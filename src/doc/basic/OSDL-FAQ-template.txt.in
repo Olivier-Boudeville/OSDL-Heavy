@@ -1,0 +1,41 @@
+
+			This is the OSDL mini-FAQ
+			
+			
+			
+* General FAQ
+
+	Q: How to have more information about OSDL in general ?
+	A: See @OSDL_SF_URL@
+
+	Q: How to have more information about this version of OSDL ?
+	A: This is the @OSDL_FULL_VERSION@ version of the OSDL library, corresponding to the dedicated documentation section at @OSDL_SF_VERSION_URL@
+
+	Q: What licence applies to the OSDL library ? 
+	A: See the COPYING.LIB file
+	
+	Q: When was released this OSDL version ?
+	A: It has been released on @OSDL_RELEASE_DATE@
+	
+	
+* User FAQ
+
+	Q: How can I build the OSDL library ? 
+	A: See the INSTALL file
+		
+	Q: How can I report bugs ?
+	A: Send bug reports to the osdl-bugs@lists.sourceforge.net mailing list
+
+	Q: How can I have more informations about OSDL ?
+	A: For general informations, visit @OSDL_SF_URL@. For in-depth version-related content, read the OSDL user guide at @OSDL_SF_VERSION_URL@
+	
+		
+* Developper FAQ
+
+	Q: How can I retrieve and install all the OSDL prerequesites ? (Ceylan, SDL, SDL_image, libpng, etc.)
+	A: Use the LOANI script, see @LOANI_WEB_HOMEPAGE@
+	
+	Q: How can I regenerate the build system, with regards to the Autotools ? 
+	A: See the conf/build directory, notably autogen.sh
+	
+	

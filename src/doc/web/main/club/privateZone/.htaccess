@@ -1,0 +1,5 @@
+AuthUserFile /home/groups/o/os/osdl/.htpasswd
+AuthName osdl
+AuthType Basic
+
+require valid-user

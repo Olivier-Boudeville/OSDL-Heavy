@@ -1,0 +1,219 @@
+# Centralized version and release informations about used tools for OSDL. 
+
+# This file is intended to be included both in Makefiles and in Bourne shell
+# scripts.
+
+# When the version of a tool is changed in trunk/src/conf/OSDLSettings.inc,
+# the corresponding section must be updated here (ex : for the MD5 code).
+
+
+
+# ----------- For required tools :
+
+
+# SDL
+
+SDL_VERSION="@SDL_OLDEST_SUPPORTED_FULL_VERSION@"
+SDL_ARCHIVE="SDL-$SDL_VERSION.tar.gz"
+SDL_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
+SDL_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_MD5="418b42956b7cd103bfab1b9077ccc149"
+
+
+
+# JPEG library (libjpeg.so) : http://www.ijg.org/
+
+libjpeg_VERSION="6b"
+libjpeg_ARCHIVE="jpegsrc.v${libjpeg_VERSION}.tar.gz"
+libjpeg_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
+libjpeg_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
+libjpeg_MD5="dbd5f3b47ed13132f04c685d608a7547"
+
+
+
+# PNG library (libpng.so) : http://www.libpng.org/pub/png/libpng.html
+
+libpng_VERSION="1.2.14"
+libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
+libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
+libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/src/"
+libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
+libpng_MD5="2ec1e1beb2e6376b09d090f74d259160"
+
+
+
+# zlib library (libzlib.a) : http://www.zlib.net/
+
+zlib_VERSION="1.2.3"
+zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.gz"
+zlib_DOWNLOAD_LOCATION="http://www.zlib.net"
+zlib_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
+zlib_MD5="dee233bf288ee795ac96a98cc2e369b6"
+
+
+# TIFF library (libtiff.so) : http://www.remotesensing.org/libtiff/
+# (TIFF support for OSDL not maintained anymore : use PNG or JPEG instead)
+libtiff_VERSION="3.7.3"
+libtiff_ARCHIVE="tiff-v${libtiff_VERSION}.tar.gz"
+libtiff_DOWNLOAD_LOCATION="ftp://ftp.remotesensing.org/pub/libtiff/"
+libtiff_ALTERNATE_DOWNLOAD_LOCATION=""
+libtiff_MD5="xxx"
+
+
+
+# SDL_image : http://www.libsdl.org/projects/SDL_image/release/
+
+SDL_image_VERSION="1.2.5"
+SDL_image_ARCHIVE="SDL_image-${SDL_image_VERSION}.tar.gz"
+SDL_image_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
+SDL_image_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_image_MD5="cd006109a73bf7dcc93e1c3ed15ee782"
+
+
+# SDL_image pre-built archives
+
+
+# Precompiled binaries of SDL_image, zlib, jpeg, png for Windows : http://www.libsdl.org/projects/SDL_image/release/
+
+SDL_image_win_precompiled_VERSION=1.2.4
+SDL_image_win_precompiled_ARCHIVE="SDL_image-devel-${SDL_image_win_precompiled_VERSION}-VC6.zip"
+SDL_image_win_precompiled_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
+SDL_image_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_image_win_precompiled_MD5=""
+
+
+# Precompiled binaries of SDL_image, zlib, jpeg, png for Mac OS X : http://www.libsdl.org/projects/SDL_image/release/
+
+SDL_image_osx_precompiled_VERSION=1.2.4-1
+SDL_image_osx_precompiled_ARCHIVE="SDL_image-devel-${SDL_image_osx_precompiled_VERSION}.ppc.rpm"
+SDL_image_osx_precompiled_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
+SDL_image_osx_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_image_osx_precompiled_MD5=""
+
+
+
+# SDL_gfx (libSDL_gfx.so) : http://www.ferzkopp.net/Software/SDL_gfx-2.0/
+# No binaries available !
+
+SDL_gfx_MAJOR_VERSION="2.0"
+SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.14"
+SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
+SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
+SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_gfx_MD5="144b1190f5358ac50c62cd49031699fc"
+
+
+
+# freetype (libfreetype.so) : http://freetype.sourceforge.net
+
+# Sources.
+
+freetype_VERSION="2.2.1"
+freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
+freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
+freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
+freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
+freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
+freetype_MD5="5b2f827082c544392a7701f7423f0781"
+
+# Precompiled binaries of freetype for Windows.
+# See : http://gnuwin32.sourceforge.net/packages/freetype.htm
+freetype_win_precompiled_VERSION="2.2.1"
+freetype_win_precompiled_ARCHIVE="freetype-${freetype_VERSION}-1-bin.zip"
+freetype_win_precompiled_ARCHIVE_SECOND="freetype-${freetype_VERSION}-1-lib.zip"
+freetype_win_precompiled_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/gnuwin32"
+freetype_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
+freetype_win_precompiled_MD5="xxx"
+
+
+# Precompiled binaries of freetype for Mac OSX.
+
+freetype_osx_precompiled_VERSION="2.1.7"
+freetype_osx_precompiled_ARCHIVE=""
+freetype_osx_precompiled_DOWNLOAD_LOCATION=""
+freetype_osx_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
+freetype_osx_precompiled_MD5="xxx"
+
+
+
+# SDL_ttf (libSDL_ttf.so) : http://www.libsdl.org/projects/SDL_ttf/
+
+# Sources.
+ 
+SDL_ttf_VERSION="2.0.8"
+SDL_ttf_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}.tar.gz"
+SDL_ttf_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
+SDL_ttf_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_ttf_MD5="094b6c08769e9842dbe1dfb5efa22df7"
+
+
+# Precompiled binaries of SDL_ttf for Windows.
+
+SDL_ttf_win_precompiled_VERSION="2.0.8"
+SDL_ttf_win_precompiled_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}-win32.zip"
+SDL_ttf_win_precompiled_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
+SDL_ttf_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_ttf_win_precompiled_MD5="xxx"
+
+# Precompiled binaries of SDL_ttf for Mac OSX.
+
+SDL_ttf_osx_precompiled_VERSION="2.0.8"
+SDL_ttf_osx_precompiled_ARCHIVE=""
+SDL_ttf_osx_precompiled_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
+SDL_ttf_osx_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_ttf_osx_precompiled_MD5=""
+
+
+# libvorbis (libvorbis.so) : http://www.xiph.org/vorbis/
+libvorbis_VERSION="1.1.2"
+libvorbis_ARCHIVE="libvorbis-${libvorbis_VERSION}.tar.gz"
+libvorbis_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/vorbis"
+libvorbis_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
+libvorbis_MD5="37847626b8e1b53ae79a34714c7b3211"
+
+
+
+# libogg (libogg.so) : http://www.xiph.org/ogg/
+
+libogg_VERSION="1.1.3"
+libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.gz"
+libogg_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
+libogg_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
+libogg_MD5="eaf7dc6ebbff30975de7527a80831585"
+
+
+
+# SDL_mixer (libSDL_mixer.so) : http://www.libsdl.org/projects/SDL_mixer/
+
+SDL_mixer_VERSION="1.2.7"
+SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
+SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
+SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
+
+
+
+# OSDL is retrieved for the moment directly thanks to CVS (export or checkout).
+# Following sections are therefore ignored.
+
+
+
+# OSDL (libOSDL.so) : http://osdl.sourceforge.net
+
+# OSDL can be retrieved from CVS or from a source code archive.
+
+OSDL_VERSION="0.4"
+OSDL_RELEASE=0
+OSDL_ARCHIVE="OSDL-${OSDL_VERSION}.${OSDL_RELEASE}.tar.bz2"
+OSDL_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
+OSDL_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/osdl"
+OSDL_MD5="(blanked)"
+
+OSDL_ROOT="OSDL/OSDL-${OSDL_VERSION}"
+OSDL_CVS_SERVER=cvs.sourceforge.net
+
+
+# Next to come may be : SDL_sound, PhysFS
+
+
+
+# End of OSDL tools definitions.

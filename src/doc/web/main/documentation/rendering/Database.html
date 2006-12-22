@@ -1,0 +1,11 @@
+There is a major difference between large enterprise APP databases 
+and GAME databases.  Because of the "really real time" nature of games, you 
+can't really wait around for a few seconds for things to go directly to a 
+database.  And this is pretty obvious (even before the talk), as is the 
+fact that there has to be something going on in the backend to facilitate 
+real time data access.  So they have a "game state" proxy server that sits 
+between the game servers and the database server, and this will receive 
+game state updates, and return game state information and then regularly 
+write out "snapshots" of the game world to the database.  And this is good 
+because if your game server goes down you still have the state, and 
+etc. 

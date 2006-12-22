@@ -1,0 +1,433 @@
+/* This document is a part of the Denofsye Project */
+/* Standard Cascading Style Sheet File */
+
+/* Last update : 15/12/2001 */
+/* Author : Olivier Boudeville (olivier.boudeville@online.fr) */
+
+div.box { border: solid; border-width: thin; width: 100% }
+
+body {
+  background: #000000;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 15px;
+  text-indent: 4%;
+  text-align: left;
+  margin-left: 5%;
+  margin-right: 3%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  color: #FFFF99
+}
+
+h1.Huge {
+  color: #FFCC00 ;
+  font-size: 70px;
+  background: transparent;
+  font-weight: bold;
+  font-family: Verdana;
+  margin-top: 0%;
+  margin-bottom: 0;
+  margin-left: 2%;
+  margin-right: 2%;
+  text-align: center
+}
+
+h1.Big {
+  font-family: "Lucida Sans Unicode";
+  font-size: 45px
+}
+
+h1 {
+  color: #8A80FF;
+  font-size: 35px;
+  background: transparent;
+  font-weight: bold;
+  font-family: "Lucida Sans Unicode", Verdana, "MS Sans Serif";
+  text-align: center;
+  margin-top: 2%;
+  margin-bottom: 3%;
+  margin-left: 2%;
+  margin-right: 2%
+}
+
+h2 {
+  color: #99CC00 ;
+  font-size: 30px;
+  background: transparent;
+  text-align: left;
+  font-family: "Lucida Sans Unicode", Verdana, "MS Sans Serif"
+}
+
+h3 {
+  color: #FFCC00;
+  font-size: 27px;
+  background: transparent;
+  font-family: "Lucida Sans Unicode", Verdana, "MS Sans Serif";
+  margin-left: 0%;
+  margin-right: 4%;
+  margin-top: 4%;
+  margin-bottom: 2%
+}
+
+h4 {
+  color : #FF9933;
+  font-size: 25px;
+  margin-left: 8%;
+  margin-right: 6%;
+  font-family : "Lucida Sans Unicode", Verdana, "MS Sans Serif";
+  font-weight: normal
+}
+
+h5 {
+  color : #99CC00;
+  font-size: 19px;
+  margin-left: 13%;
+  margin-right: 8%;
+  font-family : "Lucida Sans Unicode", Verdana, "MS Sans Serif";
+  font-weight: bold
+}
+
+h6 {
+  color : #8A80FF;
+  font-size: 14px;
+  margin-left: 18%;
+  margin-right: 8%;
+  font-family : "Lucida Sans Unicode", Verdana, "MS Sans Serif";
+  font-weight: bold
+}
+
+h7 {
+  color : #FFFF99;
+  font-size: 12px;
+  margin-left: 23%;
+  margin-right: 2%;
+  font-family : "Lucida Sans Unicode", Verdana, "MS Sans Serif";
+  font-weight: bold
+}
+
+div.Visited {
+  font-size: 20px;
+  color: #B1B189 
+}
+
+
+dl {
+  margin-top: 2%;
+  margin-bottom: 1%;
+  margin-left: 0%;
+  text-align: left;
+  color: #669933;
+  font-weight: bold;
+  margin-right: 2%
+}
+
+dt {
+  color: #8A80FF;
+  font-weight: bold;
+  font-size: 18px;  
+  margin-top: 10px
+}
+
+dd {
+  color: #FFFF99;
+  font-weight: normal;
+  font-size: 12px;
+}
+
+  
+ol {
+  color: #FFFF99;
+  margin-top: 0%;
+  margin-bottom: 0%;
+  margin-left: 0%;
+  text-align: left;	
+  margin-right: 2%
+}
+
+.romanic {
+  list-style: upper-roman
+} 
+
+p {
+  margin-top: 1%;
+  margin-bottom: 1%;
+  margin-right: 3%;
+  text-align: justify;
+  text-indent: 5%
+}
+
+ul {
+  color: #FFFF99;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  margin-left: 4%;
+  text-align: left;
+  list-style: square;		
+  margin-right: 1%
+}
+
+ul li {
+  color: #FFFF99; 
+  margin-left: 0%;
+  margin-right: 0%;
+  list-style: square
+}
+
+ol li {
+  color: #FFFF99; 
+  margin-left: 0%;
+  margin-right: 0%;
+  list-style: decimal
+}
+
+ul ul li, ol ol li {
+  color: #FFFF99;
+  list-style: disc;
+}
+  
+ul ul, ol ol, table ol, table ul {
+  list-style: disc;
+  margin-left: 4%;		
+  margin-right: 3%
+}
+
+ul ul ul li, ol ol ol li {
+  color: #669933;
+  margin-left: 0%;
+  list-style: decimal
+}
+  
+pre {
+  margin-left: 4%;
+  white-space: pre
+}
+
+table {
+  border-style: solid;
+  color: #000000;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: solid;
+  border-collapse: separate;
+  border-spacing: 5pt;
+}
+
+td {
+  border: thin dotted #800080;
+  border-style: solid; 
+  border: solid;
+}
+
+table caption {
+  font-size: larger;
+  font-weight: bolder
+}
+
+table p, table dl, ol p, ul p, dl p, blockquote p, .note p, .note ul, .note ol, .note dl, li pre, dd pre {
+  color: #000000;
+  margin-left: 0;
+  margin-right: 0
+}
+
+tr {
+   font-family: arial, helvetica, sans-serif;
+   font-size: 15px
+}
+
+th { 
+   color: #8A80FF;
+   font-family: arial, helvetica, sans-serif; 
+   font-weight: bold;
+   font-size: 19px
+ }
+
+td {
+   font-family: arial, helvetica, sans-serif;
+   font-size: 15px 
+}
+
+p.top {
+  background: #8A80FF;
+  margin-left: 1%;
+  margin-right: 1%
+}
+
+blockquote {
+  margin-left: 8%;
+  margin-right: 8%;
+  border: thin ridge #B1B189
+}
+
+blockquote pre {
+  margin-left: 1%;
+  margin-right: 1%
+}
+
+dt a {
+  font-weight: bold;
+  background : #669933;
+  color: #8A80FF;
+}
+
+td a {
+  font-weight: bold;
+  font-size: 15px
+}
+
+a:link {
+  color:#FFCC00; 
+  background: transparent;
+  text-decoration: none
+}
+
+a:visited {
+  color: #B1B189;
+  background: transparent;
+  text-decoration: none
+}
+
+a:active {
+  color: #B1B189;
+  background: transparent;
+  text-decoration: none
+}
+
+a:hover { 
+  text-decoration:underline;
+  color:#FFCC00
+}
+
+.html {
+  color: #000080;
+  background: #8A80FF;
+}
+
+.css {
+  color: #800000;
+  background: transparent
+}
+
+.javascript {
+  color: #008000;
+  background: transparent
+}
+
+.example {
+ margin-left: 10%
+}
+
+code {
+  color: #99CC00 ;
+  font-size: 17px;
+  font-weight: normal;
+  font-family: Courier
+}
+
+b {
+  color: #FF9933;
+  font-family: "Lucida Sans Unicode", Verdana, "MS Sans Serif";
+  font-size: 18px;
+  font-weight: bold
+}
+
+dfn {
+  font-style: normal;
+  color: #8A80FF;
+  font-weight: bolder
+}
+
+var sub { font-style: normal }
+
+.note {
+  font-size: 85%;
+  margin-left: 10%
+}
+
+
+.author {
+  font-style: italic
+}
+
+.copyright {
+  font-size: smaller;
+  text-align: right;
+  clear: right
+}
+
+.toolbar {
+  text-align: center
+}
+
+.toolbar IMG {
+  float: right
+}
+
+.error {
+  color: #DC143C;
+  background: transparent;
+  text-decoration: none
+}
+
+.warning {
+  color: #FF4500;
+  background: transparent;
+  text-decoration: none
+}
+
+.error strong {
+  color: #DC143C;
+  background: #FFD700;
+  text-decoration: none
+}
+
+.warning strong {
+  color: #FF4500;
+  background: #FFD700;
+  text-decoration: none
+}
+
+.warning a:link, .warning a:visited, .warning a:active {
+  color: #FF4500;
+  background: transparent;
+}
+
+.error a:link, .error a:visited, .error a:active {
+  color: #DC143C;
+  background: transparent;
+  text-decoration: underline
+}
+
+.error strong a:link, .error strong a:visited, .error strong a:active {
+  color: #DC143C;
+  background: #FFD700
+} 
+
+.warning strong a:link, .warning strong a:visited, .warning strong a:active {
+  color: #FF4500;
+  background: #FFD700
+}
+
+colgroup.entity { text-align: center }
+
+.default { text-decoration: underline; font-style: normal }
+
+.required { font-weight: bold }
+
+td li.transitional, .elements li.transitional {
+  font-weight: lighter;
+  color: #696969;
+  background: transparent
+}
+
+td li.frameset, .elements li.frameset {
+  font-weight: lighter;
+  color: #808080;
+  background: transparent
+}
+
+.footer {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: solid thin black
+}
+

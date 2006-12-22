@@ -1,0 +1,4 @@
+Created 2004, January 18
+
+This file has for only use to test CVS export : if it is working, the whole website is erased and a full export is made, otherwise the crontab script (src/code/scriptexport-CVS-to-webserver.sh)
+

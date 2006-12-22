@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2006, January 13
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Build System</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL, build">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href="../../../../common/css/OSDL.css">
+</head>
+
+<body>
+
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../common/black.html" onclick="parent.toolbar.location='../../../MainMenu.html'">home page</a> <a href="../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Build%20system">mail us</a></p>
+  </div><a name="_top_"></a> 
+
+
+  <h1>OSDL Build system</h1>
+
+
+<a name="toc">
+<center>
+	<table summary="Table of content" style="border: none">
+        <tr>
+          <td>
+
+		   <div class="box">
+		       <a href="#overview">Overview</a><br>
+		       <a href="#candidates">Candidates &amp; choices</a><br>
+		       <a href="#autotools">The Autotools</a>
+          </div>
+
+          </td>
+        </tr>
+      </table>
+</center>
+<!--
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+  -->
+
+
+
+<a name="overview"></a>			  
+<h2>Overview</h2>
+
+<p>
+OSDL and Ceylan, its helper library, are designed to be portable, hence to be run onto several <a href="PortingGuide.html#supportedPlatforms">platforms</a>. We tried to choose the most relevant technologies so that multiple platforms could be managed seamlessly, knowing that for rather uncommon or specific architectures the build system had to be tailored on a per-platform basis : requesting a unique build process to be able to take them all into account would be a tough task with no real added-value.
+</p>
+
+
+<p>
+What we mainly expect of an overall build system is to be able to :
+<ul>
+	<li><b>help the day-to-day development process</b>, by providing a user-friendly, non error-prone environment, which includes smart build messages, dependency tracking and paranoïd checkings</li>
+	<li><b>generate the library/application</b> from it sources, on every platform supported by this system, henre including per-platform detection and configuration</li>
+	<li><b>generate the means of testing the developments</b>, i.e. the set of unitary and overall tests supplied with them</li>
+	<li><b>generate the associated documentation</b>, again from the sources, including project informations, user's guide, tutorials, reference manual and full API documentation</li>
+	<li><b>install all the application-related content</b> appropriately, including of course the headers, the libraries, the documentation, the examples, the tests and the main application itself, if any</li>
+	<li><b>produce some informations and statistics</b>  about the current developments, such as the line number count</li>
+	<li><b>create archives</b>, both for back-up and distribution (releases)</li>
+</ul>
+
+</p>
+
+<p>
+Setting a build system is a necessary but dull task. What we aim at, more generally, is to make a safe bet on a standard system which will not slow us down, will not restrain or torment us daily, and that will remain used and maintained for a long while by a strong community.
+</p>
+
+<p>
+There is only one means of knowing whether a platform is supported thanks to the build system: it is to actually take a source release of the developments and to try to build it from scratch. Therefore one should have access to every platform to support, which is detailed in our quality section, in the <a href="Quality.html#testing">testing</a> subsection.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+	
+
+<a name="candidates"></a>			  
+<h2>Candidates &amp; choices</h2>
+
+<p>
+<ul>
+	<li><b>home-made Makefiles</b> : this was the solution we started with. Our somewhat advanced GNUmakefiles took in charge all the tasks detailed above. Its drawbacks where that it was a non-standard way of build, hence hindering portability and needing some efforts to be understood by new developers. Moreover, the configuration step was not separated from the build itself, thus slowing down the whole rebuild process while in development phase. It was quite a nice system though</li>
+	<li><b>Cmake</b> [<a href="http://www.cmake.org/" target="_blank">Cross-platform Make</a>] is an interesting system, but not enough mature for our needs yet. It would require the user to have it, and the maintainers to write specific rules to detect pre-requesites, whereas one could hope to have them readily available with systems already more widely spread</li>
+	<li><b>SCONS</b> [<a href="http://www.scons.org/" target="_blank">Software construction tool</a>] suffers from somewhat similar drawbacks, including the need of having Python</li>
+	<li><b>Jam</b> [<a href="http://www.perforce.com/jam/jam.html" target="_blank">homepage</a>] is little known, we did not want to take a risk with it</li>
+	<li>the GNU <b>Autools</b> have finally been chosen for the UNIX-like builds, there are detailed below</li>
+</ul>
+
+</p>
+	
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+	
+
+
+<a name="autotools"></a>			  
+<h2>The Autotools</h2>
+
+<p>
+They are powerful yet dreadfully complex. Their benefits should not be overlooked, they are vey well described in the <em>Autotools Handout</em> listed below.
+</p>
+
+<h3>Autotools links</h3>
+<p>
+<ul>
+    <li>The <a href="http://www-src.lip6.fr/homepages/Alexandre.Duret-Lutz/autotools.html" target="_blank">Autotools Handout</a>, by Alexandre Duret-Lutz</li>
+    <li>The <a href="http://sources.redhat.com/autobook/" target="_blank">Autobook</a>, a.k.a. the autotools bible, a pleasant and useful reading by Gary V. Vaughan, Ben Elliston, Tom Tromey and Ian Lance Taylor</li>
+    <li>The GNU <a href="http://www.gnu.org/software/automake/manual/html_mono/automake.html" target="_blank">Automake</a> manual [<a href="http://sources.redhat.com/automake/automake.html" target="_blank">other source</a>]</li>
+    <li>The GNU <a href="http://www.gnu.org/software/autoconf/manual/index.html" target="_blank">Autoconf</a> manual</li>
+	<li>The GNU <a href="http://www.gnu.org/software/make/manual/html_mono/make.html" target="_blank">make</a> manual</li>
+    <li>Using <a href="http://www.gnu.org/software/libtool/manual.html" target="_blank">Libtool for GNU</a></li>
+In mid-1999, an official Autoconf macro archive was established on the World Wide Web by Peter Simons in Germany. The archive collects useful Autoconf macros that might be useful to some users, but are not sufficiently general purpose to include in the core Autoconf distribution. The URL for the macro archive is:
+    <li><a href="http://www.gnu.org/software/ac-archive/" target="_blank">Useful Autoconf macros archive</a></li>
+<!--	
+    <li><a href="" target="_blank"></a></li>
+-->
+
+</ul>
+</p>
+
+	
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+	
+	
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Build%20system">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    <a href="#_top_">[Top]</a><br>
+    <br>
+    <em>Last update : 2006, January 23</em>
+  </center>
+</body>
+</html>

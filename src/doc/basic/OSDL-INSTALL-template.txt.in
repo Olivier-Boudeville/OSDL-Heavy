@@ -1,0 +1,25 @@
+
+
+		OSDL build and installation instructions
+
+
+The installation of OSDL @OSDL_FULL_VERSION@ is detailed on the website, please refer to : @OSDL_SF_URL@, notably at @OSDL_SF_VERSION_URL@ for everything specific to this @OSDL_VERSION@ version.
+
+For automatic downloading, configuring, building and installing of OSDL and its prerequesites (Ceylan, SDL, SDL_image, etc.) read the LOANI file.
+
+
+The installation procedure of OSDL itself is very close to the GNU standard one. 
+It is mainly a matter of :
+	bunzip2 -f osdl-@OSDL_VERSION@.tar.bz2 && tar -xvf osdl-@OSDL_VERSION@.tar
+	cd osdl-@OSDL_VERSION@
+	./configure
+	make
+	make check
+	su
+	make install
+	
+With future releases, one may then enter :
+	make installcheck
+
+
+The OSDL mailing list dedicated to bug reports is not specified here, please read the documentation first !

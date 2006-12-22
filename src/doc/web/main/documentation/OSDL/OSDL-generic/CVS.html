@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, January 13.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <meta content=
+  "HTML Tidy for Linux/x86 (vers 1st April 2003), see www.w3.org"
+        name="generator">
+
+  <title>OSDL - CVS policies</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL, CVS">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../../../../common/css/OSDL.css">
+  <style type="text/css">
+  div.c3 {text-align: center}
+  h1.c2 {font-family: arial, helvetica, sans-serif}
+  span.c1 {font-family: arial, helvetica, sans-serif}
+  </style>
+  <style type="text/css">
+  li.c1 {list-style: none}
+  </style>
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../../Map.html">site map</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20CVS%20policies">
+    mail us</a></p>
+  </div><a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+
+  <h1>OSDL's CVS policies</h1>
+  
+  <h2>Overview</h2>
+  <p>
+This document concentrates on the way OSDL uses CVS services.
+  </p>
+  
+<h2>Choices</h2>
+<p>
+Every OSDL's source file (code, but also documentation, web page and so on) is to be registered under CVS.
+</p>
+
+<p>The reasons for their storing in control version are :
+<ol>
+	<li>avoiding <b>loosing</b> them : there is nothing as painful in development when sources are lost. SourceForge's servers are reliable and regularly archived. And thanks to CVS, many people who performed a checkout of our sources have their own copies.</li>
+	<li>keeping all the <b>versions</b> available : for every file, every version can be retrieved, thus all thier history can be used, allowing roll-backs.</li>
+	<li><b>sharing</b> the sources : control versions systems allow users to work collaboratively on a project, in a groupware-fashion</li>
+</ol>
+
+<p>
+However, as opposed to source file, no generated file (like objects [*.o, *.lo], libraries [*.a, *.la, *.so] or executables) should be versioned, since they are to be rebuilt using the sources. Furthermore their size is often significant.
+</p>
+
+
+<p>
+At the moment, the OSDL team uses two CVS repositories :
+<ul>
+	<li>the <b>main one</b> in SourceForge [<a href="http://cvs.sourceforge.net/viewcvs.py/osdl/" target="_blank">browse</a>]</li>
+	<li>the second <b>one</b> in our project server, which is scarcely up-to-date [<a href="http://osdl.dnsalias.com/cgi-bin/viewcvs.cgi/" target="_blank">browse</a>]</li>
+</ul>
+
+</p>
+
+<br>
+<h2>Accessing our main repository</h2>
+
+<p>First of all, CVS shoud be set to be tunnelled thanks to SSH, otherwise one could not connect to SourceForge's servers. It is therefore necessary to set the shell variable CVS_RSH to the value "ssh" (in bash, it would be <code>export CVS_RSH=ssh</code>).</p>
+
+<p>
+Any registered user for OSDL project at SourceForge is granted CVS reading/writing access. For a user whose SourceForge's name is <code>hurricane</code>, the following prefix should be put before any CVS command (such as ci, co, add etc.) :
+  <center>
+ <table summary="CVS prefix" class="c1" style="border : none">
+    <tr>
+      <td>
+        <div class="box">
+          <code>cvs -z3 -d:ext:hurricane@cvs.sourceforge.net:/cvsroot/osdl</code>
+        </div>
+      </td>
+    </tr>
+  </table>
+  </center>
+
+</p>
+
+<p>
+Despite the fact that all this prefix is optional when using CVS from a check-out directory, having the right alias is helpful. So, one could define in, for example, bash shell <code>alias cvsosdl='cvs -z3 -d:ext:hurricane@cvs.sourceforge.net:/cvsroot/osdl'</code>. Afterwards, a simple command such as <code>cvsosdl co OSDL/OSDL-0.3</code> would do the trick.
+
+</p>
+
+<h3>Quick overview of the structure of our CVS repository</h3>
+<p>
+Basically, the work (development, documentation, and so on) being made by the OSDL team (including our club for game creation) respects the following structure :
+<ul>
+	<li><b>Ceylan</b> : our generic all-purpose C++ library</li>
+	<li><b>OSDL</b> : our generic multimedia library</li>
+	<li><b>Tools</b> : some tools we had to develop or improve for our own needs (such as yag-osdl) </li>
+	<li><b>Trailer</b> : what we specifically created for our first game's trailer</li>
+	<li><b>club</b> : some work necessary for our game creation club</li>
+
+</ul>
+
+</p>
+
+
+<h3>Dealing with security and user-friendly approach</h3>
+<p>
+By default, each operation involving the SourceForge's repository triggers a SSH-handshake that leads to the asking of the user's password. As oftenly many CVS operations have to be chained, it becomes a growing pain to have to type one's password many times. 
+</p>
+
+<p>There is hopefully a quick work-around described <a href="http://sourceforge.net/docman/display_doc.php?docid=761&group_id=1" target="_blank">here</a>, which allows to export one's public key to SourceForge' servers. That way, one's machine can self-authenticate the user without any password being typed, allowing a more user-friendly CVS usage. 
+
+</p>
+
+
+
+<br>
+<h2>Some CVS-related hints</h2>
+
+
+<h3>Updating one's repository</h3>
+<p>
+One should perform on a regular basis (i.e. at least before modifying anything under the local check-out directory) an update, which makes sure that the local files are up-to-date with regard to the CVS repository, therefore hindering users to work on an obsolete version of the file, which would result in a painful merge to be done. 
+
+</p>
+
+<p>
+To perform this update, use this command : 
+  <center>
+ <table summary="CVS update" class="c1" style="border : none">
+    <tr>
+      <td>
+        <div class="box">
+          <code>cvs -z3 -d:ext:hurricane@cvs.sourceforge.net:/cvsroot/osdl update -d</code> 
+        </div>
+      </td>
+    </tr>
+  </table>
+  </center> 
+  
+ <center>- or, preferably -</center>
+  
+   <center>
+ <table summary="CVS update" class="c1" style="border : none">
+    <tr>
+      <td>
+        <div class="box">
+          <code>cvsosdl update -d</code>
+        </div>
+      </td>
+    </tr>
+  </table>
+  </center>
+  </p>
+  
+  <p>
+The reason for the <code>-d</code> option is that, without it, any newly created directory in the repository would not be copied back.
+
+</p>
+
+<h3>Communication</h3>
+<p>
+Each time a major modification of the CVS repository is being made, one should inform the other CVS users of the change, so that they will not forget to perform an update.
+
+</p>
+
+
+<p>
+
+Another important point is to ensure that stable releases are tagged, so that at any time one can roll-back to a working set of source files. To do so recursively, from within a stable checkout directory, use :
+
+<center>
+    <table summary="CVS tag" class="c1" style="border : none">
+    <tr>
+      <td>
+        <div class="box">
+         <code>cvs tag STABLE_yyyymmdd</code>
+        </div>
+      </td>
+    </tr>
+  </table>
+</center>
+  
+	<center>for instance : </center>
+<center>
+	
+    <table summary="CVS tag example" class="c1" style="border : none">
+    <tr>
+      <td>
+        <div class="box">
+         <code>cvs tag STABLE_20040227</code> for 2004, February 27.
+        </div>
+      </td>
+    </tr>
+  </table>
+</center>
+</p>
+
+
+<p>
+Thus, the rule of thumb might be : ensure that the recommendations of the <a href="../../../download/Download.html" target="_blank">Download page</a> are always applicable.
+
+</p>
+
+
+<h3>CVS limitations</h3>
+<p>
+CVS is a useful tool, but has some defects that hopefully his replacements (ex : <a href="http://subversion.tigris.org/" target="_blank">Subversion</a>) won't inherit.
+</p>
+
+<p>
+The most annoying drawback of CVS is that it is not possible from its clients to remove a directory on the repository. If file deleting is easy (<code>cvs rm myFile</code> after having removed your corresponding local checkouted file), the only way of getting rid of a directory is to log on the CVS server and to manually perform deletings in the repository directly.</p>
+ 
+ <p>
+ As it is not possible to log on SourceForge's CVS servers, there exist only two solutions to correct a mistake involving a directory (see the <a href="#cvsReminder">import</a> section to understand how easy it is to make mistakes) :
+ <ul>
+	<li>usually, <b>do nothing</b> : remove recursively by hand (<code>cvs rm</code>) all files in the directory, leaving a tree of empty directories, and wait till the next project's version, which should be cleaned up of those directories before being imported again</li> 
+	<li>for big cases : issue a <b>CVS project request support</b> to SourceForge team, who will hopefully spoil a bit of their time correcting manually one's project repository</li>
+	
+
+</ul>
+
+</p>
+
+<br>
+  <a name="cvsReminder"></a> 
+  <h3>A useful reminder about cvs import</h3>
+
+  <p>Less CVS repositories should be bungled by mistake with the import
+  command thanks to that reminder taken from <a href=
+  "http://www.gnu.org/software/cvs/manual/html_mono/cvs.html"
+     target="_blank">CVS&#39; manual</a> :</p>
+
+<center>
+  <table summary="CVS informations" class="c1" style="border : none">
+    <tr>
+      <td>
+        <div class="box">
+          <code>If the files you want to install in CVS reside in
+          `wdir&#39;, and you want them to appear in the repository as
+          `$CVSROOT/yoyodyne/rdir&#39;, you can do this :<br>
+          <br>
+          $ cd wdir<br>
+          $ cvs import -m &quot;Imported sources&quot; yoyodyne/rdir
+          yoyo start<br>
+          <br>
+          Unless you supply a log message with the `-m&#39; flag, CVS
+          starts an editor and prompts for a message. The string
+          `yoyo&#39; is a vendor tag [i.e. put you user name here], and `start&#39; is a release tag.
+          They may fill no purpose in this context, but since CVS
+          requires them they must be present.</code>
+        </div>
+      </td>
+    </tr>
+  </table>
+  </center>
+  
+  <p>
+  After having imported a tree, one should make vanish its root directory (ex : <code>mv myRootDirectory myRootDirectory-putInCVS</code>) and perform an update (<code>cvs update -d</code>). Then only one's will have the previously imported tree with all CVS metadata (<code>CVS</code> directories) copied.
+  
+  </p>
+  
+  <p>After having checked the import is a success (the right content in the right place), one can safely remove completely one's private copy (<code>rm -rf myRootDirectory-putInCVS</code>). If something went wrong, some <code>cvs rm</code> black-magic will be needed.
+
+  
+  </p>
+  
+  <br>
+  <br>
+
+  <p>If I had read more attentively that previous import command&#39;s
+  description, I would not have bungled OSDL-0.1 CVS branch, forcing us
+  to release sooner than expected an OSDL-0.2 version !</p>
+
+  <p>[<a href=
+  "http://www.gnu.org/software/cvs/manual/html_mono/cvs.html"
+     target="_blank">More infos about CVS</a>]</p>
+	   
+	   
+<h3>Using CVS from Windows</h3>
+<p>
+Although it is not the preferred way of having CVS working, one can use it under the Windows OS. A careful reading of those SourceForge's documents might help :
+<ul>
+    <li><a href="https://sourceforge.net/docman/display_doc.php?docid=14033&group_id=1" target="_blank">Basic Introduction to CVS and SourceForge.net (SF.net) 
+Project CVS Services</a></li>
+    <li><a href="https://sourceforge.net/docman/display_doc.php?docid=768&group_id=1" target="_blank">Introduction to SourceForge.net Project CVS Services for 
+Developers</a></li>
+    <li><a href="https://sourceforge.net/docman/display_doc.php?docid=766&group_id=1" target="_blank">WinCvs CVS Client Installation Instructions</a></li>
+
+</ul>
+
+</p>
+
+	   
+	<br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those
+  presented in this document, if you noticed errors, neglects or points
+  insufficiently discussed, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20CVS%20policies">
+  drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+ <center>
+    <a href="#_top_">Top</a><br>
+    <br>
+    <em>Last update : 2004, February 27</em>
+  </center>
+</body>
+</html>

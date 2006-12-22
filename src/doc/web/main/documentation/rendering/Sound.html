@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    Ce document fait partie du projet OSDL.
+
+                Pour toute remarque, envoyer un courriel à olivier.boudeville@online.fr
+-->
+<!--    
+        Date de création : 7 Décembre 2003.
+        Auteur : Olivier Boudeville (olivier.boudeville@online.fr)
+        Version : 0.1
+-->
+
+<html lang="FR">
+<head>
+  <title>OSDL - Some informations about sound</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, rendering">
+  <link rel="stylesheet" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>Courts-circuits</em> <a href="../../../common/black.html"
+    onclick="parent.toolbar.location='../../MainMenu.html'">Page
+    principale</a> <a href="../../Map.html">Plan du site</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Rendu%20graphique">
+    écrivez-nous</a></p>
+  </div><a name="_top_"></a> 
+
+<h2>Quick overview</h2>
+<p>
+The purpose of this section is to give some hints about sound management. See also our <a href="SDL-audio.html">Audio with SDL</a> section.</p>
+
+  <h1>Sound management</h1>
+
+<h2>Recording</h2>
+
+<p>
+Under GNU/Linux, one may use <code>krecord</code> (the KDE sound recorder) which we found more useful than its Gnome counterpart. It produces <code>wave</code> files. <code>wavrec</code> does not seem to generate valid wave files.
+</p>
+
+
+<h2>Listening</h2>
+
+<h3>Wave files</h3>
+<p>
+Lighter than <code>xmms</code>, <code>wavplay</code> or <code>playwave</code> (test program from SDL_mixer) can be used.
+</p>
+
+<h3>OggVorbis files</h3>
+<p>
+<code>ogg123</code> does it for you.
+</p>
+
+
+<h2>Converting</h2>
+
+<h3>From wave to OggVorbis</h3>
+<p>
+<code>oggenc welcome-to-OSDL.wav</code> produces <code>welcome-to-OSDL.ogg</code>.
+</p>
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those
+  presented in this document, if you noticed errors, neglects or points
+  insufficiently discussed, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Rendering%20sound">drop
+  us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2005, November 25</em>
+  </center>
+</body>
+</html>
+

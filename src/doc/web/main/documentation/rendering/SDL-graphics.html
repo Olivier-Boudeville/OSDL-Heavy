@@ -1,0 +1,415 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, April 8.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Graphics with SDL</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL">
+  <link rel="stylesheet" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Graphics%20with%20SDL">mail us</a></p>
+  </div><a name="_top_"></a> 
+  
+  
+<h1>Graphics with SDL</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+
+<h2>Overview</h2>
+<p>
+This section focuses on the different ways of managing graphics thanks to SDL and his helper libraries.
+</p>
+
+  
+<h2>Video</h2>
+  
+<h3>DVD</h3>
+
+<p> 
+All video DVDs use MPEG-2 video. DVD movies are generally 720x480 (for NTSC), sometimes interlaced, sometimes progressive (recommended). Note though that the pixels are generally not square, so you will either have to generate your output accordingly (recommended), or resize it after.
+</p>
+
+<p>The image aspect ratio can be 4x3 or 16x9, and the pixels will just be stretched to a rectangular shape in one direction or another. </p>
+
+<p>[<a href="http://www.dvddemystified.com/dvdfaq.html" target="_blank">More infos</a>]</p>
+  
+
+<h3>Overlays</h3>
+
+<code><pre>
+Does SDL support me in getting the resolution?
+SDL_GetVideoInfo()->current_w and ->current_h 
+
+
+During my main event check loop, SDL_PollEvent (&event) gets no events as I am resizing.  One SDL_VIDEORESIZE event only comes after I stop resizing the window. That's the intended behavior. It works that way on Windows too, whereas on X11 there are continuous SDL_VIDEORESIZE events while resizing.
+
+I remember there being some kind of option I could switch on when I played with compositing (not XGL, just X.org) under KDE that fixed this problem when using SDL-based apps.
+
+
+Set the XLIB_SKIP_RGBA_VISUALS environment variable.  This works in all
+WMs, not just KDE.
+
+        export XLIB_SKIP_RGBA_VISUALS=1
+
+Any programs launched with this var set won't get access to modes with an
+alpha channel.  You won't be able to set the opacity of windows without an
+alpha channel, though.  If you want to be able to do that in the normal
+case, you could set up a script you can launch stuff that doesn't like
+alpha through:
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+#!/bin/sh
+XLIB_SKIP_RGBA_VISUALS=1 "$@"
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+I have a big image that is 8 meg of ram. It is more than 65536 bytes wide, whereas SDL only uses 16 bit integers to store all pixel offsets and such. This will not work.
+
+SDL is compiled with --enable-video-fbcon.
+Frame buffer is running (/dev/fb exists, permissions ok, /proc/fb has device name - I tried Savage FB and also Vesa FB
+Btw. mplayer is running (-vo fbdev and fbdev2 also) 
+Try running as root.  The usual problem is permissions on the mouse and
+keyboard devices.
+I've tried to set SDL_VIDEODRIVER=fbcon or fbdev -> nothing changes
+I'm trying it with test/testvidinfo - which works under X for me. 
+
+
+SDL supports hardware accelerated blitting of ``normal'' surfaces to the
+screen surface. However, this mode is not supported for X11 (except for
+some cards when using DGA). In fact, the only backend hardware accelerated
+memory-to-screen blitting is well supported seems to be the DirectX5 backend
+for Windows.
+
+You should look at the glscale backend :
+http://icps.u-strasbg.fr/~marchesin/sdl/sdl_glscale.patch
+
+If the OpenGL implementation supports DMA for texture uploads (which 
+almost all drivers do) it will accelerate upload of screen portions, and 
+try to avoid format conversions when possible. Plus as a nice bonus, you 
+get free bilinear scaling.
+
+Reading images from WebCam : http://www.iua.upf.es/mtg/reacTable/?portvideo
+
+It is a cross-platform SDL based video capture lib. I've had success with it
+in OS X and Windows, but I can't vouch for its Linux talents.
+
+
+There isn't a cross-platform way to get webcam data. You'll need to use
+the v4l2 API on Linux. Mac, Linux, and Windows all have ways to get this info,
+just no unified way, except for portVideo
+
+
+transcode, mplex, spumux
+
+Display  .yuv video file : try mpeg4ip project yuvdump. Source file is yuvdump.cpp : http://cvs.sourceforge.net/viewcvs.py/mpeg4ip/mpeg4ip/util/yuv
+Look at the SDL examples, SDL12/test/testoverlay.c and 
+SDL12/test/testoverlay2.c
+
+
+Why force a specific pixel depth?  Why not use SDL_ANYFORMAT and convert your surfaces to the appropriate format?  Even in the same pixel depth SDL might have to do something like convert between orderings.
+
+
+If you're doing complete fullscreen redraws, you might as well use SDL_DOUBLEBUF and SDL_Flip().  It won't confer any advantage in software mode but *hardware* doublebuffering really flies if you can get it -- 50% less data movement for every frame.
+
+
+For a static overlay, just render it all into an RGBA texture of sufficient size. (Remember that some cards may not support 2048x2048 
+or even 1024x1024 textures! You may have to do some tiling, or just hardwire your code for 256x256 tiles if that is easier.)
+
+Overlays are done in hardware, therefore their behaviour cannot be changed.
+
+Alpha channel blending is a full-out read-modify-write operation.  Unless you arrange some form of hardware acceleration, it's going to be slow.  Note 
+that alpha=128 is a special case for which SDL is optimized.
+
+Full-screen updating.  If you're going to be updating the *entire screen* 
+every frame, why not use SDL_DOUBLEBUF and SDL_Flip?  That's what it's there 
+for.
+
+A surface can be either an SWSURFACE, HWSURFACE or OPENGL surface. 
+ 
+SDL_HWACCEL is not a valid flag to SDL_SetVideoMode. That's not the use for it.
+
+You cannot have a mouse cursor with hardware surfaces in fullscreen mode. Paint the mouse cursor yourself.
+
+
+Blits should not become garbled by not calling SDL_DisplayFormat. SDL converts pixel formats as necessary; not calling SDL_DisplayFormat will decrease performance due to the conversion taking up CPU every time the blit is performed, but should not cause incorrect blits.
+
+When using SDL_DOUBLEBUF, SDL_Flip() is the way to go, documentation does not say whatSDL_UpdateRect() does in case of double buffering.
+
+
+Not only CRT monitors, but also LCDs (in notebooks and the ones connected to PCs) have vertical retrace -- they rely on the same kind of videosignal (even those with digital input -- only the signal uses pulse code modulation!)
+
+Thus these LCDs behave very much like and ordinary CRT.
+
+I beleive most displays use some serial (possibly not sequential) display update, since they have serial connection to display memory.
+
+ SDL *does* wait for video sync on platforms that
+support it. Because it can not be implemented on every platform and
+configuration the buffer flipping API for SDL was designed so that you
+get the benefits of video synchronization on platforms that support it
+(and here is the genius part) *without* having to worry about it. The
+API allows the developers of SDL to support triple buffering (and
+N-buffering if it is useful) and gives you the benefit of those features
+without making you worry about specifically waiting for vsync. 
+
+By hiding the details of video synchronization behind the API SDL allows
+the use of the best way to get smooth animation on each platform
+including using video synchronization and N-buffering where appropriate
+while allowing the SDL API to be implemented on the most primitive video
+displays.
+
+There is a lot of detail on this topic in the article at
+http://www.linuxdevcenter.com/pub/a/linux/2003/08/07/sdl_anim.html The
+parts that cover this subject are on the second page. In the article I
+do give some tricks for detecting the type of flipping being done by a
+particular SDL driver.
+
+I'd suggest JPG if you want destructive compression, and PNG for 
+pretty much everything else, including <=256 color images. Most other 
+formats will result in bigger files, and some aren't always supported 
+if you rely on dynamic linking. (No GIF by default on some Linux 
+distros, for example.
+
+<h3>Creating a video from the output of an SDL application</h3>
+
+<p>
+Two main methods exists : 
+<ul>
+	<li>have the <b>application</b> directly record its outputs (each frame leads to a screenshot, and a special audio driver is used to store directly the raw sound to a file)</li>
+	<li>use a <b>generic "grabber"</b> which acts as a different application</li>
+</ul>
+</p>
+
+
+<h>Capture tools</h5>
+<p>
+<ul>
+    <li><a href="" target="_blank">ffmpeg</a></li>
+    <li><a href="" target="_blank">mencoder</a></li>
+    <li><a href="http://www.fraps.com" target="_blank">fraps</a> (on Windows)</li>
+    <li><a href="" target="_blank">vncrec</a>, as explained <a href="http://linuxgazette.net/102/washko.html" target="_blank">here</a></li>
+    <li><a href="http://xvidcap.sourceforge.net/" target="_blank">xvidcap:</a></li>
+</ul>
+
+</p>
+
+<p>
+After having captured video and, possibly, audio, they still have to be mixed together so that it results in a full multimedia file (ex : MPEG).
+</p>
+
+<p>
+<ul>
+    <li>How-to make a <a href="http://icculus.org/misc/mpeg.txt" target="_blank">full MPEG</a>(video and audio) out of a running SDL application</li>
+</ul>
+</p>
+
+
+
+most of the problem with "dark edges" that are seeing is due to software alpha blending that is not clamping colors components to the range 0 to 255. The use of 1/256 means that you can get 256 as a result of alpha blending and that wraps to zero. Which gives you very dark colors.
+
+  
+Can I get info about pixels per inch on my screen?
+
+No SDL API and even if there was, it wouldn't be reliable.
+
+Applications that really care usually offer the user some way of overriding whatever the graphics subsystem says, as that option is often abused as a way of scaling fonts system wide. Of course, here's also a rather big risk of the monitor(s) being detected incorrectly, and the PPI values being off for that reason.What do you need it for? What kind of accuracy and reliability do you need? If it's really important, maybe it's easier, safer and/or better to just ask the user?
+
+  
+Can you try commenting out the (SDL_QuitSubSystem(SDL_INIT_VIDEO)
+and the SDL_InitSubSystem(SDL_INIT_VIDEO)?
+
+just do the SDL_SetVideoMode() to change to a new mode...
+
+  
+*Never* blit from the screen! You could end up 
+reading VRAM, which is slow enough that just a few sprites will 
+render slower than rerendering the whole screen every frame.
+
+  
+To simply create n colors as visually different as possible : work in the HSV color space, and take a number of points (equal to the number of colors) regularly spaced around H axis, and take S=1 and V=1. Then, I convert the color from HSV space to RGB space for each of these points.
+
+The HSV color space is another way of representing colors. Instead of 
+having red, green and blue components, you have hue, saturation and value.
+
+http://en.wikipedia.org/wiki/HSV_color_space
+
+Similarly, you'll find the hsv to rgb conversion algorithm and code quite easily.
+
+
+Remove SDL_HWACCEL flag from video flags : it is useless in SDL_SetVideoMode, and it is read-only on surfaces. It won't buy you any 
+performance, it's not an undocumented l33t trick, it just spreads 
+misconceptions about how SDL works.
+Also, SDL_HWPALETTE and SDL_DOUBLEBUF are useless together with an 
+OpenGL context.
+
+
+Note that an SVGAlib program needs to be suid-root in order to run.
+Also note that you can't launch an SVGAlib program from an xterm; you
+need to run it from an linux console.
+
+These facts actually make the use of the SDL_VIDEODRIVER env variable
+redundant. You can just run the program directly, and SDL will use
+whichever video output is available:
+
+* If run inside of X, SDL will use the X driver.
+* if run from a text console & suid-root, SDL will use the SVGAlib driver.
+* If run from a text console & not suid-root, SDL will use the AAlib driver.
+
+(Assuming of course you have an SDL library that supports all three drivers.)
+while this was true with svgalib-1.4.x this is certainly not true with 
+svgalib-1.9.x
+that's what the svgalib_helper kernel module is for
+
+if you just want to copy your surface, the action you're looking for 
+matches the row "RGBA->RGBA without SDL_SRCALPHA", "The RGBA data is 
+copied to the destination surface. If SDL_SRCCOLORKEY is set, only the 
+pixels not matching the colorkey value are copied."
+
+So, in your code, before blitting some_image to temp, disable SDL_SRCALPHA 
+in some_image using SDL_SetAlpha:
+
+SDL_SetAlpha(some_image,SDL_RLEACCEL,0);
+
+
+  sur SDL et les surfaces hardware, qui sont très trompeuses :
+
+on peut utiliser SDL_GetVideoInfo() mais ce n'est pas toujours exact
+
+>On my Mac OS X system, calling SDL_SetVideoMode(SDL_HWSURFACE |
+>> SDL_FULLSCREEN | SDL_DOUBLEBUF) results in a surface with the following
+>> flags:
+>>      SDL_HWSURFACE
+>>      SDL_NOFRAME
+>>      SDL_PREALLOC
+>>      SDL_DOUBLEBUF
+>>      SDL_FULLSCREEN
+>>
+>> This SDL_Surface for the screen claims to be a hardware surface, is it
+>> really?
+>  
+>
+you know you can only call video functions from the main
+> thread
+
+
+No, we are emulating page-flipping behavior in this case, primarily for 
+the benefit of retrace-synchronized updates. The screen surface is 
+actually a software surface that updates to the screen in another 
+thread and in sync with the monitor (60hz on LCDs w/ADC or DVI).
+
+
+
+windowed modes always return SDL_SWSURFACEs.  SDL_VideoInfo
+reports i have support for it and it works fine in fullscreen modes.
+Baffled I did some searching in the mailing list archives...
+
+>> Currently all versions of SDL (with the possible
+>> exception of SDL on Amiga) do not support hardware
+>> surfaces in a window.  Basically the problem is that
+>> there is no way to prevent the SDL program to draw on
+>> top of windows that might be on top of the SDL window
+>> if the program has access to a hardware surface.
+
+  
+  
+
+
+<h2>Alpha-blending</h2>
+
+per-surface alpha and hardware surfaces?
+
+The basic rule of thumb is... don't use alpha and 2D hardware surfaces.
+With almost all of the current drivers, the alpha blending has to be done
+in software, which means that each pixel needs to be read over the bus,
+modified, and written back out over the bus.  This is the slowest operation
+you can do. 
+
+You'll get better results by either using OpenGL or by using software surfaces.
+	
+
+the reason SDL uses colorkey instead of a mask, is because a colorkey
+can be hardware accelerated on more platforms, is built into several image
+formats, and can be converted to a mask easily.
+
+
+
+When blitting from an alpha surface to an alpha surface, SDL doesn't 
+copy the alpha channel. What I eventually did was copy pygame's 
+alphablit function (http://pygame.org/). Some say that there is a way to 
+make SDL do the correct blits, but I've never managed that.  Also, the 
+docs for SDL_SetAlpha() say:
+
+"Note that RGBA->RGBA blits (with SDL_SRCALPHA set) keep the alpha of 
+the destination surface. This means that you cannot compose two 
+arbitrary RGBA surfaces this way and get the result you would expect 
+from "overlaying" them; the destination alpha will work as a mask."
+
+SDL does'nt handle alpha->alpha blits correctly, it's a known issue.  The
+only option short of not trying to composite surfaces together that you have
+is to write your own blitter than can handle this case.
+
+
+Hardware surfaces are not available in windowed mode (except on Amiga 
+IIRC). OTOH, they are available in fullscreen mode on Windows (via directx).
+
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Graphics%20with%20SDL">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

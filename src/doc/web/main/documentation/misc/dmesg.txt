@@ -1,0 +1,244 @@
+ze: 64 pages
+[4294668.939000] VFS: Disk quotas dquot_6.5.1
+[4294668.939000] Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+[4294668.939000] devfs: 2004-01-31 Richard Gooch (rgooch@atnf.csiro.au)
+[4294668.939000] devfs: boot_options: 0x0
+[4294668.939000] Initializing Cryptographic API
+[4294668.939000] ACPI: PCI Interrupt 0000:00:01.0[A] -> GSI 16 (level, low) -> IRQ 16
+[4294668.939000] PCI: Setting latency timer of device 0000:00:01.0 to 64
+[4294668.939000] assign_interrupt_mode Found MSI capability
+[4294668.939000] Allocate Port Service[pcie00]
+[4294668.939000] Allocate Port Service[pcie03]
+[4294668.939000] ACPI: PCI Interrupt 0000:00:1c.0[A] -> GSI 17 (level, low) -> IRQ 17
+[4294668.939000] PCI: Setting latency timer of device 0000:00:1c.0 to 64
+[4294668.939000] assign_interrupt_mode Found MSI capability
+[4294668.939000] Allocate Port Service[pcie00]
+[4294668.939000] Allocate Port Service[pcie02]
+[4294668.939000] Allocate Port Service[pcie03]
+[4294668.939000] ACPI: PCI Interrupt 0000:00:1c.1[B] -> GSI 16 (level, low) -> IRQ 16
+[4294668.939000] PCI: Setting latency timer of device 0000:00:1c.1 to 64
+[4294668.940000] assign_interrupt_mode Found MSI capability
+[4294668.940000] Allocate Port Service[pcie00]
+[4294668.940000] Allocate Port Service[pcie02]
+[4294668.940000] Allocate Port Service[pcie03]
+[4294668.940000] isapnp: Scanning for PnP cards...
+[4294669.293000] isapnp: No Plug & Play device found
+[4294669.308000] PNP: PS/2 Controller [PNP0303:PS2K,PNP0f13:PS2M] at 0x60,0x64 irq 1,12
+[4294669.308000] i8042.c: Detected active multiplexing controller, rev 1.1.
+[4294669.308000] serio: i8042 AUX0 port at 0x60,0x64 irq 12
+[4294669.308000] serio: i8042 AUX1 port at 0x60,0x64 irq 12
+[4294669.308000] serio: i8042 AUX2 port at 0x60,0x64 irq 12
+[4294669.308000] serio: i8042 AUX3 port at 0x60,0x64 irq 12
+[4294669.308000] serio: i8042 KBD port at 0x60,0x64 irq 1
+[4294669.308000] Serial: 8250/16550 driver $Revision: 1.1 $ 54 ports, IRQ sharing enabled
+[4294669.310000] ACPI: PCI Interrupt 0000:00:1e.3[B] -> GSI 20 (level, low) -> IRQ 20
+[4294669.310000] ACPI: PCI interrupt for device 0000:00:1e.3 disabled
+[4294669.310000] io scheduler noop registered
+[4294669.310000] io scheduler anticipatory registered
+[4294669.310000] io scheduler deadline registered
+[4294669.310000] io scheduler cfq registered
+[4294669.310000] RAMDISK driver initialized: 16 RAM disks of 65536K size 1024 blocksize
+[4294669.310000] EISA: Probing bus 0 at eisa.0
+[4294669.310000] Cannot allocate resource for EISA slot 1
+[4294669.310000] Cannot allocate resource for EISA slot 2
+[4294669.310000] Cannot allocate resource for EISA slot 3
+[4294669.310000] Cannot allocate resource for EISA slot 4
+[4294669.310000] Cannot allocate resource for EISA slot 5
+[4294669.310000] Cannot allocate resource for EISA slot 6
+[4294669.310000] EISA: Detected 0 cards.
+[4294669.310000] NET: Registered protocol family 2
+[4294669.319000] IP: routing cache hash table of 8192 buckets, 64Kbytes
+[4294669.319000] TCP established hash table entries: 131072 (order: 8, 1048576 bytes)
+[4294669.319000] TCP bind hash table entries: 65536 (order: 6, 262144 bytes)
+[4294669.320000] TCP: Hash tables configured (established 131072 bind 65536)
+[4294669.320000] NET: Registered protocol family 8
+[4294669.320000] NET: Registered protocol family 20
+[4294669.320000] ACPI wakeup devices: 
+[4294669.320000] RP01 RP02 USB1 USB2 USB3 USB4 USB7 ELAN MODM 
+[4294669.320000] ACPI: (supports S0 S3 S4 S5)
+[4294669.320000] Freeing unused kernel memory: 224k freed
+[4294669.331000] vga16fb: initializing
+[4294669.331000] vga16fb: mapped to 0xc00a0000
+[4294669.392000] Console: switching to colour frame buffer device 80x30
+[4294669.392000] fb0: VGA16 VGA frame buffer device
+[4294669.916000] input: AT Translated Set 2 keyboard on isa0060/serio0
+[4294670.530000] Capability LSM initialized
+[4294670.539000] NET: Registered protocol family 1
+[4294670.552000] SCSI subsystem initialized
+[4294670.553000] libata version 1.11 loaded.
+[4294670.553000] ahci version 1.00
+[4294670.553000] ACPI: PCI Interrupt 0000:00:1f.2[B] -> GSI 19 (level, low) -> IRQ 19
+[4294670.553000] ACPI: PCI interrupt for device 0000:00:1f.2 disabled
+[4294670.553000] ahci: probe of 0000:00:1f.2 failed with error -12
+[4294670.555000] ata_piix version 1.03
+[4294670.555000] ACPI: PCI Interrupt 0000:00:1f.2[B] -> GSI 19 (level, low) -> IRQ 19
+[4294670.555000] PCI: Setting latency timer of device 0000:00:1f.2 to 64
+[4294670.555000] ata1: SATA max UDMA/133 cmd 0x1F0 ctl 0x3F6 bmdma 0x18F0 irq 14
+[4294670.709000] ata1: dev 0 cfg 49:2f00 82:746b 83:7d09 84:6023 85:7469 86:3d09 87:6023 88:203f
+[4294670.709000] ata1: dev 0 ATA, max UDMA/100, 194980905 sectors: lba48
+[4294670.709000] ata1(0): applying bridge limits
+[4294670.709000] ata1: dev 0 configured for UDMA/100
+[4294670.709000] scsi0 : ata_piix
+[4294670.709000]   Vendor: ATA       Model: TOSHIBA MK1032GA  Rev: AB21
+[4294670.709000]   Type:   Direct-Access                      ANSI SCSI revision: 05
+[4294670.709000] ata2: SATA max UDMA/133 cmd 0x170 ctl 0x376 bmdma 0x18F8 irq 15
+[4294671.017000] ata2: dev 0 cfg 49:0f00 82:0000 83:0000 84:0000 85:0000 86:0000 87:0000 88:0407
+[4294671.017000] ata2: dev 0 ATAPI, max UDMA/33
+[4294671.017000] ata2(0): applying bridge limits
+[4294671.017000] ata2: dev 0 configured for UDMA/33
+[4294671.017000] scsi1 : ata_piix
+[4294671.019000]   Vendor: MATSHITA  Model: DVD-RAM UJ-840S   Rev: 1.52
+[4294671.019000]   Type:   CD-ROM                             ANSI SCSI revision: 05
+[4294671.031000] Uniform Multi-Platform E-IDE driver Revision: 7.00alpha2
+[4294671.031000] ide: Assuming 33MHz system bus speed for PIO modes; override with idebus=xx
+[4294671.031000] ACPI: bus type ide registered
+[4294671.031000] ide0: I/O resource 0x1F0-0x1F7 not free.
+[4294671.031000] ide0: ports already in use, skipping probe
+[4294671.031000] ide1: I/O resource 0x170-0x177 not free.
+[4294671.031000] ide1: ports already in use, skipping probe
+[4294671.031000] Probing IDE interface ide2...
+[4294671.544000] Probing IDE interface ide3...
+[4294672.056000] Probing IDE interface ide4...
+[4294672.568000] Probing IDE interface ide5...
+[4294673.083000] SCSI device sda: 194980905 512-byte hdwr sectors (99830 MB)
+[4294673.083000] SCSI device sda: drive cache: write back
+[4294673.083000] SCSI device sda: 194980905 512-byte hdwr sectors (99830 MB)
+[4294673.083000] SCSI device sda: drive cache: write back
+[4294673.083000]  /dev/scsi/host0/bus0/target0/lun0: p1 p2 p3 p4 < p5 p6 p7 >
+[4294673.169000] Attached scsi disk sda at scsi0, channel 0, id 0, lun 0
+[4294673.315000] Attempting manual resume
+[4294673.315000] swsusp: Suspend partition has wrong signature?
+[4294673.348000] usbcore: registered new driver usbfs
+[4294673.348000] usbcore: registered new driver hub
+[4294673.349000] USB Universal Host Controller Interface driver v2.2
+[4294673.349000] ACPI: PCI Interrupt 0000:00:1d.0[A] -> GSI 23 (level, low) -> IRQ 23
+[4294673.349000] PCI: Setting latency timer of device 0000:00:1d.0 to 64
+[4294673.349000] uhci_hcd 0000:00:1d.0: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB UHCI #1
+[4294673.411000] uhci_hcd 0000:00:1d.0: new USB bus registered, assigned bus number 1
+[4294673.411000] uhci_hcd 0000:00:1d.0: irq 23, io base 0x00001800
+[4294673.411000] hub 1-0:1.0: USB hub found
+[4294673.411000] hub 1-0:1.0: 2 ports detected
+[4294673.414000] ACPI: PCI Interrupt 0000:00:1d.1[B] -> GSI 19 (level, low) -> IRQ 19
+[4294673.414000] PCI: Setting latency timer of device 0000:00:1d.1 to 64
+[4294673.414000] uhci_hcd 0000:00:1d.1: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB UHCI #2
+[4294673.476000] uhci_hcd 0000:00:1d.1: new USB bus registered, assigned bus number 2
+[4294673.476000] uhci_hcd 0000:00:1d.1: irq 19, io base 0x00001820
+[4294673.476000] hub 2-0:1.0: USB hub found
+[4294673.476000] hub 2-0:1.0: 2 ports detected
+[4294673.479000] ACPI: PCI Interrupt 0000:00:1d.2[C] -> GSI 18 (level, low) -> IRQ 18
+[4294673.479000] PCI: Setting latency timer of device 0000:00:1d.2 to 64
+[4294673.479000] uhci_hcd 0000:00:1d.2: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB UHCI #3
+[4294673.541000] uhci_hcd 0000:00:1d.2: new USB bus registered, assigned bus number 3
+[4294673.541000] uhci_hcd 0000:00:1d.2: irq 18, io base 0x00001840
+[4294673.541000] hub 3-0:1.0: USB hub found
+[4294673.541000] hub 3-0:1.0: 2 ports detected
+[4294673.544000] ACPI: PCI Interrupt 0000:00:1d.3[D] -> GSI 16 (level, low) -> IRQ 16
+[4294673.544000] PCI: Setting latency timer of device 0000:00:1d.3 to 64
+[4294673.544000] uhci_hcd 0000:00:1d.3: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB UHCI #4
+[4294673.606000] uhci_hcd 0000:00:1d.3: new USB bus registered, assigned bus number 4
+[4294673.606000] uhci_hcd 0000:00:1d.3: irq 16, io base 0x00001860
+[4294673.606000] hub 4-0:1.0: USB hub found
+[4294673.606000] hub 4-0:1.0: 2 ports detected
+[4294673.634000] ACPI: PCI Interrupt 0000:00:1d.7[A] -> GSI 23 (level, low) -> IRQ 23
+[4294673.634000] PCI: Setting latency timer of device 0000:00:1d.7 to 64
+[4294673.634000] ehci_hcd 0000:00:1d.7: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB2 EHCI Controller
+[4294673.634000] ehci_hcd 0000:00:1d.7: debug port 1
+[4294673.635000] ehci_hcd 0000:00:1d.7: new USB bus registered, assigned bus number 5
+[4294673.635000] ehci_hcd 0000:00:1d.7: irq 23, io mem 0xb0000000
+[4294673.638000] PCI: cache line size of 32 is not supported by device 0000:00:1d.7
+[4294673.638000] ehci_hcd 0000:00:1d.7: USB 2.0 initialized, EHCI 1.00, driver 10 Dec 2004
+[4294673.639000] hub 5-0:1.0: USB hub found
+[4294673.639000] hub 5-0:1.0: 8 ports detected
+[4294673.717000] 8139cp: 10/100 PCI Ethernet driver v1.2 (Mar 22, 2004)
+[4294673.717000] 8139cp: pci dev 0000:06:01.0 (id 10ec:8139 rev 10) is not an 8139C+ compatible chip
+[4294673.717000] 8139cp: Try the "8139too" driver instead.
+[4294673.718000] 8139too Fast Ethernet driver 0.9.27
+[4294673.718000] ACPI: PCI Interrupt 0000:06:01.0[A] -> GSI 21 (level, low) -> IRQ 21
+[4294673.719000] eth0: RealTek RTL8139 at 0x6000, 00:0f:b0:a5:3e:df, IRQ 21
+[4294673.719000] eth0:  Identified 8139 chip type 'RTL-8100B/8139D'
+[4294676.120000] ACPI: CPU0 (power states: C1[C1] C2[C2] C3[C3] C4[C3])
+[4294676.370000] Attempting manual resume
+[4294676.370000] swsusp: Suspend partition has wrong signature?
+[4294676.383000] kjournald starting.  Commit interval 5 seconds
+[4294676.383000] EXT3-fs: mounted filesystem with ordered data mode.
+[4294677.312000] md: md driver 0.90.1 MAX_MD_DEVS=256, MD_SB_DISKS=27
+[4294679.870000] Adding 3903752k swap on /dev/sda7.  Priority:-1 extents:1
+[4294680.159000] EXT3 FS on sda2, internal journal
+[4294685.742000] lp: driver loaded but no devices found
+[4294685.769000] mice: PS/2 mouse device common for all mice
+[4294685.801000] ieee1394: Initialized config rom entry `ip1394'
+[4294685.804000] sbp2: $Rev: 1219 $ Ben Collins <bcollins@debian.org>
+[4294686.205000] alps.c: Enabling hardware tapping
+[4294686.260000] input: PS/2 Mouse on isa0060/serio4
+[4294686.261000] input: AlpsPS/2 ALPS GlidePoint on isa0060/serio4
+[4294686.539000] ts: Compaq touchscreen protocol output
+[4294688.175000] device-mapper: 4.4.0-ioctl (2005-01-12) initialised: dm-devel@redhat.com
+[4294689.514000] kjournald starting.  Commit interval 5 seconds
+[4294689.514000] EXT3 FS on sda6, internal journal
+[4294689.514000] EXT3-fs: mounted filesystem with ordered data mode.
+[4294689.521000] NTFS driver 2.1.22 [Flags: R/O MODULE].
+[4294689.583000] NTFS volume version 3.1.
+[4294690.931000] Linux agpgart interface v0.101 (c) Dave Jones
+[4294690.937000] agpgart: Detected an Intel 915GM Chipset.
+[4294690.965000] agpgart: AGP aperture is 256M @ 0x0
+[4294691.033000] pci_hotplug: PCI Hot Plug PCI Core version: 0.5
+[4294691.060000] shpchp: Standard Hot Plug PCI Controller Driver version: 0.4
+[4294691.370000] hw_random: RNG not detected
+[4294691.513000] ACPI: PCI Interrupt 0000:00:1e.2[A] -> GSI 17 (level, low) -> IRQ 17
+[4294691.513000] PCI: Setting latency timer of device 0000:00:1e.2 to 64
+[4294692.323000] intel8x0_measure_ac97_clock: measured 49510 usecs
+[4294692.323000] intel8x0: clocking to 48000
+[4294692.897000] ohci1394: $Rev: 1250 $ Ben Collins <bcollins@debian.org>
+[4294692.897000] ACPI: PCI Interrupt 0000:06:00.0[A] -> GSI 20 (level, low) -> IRQ 20
+[4294692.950000] ohci1394: fw-host0: OHCI-1394 1.1 (PCI): IRQ=[20]  MMIO=[bc004000-bc0047ff]  Max Packet=[2048]
+[4294693.075000] ieee80211_crypt: registered algorithm 'NULL'
+[4294693.078000] ieee80211: 802.11 data/management/control stack, 1.0.3
+[4294693.078000] ieee80211: Copyright (C) 2004-2005 Intel Corporation <jketreno@linux.intel.com>
+[4294693.085000] ipw2200: Intel(R) PRO/Wireless 2200/2915 Network Driver, 1.0.6
+[4294693.085000] ipw2200: Copyright(c) 2003-2004 Intel Corporation
+[4294693.088000] ACPI: PCI Interrupt 0000:06:02.0[A] -> GSI 22 (level, low) -> IRQ 22
+[4294693.088000] ipw2200: Detected Intel PRO/Wireless 2200BG Network Connection
+[4294693.502000] ipw2200: Radio Frequency Kill Switch is On:
+[4294693.502000] Kill switch must be turned off for wireless networking to work.
+[4294693.580000] Linux Kernel Card Services
+[4294693.580000]   options:  [pci] [cardbus] [pm]
+[4294693.583000] ACPI: PCI Interrupt 0000:06:04.0[A] -> GSI 16 (level, low) -> IRQ 16
+[4294693.583000] Yenta: CardBus bridge found at 0000:06:04.0 [1179:ff01]
+[4294693.703000] Yenta: ISA IRQ mask 0x0cf8, PCI irq 16
+[4294693.703000] Socket status: 30000006
+[4294694.207000] ieee1394: Host added: ID:BUS[0-00:1023]  GUID[00023f5b76404e9b]
+[4294695.069000] Real Time Clock Driver v1.12
+[4294695.437000] sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+[4294695.437000] Uniform CD-ROM driver Revision: 3.20
+[4294695.437000] Attached scsi CD-ROM sr0 at scsi1, channel 0, id 0, lun 0
+[4294695.449000] Attached scsi generic sg0 at scsi0, channel 0, id 0, lun 0,  type 0
+[4294695.449000] Attached scsi generic sg1 at scsi1, channel 0, id 0, lun 0,  type 5
+[4294695.639000] eth0: link up, 100Mbps, full-duplex, lpa 0x45E1
+[4294697.367000] NET: Registered protocol family 10
+[4294697.367000] Disabled Privacy Extensions on device c02eb280(lo)
+[4294697.367000] IPv6 over IPv4 tunneling driver
+[4294698.584000] ACPI: AC Adapter [ACAD] (on-line)
+[4294698.698000] ACPI: Battery Slot [BAT1] (battery present)
+[4294698.741000] ACPI: Power Button (FF) [PWRF]
+[4294698.741000] ACPI: Lid Switch [LID0]
+[4294698.741000] ACPI: Power Button (CM) [PWRB]
+[4294698.839000] ibm_acpi: ec object not found
+[4294698.936000] ACPI: Video Device [VGA] (multi-head: yes  rom: no  post: no)
+[4294698.936000] ACPI: Video Device [GFX0] (multi-head: yes  rom: yes  post: no)
+[4294705.586000] apm: BIOS version 1.2 Flags 0x03 (Driver version 1.16ac)
+[4294705.586000] apm: overridden by ACPI.
+[4294706.080000] cs: IO port probe 0x100-0x4ff: excluding 0x370-0x377 0x3f0-0x3f7 0x4d0-0x4d7
+[4294706.084000] cs: IO port probe 0xc00-0xcf7: clean.
+[4294706.085000] cs: IO port probe 0xa00-0xaff: clean.
+[4294706.641000] Bluetooth: Core ver 2.7
+[4294706.641000] NET: Registered protocol family 31
+[4294706.641000] Bluetooth: HCI device and connection manager initialized
+[4294706.641000] Bluetooth: HCI socket layer initialized
+[4294706.677000] Bluetooth: L2CAP ver 2.7
+[4294706.677000] Bluetooth: L2CAP socket layer initialized
+[4294706.724000] Bluetooth: RFCOMM ver 1.5
+[4294706.725000] Bluetooth: RFCOMM socket layer initialized
+[4294706.725000] Bluetooth: RFCOMM TTY layer initialized
+[4294708.220000] eth0: no IPv6 routers present
+[4295454.505000] psmouse.c: GlidePoint at isa0060/serio4/input0 lost synchronization, throwing 1 bytes away.
+[4296475.703000] cdrom: open failed.

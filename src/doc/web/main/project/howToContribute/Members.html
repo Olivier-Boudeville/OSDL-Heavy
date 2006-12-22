@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003, June 29.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Members area</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL, join">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../../../common/css/OSDL.css">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" 
+       onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a> <a href="../../Map.html">site map</a> <a href=
+       "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Members">mail us</a></p>
+  </div><a name="_top_"></a>
+
+  <h1>OSDL's members area</h1>
+
+  <h2>Services overview</h2>
+
+  <p>Some more services are available to the members :</p>
+
+  <ul>
+    <li>all services kindly provided to project members by <a href="http://www.sourceforge.net" target="_blank">Sourceforge</a>
+    [<a href="http://www.sourceforge.net/projects/osdl" target="_blank">OSDL at Sourceforge</a>], notably CVS [read our
+       <a href="#CVSmember">CVS nano-guide for project members</a>].</li>
+    <li>an account on our own gateway (osdl.esperide.com), usable via ssh only. Allows for FTP &amp; web access to project resources</li>
+  </ul>
+  
+  <br>
+  <br>
+  <a name="CVSmember"></a> 
+
+  <h2>Services available at Sourceforge for OSDL project members</h2>
+
+  <h3>Shell access</h3>
+  <p>
+  When connecting to the shell services at Sourceforge, it may be a little boring to type each time your user password. Moreover, it prevents from writing scripts that automatically connect to these computers, for example to update the website or the documentation generated for the API, or to retrieve automatically sources from CVS.</p>
+  
+  <p>To avoid having to enter a password, one might generate on one's computer a key pair (for example thanks to <code>ssh-keygen</code>) and transfer the public key to the shell server (with SSH). Simply, one just has to append one's public key to <code>~/.ssh/authorized_keys</code> (for example : <code>cat id_rsa.pub >> ~/.ssh/authorized_keys</code> ) and, if the permissions on one's files and directories are well set, the system should not ask his password anymore.
+  </p>
+  
+  	
+  <h3>CVS</h3>
+  <ul>
+    <li>CVS access to Ceylan and OSDL repository at Sourceforge
+    (remember to use <code>export CVS_RSH=ssh</code>, and replace
+    <code>yourCommand</code> with appropriate command such as
+    <code>co OSDL</code> for instance) :<br>
+
+      <table summary="Proposed CVS commands" style="border: none">
+        <tr>
+          <td>
+            <div class="box">
+              <code>cvs -z3 -d
+              :ext:yourMemberName@cvs.sourceforge.net:/cvsroot/osdl yourCommand</code><br>
+              <br>
+
+              <div class="c1">
+                <strong>- or -</strong>
+              </div>
+              <pre>
+<code>alias cvsosdl=&#39;cvs -z3 -d :ext:yourMemberName@cvs.sourceforge.net:/cvsroot/osdl&#39; cvsosdl yourCommand     
+</code>
+</pre>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </li>
+  </ul>
+  
+  <p>
+  Some common procedures (such as how to release a new OSDL version) are detailed <a href="../../documentation/OSDL/OSDL-generic/NewRelease.html">here</a>.
+  </p>
+  
+  
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Members">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center><a href="#_top_">[Top]</a>
+	<br>
+    <br>
+    <em>Last update : 2005, November 11</em>
+  </center>
+</body>
+</html>

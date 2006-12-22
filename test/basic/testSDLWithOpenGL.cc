@@ -1,0 +1,170 @@
+/**
+ * Taken from OpenGL-intro-1.1.1 (http://www.libsdl.org/opengl/OpenGL-intro-1.1.1.zip)
+ *
+ * This code was created by Jeff Molofee '99
+ * (ported to SDL by Sam Lantinga '2000)
+ *
+ * If you've found this code useful, please let him know.
+ *
+ * Visit him at www.demonews.com/hosted/nehe 
+ *
+ */
+
+#include "OSDL.h"     // just for basic primitives such as getBackendLastError
+using namespace OSDL ;
+
+
+#include "Ceylan.h"
+
+#include <iostream> // for cerr
+
+
+#ifdef WIN32
+	#define WIN32_LEAN_AND_MEAN
+	#include <windows.h>
+#endif
+
+#if defined(__APPLE__) && defined(__MACH__)
+	#include <OpenGL/gl.h>	// Header file for the OpenGL32 Library
+	#include <OpenGL/glu.h>	// Header file for the GLu32 Library
+#else
+	#include <GL/gl.h>	// Header file for the OpenGL32 Library
+	#include <GL/glu.h>	// Header file for the GLu32 Library
+#endif
+
+#include "SDL.h"
+
+
+
+/* A general OpenGL initialization function. Sets all of the initial parameters. */
+
+void InitGL(int Width, int Height)	        
+// We call this right after our OpenGL window is created.
+{
+
+  glViewport(0, 0, Width, Height) ;
+  
+  // This will clear the background color to black :
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f) ;		
+  
+  // Enables clearing of the depth buffer :
+  glClearDepth(1.0) ;				
+
+  // The type of depth test to do :		
+  glDepthFunc(GL_LESS) ;		
+
+  // Enables depth testing : 
+  glEnable(GL_DEPTH_TEST) ;			
+  
+  // Enables smooth color shading :
+  glShadeModel(GL_SMOOTH) ;			
+
+  glMatrixMode(GL_PROJECTION) ;
+  
+  // Reset the projection matrix :
+  glLoadIdentity() ;	
+  			
+  // Calculate the aspect ratio of the window :
+  gluPerspective(45.0f,(GLfloat)Width/(GLfloat)Height,0.1f,100.0f) ;	
+
+  glMatrixMode(GL_MODELVIEW) ;
+  
+}
+
+
+/* The main drawing function. */
+void DrawGLScene()
+{
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) ;		
+  // Clear the screen and the depth buffer
+  glLoadIdentity() ;				// Reset the view
+
+  glTranslatef(-1.5f,0.0f,-6.0f) ;		
+  // Move left 1.5 units and into the screen 6.0
+	
+  // draw a triangle
+  glBegin(GL_POLYGON) ;				// start drawing a polygon
+  glVertex3f( 0.0f, 1.0f, 0.0f) ;		// Top
+  glVertex3f( 1.0f,-1.0f, 0.0f) ;		// Bottom Right
+  glVertex3f(-1.0f,-1.0f, 0.0f) ;		// Bottom Left	
+  glEnd() ;					// we're done with the polygon
+
+  glTranslatef(3.0f,0.0f,0.0f) ;		        // Move Right 3 Units
+	
+  // draw a square (quadrilateral)
+  glBegin(GL_QUADS) ;				// start drawing a polygon (4 sided)
+  glVertex3f(-1.0f, 1.0f, 0.0f) ;		// Top Left
+  glVertex3f( 1.0f, 1.0f, 0.0f) ;		// Top Right
+  glVertex3f( 1.0f,-1.0f, 0.0f) ;		// Bottom Right
+  glVertex3f(-1.0f,-1.0f, 0.0f) ;		// Bottom Left	
+  glEnd() ;					// done with the polygon
+
+  // swap buffers to display, since we're double buffered.
+  SDL_GL_SwapBuffers() ;
+  
+}
+
+
+int main(int argc, char **argv) 
+{  
+	
+	
+  int done;
+
+  /* Initialize SDL for video output */
+  if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) 
+  {
+    std::cerr << "Unable to initialize SDL : " << Utils:: getBackendLastError() << std::endl ;
+    return 1 ;
+  }
+
+  int screenWidth  = 640 ;
+  int screenHeight = 480 ;
+  	
+  /* Create a 640x480 OpenGL screen */
+  if ( SDL_SetVideoMode( screenWidth, screenHeight, /* current bpp */ 0, SDL_OPENGL) == 0 ) 
+  {
+    std::cerr << "Unable to create OpenGL screen : " << Utils:: getBackendLastError() << std::endl ;
+    SDL_Quit() ;
+    return 2 ;
+  }
+
+  /* Set the title bar in environments that support it */
+  SDL_WM_SetCaption( "SDL with OpenL example, taken from "
+  	"Jeff Molofee's GL Code Tutorial, NeHe '99", 0) ;
+
+  /* Loop, drawing and checking events */
+  InitGL( screenWidth, screenHeight ) ;
+  done = 0;
+
+  Ceylan::display( "< Press any key on SDL window to stop >" ) ;
+
+  while ( ! done ) 
+  {
+  
+    DrawGLScene() ;
+	
+	// Added by OSDL to avoid display saturation which prevents inputs to be processed on time :
+	SDL_Delay(10) ;
+	
+    /* This could go in a separate function */
+    { 
+	
+	  SDL_Event event;
+      while ( SDL_PollEvent(&event) ) 
+	  {
+        if ( event.type == SDL_QUIT ) 
+		{
+          done = 1;
+        }
+        if ( event.type == SDL_KEYDOWN ) 
+		{
+           done = 1;
+        }
+      }
+    }
+  }
+  SDL_Quit() ;
+  return 0 ;
+}

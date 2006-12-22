@@ -1,0 +1,172 @@
+0000:00:00.0 Host bridge: Intel Corp. Mobile Memory Controller Hub (rev 03)
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, fast devsel, latency 0
+	Capabilities: [e0] #09 [2109]
+
+0000:00:01.0 PCI bridge: Intel Corp. Mobile Memory Controller Hub PCI Express Port (rev 03) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+	I/O behind bridge: 00003000-00003fff
+	Memory behind bridge: b0100000-b01fffff
+	Prefetchable memory behind bridge: c0000000-cfffffff
+	Capabilities: [88] #0d [0000]
+	Capabilities: [80] Power Management version 2
+	Capabilities: [90] Message Signalled Interrupts: 64bit- Queue=0/0 Enable-
+	Capabilities: [a0] #10 [0141]
+
+0000:00:1c.0 PCI bridge: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) PCI Express Port 1 (rev 03) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
+	I/O behind bridge: 00004000-00004fff
+	Memory behind bridge: b4000000-b7ffffff
+	Prefetchable memory behind bridge: 00000000d0000000-00000000d3f00000
+	Capabilities: [40] #10 [0141]
+	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0 Enable-
+	Capabilities: [90] #0d [0000]
+	Capabilities: [a0] Power Management version 2
+
+0000:00:1c.1 PCI bridge: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) PCI Express Port 2 (rev 03) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
+	I/O behind bridge: 00005000-00005fff
+	Memory behind bridge: b8000000-bbffffff
+	Prefetchable memory behind bridge: 00000000d4000000-00000000d7f00000
+	Capabilities: [40] #10 [0141]
+	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0 Enable-
+	Capabilities: [90] #0d [0000]
+	Capabilities: [a0] Power Management version 2
+
+0000:00:1d.0 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB UHCI #1 (rev 03) (prog-if 00 [UHCI])
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, medium devsel, latency 0, IRQ 23
+	I/O ports at 1800 [size=32]
+
+0000:00:1d.1 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB UHCI #2 (rev 03) (prog-if 00 [UHCI])
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, medium devsel, latency 0, IRQ 19
+	I/O ports at 1820 [size=32]
+
+0000:00:1d.2 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB UHCI #3 (rev 03) (prog-if 00 [UHCI])
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, medium devsel, latency 0, IRQ 18
+	I/O ports at 1840 [size=32]
+
+0000:00:1d.3 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB UHCI #4 (rev 03) (prog-if 00 [UHCI])
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, medium devsel, latency 0, IRQ 16
+	I/O ports at 1860 [size=32]
+
+0000:00:1d.7 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) USB2 EHCI Controller (rev 03) (prog-if 20 [EHCI])
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, medium devsel, latency 0, IRQ 23
+	Memory at b0000000 (32-bit, non-prefetchable) [size=1K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [58] #0a [20a0]
+
+0000:00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev d3) (prog-if 01 [Subtractive decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=06, subordinate=07, sec-latency=32
+	I/O behind bridge: 00006000-00006fff
+	Memory behind bridge: bc000000-bc0fffff
+	Capabilities: [50] #0d [0000]
+
+0000:00:1e.2 Multimedia audio controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 03)
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, medium devsel, latency 0, IRQ 17
+	I/O ports at 1c00 [size=256]
+	I/O ports at 1880 [size=64]
+	Memory at b0000800 (32-bit, non-prefetchable) [size=512]
+	Memory at b0000400 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [50] Power Management version 2
+
+0000:00:1e.3 Modem: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Modem Controller (rev 03) (prog-if 00 [Generic])
+	Subsystem: Toshiba America Info Systems: Unknown device 0001
+	Flags: medium devsel, IRQ 20
+	I/O ports at 2400 [size=256]
+	I/O ports at 2000 [size=128]
+	Capabilities: [50] Power Management version 2
+
+0000:00:1f.0 ISA bridge: Intel Corp. 82801FBM (ICH6M) LPC Interface Bridge (rev 03)
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, medium devsel, latency 0
+
+0000:00:1f.2 IDE interface: Intel Corp. 82801FBM (ICH6M) SATA Controller (rev 03) (prog-if 80 [Master])
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, 66MHz, medium devsel, latency 0, IRQ 19
+	I/O ports at <unassigned>
+	I/O ports at <unassigned>
+	I/O ports at <unassigned>
+	I/O ports at <unassigned>
+	I/O ports at 18f0 [size=16]
+	Capabilities: [70] Power Management version 2
+
+0000:00:1f.3 SMBus: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) SMBus Controller (rev 03)
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: medium devsel, IRQ 11
+	I/O ports at 20a0 [size=32]
+
+0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown device 5653 (prog-if 00 [VGA])
+	Subsystem: Toshiba America Info Systems: Unknown device ff01
+	Flags: bus master, fast devsel, latency 0, IRQ 10
+	Memory at c0000000 (32-bit, prefetchable) [size=256M]
+	I/O ports at 3000 [size=256]
+	Memory at b0100000 (32-bit, non-prefetchable) [size=64K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [58] #10 [0001]
+	Capabilities: [80] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
+
+0000:06:00.0 FireWire (IEEE 1394): Texas Instruments TSB43AB21 IEEE-1394a-2000 Controller (PHY/Link) (prog-if 10 [OHCI])
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, medium devsel, latency 32, IRQ 20
+	Memory at bc004000 (32-bit, non-prefetchable) [size=2K]
+	Memory at bc000000 (32-bit, non-prefetchable) [size=16K]
+	Capabilities: [44] Power Management version 2
+
+0000:06:01.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL-8139/8139C/8139C+ (rev 10)
+	Subsystem: Toshiba America Info Systems: Unknown device ff00
+	Flags: bus master, medium devsel, latency 32, IRQ 21
+	I/O ports at 6000 [size=256]
+	Memory at bc004800 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [50] Power Management version 2
+
+0000:06:02.0 Network controller: Intel Corp. PRO/Wireless 2200BG (rev 05)
+	Subsystem: Intel Corp.: Unknown device 2741
+	Flags: bus master, medium devsel, latency 32, IRQ 22
+	Memory at bc005000 (32-bit, non-prefetchable) [size=4K]
+	Capabilities: [dc] Power Management version 2
+
+0000:06:04.0 CardBus bridge: ENE Technology Inc: Unknown device 1412 (rev 10)
+	Subsystem: Toshiba America Info Systems: Unknown device ff01
+	Flags: bus master, medium devsel, latency 168, IRQ 16
+	Memory at bc006000 (32-bit, non-prefetchable) [size=4K]
+	Bus: primary=06, secondary=07, subordinate=0a, sec-latency=176
+	Memory window 0: 40400000-407ff000 (prefetchable)
+	Memory window 1: 40800000-40bff000
+	I/O window 0: 00006400-000064ff
+	I/O window 1: 00006800-000068ff
+	16-bit legacy interface ports at 0001
+
+0000:06:04.1 FLASH memory: ENE Technology Inc: Unknown device 0530 (rev 01)
+	Subsystem: Toshiba America Info Systems: Unknown device ff01
+	Flags: bus master, medium devsel, latency 32, IRQ 10
+	Memory at bc004c00 (32-bit, non-prefetchable) [size=128]
+	Capabilities: [80] Power Management version 2
+
+0000:06:04.2 0805: ENE Technology Inc: Unknown device 0550 (rev 01) (prog-if 01)
+	Subsystem: Toshiba America Info Systems: Unknown device ff02
+	Flags: bus master, medium devsel, latency 32, IRQ 10
+	Memory at bc007000 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [80] Power Management version 2
+
+0000:06:04.3 FLASH memory: ENE Technology Inc: Unknown device 0520 (rev 01)
+	Subsystem: Toshiba America Info Systems: Unknown device ff01
+	Flags: bus master, medium devsel, latency 32, IRQ 10
+	Memory at bc007400 (32-bit, non-prefetchable) [size=128]
+	Capabilities: [80] Power Management version 2
+
+0000:06:04.4 FLASH memory: ENE Technology Inc: Unknown device 0551 (rev 01)
+	Subsystem: Toshiba America Info Systems: Unknown device ff02
+	Flags: medium devsel, IRQ 255
+	Memory at 40000000 (32-bit, non-prefetchable) [disabled] [size=256]
+	Capabilities: [80] Power Management version 2
+

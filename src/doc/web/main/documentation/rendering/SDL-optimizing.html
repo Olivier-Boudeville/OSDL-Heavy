@@ -1,0 +1,477 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, January 25.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document 
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Optimizing with SDL</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, SDL, console">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Optimizing%20with%20SDL">mail us</a></p>
+  </div><a name="_top_"></a>
+  
+
+<h1>Optimizing with SDL</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+
+<h2>Overview</h2>
+<p>
+This section is dedicated to the gathering of clues and hints in order to use SDL efficiently. Those tricks might provide a major speed up of one's FPS. 
+</p>
+
+<p>See also :
+<ul>
+    <li><a href="SDL-openGL.html">openGL and SDL</a></li>
+</ul>
+
+</p>
+
+<h2>Table of contents</h2>
+<p>
+<a name="toc"></a>
+  <center>
+  <table style="border: none">
+  
+  <tr><td><div class="box" summary="Table of contents" style="padding: 8px">
+  <a href="#pipeline">The video pipe-line</a><br>
+  <a href="#blitting">Blitting</a><br>
+  <a href="#dga">DGA</a><br>
+    </div></td></tr>
+  </table>
+</center>
+</p>
+
+
+<code><pre>
+
+
+Using OpenGL for per-pixel drawing :
+
+You have to use OpenGL calls to read and write pixels. You should 
+avoid those, though, since they're generally slow, and may interfere 
+with accelerated rendering. (Must hard-sync the CPU with the 
+accelerator, so you can't have the CPU and GPU working in parallel 
+==> potential major frame rate reduction.)
+counting FPS  :
+
+you should take a sample (ie 10 frames).
+Something like this.
+
+sample = 10; //sample every 10 frames
+
+//This will need to be called once at the start as well.
+void reset()
+{
+    count = 0;
+    time = getTime();
+}
+
+void draw()
+{
+    drawframe();
+    count++;
+    if (count == sample)
+    {
+        fps = count/(getTime()-time);
+        reset();
+    }
+}
+
+If you don't take a sample, your results will:
+1) be counting the fps for the entire program, so eventually, it'll get
+stuck on some number and generally you don't want to take inital program
+delays into account.
+2) will eventually overflow the number count.
+
+
+double buffering _IS_ how you overcome flickering 
+
+Are you getting flickering (assuming your double buffering
+works like it should) or are you getting tearing?
+
+If you're getting tearing you might want to look at your vsync
+settings.  Ideally you want your frame rate to be in sync
+with your monitor's refresh rate...
+
+
+
+<a name="pipeline"></a>
+<h2>Understanding the video pipe-line to use it efficiently</h2>
+>Why would double buffering reduce your frame rate???
+
+
+Because it allows SDL to use retrace sync'ed page flips when supported 
+by the driver. Without double buffering, SDL won't even try to sync.
+
+If the driver doesn't support retrace sync, or it's been disabled, 
+double buffering (provided it's still h/w page flipping!) should 
+indeed have insignificant impact on performance.
+
+
+
+>> You're drawing the same amound of stuff, you're just
+>> doing it on the back buffer...
+
+
+...but if you're running in windowed mode, or on one of the targets 
+that cannot do h/w page flipping, SDL_Flip() has to do an extra 
+back->front blit.
+
+
+
+<p>Often, poor performances come from a lack of knowledge about the way rendering is achieved by its actors, from the CPU and its central memory to the GPU and the video card memory (VRAM), through the graphical bus, such as the AGP one. Choosing an efficient scheme is a bit tricky, since one could think modern PCs are not designed for software rendering : video cards are able to compute scenes on their own, with very low resource overall costs, but using them uniformly, on all platforms, without special rights or complex configuration changes is difficult. 
+</p>
+
+<p>
+The problem is that CPU access to VRAM is very slow on modern video cards. As if that isn't bad enough, memory reads are <b>insanely</b> slow, many times slower than writes. And some operations, such as alpha blending, happens to be read-modify-write operations...
+</p>
+
+<p>
+What you are <b>really</b> supposed to do, for example if you want to deal with transparency, is upload your graphics to the video card, and then use the 3D accerelator for rendering. That is,
+OpenGL or Direct3D, which is what modern hardware is designed for. The major advantages are that this runs extremly fast on any reasonably modern hardware, and that you get filtered scaling,
+rotation, color modulation, blending and stuff with no significant performance impact.
+</p>
+
+<p>
+However, using 3D acceleration means your game will not run without 3D drivers and libraries, and without a 3D accelerator, you may actually see even worse frame rates than you get now. So, this is not an option, unless it is otherwise motivated to add <em>3D accelerator with OpenGL
+and/or Direct3D drivers</em> to the minimun system requirements.
+</p>
+
+<p>
+There is a simple trick, though : render into a software shadow
+surface, copy (plain blit) to the display surface and then flip.
+Repeat for each frame. Note that if you get a software display surface
+from SDL, you should <em>not</em> set up a shadow surface of your own. That
+would just be a waste of memory and cycles.</p>
+<p>
+
+That way, you get fast software rendering with alpha-blending and other stuff, but you
+still perform only writes to VRAM. The primary advantages are that
+this works everywhere, and that you can implement your own low level
+software blitting routines for pixel level effects. You <em>can</em> do that
+with OpenGL and Direct3D, but you cannot do things the same way, and
+it still has major performance issues on most systems.</p>
+
+
+>Why would double buffering reduce your frame rate???
+
+
+Because it allows SDL to use retrace sync'ed page flips when supported 
+by the driver. Without double buffering, SDL won't even try to sync.
+
+If the driver doesn't support retrace sync, or it's been disabled, 
+double buffering (provided it's still h/w page flipping!) should 
+indeed have insignificant impact on performance.
+
+
+
+>> You're drawing the same amound of stuff, you're just
+>> doing it on the back buffer...
+
+
+...but if you're running in windowed mode, or on one of the targets 
+that cannot do h/w page flipping, SDL_Flip() has to do an extra 
+back->front blit.
+
+
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center>
+<br><br>
+
+<a name="blitting"></a>
+<h2>Blitting section</h2>
+
+<h3>Managing surfaces format</h3>
+<p>
+
+  To prevent <a href="http://sdldoc.csn.ul.ie/sdlblitsurface.php" target="_blank">SDL_BlitSurface</a> from making a time consuming conversion (bits per pixel matching) <em>every time</em> it blits a specified software surface onto another (the target being in general the screen display, whose color depth is given and not easily changed), use, on the source surface which will be blitted, <a href="http://sdldoc.csn.ul.ie/sdldisplayformat.php" target="_blank">SDL_DisplayFormat</a>, or <a href="http://sdldoc.csn.ul.ie/sdldisplayformatalpha.php" target="_blank">SDL_DisplayFormatAlpha</a> if you want transparency to be managed. One should indeed convert his surface to the screen's depth before blitting it : it is better to do it once than having SDL performing it each frame for each sprite on your behalf, which would make the frame rate drop tremendously. Notably, conversions from 8 to 16, or 8 to 32 bits per pixel are very expensive. Frequently, the conversion ought to be done upon loading the corresponding image. Do not forget to free the old surface after calling <a href="http://sdldoc.csn.ul.ie/sdldisplayformat.php" target="_blank">SDL_DisplayFormat</a>, otherwise you have a memory leak !
+</p>
+
+<p>
+If the source surface is changed every frame, one should initialize the video mode so that it fits the source format, in order to avoid an on-the-fly conversion. That however requires the user to start the X server with the corresponding bits per pixel setting. The other way of dealing with format is alternatively to change the surface color depth to have it matching the display's one.
+</p>
+
+
+<a name="RLE"></a>
+<h3>RLE optimization</h3>
+<p>
+Surfaces compressed with <b>Run-Length Encoding</b> are smaller and faster blitted, but cannot be accessed directly as an array of pixels. To prevent user programs to manipulate them whereas they are still compressed, the <code>yourRLESurface->pixels</code> field gets set to 0 (NULL) and the RLE surface data is 
+stored privately, as long as the surface is not locked.
+</p>
+
+<p>To access the raw pixel data again:
+
+      <table summary="RLE" style="border: none">
+        <tr>
+          <td>
+		             <div class="box"> 
+<code><pre>SDL_LockSurface( yourRLESurface ) ;
+// yourRLESurface->pixels valid inside here, it triggers the surface decompression.
+SDL_UnlockSurface( yourRLESurface ) ;
+// yourRLESurface->pixels no longer valid (set to NULL to expose bugs cleanly)
+// the surface is compressed internally</pre></code>
+           </div>
+			  
+          </td>
+        </tr>
+      </table>
+	  
+</p>
+<p>
+Modifying an existing RLE surface costs you a decode (when locking) and a 
+re-encode (when unlocking). The benefit of RLE is faster rendering, thanks to the compression. If the RLE surface in question is being pre-rendered (instead of being modified frequently), this trade-off is a good one.
+
+</p>
+And if you're using surfaces with alpha transparency, there can be a decent 
+performance increase from turning on a surface's RLEACCEL flag:
+	... create and load an SDL surface ...
+	SDL_SetAlpha(surface,SDL_RLEACCEL|SDL_SRCALPHA,255);
+Just be sure to read the caveats to SDL's alpha transparency on the 
+SDL_SetAlpha() page in the SDL docs (http://sdldoc.csn.ul.ie/sdlsetalpha.php)
+<p>
+ [See also <a href="SDL-objects.html#surfaces">hardware surfaces</a>]  
+</p>
+
+<h3>Obtaining best performance with video ram</h3>
+
+<p>
+If one wants to benefit from better performance when reading/writing to/from
+video RAM, one ought to consider this :
+<ul>
+	<li>do as many batch transactions as you can. Give a chance for the back to
+back writes to linear addresses to be batched by the chipset</li>
+	<li>avoid read/modify/write operations on small data sizes</li>
+	<li>avoid unaligned accesses (4 byte boundaries are the smallest you want
+to go)</li>
+	<li>assemble your frames in main memory, and avoid using video card
+backbuffer surfaces. As you have found, main memory is <em>always</em> going to be
+faster than video card memory</li>
+</ul>
+</p>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center>
+<br><br>
+
+
+<a name="dga"></a>
+<h2>DGA section</h2>
+
+<p>
+DGA, which stands for <em>Direct Graphics Architecture</em>, is proposed by the <a href="http://www.xfree86.org/" target="_blank">XFree86 project</a>. DGA is meant to be used for fullscreen only.
+</p>
+
+<h3>Mouse cursor, acceleration</h3>
+<p>
+When you are drawing directly to video memory, without your
+knowledge SDL has no way of drawing the mouse cursor without corrupting your image. As no really good way around has been found for now, if you get SDL_HWSURFACE, you will need to draw the cursor yourself. 
+</p>
+
+
+<p>
+The X server tends to provide mouse acceleration, which is not present when you are using the DGA driver. In DGA mode, the X server sends raw mouse events without doing any post-processing (to modify speed, etc.)
+</p>
+
+<p>
+We could query the X server for the mouse acceleration options and use
+those to modify the DGA mouse events....
+</p>
+  
+
+- If you're using alpha blending, make sure that your display surface is
+software. Alternatively use a software buffer surface.
+
+- After loading images, always use SDL_DisplayFormatAlpha() on the surfaces.
+
+- Also call SDL_SetAlpha() on the surfaces with the SDL_RLEACCEL flag.
+
+  
+A <a href="http://shinh.skr.jp/sdlbench/showtestgl.cgi" target="_blank">benchmark software</a> for SDL with OpenGL.
+
+run a profiler tool ('man gprof' if
+your on *nix or "Profiling/Profiler" in MSVC) and find out what is
+taking time.
+
+The questions you should ask yourself is "What is the bottleneck?":
+1) graphics rendering (could be further subdivided..)
+2) logic/physic of the game
+3) something else? (O/S stealing your app's time, event handling, ...)
+ 
+<h3>Optimize for the glSDL backend</h3>
+<p>
+Running stock applications with the glSDL back-end might be extremely slow. 
+Application tuning for performance in general and for glSDL in 
+particular is described <a href="http://icps.u-strasbg.fr/~marchesin/sdl/glsdl.html" target="_blank">here</a>.
+</p>
+  
+a) Turn off the alpha channel ( eg with GIMP - unify all channels ), if
+you don't need them.
+
+b) Convert surfaces to display format
+
+c) Enable RLE ColorKey for surfaces with a lot of transparent pixels (
+if you don't need to change them )
+
+d) Enable RLE Alpha for surfaces with lot of semi-transparent pixels (
+if you don't need to change them )
+
+e) Create a buffer for background and surfaces that are rarely modified
+
+f) Try hardware surface ( this depends on the hardware support - check
+first, before setting video-mode, if hardware has accelerated alpha
+surface blitting support, otherwise software surface maybe faster )
+
+e) Or forget all that, and render images with OpenGL API
+
+having access to the frame buffer (VRAM) only occurs when your program
+is run full-screen. You'll never(someone correct me if I'm wrong, but
+really, I think it is this way) get a windowed hardware surface.
+  
+Profiling :  
+In GCC put the option -pg in both compiling and linking.  Then you run the program to use gprof and
+see the profiling information
+
+How does one build an optimised SDL library? 
+Do
+
+export CFLAGS="-funroll-loops -fexpensive-optimizations -march=i686 -mmmx"
+
+before configure (or maybe just before make?).
+
+But I've found that its the amount of data you push to display memory,
+rather than what you are working with in system memory, that is the
+bottleneck. Blitting a 32bpp system memory surface on to a 16bpp display
+surface is actualy faster than blitting 32bpp to 32bpp!
+
+
+
+ you can't rely on the GPU doing anything much at all 
+when using the SDL 2D API. (Unless you use glSDL, which uses the 
+OpenGL API, which is more likely to be accelerated on most 
+platforms.)
+
+Now, if you use alpha blending, you can pretty much forget about 
+acceleration (only glSDL and DirectFB support that AFAIK) - and 
+what's worse, if you do alpha blending with the CPU in VRAM, you'll 
+effectively downgrade the CPU to something like a 286, due to the 
+slow VRAM reads.
+
+In short, if you want the best performance on more than one platform, 
+there's no simple answer. Sometimes you should use h/w surfaces for 
+everything. Sometimes you should definitely *not* use h/w surfaces 
+for anything but the display surface. In some cases, a some kind of 
+hybrid may be faster. (For example, if everything but alpha is 
+accelerated, your best bet may be to use that, and do s/w alpha in 
+small areas only.)
+
+Either way, pretty much *anything* (including streaming from the hard 
+drive in many cases!) is faster than reading from VRAM with the 
+CPU... Avoid it at (almost) any cost. *Only* blit from the display 
+surface if you know that that particular operation (for some 
+mysterious reason) actually is accelerated or at least relatively 
+fast. (CPU access to "VRAM" *can* be fast on consoles and machines 
+with integrated graphics, but don't count on it. On graphics cards 
+with PCI, AGP and similar, bus master DMA is your only option.)
+I would recommend against copying dirty rectangles, unless rendering 
+the background is extremely expensive and/or you know that blitting 
+from the screen is accelerated. (If it isn't, you'll be doing CPU 
+reads from VRAM, which - for the 13,546,572nd time - is insanely slow 
+on pretty much any computer you can find today.)
+
+Instead, just rerender the dirty areas from the map to remove sprites.
+
+
+Either way, note that you need to do some extra work to make dirty 
+rects work properly on page flipping double buffered displays. With 
+plain dirty rects, moving sprites will leave flickering trails.
+
+
+
+
+
+  <h1>Optimizing one's use of SDL</h1>
+<br><br>
+The first thing to do is to convert all your surfaces to the screen  
+format using SDL_DisplayFormat. Otherwise SDL does the conversion on the 
+fly and this kills ther performance. Once this is done, you must 
+optimize your layer algorithm. For example if the first layer is almost 
+covered by the others then you should try to blit only the visible part 
+of it. I did this to make an efficient parallax effect with a tiled map. 
+I can send you some code if you want.
+
+Another point is alpha. If you use alpha, you must know that if your 
+surfaces are in video memory  blitting will be dog slow, because the 
+blitting is done by the CPU. If you don't need an alpha channel, and if 
+your surfaces are in video memory the blitting is done by the GPU and is 
+very fast.
+
+
+On 2.6, the image loading thread causes MAJOR slowdown.
+Make sure DMA access is enabled:
+
+hdparm -d /dev/hda
+
+/dev/hda:
+ using_dma    =  1 (on)
+ 
+And what does reveal this for the PIO modes, DMA modes and UDMA modes ?
+$ hdparm -i /dev/hda 
+
+hdparm -t -T /dev/hda
+This will run READING-ONLY speed tests and show the results.
+
+
+
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Optimizing%20with%20SDL">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

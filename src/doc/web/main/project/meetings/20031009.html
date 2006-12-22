@@ -1,0 +1,368 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003, September 29.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="FR">
+<head>
+  <title>Club de création de jeux vidéo - Compte-rendu de la réunion du
+  9/10/2003</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="compte-rendu, OSDL, video game, GPL">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <style type="text/css">
+  div.c1 {text-align: center}
+  </style>
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>Général</em> <a href="../../../common/black.html" 
+       onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">Page
+       principale</a> <a href="../../Map.html">Plan du site</a>
+       <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Compte-rendu%20du%209/10/2003">
+    Ecrivez-nous</a></p>
+  </div><a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+
+  <h1 class="c2">Compte-rendu de la réunion du club du jeudi 9 octobre
+  2003</h1>
+
+  <h2>Présentation</h2>
+
+  <p>Cette réunion a eu lieu de 19h45 à 23h30 environ, à la brasserie
+  &quot;La Tour&quot; à Montparnasse. Etaient présents (ordre
+  alphabétique) :</p>
+
+  <ul>
+    <li>Arnaud</li>
+
+    <li>Mickaël</li>
+
+    <li>Olivier</li>
+
+    <li>Sébastien</li>
+
+    <li>Thierry</li>
+
+    <li>William</li>
+  </ul><br>
+  <br>
+  <br>
+  <br>
+
+  <p>Auteur du compte-rendu : Olivier (<a href=
+  "mailto:olivier.boudeville@online.fr">wondersye</a>).</p>
+
+  <p>Le compte-rendu de cette réunion est parcellaire, et fondé sur mes
+  souvenirs et mes notes, également imparfaits. Pour toute remarque,
+  correction, ajout, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL-club]%20Compte-rendu%20du%209/10/2003">
+  envoyez un mail</a> !</p>
+
+  <h2>Minutes de la réunion</h2>
+
+  <p>Après avoir papoté dehors, nous sommes entré, à temps pour
+  l&#39;happy hour, à l&#39;intérieur de la brasserie où nous avons
+  trouvé Mickaël. Nous avons tous fait connaissance avec Thierry au
+  cours d&#39;un tour de table, qui fut doublé lorsque William fit son
+  entrée à son tour.</p>
+
+  <h3>Graphismes</h3>
+
+  <p>Au sujet des graphismes du jeu, l&#39;idéal serait bien sûr, pour
+  maintenir une vraie cohérence artistique, de détenir les compétences
+  en interne. Comme cela a toutes les chances de ne pas être le cas (à
+  moins de trouver quelques infographistes), il nous faut mettre en
+  pratique des solutions de contournement, cf <a href=
+  "../../club/game/ToDo.html#graphisme">TO-DO list</a>.</p>
+
+  <h3>Organisation</h3>
+
+  <p>Thierry a attiré notre attention sur les statuts de notre club.
+  Pour l&#39;instant, à ma connaissance, nous constituons une structure
+  informelle assimilable à une association de fait. Si une organisation
+  plus poussée était nécessaire (par exemple pour nous ou pour le
+  Cube), nous pourrions fonder une association loi 1901, avec les trois
+  membres-clés classiques. Comme c&#39;est un peu plus lourd
+  (assemblées générales nécessaires par exemple), dans un premier temps
+  je propose qu&#39;on garde notre club tel quel (cf <a href=
+  "../../club/game/Choices.html#assoce">vote</a>).
+  Conformément aux interrogations de Thierry, le processus de
+  décision/validation a été <a href=
+  "../../club/game/ChoiceProcessus.html">spécifié</a> et
+  <a href="../../club/game/Choices.html">implémenté</a>.</p>
+
+  <p>Les forums, hébergés grâce à Mickaël, sont <a href=
+  "http://www.murlock.org/forum/" target="_blank">accessibles</a> et le
+  contenu des précédents a été transféré.</p>
+
+  <h3>Quelques choix avalisés</h3>
+
+  <p>Concernant la plate-forme cible de l&#39;utilisateur final de
+  notre jeu, nous pensons viser :</p>
+
+  <ul>
+    <li>Linux (distributions majeures, dont Debian, Mandrake, Red
+    Hat)</li>
+
+    <li>Windows (98, XP, Me)</li>
+
+    <li>Mac OS Classic (9) et X</li>
+  </ul>
+
+  <p>sachant que, visant l&#39;écriture de code portable et
+  l&#39;utilisation de SDL, notre cible pourrait de fait être plus
+  large et inclure aussi BeOS, FreeBSD, OpenBSD, BSD/OS, Solaris, IRIX,
+  et QNX.</p>
+
+  <p>Concernant le public visé, qui conditionne le jeu que l&#39;on va
+  écrire (et réciproquement), on pourrait le qualifier de
+  &quot;grand-public éclairé et nostalgique&quot;. Typiquement, le jeu
+  que l&#39;on voudrait faire est le jeu auquel on aimerait, nous
+  (personnellement), bien jouer. Exit la ménagère de plus ou de moins
+  de 50 ans et le coeur de cible des 13-18 ans dont les parents sont
+  assez fortunés. Une conséquence de la cible assez large est qu&#39;il
+  faudra mettre à sa disposition les moyens d&#39;installer facilement
+  notre jeu, ce qui n&#39;est ni évident ni portable sur les
+  différentes plate-formes visées (ex : auto-installeur Windows, rpm,
+  .deb, etc.), mais nécessaire puisque même nos testeurs en auront
+  besoin. Une question voisine, et à mes yeux importante, est de
+  permettre aussi aux nouveaux développeurs de s&#39;insérer
+  relativement facilement dans le projet (sachant qu&#39;en plus dans
+  un tel club le turn-over n&#39;est pas négligeable, dans un sens
+  comme dans l&#39;autre), sous peine que la plupart nous accaparent
+  notre temps ou, rebutés, abandonnent.</p>
+
+  <p>Sur le plan du style du jeu, on converge vers un jeu
+  médiéval-fantastique épique, fortement lié aux jeux de rôles, sérieux
+  (i.e. ce n&#39;est pas une parodie à la DiscWorld) mais avec des
+  épisodes humoristiques.</p>
+
+  <p>Le joueur dirige un personnage à la fois (donc pas une équipe, en
+  tout cas pas directement), le contrôle de tiers étant possible mais
+  ne devant pas mettre à mal le coup de théâtre principal (le roi est
+  une raclure, pour ceux qui ont suivi). Ce transfert n&#39;aura donc
+  lieu que dans des portions sans lien direct avec la question du roi
+  (ex : se déroulant dans des zones de non-droit où le dialogue est
+  rare et la vie courte) ou situées, dans la trame du récit, après ce
+  coup de théâtre.</p>
+
+  <p>Tout le jeu est en temps réel, et, sur un territoire donné, les
+  monstres (en fait tous les PNJ au sens large) sont dotés de leur vie
+  propre.</p>
+
+  <h3>Petit zoom sur le scénario</h3>
+
+  <h4>Statut social</h4>
+
+  <p>Pourquoi viser si haut avec un prince ? Car c&#39;est plus
+  original que l&#39;ascension du jeune paysan qui se révèle fils du
+  roi, car cela lui permet d&#39;arriver avec un statut établi lui
+  conférant des pouvoirs (ex : faire arrêter quelqu&#39;un par la
+  garde) et parce qu&#39;aussi cela légitime le secret perpétué au
+  niveau du joueur concernant la rectitude morale du roi.</p>
+
+  <h4>Arbre des possibles</h4>
+
+  <p>Il n&#39;y aura pas de générateur d&#39;intrigues, le joueur peut
+  se déplacer à l&#39;intérieur d&#39;un arbre statique (i.e. dans
+  toutes les parties, un même personnage ne pourra être parfois un
+  traître, parfois non; cela serait trop compliqué à gérer). Une
+  branche de cette arbre, la plus probable, sera détaillée en premier
+  et plus fouillée que les autres.</p>
+
+  <h4>Techniques d&#39;écriture</h4>
+
+  <p>Chacun pourra excercer la sienne, par exemple Arnaud en raffinant
+  progressivement, Thierry en décrivant précisant un monde, pour lui
+  les intrigues en découlant, ou moi avec un Livre dont on est le
+  héros, si j&#39;en trouve le temps. Les contraintes majeures à
+  respecter : la duplicité du roi et l&#39;existence de deux royaumes
+  rivaux, de force comparable et donc en statu quo depuis quelque
+  temps, l&#39;ordre guerrier étant le détonateur qui peut faire
+  pencher la balance au profit de l&#39;un ou de l&#39;autre.</p>
+
+  <h4>Un brin d&#39;histoire ?</h4>
+
+  <p>Dans l&#39;acte I, le prince est amené à aller enquêter sur les
+  lieux d&#39;une agression supposée de l&#39;autre royaume sur, par
+  exemple, un village frontalier, avec exactions à la clé. C&#39;est en
+  fait un coup monté par le roi, afin de soulever les populations
+  locales, indécises, contre l&#39;autre royaume. Ce sera une des
+  premières confrontations du fils avec les manipulations de son père,
+  et pour celle-là les chances seront grandes pour qu&#39;il n&#39;y
+  voit que du feu. Sur le chemin, sa diligence (comment la représenter
+  ? Il faudra être inventif, et la question des moyens de locomotion se
+  posera de toute façon) pourra se faire attaquer, et dès cet instant
+  un choix devra être fait et assumé par le prince : rester dans son
+  carrosse, prendre part au combat, fuir, etc.</p>
+
+  <h4>Ambivalence et richesse</h4>
+
+  <p>Pour une trame complexe et ménageant des rebondissements, il faut
+  éviter les situations trop trivialement lisibles et manichéennes, par
+  exemple avec un écosystème propice aux conflits d&#39;intérêts, avec
+  des lignes de force orthogonales : peut-on envahir une contrée quitte
+  à perdre le soutien de l&#39;église, par exemple ? Les races du pays
+  sont-elles en bonne entente, sur leurs territoires respectifs ?
+  Pressions morales ? Intervention des Dieux et transposition de leurs
+  conflits ?</p>
+
+  <p>La mythologie scandinave (qu&#39;il nous faudra détailler, ne
+  serait-ce que pour notre propre usage, cf <a href=
+  "../../club/game/ToDo.html#scandinave">TO-DO list</a>),
+  outre qu&#39;elle est originale, a à ce sujet l&#39;avantage
+  d&#39;être multi-partite (polythéiste et adaptable) et peu
+  manichéenne.</p>
+
+  <h4>Psychologie du prince et de son joueur</h4>
+
+  <p>Pour Arnaud, la psychologie du prince serait a priori figée dès la
+  conception du jeu, Thierry la voyant dépendant du joueur et de ses
+  actes, de manière à ne pas être trop contraignant, et à ne pas
+  imposer à un joueur va-t-en-guerre une chiffe molle timide de prince
+  par exemple. Au final, on pourrait imaginer débuter avec un
+  personnage vierge de tout alignement ou d&#39;a priori
+  comportemental, la suite des choix du joueur déterminant
+  progressivement soit le caractère réel du prince, soit, peut-être
+  préférablement, l&#39;image que les tiers se font de sa personnalité,
+  c&#39;est-à-dire, entre autres, sa réputation. Cette dernière peut
+  avoir des répercussions au niveau des quêtes, qui seraient fermées à
+  un joueur trop connu, en bien ou en mal, si l&#39;enquête exige
+  l&#39;incognito, par exemple, ou s&#39;il s&#39;agit de
+  s&#39;inscrire à la guilde des voleurs, à la manière de Baldur&#39;s
+  Gate.</p>
+
+  <p>La modélisation sous-jacente serait de représenter la réputation
+  instantanée du prince (voire d&#39;autres personnages ? i.e. quête :
+  faites virer le maire pour abus de biens sociaux ?) par un point dans
+  un espace dont les dimensions pourraient être, entre autres,
+  mauvais-bon, chaotique-loyal, anonyme-connu. Les actions, au fil du
+  temps, déplaceraient ce point, et de sa position dépendraient la
+  réaction du monde au personnage, car par exemple la réputation
+  conditionnerait la tendance qu&#39;aurait une certaine classe de PNJ
+  à aider le prince. Dans cette hypothèse, le libre-arbitre du
+  personnage par rapport à son joueur serait nul.</p>
+
+  <p>Les PNJ, pour que le monde soit un minimum intéressant, devront
+  pouvoir être spontanément en interaction, auront des personnalités
+  individuellement assez marquées (&quot;tu vas voir s&#39;il est pas
+  frais mon poisson&quot;) pour éviter qu&#39;ils soient creux, tandis
+  que le prince, ne courant pas ce danger et devant s&#39;adapter à
+  tous, aura un caractère moins affirmé, si tant est qu&#39;il en ait
+  un. Comme, à tort ou à raison, ce dernier point me paraît encore un
+  peu obscur, je l&#39;ai placé dans les choix à trancher (cf
+     <a href="../../club/game/Choices.html#prince">vote</a>).</p>
+
+  <p>Les quêtes seraient régies en grande partie par les PNJ et leurs
+  interactions (ex : ne peuvent pas se voir, tombent amoureux, l&#39;un
+  doit de l&#39;argent à l&#39;autre, etc.).</p>
+
+  <p>Ethiquement, le jeu pourrait, timidement, soulever des questions,
+  telles que des variantes de &quot;la fin justifie-t-elle les moyens
+  ?&quot;, i.e. est-il légitime d&#39;assassiner un tyran sanguinaire,
+  même si, ou surtout si, c&#39;est notre ascendant direct ?</p>
+
+  <p>Il faudra aussi exposer les repères et autres canons de la morale
+  de l&#39;époque, et ne pas trop s&#39;éloigner de ceux que l&#39;on
+  connaît, de manière à ce que le joueur soit guidé (ex : sur la nature
+  du coeur supposé pur du prince, demandé par les saintes écritures), à
+  l&#39;intérieur d&#39;un système de valeurs relativement familier.
+  Devons-nous prétendre élever éthiquement le joueur en l&#39;incitant
+  à réfléchir sur le sens de son engagement moral, ou est-ce du pur
+  &quot;entertainment&quot; ?</p>
+
+  <p>Arrive là une digression sur les GN (JDR Grandeur Nature) et les
+  incarnations de marsupilamis que je me devais de faire figurer dans
+  ce CR.</p>
+
+  <p>Enfin, notons que pour T4C (The Fourth Coming, alias La quatrième
+  prophétie, cf <a href="../../documentation/Glossary.html">notre
+  glossaire</a> désormais maintenu par Thierry) comme pour Nord et Sud,
+  les forums sont un moyen particulièrement efficace pour introduire
+  des aspects jeux de rôles même quand techniquement peu de choses le
+  permettent. Une idée à garder, donc !</p>
+
+  <h3>Techniquement</h3>
+
+  <p>Difficile de parler technique dans la brasserie, Arnaud se mettant
+  à loucher sans vergogne sur les matchs de volley féminin, inquiet
+  qu&#39;il était qu&#39;elles prennent froid avec leurs courtes
+  tenues.</p>
+
+  <p>Malgré cela, nous avons réussi à établir une fois de plus que le
+  moteur de jeu devait gérer les intérieurs et les extérieurs, d&#39;un
+  monde plan représenté en 2D case par case, en temps réel.</p>
+
+  <p>Ce monde serait géré et sauvegardé par zone (i.e. pas besoin de
+  simuler les allées et venues du dragon dans son donjon quand on est
+  encore à dix jours de marche de son antre). La définition de la
+  notion de zone est délicate et amènera probablement à des essais et
+  erreurs.</p>
+
+  <h4>Installation</h4>
+
+  <p>Aussi automatisée que possible, l&#39;installation de notre jeu
+  pourra passer sous Windows par l&#39;utilitaire de Nullsoft. Sous
+  Linux, peut-être plus de latitude sera laissée, puisque
+  l&#39;utilisateur moyen est censé avoir plus d&#39;autonomie.
+  Veillons toutefois que Linux ne soit pas le parent pauvre, car
+  c&#39;est sur les terrains les plus délaissés que se trouvent les
+  meilleures perspectives ! Notons par ailleurs que notre projet
+  s&#39;adresse à deux populations, les utilisateurs finaux (les
+  joueurs) mais aussi les développeurs, que l&#39;on devra soigner un
+  minimum pour qu&#39;ils puissent nous aider.</p><br>
+
+  <h4>Machines-cibles</h4>
+
+  <p>En dehors de leur système d&#39;exploitation, il nous faut aussi
+  déterminer quelles sont les configurations minimales pour que notre
+  jeu puisse tourner. Nous nous sommes alignés sur le minimum des
+  machines possédées par les membres du club et par le Cube, cela
+  pourrait donner :</p>
+
+  <ul>
+    <li>PC Pentium II 300 Mhz 128 Mo de RAM, 16 Mo de RAM vidéo</li>
+
+    <li>Apple iMac classiques (G3, sauf erreur)</li>
+  </ul><br>
+  <br>
+
+  <h4>Conception</h4>
+
+  <p>Pour ne pas complètement se fermer d&#39;emblée les portes du jeu
+  en réseau, on veillera à utiliser la figure d&#39;architecture MVC
+  (Modèle-Vue-Commande), qui permettra de minimiser les modifications
+  lors d&#39;un éventuel passage au multi-joueur.</p><br>
+  <br>
+  <br>
+  <br>
+
+  <h3>N&#39;hésitez pas à nous faire part de votre avis !</h3>
+
+  <p>Pour toute remarque, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL-club]%20Compte-rendu%20du%209/10/2003">
+  envoyez-nous un mail</a>!</p><br>
+  <br>
+  <hr>
+
+  <div class="c1">
+    <a href="#_top_">Top</a><br>
+    <br>
+    <em>Dernière mise à jour : 12 Octobre 2003</em>
+  </div>
+</body>
+</html>

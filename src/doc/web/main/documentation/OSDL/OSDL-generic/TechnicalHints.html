@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2005, December 14
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Some technical hints</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL, release">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../../../../common/css/OSDL.css">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../common/black.html"
+       onclick="parent.toolbar.location='../../../MainMenu.html'">home page</a> <a href="../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Some%20technical%20hints">mail us</a></p>
+  </div><a name="_top_"></a> 
+
+  <h1>Some technical hints</h1>
+
+
+  <h2>Patching</h2>
+
+
+  <h3>Creating a patch from two versions of a file</h3>	
+  <p>
+  Let's suppose you have an old version of a file, say <code>file.txt</code>, and a newer, stored in  <code>file.txt.updated</code>. To create a patch named <code>my-file.patch</code>
+that, applied to <code>file.txt</code>, changes its content so that it is the same as the one of <code>file.txt.updated</code>, one can use :
+  <center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+diff -Naur file.txt file.txt.updated > my-file.patch
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+  </p>
+
+
+<p> It generates in <code>my-file.patch</code> a text like :
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+--- file.txt    2005-12-14 22:50:49.000000000 +0100
++++ file.txt.updated    2005-12-14 22:51:32.000000000 +0100
+@@ -1,3 +1,3 @@
+ Hello world,
+-OSDL is great,
++Ceylan and OSDL are great,
+ That's what the wise men say.
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+  
+  <h3>Applying a patch to a file</h3>	
+  <p>
+  Let's suppose you have an old version of a file, say in <code>file.txt</code>, and a patch named <code>my-file.patch</code>. that, applied to <code>file.txt</code>, updates its content. One just has to enter in the same directory:
+  <center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+patch < my-file.patch
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+  </p>
+
+<p>
+No need to specify any filename, since all the necessary informations are already stored in the patch file.
+</p>
+  
+<p>
+For more informations, use : <code>man patch</code>.
+</p>
+  
+    
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Some%20technical%20hints">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    <a href="#_top_">[Top]</a><br>
+    <br>
+    <em>Last update : 2005, December 14</em>
+  </center>
+</body>
+</html>

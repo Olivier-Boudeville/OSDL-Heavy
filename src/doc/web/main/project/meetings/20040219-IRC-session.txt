@@ -1,0 +1,275 @@
+<tuan> recherche
+<tuan> :o)
+<tuan> cette archive est t elle dispo ?
+<wondersye> en fait j'ai fait une liste de thème, je lis chaque jour le digest SDL et je colle les bons conseils dans le thème adéquat
+<wondersye> oui sur CVS
+<tuan> ha oui ok j'avais pas vu
+<wondersye> sous OSDL/OSDL-0.3/src/doc/web/main/documentation/rendering
+<tontione> à propos de glossaire, je te l'envoie ce soir Olivier
+<wondersye> ça roule
+<wondersye> au passage, la rectification de l'URL m'a fait découvrir http://icps.u-strasbg.fr/~marchesin/sdl/glsdl.html
+<tuan> voila j'etais un peu bloqué sur ce probleme
+<wondersye> qui me semble terriblement bien foutue
+<wondersye> et le Stéphane en question est français, en thèse, et il m'a l'air sympa
+<tontione> moi je peux tjrs pas voir vos liens :(
+<wondersye> si un jour on a un problème costaud il pourra nous aider je pense
+<tuan> oui
+<tuan> il m'a bien l'air detre balaize le monsieur
+<wondersye> ah il faut les enregistrer dans un fichier texte en attendant alors
+<wondersye> et rapidement passer sous Linux peutêtre ?
+<tuan> passe sous mozilla
+<tuan> ca marchera peut etre mieux
+<wondersye> donc Tuan on peut te considérer comme au moins temporairement débloqué ? Que comptes-tu faire ?
+<tuan> faire une methode pour un fondu
+<tuan> tres simple a faire
+<tuan> je me donne pas le baton moi !! :o)
+<wondersye> c'est normal :0)
+<tontione> non, c un probleme avec mon firewall et mon fournisseur d'acces
+<tontione> un fondu ou un zoom ?
+<tuan> oui peut etre
+<wondersye> sous linux je pourrai te donner des conseils en matière de firewall, mais sous windows je suis fort démuni
+<tuan> faudrai que j'y reflechisse pour le zoom
+<wondersye> il y a SDL rotozoom
+<tuan> mais je voulais avoir une image de taille quelconque
+<tuan> pour lafficher a la taille desiré
+<tuan> mais ca prendrai plus de temps que prevu de faire cela
+<wondersye> oui c'est un peu long mais ça en vaut la peine : la plupart du temps, travailler pour la BA c'est travailler pour le jeu et réciproquement
+<tuan> SDL rotozoom cest une librairie ? ou une fonction ?
+<tontione> pour moi un fondu c'est une transition entre 2 images, j'ai tout faux ?
+<tuan> moi je vois ca comme ca
+<wondersye> c'est une biblio : http://www.ferzkopp.net/~aschiffler/Software/SDL_gfx-2.0/index.html (c'est son nouveau nom, gfx)
+<wondersye> pour moi aussi c'est ça
+<tuan> bon alors disons que je fais la fondu
+<tuan> plus zoom
+<wondersye> Thierry, ce soir il y a bcp de vent
+<tuan> mais pour laffichage de l'image en taille dynamique
+<tontione> héhé, mais le dépanneur france telecom est passé, et a premiere vue il a fait du bon boulot !
+<tuan> je ne vous promets rien
+<wondersye> en fait non seulement il faut la mettre à l'échelle, mais le résultat sera pixellisé à mort
+<wondersye> il faudra donc passer dessus un filtre de lissage (antialiasing)
+<tuan> et j'ai peur que ca soit un peu lent
+<wondersye> avec openGL c'est "instantané"
+<tuan> si pour afficher une image on procede de cette maniere ...
+<wondersye> en parallèle, quelqu'un d'autre est coincé ?
+<tuan> si avec open GL cest rapide
+<tuan> alors oui
+<wondersye> oui c'est SUPER rapide
+<tuan> super  !!
+<wondersye> et pour faire du openGL + SDL sans se casser la tête il faut utiliser .....
+<tontione> moi oui, par mon neveu qui est en vacances ;)
+<wondersye> ..... glSDL (http://olofson.net/mixed.html)
+<wondersye> ça je ne peux rien pour (ou contre)
+<tontione> mais dès mercredi, je me replonge dans la SDL
+<tontione> j'ai pas de dessin en cours
+<tuan> merci pour le lien Olivier
+<tontione> pour le story board, je laisse arnaud faire, même si ça me dirait bien de sortir ma propre version.
+<wondersye> ptet que les prochains pourraient être des portraits ?
+<wondersye> oui ne te bride pas
+<tontione> oulah, c carrément plus dur ça !
+<wondersye> oui 
+<wondersye> c'est vrai
+<tontione> je vais y penser
+<tontione> d'ailleurs, une anecdote rigolote :
+<tontione> j'avais dessiné un vieux roi pour illustré un perso dans ma campagne Pendragon, il y a plusieurs années de ça...
+<tontione> et c'est dingue comme Theoden envouté dans lsda lui ressemble !!!
+<Hirinkael> Pouf pouf
+<Hirinkael> Je suis de retour
+<tontione> illustrer, pardon
+<wondersye> ben on a un roi, alors ?
+<tontione> non, c pas terrible comme dessin, genre croquis
+<wondersye> Arnaud tu peux rattraper ce que tu as loupé ? 
+<wondersye> pour résumer, on va essayer de faire en sorte que personne ne soit bloqué à l'issue de cette session IRC
+<wondersye> y a-t-il quelque chose qui entrave ta progression ? 
+<Hirinkael> oui je lis ça
+<tuan> si personne en a
+<tuan> jaimerai parler dun autre petit probleme me concernant
+<tuan> jaimerais
+<wondersye> d'ailleurs tes lumières sur la mise à l'échelle vers une image plus grande pourraient aider Tuan
+<wondersye> vas-y Tuan
+<tuan> je voudrais parler de la structure de ODSL
+<tuan> ODSL est fonctionnelle ?
+<tuan> j'ai regarde
+<tuan> mais pas tester
+<tuan> teste
+<tuan> il suffit de le prendre par CVS
+<tuan> puis on travaille directement ?
+<wondersye> oulà non 
+<wondersye> en fait globalement en théorie Ceylan est téléchargeable et utilisable en l'état
+<wondersye> (devrait se compiler, créer les biblios et les exécutables de test)
+<wondersye> mais OSDL doit être massivement retouché comme Ceylan l'a été
+<wondersye> afin d'utiliser le même système de makefile et d'utiliser libtool notamment
+<wondersye> enfin, des prérequis logiciels sont nécessaires ou recommandés
+<tuan> des prerequis logiciels comme ?
+<wondersye> première catégorie : (j'y arrive)
+<wondersye> un bon compilo C++
+<wondersye> make GNU
+<tuan> haa ok je vois
+<wondersye> outils UNIX classqiues : find, tar, bzip2, etc.
+<tuan> l'environnement linux en gros
+<wondersye> oui en gros
+<wondersye> c'est à la fois très peu et beaucoup
+<wondersye> pour OSDL, comme prérequis il faut rajouter Ceylan
+<wondersye> et SDL
+<wondersye> plus toutes les biblios qu'on utilisera : SDL_images, glSDL, etc.
+<wondersye> plus python, plus libtool, plus un parseur XML etc.
+<wondersye> d'où l'intérêt d'avoir un LOANI !
+<wondersye> tatiiin
+<tuan> hé oui
+<tuan> et par exemple
+<tuan> je voudrais creer ma classe et methodes
+<wondersye> mais un truc qui serait très intéressant serait que tu récupères Ceylan depuis le CVS et que tu essaies de le reconstruire
+<wondersye> oui
+<tuan> le reconstruire en le compilant tu veux dire ?
+<wondersye> oui
+<wondersye> "make all"
+<wondersye> et voir ce que cela donne
+<Hirinkael> Pour la mise à l'échelle, je pense qu'il faut distinguer le cas où l'image de départ est plus grosse que celle d'arrivée
+<wondersye> je serais content de t'aider à améliorer la bête
+<Hirinkael> et celui où elle est plus petite
+<wondersye> en fait là c'est l'autre cas : petit->gros
+<Hirinkael> si l'image est plus grosse, sans doute suffit-il de moyenner
+<wondersye> je serais content de t'aider à améliorer la bête de façon à ce que cela compile sans anicroche chez toi
+<wondersye> l'image : laquelle ,
+<wondersye> l'image : laquelle ?
+<tuan> ok Olivier
+<tuan> je te ferai signe si je bloque
+<Hirinkael> moyenner la grosse
+<wondersye> Tuan : un premier pas qui aiderait serait que tu t'inscrives sous sourceforge pour que je puisse te donner des droits de développeur sur le CVS
+<tuan> oui ouiiii
+<tuan> :)
+<tuan> faut que j'y pense
+<wondersye> pense bien à récupérer un gcc récent et libtool (qui est juste un gros script bash !)
+<tuan> oui ca va mon gcc doit etre recent
+<wondersye> ou plutôt oui les prérequis comme ça on vérifieras que les absences sont bien détectées
+<Hirinkael> Sinon effectivement ça revient à changer d'échantillonnage
+<Hirinkael> comme l'a dit Olivier
+<wondersye> oui -> oublie
+<wondersye> "ou plutôt oublie les prérequis comme ça on vérifieras que les absences sont bien détectées"
+<Hirinkael> Je ne sais pas précisément ce qui se fait
+<tuan> oui mais j'ai deja tout les prerequis que tu as enumeré
+<tuan> s
+<wondersye> ok on verra ce que ça donnera (c'est  http://sourceforge.net/account/register.php)
+<Hirinkael> Un moyen couillon c'est le filtre anti repliement
+<Hirinkael> mais je ne sais pas ce que ça peut donner
+<wondersye> tu veux dire que Shannon a son mot à dire ,
+<wondersye> tu veux dire que Shannon a son mot à dire ? zut
+<Hirinkael> Oui en quelque sorte
+<tuan> shannon ? la formule de shannon ?
+<tuan> de reseau qui donne la capacite en fonction de la bande passante ...
+<Hirinkael> L'idée de toute manière c'est d'interpoler
+<wondersye> oui
+<tuan> oupsss je venais de reviser avec des amis mes cours de resequ :o)
+<Hirinkael> Tu as une image échantillonnée
+<Hirinkael> Tu veux l'échantillonner plus finement
+<wondersye> les gars, on est foutus, "Indian Government Encourages Game Development" 
+<Hirinkael> Tu supposes donc que c'est possible
+<wondersye> pardon pour le OT
+<Hirinkael> c'est à dire qu'il existe une fonction de deux variables réelles qui y correspond dans un certain espace
+<Hirinkael> tout le problème est là
+<Hirinkael> Généralement tu supposes que ton image est à bande limitée
+<Hirinkael> Ca permet de dire que l'image peut parfaitement être reconstruite à partir de ses échantillons
+<Hirinkael> ainsi tu peux la rééchantillonner sans problème
+<Hirinkael> C'est la base
+<wondersye> en gros tu supposes qu'il existe f(x,y) = couleur qui est défini sur une grille que tu veux raffiner
+<Hirinkael> Sauf que c'est pas forcément un espace très raisonnable pour une image
+<Hirinkael> Les contours par exemple sont généralement des courbes singulières, en tout cas peu régulières
+<Hirinkael> voilà
+<Hirinkael> mais ta fonction f si tu la supposes à bande limitée tu la supposes implicitement infiniment dérivable
+<Hirinkael> donc tu escamtotes les contours
+<wondersye> et mmm quelque chose comme des propriétés vérifiées par les dérivées successives de f déterminent dans l'espace de Fourier son étendue spectrale qui ne doit pas être trop grande ou doit être modulée avec une porteuse de fréquence suffisant de telle sorte que les étendues spectrales ne se chevauchent pas ?
+<Hirinkael> Ouais mais c'est plus simple et plus compliqué que ça
+<Hirinkael> Tu n'as pas une fonction unique f qui par échantillonnage te redonne ton tableau de valeurs
+<wondersye> non il y des choix à faire
+<Hirinkael> L'unicité n'est assurée que dans certains espaces
+<Hirinkael> notamment celui des fonctions à bande limitée
+<Hirinkael> mais ce n'est pas forcément le plus raisonnable pour des images
+<wondersye> il faudrait choisir parmi les f potentielles celle qui aboutit à une image la plus douce possible
+<Hirinkael> Oui voilà
+<Hirinkael> mais ça va introduire du flou
+<wondersye> yep rien n'est parfait
+<Hirinkael> C'est probablement ce qui se fait en pratique
+<Hirinkael> mais je ne peux pas le certifier
+<wondersye> donc pour en revenir à nos moutons de nombreux algorithmes devraient être trouvables pour Tuan, un compromis est à chercher entre leur complexité et la beauté du résultat escompté
+<wondersye> il doit aussi exister des algos classiques (comme l'est le bubble sort pour les tris)
+<Hirinkael> exactement
+<tuan> refaire tout un algo serait long
+<tuan> interressant surement
+<Hirinkael> déjà pour le sous échantillonnage il y a un choix dans le filtre anti repliement
+<wondersye> il suffirait donc, si Tuan préfère cette solution à la solution glSDL, de trouver le bon algo et de le porter rapidement
+<tuan> oui trouver un algo sympa
+<tuan> serait bien
+<wondersye> Thierry, toujours là ? On doit te barber avec ces histoires
+<tuan> un super mega bien ALGO qui nous sort un truc mega beau
+<tuan> oui :)
+<tuan> bon si Arnaud veut faire l'algo, hein ... ne te gene pas
+<wondersye> on va essayer d'éviter "Wavelet transforms arising from oversampling"
+<tuan> on pourrait le reporter en code
+<wondersye> Arnaud, peut-être aurais-tu des pistes pour guider Tuan ?
+<Hirinkael> mouais faut voir ça ne doit pas être trop compliqué
+<wondersye> OT : tu connaissais http://citeseer.nj.nec.com ?
+<wondersye> ce truc référence les citations de publis
+<wondersye> il détecte même les auto-citations
+<Hirinkael> tu as un algo de fft ?
+<wondersye> il te faut une fft ?
+<tuan> fft ? c quoi ca me dit quelque chose ca
+<wondersye> fadt fourier transform
+<wondersye> fast fourier transform
+<tuan> j'ai deja du utilisé ca dans un anciennnn tres ancien projet
+<tuan> mais je ne sais plus lequel
+<Hirinkael> Ok
+<wondersye> http://trollmaster.net/m4rproject/node5.html me semble pas mal
+<wondersye> (la FFT c'est pour hum calculer la transformée de Fourier d'une fonction de manière rapide pour un ordi)
+<Hirinkael> ouaip
+<Hirinkael> donc tu filtres ton image
+<Hirinkael> fft(image).*fft(filtre)
+<wondersye> ce qui nous faudrait c'est : Scaling using RBF interpolation
+<wondersye> RBF c'est quoi ?
+<wondersye> ou plus simple l'interpolation bilinéraire
+<wondersye> ou plus simple l'interpolation bilinéaire
+<Hirinkael> oui
+<Hirinkael> c'est très envisageable
+<Hirinkael> voire linéaire
+<Hirinkael> sinon l'idée c'est que tu rajoutes des zéros, tu filtres passe bas et tu sous échantillonnes
+<wondersye> en fait RBF au lieu de prendre en compte les voisins de ligne et de colonne, tu prends tous les voisins dans un certain cercle
+<Hirinkael> le rapport du sous échantillonnage et du sur échantillonnage doivent être choisis de telle sorte que l'image de fin ait la bonne taille
+<wondersye> c'est cool
+<wondersye> Radial Basis Functions !!!!
+<tontione> bon ben moi je vais dormir ! A+
+<wondersye> ok A+ Thierry !!!!
+<Hirinkael> Bonne nuit
+<-- tontione has quit (Quit: bye ; back to http://www.direct-irc.com)
+<tuan> cioa ciao
+<tuan> (arf pas assez rapide)
+<wondersye> Tuan : http://trollmaster.net/filespace/rbfscratch.tar.bz2 contient toutes les sources de tous les algos qu'il te faut
+<tuan> wouaa super ca
+<Hirinkael> C'est vrai que c'est typiquement le genre de pb relou 
+<tuan> je regarderai ca de plus pres
+<Hirinkael> qui doit se traiter simplement
+<Hirinkael> mais bon
+<Hirinkael> Il doit y avoir parmi toutes les solutions possibles une qui soit plus avantageuse algorithmiquement
+<Hirinkael> mais laquelle je ne saurais dire
+<wondersye> Arnaud, n'hésite pas à nous proposer des solutions simples et/ou éprouvées 
+<tuan> moi qui esperait trouver une fonction SDL toute prete pour afficher une image comme on veut
+<tuan> ca m'etonne pas qu'elle n'est pas dans la lib SDL
+<Hirinkael> grossir une image sans la pixeliser n'est pas simple
+<Hirinkael> y a forcément des choix à faire
+<tuan> oui
+<tuan> autre chose a rajouter ?
+<tuan> si non, je vais me coucher
+<Hirinkael> L'interpolation bestiale me semble une bonne voie
+<tuan> j'ai bien sommmeil
+<wondersye> gargl il manque des fichiers source
+<tuan> arg
+<wondersye> dans son archive
+<wondersye> bon il faut chercher un peu plus
+<Hirinkael> mais même pour interpoler sur une image ce n'est pas si simple
+<tuan> je vais y aller, je meurs de sommeil la
+<wondersye> yep. Je propose de clore cette session ? 
+<Hirinkael> Soit
+<wondersye> ok bonne nuit à tous !!!!!
+<tuan> la discussion serait enregistrée ?
+<Hirinkael> Amen
+<wondersye> oui je l'enregistre
+<Hirinkael> Bonne nuit
+<tuan> daccord
+<tuan> bonne nuit a tous

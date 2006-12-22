@@ -1,0 +1,45 @@
+
+
+	LOANI : Lazy OSDL's Automatic Net Installer
+
+
+
+LOANI's purpose is to automatically retrieve, extract, build and install every OSDL's prerequesite and OSDL itself, so that having one's OSDL installation working is as easy as just entering :
+
+./loani.sh
+
+or, preferably if you want to be sure to have a sane build environment :
+
+./loani.sh --buildTools
+
+These two commands result in the installation, among other helper libraries, of Ceylan and OSDL. These two libraries can be retrieved in various versions (current archive release/current stable/cutting edge), thanks to various means (archive or CVS).
+
+
+End-users may preferably run the following command as a normal (non-root) user :
+
+./loani.sh --buildTools
+
+They will get and use latest stable archive release for Ceylan and OSDL, with all necessary tools (ex : compiler toolchain) automatically installed under their own user account (the system tree will not be affected, no root permissions needed).
+
+OSDL developers may use the following command to retrieve the version of Ceylan and OSDL currently in CVS :
+
+./loani.sh --allTools --sourceforge <your SourceForge user name>
+
+They will have as well all tools, including for example those needed to generate documentation. 
+
+
+For a better understanding of LOANI's use, one can :
+	- enter on his terminal : ./loani.sh --help
+	- refer to the LOANI-dedicated page from our main site : @LOANI_WEB_HOMEPAGE@
+	
+
+In the case you encounter error(s) despite careful reading of the documentation, please send the file coming from our generator of bug reports (just run it thanks to ./generateBugReport.sh from the directory where you extracted LOANI's archive) to our mail account dedicated to troubleshooting, @LOANI_MAILING_LIST@.
+		
+We will do our best to investigate and overcome the issue.
+		
+	
+Thanks a lot, and have fun using OSDL !
+
+
+Olivier Boudeville (olivier.boudeville@esperide.com).
+

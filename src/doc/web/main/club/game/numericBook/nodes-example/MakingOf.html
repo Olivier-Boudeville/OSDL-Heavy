@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, June 2.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <meta content=
+  "HTML Tidy for Linux/x86 (vers 1st April 2003), see www.w3.org"
+        name="generator">
+
+  <title>OSDL - Survol de notre livre dont on est le héros</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL, LOANI, livre dont on est le héros">
+  <link href="../../../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../../../../../common/css/OSDL.css">
+  <style type="text/css">
+  div.c3 {text-align: center}
+  h1.c2 {font-family: arial, helvetica, sans-serif}
+  span.c1 {font-family: arial, helvetica, sans-serif}
+  </style>
+  <style type="text/css">
+  td.c1 {text-align: center}
+  </style>
+  <style type="text/css">
+  table.c1 {border: none}
+  </style>
+</head>
+
+<body>
+  <div class="banner">
+    <em>General</em> <a href="../../../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../../../MainMenu.html&#39;">home page</a>
+    <a href="../../../../Map.html">site map</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Trailer">mail
+    us</a>
+  </div><br>
+  <a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+
+  <h1>L'envers du décor</h1>
+
+  <h2>Principe du livre dont on est le héros</h2>
+	<p>
+	On peut le définir comme un graphe orienté, avec un état initial, des états finaux funestes (la mort) et au moins un état final heureux (la survie, voire l'accomplissement de la Mission).
+	</p>
+	
+	<p>
+	Fondamentalement, ce graphe représente une machine à états finis, un état consistant en une situation de jeu (pour un LH, c'est une vignette numérotée), les transitions représentant chacun des choix possibles pouvant être adoptés par le joueur (pour un LH, c'est le choix en fin de vignette menant à la suivante).	
+	</p>
+	
+	
+	<p>
+	Ici, donc, les états initial et finaux sont caractérisés par un double cercle. L'état initial est coloré en bleu, les états finaux funestes en rouge, les états finaux correspondant à un succès, ici en un seul exemplaire, en vert. Les états classiques sont coloriés en rose.
+	
+	</p>
+	
+	
+	<p>
+	Chaque noeud symbolise une vignette (un paragraphe numéroté), son label la résumant. Les choix possibles sont représentés par des transitions annotées avec un court rappel du choix en question, si plusieurs possibilités existent. 
+	
+	</p>
+	
+	<p>
+	Voici la représentation de l'épisode dont vous venez de triompher sans gloire :
+		
+	<center>
+	
+		<img src="images/example-graph.png" border="0" usemap="#finite_state_machine" alt="Exemple de machine à états">
+			<map id="finite_state_machine" name="finite_state_machine">
+				<area shape="rect" href="WellDone.html" title="Victoire totale" alt="Victoire totale" coords="96,767,193,864" />
+				<area shape="rect" href="StupidDeath.html" title="Cloué" alt="Cloué" coords="257,789,310,842" />
+				<area shape="rect" href="SelfDenial.html" title="Zen" alt="Zen" coords="6,660,48,702" />
+				<area shape="rect" href="Welcome.html" title="Message de bienvenue" alt="Message de bienvenue" coords="49,13,192,155" />
+				<area shape="rect" href="InsertCoin.html" title="Insert coin" alt="Insert coin" coords="84,192,157,265" />
+				<area shape="rect" href="SelectPlayer.html" title="Choisissez votre avatar" alt="Choisissez votre avatar" coords="50,292,191,433" />
+				<area shape="rect" href="Beginning.html" title="La quête commence" alt="La quête commence" coords="58,470,183,594" />
+				<area shape="rect" href="Assassin.html" title="L&apos;Assassin part" alt="L&apos;Assassin part" coords="164,631,264,731" />
+			</map>
+
+	</center>
+
+	</p>
+	
+	<br>
+	<p>
+	Notez, ô merveille, que les états de la machine sont cliquables et mènent directement à leur descriptif !
+	
+	</p>
+	
+	<br>
+	<p>
+	
+	Voici la description textuelle du graphe, ayant servi à générer la figure précédente, à l'aide du très précieux outil <a href="http://www.research.att.com/sw/tools/graphviz/" target="_blank">Graphviz</a> (connu aussi sous le nom de dot) de AT&T Research :
+	<br><br>
+<code><pre>
+digraph finite_state_machine {
+	size="9,9";
+	node [shape = doublecircle, fillcolor=green, style=filled]; "Victoire totale" ;
+	node [shape = doublecircle, fillcolor=red, style=filled];  "Cloué" "Zen" ;
+	node [shape = doublecircle, fillcolor=lightblue, style=filled] ; "Message de bienvenue"
+	node [shape = circle, fillcolor=pink, color=lightgrey, style=filled ];	
+	"Message de bienvenue" -> "Insert coin" [ label = "Nouvelle partie" ];
+	"Insert coin" -> "Choisissez votre avatar"
+	"Choisissez votre avatar" -> "La quête commence" [ label = "Choix quelconque" ];
+	"La quête commence" -> "La quête commence" [ label = "Se rendormir" ];
+	"La quête commence" -> "Zen" [ label = "Prétendre que vous n'êtes pas vous-même"];
+	"La quête commence" -> "L'Assassin part" [ label = "Feindre la mort"];
+	"L'Assassin part" -> "L'Assassin part" [ label = "Feindre à nouveau"];
+	"L'Assassin part" -> "Cloué" [ label = "Rappeler l'Assassin"];
+	"L'Assassin part" -> "Victoire totale" [ label = "Une amulette dans l'inventaire"];	
+	
+	"Message de bienvenue" [ URL="Welcome.html" ]
+	"Insert coin" [ URL="InsertCoin.html" ]
+	"Choisissez votre avatar" [ URL="SelectPlayer.html" ]
+	"La quête commence" [ URL="Beginning.html" ]
+	"L'Assassin part" [ URL="Assassin.html" ]
+	"Cloué" [ URL="StupidDeath.html" ]
+	"Zen"[ URL="SelfDenial.html" ]
+	"Victoire totale" [ URL="WellDone.html" ]
+}	
+</pre></code>	
+	<br><br>
+	</p>
+	
+<p>
+Tous les graphismes ont été tirés de l'excellent référentiel de contenu multimédia libre <a href="http://www.worldforge.org" target="_blank">Worldforge</a>.
+
+</p>
+	
+<br>
+  <br>
+  <br>
+  <br>
+  <h3>N&#39;hésitez pas à nous faire part de votre avis !</h3>
+
+  <p>Pour toute remarque, <a href="
+  mailto:olivier.boudeville@online.fr?subject=[Club]%20LH">envoyez-nous un
+  mail</a>!</p>
+  <hr>
+
+ <center>
+    <a href="#_top_">Top</a><br>
+
+    <br>
+    <em>Dernière mise à jour : 2 Décembre 2004</em>
+</center>
+  
+  </body>
+</html>

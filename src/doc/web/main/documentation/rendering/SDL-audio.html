@@ -1,0 +1,848 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, January 25.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Audio with SDL</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL">
+  <link rel="stylesheet" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20:%20audio">mail
+    us</a></p>
+  </div><a name="_top_"></a> 
+  
+
+
+
+
+<h1>Audio with SDL</h1>
+
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<p>
+<b>Foreword</b> : the vast majority of these informations and pieces of advice comes from the various members of the <a href="http://www.libsdl.org/mailman/listinfo/sdl" target="_blank">SDL</a> mailing list. I hope that this thematical gathering will help the SDL users. Many thanks to the several SDL contributors ! 
+</p> 
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+
+<!-------------------------- Section ----------------------------------------------->  
+
+
+<h2>Overview</h2>
+<p>
+This section focuses on the different ways of managing sounds thanks to SDL and its helper libraries.
+</p>
+
+<p>Due to the amount of relevant informations, this is still a document in progress and any help would be appreciated. 
+</p>
+
+<!-------------------------- Section ----------------------------------------------->  
+
+
+<h2>Table of contents</h2>
+<p>
+<a name="toc"></a>
+  <center>
+  <table style="border: none">
+  
+  <tr><td><div class="box" summary="Table of contents" style="padding: 8px">
+     <a href="#terms">Terms &amp; conventions</a><br>
+     <a href="#buffer">Buffering sounds</a><br>
+	 <ul>
+	   <li><a href="#runtime">Understanding the runtime behaviour of the SDL sound subsystem</a></li>
+	   <li><a href="#size">How to size the audio buffer ? Latency versus skips</a></li>
+	   <li><a href="#callbacks">Callbacks</a></li>
+	   <li><a href="#resampling">Resampling</a></li>
+	 </ul>
+	 <a href="#choosing">Choosing the right library for audio output</a><br>
+         <!--<a href="#mixer">SDL_mixer</a><br>-->
+     <a href="#drivers">Audio drivers</a><br>
+	 <ul>
+	 	<li><a href="#OSS">oss</a></li>
+     	<li><a href="#ALSA">alsa</a></li>
+     	<li><a href="#ESD">esd</a></li>
+     	<li><a href="#ARTS">arts</a></li>
+	 </ul>	
+     <a href="#threeD">3D sound</a><br>
+     <a href="#modsandmidi">Mods and MIDI</a><br>
+     <a href="#trouble">Troubleshooting</a><br>
+	 <a href="#hardwareissues">Hardware-dependent audio issues</a><br>
+     <a href="#links">Audio links</a><br>
+    </div></td></tr>
+  </table>
+</center>
+</p>
+
+
+
+<a name="terms"></a>
+<h2>Terms &amp; conventions</h2>
+<p>
+For a given audio source, all samples respect the same format, like the pixels of a surface that respect the pixel format of the surface. The size of a sample depends on its format, which itself depends on :
+<ul>
+	<li>the chosen sample quantification, which is the precision of the measured sound pressure, often described with 8 or 16 bits, i.e. thanks to 256 or 65536 different values</li>
+	<li>the number of channels (mono, stereo, 5.1, etc)</li>
+</ul>	   
+</p>
+
+<p>
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+SampleSize = (size of a quantification unit) * (number of channels)
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>
+Hence one sample of a stereo 8 bit audio source is : <code>1 [8 bits] * 2 [channels] = 2 bytes</code>.
+</p>
+
+
+<p>
+<em>Frequency</em> is the number of samples played per second, expressed in Hertz (Hz) or kilo-Hertz (kHz, 1 kHz = 1000 Hz). You would set this to 44100 Hz (or 44,1 kHz) for "CD quality", or about 8 kHz for phone quality, for example.
+</p>
+
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+<!-------------------------- Section ----------------------------------------------->  
+
+
+
+<a name="buffer"></a>
+<h2>Buffering sounds</h2>
+
+
+
+<a name="runtime"></a>
+<h3>Understanding the runtime behaviour of the SDL sound subsystem</h3>
+<p>  
+A typical SDL audio driver requests two buffers at whatever sample size is specified by the application, and then pre-fills them with silence. Then it double-buffers sound, filling one buffer (thanks to the user-specified callback) while the audio hardware is reading the other.
+</p>
+
+<p>For example, let A and B be buffers, both 4kb large (1024 samples of 16-bit stereo data) :
+<ol>
+	<li>A and B are allocated and filled with silence</li>
+	<li>Audio hardware is triggered to playback A</li>
+	<li>Application gets a callback to fill B</li>
+	<li>Audio driver waits for A to finish playing and triggers playing B</li>
+	<li>Application gets a callback to fill A</li>
+	<li>...and so on...</li>
+</ol>
+</p>
+
+<p>
+This scheme assumes that the application is able to fill the buffers in time, which is usually true with current CPU and OS combinations.
+</p>
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+<!-------------------------- Section ----------------------------------------------->  
+
+ 
+<a name="size"></a>  
+<h3>How to size the audio buffer ? Latency versus skips</h3>
+
+
+<p>These days, most sound cards seem to work best with 48 kHz, since that is what the converters are designed for and/or because the cards run at that rate all the time internally, no matter what sample rates applications use.
+</p>
+
+<p>
+The larger the buffer, the more latency you will experience : it is a FIFO buffer, so the bigger it is, the longer it takes from when you put data in it to when it comes out the speaker. The latency (also known as lag) corresponds to the time taken to play back one buffer of audio data.
+</p>
+
+<p>
+Reciprocally, if the buffer is too small, you will get skips in the audio (the callback will not be called soon enough to fill the buffer on time). It is a balancing act. No automatic size guess can be easily implemented to adapt the values to the actual platform. 
+</p>
+
+<p>To better diagnose issues coming from an irrelevant buffer size, just hear the result if you are not satisfied with your sound output :
+
+<ul>
+	<li>crackle and unpleasant metal noises : the buffer size might be set <b>too low</b>. Crakles happen because you are not on a real time operating system. There is a hard deadline for delivering the audio buffer (i.e. returning from the callback), and if you miss it, audio skips. Meanwhile, a standard OS scheduler and some background system load will cause the audio callback to start anywhere from a few microseconds through tens or (occasionally) hundreds of milliseconds late, wasting the cycles you were going to use for processing, or even causing audio drop-outs before you get a chance to do anything at all. Not much you can do about that, shortof switching to Linux/lowlatency or BeOS.</li>
+	<li>lots of lag, sound effects seem to be output some time after their cause : the buffer size might be set <b>too high</b></li>
+</ul>
+
+</p>
+
+<p>
+You have to be prepared for any buffer size, regardless of what you ask for. Normally, you would just design all your audio code to be callback driven with a similar interface to that of the SDL audio callback. Every function is given some I/O buffers and is told to process N samples. That way, it is extremely simple to build arbitrarily complex trees of DSP functions. The right number of samples are generated for each audio callback, which minimizes latency and makes it easier to avoid drastically varying callback execution times.
+</p>
+
+<p>
+This is how all major audio plugin and I/O APIs like VST, TDM, AudioUnits, LADSPA, DirectX, CoreAudio, PortAudio, ASIO, EASI, JACK, ReWire, etc. work. It is the only design that <b>really</b> works in anything but the most trivial cases.
+</p>
+
+<p>
+Although it is not perfectly nice and clean code, this <a href="http://olofson.net/examples.html" target="_blank">mixer example</a> (<code>simplemixer-1.1</code>) demonstrates very basic mixing of multichannel sound with the "raw" SDL audio API.
+</p>
+
+<p>
+To fight against crakles, one can increase the buffering (latency) so that the scheduling jitter accounts for a smaller part of the audio buffer period. That way, you can use more CPU power for audio with less drop-outs, but on an OS like Windows, there is no way ever you are going to get anywhere near 100%, and/or totally eliminate the drop-outs when doing low latency audio. Maybe you can get pretty close with Windows 2000 or XP, a decent profesional sound card and running your audio code in kernel space as Kernel Stream filters, but such configuration would be insane for "consumer" multimedia such as games.
+
+<p>
+No settings could be universal, since every system (OS, hardware, configuration, ...) is different.
+Therefore one has often to fine-tune its buffer size for each hardware, which advocates for a way for the user to specify sizes different from the default hardcoded ones (thanks to command line, configuration, etc.) 
+</p>
+
+<p>
+Of course, if latency is irrelevant, you can decide on some reasonably safe value (such as buffers of 4096 samples), but it would not be totally safe, and it may be way too much latency for most applications. For average play-back frequencies, a buffer size of 2048 samples might a sensible value that should work on most systems, keeping in mind the optimum size results from a hardware-dependant compromise. If still hearing crackles, increase that buffer size.
+</p>
+
+<p>
+Note you need to scale the buffer size with sample rate, sample format and number of channels, 
+to maintain the desired amount of buffering in terms of latency. However, do not expect a common value to be totally accurate on all platforms. Internal buffering and stuff in the OS and/or drivers may affect things in weird ways, so do not rely too heavily on it.
+</p>
+
+<p>
+Therefore the value for samples in the audiospec needs to be appropriate for the audio rate which is to be set. Here are some values that should be fairly good for stereo data :
+
+<center>
+  <table border="1" summary="table">
+    <caption></caption>
+
+    <tr>
+        <th>Playing frequency (in kHz)</th>
+        <th>Buffer size (in bytes)</th>
+    </tr>
+
+    <tr>
+        <td><center>11</center></td>
+        <td><center>512</center></td>
+    </tr>
+
+    <tr>
+        <td><center>22</center></td>
+        <td><center>1024</center></td>
+    </tr>
+
+    <tr>
+        <td><center>44</center></td>
+        <td><center>2048</center></td>
+    </tr>
+
+  </table>
+</center>
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+
+<!-------------------------- Section ----------------------------------------------->  
+
+
+<a name="callbacks"></a>
+<h3>Callbacks</h3>
+
+<p>
+The callback is the user-provided function regularly called by the audio system so that the audio output is rendered. As already described about buffer sizes, one has to make sure his buffering is set up so that it is small enough to stay in reasonable sync with the gameplay, but large enough so that there is not too much callback overhead and one does not fall inside the non-realtimeness of modern day systems. Some experimentation will be required.
+</p>
+
+<p>
+The buffer contents will be played only after having returned from the callback. The data that would go into the buffer is preferably to be generated in the callback. Otherwise, one would need extra buffering and thread safe communication between the audio engine and the callback. This can make sense in some cases, but definitely not when you want interactive low latency sound effects.
+</p>
+
+<p>
+Preferably never call <code>SDL_LockAudio</code> / <code>SDL_UnlockAudio</code>. Use some sort of lock-free communication between the main thread and the audio callback context instead, to avoid increasing the callback "scheduling" jitter.
+</p>
+
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+
+<!-------------------------- Section ----------------------------------------------->  
+
+
+<a name="resampling"></a>
+<h3>Resampling : changing frequency and channel output</h3>
+  
+<p>
+SDL does some simple internal resampling on load, but that only gives double or halving resamples. One would therefore need an audio resampling that works with Mix_Chunks from SDL_mixer, such as the Pymedia's Resample object. Or get <code>resample.c</code> from ffmpeg project. They do have simple linear interpolation. ffmpeg from the 0.4.8 version supports mono and stereo resampling, mono to stereo, stereo to mono, stereo to 5.1 resampling. Pymedia supports 5.1/4/5 to stereo also.
+</p>
+
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+
+<!-------------------------- Section ----------------------------------------------->  
+
+
+<a name="choosing"></a>
+<h2>Choosing the right library for audio output</h2>
+
+<p>
+Main choices are :
+<ul>
+	<li>Basic SDL API, fairly low-level
+	<li><a href="http://icculus.org/SDL_sound/" target="_blank">SDL_sound</a> : lightweight, multiple format supported, but it is not a sound mixer, so it may take more work to use, unless you want to play just one sound at a time. The <code>mpglib</code> packaged with SDL_sound seems not to be even worse than SMPEG audio support</li>
+	<li><a href="#mixer">SDL_mixer</a>, the library can be built with MP3 support or, preferably Ogg Vorbis support</li>
+</ul>
+
+</p>
+
+
+<a href="mixer"></a>
+<h4>SDL_mixer</h4>
+
+<p>
+<a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a> can handle samples, channels, groups of channels, music and special effects, etc. [<a href="http://jcatki.no-ip.org/SDL_mixer/SDL_mixer.html" target="_blank">documentation</a>]
+</p>
+
+
+<a name="mixerloading"></a>
+<h5>Loading sounds with SDL_mixer</h5>
+
+<p>
+"Audio files" (wav, voc, etc.) are loaded in their entirety before playing, "music files" (mp3, ogg, midi) are streamed from the <code>RWops</code> as needed.
+</p>
+
+<p>
+When you use SDL_mixer to load a Mix_Chunk, it also converts the sample to the current output format of the opened audio device. So it is not surprising to see a low frequency file or mono or perhaps 8 bit samples being resampled to a high frequency, stereo, 16 bit one, which may account for a 16 time increase in memory size, compared to file size. So all you have to know to predict the size in memory is the audio output format, which you can get from a query function.
+</p>
+
+<p>
+If you need finer-grained control on all files, you might want to look into <a href="http://icculus.org/SDL_sound/" target="_blank">SDL_sound</a>, and gluing it to <a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a>. There was a patch floating around for that at one point.
+</p>
+
+
+
+<a name="mixerusing"></a>
+<h5>Using SDL_mixer</h5>
+
+<p>
+Most of the time, the calling code can just pass a null pointer for <code>obtained</code> because it does not care what the underlying audio driver is doing.
+</p>
+
+
+<p>A very simple example of use would be : 
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+Mix_PlayMusic( music, 0 ) ;
+
+while ( Mix_PlayingMusic() == 1 )
+{
+	// Do something
+	SDL_Delay( 10 ) ;
+}
+Mix_FreeMusic( music ) ;
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>Currently, <code>Mix_LoadWAV</code> supports WAVE, VOC, AIFF, and OGG. SDL_mixer can play several Ogg streams simultaneously : the <code>Mix_Chunk</code> structure is created with either <code>Mix_LoadWAV</code> or <code>Mix_LoadWAV_RW</code>. Despite their name, they both load Ogg just fine, if SDL_mixer is built with Ogg support (thanks to <code>libogg</code> and <code>libvorbis</code>). One would almost certainly not want to use .ogg files of any significant size with <code>Mix_LoadWAV*</code>, since it would have to predecode the whole thing in memory, whereas the <code>LoadMUS</code> path decodes more as it needs it, i.e. on the fly. 
+</p>
+
+
+<p>
+Other SDL_mixer examples : <a href="http://gpwiki.org/index.php/C:Playing_a_WAV_Sound_File_With_SDL_mixer" target="_blank">1</a>, <a href="http://www.kekkai.org/roger/sdl/mixer/" target="_blank">2</a>.
+</p>
+
+
+<a name="mixertrouble"></a>
+<h5>Troubleshooting for SDL_mixer</h5>
+
+<p>
+<dl>
+
+    <dt>During play-back, how to find out what the current position is ?</dt>
+    <dd>There is a <code>Mix_SetMusicPosition</code> but no <code>Mix_GetMusicPosition</code>. One solution would be to call <code>SDL_GetTicks</code> when you start the song, and then have your application keep note of how long it has been playing. This will probably prove accurate within a few milliseconds.   
+	</dd>
+
+    <dt>How to load an ogg file with SDL_mixer ?</dt>
+    <dd>See that <a href="http://gpwiki.org/index.php/C:Using_SDL_mixer_to_play_an_Ogg_music_file" target="_blank">gpwiki hint</a>.</dd>
+
+
+	<dt>Using an external libmikmod creates <code>music.raw</code> files</dt>
+	<dd>One solution is to manually rebuild SDL_mixer whilst disabling use of an external libmikmod. SDL_Mixer using an external libmikmod is the default on Gentoo.</dd>
+
+
+</dl>
+</p>
+
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+
+<!-------------------------- Section ----------------------------------------------->  
+
+
+<a name="drivers"></a>
+<h2>Audio drivers</h2>
+
+<h3>What advantages do higher level audio drivers have ?</h3>
+
+<p>
+<ul>
+	<li>device-sharing</li>
+	<li>format conversion</li>
+</ul>
+</p>
+
+<h3>What disadvantages do higher-level audio drivers have ?</h3>
+<p>
+<ul>
+	<li>Lag : they are an extra level of buffering</li>
+	<li>More skipping for the same amount of lag</li>
+	<li>Extra CPU workload</li>
+	<li>Instability : some people need to do <code>killall -9 artsd</code> at least once a day</li>
+	<li>Insecurity : artsd runs best with root permissions, but this is no longer recommended due to security flaws</li>
+	<li>Unwanted features : not everybody wants to have his default soundcard potentially be 
+on the other side of the Internet</li>
+	<li>More error conditions that cannot be bypassed : one can try an alternative OSS device, but good luck finding an alternative artsd !</li>
+</ul>
+</p>
+
+<p>Lower-level drivers almost almost always offer better performance in all the ways that matter inside SDL.
+</p>
+
+
+<a name="daemons"></a>
+<p>For example, in some cases if a SDL program is run from a non-root user, there might be about a 3/4 second delay for all the sound effects. If the program is run as root, the sound delay goes away. This is typical of using a sound daemon like artsd or esd.
+</p>
+
+<p>Also, perhaps the daemons have suid privileges on <code>/dev/dsp</code> where the user does not have access directly to it : here again, one should check file permissions.
+</p> 
+
+
+<a name="switchdaemons"></a>
+<h3>Changing of sound daemon</h3>
+
+<p>This <a href="http://www.libsdl.org/faq.php?action=listentries&category=9#10" target="_blank">page</a> explains how to choose a specific audio driver, and lists them. Refer to <a href="http://sdldoc.csn.ul.ie/sdlenvvars.php" target="_blank">this page</a> as well to know the appropriate environment variables.
+</p>
+
+<p>Trying playing around with the available audio drivers (ex: <code>export SDL_AUDIODRIVER=esd</code> in the shell, prior to running a SDL program), may resolve some audio issues. 
+</p>
+
+<p>Another work-around which is often efficient is to enter in the shell <code>export SDL_AUDIODRIVER=dsp; export SDL_DSP_NOSELECT=1</code>, still before launching the SDL program. However this work-around has been removed starting from 1.2.8.
+</p>
+
+
+<!-------------------------- Section ----------------------------------------------->  
+
+<a name="OSS"></a>
+<h3>oss</h3>
+<p>If it fails to open a device, it tries the next ones.</p>
+
+
+<a name="ALSA"></a>
+<h3>alsa</h3>
+<p>
+<dl>
+
+	<dt>ALSA and SDL disturb each other</dt>
+	<dd>They should not if you do not use <code>SDL_OpenAudio</code>, and do not use <code>SDL_INIT_AUDIO</code> when calling <code>SDL_Init</code>.
+	</dd>
+	
+
+	<dt>Way too high latency with ALSA</dt>
+	<dd>The driver defaults on Linux seem to be way too high for real-time audio, but probably fine for the cute little dings that KDE and Gnome make. Adding something like this to <code>~/.asoundrc</code> may help:
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+period_size 1024
+buffer_size 4096
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+
+</dd>
+	
+</dl>
+</p>
+
+<a name="ESD"></a>
+<h3>esd</h3>
+<p>
+One may use <code>export ESD_NO_SPAWN=1</code> to prevent SDL from starting esd.
+</p>
+
+<a name="ARTS"></a>
+<h3>arts</h3>
+<p>
+arts does not seem to have a good reputation, often it has to be switched off for debugging purpose.
+</p>
+
+ 
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+
+<!-------------------------- Section ----------------------------------------------->  
+ 
+ 
+<a name="threeD"></a>
+<h2>3D sound</h2>
+
+<p>
+SDL_sound does not support it, fmod is not free, that limits options to OpenAL. 
+</p>
+
+<p>
+The official OpenAL packages for Debian are old and buggy, compiling OpenAL from CVS can help.
+Thanks to OpenAL, a 3D audio engine with dynamic pitch and Ogg streaming can be done more easily.
+</p>
+
+<p>Watch out for the <code>ALut</code> functions though, they are <b>not</b> portable. You cannot even load a WAV using them and expect to compile the same program for Linux. OpenAL is a good library but does not support MID and MOD files. If you want to play only Ogg or PCC wav files, try OpenAL with ear and source at <code>[0,0,0]</code>. 
+</p>
+
+<p>
+Recent surround sound patches for SDL let us hope that SLD will basically provide more audio features.
+</p>
+  
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+  
+<!-------------------------- Section ----------------------------------------------->  
+  
+  
+  
+<a name="modsandmidi"></a>
+<h2>Mods and MIDI</h2>
+
+<p>
+If your program plays midis by calling SDL_mixer to play them, then users of your program will need an SDL_mixer installed that can somehow play midis. That's all. SDL_mixer has various means of playing midis, depending on the operating system and how it has been installed. One of those ways uses SDL_mixer's timidity library.
+</p>
+
+<p>
+Both mods and midis use instrument samples to make musical notes. Mods incorporate the samples they use into the mod file, but midi files do not contain samples. Midis depend on a synthesizer which can use its own samples, commonly from the standard General Midi set of instrument samples.
+</p>
+
+<p>
+Mods are more flexible in the sounds they use : they do not have to stick to imitations of ordinary musical instruments. Mods tend to be musically less conventional and less sophisticated than midis. 
+</p>  
+  
+  
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+
+<!-------------------------- Section ----------------------------------------------->  
+
+
+
+<a name="trouble"></a>  
+<h2>Troubleshooting</h2>
+
+<dl>
+
+	<dt>I got : <code>open /dev/sequencer: No such device</code></dt>
+	<dd>Check you have a <code>/dev/sequencer</code> pseudo-file on your system. See next hints if still out of luck</dd>
+	
+	<dt>I got : <code>open /dev/sequencer: Permission denied</code></dt>
+	<dd>Check you have the right permissions (<code>ls -l /dev/sequencer</code>), for example your user must often be part of the <code>audio</code> group. See next hint if still out of luck</dd>
+
+    <dt><code>/dev/sequencer</code> exists, my user is in <code>audio</code>'s group, but I still got : <code>open /dev/sequencer: No such device</code></dt>
+	
+    <dd>
+	
+<p>
+It is possibly because there is really no such device. Whether there is a sequencer device available depends on whether there is a driver for it in the kernel, in part.</p>
+
+<p>
+On some systems, there are ALSA drivers but no OSS drivers. The <code>/dev/sequencer</code> device is an OSS special file, and it exists when the appropriate ALSA driver for OSS emulation is loaded. That driver is <code>snd-seq-oss</code>. This driver can be loaded with <code>modprobe snd-seq-oss</code>.
+</p>
+
+<p>
+Before the above statement is executed, <code>/dev/sequencer</code> does not exist. Afterwards, it does exist. If you use the ALSA drivers, rather than the OSS drivers, it may work this way on your system.
+</p>
+
+<p>You can check which kernel drivers are loaded with <code>lsmod</code>. If you have ALSA, you can check the availability of <code>/dev/sequencer</code> with <code>cat /proc/asound/oss/sndstat</code>. If there is no available driver for <code>/dev/sequencer</code>, under <code>Synth devices:</code> you will see <code>Device not enabled in config</code>, or something similar. If there is a driver, you will see the device driver listed here. If you
+use OSS drivers, use <code>cat /dev/sndstat</code> instead, for this information.
+</p>
+
+
+<p>As <code>/dev/sequencer</code> is provided by OSS, not ALSA, one should make sure his kernel has support for OSS and/or the ALSA OSS compatibility library, and that SDL was built with ALSA support. And of course, one should not forget to actually load the ALSA OSS compatibility module and MIDI modules. They often are not loaded by default.
+</p>
+
+<p>
+An application that needs only PCM sound, and not MIDI, should not fail because <code>/dev/sequencer</code> is not available. 
+</p>
+	
+	</dd>
+
+
+
+	<dt>Sometimes I have <code>Mix_OpenAudio: No available audio device</code>, and others <code>open /dev/sequencer: Permission denied</code></dt>
+	<dd>Check the rights to <code>/dev/sequencer</code> : <code>ls -l /dev/sequencer</code> may output something like <code>crw-rw----  1 root audio 14, 1 2004-04-24 13:08 /dev/sequencer</code>. Verify that the user is in <code>audio</code> group. In <code>/etc/group</code> one might see something as <code>audio:x:29:yourUser,guest</code>. If so, perhaps some other application is holding <code>/dev/sequencer</code> open. Try running <code>lsof /dev/sequencer</code> and/or <code>fuser /dev/sequencer</code> to check.
+</dd>
+
+
+	<dt>Problems with <code>/dev/dsp</code></dt>
+	<dd>
+	<p>
+	They are often very similar to the ones of <code>/dev/sequencer</code> : just run <code>ps -edf | egrep 'artsd|esd'</code>, check the device permissions : <code>ls -la /dev/dsp*</code>, which processes use this device : <code>fuser /dev/dsp</code> or <code>lsof /dev/dsp</code>.
+	</p>
+	
+	<p>Then execute <code>id</code> and check if any returned group matches the one of the dsp, and if the dsp has group writability.
+	</p>
+	
+	</dd>
+
+
+
+	<dt>When I load a music from an Ogg Vorbis file using <code>Mix_LoadMUS</code>, will it completely load the file in memory and decode it when playing, or will it stream the file from the disk ?</dt>
+	<dd>It is streamed from disk as needed during playback, as all "music" files are (as opposed to "special effects" files) [see <a href="#mixerloading">full explanation</a>]</dd>
+
+
+	<dt>At runtime, I get the message <code>Warning: incorrect audio format</code>, and when I play the track I just hear noise</dt>
+	<dd>Try <code>AUDIO_S16SYS</code> for endianness : developers should never use <code>AUDIO_S16</code> in code, they should use <code>AUDIO_S16SYS</code> instead.
+</dd>
+
+
+
+    <dt>For midi files, the window opens but no sound can be heard : Timidity not working</dt>
+    <dd>
+<p>
+Look in <code>/etc/timidity/timidity.cfg</code>, if this file exists, and see what is there. If there is a statement <code>source freepats.cfg</code> there, but there is no file <code>freepats.cfg</code>, then that is your problem.
+</p>
+
+<p>
+Indeed, for timidity to work, you have to have a set of GUS <code>.pat</code> files on your system, and timidity has to be able to find them. One such set of <code>.pat</code> files is the <a href="http://freepats.opensrc.org/" target="_blank">freepats set</a>.
+</p>
+
+
+<p>
+Then, for timidity to find the <code>.pat</code> files, it has to find its configuration file, named <code>timidity.cfg</code>. One standard place for this file is in the directory <code>/etc/timidity</code>, and another standard place is in the directory <code>/usr/local/lib/timidity</code>. If you find the file on your system, you want to somehow fix things so timidity can find it. If, for example, you have the file <code>timidity.cfg</code> and the <code>.pat</code> files in <code>/usr/local/lib/timidity</code>, it might work to change directory to <code>/etc</code> and execute <code>ln -s /usr/local/lib/timidity</code>.
+</p>
+
+<p>
+If you do not have <code>timidity.cfg</code> anywhere, you probably want to download and install the freepats set of patches, because that will have a sample <code>timidity.cfg</code> file. If you do have <code>timidity.cfg</code>, take a look at its contents. The GUS <code>.pat</code> files and <code>.cfg</code> files should either be in the same directory as <code>timidity.cfg</code>, or else there should be a statement <code>dir &lt;directory&gt;</code> that tells where they are to be found.
+</p>
+	
+<p>
+There are other sets of GUS <code>.pat</code> files. The <code>eawpats</code> set is more complete than <code>freepats</code>, but it does not seem to be available any more. If you want to go to the trouble, you can construct sets of <code>.pat</code> files from <code>soundfonts</code> using an utility program named <code>unsf</code>, which is in the distribution of the midi player <b>gt</b>, available <a href="ftp://ling.lll.hawaii.edu/pub/greg/gt-0.3.tar.gz" target="_blank">here</a>.
+</p>
+
+	<p>At the bottom of <a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">this page</a>, one can download a freely redistributable set of GUS compatible patches : <a href="http://www.libsdl.org/projects/SDL_mixer/timidity/timidity.tar.gz" target="_blank">timidity.tar.gz</a> [14 Mb] 
+	</p>
+
+</dd>
+	
+
+
+	<dt>With SDL_mixer, sounds are played differently under Windows or Linux</dt>
+	
+	<dd>
+	
+	<p>If <code>buffer_size</code> in <a href="http://jcatki.no-ip.org/SDL_mixer/SDL_mixer.html#SEC9" target="_blank">Mix_OpenAudio</a><code>(44100, MIX_DEFAULT_FORMAT, 2, buffer_size)</code> is too high, try reducing it (ex : from 4 096, reduce it to 2 048 bytes). Latency should halve. Do not reduce it too much or you will have problems such as static and cracking with some soundcards, like SB Live for example. See our <a href="#buffer">buffering section</a>.
+	</p>
+	</dd>
+	
+	<dt>Poor sound quality with SDL_mixer, reverb and higher frequencies seem
+to be missing, everything sounds like played inside a tin can</dt>
+	<dd>
+	Maybe the sound data is mono, so it has to be duplicated to two channels, for stereo output.
+	</dd>
+	
+	
+	<dt>When using SDL_mixer on Linux, some unexpected latency experienced</dt>
+	
+	<dd>
+	
+	<p>
+	On Linux, when using for example <code>Mix_PlayChannel</code> to play a loaded chunk of sound, the main thread in some cases simply stalls for a short duration of time, after which it plays the sound seemingly okay.</p>
+
+	<p>The <code>arts</code> daemon (the KDE sound daemon) is sometimes causing the delay.  It appears that it buffers the sound and schedules it to share the sound device. What can be done is to kill the arts process so that the delay disappears.</p>
+	
+	</dd>
+	
+	
+	<dt>Sound quality & latency depending on the user running the program being root or not</dt>
+	
+	<dd>
+	
+	<p>
+	If the sound seems better as root, see our <a href="#daemons">sound daemons section</a>.
+	</p>
+	
+	<p>Otherwise, one might be getting more "real-time" permissions as root, but not as big a timeslice as a normal user.
+	</p>
+	
+</p>
+</dd>
+	
+	
+	<dt>This message always shows up : <code>mcop warning: user defined signal handler found for SIG_PIPE, overriding.</code></dt>
+	<dd>SDL may use arts on your machine. A solution is to switch to another audio driver, see <a href="#switchdaemons">this section</a></dd>
+
+
+	<dt>The code appears to work properly when the <code>esd</code> driver is in use, but switching to <code>alsa</code> or <code>pcm</code> drivers leaves the application running slowly and the pitch of the sound far too low</dt>
+	<dd>Is it an <code>AC97</code> chip ? There are problems with this chip family (distorded 
+sound in many SDL games). SDL can detect this in some circumstances and print a message, but it 
+does not work for me. There is a workaround for the <code>dsp</code> backend : <code>export SDL_DSP_NOSELECT=1</code></dd>
+
+
+	<dt>SDL_mixer does not seem to play a sound at the right speed</dt>
+	<dd>For example, it may play samples 20% faster than expected.The rate-conversion capabilities of SDL are limited.  Take a look at the sample rate of the file and the sample rate you are playing audio at. Probably it is not a whole multiple of the file rate.
+	</dd>
+
+
+	<dt>fmod seems to work badly</dt>
+	<dd>fmod seems to have a bad time with ALSA users, OpenAL can be used instead.</dd>
+
+	
+</dl>
+  
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+  
+<!-------------------------- Section ----------------------------------------------->  
+
+
+<a name="hardwareissues"></a>
+<h3>Hardware-dependent audio issues</h3>
+
+<h4>Sound on Windows</h4>
+
+<p>The MinGW version may be using WaveOut, where the Visual C++ version may be using DirectSound. SDL's WaveOut implementation enforces 250 ms buffering.
+</p>
+
+<p>At 44.1 kHz, with WaveOut, a 8 kb audio buffer is needed, which is about 185 ms. DirectSound does not need as much : 2 kb usually works fine. WaveOut should only ever be used as a compatibility, fallback interface. More precisely, when using <code>SDL_AUDIODRIVER=waveout</code>, there is an awful lag (about 0.25 to 0.5 second) because Microsoft says the audio buffer for waveout must 
+be above a certain minimum size, which happens to be huge. Smaller sizes will <em>usually</em> work anyway, but SDL keeps to the minimum to abide by the standard.
+</p>
+
+
+<p>On Windows, sound output will not work unless you have set the video mode : we need to associate DirectSound with a window handle. So you need to :
+<ol>
+	<li>initialize SDL with both <code>SDL_INIT_VIDEO</code> and <code>SDL_INIT_AUDIO</code> at the same time</li>
+	<li>call <code>SDL_SetVideoMode</code> before <code>SDL_OpenAudio</code>.
+</ol>
+</p>
+
+<p>To get anywhere near the "standard" Linux, BeOS and Mac OS latencies on Windows, you need to use ASIO, EASI or similar "bypass" audio API instead of DirectSound. KernelStreams might work, but only if you disable the internal software mixer.
+</p>
+
+<h4>Choosing which DSP should be used if more than one sound card is available</h4>
+
+<p>To use an alternate DSP : <code>export SDL_PATH_DSP=/dev/dspXXX</code> where dspXXX is the proper DSP device.  
+</p>
+
+<p>
+On Windows, right-clicking on the file and selecting properties Windows told me that this file had a sample rate of 32000.
+</p>
+
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+
+<!-------------------------- Section ----------------------------------------------->  
+
+
+
+<br><br>
+<a name="links"></a>
+<h2>Some audio links</h2>
+<p>
+<ul> 
+<!--
+	<li><a href="" target="_blank"></a></li>
+-->
+	<li><a href="http://www.libsdl.org/intro/usingsound.html" target="_blank">Basic SDL use</a></li>
+	<li><a href="http://icculus.org/SDL_sound/" target="_blank">SDL_sound</a> decodes several popular sound formats, such as MIDI, .wav and .mp3. With other libraries, it can manage OggVorbis and many other formats. SDL_sound can also handle sample rate, audio format, and channel conversion on-the-fly and behind-the-scenes</li>
+	<li><a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a> can handle samples, channels, groups of channels, music and special effects, etc. [<a href="http://jcatki.no-ip.org/SDL_mixer/SDL_mixer.html" target="_blank">documentation</a>]</li>
+   
+</ul>
+</p>
+
+
+<br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
+
+
+
+<!--- Cubbyhole (to integrate) 
+
+Use SDL mixer.
+
+Normal SDL audio can't mix sounds.  SDL_sound can't mix sounds either...
+The SDL audio API only provides a raw output buffer, which is good if
+your application already does all sorts of sound processing, but if
+that's not the case you'll want a higher level audio API like
+SDL_mixer or OpenAL.
+
+SDL_mixer provides loading, mixing and playback of sound samples. It
+also provides MIDI playback (either through native interfaces or using
+a built-in timidity engine). It uses the SDL audio API for its output
+buffer.
+
+SDL_sound is an audio format decoding library, providing more formats
+than SDL_mixer. The two can be used together.
+
+Also, keep in mind that there's also OpenAL, which provides similar
+features than SDL_mixer but with full 3D capabilities, and doesn't
+depend on SDL (though you'll probably want to use SDL for other tasks
+such as video and input). I'd recommend using that for your project
+(unless the raw output buffer provided by SDL is sufficient).
+
+
+You should actually use the three of them:
+- SDL provides the basic functionality
+- SDL_Sound provides you with decoders for many sound formats (OGG, MP3, 
+WAV, etc.)
+- SDL_Mixer provides you with the capability of playing a background 
+music + several SFX and manages all the mixing stuff.
+
+End of Cubbyhole --->  
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points
+  insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20:%20audio">drop
+  us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : Sunday, April 23, 2006</em>
+  </center>
+</body>
+</html>

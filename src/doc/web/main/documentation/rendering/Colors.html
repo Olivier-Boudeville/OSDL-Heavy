@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    Ce document fait partie du projet OSDL.
+
+           Pour toute remarque, envoyer un courriel à olivier.boudeville@online.fr
+-->
+<!--    
+        Date de création : 17 Décembre 2003.
+        Auteur : Olivier Boudeville (olivier.boudeville@online.fr)
+        Version : 0.1
+-->
+
+<html lang="FR">
+<head>
+  <title>OSDL - Les couleurs</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL">
+  <link rel="stylesheet" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>Courts-circuits</em> <a href="../../../common/black.html"
+    onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">Page
+    principale</a> <a href="../../Map.html">Plan du site</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Couleurs">
+    écrivez-nous</a></p>
+  </div><a name="_top_"></a> 
+
+  <h1>Quelques informations sur les couleurs</h1>
+
+<h2>Principe</h2>
+  <p>Notre perception visuelle nous fait interpréter les couleurs dans un espace tridimensionnel, qui peut être appréhendé selon différents référentiels, c'est-à-dire différents systèmes de triplets de coordonnées : une couleur peut ainsi être décrite selon de nombreuses conventions, deux d'entre elles, RGB et YUV, étant particulièrement répandues, d'autres restant moins connues (HSV, HDR). 
+  </p>
+  
+  <p>Une quatrième coordonnée utilisée pour les pixels (<em>Picture Element</em>) est la coordonnée alpha, qui quantifie son degré de transparence, et qui définit ainsi le quadruplet RGBA [<a href="Alphablending.html">Plus d'infos</a>].	
+ </p>
+
+  <h3>RGB</h3>
+  
+<p>  
+   L'une des conventions les plus connues est celle des coordonnées <b>RGB</b> pour <em>Red-Green-Blue</em> (ou RVB, Rouge-Vert-Bleu). Dans un tel système, le noir correspond à l'origine du repère (<code>[0;0;0]</code>), le blanc aux coordonnées maximales pour chacune des composantes (<code>[Cmax;Cmax; Cmax]</code>), et une couleur à dominante bleue aurait sa troisième coordonnée (le B de bleu) plus forte que les deux autres.
+</p>
+
+<p>
+Les coordonnées peuvent être encodées sur un nombre quelconque de bits, selon la précision escomptée. On nommerait ainsi R5G6B5 un encodage d'un pixel sur 16 bits qui décrirait la composante rouge sur 5 bits (R5), la verte sur 6 (G6) et la bleu sur 5 (B5).
+</p>
+
+<p>
+Le système RGB a la réputation de ne pas refléter fidèlement notre capacité à discriminer les couleurs, mais le matériel s'y est bien adapté.
+</p>
+   
+   <h3>YUV</h3>
+
+<p>
+D'autres systèmes que le RGB existent, comme le triplet teinte-saturation-brillance (<em>Hue-Saturation-Brightness</em>). Dans un tel système, la <b>teinte</b> correspond à la signification traditionnelle de la couleur (comme rouge, orange, violet, etc.), c'est-à-dire à une certaine longueur d'onde. La <b>saturation</b> détermine la quantité de lumière monochromatique (pure) de cette teinte à ajouter à de la lumière blanche pour obtenir la couleur perçue. Enfin, la <b>brillance</b> est conditionnée par l'intensité globale de lumière à choisir pour restituer la couleur en question (la quantité d'illumination).
+</p>
+
+<p>L'encodage YUV serait mieux adapté à nos perceptions visuelles, car l'oeil humain est plus sensible à des changements de brillance que de teinte, si bien qu'il est valable de coder plus finement (i.e. avec plus de bits) la première caractéristique que la seconde, là où le RGB ne permettait pas de séparer ces informations.
+</p>
+
+
+   <h3>Autres encodages</h3>
+
+
+<p>
+HDR (pour <em>High Dynamic Range</em>) manipule les composantes de couleur sous forme de nombres flottants, et non plus de petits entiers. Combiner ainsi les couleurs permet de pallier la saturation découlant de coordonnées RGB normalisées devant rester dans un ensemble de valeurs restreint. Ainsi il est possible d'obtenir de meilleurs résultats en terme d'éclairage de scènes (pour les lueurs et la diffusion) [<a href="http://gamedev.net/reference/articles/article2108.asp" target="_blank">Plus d'infos</a>].
+</p>
+
+ 
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h2>N&#39;hésitez pas à nous faire part de votre avis !</h2>
+
+  <p>Si vous disposez d&#39;informations plus détaillées ou plus
+  récentes que celles présentées dans ce document, si vous avez
+  remarqué des erreurs, oublis, ou points insuffisamment traités,
+  <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Couleurs">
+  envoyez-nous un courriel</a> !</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Retour en haut de page</a>]
+	<br>
+    <br>
+    <em>Dernière mise à jour : 14 Janvier 2004</em>
+  </center>
+</body>
+</html>

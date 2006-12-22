@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "HTML 4.01 Transitional"
+"http://www.w3.org/TR/html4/frameset.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003, July 25.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : http://www.w3.org/Style/Examples/007/maps.html
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Changes for version 0.2</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL Project">
+  <meta name="keywords" content="OSDL, changes, CHANGES">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="stylesheet" type="text/css" href=
+  "../../../../common/css/OSDL.css" media="screen, print, projection, tv">
+  <style type="text/css">
+  div.c2 {text-align: center}
+  div.c1 {padding: 8px}
+  </style>
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;MainMenu.html&#39;">home page</a>
+    <a href="../../../Map.html">site map</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Changes">mail
+    us</a></p>
+  </div><a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+
+  <h1>Changes made to the project OSDL source code for version 0.2</h1><br>
+  <br>
+  <!-- Template :
+
+                                                              <dt></dt>
+                                                              <dd></dd>
+
+                                                                  -->
+
+  <p>You may also look at OSDL&#39;s <a href=
+  "https://sourceforge.net/cvs/?group_id=71354" target=
+  "_blank">official web-based CVS server</a> to retrieve the latest
+  unstable available version with all changes up to date.</p>
+
+ 
+  <dl>
+    <dt>2003, July 25</dt>
+
+    <dd>Main code information files (such as this file and to do list)
+    added</dd>
+
+    <dt>2003, April 23</dt>
+
+    <dd>
+      <ul>
+        <li>new Log system from Ceylan integrated</li>
+
+        <li>get rid at last of ugly other macros such as THROW (for
+        conditional exception throw)</li>
+      </ul>
+    </dd>
+
+    <dt>2003, April 12</dt>
+
+    <dd>
+      <ul>
+        <li>name collision between namespace Video and class Video
+        occured when adding Pixel. As both are useful (namespaces can
+        be reopened multiple times, classes support data members and
+        methods), a new convention is chosen : classes are suffixed by
+        Module (class Video becomes VideoModule), namespaces remain
+        unchanged (namespace Video)</li>
+
+        <li>to avoid Pixel::Pixel (namespace::type), this namespace is,
+        from now on, Pixels</li>
+      </ul>
+    </dd>
+
+    <dt>2003, April 6</dt>
+
+    <dd>
+      <ul>
+        <li>added events module</li>
+
+        <li>improved test facilities, please use from now on
+        tests/playTests.sh : this script will make sure you are testing
+        the right (latest) OSDL library, with the right (latest) tests,
+        and then will execute those tests one by one, in a row</li>
+      </ul>
+    </dd>
+  </dl><br>
+  <br>
+  <br>
+  <a name="VERSION_0_1"></a> 
+
+  <div class="c2">
+    <table summary="">
+      <tr>
+        <td>
+          <div class="box c1">
+            <h2>OSDL version 0.1</h2>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div><br>
+  <br>
+
+  <dl>
+    <dt>Status</dt>
+
+    <dd>No changes are relevant because they were not specifically
+    tracked at this time !</dd>
+  </dl>
+
+  <div class="c2">
+    <a href="#_top_">Back to top</a>
+  </div><br>
+  <br>
+  <br>
+  <hr>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those
+  presented in this document, if you noticed errors, neglects or points
+  insufficiently discussed, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Changes">drop
+  us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <div class="c2">
+    <a href="#_top_">Top</a><br>
+    <br>
+    <em>Last update : 2003, December 22</em>
+  </div>
+</body>
+</html>

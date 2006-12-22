@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003, October 24.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Languages</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href="../../../../common/css/OSDL.css">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../common/black.html" onclick="parent.toolbar.location='../MainMenu.html'">home page</a>
+    <a href="../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Languages">mail us</a></p>
+  </div><a name="_top_"></a>
+
+  <h1>OSDL's languages section</h1>
+
+  <h2>Overview</h2>
+
+  <p>This document focuses on the langages we are using to develop OSDL's libraries and games. We try to explain our choices and give some pointers for newcomers to learn these languages.</p>
+
+
+  <h2>What we use</h2>
+
+  <p>For the moment, three main languages are used, and at least one more is still to come :</p>
+
+  <ul>
+    <li>OSDL's main language is C++ (see <a href="#WHYCPP">why
+    C++</a>)</li>
+
+    <li>we make some use too of Bash scripts (see <a href="#WHYBASH">why Bash</a>). We are currently working at a translation effort towards plain sh scripts (the ancestor of most scripts), since some developer platforms, such as NetBSD, do not come with a bash interpreter</li>
+	
+	<li>as for server side development, we use <a href="http://www.erlang.org" target="_blank">Erlang</a>, an awesome and powerful language based on concurrency</li>
+
+	
+  </ul>
+
+  <p>We will need at mid-term a powerful scripting tool (see <a href="#SCRIPTS">why a scripting language</a>) whose language has not be chosen yet. <a href="#SCRIPTSMATCH">This subsection</a> shows the study in progress so that we take the best-fitted interpreter.</p>
+
+
+
+  <h2>C++'s corner</h2><a name="WHYCPP"></a> 
+
+  <h3>Why do we use C++ ?</h3>
+
+  <p>C++ has several advantages over other languages :</p>
+
+  <ul>
+    <li>C++ is an <strong>object-oriented language</strong> : by using it, one is allowed to easily model its problem and the actors involved, thus resulting in a better solving approach, a sane    conception of his framework, and a less error-prone architecture.</li>
+
+    <li>C++ is <strong>fast and efficient</strong> : when necessary, it can be as low level as C, thus granting best performance, whereas the overhead of true object-oriented design is tiny. This very feature is crucial for game programming.</li>
+
+    <li>C++ is <strong>portable</strong>, you can therefore use it with many platforms and operating systems, such as Mac OS, Linux, Windows, FreeBSD, NetBSD, Solaris, HP-UX and so on</li>
+
+    <li>C++ is an <strong>ISO standard</strong>, allowing to use whatever C++-compliant compiler we have, with no fear about dependency upon this tools's future since we can swap it with another compiler</li>
+
+    <li>C++ has <strong>free open source compilers</strong> such as <a href="http://gcc.gnu.org" target="_blank">gcc</a>.</li>
+
+    <li>C++ is <strong>widely used</strong>, one has access to a wide community, several very useful libraries, numerous tutorials, and learning it might be useful to find a job.</li>
+  </ul><br>
+  <br>
+
+
+  <h3>Why not ... ?</h3>
+
+  <ul>
+    <li><strong>C</strong> : object-oriented programming in C is theoritically possible but very painful</li>
+
+    <li><strong>Java</strong> : high-level language, yes , but its compiled and interpreted nature due to its virtual machine makes it reach too poor performances for real-time intensive games (problems of efficiency with 2D/3D rendering, with network because of its high latency, of freeze due to garbage collecting, and so on).</li>
+
+    <li><strong>Assembler</strong> : most painful and dull way of programming, lowest reachable level, absolutely non portable, yet fast.</li>
+
+    <li><strong>C#</strong> : it is a Microsoft proprietary solution. Two reasons for not using C#.</li>
+
+    <li><strong>all interpreted languages</strong> : always beaten in pure efficiency by compiled languages</li>
+  </ul><br>
+  <br>
+
+  <h3>Some C++ pointers</h3><!-- template : 
+
+                                                <li><a href="" target="_blank"></a></li>
+                                                
+                                        -->
+
+  <h4>Tutorials (in french)</h4>
+
+  <ul>
+    <li><a href=
+    "http://www.esil.univ-mrs.fr/~chaouiya/C++/coursCourcelle/"
+       target="_blank">Introduction au C++ et à la programmation
+       objet</a></li>
+
+    <li><a href="http://www.esiee.fr/~coupriem/C+/main.html" target=
+    "_blank">Initiation à la programmation structurée avec le langage
+    C++</a></li>
+  </ul><br>
+  <br>
+
+  <h4>Resources</h4>
+
+  <ul>
+    <li><a href="http://www.cplusplus.com/ref/" target="_blank">C++
+    Standard library API</a> : a precious link indeed, C library and
+    iostreams detailed</li>
+
+    <li><a href="http://www.devx.com/cplus" target="_blank">DevX</a> :
+    a portal for C++ developers</li>
+
+    <li><a href=
+    "http://www.cmla.ens-cachan.fr/Utilisateurs/dosreis/C++/FAQ/"
+    target="_blank">La Foire Aux Questions de fr.comp.lang.c++</a></li>
+
+    <li><a href="http://www.buginthemachine.com/progcpp.php" target=
+    "_blank">Bug In The Machine</a> : some C++ tips by a french game
+    developer</li>
+
+    <li><a href=
+    "http://www.cprogrammingtrends.com/cprogrammingtrends-43-20030728CBeyondTheStandardLibrary.html"
+       target="_blank">Beyond Standard Library</a> : after masterizing
+       the language</li>
+  </ul><br>
+  <br>
+
+  <h4>Tools</h4>
+
+  <ul>
+    <li><a href="http://gcc.gnu.org" target="_blank">gcc</a> : the
+    leading open-source C++ compiler</li>
+
+    <li><a href="http://www.intel.com/software/products/compilers/clin/"
+    target="_blank">Intel's C++ compiler 7.1</a> : another good C++
+    compiler</li>
+
+    <li><a href="http://www.stack.nl/~dimitri/doxygen/" target=
+    "_blank">doxygen</a> : a really useful source documentation
+    generator</li>
+
+    <li><a href="http://astyle.sourceforge.net/" target=
+    "_blank">Astyle</a> stands for Artistic Style, it is a free
+    automatic indentation filter for C, C++, Java Source Codes</li>
+
+    <li><a href="http://log4cpp.sourceforge.net/" target="_blank">Log
+    for C++</a> : a convenient log system</li>
+  </ul><br>
+  <br>
+  <a name="SCRIPTS"></a> 
+
+  <h2>Scripting corner</h2>
+
+  <h3>Why do we use scripting languages ?</h3>
+
+  <p>Scripted languages are interpreted and not compiled : the
+  translation of source code into processor instructions is delayed
+  till the code is executed. It has an impact on the properties
+  fulfilled by the compiler, which is called in this case interpreter,
+  and these properties elect scripting languages for some specific
+  uses, and disqualify them for others.</p>
+
+  <p>In our case, game programming, an issue is that the developing
+  process requires huge ammounts of time and very specialized know-how.
+  It prevents many people from contributing to the code, and it leads
+  to tremendous delays. What we would like is to open some specific
+  areas of development to a non too technical population. This area is
+  behaviour and events implementation, and AI (Artificial
+  Intelligence), and these tools are scripting languages.</p>
+
+  <p>Learning these languages is easier and faster than doing so for
+  compiled ones, not to mention C++, it is therefore a convenient way
+  of sharing the workload and letting wide open the development to more
+  people. However, one has to make sure that the main language (C++)
+  gets well interfaced with the scripting one. The main solution for
+  that is to <strong>embed</strong> the underlying interpreter into the
+  C++ application, so that data structures can be shared by both
+  worlds. In this case, the two languages can efficiently cooperate and
+  work on the same data, and a computation can be made by either of the
+  two, depending on what is more convenient for the developers.</p>
+
+  <p>In all cases, embedding an interpreter requires a kind of
+  <strong>bidirectional</strong> translation of the objects that are to
+  be shared, so that they remain usable by both. It is the dullest
+  task, since painful measures are to be taken. For example, when the
+  memory management is different (C++ relies on the developers to
+  ensure that object life cycle is correctly handled, while
+  interpreters like Python use reference-counting mechanisms, namely a
+  garbage collector, so that the user has no concern about deallocation
+  of objects), some rather low-level tricks must be used not to falsify
+  the reference management. Hopefully, some helpers are available to
+  ease translations of an object from a world to another. Thanks to
+  them, the balance still tilts on the side of this embedded use.</p>
+
+  <p>Except this use, scripting tools have a second role to play in our
+  project : allowing fast, flexible and simple development, as stated
+  in the following subsection about Bash.</p>
+
+  <h3>Bash</h3>
+
+  <p>Bash is a <strong>shell</strong>, a kind of lightweight
+  interpreter which is oftenly used on UNIX platforms to directly type
+  the user's commands and, what interests us much, to write small
+  scripts. Shells are widely spread on most platforms, they are
+  therefore tools we can rely on to be already available almost
+  everywhere. To that extent, they are useful for installation
+  procedures, for instance. Bash is a shell, and perhaps the most
+  frequently available one, since it has been chosen by numerous
+  operating systems to be the one available by
+        default.</p><a name="WHYBASH"></a> 
+
+  <h4>Why do we use Bash ?</h4><a name="WHYNOTBASH"></a> 
+
+  <h4>Why don't we use Bash for all our scripting ?</h4>
+
+  <p>Bash is far too elementary a language to develop a true
+  application. Besides, it cannot be embedded within a C++ application.
+  Bash is useful for small installation or configuration scripts, and
+  it is what we will do with it.</p>
+
+  <h4>Some Bash pointers</h4>
+
+  <ul>
+    <li><a href="http://www.tldp.org/LDP/abs/html/" target=
+    "_blank">Advanced Bash Scripting</a></li>
+  </ul><a name="SCRIPTSMATCH"></a> 
+
+  <h3>Embedded interpreters</h3><br>
+
+  <p>We currently think at two famous object-oriented scripting
+  languages to be embedded in our C++ application :</p>
+
+  <ul>
+    <li><a href="http://python.org/" target="_blank">Python</a></li>
+
+    <li><a href="http://www.lua.org/" target="_blank">LUA</a></li>
+  </ul>
+
+  <h4>Python</h4>
+
+  <p>Python is an interpreted, interactive, object-oriented programming
+  language, and its implementation is highly portable (check their own
+  <a href="http://python.org/doc/Summary.html" target="_blank">Pyton
+  overview</a>).</p>
+
+  <h5>Pros</h5>
+
+  <ul>
+    <li>A reliable project : a <a href="http://www.python.org/community"
+    target="_blank">huge community</a>, plenty of <a href=
+    "http://www.python.org/doc" target="_blank">documentation</a>,
+    tutorials, etc.</li>
+
+    <li>Highly portable on almost every platform</li>
+
+    <li>Object-oriented with classes and multiple inheritance</li>
+
+    <li>Automatic garbage collection</li>
+
+    <li>Plenty of modules available (see <a href=
+    "http://www.python.org/doc/current/modindex.html" target="_blank">the
+    index of modules</a>)</li>
+
+    <li>Its license should stop nobody (see <a href=
+    "http://python.org/psf/license.html" target="_blank">the Python
+    License explained</a>)</li>
+
+    <li>embedding Python and C++ is greatly eased by <a href=
+    "http://www.boost.org/libs/python/doc/index.html" target=
+    "_blank">BOOST</a></li>
+
+    <li>Widely spread in professional world : numerous companies use
+    Python in numerous fields</li>
+
+    <li>We already have a little knowledge of Python in the OSDL's
+    club</li>
+  </ul>
+
+  <h5>Cons</h5>
+
+  <ul>
+    <li>Not dedicated to games : general purpose language</li>
+
+    <li>Exchanging data structures between a C++ application and the
+    Python interpreter is not simple</li>
+  </ul>
+
+  <h5>Python resources</h5>
+
+  <ul>
+    <li><a href="http://python.org/topics/learn/" target=
+    "_blank">Beginner's Guide to Python</a></li>
+
+    <li><a href="http://python.org/doc/current/ext/ext.html" target=
+    "_blank">Extending and Embedding the Python Interpreter</a> :
+    <a href="http://python.org/doc/current/ext/embedding.html"
+       target="_blank">Embedding Python in Another Application</a> /
+       <a href=
+       "http://python.org/doc/current/ext/embeddingInCplusplus.html"
+       target="_blank">Embedding Python in C++</a> : it is what we
+       intend to do</li>
+
+    <li><a href="http://python.org/doc/current/api/api.html" target=
+    "_blank">Python/C API Reference Manual</a></li>
+
+    <li><a href="http://python.org/doc/faq/extending.html" target=
+    "_blank">Extending/Embedding FAQ</a></li>
+
+    <li><a href="http://www.boost.org/libs/python/doc/index.html"
+    target="_blank">The Boost.Python project</a> which releases a
+    library which enables seamless interoperability between C++ and the
+    Python (see their <a href=
+    "http://www.boost.org/libs/python/doc/tutorial/doc/quickstart.html"
+    target="_blank">quickstart</a>, and their <a href=
+    "http://www.boost.org/libs/python/doc/tutorial/doc/embedding.html">embedding's
+    section</a>)</li>
+  </ul>
+
+  <h4>LUA</h4>
+
+  <h5>Pros</h5>
+
+  <h5>Cons</h5>
+
+  <h4>A choice still to be made</h4>
+
+  <p>We have not yet decided whether we will use Python or LUA. To
+  choose seriously, we should study them a little bit more in depth,
+  and we should even try them on samples cases, to try to figure out
+  which of the two corresponds the best with our goals.</p><br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Languages">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>	
+    <br>
+    <em>Last update : 2005, December 17</em>
+  </center>
+
+</body>
+</html>

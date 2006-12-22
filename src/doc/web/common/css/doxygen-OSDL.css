@@ -1,0 +1,85 @@
+H1 { text-align: center; }
+
+CAPTION { font-weight: bold }
+
+div.box { border: solid; border-width: thin; color: #A0A0A0; width: 100% }
+
+A.qindex {}
+A.qindexRef {}
+A.el { text-decoration: none; font-weight: bold }
+A.elRef { font-weight: bold }
+A.code { text-decoration: none; font-weight: normal; color: #FF0000 }
+A.codeRef { font-weight: normal; color: #FF0000 }
+
+
+a:link {
+  color:#FFFFFF; 
+  font-size: 105%;
+  background: transparent;
+  text-decoration: none
+}
+
+a:visited {
+  color: #9D9D9D;  
+  font-size: 105%;
+  background: transparent;
+  text-decoration: none
+}
+
+a:active {
+  color: #FFFFFF;
+  font-size: 105%;
+  background: transparent;
+  text-decoration: none
+}
+
+a:hover {   
+  font-size: 105%;
+  text-decoration:underline;
+  color:#FFFFFF
+}
+
+
+
+DL.el { margin-left: -1cm }
+DIV.fragment { width: 100%; border: none; background-color: #000000 }
+DIV.ah { background-color: black; font-weight: bold; color: #303030; margin-bottom: 3px; margin-top: 3px }
+
+TD.md { background-color: #5E5E5E; font-weight: bold; }
+TD.mdname1 { background-color: #727272; font-weight: bold; color: #BABABA; }
+TD.mdname { background-color: #5E5E5E; font-weight: bold; color: #BABABA; width: 600px; }
+
+DIV.groupHeader { margin-left: 16px; margin-top: 12px; margin-bottom: 6px; font-weight: bold }
+DIV.groupText { margin-left: 16px; font-style: italic; font-size: smaller }
+BODY { background:  #000000; color: #ffffff }
+TD.indexkey { 
+   background-color: #303030; 
+   font-weight: bold; 
+   padding-right  : 10px; 
+   padding-top    : 2px; 
+   padding-left   : 10px; 
+   padding-bottom : 2px; 
+   margin-left    : 0px; 
+   margin-right   : 0px; 
+   margin-top     : 2px; 
+   margin-bottom  : 2px  
+}
+TD.indexvalue { 
+   background-color: #5E5E5E; 
+   font-style: italic; 
+   padding-right  : 10px; 
+   padding-top    : 2px; 
+   padding-left   : 10px; 
+   padding-bottom : 2px; 
+   margin-left    : 0px; 
+   margin-right   : 0px; 
+   margin-top     : 2px; 
+   margin-bottom  : 2px  
+}
+span.keyword       { color: #CCCCCC }
+span.keywordtype   { color: #CCCCCC }
+span.keywordflow   { color: #CCCCCC }
+span.comment       { color: #AAAAAA }
+span.preprocessor  { color: #9E9E9E }
+span.stringliteral { color: #5E5E5E }
+span.charliteral   { color: #5E5E5E }

@@ -1,0 +1,3 @@
+I have a patch that adds an SDL backend that does scaling through OpenGL. You could look at the code to see how it works : http://icps.u-strasbg.fr/~marchesin/sdl/sdl_glscale.patch
+Note that scaling up the pictures is ok with respect to quality (it uses bilinear interpolation), however scaling down can be a problem since (like software methods) it only takes out some of the pixels which can lead to some aliasing problems.
+

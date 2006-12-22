@@ -1,0 +1,534 @@
+#include "OSDL.h"
+using namespace OSDL ;
+using namespace OSDL::Events ;
+
+#include "Ceylan.h"
+using namespace Ceylan::Log ;
+
+
+#include <iostream>  // for cout
+using std::cout ;
+using std::endl ;
+
+#include <string>
+using std::string ;
+
+#include <list>
+using std::list ;
+
+
+/**
+ * Tests the whole event-driven MVC framework :
+ *   - a specific controller is registered, so that it manages both the keyboard arrows and 
+ * the first joystick
+ *  - whenever an event occurs with the keyboard arrows or the first joystick, this controller
+ * activates the model which registers the corresponding requested direction and changes its 
+ * own state
+ *  - then the model call its views so that they can know its new state (i.e. its direction) and
+ * produce their rendering accordingly (print one of the '>', '^', '<' and 'v' symbols).
+ *
+ * @note This test is said to be event-driven since it does not involve a scheduler : it is only
+ * when an input event occurs that the whole MVC chain gets activated (controllers, then models,
+ * then views).
+ *
+ * @see testScheduledOSDLAndMVC.cc
+ *
+ */
+
+
+typedef unsigned short Direction ;
+
+
+class MyMVCEvent : public Ceylan::MVCEvent
+{
+
+	public:
+
+
+		MyMVCEvent( Ceylan::EventSource & source ) throw() : 
+			 MVCEvent( source ),
+			 _direction( 1  )
+		{
+		
+		}
+		
+		
+		void setDirection( Direction newDirection ) throw()
+		{
+			_direction = newDirection ;
+		}
+		
+		
+		Direction getDirection() const throw() 
+		{
+			return _direction ;
+		}
+			
+		
+	protected:
+	
+		Direction _direction ;
+					 
+} ;
+
+
+
+
+class MyController : public OSDL::MVC::Controller
+{
+
+	public:
+	
+	
+		MyController() throw() :
+			_eventForModel( * this )
+		{	
+		
+		}
+		
+		
+		Direction getDirection() const throw() 
+		{
+			return _direction ;
+		}	
+		
+		
+		void rawKeyPressed( const KeyboardEvent & keyboardPressedEvent ) throw()
+		{
+			
+			
+			switch( keyboardPressedEvent.keysym.sym )
+			{
+			
+				case KeyboardHandler::UpArrowKey:
+					_direction = 1 ;	
+					break ;
+					
+				case KeyboardHandler::DownArrowKey:
+					_direction = 2 ;	
+					break ;
+					
+				case KeyboardHandler::LeftArrowKey:
+					_direction = 3 ;	
+					break ;
+					
+				case KeyboardHandler::RightArrowKey:
+					_direction = 4 ;	
+					break ;
+					
+				case KeyboardHandler::EnterKey:
+				case KeyboardHandler::EnterKeypadKey:
+					_direction = 5 ;
+					break ;
+				
+				default:
+					// Do nothing.
+					break ;	
+			}	
+			
+			
+			// We are event-driven here :
+			propagateState() ;	
+						
+		}
+		
+		
+		/**
+		 * Propagates the state of this controller to the registered models.
+		 *
+		 * Necessary in an event-driven context.
+		 *
+		 */
+		void propagateState()
+		{
+			_eventForModel.setDirection( _direction ) ;
+			notifyAllListeners( _eventForModel ) ;
+		}
+		
+
+		void joystickFirstButtonPressed() throw()	
+		{
+			_direction = 5 ;
+			propagateState() ;		
+		}
+
+		void joystickUp( AxisPosition leftExtent ) throw()
+		{
+			_direction = 1 ;
+			propagateState() ;
+		}
+	
+		
+		void joystickDown( AxisPosition leftExtent ) throw()
+		{
+			_direction = 2;
+			propagateState() ;
+		}
+		
+		
+		void joystickLeft( AxisPosition leftExtent ) throw()
+		{
+			_direction = 3 ;
+			propagateState() ;
+		}
+		
+		
+		void joystickRight( AxisPosition leftExtent ) throw()
+		{
+			_direction = 4 ;
+			propagateState() ;
+		}
+		
+		
+		const Ceylan::Event & getEventFor( const Ceylan::CallerEventListener & listener )	
+			throw( Ceylan::EventException )
+		{
+			return _eventForModel ;
+		}
+		
+		
+		/// Not used here.
+		const string toString( Ceylan::VerbosityLevels level = Ceylan::high ) const throw()	
+		{
+		
+			switch( _direction )
+			{
+			
+				case 1:
+					return "^" ;
+					
+				case 2 : 
+					return "v" ;
+					
+				case 3 :
+					return "<" ;
+					
+				case 4 :
+					return ">" ;
+					
+				case 5 :
+					return "quit ! (seen by controller)" ;
+			}
+			
+			return "(unexpected direction selected) : " + Ceylan::toString( _direction ) ;
+						
+		}
+		
+		
+		
+	private:
+	
+	
+		/// 1 : up, 2 : down, 3 : left, 4 : right, 5 : quit.
+		Direction _direction ;
+		
+		MyMVCEvent _eventForModel ;
+					
+} ;
+
+
+
+
+class MyModel : public OSDL::MVC::Model
+{
+
+
+	public:
+	
+	
+		MyModel() :
+			Model( /* autoRegister */ false ),
+			_actualDirection( 1 ),
+			_eventForView( * this )			
+		{
+			// No registering since no scheduler is used.
+		}
+		
+		
+		virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
+		{
+		
+			const MyMVCEvent * event = dynamic_cast<const MyMVCEvent *>( & newEvent ) ;
+			
+			if ( event != 0 )
+			{
+				_actualDirection = event->getDirection() ;
+			}
+			
+			// We are event-driven here :
+			_eventForView.setDirection( _actualDirection ) ;			
+			notifyAllViews( _eventForView ) ;
+			
+		}
+	
+	
+		virtual const Ceylan::Event & getEventFor( const Ceylan::CallerEventListener & listener )	
+			throw( Ceylan::EventException )
+		{
+			return _eventForView ;
+		}
+	
+	
+	 	virtual void onActivation( Events::SimulationTick newTick ) throw()
+		{
+			// Will not be called without a scheduler.
+		}
+
+	
+	private:
+	
+		Direction _actualDirection ;
+		
+		MyMVCEvent _eventForView ;
+			
+		
+} ;
+
+
+
+class MyView : public Ceylan::View
+{
+
+
+	public:
+	
+	
+		MyView( Ceylan::Model & model, EventsModule & events ) throw() :
+			View( model ),
+			_events( & events )
+		{
+		
+		}
+		
+		
+		/**
+		 * Example of what could be written to manage a view being scheduled (rendering tick).
+		 *
+		 * This code is not used here, but shows how views may act.
+		 *
+		 */
+		virtual void triggerRendering() throw()
+		{
+		
+			// First retrieves from the model the necessary informations :
+			Ceylan::Model * myModel ;
+			
+			// Actually only one source : 
+			for ( std::list<Ceylan::EventSource *>::iterator it = _sources.begin() ;
+				it != _sources.end(); it++ )
+			{
+			
+				myModel = dynamic_cast<Ceylan::Model *>( *it ) ;
+				const MyMVCEvent * myModelEvent = dynamic_cast<const MyMVCEvent *>( 
+					& myModel->getEventFor( * this ) ) ;
+				
+				// Directions could be blended :	
+				_actualDirection = myModelEvent->getDirection() ;
+				
+			}
+			
+			// Then render !
+			renderModel() ;
+			
+		}
+		
+		
+		virtual void renderModel() throw()
+		{
+							
+			switch( _actualDirection )
+			{
+			
+				case 1:
+					cout << "^" << endl ;
+					break ;
+					
+				case 2 : 
+					cout << "v" << endl ;
+					break ;
+					
+				case 3 :
+					cout << "<" << endl ;
+					break ;
+					
+				case 4 :
+					cout << ">" << endl ;
+					break ;
+					
+				case 5 :
+					cout << "quit ! (seen by the view, actual end of event loop)" << endl ;
+					_events->requestQuit() ;	
+					break ;
+
+				default:
+					cout << "(unexpected direction selected) : " 
+						<< _actualDirection << endl ;	
+					break ;
+			}
+						
+		}
+	
+	
+		virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
+		{
+		
+			const MyMVCEvent * event = dynamic_cast<const MyMVCEvent *>( & newEvent ) ;
+			
+			if ( event != 0 )
+			{
+				_actualDirection = event->getDirection() ;
+			}
+			
+			// Then render !
+			renderModel() ;
+			
+		}
+
+
+	private:
+	
+		Direction _actualDirection ;
+		EventsModule * _events ;
+		
+} ;
+		
+
+
+/**
+ * Testing OSDL MVC integration with input layer, when it is event-driven (no scheduler is used).
+ *
+ * This test creates MVC instances as automatic variables, to test the framework robustness : it
+ * is a typical example of a misuse that should have led to a crash, since the deallocation order
+ * of aController, aModel and aModel is not mastered.
+ *
+ * Nevertheless counter-measures are applied and traced through the log system, so that the user
+ * is notified that the life cycle of his objects is wrong.
+ *
+ * The right solution would have been to use block to control the variable scopes, or to create
+ * instances thanks to new/delete pairs.
+ *
+ * The 'quit' request will be processed only by a view, after having following the full MVC route.
+ * 
+ */
+int main( int argc, char * argv[] ) 
+{
+
+	LogHolder myLog( argc, argv ) ;
+	
+	
+    try 
+	{
+			
+		LogPlug::info( "Testing OSDL event-driven MVC integration." ) ;
+
+		LogPlug::info( "Starting OSDL with joystick support." ) ;		
+        OSDL::CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseJoystick ) ;		
+		
+		LogPlug::info( "Testing basic event handling." ) ;
+		
+		LogPlug::info( "Getting events module." ) ;
+		EventsModule & myEvents = myOSDL.getEventsModule() ; 
+		
+		LogPlug::info( "Events module : " + myEvents.toString() ) ;
+		
+		KeyboardHandler & myKeyboardHandler = myEvents.getKeyboardHandler() ;		
+		myKeyboardHandler.setSmarterDefaultKeyHandlers() ;
+
+		JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
+
+		unsigned int joyCount = myJoystickHandler.GetAvailableJoystickCount()  ;
+		LogPlug::info( "There are " + Ceylan::toString( joyCount )
+			+ " attached joystick(s), opening them all." ) ;
+			
+		for ( unsigned int i = 0 ; i < joyCount; i++ )
+			myJoystickHandler.openJoystick( i ) ;
+		
+		LogPlug::info( "New joystick handler state is : " 
+			+ myJoystickHandler.toString( Ceylan::high ) ) ;
+		
+		LogPlug::info( "Displaying a dummy window to have access to an event queue." ) ;
+			
+		LogPlug::info( "Getting video." ) ;
+		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
+		
+		// A SDL window is needed to have the SDL event system working :
+		myVideo.setMode( 640, 480, /* current depth */ 0, 
+			OSDL::Video::VideoModule::SoftwareSurface ) ;
+		
+		
+		/*
+		 * Create and link MVC instances : (new and pointers should be used to control deallocation
+		 * order). This test relies on OSDL's MVC ability to overcome faulty life cycle, see the
+		 * Error log channel to understand why (therefore it is also a test for robustness to
+		 * misuse.
+		 *
+		 */
+		 
+		MyModel aModel ;
+		MyView aView( aModel, myEvents ) ;
+		
+		MyController aController ;
+		aModel.subscribeToController( aController ) ;
+		
+		
+		myKeyboardHandler.linkToController( KeyboardHandler::UpArrowKey,     aController ) ;
+		myKeyboardHandler.linkToController( KeyboardHandler::DownArrowKey,   aController ) ;
+		myKeyboardHandler.linkToController( KeyboardHandler::LeftArrowKey,   aController ) ;
+		myKeyboardHandler.linkToController( KeyboardHandler::RightArrowKey,  aController ) ;
+		
+		myKeyboardHandler.linkToController( KeyboardHandler::EnterKey,       aController ) ;
+		myKeyboardHandler.linkToController( KeyboardHandler::EnterKeypadKey, aController ) ;
+
+		myJoystickHandler.linkToController( /* JoystickNumber */ 0, aController ) ;
+		
+		LogPlug::info( "Entering the event loop for event waiting so that Controller can act." ) ;
+
+		std::cout << "< Hit Enter or push the first button of the first joystick (if any) "
+			"to end event-driven MVC test >" << std::endl ;
+		
+		LogPlug::info( "Entering main loop." ) ;		
+		myEvents.enterMainLoop() ;
+		LogPlug::info( "Exiting main loop." ) ;		
+				
+		LogPlug::info( "End of OSDL MVC test." ) ;
+		
+		LogPlug::info( "stopping OSDL." ) ;		
+        OSDL::stop() ;
+
+   }
+	
+    catch ( const OSDL::Exception & e )
+    {
+        LogPlug::error( "OSDL exception caught : "
+        	 + e.toString( Ceylan::high ) ) ;
+       	return Ceylan::ExitFailure ;
+
+    }
+
+    catch ( const Ceylan::Exception & e )
+    {
+        LogPlug::error( "Ceylan exception caught : "
+        	 + e.toString( Ceylan::high ) ) ;
+       	return Ceylan::ExitFailure ;
+
+    }
+
+    catch ( const std::exception & e )
+    {
+        LogPlug::error( "Standard exception caught : " 
+			 + std::string( e.what() ) ) ;
+       	return Ceylan::ExitFailure ;
+
+    }
+
+    catch ( ... )
+    {
+        LogPlug::error( "Unknown exception caught" ) ;
+       	return Ceylan::ExitFailure ;
+
+    }
+
+    return Ceylan::ExitSuccess ;
+
+}
+

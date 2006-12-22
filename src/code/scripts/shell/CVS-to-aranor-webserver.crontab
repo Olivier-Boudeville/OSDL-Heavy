@@ -1,0 +1,23 @@
+SHELL=/bin/sh
+MAILTO=sye
+
+
+# Updates Ceylan and OSDL's websites in OSDL's webserver at SourceForge from :
+#	- Ceylan doc CVS repository 
+#	- OSDL doc CVS repository 
+# once every week, on tuesday, at 3 AM :
+
+HOME_USER=/var/www
+TARGET_SCRIPT=export-CVS-to-aranor-webserver.sh
+CRONTAB_LOG=/var/www/crontab-log.txt
+
+0 3 * * 2  $HOME_USER/$TARGET_SCRIPT 1>$CRONTAB_LOG
+
+
+# To activate this crontab, do :
+# scp CVS-to-aranor-webserver.crontab www-data@aranor:/var/www
+# ssh www-data@aranor
+# crontab CVS-to-aranor-webserver.crontab
+
+# To check : crontab -l
+

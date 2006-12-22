@@ -1,0 +1,1224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, February 20.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document 
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Network with SDL</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, SDL, network">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Network%20with%20SDL">mail us</a></p>
+  </div><a name="_top_"></a>
+  
+
+<h1>Network with SDL</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<code><pre>
+
+
+
+
+it seems that when a client disconnects from the server the server should unbind its
+address
+
+
+when a client disconnects, the program quits(broken pipe).
+
+
+You need to catch the signal something like this:   
+
+	signal(SIGPIPE, SIG_IGN);
+
+I got that line from the net2 library.
+
+
+
+If I setup a listening port with..
+
+udpSocket = SDLNet_UDP_Open(0);
+
+How can I find what port was actually opened?
+I have tried..
+tempIPAddress = SDLNet_UDP_GetPeerAddress(udpSocket, -1);
+But as reported in docs it only returns info on the port that was
+specified with SDLNet_UDP_Open(port);
+
+Im really just after the port number.  Any ideas would be greatly
+appreciated.
+I know gethostname will get the IP, but this is not a part of
+SDL_net  :( 
+
+
+I had this problem once myself and I was not able to resolve it in an
+elegant way by just using the means provided by SDL_net. My workaround
+was to send a packet from my opened UDP socket with unknown port
+number to another UDP socket with a known port number (in my case this
+was a remote socket but it should work with a local socket too). After
+the reception of the packet I could read the port number on the sender
+side. Quite ugly but it worked.
+
+Now comes my real recommendation: I switched to something different. I
+define myself a range of UDP port numbers and try (in a loop) to open
+a UDP port in that given range. The first successfully opened port
+wins and I know the port number. And by having a defined port range
+this makes it easier if you are behind a router where you also have to
+know which ports you have to forward, plus for UDP "connections" you
+have to do port forwarding both on server and client side.
+
+it was an endian problem and then i figured out the use for SDLNet_Read16
+
+
+
+if your UDP packets are too big, some routers will drop them without
+notice.
+
+NAT typically works by using port translation.  This basically means
+that only if host A on port X, who is behind a NAT box, sends a UDP
+datagram to host B on port Y, who is not behind a NAT or has a NAT/
+firewall with proper port-forwarding, host B can send a datagram to
+host A.  However, host B has to send the datagram a new address, C
+(the address of the NAT), and a new port number, Z, where Z is a
+random port number picked by the NAT box.  When the NAT box receives
+the packet addressed to (C,Z), it will translate the packet's
+destination address and forward it on to host A on port X.
+
+Diagrammatically, we have
+
+A --- (A:X,B:Y,data1) --> NAT --- (C:Z,B:Y,data1) --> B
+A <-- (B:Y,A:X,data2) --- NAT <-- (B:Y,C:Z,data2) --- B
+
+where (source address:port, destination address:port, data payload)
+is our (structurally simplified) UDP packet.
+
+This only works because the host behind the NAT sends the first
+packet, because NAT maintains a translation table to map C:Z to A:X,
+but this mapping only gets made when there is outbound traffic first.
+
+So what you have to do is have the server (B) has to examine the
+packet and determine what C and Z are (what the client's address and
+port number are), rather than send the data to a fixed port number.
+Im pretty sure that the client code can basically stay the same though.
+
+Also, if youre trying to figure out how a particular game's network
+protocol works, i highly recommend using ethereal, which lets you
+look at individual IP packets.
+
+UDP and NAT for game clients : http://alumnus.caltech.edu/~dank/peer-nat.html
+
+
+but it can only make about 4 consequative calls to
+
+SDLNet_TCP_Send before everything else is dropped. So far I have bypassed
+this problem by putting in SDL_Delay(100); after each SDLNet_TCP_Send.
+
+
+sdlnet does no seperate buffering on its own, it's just a thin wrapper
+around send/rcve, the OS is responsible for buffering on both sides.
+when the receive buffer on one side gets full, the send() on the other
+side will block, until the client is ready to receive data again.
+unless you are using non-blocking IO. then the send() will return an
+error. TCP will NEVER silently drop any data.
+
+inserting random delays to cure some strange symptoms, sounds like
+masquarading an ugly bug in your code. even more as you said your
+server is multithreaded. if its really your router, throw it away -
+it's crap.
+
+also keep in mind that TCP does not preserve message bounderies. you
+must always be sure on your own where the last packet ends and the new
+one begins.
+
+SDLNet_TCP_Send() should _never_ drop packets unless there was an OS or
+network level error. It should block until the entire buffer was sent,
+and TCP promises that the other side will definitely receive it, too.
+
+Make sure you check the return value from SDLNet_TCP_Send and if it's
+smaller than you expected, you might want to look at the function in a
+debugger and see why it failed...SDL_net doesn't have a wrapper over
+errno/OSStatus/WSAGetLastError() to let you determine this from your app.
+
+I have created a number of multiplayer games using SDLNet on the client end,
+but I never used it on the server end because of the lack of
+non-blocking sockets.
+
+Another option is to use Net2
+(http://gameprogrammer.com/net2/net2-0.html) which is event driven.
+
+
+the client moves, it sends the movement to the server, the server computes 
+it, and it sends the updated character position to all of the clients... 
+Or should I do something else? Thanks!  ;-) 
+
+
+If you really want to do it properly you would use 
+the equivalent of 'phase locking'. That's like driving a car.
+
+Each client *estimates* what the other entities are doing,
+the server sends the real information (belatedly), and the 
+client then corrects its estimation.
+
+You cannot show the correct position at all times due to lag.
+This is not an artifact either -- it happens in reality too.
+One novelty you might try is give some graphical 
+hint as to how much lag there is .. eg blur vision or
+something so the player can take the lag into account.
+
+
+Personally, I would avoid visually representing each players lag in the 
+game world.  This can lead to higher ping players being targeted simply 
+for that reason.
+Base your movements off of time, and only update their movement and 
+actions when the client receives a packet.
+Example:
+
+Server sends packets describing players.
+Clients receive packet and set state flags (such as velocity, direction, 
+and actions such as running, walking, etc)
+Player A sees Player B running from left to right in front of him.
+Player A's client, based off of the player data for Player B (moving at 
+n speed in i, j, k direction representing 3d spatial movement, running 
+the "run" animation), Player B's position is estimated.
+1 second passes, in which time Player B has stopped moving.
+Server sends packets describing players.
+Player A's client now adjusts, using an "easing" animation to go from 
+the "run" animation to the "standing" animation.
+
+Additionally, take multi threaded server operation into serious 
+consideration.  This is good for many reasons, but the most common of 
+which is most likely network latency.
+A multi threaded server can easy cope with clients which are slow to 
+respond, or which may become unreachable in the process of a 
+game/connection.
+Also, if this is going to be a "massively multi player" game, consider 
+using a master/slave setup for your server configuration (and 
+subsequently, server programming).
+This allows what is considered "instancing" of various areas of the 
+playing field, and can often tie in to a dynamic LOD system quite well.  
+Also, it makes the server load for the primary server much
+lower overall, since it has but one job: handling network traffic.
+
+One more thing to consider is network bandwidth.  While clients are 
+often capable of downloading data in speeds in excess of 5Mbit, not all 
+servers or clients are capable of such speeds.
+Aim for a lowest common denominator.  That will allow more clients at a 
+lower ping rate overall.  A good estimation from my experience is no 
+more than 20 kilobytes per second.
+This does rule out dial up users, but opens the door to almost any and 
+all broadband users.  If you do aim for dial up users, remember that 
+while 56k modem users are capable of downloading at speeds of upwards of 
+5.5kilobytes per second, their upload speed can and will be greatly 
+effected by such.  In this case, aim for no more than 3 kilobytes per 
+second for each upload and download.  This can be easily accomplished 
+with packet scheduling (mind you, I'm not referring to OS specific 
+packet scheduling but scheduling built into your application.).
+
+
+Say there are 16 players playing a game, connected to a single threaded 
+server application.
+Player 9 suddenly loses power at his home/apartment/etc.  Due to the 
+nature of TCP/IP (which is the norm, and what I assume you'll be using), 
+when the server attempts to send a packet to the client, it will try to 
+get an ACK packet back.  However, due to the client no longer being 
+reachable, the program will wait until a timeout is reached (or in the 
+worst case scenario, indefinitely) to resume operation.
+However, the remaining players will ALSO have to wait the same length of 
+time to receive data packets from the server, since it cannot do 
+anything else besides wait for that client which is no longer 
+reachable.  In addition to being able to manage your connections on a 
+per thread basis, you eliminate the need to manage the connections by 
+priority.  This way, you can simply go about sending and receiving data 
+on a per thread basis nearly without worry as to what the client is 
+doing.  Depending on the threading package/API you'll be using you may 
+have the ability to manage errant threads nicely. (i.e. Kill a thread 
+that is no longer responding due to being hung/blocked/etc)
+Oh yes, and one other nice little tidbit of information: When running an 
+application such as that I've described above you should see a marked 
+and in some cases impressive increase in speed and/or efficiency when 
+running on a 64 bit processor (especially those with HT or similar 
+technology).
+
+If there are libraries that can help me tunnel my HTTP client through
+HTTPS instead, then please tell me about it.
+
+
+Take a look at gnutls, it's LGPL
+http://www.gnu.org/software/gnutls/
+
+If that ever happens, it is with blocking TCP sockets. Using non-blocking 
+sockets avoids the problem, and using UDP eliminates the ACK. UDP provides 
+better performance than TCP, so many commercial games use UDP rather than 
+TCP.
+
+Also, having a kernel thread for each player doesn't scale well. MMO's
+will use a kernel thread for some number of players. Having 10,000+ kernel
+threads can keep the kernel pretty busy switching from one thread to
+another. For a few players, like 32, it isn't a big deal, but it'll force
+the threads to properly synchronize access to data shared between the
+threads to avoid race conditions and inconsistant data.
+
+Using select() with non-blocking TCP, or a higher performace platform
+specific method, allows one thread to handle a number of clients. With
+UDP, there is no way to tell which client's data will be read on the next
+recv() call so a single-threaded server is the simplest solution.
+
+One may use non-blocking async socket I/O behind the scenes
+automatically using the fastest available event source for your
+platform: IO completion ports for Windows, epoll on Linux, 
+Kqueue on BSD and OSX, falling back to select() as a last resort.
+
+I can't agree that UDP gives a *better* performance.
+A faster performance, almost definitely.
+An application using UDP cannot know whether data sent to a peer 
+application is received by the other end or not.
+Additionally, for those that reach the destination, there is no 
+guarantee on the ordering of the data, and the receiver may get
+duplicated copies of the same data.  This can lead to congestion, or 
+even "flooding" of the client system if the upstream of
+the server is significantly large enough. (Which is not uncommon with 
+game servers)
+
+UDP (in my opinion) isn't exceptionally well suited to time critical 
+applications such as games.  Granted, some developers feel differently.
+However, in a game where you want to be certain the data is arriving the 
+way you want it to, TCP is ideal.
+Dan Kegle has a great page describing different setups for large 
+servers.  While the site is a bit older now, he keeps it up to date
+and the information is still valid for larger server applications.  If 
+the server is to be an MMO style server, it's definitely worth checking out.
+The site is at http://www.kegel.com/c10k.html
+
+
+How much does data take on bandwidth ? 
+
+
+Probably more when you account for padding. Sort the elements from largest
+to smallest in the struct to limit the padding and save memory. Also, by
+writting each element to the buffer to send instead of the whole struct,
+you can avoid sending a struct with padding over the network. This also
+increases the portability of the code because different compilers and
+different platforms may align the data differently (it's 4-byte aligned on
+most systems today, but a 64-bit system may use 8-byte alignment). By
+writting each element yourself, you can also avoid writting data that
+seldom changes except for when it does change, like the player's name. 
+Plus, you can limit the bytes used for a string, like the name, to 
+strlen(string) + 1 bytes (less if you get fancy about it, but there isn't 
+a great need).
+
+
+plan on a 100+ms latency introduced by the dial-up modem.
+
+Even better is trying to send only data that has changed.
+
+Use OpenSSL if you need to add SSL to your connection.
+
+As for an SDL-based solution: don't bother, libCurl already wins for API 
+design.   :) 
+
+Use libCurl if you want a really easy HTTP library that handles all the 
+strange corner cases you haven't started to think about yet...HTTP is 
+deceptively complex in some fairly common situations.
+
+libCurl also has OpenSSL support included as an option (and is much 
+easier to use than OpenSSL directly).
+
+
+
+ethtool eth0
+
+netpipe :
+	- server : NPtcp 
+	- client : NPtcp -h machine
+	
+TCP is fairly easy to troubleshoot by simply using telnet to test. Unfortunatley this does not work with UDP. For UDP I have found that a utility like netcat to be invaluable for troubleshooting.
+
+jnettop : very useful tool to monitor netork interfaces traffic
+
+I use a little socket class. i spawn a thread for each connection, each with its own receive buffer.
+the network protocoll consists of an 4 byte header and an up to 4GB body. the socket is opened in blocking mode. first i read the 4 byte header, then realloc the buffer if needed and finally read the body. when the whole packet has been read, i call back the application through a virtual method. (can also be implemeted via a normal c callback function, does not matter.)
+
+i saved myself from all the packet dropping/disordering by using TCP
+though.  ;-)  this design scales very well with minimum latency.
+
+We have a hardcoded '5' in the listen() call in SDLNet_TCP_Open(), so if you have more than 5 people that have connected for which you haven't yet called SDLNet_TCP_Accept(), they'll get a "connection refused" error (or on some OSes, they'll just retry up to a certain time limit). I don't believe there's an actual maximum number of accepted connections beyond what the OS allows, so just be sure to check for new connections once per frame and you shouldn't have an issue.
+
+http://www.gamedev.net/reference/list.asp?categoryid=30
+http://www.gaffer.org/articles/
+http://beej.us/guide/bgnet/
+
+Use 'iftop' to know exactly what data goes through your network interfaces.
+
+UDP adds an order of magnitude of complexity, but you're going to find
+that you'll need it eventually if you're doing anything realtime.
+Something like a network chess game can do fine with TCP.
+
+There are lots of good examples of how to do this (the Quake 3 network
+code is particularly clever, but it's not a simple example).
+
+The original quake 1 test used TCP networking, and it had too many
+problems...eventually it moved to UDP, and kept a seperate TCP
+connection for reliable data like scoreboard updating, etc...I think it
+might have later ditched that for pure UDP.
+
+enet solves a lot of the problems, though:
+   http://enet.cubik.org/Features.html
+
+
+The typical way you'd use SDLNet_ResolveHost is like this:
+
+SDLNet_ResolveHost(&ip,"something.org",port);
+
+If you only need to talk to your own machine, you can just resolve "127.0.0.1".  If you need to know your 
+REAL, ACTUAL IP address, SDL_Net can't do that.  It's a more complicated problem than it sounds -- if your machine has several IPs on several cards, 
+which should it choose?
+
+I had to find out the actual host IP address for one of my projects, faf, 
+derived from SDL_webserver...  the IP address detection currently works under 
+win, linux, and mac.  It's in it's own file in the tarball somewhere, maybye 
+you'll find it helpful.  http://burningsmell.org/faf/
+
+Sockets are bi-directional.
+
+What member in the UDP_Packet tells me the origin IP?
+
+
+In regular socket programming, for UDP,  the address is collected into the sockaddr_in data structure the first time you call recvfrom() on the server, which is why you have to use recvfrom() for the first read, instead of normal read() and write(), unlike TCP programming. After the first read you can use read() and write() because the return address is available.
+
+http://www.faqs.org/faqs/unix-faq/socket/
+What is the recommended size of data to send inside an UDP packet?
+
+You can send any size you want up to 64KB. But, lots of large UDP messages can really clog up a network. OTOH, if the packet size isn't at
+least several times the header overhead (28 bytes IIRC) you are wasting bandwidth by sending to much header and not enough data. 
+
+
+Does not the UDP packet have to be smaller than the smallest MTU as well?
+A packet that is larger than the client's MTU would be broken up and it's the responsibility of the server to put it back together. This is where the packet header comes in.  We'd know how much data to expect so we just recv() until we get it all.
+
+
+NET2 library by Robert Pendleton (http://www.gameprogrammer.com/game.html) : 
+there was an issue where windows would need to have the INIT_EVENTTHREAD flag left off  
+  
+TCP/IP is
+bidirectional and the directions work in parallel. You can be sending
+data both ways at the same time. Second, be aware of Nagle's algorithm
+in TCP. TCP will buffer data until a threshold value is reached and then
+send it all as one buffer (how it does it is controlled by Nagle's
+algorithm). This reduces the number of packets sent of the network, but
+introduces a delay into the transmission. There is an option you can use
+when creating a socket that will turn off Nagle's algorithm. (I think it
+is NO_DELAY.) But, it will greatly increase the number of packets sent.
+There is some reason to believe that you can do better by turning off
+Nagle's algorithm and doing you own application level buffering. Third,
+you can send and receive TCP in parallel with processing the requests.
+If the client has one thread that reads packets, one that sends packets,
+and one that processes packets you can get a dramatic speed up in your
+application. It is amazing to see how much of a speed up you can get.
+
+On the UDP versus TCP question; TCP is designed to be a reliable
+connection that is also a good network citizen. The first part of that
+means that TCP already uses acks and resending to get reliability. The
+second part means that TCP is designed to *slow down* in the face of
+network congestion so that everyone gets a fair chance at using the
+network. UDP does not slow down, but it pays for it by being unreliable.
+If you use UDP you have to implement your on reliability layer. My bet
+is that you can find a library that works like TCP based on UDP that
+doesn't have the good citizen nature of TCP.
+
+
+Stevens' Unix Networking Programming has some examples on making
+UDP more reliable, and a quick google search reveals thngs like enet
+(http://enet.cubik.org/) that look promising. I am thinking at this
+point that the fastest possible solution would be 3 threads like you
+suggest, but to use UDP instead of TCP.
+
+Currrent status. I was able to quickly whip up a basic UDP library. I
+did not worry about reliability as I wanted to see the unreliability
+before I fixed it. The first problem I ran into was how to dubug it,
+since you can not telnet to the port anymore with UDP to see what is
+going on. Before too long I found netcat (nc). Netcat seems to work
+very well for UDP debugging.
+
+
+
+The "word on the street" is that UDP is approximately 10 times faster than TCP
+
+
+One way of doing an application-specific protocol which is easily re-used later on, is NOT putting any "type" specifier in the header, ONLY the size and the data. The type could then be put in the data instead - making re-use of this protocol easy in the future.
+
+Decide on a max-length first of all. Say you decide 200 bytes to be max length. Then a one-byte-header is enough, and you could go with a c structure like
+
+struct Message {
+  unsigned char length;
+  unsigned char data[200];
+};
+
+.. and the corresponding read/write procedure prototypes:
+
+int writeToSocket(SockStructure* sock, Message* msg);
+int readFromSocket(SockStructure* sock, Message* msg);
+
+Decide whether you want these to be blocking or non-blocking. If you are already using threads, then blocking is quite feasible. If your in a single-thread situation, non-blocking (ie. polling) is easier on the responsiveness of the application.
+
+Be careful in the implementation, especially in the readFromSocket() procedure, since the whole message might not arrive and also two messages in a row might be concatenated. [ use some helper array/structure in order to store parts of arrived messages .. memcpy() might be handy here ].
+
+
+You don't need threading if you use NET2 from Bob Pendleton - it builds ontop of the SDL event system. It's well documented too, all you need to do is add two extra source files (fastevents.c and net2.c) to your project (and of course the corresponding .h files). 
+
+
+Threading makes a project a whole lot more complex and harder to debug. I've built a net-text-game (client-server) and itworked fine with only one thread until I realized I wanted the server to respond nicely to other clients trying to connect. But then again, the result with only one thread was not worse than client getting timeouts trying to connect.
+
+
+The problem is that SDL doesn't receive events unless you have a window and I want the server to run without X. You only need to initialise video, you dont need to make the window appear. But to install keyboard, the event loop needs a window.
+
+Why SDL_net doesn't let you bind a UDP socket to a specific interface?
+
+It seems to be a missing feature of SDL_net. I think part of the problem is that you need a machine with multiple interfaces to be able to work on fixing the problem. 
+
+
+
+end a broadcast message over LAN : your need to use UDP/IP. You just send a packet to 255.255.255.255. TCP cannot do that, since it is a point-to-point based system.
+
+sdl+broadcast here explained in french : http://www.codefr.org/tiki-index.php?page=SDL_broadcast
+
+http://glob2.ysagoon.com :
+
+void MultiplayersHost::sendBroadcastLanGameHosting(Uint16 port, bool create)
+{
+	UDPpacket *packet=SDLNet_AllocPacket(4);
+	assert(packet);
+	packet->channel=-1;
+	packet->address.host=INADDR_BROADCAST;
+	packet->address.port=SDL_SwapBE16(port);
+	packet->len=4;
+	packet->data[0]=BROADCAST_LAN_GAME_HOSTING;
+	packet->data[1]=create;
+	packet->data[2]=0;
+	packet->data[3]=0;
+	if (SDLNet_UDP_Send(socket, -1, packet)==1)
+		fprintf(logFile, "Successed to send a BROADCAST_LAN_GAME_HOSTING(%d) packet to port=(%d).\n", create, port);
+	else
+		fprintf(logFile, "failed to send a BROADCAST_LAN_GAME_HOSTING(%d) packet to port=(%d)!\n", create, port);
+	SDLNet_FreePacket(packet);
+}
+
+  
+The simplest stated like a CS sever, where one player is the server but, the game records relative speeds of the program and latency and switches the server to the fastest computer. it stays there until there is a dramatic drop in performance, you could recalculate which is the best every few minutes. however, the player starting as the server is the only one who can run server commands, even though another machine is the "real" server. when the starting server player leaves, the game calculates his performance as 0 (Zero), which should be a "dramatic drop in performance", switches server to another machine( transparently) and hands control( server commands) to the second player to enter the game. the whole "who's machine is the server" should be handled transparently.
+
+The other option is if the Random number generators are seeded *exactly* such that each machine will produce the same numbers, the game treats the networked players as additional input, such that all
+the "server" does is rout the packets containing what input each player pressed to each individual machine and allows the user to issue server commands.
+
+you could combine the two though...  
+  
+I've been thinking of doing something that with Kobo Deluxe, which has 
+"exact" (integer based) fixed rate logic with a custom pseudo-RNG 
+anyway.
+
+The problem is that what you describe above is only part of the 
+solution. It would work, but only with very low ping. High ping would 
+not only cause lag (ie the other players may not be where they seem 
+to be, because what you see is based on extrapolated positions based 
+on the last few "frames" from the server), but would also add lag to 
+your input, since it'll have to go through some sync point, rather 
+than directly to the local engine. Thus, you quickly lose the whole 
+advantage with running a local server.
+
+
+What I have in mind is to (ab)use the local engine as a prediction 
+filter on steroids. It can't do much about other players (just the 
+usual assuming they're still doing whatever they were doing the last 
+time we heard from them), but it *can* predict the actions of NPCs 
+and the game environment with 100% accuracy, except in situations 
+where the actions of other players affect things.
+
+That is, as long as you're fighting NPCs, you have 0 ping (you're 
+fighting your own computer), and your local server is the authority 
+for the area you're in. Likewise for all other players.
+
+When two or more players are in the same general area, the 
+servers/clients - lets call them nodes - will have to decide who 
+controls what. The easiest way would be to just say that the player 
+who's closest to an object or NPC gets to decide what that NPC 
+*actually* does, in case the nodes disagree.
+
+Between network packets, the nodes are basically just running local 
+games with some objects (other human players) being driven by 
+extrapolated data from the other nodes. When new information arrives, 
+nodes adjust affected parts of their game state as needed
+
+But *how*, exactly?
+
+Well, one way might be to keep a "running snapshot" of the game state, 
+corresponding to the reception time of the last packet from each 
+node. Whenever you get a packet of events from another node, you load 
+that node's running snapshot into the engine, add the new events to 
+your "player input database", and then fast forward to the current 
+time, replacing snapshots newer than the one you reloaded as you go.
+
+Obviously, this requires a rather lightweight game state and game 
+logic and/or some nice lazy evaluation logic to avoid doing much 
+about objects you can't see anyway. I suspect it might be both easier 
+and more effective to pass incremental game state updates around 
+instead, so you can just correct your state, rather than rolling back 
+and re-running the game logic. That will probably require much more 
+bandwidth, but with some smart filtering (ie send only data that may 
+accually matter to each node) and compression, it shouldn't be an 
+issue.
+  
+  
+My game was basically a real-time, online space-faring RPG where the server did pretty much all the work, and the clients pretty much only displayed what they were told.  The idea was to make it so that clients could be modified in just about any way, but wouldn't be able to cheat at the game.
+
+To help deal with the issue of updating the game state smoothly, I stored all variables that updated rapidly in a structure that included a value, the time it was set, a velocity, sometimes acceleration, and sometimes a max and min value.  Then for all updates, the server would send each variable with a current value, the current rate of change, and for some things, the current acceleration (rate of rate of change).  The client would use the rates of change to interpolate smoothly between updates.  This had the nice effect of allowing me to send updates much less frequently and still see very little skipping and jumps in object placements.
+
+The one problem I didn't have a very nice solution for was input latency.  I had only done testing on my local network at that stage, but even on that network, it was very difficult to keep the client and server close to agreement while inputs were coming in.
+
+
+The edge conditions kill you. Think about two players having a sword fight bouncing back forth across the boundary. Every action causes data to move back and forth across the boundary and things get very slow.
+
+OTOH, if you make the world into a number of islands and force each island onto a single server you can make things work pretty well.
+
+Personally, I think that as soon as you try to map territory to servers you are dead. A copy of the map of the territory can be stored on each server. The location of players and objects can be updated as they move so each server knows where everything is. You can even build a special network just to synchronize the location data. 
+
+The data that represents a specific object should most likely reside on one server at a time with a special object repository server (like a master copy of the database) being stored in one location. Changes to object should be flushed back to the main object server. When a group of objects get close enough to interact they should be all moved to the same server (the one with the lowest current load) so they can interact without network latency problems.
+
+All of this assumes that there is a front end that is routing messages from players to objects. The font end has to know what server the object is currently in and send messages there. Message passing between objects is another real problem, but it can be handled by throwing hardware at it. If all else fails all messages can be sent to all servers and discarded if the object isn't currently on that server.
+
+I've been thinking about this problem for a while and that is the best I can come up with.
+ 
+  
+  
+  
+  
+  
+  
+I think having a distributed server would introduce all sorts of weird latency issues, but thats a naive assumption ?
+
+This depends entirely on the software, OS and network hardware. A decent switched network has latencies in the micros range, so as long as packets aren't too large in relation to the bandwidth, that shouldn't be much of an issue. (Well, that depends on the number of machine/machine roundtrips per engine cycle. We're still talking about *much* higher latencies than calling functions in a single-threaded server, of course, so you'll have to think about who you're talking to, and how often...)
+
+I think that maybe the most important problem is the syncronization of distributed servers.
+Our first idea is to distribute the simulation of the game using the location of the entities (i.e., anything that can move). For instance, if I have 2 servers then I divide the map in 2 and the first server will handle (i.e., receive/response messages and do physics simulation) the clients that are in left side of the map and the other server will handle clients in right side of the map.
+
+To do this I must use some kind of syncronization between servers and this can add latency.
+
+It's ok to assume that servers are in a dedicated network.
+
+Some potential problems:
+ * Network is shared with "normal" stuff, so irrelevant network traffic may add significantly to latencies.
+  * You might have some stupid hub/switch/router/firewall or something in the way, that can't be arsed to pipe data through "instantly", but instead buffers entire packets, and then holds on to them for random amounts of time before passing them on.
+ * The OS has a crappy protocol stack, that adds more average and/or (worse) worst case latency than you can handle.
+ * The OS has a crappy scheduler that just won't wake your server threads up in time when they receive data after blocking.
+ * Your OS thinks that very frequent calls to I/O APIs (regardless of data size) means that your thread is a bandwidth hog, and penalizes it suspend it for extended periods of time as soon as there are any other runnable threads in the system.
+
+So, basically, if you can pick a nice OS, decent hardware and use a dedicated, switched network, I think it could work just fine. Just installing a distributed game server on your average bunch of web servers might not work all that well sometimes, though...
+
+So, why I don't see any FPS game using distributed/p2p/clustered servers ?
+
+You seem to have noticed that distributing a game server across multiple machines is not trivial  In fact, it is hard. Current commercial servers can support many thousands of players. Therefore it is cheaper to have multiple "shards" than to develop a fully scalable server.
+
+
+In other words, the small amount of money a commercial game company can make from solving the problem is less than it would cost to solve it. 
+Speaking of load balancing, I've been thinking a bit about it in terms 
+of programming models.
+
+How about taking OOP to the next level, and allow objects to migrate 
+as needed, as load changes?
+
+With traditional methods, one would implement this by having each 
+"object" be a thread, and use some form of IPC for inter-object 
+communication. However, that means there's a rather high penalty for 
+interaction, even when objects are on the same server. IPC can be 
+rather light weight in a proper OS, but it's still many times heavier 
+than just making method calls.
+
+However, if you base the inter-object communication on an API that 
+allows easy replacement of implementations behind interface instances 
+(for example, interfaces could be structs of function pointers), and 
+inform some central scheduler whenever communication takes place, you 
+can transparently monitor communication activity and move objects to 
+other threads (potentially other CPUs on SMP/multicore systems) and 
+even other processes.
+
+(Unless you do some serious low level magic, as some cluster support 
+kernel extensions do, you'll need objects to support migration 
+explicitly - but you can do that with a serialize()/deserialize() 
+interface, which is very handy for things like saving and restoring 
+games as well...) 
+
+
+Now, if you implement the inter-object interface such that you don't 
+care about the return values (or at least not use need them right 
+away), the communication can be asynchronous. That is, use 
+event/message based communication. This can be implemented very 
+efficiently with only in-line code for normal situations. (I have a 
+simple implementation of such a thing in Audiality, for sample 
+accurate control without splitting buffers.)
+
+Event based asynchronous communication can actually *improve* 
+performance even in single threaded systems, since it allows chains 
+of events to be processed in tight loops, without function calls or 
+reloading function state for each event.
+
+Of course, it also happens to be perfect for IPC, because you can 
+avoid this horrible roundtrip behavior of normal RPC calls.
+
+
+The bad news is latency. As long as all objects are in the same 
+thread, you can essentially code as if you were using function calls, 
+because there is a guaranteed worst case latency in terms of logic 
+time. (Something like, "Any object you send a request to will have 
+replied before you run again.") Once objects start migrating to other 
+threads, other processes or other machines, there is no truly useful 
+definition of the response time. You can't count on getting 
+information back, or having objects respond, within the current time 
+slice, logic time tick or watever your time base is.
+
+I think this could be dealt with by means of timestamps. (Just like 
+audio plugin systems use timestamps to make event handling sample 
+accurate while processing tens, hundreds or thousands of samples per 
+plugin process() call.) Stamp events with the current time, so the 
+receiver knows what time/state you're talking about, so it can roll 
+back and reevaluate if needed.
+
+
+
+Dawn Of War is interesting because it used a peer-to-peer system. Or a distributed server system if you like.
+
+If you ever played something like Counter Strike (even source) you will know that when a high pinger (>400) joins the server, everyone starts to lag and jerk about. Usually the high pinger gets "asked" to go elsewhere.
+
+Although one person creates the game, the creator can leave and so can any of the other players.  remaining players are free to play on.
+
+Anyone remember Star Wars: Galaxies? They used the WoW version and every time I would go into a city that was actually bustling with players lag would get horendus. Then there was all the server boundary bugs, pets stop following you, various city problems.  
+
+Halo2's game server stuff is interesting, if the xbox hosting the game leaves, the server will automatically jump to another players xbox.  
+
+Blizzard is using loosely coupled distributed servers on World of Warcraft. The world is divided into 2 big continents, each one having is own server. But if one server's having problems, chances are you wont be able to move from one continent (server) to the other. Which happened a lot recently. But the continent not having problems will continue to work perfectly, even if peoples get kicked from the other one.
+
+WoW had (maybe they still do but I dunno) a similiar approach to items, it becomes extremely annoying that you can't pick up the items and you get them mid somewhere else.
+
+On Win32 and Unix-like platforms, SDL_net uses recv() for reading from the socket (check the CVS code with the web interface: http://www.libsdl.org/cgi/cvsweb.cgi/SDL_net/ -> lates version of SDL_TCP). Try looking at the man page for recv, also available through Google: http://www.google.com/search?q=man+recv
+
+Basically, recv has three possible return values r:
+  r > 0 : Exactly r bytes (possibly less than you asked for) were read
+  r = 0 : "End of file", the connection has been closed
+  r < 0 : An error has occurred.
+
+So a socket which has been closed will immediately return 0, and 
+therefor is considered "ready" by select(). I think it's platform 
+dependent how often 0 is returned before it becomes an error to read 
+from the socket. Generally, after the first 0, you should assume the 
+connection has been closed, and close the socket on the client side.
+
+By the way, an excellent guide to networking is Beej's guide, if you 
+don't know it yet: http://www.ecst.csuchico.edu/~beej/guide/net/ . It's 
+Unix-centric, but the same principles apply to Win32 and many other 
+operating systems, so it's a worthwhile read, in my opinion.
+
+
+ 
+Pour tester : 	 
+  - un client netcat : nc (appelé aussi nc6)
+  - un serveur : telnet
+  - leur interaction : faire un proxy
+
+http://www.gamasutra.com/features/20041206/jenkins_01.shtml
+  
+  
+Don't forget that you have to give "SDLNet_UDP_Open(Uint16)" a host-based byte order port.
+But you have to write a net-based byte order in the "packet->address.port".
+Do you have this ? :
+udp_socket = SDLNet_UDP_Open(UDP_PORT);
+packet->address.port = SDL_SwapBE16(Uint16)UDP_PORT);
+
+  
+SDL_net does not put events in the event queue. My library, NET2, which
+is entirely based on SDL and SDL_net does do that. Well almost, I got
+tired of the way the SDL event queue loses events so I implement my own
+event queue system on top of SDL. It depends on all the SDL event queue
+infrastructure, but, it doesn't lose network events.
+
+ 
+What libraries are people using for integrating network support into their games?   
+
+Try Bob Pendletons NET2+FastEvents which integrates to the sdl events
+system. It needs sdl_net to operate. I can't say I've built very many
+network projects but for the few I've built it worked great. And
+wonderfully documented.
+
+
+
+In general when you set up a connection between two programs using pipes, the premature death of one 
+process can cause a "SIGPIPE" signal to be sent to the other.  By 
+default, pretty much any signal will kill the process that receives it, 
+giving that "Broken pipe" error in this case.  You may want to do a 
+little research on signal handlers in C and C++.  Here is one place that 
+might have some good info:
+
+http://www.delorie.com/gnu/docs/glibc/libc_487.html
+
+Adding signal handlers can make debugging much easier for things like 
+that.  For example, instead of crashing when it receives a SIGPIPE, your 
+program could log a set of helpful messages and continue running or exit 
+more gracefully.
+  
+  
+  enet is a network library someone pointed out to me, which is 
+pretty sweet: http://enet.cubik.org/Features.html
+
+You can find your internet IP address at http://whatismyip.com/
+
+What can i say, SDLNet_TCP_Open & windows dont mix.
+ Windows fails to open a tcp socket.
+
+Right now we've gone with IOCP for the server because of all the literature 
+saying how good it is at handling thousands of connections at once.  Guess 
+I should dig around in the code a bit... but if anyone knows offhand
+
+This is very exciting : http://games.slashdot.org/article.pl?sid=04/04/20/2030212&mode=thread&tid=127&tid=186&tid=206
+
+
+If you want an other ip you had to resolve the name.domain of your computer.
+Just have a look at your host file and you will find the answer.
+
+Where is the host file in Windows ??  c:\windows\hosts.sam
+On my Win98 box, this file contains the following string:
+127.0.0.1       localhost
+hosts.sam is a SAMple hosts file, it's there when you install TCP/IP 
+protocol. You can copy it to file named "hosts", which is a real hosts file.
+
+However, hosts file is NOT a right way to determine IP address of a 
+computer.
+
+
+
+Anyway, here's how I do it in Njam (copy/pasted from njamnet.cpp). It
+> works on Windows, Linux, MacOSX, BSDs, BeOS, ...etc.
+
+  <h1>Networking tips</h1>
+<br><br>
+I'd recommend you to you NET2 ontop of SDL_net, as it is higher
+level/easier to use: it simply uses the SDL-event system to
+send events when some packages arrive etc. Also, I think it
+is at least as fast as the SDL_net library, due to his replacement
+of the SDL_event structure & routines. Best of all, it has
+great documentation:
+
+http://gameprogrammer.com/game.html
+
+
+
+Everyone who has ever written a networked
+game faces the same problem. The problem I was pointing out is that even
+if you get the machines IP address it might not be the public IP address
+of the computer. The machine I am sending this from has and IP address
+of 192.168.1.5. Any code, even things like ipconfig, that you can run on
+this machine will tell you that. But, that is not the public IP address
+of the computer. In fact, it is a none routable address that is only
+valid on my LAN. The actual IP address is very different. 
+
+I have a hardware fire wall that also does address translation. That way
+there is no way for an outside computer to directly contact computers on
+my LAN. (OK, I use port forwarding to send email to the email server and
+web requests to the web server.) So, if I ran you program as a server,
+no one can contact me. I do that to protect my network from bad guys on
+the net. It may only be my home network, but I protect it as best I can.
+
+When a computer on my LAN contacts another computer the IP address it
+uses as the source address is translated into a real IP address. The
+outside world sees the real address, not the 192.168.1.* address that my
+PCs see. So if your program displays my IP address, and I send that to
+my friend to connect to. He will not be able to connect. 
+
+So, that doesn't help you at all. Try this, there are a number of web
+services out there that will tell you your IP. For example:
+
+http://checkip.dyndns.org/
+http://www.whatismyipaddress.com/
+http://www.whatismyip.com/
+http://www.showmyip.com/
+http://www.myipaddress.com/
+
+Which I found using google.com 
+http://www.google.com/search?hl=en&ie=UTF-8&oe=UTF-8&q=what+is+my+ip+address&btnG=Google+Search
+
+Provide a list of these for your players to use. Or, you can even have
+your program contact one of these sites and get the information you
+need. Or, you can write a little server, it doesn't have to be a web
+server, that your players can contact. Your server would just echo back
+the IP address of an incoming connection. And, use a service like
+dyndns.com to make up for you lack of a static IP. They can even let you
+have URL like mygame.game-server.cc
+
+Moreover, if your isp is kind enough to gives you some web space, php 
+scripting and a mysql database backend, you could extend this to maintain a 
+live list of players with their IP, the time of their connection, etc and use 
+this in your game to present a list of living game servers, with their ip to 
+the game user. Then the user would choose a game server, and directly connect 
+(peer to peer mecanism) to the other IP, where your game running on another 
+computer is waiting for connection.. The public web server would not connect 
+players , but only maintains informations about players. Your game would be 
+able to use those informations  via standard http request / response 
+mecanism.
+
+
+
+SDL_net has select call that goes by the name of SDLNet_CheckSockets()
+that does what you want.
+
+Nope, not good enough. CheckSockets only tells me IF a socket can be 
+read, not HOW MUCH. I could, of course, call CheckSockets, then read one 
+byte, then call CheckSockets etc.
+
+What I actually want is a "give me what you've got, even if it's zero, 
+and return the number read.", like read typically does, much to the 
+annoyance of new-timers.
+
+The SDL_net demos send each message in two parts: the first part just
+tells you the size of the second part. You can download them from:
+
+SDLNet_TCP_Recv() and SDLNet_UDP_Recv() do exactly that.
+
+Well, UDP, sure, but I actually want guaranteed and in-order delivery, 
+so I'd like to use TCP.
+
+This makes it sound like it will block until the buffer you give it is 
+> full.  I had to start digging in the source to realize that it will read 
+> UP TO maxlen bytes, but will still return how much was read if the 
+> buffer isn't full.
+
+I seem to have not made it clear what my requirements were, and why the 
+present code is still not sufficient. Here's what I want:
+
+- I'd like to not have to use threads or any callback or event model. 
+Bob had pointed me towards his NET2 code, and it looks very good, but an 
+early design choice of mine (for code readability) was to not use 
+threads or callbacks for my current project.
+- SDLNet_TCP_Send, as it is, will block until everything is sent. With 
+CheckSockets, I can check whether the first (internal) send will block 
+or not, but not the whole Send. I'd like Send to return the number of 
+bytes sent, including a value lower than len if not all could be sent on
+the first try, or 0 if the call would block in any case.
+- Likewise, SDLNet_TCP_Recv will still block until it can return that it
+read more than 0 bytes. I'd like it to return 0 instead of blocking.
+Yes, CheckSockets can help here, but it encumbers the interface too much 
+for my liking.
+
+So I think I'll try adapting SDL_Net myself. It shouldn't take more than 
+a "blocking" flag, adding "O_NONBLOCK" to all sockets, and changing the
+do {
+   send_or_read();
+} while (!sent_or_read_enough)
+parts, for Linux anyway. I'll let you know how it turned out.
+
+ I do not try to read from a
+socket until checksockets says it is ready. Then, I read it and expect
+it to give me what it can, just like we both want it to work. If the
+socket is marked ready, but has zero data it is dead.
+
+
+>> 
+>> Which makes complete sense.  Blocking until a buffer is filled doesn't
+>> seem entirely useful to me.
+
+
+No, not much use at all.
+
+Oh well, take a look at net2. It works, does all the network IO in a
+worker thread and is "mostly" non-blocking. It can block on writing to
+the network. Also, it contains thread safe wrappers for a large part of
+SDL_net. SDL_net by itself is not thread safe.
+
+<h2>SDL and SDL_net</h2>
+
+If you look to your host file you will see that localhost is 127.0.0.1 (it
+is the same for all computer)
+If you want an other ip you had to resolve the name.domain of your computer.
+Just have a look at your host file and you will find the answer.
+
+
+One way of doing this on linux is to use the function getifaddrs().
+
+This function returns a list of all network interfaces on the host
+machine. The function is declared in ifaddrs.h. Be sure to free the
+allocated memory with freeifaddrs() when you are done.
+
+
+I had found the same problem... SDL_net didn't resolve my ip... sometimes it
+gave me 0.0.0.0 and other times 127.0.0.1, I was testing with it and I found
+one way to solve it...maybe it wasn't the best way but it works  and you
+don't need to use system() function....
+
+// Obtenemos IP del localhost
+
+if(SDLNet_ResolveHost(&iServerIP,NULL,iServerPort)==-1)
+
+{
+
+ILogSystem.Msg(LOG_NORMAL," · [INetwork->CreateServer(%d,%d,%d)] Error(1):
+%s\n",port,passwd,dedicated,SDLNet_GetError());
+
+return 0;
+
+}
+
+// Averiguamos el nombre del localhost con su ip
+
+host=SDLNet_ResolveIP(&iServerIP);
+
+// Abrimos socket del servidor
+
+serversock=SDLNet_TCP_Open(&iServerIP);
+
+if(!serversock)
+
+{
+
+ILogSystem.Msg(LOG_NORMAL," · [INetwork->CreateServer(%d,%d,%d)] Error(2):
+%s\n",port,passwd,dedicated,SDLNet_GetError());
+
+return 0;
+
+}
+
+// Volvemos a averiguar la IP usando el nombre del host(nos da la IP de
+internet)
+
+SDLNet_ResolveHost(&iServerIP,host,iServerPort);
+
+
+
+
+
+<h3>Using both of them</h3>
+<p>
+When your program initializes, it should do this:
+
+      <table summary="init" style="border: none">
+        <tr>
+          <td>
+		             <div class="box"> 
+<code><pre>
+// Just the 0 flag if you are only using network :
+SDL_Init( 0 ) ; 
+// Necessary to use SDL_net !
+SDLNet_Init() ; 
+</pre></code>
+           </div>
+			  
+          </td>
+        </tr>
+      </table>
+	
+And on exit, after all sockets are closed etc., it should do this :
+      <table summary="quit" style="border: none">
+        <tr>
+          <td>
+		             <div class="box"> 
+<code><pre>
+SDLNet_Quit() ;
+SDL_Quit() ;
+</pre></code>
+           </div>
+			  
+          </td>
+        </tr>
+      </table>
+</p>	  
+
+
+
+
+
+
+
+<h2>Non SDL-specific</h2>
+
+<h3>Struggling against lag</h3>
+
+<p>Under TCP, as opposed to UDP (which might be something it 
+might pay to look into if there are going to be a lot of players) by 
+default you will run into the Nagle algorithm. Basically, all 
+TCP data sent is cached in 20ms intervals for performance reasons. The reason for it is that every 
+TCP packet sent has something like a 48 byte overhead, which this internal 
+TCP/IP stack algorithm attempts to minimize by grouping data together in 
+the least amount of packets.
+</p>
+
+<p>It will cause a <em>slight</em> lag in your transfers. Specifically, if you are actually just 
+sending a few bytes at a time and your frame rate is 50 fps or greater, you will probably be seeing the effects of this, as your bytes are getting bunched up by it and sent a couple at a time.
+</p>
+
+<p>
+If this looks like what you are seeing, you can either disable Nagle for your 
+application or just use UDP. UDP is generally better for sending small packets of 
+data around like this, because it does not cache packets, and it has a 
+smaller overhead. But the downside is, if the packet gets lost, UDP will not 
+automatically request the packet be resent. You will have to have your 
+program "guess" when you have packet drop-outs, or have it specifically 
+request to the other computer "um, hello? could you repeat that? still 
+there?"
+</p>
+
+<p>
+In any event, whether this is the root cause of jagged movements, 
+packet data is going to get sent at somewhat irregular intervals anyway for 
+a number of reasons. Probably the best thing to do is include in your 
+packet say a DWORD that is the time (in game ticks) when the packets were 
+sent and do some form of smoothing interpolation on the data, so that it 
+doesn't jump around as the tides of net congestion buoy the data around.
+</p>
+
+<h3>Informations that should be sent</h3>
+<p>You should never assume that the communication is instantaneous. You need to send a location, an action, an a time
+in each message. The location is the location that the action starts at.
+The time is the game time that the action took place at. And, the action
+is what happened. That gives the clients enough information to recreate
+the action and keep it smooth and in synch with the other clients.
+</p>
+
+<p>
+After each message is received figure out where the object is <b>now</b>
+based on the start time, location, and action. Move it there and keep
+animating it based on the information you now have.
+</p>
+
+
+<h3>Managing topology</h3> 
+<p>
+As a rule, you want the host to be the person who has the best bandwidth. This does not consider issues of security, hacking etc, cause that's a more complicated issue.
+</p>
+
+<p>
+As to who the "Best" is depends on how your game is set up to send this 
+information, but generally the "host" is sending out separate data streams 
+to each individual player (if 8 players than 8 streams) thus roughly 8 
+times the outgoing data than an individual player is having to cope with. 
+As said, this entirely depends on your networking strategy though. So 
+the best performance comes from the computer with the best bandwidth.
+</p>
+
+<p>
+Thus, you want an algorithm to choose a new host based on their (true) bandwidth.
+</p>
+
+<p>
+There are several ways to do this. The most obvious is to force a form of 
+delegation where each player computer sends a good-sized data packet the 
+equivalent of a "ping" and whichever player sends back the packet first 
+gets chosen by that player computer as a good host. If all or a majority of 
+player computer agree then messages are sent back and forth suggesting, 
+stating, confirming which computer should be the new host, then play 
+resume. The exact delegation protocol depends on how your game works of course.
+</p>
+
+<h3>Blocking or non-blocking paradigms</h3>
+<p>	  
+Non-blocking TCP communication is quite common, and does not always 
+require polling. Some libraries use events (in windows) or 
+signals (in Linux) to tell the user program when new data is available, if wanted.
+</p>
+
+<p>
+However, most people poll the network, though, often once per game cycle. 
+The network poll can be very efficient.
+</p>
+
+<p>
+You can, in fact, use blocking IO and do a <code>select()</code> or <code>poll()</code>
+ to see if data is ready on the connections, so you do not block on the read. To go 
+into any more detail would be off topic, one may look at <em>Unix network 
+programming</em>, by W. Richard Stevens. The SDL_net library does not provide these features 
+</p>
+
+<p>One might take a look to at the <a href="http://gameprogrammer.com/game.html" target="_blank">net2 library</a>.
+Even if you do not use this library, the article and code tell you how to
+do what you want. And, one rarely really want to use non-blocking code.
+Non-blocking code makes you poll for input, which leads to serious
+performance and synchronization problems.
+</p>
+
+<p>It is rather easy to emulate non blocking
+connections. Simply create a separate thread that
+reads (blocking), stores the data in a buffer, and
+sets variables indicating that the data has been
+indeed read, how much, etc.
+</p>
+
+<p>
+Non-blocking TCP where you have to wait for large
+amounts of data at the same time could also
+pose a buffer problem. Something like : you cannot do your read
+until you have all of the 8MB structure they are
+sending, but the OS buffer only holds 4MB : instant
+deadlock.
+</p>
+
+<p>
+Some people would implement the
+interpretation of received data within the reading thread as well. For instance, in a game, assuming you use messages of some sort
+to communicate player actions, the read thread could
+assemble the messages into appropriate structures, to
+be put in a deque such as <code>std::deque< mygame::net::message
+* ></code>.
+</p>
+
+<h2>Some network links</h2>
+<p>
+<ul>
+    <li><a href="http://www.libsdl.org/projects/SDL_net/" target="_blank">SDL_net</a></li>
+	<li>the <a href="http://gameprogrammer.com/game.html" target="_blank">net2 library</a></li>
+</ul>
+
+
+
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Network%20with%20SDL">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

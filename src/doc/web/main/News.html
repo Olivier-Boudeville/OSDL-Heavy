@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
+'http://www.w3.org/TR/html4/strict.dtd'>
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003, April 27.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : http://www.w3.org/Style/Examples/007/maps.html
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - News</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL Project">
+  <meta name="keywords" content="library, video game, GPL, news">
+  <link href="../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="stylesheet" type="text/css" href="../common/css/OSDL.css"
+  media="screen, print, projection, tv">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;MainMenu.html&#39;">home page</a>
+    <a href="Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20News">mail us</a></p>
+  </div><a name="_top_"></a> 
+
+  <h1>News from OSDL</h1>
+  
+  
+  	<p>	
+	News we posted through our <a href="http://sourceforge.net/export/projnews.php?group_id=71354&limit=50&flat=0&show_summaries=1">SourceForge's tools</a> are available, even if we even less frequently update them ! 
+	</p>		  
+  <br><br>
+
+ <dl>
+
+
+	<dt>2005, November 11</dt>
+	<dd>LOANI has been updated and intensively tested, automatic mirror selection and fallback support to our private FTP server added. Lots of documentation updated about audio, since next to come themes are first LOANI's Ceylan and OSDL installation thanks to dedicated release archives, then full music/effects support for OSDL.</dd>
+
+	<dt>2005, November 1</dt>
+	<dd>A major milestone has been successfully managed : full text rendering is now achieved, with both fixed font and Truetype font support, including template-based glyph/word/text cache with heuristics, paragraph and alinea, justified text and various graphical text containers with smart update mechanism.</dd>
+
+	<dt>2005, October 4</dt>
+	<dd>It has been a tremendous fight but we succeeded finally : we updated the whole pixel-level layer so that alphablending issues do not exist anymore. It involved fixing a lot of basic primitives thanks to the rectangle with round corners test case. The whole video low-level architecture is sane now, and solid as a rock, at last ! (it was not obvious indeed)</dd>
+
+	<dt>2005, August 17</dt>
+	<dd>Alphablending support proved faulty, investigating in inner Surface workings.</dd>
+
+	<dt>2005, June 22</dt>
+	<dd>Back in business, the font system is still to be finished, and basic OpenGL support has to come right after. What a long road ! Thinking either to a Projectyle-style ball game or a set of networked tools for role-playing games. Too many ideas, too little time, what a pity.</dd>
+
+
+	<dt>2005, May 12</dt>
+	<dd>I honestly cannot remember what I did with the font system, except that I plan something maybe too complicated.</dd>
+ 
+ 
+	<dt>2005, April 26</dt>
+	<dd>Despite a roasted motherboard, development continues with some efforts on the Truetype font support, thanks to SDL_ttf, until the main computer works again and OpenGL support can be achieved.</dd>
+ 
+
+	<dt>2005, April 17</dt>
+	<dd>After some documentation work on Open+SDL, <em>Skelmiskapr</em> game started !</dd>
+
+	<dt>2005, April 7</dt>
+	<dd>Linux systems back in business, LOANI improved (all tool versions upgraded, doc updated, etc.).</dd>
+
+	<dt>2005, March 25</dt>
+	<dd>Root renderer created, including a Multimedia one which delegates its task to a dedicated Video renderer and a dedicated Audio renderer. All <code>toString</code> methods changed so that raw or HTML logging is automatically chosen at runtime. OpenGL still to be really used, striving to finish a first approach before the next meeting of our game creation club (next thursday !).
+</dd>
+	
+
+	<dt>2005, February 27</dt>
+	<dd>MVC framework fully integrated in OSDL, be it event-driven or scheduled : full framework test is completed, it is time for OpenGL-based MVC views...</dd>
+
+
+	<dt>2005, February 12/dt>
+	<dd>Our article on the Software 2.0 issue about game programming has been successfully published, we are very proud of that !</dd>
+	
+
+	<dt>2005, 31 January</dt>
+	<dd>Not much spare time these days, still working on the low level event layer, so that MVC controllers have their state updated (notably from joystick)</dd>
+
+
+	<dt>2004, December 18</dt>
+	<dd><p>Full victory ! Our article was accepted for the january issue of <em>Software 2.0 Extra!</em> <a href="http://www.software20.org/en/" target="_blank">magazine</a>, and the latest versions of Ceylan and OSDL will be available in their cover CD, as an exclusive. Our long article (more than 10 pages) focuses on the increasing role of open source creation in the video game field, both for hobbyists and for professionals. Its translation being finished, our article should be available in four languages and nine countries : Polish (Poland), French (France, Belgium, Canada), German (Germany, Austria, Switzerland) and Spanish (Spain, Portugal) with a total circulation of about 30000. Needless to say, we are very proud to have it published.</p>
+	<p>On a more technical point of view, our scheduler advanced a lot, we still aim a little sunshine demo for the beginning of the year 2005.</p>
+	</dd>
+
+
+	<dt>2004, November 27</dt>
+	<dd>An article about free software and video game has been submitted to <a href="http://www.software20.org" target="_blank">Software20</a>. We hope it will accepted. Latest release of Ceylan (0.2) and OSDL (0.3) should be available on the CD they distribute with their magazine.</dd>
+
+	<dt>2004, November 14</dt>
+	<dd>Working both on a fractal approach to generate 2D lanscape for our planned first game <em>Eye Of Heimdal</em>, and on a scheduler so that active world objects are updated by the engine so that their logic is not affected by the rendering task
+	</dd>
+
+	<dt>2004, October 29</dt>
+	<dd>Lot of classes added to Ceylan and OSDL, in charge of linear algebra (ex : 3x3 homogenous matrices and referential dependency trees), and rendering (ex : polygon sets, illustrated by parametrized snow flakes, see <a href="http://osdl-data.esperide.com" target="_blank">screenshots</a>)</dd>
+  
+	<dt>2004, September 3</dt>
+	<dd>Our famous automatic net installer, <a href="documentation/OSDL/OSDL-0.3/LOANI.html">LOANI</a>, works great on all the GNU/Linux platforms we tried. A really good thing, which demanded us tremendous efforts !</dd>  
+  
+	<dt>2004, August 8</dt>
+	<dd>Our media content indexer, <a href="documentation/OSDL/OSDL-generic/yag-osdl.html">yag-osdl</a> version 0.5, is up and running. Give it a starting directory and it will recursively create a full HTML gallery with thumbnail, comment and thematical sorting support, automatically. <a href="documentation/OSDL/OSDL-generic/yag-osdl.html">Try it</a>, it works great !</dd>
+  
+	<dt>2004, July 31</dt>
+	<dd>Went to the <b>Game-On</b> show in Lille, where plenty of games, from 1960 to nowadays, were available and playable</dd>
+  
+	<dt>2004, July 15</dt>
+	<dd>Still scrambling, between OSDL's adding of new features and the game book's writing !</dd>
+  
+	<dt>2004, June 15</dt>
+	<dd>One big step towards having a full-blown game book to help us writing the game scenario (a kind of story board).</dd>
+
+	<dt>2004, May 22</dt>
+	<dd>Log Service fully refactored, including smart aggregator. HTML output still pending.</dd>
+
+	<dt>2004, May 7</dt>
+	<dd>JPEG support added to OSDL, before extending support to other format, and managing scaling and rotating, some work on Ceylan is being performed to prepare the refactoring of the Log service.</dd>
+  
+	<dt>2004, April 22</dt>
+	<dd>Due to several build issues of SDL helper libraries under Cygwin/MinGW, the Windows platform's support will be delayed of a few months. What a nightmare porting system-level layer and convincing libtool not to take silly actions under Windows !</dd>
+	
+    <dt>2004, March 29</dt>
+    <dd>Whereas the preliminary tests of LOANI are successful, our game creation club will be represented at the first french meeting about video games on free platforms, which will take place on April at Limoges [<a href="http://www.game-over.eu.org" target="_blank">More infos</a>]</dd>
+
+    <dt>2004, March 17</dt>
+    <dd>LOANI version 0.3 has been released. This automatic net installer for OSDL is being currently ported to Windows/Cygwin and soon to Mac OSX - wild animal (panther, jaguar) [<a href="documentation/OSDL/OSDL-0.3/LOANI.html">More infos</a>]</dd>
+
+    <dt>2004, March 5</dt>
+    <dd>Our team member Hirinkaël wrote us an in-depth study about the dynamics of the flakes in a snow tempest. If you like physics and maths, you won't be disappointed, I bet ! [<a href="club/game/trailer/Trailer.html#flake">More infos</a>]</dd>
+
+	<dt>2004, February 11</dt>
+	<dd>
+	We launch an OSDL <b>Coding Party</b> which will take place from friday 20 to sunday 29 february 2004 in Paris, at the Cube ! <br>[<a href="mailto:olivier.boudeville@online.fr?subject=OSDL%20Coding%20Party">ask for details</a>]
+	</dd>
+
+	<dt>2004, January 18</dt>
+	<dd>
+	News section at last updated ! OSDL version 0.3 and Ceylan version 0.2 released. Little improvements are to be found, but we are working hard on the story board's trailer of the first game of our game creation club...
+	</dd>
+	
+	<dt>2003, December</dt>
+	<dd>We have been formally accepted by the <a href="http://lesiteducube.com" target="_blank">Cube</a> !
+	</dd>	
+	
+    <dt>2003, November 28</dt>
+    <dd>It was the first meeting of our club in the Cube. We mainly got used to our environment, discovering MacOS X, which will be our main development environment (although many of us use Linux at home, and some still cope with Windows, thanks to mingw and Cygwin).</dd>	  
+	
+    <dt>2003, November 22</dt>
+    <dd>Meeting with the Cube, the structure that will host our activities, providing us with a place for our weekly meetings, with computers, high-speed Internet connection, and so on. We established what will be the relationship between them and our club. Thanks to the Cube for its kind help !</dd>
+	
+    <dt>2003, October 16</dt>
+    <dd>A new section added to the website, the <a href=
+    "resources/ResourceMenu.html" target="toolbar">Resource section</a>
+    !</dd>
+
+    <dt>2003, October 11</dt>
+    <dd>Our forums moved from SourceForge to <a href=
+    "http://www.murlock.org/forum/" target="_blank">this place</a>.</dd>
+
+    <dt>2003, October 8</dt>
+    <dd>A whole team gathered in order to become a club. A few <a href="project/meetings/MeetingsMenu.html" target="toolbar">meetings</a> occured, and we are starting defining what our first game will be.</dd>
+
+    <dt>2003, September 1</dt>
+    <dd>I finally proposed a game creation club in Paris, since I seem
+    to have found the perfect place for the club&#39;s activities. All
+    details in <a href="club/ClubMenu.html" target=
+    "toolbar">the club&#39;s dedicated section</a> at this moment, only
+    in french, ask for an <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Open%20the%20club%20!">
+    internationalization and/or online membership</a> if you might be
+    interested !</dd>
+
+    <dt>2003, August 24</dt>
+    <dd>New makefile system not so cool as ought to be. Rewritten and
+    applied to Ceylan. Major improvements : tests for available tools
+    and versions, the PREFIX variable is at last supported to have the
+    system installed wherever the user wants, and recursive object
+    lists on a per-module basis has been added so that choosing which
+    files to export in a library in so longer a centralized pain. Still
+    some work on Ceylan to build shared libs too, some more development
+    to check the system scales, and then it will be backported to
+    OSDL.</dd>
+
+    <dt>2003, August 18</dt>
+    <dd>Makefiles, build system and tools entirely revisited for Ceylan
+    and then for OSDL, preparing a less painful growth of these
+    projects. On OSDL, a small system to handle object files in library
+    is being added, so that the gathering of all object files split
+    among modules is made easy.</dd>
+
+    <dt>2003, July 25</dt>
+    <dd>Very little time to work on OSDL, nevertheless some
+    improvements are made to the Makefile system, and in Ceylan, a
+    first mother class to describe what a module is has been added,
+    preparing a future system of plug-in.</dd>
+
+    <dt>2003, May 17</dt>
+    <dd>Today is the author&#39;s birthday. Mass hysteria in the
+    streets, thousands of fans wanting to be the first to wish him an
+    happy birthday. Police is overwhelmed and, er, ok, I stop.</dd>
+
+    <dt>2003, May 16</dt>
+    <dd><a href="Map.html">Site map</a> added, different ways of
+    <a href="download/Download.html">getting OSDL</a> described.</dd>
+
+    <dt>2003, May 14</dt>
+    <dd>OSDL&#39;s first mailing list created : you&#39;ve got to
+    <a href="https://lists.sourceforge.net/lists/listinfo/osdl-general"
+    target="_blank">subscribe first</a>. Then you can send mail to
+    <a href=
+    "mailto:osdl-general@lists.sourceforge.net">osdl-general@lists.sourceforge.net</a>
+    [<a href="project/Contact.html">More infos</a>]</dd>
+
+    <dt>2003, May 13</dt>
+    <dd>The News, Project Infos, Monitoring of multimedia libraries
+    sections appeared in the website !</dd>
+
+    <dt>2003, April 3</dt>
+    <dd>A preversion of the site is locally available. Huge work
+    remains.</dd>
+
+    <dt>2002, December 20</dt>
+    <dd>The coding session on OSDL has begun for a while, it will be
+    time to put this first start on our CVS tree.</dd>
+	
+  </dl>
+  
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those
+  presented in this document, if you noticed errors, neglects or points
+  insufficiently discussed, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20News">drop us a
+  line</a>!</p><br>
+  <br>
+  <hr>
+  
+  <center>
+  	[<a href="#_top_">Top</a>]
+  </center>
+</body>
+</html>

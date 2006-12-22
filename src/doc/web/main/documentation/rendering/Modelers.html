@@ -1,0 +1,105 @@
+- 3D Studio Max 
+- Maya
+- Blender
+- Milkshape 3D : http://www.swissquake.ch/chumbalum-soft/ms3d/index.html
+- gmax : free 3D modeling and animation tool based on Discreet's award-winning 3ds max
+- SoftImageXSI
+
+
+Blender video tutorials :
+	- http://www.blender3d.org/cms/Video_Tutorials.396.0.html
+	- http://www.ibiblio.org/bvidtute/
+
+animation is my primary interest (I want to do animation for film) so I'll give it a shot. My 
+favorite, and top, program is Maya by far, but of course if you are going 
+for games Maya is the film standard and 3ds Max is the games standard. There 
+are parts of 3ds Max I have never liked though, and I've always loved the 
+way Maya is set up. There is a personal learning edition of Maya which just 
+watermarks your renders which you can try out if you like, and 
+learning-maya.com has over a thousand tutorials. Maya's documentation also 
+includes a full set of tutorials to get you started which comes free with 
+the learning edition. An educational edition of Maya (the full program but 
+with an educational license costs $285 for complete and $385 for unlimited). 
+Animation Master is another great program. It is the program that got me 
+started on animation before I moved to Maya. It is a spline modeller, but 
+there is a $20 plug-in that lets you export to .x format, and it can do 
+everything (textures, animation, modelling). Not only that but it does them 
+very well in an extremely intuitive interface especially for a beginner. You 
+can take a look at www.hash.com, and it costs $300 retail. Caligari also has 
+a program they launched about a year ago called Gamespace. It is basically 
+Truespace without some of the facial animation and particle features, and 
+also a few extra features added for games. There is a free version of 
+Gamespace which you can try, and some good video tutorials at 
+www.3dbuzz.com. Also concerning Max there are tutorials on 3dbuzz, and in 
+numerous other places. You can get the trial version of Max, or even use 
+Gmax if you want to try it out. Max is about $300 with an educational 
+license, if not you know how much it is. Also of note is Softimage's newer 
+program XSI which was used for Half Life 2 and the movie Sin City. I have 
+yet to use it so I can't say much about it, but it is supposed to be really 
+good. There is a trial version of that also. 
+
+You could try Anim8or(free and support animation). You could try gmax, but 
+to use it commercially and to unlock a few stuff you have to pay I think. 
+Milkshape 3D is $20. 3D canvas is a good 3d modeller as well but I dont 
+think it supports animation.
+
+
+Loading : 
+
+I managed to adapt a 3ds loader in a couple of days and have it working.
+But if you want keyframe animation you have to buy gametutorials CD. I
+havent found any full 3ds loader. 
+But if you are going to use milkshape, better try to load ms3d files, i
+think the format is better documented, and supports skeletal animation.
+Another good format is .X
+
+I've seen some demos that use the MilkShape3D format, and seem to pull it 
+off rather nicely.
+Personally, at school, my team used LightWave for creating our models, then 
+I wrote a custom exporter that creates a format I can use. Of course, this 
+didn't have ANY animations and such. If you're using animations, you might 
+want to look at the simpler model formats to get yourself started. I don't 
+think 3DS Max files would be all that easy, and I can definitely tell you 
+that LightWave is NOT simple either. It can be a pain in the butt to learn, 
+especially since there aren't that many resources online, so you'd end up 
+pouring over incomplete documentation.
+
+The .X files are well structured, and don't take long to learn. And, if you 
+decide to use DirectX as your graphics API, it's made all the more easier 
+with the Mesh and SkinnedMesh classes. If you're in need of any reference 
+material, I'd suggest "Focus on 3D Models". I've found that to be quite 
+helpful for me. As well, the book covers quite a few model formats, and how 
+to load and animate them. It also comes with a CD full of source code and 
+demos.
+
+
+* Load  3d models from file :
+
+	- I've tried 3ds, using '3ds File Loader' tutorial from http://www.gametutorials.com/Tutorials/opengl/OpenGL_Pg4.htm, 
+and it works brilliant (but crashes when try to load more models)
+
+The easiest format to load 3D models would be to use ASE - it's a text based format and easy to pull those details from - its also a common format.  For a list of file formats try www.wotsit.org. Other formats that might be worth looking at are .3DS and .X
+http://www.dcs.ed.ac.uk/home/mxr/gfx/3d/
+http://myfileformats.com/
+
+You might like to also try OBJ format, it can be exported from blender and a lot of other packages.  Has texture mapping support and is totally text based.  It's also very simple.
+http://www.wes.hpc.mil/faq/tips/vis_tips/obj.htm
+
+
+
+i want to import *.3ds file to my OpenGL scene
+www.xbdev.net : You can easily adapt the code to your needs.
+
+You could buy the book "Focus on 3D Models", which has a section on loading
+3ds files, among many other file formats and a nice section on quaternions.
+
+GameTutorials.com has a couple tutorials on loading and using animations
+from 3ds files, but those tutorials aren't free anymore. Kinda sucks, but
+worth the $5.
+
+There is also http://lib3ds.sourceforge.net/ which may be a fair starting
+point for reading in 3ds files.
+
+http://www.spacesimulator.net/tutorials.html
+
+

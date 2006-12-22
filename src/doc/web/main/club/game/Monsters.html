@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, February 1.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="FR">
+<head>
+  <meta content=
+  "HTML Tidy for Linux/x86 (vers 1st April 2003), see www.w3.org"
+        name="generator">
+
+  <title>Club de réalisation de jeux vidéo - monstres et créatures</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <style type="text/css">
+  div.c3 {text-align: center}
+  h1.c2 {font-family: arial, helvetica, sans-serif}
+  span.c1 {font-family: arial, helvetica, sans-serif}
+  </style>
+  <style type="text/css">
+  div.c1 {text-align: center}
+  </style>
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>Courts-circuits</em> <a href="../../../common/black.html"
+    onclick=
+    "parent.toolbar.location=&#39;../DocMenu.html&#39;">Documentation</a>
+    <a href="../../Map.html">Plan du site</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[Jeu]%20Monstres%20et%20créatures">
+    écrivez-nous</a></p>
+  </div><a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+
+  <h1>Liste des monstres et créatures</h1>
+
+  <h2>Présentation</h2>
+
+  <p>Ce document recense les êtres vivants, monstres et plus
+  généralement, les PNJ (Personnages Non Joueurs) potentiellement hostiles que nous avons imaginés, en expliquant notamment, à gros grain, leur type de comportement (leur I.A., intelligence artificielle, quoique en l'occurrence le mot risque d'être fort).
+  </p>
+  
+  <h2>Conception</h2>
+  
+  <p>Tous ces êtres, et bien d'autres encore, pourraient figurer dans notre jeu. Inutile de dire que cette phase de la conception est une des plus rigolotes. On pourrait considérer que
+  l&#39;important serait moins de les réussir graphiquement que de les
+  doter chacun de spécificités comportementales qui leur seraient
+  propres. Ainsi, alors que dans la plupart des jeux un monstre est
+  d&#39;abord caractérisé par son apparence et son potentiel de combat,
+  là on pourrait poser le principe que l&#39;IA de la plupart de nos
+  monstres (voire tous) soit particulière à chaque espèce. Deux
+  facteurs permettraient de ne pas rendre les développements trop
+  importants :</p>
+
+  <ol>
+    <li>on disposerait de nos propres primitives, qui seraient déjà de
+    relativement haut niveau, afin de les utiliser comme briques
+    élémentaires pour écrire les algorithmes comportementaux de chaque
+    espèce. Ainsi, des opérations de base disponibles pour décrire les
+    IA seraient par exemple &quot;se rendre à telle destination&quot;,
+    &quot;poursuivre telle cible&quot;, &quot;chercher tel objet&quot;
+    ou &quot;combatter telle cible&quot;, etc. Cela rendrait
+    l&#39;écriture de comportements un peu évolués considérablement
+    plus simple, sachant de plus que de telles primitives, dans tous
+    les cas, nous seront nécessaires</li>
+
+    <li>cette intelligence comportementale des créatures serait
+    exprimée dans le langage de script embarqué que l&#39;on aura
+    choisi (ex : <a href="http://www.python.org" target="_blank">python</a>) , ce qui facilitera énormément et son écriture, et sa mise au point</li>
+	
+  </ol>
+  <br>
+
+  <p>Il serait souhaitable de créer des légendes autour de chaque
+  créature, de manière à renforcer l&#39;aspect jeu de rôle et
+  l&#39;attachement que chacune pourrait susciter chez le joueur.</p>
+
+  <p>Des formes de factions pourraient être implémentées, comme dans
+  DAOC (Dark Age Of Camelot), où un personnage, du fait de ses
+  interactions passées avec les membres d&#39;une espèce, hérite
+  d&#39;une sorte de réputation vis-à-vis d&#39;elle, ce qui
+  conditionne en retour le comportement des nouveaux individus
+  qu&#39;il serait amené à rencontrer : après avoir considéré les
+  Changelins mineurs comme des punching-balls sans défense, le héros qui tombe sur
+  un Changelin pas mineur n'a plus qu'à courir très vite s'il tient à la vie.</p>
+
+  
+  
+  <h2>Bestiaire de notre premier jeu</h2>
+  
+  <ul>
+    <li><strong>les PNJ</strong> (classe générique) : à la manière de
+    la souris de la bande-dessinée Léonard, le PNJ vaquerait
+    frénétiquement à des occupations sans rapport avec l&#39;histoire,
+    et sans qu&#39;il ait la moindre utilité. Il formerait une partie
+    dynamique du décor, et pourrait être de plusieurs types selon son
+    activité (bûcheron, prostituée, certains, comme les gardes, les
+    marchands, les voleurs ayant eux déjà plus d&#39;interaction
+    potentielle avec le joueur). Tous seraient amenés à se défendre ou
+    à fuir en cas d&#39;agression, selon leur estimation de leur
+    probabilité de victoire, et avec leur arme caractéristique (ex : le
+    sac à (deux) main(s) avec un bonus +3 aux coups assommants en fin
+    de soirée car les pièces de l&#39;époque étaient pesantes).</li>
+
+    <li><strong>le supplicateur</strong> : le monstre entame très tôt
+    un travail de sape psychologique auprès du joueur, dans le but
+    qu&#39;il l&#39;épargne, en le suppliant et en faisant appel à ses
+    bons sentiments et à sa prudence. Si le joueur épargne le premier
+    qu&#39;il croisera, les suivants seront amenés à le lui rappeler et
+    à faire valoir cet argument supplémentaire en faveur de leur
+    survie.</li>
+
+    <li><strong>l&#39;amorce</strong> : ce monstre part en courant
+    dresser les autres contre le joueur. A tuer très rapidement avant
+    qu&#39;il rameute la moitié des gros calibres du voisinage. Bien
+    sûr, cours vite et convainc rapidement.</li>
+
+    <li><strong>la malédiction ambulante</strong> : pas forcément fort,
+    il mourra probablement si on lui donne l&#39;assaut, mais il ne
+    partira pas sans affliger le joueur de tares plus ou moins gênantes
+    (ivresse chronique, daltonisme, puanteur soufrée, etc. [faire la
+    liste des malédictions, on pourrait s&#39;inspirer des limitations
+    d&#39;INS, In Nomine Satanis]).</li>
+
+    <li><strong>le chimiste</strong> : son sang acide endommage les
+    armes, a une fâcheuse tendance à exploser quand certaines de ses
+    fioles se brisent sous les coups ou, pire, sous l&#39;impact de
+    dégâts de feu.</li>
+
+    <li><strong>la Gorgone</strong> : apprécie particulièrement de
+    pétrifier ses ennemis</li>
+
+    <li><strong>le lycanthrope revisité</strong> : cette variante, à
+    réinventer, du loup-garou transmet au joueur son état atypique (et,
+    éventuellement, s&#39;en débarasse par la même occasion, variante
+    appelée &quot;la patate chaude&quot;). Le joueur se retrouve obligé
+    de cacher sa condition et se voit doté de nouvelles capacités et
+    limitations. Cette métamorphose peut induire un changement des
+    objectifs qu&#39;il s&#39;assigne (un peu, pour ceux qui
+    connaissent, comme les amoureux dans le jeu des loups-garous et des
+    villageois).</li>
+
+    <li><strong>le bon père de famille</strong> (variante du
+    supplicateur) : cette créature, qui ne semble pas directement
+    menaçante (son apparence presque engageante est importante), est
+    accompagnée de sa progéniture (entre une et quatre répliques de
+    lui-même, avec un facteur d&#39;homothétie entre 1/4 et 1/2). Il
+    oblige le joueur à faire face au dilemme de tous les épargner ou de
+    les supprimer, lui et sa marmaille. Comment se résoudre à éliminer
+    toute une petite famille, ou à laisser des orphelins sur le carreau
+    ? D&#39;un autre côté, même les pires monstres se reproduisent, et
+    comment faire confiance, dans un monde de brutes ?</li>
+
+    <li><strong>le monstre voleur</strong> (avec moins de duplicité que
+    le PNJ de même occupation) : en clin d&#39;oeil à Dongeon Master,
+    il se ruerait sur le joueur en poussant un cri assez
+    reconnaissable, le délesterait d&#39;un objet important (par
+    exemple, son arme) et repartirait en courant. Bien sûr, quand on le
+    cherche, il est presque introuvable.</li>
+
+    <li><strong>l&#39;impénient bavard</strong> : ne constitue pas un
+    réel danger, à la manière de celui de Baldur&#39;s Gate il se
+    contente simplement d&#39;agacer le joueur en le sollicitant pour
+    le dialogue en permanence, et en toute inutilité. Ses ébauches de
+    dialogues peuvent être particulièrement réjouissantes à écrire. Une
+    variante, le bavard agressif, s&#39;échine à provoquer le joueur
+    (<em>taunting</em>, d&#39;autant plus que le joueur a adopté une
+    attitude agressive) par des interjections de type &quot;p&#39;tite
+    b*te&quot;. Si le joueur se laisse aller à une saine tentative de
+    monstricide, il pourra, en fonction de son attitude, souffrir de
+    malus d&#39;énervement pouvant aller jusqu&#39;à provoquer
+    l&#39;accident bête (maladresse).</li>
+
+    <li><strong>le dauphin</strong> : appelé ainsi car tout son jeu
+    concourt à faire flipper le joueur. Il le prend en filature,
+    restant plus ou moins discrétement en contact visuel permanent avec
+    l&#39;avatar, laissé au centre d&#39;une couronne (asservissement
+    du monstre entre une distance minimum et une maximum). Doté
+    d&#39;une bonne capacité de furtivité et de discrétion, bien que
+    gâchée en partie par un petit bruit qu&#39;il module régulièrement,
+    pas mauvais en assassinat silencieux, il s&#39;appliquera à fuir
+    quand le joueur voudra provoquer la confrontation. Pour mieux
+    revenir ensuite.</li>
+
+    <li><strong>le fou (très) dangeureux</strong> : à l&#39;image
+    d&#39;un monstre d&#39;un jeu d&#39;action dont le nom
+    m&#39;échappe qui commence dans un asile, il reste hilare mais
+    silencieux dans son coin jusqu&#39;à ce que le joueur, par sa
+    présence, le tire des séquences-fiction (à la K. Dick) qu&#39;il se
+    passe en boucle et qu&#39;il trouve amusantes. Alors, il se
+    précipite sur le joueur d&#39;un rire qui enfle jusqu&#39;à devenir
+    tonitruant et malsainement, complètement fou. S&#39;il arrive au
+    contact, il explose : il n&#39;aime pas partir seul dans le paradis
+    des rigolos. Une mini-variante : le pyromane, qui s&#39;immole par
+    le feu avant d&#39;offrir l&#39;accolade fraternelle à
+    l&#39;avatar.</li>
+
+    <li><strong>le caméléon des donjons</strong> : il se fond dans le
+    décor en fin connaisseur des lieux.</li>
+
+    <li><strong>l&#39;esseulé des charniers</strong> : sous ce nom
+    horrifique se cache un squelette, un des monstres les plus
+    attachants que le joueur sera amené à rencontrer (avec
+    l&#39;impénitent bavard, pour des raisons différentes). Le
+    squelette proposera une petite sous-quête au joueur : venger ses
+    copains dont les os ont été bouffés par un chien, en lui ramenant
+    le quadrupède espiègle en question. Cela pourrait éventuellement
+    donner lieu à une séquence rafraîssante à la Mario sur Nintendo 64,
+    où l&#39;avatar doit capturer un lapin sauteur dans un réseau de
+    tunnels inondés.</li>
+
+    <li><strong>le prêcheur du marais</strong> : à la manière de la
+    caricature des témoins de Jéhovah, il attend ses victimes dans les
+    endroits passants (pas d&#39;aéroport comme dans Zac Mac Kraken !)
+    pour leur expliquer, avec moultes preuves édifiantes, qu&#39;il
+    existe un monde meilleur, et qu&#39;il va vous y emmener. Peut-être
+    un peu plus à craindre que le bavard impénitent.</li>
+
+    <li><strong>le négociateur-rançonneur</strong> : vous le choisissez
+    pour une prestation (de type franchissement d&#39;une rivière sur
+    son bac) et découvrez que les négociations tarifaires n&#39;étaient
+    pas achevées sur la terre ferme, et qu&#39;à mesure qu&#39;elle
+    s&#39;éloigne (quoique la berge opposée se rapproche), elles se
+    font en des termes de plus en plus défavorables. Seulement voilà,
+    le bonhomme est diablement irremplaçable et il semble le
+    savoir.</li>
+
+    <li><strong>l&#39;ouvreur</strong> : ce n&#39;est pas un boucher
+    assassin, juste une monstre clin-d&#39;oeil (Bloodwich) qui trouve
+    un salut précaire en fermant la porte derrière laquelle il
+    s&#39;est réfugié à chaque fois que le joueur l&#39;ouvre pour le
+    trucider. Certaines portes sont de mauvais paris puisque des armes
+    les traversent.</li>
+
+    <li><strong>l&#39;hypocondriaque patenté</strong> : ce monstre
+    sympathique simule la blessure grave ou la mort pour mieux tromper
+    la vigilance du joueur.</li>
+
+    <li><strong>l&#39;assaisonneur à la hallebarde</strong> (car
+    parfois, il en pleut !) : doué de l&#39;infravision, il repère ses
+    victimes dans les recoins obscurs des donjons, et, tel le lama
+    d&#39;humeur vacillante, arrose le porteur de torche pour avoir
+    tout le temps, dans l&#39;obscurité traîtresse ainsi créée, de
+    l&#39;assaisonner à coups de hallebarde.</li>
+
+    <li><strong>la pieuvre qui se cherchait des amis</strong> : ce
+    céphalopode facétieux laisse traîner des tentacules sur la terre
+    ferme, autour des trous d&#39;eau qu&#39;il affectionne, dans
+    l&#39;espoir qu&#39;un étourdi se fasse prendre, attirer dans
+    l&#39;eau, et promptement noyer avant d&#39;avoir pu comprendre ce
+    qui lui arrive.</li>
+
+    <li><strong>le Jawah-surprise</strong> : cet autre monstre
+    clin-d&#39;oeil, cette fois-ci à Dungeon Master, prend une forme
+    proche des Jawah de Starwars (de petits êtres engloutis dans une
+    robe de bure, dont on ne voit que les yeux). Silencieux et
+    solitaire, presque capable de téléportation, il a une sacrée
+    tendance à se retrouver dans le dos du joueur. Dans ce cas, il
+    commence à incanter entre ses bras tendus à la verticale un éclair
+    d&#39;énergie, qu&#39;il convient d&#39;interrompre brutalement
+    sous peine de se voir bien sonné, voire plus. Le poursuivre est
+    déconcertant car rapidement on en perd la trace. On s&#39;arrête
+    pour réfléchir à l&#39;endroit où il a bien pu disparaître, un
+    sixième sens nous avertit, on fait volte-face, en général trop tard
+    pour éviter le rayon qu&#39;il préparait dans notre dos.</li>
+
+    <li><strong>le dealer de bufs</strong> : cet être peu
+    recommandable, généralement rencontré dans les zones peu sures,
+    offrira grâcieusement au joueur un dose de buf, qui augmentera
+    temporairement assez sensiblement certaines caractéristiques de
+    l&#39;avatar (ex : classe d&#39;armure, bubulle, rapidité de
+    récupération, célérité, etc.). Le joueur s&#39;applique alors à
+    bénéficier de ces bonus en exterminant des monstres au-dessus de
+    ses moyens. Mais assez rapidement les effets de la dose
+    s&#39;estompent et le joueur se retrouve en zone de conflit avec
+    des facultés diminuées par rapport aux conditions nominales, ce qui
+    rend sa survie intenable dans le guêpier dans lequel il s&#39;est
+    fourré. Seule solution : prendre une nouvelle dose, d&#39;autant
+    plus que les effets de manque peuvent se faire jour (ex :
+    déformation des perspectives, application d&#39;un filtre de flou
+    anisotrope, etc.). Et voilà notre joueur devenu accro aux bufs
+    durs, subissant éventuellement les effets d&#39;accoutumance (les
+    doses successives ont de moins en moins d&#39;effet), transformé en
+    adepte de monster-bashing pour se procurer sa dose journalière,
+    alors que vraisemblablement ce n&#39;est ni sa vocation première
+    (vous vous souvenez ? Il partait en croisade pour la Vraie Foi,
+    quelle déchéance) ni son domaine d&#39;excellence. Bien sûr, le
+    dealer de bufs a des copains très (trop) costauds. Une possibilité
+    de rémission : faire une cure de désintoxication, assez périlleuse
+    (on est vulnérable) si déjà on arrive à fuir assez loin sans trop
+    de casse. Une autre voie de sortie : une sous-quête conduisant à
+    s&#39;attirer les bonnes grâces du dieu scandinave qui va bien
+    (lequel ?), qui le délivrera du mal. Un avenir professionnel :
+    développer lui-même la compétence dealer de bufs pour recruter sa
+    petite armée de sous-fifres.</li>
+
+    <li><strong>la fausse bonne affaire</strong> : deux monstres à
+    l&#39;apparence très voisine disposent de facultés de nuisance très
+    différentes. Quand on en croise un, dur de savoir si on a affaire à
+    la version lavette ou à la version king size. En rapport avec les
+    factions.</li>
+
+    <li><strong>le Doppelgänger parfait</strong> : ce monstre assez
+    agressif prend l&#39;apparence et les capacités des créatures de
+    son voisinage qu&#39;il est amené à apercevoir, voire de
+    l&#39;avatar, ce qui, en cas de combat, donne un pronostic très
+    réservé pour le joueur (pile ou face, ce n&#39;est satisfaisant
+    pour personne). Comme le monstre ne contrôle pas nécessairement le
+    processus, un moyen de résoudre le problème serait de capturer des
+    rongeurs (vous voyez ceux auxquels je pense), de les lâcher près du
+    Doppel, de les éclairer. Sa métamorphose réflexe en ragondin
+    illuminé lui serait alors fatale.</li>
+  </ul><br>
+  <br>
+
+  <p>Pour tous ces monstres, il existe une tâche identifiée :
+  répertorier tous les graphismes de créatures disponibles en vue de
+  l&#39;établissement d&#39;une correspondance entre un profil et un
+  graphisme, modulo une adaptation dans certains cas dudit profil.</p>
+
+
+
+  </p>
+  
+  <br>
+  <br>
+  <br>
+
+
+  <h3>N&#39;hésitez pas à nous faire part de votre avis !</h3>
+
+  <p>Pour toute remarque, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[Jeu]%20Monstres%20et%20créatures">envoyez-nous
+  un mail</a>!</p><br>
+  <br>
+  <hr>
+
+  <div class="c1">
+    <a href="#_top_">Top</a><br>
+    <br>
+    <em>Dernière mise à jour : 1 Février 2004</em>
+  </div>
+</body>
+</html>

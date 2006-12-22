@@ -1,0 +1,5562 @@
+2006-01-07 09:53  wondersye
+
+	* doc/web/main/documentation/rendering/: RenderingMenu.html,
+	  SDL-graphics.html, SDL-hints.html, SDL-macosx.html,
+	  SDL-network.html, SDL-objects.html, SDL-optimizing.html,
+	  SDL-threads.html, SDL-troubleshooting.html, SDL-using.html,
+	  SDL-windows.html: First premilinary SDL doc integration achived :
+	  everything can be seen, even if not integrated.
+
+2006-01-06 23:03  wondersye
+
+	* doc/web/main/documentation/rendering/: RenderingMenu.html,
+	  SDL-backend.html, SDL-building.html, SDL-consoles.html,
+	  SDL-cross-compilation.html, SDL-events.html, SDL-graphics.html,
+	  SDL-hints.html, SDL-inputs.html, SDL-licence.html,
+	  SDL-macosx.html, SDL-network.html, SDL-openGL.html,
+	  SDL-windows.html: Topics still not integrated being added but
+	  marked as such, stopped at licenses for the moment.
+
+2006-01-06 22:15  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-building.html:
+	  Reformatting done.
+
+2006-01-06 18:43  wondersye
+
+	* doc/web/main/documentation/misc/xorg.conf: Added for Ubuntu.
+
+2006-01-06 18:42  wondersye
+
+	* doc/web/main/documentation/misc/Toshiba.html: FreeBSD
+	  unsuccessful attempt added.
+
+2006-01-04 22:10  wondersye
+
+	*
+	  doc/web/main/documentation/OSDL/OSDL-generic/WindowsEnvironment.html:
+	  Starting with environments and compilers.
+
+2006-01-04 22:10  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/PortingGuide.html:
+	  Lots of details about platforms, features and symbols added.
+
+2006-01-04 22:07  wondersye
+
+	* doc/GNUmakefile: Symbolic links shorten URL and remove useless
+	  version dependency :
+	  http://osdl.sourceforge.net/OSDL-latest/documentation/rendering/SDL-audio.html
+	  better than
+	  http://osdl.sourceforge.net/OSDL/OSDL-0.3/src/doc/web/main/documentation/rendering/SDL-audio.html
+
+2005-12-30 16:34  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/:
+	  OSDLGenericMenu.html, WindowsEnvironment.html: Windows
+	  environment added.
+
+2005-12-30 16:28  wondersye
+
+	* doc/web/main/documentation/Glossary.html: PM entry added.
+
+2005-12-30 16:27  wondersye
+
+	* doc/web/main/documentation/Documentation.html: Minor formatting
+	  update.
+
+2005-12-30 16:05  wondersye
+
+	* doc/web/main/documentation/misc/Toshiba.html: Ubuntu install is a
+	  success, moving to FreeBSD
+
+2005-12-29 19:21  wondersye
+
+	* doc/web/main/documentation/misc/: Knoppix.html, MiscMenu.html,
+	  Recipes.html, Toshiba.html, toshiba-XP-system-informations.txt:
+	  Toshiba laptop installation added.
+
+2005-12-24 10:52  wondersye
+
+	* doc/web/main/documentation/rendering/Sound.html: Sound advices
+	  added.
+
+2005-12-24 10:51  wondersye
+
+	* code/video/: OSDLOverlay.cc, OSDLOverlay.h: First overlay support
+	  added.
+
+2005-12-24 10:51  wondersye
+
+	* GNUmakefile: Updated.
+
+2005-12-24 10:47  wondersye
+
+	* doc/web/common/css/OSDL.css: Minor correction.
+
+2005-12-24 10:47  wondersye
+
+	* doc/GNUmakefile: Release only made on purpose.
+
+2005-12-24 10:46  wondersye
+
+	* doc/web/main/: MainOSDL.html, Map.html, Search.html,
+	  club/Club.html, club/game/Game.html,
+	  club/game/numericBook/HeroicBook.html,
+	  club/game/numericBook/nodes-first-volume/ForDesigner.html,
+	  documentation/Documentation.html,
+	  documentation/OSDL/OSDL-central.html,
+	  documentation/OSDL/OSDL-0.3/LOANI.html,
+	  documentation/OSDL/OSDL-0.3/OSDL-bugs.html,
+	  documentation/OSDL/OSDL-0.3/OSDL-credits.html,
+	  documentation/OSDL/OSDL-0.3/OSDLMenu.html,
+	  documentation/OSDL/OSDL-generic/Languages.html,
+	  documentation/OSDL/OSDL-generic/NewRelease.html,
+	  documentation/OSDL/OSDL-generic/PortingGuide.html,
+	  documentation/rendering/SDL-audio.html,
+	  documentation/rendering/SDL-hints.html,
+	  documentation/rendering/SDL-libraries.html,
+	  documentation/rendering/SDL-macosx.html,
+	  documentation/rendering/SDL-network.html, project/Contact.html,
+	  project/Credits.html, resources/Technical.html,
+	  resources/sounds/Sounds.html: Massive ugly update before holydays
+	  departure.
+
+2005-12-24 10:45  wondersye
+
+	* doc/web/main/resources/Resources.html: Resources updated.
+
+2005-12-24 10:42  wondersye
+
+	* conf/updateLOANI-MD5.sh: Smart MD5 update for our releases.
+
+2005-12-24 10:41  wondersye
+
+	* conf/loani-requiredTools.sh: sh/NetBSD/MinGW port.
+
+2005-12-24 10:40  wondersye
+
+	* conf/loani-commonBuildTools.sh: Port : sh/BSD on the way.
+
+2005-12-24 10:40  wondersye
+
+	* conf/loani-optionalTools.sh: Port towards sh/BSD.
+
+2005-12-24 10:39  wondersye
+
+	* code/video/twoDimensional/OSDLGLTexture.cc: Example to integrate
+	  added.
+
+2005-12-24 10:38  wondersye
+
+	* conf/manageOSDLPrerequesites.sh: Ported to sh and BSD.
+
+2005-12-24 10:38  wondersye
+
+	* code/video/OSDLVideoIncludes.h: Overlay added.
+
+2005-12-24 10:37  wondersye
+
+	* conf/osdl-versions.sh: New OSDL release taken into account.
+
+2005-12-24 10:36  wondersye
+
+	* code/video/OSDLVideo.h: Ultra-light update.
+
+2005-12-24 10:35  wondersye
+
+	* code/video/OSDLPixel.cc: Logs improved.
+
+2005-12-24 10:34  wondersye
+
+	* conf/generateBugReport.sh: Updated and adapted to sh/BSD.
+
+2005-12-24 10:33  wondersye
+
+	* code/video/OSDLSurface.cc: Comments improved.
+
+2005-12-24 10:31  wondersye
+
+	* conf/GNUmakefile: Release taken into account.
+
+2005-12-24 10:30  wondersye
+
+	* code/video/OSDLSurface.h: Comments improved.
+
+2005-12-24 10:30  wondersye
+
+	* conf/loani.sh: Adapted from bash to sh, and aiming NetBSD
+	  support.
+
+2005-12-24 10:29  wondersye
+
+	* code/video/GNUmakefile: Overlay added.
+
+2005-12-24 10:28  wondersye
+
+	* code/basic/OSDLBasic.cc: OSDL binary flags corrected (expanded).
+
+2005-12-24 10:26  wondersye
+
+	* code/basic/OSDLTypes.h: Flags now set in Ceylan.
+
+2005-12-24 10:25  wondersye
+
+	* GNUmakevars.inc: New Ceylan release used, libttol updated.
+
+2005-12-24 10:24  wondersye
+
+	* versions.inc: New 0.3.2 release.
+
+2005-12-24 00:45  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/:
+	  OSDLGenericMenu.html, PortingGuide.html: Porting informations
+	  added.
+
+2005-12-20 22:40  wondersye
+
+	* doc/web/main/documentation/gameExplained/Licenses.html: Licenses
+	  added, updated and reformatted.
+
+2005-12-20 22:38  wondersye
+
+	* doc/web/main/documentation/gameExplained/: GameMenu.html,
+	  GameResources.html: Online resources added.
+
+2005-12-14 23:11  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/NewRelease.html:
+	  HTML code cleaned.
+
+2005-12-14 23:07  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/Languages.html:
+	  Erlang added, bash/sh discussed, formatting updated.
+
+2005-12-14 23:05  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/Quality.html: Link
+	  for Ceylan updated, comments added, dead links discussed.
+
+2005-12-14 23:04  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/:
+	  OSDLGenericMenu.html, TechnicalHints.html: Generic technical
+	  hints added.
+
+2005-11-29 23:40  wondersye
+
+	* conf/osdl-versions.sh: SDL_gfx URL updated.
+
+2005-11-27 18:10  wondersye
+
+	* doc/web/main/club/Club.html: Major update.
+
+2005-11-27 15:20  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-openGL.html: OpenGL
+	  context lost explained.
+
+2005-11-27 15:19  wondersye
+
+	* doc/web/main/documentation/rendering/RenderingMenu.html:
+	  Formatting improved.
+
+2005-11-26 12:01  wondersye
+
+	* doc/web/main/project/: Join.html, ProjectInfos.html,
+	  ProjectMenu.html: Little update, tidy changes removed.
+
+2005-11-26 11:51  wondersye
+
+	* code/basic/OSDLCDROMDriveHandler.cc: Text output improved a bit.
+
+2005-11-26 11:50  wondersye
+
+	* code/basic/OSDLCDROMDrive.cc: Better code integration.
+
+2005-11-26 11:46  wondersye
+
+	* code/basic/tests/testOSDLCDROMDrive.cc: Test improved, with eject
+	  diabled, playback duration increased.
+
+2005-11-26 11:25  wondersye
+
+	* code/basic/tests/testOSDLCDROMDrive.cc: Testing CD-ROM services.
+
+2005-11-25 23:33  wondersye
+
+	* code/basic/: GNUmakefile, OSDLBasic.cc, OSDLBasic.h,
+	  OSDLBasicIncludes.h, OSDLCDROMDrive.cc, OSDLCDROMDrive.h,
+	  OSDLCDROMDriveHandler.cc, OSDLCDROMDriveHandler.h: CD-ROM
+	  (notably, playback) support added and integrated.
+
+2005-11-25 23:31  wondersye
+
+	* code/basic/tests/testOSDLBasic.cc: Little update and
+	  reformatting.
+
+2005-11-21 23:11  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h,
+	  tests/testOSDLSurfaceTransformations.cc,
+	  twoDimensional/OSDLBackBufferedWidget.cc,
+	  twoDimensional/OSDLBackBufferedWidget.h,
+	  twoDimensional/OSDLWidget.cc, twoDimensional/OSDLWidget.h: New
+	  'resize' method integrated, with flag telling whether content
+	  should be scaled, if appropriate.
+
+2005-11-21 23:09  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-openGL.html: More hints,
+	  links, comments.
+
+2005-11-21 23:08  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-audio.html: Some more
+	  hints added.
+
+2005-11-21 21:59  wondersye
+
+	* code/events/: GNUmakefile, OSDLEventsIncludes.h,
+	  OSDLInputDeviceHandler.cc, OSDLInputDeviceHandler.h: Abstract
+	  input device added.
+
+2005-11-21 21:56  wondersye
+
+	* code/events/: OSDLJoystickHandler.cc, OSDLJoystickHandler.h,
+	  OSDLKeyboardHandler.cc, OSDLKeyboardHandler.h: All handlers
+	  should inherit from abstract input device handler.
+
+2005-11-21 21:54  wondersye
+
+	* code/events/OSDLEvents.cc: Comments added about advantages over
+	  'SDL_framerate' from SDL_gfx.
+
+2005-11-20 23:35  wondersye
+
+	* doc/web/main/documentation/rendering/: Rendering.html,
+	  RenderingMenu.html: Sound section added, tidy corrected.
+
+2005-11-20 23:34  wondersye
+
+	* doc/web/main/MainOSDL.html: Quick links added, tidy corrected.
+
+2005-11-20 23:33  wondersye
+
+	* doc/web/main/Confetti.html: Links updated, tidy corrected.
+
+2005-11-20 23:15  wondersye
+
+	* code/video/twoDimensional/: OSDLBezier.cc, OSDLBezier.h: Support
+	  for Bezier curves added.
+
+2005-11-20 23:14  wondersye
+
+	* code/video/twoDimensional/GNUmakefile: Bezier added.
+
+2005-11-20 23:13  wondersye
+
+	* code/video/twoDimensional/OSDLTwoDimensionalIncludes.h: Bezier
+	  curves added.
+
+2005-11-20 23:13  wondersye
+
+	* code/video/twoDimensional/: OSDLPolygon.cc, OSDLPolygon.h:
+	  Comments improved, memory leak fixed, error status checking
+	  corrected, 'CreateFrom' factory integrated.
+
+2005-11-20 23:11  wondersye
+
+	* code/video/twoDimensional/: OSDLPoint2D.cc, OSDLPoint2D.h:
+	  Point2D constructor from FloatingPointCoordinate replaced by
+	  CreateFrom factory.
+
+2005-11-20 23:10  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLPolygon.cc: Keyboard
+	  added, screenshot improved.
+
+2005-11-20 23:09  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLMultilineText.cc:
+	  Screenshot capability improved.
+
+2005-11-20 23:09  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLLine.cc: UseKeyboard
+	  added.
+
+2005-11-20 23:08  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLConic.cc: Screenshot
+	  added.
+
+2005-11-20 23:07  wondersye
+
+	* code/video/tests/testOSDLSurfacePrimitives.cc: Bezier curves and
+	  other fancy primitives added.
+
+2005-11-20 22:26  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLBezier.cc: Bezier support
+	  tested with 'OSDL' pattern.
+
+2005-11-20 17:34  wondersye
+
+	* doc/web/main/club/game/trailer/StoryBoard.html: Image name
+	  corrected, tidy effects removed.
+
+2005-11-20 17:32  wondersye
+
+	* doc/web/main/documentation/rendering/RenderingMenu.html: Tidy
+	  effects corrected.
+
+2005-11-20 17:31  wondersye
+
+	* GNUmakevars.inc: Dependency flags and platform arch better
+	  managed.
+
+2005-11-20 17:31  wondersye
+
+	* code/basic/OSDLTypes.h: Doc improved a little.
+
+2005-11-20 17:30  wondersye
+
+	* code/video/OSDLVideoTypes.h: Comments improved.
+
+2005-11-20 17:29  wondersye
+
+	* code/video/twoDimensional/: OSDLPolygon.cc, OSDLPolygon.h: 'draw'
+	  method now uses all informations from the local referential for
+	  polygon layout.
+
+2005-11-20 12:32  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: Newer drawCross
+	  added, comments added.
+
+2005-11-20 12:31  wondersye
+
+	* code/video/twoDimensional/: OSDLLine.cc, OSDLLine.h: drawCross
+	  method #2 added.
+
+2005-11-20 12:29  wondersye
+
+	* code/video/tests/testOSDLSurface.cc: Screenshot naming improved,
+	  flags corrected.
+
+2005-11-20 12:28  wondersye
+
+	* code/video/tests/testOSDLBlit.cc: Little update (keyboard
+	  flag/screenshot activation).
+
+2005-11-20 12:27  wondersye
+
+	* code/video/tests/testOSDLSurfacePrimitives.cc: 2D basic
+	  primitives tested as well.
+
+2005-11-19 17:17  wondersye
+
+	* code/basic/tests/testSDL_image.cc: Image format changes
+	  integrated.
+
+2005-11-19 17:15  wondersye
+
+	* code/video/OSDLSurface.cc: Rotozoom facilities added and typed
+	  angles integrated from Ceylan.
+
+2005-11-19 17:14  wondersye
+
+	* code/video/OSDLSurface.h: Rotozoom facilities added, typed angles
+	  integrated from Ceylan, comments improved.
+
+2005-11-19 17:12  wondersye
+
+	* code/video/twoDimensional/: OSDLPolygon.cc, OSDLPolygon.h: Angles
+	  with unit integrated from Ceylan, comments updated and improved.
+
+2005-11-19 17:10  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLImage.cc: Updated
+	  according to image format changes.
+
+2005-11-19 16:41  wondersye
+
+	* code/video/tests/testOSDLSurfaceTransformations.cc: Better image
+	  layout, streching primitives added.
+
+2005-11-19 16:22  wondersye
+
+	* doc/web/images/: Soldier-heavy-purple-small.jpg,
+	  Soldier-heavy-purple-small.png: JPEG file replaced by PNG one
+	  with transparency added for better test examples.
+
+2005-11-19 09:49  wondersye
+
+	* code/basic/tests/testSDL_mixer.cc: A basic test to play OggVorbis
+	  short music.
+
+2005-11-18 21:03  wondersye
+
+	* doc/web/common/sounds/welcome-to-OSDL.ogg: Small sound file
+	  useful for audio testing.
+
+2005-11-18 14:49  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: CVS problems
+	  still explained more.
+
+2005-11-18 14:17  wondersye
+
+	* conf/: GNUmakefile, README-template.txt: LOANI archive has now a
+	  timestamp put in README.txt, whose template has been updated and
+	  improved.
+
+2005-11-18 12:35  wondersye
+
+	* code/video/twoDimensional/OSDLFixedFont.cc: Variable names better
+	  chosen, uniformized across font types now.
+
+2005-11-18 12:34  wondersye
+
+	* code/video/twoDimensional/OSDLFixedFont.h: Variable names
+	  updated.
+
+2005-11-18 12:34  wondersye
+
+	* code/video/twoDimensional/OSDLTrueTypeFont.cc:
+	  'renderUnicodeGlyph' takes glpyh cache into account now and uses
+	  newly added 'basicRenderUnicodeGlyph'. Variable names updated.
+
+2005-11-18 12:32  wondersye
+
+	* code/video/twoDimensional/OSDLFont.cc: Now a temporary word cache
+	  is used for multiline rendering if only a glyph cache is
+	  available, or no cache at all. Works great. Variable names
+	  updated.
+
+2005-11-18 12:30  wondersye
+
+	* code/video/twoDimensional/OSDLTrueTypeFont.h: Doc improved,
+	  'basicRenderUnicodeGlyph' added for more momdularity.
+
+2005-11-18 12:29  wondersye
+
+	* code/video/twoDimensional/OSDLFont.h: Comments updated, some
+	  variable names improved.
+
+2005-11-18 12:27  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLTrueTypeFontCache.cc:
+	  Point size improved, debug flags recommended in logs.
+
+2005-11-18 12:27  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLTrueTypeFont.cc: Debug
+	  flags recommended in logs.
+
+2005-11-18 12:25  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLMultilineText.cc:
+	  Worst-case scenario for caching tested (glyph-based with
+	  temporary word-based).
+
+2005-11-18 10:15  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/Quality.html: Strong
+	  PC spec added.
+
+2005-11-18 10:13  wondersye
+
+	* conf/osdl-versions.sh: Ogg and Vorbis URL fixed.
+
+2005-11-15 23:07  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: Major doc
+	  update following LOANI's own update : LOANI better introduced,
+	  source archive system with back-up mirrors more detailed, output
+	  traces updated, typos fixed, etc.
+
+2005-11-15 23:05  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDL.html: Some more
+	  infos given about state of the art.
+
+2005-11-12 00:19  wondersye
+
+	* GNUmakefile: Various improvements : better integration from its
+	  Ceylan counterpart, support for source release creation, etc.
+
+2005-11-12 00:17  wondersye
+
+	* GNUmakevars.inc: Synchronized with its Ceylan counterpart,
+	  release version supported, so more improvements.
+
+2005-11-12 00:16  wondersye
+
+	* versions.inc: First release for this new version labelling
+	  system.
+
+2005-11-12 00:15  wondersye
+
+	* conf/osdl-versions.sh: OSDL metada for release archive added.
+
+2005-11-12 00:13  wondersye
+
+	* conf/loani-requiredTools.sh: Ceylan and OSDL now can be installed
+	  from source release archives instead of CVS.
+
+2005-11-12 00:12  wondersye
+
+	* conf/loani.sh: Downloading of source release archive added
+	  (instead of CVS), tool sets reordered, help and wizard updated.
+
+2005-11-12 00:09  wondersye
+
+	* code/video/tests/testOSDLSurface.cc: Minor change :
+	  CommonModule::UseKeyboard added.
+
+2005-11-12 00:04  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLUprightRectangle.cc:
+	  Rectangle dimensions built to be correct regarding edge width.
+	  Screenshot feature added, minor changes.
+
+2005-11-12 00:02  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLTrueTypeFont.cc: Less
+	  keyboard hits needed, if requested.
+
+2005-11-12 00:01  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLImage.cc: Screenshot
+	  feature added, minor changes.
+
+2005-11-11 23:59  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/Quality.html:
+	  Testing process and platforms updated.
+
+2005-11-11 23:58  wondersye
+
+	*
+	  doc/web/main/documentation/OSDL/OSDL-generic/OSDLGenericMenu.html:
+	  CVS project access to own gateway removed since not used anymore.
+
+2005-11-11 23:57  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/OSDLGeneric.html:
+	  Short overview of available themes.
+
+2005-11-11 23:56  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/NewRelease.html:
+	  Creating new version, release and subrelease better explained.
+
+2005-11-11 23:54  wondersye
+
+	* doc/web/main/project/howToContribute/ContributionGuide.html:
+	  Better exaplanation for version, release and subrelease
+	  management.
+
+2005-11-11 23:11  wondersye
+
+	* doc/web/main/project/howToContribute/Members.html: Minor update.
+
+2005-11-11 23:06  wondersye
+
+	* doc/web/main/project/howToContribute/ContributionGuide.html:
+	  Minor update.
+
+2005-11-11 23:02  wondersye
+
+	* doc/web/main/documentation/Documentation.html: Ultra-minor
+	  change.
+
+2005-11-11 23:01  wondersye
+
+	* doc/web/main/News.html: Updated.
+
+2005-11-11 23:00  wondersye
+
+	* doc/web/main/download/DownloadMenu.html: Local CVS access
+	  commented out (not used).
+
+2005-11-11 22:59  wondersye
+
+	* doc/web/main/download/Download.html: Ways of obtaining OSDL
+	  updated, reordered, better explained and cleaned.
+
+2005-11-11 09:25  wondersye
+
+	* conf/loani.sh: 'launchFileRetrieval' now finds all needed
+	  informations from provided package name, 'getFileAvailability'
+	  handles set of preferred mirrors with fallback : archives should
+	  always be found now, in a server or another.
+
+2005-11-11 09:22  wondersye
+
+	* conf/loani-requiredTools.sh: Newer 'launchFileRetrieval'
+	  integrated, package names updated (improved).
+
+2005-11-11 09:19  wondersye
+
+	* conf/loani-optionalTools.sh: 'launchFileRetrieval' integrated,
+	  package order improved for more parallel downloads.
+
+2005-11-11 09:17  wondersye
+
+	* conf/loani-commonBuildTools.sh: Newer 'launchFileRetrieval'
+	  function integrated.
+
+2005-11-11 09:16  wondersye
+
+	* conf/GNUmakefile: Merging of loani-versions.sh file (from its
+	  OSDL and Ceylan counterparts) commented and displayed.
+
+2005-11-11 00:00  wondersye
+
+	* conf/osdl-versions.sh: Package naming upgraded, alternate
+	  download locations added for new LOANI mirroring facilities.
+
+2005-11-07 23:22  wondersye
+
+	* doc/web/main/documentation/rendering/Contests.html: Game creation
+	  contests, my friend.
+
+2005-11-07 23:21  wondersye
+
+	* doc/web/main/documentation/rendering/Learning.html: Tutorials on
+	  rendering.
+
+2005-11-07 23:20  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-openGL.html,
+	  SDL-windows.html: Checkin before LOANI upgrade.
+
+2005-11-07 22:53  wondersye
+
+	* conf/loani-requiredTools.sh: Stable release tags updated.
+
+2005-11-07 22:53  wondersye
+
+	* code/events/OSDLEvents.cc: Comments added for 'UseEventThread'
+	  not being used.
+
+2005-11-07 22:51  wondersye
+
+	* code/basic/OSDLBasic.cc: Comments added for subsystems
+	  interdependencies.
+
+2005-11-06 23:25  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-audio.html: Major update
+	  in SDL audio doc before starting OSDL audio module.
+
+2005-11-06 21:53  wondersye
+
+	* doc/web/common/css/OSDL.css: No more disturbing jumping links.
+
+2005-11-06 17:57  wondersye
+
+	* conf/osdl-versions.sh: Tool versions updated.
+
+2005-11-06 17:47  wondersye
+
+	* conf/GNUmakefile: It is more clearly stated in
+	  'loani-versions.sh' that this file is generated.
+
+2005-11-06 14:55  wondersye
+
+	* code/GNUmakefile: Libraries installed before header files to
+	  shorten 'make all' duration before test.
+
+2005-11-06 14:27  wondersye
+
+	* GNUmakevars.inc: Debug flags managed independently now.
+
+2005-11-06 14:25  wondersye
+
+	* code/video/OSDLSurface.cc: Color key fixed when resizing, better
+	  log (de)activation.
+
+2005-11-06 14:24  wondersye
+
+	* code/video/OSDLFromGfx.cc: Debug informations removed.
+
+2005-11-06 14:22  wondersye
+
+	* code/video/twoDimensional/OSDLWidget.cc: Logs muted if not
+	  wanted.
+
+2005-11-06 13:20  wondersye
+
+	* code/video/twoDimensional/OSDLTextWidget.cc: Comment improved,
+	  vertical and horizontal alignment improved for all widget shapes,
+	  '_roundOffset' and 'computeRadiusForRoundRectangle' integrated.
+
+2005-11-06 13:17  wondersye
+
+	* code/video/twoDimensional/OSDLUprightRectangle.cc:
+	  'computeRadiusForRoundRectangle' method added and fully
+	  integrated.
+
+2005-11-06 13:16  wondersye
+
+	* code/video/twoDimensional/OSDLUprightRectangle.h:
+	  'computeRadiusForRoundRectangle' method added.
+
+2005-11-06 13:16  wondersye
+
+	* code/video/twoDimensional/OSDLTextWidget.h: '_roundOffset'
+	  precomputation member added.
+
+2005-11-06 13:14  wondersye
+
+	* code/video/twoDimensional/OSDLBackBufferedWidget.cc: Comments
+	  improved, base color mode improved as well;
+
+2005-11-06 13:11  wondersye
+
+	* code/video/twoDimensional/OSDLBackBufferedWidget.h: 'resize' doc
+	  updated.
+
+2005-11-06 13:09  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLTextWidget.cc: Display
+	  parameters improved for clearer testing.
+
+2005-11-06 12:53  wondersye
+
+	* code/engine/OSDLScheduler.cc: Logs are all conditional now (debug
+	  flags tested).
+
+2005-11-05 16:48  wondersye
+
+	* code/video/twoDimensional/OSDLUprightRectangle.cc: Integration of
+	  'Pixels::selectColorDifferentFrom' for colorkey selection.
+
+2005-11-05 16:47  wondersye
+
+	* code/video/twoDimensional/OSDLUprightRectangle.h: Ultra-minor
+	  documentation changed (typo).
+
+2005-11-05 16:46  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLWidget.cc: API changes
+	  integrated (base mode added, 'addNewWidget' removed).
+
+2005-11-05 16:45  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLTextWidget.cc: More TTF
+	  fonts tested, API changes integrated (base mode), settings
+	  improved, checkpoints added.
+
+2005-11-05 16:43  wondersye
+
+	* code/video/twoDimensional/: OSDLTextWidget.cc, OSDLTextWidget.h:
+	  Shape management advanced, comments improved, base color mode
+	  added (for background, colorkey, etc.) selection, new redraw
+	  state management integrated, 'getWidgetRenderTarget' integrated.
+
+2005-11-05 16:41  wondersye
+
+	* code/video/twoDimensional/: OSDLBackBufferedWidget.cc,
+	  OSDLBackBufferedWidget.h: Lts of work : resize added, comments
+	  improved, base color mode added (for background, colorkey, etc.)
+	  selection, new redraw state (both for overall surface and
+	  backbuffer) management integrated, 'getWidgetRenderTarget'
+	  integrated.
+
+2005-11-05 16:37  wondersye
+
+	* code/video/twoDimensional/: OSDLWidget.cc, OSDLWidget.h: Comments
+	  improved, base color mode added (for background, colorkey, etc.)
+	  selection, new redraw state management integrated,
+	  'getWidgetRenderTarget' integrated.
+
+2005-11-05 16:34  wondersye
+
+	* code/video/twoDimensional/OSDLFont.h: Alinea management methods
+	  added.
+
+2005-11-05 16:33  wondersye
+
+	* code/video/: OSDLPixel.cc, OSDLPixel.h: Two
+	  'selectColorDifferentFrom' methods added for careful and uniform
+	  colorkey selection.
+
+2005-11-05 16:32  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: Redraw states
+	  improved (and private now), 'getWidgetRenderTarget' added, better
+	  trace and error description, useless 'addNewWidget' removed.
+
+2005-11-03 22:29  wondersye
+
+	* GNUmakevars.inc: Better libtool version catching.
+
+2005-11-01 23:22  wondersye
+
+	* code/video/twoDimensional/OSDLFont.cc: Paragraphs support
+	  finished, including inter-paragraph space and alinea (including
+	  get/set methods).
+
+2005-11-01 22:34  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLTextWidget.cc: Full test
+	  of text widgets (fonts, layouts, justification, autosize,
+	  vanishing, paragraphs, etc.)
+
+2005-11-01 22:34  wondersye
+
+	* code/video/twoDimensional/OSDLFont.cc: First paragraph support
+	  added.
+
+2005-11-01 21:09  wondersye
+
+	* code/video/twoDimensional/OSDLTextWidget.cc: Height modification
+	  better managed.
+
+2005-11-01 21:06  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFixedFont.h:
+	  Space width better computed and managed.
+
+2005-11-01 21:04  wondersye
+
+	* code/video/twoDimensional/: OSDLTrueTypeFont.cc,
+	  OSDLTrueTypeFont.h: Space width better computed.
+
+2005-11-01 21:01  wondersye
+
+	* code/video/twoDimensional/: OSDLFont.cc, OSDLFont.h: Space width
+	  better computed, alinea defined, word splitting improved a lot,
+	  memory leaks checked (there were none !), too long words managed,
+	  better error catching.
+
+2005-10-31 22:59  wondersye
+
+	* doc/web/main/documentation/rendering/: GameHints.html,
+	  Languages.html, Modelers.html, SDL-audio.html, SDL-hints.html,
+	  SDL-inputs.html, SDL-libraries.html, SDL-network.html,
+	  SDL-openGL.html, SDL-threads.html, SDL-troubleshooting.html,
+	  SDL-windows.html: More infos from the SDL mailing list added.
+
+2005-10-31 22:58  wondersye
+
+	* code/basic/tests/testSDLWithOpenGL.cc: Comments more homogeneous,
+	  more GL primitives used.
+
+2005-10-31 22:57  wondersye
+
+	* doc/web/main/documentation/Glossary.html: Definitions added.
+
+2005-10-31 22:54  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: Resize added,
+	  instance count support added, RLEColorkeyBlitAvailable added,
+	  comments improved.
+
+2005-10-31 22:52  wondersye
+
+	* code/video/OSDLVideo.h: Comments improved.
+
+2005-10-31 22:51  wondersye
+
+	* code/video/twoDimensional/: OSDLTextWidget.cc, OSDLTextWidget.h:
+	  Comments added, height can be automatically sized depending on
+	  text, correct vertical alignments achieved, redraw updates
+	  improved, etc.
+
+2005-10-31 22:48  wondersye
+
+	* code/video/twoDimensional/: OSDLTrueTypeFont.cc,
+	  OSDLTrueTypeFont.h: Better color key management (collisions
+	  avoided), more comments.
+
+2005-10-31 22:47  wondersye
+
+	* code/video/twoDimensional/OSDLUprightRectangle.cc: Now picking a
+	  color key never corresponding to any of the two disc colors.
+
+2005-10-31 22:46  wondersye
+
+	* code/video/twoDimensional/: OSDLWidget.cc, OSDLWidget.h: Many
+	  changes : Widget layout supported (offsets, client area, content
+	  and title alignment, etc.), more attributes added, resize added,
+	  better 'needs redraw' management, separation of
+	  fundamentals/decorations/client area, etc.
+
+2005-10-31 22:41  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFixedFont.h:
+	  Constants retrived in correct class, better color key choice
+	  management to avoid color collision.
+
+2005-10-31 22:40  wondersye
+
+	* code/video/twoDimensional/OSDLGLTexture.cc: Better code
+	  integration in OSDl vs back-end, clearer tests.
+
+2005-10-31 22:38  wondersye
+
+	* code/video/twoDimensional/: OSDLBackBufferedWidget.cc,
+	  OSDLBackBufferedWidget.h: Resize added, some 'needs redraw' flags
+	  corrected, log and comment improved.
+
+2005-10-31 22:35  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLTrueTypeFontCache.cc:
+	  More informations logged, code homogeniety improved, Keyboard
+	  requested now.
+
+2005-10-31 22:34  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLTrueTypeFont.cc: More
+	  informations logged, more choice for the words, Keyboard
+	  requested now.
+
+2005-10-31 22:28  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLText.cc: Better code
+	  homogeneity achieved, more TTF fonts used, little API change
+	  integrated (keyboard requested now).
+
+2005-10-31 22:27  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLMultilineText.cc: Better
+	  code homogeneity achieved, little API change integrated (keyboard
+	  requested now).
+
+2005-10-31 22:23  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLFixedFontCache.cc: Better
+	  comments, typos fixed, little API change integrated.
+
+2005-10-31 13:41  wondersye
+
+	* code/video/twoDimensional/: OSDLFont.cc, OSDLFont.h: Lot of
+	  efforts made so that rendered text can be vertically aligned in a
+	  container.
+
+2005-10-26 21:44  wondersye
+
+	* code/video/twoDimensional/: OSDLFont.cc, OSDLFont.h: The best
+	  version of all time : really perfect text rendering in all tested
+	  cases. No more rightmost pixel lost on some combinations. Initial
+	  capital letters perfect as well, for all tested fonts.
+
+2005-10-26 20:25  wondersye
+
+	* code/video/twoDimensional/OSDLFont.cc: Saves the code as is,
+	  since it seems to work perfectly. Some cleaning and commenting
+	  still needed.
+
+2005-10-08 23:41  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLText.cc: Little
+	  improvement (keyboard activated, uppercases fixed).
+
+2005-10-08 23:40  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLUprightRectangle.cc: Full
+	  test activated, shows at last pixel-perfect results.
+
+2005-10-08 23:36  wondersye
+
+	* code/video/twoDimensional/OSDLUprightRectangle.cc: This one is
+	  THE one : pixel perfect rounded rectangles, no matter which
+	  alphablending configuration it leads to. What an awful
+	  experience.
+
+2005-10-08 22:47  wondersye
+
+	* code/video/twoDimensional/OSDLUprightRectangle.cc: Good
+	  implementation for rounded corners but still room for
+	  improvement.
+
+2005-10-07 22:14  wondersye
+
+	* code/events/tests/testOSDLController.cc: Keyboard subsystem
+	  activated now.
+
+2005-10-07 21:32  wondersye
+
+	* code/video/twoDimensional/OSDLUprightRectangle.h: Width and
+	  Height made private to allow fully transparent redefinition (see
+	  Surface).
+
+2005-10-07 21:29  wondersye
+
+	* code/basic/OSDLBasic.cc: Flag management and typo corrected.
+
+2005-10-07 21:24  wondersye
+
+	* code/audio/: OSDLAudio.cc, OSDLAudio.h: Better initialization of
+	  subsystem, and naming of static variables corrected.
+
+2005-10-07 21:05  wondersye
+
+	* code/video/: OSDLVideo.cc, OSDLVideo.h: Static non-public
+	  variables correctly named, better initialization of subsytem
+	  (more modular).
+
+2005-10-07 21:03  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h:
+	  convertFromColorKeyToAlphaChannel and simple blitTo methods
+	  added. Test flag corrected.
+
+2005-10-07 19:49  wondersye
+
+	* code/events/: OSDLKeyboardHandler.cc, OSDLKeyboardHandler.h: Code
+	  improved : static variables correctly prefixed, dedicated
+	  exception added, uniformized log for life-cycle.
+
+2005-10-07 19:47  wondersye
+
+	* code/events/: OSDLJoystickHandler.cc, OSDLJoystickHandler.h:
+	  Joystick subsystem activated directly in its own handler (better
+	  per-module approach).
+
+2005-10-07 19:46  wondersye
+
+	* code/events/OSDLEvents.cc: Better selective creation of input
+	  device handlers, code and comments improved.
+
+2005-10-07 19:43  wondersye
+
+	* code/events/tests/: testOSDLEvents.cc, testOSDLJoysticks.cc:
+	  Tests updated with new subsystem init facilities.
+
+2005-10-07 19:08  wondersye
+
+	* code/events/: OSDLEvents.cc, OSDLEvents.h, OSDLEventsCommon.h:
+	  Modularization improved, keyboard and mouse subsystems will be
+	  activated only when needed.
+
+2005-10-07 19:06  wondersye
+
+	* code/basic/: OSDLBasic.cc, OSDLBasic.h: Better per-module
+	  initialization of backend subsystems.
+
+2005-10-07 15:29  wondersye
+
+	* code/basic/tests/testOSDLBasic.cc: Displaying now the OSDL
+	  initialization constants to check for collisions.
+
+2005-10-07 11:13  wondersye
+
+	* code/basic/OSDLBasic.cc: Preparing sub-system init in their
+	  dedicated module.
+
+2005-10-07 09:36  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLTextWidget.cc,
+	  OSDLTextWidget.h, OSDLTwoDimensionalIncludes.h: Text Widget being
+	  added.
+
+2005-10-05 21:49  wondersye
+
+	* code/video/twoDimensional/: OSDLBackBufferedWidget.cc,
+	  OSDLBackBufferedWidget.h: OSDLBackBufferedWidget instances own a
+	  surface to cache their own rendering.
+
+2005-10-04 13:10  wondersye
+
+	* doc/web/main/News.html: More news !
+
+2005-10-04 12:53  wondersye
+
+	* GNUmakevars.inc: Some debug flags disabled.
+
+2005-10-04 12:52  wondersye
+
+	* TODO.txt: Audio requirements added.
+
+2005-10-04 12:51  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-consoles.html: Console
+	  support for SDL added.
+
+2005-10-04 12:50  wondersye
+
+	* doc/web/main/documentation/:
+	  gameExplained/gameMarket/Lobbies.html, rendering/SDL-audio.html,
+	  rendering/SDL-hints.html, rendering/SDL-inputs.html,
+	  rendering/SDL-windows.html: Doc updated.
+
+2005-10-04 12:48  wondersye
+
+	* code/video/OSDLPalette.cc: 'convertColorDefinitionToPixelColor'
+	  API change (parameter order) integrated.
+
+2005-10-04 12:47  wondersye
+
+	* code/video/: OSDLVideo.cc, OSDLVideo.h: 'UseCurrentColorDepth'
+	  added.
+
+2005-10-04 12:46  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: API (method names)
+	  and comments improved, 'drawDiscWithEdge' delegated to OSDLConic.
+
+2005-10-04 12:45  wondersye
+
+	* code/video/: OSDLFromGfx.cc, OSDLFromGfx.h: More SDL_gfx
+	  primitives exported so that non-blended rendering can be achieved
+	  too.
+
+2005-10-04 12:43  wondersye
+
+	* code/video/: OSDLPixel.cc, OSDLPixel.h: Color masks correctly
+	  supported now, 'convertPixelColorToColorDefinition' parameter
+	  order improved, low level pixel management and inquiry primitives
+	  largely improved too.
+
+2005-10-04 12:41  wondersye
+
+	* code/video/twoDimensional/: OSDLUprightRectangle.cc,
+	  OSDLUprightRectangle.h: Major update : tricky
+	  'drawWithRoundedCorners' method fully finished (debugged,
+	  improved and tested), dimensions had to be accessed only with get
+	  methods, not directly from attributes (unused here).
+
+2005-10-04 12:37  wondersye
+
+	* code/video/twoDimensional/: OSDLImage.cc, OSDLWidget.cc: Latest
+	  'convertColorDefinitionToPixelColor' API change (parameter order)
+	  integrated.	CVS:
+	  ----------------------------------------------------------------------
+
+2005-10-04 12:35  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFont.cc,
+	  OSDLTrueTypeFont.cc: 'convertColorDefinitionToPixelColor' API
+	  change (parameter order) integrated.
+
+2005-10-04 12:33  wondersye
+
+	* code/video/twoDimensional/: OSDLConic.cc, OSDLConic.h:
+	  'drawDiscWithEdge' integrated from Surface, non blended circle
+	  drawing added, traces added.
+
+2005-10-04 12:28  wondersye
+
+	* code/video/tests/: testOSDLBlit.cc, testOSDLOpenGL.cc,
+	  testOSDLPalette.cc, testOSDLPixel.cc, testOSDLSurface.cc,
+	  testOSDLSurfaceTransformations.cc, testOSDLVideo.cc,
+	  testOSDLWindowManager.cc: All tests updated, better include
+	  ordering, current display color depth used, screen dimensions
+	  enforced.
+
+2005-10-04 12:21  wondersye
+
+	* code/video/twoDimensional/tests/: testOSDLAnimation.cc,
+	  testOSDLCircle.cc, testOSDLConic.cc, testOSDLFixedFont.cc,
+	  testOSDLFixedFontCache.cc, testOSDLImage.cc, testOSDLLine.cc,
+	  testOSDLMultilineText.cc, testOSDLPixels.cc, testOSDLPoint2D.cc,
+	  testOSDLPolygon.cc, testOSDLSaveImage.cc, testOSDLText.cc,
+	  testOSDLTrueTypeFont.cc, testOSDLTrueTypeFontCache.cc,
+	  testOSDLWidget.cc: All tests updated, better include ordering,
+	  current display color depth used, screen dimensions enforced.
+
+2005-10-04 11:50  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLUprightRectangle.cc: Full
+	  testing, even for round rectangles, added.
+
+2005-10-04 09:59  wondersye
+
+	* code/video/OSDLSurface.cc: Storing a debug version before trying
+	  a newer bold approach.
+
+2005-10-01 10:45  wondersye
+
+	* code/video/twoDimensional/: OSDLConic.cc, OSDLConic.h: Discs can
+	  be blended with destination surface...or not, now.
+
+2005-09-23 22:57  wondersye
+
+	* code/video/OSDLSurface.cc: Edged discs correctly drawn now.
+
+2005-09-20 08:02  wondersye
+
+	* doc/GNUmakefile: Doxygen libraries automatically linked
+	  (libstdc++).
+
+2005-09-19 23:24  wondersye
+
+	* doc/GNUmakefile: OSDL-environment.sh environment file is to be
+	  sourced for LOANI-installed doxygen to work on most
+	  configurations.
+
+2005-09-19 23:15  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-hints.html,
+	  SDL-network.html, SDL-openGL.html, SDL-windows.html: More hints
+	  added.
+
+2005-09-19 23:13  wondersye
+
+	* doc/web/main/documentation/rendering/Alphablending.html: Better
+	  explanations added.
+
+2005-09-19 23:12  wondersye
+
+	* doc/web/main/resources/Technical.html: Some tools added (Win
+	  compilers).
+
+2005-09-19 23:10  wondersye
+
+	* code/basic/tests/: testSDL.cc, testSDLWithOpenGL.cc,
+	  testSDL_gfx.cc, testSDL_image.cc: Tests updated, included error
+	  report of backend.
+
+2005-09-19 23:08  wondersye
+
+	* code/video/OSDLVideo.cc: Better backend error management.
+
+2005-09-19 23:07  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: Newer pixel level API
+	  integrated, drawDiscWithEdge and setAlphaForColor added, color
+	  masks better managed.
+
+2005-09-19 23:05  wondersye
+
+	* code/video/tests/: testOSDLPixel.cc,
+	  testOSDLSurfaceTransformations.cc: Tests updated with new
+	  primitives (ex : rectangle with rounded edges).
+
+2005-09-19 23:03  wondersye
+
+	* code/video/: OSDLPixel.cc, OSDLPixel.h: Newer pixel management
+	  API integrated.
+
+2005-09-19 23:02  wondersye
+
+	* code/video/: OSDLFromGfx.cc, OSDLFromGfx.h: Mistake with alpha
+	  corrected, better integration with OSDL.
+
+2005-09-19 22:59  wondersye
+
+	* code/video/twoDimensional/OSDLGLTexture.cc: [no log message]
+
+2005-09-19 22:58  wondersye
+
+	* code/video/twoDimensional/OSDLPoint2D.h: Default constructor with
+	  default parameter values.
+
+2005-09-19 22:55  wondersye
+
+	* code/video/twoDimensional/OSDLImage.cc: Better error management,
+	  better integration with OSDL pixel API.
+
+2005-09-19 22:53  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFont.cc,
+	  OSDLTrueTypeFont.cc: Portable color masks better managed.
+
+2005-09-19 22:52  wondersye
+
+	* code/video/twoDimensional/: OSDLConic.cc, OSDLConic.h: More log
+	  messages, better comments.
+
+2005-09-19 22:50  wondersye
+
+	* code/video/twoDimensional/tests/: testOSDLConic.cc,
+	  testOSDLPixels.cc, testOSDLSaveImage.cc,
+	  testOSDLUprightRectangle.cc: Tests updated to cover newer pixel
+	  API which arose while adding rounded rectangles.
+
+2005-09-06 20:26  wondersye
+
+	* doc/web/main/documentation/gameExplained/gameMarket/:
+	  GameMarket.html, Players.html: Actor "Producteur" introduced.
+
+2005-08-24 22:37  wondersye
+
+	* code/video/twoDimensional/: OSDLUprightRectangle.h,
+	  OSDLUprightRectangle.cc: Rectangles can now be drawn with rounded
+	  corners (a lot more difficult than it seems !), changes in
+	  dimensions ensure that rectangle remains valid.
+
+2005-08-23 23:43  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLCircle.cc: Circles,
+	  filled or not, with edge or not, need to be tested as well.
+
+2005-08-22 22:17  wondersye
+
+	* code/video/twoDimensional/OSDLLine.cc: Return code of back-end
+	  line primitives now correctly checked.
+
+2005-08-22 22:16  wondersye
+
+	* code/video/twoDimensional/OSDLConic.cc: Return code of back-end
+	  disc primitives now correctly checked.
+
+2005-08-22 07:26  wondersye
+
+	* conf/loani-requiredTools.sh: Typo fixed in cleanFreeType.
+
+2005-08-21 21:46  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  rendering/SDL-audio.html, rendering/SDL-hints.html,
+	  rendering/SDL-network.html, rendering/SDL-openGL.html: Doc
+	  improved a bit.
+
+2005-08-21 21:44  wondersye
+
+	* conf/loani-requiredTools.sh: New stable tags selected.
+
+2005-08-21 21:43  wondersye
+
+	* conf/loani-commonBuildTools.sh: Formatting improved.
+
+2005-08-21 21:43  wondersye
+
+	* conf/loani-requiredTools.sh: Formatting improved, SDL_mixer
+	  added, Ogg, Vorbis, Freetype fixed.
+
+2005-08-21 21:41  wondersye
+
+	* conf/loani-optionalTools.sh: Tidy deactivated, formatting
+	  improved.
+
+2005-08-21 17:28  wondersye
+
+	* conf/loani.sh: Little comment added.
+
+2005-08-21 15:41  wondersye
+
+	* conf/loani-requiredTools.sh: Explanations for TIFF deactivation
+	  improved.
+
+2005-08-21 15:40  wondersye
+
+	* conf/README-template.txt: Updated text.
+
+2005-08-21 15:39  wondersye
+
+	* conf/GNUmakefile: Better real cleaning.
+
+2005-08-21 15:19  wondersye
+
+	* doc/web/common/fonts/: cretino.ttf, earwigfa.ttf, iomanoid.ttf,
+	  minyn.ttf, minynb.ttf, minynbi.ttf, minyni.ttf, neurochr.ttf,
+	  read_me.html, stilltim.ttf: Beautiful Larabie fonts added (see
+	  read_me.html).
+
+2005-08-21 15:15  wondersye
+
+	* GNUmakefile, GNUmakevars.inc: All tools managed (including
+	  SDL_mixer and co) and checked.
+
+2005-08-21 15:13  wondersye
+
+	* conf/loani-requiredTools.sh: SDL_mixer, Ogg and Vorbis libraries
+	  added.
+
+2005-08-21 13:16  wondersye
+
+	* conf/osdl-versions.sh: SDL_mixer, Ogg and Vorbis libraires added,
+	  links updated, library names specified.
+
+2005-08-21 12:52  wondersye
+
+	* code/audio/OSDLAudio.cc: Useless using declaration removed.
+
+2005-08-21 12:51  wondersye
+
+	* code/video/tests/testOSDLSurfaceTransformations.cc: Test changed
+	  to reflect improved Clonable implementation.
+
+2005-08-21 12:50  wondersye
+
+	* code/video/OSDLPixel.h: Minor formatting change.
+
+2005-08-21 12:49  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: Cloning Surfaces is
+	  now reliable, edges can be drawn for graphical debug.
+
+2005-08-21 12:39  wondersye
+
+	* code/video/twoDimensional/tests/: testOSDLFixedFontCache.cc,
+	  testOSDLTrueTypeFontCache.cc: Font caches tested too, for glyphs,
+	  words and tests cache entries.
+
+2005-08-21 12:38  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLMultilineText.cc: This
+	  feature can be tested in both justified or not justified flavour.
+
+2005-08-21 12:37  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLText.cc: Better test
+	  coverage for all types of fonts.
+
+2005-08-21 12:37  wondersye
+
+	* code/video/twoDimensional/OSDLGLTexture.cc: An example, maybe to
+	  integrate, added.
+
+2005-08-21 12:36  wondersye
+
+	* code/video/twoDimensional/: OSDLFont.cc, OSDLFont.h: The heart of
+	  Font support was improved a lot : text compositing from cached
+	  glyphs or words upgraded, colorkeys better managed, caches
+	  (glyph, word and text) now implemented, multiline text rendering
+	  added, both justified or not.
+
+2005-08-21 12:32  wondersye
+
+	* code/video/twoDimensional/: OSDLTrueTypeFont.cc,
+	  OSDLTrueTypeFont.h, tests/testOSDLTrueTypeFont.cc: Major update
+	  for TrueType too : colorkeys better managed, caches (glyph, word
+	  and text) now implemented, Locators improved, lots of helper
+	  methods and debug facilities added.
+
+2005-08-21 12:30  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFixedFont.h,
+	  tests/testOSDLFixedFont.cc: Major update : colorkeys better
+	  managed, caches (glyph, word and text) now implemented, Locators
+	  improved, lots of helper methods added.
+
+2005-08-07 00:00  wondersye
+
+	* conf/loani-optionalTools.sh: Comment on doxygen build failure.
+
+2005-08-06 20:11  wondersye
+
+	* conf/loani-requiredTools.sh: Both stable tags put for Ceylan and
+	  OSDL, whose build is fine.
+
+2005-08-06 18:46  wondersye
+
+	* conf/loani.sh: Hidden options better documented.
+
+2005-08-06 18:39  wondersye
+
+	* conf/loani-optionalTools.sh: dot auto-check disabled since fails.
+
+2005-08-06 16:37  wondersye
+
+	* conf/loani-requiredTools.sh: Newer stable versions available.
+
+2005-08-06 16:36  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-hints.html,
+	  SDL-network.html: More infos.
+
+2005-08-06 16:35  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: Some more
+	  advice added when download fails.
+
+2005-08-06 16:12  wondersye
+
+	* code/basic/OSDLBasic.h: CHECK_OSDL_VERSIONS macro fixed to avoid
+	  useless copy of a Version.
+
+2005-08-06 15:59  wondersye
+
+	* code/scripts/substitute.sh: Minor improvements (executable paths,
+	  sed syntax, script dependency, etc.)
+
+2005-08-06 15:29  wondersye
+
+	* code/: engine/OSDLPeriodicSlot.cc, events/OSDLJoystickHandler.cc:
+	  Parentheses around the type-id removed.
+
+2005-08-06 15:19  wondersye
+
+	* GNUmakevars.inc: Compiler C++ flags fixed.
+
+2005-08-02 23:41  wondersye
+
+	* conf/loani-requiredTools.sh: Both Ceylan and OSDL have a new
+	  stable tag now.
+
+2005-08-02 23:31  wondersye
+
+	* GNUmakefile, GNUmakerules.inc, GNUmakevars.inc: Minor changes,
+	  including 'tests-results' management.
+
+2005-08-02 23:09  wondersye
+
+	* conf/README-template.txt: Updated : no bash required before
+	  LOANI, mail address fixed, more comments.
+
+2005-08-02 23:01  wondersye
+
+	* conf/osdl-versions.sh: All tool versions updated, ready to test
+	  with gcc 4.x.
+
+2005-08-02 22:20  wondersye
+
+	* code/video/: OSDLVideo.cc, OSDLVideo.h: Order for the setting of
+	  video mode and the changing of the OpenGL context corrected.
+
+2005-08-02 22:18  wondersye
+
+	* code/video/tests/: testOSDLOpenGL.cc, testOSDLSurface.cc,
+	  testOSDLWindowManager.cc: Tests modified so that they can be
+	  launched from 'tests-results' directory as well.
+
+2005-08-02 22:17  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html:
+	  Some troubleshooting added.
+
+2005-08-02 22:16  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-hints.html,
+	  SDL-libraries.html, SDL-openGL.html, SDL-threads.html,
+	  SDL-windows.html: More infos from SDL mailing list to integrate.
+
+2005-08-02 22:15  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.h, OSDLTrueTypeFont.cc,
+	  OSDLTrueTypeFont.h: Some comments added, others improved.
+
+2005-08-02 22:14  wondersye
+
+	* code/video/twoDimensional/OSDLUprightRectangle.h: Typo fixed.
+
+2005-08-02 22:13  wondersye
+
+	* code/video/twoDimensional/OSDLImage.h: Image snapshot methods
+	  improved.
+
+2005-08-02 22:13  wondersye
+
+	* code/video/twoDimensional/OSDLFont.h: Comments improved about
+	  RLE.
+
+2005-08-02 22:12  wondersye
+
+	* code/video/twoDimensional/OSDLImage.cc: Image snapshots (both PNG
+	  and BMP) improved (surface locked/method implemented).
+
+2005-08-02 22:09  wondersye
+
+	* code/engine/OSDLScheduler.cc: Description by text improved
+	  (relevant precision used).
+
+2005-08-02 22:08  wondersye
+
+	* code/engine/tests/: testOSDLAndMVC.cc,
+	  testOSDLScheduledMultimediaRendering.cc,
+	  testScheduledOSDLAndMVC.cc: Keyboard integration taken into
+	  account. Tests modified so that they can be launched from
+	  'tests-results' directory as well.
+
+2005-08-02 22:07  wondersye
+
+	* code/video/twoDimensional/tests/: testOSDLFixedFont.cc,
+	  testOSDLImage.cc, testOSDLText.cc, testOSDLTrueTypeFont.cc: Tests
+	  modified so that they can be launched from 'tests-results'
+	  directory as well.   CVS:
+	  ----------------------------------------------------------------------
+
+2005-08-02 22:06  wondersye
+
+	* code/events/: OSDLEventsCommon.h, OSDLJoystick.cc: Keyboards now
+	  managed only in KeyboardHandler.
+
+2005-08-02 22:06  wondersye
+
+	* code/events/OSDLClassicalJoystick.cc: Better textual description
+	  of joystick state.
+
+2005-08-02 22:05  wondersye
+
+	* code/events/OSDLEvents.cc: Textual description improved, comments
+	  added.
+
+2005-08-02 22:04  wondersye
+
+	* code/events/: OSDLKeyboardHandler.cc, OSDLKeyboardHandler.h: Key
+	  identifiers now fully integrated in OSDL.
+
+2005-08-02 22:02  wondersye
+
+	* code/events/tests/: testOSDLController.cc, testOSDLEvents.cc,
+	  testOSDLJoysticks.cc: Tests modified so that they can be launched
+	  from 'tests-results' directory as well. Some other minor
+	  improvements too.
+
+2005-08-02 22:01  wondersye
+
+	* code/playTests.sh: Launches from now on the tests from
+	  'tests-results' directory.
+
+2005-08-02 21:59  wondersye
+
+	* code/basic/tests/: testOSDLBasic.cc, testSDL.cc,
+	  testSDLWithOpenGL.cc, testSDL_image.cc: Tests modified so that
+	  they can be launched from 'tests-results' directory as well.
+
+2005-07-31 00:29  wondersye
+
+	* code/events/: OSDLKeyboardHandler.cc, OSDLKeyboardHandler.h: All
+	  key identifiers redefined, from their counterpart in SDL backend.
+
+2005-07-30 18:44  wondersye
+
+	* code/engine/tests/testOSDLAndMVC.cc: Test can (and must !) now be
+	  ended by the user, thanks to keyboard or joystick.
+
+2005-07-30 18:38  wondersye
+
+	* code/events/OSDLController.h: Comment about key encoding added.
+
+2005-07-30 17:57  wondersye
+
+	* code/video/tests/testOSDLSurfaceTransformations.cc: Image locator
+	  used, rendering example improved a bit.
+
+2005-07-30 17:44  wondersye
+
+	* code/basic/tests/testSDL_gfx.cc: Screen parameters standardized.
+
+2005-07-28 23:29  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: Suppressed all
+	  surviving 'freshen' method and proxy values, since they both were
+	  bad ideas : better not cache those values that can be changed
+	  silently at any time.
+
+2005-07-28 23:28  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLTrueTypeFont.cc: Crash
+	  was caused by a lack of locking the RLE encoded surface, due to a
+	  Ceylan Lockable bug.
+
+2005-07-26 23:40  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: 'saveBMP'
+	  implementation added, locking added in 'savePNG'.
+
+2005-07-26 23:16  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLAnimation.cc: Window size
+	  standardized.
+
+2005-07-26 23:15  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLWidget.cc: Text truncated
+	  in rendering explained.
+
+2005-07-25 22:54  wondersye
+
+	* code/playTests.sh: No more hardcoded module list, there are found
+	  at runtime.
+
+2005-07-25 22:23  wondersye
+
+	* GNUmaketests.inc: MODULE_ROOT replaced by an expression so that
+	  'make install' for tests can work from all directories, including
+	  'tests' subdirectories.
+
+2005-07-23 22:46  wondersye
+
+	* conf/: OSDL.proj, loani-requiredTools.sh, loani.sh: At last,
+	  SDL_image installation fixed so that libtool stops complaining
+	  that 'libtool: link: warning: library
+	  `[...]/SDL_image-1.2.4/lib/libSDL_image.la' was moved.'
+
+2005-07-23 22:13  wondersye
+
+	* code/events/tests/testOSDLController.cc: No joystick linked to
+	  controller if none available.
+
+2005-07-23 22:12  wondersye
+
+	* code/events/tests/testOSDLJoysticks.cc: Minor informations added
+	  in logs.
+
+2005-07-23 21:57  wondersye
+
+	* code/basic/tests/testSDL_image.cc: There was no point in
+	  initializing audio.
+
+2005-07-23 21:56  wondersye
+
+	* code/basic/tests/testSDL_gfx.cc: Useless Audio init removed.
+
+2005-07-23 21:55  wondersye
+
+	* code/basic/tests/testSDLWithOpenGL.cc: Exits on all key pressed,
+	  and with a success code (0) now.
+
+2005-07-23 21:53  wondersye
+
+	* code/basic/tests/testSDL.cc: Yellow line made more visible, sound
+	  init removed.
+
+2005-07-23 21:17  wondersye
+
+	* code/basic/tests/testOSDLBasic.cc: Removed reference to Audio,
+	  since must be tested in Audio module only.
+
+2005-07-23 18:40  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: clear() method added.
+
+2005-07-23 17:33  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFixedFont.h,
+	  OSDLFont.cc, OSDLFont.h, OSDLTrueTypeFont.cc, OSDLTrueTypeFont.h,
+	  tests/testOSDLTrueTypeFont.cc: Renderings are converted to
+	  display appropriately now.
+
+2005-07-23 13:27  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFixedFont.h,
+	  OSDLFont.cc, OSDLFont.h, OSDLTrueTypeFont.cc, OSDLTrueTypeFont.h,
+	  tests/testOSDLFixedFont.cc, tests/testOSDLText.cc,
+	  tests/testOSDLTrueTypeFont.cc: Font support improved with
+	  letter-by-letter composition for all types of fonts.
+
+2005-07-23 00:20  wondersye
+
+	* code/video/: OSDLPixel.cc, OSDLPixel.h, OSDLSurface.cc,
+	  OSDLSurface.h, tests/testOSDLSurface.cc,
+	  tests/testOSDLSurfaceTransformations.cc: Typos corrected, clear()
+	  method added.
+
+2005-07-23 00:18  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFixedFont.h,
+	  OSDLFont.cc, OSDLFont.h, OSDLGLTexture.cc, OSDLImage.cc,
+	  OSDLTrueTypeFont.cc, OSDLTrueTypeFont.h, OSDLUprightRectangle.h,
+	  tests/testOSDLFixedFont.cc, tests/testOSDLText.cc,
+	  tests/testOSDLTrueTypeFont.cc: Font support at last uniformized,
+	  for text all rendered or blit surfaces are transparency-correct.
+
+2005-07-22 13:48  wondersye
+
+	* code/video/twoDimensional/: OSDLFont.cc, OSDLFont.h: Cache
+	  policies being implemented now.
+
+2005-07-16 22:21  wondersye
+
+	* doc/web/main/documentation/misc/ToSevres.html: Layout updated.
+
+2005-07-08 18:07  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFont.cc,
+	  OSDLFont.h: Font support improved, and some steps towards
+	  Resource cache integration have been performed.
+
+2005-07-03 23:54  wondersye
+
+	* GNUmakefile, GNUmakevars.inc: Version selection improved,
+	  LOANI-installed gcc found again.
+
+2005-07-03 23:42  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h: New Surface
+	  primitives (ex : drawGrid) added.
+
+2005-07-03 23:40  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFixedFont.h,
+	  OSDLFont.cc, OSDLFont.h, OSDLTrueTypeFont.cc, OSDLTrueTypeFont.h:
+	  Font encapsulation achieved and allows for correct renderings.
+	  Caching still to come.
+
+2005-07-03 23:39  wondersye
+
+	* code/video/twoDimensional/tests/: testOSDLFixedFont.cc,
+	  testOSDLTrueTypeFont.cc: First time ever that the fully
+	  encapsulated fixed and TrueType font system achieves fully
+	  correct renderings. Caching is still to come.
+
+2005-07-01 23:48  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFixedFont.h,
+	  OSDLFont.cc, OSDLFont.h, OSDLTrueTypeFont.cc, OSDLTrueTypeFont.h,
+	  tests/testOSDLFixedFont.cc, tests/testOSDLText.cc: Big effort of
+	  font encapsulation, awful time spent on transparent blits for
+	  glyphs and text rendering.
+
+2005-07-01 18:52  wondersye
+
+	* code/video/twoDimensional/: OSDLFixedFont.cc, OSDLFixedFont.h:
+	  After way too many attempts, a glyph corresponding to a fixed
+	  font can be blitted on a surface, using colorkeying since, with
+	  alpha-blending, it was not displayed at all.
+
+2005-07-01 12:20  wondersye
+
+	* code/video/: OSDLSurface.h, OSDLSurface.cc: Grid drawing added.
+
+2005-06-30 22:26  wondersye
+
+	* GNUmakevars.inc: Includes reordering so that versions (ex : for
+	  gcc) are taken into account appropriately.
+
+2005-06-28 22:00  wondersye
+
+	* conf/GNUmakefile, conf/loani-requiredTools.sh, conf/loani.sh,
+	  doc/GNUmakefile: Minor update regarding LOANI and cleaning.
+
+2005-06-28 21:59  wondersye
+
+	* code/events/: OSDLEventsCommon.h, OSDLKeyboardHandler.cc,
+	  OSDLKeyboardHandler.h: Input updated.
+
+2005-06-28 21:58  wondersye
+
+	* code/video/: OSDLOpenGL.cc, OSDLOpenGL.h, OSDLPixel.cc,
+	  OSDLPixel.h, OSDLSurface.cc, OSDLSurface.h, OSDLVideo.cc,
+	  OSDLVideo.h, OSDLVideoTypes.h: Video update for OpenGL support.
+
+2005-06-28 21:49  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLFont.cc, OSDLFont.h,
+	  OSDLTrueTypeFont.cc, OSDLTrueTypeFont.h,
+	  OSDLTwoDimensionalIncludes.h, tests/testOSDLFixedFont.cc,
+	  tests/testOSDLText.cc: Font integration progresses.
+
+2005-06-28 21:48  wondersye
+
+	* doc/web/main/documentation/: gameExplained/GameAndLaw.html,
+	  rendering/SDL-events.html, rendering/SDL-hints.html,
+	  rendering/SDL-libraries.html, rendering/SDL-macosx.html,
+	  rendering/SDL-network.html, rendering/SDL-openGL-examples.html,
+	  rendering/SDL-openGL.html, rendering/SDL-threads.html,
+	  rendering/SDL-windows.html: Some steps forward in SDL
+	  documentation effort.
+
+2005-06-27 20:20  wondersye
+
+	* doc/web/main/MainMenu.html: Eurolinux petition added.
+
+2005-06-22 23:46  wondersye
+
+	* doc/web/main/News.html: Updated
+
+2005-06-22 20:16  wondersye
+
+	* doc/web/main/documentation/gameExplained/GameAndLaw.html: LGPL
+	  discussed.
+
+2005-06-21 19:50  wondersye
+
+	* doc/web/main/documentation/gameExplained/GameAndLaw.html: Author
+	  rights discussed a bit.
+
+2005-05-19 00:03  wondersye
+
+	* code/video/twoDimensional/: OSDLTrueTypeFont.cc,
+	  OSDLTrueTypeFont.h: Truetype font support progresses.
+
+2005-05-17 21:54  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLVideo.cc, OSDLVideo.h,
+	  tests/testOSDLOpenGL.cc, twoDimensional/tests/testOSDLConic.cc:
+	  OpenGL integration progresses.
+
+2005-05-17 21:52  wondersye
+
+	* GNUmakevars.inc, conf/GNUmakefile, conf/loani-versions.sh,
+	  conf/osdl-versions.sh: Versions relative to OSDL handled here,
+	  Ceylan counterparts referenced, from these two loani-versions.sh
+	  is generated.
+
+2005-05-17 15:16  wondersye
+
+	* conf/loani.sh: OSDL environment file saved and upgraded when
+	  necessary.
+
+2005-05-17 13:38  wondersye
+
+	* conf/loani.sh: Computation of available size on device improved.
+
+2005-05-17 13:26  wondersye
+
+	* conf/: LOANI-0.3.tar.gz, LOANI-0.3.zip: These LOANI archives are
+	  made from source files in CVS, they therefore do not need to be
+	  in CVS as well.
+
+2005-05-16 15:09  wondersye
+
+	* conf/: LOANI-0.3.tar.gz, LOANI-0.3.zip, loani-versions.sh,
+	  loani.sh:
+	  Minor compatibility improvementsCVS:
+
+2005-05-13 15:23  wondersye
+
+	* conf/loani.sh: Minor improvements (hidden options documented, all
+	  wget logs cleaned up, etc.)
+
+2005-05-13 15:21  wondersye
+
+	* doc/web/main/documentation/: OSDL/OSDL-0.3/LOANI.html,
+	  rendering/SDL-events.html, rendering/SDL-libraries.html,
+	  rendering/SDL-macosx.html, rendering/SDL-network.html,
+	  rendering/SDL-threads.html: Update before switching to RAID box.
+
+2005-05-11 22:08  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: Mirror down
+	  case added.
+
+2005-05-11 22:05  wondersye
+
+	* doc/web/main/project/howToContribute/: ContributionGuide.html,
+	  Members.html: Minor update, few details added.
+
+2005-05-11 20:09  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: noexec
+	  partitions documented;
+
+2005-05-09 23:18  wondersye
+
+	* conf/loani.sh: wget cleaned too
+
+2005-05-09 20:01  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-SMPEG-examples.html:
+	  Example added
+
+2005-05-09 19:57  wondersye
+
+	* code/video/twoDimensional/OSDLFont.h,
+	  code/video/twoDimensional/OSDLTrueTypeFont.cc,
+	  code/video/twoDimensional/OSDLTrueTypeFont.h,
+	  code/video/twoDimensional/OSDLWidget.cc,
+	  doc/web/main/documentation/rendering/SDL-audio.html,
+	  doc/web/main/documentation/rendering/SDL-hints.html,
+	  doc/web/main/documentation/rendering/SDL-inputs.html,
+	  doc/web/main/documentation/rendering/SDL-libraries.html,
+	  doc/web/main/documentation/rendering/SDL-macosx.html,
+	  doc/web/main/documentation/rendering/SDL-windows.html: Laptop to
+	  RAID box : merge soon.
+
+2005-05-09 19:50  wondersye
+
+	* GNUmakevars.inc, TODO.txt, code/engine/OSDLPeriodicSlot.h,
+	  code/engine/OSDLScheduler.cc, code/engine/OSDLScheduler.h,
+	  code/events/OSDLEvents.cc, code/events/OSDLEvents.h,
+	  code/video/OSDLOpenGL.cc, code/video/OSDLOpenGL.h,
+	  code/video/OSDLVideo.cc, code/video/OSDLVideo.h,
+	  code/video/tests/testOSDLOpenGL.cc,
+	  code/video/twoDimensional/OSDLGLTexture.cc,
+	  code/video/twoDimensional/OSDLGLTexture.h, conf/LOANI-0.3.tar.gz,
+	  conf/LOANI-0.3.zip,
+	  doc/web/main/documentation/rendering/SDL-audio.html,
+	  doc/web/main/documentation/rendering/SDL-cross-compilation.html,
+	  doc/web/main/documentation/rendering/SDL-graphics.html,
+	  doc/web/main/documentation/rendering/SDL-hints.html,
+	  doc/web/main/documentation/rendering/SDL-openGL.html,
+	  doc/web/main/documentation/rendering/SDL-threads.html,
+	  doc/web/main/documentation/rendering/SDL-troubleshooting.html,
+	  doc/web/main/documentation/rendering/SDL-windows.html: Temporary
+	  commits for safer transfer to newly installed RAID box.
+
+2005-05-08 16:59  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-openGL.html: GUI added
+
+2005-04-27 23:05  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLFont.cc, OSDLFont.h,
+	  OSDLText.cc, OSDLText.h, OSDLTrueTypeFont.cc, OSDLTrueTypeFont.h,
+	  OSDLTwoDimensionalIncludes.h: Fonts split into different files.
+
+2005-04-27 00:23  wondersye
+
+	* code/video/twoDimensional/: OSDLText.cc, OSDLText.h: Font support
+	  is improving.
+
+2005-04-26 07:53  wondersye
+
+	* doc/web/main/News.html: Updated
+
+2005-04-26 07:53  wondersye
+
+	* doc/web/main/documentation/rendering/: RenderingMenu.html,
+	  SDL-hints.html, SDL-windows.html: Recent updates, more themes
+	  supported.
+
+2005-04-25 22:51  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-libraries.html,
+	  SDL-openGL.html: Large re-working, content added.
+
+2005-04-24 23:53  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-libraries.html: Not
+	  wanting to loose the content...
+
+2005-04-23 16:16  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: UNIX support
+	  only underlined.
+
+2005-04-22 13:00  wondersye
+
+	* conf/: loani-optionalTools.sh, loani-requiredTools.sh, loani.sh:
+	  Option added to install only build tools, date tag removed.
+
+2005-04-22 12:59  wondersye
+
+	* GNUmakevars.inc: Version support updated, link command line
+	  improved (order and typos).
+
+2005-04-22 12:57  wondersye
+
+	* code/: GNUmakefile, OSDL.h, scripts/substitute.sh: Version
+	  specified as an Ceylan::Version object, substitute script copied
+	  from Ceylan.
+
+2005-04-22 12:56  wondersye
+
+	* code/video/: OSDLVideo.cc, tests/testOSDLOpenGL.cc: Version
+	  specified as an Ceylan::Version object, OpenGL support progresses
+	  a bit.
+
+2005-04-22 12:55  wondersye
+
+	* code/video/twoDimensional/: OSDLGLTexture.cc, OSDLGLTexture.h,
+	  OSDLText.cc: Textures and text output on the way.
+
+2005-04-22 12:55  wondersye
+
+	* code/: audio/OSDLAudio.cc, events/OSDLEvents.cc: Version
+	  specified as an Ceylan::Version object.
+
+2005-04-22 12:54  wondersye
+
+	* code/basic/: OSDLBasic.cc, OSDLBasic.h, tests/testOSDLBasic.cc:
+	  OSDL version checking (both for headers and library) added.
+
+2005-04-20 23:24  wondersye
+
+	* code/basic/: GNUmakefile, OSDLBasic.cc, OSDLUtils.cc,
+	  OSDLUtils.h: Minor utilities improvements.
+
+2005-04-20 23:23  wondersye
+
+	* code/video/: OSDLOpenGL.h, OSDLPixel.h, OSDLSurface.cc,
+	  OSDLSurface.h, tests/testOSDLSurface.cc,
+	  tests/testOSDLSurfaceTransformations.cc: OpenGL support
+	  progresses.
+
+2005-04-20 23:22  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLGLTexture.cc,
+	  OSDLGLTexture.h, OSDLImage.cc, OSDLImage.h, OSDLPoint2D.cc,
+	  OSDLPoint2D.h, OSDLPoint3D.cc, OSDLPoint3D.h,
+	  OSDLTwoDimensionalIncludes.h: OpenGL Texture support added.
+
+2005-04-18 23:37  wondersye
+
+	* code/engine/: OSDLCircleBoundingBox.cc, OSDLCircleBoundingBox.h,
+	  tests/testOSDLCircleBoundingBox.cc: Twoards OpenGL support,
+	  better basic types management.
+
+2005-04-18 23:36  wondersye
+
+	* code/video/: OSDLOpenGL.cc, OSDLOpenGL.h, OSDLVideoTypes.h,
+	  twoDimensional/GNUmakefile,
+	  twoDimensional/OSDLGLUprightRectangle.cc,
+	  twoDimensional/OSDLGLUprightRectangle.h,
+	  twoDimensional/OSDLPolygon.cc,
+	  twoDimensional/OSDLUprightRectangle.cc,
+	  twoDimensional/OSDLUprightRectangle.h: Adding bricks towards
+	  OpenGL support
+
+2005-04-17 16:53  wondersye
+
+	* doc/web/main/News.html: Updated
+
+2005-04-16 23:18  wondersye
+
+	* code/: basic/OSDLBasic.cc, basic/OSDLBasic.h, engine/GNUmakefile,
+	  engine/tests/testOSDLAndMVC.cc,
+	  engine/tests/testOSDLScheduledMultimediaRendering.cc,
+	  events/GNUmakefile, video/OSDLOpenGL.cc, video/OSDLVideo.cc,
+	  video/OSDLVideo.h, video/tests/testOSDLOpenGL.cc,
+	  video/tests/testOSDLWindowManager.cc: Updated so that build can
+	  proceed again, after the upgrade of tool versions and the first
+	  step towards OpenGL support.
+
+2005-04-16 22:56  wondersye
+
+	* code/video/: OSDLOpenGL.cc, OSDLOpenGL.h, OSDLPalette.h,
+	  OSDLPixel.h, OSDLVideo.cc, OSDLVideo.h, OSDLVideoTypes.h,
+	  twoDimensional/OSDLConic.cc, twoDimensional/OSDLImage.cc,
+	  twoDimensional/OSDLImage.h, twoDimensional/OSDLLine.cc,
+	  twoDimensional/OSDLPolygon.cc,
+	  twoDimensional/OSDLUprightRectangle.h: Rebuilding everything
+	  after tool version upgrade and beginning of OpenGL support.
+
+2005-04-14 22:28  wondersye
+
+	* conf/GNUmakefile: LOANI temp dir for the tarball cleaned.
+
+2005-04-14 22:24  wondersye
+
+	* doc/web/: common/css/OSDL.css,
+	  main/documentation/rendering/SDL-graphics.html,
+	  main/documentation/rendering/SDL-hints.html,
+	  main/documentation/rendering/SDL-troubleshooting.html,
+	  main/documentation/rendering/SDL-windows.html: Avoid loosing
+	  informations after the update
+
+2005-04-14 22:22  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: --currentCVS
+	  better explained, --noClean updated
+
+2005-04-13 22:36  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-openGL.html: Major
+	  update, ready to be uploaded to the website
+
+2005-04-12 00:13  wondersye
+
+	* doc/web/common/css/OSDL.css: Ordered lists have more space.
+
+2005-04-12 00:13  wondersye
+
+	* code/video/: OSDLOpenGL.cc, OSDLOpenGL.h: Masks added, depending
+	  on endianness.
+
+2005-04-11 22:44  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-graphics.html,
+	  SDL-libraries.html, SDL-network.html, SDL-openGL-examples.html,
+	  SDL-openGL.html: Major doc update, notably for OpenGL.
+
+2005-04-09 13:43  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-openGL.html: Saved for
+	  laptop.
+
+2005-04-09 13:41  wondersye
+
+	* doc/web/main/download/DownloadMenu.html: CVS project machine
+	  fixed.
+
+2005-04-09 10:44  wondersye
+
+	* conf/loani-versions.sh: MD5 sums updated after version upgrades
+	  for all tools.
+
+2005-04-09 00:35  wondersye
+
+	* conf/LOANI-0.3.tar.gz, conf/LOANI-0.3.zip, conf/loani.sh,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html,
+	  doc/web/main/documentation/rendering/SDL-graphics.html,
+	  doc/web/main/documentation/rendering/SDL-openGL.html,
+	  doc/web/main/documentation/rendering/SDL-windows.html: Premature
+	  checkin for laptop synch.
+
+2005-04-09 00:34  wondersye
+
+	* code/: engine/tests/testOSDLScheduledMultimediaRendering.cc,
+	  video/OSDLOpenGL.cc, video/OSDLOpenGL.h: Premature addition to
+	  ensure laptop is up-to-date.
+
+2005-04-09 00:30  wondersye
+
+	* code/: engine/OSDLMultimediaRenderer.cc,
+	  engine/OSDLMultimediaRenderer.h,
+	  engine/tests/testScheduledOSDLAndMVC.cc, video/GNUmakefile,
+	  video/OSDLVideo.cc, video/OSDLVideo.h, video/OSDLVideoIncludes.h,
+	  video/tests/testOSDLOpenGL.cc: Premature checkin before work on
+	  laptop.
+
+2005-04-08 23:49  wondersye
+
+	* conf/: loani-commonBuildTools.sh, loani-optionalTools.sh,
+	  loani-requiredTools.sh, loani-versions.sh, loani.sh: All tools
+	  have their build tree removed after successful installation, all
+	  tool versions up-to-date (result still to be tested).
+
+2005-04-08 13:04  wondersye
+
+	* doc/: GNUmakefile, web/main/News.html,
+	  web/main/documentation/gameExplained/HowToSellAGame.html,
+	  web/main/documentation/rendering/Modelers.html,
+	  web/main/documentation/rendering/RenderingEngines.html,
+	  web/main/documentation/rendering/SDL-openGL.html,
+	  web/main/download/Download.html: Update before synch with laptop
+
+2005-04-08 13:03  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: Archive
+	  links updated
+
+2005-04-08 12:05  wondersye
+
+	* conf/GNUmakefile: Both LOANI archives (*.zip and *.tar.gz) are
+	  built so that when extracted a LOANI-$(VERSION) directory appears
+	  with the set of files inside, instead of directly having the
+	  files in the current directory (exploded archive).
+
+2005-03-25 20:20  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/: LOANI.html,
+	  OSDL-usersguide.html: Updated, reorganized, linked.
+
+2005-03-25 14:51  wondersye
+
+	* code/events/: OSDLEvents.cc, tests/testOSDLController.cc:
+	  Misleading waiting message corrected.
+
+2005-03-25 14:50  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h,
+	  tests/testOSDLSurfaceTransformations.cc: Horizontal and vertical
+	  surface flipping added and tested.
+
+2005-03-25 13:37  wondersye
+
+	* GNUmakevars.inc,
+	  doc/web/main/documentation/rendering/Languages.html: Little
+	  improvements and updates.
+
+2005-03-25 13:35  wondersye
+
+	* doc/web/main/documentation/rendering/: Modelers.html,
+	  PhysicEngines.html, RenderingEngines.html, SDL-audio.html: Little
+	  update.
+
+2005-03-25 13:34  wondersye
+
+	* doc/web/main/: News.html,
+	  documentation/gameExplained/GameSociology.html,
+	  documentation/gameExplained/HowToSellAGame.html,
+	  documentation/rendering/Modelers.html,
+	  documentation/rendering/OtherTools.html,
+	  documentation/rendering/PhysicEngines.html,
+	  documentation/rendering/SDL-graphics.html,
+	  documentation/rendering/SDL-hints.html,
+	  documentation/rendering/SDL-inputs.html,
+	  documentation/rendering/SDL-libraries.html,
+	  documentation/rendering/SDL-network.html,
+	  documentation/rendering/SDL-openGL.html,
+	  documentation/rendering/SDL-threads.html: More informations
+	  added.
+
+2005-03-25 13:29  wondersye
+
+	* code/GNUmakefile: Minor changes (includes, cleaning, LogHolder).
+
+2005-03-25 13:25  wondersye
+
+	* code/: basic/OSDLBasic.cc, basic/OSDLBasic.h,
+	  basic/OSDLException.h, basic/tests/testSDLWithOpenGL.cc,
+	  events/GNUmakefile, events/OSDLClassicalJoystick.cc,
+	  events/OSDLClassicalJoystick.h, events/OSDLController.cc,
+	  events/OSDLController.h, events/OSDLEvents.cc,
+	  events/OSDLEvents.h, events/OSDLInputDevice.cc,
+	  events/OSDLInputDevice.h, events/OSDLJoystick.cc,
+	  events/OSDLJoystick.h, events/OSDLJoystickHandler.cc,
+	  events/OSDLJoystickHandler.h, events/OSDLKeyboardHandler.cc,
+	  events/OSDLKeyboardHandler.h: New toString method applied
+	  everywhere.
+
+2005-03-25 13:25  wondersye
+
+	* code/audio/renderer/: GNUmakefile, OSDLAudioRenderer.cc,
+	  OSDLAudioRenderer.h, OSDLAudioRendererIncludes.h,
+	  tests/GNUmakefile: Audio rendering : first step.
+
+2005-03-25 13:23  wondersye
+
+	* code/video/renderer/: OSDLVideoRenderer.cc, OSDLVideoRenderer.h,
+	  OSDLVideoRendererIncludes.h: Video renderer added.
+
+2005-03-25 13:22  wondersye
+
+	* code/engine/: OSDLMultimediaRenderer.cc,
+	  OSDLMultimediaRenderer.h, OSDLRenderer.cc, OSDLRenderer.h:
+	  Generic and delegating renderers belong now to the engine.
+
+2005-03-25 13:21  wondersye
+
+	* code/: engine/GNUmakefile, engine/OSDLActiveObject.cc,
+	  engine/OSDLActiveObject.h, engine/OSDLBoundingBox.cc,
+	  engine/OSDLBoundingBox.h, engine/OSDLBoundingBox2D.cc,
+	  engine/OSDLBoundingBox2D.h, engine/OSDLCircleBoundingBox.cc,
+	  engine/OSDLCircleBoundingBox.h, engine/OSDLEngineIncludes.h,
+	  engine/OSDLModel.cc, engine/OSDLModel.h,
+	  engine/OSDLPeriodicSlot.cc, engine/OSDLPeriodicSlot.h,
+	  engine/OSDLScheduler.cc, engine/OSDLScheduler.h,
+	  engine/OSDLWorldObject.cc, engine/OSDLWorldObject.h,
+	  video/GNUmakefile, video/OSDLPalette.cc, video/OSDLPalette.h,
+	  video/OSDLPixel.cc, video/OSDLPixel.h, video/OSDLSurface.cc,
+	  video/OSDLSurface.h, video/OSDLVideo.cc, video/OSDLVideo.h,
+	  video/OSDLVideoIncludes.h, video/renderer/GNUmakefile,
+	  video/renderer/OSDLRenderer.cc, video/renderer/OSDLRenderer.h,
+	  video/renderer/OSDLSprite.cc, video/renderer/OSDLSprite.h,
+	  video/tests/testOSDLWindowManager.cc,
+	  video/twoDimensional/OSDLImage.cc,
+	  video/twoDimensional/OSDLImage.h,
+	  video/twoDimensional/OSDLPoint.cc,
+	  video/twoDimensional/OSDLPoint.h,
+	  video/twoDimensional/OSDLPoint2D.cc,
+	  video/twoDimensional/OSDLPoint2D.h,
+	  video/twoDimensional/OSDLPoint3D.cc,
+	  video/twoDimensional/OSDLPoint3D.h,
+	  video/twoDimensional/OSDLPolygon.cc,
+	  video/twoDimensional/OSDLPolygon.h,
+	  video/twoDimensional/OSDLUprightRectangle.cc,
+	  video/twoDimensional/OSDLUprightRectangle.h,
+	  video/twoDimensional/OSDLWidget.cc,
+	  video/twoDimensional/OSDLWidget.h,
+	  video/twoDimensional/tests/testOSDLWidget.cc, audio/GNUmakefile,
+	  audio/OSDLAudio.cc, audio/OSDLAudio.h, audio/OSDLAudioIncludes.h:
+	  New toString method applied everywhere.
+
+2005-02-27 00:27  wondersye
+
+	* GNUmakefile: Better clean
+
+2005-02-27 00:25  wondersye
+
+	* GNUmakevars.inc: Minor debug flag change.
+
+2005-02-27 00:25  wondersye
+
+	* doc/web/main/News.html: Updated !
+
+2005-02-27 00:20  wondersye
+
+	* doc/web/main/documentation/rendering/: PhysicEngines.html,
+	  SDL-inputs.html: Updated
+
+2005-02-27 00:18  wondersye
+
+	* doc/web/main/documentation/rendering/: RenderingEngines.html,
+	  SDL-audio.html, SDL-hints.html, SDL-libraries.html,
+	  SDL-openGL.html, SDL-optimizing.html, SDL-troubleshooting.html,
+	  SDL-windows.html: Doc goes on.
+
+2005-02-27 00:17  wondersye
+
+	* code/video/: OSDLVideoIncludes.h, renderer/OSDLRenderer.cc:
+	  Renderer a little improved before OpenGL enters the game...
+
+2005-02-27 00:16  wondersye
+
+	* code/engine/tests/testScheduledOSDLAndMVC.cc: MVC Model became
+	  active objects, and their overall scheduling is fully functional
+	  and tested.
+
+2005-02-27 00:15  wondersye
+
+	* code/engine/: OSDLModel.cc, OSDLModel.h: MVC Model became active
+	  objects, and their overall scheduling is fully functional.
+
+2005-02-27 00:14  wondersye
+
+	* code/engine/: GNUmakefile, OSDLActiveObject.cc,
+	  OSDLActiveObject.h, OSDLEngineIncludes.h, OSDLPeriodicSlot.cc,
+	  OSDLScheduler.cc, OSDLScheduler.h, tests/testOSDLAndMVC.cc:
+	  Scheduler fixed for highest frequencies, input tick, better
+	  integration and testing.
+
+2005-02-27 00:13  wondersye
+
+	* code/events/: OSDLController.cc, OSDLController.h, OSDLEvents.cc,
+	  OSDLInputDevice.cc, OSDLInputDevice.h, OSDLJoystick.cc,
+	  OSDLJoystickHandler.cc, OSDLJoystickHandler.h,
+	  OSDLKeyboardHandler.cc, OSDLKeyboardHandler.h,
+	  tests/testOSDLController.cc, tests/testOSDLJoysticks.cc: Input
+	  devices, handlers and controllers revisited with success.
+
+2005-02-22 22:08  wondersye
+
+	* doc/web/main/documentation/gameExplained/VideoGameHistory.html:
+	  Minor update
+
+2005-02-17 20:17  wondersye
+
+	* doc/web/main/documentation/Glossary.html: MOre defs
+
+2005-02-11 13:36  wondersye
+
+	* code/events/: OSDLClassicalJoystick.cc, OSDLClassicalJoystick.h:
+	  Useful since simpler
+
+2005-02-11 13:35  wondersye
+
+	* GNUmakefile, GNUmakevars.inc: Timely update
+
+2005-02-11 13:33  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-hints.html,
+	  SDL-inputs.html, SDL-network.html: Updated before the week-end !
+
+2005-02-11 13:28  wondersye
+
+	* conf/loani-versions.sh: libtool updated
+
+2005-02-11 13:27  wondersye
+
+	* doc/web/main/documentation/:
+	  gameExplained/HowToBecomeAGameDeveloper.html,
+	  rendering/SDL-audio.html, rendering/SDL-hints.html,
+	  rendering/SDL-inputs.html, rendering/SDL-network.html,
+	  rendering/SDL-openGL.html, rendering/SDL-optimizing.html,
+	  rendering/SDL-troubleshooting.html: Doc updated before northside
+	  week-end
+
+2005-02-11 13:25  wondersye
+
+	* code/: basic/OSDLBasic.h, events/GNUmakefile,
+	  events/OSDLController.cc, events/OSDLController.h,
+	  events/OSDLEventsIncludes.h, events/OSDLJoystick.cc,
+	  events/OSDLJoystick.h, events/OSDLJoystickCommon.h,
+	  events/OSDLJoystickHandler.cc, events/OSDLJoystickHandler.h,
+	  events/tests/testOSDLController.cc, video/OSDLSurface.cc,
+	  video/OSDLVideo.cc, video/OSDLVideo.h,
+	  video/renderer/GNUmakefile, video/renderer/OSDLRenderer.cc,
+	  video/renderer/OSDLRenderer.h: Intermediary update specialized
+	  listener-based MVC is integrated with scheduler
+
+2005-02-11 13:24  wondersye
+
+	* code/engine/tests/testOSDLAndMVC.cc: Test not stable yet
+
+2005-02-11 13:24  wondersye
+
+	* code/engine/: GNUmakefile, OSDLEngineCommon.h, OSDLScheduler.cc,
+	  OSDLScheduler.h: Preparing MVC + scheduler integration
+
+2005-02-06 11:21  wondersye
+
+	* code/events/tests/testOSDLController.cc: Test added
+
+2005-02-06 11:20  wondersye
+
+	* code/events/: OSDLController.cc, OSDLController.h, OSDLEvents.cc,
+	  OSDLEvents.h, OSDLJoystick.h, OSDLJoystickHandler.cc,
+	  OSDLJoystickHandler.h, OSDLKeyboardHandler.cc,
+	  OSDLKeyboardHandler.h: Keyboard and joystick controller support
+	  functional.
+
+2005-02-05 15:14  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/Quality.html:
+	  Computer added
+
+2005-02-05 15:14  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html:
+	  Troubleshooting updated
+
+2005-02-05 15:13  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/: LOANI.html,
+	  OSDL-bugs.html, OSDL-usersguide.html: Troubleshooting sections
+	  updated
+
+2005-02-02 00:09  wondersye
+
+	* code/events/: OSDLController.cc, OSDLController.h, OSDLEvents.cc,
+	  OSDLEvents.h, OSDLEventsCommon.h, OSDLEventsIncludes.h,
+	  OSDLJoystickHandler.cc, OSDLJoystickHandler.h,
+	  OSDLKeyboardHandler.cc, OSDLKeyboardHandler.h,
+	  tests/testOSDLJoysticks.cc: OSDL Controller and linked to actual
+	  input devices
+
+2005-01-31 20:30  wondersye
+
+	* doc/web/main/: News.html, documentation/Glossary.html,
+	  documentation/gameExplained/GameSociology.html,
+	  documentation/gameExplained/gameMarket/Distributors.html,
+	  documentation/rendering/GameHints.html,
+	  documentation/rendering/SDL-audio.html,
+	  documentation/rendering/SDL-hints.html,
+	  documentation/rendering/SDL-inputs.html,
+	  documentation/rendering/SDL-macosx.html,
+	  documentation/rendering/SDL-network.html,
+	  documentation/rendering/SDL-openGL.html,
+	  documentation/rendering/SDL-threads.html,
+	  documentation/rendering/SDL-windows.html: [no log message]
+
+2005-01-26 23:27  wondersye
+
+	* code/events/: GNUmakefile, OSDLController.cc, OSDLController.h,
+	  OSDLEvents.cc, OSDLEvents.h, OSDLEventsCommon.h,
+	  OSDLEventsIncludes.h, OSDLInputDevice.cc, OSDLInputDevice.h,
+	  OSDLJoystick.cc, OSDLJoystick.h, OSDLJoystickHandler.cc,
+	  OSDLJoystickHandler.h, OSDLKeyboardHandler.cc,
+	  OSDLKeyboardHandler.h, tests/testOSDLJoysticks.cc: At least,
+	  compiles despite numerous adds
+
+2005-01-23 17:36  wondersye
+
+	* code/events/: GNUmakefile, OSDLEvents.cc, OSDLEvents.h,
+	  OSDLEventsIncludes.h, OSDLJoystick.h, OSDLJoystickCommon.cc,
+	  OSDLJoystickCommon.h, OSDLJoystickHandler.cc,
+	  OSDLJoystickHandler.h, OSDLJoysticksCommon.cc,
+	  OSDLJoysticksCommon.h, OSDLJoysticksHandler.cc,
+	  OSDLJoysticksHandler.h, tests/testOSDLEvents.cc: Avoid JoystickS
+	  in names (prefer Joystick)
+
+2005-01-22 00:27  wondersye
+
+	* GNUmakevars.inc, TODO.txt: Build better managed
+
+2005-01-22 00:26  wondersye
+
+	* doc/web/main/resources/Resources.html: Amiganet added
+
+2005-01-22 00:26  wondersye
+
+	* doc/web/main/documentation/rendering/: Alphablending.html,
+	  Colors.html, SDL-audio.html, SDL-cross-compilation.html,
+	  SDL-hints.html, SDL-libraries.html, SDL-macosx.html,
+	  SDL-openGL-examples.html, SDL-openGL.html, SDL-optimizing.html,
+	  SDL-troubleshooting.html, SDL-windows.html, Solutions.html: Small
+	  rewriting, lot of adding, a few reformatting actions
+
+2005-01-22 00:25  wondersye
+
+	* doc/web/main/documentation/gameExplained/: Bibliography.html,
+	  GameFuture.html, GameSociology.html: Updated !
+
+2005-01-22 00:23  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  OSDL/OSDL-0.3/OSDL-usersguide.html: Little more doc
+
+2005-01-22 00:21  wondersye
+
+	* code/basic/tests/testSDLWithOpenGL.cc: Better tests
+
+2005-01-22 00:20  wondersye
+
+	* code/engine/OSDLScheduler.h: Doc improved, static method names
+	  begin with an uppercase
+
+2005-01-22 00:18  wondersye
+
+	* code/events/: GNUmakefile, OSDLEvents.cc, OSDLEvents.h,
+	  OSDLJoystick.cc, OSDLJoystick.h, tests/testOSDLJoysticks.cc:
+	  Event being managed from back-end to controller
+
+2005-01-22 00:18  wondersye
+
+	* code/video/: renderer/OSDLSprite.cc, renderer/OSDLSprite.h,
+	  tests/testOSDLOpenGL.cc: Towards views being displayed
+
+2005-01-22 00:17  wondersye
+
+	* code/: video/GNUmakefile, video/OSDLPixel.h,
+	  video/OSDLSurface.cc, video/OSDLVideo.cc, video/OSDLVideo.h,
+	  video/renderer/tests/testOSDLRenderer.cc,
+	  video/tests/testOSDLPixel.cc, video/tests/testOSDLVideo.cc,
+	  video/tests/testOSDLWindowManager.cc,
+	  video/twoDimensional/OSDLImage.cc, basic/OSDLBasic.cc,
+	  basic/OSDLBasic.h: Static method names should begin with an
+	  uppercase
+
+2005-01-19 23:03  wondersye
+
+	* code/events/tests/testOSDLJoysticks.cc: Test your joy !
+
+2005-01-19 23:01  wondersye
+
+	* code/events/: OSDLEvents.cc, OSDLEvents.h, OSDLJoystick.cc,
+	  OSDLJoystick.h, OSDLJoysticksHandler.cc, OSDLJoysticksHandler.h:
+	  All input sources will be managed
+
+2005-01-17 22:24  wondersye
+
+	* code/events/: GNUmakefile, OSDLEvents.cc, OSDLEvents.h,
+	  OSDLEventsIncludes.h, OSDLJoystick.cc, OSDLJoystick.h,
+	  OSDLJoysticksCommon.cc, OSDLJoysticksCommon.h,
+	  OSDLJoysticksHandler.cc, OSDLJoysticksHandler.h,
+	  tests/testOSDLEvents.cc: Joystick support being added
+
+2005-01-15 16:19  wondersye
+
+	* doc/web/main/documentation/rendering/: RenderingMenu.html,
+	  SDL-inputs.html: Input handling added
+
+2005-01-14 17:00  wondersye
+
+	* doc/web/main/documentation/gameExplained/Bibliography.html: Red
+	  book updated
+
+2005-01-14 14:02  wondersye
+
+	* doc/web/main/documentation/OSDL/Copying.html: Better explained
+
+2005-01-14 13:38  wondersye
+
+	* COPYING-LGPL.txt: LGPL added
+
+2005-01-11 22:29  wondersye
+
+	* doc/web/main/resources/: Resources.html, graphics/Graphics.html:
+	  Minor update, including for 3dcafe.com
+
+2005-01-11 22:04  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/: GraphicalView.png,
+	  OSDL-Ceylan-class-diagram.png, Referentials-tree.png,
+	  TreeView.png: Color reverted : black back
+
+2005-01-11 22:03  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html:
+	  xvidcap added
+
+2005-01-11 22:01  wondersye
+
+	*
+	  doc/web/main/documentation/gameExplained/gameMarket/Distributors.html:
+	  Priston tale added
+
+2005-01-11 21:53  wondersye
+
+	*
+	  doc/web/main/documentation/gameExplained/gameMarket/GameMarket.html:
+	  AFJV added
+
+2005-01-07 21:55  wondersye
+
+	* doc/web/main/documentation/gameExplained/gameMarket/Press.html:
+	  Game sites added
+
+2005-01-06 20:43  wondersye
+
+	* doc/web/main/documentation/gameExplained/: GameAndLaw.html,
+	  GameFuture.html, GameSociology.html: Money, sweat shop and
+	  virtual change added
+
+2005-01-06 20:42  wondersye
+
+	* doc/web/main/documentation/gameExplained/Bibliography.html: Book
+	  reference added
+
+2005-01-03 22:33  wondersye
+
+	* doc/web/main/documentation/gameExplained/Bibliography.html: Two
+	  more norse books added
+
+2004-12-31 12:53  wondersye
+
+	* conf/doxygen-original.conf: Sources are no more copied into their
+	  documentations (was too messy).
+
+2004-12-30 20:26  wondersye
+
+	* GNUmakevars.inc: Debug symbol and renderer added, support mail
+	  corrected.
+
+2004-12-30 20:23  wondersye
+
+	* code/engine/: GNUmakefile, OSDLBoundingBox.cc, OSDLBoundingBox.h,
+	  OSDLBoundingBox2D.cc, OSDLBoundingBox2D.h,
+	  OSDLCircleBoundingBox.cc, OSDLCircleBoundingBox.h,
+	  OSDLEngineCommon.cc, OSDLEngineCommon.h, OSDLEngineIncludes.h,
+	  OSDLPeriodicSlot.cc, OSDLPeriodicSlot.h, OSDLScheduler.cc,
+	  OSDLScheduler.h, tests/testOSDLCircleBoundingBox.cc,
+	  tests/testOSDLScheduler.cc, tests/testOSDLSchedulerNoDeadline.cc:
+	  Bounding box added, including abstract, 2D, circle, and tested.
+	  ActiveWorldObjects corrected : renamed as ActiveObjects.
+
+2004-12-30 20:20  wondersye
+
+	* code/video/renderer/: GNUmakefile, OSDLRenderer.cc,
+	  OSDLRenderer.h, OSDLRendererIncludes.h, tests/GNUmakefile,
+	  tests/testOSDLRenderer.cc: Renderer introduced.
+
+2004-12-30 10:08  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html:
+	  Engine objects explained.
+
+2004-12-30 10:07  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/: EngineObjects.dia,
+	  EngineObjects.png: UML diagram to help figuring out engine inner
+	  working.
+
+2004-12-29 22:31  wondersye
+
+	* code/engine/: OSDLActiveObject.cc, OSDLActiveObject.h,
+	  OSDLActiveWorldObject.cc, OSDLActiveWorldObject.h: Active objects
+	  should not be necessarily world objects. It would interfer badly
+	  with world objects being 2D, 3D, etc. since a duplicated
+	  hierarchy would be necessary for active world objects as well.
+
+2004-12-29 11:54  wondersye
+
+	* code/: audio/OSDLAudio.cc, audio/OSDLAudio.h,
+	  engine/OSDLActiveWorldObject.cc, engine/OSDLActiveWorldObject.h,
+	  engine/OSDLEngineCommon.h, engine/OSDLPeriodicSlot.h,
+	  engine/OSDLScheduler.cc, engine/OSDLScheduler.h,
+	  engine/OSDLWorldObject.h, engine/tests/testOSDLScheduler.cc,
+	  engine/tests/testOSDLSchedulerNoDeadline.cc,
+	  events/OSDLEvents.cc, events/OSDLEvents.h, video/GNUmakefile,
+	  video/OSDLPalette.h, video/OSDLSurface.h,
+	  video/twoDimensional/OSDLImage.h,
+	  video/twoDimensional/OSDLUprightRectangle.h: Added a zillion
+	  private copy constructors and assignment operators to avoid
+	  unwanted copies of instances.
+
+2004-12-29 11:52  wondersye
+
+	* GNUmakerules.inc: Added () in for .. do  .. done, for target
+	  moduletests-recurse, to avoid being in the sub-directory after
+	  first iteration or adding a cd .. before 'done'.
+
+2004-12-28 16:29  wondersye
+
+	* code/engine/: OSDLActiveWorldObject.cc, OSDLActiveWorldObject.h,
+	  OSDLPeriodicSlot.cc, OSDLPeriodicSlot.h, OSDLScheduler.cc,
+	  OSDLScheduler.h, tests/testOSDLScheduler.cc: Scheduler now
+	  resists to lack of resources on a best-effort basis, and detect
+	  failures.
+
+2004-12-27 11:18  wondersye
+
+	* code/engine/OSDLActiveWorldObject.cc: Forgot to checkin it
+
+2004-12-27 11:17  wondersye
+
+	* code/engine/: OSDLActiveWorldObject.cc, OSDLActiveWorldObject.h,
+	  OSDLScheduler.cc, OSDLScheduler.h, tests/testOSDLScheduler.cc:
+	  Testing soon, objects can be registered to the scheduler now.
+
+2004-12-23 12:57  wondersye
+
+	* TODO.txt, doc/web/main/documentation/rendering/SDL-hints.html,
+	  doc/web/main/documentation/rendering/SDL-openGL.html,
+	  doc/web/main/documentation/rendering/SDL-troubleshooting.html,
+	  doc/web/main/documentation/rendering/SDL-windows.html,
+	  doc/web/main/documentation/rendering/Technical-links.html: More
+	  SDL and game infos
+
+2004-12-23 12:57  wondersye
+
+	* code/OSDL.h: Engine added
+
+2004-12-23 12:56  wondersye
+
+	* code/events/: OSDLEvents.cc, OSDLEvents.h: Scheduler integration
+	  improved
+
+2004-12-23 12:55  wondersye
+
+	* code/engine/: GNUmakefile, OSDLActiveWorldObject.cc,
+	  OSDLActiveWorldObject.h, OSDLEngineCommon.cc, OSDLEngineCommon.h,
+	  OSDLEngineIncludes.h, OSDLPeriodicSlot.cc, OSDLPeriodicSlot.h,
+	  OSDLScheduler.cc, OSDLScheduler.h, tests/testOSDLScheduler.cc:
+	  Scheduler, active objects and slots on the way, compiles and runs
+	  a bit.
+
+2004-12-20 00:05  wondersye
+
+	* TODO.txt, doc/web/main/News.html,
+	  doc/web/main/club/game/numericBook/Synthesis.html,
+	  doc/web/main/club/game/numericBook/nodes-example/MakingOf.html,
+	  doc/web/main/documentation/gameExplained/gameMarket/Lobbies.html:
+	  Updated with recent informations
+
+2004-12-20 00:05  wondersye
+
+	* code/video/tests/: testOSDLSurface.cc, testOSDLVideo.cc: Tests a
+	  bit updated.
+
+2004-12-20 00:05  wondersye
+
+	* code/engine/tests/testOSDLScheduler.cc: A scheduler needs heavy
+	  testing.
+
+2004-12-20 00:04  wondersye
+
+	* code/events/: OSDLEvents.cc, OSDLEvents.h: Events prepared to
+	  support scheduling
+
+2004-12-20 00:03  wondersye
+
+	* code/engine/: OSDLActiveWorldObject.cc, OSDLActiveWorldObject.h,
+	  OSDLScheduler.cc, OSDLScheduler.h: Scheduling on the way !
+
+2004-12-18 22:35  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  OSDL/OSDL-0.3/OSDL-usersguide.html,
+	  gameExplained/Bibliography.html,
+	  gameExplained/GameClassification.html,
+	  gameExplained/GameSociology.html,
+	  gameExplained/HowToBecomeAGameDeveloper.html,
+	  gameExplained/HowToSellAGame.html, gameExplained/Wonders.html,
+	  rendering/SDL-audio.html, rendering/SDL-cross-compilation.html,
+	  rendering/SDL-events.html, rendering/SDL-graphics.html,
+	  rendering/SDL-hints.html, rendering/SDL-libraries.html,
+	  rendering/SDL-network.html, rendering/SDL-openGL.html,
+	  rendering/SDL-threads.html, rendering/SDL-troubleshooting.html,
+	  rendering/SDL-windows.html: Update before Christmas pudding !
+
+2004-12-18 22:10  wondersye
+
+	* code/GNUmakefile: engine module activated
+
+2004-12-18 22:09  wondersye
+
+	* code/basic/: OSDLBasic.cc, OSDLBasic.h: Deallocated pointer was
+	  not nullified, falsing logic.
+
+2004-12-18 22:08  wondersye
+
+	* code/video/OSDLSurface.cc: Micro-change
+
+2004-12-18 22:07  wondersye
+
+	* code/video/twoDimensional/: OSDLImage.cc,
+	  tests/testOSDLAnimation.cc: Blit result better managed, test
+	  still to be written.
+
+2004-12-18 22:06  wondersye
+
+	* code/engine/: OSDLActiveWorldObject.cc, OSDLActiveWorldObject.h,
+	  OSDLPeriodicSlot.cc, OSDLPeriodicSlot.h, OSDLScheduler.cc,
+	  OSDLScheduler.h: Better integration with Events module. Compiles
+	  now, but a lot of work still pending.
+
+2004-12-18 22:05  wondersye
+
+	* code/events/: GNUmakefile, OSDLEvents.cc, OSDLEvents.h,
+	  tests/testOSDLEvents.cc: Time management fully recreated,
+	  including units and primitives. Scheduler integration started.
+	  Still heavy work is to be done.
+
+2004-12-08 20:42  wondersye
+
+	* code/engine/: GNUmakefile, OSDLActiveWorldObject.cc,
+	  OSDLActiveWorldObject.h, OSDLEngineIncludes.h,
+	  OSDLPeriodicSlot.cc, OSDLPeriodicSlot.h, OSDLScheduler.cc,
+	  OSDLScheduler.h: Engine being built : scheduler on the way,
+	  periodic slots added
+
+2004-12-02 20:55  wondersye
+
+	* doc/web/main/News.html: Updated
+
+2004-12-02 20:46  wondersye
+
+	* code/video/twoDimensional/OSDLTwoDimensionalIncludes.h:
+	  Deprecated includes removed
+
+2004-12-02 20:18  wondersye
+
+	* GNUmakevars.inc, TODO.txt, conf/LOANI-0.3.tar.gz,
+	  conf/LOANI-0.3.zip,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/GraphicalView.dia,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/GraphicalView.png,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/Referentials-tree.dia,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/Referentials-tree.png,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/TreeView.dia,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/TreeView.png,
+	  doc/web/main/documentation/gameExplained/HowToSellAGame.html,
+	  doc/web/main/documentation/rendering/SDL-audio.html,
+	  doc/web/main/documentation/rendering/SDL-events.html,
+	  doc/web/main/documentation/rendering/SDL-graphics.html,
+	  doc/web/main/documentation/rendering/SDL-hints.html,
+	  doc/web/main/documentation/rendering/SDL-inputs.html,
+	  doc/web/main/documentation/rendering/SDL-network.html,
+	  doc/web/main/documentation/rendering/SDL-openGL.html: Major
+	  commit before CD release
+
+2004-12-02 20:14  wondersye
+
+	* doc/web/main/: documentation/Glossary.html,
+	  documentation/OSDL/OSDL-0.3/OSDL-credits.html,
+	  documentation/OSDL/OSDL-0.3/OSDL-usersguide.html,
+	  documentation/gameExplained/Licenses.html,
+	  documentation/rendering/SDL-audio.html,
+	  documentation/rendering/SDL-hints.html,
+	  documentation/rendering/SDL-inputs.html,
+	  documentation/rendering/SDL-libraries.html,
+	  documentation/rendering/SDL-macosx.html,
+	  documentation/rendering/SDL-network.html,
+	  documentation/rendering/SDL-openGL.html,
+	  documentation/rendering/SDL-optimizing.html,
+	  documentation/rendering/SDL-threads.html,
+	  documentation/rendering/SDL-troubleshooting.html,
+	  documentation/rendering/SDL-windows.html,
+	  resources/graphics/Graphics.html: Massive update before CD
+	  release
+
+2004-12-02 20:14  wondersye
+
+	* code/: GNUmakefile, OSDL.h: Engine module added
+
+2004-12-02 20:13  wondersye
+
+	* code/engine/: GNUmakefile, OSDLActiveWorldObject.cc,
+	  OSDLActiveWorldObject.h, OSDLEngineIncludes.h, OSDLScheduler.cc,
+	  OSDLScheduler.h, OSDLWorldObject.cc, OSDLWorldObject.h,
+	  tests/GNUmakefile: Towards a scheduling engine for uncoupled
+	  logic and rendering
+
+2004-12-02 20:11  wondersye
+
+	* code/events/: OSDLEvents.cc, OSDLEvents.h: Towards different
+	  times and uncoupled simulation and rendering
+
+2004-12-02 20:10  wondersye
+
+	* code/audio/GNUmakefile: SOURCE_DIRS corrected
+
+2004-12-02 20:09  wondersye
+
+	* code/video/: OSDLFromGfx.h, OSDLPalette.cc, OSDLPalette.h,
+	  OSDLPixel.cc, OSDLPixel.h, OSDLSurface.cc, OSDLSurface.h,
+	  tests/testOSDLPalette.cc: Better pixel-level color support,
+	  including gradation palettes
+
+2004-12-02 20:08  wondersye
+
+	* code/video/twoDimensional/GNUmakefile: Clumsy Drawable addition
+	  removed (View is far better)
+
+2004-12-02 20:04  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLLine.cc, OSDLLine.h,
+	  OSDLPoint2D.cc, OSDLPoint2D.h, OSDLText.cc, OSDLText.h,
+	  OSDLTwoDimensionalIncludes.h, OSDLWidget.cc, OSDLWidget.h:
+	  Widgets needed better 2D support
+
+2004-12-02 20:03  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLAnimation.cc: Tests
+	  logic-driven animation
+
+2004-12-02 20:01  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLWidget.cc: Better test,
+	  still to be improved though
+
+2004-11-15 00:04  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-audio.html: Audio doc
+	  remastered
+
+2004-11-12 12:25  wondersye
+
+	* code/basic/OSDLDocMainPage.h: Doc page udpate with mirror URL
+
+2004-11-12 12:24  wondersye
+
+	* code/video/tests/testOSDLBlit.cc: Simple test for blits, helped
+	  fixing the bloody color masks
+
+2004-11-12 12:24  wondersye
+
+	* code/video/: OSDLPalette.cc, OSDLPixel.cc, OSDLPixel.h,
+	  OSDLSurface.cc, OSDLSurface.h, OSDLVideo.cc, OSDLVideo.h,
+	  tests/testOSDLSurface.cc: Color mask fixed, widget support on
+	  construction
+
+2004-11-12 12:23  wondersye
+
+	* code/video/twoDimensional/: OSDLImage.cc, OSDLImage.h,
+	  OSDLWidget.cc, OSDLWidget.h, tests/testOSDLWidget.cc: Widget
+	  support on the way
+
+2004-11-05 10:57  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html:
+	  Updated !
+
+2004-11-01 23:12  wondersye
+
+	* code/video/twoDimensional/: OSDLPoint.cc, OSDLPoint.h,
+	  tests/testOSDLWidget.cc: Abstract point added, useful for widgets
+
+2004-11-01 23:10  wondersye
+
+	* code/video/: OSDLPixel.h, OSDLSurface.cc, OSDLSurface.h: Widget
+	  support begun
+
+2004-11-01 23:10  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLPoint2D.cc,
+	  OSDLPoint2D.h, OSDLPoint3D.cc, OSDLPoint3D.h,
+	  OSDLTwoDimensionalIncludes.h, OSDLWidget.cc, OSDLWidget.h,
+	  tests/testOSDLConic.cc: Moving forward to widget support
+
+2004-10-30 10:27  wondersye
+
+	*
+	  doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-Ceylan-class-diagram.png:
+	  Overall class diagram registered
+
+2004-10-30 10:25  wondersye
+
+	* code/basic/OSDLDocMainPage.h, code/events/OSDLEvents.cc,
+	  code/events/OSDLEvents.h, code/video/OSDLSurface.cc,
+	  code/video/OSDLSurface.h, code/video/OSDLVideo.cc,
+	  code/video/OSDLVideo.h, code/video/twoDimensional/GNUmakefile,
+	  code/video/twoDimensional/OSDLImage.cc,
+	  code/video/twoDimensional/OSDLPoint2D.h,
+	  code/video/twoDimensional/OSDLPolygon.cc,
+	  code/video/twoDimensional/OSDLTwoDimensionalIncludes.h,
+	  code/video/twoDimensional/OSDLWidget.cc,
+	  code/video/twoDimensional/OSDLWidget.h, doc/web/main/News.html,
+	  doc/web/main/documentation/Glossary.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html,
+	  doc/web/main/documentation/gameExplained/gameMarket/Editors.html,
+	  doc/web/main/documentation/rendering/SDL-audio.html,
+	  doc/web/main/documentation/rendering/SDL-hints.html,
+	  doc/web/main/documentation/rendering/SDL-libraries.html,
+	  doc/web/main/documentation/rendering/SDL-openGL.html,
+	  doc/web/main/documentation/rendering/SDL-troubleshooting.html,
+	  doc/web/main/documentation/rendering/SDL-windows.html,
+	  doc/web/main/resources/Resources.html: Early checkin before long
+	  week-end in north with laptop
+
+2004-10-29 17:21  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h, OSDLVideoTypes.h:
+	  Tests coverage improved
+
+2004-10-29 17:21  wondersye
+
+	* code/video/twoDimensional/: OSDLPoint2D.cc, OSDLPoint2D.h,
+	  OSDLPolygon.cc, OSDLPolygon.h, tests/testOSDLPolygon.cc: Better
+	  polygon support (including sets)
+
+2004-10-19 21:05  wondersye
+
+	* code/video/: OSDLPixel.cc, OSDLPixel.h, OSDLSurface.cc,
+	  OSDLSurface.h, OSDLVideoTypes.h: Updated !
+
+2004-10-19 21:03  wondersye
+
+	* code/video/twoDimensional/: OSDLLine.cc, OSDLLine.h,
+	  OSDLPoint2D.cc, OSDLPoint2D.h, OSDLPolygon.cc, OSDLPolygon.h,
+	  tests/testOSDLPoint2D.cc, tests/testOSDLPolygon.cc,
+	  tests/testOSDLUprightRectangle.cc: Polygon added
+
+2004-10-01 23:13  wondersye
+
+	* conf/loani-requiredTools.sh: Tag-removal sections fixed
+
+2004-10-01 23:11  wondersye
+
+	* doc/: GNUmakefile, web/common/Template-en.html,
+	  web/common/Template-fr.html, web/common/Template.html,
+	  web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html,
+	  web/main/documentation/gameExplained/GameAndLaw.html,
+	  web/main/documentation/gameExplained/GameFuture.html,
+	  web/main/documentation/gameExplained/GameSociology.html,
+	  web/main/documentation/gameExplained/HowToBecomeAGameDeveloper.html,
+	  web/main/documentation/rendering/SDL-events.html,
+	  web/main/documentation/rendering/SDL-hints.html,
+	  web/main/documentation/rendering/SDL-libraries.html,
+	  web/main/documentation/rendering/SDL-windows.html: Doc updated a
+	  bit
+
+2004-10-01 23:09  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h, OSDLVideoTypes.h:
+	  Minor improvements
+
+2004-10-01 23:08  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLConic.cc,
+	  OSDLConic.h, OSDLPolygon.cc, OSDLPolygon.h,
+	  OSDLTwoDimensionalIncludes.h, tests/testOSDLConic.cc,
+	  tests/testOSDLPolygon.cc: Ellipse added to Conic, Pie and
+	  Triangle began Polygon
+
+2004-10-01 13:21  wondersye
+
+	* code/: playTests.sh, audio/OSDLAudio.h, basic/OSDLBasic.h,
+	  basic/OSDLException.h, basic/OSDLTestException.h,
+	  deprecated/OSDLEventsException.h,
+	  deprecated/OSDLVideoException.h, events/OSDLEvents.cc,
+	  events/OSDLEvents.h, events/tests/testOSDLEvents.cc,
+	  video/OSDLPalette.h, video/OSDLSurface.cc, video/OSDLSurface.h,
+	  video/OSDLVideo.cc, video/OSDLVideo.h,
+	  video/twoDimensional/OSDLConic.h,
+	  video/twoDimensional/OSDLImage.cc,
+	  video/twoDimensional/OSDLImage.h,
+	  video/twoDimensional/OSDLPoint2D.h,
+	  video/twoDimensional/OSDLText.h,
+	  video/twoDimensional/OSDLUprightRectangle.h: Tests updated (more
+	  dependable, quicker), and 'explicit' keyword generalized
+
+2004-09-23 07:48  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLConic.cc,
+	  OSDLConic.h, OSDLLine.cc, OSDLLine.h,
+	  OSDLTwoDimensionalIncludes.h, tests/testOSDLConic.cc,
+	  tests/testOSDLText.cc: Conic added
+
+2004-09-22 21:42  wondersye
+
+	* conf/LOANI-0.3.tar.gz, conf/LOANI-0.3.zip,
+	  conf/loani-commonBuildTools.sh, conf/loani-optionalTools.sh,
+	  conf/loani-requiredTools.sh, conf/loani.sh,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html,
+	  doc/web/main/documentation/rendering/SDL-network.html: Before new
+	  tag
+
+2004-09-22 20:49  wondersye
+
+	* GNUmakerules.inc, GNUmaketests.inc: Libtool install test*.exe
+	  fixed
+
+2004-09-22 20:39  wondersye
+
+	* doc/web/main/documentation/rendering/: Consoles.html,
+	  Database.html, Online.html: Text added
+
+2004-09-22 20:39  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-audio.html,
+	  SDL-cross-compilation.html, SDL-events.html, SDL-hints.html,
+	  SDL-inputs.html, SDL-macosx.html, SDL-openGL.html,
+	  SDL-threads.html, SDL-troubleshooting.html, SDL-windows.html:
+	  More infos from the SDL mailing list
+
+2004-09-22 20:36  wondersye
+
+	* code/video/tests/testOSDLSurface.cc: Surface tested with gaussian
+	  graphs
+
+2004-09-22 20:35  wondersye
+
+	* code/video/: OSDLFromGfx.cc, OSDLFromGfx.h, OSDLPixel.cc,
+	  OSDLPixel.h, OSDLSurface.cc, OSDLSurface.h, OSDLVideo.cc,
+	  OSDLVideo.h, tests/testOSDLPixel.cc: More primitives added !
+
+2004-09-22 20:32  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLSaveImage.cc: Ideal for
+	  screenshots
+
+2004-09-22 20:32  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLImage.cc,
+	  OSDLLine.cc, OSDLLine.h, OSDLText.cc, OSDLText.h,
+	  OSDLTwoDimensionalIncludes.h, OSDLUprightRectangle.cc,
+	  OSDLUprightRectangle.h, tests/testOSDLLine.cc,
+	  tests/testOSDLPixels.cc, tests/testOSDLText.cc,
+	  tests/testOSDLUprightRectangle.cc: A lot more primitives,
+	  including basic text one
+
+2004-09-22 20:29  wondersye
+
+	* code/basic/: OSDLBasic.cc, OSDLBasic.h, tests/testSDL_gfx.cc:
+	  Minor fix
+
+2004-09-22 20:01  wondersye
+
+	* code/events/: OSDLEvents.cc, OSDLEvents.h: Waiting primitives
+	  added
+
+2004-09-07 11:20  wondersye
+
+	* GNUmaketests.inc: libtool scripts for tests cleaned too
+
+2004-09-07 11:14  wondersye
+
+	* GNUmakevars.inc, conf/LOANI-0.3.tar.gz, conf/LOANI-0.3.zip,
+	  conf/loani-commonBuildTools.sh, conf/loani-requiredTools.sh,
+	  conf/loani-versions.sh, conf/loani.sh,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/OSDL.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/Quality.html,
+	  doc/web/main/documentation/rendering/SDL-troubleshooting.html,
+	  doc/web/main/documentation/rendering/SDL-windows.html: Update
+	  before new LOANIzed install (for gdb)
+
+2004-09-06 23:11  wondersye
+
+	* conf/: loani-requiredTools.sh, loani.sh: CVS tagged release
+	  managed
+
+2004-09-05 23:15  wondersye
+
+	* GNUmakefile, GNUmakerules.inc, GNUmaketests.inc, GNUmakevars.inc,
+	  TODO.txt, code/GNUmakefile, code/audio/GNUmakefile,
+	  code/basic/GNUmakefile, code/events/GNUmakefile,
+	  code/video/GNUmakefile, code/video/twoDimensional/GNUmakefile,
+	  conf/LOANI-0.3.tar.gz, conf/README-template.txt,
+	  conf/loani-optionalTools.sh, doc/web/main/club/Club.html: Make
+	  variable protected thanks to their private counterpart
+
+2004-09-05 23:14  wondersye
+
+	* doc/web/main/documentation/: OSDL/Authors.html,
+	  OSDL/Copying.html, OSDL/OSDL-0.3/LOANI.html,
+	  OSDL/OSDL-0.3/OSDL-bugs.html, OSDL/OSDL-0.3/OSDL-credits.html,
+	  OSDL/OSDL-0.3/OSDL-usersguide.html, rendering/Modelers.html,
+	  rendering/SDL-graphics.html, rendering/SDL-hints.html: User
+	  documentation updated
+
+2004-09-04 16:50  wondersye
+
+	* doc/web/main/documentation/OSDL/: OSDL-0.3/LOANI.html,
+	  OSDL-generic/Quality.html: Doc well improved for user's ease of
+	  use
+
+2004-09-04 12:15  wondersye
+
+	* GNUmakefile, GNUmakevars.inc, conf/GNUmakefile,
+	  conf/LOANI-0.3.tar.gz, conf/LOANI-0.3.zip,
+	  conf/loani-requiredTools.sh, conf/loani.sh, doc/GNUmakefile:
+	  Update after merge : ready to work only on LOANIzed versions
+
+2004-09-04 11:48  wondersye
+
+	* TODO.txt, conf/LOANI-0.3.tar.gz, conf/LOANI-0.3.zip,
+	  conf/loani-optionalTools.sh, conf/loani-versions.sh: Update
+	  before using only LOANIzed install
+
+2004-09-03 18:37  wondersye
+
+	* doc/: GNUmakefile, web/main/MainOSDL.html: Changes due to crontab
+	  from SF being unavailable
+
+2004-09-03 18:32  wondersye
+
+	* doc/web/common/GraphicalCharter.html: Improved
+
+2004-09-03 18:32  wondersye
+
+	* doc/web/main/: News.html, resources/Technical.html: LOANI,
+	  YAG-OSDL and bookmarks added
+
+2004-09-03 18:31  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  gameExplained/gameMarket/Lobbies.html: Minor update (FdF)
+
+2004-09-03 18:31  wondersye
+
+	* doc/web/main/documentation/OSDL/: OSDL-central.html,
+	  OSDLMenu.html, RFE, RFE.html: Files better organized now
+
+2004-09-03 18:30  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/yag-osdl.html: Doc
+	  added
+
+2004-09-03 18:30  wondersye
+
+	*
+	  doc/web/main/documentation/OSDL/OSDL-generic/yag-osdl-0.5.tar.bz2:
+	  YAG-OSDL archive
+
+2004-09-03 10:45  wondersye
+
+	* conf/: LOANI-0.3.tar.gz, LOANI-0.3.zip, loani-versions.sh: Last
+	  update before move to LOANIzed installation
+
+2004-09-03 10:43  wondersye
+
+	* GNUmakefile, TODO.txt, code/playTests.sh,
+	  code/video/twoDimensional/OSDLImage.cc,
+	  code/video/twoDimensional/tests/testOSDLImage.cc,
+	  conf/LOANI-0.3.tar.gz, conf/LOANI-0.3.zip,
+	  conf/generateBugReport.sh, conf/loani-commonBuildTools.sh,
+	  conf/loani-requiredTools.sh, conf/loani-versions.sh,
+	  conf/loani.sh: Full installation process improved
+
+2004-09-03 10:32  wondersye
+
+	* doc/web/images/OSDL-icon.png: Icon reworked
+
+2004-09-03 10:31  wondersye
+
+	* doc/web/main/: download/Download.html,
+	  download/DownloadMenu.html, resources/Technical.html: Download
+	  process better explained
+
+2004-09-03 10:31  wondersye
+
+	* doc/web/main/documentation/: OSDL/OSDL-0.3/LOANI.html,
+	  OSDL/OSDL-0.3/OSDL-usersguide.html,
+	  OSDL/OSDL-generic/Quality.html,
+	  gameExplained/HowToBecomeAGameDeveloper.html: MOre user infos
+	  added
+
+2004-09-03 10:31  wondersye
+
+	* doc/web/main/documentation/rendering/: Modelers.html,
+	  OtherTools.html, RenderingEngines.html: Prepare for integration
+	  and merge
+
+2004-09-03 10:30  wondersye
+
+	* doc/web/main/documentation/rendering/:
+	  SDL-cross-compilation.html, SDL-licence.html: Merged !
+
+2004-09-03 10:26  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-framebuffer.html,
+	  SDL-hints.html, SDL-openGL.html, SDL-troubleshooting.html: Some
+	  more infos
+
+2004-09-02 20:30  wondersye
+
+	* GNUmakevars.inc: -lgcc_s added
+
+2004-08-31 20:32  wondersye
+
+	* GNUmaketests.inc: LIBTOOL_INSTALL added
+
+2004-08-29 18:32  wondersye
+
+	* GNUmakefile: '@[' replaced by '@ ['
+
+2004-08-29 17:19  wondersye
+
+	* code/video/: OSDLPalette.cc, OSDLPalette.h,
+	  tests/testOSDLPalette.cc, tests/testOSDLWindowManager.cc: Palette
+	  and Window Manager added
+
+2004-08-29 17:15  wondersye
+
+	* GNUmakerules.inc, GNUmaketests.inc, TODO.txt: Improvements from
+	  Saint Malo
+
+2004-08-29 17:00  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/README-FTP.txt: All
+	  in CVS !
+
+2004-08-29 16:58  wondersye
+
+	* doc/web/: common/TemplateMenu.html,
+	  main/documentation/OSDL/OSDL-generic/WindowsEnvironment.html,
+	  main/documentation/misc/Knoppix.html,
+	  main/documentation/rendering/SDL-Todo.html,
+	  main/documentation/rendering/SDL-cross-compilation.html:
+	  On-construction pages added
+
+2004-08-29 16:53  wondersye
+
+	* doc/web/: index-SF.html, index.html,
+	  common/GraphicalCharter.html, common/Template-en.html,
+	  common/Template-fr.html, common/css/OSDL.css,
+	  images/OSDL-icon.png: Basic web architecture improved
+
+2004-08-29 16:52  wondersye
+
+	* doc/web/main/: MainOSDL.html, Search.html,
+	  resources/Resources.html, resources/graphics/Graphics.html,
+	  resources/graphics/GraphicsMenu.html,
+	  resources/sounds/Sounds.html: Various updates after Saint Malo
+
+2004-08-29 16:51  wondersye
+
+	* doc/web/main/documentation/gameExplained/gameMarket/:
+	  Constructors.html, Crisis.html, Distributors.html, Editors.html,
+	  GameMarket.html, GameMarketMenu.html, Lobbies.html, Players.html,
+	  Press.html, Studios.html, SuccessStories.html: Game market infos
+	  added
+
+2004-08-29 16:50  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  OSDL/OSDL-0.3/OSDL-usersguide.html,
+	  gameExplained/Bibliography.html, gameExplained/Game-central.html,
+	  gameExplained/GameAndLaw.html,
+	  gameExplained/GameClassification.html,
+	  gameExplained/GameFuture.html, gameExplained/GameMenu.html,
+	  gameExplained/GameSociology.html,
+	  gameExplained/HowToBecomeAGameDeveloper.html,
+	  gameExplained/HowToMakeAGame.html, gameExplained/Licenses.html,
+	  gameExplained/VideoGameHistory.html, gameExplained/Wonders.html,
+	  rendering/SDL-audio.html, rendering/SDL-hints.html,
+	  rendering/SDL-inputs.html, rendering/SDL-libraries.html,
+	  rendering/SDL-network.html, rendering/SDL-openGL.html,
+	  rendering/SDL-troubleshooting.html, rendering/SDL-windows.html:
+	  Major update after Saint Malo rewriting
+
+2004-08-29 16:48  wondersye
+
+	* code/basic/: OSDLBasic.cc, OSDLBasic.h: Updated
+
+2004-08-29 16:48  wondersye
+
+	* code/video/: GNUmakefile, OSDLPixel.cc, OSDLPixel.h,
+	  OSDLSurface.cc, OSDLSurface.h, OSDLVideo.cc, OSDLVideo.h,
+	  OSDLVideoIncludes.h, OSDLVideoTypes.h, tests/testOSDLVideo.cc,
+	  twoDimensional/tests/testOSDLPixels.cc: Major additions, better
+	  SDL support
+
+2004-08-29 16:47  wondersye
+
+	* code/audio/: OSDLAudio.cc, OSDLAudio.h: Audio starting to exist
+
+2004-08-29 16:47  wondersye
+
+	* code/events/: OSDLEvents.cc, OSDLEvents.h: Little improvements
+
+2004-08-29 16:46  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLImage.cc,
+	  OSDLImage.h, OSDLLine.cc, OSDLLine.h, OSDLUprightRectangle.cc,
+	  OSDLUprightRectangle.h, tests/testOSDLImage.cc,
+	  tests/testOSDLLine.cc: Various tests and functions added
+
+2004-08-14 00:35  wondersye
+
+	* TODO.txt, conf/GNUmakefile, conf/README-template.txt,
+	  conf/generateBugReport.sh, conf/loani-commonBuildTools.sh,
+	  conf/loani-optionalTools.sh, conf/loani-requiredTools.sh,
+	  conf/loani-versions.sh, conf/loani.sh: Some minor improvements
+	  for clarity and robustness
+
+2004-08-14 00:34  wondersye
+
+	* doc/web/: images/Logo-CRI-circled.png, images/Logo-CRI.png,
+	  main/documentation/rendering/SDL-backend.html,
+	  main/documentation/rendering/SDL-improvements.html,
+	  main/documentation/rendering/SDL-inputs.html,
+	  main/documentation/rendering/SDL-licence.html,
+	  main/documentation/rendering/Technical-links.html,
+	  main/resources/Bookmarks.html, main/resources/Tools.html: More
+	  cvs add before vacation
+
+2004-08-14 00:30  wondersye
+
+	* doc/web/main/: News.html, club/Club.html,
+	  club/game/trailer/Trailer.html, documentation/Glossary.html,
+	  documentation/OSDL/OSDL-0.3/LOANI.html,
+	  documentation/gameExplained/Bibliography.html,
+	  documentation/gameExplained/HowToMakeAGame.html,
+	  documentation/gameExplained/HowToSellAGame.html,
+	  documentation/rendering/Colors.html,
+	  documentation/rendering/SDL-audio.html,
+	  documentation/rendering/SDL-graphics.html,
+	  documentation/rendering/SDL-hints.html,
+	  documentation/rendering/SDL-libraries.html,
+	  documentation/rendering/SDL-macosx.html,
+	  documentation/rendering/SDL-openGL.html,
+	  documentation/rendering/SDL-optimizing.html,
+	  documentation/rendering/SDL-threads.html,
+	  documentation/rendering/SDL-troubleshooting.html,
+	  download/Download.html: Updated before vacacation !
+
+2004-08-14 00:18  wondersye
+
+	* code/video/tests/testOSDLPixel.cc: Testing pixel operations
+
+2004-08-14 00:17  wondersye
+
+	* code/video/: OSDLVideo.cc, twoDimensional/OSDLImage.cc,
+	  twoDimensional/OSDLImage.h: Last update before Saint Malo
+	  vacation
+
+2004-08-10 20:31  wondersye
+
+	* doc/web/main/resources/Technical.html: Sites added
+
+2004-07-27 21:54  wondersye
+
+	* doc/web/main/resources/Technical.html: NeHe added
+
+2004-07-26 23:35  wondersye
+
+	* doc/web/main/: documentation/gameExplained/Bibliography.html,
+	  resources/Technical.html: red book link added
+
+2004-07-24 14:25  wondersye
+
+	* doc/web/main/resources/Resources.html: games-creators added
+
+2004-07-09 13:43  wondersye
+
+	* doc/web/main/News.html: July
+
+2004-07-09 13:34  wondersye
+
+	* doc/web/main/project/meetings/: MeetingsExplained.html,
+	  MeetingsMenu.html: Meetings report frequency updated
+
+2004-07-07 23:45  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/: LOANI.html, OSDL.html:
+	  Host tests added, old gcc issue too
+
+2004-07-07 21:59  wondersye
+
+	* code/video/: OSDLFromGfx.cc, OSDLFromGfx.h: Added so that Surface
+	  source file is not too huge
+
+2004-07-07 21:40  wondersye
+
+	* GNUmakevars.inc, TODO.txt, conf/LOANI-0.3.tar.gz,
+	  conf/LOANI-0.3.zip, conf/loani-versions.sh: Last check-in before
+	  user release
+
+2004-07-07 21:36  wondersye
+
+	* doc/web/main/: club/Club.html,
+	  documentation/gameExplained/HowToBecomeAGameDeveloper.html,
+	  documentation/gameExplained/HowToMakeAGame.html,
+	  documentation/rendering/SDL-audio.html,
+	  documentation/rendering/SDL-hints.html,
+	  documentation/rendering/SDL-openGL.html,
+	  documentation/rendering/SDL-troubleshooting.html,
+	  documentation/rendering/SDL-windows.html: Some more hints coming
+	  from the SDL team
+
+2004-07-07 21:34  wondersye
+
+	* code/: GNUmakefile, OSDL.h: Improvements back-ported from Ceylan,
+	  audio added
+
+2004-07-07 21:33  wondersye
+
+	* code/events/: GNUmakefile, OSDLEvents.cc, OSDLEvents.h,
+	  tests/testOSDLEvents.cc: Events are improved : managed as video
+	  module (namespace), environment variables managed
+
+2004-07-07 21:32  wondersye
+
+	* code/basic/: GNUmakefile, OSDLBasic.cc, OSDLBasic.h,
+	  tests/testOSDLBasic.cc: Audio module managed, environment
+	  variables too
+
+2004-07-07 21:32  wondersye
+
+	* code/video/: GNUmakefile, OSDLPixel.cc, OSDLPixel.h,
+	  OSDLSurface.cc, OSDLSurface.h, OSDLVideo.cc, OSDLVideo.h,
+	  OSDLVideoIncludes.h, tests/testOSDLVideo.cc: Better SDL
+	  management (environment variables, flags, and so on)
+
+2004-07-07 21:30  wondersye
+
+	* code/audio/tests/GNUmakefile: Tests are useful too
+
+2004-07-07 21:29  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLLine.cc: Lines are useful
+	  too
+
+2004-07-07 21:28  wondersye
+
+	* code/audio/: GNUmakefile, OSDLAudio.cc, OSDLAudio.h,
+	  OSDLAudioIncludes.h: First steps of audio !
+
+2004-07-07 21:27  wondersye
+
+	* code/video/twoDimensional/: GNUmakefile, OSDLImage.cc,
+	  OSDLImage.h, OSDLLine.cc, OSDLLine.h, OSDLPoint2D.cc,
+	  OSDLPoint2D.h, OSDLTwoDimensionalIncludes.h,
+	  OSDLUprightRectangle.cc, OSDLUprightRectangle.h,
+	  tests/testOSDLImage.cc: Usability improvements
+
+2004-07-06 19:37  wondersye
+
+	* doc/web/common/css/OSDL.css: Bizarre (odd-looking) list item in
+	  definition list correctedCVS:
+	  ----------------------------------------------------------------------
+
+2004-07-05 23:51  wondersye
+
+	* doc/web/main/club/Club.html: IRC updated
+
+2004-07-05 23:43  wondersye
+
+	* doc/web/main/club/: ClubMenu.html, FAQ.html, ToDo.html: TO DO
+	  improved
+
+2004-07-05 23:24  wondersye
+
+	* doc/web/main/club/game/numericBook/: HeroicBookMenu.html,
+	  ThresholdSimulationSystem.pdf: RPG simulation theory added
+
+2004-07-05 23:20  wondersye
+
+	* doc/web/main/club/game/: GameMenu.html, ToDo.html: TO DO updated
+
+2004-07-05 19:04  wondersye
+
+	* doc/web/main/documentation/OSDL/: OSDLMenu.html, ToDo.html: TO-DO
+	  better written
+
+2004-07-02 19:04  wondersye
+
+	* doc/web/main/documentation/Documentation.html: Link to Ceylan
+	  documentation added
+
+2004-07-02 18:06  wondersye
+
+	* doc/web/main/documentation/OSDL/ToDo.html: References to the four
+	  TODO.txt added
+
+2004-06-27 23:14  wondersye
+
+	* doc/web/: index-SF.html, index.html, main/MainOSDL.html,
+	  main/OSDL.html: Meta informations updated for search engines
+
+2004-06-23 23:50  wondersye
+
+	* code/video/GNUmakefile, code/video/OSDLPixel.h,
+	  code/video/OSDLVideo.cc, code/video/OSDLVideo.h,
+	  code/video/OSDLVideoIncludes.h,
+	  doc/web/main/documentation/rendering/SDL-libraries.html,
+	  doc/web/main/documentation/rendering/SDL-optimizing.html,
+	  doc/web/main/documentation/rendering/SDL-using.html: Minor update
+
+2004-06-22 23:45  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  gameExplained/HowToSellAGame.html, rendering/GameHints.html,
+	  rendering/SDL-building.html, rendering/SDL-events.html,
+	  rendering/SDL-graphics.html, rendering/SDL-libraries.html,
+	  rendering/SDL-macosx.html, rendering/SDL-threads.html,
+	  rendering/SDL-troubleshooting.html, rendering/SDL-windows.html:
+	  Web site updated
+
+2004-06-22 23:43  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLImage.cc,
+	  code/video/twoDimensional/tests/testOSDLPoint2D.cc,
+	  code/video/twoDimensional/tests/testOSDLUprightRectangle.cc,
+	  doc/web/main/club/game/numericBook/nodes-first-volume/ForReader.html:
+	  Tests updated to reflect new Ceylan Log plug system
+
+2004-06-22 23:42  wondersye
+
+	* GNUmakefile, GNUmakerules.inc, GNUmaketests.inc, GNUmakevars.inc,
+	  TODO.txt, code/GNUmakefile, code/basic/tests/testBasic.cc,
+	  code/basic/tests/testOSDLBasic.cc,
+	  code/basic/tests/testOSDLException.cc,
+	  code/basic/tests/testSDL.cc, code/basic/tests/testSDL_gfx.cc,
+	  code/basic/tests/testSDL_image.cc,
+	  code/events/tests/testOSDLEvents.cc,
+	  code/video/tests/testOSDLVideo.cc: test updated to take part of
+	  Ceylan's log plug facilities
+
+2004-06-17 19:54  wondersye
+
+	* GNUmakefile, TODO.txt, doc/GNUmakefile,
+	  doc/web/common/GraphicalCharter.html,
+	  doc/web/main/club/game/numericBook/HeroicBookMenu.html,
+	  doc/web/main/club/game/numericBook/nodes-first-volume/AdventureSheet.html,
+	  doc/web/main/club/game/numericBook/nodes-first-volume/ForDesigner.html,
+	  doc/web/main/club/game/numericBook/nodes-first-volume/ForReader.html,
+	  doc/web/main/documentation/OSDL/Authors.html,
+	  doc/web/main/documentation/OSDL/Copying.html,
+	  doc/web/main/documentation/OSDL/ToDo.html,
+	  doc/web/main/documentation/OSDL/FAQ/FAQ.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/Hints.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/OSDLGenericMenu.html,
+	  doc/web/main/documentation/rendering/SDL-audio.html,
+	  doc/web/main/documentation/rendering/SDL-events.html,
+	  doc/web/main/documentation/rendering/SDL-hints.html,
+	  doc/web/main/documentation/rendering/SDL-libraries.html,
+	  doc/web/main/documentation/rendering/SDL-macosx.html,
+	  doc/web/main/documentation/rendering/SDL-network.html,
+	  doc/web/main/documentation/rendering/SDL-openGL.html,
+	  doc/web/main/documentation/rendering/SDL-optimizing.html,
+	  doc/web/main/documentation/rendering/SDL-troubleshooting.html,
+	  doc/web/main/documentation/rendering/SDL-using.html,
+	  doc/web/main/documentation/rendering/SDL-windows.html,
+	  doc/web/main/resources/Technical.html: One milestone after Lyon
+
+2004-06-17 19:54  wondersye
+
+	* code/video/twoDimensional/tests/testOSDLImage.cc: added
+
+2004-06-17 19:52  wondersye
+
+	* code/: playTests.sh, basic/tests/testBasic.cc,
+	  basic/tests/testOSDLException.cc, basic/tests/testSDL.cc,
+	  basic/tests/testSDL_gfx.cc, events/OSDLEvents.h,
+	  events/tests/testOSDLEvents.cc, video/OSDLPixel.cc,
+	  video/OSDLPixel.h, video/OSDLSurface.cc, video/OSDLSurface.h,
+	  video/OSDLVideo.cc, video/OSDLVideo.h,
+	  video/tests/testOSDLVideo.cc,
+	  video/twoDimensional/TwoDimensionalIncludes.h,
+	  video/twoDimensional/tests/testOSDLPoint2D.cc,
+	  video/twoDimensional/tests/testOSDLUprightRectangle.cc: Back-port
+	  from eturanis after Lyon's week-end
+
+2004-06-17 12:09  wondersye
+
+	* code/playTests.sh: Little update
+
+2004-06-17 11:20  wondersye
+
+	* TODO.txt, code/basic/tests/testSDL_gfx.cc,
+	  code/video/twoDimensional/OSDLText.h,
+	  code/video/twoDimensional/OSDLTwoDimensionalIncludes.h: Those
+	  files were lacking
+
+2004-06-17 11:17  wondersye
+
+	* GNUmakefile, GNUmakerules.inc, GNUmakevars.inc, code/GNUmakefile,
+	  code/basic/GNUmakefile, code/basic/OSDLBasic.cc,
+	  code/basic/OSDLBasic.h, code/basic/tests/testBasic.cc,
+	  code/basic/tests/testOSDLBasic.cc,
+	  code/basic/tests/testOSDLException.cc, code/events/GNUmakefile,
+	  code/events/OSDLEvents.cc, code/events/tests/testOSDLEvents.cc,
+	  code/video/GNUmakefile, code/video/OSDLLine.cc,
+	  code/video/OSDLLine.h, code/video/OSDLPixel.cc,
+	  code/video/OSDLPixel.h, code/video/OSDLSurface.cc,
+	  code/video/OSDLSurface.h, code/video/OSDLVideo.cc,
+	  code/video/OSDLVideoIncludes.h,
+	  code/video/tests/testOSDLVideo.cc,
+	  code/video/twoDimensional/GNUmakefile,
+	  code/video/twoDimensional/OSDLImage.cc,
+	  code/video/twoDimensional/OSDLImage.h,
+	  code/video/twoDimensional/OSDLLine.cc,
+	  code/video/twoDimensional/OSDLLine.h,
+	  code/video/twoDimensional/tests/testOSDLPoint2D.cc,
+	  code/video/twoDimensional/tests/testOSDLUprightRectangle.cc:
+	  Major update from eturanis, improved in Lyon, preparing SDL_gfx
+	  integration
+
+2004-06-16 23:07  wondersye
+
+	*
+	  doc/web/main/club/game/numericBook/nodes-first-volume/ForReader.html:
+	  Text updated
+
+2004-06-16 21:33  wondersye
+
+	* doc/web/main/club/game/Game.html: link updated
+
+2004-06-15 21:19  wondersye
+
+	* doc/web/main/News.html: updated
+
+2004-06-15 20:13  wondersye
+
+	* doc/web/main/club/game/numericBook/: HeroicBook.html,
+	  HeroicBookMenu.html, nodes-example/MakingOf.html,
+	  nodes-first-volume/AdventureSheet.html,
+	  nodes-first-volume/ForDesigner.html,
+	  nodes-first-volume/ForReader.html,
+	  nodes-first-volume/Tashkent-Map.png: Rules for the game book on
+	  their way !
+
+2004-06-09 20:32  wondersye
+
+	* doc/web/main/resources/graphics/Graphics.html: Ari's SpriteLib
+	  added
+
+2004-06-08 00:00  wondersye
+
+	* doc/web/main/club/game/numericBook/Synthesis.html: First opus
+	  continued
+
+2004-06-05 15:08  wondersye
+
+	* doc/web/main/club/game/numericBook/Synthesis.html: Synthesis
+	  continued
+
+2004-06-05 12:03  wondersye
+
+	* doc/web/main/club/game/numericBook/: HeroicBook.html,
+	  HeroicBookMenu.html, Synthesis.html, nodes-example/MakingOf.html:
+	  Updates
+
+2004-06-04 23:22  wondersye
+
+	* doc/web/main/club/game/numericBook/: HeroicBook.html,
+	  HeroicBookMenu.html, Synthesis.html: Minor updates
+
+2004-06-03 20:09  wondersye
+
+	* doc/web/main/club/game/: GameMenu.html,
+	  numericBook/nodes-example/MakingOf.html: Little fix to have the
+	  whole book example available
+
+2004-06-03 00:17  wondersye
+
+	* doc/web/main/club/game/numericBook/nodes-example/: MakingOf.html,
+	  Yendor.html, example.graph, images/example-graph.png: Clickable
+	  graphs, my friend !
+
+2004-06-02 21:52  wondersye
+
+	* doc/web/main/club/game/numericBook/: HeroicBookMenu.html,
+	  nodes-example/images/greywood.jpg, nodes-example/images/wood.jpg:
+	  Adding last files to hero book
+
+2004-06-02 21:50  wondersye
+
+	* doc/web/main/club/game/numericBook/HeroicBook.html: This file was
+	  lost
+
+2004-06-02 20:47  wondersye
+
+	* doc/web/main/club/game/numericBook/nodes-example/: Assassin.html,
+	  Beginning.html, Example.html, InsertCoin.html, SelectPlayer.html,
+	  SelfDenial.html, StupidDeath.html, Welcome.html, WellDone.html,
+	  Yendor.html: First example a little improved
+
+2004-06-02 00:12  wondersye
+
+	* doc/web/main/club/game/numericBook/: Assassin.html,
+	  Background.html, Beginning.html, Example.html, HeroicBook.html,
+	  InsertCoin.html, SelectPlayer.html, SelfDenial.html,
+	  Welcome.html, nodes-example/Assassin.html,
+	  nodes-example/Background.html, nodes-example/Beginning.html,
+	  nodes-example/Example.html, nodes-example/HeroicBook.html,
+	  nodes-example/InsertCoin.html, nodes-example/SelectPlayer.html,
+	  nodes-example/SelfDenial.html, nodes-example/Welcome.html,
+	  nodes-example/images/ballista_1_elevate_oph_NE_1.png,
+	  nodes-example/images/boulder_1_merged_hh.png,
+	  nodes-example/images/boulder_2_merged_hh.png,
+	  nodes-example/images/boulder_3_merged_hh.png,
+	  nodes-example/images/boulder_4_merged_hh.png,
+	  nodes-example/images/crabAB_walking_NE_3.png,
+	  nodes-example/images/deer_ab_walk_E_4.png,
+	  nodes-example/images/dragon_statue_merged_hh.png,
+	  nodes-example/images/fairybell_zoom_hh.png,
+	  nodes-example/images/fatpig_AB_walking_SW_4.png,
+	  nodes-example/images/floater_float_S_1_hh.png,
+	  nodes-example/images/frogleaf_zoom_hh.png,
+	  nodes-example/images/goblins_cup_zoom_hh.png,
+	  nodes-example/images/male_builder_standing_ah.png,
+	  nodes-example/images/male_stand_ah_S_0.png,
+	  nodes-example/images/manaflower_zoom_hh.png,
+	  nodes-example/images/monolith_1_merged_hh.png,
+	  nodes-example/images/paladin_female_1_idle_dw_S_6.png,
+	  nodes-example/images/purple_rays_1_se_mw_3.png,
+	  nodes-example/images/rabbithill_grass_02_hh_iso_ar.png,
+	  nodes-example/images/skeletonBS_death_SE_2.png,
+	  nodes-example/images/slab_1_merged_hh.png,
+	  nodes-example/images/sunseye_zoom_hh.png,
+	  nodes-example/images/tree_70x150_bb.png,
+	  nodes-example/images/tree_hickory_immature_381x346_jmo.png,
+	  nodes-example/images/tree_hickory_immature_v2_381x299_jmo.png,
+	  nodes-example/images/tree_willow_immature_396x303_jmo.png,
+	  nodes-example/images/water_deep_280x144_jo.png,
+	  nodes-example/images/wrought_iron_corner_128_ne_1_mw.png,
+	  nodes-example/images/wrought_iron_corner_128_nw_1_mw.png,
+	  nodes-example/images/wrought_iron_corner_128_se_1_mw.png,
+	  nodes-example/images/wrought_iron_corner_128_sw_1_mw.png: Proof
+	  of concept moved to example
+
+2004-06-01 20:20  wondersye
+
+	* doc/web/main/documentation/Glossary.html: LH added
+
+2004-05-08 14:33  wondersye
+
+	* doc/web/main/MainOSDL.html: Limoges is over
+
+2004-05-08 14:33  wondersye
+
+	* doc/web/main/News.html: May added
+
+2004-05-05 23:03  wondersye
+
+	* conf/loani-versions.sh, doc/web/common/GraphicalCharter.html,
+	  doc/web/main/documentation/Glossary.html,
+	  doc/web/main/documentation/rendering/SDL-audio.html,
+	  doc/web/main/documentation/rendering/SDL-events.html,
+	  doc/web/main/documentation/rendering/SDL-hints.html,
+	  doc/web/main/documentation/rendering/SDL-libraries.html,
+	  doc/web/main/documentation/rendering/SDL-network.html,
+	  doc/web/main/documentation/rendering/SDL-openGL.html,
+	  doc/web/main/documentation/rendering/SDL-optimizing.html,
+	  doc/web/main/documentation/rendering/SDL-troubleshooting.html,
+	  doc/web/main/documentation/rendering/SDL-using.html,
+	  doc/web/main/documentation/rendering/SDL-windows.html,
+	  doc/web/main/project/Join.html,
+	  doc/web/main/project/ProjectMenu.html,
+	  doc/web/main/project/howToContribute/ContributionGuide.html:
+	  Little improvements, mainly on updated doc
+
+2004-05-05 23:02  wondersye
+
+	* code/: playTests.sh, basic/OSDLBasic.h, events/OSDLEvents.cc,
+	  events/OSDLEvents.h: Tests managed, waiting for key pressed event
+	  added
+
+2004-05-05 23:01  wondersye
+
+	* code/video/: OSDLSurface.cc, OSDLSurface.h,
+	  tests/testOSDLVideo.cc, twoDimensional/GNUmakefile,
+	  twoDimensional/OSDLImage.cc, twoDimensional/OSDLImage.h: Image
+	  loaded support started with JPEG
+
+2004-04-30 18:34  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: Doc updated
+	  after Windows attempt
+
+2004-04-30 17:27  wondersye
+
+	* conf/: LOANI-0.3.tar.gz, LOANI-0.3.zip: Archives updated after
+	  Windows attempts and backporting
+
+2004-04-30 17:16  wondersye
+
+	* conf/: loani-commonBuildTools.sh, loani-optionalTools.sh,
+	  loani-requiredTools.sh, loani-versions.sh, loani.sh: LOANI
+	  stabilized, Linux is ok, Windows does its best, which is not a
+	  lot
+
+2004-04-15 23:45  wondersye
+
+	* conf/: LOANI-0.3.tar.gz, LOANI-0.3.zip, README-template.txt,
+	  loani-requiredTools.sh: One step towards a portable LOANI release
+
+2004-04-15 19:38  wondersye
+
+	* conf/: loani-commonBuildTools.sh, loani-optionalTools.sh,
+	  loani-requiredTools.sh, loani-versions.sh, loani.sh: Still in
+	  develooment, but not to be lost !
+
+2004-04-11 22:35  wondersye
+
+	* GNUmakerules.inc, GNUmaketests.inc: No quotes in parameter of a
+	  for loop or you will damned. And all for loop, even those who
+	  won't be executed, should be valid. What a pain.
+
+2004-04-11 21:11  wondersye
+
+	* GNUmakerules.inc, GNUmaketests.inc: Old bash want their empty
+	  "for" lists quoted even if inexecuted
+
+2004-04-11 19:54  wondersye
+
+	* code/playTests.sh: Absolute path lead to the sources too
+
+2004-04-11 18:44  wondersye
+
+	* doc/web/: common/GraphicalCharter.html, common/css/OSDL.css,
+	  main/MainOSDL.html, main/News.html,
+	  main/documentation/Documentation.html,
+	  main/documentation/Glossary.html,
+	  main/documentation/OSDL/OSDL-0.3/LOANI.html,
+	  main/documentation/OSDL/OSDL-generic/SimilarProjects.html,
+	  main/documentation/rendering/RenderingMenu.html,
+	  main/documentation/rendering/SDL-audio.html,
+	  main/documentation/rendering/SDL-openGL.html,
+	  main/documentation/rendering/SDL-using.html: Updates of various
+	  documents
+
+2004-04-11 18:42  wondersye
+
+	* GNUmakefile, GNUmakevars.inc: Better location support (compilers)
+
+2004-04-11 18:41  wondersye
+
+	* code/: GNUmakefile, playTests.sh: Better path support
+
+2004-04-08 19:15  wondersye
+
+	* conf/: GNUmakefile, LOANI-0.3.tar.gz, LOANI-0.3.zip,
+	  loani-commonBuildTools.sh, loani-optionalTools.sh,
+	  loani-requiredTools.sh, loani-versions.sh, loani.sh,
+	  manageOSDLPrerequesites.sh: LOANI builds everything without
+	  needing anything
+
+2004-04-08 18:32  wondersye
+
+	* code/playTests.sh: Use updated environment
+
+2004-04-07 22:57  wondersye
+
+	* doc/web/main/documentation/rendering/: RenderingMenu.html,
+	  SDL-network.html: Formatting goes on
+
+2004-04-05 23:48  wondersye
+
+	* doc/web/main/documentation/rendering/: Rendering.html,
+	  RenderingMenu.html, SDL-audio.html, SDL-libraries.html,
+	  SDL-openGL.html, SDL-optimizing.html, SDL-windows.html: Digests
+	  integrated and some formatted
+
+2004-04-05 20:45  wondersye
+
+	* doc/web/main/documentation/Glossary.html: Some words added
+
+2004-04-05 20:45  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-optimizing.html:
+	  Formatting done
+
+2004-03-30 20:38  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: toc added
+
+2004-03-29 23:53  wondersye
+
+	* doc/web/main/MainOSDL.html: Typo fixed
+
+2004-03-29 23:51  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: Doc improved
+
+2004-03-29 23:50  wondersye
+
+	* doc/web/main/MainOSDL.html: Limoges meeting announced
+
+2004-03-28 23:52  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html:
+	  Troubleshooting added
+
+2004-03-27 09:53  wondersye
+
+	* conf/: GNUmakefile, LOANI-0.3.tar.gz, LOANI-0.3.zip,
+	  README-template.txt, loani-requiredTools.sh, loani-versions.sh:
+	  Preparing new LOANI-installed libraries
+
+2004-03-26 19:38  wondersye
+
+	* code/playTests.sh: Guess the tested install location
+
+2004-03-26 19:37  wondersye
+
+	* conf/: LOANI-0.3.tar.gz, LOANI-0.3.zip,
+	  loani-commonBuildTools.sh, loani-requiredTools.sh: Little update
+	  to have prefix better managed
+
+2004-03-26 18:03  wondersye
+
+	* code/OSDL.h: Was in basic module, should be in root node
+
+2004-03-26 18:01  wondersye
+
+	* GNUmakefile, GNUmakerules.inc, GNUmaketests.inc, GNUmakevars.inc,
+	  conf/loani.sh,
+	  doc/web/main/documentation/rendering/SDL-events.html,
+	  doc/web/main/resources/Technical.html: Build system improved
+
+2004-03-26 17:48  wondersye
+
+	* code/: GNUmakefile, playTests.sh, basic/GNUmakefile,
+	  basic/OSDL.h, basic/OSDLBasicIncludes.h, events/GNUmakefile,
+	  video/GNUmakefile, video/OSDLVideoIncludes.h,
+	  video/twoDimensional/GNUmakefile: Build system : speed up,
+	  install is a set of trees, archive project file selection fixed
+
+2004-03-26 11:31  wondersye
+
+	* doc/web/main/download/Download.html: LOANI directly available
+
+2004-03-26 11:31  wondersye
+
+	* conf/: LOANI-0.3.tar.gz, LOANI-0.3.zip, loani.sh: LOANI can be
+	  from now on downloaded directly from the internet
+
+2004-03-24 22:42  wondersye
+
+	* GNUmakevars.inc, code/playTests.sh: Install path better handled,
+	  all tests activated
+
+2004-03-24 22:15  wondersye
+
+	* GNUmaketests.inc, code/playTests.sh,
+	  code/basic/tests/GNUmakefile, code/events/tests/GNUmakefile,
+	  code/video/GNUmakefile, code/video/tests/GNUmakefile,
+	  code/video/twoDimensional/GNUmakefile,
+	  code/video/twoDimensional/OSDLImage.cc,
+	  code/video/twoDimensional/OSDLImage.h,
+	  code/video/twoDimensional/OSDLPoint2D.h,
+	  code/video/twoDimensional/tests/GNUmakefile,
+	  code/video/twoDimensional/tests/testOSDLPoint2D.cc,
+	  code/video/twoDimensional/tests/testOSDLUprightRectangle.cc,
+	  conf/loani-versions.sh,
+	  doc/web/main/documentation/rendering/SDL-events.html,
+	  doc/web/main/documentation/rendering/SDL-optimizing.html,
+	  doc/web/main/documentation/rendering/SDL-using.html: Tests major
+	  improvements, playTests improved, executed tests are in install
+	  tree and not build tree
+
+2004-03-23 23:15  wondersye
+
+	* doc/web/main/club/Club.html: Paragraph offset removed
+
+2004-03-23 23:12  wondersye
+
+	* doc/web/main/club/Club.html: Updated for recruitment effort
+
+2004-03-23 20:20  wondersye
+
+	* doc/web/main/MainOSDL.html: Coding Party announce removed (done
+	  !)
+
+2004-03-23 20:09  wondersye
+
+	* GNUmakefile: Hints improved
+
+2004-03-23 19:44  wondersye
+
+	* GNUmakefile, code/video/twoDimensional/OSDLImage.cc,
+	  code/video/twoDimensional/OSDLImage.h,
+	  doc/web/main/documentation/rendering/SDL-events.html,
+	  doc/web/main/documentation/rendering/SDL-windows.html: Minor
+	  updates
+
+2004-03-21 22:20  wondersye
+
+	* doc/web/main/resources/Technical.html: Tools added
+
+2004-03-21 15:07  wondersye
+
+	* code/: playTests.sh, basic/tests/testOSDLException.cc,
+	  events/OSDLEvents.cc, events/OSDLEvents.h, video/OSDLSurface.cc,
+	  video/OSDLSurface.h, video/OSDLVideo.cc, video/OSDLVideo.h,
+	  video/tests/testOSDLVideo.cc, video/twoDimensional/OSDLImage.h:
+	  Improvements to support picture displaying and tests
+
+2004-03-19 14:32  wondersye
+
+	* doc/web/main/club/Club.html: Updated before recruitment phase
+
+2004-03-17 23:20  wondersye
+
+	* doc/web/main/: News.html, club/game/trailer/Trailer.html: News
+	  updated
+
+2004-03-16 20:29  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-credits.html: Alex
+	  added
+
+2004-03-15 22:06  wondersye
+
+	* conf/: loani-requiredTools.sh, loani.sh: Improved for Cygwin
+	  round #1
+
+2004-03-15 22:05  wondersye
+
+	* code/: basic/OSDLBasic.cc, basic/OSDLBasic.h,
+	  events/tests/testOSDLEvents.cc, video/OSDLPixel.cc,
+	  video/OSDLPixel.h, video/OSDLSurface.cc, video/OSDLSurface.h,
+	  video/OSDLVideo.cc, video/OSDLVideo.h,
+	  video/tests/testOSDLVideo.cc, video/twoDimensional/OSDLImage.cc,
+	  video/twoDimensional/OSDLImage.h,
+	  video/twoDimensional/OSDLUprightRectangle.cc,
+	  video/twoDimensional/OSDLUprightRectangle.h: Improvements, my
+	  friend !
+
+2004-03-15 22:04  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-audio.html,
+	  SDL-libraries.html, SDL-openGL.html, SDL-using.html: Update from
+	  ML
+
+2004-03-13 14:57  wondersye
+
+	* code/video/twoDimensional/: OSDLImage.cc, OSDLImage.h: Image
+	  support added thanks to SDL_image
+
+2004-03-13 14:56  wondersye
+
+	* code/basic/OSDLTypes.h: Test slightly changed
+
+2004-03-13 14:17  wondersye
+
+	* code/video/: OSDLPixel.cc, OSDLPixel.h, OSDLSurface.cc,
+	  OSDLVideoTypes.h: Still better organization
+
+2004-03-13 12:38  wondersye
+
+	* GNUmakefile, GNUmakevars.inc, code/basic/OSDLTypes.h,
+	  code/video/GNUmakefile, code/video/OSDLPixel.h,
+	  code/video/OSDLSurface.cc, code/video/OSDLSurface.h,
+	  code/video/OSDLVideo.h, code/video/OSDLVideoIncludes.h,
+	  code/video/tests/testOSDLVideo.cc,
+	  code/video/twoDimensional/OSDLPoint2D.cc,
+	  code/video/twoDimensional/OSDLPoint2D.h,
+	  code/video/twoDimensional/OSDLUprightRectangle.cc,
+	  code/video/twoDimensional/OSDLUprightRectangle.h,
+	  code/video/twoDimensional/TwoDimensionalIncludes.h,
+	  code/video/twoDimensional/tests/testOSDLPoint2D.cc,
+	  code/video/twoDimensional/tests/testOSDLUprightRectangle.cc,
+	  conf/GNUmakefile, conf/doxygen-original.conf, doc/GNUmakefile:
+	  Surface better managed, namespaces improved
+
+2004-03-12 23:09  wondersye
+
+	* doc/web/common/css/doxygen-OSDL.css: Better color set
+
+2004-03-12 22:27  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: SDL_image
+	  added
+
+2004-03-12 22:19  wondersye
+
+	* doc/web/common/black.html: Last wHite dot removed !
+
+2004-03-12 21:54  wondersye
+
+	* doc/web/main/club/game/trailer/Trailer.html: Better display for
+	  the PDF
+
+2004-03-12 20:41  wondersye
+
+	* GNUmakefile: Ceylan backported, all is in sync
+
+2004-03-12 20:27  wondersye
+
+	* doc/web/main/club/game/trailer/: Flocon.pdf, Trailer.html,
+	  TrailerMenu.html: Flakes added
+
+2004-03-12 19:14  wondersye
+
+	* GNUmakefile, GNUmakevars.inc, conf/GNUmakefile, conf/loani.sh:
+	  libtoolism corrected so that 1.5.2 is demanded and the silly
+	  --tag specified
+
+2004-03-12 17:51  wondersye
+
+	* GNUmakefile, GNUmakevars.inc,
+	  doc/web/main/documentation/Glossary.html: Defaulting in LOANI's
+	  installed tools if available
+
+2004-03-12 17:50  wondersye
+
+	* conf/: GNUmakefile, loani-commonBuildTools.sh,
+	  loani-optionalTools.sh, loani-requiredTools.sh,
+	  loani-versions.sh, loani.sh: Versions centralized from now on in
+	  loani-versions.sh
+
+2004-03-12 17:49  wondersye
+
+	* code/basic/tests/: testSDL.cc, testSDL_image.cc: Testing image
+	  loading support
+
+2004-03-12 12:18  wondersye
+
+	* GNUmakefile, GNUmakevars.inc, conf/GNUmakefile: SDL_ROOT well
+	  managed now
+
+2004-03-12 12:17  wondersye
+
+	* conf/loani-requiredTools.sh: Explicit setting of SDL_ROOT removed
+
+2004-03-12 11:16  wondersye
+
+	* GNUmakefile, GNUmakevars.inc, conf/loani-requiredTools.sh,
+	  doc/web/main/documentation/Glossary.html: SDL_ROOT managed so
+	  that install from LOANI works thanks to : make <target>
+	  SDL_ROOT=../../../SDL-{SDL_VERSION}/bin
+
+2004-03-10 23:07  wondersye
+
+	* conf/loani-requiredTools.sh: OSDL activated since it builds OK
+
+2004-03-10 22:56  wondersye
+
+	* doc/web/images/OSDL.bmp: Useful to test basic video services
+
+2004-03-10 22:55  wondersye
+
+	* GNUmakerules.inc, GNUmakevars.inc,
+	  doc/web/main/documentation/Glossary.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.3/OSDL-usersguide.html:
+	  Massive checkin before tagging this stable release
+
+2004-03-10 22:53  wondersye
+
+	* code/: GNUmakefile, basic/GNUmakefile, basic/OSDLBasic.cc,
+	  basic/OSDLBasic.h, basic/OSDLBasicIncludes.h,
+	  basic/OSDLException.cc, basic/OSDLException.h,
+	  basic/OSDLTestException.cc, basic/OSDLTestException.h,
+	  basic/tests/GNUmakefile, basic/tests/OSDLTestException.cc,
+	  basic/tests/OSDLTestException.h, basic/tests/testBasic.cc,
+	  basic/tests/testOSDLBasic.cc, basic/tests/testOSDLException.cc,
+	  basic/tests/testSDL.cc, events/OSDLEvents.cc,
+	  events/OSDLEvents.h, events/tests/testOSDLEvents.cc,
+	  video/OSDLSurface.cc, video/OSDLSurface.h, video/OSDLVideo.cc,
+	  video/OSDLVideo.h, video/tests/testOSDLVideo.cc,
+	  video/twoDimensional/OSDLPoint2D.cc,
+	  video/twoDimensional/OSDLPoint2D.h,
+	  video/twoDimensional/OSDLUprightRectangle.cc,
+	  video/twoDimensional/OSDLUprightRectangle.h,
+	  video/twoDimensional/TwoDimensionalIncludes.h: Final rewriting
+	  successfully achieved !
+
+2004-03-10 21:02  wondersye
+
+	* code/basic/tests/: GNUmakefile, OSDLTestException.cc,
+	  OSDLTestException.h, testBasic.cc, testOSDLBasic.cc,
+	  testOSDLException.cc, testOSDLException.h: testOSDLException
+	  should really be named OSDLTestException
+
+2004-03-09 22:42  wondersye
+
+	* code/basic/tests/: OSDLTestException.cc, OSDLTestException.h,
+	  testOSDLBasic.cc, testOSDLException.cc, testOSDLException.h:
+	  OSDLTestException renamed to testOSDLException
+
+2004-03-08 22:21  wondersye
+
+	* doc/web/main/documentation/Glossary.html: HTH
+
+2004-03-07 12:41  wondersye
+
+	* GNUmakefile, GNUmakerules.inc, GNUmaketests.inc, GNUmakevars.inc,
+	  code/GNUmakefile, code/basic/tests/testBasic.cc,
+	  code/basic/tests/testOSDLBasic.cc,
+	  doc/web/main/documentation/rendering/SDL-macosx.html,
+	  doc/web/main/documentation/rendering/SDL-using.html: Build
+	  process cleaned
+
+2004-03-06 13:18  wondersye
+
+	* doc/web/main/download/Download.html: LOANI recommended
+
+2004-03-06 12:47  wondersye
+
+	* GNUmakefile, GNUmakevars.inc: Libtool only silent when building
+	  from root, Ceylan install, includes and libraries selectively
+	  detected from the start, and build stop if not available
+
+2004-03-06 11:13  wondersye
+
+	* conf/loani.sh: Warning developer access not implemented removed
+
+2004-03-06 11:12  wondersye
+
+	* conf/: loani-requiredTools.sh, loani.sh: Developer access
+	  supported
+
+2004-03-06 11:11  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: Developer
+	  access added
+
+2004-03-05 23:58  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: Doc updated
+	  with rc1 coming
+
+2004-03-05 22:49  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  rendering/SDL-macosx.html, rendering/SDL-using.html: rc added,
+	  SDL still growing
+
+2004-03-05 22:48  wondersye
+
+	* conf/: GNUmakefile, loani-commonBuildTools.sh,
+	  loani-optionalTools.sh, loani-requiredTools.sh, loani.sh: LOANI
+	  0.3 rc1 on the way !
+
+2004-03-05 20:52  wondersye
+
+	* doc/web/main/documentation/Glossary.html: rc added
+
+2004-03-05 19:21  wondersye
+
+	* conf/GNUmakefile: README well generated now
+
+2004-03-05 19:18  wondersye
+
+	* conf/loani-commonBuildTools.sh, conf/loani-optionalTools.sh,
+	  conf/loani-requiredTools.sh, conf/loani.sh,
+	  doc/web/main/documentation/rendering/SDL-network.html: LOANI's
+	  got a wizzard now !
+
+2004-03-05 15:55  wondersye
+
+	* GNUmakevars.inc, conf/loani-requiredTools.sh, conf/loani.sh,
+	  doc/web/main/documentation/Glossary.html,
+	  doc/web/main/documentation/rendering/SDL-events.html,
+	  doc/web/main/documentation/rendering/SDL-network.html: Ugly shell
+	  trap in makefile
+
+2004-03-05 12:26  wondersye
+
+	* GNUmakefile, GNUmaketests.inc, GNUmakevars.inc, code/GNUmakefile,
+	  doc/web/main/documentation/rendering/SDL-events.html: Stripping
+	  well managed and INCDIR replaced by INC_DIR
+
+2004-03-03 22:51  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  rendering/SDL-events.html, rendering/SDL-macosx.html,
+	  rendering/SDL-optimizing.html, rendering/SDL-using.html,
+	  rendering/SDL-windows.html: Docs updated from net resources (SDL,
+	  others)
+
+2004-02-29 23:44  wondersye
+
+	* conf/: GNUmakefile, loani-commonBuildTools.sh,
+	  loani-optionalTools.sh, loani-requiredTools.sh, loani.sh: Step by
+	  step, everything until Ceylan went right
+
+2004-02-28 23:42  wondersye
+
+	* conf/loani.sh: THis time I am SURE it is executable !
+
+2004-02-28 23:41  wondersye
+
+	* conf/loani.sh: Was not executable !
+
+2004-02-28 23:25  wondersye
+
+	* conf/: loani-requiredTools.sh, loani.sh: Small fixes : md5sum and
+	  arguments parsing
+
+2004-02-28 18:31  wondersye
+
+	* conf/: GNUmakefile, README-template.txt, README.txt: README is
+	  generated from now on (version number updated)
+
+2004-02-28 18:19  wondersye
+
+	* conf/README.txt: LOANI's README template
+
+2004-02-28 18:16  wondersye
+
+	* GNUmakefile, GNUmakerules.inc, GNUmaketests.inc, GNUmakevars.inc,
+	  VERSION, conf/GNUmakefile, conf/loani-commonBuildTools.sh,
+	  conf/loani-optionalTools.sh, conf/loani-requiredTools.sh,
+	  conf/loani.sh, doc/GNUmakefile: Minor improvements, tests build
+	  simplified
+
+2004-02-28 18:14  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  rendering/SDL-events.html, rendering/SDL-network.html,
+	  rendering/SDL-openGL.html, rendering/SDL-troubleshooting.html,
+	  rendering/SDL-using.html: Doc a bit improved
+
+2004-02-28 00:17  wondersye
+
+	* code/: playTests.sh, basic/tests/OSDLTestException.cc,
+	  basic/tests/OSDLTestException.h, basic/tests/testBasic.cc,
+	  basic/tests/testOSDLBasic.cc, basic/tests/testSDL.cc: Last slice
+	  of integration
+
+2004-02-28 00:16  wondersye
+
+	* code/: events/tests/GNUmakefile, events/tests/testOSDLEvents.cc,
+	  video/tests/GNUmakefile, video/tests/testOSDLVideo.cc,
+	  video/twoDimensional/tests/GNUmakefile,
+	  video/twoDimensional/tests/testOSDLPoint2D.cc,
+	  video/twoDimensional/tests/testOSDLUprightRectangle.cc:
+	  Integrated from OSDL-0.2 and Ceylan
+
+2004-02-28 00:12  wondersye
+
+	* code/: GNUmakefile, basic/GNUmakefile, basic/OSDL.h,
+	  basic/OSDLBasic.cc, basic/OSDLBasic.h, basic/OSDLTypes.h,
+	  basic/tests/GNUmakefile, events/GNUmakefile, video/GNUmakefile,
+	  video/OSDLSurface.cc, video/twoDimensional/GNUmakefile,
+	  video/twoDimensional/OSDLPoint2D.h,
+	  video/twoDimensional/OSDLUprightRectangle.cc: Major integration
+	  of libtool and makefile system backported from Ceylan
+
+2004-02-27 16:51  wondersye
+
+	* doc/web/main/project/Contact.html: Bug report added
+
+2004-02-27 16:51  wondersye
+
+	* doc/web/main/documentation/OSDL/FAQ/FAQ.html: Some items added
+
+2004-02-27 16:09  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/CVS.html: Tag added
+
+2004-02-27 16:09  wondersye
+
+	* doc/web/main/download/Download.html: Small border fix
+
+2004-02-27 15:58  wondersye
+
+	* doc/web/main/download/Download.html: CVS tag added
+
+2004-02-27 15:26  wondersye
+
+	* doc/web/main/resources/Technical.html: gcc added
+
+2004-02-27 00:05  wondersye
+
+	* doc/web/main/project/meetings/MeetingsMenu.html: Typo in date of
+	  menu
+
+2004-02-26 23:35  wondersye
+
+	* doc/web/main/project/meetings/: 20040226.html, MeetingsMenu.html,
+	  Report-template.html: New meeting
+
+2004-02-26 13:36  wondersye
+
+	* GNUmakecolors.inc, GNUmakefile, GNUmakerules.inc,
+	  GNUmakevars.inc, versions.inc: One step towards Ceylan
+	  conformance
+
+2004-02-26 12:22  wondersye
+
+	* doc/web/main/club/game/trailer/TextVersions.html: Overview of the
+	  trailer added
+
+2004-02-26 00:57  wondersye
+
+	* doc/web/main/resources/Technical.html: Tools and links added
+
+2004-02-25 19:49  wondersye
+
+	* doc/web/main/project/meetings/20040224.html: Han the artist
+
+2004-02-25 19:47  wondersye
+
+	* doc/web/main/project/meetings/MeetingsMenu.html: Han's
+	  introduction
+
+2004-02-23 17:00  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/LOANI.html: LOANI
+	  documentated
+
+2004-02-23 09:54  wondersye
+
+	* conf/: GNUmakefile, loani-requiredTools.sh, loani.sh: LOANI 0.3
+	  on the way !
+
+2004-02-22 23:14  wondersye
+
+	* conf/: loani-requiredTools.sh, loani.sh: All pre requesites
+	  retrieved, SDL installed
+
+2004-02-22 16:41  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-network.html: Massive ci
+
+2004-02-22 16:39  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  OSDL/OSDL-0.2/LOANI-0.2.html, OSDL/OSDL-0.2/LOANI.html,
+	  OSDL/OSDL-0.3/LOANI.html, gameExplained/Bibliography.html,
+	  rendering/SDL-windows.html: Versions checked
+
+2004-02-22 16:38  wondersye
+
+	* doc/web/main/download/Download.html: Improvements
+
+2004-02-22 16:22  wondersye
+
+	* doc/web/common/css/OSDL.css: CSS still being tuned
+
+2004-02-22 16:20  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/CVS.html: CVS has
+	  been enriched
+
+2004-02-22 16:20  wondersye
+
+	* doc/web/main/resources/Technical.html: C++ Link added
+
+2004-02-22 13:57  wondersye
+
+	* conf/: doxygen-original.conf, doxygen.conf: doxygen config file
+	  is generated nowadays
+
+2004-02-22 13:55  wondersye
+
+	* conf/: GNUmakefile, doxygen.conf, loani-commonBuildTools.sh,
+	  loani-optionalTools.sh, loani-requiredTools.sh, loani.sh: LOANI
+	  is making huge steps !
+
+2004-02-21 23:01  wondersye
+
+	* doc/web/main/resources/Technical.html: SGI links added
+
+2004-02-21 22:31  wondersye
+
+	* doc/web/main/resources/Technical.html: More links added
+
+2004-02-20 23:16  wondersye
+
+	* code/scripts/: CVS-to-SF-webserver.crontab,
+	  CVS-to-aranor-webserver.crontab, export-CVS-to-SF-webserver.sh,
+	  export-CVS-to-aranor-webserver.sh: Each mirror will have its
+	  configuration files
+
+2004-02-20 19:10  wondersye
+
+	* code/scripts/: CVS-to-webserver.crontab,
+	  export-CVS-to-webserver.sh: Needed to be specialized according to
+	  the mirror
+
+2004-02-20 11:06  wondersye
+
+	* doc/web/main/project/meetings/20040219-IRC-session.txt: Not
+	  really interesting for others, mere french chatting
+
+2004-02-20 11:01  wondersye
+
+	* doc/web/main/project/meetings/: 20040219.html, MeetingsMenu.html,
+	  Report-template.html: One more report, template updated
+
+2004-02-20 10:41  wondersye
+
+	* doc/web/main/documentation/: Glossary.html,
+	  gameExplained/Bibliography.html, rendering/SDL-libraries.html,
+	  rendering/SDL-using.html: Glossary came back
+
+2004-02-16 22:58  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/Architecture.html:
+	  New services added
+
+2004-02-13 19:14  wondersye
+
+	* doc/web/: common/GraphicalCharter.html, common/css/OSDL.css,
+	  main/Confetti.html, main/MainMenu.html, main/Map.html,
+	  main/Search.html,
+	  main/project/howToContribute/ContributeMenu.html: Minor
+	  presentation improvements
+
+2004-02-13 19:06  wondersye
+
+	* doc/web/main/documentation/: DocMenu.html, OSDL/OSDLMenu.html,
+	  OSDL/OSDL-0.1/OSDLMenu-0.1.html, OSDL/OSDL-0.2/OSDLMenu-0.2.html,
+	  OSDL/OSDL-0.3/OSDLMenu.html, OSDL/OSDL-generic/Architecture.html,
+	  OSDL/OSDL-generic/OSDLGenericMenu.html,
+	  gameExplained/GameMenu.html, misc/MiscMenu.html,
+	  rendering/RenderingMenu.html: Menus linked to main page too
+
+2004-02-13 15:04  wondersye
+
+	* doc/web/main/documentation/: OSDL/OSDL-generic/Architecture.html,
+	  rendering/SDL-hints.html, rendering/SDL-libraries.html,
+	  rendering/SDL-macosx.html, rendering/SDL-using.html,
+	  rendering/SDL-windows.html: Updated from newsgrouos
+
+2004-02-13 15:02  wondersye
+
+	* doc/web/common/: GraphicalCharter.html, css/OSDL.css: Updated and
+	  tuned with validator
+
+2004-02-11 20:59  wondersye
+
+	* doc/web/common/GraphicalCharter.html: Fucking CVS
+
+2004-02-11 20:02  wondersye
+
+	* doc/web/main/: MainOSDL.html, News.html,
+	  documentation/OSDL/OSDL-generic/Architecture.html,
+	  documentation/rendering/SDL-events.html,
+	  documentation/rendering/SDL-using.html, download/Download.html:
+	  OSDL Coding Party announced !
+
+2004-02-11 19:17  wondersye
+
+	* doc/web/common/css/: OSDL-Menu.css, OSDL.css: Border around
+	  linked images disabled
+
+2004-02-11 19:15  wondersye
+
+	* code/scripts/export-CVS-to-webserver.sh: Comments corrected
+
+2004-02-10 23:37  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/Architecture.html:
+	  All OSDL services added and described
+
+2004-02-10 19:55  wondersye
+
+	* doc/web/: index-SF.html,
+	  main/documentation/OSDL/OSDL-generic/Architecture.html,
+	  main/documentation/rendering/Rendering.html,
+	  main/documentation/rendering/RenderingMenu.html,
+	  main/documentation/rendering/SDL-audio.html,
+	  main/documentation/rendering/SDL-libraries.html: Only the index
+	  should have changed (image border activated)
+
+2004-02-10 19:42  wondersye
+
+	* doc/web/common/css/: OSDL-Menu.css, OSDL.css: Hindering IE from
+	  putting ugly colors around linked images
+
+2004-02-09 22:35  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/Architecture.html:
+	  Graphics service added
+
+2004-02-09 21:17  wondersye
+
+	* doc/web/common/css/OSDL-Menu.css: No border allowed : IE would
+	  spoil them
+
+2004-02-09 19:56  wondersye
+
+	* doc/web/main/: MainMenu.html, club/ClubMenu.html,
+	  club/game/GameMenu.html, club/game/trailer/TextVersions.html,
+	  documentation/DocMenu.html, documentation/OSDL/OSDLMenu.html,
+	  documentation/gameExplained/GameMenu.html,
+	  project/ProjectMenu.html,
+	  project/howToContribute/ContributeMenu.html,
+	  resources/ResourceMenu.html,
+	  resources/graphics/GraphicsMenu.html,
+	  resources/sounds/SoundsMenu.html: Result of :
+	  changeInTreeFiles.sh '*.html' "parent.myWin.location"
+	  "parent.mainFrame.location" myWin was a mistake. Should prevent
+	  Visual Studio from asking within IE to debug the page.
+
+2004-02-08 23:20  wondersye
+
+	* doc/web/main/club/game/trailer/: TextVersions.html,
+	  TrailerMenu.html: Text versions and dialogs archived
+
+2004-02-08 22:41  wondersye
+
+	* doc/: GNUmakefile,
+	  web/main/documentation/OSDL/OSDL-generic/Architecture.html,
+	  web/main/documentation/rendering/SDL-openGL.html,
+	  web/main/documentation/rendering/SDL-windows.html: Updated after
+	  the week-end
+
+2004-02-07 14:34  wondersye
+
+	* code/basic/OSDLDocMainPage.h: Version updates
+
+2004-02-07 14:34  wondersye
+
+	* doc/web/main/documentation/gameExplained/Wonders.html: Those
+	  meetings did not changed
+
+2004-02-07 12:00  wondersye
+
+	* doc/web/main/documentation/gameExplained/Wonders.html: Spiderweb
+	  added
+
+2004-02-07 09:46  wondersye
+
+	* doc/web/common/: GraphicalCharter.html, Template-fr.html: Minor
+	  improvements
+
+2004-02-07 00:34  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/Architecture.html:
+	  OSDL archictecture added
+
+2004-02-06 20:04  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDLMenu.html: API link
+	  corrected again
+
+2004-02-06 19:50  wondersye
+
+	* code/scripts/export-CVS-to-webserver.sh: Visible timestamp of
+	  last CVS export in main page added
+
+2004-02-06 19:49  wondersye
+
+	* doc/web/main/: MainOSDL.html,
+	  documentation/gameExplained/GameMenu.html,
+	  documentation/rendering/SDL-audio.html,
+	  documentation/rendering/SDL-events.html,
+	  documentation/rendering/SDL-optimizing.html,
+	  documentation/rendering/SDL-troubleshooting.html,
+	  documentation/rendering/SDL-windows.html: Minor improvements,
+	  timestamp in main page added
+
+2004-02-06 19:21  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-generic/: CVS.html,
+	  NewRelease.html, OSDLGenericMenu.html: CVS centralized
+
+2004-02-06 17:28  wondersye
+
+	* doc/web/main/resources/Technical.html: Some links added
+
+2004-02-06 16:11  wondersye
+
+	* doc/web/main/resources/: ResourceMenu.html, Resources.html,
+	  Technical.html: Technical links added to resources
+
+2004-02-04 23:39  wondersye
+
+	* doc/web/images/: ceylan-zoom-inverted.png,
+	  osdl-zoom-inverted.png, technical-macro-inverted.png: Two more
+	  levels of zoom
+
+2004-02-04 23:38  wondersye
+
+	* doc/web/main/documentation/gameExplained/HowToMakeAGame.html:
+	  Zooming in
+
+2004-02-04 20:11  wondersye
+
+	* doc/web/main/documentation/gameExplained/: Game-central.html,
+	  HowToMakeAGame.html: Little improvements
+
+2004-02-03 23:45  wondersye
+
+	* doc/web/main/documentation/gameExplained/Game-central.html: One
+	  more item
+
+2004-02-03 23:41  wondersye
+
+	* doc/web/main/documentation/gameExplained/: GameMenu.html,
+	  HowToMakeAGame.html: Understanding game creation
+
+2004-02-03 23:41  wondersye
+
+	* doc/web/images/: club-tree-inverted.png, game-tree-inverted.png:
+	  Graphs of tasks for the club and its games
+
+2004-02-01 23:01  wondersye
+
+	* doc/web/main/: club/game/Monsters.html,
+	  documentation/rendering/SDL-macosx.html: Some files added, none
+	  changed, despite CVS messages
+
+2004-02-01 22:56  wondersye
+
+	* doc/web/main/: MainOSDL.html, Map.html, News.html,
+	  club/Club.html, club/FAQ.html, club/game/ActionList.html,
+	  club/game/Choices.html, club/game/GameMenu.html,
+	  club/game/MainCharacters.html, documentation/OSDL/ToDo.html,
+	  documentation/OSDL/FAQ/FAQ.html,
+	  documentation/OSDL/OSDL-0.2/OSDL-usersguide-0.2.html,
+	  documentation/OSDL/OSDL-0.2/OSDLMenu-0.2.html,
+	  documentation/OSDL/OSDL-0.3/OSDL-usersguide.html,
+	  documentation/OSDL/OSDL-0.3/OSDL.html,
+	  documentation/OSDL/OSDL-0.3/OSDLMenu.html,
+	  documentation/OSDL/OSDL-generic/CVS.html,
+	  documentation/OSDL/OSDL-generic/Languages.html,
+	  documentation/OSDL/OSDL-generic/OSDLGeneric.html,
+	  documentation/OSDL/OSDL-generic/OSDLGenericMenu.html,
+	  documentation/OSDL/OSDL-generic/Quality.html,
+	  documentation/OSDL/OSDL-generic/SimilarProjects.html,
+	  documentation/gameExplained/Licenses.html,
+	  documentation/misc/Recipes.html,
+	  documentation/rendering/Alphablending.html,
+	  download/DownloadMenu.html, project/Contact.html,
+	  project/meetings/20031009.html, project/meetings/20031023.html,
+	  project/meetings/20031106.html, project/meetings/20031204.html,
+	  resources/graphics/Graphics.html, resources/sounds/Sounds.html:
+	  Dead-links checked and corrected
+
+2004-02-01 12:51  wondersye
+
+	* doc/web/main/: club/Club.html, documentation/misc/MiscMenu.html:
+	  Box should be table "border: none"
+
+2004-02-01 12:44  wondersye
+
+	* doc/web/main/: documentation/OSDL/OSDL-generic/NewRelease.html,
+	  documentation/rendering/SDL-events.html,
+	  documentation/rendering/SDL-hints.html,
+	  documentation/rendering/SDL-openGL.html,
+	  documentation/rendering/SDL-troubleshooting.html,
+	  documentation/rendering/SDL-using.html,
+	  documentation/rendering/SDL-windows.html,
+	  project/meetings/MeetingsExplained.html: Litte improvements
+	  (updates, links corrected)
+
+2004-01-31 12:26  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDLMenu.html: Relative
+	  link to API was broken
+
+2004-01-30 15:42  wondersye
+
+	* doc/web/main/project/meetings/20040129.html: Report 20040129
+	  added
+
+2004-01-30 15:40  wondersye
+
+	* doc/web/main/project/meetings/MeetingsMenu.html: Another meeting
+	  report bites the dust
+
+2004-01-30 10:22  wondersye
+
+	* doc/web/main/project/meetings/: 20031009.html, 20031204.html,
+	  20031211.html, 20040122.html, MeetingsExplained.html,
+	  MeetingsMenu.html, NotYet.html: All reports updated thanks to
+	  html-tidy
+
+2004-01-26 19:54  wondersye
+
+	* doc/GNUmakefile: Copying to SF webserver improved
+
+2004-01-26 19:54  wondersye
+
+	* doc/web/main/: project/meetings/MeetingsMenu.html,
+	  resources/Resources.html, resources/graphics/Graphics.html,
+	  resources/sounds/Sounds.html: Resources repositories added
+
+2004-01-26 19:53  wondersye
+
+	* doc/web/main/documentation/gameExplained/Licenses.html: Creative
+	  Commons license added
+
+2004-01-26 19:53  wondersye
+
+	* doc/web/main/documentation/rendering/SDL-libraries.html: Forgot
+	  it !
+
+2004-01-26 19:52  wondersye
+
+	* doc/web/main/documentation/rendering/: SDL-audio.html,
+	  SDL-events.html, SDL-hints.html, SDL-objects.html,
+	  SDL-openGL.html, SDL-optimizing.html, SDL-troubleshooting.html,
+	  SDL-using.html, SDL-windows.html: Taken from SDL mailing list
+
+2004-01-26 19:51  wondersye
+
+	* doc/web/main/documentation/rendering/: Colors.html,
+	  RenderingMenu.html, SDLHints-raw.html: Small update
+
+2004-01-23 16:59  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/OSDLMenu.html: Linked to
+	  the new place of API
+
+2004-01-23 16:54  wondersye
+
+	* GNUmakevars.inc, code/scripts/export-CVS-to-webserver.sh,
+	  doc/GNUmakefile,
+	  doc/web/main/documentation/rendering/SDLHints-raw.html: html API
+	  transfer fixed
+
+2004-01-23 13:48  wondersye
+
+	* doc/web/main/project/meetings/: 20040122.html, MeetingsMenu.html:
+	  Meeting on 20040122 added
+
+2004-01-23 11:25  wondersye
+
+	* code/scripts/export-CVS-to-webserver.sh: Failure date reported
+
+2004-01-21 23:29  wondersye
+
+	* doc/web/main/documentation/misc/ToSevres.html: link to map added
+
+2004-01-21 23:18  wondersye
+
+	* doc/web/main/documentation/misc/ToSevres.html: Some comments
+	  updated
+
+2004-01-21 23:07  wondersye
+
+	* doc/web/images/: PetiteMaison.jpg, Sevres.png: Picture and map
+	  added
+
+2004-01-21 23:06  wondersye
+
+	* doc/web/main/documentation/misc/ToSevres.html: How-to to find it
+
+2004-01-21 20:03  wondersye
+
+	* code/scripts/: CVS-to-webserver.crontab,
+	  export-CVS-to-webserver.sh: Path and feedback improved
+
+2004-01-20 19:32  wondersye
+
+	* code/scripts/: CVS-to-webserver.crontab,
+	  export-CVS-to-webserver.sh: Output are logged now so that no
+	  failure is missed
+
+2004-01-19 22:01  wondersye
+
+	* doc/web/main/: documentation/gameExplained/Bibliography.html,
+	  project/meetings/MeetingsMenu.html: Books and meetings added
+
+2004-01-19 19:22  wondersye
+
+	* code/scripts/: CVS-to-webserver.crontab,
+	  export-CVS-to-webserver.sh: update to have error messages mailed
+	  if they occur
+
+2004-01-18 22:32  wondersye
+
+	* code/scripts/export-CVS-to-webserver.sh: Updated to have right
+	  export test path
+
+2004-01-18 19:54  wondersye
+
+	* doc/web/: .htaccess, main/club/privateZone/.htaccess,
+	  main/club/privateZone/PrivateZone.html: Private zone added
+
+2004-01-18 19:51  wondersye
+
+	* doc/web/main/: News.html, club/ClubMenu.html,
+	  club/game/trailer/StoryBoard.html, project/ProjectMenu.html:
+	  Updates all web stuff from SourceForge new facilities
+
+2004-01-18 13:54  wondersye
+
+	* code/scripts/export-CVS-to-webserver.sh: Test file for CVS
+	  availability
+
+2004-01-18 13:51  wondersye
+
+	* doc/web/: CVS-tester.txt, main/club/game/trailer/StoryBoard.html:
+	  CVS-tester added so that website won't disappear when CVS is down
+
+2004-01-18 12:15  wondersye
+
+	* code/scripts/export-CVS-to-webserver.sh: Auto-test CVS
+	  availability not to erase webservers file before failing at
+	  exporting CVS
+
+2004-01-17 15:48  wondersye
+
+	* doc/web/: images/Rune-stone-small.jpg,
+	  main/club/game/trailer/StoryBoard.html: Rune stone added
+
+2004-01-17 13:41  wondersye
+
+	* doc/web/images/: Battle-three-actors-small.jpg,
+	  VikingWalkingInSnow.jpeg: Pictures for story board
+
+2004-01-17 13:13  wondersye
+
+	* doc/web/: images/Soldier-heavy-purple-small.jpg,
+	  images/Soldier-light-brown-small.jpg,
+	  images/VikingWalkingInSnow.jpg,
+	  main/club/game/trailer/StoryBoard.html: Pictures added in story
+	  board
+
+2004-01-16 18:30  wondersye
+
+	* doc/web/main/club/game/trailer/StoryBoard.html: Titres ajoutés
+	  dans la table des séquences
+
+2004-01-16 14:48  wondersye
+
+	* doc/web/: images/VikingWalkingInSnow.jpeg, main/club/Club.html,
+	  main/club/ClubMenu.html,
+	  main/documentation/rendering/SDLHints-raw.html: Mis à jour du
+	  sute et ajout d'image pour la bande-annonce
+
+2004-01-16 14:47  wondersye
+
+	* doc/web/main/club/game/trailer/: StoryBoard.html, Trailer.html,
+	  TrailerMenu.html: La bande-annonce : premiers pas
+
+2004-01-16 14:46  wondersye
+
+	* doc/web/main/club/game/GameMenu.html: Ajout bande annonce
+
+2004-01-14 21:17  wondersye
+
+	* code/scripts/: CVS-to-webserver.crontab,
+	  export-CVS-to-webserver.sh: Fixed directories and CVS output
+	  which are redirected to standard error !
+
+2004-01-14 20:59  wondersye
+
+	* code/scripts/export-CVS-to-webserver.sh: Buggy WEB_ROOT corrected
+
+2004-01-14 20:56  wondersye
+
+	* doc/web/index-SF.html: Modifications removed, back in normal
+	  state
+
+2004-01-14 20:28  wondersye
+
+	* doc/web/index-SF.html: Just a test for crontab scripts
+
+2004-01-14 20:25  wondersye
+
+	* doc/web/: index-SF.html, common/css/OSDL.css,
+	  main/documentation/OSDL/OSDL-generic/NewRelease.html,
+	  main/documentation/rendering/SDLHints-raw.html: Minor update to
+	  handle new releases being updated from CVS
+
+2004-01-14 20:23  wondersye
+
+	* code/scripts/: CVS-to-webserver.crontab,
+	  export-CVS-to-webserver.sh: Allows websites to be automatically
+	  updates from their CVS sources
+
+2004-01-13 23:45  wondersye
+
+	* doc/web/main/documentation/: DocMenu.html, misc/MiscMenu.html,
+	  misc/Miscellaneous.html, misc/Recipes.html: A miscellaneous
+	  section added, with chocolate cake recipes !
+
+2004-01-13 22:02  wondersye
+
+	* doc/web/main/documentation/OSDL/OSDL-0.3/: LOANI.html,
+	  OSDL-bugs.html, OSDL-changes.html, OSDL-credits.html,
+	  OSDL-usersguide.html, OSDL.html, OSDLMenu.html: Initial revision
+
+2004-01-13 22:02  wondersye
+
+	* doc/web/main/documentation/OSDL/: OSDL-central.html,
+	  OSDLMenu.html, OSDL-0.2/OSDL-0.2.html, OSDL-0.3/LOANI.html,
+	  OSDL-0.3/OSDL-bugs.html, OSDL-0.3/OSDL-changes.html,
+	  OSDL-0.3/OSDL-credits.html, OSDL-0.3/OSDL-usersguide.html,
+	  OSDL-0.3/OSDL.html, OSDL-0.3/OSDLMenu.html: New OSDL version 0.3
+
+2004-01-13 21:29  wondersye
+
+	* doc/web/: main/project/meetings/20031009.html,
+	  main/project/meetings/20031106.html,
+	  main/project/meetings/MeetingsMenu.html,
+	  main/project/meetings/RDV-LaTour-fleche.png,
+	  common/FullGlossaryTemplate.html, common/GraphicalCharter.html,
+	  common/PickAndPaste.txt, common/Template-en.html,
+	  common/Template-fr.html, common/Template.html, common/black.html,
+	  common/css/OSDL-Menu.css, common/css/OSDL.css,
+	  common/css/doxygen-OSDL.css, common/doxygen/doxygen.png,
+	  common/doxygen/ftv2doc.png, common/doxygen/ftv2folderclosed.png,
+	  common/doxygen/ftv2folderopen.png, common/doxygen/ftv2link.png,
+	  main/Ceylan/FORCE_DIR, main/download/Download.html,
+	  main/download/DownloadMenu.html,
+	  main/project/meetings/20031023.html,
+	  main/project/meetings/20031113.html,
+	  main/project/meetings/20031122.html,
+	  main/project/meetings/20031127.html,
+	  main/project/meetings/20031204.html,
+	  main/project/meetings/20031211.html,
+	  main/project/meetings/NotYet.html,
+	  main/project/meetings/Report-template.html.src,
+	  deprecated/Denofsye-ancienne.css, deprecated/Denofsye-autre.css,
+	  deprecated/Denofsye-nouvelle.css, deprecated/Glossary-2.html,
+	  deprecated/Glossary-3.html, deprecated/Glossary.html,
+	  deprecated/NavBar.html, deprecated/Star.png,
+	  deprecated/TakenFromZope.css, deprecated/changes.txt,
+	  deprecated/doxygen-original.css, deprecated/content/Content.html,
+	  deprecated/content/ContentMenu.html, images/Arrow.png,
+	  images/BackArrow.png, images/OSDL-icon.png,
+	  images/OSDL-small.jpg, images/OSDL.jpg, images/SDL_now.gif,
+	  images/SF-Logo.png, images/Star.png, images/category.jpg,
+	  images/English.png, images/French.png, images/Special.png,
+	  images/TO-DO.png, images/WorldForge.jpg,
+	  images/discrimination.gif, images/drugs.gif, images/fear.gif,
+	  images/language.gif, images/sex.gif, images/violence.gif,
+	  images/Luxo.jpg: Initial revision
+
+2004-01-13 21:29  wondersye
+
+	* doc/web/: main/project/meetings/20031009.html,
+	  main/project/meetings/20031106.html,
+	  main/project/meetings/MeetingsMenu.html,
+	  main/project/meetings/RDV-LaTour-fleche.png,
+	  common/FullGlossaryTemplate.html, common/GraphicalCharter.html,
+	  common/PickAndPaste.txt, common/Template-en.html,
+	  common/Template-fr.html, common/Template.html, common/black.html,
+	  common/css/OSDL-Menu.css, common/css/OSDL.css,
+	  common/css/doxygen-OSDL.css, common/doxygen/doxygen.png,
+	  common/doxygen/ftv2doc.png, common/doxygen/ftv2folderclosed.png,
+	  common/doxygen/ftv2folderopen.png, common/doxygen/ftv2link.png,
+	  main/Ceylan/FORCE_DIR, main/download/Download.html,
+	  main/download/DownloadMenu.html,
+	  main/project/meetings/20031023.html,
+	  main/project/meetings/20031113.html,
+	  main/project/meetings/20031122.html,
+	  main/project/meetings/20031127.html,
+	  main/project/meetings/20031204.html,
+	  main/project/meetings/20031211.html,
+	  main/project/meetings/NotYet.html,
+	  main/project/meetings/Report-template.html.src,
+	  deprecated/Denofsye-ancienne.css, deprecated/Denofsye-autre.css,
+	  deprecated/Denofsye-nouvelle.css, deprecated/Glossary-2.html,
+	  deprecated/Glossary-3.html, deprecated/Glossary.html,
+	  deprecated/NavBar.html, deprecated/Star.png,
+	  deprecated/TakenFromZope.css, deprecated/changes.txt,
+	  deprecated/doxygen-original.css, deprecated/content/Content.html,
+	  deprecated/content/ContentMenu.html, images/Arrow.png,
+	  images/BackArrow.png, images/OSDL-icon.png,
+	  images/OSDL-small.jpg, images/OSDL.jpg, images/SDL_now.gif,
+	  images/SF-Logo.png, images/Star.png, images/category.jpg,
+	  images/English.png, images/French.png, images/Special.png,
+	  images/TO-DO.png, images/WorldForge.jpg,
+	  images/discrimination.gif, images/drugs.gif, images/fear.gif,
+	  images/language.gif, images/sex.gif, images/violence.gif,
+	  images/Luxo.jpg: New OSDL version 0.3
+
+2004-01-13 21:26  wondersye
+
+	* GNUmakefile, GNUmakerules.inc, GNUmakevars.inc, VERSION,
+	  code/GNUmakefile, code/basic/GNUmakefile, code/basic/OSDL.h,
+	  code/basic/OSDLBasic.cc, code/basic/OSDLBasic.h,
+	  code/basic/OSDLBasicIncludes.h, code/basic/OSDLDocMainPage.h,
+	  code/basic/OSDLException.cc, code/basic/OSDLException.h,
+	  code/basic/OSDLTypes.h, code/basic/OSDLUtils.h,
+	  code/video/GNUmakefile, code/video/OSDLLine.cc,
+	  code/video/OSDLPixel.cc, code/video/OSDLPixel.h,
+	  code/video/OSDLSurface.cc, code/video/OSDLSurface.h,
+	  code/video/OSDLVideo.cc, code/video/OSDLVideo.h,
+	  code/video/OSDLVideoIncludes.h, code/deprecated/OSDL.cc,
+	  code/deprecated/OSDLEventsException.cc,
+	  code/deprecated/OSDLEventsException.h,
+	  code/deprecated/OSDLVideoException.cc,
+	  code/deprecated/OSDLVideoException.h, code/events/GNUmakefile,
+	  code/events/OSDLEvents.cc, code/events/OSDLEvents.h,
+	  code/events/OSDLEventsIncludes.h, code/video/OSDLLine.h,
+	  code/video/twoDimensional/GNUmakefile,
+	  code/video/twoDimensional/OSDLLine.cc,
+	  code/video/twoDimensional/OSDLLine.h,
+	  code/video/twoDimensional/OSDLPoint2D.cc,
+	  code/video/twoDimensional/OSDLPoint2D.h,
+	  code/video/twoDimensional/OSDLUprightRectangle.cc,
+	  code/video/twoDimensional/OSDLUprightRectangle.h,
+	  code/video/twoDimensional/TwoDimensionalIncludes.h,
+	  conf/OSDL.proj, conf/astyle.conf, conf/doxygen.conf,
+	  conf/loani.sh, conf/tidy.conf, doc/GNUmakefile,
+	  doc/web/index.html, doc/web/main/Confetti.html,
+	  doc/web/main/MainMenu.html, doc/web/main/MainOSDL.html,
+	  doc/web/main/Map.html, doc/web/main/News.html,
+	  doc/web/main/OSDL.html, doc/web/main/Search.html,
+	  doc/web/main/PlanAccesCube.pdf,
+	  doc/web/main/documentation/DocMenu.html,
+	  doc/web/main/documentation/Documentation.html,
+	  doc/web/main/documentation/OSDL/Authors.html,
+	  doc/web/main/documentation/OSDL/Copying.html,
+	  doc/web/main/documentation/OSDL/OSDL-central.html,
+	  doc/web/main/documentation/OSDL/OSDLMenu.html,
+	  doc/web/main/documentation/OSDL/RFE,
+	  doc/web/main/documentation/OSDL/TODO-when-new-OSDL-version.txt,
+	  doc/web/main/documentation/OSDL/ToDo.html,
+	  doc/web/main/documentation/OSDL/FAQ/FAQ.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.1/OSDL-0.1.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.1/OSDLMenu-0.1.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/LOANI-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-bugs-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-changes-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-credits-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-usersguide-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDLMenu-0.2.html,
+	  doc/web/main/documentation/rendering/Alphablending.html,
+	  doc/web/main/documentation/rendering/Colors.html,
+	  doc/web/main/documentation/rendering/GammaCorrection.html,
+	  doc/web/main/documentation/rendering/Rendering.html,
+	  doc/web/main/documentation/rendering/RenderingMenu.html,
+	  doc/web/main/documentation/rendering/SDLHints-raw.html,
+	  doc/web/main/documentation/rendering/SDLHints.html,
+	  doc/web/main/documentation/OSDL/FAQ/BasicFAQ.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/CVS.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/Hints.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/Languages.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/NewRelease.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/OSDLGeneric.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/OSDLGenericMenu.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/Quality.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/SimilarProjects.html,
+	  doc/web/main/documentation/gameExplained/GameAndLaw.html,
+	  doc/web/main/documentation/gameExplained/GameClassification.html,
+	  doc/web/main/documentation/gameExplained/GameFuture.html,
+	  doc/web/main/documentation/gameExplained/GameMarket.html,
+	  doc/web/main/club/Club.html, doc/web/main/club/ClubMenu.html,
+	  doc/web/main/club/LeCube.html, doc/web/main/club/ToDo.html,
+	  doc/web/main/documentation/gameExplained/Bibliography.html,
+	  doc/web/main/documentation/gameExplained/Game-central.html,
+	  doc/web/main/documentation/gameExplained/GameMenu.html,
+	  doc/web/main/documentation/gameExplained/GameSociology.html,
+	  doc/web/main/documentation/gameExplained/HowToBecomeAGameDeveloper.html,
+	  doc/web/main/documentation/gameExplained/Licenses.html,
+	  doc/web/main/documentation/gameExplained/OtherGames.html,
+	  doc/web/main/documentation/gameExplained/Publishers.html,
+	  doc/web/main/documentation/gameExplained/VideoGameHistory.html,
+	  doc/web/main/documentation/gameExplained/Wonders.html,
+	  doc/web/main/club/FAQ.html, doc/web/main/club/Name.html,
+	  doc/web/main/club/RDV-LaTour.png,
+	  doc/web/main/club/AnnonceRecrutementInfographistes.txt,
+	  doc/web/main/club/PresentationClub.pdf,
+	  doc/web/main/club/game/ActionList.html,
+	  doc/web/main/club/game/ChoiceProcessus.html,
+	  doc/web/main/club/game/GameMenu.html,
+	  doc/web/main/club/game/Name.html,
+	  doc/web/main/club/game/ToDo.html,
+	  doc/web/main/club/game/ActionList.html-temp,
+	  doc/web/main/club/game/Choices.html,
+	  doc/web/main/club/game/Game.html,
+	  doc/web/main/club/game/MainCharacters.html,
+	  doc/web/main/club/game/World.html,
+	  doc/web/main/club/game/numericBook/Assassin.html,
+	  doc/web/main/club/game/numericBook/Background.html,
+	  doc/web/main/club/game/numericBook/Beginning.html,
+	  doc/web/main/club/game/numericBook/Example.html,
+	  doc/web/main/club/game/numericBook/HeroicBook.html,
+	  doc/web/main/club/game/numericBook/InsertCoin.html,
+	  doc/web/main/club/game/numericBook/SelectPlayer.html,
+	  doc/web/main/club/game/numericBook/SelfDenial.html,
+	  doc/web/main/club/game/numericBook/Welcome.html,
+	  doc/web/main/project/Contact.html,
+	  doc/web/main/project/Credits.html,
+	  doc/web/main/project/Join.html,
+	  doc/web/main/project/ProjectInfos.html,
+	  doc/web/main/project/ProjectMenu.html,
+	  doc/web/main/project/howToContribute/ContributeMenu.html,
+	  doc/web/main/project/howToContribute/ContributionGuide.html,
+	  doc/web/main/project/howToContribute/Members.html,
+	  doc/web/main/resources/Books.html,
+	  doc/web/main/resources/ContentCredits.html,
+	  doc/web/main/resources/Internet.html,
+	  doc/web/main/resources/ResourceMenu.html,
+	  doc/web/main/resources/Resources.html,
+	  doc/web/main/resources/graphics/Graphics.html,
+	  doc/web/main/resources/graphics/GraphicsMenu.html,
+	  doc/web/main/resources/sounds/Sounds.html,
+	  doc/web/main/resources/sounds/SoundsMenu.html,
+	  doc/web/main/project/meetings/20030913.html,
+	  doc/web/main/project/meetings/20030925.html,
+	  doc/web/main/project/meetings/20031002.html,
+	  doc/web/main/project/meetings/MeetingsExplained.html,
+	  doc/web/main/project/meetings/PlanAccesCube.pdf,
+	  doc/web/main/project/meetings/Report-template.html,
+	  doc/web/main/project/meetings/LaTour.jpeg,
+	  doc/web/main/project/meetings/RDV-LaTour-original.png: Initial
+	  revision
+
+2004-01-13 21:26  wondersye
+
+	* GNUmakefile, GNUmakerules.inc, GNUmakevars.inc, VERSION,
+	  code/GNUmakefile, code/basic/GNUmakefile, code/basic/OSDL.h,
+	  code/basic/OSDLBasic.cc, code/basic/OSDLBasic.h,
+	  code/basic/OSDLBasicIncludes.h, code/basic/OSDLDocMainPage.h,
+	  code/basic/OSDLException.cc, code/basic/OSDLException.h,
+	  code/basic/OSDLTypes.h, code/basic/OSDLUtils.h,
+	  code/video/GNUmakefile, code/video/OSDLLine.cc,
+	  code/video/OSDLPixel.cc, code/video/OSDLPixel.h,
+	  code/video/OSDLSurface.cc, code/video/OSDLSurface.h,
+	  code/video/OSDLVideo.cc, code/video/OSDLVideo.h,
+	  code/video/OSDLVideoIncludes.h, code/deprecated/OSDL.cc,
+	  code/deprecated/OSDLEventsException.cc,
+	  code/deprecated/OSDLEventsException.h,
+	  code/deprecated/OSDLVideoException.cc,
+	  code/deprecated/OSDLVideoException.h, code/events/GNUmakefile,
+	  code/events/OSDLEvents.cc, code/events/OSDLEvents.h,
+	  code/events/OSDLEventsIncludes.h, code/video/OSDLLine.h,
+	  code/video/twoDimensional/GNUmakefile,
+	  code/video/twoDimensional/OSDLLine.cc,
+	  code/video/twoDimensional/OSDLLine.h,
+	  code/video/twoDimensional/OSDLPoint2D.cc,
+	  code/video/twoDimensional/OSDLPoint2D.h,
+	  code/video/twoDimensional/OSDLUprightRectangle.cc,
+	  code/video/twoDimensional/OSDLUprightRectangle.h,
+	  code/video/twoDimensional/TwoDimensionalIncludes.h,
+	  conf/OSDL.proj, conf/astyle.conf, conf/doxygen.conf,
+	  conf/loani.sh, conf/tidy.conf, doc/GNUmakefile,
+	  doc/web/index.html, doc/web/main/Confetti.html,
+	  doc/web/main/MainMenu.html, doc/web/main/MainOSDL.html,
+	  doc/web/main/Map.html, doc/web/main/News.html,
+	  doc/web/main/OSDL.html, doc/web/main/Search.html,
+	  doc/web/main/PlanAccesCube.pdf,
+	  doc/web/main/documentation/DocMenu.html,
+	  doc/web/main/documentation/Documentation.html,
+	  doc/web/main/documentation/OSDL/Authors.html,
+	  doc/web/main/documentation/OSDL/Copying.html,
+	  doc/web/main/documentation/OSDL/OSDL-central.html,
+	  doc/web/main/documentation/OSDL/OSDLMenu.html,
+	  doc/web/main/documentation/OSDL/RFE,
+	  doc/web/main/documentation/OSDL/TODO-when-new-OSDL-version.txt,
+	  doc/web/main/documentation/OSDL/ToDo.html,
+	  doc/web/main/documentation/OSDL/FAQ/FAQ.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.1/OSDL-0.1.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.1/OSDLMenu-0.1.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/LOANI-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-bugs-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-changes-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-credits-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDL-usersguide-0.2.html,
+	  doc/web/main/documentation/OSDL/OSDL-0.2/OSDLMenu-0.2.html,
+	  doc/web/main/documentation/rendering/Alphablending.html,
+	  doc/web/main/documentation/rendering/Colors.html,
+	  doc/web/main/documentation/rendering/GammaCorrection.html,
+	  doc/web/main/documentation/rendering/Rendering.html,
+	  doc/web/main/documentation/rendering/RenderingMenu.html,
+	  doc/web/main/documentation/rendering/SDLHints-raw.html,
+	  doc/web/main/documentation/rendering/SDLHints.html,
+	  doc/web/main/documentation/OSDL/FAQ/BasicFAQ.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/CVS.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/Hints.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/Languages.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/NewRelease.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/OSDLGeneric.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/OSDLGenericMenu.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/Quality.html,
+	  doc/web/main/documentation/OSDL/OSDL-generic/SimilarProjects.html,
+	  doc/web/main/documentation/gameExplained/GameAndLaw.html,
+	  doc/web/main/documentation/gameExplained/GameClassification.html,
+	  doc/web/main/documentation/gameExplained/GameFuture.html,
+	  doc/web/main/documentation/gameExplained/GameMarket.html,
+	  doc/web/main/club/Club.html, doc/web/main/club/ClubMenu.html,
+	  doc/web/main/club/LeCube.html, doc/web/main/club/ToDo.html,
+	  doc/web/main/documentation/gameExplained/Bibliography.html,
+	  doc/web/main/documentation/gameExplained/Game-central.html,
+	  doc/web/main/documentation/gameExplained/GameMenu.html,
+	  doc/web/main/documentation/gameExplained/GameSociology.html,
+	  doc/web/main/documentation/gameExplained/HowToBecomeAGameDeveloper.html,
+	  doc/web/main/documentation/gameExplained/Licenses.html,
+	  doc/web/main/documentation/gameExplained/OtherGames.html,
+	  doc/web/main/documentation/gameExplained/Publishers.html,
+	  doc/web/main/documentation/gameExplained/VideoGameHistory.html,
+	  doc/web/main/documentation/gameExplained/Wonders.html,
+	  doc/web/main/club/FAQ.html, doc/web/main/club/Name.html,
+	  doc/web/main/club/RDV-LaTour.png,
+	  doc/web/main/club/AnnonceRecrutementInfographistes.txt,
+	  doc/web/main/club/PresentationClub.pdf,
+	  doc/web/main/club/game/ActionList.html,
+	  doc/web/main/club/game/ChoiceProcessus.html,
+	  doc/web/main/club/game/GameMenu.html,
+	  doc/web/main/club/game/Name.html,
+	  doc/web/main/club/game/ToDo.html,
+	  doc/web/main/club/game/ActionList.html-temp,
+	  doc/web/main/club/game/Choices.html,
+	  doc/web/main/club/game/Game.html,
+	  doc/web/main/club/game/MainCharacters.html,
+	  doc/web/main/club/game/World.html,
+	  doc/web/main/club/game/numericBook/Assassin.html,
+	  doc/web/main/club/game/numericBook/Background.html,
+	  doc/web/main/club/game/numericBook/Beginning.html,
+	  doc/web/main/club/game/numericBook/Example.html,
+	  doc/web/main/club/game/numericBook/HeroicBook.html,
+	  doc/web/main/club/game/numericBook/InsertCoin.html,
+	  doc/web/main/club/game/numericBook/SelectPlayer.html,
+	  doc/web/main/club/game/numericBook/SelfDenial.html,
+	  doc/web/main/club/game/numericBook/Welcome.html,
+	  doc/web/main/project/Contact.html,
+	  doc/web/main/project/Credits.html,
+	  doc/web/main/project/Join.html,
+	  doc/web/main/project/ProjectInfos.html,
+	  doc/web/main/project/ProjectMenu.html,
+	  doc/web/main/project/howToContribute/ContributeMenu.html,
+	  doc/web/main/project/howToContribute/ContributionGuide.html,
+	  doc/web/main/project/howToContribute/Members.html,
+	  doc/web/main/resources/Books.html,
+	  doc/web/main/resources/ContentCredits.html,
+	  doc/web/main/resources/Internet.html,
+	  doc/web/main/resources/ResourceMenu.html,
+	  doc/web/main/resources/Resources.html,
+	  doc/web/main/resources/graphics/Graphics.html,
+	  doc/web/main/resources/graphics/GraphicsMenu.html,
+	  doc/web/main/resources/sounds/Sounds.html,
+	  doc/web/main/resources/sounds/SoundsMenu.html,
+	  doc/web/main/project/meetings/20030913.html,
+	  doc/web/main/project/meetings/20030925.html,
+	  doc/web/main/project/meetings/20031002.html,
+	  doc/web/main/project/meetings/MeetingsExplained.html,
+	  doc/web/main/project/meetings/PlanAccesCube.pdf,
+	  doc/web/main/project/meetings/Report-template.html,
+	  doc/web/main/project/meetings/LaTour.jpeg,
+	  doc/web/main/project/meetings/RDV-LaTour-original.png: New OSDL
+	  version 0.3
+

@@ -1,0 +1,846 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--  This document is a part of the OSDL project 
+    For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--  
+    Creation date : 2004, January 25.
+    Author : Olivier Boudeville (olivier.boudeville@online.fr)
+    Update made by : the author
+    Version number : 0.1
+    Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+ <title>OSDL - SDL corner - Helper libraries, tools and resources for SDL</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+ <meta name="description" content="OSDL">
+ <meta name="keywords" content="OSDL">
+ <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+ <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+
+<body>
+
+ <div class="banner">
+  <p><em>General</em> <a href="../../../common/black.html" onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+  <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20Helper%20Libraries,%20tools,%20resources">mail us</a></p>
+ </div><a name="_top_"></a> 
+
+
+<h1>Helper libraries, tools and resources for SDL</h1>
+
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<p>
+<b>Foreword</b> : the vast majority of these informations and pieces of advice comes from the various members of the <a href="http://www.libsdl.org/mailman/listinfo/sdl" target="_blank">SDL</a> mailing list. I hope that this thematical gathering will help the SDL users. Many thanks to the several SDL contributors ! 
+</p> 
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+
+<h2>Overview</h2>
+<p>
+This section focuses on the listing of :
+<ul>
+	<li>the major <b>libraries</b> that can be complementary to SDL. Promised, it is not an infamous plug for our own libraries, Ceylan and OSDL !</li>
+	<li>the various <b>tools</b> that proved useful for SDL applications</li>
+	<li>some <b>resources</b> directly related to the use of these libraries and tools</li>
+</ul>
+</p>
+
+<p>Due to the amount of relevant informations, this is still a document in progress and any help would be appreciated. 
+</p>
+
+
+<h2>Table of contents</h2>
+<p>
+<a name="toc"></a>
+ <center>
+ <table style="border: none">
+ 
+ <tr><td><div class="box" summary="Table of contents" style="padding: 8px">
+ 
+	<a href="#family">The SDL family</a><br>
+	<a href="#build">Build-related tools</a><br>
+	<a href="#package">Package-related tools</a><br>
+	<a href="#fonts">Fonts section</a><br>
+	<ul>
+		<li><a href="#fontlib">Font libraries</a></li>
+		<li><a href="#fontrsc">Where to find fonts you can freely use</a></li>
+	</ul>
+	<a href="#sdlttf">SDL_ttf section</a><br>
+	<a href="#fs">Abstract file-system, encryption, compression &amp; related</a><br>
+	<a href="#gfx">Graphics &amp; rendering</a><br>
+	<a href="#vector">Vector graphics libraries</a><br>
+	<a href="#scaling">Scaling</a><br>
+	<a href="#image">Image handling</a><br>
+	<a href="#video">Displaying movies &amp; animations</a><br>
+	<a href="#gui">GUI : Graphical User Interface with SDL</a><br>
+	<a href="#audio">Sound</a><br>
+	<a href="#events">Events</a><br>
+ 
+
+<!--
+	<a href="#"></a><br>
+-->
+ 
+  </div></td></tr>
+ </table>
+</center>
+</p>
+
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+<a name="family"></a>
+<h2>The SDL family</h3>
+
+<p>
+Around the SDL core library, there are some other libraries that provide complementary services. Each of these so-called standard libraries, whose name begins with "<code>SDL_</code>", focuses on a particular theme :
+<ul>
+
+    <li><a href="http://www.libsdl.org/projects/SDL_image/" target="_blank">SDL_image</a> allows to load into SDL surfaces a large number of popular image formats : BMP, PNM (PPM/PGM/PBM), XPM, LBM, PCX, GIF, JPEG, PNG, TGA, and TIFF [<a href="http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fimage" target="_blank">Wiki</a>]
+</li>
+
+    <li><a href="http://icculus.org/SDL_sound/" target="_blank">SDL_sound</a> [more infos about <a href="SDL-audio.html">sound with SDL</a>]</li>
+
+    <li><a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a> is a multi-channel audio mixer library [<a href="http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fmixer" target="_blank">Wiki</a>] [more infos about <a href="SDL-audio.html">sound with SDL</a>]
+</li>
+
+    <li><a href="http://www.libsdl.org/projects/SDL_net/" target="_blank">SDL_net</a> is a cross-platform networking library [<a href="http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fnet" target="_blank">Wiki</a>]</li>
+	
+    <li><a href="#sdlttf">SDL_ttf</a></li>
+	
+    <li><a href="http://www.ferzkopp.net/~aschiffler/Software/SDL_gfx-2.0/" target="_blank">SDL_gfx</a> provides drawing primitives and other support functions</li>
+
+	<!--
+    <li><a href="" target="_blank"></a> [<a href="" target="_blank">Wiki</a>]</li>
+	-->
+</ul>
+
+</p>
+
+<p>
+Some less known SDL-related libraries exist, such as <a href="http://www.libsdl.org/projects/SDL_rtf/" target="_blank">SDL_rtf</a>, which allows to display Rich Text Format (RTF) documents in a SDL application.
+</p>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+
+<a name="build"></a>
+<h2>Build-related tools</h3>
+
+<p>
+
+<ul>
+    <li><a href="http://www.cmake.org/" target="_blank">CMake</a>, portable build system</li>
+    <li><a href="http://www.scons.org/" target="_blank">Scons</a>, portable build based on python</li>
+    <li><a href="http://www.sci.fi/~abisoft/hamster" target="_blank">Hamster</a>, basically "SCons in Lua". Lua has smaller build dependency than Python, but is seldom already available on a system. Hamster can work either with real SCons as the backbone, or create Makefiles on-the-fly. Hamster have been published in fink (OS X) and Debian packaging, that means you could simply declare <code>BuildDepends: hamster</code> with fink so that your program can be built</li>
+</ul>
+
+
+</p>
+
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+
+<a name="package"></a>
+<h2>Package-related tools</h3>
+
+<p>
+Once written and tested, an application has to be officially released and distributed. As SDL-based applications are often cross-platform, the distribution and packaging concerns are particularly strong.
+</p>
+
+
+<p>
+<ul>
+    <li><a href="http://www.autopackage.org/" target="_blank">Autopackage</a>, to build linux binaries compatible with many distributions</li>
+</ul>
+</p>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+
+
+<a name="fonts"></a>
+<h2>Fonts section</h3>
+
+<a name="fontlib"></a>
+<h4>Font libraries</h4>
+
+<p>
+The most known library to display TrueType fonts in the SDL world is <a href="#sdlttf">SDL_ttf</a>.
+</p>
+
+<p>
+Alternatives to SDL_ttf, other popular add-on libraries for rendering bitmap text, are <a href="http://www.linux-games.com/sfont/" target="_blank">SFont</a>, <a href="http://www.cs.unibo.it/~dbilli/bfont/bfont.html" target="_blank">Bfont</a>, <a href="http://www.daimi.au.dk/~eriksoe/krnfont.html" target="_blank">Krnfont</a>, and <a href="http://www.grinninglizard.com/kyra/index.html" target="_blank">Kyra</a>. They use a single bitmap image with spacing information in the top pixel row to define a font.</p>
+
+<p>
+For simple text display, one can use the dedicated primitives provided by <a name="#family">SDL_gfx</a> (see <code>stringColor</code> and <code>stringRGBA</code>).
+</p>
+
+
+<p>To get more control over one's text and less overhead, one might use FreeType directly, instead of going through SDL_TTF, although FreeType is deemed difficult to use that way.
+</p>
+
+<p>
+One can use as well <a href="http://kd.lab.nig.ac.jp/glyph-keeper/" target="_blank">Glyph Keeper</a>.
+
+</p>
+
+<a name="fontGL"></a>
+<h5>Fonts &amp; OpenGL</h5>
+
+<p><a href="http://www.lmnopc.com/bitmapfontbuilder/" target="_blank">Bitmap Font Builder</a> makes it easy to create bitmaps for use in OpenGL (and DirectX) applications.
+</p>
+
+
+<p>The <a href="http://www.gameprogrammer.com/polyfonts/polyfonts.html" target="_blank">Polyfonts</a> library draws text into all types of SDL surfaces. It works the same on software and hardware surfaces as it does on OpenGL surfaces, where the fonts are stored as geometry in the form of OpenGL rendering commands and vertex data. That means that all the fonts can be drawn in any size and any orientation. 
+</p>
+
+<p>Polyfonts has a large number of fonts converted to geometry, so they can be rendered without ever
+creating a texture. It includes a number of stroke fonts that can be drawn very quickly with OpenGL, but because of the large number of triangles needed to represent most outline fonts it can be a bit slow for rendering antialiased outline fonts. Use <a href="#prerender">pre-rendering</a> in that case.
+</p>
+
+<p>
+Other OpenGL-related tools for fonts are <a href="http://oglft.sourceforge.net" target="_blank">OpenGL-FreeType Library</a> (OGLFT) and, if you are working in C++, <a href="http://gltt.sourceforge.net" target="_blank">FTGL</a> [<a href="http://homepages.paradise.net.nz/henryj/code/" target="_blank">homepage</a>]. They both require FreeType and convert TTF fonts to geometry, and then render then from that.
+</p>
+
+
+<p>More infos about <a href="SDL-openGL.html#texfont">OpenGL textures</a> related to fonts.</p>
+
+                                                  
+<a name="prerender"></a>
+<h5>Pre-rendering</h5>
+
+<p>To display static or even TTF text, pre-rendering is the safe and efficient way. For text that changes, render all glyphs to surfaces or, with OpenGL, to textures. Paste them together to form text.
+</p>
+
+<p>More precisely, for outline fonts one may render each glyph/size/color once when it is first used by the program, and convert it to a surface or texture at that point. Then the text is either drawn by surface blitting or texture mapping on quads, for each individual glyph in a string.</p>
+
+<p>It also means one have a texture for each glyph that has been used; it is surprising how few glyphs are ever used. This method seems to be a good way to render antialiased text.
+</p>
+
+
+
+
+<a name="fontrsc"></a>
+<h4>Where to find fonts you can freely use</h4>
+
+<p>
+Since, with <a name="#family">SDL_ttf</a> for example, displaying Truetype fonts is made easy, one just has to find freely-distributable fonts for his application. This can be a tricky task, since many "free fonts" found in the Internet infringe licensing schemas. Here are some pointers to the most known fonts which are freely distributable, roughly sorted by decreasing confidence in their legality. Some of these fonts are released under the GPL license.
+</p>
+
+<p>Please ensure that you have been granted permission or you obtained a license of use for the fonts you use, if they are not truly free for your needs.
+</p>
+
+<p>
+
+<ul>
+    <li><a href="http://www.larabiefonts.com" target="_blank">larabiefonts</a> : awesome work indeed</li>
+    <li>SDL_ttf <a href="http://jcatki.no-ip.org/SDL_ttf/SDL_ttf_2.html#SEC2" target="_blank">recommended fonts</a> : <a href="http://www.nongnu.org/freefont/" target="_blank">Free UCS Outline Fonts</a>, <a href="http://www.fonthead.com/freeware.html" target="_blank">FontHead</a> (freeware)</li>
+</li>
+    <li><a href="http://www.gnome.org/fonts/" target="_blank">Gnome fonts</a></li>
+    <li><a href="http://www.gameprogrammer.com/polyfonts/polyfonts.html" target="_blank">Polyfonts</a> provides some fonts too</li>
+    <li><a href="http://kvota.net/fonts/" target="_blank">Kvota</a>, for cyrillic glyphs</li>
+    <li><a href="http://dejavu.sourceforge.net/" target="_blank">dejavu</a></li>
+    <li><a href="http://www.1001fonts.com/" target="_blank">1001fonts</a></li>
+    <li><a href="http://sourceforge.net/projects/freeunifont/" target="_blank">freeunifont</a></li>
+    <li><a href="http://www.freakyfonts.de/" target="_blank">FreakyFonts</a></li>
+    <li><a href="http://www.varian.net/dreamfonts/yesfonts.html" target="_blank">Varian Fonts</a></li>
+    <li><a href="http://corefonts.sourceforge.net/" target="_blank">Microsoft</a> (non-free)</li>
+    <li><a href="http://www.google.com/search?hl=en&ie=UTF-8&oe=UTF-8&q=truetype+free+redistribute&btnG=Google+Search" target="_blank">Google Font search</a></li>
+	<!--
+    <li><a href="" target="_blank"></a></li>
+	-->
+</ul>
+
+</p>
+
+<p>
+The most beautiful fonts that are free for use often do not include enough characters for internationalization.
+</p>
+
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+
+<a name="sdlttf"></a>
+<h2>SDL_ttf section</h3>
+
+<p> The 
+<a href="http://www.libsdl.org/projects/SDL_ttf/" target="_blank">SDL_ttf</a> library is one of the standard SDL libraries. [<a href="http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fttf" target="_blank">Wiki</a>]
+</p>
+
+<p>
+SDL_ttf 2.x uses FreeType 2 (not 1.2, as stated in the docs). 
+</p>
+
+
+<h4>SDL_ttf hints</h4>
+
+<p>
+<ul>
+	<li>For each call to <code>text = TTF_RenderText_Solid( myFont, message, color )</code>, there must be a call to <code>SDL_FreeSurface( text )</code></li>
+	<li>On program exit, or when you do not need the font anymore, call <code>TTF_Closefont( myFont )</code></li>
+	<li>When you are done using the ttf library (usually at exit), do <code>TTF_Quit()</code></li>
+	<li>Always check that your font file exists before giving it to TTF_Font (<code>TTF_OpenFont</code> does not seem to check it !)</li>
+	<li>If you are planning a GNU/Linux version, do not use <code>TTF_RenderText_Solid,</code>, that does not work on this platform. One may use, as a work-around, <code>SDL_RenderText_Shaded</code> and set the colorkey of the surface.</li>
+</ul>
+</p>
+
+
+
+<h4>SDL_ttf troubleshooting</h4>
+
+<dl>
+
+	<dt>Problem when trying to read fonts from RWops, when the font data is somewhere in a larger file</dt>
+	<dd>This is because SDL_ttf seeks to some offset from SEEK_SET or SEEK_END. If the RWops object is created with SDL_RWFromFP, SEEK_END naturally refers to the end of the file, and SEEK_SET to the beginning of the file, not to the position of the file pointer at the time when the RWops object was created. This can by solved by making a more flexible RWops creation function, which allows the user to specify which range of the file is to be used.</dd>
+
+
+    <dt>Using <code>TTF_RenderText_Solid</code> and encountering problems</dt>
+    <dd>Try using another function, such as <code>TTF_RenderText_Blended</code></dd>
+
+    <dt>You see unexpected empty squares (little boxes)</dt>
+    <dd>
+	
+	<p>One may see only empty squares instead of the expected characters. This little box is the default glyph that you get when you ask for nonexistent glyphs. Here are the most common reasons and solutions for that issue :
+</p>
+
+<ul>
+	<li>always check the glyph <b>indexes</b> first</li>
+	<li>if classical letters are often available, not all fonts support all <b>symbols</b></li>
+	<li>using a <b>wrong</b> version of libttf. Older versions do not handle all the features of some fonts. You might be using the version of libttf that is legal to use in the US. That version of the library does not implement certain patented features of the TTF specification. It does not implement them because it can not legal do so. </li>
+	<li>you are using a <b>bitmap</b> font, which SDL_ttf does not handle well.</li>
+</ul>	
+	</dd>
+
+    <dt>With the same code, the font displays with different sizes on different systems</dt>
+    <dd>For example, when using a program like MS-Word or PaintShop Pro to draw the font at a given point size (32 for instance) it looks much larger than if SDL_ttf is used to blit it on the screen using the <code>showfont</code> demo. The difference is that PaintShop is rendering the TTF font at 72 dpi, whereas SDL is rendering it at the dpi of your monitor, where is probably 96 dpi (hence
+appearring smaller).
+</dd>
+
+    <dt>Problem compiling with FreeType (needed by SDL_ttf)</dt>
+    <dd>
+<p>In <code>SDL_ttf.c</code>, add the following : 
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+#include &lt;ft2build.h&gt;
+#include FT_FREETYPE_H
+#include FT_OUTLINE_H
+#include FT_TRUETYPE_IDS_H
+#include &lt;freetype/internal/ftobjs.h&gt;
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+
+and remove the following:
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+#include &lt;freetype/freetype.h&gt;
+#include &lt;freetype/ftoutln.h&gt;
+#include &lt;freetype/ttnameid.h&gt;
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>Or see our LOANI automatic installer : <code>generateSDL_ttf</code> in <code>loani-requiredTools.sh</code> auto-corrects <code>SDL_ttf.c</code>.
+</p>
+ 
+	</dd>
+
+    <dt>Freetype and SDL versions</dt>
+    <dd>Freetype 2.1.5 is the last known version of Freetype to work seamlessly with SDL_ttf 2.0.6.</dd>
+
+</dl>
+
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+  
+
+
+<a name="fs"></a>
+<h2>Abstract file-system, encryption, compression &amp; related</h3>
+
+<h4>PhysicsFS</h4>
+
+<p>PhysicsFS is a file-system library. This efficient library is convenient, however it does not come packaged with most Linux distributions that allow you to install via CD. This is not a problem though in windows where you can just drop in the DLL.
+</p>
+
+<p>
+With MinGW, to avoid <code>main.c: undefined reference to `WinMain@16'</code>, use : 
+<code>make LDFLAGS=-lmingw32</code>. 
+</p>
+  
+
+
+<h4>Boost Filesystem Library</h4>
+
+<p>
+To be found <a href="http://www.boost.org/libs/filesystem/doc/" target="_blank">here</a>, its drawback is that Boost implies numerous dependencies.
+</p>
+
+<p>
+One can use <a href="http://freshmeat.net/projects/zziplib/" target="_blank">zziplib</a> to read ZIP archives.
+</p>
+
+<h4>fnkdat</h4>
+
+<p>
+<a href="http://savannah.nongnu.org/projects/fnkdat" target="_blank">fnkdat</a> provides a platform independant interface for determining common directory names [<a href="http://www.maccormack.net/~djm/fnkdat/" target="_blank">homepage</a>].
+</p>
+
+
+
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+<a name="gfx"></a>
+<h2>Graphics &amp; rendering</h3>
+
+<h4>SGE (SDL Graphics Extension)</h4>
+<p>
+http://www.etek.chalmers.se/~e8cal1/sge/
+</p>
+  
+<h4>SDL_gfx</h4>
+
+<h5>Windows DLL</h5>
+
+<p>
+To compile SDL_gfx for Dev-Cpp or for Mingw32, basically you need to add a couple of defines that are not set by default: 
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+-DBUILDING_DLL=1
+-DBUILD_DLL=1
+-DWIN32
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>One needs to simply compile the library sources (.c/.h) with the defines <code>-DWIN32</code> and <code>-DBUILD_DLL</code> when creating the DLL. Use the define <code>-DWIN32</code> when using the DLL.</p>
+
+<p>There are VC6 and VC7 project files included in the SDL_gfx distribution, but some users reported that there were not working properly.
+</p>
+
+
+
+<h5>Using rotozoom</h5>
+
+<p>
+The rotozoom routine creates a new surface. You usually use it like this (pseudocode) :
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+sourceSurface = loadimage( "image.png" ) ;
+const unsigned int steps = 10 ;
+
+float angle ;
+
+for ( unsigned int i = 0; i < steps; i++ )
+{
+   angle = i * 360 / steps ;
+   rotatedSurfaces[i] = rotozoom( sourceSurface, angle, ...) ;
+}
+
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+This pre-rotates your images and caches them for later use. It works well for smaller images since caching uses memory. To get good quality, your input should be 32bit (i.e. PNG with transparency) and interpolation should be enabled in the rotozoom routine.</p>
+
+<p>A smarter approach would be to cache only a few images relevant to the current game state (i.e. angle-20, angle-10, angle, angle+10, angle+20) and re-render to update the cache as needed when the game state is changed. That way, you can optimize to save a rotozoom for every single state change.
+</p>
+
+<p>
+Once you have the new surface, you can determine its center from its dimensions and blit as usual using clipping to limit its visibility to a rectangular area.
+</p>
+
+
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+
+<a name="vector"></a>
+<h2>Vector graphics libraries</h3>
+
+<p>Here are some hardware accelerated vector graphics libraries :
+<ul>
+    <li><a href="http://www.chem.pwf.cam.ac.uk/~jdh30/programming/opengl/smoke/" target="_blank">Smoke</a></li>
+    <li><a href="http://svgl.sourceforge.net/" target="_blank">SVGL</a></li>
+	<li><a href="http://www.linuxmotors.com/SDL_svg/" target="_blank">SDL_svg</a></li>
+    <li><a href="http://xml.apache.org/batik/" target="_blank">Batik</a> (Java-based)</li>
+    <li><a href="http://haskell.cs.yale.edu/haven/" target="_blank">Haven</a> (for Haskell)</li>
+	<li><a href="http://www.antigrain.com/" target="_blank">Anti-Grain Geometry</a> can draw to SDL surfaces</li>
+</ul>
+
+</p>
+
+<p>
+Using dedicated vector graphics libraries can help a lot, since OpenGL and DirectX are much more low level. Consider the OpenGL calls which would be required to render this vector-graphic <a href="http://www.w3.org/Graphics/SVG/webdraw01.png" target="_blank">image</a>.
+</p>
+
+<p>Both Smoke and SVGL aim to render such vector graphics by converting the conventional vector-graphics primitives (gradient and radial fills; areas enclosed by implicit lines and curves; stroked contours etc.) into OpenGL primitives (filling commands and triangle meshes). The hardest part of this is the efficient tesselation of vector "areas" into triangle meshes
+</p>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+
+
+
+<a name="scaling"></a>
+<h2>Scaling</h3>
+<p>
+It can be performed thanks to <a href="" target="_blank">SDL_gfx</a>, it is bilinear but SDL_gfx is not as portable as SDL. Zooming is only supported for 8-bpp and 32-bpp surfaces.
+</p>
+
+<p>A <a href="http://sdl-stretch.sourceforge.net/" target="_blank">sdl-stretch</a> library is available too.
+</p>
+
+<h4>sdl_glscale patch</h4>
+
+<p>Hardware acceleration does not occur in windowed mode. Stephane Marchesin made a new SDL video backend that uses OpenGL to scale the display.
+</p>
+
+<p>
+This backend uses another backend to get the window creation and keyboard handling stuff, so it is "portable". For now, it is only tested under linux/X11/i386 but it should work for other platforms with OpenGL support. It's by no means fast, but it can be useful.
+</p>
+
+<p>
+Get the patch <a href="http://icps.u-strasbg.fr/~marchesin/sdl/sdl_glscale.patch" target="_blank">here</a>. To choose the new screen size, do the following :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+export SDL_VIDEODRIVER=glscale
+export SDL_VIDEODRIVER_GLSCALE_X=&lt;desired width&gt;
+export SDL_VIDEODRIVER_GLSCALE_Y=&lt;desired height&gt;
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>
+By defaut, a 2x window scaling is used.
+</p>
+
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+<a name="image"></a>
+<h2>Image handling</h2>
+
+<p>
+<ul>
+    <li><a href="http://www.libpng.org/pub/png/libpng.html" target="_blank">libpng</a> and zlib must be installed to load a PNG</li>
+	<li><a href="http://koala.ilog.fr/lehors/xpm.html" target="_blank">XPM library</a>
+    <li><a href="http://www.libsdl.org/projects/SDL_image/" target="_blank">SDL_image</a></li>
+</ul>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+
+<a name="video"></a>
+<h2>Displaying movies &amp; animations</h3>
+   
+<ul>
+
+    <li><a href="http://xinehq.de/" target="_blank">libxine</a> does all the decoding work. Kaffeine is just a frontend to libxine.</li>
+    <li><a href="http://www.lokigames.com/development/smpeg.php3" target="_blank">SMPEG</a>, to play MPEG video files to an SDL surface. See their <code>plaympeg.c</code> example to learn how to use it. Blitting to an off-screen surface is recommended, since blitting directly to the screen might create timing problems, with SMPEG blitting over the other screen renderings without control. You really need to use threaded audio or SMPEG does not work very well. Not that it works particularly well anyway... If you are using Linux you are probably best off using ffmpeg, which is more work but is far better at the job. To overcome some SMPEG build issues, add <code>-lstdc++</code> into the file <code>smpeg-config</code> [<a href="http://linuxfromscratch.org/pipermail/blfs-support/2003-March/038115.html" target="_blank">more infos</a>]. Note also that audio must have been initialized before playing videos with smpeg, even if the video does not have any sound. It looks like SMPEG only supports mpeg-1. The way to get SMPEG compiled with shared and static is to use ltconfig and ltmain.sh from the FINK project [<a href="http://www.syntheticsw.com/~wizard/Mac/tmp/" target="_blank">see</a>]. The project team gave up on 2001.</li>
+    <li><a href="http://ffmpeg.sourceforge.net/" target="_blank">ffmpeg project</a> contains libavcodec, which now has native support for sorensen (used for quicktime), and virtually every other codec you could want. ffmpeg also contains ffplay, which is a simple SDL-based player.</li>
+    <li><a href="http://www.xvid.org/" target="_blank">XviD codec and core Library</a> : very high compression and quality, cross-platform, LGPL</li>
+
+</ul>
+   
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+
+
+<a name="gui"></a>
+<h2>GUI : Graphical User Interface with SDL</h2>
+
+<p>
+<ul>
+<!--
+    <li><a href="" target="_blank"></a>, </li>
+-->
+    <li><a href="http://aedgui.sf.net" target="_blank">aedGUI</a>, quick and nice</li>
+    <li><a href="http://www.trolltech.com" target="_blank">Qt</a>, used by KDE. However pay attention to the license if Windows is one of the targeted platforms. See also : SDL + Qt <a href="http://nehe.gamedev.net/data/lessons/qt_cpp/lesson02.tar.gz" target="_blank">example</a></li>
+	<li><a href="http://www.wxwidgets.org/" target="_blank">WxWidgets</a> (formerly known as
+<code>wxWindows</code>)</li>
+    <li><a href="http://www.fltk.org" target="_blank">FLTK</a>, whose usage is really easy : small and the dimensions do not distort over different platforms</li>
+	<li><a href="http://www.blah.ch/libsgui/" target="_blank">libsgui</a>, simple SDL-based GUI</li>
+	<li><a href="http://guichan.sourceforge.net/" target="_blank">Guichan</a> is a portable C++ GUI library designed for games using Allegro, SDL and/or OpenGL. Its approach is rather minimalistic and you usually end up improving existing widgets to implement basic functionality that is supposed to be available out-of-the-box like password input or listboxes. But it is lightweight and designed for games, relatively new though, not very stable. Not tested in .net2003</li>
+	<li><a href="http://gigi.sourceforge.net/screenshots.php" target="_blank">GiGi</a>, OpenGL Graphic User Interface Library (LGPL), needs a number of extra libraries</li>
+    <li><a href="http://libsdl.org" target="_blank">SDL</a> can be directly used</li>
+    <li><a href="http://fox-toolkit.org" target="_blank">Fox-toolkit</a>, use non-native graphical objects, similar to wxWidgets and Qt, but has less features and is faster</li>
+    <li><a href="http://upp.sourceforge.net" target="_blank">Ultimate++</a>, Linux and Windows only</li>
+    <li><a href="http://gtk.org" target="_blank">Gtk++</a>, C-based, can be used in C++ with Gtkmm or VDK</li>
+    <li><a href="http://www.cegui.org.uk" target="_blank">CeGUI</a>, much more complex and mature than guichan</li>
+ </ul>
+</p>
+
+<p>
+You may also wish to look at the SDL <a href="http://www.libsdl.org/libraries.php?category=14" target="_blank">library listing</a>, which has, among other things, several GUI libraries listed.
+</p>
+
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+<a name="audio"></a>
+<h2>Sound</h3>
+   
+<p>
+
+<ul>
+
+    <li><a href="http://www.fmod.org/" target="_blank">FMOD</a> : the problem with it is that is not a free software, but it is usable for non commercial projects</li>
+	
+	<li><a href="http://icculus.org/SDL_sound/" target="_blank">SDL_sound</a> is a library that handles the decoding of several popular sound file formats, such as .WAV and .MP3, and supports several others by using external libraries. It only decodes audio files for playing, it does not play them itself [<a href="http://icculus.org/SDL_sound/docs/html/" target="_blank">API</a>]</li>
+
+    <li><a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a>, which uses MikMod for module playback. SDL_mixer does all its heavy processing in a seperate thread, so you do not need to spin a thread to keep the audio seperate. Unless there is another reason to keep a seperate thread, just call <code>Mix_LoadWAV</code> and <code>Mix_PlayChannel</code> from the main thread</li>
+
+	<li><a href="http://www.vorbis.com/" target="_blank">Ogg Vorbis</a> is a completely open, patent-free, professional audio encoding and streaming technology with all the benefits of Open Source</li>
+	
+	<li><a href="http://cmusphinx.sourceforge.net/sphinx2/" target="_blank">Sphinx2</a> is a speaker-independent decoding engine for continuous speech</a></li>
+
+</ul>
+
+</p>
+
+
+<p>
+See also : our <a href="SDL-audio.html">sound with SDL</a> section.
+</p>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+
+
+
+<a name="events"></a>
+<h2>Events</h3>
+   
+<p>
+<a href="http://www.gameprogrammer.com/fastevents/fastevents1.html" target="_blank">Fast events</a> is basically a replacement for the event handling functions in SDL. It gets rid of the 10 ms delay (Linux 2.4 time-slice) in the WaitEvent function, and uses threads to update/change the event queue.  This makes the event handling go faster.
+</p>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+<a name="other"></a>
+<h2>Other features</h3>
+   
+<p>
+<a href="http://sourceforge.net/projects/oglconsole/" target="_blank">OGLCONSOLE</a> is a GPL powerful "never-fail" quake-style drop-down interactive command console for all OpenGL applications
+</p>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+<!--
+
+SDL_Resize which you can get here
+http://www.libsdl.org/libraries.php?match_id=1714. You can scale using
+nearest neighbor, lanczos3, and everything in between. You call the
+function SDL_ResizeXY() and tell it the source surface, new dimensions,
+and scaling mode (consult the trusty well documented header file). It
+returns a pointer to the new surface and frees the old one so you can
+call it like this:
+SDL_Surface *new = SDL_ResizeXY(old, width, hieght, 1);
+That will use nearest neighbor
+
+Gui lib : plib's "PUI":
+
+  http://plib.sf.net/pui/index.html
+ParaGUI, SDLTk and aedGUI
+An important consideration for many SDL programmers, especially those who are relatively new to it, is having minimal dependencies. I haven't used SDLTk or aedGUI, but I know ParaGUI, while a very powerful GUI library, has prohibitively complicated dependencies, and it took an excessive amount of time and energy for me to get it working under Windows. Looking through the ParaGUI forums shows that I'm far from alone on this point as well.
+
+If you want something a bit simpler and easier, try GUIChan. It's not as complete or fancy as many of the others, but it has almost no dependencies and is very easy to set up and use.
+Looks nice, but requirement of using their classes to handle event loop 
+and starting the main SDL window, disqualifies it for me.
+
+Another one is Agar (http://agar.csoft.org/). It has no dependencies besides
+SDL (although it can use FreeType and OpenGL if you have them). Great effort
+was made towards making its API simple and straightforward to use.
+
+It is also quite flexible in that you don't need to build your application
+around its event loop - you can render widgets and forward events to the
+GUI subsystem in just a few lines of code, from your own event loop.
+
+If you are using OpenGL for the rendering via SDL you can use CEGUI
+(cegui.org.uk)
+Use FLTK. It is easy like nothing else http://www.fltk.org/ 
+
+SDL-terminal : http://www.loria.fr/~rougier/software/terminal/
+
+I've tried almost all GUI libs available on Libraries page. ParaGUI is
+feature-complete but heavy and seems to be dead.
+aedGUI promised to be good library but now seems to be dead too.
+Recently I discovered SDLtk - and liked it. I don't see it developed,
+author only recently uploaded it to SourceForge, so I hope it will be
+developed.
+Agar is also interesting. Other libraries are quite old and incomplete.
+
+GiGi - very nice GUI toolkit for games
+
+http://cairographics.org
+
+Ultimate++ is a radical and innovative GUI toolkit
+
+
+    Ultimate++ is a C++ cross-platform rapid application development suite. It includes a set of libraries (GUI, SQL, etc..), and an integrated development environment. 
+
+
+http://upp.sourceforge.net/
+
+http://librsvg.sourceforge.net/
+
+look deep into it, and you will see: SVG is all the GUI toolkit 
+you'll ever need.
+
+-->
+
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+
+ <h2>Please react !</h3>
+
+ <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20Helper%20Libraries,%20tools,%20resources">drop us a line</a>!</p><br>
+ <br>
+ <hr>
+	
+ <center>	
+  [<a href="#_top_">Top</a>]<br>
+  <br>
+  <em>Last update : 2006, January 16</em>
+ </center>
+</body>
+</html>

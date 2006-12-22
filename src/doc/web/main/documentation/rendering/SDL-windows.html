@@ -1,0 +1,1431 @@
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Windows Platform</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, SDL, Windows, Microsoft">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20on%20Windows%20platforms">mail us</a></p>
+  </div><a name="_top_"></a>
+  
+
+<h1>SDL on Windows platforms</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<code><pre>
+
+I started a project using SDL, but unfortunately I couldn´t get it to 
+link with MSVC .NET 2005. I linked against both SDL.lib and SDLMain.lib but I get a linker error that the "entry point has to be specified", but I do have a main method.
+
+You have used the wrong project type. You should use "Win32
+Application" (which expects a WinMain() provided by SDLmain.lib), not
+"Win32 Console Application".
+
+I get then a warning that msvcrtd.lib conflicts with other libraries and 
+I should use /nodefault, do you know why this happens?
+
+It happens because MSVC 2005 uses a different runtime library to what
+SDLmain.lib is compiled for.
+
+You can get around this in one of two ways:
+
+1) recompile SDL in MSVC 2005 so you get a compatible SDLmain.lib
+2) Add src/main/win32/SDL_win32_main.c to your project.
+
+I also use MSVC 2005 and I've never had to recompile SDL, or add 
+src/main/etc. to any of my projects to avoid this error/warning. I 
+occasionally get such an error if I try to include certain other libraries 
+(e.g. boost, or zziplib come to mind). Check on which other .lib's you are 
+linking with (and check that you are compiling as "Multi-Threaded debug dll" in C/C++ compiler options.)
+
+
+
+
+
+Try the Memory Manager (a.k.a. "MMGR")  from The Fluid Studios
+
+http://www.fluidstudios.com/
+http://www.fluidstudios.com/pub/FluidStudios/MemoryManagers/Fluid_Studios_Memory_Manager.zip
+
+Add this mem manager to you project.It will trace all your mem allocation and will report any mem leaks.
+After your close your programm it will write a mem log file.
+See the readme for more information. 
+
+
+If fps is capped constantly at 85fps or just about, the
+"problem" is you have vsync on in windows and not in linux.  Vsync limits
+your drawing refresh rate to the refresh rate of your monitor.
+
+Vsync SHOULD be left on though unless your benchmarking because it reduces
+tearing (:
+
+If you want to take it off though, you can turn it off through your driver
+or I actually have a function here to do it:
+
+void VSyncOn(char On)
+{
+  #ifdef WIN32
+  typedef void (APIENTRY * WGLSWAPINTERVALEXT) (int);
+
+  WGLSWAPINTERVALEXT wglSwapIntervalEXT = (WGLSWAPINTERVALEXT) 
+  wglGetProcAddress("wglSwapIntervalEXT");
+  if (wglSwapIntervalEXT)
+  {
+     wglSwapIntervalEXT(On); // set vertical synchronisation
+  }
+  #endif
+}
+
+I think you just need to include windows.h and you should be good to go on
+the above.
+
+VSyncOn(0); to turn off vsync and VSyncOn(1); to turn it on (:
+
+You will have vsync on as this is the default for most Windows 3D drivers.
+
+
+there is no SDLmain.DLL - there's only an SDLmain.LIB that drops "init" code directly into my application's code space.
+
+So in summary, by changing SDLmain.lib to statically link to the C runtime 
+ library, I'm not "embedding" any SDL code into my application's codespace that 
+ wasn't there already.  All it does is say to the SDLmain code, use this 
+ runtime library instead of that one.
+In fact, if you look at the SDLmain source files,
+you'll see they're all in the public domain for you to use/copy/reuse
+any way you like.
+
+This is not a very good idea in some cases. Your application, SDLmain and
+SDL.DLL should all be using the same copy of the MS C runtime lib, be that
+MSVCRT.DLL (or 70, 71, etc) or a static copy. Which is why SDL on Windows
+normally links to MSVCRT.DLL.
+Usually, you only need this when you, for example, free() memory that was
+malloc()'d and returned by the 3rd party library (not necessarily applicable
+to SDL), or when you need to manipulate a FILE* object returned by the 3rd
+party library. With SDL on Windows, however, there is another consideration:
+if you do
+  putenv("SDL_VIDEODRIVER=directx");
+in your app, and your app links to a static C lib, and you are using SDL.DLL
+(which will always link to either MSVCRxx.DLL or its own copy of C lib), SDL
+will not see this envvar at all.
+I do not have a list of what objects MS C libs maintain internally, but if
+the above example is any indication, there are others.
+Which is why SDL_putenv() and SDL_getenv() exist.
+
+windib degrades input latency, as well as display speed and sound speed
+(the old WaveOut API is dreadfully slow)
+
+I like to use msdos console to display some debugging output, but
+>> when I insert SDL.h header and I link sdl and sdlmain libs, then console doesn't display anything anymore. Pass --disable-stdio-redirect to configure
+and rebuild.
+
+
+Error message always is:
+|>
+|> msvcrt.lib(MSVCR71.dll) : error LNK2005: _exit already defined in
+|> LIBCD.lib(crt0dat.obj)
+|> msvcrt.lib(MSVCR71.dll) : error LNK2005: _strncpy already defined in
+|> LIBCD.lib(strncpy.obj)
+|> msvcrt.lib(MSVCR71.dll) : error LNK2005: _fclose already defined in
+|> LIBCD.lib(fclose.obj)
+|> msvcrt.lib(MSVCR71.dll) : error LNK2005: __isctype already defined in
+|> LIBCD.lib(isctype.obj)
+|
+|It seems that you are mixing up debug and release libraries in some way.
+|Under "Code generation" configuration, have you selected
+|"Multithreaded DLL" or "Multithreaded Debug DLL"? (can't remember the
+|exact names)
+|You need to select the debug one.
+
+Fwiw, I've lost count of the number of big successful Triple-A titles 
+I've worked on that _don't_ use DirectInput.
+
+I can also recall a few that replaced their DirectInput code with 
+standard windows events...for many of the same reasons SDL switched to 
+WinDib.
+
+Input latency is not a big deal, in my experience.
+
+(although, yeah, the DirectDraw vs WinDib rendering IS a performance 
+hit, though...)
+
+
+I think SDL_RWFromFP(file, 0); is not fully safe on Win32 at least. 
+
+It depends on :
+- the compilation model (for MSVCRT - multithreaded dll ? or LIBCMT.LIB : static lib c multithreaded, or LIBC.LIB : static lib C monothread etc) of your own project.
+- the compilation model of the SDL.dll 
+
+You have to use exactly the same libC than the SDL.DLL for this function to work properly.
+
+the argument FILE *file is simply passed from your code to the dll, and then to the "libc" version of the dll, but it has been created in your code, with your own version of "libc". If they are not the same, this will not work correctly.
+
+You could do SDL_RWFromFile(const char *filename, etc); instead of opening the file yourself, this would hopefully work.
+
+or , open the file yourself, load it in memory (or map it to memory) and then SDL_RWFromMem() on a pointer to data loaded (or mapped).
+
+We don't rely on a C runtime on Windows any more...this change just hit 
+CVS recently. Among other tapdancing it alleviates, it should also fix 
+the RWOps issues between DLLs.
+
+Actually, I reverted it to Multithreaded DLL until 1.3, since it required
+a binary compatiblity change (passing C runtime start/end routines to the
+thread code).  However, when it was enabled, SDL is not able to do rwops on
+FILE * internally, since there was no stdio implementation to work with.
+
+
+I followed perfectly the instructions for starting an S.D.L. visual C project,
+  (using MSVS.NET2005Pro) and it compiles and builds 100% ok.
+  BUT the problem I have now is that the built EXE file
+  requires that Microsoft .NET framework 2.0+ be installed
+  onto the PC Windows based computer for the EXE to run.
+  (otherwise, receive some error message dialog box at EXE start then EXE exits)
+
+  I have no plans of utilizing this new .NET framework 2.0+
+  and wish to compile an EXE that does NOT require Microsoft .NET framework
+2.0+.
+
+  Anyone using S.D.L. with MSVS.NET2005Pro developer environment
+  and know how to set up a project OR modify an existing project
+  that does NOT require Microsoft .NET framework 2.0+ be installed on target PC
+???
+
+there are two options.  The first is to change #define HAVE_LIBC to 0 in
+includes/SDL_config_win32.h in a cvs release which would break 1.2 binary
+compatibility, or you can compile sdl and staticly link the crt library using
+the option of Project -> Properties -> Configuration Properties -> C/C++ ->
+Code Generation, set "Runtime Library" to "Multi-threaded (/MT)" (Sam includes
+VC8 project files in visualc.zip if you do a cvs checkout).
+
+You don't need to install .Net 2.0 unless you're using Managed code. 
+The problem is that you have dependencies on DLLs that you aren't 
+distributing.  If you use Event Viewer (Control Panel -> Administrative 
+Tools) it will even tell you which DLL is missing.
+
+In the VC8 folder there is a redist folder.  It has the CRT DLLs and a 
+manifest file.  Copy those to your application dir and that should be 
+all you need.  If your app uses MFC or ATL then you'll need to 
+distribute those as well.
+
+.Net 2.0 uses those DLLs as well, so by installing it you get those DLLs 
+installed.
+
+
+
+when I build and compile the game with Visual Studio 05, it works great.  Now, if I take the images/sound files, dll's, and the exe and obj file that VS creates, and move it to a different directory on the same machine, its works fine.  If I take that exact same folder, and send it to my laptop and try to run it, I get this error:
+
+"This application has failed to start because the application configuration is
+incorrect.  Reinnstalling the application may fix this problem."
+
+In order for your laptop to run it, you will have to install the VC8xxx.dll 
+runtime(s) onto your laptop. Yes, gone are the easy days of simply copying a 
+.dll into the target folder. You MUST *install* the .dlls, either by 
+installing .NET 2.0 on your laptop(or VC 05, which will do it for you), or 
+by creating a MSI package to do the trick. I have the same sort of setup as 
+you, and I was greatly dismayed to find I could no longer just copy it onto 
+my laptop for testing(well, now that I've installed VC 05 onto my laptop, 
+too, I can!) Anyway, it's not too hard to create your own installer - a 
+google search ought to do the trick. Good luck!
+
+this also means that distributing your game to friends/family/whoever 
+becomes a bigger pain, as you must have them run the installer first(make 
+sure you only distribute the non-debug .dlls!), then your game...
+
+If you compile with the /MT option (Project Properties -> Configureation 
+Properties -> C/C++ -> Code Generation, select Multi-threaded (/MT) ) it 
+will statically compile the runtime files and you will not have include the 
+runtime dlls (so no .NET 2.0 required).  Doing this, however, you lose the 
+dynamic feature of simply replacing a dll to update a runtime, and get a 
+generally larger file size.
+
+
+
+
+Does anybody know how to create an unrectangular window ?
+It's a hack. The window is rectangular and covers the space. when the
+WM_PAINT (windows) message comes through, it does a blit based on
+what's underneath. Some message fudgery makes sure mouse clicks etc get
+passed through.http://www.flipcode.com/articles/article_win32skins.shtml
+
+
+This code strips SDL of it's frame and centers it on your screen.
+You mean something like the SDL_NOFRAME flag passed SDL_SetVideoMode()?
+
+
+// ... initialize SDL video up here...
+// ...
+//=================================
+// Strip the window of it's border
+//=================================
+SDL_SysWMinfo Info;
+SDL_VERSION(&Info.version);
+SDL_GetWMInfo( &Info );
+LONG Style = GetWindowLong( Info.window, GWL_STYLE );
+Style &= (~WS_BORDER);
+Style &= (~WS_DLGFRAME);
+SetWindowLong( Info.window, GWL_STYLE, Style );
+//=================================
+// Center the window on the screen
+//=================================
+int Width, Height;
+Width = GetSystemMetrics( SM_CXSCREEN );
+Height = GetSystemMetrics( SM_CYSCREEN );
+MoveWindow( Info.window, (Width - XRES)/2, (Height - YRES)/2, XRES, YRES, 
+TRUE );
+
+
+
+DirectX says "Trying to create 88x0 window, internal driver error" and chokes.
+this system may have WindowBlinds or some AlienWare-specific windows customization tool running, turning it off may fix the problem.
+
+
+I am converting my Visual C++ 5.0 game to Visual C++ 2005 Express Edition using
+SDL 1.2.9. I have got it to compile and run without any warnings, but when I
+shut the game down, a box pops up with this message:
+
+Unhandled exception at 0x0000001f in FightingFantasy.exe: 0xC0000005: Access
+violation reading location 0x0000001f.
+
+When I push the Break button, the call stack looks like this:
+
+*************************************************************
+0000001f()
+FightingFantasy.exe!std::_Container_base::_Container_base()  + 0x1ea bytes
+msvcr80d.dll!102020c6()
+[Frames below may be incorrect and/or missing,
+no symbols loaded for msvcr80d.dll]
+msvcr80d.dll!10201e00()
+FightingFantasy.exe!_main()  + 0x108 bytes
+FightingFantasy.exe!_WinMain@16()  + 0x1cd bytes
+FightingFantasy.exe!__tmainCRTStartup()  Line 578 + 0x35 bytes
+FightingFantasy.exe!WinMainCRTStartup()  Line 403
+KERNEL32.DLL!7c598989()
+NTDLL.DLL!77f85c09()
+***************************************************************
+This problem has been existent since Visual Studio .NET 2002, and as of yet, I have not been able to narrow down _exactly_ why -- but, I have made some progress, and have a currently untestable (to me -- perhaps others have better tools available) theory.  I believe that the Visual C++ compiler is actually optimizing to the point where it unloads the SDL .dll after it is no longer used by the program itself -- this causes issue with the SDL_Parachute, which adds a method into the _onexit vector, which no longer exists when the exit() method is called implicitly at the end of your main().
+
+Compiling your program with optimizations off seems to fix it, as does passing the SDL_INIT_NOPARACHUTE flag to the SDL_Init() method.  While neither of these solutions is a 'great' one, I prefer the *_NOPARACHUTE one -- just make sure you're cleaning up SDL on your own.
+
+
+
+Microsoft has released a free version of it's Visual C++ 2005 compiler:
+http://msdn.microsoft.com/vstudio/express/visualc/default.aspx
+
+If you decide to install it, make sure you install the Platform SDK
+and follow all the instructions to enable compiling Win32 API programs:
+http://msdn.microsoft.com/vstudio/express/visualc/usingpsdk/
+
+Here's how to build SDL with Visual C++ 2005 Express Edition:
+1. Download and unpack the latest CVS snapshot:
+	http://www.libsdl.org/cvs/SDL-1.2.zip
+3. Unpack VisualC.zip into the current folder.  If you accidentally
+   create a subfolder, move the VisualC folder in the subfolder back
+   into the top level of the SDL-1.2 folder.
+3. Open the SDL solution in the VisualC directory.
+4. Allow Visual C++ to convert the project to the latest version.
+5. Remove the Version.rc resource from the project.
+6. Build! 
+
+
+Sometimes visual studio will hang if you set a breakpoint in a workerthread.
+
+
+Sometimes I find 3rd-party libraries that only provide VS style X.lib files, but usually I can use the 'reimp' tool (available in mingw-tools and via cygwin) to convert them to libX.a files compatible with gcc. I did that on DirectX before I found a pre-converted version.
+
+
+
+from just looking at the project page ("http://www.eclipse.org/cdt/") it would appear to offer a good selection of tools / facilities for the budding C/C++ coder who wishes to refrain from paying several hundred pounds to M$.
+
+
+All the things I compile under Windows are really really slow (30sec to show any window ...)
+
+try windib driver. By default SDL uses directx under windows if available, but in my boxes is noticeably slower than using windib. Doublebuffering + fullscreen + hardware surfaces + directx seems to be a bad combination (anyone has experienced the same?).
+
+Create an environment variable called SDL_VIDEODRIVER and assign the value "windib" (without the quotes) and try
+
+
+
+MSVCP50.DLL is the Microsoft C++ Runtime Lib from Visual C++ v5. The
+official win32 SDL.dll does not require it. If your game is written in C++ and you are building it using VC5, to get rid of this external dependency, you can statically link the MS libs; or ship the DLL with your game (I believe owning a copy of VC5 gives you theright to redistribute it). The DLL is normally installed into System32, and it is generally not a good idea to place it into your game dir, unless you know exactly what you are doing. For example, if your app links to some other components that also require MSVCP50.DLL and these components are installed in System32 and there is a copy of MSVCP50.DLL in System32 already, you can get pretty bad version conflicts.
+
+
+An env. var. could be used to force SDL to use waveout and windib, however several people have told me they don't work on Windows (SDL grab env vars from the wrong place or something)
+If the driver name is wrong, you get a "Couldn't open audio: No available audio device" error from 'loopwave'. In a command-prompt on XP Pro and Win2K the environment variables seem to work fine.
+
+you will probably need to reboot the system for the new environment variables to be loaded.
+On XP and 2K you don't need to reboot, but you do need to close and reopen any running command-prompts for the change to take effect.
+
+environment variables set in a command prompt window ONLY affect that window.
+
+If you need users to be able to doubleclick to launch and still use a specific driver, you need to set it globally. On XP, right click the My Computer icon, select Properties. Go to the Advanced tab on this window and click on Environment Variables. There are two groups of settings here, the top one is for the specific user who is currently logged in, and the bottom one is for all users at this computer. Have them set the env variable in the global one and it should take even if they doubleclick to launch your app.
+
+
+has ANYONE ever figured out how to ensure a certain refresh rate? (env. variables, or anything?)
+
+
+Easy. Follow the two steps:
+1) Download a driver for your monitor
+2) Download RefreshLock (http://www.pagehosting.co.uk/rl/)
+
+RefreshLock is a little tool that fixes the refresh rate problem under WinXP. It works best when you have a driver for your monitor, because the standard windows driver (Plug & Play Monitor) possibly doesn't enable all refresh rates available on your CRT.
+
+
+SDLToWin32 : http://www.polplex.co.uk/~tigger/sdl/index.html. This code allows you to draw to and SDL surface as you normally would, but then blit the contents of this surface to a Win32 window.
+
+
+One can use MSVC .NET or 6.0.  It costs $100 to $600 depending on what you want.
+
+some programs I've built using SDL for windows have an unwanted terminal window
+Add -mwindows to the linker options.
+You have to pass --subsystem windows to the linker. For example as -Wl,--subsystem,windows.
+If you're using DevCpp, there's checkbox in Options called "Don't create console window" (or sth like that).
+
+
+SDL on Win32 with Visual Studio 6.0 :
+http://pgdc.purdue.org/sdltutorial/sdl_setup.html
+
+
+how to load a dll directly from memory: http://www.joachim-bauch.de/tutorials/load_dll_memory.html/en
+
+
+Is there any possibility to pass the window-handle to sdl?
+
+first of all
+
+#include SDL_syswm.h
+
+then in your code:
+
+ SDL_SysWMInfo info;
+ SDL_VERSION(&info.version);
+ SDL_GetWMInfo(&info) // fill the structure
+
+on WIN32 this struct is
+
+typedef struct {
+     SDL_version version;
+     HWND window;                    /* The Win32 display window */
+     HGLRC hglrc;                    /* The OpenGL context, if any */
+} SDL_SysWMinfo;
+
+as to what you'll do with it i don't know, but SDL does use it.
+
+
+
+when attempting to load a DLL, windows will search the current
+directory and then the directories specified in the PATH environment
+variable.  if the DLL is not the same directory as your executable,
+you'll need to have the the directory on your PATH.
+
+I have tried to dynamically link SDL on Windows XP, by creating a dll this way :
+
+gcc -Wall -mno-cygwin -I"c:\SDL-1.2.7\include\SDL" -L"c:\SDL-1.2.7\lib" 
+-shared pad.c -lSDL -wl,-add-stdcall-alias -o pad.dll
+
+You should link with SDL.dll.a, which is included in the mingw development library.  When you link to it, your app will link and then depend on SDL.dll
+
+
+
+The cygwin install program has the option of installing mingw stuff so
+that you can have a cygwin environment and compile for it or for Win32
+without the need for cygwin. mingw libraries are put in their own
+directory (mingw) under the directory with the cygwin libraries. SDL seems
+to insist on using mingw to avoid using cygwin when built on Windows with
+cygwin. I'm using the cygwin with mingw setup along with SDL and it works
+for me.
+
+I am trying to get SDL apps to compile under cygwin.  I've been able to get it to work under linux and windows using Dev-C++ but no luck through cygwin on windows.  I downloaded and source and did a build.  I then had to move my SDL includes into usr/include because the build put them in the wrong place.  I also had to move the lib files so that linking worked.  But I can't get rid of the _WinMain@16 error. 
+
+I also had problems with missing _WinMain@16 error, but they disappeared when I tried compiling with -lSDL and -lSDLmain
+
+This is a FAQ:
+
+Q:    I get "Undefined reference to 'WinMain@16'"
+A:    Under Visual C++, you need to link with SDLmain.lib. Under the gcc build environments including Dev-C++, you need to link with the output of "sdl-config --libs", which is usually: -lmingw32 -lSDLmain -lSDL -mwindows
+
+(from http://www.libsdl.org/faq.php?action=listentries&category=4#58)
+
+I had the same problem with MinGW/MSYS the other day and it turned out I was linking in the wrong order (I was using "-lSDLmain -lSDL -lmingw32" and it didn't work). Hope that helps.   
+  
+for Dev-C++ not only do you have to have -lmingw32 -lSDLmain -lSDL, but having -lmingw32 first is also key (as someone previously mentioned).  If you leave out either -lmingw32 or -lSDLmain you will get the error you've been getting; you'll also get it if -lmingw32 isn't first.  -mwindows isn't required, but you'll probably get a console window running the program if you don't use it, and it has to be at the end of the list as far as I can tell... 
+
+  
+SDL_audio.h:97: error: syntax error before `[' token
+
+> Apparently their  SDL_audio.h line 97 reads:
+
+> void (SDLCALL *filters[10])(struct SDL_AudioCVT *cvt, Uint16 format);
+
+Just remove SDLCALL from that line.  It's a bug in the gcc parser.
+
+
+
+mingw/lib/libmingw32.a(main.o)(.text+0x106):main.c: undefined reference to `WinMain@16'
+and this I fixed by searching and I found something telling me to include windows.h and change my main(....) function to "int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)" 
+
+While in windowed mode, everything works fine. But in fullscreen, calling SDL_SetVideoMode again seems to lock the application.
+
+Try doing SDL_QuitSubSystem(SDL_INIT_VIDEO); SDL_InitSubSystem (SDL_INIT_VIDEO); before calling SDL_SetVideoMode() again. I had some
+trouble switching to/from fullscreen and windowed with the DX5 driver, but this seems to work reliably, even if it temporarily switches out of fullscreen mode into windowed, and then jumps back 
+again.  
+
+
+I have a int main( int, char ** ) function and it tells me:
+LIBCMT.lib(crt0.obj) : error LNK2019: unresolved external symbol _main referenced in function _mainCRTStartup
+
+So i include the "sdlmain.lib" library into my project and main isn't an unresolved symbol annymore
+
+
+* msvcrt.lib(ti_inst.obj) : error LNK2005: "private: __thiscall type_info::type_info(class type_info const &)" (??0type_info@@AAE@ABV0@@Z) already defined in LIBCMT.lib(typinfo.obj)
+* msvcrt.lib(ti_inst.obj) : error LNK2005: "private: class type_info & __thiscall type_info::operator=(class type_info const &)" (??4type_info@@AAEAAV0@ABV0@@Z) already defined in LIBCMT.lib(typinfo.obj)
+* msvcrt.lib(MSVCR80.dll) : error LNK2005: _exit already defined in LIBCMT.lib(crt0dat.obj)
+* msvcrt.lib(MSVCR80.dll) : error LNK2005: _strncpy already defined in LIBCMT.lib(strncpy.obj)
+* msvcrt.lib(MSVCR80.dll) : error LNK2005: _strrchr already defined in LIBCMT.lib(strrchr.obj)
+* msvcrt.lib(MSVCR80.dll) : error LNK2005: _fprintf already defined in LIBCMT.lib(fprintf.obj)
+* msvcrt.lib(MSVCR80.dll) : error LNK2005: _fopen already defined in LIBCMT.lib(fopen.obj)
+* msvcrt.lib(MSVCR80.dll) : error LNK2005: _fgetc already defined in LIBCMT.lib(fgetc.obj)
+* msvcrt.lib(MSVCR80.dll) : error LNK2005: _fclose already defined in LIBCMT.lib(fclose.obj)
+* msvcrt.lib(MSVCR80.dll) : error LNK2005: _freopen already defined in LIBCMT.lib(freopen.obj)
+* msvcrt.lib(MSVCR80.dll) : error LNK2005: __isctype already defined in LIBCMT.lib(isctype.obj)
+* LIBCMT.lib(crt0init.obj) : warning LNK4098: defaultlib 'msvcrt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
+
+ I got errors like these when I forgot to put the Runtime Library on Multithreaded DLL in the Code Generation tab.
+ 
+ Cygwin link order example :
+gcc -Wall -fno-rtti -L/usr/local/lib -mwindows -mno-cygwin -Uuinx -ggdb
+main.o game.o player.o -lws2_32 -lSDL_ttf -lSDL_image -lmingw32 -lSDLmain
+-lSDL -o main
+
+on windows xp, it ships with slow version of GL drivers (so directx apears
+faster than OpenGL most likely) and I'm not sure if the same happens on
+other versions of windows.
+
+There is no way to position the window in a Windows(tm) environment once
+your program has started to run.  The only way to do it is to set the
+environment variables before your program starts to run.
+
+ you can use SDL_GetWMInfo to retrieve the window manager info (which includes the handle) and then use the standard GetWindowPos and SetWindowPos to position the screen.
+
+  
+  SDL_WINDOWID?
+
+here is what is done in a SDL xscreensaver module:
+
+/* Lets get the root window ID!
+NEED to include 'vroot.h' for this to work */    
+char SDL_windowhack[32];
+
+xdisplay = XOpenDisplay("");
+sprintf(SDL_windowhack,"SDL_WINDOWID=%d", DefaultRootWindow(xdisplay));
+/* Tell SDL to use (virtual) root window */
+putenv(SDL_windowhack);
+    
+/* Figure out how big we are */
+full_rect.w = DisplayWidth(xdisplay, DefaultScreen(xdisplay));
+full_rect.h = DisplayHeight(xdisplay, DefaultScreen(xdisplay));
+
+
+
+Doing a clean default Cygwin installation.Then adding the required devel packages (cvs, autoconf, automake, gcc, make).
+I got SDL-1.2.7 source using CVS then did the "autogen.sh, configure, make, make install" routine.
+
+
+#include "stdafx.h"
+#include "SDL.h"
+
+int main( int argc, char* argv[] )
+{
+return 0;
+}
+
+I can't get rid off #include "stdafx.h", or VisualStudio complains and says
+: "fatal error C1010: fin de fichier inattendue lors de la recherche d'une
+directive d'en-tête précompilé"
+(unexpected end of file when searching for an inclusion directive)
+
+It's unexpected end of file when searching for a *precompiled header* directive.  Turn off precompiled headers, it's somewhere under the C++ 
+project options.  and get rid of stdafx.h. 
+
+And don't forget to also link against the SDLmain library.
+
+In your linker flags define your entry point as SDL_main.
+For .NET it's done like this:
+
+/ENTRY:SDL_main
+
+
+
+I set the variable in my program with:
+
+putenv("SDL_VIDEO_WINDOW_POS=10,10");
+SDL_Surface *s = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE);
+
+But it is never picking it up.
+
+Under Windows and a few other platforms, SDL has it's own special 
+getenv/putenv functions.  You need to include SDL_getenv.h to ensure that 
+you're calling the correct putenv function for your platform.
+  
+The routine DX5_SetVideoMode() is contained in the DLL, and the DLL is loaded automatically when the .exe is run, but
+before WinMain is called.  Therefore, the DLL gets the environment as it was when it was loaded, so no changes via putenv will be reflected
+in the DLL's environment.
+
+The only way I got it to work was with a custom build of SDL with NEED_SDL_GETENV defined.  It doesn't seem to be 
+defined under windows by default, but maybe it should be. 
+
+I just got done hacking another way to do this (putting the
+xpos,ypos in the upper 16 bits of the width,height). 
+
+Selecting back-end : try this : open cmd and type 'set SDL_VIDEODRIVER=windib' and launch from this windows your app
+
+download the source package, and you will find a visualc.zip together with the source code. In the zip, there are the dsws/dsps, other supports, anything you need to build SDL in vc6.
+
+"Could not find entry point SDL_error in dynamic link library SDL.dll" : Are you sure you use the right SDL version on both include, lib, and dll, especially for SDL.dll in system and paths ? 
+
+DevC++
+Maybe you forgot to add "-lmingw32 -lSDLmain -lSDL" to the linker
+options, but if after that still doesnt work you could try this
+devpak:
+
+http://www.devpaks.org/show.php?devpak=57
+
+wich install SDL-1.2.8, and after that after creating a new project,
+just select SDL in the proyect type and it will automatically add the
+include/ dirs and the linker options.
+
+
+     I can draw the picture or YUV video to the QT' windows by the 
+SDL,following :
+     char SDL_windowhack[32];
+     sprintf(SDL_windowhack,"SDL_WINDOWID=%d", mainwindow->winId());
+     putenv(SDL_windowhack);
+
+
+I launched the DXDIAG.EXE in windows/syYou can force the use of the windib driver setting the environment
+variable SDL_VIDEODRIVER (almost sure, check the docs) to windib before
+calling SDL_Init(). Ystem32 and disabled the DirectX manually
+
+  
+Microsoft is releasing their Visual C++ 2003 compiler suite (command line) for free. 
+Visual C++ 2003 - http://msdn.microsoft.com/visualc/vctoolkit2003/
+Visual C++ 2003 Debugger - http://www.microsoft.com/whdc/ddk/debugging/
+
+In any case it's not that hard to set up everything.
+
+1 - Download the VC++ toolkit
+2 - Download the platform SDK
+3 - Download the .Net SDK
+4 - Create a batch file that sets all the required
+  variables
+5 - Create a shortcut to command that uses the batch file to set up the environment.
+
+Use whatever IDE you feel comfortable with. Vim, XEmacs, UltraEdit, Eclipse, whatever.
+
+What do you gain by doing all of this stuff instead of just using Dev-C++, mingw?
+
+Better compatibility with windows libraries. You only have to set this once, then any code that you get for windows works out of the box. Unless it uses MFC, ATL, but that's a whole different story.
+
+
+For instance I never know where to find the latest DirectX version compatible with Dev-C++. With the M$ soluction, things just work.
+
+
+Any app that needs the stdout-stdin redirection feature can simply add:
+
+freopen("stdin.txt", "r", stdin);
+freopen("stdout.txt", "a", stdout);
+freopen("stderr.txt", "a", stderr); 
+
+Most apps on Windows need this feature, since Windows has no easily 
+accessible standard IO otherwise.
+
+This reasoning is wrong for many reasons.
+- The linker settings one would intuitively use under MinGW give a 
+program that will spawn a console if needed, and *also* redirect 
+stdio. There exists no combination of linker settings such that it 
+spawns a console and doesn't redirect stdio.
+- Win32 apps which are launched from a command prompt have accessible 
+stdio, even if they don't spawn their own console when executed 
+elsewhere. In other words, the accessibility of stdio is exactly the 
+same as on Linux, where SDL never redirects.
+- stdio redirection is a portability problem; it affects only 
+Windows, and only on some compilers/compiler settings, so it's likely 
+to turn up as an unpleasant surprise.
+- The stdout.txt and stderr.txt the program produces are added to the 
+current working directory, rather than the directory the executable 
+is in. In addition to filesystem clutter, this means that programs 
+with stdio redirection can't run setuid or setgid (yes, you can do 
+that under Windows) because that would allow you to create files in, 
+say, /Cygwin/etc/profile.d and leave trojans for other users.
+- stdout.txt and stderr.txt may be created even if nothing is written 
+into them, needlessly cluttering the filesystem.
+Build for Windows from Windows using gcc and cross tools :
+http://cone3d.gamedev.net/cgi-bin/index.pl?page=tutorials/ogladv/tut1c
+
+  
+  
+Some versions of Windows have had (deliberately) broken OpenGL 
+support, forcing users to install proper OpenGL drivers on their own 
+to play OpenGL games. One would suspect that the idea was to have the 
+average user believe that "Direct3D is superior and the real 
+standard, since it works out of the box and is much faster."
+
+It almost worked, but fortunately, a few stubborn and very skilled 
+developers just refuse to give up on OpenGL - and a major part of the 
+industry is using their engines...
+
+
+
+  
+How is one supposed to use SDL_VIDEO_CENETERED in Win32?
+
+set an environment variable in the windows
+system itself. If you're on XP, right-click My Computer->properties. Clicked
+"Adavanced" tab. At bottom is button - "Evironment variables". click it-
+then click new(either under "user" or "system", I don't think it matters,
+mine's under "user"), then give variable name SDL_VIDEO_CENTERED and value
+of 1.
+
+with vc standard library, putenv() and getenv() should work
+try #include <stdlib.h>. They work for the CURRENT process only. And only if 
+one uses consistently putenv() getenv() (ie: doesn't try to query 
+environment without using getenv() )
+
+- Quoted from msdn : 
+
+"That is, these functions operate only on data structures accessible to the 
+run-time library and not on the environment "segment" created for a process 
+by the operating system". 
+
+If they are unresolved, try using _putenv() _getenv(), but this should not 
+be necessary.
+
+
+The important thing is to have this putenv("SDL_WINDOWsomething"..) done 
+BEFORE SDL needs it.
+
+btw, If someone wanted to know : 
+
+There are 2 functions in win32 api to set or query an environment variable 
+for the *current* process, provided by the win32 kernel :
+
+DWORD GetEnvironmentVariable( 
+	LPCTSTR lpName,  
+	LPTSTR lpBuffer,  
+	DWORD nSize);
+
+BOOL SetEnvironmentVariable(
+	LPCTSTR lpName,
+	LPCTSTR lpValue);
+
+
+
+
+
+
+
+
+
+Find current resulution under Win, you can try that :
+
+int w, h, bpp, freq;
+
+BOOL a;
+DEVMODE b;
+a=EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &b );
+
+w=b.dmPelsWidth;		// 1024
+h=b.dmPelsHeight;		//  768
+bpp=b.dmBitsPerPel;		// 16
+freq=b.dmDisplayFrequency;	// 75 Hz
+
+VisualC.zip is the file used to build the DLL on Windows, for the version used in the website.
+
+I am developing a game with SDL in VC++ .NET. I created the project as a Win32 
+Console Application. SDL doesn't run in Fullscreen mode, so it would be nice 
+if the Dos Box under Windows won't appear.
+Can somebody tell me, how I can close it? (or just minimize)
+
+Change Application type to Win32 Windows Application. The output from stderr and stdout 
+appear in text files (stdout.txt and stderr.txt) while the game is 
+running.  Every time you run the game they are recreated.  If they are 
+empty when the game exits, they are deleted. Or check the documentation on the Win32 function 
+FreeConsole(), but this is not the recommended way.
+
+
+  
+Just wanted to remind the list that this is still a problem :( ...the
+latest Visual Studio _doesn't_ create working SDL programs. The obscure
+assert that exits a program on start indicated in this thread seems to
+point to the new Runtime with VC8...anyone have any fixes for this yet?
+
+I experienced the same problem, removed the dependancies with SDLmain, added 
+the following lines:
+
+#pragma comment(linker,"/ENTRY:mainCRTStartup")
+#pragma comment(linker,"/SUBSYSTEM:WINDOWS")
+
+and after that my program worked fine. So, it should be a problem with 
+SDLmain, but I have no idea what it is.  
+
+
+You may want to use the SDL Runtime Libraries for WIN32 since the DLL is a lot smaller then the compiled one. And, sometimes your own compiled version of the SDL.dll can producte strange effects making it harder to understand if the problem is related to your application or to your SDL library.
+ 
+Several times I had used my own compiled SDL.dll which conflicted and producted a General Protection Fault while with the Runtime DLL on the SDL website, didn't. I just use the source to compile the libsdl.a and for installtion of the headers. But I use the Runtime SDL.dll download when I want to test my applications (and deploy them).  
+how I need to create a new proyect using Dev ?
+i've written a howto: http://jnrdev.kbs-design.net/en/howtosdldevcpp
+
+
+  
+Make your application a Win32 console application in the compiler options.  
+The Visual C++ compiler option is <code>/D "_CONSOLE"</code>
+
+That did it, except rather than defining _CONSOLE, I have to 
+specify /SUBSYSTEM:CONSOLE to the linker and it works.  If I don't use 
+the /SUBSYSTEM parameter, it complains of a missing entry point.
+
+If you don't want this window to appear, you have to create it as a WINDOWS
+application.  To do so, just pass /SUBSYSTEM:WINDOWS to the linker.
+  	
+
+Windows decided to destroy your OpenGL context on fullscreen toggle - 
+specifically to the end of making OpenGL games seem fundamentally 
+inferior to Direct3D games. It's one of the many subtle ways Microsoft 
+bends their implementation of accepted standards to justify the 
+creation of a new product; one which will probably work only on 
+Windows.
+
+
+You still need the LoadLibrary line (_BEFORE ANY_ sdl calls), if you do 
+have that and it isn't working, try specifying the full path, your CWD 
+might be messed up - don't froget to escape your backslashes 
+("C:\\PathTo\\MyProgram\\Bin\\libsdl.dll").
+
+
+
+
+Everything you see in http://www.mysterystudio.com is developed on Linux and cross-compiled to Windows using MinGW32. The installers are made from the command line version of NSIS, which works fine under WINE.
+
+But the truth is that most casual gamers (our customers) use Windows...
+
+  
+Here is a little how to I wrote on how to get SDL, SDL_mixer (with ogg 
+support) and smpeg compiled and working on Win32 using MinGW and msys:
+
+http://www.boardmod.org/stuff/astro_constrib.tar.gz  
+  
+  
+  
+The biggest problem is running directx fullscreen with doublebuffer 
+enabled. Windib is about 10x faster there! What's the reason for this 
+odd behaviour? DirectX is somewhat unusable because of its speed right 
+now...
+
+
+DirectX is sync'ing to vertical refresh in double-buffer mode.
+  
+By including SDLmain.lib solved my problem.  
+
+Reading through the sources, I've found comments about the input being
+processed by DirectInput instead of the windows queue.
+
+
+You can force GDI usage by setting the SDL_VIDEODRIVER environment variable
+to "windib", e.g. call _putenv("SDL_VIDEODRIVER=windib") before you
+call SDL_Init().
+Note that this might impact your performance.
+
+
+
+ I recently had this problem w/ a non-sdl related app.  Check this 
+knowledge base article:
+    http://support.microsoft.com/default.aspx?scid=kb;en-us;326922
+
+SUMMARY
+When you build an application in Visual Studio .NET that uses the C 
+run-time libraries (CRT), distribute Msvcr71.dll/Msvcr70.dll with your 
+application and install the DLL in your Program Files directory. Do this 
+instead of installing the DLL in the system directories. Do not assume 
+that the DLL already exists in the system directories. 
+  
+  
+mingw itself has no IDE but if you download dev-C++, that's an IDE and mingw
+wrapped into one package:
+http://www.bloodshed.net/devcpp.html
+
+
+
+
+The problem is that the linker needs to be able to access the lib files as 
+well as the header files. You can do this easily in VS by adding lines like 
+this near your includes:
+
+#pragma comment(lib, "SDL.lib")
+#pragma comment(lib, "SDLmain.lib")
+//SDL_Image is a library for loading jpg,png,etc...
+#pragma comment(lib, "SDL_Image.lib")
+//SDL_ttf is a library for text output
+//(there are of course other possibilities to do this)
+#pragma comment(lib, "SDL_ttf.lib")
+//SDL_mixer is essential for sound/music...
+#pragma comment(lib, "SDL_mixer.lib")
+
+That'll fix you right up
+
+  
+  
+There are a number of little settings that have to be adjusted before Visual
+Studio will build an SDL project.  The following web page documents them
+all: http://pgdc.purdue.org/sdltutorial/sdl_setup.html
+  
+I need to use over 800kb of memory in a dos program. 
+As I understand it, I need to use extended memory to do this. 
+However, I can't get more than 400-500kb using malloc. 
+What do I need to do to get access to more memory?
+
+This is because DOS can only handle the first 1 MB and that memory is
+fragmented and some of it taken up already so you'll get 400-500 KB at best
+depending on your program size.  
+
+You need a dos extender. Here is one: http://michael.tippach.bei.t-online.de/wdosx/
+Here is another: http://dos32a.sourceforge.net/
+
+You will also need a compiler that supports it. I'd take a look at
+OpenWatcom,which includes 4 different dos extenders. And, there is a
+version of GCC called DJGPP
+
+http://www.openwatcom.org/product/features_content.html
+http://www.delorie.com/djgpp/
+
+All of these are completely free. I used both of them for many years and
+they're truly great for DOS development.
+
+
+Others have suggested using a DOS extender.  This puts your program in
+protected mode though.  There are some things you'll have to be careful
+about when in this mode. An alternative is to use and extended memory manager.  A
+previous version DOS comes with emm386.sys or something like that which will
+allow you to gain access to memory above the 1 MB limit.  I remember playing
+around with a library that let me allocate and access memory through the
+EMM.  Your program will still be limited to running in the first 640KB but data can be as big as EMM
+can give you.
+
+Your program will still be in 'real' mode, not 'protected' mode, if you use EMM.
+
+
+To fix such problems just use the same version of dynamic runtime
+libraries in all modules (e.g. all DLLs and EXE). Either use
+"Multithreaded DLL" or "Debug Multithreaded DLL" in all modules.
+Just "small" feature from MS to make life interesting. BTW, by default Visual Studio set runtime to static for new projects
+(e.g. "Multithreaded" or "Debug Multithreaded"). 
+
+  
+I've open a window with SDL_SetVideoMode (in MS
+Windows environment). Now I want to do some operation
+which requires a Windows handler. How can I retrieve
+the handler of my window?
+
+
+You can use the API in SDL_syswm.h
+See the "scrap" demo on the SDL website to see how this is done.
+All Known and (so called) Unknown Windows Autostart Methods
+(10/03/2001)
+obtained from: http://newdata.box.sk/2001/may/auto.txt
+
+  
+  there are two video drivers under windows. The choice is made automatically at SDL startup and favors directx. However, if you want to force one or the other, you can use the SDL env variable SDL_VIDEODRIVER. Look at the SDL doc for the available drivers :
+http://sdldoc.csn.ul.ie/sdlenvvars.php
+
+
+ I believe you're running out of memory... if MY memory
+serves, by default VC++ (at least in earlier editions)
+by default used the "small" (or was it "tiny"?) memory
+model... with 16K or 64K or something like that max
+memory.
+Try passing /AH and see if that
+fixes your problem.
+
+/AT = Tiny
+/AS = Small (default)
+/AM = Medium
+/AL = Large
+/AH = Huge
+http://support.microsoft.com/default.aspx?scid=http://support.microsoft.com:80/support/kb/articles/Q65/4/72.ASP&NoWebContent=1
+
+Are you requesting hardware surfaces when you call SDL_SetVideoMode()? 
+If you get hardware surfaces maybe you're running out of video memory (a 
+limited resource). Most platforms/drivers don't have real hardware surface 
+support except for Windows.
+
+Are you using SDL_DisplayFormat() or SDL_DisplayFormatAlpha() in your program?
+It is a common error to fail to free the original surface, resulting in out of 
+memory situations.
+
+
+ 
+I would like to know how can i add an icon as resource to an exe file.
+
+I use crosscompiling and the GCC in Linux to create the windows binary.
+
+Essentially you have your .ico, you create a .rc file
+that reference the .ico (three lines, the format of the .rc file is
+quite simple. Here it is :
+
+#define IDI_ICON1 101
+IDI_ICON1 ICON DISCARDABLE "icon.ico"
+
+I guess this will work too :
+
+101 ICON DISCARDABLE "icon.ico"
+
+just windres that and link the resulting .obj), compile it with windres (it comes with MinGW, I believe), this
+generates a .obj, link that to the rest of your .objs and you're done.
+
+ 
+  
+  
+  
+on Windows, all shared libraries need to be 
+dlopen()ed, then the symbols extracted, and then called. On Unix-like 
+systems, a "shared object" file (.so) is implicitly dynamically linked, 
+i.e. you can pretend you had linked to a static version and just call 
+the functions.
+
+To emulate this behaviour on Windows, the .lib file contains all the 
+dlopen() and related code, freeing you from having to write it yourself, 
+and providing you with "stubs" that you can call, which in turn call the 
+.dll symbols, without you noticing that the symbols had to be explicitly 
+imported by calling dlopen() and friends.
+
+Actually the .lib file is not the static library, that would be the .a file
+  
+  
+  
+Right now, it has a simple makefile and uses g++.  What environment
+ should I use in Windows?  DJGPP, Cygwin, Visual Studio (6 or .NET),
+ etc?
+
+
+MinGW and Visual C++ .NET 2003 are both valid choices.  The latter compiles
+faster and produces somewhat faster code, so it's my primary choice.  Forget
+DJGPP (which is for DOS, not Windows), Cygwin (which comes with a heavy UNIX
+emulation layer), and earlier releases of Visual C++ (which have crappy C++
+support).
+
+
+
+
+ I'm 
+ compiling with both libsdl.a and libsdlmain.a, but GCC (MinGW) is still giving 
+ me grief about WinMain() not being defined.  I've managed to fix the 
+ problem by compiling sdlmain.c straight-up into an object file and 
+ compiling that into the executable, but it seems a bit odd that this is 
+ what is nessecery to get SDL to work under MinGW. 
+
+Make sure you use the windows subsystem, ie add "-mwindows" to the mingw flags.
+
+
+I'm not exactly sure about your setup, but I've had weird atexit() problems
+on Win32 alot.  One thing that has seemed to work with me is to pass
+SDL_INIT_NOPARACHUTE to SDL_Init().  It's kinda a hack, since I still
+haven't figured out why passing it fixes the problems I was having, or even
+what was causing the problems in the first place.
+
+
+
+I tried to compile a MinGW version of the SDL library (yes, 
+I know they're provided, I was doing it for educational 
+purposes).  I followed the instructions on 
+http://www.libsdl.org/extras/win32/mingw32/README.txt and I 
+got it to work.  The thing is, to link against the version I 
+compiled, I need to add -luser32 -lgdi32 -winmm to the link 
+line.  Why did I need this with the version I made when I 
+didn't for the version provided on the website (I also 
+noticed that my library file was >9MB whereas the given one 
+is only 136KB)?
+
+Secondly, is there an easier way to get MinGW versions of 
+the SDL_net, SDL_mixer, SDL_image, SDL_ttf libraries than 
+compiling them myself?  I'm having trouble getting SMPEG to 
+compile...
+
+
+On our mpeg4ip package, I have developed a file called mpeg4ip.h (in our
+include file) that has 3 years of defines for porting between windows and linux.
+Take a look.
+
+One thing you have to worry about for windows (and mac osx, it seems) is
+that the video and events need to be processed in the main thread - this
+is not true of linux.
+
+
+
+ to detect memory leaks and trashings in a win32 application I can 
+recommend using the crtdbg facilites supplied by MS. Make one of the 
+following the first line in main() and you'll catch nearly everything (in 
+debug mode):
+
+#include <crtdbg.h> 
+
+int main ( int argc, char *argv[] )
+{
+/* a bit slow, but very useful
+  _CrtSetDbgFlag(
+  _CRTDBG_LEAK_CHECK_DF|_CRTDBG_ALLOC_MEM_DF
+  );
+*/
+
+/* very slow, very paranoid
+  _CrtSetDbgFlag(
+  _CRTDBG_LEAK_CHECK_DF|_CRTDBG_ALLOC_MEM_DF|_CRTDBG_CHECK_ALWAYS_DF
+  );
+*/
+...
+}
+Using Visual Studio, build the program (and libraries) in debug mode and then 
+run in debug mode using F5. Make sure the output window is visible. When the 
+program exists you get a list of all the memory leaks e.g.
+
+Detected memory leaks!
+Dumping objects ->
+{160443} normal block at 0x04BAE940, 8 bytes long.
+ Data: <        > 00 00 00 00 00 00 00 00 
+{160442} normal block at 0x04BAE8D8, 32 bytes long.
+ Data: <                > 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+{160441} normal block at 0x04BB8070, 38416 bytes long.
+ Data: <                > FF FF FF 00 FF FF FF 00 FF FF FF 00 FF FF FF 00 
+{160440} normal block at 0x04BAE870, 40 bytes long.
+ Data: <                > 00 00 00 00 20 04 00 00 00 00 10 08 00 18 00 00 
+....
+
+The number in {} is related to the order in which the allocations occur and if 
+you can arrange it so that this number is the same each run, then, using e.g. 
+_CrtSetBreakAlloc(160443) just after the other _Crt* lines, will break 
+execution at the point where the lost memory is allocated allowing you to 
+identify it. The spaces inside <  > and the hex digits are the first few 
+bytes of the block which can be useful. The length can also be useful for 
+tracking down the leak.
+
+Of course, this works best if you use it throughout development. It is much 
+harder to find problems like this in a large body of partially debugged code.
+
+It also helps find double-free bugs and stray-pointers that are writing where 
+they shouldn't. The extra flag in the second set causes the checks for memory 
+over-writing to be performed at every allocation which slows things down a 
+lot but finds corrupted heap problems quite effectively. I only use this 
+occasionally.
+
+If you have MSDN look it up there, it has quite a good explanation. Or this 
+very long link might work:
+http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vsdebug/html/_core_solving_buffer_overwrites_and_memory_leaks.asp
+
+>>
+>> 
+With MSVC 7.1 you must use a sdl.dll linked with msvcr71.dll instead of 
+msvcrt.dll. Had you tried that? (ie. compiling your own sdl.dll)
+
+>Does anyone know if my SDL application can continue its animation
+>> while the application window is being dragged by the user?  If so,
+>> please point me in the right direction.  Currently, everything
+>> stops.  This is in Windows SDL 1.2.7.
+
+
+That's a bug (or incredibly stupid feature) of the Windows window 
+manager. Windows hijacks the event loop while the user is holding on 
+to the window title bar.
+
+Two ways around it:
+
+	1) Use borderless windows and implement your own
+	   window manager, WinAmp style.
+
+	2) Use an extra thread for rendering, and use the
+	   "window thread" only for handling messages related
+	   to the window.
+
+Dunno if there's much you can do under SDL without hacking your SDL 
+lib, though...
+
+
+No one mentioned it yet, so I'll talk about mingw as a cross compiler.
+I usually work under linux with autoconf/automake, and mingw configured 
+as a cross compiler (along with native gcc of course).
+
+Sam has made a doc for us explaining how to setup a working cross 
+compiling environment :
+http://www.libsdl.org/extras/win32/cross/README.txt
+
+It works fine here. The big advantage IMO is you can build packages for 
+windows and linux & upload them to your website with a single script.
+(so that you can type "release_time" in a shell and just go away 
+
+The only drawback I see is you can't use unix-ish functions (as mingw 
+doesn't have them all) but I don't want to use them anyway for 
+portability reasons.
+
+Try to use DirectFB if you want real performance. Even though SDL can behave real good in some environments, DirectFB gives more HW support with streth blits, subsurface blits and others using the HW acceleration. The only minus is that it is only limited to a certain chipsets...
+
+
+
+
+
+
+SDL relies on DirectX for the Windows part. It uses DirectDraw.
+
+- try inserting
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
+- before
+#include <GL/gl.h>
+
+And you should link to opengl32.lib, sdlmain.lib, sdl.lib. Furthermore 
+if linking dynamically (which is the most common I guess), you should set:
+in project settings -> C/C++ -> Category [Code Generation] -> 
+Multithreaded DLL
+
+- instead of single-threaded!
+
+
+
+I'm using SDL for mingw (on Windows). I would like to have the output
+drected to stdout to go straight to my console like it happens in
+linux, and not in a file called stdout.txt.
+stdout output on console on windows :
+I think you will have to recompile the library; if you have msys installed
+then just run : ./configure --enable-stdio-redirect=no
+
+Use MSYS-DTK (Developer Toolkit) package as well if you need autoconf, automake, libtool, cvs, etc. http://www.mingw.org/download.shtml#hdr2MinGW
+  
+link problem with mingw : 
+have you got main written in full? i.e. 
+int main(int argc, char *argv[])
+
+also you need to link sdlmain before sdl.
+found this after a couple of googles:
+http://www.spacejack.org/games/mingw/mingw-sdl.html
+
+
+Visual Studio Stuff
+
+  >It seems to be a conflict between msvcrt.lib & libcmt.lib
+>> I have this problem a long time ago but I correct it (I dont remember how)
+>> 
+>> Any suggestions???
+
+
+I get so many damn errors from vc++ its not even funny. I know you can 
+prevent the warning
+
+LIBCMTD.lib(crt0init.obj) : warning LNK4098: defaultlib 'msvcrt.lib'
+conflicts with use of other libs; use /NODEFAULTLIB:library
+
+by putting 'msvcrt' in Property->Linker->Input->Ignore Specific Library 
+I also have LIBCD in there but I don't think that is causing the other 
+errors.
+
+try the
+multithreaded C++ libraries!!!
+
+actually, I directly throw the
+/NODEFAULTLIB switch into the command line, but it's the same effect
+
+The most idiot solution ever!
+
+remove library sdlmain.lib from import libraries list.
+remove all libraries from ignore libraries list.
+attach sdl_main.c (from SDL source) into your project (Oh yeah!)
+compile!
+
+There is only 9 cast warnings but the program runs of course 
+
+
+SDL redirects both stderr and stdout into file, because Windows does not 
+attach programs into console windows, and therefore you would never see
+the output of printf() for example. The method I use to overcome this,
+is a program called 'tail'. It's a standard *nix program, and available
+as a native Win32 port in UnxUtils package
+(http://unxutils.sourceforge.net/). You just have to open a console
+window and chdir to the folder in which your project resides and type
+"tail -f stderr.txt stdout.txt". All output gets nicely printed in the
+console window. I guess it's not the fastest solution, but it works well enough for debugging purposes.
+
+
+in visual c++ 6.0 it works like this:
+
+
+create a new project either as
+
+windows application -> printf() goes into the files
+windows console applicatiosn -> printf() goes into a console in the 
+background.
+
+
+don't forget to set the sdl specific stuff, see VisualC.html that comes 
+with SDL for further information.
+
+
+  
+There are two editions of cygwin available. The free edition only allows 
+you to distribute applications which are open source. I don't know if it 
+needs to be GPL or can be another OSI-approved licence, check the cygwin 
+webpage for details. But I would expect some BSD, MIT or Apache licence 
+should be ok, too.
+
+If you want to distribute closed-source software with cygwin, you need to 
+buy the commercial cygwin release.
+
+Unless you really do need the cygwin POSIX layer, you should also have a 
+look at MinGW, which is basically GCC-for-Win32 without the POSIX stuff of 
+cygwin. MinGW does not have any licence restrictions for your 
+applications, you can use it for commercial closed-source projects. Most 
+people do not need the cygwin POSIX layer and MinGW is sufficient.
+
+The Cygwin runtime library is licenced under the GPL, not LGPL. This means 
+it does not allow dynamic linking of closed source applications, unlike 
+the LGPL.
+
+http://cygwin.com/faq/faq_8.html#SEC135 should explain it.
+
+
+>Linking...
+>> msvcrt.lib(MSVCRT.dll) : error LNK2005: _exit already defined in
+>> LIBCD.lib(crt0dat.obj)
+
+
+You are probably linking objects which were compiled with different run-time 
+libraries (multi-threaded DLL for one project and debug single-threaded for 
+another, for example). Try to compile with the same run-time library option 
+of all projects.
+
+I'm sorry I ahven't read this thread from the start.
+
+If sound lags on Linux, try killing your sound server, and playing the 
+sound.
+
+If it lags on Windows, can you please write what SDL .dlls are you 
+using. I found that when I build my own DLL files, the sound lags. 
+Search archive of messages from this list for more info. Also, what 
+compiler are you using?
+
+If all else fails, you can take a look at FMod library
+
+when using vc++ you have to switch code generation to multhithreaded dll
+You are probably linking objects which were compiled with different run-time 
+>libraries (multi-threaded DLL for one project and debug single-threaded for 
+>another, for example). Try to compile with the same run-time library option 
+>of all projects.
+>
+> 
+Use the following code to disable vsync waits in Windows:
+
+typedef void (APIENTRY * WGLSWAPINTERVALEXT) (int);
+WGLSWAPINTERVALEXT wglSwapIntervalEXT = (WGLSWAPINTERVALEXT) 
+wglGetProcAddress("wglSwapIntervalEXT");
+if (wglSwapIntervalEXT) {
+   wglSwapIntervalEXT(0); // disable vertical synchronisation
+}
+
+
+
+
+
+>For my project, I need to be able to save games, settings and other
+>> things on a per-user basis.  I'm primarily a Linux developer, and
+>> obviously for Linux/Unix the best way is to tuck it away in a hidden
+>> directory in the users home directory.  The problem is that I have no
+>> idea where to put these files for windows, mac or OSX.  I'm fairly sure
+>> that for OSX it's the same as Unix, but for windows I have no idea.  If
+>> I remember correctly the place to put files like this has changed
+>> several times from version to version.
+>> 
+>> 	The question is: does anyone know a good clean way to decide for
+>> windows?  And the offshoot of that question is: should SDL provide some
+>> means of getting that information?
+>> 
+>> Aaron.
+>> 
+
+
+For win you have 2 options:
+
++ Create a "SavedGames" folder in the game's installation dir.
+  So if your game gets installed in C:\Games\<your project name>
+  then use C:\Games\<<your project name>\SavedGames\<username>\
+  (this is probably best (and it is what most games do), since you 
+  don't have to worry about win versions and stuff)
+
++ For XP, per user data get normally stored in:
+  C:\Documents and Settings\<username>\Application Data\<your project name>\
+  (not sure how things used to work in 2k, 98, 95, etc.)
+
+2000 works in the same exact manor
+
+
+Are you including SDL_opengl.h or are you including gl.h directly?
+Guess which one I recommend?
+
+This is sort of a repetition, but worth mentioning again, I think.
+You're still only showing 60 fps, you're just generating hundreds of
+frames that aren't seen.
+
+vsync is a 'good thing'.  Not a 'bad thing'.  The only reason you'd want
+to shut this off (that I know of) is if you need more logic steps then
+visual - which most apps don't need.  Even if you DO, you could do two
+logic steps per frame, or 8... or 50.. it ain't gonna matter because
+those 8 or 50 additional frames can't be seen, even if you draw them.
+
+Doing this will make an otherwise low CPU app pin the processor, which
+is also a 'bad thing', because where your app used to sleep for the
+sync, it's now busy filling and emptying the GL framebuffer for nothing.
+
+for sure there is use for this, quite a lot! - in many cases - just 
+think about indepentend sound and gfx output (maybe you listen 
+faster/slower than you see things) or indeptendent mouse input.
+
+but the solution is NOT to disable v_sync but to implement threads and 
+internal timing.
+
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20on%20Windows%20platforms">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

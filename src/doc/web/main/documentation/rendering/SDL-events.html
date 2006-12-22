@@ -1,0 +1,1089 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, January 25.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Event Handling and Event Loops</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, event">
+  <link rel="stylesheet" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20events">mail
+    us</a></p>
+  </div><a name="_top_"></a> 
+  
+<h1>SDL Event Handling and Event Loops</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<code><pre>
+Think also that you should not trust SDL_Delay to wait a specified time, for example you may want to wait 15 msecs
+and it may only waits 10 msecs. You should always use SDL_GetTicks to check that it is really waiting so long and not shorter or longer.
+
+The SDL event queue has a fixed number of entries, ~128 last time I
+looked. After that number of events have occurred it starts throwing
+events in to that great bit bucket in the sky. The events are lost. So,
+when you program wakes up, it responds to the events that are queued,
+mostly lots of mouse movement. Then it appears to ignore everything else
+because it has already tossed those events away.
+
+Performance of SDL event handling functions : You should look at this:
+http://www.gameprogrammer.com/fastevents/fastevents1.html
+the code is more thread-oriented, which definately speeds things up
+phenominally.
+
+  
+You need SDL_INIT_VIDEO to get any events
+
+SDL_WaitEvent() calls SDL_PumpEvents(), which can only be called from the thread that initialized SDL. 
+
+puting SDL_WaitEvent() and SDL_Init() in separate threads in not allowed in Linux either, it just happens
+to usually work (though not for some events, like window resize events) in Linux, and not in Windows.
+
+
+Could i use the user defined events to send special signals to my main thread? so instead of blitting in my seconadry thread, i would just pass the information of what to blit
+and where to the primary thread. that would work, no? 
+
+This is a very common way to handle that problem. Be aware that events might get delayed up to 10ms depending on your platform/os. this is the
+reason why bob invented this FastEvent thingy for net2. (IIRC)
+
+SDL_WaitEvent() calls SDL_PumpEvents(), which can only be called 
+from the thread that initialized SDL.  You can, however, call 
+SDL_PeekEvents() from any thread you like, though you'll need to be sure 
+to occasionally call SDL_PumpEvents() from your SDL_Init-ing thread so 
+the events will actually get to it.
+
+You can actually see how to do this quite easilly if you look at the
+code for SDL_WaitEvent() for example.
+
+ The only place where real time gets involved is 
+when you're about to render a frame. What you do at that point is:
+
+ 1. Check the current *real* time.
+
+ 2. Calculate the corresponding logic time.
+
+ 3. Advance the game logic so that the last two
+    frames are the ones right before and right
+    after the logic time corresponding to the
+    frame time. (Yes, linear interpolation adds
+    one logic frame of latency.)
+
+ 4. Interpolate coordinates between those last
+    two frames, using the fractional part of
+    the calculated logic time for weight.
+
+ 5. Render!
+ 
+ 
+With a sufficiently high logic frame rate (a few hundred Hz or 
+something), you may get away without interpolation and still have 
+pretty smooth animation.
+
+The logic engine generates a steady stream of frames at a fixed rate (*), and the rendering loop 
+picks the ones closest in time to the frames to render, or 
+interpolates between the two closest frames.
+
+(*) Not really. The logic engine actually runs in bursts, once for
+    each rendered frame, advancing zero or more frames.
+	
+	
+	
+   
+Time measuring and waiting :
+  
+For Windows :
+One can use QueryPerformanceCounter(), QueryPerformanceCounterFrequency().
+Around 1 microsecond accuracy. MSDN states that this may be unsupported by 
+some hardware. (anyway I never saw a PC without support to those functions)
+
+For Linux :
+gettimeofday() is returning you a struct with 2 members, one in secondes, 
+the other with microsecondes.
+
+
+For profiling purpose and only valid for x86 computers :
+One can use the RDTSC assembly instruction. This instruction is telling you the number of CPU cycles elapsed since the CPU was started, in a 64 bits integer, stored in EDX:EAX register pair (EDX = 32 most significant bits, EAX = 32 least significant bits).
+
+
+If your CPU is 1Ghz, the cpu cycle is 1 nanosecond ( 1/1Ghz = 1 nanosecond ) etc..
+
+This will not work on Cyrix 686 and some other old x86 clones), but works on cpus from intel pentium to latest cpu (or AMD equivalent) 
+
+This is not a measure of absolute time because you can't easily detect the cpu frequency at run-time. This is a measure of  time which is useful to compare two pieces of code on one given CPU.
+
+
+RTDSC doesn't work reliably on laptops and other variable-frequency processors like AMD's "Cool'n'Quiet" feature. Even desktop machines are using Intel's SpeedStep tech now. When these features exist, rdtsc doesn't increment reliably, so depending on it may make your game think time is moving faster or slower than expected.
+
+We ripped this out of Unreal and used gettimeofday() on Unix and timeGetTime() on Windows (QueryPerformanceCounter() is just a wrapper over rdtsc, as far as I know). gettimeofday() is actually a surprisingly fast system call.
+
+gettimeofday() gives you microsecond resolution...the comment about not 
+being able to work in units smaller than 10 milliseconds is bunk, and 
+has to do with the Linux 2.4 scheduler not letting you sleep less than 
+10ms...but even there, within your timeslice, you can get microsecond 
+timing. Linux 2.6 fixed the scheduler resolution, too.
+
+
+
+Moving windows :
+  
+Currently the issue is that the in game stuff is all monitored according to system time and when the game gets improperly paused by a move window command and doesn't store the time it is being paused from, it ends up messing up all the time based functions and causing undesirable effects.
+
+
+Would maximizing the time between two frames to, say, 0.2 s, fix your problems? (if your timer detects that more than 0.2 s happened since the previous frame, return 0.2 anyway)
+
+
+
+Input events :
+  
+Usually what programs do is poll for any queued events at the beginning of the logic for the frame, update any internal state and then proceed with the logic. The framerate is usually high enough that all the input for the frame can be considered to be simultaneous.  This breaks down when your framerate slows and it's important to know the duration a key was held down that was pressed and released before you got there, but many operating systems don't provide time information on input events, and those that do usually provide it in a different time base than the values that SDL_GetTicks() returns. However, as I mentioned framerates are usually high enough that this doesn't matter.
+
+
+
+Take a look at http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fUserEvent, which explains how to push user defined events onto the event queue.
+
+  
+Updates :
+  
+SDL_GetMouseState and SDL_GetKeyState are only updated when you call SDL_PumpEvents. In between times all sorts of things can be happening to the mouse and keys and nothing gets changed until the next time that SDL_PumpEvents gets called. That means that mouse buttons and keys can be clicked and pressed and your program will never notice that the events occurred. Why? Because they happened when you weren't looking. If a key is pressed and released between two calls to SDL_PumpEvents and
+you are counting on SDL_GetKeyState to tell you about it, you will miss the key press. 
+
+If you really need to know that a key was pressed, then you have to notice that it was pressed in your event loop. If you need to know that it was pressed more than once, then count the key presses in the event loop. 
+
+  
+With event handling with SDL_PollEvent or SDL_WaitEvent, you get every mouse press and release. You won't miss anything.  Whereas if you use SDL_PumpEvents and then directly probe the state of keys and mouse buttons, you will only see the state the mouse or keys were in after all pending events were processed. So, with SDL_PollEvents/SDL_WaitEvents you get one event for each button press and another for the corresponding release, you just process each event individually. The best event loop would poll for events until none are left, then it would redraw the screen for any changes that occured during the event processing, don't redraw for every event, it's a waste of time to do so, and it will make the application less responsive. Using events is the best way to process input.  Probing the state directly is not as useful.
+
+
+Process every event and only redraw the screen after all events are processed.
+if the processing is taking too long, then you can stop handling events for a redraw every 1/min_fps seconds.
+but most people don't have to worry about processing taking too long and emptying the queue happens much faster
+than redrawing after every event.  another thing to do is to realize a max_fps (since updating the screen faster
+than the refresh rate of the screen is futile) and at least keep polling for events until the time for a frame
+arrives.  This can increase responsiveness as well, since then you are not wasting time redrawing when nothing
+has happened or the user wouldn't see anything happen anyway because of the screen refresh rate.  most games
+don't bother with this. Some people use threaded event handling to update the state for the next frame, making
+the redraw not subtract from the response time.
+
+if you only take the last event, then it's possible you may skip an important one...  
+  
+  
+  
+you can tell to SDL to ignore the mouse event :
+SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE );
+  Ignoring the pollevent and taking only the last one each loop granted me 
+smooth and fast motion.
+  
+there are two different things you can do not to use 100% CPU time :
+
+1) Decrease the framebuffer's refresh rate
+2) Insert a timed delay into your program
+
+You can accomplish the first by adding some code that looks like this:
+
+                        // now update the screen
+                        	if(screen.get_framerate() < 200 )
+                        		{
+		                        screen.update();
+                        		}
+
+Or, you can add something like this in your main game loop
+right after a game screen refresh:
+
+					screen.update();
+					SDL_Delay(10);  	// let operating system breathe for 10 milliseconds
+
+Or, you could add a 10 millisecond delay right after you perform 
+your event poll.  It will slow down your software for sure.
+
+					event_manager.poll_events();
+					SDL_Delay(10);  
+  The graphics must be done in the same thread that initialized SDL which
+also must be the thread that handles SDL events. And, to the best of my
+understanding, that must be the main thread. This isn't really a
+restriction caused by SDL, it is a restriction caused by various
+operating systems.
+
+
+SDL_Delay() is platform dependent, to be on the safe side ask for a 
+non-zero value and hope the granularity isn't too great 
+
+ Using SDL_Delay(1) on some archs isn't acceptable; it's likely to give a
+10ms sleep in Linux 2.4, and I think it caused similar problems on OSX.
+
+Fundamentally, whether or not you need to yield CPU this way is platform-
+dependent.  I need to in Windows, or my other threads tend to starve.  I
+can't in Linux and OSX, or it sleeps too much.
+
+Is there a simple way of getting the character pressed, besides
+having a switch with a case for every key? SDL_EnableUNICODE()
+
+	<dt>Does SDL support the force feedback on a joystick ?</dt>
+	<dd>According to <a href="http://sdldoc.csn.ul.ie/joystick.php" target="_blank">this</a>, not yet.</dd>
+
+  
+  http://www.sjbaker.org/steve/omniv/keyboards_are_evil.html
+If 'a' is pressed then the key event is 'a', but in the case of an 'A'
+the 'shift' key event is also pressed (along with the 'a' key event).
+These are keycodes, not keys. You could easily write a macro or function
+to do it;
+
+#define SDL_IS_CAPS(keys) ( keys [ SDLK_RSHIFT ] || \
+~                            keys [ SDLK_LSHIFT ] || \
+~                            keys [ SDLK_CAPSLOCK ] )
+
+then incorporate that into some other macro to perform translations (or
+something). ie.
+
+#define SDL_GET_ALPHA(alpha,keys) ( SDL_IS_CAPS ( keys ) ? \
+~                                    toupper ( alpha ) : \
+~                                    alpha )
+
+SDL_GET_ALPHA ( 'a', keys ) or something like that (not ideal, just an
+idea).
+Forget about scan codes, qualifier keys and stuff. You'll just get a 
+headache and a non-portable and/or missbehaved application.
+
+In your initialization:
+
+	SDL_EnableUNICODE(1);
+
+and then when you get a keyboard event: (From 'man SDL_keysym')
+
+	if(!(event.key.keysym.unicode & 0xff80))
+		ascii = event.key.keysym.unicode;
+	else
+		<deal with international characters>;
+
+This method actually *works*, even with weird keyboard layouts like my 
+custom swedish Dvorak variant.
+
+The 'unicode' property of the SDL_keysym
+structure is a 'Uint16'
+
+You really shouldn't do any processing of the shift state with respect
+to the key presses, aside from checking control combinations.  Not only
+is the modifier state only correct for the time the event is processed,
+but you won't correctly handle international keyboard input.  If you are 
+expecting text input, you should always enable unicode and look at that
+field in the key down event.
+How can i set a break (pause) in my game?
+
+Well, that depends totally on how your game loop is implemented. You 
+could just sit in a loop calling SDL_WaitEvent() until you get the 
+"unpause" button press, but I wouldn't recommend that approach. You 
+should always be ready to respond to expose events and stuff like 
+that, and you probably want some kewl animations and stuff going on 
+even when the game is paused. So, a better way is to just stop 
+calling the game logic while the game is paused, and let the rest of 
+the main loop run as usual. (You *do* have the game logic separated 
+from the rendering code, right?
+
+I for one prefer games where pausing drastically reduces CPU usage.  If the window is in focus, sure have fireworks go off and some guy in a bunny suit break dancing.  Otherwise I'd limit myself as much as possible.  Realistically a game minimized shouldn't use any more CPU than notepad minimized, unless you're polling for many different things to start up.  I'd also suggest a "pause on alt-tab" (er platform dependent) option for when the window loses focus when not paused, however in some games it might be advantageous to minimize without pausing (running long distances?).
+I'm thinking to go so far as to have an option to purge memory on demand.  If you can quickly alt tab in and out of a program, it would be easier for the user to do such for running memory intensive programs.  That way they don't need to save/savepoint/passcode, exit the game, do their big memory program, start the program, enter/load save/passcode.  Instead they just have to wait for the memory (graphics/sound) to be reloaded, without the gamestate changing.
+The problem with SDL Delay under LINUX is it doesn´t wait
+the given delaytime. Under Windows SDL_Delay (20)
+waits exactly 20ms or a little bit more, thats okay.
+
+Under Windows SDL_Delay (20) waits sometimes 10ms, sometimes
+13ms, sometimes 19ms. But it should wait 20ms or more, but not less.  
+  I'm expect SDL_Delay to wait for _at least_ specified interval
+and not wrapped it with
+
+for(delay=time_left-SDL_GetTicks();delay>0;delay=time_left - SDL_GetTicks())
+     SDL_Delay (time_left);
+
+but test case proved i was wrong. So every call to SDL_Delay should be wrapped
+
+
+>I'd like to restrict the framerate of my game - when its running on
+>> the desktop - so that it uses minimal CPU. What is the best way of
+>> doing this in a cross-platform manner?
+>>
+>> I've done it by timing the render time for the frame, then if it is
+>> quicker than the required frame time, sleep using SDL_Delay. But
+>> SDL_Delay may not be accurate enough on some platforms to use this
+>> way.
+
+
+On most systems, the scheduler has a granularity of approximately 10 
+ms, so you're right; it's not always accurate enough. What you can do 
+is something like this:
+
+	while(time_left > 0)
+		if(time_left > 10)
+			SDL_Delay(10);
+
+where "time_left" is some expression involving SDL_GetTicks(), that 
+returns the number of ms left until it's time to render the next 
+frame.
+
+>I'm also interested in knowing if SDL_Delay( 0 ) has the same
+>> effect on all platforms as it does on Windows, ie. give up
+>> remaining time slice.
+
+
+Nope, SDL_Delay(0) does nothing on Linux and other Un*x-like platforms 
+- or at least, that's the way it was last time I looked. (Some 1.2.x 
+version.)
+
+I once suggested it should call sched_yield() or something, so it does 
+the same thing on all platforms, but for one reason or another, 
+nothing was done.
+
+I wound up doing the following:
+
+* Create a timer that runs @ the frame rate I want
+* Create a semaphore for throttling on
+* In the timer callback, do a SDL_SemPost()
+* In the foreground code, after a frame is rendered, do a SDL_SemWait on
+that semaphore
+
+That keeps CPU utilization at zero for that thread when there's nothing
+else going on.
+
+At the top of the event loop, one can use :
+<code>while(SDL_PollEvent(&event)</code>, you know that the outer loop essentially runs once per 
+frame, and nothing else.
+
+To avoid hogging the CPU (100% load) when the app isn't active, add 
+something like:
+
+			else // non-handled events
+				SDL_Delay(100);
+
+here, or (better) do something that turns that SDL_PollEvent() at the 
+top into as SDL_WaitEvent(), so you don't have to spin around that 
+loop at insane speed just to read events.
+
+(Now, some people would suggest that you should also insert an 
+SDL_Delay(<some value>) after SDL_Flip(). I say "yes, but make it a 
+user option". It will effectively restrict your frame rate to 100 Hz 
+on most operating systems, which will, in some cases, result in less 
+smooth animation than you may get otherwise.)
+
+
+>Hi to all.
+>>
+>> I have a very simple questions. I have a game with a player that is
+>> controlled with the keyboard. I want the sprite to move to the same
+>> speed on any hardware, not depending of frames displayed or other
+>> things. Mostly because the game may have network support, and so
+>> everything needs to go to the same speed.
+
+
+Oooh, this one's not very simple at all, actually... Well, the 
+*theory* is actually pretty simple, but it's not quite that easy in 
+real life, at least not if you also want optimal animation quality 
+and accurate (maybe even 100% repeatable) game logic. You will want 
+both for any serious gaming.
+
+
+
+>> Would it be a good idea to have a function ran every 20ms (for
+>> example) that moves the sprite according to what it needs to (the
+>> event are saved before, like need to be moved UP, DOWN, LEFT,
+>> RIGHT, etc), so we are sure it does move at the same speed
+>> everywhere ?
+
+
+Basically, yes - but you can't actually implement it that way, unless 
+you're fine with capping the animation frame rate and/or messing with 
+thread safe interaction between the game logic and the graphics 
+engine.
+
+
+
+>> Any hint, or better, url about this concern is appreciated 
+
+
+I recently hacked a playable example, demonstrating (among other 
+things) my favourite approach: Fixed Logic Frame Rate + 
+Interpolation. This design lets you get away with a plain, fixed 
+logic frame rate (as it was done in the days of PAL/NTSC based 
+systems) and a single thread for the whole game, and still get the 
+maximum possible rendering/animation frame rate on any hardware.
+
+	http://olofson.net/examples.html	(pig-1.0)
+
+
+The same approach is also used in the game Kobo Deluxe, which was 
+originally (XKobo) a fixed frame rate game:
+
+	http://www.olofson.net/kobodl/
+
+
+I suggest you look at the Pig first, though. Kobo Deluxe is layers and 
+layers of (mostly) C++ code, and it was hacked to be played - not 
+analyzed. Don't mess with it unless you're interested in the game 
+itself. 
+
+Meanwhile, Fixed Rate Pig was hacked specifically to be a minimal but 
+complete example of some techniques that people ask a lot about 
+around here. (Fixed logic frame rate, motion interpolation, tiled 
+backgrounds, sprite animation, smart updating with pageflipping, 
+basic platform game logic etc.) It even comes with a document 
+describing what most of that cryptic code is all about. 
+
+
+
+Disabling mouse events :
+
+If it lags only when you move the mouse then you could set up an event
+filter in your SDL init function to prevent mouse motion events from
+entering the queue, with a line looking something like:
+
+SDL_SetEventFilter(SDLEventFilter);
+
+Your filter function should look something like:
+
+int SDLEventFilter(const SDL_Event* filterEvent)
+{                 
+    if (filterEvent->type == SDL_MOUSEMOTION)
+        return 0;
+
+    return 1;
+}
+
+Obviously this isn't an option if you need mouse motion events.
+
+
+Don't call any SDL functions from a timer callback. Set a global flag (or counter) to notify your main loop that the timer has expired, and then return.
+
+
+Maybe you mean SDL_PollEvent instead of SDL_WaitEvent? SDL_WaitEvent
+waits indefinitely for the next available event, while SDL_PollEvent
+will return immediately if there are no events in the queue.
+
+you are using SDL_WaitEvent(). Which means that if there are no events
+to process your program will wait until there is an event. That is
+probably not what you want. Usually people use SDL_PollEvent() so that
+they can process all pending events and then get on with the rest of the
+code. The code you show will process all pending events and then wait
+until more events come in. That can make it look like your program is
+running slowly when in fact it is running as fast as it can.
+
+It may be that you are updating you game after processing each event. Since
+moving the mouse can generate a huge number of events updating the
+screen after each mouse event can make the program look very slow
+
+As far as mouse coordinates are concerned, I'm using this:
+
+    SDL_Event    event;
+The simplest method:
+
+Uint32 lastT = SDL_GetTicks();
+Uint32 dt = 42;
+while (...)
+{
+         Uint32 t = SDL_GetTicks();
+         while ((t - lastT) >= dt)
+         {
+                 yourPhysicsHere();
+                 lastT += dt;
+         }
+}
+
+
+
+I'm using it on a game which needs accurate physics. It runs at 1600 FPS 
+(with the ugliest possible display of course), running Lua functions in the 
+physics loop etc. It works very well and the display doesn't look "late". 
+IIRC i use 40ms for dt.
+    // Grab all the events off the queue.
+    while( SDL_PollEvent( &event ) )
+    {
+        switch( event.type )
+        {
+        case SDL_MOUSEMOTION:
+            g_MouseX = event.motion.x;
+            g_MouseY = event.motion.y;
+            break;
+        }
+    }
+
+And then for the mouse buttons:
+
+    mouseButtons = SDL_GetRelativeMouseState( &g_MouseDeltaX,
+&g_MouseDeltaY );
+
+    if( mouseButtons & SDL_BUTTON_LMASK ) {
+        // Left Mouse Button
+    }
+    if( mouseButtons & SDL_BUTTON_RMASK ) {
+        // Right Mouse Button
+    }
+    if( mouseButtons & SDL_BUTTON_MMASK ) {
+        // Middle Mouse Button
+    }
+
+This isn't exactly the best way because, since my input function is
+called once per frame, my game can miss fast mouse clicks. But over
+than that, it works.
+
+
+SDL_Event event;
+
+while(SDL_PollEvent(&event))  //Event testing loop
+{
+  if(event . type == SDL_MOUSEBUTTONDOWN &&
+SDL_BUTTON(SDL_GetMouseState(NULL,NULL)) == SDL_BUTTON_LEFT)
+  {
+    //here the action you have when left mouse button is click
+  }
+}
+
+
+
+99% of the time, I use PollEvent, since my game is busy animating and
+moving baddies and such.
+
+I've used WaitEvents for cases where I just have a yes/no prompt, and
+all I'm waiting for is a keypress or mouse click, and don't have anything
+else interesting going on.
+
+
+joystick calibrating :
+
+Do you have the evdev module loaded?
+
+Annoyingly, the new event devices interface on Linux currently cannot
+be calibrated. (Linux 2.6 does have the IOCTL to calibrate, only there
+is not a program to do it yet.)
+
+SDL has to use the same method that joydev uses by default, returning
+your 27 to 320 values.
+
+Either unload the evdev module and calibrate the joydev with jscal.
+(Same for any game that uses the joystick interface.) There will
+probably be a setting on your distribution that does this at boot.
+
+OR
+
+Compile SDL without input events. (--disable-input-events)
+
+ Have an internal counter for each key.  So instead of moving every
+frame when a key is held down, each frame a key is held down you
+increment a counter.  When the counter gets to a threshold level, you
+move.  To do this correctly, you'd need to have the threshold value
+somehow related to the number of frames per second, so that you get a
+similar rate of movement depending on the frame rate.
+
+
+PumpEvents() works fine in a thread separate 
+from SetVideoMode() and PollEvent() can handle a QUIT event. It could not handle a KEYDOWN 
+event unless I moved SetVideoMode() into the event loop thread 
+
+Have you tried to activate keyrepeat? Maybe it is
+SDL_KeyRepeat(1) before your message processign loop;
+
+
+You can only render graphics form the thread that opens the graphics 
+window you should draw.
+
+>Recently I've been trying to detect for scroll wheel movements in OS X 
+>> with:
+
+
+>> if(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_WHEELUP)) 
+
+
+Since mouse wheel motion is an instantaneous event, you'll never see
+the state on if you poll it.  To handle mouse wheel events, you actually
+have to handle mouse button events and figure out how far you want to
+move based on the number of events you get
+
+Detect this while processing sdl-events. Something like this:
+
+while( SDL_PollEvent( &event ) ) {
+   switch( event.type ) {
+   case SDL_MOUSEBUTTONDOWN: {
+     if( event.button.button == 4)
+       cerr << "mouse wheel up" << endl;
+     if( event.button.button == 5)
+       cerr << "mouse wheel down" << endl;
+   } break;
+}
+
+
+
+
+
+However - if your rationale for getting only keyboard events is that=20
+you're only interested in keyboard events, you still can't afford to=20
+ignore the others. Other kinds of events will build up, and eventually=20=
+
+fill the queue. The queue can only hold so much, and when it's full all=20=
+
+new events will just get ignored!
+
+For this reason, You would be best served by a loop that handles all=20
+events. You can chose to ignore all but keyboard events, but you must=20
+remove them all. Like:
+
+	SDL_Event inEvent;
+	while(SDL_PollEvent(&inEvent)){
+		if (inEvent.type =3D=3D SDL_KEYUP || inEvent.type =3D=3D =
+SDL_KEYDOWN){
+			//Nick Campbell's time to shine!
+		} else {
+			continue;  // ignore
+		}
+	}
+	
+the problem is that keystate returns not the keys pressed at the
+moment, but the keys pressed when SDL_Poll / Push /... Event was called.	
+  
+
+
+
+sdl doesnt give a resize event
+when it starts up and you need to do that for yourself .
+
+
+
+for this command i use keyboard event and translate to unicode with 
+the command
+event.key.keysym.unicode
+in linux it work perfectly. But in windows (all version)
+numerical pad does not perform.
+keysym works but unicode not translate.
+
+
+
+while(1) {   
+  if (SDL_PollEvent(&event) == 1) {
+    if (event.type == SDL_KEYDOWN) {
+      c = sdl_getchar(&event);
+      printf("%c", c);
+    }
+  } else {
+    SDL_BlitSurface((*txte->crnt), NULL, screen, &txte->rct);
+    SDL_UpdateRect(screen, 0, 0, 0, 0);
+  }
+}
+
+Do not update screen when there are "update" events pending. You will 
+add more events and will never get your screen updated. This is a common 
+mistake when you get out the "while SDL_PollEvent=1" method.
+
+
+Your repaint is on a timer ? Dejavu... I've tryed it before. It's a nice 
+theory, but it simply doesn't work. I will tell you why.
+
+First, you got pretty machines, with a few microseconds per CPU cycle 
+and all, but your timer can only be called after about 10ms. This limits 
+your game to only 100FPS, even if the game is "what's behind the black 
+screen" and you got a Deep Blue or better.  BTW, 10ms is usually the 
+MINUMUM. You can get a 13, 16 or even 20+ms in the real life.
+
+Second, does your callback returns the same interval it received as 
+parameter ? Think about it... Your timer waits 10+ms to start, then 
+takes... 10ms ? 20ms ? to run. Then, you tell SDL to wait another 10ms 
+to call your function again (see the SDL manual). That's 20/30+ms per 
+frame. A "black screen of death" game is limited to 50FPS or less.
+
+Third, did you know that your interval must be a multiple of about 10ms 
+? Depending on your system, the timer can have intervals of 10, 20, 
+30... miliseconds (or 8, 16, 24... or 20, 40, 60... etc).
+
+And this is because you got cool machines. If you got a K6-2 (500Mhz) as 
+I did some years ago, you will have serious trouble with a backbuffer 
+surface. Your game must do a lot of memory copy to the backbuffer 
+surface, then to the screen. This is about 1.44Mb per frame. If it's a 
+SW double buffer screen, we must multiply it by 3+ (to sw bb, to sw fb, 
+to hw fb). Yikes... I guess this is the reason they created a HW 
+backbuffer screen. You do all the mess on screen's backbuffer, then do a 
+SDL_Flip.
+
+Oh, yes ! And you are using alpha blit without HW acceleration. Poor 
+CPU... 
+
+
+
+ Now I have a couple of threads:
+1. Game updating thread
+2. Rendering thread
+3. Event processing thread (input)
+
+    with something like:
+
+    while (!mustExit) {
+        SDL_Delay(5);
+
+       before = GetTickCount();
+        Repaint()
+       log << "Render time: " << (GetTickCount() - before) << endl;
+    }
+
+    And rendering times are almost the same, but the overall speed and 
+"feeling" of the app. is much improved.
+
+Just something about that SDL_Delay(5): Maybe you'll want to make some 
+kind of dynamic framerate limitation. Look at 
+http://www.ifm.liu.se/~ulfek/projects/timers/ for details.
+
+1.) Try using a semaphore to signal when a new image is ready
+    i.) This will prevent unnecessary blitting and keeps resources from 
+being over used.
+    ii.)  Use non-blocking semaphores where possible / where applicable
+          - One doesn't always want to block on by Wait-ing on a 
+semaphore. For example, there might be events you'd want to handle while 
+you're waiting for a sempahore in the same thread main loop.
+            - If you use non-blocking semaphore calls with a loop that 
+could potentially be very tight, consider using #2 to keep the thread 
+from consuming too many CPU cycles.
+
+2.) Yield the threads when they are done with one iteration
+    i.) On Linux, use sched_yeild;
+    ii.) On Windows use SwitchToThread;
+    iii.) SDL_Delay(0) or SDL_Delay(1) might achieve the same result
+
+    - These will/should prevent tight loops from freezing up your 
+program / hindering performance.
+
+I've done similar applications (from V4L -> SDL) and have had great 
+performance from the SDL library.
+During the development of the program I ran into issues where 
+performance was bad due to tight looping in other threads; this not 
+being the first time I had experienced this problem.
+
+  SDL_SetVideoMode() returns a pointer to an SDL surface; make sure that
+all operations on that surface are in the same thread.
+ To clarify: are in the same thread as the call to SDL_SetVideoMode. 
+  
+You can access graphics from different threads as long as you are only 
+doing so from one thread at a time. Use a mutex.
+No, in general you can only make graphics calls from the main thread.
+You can access software surfaces however you want, but hardware surfaces
+and update calls should only be made from the main thread.
+
+See ya,
+	-Sam Lantinga
+
+
+You can create one "screen layer" for each thread. When the main thread 
+wants to update the real screen, it will merge all layers. It's really 
+simple to implement.
+
+If you create layers as large as screen, you will have no work and 
+threads will got a lot of space to play, but this is REALLY slow. I 
+recommend to create limited layers. Ex: the live update thread will have 
+a layer that only occupies the screen area where the live indicator appears.
+
+
+PS: I think this mt solution will have some overhead on a uniprocessor 
+machine.
+
+
+
+in many cases people simply don't understand what you are coming to
+understand. In some cases they actually know what they are doing.
+
+Systems seem to come in two classes, those with a clock tick of 10
+milliseconds and those with a clock time of 1 millisecond or less. On
+the second class of computers it makes perfect sense to use delays of a
+small number of milliseconds.
+
+On the first class of computers, those with 10 millisecond clocks a call
+to SDL_Delay() with an argument in the range of 0-10 says that you
+should just wait until the next clock tick. That means you will wait for
+an average of 5 milliseconds. You have an equal chance of waiting for a
+tiny amount greater than zero and of waiting a tiny amount less than 10
+milliseconds. So, the average wait is 5 milliseconds. The interesting
+thing is that a call to SDL_Delay(5) gives you and *average* delay of
+exactly what you asked for.
+
+On a computer with a 10 millisecond clock if you ask for a delay of 11
+milliseconds you will wait for 2 clock ticks to pass. Which means that
+you will wait for an average of 5 milliseconds for the first clock tick
+and 10 milliseconds for the second tick for an average delay of 15
+milliseconds.
+
+Using code like SDL_Delay(50 - (how long it took to get here)) actually
+works pretty well. It doesn't add to the flicker. I prefer to add a
+delay of 5 milliseconds if the program is trying to run faster than 100
+frames/second. Doing so can dramatically reduce the load on the computer
+and get you smoother animation.
+
+		Bob Pendleton
+		
+
+Let me first explain the background of the issue, which has two main 
+causes:
+1) A design problem with the SDL keyboard input system (and/or problems 
+with how people (ab)use it)
+2) Limitations in the keyboard handling & mapping code on OS X.
+
+The first issue is that SDL essentially tries to map three different 
+concepts onto only two members in the SDL_keysym struct. Let me explain 
+the three main different concepts:
+
+(i) Positional: if an arcade game maps 'y' to "rotate left" and 'x' to 
+"rotate right", it does so because on an US keyboard, 'y' is to the 
+direct right of 'x'.
+Problem: This is *not* the case on e.g. a German keyboard, where 'z' 
+and 'y' are swapped. There is simply no way in SDL to specify a 
+keyboard mapping based on the position of the keys. Any attempts to do 
+so are doomed to fail. Hence esp. for games which rely on the key 
+position, it is vital to provide a way for the use to change the 
+mapping, else you are likely to alienate a lot of potential non-US 
+users.
+
+(ii) What's printed on the key: If in an RPG, 'a' maps to "attack" and 
+'q' to "quaff" (for example), you don't care where those keys are.
+Problem #1: On a french keyboard (AFAIK), those two keys are swapped. 
+But it doesn't matter, only what is printed on the keyboard counts. 
+This is what the SDLKey value in the SDL_keysym struct attempts.
+Problem #2: However, on a french keyboard, there are normally no number 
+keys at the top - if you want a '1' you have to press 
+Shift-<key-where-1-would-be-on-an-US-keyboard>. This can be a serious 
+problem for apps which want to map '1' etc. to a function. Should SDL 
+map that key to SDLK_1 ? On the one hand that is what might be most 
+natural; but it would actually be a lie, since that is *not* they key 
+symbol. And, if you want to map '1' and Shift-'1' to different things, 
+it might get confusing for those poor french users - for them, pressing 
+'1' always implies pressing Shift, too...
+
+(iii) Character value: That is actually in some sense the 'easiest': 
+you need this when you want to let the user type in some text. Well 
+luckily SDL has some Unicode support, at least on systems supporting 
+it; for most basic cases this is fully sufficient if you want to allow 
+the user to type in e.g. a name for the highscore, even if you don't 
+add full unicode to your project (since the first 128 chars in unicode 
+are simply ASCII).
+
+In all of the above, I completely ignored the issue totally different 
+keyboards (think of some asian ones). But still, I hope it outlines why 
+proper keyboard is actually a pretty hard issue (unlike what some 
+people think), because of the greatly varying needs. SDL's keyboard 
+input designed currently simply is too limited to satisfy them all 
+properly (that's one of the things I hope will get a redesign in SDL 
+2.0 .
+
+
+Anyway, that was the SDL specific part; on OS X, you have some 
+additional problem. There exists three (or more, depending on how you 
+count) major APIs and OS subsytems to handle keyboard input. The bad 
+part is that they all apparently use a slightly different keyboard 
+mapping (or at least that's how it used to be up and including 10.2; I 
+haven't conducted proper tests on 10.3 yet). Add in that it's not 100% 
+clear what an SDLKey mod value is supposed to mean, and you have a big 
+mess.
+
+First off, we start with a fixed keycode-to-SDLKey mapping table (the 
+keyCode from NSEvent, which is a) hardware independent and b) identical 
+to kEventParamKeyCode in Carbon events - at least that's what Apple's 
+documentation claims). Next we query Carbon / the Script Manager for 
+the KCHR resource of the OS, which is used by Carbon to map scancodes. 
+We iterate over it and then adjust our scancode table with the data 
+derived from this. Finally, we have to do a last run where we re-adjust 
+the mappings of the keypad, since there is (apparently?) no way to 
+distinguish between normal and keypad keys within the KCHR resources.
+
+If you think that is this a hack (even an evil one), I'll agrre. But it 
+was the best solution I could come up with (and believe me, I tried a 
+lot); if anybody knows of a better one (and one which will also work on 
+10.1 and 10.2 !) please step forward and enlighten me, and my gratitude 
+will be yours forever 
+
+Why does the sym member of SDL_keysym not have SDLK_1 when say an
+Italian keyboard is selected, and how should I handle this situation
+correctly?
+
+
+I don't know how italian keyboards look like, but maybe they share the 
+layout of french ones (where to get a '1' you have to use Shift) ? It's 
+pretty hard to tell the cause for sure w/o actually owning such a 
+keyboard. If anybody wants to donate non-german, non-british USB 
+keyboards to me (Italian, French, whatever else you have), I'll happily 
+look into improving support for them. As it is, we have to rely on 
+testers to report problems and then try our fixes (or even better, 
+submit patches to us 
+
+
+Anyway, I hope I was able to shed a little light on the issue of 
+keyboard input in SDL in general and on OSX in special. Feel free to 
+hammer me with further questions, just don't forget that you need to CC 
+me since I am not on the list.
+
+
+Cheers,
+
+Max
+
+
+i think you're just getting a far too high framerate and therefore your 
+game is running very fast.
+
+try limiting the fps by using a simple fps limiter:
+
+while(game runs){
+time = SDL_GetTicks()
+
+{
+put everything you do now in here
+}
+while((SDL_GetTicks()-framestart) < WAITTIME); //keep framerate constant 
+at 1000/WAITTIME fps
+}
+
+where WAITTIME = 1000/wantedfps
+
+eg: if you want 62 fps your waittime is 1000/62 = 16 (milliseconds)
+  
+  
+  
+When game started I click on the "X" button in the right-top corner of a
+ window, but window do not close. Why it so?
+
+you have to check for SDL_QUIT events and make your program exit when it
+receives one
+ 
+ 
+  With the latest 2.6.1 kernel, I usually get an average of 1-2 ms wait 
+times for SDL_Delay(1).  This is a huge improvement over 2.4.x, where 
+an SDL_Delay(1) could result in (up to) a 15ms wait.
+
+
+The time granularity of Linux is controlled by the HZ constant in the 
+kernel.
+
+The previous series of linux kernel used HZ=100 for i386, implying a 
+granularity of 10 msec.
+
+The new 2.6 series sets HZ to 1000, yielding a 1 msec granularity.
+
+
+ 		since you get an event for every key you press, you should check for a
++ shift to get A.
+
+
+i think the function is SDLEnableUnicode(bool enable);
+
+this is what i use atleast, works nicely since the unicode is 'A' if you
+press a and hold shift etc, it handles all that junk for you.
+
+
+
+  SDL_EnableUNICODE(true);
+
+  [...]
+
+   case SDL_KEYDOWN:
+     switch( event.key.keysym.sym )
+     {
+       case SDLK_ESCAPE:
+         done = true;
+         break;
+
+       case SDLK_F1:
+         if( current_font > 0 )
+         {
+           sdlview1->set_font(fontfiles[--current_font]);
+           inp->refresh_views();
+           updateStatus(screen,small,"font: "+std::string(fontfiles[current_font]));
+         }
+         break;
+
+       [etc .. for any special keys that the input widget isn't supposed to see ...]
+
+       default:
+         s[0] = u8(event.key.keysym.unicode);
+         inp->exec( s );
+     }
+     break;
+
+   [...]
+
+It might be a good idea to also trap SIGINT and SIGTERM, though at=20
+least on Linux, SDL does that by default. It sends an SDL_QUIT event=20
+if you hit CTRL+C in the console or equivalent. (See signal() in=20
+signal.h.)
+
+
+This is the right way to do it.  Everybody who is using the sym directly,
+you need to rewrite your code to look at the unicode member of the key event,
+otherwise your program won't work with non-english keyboards.
+
+See ya,
+	-Sam Lantinga
+	
+	
+First enable the unicode translation of the keyboard events with 
+SDL_EnableUNICODE(1). Then maybe enable key repeating with 
+SDL_EnableKeyRepeat(delay, interval).
+Then do SDL_PollEvent and check for keydown events. In the manpage of 
+SDL_keysym you can see an example for translating the unicode keys to 
+ASCII. I use this code:
+
+if((event.key.keysym.unicode & 0xFF80) == 0)
+	string[strlen(string)] = event.key.keysym.unicode & 0x7F;
+
+I'm not sure if this is the best way, but it certainly works well for 
+ASCII characters.
+
+
+>Find below my code but it never calls anything under the event.type
+>> SDL_TIMER_EVENT. If I place the draw code directly under the
+>> switch(event.type) then it runs my display code (when moving the mouse) so I
+>> know that the display does work, but I am confused to why the
+>> SDL_TIMER_EVENT is never called. Have I forgotton something simple when
+>> setting up the timer??
+
+
+Your peek call isn't removing the message, so the next message is always next.
+
+
+
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20events">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

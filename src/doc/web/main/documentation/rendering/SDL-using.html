@@ -1,0 +1,574 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, January 25.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document 
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Using SDL</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, SDL, using">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Using%20SDL">mail us</a></p>
+  </div><a name="_top_"></a>
+  
+
+<h1>Using SDL</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<code><pre>
+
+i write a game that has some settings and data in a loadable
+library.
+
+On Linux i create a shared object:
+gcc -Wl,-Bdynamic -Wl,-shared -o skin skindata.o -lc
+
+On Win32 i do it like this:
+link /dll /nologo /subsystem:console /incremental:no \
+    /machine:I386 /map:skin.map /out:skin.dll skindata.o
+
+On Linux i have to load it like this:
+skin = SDL_LoadObject("/absolute/path/to/skin");
+
+On Win32 i load:
+skin = SDL_LoadObject("skin.dll");
+
+Until here, both work fine.
+
+  sfptr = (skin_info_get_fptr)SDL_LoadFunction(skin, "skin_info_get");
+  if(sfptr == NULL) {
+    printf("could not get skin data address\n");
+    exit(-1);
+  }
+
+On Linux the part above works fine, on Win32 it fails.  In the skin.map
+i see that the symbol "_skin_info_get" is contained in the dll.
+I also tried to load with preceding underscore, but that also failed.
+
+Can anybody tell me why it fails on Win32?
+You need to explicitly list the symbols that are exported in a Windows 
+DLL (this is actually a feature, but it's different than the current 
+Linux behaviour, if you don't count gcc's new -fvisibility command line).
+
+You probably have:
+
+extern SkinInfo *skin_info_get(void);
+
+You need something more like this:
+
+extern "C" {  // (If using C++, you need this or the symbol is mangled.)
+     extern __declspec(dllexport) SkinInfo *skin_info_get(void);
+}
+
+This tells Windows that this symbol needs to be exported from the DLL. 
+Otherwise it won't be visible at link time, or from LoadLibrary().
+
+Look at DECLSPEC in the SDL headers for an example of abstracting this, 
+since SDL on Windows obviously needs this functionality itself. gcc4 has 
+a similar mechanism, but at this point, most Linux libraries have every 
+symbol that isn't flagged "static" as exported, which is why this works 
+there.
+
+Is there a way on Linux to NOT use an absolute path?
+Use a relative one.   :)    Using none goes through a couple of 
+well-defined paths (see the manpage for dlopen(3) for the list).
+
+Use ./skin for example.
+
+
+
+  
+I want to create 2 surfaces with sdl 
+Invoke a child process to create the second SDL surface, then use pipes to 
+communicate between processes.
+Under win32, shared memory will be more efficient
+
+
+>When I compile my app with gcc, it didn't find SDLMain.
+
+That usually means that your source file in which you define the main() 
+function does not #include SDL.h. You *must* #include SDL.h in that 
+file, because it contains something like
+
+   #define main SDLMain
+
+Then, the real main() is provided by libSDLmain.
+I didn't find a way to detect when user switches away from prog from the
+docs, but maibye Ive overseen it. I need it to know when I have to reset
+video mode in windowed Opengl Window.
+
+The code I have is as follows:
+
+       while (SDL_PollEvent(&event))
+       {
+          if(event.type == SDL_ACTIVEEVENT)
+            {
+                if(event.active.state==SDL_APPACTIVE || 
+event.active.state==SDL_APPINPUTFOCUS)
+                {
+                    if(event.active.gain==0)
+                    {
+                        //do this when the user has clicked outside
+                        //of the window, or when the window loses
+                        //focus.  Works on Linux and Windows
+                    }
+                }
+             }
+          }
+       }
+
+You can probably make it nicer if you want, but this step by step look 
+at it might help you do other things with window events.
+<h2>Building SDL</h2>
+  <p>
+  
+  SDL_VIDEO_WINDOW_POS=x,y
+putenv("SDL_VIDEO_WINDOW_POS=10,10");
+
+  Did you try the cross compiling instructions available there :
+http://www.libsdl.org/extras/win32/cross/README.txt
+I can get most programs to cross compile that way.
+  
+ Try removing the file config.cache, and re-run configure.  If you ran configure before installing jpeg/z/png, it caches the results of those library checks into the config.cache file so if you run configure again it goes faster.  (At least I think that's the reason, though it seems kinda silly to me .  You can tell this is happening by the fact that "(cached)" appears in the line "checking for...".  So just  remove that file, configure, compile/install, and hopefully it'll work! 
+</p>
+static link (only possible if you are (L)GPLed)
+
+
+Never use Alpha together with HWSURFACE
+Alpha is done by CPU and needs to READ from the videosurface. Video 
+card memory access is optimized for writing but very slow for reading.
+
+
+
+i load an image that has exactly the size of my SDL window.
+
+I'd like to set this picture as the background picture and
+draw some OpenGL in front of it.
+
+What you want to do is set your screen to orthographic mode to draw the
+background.
+
+orthographic = 2d-ish so you can more easily draw a pciture to fill the
+whole background of the screen.
+
+http://www.gametutorials.com/Tutorials/OpenGL/OpenGL_Pg2.htm
+
+go there and check out "masking and ortho mode" to figure out ortho mode
+
+Make a huge quad that covers the entire window area and then apply your 
+texture on it.
+It is only a OpenGL issue, not a SDL one. Remember that your textures 
+sides must be in power of 2 so OpenGL can render it.
+That quad will have a Z value higher than the other objects in your 
+scene so it appears to be in the background.
+
+
+
+<h2>Installing SDL</h2>
+  <p>
+
+SDL_DOUBLEBUF implies SDL_HWSURFACE. You will *not* get a double 
+buffered h/w display surface with a s/w shadow surface by saying 
+SDL_DOUBLEBUF | SDL_SWSURFACE. (SDL_SWSURFACE == 0 BTW...)
+
+However, SDL_FULLSCREEN is often required to get a h/w surface at all, 
+and pretty much always required for a double buffered h/w surface. 
+(Windowed modes generally do not support page flipping.)
+  
+Unless you completely cover the screen with new graphics 
+every frame, you have to clear the screen one way or another. 
+SDL_Flip() either copies your shadow buffer to the display surface, 
+or swaps the visible page with the one you just rendered into. These 
+cases are different, but they have one thing in common: Old stuff is 
+left around until you draw over it.
+
+  You can make the engine render at any 
+frame rate you like as long as it doesn't try to display anything. 
+However, SDL_Flip() (on a proper target with retrace sync) will lock 
+the frame rate to the monitor refresh rate.
+
+Also, since SDL_Delay() and the SDL timers generally have a 
+granularity of 10 ms, you can't use those to accurately control the 
+frame rate on targets without retrace sync. As long as you want a 
+frame rate below 100 Hz, you can "throttle" the game using a mix of 
+SDL_Delay() calls and busy-waiting on SDL_GetTicks().
+  
+ Please don't hard-code "C:\\Program Files", as the
+directory has different names depending upon the
+region that the OS is configure for.  I know that in
+the German version of windows it is called something
+else.
+
+In my own project I have the following source file. 
+Notice that I can't include the normal headers for my
+project, as the shell library includes some crap that
+breaks my builds.  Anyway, here is a starting point:
+
+(plus, at work, our "home" folder is really a network
+drive.  It follows us around where ever we go. 
+Hard-coding a data path to "C:" would not work in this
+environment).
+
+
+
+/* $Id: win32funcs.cc 16 2004-03-27 16:21:01Z djenkins
+$ */
+
+/* This is compiled seperately, and without including
+"include/platform.h"
+  because including 'Shlobj.h' causes compiler errors
+if included with
+  'platform.h'. */
+
+#if !defined(WIN32)
+#error "Only compile this under Win32!"
+#endif
+
+#define STRICT
+#include <windows.h>
+#include <Shlobj.h>
+#include <string>
+
+bool	Win32_GetDocPath(std::string &sDocPath)
+{
+	IShellFolder *folder = 0;
+	ITEMIDLIST *itemidlistptr = 0;
+	IMalloc *alloc = 0;
+	char szDocPath[MAX_PATH];
+
+	SHGetSpecialFolderLocation(0, CSIDL_PERSONAL,
+&itemidlistptr);
+
+	SHGetPathFromIDList(itemidlistptr, szDocPath);
+
+	if (!SUCCEEDED(SHGetMalloc(&alloc)))
+	{
+		return false;
+	}
+
+	alloc->Free(itemidlistptr);
+
+	sDocPath = szDocPath;
+
+	return true;
+} 
+
+see also : http://savannah.nongnu.org/projects/fnkdat 
+  </p>
+  
+  
+  <h2>Configuring SDL</h2>
+  <p>
+  
+  DirectFB : export SDL_VIDEODRIVER=directfb
+  
+Did you set SDL_AUDIODRIVER to "arts"?
+SDL_VIDEODRIVER=3Ddxr3
+
+  
+  </p>
+1. SDL_DOUBLEBUF implicitly requests a hardware surface in 2D, and this
+   isn't always what you want.
+2. SDL_DOUBLEBUF has no effect in SDL OpenGL mode.
+
+  
+ Accessing internal X11 Display 
+
+
+SDL_SysWMinfo info;
+SDL_VERSION( &info.version );
+SDL_GetWMInfo( &info );
+
+info.info.x11.display;
+
+
+<h2>Using SDL</h2>
+  <p>
+  you must put sdltest.o before the libraries list,
+otherwise the linker doesn't know that SDL functions are needed when it
+"reads" libSDL.a and thus doesn't include them. GCC's linker "reads"
+link libs and objects from left to right... It won't include function
+if it doesn't know that they are needed.
+
+
+  xdpyinfo - display information utility for X
+  
+How does one disable the SDL parachute -- or, preferably, have it abort() ?
+> That way, I get a core dump and can easily debug it.DL_Init with the SDL_INIT_NOPARACHUTE flag will do it.
+
+
+you are not allowed to blit to a locked surface
+
+That was actually part of my problem - RedHat already had SDL 
+installed from an rpm, and then I installed it myself from source. 
+That's how it ended up in two different versions in different places. 
+Just something to watch out for!
+
+
+As you mention you are running RedHat (rpm based), could it be
+you have another version of SDL installed f.e. under /usr/lib?
+
+
+ Under Linux, if the environment variable 
+SDL_VIDEODRIVER is set to "dga" (to use the DGA backend), then you need to 
+run the program as root. This is a limitation of DGA itself, not SDL or SDL's 
+DGA backend. Not running it as root will simply cause SDL to return an error 
+stating that it couldn't find any video devices (since it can't use DGA).
+
+So, the solution would be to either run the program as root (bad), or change 
+SDL_VIDEODRIVER to "x11" (good).
+
+
+locate libGL : it looks like you have both the Mesa and NVidia GL libraries installed.
+Try removing both (ignore dependencies) and then re-install the NVidia drivers.
+
+
+
+Assuming that you're using X Windows, set it to "x11" right before you run 
+your program, then check it right after:
+	export SDL_VIDEODRIVER="x11"
+	./yourprogram
+	echo $SDL_VIDEODRIVER
+
+and see what happens.
+
+I needed both SDL_VIDEODRIVER=x11 and also
+I had to run 'xhost + localhost'
+
+#include "SDL.h", not #include <SDL.h> (that's not portable to the various IDE's supported by SDL)
+
+
+
+Currently I have a simple Makefile, I would like to know if there is 
+somewhere a simple tutorial or guide about how to create a configure 
+file for SDL projects?
+
+Just create "Makefile.am" or copy it from one of the SDL demos. Then run:
+
+$ automake --add-missing    ## Creates Makefile.in
+$ autoconf                  ## Creates configure
+
+
+
+Blitting through an Intermediary
+
+1. Load the image. (Let's call it tmp.)
+
+	2. Disable alpha blending;
+		SDL_SetAlpha(tmp, 0, 0);
+
+	3. For each target surface (tmp2), create an RGBA
+	   surface:
+		tmp2 = SDL_CreateRGBSurface(SDL_SWSURFACE,
+				sw, sh, 32,
+				0xff000000, 0x00ff0000,
+				0x0000ff00, 0x000000ff);
+
+	3b. Disable alpha blending for the target surface:
+		SDL_SetAlpha(tmp2, 0, 0);
+
+	3c. Blit the area(s) you want as usual:
+		SDL_BlitSurface(tmp, &rect, tmp2, NULL);
+
+	3d. Enable alpha blending for the target surface:
+		SDL_SetAlpha(tmp2, SDL_SRCALPHA | SDL_RLEACCEL,
+				SDL_ALPHA_OPAQUE);
+
+	3e. (For performance) convert the surface to a suitable
+	    format for blitting to the screen:
+		sprite = SDL_DisplayFormatAlpha(tmp2);
+
+And of course, don't forget to SDL_FreeSurface() the temporary 
+surfaces. (Note that SDL_DisplayFormat*() creates a new surface 
+without freeing the original surface.)
+
+I didn't find a way to detect when user swithces away from prog from the docs
+Read the descriptions of the expose events at
+http://sdldoc.csn.ul.ie/eventstructures.php
+
+
+
+
+
+>what is this?
+>> 
+>> i use some sdl function in timer callback.
+>> these function are sdl_flip sdl_removetimer sdl_addtimer.
+>> could be this the problem?
+
+
+yes. AFAIK, timers run in a seperate thread, but you should only call
+blit operations in the thread that opened the screen. i usually use
+SDL_PushEvent to generate a SDL_USEREVENT that i handle in the main
+eventloop. there i read the parameters from the event.data fields, so i
+know what has to be done and do the blitting stuf.
+
+
+
+
+
+automake: `configure.ac' or `configure.in' is required
+
+Not that simple.
+
+  It appears I can use seperate threads for rendering 
+but have to be able to invoke the SDL equivalent of glXMakeCurrent in each 
+additional thread.
+
+Yep. In general, all drawing should be done in the main thread.
+http://www.libsdl.org/faq.php?action=listentries&category=2#61
+
+If you really want to do your OpenGL based drawing in a separate thread, you 
+can use platform dependent functions (GLX) to make your GL context the 
+current context in that thread (glXGetCurrentContext, glXGetCurrentDrawable, 
+SDL_GetWMInfo, glXMakeCurrent).
+
+A clever application design implies: use opengl in only ONE thread !
+
+
+ You just have to make sure that the GL context is current in the thread you're 
+doing the rendering from, and you can never attempt two video operations at 
+the same time, at least not on the same context (which makes sense; there 
+would be too many races involved).
+IIRC, you should also be able to render to two different contexts in two different threads simultaneously (e.g. rendering to the screen in one=20
+thread, rendering offscreen in another thread). At least in theory...
+  </p>
+ A separate thread for blitting/flipping video is necessary if you don't want 
+to block your main thread.  
+
+If the main thread is blocked for a variable amount of time during 
+blits/flips(depending on refresh rate, video card capabilities, etc.), and 
+you're dynamically synthesizing audio/video data(such as in an emulator), 
+you're going to have to increase the amount of sound you're buffering, which 
+increases latency.  With multi-threaded video, if the last video update 
+hasn't completed yet and the sound buffer is running low, you can just skip 
+that frame update easily. 
+
+
+>Hi, I'm making a splashscreen class for myself. And now i've run into a 
+>> problem with centering the image on the monitor. Now the sdl window appears 
+>> where my windowmanager puts it. How do I control its position?
+
+
+Try setting the environment variable SDL_VIDEO_CENTERED=1
+There's no official API for it yet.
+
+
+>Is there any possibility within SDL to control
+>> the position of the window? The default behavior
+>> of centering it is not perfect in my case.
+
+
+You can specify the environment variable SDL_VIDEO_WINDOW_POS=x,y.
+Using 1.2.7, this should work on X11, MacOSX and Windows.
+
+
+However, you shouldn't turn vsync off, except for testing purposes. Your 
+monitor won't display more frames without vsync, but it can cause tearing.
+This has also been discussed in the recent past.
+
+
+
+License :
+
+Pretty much the rules are:
+
+1) If you're modifying the library itself, all
+modifications must be open source.
+2) For programs using the library, it must be possible
+to insert a different version of the library. This can
+be done via:
+
+1) Making the program open source
+2) Dynamically linking the library
+3) Staticly linking the library, but providing all the
+object files necessary to recompile the program with a
+different version of that library.
+What the license requires you to do depends how you use it.
+So here are the possible scenarios:
+
+unmodified dynamically linked SDL
+no need to provide anything although it is recommended that you save the 
+SDL sources you originally used, so that people can get those from you.
+
+modified dynamically linked SDL
+the recommendation above changes to necessity.
+
+statically linked SDL
+just as the cases above, but in addition you have to provide the object 
+code of your program so that anybody can relink their own version of 
+the SDL to your code. You of course can provide the sources instead of 
+the object code.
+
+
+
+I know that I don't have to make the .o or source code available with my project
+if I dynamically link SDL.  However, I can't seem to get around having to link
+libsdl_main.a when I compile. (I'm in C++.)  If I link libsdl_main.a to make my
+project and then distribute without any .o or source files, am I in violation of
+the LGPL?  
+ 
+SDL_main.c, placed in the public domain by Sam Lantinga  4/13/98
+
+
+
+
+If I remember correctly Loki used a hybrid of these cases:
+Ie they provided only astatically linked program without the objectcode 
+AND the same program as dynamically linked, so that people who wanted 
+to  modify the used SDL could do that with the dynamically linked 
+version. This way the others got a fully working program without the 
+pain of makeing sure that the system has the correct version of SDL 
+library.
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Using%20SDL">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

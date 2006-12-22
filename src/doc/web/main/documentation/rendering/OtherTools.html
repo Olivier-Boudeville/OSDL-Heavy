@@ -1,0 +1,30 @@
+Mappy for PC - A utility for creating flexible 'maps' for 2D and 3D tile based games :
+http://www.tilemap.co.uk/mappy.php
+
+Making tiles :
+http://tilestudio.sourceforge.net/
+http://www.thecastle.com/software.html
+
+Making bitmap fonts :
+http://www.lmnopc.com/bitmapfontbuilder/
+
+
+Python + C++
+
+SWIG does not had extra dependency : it actually generates a 'stand-alone' C/C++ source code file that 
+wraps your C/C++ functions and classes.  The wrapper provides an 
+interface to your code from Python.  All you need to do is add this 
+C/C++ file to your project.  Once you have generated the wrapper code 
+you do not need to have SWIG installed, so your code will compile on 
+another machine with just the python development stuff  installed.
+
+An advantage of SWIG over Boost is that at any time you can change your 
+scripting language without modifying your C/C++ source code (well, 
+unless you have some functions that deal directly with python).  All you 
+have to do (in theory) is specify a different scripting language target 
+on the SWIG command line.  Also, to compile Boost code on another 
+machine you need to have Boost installed.
+
+Does anyone know of a (free) tool that will make a font into a set of equally sized tiles?
+
+http://www.lmnopc.com/bitmapfontbuilder/

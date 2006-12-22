@@ -1,0 +1,733 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, January 25.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Inputs management</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20inputs">mail us</a></p>
+  </div>
+  
+  <a name="_top_"></a> 
+  
+  
+<h1>Managing user inputs with SDL</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+
+<p>
+
+<center>
+    <table summary="Disclaimer" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+All the pieces of information described here come from the <a href="http://www.libsdl.org/mailman/listinfo/sdl" target="_blank">SDL mailing list</a>. Numerous SDL experts gave useful pieces of advice that we tried to collect thematically through the years. We deem these hints useful, and we hope not too many errors survived.<br>
+<center>Many thanks to all the members of the SDL list for this shared knowledge !</center>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<a name="toc"></a>
+<center>
+    <table summary="Inputs" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+				<a href="#generic">Input handling in general</a><br>
+				<a href="#keyboard">Keyboard inputs</a><br>
+				<a href="#mouse">Mouse inputs</a><br>
+				<a href="#joystick">Joystick inputs</a><br>				
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+  
+  
+<code><pre>
+Elo Touch Screen is supported by SDL from version 1.1.8.
+All you need to do is to indicate to the SDL engine that you want to use the elo touch system with frame buffer console (not X).
+To do that we have the SDL_putenv method.
+In my program I have added three lines:
+    SDL_putenv("SDL_VIDEODRIVER=fbcon"); //We use Frame Buffer Console which support elotouch and don't use X
+    SDL_putenv("SDL_MOUSEDRV=ELO");//We use elo touch screen as mouse
+    SDL_putenv("SDL_MOUSEDEV=/dev/ttyS0");//elo touch screen is plugged on COM1
+
+
+Touchscreen moving randomly in fullscreen mode : the issue was the screen resolution set in the xorg.conf did not match what was set to the full screen parameters.  I ajdusted this and restarted X and it worked fine after that.
+
+MS Windows on tablet PCs had this problem. Switching from DirectX to WinDIB drivers fixed it.
+
+The touch screen on most winCE devices maps as a mouse.  beware that the mouse postition is valid only while the 'button is pushed'.  The direction pad maps as arrow keys.  
+
+The directional pad on a PocketPC device is exposed in SDL as keyboard 
+keys, even though it's not really a full keyboard, and never as a joystick.
+
+
+You cannot catch the mousewheel with GetMouseState, since they do not stay 
+pushed down. You have to use the event queue, and look for SDL_MOUSEDOWN 
+events for these buttons.
+
+
+I was wondering what the difference is between:
+
++ using SDL_GetKeyState to read the current keyb state and
++ using the SDL_KEYDOWN/UP events to handle key presses
+
+
+They have different purposes - use whichever fits your need.
+
+If the question is, "Has the user pressed key x since I last checked?", 
+use events. (Don't use SDL_GetKeyState because you might miss short key 
+presses.)
+
+If the question is, "Is the x key pressed right now?", use 
+SDL_GetKeyState. (You can keep your own array of key states and update 
+it using events, as you seem to be doing now, but why reinvent the wheel?)
+
+If I'm reading the source right, you only need to call SDL_GetKeyState 
+once, and the pointer you get from it will stay valid forever (it's a 
+static variable in SDL_keyboard.c). (The documentation was not clear 
+about this - I just corrected it.) SDL is updating this array all the 
+time anyway, you don't lose any performance by reading it.
+
+
+
+
+This article may be helpful in clearing up your confusion about utf-6
+and utf-16:
+http://www.joelonsoftware.com/articles/Unicode.html
+
+But two questions about UTF-8 :
+
+>>
+>> 1. How do i know if the next character uses 1 Byte, 2 Bytes
+>> or more ?
+
+
+
+Here's a snippet from Tux Paint that might help:
+
+/* For each UTF8 character: */
+
+for (j = 0; j < utf8_str_len; j++)
+  {
+    /* How many bytes does this character need? */
+
+    if (utf8_str[j] < 128)  /* 0xxx xxxx - 1 byte */
+      {
+        utf8_char[0] = utf8_str[j];
+        utf8_char[1] = '\0';
+      }
+    else if ((utf8_str[j] & 0xE0) == 0xC0)  /* 110x xxxx - 2 bytes */
+      {
+        utf8_char[0] = utf8_str[j];
+        utf8_char[1] = utf8_str[j + 1];
+        utf8_char[2] = '\0';
+        j = j + 1;
+      }
+    else if ((utf8_str[j] & 0xF0) == 0xE0)  /* 1110 xxxx - 3 bytes */
+      {
+        utf8_char[0] = utf8_str[j];
+        utf8_char[1] = utf8_str[j + 1];
+        utf8_char[2] = utf8_str[j + 2];
+        utf8_char[3] = '\0';
+        j = j + 2;
+      }
+    else  /* 1111 0xxx - 4 bytes */
+      {
+        utf8_char[0] = utf8_str[j];
+        utf8_char[1] = utf8_str[j + 1];
+        utf8_char[2] = utf8_str[j + 2];
+        utf8_char[3] = utf8_str[j + 3];
+        utf8_char[4] = '\0';
+        j = j + 3;
+      }
+...
+
+This is probably good reading:  http://en.wikipedia.org/wiki/Utf-8
+
+What marks the end of my textline ?
+
+Utf-8 is compatible with null-terminated strings.  (The byte 0x00 refers
+  to codepoint 0, which is equivalent to the ASCII character '\0'.)
+When there are 2 Bytes do i still have to swap
+
+>> for different endianess ?
+
+
+No.
+
+
+The documentation of SDL_CreateRGBSurface states,
+
+that SDLSetVideoMode has to be called before.
+
+What if i want to only manipulate a surface without displaying it?
+If i call SDL_SetVideoMode a display surface will always be shown.
+
+You can use the Dummy Video Driver.
+
+
+how do I get joystick input without creating a window ? Try the dummy video
+driver
+
+
+ I was wondering if there is a way to get the ASCII code of an 
+aggregate key event, for example shift+'a' to get 'A'.
+
+SDL_EnableUNICODE (1);   in your init stuff
+Then use the `unicode' field in the keysym. This does not solve the numeric keypad issue, as it doesn't produce unicode.
+Another option is to do the conversions yourself:
+
+--
+
+int get_char(SDL_keysym sym)
+{
+       int c;
+
+       // Do not want the modifier keys by themselves
+       if (sym.sym >= SDLK_NUMLOCK && sym.sym <= SDLK_COMPOSE) {
+               return (0);
+       }
+
+       c = sym.sym;
+
+       if ((sym.mod & KMOD_LSHIFT) || (sym.mod & KMOD_RSHIFT)
+           || (sym.mod & KMOD_CAPS)) {
+
+               // Get upper case
+               if (c >= SDLK_a && c <= SDLK_z) {
+                       c = c - 32;
+               } else if (c == SDLK_BACKQUOTE) {
+                       c = '~';
+               } else if (c == SDLK_1) {
+                       c = SDLK_EXCLAIM;
+               } else if (c == SDLK_2) {
+                       c = SDLK_AT;
+               } else if (c == SDLK_3) {
+                       c = SDLK_HASH;
+               } else if (c == SDLK_4) {
+                       c = SDLK_DOLLAR;
+               } else if (c == SDLK_5) {
+                       c = '%';
+               } else if (c == SDLK_6) {
+                       c = SDLK_CARET;
+               } else if (c == SDLK_7) {
+                       c = SDLK_AMPERSAND;
+               } else if (c == SDLK_8) {
+                       c = SDLK_ASTERISK;
+               } else if (c == SDLK_9) {
+                       c = SDLK_LEFTPAREN;
+               } else if (c == SDLK_0) {
+                       c = SDLK_RIGHTPAREN;
+               } else if (c == SDLK_MINUS) {
+                       c = SDLK_UNDERSCORE;
+               } else if (c == SDLK_EQUALS) {
+                       c = SDLK_PLUS;
+               } else if (c == SDLK_LEFTBRACKET) {
+                       c = '{';
+               } else if (c == SDLK_RIGHTBRACKET) {
+                       c = '}';
+               } else if (c == SDLK_SEMICOLON) {
+                       c = SDLK_COLON;
+               } else if (c == SDLK_QUOTE) {
+                       c = SDLK_QUOTEDBL;
+               } else if (c == SDLK_COMMA) {
+                       c = SDLK_LESS;
+               } else if (c == SDLK_PERIOD) {
+                       c = SDLK_GREATER;
+               } else if (c == SDLK_SLASH) {
+                       c = SDLK_QUESTION;
+               } else if (c == SDLK_BACKSLASH) {
+                       c = '|';
+               }
+       }
+       // control keys
+       if ((sym.mod & KMOD_LCTRL) || (sym.mod & KMOD_RCTRL)) {
+               if (c >= SDLK_a && c <= SDLK_z) {
+                       c = c - 96;
+               }
+       }
+       // numeric key pad
+       if (c == SDLK_KP_DIVIDE) {
+               c = SDLK_SLASH;
+       } else if (c == SDLK_KP_MULTIPLY) {
+               c = SDLK_ASTERISK;
+       } else if (c == SDLK_KP_MINUS) {
+               c = SDLK_MINUS;
+       } else if (c == SDLK_KP_PLUS) {
+               c = SDLK_PLUS;
+       } else if (c == SDLK_KP_ENTER) {
+               c = SDLK_RETURN;
+       }
+
+       if (sym.mod & KMOD_NUM) {
+               if (c == SDLK_KP0) {
+                       c = SDLK_0;
+               } else if (c == SDLK_KP1) {
+                       c = SDLK_1;
+               } else if (c == SDLK_KP2) {
+                       c = SDLK_2;
+               } else if (c == SDLK_KP3) {
+                       c = SDLK_3;
+               } else if (c == SDLK_KP4) {
+                       c = SDLK_4;
+               } else if (c == SDLK_KP5) {
+                       c = SDLK_5;
+               } else if (c == SDLK_KP6) {
+                       c = SDLK_6;
+               } else if (c == SDLK_KP7) {
+                       c = SDLK_7;
+               } else if (c == SDLK_KP8) {
+                       c = SDLK_8;
+               } else if (c == SDLK_KP9) {
+                       c = SDLK_9;
+               } else if (c == SDLK_KP_PERIOD) {
+                       c = SDLK_PERIOD;
+               }
+       } else {
+               if (c == SDLK_KP0) {
+                       c = SDLK_INSERT;
+               } else if (c == SDLK_KP1) {
+                       c = SDLK_END;
+               } else if (c == SDLK_KP2) {
+                       c = SDLK_DOWN;
+               } else if (c == SDLK_KP3) {
+                       c = SDLK_PAGEDOWN;
+               } else if (c == SDLK_KP4) {
+                       c = SDLK_LEFT;
+               } else if (c == SDLK_KP5) {
+                       c = 0;
+               } else if (c == SDLK_KP6) {
+                       c = SDLK_RIGHT;
+               } else if (c == SDLK_KP7) {
+                       c = SDLK_HOME;
+               } else if (c == SDLK_KP8) {
+                       c = SDLK_UP;
+               } else if (c == SDLK_KP9) {
+                       c = SDLK_PAGEUP;
+               } else if (c == SDLK_KP_PERIOD) {
+                       c = SDLK_DELETE;
+               }
+       }
+
+       return (c);
+}
+
+
+
+
+How to collect all the pending keypresses and avoiding to 
+have to discard all the mouse events? This is needed 
+in any FPS game (DooM, Quake etc..) where the user uses 
+both the keyboard and the mouse at the same time.
+
+EG:
+
+    while (SDL_PollEvent(&event))
+        root_sdl_event_filter(&event);
+
+with
+
+void root_sdl_event_filter(const SDL_Event *event)
+{
+    switch (event->type)
+    {
+        case SDL_KEYUP:
+        case SDL_KEYDOWN:
+            return(sdl_key_filter(event));
+        case SDL_MOUSEMOTION:
+            break;
+      ...
+    }
+
+    return;
+} 
+
+The above code makes the while() stuck as long as the user 
+keeps moving the mouse thus introducing a jerky movement in 
+the game - That's one of the reasons why Icculus' port of Duke 
+Nukem 3d has a Jerky mouse behavior.
+
+So I tryed to use a 
+
+SDL_PumpEvents(); 
+SDL_GetMouseState(...);
+
+before doing a 
+
+while (SDL_PollEvent(&event)) 
+   root_sdl_event_filter(&event); 
+
+because only the mouse position at the time we probe 
+is actually needed for FPS games. But SDL_GetMouseState 
+doesn't seem to remove the move mouse events at all, so 
+it's pointless and the while(...) will remain very laggy.
+
+I also had this issue. I solved it by telling SDL to ignore mouse
+movement events:
+
+SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
+
+Then I polled for mouse movement per frame with SDL_GetMouseState()
+
+For an FPS you might be best reading key input this way too, since as
+multiple keypresses will no doubt be needed. It would be far more
+efficient to dump keystate into an array and check buttons in there
+than process messages.
+
+
+Apparently SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE) doesn't discard the
+events for "SDL_PumpEvents(); SDL_GetMouseState();" but hide them from
+"SDL_PollEvent(&event)"
+
+
+  
+What is the supposed meaning of the SDL_Event.key.keysym.sym field and the corresponding SDLK_* constants? "the key that's labeled 'Z'", i.e. a reference to a key that generates a specific character
+
+The best solution is to map to the unshifted code for the current keyboard. Unfortunately, this leaves SDL's keysym set lacking, and this can't be addressed until a major API change (1.3).
+
+
+Touchscreen 'mouse' goes crazy. It only happens when using directx driver. I must fall back to windib driver to get it working properly. Decreasing the acceleration of the video driver to 'disable directdraw acceleration' also fixes the problem.
+
+
+I'm trying to run a SDL application in an embedded enviroment,
+where the X-server has no window manager. The mouse and video are working properly but I have a problem: I don't get the keyboard events in my app
+
+when using X, the keyboard
+handler is built into the X-server.  It's possible that your X isn't
+loading the required server to handle the input.
+  
+  
+Now I verify the event 's type
+ if (event.type==SDL_MOUSEMOTION)
+before SDL_GetMouseState and it works fine.
+
+
+Anyway, X11 may support rgba cursors. Take a look at
+http://www.die.net/doc/linux/man/man3/xcursor.3.html or google for "man
+page xcursor" for more info
+
+it's the hardware that draws the cursor as an overlay, so the cursor rendering is free. But the main advantage is that it makes the cursor a lot more responsive since it is refreshed more often, and thus gameplay is way smoother.
+
+I have just a little problem with the mouse in Fullscreen, the cursor stays at the left top corner. If I move the mouse the 
+SDL_MOUSEMOTION event is generated, but the cursor doesn't move.
+In fullscreen normally the mouse doesn't show (at least that is what happens here)
+
+Also I use:
+
+SDL_ShowCursor(SDL_DISABLE);
+SDL_WM_GrabInput(SDL_GRAB_ON);
+
+to "grab" the mouse-input (even in non-fullscreen the visual cursor is 
+turned off and it's input is always mine, as
+long as my application has focus.
+
+And to release it:
+
+SDL_ShowCursor(SDL_ENABLE);
+SDL_WM_GrabInput(SDL_GRAB_OFF);
+
+Using the cursor as normal in fullscreen mode would sort of conflicts with the full-screen concept  because it's cursor is controlled and drawn by the window-manager..
+
+ 
+force feedback : for linux there is libff
+
+  
+The SDLK_* symbols are to be considered portable "scancodes", and have nothing much to do with ASCII. Each symbol is supposed to represent a physical key on the keyboard, pretty much disregarding whatever might be printed on the keycap. Use these when you want a "mega gamepad" sort of input device.
+
+Use the UNICODE stuff if you want the ASCII (or rather, UNICODE) representations of keystrokes when available. (In a normal layout, only key down events generate UNICODE, and some keys are primarilly 
+used to alter the keyboard state, affecting other keys; ie "dead keys".)
+
+
+When about 3 keyboard keys are keeped pressed, it is impossible to press more keys (the presses are ignored).
+
+It can be used to cheat in games in which several people play on the same keyboard .
+
+It is mainly a hardware problem. Keyboards are wired like a big array,and pressing a key gives a row and a column (approximately). So if you press more than 2-3 keys, you have many more connections done, and the hardware don't send all the keys pressed.
+
+http://www.sjbaker.org/steve/omniv/keyboards_are_evil.html
+
+To make things even worse, keyboards deal with ghost keys differently. Some very cheap and simple ones just ignore the problem and throw any "detected" keys, including ghosts, at the PC. Others try to hide the problem by filtering out some or all potential ghosts in combinations that are known to produce ghosts.
+
+Solution: Use a joystick! This is what they are for. And SDL support both analog and digital joysticks. Only force feedback (and maybe rumble ?) is missing.
+
+I have two USB mouses connected to my linux box. Is there a way to check inside a SDL application which mouse was pressed ? For me it looks like even in the X11 core routines there is no way to figure out which mouse was pressed ?
+
+
+Chances are, you're using /dev/input/mice, which blends all USB mouse 
+input into one logical device (partially so that mouse input in the X 
+server continues to work as you plug and unplug mice).
+
+
+
+<a name="generic"></a>
+<h2>Input handling in general</h2>
+
+
+<p>
+To fully support 4 people playing on the same system, one will probably have to support joystick input.
+</p>
+
+<p>
+
+  <dl>
+  
+	<dt>Why using SDL_PollEvent() to deal with events, instead of using SDL_GetKeyState() and SDL_GetMouseState()?
+	</dt>
+		
+	<dd>	
+	<p>Basically, SDL_Get*State() gives you the current state after all events have been processed, so if a key or button has been pressed and released before you process events, then the pressed state will never show up in the SDL_Get*State calls.
+	</p>
+	
+	<p>
+	Since most operating systems handle keyboard and mouse input in an input queue, and you only have a snapshot of the keyboard state at any given time, the only way to catch keyboard state changes as they occur is to process events and handle them appropriately.
+	</p>
+    </dd>
+	
+  </dl>
+  	
+</p>
+
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="keyboard"></a>
+<h2>Keyboard handling</h2>
+
+<h3>Raw and text input</h3>
+
+<p>
+Handling keyboard for a game control (raw input) and a GUI (text input) are two different things.
+</p>
+
+<p>
+In a game context, whenever a key is pressed, you store in a array the fact the key is down, so you will react accordingly in your input handling code as long as it is not released. For example, if left is down, you will move player some pixels to the left. When the key is released, you clear its state. That's what you are doing in your code.
+</p>
+
+
+<p>
+In a GUI context, whenever a key is pressed, you react to that event. If left is pressed, you move cursor one char to the left. That's it. You do not need to store anything or even handle SDL_KEYUP events. Of course, you need to use SDL_EnableUNICODE() to get usuable infos. You will also use
+SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL), to properly handle key repeat. Only key presses and repeats will be handled, not key releases in this context.
+</p>
+
+<p>
+So, you need to switch from one mode to the other depending on the context. For example when you see in your main game loop that user pressed, say, F12, then you clear all key pressed, set a flag saying you are in GUI mode, and draw your dialog box. Depending on the type of game (realtime or not), you will go to another loop (in which case the games is paused) or continue in the main one, but handling keyboard differently since you are in GUI mode.
+</p>
+
+<p>
+The way SDL handles its key state is when you pump the event loop, as it queues each key event, it will update its internal keyboard state array.
+</p>
+
+
+<p>
+
+  <dl>
+  
+	<dt>How do I create a code that lets users of different keyboard mappings enter those characters their way ?</dt>
+	<dd>Enable UNICODE input and use the unicode field instead. Use SDLK_* only when you want to use the keyboard as an oversized gamepad.</dd>
+
+  </dl>
+
+</p>
+
+
+<h3>Simultaneous key presses</h3>
+
+<p>
+Many keyboards cannot handle even 3 keys pressed simultaneously, depending on where they are on the keyboard. This is a hardware limitation, due to the circuitry on the keyboard.
+</p>
+
+<p>
+You can find a normal PS2 keyboard that passes well multiple keypress events. For example, old DELL keyboards (model AT102W heavy, indestructible) do it well, but newer multimedia Logitech (Y-SQ33) and many others cannot do.
+</p>
+
+
+<h3>Converting a keypress into the actual character displayed on it</h3>
+<h4>Or : why neither of the two classical ways of handling keypresses are satisfactory for games</h4>
+
+<p>
+SDL provides Unicode translation for key-down events. Look at the 'unicode' field of the keysym structure. In order for it to be valid, though, you must first enable Unicode translation with an
+<code>SDL_EnableUNICODE(1)</code> call.  The release events do not get translated (more infos : <a href="http://www.libsdl.org/cgi/docwiki.cgi/FAQ_20Unicode" target="_blank">SDL Unicode FAQ</a>).
+</p>
+
+<p>
+Let's suppose I want to program a game where the keys that are covered with the '[' and ']' characters on an american keyboard should have a certain meaning. Now, I can interpret the scancode field of SDL_keysym struct, but this would make my program platform dependent (I would have to "#ifdef __WIN32__" etc.).
+</p>
+
+<p>
+Or I can use the sym field, which provide platform independent keys, but this makes my program dependent on the selected "locale" of the user, i.e. a german user would have to press AltGr+'8' or AltGr+'9' for the '[' and ']' keys respectively. Of course the later option is completely useless if the AltGr key had also a certain meaning.
+</p>
+
+<p>
+The situation gets even worse when I want to assign meta-keys or dead keys (ex : on some keyboard layouts, the spacebar is a modifier key). Here I can only fallback to the scancode solution.
+</p>
+
+<p>
+It is not that the keyssyms are really bad, they are perfectly suitable for text input-lines etc, where the user expects his current locale, but useless for "raw" keyboard accesses.
+</p>
+
+
+<h4>The solution : customization by the user</h4>
+<p>
+You could allow for keys to be customized, or use different keymaps depending on the locale. But this problem has little or nothing to do with the language / country / locale of the user, on a laptop plenty of keys that exist on a full keyboard are missing, or require holding the dreaded Function key. This is generally not suitable for games, but most tend to let me customize my controls, so it is not a problem any longer, you should probably do what they are doing.
+</p>
+
+<p>
+While customization is in general a good idea, it does not really help me in this topic. I woud still be forced to use scancodes instead of the keysyms, since not all keys are reachable via the keysyms. For example, on my current locale, both the ESC and the '[' key map to escape. While this is good for programming / writing text, I would prefer a raw keyboard when playing games.
+</p>
+
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="mouse"></a>
+<h2>Mouse handling</h2>
+
+<h3>Event frequency</h3>
+
+<p>
+Your average CPU executes some 50 million instructions between each event from a good, properly configured mouse. That's 600 000 printed pages of assembler code, or somewhere around 100 000 printed pages of some high level language.
+</p>
+
+
+<h3>Handling double click</h3>
+
+<p>
+When you get a single click, just :
+
+<code><pre>
+
+now = SDL_GetTicks() ;
+
+if last_time - now < some number
+  the user did a double click
+else
+  last_time = now
+</pre></code>
+</p>
+
+<p>
+To act nicely, also check if the mouse has moved substantially, or a too low interval between clicks, to avoid accidental double clicks.
+</p>
+
+<p>
+You should ideally make the interval user-configurable, and possibly include some conditionally compiled OS-specific code to get system-wide settings.
+</p>
+
+  
+
+
+
+
+<h3>Cursor</h3>
+
+<p>
+  <dl>
+
+    <dt>In win32, if I run fullscreen, the windows cursor disappears, while windowed applications keep the cursor. Does this act the same in other OS's ? Or should I be using SDL_ShowCursor() anyway ?</dt>
+    <dd>
+	<p>
+	This happens if you are writing directly to video memory (see <a href="http://www.libsdl.org/faq.php?action=listentries&category=2#83">SDL FAQ</a>). You can disable system cursor, create a sprite and blit it where the cursor is. It allows both color and total control
+</p>	
+	<p>
+	You can have SDL use the X11 cursor, which is not bound to your game's framerate, but this is specific to the application and not SDL. Many games hide the system (X11) cursor and render a textured quad in-game for the mouse cursor.
+	</p>
+	</dd>
+
+  </dl>
+
+</p>
+
+
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="joystick"></a>
+<h2>Joystick handling</h2>
+
+<p>
+The SDL joystick code is factored out of the rest of the event code. It is built in such a way that it is possible to get joystick events even when you cannot get any other type of events.
+</p>
+
+
+<p>
+As joysticks are often special cases, they are treated as such. For example, if the X server is properly configured using the X input extension, all input devices are handled by the server and they all come to your application over the connection to the server and are all tied tightly to the video systems. You cannot get them unless you have a window. But X servers are rarely configured to handle
+joysticks correctly, so they have to be handled by a polling loop.
+</p>
+
+<p>
+Windows does things differently. But, generally the joysticks are either tied closely to the video system, or they are not at all.
+</p> 
+
+<p>
+So, what do you do if you want to have a portable consistent way of handling joystick input ? You make it all look like events, even though it may be polled. It is easy to make a polling loop push events on an event queue. 
+</p>
+
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20inputs">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

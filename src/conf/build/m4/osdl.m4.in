@@ -1,0 +1,225 @@
+# Autoconf macro specifically written for OSDL users.
+
+# This file is therefore not generated, and should be kept as it is.
+
+# This macro is of no use for the OSDL library itself. It is provided to
+# help user code, be it other libraries or programs, to have their 
+# 'configure.ac' use correctly the OSDL library.
+
+# This m4 macro tests for the OSDL users everything needed, including
+# appropriate OSDL headers and library. It then records the relevant 
+# settings for the build of the user program or library.
+
+# More precisely, this macro checks that the OSDL header (OSDL.h) is
+# available, i.e. that it exists and can be preprocessed and compiled.
+# Then a check is performed to ensure the OSDL headers and the OSDL 
+# library that will be used match, i.e. that the library implements the API
+# described in the headers (depending on the version, newer headers mixed
+# with an obsolete library would fail at the link step).
+# Finally, a test program is built and run to check that the full tool chain 
+# behaves flawlessly, including with respect to the user-specified OSDL
+# version expected by the code being built after this configuration step
+# (versions are compared according to the libtool rules about specified
+# downward-compatibility).
+
+
+# OSDL users can execute 'aclocal' (ex : 'aclocal -I . --output=aclocal.m4)
+# to have our macros added to their 'aclocal.m4', provided that 
+# OSDL_PATH is called from the user configure.ac.
+
+# Note that this file (osdl.m4) depends on pkg.m4 (it is available from the
+# same directory).
+
+# This macro will take advantage of locations specified to the configure
+# script, ex : ./configure --with-libOSDL=~/myPrefixedOSDLInstall
+
+#
+# OSDL_PATH( ac,rev,anc )
+#
+# Checks that the OSDL library can be used, stops with AC_MSG_ERROR if it
+# failed, otherwise updates the LIBS variable accordingly.
+#
+# The parameters allow to specify which minimum version of OSDL is required.
+#
+# The three parameters of the macro specifies the minimum OSDL
+# version required, according to libtool-style versioning.
+#
+# Example : in configure.ac, OSDL_PATH( 0,4,0 )
+#
+AC_DEFUN([OSDL_PATH],
+[
+  # 1. take care of OSDL (m4 code directly here) :
+  # Here is specified for each given OSDL release what are the most ancient
+  # versions that are still compatible with this current version :
+  OSDL_OLDEST_SUPPORTED_MAJOR=0
+  OSDL_OLDEST_SUPPORTED_MINOR=4  
+  # Setting the install path of the OSDL library :
+  OSDL_LIBS=" -lOSDL "
+  AC_ARG_WITH(libOSDL,
+    AS_HELP_STRING([--with-libOSDL],[path to the OSDL library (prefix)]),
+      [
+        OSDL_CPPFLAGS="-I${withval}/include/OSDL"
+        OSDL_LIBS="-L${withval}/lib -lOSDL"
+		# Get ready for configure tests :
+		LD_LIBRARY_PATH="${withval}/lib:$LD_LIBRARY_PATH"
+		export LD_LIBRARY_PATH
+      ],[
+		default_install_path=/usr/local
+	  	# No path specified, trying to guess it :
+		# Is pkg-config available ?
+		
+		# Note : see the top of our pkg.m4 to understand why this file is 
+		# needed.
+		
+		AC_PATH_PROG(PKG_CONFIG,pkg-config,[no]) 
+		if test $PKG_CONFIG = "no" ; then 
+			AC_MSG_WARN([pkg-config tool not found, using default install path ${default_install_path}])
+        	OSDL_CPPFLAGS="-I${default_install_path}/include/OSDL"
+        	OSDL_LIBS="-L${default_install_path}/lib -lOSDL"
+		else 
+			# Here pkg-config is available.
+			# Use it if possible, otherwise choose default values :
+			# PKG_CONFIG_PATH should contain /usr/local/lib/pkgconfig, use
+			# export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
+			# Check if OSDL pkg-config configuration file is found :
+			AC_MSG_CHECKING([for osdl-$1.$2.pc (OSDL pkg-config configuration file)]) 
+			if $PKG_CONFIG --exists osdl-$1.$2 ; then
+				AC_MSG_RESULT(yes) 
+				PKG_CHECK_MODULES(OSDL,osdl-$1.$2 >= $OSDL_OLDEST_SUPPORTED_MAJOR.$OSDL_OLDEST_SUPPORTED_MINOR,
+				[
+					# pkg-config succeeded and set OSDL_CFLAGS and 
+					# OSDL_LIBS :
+					OSDL_CPPFLAGS="${OSDL_CFLAGS} ${OSDL_CPPFLAGS}"
+					# OSDL_LIBS left as set
+					# Get ready for configure tests :
+					LD_LIBRARY_PATH=`$PKG_CONFIG osdl-$1.$2 --variable=libdir`:$LD_LIBRARY_PATH
+					export LD_LIBRARY_PATH
+				],
+				[
+					AC_MSG_WARN([pkg-config failed for osdl-$1.$2, defaulting to install path $default_install_path])
+        			OSDL_CPPFLAGS="-I${default_install_path}/include/OSDL"
+        			OSDL_LIBS="-L${default_install_path}/lib -lOSDL"
+				])
+			else
+				AC_MSG_WARN([pkg-config did not find osdl-$1.$2.pc, using default install path ${default_install_path}])
+        		OSDL_CPPFLAGS="-I${default_install_path}/include/OSDL"
+        		OSDL_LIBS="-L${default_install_path}/lib -lOSDL"
+			fi
+		fi			
+     	])
+		
+  # 2. take care of Ceylan (from ceylan.m4) :
+  # 
+  CEYLAN_PATH(0,4,0)
+
+  # 3. take care of SDL (from sdl.m4) :
+  AM_PATH_SDL( 
+  
+  if test x$ac_cv_cxx_compiler_gnu = xyes; then
+    # Needed to avoid gcc warning triggered by a needed Visual C++ pragma :
+    OSDL_CPPFLAGS="$OSDL_CPPFLAGS -Wno-unknown-pragmas"
+  fi
+   
+  # OSDL_DLL section.
+
+
+  # For all builds, OSDL_DLL will be actually defined
+  # thanks to command-line preprocessor options (-DOSDL_DLL="...")
+  # so that headers can avoid #including platform-specific configuration
+  # files.
+
+  # Needed when building a library on Windows platforms :
+  OSDL_DLL_IMPORT_WINDOWS="__declspec( dllimport )"
+
+  OSDL_DLL=
+
+  case "$target" in
+	
+    *-*-win32*) 
+        OSDL_DLL="${OSDL_DLL_IMPORT_WINDOWS}"
+        ;;
+
+	*-*-cygwin*)
+        CFLAGS="$CFLAGS -I/usr/include/mingw -DWIN32 -Uunix -mno-cygwin"
+        LIBS="$LIBS -mno-cygwin"
+        OSDL_DLL="${OSDL_DLL_IMPORT_WINDOWS}"
+        ;;
+		
+	*-*-mingw32*)
+        LIBS="-lmingw32 $LIBS -mwindows"
+        OSDL_DLL="${OSDL_DLL_IMPORT_WINDOWS}"
+        ;;
+													
+  esac
+	  
+
+  # Wanting OSDL_DLL to be replaced by nothing, not "", on UNIX :	  
+  if test "${OSDL_DLL}" = "" ; then
+ 	 CPPFLAGS="$CPPFLAGS $OSDL_CPPFLAGS $pthread_cflags -DOSDL_DLL="
+  else	 
+ 	 CPPFLAGS="$CPPFLAGS $OSDL_CPPFLAGS $pthread_cflags -DOSDL_DLL=\"${OSDL_DLL}\""
+  fi
+
+   
+  LIBS="$LIBS $OSDL_LIBS"
+  # Uncomment to debug :
+  #AC_MSG_NOTICE([OSDL guessed CPPFLAGS = $CPPFLAGS])
+  #AC_MSG_NOTICE([OSDL guessed LIBS = $LIBS])  
+  AC_SUBST(CPPFLAGS)
+  AC_SUBST(LIBS)
+  # Checking for OSDL header files :
+  have_osdl=yes
+  AC_MSG_NOTICE([checking for the OSDL library])
+  # AC_CHECK_HEADERS checks better than AC_PREPROC_IFELSE :
+  # (compilable more interesting than only preprocessable)
+  AC_LANG_PUSH([C++]) 
+  AC_CHECK_HEADERS([OSDL.h],[],[have_osdl=no])
+  if test x$have_osdl = xno; then
+    AC_MSG_ERROR([No usable OSDL header file (OSDL.h) found. If the OSDL library has been installed in a non-standard location (ex : when configuring it, --prefix=$HOME/myOSDLInstall was added), use the --with-libOSDL option, ex : --with-libOSDL=$HOME/myOSDLInstall.])
+  fi
+  # Now we must check that we will link indeed to the expected version
+  # of OSDL library, as specified by OSDL_PATH arguments :
+  # Note : 
+  #   - this test will be disabled if cross-compiling
+  #   - we do not use AC_CACHE_CHECK and al on purpose, to avoid the
+  # traps of cached entries.
+  have_working_osdl_library=yes
+  AC_RUN_IFELSE([
+  	AC_LANG_PROGRAM(
+	  [[#include "OSDL.h"]],[[OSDL::Uint32 x;]])],
+	[],[have_working_osdl_library=no],[AC_MSG_WARN([No OSDL library sanity test run, since cross-compiling])])
+  AC_MSG_CHECKING([whether the OSDL library can be linked to])
+  if test x$have_working_osdl_library = xyes; then
+  	# Cross-compilation goes here, too.
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([The OSDL library could not be successfully linked to.])  
+  fi
+  have_osdl_headers_matching_library_version=yes
+  AC_RUN_IFELSE([
+  	AC_LANG_PROGRAM(
+	  [[#include "OSDL.h"]],[[CHECK_OSDL_VERSIONS();]])],
+	[],[have_osdl_headers_matching_library_version=no],[AC_MSG_WARN([No OSDL library and headers matching test run, since cross-compiling])])
+  AC_MSG_CHECKING([whether the OSDL headers match the library version])
+  if test x$have_osdl_headers_matching_library_version = xyes; then
+  	# Cross-compilation goes here, too.
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([The OSDL installation does not seem to be clean, since headers did not match the library version.])  
+  fi
+  have_compatible_osdl_version=yes
+  AC_RUN_IFELSE([
+  	AC_LANG_PROGRAM(
+	  [[#include "OSDL.h"]],[[OSDL::LibtoolVersion targetVersion( "$1.$2.$3" ) ; if ( ! OSDL::GetVersion().isCompatibleWith( targetVersion ) ) return 1 ;]])],
+	[],[have_compatible_osdl_version=no],[AC_MSG_WARN([No OSDL version compatibility test run, since cross-compiling])])
+  AC_MSG_CHECKING([whether we are linked to a $1.$2.$3-compatible OSDL version])
+  if test x$have_compatible_osdl_version = xyes; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([The OSDL library we would link to is not compatible with the one expected by the program being configured])  
+  fi
+  AC_LANG_POP([C++]) 
+])

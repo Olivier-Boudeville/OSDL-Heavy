@@ -1,0 +1,130 @@
+
+
+		TO-DO list for the OSDL project, release @OSDL_VERSION@
+		 
+			
+		
+Tasks priorities, shown between brackets, range from 1 (the smallest priority) to 10 (the top).
+
+Tasks are listed thematically, in each theme from the most important task to the least.
+
+First concern : settle down a first limited engine able to power a first light-weight game.
+
+
+
+* Urgent ones :
+
+	[8] check that pitch is used instead of w for pixel-level offsets 
+
+
+* Overall properties to aim
+
+	[7] do not use internally CFLAGS, LDFLAGS, OPT and so on to allow user to redefine them
+	[7] should be as automatically installed as feasible : portable tested LOANI
+	[6] should run at adequate speeds on a Pentium 3 1.1 Ghz machine with 32 Mb GeForce 2 graphics card . That's our 'minimum spec,' or 'minimum technical requirements,' more or less. Much of the speed will depend on the game you run it with, though - a 3D shooter will obviously run slower than Tetris, even though they may be built on the same engine.
+	[4] provide a video console allowing to communicate directly with the 
+game engine during a game session : Quake-like console/SDL_console
+	[4] make main modules (ex : Video module) being as a finite state machine ?
+	[4] add CPU extensions auto-detection informations (see SDL-1.2.7/test/testcpuinfo.c)
+	[3] provide a clean decoupled rendering (audio and video) from the game's logic (see http://olofson.net/examples.html for smooth and accurate game logic that is independent of the rendering frame rate.)
+
+	
+	
+* Video functionnalities :	
+
+	[9] add run-time informations about effectivly SDL resources obtained (hardware, must lock, etc.) and about window manager
+	[6] add color conversion (ex : YUV, see test/testoverlay.c)
+	[6] add a specialized child Surface type, ScreenSurface, which automatically handles its specificities (ex : only blit, no deallocation, more methods such as display(), and so on). It will allow to be prepared for multiple ScreenSurfaces, in order to be ready for SDL 2.0 	
+	[5] add a set of special effects for images (appearing, vanishing, morphing, etc. : see list)
+	[5] add framework members : MediaContent, Sprite, Bitmap/Image, Geometry (Geometry2D/Geometry3D
+	[4] implements efficient frame rate measurement and limiter
+	[3] add basic pixel-level surface manipulation (mirror, flip, etc.)
+	[3] openGL support (choice of different back-ends) [glSDL ?]
+	[3] add gamma ramp handling (see SDL-1.2.7/test/testpalette.c, SDL-1.2.7/test/testgamma.c)
+	[0] add dynamic loading of OpenGL library (if ever it may be useful to anybody) (see SDL-1.2.7/test/testgl.c)
+
+
+* Media functionnalities :
+		
+	[6] move all content files (ex : images, screenshots) to a separate OSDL-data package
+	[6] investigate so that a set of screenshots regularly taken can be converted into a video (ex : mgeg), with sounds captured. Candidates are : 
+		- mencoder \*.jpg -mf on:fps=25 -o output.avi -ovc divx4 
+		- http://www.theorie.physik.uni-goettingen.de/~ostreich/transcode/
+	[2] use a MPEG player (ex : http://www.lokigames.com/development/smpeg.php3)
+	
+	
+* Sound functionnalities :
+		
+	[6] add sound support (audio module)
+	[5] add Ogg Vorbis support
+	[4] add voice synthesis support
+	[4] add sound streaming from remote servers
+	[4] add sound capture support
+		
+		
+* Events handling functionnalities :
+
+	[7] add a keyboard-remapping facility to allow for on-US layouts and 
+customizable keys (look-up table), preferably that can be saved and reloaded 
+at will to support multiple layouts for multiple different players		
+	[6] make events namespace behave like the Video one
+	[5] add a frame per seconds displayer and limiter (40 FPS is generally enough)
+	
+		
+* Generic multimedia functionnalities :
+
+	[4] add an information provider about asked and *actually* obtained quality of service (ex : hardware surface, sound sample rate, etc.)  
+			
+	
+* Network :
+	
+	[4] gaming services : LAN session discovery, ping measurement, match-making and ranking, anti-cheat mecanisms, player profile and statistics kept on server, game portals
+	
+	
+* LOANI
+
+	[5] use CVS tags to retrieve only last stable versions, since CVS cannot be always non-broken
+	[3] make a pure python (no shell, no tool such as wget) maybe graphical version of LOANI (from sources and/or from binaries), in order to ease LOANI's developement and ensure it is portable ? 
+	[3] add gdb to LOANI's installs in commonBuildTools
+	[3] have a LOANI's special mode retrieving Ceylan and OSDL *archives* (not from CVS) so that a full installation can be made without Internet access or behind a proxy that filters out CVS
+	[3] add a cleanup mode which gets rid of the unnecessary files (ex : gcc build tree)
+	[0] autopatcher system (such as http://www.rakkarsoft.com/raknet/downloads/RakNet.zip)
+		
+		
+* Documentation :
+
+	[6] write yag-osdl's documentation
+	[5] update HTML documentation : architecture, high level API description
+	[5] inspect site's web page with Internet Explorer and its script debugger ('myWin' error)
+	[4] create OSDL's user guide
+	[3] have a deep look at doxygen's result and improve from that the comments
+	[2] finish Yag-osdl integration to auto-generate gallery ressources
+	[2] add in header files something like :
+
+/*
+ * OSDL : Object-oriented Simple DirectMedia Layer
+ *
+ * Web page : http://osdl.sourceforge.net
+ *
+ * Copyright (C) 2004 "the OSDL team" (see AUTHORS or Authors.html file)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License (LGPL) 
+ * as published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ */
+
+* Website
+
+	[3] make a special page for game-over and game on	
+	[3] integrate value chain and console based pages in Video Game Knowledge Base
+	[2] integrate SDL knowledge base in website
+
+	
+	

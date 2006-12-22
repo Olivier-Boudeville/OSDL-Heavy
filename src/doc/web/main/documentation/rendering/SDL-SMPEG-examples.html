@@ -1,0 +1,27 @@
+SMPEG example :
+
+// play mpeg
+int x = (o.width - info.width) / 2;
+int y = (o.height - info.height) / 2;
+SMPEG_enableaudio(mpeg, 1);
+SMPEG_enablevideo(mpeg, 1);
+SMPEG_setvolume(mpeg, 75);
+SMPEG_setdisplay(mpeg, screen, NULL, NULL);
+SMPEG_scaleXY(mpeg, info.width, info.height);
+SMPEG_move(mpeg, x, y);
+SMPEG_play(mpeg);
+bool abortmovie = false;
+while (!abortmovie && (SMPEG_status(mpeg) == SMPEG_PLAYING)) {
+	SDL_Event event;
+	while ( SDL_PollEvent(&event) ) {
+		switch (event.type) {
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_ESCAPE) 							abortmovie = true;
+				}
+		}
+	}
+	SDL_Delay(100);
+}
+SMPEG_stop(mpeg);
+SMPEG_delete(mpeg);
+

@@ -1,0 +1,11 @@
+2003, April, 23 :
+	- new log system from Ceylan integrated.
+	- get rid at last of ugly other macros such as THROW (for confitional exception throw)
+	
+2003, April, 12 :
+	- name collision between namespace Video and class Video occured when addind Pixel. As both are useful (namespaces can be reopened multiple times, classes support data members and methods), a new convention is chosen : classes are suffixed by Module (class Video becomes VideoModule), namespaces remain unchanged (namespace Video).
+	- to avoid Pixel::Pixel (namespace::type), namespace is from now on Pixels
+
+2003, April, 6 :
+	- added events module
+	- improved test facilities, please use from now on tests/playTests.sh : this script will make sure you are testing the right (latest) OSDL library, with the right (latest) tests, and then will execute those tests one by one, in a row 

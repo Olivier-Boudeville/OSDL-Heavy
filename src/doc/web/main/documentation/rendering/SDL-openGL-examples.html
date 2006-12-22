@@ -1,0 +1,790 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+
+<!--  This document is a part of the OSDL project 
+    For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--  
+    Creation date : 2004, January 25.
+    Author : Olivier Boudeville (olivier.boudeville@online.fr)
+    Update made by : the author
+    Version number : 0.1
+    Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+ <title>OSDL - SDL corner - Using OpenGL : examples</title>
+ <meta http-equiv="Content-Type" content=
+ "text/html; charset=iso-8859-1">
+ <meta name="description" content="OSDL">
+ <meta name="keywords" content="OSDL">
+ <link rel="stylesheet" type="text/css" href=
+ "../../../common/css/OSDL.css">
+ <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+
+<body>
+ <div class="banner">
+  <p><em>General</em> <a href="../../../common/black.html" onclick= 
+  "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+  <a href="../../Map.html">site map</a> <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20and%20OpenGL">mail us</a></p>
+ </div><a name="_top_"></a> 
+
+
+<h1>OpenGL and SDL examples</h1>
+
+
+<center>
+	<table summary="Table of content" style="border: none">
+        <tr>
+          <td>
+
+		   <div class="box">
+		       <a href="#loadnonalpha">Loading an OpenGL texture from a SDL surface with no alpha information</a><br>
+		       <a href="#loadbmp">Loading an OpenGL texture from a BMP image</a><br>
+		       <a href="#resize">Resizing window</a><br>
+		       <a href="#ttf">Using SDL_ttf with OpenGL</a><br>
+			   <!--
+			   <a href="#"></a>
+			   -->
+           </div>
+
+          </td>
+        </tr>
+      </table>
+</center>
+
+
+	
+<a name="loadnonalpha"></a>
+<h3>Loading an OpenGL texture from a SDL surface with no alpha information</h3>
+
+<p>
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<pre><code>
+
+
+/**
+ * Returns the first power of 2 greater or equal to the specified value.
+ *
+ * @param value that the  
+ *
+ *
+ */
+int powerOfTwo( int value )
+{
+
+	int result = 1 ;
+	
+	while ( result < value )
+		result *= 2 ;
+	
+	return result ;		
+}
+
+
+/**
+ * Creates a texture from a surface. Set the alpha according to the color key. 
+ * Pixels that match the color key get an alpha of zero while all other
+ * pixels get an alpha of one.
+ *
+ * The source surface can come from example from a PNG file.
+ *
+ */
+GLuint uploadTextureFromSurface( const SDL_Surface & sourceSurface, GLfloat * textureCoordinates, 
+	Uint8 colorKeyRed, Uint8 colorKeyGreen, Uint8 colorKeyBlue ) throw( ImageException )
+{
+
+  /*
+   * Use the surface width and height expanded to powers of 2 :
+   * (one may call also gluScaleImage.
+   */
+
+  int w = powerOfTwo( sourceSurface->w ) ;
+  int h = powerOfTwo( sourceSurface->h ) ;
+  
+  // Min X :
+  texcoord[0] = 0.0f ;
+  
+  // Min Y :
+  texcoord[1] = 0.0f ;
+  
+  // Max X :
+  texcoord[2] = (GLfloat) surface->w / w ;
+  
+   // Max Y :
+  texcoord[3] = (GLfloat) surface->h / h ;
+ 
+  /* Create the target alpha surface with correct color component ordering */
+  SDL_Surface * alphaImage = SDL_CreateRGBSurface( SDL_SWSURFACE, sourceSurface->w,
+ 	sourceSurface->h, 32 /* bits */,
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN // OpenGL RGBA masks 
+                               0x000000FF, 
+                               0x0000FF00, 
+                               0x00FF0000, 
+                               0xFF000000
+#else
+                               0xFF000000,
+                               0x00FF0000, 
+                               0x0000FF00, 
+                               0x000000FF
+#endif
+  ) ;
+
+  if ( alphaImage == 0 )
+ 	throw ImageException( "uploadTextureFromSurface : RGB surface creation failed." ) ;
+
+  // Set up so that colorkey pixels become transparent :
+
+  colorkey = SDL_MapRGBA( alphaImage->format, colorKeyRed, colorKeyGreen, colorKeyBlue, 0 ) ;
+  SDL_FillRect( alphaImage, 0, colorkey ) ;
+
+  colorkey = SDL_MapRGBA( sourceSurface->format, colorKeyRed, colorKeyGreen, colorKeyBlue, 0 ) ;
+  SDL_SetColorKey( sourceSurface, SDL_SRCCOLORKEY, colorkey ) ;
+	
+  SDL_Rect area ;
+ 
+  // Copy the surface into the GL texture image : 
+  area.x = 0 ;
+  area.y = 0 ; 
+  area.w = sourceSurface->w ;
+  area.h = sourceSurface->h ;
+  SDL_BlitSurface( sourceSurface, &area, alphaImage, &area ) ;
+ 
+  // Create an OpenGL texture for the image 
+
+  GLuint textureID ;
+  glGenTextures( 1, &textureID ) ;
+  glBindTexture( GL_TEXTURE_2D, textureID ) ;
+
+  /* Prepare the filtering of the texture image */
+
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) ;
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT ) ;
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT ) ;
+
+ /* Map the alpha surface to the texture */
+  glTexImage2D( GL_TEXTURE_2D,
+               0,
+               GL_RGBA,
+               w, h,
+               0,
+               GL_RGBA,
+               GL_UNSIGNED_BYTE,
+               alphaImage->pixels ) ;
+
+  // No longer needed :
+  SDL_FreeSurface( alphaImage ) ; 
+ 
+  return textureID ;
+  
+}
+</code></pre>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>Do not forget to do a <code>glEnable( GL_TEXTURE_2D )</code> before you actually <b>render</b> the object you are texturing.
+</p>
+
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+	
+<a name="loadbmp"></a>
+<h3>Loading an OpenGL texture from a BMP image</h3>
+
+<p>
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<pre><code>
+bool loadbmp(char *img, GLuint &image) {
+	SDL_Surface *temp, *flipped;		// temporary SDL image
+	
+	if((temp = SDL_LoadBMP(img)) == NULL) {
+		printf("Cannot load bmp: %s\n", img);
+		return false;
+	}
+	
+	if(temp->w != temp->h) {
+		printf("Image not square\n");
+		return false;
+	}
+	
+	if(temp->w < 1) {
+		printf("Invalid image\n");
+		return false;
+	} else if(!((temp->w & (temp->w-1)) == 0)) {
+		printf("Invalid image dimensions\n");
+		return false;
+	}
+	
+	Uint32 rmask, gmask, bmask, amask;
+	
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+		rmask = 0xff000000;
+		gmask = 0x00ff0000;
+		bmask = 0x0000ff00;
+		amask = 0x000000ff;
+	#else
+		rmask = 0x000000ff;
+		gmask = 0x0000ff00;
+		bmask = 0x00ff0000;
+		amask = 0xff000000;
+	#endif
+	
+	// now flip the image
+	flipped = SDL_CreateRGBSurface(SDL_SWSURFACE, temp->w, temp->h,
+temp->format->BitsPerPixel, rmask, gmask, bmask, amask);
+	if(flipped == NULL) {
+		printf("Error flipping image: %s\n", img);
+		return false;
+	}
+	
+	
+	SLock(temp);
+	SLock(flipped);
+	
+	for(int i = 0; i < temp->h; i++) {
+		for(int j = 0; j < temp->w; j++) {
+			putpixel(flipped, i, temp->h - j - 1, getpixel(temp, i, j));
+		}
+	}
+	
+	SUnlock(temp);
+	SUnlock(flipped);
+	
+	
+	
+	if(temp != NULL) {
+		SDL_FreeSurface(temp);
+	}
+	
+	// Create textures
+	glGenTextures(1, &image);
+	
+	// load the texture
+	glBindTexture(GL_TEXTURE_2D, image);
+	
+	// Generate the texture
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, flipped->w, flipped->h, 0,
+GL_BGR, GL_UNSIGNED_BYTE, flipped->pixels);
+	
+	if(flipped != NULL) {
+		SDL_FreeSurface(flipped);
+	}
+	
+	// Use nearest filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	
+	return true;
+}
+
+is what I use when I need to load a bmp as a texture.
+
+</code></pre>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+Note that I invert the Y axis manually, and use GL_BGR for the second argument of glTexImage2D. See also : <code>testgl</code> is SDL test directory.
+
+</p>
+
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+<a name="resize"></a>
+<h3>Resizing window</h3>
+
+<p>
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<pre><code>
+void SetGLWindow(int width, int height)
+{
+  GLfloat ratio;
+
+  if(height == 0)
+    height = 1;
+
+  ratio = (GLfloat)width/(GLfloat)height;
+
+  glViewport(0, 0, (GLint)width, (GLint)height);
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+
+  gluPerspective(45.0f, ratio, 0.1f, 100.0f);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+}
+
+Then I wait for a resize event in my main loop
+
+
+while(!done)
+    {
+      while(SDL_PollEvent(&event))
+    {
+     switch(event.type)
+      {
+      case SDL_ACTIVEEVENT:
+       if(event.active.gain == 0)
+        isActive = FALSE;
+       else
+        isActive = TRUE;
+       break;
+      case SDL_VIDEORESIZE:
+       if((surface = SDL_SetVideoMode(event.resize.w,
+                       event.resize.h,
+                       SCREEN_BPP,
+                       videoFlags)) == NULL)
+        {
+         fprintf(stderr,"Unable to grab surface after resize event: 
+%s\n",SDL_GetError());
+         Quit(1);
+        }
+       SetGLWindow(event.resize.w, event.resize.h);
+       break;
+      case SDL_KEYDOWN:
+       HandleKeyDown(&event.key.keysym);
+       break;
+      case SDL_QUIT:
+       done = TRUE;
+       break;
+      default:
+       break;
+      }
+    }
+      if(isActive)
+    DrawScreen();
+    }
+</code></pre>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+	
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+<a name="resizeEvent"></a>
+<h3>How a resize event could be handled</h3>
+
+<p>
+<center>
+   <table summary="resize" style="border: none">
+    <tr>
+     <td>
+		       <div class="box"> 
+<code><pre> 
+void test_event(SDL_Event *event)
+{
+	switch(event->type)
+	{
+		[...]
+		case SDL_VIDEORESIZE:
+		 {
+		   if(event->resize.w < 200) event->resize.w = 200;
+		   if(event->resize.h < 200) event->resize.h = 200;
+		   int bpp;
+		   if((bpp = SDL_VideoModeOK(
+			 	event->resize.w,event->resize.h,32,init_vflag)) == 0)
+		   h_term_error(
+			 	"Requested video mode not supported please use another mode : ");
+		   if ((main_w = SDL_SetVideoMode(
+			 	event->resize.w,event->resize.h,bpp,init_vflag)) == NULL)
+		   h_term_error("Unable to open a surface : ");
+		   at_resize_draw_scene();
+		   simple_report("Resize maked");
+		   break;
+		 }
+	}
+}
+
+[...]far far away
+
+void at_resize_draw_scene(void)
+{
+	glViewport(0,0,main_w->w,main_w->h);
+	glClearColor(0.3, 0.3, 0.3, 0.0);
+	glClearDepth(1.0);
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(90.0,static_cast<GLfloat>(main_w->w)/main_w->h, 0.1, 1000.0);
+	glPushMatrix();
+}
+</pre></code>
+      </div>
+			 
+     </td>
+    </tr>
+   </table>
+</p>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+
+<a name="ttf"></a>
+<h3>Using SDL_ttf with OpenGL</h3>
+
+<p>
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<pre><code>
+
+/-------------------------------------------------
+
+class Font
+{
+private:
+  static const int minGlyph = ' ';
+  static const int maxGlyph = 126;
+
+  static int initCounter;
+
+  typedef struct
+  {
+    int minx, maxx;
+    int miny, maxy;
+    int advance;
+    SDL_Surface *pic;
+    GLuint tex;
+    GLfloat texMinX, texMinY;
+    GLfloat texMaxX, texMaxY;
+  } glyph;
+
+  int height;
+  int ascent;
+  int descent;
+  int lineSkip;
+  glyph glyphs[maxGlyph + 1];
+
+  unsigned char *address;
+  int length;
+  int pointSize;
+  int style;
+  float fgRed, fgGreen, fgBlue;
+  float bgRed, bgGreen, bgBlue;
+
+  TTF_Font *ttfFont;
+
+  SDL_Color foreground;
+  SDL_Color background;
+
+  void loadChar(char c)
+  {
+    GLfloat texcoord[4];
+    char letter[2] = {0, 0};
+
+    if ((minGlyph <= c) && 
+        (c <= maxGlyph) &&
+        (NULL == glyphs[c].pic))
+    {
+      SDL_Surface *g0 = NULL;
+      SDL_Surface *g1 = NULL;
+
+      letter[0] = c;
+
+      TTF_GlyphMetrics(ttfFont, 
+                       (Uint16)c, 
+                       &glyphs[c].minx, 
+                       &glyphs[c].maxx, 
+                       &glyphs[c].miny, 
+                       &glyphs[c].maxy, 
+                       &glyphs[c].advance);
+
+      g0 = TTF_RenderText_Shaded(ttfFont, 
+                                 letter, 
+                                 foreground, 
+                                 background);
+
+      if (NULL != g0)
+      {
+        g1 = SDL_DisplayFormat(g0);
+        SDL_FreeSurface(g0);
+      }
+
+      if (NULL != g1)
+      {
+        glyphs[c].pic = g1;
+        glyphs[c].tex = loadTextureColorKey(g1, texcoord, 0, 0, 0);
+        glyphs[c].texMinX = texcoord[0];
+        glyphs[c].texMinY = texcoord[1];
+        glyphs[c].texMaxX = texcoord[2];
+        glyphs[c].texMaxY = texcoord[3];
+      }
+    }
+  }
+
+public:
+
+  Font(unsigned char *address,
+       int length,
+       int pointSize, 
+       int style,
+       float fgRed, float fgGreen, float fgBlue,
+       float bgRed, float bgGreen, float bgBlue):
+    address(address), length(length),
+    pointSize(pointSize),
+    style(style),
+    fgRed(fgRed), fgGreen(fgGreen), fgBlue(fgBlue),
+    bgRed(bgRed), bgGreen(bgGreen), bgBlue(bgBlue),
+    ttfFont(NULL)
+  {
+    if (0 == initCounter)
+    {
+      if (TTF_Init() < 0)
+      {
+        errorExit("cannot init SDL_ttf");
+      }
+    }
+    initCounter++;
+    initFont();
+  }
+
+  ~Font()
+  {
+    initCounter--;
+    if (0 == initCounter)
+    {
+      TTF_Quit();
+    }
+  }
+
+  void initFont()
+  {
+    SDL_RWops *src = NULL;
+    int i;
+
+    src = SDL_RWFromMem(address, length);
+
+    ttfFont = TTF_OpenFontRW(src, 1, pointSize);
+    if (NULL == ttfFont)
+    {
+      errorExit("cannot open font file");
+    }
+
+    TTF_SetFontStyle(ttfFont, style);
+
+    foreground.r = (Uint8)(255 * fgRed);
+    foreground.g  = (Uint8)(255 * fgGreen);
+    foreground.b = (Uint8)(255 * fgBlue);
+
+    background.r = (Uint8)(255 * bgRed);
+    background.g = (Uint8)(255 * bgGreen);
+    background.b = (Uint8)(255 * bgBlue);
+
+    height = TTF_FontHeight(ttfFont);
+    ascent = TTF_FontAscent(ttfFont);
+    descent = TTF_FontDescent(ttfFont);
+    lineSkip = TTF_FontLineSkip(ttfFont);
+
+    for (i = minGlyph; i <= maxGlyph; i++)
+    {
+      glyphs[i].pic = NULL;
+      glyphs[i].tex = 0;
+    }
+  }
+
+  int getLineSkip()
+  {
+    return lineSkip;
+  }
+
+  int getHeight()
+  {
+    return height;
+  }
+
+  void textSize(char *text, 
+                SDL_Rect *r)
+  {
+    int maxx = 0;
+    int advance = 0;
+
+    r->x = 0;
+    r->y = 0;
+    r->w = 0;
+    r->h = height;
+
+    while (0 != *text)
+    {
+      if ((minGlyph <= *text) && (*text <= maxGlyph))
+      {
+        loadChar(*text);
+
+        maxx = glyphs[*text].maxx;
+        advance = glyphs[*text].advance;
+        r->w += advance;
+      }
+
+      text++;
+    }
+
+    r->w = r->w - advance + maxx;
+  }
+
+void Font::drawText(char *text, int x, int y)
+ {
+   GLfloat left, right;
+   GLfloat top, bottom;
+   GLfloat texMinX, texMinY;
+   GLfloat texMaxX, texMaxY;
+   GLfloat minx;
+
+   glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+   glEnable(GL_TEXTURE_2D);
+   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+   while (0 != *text)
+   {
+     if ((minGlyph <= *text) && (*text <= maxGlyph))
+     {
+       loadChar(*text);
+
+       texMinX = glyphs[((int)*text)].texMinX;
+       texMinY = glyphs[((int)*text)].texMinY;
+       texMaxX = glyphs[((int)*text)].texMaxX;
+       texMaxY = glyphs[((int)*text)].texMaxY;
+
+       minx = glyphs[((int)*text)].minx;
+
+       left   = x + minx;
+       right  = x + glyphs[((int)*text)].pic->w + minx;
+       top    = y;
+       bottom = y + glyphs[((int)*text)].pic->h;
+
+       glBindTexture(GL_TEXTURE_2D, glyphs[((int)*text)].tex);
+
+       glBegin(GL_TRIANGLE_STRIP);
+
+       glTexCoord2f(texMinX, texMinY); glVertex2f( left,    top);
+       glTexCoord2f(texMaxX, texMinY); glVertex2f(right,    top);
+       glTexCoord2f(texMinX, texMaxY); glVertex2f( left, bottom);
+       glTexCoord2f(texMaxX, texMaxY); glVertex2f(right, bottom);
+
+       glEnd();
+
+       x += glyphs[((int)*text)].advance;
+     }
+
+     text++;
+   }
+
+   glPopAttrib();
+ } 
+
+</code></pre>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+	
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+
+<a name="drawPix"></a>
+<h3>glDrawpixels versus texture uploading</h3>
+
+<p>
+Take a look at <a href="http://icps.u-strasbg.fr/~marchesin/bench.ps" target="_blank">this benchmark</a> which shows the winner is card and data size dependent.
+</p>
+
+<p>
+The X axis is the texture width (or height as the textures are square) and the Y axis is the transfer time (no unit given, as the author does not remember how many textures were transfered to obtain these timings).
+</p>
+
+<p>
+You see that on a firegl, glDrawpixels is faster, and that on the geforce 4, the texture approach is faster.</p>
+
+<br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
+
+<!------------------------------------------------------------------------------------------------->
+
+<a name="autoconfGEM"></a>
+<h3>GEM autoconf macro to detect OpenGL</h3>
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+dnl Check for OpenGL (Original or Mesa) (or osX-framework)
+AC_CHECK_HEADERS(GL/gl.h GL/glu.h,,
+        [AC_CHECK_HEADERS(OpenGL/gl.h OpenGL/glu.h,,
+          [echo "OpenGL is mandatory";exit 1])]
+)
+
+if test `uname -s` != Darwin;
+then
+AC_CHECK_LIB(GL, glInitNames,,
+    AC_CHECK_LIB(MesaGL,glInitNames,,
+           echo "OpenGL is mandatory";exit 1)
+)
+
+dnl Check for GLU (Original or Mesa)
+AC_CHECK_LIB(GLU, gluLookAt, ,
+    AC_CHECK_LIB(MesaGLU,gluLookAt,,
+    echo "incomplete OpenGL (no GLU)";exit 1)
+)
+fi 
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+

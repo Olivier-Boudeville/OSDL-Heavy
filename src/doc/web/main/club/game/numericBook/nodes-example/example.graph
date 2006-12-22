@@ -1,0 +1,27 @@
+digraph finite_state_machine {
+	size="9,9";
+	node [shape = doublecircle, fillcolor=green, style=filled]; "Victoire totale" ;
+	node [shape = doublecircle, fillcolor=red, style=filled];  "Cloué" "Zen" ;
+	node [shape = doublecircle, fillcolor=lightblue, style=filled] ; "Message de bienvenue"
+	node [shape = circle, fillcolor=pink, color=lightgrey, style=filled ];	
+	"Message de bienvenue" -> "Insert coin" [ label = "Nouvelle partie" ];
+	"Insert coin" -> "Choisissez votre avatar"
+	"Choisissez votre avatar" -> "La quête commence" [ label = "Choix quelconque" ];
+	"La quête commence" -> "La quête commence" [ label = "Se rendormir" ];
+	"La quête commence" -> "Zen" [ label = "Prétendre que vous n'êtes pas vous-même"];
+	"La quête commence" -> "L'Assassin part" [ label = "Feindre la mort"];
+	"L'Assassin part" -> "L'Assassin part" [ label = "Feindre à nouveau"];
+	"L'Assassin part" -> "Cloué" [ label = "Rappeler l'Assassin"];
+	"L'Assassin part" -> "Victoire totale" [ label = "Une amulette dans l'inventaire"];	
+	
+	"Message de bienvenue" [ URL="Welcome.html" ]
+	"Insert coin" [ URL="InsertCoin.html" ]
+	"Choisissez votre avatar" [ URL="SelectPlayer.html" ]
+	"La quête commence" [ URL="Beginning.html" ]
+	"L'Assassin part" [ URL="Assassin.html" ]
+	"Cloué" [ URL="StupidDeath.html" ]
+	"Zen"[ URL="SelfDenial.html" ]
+	"Victoire totale" [ URL="WellDone.html" ]
+}	
+	
+	

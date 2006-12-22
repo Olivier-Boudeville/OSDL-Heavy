@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+
+<!--    This document is part of the OSDL project. 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+
+<!--    
+        Creation date : 2003 April, 23.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Ensuring quality of developments</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, library, video, game">
+  <link rel="stylesheet" type="text/css" href="../../../../common/css/OSDL.css">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../common/black.html" onclick="parent.toolbar.location=&#39;../../../MainMenu.html&#39;">home page</a>
+    <a href="../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Quality">mail us</a></p>
+  </div><a name="_top_"></a> 
+
+<h1>Ensuring quality of OSDL's releases</h1>
+
+<h2>Overview</h2>
+<p>
+This document concentrates on some common quality rules which should be enforced by the OSDL project on a best-effort basis. 
+</p>
+
+
+<h2>Some coding conventions</h2>
+<p>
+
+<!-- Links were :
+../../../../../../../../../Ceylan/Ceylan-0.2/src/doc/web/index.html
+and
+../../../../../../../../../Ceylan/Ceylan-0.2/src/doc/web/main/documentation/CodingConventions.html
+-->
+
+<!--
+They are to be found in <a href="http://ceylan.esperide.com" target="_blank">Ceylan's coding conventions</a> [<a href="http://ceylan.esperide.com/documentation/CodingConventions.html" target="_blank">Direct link</a>].
+-->
+
+They are to be found in <a href="../../../../../../../../../Ceylan/Ceylan-0.2/src/doc/web/index.html" target="_blank">Ceylan's coding conventions</a> [<a href="../../../../../../../../../Ceylan/Ceylan-0.2/src/doc/web/main/documentation/CodingConventions.html" target="_blank">Direct link</a>] (in French).
+
+
+
+</p>
+  
+<a name="testing"></a>
+<h2>Testing</h2>
+<p>
+We do our best to torture-test, as far as possible, the whole LOANI's tool chain before releasing a new version. With this test, both the auto-installation script LOANI and the Ceylan and OSDL C++ libraries are validated, thanks to the numerous executables tests that are built alongside.
+</p>
+
+<p>
+We run through the whole process on the following hardware and software configurations, which happen to be varied and, we hope, representative of the users' configurations (various technological generations, processors, video cards, kernels, and distributions) :
+
+
+<center>
+  <table border="1" summary="table">
+    <caption>Test configurations</caption>
+
+    <tr>
+        <th>Description</th>
+        <th>Processor</th>
+        <th>Video card</th>
+        <th>OS &amp; kernel version</th>
+        <th>Distribution</th>
+    </tr>
+
+
+    <tr>
+        <td>Old PC</td>
+        <td>Intel PII 300 MHz</td>
+        <td>ATI Rage 128</td>
+        <td>GNU/Linux 2.4.21</td>
+        <td>Debian Woody</td>
+    </tr>
+
+    <tr>
+        <td>Old PC</td>
+        <td>Intel PIII 733 GHz</td>
+        <td>nVidia</td>
+        <td>GNU/Linux 2.4.9</td>
+        <td>Red Hat 7.1</td>
+    </tr>
+
+
+    <tr>
+        <td>Average PC</td>
+        <td>AMD Athlon XP 2800+</td>
+        <td>ATI Radeon 9200</td>
+        <td>GNU/Linux 2.6.10</td>
+        <td>Gentoo</td>
+    </tr>
+
+
+    <tr>
+        <td>Growing old DELL Inspiron 8100 laptop</td>
+        <td>Intel PIII 1 GHz</td>
+        <td>nVidia</td>
+        <td>GNU/Linux 2.6.11</td>
+        <td>Gentoo</td>
+    </tr>
+	
+    <tr>
+        <td>Recent Toshiba M60-176 laptop</td>
+        <td>Intel Centrino 1,7 GHz</td>
+        <td>ATI Mobility Radeon x700</td>
+        <td>GNU/Linux 2.6.12</td>
+        <td>Ubuntu 5.10 (Breezy Badger)</td>
+    </tr>
+
+
+    <tr>
+        <td>Strong PC</td>
+        <td>Two Intel Xeon 2,66 GHz with hyperthreading</td>
+        <td>nVidia NV34GL (Quadro FX 500)</td>
+        <td>GNU/Linux 2.6.8.1</td>
+        <td>Debian Woody-based</td>
+    </tr>
+
+  </table>
+</center>
+
+</p>
+
+<p>
+We have access to two other sets of computers as well, even though we test our developments on their platforms less frequently. These are two <em>compile farms</em>, kindly provided by :
+<ul>
+    <li><a href="http://sourceforge.net" target="_blank">Sourceforge</a>, which provides its dedicated <a href="http://sourceforge.net/docs/compile_farm#hosts" target="_blank">12-host compile farm</a></li>
+    <li><a href="http://www.testdrive.hp.com/" target="_blank">Hewlett Packard</a>, which provides a dedicated <a href="http://www.testdrive.hp.com/current.shtml" target="_blank">Testdrive compile farm</a> with more than 30 hosts</li>
+</ul>
+</p>
+
+<p>
+Thanks to these structures, we believe we have access to most operating system/system type/processor for UNIX-based architectures.
+</p>
+
+
+
+<h3>Full testing process</h3>
+
+<p>
+For each new test, our process is to create a brand new user (<code>adduser tester</code>) and to behave exactly as a new LOANI user would behave (<code>su - tester</code>) : install everything thanks to <a href="../OSDL-0.3/LOANI.html">LOANI</a>, and run the full test suite thanks to <code>playTest.sh</code>.
+</p>
+
+<p>
+That way, we can get rid of side-effects such as configuration files (ex : <code>.cvsrc</code>) or shell environment (ex : does the user include '.' in his <code>PATH</code> ?). It allows us to feel a little bit more confident with our tests, since we closely emulate OSDL's average user.
+</p>
+
+<p>
+With tests made regularly with different other GNU/Linux machines, we believe that this platform is well supported. For the other platforms (we target first Windows, then Mac OS X), a port is still to be done, but it should mostly impact Ceylan, since OSDL relies on cross-platform tools. If you would have liked testing Ceylan and OSDL on those platforms, <a href="mailto:osdl-rfe@esperide.com?subject=[OSDL]%20Other%20platforms">send us a mail</a> !
+</p>
+  
+
+<h2>Other quality concerns</h2>
+
+<h3>Website</h3>
+<p>
+From time to time, we check our website for dead links, thanks to the W3C <a href="http://validator.w3.org/checklink" target="_blank">Link Checker</a> tool, with a recursion depth of 10.
+</p>
+
+  
+<br>
+<br>
+<br>
+<br>
+  
+<h3>Please react !</h3>
+
+<p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, or if you would like to contribute and help us, even a little bit, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Quality">drop us a line</a> !</p>
+
+<br>
+<br>
+
+<hr>
+
+<center>
+  [<a href="#_top_">Top</a>]
+  <br>
+  <br>
+  <em>Last update : 2006, January 13</em>
+</center>
+
+</body>
+</html>

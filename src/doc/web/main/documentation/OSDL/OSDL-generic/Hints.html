@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003 April, 23.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <meta content=
+  "HTML Tidy for Linux/x86 (vers 1st April 2003), see www.w3.org"
+        name="generator">
+
+  <title>OSDL - Some hints</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL, hints">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../../../../common/css/OSDL.css">
+  <style type="text/css">
+  div.c3 {text-align: center}
+  h1.c2 {font-family: arial, helvetica, sans-serif}
+  span.c1 {font-family: arial, helvetica, sans-serif}
+  </style>
+  <style type="text/css">
+  li.c1 {list-style: none}
+  </style>
+  <style type="text/css">
+  div.c2 {text-align: center}
+  table.c1 {border: none}
+  </style>
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../common/black.html"
+       onclick="parent.toolbar.location=&#39;../../../MainMenu.html&#39;">home
+       page</a> <a href="../../../Map.html">site map</a> <a href=
+       "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Hints">
+    mail us</a></p>
+  </div><a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+
+  <h1 class="c2">Quelques trucs et astuces, et autres informations utiles</h1>
+
+<h2>Maîtriser le système de construction (<em>build</em>)</h2>
+
+<p>
+ Pour activer l'affichage complet des commandes passées par le système de build (par exemple pour connaître les options passées à la compilation d'un fichier source), il suffit de suffixer la commande make avec <em>SILENT=</em>. Par exemple, depuis le répertoire src, lancer : <code>make all SILENT=</code> (le = n'est pas une faute de frappe, il permet d'effacer la valeur de la variable correspondante dans le makefile).
+</p>
+
+<p>Une autre solution est de ne pas rester au niveau de la racine (<code>${OSDL}/${OSDL}-${OSDL_VERSION}/src</code>) mais d'aller dans un sous-répertoire de <code>${OSDL}/${OSDL}-${OSDL_VERSION}/src/code</code>. En effet, il a été fait en sorte que, quand on choisit un niveau de détail supérieur (ex : celui du module ou du sous-module), les informations fournies soient plus détaillées.
+</p>
+
+
+<h2>Exécuter les tests</h2>
+
+<p>
+La compilation des tests est séparée de celle de la bibliothèque en elle-même, car les tests sont faits pour se comporter exactement comme une application tierce qui utiliserait OSDL.
+</p>
+
+<p>
+ Ce dernier doit donc être complétement compilé (*.o), link&quot; (*.a) et installé (liens
+  dans inc et dans lib) pour que les tests puissent s'exécuter. Ces tâches de construction conditionnelle et de résolution des tâches minimales sont prises en charge par le système de build.
+</p>
+
+
+<p>
+Pour exécuter les tests venant avec Ceylan ou avec OSDL, deux méthodes sont envisageables :
+<ul>
+	<li>sélectionner un <b>test précis</b> : sous une installation, sous le répertoire <code>bin</code>, les exécutables de tests sont automatiquement rangés dans une arborescence reflétant celle de leur module. Il est conseillé de les exécuter depuis leur répertoire de stockage (en plaçant le répertoire courant là où l'exécutable se situe), de manière à ce que, dans le cas où le test nécessite des ressources externes (ex : une image), il puisse d'emblée les trouver.
+</li>
+	<li>utiliser le <b>passage automatique des tests</b> grâce à l'utilitaire <code>playTests.sh</code>, qui se charge de les lister, de les enchaîner et de répertorier leurs éventuelles défaillances. Il est possible de l'exécuter en mode non-interactif (batch) via l'option <code>--batch</code>. Note : pour OSDL, cette option n'est pas toujours utilisable sachant que certains exécutables de test sont obligatoirement interactifs.
+
+  </li>
+</ul>
+
+
+</p>
+
+
+<h2>Choix d'implémentation</h2>
+
+<p>Pour totalement contrôler les sous-systèmes d&#39;OSDL (par exemple vidéo, audio, événements, etc.), il aurait été pratique de disposer de classes statiques comme en Java. Comme le C++ ne permet pas de garantir le moment ou l&#39;ordre d&#39;initialisation des classes contenant des membres
+  statiques, il a été choisi, pour une meilleure construction du code, d'utiliser une méthode notamment exposée par <a href="http://hjem.get2net.dk/stephen_muires/Ideas/Emulation%20of%20%20a%20static%20constructor%20in%20C++.htm#gamma" target="_blank">Stephen Muires</a>.
+</p>
+
+
+
+<h3>Systèmes de coordonnées</h3>
+
+<p>  
+OSDL respecte un repère orthonormé classique : les coordonnées de l&#39;écran s'étendent horizontalement (abscisses) de gauche à droite, du point de vue de l'utilisateur, et verticalement (ordonnées) de haut en bas. La base tridimensionnelle directe en découlant verrait donc le troisième axe, orthogonal aux deux autres, fuir l'utilisateur.
+</p>
+
+
+</body>
+ <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those
+  presented in this document, if you noticed errors, neglects or points
+  insufficiently discussed, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Hints">
+  drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <div class="c2">
+    <a href="#_top_">Top</a><br>
+    <br>
+    <em>Last update : 2004, June 17</em>
+  </div>
+</body>
+</html>

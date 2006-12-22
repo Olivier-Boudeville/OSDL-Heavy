@@ -1,0 +1,37 @@
+
+- partir de la version précédente (pour ne récupérer que src), et en faire un make tar 
+- se mettre dans le répertoire hébergeant la version précédente
+- copier le tar et l'extraire
+- renommer la racine pour passer à la nouvelle version
+- entrer dans le répertoire ainsi renommé
+- changer VERSION dans src/GNUmakevars.inc
+- changer PROJECT_NUMBER dans src/doc/doxygen.inp
+- vérifier que la génération de documentation est bien gérée en faisant make api depuis src
+- créer un nouveau bookmark sous API
+- sauvegarder le tout en faisant make tar depuis src
+- faire un cvs import :
+	placé sous ~/Projets/OSDL/OSDL-x.y (pour inclure src/*) :
+	export CVS_RSH=ssh
+	cvs -z3 -d:ext:wondersye@cvs.sourceforge.net:/cvsroot/osdl import -m "New OSDL version x.y" OSDL/OSDL-x.y wondersye start
+
+exemple : 
+
+sye eturanis.appart 21:53:47 /home/sye/Projets/OSDL-0.2
+> cvs -z3 -d:ext:wondersye@cvs.sourceforge.net:/cvsroot/osdl import -m "New OSDL version 0.2" OSDL/OSDL-0.2 wondersye start
+
+- écarter la version précédente : mv OSDL-0.2 OSDL-0.2-old
+- récupérer la version CVS en faisant un check-out  :
+
+sous /home/sye/Personnel/Projets: 
+> cvs -z3 -d:ext:wondersye@cvs.sourceforge.net:/cvsroot/osdl co OSDL/OSDL-0.2
+
+- annexes 
+
+	* information CVS :
+
+	If the files you want to install in CVS reside in `wdir', and you want them to appear in the repository as `$CVSROOT/yoyodyne/rdir', you can do this:
+
+$ cd wdir
+$ cvs import -m "Imported sources" yoyodyne/rdir yoyo start
+
+Unless you supply a log message with the `-m' flag, CVS starts an editor and prompts for a message. The string `yoyo' is a vendor tag, and `start' is a release tag. They may fill no purpose in this context, but since CVS requires them they must be present. See section Tracking third-party sources, for more information about them. 

@@ -1,0 +1,292 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003, October 24.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="FR">
+<head>
+  <title>Club de création de jeux vidéo - Compte-rendu de la réunion du
+  23/10/2003</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="compte-rendu, OSDL, video game, GPL">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <style type="text/css">
+  div.c1 {text-align: center}
+  </style>
+  <style type="text/css">
+  div.c1 {margin-left: 2em}
+  </style>
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>Général</em> <a href="../../../common/black.html" 
+       onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">Page
+       principale</a> <a href="../../Map.html">Plan du site</a>
+       <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Compte-rendu%20du%2023/10/2003">
+    Ecrivez-nous</a></p>
+  </div><a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+
+  <h1 class="c2">Compte-rendu de la réunion du club du jeudi 24 octobre
+  2003</h1>
+
+  <h2>Présentation</h2>
+
+  <p>Cette réunion a eu lieu de 19h45 à minuit environ, à la brasserie
+  &quot;La Tour&quot; à Montparnasse. Etaient présents (ordre
+  alphabétique) :</p>
+
+  <ul>
+    <li>Arnaud</li>
+
+    <li>Olivier</li>
+
+    <li>Sébastien</li>
+
+    <li>Thierry</li>
+  </ul><br>
+  <br>
+  <br>
+  <br>
+
+  <p>Auteur du compte-rendu : Olivier (<a href=
+  "mailto:olivier.boudeville@online.fr">wondersye</a>), on n&#39;est
+  pas encore passé au système de dés pour élire le scribe, mais cela
+  viendra probablement !</p>
+
+  <p>Le compte-rendu de cette réunion est parcellaire, et fondé sur mes
+  souvenirs et mes notes, également imparfaits. Pour toute remarque,
+  correction, ajout, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL-club]%20Compte-rendu%20du%2023/10/2003">
+  envoyez un mail</a> !</p>
+
+  <h2>Minutes de la réunion</h2>
+
+  <p>Une réunion fort réussie de mon point de vue, dans laquelle un
+  début de cohérence s&#39;est amorcé, avec une bonne répartition
+  scénario/technique.</p>
+
+  <p>Nous avons consciencieusement tenté de respecter l&#39;ordre du
+  jour, et partiellement réussi :</p>
+
+  <h3>Point sur les sondages</h3>
+
+  <ol>
+    <li><strong>Libre arbitre</strong> : le personnage pourra avoir une
+    dose de libre arbitre par rapport à son joueur, allant du
+    commentaire au refus, utile pour éviter que le joueur
+    n&#39;entreprenne des actions que l&#39;on voudrait éviter (ex :
+    sauter d&#39;un parapet, tuer le roi etc.). A ce sujet, une autre
+    solution utilisable conjointement serait de transformer cela en
+    scène fatale, du style &quot;Votre aventure s&#39;achève ici&quot;
+    (ex : &quot;Vous chutez d&#39;une dizaine de mètres et vous vous
+    écrasez sur les dalles de marbre du palais&quot;, ou &quot;Le roi,
+    paniqué, appelle la garde qui, faute de pouvoir vous maîtriser,
+    vous blesse mortellement&quot;, etc.). Ce libre arbitre est donc
+    commode dans certains cas, et peut en outre être exploité par le
+    scénario</li>
+
+    <li><strong>Statut du club</strong> : informel aussi longtemps que
+    par exemple le Cube ne l&#39;exigera pas ou qu&#39;on ne verra pas
+    de bonnes raisons pour aller vers une association type loi
+    1901</li>
+
+    <li><strong>Nom du jeu</strong> : une petite variante a surgi,
+    &quot;Castrat Thor&quot;, &quot;Thor et factions&quot; a le vent en
+    poupe et à l&#39;issue du scrutin sera probablement le nom du jeu,
+    au moins jusqu&#39;à ce que l&#39;on trouve le nom qui tue.</li>
+
+    <li><strong>Licences</strong> : la question n&#39;est pas aussi
+    évidente à trancher que prévu, parce que sa problèmatique était peu
+    connue bien que les conséquences en soient importante. Ainsi,
+    n&#39;importe quel projet commercial pourrait utiliser nos
+    bibliothèques. Il serait peut-être envisageable pour le scénario
+    d&#39;adopter la GPL afin que cela exclut les initiatives
+    commerciales, à voir. Aussi, avec des licences de type open source,
+    certaines dérives, certes très hypothétiques, seraient difficiles à
+    contrer (l&#39;exemple caricatural du jeu néo-nazi qui utiliserait
+    notre bibliothèque et sur lequel on n&#39;aurait de fait aucune
+    prise)</li>
+
+    <li><strong>Langages de script</strong> : statu-quo, il faudrait
+    trancher d&#39;ici début décembre, c&#39;est-à-dire, pour bien
+    faire, tester LUA pour pouvoir comparer. La différence pourrait se
+    faire au niveau de la facilité d&#39;intégration avec le C++ ou de
+    la communauté.</li>
+  </ol><br>
+  <br>
+
+  <h3>Point sur les personnages</h3>
+
+  <ol>
+    <li><strong>Le roi</strong> : copie conforme du Père Noël, i.e. le
+    Ninja Rouge. Débonnaire, n&#39;est pas une éminence grise. Du genre
+    à éviter les sujets qui fâchent en biaisant (ex : blocage du
+    dialogue grâce à la culpabilisation &quot;ta mère nous regarde du
+    ciel en pleurant&quot;; une idée à ce sujet : faire un peu comme
+    Colombo avec une épouse dont il parle toujours mais qui en fait est
+    décédée ou n&#39;a jamais existée en tant que telle ?). Commencer
+    une rubrique sur les fausses pistes pouvant contribuer à masquer la
+    personnalité réelle du roi au joueur.</li>
+  </ol><br>
+  <br>
+
+  <h3>Point sur le scénario</h3>
+
+  <ol>
+    <li>avancement</li>
+
+    <li>capitalisation : quelle forme lui donner ? (scénario écrit,
+    livre dont on est le héros, maquette, etc.)</li>
+
+    <li>mythologie nordique : que faire en la matière ? (recherche
+    bibliographique, commencer par Ragnarök, le crépuscule des Dieux).
+    Un de ses grands avantages outre l&#39;originalité : au contraire
+    de la plupart, elle n&#39;est pas bipolaire, manichéenne. Il
+    faudrait déterminer plus précisément la place et l&#39;influence
+    que les dieux prendront dans notre jeu. Comment se manifestent-ils
+    ? Peut-on les croiser, lorsqu&#39;ils sont descendus sur Midgard
+    par l&#39;arc-en-ciel et qu&#39;ils revêtent une apparence
+    trompeuse à la manière des dieux grecs ?</li>
+
+    <li>introduire un succédané de religion assimilée à la religion
+    chrétienne pour nourrir l&#39;opposition avec la mythologie
+    nordique ? Elle serait un peu camouflée, pour son nom (ex : <em>La
+    Vraie Foi</em>), ses symboles (la croix pourrait se voir redessinée
+    en cercle, le Christ en Manpower ou, pour les moins atteints par la
+    pub, en l&#39;homme vu par Léonard de Vinci)</li>
+
+    <li>maintenir (en interne exclusivement) un baromètre de
+    l&#39;estime que les principaux dieux de notre panthéon nordique
+    portent au personnage principal, en fonction de ses actions ?
+    Ainsi, en cas de besoin, sans nécessairement recourir à
+    l&#39;intervention divine directe (le marteau géant qui tombe du
+    ciel et écrase les ennemis, à la Turrican pour les anciens), on
+    pourrait imaginer qu&#39;un personnage, bénéficiant des faveurs
+    d&#39;un certain dieu, dispose de bonus pour les sorts qui se
+    rattachent à son domaine. Pour se concilier les dieux, des
+    méditations, prières et offrandes seraient envisageables, à la
+    Baldur&#39;s Gate ou Nethack.</li>
+
+    <li>quelle place donner à la magie dans le jeu : le prince est-il
+    magicien ? Sorts, ou seulement runes et objets magiques ?</li>
+
+    <li>formalisation des règles : à commencer en s&#39;inspirant des
+    principaux modèles en vigueur. Principe d&#39;Arnaud sur la
+    résolution par l&#39;opposition (analyser les conséquences et les
+    limitations symétries, place du hasard). Les personnages ont-ils
+    des caractéristiques ? (endurance, charisme, etc.) ? Oui. Des
+    niveaux globaux ? Non. Des degrés de compétence dans des
+    spécialités ? Oui. Comment modéliser la progression ? Jeu à somme
+    nulle, c&#39;est-à-dire que progresser dans une compétence peut, en
+    cas d&#39;atteinte d&#39;un seuil maximal, faire régresser une
+    autre ? Plus une action est menée (comptabilisée globalement dans
+    tout le jeu), moins elle est efficace ? Importance de progresser
+    aussi quand on échoue.</li>
+
+    <li>a-t-on intérêt à mettre en place des discontinuités dans le
+    temps sous la forme d&#39;épisodes ? Répercussions sur le
+    multi-joueur potentiel, sur la liberté d&#39;action ressentie et
+    sur l&#39;ennui dans des déplacements mornes et longs. Facteur
+    d&#39;accélération temporelle, à la Elite, avec passage à la
+    vitesse normale en cas de survenue d&#39;une classe d&#39;événement
+    choisie ? Vote à faire entre temps réel accélérable ou ellipses
+    temporelles. Notons que dans tous les cas le temps du jeu peut être
+    une source d&#39;événements (ex : pleine lune et lycanthropie,
+    automne et taxe d&#39;habitation)</li>
+  </ol><br>
+  <br>
+
+  <h3>Point sur les développements</h3>
+
+  <ol>
+    <li>avancement</li>
+
+    <li>séparation des thèmes en bibliothèques : OSDL, Ceylan,
+    d&#39;autres encore ? Aider au découplage entre gestion des objets,
+    contrôle et rendu (MVC)</li>
+
+    <li>zoom SDL : maquette, premiers essais, IHM, utilisation de
+    bibliothèques connexes (SDL_xx)</li>
+
+    <li>bibliothèque d&#39;encapsulation SDL pour le graphisme bas
+    niveau</li>
+
+    <li>SDL : un backend comme un autre ? On pourrait imaginer que
+    notre surcouche puisse utiliser SDL mais aussi quelques uns de ses
+    homologues (ex : ClanLib, Allegro, etc., cf notre petit <a href=
+    "../../documentation//OSDL/OSDL-generic/SimilarProjects.html">panorama des
+    bibliothèques graphiques</a>)</li>
+
+    <li>commencer une maquette de l&#39;IHM, pour se faire une première
+    idée des zones de l&#39;interface et de leur rôle ?</li>
+
+    <li>gérer le nombre de cases par créature (risque pour un dragon
+    d&#39;être risible point de vue taille versus complication des
+    rotations et du pathfinding des monstres multi-cases)</li>
+
+    <li>utilisation de SourceForge : CVS</li>
+
+    <li>répartition des tâches : les plus disponibles pourraient
+    prendre en charge une partie des thèmes à traiter pour le jeu
+    (scénario, technique, artistique, etc.)</li>
+  </ol><br>
+  <br>
+
+  <h3>Point sur le club</h3>
+
+  <ol>
+    <li>comment organiser notre activité clubistique avant et pendant
+    les réunions ? (plutôt avancer entre les réunions que pendant, si
+    possible !)</li>
+
+    <li>nombre et implication des membres : nouvelle séquence de
+    recrutement si les effectifs sont insuffisants en nombre, en
+    répartition (infographistes manquent ?) ou en degré
+    d&#39;implication ?</li>
+
+    <li>nom : à titre d&#39;information, CRI, <em>Cercle des Ragondins
+    Illuminés</em>, a pour traduction littérale en anglais CFC,
+    <em>Circle of the Floodlit Coypus</em></li>
+
+    <li>le Cube : préparation de notre arrivée (ex : familiarisation
+    avec Mac OS X)</li>
+  </ol><br>
+  <br>
+
+  <h3>AOB (Any Other Business)</h3><br>
+
+  <p>Tout a été casé avant !</p><br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>N&#39;hésitez pas à nous faire part de votre avis !</h3>
+
+  <p>Pour toute remarque, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL-club]%20Compte-rendu%20du%2023/10/2003">
+  envoyez-nous un mail</a>!</p><br>
+  <br>
+  <hr>
+
+  <div class="c1">
+    <a href="#_top_">Top</a><br>
+    <br>
+    <em>Dernière mise à jour : 18 Novembre 2003</em>
+  </div>
+</body>
+</html>

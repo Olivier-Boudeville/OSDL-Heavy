@@ -1,0 +1,1235 @@
+#!/bin/sh
+
+# LOANI
+# Lazy OSDL Automatic Net Installer.
+
+# Creation date : 2003, April 14
+# Author : Olivier Boudeville (olivier.boudeville@online.fr)
+
+
+USAGE="Usage : "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useCVS ] [ -c | --currentCVS ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools] [ --allTools] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
+
+EXAMPLE="    Recommended example (long but safe) : "`basename $0`" --allTools"
+
+HELP="This is LOANI, the famous Lazy OSDL Automatic Net Installer.
+	$USAGE
+	
+Options :
+	-d or --debug		  : display debug informations to screen
+	-s or --strict  	  : be strict, stop on wrong md5 checksums or on unexpected tool locations
+	-q or --quiet		  : avoid being too verbose
+	-w or --wizard 	          : enter wizard interactive mode, so that questions are asked to configure
+	-u or --useCVS            : retrieve Ceylan and OSDL from CVS, instead of downloading prepackaged source archives
+	-c or --currentCVS        : retrieve current CVS for Ceylan and OSDL, instead of latest CVS tagged stable release (implies --useCVS)
+	--sourceforge <user name> : uses SourceForge developer access to retrieve projects from CVS  (implies --currentCVS)
+	--buildTools		  : retrieve and install common build tools too (ex : gcc, binutils, gdb)  
+	--optionalTools 	  : retrieve and install optional tools too (ex : doxygen, dot, tidy)
+	--allTools		  : retrieve all tools (required, build, optional tools)
+	--setEnv		  : set full developer environment (ex : bash, nedit configuration)
+	--fetchonly		  : only retrieve (download in cache) pre requesite, do not install them
+	--all			  : install all and set all
+	--prefix <a path>	  : install everything under <a path> 
+	--repository <a path>	  : specify an alternate cache repository for downloads       
+	--noLog 		  : do not log installation results 
+	--noClean                 : do not remove build trees after a successful installation
+	-h or --help		  : display this message
+$EXAMPLE	
+	"
+
+starting_time=`date '+%H:%M:%S'`
+
+
+# Undocumented (since seldom used) options :
+#   --onlyBuildTools : only build tools will be installed.
+#   --onlyOptionalTools : only optional tools will be installed.
+#   --noCVS : do not retrieve anything from CVS, merely used for LOANI debugging (variable : no_cvs)
+
+
+
+launchFileRetrieval()
+# Retrieves specified package by looking at the cache (repository first).
+# If not available, will try to download it. 
+# From the package name, the archive, location and MD5 will be deduced.
+#
+# Usage : launchFileRetrieval <package name>
+# Example : launchFileRetrieval SDL
+{
+
+	package_name="$1"
+	archive_name="${package_name}_ARCHIVE"
+	#archive_file="${!archive_name}"
+	eval archive_file="\$$archive_name"
+	full_archive_path="${repository}/${archive_file}"
+	
+	md5_name="${package_name}_MD5"
+	#md5="${!md5_name}"
+	eval md5=\$$md5_name
+	
+	if [ -f "${full_archive_path}" ] ; then
+		if [ `${MD5SUM} "${full_archive_path}" | ${AWK} '{printf $1}'` = "$md5" ] ; then
+			DEBUG "${archive_file} found in cache, its integrity has been checked, retrieved."
+			return 0
+		else
+			DEBUG "${archive_file} found in cache, bad md5sum, still being retrieved from network."	
+			return 1
+		fi	
+	else
+
+		DEBUG "${archive_file} not found in cache, retrieving it from network (${download_url})."
+	
+		# Having to guess the download location to be used :
+
+		# Will set 'current_download_location' (iterate through mirrors if needed) :
+		getDownloadLocation ${package_name}
+		
+		download_url="${current_download_location}/${archive_file}"
+		if [ "$be_quiet" -eq 1 ] ; then 
+			DISPLAY "      ----> enqueuing ${archive_file} in download spool"
+		fi
+		
+		
+		if [ "$do_simulate" -eq 1 ] ; then
+			DEBUG ${WGET} ${WGET_OPT} --output-document=${full_archive_path} ${download_url} 
+			${WGET} ${WGET_OPT} --output-document=${full_archive_path} ${download_url} 1>>"$LOG_OUTPUT" 2>&1  	
+			return 2
+		else	
+			DISPLAY "Simulating only, no network retrieval for $1."		
+			return 0
+		fi
+		
+	fi		
+
+}
+
+
+getDownloadLocation()
+{
+# Returns the URL where the archive for the specified package can be downloaded, in variable
+# named 'current_download_location'
+# 
+# If all mirrors have been tried unsuccessfully, issues an error message and exit.
+#
+# Basically, one main download site should be tried, then one alternate location and, on failure,
+# our own private last-chance mirror.
+#
+# A location is tried only once : its variable is blanked afterwards, so that further attemps 
+# can use next mirror, if any.
+#
+# Usage   : getDownloadLocation <package name>; echo ${current_download_location}
+# Example : getDownloadLocation SDL
+
+	# Suppose that echo "$SDL_DOWNLOAD_LOCATION" return 'hello'
+	# ex: $1 = SDL :	
+	package_name="$1"
+	location_name="${package_name}_DOWNLOAD_LOCATION"
+	#location_value="${!location_name}"
+	eval actual_location_name="\$$location_name"
+	location_value="${actual_location_name}"
+
+	# Trying first the main site :
+	if [ -z "${location_value}" ] ; then
+		
+		# Not available ? Try the mirror (if any) :
+		location_name="${package_name}_ALTERNATE_DOWNLOAD_LOCATION"
+		#location_value="${!location_name}"
+		eval actual_location_name="\$$location_name"
+		location_value="${actual_location_name}"
+		
+		if [ -z "${location_value}" ] ; then
+			# Last hope, our little private mirror : 		
+	
+			private_mirror_used="${package_name}_USED_MIRROR"
+			eval actual_private_mirror_used="\$$private_mirror_used"
+			if [ "${actual_private_mirror_used}" -eq 0 ] ; then
+				ERROR "${package_name} archive not available through main server or known mirrors."
+				exit 12
+			else
+				current_download_location=${private_archive_mirror}/${package_name}
+				DEBUG "Selected download location (last-chance mirror): ${current_download_location}"
+				eval ${private_mirror_used}="0"
+				return
+			fi
+		else
+			saved="${location_value}"
+			eval ${location_name}=""
+			current_download_location=${saved}
+			DEBUG "Selected download location (mirror) : ${current_download_location}"
+			return
+
+		fi		
+	
+	else	
+		saved=${location_value}
+		eval ${location_name}=""
+		current_download_location=${saved}
+		DEBUG "Selected download location (main site) : ${current_download_location}"
+		return
+	fi
+	
+}
+
+
+# Used to test 'getDownloadLocation' :
+testGetDownloadLocation()
+{
+  target=doxygen
+
+  getDownloadLocation $target
+  getDownloadLocation $target
+  getDownloadLocation $target
+
+  exit 0
+}
+
+
+getFileAvailability()
+# Returns 0 if specified file is in cache and its md5sum is correct or not specified,
+#         1 if specified file is in cache but its md5sum is wrong,
+#         2 if specified file is not at all in cache or is empty (in this case, it is deleted).
+# Usage   : getFileAvailability <file name> <md5 sum of file>
+# Example : getFileAvailability dummy.tgz "886924ab144af672af9596115088ff20"
+{
+
+	filename=${1}
+	full_file_path=${repository}/${filename}
+	md5=${2}
+	
+	# Accept files or directories entries : 
+	if [ ! -e "${full_file_path}" ] ; then
+		DEBUG "File <${filename}> not in cache."
+		return 2
+	else
+		if [ `${DU} -bD ${full_file_path} | ${AWK} '{printf $1}' ` -eq 0 ] ; then
+			DEBUG "File <${filename}> present in cache but empty, removing it."
+			${RM} -f "${full_file_path}"
+			return 2
+		fi		
+                
+		if [ -z "${md5}" ] ; then
+			WARNING "<${filename}> found in cache, no md5sum given, no checking performed."
+			return 0
+		else
+   		  	computed_md5=`${MD5SUM} "${full_file_path}" | ${AWK} '{printf $1}'`      
+			if [ "${computed_md5}" = "${md5}" ] ; then
+				DEBUG "<${filename}> found in cache and its md5sum is correct."
+				return 0
+			else
+				DEBUG "<${filename}> found in cache, but its md5sum does not match the recorded one (<${computed_md5}> versus <${md5}>)."		
+				return 1
+			fi
+		fi        
+	fi
+
+}
+
+
+
+launchwizard()
+# Allows the user to interactively choose his settings.
+{
+
+	echo
+	printColor "      This is LOANI's wizard !" $cyan_text
+	
+	echo
+	echo
+	
+	DISPLAY "Entering wizard-assisted configuration."
+	echo
+	
+	OFFSET="    + "
+	
+	if askDefaultYes "${OFFSET}Activate log mode ?" ; then 
+		DISPLAY "Log mode activated."
+		do_log=0	
+	else
+		DISPLAY "Log mode deactivated."
+		do_log=1
+	fi
+	
+	
+	if askDefaultNo "${OFFSET}Activate strict mode ?" ; then 
+		DISPLAY "Strict mode activated."
+		be_strict=0			
+		do_strict_md5=0
+		must_find_tool=0
+		be_strict_on_location=0
+	else
+		DISPLAY "Strict mode deactivated."
+		be_strict=1
+	fi
+	
+	
+	if askDefaultNo "${OFFSET}Activate quiet mode ?" ; then 
+		DISPLAY "Quiet mode activated."
+		be_quiet=0	
+	else
+		DISPLAY "Quiet mode deactivated."
+		be_quiet=1
+	fi
+
+
+	if askDefaultNo "${OFFSET}Activate verbose debug on screen ?" ; then 
+		DISPLAY "Verbose debug on screen mode activated."
+		do_debug=0	
+	else
+		DISPLAY "Verbose debug on screen mode deactivated."
+		do_debug=1
+	fi	
+	
+	
+	if askDefaultNo "${OFFSET}Use CVS to retrieve sources instead of downloading source archives ?" ; then 
+		DISPLAY "CVS mode activated."
+		use_cvs=0
+		
+		if askDefaultNo "${OFFSET}Use current CVS, not last stable version,\
+	for Ceylan and OSDL ? [not recommended]" ; then 
+	
+			DISPLAY "Current CVS will be used (let's hope the build is not currently broken)."
+			use_current_cvs=0
+			
+			if askDefaultNo "${OFFSET}Use developer access for Sourceforge's CVS ?" ; then 
+				DISPLAY "CVS developer mode activated."
+				developer_access=0
+				askNonVoidString "${OFFSET}Please enter your Sourceforge's user name :"
+				developer_name="$returnedString"
+				DISPLAY "Developer name will be $developer_name"
+			else
+				DISPLAY "CVS developer mode deactivated."
+				developer_access=1
+			fi	
+
+		else
+			DISPLAY "Latest stable CVS tag will be used for Ceylan and OSDL."
+			use_current_cvs=1
+		fi	
+
+	else
+		DISPLAY "CVS mode deactivated."
+		use_cvs=1
+	fi	
+		
+	
+	if askDefaultNo "${OFFSET}Install all and set all, including environment ?" ; then 
+		DISPLAY "Everything will be installed and set."
+		manage_build_tools=0	
+		manage_optional_tools=0					
+		set_env=0
+	else
+		if askDefaultNo "${OFFSET}Install all tools ? (required tools, common build tools, optional tools)" ; then 
+			DISPLAY "All tools will be installed."
+			manage_build_tools=0	
+			manage_optional_tools=0			
+		else
+			if askDefaultNo "${OFFSET}Install build tools ? (ex : gcc, binutils) [this is the recommended setting]" ; then 
+				DISPLAY "Build tools will be installed."
+				manage_build_tools=0	
+			else
+				DISPLAY "Build tools will not be installed."
+				manage_build_tools=1
+			fi
+	
+	
+			if askDefaultNo "${OFFSET}Install optional tools ? (ex : doxygen, dot, tidy)" ; then 
+				DISPLAY "Optional tools will be installed."
+				manage_optional_tools=0	
+			else
+				DISPLAY "Optional tools will not be installed."
+				manage_optional_tools=1
+			fi
+		fi
+			
+		if askDefaultNo "${OFFSET}Fetch only ? (tools will only be downloaded)" ; then 
+			DISPLAY "Fetch only mode activated."
+			fetch_only=0
+		else
+			DISPLAY "Fetch only mode deactivated."
+			fetch_only=1
+		fi		
+			
+		if askDefaultNo "${OFFSET}Set full developer environment ? (ex : bash, nedit configuration)" ; then 
+			DISPLAY "Full developer environment will be set."
+			set_env=0
+		else
+			DISPLAY "Developer environment will not be set."
+			set_env=1
+		fi	
+		
+		if askDefaultYes "${OFFSET}Clean build trees after a successful installation ?" ; then 
+			DISPLAY "Build trees will be cleaned if possible."
+			clean_on_success=0
+		else
+			DISPLAY "No build tree removal."
+			clean_on_success=1
+		fi	
+		
+	fi	
+	
+		
+	if askDefaultYes "${OFFSET}Use an installation prefix ? [recommended]" ; then 
+		askString "${OFFSET}Please enter prefix directory where installations should be done (leave blank to let LOANI find automatically an appropriate prefix) :"
+		prefix="$returnedString"
+		if [ -z "${prefix}" ] ; then
+			DISPLAY "Prefix will be set automatically."	
+		else		
+			DISPLAY "Prefix $prefix demanded."	
+		fi		
+	else
+		WARNING "No prefix demanded (rather unusual choice)."
+	fi	
+
+	if askDefaultNo "${OFFSET}Use an alternate cache repository ?" ; then 
+		askNonVoidString "${OFFSET}Please enter path to the non-default cache repository :"
+		repository="$returnedString"
+		DISPLAY "Repository changed to $repository."		
+	else
+		DISPLAY "Repository not changed."
+	fi	
+	
+	DISPLAY "Congratulations, you made your way through LOANI's wizard."
+
+}
+
+
+# Too early, no TRACE available.
+
+
+# Checking own LOANI's pre requesites.
+
+# This script will make available all common UNIX tools that LOANI will use, as well as some
+# utilities for terminals (termUtils.sh) that it relies on, for example for text output.
+# Finally, as the locations of these tools are platform-dependent, a dedicated script is 
+# automatically used too (platformDetection.sh). Such detection is necessary for example for libpng.
+
+
+SHELL_TOOLBOX="./defaultLocations.sh"
+
+
+if [ ! -f "$SHELL_TOOLBOX" ] ; then
+	echo 1>&2
+	echo "     Error, helper script not found ($SHELL_TOOLBOX)." 1>&2
+	exit 1
+fi
+
+
+. $SHELL_TOOLBOX
+
+if [ "$platform_family_detected" -eq 1 ] ; then
+	ERROR "the detection of the platform family did not succeed."
+	exit 2
+	
+fi
+
+if [ "$precise_platform_detected" -eq 1 ] ; then
+	ERROR "the detection of the precise platform did not succeed (platform family : $platform_family_detected)."
+	exit 3
+fi
+
+
+# Some platform-specific notifications :
+
+if [ "$is_macosx" -eq 0 ] ; then
+	WARNING "Mac OS X support not tested at the moment."
+fi
+
+
+if [ "$is_netbsd" -eq 0 ] ; then
+	WARNING "Only experimental support for NetBSD at the moment."
+fi
+
+	
+if [ "$is_freebsd" -eq 0 ] ; then
+	WARNING "Only very experimental support for FreeBSD at the moment."
+fi
+
+
+#TRACE "Beginning of LOANI."
+ 
+# Pre defined set of default behaviour :
+
+
+# This flag will trigger other strict flags if set [default : false (1)] :
+be_strict=1
+
+# Used to enable strict md5 sum checking [default : false (1)] :
+do_strict_md5=1
+
+# Used to check that tools are in their expected location [default : false (1)] :
+be_strict_on_location=1
+
+# Raise a fatal error if a tool is nowhere to be found [default : false (1)] :
+must_find_tool=0
+
+# Used to display more informations [default : false (1)] :
+do_debug=1
+	
+# Used to simulate only (no downloading performed) [default : false (1)] :
+do_simulate=1
+
+# Used to specify if common build tools should be managed too [default : false (1)] :	
+manage_build_tools=1
+
+# Used to specify whether optional tools should be managed too [default : false (1)] :	
+manage_optional_tools=1
+
+# Used to demand only pre requesite retrieval, not their installation [default : false (1)] :
+fetch_only=1
+
+# Used to specify whether wizard should be used to configure LOANI interactively 
+# [default : false (1)] :
+wizard=1
+
+# Disable CVS retrieval [default : false (1)] :
+no_cvs=1
+
+# Tells whether CVS should be used (if 0) or if source archives should be downloaded (if 1)
+# [default : false (1)] :
+use_cvs=1
+
+# Used to specify whether current CVS should be used for Ceylan and OSDL (true) or latest stable 
+# version tagged in CVS (false) [default : false (1)] :
+use_current_cvs=1
+
+# Used to specify whether developer access should be used with Sourceforge's CVS
+# (developer access : CVS checkout, otherwise CVS export)
+# [default : false (1)] :
+developer_access=1
+
+# Set developer environment [default : false (1)] :			
+set_env=1
+
+# Tells whether after successfull installation the build trees are to be removed 
+# [default : true (0)] :	
+clean_on_success=0
+
+# Used to activate quiet mode [default : false (1)] :	
+be_quiet=1
+
+# Used to select whether log should be stored [default : true (0)] :
+do_log=0
+
+
+
+# Install only build tools : [default : false (1)] 
+only_build_tools=1
+
+# Install only optional tools : [default : false (1)] 
+only_optional_tools=1
+
+
+# prefix is the directory where all files will be installed 
+prefix=""
+
+# The directory to which OSDL data will be set.
+OSDL_DATA_DIR_NAME="OSDL-data"
+
+# Name of OSDL environment file, generated by LOANI from the tools location :
+OSDL_ENV_FILE_NAME="OSDL-environment.sh"
+
+# The cache directory where already available archives should be found :
+repository=`pwd`"/LOANI-repository"	
+
+# Remember the starting working directory :
+initial_dir=`pwd`
+
+
+# Root URL of our last chance mirror :
+private_archive_mirror="ftp://ftp.esperide.com/LOANI-archive-repository"
+
+
+# wget should run in background, using any specified proxy directive and using passive FTP 
+# to solve client firewall issues :
+WGET_OPT="--background $PROXY_CONF --passive-ftp"
+
+CVS_OPT="-Q -z6"
+CVS_RSH="ssh"
+
+# Maximum count of attempts to retrieve a module by CVS
+# (when Sourceforge's CVS servers are overloaded, they throw "connection closed").
+MAX_CVS_RETRY=8	
+	
+# Saving the whole command line to have it stored in logs :	
+SAVED_CMD_LINE="$0 $*"
+	
+# Scans each and every argument, from the left to the right :
+
+# Undocumented (since seldom used) options :
+#   --onlyBuildTools : only build tools will be installed.
+#   --onlyOptionalTools : only optional tools will be installed.
+#
+
+
+#TRACE "Default settings set."
+
+while [ $# -gt 0 ] ; do
+
+	DEBUG  "Evaluating argument $1."
+	token_eaten=1
+
+	if [ "$1" = "-d" -o "$1" = "--debug" ] ; then
+		DEBUG "Debug to screen mode activated."		
+		do_debug_to_screen=0
+		token_eaten=0		
+	fi
+	
+	if [ "$1" = "-s" -o "$1" = "--strict" ] ; then
+		DEBUG "Strict mode activated."
+		do_strict_md5=0
+		must_find_tool=0
+		be_strict_on_location=0
+		be_strict=0
+		token_eaten=0		
+	fi
+	
+	if [ "$1" = "-q" -o "$1" = "--quiet" ] ; then
+		DEBUG "Quiet mode activated."
+		be_quiet=0
+		token_eaten=0		
+	fi
+
+	if [ "$1" = "-w" -o "$1" = "--wizard" ] ; then
+		DEBUG "wizard mode activated."
+		wizard=0
+		token_eaten=0		
+	fi
+		
+	if [ "$1" = "-u" -o "$1" = "--useCVS" ] ; then
+		DEBUG "CVS mode activated."
+		use_cvs=0
+		token_eaten=0		
+	fi
+
+	if [ "$1" = "-c" -o "$1" = "--currentCVS" ] ; then
+		DEBUG "Use current CVS mode activated."
+		use_cvs=0
+		use_current_cvs=0
+		token_eaten=0		
+	fi
+
+	if [ "$1" = "--sourceforge" ] ; then
+		use_cvs=0
+		use_current_cvs=0
+		shift
+		developer_access=0
+		developer_name="$1"
+		DEBUG "Developer CVS access set with user name $developer_name."		
+		token_eaten=0		
+	fi
+				
+	if [ "$1" = "--buildTools" ] ; then
+		DEBUG "Common build tools will be retrieved and managed too."
+		manage_build_tools=0
+		token_eaten=0		
+	fi		
+	
+	if [ "$1" = "--optionalTools" ] ; then
+		DEBUG "Optional tools will be retrieved and managed too."
+		manage_optional_tools=0
+		token_eaten=0		
+	fi
+			
+	if [ "$1" = "--fetchonly" ] ; then
+		DEBUG "Fetch only mode activated."
+		fetch_only=0	
+		token_eaten=0		
+	fi	
+		
+	if [ "$1" = "--allTools" ] ; then
+		DEBUG "All tools will be retrieved and managed."
+		manage_build_tools=0
+		manage_optional_tools=0		
+		token_eaten=0		
+	fi		
+	
+	if [ "$1" = "--setEnv" ] ; then
+		DEBUG "Developer environment will be set."
+		set_env=0
+		token_eaten=0		
+	fi		
+	
+	if [ "$1" = "--all" ] ; then
+		DEBUG "Everything will be set and installed."
+		manage_build_tools=0
+		manage_optional_tools=0		
+		set_env=0
+		token_eaten=0		
+	fi
+		
+	if [ "$1" = "--prefix" ] ; then
+		shift
+		prefix="$1"
+		if [ -z "$prefix" ] ; then
+			ERROR "No prefix specified after --prefix option."
+			exit 1
+		fi
+		DEBUG "Prefix will be $prefix."
+		token_eaten=0		
+	fi
+	
+	if [ "$1" = "--repository" ] ; then
+		shift
+		repository="$1"
+		if [ -z "$repository" ] ; then
+			ERROR "No repository specified after --repository option."
+			exit 1
+		fi
+		DEBUG "Repository will be $repository."
+		token_eaten=0		
+	fi
+		
+	if [ "$1" = "--noLog" ] ; then
+		DEBUG "No log will be stored."
+		do_log=1
+		token_eaten=0		
+	fi
+	
+	if [ "$1" = "--noClean" ] ; then
+		DEBUG "No build tree will be removed even if installation is a success."
+		clean_on_success=1
+		token_eaten=0		
+	fi
+		
+		
+	if [ "$1" = "--noCVS" ] ; then
+		DEBUG "No CVS retrieval will be performed."
+		no_cvs=0
+		token_eaten=0		
+	fi	
+
+	if [ "$1" = "--onlyBuildTools" ] ; then
+		DEBUG "Only build tools will be installed (keep in mind that LOANI installations should be built with these tools)."
+		
+		only_build_tools=0
+		manage_build_tools=0
+		token_eaten=0		
+		
+	fi	
+
+	if [ "$1" = "--onlyOptionalTools" ] ; then
+		DEBUG "Only optional tools will be installed."
+		 
+		# Save any previously existing environment file :
+		if [ -f "${OSDL_ENV_FILE}" ] ; then
+			${CP} -f ${OSDL_ENV_FILE} ${OSDL_ENV_FILE_BACKUP}
+		fi
+
+		only_optional_tools=0
+		manage_optional_tools=0		
+		token_eaten=0		
+	fi				
+			
+	if [ "$1" = "-h" -o "$1" = "--help" ] ; then
+		DISPLAY "\n$HELP"
+		exit 0
+	fi
+	
+	if [ "$token_eaten" -eq 1 ] ; then
+		echo "Error, unknown argument : $1"
+		echo
+		echo "$USAGE"
+		exit 1
+	fi
+	
+		
+	shift
+
+done 
+
+#TRACE "Command line parsed."
+
+
+# Welcome message.
+
+if [ "$be_quiet" -eq 1 ] ; then
+
+	printColor "\n\n\t< Welcome to Loani >" $cyan_text
+	DISPLAY "\nThis is the Lazy OSDL Automatic Net Installer, dedicated to the lazy and the fearless."
+	DISPLAY "\nIts purpose is to have OSDL and all its pre requesites installed with the minimum of time and effort. Some time is nevertheless needed, since some downloads may have to be performed, and the related build is CPU-intensive, so often a bit long. Therefore, even with a powerful computer and broadband access, some patience will be needed."
+
+fi
+
+
+# Entering wizard mode if asked.
+
+if [ "$wizard" -eq 0 ] ; then
+	launchwizard
+fi
+
+# We hereby consider will always need debug informations, be it on file and/or on screen :
+do_debug=0
+
+if [ "$do_log" -eq 0 ] ; then
+
+	# Activates termUtils's debug facility :
+	do_debug=0
+	
+	LOG_OUTPUT=`pwd`"/LOANI.log"
+	
+	# Override default log file :
+	debug_file="$LOG_OUTPUT"
+	
+	# Allow debug information to got to file :
+	do_debug_in_file=0
+	
+	if [ -f "$LOG_OUTPUT" ] ; then
+		DEBUG "A previous LOANI log existed, removing it."
+		${RM} -f "$LOG_OUTPUT"
+	fi
+	
+	DEBUG "Logs will be stored in $LOG_OUTPUT."
+
+else
+
+	LOG_OUTPUT="/dev/null"
+	DEBUG "Log will be discarded."
+	
+fi
+	
+
+DEBUG "Specified command line was : ${SAVED_CMD_LINE}"
+
+# Pre requesites continued.
+
+# Check developer name is set if necessary.
+if [ "$developer_access" -eq 0 ] ; then
+	if [ -z "$developer_name" ] ; then
+		ERROR "No developer name specified whereas CVS developer access demanded."
+		exit 2
+	else
+		DEBUG "CVS developer access selected, with username ${developer_name}."
+	fi
+fi
+
+# Retrieve tool versions informations.
+
+TOOLS_META_FILE="loani-versions.sh"
+
+if [ ! -f "${TOOLS_META_FILE}" ] ; then
+	ERROR "Unable to find LOANI file containing metadata about pre requesite tools (${TOOLS_META_FILE})."
+	exit 2
+else
+	. ${TOOLS_META_FILE} 
+fi
+
+
+# Manage prefix choice.
+# alternate_prefix is required so that project tools (OSDL, Ceylan, etc.)
+# will not be installed under the root of the system ('/') to avoid any harm.
+if [ -z "$prefix" ] ; then
+	DEBUG "No prefix assigned."
+	if [ `${ID} -u` -eq 0 ] ; then
+		WARNING "The user running LOANI is root."
+		if askDefaultNo "For safety reason, we do not recommend running this script as root, continue nevertheless (few users choose that, errors might more easily occur) ?" ; then 
+			alternate_prefix=$HOME/LOANI-installations
+			DEBUG "Run as root, all tools being installed in their default locations except projet ones which will be in ${alternate_prefix}."
+		else
+			echo "We advise you to re-run LOANI as a non-privileged user."
+			exit 0
+		fi
+	else
+		prefix=`pwd`"/LOANI-installations"
+		alternate_prefix="$prefix"
+		WARNING "No prefix specified and not run as root (which is recommended indeed) : adding prefix $prefix."	
+		${MKDIR} -p "${alternate_prefix}"		
+	fi
+
+else
+	${MKDIR} -p "$prefix"	
+	if [ $? -ne "0" ] ; then
+		ERROR "Unable to create prefix directory $prefix."
+		exit 2
+	fi
+	alternate_prefix="$prefix"
+fi
+
+
+# Manage OSDL-data repository :
+OSDL_DATA_FULL_DIR_NAME="${alternate_prefix}/${OSDL_DATA_DIR_NAME}"
+${MKDIR} -p "${OSDL_DATA_FULL_DIR_NAME}"
+DEBUG "OSDL data repository will be ${OSDL_DATA_FULL_DIR_NAME}."
+
+
+if [ -n "$prefix_option" ] ; then
+	DEBUG "prefix option will be $prefix_option."
+else
+	DEBUG "No prefix option set."
+fi
+
+
+# In debug mode, unset SILENT make variable to have more build details with Ceylan and OSDL :
+if [ "$do_debug" -eq 0 ] ; then
+	BUILD_SILENT="SILENT="
+else
+	BUILD_SILENT=""	
+fi
+
+
+# If developer access is selected, use current CVS is implied :
+if [ "$developer_access" -eq 0 ] ; then
+	use_current_cvs=0
+fi
+
+#TRACE "Prerequesites checked."
+
+
+# Setting and initializing OSDL environment file :
+OSDL_ENV_FILE=${alternate_prefix}/${OSDL_ENV_FILE_NAME}
+DEBUG "OSDL environment file will be ${OSDL_ENV_FILE}."
+
+# In case a previously existing OSDL environment file should be kept :
+OSDL_ENV_FILE_BACKUP="${OSDL_ENV_FILE}.bak"
+
+echo "# This is OSDL environment file, generated by LOANI on "`date +'%B %Y, %d (%A)'`"." > ${OSDL_ENV_FILE}
+echo "# Source it to update your environment, so that it takes into account this installation." >> ${OSDL_ENV_FILE}
+echo "# PATH and LD_LIBRARY_PATH will be automatically updated accordingly." >> ${OSDL_ENV_FILE}
+echo "# Usage example : . ${OSDL_ENV_FILE}" >> ${OSDL_ENV_FILE}
+echo "" >> ${OSDL_ENV_FILE}
+echo "" >> ${OSDL_ENV_FILE}
+
+
+
+
+# Anticipated checkings.
+
+findSupplementaryShellTools
+findBuildTools
+
+
+if [ ! -d "$repository" ] ; then
+	DEBUG "Creating non already existing repository ($repository)."
+	${MKDIR} -p $repository
+fi
+
+
+DISPLAY "Retrieving all pre requesites, pipe-lining when possible."
+
+# First, select wanted tools.
+
+# Register all LOANI strict pre requesites for download.
+. loani-requiredTools.sh
+
+# Put the optional tools before the build tools so that their are taken into account in 
+# following order : build / optional / required (best both for download and build).
+if [ "$manage_optional_tools" -eq 0 ] ; then
+	# Empty list only if optional tools are wanted :
+	if [ "$only_optional_tools" -eq 0 ] ; then
+		target_list=""
+	fi
+	. loani-optionalTools.sh
+fi
+
+
+if [ "$manage_build_tools" -eq 0 ] ; then
+	# Empty list only if build tools are wanted :
+	if [ "$only_build_tools" -eq 0 ] ; then
+		target_list=""
+	fi
+	. loani-commonBuildTools.sh	
+fi
+
+
+
+DISPLAY "Target package list is <$target_list>."
+
+
+# Insert here any bypass for testing
+
+
+# Checks that there is enough available space on disk :
+
+# Available size in megabytes (1048576 is 1024^2) :
+AVAILABLE_SIZE=`${DF} --block-size=1048576 . | ${AWK} {'print $4'} | ${TAIL} -n 1`
+
+
+DEBUG "Detected available size on current disk is ${AVAILABLE_SIZE} megabytes."
+
+MINIMUM_SIZE=400
+
+if [ "$manage_build_tools" -eq 0 ] ; then
+	let "MINIMUM_SIZE += 800"
+fi
+
+if [ "$manage_optional_tools" -eq 0 ] ; then
+	let "MINIMUM_SIZE += 100"
+fi
+
+
+if [ $AVAILABLE_SIZE -lt $MINIMUM_SIZE ] ; then
+	WARNING "According to the selected tools which are to install, a rough estimate for peek need of available disk space is $MINIMUM_SIZE megabytes, whereas only $AVAILABLE_SIZE megabytes are available in the current partition. Consider interrupting this script (CTRL-C) if you believe it will not suffice."
+else
+	DEBUG "Enough space on disk ($AVAILABLE_SIZE megabytes available for an estimation of $MINIMUM_SIZE needed)."
+fi 
+
+
+# Second, sort out which tools are available and which are not.
+
+available_list=""
+retrieve_list=""
+
+for t in $target_list; do
+
+	DEBUG "Examining <$t>"
+	
+	target_archive=${t}_ARCHIVE
+	target_md5=${t}_MD5
+	
+	eval actual_target_archive="\$$target_archive"
+	eval actual_target_md5="\$$target_md5"
+	
+	#getFileAvailability ${!target_archive} ${!target_md5}
+	getFileAvailability ${actual_target_archive} ${actual_target_md5}
+	res=$?
+	
+	if [ "$res" -eq 0 ] ; then
+		# Avoid leading space in the beginning of the list :
+		#DEBUG "Adding $t in available list."
+		if [ -z "$available_list" ] ; then
+			available_list="$t"
+		else
+			available_list="$available_list $t"
+		fi
+	else
+	
+		if [ "$res" -eq 1 ] ; then
+            target_file=${t}_ARCHIVE
+			eval actual_target_file="\$$target_file"
+			#real_file="$repository/${!target_file}"
+			real_file="$repository/${actual_target_file}"
+			
+			WARNING "$t archive found in cache (${real_file}), but its md5 checksum does not match recorded one."
+
+			if [ "$do_strict_md5" -eq 0 ] ; then
+				WARNING "Erasing this faulty file and retrieving it from scratch (strict md5 checking mode is on)."                                
+  				${RM} -f "${real_file}}"
+				#DEBUG "Adding $t in retrieve list."
+				if [ -z "$retrieve_list" ] ; then
+					retrieve_list="$t"
+				else
+					retrieve_list="$retrieve_list $t"
+				fi				
+			else
+				WARNING "Will use $t file (${real_file}) nevertheless (strict md5 checking mode is off)."
+				#DEBUG "Adding $t in available list."
+				if [ -z "$available_list" ] ; then
+					available_list="$t"
+				else
+					available_list="$available_list $t"
+				fi				
+			fi	
+		
+		else
+			# res is 2, not in cache at all
+			#DEBUG "Adding $t in retrieve list."
+			if [ -z "$retrieve_list" ] ; then
+				retrieve_list="$t"
+			else
+				retrieve_list="$retrieve_list $t"
+			fi	
+		fi
+		
+	fi	
+done
+
+
+if [ -z "$available_list" ] ; then
+	DISPLAY "No tool already available in repository, will download them all ($retrieve_list)."
+else
+	 # Some are available. All of them ?
+	if [ -z "$retrieve_list" ] ; then
+		DISPLAY "All tools already available in repository ($available_list), no download needed."
+	else
+		# Mixed 
+		DISPLAY "Some tools already available ($available_list), others will be downloaded ($retrieve_list)."
+	fi		
+fi
+
+
+# Check wget is available, that an internet connection is available
+# and there exist end-to-end web access. 
+
+# Server which should almost never be down :
+RELIABLE_SERVER="google.com"
+
+if [ -n "$retrieve_list" ] ; then
+
+	if findTool wget ; then
+		WGET=$returnedString
+	else
+		ERROR "No wget tool found, whereas some files have to be downloaded ($retrieve_list)."
+		exit 5
+	fi		
+	
+	if findTool ping ; then
+	
+		PING=$returnedString
+		if ! ${PING} ${PING_OPT} 5 ${RELIABLE_SERVER} 1>>"$LOG_OUTPUT" 2>&1 ; then
+			ERROR "No available internet connection (unable to ping ${RELIABLE_SERVER})."
+			exit 6
+		else
+			DEBUG "Working internet connection detected."
+		fi		
+		
+	else
+		WARNING "No ping tool found, disabling some checks."
+	fi
+	
+	if ! ${WGET} ${PROXY_CONF} --spider http://${RELIABLE_SERVER}/index.html 1>>"$LOG_OUTPUT" 2>&1  ; then
+		ERROR "Unable to access the web (reading ${RELIABLE_SERVER}/index.html). If you are behind a proxy, please set PROXY_CONF environment variable with the relevant options to be used by wget. /bin/sh example : PROXY_CONF='--proxy-user=<my user name> --proxy-passwd=<my password>'; export PROXY_CONF"
+		exit 7
+	else
+		DEBUG "End-to-end web access successfully checked."
+	fi
+
+	# Pre-check that no wget process is already running, since it would confuse LOANI :
+
+	if ${PS} -edf | ${GREP} -v grep | ${GREP} wget; then
+		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} -edf | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running anymore in parallel with LOANI before re-launching our script, since it might confuse LOANI."
+		exit 8
+	fi
+		
+fi
+
+
+# Third step, retrieve the lacking ones.
+
+
+while [ -n "$retrieve_list" ] ; do
+	
+	DEBUG "Iterating on following retrieve list : [$retrieve_list]"
+		
+	for t in $retrieve_list ; do
+		# Retrieves the file.
+		get${t}
+		res=$?
+		if [ "$res" -eq 0 ] ; then
+			# Success, one fewer file to take care of.
+			DEBUG "Removing $t of retrieve list and adding it to available list."
+			if [ "$be_quiet" -eq 1 ] ; then 
+				target_file="${t}_ARCHIVE"
+				eval actual_target_file="\$$target_file"
+				DISPLAY "      <---- ${t} retrieved [${actual_target_file}]"
+			fi
+			available_list="$available_list $t"
+			new_retrieve_list=""
+			for i in $retrieve_list ; do
+				if [ $i != $t ] ; then
+					new_retrieve_list="$new_retrieve_list $i"
+				fi
+			done
+			retrieve_list=$new_retrieve_list
+		else
+			# md5sum is not the expected one.
+			# Still being dowloaded ? 						
+			
+			if ! ${PS} -u `${ID} -un` | ${GREP} -i wget | ${GREP} -v -i grep 1>/dev/null 2>&1 ; then
+				# No !
+				DEBUG "No wget running, having downloaded the file, but its md5sum seems to be wrong."
+				
+				if [ "$do_strict_md5" -eq 0 ] ; then
+					ERROR "Unable to download file for $t with correct md5 checksum, and strict md5 checking mode is on."
+					exit 4
+				else
+					target_file=${t}_ARCHIVE
+					eval actual_target_file="\$$target_file"
+					#if [ `${DU} -b $repository/${!target_file} | ${AWK} '{printf $1}' ` == "0" ] ; then
+					if [ `${DU} -b $repository/${actual_target_file} | ${AWK} '{printf $1}' ` -eq 0 ] ; then
+						DEBUG "Unable to download a non-empty file for $t (${actual_target_file}), removing this file to force mirror change."
+						${RM} -f $repository/${actual_target_file}
+						break
+					fi
+					WARNING "The downloaded file for $t has not the right md5 checksum, continuing anyway (strict md5 checking mode is off)"
+					if [ "$be_quiet" -eq 1 ] ; then 
+						target_file="${t}_ARCHIVE"
+						eval actual_target_file="\$$target_file"
+						DISPLAY "      <---- ${t} retrieved [${actual_target_file}]"
+					fi
+
+					available_list="$available_list $t"
+					new_retrieve_list=""					
+					for i in $retrieve_list ; do
+						if [ $i != $t ] ; then
+							new_retrieve_list="$new_retrieve_list $i"
+						fi
+					done
+					retrieve_list=$new_retrieve_list										
+				fi			
+			fi # wget not running
+		fi # get result	
+		
+	done
+
+	sleep 4
+	
+	DEBUG "Available list   : <$available_list>"
+	DEBUG "To retrieve list : <$retrieve_list>" 	
+
+done 
+
+#DEBUG "Final available list   : $available_list"
+#DEBUG "Final to retrieve list : $retrieve_list" 	
+
+DISPLAY "All pre requesites available."
+
+if [ "$fetch_only" -eq 0 ] ; then
+	DISPLAY "Fetch only mode was on, work done."
+	exit 0
+fi
+
+
+# Now installing each package.
+
+if [ ! -d "$prefix" ] ; then
+	DEBUG "Creating non already existing installation repository ($prefix)."
+	${MKDIR} -p $prefix	
+fi
+
+
+for t in $target_list; do
+	#DEBUG "Preparing $t"
+	prepare$t
+	#DEBUG "Generating $t"
+	generate$t
+done
+
+
+# manage set_env too
+
+if [ "$set_env" -eq 0 ] ; then
+	RETRIEVE_SCRIPT="${alternate_prefix}/Ceylan/Ceylan-${CEYLAN_VERSION}/src/conf/retrieveEnvironment.sh"
+	DISPLAY "Modifying environment to have it be developer-friendly."
+	if [ ! -x "$RETRIEVE_SCRIPT" ] ; then
+		ERROR "Unable to modify environment to have it be developer-friendly : script $RETRIEVE_SCRIPT not found or not executable."
+		exit 1
+	fi
+	${RETRIEVE_SCRIPT} ${alternate_prefix} --link
+fi
+
+
+if [ "$only_optional_tools" -eq 0 ] ; then
+	# Upgrade any previously existing environment file :
+	if [ -f "${OSDL_ENV_FILE_BACKUP}" ] ; then
+		${CAT} ${OSDL_ENV_FILE} >> ${OSDL_ENV_FILE_BACKUP}
+		${MV} -f ${OSDL_ENV_FILE_BACKUP} ${OSDL_ENV_FILE}
+	fi
+fi
+
+
+if [ "$clean_on_success" -eq 0 ] ; then
+	DISPLAY "Post-install cleaning of build trees."
+	for t in $target_list; do
+		clean$t
+	done
+fi
+
+
+. ${OSDL_ENV_FILE}
+
+DISPLAY "End of LOANI, started at ${starting_time}, successfully ended at "`date '+%H:%M:%S'`"."
+
+DISPLAY "You can now test the whole installation by executing ${alternate_prefix}/OSDL/OSDL-${OSDL_VERSION}/bin/playTests.sh"
+
+
+
+exit 0
+
+# End of LOANI.

@@ -1,0 +1,51 @@
+               
+			  
+			     What has changed in OSDL ?
+         
+	(Organized release by release, from the latest to the oldest)
+			 
+
+
+*** Main Changes in OSDL 0.4 [released in December 28, 2006] :
+
+	* SVN used instead of CVS
+	
+	* The Autotools are used instead of custom-made GNUMakefiles
+	
+	* integration of the Ceylan 0.4 version
+	
+	* ported and tested to the Windows XP platform
+
+
+
+*** Main Changes in OSDL 0.3 [released in December, 2004] :
+
+	* lot of work on 2D API, including TrueType font
+	
+	* some basic OpenGL functionality added
+
+	* integration of the Ceylan 0.3 version
+
+	* LOANI (install support) added
+	
+			
+			 
+*** Main Changes in OSDL 0.2 [released in April, 2003] :
+
+	* modules are being added
+	
+	* integration of the Ceylan 0.2 version
+	
+	* improved SDL support
+
+	* a lot of SDL-based documentation added
+	
+	* full GNU/Linux support tested
+	
+	
+			 
+*** Main Changes in OSDL 0.1 [released in December, 2002] :
+
+	* first OSDL library built and tested, with a very basic SDL support
+	
+	* CVS screwed up, hence gone to the 0.2 version earlier than expected 

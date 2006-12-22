@@ -1,0 +1,586 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2006, January 5.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document 
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Multithreading with SDL</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, SDL, thread, multithread, mutex, semaphore">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Multithreading%20with%20SDL">mail us</a></p>
+  </div><a name="_top_"></a>
+  
+
+<h1>Multithreading with SDL</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<code><pre>
+
+sleeping puts you more in control of where the OS will interrupt  
+the execution of your game, so it's less likely to swap out in the middle  
+of a screen update, for example, and in theory may do more short sleeps in  
+stead of fewer large ones.  I've seen choppy games become smoother after  
+yielding was added, anyway.
+
+
+How to debug with timers ?
+With the debugger, updating some physics based on the elapsed time since the last frame, then the elaped time is muchlarger than usual.. Is there a way around this?
+
+
+Well, the point with this approach is to lock logic time to wall clock time, and that's what it tries to do at all times - even if the rendering frame rate drops to a few minutes per frame or something while you're debugging...!
+
+One easy hack is to disable this timing code when debugging, and just assume a fixed rendering frame rate of somewhere around what you're getting when running full speed on your system. Of course, it won't accurately simulate the game running at full speed, but it's at least a bit closer.
+
+An more sophisticated while probably even simpler alternative is to 
+just cap the delta times before feeding them to the game logic;
+
+	if(dt > 100)
+		dt = 100;
+	advance_game_logic(dt);
+
+That way, you can have the game logic believe it's running at 10 fps (in this example) minimum, regardless of how long you stall the process, and still have it operate normally when you run it full speed. This also has the bonus of dealing somewhat nicely with the operating system freezing the game for a while and stuff like that.
+
+
+
+The game work correctly on Windows, but, I try to test him on a debian, with a
+Nvidia 6800GT. It compil correctly, but, the screen stay black.
+Maybe have you got an idea for my problem.
+
+ 
+Usually that's because one of :
+- you forgot to lock/unlock your hardware surface
+- you are using a double buffer and don't call SDL_Flip()
+- you are using a single buffer and don't call SDL_UpdateRects() 
+
+
+
+> I was wondering if there was a way to identify and then change a thread's priority in SDL,
+>
+There is no way to do so with SDL. 
+
+
+
+SDL uses gettimeofday on linux. So if you use settimeofday you effectively screw up SDL's timers.
+
+A workaround could be to do a full SDL reinit before/after your settimeofday call :
+
+SDL_QuitSubSystem(...)
+settimeofday(...)
+SDL_Init(...) 
+
+
+SDL threads aren't detached.
+
+You need to call SDL_WaitThread() to clean it up when it's done. If you don't, valgrind is correct that you are leaking memory, as this thread is a zombie process under linux waiting to be collected.
+
+
+I believe the correct documentation for adding threads to most games
+should be:
+
+    "Don't."
+
+They add complexity, bugs, and, in most cases, no significant
+performance gain, and in other cases, a performance loss. Think twice
+(no, three times) before adding threads to your game.
+
+
+as a general rule don't do anything not specifically declared thread
+safe in  a thread. this includes library functions, possibly very
+common ones.
+
+i don't know if SDL_Mixer has any thread safe parts but most of the
+main sdl library is not.
+
+if you get the FastEvents library
+http://www.gameprogrammer.com/fastevents/fastevents1.html
+
+you can use the FastEvent functions in threads( or some of them anyway )
+
+then use your thread to send an SDL_USEREVENT with the name of the wav
+
+add code to your main loop to detect such events and to do
+
+Mix_Chunk *wav;
+ wav = Mix_LoadWAV("shak.wav");
+ if(!wav) {
+   printf("Mix_LoadWAV:-%s\n", Mix_GetError());
+   // handle error
+ }
+ phaserChannel = Mix_PlayChannel(-1, wav, -1);
+
+or whatever
+i think SDL_Delay( x ) won't work as you intend here
+
+
+basically threads are complicated  :) 
+
+but more to the point, there is an easier way to do what you are
+doing( playing a sound every 3 seconds?)
+
+set a callback function.
+
+i never used one but i saw an example once and it looked a bit crazy
+but it works.
+look up the wiki under timer functions
+
+It is also a BAD idea to call SDL_mixer and SDL audio functions from a
+callback. Callbacks include Effects functions and other SDL_mixer
+audio hooks.
+
+to do what you are attempting try:
+
+http://www.gameprogrammer.com/fastevents/fastevents1.html
+
+the Fastevents functions replace most of the SDL_*Event functions with
+thread safe ones, allowing you to use SDL_USEREVENTS to signal between threads.
+use this to communicate with your "main thread"( which is the one
+which you should be
+calling SDL_Init && SDL_SetVideoMode AFAIK ) to make it do any none
+thread safe stuff
+
+
+
+SDL is not thread safe, so you must ensure
+that each each SDL function can only be executed by one thread at a
+time. *AND*, some SDL functions can only ever be executed in the main
+thread. That is more because of platform limitations than because of SDL
+limitations. Note that threaded event handling can be requested (and it
+works great) on Linux, but not on Windows. Some platforms let you do
+some things in threads that other platforms do not let you do in
+threads. So it goes!
+
+
+however, in bob pendelton's Net2 library , he got around this with
+mutexes and semaphores and condition signals( or whatever they're
+called ). These are standard techniques for doing inter
+thread control and communication. Note that the first thing I had to do
+was write thread safe wrappers for the parts of SDL_net that I use. That
+makes sure that only one thread will be in those functions at any time.
+
+It would have been better if I had made SDL_net thread safe, but that
+didn't seem reasonable at the time. (It still doesn't seem reasonable.)
+The problem is that if you mix SDL_net calls with net2 in the same
+program you can get a situation where two or more threads are trying to
+run the same non-thread safe code at the same time and it may cause a
+crash or data corruption. 
+
+
+>> 
+>> 
+http://www.devolution.com/pipermail/sdl/2004-August/063947.html
+polling the queue in a thread might not work in Windows.
+
+
+The key to using the timer functions is to remember that pretty much the
+only things you can do inside a timer function is a) restart the timer,
+and b) send an event. 
+
+The normal way to use a timer function is to tell it to fire in, say
+five seconds, and when it wakes up have it send an event that tells the
+main loop of your program to draw something. Here is an example timer
+function that sends an event and reschedules itself:
+
+Uint32 timerCallback(Uint32 interval, void *param)
+{
+  SDL_Event event;
+
+  event.type = SDL_USEREVENT;
+  event.user.code = MY_TIMEREVENT;
+  event.user.data1 = (void *)SDL_GetTicks();
+  event.user.data2 = (void *)0;
+
+  SDL_PushEvent(&event);
+
+  return interval;
+}
+
+Here is how you would declare a timer variable and start the timer
+
+SDL_TimerID timer = 0;
+timer = SDL_AddTimer(5000, timerCallback, NULL);
+
+and here is a fragment that shows how you might respond to the event
+when you get it in the main loop:
+
+  switch (e->type)
+  {
+  case SDL_USEREVENT:
+    switch (e->user.code)
+    {
+    case MY_TIMEREVENT:
+      now = SDL_GetTicks();
+      dt = now - lastTime;
+      if (dt >= minFrameTime)
+      {
+        drawBounce(dt);
+        testHits(dt);
+        checkScore();
+
+        lastTime = now;
+      }
+      break;
+    }
+    break;
+
+This code is all extracted from a little game I used in an article for
+Linux Journal a while back. The article was on SDL so I used SDL for
+everything. In a real program I would probably keep track of when things
+are supposed to happen using a priority queue ordered by time. I would
+process events stored in that queue based on the current game time. And,
+I would process them in a loop just before the loop that processes SDL
+events.
+
+The general idea is to push an event when the timer callback is called.
+You could also simply set a flag, sending the flag variable as (part of)
+the 'param' that gets passed to the callback function, and then test for
+that in your running loop (assuming you're NOT using SDL_WaitEvent(),
+in which case the flag might not get noticed until the user hits a key
+or wiggles the mouse or something).
+
+The flag idea has worked better for me (YMMV). The event queue is a fifo, so 
+if responding to the timer quickly is critical, you might get some surprises. 
+Lots of mouse motion events, for example, can delay your main program's 
+response to the timer.
+
+
+It seems SDL_PushEvent and SDL_PeepEvents are safe to be called from any thread - event queue is locked before any changes.
+
+Is there any way to yield in an SDL thread? Why isn't there an SDL_YieldThread() function?
+
+SDL_Delay(0) has that same effect.
+
+Nope, that's an undocumented side effect of the way the underlying 
+Win32 call works.
+
+For example, SDL_Delay(0) on Linux does precisely nothing. (At least, 
+that was the case last time I checked.)
+
+An SDL_Delay(10) (or perhaps even an SDL_Delay(100), depending on the thread in question) works wonders in most places.
+
+Since SDL only supports pre-emptive multithreading, the OS is already going to switch between threads as best as it sees fit.  What use is delaying for some arbitrary fixed time going to do, other than make sure that some CPU slices end up somewhere else?  Also, delaying for some fixed time interval is going to mean different things to different machines.  A slower machine is going to want less of a delay and a faster machine is going to want more.
+
+If you design your application to be event driven, so that it's processing when it needs to be, and sleeping otherwise (waiting for an event or some specific time), then you don't have to worry about this because you're using the CPU only when you need it.
+
+
+Is there any way to yield in an SDL thread? 
+
+
+Sure. Use event variables. Have the yielding thread wait on an event variable. As long you make sure the event will eventually be triggered you can build a nice thread yielding system this way. You can make it as sophisticated as you want it to be. 
+
+
+Why isn't there an SDL_YieldThread() function?
+
+
+Like everything else in SDL, only features that are supported everywhere are included. If there is even a chance that a function can't be implemented on some platform then it probably didn't get included in SDL. The result is that SDL is works just about everywhere, but you don't always get your favorite feature.
+
+
+
+CTRL-C : add a signal handler
+Just setting a "volatile int" flag that makes the main loop close 
+should be safe. (Doesn't even matter if accessing the flag is atomic 
+in this trivial case. No sync needed.)
+
+
+Of course, you'll have to wait up to one frame (provided the main loop 
+checks the flag once per frame), and it won't work if the main loop 
+is stuck.
+
+To deal with the latter, I have the signal handler check the flag, and if it's already set (that is, second try), the handler assumes the main loop is dead and tries a more brutal approach to closing down. 
+
+My SDL application doesn't appear to be reacting to ctrl-c.
+
+The SDL window will plain ignore most such combinations. (Depends on how the OS handles such combinations.) You have to decode the keyboard events yourself if you want the SDL window to respond to CTRL+C and the like.
+
+For SIGINT and the like to be sent to a normal SDL application, you have to do the keystrokes in the console you started the SDL application from; not in the SDL window. If you're not running the application from a console, you'll have to use whatever means the desktop environment provides for doing this.
+
+A Ctrl+C from a console (say, in Linux) usually sends an "SDL_QUIT" event to your app, so just look out for those and handle them appropriately.
+
+(Window manager events can cause SDL_QUIT events as well.  For example, clicking a window's 'close' button in the title bar, or selecting "Close" from a right-click menu on the window's taskbar entry.)
+
+
+
+
+
+Processors aren't getting a lot faster any more. Starting in
+about 2001 the rate at which processors get faster dropped dramatically.
+OTOH, Moore's law has been cranking right a long giveing us more and
+more transistors on a chip. The processor manufactures have been forced
+to redirect the benefits of Moore's law into things like hyperthreading
+and multicore processors rather than into faster processors. Unless
+there is a breakthrough that allows CPUs to start getting faster we are
+facing a world where all performance increases are going to come from
+multithreading on parallel processors and not from faster processors. 
+
+We're going to need thread safe versions of all the libraries we use.
+
+
+
+No thread is ever guaranteed to wake up as long as there are other currently active threads. Of course, that assumes that all threads have equal priorities. But, there is no better way to hose yourself than to start depending on thread priorities. 
+
+You have to make sure that all threads eventually wait for something so that you can ensure that all threads eventually get a chance to run. 
+
+
+Unless you have a hyperthreading or multicore CPU you can't actually have more than one thread active at a time anyway. And, having multiple threads reading from a single disk may or may not improve disk reading performance. 
+
+SDL is not thread safe. All graphics must be done in the main thread and all keyboard, mouse, and joystick input must be done in the main thread. You can do anything you want in other threads. 
+
+
+For an example of a thread safe wrapper library used with SDL take a
+look at Net2 and Fast Events at
+http://gameprogrammer.com/programming.html I had to solve this problem
+to do multithreaded network I/O handling in SDL.
+
+
+
+I'd recommend doing everything (except sound, for various reasons) in 
+a single thread. It's more robust, simpler, and tends to work well on 
+all platforms, including those that have threading issues or don't 
+support threading at all.
+
+You can't call SDL_PollEvent() or SDL_PumpEvents() in the timer either. 
+Basically think that all input and graphics can only be done in the main
+thread, and that the timer is in another thread and you'll be fine.  Note
+that the timer may not actually be another thread on some systems, but that
+should help you think about it. 
+
+
+
+fixed size queue :
+
+SDL is not so much "broken" as faced with a problem that can't be easily
+solved on all platforms. The only way to fix it that I know of is to
+ensure that SDL_PushEvent() waits for the queue to empty out before it
+pushes anything new on the queue. That requires that SDL_PushEvent be
+running in a different thread than the main thread when it is called, or
+else a wait would prevent the reading thread from ever being able to
+empty the queue and you would have a deadlock.
+
+But, you can't ensure that SDL_PushEvent runs in a different thread than
+the one that is using SDL_PollEvent or SDL_WaitEvent. You can't even
+ensure that the platform you are running SDL on supports multiple
+threads. The problem is very deep in the concept of building a game
+library that runs on as many different platforms as SDL runs on. And,
+the problem rarely, if ever, affects games. 
+
+NET2 is thread based and therefore can not be used on all the platforms
+that SDL runs on. The problem is only serious in programs that use NET2.
+So, it makes more sense to write my own library and not patch SDL.
+
+Having said all that, I have talked recently with Sam about trying to
+fix the problem on threaded platforms. He hasn't ruled out fixing it.
+OTOH, to fix it someone has to come up with a way to prevent deadlocks
+when SDL_PushEvent is called from the event reading thread when the
+queue is full. Changing the way the queue is stored so that the size can
+be extended sounds like the best approach to me, but the effects of
+changing the queue representation can be far reaching and have
+unexpected effects on performance. It is more complicated than that
+because you should only increase the size of the queue when you need to
+avoid causing a deadlock. You never know what piece of code lurking in
+the machine specific bits of SDL have dependencies on the queue
+representation or the queue size.
+
+SDL is *NOT* broken. It is showing the effects of being written by
+people who are not omniscient and it is showing the effects of being so
+successful that people, including me, are now trying to use it for
+applications, like network servers, that it was never designed for. It
+is far from being broken. And while it is not perfect, it is so much
+closer to being perfect than anything else out there that it is worth
+our time to make it more perfect.
+
+We also have to remember that the value of SDL comes from its
+simplicity. Each new feature must be consider very carefully. And,
+anything that changes the semantics of SDL affects many people and
+applications. 
+
+
+
+
+Only the thread that
+initialized SDL can access the graphics. Timers can run in their own
+thread. Therefore you can't do graphics from timers.
+
+
+You use timers to send custom events that are processed in the main
+event loop. When the timer fires it sends an event (this is guaranteed
+to work). Then when your event loop reads the event you do the graphics
+associated with the event.
+
+
+
+Does anyone know where I can find some simple sample
+codes related to SDL_Threads?
+
+
+What about a pthread tutorial ? The SDL threading functions are 
+equivalent to the corresponding pthread functions.
+
+
+
+You aren't supposed to be able to get events from
+MSWindows through SDL when the event code is not running in the main
+thread. Fastevents uses SDL to get events so it has the same
+restrictions on MSWindows that SDL does.
+
+I know that answer really bites, but that is just the way it is. You
+have to move your event processing code into the game loop so it looks
+more like:
+
+while (!done)
+{
+  while (SDL_PollEvent())
+  {
+    Process event;
+  }
+  game loop stuff;
+}
+
+
+
+
+With SDL I had anticipated that I would use an SDL_cond - i.e. a conditional
+variable. But for some reason I am only allowed to have a thread wait on a
+conditional after finishing with a mutual exclusion? Why is this?
+
+
+This is common to threading APIs, you will find that most modern 
+threading APIs only allow you to handle a cond-variable with a mutex. 
+The scenario is as follows:
+
+You have one thread waiting on a conditional variable, and another 
+waking it with a notify call. But if the notify comes before the wait, 
+the first thread may never be woken, as the notify only works on threads 
+which are sleeping right then.
+
+To work around this, you typically use a flag variable, which you set 
+when you call notify, and test before waiting. But if access to this 
+flag is unprotected, some race conditions can still occur, such as the 
+flag being tested, then set, then the second thread notifies, *then* the 
+first thread waits.
+
+So the flag is protected with a mutex. The notifier locks, then sets the 
+flag, then notifies, then unlocks. The waiter locks, then tests, then 
+waits, then unlocks. Since waiting atomically unlocks the mutex, the 
+notifier can access it while the waiter is sleeping.
+
+Since the original situation is a common pitfall, and this solution so 
+general, many threading APIs will, as I said, force you to use a mutex. 
+Otherwise, you might want to implement something like this, but might 
+forget to use the mutexed version of wait (one must exist, for 
+atomicity). So think of it as for your own good !-)
+
+
+>this is a good idea.
+>> how do you get min/gran at runtime?
+
+
+I was bored yesterday, and wrote code to do that...
+
+/* These depend on you scheduler, I try to figure them out at runtime.
+   100/50 is my worst-case-estimate
+   20/10  on my FreeBSD box
+   1/1    on my WinXP box
+ */
+ 
+Uint32 sleep_min=100; /* Minimum possible sleep time in msec */
+Uint32 sleep_gran=50; /* granularity of the sleep time in msec */
+
+#define TEST_TIMES 100     /* Number of tests */
+
+void init_delay(void){
+    int frames=0;
+
+    Uint32 t_start,t_end,ticks;
+
+    printf("Sleep_min: ");
+    ticks=SDL_GetTicks();
+    while(frames++<TEST_TIMES){
+        t_start=SDL_GetTicks();
+
+        SDL_Delay(1);
+
+        t_end=SDL_GetTicks();
+
+        if(t_end-t_start < sleep_min)
+            sleep_min=t_end-t_start;
+
+        /*printf("%d,", t_end-t_start);*/
+    };
+    printf("Sleep_min=%d\n", sleep_min);
+    printf(" avg. = %f\n", (float)(t_end-ticks)/TEST_TIMES);
+
+    printf("Sleep_gran: ");
+    frames=0; ticks=SDL_GetTicks();
+    while(frames++<TEST_TIMES){
+        t_start=SDL_GetTicks();
+
+        SDL_Delay(sleep_min+1);
+
+        t_end=SDL_GetTicks();
+
+        if(t_end-t_start-sleep_min < sleep_gran)
+            sleep_gran=t_end-t_start-sleep_min;
+
+        /*printf("%d,", t_end-t_start-sleep_min);*/
+    };
+    printf("Sleep_gran=%d\n", sleep_gran);
+    printf(" avg. = %f\n", (float)(t_end-ticks)/TEST_TIMES - sleep_min);
+};
+
+
+One can use select (the one for file descriptor) for non-blocking sub-millisecond accuracy waiting
+
+
+
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Multithreading%20with%20SDL">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

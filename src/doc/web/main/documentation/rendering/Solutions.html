@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    Ce document fait partie du projet OSDL.
+
+                Pour toute remarque, envoyer un courriel à olivier.boudeville@online.fr
+-->
+<!--    
+        Date de création : 7 Décembre 2003.
+        Auteur : Olivier Boudeville (olivier.boudeville@online.fr)
+        Version : 0.1
+-->
+
+<html lang="FR">
+<head>
+  <title>OSDL - Quelques techniques de rendu</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL">
+  <link rel="stylesheet" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>Courts-circuits</em> <a href="../../../common/black.html"
+    onclick="parent.toolbar.location='../../MainMenu.html'">Page
+    principale</a> <a href="../../Map.html">Plan du site</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Transparence">
+    écrivez-nous</a></p>
+  </div><a name="_top_"></a> 
+  
+
+  <h1>Quelques techniques de rendu</h1>
+  
+<h2>Principe</h2>
+
+  <p>Ce document vise à recenser les techniques de rendu les plus usuelles, afin qu'un nouveau venu dans ce domaine ne passe pas à côté de solutions essentielles à la réussite d'un système graphique.
+  </p>
+
+ <p>
+	Plusieurs explications particulièrement pédagogiques sont fortement inspirées de la source officielle pour l'apprentissage d'OpenGL, le <a href="../gameExplained/Bibliography.html#openGLProgGuide">Red Book</a>, qui aborde de manière très réussie certaines problématiques du rendu qui ne sont pas uniquement relatives à OpenGL.
+ </p>
+
+
+<h3>Double-buffering</h3>
+<p>
+Ce terme, difficile à traduire ("<em>utilisation d'un double tampon vidéo</em>") consiste à décrire une technique majeure utilisée afin que les animations soient fluides.
+</p>
+
+<p>L'idée la plus naturelle qui vienne à l'esprit pour réaliser une animation est de faire se succéder des images à grande vitesse pour, comme dans le cas des films, donner l'illusion d'un mouvement continu grâce à la persistance rétinienne. Ainsi, si chaque seconde 24 images se succèdent, l'animation est agréable à l'oeil et ne paraît pas trop saccadée (comme les films de Charlie Chaplin qui n'en avaient que 16 par seconde).
+</p>
+
+<p>On pense naturellement à un algorithme du genre :
+<code>
+<pre>
+
+tant que temps < tempsMax 
+{
+	effacerFenetre()
+	dessinerImage( temps )
+	attendreFinVingtquatriemeDeSeconde()
+}			
+</pre>
+</code>
+</p>
+
+<p>
+Le défaut d'une telle technique est que les images affichées ne sont pas d'emblée complètes. Ainsi, pour une scène compliquée, le rendu peut durer presque la totalité du vingt-quatrième de seconde, et les dernières primitives graphiques seront donc restées à l'écran très peu de temps, alors que les premières auront été présentes presque la totalité du temps imparti. Cela donne des animations à la qualité visuelle pauvre. 
+</p>
+
+<p>
+Une bien meilleure technique est celui du <em>double buffering</em>, qui consiste à utiliser tout-à-tour deux mémoires vidéo. Quand l'une des deux sera visible, on dessinera dans l'autre, et à chaque vingt-quatrième de seconde, on les inversera. Les avantages de cette technique sont certains : chaque image est d'emblée complète, et cela ne nécessite pas plus de ressources (hormis l'espace mémoire correspondant au second tampon vidéo) que la technique précédente : dans les deux cas, pendant chaque intervalle de temps (un vingt-quatrième de seconde par exemple), une image est dessinée.
+</p>
+
+<p>Cela donne un algorithme du genre :
+<code>
+<pre>
+
+tant que temps < tempsMax 
+{
+	effacerFenetre()
+	dessinerImage( temps )
+	echangerTamponsVideo()
+	attendreFinVingtquatriemeDeSeconde()
+}
+			
+</pre>
+</code>
+</p>
+
+<p>
+Une dernière amélioration, qui cette fois-ci nécessite que le matériel le permette, est de se synchroniser sur la fréquence de rafraîchissement de l'écran. Cela évite des scintillements et pleurages (<em>tearing</em>) qui nuisent à la perception de l'animation : avec une telle synchronisation, une image ne sera pas dessinée à cheval sur deux rafraîchissements successifs de l'écran.
+
+</p>
+
+
+<h3>Triple buffering</h3>
+<p>
+Appelée aussi <em>semi-triple buffering</em>, cette technique, comme son nom l'indique, consiste à utiliser non plus deux mais trois tampons vidéo. Cette adjonction ne sert pas à rendre directement l'animation plus fluide (deux tampons suffisent pour cela), mais permet d'avoir un <em>double-buffering</em> classique dans la mémoire vidéo tout en utilisant un troisième tampon en mémoire principale. Ce tampon sera celui où le rendu effectif sera réalisé, et une fois achevé il sera copié (<em>blitté</em>, c'est-à-dire transféré le plus efficacement possible dans une autre zone de mémoire) en mémoire vidéo, dans le tampon de rendu, en attendant, par le jeu du <em>double-buffering</em>, d'être visible. 
+</p>
+
+<p>
+Cette technique est intéressante dans la mesure où écrire et surtout lire dans la mémoire vidéo est extrêmement long. Il est donc souvent plus efficace de réaliser toutes les modifications dans la mémoire principale avant de transmettre le résultat au système de double buffering.
+</p>
+
+<p>
+Une telle organisation n'est néanmoins pas applicable avec OpenGL, puisque le rôle de ce dernier est de prendre en charge le rendu effectif, et de le réaliser (à l'exception des implémentations logicielles) directement en mémoire vidéo.
+</p>
+
+
+<h3>OpenGL</h3>
+<p>
+OpenGL n'est pas en lui-même une technique de rendu, mais un moyen d'accéder au système graphique, qui est souvent matériel, donc accéléré et susceptible de décharger d'autant le processeur principal (CPU). OpenGL est donc une interface normalisée qui permet, grâce à plus de 150 commandes, de contrôler le système graphique de manière uniforme, et de l'utiliser pour représenter des données tridimensionnelles.
+</p>
+
+<p>Son intérêt est donc non seulement de donner accès à la ressource précieuse de l'éventuel processeur graphique (GPU), souvent nécessaire pour qu'une application graphique et interactive ait des performances suffisantes, mais aussi de donner un accès uniforme, c'est-à-dire indépendant de la réalisation matérielle sous-jacente. Ainsi, grâce à OpenGL, on peut demander le rendu d'un polygone texturé sans avoir à prendre en compte quelle carte vidéo est installée.
+</p>
+
+<p>
+Pour qu'OpenGL soit réellement indépendant de la plate-forme, il ne prend en compte ni la gestion des fenêtres de l'environnement graphique, ni la collecte des événements en provenance des périphériques d'entrée, issus de l'utilisateur. Il est donc nécessaire de lui adjoindre d'autres ingrédients logiciels, comme <a href="http://www.libsdl.org" target="_blank">SDL</a>.
+</p>
+
+  
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h2>N'hésitez pas à nous faire part de votre avis !</h2>
+
+  <p>Si vous disposez d'informations plus détaillées ou plus
+  récentes que celles présentées dans ce document, si vous avez
+  remarqué des erreurs, oublis, ou points insuffisamment traités,
+  <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Transparence">
+  envoyez-nous un courriel</a> !</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Retour en haut de page</a>]
+	<br>
+    <br>
+    <em>Dernière mise à jour : 15 Janvier 2004</em>
+  </center>
+</body>
+</html>

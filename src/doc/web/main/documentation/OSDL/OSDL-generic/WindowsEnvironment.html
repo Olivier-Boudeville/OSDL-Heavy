@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2005, December 29
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Windows for development</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL, Windows, port">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href="../../../../common/css/OSDL.css">
+</head>
+
+<body>
+
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../common/black.html"
+       onclick="parent.toolbar.location='../../../MainMenu.html'">home page</a> <a href="../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Windows%20for%20development">mail us</a></p>
+  </div><a name="_top_"></a> 
+
+  <h1>Using Windows for development</h1>
+
+
+
+<a name="toc">
+<center>
+	<table summary="Table of content" style="border: none">
+        <tr>
+          <td>
+
+		   <div class="box">
+		       <a href="#overview">Overview</a><br>
+		       <a href="#environments">Environments</a><br>
+		       <a href="#compiler">Compiler toolchain</a><br>
+		       <a href="#links">Links</a>
+          </div>
+
+          </td>
+        </tr>
+      </table>
+</center>
+<!--
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+  -->
+
+
+<a name="overview"></a>
+<h2>Overview</h2>
+
+  <p>
+Windows (namely, Windows XP Home Edition) is not necessarily the development platform we dreamt of, but as the majority of the user base, notably the video game players, only uses this operating system, we have to make some efforts to support it. In this document only the topic of creating Windows applications from Windows is discussed : for example, no cross-compilation approach is taken into account.
+  </p>
+
+
+<h2>UNIX on Windows : environments and compilers</h2>
+
+<p>
+A clear distinction must be made between <b>environments</b> (IDE, shells, command line tools, etc.) and <b>runtimes</b> (libraries mainly). The difference is that environments are used <b>to generate</b> the user applications, whereas runtimes are directly <b>used by</b> the user applications.
+</p>
+
+<p>It implies that environments are not provided with the user applications, whereas runtimes are. Therefore the licenses that apply depend on the actual context of use [more infos on <a href="../../gameExplained/Licenses.html">licenses</a>].
+</p>
+
+<p>
+Generally, using environments does not lead to release restrictions (ex : one can use most GNU GPL shells even when creating commercial applications), whereas using runtimes do (ex : using a GPL library hinders from releasing closed-source software).
+</p>
+
+<p>
+For instance, products from <a href="http://www.cygwin.com" target="_blank">Cygwin</a> are both an environment (UNIX command line and tools for Windows) and a runtime (dynamic libraries offering POSIX/UNIX primitives for Windows). For our developments, which are mostly LGPL, using the Cygwin environment (shell, tools) is allowed, whereas they cannot be linked to the Cygwin runtime (<code>cygwin.dll</code>), which would require their being GPL or to purchase specific licenses.
+</p>
+  
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="environments"></a>  
+<h3>Environments</h3>
+
+
+<h4>Faking the UNIX behaviour</h4>
+	
+
+<a name="cygwinenv"></a>	
+<h5>The Cygwin environment</h5>
+
+<h6>What is it ?</h6>
+
+<p>
+As said before, <a href="http://www.cygwin.com" target="_blank">Cygwin</a> provides a fairly useful environment. The only drawback is that the shell is a bit slow, notably for file accesses, that the often subtles differences between Windows and UNIX are often difficult to hide (ex : symbolic links, file permissions, etc.), and that one must be careful with the build settings, since ending with an unappropriate dependency onto Cygwin libraries is quite easy.
+</p>
+
+<h6>How to have it ?</h6>
+<p>
+Just go to the <a href="http://www.cygwin.com" target="_blank">Cygwin</a> website and download the <a href="FIXME" target="_blank">installer</a>. After having double-clicked on it, one can select always the default settings (ex : install under the root of drive <code>C:</code>). If having enough disk space, at the screen for package selecting, in the root of the tree-like structure, one may click on the right so that the <code>Default</code> label changes to <code>All</code>. This way a great deal of tools will be readily available with no effort on the future.
+</p>
+
+
+
+<h5>The MSYS/MSYS-DTK environment</h5>
+
+<h6>What is it ?</h6>
+<p>
+Providing a minimal shell system able to run <code>configure</code> and <code>make</code> is the goal of the MSYS project. Still more tools are provided with the DTK version (<code>Developer Toolkit</code>). However, the lightweight approach leads to a smaller tool coverage than the one of Cygwin.
+</p>
+
+
+<h6>How to have it ?</h6>
+	
+<p>
+These tools are available for download in the <a href="FIXME" target="_blank">MSYS</a> website. Default settings fit perfectly to our needs.
+</p>
+
+
+<h5>Recommended hybrid approach</h5>
+<p>
+Probably the best solution in this section focusing on UNIX-like behaviour is to use both environments, Cygwin and MSYS, simultaneously. Thanks to the appropriate choice for the PATH environment variable, MSYS tools can be preferably chosen, but, when they are not available, their Cygwin counterparts are then automatically selected.
+</p>
+	
+<p>
+To do so, first install <a href="#cygwinenv">Cygwin</a> as explained, and then install MSYS and MSYS-DTK. FIXME : .bashrc : export PATH=MSYS:CYGWIN.
+</p>
+	
+		
+<h4>Using an IDE</h4>
+		
+<p>
+Another way of dealing with environments is to customize the build system on a per-platform basis : recreating, under Windows, a UNIX-like environment able to execute transparently the original GNU/Linux build system is quite a dull task. One could use an IDE instead, such as <a href="FIXME" target="_blank">Code::Blocks</a>, and only create the appropriate project file, to handle the build from the IDE. It is often much simpler, and the only supplementary task to perform is to release with the application sources a corresponding project file, with all options set accordingly to the needs of your project. 
+</p>
+
+<p>
+Among the several available IDE on Windows, we favoured <a href="FIXME" target="_blank">Code::Blocks</a> since it is free, it has many useful features, it supports multiple compilers and is itself cross-platform : the same project XML file can be used on multiple systems.
+</p>
+
+<p>
+As our build system has been made to be developer-friendly under UNIX, it uses multiple UNIX tools, that do not ease the adaptation to the Windows platform. Instead of which, if the goal is just to be able to create the already-developed application onto another target platform, this task is just a matter of setting the correct platform flags, selecting the relevant options and files, and driving the compiler. Surely such IDE are quite enough for this task !
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="compiler"></a>
+<h3>Compiler toolchain</h3>
+
+<p>
+With a given build environment, usually multiple compilers can be used. It is good practice 
+</p>
+
+cygwin runtime : complete rewrite
+mingw runtime : pure MSVC runtime, and should use the same semantics. 
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+<a name="links"></a>
+<h3>Links</h3>
+
+<p>
+<ul>
+    <li><a href="http://sources.redhat.com/autobook/autobook/autobook_121.html#SEC121" target="_blank">Unix/Windows Portability</a>, from the Autobook</li>
+<!--	
+    <li><a href="" target="_blank"></a></li>
+-->
+</ul>
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+  	
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Windows%20for%20development">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    <a href="#_top_">[Top]</a><br>
+    <br>
+    <em>Last update : 2006, January 20</em>
+  </center>
+</body>
+</html>

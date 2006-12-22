@@ -1,0 +1,606 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+
+<!--    Ce document fait partie du projet OSDL.
+		Pour toute remarque, envoyer un courriel à toshiba.laptop@esperide.com
+-->
+<!--    
+        Date de création : 13 Janvier 2004.
+        Auteur : Olivier Boudeville (toshiba.laptop@esperide.com)
+        Version : 0.1
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Installing WinXP, GNU/Linux, (trying FreeBSD with no luck) on a Toshiba M60-176 laptop</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, installation, laptop, multiboot">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  
+  <div class="banner">
+  
+    <p><em>General</em> <a href="../../../common/black.html" onclick="parent.toolbar.location='../../MainMenu.html'">home page</a>
+    <a href="../../../Map.html">site map</a> <a href="mailto:toshiba.laptop@esperide.com?subject=[OSDL]%20Installing%20multiboot%20laptop">mail us</a></p>
+	
+  </div><a name="_top_"></a>
+  
+
+<h1>Installing Windows XP, GNU/Linux, (trying FreeBSD with no luck) on a Toshiba M60-176 laptop</h1>
+
+
+<a name="toc">
+<center>
+	<table summary="Table of content" style="border: none">
+        <tr>
+          <td>
+
+		   <div class="box">
+		       <a href="#overview">Overview</a><br><a name=""></a>
+		       <a href="#windowsxp">Preparing Windows to live with other fancy OS</a><br>
+		       <a href="#ubuntu">Installing GNU/Linux Ubuntu 5.10 (Breezy Badger)</a><br>
+		       <a href="#freebsd">Unsuccessful attempt of installing FreeBSD</a>
+          </div>
+
+          </td>
+        </tr>
+      </table>
+</center>
+<!--
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+  -->
+
+<br>
+<p><center>
+<a href="http://www.linux-on-laptops.com/"><img src="http://www.linux-on-laptops.com/images/linux-on-laptops.gif" alt="Linux On Laptops" 	width="110" height="36" border="0"></a></center>
+</p>
+<br>
+  
+
+  
+<a name="overview"></a>
+<h2>Overview</h2>
+<p>
+The goal is to install following operating systems :
+<ul>
+  <li>Windows XP Home Edition (already installed on purchase)</li>
+  <li>GNU/Linux <a href="http://www.ubuntu.com/newsitems/release510" target="_blank">Ubuntu 5.10 </a> (Breezy Badger)</li>
+  <li><a href="http://www.freebsd.org/" target="_blank">FreeBSD</a> 6.0 Production Release</li>  
+</ul>
+on a Toshiba Satellite <a href="http://fr.computers.toshiba-europe.com/cgi-bin/ToshibaCSG/product_page.jsp?service=FR&PRODUCT_ID=110961" target="_blank">M60-176</a> laptop (<code>PSM60E-02D02NFR</code> model).
+</p>
+
+<p>
+The boot loader GRUB will be used to select the operating system to run, and it will be installed in the Master Boot Record (MBR) of the first (and only) hard disk.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="windowsxp"></a>
+<h2>Preparing Windows to live with other fancy OS</h2>
+ 
+ <h3>Starting situation</h3>
+ 
+<p>
+The laptop comes with Windows XP Home already installed, with only one HPFS/NTFS partition spreading over the whole 100 GB disk. We suppose you did not change anything significant under Windows, and that you did not put it on the Internet yet, so that we do not start with any trojan/virus/spyware or weird environment.
+</p>
+
+<p>
+First measure would be to make a back-up copy of the Toshiba recovery DVD, in case of problem. You can use the <code>Sonic RecordNow!</code> burner tool, which is already installed.
+</p>
+
+<p>
+Then system informations should be retrieved from Windows. We have a translated version of XP, but you should find the program under <code>System tools</code>. Choose <code>File->Save</code> (not Export) into a <code>*.NFO</code>. This file is encoded in Unicode, the notepad can convert it to UTF-8, however we had to use OpenOffice and make some editing to obtain these <a href="toshiba-XP-system-informations.txt" target="_blank">system informations</a>. Once stored in a file, any removable medium such as an USB key can be used to save them.
+</p>
+
+
+<h3>Planning the partition scheme</h3>
+<p>
+Instead of the unique Windows NTFS partition, the hard drive will have to be split in several partitions for all operating systems to be used. The first Windows partition will have to be shrunk so that it leaves room for the others.
+</p>
+
+<a name="planpart"></a>
+<p>
+We choose the following partition scheme :
+<ul>
+	<li>primary partition 1/4 will contain <b>Windows XP</b> [20 GB, NTFS, C:]</li>
+	<li>primary partition 2/4 will contain <b>Linux Ubuntu root</b> [10 GB, ext3fs, /] </li>
+	<li>primary partition 3/4 will contain <b>FreeBSD</b> [15 GB]</li>
+	<li>primary partition 4/4 will be an extended partition [total : about 55 GB] :
+	<ul>
+		<li>partition <b>shared among operating systems</b> [10 GB, FAT32, E:]</li>
+		<li>partition <b>Linux users'home</b> [25 GB, ext3fs, /home]</li>
+		<li>partition <b>Linux swap</b> [4 GB]</li>
+	</ul>
+	</li>
+</ul>
+</p>
+
+<p>
+There are still 16 GB which are not allocated, they will be available for later use (NetBSD install if GRUB is able to make it believe it is on a primary partition).
+</p>
+
+<p>
+FreeBSD seems to be able to be self-contained in an unique partition (they call it <em>slice</em>), which it can logically split into sub-partitions (they call them <em>partitions</em> [!]).
+</p>
+
+
+<p>
+ReiserFS will not be used since it is not recommended for laptops : it uses the hard disk permanently, which consumes much energy .
+</p>  
+
+  
+   <h3>Shrinking the NTFS partition</h3>
+   
+<p>
+Various approaches can be chosen for this task, one of the safest is to use <a href="http://mlf.linux.rulez.org/mlf/ezaz/ntfsresize.html#example" target="_blank">ntfsresize</a>, version 1.11.2 or higher. This tool can be easily obtained thanks to various Linux distributions. We first tried <a href="http://www.knopper.net/knoppix-mirrors/index-en.html" target="_blank">Knoppix</a> version 4.0.2, but despite correct boot ordering, we never managed to boot to have our laptop boot on it. Maybe the image file was corrupted while transferred or burnt.
+</p>
+
+<p>
+We thus used Linux <a href="http://www.tux.org/pub/people/kent-robotti/looplinux/rip/" target="_blank">RIP</a>, for (R)ecovery (I)s (P)ossible. We burnt a bootable CD ISO (<code>RIP-14.8.grub.iso.bin</code>).
+</p>
+
+   
+	<h4>Shrinking the NTFS filesystem with RIP</h4>
+	
+<p>
+Before shutting down Windows, one should defragment the hard disk thanks to the corresponding system tool, to ease the later partition resizing work. All valuable data pieces should be saved anywhere else than in this hard disk, since hazardous operations will have to take place. Then Windows should be halted normally, so that the journalized filesystem is clean on exit.
+</p>
+
+<p>
+At the boot, ensure that the CD/DVD while be tried before the hard disk (permanently thanks to the F2 key or ponctually thanks to the F12 key), so that RIP is booted. Login as root (no password needed). Now it is time to shrink the first partition, which happened to be known from RIP as <code>/dev/sda1</code> instead of <code>/dev/hda1</code>, apparently since it is a SATA disk (not IDE).
+</p>
+
+<p>
+The following command will be used to simulate (read-only) this partition to 20GB: 
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+ntfsresize -n --size 20G /dev/sda1
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>
+If the result seems correct to you, then hold your breath and issue the actual command (no <code>-n</code> this time) :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+ntfsresize --size 20G /dev/sda1
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+
+<h4>Resizing the first partition</h4>
+<p>
+Having a shrunk filesystem is not enough, since the Windows partition is still occupying the whole disk. The solution is to use <code>fdisk</code>, to delete the previous partition and to create a new one at the beginning of the disk, large enough to contain the NTFS filesystem. Yes, deleting the partition and re-creating a smaller one is the only way, and it should not erase its content if done appropriately.
+</p>
+	
+<p>
+So a <code>fdisk /dev/sda</code> must be executed, the previous partition entry should be viewed and remembered so that, after its deletion, a new one can be created, i.e. with the bootable flag and the partition type <code>7</code>, for HPFS/NTFS.</p>
+
+<p>What new size should be used ? Obviously, less than the whole disk, more than the NTFS filesystem it will contain. As the target size was 20 GB and there were 12137 sectors, we thought that having this partition ranging from sector #1 (first primary partition for Windows) to <code>12 137 * 20 /100 = 2427</code> with a margin of 80 MB (roughly 10 sectors) would be enough.</p>
+
+<p>However, as with fdisk one can enter the desired size, we entered 20 GB (as <code>20*1024= 20480</code>, i.e. <code>+20480M</code>) and fdisk answered sector <code>#2491</code>. As it was far higher than our first guess (<code>2437</code>, margin included), we chickened out and chose <code>#2500</code>.
+</p>
+
+<p>It worked, which means that after having written this new partition table (one entry, NTFS bootable from sector #1 to #2500), we rebooted to Windows (F12), a NTFS check had been triggered by <code>ntfsresize</code> and everything worked.
+</p>
+
+<p>We may have chosen a too high partition size, resulting to some megabytes being spoiled, but at least it worked. Under Ubuntu, we can see that this the total size of this partition is 19.15 GiB, with 7.71 GiB of it being free. Maybe we lost about 7 GiB, maybe not if the NTFS filesystem can grow.
+</p>
+
+
+
+<h3>Hardening Windows</h3>
+
+<p>
+Before even accessing the Net from the amazingly still working Windows XP, some measures should be taken to protect it, since it is rather defenseless when taken from scratch, even behing a somewhat paranoïd Linux gateway. All binaries were downloaded from a Linux box and transferred to the XP box thanks to a removable medium. All these tools are free, as in free beer.
+</p>
+
+<h4>Adding an antivirus</h4>
+<p>
+We chose <a href="http://free.grisoft.com/doc/1" target="_blank">AVG Free Edition</a>. Another good free antivirus may be <a href="http://www.avast.com/eng/download-avast-home.html" target="_blank">avast! Home Edition</a>.
+</p>
+
+<h4>Adding a decent firewall</h4>
+<p>
+Let <code>Internet Connection Firewall</code> (ICF, the Microsoft Windows XP - both Home and Professional editions built-in firewall) deactivated as it was, it would be safer for everyone, and use instead <a href="http://www.zonelabs.com/store/content/home.jsp" target="_blank">ZoneAlarm</a>, which is user-friendly, reliable and able to monitor outbound connections as well.
+</p>
+ 
+ 
+<h4>Adding an anti-spyware</h4>
+<p>
+We use <a href="http://www.lavasoftusa.com/" target="_blank">Ad Aware</a>, from Lavasoft.
+</p>
+ 
+ 
+<h4>Adding a good and safe browser</h4>
+<p>
+<a href="http://www.mozilla.com/" target="_blank">Firefox</a> will do the trick. Let it be your default browser.
+</p>
+ 
+ 
+<p>
+Once all these products are installed, after they tried to make your laptop reboot a zillion times, note that they all use deprecated databases. Therefore the first step when online will be to update them all, starting from the system itself (<a href="http://windowsupdate.microsoft.com" target="_blank">Windows Update</a>).
+</p>
+ 
+ 
+<h4>Securizing more</h4>
+<p>
+Courageous geeks would follow these two guides [<a href="http://www.markusjansson.net/exp.html" target="_blank">1</a>, <a href="http://netsecurity.about.com/cs/windowsxp/a/aa042204.htm" target="_blank">2</a>] if they had enough time.
+</p>
+
+<p>
+Now you have a well-behaving Windows XP installed, and ready to live next other operating systems.
+</p>
+
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="ubuntu"></a>
+<h2>Installing GNU/Linux Ubuntu 5.10 (Breezy Badger)</h2>
+
+<h3>Getting the install CD</h3>
+<p>
+Just go to <a href="http://www.ubuntulinux.org/download/" target="_blank">Ubuntu download</a> section, pick the correct ISO image (we used <code>ubuntu-5.10-install-i386.iso</code>, install, not live).
+</p>
+
+<p>
+If, like me, you had the worst troubles with the not-so-reliable <code>xcdroast</code> and <code>k3b</code>, just burn your CD directly with your laptop, from Windows. However the pre-installed <code>Sonic RecordNow!</code> should be avoided, because this quite limited tool seems unable to burn an ISO image : when downloading such a file from the Internet, it automatically suggests to burn it...and creates a data CD with a Joliet filesystem with one file in it...the ISO image...no comment.
+</p>
+
+<p>
+One shall use <a href="http://www.cdburnerxp.se/" target="_blank">CDBurnerXP Pro</a> instead, which is a free (as in free beer) tool that behaves nicely [<a href="http://www.debian.org/CD/faq/#record-windows" target="_blank">more infos</a>]
+</p>
+
+
+<h3>Grabbing some useful informations</h3>
+<p>
+Altough we did not need these informations, we stored them after our successful installation, to help poor lonesome geeks encountering Linux issues.
+</p>
+
+<p>
+One can find a slightly edited version of the following files :
+<ul>
+    <li>GRUB <a href="GRUB-menu-lst.txt" target="_blank">menu.lst</a></li>
+    <li>kernel <a href="config-2.6.12-10-386.txt" target="_blank">config-2.6.12-10-386</a></li>
+    <li><a href="dmesg.txt" target="_blank">dmesg</a> [seems to be truncated]</li>
+    <li><a href="lspci.txt" target="_blank">lspci -v </a> output</li>
+    <li><a href="lsmod.txt" target="_blank">lsmod</a> output</li>
+</ul>
+
+</p>
+
+<h3>Correcting the installation process</h3>
+
+<h4>Having fun with Xorg</h4>
+<p>
+You can smoothly follow the installation process, that we found very well designed and user-friendly. However when the great moment came, the configuration of Xorg, we chose the correct screen definitions (<code>1440*900</code> and <code>1280*800</code> which both have the best ratio for the LCD screen, 1.6, and a few standard ones such as <code>1024*768</code>), blam... a black screen and nothing more except some weird sounds. The text consoles were still available though (<code>CTRL-ALT-F1</code> for example), which allows to log as root (log in as your pre-declared first user and then enter <code>sudo bash</code> and enter your user's password to gain root priviledges).
+</p>
+
+<p>After some efforts and web inquiries, it was clear that gdm was failing constantly because of a <code>No screens found</code> which was due to a misconfiguration of the video chip. In a nutshell, here is my correctly working <a href="xorg.conf" target="_blank">xorg.conf</a>, which uses indeed the <code>ati</code> driver (not the <code>VESA</code> one). The relevant section that had to be changed is this one :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+Section "Device"
+	Identifier	"ATI Technologies, Inc. Radeon Mobility X700 (RV410)"
+	Driver		"ati"
+	BusID		"PCI:1:0:0"
+	Option 		"BusType"   	"PCIE"
+	Option 		"CRT2Position" 	"clone"
+	Option 		"MonitorLayout" "LVDS,CRT"
+EndSection
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+
+<h4>Having fun with a Gnome</h4>
+<p>
+On reboot my X session lasted for less than one second, and failed afterwards with a splendid <code>unable to read ICE authority file</code>. It may be linked with the fact that my LAPTOP was getting its network settings from DHCP, or more probably with the Xorg experiments I had to do under root. 
+</p>
+
+<p>
+Looking at <code>~/xsession-errors</code>, it appears that <code>~/.ICEauthority</code> is owned by <code>root:root</code> instead of <code>sam:sam</code>, if your first user name is <code>sam</code>.
+To correct that, use : 
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+sudo chown sam:sam /home/sam/.ICEauthority
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+and your problems should vanish.
+</p>
+
+
+<h3>Final point</h3>
+<p>
+Apart some minor changes (domain name) and customizations (all through the GUI), nothing more had to be done. It has been one of the less painful GNU/LINUX installation we have ever known, whereas it took place on a brand new laptop. Thanks to the automatically well configured GRUB, Windows XP was still perfectly working afterwards. Thus the result is pretty encouraging. Kudos to the Debian and Ubuntu community, which gave us a really nifty operating system indeed.
+</p>
+
+
+<h3>Post-install : preparing for FreeBSD</h3>
+<p>
+No need to create special partitions, since the FreeBSD install process will take care of that. Instead, GRUB should be configured so that it can launch the future FreeBSD system as well.
+</p>
+
+<p>
+To do so, one just has to edit <code>/boot/grub/menu.lst</code> and add at the end :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+title FreeBSD 6.0
+root (hd0,2,a)
+kernel /boot/loader
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+This should mean : the FreeBSD system can be loaded from first disk (<code>hd0</code>), third (primary) partition (<em>FreeBSD slice</em> <code>2</code>, since it starts from zero), in sub-partition (<em>FreeBSD partition</em>) <code>a</code>, kernel being found in <code>/boot/loader</code>.
+</p>
+
+<p>
+Note that GRUB must be in version 0.95 or later to be able to read UFS2 partitions.
+</p>
+
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="freebsd"></a>
+<h2>Unsuccessful attempt of installing FreeBSD</h2>
+
+<p>
+The whole installation process went well until first reboot, during which FreeBSD hangs. More details on it at the end of section.
+</p>
+
+<h3>Preparing the installation</h3>
+
+<p>
+One should read beforehand the <a href="http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/book.html" target="_blank">FreeBSD Handbook</a> [<a href="http://www.fr.freebsd.org/doc/en_US.ISO8859-1/books/handbook/book.html" target="_blank">french translation</a>], at least a bit, even if some sections are obsolete (ex : the deadly conflict-free kernel configuration).
+</p>
+
+<h4>Choosing a sub-partition scheme</h4>
+<p>
+With FreeBSD, usual partitions are called <em>slices</em>. Partitions can be used internally by FreeBSD as if it was a set of sub-partitions, they called them, well, <em>partitions</em>. We will stick now to their naming conventions.
+</p>
+
+<p>
+We saw, when we first <a href="#planpart">divided </a>the hard disk into separate spaces for the operating systems, that the third primary partition of 15 GB was devoted to FreeBSD. Now it is time to split this slice into FreeBSD partitions :
+<ul>
+	<li>partition <b>a</b> will be mounted as <code>/</code>, its size will be <code>0.5 GB</code> and its filesystem will be <code>UFS2</code></li>
+	<li>partition <b>b</b> will the <code>swap</code>, its size will be <code>2 GB</code></li>
+	<li>partition <b>d</b> will the <code>/var</code>, its size will be <code>2 GB</code> and its filesystem will be <code>UFS2+S</code></li>
+	<li>partition <b>e</b> will be mounted as <code>/tmp</code>, its size will be <code>0.5 GB</code> and its filesystem will be <code>UFS2+S</code></li>
+	<li>partition <b>f</b> will be mounted as <code>/usr</code>, it will take all the remaining room in the slice (a little more than <code>9 GB</code>) and its filesystem will be <code>UFS2+S</code></li>
+</ul>
+</p>
+
+
+
+<h3>Getting the installation CD</h3>
+<p>
+For the 6.0 version one can go directly to <a href="http://www.freebsd.org/releases/6.0R/announce.html" target="_blank">the FreeBSD release page</a>, choose its preferred transfer method (ex : bittorrent) and the appropriate ISO image (ex : <code>6.0-RELEASE-i386-disc1</code>). This disc 1 will be enough to bootstrap a complete FreeBSD installation. Check the MD5 sum of the downloaded image if necessary, burn it on a CD-R, reboot your computer on this CD, and follow the instructions.
+</p>
+
+
+<h3>Installing FreeBSD</h3>
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<p>
+Beware, innocent creature ! 
+Prepare to enter in a error-prone installation system where most key mistakes will lead to re-starting from scratch. 
+</p>
+
+<p>
+Using <code>CTRL-ALT-DEL</code> or any cancel/undo feature to avoid the full reboot is <b>NOT</b> an option (despite what the manual claims) since it often leaves the installation program in a faulty state. 
+</p>
+
+<p>
+As for us, our first tries led to using the restart feature, which resulted in zillions of errors such as <code>/create/symlink failed: no inodes free</code> just after that the so-called <em>emergency holographic shell</em> was launched.
+</p>
+
+<p>
+Apparently this occurs after a abort/restart installation process, which then tries to install everything...on the ramdisk instead of on the hard disk !
+</p>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+
+<p>
+Under <code>sysinstall</code>, French users should select the <code>French ISO keymap with accent</code>. It is time to select <code>Begin a Standard Installation</code>.
+</p>
+
+<h4>Messing with slices</h4>
+
+<p>
+Under the FDISK-style interface, after the frightening warning about incorrect drive geometry, pressing <code>G</code> should automatically correct the problem without you having to type in the numerical values. It was the notorious "geometry bug" which has plagued FreeBSD for a long time.
+</p>
+
+<p>
+Then hit the <code>Z</code> key until the slice sizes are expressed in GB : it will give you a chance of choosing carefully the right slice where to install FreeBSD. The filesystem types seem to be incorrectly detected (ext2 instead of ext3), a funny small unexpected slice was detected at the beginning of the disk, sizes are never exactly the same depending on the tool being used, but the targeted slice was to be found in <code>ad0s3</code> in our case.
+</p>
+
+<p>
+We had to change the type of this slice from <code>ext2</code> (created as a side-effect of Ubuntu installation) to <code>freebsd</code> (press the down arrow until the slice is highlighted and then type t and choose code 165). We did not set the bootable flag of the FreeBSD slice to true, since GRUB is able to manage it. Doing so will avoid nasty problems with Windows XP detecting another bootable partition.
+</p>
+
+<p>
+When finished, press <code>Q</code> and choose not to change the MBR : the already available GRUB will be the boot loader.
+</p>
+
+<p>
+With no more disk whose partition table would have to be modified, it is <code>Disklabel</code> time : into the FreeBSD slice, let's create FreeBSD partitions. Pressing <code>A</code> allows to have a default partition scheme, which we found quite good and left as it was. Note that pressing <code>U</code> (for undo) will bring you back to...FDISK's beginning, not Disklabel's one. 
+</p>
+
+
+<h4>Choosing what to install</h4>
+<p>
+We chose the most complete distribution set (<code>All</code>), as everything was interesting and there was presumably enough room on the slice for that. We chose the <code>Port Collection</code> as well, though the installation program does not check to see if you have adequate space. 
+</p>
+
+<p>
+Then the CD/DVD installation media was selected, we confirmed that real actions could be taken, and this time the ramdisk was not incorrectly chosen by the installer instead of the hard disk : with a non-interrupted installation process, there had been no more symlink/inode issues and the installation proceeded successfully to the end of the phase. 
+</p>
+
+<p>
+Post-installation started with the network device configuration. Firewire and the Ethernet card (<code>Realtek</code>) were detected, no Wi-fi available at this point though. 
+</p>
+
+<p>
+We selected the Ethernet interface, did not try IPv6 configuration, refused DHCP since we preferred having for this computer static network settings. After having entered these settings (desired IP, gateway, DNS server, etc.) the interface could be set to up. One can check it is successful by pinging this newly created interface. As this computer is expected to be a client, we did not activate the gateway features.
+</p>
+
+<p>
+Then network services (<code>inetd</code>), anonymous FTP, NFS and were deactivated. only <code>SSH login</code> was kept. Console settings were a bit customized, time zone was entered (not UTC), linux compatibility was enabled. As for the mouse, we did not plugged anything, we chose <code>Enable : Test and run the mouse daemon</code> which happened to detect automatically the touchpad.
+</p>
+
+<p>
+Afterwards the installation system jumped to the <code>Install Packages screen</code> section (2.9.14) instead of the  <code>Configure Additional Network Services</code> section (2.9.11). It is because the compute will not act as a gateway, and the X server facility has been removed from sysinstall, probably because it was too often failing badly.
+</p>
+
+<p>
+We chose the <code>All</code> category, but apparently each package had to be specifically selected. Quite a dull task indeed. After having acknowledged the package list, the actual installation was started. Many packages were to be found on disc 2, which we had not burnt, so we had each time to postpone the disc change.
+</p>
+
+
+<p>
+Then a new user was added to the system, and the root password was set. The general configuration menu has been visited but not used, the <code>sysinstall</code> was exited, CD-ROM removed and the computer rebooted.
+</p>
+
+
+<a name="freebsdboot"></a>
+<h3>What never worked : the boot process</h3>
+<p>
+As stated very precisely <a href="http://marc.theaimsgroup.com/?l=freebsd-mobile&m=113176933223410&w=2" target="_blank">here</a>, after that bootstrap began, the FreeBSD text boot menu is displayed, with ASCII-art. No matter which of the eight entries is selected, none works, the system just hangs. For the default option (<code>1. Boot FreeBSD [default]</code>), this line is output : 
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+/boot/kernel/acpi.ko/boot/kernel/acpi.ko text=0x40c2c data=0x2160+0x1090 [..]
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+and the spinning pipe (| then / then - then | then \ etc.) freezes.
+</p>
+
+<p>Using the option without ACPI (2) or in safe mode (3) or with verbose logging (5) does not work either.
+</p>
+
+<p>
+At the time of this writing (january 2006) we could not find any relevant solution on Internet. If ever you had a clue, please <a href="mailto:toshiba.laptop@esperide.com?subject=[OSDL]%20Installing%20multiboot%20laptop">drop us a line</a> !
+</p>
+
+<p>
+On a side note, it should not be a GRUB problem since Ubuntu provides GRUB 4.95, which is the first to support UFS2. Besides, various GRUB configuration settings for FreeBSD have been tried with no luck, including some settings with <code>rootnoverify/chainloader +1/makeactive</code> etc.
+</p>
+
+<p>
+It should be neither a kernel nor an ACPI problem since the CD-ROM can be booted successfully. What we finally came to believe is that the geometry of the 100 GB SATA <code>TOSHIBA MK1032GA</code> hard disk was not correct. More precisely, <code>sysinstall</code> detected geometry <code>193 433/16/63</code> it deemed incorrect, and set instead <code>12 137/255/63</code>. Maybe this last geometry is wrong too, but we cannot try the one detected by the BIOS since it does not let the user know it. A search on the web did not return anything useful about it.
+</p>
+
+<p>
+Finally, the hint of disabling the support for legacy USB from the BIOS did not work either.
+</p>
+
+
+
+
+<h3>Some interesting FreeBSD links</h3>
+<p>
+<ul>
+    <li><a href="http://distrowatch.com/dwres.php?resource=review-freebsd" target="_blank">Distrowatch review</a></li>
+    <li><a href="http://lists.freebsd.org/pipermail/freebsd-hackers/2004-May/006944.html" target="_blank">mini-howto: Grub on FreeBSD (UFS2)</a></li>
+</ul>
+
+</p>
+
+
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
+  <br>
+  <br>
+  <br>
+  <br>
+
+ <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:toshiba.laptop@esperide.com?subject=[OSDL]%20Installing%20multiboot%20laptop">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+  <br>
+ 
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006, February 7, Tuesday</em>
+  </center>
+</body>
+</html>

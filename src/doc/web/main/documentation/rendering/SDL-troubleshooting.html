@@ -1,0 +1,691 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, January 25.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document 
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Troubleshooting</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, SDL, console">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20troubleshooting">mail us</a></p>
+  </div><a name="_top_"></a>
+  
+
+<h1>SDL Troubleshooting</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<code><pre>
+	
+After much more carefully observing this in the debugger I realized 
+this was my own fault after all. I had mindlessly declared one of my Surface 
+objects as a global, failing to realize this would cause its destructor to 
+be invoked well after SDL_Quit was already called.	
+	
+Commands :
+
+fuser /dev/dsp
+strace aProgram
+lsof list open files
+
+	
+In X environment, even the surface is initialized as 800x600 or 1024x768 or whatever without SDL_FULLSCREEN flag, it gives me "Full screen mode" surrounded by black strip. After several testing, I realize the resolution of the screen is that I specify in lilo but not the resolution in X.
+
+Sounds like you have an SDL lib without X support, or maybe that it can't find or access X for some reason. Some distros configure X to refuse connections from local root.
+
+Check that your XFree86/Xorg.conf has a configuration for your desired video resolution, SDL will behave as you described if it can not set the desired video mode or it will choose a video mode from your X config that's close enough to the desired video res and draw black around your screen surface. You can read more about it on John Hall's "Programming Linux Games" book, on his web server
+(http://www.overcode.net)
+
+Use xprop to have informations about an X window
+
+Setting sdl program's niceness to -20 and running it as root may not help
+
+The drivers you are using.
+The compatibility between your driver and the OS you
+are running.
+What you are trying to do 'behind the scenes' (what
+you do between one frame and the next one).
+What kind of video card you are using.
+What kind of video features you are using (i.e.: try
+to use some OpenGL opperations that requires real
+video card support on a non-accellerated video card.
+The size of your screen.
+The amount of memory avaliable to the app.
+
+
+With Cygwin :
+
+Some nasm problems, changedir to the ./src/hermes, type "make clean" then
+type "make" and show the stdout output, how hermes is compiling.
+
+Or disable the MMX accel, run configure with --disable-nasm option.
+
+but I meet errors when linking and this is the error message:
+ gcc -shared  .libs/SDL.o .libs/SDL_error.o .libs/SDL_fatal.o .libs/SDL_getenv.o
+.libs/SDL_loadso.o -Wl,--whole-archive main/.libs/libarch.a audio/.libs/libaudio
+.a video/.libs/libvideo.a events/.libs/libevents.a joystick/.libs/libjoystick.a
+cdrom/.libs/libcdrom.a thread/.libs/libthread.a timer/.libs/libtimer.a endian/.l
+ibs/libendian.a file/.libs/libfile.a cpuinfo/.libs/libcpuinfo.a hermes/.libs/lib
+hermes.a -Wl,--no-whole-archive  -luser32 -lgdi32 -lwinmm  -mno-cygwin -mno-cygw
+in -o .libs/SDL.dll -Wl,--enable-auto-image-base -Wl,--out-implib,.libs/libSDL.d
+ll.a
+Creating library file: .libs/libSDL.dll.a
+/usr/lib/gcc-lib/i686-pc-mingw32/3.3.1/../../../../i686-pc-mingw32/bin/ld: herme
+s/.libs/libhermes.a(mmxp2_32.o): bad reloc address 0x87 in section `.text'
+collect2: ld returned 1 exit status
+make[2]: *** [libSDL.la] Error 1
+
+Some nasm problems, changedir to the ./src/hermes, type "make clean" then
+type "make" and show the stdout output, how hermes is compiling.
+
+Or disable the MMX accel, run configure with --disable-nasm option.
+
+
+	<dt>When executing two applications making use of SDL_CreateYUVOverlay, the second window is dark and blank</dt>
+	<dd>SDL uses XVideo for YUV overlays on the screen, but most cards cannot handle more than one application which uses XVideo. You can either set environment variable SDL_VIDEO_YUV_HWACCEL to 1 or use non-screen surfaces as destination for overlays. Notice than anyway you will get some slowdown.
+	</dd>
+	
+	<dt>I get the following message : <code>Xlib : extension "XFree86-DRI" missing on display ":0.0".</code></dt>
+	<dd>You do not seem to have 3D acceleration correctly setup. You should load 
+the dri module in your X configuration file.</dd>
+
+	<dt>My game runs 1/2 speed on 32 bit window desktops</dt>
+	<dd>If you are comparing to 16 bit modes, it's quite obvious: Going to 32 
+bits with the same resolution means twice as much data to move around - and blitting to the screen (VRAM access with the CPU) is usually the major bottleneck, and takes the full impact of such changes.</dd>
+
+
+what X version are you using (please send the output of xdpyinfo)
+
+Cannot compile SDL with gcc < 3.1 : SDL_yuv_mmx.c has a special declaration of names for assembly parameters, which is only available as of gcc 3.1
+
+SDL_FreeSurface(screenSurface);
+Don't ever do that.
+
+If I start it from shell, the program works fine but if I try to do the same from a graphical tool ot fails, or a window appears but nothing aopears in it, etc.
+
+You are probably using relative paths for your data, which work in the 
+console because you have to be in the right folder to run the program, 
+but do not work in the file browser which doesn't set up the path.
+
+
+Problem with :  tile = SDL_LoadBMP("D:\Pyro\img\brick.bmp");
+
+You have to make sure to escape the backslashes like this:
+
+  tile = SDL_LoadBMP("D:\\Pyro\\img\\brick.bmp");
+
+or this will usually work as well:
+
+  tile = SDL_LoadBMP("D:/Pyro/img/brick.bmp");
+
+otherwise it'll think you are trying to use the string escape sequence \P, \i, \b.
+
+
+
+The Windows version of my game runs faster than the Linux one :	
+	
+Could be lots of different reasons. You need to tell us the specs of the
+the two computers. You need to tell us the specs of the video cards. You
+need to tell us if you are using OpenGL or not. The most likely reasons
+(IMHO) are
+
+1) The Linux computer is half the speed of the windows computer.
+
+2) The pixels in your art are all X bits wide, which happens to be the
+same as a video mode supported by the video card on the windows computer
+but not on the Linux computer. If the depth you ask for is not supported
+by the video card on your computer SDL gives you a fake buffer and then
+converts the pixels to something the card does support at run time. So,
+the program works, but slowly.
+
+3) You are *not* using OpenGL, but only SDL's blit functions. Those
+functions are (usually) hardware accelerated on Windows and are
+(usually) not hardware accelerated on Linux.
+
+4) You *are* using OpenGL and you have a very nice video card in the
+windows computer and a relatively crappy one in the Linux computer.
+
+5) You have a lot more memory in the windows computer than you do in the
+Linux computer.
+
+And there are even more possible reasons. 
+
+
+	
+I noticed SDL_ttf was crashing
+with a segfault when the filename TTF_OpenFont(char*) expects does not
+exist.
+
+	
+Sometimes, not ALL the time, but sometimes, when i go to
+click and drag the window (you know, when you "grab" the top bar of
+the window to move the window around?) - i can't do it.
+
+
+I've had the same problem with my OpenGL game and SDL 1.2.7.
+
+SDL 1.2.6 doesn't have this problem, so I'm still using it.
+
+Also with SDL 1.2.7 the window disappears in some conditions (after
+alt-tabbing from fullscreen IIRC).	
+
+
+
+Using DevC++, I added -lSDL_image to the linker parameters. Now I am
+getting the error message "cannot find -lSDL_image" when I try to
+compile and link my application.
+
+I installed the SDL_image 1.2.3 devpak from devpaks.org which copied the
+necessary .a, .dll and .h files within the respective directories.
+
+What's wrong here?
+
+
+
+You may want to take a look here: http://www.gamedev.net/community/forums/topic.asp?topic_id=285721
+
+I tried to change my code to use an SDL Timer. Sometimes it works for a little, but it always ends up locking up
+and Not Responding.  It stops drawing, the screen turns white, and I
+get an hourglass.  What's weird, I can still quit the game by hitting
+escape, which is an event which calls Quit(0);
+
+I have a game that runs some animations.  Every once in a while I get
+the unexpected async reply message.  From what I have been reading this
+is do to the fact that more then one 'thread' is trying to write to the
+video surface.
+
+My questions are 1) do SDL_Timers create there own 'threads'?  2) is
+there a way to detect if the display surface is locked so as not to try
+and draw the graphic? And 3) this doesn't appear to happen when I use
+the hardware surfaces, why?
+
+
+
+
+mcop warning: user defined signal handler found for SIG_PIPE, overriding.
+Unable to resolve pcwks123.miel.mot.com...
+
+but, earlier I got the same message with some other tag, not "unable to resolve". But, this message of SIG_PIPE is consistently coming, though the sound is being played properly.
+
+SDL uses arts (the kde sound daemon) on your machine.
+A solution is to switch to another audio driver :
+export SDL_AUDIODRIVER=esd
+export SDL_AUDIODRIVER=dsp
+export SDL_AUDIODRIVER=alsa
+...
+
+Refer to the docs :
+http://sdldoc.csn.ul.ie/sdlenvvars.php
+
+
+
+	
+Here's how to get a backtrace :
+http://www.libsdl.org/cgi/docwiki.cgi/FAQ_20Getting_20a_20backtrace
+	
+Unexpected async reply message, because more then one thread is trying to write to the
+video surface.
+ SDL_Timers may create there own 'threads', depending on the underlying OS. In general you MUST NOT do
+graphics in a timer callback function.
+
+
+	
+Humm... When building with nasm, I get the error:
+
+Creating library file: .libs/libSDL.dll.a
+c:\MinGW\bin\..\lib\gcc-lib\mingw32\3.3.1\..\..\..\..\mingw32\bin\ld.exe: 
+hermes/.libs/libhermes.a(mmxp2_32.o): bad reloc address 0x87 in section 
+`.text'
+Any idea?
+
+Go to google, find the answer in the SDL archives.
+Basically there is a bug in your version of binutils. Upgrade/downgrade it.
+
+
+Xlib: unexpected async reply(0x190)
+
+Got such an error message recently when trying to run plaympeg (which 
+comes with the smpeg package). I solved it by setting the following 
+environment variable:
+
+export XLIB_SKIP_ARGB_VISUALS=1
+
+	
+Everything works perfectly in windowed mode, but when I switch to fullscreen video,
+it looks like my SDL surface takes only upper half of the screen. The
+bottom half stays black (I can only go there with my mouse cursor, which
+leaves there it's track).
+I've seen this problem before when setting "odd" video modes (like once i set
+50x50 to see what would happen).
+
+what's happening is that for some reason, SDL is unable or unwilling to get
+a 320x240x8 bits screen, so it's getting a bigger screen than you requested,
+but the size you requested is there, it's just in the upper left (or just
+upper) part of the screen.
+
+Other probable reason could be that the monitor geometry isn't setup for 
+such modes, since "nobody" uses them anymore.
+	
+Does SDL's event system work properly on linux/win32 textmode console?
+My app doesn't receive any keyboard events when running in console mode...
+
+
+Yes, you need to setup a video mode to get keyboards events. But this 
+can be an ascii video mode so you can try to use the ascii art rendering 
+backend :
+export SDL_VIDEODRIVER=aalib
+
+I'm sure it depends on what you're doing and the platform you're
+using, but when I tested the aalib backend with my app, the keyboard
+functions didn't behave very well.
+
+I don't think it's a well-tested backend.
+	
+	
+	
+unexpected crash of executable when i try to switch to fullscreen mode on windows with a linux application compiled with Mingw.
+
+This is usually caused by not locking surfaces properly before doing pixel
+accesses on them.	
+	
+	
+	
+It happens because you are using Windows and Windows wipes out all your
+GL context when you change the video mode. This has nothing to do with
+SDL, it is just the way MS decided to implement GL on Windows. 
+
+If I were you, I would complain to MS, and then rewrite your code to
+reload your textures after you change the video mode.	
+
+
+
+Some additional notes regarding this case, if you don't want to reload 
+your textures unless it really is necessary.
+
+If you want to switch between fullscreen and windowed mode, you will of 
+course need to call SDL_SetVideoMode. But you can check with 
+SDL_VideoDriverName if you're using the x11 driver, and in such cases skip 
+the initialization.
+
+If you receive a SDL_VIDEORESIZE event, you have to call SDL_SetVideoMode 
+according to the docs, I think. But at least at the moment, you don't 
+really need that call on Windows (the same goes for OS X), just remember 
+to update your GL viewport. Using the x11 driver, you have to call 
+SDL_SetVideoMode, but you don't need to reload the textures and 
+reinitialize the GL context again.
+
+Of course, this makes your code ugly, and this kind of OS dependant checks 
+should be avoided. But if you really want your app to do as little 
+unneccessary texture reloading as possible, using the current version of 
+SDL, this is how it works as far as I've seen.
+
+An event which tells whether the GL context was lost would of course be 
+the best solution.
+
+	
+	
+Errors Exiting SDL on Windows
+
+the problem was that i was using Microsoft Visual 
+Studio.NET and a tutorial i read said to choose a Win32 Windows 
+Application and not a Win32 Console Application.
+
+
+The exact problem was that somehow, atexit() was getting passed a NULL pointer 
+somewhere (thus why it crashes when exit() is called
+I found that if I disabled the Parachute (SDL_Init(SDL_INIT_NO_PARACHUTE) 
+or something like that), the crash stopped hapening.  Try that out.
+If that doesn't help, I'd sugest compiling your application with MinGW or 
+Cygwin -- I never had that problem occur with either of those 
+
+
+
+
+
+	
+Q: I have an accelerated video card, but SDL tells me that that I have zero video memory and no acceleration! 
+
+A: Not all display targets can make use of hardware acceleration. In particular, this is the case for the X11 target which always presents you with a software framebuffer. Your video memory will always be reported to be zero if no acceleration is available. 
+Note that this has nothing to do with 3D acceleration, just 2D hardware acceleration support in the underlying operating system video drivers. 
+If you want hardware acceleration on Linux, you can use the DGA driver (fullscreen-only, under X11) or the framebuffer console driver (fullscreen-only, under the console). See the Linux FAQ for more information on using these drivers. 
+
+If you want hardware acceleration on Windows, make sure SDL is built with DirectX support and run your program in fullscreen mode. 
+
+An excellent article by Bob Pendleton covering SDL hardware surfaces is available at the O'Reilly Network 
+
+
+ 
+Could you send us an strace of a program running and crashing ? strace 
+myprogram will do.
+	
+	
+SDL_INIT_EVENTTHREAD : The source code does seem to say that it isn't supported on all 
+operating systems:
+./include/SDL.h:#define SDL_INIT_EVENTTHREAD    0x01000000      /* Not supported on all OS's */	
+
+
+	
+I know that I've released game snapshots which defaulted to the maximum
+refresh that Windows thought was supported, and received bug reports of
+people's monitors being desynced.  I may revisit it at some point, using 70
+or 72Hz instead of the maximum.
+
+Causes might be :  you don't call SDL_UpdateRects/SDL_Flip, or you assume no surface locking is 
+needed
+
+	Try the following :
+export SDL_DSP_NOSELECT=1
+
+It seems that the via82xx driver is buggy, and SDL doesn't detect it (anyone has an idea how we could find this and automate this workaround ?).
+
+
+ Test your code on another OS, perhaps it's not a problem relative to your platform at 
+all.
+
+3) Test an application that does what YOU are trying to do, and see if 
+it has a problem on your system. If it doesn't, again, you may have 
+made a simple mistake in your code.
+
+  </div><a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+  it sounds like you need to redraw everything to the screen when you detect
+that your app has become active again
+
+  I don't use the framebuffer device in Linux because it doesn't work 
+correctly. It's very unstable, have many kernel panics, problems with 
+screen.
+I'm getting linker errors on several applications (audacity, jasper, and 
+ others). The message is:
+ 
+ /usr/bin/ld: Dwarf Error: Invalid or unhandled FORM value: 14.
+ 
+ Anyone know what this cryptic message means? 
+
+
+So, it seems you upgraded gcc but not ld and binutils ? You should upgrade those two I think.  
+if you don't provide the correct arguments to your main
+routine's function definition, it won't be replaced by
+SDL's macro. Using "main(int argc, char **argv)" is
+the best thing to do.
+  
+  
+In win32 if I run fullscreen, the windows cursor dissapears, while windowed apps keep the cursor.
+
+Many systems don't actually give you full video
+hardware priveleges in windowed mode, otherwise you'd
+be rendering all over other screens. In most systems
+this means you're rendering occurs on a seperate
+surface which eventually gets included in the final
+screen image by the window composition element of your
+system. The mouse cursor is drawn by the window
+composition system.
+
+Whenever you are in full screen, the window
+composition system no longer needs to do anything, so
+it relinquishes full video control to your
+application. During this time, the window composition
+system usually ceases to draw any sort of cursor for
+you.
+
+
+
+where do I set the path for shared libs?  I tried a demo and
+it said it couldn't find the shared lib libSDL-1-1.so.O, so I guess
+make install must have put them in a place different from my
+installation.
+
+you just need to run ldconfig, to update the database for the
+runtime linker. If you installed SDL from source, then the shared
+library is probably in /usr/local/lib. Make sure this directory is
+included in /etc/ld.so.conf so that ldconfig can find it. See the
+documentation for the runtime linker (ld.so) for more information.
+
+  
+More likely, it's binary file is quite old and links to a specific 
+version of SDL (here SDL 1.1).
+
+To see if the binary links to a specific version of SDL, do :
+ldd ./mybinary
+if it says something like :
+libSDL-1.1.so.0 => /usr/lib/libSDL-1.1.so.0
+that's the cause of the problem.
+
+If you can't recompile it, the easiest fix is to create a symlink :
+cd /usr/lib
+ln -s libSDL-1.2.so.0 libSDL-1.1.so
+
+  
+Under Linux : Unable to init SDL: No available video device
+Are you running it as the same user that is running X ? Are you
+compiling with `sdl-config --cflags --libs` ?
+
+That message means your SDL install is not configured with support for 
+your current setup, or you are forcing the backend by using the 
+SDL_VIDEODRIVER env variable. So :
+ - did you do the ./configure ; install yourself for SDL, or is this a 
+packaged version ? If it is packaged, which version is it ?
+- does "echo $SDL_VIDEODRIVER" say something ?
+
+
+About XFree86's failure to ungrab the mouse
+if an app compiled without the SDL parachute crashes.  I just noticed
+the following in the XFree86 man page that might be useful:
+
+       Ctrl+Alt+KeypadMultiply
+               Not treated specially by default.  If the AllowClose-
+               downGrabs  XF86Config-4(5x) file option is specified,
+               this key sequence kills clients with an  active  key-
+               board  or  mouse grab as well as killing any applica-
+               tion that may have locked the server, normally  using
+               the XGrabServer(3x) Xlib function.
+
+       Ctrl+Alt+KeypadDivide
+               Not  treated specially by default.  If the AllowDeac-
+               tivateGrabs XF86Config-4(5x) file  option  is  speci-
+               fied,  this  key sequence deactivates any active key-
+               board and mouse grabs.
+In short, its a bug in XFree86. It should watch if the connection that
+mouse grabbed fails, and then ungrab. The (absurd) fix is to start an
+app that mouse grabs, and then quite again; this forces XFree86 to
+ungrab.
+
+
+I met a error like this when change resolution by using SDL_SetVideoMode.
+ 
+X Error of failed request:  BadAtom (invalid Atom parameter)
+  Major opcode of failed request:  19 (X_DeleteProperty)
+  Atom id in failed request:  0x2a00003
+  Serial number of failed request:  89
+  Current serial number in output stream:  92
+
+what this error mean?
+
+
+You're probably drawing outside your window bounds. Check your 
+SDL_UpdateRects call
+<h2></h2>
+  <p>
+  
+
+	<dt>Under Windows, some odd compilation problems such as redefinitions of symbols occur</dt>
+	<dd> Try adding <code>#include &lt;windows.h&gt;</code> at the top of the file... it's a "magic bullet" in Windows. However the most portable solution is probably to replace :
+<code><pre>	
+
+#include <SDL/SDL.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+</pre></code>
+with :
+
+<code><pre>	
+
+#include "SDL.h"
+#include "SDL_opengl.h"
+</pre></code>
+
+since <code>SDL_opengl.h</code> already includes <code>windows.h</code> under Windows, unless you want to use
+<code>glut.h</code>, <code>glaux.h</code>, etc. which <code>SDL_opengl.h</code> does not include. Using no SDL or GL directory prefix for the includes is the most portable way, since on Mac, for example, the prefix would be OpenGL instead of GL. The path to these files is to be handled by <code>sdl-config</code>.</dd>
+
+
+ 
+   As a workaround, I'm using
+_Exit() (new in C99), which skips the atexit() callbacks. Not pretty, but I
+can live with it!
+
+
+  You might try updating your video drivers, I've heard the ones that come
+with XP make GL run slow (maybe so directx apears to be the better
+solution?) and maybe they put in bugs too..who knows.
+
+
+Have you tried on several PCs? It might be a driver-related problem. My
+SDL 1.2.6 game crashes like that during the SDL_SetVideoMode() call
+with the drivers that were supplied with my Radeon 9200 SE. It works
+fine after updating the drivers.
+
+
+
+Yes, of course! Didn't notice the "magic" 80 fps value, which sounds 
+very much like a sensible refresh rate for 800x600.
+
+Try removing the SDL_DOUBLEBUF flag, and/or run the app in windowed 
+mode. One or both will eliminate retrace sync on most targets.
+
+Now, note that this is just for testing. Retrace sync is a Very Good 
+Thing. It allows you to get the smoothest animation without wasting 
+CPU and/or GPU power.
+
+
+  
+if you set the colorkey or the alpha flag, the bpp 
+can be changed on the surface in favor of the video bpp if the video 
+driver supports colorkey or alpha blits in h/w. That's not documented 
+but causes bug on some programs
+
+
+this sounds errily similar to a problem I was having when using
+VC++7.  Try passing the SDL_INIT_NOPARACHUTE flag to your SDL_Init() call --
+thats how I "fixed" it in VC++7 (Actually, I've found several different
+"bugs" that are somehow fixed by disabling the parachute; so much so that
+it's now in every SDL app I write -- perhaps there's a bug in the VC++ code
+for the parachute?).
+
+For the flicker problem, are you seeing "white flashes" on the screen ? 
+Maybe you just loose frames in windowed mode, which is not surprising  
+if you redraw the whole screen.
+
+
+Yes this is the normal behavior. In windowed mode you can't do a flip 
+synch'ed with the  monitor refresh, so when you update the framebuffer 
+in memory (SDL_UpdateRect) the video card may be drawing on the screen. 
+That's why you see on the upper part your old blue and on the lower part 
+the new one.  
+  
+  
+  bash-2.05b# which sdl-config
+/usr/bin/sdl-config
+bash-2.05b# sdl-config --version
+1.2.6
+bash-2.05b# locate libSDL
+warning: locate: warning: database /var/lib/slocate/slocate.db' is more =
+than 8 days old
+bash-2.05b# tail config.log
+tail: config.log: No such file or directory
+Please help me if you can. Oh yeah, in my /etc/ld.so.conf there is the =
+line /usr/local/lib already. Thanks
+
+if the program is running in fullscreen mode and the user 
+> hits the windows key or tries to alt-tab (Etc), my program crashes.
+
+Look at the doc for SDL_BlitSurface :
+http://sdldoc.csn.ul.ie/sdlblitsurface.php
+and notice the special "-2" return value that happens "under DirectX 5.0 
+when the system switches away from your fullscreen application
+
+
+If the configure script tells you it can't find the lib, although it 
+exists, check if you have installed the developer packages and if that 
+doesn't help, have a look at the options with ./configure --help.
+
+
+The problem was that I was treating a surface's pixels as a char* when actually the
+pointer type depends on the pixel format.
+
+
+i'm using a full screen jpg background with bmp sprites and the when i run it, the mouse (that i can't use) flicks over the screen
+
+This is listed in the BUGS file:
+When the implementation is writing directly to video memory the mouse
+cursor doesn't work properly.  Applications which do this should use
+their own mouse cursor and call SDL_ShowCursor(0) to hide the system
+cursor.
+</p>
+
+
+>I am using SDL 1.2.6. I have installed it correctly. Under X-Window, The
+>> examples run ok.But Under framebuffer console, the mouse is displayed on
+>> the left-top corner, and can't move.
+>>     I stop gpm and start with -R option. Then the mouse jumps on the scre=
+
+en
+
+>> and back to the left-top corner, and so on.
+>>     How to do?
+>>
+
+
+Have you tried setting SDL_MOUSEDEV_IMPS2=3D1 in your environment?
+
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20troubleshooting">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

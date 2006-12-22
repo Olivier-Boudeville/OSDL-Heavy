@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+
+<!--    This document is part of the OSDL project. 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+
+<!--    
+        Creation date : 2004, August.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - YAG-OSDL homepage</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, library, video, game">
+  <link rel="stylesheet" type="text/css" href="../../../../common/css/OSDL.css">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../common/black.html" onclick="parent.toolbar.location=&#39;../../../MainMenu.html&#39;">home page</a>
+    <a href="../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20YAG-OSDL">mail us</a></p>
+  </div><a name="_top_"></a> 
+
+<h1>YAG-OSDL homepage</h1>
+
+<h2>Overview</h2>
+<p>
+YAG-OSDL is a GPL'd cross-platform tool which generates a static website from a set of image files, in order to build a full web gallery allowing to look at the pictures pleasantly. Hierarchical thematical sort and comments are supported [<a href="http://osdl-data.esperide.com" target="_blank">see example of result</a>].
+</p>
+
+
+<h2>More in-depth informations</h2>
+
+<p>
+More specifically, YAG-OSDL is made of a set of python scripts which scans a directory tree containing images (ex : JPEG files), and constructs out of them a set of HTML pages with thumbnails, offering the possibility to look at the pictures, with a standard browser, according to two different ways :
+<ul>
+	<li><b>tree-based fashion</b> : the user can browse the images according to their directory structure</li>
+	<li><b>theme-based fashion</b> : select a theme and see which are its sub-themes and which resources belongs to that theme</li>
+</ul>
+</p>
+
+<p>
+Gallery authors are provided with a way of adding their comments for any picture, and with a way of describing to which theme(s) a picture belongs.
+</p>
+  
+<p>
+YAG-OSDL is fully customizable, thanks to its configuration file, whose default name is <code>yag-osdl.conf</code>. Everything can be generated, the portal page included, with comments and term of use. Web themes ("skins" for galleries, not to be confused with content themes) are supported, and give their full power thanks to CSS (Cascading Style Sheets).
+</p>
+
+<p>
+We developed YAG-OSDL since we needed a tool which would archive our graphical resources so that we could browse quickly through them and select the content suited for our video game : another way of describing YAG-OSDL is indeed : "a media content browser". We plan to add sound archiving support, as soon as we feel enough need for such a feature.
+</p>
+
+<p>
+Current version of YAG-OSDL is 0.5.
+</p>
+
+<p>
+YAG-OSDL has been inspired from <a href="http://home.planet.nl/~stas.linux/python/yag/" target="_blank">YAG</a>, a previous work from <a href="mailto:linuxisbeter@yahoo.com">Stas Z</a> (thanks !).
+</p>
+
+
+
+<h2>Step-by-step mini user's guide</h2>
+
+<h3>Objective</h3>
+
+<p>
+You have a directory tree (possibly only a directory, preferably a pre-sorted tree) of image files, such as : 
+<code><pre>
+
+MySnapshots
+|-- GoldWashing
+|   |-- 200407-Chilhac-0096.jpeg
+|   |-- 200407-Chilhac-0099.jpeg
+|   |-- 200407-Chilhac-0103.jpeg
+|   |-- 200407-Chilhac-0113.jpeg
+|   |-- 200407-Chilhac-0114.jpeg
+|   |-- 200407-Chilhac-0115.jpeg
+|   |-- 200407-Chilhac-0116.jpeg
+|   `-- 200407-Chilhac-0117.jpeg
+`-- InsideVillage
+    |-- 200407-Chilhac-0087.jpeg
+    |-- 200407-Chilhac-0088.jpeg
+    |-- 200407-Chilhac-0089.jpeg
+    |-- 200407-Chilhac-0090.jpeg
+    `-- 200407-Chilhac-0091.jpeg
+
+</pre></code>
+</p>
+    
+<p>
+You want to generate a full web gallery out of it, and you are using GNU/Linux (the Windows platform cannot benefit from helper shell scripts, which will ease the work of the gallery author).
+</p>
+  
+<p>You might have interesting overall (general) gallery informations to give, let's suppose you wrote them down in a text file (ex : MyInfos.txt). If your gallery is to be put online, you might have thought to a licence and term of use, that you would written in another text file (ex : MyLicence.txt).
+</p>
+  
+<h3>What to do</h3>
+
+<h4>Step one : install the tool</h4>
+<p>
+First, retrieve and install prerequesites : <a href="http://python.org/download/" target="_blank">python</a>, version 2.2.3 or higher (most Linux distributions have it, check your version with : <code>python -V</code>), and the <a href="www.pythonware.com/products/pil/">Python Image Library</a> (PIL). 
+</p>
+
+<p>Then, retrieve YAG-OSDL from <a href="yag-osdl-0.5.tar.bz2">here</a>, and extract it (<code>tar xvjf yag-osdl-0.5.tar.bz2</code>). Alternatively, you can get latest YAG-OSDL version from CVS thanks to : <code>cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/osdl co -P Tools/yag</code>
+</p>
+
+
+<h4>Step two : edit the YAG-OSDL configuration file</h4>
+
+<p>Go into the <code>yag-osdl-0.5</code> directory, and edit your own configuration file, that you may copy from sample : <code>cp yag-osdl.conf.sample  myProject.conf</code>. We hope the sample is self-describing enough for most users, yours could be edited that way :
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+
+
+<pre>
+[Options]
+
+# This must be a valid filename (no white-space, no special character)
+project_name          = MyBeautifulProject
+
+content_directory     = /home/john/MySnapshots
+resource_directory    = /home/john/WhereIExtractedYAG-OSDL/yag-osdl-0.5/Resources
+
+output_in_content     = True
+output_directory      = "Does not matter"
+
+theme                 = OSDL-theme
+
+thumbsize             = 120
+images_by_row         = 4
+images_by_column      = 4
+dash_is_space_in_menu = True
+
+author                = John Doe
+author_mail           = John.Doe@esperide.com
+
+
+gallery_licence_file  = MyLicence.txt
+gallery_info_file     = MyInfos.txt
+
+
+</pre>
+
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<h4>Step three : annotate the images, thanks to our helper script</h4>
+
+<p>
+If we launch YAG-OSDL now, no comment nor theme information will be available. If one wants to have them, just enter from the directory where you extracted YAG-OSDL :
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+annotate-images.sh &lt;your root content tree&gt;</code> 
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+(ex : <code>annotate-images.sh /home/john/MySnapshots</code>)
+</p>
+
+<p>
+We hereby suppose that two really common tools are available on your computer, <code>nedit</code> (a text editor), and <code>xv</code> (xview) or <code>eog</code> (eye of gnome), most common image viewers. If you do not have them, or if you prefer using other tools, just update accordingly the two helper scripts <code>handleGalleryDirectory.sh</code> and <code>handleImage.sh</code>.
+</p>
+
+<p>
+The <code>annotate-images.sh</code> script will output informations about what to do, and will trigger the appropriate tools. That is, it will first fire a text editor for each encountered gallery when scanning your content tree. On this example, it would be first <code>MySnapshots</code>, then <code>GoldWashing</code>, and then <code>InsideVillage</code>. In each file, feel free to give overall informations relative to the images in that directory.
+</p>
+
+<p>
+After this gallery-commenting phase, the next phase will be the per image commenting. For each image of the content tree, <code>annotate-images.sh</code> will launch the specified image viewer so that the picture is displayed, and then a first text editor where you may put comments reminded thanks to the image viewing (the files dedicated for comments have the <code>.txt</code> extension). When writing is over, just close the text editor, and another instance of it will be triggered. This time, enter the theme informations for this image, as explained further.
+</p>
+
+<p>
+How to specify that your image belongs to themes 'Surf' and 'Hawaï', and that the theme 'Surf' is a sub-theme of theme 'My favorite sports' ? Simply, in the spawn theme file, enter in first line :
+<code>My favorite sport : Surf</code> and in the second <code>Hawaii</code>. That's it, YAG-OSDL has all the informations it needs to do its work.</p>
+
+
+<p>
+You can therefore close the image window (you have finished with that one) and this theme file, and repeat the process: 
+<ol>
+	<li>view the current image</li>
+	<li>enter its comment (if any) and close the text editor</li>
+	<li>enter its theme informations (if any) and close the image viewer and the text editor. Repeat from point 1</li>
+</ol>
+until <code>annotate-images.sh</code> stops with <code>Annotations finished !</code>, which will mean that you went successfully through the whole comment and thematical sort process.</p>
+
+<p>Note that you can at any time stop the annotation script, you won't loose any entered informations, and by re-launching the script the same way you launched it, you will be able first to validate or update every already available information you gave, until you reach the point where you stopped. You will then just have to continue the indexing process as before.
+</p>
+
+<h5>Another way of dealing with theme hierarchy</h5>
+<p>There is a complementary method in order to define you theme tree : instead of specifying the link between themes relatively to an image, you can use too a standalone theme file whose name is <code>yag-overall-themes.thm</code>. This file should be placed at the root of your content, and might have the usual structure &lt;father-theme&gt; :  &lt;a-child-theme&gt;, as shown here :
+
+<code>
+<pre>
+
+My favorite sports: sailing
+My favorite sports: surf
+My favorite sports: yoga
+
+surf: Hawaii-2003
+surf: Hawaii-2004
+surf: Snapshots Of The Shark That Ate My Board 
+
+</pre>
+</code>
+This stand-alone theme file proved useful, since all the theme tree can be defined and understood in one place that way. However, any combination of theme specifications will work : one can both use image theme files and the standalone theme file.
+</p>
+
+
+<h4>Step four : launch YAG-OSDL</h4>
+<p>
+Still following the example, one just have to run 
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+run-yag-osdl.sh -rc myProject.conf
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p> Processing informations will be displayed and, if everything went right (the usual case) you should end up with something like :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+You can browse your new gallery from file:///home/john/MySnapshots/MainMyBeautifulProject.html. Enjoy !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+ <br>
+</p>
+ 
+ 
+<h4>Step five : admire the result</h4>
+<p>
+Use your browser to inspect your new gallery, improve comments and themes if necessary and, if you feel like it should be put online, copy the whole content directory to a webserver, add a link to the gallery main page and tell all your friends about it !
+</p>
+ 
+  
+<br>
+<br>
+<br>
+<br>
+  
+<h3>Please react !</h3>
+
+<p>If you have information more detailed or more recent than those
+presented in this document, if you noticed errors, neglects or points
+insufficiently discussed, or if you would like to contribute and help us, even a little bit, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20YAG-OSDL">drop
+us a line</a> !</p>
+
+<br>
+<br>
+
+<hr>
+
+<center>
+  [<a href="#_top_">Top</a>]
+  <br>
+  <br>
+  <em>Last update : Monday, April 17, 2006</em>
+</center>
+
+</body>
+</html>

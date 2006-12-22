@@ -1,0 +1,118 @@
+/* This document is a part of the OSDL Project */
+/* Standard Cascading Style Sheet File for menu bars */
+
+/* Last update : 2003, October 24 */
+/* Author : Olivier Boudeville (olivier.boudeville@online.fr) */
+
+
+body {
+  background: #000000;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 16px;
+  color: #DADADA;
+}
+
+
+div.NoBorder {
+  color: #000000;
+  border: 5px;
+}
+
+
+div.BottomCenter {
+ position: absolute;
+ bottom: 5%;
+ left: 5%;
+}
+
+
+div.Visited {
+  font-size: 20px;
+  color: #EFEFEF;
+}
+
+
+table {
+  color: #DADADA;
+  border-collapse: separate;
+  border: solid;
+  background: #303030;
+  width: 90%;
+  border-spacing: 5pt;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+table caption {
+  font-size: larger;
+  font-weight: bolder;
+}
+
+
+tr {
+   font-family: arial, helvetica, sans-serif;
+   font-size: 15px;
+}
+
+th { 
+   color: #EFEFEF;
+   font-family: arial, helvetica, sans-serif; 
+   font-weight: bold;
+   font-size: 19px
+ }
+
+td { 
+   font-family: arial, helvetica, sans-serif;
+   font-size: 15px 
+}
+
+
+td a {
+  font-weight: bold;
+  font-size: 15px
+}
+
+a img {
+ border: none;
+ border-color: #FFFFFF;
+} 
+
+a:link {
+  color:#FFFFFF; 
+  background: transparent;
+  text-decoration: none;
+  border: none
+}
+
+a:visited {
+  color: #9D9D9D;
+  background: transparent;
+  text-decoration: none;
+  border: none  
+}
+
+a:active {
+  color: #FFFFFF;
+  background: transparent;
+  text-decoration: none;
+  border: none  
+}
+
+a:hover { 
+  text-decoration:underline;
+  color:#FFFFFF;
+  border: none
+}
+
+div.NoBorder a:link { 
+  color:#000000
+} 
+
+div.NoBorder a:visited { 
+  color:#000000
+} 
+
+div.NoBorder a:hover { 
+  color:#FFFFFF
+} 

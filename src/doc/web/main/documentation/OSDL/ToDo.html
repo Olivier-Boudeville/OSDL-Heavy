@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "HTML 4.01 Transitional"
+"http://www.w3.org/TR/html4/frameset.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003, July 25.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : http://www.w3.org/Style/Examples/007/maps.html
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - TO DO lists</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL Project">
+  <meta name="keywords" content="OSDL, To do, TODO">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="stylesheet" type="text/css" href=
+  "../../../common/css/OSDL.css" media="screen, print, projection, tv">
+  <style type="text/css">
+  div.c1 {padding: 8px}
+  </style>
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20TO%20DO%20lists">mail
+    us</a></p>
+  </div><a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+
+  <h1>TO DO lists for OSDL-0.3 &amp; friends <br>(and for their next versions)</h1>
+
+  <h2>Lists thematically organized</h2>
+  <br>
+  <!-- Template :
+
+                                                                <dt></dt>
+                                                                <dd></dd>
+
+                                                                    -->
+
+<p>This document focuses on macro-objectives, whereas the <code>TODO.txt</code> files will be aimed at detailed technical requirements.
+</p>
+
+<h3>Shortcuts</h3>
+
+<p>
+<b>Warning</b> :<br> At the root of our CVS repositories (ex : <code>${OSDL}/${OSDL}-${OSDL_VERSION}/src</code>), one can find a text file whose name is <code>TODO.txt</code>, which is, by far, more up-to-date than this page. Here are their locations :
+</p>
+
+
+
+<p>
+<ul>
+	<li>TO-DO for <a href="http://cvs.sourceforge.net/viewcvs.py/osdl/OSDL/OSDL-0.3/src/TODO.txt?view=markup" target="_blank">OSDL</a></li>
+	<li>TO-DO for <a href="http://cvs.sourceforge.net/viewcvs.py/osdl/Ceylan/Ceylan-0.2/src/TODO.txt?view=markup" target="_blank">Ceylan</a></li>	
+	<li>TO-DO for our <a href="http://cvs.sourceforge.net/viewcvs.py/osdl/club/TODO.txt?view=markup" target="_blank">game creation club</a></li>
+	<li>TO-DO for <a href="http://cvs.sourceforge.net/viewcvs.py/osdl/club/game/TODO.txt?view=markup" target="_blank">our first game</a></li>
+</ul>
+
+
+</p>
+
+
+ <h3>A few macro-objectives</h3>
+ 
+<p>
+  <center>
+    <table summary="Subject list for todo" style="border: none">
+      <tr>
+        <td>
+          <div class="box c1">
+            <a href="#technical">Technical</a> : generic technical
+            topics<br>
+            <a href="#project">Project</a> : contacts with other
+            projects<br>
+            <a href="#applications">Applications</a> : about the end
+            users of OSDL<br>
+            <a href="#quality">Quality</a> : how to ensure a good
+            experience with OSDL
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div><br>
+  <br>
+</p>
+  
+  <br>
+  <br>
+  <a name="technical"></a> 
+
+  <center>
+    <table summary="" style="border: none">
+      <tr>
+        <td>
+          <div class="box c1">
+            <h2>Technical to do list</h2>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </center><br>
+  <br>
+
+  <ul>
+    <li>generalize toString with level of detail.</li>
+
+    <li>integrate png support (thanks to SDL_Image) and integrate all
+    useful third party libraries.</li>
+
+    <li>encourage OSDL being a finite state-machine, for example not to
+    have to pass explicitly parameters such as clipping
+    Rectangles.</li>
+
+    <li>make a review of which methods should be inlined, and use a
+    profiling tool.</li>
+
+    <li>make and use Showable, Lockable and Collectable object in
+    Ceylan, for example for Surface.</li>
+
+    <li>find or create a unit test framework, and use it</li>
+
+    <li>use a finite state-machine approach for at least
+    OSDL::Video</li>
+
+    <li>organize modularization through a base class with module name,
+    author, interface, and so on, which can enforce Singleton pattern
+    if necessary (look at Ceylan)</li>
+
+    <li>look whether this modularization could not allow to link to
+    shared libraries (ex : .so) at runtime, in order to discover and
+    use new objects (new implementations of known interfaces, maybe new
+    interfaces ?) Kernel modules may be of use, too.</li>
+
+    <li>provide LOANI, an automatic installer for OSDL, Ceylan and
+    their pre requesites</li>
+
+    <li>integrate Ceylan&#39;s new Log System in OSDL</li>
+  </ul>
+
+  <center>
+    <a href="#_top_">Back to top</a>
+  </div><br>
+  <hr>
+  <br>
+  <br>
+  <br>
+  <a name="project"></a> 
+
+  <center>
+    <table summary="Project" style="border: none">
+      <tr>
+        <td>
+          <div class="box c1">
+            <h2>Project to do list</h2>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </center><br>
+  <br>
+	<ul>
+		<li>run as fast as possible towards a first model of our game, and develop only what is strictly necessary for this goal to be reached</li>
+	
+	
+	</ul>
+ 
+
+  <center>
+    <a href="#_top_">Back to top</a>
+  </center><br>
+  <hr>
+  <br>
+  <br>
+  <br>
+  <a name="APPLICATIONS" x></a> 
+
+  <center>
+    <table summary="Applications" style="border: none">
+      <tr>
+        <td>
+          <div class="box c1">
+            <h2>Applications to do list</h2>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </center><br>
+  <br>
+
+  <ul>
+    <li>think more about Speed Of Light, a game of starships race in
+    tubes at full speed</li>
+	
+	<li>use configure</li>
+	
+	<li>finish content-referencement python script (yag-osdl)</li>
+  </ul>
+
+  <center>
+    <a href="#_top_">Back to top</a>
+  </center><br>
+  <hr>
+  <br>
+  <br>
+  <br>
+  <a name="quality"></a> 
+
+  <center>
+    <table summary="Quality" style="border: none">
+      <tr>
+        <td>
+          <div class="box c1">
+            <h2>Quality to do list</h2>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </center><br>
+  <br>
+
+  <ul>
+    <li>check LOANI&#39;s behaviour on various computers</li>
+
+    <li>comment every source file and document them : user&#39;s guide,
+    reference and tutorial</li>
+	
+	<li>release Ceylan's coding conventions</li>
+  </ul>
+
+  <center>
+    <a href="#_top_">Back to top</a>
+  </center><br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those
+  presented in this document, if you noticed errors, neglects or points
+  insufficiently discussed, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20TO%20DO%20lists">
+  drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    <a href="#_top_">Top</a><br>
+    <br>
+    <em>Last update : 2004, July 5</em>
+  </center>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, January 25.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Building SDL</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL">
+  <link rel="stylesheet" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20:%20building">mail us</a></p>
+  </div><a name="_top_"></a>
+
+
+<h1>Building SDL</h1>
+
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<p>
+<b>Foreword</b> : the vast majority of these informations and pieces of advice comes from the various members of the <a href="http://www.libsdl.org/mailman/listinfo/sdl" target="_blank">SDL</a> mailing list. I hope that this thematical gathering will help the SDL users. Many thanks to the several SDL contributors ! 
+</p> 
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+
+<h2>Configuring SDL</h2>
+<p>	 
+Try removing the file <code>config.cache</code>, and re-run configure. If you ran configure before installing jpeg/z/png libraries, it caches the results of those library checks into the <code>config.cache</code> file so if you run configure again it goes faster, though it seems silly to do that. You can tell this is happening by the fact that "(cached)" appears in the line "checking for...". So just remove that file, configure, compile/install, and hopefully it will work! 
+</p>
+
+
+<h2>Compiling SDL</h2>
+
+<h3>Cross-compiling</h3>
+<p>
+For cross-compilation, please refer to our dedicated <a href="SDL-cross-compilation.html">section</a>.
+
+</p>
+
+
+<h2>Installing SDL</h2>
+<p>
+Beware of the SDL versions that might already be installed on your system, by default, without even your knowning, before you installed your own SDL. You often end up with more than one version, and various SDL installations being in different places. The risk is that you use <code>sdl-config</code> and/or the includes and/or the libraries of the previous installations, resulting often in various link errors.   
+</p>
+
+ 
+<h2>Linking</h2>
+
+<h3>Linking with OpenGL libraries</h3>  
+ 
+<p>Use, if available, <code>locate libGL</code>, to known for example whether you have both the Mesa and NVidia GL libraries installed. If your OpenGL performances are poor, try removing both (ignore dependencies) and then re-install the NVidia drivers, to be sure you really use your video card capabilities.
+</p>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20:%20building">drop us a line</a>!</p>
+  
+  <br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006, January 7</em>
+  </center>
+  
+</body>
+</html>

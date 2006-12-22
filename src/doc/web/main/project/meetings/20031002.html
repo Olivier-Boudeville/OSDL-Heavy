@@ -1,0 +1,339 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003, October 5.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="FR">
+<head>
+  <meta content=
+  "HTML Tidy for Linux/x86 (vers 1st April 2003), see www.w3.org"
+        name="generator">
+
+  <title>Club de création de jeux vidéo - Compte-rendu de la réunion du
+  2/10/2003</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="compte-rendu, OSDL, video game, GPL">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../../../common/css/OSDL.css">
+  <style type="text/css">
+  div.c3 {text-align: center}
+  h1.c2 {font-family: arial, helvetica, sans-serif}
+  span.c1 {font-family: arial, helvetica, sans-serif}
+  </style>
+  <style type="text/css">
+  div.c2 {text-align: center}
+  li.c1 {list-style: none}
+  </style>
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>Général</em> <a href="../../../common/black.html" 
+       onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">Page
+       principale</a> <a href="../../Map.html">Plan du site</a>
+       <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Compte-rendu%20du%202/10/2003">
+    Ecrivez-nous</a></p>
+  </div><a name="_top_"></a> <span class="c1"><br>
+  <br></span> 
+
+  <h1 class="c2">Compte-rendu de la réunion du club du jeudi 25
+  septembre 2003</h1>
+
+  <h2>Présentation</h2>
+
+  <p>Cette réunion a eu lieu de 19h45 à 23h environ, à la brasserie
+  &quot;La Tour&quot; à Montparnasse. Etaient présents (ordre
+  alphabétique) :</p>
+
+  <ul>
+    <li>Arnaud</li>
+
+    <li>Olivier</li>
+
+    <li>Sébastien</li>
+
+    <li>(William nous a raté de peu, la prochaine fois sera la bonne
+    !)</li>
+  </ul><br>
+  <br>
+
+  <p>Le compte-rendu de cette réunion est parcellaire, et fondé sur mes
+  souvenirs et mes notes, également imparfaits. Pour toute remarque,
+  correction, ajout, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL-club]%20Compte-rendu%20du%202/10/2003">
+  envoyez un mail</a> !</p>
+
+  <h2>Minutes de la réunion</h2>
+
+  <p>Réunion légère, sans ordre du jour préparé, agréable (comme toutes
+  les autres !) et à bâtons rompus. Voici quelques points que j&#39;ai
+  retenus.</p>
+
+  <h3>Au sujet des sous-produits du club point de vue bibliothèque</h3>
+
+  <p>Je vais intégrer un petit ajout aux makefiles qui permet, dans une
+  arborescence de modules, de faire la sélection des fichiers objets
+  (*.o) au niveau du module qui les génère afin de spécifier localement
+  lesquels doivent figurer dans la bibliothèque.</p>
+
+  <p>La bibliothèque issue de nos développements sera disponible en
+  version statique (*.a) et dynamique (bibliothèque partagée, *.so).
+  Personnellement, j&#39;ai commencé une petite bibliothèque C++ 100%
+  générique, apportant quelques commodités au langage (elle
+  s&#39;appelle Ceylan, sans jeu de mots) et une autre, elle aussi pour
+  l&#39;instant toute petite, centralisant le code générique aidant
+  plus spécifiquement au développement de jeu (OSDL). Ainsi, on
+  pourrait la fusionner avec vos travaux, progressivement la compléter,
+  par exemple avec la gestion d&#39;images (en encapsulant SDL_image
+  par exemple), la gestion des sprites, les filtres (ex : morphing,
+  anticrénelage alias anti-aliasing), etc.</p>
+
+  <h3>Ecriture du scénario</h3>
+
+  <h4>Méthode</h4>
+
+  <p>Plusieurs techniques d&#39;écriture sont possibles, par exemple en
+  définissant une trame grossière de toute l&#39;aventure puis en la
+  raffinant progressivement, ou en partant de la situation initiale en
+  avançant au fil de l&#39;écriture vers une fin non connue a priori.
+  Arnaud est plutôt adepte de la première technique. Personnellement,
+  j&#39;aurais peut-être plus tendance à m&#39;inspirer d&#39;une
+  collection de brins d&#39;histoires que j&#39;aurais amassés, qui me
+  serverait de guide pour écrire l&#39;histoire complète. A ce sujet,
+  une boîte à idées qui permet de recenser les brins d&#39;histoires
+  utilisables a été mise en place sous la forme de <a href=
+  "http://sourceforge.net/forum/forum.php?forum_id=317235" target=
+  "_blank">ce forum</a>.</p>
+
+  <p>Arnaud était prêt à s&#39;astreindre à un scénario relativement
+  linéaire, pour nous simplifier la tâche. Personnellement, et je pense
+  que Sébastien est d&#39;accord, j&#39;aurais tendance à penser
+  qu&#39;on peut quand même permettre au joueur un certain libre
+  arbitre qui l&#39;amènera à faire des choix à quelques endroits-clés
+  de l&#39;intrigue. J&#39;ai du mal à imaginer qu&#39;il y ait moins
+  d&#39;une demi-douzaine de tels choix, qui pourraient amener à au
+  moins autant de fins (sans compter les fins prématurées suite au
+  décès ou à la folie du personnage). Plus l&#39;histoire est linéaire,
+  plus il devient important de mettre en place des forces de rappel,
+  les plus discrètes possible.</p>
+
+  <p>A ce niveau, j&#39;ai eu une idée que j&#39;ai trouvée, en toute
+  modestie, très tentante : si l&#39;on part dans une trame de récit
+  relativement contrainte, au moins dans un premier temps, on se
+  rapproche beaucoup de la structure narrative des <em>Livres dont on
+  est le héros</em>, qui peuvent fort bien se réaliser informatiquement
+  sur Internet via de simples pages web (les vignettes auxquelles sont
+  rattachés les numéros) et des liens hypertexte (les renvois dans le
+  texte en fonction des choix du joueur). Du coup, sachant qu&#39;il
+  sera nécessaire, tôt dans le projet, de détailler l&#39;histoire
+  finale afin de défricher le terrain, pour faire une sorte de
+  story-board, je me suis dit que dès que je pourrai j&#39;ébaucherai
+  le petit &quot;livre dont on est le héros&quot; correspondant à notre
+  jeu. Si d&#39;autres sont tentés, qu&#39;ils n&#39;hésitent pas à le
+  faire savoir ! Autre intérêt de cette préparation : non seulement son
+  écriture est excitante, mais en plus l&#39;essentiel du texte des
+  vignettes (ex : descriptions, impressions personnelles et émotions du
+  personnage principal) sera directement réutilisable, puisque cela
+  pourra figurer dans la fenêtre de texte (par exemple en dessous de la
+  fenêtre de visualisation subjective classique &quot;à la Dungeon
+  Master&quot;). Cela augmentera notre marge de manoeuvre en tant que
+  démiurge, sachant que nombre de graphismes seront contraints par
+  l&#39;existant, cela donnera un aspect un peu littéraire à notre jeu,
+  ce que j&#39;apprécie beaucoup, et cela permettra de renforcer
+  l&#39;affiliation jeu de rôle. Je ne vois que du positif !</p>
+
+  <h4>Direction du personnage</h4>
+
+  <p>Le prince pourrait être vu au début principalement comme un
+  donneur d&#39;ordres, et pourrait recruter des acolytes, en fonction
+  des qualités, de la loyauté et de l&#39;adéquation supposée des
+  personnages qu&#39;il connaît avec certaines missions. Le joueur dès
+  lors incarnerait tour-à-tour ces personnages qui, s&#39;ils devaient
+  mourir, rendraient le contrôle au recruteur immédiatement supérieur
+  dans la chaîne (car on peut imaginer que par exemple le prince
+  recrute son maître d&#39;armes qui envoie au casse-pipe certains de
+  ses disciples en action-suicide). La sauvegarde aurait alors lieu
+  quand, sa mission achevée, le recruté rend la main (le contrôle) à
+  son recruteur.</p>
+
+  <h5>Libre arbitre</h5>
+
+  <p>On pourrait se demander si le personnage incarné par le joueur
+  (qui n&#39;est pas forcément le personnage principal s&#39;il est
+  possible de prendre contrôle de tiers) ne dispose en partie de son
+  libre arbitre, de ses impressions et émotions qui peuvent
+  l&#39;amener à examiner les directives du joueur et, le cas échéant,
+  à les refuser (ex : dans DOTT, Day of The Tentacle, jeu
+  d&#39;aventure hilarant de Sierra Online, si l&#39;on suggère des
+  actes contraires aux bonnes moeurs - ou pas implémentés - Bernard
+  peut refuser tout net en s&#39;écriant, choqué, que c&#39;est
+  inconvenant !)</p>
+
+  <p>En rapprochant les idées d&#39;Ishar II (les personnages de
+  l&#39;équipe ont chacun leur caractère et leur analyse des rapports
+  entre personnages et avec le joueur), on pourrait étudier
+  l&#39;opportunité de doter notre Prince et ses collègues
+  d&#39;émotions, d&#39;attitudes partiellement indépendantes de celles
+  du joueur. Je pense que cela permettrait d&#39;introduire une
+  richesse supplémentaire au niveau des interactions. Le personnage
+  pourrait donc soupeser les ordres qui lui sont donnés, les refuser
+  voir, dans certains cas extrêmes, aller à leur encontre (un peu comme
+  des unités qui rompent les ordres sous l&#39;influence de la peur
+  dans certains jeux de stratégie). Au niveau du choix des personnages,
+  on pourrait imaginer, comme Arnaud l&#39;a fait, un assassin
+  mélancolique, un maire du palais obsédé ou un apprenti timide. Un peu
+  dans la même veine, il est possible de gérer l&#39;état mental des
+  personnages (comme dans certains jeux de rôles où il s&#39;agit moins
+  de rester en vie que de ne pas devenir fou, Cthulu en fait peut-être
+  partie; on pourrait imaginer un état d&#39;intégrité mentale). Le
+  quota de stress enduré pourrait aussi être pris en compte, si cela
+  apporte quelque chose à l&#39;histoire.</p>
+
+  <h5>Paramètres de simulation</h5>
+
+  <p>Il est possible de prendre en compte, même de manière
+  rudimentaire, l&#39;inventaire du personnage pour qu&#39;il ne puisse
+  pas porter tout et n&#39;importe quoi. Ainsi, deux paramètres
+  suffiraient, l&#39;encombrement (volume) et la masse des objets
+  transportés.</p>
+
+  <h5>Liste des actions possibles</h5>
+
+  <p>Arnaud n&#39;étant pas encore connecté à Internet, j&#39;essaie
+  d&#39;assurer l&#39;intérim. Une nouvelle action fort utile :
+  piétiner. Commode pour éviter de défier à l&#39;épée une à une des
+  chenilles processionnaires. Pratique aussi pour humilier et mettre
+  hors jeu pour un temps un autre personnage, sans avoir à le tuer.
+  C&#39;est moins mauvais pour le karma. J&#39;ai déjà placé dans le
+  forum Règles la liste des actions la plus à jour (tenant compte des
+  réunions et des idées de Marc).</p>
+
+  <h4>Forums</h4>
+
+  <p>Pour bien écrire le scénario, quelques moyens techniques comme des
+  forums de discussion peuvent être utiles. On pense en avoir pour
+  l&#39;instant besoin de deux, un pour les idées concernant le monde
+  (races, personnages, décors, etc.), un pour les règles et leur
+  paramètrage. J&#39;ai déjà créés ces forums et leur <a href=
+  "http://sourceforge.net/forum/?group_id=71354" target=
+  "_blank">liste</a> est disponible. Notamment, il y a le forum
+     <a href="http://sourceforge.net/forum/forum.php?forum_id=316828"
+     target="_blank">dédié au monde</a> et celui <a href=
+     "http://sourceforge.net/forum/forum.php?forum_id=316829" target=
+     "_blank">dédié aux règles</a> qui gagneraient à être utilisés dès
+     maintenant (j&#39;ai posté dans chacun un court message
+     introductif). Chacun est invité à y déposer ses idées, ses
+     personnages secondaires, etc. (quel que soit leur maturité),
+     Arnaud pourrait initier le mouvement pour décomplexer les
+     éventuels timides et pour que tout le monde puisse se lancer dès
+     maintenant. Au début, je pensais fournir une grille type fiche de
+     personnage, un patron pour aider à décrire les personnages, mais
+     Arnaud a justement pointé du doigt le fait que c&#39;était
+     probablement une fausse bonne idée, dans la mesure où cela aurait
+     pour effet de bord d&#39;inciter les écrivains en herbe à se
+     concentrer au niveau des détails descriptifs (type : s&#39;il y
+     avait une rubrique &quot;description des yeux&quot;, on verrait
+     fleurir des myopes, albinos, des yeux <a href=
+     "http://www.spielberger.net/6/f.html" target="_blank">vairons</a>,
+     alors que si les gens étaient simplement confrontés à une feuille
+     blanche ils ne se seraient pas fixés sur ce genre de détails et
+     auraient privilégié une peinture psychologique plus approfondie de
+     leurs personnages). L&#39;important est plus d&#39;exposer les
+     points caractéristiques que de chercher l&#39;exhaustivité.</p>
+
+  <h3>Démo</h3>
+
+  <p>Une petite ambiguïté s&#39;était glissée dans le terme : Sébastien
+  le comprenait comme une maquette, une préfiguration de ce que serait
+  le résultat final, tandis qu&#39;en fait j&#39;imaginais plutôt une
+  démo, toutes proportions gardées, de type bande-annonce, démo-making,
+  même sommaire ou dépassé, d&#39;où mes envies de scrolltexts, de
+  plasmas etc. et de feux !</p>
+
+  <h3>Conventions de développement</h3>
+
+  <p>Selon le degré de formalisme que l&#39;on souhaite, on peut
+  imaginer les ensembles de conventions suivants :</p>
+
+  <ul>
+    <li>formattage de sources (indentations, tabulations, accolades,
+    etc.). On peut faire respecter ces conventions pour partie
+    automatiquement, via des outils comme <a href=
+    "http://astyle.sourceforge.net" target="_blank">astyle</a>
+    (artistic style). Mes makefiles peuvent déjà appliquer un jeu de
+    conventions automatiquement sur tous les fichiers source d&#39;un
+    projet</li>
+
+    <li>développement C++ : des conventions existent aussi, sont très
+    utiles (si on ne les respecte pas, on produit nécessairement du
+    code dangereux, inefficace ou propice aux bogues), mais requièrent
+    déjà un certain niveau de maîtrise du langage. Il est envisageable
+    de faire nos propres conventions, inspirées de l&#39;existant</li>
+
+    <li>commentaires, de manière à ce que les outils de génération de
+    documentation comme <a href="http://www.doxygen.org" target=
+    "_blank">doxygen</a> puissent les prendre en compte.</li>
+  </ul>
+
+  <p>Au sujet des conventions diverses, un forum spécifique est déjà
+  <a href="http://sourceforge.net/forum/forum.php?forum_id=317249"
+  target="_blank">disponible</a>.</p>
+
+  <p>Il va falloir planifier une réunion spéciale développement.
+  J&#39;espère que cela pourra se faire au Cube. Comme Sébastien
+  l&#39;a souligné, il serait préférable qu&#39;elle n&#39;ait pas lieu
+  en même temps qu&#39;une réunion scénaristique, vu que quelques uns,
+  comme lui, aimeraient participer aux deux.</p>
+
+  <h3>La sempiternelle question des noms</h3>
+
+  <ol>
+    <li>le nom du club : il pourrait être en latin, j&#39;ai contacté
+    un ami qui doit connaître des latinistes confirmés, j&#39;espère
+    qu&#39;une réponse sera trouvée</li>
+
+    <li>le nom du jeu : en réunion ont été évoquées des propositions de
+    consonances, typées japonisantes ou scandinaves, qu&#39;en
+    pensez-vous ?</li>
+  </ol>
+
+  <p>Sébastien nous a aussi décrit la façon de construire son nom
+  <strong>Starwars</strong>, il pourra la détailler précisément, et on
+  pourrait l&#39;utiliser sur nos noms pour attribuer les noms Starwars
+  correspondants à quelques personnages secondaires.</p>
+
+  <p>Pour ceux qui recherchent l&#39;inspiration, voici un générateur
+  en ligne de mots : <a href=
+  "http://www.robobunny.com/cgi-bin/dislexicon" target=
+  "_blank">Dislexicon</a> (essayez par exemple de lui fournir
+  &quot;club&quot; comme racine)</p><br>
+  <br>
+  <br>
+
+  <h3>N&#39;hésitez pas à nous faire part de votre avis sur ce
+  compte-rendu !</h3>
+
+  <p>Pour toute remarque, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL-club]%20Compte-rendu%20du%202/10/2003">
+  envoyez-nous un mail</a>!</p><br>
+  <br>
+  <hr>
+
+  <div class="c2">
+    <a href="#_top_">Top</a><br>
+    <br>
+    <em>Dernière mise à jour : 7 Octobre 2003</em>
+  </div>
+</body>
+</html>

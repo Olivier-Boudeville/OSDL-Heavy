@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2006, January 5.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document 
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Cross compilation with SDL</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, SDL, console">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]Cross-compilation%20with%20SDL">mail us</a></p>
+  </div><a name="_top_"></a>
+  
+
+<h1>Cross compilation with SDL</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<code><pre>
+
+
+Please try the cross compiling <a href="http://www.libsdl.org/extras/win32/cross/README.txt" target="_blank">instructions</a>.
+
+
+Cross compiling under Linux using mingw. At the link stage, I get a lot of
+undefined reference for call to lib function, e.g. SDL. Looks like the linker
+thinks the routine name should start with _ , e.g _IMG_Load instead of IMG_Load.
+
+I know this must be a classical problem, but I have no clue of what option to
+use in gcc (mingw)
+
+
+I just simply forgot to put the LD flags after the list of objects in my makefile
+
+# barebones whitenoise Makefile for MINGW
+# edit to fit your needs
+
+CC = i586-mingw32msvc-gcc
+SDLROOT = ../libsdl-mingw
+CFLAGS = `$(SDLROOT)/bin/i586-mingw32msvc-sdl-config --cflags` -DWIN32_PLATFORM
+LDFLAGS = -static
+LIBS = -mconsole -lm `$(SDLROOT)/bin/i586-mingw32msvc-sdl-config --static-libs`
+
+# main targets
+all: wnoise.exe
+
+OBJECTS = filter.o plot.o whitenoise.o
+
+wnoise.exe: $(OBJECTS)
+	$(CC) -o wnoise.exe $(LDFLAGS) $(OBJECTS) $(LIBS)
+
+clean:
+	rm -f wnoise.exe *.o core *~
+
+distclean: clean
+	rm -f Makefile configure config.h config.log config.status; 
+	rm -rf autom4te.cache
+
+# suffixes
+.c.o: 
+	$(CC) -c $(CFLAGS) $<
+
+
+>usr/lib/gcc/i586-mingw32msvc/3.4.2/../../../../i586-mingw32msvc/lib/libmingw32.a(main.o)(.text+0xf4):
+>> undefined reference to `_WinMain@16'
+>> collect2: ld returned 1 exit status
+
+Remember to link with SDLmain? When I'm compiling with Mingw, at least the following linker flags should be used (they should be given by i586-mingw32msvc-sdl-config) : -lmingw32 -lSDLmain -lSDL
+
+
+
+If you are cross-compiling from the same folder you have the linux build in (where the .o files are) then do not forget to 'make clean' before you build for win32. Same thing before you do 'sh cross-make.sh -f Makefile.win32'. One can make a separate makefile for the win32 build to make things easier - one can even rename .o files to .o32 for win32 compiling for safety.
+
+
+
+Your entry point is main(), right? I use something like this :
+
+#ifdef WIN32
+extern "C"
+{
+
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+char* lpCmdLine, int nCmdShow)
+{
+
+	// Parse command line
+	String sParms = lpCmdLine;
+	StringList lParms = sParms.split();
+
+	int nParms = lParms.getLength();
+	char** pParms = new (char*)[nParms + 1];
+
+	pParms[0] = new char[8];
+	strcpy(pParms[0], "(dummy)");
+
+	for (int i = 0; i < nParms; i++)
+	{
+		pParms[i+1] = new char[strlen(lParms[i]) + 1];
+		strcpy(pParms[i+1], lParms[i]);
+	}
+
+	// Do main
+	int nRet = main(nParms + 1, pParms);
+
+	// Cleanup
+	for (int i = 0; i < nParms + 1; i++)
+		delete pParms[i];
+
+	delete [] pParms;
+
+	return nRet;
+}
+
+}
+#endif
+
+
+
+
+
+
+
+
+
+
+
+If you are cross-compiling to Win32 from Linux on a PC, get tools from:
+http://www.devolution.com/~slouken/SDL/Xmingw32/
+and pass configure the arguments "--host=i386-linux --target=i386-mingw32"
+
+
+http://www.libsdl.org/faq.php?action=listentries&category=4#47 
+http://gameprogrammer.com/gpwiki/The_20basics_20of_20working_20with_20SDL
+
+
+I've updated the Windows cross-compiling tools to the latest version
+of gcc and mingw32.  You can get them here:
+http://www.libsdl.org/extras/win32/cross/README.txt
+http://www.libsdl.org/extras/win32/cross/mingw32-linux-x86-glibc-2.3.tar.gz
+
+$ sh cross-make.sh 
+   gcc -o 01-window  init.o  main.o  video.o  yerror.o `sdl-config --libs`
+   -lGL -lGLU -lm
+   /usr/local/cross-tools/lib/gcc-lib/i386-mingw32msvc/3.2.3/../../../../i386-mingw32msvc/bin/ld:
+   cannot find -lpthread
+   make: *** [01-window] Error 1
+
+
+
+Which "sdl-config" are you running?  (i.e., what's its path?)
+If it's the Linux one, that could be causing probs (similarly to trying
+to link the Win32 against Linux libs :^) )
+
+I'm guessing it should be the one from that "SDL-devel-1.2.7-mingw32.tar.gz"
+you had downloaded.
+
+
+To be even more specific : replace `sdl-config --libs` with 
+`/usr/local/cross-tools/i386-mingw32msvc/bin/sdl-config --libs`
+
+Although I'm using SDL_mixer I think it's a problem related to SDL + 
+MinGW because if I copy in the precompiled sdl.dll from libsdl.org 
+(which as far as I know is not compiled using mingw) the problem 
+disappears! However those procompiled dlls don't really help me because 
+the precompiled smpeg.dll seems to have problems with the precompiled 
+
+
+
+
+sdl.dll (black screen on videos).
+
+
+THe MingW version may be using WaveOut, where the VC version may be
+using DirectSound.  SDL's WaveOut implementation enforces 250ms buffering.
+I've found that at 44.1khz, an 8k frame buffer is needed, which is
+about 185ms.  DirectSound doesn't need as much--2k usually works fine.
+WaveOut should only ever be used as a compatibility, fallback interface.
+
+
+Never realized that there was a check for directx headers when compiling 
+SDL. After a couple of hours I figured out that I had to use the headers 
+from http://www.libsdl.org/extras/win32/common/directx-devel.tar.gz, 
+recompiled SDL with directX support and now the sound is playing nicely.
+
+I'm however running into a different problem now. In fact, it's the same 
+problem I get when using the precompiled dlls: smpeg doesn't display 
+anything anymore. Neiter the code in my app nor the plaympeg example 
+supplied with smpeg have a graphical output anymore, just a black screen.
+
+
+If you only use standard C (C++) libraries, you should be OK when 
+porting. But if one doesn't have enough experience in programming for 
+various platforms, you're gonna one way or the other use some 
+non-standard features of your compiler and/or OS. This may be just a 
+glitch or a major obstacle when porting.
+Another problem may be performance. Not always but sometimes different 
+platform perform different jobs at (drastically) different speeds. So 
+when writing code, you'll have to take these into consideration, and 
+either write two versions of code, or use an 
+always-performing-reasonable approach.
+
+
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]Cross-compilation%20with%20SDL">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

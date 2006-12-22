@@ -1,0 +1,28 @@
+
+Java :
+
+
+LWJGL is better to use if you just want to write games.  I recall that it has texture loading stuff already built-in, and it has sound libraries attached, and all sorts of great things for games built into it.
+
+The problem is that it's very watered down.  (Lightweight, as they call it).  I wanted the option of multithreading, and adding a lot more, and being overall more Java-friendly.  That's something that I recall LWJGL not being, is very Java-like.  (And I think there was something about the sound code on OS X at the time, maybe).  So I searched around more and found JOGL.
+
+JOGL is more of a "Lets you use OpenGL in Java" library.  Not designed for games at all, specifically.  So it's more like writing an OGL program from scratch than from a games library.  Also a smidge more bothersome is that you have to have a GL (and GLU) context which gets passed around, and that's how ALL the drawing calls for the GL context get done -- writing "GL.glBegin()" etc...  That prefix is annoying, and with the LWJGL you CAN circumvent that if you use Java 1.5, through the static imports.  In JOGL, this is impossible.
+
+LWJGL they kept a very linear, not objective feel to the API. JOGL is not as games-dev-based, but they managed to turn JOGL into a nicely object-oriented-friendly API for graphics programming.
+
+Both use Java binding libraries, which is... interesting to install and use, though certainly not hard. 
+
+If you want to create games, you'll probably want LWJGL.
+
+http://javaboutique.internet.com/reviews/gameutil/
+
+Talking of profiling, can anyone recommend a good free profiler for 
+Java?  I've used the -Xrunhprof option, but needless to say its not the 
+most user-friendly thing in the world!
+
+http://www.appperfect.com/ : the full version is only free for 15 days (which was enough to really help me out a lot), after which the license reverts to a "Personal" edition (ie. less features). 
+The full version is just under $500 US
+
+Python :
+	- Pygame
+	- Soya

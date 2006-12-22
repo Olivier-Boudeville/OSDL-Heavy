@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2006, January 5.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document 
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Console support</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, SDL, console">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20on%20consoles">mail us</a></p>
+  </div><a name="_top_"></a>
+  
+
+<h1>SDL Console support</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<code><pre>
+
+
+I was wondering if anyone is familiar with what it takes to make a playable Playstation 2 DVD, or maybe knows a good site for info?
+
+
+I'm not sure if you are familiar with SDL but it is a cross platform multimedia library that supports many platforms including playstation 2.
+
+
+You can't do it - at least not for a unmodded PS2. And even then,
+you'll find it difficult to get hold of the tool to make a bootable
+DVD. There is a tool to make a bootable ISO which Sony provide - but
+they only provide it to signed developers. The reason the tool exists
+is so that you can burn your game and run it on test kits - which are
+a whole lot cheaper than full-blown devkits.
+
+It wouldn't entirely surprise me if you could find it on P2P networks
+but you won't be able to get hold of it through legal channels, so the
+official answer would have to be that you can't do it. Sorry!
+
+I think, but don't quote me on it, that SCEE charge £500 for a test
+kit. SCEA probably charge $500 for a test kit, so that's the price
+you'd be looking at to get something bootable - and I think as an
+unknown, you'd have a big problem getting anything from them. You'd
+need to be signed with a publisher and, well, if you can do that then
+this wouldn't be a problem you'd be facing. Plus they'd probably
+expect you to buy a devkit from them first else the test kit would
+be useless!
+
+The PS2 is not the easiest machine to develop for - far easier would
+be to convert it to the Xbox. Though that would mean getting hold of
+the XDK (I don't know how far along the Open XDK is these days) - but
+making a bootable disk (at least for a modded machine) would be as
+simple as placing your default.xbe (XBE meaning XBox Executable) at
+the root and create a xISO. It wouldn't work on a non-modded Xbox
+because the XBE would need to be signed by MS. You just don't have
+many options!
+
+One could use the linux kit to allow you to then do development on it in
+cpp / X / etc and save to the hard drive.
+
+linux kit I think costs about USD$150-ish and fits into the original style
+PS2 (you get 40Gb HDD plus linux DVD, keyboard, mouse and network adapter).
+There are a few good forums connected with this, although I'm not sure how
+active they are lately.
+
+http://playstation2-linux.com/
+
+Essentially, you stick in the Linux PS2 DVD, which then tells the ps2 to
+boot of its hard drive instead of a game DVD, and then you have your
+Xwindows enabled PS2 to play with. There's a fairly good community of
+developers for this but, you are only developing games here for other people
+with linux-based PS2's. I know that's not really what you are after, but
+just thought I'd put this out there as an alternative for developing on the
+PS2.
+
+
+</pre></code>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20on%20consoles">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>

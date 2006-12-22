@@ -1,0 +1,932 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2004, January 30.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document 
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - SDL corner - Mac OS X Platformt</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, SDL, Mac OS X">
+  <link rel="stylesheet" type="text/css" href="../../../common/css/OSDL.css">
+  <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  <div class="banner">
+    <p><em>General</em> <a href="../../../common/black.html" onclick= 
+    "parent.toolbar.location=&#39;../../MainMenu.html&#39;">home page</a>
+    <a href="../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20on%20Mac%20OSX">mail us</a></p>
+  </div><a name="_top_"></a>
+  
+
+<h1>SDL on Mac OS X</h1>
+
+<p>  
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<code><pre>
+I looked at the Binarys after that with lipo -info and they were ppc only, not universal binaries.
+
+
+I have a build script (SCons-based) that allows me to compile i386
+
+Linux and win32 versions of my game on my Linux box. For building the win32 files, I manually switch the compiler commands to those from Debian's mingw32 package.
+
+Now I'd like to be able to build Mac OS X versions too, for both PPC and Intel
+systems. I don't have a Mac myself, so all I can do is try to figure out how
+to build the executables and then have friends test the results.
+
+However, I can't seem to find much information on cross-compiling for OS X, and even less for the new Intel systems.
+
+I suggest finding someone willing to donate an SSH account on a OS X
+system.
+
+Sourceforge seems to have some OSX machines in their compile farm:
+ * ppc-osx1: Apple Mac OS X 10.1 Server with Fink running on an Apple Mac G4
+ * ppc-osx2: Apple Mac OS X 10.2 Server with Fink running on an Apple Mac G4
+
+http://sourceforge.net/docman/display_doc.php?docid=762&group_id=1
+
+Too bad they've been down since October or something  :( 
+
+>> I don't know of any place where the OS X system headers are easily
+>> available, outside of the entire OS.  The sources for Apple's GCC are
+>> available, so it's probably doable, but it'll also probably be more
+>> effort than it is worth.
+
+
+The latest XCode ships with various OS "SDKs", which are the libraries
+and headers for a given version of Mac OS X all seperated out, so you
+can build for legacy versions no matter what your Mac's actual system
+headers and libraries look like. That part is easy.
+
+Also, Apple maintains a public CVS that has their versions of GCC and
+binutils source code, and they have the CVS tagged to match the releases
+they ship. That part is easy, too.
+
+Putting it all together? That part's a little harder.
+
+
+
+Undefined symbols:>  _SDL_Delay  _SDL_GetTicks
+
+I'm guessing you added the SDL framework to the /project/, but not to
+your /target/. If you look at the detailed build log for your target,
+the link command should include '-framework SDL' somewhere amongst
+all the other stuff; if it doesn't, this is definitely your problem.
+You can just drag the framework in the appropriate section of your
+target in the X-Code tree view, and it should be added in.
+
+
+
+the magic incantations under OS X are:
+
+#import <SDL/SDL.h>
+#import "SDLMain.h"
+
+#import <Cocoa/Cocoa.h>
+
+/* Portions of CPS.h */
+typedef struct CPSProcessSerNum
+{
+         UInt32          lo;
+         UInt32          hi;
+} CPSProcessSerNum;
+
+extern OSErr    CPSGetCurrentProcess( CPSProcessSerNum *psn);
+extern OSErr    CPSEnableForegroundOperation( CPSProcessSerNum *psn, UInt32 
+_arg2, UInt32 _arg3, UInt32 _arg4, UInt32 _arg5);
+extern OSErr    CPSSetFrontProcess( CPSProcessSerNum *psn);
+
+void CustomSDLMain()
+{
+     NSAutoreleasePool  *pool = [[NSAutoreleasePool alloc] init];
+     [ NSApplication sharedApplication ];
+     [ NSApp setMainMenu:[[NSMenu alloc] init] ];
+
+     {
+         CPSProcessSerNum PSN;
+         /* Tell the dock about us */
+         if (!CPSGetCurrentProcess(&PSN))
+             if (!CPSEnableForegroundOperation(&PSN,0x03,0x3C,0x2C,0x1103))
+                 if (!CPSSetFrontProcess(&PSN))
+                     [NSApplication sharedApplication];
+     }
+}
+
+Call CustomSDLMain before your first call to SDL.
+
+
+My guess is you are on a G3 and SDL_image was built with -faltivec. 
+libpng likes to use setjmp(), which causes GCC to emit code to save the 
+Altivec registers when built with -faltivec...unfortunately, this means 
+that G3 systems will crash as soon as they call the function with the 
+setjmp() in it. I got bit by this right before shipping a game, when I 
+added some optimizations and tested on a G3 right before kicking it out 
+the door. -faltivec doesn't suggest this sort of subtle nasty in the 
+documentation.
+
+The cheapest solution: don't build SDL_image with -faltivec, since 
+there's probably no Altivec code in it at all, but you have to make sure 
+there's no Altivec code that might execute between the setjmp and 
+longjmp calls.
+
+Getting rid of setjmp is another solution, and libpng has hooks for 
+this, but this is probably a pain.
+
+
+I'm building them seperately the Unix Way (using gcc 3.3 for ppc and gcc 4 for x86), and then using the "lipo" command line utility to merge them into one Universal binary.
+
+Are you linking against SDLmain? You shouldn't need to add Mac-specific calls to your SDL program to get basic functionality, but nothing will work right unless SDLmain is used.
+
+  
+It seems that 10.2 is the minimum acceptable platform in terms of marketing, at least at this point. I've never had anyone complain that a title didn't work on 10.1.
+
+I'd actually like it to work back to 10.0, but not if it requires lots of work or ugly changes...the public beta, though? That crap can go.
+  
+  
+EVENTTHREAD doesn't work on Mac OS X (and probably shouldn't be used anywhere...maybe we should deprecate that...) 
+
+I do not understand how to include SDLMain.m (I don't know Cocoa or Objective-C). What should I do?
+Please read the documentation inside the SDL-1.2.9.dmg. It covers this topic in detail.  
+
+How are you including SDL.h? If you are doing '#include "SDL.h"', as recommended for portability, I think there should be an additional '-I/Library/Frameworks/SDL.framework/Headers'. But as it seems to work for you without that, I left it away.)
+
+SDLMain.m is in /Library/Application Support/Apple/Developer Tools/Project Templates/Application/SDL Application/ on my system, but I'm not sure if that's where the latest installer installs it. Search for it.
+
+
+Don't compile SDL statically into your app. Just copy the SDL.framework and SDL_image.framework to MyApp.app/Contents/Frameworks
+as you have read. This is totally independent from Xcode. You can do this in Finder or through the command line.
+
+I don't seem to have SDL.framework or SDL_image.framework as I installed SDL via fink (the 'UNIX' method).
+
+You can download the frameworks from the SDL website.
+
+
+
+OSX is one of the OSes where the SDL_INIT_EVENTTHREAD is quite simply not implemented
+
+What is the best way to compile my game or app on Mac OSX so it runs on all versions of OSX ? Do i really need to compile my app with all different OSX SDKs from 10.0 to 10.4 ?
+
+You need to compile it with the lowest common denominator SDK.  If  you want to run on Mac OS X 10.2 and later, then you need to compile  it with the 10.2 SDK.  Pick one, not all of them. I wouldn't bother trying to support 10.0 or 10.1, nobody else does.   I'm not even sure the latest SDL would compile and work correctly on  anything less than 10.2.
+
+
+I just downloaded the Mac OSX version of SDL-1.2.8. There does not  seem to be
+an "SDL.h" file.
+
+Sure there is, it's in /Library/Frameworks/SDL.framework/Headers
+
+Apple's gcc will find it automatically if you reference it as <SDL/SDL.h>
+
+Don't do that.  See
+<http://www.libsdl.org/cgi/docwiki.cgi/FAQ_20Including_20SDL_20Headers>.
+If the statement
+
+  #include "SDL.h"
+
+doesn't find the appropriate file, your build environment is misconfigured.
+
+Whenever you install SDL onto a unix/linux system, it typically
+installs the SDL header files such that they are not directly available
+for inclusion. They are put in a folder usually called SDL, usually
+within your current include path. Technically in this usual situation,
+you could include SDL.h by including SDL/SDL.h as someone else had
+suggested. However then, obviously your program won't build on some
+systems without making changes (to wit, if you install the SDL
+frameworks, you cannot build most SDL software without making changes,
+because SDL files have different locations on Mac OS X.) SDL has taken
+a more explicit route to help guarantee results. That is, when
+installing SDL, a shell script called "sdl-config" is also installed.
+You execute this program during your configuration or build phase, and
+it will return compiler and linker flags which tell your compiler and
+linker where to find SDL headers and libraries. For instance:
+
+$ sdl-config --cflags
+-I/opt/local/include/SDL -DTHREAD_SAFE
+$ sdl-config --libs
+-L/opt/local/lib -lSDL
+
+(Note: you may have noticed -DTHREAD_SAFE, that is the compiler's
+command-line option to define a C/C++ preprocessor macro, this is the
+second advantage of using a build-process configuration program.)
+
+sdl-config will spit out different values on different systems. It all
+depends on where the headers and libraries were installed on the system
+in question. The above printout is applicable to having installed SDL
+from Darwin Ports (darwinports.opendarwin.org.) This doesn't really
+apply to XCode, because XCode makes you create a "project" to get this
+information. Mac OS X is a unix system, but they have augmented the
+standard way of searching for header-file inclusions, and linking. The
+underlying unix way of doing things is still there, but if you
+installed the SDL framework, then the unix-typical method of invoking
+sdl-config won't work (although, it doesn't appear that you tried to
+invoke sdl-config, otherwise that would probably be the problem you're
+reporting; it is likely then that you wrote your own SDL test app and
+when that didn't work you sent the bug complaint; don't ever make any
+assumptions that something going wrong is NOT your fault, you SHOULD
+have downloaded someone else's SDL app and tried building it before
+reporting the problem as a bug.)
+
+However, recently my hard drive broke on my ibook, and when I
+reinstalled SDL on my new system, I used the frameworks as you probably
+have, because I wanted to be able to distribute Mac OS X binaries of my
+software. So I wrote my own sdl-config script. It's a bit crude, and I
+hope to hear some people offer adjustments to it, but in its present
+form it gets the job done. Typically I invoke a command-line like this
+to build my SDL software:
+
+cc `sdl-config --cflags` -c source1.c
+cc `sdl-config --libs` source1.o source2.o -o program
+
+One last thing, if you don't know about linking to SDLmain: google. I'd
+type it here but I have to get going. Finally, here is my SDL config
+script:
+
+#!/bin/sh
+
+for param in $@
+do if [ "$param" = "--cflags" ]
+then echo -DTHREAD_SAFE -I/Library/Frameworks/SDL.framework/Headers
+-I/Library/Frameworks/SDL_image.framework/Headers
+-I/Library/Frameworks/SDL_mixer.framework/Headers
+-I/Library/Frameworks/SDL_net.framework/Headers
+-I/Library/Frameworks/SDL_console.framework/Headers
+else if [ "$param" = "--libs" ]
+then echo -framework SDL -framework OpenGL -lobjc -framework Cocoa
+-framework QuickTime /Users/donny/SDL-1.2.8/src/main/libSDLmain.a
+else if [ "$param" = "--version" ]
+then echo 1.2.8
+fi
+fi
+fi
+done
+
+
+I think the SDL installer for Mac OS X should include
+both "sdl-config" as well as "libSDLmain.a", instead of
+just providing Xcode templates and the source files...
+
+It should be possible to use SDL.framework, without Xcode ?
+
+Especially since it *needs* the non-standard -I flag, and
+breaks if you try to include the framework headers directly,
+with something like: "#include <SDL_image/SDL_image.h>"...
+
+(Not saying that SDL needs to adopt to any Mac-standards but...
+that <SDL/SDL.h> works the same on both systems is pure luck,
+for another example see: <GL/gl.h> versus <OpenGL/gl.h> ?)
+
+Since Apple has hacked their GCC to do framework-style paths,
+while the others just use directories. (both break on Mac OS 9,
+which thinks that the header filename involved is "SDL/SDL.h")
+
+
+It might also be needed to bring back the "Runtime" (user)
+version of the frameworks, since removing the Headers/ and
+stripping the shared libraries of the debugging symbols (-S)
+saves several hundred KB (!) - which matters since frameworks
+will be copied to the Frameworks folder inside the .app bundle.
+(The runtime frameworks should be bundled with the application)
+
+And it shouldn't install the developer frameworks to ~/Libraries
+either, since Xcode isn't smart enough to recognize such paths
+but expands it to e.g. "/Users/afb" - which of course then breaks
+on all other machines when trying to open up the project file...
+So the best approach is to install devel under /Library/Frameworks,
+and just use ~/Library/Frameworks as a fallback for unprivileged ?
+
+
+I will offer improved installers for SDL on Mac OS 9 / Mac OS X,
+as part of the SpriteWorld X project. (http://spriteworldx.sf.net)
+
+Where "OS 9" mostly means CFM, and "OS X" mostly means Mach-O.
+The CFM runs fine on OS X too, and the Mach-O could be Darwin...
+
+
+
+
+
+  
+how to compile sdl static on MacOSX ?
+
+I expected to find the typical ".a"-Static-Libray-Files wich i know  from
+linux, but all i found
+was ".framework". Im using the Xcode-IDE and have no idea how to do  this.
+Just build an application and add the framework as a copy  files phase to your application : http://cocoadevcentral.com/articles/000042.php
+
+Be aware that on Mac OS X, the best way to include OpenGL and related header files are like so:
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <GLUT/glut.h>
+
+
+It's difficult to correctly build a standalone application when using  Fink dependencies.  When using frameworks, it's trivial to add a copy  frameworks phase and bring in the precompiled frameworks and build a  standalone application correctly.
+
+
+he breakup between the sdl-devel and sdl packages has changed. This
+is intentional. The sdl package now contains a "proper" framework, now
+conforming to Apple conventions. This means both the runtime library
+and headers are contained in the Framework (as they are supposed to
+be). The sdl-dev package contains the documentation and Xcode
+templates.
+
+The old behavior of creating a framework, splitting it up into two
+separate frameworks, and then putting them into separtate places was
+horribly broken and had to die for a significant list of reasons. (If
+you have ever done a multiuser setup or zerolink, you might understand
+why. The complicated process in doing this operation was probably the
+ultimate reason your old sdl_net package refuses to install.) The sdl
+frameworks are actually drag-n-dropable,  so I've been wondering if
+making a .dmg instead of a package would be better. (The dev-package
+is fancy so it will still need a .pkg.)
+
+As for the SDL satellite packages, check the archives. I just posted
+on this yesterday. They too are following the proper framework
+convention. There is no longer a need for separate dev versions of 
+those packages.
+
+
+There's two ways people like to work on OS X.  Personally, when it comes to development, I enjoy command line and 'fink', which provides necessary library dependencies.
+
+The other, native way, is the frameworks, which can be used from command line compilations by a simple '-framework' (I think) gcc extension.  It does look at the appropriate places for those.
+
+As to SDL, SDL_image etc. you should probably use 'sdl-config' anyhow, instead of fixing the compilation parameters yourself.
+
+If you're doing GUI stuff, using XCode etc. then frameworks are clearly the way to go. 
+
+Actually, there is no sdl-config provided with the framework version
+of SDL so that won't work.
+
+You need to include the SDLmain.h and SDLmain.m files directly in your
+project so they are compiled with it. You can find these with the
+SDL-devel.pkg on the  website. After you install it, start Xcode and
+select the create a new SDL application project template. It will
+create a simple SDL project for you. Inside you will see that it
+copied SDLmain.* into you project. You can modify this project for
+your needs or just copy out the SDLmain files into your own project.
+(Alternatively, you can search for SDLmain on your system and just add
+those files yourself without going through Xcode. If you have
+Spotlight, this will be quick  :) 
+
+Also, it's -framework Cocoa and not -framework COCOA (though you might
+be able to get away with that since the default filesystem on OS X is
+case insensitive).
+
+You should check out the Mac OS X FAQ on the SDL FAQ page:
+http://www.libsdl.org/faq.php 
+
+you are using the framework version of SDL (which is the proper way
+in OS X, in my humble opinion)
+
+The easiest way to deal with this is to develop your project using
+XCode. Once you install the SDL-devel package, you should have a
+number of SDL project types to choose from when you create a new
+project in XCode. It should set up all the compilation requirements
+for you automatically. 
+
+If you really need to use the command line, however, you'll need to
+create your own 'sdl-config' script. I wrote a quick version for this
+situation, which I keep in ~/bin. For 'sdl-config --cflags' it
+outputs:
+
+-F/Users/yourname/Library/Frameworks
+-I/Users/yourname/Library/Frameworks/SDL.framework/Headers
+-D_REENTRANT
+
+For 'sdl-config --libs' it outputs:
+
+/Users/yourname/bin/SDLMain.o -L/Users/yourname/Library/Frameworks
+-framework Cocoa -framework SDL -lobjc
+
+(Both of these outputs are only one line.. and you should adjust them
+according to where you installed the SDL framework.)
+
+Finally, you'll notice the SDLMain.o in the --libs output above. I
+keep it pre-compiled for simplicity. You just need to grab SDLMain.m,
+which is included in the developer stationary that comes with the
+SDL-devel package. There are a few versions, use the one from the
+"SDL Application" project stationary. Compile it with
+
+   gcc `/path/to/sdl-config --cflags` -c SDLMain.m
+
+to produce the .o file. Everything should work after that.
+
+I use the following command to compile my program:
+gcc sdl.c -framework SDL -framework COCOA
+
+
+Do not do that directly.  Use `sdl-config --cflags --libs` instead, to
+substitute the output of sdl-config.
+
+
+ two different library types, 
+Framework vs. dylib (mac os x name for a .so).  Essentially, the Mac OS 
+X concept of a shared lib vs the unix concept.  Both are usable, and 
+they will both get you the same functioanlity (ie, native window system).
+
+The dylib/so approach will be most familiar to those from a unix 
+background.  Put the the sdl dylib in /usr/lib (or /sw/lib if you are 
+using fink, as you should be).  Headers are put in /usr/include/SDL (or 
+/sw/include/SDL).  You get these downloading the SDL sources and doing a 
+configure/make, or using fink.  sdl-config will then be available.
+
+By downloading the Mac OS X dev packages, you got the frameworks. 
+Frameworks are a directory (named foo.framework), that contain not only 
+the dylib, but also all the headers, and other supporting files. 
+Everything related to the framework comes in a single folder, rather 
+than scattering files between /usr/lib, bin, include, share, etc.  The 
+frameworks do not include sdl-config, because it is unnecessary.
+
+There was recently a discussion about which is best.  I'm just going to 
+say go with the Frameworks.  When redistributing your app, place the SDL 
+and SDL_image frameworks in YourAppBundle.app/Contents/Frameworks.
+
+As for getting SDL_image and SDL_mixer to work, you'll need frameworks 
+for those too.  If binaries are not available, then you can build them 
+yourself using xcode.  In the SDL_image,mixer,ttf source distributions, 
+there is a file, PBProjects.tar.gz, which contains xcode projects to 
+create these.  Place them in ~/Library/Frameworks for ease of 
+development, and then put them in AppBundle.app/Contents/Frameworks when 
+redistributing your binary.
+
+
+  
+Simpler command line way to create ".dylib" shared libraries : ./configure, make, make install (optional) then some tweaks with install_name_tool to be able to put the dylibs in the directory of the executable.
+  
+'sdl-config --libs' on MacOSX returning something with '-framework OpenGL' : your program will work just fine without "-framework OpenGL" as long as it doesn't try and use symbols from OpenGL directly, however, there is zero penalty for leaving it in because SDL itself links to OpenGL anyway.
+
+gcc: use fink on MacOSX 
+
+Apple recommends all shipping code be -Os. 
+
+I want to build my game for OS X. SDL shouldn't be statically linked
+because my program isn't GPL. Should I use the "framework" or the
+UNIX-style shared lib system ?
+
+I'd like to be able to keep SDL in my game's directory, too.
+
+You can build an application with the shared lib, but that would 
+probably involve installing the lib into one of the standard system 
+paths, which would mean you need an installer (not good on OS X).
+
+Go for the framework.  In XCode, create a 'Copy Files' build phase that 
+will copy SDL.framework (and SDL_image.framework, and whatever else), 
+into the Frameworks folder inside the bundle.
+
+It also works fine to include the shared library in the Frameworks 
+subtree of the bundle.
+
+Assuming it was linked as @executable_path relative, of course.  The 
+"developer" framework available from libsdl.org is already linked in 
+this manner so it's less of a hassle.
+
+I would tend to recommend bundling the library instead of the framework. 
+It seems wasteful to distribute the headers and versioning stuff that a 
+framework entails. No reason you couldn't remove the headers and all 
+that
+
+
+Here's how I did it for ut2004 (which may not be the best way, but it 
+was the cleanest in the long run, in my opinion):
+
+Build SDL "the unix way"...unpack the source, and from a Terminal:
+
+    cd /where/i/unpacked/SDL-1.2.8
+    ./configure
+    cd src
+    make
+
+
+Let the thing compile for awhile. When it finishes, one of the last 
+things in there should be the link command line...it starts something 
+like this...
+
+    gcc -dynamiclib  -o .libs/libSDL-1.2.0.7.1.dylib  .libs/SDL.o
+
+...and runs for 35 lines or so.
+
+Cut and paste that command, making a small change:
+
+  Find:
+
+      -install_name  /usr/local/lib/libSDL-1.2.0.dylib
+
+  Change that to:
+
+      -install_name @executable_path/libSDL-1.2.0.dylib
+
+Take the library (.libs/libSDL-1.2.0.7.1.dylib, on my system) and put it 
+into your project. Link against that file. Now the program when run will 
+look for "libSDL-1.2.0.dylib" in the same directory as the program.
+
+This is a pain to set up, but is dead simple thereafter, in terms of 
+packaging and distribution. Real Mac programmers are probably cringing 
+right now and can offer a better solution, but this worked great for me.
+
+That's close enough to the right solution.  You should probably be 
+using a different path as per Apple's recommendation 
+(@executable_path/../Frameworks/libSDL-1.2.0.dylib), but there is 
+nothing technically wrong with yours.  Additionally, rather than 
+cutting and pasting 35 lines of junk, you could use 
+install_name_tool(1) as a post-process on this dylib (works about 99.5% 
+of the time, in some edge cases install_name_tool will fail, but it 
+will tell you it failed), or edit the configure script and/or Makefile 
+to do this for you.
+
+The Xcode project that SDL comes with will build a framework of this 
+style even easier.  Basically, rip open the tarball, go to the 
+directory it creates, and type "xcodebuild".  It should be 
+preconfigured to build a development-style framework.  I'm not sure how 
+people think the library solution is easier (or why you feel the need 
+to build it yourself, unless you're patching it, but then you have LGPL 
+issues), but whatever floats your boat.
+
+
+
+Some may disagree with me, but you really should use the "unix style" 
+installation of SDL.
+
+It's very simple to install SDL via Fink (with use of the neat 
+FinkCommander GUI) or DarwinPorts from the command line.
+
+http://fink.sourceforge.net/
+http://darwinports.opendarwin.org/
+
+If you installed SDL with one of these tools, then you shouldn't need 
+to alter your build process at all, it will all build just as though 
+you were on Linux or any other Unix.
+
+The .pkg packages are generally for working with XCode.
+
+
+
+Basically, after the lib is compiled, you have to type:
+
+install_name_tool -id @executable_path/libSDL.dylib libSDL.dylib 
+
+(I renamed libSDL-1.2.0.7.1.dylib to libSDL.dylib in order to make room
+for "@executable_path" since it is longer than "/usr/local/lib". It's
+also easier to type  )
+
+And then put this lib into the executable's directory and link against
+it. (done by adding "-L." in front of "-L/usr/local/lib" in the linker
+flags.)
+
+The otool tool can be used to check that the exe is linked against the
+correct lib:
+
+otool -L testprogram
+
+
+To clarify any possible confusion, we changed what's packaged in the
+SDL.framework in the 1.2.8 release. The standard SDL.framework now
+contains both the runtime library and the header files. This was done
+to bring it in line with Apple conventions. This used to be split into
+two frameworks (runtime/headers) which was kind of weird. The header
+version went into a user's private framework directory and the runtime
+was installed in the system-wide directory. This caused some confusion
+with Xcode projects and also caused some headaches for multi-user
+systems.
+
+The development package now only contains Xcode/Project Builder
+templates and the SDL documentation.
+
+
+
+How to dynamically link your application to SDL (dylib vs framework) ? Either way works. I
+personally like the framework approach. It's really easy to bundle.
+It's all drag and drop. Just copy the SDL.framework to
+YourProgram.app/Contents/Frameworks
+Check out GLTron or Frozen Bubble. This is how they do it. (Do a "Show
+Package Contents" from Finder to see the directory structure inside
+the app.)
+
+
+It would be nice if the sdl site mentionned you have to get the user package in order to develop, and that the developer package is useful
+only for Xcode/PowerBuilder. Some more information about how to include
+the lib(s) into one's application without linking statically would be
+great too for beginners.
+
+I have now recompiled SDL, libpng, libjpeg, libogg, libvorbis, SDL_mixer
+and SDL_image, so I'm ready to go. Ah, I still need to
+"install_name_tool" some of them
+  
+  
+I have developed an application using SDL for OS X with XCode. Starting 
+the application by double clicking on the application works. But when 
+starting the program from the command line ("open something.app") I get 
+the following errors:
+
+dyld: 
+/Users/bobsturm/PacificPulses/PPgui_anim/OSX/PPgui/build/PPgui.app/Contents/MacOS/PPgui 
+Undefined symbols:
+
+SDL undefined reference to _glGetIntegerv expected to be defined in OpenGL
+
+SDL undefined reference to _glClear expected to be defined in OpenGL
+
+OpenGL undefined reference to _CGLSetCurrentContext expected to be defined 
+in /usr/X11R6/lib/libGL.dylib
+
+..hmmm, are you starting from the command line in X11?  You should 
+just use Terminal.app if you want to run cli in aqua/osx...
+
+
+  
+Fet the latest release version from ports using http://darwinports.opendarwin.org/
+Or build the latest versions yourself. Or get them via Fink 
+(http://fink.sourceforge.net).  
+
+
+OSX will not ALWAYS buffer your application's display the same way. Yes it's true, that the window composition layer (not the 
+window manager) does create the image of your window off-screen and in 
+that sense there is a second display buffer, but without actually 
+requesting double buffering, there are two possible behaviors for the 
+window composition layer:
+
+a) composition that is asynchronous with your application
+b) you get real hardware access to the portion of the screen occupied 
+by your window, no buffering at all
+
+In Jaguar I've been told you get B. I use panther, and I get A.
+
+  
+So basically want you want to be able to do is click
+an icon, and have the graphical portion of the
+application show without the stdio?
+
+You may want to learn more about the .app structure of
+typical OS X applications. I don't know much about
+them, only what I've seen from browsing their
+contents. But I just tried this in an attempt to give
+you a simple answer, and it works fine for my
+application:
+
+$ mkdir some-app.app
+$ mkdir some-app.app/Contents
+$ mkdir some-app.app/Contents/MacOS
+$ cp some-app some-app.app/Contents/MacOS/some-app
+
+Then just double click the icon that shows up in the
+finder. Some quirks about doing this:
+
+ - You cannot drag the application icon to your dock.
+Instead, run it, get into windowed mode if it starts
+in full screen, then right click its icon on the dock
+and select "Keep in Dock"
+
+ - The default Project Builder icon is used until you
+add an icon. I don't know how to do this, if you find
+out how, or see a good page about the .app structure,
+please let me know at smirk@thebuicksix.com.
+
+Please let me know how this works for you! (Btw I'm
+running Panther, in case that becomes an issue.)  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+>I want to use SDL on Mac OSX the UNIX Way.
+>> Is there a way to not open a Console Window on
+>> the programm start. Something like -mwindows on MinGW ?
+>>
+>>
+
+No there is no such way; the "console" is just another program like any 
+other. But if you just want to be able to see debug output, there are 
+two simple ways:
+1) Use Console.app
+2) Simply start Terminal.app (or any other terminal application of your 
+choice), and manually start your application from there; then you'll be 
+able to see the output. E.g. if I want to run ScummVM.app, I can do 
+this:
+   cd /path/to/ScummVM.app/Contents/MacOS/
+   ./scummvm
+   
+   Unable to open :src:main:macos:SDL_main.c or so because it is not a text file ?!?!?
+
+Were the '\n' returns correctly converted to the Mac-style when you
+downloaded it?
+
+
+
+
+
+I created a symbolic link. This is an ugly hack for compiling OpenGL applications from the
+command-line on OSX, no other solution seems to work : 
+
+ ln -s /System/Library/Frameworks/OpenGL.framework/Headers GL
+ 
+ or 
+ 
+ change the #include's as follows:
+
+# include <OpenGL/gl.h>
+# include <OpenGL/glu.h>
+
+and then add "-framework OpenGL" instead of "-lgl -lglu"
+
+OS X frameworks are useful if you're using OS X's XCode or Package 
+Builder to build your app. Of course you would want to put the 
+framework inside your application bundle, rather than requiring the 
+user to install it into /Libraries/Frameworks .
+
+OS X frameworks are not useful if you want to build an existing 
+autoconf-based project. In this case, you should use a Unix-like SDL 
+package, such as those installed by Fink or DarwinPorts. These install 
+sdl-config and libraries just like Linux/BSD/etc packages (but into /sw 
+or /opt), which means that build systems depending on sdl-config "just 
+work".
+
+However, you cannot assume that users have installed the 
+Fink/DarwinPorts package on their own systems, so you should statically 
+link with SDL. You cannot use the linker's -static argument (you cannot 
+statically link with OS X's system libraries; see 
+http://developer.apple.com/qa/qa2001/qa1118.html). Instead you must 
+link by directly referencing the .a files, e.g. "gcc mycode.o 
+/sw/lib/libSDL.a -o mycode". In SDL 1.2.7, OS X's "sdl-config 
+--static-libs" will emit the correct output, but in earlier versions 
+this was not the case. However, I notice that sdl.m4 (as found in 
+SDL-1.2.7 source) does not seem to support --static-libs, so this will 
+require custom autoconf hacking. Anyone want to comment on that?
+
+It's important to note that statically linking SDL is not possible for 
+commercial programs (because of the LGPL license). One alternative to 
+static linking, which Ryan Gordon used in UT2003, is to dynamically 
+link with SDL but include libSDL.dylib in the application bundle 
+itself. In this case you must somehow link with 
+"@executable_path/libSDL.dylib" (as seen in "otool -L <executable>", 
+but I don't know how to do this. It may require building your own 
+libSDL.dylib, and specifying the "install path" as "@executable_path". 
+
+>How do I distribute an app built this way? In Win32 and Linux I
+>> distribute the executable, the SDL shared libs, and some resource
+>> files. In Mac I find I can install an "application" which seems
+>> to be a whole directory tree. How are these things built? It's just
+>> a directory whose name ends in ".app"?
+
+
+Essentially, yes, but with a special structure. And it's important that  
+you care about the lib dependencies, too. For this reason, I always  
+static link my release binaries, that way, there is no hassle with  
+installing SDL libs. Your users will hate you if you force stuff like  
+that on them .
+
+Some information about this topic can be round in README.MacOSX, you  
+should consult that first. Then, as am example, this is what  
+ScummVM.app looks like:
+
+$ tree ScummVM.app/
+ScummVM.app/
+`-- Contents
+     |-- Info.plist
+     |-- MacOS
+     |   `-- scummvm
+     |-- PkgInfo
+     `-- Resources
+         `-- scummvm.icns
+
+We create it with a simple hand written build rule. Look at this:  
+<http://cvs.sourceforge.net/viewcvs.py/*checkout*/scummvm/scummvm/ 
+Makefile?content-type=text%2Fplain&rev=1.65>
+So no black magic...
+
+The "Info.plist" file is an almost static XML file. In the case of SDL,  
+it is indeed fully static and in our CVS:
+<http://cvs.sourceforge.net/viewcvs.py/*checkout*/scummvm/scummvm/ 
+Info.plist?content-type=text%2Fplain&rev=1.13.2.5>
+For exult, it is instead created from an "Info.plist.in" file which we  
+pass through sed to replace some stings (@VERSION@ for example).
+
+The icon file is in the .icns format, you can find plenty of  
+information about it on the net; also apple ships an icon editor for  
+that format, as well as the 'tiff2icns' CLI util. There are converters  
+from/to .ico etc. available somewhere on the net, too.
+
+Oh yes, you might notice a special target in the ScummVM Makefile,  
+which is used to generate a special static linked binary. Two notes:
+1) If you use autoconf/automake, obviously you'll want to do this  
+differently. Exult also uses automake, but so far I haven't gotten  
+around of creating an "exult-static" target for it; I'll do that  
+eventually, though
+2) We use "`sdl-config --static-libs`", but note that this only works  
+correctly starting with SDL 1.2.7 ! I strongly recommend using SDL  
+1.2.7 when working on Mac OS X.
+
+
+
+>> Another one, how do I build an installer? Is there any Mac-specific
+>> "official" way, or people use third-party installer builders (the
+>> equivalent of NSIS, for example)
+>>
+
+Good mac apps do not need an installer. They are installed by drag &  
+drop. So a typical distribution format is to pack your application, the  
+docs, etc., into a folder; then either compress that folder (as a .sit,  
+or if you don't make use of resource forks, you could also use .zip);  
+or nowadays even more common, people create a .dmg disk image file  
+(with Apple's "Disk Copy", resp. "Disk Utility" tool, or with  
+equivalent CLI commands). You then put your app on that virtual disk,  
+and distribute the .dmg file.
+
+
+
+Codewarrior
+
+1) create a new project -> Mac OS X Cocoa Stationary -> Objective-C++
+Application (I read somewhere that SDL needs to be a Cocoa app);
+
+2) add the SDL framework to the project;
+
+3) add the OpenGL framework to the project if you need it for your app;
+
+4) add the files SDLMain.h & SDLMain.m to the project, you can get them from the
+cvs (http://www.libsdl.org/cgi/cvsweb.cgi/SDL12/src/main/macosx/). They are
+normally part of a new ProjectBuilder project, but we need to add them manually;
+
+5) remove main.mm which was automatically created by codewarrior and add your
+own cpp files;
+
+6) optional step: you can also remove MainMenu.nib from the project.
+
+7) compile and enjoy.....
+
+
+I'm trying to get MP3s playing on Mac OS X using SDL_mixer + SMPEG.
+When I load the MP3 file I get the message "Warning: incorrect audio
+format," and then the audio sounds really bad. This appears to be some kind of endian issue. I first tried re=EBncoding the MP3 with a
+sample-rate matching the parameter I gave when initializing SDL_mixer.
+
+The sound was improved, but it's still horribly messed-up.
+
+Here's how I built SMPEG and SDL_mixer with XCode:
+
+I converted both the SDL_mixer and SMPEG PB projects to XCode using the
+
+"Upgrade All Targets to Native" command and added the appropriate
+Header Search Paths. I then built and installed the SMPEG framework.
+Before building SDL_mixer I got rid of the smpeg.framework that was
+lurking in SDL_mixer's "pkg-support" folder. I also added -DMP3_MUSIC
+to the "Other C Flags" in SDL_mixer's target settings for MP3 support.
+
+
+>However, Xcode references frameworks by their path
+>> ("/users/phip/library/frameworks/SDL.framework"). A template with such a
+>> reference would only work for that user.
+
+
+My experience is that you can change that explicit path that Xcode
+inserted when you added the framework to
+"$(HOME)/Library/Frameworks/SDL.framework" afterwards, and things continue
+to work. This could be a way to make the templates user-independent.
+
+  </p>
+  
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20on%20Mac%20OSX">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : 2006</em>
+  </center>
+</body>
+</html>
