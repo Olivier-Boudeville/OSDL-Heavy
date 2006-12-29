@@ -35,10 +35,10 @@ LOANI_README_TARGET   := README
 
 
 release: links $(LOANI_TGZ) $(LOANI_ZIP) 
-	@echo "$(make_style)    Release archives for LOANI are available.$(default_style)"
+	@echo "@OSDL_MAKE_STYLE@    Release archives for LOANI are available.@OSDL_DEFAULT_STYLE@"
 	
 blank-MD5:
-	@echo "$(install_style)    Blanking MD5 sum of OSDL release to avoid MD5 recursive dependency on archive$(default_style)"
+	@echo "@OSDL_INSTALL_STYLE@    Blanking MD5 sum of OSDL release to avoid MD5 recursive dependency on archive@OSDL_DEFAULT_STYLE@"
 	@../../../../Ceylan/Ceylan-${CEYLAN_VERSION}/src/code/scripts/shell/replaceLineStartingBy.sh OSDL_MD5 'OSDL_MD5="(blanked)"' osdl-versions.sh 
 
 	
@@ -50,13 +50,13 @@ links:
 	
 $(LOANI_ZIP): $(LOANI_FELLOWS_FILES) $(LOANI_README_TEMPLATE)
 	@$(MAKE) mktmpdir
-	@echo "$(make_style)    Building LOANI release file $@$(default_style)"
+	@echo "@OSDL_MAKE_STYLE@    Building LOANI release file $@@OSDL_DEFAULT_STYLE@"
 	@zip $@ $(LOANI_TMP_ARCHIVE_DIR)/* 1>/dev/null 2>&1
 	
 			
 $(LOANI_TGZ): $(LOANI_FELLOWS_FILES) $(LOANI_README_TEMPLATE)
 	@$(MAKE) mktmpdir
-	@echo "$(make_style)    Building LOANI release file $@$(default_style)"
+	@echo "@OSDL_MAKE_STYLE@    Building LOANI release file $@@OSDL_DEFAULT_STYLE@"
 	@tar chf - $(LOANI_TMP_ARCHIVE_DIR) | gzip > $@
 
 
@@ -72,7 +72,7 @@ $(LOANI_README_TARGET): $(TOP)/GNUmakevars.inc
 
 
 loani-versions.sh: $(CEYLAN_VERSIONS) osdl-versions.sh $(CEYLAN_RELEASE) $(OSDL_RELEASE)
-	@echo "$(make_style)    Merging $@$(default_style)"
+	@echo "@OSDL_MAKE_STYLE@    Merging $@@OSDL_DEFAULT_STYLE@"
 	@echo "# This file tells LOANI and the build system about the tools that they must know." > $@
 	@echo "# It corresponds to the gathering of Ceylan and OSDL related tools." >> $@
 	@echo "# " >> $@
@@ -106,14 +106,14 @@ stat:
 		
 		
 clean:
-	@echo "$(clean_style)    Cleaning all in `pwd`$(default_style)"
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning all in `pwd`@OSDL_DEFAULT_STYLE@"
 	-@rm -f wget-log* LOANI.log $(LOANI_ZIP) $(LOANI_TGZ)\
 	$(LOANI_README_TARGET) loani-versions.sh
 	-@rm -rf LOANI-$(LOANI_VERSION)
 	
 	
 realclean : clean
-	@echo "$(clean_style)    Real cleaning all in `pwd`$(default_style)"
+	@echo "@OSDL_CLEAN_STYLE@    Real cleaning all in `pwd`@OSDL_DEFAULT_STYLE@"
 	-@rm -rf $(LOANI_REPOSITORY_DIR) $(LOANI_INSTALL_DIR)	
 	-@rm -f  $(LOANI_TGZ) $(LOANI_ZIP) 
 	
