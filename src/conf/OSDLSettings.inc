@@ -42,7 +42,6 @@ UNIX_PROJECT_NAME=osdl
 # Actuel release date.
 
 OSDL_RELEASE_DATE=ST_RELEASE_DATE
-AC_SUBST(OSDL_RELEASE_DATE)
 
 # Usual versioning. 
 
