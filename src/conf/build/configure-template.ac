@@ -498,7 +498,11 @@ AC_SUBST(CEYLAN_OLDEST_SUPPORTED_FULL_VERSION)
 # The Ceylan source archive downloaded by LOANI :
 CEYLAN_CURRENT_SOURCE_ARCHIVE="ceylan-$CEYLAN_OLDEST_SUPPORTED_VERSION.tar.bz2"
 
+# Define here a CEYLAN_INSTALL_ROOT according to --with-ceylan-prefix=PFX :
+AC_ARG_WITH(ceylan-prefix,[--with-ceylan-prefix=PFX   Prefix where Ceylan is installed],ceylan_prefix="$withval",ceylan_prefix="/usr/local")
 
+CEYLAN_INSTALL_ROOT="$ceylan_prefix"
+AC_SUBST(CEYLAN_INSTALL_ROOT)
 
 
 # Warning and error section.
@@ -678,7 +682,7 @@ AC_CONFIG_FILES([
 	src/conf/Makefile
 	src/conf/build/Makefile
 	src/conf/build/osdl-ST_VERSION.pc
-	src/conf/build/osdl-versions.sh
+	src/conf/build/OSDLToolsSettings.inc
 	src/conf/build/loani/Makefile
 	src/conf/build/m4/Makefile
 	src/conf/build/m4/osdl.m4
