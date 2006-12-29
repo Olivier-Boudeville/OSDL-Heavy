@@ -4,13 +4,16 @@ ceylan_release=$1
 osdl_release=$2
 replace_script=$3
 
+loani_tools_settings="ToolsSettings.inc"
+
 do_debug=1
 
 [ "$do_debug" -eq 1 ] || echo "ceylan_release = $ceylan_release"
 [ "$do_debug" -eq 1 ] || echo "osdl_release   = $osdl_release"
 [ "$do_debug" -eq 1 ] || echo "replace_script = $replace_script"
 
-target_loani="loani-versions.sh"
+
+target_loani="LOANIToolsSettings.inc"
 
 if [ ! -e "${ceylan_release}" ] ; then
 	echo "Error, no Ceylan source release found (${ceylan_release})." 1>&2
@@ -53,10 +56,10 @@ fi
 
 ceylan_md5=`$MD5 ${ceylan_release} | awk '{print $1}'`
 [ "$do_debug" -eq 1 ] || echo "ceylan_md5 = $ceylan_md5"
-${replace_script} Ceylan_MD5 "Ceylan_MD5=\"${ceylan_md5}\"" loani-versions.sh
+${replace_script} Ceylan_MD5 "Ceylan_MD5=\"${ceylan_md5}\"" $(loani_tools_settings)
 
 osdl_md5=`$MD5 ${osdl_release} | awk '{print $1}'`
 [ "$do_debug" -eq 1 ] || echo "osdl_md5 = $osdl_md5"
-${replace_script} OSDL_MD5 "OSDL_MD5=\"${osdl_md5}\"" loani-versions.sh
+${replace_script} OSDL_MD5 "OSDL_MD5=\"${osdl_md5}\"" $(loani_tools_settings)
 
 [ "$do_debug" -eq 1 ] || echo "Replacement done."
