@@ -14,7 +14,7 @@ BUILD_SCRIPTS_SET = \
 
 
 
-EXTRA_DIST     = \
+EXTRA_DIST = \
 	$(BUILD_SCRIPTS_SET)   \
 	MakeConfigure          \
 	ToolsSettings.inc      \
@@ -23,7 +23,7 @@ EXTRA_DIST     = \
 noinst_SCRIPTS = $(BUILD_SCRIPTS_SET)
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = @CEYLAN_PKGCONFIG_FILE@
+pkgconfig_DATA = @OSDL_PKGCONFIG_FILE@
 
 DIFF_TOOL    = `which tkdiff 2>/dev/null`
 
@@ -41,16 +41,16 @@ all:
 	
 		
 check-configure: 
-	@echo "@CEYLAN_MAKE_STYLE@    Comparing configure\
-	files@CEYLAN_DEFAULT_STYLE@"
+	@echo "@OSDL_MAKE_STYLE@    Comparing configure\
+	files@OSDL_DEFAULT_STYLE@"
 	@./checkConfigure.sh $(DIFF_TOOL)
-	@echo "@CEYLAN_COMMAND_STYLE@    Comparison finished,\
+	@echo "@OSDL_COMMAND_STYLE@    Comparison finished,\
 	$(CONFIGURE_FILE) may be updated now."
 
 
 download-config-scripts: clean-download
-	@echo "@CEYLAN_MAKE_STYLE@    Downloading latest\
-	configure helper scripts@CEYLAN_DEFAULT_STYLE@"
+	@echo "@OSDL_MAKE_STYLE@    Downloading latest\
+	configure helper scripts@OSDL_DEFAULT_STYLE@"
 	@for f in $(DOWNLOADED_HELPERS); do \
 	wget --quiet $(CONFIGURE_SCRIPTS_BASE_URL)/$$f ; done
 	@chmod +x $(DOWNLOADED_HELPERS)
@@ -61,14 +61,14 @@ dist-hook:
 	
 	
 clean-local:
-	@echo "@CEYLAN_CLEAN_STYLE@    Cleaning generated config\
-	files@CEYLAN_DEFAULT_STYLE@"
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning generated config\
+	files@OSDL_DEFAULT_STYLE@"
 	-@rm -f autoscan*.log autoscan.err configure.scan
 	
 	
 clean-download:
-	@echo "@CEYLAN_CLEAN_STYLE@    Cleaning downloaded config\
-	files@CEYLAN_DEFAULT_STYLE@"
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning downloaded config\
+	files@OSDL_DEFAULT_STYLE@"
 	-@rm -f $(DOWNLOADED_HELPERS)
 	
 	
@@ -111,7 +111,7 @@ LOANI_TGZ = $(LOANI_ARCHIVE_NAME).tar.gz
 LOANI_TMP_ARCHIVE_DIR = $(LOANI_ARCHIVE_NAME)
 
 # Where the Ceylan source archive is, so that its MD5 sum can be computed :
-CEYLAN_RELEASE =  $(LOANI_REPOSITORY_DIR)/Ceylan/Ceylan-@CEYLAN_OLDEST_SUPPORTED_VERSION@/@CEYLAN_CURRENT_SOURCE_ARCHIVE@
+OSDL_RELEASE =  $(LOANI_REPOSITORY_DIR)/Ceylan/Ceylan-@OSDL_OLDEST_SUPPORTED_VERSION@/@OSDL_CURRENT_SOURCE_ARCHIVE@
 
 # Where the OSDL source archive is, so that its MD5 sum can be computed :
 OSDL_RELEASE = $(LOANI_REPOSITORY_DIR)/OSDL/OSDL-@OSDL_VERSION@/@OSDL_CURRENT_SOURCE_ARCHIVE@
@@ -126,29 +126,29 @@ LOANI_README_TARGET   = README
 
 
 
-release: links $(LOANI_TGZ) $(LOANI_ZIP) 
-	@echo "$(make_style)    Release archives for LOANI are available.$(default_style)"
+release: $(LOANI_TGZ) $(LOANI_ZIP) 
+	@echo "@OSDL_MAKE_STYLE@    Release archives for LOANI are available.@OSDL_DEFAULT_STYLE@"
 	
 blank-MD5:
-	@echo "$(install_style)    Blanking MD5 sum of OSDL release to avoid MD5 recursive dependency on archive$(default_style)"
-	@../../../../Ceylan/Ceylan-${CEYLAN_VERSION}/src/code/scripts/shell/replaceLineStartingBy.sh OSDL_MD5 'OSDL_MD5="(blanked)"' osdl-versions.sh 
+	@echo "$(install_style)    Blanking MD5 sum of OSDL release to avoid MD5 recursive dependency on archive@OSDL_DEFAULT_STYLE@"
+	@/src/code/scripts/shell/replaceLineStartingBy.sh OSDL_MD5 'OSDL_MD5="(blanked)"' osdl-versions.sh 
 
 	
 links: 
-	@ln -sf ../../../../Ceylan/Ceylan-${CEYLAN_VERSION}/src/code/scripts/shell/termUtils.sh
-	@ln -sf ../../../../Ceylan/Ceylan-${CEYLAN_VERSION}/src/code/scripts/shell/defaultLocations.sh
-	@ln -sf ../../../../Ceylan/Ceylan-${CEYLAN_VERSION}/src/code/scripts/shell/makeRepositoryLinks.sh
+	@ln -sf ../../../../Ceylan/Ceylan-${OSDL_VERSION}/src/code/scripts/shell/termUtils.sh
+	@ln -sf ../../../../Ceylan/Ceylan-${OSDL_VERSION}/src/code/scripts/shell/defaultLocations.sh
+	@ln -sf ../../../../Ceylan/Ceylan-${OSDL_VERSION}/src/code/scripts/shell/makeRepositoryLinks.sh
 	
 	
 $(LOANI_ZIP): $(LOANI_FELLOWS_FILES) $(LOANI_README_TEMPLATE)
 	@$(MAKE) mktmpdir
-	@echo "$(make_style)    Building LOANI release file $@$(default_style)"
+	@echo "@OSDL_MAKE_STYLE@    Building LOANI release file $@ @OSDL_DEFAULT_STYLE@"
 	@zip $@ $(LOANI_TMP_ARCHIVE_DIR)/* 1>/dev/null 2>&1
 	
 			
 $(LOANI_TGZ): $(LOANI_FELLOWS_FILES) $(LOANI_README_TEMPLATE)
 	@$(MAKE) mktmpdir
-	@echo "$(make_style)    Building LOANI release file $@$(default_style)"
+	@echo "@OSDL_INSTALL_STYLE@    Building LOANI release file $@ @OSDL_DEFAULT_STYLE@"
 	@tar chf - $(LOANI_TMP_ARCHIVE_DIR) | gzip > $@
 
 
@@ -163,17 +163,17 @@ $(LOANI_README_TARGET): $(TOP)/GNUmakevars.inc
 	@cat $(LOANI_README_TEMPLATE) | sed 's|PG_VERSION|$(LOANI_VERSION)|g' | sed "s|PG_DATE|`date '+%A, %B %e, %Y (%H:%M)'`|g"> $@
 
 
-loani-versions.sh: $(CEYLAN_VERSIONS) osdl-versions.sh $(CEYLAN_RELEASE) $(OSDL_RELEASE)
-	@echo "$(make_style)    Merging $@$(default_style)"
+loani-versions.sh: $(OSDL_VERSIONS) osdl-versions.sh $(OSDL_RELEASE) $(OSDL_RELEASE)
+	@echo "@OSDL_MAKE_STYLE@    Merging $@@OSDL_DEFAULT_STYLE@"
 	@echo "# This file tells LOANI and the build system about the tools that they must know." > $@
 	@echo "# It corresponds to the gathering of Ceylan and OSDL related tools." >> $@
 	@echo "# " >> $@
 	@echo "# This file is generated, hence should *not* be modified :" >> $@
-	@echo "# modify instead" `basename $(CEYLAN_VERSIONS)` "and osdl-versions.sh." >> $@
+	@echo "# modify instead" `basename $(OSDL_VERSIONS)` "and osdl-versions.sh." >> $@
 	@echo >> $@
-	@cat $(CEYLAN_VERSIONS) osdl-versions.sh >> $@
-	@./updateLOANI-MD5.sh $(CEYLAN_RELEASE) $(OSDL_RELEASE)\
-	../../../../Ceylan/Ceylan-${CEYLAN_VERSION}/src/code/scripts/shell/replaceLineStartingBy.sh
+	@cat $(OSDL_VERSIONS) osdl-versions.sh >> $@
+	@./updateLOANI-MD5.sh $(OSDL_RELEASE) $(OSDL_RELEASE)\
+	../../../../Ceylan/Ceylan-${OSDL_VERSION}/src/code/scripts/shell/replaceLineStartingBy.sh
 
 	
 test: release
@@ -188,7 +188,7 @@ info:
 	@echo "LOANI_ZIP           = $(LOANI_ZIP)" 
 	@echo "LOANI_TGZ           = $(LOANI_TGZ)"
 	@echo "LOANI_FELLOWS_FILES = $(LOANI_FELLOWS_FILES)"
-	@echo "Ceylan release      = $(CEYLAN_RELEASE)"
+	@echo "Ceylan release      = $(OSDL_RELEASE)"
 	@echo "OSDL release        = $(OSDL_RELEASE)"
 	
 
@@ -198,14 +198,14 @@ stat:
 		
 		
 clean:
-	@echo "$(clean_style)    Cleaning all in `pwd`$(default_style)"
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning all in `pwd`@OSDL_DEFAULT_STYLE@"
 	-@rm -f wget-log* LOANI.log $(LOANI_ZIP) $(LOANI_TGZ)\
 	$(LOANI_README_TARGET) loani-versions.sh
 	-@rm -rf LOANI-$(LOANI_VERSION)
 	
 	
 realclean : clean
-	@echo "$(clean_style)    Real cleaning all in `pwd`$(default_style)"
+	@echo "@OSDL_CLEAN_STYLE@    Real cleaning all in `pwd`@OSDL_DEFAULT_STYLE@"
 	-@rm -rf $(LOANI_REPOSITORY_DIR) $(LOANI_INSTALL_DIR)	
 	-@rm -f  $(LOANI_TGZ) $(LOANI_ZIP) 
 	
