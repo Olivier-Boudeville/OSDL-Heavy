@@ -219,7 +219,7 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-
+AM_PROG_LIBTOOL
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -265,8 +265,7 @@ AC_FUNC_UTIME_NULL
 # Prerequesites section.
 
 # Checks for the Ceylan library (see ceylan.m4)
-CEYLAN_PATH(ST_CEYLAN_OLDEST_SUPPORTED_MAJOR,ST_CEYLAN_OLDEST_SUPPORTED_MINOR, ST_CEYLAN_OLDEST_SUPPORTED_RELEASE)
-
+CEYLAN_PATH(ST_CEYLAN_OLDEST_SUPPORTED_MAJOR,ST_CEYLAN_OLDEST_SUPPORTED_MINOR,ST_CEYLAN_OLDEST_SUPPORTED_RELEASE)
 
 # Build section.
 
@@ -665,41 +664,40 @@ AC_CONFIG_COMMANDS([configprefix],[cat src/code/OSDLConfig.h | sed 's|OSDL_HAVE_
 
 AC_CONFIG_FILES([
     Makefile
-    src/Makefile
-	src/code/Makefile
-	src/code/basic/OSDLHeaderVersion.cc
-	src/code/basic/Makefile
-	src/code/audio/Makefile
 	src/code/audio/audioRenderer/Makefile
-	src/code/video/twoDimensional/Makefile
-	src/code/video/videoRenderer/Makefile
-	src/code/video/Makefile
+	src/code/audio/Makefile
+	src/code/basic/Makefile
+	src/code/basic/OSDLHeaderVersion.cc
 	src/code/engine/Makefile
 	src/code/events/Makefile
-	src/code/scripts/shell/Makefile
+	src/code/Makefile
 	src/code/scripts/Makefile
-	src/conf/doc/Makefile
-	src/conf/Makefile
-	src/conf/build/Makefile
-	src/conf/build/osdl-ST_VERSION.pc
-	src/conf/build/OSDLToolsSettings.inc
+	src/code/scripts/shell/Makefile
+	src/code/video/Makefile
+	src/code/video/twoDimensional/Makefile
+	src/code/video/videoRenderer/Makefile
 	src/conf/build/loani/Makefile
 	src/conf/build/m4/Makefile
 	src/conf/build/m4/osdl.m4
+	src/conf/build/Makefile
+	src/conf/build/osdl-ST_VERSION.pc
+	src/conf/build/OSDLToolsSettings.inc
 	src/conf/doc/doxygen.conf
 	src/conf/doc/Makefile
+	src/conf/Makefile
+	src/doc/basic/Makefile
 	src/doc/basic/OSDL-AUTHORS-template.txt
 	src/doc/basic/OSDL-COPYING.LIB-template.txt
 	src/doc/basic/OSDL-FAQ-template.txt
 	src/doc/basic/OSDL-INSTALL-template.txt
-	src/doc/basic/OSDL-LOANI-template.txt.in
+	src/doc/basic/OSDL-LOANI-README-template.txt
 	src/doc/basic/OSDL-MAINTENERS-template.txt
 	src/doc/basic/OSDL-NEWS-template.txt
 	src/doc/basic/OSDL-README-template.txt
 	src/doc/basic/OSDL-THANKS-template.txt
 	src/doc/basic/OSDL-TODO-template.txt
-	src/doc/basic/Makefile
 	src/doc/Makefile
+	src/Makefile
 ])
 
 
