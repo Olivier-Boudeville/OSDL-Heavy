@@ -1,3 +1,4 @@
+# Designates OSDL/trunk :
 TOP = ../../..
 
 
@@ -9,8 +10,11 @@ TOP = ../../..
 SETTINGS_FILE := $(TOP)/src/conf/OSDLSettings.inc
 include $(SETTINGS_FILE)
 
-
-SUBSTITUTE := $(TOP)/src/code/scripts/shell/substitute.sh
+# The substitute script is expected to be found in a relative Ceylan build
+# tree (probably brought back by LOANI), not in an installed location.
+# (note : this can be overriden if needed, as autogen.sh does)
+CEYLAN_TOP = $(TOP)/../../../ceylan/Ceylan/trunk
+SUBSTITUTE = $(CEYLAN_TOP)/src/code/scripts/shell/substitute.sh
 
 
 .PHONY: all config-files check-configure download-config-scripts \
@@ -90,7 +94,7 @@ $(CONFIGURE_GENERATED_FILE): $(CONFIGURE_SOURCE_FILE) $(SETTINGS_FILE)
 check-configure: 
 	@$(MAKE) -s $(CONFIGURE_GENERATED_FILE)
 	@echo "$(make_style)    Comparing configure files$(default_style)"
-	@./checkConfigure.sh $(DIFF_TOOL)
+	@$(srcdir)/checkConfigure.sh $(DIFF_TOOL)
 	@echo "$(command_style)    Comparison finished,\
 	$(CONFIGURE_SOURCE_FILE) may be updated now."
 
