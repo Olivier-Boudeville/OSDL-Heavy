@@ -29,7 +29,7 @@ ENGINE_INTERFACES = \
 
 
 ENGINE_IMPLEMENTATIONS = \
-	OSDLActiveObject.cc                   \             
+	OSDLActiveObject.cc                   \
 	OSDLBoundingBox2D.cc                  \
 	OSDLBoundingBox.cc                    \
 	OSDLCircleBoundingBox.cc              \
