@@ -1,10 +1,6 @@
 ARCHIVE_DIR  = @OSDL_ARCHIVE_DIR@/bin
 ARCHIVE_FILE = "$(ARCHIVE_DIR)/`date '+%Y%m%d'`-Full-archive-OSDL-bin.tar.bz2" 
 
-SUBDIRS = tests
-
-# These are the subdirectories which will be distributed with 'make dist' :
-DIST_SUBDIRS = $(SUBDIRS)
 
 SHELL_SCRIPTS_SET = \
 	CVS-to-aranor-webserver.crontab    \
