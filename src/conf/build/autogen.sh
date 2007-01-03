@@ -5,7 +5,7 @@ USAGE="Usage : "`basename $0`" [ -h | --help ] [ -n | --no-build ] [ -c | --chai
 
 # Main settings section.
 
-osdl_features_disable_opt="--disable-regex --disable-multithread --disable-network --disable-file-descriptor --disable-symbolic-link --disable-advanced-file-attribute --disable-file-lock --disable-advanced-process-management --disable-plugin-support --disable-signal-support"
+osdl_features_disable_opt=""
 
 osdl_features_opt=""
 
@@ -20,6 +20,8 @@ PREFIX_OPT="--prefix=$PREFIX"
 
 # Default value guessed from current path :
 loani_installations=`pwd|sed 's|osdl/OSDL/trunk/src/conf/build||1'`
+
+loani_directory_specified=1
 
 
 # 0 means true, 1 means false :
@@ -83,6 +85,7 @@ while [ "$#" -gt "0" ] ; do
 	
 	if [ "$1" == "--loani-installations" ] ; then
 		shift
+		loani_directory_specified=0
 		loani_installations="$1"
 		if [ ! -d "${loani_installations}" ] ; then
 			echo -e "Error, specified LOANI installation directory does not exist ($loani_installations).\n$USAGE" 1>&2	
@@ -145,6 +148,12 @@ debug()
 }
 
 
+warning()
+{
+	echo "warning : $*" 1>&2
+}
+
+
 
 # Wait-after-execution mode activated iff equal to true (0) :
 wait_activated=1
@@ -172,8 +181,35 @@ fi
 
 debug "COMMAND = $COMMAND"
 debug "RUNNING_DIR = $RUNNING_DIR" 
+
 debug "loani_installations = $loani_installations"
 
+echo 
+
+if [ "$loani_directory_specified" == "1" ] ; then
+	if [ ! -d "${loani_installations}" ] ; then
+		echo -e "Error, no LOANI installation directory specified, and guessed one does not exist ($loani_installations).\n$USAGE" 1>&2	
+		exit 6
+	fi	
+		
+	warning "No directory specified for LOANI installations, defaulting to $loani_installations"
+	
+fi
+
+
+# Retrieving Ceylan substitute.sh script, needed by MakeConfigure :
+CEYLAN_SRC_ROOT=${loani_installations}/ceylan/Ceylan/trunk
+if [ ! -d "${CEYLAN_SRC_ROOT}" ] ; then
+	echo -e "Error, no Ceylan source root found ($CEYLAN_SRC_ROOT)" 1>&2	
+	exit 7
+fi
+
+SUBSTITUTE_SCRIPT="${CEYLAN_SRC_ROOT}/src/code/scripts/shell/substitute.sh"
+if [ ! -x "${SUBSTITUTE_SCRIPT}" ] ; then
+	echo -e "Error, no executable substitute script found ($SUBSTITUTE_SCRIPT)" 1>&2	
+	exit 8
+fi
+	
 
 # Overall autotools settings :
 
@@ -243,6 +279,7 @@ execute()
 	
 }                 
     
+	
 	                                                 
 generateCustom()
 # Old-fashioned way of regenerating the build system from scratch : 
@@ -291,7 +328,7 @@ generateCustom()
 	echo " - generating $CONFIG_TARGET, by filling $CONFIG_SOURCE with $SETTINGS_FILE"
 
 	# Generates 'configure.ac' with an already cooked dedicated Makefile :
-	execute make -f MakeConfigure clean config-files
+	execute make -f MakeConfigure clean config-files SUBSTITUTE=$SUBSTITUTE_SCRIPT
 	
 	# Prepare to run everything from the root directory (containing 'src'
 	# and 'test').
@@ -303,7 +340,7 @@ generateCustom()
 	cd $SOURCE_OFFSET
 		
 	echo
-	echo " - preparing libtool and ltdl, by executing libtoolize"
+	echo " - preparing libtool, by executing libtoolize"
 	
 	
 	(libtool --version) < /dev/null > /dev/null 2>&1 || {
@@ -326,7 +363,7 @@ generateCustom()
 		libtoolize_verbose="--debug"
 	fi
 	
-	execute libtoolize --ltdl --automake $copy $force $libtoolize_verbose
+	execute libtoolize --automake $copy $force $libtoolize_verbose
 	
 	echo
 	echo " - generating aclocal.m4, by scanning configure.ac"
@@ -339,12 +376,13 @@ generateCustom()
 		exit 22
 	}
 
-	M4_DIR=$CONFIG_DIR/m4 
+	M4_DIR=${CONFIG_DIR}/m4 
+	M4_CEYLAN_DIR=${CEYLAN_SRC_ROOT}/test
 	
 	ACLOCAL_OUTPUT=src/conf/build/m4/aclocal.m4
 	
 	# Do not use '--acdir=.' since it prevents aclocal from writing its file :
-	execute aclocal -I $M4_DIR --output=$ACLOCAL_OUTPUT $force $verbose
+	execute aclocal -I ${M4_DIR} -I ${M4_CEYLAN_DIR} --output=$ACLOCAL_OUTPUT $force $verbose
 
 	# automake wants absolutely to find aclocal.m4 in the top-level directory :
 	ln -sf src/conf/build/m4/aclocal.m4
