@@ -11,6 +11,9 @@ USAGE="Usage : "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet
 
 EXAMPLE="    Recommended example (long but safe) : "`basename $0`" --allTools"
 
+# For testing purposes :
+# ./loani.sh --debug --strict --currentSVN --sourceforge wondersye --allTools
+
 HELP="This is LOANI, the famous Lazy OSDL Automatic Net Installer.
 
 	$USAGE
@@ -28,7 +31,7 @@ Options :
 	--allTools		  : retrieve all tools (required, build, optional tools)
 	--setEnv		  : set full developer environment (ex : bash, nedit configuration)
 	--fetchonly		  : only retrieve (download in cache) pre requesite, do not install them
-	--all			  : install all and set all
+	--all			  : install all and set all, including developer environment
 	--prefix <a path>	  : install everything under <a path> 
 	--repository <a path>	  : specify an alternate cache repository for downloads       
 	--noLog 		  : do not log installation results 
@@ -813,7 +816,7 @@ fi
 
 # Retrieve tool versions informations.
 
-TOOLS_META_FILE="loani-versions.sh"
+TOOLS_META_FILE="LOANIToolsSettings.inc"
 
 if [ ! -f "${TOOLS_META_FILE}" ] ; then
 	ERROR "Unable to find LOANI file containing metadata about pre requesite tools (${TOOLS_META_FILE})."
