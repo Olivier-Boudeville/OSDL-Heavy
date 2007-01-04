@@ -1,7 +1,7 @@
 
 .PHONY: all update-basic-doc-files update-changelog                       \
 	effective-changelog-creation update-authors update-copying update-faq \
-	update-install update-maint update-loani update-news update-readme    \
+	update-install update-maint update-news update-readme    \
 	update-thanks update-todo info-local clean-local real-clean
 
 
@@ -22,13 +22,13 @@ EXTRA_DIST = $(RAW_DOC_FILES)
 
 RAW_DOC_FILES = ${top_builddir}/AUTHORS ${top_builddir}/COPYING.LIB        \
 	${top_builddir}/FAQ ${top_builddir}/INSTALL ${top_builddir}/MAINTENERS \
-	${top_builddir}/LOANI-README ${top_builddir}/NEWS                      \
-	${top_builddir}/README ${top_builddir}/THANKS ${top_builddir}/TODO
+	${top_builddir}/NEWS ${top_builddir}/README ${top_builddir}/THANKS     \
+	${top_builddir}/TODO
 
 $(RAW_DOC_FILES): update-basic-doc-files
 
 update-basic-doc-files: update-changelog update-authors update-copying  \
-	update-faq update-install update-maint update-loani update-news     \
+	update-faq update-install update-maint update-news                  \
 	update-readme update-thanks update-todo 
 
 
@@ -109,12 +109,6 @@ update-maint:
 	-@cp -f ${top_builddir}/src/doc/basic/OSDL-MAINTENERS-template.txt\
 	${top_builddir}/MAINTENERS
 
-update-loani:
-	@echo "@OSDL_COMMAND_STYLE@    Generating LOANI-README file\
-	@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-LOANI-README-template.txt\
-	${top_builddir}/LOANI-README
- 
  
 update-news:
 	@echo "@OSDL_COMMAND_STYLE@    Generating NEWS file\
