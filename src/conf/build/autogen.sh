@@ -9,11 +9,6 @@ osdl_features_disable_opt=""
 
 osdl_features_opt=""
 
-PREFIX_DEFAULT="$HOME/tmp-OSDL-test-install"
-PREFIX="$PREFIX_DEFAULT"
-
-PREFIX_OPT="--prefix=$PREFIX"
-#PREFIX_OPT=""
 
 # To check the user can override them :
 #test_overriden_options="CPPFLAGS=\"-DTEST_CPPFLAGS\" LDFLAGS=\"-LTEST_LDFLAGS\""
@@ -117,26 +112,6 @@ while [ "$#" -gt "0" ] ; do
 done
 
 
-configure_opt="$osdl_features_opt -enable-strict-ansi --enable-debug $PREFIX_OPT $test_overriden_options"
-
-
-RM="/bin/rm -f"
-
-COMMAND=$0
-
-LAUNCH_DIR=`pwd`
-
-# Always start from 'src/conf/build' directory :
-cd `dirname $COMMAND`
-
-RUNNING_DIR=`pwd`
-#echo "RUNNING_DIR = $RUNNING_DIR"
-
-# How to go from RUNNING_DIR to base directory 
-# (the one containing src and test) :
-SOURCE_OFFSET="../../.."
-
-
 # debug mode activated iff equal to true (0) :
 debug_mode=1
 
@@ -167,6 +142,55 @@ wait()
 	fi	
 	
 }
+
+
+RM="/bin/rm -f"
+
+COMMAND=$0
+
+LAUNCH_DIR=`pwd`
+
+# Always start from 'src/conf/build' directory :
+cd `dirname $COMMAND`
+
+RUNNING_DIR=`pwd`
+#echo "RUNNING_DIR = $RUNNING_DIR"
+
+# How to go from RUNNING_DIR to base directory 
+# (the one containing src and test) :
+SOURCE_OFFSET="../../.."
+
+
+# Prefix section.
+
+PREFIX_DEFAULT=`pwd | sed 's|LOANI-repository/osdl/OSDL/trunk/src/conf/build||1'`LOANI-installations
+debug "Default prefix = ${PREFIX_DEFAULT}"
+
+PREFIX_SECOND_DEFAULT="$HOME/tmp-OSDL-test-install"
+
+if [ ! -d `dirname ${PREFIX_DEFAULT}` ] ; then
+	echo "Base of first default install directory (${PREFIX_DEFAULT}) not existing, switching to second default directory (${PREFIX_SECOND_DEFAULT})"
+	PREFIX="${PREFIX_SECOND_DEFAULT}"
+else
+	PREFIX="${PREFIX_DEFAULT}"
+fi
+
+#debug "Prefix = ${PREFIX}"
+ 
+mkdir -p ${PREFIX}
+
+
+if [ -n "${PREFIX}" ] ; then
+	PREFIX_OPT="--prefix=$PREFIX"
+else
+	PREFIX_OPT=""
+fi
+
+
+if [ -z "${configure_opt}" ] ; then
+	configure_opt="$osdl_features_opt -enable-strict-ansi --enable-debug $PREFIX_OPT $test_overriden_options"
+fi
+
 
 
 # Log-on-file mode activated iff equal to true (0) :
