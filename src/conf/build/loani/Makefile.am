@@ -25,30 +25,34 @@ LOANI_INSTALLATIONS_DIR = $(srcdir)/../../../../../../..
 LOANI_REPOSITORY_DIR = @LOANI_REPOSITORY_DIR@
 
 # Where LOANI will install packages :
-LOANI_INSTALL_DIR    = @LOANI-LOANI_INSTALL_DIR@
+LOANI_INSTALL_DIR    = @LOANI_INSTALL_DIR@
 
-
-
+	
 # Where the Ceylan source archive is, so that its MD5 sum can be computed :
-CEYLAN_RELEASE = $(LOANI_REPOSITORY_DIR)/ceylan/Ceylan-@OSDL_OLDEST_SUPPORTED_VERSION@/@CEYLAN_CURRENT_SOURCE_ARCHIVE@
+CEYLAN_RELEASE = \
+	$(LOANI_REPOSITORY_DIR)/ceylan/Ceylan/trunk/@CEYLAN_CURRENT_SOURCE_ARCHIVE@
 
 # Where the OSDL source archive is, so that its MD5 sum can be computed :
-OSDL_RELEASE = $(LOANI_REPOSITORY_DIR)/osdl/OSDL-@OSDL_VERSION@/@OSDL_CURRENT_SOURCE_ARCHIVE@
+OSDL_RELEASE = \
+	$(LOANI_REPOSITORY_DIR)/osdl/OSDL/trunk/@OSDL_CURRENT_SOURCE_ARCHIVE@
 
+
+# Where helper scripts for LOANI should be found :
+CEYLAN_INSTALL_SCRIPT_DIR = @CEYLAN_INSTALL_ROOT@/share/Ceylan/scripts/shell
 
 # The files that will be in the LOANI archive :
 LOANI_FELLOWS_FILES = \
-	loani.sh                    \
-	loani-requiredTools.sh      \
-	loani-commonBuildTools.sh   \
-	loani-optionalTools.sh      \
-	$(LOANI_TOOLS_SETTINGS)     \
-	defaultLocations.sh         \
-	termUtils.sh                \
-	platformDetection.sh        \
-	generateBugReport.sh        \
-	makeRepositoryLinks.sh      \
-	$(LOANI_README_TARGET)
+	loani.sh                                                 \
+	loani-requiredTools.sh                                   \
+	loani-commonBuildTools.sh                                \
+	loani-optionalTools.sh                                   \
+	$(top_srcdir)/src/conf/generateBugReport.sh              \
+	$(LOANI_TOOLS_SETTINGS)                                  \
+	$(LOANI_README_TARGET)                                   \
+	$(CEYLAN_INSTALL_SCRIPT_DIR)/defaultLocations.sh         \
+	$(CEYLAN_INSTALL_SCRIPT_DIR)/termUtils.sh                \
+	$(CEYLAN_INSTALL_SCRIPT_DIR)/platformDetection.sh        \
+	$(CEYLAN_INSTALL_SCRIPT_DIR)/makeRepositoryLinks.sh
 
 
 # The version of LOANI matches the one of OSDL actually :
@@ -66,7 +70,6 @@ LOANI_TMP_ARCHIVE_DIR = $(LOANI_ARCHIVE_NAME)
 LOANI_TESTING_DIR = $(HOME)/tmp/LOANI-testing
 
 
-
 EXTRA_DIST = \
 	$(LOANI_FELLOWS_FILES)
 	
@@ -74,23 +77,23 @@ noinst_SCRIPTS = \
 	$(LOANI_FELLOWS_FILES)
 
 
-
 REPLACE_SCRIPT = \
 	@CEYLAN_INSTALL_ROOT@/share/Ceylan/scripts/shell/replaceLineStartingBy.sh
 
 
+
 $(LOANI_README_TARGET): 
-	@cp $(top_srcdir)/$(LOANI_README_TARGET) $(srcdir) 
-	@cat $(LOANI_README_TARGET) | sed 's|ST_LOANI_VERSION|$(LOANI_VERSION)|g' | sed "s|ST_LOANI_DATE|`LANG= && date '+%A, %B %-e, %Y (%H:%M)'`|g" > $@
+	@cat $(LOANI_README_TEMPLATE) | sed 's|ST_LOANI_VERSION|$(LOANI_VERSION)|g' | sed "s|ST_LOANI_DATE|`LANG= && date '+%A, %B %-e, %Y (%H:%M)'`|g" > $@
 
 
 $(LOANI_TOOLS_SETTINGS): $(CEYLAN_TOOLS_SETTINGS) $(OSDL_TOOLS_SETTINGS) \
 		$(CEYLAN_RELEASE) $(OSDL_RELEASE)
 	@echo "@OSDL_MAKE_STYLE@    Merging $@ @OSDL_DEFAULT_STYLE@"
-	@echo "# This file tells LOANI and the build system about \
-	the tools that they must know." > $@
+	@echo "# This file tells LOANI and the build system about the tools " > $@
+	@echo "# that they must know." >> $@
 	@echo "# It corresponds to the gathering of \
 	Ceylan and OSDL related tools." >> $@
+	@echo "# " >> $@
 	@echo "# " >> $@
 	@echo "# This file is generated, hence should *not* be modified :" >> $@
 	@echo "# modify instead" `basename $(CEYLAN_TOOLS_SETTINGS)`\
@@ -98,6 +101,8 @@ $(LOANI_TOOLS_SETTINGS): $(CEYLAN_TOOLS_SETTINGS) $(OSDL_TOOLS_SETTINGS) \
 	@echo >> $@
 	@echo "# From $(CEYLAN_TOOLS_SETTINGS) :"       >> $@
 	@cat $(CEYLAN_TOOLS_SETTINGS)                   >> $@
+	@echo "# " >> $@
+	@echo "# " >> $@
 	@echo "# From $(OSDL_TOOLS_SETTINGS) :"         >> $@
 	@cat $(OSDL_TOOLS_SETTINGS)                     >> $@
 	@$(srcdir)/updateLOANI-MD5.sh $(LOANI_TOOLS_SETTINGS) $(CEYLAN_RELEASE) \
@@ -122,7 +127,7 @@ $(LOANI_ZIP): $(LOANI_FELLOWS_FILES) $(LOANI_README_TEMPLATE)
 	@zip $@ $(LOANI_TMP_ARCHIVE_DIR)/* 1>/dev/null 2>&1
 	
 			
-prepare-release:
+prepare-release: $(LOANI_README_TARGET) $(LOANI_TOOLS_SETTINGS)
 	-@rm -rf $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)
 	@mkdir $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)
 	@cd $(srcdir) && \
@@ -133,7 +138,8 @@ prepare-release:
 release: prepare-release $(LOANI_TGZ) $(LOANI_ZIP) 
 	@echo "@OSDL_MAKE_STYLE@    Release archives for LOANI\
 	are available.@OSDL_DEFAULT_STYLE@"
-
+	-@rm -rf $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)
+	
 	
 test: release
 	@mkdir -p $(LOANI_TESTING_DIR)
@@ -143,13 +149,17 @@ test: release
 
 
 info-local:
-	@echo "LOANI_VERSION       = $(LOANI_VERSION)"
-	@echo "LOANI_ZIP           = $(LOANI_ZIP)" 
-	@echo "LOANI_TGZ           = $(LOANI_TGZ)"
-	@echo "LOANI_FELLOWS_FILES = $(LOANI_FELLOWS_FILES)"
-	@echo "Ceylan release      = $(CEYLAN_RELEASE)"
-	@echo "OSDL release        = $(OSDL_RELEASE)"
-	
+	@echo "LOANI_VERSION         = $(LOANI_VERSION)"
+	@echo "LOANI_ZIP             = $(LOANI_ZIP)" 
+	@echo "LOANI_TGZ             = $(LOANI_TGZ)"
+	@echo "LOANI_FELLOWS_FILES   = $(LOANI_FELLOWS_FILES)"
+	@echo "Ceylan release        = $(CEYLAN_RELEASE)"
+	@echo "OSDL release          = $(OSDL_RELEASE)"
+	@echo "CEYLAN_TOOLS_SETTINGS = $(CEYLAN_TOOLS_SETTINGS)"	
+	@echo "OSDL_TOOLS_SETTINGS   = $(OSDL_TOOLS_SETTINGS)"	
+	@echo "LOANI_REPOSITORY_DIR  = $(LOANI_REPOSITORY_DIR)"
+	@echo "LOANI_INSTALL_DIR     = $(LOANI_INSTALL_DIR)"
+
 
 stat:
 	@echo "Newline, word, and byte counts for LOANI :"
