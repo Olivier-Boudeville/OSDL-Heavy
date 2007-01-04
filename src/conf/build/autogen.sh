@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="Usage : "`basename $0`" [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --loani-installations <path> ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.\n\t --disable-all-features : build a library with none of the optional features\n\t --no-build : stop just after having generated the configure script\n\t --chain-test : build and install the library, build the test suite and run it against the installation\n\t --full-test : build and install the library, perform all available tests, including 'make distcheck' and the full test suite\n\t --only-prepare-dist : configure all but do not build anything\n\t --loani-installations : specify where the LOANI installation repository can be found. If none is specified, it will be guessed from the current directory\n\t --configure-options : all following options will be directly passed whenever configure is run"
+USAGE="Usage : "`basename $0`" [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --loani-repository <path> ] [ --loani-installations <path> ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.\n\t --disable-all-features : build a library with none of the optional features\n\t --no-build : stop just after having generated the configure script\n\t --chain-test : build and install the library, build the test suite and run it against the installation\n\t --full-test : build and install the library, perform all available tests, including 'make distcheck' and the full test suite\n\t --only-prepare-dist : configure all but do not build anything\n\t --loani-repository : specify where the LOANI repository can be found. If none is specified, it will be guessed from the current directory\n\t --loani-installations : specify where the LOANI installations can be found. If none is specified, it will be guessed from the current directory\n\t --configure-options : all following options will be directly passed whenever configure is run"
 
 
 # Main settings section.
@@ -14,9 +14,15 @@ osdl_features_opt=""
 #test_overriden_options="CPPFLAGS=\"-DTEST_CPPFLAGS\" LDFLAGS=\"-LTEST_LDFLAGS\""
 
 # Default value guessed from current path :
-loani_installations=`pwd|sed 's|osdl/OSDL/trunk/src/conf/build||1'`
+loani_repository=`pwd|sed 's|/osdl/OSDL/trunk/src/conf/build||1'`
+#echo "loani_repository = $loani_repository"
 
-loani_directory_specified=1
+loani_installations=`dirname $loani_repository`/LOANI-installations
+#echo "loani_installations = $loani_installations"
+
+
+loani_repository_specified=1
+loani_installations_specified=1
 
 
 # 0 means true, 1 means false :
@@ -78,13 +84,24 @@ while [ "$#" -gt "0" ] ; do
 		token_eaten=0
 	fi
 	
+	if [ "$1" == "--loani-repository" ] ; then
+		shift
+		loani_repository_specified=0
+		loani_repository="$1"
+		if [ ! -d "${loani_repository}" ] ; then
+			echo -e "Error, specified LOANI repository directory does not exist ($loani_repository).\n$USAGE" 1>&2	
+			exit 5
+		fi
+		token_eaten=0
+	fi
+	
 	if [ "$1" == "--loani-installations" ] ; then
 		shift
-		loani_directory_specified=0
+		loani_installations_specified=0
 		loani_installations="$1"
 		if [ ! -d "${loani_installations}" ] ; then
-			echo -e "Error, specified LOANI installation directory does not exist ($loani_installations).\n$USAGE" 1>&2	
-			exit 5
+			echo -e "Error, specified LOANI installations directory does not exist ($loani_installations).\n$USAGE" 1>&2	
+			exit 6
 		fi
 		token_eaten=0
 	fi
@@ -161,9 +178,9 @@ RUNNING_DIR=`pwd`
 SOURCE_OFFSET="../../.."
 
 
-# Prefix section.
+# Prefix section for the OSDL installation.
 
-PREFIX_DEFAULT=`pwd | sed 's|LOANI-repository/osdl/OSDL/trunk/src/conf/build||1'`LOANI-installations
+PREFIX_DEFAULT=$loani_installations
 debug "Default prefix = ${PREFIX_DEFAULT}"
 
 PREFIX_SECOND_DEFAULT="$HOME/tmp-OSDL-test-install"
@@ -188,9 +205,28 @@ fi
 
 
 if [ -z "${configure_opt}" ] ; then
-	configure_opt="$osdl_features_opt -enable-strict-ansi --enable-debug $PREFIX_OPT $test_overriden_options"
+	configure_opt="$osdl_features_opt --enable-strict-ansi --enable-debug $PREFIX_OPT $test_overriden_options"
 fi
 
+
+# Guessing where Ceylan should be found :
+#   1. try under corresponding specified or guessed LOANI-installations 
+#   2. otherwise, look into standard locations (no specific option passed)
+ceylan_location=""
+
+if [ -d "${loani_installations}/include/Ceylan" ] ; then
+	ceylan_location="${loani_installations}"
+fi
+
+if [ -n "${ceylan_location}" ] ; then
+	# Update accordingly the configure prefix for Ceylan macro CEYLAN_PATH :
+	configure_opt="${configure_opt} --with-libCeylan=$loani_installations"
+else
+	# The default install location when no prefix is used :
+	ceylan_location="/usr/local"
+fi
+
+#echo "ceylan_location = ${ceylan_location}"
 
 
 # Log-on-file mode activated iff equal to true (0) :
@@ -210,10 +246,21 @@ debug "loani_installations = $loani_installations"
 
 echo 
 
-if [ "$loani_directory_specified" == "1" ] ; then
+if [ "$loani_repository_specified" == "1" ] ; then
+	if [ ! -d "${loani_repository}" ] ; then
+		echo -e "Error, no LOANI repository directory specified, and guessed one does not exist ($loani_repository).\n$USAGE" 1>&2	
+		exit 7
+	fi	
+		
+	warning "No directory specified for LOANI repository, defaulting to $loani_repository"
+	
+fi
+
+
+if [ "$loani_installations_specified" == "1" ] ; then
 	if [ ! -d "${loani_installations}" ] ; then
 		echo -e "Error, no LOANI installation directory specified, and guessed one does not exist ($loani_installations).\n$USAGE" 1>&2	
-		exit 6
+		exit 8
 	fi	
 		
 	warning "No directory specified for LOANI installations, defaulting to $loani_installations"
@@ -222,16 +269,16 @@ fi
 
 
 # Retrieving Ceylan substitute.sh script, needed by MakeConfigure :
-CEYLAN_SRC_ROOT=${loani_installations}/ceylan/Ceylan/trunk
-if [ ! -d "${CEYLAN_SRC_ROOT}" ] ; then
-	echo -e "Error, no Ceylan source root found ($CEYLAN_SRC_ROOT)" 1>&2	
-	exit 7
+CEYLAN_SHARED_DIR=${ceylan_location}/share/Ceylan
+if [ ! -d "${CEYLAN_SHARED_DIR}" ] ; then
+	echo -e "Error, no Ceylan share directory found ($CEYLAN_SHARED_DIR)" 1>&2	
+	exit 9
 fi
 
-SUBSTITUTE_SCRIPT="${CEYLAN_SRC_ROOT}/src/code/scripts/shell/substitute.sh"
+SUBSTITUTE_SCRIPT="${CEYLAN_SHARED_DIR}/scripts/shell/substitute.sh"
 if [ ! -x "${SUBSTITUTE_SCRIPT}" ] ; then
 	echo -e "Error, no executable substitute script found ($SUBSTITUTE_SCRIPT)" 1>&2	
-	exit 8
+	exit 10
 fi
 	
 
@@ -325,12 +372,12 @@ generateCustom()
 		else	
 			returnedChar="y"
 			if [ "$PREFIX" != "$PREFIX_DEFAULT" ] ; then
-				read -p "Do you really want to erase the whole $PREFIX tree ? (y/n) [n] " returnedChar 
+				read -p "Do you really want to erase the whole OSDL tree in $PREFIX ? (y/n) [n] " returnedChar 
 			fi
 			
 			if [ "$returnedChar" == "y" ] ; then
 				echo " - cleaning PREFIX = $PREFIX"
-				${RM} -r $PREFIX
+				${RM} -rf $PREFIX/include/OSDL $PREFIX/lib/libOSDL* $PREFIX/share/OSDL* 
 				echo "(prefix cleaned)"
 			fi
 		fi	
@@ -401,7 +448,7 @@ generateCustom()
 	}
 
 	M4_DIR=${CONFIG_DIR}/m4 
-	M4_CEYLAN_DIR=${CEYLAN_SRC_ROOT}/test
+	M4_CEYLAN_DIR=${CEYLAN_SHARED_DIR}
 	
 	ACLOCAL_OUTPUT=src/conf/build/m4/aclocal.m4
 	
