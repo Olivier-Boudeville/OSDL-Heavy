@@ -4,7 +4,7 @@
 
 
 
-This is LOANI version ST_VERSION, released on ST_LOANI_DATE.
+This is LOANI version ST_LOANI_VERSION, released on ST_LOANI_DATE.
 
 
 LOANI's purpose is to automatically retrieve, extract, build and install every OSDL's prerequesite and OSDL itself, so that having one's OSDL developer installation working is as easy as just entering :
