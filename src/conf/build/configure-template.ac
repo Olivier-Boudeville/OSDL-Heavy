@@ -136,6 +136,10 @@ AC_SUBST(OSDL_PKGCONFIG_FILE)
 OSDL_ARCHIVE_DIR="\${HOME}/Archive/${PROJECT_NAME}"
 AC_SUBST(OSDL_ARCHIVE_DIR)
 
+# LOANI installations default base directory (to find tools such as doxygen).
+OSDL_LOANI_INSTALLATIONS="\${prefix}"
+AC_SUBST(OSDL_LOANI_INSTALLATIONS)
+
 # The OSDL source archive downloaded by LOANI :
 OSDL_CURRENT_SOURCE_ARCHIVE="osdl-$OSDL_VERSION.tar.bz2"
 AC_SUBST(OSDL_CURRENT_SOURCE_ARCHIVE)
@@ -663,7 +667,7 @@ AC_SUBST(AM_LDFLAGS)
 AC_CONFIG_COMMANDS([configprefix],[cat src/code/OSDLConfig.h | sed 's|OSDL_HAVE_|OSDL_USES_|g' > .OSDLConfig.h; echo "/* Note : NEVER commit (check-in) this generated file ! */" >> .OSDLConfig.h; /bin/mv -f .OSDLConfig.h src/code/OSDLConfig.h; /bin/rm -f _configs.sed])
 
 AC_CONFIG_FILES([
-    Makefile
+	Makefile
 	src/code/audio/audioRenderer/Makefile
 	src/code/audio/Makefile
 	src/code/basic/Makefile
