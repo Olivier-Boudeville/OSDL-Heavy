@@ -1,19 +1,20 @@
 #!/bin/sh
 
-ceylan_release=$1
-osdl_release=$2
-replace_script=$3
+# Updates the MD5 checksums of Ceylan and OSDL release archives in this LOANI
+# file :
+loani_tools_settings=$1
 
-loani_tools_settings="ToolsSettings.inc"
+ceylan_release=$2
+osdl_release=$3
+replace_script=$4
 
 do_debug=1
 
-[ "$do_debug" -eq 1 ] || echo "ceylan_release = $ceylan_release"
-[ "$do_debug" -eq 1 ] || echo "osdl_release   = $osdl_release"
-[ "$do_debug" -eq 1 ] || echo "replace_script = $replace_script"
+[ "$do_debug" -eq 1 ] || echo "loani_tools_settings = $loani_tools_settings"
+[ "$do_debug" -eq 1 ] || echo "ceylan_release       = $ceylan_release"
+[ "$do_debug" -eq 1 ] || echo "osdl_release         = $osdl_release"
+[ "$do_debug" -eq 1 ] || echo "replace_script       = $replace_script"
 
-
-target_loani="LOANIToolsSettings.inc"
 
 if [ ! -e "${ceylan_release}" ] ; then
 	echo "Error, no Ceylan source release found (${ceylan_release})." 1>&2
@@ -27,8 +28,8 @@ if [ ! -e "${osdl_release}" ] ; then
 fi
 
 
-if [ ! -e "${target_loani}" ] ; then
-	echo "Error, no target LOANI version file found (${target_loani})." 1>&2
+if [ ! -e "${loani_tools_settings}" ] ; then
+	echo "Error, no target LOANI version file found (${loani_tools_settings})." 1>&2
 	exit 3
 fi
 
