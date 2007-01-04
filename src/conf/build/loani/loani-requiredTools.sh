@@ -5,19 +5,18 @@
 # Author : Olivier Boudeville (olivier.boudeville@online.fr)
 
 
-####################################################################################################
-# CVS tags to select versions to retrieve (if use_current_cvs not selected) :
-latest_stable_ceylan="STABLE_20051107"
-latest_stable_osdl="STABLE_20051107"
+# SVN tags to select versions to retrieve (if use_current_svn not selected) :
+latest_stable_ceylan="release-0.5.0"
+latest_stable_osdl="release-0.4.0"
 
-####################################################################################################
-
+################################################################################
 
 
 # Required tools section.
 
 
-if [ "$is_windows" -eq "1" ] ; then     
+if [ $is_windows -eq 1 ] ; then
+     
         # All non-windows platforms should build everything from sources :    
         REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"		
 else
@@ -26,16 +25,19 @@ else
 		
 		# Tools whose build is still to fix for Windows platform :
 		REMAINING_TOOLS="SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"
+		
 fi        
 
-# Maybe libmikmod should be added for SDL_mixer, if MOD music was to be supported.
+# Maybe libmikmod should be added for SDL_mixer, if MOD music was to be
+# supported.
 
 
-# TIFF library was removed from the list, since its build is a nonsense and that image format 
-# is not compulsory : PNG and JPEG are better choices and should be used instead.
+# TIFF library was removed from the list, since its build is a nonsense 
+# and that image format is not compulsory : PNG and JPEG are better 
+# choices and should be used instead.
 
 
-if [ "$is_windows" -eq "0" ] ; then
+if [ $is_windows -eq 0 ] ; then
         SDL_PREFIX=`cygpath -w ${prefix}/SDL-${SDL_VERSION} | ${SED} 's|\\\|/|g'`
 else
         SDL_PREFIX="${prefix}/SDL-${SDL_VERSION}"
@@ -60,9 +62,9 @@ LOG_STATUS "Scheduling retrieval of required tools ($REQUIRED_TOOLS)."
 
 
 
-####################################################################################################
+################################################################################
 # SDL
-####################################################################################################
+################################################################################
 
 
 getSDL()
@@ -103,7 +105,7 @@ prepareSDL()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_ARCHIVE}."
 		${MV} -f ${SDL_ARCHIVE}.save ${SDL_ARCHIVE} 
@@ -140,7 +142,7 @@ generateSDL()
 	fi
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL."
 		exit 11
@@ -156,7 +158,7 @@ generateSDL()
 		 
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL."
 		exit 12
@@ -184,7 +186,7 @@ generateSDL()
 		LD_LIBRARY_PATH=${prefix}/SDL-${SDL_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/SDL-${SDL_VERSION}/lib:${PATH}	
@@ -212,13 +214,13 @@ generateSDL()
 	fi
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL."
 		exit 13
 	fi	
 	
-	if [ "$is_windows" -eq "0" ] ; then
+	if [ $is_windows -eq 0 ] ; then
     	${MV} -f ${prefix}/SDL-${SDL_VERSION}/bin/*.dll ${prefix}/SDL-${SDL_VERSION}/lib
     fi
 	    
@@ -246,21 +248,23 @@ cleanSDL()
 
 
 
-####################################################################################################
+################################################################################
 # JPEG library
-####################################################################################################
+################################################################################
 
 
 
-# This won't rightly compile on windows since this ltconfig does not support cygwin or mingw.
+# This will not rightly compile on windows since this ltconfig does not 
+# support cygwin or mingw.
 # To overcome this issue, prebuilt binaries will be installed instead.
-# In the future, one might create its own Makefile for JPEG and maybe make use of libtool 1.5.2 
-# to directly generate the DLL without the configure nightmare. 
+# In the future, one might create its own Makefile for JPEG and maybe 
+# make use of libtool 1.5.2 to directly generate the DLL without the 
+# configure nightmare. 
 # Maybe one could be inspired by the pure cygwin makefile.
 
-# However, even on Windows, the building of the static library is still maintained, since 
-# one of its byproducts is a generated header file which is needed by SDL_image's own 
-# building.
+# However, even on Windows, the building of the static library is still
+# maintained, since one of its byproducts is a generated header file
+# which is needed by SDL_image's own building.
 
 
 getlibjpeg()
@@ -301,7 +305,7 @@ preparelibjpeg()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libjpeg_ARCHIVE}."
 		LOG_STATUS "Restoring ${libjpeg_ARCHIVE}."
 		${MV} -f ${libjpeg_ARCHIVE}.save ${libjpeg_ARCHIVE} 
@@ -339,7 +343,7 @@ generatelibjpeg()
 	
 	        LOG_STATUS "ltconfig host detection will fail in the configure step."
 	
-                if [ "$is_linux" -eq "0" ] ; then
+                if [ $is_linux -eq 0 ] ; then
 					WORK_AROUND_PLATFORM=i686-pc-linux-gnu        
 		        	LOG_STATUS "Linux detected, trying workaround of most common platform (${WORK_AROUND_PLATFORM})."
 		        	${CAT} configure | ${SED} "s|ltmain.sh$|ltmain.sh ${WORK_AROUND_PLATFORM}|1" > configure.tmp
@@ -355,7 +359,7 @@ generatelibjpeg()
 	if [ -n "$prefix" ] ; then	
 	{		
                         
-		if [ "$use_mingw" -eq "0" ] ; then
+		if [ $use_mingw -eq 0 ] ; then
 			OLD_LD=$LD  
 			LD=${MINGW_PATH}/ld						 
 			export LD					 
@@ -377,7 +381,7 @@ generatelibjpeg()
 	 } 1>>"$LOG_OUTPUT" 2>&1			
 	 fi
 	
-	 if [ $? != "0" ] ; then
+	 if [ $? != 0 ] ; then
 	        echo
 	        ERROR "Unable to configure libjpeg."
 	        exit 12
@@ -402,7 +406,7 @@ generatelibjpeg()
 		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
- 	if [ $? != "0" ] ; then
+ 	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libjpeg."
 		exit 12
@@ -427,7 +431,7 @@ generatelibjpeg()
 		LD_LIBRARY_PATH=${prefix}/jpeg-${libjpeg_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/jpeg-${libjpeg_VERSION}/lib:${PATH}	
@@ -449,7 +453,7 @@ generatelibjpeg()
         setBuildEnv ${MAKE} install prefix=${prefix}/jpeg-${libjpeg_VERSION}
                    
                 
-	    if [ $? != "0" ] ; then
+	    if [ $? != 0 ] ; then
 			ERROR "Unable to install libjpeg."
 			exit 13
 		fi	
@@ -459,7 +463,7 @@ generatelibjpeg()
 	{	
 			setBuildEnv ${MAKE} install 
  
-	        if [ $? != "0" ] ; then
+	        if [ $? != 0 ] ; then
 		        echo
 		        ERROR "Unable to install libjpeg."
 		        exit 13
@@ -489,9 +493,9 @@ cleanlibjpeg()
 
 
 
-####################################################################################################
+################################################################################
 # SDL_image_*_precompiled targets.
-####################################################################################################
+################################################################################
 
 
 
@@ -531,7 +535,7 @@ prepareSDL_image_win_precompiled()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
  
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_image_win_precompiled_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_image_win_precompiled_ARCHIVE}."
 		${MV} -f ${SDL_image_win_precompiled_ARCHIVE}.save ${SDL_image_win_precompiled_ARCHIVE} 
@@ -583,7 +587,7 @@ generateSDL_image_win_precompiled()
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{		
-		if [ "$is_windows" -eq "1" ] ; then	
+		if [ $is_windows -eq 1 ] ; then	
 			setBuildEnv ${MAKE} install 
 		else
 			DEBUG "Using ${windows_dll_location} as target Windows DLL location." 
@@ -593,7 +597,7 @@ generateSDL_image_win_precompiled()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install precompiled binaries."
 		exit 13
@@ -620,9 +624,9 @@ cleanSDL_image_win_precompiled()
 
 
 
-####################################################################################################
+################################################################################
 # zlib library
-####################################################################################################
+################################################################################
 
 
 
@@ -665,7 +669,7 @@ preparezlib()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${zlib_ARCHIVE}."
 		LOG_STATUS "Restoring ${zlib_ARCHIVE}."
 		${MV} -f ${zlib_ARCHIVE}.save ${zlib_ARCHIVE} 
@@ -700,7 +704,7 @@ generatezlib()
 		setBuildEnv ./configure --shared 
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure zlib."
 		exit 11
@@ -716,7 +720,7 @@ generatezlib()
 		setBuildEnv ${MAKE} 
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build zlib."
 		exit 12
@@ -740,7 +744,7 @@ generatezlib()
 		LD_LIBRARY_PATH=${prefix}/zlib-${zlib_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/zlib-${zlib_VERSION}/lib:${PATH}	
@@ -762,7 +766,7 @@ generatezlib()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 			
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install zlib."
 		exit 13
@@ -788,9 +792,9 @@ cleanzlib()
 
 
 
-####################################################################################################
+################################################################################
 # PNG library
-####################################################################################################
+################################################################################
 
 
 getlibpng()
@@ -832,7 +836,7 @@ preparelibpng()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libpng_ARCHIVE}."
 		LOG_STATUS "Restoring ${libpng_ARCHIVE}."
 		${MV} -f ${libpng_ARCHIVE}.save ${libpng_ARCHIVE} 
@@ -859,24 +863,24 @@ generatelibpng()
 	printItem "configuring"
 		
 		
-	if [ "$is_linux" -eq 0 ] ; then
+	if [ $is_linux -eq 0 ] ; then
 		${CP} -f scripts/makefile.linux makefile
 	fi
 	
-	if [ "$is_pure_cygwin" -eq 0 ] ; then
+	if [ $is_pure_cygwin -eq 0 ] ; then
 		${CP} -f scripts/makefile.cygwin makefile
 	fi
 
-	if [ "$is_cygwin_mingw" -eq 0 ] ; then
+	if [ $is_cygwin_mingw -eq 0 ] ; then
 		${CP} -f scripts/makefile.cygwin makefile
 	fi
 
-	if [ "$is_msys" -eq 0 ] ; then
+	if [ $is_msys -eq 0 ] ; then
 		WARNING "Assuming cygwin settings for libpng for this Windows MSYS/Mingw platform."
 		${CP} -f scripts/makefile.cygwin makefile	
 	fi
 	
-	if [ "$is_macosx" -eq 0 ] ; then
+	if [ $is_macosx -eq 0 ] ; then
 		${CP} -f scripts/makefile.macosx makefile
 	fi
 		
@@ -902,7 +906,7 @@ generatelibpng()
 	PNG_NUMBER=12
         	
 	{
-		if [ "$use_mingw" -eq "0" ] ; then
+		if [ $use_mingw -eq 0 ] ; then
 			# zLib Library version could be used.
 			setBuildEnv ${MAKE} ${BUILD_LOCATIONS} prefix=${prefix}/PNG-${libpng_VERSION} MINGW_CCFLAGS=${MINGW_CFLAGS} MINGW_LDFLAGS=${MINGW_LFLAGS} SHAREDLIB=libpng${PNG_NUMBER}.dll ZLIBINC=../zlib ZLIBLIB=../zlib 
 		else
@@ -912,7 +916,7 @@ generatelibpng()
  
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libpng."
 		exit 12
@@ -936,7 +940,7 @@ generatelibpng()
 		LD_LIBRARY_PATH=${prefix}/PNG-${libpng_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			PATH=${prefix}/PNG-${libpng_VERSION}/lib:${PATH}	
 			export PATH	
@@ -952,7 +956,7 @@ generatelibpng()
 		${MKDIR} -p ${prefix}/PNG-${libpng_VERSION}/man
 		${MKDIR} -p ${prefix}/PNG-${libpng_VERSION}/bin	
 		                
-		if [ "$use_mingw" -eq "0" ] ; then
+		if [ $use_mingw -eq 0 ] ; then
 			PNG_SHARED_LIB=libpng${PNG_NUMBER}.dll
 			setBuildEnv ${MAKE} install prefix=${prefix}/PNG-${libpng_VERSION} SHAREDLIB=${PNG_SHARED_LIB}
 			${CP} -f ${prefix}/PNG-${libpng_VERSION}/bin/${PNG_SHARED_LIB} ${prefix}/PNG-${libpng_VERSION}/lib/libpng.dll
@@ -968,7 +972,7 @@ generatelibpng()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libpng."
 		exit 13
@@ -994,9 +998,9 @@ cleanlibpng()
 
 
 
-####################################################################################################
+################################################################################
 # TIFF library (disabled for the moment)
-####################################################################################################
+################################################################################
 
 
 getlibtiff()
@@ -1038,7 +1042,7 @@ preparelibtiff()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libtiff_ARCHIVE}."
 		LOG_STATUS "Restoring ${libtiff_ARCHIVE}."
 		${MV} -f ${libtiff_ARCHIVE}.save ${libtiff_ARCHIVE} 
@@ -1062,12 +1066,13 @@ generatelibtiff()
 
 	printItem "configuring"
 	
-	#################################################################################
+################################################################################
 	# Not gone any further, since tiff support is not required and
-	# the makefile generated from ./configure --noninteractive is totally unusable.
+	# the makefile generated from ./configure --noninteractive 
+	# is totally unusable.
 	ERROR "TIFF support not implemented yet."
 	exit 1
-	#################################################################################
+################################################################################
 	
 	printOK	
 
@@ -1084,7 +1089,7 @@ generatelibtiff()
 	} 1>>"$LOG_OUTPUT" 2>&1	 	
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libtiff."
 		exit 12
@@ -1110,7 +1115,7 @@ generatelibtiff()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libtiff."
 		exit 13
@@ -1136,9 +1141,9 @@ cleanlibtiff()
 
 
 
-####################################################################################################
+################################################################################
 # SDL_image itself
-####################################################################################################
+################################################################################
 
 
 
@@ -1180,7 +1185,7 @@ prepareSDL_image()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_image_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_image_ARCHIVE}."
 		${MV} -f ${SDL_image_ARCHIVE}.save ${SDL_image_ARCHIVE} 
@@ -1200,7 +1205,7 @@ generateSDL_image()
 
 	LOG_STATUS "Generating SDL_image..."
 
-	if [ "$is_windows" -eq "0" ] ; then	
+	if [ $is_windows -eq 0 ] ; then	
 		DEBUG "Correcting sdl-config for SDL_image."
 		
         sdl_config=${prefix}/SDL-${SDL_VERSION}/bin/sdl-config
@@ -1211,7 +1216,7 @@ generateSDL_image()
 
         ${CAT} ${sdl_config} | ${SED} "s|^prefix=.*$|prefix=$prefix_one|1" > sdl-config.tmp && ${CAT} sdl-config.tmp | ${SED} "s|^exec_prefix=.*$|exec_prefix=$prefix_two|1" > sdl-config.tmp2 && ${RM} -f ${sdl_config} sdl-config.tmp && ${MV} -f sdl-config.tmp2 ${sdl_config}
         
-		if [ "$?" != "0" ] ; then
+		if [ $? -ne 0 ] ; then
 			ERROR "Unable to correct sdl-config so that SDL_image can use it."
 			exit 10
 		fi
@@ -1237,7 +1242,7 @@ generateSDL_image()
 		LIBFLAG="-L${prefix}/zlib-${zlib_VERSION}/lib ${LIBFLAG}"
 		LIBFLAG="-L${prefix}/PNG-${libpng_VERSION}/lib ${LIBFLAG}"
 
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 
 			LIBFLAG="-L`cygpath -w ${prefix}/SDL-${SDL_VERSION}/lib`"
 			LIBFLAG="-L`cygpath -w ${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}`"
@@ -1271,7 +1276,7 @@ generateSDL_image()
 		LOG_STATUS "PATH for SDL_image configure is <${PATH}>."
 		LOG_STATUS "LD_LIBRARY_PATH for SDL_image configure is <${LD_LIBRARY_PATH}>."
  
-		if [ "$use_mingw" -eq "0" ] ; then
+		if [ $use_mingw -eq 0 ] ; then
         
         	LOG_STATUS "Using SDL prefix $SDL_PREFIX for SDL_image."
 			
@@ -1287,9 +1292,10 @@ generateSDL_image()
 			
 		else
 		
-			# --disable-sdltest added since configure tries to compile a test without letting
-			# the system libraries locations to be redefined. Therefore a wrong libstdc++.so
-			# could be chosen, leading to errors such as : 
+			# --disable-sdltest added since configure tries to compile
+			# a test without letting the system libraries locations to be
+			# redefined. Therefore a wrong libstdc++.so could be chosen, 
+			# leading to errors such as : 
 			# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 			
 	  		setBuildEnv ./configure --with-sdl-prefix=${prefix}/SDL-${SDL_VERSION} --disable-sdltest             
@@ -1302,7 +1308,7 @@ generateSDL_image()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_image."
 		exit 11
@@ -1330,7 +1336,7 @@ generateSDL_image()
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL_image."
 		exit 12
@@ -1351,7 +1357,7 @@ generateSDL_image()
 		LD_LIBRARY_PATH=${prefix}/SDL_image-${SDL_image_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			PATH=${prefix}/SDL_image-${SDL_image_VERSION}/lib:${PATH}	
 			export PATH
@@ -1366,19 +1372,20 @@ generateSDL_image()
 			
 		setBuildEnv ${MAKE} install prefix=${prefix}/SDL_image-${SDL_image_VERSION}  
 		
-		if [ $? != "0" ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to install SDL_image."
 			exit 13
 		fi	
 		
-		# Rename 'libSDL_image.la', to prevent libtool from detecting it when linking OSDL and 
-		# issuing very annoying messages twice, such as :
+		# Rename 'libSDL_image.la', to prevent libtool from detecting
+		# it when linking OSDL and issuing very annoying messages twice, 
+		# such as :
 		# "libtool: link: warning: library `[...]/libSDL_image.la' was moved."
 		
 		${MV} -f ${prefix}/SDL_image-${SDL_image_VERSION}/lib/libSDL_image.la ${prefix}/SDL_image-${SDL_image_VERSION}/lib/libSDL_image.la-hidden-by-LOANI
 
-		if [ $? != "0" ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to post-install SDL_image (correction for libtool)."
 			exit 13
@@ -1393,7 +1400,7 @@ generateSDL_image()
 	fi
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_image."
 		exit 13
@@ -1420,9 +1427,9 @@ cleanSDL_image()
 
 
 
-####################################################################################################
+################################################################################
 # libogg (libogg)
-####################################################################################################
+################################################################################
 
 
 getlibogg()
@@ -1463,7 +1470,7 @@ preparelibogg()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libogg_ARCHIVE}."
 		LOG_STATUS "Restoring ${libogg_ARCHIVE}."
 		${MV} -f ${libogg_ARCHIVE}.save ${libogg_ARCHIVE} 
@@ -1505,7 +1512,7 @@ generatelibogg()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure libogg."
 		exit 11
@@ -1528,7 +1535,7 @@ generatelibogg()
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libogg."
 		exit 12
@@ -1549,7 +1556,7 @@ generatelibogg()
 		LD_LIBRARY_PATH=${prefix}/libogg-${libogg_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 		
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
@@ -1567,20 +1574,20 @@ generatelibogg()
 			
 		setBuildEnv ${MAKE} install prefix=${prefix}/libogg-${libogg_VERSION}  
 		
-		if [ $? != "0" ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to install libogg."
 			exit 13
 		fi	
 		
-		# Rename 'libogg.la', to prevent libtool from detecting it when linking OSDL and 
-		# issuing very annoying messages twice, such as :
+		# Rename 'libogg.la', to prevent libtool from detecting it when
+		# linking OSDL and issuing very annoying messages twice, such as :
 		# "libtool: link: warning: library `[...]/libogg.la' was moved."
 		
 		# Disabled since it would prevent SDL_mixer build :
 		#${MV} -f ${prefix}/libogg-${libogg_VERSION}/lib/libogg.la ${prefix}/libogg-${libogg_VERSION}/lib/libogg.la-hidden-by-LOANI
 		#
-		#if [ $? != "0" ] ; then
+		#if [ $? != 0 ] ; then
 		#	echo
 		#	ERROR "Unable to post-install libogg (correction for libtool)."
 		#	exit 13
@@ -1595,7 +1602,7 @@ generatelibogg()
 	fi
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libogg."
 		exit 13
@@ -1623,9 +1630,9 @@ cleanlibogg()
 
 
 
-####################################################################################################
+################################################################################
 # libvorbis (libvorbis)
-####################################################################################################
+################################################################################
 
 
 
@@ -1667,7 +1674,7 @@ preparelibvorbis()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libvorbis_ARCHIVE}."
 		LOG_STATUS "Restoring ${libvorbis_ARCHIVE}."
 		${MV} -f ${libvorbis_ARCHIVE}.save ${libvorbis_ARCHIVE} 
@@ -1709,7 +1716,7 @@ generatelibvorbis()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure libvorbis."
 		exit 11
@@ -1732,7 +1739,7 @@ generatelibvorbis()
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libvorbis."
 		exit 12
@@ -1753,7 +1760,7 @@ generatelibvorbis()
 		LD_LIBRARY_PATH=${prefix}/libvorbis-${libvorbis_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/libvorbis-${libvorbis_VERSION}/lib:${PATH}	
@@ -1769,20 +1776,20 @@ generatelibvorbis()
 			
 		setBuildEnv ${MAKE} install prefix=${prefix}/libvorbis-${libvorbis_VERSION}  
 		
-		if [ $? != "0" ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to install libvorbis."
 			exit 13
 		fi	
 		
-		# Rename 'libvorbis.la', to prevent libtool from detecting it when linking OSDL and 
-		# issuing very annoying messages twice, such as :
+		# Rename 'libvorbis.la', to prevent libtool from detecting it
+		# when linking OSDL and issuing very annoying messages twice, such as :
 		# "libtool: link: warning: library `[...]/libvorbis.la' was moved."
 		
 		# Disabled since would prevent SDL_mixer build :
 		#${MV} -f ${prefix}/libvorbis-${libvorbis_VERSION}/lib/libvorbis.la ${prefix}/libvorbis-${libvorbis_VERSION}/lib/libvorbis.la-hidden-by-LOANI
 		#
-		#if [ $? != "0" ] ; then
+		#if [ $? != 0 ] ; then
 		#	echo
 		#	ERROR "Unable to post-install libvorbis (correction for libtool)."
 		#	exit 13
@@ -1797,7 +1804,7 @@ generatelibvorbis()
 	fi
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libvorbis."
 		exit 13
@@ -1825,9 +1832,9 @@ cleanlibvorbis()
 
 
 
-####################################################################################################
+################################################################################
 # SDL_mixer
-####################################################################################################
+################################################################################
 
 
 getSDL_mixer()
@@ -1868,7 +1875,7 @@ prepareSDL_mixer()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_mixer_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_mixer_ARCHIVE}."
 		${MV} -f ${SDL_mixer_ARCHIVE}.save ${SDL_mixer_ARCHIVE} 
@@ -1907,9 +1914,10 @@ generateSDL_mixer()
 		#CFLAGS="-I${prefix}/libogg-${libogg_VERSION}/include -I${prefix}/libvorbis-${libvorbis_VERSION}/include"
 		#export CFLAGS
 		
-		# Following features are deactivated automatically (their companion library is not installed
-		# by LOANI yet, and they are currently considered as less useful than the ones of the core
-		# selection) : 
+		# Following features are deactivated automatically 
+		# (their companion library is not installed
+		# by LOANI yet, and they are currently considered as less 
+		# useful than the ones of the core selection) : 
 		#  - MOD support (including libmikmod), 
 		#  - MIDI support (including native and timidity), 
 		#  - MP3 support (including SMPEG) 
@@ -1927,7 +1935,7 @@ generateSDL_mixer()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_mixer."
 		exit 11
@@ -1950,7 +1958,7 @@ generateSDL_mixer()
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL_mixer."
 		exit 12
@@ -1971,7 +1979,7 @@ generateSDL_mixer()
 		LD_LIBRARY_PATH=${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 		
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
@@ -1988,7 +1996,7 @@ generateSDL_mixer()
 			
 		setBuildEnv ${MAKE} install prefix=${prefix}/SDL_mixer-${SDL_mixer_VERSION}  
 		
-		if [ $? != "0" ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to install SDL_mixer."
 			exit 13
@@ -2000,7 +2008,7 @@ generateSDL_mixer()
 		
 		${MV} -f ${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib/libSDL_mixer.la ${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib/libSDL_mixer.la-hidden-by-LOANI
 
-		if [ $? != "0" ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to post-install SDL_mixer (correction for libtool)."
 			exit 13
@@ -2015,7 +2023,7 @@ generateSDL_mixer()
 	fi
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_mixer."
 		exit 13
@@ -2043,9 +2051,9 @@ cleanSDL_mixer()
 
 
 
-####################################################################################################
+################################################################################
 # SDL_gfx
-####################################################################################################
+################################################################################
 
 
 
@@ -2087,7 +2095,7 @@ prepareSDL_gfx()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_gfx_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_gfx_ARCHIVE}."
 		${MV} -f ${SDL_gfx_ARCHIVE}.save ${SDL_gfx_ARCHIVE} 
@@ -2114,7 +2122,7 @@ generateSDL_gfx()
 		setBuildEnv ./autogen.sh
 	} 1>>"$LOG_OUTPUT" 2>&1			
 
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_gfx : autogen failed."
 		exit 11
@@ -2126,7 +2134,8 @@ generateSDL_gfx()
         
 	if [ -n "$prefix" ] ; then	
 	{		
-		# SDL_gfx uses wrongly SDL includes : asks for SDL/SDL.h instead of SDL.h
+		# SDL_gfx uses wrongly SDL includes : asks for SDL/SDL.h 
+		# instead of SDL.h.
 		# Ugly hack :
 		# (copy could be used instead, to avoid needing symbolic links for filesystems such as vfat)	
 		${LN} -s ${SDL_PREFIX}/include/SDL ${SDL_PREFIX}/include/SDL/SDL
@@ -2157,7 +2166,7 @@ generateSDL_gfx()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_gfx."
 		exit 11
@@ -2178,7 +2187,7 @@ generateSDL_gfx()
 		setBuildEnv ./nodebug.sh
 	} 1>>"$LOG_OUTPUT" 2>&1	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "SDL_gfx post-configure script failed (nodebug.sh)."
 		exit 12
@@ -2193,7 +2202,7 @@ generateSDL_gfx()
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL_gfx."
 		exit 12
@@ -2215,7 +2224,7 @@ generateSDL_gfx()
 		LD_LIBRARY_PATH=${prefix}/SDL_gfx-${SDL_gfx_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 			
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/SDL_gfx-${SDL_gfx_VERSION}/lib:${PATH}	
@@ -2239,7 +2248,7 @@ generateSDL_gfx()
 	fi
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_gfx (application)."
 		exit 13
@@ -2247,7 +2256,7 @@ generateSDL_gfx()
 	
 	FIXED_FONT_REPOSITORY="${OSDL_DATA_FULL_DIR_NAME}/fonts/fixed"
 	${MKDIR} -p "${FIXED_FONT_REPOSITORY}" && ${CP} -f Fonts/*.fnt "${FIXED_FONT_REPOSITORY}"
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_gfx fonts."
 		exit 14
@@ -2259,7 +2268,7 @@ generateSDL_gfx()
 		setBuildEnv ${MAKE} distclean
 	} 1>>"$LOG_OUTPUT" 2>&1	
 			
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		WARNING "SDL_gfx post-install cleaning failed, non-fatal error."
 	fi	
@@ -2282,9 +2291,9 @@ cleanSDL_gfx()
 
 
 
-####################################################################################################
+################################################################################
 # freetype
-####################################################################################################
+################################################################################
 
 
 getfreetype()
@@ -2326,7 +2335,7 @@ preparefreetype()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${freetype_ARCHIVE}."
 		LOG_STATUS "Restoring ${freetype_ARCHIVE}."
 		${MV} -f ${freetype_ARCHIVE}.save ${freetype_ARCHIVE} 
@@ -2359,7 +2368,7 @@ generatefreetype()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure freetype."
 		exit 11
@@ -2375,7 +2384,7 @@ generatefreetype()
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build freetype."
 		exit 12
@@ -2393,7 +2402,7 @@ generatefreetype()
 		echo "LD_LIBRARY_PATH=${prefix}/freetype-${freetype_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 	
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 		
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
@@ -2420,7 +2429,7 @@ generatefreetype()
 	fi
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install freetype."
 		exit 13
@@ -2447,9 +2456,9 @@ cleanfreetype()
 
 
 
-####################################################################################################
+################################################################################
 # SDL_ttf
-####################################################################################################
+################################################################################
 
 
 
@@ -2491,7 +2500,7 @@ prepareSDL_ttf()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_ttf_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_ttf_ARCHIVE}."
 		${MV} -f ${SDL_ttf_ARCHIVE}.save ${SDL_ttf_ARCHIVE} 
@@ -2519,7 +2528,7 @@ generateSDL_ttf()
 		setBuildEnv ./autogen.sh
 	} 1>>"$LOG_OUTPUT" 2>&1			
 
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_ttf : autogen failed."
 		exit 11
@@ -2528,8 +2537,9 @@ generateSDL_ttf()
 	if [ -n "$prefix" ] ; then	
 	{		
 
-		# --disable-sdltest added since configure tries to compile a test without letting
-		# the system libraries locations to be redefined. Therefore a wrong libstdc++.so
+		# --disable-sdltest added since configure tries to compile
+		# a test without letting the system libraries locations to
+		# be redefined. Therefore a wrong libstdc++.so
 		# could be chosen, leading to errors such as : 
 		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 	
@@ -2541,7 +2551,7 @@ generateSDL_ttf()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_ttf."
 		exit 11
@@ -2552,11 +2562,11 @@ generateSDL_ttf()
 	printItem "building"
 	
 	# SDL_ttf won't compile if not patched :
-	# Ugly tr-based hack to prevent the numerous versions of sed to panic when having a 
-	# newline in replacement string :
+	# Ugly tr-based hack to prevent the numerous versions of sed to 
+	# panic when having a newline in replacement string :
 	${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/freetype.h>|#include <ft2build.h>?#include FT_FREETYPE_H??#include <freetype/freetype.h>|1' | ${TR} "?" "\n" > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c
 
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		WARNING "SDL_ttf include patch failed, continuing anyway."
 	fi	
@@ -2566,7 +2576,7 @@ generateSDL_ttf()
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL_ttf."
 		exit 12
@@ -2584,7 +2594,7 @@ generateSDL_ttf()
 		echo "LD_LIBRARY_PATH=${prefix}/SDL_ttf-${SDL_ttf_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 		
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
@@ -2611,7 +2621,7 @@ generateSDL_ttf()
 	fi
 	
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_ttf."
 		exit 13
@@ -2637,9 +2647,9 @@ cleanSDL_ttf()
 
 
 
-####################################################################################################
+################################################################################
 # GNU Libtool 
-####################################################################################################
+################################################################################
 
 
 getlibtool()
@@ -2680,7 +2690,7 @@ preparelibtool()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libtool_ARCHIVE}."
 		LOG_STATUS "Restoring ${libtool_ARCHIVE}."
 		${MV} -f ${libtool_ARCHIVE.save} ${libtool_ARCHIVE} 
@@ -2712,7 +2722,7 @@ generatelibtool()
 		old_cc=$CC
 		old_cxx=$CXX	
 		
-		if [ "$use_mingw" -eq "0" ] ; then 
+		if [ $use_mingw -eq 0 ] ; then 
 		
 			PATH=${MINGW_PATH}:$PATH
 			export PATH
@@ -2730,16 +2740,17 @@ generatelibtool()
 
 
 		# To avoid libltdl problems, we make use of --disable-ltdl-install.    
-		# Parameters and/or environment set for libtool does not seem to be passed to libltdl.
+		# Parameters and/or environment set for libtool does not seem
+		# to be passed to libltdl.
 		# (a tag is to be specified with ltdl whereas it is ok with libtool)
-		# A work-around could be to recurse make in ltdl directory before performing the global 
-		# libtool make.
+		# A work-around could be to recurse make in ltdl directory
+		# before performing the global libtool make.
            
 		setBuildEnv ./configure --prefix=${prefix}/libtool-${libtool_VERSION} --exec-prefix=${prefix}/libtool-${libtool_VERSION} --disable-ltdl-install
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{
-		if [ "$use_mingw" -eq "0" ] ; then 
+		if [ $use_mingw -eq 0 ] ; then 
 		
 			PATH=${MINGW_PATH}:$PATH
 			export PATH
@@ -2761,13 +2772,13 @@ generatelibtool()
 	fi
 	
 			
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure libtool."
 		exit 11
 	fi	
 
-	if [ "${use_mingw}" -eq "0" ] ; then	
+	if [ ${use_mingw} -eq 0 ] ; then	
 	
 		PATH=$old_path
 		export PATH
@@ -2791,7 +2802,7 @@ generatelibtool()
 		setBuildEnv ${MAKE} 
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libtool."
 		exit 12
@@ -2815,9 +2826,10 @@ generatelibtool()
 		echo "LD_LIBRARY_PATH=${prefix}/libtool-${libtool_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 		
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 		
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched through
+			# the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/libtool-${libtool_VERSION}/lib:${PATH}	
 			export PATH
@@ -2837,7 +2849,7 @@ generatelibtool()
 
 		setBuildEnv ${MAKE} install prefix=${prefix}/libtool-${libtool_VERSION} 
 		
-		#if [ "$?" != "0" ] ; then 
+		#if [ $? -ne 0 ] ; then 
 		#	WARNING "First libtool install failed"
 		#	${MAKE} install
 		#fi		
@@ -2849,7 +2861,7 @@ generatelibtool()
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libtool to libtool-${libtool_VERSION}."
 		WARNING "Step on failure disabled"
@@ -2876,9 +2888,9 @@ cleanlibtool()
 
 
 
-####################################################################################################
+################################################################################
 # Windows pthreads for POSIX compliance.
-####################################################################################################
+################################################################################
 
 
 # Using precompiled binaries.
@@ -2896,7 +2908,8 @@ getwin_pthread()
 	else
 		DEBUG "Not all parts of win_pthread available, downloading them."
          
-		# The following is commented out, it would have to be updated before use :
+		# The following is commented out, it would have to be updated
+		# before use :
 						
 		# Needs to download recursively the FTP root :
 		#OLD_WGET_OPT="${WGET_OPT}"
@@ -2987,7 +3000,7 @@ generatewin_pthread()
 		} 1>>"$LOG_OUTPUT" 2>&1	
 	fi
         
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		WARNING "Pre installation phase for win pthread had errors."
 		${RM} -rf ${win_pthread_wget_dir}
@@ -3001,7 +3014,7 @@ generatewin_pthread()
 		echo "LD_LIBRARY_PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 		
-		if [ "$is_windows" -eq "0" ] ; then
+		if [ $is_windows -eq 0 ] ; then
 		
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:${PATH}	
@@ -3037,7 +3050,7 @@ generatewin_pthread()
 	} 1>>"$LOG_OUTPUT" 2>&1	
 	fi
              
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install win pthread."
 		exit 15
@@ -3069,9 +3082,9 @@ cleanwin_pthread()
 
 
 
-####################################################################################################
+################################################################################
 # Ceylan 
-####################################################################################################
+################################################################################
 
 
 getCeylan()
@@ -3079,133 +3092,135 @@ getCeylan()
 	
 	DEBUG "Getting Ceylan..."
 
-	# Ceylan can be obtained by downloading a release archive or by using CVS.
+	# Ceylan can be obtained by downloading a release archive or by using SVN.
 	
-	if [ "${use_cvs}" -eq "1" ]; then
-		# Use archive instead of CVS : 
+	if [ ${use_svn} -eq 1 ]; then
+		# Use archive instead of SVN : 
 		launchFileRetrieval Ceylan
 		return $?
 	fi
 	
-	# Here we are to use CVS :
+	# Here we are to use SVN :
 
-	DISPLAY "      ----> getting Ceylan from CVS"
+	DISPLAY "      ----> getting Ceylan from SVN"
 	
-	cd ${alternate_prefix}
+	cd ${repository}
 
-	if [ -d "${alternate_prefix}/${Ceylan_ROOT}" ] ; then
-		if [ -d "${alternate_prefix}/${Ceylan_ROOT}.save" ] ; then
-			if [ "$be_strict" -eq "0" ] ; then
-				ERROR "There already exist a back-up directory for Ceylan, it is on the way, please remove it first (${alternate_prefix}/${Ceylan_ROOT}.save)"
+	if [ -d "${repository}/${Ceylan_ROOT}" ] ; then
+		if [ -d "${repository}/${Ceylan_ROOT}.save" ] ; then
+			if [ $be_strict -eq 0 ] ; then
+				ERROR "There already exist a back-up directory for Ceylan, it is on the way, please remove it first (${repository}/${Ceylan_ROOT}.save)"
 				exit 5
 			else	
-				WARNING "Deleting already existing back-up directory for ${Ceylan_ROOT} (removing ${alternate_prefix}/${Ceylan_ROOT}.save)"
-			 	${RM} -rf "${alternate_prefix}/${Ceylan_ROOT}.save"
+				WARNING "Deleting already existing back-up directory for ${Ceylan_ROOT} (removing ${repository}/${Ceylan_ROOT}.save)"
+			 	${RM} -rf "${repository}/${Ceylan_ROOT}.save"
 			fi
 		fi		
-		${MV} -f ${alternate_prefix}/${Ceylan_ROOT} ${alternate_prefix}/${Ceylan_ROOT}.save
-		WARNING "There already existed a directory for Ceylan (${alternate_prefix}/${Ceylan_ROOT}), it has been moved to ${alternate_prefix}/${Ceylan_ROOT}.save." 
+		${MV} -f ${repository}/${Ceylan_ROOT} ${repository}/${Ceylan_ROOT}.save
+		WARNING "There already existed a directory for Ceylan (${repository}/${Ceylan_ROOT}), it has been moved to ${repository}/${Ceylan_ROOT}.save." 
 	fi	
 	
-	LOG_STATUS "Getting Ceylan in its final directory ${alternate_prefix}..."
+	LOG_STATUS "Getting Ceylan in its source directory ${repository}..."
 	
-	if [ "$developer_access" -eq "0" ] ; then
-		DISPLAY "Retrieving Ceylan from developer CVS with user name ${developer_name}."
+	if [ $developer_access -eq 0 ] ; then
+		DISPLAY "Retrieving Ceylan from developer SVN with user name ${developer_name}."
 		
-		if [ "$no_cvs" -eq 1 ] ; then
+		if [ $no_svn -eq 1 ] ; then
 		
-			cvsAttemptNumber=1
+			svnAttemptNumber=1
 			success=1
 			
-			if [ "$use_current_cvs" -eq 0 ] ; then 
-				DEBUG "No stable tag wanted, retrieving directly latest version from CVS."
+			if [ $use_current_svn -eq 0 ] ; then 
+				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
 				# Not wanting sticky tags : TAG_OPTION="-D tomorrow" commented
 				TAG_OPTION=""
 			else
-				DEBUG "Using latest stable CVS tag (${latest_stable_ceylan})."
+				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
 				TAG_OPTION="-r ${latest_stable_ceylan}"
 			fi
 			
-			while [ "$cvsAttemptNumber" -le "$MAX_CVS_RETRY" ]; do
-				LOG_STATUS "Attempt #${cvsAttemptNumber} to retrieve Ceylan."
+			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				{
-					DEBUG "CVS command : ${CVS} ${CVS_OPT} -d:ext:${developer_name}@${Ceylan_CVS_SERVER}:/cvsroot/osdl co ${TAG_OPTION} ${Ceylan_ROOT}"
-					${CVS} ${CVS_OPT} -d:ext:${developer_name}@${Ceylan_CVS_SERVER}:/cvsroot/osdl co ${TAG_OPTION} ${Ceylan_ROOT} 
+					DEBUG "SVN command : ${SVN} co ${SVN_OPT} ${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION} --username=${developer_name}"
+					${SVN} co ${SVN_OPT} ${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION} --username=${developer_name}
 				} 1>>"$LOG_OUTPUT" 2>&1	
 				
-				if [ "$?" -eq "0" ] ; then
-					cvsAttemptNumber=$(($MAX_CVS_RETRY+1))
+				if [ $? -eq 0 ] ; then
+					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
 					success=0	
 				else
-					cvsAttemptNumber=$(($cvsAttemptNumber+1))	
-					LOG_STATUS "CVS command failed."
+					svnAttemptNumber=$(($svnAttemptNumber+1))	
+					LOG_STATUS "SVN command failed."
 					${SLEEP} 3
 				fi	
 			done
 			
 			
-			if [ "$success" != 0 ] ; then
-				ERROR "Unable to retrieve Ceylan from CVS after $MAX_CVS_RETRY attempts."
+			if [ $success"" != 0 ] ; then
+				ERROR "Unable to retrieve Ceylan from SVN after $MAX_SVN_RETRY attempts."
 				exit 20
 			fi
 							
 		else
-			LOG_STATUS "CVS retrieval disabled for Ceylan."
+			LOG_STATUS "SVN retrieval disabled for Ceylan."
 		fi
 			
-		if [ "$?" != "0" ] ; then
-			ERROR "Unable to retrieve Ceylan from developer CVS."
+		if [ $? -ne 0 ] ; then
+			ERROR "Unable to retrieve Ceylan from developer SVN."
 			exit 20	
 		fi
 
 	else			
 	
-		LOG_STATUS "Retrieving Ceylan from anonymous CVS."
+		LOG_STATUS "Retrieving Ceylan from anonymous SVN."
 		
-		if [ "$no_cvs" -eq 1 ] ; then
+		if [ $no_svn -eq 1 ] ; then
 		{
-			cvsAttemptNumber=1
+			svnAttemptNumber=1
 			success=1
 
-			if [ "$use_current_cvs" -eq 0 ] ; then 
-				DEBUG "No stable tag wanted, retrieving directly latest version from CVS."
+			if [ $use_current_svn -eq 0 ] ; then 
+				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
 				# Not wanting sticky tags : TAG_OPTION="-D tomorrow" commented
 				TAG_OPTION=""
 			else
-				DEBUG "Using latest stable CVS tag (${latest_stable_ceylan})."
+				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
 				TAG_OPTION="-r ${latest_stable_ceylan}"
 			fi
 			
-			while [ "$cvsAttemptNumber" -le "$MAX_CVS_RETRY" ]; do
-				LOG_STATUS "Attempt #${cvsAttemptNumber} to retrieve Ceylan."
+			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
 				{
-					DEBUG "CVS command : ${CVS} -d:pserver:anonymous@${Ceylan_CVS_SERVER}:/cvsroot/osdl export ${TAG_OPTION} ${Ceylan_ROOT}"
-					${CVS} -d:pserver:anonymous@${Ceylan_CVS_SERVER}:/cvsroot/osdl export ${TAG_OPTION} ${Ceylan_ROOT} 
+					DEBUG "${SVN} export ${SVN_OPT} ${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION}"
+
+					${SVN} export ${SVN_OPT} ${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION}
+
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
-				if [ "$?" -eq "0" ] ; then
-					cvsAttemptNumber=$(($MAX_CVS_RETRY+1))
+				if [ $? -eq 0 ] ; then
+					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
 					success=0	
 				else
-					cvsAttemptNumber=$(($cvsAttemptNumber+1))	
-					LOG_STATUS "CVS command failed."
+					svnAttemptNumber=$(($svnAttemptNumber+1))	
+					LOG_STATUS "SVN command failed."
 					${SLEEP} 3
 				fi	
 			done			
 			
-			if [ "$success" != 0 ] ; then
-				ERROR "Unable to retrieve Ceylan from CVS after $MAX_CVS_RETRY attempts."
+			if [ $success"" != 0 ] ; then
+				ERROR "Unable to retrieve Ceylan from SVN after $MAX_SVN_RETRY attempts."
 				exit 21
 			fi
 			
 		} 1>>"$LOG_OUTPUT" 2>&1
 		else
-			LOG_STATUS "CVS retrieval disabled for Ceylan."
+			LOG_STATUS "SVN retrieval disabled for Ceylan."
 		fi
 				
-		if [ "$?" != "0" ] ; then
-			ERROR "Unable to retrieve Ceylan from anonymous CVS."
+		if [ $? -ne 0 ] ; then
+			ERROR "Unable to retrieve Ceylan from anonymous SVN."
 			exit 21	
 		fi
 	fi	
@@ -3222,13 +3237,13 @@ prepareCeylan()
 
 	printItem "extracting"
 
-	if [ "$no_cvs" -eq 0 ] ; then
-		WARNING "As the option noCVS was used, build process stops here."
+	if [ $no_svn -eq 0 ] ; then
+		WARNING "As the --noSVN option was used, build process stops here."
 		exit 0 	
 	fi
 
 
-	if [ "${use_cvs}" -eq "1" ]; then
+	if [ ${use_svn} -eq 1 ]; then
 
 		# Here we use source archives :
 		
@@ -3245,30 +3260,22 @@ prepareCeylan()
 			ERROR "No tar tool found, whereas some files have to be detarred."
 			exit 15
 		fi		
-	
-		# For project archives (Ceylan and OSDL), all build and install trees are expected to
-		# be in ${alternate_prefix} (usually LOANI-installations) instead of $repository.
-		# Hence the copy for bzip2 is made from the repository to the installation directory :
-		
-		${MKDIR} -p ${alternate_prefix}/Ceylan
-		
-		cd ${alternate_prefix}/Ceylan
+
+		cd $repository
 	
 		# Prevent archive from disappearing because of bunzip2.
 		{
-			${CP} -f $repository/${Ceylan_ARCHIVE} . && ${BUNZIP2} -f ${Ceylan_ARCHIVE} && tar -xvf "Ceylan-${Ceylan_VERSION}.${Ceylan_RELEASE}.tar" 
+			${CP} -f ${Ceylan_ARCHIVE} ${Ceylan_ARCHIVE}.save && ${BUNZIP2} -f ${Ceylan_ARCHIVE} && tar -xvf "ceylan-${Ceylan_VERSION}.tar" 
 		} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-		if [ $? != "0" ] ; then
+		if [ $? != 0 ] ; then
 			ERROR "Unable to extract ${Ceylan_ARCHIVE}."
 			DEBUG "Restoring ${Ceylan_ARCHIVE}."
-			${RM} -rf ${alternate_prefix}/Ceylan
+			${MV} -f ${Ceylan_ARCHIVE}.save ${Ceylan_ARCHIVE} 
 			exit 10
 		fi
-	
-		${RM} -f "${alternate_prefix}/Ceylan/Ceylan-${Ceylan_VERSION}.${Ceylan_RELEASE}.tar"
-	
+		
 	fi	
 	
 	printOK	
@@ -3281,20 +3288,21 @@ generateCeylan()
 
 	LOG_STATUS "Generating Ceylan..."
 	
-	cd "${alternate_prefix}/${Ceylan_ROOT}/src"
+	cd $repository/ceylan-${Ceylan_VERSION}	
 	
 	printItem "configuring"
-	
-	#{
-	#	 ./configure	
-	#} 1>>"$LOG_OUTPUT" 2>&1
-	
-	LOG_STATUS "Configure test : checking tools."
-	{
-       	setBuildEnv ${MAKE} checktools ${BUILD_LOCATIONS} ${BUILD_SILENT}
-	} 1>>"$LOG_OUTPUT" 2>&1
-	
-	if [ $? != "0" ] ; then
+
+	if [ -n "$prefix" ] ; then	
+		{
+			setBuildEnv --exportEnv ./configure --prefix=${prefix}/Ceylan-${Ceylan_VERSION}
+		} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+		{
+			setBuildEnv --exportEnv ./configure	
+		} 1>>"$LOG_OUTPUT" 2>&1		
+	fi
+		
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure Ceylan."
 		exit 11
@@ -3305,10 +3313,10 @@ generateCeylan()
 	printItem "building"
 		
 	{
-		setBuildEnv ${MAKE} deps build ${BUILD_LOCATIONS} ${BUILD_SILENT}
+		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build Ceylan."
 		exit 12
@@ -3317,84 +3325,116 @@ generateCeylan()
 	printOK
 	
 	printItem "installing"
-	# We hereby install Ceylan alongside to its sources :
-	# We will end up under ${Ceylan_ROOT} with src, bin, lib, etc.
+
+	if [ -n "$prefix" ] ; then	
+		{				
+			echo "# Ceylan section." >> ${OSDL_ENV_FILE}
+			
+			if [ $is_windows -eq 0 ] ; then
 		
-	{		
-	
-		echo "# Ceylan section." >> ${OSDL_ENV_FILE}
+				# Always remember that, on Windows, DLL are searched 
+				# through the PATH, not the LD_LIBRARY_PATH.
+					
+				echo "PATH=${prefix}/Ceylan-${Ceylan_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+				echo "export PATH" >> ${OSDL_ENV_FILE}
+
+				PATH=${prefix}/Ceylan-${Ceylan_VERSION}/bin:${PATH}	
+				export PATH	
+
+				echo "" >> ${OSDL_ENV_FILE}
+			
+			else
+			
+				echo "PATH=${prefix}/Ceylan-${Ceylan_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+				echo "export PATH" >> ${OSDL_ENV_FILE}
+			
+				echo "LD_LIBRARY_PATH=${prefix}/Ceylan-${Ceylan_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+				echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
+			
+				echo "" >> ${OSDL_ENV_FILE}
+			
+				PATH=${prefix}/Ceylan-${Ceylan_VERSION}/bin:${PATH}
+				export PATH
+			
+				LD_LIBRARY_PATH=${prefix}/Ceylan-${Ceylan_VERSION}/lib:${LD_LIBRARY_PATH}
+				export LD_LIBRARY_PATH
+
+			fi
+		
+			
+			setBuildEnv ${MAKE} install prefix=${prefix}/Ceylan-${Ceylan_VERSION}
+
+		} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+		{		
+			setBuildEnv ${MAKE} install
+		} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
 				
-		echo "LD_LIBRARY_PATH=${alternate_prefix}/${Ceylan_ROOT}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
-		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
-
-	
-		LD_LIBRARY_PATH=${alternate_prefix}/${Ceylan_ROOT}/lib:${LD_LIBRARY_PATH}	
-		export LD_LIBRARY_PATH
-		
-		if [ "$is_windows" -eq "0" ] ; then
-		
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
-			
-			PATH=${alternate_prefix}/${Ceylan_ROOT}/lib:${PATH}	
-			export PATH	
-			
-			echo "PATH=${alternate_prefix}/${Ceylan_ROOT}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "export PATH" >> ${OSDL_ENV_FILE}
-			
-		fi
-
-		echo "" >> ${OSDL_ENV_FILE}
-		
-		setBuildEnv ${MAKE} install PREFIX=${alternate_prefix}/${Ceylan_ROOT} ${BUILD_LOCATIONS} ${BUILD_SILENT}
-		
-	} 1>>"$LOG_OUTPUT" 2>&1	
-	
 	if [ $? != "0" ] ; then
 		echo
-		ERROR "Unable to install Ceylan to ${alternate_prefix}/${Ceylan_ROOT}."
+		ERROR "Unable to install Ceylan."
 		exit 13
 	fi	
+	
 	
 	LOG_STATUS "Making tests for Ceylan."
 	
 	{		
-		setBuildEnv ${MAKE} tests PREFIX=${alternate_prefix}/${Ceylan_ROOT} ${BUILD_LOCATIONS} ${BUILD_SILENT}
+
+		cd test
+		
+		setBuildEnv ./configure --prefix=$repository/ceylan-${Ceylan_VERSION} --with-ceylan-prefix=$repository/ceylan-${Ceylan_VERSION} 
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to configure Ceylan tests."
+			exit 14
+		fi	
+		
+		setBuildEnv make
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to build Ceylan tests."
+			exit 15
+		fi	
+
+		setBuildEnv make install
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to install Ceylan tests."
+			exit 16
+		fi	
+
+		setBuildEnv ./playTests.sh
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to pass Ceylan tests."
+			exit 17
+		fi	
+
+
 	} 1>>"$LOG_OUTPUT" 2>&1	
-	
-	if [ $? != "0" ] ; then
-		echo
-		ERROR "Unable to build and set Ceylan tests to ${alternate_prefix}/${Ceylan_ROOT}."
-		exit 14
-	fi	
 	
 	
 	LOG_STATUS "Making Ceylan post-install"
 	
-	{		
-		setBuildEnv ${MAKE} postinstall PREFIX=${alternate_prefix}/${Ceylan_ROOT} ${BUILD_LOCATIONS} ${BUILD_SILENT}
-	} 1>>"$LOG_OUTPUT" 2>&1	
 	
-	if [ $? != "0" ] ; then
-		echo
-		ERROR "Unable to post-install Ceylan to ${alternate_prefix}/${Ceylan_ROOT}."
-		exit 15
-	fi	
-	
+	# FIXME : only valid for CVS, not SVN ?
 	
 	# Avoid CVS pitfall and remove sticky tags (only if necessary) :
 	
-	if [ "$use_cvs" -eq "0" -a "$use_current_cvs" -eq "1" ] ; then  
-		{		
-			LOG_STATUS "Removing CVS sticky tag used for stable version"
-			cd "${alternate_prefix}/Ceylan" && ${CVS} update -A
-		} 1>>"$LOG_OUTPUT" 2>&1	
-
-		if [ $? != "0" ] ; then
-			echo
-			WARNING "Non-fatal error while removing stable sticky CVS tag from Ceylan version."
-		fi	
-
-	fi
+#	if [ $use_svn -eq 0 -a $use_current_svn -eq 1 ] ; then  
+#		{		
+#			LOG_STATUS "Removing SVN sticky tag used for stable version"
+#			cd "${alternate_prefix}/Ceylan" && ${SVN} update -A
+#		} 1>>"$LOG_OUTPUT" 2>&1	
+#
+#		if [ $? != 0 ] ; then
+#			echo
+#			WARNING "Non-fatal error while removing stable sticky SVN tag from Ceylan version."
+#		fi	
+#
+#	fi
 	
 	printOK
 
@@ -3410,15 +3450,15 @@ generateCeylan()
 cleanCeylan()
 {
 	LOG_STATUS "Cleaning Ceylan build tree..."
-	# Nothing to do : directly managed in install location.
+	# Nothing to do : we want to be able to go on with the Ceylan build.
 }
 
 
 
 
-####################################################################################################
+################################################################################
 # OSDL
-####################################################################################################
+################################################################################
 
 
 getOSDL()
@@ -3426,160 +3466,159 @@ getOSDL()
 
 	DEBUG "Getting OSDL..."
 
-	# OSDL can be obtained by downloading a release archive or by using CVS.
+	# OSDL can be obtained by downloading a release archive or by using SVN.
 	
-	if [ "${use_cvs}" -eq "1" ]; then
-		# Use archive instead of CVS : 
+	if [ ${use_svn} -eq 1 ]; then
+		# Use archive instead of SVN : 
 		launchFileRetrieval OSDL
 		return $?
 	fi
 	
-	# Here we are to use CVS :
+	# Here we are to use SVN :
 	
-	DISPLAY "      ----> getting OSDL from CVS"
+	DISPLAY "      ----> getting OSDL from SVN"
 	
-	cd ${alternate_prefix}
-	
-	if [ -d "${alternate_prefix}/${OSDL_ROOT}" ] ; then
-		if [ -d "${alternate_prefix}/${OSDL_ROOT}.save" ] ; then
-			if [ "$be_strict" -eq "0" ] ; then
-				ERROR "There already exist a back-up directory for OSDL, it is on the way, please remove it first (${alternate_prefix}/${OSDL_ROOT}.save)"
+	cd ${repository}
+
+	if [ -d "${repository}/${OSDL_ROOT}" ] ; then
+		if [ -d "${repository}/${OSDL_ROOT}.save" ] ; then
+			if [ $be_strict -eq 0 ] ; then
+				ERROR "There already exist a back-up directory for OSDL, it is on the way, please remove it first (${repository}/${OSDL_ROOT}.save)"
 				exit 5
 			else	
-				WARNING "Deleting already existing back-up directory for ${OSDL_ROOT} (removing ${alternate_prefix}/${OSDL_ROOT}.save)"
-			 	${RM} -rf "${alternate_prefix}/${OSDL_ROOT}.save"
+				WARNING "Deleting already existing back-up directory for ${OSDL_ROOT} (removing ${repository}/${OSDL_ROOT}.save)"
+			 	${RM} -rf "${repository}/${OSDL_ROOT}.save"
 			fi
 		fi		
-		${MV} -f ${alternate_prefix}/${OSDL_ROOT} ${alternate_prefix}/${OSDL_ROOT}.save
-		WARNING "There already existed a directory for OSDL (${alternate_prefix}/${OSDL_ROOT}), it has been moved to ${alternate_prefix}/${OSDL_ROOT}.save." 
+		${MV} -f ${repository}/${OSDL_ROOT} ${repository}/${OSDL_ROOT}.save
+		WARNING "There already existed a directory for Ceylan (${repository}/${OSDL_ROOT}), it has been moved to ${repository}/${OSDL_ROOT}.save." 
 	fi	
 	
 
-	LOG_STATUS "Getting OSDL in its final directory ${alternate_prefix}..."
+	LOG_STATUS "Getting OSDL in its source directory ${repository}..."
 	
-	if [ "$developer_access" -eq "0" ] ; then
-	
-		DISPLAY "Retrieving OSDL from developer CVS with user name ${developer_name}."
-				
-		if [ "$no_cvs" -eq 1 ] ; then
+	if [ $developer_access -eq 0 ] ; then
+		DISPLAY "Retrieving OSDL from developer SVN with user name ${developer_name}."
 		
-			cvsAttemptNumber=1
+		if [ $no_svn -eq 1 ] ; then
+		
+			svnAttemptNumber=1
 			success=1
-
-			if [ "$use_current_cvs" -eq 0 ] ; then 
-				DEBUG "No stable tag wanted, retrieving directly latest version from CVS."
+			
+			if [ $use_current_svn -eq 0 ] ; then 
+				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
 				# Not wanting sticky tags : TAG_OPTION="-D tomorrow" commented
 				TAG_OPTION=""
 			else
-				DEBUG "Using latest stable CVS tag (${latest_stable_osdl})."
+				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
 				TAG_OPTION="-r ${latest_stable_osdl}"
 			fi
 			
-			while [ "$cvsAttemptNumber" -le "$MAX_CVS_RETRY" ]; do
-				LOG_STATUS "Attempt #${cvsAttemptNumber} to retrieve OSDL."
+			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
 				{
-					DEBUG "CVS command : ${CVS} ${CVS_OPT} -d:ext:${developer_name}@${OSDL_CVS_SERVER}:/cvsroot/osdl co ${TAG_OPTION} ${OSDL_ROOT}"
-					${CVS} ${CVS_OPT} -d:ext:${developer_name}@${OSDL_CVS_SERVER}:/cvsroot/osdl co ${TAG_OPTION} ${OSDL_ROOT}
-				} 1>>"$LOG_OUTPUT" 2>&1					
+					DEBUG "SVN command : ${SVN} co ${SVN_OPT} ${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION} --username=${developer_name}"
+					${SVN} co ${SVN_OPT} ${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION} --username=${developer_name}
+				} 1>>"$LOG_OUTPUT" 2>&1	
 				
-				if [ "$?" -eq "0" ] ; then
-					cvsAttemptNumber=$(($MAX_CVS_RETRY+1))
+				if [ $? -eq 0 ] ; then
+					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
 					success=0	
 				else
-					cvsAttemptNumber=$(($cvsAttemptNumber+1))	
-					LOG_STATUS "CVS command failed."
+					svnAttemptNumber=$(($svnAttemptNumber+1))	
+					LOG_STATUS "SVN command failed."
 					${SLEEP} 3
 				fi	
 			done
 			
 			
-			if [ "$success" != 0 ] ; then
-				ERROR "Unable to retrieve OSDL from CVS after $MAX_CVS_RETRY attempts."
+			if [ $success"" != 0 ] ; then
+				ERROR "Unable to retrieve OSDL from SVN after $MAX_SVN_RETRY attempts."
 				exit 20
-			fi		
-		
-			
+			fi
+							
 		else
-			LOG_STATUS "CVS retrieval disabled for OSDL."
+			LOG_STATUS "SVN retrieval disabled for OSDL."
 		fi
-					
-		if [ "$?" != "0" ] ; then
-			ERROR "Unable to retrieve OSDL from developer CVS."
-			exit 22	
+			
+		if [ $? -ne 0 ] ; then
+			ERROR "Unable to retrieve OSDL from developer SVN."
+			exit 20	
 		fi
 
 	else			
 	
-		LOG_STATUS "Retrieving OSDL from anonymous CVS."
-				
-		if [ "$no_cvs" -eq 1 ] ; then
+		LOG_STATUS "Retrieving OSDL from anonymous SVN."
+		
+		if [ $no_svn -eq 1 ] ; then
 		{
-		
-		
-			cvsAttemptNumber=1
+			svnAttemptNumber=1
 			success=1
 
-			if [ "$use_current_cvs" -eq 0 ] ; then 
-				DEBUG "No stable tag wanted, retrieving directly latest version from CVS."
+			if [ $use_current_svn -eq 0 ] ; then 
+				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
 				# Not wanting sticky tags : TAG_OPTION="-D tomorrow" commented
 				TAG_OPTION=""
 			else
-				DEBUG "Using latest stable CVS tag (${latest_stable_osdl})."
+				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
 				TAG_OPTION="-r ${latest_stable_osdl}"
 			fi
 			
-			while [ "$cvsAttemptNumber" -le "$MAX_CVS_RETRY" ]; do
-				LOG_STATUS "Attempt #${cvsAttemptNumber} to retrieve OSDL."
+			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
+				
 				{
-					DEBUG "CVS command : ${CVS} -d:pserver:anonymous@${OSDL_CVS_SERVER}:/cvsroot/osdl export ${TAG_OPTION} ${OSDL_ROOT}"
-					${CVS} -d:pserver:anonymous@${OSDL_CVS_SERVER}:/cvsroot/osdl export ${TAG_OPTION} ${OSDL_ROOT} 
+					DEBUG "${SVN} export ${SVN_OPT} ${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION}"
+
+					${SVN} export ${SVN_OPT} ${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION}
+
 				} 1>>"$LOG_OUTPUT" 2>&1
-					
-				if [ "$?" -eq "0" ] ; then
-					cvsAttemptNumber=$(($MAX_CVS_RETRY+1))
+				
+				if [ $? -eq 0 ] ; then
+					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
 					success=0	
 				else
-					cvsAttemptNumber=$(($cvsAttemptNumber+1))	
-					LOG_STATUS "CVS command failed."
+					svnAttemptNumber=$(($svnAttemptNumber+1))	
+					LOG_STATUS "SVN command failed."
 					${SLEEP} 3
 				fi	
-			done
+			done			
 			
+			if [ $success"" != 0 ] ; then
+				ERROR "Unable to retrieve OSDL from SVN after $MAX_SVN_RETRY attempts."
+				exit 21
+			fi
 			
-			if [ "$success" != 0 ] ; then
-				ERROR "Unable to retrieve OSDL from CVS after $MAX_CVS_RETRY attempts."
-				exit 20
-			fi	
-						
 		} 1>>"$LOG_OUTPUT" 2>&1
 		else
-			LOG_STATUS "CVS retrieval disabled for OSDL."
+			LOG_STATUS "SVN retrieval disabled for OSDL."
 		fi
-	
-		if [ "$?" != "0" ] ; then
-			ERROR "Unable to retrieve OSDL from anonymous CVS."
-			exit 23	
+				
+		if [ $? -ne 0 ] ; then
+			ERROR "Unable to retrieve OSDL from anonymous SVN."
+			exit 21	
 		fi
 	fi	
 	
-	return 0
-	
+	return 0	
 }
 
 
 prepareOSDL()
 {
-	
-	
+
 	LOG_STATUS "Preparing OSDL..."
-	
-	printBeginList "OSDL       "
-	
+	printBeginList "OSDL     "
+
 	printItem "extracting"
 
+	if [ $no_svn -eq 0 ] ; then
+		WARNING "As the --noSVN option was used, build process stops here."
+		exit 0 	
+	fi
 
-	if [ "${use_cvs}" -eq "1" ]; then
 
+	if [ ${use_svn} -eq 1 ]; then
 
 		# Here we use source archives :
 		
@@ -3596,34 +3635,26 @@ prepareOSDL()
 			ERROR "No tar tool found, whereas some files have to be detarred."
 			exit 15
 		fi		
-	
-		# For project archives (Ceylan and OSDL), all build and install trees are expected to
-		# be in ${alternate_prefix} (usually LOANI-installations) instead of $repository.
-		# Hence the copy for bzip2 is made from the repository to the installation directory :
-		
-		${MKDIR} -p ${alternate_prefix}/OSDL
-		
-		cd ${alternate_prefix}/OSDL
+
+		cd $repository
 	
 		# Prevent archive from disappearing because of bunzip2.
 		{
-			${CP} -f $repository/${OSDL_ARCHIVE} . && ${BUNZIP2} -f ${OSDL_ARCHIVE} && tar -xvf "OSDL-${OSDL_VERSION}.${OSDL_RELEASE}.tar" 
+			${CP} -f ${OSDL_ARCHIVE} ${OSDL_ARCHIVE}.save && ${BUNZIP2} -f ${OSDL_ARCHIVE} && tar -xvf "osdl-${OSDL_VERSION}.tar" 
 		} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-		if [ $? != "0" ] ; then
+		if [ $? != 0 ] ; then
 			ERROR "Unable to extract ${OSDL_ARCHIVE}."
 			DEBUG "Restoring ${OSDL_ARCHIVE}."
-			${RM} -rf ${alternate_prefix}/OSDL
+			${MV} -f ${OSDL_ARCHIVE}.save ${OSDL_ARCHIVE} 
 			exit 10
 		fi
-	
-		${RM} -f "${alternate_prefix}/OSDL/OSDL-${OSDL_VERSION}.${OSDL_RELEASE}.tar"
-	
-	fi
+		
+	fi	
 	
 	printOK	
-	
+
 }
 
 
@@ -3633,20 +3664,21 @@ generateOSDL()
 	LOG_STATUS "Generating OSDL..."
 	
 	
-	cd "${alternate_prefix}/${OSDL_ROOT}/src"
+	cd $repository/osdl-${OSDL_VERSION}	
 	
 	printItem "configuring"
-	
-	#{
-	#	 ./configure	
-	#} 1>>"$LOG_OUTPUT" 2>&1
-	
-	LOG_STATUS "Configure test : checking tools."
-	{
-       	setBuildEnv ${MAKE} checktools ${BUILD_LOCATIONS} ${BUILD_SILENT}
-	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ -n "$prefix" ] ; then	
+		{
+			setBuildEnv --exportEnv ./configure --prefix=${prefix}/OSDL-${OSDL_VERSION} --with-ceylan-prefix=${prefix}/Ceylan-${Ceylan_VERSION}
+		} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+		{
+			setBuildEnv --exportEnv ./configure	
+		} 1>>"$LOG_OUTPUT" 2>&1		
+	fi
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure OSDL."
 		exit 11
@@ -3655,13 +3687,12 @@ generateOSDL()
 	printOK	
 	
 	printItem "building"
-	
 		
 	{
-		setBuildEnv ${MAKE} build ${BUILD_LOCATIONS} ${BUILD_SILENT}
+		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build OSDL."
 		exit 12
@@ -3670,91 +3701,117 @@ generateOSDL()
 	printOK
 	
 	printItem "installing"
-	# We hereby install OSDL alongside to its sources :
-	# We will end up under ${OSDL_ROOT} with src, bin, lib, etc.
-		
-	{	
-	
-		echo "# OSDL section." >> ${OSDL_ENV_FILE}	
-			
-		echo "LD_LIBRARY_PATH=${alternate_prefix}/${OSDL_ROOT}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
-		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${alternate_prefix}/${OSDL_ROOT}/lib:${LD_LIBRARY_PATH}	
-		export LD_LIBRARY_PATH	
+	if [ -n "$prefix" ] ; then	
+		{				
+			echo "# OSDL section." >> ${OSDL_ENV_FILE}
+			
+			if [ $is_windows -eq 0 ] ; then
 		
-		if [ "$is_windows" -eq "0" ] ; then
-		
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
-			
-			PATH=${alternate_prefix}/${OSDL_ROOT}/lib:${PATH}	
-			export PATH
-			
-			echo "PATH=${alternate_prefix}/${OSDL_ROOT}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "export PATH" >> ${OSDL_ENV_FILE}
-			
-		fi
+				# Always remember that, on Windows, DLL are searched 
+				# through the PATH, not the LD_LIBRARY_PATH.
+					
+				echo "PATH=${prefix}/OSDL-${OSDL_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+				echo "export PATH" >> ${OSDL_ENV_FILE}
 
-		echo "" >> ${OSDL_ENV_FILE}
-		
-		# Register OSDL-data in OSDL environment file :
-		echo "# OSDL-data section." >> ${OSDL_ENV_FILE}	
+				PATH=${prefix}/OSDL-${OSDL_VERSION}/bin:${PATH}	
+				export PATH	
+
+				echo "" >> ${OSDL_ENV_FILE}
 			
-		echo "FONT_PATH=${OSDL_DATA_FULL_DIR_NAME}/fonts/fixed:${OSDL_DATA_FULL_DIR_NAME}/fonts/truetype" >> ${OSDL_ENV_FILE}		
-		echo "export FONT_PATH" >> ${OSDL_ENV_FILE}	
+			else
 			
-		echo "" >> ${OSDL_ENV_FILE}
+				echo "PATH=${prefix}/OSDL-${OSDL_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+				echo "export PATH" >> ${OSDL_ENV_FILE}
+			
+				echo "LD_LIBRARY_PATH=${prefix}/OSDL-${OSDL_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+				echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
+			
+				echo "" >> ${OSDL_ENV_FILE}
+			
+				PATH=${prefix}/OSDL-${OSDL_VERSION}/bin:${PATH}
+				export PATH
+			
+				LD_LIBRARY_PATH=${prefix}/OSDL-${OSDL_VERSION}/lib:${LD_LIBRARY_PATH}
+				export LD_LIBRARY_PATH
+
+			fi
 		
-		setBuildEnv ${MAKE} install PREFIX=${alternate_prefix}/${OSDL_ROOT} ${BUILD_LOCATIONS} ${BUILD_SILENT}
-		
-	} 1>>"$LOG_OUTPUT" 2>&1	
-	
+			
+			setBuildEnv ${MAKE} install prefix=${prefix}/OSDL-${OSDL_VERSION}
+
+		} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+		{		
+			setBuildEnv ${MAKE} install
+		} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+				
 	if [ $? != "0" ] ; then
 		echo
-		ERROR "Unable to install OSDL to ${alternate_prefix}/${OSDL_ROOT}."
+		ERROR "Unable to install OSDL."
 		exit 13
 	fi	
+
 	
 	LOG_STATUS "Making tests for OSDL."
 	
 	{		
-		setBuildEnv ${MAKE} tests PREFIX=${alternate_prefix}/${OSDL_ROOT} ${BUILD_LOCATIONS} ${BUILD_SILENT}
+
+		cd test
+		
+		setBuildEnv ./configure --prefix=$repository/osdl-${OSDL_VERSION} --with-osdl-prefix=$repository/osdl-${OSDL_VERSION} --with-ceylan-prefix=$repository/ceylan-${Ceylan_VERSION}
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to configure OSDL tests."
+			exit 14
+		fi	
+		
+		setBuildEnv make
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to build OSDL tests."
+			exit 15
+		fi	
+
+		setBuildEnv make install
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to install OSDL tests."
+			exit 16
+		fi	
+
+		setBuildEnv ./playTests.sh
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to pass OSDL tests."
+			exit 17
+		fi	
+
+
 	} 1>>"$LOG_OUTPUT" 2>&1	
-	
-	if [ $? != "0" ] ; then
-		echo
-		ERROR "Unable to build and set OSDL tests to ${alternate_prefix}/${OSDL_ROOT}."
-		exit 14
-	fi	
 	
 	
 	LOG_STATUS "Making OSDL post-install"
 	
-	{		
-		setBuildEnv ${MAKE} postinstall PREFIX=${alternate_prefix}/${OSDL_ROOT} ${BUILD_LOCATIONS} ${BUILD_SILENT}
-	} 1>>"$LOG_OUTPUT" 2>&1	
 	
-	if [ $? != "0" ] ; then
-		echo
-		ERROR "Unable to post-install OSDL to ${alternate_prefix}/${OSDL_ROOT}."
-		exit 15
-	fi	
-
-	# Avoid CVS pitfall and remove sticky tags (only if necessary, i.e. ) :
+	# FIXME : only valid for CVS, not SVN ?
 	
-	if [ "$use_cvs" -eq "0" -a "$use_current_cvs" -eq "1" ] ; then  
-		{		
-			LOG_STATUS "Removing CVS sticky tag used for stable version"
-			cd "${alternate_prefix}/OSDL" && ${CVS} update -A
-		} 1>>"$LOG_OUTPUT" 2>&1	
-
-		if [ $? != "0" ] ; then
-			echo
-			WARNING "Non-fatal error while removing stable sticky CVS tag from OSDL version."
-		fi	
-
-	fi
-		
+	# Avoid CVS pitfall and remove sticky tags (only if necessary) :
+	
+#	if [ $use_svn -eq 0 -a $use_current_svn -eq 1 ] ; then  
+#		{		
+#			LOG_STATUS "Removing SVN sticky tag used for stable version"
+#			cd "${alternate_prefix}/OSDL" && ${SVN} update -A
+#		} 1>>"$LOG_OUTPUT" 2>&1	
+#
+#		if [ $? != 0 ] ; then
+#			echo
+#			WARNING "Non-fatal error while removing stable sticky SVN tag from OSDL version."
+#		fi	
+#
+#	fi
+	
 	printOK
 
 	printEndList
@@ -3769,11 +3826,11 @@ generateOSDL()
 cleanOSDL()
 {
 	LOG_STATUS "Cleaning OSDL build tree..."
-	# Nothing to do : directly managed in install location.
+	# Nothing to do : we want to be able to go on with the OSDL build.
 }
 
 
 
-####################################################################################################
+################################################################################
 # End of loani-requiredTools.sh
-####################################################################################################
+################################################################################
