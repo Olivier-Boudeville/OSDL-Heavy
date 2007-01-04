@@ -57,10 +57,10 @@ fi
 
 ceylan_md5=`$MD5 ${ceylan_release} | awk '{print $1}'`
 [ "$do_debug" -eq 1 ] || echo "ceylan_md5 = $ceylan_md5"
-${replace_script} Ceylan_MD5 "Ceylan_MD5=\"${ceylan_md5}\"" $(loani_tools_settings)
+${replace_script} Ceylan_MD5 "Ceylan_MD5=\"${ceylan_md5}\"" ${loani_tools_settings}
 
 osdl_md5=`$MD5 ${osdl_release} | awk '{print $1}'`
 [ "$do_debug" -eq 1 ] || echo "osdl_md5 = $osdl_md5"
-${replace_script} OSDL_MD5 "OSDL_MD5=\"${osdl_md5}\"" $(loani_tools_settings)
+${replace_script} OSDL_MD5 "OSDL_MD5=\"${osdl_md5}\"" ${loani_tools_settings}
 
 [ "$do_debug" -eq 1 ] || echo "Replacement done."
