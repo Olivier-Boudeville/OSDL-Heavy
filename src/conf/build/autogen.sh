@@ -220,7 +220,7 @@ fi
 
 if [ -n "${ceylan_location}" ] ; then
 	# Update accordingly the configure prefix for Ceylan macro CEYLAN_PATH :
-	configure_opt="${configure_opt} --with-libCeylan=$loani_installations"
+	configure_opt="${configure_opt} --with-ceylan-prefix=$loani_installations"
 else
 	# The default install location when no prefix is used :
 	ceylan_location="/usr/local"
