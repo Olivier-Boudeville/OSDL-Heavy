@@ -578,7 +578,8 @@ generateSDL_image_win_precompiled()
 
 		# The libjpeg target should already have :
 		#       - created ${prefix}/jpeg-${libjpeg_VERSION}/lib
-		#       - defined LIBFLAG="-L${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}"
+		#       - defined :
+		# LIBFLAG="-L${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}"
 		#       - added the libjpeg section." in ${OSDL_ENV_FILE}
 		#       - updated LD_LIBRARY_PATH *and* PATH with ${prefix}/jpeg-${libjpeg_VERSION}/lib
 		
@@ -1238,10 +1239,10 @@ generateSDL_image()
 	
 		# Debug purpose (should be set from other targets) :
 				
-		LIBFLAG="-L${prefix}/SDL-${SDL_VERSION}/lib"
-		LIBFLAG="-L${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}"
-		LIBFLAG="-L${prefix}/zlib-${zlib_VERSION}/lib ${LIBFLAG}"
-		LIBFLAG="-L${prefix}/PNG-${libpng_VERSION}/lib ${LIBFLAG}"
+		#LIBFLAG="-L${prefix}/SDL-${SDL_VERSION}/lib"
+		#LIBFLAG="-L${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}"
+		#LIBFLAG="-L${prefix}/zlib-${zlib_VERSION}/lib ${LIBFLAG}"
+		#LIBFLAG="-L${prefix}/PNG-${libpng_VERSION}/lib ${LIBFLAG}"
 
 		if [ $is_windows -eq 0 ] ; then
 
@@ -1286,7 +1287,7 @@ generateSDL_image()
         	LDFLAGS=${LIBFLAG}
         	export LDFLAGS
 			
-			setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} 
+			setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif "LDFLAGS=${LDFLAGS}"
 			
 			LDFLAGS=${OLD_LDFLAGS}
 			export LDFLAGS
@@ -1299,7 +1300,8 @@ generateSDL_image()
 			# leading to errors such as : 
 			# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 			
-	  		setBuildEnv ./configure --with-sdl-prefix=${prefix}/SDL-${SDL_VERSION} --disable-sdltest             
+	  		setBuildEnv ./configure --with-sdl-prefix=${prefix}/SDL-${SDL_VERSION} --disable-tif --disable-sdltest "LDFLAGS=${LIBFLAG}"
+			            
 		fi
  
 	} 1>>"$LOG_OUTPUT" 2>&1		
@@ -1323,11 +1325,22 @@ generateSDL_image()
 	{
             
 		#setBuildEnv ${MAKE} "CFLAGS=-O2 -I${SDL_PREFIX}/include/SDL -D_REENTRANT -DLOAD_BMP -DLOAD_GIF -DLOAD_LBM -DLOAD_PCX -DLOAD_PNM -DLOAD_TGA -DLOAD_XPM -DLOAD_JPG -DLOAD_PNG" "LDFLAGS=${LIBFLAG} -ljpeg -lpng -lz" "IMG_LIBS=-ljpeg -lpng -lz"
-		JPEG_INC=`cygpath -w ${prefix}/jpeg-${libjpeg_VERSION}/include | ${SED} 's|\\\|/|g'`
-		PNG_INC=`cygpath -w ${prefix}/PNG-${libpng_VERSION}/include | ${SED} 's|\\\|/|g'`
-		ZLIB_INC=`cygpath -w ${prefix}/zlib-${zlib_VERSION}/include | ${SED} 's|\\\|/|g'`
-                
-		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s" INCLUDES="-I${JPEG_INC} -I${PNG_INC} -I${PNG_INC}/ -I${ZLIB_INC}" 	
+		
+		if [ $is_windows -eq 0 ] ; then	
+
+			JPEG_INC=`cygpath -w ${prefix}/jpeg-${libjpeg_VERSION}/include | ${SED} 's|\\\|/|g'`
+			PNG_INC=`cygpath -w ${prefix}/PNG-${libpng_VERSION}/include | ${SED} 's|\\\|/|g'`
+			ZLIB_INC=`cygpath -w ${prefix}/zlib-${zlib_VERSION}/include | ${SED} 's|\\\|/|g'`
+		
+		else
+		
+			JPEG_INC="${prefix}/jpeg-${libjpeg_VERSION}/include"
+			ZLIB_INC="${prefix}/zlib-${zlib_VERSION}/include"
+			PNG_INC="${prefix}/PNG-${libpng_VERSION}/include"
+			
+		fi
+		        
+		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s ${LIBFLAG}" CPPFLAGS="-I${JPEG_INC} -I${ZLIB_INC} -I${PNG_INC}" 	
                 
 	} 1>>"$LOG_OUTPUT" 2>&1	
 	else
@@ -1549,6 +1562,9 @@ generatelibogg()
 	
 	if [ -n "$prefix" ] ; then	
 	{		
+
+		LIBFLAG="-L${prefix}/libogg-${libogg_VERSION}/lib ${LIBFLAG}"
+		INCLUDE
 		echo "# libogg section." >> ${OSDL_ENV_FILE}
 		
 		echo "LD_LIBRARY_PATH=${prefix}/libogg-${libogg_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
@@ -1559,7 +1575,8 @@ generatelibogg()
 		
 		if [ $is_windows -eq 0 ] ; then
 		
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched 
+			# through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/libogg-${libogg_VERSION}/lib:${PATH}	
 			export PATH
@@ -1708,7 +1725,7 @@ generatelibvorbis()
 	if [ -n "$prefix" ] ; then	
 	{	
 	
-		setBuildEnv ./configure --prefix=${prefix}/libvorbis-${libvorbis_VERSION} --exec-prefix=${prefix}/libvorbis-${libvorbis_VERSION} --with-libogg=${prefix}/libogg-${libogg_VERSION}
+		setBuildEnv ./configure --prefix=${prefix}/libvorbis-${libvorbis_VERSION} --exec-prefix=${prefix}/libvorbis-${libvorbis_VERSION} --with-ogg=${prefix}/libogg-${libogg_VERSION}
  
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -2405,7 +2422,8 @@ generatefreetype()
 	
 		if [ $is_windows -eq 0 ] ; then
 		
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched through
+			# the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/freetype-${freetype_VERSION}/lib:${PATH}	
 			export PATH
@@ -2544,7 +2562,10 @@ generateSDL_ttf()
 		# could be chosen, leading to errors such as : 
 		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 	
-		setBuildEnv ./configure --prefix=${prefix}/SDL_ttf-${SDL_ttf_VERSION} --exec-prefix=${prefix}/SDL_ttf-${SDL_ttf_VERSION} --with-freetype-prefix=${prefix}/freetype-${freetype_VERSION} --with-freetype-exec-prefix=${prefix}/freetype-${freetype_VERSION} --with-sdl-prefix=${prefix}/SDL-${SDL_VERSION} --with-sdl-exec-prefix=${prefix}/SDL-${SDL_VERSION} --disable-sdltest
+		# SDL_ttf.c needs freetype/internal/ftobjs.h, which is in the
+		# freetype sources only (not installed), hence the CPPFLAGS :
+		
+		setBuildEnv ./configure --prefix=${prefix}/SDL_ttf-${SDL_ttf_VERSION} --exec-prefix=${prefix}/SDL_ttf-${SDL_ttf_VERSION} --with-freetype-prefix=${prefix}/freetype-${freetype_VERSION} --with-freetype-exec-prefix=${prefix}/freetype-${freetype_VERSION} --with-sdl-prefix=${prefix}/SDL-${SDL_VERSION} --with-sdl-exec-prefix=${prefix}/SDL-${SDL_VERSION} --disable-sdltest CPPFLAGS="-I${repository}/freetype-${freetype_VERSION}/include"
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{		
@@ -2562,11 +2583,17 @@ generateSDL_ttf()
 	
 	printItem "building"
 	
-	# SDL_ttf won't compile if not patched :
+	# SDL_ttf will not compile if not patched :
 	# Ugly tr-based hack to prevent the numerous versions of sed to 
 	# panic when having a newline in replacement string :
-	${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/freetype.h>|#include <ft2build.h>?#include FT_FREETYPE_H??#include <freetype/freetype.h>|1' | ${TR} "?" "\n" > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c
-
+	# This modification used to work with previous SDL_ttf releases :
+	#${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/freetype.h>|#include <ft2build.h>?#include FT_FREETYPE_H??#include <freetype/freetype.h>|1' | ${TR} "?" "\n" > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c
+	
+	# This one works, at least for SDL_ttf-2.0.8 :
+	# See also :
+	#    - http://www.freetype.org/freetype2/freetype-2.2.0.html
+	#    - http://www.freetype.org/freetype2/patches/rogue-patches.html
+	${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/internal/ftobjs.h>||g' | sed 's|library->memory|NULL|g' > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c                                                                                  
 	if [ $? != 0 ] ; then
 		echo
 		WARNING "SDL_ttf include patch failed, continuing anyway."
@@ -2597,7 +2624,8 @@ generateSDL_ttf()
 
 		if [ $is_windows -eq 0 ] ; then
 		
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched 
+			# through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/SDL_ttf-${SDL_ttf_VERSION}/lib:${PATH}	
 			export PATH
@@ -3246,6 +3274,7 @@ prepareCeylan()
 	printItem "extracting"
 
 	if [ $no_svn -eq 0 ] ; then
+		echo
 		WARNING "As the --noSVN option was used, build process stops here."
 		exit 0 	
 	fi
