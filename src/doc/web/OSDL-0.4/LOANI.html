@@ -651,10 +651,41 @@ The most common mistakes that are made or errors that occur are listed here, alo
 	<dt>LOANI seems to hang while downloading packages, notably whenever I am retrieving Ceyland and OSDL from CVS</dt>
 	<dd>
 
-	<p>The main culprit for that case seems to be Sourceforge's CVS which experiences some outages that lead to a never-ending check-out. A good workaround is to type <code>CTRL-C</code> in the terminal from which LOANI is run, it will force a CVS reset which will result in another CVS attempt of LOANI which, in most cases, then succeeds.
+	<p>The main culprit for that case seems to be Sourceforge's SVN which experiences some outages that lead to a never-ending check-out. A good workaround is to type <code>CTRL-C</code> in the terminal from which LOANI is run, it will force a CVS reset which will result in another CVS attempt of LOANI which, in most cases, then succeeds.
+	</p>
+
+	<p>	
+	Another frequent cause of problem is SVN requesting interactively a user acknowledgement, whereas LOANI hides the request. Using <code>tail -f LOANI.log</code>, one can see a message like :
+	
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+Error validating server certificate for 'https://ceylan.svn.sourceforge.net:443':
+ - The certificate is not issued by a trusted authority. Use the
+   fingerprint to validate the certificate manually!
+Certificate information:
+ - Hostname: *.svn.sourceforge.net
+ - Valid: from Oct 27 12:05:58 2006 GMT until Oct 28 13:05:58 2007 GMT
+ - Issuer: Equifax Secure Certificate Authority, Equifax, US
+ - Fingerprint: f2:6c:fe:bb:82:92:30:09:72:dd:1c:b3:e7:56:69:c7:7a:df:67:3e
+(R)eject, accept (t)emporarily or accept (p)ermanently?                         
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
 	</p>
 	
-	<p>Otherwise the issue and its solution are mostly the same as for the previous case. Typically, LOANI succeeded in downloading most packages, but, for one or more, does not progress anymore. Using <code>tail -f LOANI.log</code>, you may see LOANI regularly waiting for the lacking packages, and inspecting the various <code>wget-log.*</code> shows some messages like <code>failed: Connection timed out</code>.</p>
+	<p>   
+   Most simple work-around is to accept manually the certificate with 
+   <code>svn co https://ceylan.svn.sourceforge.net:/svnroot/ceylan</code> for example, and then to launch LOANI again.                          
+	</p>
+	
+	<p>Otherwise the issue and its solution are mostly the same as for the previous case. Typically, LOANI succeeded in downloading most packages, but, for one or more, does not progress anymore. Using again <code>tail -f LOANI.log</code>, you may see LOANI regularly waiting for the lacking packages, and inspecting the various <code>wget-log.*</code> shows some messages like <code>failed: Connection timed out</code>.</p>
 	
 	<p>This may happen if a download mirror is experiencing some kind of internal errors. Despite the mirrors used by LOANI are selected among the major and most available ones, some outages already occured. Some temporary network failures may happen too. Most of the time LOANI overcomes these problems and defaults to the next available mirror : just wait some more seconds to let it switch to another mirror.</p>
 		
@@ -844,7 +875,7 @@ We hope you will enjoy using LOANI and OSDL !
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update : Friday, December 22, 2006</em>
+    <em>Last update : Friday, January 5, 2007</em>
   </center>
 </body>
 </html>
