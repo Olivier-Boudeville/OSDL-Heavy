@@ -655,7 +655,7 @@ The most common mistakes that are made or errors that occur are listed here, alo
 	</p>
 
 	<p>	
-	Another frequent cause of problem is SVN requesting interactively a user acknowledgement, whereas LOANI hides the request. Using <code>tail -f LOANI.log</code>, one can see a message like :
+	Another frequent cause of problem is SVN needing the user to acknowledge interactively the use of Sourceforge certificate. Using <code>tail -f LOANI.log</code>, one can see a message like :
 	
 <center>
     <table summary="Code" style="border : none">
@@ -681,8 +681,8 @@ Certificate information:
 	</p>
 	
 	<p>   
-   Most simple work-around is to accept manually the certificate with 
-   <code>svn co https://ceylan.svn.sourceforge.net:/svnroot/ceylan</code> for example, and then to launch LOANI again.                          
+   Most simple work-around is to accept manually the certificate from a terminal with 
+   <code>svn co https://ceylan.svn.sourceforge.net:/svnroot/ceylan</code> for example, to stop it after the certificate has been accepted, to remove any downloaded directory, and then to launch LOANI again.                          
 	</p>
 	
 	<p>Otherwise the issue and its solution are mostly the same as for the previous case. Typically, LOANI succeeded in downloading most packages, but, for one or more, does not progress anymore. Using again <code>tail -f LOANI.log</code>, you may see LOANI regularly waiting for the lacking packages, and inspecting the various <code>wget-log.*</code> shows some messages like <code>failed: Connection timed out</code>.</p>
