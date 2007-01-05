@@ -14,7 +14,7 @@ EXAMPLE="    Recommended examples (long but safe) :
 	for a developer (check-out of current sources) : ./"`basename $0`" --allTools --sourceforge <your developer login> --currentSVN 
 	"
 
-# For testing purposes :
+# For testing purposes :
 # ./loani.sh --debug --strict --currentSVN --sourceforge wondersye --allTools
 
 HELP="This is LOANI, the famous Lazy OSDL Automatic Net Installer.
@@ -117,20 +117,20 @@ launchFileRetrieval()
 getDownloadLocation()
 {
 # Returns the URL where the archive for the specified package can be 
-# downloaded, in variable named 'current_download_location'
+# downloaded, in variable named 'current_download_location'
 # 
 # If all mirrors have been tried unsuccessfully, issues an error message 
 # and exit.
 #
 # Basically, one main download site should be tried, then one alternate 
-# location and, on failure, our own private last-chance mirror.
+# location and, on failure, our own private last-chance mirror.
 #
 # A location is tried only once : its variable is blanked afterwards,
 # so that further attempts can use next mirror, if any.
 #
 # Usage   : 
 #   getDownloadLocation <package name>; 
-#   echo ${current_download_location}
+#   echo ${current_download_location}
 # Example : getDownloadLocation SDL
 
 	# ex: $1 = SDL :	
@@ -196,7 +196,7 @@ testGetDownloadLocation()
 
 getFileAvailability()
 # Returns 0 if specified file is in cache and its md5sum is correct or 
-# not specified,
+# not specified,
 #         1 if specified file is in cache but its md5sum is wrong,
 #         2 if specified file is not at all in cache or is empty 
 # (in this case, it is deleted).
@@ -411,12 +411,13 @@ launchwizard()
 # Checking own LOANI's pre requesites.
 
 # This script will make available all common UNIX tools that LOANI will use, 
-# as well as some utilities for terminals (termUtils.sh) that it relies on, 
+# as well as some utilities for terminals (termUtils.sh) that it relies on, 
 # for example for text output.
 # Finally, as the locations of these tools are platform-dependent, a 
 # dedicated script is automatically used too (platformDetection.sh).
 # Such detection is necessary for example for libpng.
 
+echo "Just before defaultLocations.sh"
 
 SHELL_TOOLBOX="./defaultLocations.sh"
 
@@ -431,6 +432,8 @@ fi
 
 
 . $SHELL_TOOLBOX
+
+TRACE "Just after defaultLocations.sh"
 
 if [ $platform_family_detected -eq 1 ] ; then
 	ERROR "the detection of the platform family did not succeed."
@@ -462,7 +465,7 @@ fi
 
 #displayPlatformFlags
 
-#TRACE "Beginning of LOANI."
+TRACE "Beginning of LOANI."
  
 # Pre defined set of default behaviour :
 
@@ -522,7 +525,7 @@ developer_access=1
 set_env=1
 
 # Tells whether after successfull installation the build trees are to 
-# be removed [default : true (0)] :	
+# be removed [default : true (0)] :	
 clean_on_success=0
 
 # Used to activate quiet mode [default : false (1)] :	
@@ -571,7 +574,7 @@ SVN_OPT="--non-interactive"
 
 # Maximum count of attempts to retrieve a module by SVN
 # (when Sourceforge's SVN servers are overloaded, they throw 
-# "connection closed").
+# "connection closed").
 MAX_SVN_RETRY=8	
 	
 # Saving the whole command line to have it stored in logs :	
@@ -584,7 +587,7 @@ SAVED_CMD_LINE="$0 $*"
 #   --onlyOptionalTools : only optional tools will be installed.
 
 
-#TRACE "Default settings set."
+TRACE "Default settings set."
 
 while [ $# -gt 0 ] ; do
 
@@ -760,7 +763,7 @@ while [ $# -gt 0 ] ; do
 
 done 
 
-#TRACE "Command line parsed."
+TRACE "Command line parsed."
 
 
 # Welcome message.
@@ -902,7 +905,7 @@ if [ "$manage_optional_tools" -eq 0 ] ; then
 	fi
 fi
 
-#TRACE "Prerequesites checked."
+TRACE "Prerequesites checked."
 
 
 # Setting and initializing OSDL environment file :
@@ -936,6 +939,10 @@ fi
 
 DISPLAY "Retrieving all pre requesites, pipe-lining when possible."
 
+
+TRACE "Sourcing toolsets."
+
+
 # First, select wanted tools.
 
 # Register all LOANI strict pre requesites for download.
@@ -962,6 +969,7 @@ if [ "$manage_build_tools" -eq 0 ] ; then
 fi
 
 
+TRACE "Toolsets sourced."
 
 DISPLAY "Target package list is <$target_list>."
 
@@ -1113,7 +1121,7 @@ if [ -n "$retrieve_list" ] ; then
 	fi
 
 	# Pre-check that no wget process is already running, since it would 
-	# confuse LOANI :
+	# confuse LOANI :
 
 	if ${PS} -edf | ${GREP} -v grep | ${GREP} wget; then
 		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} -edf | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running anymore in parallel with LOANI before re-launching our script, since it might confuse LOANI."
@@ -1152,7 +1160,7 @@ while [ -n "$retrieve_list" ] ; do
 			retrieve_list=$new_retrieve_list
 		else
 			# md5sum is not the expected one.
-			# Still being dowloaded ? 						
+			# Still being downloaded ? 						
 			
 			if ! ${PS} -u `${ID} -un` | ${GREP} -i wget | ${GREP} -v -i grep 1>/dev/null 2>&1 ; then
 				# No !
