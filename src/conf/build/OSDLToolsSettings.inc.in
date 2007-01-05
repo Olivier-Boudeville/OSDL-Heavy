@@ -13,7 +13,7 @@
 
 # SDL
 
-SDL_VERSION="@SDL_OLDEST_SUPPORTED_FULL_VERSION@"
+SDL_VERSION="1.2.11"
 SDL_ARCHIVE="SDL-$SDL_VERSION.tar.gz"
 SDL_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
 SDL_ALTERNATE_DOWNLOAD_LOCATION=""
@@ -207,9 +207,7 @@ OSDL_ARCHIVE="OSDL-${OSDL_VERSION}.${OSDL_RELEASE}.tar.bz2"
 OSDL_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
 OSDL_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/osdl"
 OSDL_MD5="(blanked)"
-
-OSDL_ROOT="OSDL/OSDL-${OSDL_VERSION}"
-OSDL_CVS_SERVER=cvs.sourceforge.net
+OSDL_SVN_SERVER=osdl.svn.sourceforge.net
 
 
 # Next to come may be : SDL_sound, PhysFS
