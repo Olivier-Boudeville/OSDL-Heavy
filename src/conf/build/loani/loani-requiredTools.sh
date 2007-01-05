@@ -3770,7 +3770,7 @@ generateOSDL()
 		# Here we are in the SVN tree, needing to generate the build system :
 		cd $repository/osdl/OSDL/trunk/src/conf/build
 		{
-			setBuildEnv ./autogen.sh --no-build
+			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix $prefix/Ceylan-${Ceylan_VERSION}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 		
 		if [ $? != 0 ] ; then
