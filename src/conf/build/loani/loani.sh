@@ -9,7 +9,10 @@
 
 USAGE="Usage : "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools] [ --allTools] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
 
-EXAMPLE="    Recommended example (long but safe) : "`basename $0`" --allTools"
+EXAMPLE="    Recommended examples (long but safe) :
+	for a end-user  (export of last stable)        : "`basename $0`"
+	for a developer (check-out of current sources) : "`basename $0`" --allTools --sourceforge wondersye --currentSVN 
+	"
 
 # For testing purposes :
 # ./loani.sh --debug --strict --currentSVN --sourceforge wondersye --allTools
@@ -50,6 +53,10 @@ starting_time=`date '+%H:%M:%S'`
 #   --noSVN : do not retrieve anything from SVN, merely used for LOANI 
 # debugging (variable : no_svn)
 
+if [ "$1" = "-h" -o "$1" = "--help" ] ; then
+	echo "$HELP"
+	exit 0
+fi
 
 
 launchFileRetrieval()
@@ -415,9 +422,11 @@ SHELL_TOOLBOX="./defaultLocations.sh"
 
 
 if [ ! -f "$SHELL_TOOLBOX" ] ; then
+
 	echo 1>&2
 	echo "     Error, helper script not found ($SHELL_TOOLBOX)." 1>&2
-	exit 1
+	exit 1	
+	
 fi
 
 
@@ -612,7 +621,7 @@ while [ $# -gt 0 ] ; do
 	if [ "$1" = "-u" -o "$1" = "--useSVN" ] ; then
 		DEBUG "SVN mode activated."
 		use_svn=0
-		token_eaten=0		
+		token_eaten=0
 	fi
 
 	if [ "$1" = "-c" -o "$1" = "--currentSVN" ] ; then
