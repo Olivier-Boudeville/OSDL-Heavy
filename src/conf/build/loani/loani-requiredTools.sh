@@ -18,7 +18,8 @@ latest_stable_osdl="release-0.4.0"
 if [ $is_windows -eq 1 ] ; then
      
         # All non-windows platforms should build everything from sources :    
-        REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"		
+        REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"	
+		
 else
         # Windows special case :
         REQUIRED_TOOLS="libtool SDL libjpeg SDL_image_win_precompiled zlib libpng SDL_image win_pthread"
@@ -1237,7 +1238,7 @@ generateSDL_image()
 	if [ -n "$prefix" ] ; then	
 	{	
 	
-		# Debug purpose (should be set from other targets) :
+		# For debug purpose (should be set from other targets) :
 				
 		#LIBFLAG="-L${prefix}/SDL-${SDL_VERSION}/lib"
 		#LIBFLAG="-L${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}"
@@ -3118,7 +3119,8 @@ cleanwin_pthread()
 
 getCeylan()
 {
-	
+		
+		
 	DEBUG "Getting Ceylan..."
 
 	# Ceylan can be obtained by downloading a release archive or by using SVN.
@@ -3130,14 +3132,15 @@ getCeylan()
 	fi
 	
 	# Here we are to use SVN :
-
-	DISPLAY "      ----> getting Ceylan from SVN"
 	
 	# To avoid a misleading message when the retrieval is finished :
 	Ceylan_ARCHIVE="from SVN"
 	
 	cd ${repository}
 
+
+	# Manage back-up directory if necessary :
+	
 	if [ -d "${repository}/ceylan" ] ; then
 		if [ -d "${repository}/ceylan.save" ] ; then
 			if [ $be_strict -eq 0 ] ; then
@@ -3152,32 +3155,35 @@ getCeylan()
 		WARNING "There already existed a directory for Ceylan (${repository}/ceylan), it has been moved to ${repository}/ceylan.save." 
 	fi	
 	
+	
 	LOG_STATUS "Getting Ceylan in its source directory ${repository}..."
 	
 	if [ $developer_access -eq 0 ] ; then
+
 		DISPLAY "Retrieving Ceylan from developer SVN with user name ${developer_name}."
 		
 		if [ $no_svn -eq 1 ] ; then
+
+			DISPLAY "      ----> getting Ceylan from SVN with user name ${developer_name} (check-out)"
 		
 			svnAttemptNumber=1
 			success=1
 			
 			if [ $use_current_svn -eq 0 ] ; then 
 				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				# Not wanting sticky tags : TAG_OPTION="-D tomorrow" commented
-				TAG_OPTION=""
+				SVN_URL="/svnroot/ceylan"
 			else
 				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
-				# Actually a different URL should be used here :
-				# /svnroot/ceylan/Ceylan/tags/${latest_stable_ceylan}
-				TAG_OPTION="-r ${latest_stable_ceylan}"
+				SVN_URL="/svnroot/ceylan/Ceylan/tags/${latest_stable_ceylan}"
 			fi
 			
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+			
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
+				
 				{
-					DEBUG "SVN command : ${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${repository}/ceylan ${TAG_OPTION} --username=${developer_name}"
-					${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${repository}/ceylan ${TAG_OPTION} --username=${developer_name}
+					DEBUG "SVN command : ${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name}"
+					${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name}
 				} 1>>"$LOG_OUTPUT" 2>&1	
 				
 				if [ $? -eq 0 ] ; then
@@ -3197,7 +3203,7 @@ getCeylan()
 			fi
 							
 		else
-			LOG_STATUS "SVN retrieval disabled for Ceylan."
+			DISPLAY "      ----> SVN retrieval disabled for Ceylan."
 		fi
 			
 		if [ $? -ne 0 ] ; then
@@ -3207,31 +3213,31 @@ getCeylan()
 
 	else			
 	
-		LOG_STATUS "Retrieving Ceylan from anonymous SVN."
-		
+			
 		if [ $no_svn -eq 1 ] ; then
-		{
+
+
+			DISPLAY "      ----> getting Ceylan from anonymous SVN (export)"
+			
 			svnAttemptNumber=1
 			success=1
 
 			if [ $use_current_svn -eq 0 ] ; then 
 				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				# Not wanting sticky tags : TAG_OPTION="-D tomorrow" commented
-				TAG_OPTION=""
+				SVN_URL="/svnroot/ceylan"
 			else
 				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
-				# Actually a different URL should be used here :
-				# /svnroot/ceylan/Ceylan/tags/${latest_stable_ceylan}
-				TAG_OPTION="-r ${latest_stable_ceylan}"
+				SVN_URL="/svnroot/ceylan/Ceylan/tags/${latest_stable_ceylan}"
 			fi
 			
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+			
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
 				{
-					DEBUG "${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ceylan ${TAG_OPTION}"
+					DEBUG "${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:${SVN_URL}"
 
-					${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ceylan ${TAG_OPTION}
+					${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:${SVN_URL}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
@@ -3248,13 +3254,19 @@ getCeylan()
 			if [ $success"" != 0 ] ; then
 				ERROR "Unable to retrieve Ceylan from SVN after $MAX_SVN_RETRY attempts."
 				exit 21
+			else
+				EXPORT_TARGET_DIR="ceylan/Ceylan"
+				${MKDIR} -p ${EXPORT_TARGET_DIR}
+				${MV} -f ${latest_stable_ceylan} ${EXPORT_TARGET_DIR}/trunk
+				${LN} -s ${EXPORT_TARGET_DIR}/trunk ${latest_stable_ceylan}
+				WARNING "Exported Ceylan sources have been placed in faked trunk, in ${EXPORT_TARGET_DIR}/trunk."
 			fi
 			
-		} 1>>"$LOG_OUTPUT" 2>&1
 		else
-			LOG_STATUS "SVN retrieval disabled for Ceylan."
+
+			DISPLAY "      ----> SVN retrieval disabled for Ceylan."
 		fi
-				
+		
 		if [ $? -ne 0 ] ; then
 			ERROR "Unable to retrieve Ceylan from anonymous SVN."
 			exit 21	
@@ -3331,30 +3343,36 @@ generateCeylan()
 		# Here we are in the SVN tree, needing to generate the build system :
 		cd $repository/ceylan/Ceylan/trunk/src/conf/build
 		{
-			./autogen.sh -f
+			setBuildEnv ./autogen.sh --no-build
 		} 1>>"$LOG_OUTPUT" 2>&1		
 		
 		if [ $? != 0 ] ; then
 			echo
-			ERROR "Unable to generate Ceylan from scratch (with autogen.sh)."
-			exit 11
+			ERROR "Unable to generate build system for Ceylan (with autogen.sh)."
+			exit 10
 		fi	
 		
-		return 0
-		
+		# Going to the root of the source to continue the normal build process :
+		cd $repository/ceylan/Ceylan/trunk
+	
+	else
+	
+		cd $repository/ceylan-${Ceylan_VERSION}
 	fi
 	
-	cd $repository/ceylan-${Ceylan_VERSION}	
+	
+	# Rest of the build is common to autogen-based and release-based trees :
+		
 	
 	printItem "configuring"
 
 	if [ -n "$prefix" ] ; then	
 		{
-			setBuildEnv --exportEnv ./configure --prefix=${prefix}/Ceylan-${Ceylan_VERSION}
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${prefix}/Ceylan-${Ceylan_VERSION}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 		{
-			setBuildEnv --exportEnv ./configure	
+			setBuildEnv --exportEnv --appendEnv ./configure	
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	fi
 		
@@ -3383,7 +3401,8 @@ generateCeylan()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then	
-		{				
+		{			
+			
 			echo "# Ceylan section." >> ${OSDL_ENV_FILE}
 			
 			if [ $is_windows -eq 0 ] ; then
@@ -3417,7 +3436,6 @@ generateCeylan()
 
 			fi
 		
-			
 			setBuildEnv ${MAKE} install prefix=${prefix}/Ceylan-${Ceylan_VERSION}
 
 		} 1>>"$LOG_OUTPUT" 2>&1		
@@ -3436,62 +3454,75 @@ generateCeylan()
 	
 	LOG_STATUS "Making tests for Ceylan."
 	
-	{		
 
-		cd test
+	cd test
 		
-		setBuildEnv ./configure --prefix=$repository/ceylan-${Ceylan_VERSION} --with-ceylan-prefix=$repository/ceylan-${Ceylan_VERSION} 
+	if [ ${use_svn} -eq 0 ]; then
+	
+		# Here we are in the SVN tree, needing to generate the
+		# build system for tests :
+		{
+			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix $prefix/Ceylan-${Ceylan_VERSION}
+		} 1>>"$LOG_OUTPUT" 2>&1		
+		
 		if [ $? != 0 ] ; then
 			echo
-			ERROR "Unable to configure Ceylan tests."
-			exit 14
+			ERROR "Unable to generate build system for Ceylan tests (with autogen.sh)."
+			exit 10
 		fi	
 		
-		setBuildEnv make
-		if [ $? != 0 ] ; then
-			echo
-			ERROR "Unable to build Ceylan tests."
-			exit 15
-		fi	
+	fi
+		
+	# Rest of the build is common to autogen-based and release-based trees :
 
-		setBuildEnv make install
-		if [ $? != 0 ] ; then
-			echo
-			ERROR "Unable to install Ceylan tests."
-			exit 16
-		fi	
+	if [ -n "$prefix" ] ; then	
+		{				
+		
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=$prefix/Ceylan-${Ceylan_VERSION} --with-ceylan-prefix=$prefix/Ceylan-${Ceylan_VERSION} 
+		} 1>>"$LOG_OUTPUT" 2>&1			
+	else
+		{		
+			setBuildEnv --exportEnv --appendEnv ./configure
+		} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+		
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure Ceylan tests."
+		exit 14
+	fi	
+		
+	{				
+		setBuildEnv ${MAKE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+					
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build Ceylan tests."
+		exit 15
+	fi	
 
+	{				
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install Ceylan tests."
+		exit 16
+	fi	
+
+	{				
 		setBuildEnv ./playTests.sh
-		if [ $? != 0 ] ; then
-			echo
-			ERROR "Unable to pass Ceylan tests."
-			exit 17
-		fi	
-
-
-	} 1>>"$LOG_OUTPUT" 2>&1	
+	} 1>>"$LOG_OUTPUT" 2>&1
 	
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to pass Ceylan tests."
+		exit 17
+	fi	
 	
-	LOG_STATUS "Making Ceylan post-install"
-	
-	
-	# FIXME : only valid for CVS, not SVN ?
-	
-	# Avoid CVS pitfall and remove sticky tags (only if necessary) :
-	
-#	if [ $use_svn -eq 0 -a $use_current_svn -eq 1 ] ; then  
-#		{		
-#			LOG_STATUS "Removing SVN sticky tag used for stable version"
-#			cd "${alternate_prefix}/Ceylan" && ${SVN} update -A
-#		} 1>>"$LOG_OUTPUT" 2>&1	
-#
-#		if [ $? != 0 ] ; then
-#			echo
-#			WARNING "Non-fatal error while removing stable sticky SVN tag from Ceylan version."
-#		fi	
-#
-#	fi
-	
+		
 	printOK
 
 	printEndList
@@ -3522,6 +3553,10 @@ getOSDL()
 
 	DEBUG "Getting OSDL..."
 
+	# FIXME
+	#DEBUG "OSDL got"
+	#return 0
+
 	# OSDL can be obtained by downloading a release archive or by using SVN.
 	
 	if [ ${use_svn} -eq 1 ]; then
@@ -3532,47 +3567,48 @@ getOSDL()
 	
 	# Here we are to use SVN :
 	
-	DISPLAY "      ----> getting OSDL from SVN"
-
 	# To avoid a misleading message when the retrieval is finished :
 	OSDL_ARCHIVE="from SVN"
 	
 	cd ${repository}
 
-	if [ -d "${repository}/${OSDL_ROOT}" ] ; then
-		if [ -d "${repository}/${OSDL_ROOT}.save" ] ; then
+
+	# Manage back-up directory if necessary :
+	
+	if [ -d "${repository}/osdl" ] ; then
+		if [ -d "${repository}/osdl.save" ] ; then
 			if [ $be_strict -eq 0 ] ; then
-				ERROR "There already exist a back-up directory for OSDL, it is on the way, please remove it first (${repository}/${OSDL_ROOT}.save)"
+				ERROR "There already exist a back-up directory for OSDL, it is on the way, please remove it first (${repository}/osdl.save)"
 				exit 5
 			else	
-				WARNING "Deleting already existing back-up directory for ${OSDL_ROOT} (removing ${repository}/${OSDL_ROOT}.save)"
-			 	${RM} -rf "${repository}/${OSDL_ROOT}.save"
+				WARNING "Deleting already existing back-up directory for osdl (removing ${repository}/osdl.save)"
+			 	${RM} -rf "${repository}/osdl.save"
 			fi
 		fi		
-		${MV} -f ${repository}/${OSDL_ROOT} ${repository}/${OSDL_ROOT}.save
-		WARNING "There already existed a directory for Ceylan (${repository}/${OSDL_ROOT}), it has been moved to ${repository}/${OSDL_ROOT}.save." 
+		${MV} -f ${repository}/osdl ${repository}/osdl.save
+		WARNING "There already existed a directory for Ceylan (${repository}/osdl), it has been moved to ${repository}/osdl.save." 
 	fi	
 	
 
 	LOG_STATUS "Getting OSDL in its source directory ${repository}..."
 	
 	if [ $developer_access -eq 0 ] ; then
+	
 		DISPLAY "Retrieving OSDL from developer SVN with user name ${developer_name}."
 		
 		if [ $no_svn -eq 1 ] ; then
 		
+			DISPLAY "      ----> getting OSDL from SVN with user name ${developer_name} (check-out)"
+			
 			svnAttemptNumber=1
 			success=1
 			
 			if [ $use_current_svn -eq 0 ] ; then 
 				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				# Not wanting sticky tags : TAG_OPTION="-D tomorrow" commented
-				TAG_OPTION=""
+				SVN_URL="/svnroot/osdl"
 			else
 				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
-				# Actually a different URL should be used here :
-				# /svnroot/osdl/OSDL/tags/${latest_stable_osdl}
-				TAG_OPTION="-r ${latest_stable_osdl}"
+				SVN_URL="/svnroot/osdl/OSDL/tags/${latest_stable_osdl}"
 			fi
 			
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
@@ -3874,24 +3910,7 @@ generateOSDL()
 	
 	LOG_STATUS "Making OSDL post-install"
 	
-	
-	# FIXME : only valid for CVS, not SVN ?
-	
-	# Avoid CVS pitfall and remove sticky tags (only if necessary) :
-	
-#	if [ $use_svn -eq 0 -a $use_current_svn -eq 1 ] ; then  
-#		{		
-#			LOG_STATUS "Removing SVN sticky tag used for stable version"
-#			cd "${alternate_prefix}/OSDL" && ${SVN} update -A
-#		} 1>>"$LOG_OUTPUT" 2>&1	
-#
-#		if [ $? != 0 ] ; then
-#			echo
-#			WARNING "Non-fatal error while removing stable sticky SVN tag from OSDL version."
-#		fi	
-#
-#	fi
-	
+		
 	printOK
 
 	printEndList
