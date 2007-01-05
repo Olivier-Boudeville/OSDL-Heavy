@@ -451,6 +451,7 @@ if [ "$is_freebsd" -eq 0 ] ; then
 	WARNING "Only very experimental support for FreeBSD at the moment."
 fi
 
+#displayPlatformFlags
 
 #TRACE "Beginning of LOANI."
  
@@ -572,7 +573,7 @@ SAVED_CMD_LINE="$0 $*"
 # Undocumented (since seldom used) options :
 #   --onlyBuildTools : only build tools will be installed.
 #   --onlyOptionalTools : only optional tools will be installed.
-*
+
 
 #TRACE "Default settings set."
 
@@ -872,7 +873,8 @@ else
 fi
 
 
-# In debug mode, unset SILENT make variable to have more build details with Ceylan and OSDL :
+# In debug mode, unset SILENT make variable to have more build details
+# with Ceylan and OSDL :
 if [ "$do_debug" -eq 0 ] ; then
 	BUILD_SILENT="SILENT="
 else
