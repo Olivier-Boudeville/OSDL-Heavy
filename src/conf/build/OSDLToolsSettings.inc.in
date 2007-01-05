@@ -45,7 +45,7 @@ libpng_MD5="2ec1e1beb2e6376b09d090f74d259160"
 # zlib library (libzlib.a) : http://www.zlib.net/
 
 zlib_VERSION="1.2.3"
-zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.gz"
+zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.bz2"
 zlib_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
 zlib_MD5="dee233bf288ee795ac96a98cc2e369b6"
