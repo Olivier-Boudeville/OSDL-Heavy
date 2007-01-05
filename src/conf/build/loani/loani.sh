@@ -554,8 +554,10 @@ private_archive_mirror="ftp://ftp.esperide.com/LOANI-archive-repository"
 # and using passive FTP to solve client firewall issues :
 WGET_OPT="--background $PROXY_CONF --passive-ftp"
 
-SVN_OPT="-Q -z6"
-SVN_RSH="ssh"
+CVS_OPT="-Q -z6"
+CVS_RSH="ssh"
+
+SVN_OPT=""
 
 # Maximum count of attempts to retrieve a module by SVN
 # (when Sourceforge's SVN servers are overloaded, they throw 
