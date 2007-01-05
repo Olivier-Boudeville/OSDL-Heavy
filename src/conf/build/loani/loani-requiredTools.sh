@@ -3197,7 +3197,7 @@ getCeylan()
 			done
 			
 			
-			if [ $success"" != 0 ] ; then
+			if [ $success -ne 0 ] ; then
 				ERROR "Unable to retrieve Ceylan from SVN after $MAX_SVN_RETRY attempts."
 				exit 20
 			fi
@@ -3251,7 +3251,7 @@ getCeylan()
 				fi	
 			done			
 			
-			if [ $success"" != 0 ] ; then
+			if [ $success -ne 0 ] ; then
 				ERROR "Unable to retrieve Ceylan from SVN after $MAX_SVN_RETRY attempts."
 				exit 21
 			else
@@ -3263,10 +3263,9 @@ getCeylan()
 			fi
 			
 		else
-
 			DISPLAY "      ----> SVN retrieval disabled for Ceylan."
 		fi
-		
+
 		if [ $? -ne 0 ] ; then
 			ERROR "Unable to retrieve Ceylan from anonymous SVN."
 			exit 21	
@@ -3295,8 +3294,7 @@ prepareCeylan()
 	if [ ${use_svn} -eq 1 ]; then
 
 		# Here we use source archives :
-		
-		
+				
 		if findTool bunzip2 ; then
 			BUNZIP2=$returnedString
 		else
@@ -3586,7 +3584,7 @@ getOSDL()
 			fi
 		fi		
 		${MV} -f ${repository}/osdl ${repository}/osdl.save
-		WARNING "There already existed a directory for Ceylan (${repository}/osdl), it has been moved to ${repository}/osdl.save." 
+		WARNING "There already existed a directory for OSDL (${repository}/osdl), it has been moved to ${repository}/osdl.save." 
 	fi	
 	
 
@@ -3614,8 +3612,8 @@ getOSDL()
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
 				{
-					DEBUG "SVN command : ${SVN} co ${SVN_OPT} https://${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION} --username=${developer_name}"
-					${SVN} co ${SVN_OPT} https://${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION} --username=${developer_name}
+					DEBUG "SVN command : ${SVN} co ${SVN_OPT} https://${OSDL_SVN_SERVER}:${SVN_URL} ${repository}/osdl --username=${developer_name}"
+					${SVN} co ${SVN_OPT} https://${OSDL_SVN_SERVER}:${SVN_URL} ${repository}/osdl --username=${developer_name}
 				} 1>>"$LOG_OUTPUT" 2>&1	
 				
 				if [ $? -eq 0 ] ; then
@@ -3629,13 +3627,13 @@ getOSDL()
 			done
 			
 			
-			if [ $success"" != 0 ] ; then
+			if [ $success -ne 0 ] ; then
 				ERROR "Unable to retrieve OSDL from SVN after $MAX_SVN_RETRY attempts."
 				exit 20
 			fi
 							
 		else
-			LOG_STATUS "SVN retrieval disabled for OSDL."
+			DISPLAY "      ----> SVN retrieval disabled for OSDL."
 		fi
 			
 		if [ $? -ne 0 ] ; then
@@ -3644,32 +3642,31 @@ getOSDL()
 		fi
 
 	else			
-	
-		LOG_STATUS "Retrieving OSDL from anonymous SVN."
-		
+			
+			
 		if [ $no_svn -eq 1 ] ; then
-		{
+
+			DISPLAY "      ----> getting OSDL from anonymous SVN (export)"
+
 			svnAttemptNumber=1
 			success=1
 
 			if [ $use_current_svn -eq 0 ] ; then 
 				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				# Not wanting sticky tags : TAG_OPTION="-D tomorrow" commented
-				TAG_OPTION=""
+				SVN_URL="/svnroot/osdl"
 			else
 				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
-				# Actually a different URL should be used here :
-				# /svnroot/osdl/OSDL/tags/${latest_stable_osdl}
-				TAG_OPTION="-r ${latest_stable_osdl}"
+				SVN_URL="/svnroot/osdl/OSDL/tags/${latest_stable_osdl}"
 			fi
 			
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
 				
 				{
-					DEBUG "${SVN} export ${SVN_OPT} https://${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION}"
+					DEBUG "${SVN} export ${SVN_OPT} https://${OSDL_SVN_SERVER}:${SVN_URL}"
 
-					${SVN} export ${SVN_OPT} https://${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION}
+					${SVN} export ${SVN_OPT} https://${OSDL_SVN_SERVER}:${SVN_URL}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
@@ -3683,14 +3680,19 @@ getOSDL()
 				fi	
 			done			
 			
-			if [ $success"" != 0 ] ; then
+			if [ $success -ne 0 ] ; then
 				ERROR "Unable to retrieve OSDL from SVN after $MAX_SVN_RETRY attempts."
 				exit 21
+			else
+				EXPORT_TARGET_DIR="osdl/OSDL"
+				${MKDIR} -p ${EXPORT_TARGET_DIR}
+				${MV} -f ${latest_stable_osdl} ${EXPORT_TARGET_DIR}/trunk
+				${LN} -s ${EXPORT_TARGET_DIR}/trunk ${latest_stable_osdl}
+				WARNING "Exported OSDL sources have been placed in faked trunk, in ${EXPORT_TARGET_DIR}/trunk."
 			fi
 			
-		} 1>>"$LOG_OUTPUT" 2>&1
 		else
-			LOG_STATUS "SVN retrieval disabled for OSDL."
+			DISPLAY "      ----> SVN retrieval disabled for OSDL."
 		fi
 				
 		if [ $? -ne 0 ] ; then
@@ -3707,11 +3709,12 @@ prepareOSDL()
 {
 
 	LOG_STATUS "Preparing OSDL..."
-	printBeginList "OSDL     "
+	printBeginList "OSDL       "
 
 	printItem "extracting"
 
 	if [ $no_svn -eq 0 ] ; then
+		echo
 		WARNING "As the --noSVN option was used, build process stops here."
 		exit 0 	
 	fi
@@ -3767,26 +3770,32 @@ generateOSDL()
 		# Here we are in the SVN tree, needing to generate the build system :
 		cd $repository/osdl/OSDL/trunk/src/conf/build
 		{
-			./autogen.sh -f
+			setBuildEnv ./autogen.sh --no-build
 		} 1>>"$LOG_OUTPUT" 2>&1		
 		
 		if [ $? != 0 ] ; then
 			echo
-			ERROR "Unable to generate OSDL from scratch (with autogen.sh)."
+			ERROR "Unable to generate build system for OSDL (with autogen.sh)."
 			exit 11
 		fi	
-		
-		return 0
-		
+	
+		# Going to the root of the source to continue the normal build process :
+		cd $repository/osdl/OSDL/trunk
+	
+	else
+	
+		cd $repository/osdl-${OSDL_VERSION}
 	fi
-	
-	cd $repository/osdl-${OSDL_VERSION}	
-	
+		
+		
+	# Rest of the build is common to autogen-based and release-based trees :
+		
+		
 	printItem "configuring"
 
 	if [ -n "$prefix" ] ; then	
 		{
-			setBuildEnv --exportEnv ./configure --prefix=${prefix}/OSDL-${OSDL_VERSION} --with-ceylan-prefix=${prefix}/Ceylan-${Ceylan_VERSION}
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${prefix}/OSDL-${OSDL_VERSION} --with-ceylan-prefix=${prefix}/Ceylan-${Ceylan_VERSION}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 		{
@@ -3820,6 +3829,7 @@ generateOSDL()
 
 	if [ -n "$prefix" ] ; then	
 		{				
+		
 			echo "# OSDL section." >> ${OSDL_ENV_FILE}
 			
 			if [ $is_windows -eq 0 ] ; then
@@ -3872,45 +3882,76 @@ generateOSDL()
 	
 	LOG_STATUS "Making tests for OSDL."
 	
-	{		
-
-		cd test
+	
+	cd test
 		
-		setBuildEnv ./configure --prefix=$repository/osdl-${OSDL_VERSION} --with-osdl-prefix=$repository/osdl-${OSDL_VERSION} --with-ceylan-prefix=$repository/ceylan-${Ceylan_VERSION}
+	if [ ${use_svn} -eq 0 ]; then
+	
+		# Here we are in the SVN tree, needing to generate the
+		# build system for tests :
+		{
+			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix $prefix/Ceylan-${Ceylan_VERSION} --osdl-install-prefix $prefix/OSDL-${OSDL_VERSION}
+		} 1>>"$LOG_OUTPUT" 2>&1		
+		
 		if [ $? != 0 ] ; then
 			echo
-			ERROR "Unable to configure OSDL tests."
-			exit 14
+			ERROR "Unable to generate build system for OSDL tests (with autogen.sh)."
+			exit 10
 		fi	
 		
-		setBuildEnv make
-		if [ $? != 0 ] ; then
-			echo
-			ERROR "Unable to build OSDL tests."
-			exit 15
-		fi	
+	fi
+		
+	# Rest of the build is common to autogen-based and release-based trees :
 
-		setBuildEnv make install
-		if [ $? != 0 ] ; then
-			echo
-			ERROR "Unable to install OSDL tests."
-			exit 16
-		fi	
 
+	if [ -n "$prefix" ] ; then	
+		{				
+
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=$prefix/OSDL-${OSDL_VERSION} --with-osdl-prefix=$prefix/OSDL-${OSDL_VERSION} --with-ceylan-prefix=$prefix/Ceylan-${Ceylan_VERSION}
+		} 1>>"$LOG_OUTPUT" 2>&1			
+	else
+		{		
+			setBuildEnv --exportEnv --appendEnv ./configure
+		} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+		
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure OSDL tests."
+		exit 14
+	fi	
+		
+	{				
+		setBuildEnv ${MAKE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+					
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build OSDL tests."
+		exit 15
+	fi	
+
+	{				
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install OSDL tests."
+		exit 16
+	fi	
+
+	{				
 		setBuildEnv ./playTests.sh
-		if [ $? != 0 ] ; then
-			echo
-			ERROR "Unable to pass OSDL tests."
-			exit 17
-		fi	
-
-
-	} 1>>"$LOG_OUTPUT" 2>&1	
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to pass OSDL tests."
+		exit 17
+	fi	
 	
 	
-	LOG_STATUS "Making OSDL post-install"
-	
-		
 	printOK
 
 	printEndList
