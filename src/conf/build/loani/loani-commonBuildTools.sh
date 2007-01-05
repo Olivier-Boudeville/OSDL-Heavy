@@ -242,10 +242,10 @@ preparebinutils()
 
 	DEBUG "Preparing binutils..."
 	
-	if findTool gunzip ; then
-		GUNZIP=$returnedString
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
 	else
-		ERROR "No gunzip tool found, whereas some files have to be gunziped."
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
 		exit 14
 	fi	
 	
@@ -264,7 +264,7 @@ preparebinutils()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${binutils_ARCHIVE} ${binutils_ARCHIVE}.save && ${GUNZIP} -f ${binutils_ARCHIVE} && tar -xvf "binutils-${binutils_VERSION}.tar" 
+		${CP} -f ${binutils_ARCHIVE} ${binutils_ARCHIVE}.save && ${BUNZIP2} -f ${binutils_ARCHIVE} && tar -xvf "binutils-${binutils_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
