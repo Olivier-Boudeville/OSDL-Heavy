@@ -359,7 +359,7 @@ generatelibjpeg()
 	if [ -n "$prefix" ] ; then	
 	{		
                         
-		if [ $use_mingw -eq 0 ] ; then
+		if [ $is_mingw -eq 0 ] ; then
 			OLD_LD=$LD  
 			LD=${MINGW_PATH}/ld						 
 			export LD					 
@@ -875,7 +875,7 @@ generatelibpng()
 		${CP} -f scripts/makefile.cygwin makefile
 	fi
 
-	if [ $is_msys -eq 0 ] ; then
+	if [ $use_msys -eq 0 ] ; then
 		WARNING "Assuming cygwin settings for libpng for this Windows MSYS/Mingw platform."
 		${CP} -f scripts/makefile.cygwin makefile	
 	fi
@@ -906,7 +906,7 @@ generatelibpng()
 	PNG_NUMBER=12
         	
 	{
-		if [ $use_mingw -eq 0 ] ; then
+		if [ $is_mingw -eq 0 ] ; then
 			# zLib Library version could be used.
 			setBuildEnv ${MAKE} ${BUILD_LOCATIONS} prefix=${prefix}/PNG-${libpng_VERSION} MINGW_CCFLAGS=${MINGW_CFLAGS} MINGW_LDFLAGS=${MINGW_LFLAGS} SHAREDLIB=libpng${PNG_NUMBER}.dll ZLIBINC=../zlib ZLIBLIB=../zlib 
 		else
@@ -956,7 +956,7 @@ generatelibpng()
 		${MKDIR} -p ${prefix}/PNG-${libpng_VERSION}/man
 		${MKDIR} -p ${prefix}/PNG-${libpng_VERSION}/bin	
 		                
-		if [ $use_mingw -eq 0 ] ; then
+		if [ $is_mingw -eq 0 ] ; then
 			PNG_SHARED_LIB=libpng${PNG_NUMBER}.dll
 			setBuildEnv ${MAKE} install prefix=${prefix}/PNG-${libpng_VERSION} SHAREDLIB=${PNG_SHARED_LIB}
 			${CP} -f ${prefix}/PNG-${libpng_VERSION}/bin/${PNG_SHARED_LIB} ${prefix}/PNG-${libpng_VERSION}/lib/libpng.dll
@@ -1206,6 +1206,7 @@ generateSDL_image()
 	LOG_STATUS "Generating SDL_image..."
 
 	if [ $is_windows -eq 0 ] ; then	
+	
 		DEBUG "Correcting sdl-config for SDL_image."
 		
         sdl_config=${prefix}/SDL-${SDL_VERSION}/bin/sdl-config
@@ -1276,7 +1277,7 @@ generateSDL_image()
 		LOG_STATUS "PATH for SDL_image configure is <${PATH}>."
 		LOG_STATUS "LD_LIBRARY_PATH for SDL_image configure is <${LD_LIBRARY_PATH}>."
  
-		if [ $use_mingw -eq 0 ] ; then
+		if [ $is_mingw -eq 0 ] ; then
         
         	LOG_STATUS "Using SDL prefix $SDL_PREFIX for SDL_image."
 			
@@ -2722,7 +2723,7 @@ generatelibtool()
 		old_cc=$CC
 		old_cxx=$CXX	
 		
-		if [ $use_mingw -eq 0 ] ; then 
+		if [ $is_mingw -eq 0 ] ; then 
 		
 			PATH=${MINGW_PATH}:$PATH
 			export PATH
@@ -2750,7 +2751,7 @@ generatelibtool()
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{
-		if [ $use_mingw -eq 0 ] ; then 
+		if [ $is_mingw -eq 0 ] ; then 
 		
 			PATH=${MINGW_PATH}:$PATH
 			export PATH
@@ -2778,7 +2779,7 @@ generatelibtool()
 		exit 11
 	fi	
 
-	if [ ${use_mingw} -eq 0 ] ; then	
+	if [ ${is_mingw} -eq 0 ] ; then	
 	
 		PATH=$old_path
 		export PATH
@@ -3105,22 +3106,22 @@ getCeylan()
 	DISPLAY "      ----> getting Ceylan from SVN"
 	
 	# To avoid a misleading message when the retrieval is finished :
-	Ceylan_ARCHIVE="(from SVN)"
+	Ceylan_ARCHIVE="from SVN"
 	
 	cd ${repository}
 
-	if [ -d "${repository}/${Ceylan_ROOT}" ] ; then
-		if [ -d "${repository}/${Ceylan_ROOT}.save" ] ; then
+	if [ -d "${repository}/ceylan" ] ; then
+		if [ -d "${repository}/ceylan.save" ] ; then
 			if [ $be_strict -eq 0 ] ; then
-				ERROR "There already exist a back-up directory for Ceylan, it is on the way, please remove it first (${repository}/${Ceylan_ROOT}.save)"
+				ERROR "There already exist a back-up directory for Ceylan, it is on the way, please remove it first (${repository}/ceylan.save)"
 				exit 5
 			else	
-				WARNING "Deleting already existing back-up directory for ${Ceylan_ROOT} (removing ${repository}/${Ceylan_ROOT}.save)"
-			 	${RM} -rf "${repository}/${Ceylan_ROOT}.save"
+				WARNING "Deleting already existing back-up directory for ceylan (removing ${repository}/ceylan.save)"
+			 	${RM} -rf "${repository}/ceylan.save"
 			fi
 		fi		
-		${MV} -f ${repository}/${Ceylan_ROOT} ${repository}/${Ceylan_ROOT}.save
-		WARNING "There already existed a directory for Ceylan (${repository}/${Ceylan_ROOT}), it has been moved to ${repository}/${Ceylan_ROOT}.save." 
+		${MV} -f ${repository}/ceylan ${repository}/ceylan.save
+		WARNING "There already existed a directory for Ceylan (${repository}/ceylan), it has been moved to ${repository}/ceylan.save." 
 	fi	
 	
 	LOG_STATUS "Getting Ceylan in its source directory ${repository}..."
@@ -3139,14 +3140,16 @@ getCeylan()
 				TAG_OPTION=""
 			else
 				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
+				# Actually a different URL should be used here :
+				# /svnroot/ceylan/Ceylan/tags/${latest_stable_ceylan}
 				TAG_OPTION="-r ${latest_stable_ceylan}"
 			fi
 			
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				{
-					DEBUG "SVN command : ${SVN} co ${SVN_OPT} co https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION} --username=${developer_name}"
-					${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION} --username=${developer_name}
+					DEBUG "SVN command : ${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${repository}/ceylan ${TAG_OPTION} --username=${developer_name}"
+					${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${repository}/ceylan ${TAG_OPTION} --username=${developer_name}
 				} 1>>"$LOG_OUTPUT" 2>&1	
 				
 				if [ $? -eq 0 ] ; then
@@ -3189,6 +3192,8 @@ getCeylan()
 				TAG_OPTION=""
 			else
 				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
+				# Actually a different URL should be used here :
+				# /svnroot/ceylan/Ceylan/tags/${latest_stable_ceylan}
 				TAG_OPTION="-r ${latest_stable_ceylan}"
 			fi
 			
@@ -3196,9 +3201,9 @@ getCeylan()
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
 				{
-					DEBUG "${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION}"
+					DEBUG "${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ceylan ${TAG_OPTION}"
 
-					${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION}
+					${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ceylan ${TAG_OPTION}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
@@ -3250,6 +3255,7 @@ prepareCeylan()
 
 		# Here we use source archives :
 		
+		
 		if findTool bunzip2 ; then
 			BUNZIP2=$returnedString
 		else
@@ -3290,6 +3296,24 @@ generateCeylan()
 {
 
 	LOG_STATUS "Generating Ceylan..."
+
+	if [ ${use_svn} -eq 0 ]; then
+	
+		# Here we are in the SVN tree, needing to generate the build system :
+		cd $repository/ceylan/Ceylan/trunk/src/conf/build
+		{
+			./autogen.sh -f
+		} 1>>"$LOG_OUTPUT" 2>&1		
+		
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to generate Ceylan from scratch (with autogen.sh)."
+			exit 11
+		fi	
+		
+		return 0
+		
+	fi
 	
 	cd $repository/ceylan-${Ceylan_VERSION}	
 	
@@ -3482,7 +3506,7 @@ getOSDL()
 	DISPLAY "      ----> getting OSDL from SVN"
 
 	# To avoid a misleading message when the retrieval is finished :
-	OSDL_ARCHIVE="(from SVN)"
+	OSDL_ARCHIVE="from SVN"
 	
 	cd ${repository}
 
@@ -3517,6 +3541,8 @@ getOSDL()
 				TAG_OPTION=""
 			else
 				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
+				# Actually a different URL should be used here :
+				# /svnroot/osdl/OSDL/tags/${latest_stable_osdl}
 				TAG_OPTION="-r ${latest_stable_osdl}"
 			fi
 			
@@ -3567,6 +3593,8 @@ getOSDL()
 				TAG_OPTION=""
 			else
 				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
+				# Actually a different URL should be used here :
+				# /svnroot/osdl/OSDL/tags/${latest_stable_osdl}
 				TAG_OPTION="-r ${latest_stable_osdl}"
 			fi
 			
@@ -3669,6 +3697,23 @@ generateOSDL()
 
 	LOG_STATUS "Generating OSDL..."
 	
+	if [ ${use_svn} -eq 0 ]; then
+	
+		# Here we are in the SVN tree, needing to generate the build system :
+		cd $repository/osdl/OSDL/trunk/src/conf/build
+		{
+			./autogen.sh -f
+		} 1>>"$LOG_OUTPUT" 2>&1		
+		
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to generate OSDL from scratch (with autogen.sh)."
+			exit 11
+		fi	
+		
+		return 0
+		
+	fi
 	
 	cd $repository/osdl-${OSDL_VERSION}	
 	
