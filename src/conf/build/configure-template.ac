@@ -136,10 +136,6 @@ AC_SUBST(OSDL_PKGCONFIG_FILE)
 OSDL_ARCHIVE_DIR="\${HOME}/Archive/${PROJECT_NAME}"
 AC_SUBST(OSDL_ARCHIVE_DIR)
 
-# LOANI installations default base directory (to find tools such as doxygen).
-OSDL_LOANI_INSTALLATIONS="\${prefix}"
-AC_SUBST(OSDL_LOANI_INSTALLATIONS)
-
 # The OSDL source archive downloaded by LOANI :
 OSDL_CURRENT_SOURCE_ARCHIVE="osdl-$OSDL_VERSION.tar.bz2"
 AC_SUBST(OSDL_CURRENT_SOURCE_ARCHIVE)
@@ -467,12 +463,16 @@ AC_DEFINE_UNQUOTED([COUNT_INSTANCES],
 LOANI_VERSION=$OSDL_VERSION
 AC_SUBST(LOANI_VERSION)
 
+# LOANI installations default base directory.
+OSDL_LOANI_INSTALLATIONS="\${prefix}"
+AC_SUBST(OSDL_LOANI_INSTALLATIONS)
+
 # Where the LOANI download cache will be put :
-LOANI_REPOSITORY_DIR="LOANI-repository"
+LOANI_REPOSITORY_DIR="${OSDL_LOANI_INSTALLATIONS}/../LOANI-repository"
 AC_SUBST(LOANI_REPOSITORY_DIR)
 
 # Where LOANI will install packages :
-LOANI_INSTALL_DIR="LOANI-installations"
+LOANI_INSTALL_DIR="${OSDL_LOANI_INSTALLATIONS}"
 AC_SUBST(LOANI_INSTALL_DIR)
 
 # The LOANI documentation page :
@@ -500,6 +500,7 @@ AC_SUBST(CEYLAN_OLDEST_SUPPORTED_FULL_VERSION)
 
 # The Ceylan source archive downloaded by LOANI :
 CEYLAN_CURRENT_SOURCE_ARCHIVE="ceylan-$CEYLAN_OLDEST_SUPPORTED_VERSION.tar.bz2"
+AC_SUBST(CEYLAN_CURRENT_SOURCE_ARCHIVE)
 
 # Define here a CEYLAN_INSTALL_ROOT according to --with-ceylan-prefix=PFX :
 AC_ARG_WITH(ceylan-prefix,[--with-ceylan-prefix=PFX   Prefix where Ceylan is installed],ceylan_prefix="$withval",ceylan_prefix="/usr/local")
@@ -680,6 +681,7 @@ AC_CONFIG_FILES([
 	src/code/video/Makefile
 	src/code/video/twoDimensional/Makefile
 	src/code/video/videoRenderer/Makefile
+	src/conf/build/loani/LOANI-README-template.txt
 	src/conf/build/loani/Makefile
 	src/conf/build/m4/Makefile
 	src/conf/build/m4/osdl.m4
@@ -694,7 +696,6 @@ AC_CONFIG_FILES([
 	src/doc/basic/OSDL-COPYING.LIB-template.txt
 	src/doc/basic/OSDL-FAQ-template.txt
 	src/doc/basic/OSDL-INSTALL-template.txt
-	src/doc/basic/OSDL-LOANI-README-template.txt
 	src/doc/basic/OSDL-MAINTENERS-template.txt
 	src/doc/basic/OSDL-NEWS-template.txt
 	src/doc/basic/OSDL-README-template.txt
