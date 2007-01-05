@@ -10,8 +10,8 @@
 USAGE="Usage : "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools] [ --allTools] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
 
 EXAMPLE="    Recommended examples (long but safe) :
-	for a end-user  (export of last stable)        : "`basename $0`"
-	for a developer (check-out of current sources) : "`basename $0`" --allTools --sourceforge wondersye --currentSVN 
+	for a end-user  (export of last stable)        : ./"`basename $0`"
+	for a developer (check-out of current sources) : ./"`basename $0`" --allTools --sourceforge <your developer login> --currentSVN 
 	"
 
 # For testing purposes :
@@ -567,7 +567,7 @@ WGET_OPT="--background $PROXY_CONF --passive-ftp"
 CVS_OPT="-Q -z6"
 CVS_RSH="ssh"
 
-SVN_OPT=""
+SVN_OPT="--non-interactive"
 
 # Maximum count of attempts to retrieve a module by SVN
 # (when Sourceforge's SVN servers are overloaded, they throw 

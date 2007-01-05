@@ -3182,8 +3182,8 @@ getCeylan()
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
 				{
-					DEBUG "SVN command : ${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name}"
-					${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name}
+					DEBUG "SVN command : ${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name} ${SVN_OPT}"
+					${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name} ${SVN_OPT}
 				} 1>>"$LOG_OUTPUT" 2>&1	
 				
 				if [ $? -eq 0 ] ; then
@@ -3235,9 +3235,9 @@ getCeylan()
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
 				{
-					DEBUG "${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:${SVN_URL}"
+					DEBUG "${SVN} export https://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
 
-					${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:${SVN_URL}
+					${SVN} export https://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT} 
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
@@ -3612,8 +3612,8 @@ getOSDL()
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
 				{
-					DEBUG "SVN command : ${SVN} co ${SVN_OPT} https://${OSDL_SVN_SERVER}:${SVN_URL} ${repository}/osdl --username=${developer_name}"
-					${SVN} co ${SVN_OPT} https://${OSDL_SVN_SERVER}:${SVN_URL} ${repository}/osdl --username=${developer_name}
+					DEBUG "SVN command : ${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${repository}/osdl --username=${developer_name} ${SVN_OPT}"
+					${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${repository}/osdl --username=${developer_name} ${SVN_OPT} 
 				} 1>>"$LOG_OUTPUT" 2>&1	
 				
 				if [ $? -eq 0 ] ; then
@@ -3664,9 +3664,9 @@ getOSDL()
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
 				
 				{
-					DEBUG "${SVN} export ${SVN_OPT} https://${OSDL_SVN_SERVER}:${SVN_URL}"
+					DEBUG "${SVN} export https://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
 
-					${SVN} export ${SVN_OPT} https://${OSDL_SVN_SERVER}:${SVN_URL}
+					${SVN} export https://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT} 
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
