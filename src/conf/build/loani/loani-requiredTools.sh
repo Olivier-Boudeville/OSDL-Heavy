@@ -643,10 +643,10 @@ preparezlib()
 
 	LOG_STATUS "Preparing zlib library..."
 
-	if findTool gunzip ; then
-		GUNZIP=$returnedString
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
 	else
-		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
 		exit 8
 	fi	
 	
@@ -665,7 +665,7 @@ preparezlib()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${zlib_ARCHIVE} ${zlib_ARCHIVE}.save && ${GUNZIP} -f ${zlib_ARCHIVE} && tar -xvf "zlib-${zlib_VERSION}.tar" 
+		${CP} -f ${zlib_ARCHIVE} ${zlib_ARCHIVE}.save && ${BUNZIP2} -f ${zlib_ARCHIVE} && tar -xvf "zlib-${zlib_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -3104,6 +3104,9 @@ getCeylan()
 
 	DISPLAY "      ----> getting Ceylan from SVN"
 	
+	# To avoid a misleading message when the retrieval is finished :
+	Ceylan_ARCHIVE="(from SVN)"
+	
 	cd ${repository}
 
 	if [ -d "${repository}/${Ceylan_ROOT}" ] ; then
@@ -3142,8 +3145,8 @@ getCeylan()
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				{
-					DEBUG "SVN command : ${SVN} co ${SVN_OPT} ${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION} --username=${developer_name}"
-					${SVN} co ${SVN_OPT} ${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION} --username=${developer_name}
+					DEBUG "SVN command : ${SVN} co ${SVN_OPT} co https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION} --username=${developer_name}"
+					${SVN} co ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION} --username=${developer_name}
 				} 1>>"$LOG_OUTPUT" 2>&1	
 				
 				if [ $? -eq 0 ] ; then
@@ -3193,9 +3196,9 @@ getCeylan()
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
 				{
-					DEBUG "${SVN} export ${SVN_OPT} ${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION}"
+					DEBUG "${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION}"
 
-					${SVN} export ${SVN_OPT} ${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION}
+					${SVN} export ${SVN_OPT} https://${Ceylan_SVN_SERVER}:/svnroot/ceylan ${Ceylan_ROOT} ${TAG_OPTION}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
@@ -3477,6 +3480,9 @@ getOSDL()
 	# Here we are to use SVN :
 	
 	DISPLAY "      ----> getting OSDL from SVN"
+
+	# To avoid a misleading message when the retrieval is finished :
+	OSDL_ARCHIVE="(from SVN)"
 	
 	cd ${repository}
 
@@ -3517,8 +3523,8 @@ getOSDL()
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
 				{
-					DEBUG "SVN command : ${SVN} co ${SVN_OPT} ${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION} --username=${developer_name}"
-					${SVN} co ${SVN_OPT} ${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION} --username=${developer_name}
+					DEBUG "SVN command : ${SVN} co ${SVN_OPT} https://${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION} --username=${developer_name}"
+					${SVN} co ${SVN_OPT} https://${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION} --username=${developer_name}
 				} 1>>"$LOG_OUTPUT" 2>&1	
 				
 				if [ $? -eq 0 ] ; then
@@ -3568,9 +3574,9 @@ getOSDL()
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
 				
 				{
-					DEBUG "${SVN} export ${SVN_OPT} ${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION}"
+					DEBUG "${SVN} export ${SVN_OPT} https://${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION}"
 
-					${SVN} export ${SVN_OPT} ${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION}
+					${SVN} export ${SVN_OPT} https://${OSDL_SVN_SERVER}:/svnroot/osdl ${OSDL_ROOT} ${TAG_OPTION}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
