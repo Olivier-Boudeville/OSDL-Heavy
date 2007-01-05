@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="Usage : "`basename $0`" [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --loani-repository <path> ] [ --loani-installations <path> ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.\n\t --disable-all-features : build a library with none of the optional features\n\t --no-build : stop just after having generated the configure script\n\t --chain-test : build and install the library, build the test suite and run it against the installation\n\t --full-test : build and install the library, perform all available tests, including 'make distcheck' and the full test suite\n\t --only-prepare-dist : configure all but do not build anything\n\t --loani-repository : specify where the LOANI repository can be found. If none is specified, it will be guessed from the current directory\n\t --loani-installations : specify where the LOANI installations can be found. If none is specified, it will be guessed from the current directory\n\t --configure-options : all following options will be directly passed whenever configure is run"
+USAGE="Usage : "`basename $0`" [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --loani-repository <path> ] [ --loani-installations <path> ] [ --ceylan-install-prefix <path> ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.\n\t --disable-all-features : build a library with none of the optional features\n\t --no-build : stop just after having generated the configure script\n\t --chain-test : build and install the library, build the test suite and run it against the installation\n\t --full-test : build and install the library, perform all available tests, including 'make distcheck' and the full test suite\n\t --only-prepare-dist : configure all but do not build anything\n\t --loani-repository : specify where the LOANI repository can be found. If none is specified, it will be guessed from the current directory\n\t --loani-installations : specify where the LOANI installations can be found. If none is specified, it will be guessed from the current directory\n\t --ceylan-install-prefix : specify where the Ceylan installation can be found.\n\t --configure-options : all following options will be directly passed whenever configure is run"
 
 
 # Main settings section.
@@ -23,6 +23,8 @@ loani_installations=`dirname $loani_repository`/LOANI-installations
 
 loani_repository_specified=1
 loani_installations_specified=1
+
+ceylan_location=""
 
 
 # 0 means true, 1 means false :
@@ -102,6 +104,16 @@ while [ "$#" -gt "0" ] ; do
 		if [ ! -d "${loani_installations}" ] ; then
 			echo -e "Error, specified LOANI installations directory does not exist ($loani_installations).\n$USAGE" 1>&2	
 			exit 6
+		fi
+		token_eaten=0
+	fi
+	
+	if [ "$1" == "--ceylan-install-prefix" ] ; then
+		shift
+		ceylan_location="$1"
+		if [ ! -d "${ceylan_location}" ] ; then
+			echo -e "Error, specified Ceylan installation directory does not exist ($ceylan_location).\n$USAGE" 1>&2	
+			exit 7
 		fi
 		token_eaten=0
 	fi
@@ -209,25 +221,6 @@ if [ -z "${configure_opt}" ] ; then
 fi
 
 
-# Guessing where Ceylan should be found :
-#   1. try under corresponding specified or guessed LOANI-installations 
-#   2. otherwise, look into standard locations (no specific option passed)
-ceylan_location=""
-
-if [ -d "${loani_installations}/include/Ceylan" ] ; then
-	ceylan_location="${loani_installations}"
-fi
-
-if [ -n "${ceylan_location}" ] ; then
-	# Update accordingly the configure prefix for Ceylan macro CEYLAN_PATH :
-	configure_opt="${configure_opt} --with-ceylan-prefix=$loani_installations"
-else
-	# The default install location when no prefix is used :
-	ceylan_location="/usr/local"
-fi
-
-#echo "ceylan_location = ${ceylan_location}"
-
 
 # Log-on-file mode activated iff equal to true (0) :
 log_on_file=1
@@ -246,7 +239,7 @@ debug "loani_installations = $loani_installations"
 
 echo 
 
-if [ "$loani_repository_specified" == "1" ] ; then
+if [ $loani_repository_specified -eq 1 ] ; then
 	if [ ! -d "${loani_repository}" ] ; then
 		echo -e "Error, no LOANI repository directory specified, and guessed one does not exist ($loani_repository).\n$USAGE" 1>&2	
 		exit 7
@@ -257,7 +250,7 @@ if [ "$loani_repository_specified" == "1" ] ; then
 fi
 
 
-if [ "$loani_installations_specified" == "1" ] ; then
+if [ $loani_installations_specified -eq 1 ] ; then
 	if [ ! -d "${loani_installations}" ] ; then
 		echo -e "Error, no LOANI installation directory specified, and guessed one does not exist ($loani_installations).\n$USAGE" 1>&2	
 		exit 8
@@ -266,6 +259,30 @@ if [ "$loani_installations_specified" == "1" ] ; then
 	warning "No directory specified for LOANI installations, defaulting to $loani_installations"
 	
 fi
+
+
+# Guessing where Ceylan should be found :
+#   1. try under corresponding specified or guessed LOANI-installations 
+#   2. otherwise, look into standard locations (no specific option passed)
+
+if [ -z "${ceylan_location}" ] ; then
+
+	if [ -d "${loani_installations}/include/Ceylan" ] ; then
+		ceylan_location="${loani_installations}"
+	fi
+	
+fi
+
+
+if [ -n "${ceylan_location}" ] ; then
+	# Update accordingly the configure prefix for Ceylan macro CEYLAN_PATH :
+	configure_opt="${configure_opt} --with-ceylan-prefix=$loani_installations"
+else
+	# The default install location when no prefix is used :
+	ceylan_location="/usr/local"
+fi
+
+#echo "ceylan_location = ${ceylan_location}"
 
 
 # Retrieving Ceylan substitute.sh script, needed by MakeConfigure :
