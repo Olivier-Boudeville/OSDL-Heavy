@@ -105,7 +105,7 @@ OSDL_OLDEST_SUPPORTED_MINOR=4
 # Pre-requesite section.
 
 # Note : when the version of a tool is changed here,
-# trunk/src/conf/build/osdl-versions.sh.in must be updated as well.
+# trunk/src/conf/build/OSDLToolsSettings.inc.in must be updated as well.
 
 
 # The oldest version of the Ceylan library that may be used by OSDL :
@@ -114,7 +114,7 @@ OSDL_OLDEST_SUPPORTED_MINOR=4
 CEYLAN_OLDEST_SUPPORTED_MAJOR=0
 
 # (tag : ST_CEYLAN_OLDEST_SUPPORTED_MINOR)
-CEYLAN_OLDEST_SUPPORTED_MINOR=4
+CEYLAN_OLDEST_SUPPORTED_MINOR=5
 
 # (tag : ST_CEYLAN_OLDEST_SUPPORTED_RELEASE)
 CEYLAN_OLDEST_SUPPORTED_RELEASE=0
@@ -125,32 +125,6 @@ CEYLAN_OLDEST_SUPPORTED_VERSION=$(CEYLAN_OLDEST_SUPPORTED_MAJOR).$(CEYLAN_OLDEST
 
 # (tag : ST_CEYLAN_OLDEST_SUPPORTED_FULL_VERSION)
 CEYLAN_OLDEST_SUPPORTED_FULL_VERSION=$(CEYLAN_OLDEST_SUPPORTED_VERSION).$(CEYLAN_OLDEST_SUPPORTED_RELEASE)
-
-
-
-# SDL (http://www.libsdl.org/download-1.2.php)
-# (tag : ST_SDL_OLDEST_SUPPORTED_FULL_VERSION)
-SDL_OLDEST_SUPPORTED_FULL_VERSION="1.2.11"
-
-# JPEG (http://www.ijg.org/)
-# (tag : ST_JPEG_OLDEST_SUPPORTED_FULL_VERSION)
-SDL_OLDEST_SUPPORTED_FULL_VERSION="6b"
-
-# SDL_image (http://www.libsdl.org/projects/SDL_image/)
-# (tag : ST_SDL_IMAGE_OLDEST_SUPPORTED_FULL_VERSION)
-SDL_IMAGE_OLDEST_SUPPORTED_FULL_VERSION="1.2.5"
-
-# SDL_mixer (http://www.libsdl.org/projects/SDL_mixer/)
-# (tag : ST_SDL_MIXER_OLDEST_SUPPORTED_FULL_VERSION)
-SDL_MIXER_OLDEST_SUPPORTED_FULL_VERSION="1.2.7"
-
-# SDL_gfx (http://www.ferzkopp.net/~aschiffler/Software/SDL_gfx-2.0/)
-# (tag : ST_SDL_GFX_OLDEST_SUPPORTED_FULL_VERSION)
-SDL_GFX_OLDEST_SUPPORTED_FULL_VERSION="2.0.14"
-
-# SDL_ttf (http://www.libsdl.org/projects/SDL_ttf/)
-# (tag : ST_SDL_TTF_OLDEST_SUPPORTED_FULL_VERSION)
-SDL_TTF_OLDEST_SUPPORTED_FULL_VERSION="2.0.8"
 
 
 # Build section.
@@ -169,6 +143,4 @@ OSDL_MAILING_LIST_BUGTRACKING="osdl-bugs@lists.sourceforge.net"
 
 # (tag : ST_MAILING_LIST_LOANI)
 OSDL_MAILING_LIST_LOANI="osdl-loani-bugs@lists.sourceforge.net"
-
-
 
