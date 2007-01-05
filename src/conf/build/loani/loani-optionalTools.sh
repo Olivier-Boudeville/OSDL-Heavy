@@ -10,7 +10,8 @@
 #OPTIONAL_TOOLS="dot doxygen tidy"
 
 # tidy deactivated since seldom used and causes problems 
-# (configure step fails with libtool, md5sum not constant since no version number provided)
+# (configure step fails with libtool, md5sum not constant since no 
+# version number provided)
 OPTIONAL_TOOLS="dot doxygen"
 
 
@@ -24,9 +25,9 @@ DEBUG "Scheduling retrieval of optional tools ($OPTIONAL_TOOLS)."
 
 
 
-####################################################################################################
+################################################################################
 # dot
-####################################################################################################
+################################################################################
 
 
 getdot()
@@ -66,7 +67,7 @@ preparedot()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${dot_ARCHIVE}."
 		DEBUG "Restoring ${dot_ARCHIVE}."
 		${MV} -f ${dot_ARCHIVE}.save ${dot_ARCHIVE} 
@@ -101,7 +102,7 @@ generatedot()
 	fi
 		
 
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure dot."
 		exit 11
@@ -117,7 +118,7 @@ generatedot()
 		setBuildEnv ${MAKE} 
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build dot."
 		exit 12
@@ -130,7 +131,7 @@ generatedot()
 	#	${MAKE} check 
 	#} 1>>"$LOG_OUTPUT" 2>&1	 
 	#	
-	#if [ $? != "0" ] ; then
+	#if [ $? != 0 ] ; then
 	#	echo
 	#	ERROR "Unable to build dot : auto-check failed."
 	#	exit 12
@@ -160,7 +161,7 @@ generatedot()
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 			
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install dot."
 		exit 13
@@ -186,10 +187,8 @@ cleandot()
 
 
 
-####################################################################################################
-# doxygen
-####################################################################################################
-
+################################################################################# doxygen
+################################################################################
 
 getdoxygen()
 {
@@ -228,7 +227,7 @@ preparedoxygen()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${doxygen_ARCHIVE}."
 		DEBUG "Restoring ${doxygen_ARCHIVE}."
 		${MV} -f ${doxygen_ARCHIVE}.save ${doxygen_ARCHIVE} 
@@ -263,7 +262,7 @@ generatedoxygen()
 	fi
 		
 
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure doxygen."
 		exit 11
@@ -281,7 +280,7 @@ generatedoxygen()
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build doxygen."
 		exit 12
@@ -292,7 +291,7 @@ generatedoxygen()
 	#	${MAKE} docs 
 	#} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	#if [ $? != "0" ] ; then
+	#if [ $? != 0 ] ; then
 	#	echo
 	#	ERROR "Unable to build doxygen doc."
 	#	exit 12
@@ -322,7 +321,7 @@ generatedoxygen()
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install doxygen."
 		exit 13
@@ -349,9 +348,9 @@ cleandoxygen()
 
 
 
-####################################################################################################
+################################################################################
 # tidy
-####################################################################################################
+################################################################################
 
 
 
@@ -393,7 +392,7 @@ preparetidy()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${tidy_ARCHIVE}."
 		DEBUG "Restoring ${tidy_ARCHIVE}."
 		${MV} -f ${tidy_ARCHIVE}.save ${tidy_ARCHIVE} 
@@ -418,7 +417,7 @@ generatetidy()
 	
 	/bin/sh build/gnuauto/setup.sh 1>>"$LOG_OUTPUT" 2>&1		
 
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to run tidy setup."
 		exit 11
@@ -435,7 +434,7 @@ generatetidy()
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	fi
 		
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure tidy."
 		exit 11
@@ -450,7 +449,7 @@ generatetidy()
 		setBuildEnv ${MAKE} 
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build tidy."
 		exit 12
@@ -480,7 +479,7 @@ generatetidy()
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 	
-	if [ $? != "0" ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install tidy."
 		exit 13
@@ -504,6 +503,6 @@ cleantidy()
 }
 
 
-####################################################################################################
+################################################################################
 # End of loani-optionalTools.sh
-####################################################################################################
+################################################################################
