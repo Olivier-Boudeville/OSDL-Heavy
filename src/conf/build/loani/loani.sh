@@ -887,6 +887,12 @@ if [ "$developer_access" -eq 0 ] ; then
 	use_current_svn=0
 fi
 
+if [ "$manage_optional_tools" -eq 0 ] ; then
+	if [ -x "$FLEX" ] ; then
+		ERROR "No executable flex tool available ($FLEX), whereas needed by doxygen."
+	fi
+fi
+
 #TRACE "Prerequesites checked."
 
 
