@@ -11,6 +11,7 @@ latest_stable_osdl="release-0.4.0"
 
 ################################################################################
 
+#TRACE "[loani-requiredTools] Begin"
 
 # Required tools section.
 
@@ -66,6 +67,8 @@ LOG_STATUS "Scheduling retrieval of required tools ($REQUIRED_TOOLS)."
 ################################################################################
 # SDL
 ################################################################################
+
+#TRACE "[loani-requiredTools] SDL"
 
 
 getSDL()
@@ -253,13 +256,14 @@ cleanSDL()
 # JPEG library
 ################################################################################
 
+#TRACE "[loani-requiredTools] JPEG"
 
 
 # This will not rightly compile on windows since this ltconfig does not 
-# support cygwin or mingw.
+# support cygwin or mingw.
 # To overcome this issue, prebuilt binaries will be installed instead.
 # In the future, one might create its own Makefile for JPEG and maybe 
-# make use of libtool 1.5.2 to directly generate the DLL without the 
+# make use of libtool 1.5.2 to directly generate the DLL without the 
 # configure nightmare. 
 # Maybe one could be inspired by the pure cygwin makefile.
 
@@ -498,6 +502,7 @@ cleanlibjpeg()
 # SDL_image_*_precompiled targets.
 ################################################################################
 
+#TRACE "[loani-requiredTools] SDL_image_*_precompiled targets"
 
 
 # Windows binaries.
@@ -630,6 +635,8 @@ cleanSDL_image_win_precompiled()
 # zlib library
 ################################################################################
 
+
+#TRACE "[loani-requiredTools] zlib"
 
 
 getzlib()
@@ -798,6 +805,8 @@ cleanzlib()
 # PNG library
 ################################################################################
 
+
+#TRACE "[loani-requiredTools] PNG"
 
 getlibpng()
 {
@@ -1005,6 +1014,8 @@ cleanlibpng()
 ################################################################################
 
 
+#TRACE "[loani-requiredTools] TIFF"
+
 getlibtiff()
 {
 	LOG_STATUS "Getting TIFF library..."
@@ -1147,6 +1158,8 @@ cleanlibtiff()
 # SDL_image itself
 ################################################################################
 
+
+#TRACE "[loani-requiredTools] SDL_image"
 
 
 getSDL_image()
@@ -1298,7 +1311,7 @@ generateSDL_image()
 			# --disable-sdltest added since configure tries to compile
 			# a test without letting the system libraries locations to be
 			# redefined. Therefore a wrong libstdc++.so could be chosen, 
-			# leading to errors such as : 
+			# leading to errors such as : 
 			# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 			
 	  		setBuildEnv ./configure --with-sdl-prefix=${prefix}/SDL-${SDL_VERSION} --disable-tif --disable-sdltest "LDFLAGS=${LIBFLAG}"
@@ -1395,7 +1408,7 @@ generateSDL_image()
 		
 		# Rename 'libSDL_image.la', to prevent libtool from detecting
 		# it when linking OSDL and issuing very annoying messages twice, 
-		# such as :
+		# such as :
 		# "libtool: link: warning: library `[...]/libSDL_image.la' was moved."
 		
 		${MV} -f ${prefix}/SDL_image-${SDL_image_VERSION}/lib/libSDL_image.la ${prefix}/SDL_image-${SDL_image_VERSION}/lib/libSDL_image.la-hidden-by-LOANI
@@ -1445,6 +1458,9 @@ cleanSDL_image()
 ################################################################################
 # libogg (libogg)
 ################################################################################
+
+
+#TRACE "[loani-requiredTools] libogg"
 
 
 getlibogg()
@@ -1577,7 +1593,7 @@ generatelibogg()
 		if [ $is_windows -eq 0 ] ; then
 		
 			# Always remember that, on Windows, DLL are searched 
-			# through the PATH, not the LD_LIBRARY_PATH.
+			# through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/libogg-${libogg_VERSION}/lib:${PATH}	
 			export PATH
@@ -1653,6 +1669,8 @@ cleanlibogg()
 # libvorbis (libvorbis)
 ################################################################################
 
+
+#TRACE "[loani-requiredTools] libvorbis"
 
 
 getlibvorbis()
@@ -1854,6 +1872,9 @@ cleanlibvorbis()
 ################################################################################
 # SDL_mixer
 ################################################################################
+
+
+#TRACE "[loani-requiredTools] SDL_mixer"
 
 
 getSDL_mixer()
@@ -2074,6 +2095,8 @@ cleanSDL_mixer()
 # SDL_gfx
 ################################################################################
 
+
+#TRACE "[loani-requiredTools] SDL_gfx"
 
 
 getSDL_gfx()
@@ -2315,6 +2338,9 @@ cleanSDL_gfx()
 ################################################################################
 
 
+#TRACE "[loani-requiredTools] freetype"
+
+
 getfreetype()
 {
 	LOG_STATUS "Getting freetype..."
@@ -2481,6 +2507,8 @@ cleanfreetype()
 ################################################################################
 
 
+#TRACE "[loani-requiredTools] SDL_ttf"
+
 
 getSDL_ttf()
 {
@@ -2563,7 +2591,7 @@ generateSDL_ttf()
 		# could be chosen, leading to errors such as : 
 		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 	
-		# SDL_ttf.c needs freetype/internal/ftobjs.h, which is in the
+		# SDL_ttf.c needs freetype/internal/ftobjs.h, which is in the
 		# freetype sources only (not installed), hence the CPPFLAGS :
 		
 		setBuildEnv ./configure --prefix=${prefix}/SDL_ttf-${SDL_ttf_VERSION} --exec-prefix=${prefix}/SDL_ttf-${SDL_ttf_VERSION} --with-freetype-prefix=${prefix}/freetype-${freetype_VERSION} --with-freetype-exec-prefix=${prefix}/freetype-${freetype_VERSION} --with-sdl-prefix=${prefix}/SDL-${SDL_VERSION} --with-sdl-exec-prefix=${prefix}/SDL-${SDL_VERSION} --disable-sdltest CPPFLAGS="-I${repository}/freetype-${freetype_VERSION}/include"
@@ -2591,8 +2619,8 @@ generateSDL_ttf()
 	#${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/freetype.h>|#include <ft2build.h>?#include FT_FREETYPE_H??#include <freetype/freetype.h>|1' | ${TR} "?" "\n" > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c
 	
 	# This one works, at least for SDL_ttf-2.0.8 :
-	# See also :
-	#    - http://www.freetype.org/freetype2/freetype-2.2.0.html
+	# See also :
+	#    - http://www.freetype.org/freetype2/freetype-2.2.0.html
 	#    - http://www.freetype.org/freetype2/patches/rogue-patches.html
 	${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/internal/ftobjs.h>||g' | sed 's|library->memory|NULL|g' > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c                                                                                  
 	if [ $? != 0 ] ; then
@@ -2682,12 +2710,18 @@ cleanSDL_ttf()
 ################################################################################
 
 
+#TRACE "[loani-requiredTools] Libtool"
+
+#TRACE "[loani-requiredTools] Libtool : getlibtool"
+
 getlibtool()
 {
 	LOG_STATUS "Getting libtool..."
 	launchFileRetrieval libtool
 }
 
+
+#TRACE "[loani-requiredTools] Libtool : preparelibtool"
 
 preparelibtool()
 {
@@ -2723,7 +2757,7 @@ preparelibtool()
 	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libtool_ARCHIVE}."
 		LOG_STATUS "Restoring ${libtool_ARCHIVE}."
-		${MV} -f ${libtool_ARCHIVE.save} ${libtool_ARCHIVE} 
+		${MV} -f ${libtool_ARCHIVE}.save ${libtool_ARCHIVE} 
 		exit 10
 	fi
 	
@@ -2734,6 +2768,8 @@ preparelibtool()
 	
 }
 
+
+#TRACE "[loani-requiredTools] Libtool : generatelibtool"
 
 generatelibtool()
 {
@@ -2909,6 +2945,8 @@ generatelibtool()
 }
 
 
+#TRACE "[loani-requiredTools] Libtool : cleanlibtool"
+
 cleanlibtool()
 {
 	LOG_STATUS "Cleaning libtool build tree..."
@@ -2921,6 +2959,9 @@ cleanlibtool()
 ################################################################################
 # Windows pthreads for POSIX compliance.
 ################################################################################
+
+
+#TRACE "[loani-requiredTools] Windows pthreads"
 
 
 # Using precompiled binaries.
@@ -3117,6 +3158,9 @@ cleanwin_pthread()
 ################################################################################
 
 
+#TRACE "[loani-requiredTools] Ceylan"
+
+
 getCeylan()
 {
 		
@@ -3133,13 +3177,13 @@ getCeylan()
 	
 	# Here we are to use SVN :
 	
-	# To avoid a misleading message when the retrieval is finished :
+	# To avoid a misleading message when the retrieval is finished :
 	Ceylan_ARCHIVE="from SVN"
 	
 	cd ${repository}
 
 
-	# Manage back-up directory if necessary :
+	# Manage back-up directory if necessary :
 	
 	if [ -d "${repository}/ceylan" ] ; then
 		if [ -d "${repository}/ceylan.save" ] ; then
@@ -3350,7 +3394,7 @@ generateCeylan()
 			exit 10
 		fi	
 		
-		# Going to the root of the source to continue the normal build process :
+		# Going to the root of the source to continue the normal build process :
 		cd $repository/ceylan/Ceylan/trunk
 	
 	else
@@ -3359,7 +3403,7 @@ generateCeylan()
 	fi
 	
 	
-	# Rest of the build is common to autogen-based and release-based trees :
+	# Rest of the build is common to autogen-based and release-based trees :
 		
 	
 	printItem "configuring"
@@ -3471,7 +3515,7 @@ generateCeylan()
 		
 	fi
 		
-	# Rest of the build is common to autogen-based and release-based trees :
+	# Rest of the build is common to autogen-based and release-based trees :
 
 	if [ -n "$prefix" ] ; then	
 		{				
@@ -3546,6 +3590,9 @@ cleanCeylan()
 ################################################################################
 
 
+#TRACE "[loani-requiredTools] OSDL"
+
+
 getOSDL()
 {
 
@@ -3565,13 +3612,13 @@ getOSDL()
 	
 	# Here we are to use SVN :
 	
-	# To avoid a misleading message when the retrieval is finished :
+	# To avoid a misleading message when the retrieval is finished :
 	OSDL_ARCHIVE="from SVN"
 	
 	cd ${repository}
 
 
-	# Manage back-up directory if necessary :
+	# Manage back-up directory if necessary :
 	
 	if [ -d "${repository}/osdl" ] ; then
 		if [ -d "${repository}/osdl.save" ] ; then
@@ -3779,7 +3826,7 @@ generateOSDL()
 			exit 11
 		fi	
 	
-		# Going to the root of the source to continue the normal build process :
+		# Going to the root of the source to continue the normal build process :
 		cd $repository/osdl/OSDL/trunk
 	
 	else
@@ -3788,7 +3835,7 @@ generateOSDL()
 	fi
 		
 		
-	# Rest of the build is common to autogen-based and release-based trees :
+	# Rest of the build is common to autogen-based and release-based trees :
 		
 		
 	printItem "configuring"
@@ -3901,7 +3948,7 @@ generateOSDL()
 		
 	fi
 		
-	# Rest of the build is common to autogen-based and release-based trees :
+	# Rest of the build is common to autogen-based and release-based trees :
 
 
 	if [ -n "$prefix" ] ; then	
@@ -3969,6 +4016,8 @@ cleanOSDL()
 	# Nothing to do : we want to be able to go on with the OSDL build.
 }
 
+
+#TRACE "[loani-requiredTools] End"
 
 
 ################################################################################
