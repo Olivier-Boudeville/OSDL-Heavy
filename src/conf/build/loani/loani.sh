@@ -68,6 +68,8 @@ launchFileRetrieval()
 # Example : launchFileRetrieval SDL
 {
 
+	#TRACE "launchFileRetrieval called"
+	
 	package_name="$1"
 	archive_name="${package_name}_ARCHIVE"
 	eval archive_file="\$$archive_name"
@@ -76,8 +78,14 @@ launchFileRetrieval()
 	md5_name="${package_name}_MD5"
 	eval md5=\$$md5_name
 	
+	# Is file already present in cache ?
+	
 	if [ -f "${full_archive_path}" ] ; then
-		if [ `${MD5SUM} "${full_archive_path}" | ${AWK} '{printf $1}'` = "$md5" ] ; then
+	
+		computed_md5=`${MD5SUM} "${full_archive_path}" | ${AWK} '{printf $1}'`
+		#DEBUG "launchFileRetrieval : ${full_archive_path} : $computed_md5"
+
+		if [ "${computed_md5}" = "$md5" ] ; then
 			DEBUG "${archive_file} found in cache, its integrity has been checked, retrieved."
 			return 0
 		else
@@ -85,17 +93,18 @@ launchFileRetrieval()
 			return 1
 		fi	
 	else
-
-		DEBUG "${archive_file} not found in cache, retrieving it from network (${download_url})."
 	
-		# Having to guess the download location to be used :
+		# File not here, having to guess the download location to be used :
 
 		# Will set 'current_download_location' 
 		# (iterate through mirrors if needed) :
 		getDownloadLocation ${package_name}
 		
 		download_url="${current_download_location}/${archive_file}"
-		if [ "$be_quiet" -eq 1 ] ; then 
+		
+		DEBUG "${archive_file} not found in cache, retrieving it from network (${download_url})."
+		
+		if [ $be_quiet -eq 1 ] ; then 
 			DISPLAY "      ----> enqueuing ${archive_file} in download spool"
 		fi
 		
@@ -152,7 +161,7 @@ getDownloadLocation()
 	
 			private_mirror_used="${package_name}_USED_MIRROR"
 			eval actual_private_mirror_used="\$$private_mirror_used"
-			if [ "${actual_private_mirror_used}" -eq 0 ] ; then
+			if [ "${actual_private_mirror_used}" = "0" ] ; then
 				ERROR "${package_name} archive not available through main server or known mirrors."
 				exit 12
 			else
@@ -203,7 +212,7 @@ getFileAvailability()
 # Usage   : getFileAvailability <file name> <md5 sum of file>
 # Example : getFileAvailability dummy.tgz "886924ab144af672af9596115088ff20"
 {
-
+	
 	filename=${1}
 	full_file_path=${repository}/${filename}
 	md5=${2}
@@ -223,7 +232,10 @@ getFileAvailability()
 			WARNING "<${filename}> found in cache, no md5sum given, no checking performed."
 			return 0
 		else
-   		  	computed_md5=`${MD5SUM} "${full_file_path}" | ${AWK} '{printf $1}'`      
+
+   		  	computed_md5=`${MD5SUM} "${full_file_path}" | ${AWK} '{printf $1}'`      		
+			#DEBUG "getFileAvailability : ${full_file_path} : computed $computed_md5, expected ${md5}"
+			
 			if [ "${computed_md5}" = "${md5}" ] ; then
 				DEBUG "<${filename}> found in cache and its md5sum is correct."
 				return 0
@@ -405,7 +417,7 @@ launchwizard()
 }
 
 
-# Too early, no TRACE available.
+# Too early, no #TRACE available.
 
 
 # Checking own LOANI's pre requesites.
@@ -433,7 +445,7 @@ fi
 
 . $SHELL_TOOLBOX
 
-TRACE "Just after defaultLocations.sh"
+#TRACE "Just after defaultLocations.sh"
 
 if [ $platform_family_detected -eq 1 ] ; then
 	ERROR "the detection of the platform family did not succeed."
@@ -465,7 +477,7 @@ fi
 
 #displayPlatformFlags
 
-TRACE "Beginning of LOANI."
+#TRACE "Beginning of LOANI."
  
 # Pre defined set of default behaviour :
 
@@ -587,7 +599,7 @@ SAVED_CMD_LINE="$0 $*"
 #   --onlyOptionalTools : only optional tools will be installed.
 
 
-TRACE "Default settings set."
+#TRACE "Default settings set."
 
 while [ $# -gt 0 ] ; do
 
@@ -763,12 +775,12 @@ while [ $# -gt 0 ] ; do
 
 done 
 
-TRACE "Command line parsed."
+#TRACE "Command line parsed."
 
 
 # Welcome message.
 
-if [ "$be_quiet" -eq 1 ] ; then
+if [ $be_quiet -eq 1 ] ; then
 
 	printColor "\n\n\t< Welcome to Loani >" $cyan_text
 	DISPLAY "\nThis is the Lazy OSDL Automatic Net Installer, dedicated to the lazy and the fearless."
@@ -778,7 +790,7 @@ fi
 
 
 # Entering wizard mode if asked.
-TRACE "Before wizard"
+#TRACE "Before wizard"
 
 if [ "$wizard" -eq 0 ] ; then
 	launchwizard
@@ -916,7 +928,7 @@ fi
 
 USER_ID=`${ID} -u`
 
-TRACE "Prerequesites checked."
+#TRACE "Prerequesites checked."
 
 
 # Setting and initializing OSDL environment file :
@@ -951,7 +963,7 @@ fi
 DISPLAY "Retrieving all pre requesites, pipe-lining when possible."
 
 
-TRACE "Sourcing toolsets."
+#TRACE "Sourcing toolsets."
 
 
 # First, select wanted tools.
@@ -980,7 +992,7 @@ if [ "$manage_build_tools" -eq 0 ] ; then
 fi
 
 
-TRACE "Toolsets sourced."
+#TRACE "Toolsets sourced."
 
 DISPLAY "Target package list is <$target_list>."
 
@@ -998,12 +1010,12 @@ DEBUG "Detected available size on current disk is ${AVAILABLE_SIZE} megabytes."
 
 MINIMUM_SIZE=400
 
-if [ "$manage_build_tools" -eq 0 ] ; then
-	let "MINIMUM_SIZE += 800"
+if [ $manage_build_tools -eq 0 ] ; then
+	MINIMUM_SIZE=`expr $MINIMUM_SIZE + 900`
 fi
 
-if [ "$manage_optional_tools" -eq 0 ] ; then
-	let "MINIMUM_SIZE += 100"
+if [ $manage_optional_tools -eq 0 ] ; then
+	MINIMUM_SIZE=`expr $MINIMUM_SIZE + 200`
 fi
 
 
@@ -1028,6 +1040,8 @@ for t in $target_list; do
 	
 	eval actual_target_archive="\$$target_archive"
 	eval actual_target_md5="\$$target_md5"
+	
+	#TRACE "Getting availability of ${actual_target_archive} whose expected MD5 is ${actual_target_md5}"
 	
 	getFileAvailability ${actual_target_archive} ${actual_target_md5}
 	res=$?
@@ -1133,8 +1147,8 @@ if [ -n "$retrieve_list" ] ; then
 
 	# Pre-check that no wget process is already running, since it would 
 	# confuse LOANI :
-	if ${PS} -U ${USER_ID} -o comm | ${GREP} -v grep | ${GREP} wget; then
-		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} -U ${USER_ID} -o comm | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running anymore in parallel with LOANI before re-launching our script, since it might confuse LOANI."
+	if ${PS} ax | ${GREP} -v grep | ${GREP} wget ; then
+		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} ax | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running anymore in parallel with LOANI before re-launching our script, since it might confuse LOANI."
 		exit 8
 	fi
 		
@@ -1143,19 +1157,28 @@ fi
 
 # Third step, retrieve the lacking ones.
 
+# Needed to force the whole loop to run one more time, to prevent following
+# scenario :
+#  1. launchFileRetrieval returned 2, because a file is still being downloaded,
+#  2. the file is retrieved and wget stops
+#  3. this loop sees launchFileRetrieval returned 2 but does not find any wget
+# running, concludes wrongly the file is corrupted.
+double_checked=1
 
 while [ -n "$retrieve_list" ] ; do
 	
 	DEBUG "Iterating on following retrieve list : [$retrieve_list]"
 		
 	for t in $retrieve_list ; do
-		# Retrieves the file.
+		#TRACE "Taking care of ${t}"
+		
+		# Retrieves the file, and retrieve the result of the operation :
 		get${t}
 		res=$?
-		if [ "$res" -eq 0 ] ; then
+		if [ $res -eq 0 ] ; then
 			# Success, one fewer file to take care of.
 			DEBUG "Removing $t of retrieve list and adding it to available list."
-			if [ "$be_quiet" -eq 1 ] ; then 
+			if [ $be_quiet -eq 1 ] ; then 
 				target_file="${t}_ARCHIVE"
 				eval actual_target_file="\$$target_file"
 				DISPLAY "      <---- ${t} retrieved [${actual_target_file}]"
@@ -1169,26 +1192,39 @@ while [ -n "$retrieve_list" ] ; do
 			done
 			retrieve_list=$new_retrieve_list
 		else
-			# md5sum is not the expected one.
-			# Still being downloaded ? 						
-			if ! ${PS} -U ${USER_ID} -o comm | ${GREP} wget | ${GREP} -v -i grep 1>/dev/null 2>&1 ; then
+		
+			DEBUG "md5sum is not the expected one, still being downloaded ?"									
+			if ! ${PS} ax | ${GREP} wget | ${GREP} -v -i grep 1>/dev/null 2>&1 ; then
 				# No !
+
 				DEBUG "No wget running, having downloaded the file, but its md5sum seems to be wrong."
 				
 				if [ "$do_strict_md5" -eq 0 ] ; then
-					ERROR "Unable to download file for $t with correct md5 checksum, and strict md5 checking mode is on."
-					exit 4
+				
+					if [ $double_checked -eq 1 ] ; then 
+						double_checked=0
+					else
+						ERROR "Unable to download file for $t with correct md5 checksum, and strict md5 checking mode is on."
+						exit 4
+					fi	
+					
 				else
 					target_file=${t}_ARCHIVE
 					eval actual_target_file="\$$target_file"
 
+					if [ ! -e "$repository/${actual_target_file}" ] ; then
+						DEBUG "Unable to download $t (no $repository/${actual_target_file} file found), forcing mirror change."
+						break					
+					fi
+					
 					if [ `${DU} $repository/${actual_target_file} | ${AWK} '{printf $1}'` -eq 0 ] ; then
 						DEBUG "Unable to download a non-empty file for $t (${actual_target_file}), removing this file to force mirror change."
+						DEBUG "File is $repository/${actual_target_file}, "`ls -l $repository/${actual_target_file}` `${MD5SUM} $repository/${actual_target_file}`
 						${RM} -f $repository/${actual_target_file}
 						break
 					fi
 					WARNING "The downloaded file for $t has not the right md5 checksum, continuing anyway (strict md5 checking mode is off)"
-					if [ "$be_quiet" -eq 1 ] ; then 
+					if [ $be_quiet -eq 1 ] ; then 
 						target_file="${t}_ARCHIVE"
 						eval actual_target_file="\$$target_file"
 						DISPLAY "      <---- ${t} retrieved [${actual_target_file}]"
@@ -1202,7 +1238,9 @@ while [ -n "$retrieve_list" ] ; do
 						fi
 					done
 					retrieve_list=$new_retrieve_list										
-				fi			
+				fi
+			else
+				DEBUG "(wget still running)"				
 			fi # wget not running
 		fi # get result	
 		
