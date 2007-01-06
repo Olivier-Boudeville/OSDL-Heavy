@@ -10,7 +10,7 @@
 COMMON_BUILD_TOOLS="gcc binutils gdb"
 
 # Automake, autconf, aclocal, make, etc. are deemed most basic build tools
-# and are supposed to be available if needed.
+# and are supposed to be available if needed.
 
 
 # Updating retrieve list.
@@ -484,9 +484,9 @@ generategdb()
 	
 	if [ $? != "0" ] ; then
 		echo
-		# Make may fail because libncurses if lacking :
-		# Debian users can try : 'apt-get build-dep gdb'
-		# before re-running LOANI.
+		# Make may fail because libncurses if lacking :
+		# Debian users can try : 'apt-get build-dep gdb'
+		# before re-running LOANI.
 		ERROR "Unable to build gdb (hint : is libncurses5-dev available ?)."
 		exit 12
 	fi
