@@ -877,7 +877,28 @@ generatelibpng()
 	if [ $is_linux -eq 0 ] ; then
 		${CP} -f scripts/makefile.linux makefile
 	fi
+		
+	if [ $is_solaris -eq 0 ] ; then
+		WARNING "generatelibpng is selecting makefile.solaris, but there is also makefile.so9 and makefile.sunos"
+		${CP} -f scripts/makefile.solaris makefile
+	fi
+		
+	if [ $is_aix -eq 0 ] ; then
+		${CP} -f scripts/makefile.aix makefile
+	fi
 	
+	if [ $is_freebsd -eq 0 ] ; then
+		${CP} -f scripts/makefile.freebsd makefile
+	fi
+	
+	if [ $is_netbsd -eq 0 ] ; then
+		${CP} -f scripts/makefile.netbsd makefile
+	fi
+
+	if [ $is_openbsd -eq 0 ] ; then
+		${CP} -f scripts/makefile.openbsd makefile
+	fi
+
 	if [ $is_pure_cygwin -eq 0 ] ; then
 		${CP} -f scripts/makefile.cygwin makefile
 	fi
@@ -896,7 +917,7 @@ generatelibpng()
 	fi
 		
 	if [ ! -f "makefile" ] ; then
-		ERROR "Your platform does not seem to be supported by LOANI. If you want to continue nevertheless, you must select in "`pwd`"/scripts the makefile.XXX where XXX matches your platform, and copy it in "`pwd`" : cd "`pwd`"; cp -f scripts/makefile.XXX makefile"
+		ERROR "Your platform does not seem to be supported by LOANI. If you want to continue nevertheless, you must select in "`pwd`"/scripts the makefile.XXX where XXX matches your platform, and copy and rename it in "`pwd`" : cd "`pwd`"; cp -f scripts/makefile.XXX makefile"
 		if ! askDefaultYes "Do you want to continue ? [press y only when the relevant makefile has been copied, n or CTRL-C to stop " ; then
 			ERROR "Installation cancelled."
 			exit 0
