@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="Usage : "`basename $0`" [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --loani-repository <path> ] [ --loani-installations <path> ] [ --ceylan-install-prefix <path> ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.\n\t --disable-all-features : build a library with none of the optional features\n\t --no-build : stop just after having generated the configure script\n\t --chain-test : build and install the library, build the test suite and run it against the installation\n\t --full-test : build and install the library, perform all available tests, including 'make distcheck' and the full test suite\n\t --only-prepare-dist : configure all but do not build anything\n\t --loani-repository : specify where the LOANI repository can be found. If none is specified, it will be guessed from the current directory\n\t --loani-installations : specify where the LOANI installations can be found. If none is specified, it will be guessed from the current directory\n\t --ceylan-install-prefix : specify where the Ceylan installation can be found.\n\t --configure-options : all following options will be directly passed whenever configure is run"
+USAGE="Usage : "`basename $0`" [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --loani-repository <path> ] [ --loani-installations <path> ] [ --ceylan-install-prefix <path> ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.\n\t --disable-all-features : build a library with none of the optional features\n\t --no-build : stop just after having generated the configure script\n\t --chain-test : build and install the library, build the test suite and run it against the installation\n\t --full-test : build and install the library, perform all available tests, including 'make distcheck' and the full test suite\n\t --only-prepare-dist : configure all but do not build anything\n\t --loani-repository : specify where the LOANI repository can be found. If none is specified, it will be guessed from the current directory\n\t --loani-installations : specify where the LOANI installations can be found. If none is specified, it will be guessed from the current directory\n\t --ceylan-install-prefix : specify where the Ceylan installation can be found.\n\t --configure-options : all following options will be directly passed whenever configure is run"
 
 
 # Main settings section.
@@ -13,7 +13,7 @@ osdl_features_opt=""
 # To check the user can override them :
 #test_overriden_options="CPPFLAGS=\"-DTEST_CPPFLAGS\" LDFLAGS=\"-LTEST_LDFLAGS\""
 
-# Default value guessed from current path :
+# Default value guessed from current path :
 loani_repository=`pwd|sed 's|/osdl/OSDL/trunk/src/conf/build||1'`
 #echo "loani_repository = $loani_repository"
 
@@ -141,7 +141,7 @@ while [ "$#" -gt "0" ] ; do
 done
 
 
-# debug mode activated iff equal to true (0) :
+# debug mode activated iff equal to true (0) :
 debug_mode=1
 
 debug()
@@ -190,7 +190,7 @@ RUNNING_DIR=`pwd`
 SOURCE_OFFSET="../../.."
 
 
-# Prefix section for the OSDL installation.
+# Prefix section for the OSDL installation.
 
 PREFIX_DEFAULT=$loani_installations
 debug "Default prefix = ${PREFIX_DEFAULT}"
@@ -261,31 +261,35 @@ if [ $loani_installations_specified -eq 1 ] ; then
 fi
 
 
-# Guessing where Ceylan should be found :
-#   1. try under corresponding specified or guessed LOANI-installations 
-#   2. otherwise, look into standard locations (no specific option passed)
+# Guessing where Ceylan should be found :
+#   1. try under corresponding specified or guessed LOANI-installations 
+#   2. otherwise, look into standard locations (no specific option passed)
 
 if [ -z "${ceylan_location}" ] ; then
 
-	if [ -d "${loani_installations}/include/Ceylan" ] ; then
-		ceylan_location="${loani_installations}"
+	# Ignore elements of Makefile syntax :
+	source ../OSDLSettings.inc 2>/dev/null
+		ceylan_loanized_dir="${loani_installations}/Ceylan-${CEYLAN_OLDEST_SUPPORTED_MAJOR}.${CEYLAN_OLDEST_SUPPORTED_MINOR}"
+	
+	if [ -d "${ceylan_loanized_dir}" ] ; then
+		ceylan_location="${ceylan_loanized_dir}"
 	fi
 	
 fi
 
 
 if [ -n "${ceylan_location}" ] ; then
-	# Update accordingly the configure prefix for Ceylan macro CEYLAN_PATH :
-	configure_opt="${configure_opt} --with-ceylan-prefix=$loani_installations"
+	# Update accordingly the configure prefix for Ceylan macro CEYLAN_PATH :
+	configure_opt="${configure_opt} --with-ceylan-prefix=$ceylan_location"
 else
-	# The default install location when no prefix is used :
+	# The default install location when no prefix is used :
 	ceylan_location="/usr/local"
 fi
 
 #echo "ceylan_location = ${ceylan_location}"
 
 
-# Retrieving Ceylan substitute.sh script, needed by MakeConfigure :
+# Retrieving Ceylan substitute.sh script, needed by MakeConfigure :
 CEYLAN_SHARED_DIR=${ceylan_location}/share/Ceylan
 if [ ! -d "${CEYLAN_SHARED_DIR}" ] ; then
 	echo -e "Error, no Ceylan share directory found ($CEYLAN_SHARED_DIR)" 1>&2	
@@ -301,11 +305,11 @@ fi
 
 # Overall autotools settings :
 
-# Be verbose for debug purpose :
+# Be verbose for debug purpose :
 #verbose="--verbose"
 verbose=""
 
-# Copy files instead of using symbolic link :
+# Copy files instead of using symbolic link :
 copy="--copy"
 #copy=""
 
@@ -313,7 +317,7 @@ copy="--copy"
 #force="--force"
 force=""
 
-# Warning selection : 
+# Warning selection : 
 warnings="--warnings=all"
 #warnings=""
 
@@ -351,9 +355,9 @@ execute()
 			AUTOMAKE_HINT="\nTo upgrade automake and aclocal from Debian-based distributions, do the following as root : 'apt-get install automake1.9' which updates aclocal too. One has nonetheless to update the symbolic links /etc/alternatives/aclocal so that it points to /usr/bin/aclocal-1.9, and /etc/alternatives/automake so that it points to /usr/bin/automake-1.9"
 			
 			if [ "$1" == "aclocal" ]; then
-				echo -e "\nNote : if aclocal is failing since AM_CXXFLAGS (used in configure.ac) 'cannot be found in library', then check that your aclocal version is indeed 1.9 or newer. For example, with Debian-based distributions, /usr/bin/aclocal is a symbolic link to /etc/alternatives/aclocal, which itself is a symbolic link which may or may not point to the expected aclocal version. Your version of $1 is :\n\t" `$1 --version` "\n\n\t" `/bin/ls -l --color $(type -p $1)` "${AUTOMAKE_HINT}"
+				echo -e "\nNote : if aclocal is failing since AM_CXXFLAGS (used in configure.ac) 'cannot be found in library', then check that your aclocal version is indeed 1.9 or newer. For example, with Debian-based distributions, /usr/bin/aclocal is a symbolic link to /etc/alternatives/aclocal, which itself is a symbolic link which may or may not point to the expected aclocal version. Your version of $1 is :\n\t" `$1 --version` "\n\n\t" `/bin/ls -l --color $(type -p $1)` "${AUTOMAKE_HINT}"
 			elif [ "$1" == "automake" ]; then
-				echo -e "\nNote : check that your automake version is indeed 1.9 or newer. For example, with Debian-based distributions, /usr/bin/automake is a symbolic link to /etc/alternatives/automake, which itself is a symbolic link which may or may not point to the expected automake version. Your version of $1 is :\n\t" `$1 --version` "\n\n\t" `/bin/ls -l --color $(type -p $1)` "${AUTOMAKE_HINT}"
+				echo -e "\nNote : check that your automake version is indeed 1.9 or newer. For example, with Debian-based distributions, /usr/bin/automake is a symbolic link to /etc/alternatives/automake, which itself is a symbolic link which may or may not point to the expected automake version. Your version of $1 is :\n\t" `$1 --version` "\n\n\t" `/bin/ls -l --color $(type -p $1)` "${AUTOMAKE_HINT}"
 			elif [ "$1" == "./configure" ]; then
 				echo -e "\nNote : check the following log :" `pwd`/config.log
   			fi
@@ -407,7 +411,7 @@ generateCustom()
 
 	CONFIG_TARGET=configure.ac
 	
-	# Config files are to lie in 'src/conf/build' directory :
+	# Config files are to lie in 'src/conf/build' directory :
 	CONFIG_DIR=$RUNNING_DIR
 	
 	SETTINGS_FILE="OSDLSettings.inc"
@@ -418,13 +422,13 @@ generateCustom()
 	# Generates 'configure.ac' with an already cooked dedicated Makefile :
 	execute make -f MakeConfigure clean config-files SUBSTITUTE=$SUBSTITUTE_SCRIPT
 	
-	# Prepare to run everything from the root directory (containing 'src'
+	# Prepare to run everything from the root directory (containing 'src'
 	# and 'test').
 	# This is because automake and al *must* be run from that directory
-	# and that configure.ac has a hardcoded AC_CONFIG_AUX_DIR
+	# and that configure.ac has a hardcoded AC_CONFIG_AUX_DIR
 	
 	
-	# Go to the top directory of the sources :
+	# Go to the top directory of the sources :
 	cd $SOURCE_OFFSET
 		
 	echo
@@ -469,7 +473,7 @@ generateCustom()
 	
 	ACLOCAL_OUTPUT=src/conf/build/m4/aclocal.m4
 	
-	# Do not use '--acdir=.' since it prevents aclocal from writing its file :
+	# Do not use '--acdir=.' since it prevents aclocal from writing its file :
 	execute aclocal -I ${M4_DIR} -I ${M4_CEYLAN_DIR} --output=$ACLOCAL_OUTPUT $force $verbose
 
 	# automake wants absolutely to find aclocal.m4 in the top-level directory :
