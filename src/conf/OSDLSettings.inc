@@ -20,9 +20,8 @@
 # here, and the result will be the expected 'configure.ac' filled appropriately.  
 # This settings file is only to be sourced for the substitution process, it
 # should not be used afterwards in the building process. Hence no Makefile
-# should include it. The proper way for them to access the settings is
-# to include the 'Makevars.inc' file, which is specifically generated with the
-# correct values by the configuration process.   
+# should include it. The proper way for them to access these settings is
+# to use Autoconf variables (ex : @HELLO@). 
 
 
 # Filenames are relative to the 'trunk/src' directory.
