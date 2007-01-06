@@ -178,10 +178,11 @@ generateSDL()
 	
 		echo "# SDL section." >> ${OSDL_ENV_FILE}
 		
-		echo "PATH=${prefix}/SDL-${SDL_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_PREFIX=${prefix}/SDL-${SDL_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$SDL_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 		echo "export PATH" >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/SDL-${SDL_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 		
 		PATH=${prefix}/SDL-${SDL_VERSION}/bin:${PATH}
@@ -196,7 +197,7 @@ generateSDL()
 			PATH=${prefix}/SDL-${SDL_VERSION}/lib:${PATH}	
 			export PATH
 				
-			echo "PATH=:${prefix}/SDL-${SDL_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 		fi
 		
@@ -204,7 +205,8 @@ generateSDL()
 				
         LIBPATH="-L${prefix}/SDL-${SDL_VERSION}/lib"
         
-		# Don't ever imagine that to avoid bad nedit syntax highlighting you could change :
+		# Do not ever imagine that to avoid bad nedit syntax highlighting 
+		# you could change :
 		# include/*.h to "include/*.h" in next line.
 		# It would fail at runtime with "include/*.h" not found...
 		
@@ -429,7 +431,8 @@ generatelibjpeg()
 		
 		echo "# libjpeg section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/jpeg-${libjpeg_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "libjpeg_PREFIX=${prefix}/jpeg-${libjpeg_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$libjpeg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 		
 		# In order SDL_image configure does not fail :
@@ -442,7 +445,7 @@ generatelibjpeg()
 			PATH=${prefix}/jpeg-${libjpeg_VERSION}/lib:${PATH}	
 			export PATH
 				
-			echo "PATH=${prefix}/jpeg-${libjpeg_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$libjpeg_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH"
 			
 		fi
@@ -746,7 +749,8 @@ generatezlib()
 		
 		echo "# zlib section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/zlib-${zlib_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "zlib_PREFIX=${prefix}/zlib-${zlib_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$zlib_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 
 		# In order SDL_image configure does not fail :
@@ -754,12 +758,13 @@ generatezlib()
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched through
+			# the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/zlib-${zlib_VERSION}/lib:${PATH}	
 			export PATH
 			
-			echo "PATH=${prefix}/zlib-${zlib_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$zlib_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 			
 		fi
@@ -965,7 +970,8 @@ generatelibpng()
 			
 		echo "# libpng section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/PNG-${libpng_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "libpng_PREFIX=${prefix}/PNG-${libpng_VERSION}" >> ${OSDL_ENV_FILE} 
+		echo "LD_LIBRARY_PATH=\$libpng_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 	
 		# In order SDL_image configure does not fail :
@@ -973,11 +979,12 @@ generatelibpng()
 		export LD_LIBRARY_PATH
 
 		if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched through
+			# the PATH, not the LD_LIBRARY_PATH.
 			PATH=${prefix}/PNG-${libpng_VERSION}/lib:${PATH}	
 			export PATH	
 			
-			echo "PATH=${prefix}/PNG-${libpng_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$libpng_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 		fi
 
@@ -1400,18 +1407,20 @@ generateSDL_image()
 	{		
 		echo "# SDL_image section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/SDL_image-${SDL_image_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_image_PREFIX=${prefix}/SDL_image-${SDL_image_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_image_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 
 		LD_LIBRARY_PATH=${prefix}/SDL_image-${SDL_image_VERSION}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched 
+			# through the PATH, not the LD_LIBRARY_PATH.
 			PATH=${prefix}/SDL_image-${SDL_image_VERSION}/lib:${PATH}	
 			export PATH
 				
-			echo "PATH=${prefix}/SDL_image-${SDL_image_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL_image_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 		fi
 
@@ -1605,7 +1614,8 @@ generatelibogg()
 		INCLUDE
 		echo "# libogg section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/libogg-${libogg_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "libogg_PREFIX=${prefix}/libogg-${libogg_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$libogg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 
 		LD_LIBRARY_PATH=${prefix}/libogg-${libogg_VERSION}/lib:${LD_LIBRARY_PATH}
@@ -1619,7 +1629,7 @@ generatelibogg()
 			PATH=${prefix}/libogg-${libogg_VERSION}/lib:${PATH}	
 			export PATH
 			
-			echo "PATH=${prefix}/libogg-${libogg_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$libogg_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 			
 		fi
@@ -1812,7 +1822,8 @@ generatelibvorbis()
 	{		
 		echo "# libvorbis section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/libvorbis-${libvorbis_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "libvorbis_PREFIX=${prefix}/libvorbis-${libvorbis_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$libvorbis_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 
 		LD_LIBRARY_PATH=${prefix}/libvorbis-${libvorbis_VERSION}/lib:${LD_LIBRARY_PATH}
@@ -1824,7 +1835,7 @@ generatelibvorbis()
 			PATH=${prefix}/libvorbis-${libvorbis_VERSION}/lib:${PATH}	
 			export PATH
 				
-			echo "PATH=${prefix}/libvorbis-${libvorbis_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$libvorbis_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 		fi
 
@@ -2034,7 +2045,8 @@ generateSDL_mixer()
 	{		
 		echo "# SDL_mixer section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_mixer_PREFIX=${prefix}/SDL_mixer-${SDL_mixer_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_mixer_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 
 		LD_LIBRARY_PATH=${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib:${LD_LIBRARY_PATH}
@@ -2042,12 +2054,13 @@ generateSDL_mixer()
 		
 		if [ $is_windows -eq 0 ] ; then
 		
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched 
+			# through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib:${PATH}	
 			export PATH
 				
-			echo "PATH=${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL_mixer_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 		fi
 
@@ -2281,7 +2294,8 @@ generateSDL_gfx()
 	
 		echo "# SDL_gfx section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/SDL_gfx-${SDL_gfx_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_gfx_PREFIX=${prefix}/SDL_gfx-${SDL_gfx_VERSION}" >> ${OSDL_ENV_FILE} 
+		echo "LD_LIBRARY_PATH=\$SDL_gfx_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 			
 		LD_LIBRARY_PATH=${prefix}/SDL_gfx-${SDL_gfx_VERSION}/lib:${LD_LIBRARY_PATH}
@@ -2293,7 +2307,7 @@ generateSDL_gfx()
 			PATH=${prefix}/SDL_gfx-${SDL_gfx_VERSION}/lib:${PATH}	
 			export PATH
 			
-			echo "PATH=${prefix}/SDL_gfx-${SDL_gfx_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL_gfx_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 			
 		fi
@@ -2465,7 +2479,8 @@ generatefreetype()
 	{		
 		echo "# freetype section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/freetype-${freetype_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "freetype_PREFIX=${prefix}/freetype-${freetype_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$freetype_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 	
 		if [ $is_windows -eq 0 ] ; then
@@ -2476,7 +2491,7 @@ generatefreetype()
 			PATH=${prefix}/freetype-${freetype_VERSION}/lib:${PATH}	
 			export PATH
 			
-			echo "PATH=${prefix}/freetype-${freetype_VERSION}:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$freetype_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 			
 		fi
@@ -2669,7 +2684,8 @@ generateSDL_ttf()
 	{		
 		echo "# SDL_ttf section." >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/SDL_ttf-${SDL_ttf_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_ttf_PREFIX=${prefix}/SDL_ttf-${SDL_ttf_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_ttf_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 
 		if [ $is_windows -eq 0 ] ; then
@@ -2680,7 +2696,7 @@ generateSDL_ttf()
 			PATH=${prefix}/SDL_ttf-${SDL_ttf_VERSION}/lib:${PATH}	
 			export PATH
 				
-			echo "PATH=${prefix}/SDL_ttf-${SDL_ttf_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL_ttf_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 			
 		fi
@@ -2907,10 +2923,11 @@ generatelibtool()
                 
 		echo "# libtool section." >> ${OSDL_ENV_FILE}
 		
-		echo "PATH=${prefix}/libtool-${libtool_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "libtool_PREFIX=${prefix}/libtool-${libtool_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$libtool_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 		echo "export PATH" >> ${OSDL_ENV_FILE}
 		
-		echo "LD_LIBRARY_PATH=${prefix}/libtool-${libtool_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$libtool_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 		
 		if [ $is_windows -eq 0 ] ; then
@@ -2921,7 +2938,7 @@ generatelibtool()
 			PATH=${prefix}/libtool-${libtool_VERSION}/lib:${PATH}	
 			export PATH
 			
-			echo "PATH=${prefix}/libtool-${libtool_VERSION}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$libtool_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 			
 		fi
@@ -3103,16 +3120,18 @@ generatewin_pthread()
 	{              
 		echo "# pthreads win32 section." >> ${OSDL_ENV_FILE}	
 			
-		echo "LD_LIBRARY_PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "pthreads_win32_PREFIX=${prefix}/${PTHREADS_WIN32_DIR}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$pthreads_win32_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 		
 		if [ $is_windows -eq 0 ] ; then
 		
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched 
+			# through the PATH, not the LD_LIBRARY_PATH.
 			PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:${PATH}	
 			export PATH	
 			
-			echo "PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$pthreads_win32_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 			
 		fi
@@ -3468,25 +3487,27 @@ generateCeylan()
 			
 			echo "# Ceylan section." >> ${OSDL_ENV_FILE}
 			
+			echo "Ceylan_PREFIX=${prefix}/Ceylan-${Ceylan_VERSION}" >> ${OSDL_ENV_FILE}
+			
 			if [ $is_windows -eq 0 ] ; then
 		
 				# Always remember that, on Windows, DLL are searched 
 				# through the PATH, not the LD_LIBRARY_PATH.
 					
-				echo "PATH=${prefix}/Ceylan-${Ceylan_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+				echo "PATH=\$Ceylan_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 				echo "export PATH" >> ${OSDL_ENV_FILE}
 
-				PATH=${prefix}/Ceylan-${Ceylan_VERSION}/bin:${PATH}	
+				PATH=${prefix}/Ceylan-${Ceylan_VERSION}/lib:${PATH}	
 				export PATH	
 
 				echo "" >> ${OSDL_ENV_FILE}
 			
 			else
 			
-				echo "PATH=${prefix}/Ceylan-${Ceylan_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+				echo "PATH=\$Ceylan_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 				echo "export PATH" >> ${OSDL_ENV_FILE}
 			
-				echo "LD_LIBRARY_PATH=${prefix}/Ceylan-${Ceylan_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+				echo "LD_LIBRARY_PATH=\$Ceylan_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 				echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 			
 				echo "" >> ${OSDL_ENV_FILE}
@@ -3900,25 +3921,27 @@ generateOSDL()
 		
 			echo "# OSDL section." >> ${OSDL_ENV_FILE}
 			
+			echo "OSDL_PREFIX=${prefix}/OSDL-${OSDL_VERSION}" >> ${OSDL_ENV_FILE}
+			
 			if [ $is_windows -eq 0 ] ; then
 		
 				# Always remember that, on Windows, DLL are searched 
 				# through the PATH, not the LD_LIBRARY_PATH.
 					
-				echo "PATH=${prefix}/OSDL-${OSDL_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+				echo "PATH=\$OSDL_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 				echo "export PATH" >> ${OSDL_ENV_FILE}
 
-				PATH=${prefix}/OSDL-${OSDL_VERSION}/bin:${PATH}	
+				PATH=${prefix}/OSDL-${OSDL_VERSION}/lib:${PATH}	
 				export PATH	
 
 				echo "" >> ${OSDL_ENV_FILE}
 			
 			else
 			
-				echo "PATH=${prefix}/OSDL-${OSDL_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+				echo "PATH=\$OSDL_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 				echo "export PATH" >> ${OSDL_ENV_FILE}
 			
-				echo "LD_LIBRARY_PATH=${prefix}/OSDL-${OSDL_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+				echo "LD_LIBRARY_PATH=\$OSDL_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 				echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
 			
 				echo "" >> ${OSDL_ENV_FILE}
