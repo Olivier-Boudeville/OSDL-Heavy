@@ -213,7 +213,7 @@ getFileAvailability()
 		DEBUG "File <${filename}> not in cache."
 		return 2
 	else
-		if [ `${DU} -bD ${full_file_path} | ${AWK} '{printf $1}' ` -eq 0 ] ; then
+		if [ `${DU} -L ${full_file_path} | ${AWK} '{printf $1}'` -eq 0 ] ; then
 			DEBUG "File <${filename}> present in cache but empty, removing it."
 			${RM} -f "${full_file_path}"
 			return 2
@@ -417,7 +417,7 @@ launchwizard()
 # dedicated script is automatically used too (platformDetection.sh).
 # Such detection is necessary for example for libpng.
 
-echo "Just before defaultLocations.sh"
+#echo "Trace : Just before defaultLocations.sh"
 
 SHELL_TOOLBOX="./defaultLocations.sh"
 
@@ -480,7 +480,7 @@ do_strict_md5=1
 # [default : false (1)] :
 be_strict_on_location=1
 
-# Raise a fatal error if a tool is nowhere to be found [default : false (1)] :
+# Raise a fatal error if a tool is nowhere to be found [default : true (0)] :
 must_find_tool=0
 
 # Used to display more informations [default : false (1)] :
@@ -778,6 +778,7 @@ fi
 
 
 # Entering wizard mode if asked.
+TRACE "Before wizard"
 
 if [ "$wizard" -eq 0 ] ; then
 	launchwizard
@@ -790,14 +791,13 @@ do_debug=0
 if [ "$do_log" -eq 0 ] ; then
 
 	# Activates termUtils's debug facility :
-	do_debug=0
 	
 	LOG_OUTPUT=`pwd`"/LOANI.log"
 	
 	# Override default log file :
 	debug_file="$LOG_OUTPUT"
 	
-	# Allow debug information to got to file :
+	# Allow debug information to go to file :
 	do_debug_in_file=0
 	
 	if [ -f "$LOG_OUTPUT" ] ; then
@@ -831,7 +831,7 @@ fi
 
 # Retrieve tool versions informations.
 
-TOOLS_META_FILE="LOANIToolsSettings.inc"
+TOOLS_META_FILE="./LOANIToolsSettings.inc"
 
 if [ ! -f "${TOOLS_META_FILE}" ] ; then
 	ERROR "Unable to find LOANI file containing metadata about pre requesite tools (${TOOLS_META_FILE})."
@@ -839,6 +839,7 @@ if [ ! -f "${TOOLS_META_FILE}" ] ; then
 else
 	. ${TOOLS_META_FILE} 
 fi
+
 
 
 # Manage prefix choice.
@@ -887,7 +888,7 @@ fi
 
 # In debug mode, unset SILENT make variable to have more build details
 # with Ceylan and OSDL :
-if [ "$do_debug" -eq 0 ] ; then
+if [ $do_debug -eq 0 ] ; then
 	BUILD_SILENT="SILENT="
 else
 	BUILD_SILENT=""	
@@ -904,6 +905,16 @@ if [ "$manage_optional_tools" -eq 0 ] ; then
 		ERROR "No executable flex tool available ($FLEX), whereas needed by doxygen."
 	fi
 fi
+
+# Check for SVN tool if needed :
+if [ $no_svn -eq 1 ] ; then
+	if [ $use_svn -eq 0 ] ; then
+		findTool svn
+		SVN=$returnedString
+	fi	
+fi
+
+USER_ID=`${ID} -u`
 
 TRACE "Prerequesites checked."
 
@@ -946,7 +957,7 @@ TRACE "Sourcing toolsets."
 # First, select wanted tools.
 
 # Register all LOANI strict pre requesites for download.
-. loani-requiredTools.sh
+. ./loani-requiredTools.sh
 
 # Put the optional tools before the build tools so that their are taken 
 # into account in following order : 
@@ -956,7 +967,7 @@ if [ "$manage_optional_tools" -eq 0 ] ; then
 	if [ "$only_optional_tools" -eq 0 ] ; then
 		target_list=""
 	fi
-	. loani-optionalTools.sh
+	. ./loani-optionalTools.sh
 fi
 
 
@@ -965,7 +976,7 @@ if [ "$manage_build_tools" -eq 0 ] ; then
 	if [ "$only_build_tools" -eq 0 ] ; then
 		target_list=""
 	fi
-	. loani-commonBuildTools.sh	
+	. ./loani-commonBuildTools.sh	
 fi
 
 
@@ -980,7 +991,7 @@ DISPLAY "Target package list is <$target_list>."
 # Checks that there is enough available space on disk :
 
 # Available size in megabytes (1048576 is 1024^2) :
-AVAILABLE_SIZE=`${DF} --block-size=1048576 . | ${AWK} {'print $4'} | ${TAIL} -n 1`
+AVAILABLE_SIZE=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
 
 
 DEBUG "Detected available size on current disk is ${AVAILABLE_SIZE} megabytes."
@@ -1122,9 +1133,8 @@ if [ -n "$retrieve_list" ] ; then
 
 	# Pre-check that no wget process is already running, since it would 
 	# confuse LOANI :
-
-	if ${PS} -edf | ${GREP} -v grep | ${GREP} wget; then
-		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} -edf | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running anymore in parallel with LOANI before re-launching our script, since it might confuse LOANI."
+	if ${PS} -U ${USER_ID} -o comm | ${GREP} -v grep | ${GREP} wget; then
+		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} -U ${USER_ID} -o comm | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running anymore in parallel with LOANI before re-launching our script, since it might confuse LOANI."
 		exit 8
 	fi
 		
@@ -1161,8 +1171,7 @@ while [ -n "$retrieve_list" ] ; do
 		else
 			# md5sum is not the expected one.
 			# Still being downloaded ? 						
-			
-			if ! ${PS} -u `${ID} -un` | ${GREP} -i wget | ${GREP} -v -i grep 1>/dev/null 2>&1 ; then
+			if ! ${PS} -U ${USER_ID} -o comm | ${GREP} wget | ${GREP} -v -i grep 1>/dev/null 2>&1 ; then
 				# No !
 				DEBUG "No wget running, having downloaded the file, but its md5sum seems to be wrong."
 				
@@ -1173,7 +1182,7 @@ while [ -n "$retrieve_list" ] ; do
 					target_file=${t}_ARCHIVE
 					eval actual_target_file="\$$target_file"
 
-					if [ `${DU} -b $repository/${actual_target_file} | ${AWK} '{printf $1}' ` -eq 0 ] ; then
+					if [ `${DU} $repository/${actual_target_file} | ${AWK} '{printf $1}'` -eq 0 ] ; then
 						DEBUG "Unable to download a non-empty file for $t (${actual_target_file}), removing this file to force mirror change."
 						${RM} -f $repository/${actual_target_file}
 						break
