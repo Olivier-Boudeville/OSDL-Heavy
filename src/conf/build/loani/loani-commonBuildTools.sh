@@ -1,4 +1,5 @@
-# This script is made to be sourced by LOANI when retrieving basic common build tools.
+# This script is made to be sourced by LOANI when retrieving basic 
+# common build tools.
 # Most of them is expected to be already available in user'system.
 
 # Creation date : 2004, February 22.
@@ -136,11 +137,11 @@ generategcc()
 	if [ -n "$prefix" ] ; then	
 		{				
 			echo "# gcc section." >> ${OSDL_ENV_FILE}
-			echo "PATH=${prefix}/gcc-${gcc_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "export PATH" >> ${OSDL_ENV_FILE}
 			
-			echo "LD_LIBRARY_PATH=${prefix}/gcc-${gcc_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
-			echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
+			echo "gcc_PREFIX=${prefix}/gcc-${gcc_VERSION}" >> ${OSDL_ENV_FILE}
+			echo "export gcc_PREFIX" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$gcc_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "LD_LIBRARY_PATH=\$gcc_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 			echo "" >> ${OSDL_ENV_FILE}
 			${MAKE} install prefix=${prefix}/gcc-${gcc_VERSION} ${MAKE_C}
 
@@ -339,11 +340,10 @@ generatebinutils()
 		{				
 			echo "# binutils section." >> ${OSDL_ENV_FILE}
 			
-			echo "PATH=${prefix}/binutils-${binutils_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "export PATH" >> ${OSDL_ENV_FILE}
-			
-			echo "LD_LIBRARY_PATH=${prefix}/binutils-${binutils_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
-			echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
+			echo "binutils_PREFIX=${prefix}/binutils-${binutils_VERSION}" >> ${OSDL_ENV_FILE}
+			echo "export binutils_PREFIX" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$binutils_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "LD_LIBRARY_PATH=\$binutils_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 			
 			echo "" >> ${OSDL_ENV_FILE}
 			
@@ -499,11 +499,10 @@ generategdb()
 		{				
 			echo "# gdb section." >> ${OSDL_ENV_FILE}
 			
-			echo "PATH=${prefix}/gdb-${gdb_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "export PATH" >> ${OSDL_ENV_FILE}
-			
-			echo "LD_LIBRARY_PATH=${prefix}/gdb-${gdb_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
-			echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
+			echo "gdb_PREFIX=${prefix}/gdb-${gdb_VERSION}" >> ${OSDL_ENV_FILE}
+			echo "export gdb_PREFIX" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$gdb_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "LD_LIBRARY_PATH=\$gdb_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 			
 			echo "" >> ${OSDL_ENV_FILE}
 			setBuildEnv ${MAKE} install prefix=${prefix}/gdb-${gdb_VERSION} ${MAKE_C}
