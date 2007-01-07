@@ -68,7 +68,9 @@ Download either <a href="../../../download/LOANI-0.4.zip">LOANI-0.4.zip</a> or  
 
   <p>LOANI stands for <b>Lazy OSDL's Automatic Net Installer</b>.
   Its purpose is to simplify as much as possible the installation of OSDL and its pre requesites, on most UNIX platforms, including GNU/Linux. Human beings tend to be lazy, and we really understand there are much more enjoyable activities than to painfully install an intricate list of cyclic dependancies in order to have one's library working.</p>
-    
+
+  <p>Some operating systems, such as GNU/Linux with for example the Debian or Gentoo distributions, automate software installations with a package system. However it does not discard the need of tools like LOANI, as we must compile with dedicated options specific versions of helper libraries. Most often package managers do not let easily choose the options sets and/or offer too old versions. For example, SDL_image did not build with gcc higher than 3.4, and needs to be configured with JPEG, PNG support, but not TIFF one. LOANI takes in charge that task automatically and without complaining.</p>   
+  
   <p>
   That's why we imagined LOANI : the simpliest shell script (on the user side) that performs everything on your behalf and cooks you a brand new OSDL-compliant environment from scratch, with almost no effort but the typing of a simple line : <code>loani.sh</code>.
   </p>
