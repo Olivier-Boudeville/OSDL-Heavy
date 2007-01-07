@@ -86,56 +86,6 @@ OSDL_FULL_VERSION=$(OSDL_VERSION).$(OSDL_RELEASE)
 OSDL_MAJOR_ANCESTOR=0
 
 
-# Backward compatibility section.
-
-# As long as the OSDL library is not almost frozen, managing age is
-# cumbersome, the usual major.minor versioning is preferred.
-
-# The major version of the most ancient OSDL version compatible with this one.
-# (tag : ST_OLDEST_SUPPORTED_MAJOR)
-OSDL_OLDEST_SUPPORTED_MAJOR=0
-
-# The minor version of the most ancient OSDL version compatible with this one.
-# (tag : ST_OLDEST_SUPPORTED_MINOR)
-OSDL_OLDEST_SUPPORTED_MINOR=4
-
-
-
-# Pre-requesite section.
-
-# Note : when the version of Ceylan is changed here,
-# trunk/src/conf/build/OSDLToolsSettings.inc.in must be updated as well.
-
-# Ceylan is defined here, to help creating the OSDL autogen.sh and others
-# build files, thanks to its substitute.sh script.
-
-# Other pre-requesite versions are here, as for example the bin directory
-# of a SDL installation is needed (by sdl.m4, to find sdl-config) when 
-# OSDL is configured.
-# setting them in the configure-template.ac file (which itself sets the
-# OSDLToolsSettings.inc file) is sometimenough.
-# However the OSDLToolsSettings.inc.in must file must still be edited
-# whenever a version changes, at least because of the MD5 code.
-
-
-# The oldest version of the Ceylan library that may be used by OSDL :
-
-# (tag : ST_CEYLAN_OLDEST_SUPPORTED_MAJOR)
-CEYLAN_OLDEST_SUPPORTED_MAJOR=0
-
-# (tag : ST_CEYLAN_OLDEST_SUPPORTED_MINOR)
-CEYLAN_OLDEST_SUPPORTED_MINOR=5
-
-# (tag : ST_CEYLAN_OLDEST_SUPPORTED_RELEASE)
-CEYLAN_OLDEST_SUPPORTED_RELEASE=0
-
-
-# (tag : ST_CEYLAN_OLDEST_SUPPORTED_VERSION)
-CEYLAN_OLDEST_SUPPORTED_VERSION=$(CEYLAN_OLDEST_SUPPORTED_MAJOR).$(CEYLAN_OLDEST_SUPPORTED_MINOR)
-
-# (tag : ST_CEYLAN_OLDEST_SUPPORTED_FULL_VERSION)
-CEYLAN_OLDEST_SUPPORTED_FULL_VERSION=$(CEYLAN_OLDEST_SUPPORTED_VERSION).$(CEYLAN_OLDEST_SUPPORTED_RELEASE)
-
 
 # Build section.
 
