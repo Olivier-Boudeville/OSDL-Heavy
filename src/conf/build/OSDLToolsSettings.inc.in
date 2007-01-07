@@ -13,7 +13,7 @@
 
 # SDL
 
-SDL_VERSION="1.2.11"
+SDL_VERSION="@SDL_RECOMMENDED_VERSION@"
 SDL_ARCHIVE="SDL-$SDL_VERSION.tar.gz"
 SDL_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
 SDL_ALTERNATE_DOWNLOAD_LOCATION=""
@@ -192,8 +192,14 @@ SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
 
 
 
-# OSDL is retrieved for the moment directly thanks to CVS (export or checkout).
-# Following sections are therefore ignored.
+# Ceylan (libCeylan.so) : http://ceylan.sourceforge.net
+
+Ceylan_VERSION="@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@"
+Ceylan_ARCHIVE="ceylan-${Ceylan_VERSION}.tar.bz2"
+Ceylan_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/ceylan"
+Ceylan_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/ceylan"
+Ceylan_MD5="xxx"
+Ceylan_SVN_SERVER=ceylan.svn.sourceforge.net
 
 
 
@@ -202,7 +208,6 @@ SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
 # OSDL can be retrieved from CVS or from a source code archive.
 
 OSDL_VERSION="0.4"
-OSDL_RELEASE=0
 OSDL_ARCHIVE="OSDL-${OSDL_VERSION}.${OSDL_RELEASE}.tar.bz2"
 OSDL_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
 OSDL_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/osdl"
