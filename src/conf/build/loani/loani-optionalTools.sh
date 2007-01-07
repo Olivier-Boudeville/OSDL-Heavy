@@ -145,11 +145,10 @@ generatedot()
 		{				
 			echo "# dot section." >> ${OSDL_ENV_FILE}
 			
-			echo "PATH=prefix=${prefix}/dot-graphviz-${dot_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "export PATH" >> ${OSDL_ENV_FILE}
-			
-			echo "LD_LIBRARY_PATH=${prefix}/dot-graphviz-${dot_VERSION}/lib/graphviz:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
-			echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
+			echo "dot_PREFIX=${prefix}/dot-graphviz-${dot_VERSION}" >> ${OSDL_ENV_FILE}
+			echo "export dot_PREFIX" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$dot_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}			
+			echo "LD_LIBRARY_PATH=\$dot_PREFIX/lib/graphviz:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 			
 			echo "" >> ${OSDL_ENV_FILE}
 			${MAKE} install prefix=${prefix}/dot-graphviz-${dot_VERSION} 
@@ -304,11 +303,9 @@ generatedoxygen()
 		{				
 			echo "# doxygen section." >> ${OSDL_ENV_FILE}
 			
-			echo "PATH=$prefix/doxygen-${doxygen_VERSION}/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "export PATH" >> ${OSDL_ENV_FILE}
-			
-			echo "LD_LIBRARY_PATH=${prefix}/doxygen-${doxygen_VERSION}/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
-			echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
+			echo "doxygen_PREFIX=$prefix/doxygen-${doxygen_VERSION}" >> ${OSDL_ENV_FILE}
+			echo "export doxygen_PREFIX" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$doxygen_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}						echo "LD_LIBRARY_PATH=\$doxygen_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 			
 			echo "" >> ${OSDL_ENV_FILE}
 			
@@ -463,11 +460,10 @@ generatetidy()
 		{				
 			echo "# tidy section." >> ${OSDL_ENV_FILE}
 			
-			echo "PATH=$prefix/tidy/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "export PATH" >> ${OSDL_ENV_FILE}
-			
-			echo "LD_LIBRARY_PATH=$prefix/tidy/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
-			echo "export LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+			echo "tidy_PREFIX=$prefix/tidy" >> ${OSDL_ENV_FILE}
+			echo "export tidy_PREFIX" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$tidy_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "LD_LIBRARY_PATH=\$tidy_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 			
 			echo "" >> ${OSDL_ENV_FILE}
 			${MAKE} install prefix=${prefix}/tidy 
