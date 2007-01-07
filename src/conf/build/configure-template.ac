@@ -37,8 +37,7 @@ AM_INIT_AUTOMAKE([tar-ustar])
 # ignores this too common (hence risky) symbol, and uses 
 # OSDL_USES_CONFIG_H instead.
 AC_CONFIG_HEADERS([ST_CONFIG_HEADER],[],[])
-CPPFLAGS="-DOSDL_USES_CONFIG_H $CPPFLAGS"
-AC_SUBST(CPPFLAGS)
+OSDL_CPPFLAGS="-DOSDL_USES_CONFIG_H $OSDL_CPPFLAGS"
 
 
 # OSDLConfig.h will be the only config header to be installed.
@@ -264,8 +263,35 @@ AC_FUNC_UTIME_NULL
 
 # Prerequesites section.
 
+# Actually the *_OLDEST_SUPPORTED_* variables often designate the exact
+# version expected by OSDL.
+
+
+# Ceylan.
+
 # Checks for the Ceylan library (see ceylan.m4)
 CEYLAN_PATH(ST_CEYLAN_OLDEST_SUPPORTED_MAJOR,ST_CEYLAN_OLDEST_SUPPORTED_MINOR,ST_CEYLAN_OLDEST_SUPPORTED_RELEASE)
+
+# Set by CEYLAN_PATH :
+CEYLAN_INSTALL_ROOT="$CEYLAN_PREFIX"
+AC_SUBST(CEYLAN_INSTALL_ROOT)
+
+OSDL_CPPFLAGS="$OSDL_CPPFLAGS $CEYLAN_CPPFLAGS"
+OSDL_LIBS="$OSDL_LIBS $CEYLAN_LIBS"
+
+
+# SDL.
+
+SDL_OLDEST_SUPPORTED_VERSION="1.2.11"
+AC_SUBST(SDL_OLDEST_SUPPORTED_VERSION)
+
+AM_PATH_SDL($SDL_OLDEST_SUPPORTED_VERSION,[
+	OSDL_CPPFLAGS="$OSDL_CPPFLAGS $SDL_CFLAGS"
+	OSDL_LIBS="$OSDL_LIBS $SDL_LIBS"],[
+	AC_MSG_ERROR([No usable SDL installation found, minimum requested version was $SDL_OLDEST_SUPPORTED_VERSION.])
+	])
+	
+
 
 # Build section.
 
@@ -505,8 +531,6 @@ AC_SUBST(CEYLAN_CURRENT_SOURCE_ARCHIVE)
 # Define here a CEYLAN_INSTALL_ROOT according to --with-ceylan-prefix=PFX :
 AC_ARG_WITH(ceylan-prefix,[--with-ceylan-prefix=PFX   Prefix where Ceylan is installed],ceylan_prefix="$withval",ceylan_prefix="/usr/local")
 
-CEYLAN_INSTALL_ROOT="$ceylan_prefix"
-AC_SUBST(CEYLAN_INSTALL_ROOT)
 
 
 # Warning and error section.
@@ -660,6 +684,15 @@ AC_SUBST(OSDL_EXTRA_DIRS)
 
 # Libraries conditionnally selected by the configure step :
 AC_SUBST(OSDL_EXTRA_LIBS)
+
+AC_MSG_NOTICE([OSDL_CPPFLAGS = $OSDL_CPPFLAGS])
+AC_MSG_NOTICE([OSDL_LIBS = $OSDL_LIBS]) 
+
+CPPFLAGS="$CPPFLAGS $OSDL_CPPFLAGS"
+AC_SUBST(CPPFLAGS)
+
+LIBS="$LIBS $OSDL_LIBS"
+AC_SUBST(LIBS)
 
 AC_SUBST(AM_CXXFLAGS)
 AC_SUBST(AM_LDFLAGS)
