@@ -1,7 +1,7 @@
 #!/bin/sh
 
 USAGE="
-Usage : "`basename $0`" --with-osdl-environment <path> || --ceylan-install-prefix <path> [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.
+Usage : "`basename $0`" --with-osdl-environment <path> || --ceylan-install-prefix <path> [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.
 
 	--with-osdl-environment : specify where the OSDL environment file (OSDL-environment.sh) should be read
 	--ceylan-install-prefix : specify where the Ceylan installation can be found
@@ -27,7 +27,7 @@ configure_user_opt=""
 
 osdl_features_opt=""
 
-# At least one of the two will have to be set :
+# At least one of the two will have to be set :
 osdl_environment_file=""
 ceylan_location=""
 
@@ -219,20 +219,18 @@ $USAGE" 1>&2
 			exit 6
 		fi
 			
-		WARNING "Guessed OSDL environment file is ${osdl_environment_file}." 
+		warning "Guessed OSDL environment file is ${osdl_environment_file}." 
 		. ${osdl_environment_file}
 
 		ceylan_location="$Ceylan_PREFIX"
 	
-		if [ ! -d "$ceylan_location" ] ; then
+		if [ ! -d "$ceylan_location" ] ; then
 	
 			echo "Error, Ceylan prefix retrieved thanks to guessed OSDL environment file ($osdl_environment_file) does not exist ($ceylan_location)" 1>&2
 			exit 7
 		
 		fi	
 	
-	fi
-
 	else 
 	
 		# ceylan_location specified and exists, ok.
@@ -249,7 +247,7 @@ else
 	# osdl_environment_file specified, exists and has been sourced.
 	ceylan_location="$Ceylan_PREFIX"
 	
-	if [ ! -d "$ceylan_location" ] ; then
+	if [ ! -d "$ceylan_location" ] ; then
 	
 		echo "Error, Ceylan prefix retrieved thanks to specified OSDL environment file ($osdl_environment_file) does not exist ($ceylan_location)" 1>&2
 		exit 10
@@ -280,21 +278,25 @@ else
 	ceylan_location="/usr/local"
 fi
 
-#echo "ceylan_location = ${ceylan_location}"
 
-# If OSDL-environment.sh is used, we have to add the tools prefix :
-if [ -n "$osdl_environment_file" ] ; then
+# If OSDL-environment.sh is used, we have to add the tools prefix :
+if [ -n "$osdl_environment_file" ] ; then
+
+	if [ -n "${gcc_PREFIX}" ] ; then
+		configure_opt="${configure_opt} CXX=${gcc_PREFIX}/bin/g++ "
+	fi
 
 	if [ -n "${SDL_PREFIX}" ] ; then
 		configure_opt="${configure_opt} --with-sdl-prefix=$SDL_PREFIX"
 	fi
+		
 	
 fi
 
 
 # Prefix section for the OSDL installation.
 
-# If it is needed, then OSDL environment file is being used and OSDL_PREFIX
+# If it is needed, then OSDL environment file is being used and OSDL_PREFIX
 # is already set.
 
 
@@ -425,7 +427,7 @@ generateCustom()
 	if [ $do_clean_prefix -eq 0 ] ; then
 		echo
 		if [ -z "$PREFIX" -o "$PREFIX" = "$HOME" ] ; then
-			echo "(no PREFIX=$PREFIX removed)"
+			echo "(no PREFIX removed)"
 		else	
 			returnedChar="y"
 			if [ "$PREFIX" != "$PREFIX_DEFAULT" ] ; then
