@@ -103,8 +103,19 @@ OSDL_OLDEST_SUPPORTED_MINOR=4
 
 # Pre-requesite section.
 
-# Note : when the version of a tool is changed here,
+# Note : when the version of Ceylan is changed here,
 # trunk/src/conf/build/OSDLToolsSettings.inc.in must be updated as well.
+
+# Ceylan is defined here, to help creating the OSDL autogen.sh and others
+# build files, thanks to its substitute.sh script.
+
+# Other pre-requesite versions are here, as for example the bin directory
+# of a SDL installation is needed (by sdl.m4, to find sdl-config) when 
+# OSDL is configured.
+# setting them in the configure-template.ac file (which itself sets the
+# OSDLToolsSettings.inc file) is sometimenough.
+# However the OSDLToolsSettings.inc.in must file must still be edited
+# whenever a version changes, at least because of the MD5 code.
 
 
 # The oldest version of the Ceylan library that may be used by OSDL :
@@ -142,4 +153,5 @@ OSDL_MAILING_LIST_BUGTRACKING="osdl-bugs@lists.sourceforge.net"
 
 # (tag : ST_MAILING_LIST_LOANI)
 OSDL_MAILING_LIST_LOANI="osdl-loani-bugs@lists.sourceforge.net"
+
 
