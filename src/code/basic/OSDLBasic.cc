@@ -47,9 +47,10 @@ Ceylan::Version & OSDL::GetVersion() throw()
  * These flags are to be used with getCommonModule to specify which submodules 
  * and settings should be used.
  *
- * A flag specifying that the application required event management could be added : UseJoystick
- * could be complemented with UseKeyboard and UseMouse, and UseEvents would be internally 
- * activated iff UseJoystick, UseKeyboard or UseMouse (or even UseEventThread) were activated.
+ * A flag specifying that the application required event management could 
+ * be added : UseJoystick could be complemented with UseKeyboard and 
+ * UseMouse, and UseEvents would be internally activated iff UseJoystick,
+ * UseKeyboard or UseMouse (or even UseEventThread) were activated.
  *
  * @note They are defined relatively as SDL back-end.
  *
@@ -68,8 +69,8 @@ const Ceylan::Flags CommonModule::UseEventThread = SDL_INIT_EVENTTHREAD ;
 
 
 /*
- * Warning : OSDL added flags (if SDL adds flags they might collide and create awkward bugs) :
- * see 'testOSDLBasic' to check their value.
+ * Warning : OSDL added flags (if SDL adds flags they might collide and 
+ * create awkward bugs) : see 'testOSDLBasic' to check their value.
  *
  * SDL_INIT_TIMER		: 0x00000001 = 0b00000000000000000000000000000001
  * SDL_INIT_AUDIO		: 0x00000010 = 0b00000000000000000000000000010000
@@ -117,10 +118,11 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ) :
 		+ InterpretFlags( flags ) ) ; 
 				
 	/*
-	 * UseEverything flag is 0x0000FFFF, therefore not to be specifically managed.
+	 * UseEverything flag is 0x0000FFFF, therefore not to be specifically
+	 * managed.
 	 *
-	 * Moreover, the flags should have been already fixed thanks to the AutoCorrectFlags method,
-	 * so no more interpretation is needed.
+	 * Moreover, the flags should have been already fixed thanks to the
+	 * AutoCorrectFlags method, so no more interpretation is needed.
 	 *
 	 */
 	
@@ -129,7 +131,8 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ) :
 		send( "Initializing timer subsystem" ) ;
 		if ( SDL_InitSubSystem( UseTimer ) != BackendSuccess ) 
 			throw OSDL::Exception( "CommonModule constructor : "
-				"unable to initialize timer subsystem : " + Utils::getBackendLastError() ) ;
+				"unable to initialize timer subsystem : " 
+				+ Utils::getBackendLastError() ) ;
 		send( "Timer subsystem initialized" ) ;				
 	}
 	
@@ -145,16 +148,19 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ) :
 		send( "Disabling SDL parachute" ) ;
 		if ( SDL_InitSubSystem( NoParachute ) != BackendSuccess )
 			throw OSDL::Exception( "CommonModule constructor : "
-				"unable to disable SDL parachute : " + Utils::getBackendLastError() ) ;
+				"unable to disable SDL parachute : " 
+				+ Utils::getBackendLastError() ) ;
 		send( "SDL parachute initialized" ) ;				
 	}
 	
 			
 	/*
-	 * @fixme Events must imply video. There seems to exist no way of requesting 
-	 * specifically events. Currently video and event support are synonym features.
+	 * @fixme Events must imply video. There seems to exist no way 
+	 * of requesting specifically events. Currently video and event 
+	 * support are synonym features.
 	 *
-	 * @fixme On some platforms (ex : Windows), audio may not work if no video mode is initialized.
+	 * @fixme On some platforms (ex : Windows), audio may not work if 
+	 * no video mode is initialized.
 	 * Hence audio would imply video (to be checked).
 	 *
 	 */
@@ -166,7 +172,12 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ) :
 		_events = new Events::EventsModule( flags ) ;  		
 	}
 	
-	// Video must be initialized *before* audio (to rely on a window handle) on some platforms :	
+	
+	/*
+	 * Video must be initialized *before* audio (to rely on a window handle) 
+	 * on some platforms :
+	 *
+	 */	
 	if ( flags & UseAudio )
 	{
 		_audio = new Audio::AudioModule() ;
@@ -241,18 +252,21 @@ string CommonModule::InterpretFlags( Flags flags ) throw()
 	if ( flags & UseCDROM )
 		res.push_back( "CD-ROM support requested (UseCDROM is set)." ) ;
 	else
-		res.push_back( "No CD-ROM support requested (UseCDROM is not set)." ) ;
+		res.push_back( "No CD-ROM support requested "
+			"(UseCDROM is not set)." ) ;
 		
 		
 	if ( flags & UseJoystick )
 		res.push_back( "Joystick support requested (UseJoystick is set)." ) ;
 	else
-		res.push_back( "No joystick support requested (UseJoystick is not set)." ) ;
+		res.push_back( "No joystick support requested "
+			"(UseJoystick is not set)." ) ;
 		
 	if ( flags & UseKeyboard )
 		res.push_back( "Keyboard support requested (UseKeyboard is set)." ) ;
 	else
-		res.push_back( "No keyboard support requested (UseKeyboard is not set)." ) ;
+		res.push_back( "No keyboard support requested "
+			"(UseKeyboard is not set)." ) ;
 		
 	if ( flags & UseMouse )
 		res.push_back( "Mouse support requested (UseMouse is set)." ) ;
@@ -261,19 +275,23 @@ string CommonModule::InterpretFlags( Flags flags ) throw()
 		
 		
 	if ( ( flags & UseEverything ) == UseEverything )
-		res.push_back( "Every subsystem is requested (UseEverything is set)." ) ;
+		res.push_back( "Every subsystem is requested "
+			"(UseEverything is set)." ) ;
 	else
 		res.push_back( "No audio requested (UseEverything is not set)." ) ;
 		
 	if ( flags & NoParachute )
-		res.push_back( "No catching of fatal signals requested (NoParachute is set)." ) ;
+		res.push_back( "No catching of fatal signals requested "
+			"(NoParachute is set)." ) ;
 	else
-		res.push_back( "Fatal signal will be caught (NoParachute is not set)." ) ;
+		res.push_back( "Fatal signal will be caught "
+			"(NoParachute is not set)." ) ;
 		
 	if ( flags & UseEventThread )
 		res.push_back( "Event thread requested (UseEventThread is set)." ) ;
 	else
-		res.push_back( "No event thread requested (UseEventThread is not set)." ) ;
+		res.push_back( "No event thread requested "
+			"(UseEventThread is not set)." ) ;
 		
 
 	return "The specified flags for Common module, whose value is " 
@@ -289,12 +307,16 @@ bool CommonModule::hasVideoModule() const throw()
 }
 
 
-Video::VideoModule & CommonModule::getVideoModule() const throw( OSDL::Exception )
+Video::VideoModule & CommonModule::getVideoModule() const 
+	throw( OSDL::Exception )
 {
+
 	if ( _video == 0 )
-		throw OSDL::Exception( "CommonModule::getVideoModule : no video module available." ) ;
+		throw OSDL::Exception( 
+			"CommonModule::getVideoModule : no video module available." ) ;
 	
 	return * _video ;
+	
 }
 
 
@@ -305,12 +327,16 @@ bool CommonModule::hasEventsModule() const throw()
 }
 
 
-Events::EventsModule & CommonModule::getEventsModule() const throw( OSDL::Exception )
+Events::EventsModule & CommonModule::getEventsModule() const 
+	throw( OSDL::Exception )
 {
+
 	if ( _events == 0 )
-		throw OSDL::Exception( "CommonModule::getEventsModule : no events module available." ) ;
+		throw OSDL::Exception( 
+			"CommonModule::getEventsModule : no events module available." ) ;
 	
 	return * _events ;
+	
 }
 
 
@@ -321,12 +347,16 @@ bool CommonModule::hasAudioModule() const throw()
 }
  
  
-Audio::AudioModule & CommonModule::getAudioModule() const throw( OSDL::Exception )
+Audio::AudioModule & CommonModule::getAudioModule() const 
+	throw( OSDL::Exception )
 {
+
 	if ( _audio == 0 )
-		throw OSDL::Exception( "CommonModule::getAudioModule : no audio module available." ) ;
+		throw OSDL::Exception( 
+			"CommonModule::getAudioModule : no audio module available." ) ;
 	
 	return * _audio ;
+	
 }
 
 
@@ -344,7 +374,8 @@ bool CommonModule::hasCDROMDriveHandler() const throw()
 }
 
 		
-CDROMDriveHandler & CommonModule::getCDROMDriveHandler() const throw( OSDL::Exception )
+CDROMDriveHandler & CommonModule::getCDROMDriveHandler() 
+	const throw( OSDL::Exception )
 {
 
 	if ( _cdromHandler == 0 )
@@ -356,7 +387,8 @@ CDROMDriveHandler & CommonModule::getCDROMDriveHandler() const throw( OSDL::Exce
 }
 
 
-const string CommonModule::toString( Ceylan::VerbosityLevels level ) const throw()
+const string CommonModule::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
 	
 	string res = "Common root module, with currently video module " ;
@@ -404,10 +436,12 @@ const string CommonModule::toString( Ceylan::VerbosityLevels level ) const throw
 	
 	completeMessage.push_back( Ceylan::Module::toString()  ) ;
 	
-	completeMessage.push_back( "The version of the Ceylan library currently linked is " 
+	completeMessage.push_back( 
+		"The version of the Ceylan library currently linked is " 
 		+ Ceylan::GetVersion().toString() + "." ) ;
 		
-	completeMessage.push_back( "The version of the OSDL library currently linked is " 
+	completeMessage.push_back( 
+		"The version of the OSDL library currently linked is " 
 		+ OSDL::GetVersion().toString() + "." ) ;
 	
 	return Ceylan::formatStringList( completeMessage ) ;
@@ -418,7 +452,8 @@ const string CommonModule::toString( Ceylan::VerbosityLevels level ) const throw
 string CommonModule::DescribeEnvironmentVariables() throw()
 {
 
-	unsigned int varCount = sizeof( _SDLEnvironmentVariables ) / sizeof (char * ) ;
+	unsigned int varCount = sizeof( _SDLEnvironmentVariables ) 
+		/ sizeof (char * ) ;
 	
 	string result = "Examining the " + Ceylan::toString( varCount )
 		+ " general-purpose environment variables for SDL backend :" ;
@@ -450,7 +485,8 @@ string CommonModule::DescribeEnvironmentVariables() throw()
 		{			
 			if ( htmlFormat == Ceylan::TextDisplayable::html )
 			{
-				variables.push_back( "<b>" + var + " set to [" + value + "].</b>" ) ;
+				variables.push_back( "<b>" + var + " set to [" 
+					+ value + "].</b>" ) ;
 			}
 			else
 			{
@@ -475,7 +511,11 @@ Flags CommonModule::AutoCorrectFlags( Flags inputFlags ) throw()
 {
 
 
-	// Event source implies event propagation which implies, with SDL, video being activated :
+	/*
+	 * Event source implies event propagation which implies, with SDL, 
+	 * video being activated :
+	 *
+	 */
 	
 	if ( ! ( inputFlags & UseVideo ) )
 	{
@@ -485,11 +525,17 @@ Flags CommonModule::AutoCorrectFlags( Flags inputFlags ) throw()
 		if ( inputFlags & ( UseJoystick | UseKeyboard | UseMouse ) ) 
 		{
 		
-			// Yes, it is abnormal since events implies video. Let's correct that :
+			/*
+			 * Yes, it is abnormal since events implies video. 
+			 * Let's correct that :
+			 *
+			 */
 			
 			LogPlug::warning( "CommonModule::AutoCorrectFlags : "
-				"at least on input device was selected, hence event support was requested, "
-				"whereas video was not specifically set. Since the event loop needs video, "
+				"at least on input device was selected, "
+				"hence event support was requested, "
+				"whereas video was not specifically set. " 
+				"Since the event loop needs video, "
 				"the video subsystem has been automatically enabled." ) ; 
 				
 			inputFlags |= UseVideo ;
@@ -501,6 +547,7 @@ Flags CommonModule::AutoCorrectFlags( Flags inputFlags ) throw()
 	return inputFlags ;
 		
 }
+
 
 
 // Friend section :
@@ -518,7 +565,8 @@ CommonModule & OSDL::getCommonModule( Flags flags ) throw()
 	{
 	
 		// if not running, launch OSDL unconditionnally and store it.	
-		LogPlug::info( "OSDL was not running yet, launching basic OSDL with flags "
+		LogPlug::info( 
+			"OSDL was not running yet, launching basic OSDL with flags "
 			+ Ceylan::toString( flags, /* bitfield */ true ) ) ;
 		CommonModule::_CurrentCommonModule = new CommonModule( flags ) ;
 		return * CommonModule::_CurrentCommonModule ;
@@ -534,11 +582,15 @@ CommonModule & OSDL::getCommonModule( Flags flags ) throw()
 		if ( flags == CommonModule::_CurrentCommonModule->getFlags() ) 
 		{
 		
-			/* if requested flags are the same that the ones of the currently running 
+			/* 
+			 * if requested flags are the same that the ones of the 
+			 * currently running 
 			 * OSDL instance, return currently running OSDL instance.
 			 */
 			 
-			LogPlug::info( "Flags are matching, returning already launched basic OSDL module" ) ;
+			LogPlug::info( "Flags are matching, "
+				"returning already launched basic OSDL module" ) ;
+				
 			return * CommonModule::_CurrentCommonModule ;
 			
 		} 
@@ -550,10 +602,14 @@ CommonModule & OSDL::getCommonModule( Flags flags ) throw()
 			 * Stop current OSDL instance, and re-run OSDL with requested flags.
 			 *
 			 */
-			LogPlug::info( "Flags do not match, stopping already launched OSDL root module, "
+			LogPlug::info( "Flags do not match, "
+				"stopping already launched OSDL root module, "
 				"restarting with new flags, returning this new instance" ) ;
+				
 			delete CommonModule::_CurrentCommonModule ;
+			
 			CommonModule::_CurrentCommonModule = new CommonModule( flags ) ;
+			
 			return * CommonModule::_CurrentCommonModule ;
 			
 		}
@@ -569,10 +625,13 @@ bool OSDL::hasExistingCommonModule() throw()
 
 CommonModule & OSDL::getExistingCommonModule() throw()
 {
+
 	if ( CommonModule::_CurrentCommonModule == 0 ) 
-		Ceylan::emergencyShutdown( "OSDL::getExistingCommonModule : no common module available." ) ;
+		Ceylan::emergencyShutdown( 
+			"OSDL::getExistingCommonModule : no common module available." ) ;
 	
 	return * CommonModule::_CurrentCommonModule ;
+	
 }
 
 
@@ -581,7 +640,8 @@ void OSDL::stop() throw()
 
 	if ( CommonModule::_CurrentCommonModule == 0 )
 	{
-		LogPlug::error( "OSDL::stop has been called whereas OSDL was not running" ) ;
+		LogPlug::error( 
+			"OSDL::stop has been called whereas OSDL was not running" ) ;
 	}	
 	else
 	{
@@ -589,6 +649,7 @@ void OSDL::stop() throw()
 		delete CommonModule::_CurrentCommonModule ;
 		CommonModule::_CurrentCommonModule = 0 ;
 	}
+	
 }
 
 

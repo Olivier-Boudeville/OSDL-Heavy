@@ -6,7 +6,9 @@ using std::string ;
 using namespace OSDL ;
 
 
-TestException::TestException( const string & reason ) throw() : Exception( reason )
+
+TestException::TestException( const string & reason ) throw() : 
+	Exception( reason )
 {
 
 }

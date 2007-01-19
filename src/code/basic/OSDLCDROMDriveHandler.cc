@@ -19,7 +19,8 @@ using namespace OSDL ;
 
 
 
-CDROMDriveException::CDROMDriveException( const std::string & message ) throw() :
+CDROMDriveException::CDROMDriveException( const std::string & message ) 
+		throw() :
 	OSDL::Exception( message )
 {
 
@@ -41,9 +42,11 @@ CDROMDriveHandler::CDROMDriveHandler() throw( CDROMDriveException ) :
 	
 	send( "Initializing CD-ROM subsystem" ) ;
 		
-	if ( SDL_InitSubSystem( CommonModule::UseCDROM ) != CommonModule::BackendSuccess ) 
+	if ( SDL_InitSubSystem( CommonModule::UseCDROM ) 
+			!= CommonModule::BackendSuccess ) 
 		throw CDROMDriveException( "CDROMDriveHandler constructor : "
-				"unable to initialize CD-ROM subsystem : " + Utils::getBackendLastError() ) ;
+				"unable to initialize CD-ROM subsystem : " 
+				+ Utils::getBackendLastError() ) ;
 				
 	send( "CD-ROM subsystem initialized" ) ;				
 
@@ -55,8 +58,8 @@ CDROMDriveHandler::~CDROMDriveHandler() throw()
 
 	send( "Stopping CD-ROM subsystem." ) ;
 
-	for ( map<CDROMDriveNumber, CDROMDrive *>::const_iterator it = _drives.begin() ;
-		it != _drives.end(); it++ )
+	for ( map<CDROMDriveNumber, CDROMDrive *>::const_iterator it 
+		= _drives.begin() ;	it != _drives.end(); it++ )
 	{
 		delete (*it).second ;
 	}
@@ -82,7 +85,8 @@ CDROMDrive & CDROMDriveHandler::getCDROMDrive( CDROMDriveNumber number )
 	throw( CDROMDriveException )
 {
 	
-	map<CDROMDriveNumber, CDROMDrive *>::const_iterator it = _drives.find( number ) ;
+	map<CDROMDriveNumber, CDROMDrive *>::const_iterator it 
+		= _drives.find( number ) ;
 	
 	if ( it != _drives.end() )
 	{
@@ -95,7 +99,11 @@ CDROMDrive & CDROMDriveHandler::getCDROMDrive( CDROMDriveNumber number )
 	// Else : drive not already created, let's try to create it :
 	CDROMDrive * newDrive = new CDROMDrive( number ) ;
 	
-	// Here the creation succeeded (otherwise an exception is propagated as expected) :
+	/*
+	 * Here the creation succeeded (otherwise an exception is propagated 
+	 * as expected) :
+	 *
+	 */
 	_drives[ number ] = newDrive ;
 	
 	return *newDrive ;
@@ -103,7 +111,8 @@ CDROMDrive & CDROMDriveHandler::getCDROMDrive( CDROMDriveNumber number )
 }
 
 				
-const std::string CDROMDriveHandler::toString( Ceylan::VerbosityLevels level ) const throw()
+const std::string CDROMDriveHandler::toString( Ceylan::VerbosityLevels level )
+	const throw()
 {
 		
 	CDROMDriveNumber driveNumber = GetAvailableCDROMDrivesCount() ;
@@ -119,13 +128,14 @@ const std::string CDROMDriveHandler::toString( Ceylan::VerbosityLevels level ) c
 			
 	list<string> descriptions ;
 	
-	for ( map<CDROMDriveNumber, CDROMDrive *>::const_iterator it = _drives.begin() ;
-		it != _drives.end(); it++ )
+	for ( map<CDROMDriveNumber, CDROMDrive *>::const_iterator it 
+		= _drives.begin() ; it != _drives.end(); it++ )
 	{
 		descriptions.push_back( (*it).second->toString() ) ;
 	}
 	
-	return "Out of " + Ceylan::toString( driveNumber ) + " available CD-ROM drive(s), " 
+	return "Out of " + Ceylan::toString( driveNumber ) 
+		+ " available CD-ROM drive(s), " 
 		+ Ceylan::toString( _drives.size() ) + " is/are opened : " 
 		+ Ceylan::formatStringList( descriptions ) ;	
 

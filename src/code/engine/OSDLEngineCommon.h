@@ -9,10 +9,8 @@
 
 
 /*
- * This file has for purpose to solve all intricated dependency links existing between the 
- * scheduler, the active objects and the periodic slots.
- *
- *
+ * This file has for purpose to solve all intricated dependency links 
+ * existing between the scheduler, the active objects and the periodic slots.
  *
  */
  
@@ -46,7 +44,8 @@ namespace OSDL
 		{
 			public:
 		
-				explicit SchedulingException( const std::string & reason ) throw() ;
+				explicit SchedulingException( const std::string & reason )
+					throw() ;
 				virtual ~SchedulingException() throw() ;
 			
 		} ;
@@ -55,32 +54,39 @@ namespace OSDL
 		/**
 		 * Defines a list of pointer to active objects.
 		 *
-		 * Was not defined in OSDLScheduler to avoir circular dependency : OSDLPeriodicSlot
-		 * should not depend on OSDLScheduler, since the opposite have to be true.
+		 * Was not defined in OSDLScheduler to avoir circular dependency :
+		 * OSDLPeriodicSlot should not depend on OSDLScheduler, since the
+		 * opposite has to be true.
 		 *
 		 */
-		typedef std::list<ActiveObject *> listActiveObjects ;
+		typedef std::list<ActiveObject *> ListOfActiveObjects ;
 		
 
 
 		/**
-		 * Determines roughly how much the activation of a specific object will cost in CPU
-		 * time. The greater the weight is, the heavier the needed processing resource should be.
+		 * Determines roughly how much the activation of a specific object 
+		 * will cost in CPU time. 
+		 *
+		 * The greater the weight is, the heavier the needed processing 
+		 * resource should be.
 		 *
 		 */
 		typedef unsigned int Weight ;
 		
 		
 		/**
-		 * Describes a scheduling policy.
+		 * Describes a scheduling policy, among : 
 		 *
-		 * relaxed : the scheduler is allowed to defer activation of a few periods if needed. 
-		 * Beside the jittering, some latency may occur, if the scheduler prefers putting this 
-		 * object in a less overcrowed periodic slot than the current one.
+		 * 	- relaxed : the scheduler is allowed to defer activation of a 
+		 * few periods if needed. 
+		 * Beside the jittering, some latency may occur, if the scheduler
+		 * prefers putting this object in a less overcrowed periodic slot 
+		 * than its current one.
 		 *
-		 * strict : enforce strict respect of specified parameters, namely for the period and the
-		 * simulation step to begin with. Strict scheduling might be useful for animations or sound,
-		 * for example.
+		 *	- strict : enforce strict respect of specified parameters, 
+		 * namely for the period and the simulation step to begin with. 
+		 * Strict scheduling might be useful for animations or sound, for
+		 * example.
 		 *
 		 */
 		enum ObjectSchedulingPolicy { relaxed, strict } ;

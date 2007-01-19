@@ -1,5 +1,6 @@
 #include "OSDLBoundingBox.h"
 
+
 using namespace OSDL::Engine ;
 
 using std::string ;
@@ -49,7 +50,8 @@ string BoundingBox::InterpertIntersectionResult( IntersectionResult result )
 			break ;
 				
 		case isContained :
-			return "The first bounding box is strictly contained by the second." ;
+			return "The first bounding box is "
+				"strictly contained by the second." ;
 			break ;
 				
 		case intersects :
@@ -62,7 +64,8 @@ string BoundingBox::InterpertIntersectionResult( IntersectionResult result )
 				
 		
 		default:
-			throw BoundingBoxException( "BoundingBox::InterpertIntersectionResult : "
+			throw BoundingBoxException(
+				"BoundingBox::InterpertIntersectionResult : "
 				"unknown intersection outcome." ) ;
 			break ;
 				

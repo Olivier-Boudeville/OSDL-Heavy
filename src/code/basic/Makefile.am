@@ -18,6 +18,7 @@ BASIC_INTERFACES = \
 	OSDLCDROMDrive.h                     \
 	OSDLCDROMDriveHandler.h              \
 	OSDLException.h                      \
+	OSDLHeaderVersion.h                  \
 	OSDLTestException.h                  \
 	OSDLTypes.h                          \
 	OSDLUtils.h

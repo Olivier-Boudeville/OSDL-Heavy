@@ -47,6 +47,7 @@ Uint32 getChunkTimeMilliseconds(Mix_Chunk *chunk)
 
 */
 
+
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
 string AudioModule::SDLEnvironmentVariables[] = 
 {
@@ -88,9 +89,11 @@ AudioModule::AudioModule() throw( AudioException ) :
 
 	send( "Initializing audio subsystem." ) ;
 
-	if ( SDL_InitSubSystem( CommonModule::UseAudio ) != CommonModule::BackendSuccess )
+	if ( SDL_InitSubSystem( 
+			CommonModule::UseAudio ) != CommonModule::BackendSuccess )
 		throw AudioException( "AudioModule constructor : "
-			"unable to initialize audio subsystem : " + Utils::getBackendLastError() ) ;
+			"unable to initialize audio subsystem : " 
+			+ Utils::getBackendLastError() ) ;
 
 	_AudioInitialized = true ;
 	
@@ -113,7 +116,8 @@ AudioModule::~AudioModule() throw()
 }
 
 
-const string AudioModule::toString( Ceylan::VerbosityLevels level ) const throw()
+const string AudioModule::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
 	
 	string res = "Audio module" ;
@@ -131,7 +135,9 @@ const string AudioModule::toString( Ceylan::VerbosityLevels level ) const throw(
 string AudioModule::DescribeEnvironmentVariables() throw()
 {
 
-	unsigned int varCount = sizeof( SDLEnvironmentVariables ) / sizeof (char * ) ;
+	unsigned int varCount = 
+		sizeof( SDLEnvironmentVariables ) / sizeof (char * ) ;
+		
 	string result = "Examining the " + Ceylan::toString( varCount )
 		+ " audio-related environment variables for SDL backend :" ;
 	
@@ -161,7 +167,8 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 		{			
 			if ( htmlFormat )
 			{
-				variables.push_back( "<b>" + var + " set to [" + value + "].</b>" ) ;
+				variables.push_back( "<b>" + var + " set to [" 
+					+ value + "].</b>" ) ;
 			}
 			else
 			{
@@ -180,3 +187,4 @@ bool AudioModule::IsAudioInitialized() throw()
 {
 	return _AudioInitialized ;
 }
+

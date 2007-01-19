@@ -28,7 +28,8 @@ using std::string ;
 
 
 
-AudioRenderer::AudioRenderer( bool registerToRootRenderer ) throw( RenderingException ) :
+AudioRenderer::AudioRenderer( bool registerToRootRenderer ) 
+		throw( RenderingException ) :
 	Renderer( /* registerToScheduler */ false )
 	//,_internalCamera( 0 )
 {
@@ -47,9 +48,10 @@ AudioRenderer::AudioRenderer( bool registerToRootRenderer ) throw( RenderingExce
 		}
 		catch( const RenderingException & e )
 		{
-			throw RenderingException( 
-				"AudioRenderer constructor : no already existing root renderer ("
-				+ e.toString() + ") whereas registering had been requested." ) ;
+			throw RenderingException( "AudioRenderer constructor : "
+				"no already existing root renderer ("
+				+ e.toString() 
+				+ ") whereas registering had been requested." ) ;
 		} 
 		
 		// Check it is a multimedia renderer indeed :
@@ -58,7 +60,8 @@ AudioRenderer::AudioRenderer( bool registerToRootRenderer ) throw( RenderingExce
 				
 		if ( multimediaRenderer == 0 )
 			throw RenderingException( "AudioRenderer constructor : "
-				"root renderer is not a multimedia renderer, no registering possible." ) ;
+				"root renderer is not a multimedia renderer, "
+				"no registering possible." ) ;
 					
 		multimediaRenderer->setAudioRenderer( * this ) ;
 
@@ -102,32 +105,45 @@ void AudioRenderer::setCamera( Camera & newCamera ) throw()
 
 void AudioRenderer::render( Events::RenderingTick currentRenderingTick ) throw()
 {
+
 	OSDL_AUDIO_RENDER_LOG( "Audio rendering ! " ) ;
 	
-	// Beware, currentRenderingTick might be always zero if no scheduler is used.
+	/*
+	 * Beware, currentRenderingTick might be always zero if no scheduler 
+	 * is used.
+	 *
+	 */
 	_renderingDone++ ;
+	
 }
 
 
-void AudioRenderer::onRenderingSkipped( RenderingTick skippedRenderingTick ) throw()
+void AudioRenderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
+	throw()
 {
 
 	OSDL_AUDIO_RENDER_LOG( "Audio rendering skipped." ) ;
 	_renderingSkipped++ ;
+	
 }
 
 
-const string AudioRenderer::toString( Ceylan::VerbosityLevels level ) const throw() 
+const string AudioRenderer::toString( Ceylan::VerbosityLevels level ) 
+	const throw() 
 {
 
-	string res = "Audio renderer, last rendering tick was " + Ceylan::toString( _lastRender )
-		+ ", having performed " + Ceylan::toString( _renderingDone ) + " rendering(s) for "
+	string res = "Audio renderer, last rendering tick was " 
+		+ Ceylan::toString( _lastRender )
+		+ ", having performed " + Ceylan::toString( _renderingDone ) 
+		+ " rendering(s) for "
 		+ Ceylan::toString( _renderingSkipped ) + " skip(s)" ;
 	
 	if ( _renderingDone + _renderingSkipped != 0 )
 		res += " (rendering proportion : " 
-			+ Ceylan::toString( 100 * _renderingDone / ( _renderingDone + _renderingSkipped ) )
+			+ Ceylan::toString( 100 * _renderingDone 
+				/ ( _renderingDone + _renderingSkipped ) )
 		 	+ "%)" ;
+			
 	/*		
 	if ( _internalCamera != 0 )
 		res += ". Following camera is being used : " 
@@ -135,6 +151,7 @@ const string AudioRenderer::toString( Ceylan::VerbosityLevels level ) const thro
 	else
 		res += ". No camera is currently used" ;		 
 	*/	
+	
 	return res ;
 	
 }

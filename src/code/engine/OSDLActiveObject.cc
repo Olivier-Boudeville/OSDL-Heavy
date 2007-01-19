@@ -31,8 +31,9 @@ ActiveObject::ActiveObject( Period period, ObjectSchedulingPolicy policy,
 }
 
 
-ActiveObject::ActiveObject( const list<SimulationTick> & triggeringTicks, 
-		bool absolutlyDefined, ObjectSchedulingPolicy policy, Weight weight ) throw() :
+ActiveObject::ActiveObject( const SimulationTickList & triggeringTicks, 
+	bool absolutlyDefined, ObjectSchedulingPolicy policy, Weight weight )
+		throw() :
 	_policy( policy ),
 	_weight( weight ),
 	_period( 0 ),
@@ -40,7 +41,7 @@ ActiveObject::ActiveObject( const list<SimulationTick> & triggeringTicks,
 	_absoluteTriggers( absolutlyDefined ),
 	_birthTime( 0 )
 {
-	_programmedTriggerTicks = new list<SimulationTick>( triggeringTicks ) ;
+	_programmedTriggerTicks = new SimulationTickList( triggeringTicks ) ;
 }	
 
 
@@ -54,7 +55,7 @@ ActiveObject::ActiveObject( SimulationTick triggerTick, bool absolutlyDefined,
 	_birthTime( 0 )
 
 {
-	_programmedTriggerTicks = new list<SimulationTick> ;
+	_programmedTriggerTicks = new SimulationTickList ;
 	_programmedTriggerTicks->push_back( triggerTick ) ;
 }	
 
@@ -90,16 +91,19 @@ void ActiveObject::setPeriod( Period newPeriod ) throw()
 }
 
 
-Hertz ActiveObject::setFrequency( Hertz newFrequency ) throw( SchedulingException )
+Hertz ActiveObject::setFrequency( Hertz newFrequency ) 
+	throw( SchedulingException )
 {
 
 	// Throw exception if scheduler not already existing :
 	Scheduler & scheduler = Scheduler::GetExistingScheduler() ;
 	
 	/*
-	 * Target period is 1/newFrequency, one needs to divide it by simulation period duration
-	 * to know how many simulation periods it will need :
-	 * _period = (1/newFrequency) / simulatickDuration = simulatickDuration / newFrequency
+	 * Target period is 1/newFrequency, one needs to divide it by 
+	 * simulation period duration to know how many simulation periods 
+	 * it will need :
+	 * _period = (1/newFrequency) / simulatickDuration 
+	 * = simulatickDuration / newFrequency
 	 *
 	 * Microsecond simulatickDuration = 
 	 * 	scheduler.getSimulationTickCount() * scheduler.getTimeSliceDuration() ;
@@ -108,8 +112,8 @@ Hertz ActiveObject::setFrequency( Hertz newFrequency ) throw( SchedulingExceptio
 	
 		
 	_period = static_cast<Period>( Ceylan::Maths::Round( 1000000.0f / 
-	 	( newFrequency * scheduler.getSimulationTickCount() * scheduler.getTimeSliceDuration() ) )
-	) ;
+	 	( newFrequency * scheduler.getSimulationTickCount() 
+			* scheduler.getTimeSliceDuration() ) ) ) ;
 	 
 	 // Clamp for too high frequencies :
 	 if ( _period < 1 )
@@ -119,17 +123,18 @@ Hertz ActiveObject::setFrequency( Hertz newFrequency ) throw( SchedulingExceptio
 	 /*
 	  * newFrequency = simulatickDuration / _period
 	  *
-	  *
 	  */
 	 return static_cast<Hertz>( Ceylan::Maths::Round( 1000000.0f / 
-	 	( _period * scheduler.getSimulationTickCount() * scheduler.getTimeSliceDuration() ) ) ) ;
+	 	( _period * scheduler.getSimulationTickCount() 
+			* scheduler.getTimeSliceDuration() ) ) ) ;
 		
 }
 
 
 bool ActiveObject::hasProgrammedActivations() const throw()
 {
-	return ! ( _programmedTriggerTicks == 0 || _programmedTriggerTicks->size() == 0 ) ;
+	return ! ( _programmedTriggerTicks == 0 
+		|| _programmedTriggerTicks->size() == 0 ) ;
 }
 
 
@@ -145,9 +150,10 @@ void ActiveObject::absoluteProgrammedActivationsWanted( bool on ) throw()
 }
 
 
-const list<SimulationTick> & ActiveObject::getProgrammedActivations()
+const SimulationTickList & ActiveObject::getProgrammedActivations()
 	const throw( SchedulingException ) 
 {
+
 	if ( _programmedTriggerTicks == 0 )
 		throw SchedulingException( "ActiveObject::getProgrammedActivations : "
 			"no activation available." ) ;
@@ -158,29 +164,33 @@ const list<SimulationTick> & ActiveObject::getProgrammedActivations()
 }
 
 
-void ActiveObject::setProgrammedActivations( const list<SimulationTick> & newActivationsList )
-	throw()	
+void ActiveObject::setProgrammedActivations( 
+	const SimulationTickList & newActivationsList ) throw()	
 {
 
 	if ( _programmedTriggerTicks != 0 )
 		delete _programmedTriggerTicks ;
 	
-	_programmedTriggerTicks = new list<SimulationTick>( newActivationsList ) ;
+	_programmedTriggerTicks = new SimulationTickList( newActivationsList ) ;
+	
 }
 
 
 void ActiveObject::addProgrammedActivations( 
-	const list<SimulationTick> & additionalActivationsList ) throw()	
+	const SimulationTickList & additionalActivationsList ) throw()	
 {
 	if ( _programmedTriggerTicks != 0 )
 	{
 		// Do not trust 'merge' to be efficient :
-		for ( list<SimulationTick>::const_iterator it = _programmedTriggerTicks->begin();
+		for ( SimulationTickList::const_iterator it 
+					= _programmedTriggerTicks->begin();
 				it != _programmedTriggerTicks->end(); it++ )
 			_programmedTriggerTicks->push_back( *it ) ;
 	}	
 	else
-		_programmedTriggerTicks = new list<SimulationTick>( additionalActivationsList ) ;
+		_programmedTriggerTicks = new SimulationTickList(
+			additionalActivationsList ) ;
+			
 }
 
 
@@ -203,23 +213,31 @@ void ActiveObject::setBirthTime( SimulationTick birthSimulationTick ) throw()
 }
 
 
-void ActiveObject::onSkip( SimulationTick skippedStep ) throw( SchedulingException )
+void ActiveObject::onSkip( SimulationTick skippedStep ) 
+	throw( SchedulingException )
 {
-	LogPlug::warning( "An active object (" + toString( Ceylan::low )
-		+ ") had his simulation tick " + Ceylan::toString( skippedStep ) + " skipped." ) ; 
+
+	LogPlug::warning( "An active object (" 
+		+ toString( Ceylan::low )
+		+ ") had his simulation tick " 
+		+ Ceylan::toString( skippedStep ) + " skipped." ) ; 
+		
 }
 
 
 void ActiveObject::onImpossibleActivation( SimulationTick missedStep ) 
 	throw( SchedulingException )
 {
+
 	throw SchedulingException( "Active object (" + toString( Ceylan::low )
-		+ ") had his activation failed for simulation tick " + Ceylan::toString( missedStep ) 
-		+ "." ) ; 
+		+ ") had his activation failed for simulation tick " 
+		+ Ceylan::toString( missedStep ) + "." ) ; 
+		
 }
 
 
-const string ActiveObject::toString( Ceylan::VerbosityLevels level ) const throw()
+const string ActiveObject::toString( Ceylan::VerbosityLevels level )
+	const throw()
 {	
 	return "Active object, whose date of birth is " 
 		+ Ceylan::toString( _birthTime ) ;

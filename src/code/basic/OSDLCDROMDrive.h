@@ -2,7 +2,8 @@
 #define OSDL_CD_ROM_DRIVE_H_
 
 
-#include "OSDLCDROMDriveHandler.h"   // for OSDL::CDROMDriveException, CDROMDriveNumber
+// for OSDL::CDROMDriveException, CDROMDriveNumber :
+#include "OSDLCDROMDriveHandler.h"   
 
 #include "Ceylan.h"                  // for inheritance
 
@@ -35,7 +36,8 @@ namespace OSDL
 	
 	
 	/**
-	 * Describes a CD track, it is just an object-oriented view of an actual track.
+	 * Describes a CD track, it is just an object-oriented view of an 
+	 * actual track.
 	 *
 	 */
 	class CDTrack : public Ceylan::TextDisplayable
@@ -80,8 +82,8 @@ namespace OSDL
 		     * @see Ceylan::TextDisplayable
 	         *
 	         */
-		    virtual const std::string toString( Ceylan::VerbosityLevels level = Ceylan::high ) 
-		       const throw() ;
+		    virtual const std::string toString( 
+				Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
 
 
 		
@@ -94,18 +96,22 @@ namespace OSDL
 		
 
 			/**
-			 * Copy constructor made private to ensure that it will be never called.
-			 * The compiler should complain whenever this undefined constructor is called, 
-			 * implicitly or not.
+			 * Copy constructor made private to ensure that it will 
+			 * be never called.
+			 *
+			 * The compiler should complain whenever this undefined 
+			 * constructor is called, implicitly or not.
 			 * 
 			 */			 
 			explicit CDTrack( const CDTrack & source ) throw() ;
 			
 			
 			/**
-			 * Assignment operator made private to ensure that it will be never called.
-			 * The compiler should complain whenever this undefined operator is called, 
-			 * implicitly or not.
+			 * Assignment operator made private to ensure that it will 
+			 * be never called.
+			 *
+			 * The compiler should complain whenever this undefined 
+			 * operator is called, implicitly or not.
 			 * 
 			 */			 
 			CDTrack & operator = ( const CDTrack & source ) throw() ;
@@ -116,7 +122,8 @@ namespace OSDL
 	
 	
 	/**
-	 * A CD-ROM drive allows to control a particular CD-ROM device attached to the system.
+	 * A CD-ROM drive allows to control a particular CD-ROM device 
+	 * attached to the system.
 	 *
 	 */
 	class CDROMDrive : public Ceylan::Object
@@ -139,13 +146,14 @@ namespace OSDL
 			
 			
 			/**
-			 * Opens for access this CD-ROM drive, so that the CD that must be in it can be directly
-			 * read afterwards, a bit like 'mounting' this device.
+			 * Opens for access this CD-ROM drive, so that the CD that 
+			 * must be in it can be directly read afterwards, a bit like
+			 * 'mounting' this device.
 			 *
 			 * @note This has nothing to do with opening the drive tray.
 			 *
-			 * @throw CDROMDriveException if the drive could not be opened, for example if it is
-			 * busy, or with no disc, or already opened.
+			 * @throw CDROMDriveException if the drive could not be opened, 
+			 * for example if it is busy, or with no disc, or already opened.
 			 *
 			 */
 			virtual void open() throw( CDROMDriveException ) ;
@@ -156,8 +164,8 @@ namespace OSDL
 			 *
 			 * @note This has nothing to do with the drive tray.
 			 *
-			 * @throw CDROMDriveException if the drive could not be opened, for example if it is
-			 * busy and not opened.
+			 * @throw CDROMDriveException if the drive could not be opened,
+			 * for example if it is busy and not opened.
 			 *
 			 */
 			virtual void close() throw( CDROMDriveException ) ;
@@ -167,7 +175,8 @@ namespace OSDL
 			 * Ejects the CD-ROM which is in the drive.
 			 * The drive must be already opened.
 			 *
-			 * @throw CDROMDriveException if an error occured, for example if drive was not open.
+			 * @throw CDROMDriveException if an error occured, 
+			 * for example if drive was not open.
 			 * 
 			 */
 			virtual void eject() const throw( CDROMDriveException ) ;
@@ -178,7 +187,8 @@ namespace OSDL
 			 *
 			 * @throw CDROMDriveException if drive not already open.
 			 *
-			 * This method cannot be 'const' since status update flag has to be updated.
+			 * This method cannot be 'const' since status update flag 
+			 * has to be updated.
 			 *
 			 */
 			virtual Status getStatus() throw( CDROMDriveException ) ;
@@ -211,11 +221,12 @@ namespace OSDL
 			/**
 			 * Returns the number of tracks in the CD in this drive.
 			 *
-			 * @throw CDROMDriveException if an error occured, for example if the drive is not 
-			 * already opened.
+			 * @throw CDROMDriveException if an error occured, for 
+			 * example if the drive is not already opened.
 			 *
 			 */
-			virtual TrackNumber getTracksCount() const throw( CDROMDriveException ) ;
+			virtual TrackNumber getTracksCount() const 
+				throw( CDROMDriveException ) ;
 			
 			
 			/**
@@ -223,8 +234,8 @@ namespace OSDL
 			 *
 			 * @param targetTrack the track whose duration is to be known.
 			 *
-			 * @throw CDROMDriveException if an error occured, for example if an invalid track
-			 * number is given.
+			 * @throw CDROMDriveException if an error occured, for 
+			 * example if an invalid track number is given.
 			 *
 			 */
 			virtual FrameCount getTrackDuration( TrackNumber targetTrack ) 
@@ -236,7 +247,8 @@ namespace OSDL
 			 *
 			 * @param targetTrack the track to return.
 			 *
-			 * @note The caller must deallocate the returned track when finished with it.
+			 * @note The caller must deallocate the returned track when
+			 * finished with it.
 			 *
 			 */
 			virtual CDTrack & getTrack( TrackNumber targetTrack ) 
@@ -244,7 +256,8 @@ namespace OSDL
 				
 				
 			/**
-			 * Plays the CD-ROM in drive, starting from specified CD frame, for specified duration.
+			 * Plays the CD-ROM in drive, starting from specified CD 
+			 * frame, for specified duration.
 			 *
 			 * @param startingFrame the frame to start.
 			 *
@@ -253,32 +266,38 @@ namespace OSDL
 			 * @throw CDROMDriveException if an error occured.
 			 *
 			 */
-			virtual void playFrames( FrameCount startingFrame, FrameCount durationInFrames ) 
-				throw( CDROMDriveException ) ;
+			virtual void playFrames( FrameCount startingFrame, 
+				FrameCount durationInFrames ) throw( CDROMDriveException ) ;
 				
 				
 			/**
-			 * Plays the CD-ROM in drive, starting from specified CD track, for specified number
-			 * of tracks. Frame offsets can be used to start after the beginning of the starting
-			 * track and to stop after the stopping track. 
+			 * Plays the CD-ROM in drive, starting from specified CD track, 
+			 * for specified number of tracks. Frame offsets can be used to
+			 * start after the beginning of the starting track and to stop 
+			 * after the stopping track. 
 			 *
 			 * @note Data tracks are ignored. 
 			 *
 			 * @param startingTrack the track to start with.
 			 *
-			 * @param numberOfTracks the number of tracks to play from 'startingTrack'.
+			 * @param numberOfTracks the number of tracks to play from
+			 * 'startingTrack'.
 			 *
-			 * @param startingFrameOffset the frame offset, from the beginning of 'startingTrack',
-			 * at which to start.
+			 * @param startingFrameOffset the frame offset, from the 
+			 * beginning of 'startingTrack', at which to start.
 			 *
-			 * @param stoppingFrameOffset the frame offset, from the beginning of the last track
-			 * (startingTrack+numberOfTracks), at which to end playing.
+			 * @param stoppingFrameOffset the frame offset, from the 
+			 * beginning of the last track (startingTrack+numberOfTracks), 
+			 * at which to end playing.
 			 *
 			 * @throw CDROMDriveException if an error occured.
 			 *
 			 */
-			virtual void playTracks( TrackNumber startingTrack, TrackNumber numberOfTracks,
-					FrameCount startingFrameOffset = 0, FrameCount stoppingFrameOffset = 0 ) 
+			virtual void playTracks( 
+					TrackNumber startingTrack, 
+					TrackNumber numberOfTracks,	
+					FrameCount startingFrameOffset = 0,
+					FrameCount stoppingFrameOffset = 0 ) 
 				throw( CDROMDriveException ) ;
 			
 			
@@ -310,8 +329,8 @@ namespace OSDL
 		     * @see Ceylan::TextDisplayable
 	         *
 	         */
-		    virtual const std::string toString( Ceylan::VerbosityLevels level = Ceylan::high ) 
-		       const throw() ;
+		    virtual const std::string toString( 
+				Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
 
 
 			
@@ -319,23 +338,29 @@ namespace OSDL
 			
 			
 			/**
-			 * Returns the number of CD frames corresponding to the specified time.
+			 * Returns the number of CD frames corresponding to the 
+			 * specified time.
 			 * 
-			 * @param duration the duration in seconds to convert into CD frames.
+			 * @param duration the duration in seconds to convert into 
+			 * CD frames.
 			 *
 			 */
-			static FrameCount ConvertTimeToFrameCount( Ceylan::System::Second duration ) throw() ;
+			static FrameCount ConvertTimeToFrameCount( 
+				Ceylan::System::Second duration ) throw() ;
 
 
 			/**
-			 * Returns the duration in seconds corresponding to the specified number of CD frames.
+			 * Returns the duration in seconds corresponding to the 
+			 * specified number of CD frames.
 			 * 
-			 * @param duration the duration in seconds to convert into CD frames.
+			 * @param duration the duration in seconds to convert into 
+			 * CD frames.
 			 *
 			 * @param The returned number of second is rounded.
 			 *
 			 */
-			static Ceylan::System::Second ConvertFrameCountToTime( FrameCount duration ) throw() ;
+			static Ceylan::System::Second ConvertFrameCountToTime( 
+				FrameCount duration ) throw() ;
 
 
 
@@ -357,24 +382,28 @@ namespace OSDL
 			/**
 			 * Gathers some informations about this drive and its status.
 			 *
-			 * Tells too whether the drive is open for access (if non-null) or not (if null).
+			 * Tells too whether the drive is open for access (if non-null)
+			 * or not (if null).
 			 *
 			 */
 			SDL_CD * _driveStatus ;
 			
 			
 			/**
-			 * A CD-ROM drive object (CDROMDrive) will be associated uniquely to a CD-ROM device.
+			 * A CD-ROM drive object (CDROMDrive) will be associated 
+			 * uniquely to a CD-ROM device.
 			 *
-			 * This constructor is private so that the factory gets total control onto drive
-			 * instance creations.
+			 * This constructor is private so that the factory gets total
+			 * control onto drive instance creations.
 			 *
 			 * @param driveNumber the drive number to take control of.
 			 *
-			 * @throw CDROMDriveException if specified drive number is not in licit range.
+			 * @throw CDROMDriveException if specified drive number is 
+			 * not in licit range.
 			 *
 			 */
-			explicit CDROMDrive( CDROMDriveNumber driveNumber ) throw( CDROMDriveException ) ;
+			explicit CDROMDrive( CDROMDriveNumber driveNumber ) 
+				throw( CDROMDriveException ) ;
 			
 			
 			/// Virtual destructor.
@@ -383,18 +412,20 @@ namespace OSDL
 			
 
 			/**
-			 * Copy constructor made private to ensure that it will be never called.
-			 * The compiler should complain whenever this undefined constructor is called, 
-			 * implicitly or not.
+			 * Copy constructor made private to ensure that it will be 
+			 * never called.
+			 * The compiler should complain whenever this undefined 
+			 * constructor is called, implicitly or not.
 			 * 
 			 */			 
 			explicit CDROMDrive( const CDROMDrive & source ) throw() ;
 			
 			
 			/**
-			 * Assignment operator made private to ensure that it will be never called.
-			 * The compiler should complain whenever this undefined operator is called, 
-			 * implicitly or not.
+			 * Assignment operator made private to ensure that it will 
+			 * be never called.
+			 * The compiler should complain whenever this undefined 
+			 * operator is called, implicitly or not.
 			 * 
 			 */			 
 			CDROMDrive & operator = ( const CDROMDrive & source ) throw() ;

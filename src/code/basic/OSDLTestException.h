@@ -1,10 +1,11 @@
 #ifndef OSDL_TEST_EXCEPTION_H_
 #define OSDL_TEST_EXCEPTION_H_
 
-#include <string>
-#include <iostream>
 
 #include "OSDLException.h"
+
+#include <string>
+#include <iostream>
 
 
 namespace OSDL
@@ -23,6 +24,8 @@ namespace OSDL
 }
 
 
-std::ostream & operator << ( std::ostream & os, const OSDL::TestException & e ) ;
+std::ostream & operator << ( std::ostream & os, 
+	const OSDL::TestException & e ) ;
+
 
 #endif // OSDL_TEST_EXCEPTION_H_

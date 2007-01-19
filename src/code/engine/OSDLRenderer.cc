@@ -12,6 +12,7 @@ using namespace OSDL::Engine ;
 using std::string ;
 
 
+
 #ifdef OSDL_DEBUG_RENDERER
 
 #define OSDL_RENDER_LOG(message) send( message ) ;
@@ -55,7 +56,8 @@ Renderer::Renderer( bool registerToScheduler ) throw( RenderingException ) :
 		}
 		catch( const RenderingException & e )
 		{
-			throw RenderingException( "Renderer constructor : no already existing scheduler ("
+			throw RenderingException( 
+				"Renderer constructor : no already existing scheduler ("
 				+ e.toString() + ") whereas registering had been requested." ) ;
 		} 
 	}
@@ -65,16 +67,24 @@ Renderer::Renderer( bool registerToScheduler ) throw( RenderingException ) :
 
 Renderer::~Renderer() throw()
 {
+
 	// Views are not owned.
+	
 }
 
 
 void Renderer::render( Events::RenderingTick currentRenderingTick ) throw()
 {
+
 	OSDL_RENDER_LOG( "Rendering ! " ) ;
 	
-	// Beware, currentRenderingTick might be always zero if no scheduler is used.
+	/*
+	 * Beware, currentRenderingTick might be always zero if no scheduler 
+	 * is used.
+	 *
+	 */
 	_renderingDone++ ;
+	
 }
 
 
@@ -83,20 +93,23 @@ void Renderer::onRenderingSkipped( RenderingTick skippedRenderingTick )	throw()
 
 	OSDL_RENDER_LOG( "Rendering skipped." ) ;
 	_renderingSkipped++ ;
+	
 }
 
 
 const string Renderer::toString( Ceylan::VerbosityLevels level ) const throw() 
 {
 
-	string res = "Basic renderer, last rendering tick was " + Ceylan::toString( _lastRender )
-		+ ", having performed " + Ceylan::toString( _renderingDone ) + " rendering(s) for "
+	string res = "Basic renderer, last rendering tick was " 
+		+ Ceylan::toString( _lastRender )
+		+ ", having performed " 
+		+ Ceylan::toString( _renderingDone )    + " rendering(s) for "
 		+ Ceylan::toString( _renderingSkipped ) + " skip(s)" ;
 	
 	if ( _renderingDone + _renderingSkipped != 0 )
 		res += " (rendering proportion : " 
-			+ Ceylan::toString( 100 * _renderingDone / ( _renderingDone + _renderingSkipped ) )
-		 	+ "%)" ;
+			+ Ceylan::toString( 100 * _renderingDone / ( _renderingDone 
+				+ _renderingSkipped ) )	+ "%)" ;
 			
 	return res ;
 	
@@ -105,7 +118,9 @@ const string Renderer::toString( Ceylan::VerbosityLevels level ) const throw()
 
 bool Renderer::HasExistingRootRenderer() throw()
 {
+
 	return ( _internalRootRenderer != 0 ) ;
+	
 }
 
 
@@ -124,10 +139,11 @@ void Renderer::DeleteExistingRootRenderer() throw( RenderingException )
 {
 
     if ( Renderer::_internalRootRenderer != 0 )
-		throw RenderingException( 
-			"Renderer::DeleteExistingRenderer : there was no already existing Renderer." ) ;
+		throw RenderingException( "Renderer::DeleteExistingRenderer : "
+			"there was no already existing Renderer." ) ;
 			
     LogPlug::debug( "Renderer::DeleteExistingRenderer : effective deleting." ) ;
+
     delete Renderer::_internalRootRenderer ;
 	Renderer::_internalRootRenderer = 0 ;
 
@@ -139,13 +155,19 @@ void Renderer::DeleteRootRenderer() throw()
 
     if ( Renderer::_internalRootRenderer != 0 )
     {
+	
         LogPlug::debug( "Renderer::DeleteRenderer : effective deleting." ) ;
+
         delete Renderer::_internalRootRenderer ;
 		Renderer::_internalRootRenderer = 0 ;
+		
     }
     else
     {
+	
         LogPlug::debug( "Renderer::DeleteRenderer : no deleting needed." ) ;
+		
     }
 
 }
+

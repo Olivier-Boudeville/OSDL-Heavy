@@ -50,7 +50,8 @@ TrackType CDTrack::getTrackType() const throw()
 			break ;
 		
 		default:
-			Ceylan::emergencyShutdown( "CDTrack::getTrackType : unexpected type." ) ;
+			Ceylan::emergencyShutdown( 
+				"CDTrack::getTrackType : unexpected type." ) ;
 			// Do not care, just to avoid a warning :
 			return dataTrack ;
 			break ;
@@ -75,20 +76,24 @@ FrameCount CDTrack::getFrameOffset() const throw()
 const string CDTrack::toString( Ceylan::VerbosityLevels level ) const throw()
 {
 	
-	string res = "Track #" + Ceylan::toString( getTrackNumber() ) + " : this is " ;
+	string res = "Track #" + Ceylan::toString( getTrackNumber() ) 
+		+ " : this is " ;
 	
 	switch( getTrackType() )
 	{
 		
 		case audioTrack:
-			res += "an audio track, its length is " + Ceylan::toString( getLength() ) 
+			res += "an audio track, its length is " 
+				+ Ceylan::toString( getLength() ) 
 				+ " frames (about " 
-				+ Ceylan::toString( CDROMDrive::ConvertFrameCountToTime( getLength() ) ) 
+				+ Ceylan::toString( 
+					CDROMDrive::ConvertFrameCountToTime( getLength() ) ) 
 				+ " seconds)" ;
 			break ;
 			
 		case dataTrack:
-			res += "a data track, its length is " + Ceylan::toString( getLength() ) 
+			res += "a data track, its length is " 
+				+ Ceylan::toString( getLength() ) 
 				+ " frames" ;
 			break ;
 			
@@ -98,7 +103,7 @@ const string CDTrack::toString( Ceylan::VerbosityLevels level ) const throw()
 				
 	}
 
-	res += ". Current frame offset is " +  Ceylan::toString( getFrameOffset() ) ;
+	res += ". Current frame offset is " + Ceylan::toString( getFrameOffset() ) ;
 	
 	return res ;
 	
@@ -137,7 +142,8 @@ void CDROMDrive::open() throw( CDROMDriveException )
 {
 
 	if ( _driveStatus != 0 )
-		throw CDROMDriveException( "CDROMDrive::open : drive already opened." ) ;
+		throw CDROMDriveException( 
+			"CDROMDrive::open : drive already opened." ) ;
 		
 	_driveStatus = SDL_CDOpen( _driveNumber ) ;
 	
@@ -152,7 +158,8 @@ void CDROMDrive::close() throw( CDROMDriveException )
 {
 
 	if ( _driveStatus == 0 )
-		throw CDROMDriveException( "CDROMDrive::close : drive was not already opened." ) ;
+		throw CDROMDriveException( 
+			"CDROMDrive::close : drive was not already opened." ) ;
 		
 	SDL_CDClose( _driveStatus ) ;
 	
@@ -166,10 +173,12 @@ void CDROMDrive::eject() const throw( CDROMDriveException )
 {
 
 	if ( _driveStatus == 0 )
-		throw CDROMDriveException( "CDROMDrive::eject : drive was not already opened." ) ;
+		throw CDROMDriveException( 
+			"CDROMDrive::eject : drive was not already opened." ) ;
 
 	if ( SDL_CDEject( _driveStatus ) != 0 )
-		throw CDROMDriveException( "CDROMDrive::eject : " + Utils::getBackendLastError() ) ;
+		throw CDROMDriveException( 
+			"CDROMDrive::eject : " + Utils::getBackendLastError() ) ;
 		
 }
 
@@ -186,11 +195,13 @@ CDROMDrive::Status CDROMDrive::getStatus() throw( CDROMDriveException )
 }
 		
 
-CDROMDrive::Status CDROMDrive::getConstStatus() const throw( CDROMDriveException )
+CDROMDrive::Status CDROMDrive::getConstStatus() const 
+	throw( CDROMDriveException )
 {
 
 	if ( _driveStatus == 0 )
-		throw CDROMDriveException( "CDROMDrive::getStatus : drive was not already opened." ) ;
+		throw CDROMDriveException( 
+			"CDROMDrive::getStatus : drive was not already opened." ) ;
 
 		
 	switch( SDL_CDStatus( _driveStatus ) )
@@ -217,7 +228,8 @@ CDROMDrive::Status CDROMDrive::getConstStatus() const throw( CDROMDriveException
 			break ;
 			
 		default:
-			Ceylan::emergencyShutdown( "CDROMDrive::getStatus : unknown status read" ) ;
+			Ceylan::emergencyShutdown( 
+				"CDROMDrive::getStatus : unknown status read" ) ;
 			// Do not care, just to avoid a warning :
 			return InError ;			
 			break ;
@@ -241,7 +253,8 @@ TrackNumber CDROMDrive::getTracksCount() const throw( CDROMDriveException )
 {
 
 	if ( _driveStatus == 0 )
-		throw CDROMDriveException( "CDROMDrive::getTracksCount : drive was not already opened." ) ;
+		throw CDROMDriveException( 
+			"CDROMDrive::getTracksCount : drive was not already opened." ) ;
 
 	return _driveStatus->numtracks ;
 	
@@ -255,32 +268,36 @@ FrameCount CDROMDrive::getTrackDuration( TrackNumber targetTrack )
 	// Checks as well that the drive is opened :
 	if ( targetTrack >= getTracksCount() )
 		throw CDROMDriveException( "CDROMDrive::getTrackDuration : "
-			"specified track (" + Ceylan::toString( targetTrack ) + ") out of range." ) ;
+			"specified track (" 
+			+ Ceylan::toString( targetTrack ) + ") out of range." ) ;
 		
 	return _driveStatus->track[targetTrack].length ; 		
 	
 }
 
 	
-CDTrack & CDROMDrive::getTrack( TrackNumber targetTrack ) const throw( CDROMDriveException )
+CDTrack & CDROMDrive::getTrack( TrackNumber targetTrack ) const 
+	throw( CDROMDriveException )
 {
 
 	// Checks as well that the drive is opened :
 	if ( targetTrack >= getTracksCount() )
 		throw CDROMDriveException( "CDROMDrive::getTrack : "
-			"specified track (" + Ceylan::toString( targetTrack ) + ") out of range." ) ;
+			"specified track (" + Ceylan::toString( targetTrack )
+			+ ") out of range." ) ;
 
 	return * new CDTrack( _driveStatus->track[ targetTrack ] ) ;
 	
 }
 
 					
-void CDROMDrive::playFrames( FrameCount startingFrame, FrameCount durationInFrames ) 
-	throw( CDROMDriveException )		
+void CDROMDrive::playFrames( FrameCount startingFrame, 
+	FrameCount durationInFrames ) throw( CDROMDriveException )		
 {
 
 	if ( _driveStatus == 0 )
-		throw CDROMDriveException( "CDROMDrive::playFrames : drive was not already opened." ) ;
+		throw CDROMDriveException( 
+			"CDROMDrive::playFrames : drive was not already opened." ) ;
 
 	if ( SDL_CDPlay( _driveStatus, startingFrame, durationInFrames) != 0 )
 		throw CDROMDriveException( "CDROMDrive::playFrames failed : " 
@@ -289,16 +306,17 @@ void CDROMDrive::playFrames( FrameCount startingFrame, FrameCount durationInFram
 }
 
 
-void CDROMDrive::playTracks( TrackNumber startingTrack, TrackNumber numberOfTracks,
-	FrameCount startingFrameOffset, FrameCount stoppingFrameOffset ) throw( CDROMDriveException )	
+void CDROMDrive::playTracks( TrackNumber startingTrack, 
+	TrackNumber numberOfTracks, FrameCount startingFrameOffset, 
+	FrameCount stoppingFrameOffset ) throw( CDROMDriveException )	
 {
 
 	// Updated status needed to play tracks (check that drive is opened too) :
 	if ( ! _statusUpdated )
 		getStatus() ;
 	
-	if ( SDL_CDPlayTracks( _driveStatus, startingTrack, startingFrameOffset, numberOfTracks,
-		 	stoppingFrameOffset ) != 0 )
+	if ( SDL_CDPlayTracks( _driveStatus, startingTrack, startingFrameOffset,
+		numberOfTracks,	stoppingFrameOffset ) != 0 )
 	{		
 		throw CDROMDriveException( "CDROMDrive::playFrames failed : " 
 			+ Utils::getBackendLastError() ) ;
@@ -311,7 +329,8 @@ void CDROMDrive::pause() const throw( CDROMDriveException )
 {
 	
 	if ( _driveStatus == 0 )
-		throw CDROMDriveException( "CDROMDrive::pause : drive was not already opened." ) ;
+		throw CDROMDriveException( 
+			"CDROMDrive::pause : drive was not already opened." ) ;
 		
 	if ( SDL_CDPause( _driveStatus ) != 0 )
 		throw CDROMDriveException( "CDROMDrive::pause failed : "
@@ -324,7 +343,8 @@ void CDROMDrive::resume() const throw( CDROMDriveException )
 {
 	
 	if ( _driveStatus == 0 )
-		throw CDROMDriveException( "CDROMDrive::resume : drive was not already opened." ) ;
+		throw CDROMDriveException( 
+			"CDROMDrive::resume : drive was not already opened." ) ;
 		
 	if ( SDL_CDResume( _driveStatus ) != 0 )
 		throw CDROMDriveException( "CDROMDrive::resume failed : "
@@ -415,13 +435,16 @@ const string CDROMDrive::toString( Ceylan::VerbosityLevels level ) const throw()
 			   				
 
 
-FrameCount CDROMDrive::ConvertTimeToFrameCount( Ceylan::System::Second duration ) throw()
+FrameCount CDROMDrive::ConvertTimeToFrameCount( 
+	Ceylan::System::Second duration ) throw()
 {
 	return duration * FramesPerSecond ;
 }
 
 
-Ceylan::System::Second CDROMDrive::ConvertFrameCountToTime( FrameCount duration ) throw()
+Ceylan::System::Second CDROMDrive::ConvertFrameCountToTime( 
+	FrameCount duration ) throw()
 {
 	return duration / FramesPerSecond ;
 }
+

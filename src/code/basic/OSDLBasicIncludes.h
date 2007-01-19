@@ -8,6 +8,7 @@
 #include "OSDLBasic.h"
 #include "OSDLTypes.h"
 #include "OSDLException.h"
+#include "OSDLHeaderVersion.h"
 #include "OSDLTestException.h"
 #include "OSDLUtils.h"
 #include "OSDLCDROMDrive.h"

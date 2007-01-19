@@ -1,8 +1,9 @@
 #include "OSDLPeriodicSlot.h"
 
-using namespace Ceylan::Log ;
 using namespace OSDL::Events ;
 using namespace OSDL::Engine ;
+
+using namespace Ceylan::Log ;
 
 using std::string ;
 using std::list ;
@@ -20,7 +21,7 @@ PeriodicSlot::PeriodicSlot( Period periodicity ) throw() :
 	
 	_slotWeights = new Weight[ _period ] ;
 	
-	// Initialize with null pointer for lists and zero for weights :
+	// Initializes with null pointer for lists, and zero for weights :
 	
 	for ( Period i = 0; i < _period; i++ )
 	{
@@ -50,20 +51,35 @@ PeriodicSlot::~PeriodicSlot() throw()
 }
 
 
-void PeriodicSlot::add( ActiveObject & newObject ) throw()
+void PeriodicSlot::add( ActiveObject & newObject ) throw( SchedulingException )
 {
 	
 	Period chosenSlot ;
 	
-	// If strict policy is requested, schedules the object exactly at next simulation step :
-	if ( newObject.getPolicy() == strict )
-		chosenSlot = ( _currentSlot + 1 ) % _period ;
+	/*
+	 * If strict policy is requested, schedules the object exactly at 
+	 * next simulation step.
+	 *
+	 * If relaxed policy is allowed, schedule on least crowded slot.
+	 *
+	 */
+	switch( newObject.getPolicy() )
+	{
 	
-	// If relaxed policy is allowed, schedule on least crowded slot :	
-	if ( newObject.getPolicy() == relaxed )	
-		chosenSlot = getLeastBusySlot() ;
+		case strict:
+			chosenSlot = ( _currentSlot + 1 ) % _period ;
+			break ;
+			
+		case relaxed:	
+			chosenSlot = getLeastBusySlot() ;
+			break ;
 	
-	
+		default:
+			throw SchedulingException( "PeriodicSlot::add : "
+				"unexpected scheduling policy." ) ;
+				
+	}
+			
 	// Apply slot choice for all policies :
 	addInSlot( newObject, chosenSlot ) ;
 			
@@ -72,6 +88,7 @@ void PeriodicSlot::add( ActiveObject & newObject ) throw()
 
 void PeriodicSlot::remove( ActiveObject & object ) throw( SchedulingException )
 {
+
 	bool removed = false ;
 	
 	for ( Period i = 0; i < _period; i++ )
@@ -81,7 +98,8 @@ void PeriodicSlot::remove( ActiveObject & object ) throw( SchedulingException )
 	}
 	
 	if ( ! removed )
-		throw SchedulingException( "PeriodicSlot::remove : all slots inspected for object ("
+		throw SchedulingException( 
+			"PeriodicSlot::remove : all slots inspected for object ("
 			+ object.toString( Ceylan::low ) + "), but was never found." ) ;
 }
 
@@ -90,37 +108,52 @@ void PeriodicSlot::onNextTick( Events::SimulationTick newTick ) throw()
 {
 	
 	/*
-	 * Protect from multiple calls. Unitary periods are special cases, since the current slot 
-	 * never changes.
+	 * Protect from multiple calls. 
+	 * Unitary periods are special cases, since the current slot never changes.
 	 *
 	 */
+	Period deducedSubSlot = getSubSlotForSimulationTick( newTick ) ;
 	
-	if ( _currentSlot != getSubSlotForSimulationTick( newTick ) || _period == 1 )
+	if ( _currentSlot != deducedSubSlot || _period == 1 )
 	{
+	
 		// OK, it is not the last slot again. But is it really the next slot ?
 		_currentSlot = ( _currentSlot + 1 ) % _period ;	
 
-		if ( _currentSlot != getSubSlotForSimulationTick( newTick ) )
-			LogPlug::warning( "PeriodicSlot::onNextTick : expected next sub-slot to be " 
+		if ( _currentSlot != deducedSubSlot )
+			LogPlug::warning( 
+				"PeriodicSlot::onNextTick : expected next sub-slot to be " 
 				+ Ceylan::toString( _currentSlot ) + ", got " 
-				+ Ceylan::toString( getSubSlotForSimulationTick( newTick ) )
+				+ Ceylan::toString( deducedSubSlot )
 				+ " for simulation tick "
 				+ Ceylan::toString( newTick ) + "." ) ;
 		
-		// Nevermind, reset the current slot on all situations, and activate accordingly :		
-		_currentSlot = getSubSlotForSimulationTick( newTick ) ;
+		/*
+		 * Nevermind, reset the current slot on all situations, and 
+		 * activate accordingly :		
+		 *
+		 */
+		_currentSlot = deducedSubSlot ;
 		activateAllObjectsInSubSlot( _currentSlot, newTick ) ;
+		
 	}
 	else
 	{
 		
-		// First simulation tick is a special case (bootstrap), since initial sub-slot is zero too.
+		/*
+		 * First simulation tick is a special case (bootstrap), since 
+		 * initial sub-slot is zero too.
+		 *
+		 */
 		
 		if ( newTick != 0 )
 		{
+		
 			// The sub-slot has already been activated !
-			LogPlug::warning( "PeriodicSlot::onNextTick : apparently called multiple times for "
-				"simulation time " + Ceylan::toString( newTick ) + " (last activated sub-slot was "
+			LogPlug::warning( "PeriodicSlot::onNextTick : "
+				"apparently called multiple times for simulation time " 
+				+ Ceylan::toString( newTick ) 
+				+ " (last activated sub-slot was "
 				+ Ceylan::toString( _currentSlot ) 
 				+ "), no more activation performed." ) ;
 		}		
@@ -129,7 +162,8 @@ void PeriodicSlot::onNextTick( Events::SimulationTick newTick ) throw()
 }
 
 
-void PeriodicSlot::onSimulationSkipped( SimulationTick skipped ) throw( SchedulingException )
+void PeriodicSlot::onSimulationSkipped( SimulationTick skipped ) 
+	throw( SchedulingException )
 {
 
 	Period subSlot = getSubSlotForSimulationTick( skipped ) ;
@@ -145,6 +179,7 @@ void PeriodicSlot::onSimulationSkipped( SimulationTick skipped ) throw( Scheduli
 	
 	// Avoid to confuse onNextTick :
 	_currentSlot = subSlot ;
+	
 }
 
 					
@@ -154,11 +189,14 @@ Period PeriodicSlot::getPeriod() throw()
 }
 
 
-const string PeriodicSlot::toString( Ceylan::VerbosityLevels level ) const throw()
+const string PeriodicSlot::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
 
-	string res = "Periodic slot whose period is " + Ceylan::toString( _period ) 
-		+ ". Current sub-slot is " + Ceylan::toString( _currentSlot ) ; 
+	string res = "Periodic slot whose period is " 
+		+ Ceylan::toString( _period ) 
+		+ ". Current sub-slot is " 
+		+ Ceylan::toString( _currentSlot ) ; 
 		
 	if ( level == Ceylan::low )
 		return res ;
@@ -178,7 +216,8 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level ) const throw
 		}		
 	
 		return res + ". " + Ceylan::toString( objectCount ) 
-			+ " active objects are registered in its slots, for a total weight of "
+			+ " active objects are registered in its slots, "
+			"for a total weight of "
 			+ Ceylan::toString( weightCount ) + "." ;
 	}
 		
@@ -200,19 +239,23 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level ) const throw
 }
 						
 
-Period PeriodicSlot::getSubSlotForSimulationTick( SimulationTick tick ) const throw()
+Period PeriodicSlot::getSubSlotForSimulationTick( SimulationTick tick ) 
+	const throw()
 {
 	return ( tick % _period ) ;
 }
 
 
-void PeriodicSlot::addInSlot( ActiveObject & newObject, Period targetSlot ) throw()
+void PeriodicSlot::addInSlot( ActiveObject & newObject, Period targetSlot )
+	throw()
 {
+
 	if ( _slots[ targetSlot ] == 0 )
 		_slots[ targetSlot ] = new listActiveObjects() ;
 		
 	_slots[ targetSlot ]->push_back( & newObject ) ;
 	_slotWeights[ targetSlot ] += newObject.getWeight() ;
+	
 }
 
 
@@ -223,11 +266,11 @@ bool PeriodicSlot::removeFromSlot( ActiveObject & object, Period targetSlot )
 	if ( _slots[ targetSlot ] == 0 )
 		return false ;
 		
-	unsigned int count = 0 ;
+	Ceylan::Uint32 count = 0 ;
 	
 	/* 
-	 * Removes all occurences of this object, must use two passes since otherwise an erase 
-	 * would invalidate the iterator.
+	 * Removes all occurences of this object, must use two passes since
+	 * otherwise an erase would invalidate the iterator.
 	 *
 	 */
 	for ( listActiveObjects::iterator it = _slots[ targetSlot ]->begin() ; 
@@ -275,8 +318,8 @@ Period PeriodicSlot::getLeastBusySlot() const throw()
 }
 
 
-void PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot, Events::SimulationTick currentTime )
-	throw()
+void PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
+	Events::SimulationTick currentTime ) throw()
 {
 
 	if ( _slots[ subSlot ] == 0 )
@@ -285,7 +328,11 @@ void PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot, Events::Simulati
 		return ;
 	}
 	
-	// There could be too a dynamic slip for heavy active objects with relaxed policy.
+	/*
+	 * There could be too a dynamic slip for heavy active objects with 
+	 * relaxed policy.
+	 *
+	 */
 	
 	for ( listActiveObjects::iterator it = _slots[ subSlot ]->begin();
 		it != _slots[ subSlot ]->end(); it++ )
@@ -294,3 +341,4 @@ void PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot, Events::Simulati
 	}
 
 }
+

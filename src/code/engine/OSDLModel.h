@@ -23,11 +23,11 @@ namespace OSDL
 	
 			
 		/**
-		 * These specialized MVC models comply with the scheduler framework, since they are
-		 * active objects.
+		 * These specialized MVC models comply with the scheduler framework,
+		 * since they are active objects.
 		 *
-		 * It allows the models to be scheduled, periodically and/or programmatically, during 
-		 * simulation ticks.
+		 * It allows the models to be scheduled, periodically and/or
+		 * programmatically, during simulation ticks.
 		 *
 		 * @see OSDL::Engine::Scheduler
 		 *
@@ -40,89 +40,106 @@ namespace OSDL
 			
 			
 				/**
-				 * Constructor of an OSDL MVC model which is to be periodically scheduled.
+				 * Constructor of an OSDL MVC model which is to be 
+				 * periodically scheduled.
 				 *
-				 * @param autoRegister tells whether this new Model is to automatically register
-				 * itself to the scheduler. It requires the scheduler to exist already.
+				 * @param autoRegister tells whether this new Model is to
+				 * automatically register itself to the scheduler. 
+				 * It requires the scheduler to exist already.
 				 *
-				 * @param period tells how many simulation steps are to be waited by the scheduler
-				 * until the model is activated again. The period must not be null.
+				 * @param period tells how many simulation steps are to be
+				 * waited by the scheduler until the model is activated again.
+				 * The period must not be null.
 				 *
+				 * @param policy allows to choose a scheduling policy, 
+				 * according to the quality of service this model requires.
 				 *
-				 * @param policy allows to choose a scheduling policy, according to the quality of
-				 * service this model requires.
+				 * @param weight evaluates how much processing power an
+				 * activation of this model is to cost on average. 
+				 * This helps the scheduler doing its job balance.
 				 *
-				 * @param weight evaluates how much processing power an activation of this model
-				 * is to cost, on average. This helps the scheduler doing its job.
-				 *
-				 * @note Do not mix up this constructor with the one for programmed models, since
-				 * their arguments are almost the same.
+				 * @note Do not mix up this constructor with the one for
+				 * programmed models, since their arguments are almost the 
+				 * same.
 				 *
 				 */
-				explicit Model( bool autoRegister = true, Events::Period period = 1, 
-						Engine::ObjectSchedulingPolicy policy = Engine::relaxed, 
+				explicit Model( 
+						bool autoRegister = true, 
+						Events::Period period = 1,
+						Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
 						Engine::Weight weight = 1 )
 					throw( Engine::SchedulingException ) ;
 				
 				
 				/**
-				 * Constructor of an OSDL MVC model activated only on specifically programmed
-				 * simulation steps. 
+				 * Constructor of an OSDL MVC model activated only on
+				 * specifically programmed simulation steps. 
 				 *
-				 * @param autoRegister tells whether this new Model is to automatically register
-				 * itself to the scheduler. It requires the scheduler to exist already.
+				 * @param autoRegister tells whether this new Model is to
+				 * automatically register itself to the scheduler. 
+				 * It requires the scheduler to exist already.
 				 *
-				 * @param triggeringStates is the list of simulation ticks where the activation
-				 * should occur. The model does not take ownership of this list, it will make
-				 * a copy of it.
+				 * @param triggeringStates is the list of simulation ticks 
+				 * when the activation should occur. 
+				 * The model does not take ownership of this list, it will 
+				 * make its own copy of it.
 				 *
-				 * @param absolutlyDefined tells if the specified steps are defined absolutly,
-				 * or relatively to the current simulation step.
+				 * @param absolutelyDefined tells if the specified steps are
+				 * defined absolutely, or relatively to the current simulation
+				 * step.
 				 *
-				 * @param policy allows to choose a scheduling policy, according to the quality of
-				 * service this model requires.
+				 * @param policy allows to choose a scheduling policy, 
+				 * according to the quality of service this model requires.
 				 *
-				 * @param weight evaluates how much processing power an activation of this model
-				 * is to cost, on average. This helps the scheduler doing its job.
+				 * @param weight evaluates how much processing power an
+				 * activation of this model is to cost on average. 
+				 * This helps the scheduler doing its job balance.
 				 *
-				 * @note Do not mix up this constructor with the one for periodic models, since
-				 * their arguments are almost the same.
+				 * @note Do not mix up this constructor with the one for
+				 * periodic models, since their arguments are almost the same.
 				 *
 				 */
 				explicit Model(	bool autoRegister, 
-					const std::list<Events::SimulationTick> & triggeringStates, 
-					bool absolutlyDefined = true, 
+					const SimulationTickList & triggeringStates, 
+					bool absolutelyDefined = true, 
 					Engine::ObjectSchedulingPolicy policy = Engine::relaxed, 
 					Engine::Weight weight = 1 )
 						throw( Engine::SchedulingException ) ;
 				
 				
 				/**
-				 * Constructor of an OSDL MVC Model activated only on a specific simulation step. 
+				 * Constructor of an OSDL MVC Model activated only on a 
+				 * specific simulation step. 
 				 *
-				 * @param autoRegister tells whether this new Model is to automatically register
-				 * itself to the scheduler. It requires the scheduler to exist already.
+				 * @param autoRegister tells whether this new Model is to
+				 * automatically register itself to the scheduler. 
+				 * It requires the scheduler to exist already.
 				 *
-				 * @param triggerTick is the simulation step when this model will be
-				 * activated.
+				 * @param triggerTick is the simulation step when this 
+				 * model will be activated.
 				 *
-				 * @param absolutlyDefined tells if the specified steps are defined absolutly,
-				 * or relatively to the current simulation step. No default value can be given
-				 * for that parameter, since there would be an ambiguity with first constructor
+				 * @param absolutelyDefined tells if the specified step
+				 * is defined absolutely, or relatively to the current
+				 * simulation step. 
+				 * No default value can be given for that parameter, since 
+				 * there would be an ambiguity with first constructor
 				 * on any call with only one argument.
 				 *
-				 * @param policy allows to choose a scheduling policy, according to the quality of
-				 * service this model requires.
+				 * @param policy allows to choose a scheduling policy, 
+				 * according to the quality of service this model requires.
 				 *
-				 * @param weight evaluates how much processing power an activation of this model
-				 * is to cost, on average. This helps the scheduler doing its job.
+				 * @param weight evaluates how much processing power an
+				 * activation of this model is to cost on average. 
+				 * This helps the scheduler doing its job balance.
 				 *
-				 * @note Do not mix up this constructor with the one for programmed models, since
-				 * their arguments are almost the same.
+				 * @note Do not mix up this constructor with the one for
+				 * programmed models, since their arguments are almost the same.
 				 *						 
 				 */
-				explicit Model( bool autoRegister, Events::SimulationTick triggerTick, 
-					bool absolutlyDefined = true, 
+				explicit Model( 
+					bool autoRegister, 
+					Events::SimulationTick triggerTick, 
+					bool absolutelyDefined = true, 
 					Engine::ObjectSchedulingPolicy policy = Engine::relaxed, 
 					Engine::Weight weight = 1 ) 
 						throw( Engine::SchedulingException ) ;
@@ -130,15 +147,16 @@ namespace OSDL
 				
 				
 				/**
-				 * Virtual destructor, which performs automatic unsubscribing of this model from
-				 * the scheduler.
+				 * Virtual destructor, which performs automatic 
+				 * unsubscribing of this model from the scheduler.
 				 *
 				 */
 				virtual ~Model() throw() ;
 
 
 	            /**
-	             * Returns an user-friendly description of the state of this object.
+	             * Returns an user-friendly description of the state 
+				 * of this object.
 	             *
 				 * @param level the requested verbosity level.
 				 *
@@ -147,7 +165,8 @@ namespace OSDL
 				 * @see Ceylan::TextDisplayable
 	             *
 	             */
-		 		virtual const std::string toString( Ceylan::VerbosityLevels level = Ceylan::high ) 
+		 		virtual const std::string toString( 
+						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
 			
 				

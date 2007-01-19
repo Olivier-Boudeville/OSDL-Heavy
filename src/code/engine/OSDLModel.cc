@@ -1,6 +1,5 @@
 #include "OSDLModel.h"
 
-
 #include "OSDLEvents.h"           // for Period
 #include "OSDLScheduler.h"        // for Scheduler
 
@@ -20,12 +19,15 @@ using namespace OSDL::MVC ;
 
 
 
-Model::Model( bool autoRegister, Period period, ObjectSchedulingPolicy policy, Weight weight ) 
+Model::Model( bool autoRegister, Period period, 
+	ObjectSchedulingPolicy policy, Weight weight ) 
 		throw( SchedulingException ) : 
 	ActiveObject( period, policy, weight )	
 {
+
 	if ( autoRegister )
 		Scheduler::GetExistingScheduler().registerObject( * this ) ; 
+		
 }
 
 
@@ -34,17 +36,23 @@ Model::Model( bool autoRegister, const list<SimulationTick> & triggeringTicks,
 		throw(SchedulingException ) :
 	ActiveObject( triggeringTicks, absolutlyDefined, policy, weight )
 {
+
 	if ( autoRegister )
 		Scheduler::GetExistingScheduler().registerObject( * this ) ; 
+		
 }	
 
 
-Model::Model( bool autoRegister, SimulationTick triggerTick, bool absolutlyDefined,
-		ObjectSchedulingPolicy policy, Weight weight ) throw( SchedulingException ) :
-	ActiveObject( triggerTick, absolutlyDefined, policy, weight )
+Model::Model( bool autoRegister, SimulationTick triggerTick, 
+		bool absolutlyDefined, ObjectSchedulingPolicy policy, 
+		Weight weight ) 
+	throw( SchedulingException ) :
+		ActiveObject( triggerTick, absolutlyDefined, policy, weight )
 {
+
 	if ( autoRegister )
 		Scheduler::GetExistingScheduler().registerObject( * this ) ; 
+		
 }	
 
 

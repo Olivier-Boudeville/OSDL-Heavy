@@ -41,9 +41,9 @@ namespace OSDL
 	
 	
 	/**
-	 * A CD-ROM drive handler manages all CD-ROM device attached to the system, so they can be used
-	 * easily and safely, by ensuring at most one CD-ROM drive object is associated to an actual 
-	 * device.
+	 * A CD-ROM drive handler manages all CD-ROM device attached to the 
+	 * system, so they can be used easily and safely, by ensuring at most 
+	 * one CD-ROM drive object is associated to an actual device.
 	 *
 	 */
 	class CDROMDriveHandler : public Ceylan::Object
@@ -54,9 +54,11 @@ namespace OSDL
 		
 		
 			/**
-			 * Handler constructor. No CD-ROM drive specifically opened by this operation.
+			 * Handler constructor. No CD-ROM drive specifically opened 
+			 * by this operation.
 			 *
-			 * @throw CDROMDriveException if the CD-ROM subsystem could not be initialized.
+			 * @throw CDROMDriveException if the CD-ROM subsystem could 
+			 * not be initialized.
 			 *
 			 */
 			CDROMDriveHandler() throw( CDROMDriveException ) ;
@@ -77,41 +79,40 @@ namespace OSDL
 		
 			
 			/**
-			 * Returns a CD-ROM drive object corresponding to the specified drive number, which
-			 * will be automatically opened, if not already. This handler enforces that each
-			 * actual CD-ROM drive device is managed by at most one CDROMDrive object, hence 
-			 * getting multiple times the same drive number will always return the same instance.
+			 * Returns a CD-ROM drive object corresponding to the specified
+			 * drive number, which will be automatically opened, if not 
+			 * already. 
+			 * This handler enforces that each actual CD-ROM drive device 
+			 * is managed by at most one CDROMDrive object, hence getting
+			 * multiple times the same drive number will always return the
+			 * same instance.
 			 * 
-			 * @param number the number of the drive to retrieve, which must be within 
-			 * [0;GetCDROMDrivesCount()-1]. The default value zero designates the default CD-ROM
-			 * drive.
+			 * @param number the number of the drive to retrieve, which 
+			 * must be within [0;GetCDROMDrivesCount()-1]. The default value
+			 * zero designates the default CD-ROM drive.
 			 *
-			 * @throw CDROMDriveException if specified drive number is not in licit range.
+			 * @throw CDROMDriveException if specified drive number is not
+			 * in licit range.
 			 *
 			 */		
 			CDROMDrive & getCDROMDrive( CDROMDriveNumber number = 0 ) 
 				throw( CDROMDriveException ) ;
 		
 		
-	       /**
-	        * Returns an user-friendly description of the state of this drive manager.
-	        *
-		    * @param level the requested verbosity level.
-		    *
-		    * @note Text output format is determined from overall settings.
-		    *
-		    * @see Ceylan::TextDisplayable
-	        *
-	        */
-		   virtual const std::string toString( Ceylan::VerbosityLevels level = Ceylan::high ) 
-		       const throw() ;
+	        /**
+	         * Returns an user-friendly description of the state of this
+			 * drive manager.
+	         *
+		     * @param level the requested verbosity level.
+		     *
+		     * @note Text output format is determined from overall settings.
+		     *
+		     * @see Ceylan::TextDisplayable
+	         *
+	         */
+		    virtual const std::string toString( 
+				Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
 
-		
-			
-
-		protected:
-		
-					
 		
 			
 		private:
@@ -119,8 +120,8 @@ namespace OSDL
 			
 			
 			/**
-			 * Keeps track of drive numbers, so no CD-ROM device can be linked to more than one
-			 * CDROMDrive object.
+			 * Keeps track of drive numbers, so no CD-ROM device can be 
+			 * linked to more than one CDROMDrive object.
 			 *
 			 */
 			std::map<CDROMDriveNumber, CDROMDrive *> _drives ;
@@ -128,21 +129,27 @@ namespace OSDL
 			
 
 			/**
-			 * Copy constructor made private to ensure that it will be never called.
-			 * The compiler should complain whenever this undefined constructor is called, 
-			 * implicitly or not.
+			 * Copy constructor made private to ensure that it will be 
+			 * never called.
+			 *
+			 * The compiler should complain whenever this undefined 
+			 * constructor is called, implicitly or not.
 			 * 
 			 */			 
-			explicit CDROMDriveHandler( const CDROMDriveHandler & source ) throw() ;
+			explicit CDROMDriveHandler( const CDROMDriveHandler & source )
+				throw() ;
 			
 			
 			/**
-			 * Assignment operator made private to ensure that it will be never called.
-			 * The compiler should complain whenever this undefined operator is called, 
-			 * implicitly or not.
+			 * Assignment operator made private to ensure that it will 
+			 * be never called.
+			 *
+			 * The compiler should complain whenever this undefined 
+			 * operator is called, implicitly or not.
 			 * 
 			 */			 
-			CDROMDriveHandler & operator = ( const CDROMDriveHandler & source ) throw() ;
+			CDROMDriveHandler & operator = ( const CDROMDriveHandler & source )
+				throw() ;
 			
 	
 	} ;

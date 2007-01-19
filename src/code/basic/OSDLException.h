@@ -1,10 +1,11 @@
 #ifndef OSDL_EXCEPTION_H_
 #define OSDL_EXCEPTION_H_
 
-#include <string>
-#include <iostream>
 
 #include "Ceylan.h"
+
+#include <string>
+#include <iostream>
 
 
 namespace OSDL
@@ -26,7 +27,8 @@ namespace OSDL
 			/**
 			 * Basic constructor.
 			 *
-			 * @param reason the message giving details about this raised exception.
+			 * @param reason the message giving details about this 
+			 * raised exception.
 			 *
 			 */
 			explicit Exception( const std::string & reason ) throw() ;
@@ -41,14 +43,20 @@ namespace OSDL
 }
 
 
+
 /**
- * Operator used to display easily an exception's message in an output stream.
- * The message is the one returned by toString with high level of detail selected.
+ * Operator used to display easily an exception's message in an output 
+ * stream.
+ *
+ * The message is the one returned by toString with high level of detail
+ * selected.
  *
  * @see toString.
  * 
  */
-std::ostream & operator << ( std::ostream & os, const OSDL::Exception & e ) throw() ;
+std::ostream & operator << ( std::ostream & os, const OSDL::Exception & e )
+	throw() ;
+
 
 
 #endif // OSDL_EXCEPTION_H_
