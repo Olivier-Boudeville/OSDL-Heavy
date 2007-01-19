@@ -1,11 +1,11 @@
 #ifndef OSDL_ENGINE_COMMON_H_
 #define OSDL_ENGINE_COMMON_H_
 
+#include "OSDLException.h"            // for Exception
 
 #include <string>
 #include <list>
 
-#include "OSDLException.h"            // for Exception
 
 
 /*
@@ -52,7 +52,7 @@ namespace OSDL
 
 
 		/**
-		 * Defines a list of pointer to active objects.
+		 * Defines a list of pointers to active objects.
 		 *
 		 * Was not defined in OSDLScheduler to avoir circular dependency :
 		 * OSDLPeriodicSlot should not depend on OSDLScheduler, since the
@@ -71,7 +71,7 @@ namespace OSDL
 		 * resource should be.
 		 *
 		 */
-		typedef unsigned int Weight ;
+		typedef Ceulan::Uint16 Weight ;
 		
 		
 		/**

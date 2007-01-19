@@ -20,7 +20,6 @@ namespace OSDL
 	namespace MVC
 	{
 	
-	
 		// Keyboard handler is linked to controllers.
 		class Controller ;
 		
@@ -32,19 +31,20 @@ namespace OSDL
 			
 		
 		/**
-		 * Pointer to functions managing specific keyboard events, i.e. a specific set of keys 
-		 * that may be pressed or released.
+		 * Pointer to functions managing specific keyboard events, i.e. 
+		 * a specific set of keys that may be pressed or released.
 		 *
-		 * @see for instance doNothingKeyHandler and smarterKeyHandler in OSDLKeyboardHandler.cc.
+		 * @see for instance doNothingKeyHandler and smarterKeyHandler in
+		 * OSDLKeyboardHandler.cc.
 		 * 
-		 * @note The compiler refuses to force exception specification in typedef thanks to a 
-		 * 'throw()' : "error: OSDL::Events::KeyboardEventHandler declared with an exception
+		 * @note The compiler refuses to force exception specification in
+		 * typedef thanks to a 'throw()' : 
+		 * "error: OSDL::Events::KeyboardEventHandler declared with an exception
 		 * specification."
 		 *
-		 *
 		 */ 
-		typedef void (* KeyboardEventHandler)( const KeyboardEvent & keyboardEvent )
-			/* throw() */ ;
+		typedef void (* KeyboardEventHandler)( 
+			const KeyboardEvent & keyboardEvent ) /* throw() */ ;
 		
 		
 		
@@ -52,7 +52,8 @@ namespace OSDL
 		class KeyboardException: public EventsException 
 		{
 			public: 
-				explicit KeyboardException( const std::string & reason ) throw() ; 
+				explicit KeyboardException( const std::string & reason ) 
+					throw() ; 
 				virtual ~KeyboardException() throw() ; 
 				
 		} ;
@@ -60,19 +61,23 @@ namespace OSDL
 
 				
 		/**
-		 * Describes what is the current mode used to handle keypresses and key releases. 
+		 * Describes what is the current mode used to handle key presses 
+		 * and key releases. 
 		 *
-		 * - rawInput uses basically scancodes to track only keys being hit or realeased,
-		 * as if the keyboard was a big game pad with numerous buttons
-		 * - textInput is used for text input with unicode support, scan codes are converted 
-		 * according to keyboard layout so that actual characters are returned.
+		 * - 'rawInput' uses basically scancodes to track only keys being hit 
+		 * or realeased, as if the keyboard was a big game pad with numerous
+		 * buttons
+		 * - 'textInput' is used for text input with unicode support, scan 
+		 * codes are converted according to keyboard layout so that actual
+		 * characters are returned.
 		 *
-		 * @note None of these modes can be totally satisfactory, since many keyboard
-		 * layouts exist and any locale can be mapped onto it. The most reliable solution
-		 * is doing like commercial games, which uses a settings screen allowing the user
-		 * to specify key-action associations.
+		 * @note None of these modes can be totally satisfactory, since many
+		 * keyboard layouts exist and any locale can be mapped onto it. 
+		 * The most reliable solution is doing like commercial games, 
+		 * which uses a settings screen allowing the user to specify 
+		 * key-action associations.
 		 *
-		 * Keyboard starts in raw input mode.
+		 * @note Keyboard starts in raw input mode.
 		 *
 		 */
 		enum KeyboardMode { rawInput, textInput } ;
@@ -81,8 +86,8 @@ namespace OSDL
 		/**
 		 * Handler for keyboard.
 		 *
-		 * Keyboard input are managed according to the current keyboard mode (example : raw input,
-		 * text input with unicode support, etc.)
+		 * Keyboard input are managed according to the current keyboard mode
+		 * (example : raw input, text input with unicode support, etc.)
 		 *
 		 */
 		class KeyboardHandler : public InputDeviceHandler
@@ -94,31 +99,42 @@ namespace OSDL
 
 
 				/**
-				 * List of all currently available key identifiers : allows to identify a 
-				 * keyboard key being pressed or released.
+				 * List of all currently available key identifiers : allows 
+				 * to identify a keyboard key being pressed or released.
 				 *
-				 * First column lists the key identifiers which are to be used in user applications,
-				 * second one maps them to the keys defined by the SDL back-end, and third  
-				 * describes the corresponding key.
+				 * First column lists the key identifiers which are to be
+				 * used in user applications, second one maps them to the
+				 * keys defined by the SDL back-end, and third describes 
+				 * the corresponding key.
 				 *
-				 * The source of the complete list is the SDL back-end (SDL_keysym.h).
+				 * The source of the complete list is the SDL back-end
+				 * (SDL_keysym.h).
 				 *
 				 */			
 				enum KeyIdentifier
 				{
 				
 				
-					//  The keyboard identifiers have been cleverly chosen to map to ASCII :
+					/*
+					 * The keyboard identifiers have been cleverly chosen to 
+					 * map to ASCII :
+					 *
+					 */
+				
+					// For unknown keys :	
+					//UnknownKey        = SDLK_UNKNOWN      ,  
 					
-					//UnknownKey        = SDLK_UNKNOWN      , // For unknown keys 
 					//FirstKey          = SDLK_FIRST        , // 
 					
 					BackspaceKey        = SDLK_BACKSPACE    , // 
 					TabKey              = SDLK_TAB          , // 
 					ClearKey            = SDLK_CLEAR        , // 
 					
-					EnterKey            = SDLK_RETURN       , // See also : EnterKeypadKey
-					ReturnKey           = SDLK_RETURN       , // Synonym of EnterKey.
+					// See also : EnterKeypadKey
+					EnterKey            = SDLK_RETURN       , 
+					
+					 // Synonym of EnterKey :
+					ReturnKey           = SDLK_RETURN       ,
 					
 					PauseKey            = SDLK_PAUSE        , // 
 					EscapeKey           = SDLK_ESCAPE       , // 
@@ -324,8 +340,10 @@ namespace OSDL
 					DivideKeypadKey     = SDLK_KP_DIVIDE    , // 
 					MultiplyKeypadKey   = SDLK_KP_MULTIPLY  , // 
 					MinusKeypadKey      = SDLK_KP_MINUS     , // 
-					PlusKeypadKey       = SDLK_KP_PLUS      , // 
-					EnterKeypadKey      = SDLK_KP_ENTER     , // See also : EnterKey.
+					PlusKeypadKey       = SDLK_KP_PLUS      , //
+					
+					// See also : EnterKey. 
+					EnterKeypadKey      = SDLK_KP_ENTER     , 
 					EqualsKeypadKey     = SDLK_KP_EQUALS    , // 
 
 
@@ -371,10 +389,16 @@ namespace OSDL
 					RightAltKey         = SDLK_RALT         , // 
 					LeftMetaKey         = SDLK_LMETA        , // 
 					RightMetaKey        = SDLK_RMETA        , // 
-					LeftSuperKey        = SDLK_LSUPER       , // Left "Windows" key.
-					RightSuperKey       = SDLK_RSUPER       , // Right "Windows" key.
+					
+					// Left "Windows" key :
+					LeftSuperKey        = SDLK_LSUPER       ,
+					
+					// Right "Windows" key : 
+					RightSuperKey       = SDLK_RSUPER       , 
 					ModeKey             = SDLK_MODE         , // "Alt Gr" key.
-					ComposeKey          = SDLK_COMPOSE      , // Multi-key compose key.
+					
+					// Multi-key compose key :
+					ComposeKey          = SDLK_COMPOSE      ,  
 					
 					
 					// Miscellaneous function keys :
@@ -383,9 +407,15 @@ namespace OSDL
 					SysReqKey           = SDLK_SYSREQ       , // 
 					BreakKey            = SDLK_BREAK        , // 
 					MenuKey             = SDLK_MENU         , // 
-					PowerKey            = SDLK_POWER        , // Power Macintosh power key.
-					EuroKey             = SDLK_EURO         , // Some european keyboards.
-					UndoKey             = SDLK_UNDO         , // Atari keyboard has Undo.
+					
+					// Power Macintosh power key :
+					PowerKey            = SDLK_POWER        ,
+					
+					// Some european keyboards : 
+					EuroKey             = SDLK_EURO         ,
+					
+					// Atari keyboard has Undo : 
+					UndoKey             = SDLK_UNDO         , 
 
 	
 					// Add any other keys here.
@@ -395,10 +425,14 @@ namespace OSDL
 
 
 				/**
-				 * List of all currently available key modifiers (control, alt, meta, etc.).
+				 * List of all currently available key modifiers 
+				 * (control, alt, meta, etc.).
 				 *
-				 * They can be OR'd together, since modifiers can be pressed simultaneously.
-				 * Ex : if ( mod == ( LeftShiftModifier | RightAltModifier ) )...
+				 * They can be OR'd together, since modifiers can be 
+				 * pressed simultaneously.
+				 *
+				 * @example : if ( mod == ( LeftShiftModifier 
+				 *	| RightAltModifier ) )...
 				 *
 				 */
 				enum KeyModifier
@@ -426,14 +460,21 @@ namespace OSDL
 					
 					
 					/*
-					 * Virtual modifiers, when left and right versions of the modifier mean the 
-					 * same :
+					 * Virtual modifiers, when left and right versions of 
+					 * the modifier mean the same :
 					 *
 					 */
-					ShiftModifier        = LeftShiftModifier   | RightShiftModifier    ,
-					ControlModifier      = LeftControlModifier | RightControlModifier  ,
-					AltModifier          = LeftAltModifier     | RightAltModifier      , 
-					MetaModifier         = LeftMetaModifier    | RightMetaModifier
+					ShiftModifier        = LeftShiftModifier   
+						| RightShiftModifier,
+						
+					ControlModifier      = LeftControlModifier 
+						| RightControlModifier,
+						
+					AltModifier          = LeftAltModifier     
+						| RightAltModifier, 
+						
+					MetaModifier         = LeftMetaModifier    
+						| RightMetaModifier
 				
 				
 				} ;
@@ -443,15 +484,19 @@ namespace OSDL
 				/**
 				 * Constructs a new keyboard handler. 
 				 *
-				 * @param initialMode the mode in which this keyboard will start.
+				 * @param initialMode the mode in which this keyboard will
+				 * start.
 				 *
-				 * @param useSmarterDefaultKeyHandler if true, a key handler that will exit 
-				 * the event loop if escape or 'q' is pressed will be used. Otherwise, a do-nothing
-				 * key handler will be used.
+				 * @param useSmarterDefaultKeyHandler if true, a key handler
+				 * that will exit the event loop if escape or 'q' is pressed,
+				 * will be used. 
+				 * Otherwise, a do-nothing key handler will be used.
 				 *
-				 * @note The keyboard mode is shared between all keyboard handlers.
+				 * @note The keyboard mode is shared between all keyboard
+				 * handlers.
 				 *
-				 * @throw InputDeviceHandlerException if keyboard could not be initialized.
+				 * @throw InputDeviceHandlerException if keyboard could 
+				 * not be initialized.
 				 *
 				 */
 				explicit KeyboardHandler( KeyboardMode initialMode = rawInput, 
@@ -467,18 +512,19 @@ namespace OSDL
 				
 								
 				/**
-				 * Links the specified raw key to specified controller, so that any further 
-				 * key press or release of this raw key will be sent to the controller, if the
-				 * keyboard is in raw input mode.
+				 * Links the specified raw key to specified controller, so 
+				 * that any further key press or release of this raw key 
+				 * will be sent to the controller, if the keyboard is in 
+				 * raw input mode.
 				 *
-				 * Removes automatically any link previously defined between this raw key and
-				 * any other controller.
+				 * Removes automatically any link previously defined 
+				 * between this raw key and any other controller.
 				 *
-				 * @param rawKey the identifier of the raw key that shall be linked to the
-				 *  controller.
+				 * @param rawKey the identifier of the raw key that shall 
+				 * be linked to the controller.
 				 *
-				 * @param controller the OSDL controller which will be notified of this raw key
-				 * presses and releases.
+				 * @param controller the OSDL controller which will be 
+				 * notified of this raw key presses and releases.
 				 *
 				 */
 				virtual void linkToController( KeyIdentifier rawKey, 
@@ -486,17 +532,19 @@ namespace OSDL
 				
 				
 				/**
-				 * Links the specified Unicode to specified controller, so that any further 
-				 * selection of this Unicode will be sent to the controller, if the
-				 * keyboard is in text input mode.
+				 * Links the specified Unicode to specified controller, so 
+				 * that any further selection of this Unicode will be 
+				 * sent to the controller, if the keyboard is in text input
+				 * mode.
 				 *
-				 * Removes automatically any link previously defined between this Unicode and
-				 * any other controller.
+				 * Removes automatically any link previously defined between
+				 * this Unicode and any other controller.
 				 *
-				 * @param unicode the Unicode that shall be linked to the controller.
+				 * @param unicode the Unicode that shall be linked to the
+				 * controller.
 				 *
-				 * @param controller the OSDL controller which will be notified of this Unicode
-				 * being selected.
+				 * @param controller the OSDL controller which will be 
+				 * notified of this Unicode being selected.
 				 *
 				 */
 				virtual void linkToController( Ceylan::Unicode unicode, 
@@ -504,69 +552,80 @@ namespace OSDL
 				
 				
 				/**
-				 * Links the specified raw key to specified keyboard event handler, so that if no
-				 * controller is linked to this raw key, the keyboard event handler is triggered.
+				 * Links the specified raw key to specified keyboard event
+				 * handler, so that if no controller is linked to this 
+				 * raw key, the keyboard event handler is triggered.
 				 *
-				 * @param rawKey the raw key to link with the keyboard event handler.
+				 * @param rawKey the raw key to link with the keyboard 
+				 * event handler.
 				 *
-				 * @param handler the handler that will received the raw key event, in the lack of
-				 * linked controller.
+				 * @param handler the handler that will received the raw 
+				 * key event, in the lack of linked controller.
 				 *
 				 */
-				virtual void linkToHandler( KeyIdentifier rawKey, KeyboardEventHandler handler )
-					throw() ;
+				virtual void linkToHandler( KeyIdentifier rawKey,
+					KeyboardEventHandler handler ) throw() ;
 			
 				
 				/**
-				 * Links the specified Unicode to specified keyboard event handler, so that if no
-				 * controller is linked to this Unicode, the keyboard event handler is triggered.
+				 * Links the specified Unicode to specified keyboard event
+				 * handler, so that if no controller is linked to this 
+				 * Unicode, the keyboard event handler is triggered.
 				 *
-				 * @param unicode the Unicode to link with the keyboard event handler.
+				 * @param unicode the Unicode to link with the keyboard 
+				 * event handler.
 				 *
-				 * @param handler the handler that will received the Unicode event, in the lack of
-				 * linked controller.
+				 * @param handler the handler that will received the 
+				 * Unicode event, in the lack of linked controller.
 				 *
 				 */
-				virtual void linkToHandler( Ceylan::Unicode unicode, KeyboardEventHandler handler ) 
+				virtual void linkToHandler( Ceylan::Unicode unicode,
+					KeyboardEventHandler handler ) throw() ;
+				
+				
+				/**
+				 * Called whenever a key was pressed, so that its 
+				 * controller, if any, is notified.
+				 *
+				 * If no controller is registered for this key, then : 
+				 *   - if a key handler is registered for this key, it will 
+				 * be called
+				 *   - otherwise (no handler for this key is found), then 
+				 * the default key handler will be called. 
+				 *
+				 * @note The actions taken depend on the current input mode.
+				 *
+				 */
+				virtual void keyPressed( const KeyboardEvent & keyboardEvent )
 					throw() ;
 				
 				
 				/**
-				 * Called whenever a key was pressed, so that its controller, if any, is notified.
+				 * Called whenever a key was released, so that its controller,
+				 * if any, is notified.
 				 *
 				 * If no controller is registered for this key, then : 
-				 *   - if a key handler is registered for this key, it will be called.
-				 *   - otherwise (no handler for this key is found), then the default key handler 
-				 * will be called. 
+				 *   - if a key handler is registered for this key, it 
+				 * will be called.
+				 *   - otherwise (no handler for this key is found), then 
+				 * the default key handler will be called. 
 				 *
 				 * @note The actions taken depend on the current input mode.
 				 *
 				 */
-				virtual void keyPressed( const KeyboardEvent & keyboardEvent ) throw() ;
-				
-				
-				/**
-				 * Called whenever a key was released, so that its controller, if any, is notified.
-				 *
-				 * If no controller is registered for this key, then : 
-				 *   - if a key handler is registered for this key, it will be called.
-				 *   - otherwise (no handler for this key is found), then the default key handler 
-				 * will be called. 
-				 *
-				 * @note The actions taken depend on the current input mode.
-				 *
-				 */
-				virtual void keyReleased( const KeyboardEvent & keyboardEvent ) throw() ;
+				virtual void keyReleased( const KeyboardEvent & keyboardEvent )
+					throw() ;
 				
 				
 				/**
 				 * Sets the default key handlers to the smarter handlers.
 				 *
-				 * These handlers allow to trigger an exit from the event loop if escape or 
-				 *'q' key is pressed, both for raw and input modes. 
+				 * These handlers allow to trigger an exit from the event 
+				 * loop if escape or 'q' key is pressed, both for raw and 
+				 * input modes. 
 				 *
-				 * The 'F1' key is used to toggle between raw input and text input
-				 * keyboard modes.
+				 * The 'F1' key is used to toggle between raw input and 
+				 * text input keyboard modes.
 				 *
 				 */
 				virtual void setSmarterDefaultKeyHandlers() throw() ;
@@ -578,7 +637,8 @@ namespace OSDL
 				 * @param newHandler the new handler
 				 *
 				 */
-				virtual void setDefaultRawKeyHandler( KeyboardEventHandler newHandler ) throw() ;
+				virtual void setDefaultRawKeyHandler( 
+					KeyboardEventHandler newHandler ) throw() ;
 				
 				
 				/**
@@ -587,11 +647,13 @@ namespace OSDL
 				 * @param newHandler the new handler
 				 *
 				 */
-				virtual void setDefaultUnicodeHandler( KeyboardEventHandler newHandler ) throw() ;
+				virtual void setDefaultUnicodeHandler( 
+					KeyboardEventHandler newHandler ) throw() ;
 	
 								
 				/**
-				 * Returns an user-friendly description of the state of this object.
+				 * Returns an user-friendly description of the state of 
+				 * this object.
 				 *
 				 * @param level the requested verbosity level.
 				 *
@@ -600,7 +662,8 @@ namespace OSDL
 				 * @see Ceylan::TextDisplayable
 				 *
 				 */
-		 		virtual const std::string toString( Ceylan::VerbosityLevels level = Ceylan::high ) 
+		 		virtual const std::string toString( 
+						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
 
 
@@ -615,7 +678,8 @@ namespace OSDL
 				 *
 				 * @return KeyboardMode the current keyboard mode.
 				 *
-				 * @note This belongs to overall common settings, it has therefore to be static.
+				 * @note This belongs to overall common settings, it has
+				 * therefore to be static.
 				 *
 				 */
 				static KeyboardMode GetMode() throw() ;
@@ -626,7 +690,8 @@ namespace OSDL
 				 *
 				 * @param newMode the new keyboard mode.
 				 *
-				 * @note This belongs to overall common settings, it has therefore to be static.
+				 * @note This belongs to overall common settings, it has
+				 * therefore to be static.
 				 *
 				 */
 				static void SetMode( KeyboardMode newMode ) throw() ;
@@ -644,10 +709,12 @@ namespace OSDL
 				/**
 				 * Describes specified key modifier.
 				 *
-				 * @param modifier the modifier to describe (alt, control, meta, etc.).
+				 * @param modifier the modifier to describe 
+				 * (alt, control, meta, etc.).
 				 *
 				 */
-				static std::string DescribeModifier( KeyModifier modifier ) throw() ;
+				static std::string DescribeModifier( KeyModifier modifier )
+					throw() ;
 				
 				
 				/**
@@ -656,24 +723,26 @@ namespace OSDL
 				 * @param value the Unicode value to describe.
 				 *
 				 */
-				static std::string DescribeUnicode( Ceylan::Unicode value ) throw() ;
+				static std::string DescribeUnicode( Ceylan::Unicode value )
+					throw() ;
 				
 				
 				/**
-				 * Specifies how long a key must be pressed before it begins repeating, in
-				 * milliseconds.
+				 * Specifies how long by default a key must be pressed
+				 * before it begins repeating, in milliseconds.
 				 *
 				 */
-				static Ceylan::Uint16 DefaultDelayBeforeKeyRepeat ;
+				static Ceylan::System::Millisecond DefaultDelayBeforeKeyRepeat ;
 	
 	
 				/**
-				 * Specifies how many milliseconds should be waited until two repeated keys : once
-				 * a key is hold long enough to repeat, this will be the time between two repeats
+				 * Specifies how many milliseconds by default should be 
+				 * waited until two repeated keys : once a key is hold long
+				 * enough to repeat, this will be the time between two repeats
 				 * of this key.
 				 *
 				 */
-				static Ceylan::Uint16 DefaulKeyRepeatInterval ;
+				static Ceylan::System::Millisecond DefaulKeyRepeatInterval ;
 	
 				 		
 
@@ -681,79 +750,92 @@ namespace OSDL
 		protected :
 		
 				
-				
 				/// Stores the current keyboard interacting scheme.
 				static KeyboardMode _CurrentMode ;
 		
 		
 				/** 
-				 * Allows to link a controller to a specific keyboard raw key, when in raw
-				 * input mode.
+				 * Allows to link a controller to a specific keyboard raw 
+				 * key, when in raw input mode.
 				 *
-				 * The controller can be then notified than one of its tracked keys has been
-				 * pressed or released.
-				 *
-				 * @note This is used only in raw input mode.
-				 *
-				 */
-				std::map<KeyIdentifier, OSDL::MVC::Controller *> _rawKeyControllerMap ;
-				
-				
-				/** 
-				 * Fall-back map used whenever a raw key was pressed or released without being 
-				 * registered in the map making raw keys correspond to controllers : it may then be 
-				 * linked to a specific keyboard event handler.
-				 *
-				 * When a key has been pressed or released, but no controller was linked to it,
-				 * this key is sent to this default key dictionnary which manages external settings
-				 * not linked with simulation world. 
-				 *
-				 * For example, an application could decide to quit when the so-defined 'q' key is
-				 * pressed, which obviously should not rely on the controller MVC framework.
+				 * The controller can be then notified than one of its 
+				 * tracked keys has been pressed or released.
 				 *
 				 * @note This is used only in raw input mode.
 				 *
 				 */
-				std::map<KeyIdentifier, KeyboardEventHandler> _rawKeyHandlerMap ;
+				std::map<KeyIdentifier, OSDL::MVC::Controller *>
+					_rawKeyControllerMap ;
 				
 				
 				/** 
-				 * Allows to link a controller to a specific Unicode, when in text input mode.
-				 *
-				 * The controller can be then notified than one of its tracked unicodes has been
-				 * selected by the user.
-				 *
-				 * @note This is used only in text input mode. Linked controllers will only be
-				 * notified in this mode of key presses and repeats (not of key releases which are
-				 * not relevant in this context).
-				 *
-				 */
-				std::map<Ceylan::Unicode, OSDL::MVC::Controller *> _unicodeControllerMap ;
-				
-				
-				/** 
-				 * Fall-back map used whenever a Unicode was selected by the user without being 
-				 * registered in the map making Unicodes correspond to controllers : it may then be 
+				 * Fall-back map used whenever a raw key was pressed or 
+				 * released without being registered in the map making 
+				 * raw keys correspond to controllers : it may then be 
 				 * linked to a specific keyboard event handler.
 				 *
-				 * When a Unicode is selected, but no controller was linked to it,
-				 * this Unicode is sent to this default Unicode dictionnary which manages external
-				 * settings not linked with simulation world. 
+				 * When a key has been pressed or released, but no controller
+				 * was linked to it, this key is sent to this default key
+				 * dictionnary which manages external settings not linked 
+				 * with MVC-based simulation world. 
 				 *
-				 * For example, an application could decide to quit when the 'q' Unicode is
-				 * selected, which obviously should not rely on the controller MVC framework.
+				 * For example, an application could decide to quit when the
+				 * so-defined 'q' key is pressed, which obviously should not
+				 * rely on the controller MVC framework.
 				 *
-				 * @note This is used only in text input mode. Linked event handlers will only be
-				 * notified in this mode of key presses and repeats (not of key releases which are
+				 * @note This is used only in raw input mode.
+				 *
+				 */
+				std::map<KeyIdentifier, KeyboardEventHandler> 
+					_rawKeyHandlerMap ;
+				
+				
+				/** 
+				 * Allows to link a controller to a specific Unicode, 
+				 * when in text input mode.
+				 *
+				 * The controller can be then notified than one of its 
+				 * tracked unicodes has been selected by the user.
+				 *
+				 * @note This is used only in text input mode. 
+				 * Linked controllers will only be notified in this mode 
+				 * of key presses and repeats (not of key releases which are
 				 * not relevant in this context).
 				 *
 				 */
-				std::map<Ceylan::Unicode, KeyboardEventHandler> _unicodeHandlerMap ;
+				std::map<Ceylan::Unicode, OSDL::MVC::Controller *>
+					_unicodeControllerMap ;
+				
+				
+				/** 
+				 * Fall-back map used whenever a Unicode was selected 
+				 * by the user without being registered in the map making
+				 * Unicodes correspond to controllers : it may then be 
+				 * linked to a specific keyboard event handler.
+				 *
+				 * When a Unicode is selected, but no controller was linked 
+				 * to it, this Unicode is sent to this default Unicode
+				 * dictionnary which manages external settings not linked
+				 * with the MVC-based simulation world. 
+				 *
+				 * For example, an application could decide to quit when 
+				 * the 'q' Unicode is selected, which obviously should 
+				 * not rely on the controller MVC framework.
+				 *
+				 * @note This is used only in text input mode. 
+				 * Linked event handlers will only be notified in this 
+				 * mode of key presses and repeats (not of key releases 
+				 * which are not relevant in this context).
+				 *
+				 */
+				std::map<Ceylan::Unicode, KeyboardEventHandler>
+					_unicodeHandlerMap ;
 				
 
 
 				/**
-				 * Default raw key event handler, does nothing, but can log keyboard events.
+				 * Default raw key event handler, does nothing, but can 
+				 * log keyboard events.
 				 *
 				 * @note It is only used when in raw input mode.
 				 *
@@ -762,7 +844,8 @@ namespace OSDL
 				
 				
 				/**
-				 * Default Unicode event handler, does nothing, but can log keyboard events.
+				 * Default Unicode event handler, does nothing, 
+				 * but can log keyboard events.
 				 *
 				 * @note It is only used when in text input mode.
 				 *
@@ -771,8 +854,8 @@ namespace OSDL
 				
 				
 				/**
-				 * Records the status of UNICODE input before this handler was created, so that
-				 * it can be restored.
+				 * Records the status of Unicode input before this handler 
+				 * was created, so that it can be restored.
 				 *
 				 */
 				bool _unicodeInputWasActivated ;
@@ -783,23 +866,27 @@ namespace OSDL
 		
 		
 				/**
-				 * Copy constructor made private to ensure that it will be never called.
-				 * The compiler should complain whenever this undefined constructor is called, 
-				 * implicitly or not.
-				 * 
+				 * Copy constructor made private to ensure that it will 
+				 * never be called.
 				 *
+				 * The compiler should complain whenever this undefined 
+				 * constructor is called, implicitly or not.
+				 * 
 				 */			 
-				explicit KeyboardHandler( const KeyboardHandler & source ) throw() ;
+				explicit KeyboardHandler( const KeyboardHandler & source )
+					throw() ;
 			
 			
 				/**
-				 * Assignment operator made private to ensure that it will be never called.
-				 * The compiler should complain whenever this undefined operator is called, 
-				 * implicitly or not.
-				 * 
+				 * Assignment operator made private to ensure that it 
+				 * will never be called.
 				 *
+				 * The compiler should complain whenever this undefined 
+				 * operator is called, implicitly or not.
+				 * 
 				 */			 
-				KeyboardHandler & operator = ( const KeyboardHandler & source ) throw() ;
+				KeyboardHandler & operator = ( const KeyboardHandler & source )
+					throw() ;
 										
 				
 		} ;

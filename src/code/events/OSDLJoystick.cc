@@ -22,11 +22,11 @@ using namespace OSDL::MVC ;     // for joystickAxisChanged, etc.
 #include <iostream>
 #define OSDL_JOYSTICK_LOG( message ) std::cout << "[OSDL Joystick] " << message << std::endl ;
 
-#else
+#else // OSDL_VERBOSE_JOYSTICK
 
 #define OSDL_JOYSTICK_LOG( message )
 
-#endif
+#endif // OSDL_VERBOSE_JOYSTICK
 
 
 
@@ -34,7 +34,6 @@ using namespace OSDL::MVC ;     // for joystickAxisChanged, etc.
  * Not used currently since event loop is prefered to polling :
  *   - SDL_JoystickUpdate
  *	 - SDL_JoystickEventState (used in OSDLJoysticksHandler)
- *
  *
  */
 
@@ -49,7 +48,7 @@ Joystick::Joystick( JoystickNumber index ) throw() :
 	_buttonCount( 0 )
 {
 
-	if ( _name.size() == 0 )
+	if ( _name.empty() )
 		_name = "(unknown joystick)" ;
 	
 }
@@ -83,13 +82,14 @@ bool Joystick::isOpen() const throw()
 	
 	bool isOpened = ( SDL_JoystickOpened( _index ) == 1 ) ;
 	
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
 	if ( isOpened != ( _internalJoystick != 0 ) ) 
 		LogPlug::error( "Joystick::isOpen : conflicting status : "
 			"back-end (makes authority) says " + Ceylan::toString( isOpened ) 
-			+ " whereas internal status says " + Ceylan::toString( ( _internalJoystick != 0 ) )
+			+ " whereas internal status says " 
+			+ Ceylan::toString( ( _internalJoystick != 0 ) )
 			+ "." ) ;			
-	#endif
+#endif // OSDL_DEBUG 
 	
 	return isOpened ;
 	
@@ -100,7 +100,8 @@ void Joystick::open() throw( JoystickException )
 {
 
 	if ( isOpen() )
-		throw JoystickException( "Joystick::open requested whereas was already open." ) ;
+		throw JoystickException( 
+			"Joystick::open requested whereas was already open." ) ;
 		
 	_internalJoystick = SDL_JoystickOpen( _index ) ;
 	
@@ -113,7 +114,8 @@ void Joystick::close() throw( JoystickException )
 {
 
 	if ( ! isOpen() )
-		throw JoystickException( "Joystick::close requested whereas was not open." ) ;
+		throw JoystickException( 
+			"Joystick::close requested whereas was not open." ) ;
 		
 	SDL_JoystickClose( _internalJoystick ) ;
 	
@@ -129,21 +131,28 @@ void Joystick::axisChanged( const JoystickAxisEvent & joystickEvent ) throw()
 	if ( isLinkedToController() )
 		getActualController().joystickAxisChanged( joystickEvent ) ;			
 	else
+	{
 		OSDL_JOYSTICK_LOG( "Axis changed for joystick #" 
 			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
+	}
+			
 }
 
 
-void Joystick::trackballChanged( const JoystickTrackballEvent & joystickEvent ) throw()
+void Joystick::trackballChanged( const JoystickTrackballEvent & joystickEvent )
+	throw()
 {
 	
 	if ( isLinkedToController() )
 		getActualController().joystickTrackballChanged( joystickEvent ) ;			
 	else
+	{
 		OSDL_JOYSTICK_LOG( "Trackball changed for joystick #" 
 			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
+	}
+			
 }
 
 
@@ -153,81 +162,97 @@ void Joystick::hatChanged( const JoystickHatEvent & joystickEvent ) throw()
 	if ( isLinkedToController() )
 		getActualController().joystickHatChanged( joystickEvent ) ;			
 	else
+	{
 		OSDL_JOYSTICK_LOG( "Hat changed for joystick #" 
 			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
+	}		
 			
 }
 
 
-void Joystick::buttonPressed( const JoystickButtonEvent & joystickEvent ) throw()
+void Joystick::buttonPressed( const JoystickButtonEvent & joystickEvent )
+	throw()
 {
 	
 	if ( isLinkedToController() )
 		getActualController().joystickButtonPressed( joystickEvent ) ;			
 	else
+	{
 		OSDL_JOYSTICK_LOG( "Button pressed for joystick #" 
 			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
-			
+	}
+		
 }
 
 
-void Joystick::buttonReleased( const JoystickButtonEvent & joystickEvent ) throw()
+void Joystick::buttonReleased( const JoystickButtonEvent & joystickEvent )
+	throw()
 {
 	
 	if ( isLinkedToController() )
 		getActualController().joystickButtonReleased( joystickEvent ) ;			
 	else
+	{
 		OSDL_JOYSTICK_LOG( "Button released for joystick #" 
 			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
+	}		
 			
 }
 
 
-unsigned int Joystick::getNumberOfAxes() const throw()
+JoystickAxesCount Joystick::getNumberOfAxes() const throw()
 {
-	#ifdef OSDL_DEBUG
+
+#if OSDL_DEBUG
 	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( "Joystick::getNumberOfAxes : joystick not open." ) ;	
-	#endif
+		Ceylan::emergencyShutdown( 
+			"Joystick::getNumberOfAxes : joystick not open." ) ;	
+#endif // OSDL_DEBUG
 
 	return _axisCount ;
 	
 }
 
 
-unsigned int Joystick::getNumberOfTrackballs() const throw()
+JoystickTrackballsCount Joystick::getNumberOfTrackballs() const throw()
 {
-	#ifdef OSDL_DEBUG
+
+#if OSDL_DEBUG
 	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( "Joystick::getNumberOfTrackballs : joystick not open." ) ;	
-	#endif
+		Ceylan::emergencyShutdown( 
+			"Joystick::getNumberOfTrackballs : joystick not open." ) ;	
+#endif // OSDL_DEBUG
 
 	return _trackballCount ;
 	
 }
 
 
-unsigned int Joystick::getNumberOfHats() const throw()
+JoystickHatsCount Joystick::getNumberOfHats() const throw()
 {
-	#ifdef OSDL_DEBUG
+
+#if OSDL_DEBUG
 	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( "Joystick::getNumberOfHats : joystick not open." ) ;	
-	#endif
+		Ceylan::emergencyShutdown( 
+			"Joystick::getNumberOfHats : joystick not open." ) ;	
+#endif // OSDL_DEBUG
 	
 	return _hatCount ;
 	
 }
 
 
-unsigned int Joystick::getNumberOfButtons() const throw()
+JoystickButtonsCount Joystick::getNumberOfButtons() const throw()
 {
-	#ifdef OSDL_DEBUG
+
+#if OSDL_DEBUG
 	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( "Joystick::getNumberOfButtons : joystick not open." ) ;	
-	#endif
+		Ceylan::emergencyShutdown( 
+			"Joystick::getNumberOfButtons : joystick not open." ) ;	
+#endif // OSDL_DEBUG
 	
 	return _buttonCount ;
 	
@@ -236,14 +261,17 @@ unsigned int Joystick::getNumberOfButtons() const throw()
 
 AxisPosition Joystick::getAbscissaPosition() const throw() 
 {
-	#ifdef OSDL_DEBUG
+
+#if OSDL_DEBUG
 	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( "Joystick::getAbscissaPosition : joystick not open." ) ;
+		Ceylan::emergencyShutdown( 
+			"Joystick::getAbscissaPosition : joystick not open." ) ;
 		
 	if ( _axisCount == 0 )
-		Ceylan::emergencyShutdown( "Joystick::getAbscissaPosition : no X axe available." ) ;
+		Ceylan::emergencyShutdown( 
+			"Joystick::getAbscissaPosition : no X axe available." ) ;
 	
-	#endif
+#endif // OSDL_DEBUG
 	
 	return SDL_JoystickGetAxis( _internalJoystick, 0 ) ;
 	
@@ -252,25 +280,30 @@ AxisPosition Joystick::getAbscissaPosition() const throw()
 
 AxisPosition Joystick::getOrdinatePosition() const throw() 
 {
-	#ifdef OSDL_DEBUG
+
+#if OSDL_DEBUG
 	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( "Joystick::getOrdinatePosition : joystick not open." ) ;
+		Ceylan::emergencyShutdown( 
+			"Joystick::getOrdinatePosition : joystick not open." ) ;
 		
 	if ( _axisCount <= 1 )
-		Ceylan::emergencyShutdown( "Joystick::getOrdinatePosition : no Y axe available." ) ;
+		Ceylan::emergencyShutdown( 
+			"Joystick::getOrdinatePosition : no Y axe available." ) ;
 	
-	#endif
+#endif // OSDL_DEBUG
 
 	return SDL_JoystickGetAxis( _internalJoystick, 1 ) ;
 	
 }
 
 
-AxisPosition Joystick::getPositionOfAxis( unsigned int index ) const throw( JoystickException )
+AxisPosition Joystick::getPositionOfAxis( JoystickAxesCount index ) 
+	const throw( JoystickException )
 {
 
 	if ( ! isOpen() )
-		throw JoystickException( "Joystick::getPositionOfAxis : joystick not open." ) ;
+		throw JoystickException( 
+			"Joystick::getPositionOfAxis : joystick not open." ) ;
 	
 	if ( index >= _axisCount )
 		throw JoystickException( "Joystick::getPositionOfAxis : axe index ( " 
@@ -281,11 +314,13 @@ AxisPosition Joystick::getPositionOfAxis( unsigned int index ) const throw( Joys
 }
 
 
-HatPosition Joystick::getPositionOfHat( unsigned int index ) const throw( JoystickException )
+HatPosition Joystick::getPositionOfHat( JoystickHatsCount index ) 
+	const throw( JoystickException )
 {
 
 	if ( ! isOpen() )
-		throw JoystickException( "Joystick::getPositionOfHat : joystick not open." ) ;
+		throw JoystickException( 
+			"Joystick::getPositionOfHat : joystick not open." ) ;
 	
 	if ( index >= _hatCount )
 		throw JoystickException( "Joystick::getPositionOfHat : hat index ( " 
@@ -296,11 +331,13 @@ HatPosition Joystick::getPositionOfHat( unsigned int index ) const throw( Joysti
 }
 
 
-bool Joystick::isButtonPressed( unsigned int buttonNumber ) const throw( JoystickException )
+bool Joystick::isButtonPressed( JoystickButtonsCount buttonNumber ) 
+	const throw( JoystickException )
 {
 
 	if ( ! isOpen() )
-		throw JoystickException( "Joystick::isButtonPressed : joystick not open." ) ;
+		throw JoystickException( 
+			"Joystick::isButtonPressed : joystick not open." ) ;
 	
 	if ( buttonNumber >= _buttonCount )
 		throw JoystickException( "Joystick::isButtonPressed : button number ( " 
@@ -311,15 +348,17 @@ bool Joystick::isButtonPressed( unsigned int buttonNumber ) const throw( Joystic
 }
 
 
-bool Joystick::getPositionOfTrackball( unsigned int ball, 
+bool Joystick::getPositionOfTrackball( JoystickTrackballsCount ball, 
 	BallMotion & deltaX, BallMotion & deltaY ) const throw( JoystickException )				
 {
 
 	if ( ! isOpen() )
-		throw JoystickException( "Joystick::getPositionOfTrackball : joystick not open." ) ;
+		throw JoystickException( 
+			"Joystick::getPositionOfTrackball : joystick not open." ) ;
 	
 	if ( ball >= _trackballCount )
-		throw JoystickException( "Joystick::getPositionOfTrackball : trackball number ( " 
+		throw JoystickException( 
+			"Joystick::getPositionOfTrackball : trackball number ( " 
 			+ Ceylan::toString( _trackballCount ) + ") out of bounds." ) ;
 			
  	return SDL_JoystickGetBall( _internalJoystick, ball, & deltaX, & deltaY ) ;
@@ -331,16 +370,21 @@ JoystickNumber Joystick::getIndex() const throw()
 {
 
 	if ( _internalJoystick == 0 )
-		Ceylan::emergencyShutdown( "Joystick::getIndex : no internal joystick registered." ) ;
+		Ceylan::emergencyShutdown( 
+			"Joystick::getIndex : no internal joystick registered." ) ;
 	
 	JoystickNumber index = SDL_JoystickIndex( _internalJoystick ) ;
 	
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( index != _index ) 
 		LogPlug::error( "Joystick::getIndex : conflicting status : "
-			"back-end (makes authority) says index is " + Ceylan::toString( index ) 
-			+ " whereas internal index says " + Ceylan::toString( _index ) + "." ) ;			
-	#endif
+			"back-end (makes authority) says index is " 
+			+ Ceylan::toString( index ) 
+			+ " whereas internal index says " 
+			+ Ceylan::toString( _index ) + "." ) ;	
+					
+#endif // OSDL_DEBUG
 
 	return index ;
 	
@@ -362,7 +406,8 @@ const string Joystick::toString( Ceylan::VerbosityLevels level ) const throw()
 {
 
 	if ( ! isOpen() )
-		return "Non-opened joystick whose index is #" + Ceylan::toString( _index ) 
+		return "Non-opened joystick whose index is #" 
+			+ Ceylan::toString( _index ) 
 			+ ", named '" + _name + "'";
 		
 	return "Opened joystick whose index is #" + Ceylan::toString( _index ) 
@@ -373,3 +418,4 @@ const string Joystick::toString( Ceylan::VerbosityLevels level ) const throw()
 		+ Ceylan::toString( _buttonCount ) + " button(s)" ;
 				
 }
+

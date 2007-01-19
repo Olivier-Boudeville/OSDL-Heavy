@@ -20,11 +20,11 @@ using namespace OSDL::MVC ;
 #include <iostream>
 #define OSDL_CONTROLLER_LOG( message ) std::cout << "[OSDL controller] " << message << std::endl ;
 
-#else
+#else // OSDL_VERBOSE_CONTROLLER
 
 #define OSDL_CONTROLLER_LOG( message )
 
-#endif
+#endif // OSDL_VERBOSE_CONTROLLER
 
 
 
@@ -48,14 +48,17 @@ Controller::~Controller() throw()
 }
 
 
-void Controller::rawKeyPressed( const KeyboardEvent & keyboardPressedEvent ) throw()
+void Controller::rawKeyPressed( const KeyboardEvent & keyboardPressedEvent )
+	throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( keyboardPressedEvent.type != EventsModule::KeyPressed )
 		Ceylan::emergencyShutdown( "Controller::rawKeyPressed : "
-			"unexpected event received instead." ) ;		
-	#endif
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG // OSDL_DEBUG
 	
 	OSDL_CONTROLLER_LOG( "OSDL controller : raw key pressed : " 
 		+ EventsModule::DescribeEvent( keyboardPressedEvent ) ) ;
@@ -63,14 +66,17 @@ void Controller::rawKeyPressed( const KeyboardEvent & keyboardPressedEvent ) thr
 }
 
 
-void Controller::rawKeyReleased( const KeyboardEvent & keyboardReleasedEvent ) throw()
+void Controller::rawKeyReleased( const KeyboardEvent & keyboardReleasedEvent )
+	throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( keyboardReleasedEvent.type != EventsModule::KeyReleased )
 		Ceylan::emergencyShutdown( "Controller::rawKeyReleased : "
 			"unexpected event received instead." ) ;		
-	#endif
+			
+#endif // OSDL_DEBUG
 	
 	OSDL_CONTROLLER_LOG( "OSDL controller : raw key released : " 
 		+ EventsModule::DescribeEvent( keyboardReleasedEvent ) ) ;
@@ -78,14 +84,17 @@ void Controller::rawKeyReleased( const KeyboardEvent & keyboardReleasedEvent ) t
 }
 
 
-void Controller::unicodeSelected( const KeyboardEvent & keyboardPressedEvent ) throw()
+void Controller::unicodeSelected( const KeyboardEvent & keyboardPressedEvent )
+	throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( keyboardPressedEvent.type != EventsModule::KeyPressed )
 		Ceylan::emergencyShutdown( "Controller::unicodeSelected : "
-			"unexpected event received instead." ) ;		
-	#endif
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG
 	
 	OSDL_CONTROLLER_LOG( "OSDL controller : unicode selected : " 
 		+ EventsModule::DescribeEvent( keyboardPressedEvent ) ) ;
@@ -94,48 +103,55 @@ void Controller::unicodeSelected( const KeyboardEvent & keyboardPressedEvent ) t
 
 
 
-void Controller::mouseMoved( const MouseMotionEvent & mouseMotionEvent ) throw()
+void Controller::mouseMoved( const MouseMotionEvent & mouseMotionEvent ) 
+	throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( mouseMotionEvent.type != EventsModule::MouseMoved )
-		Ceylan::emergencyShutdown( "Controller::MouseMoved : "
-			"unexpected event received instead." ) ;		
-	#endif
+		Ceylan::emergencyShutdown( "Controller::mouseMoved : "
+			"unexpected event received instead." ) ;	
+				
+#endif // OSDL_DEBUG
 	
-	OSDL_CONTROLLER_LOG( "OSDL controller : MouseMoved : " 
+	OSDL_CONTROLLER_LOG( "OSDL controller : mouseMoved : " 
 		+ EventsModule::DescribeEvent( mouseMotionEvent ) ) ;
 		
 }
 
 
-void Controller::mouseButtonPressed( const MouseButtonEvent & mouseButtonPressedEvent ) 
-	throw()
+void Controller::mouseButtonPressed( 
+	const MouseButtonEvent & mouseButtonPressedEvent ) throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( mouseButtonPressedEvent.type != EventsModule::MouseButtonPressed )
-		Ceylan::emergencyShutdown( "Controller::MouseButtonPressed : "
-			"unexpected event received instead." ) ;		
-	#endif
+		Ceylan::emergencyShutdown( "Controller::mouseButtonPressed : "
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG
 	
-	OSDL_CONTROLLER_LOG( "OSDL controller : MouseButtonPressed : " 
+	OSDL_CONTROLLER_LOG( "OSDL controller : mouseButtonPressed : " 
 		+ EventsModule::DescribeEvent( mouseButtonPressedEvent ) ) ;
 		
 }
 					
 					
-void Controller::mouseButtonReleased( const MouseButtonEvent & mouseButtonReleasedEvent ) 
-	throw()					
+void Controller::mouseButtonReleased( 
+	const MouseButtonEvent & mouseButtonReleasedEvent ) throw()					
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( mouseButtonReleasedEvent.type != EventsModule::MouseButtonReleased )
-		Ceylan::emergencyShutdown( "Controller::MouseButtonReleased : "
+		Ceylan::emergencyShutdown( "Controller::mouseButtonReleased : "
 			"unexpected event received instead." ) ;		
-	#endif
+			
+#endif // OSDL_DEBUG
 	
-	OSDL_CONTROLLER_LOG( "OSDL controller : MouseButtonReleased : " 
+	OSDL_CONTROLLER_LOG( "OSDL controller : mouseButtonReleased : " 
 		+ EventsModule::DescribeEvent( mouseButtonReleasedEvent ) ) ;
 		
 }
@@ -143,80 +159,94 @@ void Controller::mouseButtonReleased( const MouseButtonEvent & mouseButtonReleas
 	
 	
 	
-void Controller::joystickAxisChanged( const JoystickAxisEvent & joystickAxisEvent ) throw()
+void Controller::joystickAxisChanged( 
+	const JoystickAxisEvent & joystickAxisEvent ) throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( joystickAxisEvent.type != EventsModule::JoystickAxisChanged )
-		Ceylan::emergencyShutdown( "Controller::JoystickAxisChanged : "
-			"unexpected event received instead." ) ;		
-	#endif
+		Ceylan::emergencyShutdown( "Controller::joystickAxisChanged : "
+			"unexpected event received instead." ) ;	
+				
+#endif // OSDL_DEBUG
 	
-	OSDL_CONTROLLER_LOG( "OSDL controller : JoystickAxisChanged : " 
+	OSDL_CONTROLLER_LOG( "OSDL controller : joystickAxisChanged : " 
 		+ EventsModule::DescribeEvent( joystickAxisEvent ) ) ;
 		
 }
 					
 					
-void Controller::joystickTrackballChanged( const JoystickTrackballEvent & joystickTrackballEvent )
-	throw()
+void Controller::joystickTrackballChanged( 
+	const JoystickTrackballEvent & joystickTrackballEvent ) throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( joystickTrackballEvent.type != EventsModule::JoystickTrackballChanged )
-		Ceylan::emergencyShutdown( "Controller::JoystickTrackballChanged : "
-			"unexpected event received instead." ) ;		
-	#endif
+		Ceylan::emergencyShutdown( "Controller::joystickTrackballChanged : "
+			"unexpected event received instead." ) ;	
+				
+#endif // OSDL_DEBUG
 	
-	OSDL_CONTROLLER_LOG( "OSDL controller : JoystickTrackballChanged : " 
+	OSDL_CONTROLLER_LOG( "OSDL controller : joystickTrackballChanged : " 
 		+ EventsModule::DescribeEvent( joystickTrackballEvent ) ) ;
 		
 }
 		
 					
-void Controller::joystickHatChanged( const JoystickHatEvent & joystickHatChangedEvent ) 
-	throw()
+void Controller::joystickHatChanged( 
+	const JoystickHatEvent & joystickHatChangedEvent ) throw()
 {
 
-	#ifdef OSDL_DEBUG
-	if ( joystickHatChangedEvent.type != EventsModule::JoystickHatPositionChanged )
-		Ceylan::emergencyShutdown( "Controller::JoystickHatPositionChanged : "
-			"unexpected event received instead." ) ;		
-	#endif
+#if OSDL_DEBUG
+
+	if ( joystickHatChangedEvent.type !=
+			EventsModule::JoystickHatPositionChanged )
+		Ceylan::emergencyShutdown( "Controller::joystickHatPositionChanged : "
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG
 	
-	OSDL_CONTROLLER_LOG( "OSDL controller : JoystickHatPositionChanged : " 
+	OSDL_CONTROLLER_LOG( "OSDL controller : joystickHatPositionChanged : " 
 		+ EventsModule::DescribeEvent( joystickHatChangedEvent ) ) ;
 		
 }
 					
 					
-void Controller::joystickButtonPressed( const JoystickButtonEvent & joystickButtonPressedEvent )
-	throw()
+void Controller::joystickButtonPressed( 
+	const JoystickButtonEvent & joystickButtonPressedEvent ) throw()
 {
 
-	#ifdef OSDL_DEBUG
-	if ( joystickButtonPressedEvent.type != EventsModule::JoystickButtonPressed )
-		Ceylan::emergencyShutdown( "Controller::JoystickButtonPressed : "
-			"unexpected event received instead." ) ;		
-	#endif
+#if OSDL_DEBUG
+
+	if ( joystickButtonPressedEvent.type != 
+			EventsModule::JoystickButtonPressed )
+		Ceylan::emergencyShutdown( "Controller::joystickButtonPressed : "
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG
 	
-	OSDL_CONTROLLER_LOG( "OSDL controller : JoystickButtonPressed : " 
+	OSDL_CONTROLLER_LOG( "OSDL controller : joystickButtonPressed : " 
 		+ EventsModule::DescribeEvent( joystickButtonPressedEvent ) ) ;
 		
 }
 					
 					
-void Controller::joystickButtonReleased( const JoystickButtonEvent & joystickButtonReleasedEvent )
-	throw()										
+void Controller::joystickButtonReleased( 
+	const JoystickButtonEvent & joystickButtonReleasedEvent ) throw()										
 {
 
-	#ifdef OSDL_DEBUG
-	if ( joystickButtonReleasedEvent.type != EventsModule::JoystickButtonReleased )
-		Ceylan::emergencyShutdown( "Controller::JoystickButtonReleased : "
-			"unexpected event received instead." ) ;		
-	#endif
+#if OSDL_DEBUG
+
+	if ( joystickButtonReleasedEvent.type !=
+			EventsModule::JoystickButtonReleased )
+		Ceylan::emergencyShutdown( "Controller::joystickButtonReleased : "
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG
 	
-	OSDL_CONTROLLER_LOG( "OSDL controller : JoystickButtonReleased : " 
+	OSDL_CONTROLLER_LOG( "OSDL controller : joystickButtonReleased : " 
 		+ EventsModule::DescribeEvent( joystickButtonReleasedEvent ) ) ;
 		
 }
@@ -224,34 +254,43 @@ void Controller::joystickButtonReleased( const JoystickButtonEvent & joystickBut
 																				
 void Controller::joystickLeft( AxisPosition leftExtent ) throw()
 {
-	OSDL_CONTROLLER_LOG( "Controller::joystickLeft : extent is " << leftExtent ) ; 
+
+	OSDL_CONTROLLER_LOG( "Controller::joystickLeft : extent is " 
+		<< leftExtent ) ; 
 
 }
 
 
 void Controller::joystickRight( AxisPosition rightExtent ) throw()
 {
-	OSDL_CONTROLLER_LOG( "Controller::joystickRight : extent is " << rightExtent ) ; 
+
+	OSDL_CONTROLLER_LOG( "Controller::joystickRight : extent is " 
+		<< rightExtent ) ; 
 
 }
 
 
 void Controller::joystickUp( AxisPosition upExtent ) throw()
 {
-	OSDL_CONTROLLER_LOG( "Controller::joystickUp : extent is " << upExtent ) ; 
+
+	OSDL_CONTROLLER_LOG( "Controller::joystickUp : extent is " 
+		<< upExtent ) ; 
 
 }
 
 
 void Controller::joystickDown( AxisPosition downExtent ) throw()
 {
-	OSDL_CONTROLLER_LOG( "Controller::joystickDown : extent is " << downExtent ) ; 
+
+	OSDL_CONTROLLER_LOG( "Controller::joystickDown : extent is " 
+		<< downExtent ) ; 
 
 }
 
 
 void Controller::joystickFirstButtonPressed() throw()
 {
+
 	OSDL_CONTROLLER_LOG( "Controller::joystickFirstButtonPressed"  ) ; 
 
 }
@@ -259,6 +298,7 @@ void Controller::joystickFirstButtonPressed() throw()
 
 void Controller::joystickFirstButtonReleased() throw()
 {
+
 	OSDL_CONTROLLER_LOG( "Controller::joystickFirstButtonReleased" ) ; 
 
 }
@@ -266,6 +306,7 @@ void Controller::joystickFirstButtonReleased() throw()
 
 void Controller::joystickSecondButtonPressed() throw() 
 {
+
 	OSDL_CONTROLLER_LOG( "Controller::joystickSecondButtonPressed" ) ; 
 
 }
@@ -273,6 +314,7 @@ void Controller::joystickSecondButtonPressed() throw()
 
 void Controller::joystickSecondButtonReleased() throw()
 {
+
 	OSDL_CONTROLLER_LOG( "Controller::joystickSecondButtonReleased" ) ; 
 
 }
@@ -281,6 +323,8 @@ void Controller::joystickSecondButtonReleased() throw()
 
 const string Controller::toString( Ceylan::VerbosityLevels level ) const throw()
 {
-	return "OSDL controller : " + Ceylan::Controller::toString( level ) ;				
+
+	return "OSDL controller : " + Ceylan::Controller::toString( level ) ;		
+	
 }
 

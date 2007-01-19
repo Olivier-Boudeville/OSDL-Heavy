@@ -3,8 +3,9 @@
 
 
 #include "OSDLJoystickCommon.h"    // for JoystickNumber, etc.
-
 #include "OSDLInputDevice.h"       // for inheritance
+
+#include "SDL.h"                   // for SDL_Joystick
 
 #include <string>
 #include <list>
@@ -25,18 +26,22 @@ namespace OSDL
 				
 		
 		/**
-		 * Models a basic joystick, including relevant axes, hats, balls and buttons.
+		 * Models a basic joystick, including relevant axes, hats, balls and
+		 * buttons.
 		 *
 		 * Usually, joystick directions should be interpreted this way :
-		 *   - axis 0 : left-right direction, negative values are left, positive are right.
-		 *   - axis 1 : up-down direction, negative values are up, positive are down.
+		 *   - axis 0 : left-right direction, negative values are left, 
+		 * positive are right
+		 *   - axis 1 : up-down direction, negative values are up, positive 
+		 * are down
 		 *
-		 * All events are propagated to the associated controller, if any, which allows to 
-		 * finely master all available informations, at the expense of a higher complexity on
-		 * the controller part.
+		 * All events are propagated to the associated controller, if any, 
+		 * which allows to finely master all available informations, at the
+		 * expense of a higher complexity on the controller part.
 		 *
-		 * For usual needs, ClassicalJoystick child class should be more convenient, since it is
-		 * a higher-level (but a little less general-purpose) model.
+		 * For usual needs, ClassicalJoystick child class should be more
+		 * convenient, since it is a higher-level (but a little less
+		 * general-purpose) model.
 		 *
 		 * @see ClassicalJoystick
 		 *
@@ -49,7 +54,7 @@ namespace OSDL
 
 
 				/**
-				 * Constructs a new joystick handler.
+				 * Constructs a new joystick manager.
 				 *
 				 * @param index the index of this joystick in platform list.
 				 *
@@ -99,53 +104,58 @@ namespace OSDL
 
 
 				/**
-				 * Called whenever an axis of this joystick changed, and notify the linked 
-				 * controller, if any.
+				 * Called whenever an axis of this joystick changed, and 
+				 * notifies the linked controller, if any.
 				 *
 				 * @param joystickEvent the corresponding joystick event.
 				 *
 				 */
-				virtual void axisChanged( const JoystickAxisEvent & joystickEvent ) throw() ;
+				virtual void axisChanged( 
+					const JoystickAxisEvent & joystickEvent ) throw() ;
 	
 							
 				/**
-				 * Called whenever a trackball of this joystick changed.
+				 * Called whenever a trackball of this joystick changed, and 
+				 * notifies the linked controller, if any.
 				 *
 				 * @param joystickEvent the corresponding joystick event.
 				 *
 				 */
-				virtual void trackballChanged( const JoystickTrackballEvent & joystickEvent )
-					throw() ;
+				virtual void trackballChanged( 
+					const JoystickTrackballEvent & joystickEvent ) throw() ;
 	
 							
 				/**
-				 * Called whenever a hat of this joystick changed, and notify the linked 
-				 * controller, if any.
+				 * Called whenever a hat of this joystick changed, 
+				 * and notifies the linked controller, if any.
 				 *
 				 * @param joystickEvent the corresponding joystick event.
 				 *
 				 */
-				virtual void hatChanged( const JoystickHatEvent & joystickEvent ) throw() ;
+				virtual void hatChanged( 
+					const JoystickHatEvent & joystickEvent ) throw() ;
 	
 	
 				/**
-				 * Called whenever a button of this joystick was pressed, and notify the linked 
-				 * controller, if any.
+				 * Called whenever a button of this joystick was pressed, 
+				 * and notifies the linked controller, if any.
 				 *
 				 * @param joystickEvent the corresponding joystick event.
 				 *
 				 */
-				virtual void buttonPressed( const JoystickButtonEvent & joystickEvent ) throw() ;
+				virtual void buttonPressed( 
+					const JoystickButtonEvent & joystickEvent ) throw() ;
 	
 	
 				/**
-				 * Called whenever a button of this joystick was released, and notify the linked 
-				 * controller, if any.
+				 * Called whenever a button of this joystick was released, 
+				 * and notifies the linked controller, if any.
 				 *
 				 * @param joystickEvent the corresponding joystick event.
 				 *
 				 */
-				virtual void buttonReleased( const JoystickButtonEvent & joystickEvent ) throw() ;
+				virtual void buttonReleased( 
+					const JoystickButtonEvent & joystickEvent ) throw() ;
 	
 											
 				/**
@@ -154,7 +164,7 @@ namespace OSDL
 				 * @note The joystick must already have been opened.
 				 *
 				 */
-				virtual unsigned int getNumberOfAxes() const throw() ;
+				virtual JoystickAxesCount getNumberOfAxes() const throw() ;
 				
 				
 				/**
@@ -163,7 +173,8 @@ namespace OSDL
 				 * @note The joystick must already have been opened.
 				 *
 				 */
-				virtual unsigned int getNumberOfTrackballs() const throw() ;
+				virtual JoystickTrackballsCount getNumberOfTrackballs() 
+					const throw() ;
 				
 				
 				/**
@@ -172,7 +183,7 @@ namespace OSDL
 				 * @note The joystick must already have been opened.
 				 *
 				 */
-				virtual unsigned int getNumberOfHats() const throw() ;
+				virtual JoystickHatsCount getNumberOfHats() const throw() ;
 				
 				
 				/**
@@ -181,14 +192,15 @@ namespace OSDL
 				 * @note The joystick must already have been opened.
 				 *
 				 */
-				virtual unsigned int getNumberOfButtons() const throw() ;
+				virtual JoystickButtonsCount getNumberOfButtons() 
+					const throw() ;
 				 
 				
 				/**
 				 * Returns the absolute position of the X axis.
 				 *
-				 * @note On most modern joysticks the X axis is represented by axis 0, which is 
-				 * the axis that is used by this method.
+				 * @note On most modern joysticks the X axis is represented 
+				 * by axis 0, which is the axis that is used by this method.
 				 *
 				 * @note Joystick must be already open.
 				 *
@@ -199,8 +211,8 @@ namespace OSDL
 				/**
 				 * Returns the absolute position of the Y axis.
 				 *
-				 * @note On most modern joysticks the Y axis is represented by axis 1, which is 
-				 * the axis that is used by this method.
+				 * @note On most modern joysticks the Y axis is represented 
+				 * by axis 1, which is the axis that is used by this method.
 				 *
 				 * @note Joystick must be already open.
 				 *
@@ -215,11 +227,12 @@ namespace OSDL
 				 *
 				 * @return the axis position.
 				 *
-				 * @throw JoystickException if the joystick is not already open or if index is
-				 * out of bounds.
+				 * @throw JoystickException if the joystick is not already 
+				 * opened or if index is out of bounds.
 				 *
 				 */ 
-				virtual AxisPosition getPositionOfAxis( unsigned int index ) 
+				virtual AxisPosition getPositionOfAxis( 
+						JoystickAxesCount index ) 
 					const throw( JoystickException ) ;				 
 				 	
 							
@@ -230,26 +243,29 @@ namespace OSDL
 				 *
 				 * @return the hat position.
 				 *
-				 * @throw JoystickException if the joystick is not already open or if index is
-				 * out of bounds.
+				 * @throw JoystickException if the joystick is not already 
+				 * open or if index is out of bounds.
 				 *
 				 */ 
-				virtual HatPosition getPositionOfHat( unsigned int index ) 
+				virtual HatPosition getPositionOfHat( 
+						JoystickHatsCount index ) 
 					const throw( JoystickException ) ;				 
 				
 				 			
 				/**
 				 * Tells whether specified joystick button is pressed.
 				 *
-				 * @param buttonNumber the number of the button for this joystick.
+				 * @param buttonNumber the number of the button for this
+				 * joystick.
 				 *
 				 * @return true iff the button is currently pressed.
 				 *
-				 * @throw JoystickException if the joystick is not already open or if the button
-				 * number is out of bounds.
+				 * @throw JoystickException if the joystick is not 
+				 * already open or if the button number is out of bounds.
 				 *
 				 */ 
-				virtual bool isButtonPressed( unsigned int buttonNumber ) 
+				virtual bool isButtonPressed( 
+						JoystickButtonsCount buttonNumber ) 
 					const throw( JoystickException ) ;				 
 			
 			
@@ -258,27 +274,28 @@ namespace OSDL
 				 *
 				 * @param ball the number of the ball for this joystick.
 				 *
-				 * @param deltaX abscissa motion delta since last call to this method will be 
-				 * stored here.
+				 * @param deltaX the abscissa motion delta, since last call to 
+				 * this method, will be stored here.
 				 *
-				 * @param deltaY ordinate motion delta since last call to this method will be
-				 * stored here.				
+				 * @param deltaY the ordinate motion delta, since last call to
+				 * this method, will be stored here.				
 				 * 
-				 * @throw JoystickException if the joystick is not already open or if index is
-				 * out of bounds.
+				 * @throw JoystickException if the joystick is not already 
+				 * open or if index is out of bounds.
 				 *
-				 * @return true on success
-				 *
-				 * @note Trackballs can only return relative motion since the last call of this
-				 * method.
+				 * @note Trackballs can only return relative motion since 
+				 * the last call of this method.
 				 *
 				 */ 
-				virtual bool getPositionOfTrackball( unsigned int ball,
-					BallMotion & deltaX, BallMotion & deltaY ) const throw( JoystickException ) ;	
+				virtual void getPositionOfTrackball( 
+						JoystickTrackballsCount ball,
+						BallMotion & deltaX, BallMotion & deltaY ) 
+					const throw( JoystickException ) ;	
 							
 								 					
 				/**
-				 * Updates the description of this joystick (trackballs, hat, buttons, etc.)
+				 * Updates the description of this joystick (trackballs, hats,
+				 * buttons, etc.)
 				 *
 				 * @note The joystick must be open.
 				 *
@@ -287,7 +304,8 @@ namespace OSDL
 				
 								
 	            /**
-	             * Returns an user-friendly description of the state of this object.
+	             * Returns an user-friendly description of the state of 
+				 * this object.
 	             *
 				 * @param level the requested verbosity level.
 				 *
@@ -296,7 +314,8 @@ namespace OSDL
 				 * @see Ceylan::TextDisplayable
 	             *
 	             */
-		 		virtual const std::string toString( Ceylan::VerbosityLevels level = Ceylan::high ) 
+		 		virtual const std::string toString( 
+						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
 				
 				
@@ -329,19 +348,19 @@ namespace OSDL
 	
 				
 				/// The number of axes for this joystick.
-				unsigned int _axisCount ;
+				JoystickAxesCount _axisCount ;
 
 
 				/// The number of trackballs for this joystick.
-				unsigned int _trackballCount ;
+				JoystickTrackballsCount _trackballCount ;
 
 
 				/// The number of hats for this joystick.
-				unsigned int _hatCount ;
+				JoystickHatsCount _hatCount ;
 
 
 				/// The number of buttons for this joystick.
-				unsigned int _buttonCount ;
+				JoystickButtonsCount _buttonCount ;
 
 
 
@@ -349,21 +368,23 @@ namespace OSDL
 		
 		
 				/**
-				 * Copy constructor made private to ensure that it will be never called.
-				 * The compiler should complain whenever this undefined constructor is called, 
-				 * implicitly or not.
-				 * 
+				 * Copy constructor made private to ensure that it will 
+				 * never be called.
 				 *
+				 * The compiler should complain whenever this undefined 
+				 * constructor is called, implicitly or not.
+				 * 
 				 */			 
 				explicit Joystick( const Joystick & source ) throw() ;
 			
 			
 				/**
-				 * Assignment operator made private to ensure that it will be never called.
-				 * The compiler should complain whenever this undefined operator is called, 
-				 * implicitly or not.
-				 * 
+				 * Assignment operator made private to ensure that it 
+				 * will never be called.
 				 *
+				 * The compiler should complain whenever this undefined 
+				 * operator is called, implicitly or not.
+				 * 
 				 */			 
 				Joystick & operator = ( const Joystick & source ) throw() ;
 										

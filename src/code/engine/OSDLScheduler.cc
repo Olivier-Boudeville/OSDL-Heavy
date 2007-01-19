@@ -942,8 +942,15 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			 
 			// Do nothing : wait.
 			
-			// FIXME : use idle function from time to time ?
-			// onIdle() ;
+			/*
+			 * @fixme: use idle function from time to time ?
+			 *  1. know previously the expecte average duration of an idle
+			 * call, Tidle.
+			 *  2. measure the time left before next tick, no matter its type
+			 * (simulation, rendering, input, etc.), Tleft.
+			 *  3. if Tidle < Tleft + margin, then call onIdle().
+			 *
+			 */
 			
 		}	
 		

@@ -15,14 +15,22 @@ namespace OSDL
 	
 	
 		/**
-		 * World objects are to be used to describe all objects a virtual world can contain. 
-		 * Whereas world objects are meant to be passive (they do not get a slice of CPU time
-		 * during which they live), using some child classes allows to have active world objects.
+		 * World objects are to be used to describe all objects a virtual 
+		 * world can contain. 
+		 * Whereas world objects are meant to be passive by default (they do
+		 * not get a slice of CPU time during which they live), using 
+		 * some specific child classes allows to have active world objects.
 		 *
-		 * Basic world objects will not therefore <b>act by themselves</b>, which does not imply
-		 * they cannot achieve complex triggered behaviours.
+		 * Basic world objects will not therefore <b>act by themselves</b>,
+		 * which does not imply they cannot achieve complex trigger-based
+		 * behaviours.
+		 * For example if a stone on the ground may not require periodic
+		 * processings as it remains static, it can be though taken into 
+		 * account as soon as it is grabbed and thrown.
 		 * 
-		 * World objects are models, in the sense of the Model-Controller-View framework.
+		 * World objects are models, in the sense of the Model-Controller-View
+		 * framework.
+		 *
 		 * @see Ceylan::Model
 		 *
 		 */
@@ -35,7 +43,6 @@ namespace OSDL
 				/**
 				 * Constructs a new blank world object.
 				 *
-				 *
 				 */
 				WorldObject() throw() ;
 				
@@ -45,7 +52,8 @@ namespace OSDL
 
 
 	            /**
-	             * Returns an user-friendly description of the state of this object.
+	             * Returns an user-friendly description of the state of 
+				 * this object.
 	             *
 				 * @param level the requested verbosity level.
 				 *
@@ -54,7 +62,8 @@ namespace OSDL
 				 * @see Ceylan::TextDisplayable
 	             *
 	             */
-		 		virtual const std::string toString( Ceylan::VerbosityLevels level = Ceylan::high ) 
+		 		virtual const std::string toString( 
+						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
 		
 		} ;

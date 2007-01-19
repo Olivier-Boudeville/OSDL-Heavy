@@ -7,7 +7,9 @@
 #include "OSDLUtils.h"              // for getBackendLastError
 #include "OSDLBasic.h"              // for CommonModule
 
+
 #include "Ceylan.h"                 // for Ceylan logs
+
 
 #include "SDL.h"                    // for SDL_JoystickEventState
 
@@ -29,11 +31,11 @@ const string DebugPrefix = " " ;
 #include <iostream>
 #define OSDL_JOYSTICK_HANDLER_LOG( message ) std::cout << "[OSDL Joystick Handler] " << message << std::endl ;
 
-#else
+#else // OSDL_VERBOSE_JOYSTICK_HANDLER
 
 #define OSDL_JOYSTICK_HANDLER_LOG( message )
 
-#endif
+#endif // OSDL_VERBOSE_JOYSTICK_HANDLER
 
 
 
@@ -47,9 +49,11 @@ JoystickHandler::JoystickHandler( bool useClassicalJoysticks )
 
 	send( "Initializing joystick subsystem." ) ;
 
-	if ( SDL_InitSubSystem( CommonModule::UseVideo ) != CommonModule::BackendSuccess )
+	if ( SDL_InitSubSystem( CommonModule::UseVideo ) 
+			!= CommonModule::BackendSuccess )
 		throw JoystickException( "JoystickHandler constructor : "
-			"unable to initialize joystick subsystem : " + Utils::getBackendLastError() ) ;
+			"unable to initialize joystick subsystem : " 
+			+ Utils::getBackendLastError() ) ;
 
 	// We want joystick changes to be translated into events :
 	SDL_JoystickEventState( SDL_ENABLE ) ;
@@ -70,11 +74,6 @@ JoystickHandler::~JoystickHandler() throw()
 
 	// Joysticks instances are owned by the handler :
 	blank() ;
-
-	/* Using now an array, which is faster than a list : 
-	for ( list<Joystick *>::iterator it = _joysticks.begin(); it != _joysticks.end(); it++ )
-		delete (*it) ;
-	 */	
 	 
 	SDL_QuitSubSystem( CommonModule::UseJoystick ) ;
 	
@@ -87,39 +86,25 @@ JoystickHandler::~JoystickHandler() throw()
 void JoystickHandler::update() throw() 
 {
 
-	send( Ceylan::toString( SDL_NumJoysticks() ) + " joystick(s) auto-detected." ) ;
-	
 	/*
-	 * Joystick instances have to be deleted so that the _useClassicalJoysticks value is 
-	 * taken into account (it might have changed since last call).
+	 * Joystick instances have to be deleted so that the 
+	 * _useClassicalJoysticks value is taken into account 
+	 * (it might have changed since last call).
 	 *
-	 */
-	 
-	/*
-	for ( int i = 0; i < SDL_NumJoysticks(); i++ )
-		_joysticks.push_back( new Joystick( i ) ) ;
-	*/
-	
-	/*
-	if ( _joysticks != 0 )
-	{
-		if ( static_cast<JoystickNumber>( SDL_NumJoysticks() ) == _joystickCount )
-		{
-			for ( JoystickNumber i = 0; i < _joystickCount; i++ )
-				_joysticks[i]->update() ;	
-			return ;
-		}	
-		else	
-			blank() ;
-	}	
-	*/
-	
+	 */ 
 	blank() ;
+
 	
 	// Here the joystick array must be created.
-	_joystickCount = SDL_NumJoysticks() ;
+	_joystickCount = GetAvailableJoystickCount() ;
+
+	send( Ceylan::toString( _joystickCount ) + " joystick(s) auto-detected." ) ;
 	
-	// This array will contain _joystickCount pointers to Joystick instances :
+	/*
+	 * This array, faster than a list, will contain _joystickCount pointers 
+	 * to Joystick instances :
+	 *
+	 */
 	_joysticks = new Joystick *[ _joystickCount ] ;
 	
 	for ( JoystickNumber i = 0; i < _joystickCount; i++ )
@@ -131,48 +116,36 @@ void JoystickHandler::update() throw()
 }
 
 
-void JoystickHandler::openJoystick( JoystickNumber index ) throw( JoystickException )
+void JoystickHandler::openJoystick( JoystickNumber index ) 
+	throw( JoystickException )
 {
 
 	/*
-	 * Beware, joystick list might be out of synch, test is not exactly equivalent to 
-	 * _joysticks.size() or _joystickCount.
+	 * Beware, joystick list might be out of synch, test is not exactly
+	 * equivalent to _joystickCount.
 	 *
 	 */	
-	if ( index >= static_cast<JoystickNumber>( SDL_NumJoysticks() ) )
+	if ( index >= GetAvailableJoystickCount() )
 		throw JoystickException( "JoystickHandler::openJoystick : index " 
 			+ Ceylan::toString( index) + " out of bounds (" 
-			+ Ceylan::toString( SDL_NumJoysticks() )
+			+ Ceylan::toString( GetAvailableJoystickCount() )
 			+ " joystick(s) attached)." ) ;
 			
-	//if ( index >= _joysticks.size() )
 	if ( index >= _joystickCount )
 		throw JoystickException( "JoystickHandler::openJoystick : index " 
 			+ Ceylan::toString( index) + " out of bounds (" 
-			+ Ceylan::toString( _joystickCount /* _joysticks.size() */ )
+			+ Ceylan::toString( _joystickCount )
 			+ " joystick(s) attached according to internal joystick list)." ) ;
 	
-	#ifdef OSDL_DEBUG
-	if (  _joysticks[ index ] == 0 )
+#if OSDL_DEBUG
+	if ( _joysticks[ index ] == 0 )
 		throw JoystickException( "JoystickHandler::openJoystick : "
 			"no known joystick for index " + Ceylan::toString( index ) + "." ) ;
-	#endif
+#endif // OSDL_DEBUG
 	
 	if ( ! _joysticks[ index ]->isOpen() )
 		_joysticks[ index ]->open() ;
-		
-	
-	/*
-	// No [] random access operator on STL lists, clumsy coding instead :
-	list<Joystick *>::iterator it = _joysticks.begin() ;
-	for ( unsigned int i = 0; i < index; i++ )
-		it++ ;
-	Joystick & joy = * (*it) ;
-	if ( ! joy.isOpen() )	 
-		joy.open() ;
-	*/	
-
-				
+						
 }
 
 
@@ -181,125 +154,119 @@ void JoystickHandler::linkToController( JoystickNumber index,
 {
 
 	/*
-	 * Beware, joystick list might be out of synch, test is not exactly equivalent to 
-	 * _joysticks.size() or _joystickCount.
+	 * Beware, joystick list might be out of synch, test is not exactly
+	 * equivalent to _joystickCount.
 	 *
 	 */	
-	if ( index >= static_cast<JoystickNumber>( SDL_NumJoysticks() ) )
+	if ( index >= static_cast<JoystickNumber>( GetAvailableJoystickCount() ) )
 		throw JoystickException( "JoystickHandler::linkToController : index " 
 			+ Ceylan::toString( index) + " out of bounds (" 
-			+ Ceylan::toString( SDL_NumJoysticks() )
+			+ Ceylan::toString( GetAvailableJoystickCount() )
 			+ " joystick(s) attached)." ) ;
 			
-	//if ( index >= _joysticks.size() )
 	if ( index >= _joystickCount )
 		throw JoystickException( "JoystickHandler::linkToController : index " 
 			+ Ceylan::toString( index) + " out of bounds (" 
-			+ Ceylan::toString( _joystickCount /* _joysticks.size() */ )
+			+ Ceylan::toString( _joystickCount )
 			+ " joystick(s) attached according to internal joystick list)." ) ;
 	
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
 	if (  _joysticks[ index ] == 0 )
 		throw JoystickException( "JoystickHandler::linkToController : "
 			"no known joystick for index " + Ceylan::toString( index ) + "." ) ;
-	#endif
+#endif // OSDL_DEBUG
 
 	_joysticks[ index ]->setController( controller ) ;
 	
 }
 	
 
-void JoystickHandler::axisChanged( const JoystickAxisEvent & joystickEvent ) const throw()
+void JoystickHandler::axisChanged( const JoystickAxisEvent & joystickEvent )
+	const throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
 	checkJoystickAt( joystickEvent.which ) ;
-	#endif
+#endif // OSDL_DEBUG
 	
 	_joysticks[ joystickEvent.which ]->axisChanged( joystickEvent ) ;
 	
 }
 
 
-void JoystickHandler::trackballChanged( const JoystickTrackballEvent & joystickEvent ) const throw()
+void JoystickHandler::trackballChanged( 
+	const JoystickTrackballEvent & joystickEvent ) const throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
 	checkJoystickAt( joystickEvent.which ) ;
-	#endif
+#endif // OSDL_DEBUG
 	
 	_joysticks[ joystickEvent.which ]->trackballChanged( joystickEvent ) ;
 	
 }
 
 
-void JoystickHandler::hatChanged( const JoystickHatEvent & joystickEvent ) const throw()
+void JoystickHandler::hatChanged( const JoystickHatEvent & joystickEvent ) 
+	const throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
 	checkJoystickAt( joystickEvent.which ) ;
-	#endif
+#endif // OSDL_DEBUG
 	
 	_joysticks[ joystickEvent.which ]->hatChanged( joystickEvent ) ;
 	
 }
 
 
-void JoystickHandler::buttonPressed( const JoystickButtonEvent & joystickEvent ) const throw()
+void JoystickHandler::buttonPressed( const JoystickButtonEvent & joystickEvent )
+	const throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
 	checkJoystickAt( joystickEvent.which ) ;
-	#endif
+#endif // OSDL_DEBUG
 	
 	_joysticks[ joystickEvent.which ]->buttonPressed( joystickEvent ) ;
 	
 }
 
 
-void JoystickHandler::buttonReleased( const JoystickButtonEvent & joystickEvent ) const throw()
+void JoystickHandler::buttonReleased( 
+	const JoystickButtonEvent & joystickEvent ) const throw()
 {
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
 	checkJoystickAt( joystickEvent.which ) ;
-	#endif
+#endif // OSDL_DEBUG
 	
 	_joysticks[ joystickEvent.which ]->buttonReleased( joystickEvent ) ;
 	
 }
 
 
-const string JoystickHandler::toString( Ceylan::VerbosityLevels level ) const throw()
+const string JoystickHandler::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
 
 	string res ;
 	
 	if ( _joystickCount > 0 )
-		res = "Joystick handler managing " + Ceylan::toString( _joystickCount ) + " joystick(s)" ;
+		res = "Joystick handler managing " 
+		+ Ceylan::toString( _joystickCount ) + " joystick(s)" ;
 	else
 		return "Joystick handler does not manage any joystick" ;
 
-	/*	
-	unsigned int size = _joysticks.size() ;
-	if ( size > 0 )
-		res = "Joystick handler managing " + Ceylan::toString( size ) + " joystick(s)." ;
-	else
-		return "Joystick handler does not manage any joystick." ;
-	*/
 	if ( level == Ceylan::low ) 	
 		return res ;
 	
 	res += ". Listing detected joystick(s) : " ;
-	
 		
 	list<string> joysticks ;
 		
-	//for ( list<Joystick *>::const_iterator it = _joysticks.begin(); it != _joysticks.end(); it++ )
 	for ( JoystickNumber i = 0; i < _joystickCount; i++ )
-	{
 		joysticks.push_back( _joysticks[i]->toString( level ) ) ;
-		// joysticks.push_back( (*it)->toString( level, htmlFormat ) ) ;
-	}
 	
 	return res + Ceylan::formatStringList( joysticks ) ;
 		
@@ -309,7 +276,9 @@ const string JoystickHandler::toString( Ceylan::VerbosityLevels level ) const th
 
 JoystickNumber JoystickHandler::GetAvailableJoystickCount() throw() 
 {
-	return SDL_NumJoysticks() ;
+
+	return static_cast<JoystickNumber>( SDL_NumJoysticks() ) ;
+	
 }
 
 
@@ -336,9 +305,12 @@ void JoystickHandler::blank() throw()
 
 void JoystickHandler::checkJoystickAt( JoystickNumber index ) const throw()
 {
+
 	if ( index >= _joystickCount )
-		Ceylan::emergencyShutdown( "JoystickHandler::checkJoystickAt : index "
-			+ Ceylan::toNumericalString( index ) + " out of bounds (maximum value is "
+		Ceylan::emergencyShutdown( 
+			"JoystickHandler::checkJoystickAt : index "
+			+ Ceylan::toNumericalString( index ) 
+			+ " out of bounds (maximum value is "
 			+ Ceylan::toNumericalString( _joystickCount - 1 ) + ")." ) ; 
 		
 	if ( _joysticks[ index ] == 0 )
@@ -347,7 +319,8 @@ void JoystickHandler::checkJoystickAt( JoystickNumber index ) const throw()
 			+ Ceylan::toNumericalString( index ) + "." ) ;
 
 	if ( ! _joysticks[ index ]->isOpen() )
-		Ceylan::emergencyShutdown( "JoystickHandler::checkJoystickAt : joystick at index "
+		Ceylan::emergencyShutdown( 
+			"JoystickHandler::checkJoystickAt : joystick at index "
 			+ Ceylan::toNumericalString( index ) + " was not open." ) ; 
 	
 }

@@ -16,8 +16,11 @@ using namespace Ceylan::Log ;    // for LogPlug
 using namespace OSDL::Events ;
 
 
-Ceylan::Uint16 KeyboardHandler::DefaultDelayBeforeKeyRepeat = SDL_DEFAULT_REPEAT_DELAY ; 
-Ceylan::Uint16 KeyboardHandler::DefaulKeyRepeatInterval     = SDL_DEFAULT_REPEAT_INTERVAL ;
+Ceylan::Uint16 KeyboardHandler::DefaultDelayBeforeKeyRepeat 
+	= SDL_DEFAULT_REPEAT_DELAY ; 
+	
+Ceylan::Uint16 KeyboardHandler::DefaulKeyRepeatInterval
+	= SDL_DEFAULT_REPEAT_INTERVAL ;
 
 
 // Starts with raw input mode.
@@ -44,32 +47,35 @@ KeyboardException::~KeyboardException() throw()
 #include <iostream>
 #define OSDL_KEYBOARD_HANDLER_LOG( message ) std::cout << "[OSDL Keyboard Handler] " << message << std::endl ;
 
-#else
+#else // OSDL_VERBOSE_KEYBOARD_HANDLER
 
 #define OSDL_KEYBOARD_HANDLER_LOG( message )
 
-#endif
+#endif // OSDL_VERBOSE_KEYBOARD_HANDLER
 
 
 
 /**
- * The default key to handler mapper can reference this general-purpose key handler.
+ * The default key to handler mapper can reference this general-purpose 
+ * key handler.
  *
  * Can be used both for raw and input modes.
  *
  */
 void doNothingKeyHandler( const KeyboardEvent & keyboardEvent )
 {
+
 	OSDL_KEYBOARD_HANDLER_LOG( EventsModule::DescribeEvent( keyboardEvent ) ) ;		
 }
 
 
 /**
- * The default key to handler mapper can reference this general-purpose key handler.
+ * The default key to handler mapper can reference this general-purpose 
+ * key handler.
  *
  * Can be used both for raw and input modes.
  *
- * Add following behaviour :
+ * Respects following behaviour :
  *   - if 'q' key or escape is pressed, exits from the main loop
  *   - if F1 key is pressed, toggle between raw input and text input modes.
  *
@@ -77,18 +83,21 @@ void doNothingKeyHandler( const KeyboardEvent & keyboardEvent )
 void smarterKeyHandler( const KeyboardEvent & keyboardEvent )
 {
 
-	OSDL_KEYBOARD_HANDLER_LOG( EventsModule::DescribeEvent( keyboardEvent ) ) ;		
+	OSDL_KEYBOARD_HANDLER_LOG( 
+		EventsModule::DescribeEvent( keyboardEvent ) ) ;		
 	
 	// Reacts to key presses for both input modes (raw or text) :
 	
 	if ( keyboardEvent.type != EventsModule::KeyPressed )
 	{
-		// Only key presses interest us : OSDL_KEYBOARD_HANDLER_LOG( "(released)" ) ;
+		
+		// Only key presses interest us .
 	 	return ;
 	}
 	
 	
-	switch( static_cast<KeyboardHandler::KeyIdentifier>( keyboardEvent.keysym.sym ) )
+	switch( static_cast<KeyboardHandler::KeyIdentifier>(
+		keyboardEvent.keysym.sym ) )
 	{
 	
 		case KeyboardHandler::EscapeKey:
@@ -128,7 +137,8 @@ void smarterKeyHandler( const KeyboardEvent & keyboardEvent )
 }
 
 
-KeyboardHandler::KeyboardHandler( KeyboardMode initialMode, bool useSmarterDefaultKeyHandler )
+KeyboardHandler::KeyboardHandler( KeyboardMode initialMode, 
+	bool useSmarterDefaultKeyHandler )
 		throw( InputDeviceHandlerException ) :
 	InputDeviceHandler(),
 	_rawKeyControllerMap(),
@@ -141,7 +151,7 @@ KeyboardHandler::KeyboardHandler( KeyboardMode initialMode, bool useSmarterDefau
 
 	// No SDL_InitSubSystem for keyboard.
 	
-	// Stores the previous UNICODE mode :
+	// Stores the previous Unicode mode :
 	_unicodeInputWasActivated = ( SDL_EnableUNICODE( -1 ) == 1 ) ;
 	
 	if ( useSmarterDefaultKeyHandler )
@@ -196,13 +206,15 @@ void KeyboardHandler::linkToController( Ceylan::Unicode unicode,
 	
 	
 	
-void KeyboardHandler::linkToHandler( KeyIdentifier rawKey, KeyboardEventHandler handler ) throw()
+void KeyboardHandler::linkToHandler( KeyIdentifier rawKey, 
+	KeyboardEventHandler handler ) throw()
 {
 	_rawKeyHandlerMap[ rawKey ] = handler ;
 }
 
 					
-void KeyboardHandler::linkToHandler( Ceylan::Unicode unicode, KeyboardEventHandler handler ) throw()
+void KeyboardHandler::linkToHandler( Ceylan::Unicode unicode,
+	KeyboardEventHandler handler ) throw()
 {
 	_unicodeHandlerMap[ unicode ] = handler ;
 }
@@ -218,13 +230,12 @@ void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent ) throw()
 	 *
 	 */
 	 
-	 
 	if ( _CurrentMode == rawInput )
 	{
 	
 		map<KeyIdentifier, OSDL::MVC::Controller *>::iterator itController
-				= _rawKeyControllerMap.find( 
-					static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
+			= _rawKeyControllerMap.find( 
+				static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
 			
 		if ( itController != _rawKeyControllerMap.end() )
 		{
@@ -237,7 +248,6 @@ void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent ) throw()
 		}
 		else
 		{
-
 
 			// No controller registered, default to handler map :
 			
@@ -280,8 +290,8 @@ void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent ) throw()
 	{
 	
 		map<Ceylan::Unicode, OSDL::MVC::Controller *>::iterator itController
-				=  _unicodeControllerMap.find( 
-					static_cast<KeyIdentifier>( keyboardEvent.keysym.unicode ) ) ;
+			=  _unicodeControllerMap.find( 
+				static_cast<KeyIdentifier>( keyboardEvent.keysym.unicode ) ) ;
 			
 		if ( itController != _unicodeControllerMap.end() )
 		{
@@ -300,7 +310,8 @@ void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent ) throw()
 			
 			map<Ceylan::Unicode, KeyboardEventHandler>::iterator itHandler 
 				=  _unicodeHandlerMap.find( 
-					static_cast<KeyIdentifier>( keyboardEvent.keysym.unicode ) ) ;
+					static_cast<KeyIdentifier>( 
+						keyboardEvent.keysym.unicode ) ) ;
 			
 			if ( itHandler != _unicodeHandlerMap.end() )
 			{
@@ -346,8 +357,8 @@ void KeyboardHandler::keyReleased( const KeyboardEvent & keyboardEvent ) throw()
 	{
 	
 		map<KeyIdentifier, OSDL::MVC::Controller *>::iterator itController
-				=  _rawKeyControllerMap.find( 
-					static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
+			=  _rawKeyControllerMap.find( 
+				static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
 			
 		if ( itController != _rawKeyControllerMap.end() )
 		{
@@ -395,8 +406,9 @@ void KeyboardHandler::keyReleased( const KeyboardEvent & keyboardEvent ) throw()
 	} 
 	
 	/*
-	 * Release events do not have unicode information, so do nothing on text input mode.
-	 * It is handled differently, with key repeats.
+	 * Release events do not have unicode information, so do nothing on 
+	 * text input mode.
+	 * They are handled differently, with key repeats.
 	 *
 	 */
 	 
@@ -405,28 +417,36 @@ void KeyboardHandler::keyReleased( const KeyboardEvent & keyboardEvent ) throw()
 
 void KeyboardHandler::setSmarterDefaultKeyHandlers() throw()
 {
+
 	_defaultRawKeyHandler  = smarterKeyHandler ;
 	_defaultUnicodeHandler = smarterKeyHandler ;
+	
 }
 
 
-void KeyboardHandler::setDefaultRawKeyHandler( KeyboardEventHandler newHandler ) throw()
+void KeyboardHandler::setDefaultRawKeyHandler( 
+	KeyboardEventHandler newHandler ) throw()
 {
+
 	_defaultRawKeyHandler = newHandler ;
+	
 }
 
 
-void KeyboardHandler::setDefaultUnicodeHandler( KeyboardEventHandler newHandler ) throw()
+void KeyboardHandler::setDefaultUnicodeHandler( 
+	KeyboardEventHandler newHandler ) throw()
 {
+
 	_defaultUnicodeHandler = newHandler ;
+	
 }
 
 
-const string KeyboardHandler::toString( Ceylan::VerbosityLevels level ) const throw()
+const string KeyboardHandler::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
 
 	string res = "Keyboard handler in " ;
-
 
 	switch( _CurrentMode )
 	{
@@ -464,7 +484,8 @@ void KeyboardHandler::SetMode( KeyboardMode newMode ) throw()
 
 	
 	OSDL_KEYBOARD_HANDLER_LOG( "Setting keyboard mode to " 
-		<< ( ( newMode == rawInput ) ? "raw input mode." : "text input mode." ) ) ;
+		<< ( ( newMode == rawInput ) ? 
+			"raw input mode." : "text input mode." ) ) ;
 		
 	_CurrentMode = newMode ;
 	
@@ -477,11 +498,13 @@ void KeyboardHandler::SetMode( KeyboardMode newMode ) throw()
 			
 		case textInput:
 			SDL_EnableUNICODE( 1 ) ;
-			SDL_EnableKeyRepeat( DefaultDelayBeforeKeyRepeat, DefaulKeyRepeatInterval ) ;
+			SDL_EnableKeyRepeat( DefaultDelayBeforeKeyRepeat,
+				DefaulKeyRepeatInterval ) ;
 			break ;
 		
 		default:
-			Ceylan::emergencyShutdown( "KeyboardHandler::SetMode : unknown keyboard mode : "
+			Ceylan::emergencyShutdown( 
+				"KeyboardHandler::SetMode : unknown keyboard mode : "
 				+ Ceylan::toString( newMode ) + "." ) ;
 			break ;	
 			
@@ -542,6 +565,7 @@ string KeyboardHandler::DescribeKey( KeyIdentifier key ) throw()
 	}
 	
 	return "(unexpected key)" ;
+	
 }
 
 
@@ -586,7 +610,7 @@ string KeyboardHandler::DescribeModifier( KeyModifier modifier ) throw()
 	if ( modifier & ReservedModifier )
 		res += " reserved" ;
 		
-	if ( res.size() == 0 )
+	if ( res.empty() )
 		return "(none)" ;
 	else		
 		return res ;
@@ -604,5 +628,4 @@ string KeyboardHandler::DescribeUnicode( Ceylan::Unicode value ) throw()
 		return "International Unicode character" ;
 
 }			
-
 

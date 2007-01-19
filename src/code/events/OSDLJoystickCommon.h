@@ -2,13 +2,14 @@
 #define OSDL_JOYSTICK_COMMON_H_
 
 
+#include "OSDLEvents.h"   // for EventsException
+
+#include "Ceylan.h"       // for Uint8, etc.
+
+
 #include <string>
 #include <list>
 
-
-#include "OSDLEvents.h"   // for EventsException
-
-#include "Ceylan.h"       // for Uint8
 
 
 namespace OSDL
@@ -22,16 +23,34 @@ namespace OSDL
 		/// Number (index) of a joystick, or joystick count.
 		typedef unsigned int JoystickNumber ;
 
+
+		/// Number of joystick axis.
+		typedef unsigned int JoystickAxesCount ;
+
+		/// Number of joystick trackballs.
+		typedef unsigned int JoystickTrackballsCount ;
+
+		/// Number of joystick hats.
+		typedef unsigned int JoystickHatsCount ;
+
+		/// Number of joystick buttons.
+		typedef unsigned int JoystickButtonsCount ;
+
+
 				
 		/**
-		 * Axis position, which ranges from 32768 to 32767.
+		 * Axis position, which ranges from -32768 to 32767.
 		 *
 		 */
-		typedef Sint16 AxisPosition ;
+		typedef Ceylan::Sint16 AxisPosition ;
 
 
-		/// Position of a hat, can be combined (OR'd) to make the eight possible directions.
-		typedef Uint8 HatPosition ;
+		/**
+		 * Position of a hat, can be combined (OR'd) to make the eight 
+		 * possible directions.
+		 *
+		 */
+		typedef Ceylan::Uint8 HatPosition ;
 
 
 		/// State of a joystick hat.
@@ -66,17 +85,19 @@ namespace OSDL
 		 * Relative trackball motion.
 		 *
 		 */				
-		typedef int BallMotion ;
+		typedef Ceylan::Sint32 BallMotion ;
 		
 		
 		/// Mother class for all joystick exceptions. 		
 		class JoystickException: public EventsException 
 		{
 			public: 
-				explicit JoystickException( const std::string & reason ) throw() ; 
+				explicit JoystickException( const std::string & reason ) 
+					throw() ; 
 				virtual ~JoystickException() throw() ; 
 				
 		} ;
+		
 	
 	}	
 	

@@ -34,8 +34,10 @@ const AxisPosition ClassicalJoystick::DefaultDeadZoneExtent = 100 ;
  *
  *
  */
+ 
 
-ClassicalJoystick::ClassicalJoystick( JoystickNumber index, AxisPosition deadZoneExtent ) throw() :
+ClassicalJoystick::ClassicalJoystick( 
+		JoystickNumber index, AxisPosition deadZoneExtent ) throw() :
 	Joystick( index ),
 	_deadZoneExtentFirstAxis( deadZoneExtent ),
 	_deadZoneExtentSecondAxis( deadZoneExtent )
@@ -50,7 +52,8 @@ ClassicalJoystick::~ClassicalJoystick() throw()
 }
 
 
-void ClassicalJoystick::axisChanged( const JoystickAxisEvent & joystickEvent ) throw()
+void ClassicalJoystick::axisChanged( const JoystickAxisEvent & joystickEvent )
+	throw()
 {
 	
 	if ( isLinkedToController() )
@@ -91,69 +94,125 @@ void ClassicalJoystick::axisChanged( const JoystickAxisEvent & joystickEvent ) t
 			
 	}		
 	else
-		OSDL_JOYSTICK_LOG( "Axis changed for classical joystick #" 
+	{
+		OSDL_JOYSTICK_LOG( 
+			"Axis changed for controller-less classical joystick #" 
 			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
+	}
+		
+}
+
+
+void ClassicalJoystick::buttonPressed( 
+	const JoystickButtonEvent & joystickEvent ) throw()
+{
+	
+	if ( isLinkedToController() )
+	{
+	
+		switch( joystickEvent.button )
+		{
+		
+			case 0:
+				getActualController().joystickFirstButtonPressed() ;
+				break ;
+				
+			case 1:
+				getActualController().joystickSecondButtonPressed() ;
+				break ;
+			
+			default:
+				OSDL_JOYSTICK_LOG( 
+					"Button (neither first or second, hence ignored) "
+					"pressed for classical joystick #" 
+					+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
+					+ EventsModule::DescribeEvent( joystickEvent ) ) ;
+				break ;
+		}
+		
+		
+	}	
+	else
+	{
+		OSDL_JOYSTICK_LOG( 
+			"Button pressed for controller-less classical joystick #" 
+			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
+			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
+	}
 			
 }
 
 
-void ClassicalJoystick::buttonPressed( const JoystickButtonEvent & joystickEvent ) throw()
+void ClassicalJoystick::buttonReleased( 
+	const JoystickButtonEvent & joystickEvent ) throw()
 {
 	
 	if ( isLinkedToController() )
 	{
-		if ( joystickEvent.button == 0 )
-			getActualController().joystickFirstButtonPressed() ;
-		else
-			getActualController().joystickSecondButtonPressed() ;					
-	}	
-	else
-		OSDL_JOYSTICK_LOG( "Button pressed for classical joystick #" 
-			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
-			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
-}
-
-
-void ClassicalJoystick::buttonReleased( const JoystickButtonEvent & joystickEvent ) throw()
-{
 	
-	if ( isLinkedToController() )
-	{
-		if ( joystickEvent.button == 0 )
-			getActualController().joystickFirstButtonReleased() ;
-		else
-			getActualController().joystickSecondButtonReleased() ;					
+		switch( joystickEvent.button )
+		{
+		
+			case 0:
+				getActualController().joystickFirstButtonReleased() ;
+				break ;
+				
+			case 1:
+				getActualController().joystickSecondButtonReleased() ;
+				break ;
+			
+			default:
+				OSDL_JOYSTICK_LOG( 
+					"Button (neither first or second, hence ignored) "
+					"released for classical joystick #" 
+					+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
+					+ EventsModule::DescribeEvent( joystickEvent ) ) ;
+				break ;
+		}
+		
 	}	
 	else
-		OSDL_JOYSTICK_LOG( "Button released for classical joystick #" 
+	{
+	
+		OSDL_JOYSTICK_LOG( 
+			"Button released for controller-less classical joystick #" 
 			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
+	}
+			
 }
 
 
 void ClassicalJoystick::getDeadZoneValues( AxisPosition & firstAxisExtent, 
 	AxisPosition & secondAxisExtent ) const throw()
 {
+
 	firstAxisExtent  = _deadZoneExtentFirstAxis ;
 	secondAxisExtent = _deadZoneExtentSecondAxis ;
+	
 }
 	
 					
 void ClassicalJoystick::setDeadZoneValues( AxisPosition firstAxisExtent, 
 	AxisPosition secondAxisExtent )	throw()
 {
+
 	_deadZoneExtentFirstAxis  = firstAxisExtent ;
 	_deadZoneExtentSecondAxis = secondAxisExtent ;
+	
 }
 	
 
-const string ClassicalJoystick::toString( Ceylan::VerbosityLevels level ) const throw()
+const string ClassicalJoystick::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
 
 	return "Classical joystick : " + Joystick::toString( level )
-		+ ". The first axis deadzone extent is "   + Ceylan::toString( _deadZoneExtentFirstAxis ) 
+		+ ". The first axis deadzone extent is "   
+		+ Ceylan::toString( _deadZoneExtentFirstAxis ) 
 		+ ", the second axis deadzone extent is " 
 		+ Ceylan::toString( _deadZoneExtentSecondAxis ) ;
 				
 }
+

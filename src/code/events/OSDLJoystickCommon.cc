@@ -33,3 +33,4 @@ JoystickException::~JoystickException() throw()
 {
 
 }
+
