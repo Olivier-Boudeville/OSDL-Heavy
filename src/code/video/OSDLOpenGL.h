@@ -28,13 +28,14 @@ namespace OSDL
 	
 		
 		/**
-		 * All OpenGL-specific operations and conventions are encapsulated here, be they related 
-		 * to 2D or 3D.
+		 * All OpenGL-specific operations and conventions are encapsulated 
+		 * here, be they related to 2D or 3D.
 		 *
-		 * The OpenGL viewport is set so that it covers all the setMode-created surface.
+		 * The OpenGL viewport is set so that it covers all of the 
+		 * setMode-created surface.
 		 *
-		 * @see 'http://osdl.sourceforge.net', then 'Documentation', 'Rendering', 'OpenGL + SDL' for
-		 * further implementation details.
+		 * @see 'http://osdl.sourceforge.net', then 'Documentation',
+		 * 'Rendering', 'OpenGL + SDL' for further implementation details.
 		 *
 		 */
 		namespace OpenGL
@@ -50,7 +51,7 @@ namespace OSDL
 				
 				
 					/// Constructs a new OpenGLException.
-					OpenGLException( const std::string & reason ) throw() ;					
+					OpenGLException( const std::string & reason ) throw() ;
 					
 					
 					/// Virtual destructor.
@@ -61,41 +62,50 @@ namespace OSDL
 			
 		
 			/**
-			 * Mask used for OpenGL RGBA color specification for red, depending on the endianness 
-			 * of the local machine.
+			 * Mask used for OpenGL RGBA color specification for red, 
+			 * depending on the endianness of the local machine.
 			 *
 			 */
 			extern Pixels::ColorMask RedMask ;
 			
 			
 			/**
-			 * Mask used for OpenGL RGBA color specification for green, depending on the endianness
-			 * of the local machine.
+			 * Mask used for OpenGL RGBA color specification for green,
+			 * depending on the endianness of the local machine.
 			 *
 			 */
 			extern Pixels::ColorMask GreenMask ;
 			
 			
 			/**
-			 * Mask used for OpenGL RGBA color specification for blue, depending on the endianness
-			 * of the local machine.
+			 * Mask used for OpenGL RGBA color specification for blue, 
+			 * depending on the endianness of the local machine.
 			 *
 			 */
 			extern Pixels::ColorMask BlueMask ;
 			
 			
 			/**
-			 * Mask used for OpenGL RGBA color specification for alpha, depending on the endianness
-			 * of the local machine.
+			 * Mask used for OpenGL RGBA color specification for alpha,
+			 * depending on the endianness of the local machine.
 			 *
 			 */
 			extern Pixels::ColorMask AlphaMask ;
 		
 		
-			/// Length, OpenGL unit of measure. GL prefix is kept to avoid namespace misuse.
+			/**
+			 * Length, OpenGL unit of measure.
+			 * GL prefix is kept to avoid namespace misuse.
+			 *
+			 */
 			typedef GLfloat GLLength ;
 	
-			/// Coordinate, OpenGL unit of measure. GL prefix is kept to avoid namespace misuse.
+	
+			/**
+			 * Coordinate, OpenGL unit of measure. 
+			 * GL prefix is kept to avoid namespace misuse.
+			 *
+			 */
 			typedef GLfloat GLCoordinate ;	
 			
 			
@@ -103,21 +113,24 @@ namespace OSDL
 			/**
 			 * Various flavours (presets) are available for OpenGL.
 			 *
-			 * The flavour must be selected before or during the call to setMode, and will not take
-			 * effect until that call.
+			 * The flavour must be selected before or during the call to
+			 * setMode, and will not take effect until that call.
 			 *
 			 * Following flavours are available :
-			 *   - None : no further action taken after basic OpenGL initialization
+			 *   - None : no further action taken after basic OpenGL
+			 * initialization
 			 *   - OpenGLFor2D : dedicated for accelerated 2D with OpenGL
 			 *   - OpenGLFor3D : classical full-blown 3D 
-			 *   - Reload : designates the same settings as the ones that were used, just set them
-			 * back in the state machine. This is useful for example when a resize occurs : the 
-			 * actual OpenGL context of the state machine is lost on some platforms, so the OSDL   
-			 * OpenGLContext object must set them again during the setMode call.
+			 *   - Reload : designates the same settings as the ones that 
+			 * were lastly used, just set them back in the state machine. 
+			 * This is useful for example when a resize occurs : the 
+			 * actual OpenGL context of the state machine is lost on some
+			 * platforms, so the OSDL OpenGLContext object must set them 
+			 * again during the setMode call.
 			 *
-			 * @note It results in loading the appropriate OpenGL settings for the selected
-			 * mode, including projection, model view matrix, etc.
-			 *
+			 * @note It results in loading the appropriate OpenGL settings 
+			 * for the selected mode, including projection, model view 
+			 * matrix, etc.
 			 *
 			 */
 			enum Flavour { None, OpenGLFor2D, OpenGLFor3D, Reload } ;
@@ -125,15 +138,17 @@ namespace OSDL
 
 
 			/**
-			 * An OpenGL context corresponds to the state of a running OpenGL screen. 
+			 * An OpenGL context corresponds to the state of a running 
+			 * OpenGL screen. 
 			 *
-			 * It can be managed on a per-application basis, or a per-window basis.
+			 * It can be managed on a per-application basis, or a 
+			 * per-window basis.
 			 *
-			 * OpenGL context objects have to store settings, so that they can be reloaded when
-			 * required, see OpenGL::Reload flavour.
+			 * OpenGL context objects have to store settings, so that 
+			 * they can be reloaded when required, see OpenGL::Reload flavour.
 			 *
-			 * @note For the moment, direct access is used to the only one OpenGL context provided
-			 * by the SDL back-end.
+			 * @note For the moment, direct access is used to the only one
+			 * OpenGL context provided by the SDL back-end.
 			 *
 			 */
 			class OpenGLContext : public Ceylan::TextDisplayable
@@ -144,8 +159,11 @@ namespace OSDL
 				
 					
 					/**
-					 * Describes a projection mode.
-					 *
+					 * Describes a projection mode :
+					 *    - Orthographic : 
+					 * http://en.wikipedia.org/wiki/Orthographic_projection
+					 *    - Perspective :
+					 * http://en.wikipedia.org/wiki/Perspective_(graphical)
 					 *
 					 */
 					enum ProjectionMode { Orthographic, Perspective } ;
@@ -154,15 +172,19 @@ namespace OSDL
 					/**
 					 * Describes a shading model.
 					 *
-					 * Flat shading selects the computed color of just one vertex and assigns it to
-					 * all the pixel fragments generated by rasterizing a single primitive. 
+					 * Flat shading selects the computed color of just one
+					 * vertex and assigns it to all the pixel fragments
+					 * generated by rasterizing a single primitive. 
 					 *
-					 * Smooth shading, the default, causes the computed colors of vertices to be
-					 * interpolated as the primitive is rasterized, typically assigning different
-					 * colors to each resulting pixel fragment. Also known as Gouraud shading.
+					 * Smooth shading, the default, causes the computed 
+					 * colors of vertices to be interpolated as the 
+					 * primitive is rasterized, typically assigning different
+					 * colors to each resulting pixel fragment. 
+					 * Also known as Gouraud shading.
 					 *
-					 * In either case, the computed color of a vertex is the result of lighting, 
-					 * if lighting is enabled, or it is the current color at the time the vertex
+					 * In either case, the computed color of a vertex is 
+					 * the result of lighting, if lighting is enabled, or 
+					 * it is the current color at the time the vertex
 					 * was specified, if lighting is disabled.
 					 *
 					 */
@@ -170,31 +192,42 @@ namespace OSDL
 					
 					
 					/**
-					 * Describes which facets should be culled, i.e. specifies whether front- or
-					 * back-facing facets are culled when facet	culling	is enabled.
+					 * Describes which facets should be culled, i.e. 
+					 * specifies whether front-facing or back-facing facets
+					 * are culled, when facet culling is enabled.
 					 *
-					 * Facets include triangles, quadrilaterals, polygons, and rectangles.
+					 * Facets include triangles, quadrilaterals, polygons, 
+					 * and rectangles.
 					 *
-					 * @note If FrontAndBack is selected, then no facets are drawn, but other
-					 * primitives such as points and lines are.
+					 * @note If FrontAndBack is selected, then no facets 
+					 * are drawn, but other primitives such as points and 
+					 * lines are.
 					 *
-					 * Front and back are defined according to 
+					 * Front and back are defined according to the normal
+					 * vector of a facet, which can be determined according
+					 * to the dot product of ordered listed vertices.
+					 *
+					 * @see FrontOrientation
+					 *
 					 */
 					enum CulledFacet { Front, Back, FrontAndBack } ;
 					 
 					
 					/**
-					 * Determines how front-facing polygons are defined, depending on their
-					 * winding.
+					 * Determines how front-facing polygons are defined,
+					 * depending on their winding.
 					 *
-					 * The projection of a polygon to window coordinates is said to have clockwise
-					 * winding if an imaginary object following the path from its first vertex,
-					 * its second vertex, and so on, to its last vertex, and finally back to its
-					 * first vertex, moves in a clockwise direction about the interior of the
+					 * The projection of a polygon to window coordinates 
+					 * is said to have clockwise winding if an imaginary 
+					 * object following the path from its first vertex,
+					 * its second vertex, and so on, to its last vertex, 
+					 * and finally back to its first vertex, moves in a
+					 * clockwise direction about the interior of the
 					 * polygon.  
 					 *
-					 * On the contrary, the polygon's winding is said to be	counterclockwise if the
-					 * imaginary object following the same path moves in a counterclockwise
+					 * On the contrary, the polygon's winding is said to be
+					 * counterclockwise if the imaginary object following 
+					 * the same path moves in a counterclockwise
 					 * direction about the interior of the polygon.	
 					 *
 					 */
@@ -202,13 +235,15 @@ namespace OSDL
 					
 					  
 					/**
-					 * Creates a new blank OpenGL context, according to the specified flavour.
+					 * Creates a new blank OpenGL context, according to 
+					 * the specified flavour.
 					 *
 					 * The default projection mode is orthographic.
 					 *
 					 * @param flavour the flavour to set, if any.
 					 * 
-					 * @throw OpenGLException if the OpenGL state machine reports an error.
+					 * @throw OpenGLException if the OpenGL state machine
+					 * reports an error.
 					 *
 					 */
 					OpenGLContext( OpenGL::Flavour flavour = OpenGL::None ) 
@@ -221,25 +256,30 @@ namespace OSDL
 				
 				
 					/**
-					 * If OpenGL is to be used, allows to select a flavour, which provides 
-					 * convenient presets.
+					 * If OpenGL is to be used, allows to select a flavour,
+					 * which provides convenient presets.
 					 *
 					 * @param flavour the selected flavour for OpenGL.
 					 *
-					 * @param plannedBpp the planned color depth, in bits per pixel.
+					 * @param plannedBpp the planned color depth, in bits 
+					 * per pixel.
 					 *
-					 * @throw OpenGLException if the OpenGL state machine reports an error.
+					 * @throw OpenGLException if the OpenGL state machine
+					 * reports an error.
 					 *
-					 * This method must be called before setting the actual video mode, since the
-					 * flavour will be taken into account only at this moment.
+					 * This method must be called before setting the actual
+					 * video mode, since the flavour will be taken into 
+					 * account only at this moment.
 					 *
-					 * @note OpenGL support cannot be encapsulated into Video renderers, since 
-					 * they may	not be used, and OpenGL must be specified during the setMode phase.
+					 * @note OpenGL support cannot be encapsulated into 
+					 * Video renderers, since they may not be used, and 
+					 * OpenGL must be specified during the setMode phase.
 					 *
 					 * @see OpenGLFlavour
 					 *
 					 */
-					virtual void selectFlavour( OpenGL::Flavour flavour ) throw( OpenGLException ) ;
+					virtual void selectFlavour( OpenGL::Flavour flavour ) 
+						throw( OpenGLException ) ;
 	
 	
 					/**
@@ -257,21 +297,23 @@ namespace OSDL
 				
 					
 					/**
-					 * Blanks the current settings in the actual OpenGL state machine. 
+					 * Blanks the current settings in the actual OpenGL 
+					 * state machine. 
 					 *
-					 * @note Useful to reset the OpenGL state before applying a flavour.
-					 *
+					 * @note It is useful to reset the OpenGL state before 
+					 * applying a flavour.
 					 *
 					 */
 					virtual void blank() throw( OpenGLException ) ;
 					 
 				
 					/**
-					 * Requests the OpenGL context to reload the current settings in the actual
-					 * OpenGL state machine. 
+					 * Requests the OpenGL context to reload the current
+					 * settings in the actual OpenGL state machine. 
 					 *
-					 * It is notably useful for platforms that loose their OpenGL context under
-					 * various circumstances, including resizing.
+					 * It is notably useful for platforms that loose their
+					 * OpenGL context under various circumstances, 
+					 * including resizing.
 					 *
 					 * @see OpenGL::Reload
 					 *
@@ -282,50 +324,57 @@ namespace OSDL
 					/**
 					 * Gets the OpenGL color depth for each color component.
 					 *
-					 * @param redSize the variable where the size in bits of the red component will
-					 * be written.
+					 * @param redSize the variable where the size in bits 
+					 * of the red component will be written.
 					 * 
-					 * @param greenSize the variable where the size in bits of the green component
-					 * will	be written.
+					 * @param greenSize the variable where the size in bits
+					 * of the green component will be written.
 					 *
-					 * @param blueSize the variable where the size in bits of the blue component
-					 * will be written.
+					 * @param blueSize the variable where the size in bits
+					 * of the blue component will be written.
 					 *
 					 * @return the actual overall bits per pixel value.
 					 *
 					 */
 					 virtual OSDL::Video::BitsPerPixel getColorDepth( 
-					 	Ceylan::Uint8 & redSize, 
-					 	Ceylan::Uint8 & greenSize, 
-						Ceylan::Uint8 & blueSize ) const throw( OpenGLException ) ;
+					 		OSDL::Video::BitsPerPixel & redSize, 
+					 		OSDL::Video::BitsPerPixel & greenSize, 
+							OSDL::Video::BitsPerPixel & blueSize ) 
+						const throw( OpenGLException ) ;
 				 
 				 
 					/**
 					 * Sets the OpenGL color depth.
 					 *
-					 * @param plannedBpp the planned color depth, in bits per pixel.
+					 * @param plannedBpp the planned color depth, in bits
+					 * per pixel.
 					 * 
 					 */
-					virtual void setColorDepth( OSDL::Video::BitsPerPixel plannedBpp ) 
+					virtual void setColorDepth( 
+							OSDL::Video::BitsPerPixel plannedBpp ) 
 						throw( OpenGLException ) ;
 				
 				 
 					/**
 					 * Sets the OpenGL color depth.
 					 *
-					 * @param redSize the size of the red component, in bits per pixel.
+					 * @param redSize the size of the red component, in 
+					 * bits per pixel.
 					 * 
-					 * @param greenSize the size of the green component, in bits per pixel.
+					 * @param greenSize the size of the green component, 
+					 * in bits per pixel.
 					 * 
-					 * @param blueSize the size of the blue component, in bits per pixel.
+					 * @param blueSize the size of the blue component, 
+					 * in bits per pixel.
 					 * 
 					 * @note Maybe alpha should be added.
 					 *
 					 */
 					virtual void setColorDepth( 
-						Ceylan::Uint8 redSize, 
-						Ceylan::Uint8 greenSize, 
-						Ceylan::Uint8 blueSize  ) throw( OpenGLException ) ;
+							OSDL::Video::BitsPerPixel redSize, 
+							OSDL::Video::BitsPerPixel greenSize, 
+							OSDL::Video::BitsPerPixel blueSize  ) 
+						throw( OpenGLException ) ;
 				
 				
 					/**
@@ -336,35 +385,43 @@ namespace OSDL
 					 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					virtual bool getDoubleBufferStatus() throw( OpenGLException ) ;
+					virtual bool getDoubleBufferStatus() 
+						throw( OpenGLException ) ;
 					
 					
 					/**
-					 * Sets the OpenGL double buffering status (enabled or disabled).
+					 * Sets the OpenGL double buffering status (enabled or
+					 * disabled).
 					 *
-					 * @param newStatus, double buffering will be enabled iff true.
+					 * @param newStatus, double buffering will be enabled
+					 * iff true.
 					 * 
 					 * @return true iff double buffering was indeed obtained.
 					 *
 					 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					virtual bool setDoubleBufferStatus( bool newStatus ) throw( OpenGLException ) ;
+					virtual bool setDoubleBufferStatus( bool newStatus ) 
+						throw( OpenGLException ) ;
 				
 				
 					/**
 					 * Sets the shading technique to be used.
 					 *
-					 * @param newShadingModel the new shading technique that shall be used.
+					 * @param newShadingModel the new shading technique 
+					 * that shall be used.
 					 *
 				 	 * @throw OpenGLException should an error occur.
+					 *
 					 */
-					 virtual void setShadingModel( ShadingModel newShadingModel = Smooth ) 
+					 virtual void setShadingModel( 
+					 		ShadingModel newShadingModel = Smooth ) 
 					 	throw( OpenGLException ) ;
 	
 					 
 					/**
-					 * Sets the cullings status, i.e. enable or disable culling.
+					 * Sets the cullings status, i.e. enable or disable 
+					 * culling.
 					 *
 					 * @param newStatus culling is activated iff true.
 					 *
@@ -373,15 +430,16 @@ namespace OSDL
 	
 				
 					/**
-					 * Sets the culling settings, and enables it if requested..
+					 * Sets the culling settings, and enables it if requested.
 					 *
-					 * @param culledFacet tells whether front, or back, or front and back facets
-					 * should be culled.
+					 * @param culledFacet tells whether front, or back, or 
+					 * front and back facets should be culled.
 					 *
-					 * @param frontOrientation determines what is front facing polygon, depending
-					 * on its winding.
+					 * @param frontOrientation defines what are front 
+					 * facing polygons, depending on their winding.
 					 *
-					 * @param autoEnable will specifically enable the use of culling iff true.
+					 * @param autoEnable will specifically enable the use 
+					 * of culling iff true (it will not be only set).
 					 *
 					 */					 
 					virtual void setCulling( CulledFacet culledFacet = Back, 
@@ -390,46 +448,52 @@ namespace OSDL
 						
 					
 					
-					
 					/**
-					 * Sets the OpenGL fullscreen antialiasing (FSAA) status (enabled or disabled).
+					 * Sets the OpenGL fullscreen antialiasing (FSAA) 
+					 * status (enabled or disabled).
 					 *
 					 * @note Requires the GL_ARB_MULTISAMPLE extension.
 					 *
 					 * @param newStatus, FSAA will be enabled iff true.
 					 *
-					 * @param samplesPerPixelNumber, number of samples per pixel when multisampling 
-					 * (FSAA) is enabled.
+					 * @param samplesPerPixelNumber number of samples 
+					 * per pixel when multisampling (FSAA) is enabled.
 					 * 
 					 */
-					virtual void setFullScreenAntialiasingStatus( bool newStatus,
-						Ceylan::Uint8 samplesPerPixelNumber = 1 ) throw( OpenGLException ) ;
+					virtual void setFullScreenAntialiasingStatus( 
+							bool newStatus,
+							Ceylan::Uint8 samplesPerPixelNumber = 1 ) 
+						throw( OpenGLException ) ;
 				
 				
 				
 					/**
 					 * Enables or disables the use of the depth buffer.
 					 *
-					 * @param newStatus if true, will enable the depth buffer, if false will
-					 * disable it.
+					 * @param newStatus if true, will enable the depth 
+					 * buffer, if false will disable it.
 					 *
 					 *
 					 */
-					virtual void setDepthBufferStatus( bool newStatus ) throw() ;
+					virtual void setDepthBufferStatus( bool newStatus ) 
+						throw() ;
 					
 					
 					/**
-					 * Sets the size, in bits, of the OpenGL depth buffer, and enables it if 
-					 * requested.
+					 * Sets the size, in bits, of the OpenGL depth buffer, 
+					 * and enables it, if requested.
 					 *
 					 * @param bitsNumber the new depth buffer size.
 					 *
-					 * @param autoEnable will specifically enable the use of the depth buffer iff
-					 * true.
+					 * @param autoEnable will specifically enable the use 
+					 * of the depth buffer iff true (it will not be only set).
 					 *
 					 */
-					virtual void setDepthBufferSize( Ceylan::Uint8 bitsNumber = 16,
-						bool autoEnable = true ) throw( OpenGLException ) ;
+					virtual void setDepthBufferSize( 
+							Ceylan::Uint8 bitsNumber = 16,
+							bool autoEnable = true ) 
+						throw( OpenGLException ) ;
+
 
 
 
@@ -437,23 +501,27 @@ namespace OSDL
 					
 					
 					/**
-					 * Sets the OpenGL viewport, i.e.determines the transformation of x and y from
-					 * normalized device coordinates to window coordinates. 
+					 * Sets the OpenGL viewport, i.e.determines the
+					 * transformation of x and y from normalized device
+					 * coordinates to window coordinates. 
 					 *
-					 * The recomputation of the projection is automatically triggered accordingly,
-					 * to avoid distorted graphics : it ensures that the viewport aspect ratio is
-					 * the same as the one of the viewing volume.
+					 * The recomputation of the projection is automatically
+					 * triggered accordingly, to avoid distorted graphics : 
+					 * it ensures that the viewport aspect ratio is the same
+					 * as the one of the viewing volume.
 					 *
 					 * @param width the width of the viewport.
 					 * 
 					 * @param height the height of the viewport.
 					 * 
-					 * @param lowerLeftCorner the lower left corner of the viewport rectangle, 
-					 * in pixels. The default is the origin, (0,0).
+					 * @param lowerLeftCorner the coordinates of the lower 
+					 * left corner of the viewport rectangle in pixels. 
+					 * The default is the origin, (0,0).
 					 *
-					 * @throw OpenGLException if either width or height is negative, or 
-					 * if this method is called between the execution of glBegin and the
-					 * corresponding execution of glEnd.
+					 * @throw OpenGLException if either width or height 
+					 * is negative, or if this method is called between 
+					 * the execution of glBegin and the corresponding 
+					 * execution of glEnd.
 					 *
 					 */					 
 					virtual void setViewPort( Length width, Length height, 
@@ -463,27 +531,33 @@ namespace OSDL
 						
 						
 					/**
-					 * Sets an orthographic projection, so that the viewing volume is a box, whose
-					 * sides are parallel to the main axis.
+					 * Sets an orthographic projection, so that the viewing
+					 * volume is a box, whose sides are parallel to the 
+					 * main axes.
 					 *
-					 * The viewer is located at the origin, looking towards the negative z values,
-					 * his up vector being (0;1;0).
+					 * The viewer is located at the origin, looking towards 
+					 * the negative z values, his up vector being (0;1;0).
 					 *
 					 * The box will be set so that :
-					 *   - the viewport ratio is preserved, to avoid distorted graphics
-					 *   - the box is cut in two equal parts by the axes x=0 and y=0
-					 *   - the box will lie between the two planes z=-near and z=-far
+					 *   - the viewport ratio is preserved, to avoid distorted
+					 * graphics
+					 *   - the box is cut in two equal parts by the axes x=0 
+					 * and y=0
+					 *   - the box will lie between the two planes z=-near 
+					 * and z=-far
 					 *
-					 * Therefore, for a box width of w, the box will range between -w/2 and w/2 on
-					 * the x axis, and between -w*r/2 and w*r/2 on the y axis, where r is the 
-					 * viewport aspect ratio : r = (viewport height) / (viewport width)
+					 * Therefore, for a box width of w, the box will range
+					 * between -w/2 and w/2 on the x axis, and between 
+					 * -w*r/2 and w*r/2 on the y axis, where r is the 
+					 * viewport aspect ratio : 
+					 * r = (viewport height) / (viewport width).
 					 *
-					 * @param width the length of the box edge which is parallel to the x axis
+					 * @param width the length of the box edge which is 
+					 * parallel to the x axis.
 					 *
 					 * @param near the z coordinate of the near clipping plane.
 					 *
 					 * @param far the z coordinate of the far clipping plane.
-					 *
 					 *
 					 */	
 					virtual void setOrthographicProjection( GLLength width, 
@@ -493,11 +567,13 @@ namespace OSDL
 						
 			
 					// virtual void setClearColor() throw() ;
+					
 					/**
 					 * Clears the viewport with the current clear color.
 					 *
-					 * @throw OpenGLException if this method is called between the execution of
-					 * glBegin and the corresponding execution of glEnd.
+					 * @throw OpenGLException if this method is called 
+					 * between the execution of glBegin and the 
+					 * corresponding execution of glEnd.
 					 *
 					 */	
 					virtual void clearViewport() throw( OpenGLException ) ;
@@ -506,79 +582,113 @@ namespace OSDL
 					/**
 					 * Clears the depth buffer within the viewport.
 					 *
-					 * @throw OpenGLException if this method is called between the execution of
-					 * glBegin and the corresponding execution of glEnd.
-					 *
+					 * @throw OpenGLException if this method is called 
+					 * between the execution of glBegin and the 
+					 * corresponding execution of glEnd.
 					 *
 					 */
 					virtual void clearDepthBuffer() throw( OpenGLException ) ;
 					
 					 	
 					/**
-					 * Uploads specified surface as an OpenGL texture in OpenGL context.
+					 * Uploads specified surface as an OpenGL texture in 
+					 * OpenGL context.
 					 *
-					 * @param source the surface that must be converted into texture. It is no 
-					 * longer needed once the texture is loaded, hence it can be deallocated by the
-					 * caller.
+					 * @param source the surface that must be converted into
+					 * texture. Its width and height must be a power of 2.
+					 *
+					 * It is no longer needed once the texture is loaded, 
+					 * hence it can be deallocated by the caller.
 					 *
 					 *
 					 */
-					//Texture & uploadTextureFrom( const Video::Surface & source ) throw() ;
+					//Texture & uploadTextureFrom( 
+						const Video::Surface & source ) throw() ;
 					
 					
 		            /**
-	    	         * Returns an user-friendly description of the state of this object.
+	    	         * Returns an user-friendly description of the state 
+					 * of this object.
 	        	     *
 					 * @param level the requested verbosity level.
 					 *
-					 * @note Text output format is determined from overall settings.
+					 * @note Text output format is determined from 
+					 * overall settings.
 					 *
 					 * @see Ceylan::TextDisplayable
 	            	 *
 		             */
 			 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
+							Ceylan::VerbosityLevels level = Ceylan::high ) 
+						const throw() ;
 					
 					
 					
 		            /**
-	    	         * Returns an user-friendly description of the specified OpenGL flavour.
+	    	         * Returns an user-friendly description of the 
+					 * specified OpenGL flavour.
 	        	     *
 					 * @param flavour the flavour to describe.
 					 *
 					 *
 					 */
-					static std::string ToString( OpenGL::Flavour flavour ) throw() ;	
+					static std::string ToString( OpenGL::Flavour flavour )
+						throw() ;	
 
 
 					/**
-					 * Tells whether the OpenGL context is lost (and therefore must be reloaded)   
-					 * whenever the screen is resized.
+					 * Tells whether the OpenGL context is lost (and 
+					 * therefore must be reloaded) whenever the screen is
+					 * resized.
 					 *
-					 * @note The actual value should be set on a per-platform basis.
+					 * @note The actual value should be set on a 
+					 * per-platform basis.
 					 *
-					 * @see OpenGL::Flavour, for Reload
+					 * @see OpenGL::Flavour, for Reload.
 					 *
 					 */
 					static const bool ContextIsLostOnResize = true ;
 			
 			
-					/// Default width of the orthographic box .
+					/**
+					 * Default width of the orthographic box .
+					 *
+					 */
 					static const GLLength DefaultOrthographicWidth = 1000.0f ;
 					
 					
-					/// Coordinate, along the -z axis, of the default near clipping plane in 2D.
-					static const GLCoordinate DefaultNearClippingPlaneFor2D = -1.0f ;
+					/**
+					 * Coordinate, along the -z axis, of the default near
+					 * clipping plane in 2D.
+					 *
+					 */
+					static const GLCoordinate DefaultNearClippingPlaneFor2D 
+						= -1.0f ;
 					
-					/// Coordinate, along the -z axis, of the default far clipping plane in 2D.
-					static const GLCoordinate DefaultFarClippingPlaneFor2D = 1.0f ;
+					/**
+					 * Coordinate, along the -z axis, of the default far
+					 * clipping plane in 2D.
+					 *
+					 */
+					static const GLCoordinate DefaultFarClippingPlaneFor2D 
+						= 1.0f ;
 					
 					
-					/// Coordinate, along the -z axis, of the default near clipping plane in 3D.
-					static const GLCoordinate DefaultNearClippingPlaneFor3D = 1.0f ;
+					/**
+					 * Coordinate, along the -z axis, of the default near
+					 * clipping plane in 3D.
+					 *
+					 */
+					static const GLCoordinate DefaultNearClippingPlaneFor3D 
+						= 1.0f ;
 					
-					/// Coordinate, along the -z axis, of the default far clipping plane in 3D.
-					static const GLCoordinate DefaultFarClippingPlaneFor3D = 100000.0f ;
+					/**
+					 * Coordinate, along the -z axis, of the default far
+					 * clipping plane in 3D.
+					 *
+					 */
+					static const GLCoordinate DefaultFarClippingPlaneFor3D 
+						= 100000.0f ;
 					
 					
 					
@@ -588,10 +698,11 @@ namespace OSDL
 			
 					
 					/**
-					 * Updates the current projection so that its aspect ratio matches the one of 
-					 * the viewport.
+					 * Updates the current projection so that its aspect 
+					 * ratio matches the one of the viewport.
 					 *
-					 * @throw OpenGLException if the current projection mode cannot be handled.
+					 * @throw OpenGLException if the current projection 
+					 * mode cannot be handled.
 					 *
 					 */
 					virtual void updateProjection() throw( OpenGLException ) ;
@@ -606,19 +717,28 @@ namespace OSDL
 										 	
 													
 					/// Size in bits of the red component.
-					Ceylan::Uint8 _redSize ; 
+					OSDL::Video::BitsPerPixel _redSize ; 
 					
 					/// Size in bits of the green component.
-					Ceylan::Uint8 _greenSize ;
+					OSDL::Video::BitsPerPixel _greenSize ;
 					
 					/// Size in bits of the blue component.
-					Ceylan::Uint8 _blueSize ;
+					OSDL::Video::BitsPerPixel _blueSize ;
 
 					
-					/// Width of the viewport, useful to ensure aspect ratio is well managed.
+					/**
+					 * Width of the viewport, useful to ensure aspect ratio 
+					 * is well managed.
+					 *
+					 */
 					Length _viewportWidth ;
 					
-					/// Height of the viewport, useful to ensure aspect ratio is well managed.
+					
+					/**
+					 * Height of the viewport, useful to ensure aspect ratio 
+					 * is well managed.
+					 *
+					 */
 					Length _viewportHeight ;
 					
 					
@@ -627,15 +747,21 @@ namespace OSDL
 					
 					
 					/**
-					 * Width of the projection volume, so that projection can be automatically
-					 * updated when the viewport area changes.
+					 * Width of the projection volume, so that projection 
+					 * can be automatically updated when the viewport area
+					 * changes.
 					 *
 					 */
 					GLLength _projectionWidth ;
 					
 					
-					/// The current z axis coordinate of the near clipping plane.
+					/**
+					 * The current z axis coordinate of the near clipping 
+					 * plane.
+					 *
+					 */
 					GLCoordinate _nearClippingPlane ;
+					
 					
 					/// The current z axis coordinate of the far clipping plane.
 					GLCoordinate _farClippingPlane ;
@@ -646,34 +772,39 @@ namespace OSDL
 				
 									
 					/**
-					 * Copy constructor made private to ensure that it will be never called.
-					 * The compiler should complain whenever this undefined constructor is called, 
-					 * implicitly or not.
-					 * 
+					 * Copy constructor made private to ensure that it 
+					 * will be never called.
 					 *
+					 * The compiler should complain whenever this 
+					 * undefined constructor is called, implicitly or not.
+					 * 
 					 */			 
 					OpenGLContext( const OpenGLContext & source ) throw() ;
 			
 			
 					/**
-					 * Assignment operator made private to ensure that it will be never called.
-					 * The compiler should complain whenever this undefined operator is called, 
-					 * implicitly or not.
-					 * 
+					 * Assignment operator made private to ensure that it 
+					 * will be never called.
+					 *
+					 * The compiler should complain whenever this 
+					 * undefined operator is called, implicitly or not.
 					 *
 					 */			 
-					OpenGLContext & operator = ( const OpenGLContext & source ) throw() ;
+					OpenGLContext & operator = ( const OpenGLContext & source )
+						throw() ;
 			
 			
 			} ;
 						
 		}
+		
 	}
+	
 }
 
 
 
-#endif // OSDL_OPENGL_H_
+#endif // OSDL_HAVE_OPENGL
 
 
 

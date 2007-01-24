@@ -1324,14 +1324,14 @@ bool Surface::blitTo( Surface & targetSurface,
 	
 Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor, 
 		Ceylan::Maths::Real ordinateZoomFactor,	bool antialiasing ) 
-	throw( VideoException )
+	const throw( VideoException )
 {
 
 	// Antialiasing not supported with flipping :
 	if ( abscissaZoomFactor < 0 || ordinateZoomFactor < 0 )
 		antialiasing = false ;
 	
-	SDL_Surface * res = ::zoomSurface( _surface, abscissaZoomFactor, ordinateZoomFactor,
+	SDL_Surface * res = ::zoomSurface( const_cast<SDL_Surface *>( _surface ), abscissaZoomFactor, ordinateZoomFactor,
 		antialiasing ? SMOOTHING_ON : SMOOTHING_OFF ) ;
 	
 	if ( res == 0 )
@@ -1345,7 +1345,7 @@ Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor,
 					
 Surface & Surface::rotoZoom( Ceylan::Maths::AngleInDegrees angle, 
 		Ceylan::Maths::Real zoomFactor, bool antialiasing ) 
-	throw( VideoException )
+	const throw( VideoException )
 {
 	return rotoZoom( angle, zoomFactor, zoomFactor, antialiasing ) ;
 }
@@ -1354,14 +1354,14 @@ Surface & Surface::rotoZoom( Ceylan::Maths::AngleInDegrees angle,
 Surface & Surface::rotoZoom( Ceylan::Maths::AngleInDegrees angle, 
 		Ceylan::Maths::Real abscissaZoomFactor, Ceylan::Maths::Real ordinateZoomFactor,
 		bool antialiasing ) 
-	throw( VideoException )
+	const throw( VideoException )
 {
 
 	// Antialiasing not supported with flipping :
 	if ( abscissaZoomFactor < 0 || ordinateZoomFactor < 0 )
 		antialiasing = false ;
 	
-	SDL_Surface * res = ::rotozoomSurfaceXY( _surface, angle, abscissaZoomFactor,
+	SDL_Surface * res = ::rotozoomSurfaceXY( const_cast<SDL_Surface *>( _surface ), angle, abscissaZoomFactor,
 		ordinateZoomFactor,	antialiasing ? SMOOTHING_ON : SMOOTHING_OFF ) ;
 	
 	if ( res == 0 )
@@ -1584,7 +1584,7 @@ void Surface::update() throw( VideoException )
 }
 
 
-void Surface::updateRectangles( const list<UprightRectangle *> & listRects ) throw()
+void Surface::updateRectangles( const list<UprightRectangle *> & listRects ) throw( VideoException )
 {
 
 	// Does not use SDL_UpdateRects for efficiency reasons (avoid too many conversions).
@@ -1608,14 +1608,14 @@ void Surface::updateRectangles( const list<UprightRectangle *> & listRects ) thr
 }
 			
 					
-void Surface::updateRectangle( const UprightRectangle & rect ) throw() 
+void Surface::updateRectangle( const UprightRectangle & rect ) throw( VideoException ) 
 {	
 	updateRectangle( rect.getUpperLeftAbscissa(), rect.getUpperLeftOrdinate(), 
 		rect.getWidth(), rect.getHeight() ) ;	
 }
 
 
-void Surface::updateRectangle( Coordinate x, Coordinate y, Length width, Length height ) throw() 
+void Surface::updateRectangle( Coordinate x, Coordinate y, Length width, Length height ) throw( VideoException ) 
 {	
 
 	#ifdef OSDL_DEBUG
@@ -1629,8 +1629,7 @@ void Surface::updateRectangle( Coordinate x, Coordinate y, Length width, Length 
 	}	
 	else
 	{
-		LogPlug::warning( "Surface::updateRectangle() requested on a non-screen surface !"
-			" (nothing done)" ) ;
+		throw VideoException( "Surface::updateRectangle requested on a non-screen surface" ) ;
 	}
 		
 }
@@ -1851,7 +1850,7 @@ Ceylan::System::Size Surface::getSizeInMemory() const throw()
 }
 
 
-bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray, unsigned int dataCount,
+bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray, Ceylan::Uint32 dataCount,
 	Pixels::ColorDefinition pencilColor, Pixels::ColorDefinition captionColor,
 	Pixels::ColorDefinition backgroundColor,
 	const string & caption, const UprightRectangle * inBox ) throw()

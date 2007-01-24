@@ -4,12 +4,13 @@
 
 #include "OSDLVideoTypes.h"  // for Coordinate, BitsPerPixel, VideoException
 
-#include "Ceylan.h"
+#include "Ceylan.h"          // for Ceylan::Uint8, etc.
 
 
-#include "SDL.h"            // for SDL_PixelFormat
+#include "SDL.h"             // for SDL_PixelFormat
 
 #include <string>
+
 
 
 namespace OSDL
@@ -24,78 +25,59 @@ namespace OSDL
 		class Surface ;
 	
 	
+		/**
+		 * Allows to handle the various pixel colors and formats.
+		 *
+		 * Various conversion functions are provided, when no canonic
+		 * operator can be used.
+		 * 
+		 * For example, comparing two PixelColor instances can be done 
+		 * directly thanks to the '==' operator, provided they respect the
+		 * same pixel format.
+		 *
+		 */
 		namespace Pixels
 		{
+
+
 
 			/**
 			 * Describes a pixel format.
 			 *
 			 */
 			typedef SDL_PixelFormat PixelFormat ;
-			
-		}	
-	
 		
-	}
-}
-		
-		
+	
+	
+			/**
+			 * Format-independent color description.
+			 *
+			 * Corresponds to the RBGA information describing a color 
+			 * defined in 32-bit color space, in this order : the latest
+			 * coordinate is the pixel's alpha channel.
+			 *
+			 * @note The alpha coordinate is not always taken into account
+			 * and reliable.
+			 *
+			 * @see The list of color names (ex : Pixels::RoyalBlue).
+			 *
+			 */		
+			typedef SDL_Color ColorDefinition ;
 
-
-struct SDL_PixelFormat ;
-
-
-namespace OSDL
-{
-	
-	
-	namespace Video
-	{
-	
-	
-		// Pixels belong to surfaces.
-		class Surface ;
-	
-	
-	
-		/**
-		 * Allows to handle the various pixel colors and formats.
-		 *
-		 * Various conversion functions are provided, when no canonic operator can be used.
-		 * 
-		 * For example, comparing two PixelColor instances can be done directly thanks to the
-		 * '==' operator.
-		 *
-		 */
-		namespace Pixels
-		{
-		
 		
 			/**
-			 * Corresponds to an actual pixel color, encoded according to a pixel format.
+			 * Corresponds to an actual pixel color, i.e. a color definition
+			 * which is encoded according to a pixel format.
 			 *
 			 */
 			typedef Ceylan::Uint32 PixelColor ;
 	
 			
+						
 			/**
-			 * Format independent color description.
-			 *
-			 * Corresponds to the RBGA information describing a color defined in 
-			 * 32-bit color space, in this order : the latest coordinate is the pixel's 
-			 * alpha channel.
-			 *
-			 * @note The alpha coordinate is not always taken into account and reliable.
-			 *
-			 * @see The list of color names (ex : RoyalBlue).
-			 *
-			 */		
-			typedef SDL_Color ColorDefinition ;
-			
-			
-			/**
-			 * Corresponds to a bit mask which allows to define how to get color coordinates
-			 * from a PixelColor, for example depending on the endianness of the system.
+			 * Corresponds to a bit mask which allows to define how to 
+			 * get color coordinates from a PixelColor, for example 
+			 * depending on the endianness of the system.
 			 *
 			 */
 			typedef Ceylan::Uint32 ColorMask ;
@@ -109,7 +91,7 @@ namespace OSDL
 									 
 			
 			/**
-			 * The alpha coordinate which corresponds to transparent pixels.		
+			 * The alpha coordinate which corresponds to transparent pixels.
 			 *
 			 * @note This is the reverse for OpenGL.
 			 *
@@ -118,7 +100,8 @@ namespace OSDL
 			
 			
 			/**
-			 * The alpha coordinate which corresponds to opaque (solid) pixels.		
+			 * The alpha coordinate which corresponds to opaque (solid) 
+			 * pixels.		
 			 *
 			 * @note This is the reverse for OpenGL.
 			 *
@@ -127,23 +110,32 @@ namespace OSDL
 			
 			
 			
-			
-			// Gamma controls the brightness/contrast of colors displayed on the screen. 
-			typedef float GammaFactor ;
+			/**
+			 * Gamma controls the brightness/contrast of colors displayed 
+			 * on the screen. 
+			 *
+			 */
+			typedef Ceylan::Float32 GammaFactor ;
 			
 			
 			/**
-			 * Sets the "gamma function" for the display of each color component. 
-			 * Gamma controls the brightness/contrast of colors displayed on the screen. 
+			 * Sets the "gamma function" for the display of each color
+			 * component. 
+			 *
+			 * Gamma controls the brightness/contrast of colors displayed 
+			 * on the screen. 
+			 *
 			 * A gamma value of 1.0 is identity (i.e., no adjustment is made).
 			 *
-			 * @note Not all display hardware is able to change gamma.
+			 * @note Not all display hardware are able to change gamma.
 			 *
-			 * @return a boolean telling whether the operation is a success. An error could be
-			 * that gamma adjustment is not supported, since no all display hardware support it.
+			 * @return true iff the operation is a success. An error could 
+			 * be that gamma adjustment is not supported : not all display
+			 * hardware support it.
 			 *
 			 */
-			bool setGamma( GammaFactor red, GammaFactor green, GammaFactor blue ) throw() ;
+			bool setGamma( GammaFactor red, GammaFactor green, 
+				GammaFactor blue ) throw() ;
 			
 			
 			/// A color element of a gamma ramp.
@@ -151,39 +143,52 @@ namespace OSDL
 						
 			
 			/**
-			 * Sets the gamma lookup tables for the display for each color component. 
+			 * Sets the gamma lookup tables for the display for each color
+			 * component. 
+			 *
 			 * Each ramp (table) should have 256 entries.
 			 *
-			 * Each gamma ramp represents a mapping between the input and output for that channel.
-			 * The input is the index into the array, and the output is the 16-bit gamma value at
-			 * that index, scaled to the output color precision. 
-			 * You may pass a null pointer (O) to any of the channels to leave them unchanged.
+			 * Each gamma ramp represents a mapping between the input and 
+			 * output for that color coordinate.
 			 *
-			 * @note This function adjusts the gamma based on lookup tables, you can also have the
-			 * gamma calculated based on a "gamma function", parametered with setGamma.
+			 * The input is the index into the array, and the output is the
+			 * 16-bit gamma value at that index, scaled to the output color
+			 * precision. 
+			 * You may pass a null pointer (O) to any of the channels to 
+			 * leave them unchanged.
 			 *
-			 * @return a boolean telling whether the operation is a success. An error could be
-			 * that gamma adjustment is not supported, since no all display hardware support it.
+			 * @note This function adjusts the gamma based on lookup tables, 
+			 * you can also have the gamma calculated based on a 
+			 * "gamma function", parametered with setGamma.
 			 *
-			 * @fixme Ownership of specified buffers is not clear. Who should deallocate them ?
+			 * @return true iff the operation is a success. An error could be
+			 * that gamma adjustment is not supported, since not all display
+			 * hardware support it.
+			 *
+			 * @fixme Ownership of specified buffers is not clear. 
+			 * Who should deallocate them ?
 			 *
 			 */
-			bool setGammaRamp( GammaRampElement * redRamp, GammaRampElement * greenRamp, 
-				GammaRampElement * blueRamp ) throw() ;
+			bool setGammaRamp( GammaRampElement * redRamp, 
+					GammaRampElement * greenRamp, GammaRampElement * blueRamp )
+				throw() ;
 				
 				
 			/**
 			 * Gets the color gamma lookup tables for the display.
 			 *
-			 * @return a boolean telling whether the operation is a success. An error could be
-			 * that gamma adjustment is not supported, since no all display hardware support it.
+			 * @return true iff the operation is a success. An error could be
+			 * that gamma adjustment is not supported, since not all display
+			 * hardware support it.
 			 *
-			 * @fixme Ownership of specified buffers is not clear. Who should allocate them ?
-			 * We suppose the caller, which should use the method to set their values.
+			 * @fixme Ownership of specified buffers is not clear. 
+			 * Who should allocate them ? We suppose the caller must allocate
+			 * them.
 			 *
 			 */	
-			bool getGammaRamp( GammaRampElement * redRamp, GammaRampElement * greenRamp, 
-				GammaRampElement * blueRamp ) throw() ;
+			bool getGammaRamp( GammaRampElement * redRamp, 
+					GammaRampElement * greenRamp, GammaRampElement * blueRamp )
+				throw() ;
 
 
 
@@ -192,70 +197,87 @@ namespace OSDL
 			
 
 			/**
-			 * Returns the RBGA masks which are recommended in this platform : the endianness is
-			 * taken into account, regarless of any specific pixel format. 
+			 * Returns the RBGA masks which are recommended on this platform :
+			 * the endianness is taken into account, regardless of any 
+			 * specific pixel format. 
 			 *
-			 * This method just chooses, among the various 32 bit combinations of masks, one that
-			 * would be suitable for most uses, including for OpenGL textures.
+			 * This method just chooses, among the various 32 bit 
+			 * combinations of masks, one that would be suitable for most 
+			 * uses, including for OpenGL textures.
 			 *
 			 * @param format the pixel format from which masks are to be read.
 			 *
-			 * @param redMask the variable in which this method will put the red mask.
+			 * @param redMask the variable in which this method will put 
+			 * the red mask.
 			 *
-			 * @param greenMask the variable in which this method will put the green mask.
+			 * @param greenMask the variable in which this method will
+			 * put the green mask.
 			 *
-			 * @param blueMask the variable in which this method will put the blue mask.
+			 * @param blueMask the variable in which this method will 
+			 * put the blue mask.
 			 *
-			 * @param alphaMask the variable in which this method will put the alpha mask.
+			 * @param alphaMask the variable in which this method will 
+			 * put the alpha mask.
 			 *
 			 * @see getColorMasks
 			 *
 			 */
-			void getRecommendedColorMasks( ColorMask & redMask, ColorMask & greenMask, 
-				ColorMask & blueMask, ColorMask & alphaMask ) throw() ;
+			void getRecommendedColorMasks( ColorMask & redMask, 
+				ColorMask & greenMask, ColorMask & blueMask, 
+				ColorMask & alphaMask ) throw() ;
 
 
 			/**
-			 * Returns the RBG masks which are recommended in this platform : the endianness is
-			 * taken into account, regarless of any specific pixel format. 
+			 * Returns the RBG masks which are recommended on this platform :
+			 * the endianness is taken into account, regardless of any 
+			 * specific pixel format. 
 			 *
-			 * This method just chooses, among the various 32 bit combinations of masks, one that
-			 * would be suitable for most uses, including for OpenGL textures.
+			 * This method just chooses, among the various 32 bit 
+			 * combinations of masks, one that would be suitable for most 
+			 * uses, including for OpenGL textures.
 			 *
 			 * @param format the pixel format from which masks are to be read.
 			 *
-			 * @param redMask the variable in which this method will put the red mask.
+			 * @param redMask the variable in which this method will put 
+			 * the red mask.
 			 *
-			 * @param greenMask the variable in which this method will put the green mask.
+			 * @param greenMask the variable in which this method will 
+			 * put the green mask.
 			 *
-			 * @param blueMask the variable in which this method will put the blue mask.
+			 * @param blueMask the variable in which this method will 
+			 * put the blue mask.
 			 *
 			 * @see getColorMasks
 			 *
 			 */
-			void getRecommendedColorMasks( ColorMask & redMask, ColorMask & greenMask, 
-				ColorMask & blueMask ) throw() ;
+			void getRecommendedColorMasks( ColorMask & redMask, 
+				ColorMask & greenMask, ColorMask & blueMask ) throw() ;
 
 
 			/**
-			 * Reads from specified pixel format the RBGA masks, and returns them by updating 
-			 * specified color mask references.
+			 * Reads from specified pixel format the RBGA masks, and 
+			 * returns them by updating specified color mask references.
 			 *
 			 * @param format the pixel format from which masks are to be read.
 			 *
-			 * @param redMask the variable in which this method will put the red mask.
+			 * @param redMask the variable in which this method will put 
+			 * the red mask.
 			 *
-			 * @param greenMask the variable in which this method will put the green mask.
+			 * @param greenMask the variable in which this method will 
+			 * put the green mask.
 			 *
-			 * @param blueMask the variable in which this method will put the blue mask.
+			 * @param blueMask the variable in which this method will put 
+			 * the blue mask.
 			 *
-			 * @param alphaMask the variable in which this method will put the alpha mask.
+			 * @param alphaMask the variable in which this method will 
+			 * put the alpha mask.
 			 *
 			 * @see getRecommendedColorMasks
 			 *
 			 */
-			void getCurrentColorMasks( const PixelFormat & format, ColorMask & redMask, 
-				ColorMask & greenMask, ColorMask & blueMask, ColorMask & alphaMask ) throw() ;
+			void getCurrentColorMasks( const PixelFormat & format, 
+				ColorMask & redMask, ColorMask & greenMask, 
+				ColorMask & blueMask, ColorMask & alphaMask ) throw() ;
 
 
 
@@ -263,14 +285,15 @@ namespace OSDL
 
 
 			/**
-			 * Converts a set of four coordinates in RGBA color space to the equivalent
-			 * ColorDefinition.
+			 * Converts a set of four coordinates in RGBA color space to 
+			 * the equivalent ColorDefinition.
 			 *
-			 * @note If alpha coordinate is not specified (just plain RGB), the pixel will be 
-			 * considered as fully opaque.
+			 * @note If alpha coordinate is not specified (just plain RGB), 
+			 * the pixel will be considered as fully opaque.
 			 *
-			 * @note No mapping to any pixel format is performed, it is just two different ways
-			 * of gathering the exact same data about color.
+			 * @note No mapping to any pixel format is performed, it is 
+			 * just two different ways of gathering the exact same data 
+			 * about color.
 			 *
 			 * @see convertColorDefinitionToRGBA, convertRGBAToPixelColor
 			 *
@@ -281,10 +304,12 @@ namespace OSDL
 				
 			
 			/**
-			 * Updates provided RGBA quadruplet from the specified color definition.
+			 * Updates provided RGBA quadruplet from the specified color
+			 * definition.
 			 *
-			 * @note No mapping to any pixel format is performed, it is just two different ways
-			 * of gathering the exact same data about color.
+			 * @note No mapping to any pixel format is performed, it is 
+			 * just two different ways of gathering the exact same data 
+			 * about color.
 			 *
 			 * @see convertRGBAToColorDefinition, convertRGBAToPixelColor
 			 *
@@ -295,72 +320,74 @@ namespace OSDL
 							
 			
 			/**
-			 * Converts a set of four coordinates in RGBA color space to a PixelColor, using
-			 * specified format.
+			 * Converts a set of four coordinates in RGBA color space to a
+			 * PixelColor, using specified format.
 			 *
-			 * @note If alpha coordinate is not specified (just plain RGB), the pixel will be 
-			 * considered as fully opaque.
-			 *
-			 * @note Pixel format will have the const qualifier as soon as SDL will allow it.
+			 * @note If alpha coordinate is not specified (just plain RGB), 
+			 * the pixel will be considered as fully opaque.
 			 *
 			 */
-			PixelColor convertRGBAToPixelColor( PixelFormat & format,
+			PixelColor convertRGBAToPixelColor( const PixelFormat & format,
 				ColorElement red, ColorElement green, ColorElement blue, 
 				ColorElement alpha = AlphaOpaque ) throw() ;
 				
 			
 			/**
-			 * Returns RGBA quadruplet corresponding to specified pixel, encoded according to
-			 * specified pixel format.
+			 * Returns RGBA quadruplet corresponding to specified pixel, 
+			 * encoded according to specified pixel format.
 			 *
-			 * @note If the surface has no alpha component, the alpha will be returned as
-			 * AlphaOpaque (100% opaque).
+			 * @note If the surface has no alpha component, the alpha 
+			 * will be returned as AlphaOpaque (100% opaque).
 			 *
-			 * @note This methods uses the entire 8-bit [0..255] range when converting color
-			 * components from pixel formats with less than 8-bits per RGB component (e.g., a
-			 * completely white pixel in 16-bit RGB565 format would return [0xff, 0xff, 0xff] not
+			 * @note This methods uses the entire 8-bit [0..255] range when
+			 * converting color components from pixel formats with less than
+			 * 8-bits per RGB component (e.g., a completely white pixel in
+			 * 16-bit RGB565 format would return [0xff, 0xff, 0xff] not
 			 * [0xf8, 0xfc, 0xf8]).
 			 *
-			 * @return a ColorDefinition, from which RGBA components can be directly read
-			 * (myPixelDefinition.r, myPixelDefinition.g, myPixelDefinition.b and
-			 * myPixelDefinition.unused for alpha)
-			 *
-			 * @note Pixel format will have the const qualifier as soon as SDL will allow it.
+			 * @return a ColorDefinition, from which RGBA components can be
+			 * directly read (myPixelDefinition.r, myPixelDefinition.g,
+			 * myPixelDefinition.b and myPixelDefinition.unused for alpha)
 			 *
 			 */
-			ColorDefinition convertPixelColorToColorDefinition( PixelFormat & format,
-				PixelColor pixel ) throw() ;
+			ColorDefinition convertPixelColorToColorDefinition( 
+				const PixelFormat & format,	PixelColor pixel ) throw() ;
 	
 					
 			/**
-			 * Converts a set of four coordinates in RGBA color space, expressed as a color 
-			 * definition, to a PixelColor, using specified surface format.
+			 * Converts a set of four coordinates in RGBA color space, 
+			 * expressed as a color definition, to a PixelColor, using 
+			 * specified surface format.
 			 *
-			 * If the specified pixel format has no alpha component, or if a palette is used, then
-			 * the alpha value will be ignored since it can be in no way be taken into account.
-			 *
-			 * @note Pixel format will have the const qualifier as soon as SDL will allow it.
+			 * If the specified pixel format has no alpha component, or if 
+			 * a palette is used, then the alpha value will be ignored 
+			 * since it can be in no way be taken into account.
 			 *
 			 */
-			PixelColor convertColorDefinitionToPixelColor( PixelFormat & format,
-				ColorDefinition colorDef ) throw() ;
+			PixelColor convertColorDefinitionToPixelColor( 
+				const PixelFormat & format,	ColorDefinition colorDef ) throw() ;
 	
 
 			/**
-			 * Converts a color definition to a raw PixelColor, regardless of any pixel format.
+			 * Converts a color definition to a raw PixelColor, regardless 
+			 * of any pixel format.
 			 *
-			 * @note No pixel format mapping of any kind is performed, it is a transformation
-			 * between two exactly similar formats.
+			 * @note No pixel format mapping of any kind is performed, 
+			 * it is a transformation between two exactly similar formats, as
+			 * if the pixel format was exactly 32-bit RGBA.
 			 *
 			 */
-			PixelColor convertColorDefinitionToRawPixelColor( ColorDefinition colorDef ) throw() ;
+			PixelColor convertColorDefinitionToRawPixelColor( 
+				ColorDefinition colorDef ) throw() ;
 		
 		
 			/**
-			 * Converts a RGBA raw color into a raw PixelColor, with no pixel format mapping.
+			 * Converts a RGBA raw color into a raw PixelColor, with no 
+			 * pixel format mapping.
 			 *
-			 * @note No pixel format mapping of any kind is performed, it is a transformation
-			 * between two exactly similar formats.
+			 * @note No pixel format mapping of any kind is performed, 
+			 * it is a transformation between two exactly similar formats, as
+			 * if the pixel format was exactly 32-bit RGBA.
 			 *
 			 */
 			PixelColor convertRGBAToRawPixelColor( 
@@ -374,13 +401,15 @@ namespace OSDL
 			
 			
 			/**
-			 * Returns whether the two color definitions describe the exact same color.
+			 * Returns whether the two color definitions describe the 
+			 * exact same color.
 			 *
 			 * @param first the first color definition for the comparison.
 			 *
 			 * @param second the second color definition for the comparison.
 			 *
-			 * @param useAlpha tells whether the alpha coordinate is tested too for equality.
+			 * @param useAlpha tells whether the alpha coordinate is tested 
+			 * too for equality.
 			 *
 			 */
 			bool areEqual( ColorDefinition first, ColorDefinition second, 
@@ -388,41 +417,47 @@ namespace OSDL
 		
 		
 			/**
-			 * Returns whether <b>value</b> is strictly less than <b>comparison</b>, by defining an
-			 * arbitrary order in color coordinates.
+			 * Returns whether <b>value</b> is strictly less than
+			 * <b>comparison</b>, by defining an arbitrary order in color
+			 * coordinates.
 			 *
 			 * @param value the value of reference.
 			 *
 			 * @param comparison the value to compare with.
 			 *
-			 * @note This function is useful to provide a '<' operator for some containers
-			 * (see Text::Font class).
+			 * @note This function is useful to provide a '<' operator for 
+			 * some containers (see Text::Font class).
 			 *
 			 */
-			bool isLess( ColorDefinition value, ColorDefinition comparison ) throw() ;
+			bool isLess( ColorDefinition value, ColorDefinition comparison )
+				throw() ;
 		
 		
 			/**
-			 * Returns whether the two pixel colors describe the exact same color, supposing that
-			 * the two pixel colors are defined according to the same pixel format.
+			 * Returns whether the two pixel colors describe the exact 
+			 * same color, supposing that the two pixel colors are 
+			 * defined according to the same pixel format.
 			 *
 			 * @param first the first pixel color for the comparison.
 			 *
 			 * @param second the second pixel definition for the comparison.
 			 *
-			 * @note The alpha coordinate cannot be disabled or enabled, this function just compares
-			 * the two values and could be directly replaced by the '==' operator.
+			 * @note The alpha coordinate cannot be disabled or enabled, 
+			 * this function just compares the two values and could be 
+			 * directly replaced by the '==' operator.
 			 *
 			 */
 			bool areEqual( PixelColor first, PixelColor second ) throw() ;
 
 
 			/**
-			 * Returns a color definition which is different from the specified ones. The alpha
-			 * coordinate is not taken into account in comparisons.
+			 * Returns a color definition which is chosen different from the 
+			 * specified ones. 
 			 *
-			 * It is useful for example when having to find predictably a color key which does not
-			 * collide with a set of used colors.
+			 * The alpha coordinate is not taken into account in comparisons.
+			 *
+			 * It is useful for example when having to find predictably a 
+			 * color key which does not collide with two used colors.
 			 *
 			 * @param first the first color to avoid.
 			 *
@@ -436,11 +471,13 @@ namespace OSDL
 		
 		
 			/**
-			 * Returns a color definition which is different from the specified ones. The alpha
-			 * coordinate is not taken into account in comparisons.
+			 * Returns a color definition which is different from the 
+			 * specified ones. 
 			 *
-			 * It is useful for example when having to find predictably a color key which does not
-			 * collide with a set of used colors.
+			 * The alpha coordinate is not taken into account in comparisons.
+			 *
+			 * It is useful for example when having to find predictably a 
+			 * color key which does not collide with a set of used colors.
 			 *
 			 * @param first the first color to avoid.
 			 *
@@ -462,30 +499,33 @@ namespace OSDL
 			/**
 	 		 * Returns the pixel color at [x;y].
 			 * 
-			 * This method is generic (i.e. not optimized for any display format).
+			 * This method is generic (i.e. not optimized for any display
+			 * format).
 			 *
-			 * @note No clipping is performed, the surface should have been 
-			 * previously locked if necessary.			 
+			 * @note No clipping is performed, and the surface should have 
+			 * been previously locked if necessary.			 
 	 		 *
 			 * @see put methods
 	 		 * @see http://sdldoc.csn.ul.ie/guidevideo.php 
 			 *
 	 		 */
-			PixelColor getPixelColor( const Surface & fromSurface, Coordinate x, Coordinate y )
-				throw ( VideoException ) ;
+			PixelColor getPixelColor( const Surface & fromSurface, 
+				Coordinate x, Coordinate y ) throw ( VideoException ) ;
 			
 			
 			/**
 	 		 * Returns the color definition of pixel at [x;y].
 			 * 
-			 * This method is generic (i.e. not optimized for any display format).
+			 * This method is generic (i.e. not optimized for any display
+			 * format).
 			 *
-			 * @param fromSurface the surface to read the pixel from. If this surface has no alpha
-			 * coordinate, then the returned color definition will have its fourth color coordinate
+			 * @param fromSurface the surface to read the pixel from. 
+			 * If this surface has no alpha coordinate, then the returned 
+			 * color definition will have its fourth color coordinate
 			 * equal to AlphaOpaque.
 			 *
-			 * @note No clipping is performed, the surface should have been 
-			 * previously locked if necessary.			 
+			 * @note No clipping is performed, and the surface should have 
+			 * been previously locked if necessary.			 
 	 		 *
 			 * @see put methods
 	 		 * @see http://sdldoc.csn.ul.ie/guidevideo.php 
@@ -496,75 +536,91 @@ namespace OSDL
 
 			
 			/**
-		 	 * Puts specified pixel at [x;y] with the given color, specified as separate RGBA
-			 * coordinates. 
+		 	 * Puts specified pixel at [x;y] with the given color, 
+			 * specified as separate RGBA coordinates. 
 			 *
-			 * If the alpha coordinate is not AlphaOpaque, then the specified pixel
-			 * will be alphablended with the pixel already present at specified location.
+			 * If the alpha coordinate is not AlphaOpaque, then the specified
+			 * pixel will be alphablended with the pixel already present 
+			 * at specified location.
 			 * 
-			 * @param x the abscissa of the point to change
+			 * @param x the abscissa of the point to change.
 			 *
-			 * @param y the ordinate of the point to change
+			 * @param y the ordinate of the point to change.
 			 *
-			 * @param red red color coordinate
+			 * @param red the red color coordinate.
 			 *
-			 * @param green green color coordinate
+			 * @param green the green color coordinate.
 			 *
-			 * @param blue blue color coordinate
+			 * @param blue the blue color coordinate.
 			 *
-			 * @param alpha alpha color coordinate
+			 * @param alpha the alpha color coordinate.
 			 *			 
-			 * @param blending tells whether the alpha channel must be taken into account,
-			 * resulting to alpha blending with the destination pixel. If false, the exact
-			 * specified color will be put in target pixel, instead of being blended with it.
+			 * @param blending tells whether the alpha channel must be taken
+			 * into account, resulting to alpha blending with the destination
+			 * pixel. 
+			 * If false, the exact specified color will be put in target 
+			 * pixel, instead of being blended with it.
 			 *
-			 * @param clipping tells whether point location is checked against surface bounds.
-			 * If clipping is activated and the pixel is outside, nothing is done.
+			 * @param clipping tells whether point location is checked 
+			 * against surface bounds.
+			 * If clipping is activated and the pixel is outside, nothing 
+			 * is done.
 			 *
-			 * @param locking tells whether this primitive should take care of locking /
-			 * unlocking the surface (not recommended on a per pixel basis because of lock overhead)
+			 * @param locking tells whether this primitive should take care 
+			 * of locking / unlocking the surface (not recommended on a per
+			 * pixel basis, because of lock overhead).
 			 *
 			 * @throw VideoException if a problem occurs with a lock operation. 
 			 *
-			 * @note The four RGBA coordinates will be automatically mapped according to the target
-			 * surface's pixel format.
+			 * @note The four RGBA coordinates will be automatically mapped
+			 * according to the target surface's pixel format.
 		 	 *
 			 * @see get methods
 			 *
 			 * @see http://sdldoc.csn.ul.ie/guidevideo.php
 			 *
 			 */
-			void putRGBAPixel( Surface & targetSurface, Coordinate x, Coordinate y, 
+			void putRGBAPixel( Surface & targetSurface, 
+					Coordinate x, Coordinate y, 
 					ColorElement red, ColorElement green, ColorElement blue, 
 					ColorElement alpha = AlphaOpaque, 
-					bool blending = true, bool clipping = true, bool locking = false )
+					bool blending = true, bool clipping = true, 
+					bool locking = false )
 				throw( VideoException ) ;
 	
 
+
 			/**
-		 	 * Puts the specified pixel at [x;y] with the given color, specified as a RGBA color
-			 * definition, not as a pixel color already encoded according to the pixel format of
-			 * target surface.
+		 	 * Puts the specified pixel at [x;y] with the given color, 
+			 * specified as a RGBA color definition, not as a pixel color
+			 * already encoded according to the pixel format of target surface.
 			 *
-			 * If the alpha coordinate is not AlphaOpaque, then the specified pixel
-			 * will be alphablended with the pixel already present at specified location.
+			 * If the alpha coordinate is not AlphaOpaque, then the specified
+			 * pixel will be alphablended with the pixel already present at
+			 * specified location.
 			 * 
-			 * @param x the abscissa of the point to change
+			 * @param x the abscissa of the point to change.
 			 *
-			 * @param y the ordinate of the point to change
+			 * @param y the ordinate of the point to change.
 			 *
-			 * @param colorDef the color definition of the pixel to be put. These coordinates will
-			 * be mapped according to the target surface's pixel format.
+			 * @param colorDef the color definition of the pixel to be put.
+			 * These color coordinates will be mapped according to the 
+			 * target surface's pixel format.
 			 *
-			 * @param blending tells whether the alpha channel must be taken into account,
-			 * resulting to alpha blending with the destination pixel. If false, the exact
-			 * specified color will be put in target pixel, instead of being blended with it.
+			 * @param blending tells whether the alpha channel must be 
+			 * taken into account, resulting to alpha blending with the
+			 * destination pixel. 
+			 * If false, the exact specified color will be put in target 
+			 * pixel, instead of being blended with it.
 			 *
-			 * @param clipping tells whether point location is checked against surface bounds.
-			 * If clipping is activated and the pixel is outside, nothing is done.
+			 * @param clipping tells whether point location is checked 
+			 * against surface bounds.
+			 * If clipping is activated and the pixel is outside, nothing 
+			 * is done.
 			 *
-			 * @param locking tells whether this primitive should take care of locking /
-			 * unlocking the surface (not recommended on a per pixel basis because of lock overhead)
+			 * @param locking tells whether this primitive should take care
+			 * of locking / unlocking the surface (not recommended on a 
+			 * per pixel basis, because of lock overhead).
 			 *
 			 * @note This method is relatively expensive.
 			 *
@@ -573,65 +629,84 @@ namespace OSDL
 			 * @see http://sdldoc.csn.ul.ie/guidevideo.php
 			 *
 			 */
-			void putColorDefinition( Surface & targetSurface, Coordinate x, Coordinate y, 
+			void putColorDefinition( Surface & targetSurface, 
+					Coordinate x, Coordinate y, 
 					ColorDefinition colorDef,
-					bool blending = true, bool clipping = true, bool locking = false )
+					bool blending = true, bool clipping = true, 
+					bool locking = false )
 			 	throw( VideoException ) ;
 	
 	
+	
 			/**
-		 	 * Puts the pixel at [x;y] with the given color, specified as a 32-bit RGBA pixel color,
-			 * already encoded according to Surface's pixel format.
+		 	 * Puts the pixel at [x;y] with the given color, specified as a
+			 * 32-bit RGBA pixel color, already encoded according to 
+			 * Surface's pixel format.
 			 * 
-			 * If the alpha coordinate is not AlphaOpaque, then the specified pixel
-			 * will be alphablended with the pixel already present at specified location.
+			 * If the alpha coordinate is not AlphaOpaque, then the 
+			 * specified pixel will be alphablended with the pixel already
+			 * present at specified location.
 			 *
-			 * @param x the abscissa of the point to change
+			 * @param x the abscissa of the point to change.
 			 *
-			 * @param y the ordinate of the point to change
+			 * @param y the ordinate of the point to change.
 			 *
-			 * @param convertedColor the color of the pixel to be put, a 32-bit pixel value
-			 * already mapped according to the target surface's pixel format.
+			 * @param convertedColor the color of the pixel to be put, 
+			 * a 32-bit pixel value already mapped according to the target
+			 * surface's pixel format.
 			 *
-			 * @param alpha the full alpha coordinate to be used. The one guessed from the
-			 * 'convertedColor' parameter would not be enough since it would be already encoded.
+			 * @param alpha the full alpha coordinate to be used. 
+			 * The one guessed from the 'convertedColor' parameter would 
+			 * not be enough, since it would be already encoded and rounded.
 			 *
-			 * @param blending tells whether the alpha channel must be taken into account,
-			 * resulting to alpha blending with the destination pixel. If false, the exact
-			 * specified color will be put in target pixel, instead of being blended with it.
+			 * @param blending tells whether the alpha channel must be taken
+			 * into account, resulting to alpha blending with the 
+			 * destination pixel. 
+			 * If false, the exact specified color will be put in target
+			 * pixel, instead of being blended with it.
 			 *
-			 * @param clipping tells whether point location is checked against surface bounds.
-			 * If clipping is activated and the pixel is outside, nothing is done.
+			 * @param clipping tells whether point location is checked 
+			 * against surface bounds.
+			 * If clipping is activated and the pixel is outside, nothing 
+			 * is done.
 			 *
-			 * @param locking tells whether this primitive should take care of locking /
-			 * unlocking the surface (not recommended on a per pixel basis because of lock overhead)
+			 * @param locking tells whether this primitive should take 
+			 * care of locking / unlocking the surface (not recommended on 
+			 * a per pixel basis, because of lock overhead).
 			 *
 			 * @see get methods
 			 *
 			 * @see http://sdldoc.csn.ul.ie/guidevideo.php
 			 *
 			 */
-			void putPixelColor( Surface & targetSurface, Coordinate x, Coordinate y, 
+			void putPixelColor( Surface & targetSurface, 
+					Coordinate x, Coordinate y, 
 					PixelColor convertedColor, ColorElement alpha,
-					bool blending = true, bool clipping = true, bool locking = false )
+					bool blending = true, bool clipping = true, 
+					bool locking = false )
 			 	throw( VideoException ) ;
 	
 		
+		
 			/**
-			 * Alternative method to set the pixel at [x;y] to the given color.
+			 * Alternative method to set the pixel at [x;y] to the given 
+			 * pixel color.
 			 *
-			 * If the alpha coordinate is not AlphaOpaque, then the specified pixel
-			 * will be alphablended with the pixel already present at specified location.
+			 * If the alpha coordinate is not AlphaOpaque, then the 
+			 * specified pixel will be alphablended with the pixel already
+			 * present at specified location.
 			 *
-			 * @param mapToSurfaceFormat tells whether the specified pixel color is to be encoded
-			 * to target Surface's pixel format (if true), or if it is not wanted (if false, for
-			 * example if it is already done).
+			 * @param mapToSurfaceFormat tells whether the specified pixel 
+			 * color is to be encoded to target Surface's pixel format (if
+			 * true), or if it is not wanted (if false, for example if it 
+			 * is already done).
 			 *
-			 * @note This function should not be used directly, it is merely a debug method when
-			 * pixel-level operations must be checked.
+			 * @note This function should not be used directly, it is merely
+			 * a debug method when pixel-level operations must be checked.
 			 *
 			 */
-			void alternativePutPixelColor( Surface & targetSurface, Coordinate x, Coordinate y, 
+			void alternativePutPixelColor( Surface & targetSurface, 
+				Coordinate x, Coordinate y, 
 				PixelColor color, bool mapToSurfaceFormat = false ) throw()	;
 				
 								
@@ -646,29 +721,25 @@ namespace OSDL
 
 
 			/**
-			 * Returns a textual representation of the specified color, according to the specified
-			 * pixel format.
+			 * Returns a textual representation of the specified color,
+			 * according to the specified pixel format.
 			 *
 			 * @param pixel the pixel color to describe.
 			 *
-			 * @param format the pixel format which allows to decode the pixel.
-			 *
-			 * @note The 'format' parameter cannot be 'const' because of the SDL back-end.
+			 * @param format the pixel format which allows to decode 
+			 * the pixel.
 			 *
 			 */
-			std::string toString( PixelColor pixel, PixelFormat & format ) throw() ;
+			std::string toString( PixelColor pixel, 
+				const PixelFormat & format ) throw() ;
 
 			
 			/**
-			 * Returns a textual representation of the specified color definition.
+			 * Returns a textual representation of the specified color
+			 * definition.
 			 *
-			 * @note The alpha coordinate has not always a meaning, depending of the context.
-			 *
-			 * @note The color definition will be correctly interpreted if read from a palette for
-			 * example, where the format is plain RGB. But for most other formats, the pixel
-			 * color is encoded when mapped from RGB to the format, so this function won't
-			 * display accurate coordinates for actual pixel color (for example, red could be 
-			 * stored as 4 bits and not 8 bits, and so on).
+			 * @note The alpha coordinate has not always a meaning, 
+			 * depending of the context.
 			 *
 			 */
 			std::string toString( ColorDefinition color ) throw() ;
@@ -684,11 +755,11 @@ namespace OSDL
 			
 
 			/**
-			 * Transparent color (alpha set to not opaque at all). With an opaque alpha, would be
-			 * pure black.
+			 * Transparent color (alpha set to not opaque at all). 
+			 * With an opaque alpha, would be pure black.
 			 *
-			 * This color is useful to specify that, for example, a background should remain 
-			 * empty, i.e. fully transparent.
+			 * This color is useful to specify that, for example, a 
+			 * background should remain empty, i.e. fully transparent.
 			 *
 			 */
 			extern const ColorDefinition Transparent ;          
@@ -850,10 +921,13 @@ namespace OSDL
 			extern const ColorDefinition Yellow ;         
 		
 		
+		
 		}
 	
 	}
 
 }
 
+
 #endif // OSDL_PIXEL_H_
+

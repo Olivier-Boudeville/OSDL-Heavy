@@ -3,10 +3,11 @@
 #include "OSDLVideo.h"    // for VideoModule
 #include "OSDLUtils.h"    // for getBackendLastError
 
+#include "Ceylan.h"       // for CEYLAN_DETECTED_LITTLE_ENDIAN
 
 #ifdef OSDL_HAVE_OPENGL
 #include "SDL_opengl.h"
-#endif
+#endif // OSDL_HAVE_OPENGL
 
 using std::string ;
 
@@ -22,7 +23,15 @@ using namespace Ceylan::Log ;
 
 // OpenGL RGBA masks, since it always assumes RGBA order : 
 	
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#if CEYLAN_DETECTED_LITTLE_ENDIAN
+
+OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::RedMask   = 0x000000ff ;
+OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::GreenMask = 0x0000ff00 ;
+OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::BlueMask  = 0x00ff0000 ;
+OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::AlphaMask = 0xff000000 ;
+
+
+#else // CEYLAN_DETECTED_LITTLE_ENDIAN
 
 OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::RedMask   = 0xff000000 ;
 OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::GreenMask = 0x00ff0000 ;
@@ -30,14 +39,7 @@ OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::BlueMask  = 0x0000ff00 ;
 OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::AlphaMask = 0x000000ff ;
 
 
-#else // SDL_LIL_ENDIAN
-
-OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::RedMask   = 0x000000ff ;
-OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::GreenMask = 0x0000ff00 ;
-OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::BlueMask  = 0x00ff0000 ;
-OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::AlphaMask = 0xff000000 ;
-
-#endif
+#endif // CEYLAN_DETECTED_LITTLE_ENDIAN
 
 
 
@@ -57,7 +59,8 @@ OpenGLException::~OpenGLException() throw()
 
 
 
-OpenGLContext::OpenGLContext( OpenGL::Flavour flavour ) throw( OpenGLException ) :
+OpenGLContext::OpenGLContext( OpenGL::Flavour flavour ) 
+		throw( OpenGLException ) :
 	_flavour( OpenGL::None ),
 	_redSize( 0 ),
 	_greenSize( 0 ),
@@ -69,7 +72,9 @@ OpenGLContext::OpenGLContext( OpenGL::Flavour flavour ) throw( OpenGLException )
 	_nearClippingPlane( DefaultNearClippingPlaneFor2D ),
 	_farClippingPlane( DefaultFarClippingPlaneFor2D )
 {
+
 	selectFlavour( flavour ) ;
+	
 }
 
 
@@ -82,14 +87,15 @@ OpenGLContext::~OpenGLContext() throw()
 
 
 
-void OpenGLContext::selectFlavour( Flavour flavour /*, BitsPerPixel plannedBpp */) 
-	throw( OpenGLException )
+void OpenGLContext::selectFlavour( Flavour flavour 
+	/*, BitsPerPixel plannedBpp */) throw( OpenGLException )
 {
 	
 	_flavour = flavour ;
 	
 	if ( VideoModule::IsDisplayInitialized() )
-		LogPlug::warning( "OpenGLContext::selectFlavour : display is already initialized." ) ;
+		LogPlug::warning( 
+			"OpenGLContext::selectFlavour : display is already initialized." ) ;
 	
 	switch( flavour )
 	{
@@ -108,7 +114,8 @@ void OpenGLContext::selectFlavour( Flavour flavour /*, BitsPerPixel plannedBpp *
 			break ;
 		
 		default:
-			LogPlug::error( "OpenGLContext:selectFlavour : unknown flavour selected, "
+			LogPlug::error( 
+				"OpenGLContext:selectFlavour : unknown flavour selected, "
 				"defaulting to None." ) ;
 			return ;
 			break ;		
@@ -121,6 +128,7 @@ void OpenGLContext::selectFlavour( Flavour flavour /*, BitsPerPixel plannedBpp *
 
 void OpenGLContext::set2DFlavour() throw( OpenGLException )
 {
+
 	//glShadeModel(GL_FLAT);
 	setFullScreenAntialiasingStatus( true ) ;
 	//glDisable( GL_DEPTH_TEST ) ;
@@ -137,6 +145,7 @@ void OpenGLContext::set2DFlavour() throw( OpenGLException )
 
 void OpenGLContext::set3DFlavour() throw( OpenGLException )
 {
+
 	setFullScreenAntialiasingStatus( true ) ;
 
 	setDoubleBufferStatus( true ) ;
@@ -152,12 +161,14 @@ void OpenGLContext::set3DFlavour() throw( OpenGLException )
 	*/
 	
 	LogPlug::warning( "OpenGLContext::set3DFlavour : not implemented yet." ) ;
+	
 }
 
 
 
 void OpenGLContext::blank() throw( OpenGLException )
 {
+
 	LogPlug::warning( "OpenGLContext::blank not implemented yet." ) ;
 		
 }
@@ -166,13 +177,18 @@ void OpenGLContext::blank() throw( OpenGLException )
 
 void OpenGLContext::reload() throw( OpenGLException ) 
 {
+
 	LogPlug::warning( "OpenGLContext::blank not implemented yet." ) ;
+	
 }
 
 
 
-Ceylan::Uint8 OpenGLContext::getColorDepth( Ceylan::Uint8 & redSize, 
-	Ceylan::Uint8 & greenSize, Ceylan::Uint8 & blueSize ) const throw( OpenGLException )
+Ceylan::Uint8 OpenGLContext::getColorDepth( 
+		OSDL::Video::BitsPerPixel & redSize, 
+		OSDL::Video::BitsPerPixel & greenSize, 
+		OSDL::Video::BitsPerPixel & blueSize )
+	const throw( OpenGLException )
 {
 
 	// @fixme : Alpha currently not managed here.
@@ -180,20 +196,21 @@ Ceylan::Uint8 OpenGLContext::getColorDepth( Ceylan::Uint8 & redSize,
 	int value ;
 	
 	SDL_GL_GetAttribute( SDL_GL_RED_SIZE, & value ) ;		
-	redSize = static_cast<Ceylan::Uint8>( value ) ;
+	redSize = static_cast<OSDL::Video::BitsPerPixel>( value ) ;
 	
 	SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, & value ) ;	
-	greenSize = static_cast<Ceylan::Uint8>( value ) ;
+	greenSize = static_cast<OSDL::Video::BitsPerPixel>( value ) ;
 	 	
 	SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, & value  ) ;		
-	blueSize = static_cast<Ceylan::Uint8>( value ) ;
+	blueSize = static_cast<OSDL::Video::BitsPerPixel>( value ) ;
 	
 	return redSize + greenSize + blueSize ;
 	
 }
 
 	
-void OpenGLContext::setColorDepth( BitsPerPixel plannedBpp ) throw( OpenGLException )
+void OpenGLContext::setColorDepth( BitsPerPixel plannedBpp ) 
+	throw( OpenGLException )
 {
 
 	// Setting the relevant bits per color component for OpenGL framebuffer :
@@ -230,13 +247,16 @@ void OpenGLContext::setColorDepth( BitsPerPixel plannedBpp ) throw( OpenGLExcept
 }
 
 
-void OpenGLContext::setColorDepth( Ceylan::Uint8 redSize, Ceylan::Uint8 greenSize, 
-	Ceylan::Uint8 blueSize ) throw( OpenGLException )
+void OpenGLContext::setColorDepth( 
+		OSDL::Video::BitsPerPixel redSize, 
+		OSDL::Video::BitsPerPixel greenSize,
+		OSDL::Video::BitsPerPixel blueSize ) 
+	throw( OpenGLException )
 {
 
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   redSize ) ;
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   redSize   ) ;
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, greenSize ) ;
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  blueSize ) ;
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  blueSize  ) ;
 
 }
 	
@@ -244,10 +264,12 @@ void OpenGLContext::setColorDepth( Ceylan::Uint8 redSize, Ceylan::Uint8 greenSiz
 	
 bool OpenGLContext::getDoubleBufferStatus() throw( OpenGLException )
 {
+
 	int value ;
 	
 	if ( SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, & value ) != 0 ) 
-		throw OpenGLException( "OpenGLContext::getDoubleBufferStatus : error occured, "
+		throw OpenGLException( 
+			"OpenGLContext::getDoubleBufferStatus : error occurred, "
 			+ Utils::getBackendLastError() ) ;
 
 	return ( value != 0 ) ; 
@@ -255,15 +277,19 @@ bool OpenGLContext::getDoubleBufferStatus() throw( OpenGLException )
 }
 
 
-bool OpenGLContext::setDoubleBufferStatus( bool newStatus ) throw( OpenGLException )
+bool OpenGLContext::setDoubleBufferStatus( bool newStatus ) 
+	throw( OpenGLException )
 {
+
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, newStatus ) ;
 	
 	return getDoubleBufferStatus() ;
+	
 }
 
 
-void OpenGLContext::setShadingModel( ShadingModel newShadingModel ) throw( OpenGLException )
+void OpenGLContext::setShadingModel( ShadingModel newShadingModel ) 
+	throw( OpenGLException )
 {
 
 	switch( newShadingModel )
@@ -286,6 +312,7 @@ void OpenGLContext::setShadingModel( ShadingModel newShadingModel ) throw( OpenG
 	
 	switch ( glGetError() )
 	{
+	
 		case GL_NO_ERROR:
 			break ;
 		
@@ -301,7 +328,8 @@ void OpenGLContext::setShadingModel( ShadingModel newShadingModel ) throw( OpenG
 			break ;
 		
 		default:
-			throw OpenGLException( "OpenGLContext::setShadingModel : unexpected error reported." ) ;
+			throw OpenGLException( "OpenGLContext::setShadingModel : "
+				"unexpected error reported." ) ;
 			break ;	
 				
 	}
@@ -320,12 +348,14 @@ void OpenGLContext::setCullingStatus( bool newStatus ) throw()
 }
 
 
-void OpenGLContext::setCulling( CulledFacet culledFacet, FrontOrientation frontOrientation,
-	bool autoEnable ) throw( OpenGLException ) 
+void OpenGLContext::setCulling( CulledFacet culledFacet, 
+		FrontOrientation frontOrientation, bool autoEnable ) 
+	throw( OpenGLException ) 
 {
 
 	switch( culledFacet )
 	{
+	
 		case Front:
 			glCullFace( GL_FRONT ) ;
 			break ;
@@ -339,8 +369,10 @@ void OpenGLContext::setCulling( CulledFacet culledFacet, FrontOrientation frontO
 			break ;
 	}
 
+
 	switch ( glGetError() )
 	{
+	
 		case GL_NO_ERROR:
 			break ;
 		
@@ -361,9 +393,11 @@ void OpenGLContext::setCulling( CulledFacet culledFacet, FrontOrientation frontO
 			break ;	
 				
 	}
+		
 			
 	switch( frontOrientation )
 	{
+	
 		case Clockwise:
 			glFrontFace( GL_CW ) ;
 			break ;
@@ -374,8 +408,10 @@ void OpenGLContext::setCulling( CulledFacet culledFacet, FrontOrientation frontO
 	
 	}
 	
+	
 	switch ( glGetError() )
 	{
+	
 		case GL_NO_ERROR:
 			break ;
 		
@@ -408,30 +444,36 @@ void OpenGLContext::setFullScreenAntialiasingStatus( bool newStatus,
 	Ceylan::Uint8 samplesPerPixelNumber ) throw( OpenGLException )
 {
 
-	if ( newStatus == true ) 
+	if ( newStatus ) 
 	{
 		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 
 			/* Number of multisample buffers (0 or 1) */ 1 ) ;
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, samplesPerPixelNumber ) ;
+			
+		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 
+			samplesPerPixelNumber ) ;
+			
 	}
 	else
 	{
 		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0 ) ;	
 	}
+	
 }
 
 
 void OpenGLContext::setDepthBufferStatus( bool newStatus ) throw()
 {
+
 	if ( newStatus )
 		glEnable( GL_DEPTH_TEST ) ;
 	else
 		glDisable( GL_DEPTH_TEST ) ;
+		
 }
 
 
-void OpenGLContext::setDepthBufferSize( Ceylan::Uint8 bitsNumber, bool autoEnable ) 
-	throw( OpenGLException )
+void OpenGLContext::setDepthBufferSize( Ceylan::Uint8 bitsNumber, 
+	bool autoEnable ) throw( OpenGLException )
 {
 
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, bitsNumber ) ;
@@ -443,16 +485,18 @@ void OpenGLContext::setDepthBufferSize( Ceylan::Uint8 bitsNumber, bool autoEnabl
 
 
 void OpenGLContext::setViewPort( Length width, Length height, 
-		const TwoDimensional::Point2D & lowerLeftCorner ) throw( OpenGLException )
+	const TwoDimensional::Point2D & lowerLeftCorner ) throw( OpenGLException )
 {
 
-	_viewportWidth = width ;
+	_viewportWidth  = width  ;
 	_viewportHeight = height ;
 	
-	glViewport( lowerLeftCorner.getX(), lowerLeftCorner.getY(), width, height ) ;
+	glViewport( lowerLeftCorner.getX(), lowerLeftCorner.getY(), 
+		width, height ) ;
 
 	switch ( glGetError() )
 	{
+	
 		case GL_NO_ERROR:
 			break ;
 		
@@ -468,7 +512,8 @@ void OpenGLContext::setViewPort( Length width, Length height,
 			break ;
 		
 		default:
-			throw OpenGLException( "OpenGLContext::setViewPort : unexpected error reported." ) ;
+			throw OpenGLException( "OpenGLContext::setViewPort : "
+				"unexpected error reported." ) ;
 			break ;	
 				
 	}
@@ -479,10 +524,11 @@ void OpenGLContext::setViewPort( Length width, Length height,
 }
 
 
-void OpenGLContext::setOrthographicProjection( GLLength width, GLCoordinate near, 
-	GLCoordinate far ) throw ( OpenGLException )
+void OpenGLContext::setOrthographicProjection( GLLength width, 
+	GLCoordinate near, GLCoordinate far ) throw ( OpenGLException )
 {
-	_projectionMode = Orthographic ;
+
+	_projectionMode  = Orthographic ;
 	_projectionWidth = width ;
 
 	glMatrixMode( GL_PROJECTION ) ;
@@ -493,13 +539,15 @@ void OpenGLContext::setOrthographicProjection( GLLength width, GLCoordinate near
 	GLCoordinate right = width / 2 ;
 	
 	// Enforce the viewport aspect ratio :
-	GLCoordinate top = (width*_viewportHeight) / (2*_viewportWidth) ;
+	GLCoordinate top = ( width * _viewportHeight ) / ( 2 * _viewportWidth ) ;
 	
-	glOrtho( /* left */ -right, /* right */ right, /* bottom */ -top, /* top */ top,
+	glOrtho( /* left */ -right, /* right */ right, 
+		/* bottom */ -top, /* top */ top,
 		/* near */ near, /* far */ far ) ;
 
 	switch ( glGetError() )
 	{
+	
 		case GL_NO_ERROR:
 			break ;
 		
@@ -526,6 +574,7 @@ void OpenGLContext::clearViewport() throw( OpenGLException )
 
 	switch ( glGetError() )
 	{
+	
 		case GL_NO_ERROR:
 			break ;
 		
@@ -581,21 +630,29 @@ void OpenGLContext::clearDepthBuffer() throw( OpenGLException )
 }
 
 
-const string OpenGLContext::toString( Ceylan::VerbosityLevels level ) const throw() 
+const string OpenGLContext::toString( Ceylan::VerbosityLevels level ) 
+	const throw() 
 {
 	
 	std::list<string> res ;
 	
-	res.push_back( "Current selected flavour is " + ToString( _flavour ) + "." ) ;
+	res.push_back( "OpenGL context whose current selected flavour is " 
+		+ ToString( _flavour ) + "." ) ;
 	
-	Ceylan::Uint8 redSize, greenSize, blueSize ;
+	OSDL::Video::BitsPerPixel redSize, greenSize, blueSize ;
 	
 	BitsPerPixel bpp = getColorDepth( redSize, greenSize, blueSize ) ;
-	res.push_back( "Overall bit per pixel is " + Ceylan::toNumericalString( bpp ) + "." ) ;
+	res.push_back( "Overall bit per pixel is " 
+		+ Ceylan::toNumericalString( bpp ) + "." ) ;
 	
-	res.push_back( "Red component size : "   + Ceylan::toNumericalString( redSize ) + " bits." ) ;
-	res.push_back( "Green component size : " + Ceylan::toNumericalString( greenSize ) + " bits." ) ;
-	res.push_back( "Blue component size : "  + Ceylan::toNumericalString( blueSize ) + " bits." ) ;
+	res.push_back( "Red component size : "   
+		+ Ceylan::toNumericalString( redSize ) + " bits." ) ;
+		
+	res.push_back( "Green component size : " 
+		+ Ceylan::toNumericalString( greenSize ) + " bits." ) ;
+		
+	res.push_back( "Blue component size : "  
+		+ Ceylan::toNumericalString( blueSize ) + " bits." ) ;
 	
 	// Alpha ?
 			
@@ -627,7 +684,8 @@ string OpenGLContext::ToString( OpenGL::Flavour flavour ) throw()
 			break ;
 			
 		default:
-			return "unknown (" + Ceylan::toString( flavour ) + ", which is abnormal)" ;
+			return "unknown flavour (" + Ceylan::toString( flavour ) 
+				+ "), which is abnormal)" ;
 			break ;	
 			
 	}
@@ -644,7 +702,8 @@ void OpenGLContext::updateProjection() throw( OpenGLException )
 	
 		case Orthographic:
 			// Forces recomputation of projection height :
-			setOrthographicProjection( _projectionWidth, _nearClippingPlane, _farClippingPlane ) ; 
+			setOrthographicProjection( _projectionWidth,
+				 _nearClippingPlane, _farClippingPlane ) ; 
 			break ;
 			
 		default:

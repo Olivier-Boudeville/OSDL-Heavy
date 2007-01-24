@@ -2,9 +2,11 @@
 
 #include "OSDLSurface.h"  // for Surface
 
-#include "SDL.h"           // for SDL_PixelFormat
+#include "Ceylan.h"       // for Ceil
 
-#include <cmath>           // for ceil
+#include "SDL.h"          // for SDL_PixelFormat
+
+
 #include <list>
 
 
@@ -16,8 +18,10 @@ using namespace Ceylan::Log ;
 using namespace OSDL::Video ;
 
 
+
 const OSDL::Flags Palette::Logical  = SDL_LOGPAL ;
 const OSDL::Flags Palette::Physical = SDL_PHYSPAL ;
+
 
 
 PaletteException::PaletteException( const string & message ) throw() : 
@@ -32,6 +36,7 @@ PaletteException::~PaletteException() throw()
 		
 }
 		
+		
 			
 			
 Palette::Palette( ColorCount numberOfColors, Pixels::ColorDefinition * colors, 
@@ -41,16 +46,20 @@ Palette::Palette( ColorCount numberOfColors, Pixels::ColorDefinition * colors,
 	_pixelColors( 0 ),
 	_converted( false )
 {
+
 	load( numberOfColors, colors ) ;
 	
 	if ( format != 0 )
 		updatePixelColorsFrom( * format ) ;
+		
 }
 
 
 Palette::Palette( SDL_Palette & palette ) throw( PaletteException )
 {
+
 	load( palette.ncolors, palette.colors ) ;
+	
 }
 
 
@@ -70,8 +79,8 @@ Palette::~Palette() throw()
 }
 
 
-void Palette::load( ColorCount numberOfColors, Pixels::ColorDefinition * colors ) 
-	throw( PaletteException )
+void Palette::load( ColorCount numberOfColors, 
+	Pixels::ColorDefinition * colors ) throw( PaletteException )
 {
 
 	if ( colors == 0 )
@@ -81,9 +90,7 @@ void Palette::load( ColorCount numberOfColors, Pixels::ColorDefinition * colors 
 	_converted = false ;
 
 	if ( _colorDefs != 0 )
-	{
 		delete [] _colorDefs ;
-	}
 
 	_colorDefs = colors ;
 	
@@ -100,6 +107,8 @@ void Palette::load( ColorCount numberOfColors, Pixels::ColorDefinition * colors 
 			_pixelColors = 0 ;
 		}
 
+		// Will have to be recomputed when needed.
+		
 	}
 		
 }
@@ -107,38 +116,48 @@ void Palette::load( ColorCount numberOfColors, Pixels::ColorDefinition * colors 
 
 ColorCount Palette::getNumberOfColors() const throw()
 {
+
 	return _numberOfColors ;
+	
 }
 
 
-const Pixels::PixelColor & Palette::getPixelColorAt( ColorCount index ) const 
-	throw( PaletteException )
+const Pixels::PixelColor & Palette::getPixelColorAt( ColorCount index ) 
+	const throw( PaletteException )
 {
+
 	if ( index >= _numberOfColors )
-		 throw PaletteException( "Palette::getPixelColorAt : out of bounds : specified index ("
-		 	+ Ceylan::toString( index ) + ") greater than upper index ("
+		 throw PaletteException( 
+		 	"Palette::getPixelColorAt : out of bounds : specified index ("
+		 	+ Ceylan::toString( index ) + ") greater or equal to upper index ("
 			+ Ceylan::toString( _numberOfColors ) + ")." ) ;
 			
 	return _pixelColors[ index ] ;	
+	
 }
 
 
 Pixels::PixelColor * Palette::getPixelColors() const throw()
 {
+
 	return _pixelColors ;
+	
 }
  
  
-const Pixels::ColorDefinition & Palette::getColorDefinitionAt( ColorCount index ) const 
-	throw( PaletteException )
+const Pixels::ColorDefinition & Palette::getColorDefinitionAt(
+	ColorCount index ) const throw( PaletteException )
 {
+
 	if ( index >= _numberOfColors )
-		 throw PaletteException( "Palette::getColorDefinitionAt : out of bounds : "
+		 throw PaletteException( 
+		 	"Palette::getColorDefinitionAt : out of bounds : "
 		 	"specified index ("
-		 	+ Ceylan::toString( index ) + ") greater than upper index ("
+		 	+ Ceylan::toString( index ) + ") greater or equal to upper index ("
 			+ Ceylan::toString( _numberOfColors ) + ")." ) ;
 			
-	return _colorDefs[ index ] ;	
+	return _colorDefs[ index ] ;
+		
 }
 
 
@@ -153,7 +172,8 @@ void Palette::updatePixelColorsFrom( Pixels::PixelFormat & format ) throw()
 	
 	if ( _numberOfColors == 0 )
 	{
-		LogPlug::warning( "Palette::updatePixelColorsFrom : no color available." ) ;
+		LogPlug::warning(
+			 "Palette::updatePixelColorsFrom : no color available." ) ;
 		_converted = true ;
 		return ;		
 	}
@@ -164,9 +184,10 @@ void Palette::updatePixelColorsFrom( Pixels::PixelFormat & format ) throw()
 	}
 	
 	
-	for ( ColorCount c = 0; c < _numberOfColors ; c++ )
+	for ( ColorCount c = 0; c < _numberOfColors; c++ )
 	{
-		_pixelColors[c] = Pixels::convertColorDefinitionToPixelColor( format, _colorDefs[c] ) ;
+		_pixelColors[c] = Pixels::convertColorDefinitionToPixelColor( 
+			format, _colorDefs[c] ) ;
 	}
 	
 	_converted = true ;
@@ -174,12 +195,15 @@ void Palette::updatePixelColorsFrom( Pixels::PixelFormat & format ) throw()
 }
 
 
-bool Palette::draw( Surface & targetSurface, Pixels::ColorDefinition backgroundColor ) throw()
+bool Palette::draw( Surface & targetSurface, 
+	Pixels::ColorDefinition backgroundColor ) throw()
 {
 
+
 	/*
-	 * Unconditionnaly reconvert actual pixel colors, since it is not known a priori whether
-	 * an already computed pixel color array would correspond to the same pixel format.
+	 * Unconditionnaly reconverts actual pixel colors, since it is not
+	 * known a priori whether an already computed pixel color array would
+	 * correspond to the same pixel format.
 	 *
 	 */
 	 
@@ -189,9 +213,11 @@ bool Palette::draw( Surface & targetSurface, Pixels::ColorDefinition backgroundC
 	
 	targetSurface.fill( backgroundColor ) ;
 	 	
-	for ( Length i = 0; i < targetSurface.getHeight() && i < _numberOfColors; i++ )
+	for ( Length i = 0; 
+		i < targetSurface.getHeight() && i < _numberOfColors; i++ )
 	{	
-		targetSurface.drawHorizontalLine( 0, targetSurface.getWidth(), i, getPixelColorAt( i ) ) ;
+		targetSurface.drawHorizontalLine( 0, targetSurface.getWidth(), 
+			i, getPixelColorAt( i ) ) ;
 	}	
 				
 	targetSurface.unlock() ;
@@ -209,21 +235,23 @@ const string Palette::toString( Ceylan::VerbosityLevels level ) const throw()
 		
 	if ( _colorDefs == 0 )
 	{
+	
 		LogPlug::error( "Palette::toString : palette should have " 
-			+ Ceylan::toString( _numberOfColors ) 
-			+ " color definitions, but no definition is registered (null pointer)." ) ;
-		return 	"Palette has no color defined and is in inconsistent state" ;
+			+ Ceylan::toString( _numberOfColors ) + " color definitions, "
+			"but no definition is registered (null pointer)." ) ;
+			
+		return "Palette has no color defined and is in inconsistent state" ;
 		
 	}	
 	
-	string result = "Palette has " + Ceylan::toString( _numberOfColors ) + " color definitions, " ;
+	string result = "Palette has " + Ceylan::toString( _numberOfColors ) 
+		+ " color definitions, " ;
 	
 	if ( _pixelColors != 0 )
 		result += "they are not converted to actual pixel colors" ;
 	else
 		result += "they are already converted to actual pixel colors" ;
-	
-	
+		
 	if ( level == Ceylan::low )
 		return result ;
 		
@@ -246,7 +274,10 @@ const string Palette::toString( Ceylan::VerbosityLevels level ) const throw()
 
 Palette & Palette::CreateGreyScalePalette( ColorCount numberOfColors ) throw()
 {
-	return CreateGradationPalette( Pixels::Black, Pixels::White, numberOfColors ) ;	
+
+	return CreateGradationPalette( Pixels::Black, Pixels::White, 
+		numberOfColors ) ;	
+		
 }
 
 
@@ -254,36 +285,56 @@ Palette & Palette::CreateGradationPalette( Pixels::ColorDefinition colorStart,
 	Pixels::ColorDefinition colorEnd, ColorCount numberOfColors ) throw()
 {
 
-	Pixels::ColorDefinition * colorBuffer = new Pixels::ColorDefinition[ numberOfColors ] ;
+
+	Pixels::ColorDefinition * colorBuffer = 
+		new Pixels::ColorDefinition[ numberOfColors ] ;
 	
 	if ( colorBuffer == 0 )
-		Ceylan::emergencyShutdown( "Palette::CreateGradationPalette : not enough memory." ) ;
+		Ceylan::emergencyShutdown( 
+			"Palette::CreateGradationPalette : not enough memory." ) ;
 	
-	#ifdef OSDL_DEBUG
-	LogPlug::debug( "Gradation ranging from " + Pixels::toString( colorStart ) + " to "
+#if OSDL_DEBUG
+	LogPlug::debug( "Gradation ranging from " 
+		+ Pixels::toString( colorStart ) + " to "
 		+ Pixels::toString( colorEnd ) + "." ) ;		
-	#endif
+#endif // OSDL_DEBUG
 	
-	float redIncrement   = ( ( (float) colorEnd.r ) - colorStart.r ) / numberOfColors ;	
-	float greenIncrement = ( ( (float) colorEnd.g ) - colorStart.g ) / numberOfColors ;	
-	float blueIncrement  = ( ( (float) colorEnd.b ) - colorStart.b ) / numberOfColors ;	
-	float alphaIncrement = ( ( (float) colorEnd.unused ) - colorStart.unused ) / numberOfColors ;	
+	Ceylan::Float32 redIncrement   = ( 
+		static_cast<Ceylan::Float32>( colorEnd.r ) - colorStart.r ) 
+			/ numberOfColors ;	
+			
+	Ceylan::Float32 greenIncrement = ( 
+		static_cast<Ceylan::Float32>( colorEnd.g ) - colorStart.g ) 
+			/ numberOfColors ;	
 	
-	for ( ColorCount c = 0; c < numberOfColors ; c++ )
+	Ceylan::Float32 blueIncrement  = ( 
+		static_cast<Ceylan::Float32>( colorEnd.b ) - colorStart.b ) 
+			/ numberOfColors ;	
+	
+	Ceylan::Float32 alphaIncrement = ( 
+		static_cast<Ceylan::Float32>( colorEnd.unused ) - colorStart.unused ) 
+			/ numberOfColors ;	
+	
+	for ( ColorCount c = 0; c < numberOfColors; c++ )
 	{
-		// Without ceil, there would be an offset, for example with 256 colors since 255/256 < 1.
+	
+		/*
+		 * Without Ceil, there would be an offset, for example with 
+		 * 256 colors since 255/256 < 1.
+		 *
+		 */
 		
-		colorBuffer[ c ].r = static_cast<Pixels::ColorElement>( 
-			::ceil( colorStart.r + redIncrement * c ) ) ;
+		colorBuffer[ c ].r      = static_cast<Pixels::ColorElement>( 
+			Ceylan::Ceil( colorStart.r + redIncrement * c ) ) ;
 			
-		colorBuffer[ c ].g = static_cast<Pixels::ColorElement>( 
-			::ceil( colorStart.g + greenIncrement * c ) ) ;
+		colorBuffer[ c ].g      = static_cast<Pixels::ColorElement>( 
+			Ceylan::Ceil( colorStart.g + greenIncrement * c ) ) ;
 			
-		colorBuffer[ c ].b = static_cast<Pixels::ColorElement>( 
-			::ceil( colorStart.b + blueIncrement * c ) ) ;
+		colorBuffer[ c ].b      = static_cast<Pixels::ColorElement>( 
+			Ceylan::Ceil( colorStart.b + blueIncrement * c ) ) ;
 			
-		colorBuffer[ c ].unused= static_cast<Pixels::ColorElement>( 
-			::ceil( colorStart.unused + alphaIncrement * c ) ) ;
+		colorBuffer[ c ].unused = static_cast<Pixels::ColorElement>( 
+			Ceylan::Ceil( colorStart.unused + alphaIncrement * c ) ) ;
 			
 	}
 
@@ -295,7 +346,7 @@ Palette & Palette::CreateGradationPalette( Pixels::ColorDefinition colorStart,
 Palette & Palette::CreateLandscapePalette( ColorCount numberOfColors ) throw()
 {
 
-	// FIXME
+	// @fixme
 	return * new Palette( numberOfColors, 0 ) ;
 
 }
