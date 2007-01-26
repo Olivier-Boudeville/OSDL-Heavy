@@ -135,7 +135,7 @@ const string AudioModule::toString( Ceylan::VerbosityLevels level )
 string AudioModule::DescribeEnvironmentVariables() throw()
 {
 
-	unsigned int varCount = 
+	Ceylan::Uint16 varCount = 
 		sizeof( SDLEnvironmentVariables ) / sizeof (char * ) ;
 		
 	string result = "Examining the " + Ceylan::toString( varCount )
@@ -147,7 +147,7 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 
 	bool htmlFormat = Ceylan::TextDisplayable::GetOutputFormat() ;
 	
-	for ( unsigned int i = 0; i < varCount; i++ ) 
+	for ( Ceylan::Uint16 i = 0; i < varCount; i++ ) 
 	{
 		var = SDLEnvironmentVariables[ i ] ;
 		value = Ceylan::System::getEnvironmentVariable( var ) ;
@@ -156,7 +156,7 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 		{
 			if ( htmlFormat )
 			{
-				variables.push_back( "<em>" + var + " is not set.</em>" ) ;
+				variables.push_back( "<em>" + var + "</em> is not set." ) ;
 			}
 			else
 			{
@@ -167,8 +167,8 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 		{			
 			if ( htmlFormat )
 			{
-				variables.push_back( "<b>" + var + " set to [" 
-					+ value + "].</b>" ) ;
+				variables.push_back( "<b>" + var + "</b> set to [" 
+					+ value + "]." ) ;
 			}
 			else
 			{
@@ -185,6 +185,8 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 
 bool AudioModule::IsAudioInitialized() throw()
 {
+
 	return _AudioInitialized ;
+	
 }
 

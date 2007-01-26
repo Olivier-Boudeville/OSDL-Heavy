@@ -1,5 +1,8 @@
 #include "OSDLBackBufferedWidget.h"
 
+#include "OSDLSurface.h"   // for Surface
+#include "OSDLPoint2D.h"   // for Point2D
+
 
 using namespace Ceylan::Log ;
 
@@ -11,12 +14,19 @@ using std::string ;
 
 
 
-BackBufferedWidget::BackBufferedWidget( Surface & container, const Point2D & relativePosition, 
-		Length width, Length height, 
-		BaseColorMode baseColorMode, Pixels::ColorDefinition baseColor,
-		const string & title,
-		bool minMaximizable, bool draggable, bool wrappable, bool closable ) 
-			throw( VideoException ) :
+BackBufferedWidget::BackBufferedWidget( 
+	Surface & container, 
+	const Point2D & relativePosition, 
+	Length width,
+	Length height, 
+	BaseColorMode baseColorMode, 
+	Pixels::ColorDefinition baseColor,
+	const string & title,
+	bool minMaximizable, 
+	bool draggable, 
+	bool wrappable, 
+	bool closable ) 
+		throw( VideoException ) :
 	Widget( container, 
 			relativePosition, 
 			width, 
@@ -32,48 +42,56 @@ BackBufferedWidget::BackBufferedWidget( Surface & container, const Point2D & rel
 	_needsBackBufferRedraw( true )
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
+
 	LogPlug::trace( "Back-buffered widget constructor" ) ; 
-	#endif
+	
+#endif // OSDL_DEBUG_WIDGET
 
 	/*
-	 * Creates a shadow surface that will act as a cache for this widget own rendering :
-	 * (a clone operation could be used as well)
+	 * Creates a shadow surface that will act as a cache for this widget 
+	 * own rendering : clones the container except for the dimensions.
 	 *
 	 */
-	_overallSurface = new Surface( container.getFlags(), 
-		 width, 
-		 height, 
-		 container.getBitsPerPixel(), 
-		 container.getPixelFormat().Rmask, 
-		 container.getPixelFormat().Gmask,
-		 container.getPixelFormat().Bmask,
-		 container.getPixelFormat().Amask ) ;	
+	_overallSurface = new Surface( 
+		container.getFlags(), 
+		width, 
+		height, 
+		container.getBitsPerPixel(), 
+		container.getPixelFormat().Rmask, 
+		container.getPixelFormat().Gmask,
+		container.getPixelFormat().Bmask,
+		container.getPixelFormat().Amask ) ;	
 
 	/*
-	 * Speed boost : an alpha channel will be used iff the backbuffer (hence, the container too)
-	 * already use it.
+	 * Speed boost : an alpha channel will be used iff the backbuffer 
+	 * (hence, the container too) already use it.
 	 *
 	 */
-	_overallSurface->convertToDisplay( /* useAlphaChannel */ static_cast<bool>( 
-		getFlags() & Surface::AlphaBlendingBlit ) ) ;
+	_overallSurface->convertToDisplay( /* useAlphaChannel */ 
+		static_cast<bool>( getFlags() & Surface::AlphaBlendingBlit ) ) ;
 		
 }
+
 
 
 BackBufferedWidget::~BackBufferedWidget() throw()
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
+
 	LogPlug::trace( "Back-buffered widget destructor" ) ; 
-	#endif
+	
+#endif // OSDL_DEBUG_WIDGET
 
 	delete _overallSurface ;
 	
 }
 
 
-void BackBufferedWidget::resize( Length newWidth, Length newHeight, bool ignored ) throw()	
+
+void BackBufferedWidget::resize( Length newWidth, Length newHeight, 
+	bool ignored ) throw()	
 {	
 	
 	// Sets the 'need for redraw' state to true, and updates the client area :	
@@ -86,14 +104,19 @@ void BackBufferedWidget::resize( Length newWidth, Length newHeight, bool ignored
 }
 
 
+
 void BackBufferedWidget::setBaseColorMode( BaseColorMode newBaseColorMode, 
 	Pixels::ColorDefinition newBaseColor ) throw( VideoException )
 {
 	
-	// Same as Widget::setBaseColorMode except the back-buffer is modified as well :
+	/*
+	 * Same as Widget::setBaseColorMode except the back-buffer is modified 
+	 * as well :
+	 *
+	 */
 
-	bool mustUpdateColor = ( 
-		( _baseColorMode == NotInitialized ) && ( newBaseColorMode != NotInitialized ) ) 
+	bool mustUpdateColor = ( ( _baseColorMode == NotInitialized )
+			 && ( newBaseColorMode != NotInitialized ) ) 
 		|| ( ! Pixels::areEqual( newBaseColor, _baseColor ) ) ;
 		
 	bool mustUpdateColorKey = false ;
@@ -108,9 +131,14 @@ void BackBufferedWidget::setBaseColorMode( BaseColorMode newBaseColorMode,
 		if ( _baseColorMode == Colorkey )
 		{
 			
-			setColorKey( /* no more color-keying */ 0, /* do not care */ _actualBaseColor ) ;
+			// Thus newBaseColorMode != Colorkey, so :
+			
+			setColorKey( /* no more color-keying */ 0, 
+				/* do not care */ _actualBaseColor ) ;
+				
 			_overallSurface->setColorKey( /* no more color-keying */ 0, 
 				/* do not care */ _actualBaseColor ) ;
+				
 		}	
 		else
 		{
@@ -146,9 +174,15 @@ void BackBufferedWidget::setBaseColorMode( BaseColorMode newBaseColorMode,
 	if ( mustUpdateColorKey )
 	{
 				
-		// Comment following two lines to see the colorkey (generally, Pixels::Red) :
+		/*
+		 * Comment following two lines to see the colorkey 
+		 * (generally, Pixels::Red) :
+		 *
+		 */
 		setColorKey( ColorkeyBlit | RLEColorkeyBlit, _actualBaseColor ) ;
-		_overallSurface->setColorKey( ColorkeyBlit | RLEColorkeyBlit, _actualBaseColor ) ;
+		
+		_overallSurface->setColorKey( ColorkeyBlit | RLEColorkeyBlit,
+			_actualBaseColor ) ;
 		
 		// Sets the widget redraw state to true as well :	
 		setBackBufferRedrawState( true ) ;
@@ -159,15 +193,22 @@ void BackBufferedWidget::setBaseColorMode( BaseColorMode newBaseColorMode,
 }
 
 
+
 void BackBufferedWidget::redraw() throw() 
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
+
 	LogPlug::trace( "BackBufferedWidget::redraw : needs redraw attribute is " 
 		+ Ceylan::toString( getRedrawState() ) + "." ) ; 
-	#endif
+		
+#endif // OSDL_DEBUG_WIDGET
 
-	// Triggers its own redraw then the full recursive redraw for any internal subwidgets :
+	/*
+	 * Triggers its own redraw, then the full recursive redraw for 
+	 * all internal subwidgets :
+	 *
+	 */
 	Surface::redraw() ;
 	
 	// Once done, draw the result on the container :
@@ -176,32 +217,45 @@ void BackBufferedWidget::redraw() throw()
 		
 		// Uncomment to debug blits :
 		/*
-		savePNG( Ceylan::toString( this ) + "-redrawn-backbuffer.png" ) ;		
-		_overallSurface->savePNG( Ceylan::toString( this ) + "-redrawn-frontbuffer.png" ) ;		
+		
+		savePNG( Ceylan::toString( this ) + "-redrawn-backbuffer.png" ) ;
+				
+		_overallSurface->savePNG( Ceylan::toString( this ) 
+			+ "-redrawn-frontbuffer.png" ) ;		
+			
 		*/
 		
-		_overallSurface->blitTo( getContainer().getWidgetRenderTarget(), _upperLeftCorner ) ;
+		_overallSurface->blitTo( getContainer().getWidgetRenderTarget(),
+			_upperLeftCorner ) ;
 	}
 	catch( const VideoException & e )
 	{
-		LogPlug::error( "BackBufferedWidget::redraw : blit to container failed : " 
+		LogPlug::error( 
+			"BackBufferedWidget::redraw : blit to container failed : " 
 			+ e.toString() ) ;
 	}	
 	
 }
 
 
+
 void BackBufferedWidget::redrawInternal() throw() 
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
-	LogPlug::trace( "BackBufferedWidget::redrawInternal : needs back-buffer redraw attribute is " 
+#if OSDL_DEBUG_WIDGET
+
+	LogPlug::trace( "BackBufferedWidget::redrawInternal : "
+		"needs back-buffer redraw attribute is " 
 		+ Ceylan::toString( getBackBufferRedrawState() ) + "." ) ; 
-	#endif
+		
+#endif // OSDL_DEBUG_WIDGET
 
 	/*
-	 * Here we know that this widget and its subwidgets have to be redrawn as a whole.
-	 * But this widget may or may not reuse any previously cached own rendering.
+	 * Here we know that this widget and its subwidgets have to be redrawn 
+	 * as a whole.
+	 *
+	 * But this widget may or may not reuse any previously cached own 
+	 * rendering.
 	 * If not, it will have to paint itself first : 
 	 *
 	 */
@@ -219,21 +273,29 @@ void BackBufferedWidget::redrawInternal() throw()
 	else
 	{	
 	
-		#ifdef OSDL_DEBUG_WIDGET
-		LogPlug::trace( "BackBufferedWidget::redrawInternal : back-buffer already available." ) ; 
-		#endif
+#ifdef OSDL_DEBUG_WIDGET
+
+		LogPlug::trace( "BackBufferedWidget::redrawInternal :"
+			" back-buffer already available." ) ; 
+			
+#endif // OSDL_DEBUG_WIDGET
 		
 	}
 
 
-	#ifdef OSDL_DEBUG_WIDGET
-	LogPlug::trace( "BackBufferedWidget::redrawInternal : blitting back-buffer to front buffer." ) ;
-	#endif
+#if OSDL_DEBUG_WIDGET
+
+	LogPlug::trace( "BackBufferedWidget::redrawInternal : "
+		"blitting back-buffer to front buffer." ) ;
+		
+#endif // OSDL_DEBUG_WIDGET
+	
 	
 	/*
-	 * We can reuse our own previously cached rendering on both cases. But before blitting from
-	 * back-buffer to overall surface, we must fill the latter with the color key, if any
-	 * (otherwise color-keing will be lost for the blit from this overall surface to the container)
+	 * We can now reuse our own previously cached rendering on both cases. 
+	 * But before blitting from back-buffer to overall surface, we must 
+	 * fill the latter with the color key, if any, otherwise color-keing 
+	 * will be lost for the blit from this overall surface to the container.
 	 *
 	 */
 	
@@ -247,32 +309,45 @@ void BackBufferedWidget::redrawInternal() throw()
 }
 
 
+
 void BackBufferedWidget::redrawBackBuffer() throw()
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
-	LogPlug::trace( "BackBufferedWidget::redrawBackBuffer" ) ; 
-	#endif
+#if OSDL_DEBUG_WIDGET
 
-	// (...) [real rendering]
+	LogPlug::trace( "BackBufferedWidget::redrawBackBuffer" ) ; 
+	
+#endif // OSDL_DEBUG_WIDGET
+
+
+	// (...) [real rendering should take place here in overriden methods]
 	
 	// This inherited Surface (not _overallSurface !) should be updated here.
 		
 	
-	// This mostly empty method should be overriden, but all versions should end with :	
+	/*
+	 * This mostly empty method should be overriden, but all versions 
+	 * should end with :	
+	 *
+	 */
 	setBackBufferRedrawState( false ) ;
 	
 }
 
 
+
 Surface & BackBufferedWidget::getWidgetRenderTarget() throw()
 {	
+
 	// Sub-widgets must target overall surface, not back-buffer :
 	return *_overallSurface ;
+	
 }
 
 
-const string BackBufferedWidget::toString( Ceylan::VerbosityLevels level ) const throw()
+
+const string BackBufferedWidget::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
 
 	string res ;
@@ -284,20 +359,24 @@ const string BackBufferedWidget::toString( Ceylan::VerbosityLevels level ) const
 	
 	res += "Overall surface is : " + _overallSurface->toString( level ) ;
 		
-	return "Back-buffered widget description whose back-buffer " + res + Widget::toString( level ) ;
+	return "Back-buffered widget description whose back-buffer " 
+		+ res + Widget::toString( level ) ;
 	
 }
 
 
-void BackBufferedWidget::setBackBufferRedrawState( bool needsToBeRedrawn ) throw()
+
+void BackBufferedWidget::setBackBufferRedrawState( bool needsToBeRedrawn )
+	throw()
 {
 
 	/*
-	 * If back-buffer redraw state goes from false to true, then the general redraw state should 
-	 * do as well, so that it propagates the need of redraw to the container :
+	 * If back-buffer redraw state goes from false to true, then the 
+	 * general redraw state should do as well, so that it propagates 
+	 * the need of redraw to the container :
 	 *
 	 */
-	if ( ( ! getBackBufferRedrawState() ) && needsToBeRedrawn )
+	if ( ( getBackBufferRedrawState() == false ) && needsToBeRedrawn )
 	{
 		_needsBackBufferRedraw = true ;
 		setRedrawState( true ) ;
@@ -306,9 +385,9 @@ void BackBufferedWidget::setBackBufferRedrawState( bool needsToBeRedrawn ) throw
 }
 
 	
+	
 bool BackBufferedWidget::getBackBufferRedrawState() const throw()
 {
 	return _needsBackBufferRedraw ;
 }
 
-	

@@ -24,28 +24,36 @@ namespace OSDL
 		
 			/**
 		 	 * Conics section includes support for :
-			 * - circle
-			 * - ellipse
+			 *  - circle
+			 *  - ellipse
 			 *
 			 */
 
 
-			// Methods could be inlined in a dedicated file for faster processing.
+			/*
+			 * Methods could be inlined in a dedicated file for faster
+			 * processing.
+			 *
+			 */
 	
 	
 			/**
-			 * Draws a circle whose center is (xCenter,yCenter) of specified radius, with 
-			 * specified RGBA color, on specified surface.
+			 * Draws a circle whose center is (xCenter,yCenter) of 
+			 * specified radius, with specified RGBA color, on specified
+			 * surface.
 			 *
 			 * @param filled tells whether the circle should be filled (disc).
 			 *
-			 * @param blended tells whether, for each pixel of disc, the specified color should be
-			 * blended with the one of the target pixel (if true), or if the specified color should
-			 * replace the former one, regardless of any blending (if false). Note that only discs
-			 * may be drawn without being blended : circles are always blended, therefore if filled
-			 * is false, blended does not matter.
+			 * @param blended tells whether, for each pixel of the disc, the
+			 * specified color should be blended with the one of the target
+			 * pixel (if true), or if the disc color should replace the target
+			 * one, regardless of any blending (if false). 
+			 * Note that only discs may be drawn without being blended : 
+			 * circles are always blended, therefore if filled is false, 
+			 * blended does not matter.
 			 *
-			 * @return false if and only if something went wrong (ex : surface lock failed).
+			 * @return false if and only if something went wrong, for 
+			 * example if surface locking failed.
 			 * 
 			 * @note Locks surface if needed.
 			 *
@@ -59,25 +67,30 @@ namespace OSDL
 			bool drawCircle( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter, Length radius, 
 				Pixels::ColorElement red, Pixels::ColorElement green, 
-				Pixels::ColorElement blue, Pixels::ColorElement alpha = Pixels::AlphaOpaque,
+				Pixels::ColorElement blue, 
+				Pixels::ColorElement alpha = Pixels::AlphaOpaque,
 				bool filled = true, bool blended = true ) throw() ;
 	
 	
 			/**
-			 * Draws a circle whose center is (xCenter,yCenter) of specified radius, with 
-			 * specified RGBA color, on specified surface.
+			 * Draws a circle whose center is (xCenter,yCenter) of 
+			 * specified radius, with specified color definition, on specified
+			 * surface.
 			 *
-			 * @param targetSurface the surface where to draw.
+			 * @param colorDef the color definition of the drawing.
 			 *
 			 * @param filled tells whether the circle should be filled (disc).
 			 *
-			 * @param blended tells whether, for each pixel of disc, the specified color should be
-			 * blended with the one of the target pixel (if true), or if the specified color should
-			 * replace the former one, regardless of any blending (if false). Note that only discs
-			 * may be drawn without being blended : circles are always blended, therefore if filled
-			 * is false, blended does not matter.
+			 * @param blended tells whether, for each pixel of the disc, the
+			 * specified color should be blended with the one of the target
+			 * pixel (if true), or if the disc color should replace the target
+			 * one, regardless of any blending (if false). 
+			 * Note that only discs may be drawn without being blended : 
+			 * circles are always blended, therefore if filled is false, 
+			 * blended does not matter.
 			 *
-			 * @return false if and only if something went wrong (ex : surface lock failed).
+			 * @return false if and only if something went wrong, for 
+			 * example if surface locking failed.
 			 * 
 			 * @note Locks surface if needed.
 			 *
@@ -90,15 +103,17 @@ namespace OSDL
 			 */
 			bool drawCircle( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter, Length radius, 
-				Pixels::ColorDefinition colorDef, bool filled = true, bool blended = true ) 
+				Pixels::ColorDefinition colorDef, bool filled = true, 
+				bool blended = true ) 
 					throw() ;
 	
 		
 			/**
-			 * Draws a disc whose center is (xCenter,yCenter), of specified radius
-			 * (totalRadius), filled with specified color discColorDef, with a ring in it, on
-			 * its border, i.e. starting from innerRadius to totalRadius, colored with 
-			 * ringColorDef, on specified surface. 
+			 * Draws a disc whose center is (xCenter,yCenter), of specified
+			 * radius (totalRadius), filled with specified color discColorDef,
+			 * with a ring in it, on its border, i.e. starting from 
+			 * innerRadius to totalRadius, colored with ringColorDef, on
+			 * specified surface. 
 			 *
 			 * @param targetSurface the surface where to draw.
 			 *
@@ -106,27 +121,31 @@ namespace OSDL
 			 *
 			 * @param yCenter the ordinate of the center of the disc.
 			 *
-			 * @param outerRadius the overall disc radius, including the border ring.
+			 * @param outerRadius the overall disc radius, including the 
+			 * border ring.
 			 *
-			 * @param innerRadius, the radius from which the ring is drawn, until totalRadius is
-			 * reached.
+			 * @param innerRadius, the radius from which the ring is drawn,
+			 * until totalRadius is reached.
 			 *
-			 * @param ringColorDef the ring color, the color of the border of this disk.
+			 * @param ringColorDef the ring color, the color of the border 
+			 * of this disk.
 			 *
 			 * @param discColorDef the inner color of the disc.
 			 *
-			 * @param blended tells whether, for each pixel of the edged disc, the specified
-			 * color should be blended with the one of the target pixel (if true), or if the
-			 * specified color should replace the former one, regardless of any blending (if
-			 * false).
+			 * @param blended tells whether, for each pixel of the edged 
+			 * disc, the specified color should be blended with the one 
+			 * of the target pixel (if true), or if the specified color 
+			 * should replace the former one, regardless of any blending 
+			 * (if false).
 			 *
-			 * @return false if and only if something went wrong (ex : surface lock failed).
+			 * @return false if and only if something went wrong, for 
+			 * example if surface locking failed.
 			 * 
-			 * @note This method is rather expensive (slow), especially if 'discColorDef' is
-			 * not fully opaque and if 'blended' is false.
+			 * @note This method is rather expensive (slow), especially if
+			 * 'discColorDef' is not fully opaque and if 'blended' is false.
 			 *
-			 * @note Locks surface if needed, cipping is performed, disc will be antialiased 
-			 * if antialias mode is set.
+			 * @note Locks surface if needed, clipping is performed, 
+			 * disc will be antialiased iff antialias mode is set.
 			 *
 			 * @see VideoModule::GetAntiAliasingState
 			 *
@@ -135,25 +154,30 @@ namespace OSDL
 				Coordinate xCenter, Coordinate yCenter, 
 				Length outerRadius, Length innerRadius, 
 				Pixels::ColorDefinition ringColorDef = Pixels::Blue, 
-				Pixels::ColorDefinition discColorDef = Pixels::White, bool blended = true )
+				Pixels::ColorDefinition discColorDef = Pixels::White, 
+				bool blended = true )
 					throw() ;
 		
 		
 			/**
-			 * Draws an ellipse whose center is (xCenter,yCenter), with specified horizontal and 
-			 * vertical radius, with specified RGBA color, on specified surface.
+			 * Draws an ellipse whose center is (xCenter,yCenter), with
+			 * specified horizontal and vertical radius, with specified 
+			 * RGBA color, on specified surface.
 			 *
 			 * @param filled tells whether the ellipse should be filled.
 			 *
-			 * @return false if and only if something went wrong (ex : surface lock failed).
+			 * @return false if and only if something went wrong, for 
+			 * example if surface locking failed.
 			 * 
 			 * @note Locks surface if needed.
 			 *
 			 * @note Clipping is performed.
 			 *
-			 * @note An unfilled ellipse will be antialiased if antialias mode is set.
+			 * @note An unfilled ellipse will be antialiased if antialias
+			 * mode is set.
 			 *
-			 * @note Ellipse's axis will be orthogonal or parallel to screen axis.
+			 * @note The ellipse axes will be either orthogonal or parallel to 
+			 * the screen axes.
 			 *
 			 * @see VideoModule::GetAntiAliasingState
 			 *
@@ -162,25 +186,30 @@ namespace OSDL
 				Coordinate xCenter, Coordinate yCenter,
 				Length horizontalRadius, Length verticalRadius,				
 				Pixels::ColorElement red, Pixels::ColorElement green, 
-				Pixels::ColorElement blue, Pixels::ColorElement alpha = Pixels::AlphaOpaque,
+				Pixels::ColorElement blue, 
+				Pixels::ColorElement alpha = Pixels::AlphaOpaque,
 				bool filled = true ) throw() ;
 
 
 			/**
-			 * Draws an ellipse whose center is (xCenter,yCenter), with specified horizontal and 
-			 * vertical radius, with specified RGBA color, on specified surface.
+			 * Draws an ellipse whose center is (xCenter,yCenter), with
+			 * specified horizontal and vertical radius, with specified 
+			 * color definition, on specified surface.
 			 *
 			 * @param filled tells whether the ellipse should be filled.
 			 *
-			 * @return false if and only if something went wrong (ex : surface lock failed).
+			 * @return false if and only if something went wrong, for 
+			 * example if surface locking failed.
 			 * 
 			 * @note Locks surface if needed.
 			 *
 			 * @note Clipping is performed.
 			 *
-			 * @note An unfilled ellipse will be antialiased if antialias mode is set.
+			 * @note An unfilled ellipse will be antialiased iff antialias 
+			 * mode is set.
 			 *
-			 * @note Ellipse's axis will be orthogonal or parallel to screen axis.
+			 * @note The ellipse axes will be either orthogonal or parallel to 
+			 * the screen axes.
 			 *
 			 * @see VideoModule::GetAntiAliasingState
 			 *

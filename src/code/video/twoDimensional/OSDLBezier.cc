@@ -19,9 +19,14 @@ using namespace Ceylan::Log ;
 
 
 
-bool TwoDimensional::drawBezierCurve( Surface & targetSurface, const listPoint2D & controlPoints,
-	Ceylan::Uint16 numberOfSteps, Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha ) throw()
+bool TwoDimensional::drawBezierCurve( 
+	Surface & targetSurface, 
+	const listPoint2D & controlPoints,
+	Ceylan::Uint16 numberOfSteps, 
+	Pixels::ColorElement red, 
+	Pixels::ColorElement green, 
+	Pixels::ColorElement blue, 
+	Pixels::ColorElement alpha ) throw()
 {
 		
 	return drawBezierCurve( targetSurface, controlPoints, numberOfSteps, 
@@ -30,13 +35,17 @@ bool TwoDimensional::drawBezierCurve( Surface & targetSurface, const listPoint2D
 }	
 
 
-bool TwoDimensional::drawBezierCurve( Surface & targetSurface, const listPoint2D & controlPoints,
-	Ceylan::Uint16 numberOfSteps, Pixels::ColorDefinition colorDef ) throw()
+bool TwoDimensional::drawBezierCurve( 
+	Surface & targetSurface, 
+	const listPoint2D & controlPoints,
+	Ceylan::Uint16 numberOfSteps, 
+	Pixels::ColorDefinition colorDef ) throw()
 {
 
 
 	/*
-	 * If a large number of summits is to be used, dynamic allocation (new/delete) would be better.
+	 * If a large number of summits is to be used, dynamic allocation
+	 * (new/delete) would be better.
 	 *
 	 */
 	Ceylan::System::Size vertexCount = controlPoints.size() ;
@@ -46,7 +55,8 @@ bool TwoDimensional::drawBezierCurve( Surface & targetSurface, const listPoint2D
 	
 	vertexCount = 0 ;
 	
-	for ( listPoint2D::const_iterator it = controlPoints.begin(); it != controlPoints.end(); it++ )
+	for ( listPoint2D::const_iterator it = controlPoints.begin(); 
+		it != controlPoints.end(); it++ )
 	{
 		abscissaArray[ vertexCount ] = (*it)->getX() ;
 		ordinateArray[ vertexCount ] = (*it)->getY() ;
@@ -54,8 +64,8 @@ bool TwoDimensional::drawBezierCurve( Surface & targetSurface, const listPoint2D
 		vertexCount++ ;
 	}
 	
-	return ( ::bezierColor( & targetSurface.getSDLSurface(), abscissaArray, ordinateArray,
-		vertexCount, numberOfSteps, 
+	return ( ::bezierColor( & targetSurface.getSDLSurface(), 
+		abscissaArray, ordinateArray, vertexCount, numberOfSteps, 
 		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
 
 }	

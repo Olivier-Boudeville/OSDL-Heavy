@@ -452,7 +452,7 @@ const string CommonModule::toString( Ceylan::VerbosityLevels level )
 string CommonModule::DescribeEnvironmentVariables() throw()
 {
 
-	unsigned int varCount = sizeof( _SDLEnvironmentVariables ) 
+	Ceylan::Uint16 varCount = sizeof( _SDLEnvironmentVariables ) 
 		/ sizeof (char * ) ;
 	
 	string result = "Examining the " + Ceylan::toString( varCount )
@@ -464,7 +464,7 @@ string CommonModule::DescribeEnvironmentVariables() throw()
 	
 	bool htmlFormat = Ceylan::TextDisplayable::GetOutputFormat() ;
 	
-	for ( unsigned int i = 0; i < varCount; i++ ) 
+	for ( Ceylan::Uint16 i = 0; i < varCount; i++ ) 
 	{
 	
 		var = _SDLEnvironmentVariables[ i ] ;
@@ -474,7 +474,7 @@ string CommonModule::DescribeEnvironmentVariables() throw()
 		{
 			if ( htmlFormat == Ceylan::TextDisplayable::html )
 			{
-				variables.push_back( "<em>" + var + " is not set.</em>" ) ;
+				variables.push_back( "<em>" + var + "</em> is not set." ) ;
 			}
 			else
 			{
@@ -485,8 +485,8 @@ string CommonModule::DescribeEnvironmentVariables() throw()
 		{			
 			if ( htmlFormat == Ceylan::TextDisplayable::html )
 			{
-				variables.push_back( "<b>" + var + " set to [" 
-					+ value + "].</b>" ) ;
+				variables.push_back( "<b>" + var + "</b> set to [" 
+					+ value + "]." ) ;
 			}
 			else
 			{
@@ -503,7 +503,9 @@ string CommonModule::DescribeEnvironmentVariables() throw()
 
 bool CommonModule::IsBackendInitialized() throw()
 {
+
 	return _BackendInitialized ;
+	
 }
 
 
@@ -613,13 +615,16 @@ CommonModule & OSDL::getCommonModule( Flags flags ) throw()
 			return * CommonModule::_CurrentCommonModule ;
 			
 		}
-	}				
+	}	
+				
 }
 
 
 bool OSDL::hasExistingCommonModule() throw()
 {
+
 	return ( CommonModule::_CurrentCommonModule != 0 ) ;
+	
 }
 
 
@@ -651,6 +656,4 @@ void OSDL::stop() throw()
 	}
 	
 }
-
-
 

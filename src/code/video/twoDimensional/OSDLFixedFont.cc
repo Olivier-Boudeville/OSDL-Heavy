@@ -5,9 +5,8 @@
 #include "OSDLVideoTypes.h"      // for Length, SignedLength, etc.
 #include "OSDLUtils.h"           // for getBackendLastError.
 
-#include "Ceylan.h"              // for Uint32, inheritance
-
 #include "SDL_gfxPrimitives.h"   // for stringColor
+
 #include "SDL.h"                 // for SDL_Surface
 
 #include <list>
@@ -28,8 +27,11 @@ using namespace OSDL::Video::TwoDimensional::Text ;
 Ceylan::System::FileLocator Text::FixedFont::FixedFontFileLocator ;
 
 
-const OSDL::Video::Length OSDL::Video::TwoDimensional::Text::BasicFontCharacterWidth  = 8 ;
-const OSDL::Video::Length OSDL::Video::TwoDimensional::Text::BasicFontCharacterHeight = 8 ;
+const OSDL::Video::Length
+	OSDL::Video::TwoDimensional::Text::BasicFontCharacterWidth  = 8 ;
+	
+const OSDL::Video::Length
+	OSDL::Video::TwoDimensional::Text::BasicFontCharacterHeight = 8 ;
 
 
 
@@ -39,7 +41,7 @@ string Text::FixedFont::FontFileExtension = ".fnt" ;
 const Ceylan::Float32 Text::FixedFont::SpaceWidthFactor = 0.7 ;
 
 
-Ceylan::Uint16 Text::FixedFont::FontCharacterCount = 256 ;
+const Ceylan::Uint16 Text::FixedFont::FontCharacterCount = 256 ;
 
 
 
@@ -50,57 +52,55 @@ bool Text::printBasic( const std::string & text, Surface & targetSurface,
 	Coordinate x, Coordinate y, Pixels::ColorDefinition colorDef ) throw()
 {	
 
-	// SDl_gfx is clumsy here : should have 'const char *c', not 'char *c' as parameter :	
-	char * copiedText = Ceylan::getNonConstCharFrom( text ) ;
-		
 	FixedFont::SetFontSettings( /* no font data : built-in */ 0, /* width */ 8, 
 		/* height */ 8 ) ;
 			
-	bool result = ::stringColor( & targetSurface.getSDLSurface(), x, y, copiedText,
+	bool result = ::stringColor( & targetSurface.getSDLSurface(), 
+		x, y, text.c_str(),
 		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ;
-	
-	delete[] copiedText ;
-	
+		
 	return result ;
 	
 }
 
 
 bool Text::printBasic( const std::string & text, Surface & targetSurface,
-	Coordinate x, Coordinate y, Pixels::ColorElement red, Pixels::ColorElement blue,
+	Coordinate x, Coordinate y, 
+	Pixels::ColorElement red, Pixels::ColorElement blue,
 	Pixels::ColorElement green, Pixels::ColorElement alpha ) throw()
 {	
 
-	char * copiedText = Ceylan::getNonConstCharFrom( text ) ;
 	
 	FixedFont::SetFontSettings( /* no font data : built-in */ 0, /* width */ 8, 
 		/* height */ 8 ) ;
 		
 	/*
-	 * Color should not be mapped to target surface, since it will be done thanks to the SDL_gfx
-	 * blit of the result.
+	 * Color should not be mapped to target surface, since it will be 
+	 * done thanks to the SDL_gfx blit of the result.
 	 *
 	 */
 		
-	bool result = ::stringRGBA( & targetSurface.getSDLSurface(), x, y, copiedText,
-		red, green, blue, alpha	) == 0 ;
-	
-	delete[] copiedText ;
-	
+	bool result = ::stringRGBA( & targetSurface.getSDLSurface(), x, y,
+		text.c_str(), red, green, blue, alpha ) == 0 ;
+		
 	return result ;
+	
 }
 
 
 
 /*
- * The problem of the SDL_gfx fixed fonts is that the glyph caching feature works only
- * for one font (and one color). If multiple fixed fonts are used, as they share the same cache,
- * their glyphs are regularly overwritten by the same character rendered with another font, and,
- * even worse, switching fonts leads to flushing all the glyph cache.
+ * The problem of the SDL_gfx fixed fonts is that the glyph caching 
+ * feature works only for one font and one color.
+ * If multiple fixed fonts are used, as they share the same cache,
+ * their glyphs are regularly overwritten by the same character rendered 
+ * with another font, and, even worse, switching fonts leads to flushing 
+ * all the glyph cache.
  *
- * To avoid that, OSDL uses one cache by fixed font. Besides, the cached glyph can be directly 
- * converted to display, which, together with a RLE encoding based on the color key, should be
- * more efficient.
+ * To avoid that, OSDL uses one cache by fixed font. 
+ * Besides, the cached glyph can be directly converted to display, which,
+ * together with a RLE encoding based on the color key, should be more
+ * efficient.
  *
  */
 
@@ -120,7 +120,8 @@ FixedFont::FixedFont(
 {
 
 	// Space and alinea widths are set as well by :
-	loadFontFrom( BuildFontFilenameFor( characterWidth, characterHeight, renderingStyle ) ) ;
+	loadFontFrom( BuildFontFilenameFor( characterWidth, characterHeight,
+		renderingStyle ) ) ;
 	
 }
 
@@ -147,28 +148,37 @@ FixedFont::FixedFont(
 
 
 FixedFont::~FixedFont() throw()
-{				
+{		
+		
 	if ( _fontData != 0 )
-		delete [] _fontData ;				
+		delete [] _fontData ;	
+					
 }
 
 
 
 Width FixedFont::getWidth() const throw()
 {
+
 	return _width ;
+	
 }
 
 
 Width FixedFont::getWidth( Ceylan::Latin1Char character ) const throw()
 {
+
 	return _width ;
+	
 }
 
 
-SignedWidth FixedFont::getWidthOffset( Ceylan::Latin1Char character ) const throw( TextException )
+SignedWidth FixedFont::getWidthOffset( Ceylan::Latin1Char character ) 
+	const throw( TextException )
 {
+
 	return 0 ;
+	
 }
 
 
@@ -176,32 +186,43 @@ SignedWidth FixedFont::getWidthOffset( Ceylan::Latin1Char character ) const thro
 SignedHeight FixedFont::getHeightAboveBaseline( Ceylan::Latin1Char character ) 
 	const throw( TextException )
 {
+
 	return _height ;
+	
 }
 
 
 SignedLength FixedFont::getAdvance() const throw( TextException )
 {
+
 	return _width ;
+	
 }
 
 
-SignedLength FixedFont::getAdvance( Ceylan::Latin1Char character ) const throw( TextException )
+SignedLength FixedFont::getAdvance( Ceylan::Latin1Char character ) 
+	const throw( TextException )
 {
+
 	// As getInterGlyphWidth returns 0 :
 	return _width ;
+	
 }
 
 
 Width FixedFont::getInterGlyphWidth() const throw()
 {
+
 	return 0 ;
+	
 }
 
 
 Height FixedFont::getHeight() const throw()
 {
+
 	return _height ;
+	
 }
 
 
@@ -213,13 +234,18 @@ SignedHeight FixedFont::getAscent() const throw()
 
 SignedHeight FixedFont::getDescent() const throw()
 {
+
 	return 0 ;
+	
 }
 
 
 Height FixedFont::getLineSkip() const throw()
 {
-	return _height + static_cast<Height>( Ceylan::Maths::Max<float>( 2 , 0.1 * _height ) ) ;
+
+	return _height + static_cast<Height>( 
+		Ceylan::Maths::Max<Ceylan::Float32>( 2 , 0.1 * _height ) ) ;
+		
 }
 
 
@@ -229,16 +255,19 @@ Height FixedFont::getLineSkip() const throw()
 
 UprightRectangle & FixedFont::getBoundingBox() const throw( TextException )
 {
+
 	return * new UprightRectangle( 0, 0, getAdvance(), getLineSkip() ) ;
+	
 }
 
 
-UprightRectangle & FixedFont::getBoundingBoxFor( const std::string & word ) const
-	throw( TextException )
+UprightRectangle & FixedFont::getBoundingBoxFor( const std::string & word )
+	const throw( TextException )
 {
 
 	if ( word.empty() )
-		throw TextException( "FixedFont::getBoundingBoxFor (word) : empty word specified." ) ;
+		throw TextException( 
+			"FixedFont::getBoundingBoxFor (word) : empty word specified." ) ;
 			
 	return * new UprightRectangle( 0, 0, 
 		static_cast<Length>( getAdvance() * ( word.size() - 1 ) + _width ), 
@@ -253,8 +282,9 @@ UprightRectangle & FixedFont::getBoundingBoxFor( const std::string & word ) cons
 
 
 
-OSDL::Video::Surface & FixedFont::renderLatin1Glyph( Ceylan::Latin1Char character, 
-	RenderQuality quality, Pixels::ColorDefinition glyphColor ) throw( TextException )
+OSDL::Video::Surface & FixedFont::renderLatin1Glyph( 
+	Ceylan::Latin1Char character, RenderQuality quality, 
+	Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
 
 	// Two different cases, depending on a glyph cache being used or not :
@@ -263,8 +293,8 @@ OSDL::Video::Surface & FixedFont::renderLatin1Glyph( Ceylan::Latin1Char characte
 	{
 		
 		/*
-		 * First check that the character-quality-color combination is not already available 
-		 * in cache :
+		 * First check that the character-quality-color combination is not
+		 * already available in cache :
 		 *
 		 */
 		
@@ -276,23 +306,30 @@ OSDL::Video::Surface & FixedFont::renderLatin1Glyph( Ceylan::Latin1Char characte
 		if ( res != 0 )
 		{
 		
-			#ifdef OSDL_DEBUG_FONT
+			Surface * toReturn = dynamic_cast<Surface *>( res ) ;
+			
+#if OSDL_DEBUG_FONT
+
 			LogPlug::debug( "FixedFont::renderLatin1Glyph : cache hit, "
 				"returning clone of prerendered glyph." ) ;
 			
-			if ( res == 0 )
+			if ( toReturn == 0 )
 				Ceylan::emergencyShutdown( "FixedFont::renderLatin1Glyph : "
-					"clone is not a Surface." ) ;
-			#endif
+					"cache did not return a Surface." ) ;
+								
+#endif // OSDL_DEBUG_FONT
 			
-			return * dynamic_cast<Surface *>( res ) ;
+			return *toReturn ;
 			
 		}	
 		
-		#ifdef OSDL_DEBUG_FONT
+		
+#if OSDL_DEBUG_FONT
+
 		LogPlug::debug( "FixedFont::renderLatin1Glyph : "
 			"cache miss, creating new glyph rendering." ) ;
-		#endif
+			
+#endif // OSDL_DEBUG_FONT
 
 		// Here it its a cache miss, we therefore have to generate the glyph :
 		Surface & newSurface = basicRenderLatin1Glyph( character, glyphColor ) ;
@@ -305,13 +342,18 @@ OSDL::Video::Surface & FixedFont::renderLatin1Glyph( Ceylan::Latin1Char characte
 					
 	}
 
-	// Here we are not using a glyph cache, we have simply to generate the glyph :	
+	/*
+	 * Here we are not using a glyph cache, we have simply to generate 
+	 * the glyph :	
+	 *
+	 */
 	return basicRenderLatin1Glyph( character, glyphColor ) ;	
 
 }
 
 
-void FixedFont::blitLatin1Glyph( Surface & targetSurface, Coordinate x, Coordinate y, 
+void FixedFont::blitLatin1Glyph( Surface & targetSurface, 
+	Coordinate x, Coordinate y, 
 	Ceylan::Latin1Char character, RenderQuality quality, 
 	Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
@@ -325,8 +367,8 @@ void FixedFont::blitLatin1Glyph( Surface & targetSurface, Coordinate x, Coordina
 	{
 		
 		/*
-		 * First check that the character-(quality)-color combination is not already available in
-		 * cache :
+		 * First check that the character-(quality)-color combination 
+		 * is not already available in cache :
 		 *
 		 */
 		 
@@ -339,16 +381,19 @@ void FixedFont::blitLatin1Glyph( Surface & targetSurface, Coordinate x, Coordina
 		{
 		
 			// Already available ? Get it and blit it !
-			const Surface * cachedSurface = dynamic_cast<const Surface *>( cacheEntry ) ;
+			const Surface * cachedSurface = 
+				dynamic_cast<const Surface *>( cacheEntry ) ;
 			
-			#ifdef OSDL_DEBUG_FONT
+#if OSDL_DEBUG_FONT
+
 			LogPlug::debug( "FixedFont::blitLatin1Glyph : "
 				"cache hit, blitting prerendered glyph." ) ;
 			
 			if ( cachedSurface == 0 )
 				Ceylan::emergencyShutdown( "FixedFont::blitLatin1Glyph : "
 					"cache did not return a Surface." ) ;
-			#endif
+					
+#endif // OSDL_DEBUG_FONT
 			
 			try
 			{
@@ -356,63 +401,75 @@ void FixedFont::blitLatin1Glyph( Surface & targetSurface, Coordinate x, Coordina
 			}
 			catch( const VideoException & e )
 			{
-				throw TextException( "FixedFont::blitLatin1Glyph : blit of cloned glyph failed : "
-					+ e.toString() ) ;
+				throw TextException( "FixedFont::blitLatin1Glyph : "
+					"blit of cloned glyph failed : " + e.toString() ) ;
 			}
 			
 		}
 		else
 		{
 		
-			#ifdef OSDL_DEBUG_FONT
+#if OSDL_DEBUG_FONT
+
 			LogPlug::debug( "FixedFont::blitLatin1Glyph : cache miss, "
-				"blitting glyph newly rendered." ) ;
-			#endif
+				"blitting newly rendered glyph." ) ;
+				
+#endif // OSDL_DEBUG_FONT
 		
 			/*
-			 * Not found in cache, hence ask a new rendering (and submit it to the glyph cache) :
+			 * Not found in cache, hence ask a new rendering 
+			 * (and submit it to the glyph cache) :
 			 *
-			 * (the surface returned by 'submitLatin1GlyphToCache' is owned in all cases by the
-			 * cache, it should not be deallocated here)
+			 * (the surface returned by 'submitLatin1GlyphToCache' is 
+			 * owned in all cases by the cache, it should not be 
+			 * deallocated here)
+			 *
 			 */ 
-			submitLatin1GlyphToCache( character, glyphColor ).blitTo( targetSurface, x, y ) ;
+			submitLatin1GlyphToCache( character, glyphColor ).blitTo(
+				targetSurface, x, y ) ;
 							
 		}
 					
 	}
 	
-	// Here we are not glyph-cached, we blit the glyph directly :
-	basicBlitLatin1Glyph( targetSurface, x, y, character, /* no quality managed */ glyphColor ) ;
-	
+	/*
+	 * Here we are not glyph-cached, we blit the glyph directly :
+	 * (no quality managed) :
+	 *
+	 */
+	basicBlitLatin1Glyph( targetSurface, x, y, character, glyphColor ) ;
 	
 }
 
 			
 				
-OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha( Ceylan::Latin1Char character, 
-	RenderQuality quality, Pixels::ColorDefinition glyphColor ) throw( TextException )
+OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha( 
+	Ceylan::Latin1Char character, RenderQuality quality,
+	Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
 
 	/*
-	 * This method should not be used since it does not do what was expected.
+	 * This method should not be used, since it does not do what was expected.
 	 *
-	 * This is not really annoying since using colorkey is indeed better than using alphablending
-	 * in the case of fonts.
+	 * This is not really annoying since using colorkey is indeed better 
+	 * than using alphablending in the case of fonts.
 	 *
 	 */
 	
 	/*
 	 * With testOSDLFixedFont.cc, one can see that :
-	 *   - if the alpha mask for the created surface is the expected '0x000000FF', then one can 
-	 * see only a grid, no character is to be seen
-	 *   - if the alpha mask for the created surface is '0x00000FF0', then one can see that the 
-	 * characters are indeed available but that their alpha coordinate is null, whereas we would
-	 * want to have it set to the one of the surface generated by SDL_gfx : the blit does not do
+	 *   - if the alpha mask for the created surface is the expected
+	 * '0x000000FF', then one can see only a grid, no character is to be seen
+	 *   - if the alpha mask for the created surface is '0x00000FF0', then 
+	 * one can see that the characters are indeed available but that their 
+	 * alpha coordinate is null, whereas we would want to have it set to 
+	 * the one of the surface generated by SDL_gfx : the blit does not do
 	 * what we would want, we tried many settings with no luck for the moment.
 	 *
 	 */
 	 
-	Pixels::PixelColor color = Pixels::convertColorDefinitionToRawPixelColor( glyphColor ) ;
+	Pixels::PixelColor color = Pixels::convertColorDefinitionToRawPixelColor(
+		glyphColor ) ;
 	
 	/*
 	if ( _cacheSettings == Font::GlyphCached )
@@ -425,41 +482,56 @@ OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha( Ceylan::Latin1Char cha
 				return inCache->clone() ;
 	}
 	*/
+	
 	// Here we have to generate the glyph.
 
 	/*
-	 * Some explanations are needed to understand how alpha blending is managed :
-	 * 1. an empty RGBA surface, with source alpha blending disabled, is created.
-	 * It will hold a copy of the surface put in cache and blit by SDL_gfx (characterColor).
-	 * The first setAlpha disables the source alpha blending on this surface, to prepare for the
-	 * SDL_gfx operated blit. Otherwise we would be in the case of (RGBA with SRCALPHA) -> RBGA 
-	 * blit which, according to http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fSetAlpha, would result
-	 * to our new surface having unchanged alpha coordinates, hence uniform : the alpha-coded shape
-	 * of letters would be lost. Instead, this first setAlpha allows to have a
-	 * (RGBA with SRCALPHA) -> RBG blit, which preserves the alpha coordinates from SDL_gfx 
+	 * Some explanations are needed to understand how alpha blending is 
+	 * managed :
+	 * 1. an empty RGBA surface, with source alpha blending disabled, is
+	 * created.
+	 * It will hold a copy of the surface put in cache and blit by SDL_gfx
+	 * (characterColor).
+	 * The first setAlpha disables the source alpha blending on this surface, 
+	 * to prepare for the SDL_gfx operated blit. 
+	 * Otherwise we would be in the case of (RGBA with SRCALPHA) -> RBGA 
+	 * blit which, according to
+	 * http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fSetAlpha, would result
+	 * to our new surface having unchanged alpha coordinates, hence uniform :
+	 * the alpha-coded shape of letters would be lost. 
+	 * Instead, this first setAlpha allows to have a
+	 * (RGBA with SRCALPHA) -> RBG blit, which preserves the alpha 
+	 * coordinates from SDL_gfx 
 	 * 2. then the blit is performed thanks to characterColor
-	 * 3. the source alpha attribute of the result is restored thanks to a second call to setAlpha.
-	 * This way, when our surface will be blitted (for example to the screen surface), it will blit 
-	 * as a surface directly generated by SDL_gfx would be blitted, i.e. with respect to the
-	 * alpha coordinates we managed painfully to preserve.
+	 * 3. the source alpha attribute of the result is restored thanks 
+	 * to a second call to setAlpha.
+	 * This way, when our surface will be blitted (for example to the 
+	 * screen surface), it will be blitted as a surface directly generated 
+	 * by SDL_gfx would be blitted, i.e. with respect to the alpha 
+	 * coordinates we managed painfully to preserve.
 	 *
-	 * I found this alpha-blending subject rather dull or awfully explained by the SDL doc,
-	 * the result worked after many attempts and errors, I hope I gave correct explanations 
-	 * nevertheless.
+	 * I found this alpha-blending subject rather dull and awfully explained 
+	 * by the SDL doc, the result does not seem to work correctly.
 	 *
 	 */
 	 
 	 
-	// Creates a new back-buffer surface to which the glyph will be blitted :
+	/*
+	 * Creates a new back-buffer surface to which the glyph will be blitted :
+	 *
+	 * (beware to endianness)
+	 *
+	 */
 		
 	Surface & res = * new Surface( * SDL_CreateRGBSurface( 
-		Surface::Hardware ,
-		_width, _height, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF0
-		 /* replace 0x000000FF by 0x00000FF0 to see that this could work */
+		Surface::Hardware, _width, _height, 32, 
+		0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF0
+		/* replace 0x000000FF by 0x00000FF0 to see that this could work */
 		  ) ) ;
 	
 	// Clears source alpha bit for our surface to prepare for next blit :
-	res.setAlpha( 0 /* Surface::AlphaBlendingBlit disabled */, Pixels::AlphaOpaque ) ;		
+	res.setAlpha( 0 /* Surface::AlphaBlendingBlit disabled */,
+		Pixels::AlphaOpaque ) ;		
 	
 	// Blits the SDL_gfx-generated character to our surface :
 	if ( ::characterColor( & res.getSDLSurface(), 0, 0, 
@@ -484,7 +556,8 @@ OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha( Ceylan::Latin1Char cha
 const string FixedFont::toString( Ceylan::VerbosityLevels level ) const throw()
 {
 
-	string res = "Fixed font, whose dimensions are " + Ceylan::toString( _width ) 
+	string res = "Fixed font, whose dimensions are " 
+		+ Ceylan::toString( _width ) 
 		+ "x" + Ceylan::toString( _height ) ;
 		
 	if ( level == Ceylan::low )
@@ -493,7 +566,6 @@ const string FixedFont::toString( Ceylan::VerbosityLevels level ) const throw()
 	res += ". " + Font::toString( level ) ;
 	
 	return res ;
-		
 		
 }
 
@@ -507,30 +579,40 @@ const string FixedFont::toString( Ceylan::VerbosityLevels level ) const throw()
 // Protected section.
 
 	
-Font::RenderQuality FixedFont::GetObtainedQualityFor( Font::RenderQuality targetedQuality ) throw()	
+Font::RenderQuality FixedFont::GetObtainedQualityFor( 
+	Font::RenderQuality targetedQuality ) throw()	
 {
+
 	return Solid ;
+	
 }
 
 
-void FixedFont::SetFontSettings( const char * fontData, 
+void FixedFont::SetFontSettings( const Ceylan::Byte * fontData, 
 	Length characterWidth, Length characterHeight ) throw()	
 {
 
-	static const char * lastFontData        = 0 ;
+	static const char * lastFontData  = 0 ;
 	static Length lastCharacterWidth  = 0 ;
 	static Length lastCharacterHeight = 0 ;
 	
-	// No other code should use directly 'gfxPrimitivesSetFont' since it would change SDL_gfx state.
+	/*
+	 * No other code should use directly 'gfxPrimitivesSetFont' since it 
+	 * would change SDL_gfx state.
+	 *
+	 */
 	if ( lastFontData != fontData || lastCharacterWidth != characterWidth 
 		|| lastCharacterHeight != characterHeight )
 	{
 	
 		// We have indeed to reset SDL_gfx state :
 				
-		#ifdef OSDL_DEBUG_FONT
-		LogPlug::debug( "FixedFont::SetFontSettings : having to reset SDL_gfx state" ) ;
-		#endif
+#if OSDL_DEBUG_FONT
+
+		LogPlug::debug( 
+			"FixedFont::SetFontSettings : having to reset SDL_gfx state" ) ;
+			
+#endif // OSDL_DEBUG_FONT
 		
 		lastFontData        = fontData ;
 		lastCharacterWidth  = characterWidth ;
@@ -540,25 +622,34 @@ void FixedFont::SetFontSettings( const char * fontData,
 	}	
 	else
 	{
-		#ifdef OSDL_DEBUG_FONT
+	
+#if OSDL_DEBUG_FONT
+
 		LogPlug::debug( "FixedFont::SetFontSettings : saved a SDL_gfx reset" ) ;
-		#endif
+		
+#endif // OSDL_DEBUG_FONT
+
 	}
 
 }							
+
 
 
 							
 // Protected section.
 
 							
-void FixedFont::loadFontFrom( const std::string & fontFilename ) throw( TextException )
+void FixedFont::loadFontFrom( const std::string & fontFilename ) 
+	throw( TextException )
 {
 
 
-	#ifdef OSDL_DEBUG_FONT
-	LogPlug::trace( "FixedFont::loadFontFrom : trying to load font file <" + fontFilename + ">." ) ;
-	#endif
+#if OSDL_DEBUG_FONT
+
+	LogPlug::trace( "FixedFont::loadFontFrom : trying to load font file '" 
+		+ fontFilename + "'." ) ;
+	
+#endif // OSDL_DEBUG_FONT
 
 	string fontFullPath = fontFilename ;
 	
@@ -588,23 +679,31 @@ void FixedFont::loadFontFrom( const std::string & fontFilename ) throw( TextExce
 				
 				try
 				{
-					currentDir = System::Directory::GetCurrentWorkingDirectoryName() ;
+					currentDir =
+						System::Directory::GetCurrentWorkingDirectoryName() ;
 				}
-				catch( const Ceylan::System::Directory::DirectoryException & exc )
+				catch( const System::Directory::DirectoryException & exc )
 				{
-					throw TextException( "FixedFont::loadFontFrom : unable to load '" 
-						+ fontFilename + "', exception generation triggered another failure : "
+				
+					throw TextException( 
+						"FixedFont::loadFontFrom : unable to load '" 
+						+ fontFilename 
+						+ "', exception generation triggered another failure : "
 						+ exc.toString() + "." ) ;
+						
 				}
 				
-				throw TextException( "FixedFont::loadFontFrom : '" + fontFilename 
+				throw TextException( "FixedFont::loadFontFrom : '" 
+					+ fontFilename 
 					+ "' is not a regular file or a symbolic link "
 					"relative to the current directory (" + currentDir
 					+ ") and cannot be found through Fixed font locator ("
 					+ FixedFont::FixedFontFileLocator.toString() 
-					+ ") nor through general font locator based on font path environment variable ("
+					+ ") nor through general font locator "
+					"based on font path environment variable ("
 					+ Font::FontPathEnvironmentVariable + ") : " 
 					+ Font::FontFileLocator.toString() + "." ) ;
+					
 			}		
 		}		
 	}		
@@ -612,9 +711,12 @@ void FixedFont::loadFontFrom( const std::string & fontFilename ) throw( TextExce
 	
 	// Here fontFullPath should be OK.
 
-	#ifdef OSDL_DEBUG_FONT
-	LogPlug::debug( "FixedFont::loadFontFrom : full font filename is '" + fontFullPath + "'." ) ;
-	#endif
+#if OSDL_DEBUG_FONT
+
+	LogPlug::debug( "FixedFont::loadFontFrom : full font filename is '" 
+		+ fontFullPath + "'." ) ;
+		
+#endif // OSDL_DEBUG_FONT
 	
 	try
 	{
@@ -629,16 +731,19 @@ void FixedFont::loadFontFrom( const std::string & fontFilename ) throw( TextExce
 		_fontData = new char[ dataSize ] ;
 		
 		if ( _fontData == 0 )
-			throw TextException( "FixedFont::loadFontFrom : not enough memory." ) ;
+			throw TextException( 
+				"FixedFont::loadFontFrom : not enough memory." ) ;
 		
 		if ( fontFile.read( _fontData, dataSize ) != dataSize )
-			throw TextException( "FixedFont::loadFontFrom : error while reading font data." ) ;
+			throw TextException( 
+				"FixedFont::loadFontFrom : error while reading font data." ) ;
 		
 	}
 	catch( const System::SystemException & e )
 	{
-		throw TextException( "FixedFont::loadFontFrom : error while loading font data file : "
-			+ e.toString() ) ;
+	
+		throw TextException( "FixedFont::loadFontFrom : "
+			"error while loading font data file : "	+ e.toString() ) ;
 	}
 	
 	_spaceWidth = static_cast<Width>( SpaceWidthFactor * 
@@ -647,15 +752,22 @@ void FixedFont::loadFontFrom( const std::string & fontFilename ) throw( TextExce
 	// By default, the width of an alinea is a multiple of a space width :
 	_alineaWidth = DefaultSpaceBasedAlineaWidth * _spaceWidth ;	
 
-	// Here the font is loaded.			
+	// Here the font is loaded.	
+			
 }
 
 
-const Surface & FixedFont::submitLatin1GlyphToCache( Ceylan::Latin1Char character,
-	Pixels::ColorDefinition glyphColor )	throw( TextException )
+
+const Surface & FixedFont::submitLatin1GlyphToCache( 
+		Ceylan::Latin1Char character, Pixels::ColorDefinition glyphColor ) 
+	throw( TextException )
 {
 	
-	// The method contracts tells us this character is not in cache, we have to render it :
+	/*
+	 * The method contract tells us this character is not in cache, we 
+	 * have to render it :
+	 *
+	 */
 	Surface & glyphSurface = basicRenderLatin1Glyph( character, glyphColor ) ;
 
 	CharColorQualityKey renderKey( character, glyphColor, 
@@ -671,18 +783,21 @@ const Surface & FixedFont::submitLatin1GlyphToCache( Ceylan::Latin1Char characte
 	{
 	
 		/*
-		 * This should never happen since this method is meant to be called only when the cache
-		 * could not respond : the key should therefore not be already associated.
+		 * This should never happen since this method is meant to be 
+		 * called only when the cache could not respond : the key should
+		 * therefore not be already associated.
 		 *
 		 */
-		 throw TextException( "FixedFont::submitLatin1GlyphToCache : cache submitting failed : "
+		 throw TextException( 
+		 	"FixedFont::submitLatin1GlyphToCache : cache submitting failed : "
 		 	+ e.toString() ) ;
 
 	}
 	
 	if ( ! takenByCache )
 		throw TextException( "FixedFont::submitLatin1GlyphToCache : "
-			"cache did not accept rendering for '" + Ceylan::toString( character ) + "'." ) ;
+			"cache did not accept rendering for '" 
+			+ Ceylan::toString( character ) + "'." ) ;
 	
 	// Cache still owns that (const) surface :		
 	return glyphSurface ;
@@ -690,16 +805,19 @@ const Surface & FixedFont::submitLatin1GlyphToCache( Ceylan::Latin1Char characte
 }
 
 
+
 Surface & FixedFont::basicRenderLatin1Glyph( Ceylan::Latin1Char character, 
 	Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
 
 	ColorMask redMask, greenMask, blueMask ;
+	
 	Pixels::getRecommendedColorMasks( redMask, greenMask, blueMask ) ;
 	
 	// Creates a back-buffer surface with no source alpha blending requested :
 	Surface & res = * new Surface( Surface::Hardware | Surface::ColorkeyBlit,
-		_width, _height, /* bpp */ 32, redMask, greenMask, blueMask, /* no alpha wanted */ 0 ) ;
+		_width, _height, /* bpp */ 32, redMask, greenMask, blueMask, 
+		/* no alpha wanted */ 0 ) ;
 
 	// Avoid messing text color with color key :
 	Pixels::ColorDefinition colorKey ;
@@ -711,8 +829,15 @@ Surface & FixedFont::basicRenderLatin1Glyph( Ceylan::Latin1Char character,
 	}	
 	else
 	{
+	
 		colorKey = Pixels::Black ;
-		// No need to fill 'res' with black, since new RGB surfaces come all black already.
+		
+		/*
+		 * No need to fill 'res' with black, since new RGB surfaces come 
+		 * all black already.
+		 *
+		 */
+		 
 	}	
 		
 	basicBlitLatin1Glyph( res, 0, 0, character, glyphColor ) ;
@@ -737,31 +862,36 @@ Surface & FixedFont::basicRenderLatin1Glyph( Ceylan::Latin1Char character,
 }	
 								
 							
-void FixedFont::basicBlitLatin1Glyph( Surface & targetSurface, Coordinate x, Coordinate y,
-	Ceylan::Latin1Char character, Pixels::ColorDefinition glyphColor ) throw( TextException )
+void FixedFont::basicBlitLatin1Glyph( Surface & targetSurface,
+	 Coordinate x, Coordinate y, Ceylan::Latin1Char character,
+	 Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
 
 	/*
-	 * SDL_gfx internal cache may have to be reset, since another fixed font may be the current
-	 * one.
+	 * SDL_gfx internal cache may have to be reset, since another fixed 
+	 * font may be the current one.
 	 *
-	 * This is not that annoying since glyphs already can be cached at the OSDL level, and the 
-	 * actual reset is only triggered when necessary.
+	 * This is not that annoying since glyphs already can be cached at 
+	 * the OSDL level, and the actual reset is only triggered when necessary.
 	 *
 	 */
 	SetFontSettings( _fontData, _width, _height ) ; 
 
-	Pixels::PixelColor color = Pixels::convertColorDefinitionToRawPixelColor( glyphColor ) ;
+	Pixels::PixelColor color = Pixels::convertColorDefinitionToRawPixelColor(
+		glyphColor ) ;
 	
 	if ( ::characterColor( & targetSurface.getSDLSurface(), x, y, 
 			static_cast<char>( character ), color ) != 0 )
-		throw TextException( "FixedFont::basicBlitLatin1Glyph : blit of glyph failed, " 
+		throw TextException( 
+			"FixedFont::basicBlitLatin1Glyph : blit of glyph failed, " 
 			+ Utils::getBackendLastError() ) ;	
 
 }
+	
 							
 							
-string FixedFont::BuildFontFilenameFor( Length characterWidth, Length characterHeight,
+string FixedFont::BuildFontFilenameFor( 
+	Length characterWidth, Length characterHeight,
 	RenderingStyle renderingStyle ) throw( TextException )
 {
 
@@ -769,51 +899,59 @@ string FixedFont::BuildFontFilenameFor( Length characterWidth, Length characterH
 	
 	if ( renderingStyle & Bold )
 	{
+	
 		if ( renderingStyle & ~Bold )
 			throw TextException( "FixedFont::buildFontFilenameFor : "
-				"too many rendering styles selected : " + Ceylan::toString( renderingStyle ) 
-				+ "." ) ;
+				"too many rendering styles selected : " 
+				+ Ceylan::toString( renderingStyle ) + "." ) ;
 				
 		attribute += "B" ;
+		
 	}
 	
 	if ( renderingStyle & Italic )
 	{
+	
 		if ( renderingStyle & ~Italic )
 			throw TextException( "FixedFont::buildFontFilenameFor : "
-				"too many rendering styles selected : " + Ceylan::toString( renderingStyle ) 
-				+ "." ) ;
+				"too many rendering styles selected : " 
+				+ Ceylan::toString( renderingStyle ) + "." ) ;
 				
 		attribute += "O" ;
+		
 	}
 	
 	if ( renderingStyle & Underline )
 	{
+	
 		if ( renderingStyle & ~Underline )
 			throw TextException( "FixedFont::buildFontFilenameFor : "
-				"too many rendering styles selected : " + Ceylan::toString( renderingStyle ) 
-				+ "." ) ;
+				"too many rendering styles selected : " 
+				+ Ceylan::toString( renderingStyle ) + "." ) ;
 				
 		attribute += "U" ;
+		
 	}
 	
 	
-	return Ceylan::toString( characterWidth ) + "x" + Ceylan::toString( characterHeight )
-		+ attribute + FontFileExtension ;
+	return Ceylan::toString( characterWidth ) + "x" 
+		+ Ceylan::toString( characterHeight ) + attribute + FontFileExtension ;
 
 }
 
 
-void FixedFont::GetFontAttributesFrom( const string & filename, Length & characterWidth, 
-	Length & characterHeight, RenderingStyle & renderingStyle ) throw( TextException )
+void FixedFont::GetFontAttributesFrom( const string & filename, 
+	Length & characterWidth, Length & characterHeight, 
+	RenderingStyle & renderingStyle ) throw( TextException )
 {
 
 	// Some examples : '10x20.fnt', '8x13B.fnt'
 	System::Size size = filename.size() ;
 
 	if ( filename.substr( size - 4 ) != FontFileExtension )
-		throw TextException( "FixedFont::getFontAttributesFrom : expected extension ("
-			+ FontFileExtension + ") not found in '" + filename + "'." ) ;
+		throw TextException( 
+			"FixedFont::getFontAttributesFrom : expected extension ("
+			+ FontFileExtension + "), not found in '" + filename + "'." ) ;
 	
 	string width, height ;
 	
@@ -830,26 +968,33 @@ void FixedFont::GetFontAttributesFrom( const string & filename, Length & charact
 	}
 	catch( const Ceylan::Exception & e )
 	{
-		throw TextException( "FixedFont::getFontAttributesFrom : unable to guess width from '"
+	
+		throw TextException( 
+			"FixedFont::getFontAttributesFrom : unable to guess width from '"
 			+ filename + "' : " + e.toString() ) ;
 	}
 	
 	index++ ;
 	
-	while ( ::isdigit( filename[index] ) && index < size - 3 /* to include the '.' */ )
+	while ( ::isdigit( filename[index] ) 
+		&& index < size - 3 /* to include the '.' */ )
 	{
 		height += filename[index] ;
 	} 		
 	
+	
 	try
 	{	
-		characterHeight = static_cast<Length>( stringToUnsignedLong( height ) ) ;
+		characterHeight = 
+			static_cast<Length>( stringToUnsignedLong( height ) ) ;
 	}
 	catch( const Ceylan::Exception & e )
 	{
-		throw TextException( "FixedFont::getFontAttributesFrom : unable to guess height from '"
+		throw TextException( 
+			"FixedFont::getFontAttributesFrom : unable to guess height from '"
 			+ filename + "' : " + e.toString() ) ;
 	}
+	
 	
 	switch( filename[index] )
 	{
@@ -880,5 +1025,3 @@ void FixedFont::GetFontAttributesFrom( const string & filename, Length & charact
 	
 }
 
-
-	

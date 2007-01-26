@@ -1050,17 +1050,17 @@ namespace OSDL
 			
 
 				/// Number of available slots used to keep track of frame rate.
-				static const unsigned int _FrameTimingSlotsCount ;
+				static const Ceylan::Uint32 _FrameTimingSlotsCount ;
 				
 				
 				/// Designates the mouse focus.
-				static const short _MouseFocus ;
+				static const Ceylan::Sint16 _MouseFocus ;
 				
 				/// Designates the keyboard focus.
-				static const short _KeyboardFocus ;
+				static const Ceylan::Sint16 _KeyboardFocus ;
 				
 				/// Designates the application focus (iconified or restored).
-				static const short _ApplicationFocus ;
+				static const Ceylan::Sint16 _ApplicationFocus ;
 				
 				/**
 				 * Header of messages sent by default implementations 
@@ -1076,7 +1076,7 @@ namespace OSDL
 				 * @fixme Put in MouseHandler
 				 *
 				 */
-				static const unsigned int _MouseButtonCount ;
+				static const Ceylan::Uint32 _MouseButtonCount ;
 			
 				
 				

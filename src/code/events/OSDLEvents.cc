@@ -24,7 +24,7 @@ using namespace Ceylan::System ;
 using namespace OSDL::Events ;
 using namespace OSDL::Engine ;
 
-//const unsigned int EventModule::FrameTimingSlots = 200 ;
+//const Ceylan::Uint32 EventModule::FrameTimingSlots = 200 ;
 
 
 #if OSDL_DEBUG_EVENTS
@@ -117,9 +117,9 @@ const UserEventType EventsModule::QuitRequested                 = 1 ;
  
 // Focus flags :
  
-const short EventsModule::_MouseFocus       = SDL_APPMOUSEFOCUS ;
-const short EventsModule::_KeyboardFocus    = SDL_APPINPUTFOCUS ;
-const short EventsModule::_ApplicationFocus = SDL_APPACTIVE ;
+const Ceylan::Sint16 EventsModule::_MouseFocus       = SDL_APPMOUSEFOCUS ;
+const Ceylan::Sint16 EventsModule::_KeyboardFocus    = SDL_APPINPUTFOCUS ;
+const Ceylan::Sint16 EventsModule::_ApplicationFocus = SDL_APPACTIVE ;
 
 
 const string EventsModule::_MessageHeader = "[OSDL event] " ;
@@ -141,7 +141,7 @@ string EventsModule::_SDLEnvironmentVariables[] =
 
 
 /// Includes left, middle, right, wheel up, wheel down buttons.
-const unsigned int EventsModule::_MouseButtonCount = 5 ;
+const Ceylan::Uint32 EventsModule::_MouseButtonCount = 5 ;
 
 
 
@@ -622,7 +622,7 @@ const string EventsModule::toString( Ceylan::VerbosityLevels level )
 string EventsModule::DescribeEnvironmentVariables() throw()
 {
 
-	Ceylan::Uint32 varCount = 
+	Ceylan::Uint16 varCount = 
 		sizeof( _SDLEnvironmentVariables ) / sizeof (char * ) ;
 		
 	string result = "Examining the " + Ceylan::toString( varCount )
@@ -634,7 +634,7 @@ string EventsModule::DescribeEnvironmentVariables() throw()
 	
 	bool htmlFormat = TextDisplayable::GetOutputFormat() ;
 	
-	for ( Ceylan::Uint32 i = 0; i < varCount; i++ ) 
+	for ( Ceylan::Uint16 i = 0; i < varCount; i++ ) 
 	{
 	
 		var = _SDLEnvironmentVariables[ i ] ;
@@ -655,8 +655,8 @@ string EventsModule::DescribeEnvironmentVariables() throw()
 		{			
 			if ( htmlFormat )
 			{
-				variables.push_back( "<b>" + var + " set to [" 
-					+ value + "].</b>" ) ;
+				variables.push_back( "<b>" + var + "</b> set to [" 
+					+ value + "]." ) ;
 			}
 			else
 			{
@@ -781,7 +781,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	if ( GetFrameAccountingState() )
 	{	
 		frameClock = new Milliseconds[FrameTimingSlots] ;	
-		for ( unsigned int i; i < FrameTimingSlots; i ++ )
+		for ( Ceylan::Uint32 i; i < FrameTimingSlots; i ++ )
 			frameClock[i] = 0 ;
 	}
 	*/	
@@ -1495,6 +1495,8 @@ string EventsModule::DescribeEvent( const UserEvent & userEvent )
  
 bool EventsModule::IsEventsInitialized() throw()
 {
+
 	return _EventsInitialized ;
+	
 }
 

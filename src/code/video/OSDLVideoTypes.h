@@ -12,9 +12,9 @@
  *
  * As much as possible, consider using strong typing.
  *
- * @note These units are not chosen so that they are accurate. Their purpose is to efficiently
- * fulfill most multimedia needs.
- *
+ * @note These units are not chosen so that they are completely accurate,
+ * as some physic computations would require. 
+ * Their purpose is only to efficiently fulfill most multimedia needs.
  *
  */
 namespace OSDL
@@ -40,8 +40,9 @@ namespace OSDL
 		/**
 		 * Coordinate, unit of measure, integer, signed.
 		 *
-		 * @note Not having 'Coordinate' set to 'Ceylan::Sint16' would break functions 
-		 * using SDL_gfx (example : vertex array elements are expected to be 'Ceylan::Sint16').
+		 * @note Not having 'Coordinate' set to 'Ceylan::Sint16' would break
+		 * functions using SDL_gfx (example : vertex array elements are 
+		 * expected to store 'Ceylan::Sint16').
 		 *
 		 */
 		typedef Ceylan::Sint16 Coordinate ;
@@ -51,7 +52,7 @@ namespace OSDL
 		typedef Coordinate Offset ;
 
 		/// Coordinate unit of measure, floating-point.
-		typedef float FloatingPointCoordinate ;
+		typedef Ceylan::Float32 FloatingPointCoordinate ;
 
 
 		/// Color depth, bits per pixel.
@@ -60,11 +61,9 @@ namespace OSDL
 		/// Color depth, bytes per pixel.
 		typedef Ceylan::Uint8 BytesPerPixel ;
 		
-		/// Angle unit of measure, in degrees, should be in range ]-180;180] (signed).
-		// Disabled not to mix with Ceylan angle : typedef Ceylan::Sint16 Angle ;
 		
-		/// Ratio (percentage) unit, should store floating point values between 0 and 1.
-		typedef float Ratio ;
+		// Angle units and ratio already available thanks to Ceylan.
+		
 
 
 		/// Mother class for all video exceptions. 		
@@ -84,10 +83,12 @@ namespace OSDL
 				
 				}
 				
-		} ;		
+		} ;	
+			
 	
 	}
 	
 }
 
 #endif // OSDL_VIDEO_TYPES_H_
+

@@ -4,7 +4,7 @@
 #include "OSDLSurface.h"        // for Surface 
 #include "OSDLVideoRenderer.h"  // for VideoRenderer 
 #include "OSDLUtils.h"          // for getBackendLastError
-#include "OSDLBasic.h"          // for getExistingCommonModule, OSDL::GetVersion, etc.
+#include "OSDLBasic.h"          // for getExistingCommonModule, GetVersion, etc.
 
 
 #include "SDL.h"
@@ -28,7 +28,6 @@ using namespace OSDL::Video::OpenGL ;
  *
  * @note They are defined relatively to SDL back-end, see SDL_video.h
  *
- *
  */
 
 const OSDL::Flags VideoModule::SoftwareSurface  = SDL_SWSURFACE  ;
@@ -43,13 +42,13 @@ const OSDL::Flags VideoModule::Resizable        = SDL_RESIZABLE  ;
 const OSDL::Flags VideoModule::NoFrame          = SDL_NOFRAME    ;
 
 
-const unsigned int VideoModule::DriverNameMaximumLength = 50 ;
+const Ceylan::Uint16 VideoModule::DriverNameMaximumLength = 50 ;
 
 const BitsPerPixel VideoModule::UseCurrentColorDepth = 0 ;
 
 
 /* @fixme Put elsewhere
-const unsigned int VideoModule::DelayBetweenFrameRateDisplay = 500 ;
+const Ceylan::Uint32 VideoModule::DelayBetweenFrameRateDisplay = 500 ;
 Point2D * VideoModule::FrameRateCounterOrigin
 PixelDefinition VideoModule::FrameRateCounterSpecifiedColor
 PixelColor VideoModule::FrameRateCounterActualColor
@@ -98,9 +97,11 @@ VideoModule::VideoModule() throw( VideoException ) :
 
 	send( "Initializing video subsystem." ) ;
 	
-	if ( SDL_InitSubSystem( CommonModule::UseVideo ) != CommonModule::BackendSuccess )
+	if ( SDL_InitSubSystem( CommonModule::UseVideo ) 
+			!= CommonModule::BackendSuccess )
 		throw VideoException( "VideoModule constructor : "
-			"unable to initialize video subsystem : " + Utils::getBackendLastError() ) ;
+			"unable to initialize video subsystem : " 
+			+ Utils::getBackendLastError() ) ;
 	
 	send( "Video subsystem initialized." ) ;
 	
@@ -121,7 +122,7 @@ VideoModule::~VideoModule() throw()
 	if ( _renderer != 0 )
 		delete _renderer ;
 		
-	// Screen surface will not be deallocated.	
+	// Back-end screen surface will not be deallocated here :
 	if ( _screen != 0 )
 		delete _screen ;
 
@@ -133,13 +134,35 @@ VideoModule::~VideoModule() throw()
 
 
 
-void VideoModule::setScreenSurface( Surface & newScreenSurface ) throw( VideoException )
+bool VideoModule::hasScreenSurface() const throw()
+{
+
+	return ( _screen != 0 ) ;
+	
+}
+
+
+Surface & VideoModule::getScreenSurface() const throw ( VideoException )  
+{			
+
+	if ( _screen == 0 )
+		throw VideoException( "VideoModule::getScreenSurface : "
+			"no available screen surface." ) ;
+			
+	return * _screen ;
+	
+}
+
+
+void VideoModule::setScreenSurface( Surface & newScreenSurface ) 
+	throw( VideoException )
 {
 
 	send( "Setting screen surface to " + newScreenSurface.toString(), 8 ) ;
 						
 	if ( _screen->getDisplayType() == Surface::BackBuffer )
-		throw VideoException( "VideoModule::setScreenSurface : from its display type, "
+		throw VideoException( 
+			"VideoModule::setScreenSurface : from its display type, "
 			"specified surface is not a screen surface" ) ;
 					
 	_screen = & newScreenSurface ;
@@ -147,17 +170,23 @@ void VideoModule::setScreenSurface( Surface & newScreenSurface ) throw( VideoExc
 }
 
 
-Surface & VideoModule::getScreenSurface() const throw ( VideoException )  
-{			
-	return * _screen ;
-}
-
-
-
 
 bool VideoModule::hasRenderer() const throw() 
 {
 	return ( _renderer != 0 ) ;
+}
+
+
+OSDL::Rendering::VideoRenderer & VideoModule::getRenderer() const 
+	throw( VideoException )
+{
+
+	if ( _renderer == 0 )
+		throw VideoException( 
+			"VideoModule::getRenderer : no video renderer available." ) ;
+	
+	return * _renderer ;
+		
 }
 
 
@@ -172,26 +201,30 @@ void VideoModule::setRenderer( Rendering::VideoRenderer & newRenderer ) throw()
 }
 
 
-OSDL::Rendering::VideoRenderer & VideoModule::getRenderer() const throw( VideoException )
+
+bool VideoModule::hasOpenGLContext() const throw() 
 {
 
-	if ( _renderer == 0 )
-		throw VideoException( "VideoModule::getRenderer : no video renderer available." ) ;
+	return ( _openGLcontext != 0 ) ;
 	
-	return * _renderer ;
+}
+
+
+OpenGL::OpenGLContext & VideoModule::getOpenGLContext() const 
+	throw( VideoException )
+{
+
+	if ( _openGLcontext == 0 )
+		throw VideoException( 
+			"VideoModule::getOpenGLContext : no OpenGL context available." ) ;
+	
+	return * _openGLcontext ;
 		
 }
 
 
-
-
-bool VideoModule::hasOpenGLContext() const throw() 
-{
-	return ( _openGLcontext != 0 ) ;
-}
-
-
-void VideoModule::setOpenGLContext( OpenGL::OpenGLContext & newOpenGLContext ) throw()
+void VideoModule::setOpenGLContext( OpenGL::OpenGLContext & newOpenGLContext )
+	throw()
 {
 
 	if (  _openGLcontext != 0 )
@@ -202,21 +235,14 @@ void VideoModule::setOpenGLContext( OpenGL::OpenGLContext & newOpenGLContext ) t
 }
 
 
-OpenGL::OpenGLContext & VideoModule::getOpenGLContext() const throw( VideoException )
+
+
+BitsPerPixel VideoModule::getBestColorDepthForMode( 
+	Length width, Length height, BitsPerPixel askedBpp, Flags flags ) throw()
 {
 
-	if ( _openGLcontext == 0 )
-		throw VideoException( "VideoModule::getOpenGLContext : no OpenGL context available." ) ;
-	
-	return * _openGLcontext ;
-		
-}
-
-
-BitsPerPixel VideoModule::getBestColorDepthForMode( Length width, Length height, 
-	BitsPerPixel askedBpp, Flags flags ) throw()
-{
 	return SDL_VideoModeOK( width, height, askedBpp, flags ) ;
+	
 }
 
 
@@ -226,8 +252,9 @@ bool VideoModule::isDisplayInitialized() const throw()
 }
 
 
-OSDL::Flags VideoModule::setMode( Length width, Length height, BitsPerPixel askedBpp, 
-	Flags flags, OpenGL::Flavour flavour ) throw ( VideoException ) 
+OSDL::Flags VideoModule::setMode( Length width, Length height, 
+		BitsPerPixel askedBpp, Flags flags, OpenGL::Flavour flavour ) 
+	throw ( VideoException ) 
 {
 	
 	_displayInitialized = false ;
@@ -271,7 +298,11 @@ OSDL::Flags VideoModule::setMode( Length width, Length height, BitsPerPixel aske
 			+ " video mode : " + Utils::getBackendLastError() ) ;
 	
 	
-	// Initializes the flavours and the context since setMode has just been called :
+	/*
+	 * Initializes the flavours and the context since setMode has just 
+	 * been called :
+	 *
+	 */
 	switch ( flavour )
 	{
 	
@@ -303,7 +334,8 @@ OSDL::Flags VideoModule::setMode( Length width, Length height, BitsPerPixel aske
 			if ( _openGLcontext != 0 )
 				_openGLcontext->reload() ;
 			else
-				throw VideoException( "VideoModule::setMode : Reload flavour selected whereas "
+				throw VideoException( "VideoModule::setMode : "
+					"reload flavour selected whereas "
 					"no OpenGL context was set, nothing done." ) ;
 			break ;
 		
@@ -315,18 +347,27 @@ OSDL::Flags VideoModule::setMode( Length width, Length height, BitsPerPixel aske
 	}
 
 	
-	// In all cases, if OpenGL is to be used, an OpenGL context is available from here.
+	/*
+	 * In all cases, if OpenGL is to be used, an OpenGL context is 
+	 * available here.
+	 *
+	 */
 	
 		
-	// Never disable double buffering is a flavour selected it, but enable it if specified :
+	/*
+	 * Never disable double buffering is a flavour selected it, but enable 
+	 * it if specified :
+	 *
+	 */
 	if ( useOpenGLRequested && ( flags & DoubleBuffered ) )
 	{
 
 		_openGLcontext->setDoubleBufferStatus( true ) ;
 		
 		/*
-		 * Double buffering with OpenGL is not to be selected with the DoubleBuffered flag for
-		 * setMode, we therefore ensure it is deactivated :
+		 * Double buffering with OpenGL is not to be selected with the
+		 * DoubleBuffered flag for setMode, we therefore ensure it is
+		 * deactivated now :
 		 *
 		 */
 		flags &= ~ DoubleBuffered ;
@@ -347,29 +388,34 @@ OSDL::Flags VideoModule::setMode( Length width, Length height, BitsPerPixel aske
 	
 	/*
 	 * Defines the viewport independently of flavours
-	 * (lower-left corner of the OpenGL viewport is the origin of the setMode window)
-	 * By default, the viewport is chosen so that it takes all the display window.
+	 * (lower-left corner of the OpenGL viewport is the origin of the 
+	 * setMode window).
+	 *
+	 * By default, the viewport is chosen so that it takes all the display
+	 * window.
 	 *
 	 */
 	if ( useOpenGLRequested ) 
-		_openGLcontext->setViewPort( _screen->getWidth(), _screen->getHeight() /* Origin */ ) ; 
+		_openGLcontext->setViewPort( _screen->getWidth(), 
+			_screen->getHeight() /* Origin */ ) ; 
 		
 
 	// Special case for OpenGL ?		
 	int bpp = _screen->getBitsPerPixel() ;
 	
-	send( "Actual color depth is " + Ceylan::toString( bpp ) + " bits per pixel." ) ;
+	send( "Actual color depth is " + Ceylan::toString( bpp ) 
+		+ " bits per pixel." ) ;
 	
 	// A zero bit per pixel request means any depth, no warning in this case :
 	if ( askedBpp != bpp && askedBpp != 0 ) 
-		LogPlug::warning( "Color depth is " 
-			+ Ceylan::toString( bpp ) 
+		LogPlug::warning( "Color depth is " + Ceylan::toString( bpp ) 
 			+ " bits per pixel (instead of the asked " 
-			+ Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) + " bits per pixel)." ) ;
+			+ Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) 
+			+ " bits per pixel)." ) ;
 
 	_displayInitialized = true ;
 	
-	send( "After display creation, interpreting actually obtained surface. "
+	send( "After display creation, interpreting actually obtained surface : "
 		+ _screen->toString()
 		+ "The corresponding pixel format for this screen surface is : "
 		+ Pixels::toString( _screen->getPixelFormat() )	) ;
@@ -382,14 +428,14 @@ OSDL::Flags VideoModule::setMode( Length width, Length height, BitsPerPixel aske
 }
 
 
-void VideoModule::resize( Length newWidth, Length newHeight ) throw( VideoException )
+void VideoModule::resize( Length newWidth, Length newHeight ) 
+	throw( VideoException )
 {
 
 	send( "Resizing window to (" + Ceylan::toString( newWidth ) + ", "
 		+ Ceylan::toString( newHeight ) + ")." ) ;
 	
 	
-		
 	/* @fixme OpenGL : restore context (destroyed textures, glViewport etc.)
 	if ( _renderer )
 	{
@@ -398,14 +444,15 @@ void VideoModule::resize( Length newWidth, Length newHeight ) throw( VideoExcept
 	*/
 	
 	if ( _screen == 0 )
-		throw VideoException( "VideoModule::resize : video mode was not set." ) ;
+		throw VideoException( 
+			"VideoModule::resize : video mode was not set." ) ;
 
 	if ( ( _openGLcontext != 0 ) && OpenGLContext::ContextIsLostOnResize )		
-		setMode( newWidth, newHeight, _screen->getBitsPerPixel(), _screen->getFlags(), 
-			OpenGL::Reload ) ;
+		setMode( newWidth, newHeight, _screen->getBitsPerPixel(),
+			_screen->getFlags(), OpenGL::Reload ) ;
 	else
-		setMode( newWidth, newHeight, _screen->getBitsPerPixel(), _screen->getFlags(), 
-			OpenGL::None ) ;
+		setMode( newWidth, newHeight, _screen->getBitsPerPixel(),
+			_screen->getFlags(), OpenGL::None ) ;
 	
 	
 	/* @fixme Change viewport :
@@ -422,7 +469,8 @@ void VideoModule::redraw() throw( VideoException )
 {
 
 	if ( _screen == 0 )
-		throw VideoException( "VideoModule::redraw : video mode was not set." ) ;
+		throw VideoException( 
+			"VideoModule::redraw : video mode was not set." ) ;
 		
 	/* @fixme Change 
 	if ( _renderer )
@@ -440,10 +488,11 @@ void VideoModule::toggleFullscreen() throw( VideoException )
 {
 
 	if ( _screen == 0 )
-		throw VideoException( "VideoModule::toggleFullscreen : video mode was not set." ) ;
+		throw VideoException( 
+			"VideoModule::toggleFullscreen : video mode was not set." ) ;
 		
 	if ( SDL_WM_ToggleFullScreen( & _screen->getSDLSurface() ) == 0 )
-		throw VideoException( "VideoModule::toggleFullscreen() failed : " 
+		throw VideoException( "VideoModule::toggleFullscreen failed : " 
 			+ Utils::getBackendLastError() ) ;
 			
 }
@@ -452,26 +501,34 @@ void VideoModule::toggleFullscreen() throw( VideoException )
 
 bool VideoModule::getEndPointDrawState() const throw()
 {
+
 	return _drawEndPoint ;
+	
 }
 
 
 void VideoModule::setEndPointDrawState( bool newState ) throw()
 {
+
 	_drawEndPoint = newState ;
+	
 }
 
 
 
 bool VideoModule::getAntiAliasingState() const throw()
 {
+
 	return _antiAliasing ;
+	
 }
 
 
 void VideoModule::setAntiAliasingState( bool newState ) throw()
 {
+
 	_antiAliasing = newState ;
+	
 }
 
 
@@ -481,17 +538,20 @@ const std::string VideoModule::getDriverName() const throw()
 	char driverName[ VideoModule::DriverNameMaximumLength + 1 ]  ;
 	
 	if ( SDL_VideoDriverName( driverName, sizeof( driverName ) ) == 0 )
-		throw VideoException(
-			"Video::getDriverName failed : video was probably not initialized." ) ;
+		throw VideoException( "Video::getDriverName failed : "
+			"video was probably not initialized." ) ;
 			
 	return std::string( driverName ) ;
 
 }
 
 
-void VideoModule::setWindowCaption( const string & newTitle, const string & newIconName ) throw()
+void VideoModule::setWindowCaption( const string & newTitle,
+	 const string & newIconName ) throw()
 {
+
 	SDL_WM_SetCaption( newTitle.c_str(), newIconName.c_str() ) ;
+	
 }
 
 
@@ -501,19 +561,40 @@ void VideoModule::getWindowCaption( string & title, string & iconName ) throw()
 	char newTitle[ 50 ] ;
 	char newIconName[ 50 ] ;
 		
-	SDL_WM_GetCaption( (char **) & newTitle, (char **) & newIconName ) ;
+	SDL_WM_GetCaption( 
+		static_cast<char **>( & newTitle ), 
+		static_cast<char **>( & newIconName ) ;
 
 	title = newTitle  ;
 	iconName = newIconName ;
+	
 }
 
 
-void VideoModule::setWindowIcon( const std::string & filename ) throw( VideoException ) 
+void VideoModule::setWindowIcon( const std::string & filename ) 
+	throw( VideoException ) 
 {
 	
 	if ( isDisplayInitialized() )
 		throw VideoException( "VideoModule::setWindowIcon called whereas "
-			"display was already initialized (VideoModule::setMode was already called)." ) ;
+			"display was already initialized "
+			"(VideoModule::setMode was already called)." ) ;
+
+	/*
+	 * The mask is a bitmask that describes the shape of the icon. 
+	 * - if mask is null (0), then the shape is determined by the
+	 * colorkey of icon, if any, or makes the icon rectangular 
+	 * (no transparency) otherwise.
+	 * - if mask is non-null (non 0), it has to point to a bitmap
+	 * with bits set where the corresponding pixel should be
+	 * visible. 
+	 * The format of the bitmap is as follows. 
+	 * Scanlines come in the usual top-down order. 
+	 * Each scanline consists of (width / 8) bytes, rounded up. 
+	 * The most significant bit of each byte represents the 
+	 * leftmost pixel.
+	 *
+	 */
 		
 	Pixels::ColorElement * mask ;
 	
@@ -525,11 +606,14 @@ void VideoModule::setWindowIcon( const std::string & filename ) throw( VideoExce
 	} 
 	catch( const TwoDimensional::ImageException & e )
 	{
-		throw VideoException( "VideoModule::setWindowIcon : "  + e.toString() ) ;
+		throw VideoException( "VideoModule::setWindowIcon : " 
+			+ e.toString() ) ;
 	}
 	
 	LogPlug::debug( "Setting icon now" ) ;
+	
 	SDL_WM_SetIcon( & iconSurface->getSDLSurface(), mask ) ;
+	// No error status available.
 	
 	/*
 	 * Do not know whether they can/should be freed :
@@ -544,25 +628,32 @@ void VideoModule::setWindowIcon( const std::string & filename ) throw( VideoExce
 
 bool VideoModule::iconifyWindow() throw()
 {
+
 	return ( SDL_WM_IconifyWindow() != 0 ) ;
+	
 }
 
 
 
 bool VideoModule::getFrameAccountingState() throw()
 {
+
 	return _frameAccountingState ;
+	
 }
 
 
 void VideoModule::setFrameAccountingState( bool newState ) throw()
 {
+
 	_frameAccountingState = newState ;
+	
 }
 
 
 
-const string VideoModule::toString( Ceylan::VerbosityLevels level ) const throw() 
+const string VideoModule::toString( Ceylan::VerbosityLevels level ) 
+	const throw() 
 {
 	
 	string res = "Video module, " ;
@@ -573,9 +664,9 @@ const string VideoModule::toString( Ceylan::VerbosityLevels level ) const throw(
 		res += "video mode set, " ;
 		
 	if ( _renderer == 0 )
-		res += "no renderer set, " ;
+		res += "no video renderer set, " ;
 	else
-		res += "a renderer is set, " ;
+		res += "a video renderer is set, " ;
 
 	if ( _openGLcontext == 0 )
 		res += "no available OpenGL context" ;
@@ -588,13 +679,16 @@ const string VideoModule::toString( Ceylan::VerbosityLevels level ) const throw(
 	res += Ceylan::Module::toString() ;
 		
 	if ( _screen != 0 )	
-		res += " Screen surface information : " + _screen->toString( level ) ;
+		res += " Screen surface information : " 
+			+ _screen->toString( level ) ;
 		
 	if ( _renderer != 0 )
-		res += ". Internal renderer : " + _renderer->toString( level ) ;
+		res += ". Internal renderer : " 
+			+ _renderer->toString( level ) ;
 		
 	if ( _openGLcontext != 0 )
-		res += ". Current OpenGL context : " + _openGLcontext->toString( level ) ;
+		res += ". Current OpenGL context : " 
+			+ _openGLcontext->toString( level ) ;
 		
 	return res ;
 		
@@ -611,8 +705,8 @@ bool VideoModule::IsDisplayInitialized() throw()
 {
 
 	/*
-	 * Display is initialized iff the video module says so, therefore video module and common
-	 * module must (necessarily) already exist.
+	 * Display is initialized iff the video module says so, therefore 
+	 * video module and common module must (necessarily) already exist.
 	 *
 	 */
 	
@@ -636,14 +730,16 @@ bool VideoModule::GetEndPointDrawState() throw()
 {
 
 	if ( ! OSDL::hasExistingCommonModule() )
-		Ceylan::emergencyShutdown( "VideoModule::GetEndPointDrawState() called "
+		Ceylan::emergencyShutdown( 
+			"VideoModule::GetEndPointDrawState() called "
 			"whereas no common module available." ) ;
 		
 	// No exception should ever occur since already tested :	
 	CommonModule & common = OSDL::getExistingCommonModule() ;
 	
 	if ( ! common.hasVideoModule() )
-		Ceylan::emergencyShutdown( "VideoModule::GetEndPointDrawState() called "
+		Ceylan::emergencyShutdown( 
+			"VideoModule::GetEndPointDrawState() called "
 			"whereas no video module available." ) ;
 	
 	VideoModule & video = common.getVideoModule() ;
@@ -657,14 +753,16 @@ bool VideoModule::GetAntiAliasingState() throw()
 {
 
 	if ( ! OSDL::hasExistingCommonModule() )
-		Ceylan::emergencyShutdown( "VideoModule::GetAntiAliasingState() called "
+		Ceylan::emergencyShutdown( 
+			"VideoModule::GetAntiAliasingState() called "
 			"whereas no common module available." ) ;
 		
 	// No exception should ever occur since already tested :	
 	CommonModule & common = OSDL::getExistingCommonModule() ;
 	
 	if ( ! common.hasVideoModule() )
-		Ceylan::emergencyShutdown( "VideoModule::GetAntiAliasingState() called "
+		Ceylan::emergencyShutdown( 
+			"VideoModule::GetAntiAliasingState() called "
 			"whereas no video module available." ) ;
 	
 	VideoModule & video = common.getVideoModule() ;
@@ -681,8 +779,8 @@ const string VideoModule::GetDriverName() throw()
 	char driverName[ VideoModule::DriverNameMaximumLength + 1 ]  ;
 	
 	if ( SDL_VideoDriverName( driverName, sizeof( driverName ) ) == 0 )
-		throw VideoException(
-			"Video::getDriverName failed : video was probably not initialized." ) ;
+		throw VideoException( "Video::GetDriverName failed : "
+			"video was probably not initialized." ) ;
 			
 	return std::string( driverName ) ;
 
@@ -694,79 +792,99 @@ string VideoModule::InterpretFlags( Flags flags ) throw()
 
 	std::list<string> res ;
 	
-	// As the Software (SDL_SWSURFACE) flag is null (0), the test had no meaning :
+	/*
+	 * As the Software (SDL_SWSURFACE) flag is null (0), the test had no 
+	 * real meaning :
+	 *
+	 */
 	
 	/*
 	if ( flags & SoftwareSurface )
-		res.push_back( "Video surface requested to be created in system memory "
+		res.push_back( 
+			"Video surface requested to be created in system memory "
 			"(SoftwareSurface is set)." ) ;
 	else
-		res.push_back( "Video surface not requested to be created in system memory "
+		res.push_back( 
+			"Video surface not requested to be created in system memory "
 			"(SoftwareSurface not set)." ) ;
 	*/
 		
 	if ( flags & HardwareSurface )
-		res.push_back( "Display surface requested to be created in video memory "
+		res.push_back( 
+			"Display surface requested to be created in video memory "
 			"(HardwareSurface is set)." ) ;
 	else
-		res.push_back( "Display surface not requested to be created in video memory "
+		res.push_back( 
+			"Display surface not requested to be created in video memory "
 			"(HardwareSurface not set)." ) ;
 		
 	if ( flags & AsynchronousBlit )
-		res.push_back( "Use, if possible, asynchronous updates of the display surface "
+		res.push_back( 
+			"Use, if possible, asynchronous updates of the display surface "
 			"(AsynchronousBlit is set)." ) ;
 	else
-		res.push_back( "Do not use asynchronous blits "
-			"(AsynchronousBlit not set)." ) ;
+		res.push_back( 
+			"Do not use asynchronous blits (AsynchronousBlit not set)." ) ;
 		
 	if ( flags & AnyPixelFormat )
-		res.push_back( "Display surface should use the available video surface, "
+		res.push_back( 
+			"Display surface should use the available video surface, "
 			"regardless of its pixel depth (AnyPixelFormat is set)." ) ;
 	else
-		res.push_back( "Display surface will emulate, thanks to a shadow surface, "
+		res.push_back( 
+			"Display surface will emulate, thanks to a shadow surface, "
 			"the specified bit-per-pixel mode if not available "
 			"(AnyPixelFormat not set)." ) ;
 				
 	if ( flags & ExclusivePalette )
-		res.push_back( "Display surface is given exclusive palette access, "
+		res.push_back( 
+			"Display surface is given exclusive palette access, "
 			"in order to always have the requested colors "
 			"(ExclusivePalette is set)." ) ;
 	else
-		res.push_back( "Display surface is not required to have exclusive palette access, "
+		res.push_back( 
+			"Display surface is not required to have exclusive palette access, "
 			"some colors might be different from the requested ones "
 			"(ExclusivePalette not set)." ) ;
 		
 	if ( flags & DoubleBuffered )
-		res.push_back( "Enable hardware double buffering, "
-			"only valid with display surface in video memory and without OpenGL "
-			"(DoubleBuffered is set)." ) ;
+		res.push_back( 
+			"Enable hardware double buffering, "
+			"only valid with display surface in video memory "
+			"and without OpenGL (DoubleBuffered is set)." ) ;
 	else
 		res.push_back( "No hardware double buffering requested, or OpenGL used "
 			"(DoubleBuffered not set)." ) ;
 		
 	if ( flags & FullScreen )
-		res.push_back( "Display surface should attempt to use full screen mode. "
-			"If a hardware resolution change is not possible (for whatever reason), "
-			"the next higher resolution will be used and the display window centered "
+		res.push_back( 
+			"Display surface should attempt to use full screen mode. "
+			"If a hardware resolution change is not possible 
+			"(for whatever reason), the next higher resolution "
+			"will be used and the display window centered "
 			"on a black background (FullScreen is set)." ) ;
 	else
-		res.push_back( "No full screen mode requested (FullScreen not set)." ) ;
+		res.push_back( 
+			"No full screen mode requested (FullScreen not set)." ) ;
 		
 	if ( flags & OpenGL )
-		res.push_back( "Display surface should have an OpenGL rendering context, "
+		res.push_back( 
+			"Display surface should have an OpenGL rendering context, "
 			"whose video attributes should already have been set "
 			"(OpenGL is set)." ) ;
 	else
-		res.push_back( "Display surface is not requested to have an OpenGL context "
+		res.push_back( 
+			"Display surface is not requested to have an OpenGL context "
 			"(OpenGL not set)." ) ;
 		
 	// Deprecated flag :
 		
 	if ( flags & SDL_OPENGLBLIT )
-			res.push_back( "Display surface should have an OpenGL rendering context, "
-			"and will allow normal blitting operations. "
-			"This SDL_OPENGLBLIT flag is deprecated and "
-			"should not be used for new applications." ) ;
+			res.push_back( 
+				"Display surface should have an OpenGL rendering context, "
+				"and will allow normal blitting operations. "
+				"This SDL_OPENGLBLIT flag is deprecated and "
+				"should not be used for new applications." ) ;
 			
 	/*
 	 * Not even try to advertise deprecated SDL_OPENGLBLIT :
@@ -782,15 +900,17 @@ string VideoModule::InterpretFlags( Flags flags ) throw()
 		res.push_back( "No resizable window requested (Resizable not set)." ) ;
 		
 	if ( flags & NoFrame )
-		res.push_back( "Requests creation of a window with no title bar or frame decoration "
-			"(NoFrame is set)" ) ;
+		res.push_back( 
+			"Requests creation of a window with no title bar or "
+			"frame decoration (NoFrame is set)" ) ;
 	else
-		res.push_back( "Title bar and frame decoration allowed for display window "
+		res.push_back( 
+			"Title bar and frame decoration allowed for display window "
 			"(NoFrame not set)." ) ;
 
 	return "The specified display surface mode flags, whose value is " 
 		+ Ceylan::toString( flags, /* bit field */ true ) 
-		+ ", means : " + Ceylan::formatStringList( res ) ;
+		+ ", mean : " + Ceylan::formatStringList( res ) ;
 
 }
 
@@ -798,122 +918,164 @@ string VideoModule::InterpretFlags( Flags flags ) throw()
 
 bool VideoModule::HardwareSurfacesCanBeCreated() throw( VideoException )
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
 		throw( "VideoModule::HardwareSurfacesCanBeCreated : "
 			"unable to retrieve video informations." ) ;
 		
 	return static_cast<bool>( videoInfo->hw_available ) ;
+	
 }
 
 				 
 bool VideoModule::WindowManagerAvailable() throw( VideoException )
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
-		throw( "VideoModule::WindowManagerAvailable : unable to retrieve video informations." ) ;
+		throw( "VideoModule::WindowManagerAvailable : "
+			"unable to retrieve video informations." ) ;
 		
 	return static_cast<bool>( videoInfo->wm_available ) ;
+	
 }
 				 
 
 bool VideoModule::HardwareToHardwareBlitsAccelerated() throw( VideoException )
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
 		throw( "VideoModule::HardwareToHardwareBlitsAccelerated : "
 			"unable to retrieve video informations." ) ;
 		
 	return static_cast<bool>( videoInfo->blit_hw ) ;
+	
 }
 
 				 
-bool VideoModule::HardwareToHardwareColorkeyBlitsAccelerated() throw( VideoException ) 			 
+bool VideoModule::HardwareToHardwareColorkeyBlitsAccelerated() 
+	throw( VideoException ) 			 
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
 		throw( "VideoModule::HardwareToHardwareColorkeyBlitsAccelerated : "
 			"unable to retrieve video informations." ) ;
 		
 	return static_cast<bool>( videoInfo->blit_hw_CC ) ;
+	
 }
 
 				 
-bool VideoModule::HardwareToHardwareAlphaBlitsAccelerated() throw( VideoException )
+bool VideoModule::HardwareToHardwareAlphaBlitsAccelerated() 
+	throw( VideoException )
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
 		throw( "VideoModule::HardwareToHardwareAlphaBlitsAccelerated : "
 			"unable to retrieve video informations." ) ;
 		
 	return static_cast<bool>( videoInfo->blit_hw_A ) ;
+	
 }
 
 				 
 bool VideoModule::SoftwareToHardwareBlitsAccelerated() throw( VideoException )
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
 		throw( "VideoModule::SoftwareToHardwareBlitsAccelerated : "
 			"unable to retrieve video informations." ) ;
 		
 	return static_cast<bool>( videoInfo->blit_sw ) ;
+	
 }
 
 				 
-bool VideoModule::SoftwareToHardwareColorkeyBlitsAccelerated() throw( VideoException )			 
+bool VideoModule::SoftwareToHardwareColorkeyBlitsAccelerated() 
+	throw( VideoException )			 
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
 		throw( "VideoModule::SoftwareToHardwareColorkeyBlitsAccelerated : "
 			"unable to retrieve video informations." ) ;
 		
 	return static_cast<bool>( videoInfo->blit_sw_CC ) ;
+	
 }
 
 				 
-bool VideoModule::SoftwareToHardwareAlphaBlitsAccelerated() throw( VideoException )
+bool VideoModule::SoftwareToHardwareAlphaBlitsAccelerated() 
+	throw( VideoException )
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
 		throw( "VideoModule::SoftwareToHardwareAlphaBlitsAccelerated : "
 			"unable to retrieve video informations." ) ;
 		
 	return static_cast<bool>( videoInfo->blit_sw_A ) ;
+	
 }
 
 
 bool VideoModule::ColorFillsAccelerated() throw( VideoException )
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
-		throw( "VideoModule::ColorFillsAccelerated : unable to retrieve video informations." ) ;
+		throw( "VideoModule::ColorFillsAccelerated : "
+			"unable to retrieve video informations." ) ;
 		
 	return static_cast<bool>( videoInfo->blit_fill ) ;
+	
 }
 
 				 
-unsigned int VideoModule::GetVideoMemorySize() throw( VideoException ) 
+Ceylan::Uint32 VideoModule::GetVideoMemorySize() throw( VideoException ) 
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
-		throw( "VideoModule::GetVideoMemorySize : unable to retrieve video informations." ) ;
+		throw( "VideoModule::GetVideoMemorySize : "
+			"unable to retrieve video informations." ) ;
 		
-	return static_cast<unsigned int>( videoInfo->video_mem ) ;
+	return static_cast<Ceylan::Uint32>( videoInfo->video_mem ) ;
+	
 }
 
 				 
-Pixels::PixelFormat VideoModule::GetVideoDevicePixelFormat() throw( VideoException )
+Pixels::PixelFormat VideoModule::GetVideoDevicePixelFormat() 
+	throw( VideoException )
 {
+
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
+	
 	if ( videoInfo == 0 )
-		throw( "VideoModule::GetVideoDevicePixelFormat : unable to retrieve video informations." ) ;
+		throw( "VideoModule::GetVideoDevicePixelFormat : "
+			"unable to retrieve video informations." ) ;
 		
 	return * static_cast<Pixels::PixelFormat *>( videoInfo->vfmt ) ;
+	
 }
 
 
-string VideoModule::DescribeVideoCapabilities() throw( VideoException )			 
+string VideoModule::DescribeVideoCapabilities() throw( VideoException )
 {
 
 	string result ;
@@ -956,32 +1118,37 @@ string VideoModule::DescribeVideoCapabilities() throw( VideoException )
 	if ( HardwareToHardwareColorkeyBlitsAccelerated() )
 		l.push_back( "Hardware to hardware colorkey blits are accelerated." ) ;
 	else
-		l.push_back( "No hardware to hardware colorkey blit acceleration available." ) ;
+		l.push_back( 
+			"No hardware to hardware colorkey blit acceleration available." ) ;
 		
 
 	if ( HardwareToHardwareAlphaBlitsAccelerated() )
 		l.push_back( "Hardware to hardware alpha blits are accelerated." ) ;
 	else
-		l.push_back( "No hardware to hardware alpha blit acceleration available." ) ;
+		l.push_back( 
+			"No hardware to hardware alpha blit acceleration available." ) ;
 		
 
 
 	if ( SoftwareToHardwareBlitsAccelerated() )
 		l.push_back( "Software to hardware blits are accelerated." ) ;
 	else
-		l.push_back( "No software to hardware blit acceleration available." ) ;
+		l.push_back( 
+			"No software to hardware blit acceleration available." ) ;
 		
 		
 	if ( SoftwareToHardwareColorkeyBlitsAccelerated() )
 		l.push_back( "Software to hardware colorkey blits are accelerated." ) ;
 	else
-		l.push_back( "No software to hardware colorkey blit acceleration available." ) ;
+		l.push_back( 
+			"No software to hardware colorkey blit acceleration available." ) ;
 		
 
 	if ( SoftwareToHardwareAlphaBlitsAccelerated() )
 		l.push_back( "Software to hardware alpha blits are accelerated." ) ;
 	else
-		l.push_back( "No software to hardware alpha blit acceleration available." ) ;
+		l.push_back( 
+			"No software to hardware alpha blit acceleration available." ) ;
 		
 		
 
@@ -989,6 +1156,7 @@ string VideoModule::DescribeVideoCapabilities() throw( VideoException )
 		l.push_back( "Color fills are accelerated." ) ;
 	else
 		l.push_back( "No color fill acceleration available." ) ;
+	
 	
 	if ( GetVideoMemorySize() )
 		l.push_back( "Total amount of video memory is " 
@@ -1010,7 +1178,9 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 	
     SDL_Rect ** modes ;
 	
-    LogPlug::trace( "VideoModule::areDefinitionsRestricted : getting available modes.", 8 ) ; 
+    LogPlug::trace( "VideoModule::AreDefinitionsRestricted : "
+		"getting available modes.", 8 ) ; 
+		
     modes = SDL_ListModes( pixelFormat, flags ) ;
 	
     if ( reinterpret_cast<int>( modes ) == 0 ) 
@@ -1018,8 +1188,9 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 		LogPlug::debug( "No screen dimensions available for format " 
 			+ Pixels::toString( * pixelFormat ) + " !" ) ;
 			
-		// List stays empty, and restricted is true : nothing available.
-		return true ;	
+		// List stays empty, and restricted result is true : nothing available.
+		return true ;
+			
 	}
 
 	// From that point, at least one dimension will be available.	 
@@ -1035,9 +1206,10 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 
 	// In this last case, only a set of definitions is available :
 	
-	for ( int i = 0 ; modes[ i ] ; i++ )
+	for ( Ceylan::Uint16 i = 0 ; modes[ i ] ; i++)
 	{
-		definitions.push_back( pair<Length, Length>( modes[ i ]->w, modes[ i ]->h ) ) ;
+		definitions.push_back( pair<Length, Length>( 
+			modes[ i ]->w, modes[ i ]->h ) ) ;
 	}
 
 	return true ;		
@@ -1049,10 +1221,10 @@ string VideoModule::DescribeAvailableDefinitions( Flags flags,
 	Pixels::PixelFormat * pixelFormat ) throw() 
 {
 	
-	
 	list<Definition> defList ;
 		
-    LogPlug::trace( "VideoModule::describeAvailableDefinitions : getting available modes.", 8 ) ; 
+    LogPlug::trace( "VideoModule::DescribeAvailableDefinitions : "
+		"getting available modes.", 8 ) ; 
  	
     // Checking whether there is any mode available. 
 
@@ -1060,9 +1232,11 @@ string VideoModule::DescribeAvailableDefinitions( Flags flags,
 	{
 	
 		if ( pixelFormat == 0 )
-				return "All screen dimensions are supported for the best possible video mode" ;
-			else
-				return "All screen dimensions are supported for the given pixel format" ;
+			return "All screen dimensions are supported for "
+				"the best possible video mode" ;
+		else
+			return "All screen dimensions are supported for "
+				"the given pixel format" ;
 
 	} 
 	else // definitions are restricted :
@@ -1070,7 +1244,8 @@ string VideoModule::DescribeAvailableDefinitions( Flags flags,
 
 		if ( defList.empty() )
 		{	
-				return "No screen dimension available for specified format and flags" ;
+			return "No screen dimension available for "
+				"specified format and flags" ;
 		}		
 		else
 		{
@@ -1082,19 +1257,21 @@ string VideoModule::DescribeAvailableDefinitions( Flags flags,
         	// Print valid modes.
 			
 			if ( pixelFormat == 0 )
-				result = 
-					"Screen dimensions supported for the best possible video mode are :" ;
+				result = "Screen dimensions supported for "
+					"the best possible video mode are :" ;
 			else
-				result = "Screen dimensions supported for the given pixel format are :" ;
+				result = "Screen dimensions supported for "
+					"the given pixel format are :" ;
 		
 			for ( list<Definition>::const_iterator it = defList.begin(); 
 				it != defList.end(); it++ )
 			{
 				l.push_back( Ceylan::toString( (*it).first ) 
-					+ 'x' + Ceylan::toString( (*it).second ) ) ;
+					+ 'x' +  Ceylan::toString( (*it).second ) ) ;
 			}
 		
 			return result + Ceylan::formatStringList( l ) ;
+			
 		}
 			
     }
@@ -1105,7 +1282,9 @@ string VideoModule::DescribeAvailableDefinitions( Flags flags,
 string VideoModule::DescribeEnvironmentVariables() throw()
 {
 
-	unsigned int varCount = sizeof( _SDLEnvironmentVariables ) / sizeof (char * ) ;
+	Ceylan::Uint16 varCount =
+		sizeof( _SDLEnvironmentVariables ) / sizeof (char * ) ;
+		
 	string result = "Examining the " + Ceylan::toString( varCount )
 		+ " video-related environment variables for SDL backend :" ;
 	
@@ -1115,8 +1294,9 @@ string VideoModule::DescribeEnvironmentVariables() throw()
 	
 	bool htmlFormat = Ceylan::TextDisplayable::GetOutputFormat() ;
 	
-	for ( unsigned int i = 0; i < varCount; i++ ) 
+	for ( Ceylan::Uint16 i = 0; i < varCount; i++ ) 
 	{
+	
 		var = _SDLEnvironmentVariables[ i ] ;
 		value = Ceylan::System::getEnvironmentVariable( var ) ;
 		
@@ -1124,7 +1304,7 @@ string VideoModule::DescribeEnvironmentVariables() throw()
 		{
 			if ( htmlFormat == TextDisplayable::html )
 			{
-				variables.push_back( "<em>" + var + " is not set.</em>" ) ;
+				variables.push_back( "<em>" + var + "</em> is not set." ) ;
 			}
 			else
 			{
@@ -1135,7 +1315,8 @@ string VideoModule::DescribeEnvironmentVariables() throw()
 		{			
 			if ( htmlFormat == TextDisplayable::html )
 			{
-				variables.push_back( "<b>" + var + " set to [" + value + "].</b>" ) ;
+				variables.push_back( "<b>" + var + "</b> set to [" 
+					+ value + "]." ) ;
 			}
 			else
 			{
@@ -1161,3 +1342,4 @@ bool VideoModule::useOpenGL() const throw()
 	return ( _openGLContext != 0 ) ;
 }
 */
+
