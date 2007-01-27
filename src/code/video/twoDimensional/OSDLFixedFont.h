@@ -5,6 +5,7 @@
 
 #include "OSDLFont.h"         // for inheritance
 
+#include "Ceylan.h"           // for Ceylan::Byte
 
 #include <string>
 
@@ -16,14 +17,6 @@ namespace OSDL
 {
 
 
-	namespace Ceylan
-	{
-	
-		class Byte ;
-		
-	}
-	
-	
 	namespace Video
 	{
 
@@ -95,7 +88,7 @@ namespace OSDL
 
 
 				/**
-				 * Models fixed fonts, a category which gatherS all fonts 
+				 * Models fixed fonts, a category which gathers all fonts 
 				 * whose rendering demands little resources, but cannot 
 				 * be scaled, as opposed to Truetype fonts.
 				 *
@@ -519,7 +512,7 @@ namespace OSDL
 						 *
 						 * It could be used when drawing an individual 
 						 * glyph relative to a bottom point, by combining 
-						 * it with the glyph's maxy metric to resolve the 
+						 * with the glyph's vertical metrics to resolve the
 						 * top of the rectangle used when blitting the 
 						 * glyph on the screen.
 						 *
@@ -616,7 +609,7 @@ namespace OSDL
 							 
 						/**
 						 * Renders specified glyph (Latin-1 character) in
-						 * specified color, in a returned surface.
+						 * specified color, in a returned new surface.
 						 *
 						 * Depending on the settings, the returned surface 
 						 * can be a clone of a pre-rendered (cached) 
@@ -626,7 +619,7 @@ namespace OSDL
 						 * character will be rendered as many times as
 						 * requested.
 						 *
-						 * The caller is responsible for deleting any 
+						 * The caller is responsible for deleting the 
 						 * returned surface.
 						 *
 						 * @param character the Latin-1 character to render.
@@ -1014,13 +1007,13 @@ namespace OSDL
 						 * characters in a fixed font.
 						 *
 						 */
-						static Ceylan::Uint16 FontCharacterCount ;
+						static const Ceylan::Uint16 FontCharacterCount ;
+					
 					
 					
 					
 					private:
-					
-									
+								
 									
 						/**
 						 * Copy constructor made private to ensure that 
