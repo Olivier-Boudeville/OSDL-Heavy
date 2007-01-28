@@ -7,6 +7,7 @@
 #include <string>
 
 
+
 namespace OSDL
 {
 
@@ -23,8 +24,8 @@ namespace OSDL
 			/**
 		     * Represents an abstract point whose coordinates are integers.
 			 *
-			 * @note These integer points are especially useful to handle graphical user interface
-			 * elements, such as widgets.
+			 * @note These integer points are especially useful to handle
+			 * graphical user interface elements, such as widgets.
 			 *
 			 */
 	    	class Point: public Ceylan::TextDisplayable
@@ -41,29 +42,38 @@ namespace OSDL
 	            	virtual ~Point() throw() ;
 	
 
-					/// Flips the coordinates of this point (negates them all).
+					/**
+					 * Flips the coordinates of this point (negates them all).
+					 *
+					 */
 					virtual void flip() throw() = 0 ;
 
 
 	 	            /**
-		             * Returns an user-friendly description of the state of this object.
+		             * Returns an user-friendly description of the state of 
+					 * this object.
 		             *
 					 * @param level the requested verbosity level.
 					 *
-					 * @note Text output format is determined from overall settings.
+					 * @note Text output format is determined from 
+					 * overall settings.
 					 *
 					 * @see Ceylan::TextDisplayable
 		             *
 		             */
 			 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
+							Ceylan::VerbosityLevels level = Ceylan::high ) 
+						const throw() ;
 						
 
 					/**
-					 * Tells what is the dimension of the space this point is defined in.
+					 * Tells what is the dimension of the space this 
+					 * point is defined in.
 					 *
 					 */
-					static const Ceylan::Maths::Linear::MatrixIndex Dimensions = 0 ;
+					static const Ceylan::Maths::Linear::MatrixIndex 
+						Dimensions = 0 ;
+						
 					
 	    	} ;
 				
@@ -81,3 +91,4 @@ std::ostream & operator << ( std::ostream & os,
 
 
 #endif // OSDL_POINT_H_
+

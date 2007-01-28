@@ -1,8 +1,5 @@
 #include "OSDLGLTexture.h"
 
-
-//#include "OSDLOpenGL.h"     // for Load
-//#include "OSDLImage.h"      // for Load
 #include "OSDLSurface.h"    // for Surface
 #include "OSDLVideo.h"      // for VideoModule::SoftwareSurface
 
@@ -35,7 +32,8 @@ GLTextureException::~GLTextureException() throw()
 
 
 
-GLTexture::GLTexture( const std::string imageFilename, Textureflavour flavour, bool keep ) 
+GLTexture::GLTexture( const std::string imageFilename, 
+	Textureflavour flavour, bool keep ) 
 		throw( GLTextureException ) :
 	_source( 0 ),
 	_id( 0 )
@@ -45,15 +43,20 @@ GLTexture::GLTexture( const std::string imageFilename, Textureflavour flavour, b
 	
 	try
 	{
-		loaded = & Surface::LoadImage( imageFilename, /* convertToDisplay */ false ) ;
+	
+		loaded = & Surface::LoadImage( imageFilename, 
+			/* convertToDisplay */ false ) ;
+			
 	}
 	catch( const TwoDimensional::ImageException & e )
 	{
-		throw GLTextureException( "GLTexture constructor : unable to load source image from file "
+	
+		throw GLTextureException( 
+			"GLTexture constructor : unable to load source image from file "
 			+ imageFilename + " : " + e.toString() ) ;
 	}
 	
-	upload( * loaded, flavour, keep ) ;
+	upload( *loaded, flavour, keep ) ;
 	
 	// Texture not wanted any more, in all cases (it has been copied) :
 	delete loaded ;
@@ -62,8 +65,8 @@ GLTexture::GLTexture( const std::string imageFilename, Textureflavour flavour, b
 
 
 
-GLTexture::GLTexture( Surface & sourceSurface, Textureflavour flavour, bool keep ) 
-		throw( GLTextureException ) :
+GLTexture::GLTexture( Surface & sourceSurface, Textureflavour flavour, 
+		bool keep ) throw( GLTextureException ) :
 	_source( 0 )
 {
 
@@ -81,23 +84,28 @@ GLTexture::~GLTexture() throw()
 		
 	if ( _source != 0 )
 		delete _source ;
+		
 }
 
 
 
 bool GLTexture::canBeUploaded() const throw()
 {
+
 	return ( _source != 0 ) ;
+	
 }
 
 
 void GLTexture::upload() throw( GLTextureException )
 {
+
 	if ( ! canBeUploaded() )
 		throw GLTextureException( "GLTexture::upload : "
 			"texture cannot be uploaded into OpenGL context." ) ;
 			
-
+	// @todo		
+	
 }
 
 
@@ -112,9 +120,11 @@ const string GLTexture::toString( Ceylan::VerbosityLevels level ) const throw()
 		res += "whose OpenGL identifier is " + Ceylan::toString( _id ) ;
 	
 	if ( _source == 0 )
-		res += ", and which has no available internal surface kept for reload." ;
+		res += ", and which has no available internal surface "
+			"kept for reload." ;
 	else
-		res += ", which owns an internal surface, kept for reloading purposes." ;
+		res += ", which owns an internal surface, "
+			"kept for reloading purposes." ;
 	
 	return res ;	 	
 		
@@ -127,13 +137,17 @@ const string GLTexture::toString( Ceylan::VerbosityLevels level ) const throw()
 
 GLTexture::TextureMode GLTexture::GetTextureMode() throw()
 {
+
 	return CurrentTextureMode ;
+	
 }
 
 
 void GLTexture::SetTextureMode( TextureMode newMode ) throw()
 {
+
 	CurrentTextureMode = newMode ;
+	
 }
 
 
@@ -150,33 +164,51 @@ void GLTexture::SetTextureFlavour( Textureflavour flavour )
 		
 		
 		case Basic:
-		 	// Minifying function : weighted average of the four closest texture elements.
+		
+		 	/*
+			 * Minifying function : weighted average of the four closest 
+			 * texture elements.
+			 *
+			 */
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ) ;
 			
-		 	// Magnifying function : weighted average of the four closest texture elements.		
+		 	/*
+			 * Magnifying function : weighted average of the four closest
+			 * texture elements.
+			 *
+			 */
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ) ;
 	
-			// Wrap parameter for texture coordinate s : clamped to the range [0,1];
+			/*
+			 * Wrap parameter for texture coordinate s : clamped to the range
+			 * [0,1].
+			 *
+			 */
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP ) ;
 			
-			// Wrap parameter for texture coordinate t : clamped to the range [0,1].			
+			/*
+			 * Wrap parameter for texture coordinate t : clamped to the 
+			 * range [0,1].
+			 *
+			 */
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP ) ;
 			
 			break ;		
 	
 	
 		default:
-			LogPlug::warning( "GLTexture::SetTextureFlavour : unknown flavour : "
+			LogPlug::warning( 
+				"GLTexture::SetTextureFlavour : unknown flavour : "
 				+ Ceylan::toString( flavour ) + "." ) ;
-			return ;
 			break ;	
+			
 	}
 	
 }
 
 
-void GLTexture::upload( Surface & sourceSurface, Textureflavour flavour, bool keep ) 
-	throw( GLTextureException ) 
+void GLTexture::upload( Surface & sourceSurface, 
+	Textureflavour flavour, bool keep ) throw( GLTextureException ) 
 {
 
 	/*
@@ -377,8 +409,8 @@ int main(int, char**)
 	SDL_Surface * sourceInternal = & sourceSurface.getSDLSurface() ;
 	
 	/*
-	 * No alpha blending, no RLE acceleration should be used, and overall alpha is set to full
-	 * transparency.
+	 * No alpha blending, no RLE acceleration should be used, and 
+	 * overall alpha is set to full transparency.
 	 *
 	 * 
 	 */
@@ -391,7 +423,8 @@ int main(int, char**)
 		
 	Pixels::ColorElement savedAlpha = sourceInternal->format->alpha ;
 	
-	bool mustModifyOverallAlpha = static_cast<bool>( savedFlags & Surface::AlphaBlendingBlit ) ;
+	bool mustModifyOverallAlpha = static_cast<bool>( 
+		savedFlags & Surface::AlphaBlendingBlit ) ;
 	
 	if ( mustModifyOverallAlpha ) 
 	  	SDL_SetAlpha( sourceInternal, 0, 0 ) ;
@@ -400,11 +433,14 @@ int main(int, char**)
 	Length height = sourceInternal->h ;
 	
 	// To avoid having transparent surfaces, use 0 for AlphaMask ?
-	SDL_Surface * convertedSurface = SDL_CreateRGBSurface( VideoModule::SoftwareSurface, 
-		width, height, 32 /* bits per pixel */,	RedMask, GreenMask, BlueMask, AlphaMask ) ;
+	SDL_Surface * convertedSurface = SDL_CreateRGBSurface(
+		VideoModule::SoftwareSurface, 
+		width, height, 32 /* bits per pixel */,
+		RedMask, GreenMask, BlueMask, AlphaMask ) ;
 	
 	if ( convertedSurface == 0 )
-		throw GLTextureException( "GLTexture::upload : RGB surface creation failed." ) ;
+		throw GLTextureException( 
+			"GLTexture::upload : RGB surface creation failed." ) ;
 		
 		 
 	int res = SDL_BlitSurface( sourceInternal, 0, convertedSurface, 0 ) ;
@@ -430,16 +466,27 @@ int main(int, char**)
 	SetTextureFlavour( flavour ) ;
 	
 	if ( IsAPowerOfTwo( width ) && IsAPowerOfTwo( height ) )
-        glTexImage2D( /* mandatory */ GL_TEXTURE_2D, /* level : base image */  0, 
-			/* number of color components */ GL_RGBA, width, height, /* border */ 0, 
-			/* pixel format */ GL_RGBA, /* pixel data type */ GL_UNSIGNED_BYTE, 
+        glTexImage2D( 
+			/* mandatory */ GL_TEXTURE_2D, 
+			/* level : base image */  0, 
+			/* number of color components */ GL_RGBA, 
+			width, 
+			height, 
+			/* border */ 0, 
+			/* pixel format */ GL_RGBA, 
+			/* pixel data type */ GL_UNSIGNED_BYTE, 
 			convertedSurface->pixels ) ;
 	else
-        gluBuild2DMipmaps( /* mandatory */ GL_TEXTURE_2D, 
-			/* number of color components */ GL_RGBA, width, height,
-			/* pixel format */ GL_RGBA, /* pixel data type */ GL_UNSIGNED_BYTE, 
+        gluBuild2DMipmaps( 
+			/* mandatory */ GL_TEXTURE_2D, 
+			/* number of color components */ GL_RGBA, 
+			width, 
+			height,
+			/* pixel format */ GL_RGBA, 
+			/* pixel data type */ GL_UNSIGNED_BYTE, 
 			convertedSurface->pixels ) ;
 			
 	SDL_FreeSurface( convertedSurface ) ;
 
 }
+

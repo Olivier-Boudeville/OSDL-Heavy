@@ -18,23 +18,28 @@ UprightRectangleGL::UprightRectangleGL( const Bipoint & upperLeftCorner,
 		const Bipoint & lowerRightCorner ) throw( VideoException ) :
 	_x( upperLeftCorner.getX() ),
 	_y( upperLeftCorner.getY() ),
-	_width(  ( GLLength ) lowerRightCorner.getX() - upperLeftCorner.getX() ),
-	_height( ( GLLength ) lowerRightCorner.getY() - upperLeftCorner.getY() )
+	_width( static_cast<GLLength>( lowerRightCorner.getX() -
+		upperLeftCorner.getX() ) ),
+	_height( static_cast<GLLength>( lowerRightCorner.getY() -
+		upperLeftCorner.getY() ) )
 {
 
-#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
 
 	if ( lowerRightCorner.getX() < upperLeftCorner.getX() )
 		throw VideoException( 
-			string ( "UprightRectangleGL constructor : width is negative ( " ) 
-				+  ( long ) ( lowerRightCorner.getX() - upperLeftCorner.getX() ) + " ) " ) ;
+			"UprightRectangleGL constructor : width is negative ( " 
+			+ Ceylan::toString( 
+				lowerRightCorner.getX() - upperLeftCorner.getX() ) 
+			+ " ) " ) ;
 		
-	if ( lowerRightCorner.getY() < upperLeftCorner.getY() )
 		throw VideoException( 
-			string ( "UprightRectangleGL constructor : height is negative ( " )
-				+ ( long ) ( lowerRightCorner.getY() - upperLeftCorner.getY() ) + " ) " ) ;
+			"UprightRectangleGL constructor : height is negative ( " 
+			+ Ceylan::toString( 
+				lowerRightCorner.getY() - upperLeftCorner.getY() ) 
+			+ " ) " ) ;
 		
-#endif
+#endif // OSDL_DEBUG
 
 }
 
@@ -69,26 +74,35 @@ UprightRectangleGL::~UprightRectangleGL() throw()
 
 Bipoint UprightRectangleGL::getUpperLeftCorner() const throw()
 {
+
 	return Bipoint( _x, _y ) ;
+	
 }
 
 
-void UprightRectangleGL::setUpperLeftCorner( Bipoint & newUpperLeftCorner ) throw()
+void UprightRectangleGL::setUpperLeftCorner( 
+	Bipoint & newUpperLeftCorner ) throw()
 {
+
 	_x = newUpperLeftCorner.getX() ;
 	_y = newUpperLeftCorner.getY() ;	
+	
 }
 
 
 GLCoordinate UprightRectangleGL::getUpperLeftAbscissa() const throw()
 {
+
 	return _x ;
+	
 }
  
  
 GLCoordinate UprightRectangleGL::getUpperLeftOrdinate() const throw()
 {
+
 	return _y ;
+	
 }
  
  
@@ -100,49 +114,65 @@ GLLength UprightRectangleGL::getWidth() const throw()
 
 void UprightRectangleGL::setWidth( GLLength newWidth ) throw()
 {
+
 	_width = newWidth ;
+	
 }
 
 
 GLLength UprightRectangleGL::getHeight() const throw()
 {
+
 	return _height ;
+	
 }
 
 
 void UprightRectangleGL::setHeight( GLLength newHeight ) throw()
 {
+
 	_height = newHeight ;
+	
 }
 		
 		
 bool UprightRectangleGL::draw() const throw()
 {
 	
-	#ifdef OSDL_HAVE_OPENGL
+#ifdef OSDL_HAVE_OPENGL
+
 	glRectf( _x, _y, _x + _width, _y + _height ) ;
-	#else
+	
+#else // OSDL_HAVE_OPENGL
+
 	Ceylan::emergencyShutdown( "UprightRectangleGL::draw "
 		"called whereas no OpenGL support available." ) ;
-	#endif
+		
+#endif //OSDL_HAVE_OPENGL 
 	
 	return true ;
 	
 }
 
 
-const string UprightRectangleGL::toString( Ceylan::VerbosityLevels level ) const throw()
+const string UprightRectangleGL::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
-	return "OpenGL rectangle whose upper-left corner is " + Bipoint( _x, _y ).toString( level ) 
+
+	return "OpenGL rectangle whose upper-left corner is " 
+		+ Bipoint( _x, _y ).toString( level ) 
 		+ " ( width = "  + Ceylan::toString( _width )
 		+ " ; height = " + Ceylan::toString( _height ) + " )" ;
+		
 }
 	
 
 
-std::ostream & operator << ( std::ostream & os, UprightRectangleGL & rect ) throw()
+std::ostream & operator << ( std::ostream & os, UprightRectangleGL & rect )
+	throw()
 {
-    return os << rect.toString() ;
-}
 
+    return os << rect.toString() ;
+	
+}
 

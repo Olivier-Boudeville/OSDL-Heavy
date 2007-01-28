@@ -2,8 +2,8 @@
 #define OSDL_LINE_H_
 
 
-#include "OSDLTypes.h" 
-#include "OSDLPixel.h" // for Pixels::put, Pixels::Pixel
+#include "OSDLTypes.h"   // for Coordinate, etc.
+#include "OSDLPixel.h"   // for Pixels::put, Pixels::Pixel
 
 
 
@@ -29,31 +29,36 @@ namespace OSDL
 			/**
 		 	 * This namespace gathers all line-oriented graphics output.
 			 *
-			 * Color expressed as raw (non-converted to surface's pixel format) 32-bit color
-			 * must respect the 0xRRGGBBAA structure, i.e. one byte for each of the four color
-			 * components.
+			 * Colors expressed as raw (non-converted to surface's pixel format)
+			 * 32-bit color must respect the 0xRRGGBBAA structure, i.e. 
+			 * one byte for each of the four color components.
 			 *
-			 *
-			 * @note Line clipping is elementary : a line wiil not be drawn unless both endpoints
-			 * are in clipped area. However, a line might be partially visible even if neither of
-			 * them are in clipping area, therefore an improvement would be to draw the onscreen 
-			 * remaining part.
-			 *
+			 * @note Line clipping is elementary : a line will not be drawn
+			 * unless both endpoints are in clipped area. 
+			 * However, a line might be partially visible even if neither of
+			 * them are in clipping area, therefore an improvement would be 
+			 * to draw the onscreen remaining part.
 			 *
 			 */
 			namespace Line
 			{
 	
 	
-				// Methods could be inlined in a dedicated file for faster processing.
+				/*
+				 * Methods could be inlined in a dedicated file for faster
+				 * processing.
+				 *
+				 */
 	
 	
 				/**
-				 * Draws an horizontal line ranging from point (xStart;y), included,
-				 * to point (xStop;y), included if and only if endpoint drawing mode is set, 
-				 * with specified RGBA color.
+				 * Draws an horizontal line ranging from point (xStart;y),
+				 * included, to point (xStop;y), which is included if and 
+				 * only if endpoint drawing mode is set, with specified RGBA
+				 * color.
 				 *
-				 * @return false if and only if something went wrong (ex : surface lock failed).
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -63,23 +68,26 @@ namespace OSDL
 				 *
 				 * @see drawVertical, draw
 				 *
-				 * @see VideoModule::GetEndPointDrawState, VideoModule::GetAntiAliasingState
+				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
 				bool drawHorizontal( Surface & targetSurface, 
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
-					Pixels::ColorElement blue, Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-					throw() ;
+					Pixels::ColorElement blue, 
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
+						throw() ;
 	
 	
 				/**
-				 * Draws an horizontal line ranging from point (xStart;y), included,
-				 * to point (xStop;y), included if and only if endpoint drawing mode is set, 
-				 * with specified RGBA color, already expressed according to <b>targetSurface</b>
+				 * Draws an horizontal line ranging from point (xStart;y),
+				 * included, to point (xStop;y), which is included if and 
+				 * only if endpoint drawing mode is set, with specified RGBA
+				 * color, already expressed according to <b>targetSurface</b>
 				 * pixel format.
-.				 *
-				 * @return false if and only if something went wrong (ex : surface lock failed).
+				 *
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -89,7 +97,7 @@ namespace OSDL
 				 *
 				 * @see drawVertical, draw
 				 *
-				 * @see VideoModule::GetEndPointDrawState, VideoModule::GetAntiAliasingState
+				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
 				bool drawHorizontal( Surface & targetSurface, 
@@ -98,11 +106,13 @@ namespace OSDL
 	
 	
 				/**
-				 * Draws an horizontal line ranging from point (xStart;y), included,
-				 * to point (xStop;y), included if and only if endpoint drawing mode is set, 
-				 * with specified RGBA color.
+				 * Draws an horizontal line ranging from point (xStart;y),
+				 * included, to point (xStop;y), which is included if and 
+				 * only if endpoint drawing mode is set, with specified RGBA
+				 * color.
 				 *
-				 * @return false if and only if something went wrong (ex : surface lock failed).
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -112,7 +122,7 @@ namespace OSDL
 				 *
 				 * @see drawVertical, draw
 				 *
-				 * @see VideoModule::GetEndPointDrawState, VideoModule::GetAntiAliasingState
+				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
 				bool drawHorizontal( Surface & targetSurface, 
@@ -121,11 +131,13 @@ namespace OSDL
 	
 	
 				/**
-				 * Draws a vertical line ranging from point (x;yStart), included,
-				 * to point (x;yStop), included if and only if endpoint drawing mode is set, 
-				 * with specified RGBA color.
+				 * Draws a vertical line ranging from point (x;yStart),
+				 * included, to point (x;yStop), which is included if and 
+				 * only if endpoint drawing mode is set, with specified 
+				 * RGBA color.
 				 *
-				 * @return false if and only if something went wrong (ex : surface lock failed).
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 *
 				 * @note Locks surface if needed.
 				 *
@@ -135,22 +147,25 @@ namespace OSDL
 				 *
 				 * @see drawHorizontal, draw
 				 *
-				 * @see VideoModule::GetEndPointDrawState, VideoModule::GetAntiAliasingState
+				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
 				bool drawVertical( Surface & targetSurface, 
 					Coordinate x, Coordinate yStart, Coordinate yStop, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
-					Pixels::ColorElement blue, Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-					throw() ;
+					Pixels::ColorElement blue, 
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
+						throw() ;
 	
 	
 				/**
-				 * Draws a vertical line ranging from point (x;yStart), included,
-				 * to point (x;yStop), included if and only if endpoint drawing mode is set, 
-				 * with specified RGBA color.
+				 * Draws a vertical line ranging from point (x;yStart),
+				 * included, to point (x;yStop), which is included if and 
+				 * only if endpoint drawing mode is set, with specified 
+				 * RGBA color.
 				 *
-				 * @return false if and only if something went wrong (ex : surface lock failed).
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 *
 				 * @note Locks surface if needed.
 				 *
@@ -160,7 +175,7 @@ namespace OSDL
 				 *
 				 * @see drawHorizontal, draw
 				 *
-				 * @see VideoModule::GetEndPointDrawState, VideoModule::GetAntiAliasingState
+				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
 				bool drawVertical( Surface & targetSurface, 
@@ -169,15 +184,20 @@ namespace OSDL
 					throw() ;
 
 
-				// There is no drawVertical with PixelColor, as SDL_gfx does not provide it.
+				/*
+				 * There is no drawVertical with PixelColor, as the SDL_gfx 
+				 * back-end does not provide it.
+				 *
+				 */
 				
 				
 				/**
 				 * Draws a line ranging from point (xStart;yStart), included,
-				 * to point (xStop;yStop), included if and only if endpoint drawing mode is set, 
-				 * with specified RGBA color.
+				 * to point (xStop;yStop), which is included if and only 
+				 * if endpoint drawing mode is set, with specified RGBA color.
 				 *
-				 * @return false if and only if something went wrong (ex : surface lock failed).
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 *
 				 * @note Locks surface if needed.
 				 *
@@ -187,22 +207,26 @@ namespace OSDL
 				 *
 				 * @see drawHorizontal, drawVertical
 				 *
-				 * @see VideoModule::GetEndPointDrawState, VideoModule::GetAntiAliasingState
+				 * @see VideoModule::GetEndPointDrawState,
+				 * VideoModule::GetAntiAliasingState
 				 *
 				 */
 				bool draw( Surface & targetSurface, 
-					Coordinate xStart, Coordinate yStart, Coordinate xStop, Coordinate yStop, 
+					Coordinate xStart, Coordinate yStart, 
+					Coordinate xStop, Coordinate yStop, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
-					Pixels::ColorElement blue, Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-					throw() ;
+					Pixels::ColorElement blue, 
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
+						throw() ;
 	
 	
 				/**
 				 * Draws a line ranging from point (xStart;yStart), included,
-				 * to point (xStop;yStop), included if and only if endpoint drawing mode is set, 
-				 * with specified RGBA color.
+				 * to point (xStop;yStop), which is included if and only 
+				 * if endpoint drawing mode is set, with specified RGBA color.
 				 *
-				 * @return false if and only if something went wrong (ex : surface lock failed).
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 *
 				 * @note Locks surface if needed.
 				 *
@@ -212,43 +236,24 @@ namespace OSDL
 				 *
 				 * @see drawHorizontal, drawVertical
 				 *
-				 * @see VideoModule::GetEndPointDrawState, VideoModule::GetAntiAliasingState
+				 * @see VideoModule::GetEndPointDrawState,
+				 * VideoModule::GetAntiAliasingState
 				 *
 				 */
 				bool draw( Surface & targetSurface, 
-					Coordinate xStart, Coordinate yStart, Coordinate xStop, Coordinate yStop, 
+					Coordinate xStart, Coordinate yStart, 
+					Coordinate xStop, Coordinate yStop, 
 					Pixels::ColorDefinition colorDef = Pixels::White )
-					throw() ;
-					
-					
-				/**
-				 * Draws a line ranging from firstpoint, included, to secondPoint, included if 
-				 * and only if endpoint drawing mode is set, with specified RGBA color.
-				 *
-				 * @return false if and only if something went wrong (ex : surface lock failed).
-				 *
-				 * @note Locks surface if needed.
-				 *
-				 * @note Clipping is performed.
-				 *
-				 * @note This line will be antialiased if antialias mode is set.
-				 *
-				 * @see drawHorizontal, drawVertical
-				 *
-				 * @see VideoModule::GetEndPointDrawState, VideoModule::GetAntiAliasingState
-				 *
-				 */					
-				bool draw( Surface & targetSurface, Point2D & firstPoint, Point2D & secondPoint,
-					Pixels::ColorElement red, Pixels::ColorElement green, 
-					Pixels::ColorElement blue, Pixels::ColorElement alpha = Pixels::AlphaOpaque )
 						throw() ;
 					
 					
 				/**
-				 * Draws a line ranging from firstpoint, included, to secondPoint, included if 
-				 * and only if endpoint drawing mode is set, with specified RGBA color.
+				 * Draws a line ranging from firstpoint, included, to
+				 * secondPoint, which is included if and only if endpoint
+				 * drawing mode is set, with specified RGBA color.
 				 *
-				 * @return false if and only if something went wrong (ex : surface lock failed).
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 *
 				 * @note Locks surface if needed.
 				 *
@@ -258,16 +263,46 @@ namespace OSDL
 				 *
 				 * @see drawHorizontal, drawVertical
 				 *
-				 * @see VideoModule::GetEndPointDrawState, VideoModule::GetAntiAliasingState
+				 * @see VideoModule::GetEndPointDrawState,
+				 * VideoModule::GetAntiAliasingState
 				 *
 				 */					
-				bool draw( Surface & targetSurface, Point2D & firstPoint, Point2D & secondPoint,
+				bool draw( Surface & targetSurface, 
+					Point2D & firstPoint, Point2D & secondPoint,
+					Pixels::ColorElement red, Pixels::ColorElement green, 
+					Pixels::ColorElement blue, 
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
+						throw() ;
+					
+					
+				/**
+				 * Draws a line ranging from firstpoint, included, to
+				 * secondPoint, which is included if and only if endpoint
+				 * drawing mode is set, with specified RGBA color.
+				 *
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
+				 *
+				 * @note Locks surface if needed.
+				 *
+				 * @note Clipping is performed.
+				 *
+				 * @note This line will be antialiased if antialias mode is set.
+				 *
+				 * @see drawHorizontal, drawVertical
+				 *
+				 * @see VideoModule::GetEndPointDrawState,
+				 * VideoModule::GetAntiAliasingState
+				 *
+				 */					
+				bool draw( Surface & targetSurface, 
+					Point2D & firstPoint, Point2D & secondPoint,
 					Pixels::ColorDefinition colorDef = Pixels::White ) throw() ;
 				
 				
 				/**
-				 * Draws a cross centered in <b>center</b>, included in a square whose length of
-				 * edge is <b>squareEdge</b>.
+				 * Draws a cross centered in <b>center</b>, included in a 
+				 * square whose length of edge is <b>squareEdge</b>.
 				 *
 				 * @note Useful to mark a specified pixel.
 				 *
@@ -275,7 +310,11 @@ namespace OSDL
 				 *
 				 * @note Clipping is performed.
 				 *
-				 * @note This cross will be antialiased if antialias mode is set.
+				 * @note This cross will be antialiased if antialias mode 
+				 * is set.
+				 *
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 *
 				 */
 				bool drawCross( Surface & targetSurface, const Point2D & center,
@@ -284,8 +323,8 @@ namespace OSDL
 					
 					
 				/**
-				 * Draws a cross centered in <b>center</b>, included in a square whose length of
-				 * edge is <b>squareEdge</b>.
+				 * Draws a cross centered in <b>center</b>, included in a 
+				 * square whose length of edge is <b>squareEdge</b>.
 				 *
 				 * @note Useful to mark a specified pixel.
 				 *
@@ -293,13 +332,19 @@ namespace OSDL
 				 *
 				 * @note Clipping is performed.
 				 *
-				 * @note This cross will be antialiased if antialias mode is set.
+				 * @note This cross will be antialiased if antialias mode 
+				 * is set.
+				 *
+				 * @return false if and only if something went wrong, for
+				 * example if surface locking failed.
 				 *
 				 */
-				bool drawCross( Surface & targetSurface, Coordinate xCenter, Coordinate yCenter,
+				bool drawCross( Surface & targetSurface, 
+					Coordinate xCenter, Coordinate yCenter,
 					Pixels::ColorDefinition colorDef = Pixels::White, 
 					Length squareEdge = 5 ) throw() ;
 					
+				
 				
 			}	
 				
@@ -311,3 +356,4 @@ namespace OSDL
 
 
 #endif // OSDL_LINE_H_
+

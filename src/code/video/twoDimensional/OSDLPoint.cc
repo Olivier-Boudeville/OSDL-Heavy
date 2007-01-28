@@ -1,6 +1,5 @@
 #include "OSDLPoint.h"
 
-#include "Ceylan.h"
 
 #include <iostream>      // for ostream
 
@@ -27,11 +26,16 @@ Point::~Point() throw()
 
 const string Point::toString( Ceylan::VerbosityLevels level ) const throw()
 {
+
     return "Abstract point" ;
+	
 }
 
 
 std::ostream & operator << ( std::ostream & os, const Point & p )
 {
+
     return os << p.toString() ;
+	
 }
+

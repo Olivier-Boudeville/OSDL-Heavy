@@ -4,8 +4,6 @@
 #include "OSDLPoint2D.h"  // for Point2D
 #include "OSDLVideo.h"    // for VideoModule
 
-#include "OSDLVideo.h"    // for VideoModule
-
 
 #include "SDL_gfxPrimitives.h"  // for graphic primitives exported by SDL_gfx
 
@@ -28,34 +26,40 @@ using Ceylan::Maths::Real ;
 
 bool TwoDimensional::drawPie( Surface & targetSurface, 
 	Coordinate xCenter, Coordinate yCenter, Length radius, 
-	Ceylan::Maths::AngleInDegrees angleStart, Ceylan::Maths::AngleInDegrees angleStop,
+	Ceylan::Maths::AngleInDegrees angleStart, 
+	Ceylan::Maths::AngleInDegrees angleStop,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
 	Pixels::ColorElement blue, Pixels::ColorElement alpha ) throw()
 {
 
-	return ( ::filledPieRGBA( & targetSurface.getSDLSurface(), xCenter, yCenter,
-			radius, static_cast<Coordinate>( angleStart ), static_cast<Coordinate>( angleStop ),
-			red, green, blue, alpha ) == 0 ) ;
+	return ( ::filledPieRGBA( & targetSurface.getSDLSurface(), 
+		xCenter, yCenter, radius, static_cast<Coordinate>( angleStart ),
+		static_cast<Coordinate>( angleStop ), red, green, blue, alpha ) == 0 ) ;
 		
 }
 
 
 bool TwoDimensional::drawPie( Surface & targetSurface, 
 	Coordinate xCenter, Coordinate yCenter, Length radius, 
-	Ceylan::Maths::AngleInDegrees angleStart, Ceylan::Maths::AngleInDegrees angleStop, 
+	Ceylan::Maths::AngleInDegrees angleStart, 
+	Ceylan::Maths::AngleInDegrees angleStop, 
 	Pixels::ColorDefinition colorDef ) throw()
 {
 
-	return ( ::filledPieColor( & targetSurface.getSDLSurface(), xCenter, yCenter,
-			radius, static_cast<Coordinate>( angleStart ), static_cast<Coordinate>( angleStop ),
-			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+	return ( ::filledPieColor( & targetSurface.getSDLSurface(), 
+		xCenter, yCenter, radius, 
+		static_cast<Coordinate>( angleStart ),
+		static_cast<Coordinate>( angleStop ),
+		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
 
 }
 
 
 
 bool TwoDimensional::drawTriangle( Surface & targetSurface, 
-	Coordinate x1, Coordinate y1, Coordinate x2, Coordinate y2, Coordinate x3, Coordinate y3, 
+	Coordinate x1, Coordinate y1, 
+	Coordinate x2, Coordinate y2, 
+	Coordinate x3, Coordinate y3, 
 	Pixels::ColorElement red, Pixels::ColorElement green, 
 	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) throw()
 {
@@ -63,8 +67,8 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	if ( filled )
 	{
 				
-		return ( ::filledTrigonRGBA( & targetSurface.getSDLSurface(), x1, y1, x2, y2, x3, y3,
-			red, green, blue, alpha ) == 0 ) ;
+		return ( ::filledTrigonRGBA( & targetSurface.getSDLSurface(), 
+			x1, y1, x2, y2, x3, y3,	red, green, blue, alpha ) == 0 ) ;
 			
 	}
 	else
@@ -72,14 +76,14 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 		
 		if ( VideoModule::GetAntiAliasingState() )
 		{
-			return ( ::aatrigonRGBA( & targetSurface.getSDLSurface(), x1, y1, x2, y2, x3, y3,
-				red, green, blue, alpha ) == 0 ) ;
+			return ( ::aatrigonRGBA( & targetSurface.getSDLSurface(), 
+				x1, y1, x2, y2, x3, y3,	red, green, blue, alpha ) == 0 ) ;
 			
 		}
 		else
 		{
-			return ( ::trigonRGBA( & targetSurface.getSDLSurface(), x1, y1, x2, y2, x3, y3,
-				red, green, blue, alpha ) == 0 ) ;
+			return ( ::trigonRGBA( & targetSurface.getSDLSurface(), 
+				x1, y1, x2, y2, x3, y3,	red, green, blue, alpha ) == 0 ) ;
 		
 		}
 	
@@ -89,14 +93,17 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 
 	
 bool TwoDimensional::drawTriangle( Surface & targetSurface, 
-	Coordinate x1, Coordinate y1, Coordinate x2, Coordinate y2, Coordinate x3, Coordinate y3, 
+	Coordinate x1, Coordinate y1, 
+	Coordinate x2, Coordinate y2, 
+	Coordinate x3, Coordinate y3, 
 	Pixels::ColorDefinition colorDef, bool filled ) throw()
 {
 
 	if ( filled )
 	{
 				
-		return ( ::filledTrigonColor( & targetSurface.getSDLSurface(), x1, y1, x2, y2, x3, y3,
+		return ( ::filledTrigonColor( & targetSurface.getSDLSurface(), 
+			x1, y1, x2, y2, x3, y3,
 			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
 			
 	}
@@ -105,14 +112,20 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 		
 		if ( VideoModule::GetAntiAliasingState() )
 		{
-			return ( ::aatrigonColor( & targetSurface.getSDLSurface(), x1, y1, x2, y2, x3, y3,
-				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+		
+			return ( ::aatrigonColor( & targetSurface.getSDLSurface(), 
+				x1, y1, x2, y2, x3, y3,
+				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) 
+					) == 0 ) ;
 			
 		}
 		else
 		{
-			return ( ::trigonColor( & targetSurface.getSDLSurface(), x1, y1, x2, y2, x3, y3,
-				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+		
+			return ( ::trigonColor( & targetSurface.getSDLSurface(), 
+				x1, y1, x2, y2, x3, y3,
+				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) 
+					) == 0 ) ;
 		
 		}
 	
@@ -125,7 +138,8 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 bool TwoDimensional::drawTriangle( Surface & targetSurface, 
 	const Point2D & p1, const Point2D & p2, const Point2D & p3,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) throw()
+	Pixels::ColorElement blue, Pixels::ColorElement alpha, 
+	bool filled ) throw()
 {
 
 	if ( filled )
@@ -169,7 +183,8 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 				
 		return ( ::filledTrigonColor( & targetSurface.getSDLSurface(), 
 			p1.getX(), p1.getY(),p2.getX(),p2.getY(), p3.getX(),p3.getY(),
-			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) 
+				== 0 ) ;
 			
 	}
 	else
@@ -177,16 +192,20 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 		
 		if ( VideoModule::GetAntiAliasingState() )
 		{
+		
 			return ( ::aatrigonColor( & targetSurface.getSDLSurface(), 
 				p1.getX(), p1.getY(),p2.getX(),p2.getY(), p3.getX(),p3.getY(),
-				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) 
+					== 0 ) ;
 			
 		}
 		else
 		{
+		
 			return ( ::trigonColor( & targetSurface.getSDLSurface(),
 				p1.getX(), p1.getY(),p2.getX(),p2.getY(), p3.getX(),p3.getY(),
-				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) 
+					== 0 ) ;
 		
 		}
 	
@@ -195,8 +214,8 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 }
 
 
-bool TwoDimensional::drawPolygon( Surface & targetSurface, const listPoint2D & summits,
-	Coordinate x, Coordinate y,
+bool TwoDimensional::drawPolygon( Surface & targetSurface, 
+	const listPoint2D & summits, Coordinate x, Coordinate y,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
 	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) throw()
 {
@@ -206,7 +225,8 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface, const listPoint2D & s
 	
 	
 	/*
-	 * If a large number of summits is to be used, dynamic allocation (new/delete) would be better.
+	 * If a large number of summits waq to be used, dynamic allocation
+	 * (new/delete) would be better.
 	 *
 	 */
 	Ceylan::System::Size vertexCount = summits.size() ;
@@ -216,12 +236,15 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface, const listPoint2D & s
 	
 	vertexCount = 0 ;
 	
-	for ( listPoint2D::const_iterator it = summits.begin(); it != summits.end(); it++ )
+	for ( listPoint2D::const_iterator it = summits.begin(); 
+		it != summits.end(); it++ )
 	{
+	
 		abscissaArray[ vertexCount ] = (*it)->getX() + x ;
 		ordinateArray[ vertexCount ] = (*it)->getY() + y ;
 		
 		vertexCount++ ;
+		
 	}
 	
 		
@@ -231,7 +254,8 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface, const listPoint2D & s
 	{
 				
 		return ( ::filledPolygonRGBA( & targetSurface.getSDLSurface(), 
-			abscissaArray, ordinateArray, vertexCount, red, green, blue, alpha ) == 0 ) ;
+			abscissaArray, ordinateArray, vertexCount, 
+			red, green, blue, alpha ) == 0 ) ;
 			
 	}
 	else
@@ -239,14 +263,18 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface, const listPoint2D & s
 		
 		if ( VideoModule::GetAntiAliasingState() )
 		{
+		
 			return ( ::aapolygonRGBA( & targetSurface.getSDLSurface(), 
-				abscissaArray, ordinateArray, vertexCount, red, green, blue, alpha ) == 0 ) ;
+				abscissaArray, ordinateArray, vertexCount, 
+				red, green, blue, alpha ) == 0 ) ;
 			
 		}
 		else
 		{
+		
 			return ( ::polygonRGBA( & targetSurface.getSDLSurface(),
-				abscissaArray, ordinateArray, vertexCount, red, green, blue, alpha ) == 0 ) ;
+				abscissaArray, ordinateArray, vertexCount, 
+				red, green, blue, alpha ) == 0 ) ;
 		
 		}
 	
@@ -255,13 +283,15 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface, const listPoint2D & s
 }	
 	
 	
-bool TwoDimensional::drawPolygon( Surface & targetSurface, const listPoint2D & summits,
-	Coordinate x, Coordinate y,	Pixels::ColorDefinition colorDef, bool filled ) throw()
+bool TwoDimensional::drawPolygon( Surface & targetSurface, 
+	const listPoint2D & summits, Coordinate x, Coordinate y,
+	Pixels::ColorDefinition colorDef, bool filled ) throw()
 {
 
 
 	/*
-	 * If a large number of summits is to be used, dynamic allocation (new/delete) would be better.
+	 * If a large number of summits is to be used, dynamic allocation
+	 * (new/delete) would be better.
 	 *
 	 */
 	Ceylan::System::Size vertexCount = summits.size() ;
@@ -271,12 +301,15 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface, const listPoint2D & s
 	
 	vertexCount = 0 ;
 	
-	for ( listPoint2D::const_iterator it = summits.begin(); it != summits.end(); it++ )
+	for ( listPoint2D::const_iterator it = summits.begin(); 
+		it != summits.end(); it++ )
 	{
+	
 		abscissaArray[ vertexCount ] = (*it)->getX() + x ;
 		ordinateArray[ vertexCount ] = (*it)->getY() + y ;
 		
 		vertexCount++ ;
+		
 	}
 	
 			
@@ -295,16 +328,20 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface, const listPoint2D & s
 		
 		if ( VideoModule::GetAntiAliasingState() )
 		{
+		
 			return ( ::aapolygonColor( & targetSurface.getSDLSurface(), 
 				abscissaArray, ordinateArray, vertexCount,
-				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) 
+					) == 0 ) ;
 			
 		}
 		else
 		{
+		
 			return ( ::polygonColor( & targetSurface.getSDLSurface(),
 				abscissaArray, ordinateArray, vertexCount,
-				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) 
+					) == 0 ) ;
 		
 		}
 	
@@ -339,12 +376,17 @@ Polygon::~Polygon() throw()
 		if ( _listOwner )
 		{
 		 
-			for ( listPoint2D::iterator it = _summits->begin(); it != _summits->end(); it++ )
+			for ( listPoint2D::iterator it = _summits->begin(); 
+				it != _summits->end(); it++ )
 			{
 				delete *it ;
 			}
 
-			// Even the list should be deallocated, <b>only</b> if list owner  :
+			/*
+			 * Even the list should be deallocated, <b>only</b> if list 
+			 * owner  :
+			 *
+			 */
 			delete _summits ;
 			
 		}
@@ -355,16 +397,28 @@ Polygon::~Polygon() throw()
 }
 
 
-bool Polygon::draw( Surface & targetSurface, Pixels::ColorDefinition colorDef, bool filled )
-	const throw()
+bool Polygon::draw( Surface & targetSurface, 
+	Pixels::ColorDefinition colorDef, bool filled ) const throw()
 {
 
+     /*
+	  * Could be added to the API :
+	  *
+	  * @param transform tells whether the polygon should 
+	  * be transformed against referential matrix (if true) 
+	  * or drawn as is (if false). 
+	  * In all cases the internal summit list will not be
+	  * modified.
+	  *
+      */
+	  
 	listPoint2D * vertices = & Duplicate( *_summits ) ;
 	Apply( getLocalMatrix(), * vertices ) ;
 	
+	
 	/*
-	 * [0;0] origin specified since center must have been taken into account within the homogeneous
-	 * matrix :
+	 * [0;0] origin specified since center must have been taken into 
+	 * account within the homogeneous matrix :
 	 *
 	 */
 	return drawPolygon( targetSurface, * vertices, 0, 0, colorDef, filled ) ;
@@ -374,7 +428,9 @@ bool Polygon::draw( Surface & targetSurface, Pixels::ColorDefinition colorDef, b
 
 listPoint2D & Polygon::getPoints() const throw()
 {
+
 	return * _summits ;
+	
 }
 
 
@@ -383,8 +439,10 @@ void Polygon::setPoints( listPoint2D & newList ) throw()
 
 	if ( _listOwner )
 	{
+	
 		if ( _summits != 0 )
 			Delete( * _summits ) ;
+			
 	}
 
 	_summits = & newList ;	
@@ -392,9 +450,12 @@ void Polygon::setPoints( listPoint2D & newList ) throw()
 }
 
 
+
 bool Polygon::isListOwner() const throw()
 {
+
 	return _listOwner ;
+	
 }
 
  	
@@ -406,7 +467,8 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 	if ( _summits && ! _summits->empty() )
 	{
 
-		res = "Polygon defined by " + Ceylan::toString( _summits->size() ) + " summits" ;
+		res = "Polygon defined by " + Ceylan::toString( _summits->size() ) 
+			+ " summits" ;
 
 		if ( level == Ceylan::low )
 			return res ;
@@ -417,10 +479,13 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 		
 		Ceylan::Uint32 count = 0 ;
 		
-		for ( listPoint2D::const_iterator it = _summits->begin(); it != _summits->end(); it++ )
+		for ( listPoint2D::const_iterator it = _summits->begin(); 
+			it != _summits->end(); it++ )
 		{
+		
 			count++ ;
-			summitsCoordinates.push_back( "summit #" + Ceylan::toString( count ) + " : " 
+			summitsCoordinates.push_back( "summit #" 
+				+ Ceylan::toString( count ) + " : " 
 				+ (*it)->toString( level ) ) ;				
 		}
 		
@@ -440,13 +505,15 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 // Static section.
 
 
-Polygon & Polygon::CreateFlakeBranch( Length length, Length thickness, AngleInDegrees childAngle,
-	Ratio branchingHeightRatio, Ratio scale ) throw()
+Polygon & Polygon::CreateFlakeBranch( Length length, Length thickness,
+		AngleInDegrees childAngle, Ratio branchingHeightRatio, Ratio scale ) 
+	throw()
 {
+
 	
 	/*
-	 * Points will be created, put in a list that will have to be deallocated explicitly by the 
-	 * caller.
+	 * Points will be created, put in a list that will have to be 
+	 * deallocated explicitly by the caller.
 	 *
 	 */
 	
@@ -505,6 +572,7 @@ Polygon & Polygon::CreateFlakeBranch( Length length, Length thickness, AngleInDe
 	  *
 	  */
 		
+		
 	// Copy constructors :
 		
 	Point2D * alpha1 = new Point2D( * alpha ) ;
@@ -528,7 +596,11 @@ Polygon & Polygon::CreateFlakeBranch( Length length, Length thickness, AngleInDe
 	Point2D * nu1 = new Point2D( * nu ) ;
 	nu1->flipX() ;
 	
-	// Mere copy to avoid double referenced points, since the polygon may own its points.
+	/*
+	 * Mere copy to avoid double referenced points, since the polygon may 
+	 * own its points.
+	 *
+	 */
 	Point2D * omicron1 = new Point2D( * omicron ) ;
 
 	summits->push_back( alpha1 ) ;
@@ -551,10 +623,14 @@ listPoint2D & Polygon::Duplicate( const listPoint2D & source ) throw()
 
 	listPoint2D * newList = new listPoint2D ;
 	
-	for ( listPoint2D::const_iterator it = source.begin(); it != source.end(); it++ )
+	for ( listPoint2D::const_iterator it = source.begin(); 
+		it != source.end(); it++ )
 	{
+	
 		newList->push_back( new Point2D( * (*it) ) ) ;
+		
 	}
+	
 	return * newList ;
 	
 }
@@ -563,9 +639,12 @@ listPoint2D & Polygon::Duplicate( const listPoint2D & source ) throw()
 void Polygon::Delete( listPoint2D & listToBeDeleted ) throw()
 {
 
-	for ( listPoint2D::iterator it = listToBeDeleted.begin(); it != listToBeDeleted.end(); it++ )
+	for ( listPoint2D::iterator it = listToBeDeleted.begin();
+		 it != listToBeDeleted.end(); it++ )
 	{
+	
 		delete (*it) ;
+		
 	}
 	
 	delete & listToBeDeleted ;
@@ -573,12 +652,16 @@ void Polygon::Delete( listPoint2D & listToBeDeleted ) throw()
 }
 
 
-listPoint2D & Polygon::Append( listPoint2D & toBeAugmented, const listPoint2D & toAppend ) throw()
+listPoint2D & Polygon::Append( listPoint2D & toBeAugmented,
+	 const listPoint2D & toAppend ) throw()
 {
 
-	for ( listPoint2D::const_iterator it = toAppend.begin(); it != toAppend.end(); it++ )
+	for ( listPoint2D::const_iterator it = toAppend.begin(); 
+		it != toAppend.end(); it++ )
 	{
+	
 		toBeAugmented.push_back( (*it) ) ;
+		
 	}
 	
 	// Non-necessary but useful for chaining :
@@ -588,17 +671,24 @@ listPoint2D & Polygon::Append( listPoint2D & toBeAugmented, const listPoint2D & 
 }
 
 
-listPoint2D & Polygon::Apply( const Linear::HomogeneousMatrix3 & transformation, 
+listPoint2D & Polygon::Apply( 
+	const Linear::HomogeneousMatrix3 & transformation, 
 	listPoint2D & sourceList ) throw()
 {
 
-	for ( listPoint2D::iterator it = sourceList.begin(); it != sourceList.end(); it++ )
+	for ( listPoint2D::iterator it = sourceList.begin(); 
+		it != sourceList.end(); it++ )
 	{
 	
-		// Linear operations performed on floating-point Vector2, not on integer Point2D :
+		/*
+		 * Linear operations performed on floating-point Vector2, 
+		 * not on integer Point2D :
+		 *
+		 */
 		Linear::Vector2 temp( static_cast<Real>( (*it)->getX()), 
 			static_cast<Real>( (*it)->getY()) ) ;
 		(*it)->setFrom( transformation * temp ) ;
+		
 	}
 
 	// Non-necessary but useful for chaining :
@@ -622,7 +712,8 @@ PolygonSet::PolygonSet( bool listOwner ) throw() :
 }
 
 
-PolygonSet::PolygonSet( std::list<listPoint2D *> & polygonList, bool listOwner ) throw():
+PolygonSet::PolygonSet( std::list<listPoint2D *> & polygonList,
+		bool listOwner ) throw():
 	Locatable2D(),
 	_polygonList( & polygonList ),
 	_listOwner( listOwner )
@@ -644,7 +735,9 @@ PolygonSet::~PolygonSet() throw()
 			for ( list<listPoint2D *>::iterator it = _polygonList->begin(); 
 				it != _polygonList->end(); it++ )
 			{
+			
 				Polygon::Delete( * (*it) ) ;
+				
 			}
 
 			delete _polygonList ;
@@ -654,6 +747,7 @@ PolygonSet::~PolygonSet() throw()
 	}	
 	
 }
+
 
 
 void PolygonSet::addPointsOf( Polygon & newPolygon ) throw()
@@ -673,6 +767,7 @@ void PolygonSet::addPointList( listPoint2D & listToAdd ) throw()
 
 	if ( _polygonList == 0 )
 		_polygonList = new list<listPoint2D *> ;
+		
 	_polygonList->push_back( & listToAdd ) ;
 	
 }
@@ -689,14 +784,17 @@ bool PolygonSet::draw( Surface & targetSurface, Coordinate x, Coordinate y,
 	{
 	
 		/*
-		 * Avoid result = result && (*it)->draw( targetSurface, x, y, colorDef,* (*it) ) ;
-		 * since if a drawing had to fail, next ones would not be attempted (shortcut boolean 
-		 * evaluation).
+		 * Avoid result = result 
+		 *    && (*it)->draw( targetSurface, x, y, colorDef,* (*it) ) ;
+		 * since if a drawing had to fail, next ones would not be attempted
+		 * (shortcut boolean evaluation).
 		 *
 		 */
 		 
-		if ( drawPolygon( targetSurface, * (*it), x, y, colorDef, filled ) == false )
+		if ( drawPolygon( targetSurface, * (*it), x, y, colorDef, filled ) 
+				== false )
 			result = false ; 
+			
 	}
 	
 	return result ;
@@ -705,7 +803,8 @@ bool PolygonSet::draw( Surface & targetSurface, Coordinate x, Coordinate y,
 
 
 	
-const string PolygonSet::toString( Ceylan::VerbosityLevels level ) const throw()
+const string PolygonSet::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
 
 	string res ;
@@ -713,7 +812,8 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level ) const throw()
 	if ( _polygonList && ( ! _polygonList->empty() ) )
 	{
 
-		res = "Polygon set made of " + Ceylan::toString( _polygonList->size() ) 
+		res = "Polygon set made of " 
+			+ Ceylan::toString( _polygonList->size() ) 
 			+ " separate polygons" ;
 
 		if ( level == Ceylan::low )
@@ -723,16 +823,18 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level ) const throw()
 			
 		list<string> summitsCoordinates ;
 		
-		unsigned int polygonCount = 0 ;
-		unsigned int summitCount ;
+		Ceylan::Uint32 polygonCount = 0 ;
+		Ceylan::Uint32 summitCount ;
 				
-		for ( list<listPoint2D *>::const_iterator itPolygonList = _polygonList->begin(); 
+		for ( list<listPoint2D *>::const_iterator itPolygonList 
+				= _polygonList->begin(); 
 			itPolygonList != _polygonList->end(); itPolygonList++ )
 		{	
 			
 			polygonCount++ ;
 			
-			res += "For polygon #" + Ceylan::toString( polygonCount ) + " : " ;
+			res += "For polygon #" 
+				+ Ceylan::toString( polygonCount ) + " : " ;
 			 
 			summitCount = 0 ;
 			summitsCoordinates.clear() ;
@@ -740,9 +842,12 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level ) const throw()
 			for ( listPoint2D::iterator it = (*itPolygonList)->begin(); 
 				it != (*itPolygonList)->end(); it++ )
 			{
+			
 				summitCount++ ;
-				summitsCoordinates.push_back( "summit #" + Ceylan::toString( summitCount ) + " : " 
-					+ (*it)->toString( level ) ) ;				
+				summitsCoordinates.push_back( "summit #" 
+					+ Ceylan::toString( summitCount ) + " : " 
+					+ (*it)->toString( level ) ) ;		
+							
 			}
 		
 			res += Ceylan::formatStringList( summitsCoordinates ) ; 
@@ -758,8 +863,10 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level ) const throw()
 }
 
 
-PolygonSet & PolygonSet::CreateFlake( Ceylan::Uint8 branchCount, Length length, Length thickness, 
-	Ceylan::Maths::AngleInDegrees childAngle, Ratio branchingHeightRatio, Ratio scale ) throw()
+PolygonSet & PolygonSet::CreateFlake( 
+	Ceylan::Uint8 branchCount, Length length, Length thickness, 
+	Ceylan::Maths::AngleInDegrees childAngle, Ratio branchingHeightRatio, 
+	Ratio scale ) throw()
 {
 
 	if ( branchCount == 0 )
@@ -767,15 +874,24 @@ PolygonSet & PolygonSet::CreateFlake( Ceylan::Uint8 branchCount, Length length, 
 			"snow flakes should have at least one branch." ) ;
 			
 	// Flake branches do not own their points.		
-	Polygon & modelBranch = Polygon::CreateFlakeBranch( length, thickness, childAngle,
-		branchingHeightRatio, scale ) ;
+	Polygon & modelBranch = Polygon::CreateFlakeBranch( length, 
+		thickness, childAngle, branchingHeightRatio, scale ) ;
 	
-	// List owner ensures all points and lists will be deleted when appropriate :
+	/*
+	 * List owner ensures all points and lists will be deleted when 
+	 * appropriate :
+	 *
+	 */
 	PolygonSet & result = * new PolygonSet( /* listOwner */ true ) ;	
 		
 
-	// Creates the relevant transformation for branches (they are evenly placed) :
-	Linear::HomogeneousMatrix3 transformation( 360 / branchCount, Linear::Vector2( 0, 0 ) ) ;
+	/*
+	 * Creates the relevant transformation for branches 
+	 * (they are evenly placed) :
+	 *
+	 */
+	Linear::HomogeneousMatrix3 transformation( 360 / branchCount,
+		Linear::Vector2( 0, 0 ) ) ;
 
 	// Creates first branch element :
 	listPoint2D * lastlyCreatedBranchPoints = & modelBranch.getPoints() ;
@@ -783,7 +899,11 @@ PolygonSet & PolygonSet::CreateFlake( Ceylan::Uint8 branchCount, Length length, 
 	
 	listPoint2D * newlyCreatedBranchPoints ;
 	
-	// Rotates in turn each of the other branches until a complete circle is made :	
+	/*
+	 * Rotates in turn each of the other branches until a complete circle 
+	 * is made :	
+	 *
+	 */
 	for ( Ceylan::Uint8 count = 1; count < branchCount; count++ )
 	{
 	
@@ -798,12 +918,12 @@ PolygonSet & PolygonSet::CreateFlake( Ceylan::Uint8 branchCount, Length length, 
 	delete & modelBranch ;
 	
 	/*
-	 * All lists and points (either coming from 'modelBranch' or duplicated) are registered in the
-	 * polygon set, that will deallocate each of them upon its own deallocation.
+	 * All lists and points (either coming from 'modelBranch' or duplicated) 
+	 * are registered in the polygon set, that will deallocate each of 
+	 * them upon its own deallocation.
 	 *
 	 */
 	return result ;
 	
 }
-
 
