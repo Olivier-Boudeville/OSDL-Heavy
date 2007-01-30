@@ -25,15 +25,17 @@ namespace OSDL
 		
 				// TextWidget instances use fonts to render text.
 				class Font ;
+				
 			}
 			
 			
 
 			/**
-			 * Text widgets are back-buffered widget which display full texts, sets of paragraphs.
+			 * Text widgets are back-buffered widget which display full 
+			 * texts, i.e. sets of paragraphs.
 			 *
-			 * Many attributes of the text (ex : text color) are determined from the provided
-			 * font.
+			 * Many attributes of the text (ex : text color) are 
+			 * determined from the provided font.
 			 *
 			 */
 			class TextWidget : public BackBufferedWidget
@@ -46,7 +48,8 @@ namespace OSDL
 					/**
 					 * Describes the shape of a text container :
 					 *	- SquareCorners : the text is in a rectangular box
-					 *  - RoundCorners : the text is in a box with round corners
+					 *  - RoundCorners : the text is in a box with round 
+					 * corners
 					 *
 					 */
 					enum Shape { SquareCorners, RoundCorners } ;	
@@ -57,85 +60,107 @@ namespace OSDL
 			
 					
 					/**
-					 * Creates a back-buffered widget whose role is to display text.
+					 * Creates a back-buffered widget whose role is to 
+					 * display text.
 					 *
-					 * Its container, which is always a surface (since Widgets are themselves 
-					 * specialized surfaces) will own this widget, therefore will deallocate it when
+					 * Its container, which is always a surface (since 
+					 * Widgets are themselves specialized surfaces) will own
+					 * this widget, therefore will deallocate it when
 					 * appropriate.
 					 *
-					 * Most of the widget attributes, such as bits per pixel, will be deduced from
+					 * Most of the widget attributes, such as bits per pixel,
+					 * will be deduced from
 					 * the corresponding attributes of its container.
 					 * 
-					 * @param container this Widget's container surface, to which it will 
-					 * automatically be subscribed to, as an EventListener for redraw operations.
+					 * @param container this Widget's container surface, to
+					 * which it will automatically be subscribed to, as an
+					 * EventListener for redraw operations.
 					 *
-					 * @param relativePosition tells where the upper-left corner of the
-					 * widget is located inside its container (widget origin in container space).
+					 * @param relativePosition tells where the upper-left 
+					 * corner of the widget is located inside its container.
 					 *
 					 * @param width this widget's width, in pixels.
 					 *
-					 * @param maximumHeight this widget's height, in pixels. The widget can never
-					 * have a bigger height, but if 'minimumHeight' is true, it may be smaller.
+					 * @param maximumHeight this widget's height, in pixels. 
+					 * The widget can never have a bigger height, but if
+					 * 'minimumHeight' is true, it may be smaller.
 					 *
-					 * @param shape the desired shape of the text container. If implies the choice
-					 * of base color mode.
+					 * @param shape the desired shape of the text container. 
+					 * If implies the choice of base color mode.
 					 *
-					 * @param textColor is the color of the text to be rendered in this widget.
+					 * @param textColor is the color of the text to be 
+					 * rendered in this widget.
 					 *
-					 * @param edgeColor is the color of the container edges. It is the only edge
-					 * color used, and Widget::EdgeColor is not impacted for other types of widgets.
+					 * @param edgeColor is the color of the container edges. 
+					 * It is the only edge color used, and Widget::EdgeColor 
+					 * is not impacted for other types of widgets.
 					 *
-					 * @param backgroundColor is the color of the background behind the text.
+					 * @param backgroundColor is the color of the background
+					 * behind the text.
 					 *
-					 * @param title the title which may be drawn, if non empty, on the top of the
+					 * @param title the title which may be drawn, if non 
+					 * empty, on the top of the widget.
+					 *
+					 * @param minMaximizable tells whether the widget can 
+					 * be minimized or maximized by the user.
+					 *
+					 * @param text the text which is to be rendered in this
 					 * widget.
 					 *
-					 * @param minMaximizable tells whether the widget can be minimized or maximized
-					 * by the user.
+					 * @param font the font that should be used. 
+					 * It will be used by this widget but not owned, hence 
+					 * the font will not be deleted when this widget will be
+					 * deleted.
 					 *
-					 * @param text the text which is to be rendered in this widget.
+					 * @param minimumHeight tells whether, if the rendered 
+					 * text takes less than than the full provided height, 
+					 * this widget should have an height just big enough to
+					 * contain the text (if true), or if the user-provided
+					 * height should be kept, hence creating a widget whose 
+					 * last pixel rows are empty (if false).
+					 * In all cases the actual height will be no bigger than 
+					 * the provided 'maximumHeight'.
 					 *
-					 * @param font the font that should be used. It will be used by this widget but
-					 * not owned, hence it will not be deleted when this widget will be deleted.
+					 * @param verticallyAligned tells whether the text 
+					 * should be vertically aligned. 
+					 * Even if set to false, if the text uses all the 
+					 * container final height it could use, then the text 
+					 * will be nonetheless vertically aligned to avoid the 
+					 * false feeling of having enough room for one more line.
 					 *
-					 * @param minimumHeight tells whether, if the rendered text takes less than
-					 * than the full provided height, this widget should have an height just big 
-					 * enough to contain the text (if true), or if the user-provided height should
-					 * be kept, hence creating a widget whose last pixel rows are empty (if false).
-					 * In all cases the actual height will be no bigger than the provided 
-					 * 'maximumHeight'.
-					 *
-					 * @param verticallyAligned tells whether the text should be vertically 
-					 * aligned. Even if set to false, if the text uses all the container final
-					 * height it could use, then the text will be nonetheless vertically aligned to
-					 * avoid the false feeling of having enough room for one more line.
-
-					 * @param justified tells whether text should be justified in the client area
-					 * of this widget.
+					 * @param justified tells whether text should be 
+					 * justified in the client area of this widget.
 					 *
 					 * @param quality the chosen quality for text rendering.
 					 *
-					 * @param title the title which may be drawn, if non empty, on the top of the
-					 * widget.
+					 * @param title the title which may be drawn, if non 
+					 * empty, on the top of the widget.
 					 *
-					 * @param minMaximizable tells whether the widget can be minimized or
-					 * maximized by the user.
+					 * @param minMaximizable tells whether the widget can 
+					 * be minimized or maximized by the user.
 					 *
-					 * @param draggable tells whether the widget can be dragged by the user.
+					 * @param draggable tells whether the widget can be 
+					 * dragged by the user.
 					 *
-					 * @param wrappable tells whether the widget can be wrapped (only the widget
-					 * decoration is displayed) by the user.
+					 * @param wrappable tells whether the widget can be 
+					 * wrapped (only the widget decoration is displayed) 
+					 * by the user.
 					 *
-					 * @param closable tells whether the widget can be closed by the user.
+					 * @param closable tells whether the widget can be 
+					 * closed by the user.
 					 *
 					 * @throw VideoException if an error occured.
 					 *
-					 * @note The stacking is set to the top position on creation. The stack level
-					 * was inaccurately modeled as a third coordinate (depth), instead of which it
-					 * is managed thanks to an ordered list in the parent container.
+					 * @note The stacking is set to the top position on
+					 * creation. 
 					 *
-					 * @note Parent surface cannot be 'const' since the widget may issue redraw
-					 * triggers for example.
+					 * The stack level used to be inaccurately modeled as 
+					 * a third coordinate (depth), instead of which it
+					 * is managed thanks to an ordered list in the parent
+					 * container.
+					 *
+					 * @note Parent surface cannot be 'const' since the 
+					 * widget may issue redraw triggers for example.
 					 * 
 					 */
 					TextWidget( Surface & container, 
@@ -166,27 +191,33 @@ namespace OSDL
 					/**
 					 * Sets the new text this widget should render.
 					 *
-					 * @param newText the text that will be rendered, at least partially.
+					 * @param newText the text that will be rendered, 
+					 * at least partially.
 					 *
 					 */
-					virtual void setText( const std::string & newText ) throw() ;
+					virtual void setText( const std::string & newText ) 
+						throw() ;
 					
 					
 					/**
-					 * Returns the text which is currently being displayed by this widget.
+					 * Returns the text which is currently being displayed 
+					 * by this widget.
 					 *
 					 */
 					virtual const std::string & getText() const throw() ;
 					
 					
 					/**
-					 * Returns the current index of the first character of current text that could
-					 * not be rendered in this widget, if a rendering has already been done.
-					 * Otherwise returns zero, as long as no text had to be rendered.
+					 * Returns the current index of the first character 
+					 * of current text that could not be rendered in this
+					 * widget, if a rendering has already been done.
+					 * Otherwise returns zero, as long as no text had to be
+					 * rendered.
 					 * 
-					 * Therefore if the full text could be displayed, returns the size of
-					 * the string returned by the getText method. Less than that means the text is
-					 * too long for the display.
+					 * Therefore if the full text could be displayed, returns
+					 * the size of the string returned by the getText method.
+					 * Less than that means the text is too long for the
+					 * display.
 					 *
 					 */
 					virtual Text::TextIndex getRenderIndex() const throw() ;
@@ -195,25 +226,29 @@ namespace OSDL
 					/**
 					 * Triggers the actual internal rendering.
 					 *
-					 * @note This method is meant to be overridden, so that this widget is able to
-					 * paint itself, i.e. only its background, its widgets excluded.
+					 * @note This method is meant to be overridden, so 
+					 * that this widget is able to paint itself, i.e. only 
+					 * its background, its widgets excluded.
 					 *
 					 */
 					virtual void redrawBackBuffer() throw() ;
 			
 					
 	 	            /**
-		             * Returns an user-friendly description of the state of this object.
+		             * Returns an user-friendly description of the state 
+					 * of this object.
 		             *
 					 * @param level the requested verbosity level.
 					 *
-					 * @note Text output format is determined from overall settings.
+					 * @note Text output format is determined from 
+					 * overall settings.
 					 *
 					 * @see Ceylan::TextDisplayable
 		             *
 		             */
 			 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
+							Ceylan::VerbosityLevels level = Ceylan::high ) 
+						const throw() ;
 				
 					
 											
@@ -221,7 +256,8 @@ namespace OSDL
 						
 
 					/**
-					 * Updates client area with regard to current shape and decoration status.
+					 * Updates client area with regard to current shape 
+					 * and decoration status.
 					 *
 					 */
 					virtual void updateClientArea() throw() ;
@@ -234,8 +270,13 @@ namespace OSDL
 					static const Length _TextHeightOffset ;
 					
 					
-					/// Tells whether the height of this widget should be smallest possible one.
+					/**
+					 * Tells whether the height of this widget should be
+					 * smallest possible one.
+					 *
+					 */
 					Length _minimumHeight ;
+					
 					
 					/// The upper bound of the height of this widget.
 					Length _maximumHeight ;
@@ -252,17 +293,19 @@ namespace OSDL
 					
 					
 					/**
-					 * The background color, only for RoundCorners shape, since the basecolor is 
-					 * already used for the colorkey.
+					 * The background color, only for RoundCorners shape, 
+					 * since the basecolor is already used for the colorkey.
 					 *
 					 */
 					Pixels::ColorDefinition _backColorForRoundCorners ;
 					
 					
 					/**
-					 * Precomputation of the round offset associated with round corners.
+					 * Precomputation of the round offset associated with 
+					 * round corners.
 					 *
-					 * Updated when client area itself updated, and reused afterwards.
+					 * Updated when client area itself updated, and 
+					 * reused afterwards.
 					 *
 					 */
 					Length _roundOffset ;
@@ -288,33 +331,40 @@ namespace OSDL
 					
 					
 					/**
-					 * The current index of text that could not fit in the last display, or zero
-					 * if no text has been rendered yet.
+					 * The current index of text that could not fit in 
+					 * the last display, or zero if no text has been 
+					 * rendered yet.
 					 *
 					 */
 					Text::TextIndex _currentIndex ;
 					
 
 
+
 				private:	
 
 
 					/**
-					 * Copy constructor made private to ensure that it will be never called.
-					 * The compiler should complain whenever this undefined constructor is called, 
-					 * implicitly or not.
+					 * Copy constructor made private to ensure that it will 
+					 * never be called.
+					 *
+					 * The compiler should complain whenever this undefined 
+					 * constructor is called, implicitly or not.
 					 * 
 					 */			 
 					explicit TextWidget( const TextWidget & source ) throw() ;
 			
 			
 					/**
-					 * Assignment operator made private to ensure that it will be never called.
-					 * The compiler should complain whenever this undefined operator is called, 
-					 * implicitly or not.
+					 * Assignment operator made private to ensure that it 
+					 * will never be called.
+					 *
+					 * The compiler should complain whenever this undefined 
+					 * operator is called, implicitly or not.
 					 * 
 					 */			 
-					TextWidget & operator = ( const TextWidget & source ) throw() ;
+					TextWidget & operator = ( const TextWidget & source )
+						throw() ;
 					
 					
 			} ;			

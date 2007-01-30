@@ -31,7 +31,8 @@ namespace OSDL
 
 
 		/**
-		 * A sprite is a specialized view corresponding to a 2D bitmap-based graphical element.
+		 * A sprite is a specialized view corresponding to a 2D 
+		 * bitmap-based graphical element.
 		 *
 		 */	
 		class Sprite : public Ceylan::View
@@ -44,9 +45,9 @@ namespace OSDL
 				/**
 				 * Constructs a new sprite.
 				 *
-				 * @param ownBoundingBox tells whether this sprite owns its bounding box, i.e.
-				 * generally whether this is a local execution scheme, as opposed to a 
-				 * client/server scheme.
+				 * @param ownBoundingBox tells whether this sprite owns 
+				 * its bounding box, i.e. generally whether this is a local
+				 * execution scheme, as opposed to a client/server scheme.
 				 *
 				 */
 				explicit Sprite( bool ownBoundingBox = true ) throw() ;
@@ -60,7 +61,8 @@ namespace OSDL
 			
 
 	            /**
-	             * Returns an user-friendly description of the state of this object.
+	             * Returns an user-friendly description of the state 
+				 * of this object.
 	             *
 				 * @param level the requested verbosity level.
 				 *
@@ -69,7 +71,8 @@ namespace OSDL
 				 * @see Ceylan::TextDisplayable
 	             *
 	             */
-		 		virtual const std::string toString( Ceylan::VerbosityLevels level = Ceylan::high ) 
+		 		virtual const std::string toString( 
+						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
 
 
@@ -78,24 +81,29 @@ namespace OSDL
 			
 
 				/**
-				 * Tells whether this sprite owns the bounding box(es) it refers to.
+				 * Tells whether this sprite owns the bounding box(es) it 
+				 * refers to.
 				 *
-				 * On a local scheme, the bounding box is shared between the view(s) and the model,
-				 * since it may use both for rendering and collision detection.
-				 * On a distributed context (typically, client/server), multiple bounding boxes
-				 * exist : one on each client, shared between the views, and one on the server,
-				 * for the model.
+				 * On a local scheme, the bounding box is shared between 
+				 * the view(s) and the model, since it may use both for
+				 * rendering and collision detection.
+				 *
+				 * On a distributed context (typically, client/server), 
+				 * multiple bounding boxes exist : one on each client, 
+				 *shared between the views, and one on the server, for 
+				 * the model.
 				 *
 				 */
 				bool _ownBoundingBox ;
 				
 				
 				/**
-				 * Each sprite is linked with a bounding box, which graphically contains it.
+				 * Each sprite is linked with a bounding box, which 
+				 * graphically contains it.
 				 *
-				 * @note For the moment, each sprite has only one (2D) bounding box.
+				 * @note For the moment, each sprite has only one (2D) 
+				 * bounding box.
 				 *
-				 * 
 				 */
 				BoundingBox2D _renderingDone ;
 		
@@ -105,21 +113,23 @@ namespace OSDL
 			
 			
 				/**
-				 * Copy constructor made private to ensure that it will be never called.
-				 * The compiler should complain whenever this undefined constructor is called, 
-				 * implicitly or not.
-				 * 
+				 * Copy constructor made private to ensure that it will 
+				 * never be called.
 				 *
+				 * The compiler should complain whenever this undefined 
+				 * constructor is called, implicitly or not.
+				 * 
 				 */			 
 				Sprite( const Sprite & source ) throw() ;
 			
 			
 				/**
-				 * Assignment operator made private to ensure that it will be never called.
-				 * The compiler should complain whenever this undefined operator is called, 
-				 * implicitly or not.
-				 * 
+				 * Assignment operator made private to ensure that it 
+				 * will never be called.
 				 *
+				 * The compiler should complain whenever this undefined 
+				 * operator is called, implicitly or not.
+				 * 
 				 */			 
 				Sprite & operator = ( const Sprite & source ) throw() ;
 				

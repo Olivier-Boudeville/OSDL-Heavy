@@ -130,7 +130,7 @@ namespace OSDL
 				 * Allows the renderer to be aware that a rendering step 
 				 * has to be skipped.
 				 *
-				 * It may be a chance of it to trigger counter-measures, 
+				 * It may be a chance for it to trigger counter-measures, 
 				 * such as decreasing the level of detail in order not to 
 				 * slow down the whole process.
 				 *

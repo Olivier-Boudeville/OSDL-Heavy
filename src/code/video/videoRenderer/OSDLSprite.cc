@@ -9,14 +9,15 @@ using namespace OSDL::Rendering ;
 using std::string ;
 
 
-#ifdef OSDL_DEBUG_SPRITE
+#if OSDL_DEBUG_SPRITE
 
 #define OSDL_RENDER_LOG(message) LogPlug::debug( message ) ;
-#else
+
+#else // OSDL_DEBUG_SPRITE
 
 #define OSDL_RENDER_LOG(message)
 
-#endif
+#endif // OSDL_DEBUG_SPRITE
 
 
 

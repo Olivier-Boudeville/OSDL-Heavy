@@ -1,7 +1,7 @@
 #include "OSDLWidget.h"
 
-#include "OSDLFont.h"           // for HorizontalAlignment, WidthCentered, etc.
-#include "OSDLFixedFont.h"      // for BasicFontCharacterWidth, etc.
+#include "OSDLFont.h"         // for HorizontalAlignment, WidthCentered, etc.
+#include "OSDLFixedFont.h"    // for BasicFontCharacterWidth, etc.
 
 
 
@@ -32,16 +32,23 @@ Pixels::ColorDefinition Widget::_EdgeColor  = Pixels::Grey ;
 Pixels::ColorDefinition Widget::_TitleColor = Pixels::Black ;
 
 
-Text::HorizontalAlignment Widget::_TitleHorizontalAlignment = Text::WidthCentered ;
-Text::VerticalAlignment   Widget::_TitleVerticalAlignment   = Text::HeightCentered ;
+Text::HorizontalAlignment Widget::_TitleHorizontalAlignment 
+	= Text::WidthCentered ;
+	
+Text::VerticalAlignment Widget::_TitleVerticalAlignment 
+	= Text::HeightCentered ;
 
 
-// By default, the client area takes almost the full room (edges are one pixel thick) :
+/*
+ * By default, the client area takes almost the full room 
+ * (edges are one pixel thick) :
+ *
+ */
 
 // One more pixel on width increases readability :
-Length Widget::_ClientOffsetWidth  = 2 ;
+Length Widget::_ClientOffsetWidth = 2 ;
 
-// Not too many margin since too few lines could be displayed otherwise :
+// Not too much margin since too few lines could be displayed otherwise :
 Length Widget::_ClientOffsetHeight = 1 ;
 
 
@@ -55,21 +62,24 @@ std::string Widget::_DefaultTitle = "(anonymous widget)" ;
 
 
 Widget::Widget( Surface & container, const Point2D & relativePosition, 
-		Length width, Length height, BaseColorMode baseColorMode, Pixels::ColorDefinition baseColor,
-		const string & title, bool minMaximizable, bool draggable, bool wrappable, bool closable ) 
+		Length width, Length height, BaseColorMode baseColorMode,
+		Pixels::ColorDefinition baseColor,
+		const string & title, bool minMaximizable, bool draggable, 
+		bool wrappable, bool closable ) 
 			throw( VideoException ) :
-	Surface( container.getFlags(), 
-		 width, 
-		 height, 
-		 container.getBitsPerPixel(), 
-		 container.getPixelFormat().Rmask, 
-		 container.getPixelFormat().Gmask,
-		 container.getPixelFormat().Bmask,
-		 container.getPixelFormat().Amask ),	
+	Surface( 
+		container.getFlags(), 
+		width, 
+		height, 
+		container.getBitsPerPixel(), 
+		container.getPixelFormat().Rmask, 
+		container.getPixelFormat().Gmask,
+		container.getPixelFormat().Bmask,
+		container.getPixelFormat().Amask ),	
 	EventListener( container ),
-	#ifdef OSDL_COUNT_INSTANCES
+#if OSDL_COUNT_INSTANCES
 	Object(),
-	#endif
+#endif // OSDL_COUNT_INSTANCES
 	_upperLeftCorner( relativePosition ),
 	_clientArea( 0, 0, getWidth(), getHeight() ),
 	_decorated( false ),
@@ -84,17 +94,18 @@ Widget::Widget( Surface & container, const Point2D & relativePosition,
 	_actualBaseColor()
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
 	LogPlug::trace( "Widget constructor" ) ; 
-	#endif
+#endif // OSDL_DEBUG_WIDGET
 
-		
+
 	// _needsRedraw set to true thanks to Surface constructor.
 	
 	setBaseColorMode( baseColorMode, baseColor ) ;	
 	
 	/*
-	 * Speed boost : an alpha channel will be used iff the container too already uses it.
+	 * Speed boost : an alpha channel will be used iff the container 
+	 * too already uses it.
 	 *
 	 */
 	convertToDisplay( /* useAlphaChannel */ static_cast<bool>( 
@@ -113,31 +124,44 @@ Widget::Widget( Surface & container, const Point2D & relativePosition,
 Widget::~Widget() throw()
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
 	LogPlug::trace( "Widget destructor" ) ; 
-	#endif
+#endif // OSDL_DEBUG_WIDGET
 
-	// Unsubscribing from container is automatic thanks to the EventListener inheritance.
+	/*
+	 * Unsubscribing from container is automatic thanks to the 
+	 * EventListener inheritance.
+	 *
+	 */
+	 
 }
 
 
 
 void Widget::setWidth( Length newWidth ) throw()
 {
-	resize( newWidth, getHeight() ) ;		
+
+	resize( newWidth, getHeight() ) ;
+			
 }
 
 
 void Widget::setHeight( Length newHeight ) throw()
 {
-	resize( getWidth(), newHeight ) ;		
+
+	resize( getWidth(), newHeight ) ;	
+		
 }
 
 
 void Widget::resize( Length newWidth, Length newHeight, bool ignored ) throw()
 {
 
-	// This test is needed so that the client area is updated only if necessary :
+	/*
+	 * This test is needed so that the client area is updated only if 
+	 * necessary :
+	 *
+	 */
 	if ( ( newWidth == getWidth() ) && ( newHeight == getHeight() ) )
 		return ;
 
@@ -149,10 +173,14 @@ void Widget::resize( Length newWidth, Length newHeight, bool ignored ) throw()
 }
 
 
+
 Widget::BaseColorMode Widget::getBaseColorMode() const throw()
 {
+
 	return _baseColorMode ;
+	
 }
+
 
 
 void Widget::setBaseColorMode( BaseColorMode newBaseColorMode, 
@@ -161,6 +189,7 @@ void Widget::setBaseColorMode( BaseColorMode newBaseColorMode,
 	
 	bool mustUpdateColor = ( newBaseColorMode != NotInitialized ) || 
 		! Pixels::areEqual( newBaseColor, _baseColor, /* use alpha */ true ) ;
+		
 	bool mustUpdateColorKey = false ;
 	 
 	 
@@ -172,13 +201,18 @@ void Widget::setBaseColorMode( BaseColorMode newBaseColorMode,
 		// Deactivate color key if needed :
 		if ( _baseColorMode == Colorkey )
 		{
-			setColorKey( /* no more color-keying */ 0, /* do not care */ _actualBaseColor ) ;
+		
+			setColorKey( /* no more color-keying */ 0, 
+				/* do not care */ _actualBaseColor ) ;
+				
 		}	
 		else
 		{
+		
 			// Activate color key if needed :
 			if ( newBaseColorMode == Colorkey )
 				mustUpdateColorKey = true ;
+				
 		}
 		
 		_baseColorMode = newBaseColorMode ;
@@ -190,6 +224,7 @@ void Widget::setBaseColorMode( BaseColorMode newBaseColorMode,
 		
 		if ( ( _baseColorMode == Colorkey ) && mustUpdateColor )
 			mustUpdateColorKey = true ;
+			
 	}
 	
 	if ( mustUpdateColor )
@@ -219,29 +254,37 @@ void Widget::setBaseColorMode( BaseColorMode newBaseColorMode,
 
 Pixels::ColorDefinition Widget::getBaseColor() const throw()
 {
+
 	return _baseColor ;
+	
 }
 
 
 
 void Widget::setDecorationStatus( bool newDecorationStatus ) throw()
 {
+
 	_decorated = newDecorationStatus ;
+	
 }
+
 
 
 const UprightRectangle & Widget::getClientArea() const throw()
 {
+
 	return _clientArea ;
+	
 }
+
 
 
 bool Widget::clean() throw()
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
 	LogPlug::trace( "Widget::clean" ) ; 
-	#endif
+#endif // OSDL_DEBUG_WIDGET
 
 	
 	switch( _baseColorMode )
@@ -258,7 +301,8 @@ bool Widget::clean() throw()
 			break ;
 		
 		case NotInitialized:
-			LogPlug::error( "Widget::clean : base color mode not initialized." ) ;
+			LogPlug::error( 
+				"Widget::clean : base color mode not initialized." ) ;
 			return false ;
 		
 		default:
@@ -280,9 +324,9 @@ void Widget::beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 	if ( redrawRequestEvent != 0 )
 	{
 		
-		#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
 		LogPlug::trace( "Widget::beNotifiedOf : redraw event received" ) ; 
-		#endif
+#endif // OSDL_DEBUG_WIDGET
 
 		// Takes in charge the recursive redraw as well for sub-widgets :
 		redraw() ;
@@ -299,7 +343,11 @@ void Widget::beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 void Widget::setRedrawState( bool needsToBeRedrawn ) throw()
 {
 
-	// If redraw state goes from false to true, then propagate the need of redraw to the container :
+	/*
+	 * If redraw state goes from false to true, then propagate the 
+	 * need of redraw to the container :
+	 *
+	 */
 	if ( ( ! getRedrawState() ) && needsToBeRedrawn )
 		getContainer().setRedrawState( true ) ;
 		
@@ -311,27 +359,35 @@ void Widget::setRedrawState( bool needsToBeRedrawn ) throw()
 void Widget::redraw() throw() 
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
+
 	LogPlug::trace( "Widget::redraw : needs redraw attribute is " 
 		+ Ceylan::toString( getRedrawState() ) + "." ) ; 
-	#endif
+		
+#endif // OSDL_DEBUG_WIDGET
 
-	// Triggers its own redraw then the full recursive redraw for any internal subwidgets :
+	/*
+	 * Triggers its own redraw then the full recursive redraw for any 
+	 * internal subwidgets :
+	 *
+	 */
 	Surface::redraw() ;
 	
 	// Once done, draw the result on the container :
 	try
 	{
 	
-		#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
 		LogPlug::trace( "Widget::redraw : blitting to container" ) ;
-		#endif
+#endif // OSDL_DEBUG_WIDGET
+
 		blitTo( getContainer().getWidgetRenderTarget(), _upperLeftCorner ) ;
 				
 	}
 	catch( const VideoException & e )
 	{
-		LogPlug::error( "Widget::redraw : blit to container failed : " + e.toString() ) ;
+		LogPlug::error( "Widget::redraw : blit to container failed : " 
+			+ e.toString() ) ;
 	}	
 	
 }
@@ -340,9 +396,9 @@ void Widget::redraw() throw()
 void Widget::redrawInternal() throw()
 {
 
-	#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
 	LogPlug::trace( "Widget::redrawInternal" ) ; 
-	#endif
+#endif // OSDL_DEBUG_WIDGET
 	
 	drawFundamentals( /* target directly the surface widget */ *this ) ;
 	
@@ -352,8 +408,8 @@ void Widget::redrawInternal() throw()
 	
 	
 	/*
-	 * Here _needsRedraw has to be false, otherwise	the whole path to root widget will be redrawn
-	 * again and again, with no use.
+	 * Here _needsRedraw has to be false, otherwise	the whole path to 
+	 * root widget will be redrawn again and again, with no use.
 	 *
 	 */
 	setRedrawState( false ) ;
@@ -366,7 +422,6 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 
 	std::list<string> widgetList ;
 	
-	
 	if ( getRedrawState() )
 		widgetList.push_back( "Needs to be redrawn." ) ;
 	else
@@ -377,8 +432,9 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 		+ _upperLeftCorner.toString( Ceylan::medium )
 		+ " in the referential of its container." ) ;
 		
-	widgetList.push_back( "Widget dimensions : ( width = " + Ceylan::toString( getWidth() ) 
-		+ " ; height = " + getHeight() + " )" ) ; 
+	widgetList.push_back( "Widget dimensions : ( width = " 
+		+ Ceylan::toString( getWidth() ) 
+		+ " ; height = " + Ceylan::toString( getHeight() ) + " )" ) ; 
 	
 	if ( _decorated )
 		widgetList.push_back( "Widget is decorated." ) ;
@@ -393,9 +449,11 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 		widgetList.push_back( "The widget title is '" + _title + "'." ) ;
 
 	if ( _minMaximizable )
-		widgetList.push_back( "Widget can be minimized and maximized by the user." ) ;
+		widgetList.push_back( 
+			"Widget can be minimized and maximized by the user." ) ;
 	else	
-		widgetList.push_back( "Widget cannot be minimized and maximized by the user." ) ;
+		widgetList.push_back( 
+			"Widget cannot be minimized and maximized by the user." ) ;
 		
 	if ( _draggable )
 		widgetList.push_back( "Widget can be dragged by the user." ) ;
@@ -432,7 +490,8 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 			break ;
 		
 		case None:
-			widgetList.push_back( "Widget does not use its base color (which is " 
+			widgetList.push_back( 
+				"Widget does not use its base color (which is " 
 				+ Pixels::toString( _baseColor ) + ")" ) ;
 			break ;
 		
@@ -443,8 +502,8 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 	}
 	
 
-	widgetList.push_back( "Widget internal " + 
-		Surface::toString( Ceylan::medium ) ) ;			
+	widgetList.push_back( "Widget internal " 
+		+ Surface::toString( Ceylan::medium ) ) ;			
 		
 		
 	widgetList.push_back( "Widget container is : " 
@@ -461,13 +520,17 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 
 Pixels::ColorDefinition Widget::GetEdgeColor() throw() 
 {
+
 	return _EdgeColor ;
+	
 }
 
 
 void Widget::SetEdgeColor( Pixels::ColorDefinition edgeColorDef ) throw() 
 {
+
 	_EdgeColor = edgeColorDef ;
+	
 }
 
 
@@ -480,7 +543,8 @@ void Widget::updateDecorationFlag() throw()
 {
 	
 	// True iff already true or at least a decorated attribute selected :
-	if ( ! _decorated && ( _minMaximizable || _draggable || _wrappable || _closable 
+	if ( ! _decorated && 
+		( _minMaximizable || _draggable || _wrappable || _closable 
 			|| ( ! _title.empty() ) ) )
 		_decorated = true ;
 
@@ -490,20 +554,32 @@ void Widget::updateDecorationFlag() throw()
 void Widget::updateClientArea() throw()
 {
 
-	// Defines the biggest possible inner upright rectangle available for rendering :
+	/*
+	 * Defines the biggest possible inner upright rectangle available 
+	 * for rendering :
+	 *
+	 */
 	
 	_clientArea.setUpperLeftAbscissa( _ClientOffsetWidth ) ;
+	
 	_clientArea.setWidth( getWidth() - 2 * _ClientOffsetWidth ) ;
 	
 	if ( _decorated )
 	{
-		_clientArea.setUpperLeftOrdinate( _TitleBarOffsetOrdinate + _ClientOffsetHeight ) ;
-		_clientArea.setHeight( getHeight() -  _TitleBarOffsetOrdinate - 2 * _ClientOffsetHeight ) ;
+	
+		_clientArea.setUpperLeftOrdinate( _TitleBarOffsetOrdinate 
+			+ _ClientOffsetHeight ) ;
+			
+		_clientArea.setHeight( getHeight() -  _TitleBarOffsetOrdinate 
+			- 2 * _ClientOffsetHeight ) ;
+			
 	}
 	else
 	{
+	
 		_clientArea.setUpperLeftOrdinate( _ClientOffsetHeight ) ;
 		_clientArea.setHeight( getHeight() - 2 * _ClientOffsetHeight ) ;
+		
 	}
 	
 }
@@ -514,12 +590,15 @@ Surface & Widget::getContainer() throw()
 
 	// There should be exactly one source in this listener list, its container.
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG_WIDGET
+
 	if ( _sources.size() != 1 )
 		Ceylan::emergencyShutdown( "Widget::getContainer : "
-			"not exactly one registered source : " + Ceylan::toString( _sources.size() )
+			"not exactly one registered source : " 
+			+ Ceylan::toString( _sources.size() )
 			+ " sources in listener list." ) ;
-	#endif
+			
+#endif // OSDL_DEBUG_WIDGET
 	
 	// List with only one element :
 	 
@@ -539,12 +618,15 @@ const Surface & Widget::getConstContainer() const throw()
 
 	// There should be exactly one source in this listener list, its container.
 
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG_WIDGET
+	
 	if ( _sources.size() != 1 )
 		Ceylan::emergencyShutdown( "Widget::getConstContainer : "
-			"not exactly one registered source : " + Ceylan::toString( _sources.size() )
+			"not exactly one registered source : " 
+			+ Ceylan::toString( _sources.size() )
 			+ " sources in listener list." ) ;
-	#endif
+			
+#endif // OSDL_DEBUG_WIDGET
 	
 	// List with only one element :
 	 
@@ -575,7 +657,9 @@ void Widget::drawFundamentals( Surface & targetSurface ) throw()
 
 bool Widget::isDecorated() const throw()
 {
+
 	return _decorated ;
+	
 }
 
 
@@ -597,15 +681,17 @@ void Widget::drawDecorations( Surface & targetSurface ) throw()
 		// Right not implemented yet since mostly useless :
 		
 		case Text::Left:
-			startingAbscissa = targetSurface.getUpperLeftAbscissa() + _TitleOffsetAbscissa ;
+			startingAbscissa = targetSurface.getUpperLeftAbscissa() 
+				+ _TitleOffsetAbscissa ;
 			break ;
 			
 		case Text::WidthCentered:
 		case Text::Right:
 		default:
 			// No clipping performed :
-			startingAbscissa = targetSurface.getUpperLeftAbscissa() + 
-				( targetSurface.getWidth() - _title.size() * Text::BasicFontCharacterWidth ) / 2 ;
+			startingAbscissa = targetSurface.getUpperLeftAbscissa() 
+				+ ( targetSurface.getWidth() - _title.size() 
+					* Text::BasicFontCharacterWidth ) / 2 ;
 			break ;
 			
 	}
@@ -617,7 +703,8 @@ void Widget::drawDecorations( Surface & targetSurface ) throw()
 		// Bottom not implemented yet since mostly useless :
 		
 		case Text::Top:
-		 	startingOrdinate = targetSurface.getUpperLeftOrdinate() + _TitleOffsetOrdinate ;
+		 	startingOrdinate = targetSurface.getUpperLeftOrdinate() 
+				+ _TitleOffsetOrdinate ;
 			break ;
 			
 		case Text::HeightCentered:
@@ -625,19 +712,21 @@ void Widget::drawDecorations( Surface & targetSurface ) throw()
 		default:
 			// No clipping performed :
 			startingOrdinate = targetSurface.getUpperLeftOrdinate() 
-				+ /* to compensate for widget border */ 1 +
-				( _TitleBarOffsetOrdinate - Text::BasicFontCharacterHeight ) / 2 ;
+				+ /* to compensate for widget border */ 1 
+				+ ( _TitleBarOffsetOrdinate - Text::BasicFontCharacterHeight ) 
+					/ 2 ;
 			break ;
 			
 	}
 					
-	targetSurface.printText( _title, startingAbscissa, startingOrdinate, _TitleColor ) ;
+	targetSurface.printText( _title, startingAbscissa, 
+		startingOrdinate, _TitleColor ) ;
 		
 	targetSurface.drawHorizontalLine( targetSurface.getUpperLeftAbscissa(),
-		targetSurface.getWidth(), targetSurface.getUpperLeftOrdinate() + _TitleBarOffsetOrdinate,
+		targetSurface.getWidth(), 
+		targetSurface.getUpperLeftOrdinate() + _TitleBarOffsetOrdinate,
 		_EdgeColor ) ;
 						
 
 }
-
 
