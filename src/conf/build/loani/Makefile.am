@@ -3,7 +3,7 @@
 	clean-local realclean 
 
 
-# The template for the LOANI README :
+# The template for the LOANI README :
 LOANI_README_TEMPLATE = LOANI-README-template.txt
 
 # The actual README to produce :
@@ -28,19 +28,19 @@ LOANI_REPOSITORY_DIR = @LOANI_REPOSITORY_DIR@
 LOANI_INSTALL_DIR    = @LOANI_INSTALL_DIR@
 
 	
-# Where the Ceylan source archive is, so that its MD5 sum can be computed :
+# Where the Ceylan source archive is, so that its MD5 sum can be computed :
 CEYLAN_RELEASE = \
 	$(LOANI_REPOSITORY_DIR)/ceylan/Ceylan/trunk/@CEYLAN_CURRENT_SOURCE_ARCHIVE@
 
-# Where the OSDL source archive is, so that its MD5 sum can be computed :
+# Where the OSDL source archive is, so that its MD5 sum can be computed :
 OSDL_RELEASE = \
 	$(LOANI_REPOSITORY_DIR)/osdl/OSDL/trunk/@OSDL_CURRENT_SOURCE_ARCHIVE@
 
 
-# Where helper scripts for LOANI should be found :
+# Where helper scripts for LOANI should be found :
 CEYLAN_INSTALL_SCRIPT_DIR = @CEYLAN_INSTALL_ROOT@/share/Ceylan/scripts/shell
 
-# The files that will be in the LOANI archive :
+# The files that will be in the LOANI archive :
 LOANI_FELLOWS_FILES = \
 	loani.sh                                                 \
 	loani-requiredTools.sh                                   \
@@ -58,13 +58,13 @@ LOANI_FELLOWS_FILES = \
 # The version of LOANI matches the one of OSDL actually :
 LOANI_VERSION = @OSDL_VERSION@
 
-# The base name of LOANI archives :
+# The base name of LOANI archives :
 LOANI_ARCHIVE_NAME = LOANI-$(LOANI_VERSION)
  
 LOANI_ZIP = $(LOANI_ARCHIVE_NAME).zip
 LOANI_TGZ = $(LOANI_ARCHIVE_NAME).tar.gz
 
-# The directory used to prepare the LOANI archive :
+# The directory used to prepare the LOANI archive :
 LOANI_TMP_ARCHIVE_DIR = $(LOANI_ARCHIVE_NAME)
 
 LOANI_TESTING_DIR = $(HOME)/tmp/LOANI-testing
@@ -99,11 +99,11 @@ $(LOANI_TOOLS_SETTINGS): $(CEYLAN_TOOLS_SETTINGS) $(OSDL_TOOLS_SETTINGS) \
 	@echo "# modify instead" `basename $(CEYLAN_TOOLS_SETTINGS)`\
 	"and" `basename $(OSDL_TOOLS_SETTINGS)`"." >> $@
 	@echo >> $@
-	@echo "# From $(CEYLAN_TOOLS_SETTINGS) :"       >> $@
+	@echo "# From $(CEYLAN_TOOLS_SETTINGS) :"       >> $@
 	@cat $(CEYLAN_TOOLS_SETTINGS)                   >> $@
 	@echo "# " >> $@
 	@echo "# " >> $@
-	@echo "# From $(OSDL_TOOLS_SETTINGS) :"         >> $@
+	@echo "# From $(OSDL_TOOLS_SETTINGS) :"         >> $@
 	@cat $(OSDL_TOOLS_SETTINGS)                     >> $@
 	@$(srcdir)/updateLOANI-MD5.sh $(LOANI_TOOLS_SETTINGS) $(CEYLAN_RELEASE) \
 		$(OSDL_RELEASE)	$(REPLACE_SCRIPT)
