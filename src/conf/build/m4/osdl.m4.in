@@ -23,7 +23,7 @@
 # downward-compatibility).
 
 
-# OSDL users can execute 'aclocal' (ex : 'aclocal -I . --output=aclocal.m4)
+# OSDL users can execute 'aclocal' (ex : 'aclocal -I . --output=aclocal.m4')
 # to have our macros added to their 'aclocal.m4', provided that 
 # OSDL_PATH is called from the user configure.ac.
 
@@ -107,21 +107,25 @@ AC_DEFUN([OSDL_PATH],
 			fi
 		fi			
      	])
-		
-  # 2. take care of Ceylan (from ceylan.m4) :
-  # 
-  CEYLAN_PATH(0,4,0)
 
-  # 3. take care of SDL (from sdl.m4) :
-  AM_PATH_SDL( 
+  # 2. take care of OpenGL support : wanted ? available ?
+  # Defined in opengl.m4 :
+  AX_CHECK_GL
+  AX_CHECK_GLU
+  
+  # 3. take care of Ceylan (from ceylan.m4) :
+  CEYLAN_PATH(@CEYLAN_RECOMMENDED_MAJOR@, @CEYLAN_RECOMMENDED_MINOR@, @CEYLAN_RECOMMENDED_RELEASE@)
+
+  # 4. take care of SDL (from sdl.m4) :
+  AM_PATH_SDL(@SDL_OLDEST_SUPPORTED_VERSION@) 
   
   if test x$ac_cv_cxx_compiler_gnu = xyes; then
     # Needed to avoid gcc warning triggered by a needed Visual C++ pragma :
     OSDL_CPPFLAGS="$OSDL_CPPFLAGS -Wno-unknown-pragmas"
   fi
    
+   
   # OSDL_DLL section.
-
 
   # For all builds, OSDL_DLL will be actually defined
   # thanks to command-line preprocessor options (-DOSDL_DLL="...")
