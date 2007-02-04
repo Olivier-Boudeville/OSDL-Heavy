@@ -3,8 +3,8 @@
 # This file is intended to be included both in Makefiles and in Bourne shell
 # scripts.
 
-# When the version of a tool is changed in trunk/src/conf/OSDLSettings.inc,
-# the corresponding section must be updated here (ex : for the MD5 code).
+# When the version of a tool is changed in trunk/src/conf/OSDLSettings.inc,
+# the corresponding section must be updated here (ex : for the MD5 code).
 
 
 
