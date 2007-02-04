@@ -204,7 +204,7 @@ generateSDL()
         LIBPATH="-L${prefix}/SDL-${SDL_VERSION}/lib"
         
 		# Do not ever imagine that to avoid bad nedit syntax highlighting 
-		# you could change :
+		# you could change :
 		# include/*.h to "include/*.h" in next line.
 		# It would fail at runtime with "include/*.h" not found...
 		
@@ -2045,7 +2045,7 @@ generateSDL_mixer()
 		if [ $is_windows -eq 0 ] ; then
 		
 			# Always remember that, on Windows, DLL are searched 
-			# through the PATH, not the LD_LIBRARY_PATH.
+			# through the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib:${PATH}	
 			export PATH
@@ -3107,7 +3107,7 @@ generatewin_pthread()
 		if [ $is_windows -eq 0 ] ; then
 		
 			# Always remember that, on Windows, DLL are searched 
-			# through the PATH, not the LD_LIBRARY_PATH.
+			# through the PATH, not the LD_LIBRARY_PATH.
 			PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:${PATH}	
 			export PATH	
 			
@@ -3829,7 +3829,7 @@ generateOSDL()
 	LOG_STATUS "Generating OSDL..."
 
 
-	# Premature generation of OSDL-environment.sh so that it is available
+	# Premature generation of OSDL-environment.sh so that it is available
 	# for autogen.sh :
 	
 	if [ -n "$prefix" ] ; then	
@@ -3955,7 +3955,7 @@ generateOSDL()
 	if [ -n "$prefix" ] ; then	
 		{				
 		
-			# OSDL_ENV_FILE has already been updated here.		
+			# OSDL_ENV_FILE has already been updated here.		
 			
 			setBuildEnv ${MAKE} install prefix=${prefix}/OSDL-${OSDL_VERSION}
 
