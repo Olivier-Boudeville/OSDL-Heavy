@@ -268,6 +268,49 @@ AC_FUNC_UTIME_NULL
 # to generate OSDLToolsSettings.inc.
 
 
+# OpenGL.
+
+# Is openGL to be used ?
+AC_ARG_ENABLE([opengl],
+  AS_HELP_STRING(--enable-opengl,[use OpenGL and GLU in OSDL internals [[default=yes]]]),
+  [case "${enableval}" in
+    yes) opengl=yes ;;
+    no)  opengl=no ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-opengl) ;;
+  esac],[opengl=yes])
+	# If wanted, is OpenGL available ?	
+	AC_MSG_CHECKING([whether OpenGL and GLU are wanted])
+	if test x$opengl = xyes; then
+        AC_MSG_RESULT([yes])
+        have_opengl=yes
+        # Defined in opengl.m4 :
+        AX_CHECK_GL
+		if test x$no_gl = xyes; then 
+			AC_MSG_WARN([OpenGL use requested but not available, disabling it])
+			have_opengl=no
+		else
+			# OpenGL is ok, GLU too ?	
+        	AX_CHECK_GLU
+			if test x$no_glu = xyes; then 
+				AC_MSG_WARN([GLU use requested but not available, OpenGL use disabled])
+				have_opengl=no
+			else
+				CFLAGS="$CFLAGS $GLU_CFLAGS $GL_CFLAGS"
+				LIBS="$LIBS $GLU_LIBS $GL_LIBS"
+			fi	
+		fi
+		AC_MSG_CHECKING([whether OpenGL and GLU are enabled])
+		AC_MSG_RESULT([$have_opengl])
+	else
+		# OpenGL not wanted here :
+		AC_MSG_RESULT([no])	
+	fi
+	
+	AC_DEFINE_UNQUOTED([USES_OPENGL],
+		[$have_opengl],
+		[Define to 1 if OSDL is to use OpenGL and GLU])
+		
+
 
 
 # SDL.
@@ -375,7 +418,9 @@ if test x$enable_debug = xyes; then
 
 	# Debug requested :
 	DEBUG=1
+	DEBUG_SURFACE=0
 	DEBUG_WIDGET=0
+	DEBUG_CONICS=0
 	DEBUG_FONT=0
 	DEBUG_EVENTS=0
 	DEBUG_VIDEO_RENDERER=0
@@ -405,7 +450,9 @@ else
 
 	# Aggressive optimizations :
 	DEBUG=0
+	DEBUG_SURFACE=0
 	DEBUG_WIDGET=0
+	DEBUG_CONICS=0
 	DEBUG_FONT=0
 	DEBUG_EVENTS=0
 	DEBUG_VIDEO_RENDERER=0
@@ -454,9 +501,17 @@ AC_DEFINE_UNQUOTED([DEBUG],
 	[$DEBUG],
 	[Define to 1 if generic debug mode is to be enabled])
 
+AC_DEFINE_UNQUOTED([DEBUG_SURFACE],
+	[$DEBUG_SURFACE],
+	[Define to 1 if debug mode for surfaces is to be enabled])
+	
 AC_DEFINE_UNQUOTED([DEBUG_WIDGET],
 	[$DEBUG_WIDGET],
 	[Define to 1 if debug mode for widgets is to be enabled])
+	
+AC_DEFINE_UNQUOTED([DEBUG_CONICS],
+	[$DEBUG_CONICS],
+	[Define to 1 if debug mode for conics is to be enabled])
 	
 AC_DEFINE_UNQUOTED([DEBUG_FONT],
 	[$DEBUG_FONT],
@@ -555,9 +610,6 @@ AC_SUBST(CEYLAN_OLDEST_SUPPORTED_FULL_VERSION)
 # The Ceylan source archive downloaded by LOANI :
 CEYLAN_CURRENT_SOURCE_ARCHIVE="ceylan-$CEYLAN_OLDEST_SUPPORTED_VERSION.tar.bz2"
 AC_SUBST(CEYLAN_CURRENT_SOURCE_ARCHIVE)
-
-# Define here a CEYLAN_INSTALL_ROOT according to --with-ceylan-prefix=PFX :
-AC_ARG_WITH(ceylan-prefix,[--with-ceylan-prefix=PFX   Prefix where Ceylan is installed],ceylan_prefix="$withval",ceylan_prefix="/usr/local")
 
 
 
@@ -690,8 +742,82 @@ AC_SUBST(OSDL_WARNING_STYLE)
 
 
 
+# Detects underlying platform and configures build accordingly.
+#
+# Still needing platform detection for some specificities :
+#   - need to define OSDL_DLL for the Windows platform, for
+# Visual C++-based builds
+#	- set various system-dependent paths
+#
+CheckPlatform()
+{
+	
+	# This symbol ought to be specifically defined only so that Windows
+	# builds declare correctly import/export defines :
+	OSDL_DLL=""
+	
+	# Needed when building a library on Windows platforms :
+	OSDL_DLL_EXPORT_WINDOWS="__declspec( dllexport )"
+	
+	case "$target" in
+	
+		*-*-win32*) 
+			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
+			;;
+
+		*-*-cygwin*)
+			CFLAGS="$CFLAGS -I/usr/include/mingw -DWIN32 -Uunix -mno-cygwin"
+			LIBS="$LIBS -mno-cygwin"
+			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
+			;;
+		
+		*-*-mingw32*)
+	        LIBS="-lmingw32 $LIBS -mwindows"
+			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
+			;;
+				
+	    *-*-linux*) 
+			;;
+			
+		*-*-freebsd*)
+			;;
+			
+		*-*-netbsd*) 
+			;;
+
+		*-*-openbsd*) 
+			;;
+		
+		*-*-solaris*)	
+			;;
+					
+	    *)
+	        # Not identified
+	        ;;
+		
+	esac
 
 
+	# For all builds, OSDL_DLL will be actually defined
+	# thanks to command-line preprocessor options (-DOSDL_DLL="...")
+	# so that headers can avoid #including platform-specific configuration
+	# files. Hence no 'AC_DEFINE_UNQUOTED([OSDL_DLL], ...' here.
+	
+	AM_CXXFLAGS="${AM_CXXFLAGS} -DOSDL_DLL=\"${OSDL_DLL}\""
+	
+}
+
+# Detects OpenGL capabilities and setup build accordingly.
+#
+CheckOpenGL()
+{
+
+	AX_CHECK_GL
+}
+
+
+CheckPlatform
+CheckOpenGL
 
 
 # Section of non feature-based checkings.
@@ -733,7 +859,8 @@ AC_CONFIG_FILES([
 	src/code/audio/audioRenderer/Makefile
 	src/code/audio/Makefile
 	src/code/basic/Makefile
-	src/code/basic/OSDLHeaderVersion.cc
+	src/code/basic/OSDLDocMainPage.h
+	src/code/basic/OSDLHeaderVersion.h
 	src/code/engine/Makefile
 	src/code/events/Makefile
 	src/code/Makefile
