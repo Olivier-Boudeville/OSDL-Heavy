@@ -48,7 +48,7 @@
 </center>
 
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 <h2>Overview</h2>
@@ -67,6 +67,7 @@ This section focuses on helping developers to use OpenGL with SDL.
  <table style="border: none">
  
  <tr><td><div class="box" summary="Table of contents" style="padding: 8px">
+<br>
 	<a href="#general">General OpenGL informations</a><br>
 	<a href="#availability">Availability of OpenGL on a specific device</a><br>
 	<a href="#loading">Loading the OpenGL library</a><br>	
@@ -104,21 +105,32 @@ This section focuses on helping developers to use OpenGL with SDL.
 </p>
 
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 <a name="general"></a>
 <h2>General OpenGL informations</h2>
 
 <p>
-OpenGL 1.1 is somehow outdated. The problem is that the default Windows OpenGL library doesn't have the 2.0 functions. It only supports up to 1.1.
+GL stands for Graphics Language. <a href="http://en.wikipedia.org/wiki/OpenGL" target="_blank">OpenGL</a> (Open Graphics Library) is the "open source" version of GL.
+</p>
+
+<p>
+OpenGL 1.1 is somehow outdated. The problem is that the default Windows OpenGL library does not have the 2.0 functions. It only supports up to 1.1.
+</p>
+
+
+<p>
+<a href="http://en.wikipedia.org/wiki/GLU" target="_blank">GLU</a>
+ is the <em>OpenGL Utility Library</em>. This library is associated to OpenGL (it is usually distributed with it), and provides higher-level constructs, built from OpenGL basic operations.
 </p>
 
 <h3>What OpenGL does not do</h3>
-<p>OpenGL does not provide input event handling (ex : mouse), sound, window management, etc.
+<p>OpenGL by itself does not provide input event handling (ex : mouse), sound, window management, etc.
 </p>
 
-<p>Exactly as SDL, GLUT (GL Utility Toolkit) certainly does it, because it is designed as a cross-platform utility toolkit for making OpenGL programs without operating system-specific code.
+<p>
+<a href="http://en.wikipedia.org/wiki/OpenGL_Utility_Toolkit" target="_blank">GLUT</a> (OpenGL Utility Toolkit), exactly as SDL, provides window management, input handling, because it is designed as a cross-platform utility toolkit for making OpenGL programs without operating system-specific code.
 </p>
 
 <p>For various reasons, including performance and completness, one might prefer SDL, and do not use GLUT at all. Stick to GL and GLU, and you will be fine, especially if your multimedia application is a game.
@@ -171,15 +183,14 @@ OpenGL is a state machine, which means you can set states and these will remain 
 
 
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 <a name="availability"></a>
 <h2>Availability of OpenGL on a specific device</h2>
 
 <p>
-OpenGL is not available (at least not in accelerated form) on all platforms (ex : PDAs, 16 
-bit computers, non-ps2gl Playstation2, pre-3D-boom consoles and some laptops), and not even on all systems based on platforms that do support OpenGL.</p>
+OpenGL is not available (at least not in accelerated form) on all platforms (ex : PDAs, 16 bit computers, non-ps2gl Playstation2, pre-3D-boom consoles and some laptops), and not even on all systems based on platforms that do support OpenGL.</p>
 
 <p>The SDL back-ends that support OpenGL are the ones for Windows, X11, Quartz (Mac OS X), maybe whatever MacOS 9 uses; no more.
 </p>
@@ -187,23 +198,27 @@ bit computers, non-ps2gl Playstation2, pre-3D-boom consoles and some laptops), a
 <p>Many old Windows machines have video cards and/or drivers without OpenGL support, and the situation is even worse with Linux. For example, on some old Linux workstations, OpenGL cannot be accelerated unless the secondary head is disabled.
 </p>
 
+<h3>Enabling a proper hardware acceleration on GNU/Linux</h3>
+<p>
+The first step is to know what is your video card, for example thanks to : <code>lspci | grep VGA</code>.
 
-<p>There exist <a href="http://autoconf-archive.cryp.to/mdl_have_opengl.html" target="_blank">autoconf</a> scripts made to detect OpenGL [see also <a href="http://autoconf-archive.cryp.to/" target="_blank">autoconf macro archive</a>, <a href="SDL-openGL-examples.html#autoconfGEM">GEM macro</a>]</p>
+</p>
 
-<p>Note that using OpenGL under most Unix systems (except OS X) usually implies using GLX contexts under the X windowing system. Other solution are to :
+
+
+<p>Note that using OpenGL under most Unix systems (except OS X) usually implies using GLX contexts under the X windowing system. Other solutions are to :
 
 <ul>
 	<li>use <b>OSMesa</b>; which is software rendering only. It could be easy to add this to the framebuffer SDL driver. Mesa has support for svgalib, maybe it could be integrated into the svgalib SDL driver, and be a default OpenGL driver for all targets</li>
 	<li>add <b>directfbgl</b> support to the directfb SDL driver. This is a glx emulation layer, there are hardware accelerated drivers for just <a href="http://www.directfb.org/index.php?path=Development%2FProjects%2FDirectFBGL" target="_blank">a few video cards</a></li>
-	<li>implement OpenGL in the <b>fbcon</b>  backend, using Mesa's miniglx (OpenGL
-over the framebuffer). This is limited to DRI-supported video cards but
-works fine and is hardware-accelerated [get Stephane Marchesin's <a href="http://icps.u-strasbg.fr/~marchesin/sdl/sdl_fb_miniglx.patch">SDL patch</a></li>]
+	<li>implement OpenGL in the <b>fbcon</b>  backend, using Mesa's miniglx (OpenGL over the framebuffer). This is limited to DRI-supported video cards but
+works fine and is hardware-accelerated [get Stephane Marchesin's <a href="http://icps.u-strasbg.fr/~marchesin/sdl/sdl_fb_miniglx.patch">SDL patch</a>]</li>
 </ul>
 </p>
 
 <h3>Learning what is locally available under the X environment</h3>
 <p>
-Run <code>glxinfo</code> and look at the visuals listed at the bottom of all that data it dumps out. All major informations about the supported GLX extensions and the OpenGL renderer should be displayed. If you run <code>glxinfo | grep direct</code> and it prints : <code>direct rendering: Yes</code> then your OpenGL drivers are setup correctly.
+Run <code>glxinfo</code> and look at the visuals listed at the bottom of all that data it dumps out. All major informations about the supported GLX extensions and the OpenGL renderer should be displayed. If you run <code>glxinfo | grep direct</code> and it prints : <code>direct rendering: Yes</code> then your OpenGL drivers are setup correctly. On the contrary, if <code>glxinfo | grep 'OpenGL vendor string'</code> returns something like <code>OpenGL vendor string: Mesa project: www.mesa3d.org</code>, then you have only software OpenGL.
 </p>
 
 <h4>GLX</h4>
@@ -221,9 +236,21 @@ The <a href="http://delphi3d.net/hardware/index.php" target="_blank">OpenGL Hard
 OpenGL drivers being installed and OpenGL hardware acceleration being available are still unfortunately not guaranteed on all computers under Windows. The user might have to download and install the appropriate drivers.
 </p>
 
+<h3>Developing an OpenGL-based application</h3>
+<p>
+In order to compile a program using an OpenGL library, the related headers must be available. They are to be specified through <code>#include &lt;GL/gl.h&gt;</code>. They are often not already installed (check with <code>locate gl.h</code> for example).
+
+
+</p>
+
+<h3>Autoconf</h3>
+
+<p>There exist <a href="http://autoconf-archive.cryp.to/mdl_have_opengl.html" target="_blank">autoconf</a> scripts made to detect OpenGL [see also <a href="http://autoconf-archive.cryp.to/" target="_blank">autoconf macro archive</a>, <a href="SDL-openGL-examples.html#autoconfGEM">GEM macro</a>] : for <a href="http://autoconf-archive.cryp.to/ax_check_gl.html" target="_blank">OpenGL</a>, for <a href="http://autoconf-archive.cryp.to/ax_check_glu.html" target="_blank">GLU</a>, and for <a href="http://autoconf-archive.cryp.to/ax_check_glut.html" target="_blank">GLUT</a>.
+</p>
+
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -275,7 +302,7 @@ Note that <code>SDL_SetVideoMode</code> should be called after <code>SDL_GL_Load
 
 <h4>Static linking</h4>
 <p>
-Static linking is pretty much out, unless you count on all users building from source, as some (most ?) platforms have driver specific GL libraries.
+Static linking is pretty much out, unless you count on all users building from source, as some (most ?) platforms have driver-specific GL libraries.
 </p>
 
 
@@ -322,7 +349,7 @@ One's release could provide the user with two binaries : one with OpenGL support
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
  
  
@@ -458,7 +485,7 @@ They do the work for you : bloat or useful help ?
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -500,7 +527,7 @@ One can look at the source of SDL (the opengl_blit code is still in there), or a
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
  
  
@@ -573,7 +600,7 @@ After the window is created, you can see if you got what you wanted :
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -862,7 +889,7 @@ All the texture memory in an OpenGL context is generally freed when the context 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1005,7 +1032,7 @@ Using the OpenGL texture uploading routines ensures that the actual transmission
 <h3>Texture size</h3>
 
 <p>
-OpenGL requires texture width and height to be a power of 2 (not necessarily the same : textures does npt have to be square), border excluded. They must therefore have the form <code>2^m + 2.b</code>, where m is a non-negative integer and b, the border, is 0 or 1.
+OpenGL requires texture width and height to be a power of 2 (not necessarily the same : textures does not have to be square), border excluded. They must therefore have the form <code>2^m + 2.b</code>, where m is a non-negative integer and b, the border, is 0 or 1.
  For example : width x height = (512+2)x(64+2), or 256x256, etc.
 </p>
 
@@ -1136,7 +1163,7 @@ Last resort is to apply a correctly alpha-blended texture to a surface more than
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1277,12 +1304,12 @@ One should allow the user to force a particular behaviour if it turns out it is 
 <h3>GUI</h3>
 
 <p>
-Graphical User Interfaces can be built on top of OpenGL. They can be home-made, or existing libraries, such as <a href="http://openglgui.sourceforge.net/" target="_blank">OpenGLGUI</a>, can be used.</p>
+Graphical User Interfaces can be built on top of OpenGL. They can be home-made, or existing libraries, such as <a href="http://guichan.sourceforge.net" target="_blank">Guichan</a>, <a href="http://gigi.sourceforge.net" target="_blank">Gigi</a> or <a href="http://openglgui.sourceforge.net/" target="_blank">OpenGLGUI</a>, can be used.</p>
 
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1324,7 +1351,7 @@ Windows XP uses 60 Hz as a default OpenGL refresh rate. Setting it to another va
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1384,7 +1411,7 @@ if ( wglSwapIntervalEXT != 0 )
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1408,7 +1435,7 @@ The 16 bit stencil buffer is not widely supported. One may try requesting a 32 b
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1432,7 +1459,7 @@ So you "just" have to reload your textures, restore your viewport and projection
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1470,7 +1497,7 @@ glViewport( 0, 0, newWidth, newHeight ) ;
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1489,7 +1516,7 @@ Running stock applications with the glSDL back-end might be extremely slow. Appl
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1517,7 +1544,7 @@ Floating point pixels are good for high resolution colors (color values are not 
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1535,7 +1562,7 @@ Floating point pixels are good for high resolution colors (color values are not 
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1571,7 +1598,7 @@ Do not call <code>glFlush()</code> before <b>SDL_GL_SwapBuffers</b> since the la
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1649,7 +1676,7 @@ The SDL gamma functions should work with OpenGL contexts.
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1707,24 +1734,12 @@ glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE ) ;
 
 	</dd>
 	
-	
->I'm having a problem when texturing a quad with a png with aplha values.
->> 
->> The problem is that the part of the quad with alpha values are
->> appearing as white instead of no appearing at all.
-
-
-
-I had the exact same problem.  The solution I found was that 
 </dl>
 </p>
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ----------------------------------------------->  
-
-
-
+<!-------------------------- Section ---------------------------------------->  
 <a name="links"></a>
 <h2>OpenGL &amp; SDL links</h2>
 <p>
@@ -1738,7 +1753,7 @@ I had the exact same problem.  The solution I found was that
 </ul>
 
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1759,7 +1774,7 @@ This documentation addresses generic OpenGL concerns, it is not specifically rel
 </p>
 
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 <h2>Documentation on 3D rendering in general</h2>
@@ -1777,7 +1792,7 @@ This documentation addresses generic OpenGL concerns, it is not specifically rel
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
 
-<!-------------------------- Section ----------------------------------------------->  
+<!-------------------------- Section ---------------------------------------->  
 
 
 
@@ -1904,11 +1919,11 @@ Under the section "SDL surface to OpenGL texture", I've found a very simple tech
 >>   the image starts in the lower left corner).
 
 
-Umm, this convention doesn't apply to textures, AFAIK.
+Umm, this convention does not apply to textures, AFAIK.
 
 In texture space, (0,0) is the "beginning" of the texture data fed to 
 glTexImage. (x,0) always belongs to the first row of the texture data, 
-(x,1) belongs to the second row, etc. glTexImage doesn't have any notion 
+(x,1) belongs to the second row, etc. glTexImage does not have any notion 
 of directions as in up/down/left/right or or upper/lower corners. It only 
 is given texture data as a sequence, and the only sensible thing to do 
 with that is to map (0,0) to the beginning of that data.
@@ -1938,7 +1953,7 @@ coord conventions.
 
 
 
-End of Cubbyhole ----------------------------------------------->  
+End of Cubbyhole ---------------------------------------->  
 
  <br>
  <br>
@@ -1956,7 +1971,8 @@ End of Cubbyhole ----------------------------------------------->
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update : Friday, June 16, 2006</em>
+  <em>Last update : Friday, February 2, 2007
+</em>
  </center>
 </body>
 </html>
