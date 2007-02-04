@@ -53,7 +53,7 @@ namespace OSDL
 		 * implement the getActualController method.
 		 *
 		 */
-		class InputDevice : public Ceylan::InputDevice
+		class OSDL_DLL InputDevice : public Ceylan::InputDevice
 		{
 		
 			
@@ -149,3 +149,4 @@ namespace OSDL
 
 
 #endif // OSDL_INPUT_DEVICE_H_
+

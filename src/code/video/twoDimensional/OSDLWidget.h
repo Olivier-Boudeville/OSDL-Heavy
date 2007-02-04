@@ -31,7 +31,7 @@ namespace OSDL
 			 * the widget redraws itself.
 			 *
 			 */
-			class RedrawRequestEvent : public SurfaceEvent
+			class OSDL_DLL RedrawRequestEvent : public SurfaceEvent
 			{
 				public:
 				
@@ -119,9 +119,10 @@ namespace OSDL
 			 * gain speed.
 			 *
 			 */
-			class Widget : public Surface, public Ceylan::EventListener
+			class OSDL_DLL Widget : public Surface, 
+				public Ceylan::EventListener
 #if OSDL_COUNT_INSTANCES
-			, public Ceylan::Object
+				, public Ceylan::Object
 #endif // OSDL_COUNT_INSTANCES
 			{
 			

@@ -7,11 +7,13 @@
 #include <string>
 
 
+
 namespace OSDL
 {
 
 	namespace Engine 
 	{
+	
 	
 	
 		/**
@@ -34,7 +36,7 @@ namespace OSDL
 		 * @see Ceylan::Model
 		 *
 		 */
-		class WorldObject : public Ceylan::Model
+		class OSDL_DLL WorldObject : public Ceylan::Model
 		{
 		
 			public:
@@ -65,6 +67,7 @@ namespace OSDL
 		 		virtual const std::string toString( 
 						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
+					
 		
 		} ;
 

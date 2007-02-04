@@ -36,10 +36,10 @@ namespace OSDL
 			
 
 				/// The character width of fixed basic font.
-				extern const Length BasicFontCharacterWidth ;
+				extern OSDL_DLL const Length BasicFontCharacterWidth ;
 				
 				/// The character height of fixed basic font.
-				extern const Length BasicFontCharacterHeight ;
+				extern OSDL_DLL const Length BasicFontCharacterHeight ;
 				
 				
 				/**
@@ -57,7 +57,7 @@ namespace OSDL
 				 * instanciate a FixedFont class to use them.
 				 *
 				 */
-				bool printBasic( const std::string & text, 
+				OSDL_DLL bool printBasic( const std::string & text, 
 					Surface & targetSurface, Coordinate x, Coordinate y,
 					Pixels::ColorElement red, Pixels::ColorElement blue,
 					Pixels::ColorElement green, 
@@ -80,7 +80,7 @@ namespace OSDL
 				 * instanciate a FixedFont class to use them.
 				 *
 				 */
-				bool printBasic( const std::string & text, 
+				OSDL_DLL bool printBasic( const std::string & text, 
 					Surface & targetSurface,
 					Coordinate x, Coordinate y, 
 					Pixels::ColorDefinition colorDef ) throw() ; 
@@ -143,7 +143,7 @@ namespace OSDL
 				 * and therefore they can be negative.
 				 *
 				 */	
-				class FixedFont : public Font
+				class OSDL_DLL FixedFont : public Font
 				{
 				
 				

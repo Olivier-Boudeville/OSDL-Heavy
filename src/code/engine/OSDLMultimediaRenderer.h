@@ -42,7 +42,7 @@ namespace OSDL
 		 * @see Ceylan::View
 		 *
 		 */	
-		class MultimediaRenderer : public Renderer
+		class OSDL_DLL MultimediaRenderer : public Renderer
 		{
 		
 		
@@ -305,3 +305,4 @@ namespace OSDL
 
 
 #endif // OSDL_MULTIMEDIA_RENDERER_H_
+

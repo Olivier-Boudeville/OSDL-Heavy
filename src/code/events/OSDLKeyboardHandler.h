@@ -49,7 +49,7 @@ namespace OSDL
 		
 		
 		/// Mother class for all keyboard exceptions. 		
-		class KeyboardException: public EventsException 
+		class OSDL_DLL KeyboardException: public EventsException 
 		{
 			public: 
 				explicit KeyboardException( const std::string & reason ) 
@@ -90,7 +90,7 @@ namespace OSDL
 		 * (example : raw input, text input with unicode support, etc.)
 		 *
 		 */
-		class KeyboardHandler : public InputDeviceHandler
+		class OSDL_DLL KeyboardHandler : public InputDeviceHandler
 		{
 		
 			
@@ -754,6 +754,17 @@ namespace OSDL
 				static KeyboardMode _CurrentMode ;
 		
 		
+/* 
+ * Takes care of the awful issue of Windows DLL with templates.
+ *
+ * @see Ceylan's developer guide and README-build-for-windows.txt 
+ * to understand it, and to be aware of the associated risks. 
+ * 
+ */
+#pragma warning( push )
+#pragma warning( disable : 4251 )
+		
+		
 				/** 
 				 * Allows to link a controller to a specific keyboard raw 
 				 * key, when in raw input mode.
@@ -831,6 +842,9 @@ namespace OSDL
 				std::map<Ceylan::Unicode, KeyboardEventHandler>
 					_unicodeHandlerMap ;
 				
+
+#pragma warning( pop ) 
+
 
 
 				/**

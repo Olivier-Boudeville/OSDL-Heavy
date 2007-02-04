@@ -35,8 +35,9 @@ namespace OSDL
 			 * graphical user interface elements, such as widgets.
 			 *
 			 */
-	    	class Point2D : public Point
+	    	class OSDL_DLL Point2D : public Point
 	   		{
+
 
 	        	public:
 	
@@ -295,7 +296,7 @@ namespace OSDL
 
 
 /// Stream operator for serialization.
-std::ostream & operator << ( std::ostream & os, 
+OSDL_DLL std::ostream & operator << ( std::ostream & os, 
 	const OSDL::Video::TwoDimensional::Point2D & p ) ;
 
 

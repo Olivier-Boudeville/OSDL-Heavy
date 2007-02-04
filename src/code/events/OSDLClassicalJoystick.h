@@ -37,7 +37,7 @@ namespace OSDL
 		 * joystick, since the joystick index is not propagated.
 		 *
 		 */
-		class ClassicalJoystick : public Joystick
+		class OSDL_DLL ClassicalJoystick : public Joystick
 		{
 		
 			

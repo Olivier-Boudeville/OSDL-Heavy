@@ -3,6 +3,7 @@
 
 
 #include "OSDLException.h"   // for OSDL::Exception
+
 #include "Ceylan.h"          // for inheritance
 
 
@@ -16,7 +17,7 @@ namespace OSDL
 	
 	
 	/// Exception returned whenever an error concerning a CD-ROM drive occured.
-	class CDROMDriveException : public OSDL::Exception
+	class OSDL_DLL CDROMDriveException : public OSDL::Exception
 	{
 	
 		public:
@@ -46,7 +47,7 @@ namespace OSDL
 	 * one CD-ROM drive object is associated to an actual device.
 	 *
 	 */
-	class CDROMDriveHandler : public Ceylan::Object
+	class OSDL_DLL CDROMDriveHandler : public Ceylan::Object
 	{
 	
 		
@@ -118,6 +119,15 @@ namespace OSDL
 		private:
 	
 			
+/* 
+ * Takes care of the awful issue of Windows DLL with templates.
+ *
+ * @see Ceylan's developer guide and README-build-for-windows.txt 
+ * to understand it, and to be aware of the associated risks. 
+ * 
+ */
+#pragma warning( push )
+#pragma warning( disable : 4251 )
 			
 			/**
 			 * Keeps track of drive numbers, so no CD-ROM device can be 
@@ -126,6 +136,7 @@ namespace OSDL
 			 */
 			std::map<CDROMDriveNumber, CDROMDrive *> _drives ;
 			
+#pragma warning( pop ) 
 			
 
 			/**

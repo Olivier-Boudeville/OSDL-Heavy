@@ -61,8 +61,9 @@ namespace OSDL
 		 * intensive use of it.
 		 *
 		 */
-		class PeriodicSlot /* no inheritance, no virtual methods */
+		class OSDL_DLL PeriodicSlot /* no inheritance, no virtual methods */
 		{
+		
 		
 			public:
 			

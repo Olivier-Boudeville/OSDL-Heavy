@@ -5,7 +5,6 @@
 #include "OSDLImage.h"              // for ImageException
 #include "OSDLUprightRectangle.h"   // for UprightRectangle
 #include "OSDLPalette.h"            // for ColorCount
-#include "OSDLTypes.h"				// for flags
 
 
 #include "Ceylan.h"                 // for EventSource, Lockable, SmartResource
@@ -50,7 +49,7 @@ namespace OSDL
 		 * to its widgets (listeners).
 		 *
 		 */
-		class SurfaceEvent : public Ceylan::Event
+		class OSDL_DLL SurfaceEvent : public Ceylan::Event
 		{
 		
 			public:
@@ -65,7 +64,7 @@ namespace OSDL
 	
 		
 		/// Thrown when video memory has been lost.
-		class VideoMemoryLostException : public VideoException
+		class OSDL_DLL VideoMemoryLostException : public VideoException
 		{
 		
 			public:
@@ -176,7 +175,7 @@ namespace OSDL
 		 * Screen surfaces have also methods to control the mouse position.
 		 *
 		 */
-		class Surface : 
+		class OSDL_DLL Surface : 
 			public TwoDimensional::UprightRectangle, 
 			public Ceylan::EventSource,
 			public Ceylan::Lockable, 
@@ -213,11 +212,11 @@ namespace OSDL
 
 
 				/// Indicates that a surface is to be stored in system memory.
-				static const Flags Software ;			   
+				static const Ceylan::Flags Software ;			   
 
 
 				/// Indicates that a surface is to be stored in video memory.
-				static const Flags Hardware ;			   
+				static const Ceylan::Flags Hardware ;			   
 				
 				
 				/**
@@ -225,11 +224,11 @@ namespace OSDL
 				 * if possible.
 				 *
 				 */
-				static const Flags AsynchronousBlit ;
+				static const Ceylan::Flags AsynchronousBlit ;
 					
 									
 				/// Indicates that a surface should have an exclusive palette.
-				static const Flags ExclusivePalette ;	
+				static const Ceylan::Flags ExclusivePalette ;	
 				
 				
 				/**
@@ -237,11 +236,11 @@ namespace OSDL
 				 * blits.				 
 				 *
 				 */  
-				static const Flags HardwareAcceleratedBlit ;
+				static const Ceylan::Flags HardwareAcceleratedBlit ;
 				
 				
 				/// Indicates that a surface is to use colorkey blits.
-				static const Flags ColorkeyBlit ;		   
+				static const Ceylan::Flags ColorkeyBlit ;		   
 				
 				
 				/**
@@ -249,14 +248,14 @@ namespace OSDL
 				 * colorkey blits.
 				 *
 				 */
-				static const Flags RLEColorkeyBlit  ;	   
+				static const Ceylan::Flags RLEColorkeyBlit  ;	   
 				
 				
 				/// Indicates that a surface is to use alpha blending blits.	
-				static const Flags AlphaBlendingBlit ;	   
+				static const Ceylan::Flags AlphaBlendingBlit ;	   
 
 				/// Indicates that a surface is to use preallocated memory.
-				static const Flags Preallocated ;	   
+				static const Ceylan::Flags Preallocated ;	   
 
 
 				/**
@@ -267,7 +266,7 @@ namespace OSDL
 				 * hypothesis, this flag should not be used externally anyway.
 				 *
 				 */
-				static const Flags RLEColorkeyBlitAvailable ;	   
+				static const Ceylan::Flags RLEColorkeyBlitAvailable ;	   
 
 
 
@@ -282,7 +281,7 @@ namespace OSDL
 				 * format.
 				 *
 				 */
-				static const Flags AnyPixelFormat ;
+				static const Ceylan::Flags AnyPixelFormat ;
 				
 				
 				/**
@@ -290,7 +289,7 @@ namespace OSDL
 				 * buffered.
 				 *
 				 */
-				static const Flags DoubleBuffered ;
+				static const Ceylan::Flags DoubleBuffered ;
 				
 				
 				/**
@@ -298,7 +297,7 @@ namespace OSDL
 				 * screen, not windowed.
 				 *
 				 */
-				static const Flags FullScreen ;
+				static const Ceylan::Flags FullScreen ;
 				
 				
 				/**
@@ -306,14 +305,14 @@ namespace OSDL
 				 * an OpenGL context.
 				 *
 				 */
-				static const Flags OpenGL ;
+				static const Ceylan::Flags OpenGL ;
 				
 				/**
 				 * Indicates that a <b>display</b> surface is to be 
 				 * resizable.
 				 *
 				 */
-				static const Flags Resizable ;
+				static const Ceylan::Flags Resizable ;
 	
 
 				/**
@@ -398,7 +397,7 @@ namespace OSDL
 				 * surface creation.
 				 *
 				 */
-				Surface( Flags flags, Length width, Length height, 
+				Surface( Ceylan::Flags flags, Length width, Length height, 
 					BitsPerPixel depth = 32,
 					Pixels::ColorMask redMask   = 0, 
 					Pixels::ColorMask greenMask = 0,
@@ -485,10 +484,10 @@ namespace OSDL
 				/**
 				 * Returns the flags caracterizing this surface.
 				 *
-				 * @see OSDL::Flags
+				 * @see the static Flags defined in this class.
 				 *
 				 */
-				virtual Flags getFlags() const throw() ;
+				virtual Ceylan::Flags getFlags() const throw() ;
 
 				
 				/**
@@ -496,10 +495,10 @@ namespace OSDL
 				 *
 				 * @note Does not change anything to the surface, though. 
 				 * 
-				 * @see OSDL::Flags
+				 * @see the static Flags defined in this class.
 				 *
 				 */				
-				virtual void setFlags( Flags newFlags ) throw() ;
+				virtual void setFlags( Ceylan::Flags newFlags ) throw() ;
 	
 	
 				/**
@@ -551,7 +550,7 @@ namespace OSDL
 				 * than other per-surface values.
 				 *
 				 */
-				virtual void setAlpha( Flags flags, 
+				virtual void setAlpha( Ceylan::Flags flags, 
 					Pixels::ColorElement newAlpha ) throw( VideoException ) ;
 				
 				
@@ -581,7 +580,7 @@ namespace OSDL
 				 * for obtaining a correct value for the color key.
 				 *
 				 */
-				virtual void setColorKey( Flags flags, 
+				virtual void setColorKey( Ceylan::Flags flags, 
 					Pixels::PixelColor keyPixelColor ) throw( VideoException ) ;
 				
 				
@@ -608,7 +607,7 @@ namespace OSDL
 				 *
 				 * @param keyColorDef the color definition of the color key.
 				 */
-				virtual void setColorKey( Flags flags, 
+				virtual void setColorKey( Ceylan::Flags flags, 
 						Pixels::ColorDefinition keyColorDef ) 
 					throw( VideoException ) ;
 				
@@ -653,7 +652,7 @@ namespace OSDL
 				virtual bool setPalette( Palette & newPalette, 
 					ColorCount startingColorIndex = 0,
 					ColorCount numberOfColors = 0, 
-					Flags targettedPalettes = 
+					Ceylan::Flags targettedPalettes = 
 						Palette::Logical | Palette::Physical ) 
 					throw() ;
 				
@@ -3035,7 +3034,8 @@ namespace OSDL
 				 * meaning is different.
 				 *
 				 */
-				static std::string InterpretFlags( Flags flags ) throw() ;
+				static std::string InterpretFlags( Ceylan::Flags flags ) 
+					throw() ;
 	
 	
 				/// Offset used when drawing curve in a container.
@@ -3202,9 +3202,11 @@ namespace OSDL
 }
 
 
+
 /// Used to serialize this surface into a stream.
-std::ostream & operator << ( std::ostream & os, 
+OSDL_DLL std::ostream & operator << ( std::ostream & os, 
 	OSDL::Video::Surface & s ) throw() ;
 
 
 #endif // OSDL_SURFACE_H_
+

@@ -1,6 +1,8 @@
 #ifndef OSDL_BOUNDING_BOX_2D_H_
 #define OSDL_BOUNDING_BOX_2D_H_
 
+
+
 #include "OSDLBoundingBox.h"       // for inheritance
 
 #include "Ceylan.h"                // for VerbosityLevels, Bipoint
@@ -33,7 +35,8 @@ namespace OSDL
 		 * bounding box.
 		 *
 		 */
-		class BoundingBox2D : public BoundingBox, public Ceylan::Locatable2D
+		class OSDL_DLL BoundingBox2D : public BoundingBox, 
+			public Ceylan::Locatable2D
 		{
 		
 		

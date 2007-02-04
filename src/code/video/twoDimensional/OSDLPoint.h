@@ -28,8 +28,9 @@ namespace OSDL
 			 * graphical user interface elements, such as widgets.
 			 *
 			 */
-	    	class Point: public Ceylan::TextDisplayable
+	    	class OSDL_DLL Point: public Ceylan::TextDisplayable
 	   		{
+
 
 	        	public:
 	
@@ -85,7 +86,7 @@ namespace OSDL
 
 
 /// Stream operator for serialization.
-std::ostream & operator << ( std::ostream & os, 
+OSDL_DLL std::ostream & operator << ( std::ostream & os, 
 	const OSDL::Video::TwoDimensional::Point & p ) ;
 
 

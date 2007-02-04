@@ -77,7 +77,7 @@ namespace OSDL
 		 * @see Scheduler::registerAsPeriodic, Scheduler::registerAsProgrammed
 		 * 
 		 */
-		class ActiveObject : public Ceylan::TextDisplayable
+		class OSDL_DLL ActiveObject : public Ceylan::TextDisplayable
 		{
 		
 		

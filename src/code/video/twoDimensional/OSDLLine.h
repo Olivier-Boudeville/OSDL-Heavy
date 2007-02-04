@@ -71,7 +71,7 @@ namespace OSDL
 				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
-				bool drawHorizontal( Surface & targetSurface, 
+				OSDL_DLL bool drawHorizontal( Surface & targetSurface, 
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
@@ -100,7 +100,7 @@ namespace OSDL
 				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
-				bool drawHorizontal( Surface & targetSurface, 
+				OSDL_DLL bool drawHorizontal( Surface & targetSurface, 
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
 					Pixels::PixelColor actualColor ) throw() ;
 	
@@ -125,7 +125,7 @@ namespace OSDL
 				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
-				bool drawHorizontal( Surface & targetSurface, 
+				OSDL_DLL bool drawHorizontal( Surface & targetSurface, 
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
 					Pixels::ColorDefinition = Pixels::White ) throw() ;
 	
@@ -150,7 +150,7 @@ namespace OSDL
 				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
-				bool drawVertical( Surface & targetSurface, 
+				OSDL_DLL bool drawVertical( Surface & targetSurface, 
 					Coordinate x, Coordinate yStart, Coordinate yStop, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
@@ -178,7 +178,7 @@ namespace OSDL
 				 * @see VideoModule::GetEndPointDrawState
 				 *
 				 */
-				bool drawVertical( Surface & targetSurface, 
+				OSDL_DLL bool drawVertical( Surface & targetSurface, 
 					Coordinate x, Coordinate yStart, Coordinate yStop, 
 					Pixels::ColorDefinition = Pixels::White )
 					throw() ;
@@ -211,7 +211,7 @@ namespace OSDL
 				 * VideoModule::GetAntiAliasingState
 				 *
 				 */
-				bool draw( Surface & targetSurface, 
+				OSDL_DLL bool draw( Surface & targetSurface, 
 					Coordinate xStart, Coordinate yStart, 
 					Coordinate xStop, Coordinate yStop, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
@@ -240,7 +240,7 @@ namespace OSDL
 				 * VideoModule::GetAntiAliasingState
 				 *
 				 */
-				bool draw( Surface & targetSurface, 
+				OSDL_DLL bool draw( Surface & targetSurface, 
 					Coordinate xStart, Coordinate yStart, 
 					Coordinate xStop, Coordinate yStop, 
 					Pixels::ColorDefinition colorDef = Pixels::White )
@@ -267,7 +267,7 @@ namespace OSDL
 				 * VideoModule::GetAntiAliasingState
 				 *
 				 */					
-				bool draw( Surface & targetSurface, 
+				OSDL_DLL bool draw( Surface & targetSurface, 
 					Point2D & firstPoint, Point2D & secondPoint,
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
@@ -295,7 +295,7 @@ namespace OSDL
 				 * VideoModule::GetAntiAliasingState
 				 *
 				 */					
-				bool draw( Surface & targetSurface, 
+				OSDL_DLL bool draw( Surface & targetSurface, 
 					Point2D & firstPoint, Point2D & secondPoint,
 					Pixels::ColorDefinition colorDef = Pixels::White ) throw() ;
 				
@@ -317,7 +317,8 @@ namespace OSDL
 				 * example if surface locking failed.
 				 *
 				 */
-				bool drawCross( Surface & targetSurface, const Point2D & center,
+				OSDL_DLL bool drawCross( Surface & targetSurface, 
+					const Point2D & center,
 					Pixels::ColorDefinition colorDef = Pixels::White, 
 					Length squareEdge = 5 ) throw() ;
 					
@@ -339,7 +340,7 @@ namespace OSDL
 				 * example if surface locking failed.
 				 *
 				 */
-				bool drawCross( Surface & targetSurface, 
+				OSDL_DLL bool drawCross( Surface & targetSurface, 
 					Coordinate xCenter, Coordinate yCenter,
 					Pixels::ColorDefinition colorDef = Pixels::White, 
 					Length squareEdge = 5 ) throw() ;

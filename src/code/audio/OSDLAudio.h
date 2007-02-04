@@ -25,7 +25,7 @@ namespace OSDL
 			
 			
 		/// Mother class for all audio exceptions. 		
-		class AudioException: public OSDL::Exception 
+		class OSDL_DLL AudioException: public OSDL::Exception 
 		{ 
 			public: 
 			
@@ -39,7 +39,7 @@ namespace OSDL
 		 * Root module for all audio services.
 		 *
 		 */
-		class AudioModule : public Ceylan::Module
+		class OSDL_DLL AudioModule : public Ceylan::Module
 		{
 		
 		

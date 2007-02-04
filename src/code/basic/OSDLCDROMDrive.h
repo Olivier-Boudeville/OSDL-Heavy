@@ -19,6 +19,7 @@ struct SDL_CD ;
 struct SDL_CDtrack ;
 
 
+
 namespace OSDL
 {
 	
@@ -35,12 +36,13 @@ namespace OSDL
 	enum TrackType { audioTrack, dataTrack } ;
 	
 	
+	
 	/**
 	 * Describes a CD track, it is just an object-oriented view of an 
 	 * actual track.
 	 *
 	 */
-	class CDTrack : public Ceylan::TextDisplayable
+	class OSDL_DLL CDTrack : public Ceylan::TextDisplayable
 	{
 	
 		
@@ -89,7 +91,9 @@ namespace OSDL
 		
 		protected:
 		
+		
 			const SDL_CDtrack * _trackData ;
+					
 						
 			
 		private:	
@@ -126,7 +130,7 @@ namespace OSDL
 	 * attached to the system.
 	 *
 	 */
-	class CDROMDrive : public Ceylan::Object
+	class OSDL_DLL CDROMDrive : public Ceylan::Object
 	{
 	
 	
@@ -331,6 +335,7 @@ namespace OSDL
 	         */
 		    virtual const std::string toString( 
 				Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
+
 
 
 			

@@ -18,7 +18,7 @@ namespace OSDL
 	 * All OSDL exceptions should inherit from it, directly or not.
 	 *
 	 */
-    class Exception : public Ceylan::Exception
+    class OSDL_DLL Exception : public Ceylan::Exception
     {
 
         public:
@@ -54,9 +54,10 @@ namespace OSDL
  * @see toString.
  * 
  */
-std::ostream & operator << ( std::ostream & os, const OSDL::Exception & e )
-	throw() ;
+OSDL_DLL std::ostream & operator << ( std::ostream & os, 
+	const OSDL::Exception & e )	throw() ;
 
 
 
 #endif // OSDL_EXCEPTION_H_
+

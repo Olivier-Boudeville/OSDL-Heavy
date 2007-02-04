@@ -23,12 +23,12 @@ namespace OSDL
 	
 	
 		/// Thrown when an error regarding overlays occured.
-		class OverlayException : public VideoException
+		class OSDL_DLL OverlayException : public VideoException
 		{
 		
 			public:
 			
-				OverlayException( const std::string & message ) throw() ;				
+				OverlayException( const std::string & message ) throw() ;		
 				virtual ~OverlayException() throw() ;
 			
 		} ;
@@ -58,7 +58,7 @@ namespace OSDL
 		 * be overwritten when the overlay is displayed.
 		 *
 		 */
-		class Overlay : public Ceylan::Lockable
+		class OSDL_DLL Overlay : public Ceylan::Lockable
 		{
 		
 		
@@ -264,3 +264,4 @@ namespace OSDL
 
 
 #endif // OSDL_OVERLAY_H_
+

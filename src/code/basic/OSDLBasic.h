@@ -2,12 +2,10 @@
 #define OSDL_BASIC_H_
 
 
-#include "OSDLTypes.h"      // for Flags
 #include "OSDLException.h"  // for OSDL::Exception
 
 
-
-#include "Ceylan.h"         // for Ceylan::Module, Version
+#include "Ceylan.h"         // for Ceylan::Module, Version, etc.
 
 
 
@@ -51,22 +49,28 @@ namespace OSDL
 	
 	namespace Video
 	{
+	
 		// Managed by the common module.
 		class VideoModule ;
+		
 	}
 	
 	
 	namespace Events
 	{
+	
 		// Managed by the common module.
 		class EventsModule ;
+		
 	}
 
 		
 	namespace Audio
 	{
+	
 		// Managed by the common module.
 		class AudioModule ;
+		
 	}
 			
 			
@@ -75,11 +79,11 @@ namespace OSDL
 	
 	
 	/// Returns the version of the OSDL library currently linked.
-	Ceylan::Version & GetVersion() throw() ;
+	OSDL_DLL Ceylan::Version & GetVersion() throw() ;
 
 	
 	/// Shutdowns all OSDL services.
-	void stop() throw() ;
+	OSDL_DLL void stop() throw() ;
 		
 		
 		
@@ -89,8 +93,9 @@ namespace OSDL
 	 * From this common module, all other modules can be triggered.
 	 *
 	 */
-	class CommonModule : public Ceylan::Module
+	class OSDL_DLL CommonModule : public Ceylan::Module
 	{
+
 
 
 		/**
@@ -112,14 +117,15 @@ namespace OSDL
 		 * initializer ordering.
 		 *
 		 */			
-		friend CommonModule & getCommonModule( Flags flags ) throw() ;
+		OSDL_DLL friend CommonModule & getCommonModule( Ceylan::Flags flags )
+			throw() ;
 		
 		
 		/**
 		 * Tells whether there already exists a common module.
 		 *
 		 */
-		friend bool hasExistingCommonModule() throw() ;
+		OSDL_DLL friend bool hasExistingCommonModule() throw() ;
 		
 		
 		/**
@@ -138,13 +144,13 @@ namespace OSDL
 		 * initializer ordering.
 		 *
 		 */			
-		friend CommonModule & getExistingCommonModule() throw() ;
+		OSDL_DLL friend CommonModule & getExistingCommonModule() throw() ;
 		
 		
 		
 		
 		/// This friend function allows to shutdown all OSDL services.
-		friend void stop() throw() ;
+		OSDL_DLL friend void stop() throw() ;
 
 
 
@@ -152,11 +158,12 @@ namespace OSDL
 		
 		
 			/// Data type of back-end return code :
-			typedef signed int BackendReturnCode ;
+			typedef Ceylan::Sint32 BackendReturnCode ;
 
 
 			/// Exported logical value for back-end success.
 			static const BackendReturnCode BackendSuccess ;
+			
 			
 			/**
 			 * Exported logical value for back-end success/
@@ -214,7 +221,7 @@ namespace OSDL
 			
 			
 			/// Returns flags used for this common module.
-			virtual Flags getFlags() const throw() ;
+			virtual Ceylan::Flags getFlags() const throw() ;
 
 
 
@@ -264,7 +271,7 @@ namespace OSDL
 			 * instead, since their meaning is different.
 			 *
 			 */ 
-			static std::string InterpretFlags( Flags flags ) throw() ;
+			static std::string InterpretFlags( Ceylan::Flags flags ) throw() ;
 	
 	
 			/**
@@ -297,16 +304,16 @@ namespace OSDL
 
 
 			/// Initializes the timer subsystem.
-			static const Flags UseTimer ;			   
+			static const Ceylan::Flags UseTimer ;			   
 
 			/// Initializes the audio subsystem.
-			static const Flags UseAudio ;
+			static const Ceylan::Flags UseAudio ;
 						   
 			/// Initializes the video subsystem.
-			static const Flags UseVideo ;
+			static const Ceylan::Flags UseVideo ;
 						   
 			/// Initializes the CD-ROM subsystem.
-			static const Flags UseCDROM ;			   
+			static const Ceylan::Flags UseCDROM ;			   
 
 
 			/**
@@ -314,7 +321,7 @@ namespace OSDL
 			 * the video (UseVideo).
 			 *
 			 */
-			static const Flags UseJoystick ;			   
+			static const Ceylan::Flags UseJoystick ;			   
 
 
 			/**
@@ -322,7 +329,7 @@ namespace OSDL
 			 * the video (UseVideo).
 			 *
 			 */
-			static const Flags UseKeyboard ;			   
+			static const Ceylan::Flags UseKeyboard ;			   
 
 
 			/**
@@ -330,11 +337,11 @@ namespace OSDL
 			 * the video (UseVideo).
 			 *
 			 */
-			static const Flags UseMouse ;			   
+			static const Ceylan::Flags UseMouse ;			   
 
 
 			/// Initializes all above subsystems.
-			static const Flags UseEverything ;			   
+			static const Ceylan::Flags UseEverything ;			   
 
 
 			/**
@@ -357,11 +364,12 @@ namespace OSDL
 			 * resolution, which annoys the user. 
 			 *
 			 */
-			static const Flags NoParachute ;			   
+			static const Ceylan::Flags NoParachute ;			   
 
 
 			/// Initializes the event thread.
-			static const Flags UseEventThread ;
+			static const Ceylan::Flags UseEventThread ;
+
 
 
 
@@ -380,7 +388,8 @@ namespace OSDL
 			 * that they are consistent.
 			 *
 			 */
-			static Flags AutoCorrectFlags( Flags inputFlags ) throw() ;
+			static Ceylan::Flags AutoCorrectFlags( Ceylan::Flags inputFlags )
+				throw() ;
 					
 					
 			/// Pointer to the current video module used, if any.
@@ -393,7 +402,7 @@ namespace OSDL
 			Audio::AudioModule * _audio ;
 			
 			/// Flags used for this common module.
-			Flags _flags ;	
+			Ceylan::Flags _flags ;	
 			
 			/// Pointer to the current CD-ROM drive handler used, if any.
 			CDROMDriveHandler * _cdromHandler ;
@@ -427,16 +436,20 @@ namespace OSDL
  			 * @param flags parameters to initialize SDL.
 			 * 
 			 * @note To have the common module created, use getCommonModule.
+			 *
  			 */
- 			explicit CommonModule( Flags flags ) throw ( OSDL::Exception ) ;
+ 			explicit CommonModule( Ceylan::Flags flags ) 
+				throw ( OSDL::Exception ) ;
 	
 	
  			/**
  			 * Stops OSDL system common module.
 			 *
  			 * @see SDL_Quit defined in http://sdldoc.csn.ul.ie/sdlquit.php.
+			 *
  			 */
  			virtual ~CommonModule() throw() ;	
+			
 					
 		
 	} ;		
@@ -446,3 +459,4 @@ namespace OSDL
 
 
 #endif // OSDL_BASIC_H_
+

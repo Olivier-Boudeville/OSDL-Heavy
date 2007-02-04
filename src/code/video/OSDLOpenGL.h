@@ -44,7 +44,7 @@ namespace OSDL
 		
 		
 			/// Exception to be raised when OpenGL operations fail.
-			class OpenGLException : public VideoException
+			class OSDL_DLL OpenGLException : public VideoException
 			{
 			
 				public:
@@ -66,7 +66,7 @@ namespace OSDL
 			 * depending on the endianness of the local machine.
 			 *
 			 */
-			extern Pixels::ColorMask RedMask ;
+			extern OSDL_DLL Pixels::ColorMask RedMask ;
 			
 			
 			/**
@@ -74,7 +74,7 @@ namespace OSDL
 			 * depending on the endianness of the local machine.
 			 *
 			 */
-			extern Pixels::ColorMask GreenMask ;
+			extern OSDL_DLL Pixels::ColorMask GreenMask ;
 			
 			
 			/**
@@ -82,7 +82,7 @@ namespace OSDL
 			 * depending on the endianness of the local machine.
 			 *
 			 */
-			extern Pixels::ColorMask BlueMask ;
+			extern OSDL_DLL Pixels::ColorMask BlueMask ;
 			
 			
 			/**
@@ -90,7 +90,7 @@ namespace OSDL
 			 * depending on the endianness of the local machine.
 			 *
 			 */
-			extern Pixels::ColorMask AlphaMask ;
+			extern OSDL_DLL Pixels::ColorMask AlphaMask ;
 		
 		
 			/**
@@ -151,7 +151,7 @@ namespace OSDL
 			 * OpenGL context provided by the SDL back-end.
 			 *
 			 */
-			class OpenGLContext : public Ceylan::TextDisplayable
+			class OSDL_DLL OpenGLContext : public Ceylan::TextDisplayable
 			{
 
 			
@@ -601,10 +601,9 @@ namespace OSDL
 					 * hence it can be deallocated by the caller.
 					 *
 					 *
-					 */
-					//Texture & uploadTextureFrom( 
+					Texture & uploadTextureFrom( 
 						const Video::Surface & source ) throw() ;
-					
+					*/
 					
 		            /**
 	    	         * Returns an user-friendly description of the state 
@@ -804,8 +803,5 @@ namespace OSDL
 
 
 
-#endif // OSDL_HAVE_OPENGL
-
-
-
 #endif // OSDL_OPENGL_H_
+

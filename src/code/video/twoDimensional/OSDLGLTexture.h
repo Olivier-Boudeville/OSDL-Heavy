@@ -37,7 +37,7 @@ namespace OSDL
 		
 		
 			/// Exception to be raised when OpenGL operations fail.
-			class GLTextureException : public OpenGLException
+			class OSDL_DLL GLTextureException : public OpenGLException
 			{
 			
 				public:
@@ -78,7 +78,7 @@ namespace OSDL
 			 * 'Rendering', 'OpenGL + SDL' for further implementation details.
 			 *
 			 */
-			class GLTexture : public Ceylan::TextDisplayable
+			class OSDL_DLL GLTexture : public Ceylan::TextDisplayable
 			{
 
 			
@@ -337,3 +337,4 @@ namespace OSDL
 
 
 #endif  // OSDL_GL_TEXTURE_H_
+

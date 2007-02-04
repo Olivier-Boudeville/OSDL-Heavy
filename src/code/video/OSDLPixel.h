@@ -169,7 +169,7 @@ namespace OSDL
 			 * Who should deallocate them ?
 			 *
 			 */
-			bool setGammaRamp( GammaRampElement * redRamp, 
+			OSDL_DLL bool setGammaRamp( GammaRampElement * redRamp, 
 					GammaRampElement * greenRamp, GammaRampElement * blueRamp )
 				throw() ;
 				
@@ -186,7 +186,7 @@ namespace OSDL
 			 * them.
 			 *
 			 */	
-			bool getGammaRamp( GammaRampElement * redRamp, 
+			OSDL_DLL bool getGammaRamp( GammaRampElement * redRamp, 
 					GammaRampElement * greenRamp, GammaRampElement * blueRamp )
 				throw() ;
 
@@ -222,7 +222,7 @@ namespace OSDL
 			 * @see getColorMasks
 			 *
 			 */
-			void getRecommendedColorMasks( ColorMask & redMask, 
+			OSDL_DLL void getRecommendedColorMasks( ColorMask & redMask, 
 				ColorMask & greenMask, ColorMask & blueMask, 
 				ColorMask & alphaMask ) throw() ;
 
@@ -250,7 +250,7 @@ namespace OSDL
 			 * @see getColorMasks
 			 *
 			 */
-			void getRecommendedColorMasks( ColorMask & redMask, 
+			OSDL_DLL void getRecommendedColorMasks( ColorMask & redMask, 
 				ColorMask & greenMask, ColorMask & blueMask ) throw() ;
 
 
@@ -275,7 +275,7 @@ namespace OSDL
 			 * @see getRecommendedColorMasks
 			 *
 			 */
-			void getCurrentColorMasks( const PixelFormat & format, 
+			OSDL_DLL void getCurrentColorMasks( const PixelFormat & format, 
 				ColorMask & redMask, ColorMask & greenMask, 
 				ColorMask & blueMask, ColorMask & alphaMask ) throw() ;
 
@@ -298,7 +298,7 @@ namespace OSDL
 			 * @see convertColorDefinitionToRGBA, convertRGBAToPixelColor
 			 *
 			 */
-			ColorDefinition convertRGBAToColorDefinition( 
+			OSDL_DLL ColorDefinition convertRGBAToColorDefinition( 
 				ColorElement red, ColorElement green, ColorElement blue, 
 				ColorElement alpha = AlphaOpaque ) throw() ;
 				
@@ -314,7 +314,7 @@ namespace OSDL
 			 * @see convertRGBAToColorDefinition, convertRGBAToPixelColor
 			 *
 			 */
-			void convertColorDefinitionToRGBA( ColorDefinition color,
+			OSDL_DLL void convertColorDefinitionToRGBA( ColorDefinition color,
 				ColorElement & red, ColorElement & green, ColorElement & blue, 
 				ColorElement & alpha ) throw() ;
 							
@@ -327,7 +327,8 @@ namespace OSDL
 			 * the pixel will be considered as fully opaque.
 			 *
 			 */
-			PixelColor convertRGBAToPixelColor( const PixelFormat & format,
+			OSDL_DLL PixelColor convertRGBAToPixelColor( 
+				const PixelFormat & format,
 				ColorElement red, ColorElement green, ColorElement blue, 
 				ColorElement alpha = AlphaOpaque ) throw() ;
 				
@@ -350,7 +351,7 @@ namespace OSDL
 			 * myPixelDefinition.b and myPixelDefinition.unused for alpha)
 			 *
 			 */
-			ColorDefinition convertPixelColorToColorDefinition( 
+			OSDL_DLL ColorDefinition convertPixelColorToColorDefinition( 
 				const PixelFormat & format,	PixelColor pixel ) throw() ;
 	
 					
@@ -364,7 +365,7 @@ namespace OSDL
 			 * since it can be in no way be taken into account.
 			 *
 			 */
-			PixelColor convertColorDefinitionToPixelColor( 
+			OSDL_DLL PixelColor convertColorDefinitionToPixelColor( 
 				const PixelFormat & format,	ColorDefinition colorDef ) throw() ;
 	
 
@@ -377,7 +378,7 @@ namespace OSDL
 			 * if the pixel format was exactly 32-bit RGBA.
 			 *
 			 */
-			PixelColor convertColorDefinitionToRawPixelColor( 
+			OSDL_DLL PixelColor convertColorDefinitionToRawPixelColor( 
 				ColorDefinition colorDef ) throw() ;
 		
 		
@@ -390,7 +391,7 @@ namespace OSDL
 			 * if the pixel format was exactly 32-bit RGBA.
 			 *
 			 */
-			PixelColor convertRGBAToRawPixelColor( 
+			OSDL_DLL PixelColor convertRGBAToRawPixelColor( 
 				ColorElement red, ColorElement green, ColorElement blue, 
 				ColorElement alpha = AlphaOpaque ) throw() ;
 		
@@ -412,8 +413,8 @@ namespace OSDL
 			 * too for equality.
 			 *
 			 */
-			bool areEqual( ColorDefinition first, ColorDefinition second, 
-				bool useAlpha = true ) throw() ;
+			OSDL_DLL bool areEqual( ColorDefinition first, 
+				ColorDefinition second, bool useAlpha = true ) throw() ;
 		
 		
 			/**
@@ -429,8 +430,8 @@ namespace OSDL
 			 * some containers (see Text::Font class).
 			 *
 			 */
-			bool isLess( ColorDefinition value, ColorDefinition comparison )
-				throw() ;
+			OSDL_DLL bool isLess( ColorDefinition value, 
+				ColorDefinition comparison ) throw() ;
 		
 		
 			/**
@@ -447,7 +448,8 @@ namespace OSDL
 			 * directly replaced by the '==' operator.
 			 *
 			 */
-			bool areEqual( PixelColor first, PixelColor second ) throw() ;
+			OSDL_DLL bool areEqual( PixelColor first, PixelColor second )
+				throw() ;
 
 
 			/**
@@ -466,8 +468,8 @@ namespace OSDL
 			 * @return a colorkey different from all provided colors.
 			 *
 			 */
-			ColorDefinition selectColorDifferentFrom( ColorDefinition first, 
-				ColorDefinition second ) throw() ;
+			OSDL_DLL ColorDefinition selectColorDifferentFrom( 
+				ColorDefinition first, ColorDefinition second ) throw() ;
 		
 		
 			/**
@@ -488,8 +490,9 @@ namespace OSDL
 			 * @return a colorkey different from all provided colors.
 			 *
 			 */
-			ColorDefinition selectColorDifferentFrom( ColorDefinition first, 
-				ColorDefinition second, ColorDefinition third ) throw() ;
+			OSDL_DLL ColorDefinition selectColorDifferentFrom( 
+				ColorDefinition first, ColorDefinition second, 
+					ColorDefinition third ) throw() ;
 				
 				
 				
@@ -509,7 +512,7 @@ namespace OSDL
 	 		 * @see http://sdldoc.csn.ul.ie/guidevideo.php 
 			 *
 	 		 */
-			PixelColor getPixelColor( const Surface & fromSurface, 
+			OSDL_DLL PixelColor getPixelColor( const Surface & fromSurface, 
 				Coordinate x, Coordinate y ) throw ( VideoException ) ;
 			
 			
@@ -531,7 +534,8 @@ namespace OSDL
 	 		 * @see http://sdldoc.csn.ul.ie/guidevideo.php 
 			 *
 	 		 */
-			ColorDefinition getColorDefinition( const Surface & fromSurface, 
+			OSDL_DLL ColorDefinition getColorDefinition( 
+				const Surface & fromSurface, 
 				Coordinate x, Coordinate y ) throw ( VideoException ) ;
 
 			
@@ -580,7 +584,7 @@ namespace OSDL
 			 * @see http://sdldoc.csn.ul.ie/guidevideo.php
 			 *
 			 */
-			void putRGBAPixel( Surface & targetSurface, 
+			OSDL_DLL void putRGBAPixel( Surface & targetSurface, 
 					Coordinate x, Coordinate y, 
 					ColorElement red, ColorElement green, ColorElement blue, 
 					ColorElement alpha = AlphaOpaque, 
@@ -629,7 +633,7 @@ namespace OSDL
 			 * @see http://sdldoc.csn.ul.ie/guidevideo.php
 			 *
 			 */
-			void putColorDefinition( Surface & targetSurface, 
+			OSDL_DLL void putColorDefinition( Surface & targetSurface, 
 					Coordinate x, Coordinate y, 
 					ColorDefinition colorDef,
 					bool blending = true, bool clipping = true, 
@@ -679,7 +683,7 @@ namespace OSDL
 			 * @see http://sdldoc.csn.ul.ie/guidevideo.php
 			 *
 			 */
-			void putPixelColor( Surface & targetSurface, 
+			OSDL_DLL void putPixelColor( Surface & targetSurface, 
 					Coordinate x, Coordinate y, 
 					PixelColor convertedColor, ColorElement alpha,
 					bool blending = true, bool clipping = true, 
@@ -705,7 +709,7 @@ namespace OSDL
 			 * a debug method when pixel-level operations must be checked.
 			 *
 			 */
-			void alternativePutPixelColor( Surface & targetSurface, 
+			OSDL_DLL void alternativePutPixelColor( Surface & targetSurface, 
 				Coordinate x, Coordinate y, 
 				PixelColor color, bool mapToSurfaceFormat = false ) throw()	;
 				
@@ -717,7 +721,8 @@ namespace OSDL
 			 * @param format the pixel format to describe.
 			 *
 			 */
-			std::string toString( const PixelFormat & format ) throw() ;
+			OSDL_DLL std::string toString( const PixelFormat & format ) 
+				throw() ;
 
 
 			/**
@@ -730,7 +735,7 @@ namespace OSDL
 			 * the pixel.
 			 *
 			 */
-			std::string toString( PixelColor pixel, 
+			OSDL_DLL std::string toString( PixelColor pixel, 
 				const PixelFormat & format ) throw() ;
 
 			
@@ -742,7 +747,7 @@ namespace OSDL
 			 * depending of the context.
 			 *
 			 */
-			std::string toString( ColorDefinition color ) throw() ;
+			OSDL_DLL std::string toString( ColorDefinition color ) throw() ;
 			
 			
 			/**
@@ -762,163 +767,163 @@ namespace OSDL
 			 * background should remain empty, i.e. fully transparent.
 			 *
 			 */
-			extern const ColorDefinition Transparent ;          
+			extern OSDL_DLL const ColorDefinition Transparent ;          
 			
 			 
 			/// Shades of Grey :
 
-			extern const ColorDefinition Black ;          
-			extern const ColorDefinition Grey ;           
-			extern const ColorDefinition DimGrey ;        
-			extern const ColorDefinition LightGrey ;      
-			extern const ColorDefinition SlateGrey ;      
-			extern const ColorDefinition Silver ;         
+			extern OSDL_DLL const ColorDefinition Black ;          
+			extern OSDL_DLL const ColorDefinition Grey ;           
+			extern OSDL_DLL const ColorDefinition DimGrey ;        
+			extern OSDL_DLL const ColorDefinition LightGrey ;      
+			extern OSDL_DLL const ColorDefinition SlateGrey ;      
+			extern OSDL_DLL const ColorDefinition Silver ;         
 
 
 
 			/// Shades of Blue :
 			
-			extern const ColorDefinition AliceBlue ;      
-			extern const ColorDefinition BlueViolet ;     
-			extern const ColorDefinition CadetBlue ;      
-			extern const ColorDefinition DarkSlateBlue ;  
-			extern const ColorDefinition DarkTurquoise ;  
-			extern const ColorDefinition DeepSkyBlue ;    
-			extern const ColorDefinition DodgerBlue ;     
-			extern const ColorDefinition LightBlue ;      
-			extern const ColorDefinition LightCyan ;      
-			extern const ColorDefinition MediumBlue ;     
-			extern const ColorDefinition NavyBlue ;       
-			extern const ColorDefinition RoyalBlue ;      
-			extern const ColorDefinition SkyBlue ;        
-			extern const ColorDefinition SlateBlue ;      
-			extern const ColorDefinition SteelBlue ;      
-			extern const ColorDefinition Aquamarine ;     
-			extern const ColorDefinition Azure ;          
-			extern const ColorDefinition Blue ;           
-			extern const ColorDefinition Cyan ; 	      
-			extern const ColorDefinition Turquoise ;      
-			extern const ColorDefinition MidnightBlue ;      
+			extern OSDL_DLL const ColorDefinition AliceBlue ;      
+			extern OSDL_DLL const ColorDefinition BlueViolet ;     
+			extern OSDL_DLL const ColorDefinition CadetBlue ;      
+			extern OSDL_DLL const ColorDefinition DarkSlateBlue ;  
+			extern OSDL_DLL const ColorDefinition DarkTurquoise ;  
+			extern OSDL_DLL const ColorDefinition DeepSkyBlue ;    
+			extern OSDL_DLL const ColorDefinition DodgerBlue ;     
+			extern OSDL_DLL const ColorDefinition LightBlue ;      
+			extern OSDL_DLL const ColorDefinition LightCyan ;      
+			extern OSDL_DLL const ColorDefinition MediumBlue ;     
+			extern OSDL_DLL const ColorDefinition NavyBlue ;       
+			extern OSDL_DLL const ColorDefinition RoyalBlue ;      
+			extern OSDL_DLL const ColorDefinition SkyBlue ;        
+			extern OSDL_DLL const ColorDefinition SlateBlue ;      
+			extern OSDL_DLL const ColorDefinition SteelBlue ;      
+			extern OSDL_DLL const ColorDefinition Aquamarine ;     
+			extern OSDL_DLL const ColorDefinition Azure ;          
+			extern OSDL_DLL const ColorDefinition Blue ;           
+			extern OSDL_DLL const ColorDefinition Cyan ; 	      
+			extern OSDL_DLL const ColorDefinition Turquoise ;      
+			extern OSDL_DLL const ColorDefinition MidnightBlue ;      
 
 
 
 			/// Shades of Brown :
 
-			extern const ColorDefinition Brown ;      
-			extern const ColorDefinition RosyBrown ;      
-			extern const ColorDefinition SaddleBrown ;    
-			extern const ColorDefinition Beige ;          
-			extern const ColorDefinition Burlywood ;      
-			extern const ColorDefinition Chocolate ;      
-			extern const ColorDefinition Peru ;           
-			extern const ColorDefinition Tan ;            
-			extern const ColorDefinition Copper ;         
+			extern OSDL_DLL const ColorDefinition Brown ;      
+			extern OSDL_DLL const ColorDefinition RosyBrown ;      
+			extern OSDL_DLL const ColorDefinition SaddleBrown ;    
+			extern OSDL_DLL const ColorDefinition Beige ;          
+			extern OSDL_DLL const ColorDefinition Burlywood ;      
+			extern OSDL_DLL const ColorDefinition Chocolate ;      
+			extern OSDL_DLL const ColorDefinition Peru ;           
+			extern OSDL_DLL const ColorDefinition Tan ;            
+			extern OSDL_DLL const ColorDefinition Copper ;         
 
 
 
 			/// Shades of Green :
 
-			extern const ColorDefinition DarkGreen ;      
-			extern const ColorDefinition DarkOliveGreen ; 
-			extern const ColorDefinition ForestGreen ;    
-			extern const ColorDefinition GreenYellow  ;   
-			extern const ColorDefinition LawnGreen ;      
-			extern const ColorDefinition LimeGreen ;      
-			extern const ColorDefinition MintCream ;     
-			extern const ColorDefinition OliveDrab ;      
-			extern const ColorDefinition PaleGreen ;      
-			extern const ColorDefinition SeaGreen ;       
-			extern const ColorDefinition SpringGreen ;    
-			extern const ColorDefinition YellowGreen ;    
-			extern const ColorDefinition Chartreuse ;     
-			extern const ColorDefinition Green ;          
-			extern const ColorDefinition Khaki ;          
+			extern OSDL_DLL const ColorDefinition DarkGreen ;      
+			extern OSDL_DLL const ColorDefinition DarkOliveGreen ; 
+			extern OSDL_DLL const ColorDefinition ForestGreen ;    
+			extern OSDL_DLL const ColorDefinition GreenYellow  ;   
+			extern OSDL_DLL const ColorDefinition LawnGreen ;      
+			extern OSDL_DLL const ColorDefinition LimeGreen ;      
+			extern OSDL_DLL const ColorDefinition MintCream ;     
+			extern OSDL_DLL const ColorDefinition OliveDrab ;      
+			extern OSDL_DLL const ColorDefinition PaleGreen ;      
+			extern OSDL_DLL const ColorDefinition SeaGreen ;       
+			extern OSDL_DLL const ColorDefinition SpringGreen ;    
+			extern OSDL_DLL const ColorDefinition YellowGreen ;    
+			extern OSDL_DLL const ColorDefinition Chartreuse ;     
+			extern OSDL_DLL const ColorDefinition Green ;          
+			extern OSDL_DLL const ColorDefinition Khaki ;          
 
 
 
 			/// Shades of Orange :
 
-			extern const ColorDefinition DarkOrange ;     
-			extern const ColorDefinition DarkSalmon ;     
-			extern const ColorDefinition LightCoral ;     
-			extern const ColorDefinition LightSalmon ;    
-			extern const ColorDefinition PeachPuff ;      
-			extern const ColorDefinition Bisque ;         
-			extern const ColorDefinition Coral ;          
-			extern const ColorDefinition Honeydew ;       
-			extern const ColorDefinition Orange ;         
-			extern const ColorDefinition Salmon ;         
-			extern const ColorDefinition Sienna ;         
+			extern OSDL_DLL const ColorDefinition DarkOrange ;     
+			extern OSDL_DLL const ColorDefinition DarkSalmon ;     
+			extern OSDL_DLL const ColorDefinition LightCoral ;     
+			extern OSDL_DLL const ColorDefinition LightSalmon ;    
+			extern OSDL_DLL const ColorDefinition PeachPuff ;      
+			extern OSDL_DLL const ColorDefinition Bisque ;         
+			extern OSDL_DLL const ColorDefinition Coral ;          
+			extern OSDL_DLL const ColorDefinition Honeydew ;       
+			extern OSDL_DLL const ColorDefinition Orange ;         
+			extern OSDL_DLL const ColorDefinition Salmon ;         
+			extern OSDL_DLL const ColorDefinition Sienna ;         
 
 
 
 			/// Shades of Red :
 
-			extern const ColorDefinition DeepPink ;       
-			extern const ColorDefinition HotPink ;       
-			extern const ColorDefinition IndianRed ;      
-			extern const ColorDefinition LightPink ;      
-			extern const ColorDefinition MediumVioletRed ;
-			extern const ColorDefinition MistyRose ;      
-			extern const ColorDefinition OrangeRed ;      
-			extern const ColorDefinition VioletRed ;      
-			extern const ColorDefinition Firebrick ;      
-			extern const ColorDefinition Pink ;           
-			extern const ColorDefinition Red ;            
-			extern const ColorDefinition Tomato ;         
+			extern OSDL_DLL const ColorDefinition DeepPink ;       
+			extern OSDL_DLL const ColorDefinition HotPink ;       
+			extern OSDL_DLL const ColorDefinition IndianRed ;      
+			extern OSDL_DLL const ColorDefinition LightPink ;      
+			extern OSDL_DLL const ColorDefinition MediumVioletRed ;
+			extern OSDL_DLL const ColorDefinition MistyRose ;      
+			extern OSDL_DLL const ColorDefinition OrangeRed ;      
+			extern OSDL_DLL const ColorDefinition VioletRed ;      
+			extern OSDL_DLL const ColorDefinition Firebrick ;      
+			extern OSDL_DLL const ColorDefinition Pink ;           
+			extern OSDL_DLL const ColorDefinition Red ;            
+			extern OSDL_DLL const ColorDefinition Tomato ;         
 
 
 
 			/// Shades of Violet :
 
-			extern const ColorDefinition DarkOrchid ;     
-			extern const ColorDefinition DarkViolet ;     
-			extern const ColorDefinition LavenderBlush ;  
-			extern const ColorDefinition MediumOrchid ;   
-			extern const ColorDefinition MediumPurple ;   
-			extern const ColorDefinition Lavender ;       
-			extern const ColorDefinition Magenta ;        
-			extern const ColorDefinition Maroon ;         
-			extern const ColorDefinition Orchid ;         
-			extern const ColorDefinition Plum ;           
-			extern const ColorDefinition Purple ;         
-			extern const ColorDefinition Thistle ;        
-			extern const ColorDefinition Violet ;         
+			extern OSDL_DLL const ColorDefinition DarkOrchid ;     
+			extern OSDL_DLL const ColorDefinition DarkViolet ;     
+			extern OSDL_DLL const ColorDefinition LavenderBlush ;  
+			extern OSDL_DLL const ColorDefinition MediumOrchid ;   
+			extern OSDL_DLL const ColorDefinition MediumPurple ;   
+			extern OSDL_DLL const ColorDefinition Lavender ;       
+			extern OSDL_DLL const ColorDefinition Magenta ;        
+			extern OSDL_DLL const ColorDefinition Maroon ;         
+			extern OSDL_DLL const ColorDefinition Orchid ;         
+			extern OSDL_DLL const ColorDefinition Plum ;           
+			extern OSDL_DLL const ColorDefinition Purple ;         
+			extern OSDL_DLL const ColorDefinition Thistle ;        
+			extern OSDL_DLL const ColorDefinition Violet ;         
 
 
 
 			/// Shades of White :
 
-			extern const ColorDefinition AntiqueWhite ;   
-			extern const ColorDefinition FloralWhite ;    
-			extern const ColorDefinition GhostWhite ;     
-			extern const ColorDefinition NavajoWhite ;    
-			extern const ColorDefinition OldLace ;        
-			extern const ColorDefinition WhiteSmoke ;     
-			extern const ColorDefinition Gainsboro ;      
-			extern const ColorDefinition Ivory ;          
-			extern const ColorDefinition Linen ;          
-			extern const ColorDefinition Seashell ;       
-			extern const ColorDefinition Snow ;          
-			extern const ColorDefinition Wheat ;          
-			extern const ColorDefinition White ;          
+			extern OSDL_DLL const ColorDefinition AntiqueWhite ;   
+			extern OSDL_DLL const ColorDefinition FloralWhite ;    
+			extern OSDL_DLL const ColorDefinition GhostWhite ;     
+			extern OSDL_DLL const ColorDefinition NavajoWhite ;    
+			extern OSDL_DLL const ColorDefinition OldLace ;        
+			extern OSDL_DLL const ColorDefinition WhiteSmoke ;     
+			extern OSDL_DLL const ColorDefinition Gainsboro ;      
+			extern OSDL_DLL const ColorDefinition Ivory ;          
+			extern OSDL_DLL const ColorDefinition Linen ;          
+			extern OSDL_DLL const ColorDefinition Seashell ;       
+			extern OSDL_DLL const ColorDefinition Snow ;          
+			extern OSDL_DLL const ColorDefinition Wheat ;          
+			extern OSDL_DLL const ColorDefinition White ;          
 
 
 
 			/// Shades of Yellow :
 
-			extern const ColorDefinition BlanchedAlmond ; 
-			extern const ColorDefinition DarkGoldenrod ;  
-			extern const ColorDefinition LemonChiffon ;   
-			extern const ColorDefinition LightGoldenrod ; 
-			extern const ColorDefinition LightYellow ;    
-			extern const ColorDefinition PaleGoldenrod ;  
-			extern const ColorDefinition PapayaWhip ;   
-			extern const ColorDefinition Cornsilk ;       
-			extern const ColorDefinition Gold ;           
-			extern const ColorDefinition Goldenrod ;      
-			extern const ColorDefinition Moccasin ;       
-			extern const ColorDefinition Yellow ;         
+			extern OSDL_DLL const ColorDefinition BlanchedAlmond ; 
+			extern OSDL_DLL const ColorDefinition DarkGoldenrod ;  
+			extern OSDL_DLL const ColorDefinition LemonChiffon ;   
+			extern OSDL_DLL const ColorDefinition LightGoldenrod ; 
+			extern OSDL_DLL const ColorDefinition LightYellow ;    
+			extern OSDL_DLL const ColorDefinition PaleGoldenrod ;  
+			extern OSDL_DLL const ColorDefinition PapayaWhip ;   
+			extern OSDL_DLL const ColorDefinition Cornsilk ;       
+			extern OSDL_DLL const ColorDefinition Gold ;           
+			extern OSDL_DLL const ColorDefinition Goldenrod ;      
+			extern OSDL_DLL const ColorDefinition Moccasin ;       
+			extern OSDL_DLL const ColorDefinition Yellow ;         
 		
 		
 		

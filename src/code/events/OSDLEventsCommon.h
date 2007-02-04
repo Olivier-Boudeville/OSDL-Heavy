@@ -3,15 +3,18 @@
 
 
 /*
- * Typedef cannot be forward-declared apparently, they therefore have to be gathered separatly.
+ * Typedef cannot be forward-declared apparently, they therefore have to 
+ * be gathered separately.
  *
- * @note These are SDL-related typedefs, and there is also EventsException defined here.
+ * @note These are SDL-related typedefs, and there is also 
+ * EventsException defined here.
  *
  */
 
 #include "OSDLException.h"   // for OSDL::Exception
 
 #include "Ceylan.h"          // for string operators
+
 
 #include "SDL.h"             // for SDL_*
 				
@@ -73,7 +76,7 @@ typedef SDL_UserEvent UserEvent ;
 
 
 /// Mother class for all event-related exceptions. 		
-class EventsException: public OSDL::Exception 
+class OSDL_DLL EventsException: public OSDL::Exception 
 { 
 
 	public: 
@@ -84,12 +87,15 @@ class EventsException: public OSDL::Exception
 		
 		} 
 		
+		
 		virtual ~EventsException() throw()
 		{
 		
 		}
 		
+		
 } ;
 
 
 #endif // OSDL_EVENTS_COMMON_H_
+

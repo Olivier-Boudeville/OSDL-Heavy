@@ -37,7 +37,7 @@ namespace OSDL
 		 * @see Ceylan::View
 		 *
 		 */	
-		class AudioRenderer : public Rendering::Renderer
+		class OSDL_DLL AudioRenderer : public Rendering::Renderer
 		{
 		
 		

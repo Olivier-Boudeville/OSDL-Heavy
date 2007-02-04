@@ -84,7 +84,7 @@ namespace OSDL
 		 * they can be scheduled as well.
 		 *
 		 */
-		class Controller : public Ceylan::Controller
+		class OSDL_DLL Controller : public Ceylan::Controller
 		{
 		
 			

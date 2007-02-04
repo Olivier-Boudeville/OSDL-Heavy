@@ -22,7 +22,7 @@ namespace OSDL
 	
 	
 		/// Exception raised by bounding boxes.
-		class BoundingBoxException : public EngineException
+		class OSDL_DLL BoundingBoxException : public EngineException
 		{
 			public:
 		
@@ -99,7 +99,7 @@ namespace OSDL
 		 * @see IntersectionResult
 		 *
 		 */
-		class BoundingBox : public Ceylan::TextDisplayable
+		class OSDL_DLL BoundingBox : public Ceylan::TextDisplayable
 		{
 		
 		
@@ -208,3 +208,4 @@ namespace OSDL
 
 
 #endif // OSDL_BOUNDING_BOX_H_
+

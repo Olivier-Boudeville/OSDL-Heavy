@@ -33,7 +33,7 @@ namespace OSDL
 			
 			
 			/// Mother class for all text exceptions. 		
-			class TextException: public VideoException 
+			class OSDL_DLL TextException: public VideoException 
 			{ 
 			
 				public: 
@@ -49,7 +49,6 @@ namespace OSDL
 			namespace Text
 			{	
 			
-
 
 				/// Point size, in dots per inch.
 				typedef Length PointSize ;
@@ -175,7 +174,7 @@ namespace OSDL
 				 * level of this Font mother class.
 				 *
 				 */
-				class Font : public Ceylan::TextDisplayable
+				class OSDL_DLL Font : public Ceylan::TextDisplayable
 				{
 				
 				
@@ -324,7 +323,7 @@ namespace OSDL
 						 * a search key. Virtual table is avoided.
 						 *
 						 */
-						class CharColorQualityKey
+						class OSDL_DLL CharColorQualityKey
 						{
 						
 						
@@ -386,7 +385,7 @@ namespace OSDL
 						 * word only and full text.
 						 *
 						 */
-						class StringColorQualityKey
+						class OSDL_DLL StringColorQualityKey
 						{
 						
 

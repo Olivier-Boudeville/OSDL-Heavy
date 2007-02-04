@@ -22,7 +22,7 @@ namespace OSDL
 
 
 		/// Mother class for all keyboard exceptions. 		
-		class InputDeviceHandlerException : public EventsException 
+		class OSDL_DLL InputDeviceHandlerException : public EventsException 
 		{
 			public: 
 				explicit InputDeviceHandlerException( 
@@ -41,7 +41,7 @@ namespace OSDL
 		 * (ex : UseJoystick, UseKeyboard, etc.).
 		 *
 		 */
-		class InputDeviceHandler : public Ceylan::Object
+		class OSDL_DLL InputDeviceHandler : public Ceylan::Object
 		{
 		
 			
@@ -100,3 +100,4 @@ namespace OSDL
 
 
 #endif // OSDL_INPUT_DEVICE_HANDLER_H_
+

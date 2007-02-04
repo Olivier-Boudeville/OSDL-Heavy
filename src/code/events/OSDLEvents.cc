@@ -11,6 +11,7 @@
 
 #include <list>
 
+#include "OSDLConfig.h"            // for OSDL_DEBUG and al (private header)
 
 
 using std::string ;

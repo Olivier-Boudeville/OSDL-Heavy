@@ -19,12 +19,13 @@ namespace OSDL
 	namespace Engine 
 	{
 	
+	
 			
 		/**
 		 * Circular 2D bounding box.
 		 *
 		 */
-		class CircleBoundingBox : public BoundingBox2D
+		class OSDL_DLL CircleBoundingBox : public BoundingBox2D
 		{
 		
 		
@@ -53,7 +54,6 @@ namespace OSDL
 
 				/**
 				 * Returns the radius of this circular bounding box.
-				 *
 				 *
 				 */
 				virtual Ceylan::Maths::Real getRadius() const throw() ;
@@ -153,6 +153,7 @@ namespace OSDL
 								
 				/// Radius of the bounding box.
 				Ceylan::Maths::Real _radius ;
+				
 				
 				
 			private:		

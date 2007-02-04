@@ -21,20 +21,20 @@ namespace OSDL
 	
 
 		/// Number (index) of a joystick, or joystick count.
-		typedef unsigned int JoystickNumber ;
+		typedef Ceylan::Uint32 JoystickNumber ;
 
 
 		/// Number of joystick axis.
-		typedef unsigned int JoystickAxesCount ;
+		typedef Ceylan::Uint32 JoystickAxesCount ;
 
 		/// Number of joystick trackballs.
-		typedef unsigned int JoystickTrackballsCount ;
+		typedef Ceylan::Uint32 JoystickTrackballsCount ;
 
 		/// Number of joystick hats.
-		typedef unsigned int JoystickHatsCount ;
+		typedef Ceylan::Uint32 JoystickHatsCount ;
 
 		/// Number of joystick buttons.
-		typedef unsigned int JoystickButtonsCount ;
+		typedef Ceylan::Uint32 JoystickButtonsCount ;
 
 
 				
@@ -106,3 +106,4 @@ namespace OSDL
 
 
 #endif // OSDL_JOYSTICK_COMMON_H_
+

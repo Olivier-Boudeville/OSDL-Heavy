@@ -1,6 +1,8 @@
 #ifndef OSDL_ENGINE_COMMON_H_
 #define OSDL_ENGINE_COMMON_H_
 
+
+
 #include "OSDLException.h"            // for Exception
 
 #include <string>
@@ -22,13 +24,14 @@ namespace OSDL
 	namespace Engine 
 	{
 	
+	
 		
 		// Forward declaration.
 		class ActiveObject ;
 		
 		
 		/// Exception to be thrown when engine abnormal behaviour occurs.
-		class EngineException : public OSDL::Exception
+		class OSDL_DLL EngineException : public OSDL::Exception
 		{
 			public:
 		
@@ -40,7 +43,7 @@ namespace OSDL
 		
 		
 		/// Exception to be thrown when scheduling abnormal behaviour occurs.
-		class SchedulingException : public EngineException
+		class OSDL_DLL SchedulingException : public EngineException
 		{
 			public:
 		
@@ -71,7 +74,7 @@ namespace OSDL
 		 * resource should be.
 		 *
 		 */
-		typedef Ceulan::Uint16 Weight ;
+		typedef Ceylan::Uint16 Weight ;
 		
 		
 		/**

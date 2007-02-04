@@ -93,7 +93,7 @@ namespace OSDL
 				 * FixedFont class too. 
 				 *
 				 */	
-				class TrueTypeFont : public Font
+				class OSDL_DLL TrueTypeFont : public Font
 				{
 				
 				

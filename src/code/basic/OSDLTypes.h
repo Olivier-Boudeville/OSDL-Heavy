@@ -5,6 +5,7 @@
 #include "Ceylan.h"     // for Ceylan::Uint32
 
 
+
 /**
  * Definition of the main OSDL common non-specialized types.
  *
@@ -22,3 +23,4 @@ namespace OSDL
 
 
 #endif // OSDL_TYPES_H_
+

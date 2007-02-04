@@ -63,7 +63,7 @@ namespace OSDL
 			 * subwidgets.
 			 *
 			 */
-			class BackBufferedWidget : public Widget
+			class OSDL_DLL BackBufferedWidget : public Widget
 			{
 			
 					

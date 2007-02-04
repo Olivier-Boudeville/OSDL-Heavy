@@ -68,7 +68,8 @@ namespace OSDL
 			 * used instead.
 			 *
 			 */
-			class UprightRectangleGL : public Ceylan::TextDisplayable
+			class OSDL_DLL  UprightRectangleGL : 
+				public Ceylan::TextDisplayable
 			{
 			
 					
@@ -243,9 +244,10 @@ namespace OSDL
 	
 
 /// To output its state in an output stream.
-std::ostream & operator << ( std::ostream & os, 
+OSDL_DLL std::ostream & operator << ( std::ostream & os, 
 	OSDL::Video::TwoDimensional::UprightRectangleGL & rect ) throw() ;
 
 
 
 #endif // OSDL_UPRIGHT_RECTANGLE_GL_H_
+

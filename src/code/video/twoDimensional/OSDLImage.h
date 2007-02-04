@@ -28,7 +28,7 @@ namespace OSDL
 			
 			
 			/// Mother class for all image exceptions. 		
-			class ImageException : public OSDL::Video::VideoException 
+			class OSDL_DLL ImageException : public OSDL::Video::VideoException 
 			{ 
 				public: 
 				
@@ -69,7 +69,7 @@ namespace OSDL
 			 * images, with or without alpha channel
 			 *
 			 */
-			class Image : public Ceylan::TextDisplayable
+			class OSDL_DLL Image : public Ceylan::TextDisplayable
 			{
 				
 				
@@ -595,7 +595,6 @@ namespace OSDL
 					/**
 					 * Loads a XPM image from specified file into target
 					 * surface.
-					 *
 					 *
 					 * @param targetSurface the surface that should contain
 					 * the loaded image.

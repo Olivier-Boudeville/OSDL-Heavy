@@ -47,7 +47,7 @@ namespace OSDL
 		 * CommonModule::getCommonModule so that joystick support is enabled.
 		 *
 		 */
-		class JoystickHandler : public InputDeviceHandler
+		class OSDL_DLL JoystickHandler : public InputDeviceHandler
 		{
 		
 			
@@ -158,7 +158,6 @@ namespace OSDL
 				/**
 				 * Called whenever a joystick button was pressed, so 
 				 * that its controller, if any, is notified.
-				 *
 				 *
 				 */
 				virtual void buttonPressed( 

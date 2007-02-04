@@ -211,7 +211,7 @@ namespace OSDL
 		 * or 10ms (kernel 2.4), and many skips would occur.
 		 *
 		 */	
-		class Scheduler : public Ceylan::Object
+		class OSDL_DLL Scheduler : public Ceylan::Object
 		{
 		
 		
@@ -954,6 +954,17 @@ namespace OSDL
 				 */
 				 Events::Period _screenshotPeriod ;		
 				
+
+/* 
+ * Takes care of the awful issue of Windows DLL with templates.
+ *
+ * @see Ceylan's developer guide and README-build-for-windows.txt 
+ * to understand it, and to be aware of the associated risks. 
+ * 
+ */
+#pragma warning( push )
+#pragma warning( disable : 4251 )
+			
 			
 				/**
 				 * A list containing all available periodic slots, sorted
@@ -990,6 +1001,8 @@ namespace OSDL
 				std::map<Events::SimulationTick, ListOfActiveObjects>
 					_programmedActivated ;		
 				
+#pragma warning( pop ) 
+
 				
 				/**
 				 * Defines the duration in microseconds of an elementary
@@ -1277,3 +1290,4 @@ namespace OSDL
 
 
 #endif // OSDL_SCHEDULER_H_
+

@@ -32,7 +32,8 @@ namespace OSDL
 		 * @see OSDL::Engine::Scheduler
 		 *
 		 */
-		class Model : public Ceylan::Model, public Engine::ActiveObject
+		class OSDL_DLL Model : public Ceylan::Model, 
+			public Engine::ActiveObject
 		{
 		
 		

@@ -95,7 +95,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawPie( Surface & targetSurface, 
+			OSDL_DLL bool drawPie( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter, Length radius, 
 				Ceylan::Maths::AngleInDegrees angleStart,
 				Ceylan::Maths::AngleInDegrees angleStop,
@@ -134,7 +134,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawPie( Surface & targetSurface, 
+			OSDL_DLL bool drawPie( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter, Length radius, 
 				Ceylan::Maths::AngleInDegrees angleStart,
 				Ceylan::Maths::AngleInDegrees angleStop, 
@@ -160,7 +160,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawTriangle( Surface & targetSurface, 
+			OSDL_DLL bool drawTriangle( Surface & targetSurface, 
 				Coordinate x1, Coordinate y1, 
 				Coordinate x2, Coordinate y2, 
 				Coordinate x3, Coordinate y3, 
@@ -188,7 +188,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawTriangle( Surface & targetSurface, 
+			OSDL_DLL bool drawTriangle( Surface & targetSurface, 
 				Coordinate x1, Coordinate y1, 
 				Coordinate x2, Coordinate y2, 
 				Coordinate x3, Coordinate y3, 
@@ -214,7 +214,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawTriangle( Surface & targetSurface, 
+			OSDL_DLL bool drawTriangle( Surface & targetSurface, 
 				const Point2D & p1, const Point2D & p2, const Point2D & p3,
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
@@ -240,7 +240,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawTriangle( Surface & targetSurface, 
+			OSDL_DLL bool drawTriangle( Surface & targetSurface, 
 				const Point2D & p1, const Point2D & p2, const Point2D & p3,
 				Pixels::ColorDefinition colorDef, bool filled = true ) throw() ;
 	
@@ -274,7 +274,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */	
-			bool drawPolygon( Surface & targetSurface, 
+			OSDL_DLL bool drawPolygon( Surface & targetSurface, 
 				const listPoint2D & summits,
 				Coordinate x, Coordinate y,
 				Pixels::ColorElement red, Pixels::ColorElement green, 
@@ -313,10 +313,11 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */	
-			bool drawPolygon( Surface & targetSurface, 
+			OSDL_DLL bool drawPolygon( Surface & targetSurface, 
 				const listPoint2D & summits,
 				Coordinate x, Coordinate y,
-				Pixels::ColorDefinition colorDef, bool filled = true ) throw() ;				
+				Pixels::ColorDefinition colorDef, bool filled = true ) throw() ;
+				
 				 
 			
 			/**
@@ -338,7 +339,7 @@ namespace OSDL
 			 * The points themselves are left as they are.
 			 *
 			 */
-			class Polygon : public Ceylan::Locatable2D
+			class OSDL_DLL Polygon : public Ceylan::Locatable2D
 			{
 			
 				public:
@@ -556,10 +557,22 @@ namespace OSDL
 					
 					
 				private:
+			
 				
+/* 
+ * Takes care of the awful issue of Windows DLL with templates.
+ *
+ * @see Ceylan's developer guide and README-build-for-windows.txt 
+ * to understand it, and to be aware of the associated risks. 
+ * 
+ */
+#pragma warning( push )
+#pragma warning( disable : 4251 )
 
 					/// List of the summits of the polygon.
 					listPoint2D * _summits ;
+
+#pragma warning( pop ) 
 			
 					
 					/**
@@ -611,7 +624,7 @@ namespace OSDL
 			 * @see Polygon
 			 *
 			 */
-			class PolygonSet : public Ceylan::Locatable2D
+			class OSDL_DLL PolygonSet : public Ceylan::Locatable2D
 			{
 			
 			
@@ -769,11 +782,23 @@ namespace OSDL
 				
 						
 				protected:
+
 				
+/* 
+ * Takes care of the awful issue of Windows DLL with templates.
+ *
+ * @see Ceylan's developer guide and README-build-for-windows.txt 
+ * to understand it, and to be aware of the associated risks. 
+ * 
+ */
+#pragma warning( push )
+#pragma warning( disable : 4251 )
 				
 					/// List of the summits of the polygon.
 					std::list<listPoint2D *> * _polygonList ;
 			
+#pragma warning( pop ) 
+
 			
 					/**
 					 * Tells whether the polygon owns the embedded list,

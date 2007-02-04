@@ -2,16 +2,20 @@
 #define OSDL_BASIC_INCLUDES_H_
 
 
-// Please include below all header files to be exported by module basic.
+/*
+ * Please include below all header files to be exported by the 'basic'
+ * module.
+ *
+ */
 
 
 #include "OSDLBasic.h"
-#include "OSDLTypes.h"
+#include "OSDLCDROMDrive.h"
 #include "OSDLException.h"
 #include "OSDLHeaderVersion.h"
 #include "OSDLTestException.h"
+#include "OSDLTypes.h"
 #include "OSDLUtils.h"
-#include "OSDLCDROMDrive.h"
 
 
 #endif // OSDL_BASIC_INCLUDES_H_

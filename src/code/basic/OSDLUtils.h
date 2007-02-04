@@ -12,7 +12,6 @@ namespace OSDL
 	/**
 	 * Various convenient helpers are defined here.
 	 * 
-	 *
 	 */
 	namespace Utils
 	{
@@ -21,11 +20,13 @@ namespace OSDL
 		 * Returns a description of the back-end related internal error.
 		 *
 		 */
-		const std::string getBackendLastError() throw() ;	
+		OSDL_DLL const std::string getBackendLastError() throw() ;	
 	
 	}
+	
 
 }
 
 
 #endif // OSDL_UTILS_H_ 
+

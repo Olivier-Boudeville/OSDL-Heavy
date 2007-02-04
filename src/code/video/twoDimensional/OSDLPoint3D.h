@@ -39,7 +39,7 @@ namespace OSDL
 			 * such as widgets.
 			 *
 			 */
-	    	class Point3D : public Point
+	    	class OSDL_DLL Point3D : public Point
 	   		{
 
 
@@ -284,10 +284,9 @@ namespace OSDL
 
 
 /// Stream operator for serialization.
-std::ostream & operator << ( std::ostream & os, 
+OSDL_DLL std::ostream & operator << ( std::ostream & os, 
 	const OSDL::Video::TwoDimensional::Point3D & p ) throw() ;
 
 
 #endif // OSDL_POINT_3D_H_
-
 

@@ -8,11 +8,13 @@
 #include <iostream>
 
 
+
 namespace OSDL
 {
 
+
 	/// Test class for OSDL::Exception.
-	class TestException : public Exception
+	class OSDL_DLL TestException : public Exception
 	{
 
 		public:
@@ -24,8 +26,10 @@ namespace OSDL
 }
 
 
-std::ostream & operator << ( std::ostream & os, 
+
+OSDL_DLL std::ostream & operator << ( std::ostream & os, 
 	const OSDL::TestException & e ) ;
 
 
 #endif // OSDL_TEST_EXCEPTION_H_
+

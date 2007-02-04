@@ -38,7 +38,7 @@ namespace OSDL
 			 * determined from the provided font.
 			 *
 			 */
-			class TextWidget : public BackBufferedWidget
+			class OSDL_DLL TextWidget : public BackBufferedWidget
 			{
 			
 					
@@ -377,3 +377,4 @@ namespace OSDL
 
 
 #endif // OSDL_TEXT_WIDGET_H_
+

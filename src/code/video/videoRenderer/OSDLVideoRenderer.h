@@ -38,7 +38,7 @@ namespace OSDL
 		 * @see Ceylan::View
 		 *
 		 */	
-		class VideoRenderer : public Rendering::Renderer
+		class OSDL_DLL VideoRenderer : public Rendering::Renderer
 		{
 		
 		
@@ -185,6 +185,7 @@ namespace OSDL
 				 */			 
 				VideoRenderer & operator = ( 
 					const VideoRenderer & source ) throw() ;
+					
 				
 		} ;
 
@@ -194,3 +195,4 @@ namespace OSDL
 
 
 #endif // OSDL_VIDEO_RENDERER_H_
+

@@ -5,10 +5,9 @@
 #include "OSDLSurface.h"     // for Surface
 #include "OSDLPixel.h"       // for PixelFormat
 #include "OSDLVideoTypes.h"  // for Length, Coordinate, etc.
-#include "OSDLTypes.h"       // for Flags
 #include "OSDLOpenGL.h"      // for Flavour, etc.
 
-#include "Ceylan.h"          // for Uint8, etc.
+#include "Ceylan.h"          // for Uint8, Flags, etc.
 
 #include <string>
 #include <list>
@@ -27,8 +26,10 @@ namespace OSDL
 		
 	namespace Rendering 
 	{
+	
 		// Video module can make use of a video renderer.
 		class VideoRenderer ;
+		
 	}
 	
 	
@@ -62,7 +63,7 @@ namespace OSDL
 		 * available video mode. 
 		 *
 		 */
-		class VideoModule : public Ceylan::Module
+		class OSDL_DLL VideoModule : public Ceylan::Module
 		{
 		
 		
@@ -187,12 +188,12 @@ namespace OSDL
 				 * @return 0 if the requested mode is not supported under 
 				 * any bit depth, or returns the bits-per-pixel of the 
 				 * closest available mode with the given width, height and
-				 * requested surface flags 
+				 * requested surface flags.
 				 *
 				 */
 				 virtual BitsPerPixel getBestColorDepthForMode( 
 				 	Length width, Length height, 
-					BitsPerPixel askedBpp, Flags flags ) throw() ;
+					BitsPerPixel askedBpp, Ceylan::Flags flags ) throw() ;
 				
 				
 				/**
@@ -244,8 +245,8 @@ namespace OSDL
 				 * prevents nasty visual tearing.
 				 *
 				 */			
-				virtual Flags setMode( Length width, Length height, 
-						BitsPerPixel askedBpp, Flags flags, 
+				virtual Ceylan::Flags setMode( Length width, Length height, 
+						BitsPerPixel askedBpp, Ceylan::Flags flags, 
 						OpenGL::Flavour flavour = OpenGL::None ) 
 					throw( VideoException ) ;
 
@@ -520,7 +521,7 @@ namespace OSDL
 				 * Returns the name of the video driver being currently 
 				 * used (example : 'x11').
 				 *
-				 * @see getDriverName
+				 * @see getDriverName.
 				 *
 				 */
 				static const std::string GetDriverName() throw() ;
@@ -535,10 +536,11 @@ namespace OSDL
 				 * Use Surface::interpretFlags instead, since their meaning 
 				 * is different.
 				 * 
-				 * @see setMode
+				 * @see setMode.
 				 *
 				 */	
-				static std::string InterpretFlags( Flags flags ) throw() ;
+				static std::string InterpretFlags( Ceylan::Flags flags ) 
+					throw() ;
 						
 				
 						
@@ -715,7 +717,8 @@ namespace OSDL
 				 */
 				static bool AreDefinitionsRestricted( 
 						std::list<Definition> & definitions,
-						Flags flags, Pixels::PixelFormat * pixelFormat = 0 ) 
+						Ceylan::Flags flags, 
+						Pixels::PixelFormat * pixelFormat = 0 ) 
 					throw() ;		
 			
 					
@@ -731,7 +734,8 @@ namespace OSDL
 				 * correspond to the "best" mode available.
 				 *
 				 */
-				static std::string DescribeAvailableDefinitions( Flags flags, 
+				static std::string DescribeAvailableDefinitions( 
+					Ceylan::Flags flags, 
 					Pixels::PixelFormat * pixelFormat = 0 ) throw() ;
 					
 					
@@ -767,7 +771,7 @@ namespace OSDL
 				 * system memory.
 				 *
 				 */
-				static const Flags SoftwareSurface ;			   
+				static const Ceylan::Flags SoftwareSurface ;			   
 
 
 				/**
@@ -775,20 +779,22 @@ namespace OSDL
 				 * video memory.
 				 *
 				 */
-				static const Flags HardwareSurface ;			   
+				static const Ceylan::Flags HardwareSurface ;			   
 				
 				/**
 				 * Enables the use of asynchronous updates of the display
 				 * surface.
 				 *
 				 */
-				static const Flags AsynchronousBlit ;
+				static const Ceylan::Flags AsynchronousBlit ;
+								
 									
 				/// Indicates that the screen surface may use any pixel format.
-				static const Flags AnyPixelFormat ;
+				static const Ceylan::Flags AnyPixelFormat ;
+
 
 				/// Indicates that a surface should have an exclusive palette.
-				static const Flags ExclusivePalette ;	
+				static const Ceylan::Flags ExclusivePalette ;	
 				
 				
 				/**
@@ -797,7 +803,7 @@ namespace OSDL
 				 * Works also if OpenGL is used.
 				 *
 				 */
-				static const Flags DoubleBuffered ;
+				static const Ceylan::Flags DoubleBuffered ;
 				
 				
 				/**
@@ -805,7 +811,7 @@ namespace OSDL
 				 * not windowed.
 				 *
 				 */		
-				static const Flags FullScreen ;
+				static const Ceylan::Flags FullScreen ;
 				
 				
 				/**
@@ -813,14 +819,14 @@ namespace OSDL
 				 * context.	
 				 *
 				 */
-				static const Flags OpenGL ;
+				static const Ceylan::Flags OpenGL ;
 				
 				
 				/**
 				 * Indicates that the screen surface is to be resizable.
 				 *
 				 */		
-				static const Flags Resizable ;
+				static const Ceylan::Flags Resizable ;
 
 
 				/**
@@ -829,7 +835,7 @@ namespace OSDL
 				 * decoration, if possible.
 				 *
 				 */		
-				static const Flags NoFrame ;
+				static const Ceylan::Flags NoFrame ;
 				
 						
 				
@@ -995,5 +1001,5 @@ namespace OSDL
 
 
 
-
 #endif // OSDL_VIDEO_H_
+

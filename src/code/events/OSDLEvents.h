@@ -7,12 +7,12 @@
 #include "OSDLTypes.h"           // for Flag
 #include "OSDLException.h"       // for OSDL::Exception
 
-#include "Ceylan.h"              // for Uint32
+#include "Ceylan.h"              // for Uint32, Flags, etc.
 
 #include "SDL.h"                 // for SDL_Event
 
 #include <string>
-#include <map>
+
 
 
 namespace OSDL
@@ -198,7 +198,7 @@ namespace OSDL
 		 *
 		 *
 		 */
-		class EventsModule : public Ceylan::Module
+		class OSDL_DLL EventsModule : public Ceylan::Module
 		{
 		
 		
@@ -1094,7 +1094,7 @@ namespace OSDL
 				 * subsystem failed.
 				 *
 				 */
-				explicit EventsModule( Flags eventsFlag ) 
+				explicit EventsModule( Ceylan::Flags eventsFlag ) 
 					throw( EventsException ) ;
 			
 			

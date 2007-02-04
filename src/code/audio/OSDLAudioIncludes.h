@@ -2,7 +2,7 @@
 #define OSDL_AUDIO_INCLUDES_H_
 
 
-/// This include repository keeps track of headers for audio.
+/// This include repository keeps track of headers for the 'audio' module.
 
 #include "OSDLAudio.h"
 #include "OSDLAudioRendererIncludes.h"

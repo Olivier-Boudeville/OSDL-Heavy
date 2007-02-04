@@ -136,3 +136,4 @@ OSDL_DLL int filledCircleRGBANotBlended( SDL_Surface * dst,
 
 
 # endif // OSDL_FROM_GFX_H_
+

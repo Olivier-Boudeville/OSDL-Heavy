@@ -35,7 +35,7 @@ namespace OSDL
 		 * bitmap-based graphical element.
 		 *
 		 */	
-		class Sprite : public Ceylan::View
+		class OSDL_DLL Sprite : public Ceylan::View
 		{
 		
 		
@@ -141,3 +141,4 @@ namespace OSDL
 
 
 #endif // OSDL_SPRITE_H_
+

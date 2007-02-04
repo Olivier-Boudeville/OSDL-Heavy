@@ -3,9 +3,8 @@
 
 		
 #include "OSDLPixel.h"       // for ColorDefinition
-#include "OSDLTypes.h"       // for Flag
 
-#include "Ceylan.h"           // for TextDisplayable
+#include "Ceylan.h"          // for TextDisplayable, Uint32, etc.
 
 #include <string>
 
@@ -19,16 +18,18 @@ namespace OSDL
 	
 
 		/// Number of colors.
-		typedef unsigned int ColorCount ;
+		typedef Ceylan::Uint32 ColorCount ;
 		
 		
 		/// Exception raised when palette operation failed.
-		class PaletteException : public VideoException
+		class OSDL_DLL PaletteException : public VideoException
 		{
+		
 			public:
 				explicit PaletteException( const std::string & message ) 
 					throw() ;
-				virtual ~PaletteException() throw() ;			
+				virtual ~PaletteException() throw() ;
+							
 		} ;
 		
 	
@@ -56,17 +57,17 @@ namespace OSDL
 		 * to getNumberOfColors()-1.
 		 *
 		 */
-		class Palette : public Ceylan::TextDisplayable
+		class OSDL_DLL Palette : public Ceylan::TextDisplayable
 		{
 		
 			public:
 			
 			
 				/// The flag used to designate logical palette.
-				static const Flags Logical ;
+				static const Ceylan::Flags Logical ;
 								
 				/// The flag used to designate physical palette.
-				static const Flags Physical ;
+				static const Ceylan::Flags Physical ;
 			
 			
 				/**
@@ -331,3 +332,4 @@ namespace OSDL
 
 
 #endif // OSDL_PALETTE_H_
+

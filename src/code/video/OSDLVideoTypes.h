@@ -67,7 +67,7 @@ namespace OSDL
 
 
 		/// Mother class for all video exceptions. 		
-		class VideoException: public OSDL::Exception 
+		class OSDL_DLL VideoException: public OSDL::Exception 
 		{ 
 			public:
 				

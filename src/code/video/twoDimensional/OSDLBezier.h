@@ -57,7 +57,7 @@ namespace OSDL
 			 * @note Clipping is performed.
 			 *
 			 */
-			bool drawBezierCurve( 
+			OSDL_DLL bool drawBezierCurve( 
 				Surface & targetSurface,
 				const listPoint2D & controlPoints,
 				Ceylan::Uint16 numberOfSteps,
@@ -98,7 +98,7 @@ namespace OSDL
 			 * @note Clipping is performed.
 			 *
 			 */
-			bool drawBezierCurve( 
+			OSDL_DLL bool drawBezierCurve( 
 				Surface & targetSurface, 
 				const listPoint2D & controlPoints,
 				Ceylan::Uint16 numberOfSteps, 
@@ -113,3 +113,4 @@ namespace OSDL
 
 
 #endif // OSDL_BEZIER_H_
+

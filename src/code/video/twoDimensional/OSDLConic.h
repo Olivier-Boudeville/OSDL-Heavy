@@ -64,7 +64,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawCircle( Surface & targetSurface, 
+			OSDL_DLL bool drawCircle( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter, Length radius, 
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
@@ -101,7 +101,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawCircle( Surface & targetSurface, 
+			OSDL_DLL bool drawCircle( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter, Length radius, 
 				Pixels::ColorDefinition colorDef, bool filled = true, 
 				bool blended = true ) 
@@ -150,7 +150,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawDiscWithEdge( Surface & targetSurface,
+			OSDL_DLL bool drawDiscWithEdge( Surface & targetSurface,
 				Coordinate xCenter, Coordinate yCenter, 
 				Length outerRadius, Length innerRadius, 
 				Pixels::ColorDefinition ringColorDef = Pixels::Blue, 
@@ -182,7 +182,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawEllipse( Surface & targetSurface, 
+			OSDL_DLL bool drawEllipse( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter,
 				Length horizontalRadius, Length verticalRadius,				
 				Pixels::ColorElement red, Pixels::ColorElement green, 
@@ -214,7 +214,7 @@ namespace OSDL
 			 * @see VideoModule::GetAntiAliasingState
 			 *
 			 */
-			bool drawEllipse( Surface & targetSurface, 
+			OSDL_DLL bool drawEllipse( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter, 
 				Length horizontalRadius, Length verticalRadius,
 				Pixels::ColorDefinition colorDef, bool filled = true ) throw() ;
@@ -228,3 +228,4 @@ namespace OSDL
 
 
 #endif // OSDL_CONIC_H_
+

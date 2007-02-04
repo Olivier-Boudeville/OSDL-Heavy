@@ -4,19 +4,6 @@
 #include <string>
 
 
-
-/*
- * This file is dedicated to the Windows version, as on UNIX it is overwritten
- * by the configure-time generated one.
- *
- */
- 
- 
-
-// Allowed because on Windows (hence not installed) :
-#include "OSDLConfig.h"  // for  OSDL_LIBTOOL_VERSION
-
- 
 namespace OSDL
 {
 
@@ -31,7 +18,7 @@ namespace OSDL
 	 *
 	 */
 	OSDL_DLL const std::string actualOSDLHeaderLibtoolVersion 
-		= OSDL_LIBTOOL_VERSION ;
+		= "0.4.0" ;
 		
 }
 

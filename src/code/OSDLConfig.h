@@ -28,6 +28,11 @@
 #define OSDL_DEBUG_BOUNDING_BOX  0 
 #endif
 
+/* Define to 1 if debug mode for conics is to be enabled */
+#ifndef OSDL_DEBUG_CONICS 
+#define OSDL_DEBUG_CONICS  0 
+#endif
+
 /* Define to 1 if debug mode for events is to be enabled */
 #ifndef OSDL_DEBUG_EVENTS 
 #define OSDL_DEBUG_EVENTS  0 
@@ -48,6 +53,11 @@
 #define OSDL_DEBUG_SCHEDULER  0 
 #endif
 
+/* Define to 1 if debug mode for surfaces is to be enabled */
+#ifndef OSDL_DEBUG_SURFACE 
+#define OSDL_DEBUG_SURFACE  0 
+#endif
+
 /* Define to 1 if debug mode for video renderer is to be enabled */
 #ifndef OSDL_DEBUG_VIDEO_RENDERER 
 #define OSDL_DEBUG_VIDEO_RENDERER  0 
@@ -57,6 +67,9 @@
 #ifndef OSDL_DEBUG_WIDGET 
 #define OSDL_DEBUG_WIDGET  0 
 #endif
+
+/* Use the Apple OpenGL framework. */
+/* #undef OSDL_USES_APPLE_OPENGL_FRAMEWORK */
 
 /* Define to 1 if you have the <Ceylan.h> header file. */
 #ifndef OSDL_USES_CEYLAN_H 
@@ -91,6 +104,11 @@
 
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef OSDL_USES_NDIR_H */
+
+/* Define if you have POSIX threads libraries and header files. */
+#ifndef OSDL_USES_PTHREAD 
+#define OSDL_USES_PTHREAD  1 
+#endif
 
 /* Define to 1 if `stat' has the bug that it succeeds when given the
    zero-length file name argument. */
@@ -172,6 +190,9 @@
 /* Define to 1 if you have the <vfork.h> header file. */
 /* #undef OSDL_USES_VFORK_H */
 
+/* Define to 1 if you have the <windows.h> header file. */
+/* #undef OSDL_USES_WINDOWS_H */
+
 /* Define to 1 if `fork' works. */
 #ifndef OSDL_USES_WORKING_FORK 
 #define OSDL_USES_WORKING_FORK  1 
@@ -228,6 +249,10 @@
 #define OSDL_PACKAGE_VERSION  "0.4" 
 #endif
 
+/* Define to necessary symbol if this constant uses a non-standard name on
+   your system. */
+/* #undef OSDL_PTHREAD_CREATE_JOINABLE */
+
 /* Define as the return type of signal handlers (`int' or `void'). */
 #ifndef OSDL_RETSIGTYPE 
 #define OSDL_RETSIGTYPE  void 
@@ -260,6 +285,11 @@
 
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 /* #undef OSDL_TM_IN_SYS_TIME */
+
+/* Define to 1 if OSDL is to use OpenGL and GLU */
+#ifndef OSDL_USES_OPENGL 
+#define OSDL_USES_OPENGL  no 
+#endif
 
 /* Define to 1 if verbose mode for controller is to be enabled */
 #ifndef OSDL_VERBOSE_CONTROLLER 

@@ -28,7 +28,7 @@ namespace OSDL
 		 * situation.
 		 *
 		 */
-		class RenderingException : public OSDL::Exception
+		class OSDL_DLL RenderingException : public OSDL::Exception
 		{
 			public:
 
@@ -81,7 +81,7 @@ namespace OSDL
 		 * @see Ceylan::View
 		 *
 		 */	
-		class Renderer : public Ceylan::Object
+		class OSDL_DLL Renderer : public Ceylan::Object
 		{
 		
 		
