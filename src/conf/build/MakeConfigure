@@ -10,9 +10,9 @@ TOP = ../../..
 SETTINGS_FILE := $(TOP)/src/conf/OSDLSettings.inc
 include $(SETTINGS_FILE)
 
-# The substitute script is expected to be found in a relative Ceylan build
+# The substitute script is expected to be found in a relative Ceylan build
 # tree (probably brought back by LOANI), not in an installed location.
-# (note : this can be overriden if needed, as autogen.sh does)
+# (note : this can be overriden if needed, as autogen.sh does)
 CEYLAN_TOP = $(TOP)/../../../ceylan/Ceylan/trunk
 SUBSTITUTE = $(CEYLAN_TOP)/src/code/scripts/shell/substitute.sh
 
