@@ -150,8 +150,8 @@ void ActiveObject::absoluteProgrammedActivationsWanted( bool on ) throw()
 }
 
 
-const SimulationTickList & ActiveObject::getProgrammedActivations()
-	const throw( SchedulingException ) 
+const ActiveObject::SimulationTickList &
+	ActiveObject::getProgrammedActivations() const throw( SchedulingException ) 
 {
 
 	if ( _programmedTriggerTicks == 0 )
