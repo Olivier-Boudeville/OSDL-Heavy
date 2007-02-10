@@ -107,15 +107,6 @@ namespace OSDL
 			
 
 				/**
-				 * Blits the overlay to the display.
-				 *
-				 * @throw OverlayException if the operation failed.
-				 *
-				 */
-				virtual bool blit() const throw( OverlayException ) ;
-
-			
-				/**
 				 * Blits the overlay to the display, at the specified 
 				 * location, at its original size.
 				 *
@@ -128,29 +119,19 @@ namespace OSDL
 				 * @throw OverlayException if the operation failed.
 				 *
 				 */
-				virtual bool blit( Coordinate x, Coordinate y ) const 
-					throw( OverlayException ) ;
+				virtual void blit( Coordinate x, Coordinate y ) const 
+					throw( OverlayException ) ;			
+			
+			
+				/**
+				 * Blits the overlay to the display.
+				 *
+				 * @throw OverlayException if the operation failed.
+				 *
+				 */
+				virtual void blit() const throw( OverlayException ) ;
+
 					
-			
-				/**
-				 * Blits the overlay to the display.
-				 *
-				 * @throw OverlayException if the operation failed.
-				 *
-				 */
-				virtual bool blit() const throw( OverlayException ) ;
-			
-			
-				/**
-				 * Blits the overlay to the display.
-				 *
-				 * @throw OverlayException if the operation failed.
-				 *
-				 */
-				virtual bool blit() const throw( OverlayException ) ;
-			
-			
-		
 				/**
 				 * Tells whether this overlay has to be locked before 
 				 * modifying it. 
