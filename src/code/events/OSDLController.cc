@@ -5,7 +5,9 @@
 #include "SDL.h"
 
 
-#include "OSDLConfig.h"       // for OSDL_DEBUG and al (private header)
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
+#endif // OSDL_USES_CONFIG_H
 
 
 using std::string ;
