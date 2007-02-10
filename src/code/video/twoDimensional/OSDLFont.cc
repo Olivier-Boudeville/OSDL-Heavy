@@ -8,6 +8,13 @@
 #include "SDL_ttf.h"             // for TTF_STYLE_NORMAL and others
 
 #include <list>
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>          // for OSDL_DEBUG_FONT and al 
+#endif // OSDL_USES_CONFIG_H
+
+
 using std::list ;
 using std::pair ;
 
@@ -1432,7 +1439,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 		
 #endif // OSDL_DEBUG_FONT
 		
-	Length horizSteps[ textSize ] ;
+	Length * horizSteps = new Length[ textSize ] ;
 
 
 	/*
@@ -1561,6 +1568,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	}
 	catch( const VideoException & e )
 	{
+		delete [] horizSteps ;
 		throw TextException( 
 			"Font::basicRenderLatin1Text : surface creation failed : "
 			+ e.toString() ) ;
@@ -1632,6 +1640,8 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	 *
 	 */
 	//res->drawEdges() ;
+	
+	delete [] horizSteps ;
 	
 	return *res ;
 	
