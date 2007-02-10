@@ -180,9 +180,6 @@ namespace OSDL
 			public Ceylan::EventSource,
 			public Ceylan::Lockable, 
 			public Ceylan::SmartResource
-#ifdef OSDL_COUNT_INSTANCES
-			, public Ceylan::Countable
-#endif // OSDL_COUNT_INSTANCES
 		{
 	
 	
@@ -2768,7 +2765,7 @@ namespace OSDL
 				 * 
 				 */
 				 virtual void updateRectangle( const UprightRectangle & rect )	
-				 	throw() ;
+				 	throw( VideoException ) ;
 				
 					
 				/**
@@ -2790,7 +2787,7 @@ namespace OSDL
 				 */
 				 virtual void updateRectangle( 
 				 	Coordinate x, Coordinate y, Length width, Length height )
-						throw() ;
+						throw( VideoException ) ;
 					
 
 
