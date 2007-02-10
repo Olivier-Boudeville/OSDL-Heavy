@@ -44,6 +44,11 @@ using namespace OSDL::Video::TwoDimensional ;
 using TwoDimensional::UprightRectangle ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>     // for OSDL_DEBUG_* and al 
+#endif // OSDL_USES_CONFIG_H
+
+
 
 SurfaceEvent::SurfaceEvent( Ceylan::EventSource & source ) throw() : 
 	Ceylan::Event( source )
@@ -88,19 +93,19 @@ VideoMemoryLostException::~VideoMemoryLostException() throw()
  *
  */
 
-const OSDL::Flags Surface::Software                 = SDL_SWSURFACE   ;
-const OSDL::Flags Surface::Hardware                 = SDL_HWSURFACE   ;
-const OSDL::Flags Surface::AsynchronousBlit         = SDL_ASYNCBLIT   ;
-const OSDL::Flags Surface::ExclusivePalette         = SDL_HWPALETTE   ;
-const OSDL::Flags Surface::HardwareAcceleratedBlit  = SDL_HWACCEL     ;
-const OSDL::Flags Surface::ColorkeyBlit             = SDL_SRCCOLORKEY ;
-const OSDL::Flags Surface::RLEColorkeyBlit          = SDL_RLEACCEL    ;
-const OSDL::Flags Surface::AlphaBlendingBlit        = SDL_SRCALPHA    ;
-const OSDL::Flags Surface::Preallocated             = SDL_PREALLOC    ;
+const Ceylan::Flags Surface::Software                 = SDL_SWSURFACE   ;
+const Ceylan::Flags Surface::Hardware                 = SDL_HWSURFACE   ;
+const Ceylan::Flags Surface::AsynchronousBlit         = SDL_ASYNCBLIT   ;
+const Ceylan::Flags Surface::ExclusivePalette         = SDL_HWPALETTE   ;
+const Ceylan::Flags Surface::HardwareAcceleratedBlit  = SDL_HWACCEL     ;
+const Ceylan::Flags Surface::ColorkeyBlit             = SDL_SRCCOLORKEY ;
+const Ceylan::Flags Surface::RLEColorkeyBlit          = SDL_RLEACCEL    ;
+const Ceylan::Flags Surface::AlphaBlendingBlit        = SDL_SRCALPHA    ;
+const Ceylan::Flags Surface::Preallocated             = SDL_PREALLOC    ;
 
 
 // Private flag.
-const OSDL::Flags Surface::RLEColorkeyBlitAvailable = SDL_RLEACCELOK  ;
+const Ceylan::Flags Surface::RLEColorkeyBlitAvailable = SDL_RLEACCELOK  ;
 
 
 /*
@@ -110,11 +115,11 @@ const OSDL::Flags Surface::RLEColorkeyBlitAvailable = SDL_RLEACCELOK  ;
  *
  */
 
-const OSDL::Flags Surface::AnyPixelFormat = SDL_ANYFORMAT  ;
-const OSDL::Flags Surface::DoubleBuffered = SDL_DOUBLEBUF  ;
-const OSDL::Flags Surface::FullScreen     = SDL_FULLSCREEN ;
-const OSDL::Flags Surface::OpenGL         = SDL_OPENGL     ;
-const OSDL::Flags Surface::Resizable      = SDL_RESIZABLE  ;
+const Ceylan::Flags Surface::AnyPixelFormat = SDL_ANYFORMAT  ;
+const Ceylan::Flags Surface::DoubleBuffered = SDL_DOUBLEBUF  ;
+const Ceylan::Flags Surface::FullScreen     = SDL_FULLSCREEN ;
+const Ceylan::Flags Surface::OpenGL         = SDL_OPENGL     ;
+const Ceylan::Flags Surface::Resizable      = SDL_RESIZABLE  ;
 	
 
 const Length Surface::graphAbscissaOffset   = 10 ;
@@ -140,9 +145,6 @@ Surface::Surface( SDL_Surface & surface, DisplayType displayType ) throw() :
 	UprightRectangle( 0, 0, 0, 0 ),
 	EventSource(),
 	Lockable(),
-#ifdef OSDL_COUNT_INSTANCES
-	Countable(),
-#endif // OSDL_COUNT_INSTANCES
 	_surface( & surface ), 
 	_displayType( displayType ),
 	_mustBeLocked( false ),
@@ -420,7 +422,7 @@ void Surface::setDisplayType( DisplayType newDisplayType ) throw()
 }
 
 
-OSDL::Flags Surface::getFlags() const throw()
+Ceylan::Flags Surface::getFlags() const throw()
 {
 
 	return _surface->flags ;
@@ -655,7 +657,7 @@ Surface & Surface::flipHorizontal() const throw()
 		
 	Ceylan::Uint8 * target = 
 		reinterpret_cast<Ceylan::Uint8 *>( result->pixels ) 
-			+ result->pitch * ( result->h - 1 ) ) ;
+			+ result->pitch * ( result->h - 1 ) ;
 
   	const Coordinate height = result->h ;
   
@@ -2313,13 +2315,13 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	Ceylan::Float32 yScaleFactor ;
 	
 	if ( maxData != minData )
-		yScaleFactor = static_cast<yScaleFactor>( ordinateDrawRange ) 
+		yScaleFactor = static_cast<Ceylan::Float32>( ordinateDrawRange ) 
 			/ ( maxData - minData ) ;
 	else
 		yScaleFactor = 1 ;
 	
 		
-#ifdef OSDL_DEBUG_DISPLAY_DATA
+#if OSDL_DEBUG_DISPLAY_DATA
 
 	LogPlug::debug( "Ordinate scale factor is " 
 		+ Ceylan::toString( yScaleFactor ) 
@@ -2669,6 +2671,9 @@ void Surface::inconsistencyDetected( const string & message ) const throw()
 
 Surface::Surface( const Surface & source ) throw() :
 	TwoDimensional::UprightRectangle( 0, 0, 0, 0 ),
+	Ceylan::EventSource(),
+	Ceylan::Lockable(),
+	Ceylan::SmartResource(),
 	_surface( 0 ), 
 	_displayType( BackBuffer ), 
 	_mustBeLocked( false ),
