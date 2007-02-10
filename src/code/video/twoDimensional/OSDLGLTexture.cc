@@ -4,9 +4,20 @@
 #include "OSDLVideo.h"      // for VideoModule::SoftwareSurface
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>     // for OSDL_USES_OPENGL and al 
+#endif // OSDL_USES_CONFIG_H
+
+#ifdef OSDL_HAVE_OPENGL
+#include "SDL_opengl.h"     // for GL functions
+#endif // OSDL_HAVE_OPENGL
+
+
+
 using std::string ;
 
 
+using namespace Ceylan ;
 using namespace Ceylan::Log ;
 using namespace Ceylan::Maths ;
 
@@ -38,6 +49,8 @@ GLTexture::GLTexture( const std::string imageFilename,
 	_source( 0 ),
 	_id( 0 )
 {
+
+#if OSDL_USES_OPENGL
 	
 	Surface * loaded ;
 	
@@ -60,6 +73,12 @@ GLTexture::GLTexture( const std::string imageFilename,
 	
 	// Texture not wanted any more, in all cases (it has been copied) :
 	delete loaded ;
+
+#else // OSDL_USES_OPENGL
+
+	throw GLTextureException( "OpenGL support not available." ) ;
+	
+#endif // OSDL_USES_OPENGL
 		
 }
 
@@ -79,11 +98,15 @@ GLTexture::GLTexture( Surface & sourceSurface, Textureflavour flavour,
 GLTexture::~GLTexture() throw()
 {
 
+#if OSDL_USES_OPENGL
+
 	if ( _id != 0 )
 		glDeleteTextures( 1, & _id ) ;
 		
 	if ( _source != 0 )
 		delete _source ;
+
+#endif // OSDL_USES_OPENGL
 		
 }
 
@@ -100,11 +123,20 @@ bool GLTexture::canBeUploaded() const throw()
 void GLTexture::upload() throw( GLTextureException )
 {
 
+
+#if OSDL_USES_OPENGL
+
 	if ( ! canBeUploaded() )
 		throw GLTextureException( "GLTexture::upload : "
 			"texture cannot be uploaded into OpenGL context." ) ;
 			
 	// @todo		
+
+#else // OSDL_USES_OPENGL
+
+	throw GLTextureException( "OpenGL support not available." ) ;
+	
+#endif // OSDL_USES_OPENGL
 	
 }
 
@@ -152,8 +184,11 @@ void GLTexture::SetTextureMode( TextureMode newMode ) throw()
 
 
 
-void GLTexture::SetTextureFlavour( Textureflavour flavour )
+void GLTexture::SetTextureFlavour( Textureflavour flavour ) 
+	throw( GLTextureException )
 {
+
+#if OSDL_USES_OPENGL
 
 	switch( flavour )
 	{
@@ -203,13 +238,22 @@ void GLTexture::SetTextureFlavour( Textureflavour flavour )
 			break ;	
 			
 	}
+
+#else // OSDL_USES_OPENGL
+
+	throw GLTextureException( "OpenGL support not available." ) ;
+	
+#endif // OSDL_USES_OPENGL
 	
 }
+
 
 
 void GLTexture::upload( Surface & sourceSurface, 
 	Textureflavour flavour, bool keep ) throw( GLTextureException ) 
 {
+
+#if OSDL_USES_OPENGL
 
 	/*
 inspiration : 	
@@ -254,7 +298,6 @@ GLuint loadTextureCK(char *filepath, int ckr, int ckg, int ckb){
   SDL_FreeSurface(tmpsurface);
 
   return texture;
-}	
 	
 	
 	
@@ -488,5 +531,11 @@ int main(int, char**)
 			
 	SDL_FreeSurface( convertedSurface ) ;
 
-}
+#else // OSDL_USES_OPENGL
+
+	throw GLTextureException( "OpenGL support not available." ) ;
+	
+#endif // OSDL_USES_OPENGL
+
+}	
 
