@@ -198,10 +198,111 @@ OpenGL is not available (at least not in accelerated form) on all platforms (ex 
 <p>Many old Windows machines have video cards and/or drivers without OpenGL support, and the situation is even worse with Linux. For example, on some old Linux workstations, OpenGL cannot be accelerated unless the secondary head is disabled.
 </p>
 
-<h3>Enabling a proper hardware acceleration on GNU/Linux</h3>
+<h3>Learning what is locally available under the X environment</h3>
 <p>
-The first step is to know what is your video card, for example thanks to : <code>lspci | grep VGA</code>.
+Run <code>glxinfo</code> (see below) and look at the visuals listed at the bottom of all that data it dumps out. All major informations about the supported GLX extensions and the OpenGL renderer should be displayed. If you run <code>glxinfo | grep direct</code> and it prints : <code>direct rendering: Yes</code> then your OpenGL drivers are setup correctly. On the contrary, if <code>glxinfo | grep 'OpenGL vendor string'</code> returns something like <code>OpenGL vendor string: Mesa project: www.mesa3d.org</code>, then you have only software OpenGL.
+</p>
 
+
+<h3>Enabling a proper hardware acceleration on GNU/Linux</h3>
+
+<p>
+More preciselyn usually the goal is to activate the direct (GPU-based) rendering, i.e. to get rid of 
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+&gt; glxinfo
+Xlib:  extension "XFree86-DRI" missing on display ":0.0".
+name of display: :0.0  screen: 0
+[...]
+OpenGL vendor string: Mesa project: www.mesa3d.org
+[...]
+OpenGL renderer string: Mesa GLX Indirect
+[...]
+OpenGL version string: 1.2 (1.5 Mesa 6.2.1)
+[...]
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+and of 
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+&gt; glxgears -printfps
+Xlib:  extension "XFree86-DRI" missing on display ":0.0".
+2501 frames in 5.2 seconds = 481.485 FPS
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+so that it becomes something like :
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+&gt; glxinfo
+name of display: :0.0
+display: :0  screen: 0
+direct rendering: Yes
+server glx vendor string: SGI
+server glx version string: 1.2
+[...]
+client glx vendor string: ATI
+client glx version string: 1.3
+[...]
+GLX version: 1.2
+[...]
+OpenGL vendor string: ATI Technologies Inc.
+OpenGL renderer string: MOBILITY RADEON X700 Generic
+OpenGL version string: 2.0.6286 (8.33.6)
+OpenGL extensions:                                                               [...]                                                                      
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+and <center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+&gt; glxgears -printfps
+23879 frames in 5.0 seconds = 4775.796 FPS
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>
+The first step is to know what is your video card, for example thanks to : <code>lspci | grep VGA</code>, it should output something like <code>0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown device 5653</code> or, if your OS database is up-to-date, <code>0000:01:00.0 VGA compatible controller: ATI Technologies Inc Radeon Mobility X700 (PCIE)</code>
+</p>
+
+<p>
+The procedure is then to refer to your distribution guide to set up the proper drivers, libraries, kernel modules, xorg.conf etc., which is not always a piece of cake.
 </p>
 
 
@@ -216,10 +317,6 @@ works fine and is hardware-accelerated [get Stephane Marchesin's <a href="http:/
 </ul>
 </p>
 
-<h3>Learning what is locally available under the X environment</h3>
-<p>
-Run <code>glxinfo</code> and look at the visuals listed at the bottom of all that data it dumps out. All major informations about the supported GLX extensions and the OpenGL renderer should be displayed. If you run <code>glxinfo | grep direct</code> and it prints : <code>direct rendering: Yes</code> then your OpenGL drivers are setup correctly. On the contrary, if <code>glxinfo | grep 'OpenGL vendor string'</code> returns something like <code>OpenGL vendor string: Mesa project: www.mesa3d.org</code>, then you have only software OpenGL.
-</p>
 
 <h4>GLX</h4>
 <p>
@@ -238,10 +335,23 @@ OpenGL drivers being installed and OpenGL hardware acceleration being available 
 
 <h3>Developing an OpenGL-based application</h3>
 <p>
-In order to compile a program using an OpenGL library, the related headers must be available. They are to be specified through <code>#include &lt;GL/gl.h&gt;</code>. They are often not already installed (check with <code>locate gl.h</code> for example).
+On most platforms, OpenGL headers are often not already installed (check with <code>locate gl.h</code> for example).
 
+<p>
 
 </p>
+On Linux, request your distribution to install the correct <code>*-dev</code> packages, MESA ones are good for that.
+</p>
+
+<p>
+On Windows, the OpenGL headers (gl.h and glu.h) and libraries (opengl32.lib and glu32.lib) for Visual C++ are provided with the Microsoft Platform SDK.
+</p>
+
+
+<p>
+In order to compile a program using an OpenGL library, the related headers must be specified. They are to be specified through <code>#include &lt;GL/gl.h&gt;</code> or, if SDL is used, the <code>SDL_opengl.h</code> headers takes care of it.
+</p>
+
 
 <h3>Autoconf</h3>
 
