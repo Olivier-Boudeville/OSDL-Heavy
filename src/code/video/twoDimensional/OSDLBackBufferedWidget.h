@@ -15,6 +15,11 @@ namespace OSDL
 
 	namespace Video
 	{
+
+
+		// A BackBufferedWidget is and owns a Surface :
+		class Surface ;
+		
 		
 		namespace TwoDimensional
 		{
@@ -23,8 +28,6 @@ namespace OSDL
 			// To locate a widget in its container :
 			class Point2D ;
 			
-			// A BackBufferedWidget is and owns a Surface :
-			class Surface ;
 			
 			
 
