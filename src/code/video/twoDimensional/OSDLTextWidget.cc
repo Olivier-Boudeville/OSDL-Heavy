@@ -1,7 +1,11 @@
 #include "OSDLTextWidget.h"
 
-#include "OSDLFont.h"      // for Font
+#include "OSDLFont.h"       // for Font
 
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>     // for OSDL_DEBUG_WIDGET and al 
+#endif // OSDL_USES_CONFIG_H
 
 
 using std::string ;
