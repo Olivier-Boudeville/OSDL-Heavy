@@ -415,7 +415,7 @@ namespace OSDL
 					EuroKey             = SDLK_EURO         ,
 					
 					// Atari keyboard has Undo : 
-					UndoKey             = SDLK_UNDO         , 
+					UndoKey             = SDLK_UNDO
 
 	
 					// Add any other keys here.
@@ -732,7 +732,8 @@ namespace OSDL
 				 * before it begins repeating, in milliseconds.
 				 *
 				 */
-				static Ceylan::System::Millisecond DefaultDelayBeforeKeyRepeat ;
+				static const Ceylan::System::Millisecond
+					DefaultDelayBeforeKeyRepeat ;
 	
 	
 				/**
@@ -742,7 +743,8 @@ namespace OSDL
 				 * of this key.
 				 *
 				 */
-				static Ceylan::System::Millisecond DefaulKeyRepeatInterval ;
+				static const Ceylan::System::Millisecond 
+					DefaulKeyRepeatInterval ;
 	
 				 		
 
