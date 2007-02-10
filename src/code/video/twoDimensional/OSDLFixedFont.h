@@ -5,7 +5,7 @@
 
 #include "OSDLFont.h"         // for inheritance
 
-#include "Ceylan.h"           // for Ceylan::Byte
+#include "Ceylan.h"           // for Ceylan::Byte, Height
 
 #include <string>
 
@@ -477,7 +477,7 @@ namespace OSDL
 						 * see getLineSkip as well.
 						 *
 						 */
-						virtual Height getHeight() const throw() ;
+						virtual Text::Height getHeight() const throw() ;
 						 						 
 						 
 						/**
@@ -538,7 +538,7 @@ namespace OSDL
 						 * by getHeight.
 						 *
 						 */
-						virtual Height getLineSkip() const throw() ;
+						virtual Text::Height getLineSkip() const throw() ;
 						
 						
 						
