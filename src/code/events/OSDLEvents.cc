@@ -7,15 +7,19 @@
 #include "OSDLJoystickHandler.h"   // for JoystickHandler
 #include "OSDLKeyboardHandler.h"   // for KeyboardHandler
 
-#include "Ceylan.h"
+#include "Ceylan.h"                // for Flags, etc.
 
 #include <list>
 
-#include "OSDLConfig.h"            // for OSDL_DEBUG and al (private header)
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
+#endif // OSDL_USES_CONFIG_H
 
 
 using std::string ;
 
+using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 // for time units and calls (ex : Millisecond, basicSleep) :
@@ -919,7 +923,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 		LogPlug::debug( "Exited from main loop after " 
 			+ Ceylan::toString( frameCount ) 
 			+ " frames, an average of " 
-			+ Ceylan::toString( ( 
+			+ Ceylan::toString( 
 				static_cast<Ceylan::Float64>( _idleCallsCount ) / frameCount, 
 				/* precision */ 3 )
 			+ " idle calls per frame have been performed." ) ;
