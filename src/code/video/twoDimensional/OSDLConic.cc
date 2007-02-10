@@ -10,6 +10,10 @@
 #include "SDL_gfxPrimitives.h"  // for graphic primitives exported by SDL_gfx
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>         // for OSDL_DEBUG_CONICS and al 
+#endif // OSDL_USES_CONFIG_H
+
 using namespace OSDL::Video ;
 
 using namespace Ceylan::Log ;
