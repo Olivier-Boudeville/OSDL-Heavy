@@ -159,15 +159,9 @@ IntersectionResult CircleBoundingBox::compareWith( CircleBoundingBox & other )
 	if ( other.getRadius() > centerDistance + _radius )
 		return isContained ;
 	
-	/*
-	 * Beware, on most cases distances are not null because of numerical 
-	 * errors :
-	 *
-	 * @todo Use epsilon-relative comparisons.
-	 *
-	 */
-	if ( centerDistance == 0 && _radius == other.getRadius() 
-			/* useless test, but safe */ )	
+	// Floating point values are almost never equal :
+	if ( Ceylan::Maths::AreRelativelyEqual( centerDistance, 0.0f )
+		&& Ceylan::Maths::AreRelativelyEqual( _radius, other.getRadius() ) )	
 		return isEqual ;
 	
 	// Last possible case :
