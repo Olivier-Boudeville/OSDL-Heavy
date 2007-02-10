@@ -2,15 +2,11 @@
 #define OSDL_OPENGL_H_
 
 
-// Do nothing if no OpenGL support is available :
-#ifdef OSDL_HAVE_OPENGL
-
-
-
+#include "OSDLVideoTypes.h"  // for VideoException
 #include "OSDLPixel.h"      // for ColorElement, ColorMask
 #include "OSDLPoint2D.h"    // for Point2D::Origin
 
-#include "Ceylan.h"         // for Ceylan::Uint8, inheritance
+#include "Ceylan.h"         // for Uint8, Uint32, inheritance
 
 #include "SDL_opengl.h"     // for GLfloat
 
@@ -650,44 +646,43 @@ namespace OSDL
 			
 			
 					/**
-					 * Default width of the orthographic box .
+					 * Default width of the orthographic box is 1000
+					 * (1000.0f).
 					 *
 					 */
-					static const GLLength DefaultOrthographicWidth = 1000.0f ;
+					static const GLLength DefaultOrthographicWidth ;
 					
 					
 					/**
 					 * Coordinate, along the -z axis, of the default near
-					 * clipping plane in 2D.
+					 * clipping plane in 2D is -1 (-1.0f).
 					 *
 					 */
-					static const GLCoordinate DefaultNearClippingPlaneFor2D 
-						= -1.0f ;
+					static const GLCoordinate DefaultNearClippingPlaneFor2D ;
+					
 					
 					/**
 					 * Coordinate, along the -z axis, of the default far
-					 * clipping plane in 2D.
+					 * clipping plane in 2D is 1 (1.0f).
 					 *
 					 */
-					static const GLCoordinate DefaultFarClippingPlaneFor2D 
-						= 1.0f ;
+					static const GLCoordinate DefaultFarClippingPlaneFor2D ;
 					
 					
 					/**
 					 * Coordinate, along the -z axis, of the default near
-					 * clipping plane in 3D.
+					 * clipping plane in 3D is 1 (1.0f).
 					 *
 					 */
-					static const GLCoordinate DefaultNearClippingPlaneFor3D 
-						= 1.0f ;
+					static const GLCoordinate DefaultNearClippingPlaneFor3D ;
+					
 					
 					/**
 					 * Coordinate, along the -z axis, of the default far
-					 * clipping plane in 3D.
+					 * clipping plane in 3D is 100000 (100000.0f).
 					 *
 					 */
-					static const GLCoordinate DefaultFarClippingPlaneFor3D 
-						= 100000.0f ;
+					static const GLCoordinate DefaultFarClippingPlaneFor3D ;
 					
 					
 					
@@ -794,6 +789,34 @@ namespace OSDL
 			
 			
 			} ;
+		
+		
+		
+			/**
+			 * Gathers appropriate GLU (OpenGL Utility Library) encapsulations
+			 * for better integration into OSDL.
+			 *
+			 * Some of them are defined here just to use GLU conventions 
+			 * (ex : GLUint) without needing to include GLU headers, that may
+			 * or may not be available.
+			 *
+			 * This is a form of code duplication, but GLU conventions are not
+			 * expected to change often, and the other solutions are worse :
+			 * hiding actual datatypes behind indirection pointers (would need
+			 * a lot of code for that and would decrease runtime performance) 
+			 * or including GLU headers (would require to include as well
+			 * OSDLConfig.h in OSDL headers, and then would force to 
+			 * install OSDLConfig.h, which is not wished).
+			 *
+			 */ 
+			namespace GLU
+			{
+			
+				/// GLU::Int (actually GLUint) is unsigned int.
+				typedef Ceylan::Uint32 Int ;
+			
+			}
+			
 						
 		}
 		
