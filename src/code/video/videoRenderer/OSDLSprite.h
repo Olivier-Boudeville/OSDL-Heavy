@@ -2,22 +2,26 @@
 #define OSDL_SPRITE_H_
 
 
-#include "OSDLRenderer.h"            // for RenderingException
 
 
 /*
-#include "Ceylan.h"                   // for inheritance
+
+#include "OSDLRenderer.h"            // for RenderingException
+
 
 
 #include "OSDLEvents.h"               // for RenderingTick
 
 #include "OSDLException.h"            // for Exception
 
+#include <list>
+
 */
+
+#include "Ceylan.h"                   // for inheritance
 
 
 #include <string>
-#include <list>
 
 
 
@@ -25,6 +29,14 @@ namespace OSDL
 {
 
 
+	namespace Engine 
+	{
+
+		class BoundingBox2D ;
+		
+	}
+	
+		
 	namespace Rendering 
 	{
 	
@@ -105,7 +117,7 @@ namespace OSDL
 				 * bounding box.
 				 *
 				 */
-				BoundingBox2D _renderingDone ;
+				Engine::BoundingBox2D * _box ;
 		
 		
 						
