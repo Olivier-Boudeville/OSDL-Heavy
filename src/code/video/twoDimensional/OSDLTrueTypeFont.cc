@@ -10,6 +10,12 @@
 
 #include <list>
  
+ 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>          // for OSDL_DEBUG_FONT and al 
+#endif // OSDL_USES_CONFIG_H
+
+
 
 using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::TwoDimensional::Text ;
@@ -256,7 +262,7 @@ OSDL::Video::SignedLength TrueTypeFont::getAdvance(
 }
 
 
-Height TrueTypeFont::getHeight() const throw()
+Text::Height TrueTypeFont::getHeight() const throw()
 {
 
 	return TTF_FontHeight( _actualFont ) ;
@@ -264,7 +270,7 @@ Height TrueTypeFont::getHeight() const throw()
 }
 
 
-SignedHeight TrueTypeFont::getAscent() const throw()
+Text::SignedHeight TrueTypeFont::getAscent() const throw()
 {
 
 	return TTF_FontAscent( _actualFont ) ;
@@ -272,7 +278,7 @@ SignedHeight TrueTypeFont::getAscent() const throw()
 }
 
 
-SignedHeight TrueTypeFont::getDescent() const throw()
+Text::SignedHeight TrueTypeFont::getDescent() const throw()
 {
 
 	return TTF_FontDescent( _actualFont ) ;
@@ -280,7 +286,7 @@ SignedHeight TrueTypeFont::getDescent() const throw()
 }
 
 
-Height TrueTypeFont::getLineSkip() const throw()
+Text::Height TrueTypeFont::getLineSkip() const throw()
 {
 
 	return TTF_FontLineSkip( _actualFont ) ;
