@@ -14,6 +14,10 @@
 #include "SDL.h"                    // for SDL_JoystickEventState
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>             // for OSDL_DEBUG and al
+#endif // OSDL_USES_CONFIG_H
+
 
 using std::string ;
 using std::list ;
