@@ -13,6 +13,13 @@ using namespace Ceylan::Log ;
 using namespace OSDL::Video ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>     // for OSDL_DEBUG_PIXEL and al 
+
+#endif // OSDL_USES_CONFIG_H
+
+
+
 /*
  * - putPixelAlpha left 'almost as was in SDL_gfx', but exported now
  * - filledCircleRGBANotBlended, aacircleRGBANotBlended and 
@@ -70,7 +77,7 @@ int filledCircleColorNotBlended( SDL_Surface * dst,
  * encoded to a specific pixel format.
  *
  */
-int ::putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y, 
+int putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y, 
 	OSDL::Video::Pixels::PixelColor color, 
 	OSDL::Video::Pixels::ColorElement alpha )
 {
@@ -286,7 +293,7 @@ int ::putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y,
 
 
 
-int ::filledCircleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
+int filledCircleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Sint16 rad, Ceylan::Uint8 r, Ceylan::Uint8 g,
 	Ceylan::Uint8 b, Ceylan::Uint8 a )
 {
@@ -311,7 +318,7 @@ int ::filledCircleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
 
 #ifdef OSDL_CIRCLE_NOT_BLENDED_IMPLEMENTED
 
-int ::aacircleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
+int aacircleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Sint16 rad, Ceylan::Uint8 r, Ceylan::Uint8 g,
 	Ceylan::Uint8 b, Ceylan::Uint8 a )
 {
@@ -344,7 +351,7 @@ int ::circleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
 
 
 
-int ::filledCircleColorNotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
+int filledCircleColorNotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Sint16 r, Pixels::ColorDefinition color )
 {
 
