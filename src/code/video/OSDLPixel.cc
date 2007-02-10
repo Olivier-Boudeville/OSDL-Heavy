@@ -6,7 +6,7 @@
 
 #include "OSDLFromGfx.h"         // taken from SDL_gfx
 
-#include "ceylan.h"              // for CEYLAN_DETECTED_LITTLE_ENDIAN
+#include "Ceylan.h"              // for CEYLAN_DETECTED_LITTLE_ENDIAN
 #include "SDL_gfxPrimitives.h"   // for all graphics primitives
 
 #include <list>
@@ -20,6 +20,10 @@ using std::string ;
 using namespace Ceylan::Log ;
 using namespace OSDL::Video ;
 
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>     // for OSDL_DEBUG and al 
+#endif // OSDL_USES_CONFIG_H
 
 
 // Different colors described by name.
@@ -431,6 +435,7 @@ bool Pixels::setGamma( GammaFactor red, GammaFactor green, GammaFactor blue )
 }
 
 
+
 bool Pixels::setGammaRamp( GammaRampElement * redRamp, 
 	GammaRampElement * greenRamp, GammaRampElement * blueRamp ) throw()
 {
@@ -445,6 +450,7 @@ bool Pixels::setGammaRamp( GammaRampElement * redRamp,
 	return true ;
 
 }	
+
 
 
 bool Pixels::getGammaRamp( GammaRampElement * redRamp, 
@@ -488,6 +494,8 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 		"using big endian convention." ) ;
 		
 #endif // CEYLAN_DETECTED_LITTLE_ENDIAN
+
+#endif // OSDL_DEBUG
 	
 	/*
 	 * Ensure color masks are only defined once (in OpenGL module) to 
@@ -502,11 +510,11 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 		
 }	
 								
+	
 				
 void Pixels::getRecommendedColorMasks( ColorMask & redMask, 
 	ColorMask & greenMask, ColorMask & blueMask ) throw()
 {
-
 
 
 #if OSDL_DEBUG
@@ -525,13 +533,16 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 		
 #endif // CEYLAN_DETECTED_LITTLE_ENDIAN
 
-	
+#endif // OSDL_DEBUG
+
+
 	redMask   = OpenGL::RedMask ;
 	greenMask = OpenGL::GreenMask ;
 	blueMask  = OpenGL::BlueMask ;
 
 }	
 				
+
 
 void Pixels::getCurrentColorMasks( const Pixels::PixelFormat & format, 
 	Pixels::ColorMask & redMask,  Pixels::ColorMask & greenMask, 
@@ -565,6 +576,7 @@ ColorDefinition Pixels::convertRGBAToColorDefinition(
 	return result ;
 }
 	
+	
 				
 void Pixels::convertColorDefinitionToRGBA( ColorDefinition color,
 	ColorElement & red, ColorElement & green, ColorElement & blue, 
@@ -578,6 +590,7 @@ void Pixels::convertColorDefinitionToRGBA( ColorDefinition color,
 	
 }	
 							
+
 				
 PixelColor Pixels::convertRGBAToPixelColor( const Pixels::PixelFormat & format,
 	ColorElement red, ColorElement green, ColorElement blue, 
@@ -600,6 +613,7 @@ PixelColor Pixels::convertRGBAToPixelColor( const Pixels::PixelFormat & format,
 }
 
 
+
 ColorDefinition Pixels::convertPixelColorToColorDefinition(
 	 const PixelFormat & format, PixelColor pixel )	throw()
 {
@@ -614,6 +628,7 @@ ColorDefinition Pixels::convertPixelColorToColorDefinition(
 }
 
 
+
 PixelColor Pixels::convertColorDefinitionToPixelColor( 
 	const PixelFormat & format, ColorDefinition colorDef ) throw()
 {
@@ -622,6 +637,7 @@ PixelColor Pixels::convertColorDefinitionToPixelColor(
 		colorDef.r, colorDef.g, colorDef.b, colorDef.unused ) ;
 	
 }
+
 
 
 PixelColor Pixels::convertColorDefinitionToRawPixelColor( 
@@ -639,6 +655,7 @@ PixelColor Pixels::convertColorDefinitionToRawPixelColor(
 		 | ((Ceylan::Uint32) colorDef.unused ) ;
 		 
 }
+
 
 
 PixelColor Pixels::convertRGBAToRawPixelColor( 
@@ -683,6 +700,7 @@ bool Pixels::areEqual( ColorDefinition first, ColorDefinition second,
 		return true ;	
 		
 }
+
 
 
 bool Pixels::isLess( ColorDefinition value, ColorDefinition comparison ) throw()
@@ -750,6 +768,7 @@ ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first,
 	return Pixels::Blue ;
 			
 }
+	
 		
 		
 ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first, 
@@ -828,6 +847,7 @@ Pixels::PixelColor Pixels::getPixelColor( const Surface & fromSurface,
 } 
 
 
+
 Pixels::ColorDefinition Pixels::getColorDefinition( 
 		const Surface & fromSurface, Coordinate x, Coordinate y ) 
 	throw ( VideoException )
@@ -855,6 +875,7 @@ void Pixels::putRGBAPixel( Surface & targetSurface,
 }
 
 
+
 void Pixels::putColorDefinition( Surface & targetSurface, 
 		Coordinate x, Coordinate y, ColorDefinition colorDef, 
 		bool blending, bool clipping, bool locking )
@@ -867,6 +888,7 @@ void Pixels::putColorDefinition( Surface & targetSurface,
 		colorDef.unused, blending, clipping, locking ) ;
 		
 }	
+
 
 
 void Pixels::putPixelColor( Surface & targetSurface, 
@@ -1058,6 +1080,7 @@ void Pixels::putPixelColor( Surface & targetSurface,
 }
 
 
+
 void Pixels::alternativePutPixelColor( Surface & targetSurface, 
 	Coordinate x, Coordinate y, PixelColor color, bool mapToSurfaceFormat )
 		throw()
@@ -1105,7 +1128,7 @@ void Pixels::alternativePutPixelColor( Surface & targetSurface,
     	    break ;
 
    	 	case 3:
-#if CEYLAN_DETECTED_LITTLE_ENDIAN == SDL_BIG_ENDIAN ) 
+#if CEYLAN_DETECTED_LITTLE_ENDIAN
    	        	p[0] =   color         & 0xff ;
             	p[1] = ( color >> 8  ) & 0xff ;
             	p[2] = ( color >> 16 ) & 0xff ;
@@ -1151,10 +1174,10 @@ string Pixels::toString( const Pixels::PixelFormat & format ) throw()
 		+ " bytes per pixel." ) ;
 
 	l.push_back( "Colorkey (pixel value of transparent pixels) is " 
-		+ Ceylan::toNumericalString( format.colorkey ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.colorkey ) + "." ) ;
 		
 	l.push_back( "Overall alpha is " 
-		+ Ceylan::toNumericalString( format.alpha ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.alpha ) + "." ) ;
 	
 	if ( format.palette )
 		l.push_back( "Palette available." ) ;
@@ -1168,33 +1191,34 @@ string Pixels::toString( const Pixels::PixelFormat & format ) throw()
 	l.push_back( "Amask is " + Ceylan::toString( format.Amask, true ) + "." ) ;
 
 	l.push_back( "Rshift is " 
-		+ Ceylan::toNumericalString( format.Rshift ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.Rshift ) + "." ) ;
 		
 	l.push_back( "Gshift is " 
-		+ Ceylan::toNumericalString( format.Gshift ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.Gshift ) + "." ) ;
 		
 	l.push_back( "Bshift is " 
-		+ Ceylan::toNumericalString( format.Bshift ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.Bshift ) + "." ) ;
 		
 	l.push_back( "Ashift is " 
-		+ Ceylan::toNumericalString( format.Ashift ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.Ashift ) + "." ) ;
 		
 	l.push_back( "Rloss is " 
-		+ Ceylan::toNumericalString( format.Rloss ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.Rloss ) + "." ) ;
 		
 	l.push_back( "Gloss is " 
-		+ Ceylan::toNumericalString( format.Gloss ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.Gloss ) + "." ) ;
 		
 	l.push_back( "Bloss is " 
-		+ Ceylan::toNumericalString( format.Bloss ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.Bloss ) + "." ) ;
 		
 	l.push_back( "Aloss is " 
-		+ Ceylan::toNumericalString( format.Aloss ) ) + "." ) ;
+		+ Ceylan::toNumericalString( format.Aloss ) + "." ) ;
 	
 		
 	return result + Ceylan::formatStringList( l ) ;
 	
 }
+
 
 
 string Pixels::toString( PixelColor pixel, const PixelFormat & format ) throw()
@@ -1205,6 +1229,7 @@ string Pixels::toString( PixelColor pixel, const PixelFormat & format ) throw()
 	
 }
 			
+		
 				
 string Pixels::toString( ColorDefinition color ) throw() 
 {
