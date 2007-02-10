@@ -39,6 +39,7 @@ bool TwoDimensional::drawPie( Surface & targetSurface,
 }
 
 
+
 bool TwoDimensional::drawPie( Surface & targetSurface, 
 	Coordinate xCenter, Coordinate yCenter, Length radius, 
 	Ceylan::Maths::AngleInDegrees angleStart, 
@@ -90,6 +91,7 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	}
 
 }
+
 
 	
 bool TwoDimensional::drawTriangle( Surface & targetSurface, 
@@ -172,6 +174,7 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 
 }
 
+
 	
 bool TwoDimensional::drawTriangle( Surface & targetSurface, 
 	const Point2D & p1, const Point2D & p2, const Point2D & p3, 
@@ -214,6 +217,7 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 }
 
 
+
 bool TwoDimensional::drawPolygon( Surface & targetSurface, 
 	const listPoint2D & summits, Coordinate x, Coordinate y,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
@@ -231,8 +235,8 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	 */
 	Ceylan::System::Size vertexCount = summits.size() ;
 	 
-	Coordinate abscissaArray[ vertexCount ] ;
-	Coordinate ordinateArray[ vertexCount ] ;
+	Coordinate * abscissaArray = new Coordinate[ vertexCount ] ;
+	Coordinate * ordinateArray = new Coordinate[ vertexCount ] ;
 	
 	vertexCount = 0 ;
 	
@@ -252,10 +256,15 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	
 	if ( filled )
 	{
-				
-		return ( ::filledPolygonRGBA( & targetSurface.getSDLSurface(), 
+		
+		int res = ::filledPolygonRGBA( & targetSurface.getSDLSurface(), 
 			abscissaArray, ordinateArray, vertexCount, 
-			red, green, blue, alpha ) == 0 ) ;
+			red, green, blue, alpha ) ;
+		
+		delete [] abscissaArray ;
+		delete [] ordinateArray ;
+			 		
+		return ( res == 0 ) ;
 			
 	}
 	else
@@ -264,23 +273,31 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		if ( VideoModule::GetAntiAliasingState() )
 		{
 		
-			return ( ::aapolygonRGBA( & targetSurface.getSDLSurface(), 
+			int res = ::aapolygonRGBA( & targetSurface.getSDLSurface(), 
 				abscissaArray, ordinateArray, vertexCount, 
-				red, green, blue, alpha ) == 0 ) ;
+				red, green, blue, alpha ) ;
+
+			delete [] abscissaArray ;
+			delete [] ordinateArray ;
+				
+			return ( res == 0 ) ;
 			
 		}
 		else
 		{
 		
-			return ( ::polygonRGBA( & targetSurface.getSDLSurface(),
+			int res = ::polygonRGBA( & targetSurface.getSDLSurface(),
 				abscissaArray, ordinateArray, vertexCount, 
-				red, green, blue, alpha ) == 0 ) ;
+				red, green, blue, alpha ) ;
+				
+			return ( res == 0 ) ;
 		
 		}
 	
 	}
 
 }	
+
 	
 	
 bool TwoDimensional::drawPolygon( Surface & targetSurface, 
@@ -296,8 +313,8 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	 */
 	Ceylan::System::Size vertexCount = summits.size() ;
 	 
-	Coordinate abscissaArray[ vertexCount ] ;
-	Coordinate ordinateArray[ vertexCount ] ;
+	Coordinate * abscissaArray = new Coordinate[ vertexCount ] ;
+	Coordinate * ordinateArray = new Coordinate[ vertexCount ] ;
 	
 	vertexCount = 0 ;
 	
@@ -317,10 +334,15 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	
 	if ( filled )
 	{
-				
-		return ( ::filledPolygonColor( & targetSurface.getSDLSurface(), 
+		
+		int res = ::filledPolygonColor( & targetSurface.getSDLSurface(), 
 			abscissaArray, ordinateArray, vertexCount,
-			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
+		
+		delete [] abscissaArray ; 			
+		delete [] ordinateArray ; 	
+				
+		return ( res == 0 ) ;
 			
 	}
 	else
@@ -329,19 +351,27 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		if ( VideoModule::GetAntiAliasingState() )
 		{
 		
-			return ( ::aapolygonColor( & targetSurface.getSDLSurface(), 
+			int res = ::aapolygonColor( & targetSurface.getSDLSurface(), 
 				abscissaArray, ordinateArray, vertexCount,
-				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) 
-					) == 0 ) ;
+				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
+
+			delete [] abscissaArray ; 			
+			delete [] ordinateArray ; 	
+					
+			return ( res == 0 ) ;
 			
 		}
 		else
 		{
 		
-			return ( ::polygonColor( & targetSurface.getSDLSurface(),
+			int res = ::polygonColor( & targetSurface.getSDLSurface(),
 				abscissaArray, ordinateArray, vertexCount,
-				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) 
-					) == 0 ) ;
+				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
+				 
+			delete [] abscissaArray ; 			
+			delete [] ordinateArray ; 	
+			
+			return ( res == 0 ) ;
 		
 		}
 	
@@ -364,6 +394,7 @@ Polygon::Polygon( listPoint2D & summits, bool listOwner ) throw() :
 {
 
 }
+
 
 
 Polygon::~Polygon() throw()
@@ -397,6 +428,7 @@ Polygon::~Polygon() throw()
 }
 
 
+
 bool Polygon::draw( Surface & targetSurface, 
 	Pixels::ColorDefinition colorDef, bool filled ) const throw()
 {
@@ -426,12 +458,14 @@ bool Polygon::draw( Surface & targetSurface,
 }
 
 
+
 listPoint2D & Polygon::getPoints() const throw()
 {
 
 	return * _summits ;
 	
 }
+
 
 
 void Polygon::setPoints( listPoint2D & newList ) throw()
@@ -457,6 +491,7 @@ bool Polygon::isListOwner() const throw()
 	return _listOwner ;
 	
 }
+
 
  	
 const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
@@ -499,6 +534,7 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 	return "Void polygon (no summit registered)" ;
 
 }
+
 
 
 
@@ -618,6 +654,7 @@ Polygon & Polygon::CreateFlakeBranch( Length length, Length thickness,
 }
 
 
+
 listPoint2D & Polygon::Duplicate( const listPoint2D & source ) throw()
 {
 
@@ -636,6 +673,7 @@ listPoint2D & Polygon::Duplicate( const listPoint2D & source ) throw()
 }
 
 
+
 void Polygon::Delete( listPoint2D & listToBeDeleted ) throw()
 {
 
@@ -650,6 +688,7 @@ void Polygon::Delete( listPoint2D & listToBeDeleted ) throw()
 	delete & listToBeDeleted ;
 
 }
+
 
 
 listPoint2D & Polygon::Append( listPoint2D & toBeAugmented,
@@ -669,6 +708,7 @@ listPoint2D & Polygon::Append( listPoint2D & toBeAugmented,
 	return toBeAugmented ;
 	
 }
+
 
 
 listPoint2D & Polygon::Apply( 
@@ -712,6 +752,7 @@ PolygonSet::PolygonSet( bool listOwner ) throw() :
 }
 
 
+
 PolygonSet::PolygonSet( std::list<listPoint2D *> & polygonList,
 		bool listOwner ) throw():
 	Locatable2D(),
@@ -720,6 +761,7 @@ PolygonSet::PolygonSet( std::list<listPoint2D *> & polygonList,
 {
 
 }
+
 
 
 PolygonSet::~PolygonSet() throw()
@@ -762,6 +804,7 @@ void PolygonSet::addPointsOf( Polygon & newPolygon ) throw()
 }
 
 
+
 void PolygonSet::addPointList( listPoint2D & listToAdd ) throw()
 {
 
@@ -771,6 +814,7 @@ void PolygonSet::addPointList( listPoint2D & listToAdd ) throw()
 	_polygonList->push_back( & listToAdd ) ;
 	
 }
+
 
 
 bool PolygonSet::draw( Surface & targetSurface, Coordinate x, Coordinate y,
@@ -861,6 +905,7 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level )
 	return "Void set of polygons (no polygon registered)" ;
 
 }
+
 
 
 PolygonSet & PolygonSet::CreateFlake( 
