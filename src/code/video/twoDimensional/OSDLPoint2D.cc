@@ -21,7 +21,8 @@ Point2D::Point2D( Coordinate x, Coordinate y ) throw()
 }
 
 
-Point2D::Point2D( const Point2D & source ) throw() 
+Point2D::Point2D( const Point2D & source ) throw()  :
+	Point()
 {
 
 	_coord[0] = source._coord[0] ;
