@@ -16,10 +16,10 @@ using namespace Ceylan::Log ;    // for LogPlug
 using namespace OSDL::Events ;
 
 
-Ceylan::Uint16 KeyboardHandler::DefaultDelayBeforeKeyRepeat 
+const Ceylan::System::Millisecond KeyboardHandler::DefaultDelayBeforeKeyRepeat 
 	= SDL_DEFAULT_REPEAT_DELAY ; 
 	
-Ceylan::Uint16 KeyboardHandler::DefaulKeyRepeatInterval
+const Ceylan::System::Millisecond KeyboardHandler::DefaulKeyRepeatInterval
 	= SDL_DEFAULT_REPEAT_INTERVAL ;
 
 
