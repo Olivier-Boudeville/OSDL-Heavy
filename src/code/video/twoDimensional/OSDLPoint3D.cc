@@ -23,7 +23,8 @@ Point3D::Point3D( Coordinate x, Coordinate y, Coordinate z ) throw()
 }
 
 
-Point3D::Point3D( const Point3D & source ) throw()
+Point3D::Point3D( const Point3D & source ) throw() :
+	Point()
 {
 
 	_coord[0] = source._coord[0] ;
