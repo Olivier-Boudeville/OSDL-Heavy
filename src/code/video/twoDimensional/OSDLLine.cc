@@ -111,10 +111,12 @@ bool Line::draw( Surface & targetSurface, Coordinate xStart, Coordinate yStart,
 	{
 	
 		return ( ::aalineColorInt( & targetSurface.getSDLSurface(), 
+			xStart, yStart, xStop, yStop,
 			( static_cast<Ceylan::Uint32>( red   ) << 24 ) | 
 			( static_cast<Ceylan::Uint32>( green ) << 16 ) | 
 			( static_cast<Ceylan::Uint32>( blue  ) <<  8 ) | 
-			( static_cast<Ceylan::Uint32>( alpha ) ) ) == 0 ) ;
+			( static_cast<Ceylan::Uint32>( alpha )       ),
+			VideoModule::GetEndPointDrawState() ) == 0 ) ;
 			
 	}
 	else
