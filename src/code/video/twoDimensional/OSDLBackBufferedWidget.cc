@@ -1,7 +1,14 @@
 #include "OSDLBackBufferedWidget.h"
 
-#include "OSDLSurface.h"   // for Surface
-#include "OSDLPoint2D.h"   // for Point2D
+
+#include "OSDLSurface.h"            // for Surface
+#include "OSDLPoint2D.h"            // for Point2D
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>             // for OSDL_DEBUG_WIDGET and al 
+#endif // OSDL_USES_CONFIG_H
+
 
 
 using namespace Ceylan::Log ;
