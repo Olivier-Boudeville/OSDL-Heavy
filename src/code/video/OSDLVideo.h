@@ -41,6 +41,15 @@ namespace OSDL
 		class Surface ;
 			
 		
+		namespace OpenGL
+		{	
+		
+			// The Video module may have to manage OpenGL contexts.
+			class OpenGLContext ;
+		
+		}	
+			
+		
 		/// Icon masks are use for window manager's icons.
 		typedef Ceylan::Uint8 IconMask ;
 
@@ -65,6 +74,10 @@ namespace OSDL
 		 */
 		class OSDL_DLL VideoModule : public Ceylan::Module
 		{
+		
+
+			// The common module has to create the video module.
+			friend class OSDL::CommonModule ;
 		
 		
 			public:
@@ -987,11 +1000,7 @@ namespace OSDL
 				 *
 				 */
 				static std::string _SDLEnvironmentVariables[] ;
-						
-						
-				// Video is to be managed by root module :				
-				friend class CommonModule ;
-			
+									
 			
 		} ;
 		
