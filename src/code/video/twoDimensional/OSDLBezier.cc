@@ -49,9 +49,14 @@ bool TwoDimensional::drawBezierCurve(
 	 *
 	 */
 	Ceylan::System::Size vertexCount = controlPoints.size() ;
-	 
-	Coordinate abscissaArray[ vertexCount ] ;
-	Coordinate ordinateArray[ vertexCount ] ;
+	
+	/*
+	 * Used to be allocated on the stack, but 
+	 * 'ISO C++ forbids variable-size array'...
+	 *
+	 */
+	Coordinate * abscissaArray = new Coordinate[ vertexCount ] ;
+	Coordinate * ordinateArray = new Coordinate[ vertexCount ] ;
 	
 	vertexCount = 0 ;
 	
@@ -64,9 +69,14 @@ bool TwoDimensional::drawBezierCurve(
 		vertexCount++ ;
 	}
 	
-	return ( ::bezierColor( & targetSurface.getSDLSurface(), 
+	int res = ::bezierColor( & targetSurface.getSDLSurface(), 
 		abscissaArray, ordinateArray, vertexCount, numberOfSteps, 
-		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
+	
+	delete [] abscissaArray ;
+	delete [] ordinateArray ;
+		
+	return ( res == 0 ) ;	
 
 }	
 
