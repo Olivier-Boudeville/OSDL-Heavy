@@ -79,13 +79,12 @@ namespace OSDL
 	
 	
 	/// Returns the version of the OSDL library currently linked.
-	OSDL_DLL Ceylan::Version & GetVersion() throw() ;
+	OSDL_DLL const Ceylan::LibtoolVersion & GetVersion() throw() ;
 
 	
 	/// Shutdowns all OSDL services.
 	OSDL_DLL void stop() throw() ;
-		
-		
+				
 		
 	/**
 	 * Root of all OSDL modules. 
@@ -453,6 +452,42 @@ namespace OSDL
 					
 		
 	} ;		
+
+
+
+	/**
+	 * Returns a common module, already existing or, otherwise, created as
+	 * a side-effect of this call.
+	 *
+	 */
+	OSDL_DLL CommonModule & getCommonModule( Ceylan::Flags flags ) throw() ;
+		
+		
+	/**
+	 * Tells whether there already exists a common module.
+	 *
+	 */
+	OSDL_DLL bool hasExistingCommonModule() throw() ;
+	
+	
+	/**
+	 * This function is intended to be the usual means of
+	 * getting a reference to the common module, which must already exist.
+	 * If not, a fatal error will be triggered (not an exception to 
+	 * avoid handling it in all user methods).
+	 * 
+	 * @note This function is mainly useful for the OSDL internals, 
+	 * if sub-modules, such as the event module, needed access to 
+	 * the common module.
+	 *
+	 * @see hasCommonModule()
+	 * 
+	 * @note This method is not static to avoid pitfalls of static
+	 * initializer ordering.
+	 *
+	 */			
+	OSDL_DLL CommonModule & getExistingCommonModule() throw() ;
+		
 	
 }
 
