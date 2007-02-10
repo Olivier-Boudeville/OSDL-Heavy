@@ -203,9 +203,8 @@ namespace OSDL
 		
 		
 			// The common module has to create the event module.
-			friend class CommonModule ;
-		
-			
+			friend class OSDL::CommonModule ;
+					
 			
 			public:
 
