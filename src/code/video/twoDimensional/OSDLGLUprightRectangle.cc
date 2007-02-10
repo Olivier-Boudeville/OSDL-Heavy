@@ -1,6 +1,15 @@
 #include "OSDLGLUprightRectangle.h"
 
-#include "SDL_opengl.h"     	// for glRectf
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>     // for OSDL_USES_OPENGL and al 
+#endif // OSDL_USES_CONFIG_H
+
+
+#if OSDL_USES_OPENGL
+#include "SDL_opengl.h"     // for glRectf
+#endif // OSDL_USES_OPENGL
+
 
 
 using std::string ;
