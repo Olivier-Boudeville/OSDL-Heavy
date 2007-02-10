@@ -280,6 +280,8 @@ namespace OSDL
 				 * @param deltaY the ordinate motion delta, since last call to
 				 * this method, will be stored here.				
 				 * 
+				 * @return true iff the operation succeeded.
+				 *
 				 * @throw JoystickException if the joystick is not already 
 				 * open or if index is out of bounds.
 				 *
@@ -287,7 +289,7 @@ namespace OSDL
 				 * the last call of this method.
 				 *
 				 */ 
-				virtual void getPositionOfTrackball( 
+				virtual bool getPositionOfTrackball( 
 						JoystickTrackballsCount ball,
 						BallMotion & deltaX, BallMotion & deltaY ) 
 					const throw( JoystickException ) ;	
