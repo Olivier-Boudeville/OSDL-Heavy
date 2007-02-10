@@ -16,8 +16,12 @@ PeriodicSlot::PeriodicSlot( Period periodicity ) throw() :
 	_currentSlot( 0 )
 {
 
-	// This array will contain _period pointers to listActiveObjects instances :
-	_slots = new listActiveObjects *[ _period ] ;
+	/*
+	 * This array will contain _period pointers to ListOfActiveObjects 
+	 * instances :
+	 *
+	 */
+	_slots = new ListOfActiveObjects *[ _period ] ;
 	
 	_slotWeights = new Weight[ _period ] ;
 	
@@ -172,7 +176,7 @@ void PeriodicSlot::onSimulationSkipped( SimulationTick skipped )
 	
 	if ( _slots[subSlot] != 0 )
 	{
-		for ( listActiveObjects::iterator it = _slots[subSlot]->begin() ;
+		for ( ListOfActiveObjects::iterator it = _slots[subSlot]->begin() ;
 				it != _slots[subSlot]->end(); it++ )
 			(*it)->onSkip( skipped ) ;
 	}
@@ -185,7 +189,9 @@ void PeriodicSlot::onSimulationSkipped( SimulationTick skipped )
 					
 Period PeriodicSlot::getPeriod() throw()
 {
+
 	return _period ;
+	
 }
 
 
@@ -242,7 +248,9 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level )
 Period PeriodicSlot::getSubSlotForSimulationTick( SimulationTick tick ) 
 	const throw()
 {
+
 	return ( tick % _period ) ;
+	
 }
 
 
@@ -251,7 +259,7 @@ void PeriodicSlot::addInSlot( ActiveObject & newObject, Period targetSlot )
 {
 
 	if ( _slots[ targetSlot ] == 0 )
-		_slots[ targetSlot ] = new listActiveObjects() ;
+		_slots[ targetSlot ] = new ListOfActiveObjects() ;
 		
 	_slots[ targetSlot ]->push_back( & newObject ) ;
 	_slotWeights[ targetSlot ] += newObject.getWeight() ;
@@ -273,7 +281,7 @@ bool PeriodicSlot::removeFromSlot( ActiveObject & object, Period targetSlot )
 	 * otherwise an erase would invalidate the iterator.
 	 *
 	 */
-	for ( listActiveObjects::iterator it = _slots[ targetSlot ]->begin() ; 
+	for ( ListOfActiveObjects::iterator it = _slots[ targetSlot ]->begin() ; 
 		it != _slots[ targetSlot ]->end(); it++ )
 	{
 		if ( (*it) == & object )
@@ -334,7 +342,7 @@ void PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
 	 *
 	 */
 	
-	for ( listActiveObjects::iterator it = _slots[ subSlot ]->begin();
+	for ( ListOfActiveObjects::iterator it = _slots[ subSlot ]->begin();
 		it != _slots[ subSlot ]->end(); it++ )
 	{	
 		(*it)->onActivation( currentTime ) ;	
