@@ -143,14 +143,15 @@ local-web: site api
 
 # The 'site' target takes automatically care of both shared tree and
 # of the tree specific to this version :
-site: common loani-archives
-	@echo; echo "@OSDL_INSTALL_STYLE@    Copying web source tree to\
+# (loani-archives not activated here anymore)
+site: common 
+	@echo; echo "@OSDL_INSTALL_STYLE@    Copying web source tree to \
 	local web repository [@OSDL_LOCAL_WEB_DIR@]@OSDL_DEFAULT_STYLE@"
 	@cd $(srcdir)/web; for d in $(WEB_CONTENT_DIRS); do \
 	mkdir -p @OSDL_LOCAL_WEB_SHARED_DIR@/$$d ; done ;  \
 	for f in $(WEB_CONTENT_FILES); do \
 	cp -f $$f @OSDL_LOCAL_WEB_SHARED_DIR@/$$f; done
-	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark local doc site,\
+	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark local doc site, \
 	which is to be found in :"
 	@echo "      file://@OSDL_LOCAL_WEB_DIR@/index.html@OSDL_DEFAULT_STYLE@"
 	@cd @OSDL_LOCAL_WEB_DIR@; \
@@ -158,8 +159,8 @@ site: common loani-archives
 
 
 common: 
-	@echo; echo "@OSDL_INSTALL_STYLE@    Copying common web files to\
-	local doc repository\
+	@echo; echo "@OSDL_INSTALL_STYLE@    Copying common web files to \
+	local doc repository \
 	[@OSDL_LOCAL_WEB_SHARED_DIR@]@OSDL_DEFAULT_STYLE@"
 	@if [ -d "@OSDL_LOCAL_DOC_DIR@" ] ; then \
 	chmod a+w @OSDL_LOCAL_DOC_DIR@; else \
@@ -173,9 +174,9 @@ common:
 	cp -f $$f @OSDL_LOCAL_WEB_SHARED_DIR@/$$f; done
 
 
+# Automatic creation of LOANI releases disabled, only 
+# to be done on user request :
 loani-archives:
-	@# Automatic creation of LOANI releases disabled, \
-	only to be done on user request : \
 	cd $(top_srcdir)/src/conf/build/loani && $(MAKE) release
 	-@cp -f $(top_srcdir)/src/conf/build/loani/LOANI-*.zip \
 	$(top_srcdir)/src/conf/build/loani/LOANI-*.tar.gz \
@@ -196,11 +197,11 @@ uninstall-hook:
 api: check-dot fix-dox-conf
 	@[ -x "$(DOXYGEN)" ] || \
 	( echo; echo "@OSDL_ERROR_STYLE@    \
-	Unable to create source documentation : doxygen tool not found\
+	Unable to create source documentation : doxygen tool not found \
 	[doxygen homepage : http://www.doxygen.org].@OSDL_DEFAULT_STYLE@"; \
 	echo; false )
 	@echo; echo "@OSDL_COMMAND_STYLE@    Generating API\
-	(doxygen configuration taken from $(DOXYGEN_GENERATED_CONF))\
+	(doxygen configuration taken from $(DOXYGEN_GENERATED_CONF)) \
 	@OSDL_DEFAULT_STYLE@"
 	@echo
 	@mkdir -p @OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@
@@ -318,21 +319,21 @@ toMirror-scp: check-scp site
 
 check-scp:
 	@[ -x "$(SCP)" ] || ( echo; echo "@OSDL_ERROR_STYLE@    \
-	Unable to transfer html documentation files to remote\
-	web server : rsync and its alternative scp not available.\
-	Please check src/conf/MakeVars.inc or update\
+	Unable to transfer html documentation files to remote \
+	web server : rsync and its alternative scp not available. \
+	Please check src/conf/MakeVars.inc or update \
 	PATH environment variable.@OSDL_DEFAULT_STYLE@"; echo; false ) 
-	@echo; echo "@OSDL_WARNING_STYLE@    Consider installing rsync,\
+	@echo; echo "@OSDL_WARNING_STYLE@    Consider installing rsync, \
 	which is far more efficient than scp at updating \
 	mirrors.@OSDL_DEFAULT_STYLE@"
 		
 		
 remind-locations:
-	@echo; echo "@OSDL_INSTALL_STYLE@    + the following\
+	@echo; echo "@OSDL_INSTALL_STYLE@    + the following \
 	documentation repositories are available :"
 	@echo "      * local doc directory : @OSDL_LOCAL_DOC_DIR@"
 	@echo "      * local web site      : @OSDL_LOCAL_WEB_DIR@/main/index.html"
-	@echo "      * local web API       :\
+	@echo "      * local web API       : \
 	@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/index.html"
 	@echo "      * official website    : @OSDL_SF_VERSION_URL@"
 	@echo "@OSDL_DEFAULT_STYLE@"		
@@ -342,10 +343,10 @@ show-found-tools:
 	@echo; echo "@OSDL_INSTALL_STYLE@    Listing found tools\
 	@OSDL_DEFAULT_STYLE@"; echo
 	@if [ -x "$(DOXYGEN)" ]; \
-	then echo "  + doxygen found, using <$(DOXYGEN)>\
+	then echo "  + doxygen found, using <$(DOXYGEN)> \
 	with configuration file <$(DOXYGEN_CONF)>"; fi
 	@if [ -x "$(DOT)" ]; then  echo "  + dot found, using <$(DOT)>"; fi
-	@if [ -x "$(ASTYLE)" ]; then echo "  + astyle found, using <$(ASTYLE)>\
+	@if [ -x "$(ASTYLE)" ]; then echo "  + astyle found, using <$(ASTYLE)> \
 	with configuration file <$(ASTYLE_CONF)>"; fi
 	@if [ -x "$(TIDY)" ]; then echo "  + tidy found, using <$(TIDY)>"; fi
 	@if [ -x "$(RSYNC)" ]; then echo "  + rsync found, using <$(RSYNC)>"; fi
@@ -359,7 +360,7 @@ info-dirs:
 	@echo "    + prefix is  :" ${prefix}
 	@echo "    + local documentation directory is : @OSDL_LOCAL_DOC_DIR@"
 	@echo "    + local web directory is  : @OSDL_LOCAL_WEB_DIR@"
-	@echo "    + local api directory is  :\
+	@echo "    + local api directory is  : \
 	@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@"
 	
 	
@@ -409,8 +410,7 @@ clean-web:
 
 
 clean-install: clean-web
-	@echo "@OSDL_CLEAN_STYLE@    Cleaning installed doc repository\
-	[@OSDL_LOCAL_DOC_DIR@]@OSDL_DEFAULT_STYLE@"
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning installed doc repository [@OSDL_LOCAL_DOC_DIR@]@OSDL_DEFAULT_STYLE@"
 	-@rm -rf @OSDL_LOCAL_DOC_DIR@
 
 
