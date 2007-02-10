@@ -13,6 +13,11 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>       // for OSDL_DEBUG_WIDGET and al 
+#endif // OSDL_USES_CONFIG_H
+
+
 
 RedrawRequestEvent::RedrawRequestEvent( Ceylan::EventSource & source ) throw(): 
 	SurfaceEvent( source )
@@ -77,9 +82,6 @@ Widget::Widget( Surface & container, const Point2D & relativePosition,
 		container.getPixelFormat().Bmask,
 		container.getPixelFormat().Amask ),	
 	EventListener( container ),
-#if OSDL_COUNT_INSTANCES
-	Object(),
-#endif // OSDL_COUNT_INSTANCES
 	_upperLeftCorner( relativePosition ),
 	_clientArea( 0, 0, getWidth(), getHeight() ),
 	_decorated( false ),
