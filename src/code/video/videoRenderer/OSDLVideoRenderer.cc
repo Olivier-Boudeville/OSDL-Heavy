@@ -15,6 +15,12 @@ using namespace OSDL::Engine ;
 using std::string ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>                // for OSDL_DEBUG_VIDEO_RENDERER and al 
+#endif // OSDL_USES_CONFIG_H
+
+
+
 #if OSDL_DEBUG_VIDEO_RENDERER
 
 #define OSDL_VIDEO_RENDER_LOG(message) send( message ) ;
