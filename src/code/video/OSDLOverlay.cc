@@ -3,7 +3,7 @@
 
 #include "OSDLVideo.h"    // for VideoModule
 #include "OSDLBasic.h"    // for CommonModule
-
+#include "OSDLUtils.h"    // for getBackendLastError
 
 #include "SDL.h"          // for SDL_Overlay
 
@@ -68,7 +68,7 @@ Overlay::~Overlay() throw()
 }
 
 
-bool Overlay::blit( Coordinate x, Coordinate y ) const throw( OverlayException )
+void Overlay::blit( Coordinate x, Coordinate y ) const throw( OverlayException )
 {
 
 	SDL_Rect destinationRect ;
@@ -79,13 +79,17 @@ bool Overlay::blit( Coordinate x, Coordinate y ) const throw( OverlayException )
 	destinationRect.w = _width ;
 	destinationRect.h = _height ;
 	
-	SDL_DisplayYUVOverlay( _overlay, & destinationRect ) ;
+	if ( SDL_DisplayYUVOverlay( _overlay, & destinationRect ) != 0 )
+		throw OverlayException( "Overlay::blit failed : "
+			+ Utils::getBackendLastError() ) ;
 	
 }
 
 
-bool Overlay::blit() const throw( OverlayException )
+void Overlay::blit() const throw( OverlayException )
 {
+
+	blit( 0, 0 ) ;
 
 }
 
