@@ -1,12 +1,18 @@
 #include "OSDLSprite.h"
 
+#include "OSDLBoundingBox2D.h"   // for BoundingBox2D
+
 
 using namespace Ceylan::Log ;
 
-using namespace OSDL::Events ;
 using namespace OSDL::Rendering ;
 
 using std::string ;
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>     // for OSDL_DEBUG_SPRITE and al 
+#endif // OSDL_USES_CONFIG_H
 
 
 #if OSDL_DEBUG_SPRITE
@@ -24,7 +30,7 @@ using std::string ;
 Sprite::Sprite( bool ownBoundingBox ) throw() :
 	View(),
 	_ownBoundingBox( ownBoundingBox ),
-	_renderingDone( false )
+	_box( 0 )
 {
 
 }
@@ -33,6 +39,9 @@ Sprite::Sprite( bool ownBoundingBox ) throw() :
 Sprite::~Sprite() throw()
 {
 
+	if ( _ownBoundingBox && ( _box != 0 ) )
+		delete _box ;
+		
 }
 
 
