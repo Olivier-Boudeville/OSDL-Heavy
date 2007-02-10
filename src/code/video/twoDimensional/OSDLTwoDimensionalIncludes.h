@@ -11,7 +11,6 @@
  *
  */
  
-
 #include "OSDLBackBufferedWidget.h"
 #include "OSDLBezier.h"
 #include "OSDLConic.h"
