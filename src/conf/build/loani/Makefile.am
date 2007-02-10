@@ -17,6 +17,8 @@ CEYLAN_TOOLS_SETTINGS = \
 OSDL_TOOLS_SETTINGS   = $(srcdir)/../OSDLToolsSettings.inc
 
 LOANI_TOOLS_SETTINGS  = $(srcdir)/LOANIToolsSettings.inc
+noinst_data = $(LOANI_TOOLS_SETTINGS) $(LOANI_ZIP) $(LOANI_TGZ)
+
 
 LOANI_INSTALLATIONS_DIR = $(srcdir)/../../../../../../..
 
@@ -55,6 +57,8 @@ LOANI_FELLOWS_FILES = \
 	$(CEYLAN_INSTALL_SCRIPT_DIR)/makeRepositoryLinks.sh
 
 
+
+
 # The version of LOANI matches the one of OSDL actually :
 LOANI_VERSION = @OSDL_VERSION@
 
@@ -70,12 +74,8 @@ LOANI_TMP_ARCHIVE_DIR = $(LOANI_ARCHIVE_NAME)
 LOANI_TESTING_DIR = $(HOME)/tmp/LOANI-testing
 
 
-EXTRA_DIST = \
-	$(LOANI_FELLOWS_FILES)
+EXTRA_DIST = $(LOANI_FELLOWS_FILES)
 	
-noinst_SCRIPTS = \
-	$(LOANI_FELLOWS_FILES)
-
 
 REPLACE_SCRIPT = \
 	@CEYLAN_INSTALL_ROOT@/share/Ceylan/scripts/shell/replaceLineStartingBy.sh
