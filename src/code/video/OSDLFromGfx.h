@@ -131,7 +131,7 @@ OSDL_DLL int filledCircleRGBANotBlended( SDL_Surface * dst,
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-} ;
+}
 #endif // __cplusplus
 
 
