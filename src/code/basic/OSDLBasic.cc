@@ -14,11 +14,15 @@
 #include <list>
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>            // for the actual OSDL_LIBTOOL_VERSION
+#endif // OSDL_USES_CONFIG_H
 
 
 
 using std::string ;
 
+using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 using namespace OSDL ;
@@ -34,11 +38,39 @@ const CommonModule::BackendReturnCode CommonModule::BackendError   = -1 ;
 bool CommonModule::_BackendInitialized = false ;
 
 
-Ceylan::Version & OSDL::GetVersion() throw()
+
+#define OSDL_DEBUG_VERSION 0
+
+const Ceylan::LibtoolVersion & OSDL::GetVersion() throw()
 {
-	static Ceylan::Version osdlVersion( VERSION ) ;
+
+
+#if	OSDL_DEBUG_VERSION
+
+	// Intentional memory leak :
 	
+	Ceylan::LibtoolVersion * ceylanVersion ;
+	
+	try
+	{
+		osdlVersion = new Ceylan::LibtoolVersion( OSDL_LIBTOOL_VERSION ) ;
+	}
+	catch( const Ceylan::Exception & e )
+	{
+		Ceylan::emergencyShutdown( "OSDL::GetVersion failed : "
+			+ e.toString() ) ;
+	}	
+		
+	return *osdlVersion ;
+
+
+#else // OSDL_DEBUG_VERSION
+
+	static Ceylan::LibtoolVersion osdlVersion( OSDL_LIBTOOL_VERSION ) ;
 	return osdlVersion ;
+
+#endif // OSDL_DEBUG_VERSION	
+	
 }
 
 
