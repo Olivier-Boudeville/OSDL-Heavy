@@ -11,6 +11,10 @@
 #include "png.h"                    // for png_structp and many others
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>             // for OSDL_DEBUG and al 
+#endif // OSDL_USES_CONFIG_H
+
 
 using std::string ;
 
@@ -1471,10 +1475,7 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 			+ filename + " : file not found." ) ;
 			
 	SDL_Surface * image ;
-	
-
-	char * charXPMTag = Ceylan::getNonConstCharFrom( XPMTag ) ;
-	
+		
 	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
 		1, const_cast<char *>( XPMTag.c_str() ) ) ;
 		
