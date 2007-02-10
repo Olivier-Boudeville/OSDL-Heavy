@@ -12,6 +12,11 @@ using std::ostringstream ;
 #include <iomanip> 				      // for std::ios::fixed
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>               // for OSDL_DEBUG_SCHEDULER and al
+#endif // OSDL_USES_CONFIG_H
+
+
 using namespace Ceylan::Log ;         // for LogPlug
 
 // for time units and calls (ex : Millisecond, basicSleep)
@@ -281,7 +286,8 @@ void Scheduler::registerObject( ActiveObject & objectToRegister ) throw()
 	
 		// Declare the programmed ticks for this object :
 		
-		const list<SimulationTick> & programmed = objectToRegister.getProgrammedActivations() ;
+		const list<SimulationTick> & programmed =
+			objectToRegister.getProgrammedActivations() ;
 		
 		for ( list<SimulationTick>::const_iterator it = programmed.begin(); 
 			it != programmed.end(); it++ )
@@ -455,7 +461,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		
 		std::list<string> programmed ;
 		
-		for( map<SimulationTick, listActiveObjects>::const_iterator it 
+		for( map<SimulationTick, ListOfActiveObjects>::const_iterator it 
 				= _programmedActivated.begin(); it 
 					!= _programmedActivated.end(); it++ )
 			programmed.push_back( "For simulation tick #" 
@@ -700,7 +706,7 @@ Scheduler::~Scheduler() throw()
 void Scheduler::scheduleBestEffort() throw( SchedulingException )
 {
 
-	send( "Scheduler starting in soft real-time best effort mode. 
+	send( "Scheduler starting in soft real-time best effort mode. " 
 		"Scheduler infos : " + toString( Ceylan::high ) ) ;
 	
 	// Let's prepare to the run :
@@ -1573,7 +1579,7 @@ void Scheduler::scheduleProgrammedObjects(
 	SimulationTick currentSimulationTick ) throw()
 {
 
-	map<SimulationTick, listActiveObjects>::iterator it 
+	map<SimulationTick, ListOfActiveObjects>::iterator it 
 		= _programmedActivated.find( currentSimulationTick ) ;
 		
 	if ( it != _programmedActivated.end() )
@@ -1642,10 +1648,10 @@ void Scheduler::scheduleInput( InputTick current ) throw()
 
 void Scheduler::scheduleActiveObjectList( 
 	Events::RenderingTick currentSimulationTick, 
-	listActiveObjects objectList ) throw()
+	ListOfActiveObjects & objectList ) throw()
 {
 
-	for ( listActiveObjects::iterator it = objectList.begin(); 
+	for ( ListOfActiveObjects::iterator it = objectList.begin(); 
 		it != objectList.end(); it++ )
 	{
 		(*it)->onActivation( currentSimulationTick ) ;
@@ -1681,12 +1687,12 @@ void Scheduler::onSimulationSkipped( SimulationTick skipped )
 	
 	// Second, send notification to programmed objects :
 
-	map<SimulationTick, listActiveObjects>::iterator it 
+	map<SimulationTick, ListOfActiveObjects>::iterator it 
 		= _programmedActivated.find( skipped ) ;
 		
 	if ( it != _programmedActivated.end() )
 	{
-		for ( listActiveObjects::iterator itObjects = (*it).second.begin() ;
+		for ( ListOfActiveObjects::iterator itObjects = (*it).second.begin() ;
 				itObjects != (*it).second.end(); itObjects++ )
 			(*itObjects)->onSkip( skipped ) ;
 	}
@@ -1761,7 +1767,7 @@ void Scheduler::programTriggerFor( ActiveObject & objectToProgram,
 	if ( ! objectToProgram.areProgrammedActivationsAbsolute() )
 		targetTick += _currentSimulationTick ;
 		
-	map<SimulationTick, listActiveObjects>::iterator it 
+	map<SimulationTick, ListOfActiveObjects>::iterator it 
 		= _programmedActivated.find( targetTick ) ;
 		
 	if ( it != _programmedActivated.end() )
@@ -1773,7 +1779,7 @@ void Scheduler::programTriggerFor( ActiveObject & objectToProgram,
 	{
 		// First object for this simulation tick :
 		
-		listActiveObjects newList ;
+		ListOfActiveObjects newList ;
 		newList.push_back( & objectToProgram ) ; 
 		_programmedActivated[ targetTick ] = newList ;
 				
