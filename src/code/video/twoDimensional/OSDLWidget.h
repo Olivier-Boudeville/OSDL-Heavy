@@ -121,9 +121,6 @@ namespace OSDL
 			 */
 			class OSDL_DLL Widget : public Surface, 
 				public Ceylan::EventListener
-#if OSDL_COUNT_INSTANCES
-				, public Ceylan::Object
-#endif // OSDL_COUNT_INSTANCES
 			{
 			
 					
