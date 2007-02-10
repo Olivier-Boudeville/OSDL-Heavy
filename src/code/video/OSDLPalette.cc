@@ -18,9 +18,13 @@ using namespace Ceylan::Log ;
 using namespace OSDL::Video ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>     // for OSDL_DEBUG and al 
+#endif // OSDL_USES_CONFIG_H
 
-const OSDL::Flags Palette::Logical  = SDL_LOGPAL ;
-const OSDL::Flags Palette::Physical = SDL_PHYSPAL ;
+
+const Ceylan::Flags Palette::Logical  = SDL_LOGPAL ;
+const Ceylan::Flags Palette::Physical = SDL_PHYSPAL ;
 
 
 
@@ -325,16 +329,16 @@ Palette & Palette::CreateGradationPalette( Pixels::ColorDefinition colorStart,
 		 */
 		
 		colorBuffer[ c ].r      = static_cast<Pixels::ColorElement>( 
-			Ceylan::Ceil( colorStart.r + redIncrement * c ) ) ;
+			Ceylan::Maths::Ceil( colorStart.r + redIncrement * c ) ) ;
 			
 		colorBuffer[ c ].g      = static_cast<Pixels::ColorElement>( 
-			Ceylan::Ceil( colorStart.g + greenIncrement * c ) ) ;
+			Ceylan::Maths::Ceil( colorStart.g + greenIncrement * c ) ) ;
 			
 		colorBuffer[ c ].b      = static_cast<Pixels::ColorElement>( 
-			Ceylan::Ceil( colorStart.b + blueIncrement * c ) ) ;
+			Ceylan::Maths::Ceil( colorStart.b + blueIncrement * c ) ) ;
 			
 		colorBuffer[ c ].unused = static_cast<Pixels::ColorElement>( 
-			Ceylan::Ceil( colorStart.unused + alphaIncrement * c ) ) ;
+			Ceylan::Maths::Ceil( colorStart.unused + alphaIncrement * c ) ) ;
 			
 	}
 
