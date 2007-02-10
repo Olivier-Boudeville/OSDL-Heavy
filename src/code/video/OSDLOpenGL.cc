@@ -5,9 +5,16 @@
 
 #include "Ceylan.h"       // for CEYLAN_DETECTED_LITTLE_ENDIAN
 
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>   // for OSDL_USES_OPENGL and al 
+#endif // OSDL_USES_CONFIG_H
+
 #ifdef OSDL_HAVE_OPENGL
-#include "SDL_opengl.h"
+#include "SDL_opengl.h"   // for GL, GLU
 #endif // OSDL_HAVE_OPENGL
+
+
 
 using std::string ;
 
@@ -16,6 +23,7 @@ using std::list ;
 
 
 using namespace OSDL::Video::OpenGL ;
+using namespace OSDL::Video::OpenGL::GLU ;
 
 using namespace Ceylan::Log ;
 
@@ -38,15 +46,14 @@ OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::GreenMask = 0x00ff0000 ;
 OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::BlueMask  = 0x0000ff00 ;
 OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::AlphaMask = 0x000000ff ;
 
-
 #endif // CEYLAN_DETECTED_LITTLE_ENDIAN
+
 
 
 
 OpenGLException::OpenGLException( const std::string & reason ) throw() : 
 	VideoException( reason )
 {	
-
 
 }
 
@@ -58,7 +65,15 @@ OpenGLException::~OpenGLException() throw()
 
 
 
+const GLLength OpenGLContext::DefaultOrthographicWidth = 1000.0f ;
 
+const GLCoordinate OpenGLContext::DefaultNearClippingPlaneFor2D =     -1.0f ;
+const GLCoordinate OpenGLContext::DefaultFarClippingPlaneFor2D  =      1.0f ;
+const GLCoordinate OpenGLContext::DefaultNearClippingPlaneFor3D =      1.0f	;	
+const GLCoordinate OpenGLContext::DefaultFarClippingPlaneFor3D  = 100000.0f ;
+
+
+ 				
 OpenGLContext::OpenGLContext( OpenGL::Flavour flavour ) 
 		throw( OpenGLException ) :
 	_flavour( OpenGL::None ),
