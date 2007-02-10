@@ -2,17 +2,12 @@
 #define OSDL_GL_TEXTURE_H_
 
 
-// Do nothing if no OpenGL support is available :
-#ifdef OSDL_HAVE_OPENGL
-
-
 #include "OSDLOpenGL.h"    // for OpenGLException
 
-#include "Ceylan.h"        // for inheritance
-
-#include "SDL_opengl.h"    // for GLuint
+#include "Ceylan.h"        // for inheritance, Uint32, etc.
 
 #include <string>
+
 
 
 namespace OSDL
@@ -32,11 +27,23 @@ namespace OSDL
 		
 		
 		
-			/// Texture identifier, as given by OpenGL.
-			typedef GLuint GLTextureIdentifier ;
+			/**
+			 * Texture identifier.
+			 *
+			 * @note Made so that it can be converted (i.e. has at least the
+			 * same value range) into OpenGL texture identifier, Gluint
+			 * (which is 'unsigned int' in general).
+			 *
+			 * No 'typedef GLUint GLTextureIdentifier' could be kept, as
+			 * it would have made this header file depend on OSDLConfig, which
+			 * should not be installed.
+			 *
+			 */
+			typedef GLU::Int GLTextureIdentifier ;
 		
 		
-			/// Exception to be raised when OpenGL operations fail.
+		
+			/// Exception to be raised when OpenGL texture operations fail.
 			class OSDL_DLL GLTextureException : public OpenGLException
 			{
 			
@@ -70,6 +77,9 @@ namespace OSDL
 			 *
 			 * In this case, they have to be reloaded, which is possible 
 			 * if they have kept their converted surface.
+			 *
+			 * @note OpenGL support must have been selected and be available
+			 * at configure time so that these OpenGL services can be used.
 			 *
 			 * @note SetTextureMode should be called prior to any texture
 			 * operation.
@@ -241,8 +251,12 @@ namespace OSDL
 					 * Sets the current texture state according to 
 					 * specified flavour.
 					 *
+					 * @throw GLTextureException if the operation failed,
+					 * including if no OpenGL support is available.
+					 *
 					 */
-					void SetTextureFlavour( Textureflavour flavour ) ;
+					void SetTextureFlavour( Textureflavour flavour )
+						throw( GLTextureException ) ;
 					
 					
 					
@@ -333,8 +347,6 @@ namespace OSDL
 }
 
 
-#endif  // OSDL_OPENGL_H_
 
-
-#endif  // OSDL_GL_TEXTURE_H_
+#endif // OSDL_GL_TEXTURE_H_
 
