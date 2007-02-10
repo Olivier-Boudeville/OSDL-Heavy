@@ -1343,7 +1343,7 @@ namespace OSDL
 						 * @throw TextException on error.
 						 *
 						 */
-						Surface & Font::renderLatin1TextWithWordCached( 
+						Surface & renderLatin1TextWithWordCached( 
 								const std::string & text,
 								RenderQuality quality, 
 								Pixels::ColorDefinition textColor ) 
@@ -1372,7 +1372,7 @@ namespace OSDL
 						 * @throw TextException on error.
 						 *
 						 */
-						Surface & Font::renderLatin1TextWithTextCached( 
+						Surface & renderLatin1TextWithTextCached( 
 								const std::string & text,
 								RenderQuality quality, 
 								Pixels::ColorDefinition textColor ) 
