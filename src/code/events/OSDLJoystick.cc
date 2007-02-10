@@ -5,6 +5,9 @@
 #include "SDL.h"               // for SDL_JoystickOpened, etc.
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
+#endif // OSDL_USES_CONFIG_H
 
 
 using std::string ;
@@ -361,7 +364,8 @@ bool Joystick::getPositionOfTrackball( JoystickTrackballsCount ball,
 			"Joystick::getPositionOfTrackball : trackball number ( " 
 			+ Ceylan::toString( _trackballCount ) + ") out of bounds." ) ;
 			
- 	return SDL_JoystickGetBall( _internalJoystick, ball, & deltaX, & deltaY ) ;
+ 	return ( SDL_JoystickGetBall( 
+		_internalJoystick, ball, & deltaX, & deltaY ) == 0 ) ;
 
 }
 
