@@ -43,6 +43,10 @@ namespace OSDL
 		{
 		
 		
+			// The common module has to create the audio module.
+			friend class OSDL::CommonModule ;
+		
+		
 			public:
 
 
