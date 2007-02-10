@@ -484,8 +484,8 @@ namespace OSDL
 						Length length = 200,
 						Length thickness = 20, 
 						Ceylan::Maths::AngleInDegrees childAngle = 50, 
-						Ratio branchingHeightRatio = 0.7, 
-						Ratio scale = 0.3 ) throw() ;
+						Ceylan::Maths::Ratio branchingHeightRatio = 0.7, 
+						Ceylan::Maths::Ratio scale = 0.3 ) throw() ;
 					
 					
 					/**
@@ -776,7 +776,8 @@ namespace OSDL
 						Ceylan::Uint8 branchCount = 5, 
 						Length length = 200, Length thickness = 20, 
 						Ceylan::Maths::AngleInDegrees childAngle = 50, 
-						Ratio branchingHeightRatio = 0.7, Ratio scale = 0.3 )
+						Ceylan::Maths::Ratio branchingHeightRatio = 0.7, 
+						Ceylan::Maths::Ratio scale = 0.3 )
 							throw() ;
 					
 				
