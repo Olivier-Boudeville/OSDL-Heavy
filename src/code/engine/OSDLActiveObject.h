@@ -4,7 +4,7 @@
 
 
 #include "OSDLPeriodicSlot.h"   // for Period, SchedulingException
-
+#include "OSDLEngineCommon.h"   // for ObjectSchedulingPolicy, Weight, etc. 
 #include "OSDLEvents.h"         // for SimulationTick
 
 #include "Ceylan.h"             // for VerbosityLevels, inheritance
