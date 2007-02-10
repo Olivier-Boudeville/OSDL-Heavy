@@ -14,6 +14,12 @@
 #include <ctype.h>               // for isdigit
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>          // for OSDL_DEBUG_FONT and al 
+#endif // OSDL_USES_CONFIG_H
+
+
+
 using std::string ;
 
 using namespace Ceylan ;
@@ -218,7 +224,7 @@ Width FixedFont::getInterGlyphWidth() const throw()
 }
 
 
-Height FixedFont::getHeight() const throw()
+Text::Height FixedFont::getHeight() const throw()
 {
 
 	return _height ;
@@ -240,10 +246,10 @@ SignedHeight FixedFont::getDescent() const throw()
 }
 
 
-Height FixedFont::getLineSkip() const throw()
+Text::Height FixedFont::getLineSkip() const throw()
 {
 
-	return _height + static_cast<Height>( 
+	return _height + static_cast<Text::Height>( 
 		Ceylan::Maths::Max<Ceylan::Float32>( 2 , 0.1 * _height ) ) ;
 		
 }
@@ -721,7 +727,7 @@ void FixedFont::loadFontFrom( const std::string & fontFilename )
 	try
 	{
 	
-		System::File fontFile( fontFullPath, System::File::ReadOnly ) ; 
+		System::File fontFile( fontFullPath, System::File::Read ) ; 
 		
 		System::Size dataSize = fontFile.size() ;
 		
