@@ -27,7 +27,7 @@ TWO_DIMENSIONAL_INTERFACES = \
 	OSDLPoint3D.h                         \
 	OSDLPoint.h                           \
 	OSDLPolygon.h                         \
-	OSDLTextWidget.h                      \
+	OSDLTextWidget.h                      \
 	OSDLTrueTypeFont.h                    \
 	OSDLTwoDimensionalIncludes.h          \
 	OSDLUprightRectangle.h                \
