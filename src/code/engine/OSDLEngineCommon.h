@@ -21,6 +21,7 @@
 namespace OSDL
 {
 
+
 	namespace Engine 
 	{
 	
@@ -102,3 +103,4 @@ namespace OSDL
 
 
 #endif // OSDL_ENGINE_COMMON_H_
+
