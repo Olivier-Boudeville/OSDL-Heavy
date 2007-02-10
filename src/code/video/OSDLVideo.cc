@@ -16,7 +16,7 @@ using std::string ;
 using std::pair ;
 
 
-
+using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Video ;
@@ -30,16 +30,16 @@ using namespace OSDL::Video::OpenGL ;
  *
  */
 
-const OSDL::Flags VideoModule::SoftwareSurface  = SDL_SWSURFACE  ;
-const OSDL::Flags VideoModule::HardwareSurface  = SDL_HWSURFACE  ;
-const OSDL::Flags VideoModule::AsynchronousBlit = SDL_ASYNCBLIT  ;
-const OSDL::Flags VideoModule::AnyPixelFormat   = SDL_ANYFORMAT  ;
-const OSDL::Flags VideoModule::ExclusivePalette = SDL_HWPALETTE  ;
-const OSDL::Flags VideoModule::DoubleBuffered   = SDL_DOUBLEBUF  ;
-const OSDL::Flags VideoModule::FullScreen       = SDL_FULLSCREEN ;
-const OSDL::Flags VideoModule::OpenGL           = SDL_OPENGL     ;
-const OSDL::Flags VideoModule::Resizable        = SDL_RESIZABLE  ;
-const OSDL::Flags VideoModule::NoFrame          = SDL_NOFRAME    ;
+const Ceylan::Flags VideoModule::SoftwareSurface  = SDL_SWSURFACE  ;
+const Ceylan::Flags VideoModule::HardwareSurface  = SDL_HWSURFACE  ;
+const Ceylan::Flags VideoModule::AsynchronousBlit = SDL_ASYNCBLIT  ;
+const Ceylan::Flags VideoModule::AnyPixelFormat   = SDL_ANYFORMAT  ;
+const Ceylan::Flags VideoModule::ExclusivePalette = SDL_HWPALETTE  ;
+const Ceylan::Flags VideoModule::DoubleBuffered   = SDL_DOUBLEBUF  ;
+const Ceylan::Flags VideoModule::FullScreen       = SDL_FULLSCREEN ;
+const Ceylan::Flags VideoModule::OpenGL           = SDL_OPENGL     ;
+const Ceylan::Flags VideoModule::Resizable        = SDL_RESIZABLE  ;
+const Ceylan::Flags VideoModule::NoFrame          = SDL_NOFRAME    ;
 
 
 const Ceylan::Uint16 VideoModule::DriverNameMaximumLength = 50 ;
@@ -246,13 +246,17 @@ BitsPerPixel VideoModule::getBestColorDepthForMode(
 }
 
 
+
 bool VideoModule::isDisplayInitialized() const throw()
 {
+
 	return _displayInitialized ;
+	
 }
 
 
-OSDL::Flags VideoModule::setMode( Length width, Length height, 
+
+Ceylan::Flags VideoModule::setMode( Length width, Length height, 
 		BitsPerPixel askedBpp, Flags flags, OpenGL::Flavour flavour ) 
 	throw ( VideoException ) 
 {
@@ -562,8 +566,8 @@ void VideoModule::getWindowCaption( string & title, string & iconName ) throw()
 	char newIconName[ 50 ] ;
 		
 	SDL_WM_GetCaption( 
-		static_cast<char **>( & newTitle ), 
-		static_cast<char **>( & newIconName ) ;
+		reinterpret_cast<char **>( & newTitle ), 
+		reinterpret_cast<char **>( & newIconName ) ) ;
 
 	title = newTitle  ;
 	iconName = newIconName ;
@@ -859,7 +863,7 @@ string VideoModule::InterpretFlags( Flags flags ) throw()
 	if ( flags & FullScreen )
 		res.push_back( 
 			"Display surface should attempt to use full screen mode. "
-			"If a hardware resolution change is not possible 
+			"If a hardware resolution change is not possible "
 			"(for whatever reason), the next higher resolution "
 			"will be used and the display window centered "
 			"on a black background (FullScreen is set)." ) ;
