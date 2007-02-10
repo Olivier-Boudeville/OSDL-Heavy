@@ -13,15 +13,16 @@ using namespace OSDL::Engine ;
 using std::string ;
 
 
+
 #ifdef OSDL_DEBUG_RENDERER
 
 #define OSDL_MULTIMEDIA_RENDER_LOG(message) send( message ) ;
 
-#else
+#else // OSDL_DEBUG_RENDERER
 
 #define OSDL_MULTIMEDIA_RENDER_LOG(message)
 
-#endif
+#endif // OSDL_DEBUG_RENDERER
 
 
 
@@ -38,15 +39,20 @@ MultimediaRenderer::MultimediaRenderer( bool registerToScheduler )
 
 MultimediaRenderer::~MultimediaRenderer() throw()
 {
+
 	// Views are not owned.
+	
 }
 
 
 
 bool MultimediaRenderer::hasVideoRenderer() const throw()
 {
+
 	return ( _videoRenderer != 0 ) ;
+	
 }
+
 
 
 VideoRenderer & MultimediaRenderer::getVideoRenderer() const 
@@ -62,6 +68,7 @@ VideoRenderer & MultimediaRenderer::getVideoRenderer() const
 }
 
 
+
 void MultimediaRenderer::setVideoRenderer( VideoRenderer & newVideoRenderer )
 	throw()
 {
@@ -74,10 +81,14 @@ void MultimediaRenderer::setVideoRenderer( VideoRenderer & newVideoRenderer )
 }
 
 
+
 bool MultimediaRenderer::hasAudioRenderer() const throw()
 {
+
 	return ( _audioRenderer != 0 ) ;
+	
 }
+
 
 
 AudioRenderer & MultimediaRenderer::getAudioRenderer() const 
@@ -93,6 +104,7 @@ AudioRenderer & MultimediaRenderer::getAudioRenderer() const
 }
 
 
+
 void MultimediaRenderer::setAudioRenderer( AudioRenderer & newAudioRenderer )
 	throw()
 {
@@ -103,6 +115,7 @@ void MultimediaRenderer::setAudioRenderer( AudioRenderer & newAudioRenderer )
 	_audioRenderer = & newAudioRenderer ;
 	
 }
+
 
 
 void MultimediaRenderer::render( Events::RenderingTick currentRenderingTick )
@@ -127,6 +140,7 @@ void MultimediaRenderer::render( Events::RenderingTick currentRenderingTick )
 }
 
 
+
 void MultimediaRenderer::onRenderingSkipped( 
 	RenderingTick skippedRenderingTick ) throw()
 {
@@ -135,6 +149,7 @@ void MultimediaRenderer::onRenderingSkipped(
 	_renderingSkipped++ ;
 	
 }
+
 
 
 const string MultimediaRenderer::toString( Ceylan::VerbosityLevels level ) 
@@ -146,7 +161,8 @@ const string MultimediaRenderer::toString( Ceylan::VerbosityLevels level )
 	if ( _videoRenderer != 0 )
 		res += "having a video renderer (" 
 			+ _videoRenderer->toString( Ceylan::low ) + ")" ;
-	else                                                                          		res += "with no video renderer registered" ;
+	else
+		res += "with no video renderer registered" ;
 	
 	if ( _audioRenderer != 0 )
 		res += ", having an audio renderer (" 
@@ -171,5 +187,4 @@ const string MultimediaRenderer::toString( Ceylan::VerbosityLevels level )
 	return res ;
 	
 }
-
 
