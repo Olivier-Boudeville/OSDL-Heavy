@@ -52,7 +52,7 @@ CHANGELOG_COMMAND   = "$(CHANGELOG_GENERATOR)"
 update-changelog: 
 	@if [ "${CREATE_CHANGELOG}" = true ] ; then \
 	if [ ! -x "$(CHANGELOG_COMMAND)" ] ; then echo\
-	"@OSDL_WARNING_STYLE@    No ChangeLog tool\
+	"@OSDL_WARNING_STYLE@    No ChangeLog tool \
 	available (svn2cl), nothing done@OSDL_DEFAULT_STYLE@"; \
 	else $(MAKE) effective-changelog-creation; fi; else\
 	echo "@OSDL_WARNING_STYLE@   \
@@ -61,10 +61,10 @@ update-changelog:
 	
 
 effective-changelog-creation:
-	@echo "@OSDL_COMMAND_STYLE@    Recreating ChangeLog file from SVN\
+	@echo "@OSDL_COMMAND_STYLE@    Recreating ChangeLog file from SVN \
 	[takes some time]@OSDL_DEFAULT_STYLE@"
 	@if [ ! -x "$(CHANGELOG_COMMAND)" ] ; then echo\
-	"@OSDL_WARNING_STYLE@No Changelog tool\
+	"@OSDL_WARNING_STYLE@No Changelog tool \
 	available, nothing done@OSDL_DEFAULT_STYLE@"; else\
 	$(CHANGELOG_COMMAND) --linelen=10000 -o ${top_builddir}/ChangeLog ${top_srcdir} ; fi
 	-@/bin/rm -f ${top_srcdir}/ChangeLog.bak
@@ -76,67 +76,58 @@ effective-changelog-creation:
 
 
 update-authors:
-	@echo "@OSDL_COMMAND_STYLE@    Generating AUTHORS\
+	@echo "@OSDL_COMMAND_STYLE@    Generating AUTHORS \
 	file@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-AUTHORS-template.txt\
-	${top_builddir}/AUTHORS
+	-@cp -f ${top_builddir}/src/doc/basic/OSDL-AUTHORS-template.txt	${top_builddir}/AUTHORS
 
 
 update-copying:
-	@echo "@OSDL_COMMAND_STYLE@    Generating COPYING.LIB\
+	@echo "@OSDL_COMMAND_STYLE@    Generating COPYING.LIB \
 	file@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-COPYING.LIB-template.txt\
-	${top_builddir}/COPYING.LIB
+	-@cp -f ${top_builddir}/src/doc/basic/OSDL-COPYING.LIB-template.txt	${top_builddir}/COPYING.LIB
 	
 	
 update-faq:
-	@echo "@OSDL_COMMAND_STYLE@    Generating FAQ file\
+	@echo "@OSDL_COMMAND_STYLE@    Generating FAQ file \
 	@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-FAQ-template.txt\
-	${top_builddir}/FAQ
+	-@cp -f ${top_builddir}/src/doc/basic/OSDL-FAQ-template.txt	${top_builddir}/FAQ
 	
 	
 update-install:
-	@echo "@OSDL_COMMAND_STYLE@    Generating INSTALL file\
+	@echo "@OSDL_COMMAND_STYLE@    Generating INSTALL file \
 	@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-INSTALL-template.txt\
-	${top_builddir}/INSTALL 
+	-@cp -f ${top_builddir}/src/doc/basic/OSDL-INSTALL-template.txt	${top_builddir}/INSTALL 
 	 
 	 
 update-maint:
-	@echo "@OSDL_COMMAND_STYLE@    Generating MAINTENERS file\
+	@echo "@OSDL_COMMAND_STYLE@    Generating MAINTENERS file \
 	@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-MAINTENERS-template.txt\
-	${top_builddir}/MAINTENERS
+	-@cp -f ${top_builddir}/src/doc/basic/OSDL-MAINTENERS-template.txt	${top_builddir}/MAINTENERS
 
  
 update-news:
-	@echo "@OSDL_COMMAND_STYLE@    Generating NEWS file\
+	@echo "@OSDL_COMMAND_STYLE@    Generating NEWS file \
 	@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-NEWS-template.txt\
-	${top_builddir}/NEWS
+	-@cp -f ${top_builddir}/src/doc/basic/OSDL-NEWS-template.txt	${top_builddir}/NEWS
  
  
 update-readme:
-	@echo "@OSDL_COMMAND_STYLE@    Generating README file\
+	@echo "@OSDL_COMMAND_STYLE@    Generating README file \
 	@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-README-template.txt\
-	${top_builddir}/README
+	-@cp -f ${top_builddir}/src/doc/basic/OSDL-README-template.txt ${top_builddir}/README
 	-@@OSDL_SUBSTITUTE@ ST_DATE "$(CURRENT_DATE)" ${top_builddir}/README
 
 
 update-thanks:
-	@echo "@OSDL_COMMAND_STYLE@    Generating THANKS file\
+	@echo "@OSDL_COMMAND_STYLE@    Generating THANKS file \
 	@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-THANKS-template.txt\
-	 ${top_builddir}/THANKS 
+	-@cp -f ${top_builddir}/src/doc/basic/OSDL-THANKS-template.txt ${top_builddir}/THANKS 
 	 
 	 
 update-todo: 	
-	@echo "@OSDL_COMMAND_STYLE@    Generating TODO file\
+	@echo "@OSDL_COMMAND_STYLE@    Generating TODO file \
 	@OSDL_DEFAULT_STYLE@"
-	-@cp -f ${top_builddir}/src/doc/basic/OSDL-TODO-template.txt\
-	${top_builddir}/TODO 
+	-@cp -f ${top_builddir}/src/doc/basic/OSDL-TODO-template.txt	${top_builddir}/TODO 
 		
 		
 info-local:
@@ -144,16 +135,16 @@ info-local:
 	
 	
 clean-local:
-	@echo "@OSDL_CLEAN_STYLE@    Cleaning basic doc repository\
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning basic doc repository \
 	@OSDL_DEFAULT_STYLE@"
 	-@rm -f $(RAW_DOC_FILES)
 
 
 real-clean:
-	@echo "@OSDL_CLEAN_STYLE@    Real cleaning basic doc repository\
+	@echo "@OSDL_CLEAN_STYLE@    Real cleaning basic doc repository \
 	@OSDL_DEFAULT_STYLE@"
 	-@rm -f OSDL-AUTHORS-template.txt OSDL-COPYING.LIB-template.txt \
-	OSDL-FAQ-template.txt	OSDL-INSTALL-template.txt                 \
+	OSDL-FAQ-template.txt OSDL-INSTALL-template.txt                 \
 	OSDL-MAINTENERS-template.txt OSDL-NEWS-template.txt             \
 	OSDL-README-template.txt OSDL-THANKS-template.txt               \
 	OSDL-TODO-template.txt Makefile.in
