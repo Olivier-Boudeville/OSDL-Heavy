@@ -14,10 +14,11 @@ testsengine_PROGRAMS = \
 	testOSDLScheduledMVC.exe
 	
 
-testOSDLAndMVC_SOURCES                       = testOSDLAndMVC.cc
-testOSDLCircleBoundingBox_SOURCES            = testOSDLCircleBoundingBox.cc
-testOSDLScheduledMultimediaRendering_SOURCES = \
+testOSDLAndMVC_exe_SOURCES                       = testOSDLAndMVC.cc
+testOSDLCircleBoundingBox_exe_SOURCES            = testOSDLCircleBoundingBox.cc
+testOSDLScheduledMultimediaRendering_exe_SOURCES = \
 	testOSDLScheduledMultimediaRendering.cc
-testOSDLScheduler_SOURCES                    = testOSDLScheduler.cc
-testOSDLSchedulerNoDeadline_SOURCES          = testOSDLSchedulerNoDeadline.cc
-testOSDLScheduledMVC_SOURCES                 = testOSDLScheduledMVC.cc
+testOSDLScheduler_exe_SOURCES                    = testOSDLScheduler.cc
+testOSDLSchedulerNoDeadline_exe_SOURCES          = \
+	testOSDLSchedulerNoDeadline.cc
+testOSDLScheduledMVC_exe_SOURCES                 = testOSDLScheduledMVC.cc
