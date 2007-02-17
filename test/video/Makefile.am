@@ -20,12 +20,12 @@ testsvideo_PROGRAMS = \
 	testOSDLWindowManager.exe
 
 
-testOSDLBlit_SOURCES                   = testOSDLBlit.cc
-testOSDLOpenGL_SOURCES                 = testOSDLOpenGL.cc
-testOSDLPalette_SOURCES                = testOSDLPalette.cc
-testOSDLPixel_SOURCES                  = testOSDLPixel.cc
-testOSDLSurface_SOURCES                = testOSDLSurface.cc
-testOSDLSurfacePrimitives_SOURCES      = testOSDLSurfacePrimitives.cc
-testOSDLSurfaceTransformations_SOURCES = testOSDLSurfaceTransformations.cc
-testOSDLVideo_SOURCES                  = testOSDLVideo.cc
-testOSDLWindowManager_SOURCES          = testOSDLWindowManager.cc
+testOSDLBlit_exe_SOURCES                   = testOSDLBlit.cc
+testOSDLOpenGL_exe_SOURCES                 = testOSDLOpenGL.cc
+testOSDLPalette_exe_SOURCES                = testOSDLPalette.cc
+testOSDLPixel_exe_SOURCES                  = testOSDLPixel.cc
+testOSDLSurface_exe_SOURCES                = testOSDLSurface.cc
+testOSDLSurfacePrimitives_exe_SOURCES      = testOSDLSurfacePrimitives.cc
+testOSDLSurfaceTransformations_exe_SOURCES = testOSDLSurfaceTransformations.cc
+testOSDLVideo_exe_SOURCES                  = testOSDLVideo.cc
+testOSDLWindowManager_exe_SOURCES          = testOSDLWindowManager.cc
