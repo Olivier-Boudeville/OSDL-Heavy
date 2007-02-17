@@ -7,7 +7,7 @@ testsaudioRendererdir=@OSDL_TEST_DIR@/audio/audioRenderer
 testsaudioRenderer_CXXFLAGS = @AM_CXXFLAGS@
 
 #testsaudioRenderer_PROGRAMS = \
-#	testBasic.exe                               \
+#	testBasic.exe                               
 	
 
 #testBasic_SOURCES                        = testBasic.cc
