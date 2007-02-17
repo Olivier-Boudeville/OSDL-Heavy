@@ -10,7 +10,7 @@ teststwodimensional_PROGRAMS = \
 	testOSDLAnimation.exe                        \
 	testOSDLBezier.exe                           \
 	testOSDLCircle.exe                           \
-	testOSDLConic.exe                            \ 
+	testOSDLConic.exe                            \
 	testOSDLFixedFontCache.exe                   \
 	testOSDLFixedFont.exe                        \
 	testOSDLImage.exe                            \
@@ -28,23 +28,23 @@ teststwodimensional_PROGRAMS = \
 	testOSDLWidget.exe	
 
 
-testOSDLAnimation_SOURCES         = testOSDLAnimation.cc
-testOSDLBezier_SOURCES            = testOSDLBezier.cc
-testOSDLCircle_SOURCES            = testOSDLCircle.cc
-testOSDLConic_SOURCES             = testOSDLConic.cc
-testOSDLFixedFontCache_SOURCES    = testOSDLFixedFontCache.cc
-testOSDLFixedFont_SOURCES         = testOSDLFixedFont.cc
-testOSDLImage_SOURCES             = testOSDLImage.cc
-testOSDLLine_SOURCES              = testOSDLLine.cc
-testOSDLMultilineText_SOURCES     = testOSDLMultilineText.cc
-testOSDLPixels_SOURCES            = testOSDLPixels.cc
-testOSDLPoint2D_SOURCES           = testOSDLPoint2D.cc
-testOSDLPolygon_SOURCES           = testOSDLPolygon.cc
-testOSDLSaveImage_SOURCES         = testOSDLSaveImage.cc
-testOSDLText_SOURCES              = testOSDLText.cc
-testOSDLTextWidget_SOURCES        = testOSDLTextWidget.cc
-testOSDLTrueTypeFontCache_SOURCES = testOSDLTrueTypeFontCache.cc
-testOSDLTrueTypeFont_SOURCES      = testOSDLTrueTypeFont.cc
-testOSDLUprightRectangle_SOURCES  = testOSDLUprightRectangle.cc
-testOSDLWidget_SOURCES            = testOSDLWidget.cc
+testOSDLAnimation_exe_SOURCES         = testOSDLAnimation.cc
+testOSDLBezier_exe_SOURCES            = testOSDLBezier.cc
+testOSDLCircle_exe_SOURCES            = testOSDLCircle.cc
+testOSDLConic_exe_SOURCES             = testOSDLConic.cc
+testOSDLFixedFontCache_exe_SOURCES    = testOSDLFixedFontCache.cc
+testOSDLFixedFont_exe_SOURCES         = testOSDLFixedFont.cc
+testOSDLImage_exe_SOURCES             = testOSDLImage.cc
+testOSDLLine_exe_SOURCES              = testOSDLLine.cc
+testOSDLMultilineText_exe_SOURCES     = testOSDLMultilineText.cc
+testOSDLPixels_exe_SOURCES            = testOSDLPixels.cc
+testOSDLPoint2D_exe_SOURCES           = testOSDLPoint2D.cc
+testOSDLPolygon_exe_SOURCES           = testOSDLPolygon.cc
+testOSDLSaveImage_exe_SOURCES         = testOSDLSaveImage.cc
+testOSDLText_exe_SOURCES              = testOSDLText.cc
+testOSDLTextWidget_exe_SOURCES        = testOSDLTextWidget.cc
+testOSDLTrueTypeFontCache_exe_SOURCES = testOSDLTrueTypeFontCache.cc
+testOSDLTrueTypeFont_exe_SOURCES      = testOSDLTrueTypeFont.cc
+testOSDLUprightRectangle_exe_SOURCES  = testOSDLUprightRectangle.cc
+testOSDLWidget_exe_SOURCES            = testOSDLWidget.cc
  
