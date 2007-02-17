@@ -34,7 +34,7 @@ using std::string ;
 void displayImage( const string & fileName, SDL_Surface * targetSurface )
 {
 
-    // Loads the JPEG file into a surface.	
+    // Loads the image file into a surface.	
 
 	SDL_Surface * mySurface ;
 	
@@ -42,10 +42,10 @@ void displayImage( const string & fileName, SDL_Surface * targetSurface )
 	
 	if ( mySurface == 0 )
 	{
-		LogPlug::fatal( "Unable to load image from file " + fileName
-			+ " : " + Ceylan::toString( IMG_GetError() ) ) ;
-		throw Ceylan::TestException( "Unable to load image from file "
-			+ fileName + " : " + Ceylan::toString( IMG_GetError() ) ) ;	 
+		LogPlug::fatal( "Unable to load image from file '" + fileName
+			+ "' : " + Ceylan::toString( IMG_GetError() ) ) ;
+		throw Ceylan::TestException( "Unable to load image from file '"
+			+ fileName + "' : " + Ceylan::toString( IMG_GetError() ) ) ;	 
 	}
 
     /*
@@ -73,13 +73,38 @@ void displayImage( const string & fileName, SDL_Surface * targetSurface )
 	LogPlug::info( "Image width is " + Ceylan::toString( mySurface->w )
 		+ ", height is " + Ceylan::toString( mySurface->h ) );
 	
-    SDL_UpdateRect( targetSurface, 0, 0, mySurface->w, mySurface->h ) ;
+    SDL_UpdateRect( targetSurface, 0, 0, targetSurface->w, targetSurface->h ) ;
 
     // Free the allocated BMP surface.
     SDL_FreeSurface( mySurface ) ;
 	
 }
 
+
+void waiter( bool isBatch )
+{
+
+	SDL_Event event ; 
+	
+	if ( ! isBatch )
+	{
+
+		Ceylan::display( "< Press any key on SDL window to stop >" ) ;
+	
+		do 
+		{
+	
+			// Avoid busy waits :
+			SDL_WaitEvent( & event ) ;
+		
+		} while ( event.type != SDL_KEYDOWN ) ;
+	}
+	else
+	{
+		SDL_Delay( 1000 /* milliseconds */ ) ;
+	}
+
+}
 
 
 int main( int argc, char * argv[] )
@@ -93,6 +118,56 @@ int main( int argc, char * argv[] )
 	
 		LogPlug::info( "Testing basic SDL_image" ) ;
 		
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+
+
 		LogPlug::info( "Starting SDL (base, audio and video)" ) ;
 
     	if ( SDL_Init( SDL_INIT_VIDEO ) != SDL_SUCCESS ) 
@@ -150,22 +225,12 @@ int main( int argc, char * argv[] )
 		imageFinder.addPath( "../src/doc/web/images" ) ;
 	
 		const string firstImageFile = imageFinder.find(
-			"Soldier-heavy-purple-small.png" ) ;
+			"VikingWalkingInSnow.jpg" ) ;
 		
 		LogPlug::info( "Displaying a JPEG image from file " + firstImageFile ) ;
 		
 		displayImage( firstImageFile, screen ) ;
-
-		Ceylan::display( "< Press any key on SDL window to stop >" ) ;
-	
-		SDL_Event event ; 
-	
-		do 
-		{
-	  		SDL_PollEvent( & event ) ;
-		} 
-		while ( event.type != SDL_KEYDOWN ) ;
-
+		waiter( isBatch ) ;
 	
 		const string secondImageFile = imageFinder.find(
 			"osdl-zoom-inverted.png" ) ;
@@ -173,16 +238,8 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Displaying a PNG image from file " + secondImageFile ) ;
 
 		displayImage( secondImageFile, screen ) ;
-			
-		Ceylan::display( "< Press any key on SDL window to stop >" ) ;
+		waiter( isBatch ) ;
 	
-		do 
-		{
-		
-	  		SDL_PollEvent( & event ) ;
-			
-		} while ( event.type != SDL_KEYDOWN ) ;
-
     	LogPlug::info( "Stopping SDL" ) ;
     	SDL_Quit() ;
     	LogPlug::info( "SDL successfully stopped." ) ;
