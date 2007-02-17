@@ -11,8 +11,6 @@ using namespace Ceylan::Log ;
  * Basically useful to check whether library linking works.
  *
  */
-
-
 int main( int argc, char * argv[] )
 {
 
