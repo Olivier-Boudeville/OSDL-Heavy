@@ -15,7 +15,7 @@ using std::string ;
 
 /* 
  * This module is made to test just plain SDL : nothing here should depend 
- * on OSDL !
+ * on OSDL, apart basic helpers. 
  *
  */
 
@@ -38,9 +38,9 @@ void display_bmp( const string & fileName, SDL_Surface * targetSurface )
 	
     if ( image == 0 ) 
 	{
-		LogPlug::fatal( "Unable to load " + fileName + " :"  
+		LogPlug::fatal( "Unable to load '" + fileName + "' :"  
 				+ Utils::getBackendLastError() ) ;
- 		throw Ceylan::TestException( "Unable to load " + fileName + " : "  
+ 		throw Ceylan::TestException( "Unable to load '" + fileName + "' : "  
 				+ Utils::getBackendLastError() ) ;
     }
 
@@ -235,6 +235,55 @@ int main( int argc, char * argv[] )
 	{
 	
 		LogPlug::info( "Testing basic SDL" ) ;
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
 		
 		LogPlug::info( "Starting SDL (base and video)" ) ;
 
@@ -292,7 +341,7 @@ int main( int argc, char * argv[] )
 	
 		const string imageFile = imageFinder.find( "OSDL.bmp" ) ;
 		
-		LogPlug::info( "Displaying a JPEG image from file " + imageFile ) ;
+		LogPlug::info( "Displaying a BMP image from file " + imageFile ) ;
 	
 		display_bmp( imageFile, screen ) ;
 
@@ -301,7 +350,7 @@ int main( int argc, char * argv[] )
 		SDL_LockSurface( screen ) ;
 	
 		
-		for ( x=1 ; x <6 ; x++ ) 
+		for ( x=1 ; x<6 ; x++ ) 
 		{
 			LogPlug::info( "Testing getPixel at ( " 
 				+ Ceylan::toString( x ) + " ; " 
@@ -390,11 +439,22 @@ int main( int argc, char * argv[] )
 	
 		SDL_Event event ; 
 	
-		do 
+		if ( ! isBatch )
 		{
-	  		SDL_PollEvent( & event ) ;
-		} while ( event.type != SDL_KEYDOWN ) ;
-
+		
+			do 
+			{
+		
+				// Avoid busy waits :
+	  			SDL_WaitEvent( & event ) ;
+			
+			} while ( event.type != SDL_KEYDOWN ) ;
+		}
+		else
+		{
+			SDL_Delay( 1000 /* milliseconds */ ) ;
+		}
+		
 		LogPlug::info( "Stopping SDL" ) ;
     	SDL_Quit() ;
 		LogPlug::info( "SDL successfully stopped" ) ;
