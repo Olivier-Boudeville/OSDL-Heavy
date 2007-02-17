@@ -45,9 +45,59 @@ int main( int argc, char * argv[] )
 
 	LogHolder myLog( argc, argv ) ;
 	
-	try {
+	try 
+	{
 	
 		LogPlug::info( "Testing basic SDL_gfx" ) ;
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
 		
 		LogPlug::info( "Starting SDL (base, audio and video)" ) ;
 
@@ -113,10 +163,21 @@ int main( int argc, char * argv[] )
 		
 		SDL_Event event ; 
 	
-		do 
+		if ( ! isBatch )
 		{
-	  		SDL_PollEvent( & event ) ;
-		} while ( event.type != SDL_KEYDOWN ) ;
+		
+			do 
+			{
+		
+				// Avoid busy waits :
+	  			SDL_WaitEvent( & event ) ;
+			
+			} while ( event.type != SDL_KEYDOWN ) ;
+		}
+		else
+		{
+			SDL_Delay( 1000 /* milliseconds */ ) ;
+		}
 
     	LogPlug::info( "Stopping SDL" ) ;
     	SDL_Quit() ;
