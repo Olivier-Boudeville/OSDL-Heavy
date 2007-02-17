@@ -9,6 +9,6 @@ testsaudiodir=@OSDL_TEST_DIR@/audio
 testsaudio_CXXFLAGS = @AM_CXXFLAGS@
 
 #testsaudio_PROGRAMS = \
-#	testBasic.exe                               \
+#	testBasic.exe                               
 
 #testBasic_SOURCES                        = testBasic.cc
