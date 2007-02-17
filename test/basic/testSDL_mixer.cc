@@ -51,12 +51,69 @@ int main( int argc, char * argv[] )
 {
 
 	LogHolder myLog( argc, argv ) ;
+
+	bool loop = false ;
 	
 	try 
 	{
 	
 		LogPlug::info( "Testing basic SDL_mixer" ) ;
 		
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--loop" )
+			{
+				LogPlug::info( "Loop mode selected" ) ;
+				loop = true ;
+				tokenEaten = true ;
+			}
+			
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
 		
 		LogPlug::info( "Starting SDL (base, audio and video)" ) ;
 
@@ -117,7 +174,6 @@ int main( int argc, char * argv[] )
 		
 		Ceylan::Uint32 seconds = 0 ;
 		
-		bool loop = false ;
 		
 		Mix_PlayMusic( music, loop ? -1 : 1 ) ;
 		
@@ -130,10 +186,12 @@ int main( int argc, char * argv[] )
 		
 		while ( Mix_PlayingMusic() ) 
 		{
-			SDL_Delay( 1000 ) ;
+		
+			SDL_Delay( 1000 /* milliseconds */ ) ;
 			LogPlug::info( "Playing for " + Ceylan::toString( seconds ) 
 				+ " second(s)." ) ;
 			seconds++ ;
+			
 		}
 		
 		Mix_FreeMusic( music ) ;
