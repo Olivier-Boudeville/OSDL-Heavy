@@ -17,13 +17,13 @@ testsbasic_PROGRAMS = \
 	testSDLWithOpenGL.exe
 	
 
-testBasic_SOURCES                        = testBasic.cc
-testOSDLBasic_SOURCES                    = testOSDLBasic.cc
-testOSDLCDROMDrive_SOURCES               = testOSDLCDROMDrive.cc
-testOSDLException_SOURCES                = testOSDLException.cc
-testSDL_SOURCES                          = testSDL.cc
-testSDL_gfx_SOURCES                      = testSDL_gfx.cc
-testSDL_image_SOURCES                    = testSDL_image.cc
-testSDL_mixer_SOURCES                    = testSDL_mixer.cc
-testSDLWithOpenGL_SOURCES                = testSDLWithOpenGL.cc
+testBasic_exe_SOURCES                        = testBasic.cc
+testOSDLBasic_exe_SOURCES                    = testOSDLBasic.cc
+testOSDLCDROMDrive_exe_SOURCES               = testOSDLCDROMDrive.cc
+testOSDLException_exe_SOURCES                = testOSDLException.cc
+testSDL_exe_SOURCES                          = testSDL.cc
+testSDL_gfx_exe_SOURCES                      = testSDL_gfx.cc
+testSDL_image_exe_SOURCES                    = testSDL_image.cc
+testSDL_mixer_exe_SOURCES                    = testSDL_mixer.cc
+testSDLWithOpenGL_exe_SOURCES                = testSDLWithOpenGL.cc
 
