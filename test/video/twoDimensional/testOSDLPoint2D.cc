@@ -1,7 +1,6 @@
 #include "OSDL.h"
 using namespace OSDL::Video::TwoDimensional ;
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 #include <string>
@@ -23,7 +22,7 @@ int main( int argc, char * argv[] )
 
     	LogPlug::info( "Testing OSDL Point2D" ) ;	
 
-        Point2D p1( (OSDL::Video::Coordinate) 14, 34 ) ;
+        Point2D p1( static_cast<OSDL::Video::Coordinate>( 14 ), 34 ) ;
         
 		LogPlug::info( "Point located at ( 14 ; 34 ) displays as " 
 			+ p1.toString() ) ;
@@ -54,6 +53,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -62,6 +62,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -70,6 +71,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -78,6 +80,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

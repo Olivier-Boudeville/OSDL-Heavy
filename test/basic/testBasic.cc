@@ -1,31 +1,30 @@
-#include "Ceylan.h"
-using namespace Ceylan::Log ;
-
-
 #include "OSDL.h"
 using namespace OSDL ;
+
+using namespace Ceylan::Log ;
 
 
 
 /**
  * Test for the basic module.
  *
- * Basically useful to check library linking works.
+ * Basically useful to check whether library linking works.
  *
  */
 
 
-int main( int argc, const char * const argv[] )
+int main( int argc, char * argv[] )
 {
+
+
+	LogHolder myLog( argc, argv ) ;
 
     try
     {
-	
-		LogPlugClassical::startService( argv[ 0 ] ) ;
-		
+			
         LogPlug::info( "Testing some of the basic services." ) ;
 
-		CommonModule & myModule = getCommonModule( static_cast<Flags>( 1 ) ) ; 
+		CommonModule & myModule = getCommonModule( CommonModule::UseVideo ) ; 
 		
 		LogPlug::info( myModule.toString() ) ;
 		

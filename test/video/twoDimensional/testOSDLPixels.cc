@@ -4,7 +4,6 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::Pixels ;
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -34,14 +33,16 @@ int main( int argc, char * argv[] )
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         
 		 
-		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo ) ;				
+		CommonModule & myOSDL = OSDL::getCommonModule( 
+			CommonModule::UseVideo ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -52,8 +53,12 @@ int main( int argc, char * argv[] )
 		
     		LogPlug::info( "Prerequesite : having three random generators" ) ;	
 		
-			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, screenWidth ) ;
-			Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, screenHeight ) ;
+			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 
+				0, screenWidth ) ;
+				
+			Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 
+				0, screenHeight ) ;
+				
 			Ceylan::Maths::Random::WhiteNoiseGenerator colorRand( 0, 256 ) ;
 	
 	
@@ -74,10 +79,10 @@ int main( int argc, char * argv[] )
 				+ Pixels::toString( screen.getPixelFormat() ) ) ;
 	
 	
-			for ( int i = 0; i < 50; i++ )
+			for ( Ceylan::Uint32 i = 0; i < 50; i++ )
 			{
 	
-				for ( int j = 0; j < 5000; j++ )
+				for ( Ceylan::Uint32 j = 0; j < 5000; j++ )
 				{
 	
 					abscissa = abscissaRand.getNewValue() ;
@@ -88,13 +93,15 @@ int main( int argc, char * argv[] )
 					blue  = colorRand.getNewValue() ;
 					alpha = colorRand.getNewValue() ;
 	
-					screen.putRGBAPixelAt( abscissa, ordinate, red, green, blue, alpha ) ;
+					screen.putRGBAPixelAt( abscissa, ordinate, 
+						red, green, blue, alpha ) ;
 	
 				}
 
 				// Avoid having too many logs (300 000 would be too much !)
 				LogPlug::info( "Putting at [ "
-					+ Ceylan::toString( abscissa ) + " ; " + Ceylan::toString( ordinate )
+					+ Ceylan::toString( abscissa ) + " ; " 
+					+ Ceylan::toString( ordinate )
 					+ " ] pixel [R;G;B;A] = [ "
 					+ Ceylan::toNumericalString( red )	+ " ; "
 					+ Ceylan::toNumericalString( green ) + " ; "
@@ -102,7 +109,8 @@ int main( int argc, char * argv[] )
 					+ Ceylan::toNumericalString( alpha ) + " ]" ) ;
 	
 				LogPlug::info( "Reading afterwards : actual pixel color is "
-					+ Pixels::toString( screen.getColorDefinitionAt( abscissa, ordinate ) ) ) ;
+					+ Pixels::toString( 
+						screen.getColorDefinitionAt( abscissa, ordinate ) ) ) ;
 
 			}
 			
@@ -119,18 +127,21 @@ int main( int argc, char * argv[] )
 		{	
 			
 			
- 			LogPlug::info( "Drawing a few colored pixels to allow fine log checking" ) ;
+ 			LogPlug::info( 
+				"Drawing a few colored pixels to allow fine log checking" ) ;
 	
 			screen.lock() ;
 		
 			// DodgerBlue = {  30, 144, 255, 255 }
 			ColorDefinition firstColorDef = Pixels::DodgerBlue ;
 			
-			PixelColor firstPixelColor = Pixels::convertColorDefinitionToPixelColor(
-				screen.getPixelFormat(), firstColorDef ) ;
+			PixelColor firstPixelColor =
+				Pixels::convertColorDefinitionToPixelColor(
+					screen.getPixelFormat(), firstColorDef ) ;
 			
 			LogPlug::info( "First color, " + Pixels::toString( firstColorDef ) 
-				+ ", converted to screen pixel format and then de-converted, displays as : " 
+				+ ", converted to screen pixel format "
+				"and then de-converted, displays as : " 
 				+ Pixels::toString( Pixels::convertPixelColorToColorDefinition(
 					screen.getPixelFormat(), firstPixelColor ) ) 
 					+ "." ) ;
@@ -141,11 +152,13 @@ int main( int argc, char * argv[] )
 			ColorElement blue  =  14 ;
 			ColorElement alpha = 130 ;
 			
-			ColorDefinition secondColorDef = Pixels::convertRGBAToColorDefinition(
-				red, green, blue, alpha ) ;
+			ColorDefinition secondColorDef =
+				Pixels::convertRGBAToColorDefinition(
+					red, green, blue, alpha ) ;
 			
 			if ( Pixels::areEqual( secondColorDef, 
-				Pixels::convertRGBAToColorDefinition( red, green, blue, alpha ) ) ) 
+				Pixels::convertRGBAToColorDefinition( 
+					red, green, blue, alpha ) ) ) 
 			{	
 			
 				LogPlug::info( "Small test for basic two-way conversion "
@@ -163,28 +176,37 @@ int main( int argc, char * argv[] )
 			}
 			
 			
-			PixelColor secondPixelColor = Pixels::convertColorDefinitionToPixelColor(
-				screen.getPixelFormat(), secondColorDef ) ;
+			PixelColor secondPixelColor =
+				Pixels::convertColorDefinitionToPixelColor(
+					screen.getPixelFormat(), secondColorDef ) ;
 				
-			LogPlug::info( "Second color, " + Pixels::toString( secondColorDef ) 
-				+ ", converted to pixel format and then de-converted, displays as : " 
+			LogPlug::info( "Second color, " 
+				+ Pixels::toString( secondColorDef ) 
+				+ ", converted to pixel format and then de-converted, "
+				"displays as : " 
 				+ Pixels::toString( Pixels::convertPixelColorToColorDefinition(
 					screen.getPixelFormat(), secondPixelColor ) ) + "." ) ;
 			
 			LogPlug::info( "Putting onscreen both pixels." ) ;
 			
-			screen.putPixelColorAt( 10, 10, firstPixelColor, firstColorDef.unused ) ;
-			screen.putPixelColorAt( 20, 20, secondPixelColor, secondColorDef.unused ) ;
+			screen.putPixelColorAt( 10, 10, firstPixelColor,
+				firstColorDef.unused ) ;
+				
+			screen.putPixelColorAt( 20, 20, secondPixelColor,
+				secondColorDef.unused ) ;
 			
 			LogPlug::info( "Reading both pixels from screen." ) ;
 			
-			LogPlug::info( "First pixel displays as "  + screen.describePixelAt( 10, 10 ) ) ;
+			LogPlug::info( "First pixel displays as " 
+				+ screen.describePixelAt( 10, 10 ) ) ;
 
-			LogPlug::info( "Second pixel displays as " + screen.describePixelAt( 20, 20 ) 
-				+ " Alpha cannot match since the screen surface has no alpha coordinate, "
-				"in this case AlphaOpaque should be returned instead. Moreover, this second color "
-				"is not totally opaque, hence is alphablended by the pure black background, "
-				"leading to a darker color." ) ;
+			LogPlug::info( "Second pixel displays as " 
+				+ screen.describePixelAt( 20, 20 ) 
+				+ " Alpha cannot match since the screen surface "
+				"has no alpha coordinate, in this case AlphaOpaque "
+				"should be returned instead. Moreover, this second color "
+				"is not totally opaque, hence is alphablended by "
+				"the pure black background, leading to a darker color." ) ;
 							 
 			
 			screen.unlock() ;
@@ -202,6 +224,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -210,6 +233,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -218,6 +242,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -226,6 +251,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

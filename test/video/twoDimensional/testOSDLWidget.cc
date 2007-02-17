@@ -4,7 +4,6 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::Pixels ;
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -31,14 +30,16 @@ int main( int argc, char * argv[] )
 		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         		 
-		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo ) ;				
+		CommonModule & myOSDL = OSDL::getCommonModule( 
+			CommonModule::UseVideo ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -46,12 +47,14 @@ int main( int argc, char * argv[] )
     	LogPlug::info( "Drawing widget." ) ;		
  		
 		
-		LogPlug::info( "Before adding widget, screen surface is : " + screen.toString() ) ;
+		LogPlug::info( "Before adding widget, screen surface is : "
+			 + screen.toString() ) ;
 
 		screen.lock() ;		
 	
 		/*
-		 * Widgets will be owned (and deallocated) by their container, here the screen surface.
+		 * Widgets will be owned (and deallocated) by their container, here 
+		 * the screen surface.
 		 *
 		 * Widget width is only 100, so 'Heimdal' will be truncated to 'Heimd' :
 		 *
@@ -76,12 +79,12 @@ int main( int argc, char * argv[] )
 			"Hello world" ) ;
 		
 		
-		LogPlug::info( "After adding widget, screen surface is : " + screen.toString() ) ;
+		LogPlug::info( "After adding widget, screen surface is : " 
+			+ screen.toString() ) ;
 
 		
 		screen.drawCircle( 150, 150, 150, Red, /* filled */ false ) ;
 
-		
 		screen.redraw() ;
 		
 		screen.drawCircle( 300, 250, 100, Green, /* filled */ true ) ;
@@ -102,6 +105,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -110,6 +114,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -118,6 +123,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -126,6 +132,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

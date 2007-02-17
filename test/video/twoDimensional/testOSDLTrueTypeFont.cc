@@ -6,7 +6,6 @@ using namespace OSDL::Video::TwoDimensional::Text ;
 using namespace OSDL::Video::Pixels ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 using namespace Ceylan::System ;
 
@@ -16,17 +15,20 @@ using namespace Ceylan::System ;
 
 
 /*
- * TrueType font directory is defined relatively to OSDL documentation tree, usually this pathname
- * relative to the install directory where this test executable should lie is :
+ * TrueType font directory is defined relatively to OSDL documentation tree,
+ * usually this pathname relative to the install directory where this 
+ * test executable should lie is :
  * (to be reached from executable directory)
  *
  */
-const std::string trueTypeFontDirFromExec = "../../../src/doc/web/common/fonts" ;
+const std::string trueTypeFontDirFromExec = 
+	"../../../src/doc/web/common/fonts" ;
 
 
 /*
- * TrueType font directory is defined relatively to OSDL documentation tree, usually this pathname
- * relative to the install directory where this test executable should lie is :
+ * TrueType font directory is defined relatively to OSDL documentation tree,
+ * usually this pathname relative to the install directory where this test
+ * executable should lie is :
  * (to be reached from OSDL/OSDL-${OSDL_VERSION}/src/code)
  *
  */
@@ -34,7 +36,11 @@ const std::string trueTypeFontDirForPlayTests = "../src/doc/web/common/fonts" ;
 
 
 
-// Those are Larabie splendid fonts, see read_me.html under trueTypeFontDirFromExec :
+/*
+ * Those are Larabie splendid fonts, see read_me.html under
+ * trueTypeFontDirFromExec :
+ *
+ */
 const std::string firstTrueTypeFontFile  = "cretino.ttf" ;
 const std::string secondTrueTypeFontFile = "iomanoid.ttf" ;
 const std::string thirdTrueTypeFontFile  = "stilltim.ttf" ;
@@ -46,18 +52,18 @@ const std::string sixthTrueTypeFontFile  = "stilltim.ttf" ;
 */
 
 
-void displayFont( Surface & screen, const std::string & fontFilename, bool convertToDisplay,
-	Font::RenderCache cache )
+void displayFont( Surface & screen, const std::string & fontFilename, 
+	bool convertToDisplay, Font::RenderCache cache )
 {
 
 	screen.clear() ;
 	
 	Coordinate abscissa ;
 	
-	unsigned int scaleFactor = 75 ;
+	Ceylan::Uint32 scaleFactor = 75 ;
 	
 	
-	for ( unsigned int i = 0; i < 8; i++ )
+	for ( Ceylan::Uint32 i = 0; i < 8; i++ )
 	{
 	
 		TrueTypeFont testedFont( fontFilename, 
@@ -74,7 +80,8 @@ void displayFont( Surface & screen, const std::string & fontFilename, bool conve
 		testedFont.blitLatin1Text( screen, abscissa, 0  , "did",
 			/* quality */ Font::Solid, Pixels::Green ) ;
 			
-		testedFont.blitLatin1Text( screen, abscissa, 50  , /* "averylongwordmydear" */ "Glive",
+		testedFont.blitLatin1Text( screen, abscissa, 50  , 
+			/* "averylongwordmydear" */ "Glive",
 			/* quality */ Font::Solid, Pixels::Green ) ;
 			
 		testedFont.blitLatin1Text( screen, abscissa, 100, "tested",
@@ -138,7 +145,8 @@ int main( int argc, char * argv[] )
 
 		LogPlug::info( "Testing OSDL TrueType font service" ) ;	
 		
-		LogPlug::info( "Note that having compiled OSDL with the OSDL_DEBUG_FONT flag set "
+		LogPlug::info( 
+			"Note that having compiled OSDL with the OSDL_DEBUG_FONT flag set "
 			"allows for far more debug informations." ) ;
 			
 			
@@ -153,23 +161,27 @@ int main( int argc, char * argv[] )
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
-    	LogPlug::info( "Font path is managed by " + Text::Font::FontFileLocator.toString() ) ;
+    	LogPlug::info( "Font path is managed by " 
+			+ Text::Font::FontFileLocator.toString() ) ;
 
 
 		bool correct = false ;
 		
 		try
 		{
-			TrueTypeFont nonExistingFont( "NotExisting.ttf", /* point size */ 20 ) ;
+			TrueTypeFont nonExistingFont( "NotExisting.ttf", 
+				/* point size */ 20 ) ;
 		}
 		catch( const TextException & e )
 		{
-			LogPlug::info( "Asking for a non-existing font failed as expected : " 
+			LogPlug::info( 
+				"Asking for a non-existing font failed as expected : " 
 				+ e.toString() ) ;
 			correct = true ;
 		}
@@ -182,8 +194,11 @@ int main( int argc, char * argv[] )
 		 * Find a valid TrueType font :
 		 *
 		 */
-		TrueTypeFont::TrueTypeFontFileLocator.addPath( trueTypeFontDirFromExec ) ;
-		TrueTypeFont::TrueTypeFontFileLocator.addPath( trueTypeFontDirForPlayTests ) ;
+		TrueTypeFont::TrueTypeFontFileLocator.addPath( 
+			trueTypeFontDirFromExec ) ;
+			
+		TrueTypeFont::TrueTypeFontFileLocator.addPath(
+			trueTypeFontDirForPlayTests ) ;
 			
 		LogPlug::info( "TrueType fonts will be found through : " 
 			+ TrueTypeFont::TrueTypeFontFileLocator.toString() ) ;		
@@ -192,22 +207,28 @@ int main( int argc, char * argv[] )
 		if ( randomTestWanted )
 		{			
 			
-	    	LogPlug::info( "Writing at random places text with random color." ) ;	
+	    	LogPlug::info( 
+				"Writing at random places text with random color." ) ;	
 		
 	    	LogPlug::info( "Prerequesite : having four random generators" ) ;	
 		
-			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, screenWidth ) ;
-			Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, screenHeight ) ;
+			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0,
+				screenWidth ) ;
+				
+			Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0,
+				screenHeight ) ;
+				
 			Ceylan::Maths::Random::WhiteNoiseGenerator colorRand( 0, 256 ) ;
 			Ceylan::Maths::Random::WhiteNoiseGenerator charRand( 0, 256 ) ;
 	
 			Coordinate x, y ;
 					
-			TrueTypeFont existingFont( firstTrueTypeFontFile, /* point size */ 50, 
-				/* font index */ 0, /* convertToDisplay */ true, 
-				/* render cache */ Font::None ) ;
+			TrueTypeFont existingFont( firstTrueTypeFontFile, 
+				/* point size */ 50, /* font index */ 0, 
+				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
 						
-			LogPlug::info( "Successfully loaded following font : " + existingFont.toString() ) ;
+			LogPlug::info( "Successfully loaded following font : " 
+				+ existingFont.toString() ) ;
 		
 		
 			ColorElement red ;
@@ -227,7 +248,7 @@ int main( int argc, char * argv[] )
 			Ceylan::Latin1Char toRender ;
 			Font::RenderQuality quality ;
 			
-			for ( unsigned int i = 0; i < 400; i++ )
+			for ( Ceylan::Uint32 i = 0; i < 400; i++ )
 			{
 										
 				x = abscissaRand.getNewValue() ;			
@@ -237,9 +258,11 @@ int main( int argc, char * argv[] )
 				green = colorRand.getNewValue() ;	
 				blue  = colorRand.getNewValue() ;
 				
-				toRender = static_cast<Ceylan::Latin1Char>( charRand.getNewValue() ) ;
+				toRender = static_cast<Ceylan::Latin1Char>(
+					charRand.getNewValue() ) ;
 
-				textColor = convertRGBAToColorDefinition( red, green, blue, Pixels::AlphaOpaque ) ;
+				textColor = convertRGBAToColorDefinition( 
+					red, green, blue, Pixels::AlphaOpaque ) ;
 			
 				switch( i % 3 )
 				{
@@ -252,8 +275,10 @@ int main( int argc, char * argv[] )
 						quality = Font::Shaded ;
 						if ( randomBackgroundColor )
 							existingFont.setBackgroundColor( 
-								convertRGBAToColorDefinition( colorRand.getNewValue(),
-									colorRand.getNewValue(), colorRand.getNewValue(),
+								convertRGBAToColorDefinition(
+									colorRand.getNewValue(),
+									colorRand.getNewValue(),
+									colorRand.getNewValue(),
 									Pixels::AlphaOpaque ) ) ;
 						break ;
 						
@@ -262,7 +287,8 @@ int main( int argc, char * argv[] )
 						break ;
 						
 					default:
-						throw Ceylan::TestException( "Unexpected random quality drawn." ) ;
+						throw Ceylan::TestException( 
+							"Unexpected random quality drawn." ) ;
 						break ;
 						
 				}
@@ -271,15 +297,21 @@ int main( int argc, char * argv[] )
 				if ( i % 10 == 0 )
 					LogPlug::debug( "Requesting rendering for character '" 
 						+ Ceylan::toString( toRender )
-						+ "' at (" + Ceylan::toString( x ) + ";" + Ceylan::toString( y ) 
-						+ ") with color " + Pixels::toString( textColor ) + "." ) ;
+						+ "' at (" + Ceylan::toString( x ) + ";" 
+						+ Ceylan::toString( y ) + ") with color " 
+						+ Pixels::toString( textColor ) + "." ) ;
 			
 				// Try renderLatin1GlyphAlpha instead to see it is not correct.
 
-				// Test both : generates an intermediate texture and blit it, or blit directly :
+				/*
+				 * Test both : generates an intermediate texture and blit it, 
+				 * or blit directly :
+				 *
+				 */
 				if ( i % 2 == 0 )
 				{
-					existingFont.blitLatin1Glyph( screen, x, y, toRender, quality, textColor ) ;
+					existingFont.blitLatin1Glyph( screen, x, y, 
+						toRender, quality, textColor ) ;
 				}	
 				else
 				{	
@@ -294,7 +326,8 @@ int main( int argc, char * argv[] )
 		
 		
 			Surface * textSurface = & existingFont.renderLatin1Text( 
-				"You want to read a game-book",	Font::Shaded, Pixels::DarkOrange ) ;
+				"You want to read a game-book",	
+				Font::Shaded, Pixels::DarkOrange ) ;
 		
 			textSurface->blitTo( screen, 100, 100 ) ;
 			textSurface->savePNG( "testOSDLTrueTypeFont-text.png" ) ;
@@ -323,16 +356,21 @@ int main( int argc, char * argv[] )
 			 * Find a valid TrueType font :
 			 *
 			 */
-			TrueTypeFont::TrueTypeFontFileLocator.addPath( trueTypeFontDirFromExec ) ;
-			TrueTypeFont::TrueTypeFontFileLocator.addPath( trueTypeFontDirForPlayTests ) ;
+			TrueTypeFont::TrueTypeFontFileLocator.addPath(
+				trueTypeFontDirFromExec ) ;
+				
+			TrueTypeFont::TrueTypeFontFileLocator.addPath(
+				trueTypeFontDirForPlayTests ) ;
 				
 			LogPlug::info( "TrueType fonts will be found through : " 
 				+ TrueTypeFont::TrueTypeFontFileLocator.toString() ) ;
 					
-			TrueTypeFont existingFont( firstTrueTypeFontFile, 50, /* font index */ 0, 
-				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
+			TrueTypeFont existingFont( firstTrueTypeFontFile, 50, 
+				/* font index */ 0, /* convertToDisplay */ true, 
+				/* render cache */ Font::None ) ;
 						
-			LogPlug::info( "Successfully loaded following font : " + existingFont.toString() ) ;
+			LogPlug::info( "Successfully loaded following font : " 
+				+ existingFont.toString() ) ;
 
 		
 			existingFont.blitLatin1Text( screen, 5, 5, 
@@ -384,7 +422,8 @@ int main( int argc, char * argv[] )
 			bool manyKeysToHit = false ;
 			
 			
-			displayFont( screen, firstTrueTypeFontFile, /* convertToDisplay */ true, 
+			displayFont( screen, firstTrueTypeFontFile, 
+				/* convertToDisplay */ true, 
 				/* render cache */ Font::GlyphCached ) ;
 
 			myOSDL.getEventsModule().waitForAnyKey() ;
@@ -393,12 +432,14 @@ int main( int argc, char * argv[] )
 			if ( manyKeysToHit )
 			{
 			
-				displayFont( screen, firstTrueTypeFontFile, /* convertToDisplay */ true, 
+				displayFont( screen, firstTrueTypeFontFile, 
+					/* convertToDisplay */ true, 
 					/* render cache */ Font::WordCached ) ;
 
 				myOSDL.getEventsModule().waitForAnyKey() ;
 
-				displayFont( screen, firstTrueTypeFontFile, /* convertToDisplay */ true, 
+				displayFont( screen, firstTrueTypeFontFile, 
+					/* convertToDisplay */ true, 
 					/* render cache */ Font::TextCached ) ;
 
 				myOSDL.getEventsModule().waitForAnyKey() ;
@@ -406,7 +447,8 @@ int main( int argc, char * argv[] )
 			}
 
 		
-			displayFont( screen, secondTrueTypeFontFile, /* convertToDisplay */ false, 
+			displayFont( screen, secondTrueTypeFontFile, 
+				/* convertToDisplay */ false, 
 				/* render cache */ Font::GlyphCached ) ;
 
 			myOSDL.getEventsModule().waitForAnyKey() ;
@@ -415,12 +457,14 @@ int main( int argc, char * argv[] )
 			if ( manyKeysToHit )
 			{
 			
-				displayFont( screen, secondTrueTypeFontFile, /* convertToDisplay */ false, 
+				displayFont( screen, secondTrueTypeFontFile, 
+					/* convertToDisplay */ false, 
 					/* render cache */ Font::WordCached ) ;
 
 				myOSDL.getEventsModule().waitForAnyKey() ;
 
-				displayFont( screen, secondTrueTypeFontFile, /* convertToDisplay */ false, 
+				displayFont( screen, secondTrueTypeFontFile, 
+					/* convertToDisplay */ false, 
 					/* render cache */ Font::TextCached ) ;
 
 				myOSDL.getEventsModule().waitForAnyKey() ;
@@ -428,7 +472,8 @@ int main( int argc, char * argv[] )
 			}
 		
 		
-			displayFont( screen, thirdTrueTypeFontFile, /* convertToDisplay */ true, 
+			displayFont( screen, thirdTrueTypeFontFile, 
+				/* convertToDisplay */ true, 
 				/* render cache */ Font::GlyphCached ) ;
 
 			myOSDL.getEventsModule().waitForAnyKey() ;
@@ -437,13 +482,15 @@ int main( int argc, char * argv[] )
 			if ( manyKeysToHit )
 			{
 			
-				displayFont( screen, thirdTrueTypeFontFile, /* convertToDisplay */ true, 
+				displayFont( screen, thirdTrueTypeFontFile, 
+					/* convertToDisplay */ true, 
 					/* render cache */ Font::WordCached ) ;
 
 				myOSDL.getEventsModule().waitForAnyKey() ;
 				
 		
-				displayFont( screen, thirdTrueTypeFontFile, /* convertToDisplay */ true, 
+				displayFont( screen, thirdTrueTypeFontFile, 
+					/* convertToDisplay */ true, 
 					/* render cache */ Font::TextCached ) ;
 
 				myOSDL.getEventsModule().waitForAnyKey() ;
@@ -457,6 +504,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -465,6 +513,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -473,6 +522,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -481,6 +531,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

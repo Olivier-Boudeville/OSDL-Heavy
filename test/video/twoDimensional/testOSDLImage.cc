@@ -3,7 +3,6 @@ using namespace OSDL ;
 using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -17,8 +16,9 @@ const std::string secondImageFile = "Battle-three-actors-small.jpg"  ;
 
 
 /*
- * Image directory is defined relatively to OSDL documentation tree, usually this pathname
- * relative to the install directory where this test executable should lie is :
+ * Image directory is defined relatively to OSDL documentation tree, usually
+ * this pathname relative to the install directory where this test 
+ * executable should lie is :
  * (to be reached from executable directory)
  *
  */
@@ -26,8 +26,9 @@ const std::string imageDirFromExec = "../../../src/doc/web/images" ;
 
 
 /*
- * Image directory is defined relatively to OSDL documentation tree, usually this pathname
- * relative to the install directory where this test executable should lie is :
+ * Image directory is defined relatively to OSDL documentation tree, 
+ * usually this pathname relative to the install directory where this 
+ * test executable should lie is :
  * (to be reached from OSDL/OSDL-${OSDL_VERSION}/src/code)
  *
  */
@@ -55,8 +56,8 @@ int main( int argc, char * argv[] )
     	LogPlug::info( "Testing OSDL Image" ) ;	
          
 		 
-		OSDL::CommonModule & myOSDL = 
-			OSDL::getCommonModule( CommonModule::UseVideo | CommonModule::UseKeyboard ) ;		
+		OSDL::CommonModule & myOSDL = OSDL::getCommonModule( 
+			CommonModule::UseVideo | CommonModule::UseKeyboard ) ;		
 		
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
@@ -64,13 +65,14 @@ int main( int argc, char * argv[] )
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 
 
-		LogPlug::info( "Loading image located in "	+ firstImageFile ) ;
+		LogPlug::info( "Loading image located in " + firstImageFile ) ;
 				
 		screen.lock() ;
 
@@ -84,7 +86,8 @@ int main( int argc, char * argv[] )
 		
 		screen.drawGrid() ;
 
- 		screen.loadImage( imageFinder.find( firstImageFile ), /* blit only */ true ) ;
+ 		screen.loadImage( imageFinder.find( firstImageFile ), 
+			/* blit only */ true ) ;
 				
 		screen.unlock() ;
 
@@ -99,7 +102,9 @@ int main( int argc, char * argv[] )
 		screen.lock() ;
 
 
- 		Surface & other = Surface::LoadImage( imageFinder.find( secondImageFile ) ) ;
+ 		Surface & other = Surface::LoadImage( 
+			imageFinder.find( secondImageFile ) ) ;
+			
 		other.blitTo( screen, 270, 155 ) ;
 				
 		screen.unlock() ;
@@ -120,6 +125,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -128,6 +134,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -136,6 +143,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -144,6 +152,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

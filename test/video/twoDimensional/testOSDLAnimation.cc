@@ -5,7 +5,6 @@ using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Events ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 using namespace Ceylan::Maths::Linear ;
 
@@ -15,10 +14,8 @@ using namespace Ceylan::Maths::Linear ;
 
 
 
-
 /**
  * Small usage tests for very basic animation.
- *
  *
  */
 
@@ -26,9 +23,8 @@ Length screenWidth  = 640 ;
 Length screenHeight = 480 ;
   
 /*
- Should be ActiveObject !
  
-class Sun : public TimedDrawable
+class Sun : public ActiveObject
 {
 
 	public:
@@ -78,6 +74,7 @@ class Sun : public TimedDrawable
 
 */
  
+ 
 int main( int argc, char * argv[] ) 
 {
 
@@ -92,12 +89,13 @@ int main( int argc, char * argv[] )
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         
 		 
-		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo ) ;				
+		CommonModule & myOSDL = OSDL::getCommonModule( 
+			CommonModule::UseVideo ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
@@ -113,6 +111,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -121,6 +120,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -129,6 +129,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -137,6 +138,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

@@ -5,15 +5,14 @@ using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::Pixels ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
 
 
 /**
- * Small unit tests for UprightRectangle primitive, rendered both as classical rectangles or as
- * rectangles with round corners.
+ * Small unit tests for UprightRectangle primitive, rendered both as 
+ * classical rectangles or as rectangles with round corners.
  *
  */
 int main( int argc, char * argv[] ) 
@@ -46,7 +45,8 @@ int main( int argc, char * argv[] )
 			+ p1.toString() + " and " + p2.toString() 
 			+ " displays as " + r1.toString() ) ;
 		
-		LogPlug::info( "Trying to make an incorrect UprightRectangle from points "
+		LogPlug::info( 
+			"Trying to make an incorrect UprightRectangle from points "
 			+ p2.toString() + " and " + p1.toString() ) ;
 		
 		
@@ -58,13 +58,15 @@ int main( int argc, char * argv[] )
 		}
 		catch( const OSDL::Video::VideoException & e )
 		{
-			LogPlug::info( "Correct, VideoException caught : " + e.toString() ) ;
+			LogPlug::info( "Correct, VideoException caught : " 
+				+ e.toString() ) ;
 			caught = true ;
 		}
 		
 		if ( ! caught )
 			throw OSDL::TestException( 
-				"Creating an abnormal UprightRectangle has not been detected !" ) ;
+				"Creating an abnormal UprightRectangle has not been detected !"
+		) ;
 				
 		LogPlug::info( "Initializing display to draw rectangles." ) ;
 		
@@ -76,7 +78,8 @@ int main( int argc, char * argv[] )
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -86,8 +89,12 @@ int main( int argc, char * argv[] )
 
     	LogPlug::info( "Prerequesite : having four random generators" ) ;	
 		
-		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, screenWidth ) ;
-		Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, screenHeight ) ;
+		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, 
+			screenWidth ) ;
+			
+		Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, 
+			screenHeight ) ;
+			
 		Ceylan::Maths::Random::WhiteNoiseGenerator colorRand( 0, 256 ) ;
 	
 		
@@ -113,7 +120,7 @@ int main( int argc, char * argv[] )
 		
 			// First, filled rectangles :
 		
-			for ( int i = 0; i < 50; i++ )
+			for ( Ceylan::Uint8 i = 0; i < 50; i++ )
 			{
 	
 				x = abscissaRand.getNewValue() ;
@@ -139,7 +146,7 @@ int main( int argc, char * argv[] )
 	
 			// Second, non filled rectangles :
 	
-			for ( int i = 0; i < 50; i++ )
+			for ( Ceylan::Uint8 i = 0; i < 50; i++ )
 			{
 	
 				x = abscissaRand.getNewValue() ;
@@ -171,7 +178,8 @@ int main( int argc, char * argv[] )
 			screen.update() ;
 
 			if ( screenshotWanted )
-				screen.savePNG( "testOSDLUprightRectangle-classical-examples.png" ) ;
+				screen.savePNG(
+					"testOSDLUprightRectangle-classical-examples.png" ) ;
 	
 			myOSDL.getEventsModule().waitForAnyKey() ;
 	
@@ -181,8 +189,6 @@ int main( int argc, char * argv[] )
 		if ( testRoundedRectangles )
 		{
 		
-		
-			
 			// Draw now rectangles with rounded corners :
 
 
@@ -252,13 +258,17 @@ int main( int argc, char * argv[] )
 				Pixels::convertRGBAToColorDefinition( 0, 255, 0, 128 ) ;
 			
 			// Used to compare colors :	
-			screen.drawCircle( /* x */ 320, /* y */ 450, /* radius */ 30, semiAlphaEdgeColor ) ;
-			screen.drawCircle( /* x */ 610, /* y */ 450, /* radius */ 30, semiAlphaBackColor ) ;
+			screen.drawCircle( /* x */ 320, /* y */ 450, 
+				/* radius */ 30, semiAlphaEdgeColor ) ;
+				
+			screen.drawCircle( /* x */ 610, /* y */ 450, /* radius */ 30,
+				semiAlphaBackColor ) ;
 			
 			if ( ! aRect->drawWithRoundedCorners( screen, /* edgeWith */ 25,
 					/* edgeColorDef */ semiAlphaEdgeColor,
 					/* backgroundColorDef */ semiAlphaBackColor ) )
-				LogPlug::error( "Drawing a rectangle with round corner failed." ) ;
+				LogPlug::error( 
+					"Drawing a rectangle with round corner failed." ) ;
 	
 		
 			delete aRect ;
@@ -269,14 +279,14 @@ int main( int argc, char * argv[] )
 			screen.update() ;
 
 			if ( screenshotWanted )	
-				screen.savePNG( "testOSDLUprightRectangle-rounded-examples.png" ) ;
+				screen.savePNG( 
+					"testOSDLUprightRectangle-rounded-examples.png" ) ;
 			
 			myOSDL.getEventsModule().waitForAnyKey() ;
 
 
 			if ( drawPlentyOfRandomRects )
 			{
-			
 			
 				// Plenty of random rounded rectangles :
 	
@@ -286,7 +296,7 @@ int main( int argc, char * argv[] )
 				Ceylan::Maths::Random::WhiteNoiseGenerator edgeRand( 0, 10 ) ;
 				Length edgeWith ;
 	
-				for ( unsigned int i = 0; i < 100; i++ )
+				for ( Ceylan::Uint32 i = 0; i < 100; i++ )
 				{
 	
 					x = abscissaRand.getNewValue() ;
@@ -300,7 +310,8 @@ int main( int argc, char * argv[] )
 					blue  = colorRand.getNewValue() ;
 					alpha = colorRand.getNewValue() ;
 
-					Pixels::ColorDefinition edgeColorDef = Pixels::convertRGBAToColorDefinition(
+					Pixels::ColorDefinition edgeColorDef =
+						Pixels::convertRGBAToColorDefinition(
 						red, green, blue, alpha ) ;
 	
 					red   = colorRand.getNewValue() ;
@@ -314,14 +325,18 @@ int main( int argc, char * argv[] )
 	
 					edgeWith = edgeRand.getNewValue() ;
 					
-					// Ensure that rectangle dimensions are enough, regarding edge width :
+					/*
+					 * Ensure that rectangle dimensions are enough, regarding
+					 * edge width :
+					 *
+					 */
 					rect = new UprightRectangle( x, y, 
 						width + 3 * edgeWith, height + 3 * edgeWith ) ;
 	
 					LogPlug::info( rect->toString() ) ;
 	
-					rect->drawWithRoundedCorners( screen, edgeWith, edgeColorDef, 
-						backgroundColorDef ) ;
+					rect->drawWithRoundedCorners( screen, edgeWith,
+						edgeColorDef, backgroundColorDef ) ;
 	
 					delete rect ;
 				}
@@ -330,7 +345,8 @@ int main( int argc, char * argv[] )
 				screen.update() ;
 	
 				if ( screenshotWanted )
-					screen.savePNG( "testOSDLUprightRectangle-rounded-plenty.png" ) ;
+					screen.savePNG(
+						"testOSDLUprightRectangle-rounded-plenty.png" ) ;
 
 				myOSDL.getEventsModule().waitForAnyKey() ;
 	
@@ -344,6 +360,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -352,6 +369,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -360,6 +378,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -368,6 +387,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

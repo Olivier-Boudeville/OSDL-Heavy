@@ -3,7 +3,6 @@ using namespace OSDL ;
 using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -31,7 +30,8 @@ using namespace Ceylan::Log ;
          
 		 
 		OSDL::CommonModule & myOSDL = 
-			OSDL::getCommonModule( CommonModule::UseVideo | CommonModule::NoParachute ) ;		
+			OSDL::getCommonModule( 
+				CommonModule::UseVideo | CommonModule::NoParachute ) ;		
 				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
@@ -39,7 +39,8 @@ using namespace Ceylan::Log ;
 		Length windowWidth  = 640 ;
 		Length windowHeight = 480 ;
 		
-		myVideo.setMode( windowWidth, windowHeight, VideoModule::UseCurrentColorDepth, 
+		myVideo.setMode( windowWidth, windowHeight,
+			VideoModule::UseCurrentColorDepth, 
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -50,8 +51,12 @@ using namespace Ceylan::Log ;
 
     	LogPlug::info( "Prerequesite : having three random generators" ) ;	
 		
-		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, windowWidth ) ;
-		Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, windowHeight ) ;
+		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, 
+			windowWidth ) ;
+			
+		Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, 
+			windowHeight ) ;
+			
 		Ceylan::Maths::Random::WhiteNoiseGenerator colorRand( 0, 256 ) ;
 		
 				
@@ -68,7 +73,7 @@ using namespace Ceylan::Log ;
 		ColorElement alpha ;
 		
 						
-		for ( int j = 0; j < 50000; j++ )
+		for ( Ceylan::Uint32 j = 0; j < 50000; j++ )
 		{
 		
 			abscissa = abscissaRand.getNewValue() ;
@@ -79,7 +84,8 @@ using namespace Ceylan::Log ;
 			blue  = colorRand.getNewValue() ;
 			alpha = colorRand.getNewValue() ;
 								
-			putRGBAPixel( screen, abscissa, ordinate, red, green, blue, alpha ) ;
+			putRGBAPixel( screen, abscissa, ordinate, 
+				red, green, blue, alpha ) ;
 		}
 
 			
@@ -106,6 +112,7 @@ using namespace Ceylan::Log ;
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -114,6 +121,7 @@ using namespace Ceylan::Log ;
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -122,6 +130,7 @@ using namespace Ceylan::Log ;
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -130,6 +139,7 @@ using namespace Ceylan::Log ;
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

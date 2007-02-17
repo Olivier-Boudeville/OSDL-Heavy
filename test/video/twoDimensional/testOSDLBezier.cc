@@ -5,7 +5,6 @@ using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::Pixels ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -43,8 +42,8 @@ int main( int argc, char * argv[] )
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
@@ -78,7 +77,8 @@ int main( int argc, char * argv[] )
 				
 		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints, 
 				/* numberOfSteps */ 50, Pixels::Bisque ) ) 
-			throw Ceylan::TestException( "Drawing of Bezier curve failed (letter 'O')." ) ;
+			throw Ceylan::TestException( 
+				"Drawing of Bezier curve failed (letter 'O')." ) ;
 		
 		controlPoints.clear() ;
 		
@@ -103,7 +103,8 @@ int main( int argc, char * argv[] )
 				
 		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints, 
 				/* numberOfSteps */ 50, Pixels::Bisque ) ) 
-			throw Ceylan::TestException( "Drawing of Bezier curve failed (letter 'S')." ) ;
+			throw Ceylan::TestException( 
+				"Drawing of Bezier curve failed (letter 'S')." ) ;
 		
 		controlPoints.clear() ;
 
@@ -133,7 +134,8 @@ int main( int argc, char * argv[] )
 				
 		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints, 
 				/* numberOfSteps */ 50, Pixels::Bisque ) ) 
-			throw Ceylan::TestException( "Drawing of Bezier curve failed (letter 'D')." ) ;
+			throw Ceylan::TestException( 
+				"Drawing of Bezier curve failed (letter 'D')." ) ;
 		
 		controlPoints.clear() ;
 			
@@ -155,7 +157,8 @@ int main( int argc, char * argv[] )
 					
 		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints, 
 				/* numberOfSteps */ 50, Pixels::Bisque ) ) 
-			throw Ceylan::TestException( "Drawing of Bezier curve failed (letter 'L')." ) ;
+			throw Ceylan::TestException( 
+				"Drawing of Bezier curve failed (letter 'L')." ) ;
 		
 		controlPoints.clear() ;
 			
@@ -175,6 +178,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -183,6 +187,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -191,6 +196,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -199,6 +205,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

@@ -2,8 +2,6 @@
 using namespace OSDL ;
 using namespace OSDL::Events ;
 
-
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -23,32 +21,35 @@ using std::list ;
 
 #ifdef OSDL_TEST_VERBOSE
 
-#define OSDL_DISPLAY_DEBUG( message ) std::cout << message << endl ;
+#define OSDL_DISPLAY_DEBUG( message ) std::cout << "[testOSDLScheduledMultimediaRendering] " << message << endl ;
 
-#else
+#else // OSDL_TEST_VERBOSE
 
 #define OSDL_DISPLAY_DEBUG( message )
 
-#endif
+#endif // OSDL_TEST_VERBOSE
 
 
 
 
 /**
- * Tests the whole scheduling and rendering framework : the scheduler manages a root renderer which
- * is a multimedia renderer. This one uses an internal video renderer, and an internal audio 
+ * Tests the whole scheduling and rendering framework : the scheduler 
+ * manages a root renderer which is a multimedia renderer. 
+ *
+ * This one uses an internal video renderer, and an internal audio 
  * renderer.
  *
  */
 
 
 /// Directions are : 1 : up, 2 : down, 3 : left, 4 : right.
-typedef unsigned short Direction ;
+typedef Ceylan::Uint8 Direction ;
 
 
 
 /**
- * Very basic multimedia renderer which just uses a list to store its registered views.
+ * Very basic multimedia renderer which just uses a list to store its 
+ * registered views.
  *
  */
 class MyBasicMultimediaRenderer : public OSDL::Rendering::MultimediaRenderer
@@ -58,7 +59,8 @@ class MyBasicMultimediaRenderer : public OSDL::Rendering::MultimediaRenderer
 	public:
 
 	
-		MyBasicMultimediaRenderer() throw( OSDL::Rendering::RenderingException ) :
+		MyBasicMultimediaRenderer() 
+				throw( OSDL::Rendering::RenderingException ) :
 			MultimediaRenderer( /* registerToScheduler */ true ),
 			_views()
 		{
@@ -80,11 +82,12 @@ class MyBasicMultimediaRenderer : public OSDL::Rendering::MultimediaRenderer
 		
 		
 		/**
-		 * Called by the scheduler when a new rendering tick occurs, make the views display 
-		 * themselves.
+		 * Called by the scheduler when a new rendering tick occurs, makes
+		 * the views display themselves.
 		 *
 		 */
-		void renderVideo( Events::RenderingTick currentRenderingTick = 0 ) throw()
+		void renderVideo( Events::RenderingTick currentRenderingTick = 0 )
+			throw()
 		{
 		
 			OSDL_DISPLAY_DEBUG( "Multimedia renderer is rendering video, with " 
@@ -99,7 +102,8 @@ class MyBasicMultimediaRenderer : public OSDL::Rendering::MultimediaRenderer
 		
 		
 		/// Mute test case.
-		void renderAudio( Events::RenderingTick currentRenderingTick = 0 ) throw()
+		void renderAudio( Events::RenderingTick currentRenderingTick = 0 )
+			throw()
 		{
 		
 			OSDL_DISPLAY_DEBUG( "Multimedia renderer is rendering audio, with " 
@@ -191,18 +195,21 @@ class MyController : public OSDL::MVC::Controller
 					break ;
 					
 				case KeyboardHandler::RightArrowKey:
-					OSDL_DISPLAY_DEBUG( "Controller updated with key right !" ) ;
+					OSDL_DISPLAY_DEBUG( 
+						"Controller updated with key right !" ) ;
 					_eventForModel.setDirection( 4 ) ;	
 					break ;
 				
 				case KeyboardHandler::EnterKey:
-					OSDL_DISPLAY_DEBUG( "Controller updated with enter key !" ) ;
+					OSDL_DISPLAY_DEBUG( 
+						"Controller updated with enter key !" ) ;
 					_eventForModel.setDirection( 5 ) ;	
 					break ;
 				
 				default:
 					// Do nothing.
-					OSDL_DISPLAY_DEBUG( "Controller updated with key not registered !" ) ;
+					OSDL_DISPLAY_DEBUG( 
+						"Controller updated with key not registered !" ) ;
 					break ;	
 			}	
 			
@@ -247,7 +254,8 @@ class MyController : public OSDL::MVC::Controller
 		}
 		
 		
-		const Ceylan::Event & getEventFor( const Ceylan::CallerEventListener & listener )	
+		const Ceylan::Event & getEventFor( 
+				const Ceylan::CallerEventListener & listener )	
 			throw( Ceylan::EventException )
 		{
 			OSDL_DISPLAY_DEBUG( "Controller interrogated, returning state " 
@@ -257,7 +265,8 @@ class MyController : public OSDL::MVC::Controller
 				
 		
 		/// Not used here.
-		const string toString( Ceylan::VerbosityLevels level = Ceylan::high ) const throw()	
+		const string toString( Ceylan::VerbosityLevels level = Ceylan::high )
+			const throw()	
 		{
 		
 			switch( _eventForModel.getDirection() )
@@ -304,7 +313,8 @@ class MyModel : public OSDL::MVC::Model
 	
 	
 		MyModel() :
-			Model( /* autoRegister */ true, /* period */ 1, /* policy */ Engine::relaxed ),
+			Model( /* autoRegister */ true, /* period */ 1, 
+				/* policy */ Engine::relaxed ),
 			_eventForView( * this )			
 		{
 		
@@ -315,7 +325,8 @@ class MyModel : public OSDL::MVC::Model
 		virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 		{
 		
-			const MyMVCEvent * event = dynamic_cast<const MyMVCEvent *>( & newEvent ) ;
+			const MyMVCEvent * event = dynamic_cast<const MyMVCEvent *>( 
+				& newEvent ) ;
 			
 			if ( event != 0 )
 			{
@@ -328,7 +339,8 @@ class MyModel : public OSDL::MVC::Model
 		}
 	
 	
-		const Ceylan::Event & getEventFor( const Ceylan::CallerEventListener & listener )	
+		const Ceylan::Event & getEventFor( 
+				const Ceylan::CallerEventListener & listener )	
 			throw( Ceylan::EventException )
 		{
 		
@@ -347,7 +359,8 @@ class MyModel : public OSDL::MVC::Model
 			OSDL_DISPLAY_DEBUG( "Model state : " + toString() ) ;
 			
 			// Only one event source, must be the controller :	
-			MyController * myController = dynamic_cast<MyController *>( _sources.back() ) ;
+			MyController * myController = dynamic_cast<MyController *>(
+				_sources.back() ) ;
 			
 			const MyMVCEvent * myEvent = dynamic_cast<const MyMVCEvent *>( 
 				& myController->getEventFor( * this ) ) ;
@@ -392,13 +405,14 @@ class MyView : public Ceylan::View
 			Ceylan::Model * myModel ;
 			
 			// Actually only one source : 
-			for ( std::list<Ceylan::EventSource *>::iterator it = _sources.begin() ;
-				it != _sources.end(); it++ )
+			for ( std::list<Ceylan::EventSource *>::iterator 
+				it = _sources.begin() ;	it != _sources.end(); it++ )
 			{
 			
 				myModel = dynamic_cast<Ceylan::Model *>( *it ) ;
-				const MyMVCEvent * myModelEvent = dynamic_cast<const MyMVCEvent *>( 
-					& myModel->getEventFor( * this ) ) ;
+				const MyMVCEvent * myModelEvent = 
+					dynamic_cast<const MyMVCEvent *>( 
+						& myModel->getEventFor( * this ) ) ;
 				
 				// Directions could be blended :	
 				_actualDirection = myModelEvent->getDirection() ;
@@ -426,7 +440,8 @@ class MyView : public Ceylan::View
 					break ;
 					
 				case 5 :
-					cout << "quit ! (seen by the view, actual end of event loop)" << endl ;
+					cout << "quit ! "
+						"(seen by the view, actual end of event loop)" << endl ;
 					_events->requestQuit() ;	
 					break ;
 					
@@ -443,7 +458,8 @@ class MyView : public Ceylan::View
 		virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 		{
 		
-			const MyMVCEvent * event = dynamic_cast<const MyMVCEvent *>( & newEvent ) ;
+			const MyMVCEvent * event = dynamic_cast<const MyMVCEvent *>( 
+				& newEvent ) ;
 			
 			if ( event != 0 )
 			{
@@ -466,21 +482,25 @@ class MyView : public Ceylan::View
 
 
 /**
- * Testing scheduled OSDL MVC integration with input layer and multimedia renderer.
+ * Testing scheduled OSDL MVC integration with input layer and multimedia
+ * renderer.
  *
- * This test creates MVC instances as automatic variables, to test the framework robustness : it
- * is a typical example of a misuse that should have led to a crash, since the deallocation order
- * of aController, aModel and aModel is not mastered.
+ * This test creates MVC instances as automatic variables, to test the
+ * framework robustness : it is a typical example of a misuse that should 
+ * have led to a crash, since the deallocation order of aController, aModel 
+ * and aModel is not mastered.
  *
- * Nevertheless counter-measures are applied but traced through the log system, so that the user
- * is notified that the life cycle of his objects is wrong.
+ * Nevertheless counter-measures are applied, and traced through the log 
+ * system, so that the user is notified that the life cycle of his objects
+ * is wrong.
  *
- * The right solution would have been to use block to control the variable scopes, or to create
- * instances thanks to new/delete pairs.
+ * The right solution would have been to use block to control the variable
+ * scopes, or to create instances thanks to new/delete pairs.
  * 
  */
 int main( int argc, char * argv[] ) 
 {
+
 
 	LogHolder myLog( argc, argv ) ;
 	
@@ -495,7 +515,8 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Testing OSDL MVC integration." ) ;
 
 		LogPlug::info( "Starting OSDL with joystick support." ) ;		
-        OSDL::CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseJoystick ) ;		
+        OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
+			CommonModule::UseJoystick ) ;		
 		
 		LogPlug::info( "Testing basic event handling." ) ;
 		
@@ -513,17 +534,20 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Current joystick handler is : " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 
-		unsigned int joyCount = myJoystickHandler.GetAvailableJoystickCount()  ;
+		Ceylan::Uint32 joyCount = 
+			myJoystickHandler.GetAvailableJoystickCount() ;
+			
 		LogPlug::info( "There are " + Ceylan::toString( joyCount )
 			+ " attached joystick(s), opening them all." ) ;
 			
-		for ( unsigned int i = 0 ; i < joyCount; i++ )
+		for ( Ceylan::Uint32 i = 0 ; i < joyCount; i++ )
 			myJoystickHandler.openJoystick( i ) ;
 		
 		LogPlug::info( "New joystick handler state is : " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 
-		LogPlug::info( "Displaying a dummy window to have access to an event queue." ) ;
+		LogPlug::info( 
+			"Displaying a dummy window to have access to an event queue." ) ;
 			
 		LogPlug::info( "Getting video." ) ;
 		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
@@ -534,10 +558,12 @@ int main( int argc, char * argv[] )
 		
 		
 		/*
-		 * Create and link MVC instances (new and pointers should be used to control deallocation
-		 * order). This test relies on OSDL's MVC ability to overcome faulty life cycle, see the
-		 * Error log channel to understand why (therefore it is also a test for robustness to
-		 * misuse).
+		 * Create and link MVC instances (new and pointers should be used 
+		 * to control deallocation order). 
+		 *
+		 * This test relies on OSDL's MVC ability to overcome faulty life 
+		 * cycle, see the Error log channel to understand why (therefore it 
+		 * is also a test for robustness to misuse).
 		 *
 		 */
 		 
@@ -546,22 +572,23 @@ int main( int argc, char * argv[] )
 		MyController aController ;
 		aModel.subscribeToController( aController ) ;
 				
-		myEvents.getKeyboardHandler().linkToController( KeyboardHandler::UpArrowKey, 
-			aController ) ;
+		myEvents.getKeyboardHandler().linkToController(
+			KeyboardHandler::UpArrowKey, aController ) ;
 			
-		myEvents.getKeyboardHandler().linkToController( KeyboardHandler::DownArrowKey,
-			aController ) ;
+		myEvents.getKeyboardHandler().linkToController(
+			KeyboardHandler::DownArrowKey, aController ) ;
 			
-		myEvents.getKeyboardHandler().linkToController( KeyboardHandler::LeftArrowKey, 
-			aController ) ;
+		myEvents.getKeyboardHandler().linkToController(
+			KeyboardHandler::LeftArrowKey, aController ) ;
 			
-		myEvents.getKeyboardHandler().linkToController( KeyboardHandler::RightArrowKey,
-			aController ) ;
+		myEvents.getKeyboardHandler().linkToController(
+			KeyboardHandler::RightArrowKey,	aController ) ;
 			
-		myEvents.getKeyboardHandler().linkToController( KeyboardHandler::EnterKey, 
-			aController ) ;
+		myEvents.getKeyboardHandler().linkToController(
+			KeyboardHandler::EnterKey, aController ) ;
 		
-		myJoystickHandler.linkToController( /* JoystickNumber */ 0, aController ) ;
+		myJoystickHandler.linkToController( /* JoystickNumber */ 0, 
+			aController ) ;
 		
 		LogPlug::info( "Creating renderer." ) ;
 		
@@ -569,21 +596,26 @@ int main( int argc, char * argv[] )
 		/*
 		 * Auto-registers itself to the scheduler.
 		 *
-		 * Warning : this renderer must be specially allocated thanks to a new(), and not simply
-		 * as an automatic variable, since the renderer will automatically register itself to
-		 * the scheduler which will take ownership of it, and will deallocate it upon its own
-		 * destruction. Therefore it must not be an automatic variable whose life cycle would be
-		 * managed independently.
+		 * Warning : this renderer must be specially allocated thanks to a
+		 * new(), and not simply as an automatic variable, since the 
+		 * renderer will automatically register itself to the scheduler,
+		 * which will take ownership of it, and will deallocate it upon its 
+		 * own destruction. 
+		 *
+		 * Therefore it must not be an automatic variable whose life cycle 
+		 * would be managed independently.
 		 *
 		 */
-		MyBasicMultimediaRenderer * aRenderer = new MyBasicMultimediaRenderer() ;
+		MyBasicMultimediaRenderer * aRenderer = 
+			new MyBasicMultimediaRenderer() ;
 		
 		aRenderer->registerView( aView ) ;
 
 		LogPlug::debug( "Showing scheduler state before activation : " 
 			+ OSDL::Engine::Scheduler::GetExistingScheduler().toString() ) ;
 			
-		LogPlug::info( "Entering the event loop for event waiting so that Controller can act." ) ;
+		LogPlug::info( "Entering the event loop for event waiting "
+			"so that Controller can act." ) ;
 		
 		LogPlug::info( "Entering main loop." ) ;		
 		myEvents.enterMainLoop() ;
@@ -598,6 +630,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -606,6 +639,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -614,6 +648,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -622,6 +657,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

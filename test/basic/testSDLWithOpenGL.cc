@@ -1,10 +1,11 @@
 /**
- * Taken from OpenGL-intro-1.1.1 (http://www.libsdl.org/opengl/OpenGL-intro-1.1.1.zip)
+ * Taken from OpenGL-intro-1.1.1
+ * (http://www.libsdl.org/opengl/OpenGL-intro-1.1.1.zip)
  *
  * This code was created by Jeff Molofee '99
  * (ported to SDL by Sam Lantinga '2000)
  *
- * If you've found this code useful, please let him know.
+ * If you have found this code useful, please let him know.
  *
  * Visit him at www.demonews.com/hosted/nehe 
  *
@@ -14,29 +15,19 @@
 using namespace OSDL ;
 
 
-#include "Ceylan.h"
 
 #include <iostream> // for cerr
 
 
-#ifdef WIN32
-	#define WIN32_LEAN_AND_MEAN
-	#include <windows.h>
-#endif
-
-#if defined(__APPLE__) && defined(__MACH__)
-	#include <OpenGL/gl.h>	// Header file for the OpenGL32 Library
-	#include <OpenGL/glu.h>	// Header file for the GLu32 Library
-#else
-	#include <GL/gl.h>	// Header file for the OpenGL32 Library
-	#include <GL/glu.h>	// Header file for the GLu32 Library
-#endif
-
 #include "SDL.h"
+#include "SDL_opengl.h"
 
 
 
-/* A general OpenGL initialization function. Sets all of the initial parameters. */
+/* 
+ * A general OpenGL initialization function. Sets all of the initial 
+ * parameters. 
+ */
 
 void InitGL(int Width, int Height)	        
 // We call this right after our OpenGL window is created.
@@ -115,7 +106,8 @@ int main(int argc, char **argv)
   /* Initialize SDL for video output */
   if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) 
   {
-    std::cerr << "Unable to initialize SDL : " << Utils:: getBackendLastError() << std::endl ;
+    std::cerr << "Unable to initialize SDL : " 
+		<< Utils:: getBackendLastError() << std::endl ;
     return 1 ;
   }
 
@@ -123,9 +115,11 @@ int main(int argc, char **argv)
   int screenHeight = 480 ;
   	
   /* Create a 640x480 OpenGL screen */
-  if ( SDL_SetVideoMode( screenWidth, screenHeight, /* current bpp */ 0, SDL_OPENGL) == 0 ) 
+  if ( SDL_SetVideoMode( screenWidth, screenHeight, /* current bpp */ 0,
+  	SDL_OPENGL) == 0 ) 
   {
-    std::cerr << "Unable to create OpenGL screen : " << Utils:: getBackendLastError() << std::endl ;
+    std::cerr << "Unable to create OpenGL screen : " << 
+		Utils:: getBackendLastError() << std::endl ;
     SDL_Quit() ;
     return 2 ;
   }
@@ -145,7 +139,11 @@ int main(int argc, char **argv)
   
     DrawGLScene() ;
 	
-	// Added by OSDL to avoid display saturation which prevents inputs to be processed on time :
+	/*
+	 * Added by OSDL to avoid display saturation which prevents inputs to 
+	 * be processed on time :
+	 *
+	 */
 	SDL_Delay(10) ;
 	
     /* This could go in a separate function */
@@ -167,4 +165,6 @@ int main(int argc, char **argv)
   }
   SDL_Quit() ;
   return 0 ;
+  
 }
+

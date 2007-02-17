@@ -5,7 +5,6 @@ using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::Pixels ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 using namespace Ceylan::Maths::Random ;
 
@@ -44,7 +43,8 @@ int main( int argc, char * argv[] )
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -104,15 +104,17 @@ int main( int argc, char * argv[] )
 		screen.drawCircle( 300, 350, 50, Pixels::Orange, 
 			/* filled */ false, /* blended */ true ) ;
 		
-		screen.drawDiscWithEdge( 570, 350, 80, 50, Pixels::SteelBlue, Pixels::Silver,
-			/* blended */ true ) ;
+		screen.drawDiscWithEdge( 570, 350, 80, 50, Pixels::SteelBlue,
+			Pixels::Silver, /* blended */ true ) ;
 		
-		screen.drawEllipse( 100, 400, 80, 50, Pixels::Red, /* filled */ false ) ;
+		screen.drawEllipse( 100, 400, 80, 50, Pixels::Red, 
+			/* filled */ false ) ;
 		
-		screen.drawEllipse( 100, 300, 80, 50, Pixels::PaleGreen, /* filled */ true ) ;
+		screen.drawEllipse( 100, 300, 80, 50, Pixels::PaleGreen, 
+			/* filled */ true ) ;
 		
-		screen.drawPie( 500, 100, 80, /* angle start */ 50, /* angle stop */ 160,
-			Pixels::YellowGreen ) ;
+		screen.drawPie( 500, 100, 80, /* angle start */ 50, 
+			/* angle stop */ 160, Pixels::YellowGreen ) ;
 		
 		screen.drawTriangle( 300, 300, 380, 250, 350, 100, Pixels::Purple ) ;
 		
@@ -125,12 +127,14 @@ int main( int argc, char * argv[] )
 			/* height ratio */ 0.5,
 			/* scale */ 0.4	) ; 
 			
-		flake->draw( screen, 450, 350, /* color name */ Snow, /* filled */ true ) ;
+		flake->draw( screen, 450, 350, /* color name */ Snow, 
+			/* filled */ true ) ;
 				
 		delete flake ;
 		
-		screen.printText( "Non-solid colors (with intermediate alpha coordinates) "
-			"could be used as well.", 15, 460, Pixels::LavenderBlush ) ;
+		screen.printText( "Non-solid colors "
+			"(with intermediate alpha coordinates) could be used as well.", 
+			15, 460, Pixels::LavenderBlush ) ;
 
 
 		// Let's add some Bezier curves :
@@ -164,7 +168,8 @@ int main( int argc, char * argv[] )
 				
 		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints, 
 				/* numberOfSteps */ 50, letterColor ) ) 
-			throw Ceylan::TestException( "Drawing of Bezier curve failed (letter 'O')." ) ;
+			throw Ceylan::TestException( 
+				"Drawing of Bezier curve failed (letter 'O')." ) ;
 		
 		controlPoints.clear() ;
 		
@@ -189,7 +194,8 @@ int main( int argc, char * argv[] )
 				
 		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints, 
 				/* numberOfSteps */ 50, letterColor ) ) 
-			throw Ceylan::TestException( "Drawing of Bezier curve failed (letter 'S')." ) ;
+			throw Ceylan::TestException( 
+				"Drawing of Bezier curve failed (letter 'S')." ) ;
 		
 		controlPoints.clear() ;
 
@@ -219,7 +225,8 @@ int main( int argc, char * argv[] )
 				
 		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints, 
 				/* numberOfSteps */ 50, letterColor ) ) 
-			throw Ceylan::TestException( "Drawing of Bezier curve failed (letter 'D')." ) ;
+			throw Ceylan::TestException( 
+				"Drawing of Bezier curve failed (letter 'D')." ) ;
 		
 		controlPoints.clear() ;
 			
@@ -241,7 +248,8 @@ int main( int argc, char * argv[] )
 					
 		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints, 
 				/* numberOfSteps */ 50, letterColor ) ) 
-			throw Ceylan::TestException( "Drawing of Bezier curve failed (letter 'L')." ) ;
+			throw Ceylan::TestException( 
+				"Drawing of Bezier curve failed (letter 'L')." ) ;
 		
 		controlPoints.clear() ;
 
@@ -261,6 +269,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -269,6 +278,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -277,6 +287,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -285,6 +296,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

@@ -5,7 +5,6 @@ using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::Pixels ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 using namespace Ceylan::Maths::Random ;
 
@@ -44,7 +43,8 @@ int main( int argc, char * argv[] )
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -64,15 +64,18 @@ int main( int argc, char * argv[] )
 			{
 				
 				if ( x % 40 == 0 && y % 40 == 0 )
-					LogPlug::trace( "Screen pixel at " + Point2D( x, y ).toString() + " : " 
+					LogPlug::trace( "Screen pixel at " 
+						+ Point2D( x, y ).toString() + " : " 
 						+ screen.describePixelAt( x, y ) ) ;
 						
 		 		ColorDefinition current = screen.getColorDefinitionAt( x, y ) ;
 				
 				// Screen is RGB, not RGBA :
-				if ( ! Pixels::areEqual( last, current, /* use alpha */ false ) )
+				if ( ! Pixels::areEqual( last, current, 
+					/* use alpha */ false ) )
 				{
-					LogPlug::error( "Current screen color at " + Point2D( x, y ).toString() + ", "
+					LogPlug::error( "Current screen color at " 
+						+ Point2D( x, y ).toString() + ", "
 						+ Pixels::toString( current ) 
 						+ ", is not the same as the one of previous pixel ("
 						+ Pixels::toString( last ) + ")" ) ; 
@@ -83,10 +86,12 @@ int main( int argc, char * argv[] )
 		}
 				
 		if ( allEqual )
-			LogPlug::info( "All pixels of the screen start at color definition " 
+			LogPlug::info( 
+				"All pixels of the screen start at color definition " 
 				+ Pixels::toString(	Pixels::Black ) ) ;
 		else
-			throw Ceylan::TestException( "Screen pixels do not all start at the same color" ) ;
+			throw Ceylan::TestException( 
+				"Screen pixels do not all start at the same color" ) ;
 					
 		screen.unlock() ;
 		
@@ -95,7 +100,8 @@ int main( int argc, char * argv[] )
 		
 		
 		// RGBA test surface :
-		Surface & testSurface = * new Surface ( Surface::Software | Surface::AlphaBlendingBlit,
+		Surface & testSurface = * new Surface ( 
+			Surface::Software | Surface::AlphaBlendingBlit,
 			/* width */ testSurfaceWidth, /* height */ testSurfaceHeight ) ;
 		
 
@@ -111,10 +117,12 @@ int main( int argc, char * argv[] )
 				
 
 				if ( x % 40 == 0 && y % 40 == 0 )
-					LogPlug::trace( "Test surface pixel at " + Point2D( x, y ).toString() + " : " 
+					LogPlug::trace( "Test surface pixel at " 
+						+ Point2D( x, y ).toString() + " : " 
 						+ testSurface.describePixelAt( x, y ) ) ;
 
-		 		ColorDefinition current = testSurface.getColorDefinitionAt( x, y ) ;
+		 		ColorDefinition current = testSurface.getColorDefinitionAt( 
+					x, y ) ;
 				
 				// Test surface is RGBA :
 				if ( ! Pixels::areEqual( last, current, /* use alpha */ true ) )
@@ -131,11 +139,12 @@ int main( int argc, char * argv[] )
 		}
 		
 		if ( allEqual )
-			LogPlug::info( "All pixels of the RGBA test surface start at color definition " 
+			LogPlug::info( "All pixels of the RGBA test surface "
+				"start at color definition " 
 				+ Pixels::toString(	Pixels::Black ) ) ;
 		else
-			throw Ceylan::TestException( 
-				"RGBA test surface pixels do not all start at the same color" ) ;
+			throw Ceylan::TestException( "RGBA test surface pixels "
+				"do not all start at the same color" ) ;
 									
 		testSurface.unlock() ;
 
@@ -154,9 +163,11 @@ int main( int argc, char * argv[] )
 		Sample mean     = 77 ;
 		Deviation sigma = 4 ;
 		
-		LogPlug::info( "Creating a probability density function (PDF) corresponding to "
-			"a normal distribution whose sample mean is " + Ceylan::toString( mean )
-			+ " and whose standard deviation is " + Ceylan::toString( sigma ) + "." ) ;
+		LogPlug::info( "Creating a probability density function (PDF) "
+			" corresponding to a normal distribution whose sample mean is " 
+			+ Ceylan::toString( mean )
+			+ " and whose standard deviation is " 
+			+ Ceylan::toString( sigma ) + "." ) ;
 			
 		NormalProbabilityFunction myGaussian( mean, sigma ) ; 	
 		
@@ -176,14 +187,16 @@ int main( int argc, char * argv[] )
 			+ myGaussianGenerator.displayProbabilities() ) ;
 		 	
 		
-		unsigned int firstDrawCount  = 100 ;		
-		unsigned int secondDrawCount = 1000 ;		
-		unsigned int thirdDrawCount  = 10000 ;		
-		unsigned int fourthDrawCount = 100000 ;		
+		Ceylan::Uint32 firstDrawCount  = 100 ;		
+		Ceylan::Uint32 secondDrawCount = 1000 ;		
+		Ceylan::Uint32 thirdDrawCount  = 10000 ;		
+		Ceylan::Uint32 fourthDrawCount = 100000 ;		
 		
-		unsigned int totalDrawCount = 0 ;
+		Ceylan::Uint32 totalDrawCount = 0 ;
 
-		Length graphWidth  = 3 * sampleCount + 2 * Surface::graphAbscissaOffset + 20 ;
+		Length graphWidth  = 3 * sampleCount 
+			+ 2 * Surface::graphAbscissaOffset + 20 ;
+			
 		Length graphHeight = 80 ;
 		
 		
@@ -191,18 +204,22 @@ int main( int argc, char * argv[] )
 		
 		RandomValue newValue ;
 		
-		// Constructs a table recording how many samples are drawn for each possible value.
+		/*
+		 * Constructs a table recording how many samples are drawn for 
+		 * each possible value.
+		 *
+		 */
 		
 		Ceylan::Maths::IntegerData * distributionTable = 
 			new Ceylan::Maths::IntegerData[ sampleCount ] ;
 		
-		for ( unsigned int i = 0 ; i < sampleCount; i++)
+		for ( Ceylan::Uint32 i = 0 ; i < sampleCount; i++)
 			distributionTable[ i ] = 0 ;
 			
 		//LogPlug::info( "Throwing dice (one out of ten displayed)..." ) ;
 		
 		/// After 100 samples :
-		for ( unsigned int currentDrawCount = totalDrawCount; 
+		for ( Ceylan::Uint32 currentDrawCount = totalDrawCount; 
 			currentDrawCount < firstDrawCount; currentDrawCount++ )
 		{
 			newValue = myGaussianGenerator.getNewValue() ;
@@ -211,7 +228,8 @@ int main( int argc, char * argv[] )
 			/*
 			 if ( currentDrawCount % 10 == 0 )
 			
-			 	LogPlug::info( "Drawing value " + Ceylan::toString( newValue ) + "." ) ;
+			 	LogPlug::info( "Drawing value " 
+					+ Ceylan::toString( newValue ) + "." ) ;
 			*/
 			
 			distributionTable[ newValue - sampleStart ] += 1 ;
@@ -221,7 +239,8 @@ int main( int argc, char * argv[] )
 
 		screen.lock() ;
 
-		screen.printText( "Graphs of a normal distribution", 100, 30, Pixels::Yellow ) ;
+		screen.printText( "Graphs of a normal distribution", 100, 30,
+			Pixels::Yellow ) ;
 			
 		screen.printText( "(sample mean is "
 			+ Ceylan::toString( mean ) + ", standard deviation is " 
@@ -230,13 +249,14 @@ int main( int argc, char * argv[] )
 		UprightRectangle firstDrawingArea( 100, 80, graphWidth, graphHeight ) ;
 
 			
-		screen.displayData( distributionTable, sampleCount, pencilColor, captionColor, backColor, 
+		screen.displayData( distributionTable, sampleCount, pencilColor,
+			captionColor, backColor, 
 			"Distribution of " + Ceylan::toString( totalDrawCount )
 			+ " samples", & firstDrawingArea ) ;
 
 
 		/// After 1 000 samples :
-		for ( unsigned int currentDrawCount = totalDrawCount; 
+		for ( Ceylan::Uint32 currentDrawCount = totalDrawCount; 
 			currentDrawCount < secondDrawCount; currentDrawCount++ )
 		{
 			newValue = myGaussianGenerator.getNewValue() ;
@@ -245,7 +265,8 @@ int main( int argc, char * argv[] )
 			/*
 			 if ( currentDrawCount % 10 == 0 )
 			
-			 	LogPlug::info( "Drawing value " + Ceylan::toString( newValue ) + "." ) ;
+			 	LogPlug::info( "Drawing value " 
+					+ Ceylan::toString( newValue ) + "." ) ;
 			*/
 			
 			distributionTable[ newValue - sampleStart ] += 1 ;
@@ -254,15 +275,17 @@ int main( int argc, char * argv[] )
 		totalDrawCount = secondDrawCount ;
 	
 	
-		UprightRectangle secondDrawingArea( 100, 180, graphWidth, graphHeight ) ;
+		UprightRectangle secondDrawingArea( 100, 180, 
+			graphWidth, graphHeight ) ;
 			
-		screen.displayData( distributionTable, sampleCount, pencilColor, captionColor, backColor, 
+		screen.displayData( distributionTable, sampleCount, pencilColor,
+			captionColor, backColor, 
 			"Distribution of " + Ceylan::toString( totalDrawCount )
 			+ " samples", & secondDrawingArea ) ;
 
 
 		/// After 10 000 samples :
-		for ( unsigned int currentDrawCount = totalDrawCount; 
+		for ( Ceylan::Uint32 currentDrawCount = totalDrawCount; 
 			currentDrawCount < thirdDrawCount; currentDrawCount++ )
 		{
 			newValue = myGaussianGenerator.getNewValue() ;
@@ -271,7 +294,8 @@ int main( int argc, char * argv[] )
 			/*
 			 if ( currentDrawCount % 10 == 0 )
 			
-			 	LogPlug::info( "Drawing value " + Ceylan::toString( newValue ) + "." ) ;
+			 	LogPlug::info( "Drawing value " 
+					+ Ceylan::toString( newValue ) + "." ) ;
 			*/
 			
 			distributionTable[ newValue - sampleStart ] += 1 ;
@@ -281,13 +305,14 @@ int main( int argc, char * argv[] )
 
 		UprightRectangle thirdDrawingArea( 100, 280, graphWidth, graphHeight ) ;
 			
-		screen.displayData( distributionTable, sampleCount, pencilColor, captionColor, backColor, 
+		screen.displayData( distributionTable, sampleCount, pencilColor,
+			captionColor, backColor, 
 			"Distribution of " + Ceylan::toString( totalDrawCount )
 			+ " samples", & thirdDrawingArea ) ;
 
 
 		// After 100 000 samples :
-		for ( unsigned int currentDrawCount = totalDrawCount; 
+		for ( Ceylan::Uint32 currentDrawCount = totalDrawCount; 
 			currentDrawCount < fourthDrawCount; currentDrawCount++ )
 		{
 			newValue = myGaussianGenerator.getNewValue() ;
@@ -296,7 +321,8 @@ int main( int argc, char * argv[] )
 			/*
 			 if ( currentDrawCount % 10 == 0 )
 			
-			 	LogPlug::info( "Drawing value " + Ceylan::toString( newValue ) + "." ) ;
+			 	LogPlug::info( "Drawing value " 
+					+ Ceylan::toString( newValue ) + "." ) ;
 			*/
 			
 			distributionTable[ newValue - sampleStart ] += 1 ;
@@ -304,9 +330,11 @@ int main( int argc, char * argv[] )
 		
 		totalDrawCount = fourthDrawCount ;
 	
-		UprightRectangle fourthDrawingArea( 100, 380, graphWidth, graphHeight ) ;
+		UprightRectangle fourthDrawingArea( 100, 380, 
+			graphWidth, graphHeight ) ;
 			
-		screen.displayData( distributionTable, sampleCount, pencilColor, captionColor, backColor, 
+		screen.displayData( distributionTable, sampleCount, pencilColor,
+			captionColor, backColor, 
 			"Distribution of " + Ceylan::toString( totalDrawCount )
 			+ " samples", & fourthDrawingArea ) ;
 
@@ -314,7 +342,7 @@ int main( int argc, char * argv[] )
 
 		LogPlug::info( "Displaying final distribution table : " ) ;
 	
-		for ( unsigned int i = 0 ; i < sampleStop - sampleStart; i++)
+		for ( Ceylan::Uint32 i = 0 ; i < sampleStop - sampleStart; i++)
 			LogPlug::info( Ceylan::toString( i + sampleStart ) + " occured " 
 				+ Ceylan::toString( distributionTable[ i ] ) + " time(s)." ) ;
 		*/	
@@ -334,6 +362,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -342,6 +371,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -350,6 +380,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -358,6 +389,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

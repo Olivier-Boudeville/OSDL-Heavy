@@ -5,7 +5,6 @@ using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::Pixels ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 using namespace Ceylan::Maths::Random ;
 
@@ -47,12 +46,14 @@ int main( int argc, char * argv[] )
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth, 
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth, 
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 		
-		LogPlug::info( "Informations about this screen surface : " + screen.toString() ) ;
+		LogPlug::info( "Informations about this screen surface : " 
+			+ screen.toString() ) ;
 				
 
 		screen.lock() ;
@@ -67,11 +68,11 @@ int main( int argc, char * argv[] )
 		// When run from tests-results directory :
 		imageFinder.addPath( "../src/doc/web/images" ) ;
 		
- 		screen.loadImage( imageFinder.find( firstImageFile ), /* blit only */ true ) ;
+ 		screen.loadImage( imageFinder.find( firstImageFile ), 
+			/* blit only */ true ) ;
 				
 		screen.unlock() ;
 		
-
 		screen.update() ;
 
 		myOSDL.getEventsModule().waitForAnyKey() ;
@@ -79,7 +80,9 @@ int main( int argc, char * argv[] )
 					
 		Surface & flipV = screen.flipVertical() ;
 		flipV.blitTo( screen, TwoDimensional::Point2D::Origin ) ;
-		Surface & clonedSurface( * dynamic_cast<Surface * >( & flipV.clone() ) ) ;	
+		Surface & clonedSurface( * dynamic_cast<Surface * >( 
+			& flipV.clone() ) ) ;
+			
 		delete & flipV ;
 		screen.update() ;
 
@@ -125,8 +128,12 @@ int main( int argc, char * argv[] )
 	
     	LogPlug::info( "Prerequesite : having three random generators" ) ;	
 		
-		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, screenWidth ) ;
-		Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, screenHeight ) ;
+		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, 
+			screenWidth ) ;
+			
+		Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, 
+			screenHeight ) ;
+			
 		Ceylan::Maths::Random::WhiteNoiseGenerator radiusRand( 0, 100 ) ;
 		
 		
@@ -150,7 +157,8 @@ int main( int argc, char * argv[] )
 			blue  = colorRand.getNewValue() ;
 			alpha = colorRand.getNewValue() ;
 			
-			Pixels::ColorDefinition discColorDef = Pixels::convertRGBAToColorDefinition( 
+			Pixels::ColorDefinition discColorDef =
+				Pixels::convertRGBAToColorDefinition( 
 				red, green, blue, alpha ) ;
 				
 			red   = colorRand.getNewValue() ;
@@ -158,11 +166,17 @@ int main( int argc, char * argv[] )
 			blue  = colorRand.getNewValue() ;
 			alpha = colorRand.getNewValue() ;
 			
-			Pixels::ColorDefinition ringColorDef = Pixels::convertRGBAToColorDefinition( 
+			Pixels::ColorDefinition ringColorDef =
+				Pixels::convertRGBAToColorDefinition( 
 				red, green, blue, alpha ) ;
 			
-			// Do not order radiuses, hence one disc out of two should not be drawn.	
-			screen.drawDiscWithEdge( x, y, radiusRand.getNewValue(), radiusRand.getNewValue(),
+			/*
+			 * Do not order radiuses, hence one disc out of two should not 
+			 * be drawn.
+			 *
+			 */
+			screen.drawDiscWithEdge( x, y, 
+				radiusRand.getNewValue(), radiusRand.getNewValue(),
 				discColorDef, ringColorDef ) ;
 					
 		}
@@ -180,10 +194,12 @@ int main( int argc, char * argv[] )
 				
 		LogPlug::info( "End of OSDL Surface transformation test." ) ;
 		
+		
     }
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -192,6 +208,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -200,6 +217,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -208,6 +226,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

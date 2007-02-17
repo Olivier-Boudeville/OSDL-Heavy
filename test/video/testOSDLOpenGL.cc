@@ -3,7 +3,6 @@ using namespace OSDL ;
 using namespace OSDL::Video ;
 using namespace OSDL::Video::OpenGL ;
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -58,13 +57,15 @@ int main( int argc, char * argv[] )
 
 		// Going from potential to real :
 					
-		LogPlug::info( "Entering visual tests : initializing the screen with OpenGL." ) ;
+		LogPlug::info( "Entering visual tests : "
+			"initializing the screen with OpenGL." ) ;
 
 
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::OpenGL /* | VideoModule::Fullscreen */, OpenGLFor2D ) ;
 
 		LogPlug::info( "Displaying now new current video informations. "
@@ -84,7 +85,8 @@ int main( int argc, char * argv[] )
 		// When run from 'tests-results' directory :
 		textureFinder.addPath( "../src/doc/web/images" ) ;
 		
-		GLTexture & texture = * new GLTexture( textureFinder.find( textureFilename ) ) ;
+		GLTexture & texture = * new GLTexture( 
+			textureFinder.find( textureFilename ) ) ;
 		
 		LogPlug::info( VideoModule::DescribeEnvironmentVariables() ) ;
 		
@@ -107,6 +109,7 @@ int main( int argc, char * argv[] )
 		
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -115,6 +118,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -123,6 +127,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -131,6 +136,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

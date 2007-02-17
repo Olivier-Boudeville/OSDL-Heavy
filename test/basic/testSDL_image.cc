@@ -1,8 +1,6 @@
 #include "OSDL.h"     // just for basic primitives such as getBackendLastError
 using namespace OSDL ;
 
-
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 #include "SDL_image.h"
@@ -16,11 +14,16 @@ using std::string ;
 #define SDL_ERROR   -1
 
 
-// This module is made to test just plain SDL_image : nothing here should depend on OSDL !
+/*
+ * This module is made to test just plain SDL_image : nothing here should 
+ * depend on OSDL !
+ *
+ */
 
 
 /**
- * Displays an image (type auto-detected) stored in file fileName into SDL_Surface targetSurface.
+ * Displays an image (type auto-detected) stored in file fileName into
+ * SDL_Surface targetSurface.
  * targetSurface should be screen surface (obtained with SDL_SetVideoMode)
  * otherwise blitting is useless.
  *
@@ -41,8 +44,8 @@ void displayImage( const string & fileName, SDL_Surface * targetSurface )
 	{
 		LogPlug::fatal( "Unable to load image from file " + fileName
 			+ " : " + Ceylan::toString( IMG_GetError() ) ) ;
-		throw Ceylan::TestException( "Unable to load image from file " + fileName
-			+ " : " + Ceylan::toString( IMG_GetError() ) ) ;	 
+		throw Ceylan::TestException( "Unable to load image from file "
+			+ fileName + " : " + Ceylan::toString( IMG_GetError() ) ) ;	 
 	}
 
     /*
@@ -94,7 +97,8 @@ int main( int argc, char * argv[] )
 
     	if ( SDL_Init( SDL_INIT_VIDEO ) != SDL_SUCCESS ) 
 		{
-			LogPlug::fatal( "Unable to initialize SDL : " + Utils::getBackendLastError() ) ;
+			LogPlug::fatal( "Unable to initialize SDL : " 
+				+ Utils::getBackendLastError() ) ;
  			return Ceylan::ExitFailure ;
 		}
 		
@@ -111,7 +115,8 @@ int main( int argc, char * argv[] )
 			+ Ceylan::toString( yrange ) + " with " 
 			+ Ceylan::toString( askedBpp ) + " bits per pixel video mode." ) ;
 
-    	SDL_Surface * screen = SDL_SetVideoMode( xrange, yrange, askedBpp, SDL_SWSURFACE ) ;
+    	SDL_Surface * screen = SDL_SetVideoMode( xrange, yrange, askedBpp,
+			SDL_SWSURFACE ) ;
 
     	if ( screen == 0 ) 
 		{
@@ -125,12 +130,14 @@ int main( int argc, char * argv[] )
 	
 		int bpp = screen->format->BitsPerPixel ;
 	
-		LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) + " bits per pixel" ) ;
+		LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) 
+			+ " bits per pixel" ) ;
 		
 		if ( askedBpp != bpp )
 		{
-			 LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) + " bits per pixel"
-			 	" instead of the asked " + Ceylan::toString( askedBpp ) + " bits per pixel." ) ;
+			 LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) 
+			 	+ " bits per pixel instead of the asked " 
+				+ Ceylan::toString( askedBpp ) + " bits per pixel." ) ;
 		}
 
 
@@ -142,7 +149,8 @@ int main( int argc, char * argv[] )
 		// When run from tests-results directory :
 		imageFinder.addPath( "../src/doc/web/images" ) ;
 	
-		const string firstImageFile = imageFinder.find( "Soldier-heavy-purple-small.png" ) ;
+		const string firstImageFile = imageFinder.find(
+			"Soldier-heavy-purple-small.png" ) ;
 		
 		LogPlug::info( "Displaying a JPEG image from file " + firstImageFile ) ;
 		
@@ -159,7 +167,8 @@ int main( int argc, char * argv[] )
 		while ( event.type != SDL_KEYDOWN ) ;
 
 	
-		const string secondImageFile = imageFinder.find( "osdl-zoom-inverted.png" ) ;
+		const string secondImageFile = imageFinder.find(
+			"osdl-zoom-inverted.png" ) ;
 		
 		LogPlug::info( "Displaying a PNG image from file " + secondImageFile ) ;
 
@@ -185,6 +194,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -193,6 +203,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -201,6 +212,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

@@ -1,8 +1,6 @@
 #include "OSDL.h"     // just for basic primitives such as getBackendLastError
 using namespace OSDL ;
 
-
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 #include "SDL_mixer.h"
@@ -17,8 +15,9 @@ using std::string ;
 
 
 /*
- * Sound directory is defined relatively to OSDL documentation tree, usually this pathname
- * relative to the install directory where this test executable should lie is :
+ * Sound directory is defined relatively to OSDL documentation tree, 
+ * usually this pathname relative to the install directory where this test
+ * executable should lie is :
  * (to be reached from executable directory)
  *
  */
@@ -26,8 +25,9 @@ const std::string soundDirFromExec = "../../src/doc/web/common/sounds" ;
 
 
 /*
- * Sound directory is defined relatively to OSDL documentation tree, usually this pathname
- * relative to the install directory where this test executable should lie is :
+ * Sound directory is defined relatively to OSDL documentation tree, 
+ * usually this pathname relative to the install directory where this
+ * test executable should lie is :
  * (to be reached from OSDL/OSDL-${OSDL_VERSION}/src/code)
  *
  */
@@ -38,7 +38,8 @@ const std::string musicFile = "welcome-to-OSDL.ogg" ;
 
 
 /*
- * This module is made to test just plain SDL_mixer : nothing here should depend on OSDL !
+ * This module is made to test just plain SDL_mixer : nothing here should 
+ * depend on OSDL !
  *
  * It is inspired from playwave.c and playmus.c from the SDL_mixer package.
  *
@@ -79,7 +80,8 @@ int main( int argc, char * argv[] )
 		int audio_volume = MIX_MAX_VOLUME ;
 		
 		/* Open the audio device */
-		if ( Mix_OpenAudio( audio_rate, audio_format, audio_channels, audio_buffers ) < 0 ) 
+		if ( Mix_OpenAudio( audio_rate, audio_format, audio_channels,
+			audio_buffers ) < 0 ) 
 		{
 			LogPlug::fatal( "Could not open audio : " 
 				+ Utils::getBackendLastError() ) ;
@@ -88,10 +90,13 @@ int main( int argc, char * argv[] )
 			
 		Mix_QuerySpec( & audio_rate, & audio_format, & audio_channels ) ;
 		
-		LogPlug::info( "Opened audio at " + Ceylan::toString( audio_rate ) + " Hz, "
-			 + Ceylan::toString( audio_format & 0xFF ) + string( " bit " )
-			 + ( (audio_channels > 2 ) ? "surround" : (audio_channels > 1 ) ? "stereo" : "mono" )
-			 + string( ", with ") + Ceylan::toString( audio_buffers ) + " bytes audio buffer." ) ; 
+		LogPlug::info( "Opened audio at " + Ceylan::toString( audio_rate ) 
+			+ " Hz, " + Ceylan::toString( audio_format & 0xFF ) 
+			+ string( " bit " )
+			+ ( (audio_channels > 2 ) ? "surround" : (audio_channels > 1 ) ?
+				"stereo" : "mono" )
+			+ string( ", with ") + Ceylan::toString( audio_buffers ) 
+			+ " bytes audio buffer." ) ; 
 
 		/* Set the music volume */
 		Mix_VolumeMusic( audio_volume ) ;
@@ -100,11 +105,13 @@ int main( int argc, char * argv[] )
 		soundLocator.addPath( soundDirFromExec ) ;
 		soundLocator.addPath( soundDirForPlayTests ) ;
 
-		Mix_Music * music = Mix_LoadMUS( soundLocator.find( musicFile ).c_str() ) ;
+		Mix_Music * music = Mix_LoadMUS( 
+			soundLocator.find( musicFile ).c_str() ) ;
 		
 		if ( music == 0 ) 
 		{
-			LogPlug::fatal( "Could not load " + musicFile + " : " + Utils::getBackendLastError() ) ;
+			LogPlug::fatal( "Could not load " + musicFile + " : " 
+				+ Utils::getBackendLastError() ) ;
  			return Ceylan::ExitFailure ;
 		}
 		
@@ -114,13 +121,18 @@ int main( int argc, char * argv[] )
 		
 		Mix_PlayMusic( music, loop ? -1 : 1 ) ;
 		
-		// Necessary to wait, otherwise next test is evaluated *before* music starts playing :
+		/*
+		 * Necessary to wait, otherwise next test is evaluated *before* 
+		 * music starts playing :
+		 *
+		 */
 		SDL_Delay( 100 ) ;
 		
 		while ( Mix_PlayingMusic() ) 
 		{
 			SDL_Delay( 1000 ) ;
-			LogPlug::info( "Playing for " + Ceylan::toString( seconds ) + " second(s)." ) ;
+			LogPlug::info( "Playing for " + Ceylan::toString( seconds ) 
+				+ " second(s)." ) ;
 			seconds++ ;
 		}
 		
@@ -140,6 +152,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -148,6 +161,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -156,6 +170,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

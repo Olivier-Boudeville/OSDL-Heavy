@@ -6,7 +6,6 @@ using namespace OSDL::Video::TwoDimensional::Text ;
 using namespace OSDL::Video::Pixels ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 using namespace Ceylan::System ;
 
@@ -16,8 +15,8 @@ using namespace Ceylan::System ;
 
 /*
  * Fixed font directory is defined in LOANI as
- * ${alternate_prefix}/OSDL-data/fonts/fixed, usually this pathname relative to the
- * install directory where this test executable should lie is :
+ * ${alternate_prefix}/OSDL-data/fonts/fixed, usually this pathname relative 
+ * to the install directory where this test executable should lie is :
  *
  */
 const std::string fixedFontDirFromExec = "../../../../OSDL-data/fonts/fixed" ;
@@ -26,8 +25,8 @@ const std::string fixedFontDirFromExec = "../../../../OSDL-data/fonts/fixed" ;
 /*
  * Fixed font directory is defined in LOANI as
  * ${alternate_prefix}/OSDL-data/fonts/fixed, usually this pathname relative to
- * OSDL/OSDL-${OSDL_VERSION}/src/code where this test executable should be executed by 
- * 'playTests.sh' is :
+ * OSDL/OSDL-${OSDL_VERSION}/src/code where this test executable should be
+ * executed by 'playTests.sh' is :
  *
  */
 const std::string fixedFontDirForPlayTests = "../../../OSDL-data/fonts/fixed" ;
@@ -64,23 +63,24 @@ int main( int argc, char * argv[] )
 			
 			
 			
-		LogPlug::info( "At the end of this test, one should see red letters ('a', 'b'), "
-			"and two groups of two sentences, first green, then blue." ) ;
+		LogPlug::info( "At the end of this test, one should see red letters "
+			"('a', 'b'), and two groups of two sentences, "
+			"first green, then blue." ) ;
 			
 		
-		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Prerequesite : initializing the display" ) ;	
 	         
 		 
-		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo 
-			| CommonModule::UseKeyboard ) ;				
+		CommonModule & myOSDL = OSDL::getCommonModule( 
+			CommonModule::UseVideo | CommonModule::UseKeyboard ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -88,7 +88,8 @@ int main( int argc, char * argv[] )
 		Pixels::ColorDefinition textColor = Pixels::Red  ;
 
 		/*
-		 * Wanting to use at first '6x12.fnt', and to find it from various locations.
+		 * Wanting to use at first '6x12.fnt', and to find it from various
+		 * locations.
 		 *
 		 */
 
@@ -98,44 +99,55 @@ int main( int argc, char * argv[] )
 				
 		Surface * mySurface ;
 		
-		bool gridWanted = true ;		
+		bool gridWanted = true ;	
+			
 		if ( gridWanted )
 		{
+		
 			LogPlug::info( "Drawing a grid to check transparency of text." ) ;
+			
 			if ( ! screen.drawGrid() )
 				LogPlug::error( "Grid rendering failed." ) ;
+				
 		}
 
 		
 		// Glyph cached section.
-		
 		
 		if ( testGlyphCache )
 		{
 		
 			LogPlug::info( "First : testing cache for glyph rendering." ) ;
 					
-			FixedFont myGlyphCachedFixedFont( 6, 12, /* renderingStyle */ Font::Normal, 
-				/* convertToDisplay */ true, /* render cache */ Font::GlyphCached ) ;
+			FixedFont myGlyphCachedFixedFont( 6, 12,
+				/* renderingStyle */ Font::Normal, 
+				/* convertToDisplay */ true, 
+				/* render cache */ Font::GlyphCached ) ;
 						
-			LogPlug::info( "Successfully loaded following font in initial state : " 
+			LogPlug::info( 
+				"Successfully loaded following font in initial state : " 
 				+ myGlyphCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			mySurface = & myGlyphCachedFixedFont.renderLatin1Glyph( 'a', Font::Solid, textColor ) ;
+			mySurface = & myGlyphCachedFixedFont.renderLatin1Glyph( 'a',
+				Font::Solid, textColor ) ;
+				
 			mySurface->blitTo( screen, 20, 50 ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after first render of 'a' : " 
 				+ myGlyphCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			mySurface = & myGlyphCachedFixedFont.renderLatin1Glyph( 'a', Font::Solid, textColor ) ;
+			mySurface = & myGlyphCachedFixedFont.renderLatin1Glyph( 'a',
+				Font::Solid, textColor ) ;
+				
 			mySurface->blitTo( screen, 40, 50 ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after second render of 'a' : " 
 				+ myGlyphCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			mySurface = & myGlyphCachedFixedFont.renderLatin1Glyph( 'a', Font::Solid, textColor ) ;
+			mySurface = & myGlyphCachedFixedFont.renderLatin1Glyph( 'a',
+				Font::Solid, textColor ) ;
 			mySurface->blitTo( screen, 60, 50 ) ;
 			delete mySurface ;
 		
@@ -143,15 +155,21 @@ int main( int argc, char * argv[] )
 				+ myGlyphCachedFixedFont.toString( Ceylan::high ) ) ;
 		
 		
-			myGlyphCachedFixedFont.blitLatin1Glyph( screen, 30, 50, 'b', Font::Solid, textColor ) ; 
+			myGlyphCachedFixedFont.blitLatin1Glyph( screen, 30, 50, 'b',
+				Font::Solid, textColor ) ;
+				 
 			LogPlug::info( "Font after first blit of 'b' : " 
 				+ myGlyphCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			myGlyphCachedFixedFont.blitLatin1Glyph( screen, 50, 50, 'b', Font::Solid, textColor ) ; 
+			myGlyphCachedFixedFont.blitLatin1Glyph( screen, 50, 50, 'b',
+				Font::Solid, textColor ) ; 
+				
 			LogPlug::info( "Font after second blit of 'b' : " 
 				+ myGlyphCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			myGlyphCachedFixedFont.blitLatin1Glyph( screen, 70, 50, 'b', Font::Solid, textColor ) ; 
+			myGlyphCachedFixedFont.blitLatin1Glyph( screen, 70, 50, 'b',
+				Font::Solid, textColor ) ;
+				 
 			LogPlug::info( "Font after third blit of 'b' : " 
 				+ myGlyphCachedFixedFont.toString( Ceylan::high ) ) ;
 		
@@ -167,19 +185,23 @@ int main( int argc, char * argv[] )
 		
 			textColor = Pixels::Green ;
 			
-			LogPlug::info( "Second : testing cache for word rendering, with first test sentence : '"
-				+ firstTestSentence 
-				+ "', with second test sentence '" + secondTestSentence + "'." ) ;
+			LogPlug::info( "Second : testing cache for word rendering, "
+				"with first test sentence : '" + firstTestSentence 
+				+ "', with second test sentence '" + secondTestSentence 
+				+ "'." ) ;
 					
-			FixedFont myWordCachedFixedFont( 6, 12, /* renderingStyle */ Font::Normal, 
-				/* convertToDisplay */ true, /* render cache */ Font::WordCached ) ;
+			FixedFont myWordCachedFixedFont( 6, 12, 
+				/* renderingStyle */ Font::Normal, 
+				/* convertToDisplay */ true, 
+				/* render cache */ Font::WordCached ) ;
 						
-			LogPlug::info( "Successfully loaded following font in initial state : " 
+			LogPlug::info( 
+				"Successfully loaded following font in initial state : " 
 				+ myWordCachedFixedFont.toString( Ceylan::high ) ) ;
 			
 
-			mySurface = & myWordCachedFixedFont.renderLatin1Text( firstTestSentence, 
-				Font::Solid, textColor ) ;
+			mySurface = & myWordCachedFixedFont.renderLatin1Text(
+				firstTestSentence, Font::Solid, textColor ) ;
 				
 			mySurface->blitTo( screen, 20, 100 ) ;
 			delete mySurface ;
@@ -187,16 +209,17 @@ int main( int argc, char * argv[] )
 			LogPlug::info( "Font after first render of first test sentence : " 
 				+ myWordCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			mySurface = & myWordCachedFixedFont.renderLatin1Text( firstTestSentence,
-				 Font::Solid, textColor ) ;
+			mySurface = & myWordCachedFixedFont.renderLatin1Text(
+				firstTestSentence, Font::Solid, textColor ) ;
+				
 			mySurface->blitTo( screen, 220, 100 ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after second render of first test sentence : " 
 				+ myWordCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			mySurface = & myWordCachedFixedFont.renderLatin1Text( firstTestSentence, 
-				 Font::Solid, textColor ) ;
+			mySurface = & myWordCachedFixedFont.renderLatin1Text(
+				firstTestSentence, Font::Solid, textColor ) ;
 				 
 			mySurface->blitTo( screen, 420, 100 ) ;
 			delete mySurface ;
@@ -235,20 +258,24 @@ int main( int argc, char * argv[] )
 		
 			textColor = Pixels::Blue ;
 							
-			LogPlug::info( "Third : testing cache for text rendering, with first test sentence : '"
-				+ firstTestSentence 
-				+ "', with second test sentence '" + secondTestSentence + "'." ) ;
+			LogPlug::info( "Third : testing cache for text rendering, "
+				"with first test sentence : '" + firstTestSentence 
+				+ "', with second test sentence '" + secondTestSentence 
+				+ "'." ) ;
 
 
-			FixedFont myTextCachedFixedFont( 6, 12, /* renderingStyle */ Font::Normal, 
-				/* convertToDisplay */ true, /* render cache */ Font::TextCached ) ;
+			FixedFont myTextCachedFixedFont( 6, 12, 
+				/* renderingStyle */ Font::Normal, 
+				/* convertToDisplay */ true, 
+				/* render cache */ Font::TextCached ) ;
 						
-			LogPlug::info( "Successfully loaded following font in initial state : " 
+			LogPlug::info( 
+				"Successfully loaded following font in initial state : " 
 				+ myTextCachedFixedFont.toString( Ceylan::high ) ) ;
 	
 
-			mySurface = & myTextCachedFixedFont.renderLatin1Text( firstTestSentence, 
-				 Font::Solid, textColor ) ;
+			mySurface = & myTextCachedFixedFont.renderLatin1Text(
+				firstTestSentence, Font::Solid, textColor ) ;
 				 
 			mySurface->blitTo( screen, 20, 200 ) ;
 			delete mySurface ;
@@ -256,8 +283,8 @@ int main( int argc, char * argv[] )
 			LogPlug::info( "Font after first render of first test sentence : " 
 				+ myTextCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			mySurface = & myTextCachedFixedFont.renderLatin1Text( firstTestSentence, 
-				Font::Solid, textColor ) ;
+			mySurface = & myTextCachedFixedFont.renderLatin1Text(
+				firstTestSentence, Font::Solid, textColor ) ;
 				
 			mySurface->blitTo( screen, 220, 200 ) ;
 			delete mySurface ;
@@ -265,30 +292,31 @@ int main( int argc, char * argv[] )
 			LogPlug::info( "Font after second render of first test sentence : " 
 				+ myTextCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			mySurface = & myTextCachedFixedFont.renderLatin1Text( firstTestSentence, 
-				 Font::Solid, textColor ) ;
+			mySurface = & myTextCachedFixedFont.renderLatin1Text(
+				firstTestSentence, Font::Solid, textColor ) ;
 				 
 			mySurface->blitTo( screen, 420, 200 ) ;
 			delete mySurface ;
 		
-			LogPlug::info( "Font after third render of first test sentence being " 
+			LogPlug::info( 
+				"Font after third render of first test sentence being " 
 				+ myTextCachedFixedFont.toString( Ceylan::high ) ) ;
 
 
-			myTextCachedFixedFont.blitLatin1Text( screen, 20, 250, secondTestSentence, 
-				 Font::Solid, textColor ) ;		
+			myTextCachedFixedFont.blitLatin1Text( screen, 20, 250,
+				secondTestSentence, Font::Solid, textColor ) ;		
 				
 			LogPlug::info( "Font after first blit of second test sentence : " 
 				+ myTextCachedFixedFont.toString( Ceylan::high ) ) ;
 		
-			myTextCachedFixedFont.blitLatin1Text( screen, 220, 250, secondTestSentence,
-				 Font::Solid, textColor ) ;		
+			myTextCachedFixedFont.blitLatin1Text( screen, 220, 250,
+				secondTestSentence, Font::Solid, textColor ) ;		
 				 
 			LogPlug::info( "Font after first blit of second test sentence : " 
 				+ myTextCachedFixedFont.toString( Ceylan::high ) ) ;
 			
-			myTextCachedFixedFont.blitLatin1Text( screen, 420, 250, secondTestSentence,
-				 Font::Solid, textColor ) ;		
+			myTextCachedFixedFont.blitLatin1Text( screen, 420, 250,
+				secondTestSentence, Font::Solid, textColor ) ;		
 				
 			LogPlug::info( "Font after first blit of second test sentence : " 
 				+ myTextCachedFixedFont.toString( Ceylan::high ) ) ;
@@ -306,6 +334,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -314,6 +343,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -322,6 +352,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -330,6 +361,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

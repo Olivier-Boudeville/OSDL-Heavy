@@ -6,7 +6,6 @@ using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::TwoDimensional::Text ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -20,25 +19,29 @@ using std::string ;
 
 #define CHECKPOINT(message) CHECKPOINT( message )
 
-#else
+#else // OSDL_COUNT_INSTANCES
 
 #define CHECKPOINT(message) 
 
-#endif
+#endif // OSDL_COUNT_INSTANCES
+
 
 
 /*
- * TrueType font directory is defined relatively to OSDL documentation tree, usually this
- * pathname relative to the install directory where this test executable should lie is :
+ * TrueType font directory is defined relatively to OSDL documentation tree,
+ * usually this pathname relative to the install directory where this test
+ * executable should lie is :
  * (to be reached from executable directory)
  *
  */
-const std::string trueTypeFontDirFromExec = "../../../src/doc/web/common/fonts" ;
+const std::string trueTypeFontDirFromExec = 
+	"../../../src/doc/web/common/fonts" ;
 
 
 /*
- * TrueType font directory is defined relatively to OSDL documentation tree, usually this
- * pathname relative to the install directory where this test executable should lie is :
+ * TrueType font directory is defined relatively to OSDL documentation tree,
+ * usually this pathname relative to the install directory where this test
+ * executable should lie is :
  * (to be reached from OSDL/OSDL-${OSDL_VERSION}/src/code)
  *
  */
@@ -55,9 +58,10 @@ const std::string thirdTrueTypeFontName  = "earwigfa.ttf" ;
 
 /*
  * Wanting to use at first '9x18B.fnt'.
- * Fixed font directory is defined in LOANI as ${alternate_prefix}/OSDL-data/fonts/fixed,
- * usually this pathname relative to the install directory where this test executable 
- * should lie is :
+ * Fixed font directory is defined in LOANI as
+ * ${alternate_prefix}/OSDL-data/fonts/fixed,
+ * usually this pathname relative to the install directory where this test
+ * executable should lie is :
  * (to be reached from executable directory)
  *
  */
@@ -66,9 +70,10 @@ const std::string fixedFontDirFromExec = "../../../../OSDL-data/fonts/fixed" ;
 
 /*
  * Wanting to use at first '9x18B.fnt'.
- * Fixed font directory is defined in LOANI as ${alternate_prefix}/OSDL-data/fonts/fixed,
- * usually this pathname relative to the install directory where this test executable 
- * should lie is :
+ * Fixed font directory is defined in LOANI as
+ * ${alternate_prefix}/OSDL-data/fonts/fixed,
+ * usually this pathname relative to the install directory where this test
+ * executable should lie is :
  * (to be reached from executable directory)
  *
  */
@@ -107,7 +112,8 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 	
 		CHECKPOINT( "Before setMode." ) ;	
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		CHECKPOINT( "Retrieving screen surface." ) ;	
@@ -118,8 +124,11 @@ int main( int argc, char * argv[] )
 		
     	LogPlug::info( "Preparing TrueType font." ) ;				
 
-		Text::TrueTypeFont::TrueTypeFontFileLocator.addPath( trueTypeFontDirFromExec ) ;
-		Text::TrueTypeFont::TrueTypeFontFileLocator.addPath( trueTypeFontDirForPlayTests ) ;		
+		Text::TrueTypeFont::TrueTypeFontFileLocator.addPath(
+			trueTypeFontDirFromExec ) ;
+			
+		Text::TrueTypeFont::TrueTypeFontFileLocator.addPath(
+			trueTypeFontDirForPlayTests ) ;		
 	
 		Text::TrueTypeFont myFirstTrueTypeFont( firstTrueTypeFontName,
 			/* point size */ 26, 
@@ -143,29 +152,42 @@ int main( int argc, char * argv[] )
     	LogPlug::info( "Preparing Fixed font." ) ;	
 					
 		Text::FixedFont::FixedFontFileLocator.addPath( fixedFontDirFromExec ) ;
-		Text::FixedFont::FixedFontFileLocator.addPath( fixedFontDirForPlayTests ) ;
+		Text::FixedFont::FixedFontFileLocator.addPath( 
+			fixedFontDirForPlayTests ) ;
 				
-		Text::FixedFont myFixedFont( 9, 18, /* renderingStyle */ Text::Font::Bold, 
-			/* convertToDisplay */ true, /* render cache */ Text::Font::WordCached ) ;
+		Text::FixedFont myFixedFont( 9, 18, 
+			/* renderingStyle */ Text::Font::Bold, 
+			/* convertToDisplay */ true, /* render cache */
+			Text::Font::WordCached ) ;
 		
 		
-		const string myFirstText = "This is an example of a text widget with square corners. "
-			"Dare to be naive. Zombie processes detected, machine is haunted. End of paragraph.\n"
-			"Happiness is twin floppies. Intel CPUs are not defective, they just act that way. "
-			"Have you reconsidered a computer career ? People who take cold baths never have "
-			"rheumatism, but they have cold baths. Another paragraph hits the dust.\n"
-			"I recognize terror as the finest emotion and so I will try to terrorize the reader. "
+		const string myFirstText = 
+			"This is an example of a text widget with square corners. "
+			"Dare to be naive. Zombie processes detected, machine is haunted. "
+			"End of paragraph.\n"
+			"Happiness is twin floppies. Intel CPUs are not defective, "
+			"they just act that way. "
+			"Have you reconsidered a computer career ? "
+			"People who take cold baths never have rheumatism, "
+			"but they have cold baths. Another paragraph hits the dust.\n"
+			"I recognize terror as the finest emotion and so I will try to "
+			"terrorize the reader. "
 			"But if I find that I cannot terrify, I will try to horrify, "
-			"and if I find that I cannot horrify, I'll go for the gross-out (Stephen King)." ;
+			"and if I find that I cannot horrify, I'll go for the gross-out "
+			"(Stephen King)." ;
 
 
-		const string mySecondText = "This is an example of a text widget with round corners. "
-			"Never trust an operating system. You know you're using the computer too much when "
-			"you emerge packages just to watch the compile messages fly by on the screen...\n"
-			"You will visit the Dung Pits of Glive soon. If people could put rainbows in zoos,"
-			" they'd do it." ;
+		const string mySecondText = 
+			"This is an example of a text widget with round corners. "
+			"Never trust an operating system. "
+			"You know you're using the computer too much when "
+			"you emerge packages just to watch the compile messages fly "
+			"by on the screen...\n"
+			"You will visit the Dung Pits of Glive soon. "
+			"If people could put rainbows in zoos, they'd do it." ;
 
-		LogPlug::info( "Before adding text widget, screen surface is : " + screen.toString() ) ;
+		LogPlug::info( "Before adding text widget, screen surface is : " 
+			+ screen.toString() ) ;
 		
 		CHECKPOINT( "Creating first widget." ) ;	
 		
@@ -194,10 +216,11 @@ int main( int argc, char * argv[] )
 		// Made to overlap :
 				
 		/*
-		 * Automatic registering to container (screen), which would remove it automatically, but
-		 * for example purpose here the pointer is kept so that the deallocation is triggered
-		 * explicitly in user code.
-		 * As this instance count should show, both types of deletion should work.
+		 * Automatic registering to container (screen), which would remove 
+		 * it automatically, but, for example purpose here, the pointer is 
+		 * kept so that the deallocation is triggered explicitly in user code.
+		 * As this instance count should show, both types of deletion should
+		 * work.
 		 *
 		 */
 		new TextWidget( screen, 
@@ -227,10 +250,11 @@ int main( int argc, char * argv[] )
 			/* baseColorMode */ Widget::BackgroundColor,
 			/* background color */ Pixels::Blue, 
 			/* title */ "",
-			/* minMaximizable */ false, /* draggable */ false, /* wrappable */ false, 
-			/* closable */ false ) ;
+			/* minMaximizable */ false, /* draggable */ false, 
+			/* wrappable */ false, 	/* closable */ false ) ;
 		
-		LogPlug::info( "After adding text widget, screen surface is : " + screen.toString() ) ;
+		LogPlug::info( "After adding text widget, screen surface is : " 
+			+ screen.toString() ) ;
 
 		screen.lock() ;				
 		screen.redraw() ;		
@@ -242,7 +266,11 @@ int main( int argc, char * argv[] )
 		
 		myOSDL.getEventsModule().waitForAnyKey() ;
 		
-		// If you do not want this widget to show up in second screen just delete it :
+		/*
+		 * If you do not want this widget to show up in second screen just
+		 * delete it :
+		 *
+		 */
 		delete theWidgetIChoseToDeleteMyself ;
 		
 		screen.clear() ;
@@ -250,7 +278,11 @@ int main( int argc, char * argv[] )
 		std::string currentText = "A short sentence. "
 		
 		// Uncomment this to check that too long word are correctly managed :
-		//currentText += " Atoolongwordtofitinthetextcontaineryesmylorditisverylong" ;
+		/*
+		 * currentText += 
+		 	" Atoolongwordtofitinthetextcontaineryesmylorditisverylong" ;
+		 *
+		 */
 		
 		CHECKPOINT( "Creating fourth widget." ) ;	
 
@@ -292,7 +324,8 @@ int main( int argc, char * argv[] )
 			/* quality */ chosenQuality,
 			/* title */ "" ) ;
 		
-		currentText += " Still a longer one, hoping a total of at least three lines." ;
+		currentText += 
+			" Still a longer one, hoping a total of at least three lines." ;
 
 		CHECKPOINT( "Creating sixth widget." ) ;	
 
@@ -348,7 +381,8 @@ int main( int argc, char * argv[] )
 				
 		OSDL::stop() ;
 
-		CHECKPOINT( "After having stopped OSDL " + Ceylan::Countable::ToString() ) ;	
+		CHECKPOINT( "After having stopped OSDL " 
+			+ Ceylan::Countable::ToString() ) ;	
 		
 		// Fonts are deallocated automatically.
 		
@@ -356,6 +390,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -364,6 +399,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -372,6 +408,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -380,6 +417,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

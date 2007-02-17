@@ -1,9 +1,9 @@
-#include "Ceylan.h"
+#include "OSDL.h"
+using namespace OSDL ;
+
 using namespace Ceylan::Log ;
 
 
-#include "OSDL.h"
-using namespace OSDL ;
 
 
 /**
@@ -17,11 +17,13 @@ int main( int argc, char * argv[] )
 
 	LogHolder myLog( argc, argv ) ;
 	
-	try {
+	try 
+	{
 
 		LogPlug::info( "Testing OSDL exception handling" ) ;
 
-		throw OSDL::TestException( "This exception has been explicitly raised." ) ;
+		throw OSDL::TestException( 
+			"This exception has been explicitly raised." ) ;
 		
 		
 		// Never reached :
@@ -33,6 +35,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::info( "End of OSDL exception handling test." ) ;	
 					
 		// This is a success, from this test point of view.	 
@@ -42,6 +45,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -50,6 +54,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -63,7 +68,8 @@ int main( int argc, char * argv[] )
 
     }
 
-    return Ceylan::ExitSuccess ;
+	// Exception missed :
+    return Ceylan::ExitFailure ;
 
 }
 

@@ -3,7 +3,6 @@ using namespace OSDL ;
 using namespace OSDL::Video ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -12,8 +11,10 @@ using std::string ;
 
 
 
-
-
+/**
+ * Testing the OSDL palette-oriented services.
+ *
+ */
 int main( int argc, char * argv[] ) 
 {
 
@@ -31,14 +32,16 @@ int main( int argc, char * argv[] )
 			
 		Palette & greyPal = Palette::CreateGreyScalePalette( screenHeight ) ;
 			
-		LogPlug::info( "Displaying greyscale palette : " + greyPal.toString() ) ;		
+		LogPlug::info( "Displaying greyscale palette : " 
+			+ greyPal.toString() ) ;		
 
-		OSDL::CommonModule & myOSDL = 
-			OSDL::getCommonModule( CommonModule::UseVideo | CommonModule::NoParachute ) ;	
+		OSDL::CommonModule & myOSDL = OSDL::getCommonModule( 
+				CommonModule::UseVideo | CommonModule::NoParachute ) ;	
 				
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 		
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -51,8 +54,8 @@ int main( int argc, char * argv[] )
 		
 		delete & greyPal ;
 		
-		Palette & colorPal = Palette::CreateGradationPalette( Pixels::MidnightBlue,
-			Pixels::DeepPink, screenHeight ) ;
+		Palette & colorPal = Palette::CreateGradationPalette(
+			Pixels::MidnightBlue, Pixels::DeepPink, screenHeight ) ;
 
 		LogPlug::info( "Displaying colored palette : " + colorPal.toString() ) ;		
 		
@@ -74,6 +77,7 @@ int main( int argc, char * argv[] )
 		
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -82,6 +86,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -90,6 +95,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -98,6 +104,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

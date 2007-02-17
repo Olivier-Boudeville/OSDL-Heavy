@@ -1,23 +1,23 @@
 #include "OSDL.h"     // just for basic primitives such as getBackendLastError
 using namespace OSDL ;
 
-
-#include "Ceylan.h"
-
-#include "SDL.h"
+using namespace Ceylan::Log ;
 
 #include <string>
 using std::string ;
 
 
-using namespace Ceylan::Log ;
 
 
 #define SDL_SUCCESS  0
 #define SDL_ERROR	-1
 
 
-// This module is made to test just plain SDL : nothing here should depend on OSDL !
+/* 
+ * This module is made to test just plain SDL : nothing here should depend 
+ * on OSDL !
+ *
+ */
 
 
 /**
@@ -86,7 +86,8 @@ void putPixel( SDL_Surface * targetSurface, int x, int y, Uint32 pixel )
 	int bpp = targetSurface->format->BytesPerPixel ;
 	
     // Here p is the address to the pixel we want to set.
-    Uint8 * p = ( Uint8 * ) targetSurface->pixels + y * targetSurface->pitch + x * bpp ;
+    Uint8 * p = ( Uint8 * ) targetSurface->pixels + y * targetSurface->pitch 
+		+ x * bpp ;
 
     switch( bpp ) 
 	{
@@ -139,7 +140,8 @@ Uint32 getPixel( SDL_Surface * fromSurface, int x, int y )
     int bpp = fromSurface->format->BytesPerPixel ;
 	
     //Here p is the address to the pixel we want to retrieve.
-    Uint8 * p = (Uint8 *) fromSurface->pixels + y * fromSurface->pitch + x * bpp ;
+    Uint8 * p = (Uint8 *) fromSurface->pixels + y * fromSurface->pitch 
+		+ x * bpp ;
 
     switch( bpp ) 
 	{
@@ -161,9 +163,11 @@ Uint32 getPixel( SDL_Surface * fromSurface, int x, int y )
  	
     	default:
 			LogPlug::fatal( "Abnormal bit per pixel detected in getPixel." ) ;
-        	throw Ceylan::TestException( "Abnormal bit per pixel detected in getPixel." ) ;
+        	throw Ceylan::TestException( 
+				"Abnormal bit per pixel detected in getPixel." ) ;
 			break ;
     }
+	
 }
 
 
@@ -212,7 +216,8 @@ const string RGBtoString( Uint32 pixel, const SDL_Surface * fromSurface )
 	temp = temp << fmt->Aloss ;  /* Expand to a full 8-bit number */
 	alpha = (Uint8) temp ;
 	
-	string result = string( "[ " ) + red + " ; " + green + " ; " + blue + " ; " + alpha + " ]" ;
+	string result = string( "[ " ) + red + " ; " + green + " ; " + blue 
+		+ " ; " + alpha + " ]" ;
 	
 	LogPlug::info( "[ Red; Green; Blue; Alpha ] = " + result ) ;
 
@@ -252,11 +257,12 @@ int main( int argc, char * argv[] )
 			+ Ceylan::toString( askedBpp ) + " bits per pixel video mode." ) ;
 
 
-    	SDL_Surface * screen = SDL_SetVideoMode( xrange, yrange, askedBpp, SDL_SWSURFACE ) ;
+    	SDL_Surface * screen = SDL_SetVideoMode( xrange, yrange, askedBpp,
+			SDL_SWSURFACE ) ;
 
     	if ( screen == 0 ) 
 		{
-        	LogPlug::fatal( "Couldn't set " 
+        	LogPlug::fatal( "Could not set " 
 				+ Ceylan::toString( xrange ) + "x"
 				+ Ceylan::toString( yrange ) + " with " 
 				+ Ceylan::toString( askedBpp ) + " bits per pixel video mode : "
@@ -266,12 +272,14 @@ int main( int argc, char * argv[] )
 	
 		int bpp = screen->format->BitsPerPixel ;
 	
-		LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) + " bits per pixel" ) ;
+		LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) 
+			+ " bits per pixel" ) ;
 		
 		if ( askedBpp != bpp )
 		{
-			 LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) + " bits per pixel"
-			 	" instead of the asked " + Ceylan::toString( askedBpp ) + " bits per pixel." ) ;
+			 LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) 
+			 	+ " bits per pixel instead of the asked " 
+				+ Ceylan::toString( askedBpp ) + " bits per pixel." ) ;
 		}
 
 		Ceylan::System::FileLocator imageFinder ;
@@ -399,6 +407,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -407,6 +416,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -415,6 +425,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

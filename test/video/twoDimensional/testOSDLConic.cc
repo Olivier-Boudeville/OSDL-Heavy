@@ -4,7 +4,6 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::Pixels ;
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -20,6 +19,7 @@ using namespace Ceylan::Log ;
  */
 int main( int argc, char * argv[] ) 
 {
+
 
 	bool screenshotWanted = true ;
 
@@ -37,19 +37,21 @@ int main( int argc, char * argv[] )
 		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         		 
-		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo ) ;				
+		CommonModule & myOSDL = OSDL::getCommonModule( 
+			CommonModule::UseVideo ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
-    	LogPlug::info( "Drawing random coloured circles, discs, ellipses, filled or not." ) ;		
+    	LogPlug::info( "Drawing random coloured circles, discs, "
+			"ellipses, filled or not." ) ;		
  		
 	
 		if ( testSingleDiscWithEdge )
@@ -61,9 +63,14 @@ int main( int argc, char * argv[] )
 				
 			screen.drawGrid() ;
 			
-			ColorDefinition red   = Pixels::convertRGBAToColorDefinition( 255, 0, 0, 128 ) ;
-			ColorDefinition green = Pixels::convertRGBAToColorDefinition( 0, 255, 0, 128 ) ;
-			ColorDefinition blue  = Pixels::convertRGBAToColorDefinition( 0, 0, 255, 128 ) ;
+			ColorDefinition red   = Pixels::convertRGBAToColorDefinition( 255,
+				0, 0, 128 ) ;
+				
+			ColorDefinition green = Pixels::convertRGBAToColorDefinition( 0,
+				255, 0, 128 ) ;
+				
+			ColorDefinition blue  = Pixels::convertRGBAToColorDefinition( 0, 
+				0, 255, 128 ) ;
 			
 			// Both green must look the same :
 			screen.drawCircle( 550, 400, 80, green, /* filled */ true ) ;
@@ -72,16 +79,18 @@ int main( int argc, char * argv[] )
 			screen.drawCircle( 550, 80, 80, red, /* filled */ true ) ;
 
 			if ( ! screen.drawDiscWithEdge( /* x */ 240, /* y */ 240, 
-				/* outer radius */ 240, /* inner radius */ 150, 
-				/* ring color */ red, /* inner disc color */ green ) )
-					throw Ceylan::TestException( 
-						"Drawing of a disc with edges (inner not opaque) failed." ) ;
+					/* outer radius */ 240, /* inner radius */ 150, 
+					/* ring color */ red, /* inner disc color */ green ) )
+				throw Ceylan::TestException( 
+					"Drawing of a disc with edges (inner not opaque) failed." 
+				) ;
 			
 			if ( ! screen.drawDiscWithEdge( /* x */ 550, /* y */ 240, 
-				/* outer radius */ 40, /* inner radius */ 20, 
-				/* ring color */ Pixels::Tan, /* inner disc color */ Pixels::Honeydew ) )
-					throw Ceylan::TestException( 
-						"Drawing of a disc with edges (inner opaque) failed." ) ;
+					/* outer radius */ 40, /* inner radius */ 20, 
+					/* ring color */ Pixels::Tan, 
+					/* inner disc color */ Pixels::Honeydew ) )
+				throw Ceylan::TestException( 
+					"Drawing of a disc with edges (inner opaque) failed." ) ;
 			
 				 
 			screen.unlock() ;
@@ -96,13 +105,18 @@ int main( int argc, char * argv[] )
 		if ( testRandomEllipsesAndDisc ) 
 		{
 		
-			LogPlug::info( "Testing random ellipses, circles with our without edges" ) ;
+			LogPlug::info( 
+				"Testing random ellipses, circles with our without edges" ) ;
 			
 			
     		LogPlug::info( "Prerequesite : having three random generators" ) ;	
 		
-			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, screenWidth ) ;
-			Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, screenHeight ) ;
+			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0,
+				screenWidth ) ;
+				
+			Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0,
+				screenHeight ) ;
+				
 			Ceylan::Maths::Random::WhiteNoiseGenerator radiusRand( 0, 200 ) ;
 	
 			// Returns 0 or 1, as a coin :
@@ -121,7 +135,7 @@ int main( int argc, char * argv[] )
 	
 			screen.lock() ;		
 	
-			for ( int i = 0; i < 200; i++ )
+			for ( Ceylan::Uint32 i = 0; i < 200; i++ )
 			{
 	
 				x     = abscissaRand.getNewValue() ;
@@ -136,28 +150,35 @@ int main( int argc, char * argv[] )
 				{
 				
 					case 0:
-						screen.drawCircle( x, y, radiusRand.getNewValue(), red, green, blue, alpha,
-							/* filled */ static_cast<bool>( coinRand.getNewValue() ) ) ;
+						screen.drawCircle( x, y, radiusRand.getNewValue(), 
+							red, green, blue, alpha,
+							/* filled */ static_cast<bool>(
+								coinRand.getNewValue() ) ) ;
 						break ;
 					
 					case 1:
 						screen.drawEllipse( x, y, radiusRand.getNewValue(),
 							radiusRand.getNewValue(),
 							red, green, blue, alpha,
-							/* filled */ static_cast<bool>( coinRand.getNewValue() ) ) ;
+							/* filled */ static_cast<bool>(
+								coinRand.getNewValue() ) ) ;
 						break ;
 						
 					case 2:
-						screen.drawDiscWithEdge( x, y, radiusRand.getNewValue(), 
-							radiusRand.getNewValue(), 
-							Pixels::convertRGBAToColorDefinition( red, green, blue, alpha ),
-							Pixels::convertRGBAToColorDefinition( colorRand.getNewValue(),
-								colorRand.getNewValue(), colorRand.getNewValue(),
+						screen.drawDiscWithEdge( x, y, 
+							radiusRand.getNewValue(), radiusRand.getNewValue(), 
+							Pixels::convertRGBAToColorDefinition( 
+								red, green, blue, alpha ),
+							Pixels::convertRGBAToColorDefinition(
+								colorRand.getNewValue(),
+								colorRand.getNewValue(),
+								colorRand.getNewValue(),
 								colorRand.getNewValue() ) ) ;
 						break ;
 						
 					default:
-						throw Ceylan::TestException( "Unexpected type drawn !" ) ;
+						throw Ceylan::TestException( 
+							"Unexpected type drawn !" ) ;
 						break ;		
 						
 				}		
@@ -182,6 +203,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -190,6 +212,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -198,6 +221,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -206,6 +230,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

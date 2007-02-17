@@ -1,16 +1,18 @@
-#include <list>
-using std::list ;
-
-#include "Ceylan.h"
-using namespace Ceylan::Log ;
-using namespace Ceylan::Maths::Linear ;
-
 #include "OSDL.h"
 using namespace OSDL ;
 using namespace OSDL::Events ;
 using namespace OSDL::Engine ;
 
+using namespace Ceylan::Log ;
+using namespace Ceylan::Maths::Linear ;
+
+
 using Ceylan::Maths::Real ;
+
+
+#include <list>
+using std::list ;
+
 
 
 /**
@@ -55,56 +57,75 @@ int main( int argc, char * argv[] )
 		for ( Real x = -100; x < 100 ; x += 5 )
 		{
 			second.setCenter( x, 0 ) ;
-			LogPlug::info( "Second box is " + second.toString( Ceylan::low ) + ". "
-				+ BoundingBox::InterpertIntersectionResult( first.doesIntersectWith( second ) ) ) ;
-			if ( x < -limitRadius && first.doesIntersectWith( second ) != isSeparate )
-				LogPlug::error( "First test : for a second box abscissa of " 
-					+ Ceylan::toString( x ) + ", there should be no intersection." ) ;
+			LogPlug::info( "Second box is " + second.toString( Ceylan::low ) 
+				+ ". "
+				+ BoundingBox::InterpretIntersectionResult(
+					first.doesIntersectWith( second ) ) ) ;
 					
-			if ( x > -limitRadius && x < limitRadius && x != 0 
+			if ( x < -limitRadius && 
+					first.doesIntersectWith( second ) != isSeparate )
+				LogPlug::error( "First test : for a second box abscissa of " 
+					+ Ceylan::toString( x ) 
+					+ ", there should be no intersection." ) ;
+					
+			if ( x > -limitRadius && x < limitRadius 
+					&& ( ! Ceylan::Maths::IsNull( x ) ) 
 					&& first.doesIntersectWith( second ) != intersects )
 				LogPlug::error( "First test : for a second box abscissa of " 
-					+ Ceylan::toString( x ) + ", there should be intersection." ) ;
+					+ Ceylan::toString( x ) 
+					+ ", there should be intersection." ) ;
 					
-			if ( x == 0 && first.doesIntersectWith( second ) != isEqual )
+			if ( Ceylan::Maths::IsNull( x ) 
+					&& first.doesIntersectWith( second ) != isEqual )
 				LogPlug::error( "First test : for a second box abscissa of " 
 					+ Ceylan::toString( x ) + ", there should be equality." ) ;
 					
-			if ( x > limitRadius && first.doesIntersectWith( second ) != isSeparate )
+			if ( x > limitRadius 
+					&& first.doesIntersectWith( second ) != isSeparate )
 				LogPlug::error( "First test : for a second box abscissa of " 
-					+ Ceylan::toString( x ) + ", there should be no intersection." ) ;				
+					+ Ceylan::toString( x ) + 
+					", there should be no intersection." ) ;				
 		}
 		
 
 
-		LogPlug::info( "Second test involves a second box smaller than the first." ) ;
+		LogPlug::info( "Second test involves a second box "
+			"smaller than the first." ) ;
 
 		first.setRadius( 50 ) ;
 		second.setRadius( 20 ) ;
 		
 		Real firstLimitRadius  = first.getRadius() + second.getRadius() ;
-		Real secondLimitRadius = Ceylan::Maths::Max( first.getRadius(), second.getRadius() ) 
+		Real secondLimitRadius = Ceylan::Maths::Max( first.getRadius(),
+				second.getRadius() ) 
 			- 2 * Ceylan::Maths::Min( first.getRadius(), second.getRadius() ) ;
 		
-		LogPlug::info( "(first limit is " + Ceylan::toString( firstLimitRadius ) + ", second is "
+		LogPlug::info( "(first limit is " 
+			+ Ceylan::toString( firstLimitRadius ) + ", second is "
 			+ Ceylan::toString( secondLimitRadius ) + ")" ) ;
 			
 		// Make the second box move until it collides.
 			
 		for ( Real x = -100; x < 100 ; x += 5 )
 		{
+		
 			second.setCenter( x, 0 ) ;
-			LogPlug::info( "Second box is " + second.toString( Ceylan::low ) + ". "
-				+ BoundingBox::InterpertIntersectionResult( first.doesIntersectWith( second ) ) ) ;
-			if ( x < -firstLimitRadius && first.doesIntersectWith( second ) != isSeparate )
+			LogPlug::info( "Second box is " + second.toString( Ceylan::low ) 
+				+ ". " + BoundingBox::InterpretIntersectionResult(
+					first.doesIntersectWith( second ) ) ) ;
+					
+			if ( x < -firstLimitRadius 
+					&& first.doesIntersectWith( second ) != isSeparate )
 				LogPlug::error( "Second test : for a second box abscissa of " 
-					+ Ceylan::toString( x ) + ", there should be no intersection." ) ;
+					+ Ceylan::toString( x ) 
+					+ ", there should be no intersection." ) ;
 			
 			if ( x > -secondLimitRadius && x < secondLimitRadius  
 					&& first.doesIntersectWith( second ) != contains )
 				{	
 					LogPlug::error( "For a second box abscissa of " 
-						+ Ceylan::toString( x ) + ", first should contain the second." ) ;
+						+ Ceylan::toString( x ) 
+						+ ", first should contain the second." ) ;
 					break ;
 				}
 					
@@ -112,11 +133,14 @@ int main( int argc, char * argv[] )
 					&& x < -secondLimitRadius && x > secondLimitRadius
 					&& first.doesIntersectWith( second ) != intersects )
 				LogPlug::error( "Second test : for a second box abscissa of " 
-					+ Ceylan::toString( x ) + ", there should be intersection." ) ;
+					+ Ceylan::toString( x ) 
+					+ ", there should be intersection." ) ;
 					
-			if ( x > firstLimitRadius && first.doesIntersectWith( second ) != isSeparate )
+			if ( x > firstLimitRadius 
+					&& first.doesIntersectWith( second ) != isSeparate )
 				LogPlug::error( "Second test : for a second box abscissa of " 
-					+ Ceylan::toString( x ) + ", there should be no intersection." ) ;				
+					+ Ceylan::toString( x ) 
+					+ ", there should be no intersection." ) ;				
 		}
 		
 
@@ -126,29 +150,35 @@ int main( int argc, char * argv[] )
 		second.setRadius( 30 ) ;
 		
 		firstLimitRadius  = first.getRadius() + second.getRadius() ;
-		secondLimitRadius = Ceylan::Maths::Max( first.getRadius(), second.getRadius() )
+		secondLimitRadius = Ceylan::Maths::Max( first.getRadius(),
+				second.getRadius() )
 			- Ceylan::Maths::Min( first.getRadius(), second.getRadius() ) ;
 
 
-		LogPlug::info( "(first limit is " + Ceylan::toString( firstLimitRadius ) + ", second is "
-			+ Ceylan::toString( secondLimitRadius ) + ")" ) ;
+		LogPlug::info( "(first limit is " + Ceylan::toString( firstLimitRadius )
+			+ ", second is " + Ceylan::toString( secondLimitRadius ) + ")" ) ;
 		
 		// Make the second box move until it collides.
 			
 		for ( Real x = -100; x < 100 ; x += 5 )
 		{
 			second.setCenter( x, 0 ) ;
-			LogPlug::info( "Second box is " + second.toString( Ceylan::low ) + ". "
-				+ BoundingBox::InterpertIntersectionResult( first.doesIntersectWith( second ) ) ) ;
-			if ( x < -firstLimitRadius && first.doesIntersectWith( second ) != isSeparate )
+			LogPlug::info( "Second box is " + second.toString( Ceylan::low ) 
+				+ ". " + BoundingBox::InterpretIntersectionResult(
+					first.doesIntersectWith( second ) ) ) ;
+					
+			if ( x < -firstLimitRadius 
+					&& first.doesIntersectWith( second ) != isSeparate )
 				LogPlug::error( "Third test : for a second box abscissa of " 
-					+ Ceylan::toString( x ) + ", there should be no intersection." ) ;
+					+ Ceylan::toString( x ) 
+					+ ", there should be no intersection." ) ;
 			
 			if ( x > -secondLimitRadius && x < secondLimitRadius 
 					&& first.doesIntersectWith( second ) != isContained )
 				{	
-					LogPlug::error( "Third test : for a second box abscissa of " 
-						+ Ceylan::toString( x ) + ", first should contained in second." ) ;
+					LogPlug::error( "Third test : for a second box abscissa of "
+						+ Ceylan::toString( x ) 
+						+ ", first should contained in second." ) ;
 					break ;
 				}
 					
@@ -156,11 +186,14 @@ int main( int argc, char * argv[] )
 					&& x < -secondLimitRadius && x > secondLimitRadius 
 					&& first.doesIntersectWith( second ) != intersects )
 				LogPlug::error( "Third test : for a second box abscissa of " 
-					+ Ceylan::toString( x ) + ", there should be intersection." ) ;
+					+ Ceylan::toString( x ) 
+					+ ", there should be intersection." ) ;
 					
-			if ( x > firstLimitRadius && first.doesIntersectWith( second ) != isSeparate )
+			if ( x > firstLimitRadius 
+					&& first.doesIntersectWith( second ) != isSeparate )
 				LogPlug::error( "Third test : for a second box abscissa of " 
-					+ Ceylan::toString( x ) + ", there should be no intersection." ) ;				
+					+ Ceylan::toString( x ) 
+					+ ", there should be no intersection." ) ;				
 		}
 						
 		LogPlug::info( "stopping OSDL." ) ;		
@@ -171,6 +204,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -179,6 +213,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -187,6 +222,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -195,6 +231,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

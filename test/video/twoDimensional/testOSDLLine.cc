@@ -5,7 +5,6 @@ using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::Pixels ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
 
@@ -39,7 +38,8 @@ int main( int argc, char * argv[] )
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		myVideo.setMode( screenWidth, screenHeight, VideoModule::UseCurrentColorDepth,
+		myVideo.setMode( screenWidth, screenHeight,
+			VideoModule::UseCurrentColorDepth,
 			VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -49,7 +49,7 @@ int main( int argc, char * argv[] )
 		
 		screen.lock() ;
 
-		for ( int x = 0; x < 250; x++ )
+		for ( Ceylan::Uint32 x = 0; x < 250; x++ )
 		{
 					
 			LogPlug::info( "drawing from abscissa " + Ceylan::toString( x ) 
@@ -63,12 +63,13 @@ int main( int argc, char * argv[] )
 		
     	LogPlug::info( "Drawing horizontal lines" ) ;	
 		
-		for ( int y = 100; y < 300; y++ )
+		for ( Ceylan::Uint32 y = 100; y < 300; y++ )
 		{
 					
 			LogPlug::info( "drawing from ordinate " + Ceylan::toString( y ) 
 				+ " an horizontal line whose color is [R,G,B] = [" 
-				+ Ceylan::toString( y - 50 ) + ", " + Ceylan::toString( y - 50 ) + ", "
+				+ Ceylan::toString( y - 50 ) + ", " 
+				+ Ceylan::toString( y - 50 ) + ", "
 				+ Ceylan::toString( y - 50 ) + "] " ) ;
 
 			screen.drawHorizontalLine( 300, 550, y, y-50, y-50, y-50 ) ;
@@ -79,8 +80,12 @@ int main( int argc, char * argv[] )
 
     	LogPlug::info( "Prerequesite : having three random generators" ) ;	
 		
-		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, screenWidth ) ;
-		Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0, screenHeight ) ;
+		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 
+			0, screenWidth ) ;
+			
+		Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 
+			0, screenHeight ) ;
+			
 		Ceylan::Maths::Random::WhiteNoiseGenerator colorRand( 0, 256 ) ;
 	
 		Coordinate x1, y1, x2, y2 ;
@@ -91,7 +96,7 @@ int main( int argc, char * argv[] )
 		ColorElement alpha ;
 	
 	
-		for ( int i = 0; i < 10000; i++ )
+		for ( Ceylan::Uint32 i = 0; i < 10000; i++ )
 		{
 								
 			x1 = abscissaRand.getNewValue() ;
@@ -120,6 +125,7 @@ int main( int argc, char * argv[] )
 	
     catch ( const OSDL::Exception & e )
     {
+	
         LogPlug::error( "OSDL exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -128,6 +134,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -136,6 +143,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -144,6 +152,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 

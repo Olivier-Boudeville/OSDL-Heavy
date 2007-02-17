@@ -2,9 +2,9 @@
 using namespace OSDL ;
 
 
-#include "Ceylan.h"
 using namespace Ceylan::Log ;
 
+// Not included by OSDL headers (only in implementations files) :
 #include "SDL_gfxPrimitives.h"
 
 
@@ -18,7 +18,11 @@ using std::string ;
 #define SDL_ERROR   -1
 
 
-// This module is made to test just plain SDL_gfx : nothing here should depend on OSDL !
+/*
+ * This module is made to test just plain SDL_gfx : nothing here should 
+ * depend on OSDL !
+ *
+ */
 
 
 void displayString( const string & message, SDL_Surface * targetSurface, 
@@ -56,8 +60,8 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "SDL successfully initialized" ) ;
 	
-		int xrange   = 640 ;
-		int yrange   = 480 ;
+		int xrange = 640 ;
+		int yrange = 480 ;
 		
 		// A null value signifies the current screen bpp shoud be used :
 		int askedBpp = 0 ;
@@ -68,7 +72,8 @@ int main( int argc, char * argv[] )
 			+ Ceylan::toString( askedBpp ) + " bits per pixel video mode." ) ;
 
 
-    	SDL_Surface * screen = SDL_SetVideoMode( xrange, yrange, askedBpp, SDL_SWSURFACE ) ;
+    	SDL_Surface * screen = SDL_SetVideoMode( xrange, yrange, askedBpp,
+			SDL_SWSURFACE ) ;
 
     	if ( screen == 0 ) 
 		{
@@ -82,12 +87,14 @@ int main( int argc, char * argv[] )
 	
 		int bpp = screen->format->BitsPerPixel ;
 	
-		LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) + " bits per pixel" ) ;
+		LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) 
+			+ " bits per pixel" ) ;
 		
 		if ( askedBpp != bpp )
 		{
-			 LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) + " bits per pixel"
-			 	" instead of the asked " + Ceylan::toString( askedBpp ) + " bits per pixel." ) ;
+			 LogPlug::info( "Color depth is " + Ceylan::toString( bpp ) 
+			 	+ " bits per pixel instead of the asked " 
+				+ Ceylan::toString( askedBpp ) + " bits per pixel." ) ;
 		}
 		
 		LogPlug::info( "Drawing various graphical primitives." ) ;
@@ -122,6 +129,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
+	
         LogPlug::error( "Ceylan exception caught : "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
@@ -130,6 +138,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
+	
         LogPlug::error( "Standard exception caught : " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
@@ -138,6 +147,7 @@ int main( int argc, char * argv[] )
 
     catch ( ... )
     {
+	
         LogPlug::error( "Unknown exception caught" ) ;
        	return Ceylan::ExitFailure ;
 
