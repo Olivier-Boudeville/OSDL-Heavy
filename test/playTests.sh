@@ -1,33 +1,41 @@
-#!/bin/bash
+#!/bin/sh
 
 TESTLOGFILE=`pwd`"/testsOutcome.txt"
 
-USAGE="`basename $0` [--batch] : executes all tests for OSDL in a row.\n\tIf the --batch option is used, tests won't be interactive, and will be silently executed. Only their final result will be output, their messages will be stored in file ${TESTLOGFILE}."
+USAGE="`basename $0` [--interactive] : executes all tests for OSDL in a row.
+	
+	If the --interactive option is used, tests will not be run in batch mode, and will prompt the user for various inputs. Otherwise only their final result will be output. In all cases their messages will be stored in file ${TESTLOGFILE}. The return code of this script will be the number of failed tests (beware to overflow of the return code)"
 
 
-# Please remember, when debugging it, to execute the playTest.sh from *installed* version 
-# but to modify the playTest.sh from *source* code, and to copy back the latter to the former.
+# Please remember, when debugging it, to execute the playTests.sh from
+# *installed* version, but to modify the playTests.sh from *source* code, 
+# and to copy back the latter to the former.
  
 
-# Not in batch mode by default.
-is_batch=1
+# In batch (non-interactive) mode by default (0) :
+# In batch (non-interactive) mode by default (0) :
+is_batch=0
+
 
 
 if [ "$#" -ge "2" ] ; then
-	echo -e "Usage : $USAGE" 1>&2
+	echo "
+	Usage : $USAGE" 1>&2
 	exit 1
 fi	
 
-if [ "$#" == "1" ] ; then
-	if [ "$1" != "--batch" ] ; then
+if [ "$#" = "1" ] ; then
+	if [ "$1" != "--interactive" ] ; then
 		echo "$1 : unknown option." 1>&2
-		echo -e "Usage : $USAGE" 1>&2
+		echo "
+		Usage : $USAGE" 1>&2
 		exit 2
 	else
-		is_batch=0	
-		WARNING_INTERNAL "Even in batch mode, some tests remain interactive since it is the purpose of the test."
+		is_batch=1	
 	fi
 fi
+
+
 
 # Debug mode is deactivated by default (1).
 debug_mode=1
@@ -36,7 +44,7 @@ debug_mode=1
 DEBUG_INTERNAL()
 # Prints debug informations if debug mode is on.
 {
-	[ "$debug_mode" == 1 ] || echo "Debug : $*"
+	[ "$debug_mode" = 1 ] || echo "Debug : $*"
 }
 
 
@@ -57,230 +65,361 @@ ERROR_INTERNAL()
 DEBUG_INTERNAL "Debug mode activated"
 
 
-# Guessing where OSDL sources might be (ex : OSDL=<..>/OSDL/OSDL-x.y/src)
 
-if [ -n "${OSDL}" ] ; then
-	if [ ! -d "${OSDL}" ] ; then
-		WARNING_INTERNAL "OSDL environment variable was set to <${OSDL}> which is not a directory, ignoring this setting."
-		OSDL=""
-	fi	
-fi
+# Some useful test functions :
 
-if [ -z "${OSDL}" ] ; then
+display_launching()
+# Usage : display_launching <name of the test>
+{
 
-	# If absolute path given :
-	first_char=`echo $0 | head -c 1`
-	if [ "$first_char" == "/" ] ; then
-		root_dir=`dirname $0`
-		OSDL=`dirname $root_dir`/src
-		DEBUG_INTERNAL "Absolute path given, deducing OSDL : ${OSDL}"
+	test_name="$1"
+	
+	if [ "$is_batch" = "1" ] ; then
+		printColor "${term_primary_marker}Launching $test_name" $cyan_text $blue_back
 	else
-		# If launched from $OSDL_ROOT/bin
-		OSDL=$PWD/`dirname $0`/../src
-		DEBUG_INTERNAL "Testing OSDL=${OSDL}"
-
-		if [ ! -d ${OSDL} ] ; then
-			# If launched from $OSDL_ROOT/src/code
-			OSDL=$PWD/`dirname $0`/..
-			DEBUG_INTERNAL "Testing OSDL=${OSDL}"
-			if [ ! -d ${OSDL} ] ; then
-				echo "Unable to guess OSDL sources location, please set it (bash example : export OSDL=\$HOME/Projects/OSDL/OSDL-x.y/src)" 1>&2
-				exit 1	
-			else
-				DEBUG_INTERNAL "OSDL candidate ${OSDL} acknowledged, script must have been launched from $OSDL_ROOT/src/code"	
-			fi
-		else
-			DEBUG_INTERNAL "OSDL candidate ${OSDL} acknowledged, script must have been launched from $OSDL_ROOT/bin"			
-		fi
+		printf "[${cyan_text}m%-${space_for_test_name}s" `echo $test_name|sed 's|^./||'`
 	fi
-fi
-
-if [ ! -d ${OSDL} ] ; then
-	ERROR_INTERNAL "No available OSDL directory found."
-	exit 2
-fi
-
-DEBUG_INTERNAL "OSDL path is $OSDL"
-
-VERSIONS_FILE="${OSDL}/conf/loani-versions.sh"
-
-if [ ! -f ${VERSIONS_FILE} ] ; then
-	echo "No version file found (${VERSIONS_FILE})" 1>&2
-	exit 5
-fi
- 
-source ${VERSIONS_FILE}
-
-# Creates a test directory under OSDL/OSDL-${OSDL_VERSION}, 
-# allows to avoid polluting other directories :
-TEST_DIR="tests-results"
-mkdir -p ${OSDL}/../${TEST_DIR}
-
-cd ${OSDL}/code
-
-OSDL_ENV_FILE="../../../../OSDL-environment.sh"
-if [ ! -f "${OSDL_ENV_FILE}" ] ; then
-	echo "Unable to find OSDL environment file (expected `pwd`/${OSDL_ENV_FILE})." 1>&2
-	exit 6
-fi
-source ${OSDL_ENV_FILE}
-
-SHELLS_LOCATION="../../../../${Ceylan_ROOT}/src/code/scripts/shell"
-
-if [ ! -d ${SHELLS_LOCATION} ] ; then
-	echo "Unable to find shell tools path (expected `pwd`/${SHELLS_LOCATION})." 1>&2
-	exit 7
-fi
-
-DEFAULT_LOCATIONS="${SHELLS_LOCATION}/defaultLocations.sh"
+	
+}
 
 
-if [ ! -f ${DEFAULT_LOCATIONS} ] ; then
-	echo "No bash helper script found (expected ${DEFAULT_LOCATIONS}), are you sure you are running "`basename $0`" from \$OSDL_ROOT/src/code ?" 1>&2
-	exit 8
-fi
+display_test_result()
+# Usage : display_test_result <name of the test> <test path> <returned code>
+{
 
-source ${DEFAULT_LOCATIONS}
-
-
-
-# Corresponds to real LOANI default prefix settings :
-LOANI_INSTALLATIONS_FIRST=`pwd`/../../../../../LOANI-installations
-
-LOANI_INSTALLATIONS_SECOND=`pwd`/../../src/conf/LOANI-installations
-
-LOANI_INSTALLATIONS=${LOANI_INSTALLATIONS_FIRST}
-
-
-DEBUG_INTERNAL "Searching LOANI_INSTALLATIONS in ${LOANI_INSTALLATIONS}"
-if [ ! -d ${LOANI_INSTALLATIONS} ] ; then
-	DEBUG_INTERNAL "Not found in ${LOANI_INSTALLATIONS}."
-	LOANI_INSTALLATIONS=${LOANI_INSTALLATIONS_SECOND}
-	DEBUG_INTERNAL "Searching LOANI_INSTALLATIONS in ${LOANI_INSTALLATIONS}"
-	if [ ! -d ${LOANI_INSTALLATIONS} ] ; then
-		DEBUG_INTERNAL "Not found in ${LOANI_INSTALLATIONS}."
+	test_name="$1"
+	t="$2"
+	return_code="$3"
+	
+	if [ "$return_code" = 0 ] ; then
+		# Test succeeded :
+		if [ "$is_batch" = "1" ] ; then
+			echo
+			printColor "${term_offset}$test_name seems to be successful     " $green_text $black_back
+		else
+			printf  "[${white_text}m[[${green_text}mOK[${white_text}m]\n"
+		fi	
+				
+	else
+			
+		# Test failed :
+		error_count=`expr $error_count + 1`
+		if [ "$is_batch" = "1" ] ; then
+			echo
+			printColor "${term_offset}$t seems to be failed (exit status $return_code)     " $white_text $red_back
+		else
 		
-		ERROR_INTERNAL "Unable to find LOANI-installations, neither in ${LOANI_INSTALLATIONS_FIRST} nor in ${LOANI_INSTALLATIONS_SECOND}"
-		exit 8
-	fi	
+			if [ "$check_dependency" -eq "0" ] ; then
+			
+				if [ "$on_cygwin" -eq "0" ] ; then
+					# See also : http://www.dependencywalker.com/
+					PATH="/cygdrive/c/Program Files/Microsoft Platform SDK for Windows Server 2003 R2/bin:$PATH"
+					depend_tool="Depends.exe"
+					if which $depend_tool 1>/dev/null 2>&1; then
+						depends_exe=`which $depend_tool`
+						"$depends_exe" $t >> ${TESTLOGFILE}
+					else
+						echo "No $depend_tool available, no dependency displayed."  >> ${TESTLOGFILE}
+					fi
+				else
+					echo "$t failed, whose shared library dependencies are : " >> ${TESTLOGFILE}
+					ldd $t >>${TESTLOGFILE}
+				fi
+			fi
+			
+			printf "[${white_text}m[[${red_text}mKO[${white_text}m]\n"
+		fi	
+	fi
+}
+
+
+run_test()
+# Usage : run_test <name of the test> <test path> 
+{
+
+	test_name="$1"
+	t="$2"
+	
+	# The --interactive parameter is used to tell the test it is 
+	# run in interactive mode, so that those which are long 
+	# (ex : stress tests) are shorten.
+	if [ "$is_batch" = "0" ] ; then
+		echo "
+		
+		########### Running now $t" >>${TESTLOGFILE}
+		$t --batch ${network_option} 1>>${TESTLOGFILE} 2>&1
+	else
+		$t --interactive ${network_option}
+	fi			
+		
+	return_code="$?"
+	
+	display_test_result "$test_name" "$t" "$return_code"
+	
+		
+	if [ "$is_batch" = "1" ] ; then
+		printColor "${term_primary_marker}End of $test_name, press enter to continue" $cyan_text $blue_back
+		read 
+		clear
+	fi		
+			
+}
+
+
+display_final_stats()
+{
+	echo 
+
+	if [ "$error_count" -eq "0" ] ; then
+		echo "   Test result : [${green_text}m all $test_count tests succeeded[${white_text}m"
+	else
+		echo "   Test result : [${red_text}m $error_count out of $test_count tests failed[${white_text}m"
+		echo "   (see ${TESTLOGFILE} for more details)"
+	fi
+}
+
+
+get_logical_test_name()
+# Converts executables names on Cygwin to the usual names
+# 'system-testOSDLX.exe' should become 'testOSDLX'
+{
+	
+	if [ "$on_cygwin" -eq "0" ] ; then
+		returned_string=`basename $t |sed 's|^.*-test|test|1' |sed 's|.exe$||1'`
+	else
+		returned_string=`basename $t |sed 's|.exe$||1'`
+	fi
+		
+}
+
+
+# Try to find automagically the relevant OSDL-environment.sh file :
+
+# If absolute path given :
+first_char=`echo $0 | head -c 1`
+if [ "$first_char" = "/" ] ; then
+	starting_dir=`dirname $0`
+	
+else
+	starting_dir=$PWD`dirname $0`/
 fi
 
+#echo "starting_dir = $starting_dir"
 
-#SDL_image_ROOT="${LOANI_INSTALLATIONS}/SDL_image-${SDL_image_VERSION}"
+loani_installations=`echo $starting_dir | sed 's|osdl/OSDL/trunk/test||1'`"../LOANI-installations"
+	
+#echo "loani_installations = $loani_installations"
 
+if [ ! -d "$loani_installations" ] ; then
 
-#if [ -d ${SDL_image_ROOT}/lib ] ; then
-	# Prefix can be unused, in this case we suppose SDL_image is to be found 
-	# in default LD_LIBRARY_PATH. 
-	#LD_LIBRARY_PATH=${SDL_image_ROOT}/lib:/usr/local/lib:/usr/lib:/lib:${LD_LIBRARY_PATH}
-#fi
-   
+	ERROR_INTERNAL "unable to guess the LOANI installation repository (tried $loani_installations)"
+	exit 1
+	
+fi
 
-echo -e "\nEnforcing prerequesite, using OSDL = ${OSDL} for root directory :"
+osdl_environment_file="$loani_installations/OSDL-environment.sh"
 
-echo -e "\t1. make sure that the OSDL library to test is up to date"
-echo -e "\t2. then compile and link tests to that OSDL library\n"
+if [ ! -f "$osdl_environment_file" ] ; then
 
-DEBUG_INTERNAL "Regenerating all build to be sure everything is up-to-date"
+	ERROR_INTERNAL "unable to find OSDL environment file (tried $osdl_environment_file)"
+	exit 2
 
-# Tries to used required gcc if detected :
-unset GCC_PATH
-if [ -n "$GCC_ROOT" ] ; then
-	GCC_PATH="GCC_ROOT=$GCC_ROOT"
+fi
+
+. $osdl_environment_file
+
+	
+# Try to find term utilities :
+
+TEST_ROOT=`dirname $0`
+
+TERM_PATH="$Ceylan_PREFIX/share/Ceylan/scripts/shell/termUtils.sh"
+if [ -f "$TERM_PATH" ] ; then
+	. $TERM_PATH
+else
+	ERROR_INTERNAL "terminal utilities not found (tried $TERM_PATH)"
+	exit 3
 fi	
 
-# Do not update in debug mode to avoid too much waiting :
-if [ "$debug_mode" == "1" ] ; then
-	echo -e "\n\tUpdating (might be a bit long)...."
-	( cd ..; make -s all $GCC_PATH 1>/dev/null 2>&1 )
+# For tests that need to search relative paths :
+# (do not know why shell fails when doing a 'cd test' when run from trunk)
+cd ${TEST_ROOT}
+
+# Creates a test directory to avoid polluting other directories :
+TEST_DIR="tests-results-"`date '+%Y%m%d'`
+
+
+if [ "$is_batch" = "0" ] ; then
+	echo "
+	Running in batch mode, tests will be short and silent, only results are to be output."
+else	
+	echo "
+	Interactive tests will need an input device (joystick, mouse, keyboard) to be used. Be warned though that some tests might take a long time, and that some of them have no special output except a test result."
+fi
+
+# Test whether we are online (needed for DNS queries) :
+if ping google.com -c 2 1>/dev/null 2>&1; then
+	is_online=0
+	network_option="--online"
+	echo "
+	Running in online mode, in-depth network testing enabled."
+else	
+	is_online=1
+	network_option=""
+	echo "
+	No Internet connection detected, some network tests will be disabled."
 fi
 
 
-# Ensure we are back in ${OSDL}/../${TEST_DIR} = <..>/OSDL/OSDL-x.y/${TEST_DIR} directory
-cd ${OSDL}/../${TEST_DIR}
+test_count=0
+error_count=0
 
-DEBUG_INTERNAL "We are in ${OSDL}/../${TEST_DIR} = "`pwd` " directory."
+# Not using Cygwin by default to chain the tests :
+on_cygwin=1
 
+# Tells whether link dependencies should be checked in case a test fails :
+check_dependency=1
 
-if [ "$is_batch" == "0" ] ; then
-	echo -e "\n\tRunning in batch mode, tests will be silent, only results are to be output."
-fi
-
-echo -e "\t(be warned that some tests might take a long time, and that some of them have no special output except a test result)"
-
-echo -e "\nInteractive tests will only need the enter key to be pressed one or more times."
+# Special case for tests generated on Windows :
+if [ `uname -s | cut -b1-6` = "CYGWIN" ] ; then
+	
+	on_cygwin=0
+	DEBUG_INTERNAL "Running tests in the Windows (Cygwin) context."
+	
+	# Updated PATH needed to find the OSDL DLL :
+	export PATH="../src/Debug:$PATH"
+	
+fi	
 
 # This script will automatically run each test of each selected OSDL module.
-#TESTED_MODULES="basic events video video/twoDimensional audio"
-TESTED_MODULES=`cd ../bin; find . -type d -a ! -name .`
+TESTED_ROOT_MODULES=`cd ${TEST_ROOT}; find . -type d | grep -v tmp | grep -v Debug | grep -v autom4te.cache | grep -v .svn | grep -v '.deps' | grep -v '.libs' | grep -v 'testOSDL'| grep -v '^\.$'`
 
-for m in ${TESTED_MODULES} ; do
+# For debug purpose :
+#TESTED_ROOT_MODULES="generic logs interfaces modules system maths network middleware"
+
+DEBUG_INTERNAL "Tested modules are : ${TESTED_ROOT_MODULES}"
+
+
+# "[OK] " is 5 character wide and must be aligned along the right edge :
+if [ -z "${COLUMNS}" ] ; then
+	DEBUG_INTERNAL "Retrieving columns thanks to tput"	
+	COLUMNS=`tput cols`
+	if [ -z "${COLUMNS}" ] ; then
+		DEBUG_INTERNAL "Retrieving columns thanks to stty"	
+		COLUMNS=`stty size |awk '{print $2}'`
+	fi	
+fi
+DEBUG_INTERNAL "Columns = ${COLUMNS}"	
+
+space_for_test_name=`expr ${COLUMNS} - 5`
+DEBUG_INTERNAL "Space for test names = ${space_for_test_name}"	
+
+
+if [ "$is_batch" = "0" ] ; then
+	echo "
+		Test results established at "`date '+%A, %B %-e, %Y'`"\n\n" > ${TESTLOGFILE}
+fi
+
+if [ "$on_cygwin" -eq "0" ] ; then
+	echo "
 	
-	printColor "\n\n${term_offset}${term_primary_marker}Playing all tests of module '"`echo $m | sed 's|./||'`"' : " $magenta_text $black_back
+	Library search path is : PATH='$PATH'" >> ${TESTLOGFILE}
+else
+	echo "
 	
-	if [ "$is_batch" == "1" ] ; then
+	Library search path is : LD_LIBRARY_PATH='$LD_LIBRARY_PATH'" >> ${TESTLOGFILE}
+fi
+
+# So that test plugin can be found :
+saved_LTDL_LIBRARY_PATH="$LTDL_LIBRARY_PATH"
+
+
+for m in ${TESTED_ROOT_MODULES} ; do
+
+	DEBUG_INTERNAL "Testing module ${m}"
 	
-		for t in ../bin/$m/test* ; do		
+	LTDL_LIBRARY_PATH="$saved_LTDL_LIBRARY_PATH:${TEST_ROOT}/$m"
+	export LTDL_LIBRARY_PATH
+	
+	# Some local scripts are needed in some cases, for example when a test
+	# client requires a test server to be launched before.
+	
+	PLAYTEST_LOCAL="${TEST_ROOT}/$m/${PLAYTEST_LOCAL_FILE}"
+	
+	printColor "
+	${term_offset}${term_primary_marker}Playing all tests of module '"`echo $m | sed 's|^./||1'`"' : " $magenta_text $black_back
+	
+	if [ -f "${PLAYTEST_LOCAL}" ] ; then
+		EXCLUDED_TESTS=""
+		DEBUG_INTERNAL "Sourcing ${PLAYTEST_LOCAL}"
+		. ${PLAYTEST_LOCAL}
+	fi
+		
+	if [ "$on_cygwin" -eq "0" ] ; then
+		TESTS=`ls ${TEST_ROOT}/$m/*-testOSDL*.exe 2>/dev/null`
+	else	
+		TESTS=`ls ${TEST_ROOT}/$m/testOSDL*.exe 2>/dev/null`	
+	fi
+	
+	DEBUG_INTERNAL "Tests in module ${m} are : '${TESTS}'"
+	
+	if [ "$is_batch" = "1" ] ; then
+	
+		# Lists all tests that are to be run :
+		for t in $TESTS ; do
 			if [ -x "$t" -a -f "$t" ] ; then
-				printColor "${term_offset}${term_offset}+ $t" $cyan_text $black_back
+				printColor "${term_offset}${term_offset}+ `basename $t`" $cyan_text $black_back
 			fi
 		done
 
-		echo -e "\n   <Press enter to start testing module '"`echo $m | sed 's|./||'`"'>"
+		echo "
+		<Press enter to start testing module '"`echo $m | sed 's|./||'`"'>"
 		read $dummy
 		clear
 	fi
 
-	# Used to test in their *build* location : for t in $m/tests/test*.exe ; do
-	# Now, test them in place (in *install* directory)
-	for t in ../bin/$m/test* ; do
+	for t in $TESTS ; do
+	
 		if [ -x "$t" -a -f "$t" ] ; then
-			printColor "${term_primary_marker}Launching $t" $cyan_text $blue_back
-			# The --interactive parameter is used to tell the test it is run in interactive mode,
-			# so that those which are long (ex : stress tests) are shorten.
-			if [ "$is_batch" == "0" ] ; then
-				./$t --batch 1>${TESTLOGFILE} 2>&1
-			else
-				./$t --interactive
-			fi
-		
-			if [ "$?" == 0 ] ; then
-				if [ "$is_batch" == "1" ] ; then
-					echo
+
+			get_logical_test_name $t
+			logical_test_name=$returned_string
+			
+			to_be_excluded=1
+			for excluded in ${EXCLUDED_TESTS} ; do
+				if [ "$logical_test_name" = "$excluded" ] ; then
+					to_be_excluded=0
 				fi	
-				printColor "${term_offset}Seems to be successful     " $green_text $black_back
-			else
-				if [ "$is_batch" == "1" ] ; then
-					echo
-				fi	
-				printColor "${term_offset}Seems to be failed (exit status $?)     " $white_text $red_back
-			fi
+			done	
 		
-			if [ "$is_batch" == "1" ] ; then
-				printColor "${term_primary_marker}End of $t, press enter to continue" $cyan_text $blue_back
-				read 
-				clear
-			fi	
+			if [ "$to_be_excluded" = "0" ] ; then
+				# Skip this test, as PLAYTEST_LOCAL_FILE took care of it :
+				DEBUG_INTERNAL "Skipping test $t"
+				continue
+			fi
+			
+			test_count=`expr $test_count + 1`
+			
+			get_logical_test_name $t
+			test_name="$returned_string"
+			
+			display_launching $test_name
+			
+			run_test $test_name "$t"
+			
 		fi
 			
 	done
-
+		
 done 
 
+display_final_stats
 
-# Summary is only needed if full ouput was asked :
 
-if [ "$is_batch" == "1" ] ; then
-	clear
-	printColor "${term_offset}${term_primary_marker}Following tests have been played : " $magenta_text $black_back
+echo "
+End of tests"
 
-	for m in ${TESTED_MODULES} ; do
-	
-		printColor "${term_offset}${term_offset}${term_secondary_marker}For module '"`echo $m | sed 's|./||'`"' :" $magenta_text $black_back
-		for t in ../bin/$m/test* ; do
-			if [ -x "$t" -a -f "$t" ] ; then	
-				printColor "${term_offset}${term_offset}${term_offset}${term_offset}+ $t" $cyan_text $black_back
-			fi
-		done		
-	done
-fi
+LTDL_LIBRARY_PATH="$saved_LTDL_LIBRARY_PATH"
+
+exit $error_count
+
