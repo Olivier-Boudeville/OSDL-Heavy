@@ -11,6 +11,6 @@ testsevents_PROGRAMS = \
 	testOSDLJoysticks.exe
 
 
-testOSDLController_SOURCES = testOSDLController.cc
-testOSDLEvents_SOURCES        = testOSDLEvents.cc
-testOSDLJoysticks_SOURCES = testOSDLJoysticks.cc
+testOSDLController_exe_SOURCES = testOSDLController.cc
+testOSDLEvents_exe_SOURCES        = testOSDLEvents.cc
+testOSDLJoysticks_exe_SOURCES = testOSDLJoysticks.cc
