@@ -14,6 +14,7 @@
 #include "OSDL.h"     // just for basic primitives such as getBackendLastError
 using namespace OSDL ;
 
+using namespace Ceylan::Log ;
 
 
 #include <iostream> // for cerr
@@ -100,7 +101,60 @@ void DrawGLScene()
 int main(int argc, char **argv) 
 {  
 	
+  LogHolder myLog( argc, argv ) ;
 	
+  LogPlug::info( "Testing basic OpenGL support" ) ;
+
+  bool isBatch = false ;
+
+  std::string executableName ;
+  std::list<std::string> options ;
+
+  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+
+  std::string token ;
+  bool tokenEaten ;
+
+
+  while ( ! options.empty() )
+  {
+
+      token = options.front() ;
+      options.pop_front() ;
+
+      tokenEaten = false ;
+    			  
+      if ( token == "--batch" )
+      {
+    	  LogPlug::info( "Batch mode selected" ) ;
+    	  isBatch = true ;
+    	  tokenEaten = true ;
+      }
+      
+      if ( token == "--interactive" )
+      {
+    	  LogPlug::info( "Interactive mode selected" ) ;
+    	  isBatch = false ;
+    	  tokenEaten = true ;
+      }
+      
+      
+      if ( LogHolder::IsAKnownPlugOption( token ) )
+      {
+    	  // Ignores log-related (argument-less) options.
+    	  tokenEaten = true ;
+      }
+      
+      
+      if ( ! tokenEaten )
+      {
+    	  throw Ceylan::CommandLineParseException( 
+    		  "Unexpected command line argument : " + token ) ;
+      }
+
+  }
+
+
   int done;
 
   /* Initialize SDL for video output */
@@ -125,14 +179,15 @@ int main(int argc, char **argv)
   }
 
   /* Set the title bar in environments that support it */
-  SDL_WM_SetCaption( "SDL with OpenL example, taken from "
+  SDL_WM_SetCaption( "SDL with OpenGL example, taken from "
   	"Jeff Molofee's GL Code Tutorial, NeHe '99", 0) ;
 
   /* Loop, drawing and checking events */
   InitGL( screenWidth, screenHeight ) ;
   done = 0;
 
-  Ceylan::display( "< Press any key on SDL window to stop >" ) ;
+  if ( ! isBatch )
+  	Ceylan::display( "< Press any key on SDL window to stop >" ) ;
 
   while ( ! done ) 
   {
@@ -150,18 +205,29 @@ int main(int argc, char **argv)
     { 
 	
 	  SDL_Event event;
-      while ( SDL_PollEvent(&event) ) 
+
+	  if ( ! isBatch )
 	  {
-        if ( event.type == SDL_QUIT ) 
-		{
-          done = 1;
-        }
-        if ( event.type == SDL_KEYDOWN ) 
-		{
-           done = 1;
-        }
-      }
+	
+	      do 
+	      {
+		    	  
+	    	  // Avoid busy waits :
+	    	  SDL_WaitEvent( & event ) ;
+	      
+	      } while ( event.type != SDL_KEYDOWN ) ;
+		  
+		  done = true ;
+		  
+	  }
+	  else
+	  {
+	      SDL_Delay( 1000 /* milliseconds */ ) ;
+		  done = true ;
+	  }
+
     }
+	
   }
   SDL_Quit() ;
   return 0 ;
