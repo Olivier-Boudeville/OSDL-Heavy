@@ -207,7 +207,7 @@ if [ -z "$osdl_environment_file" ] ; then
 	
 	if [ -z "$ceylan_location" ] ; then
 
-		# Nothing specified, trying to guess where a OSDl-environment.sh file
+		# Nothing specified, trying to guess where a OSDL-environment.sh file
 		# is to be found :
 
 	
@@ -626,7 +626,7 @@ generateCustom()
 		echo
 		echo " - building and running test suite"
 		cd test
-	 	execute ./autogen.sh --osdl-install-prefix $PREFIX
+	 	execute ./autogen.sh --with-osdl-environment $osdl_environment_file
 	elif [ "$do_only_prepare_dist" -eq 0 ] ; then
 		echo
 		echo " - generating configure for test suite"
