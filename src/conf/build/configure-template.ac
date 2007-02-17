@@ -135,6 +135,15 @@ AC_SUBST(OSDL_PKGCONFIG_FILE)
 OSDL_ARCHIVE_DIR="\${HOME}/Archive/${PROJECT_NAME}"
 AC_SUBST(OSDL_ARCHIVE_DIR)
 
+# Local shared directory for OSDL :
+# If the user wants to redefine his prefix, then he should reconfigure the
+# package : if not hardcoding the prefix at the configure step, then for
+# example we could not use autoconf to generate doxygen.conf which needs
+# a fully expanded output path (hence not containing '${prefix}').
+OSDL_INSTALL_SHARED_DIR="\${prefix}/share/${PROJECT_NAME}"
+AC_SUBST(OSDL_INSTALL_SHARED_DIR)
+
+
 # The OSDL source archive downloaded by LOANI :
 OSDL_CURRENT_SOURCE_ARCHIVE="osdl-$OSDL_VERSION.tar.bz2"
 AC_SUBST(OSDL_CURRENT_SOURCE_ARCHIVE)
@@ -355,7 +364,7 @@ CEYLAN_RECOMMENDED_MAJOR="0"
 AC_SUBST(CEYLAN_RECOMMENDED_MAJOR)
 
 CEYLAN_RECOMMENDED_MINOR="5"
-AC_SUBST(CEYLAN_RECOMMENDED_MAJOR)
+AC_SUBST(CEYLAN_RECOMMENDED_MINOR)
 
 CEYLAN_RECOMMENDED_RELEASE="0"
 AC_SUBST(CEYLAN_RECOMMENDED_RELEASE)
