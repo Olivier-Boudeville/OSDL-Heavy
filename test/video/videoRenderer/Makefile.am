@@ -10,5 +10,5 @@ testsvideorenderer_PROGRAMS = \
 	testOSDLRenderer.exe
 
 
-testOSDLRenderer_SOURCES          = testOSDLRenderer.cc
+testOSDLRenderer_exe_SOURCES          = testOSDLRenderer.cc
 
