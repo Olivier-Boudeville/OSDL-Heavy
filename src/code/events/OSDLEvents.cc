@@ -6,6 +6,7 @@
 #include "OSDLRenderer.h"          // for Renderer
 #include "OSDLJoystickHandler.h"   // for JoystickHandler
 #include "OSDLKeyboardHandler.h"   // for KeyboardHandler
+#include "OSDLMouseHandler.h"      // for MouseHandler
 
 #include "Ceylan.h"                // for Flags, etc.
 
@@ -13,7 +14,7 @@
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
+#include <OSDLConfig.h>            // for OSDL_DEBUG and al (private header)
 #endif // OSDL_USES_CONFIG_H
 
 
@@ -162,6 +163,7 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) :
 	_useScheduler( false ),	
 	_keyboardHandler( 0 ),
 	_joystickHandler( 0 ),
+	_mouseHandler( 0 ),
 	_quitRequested( false ),
 	_loopTargetedFrequency( DefaultEventLoopTargetedFrequency ),
 	_idleCallsCount( 0 ),
@@ -171,12 +173,15 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) :
 
 	send( "Initializing events subsystem." ) ;
 	
+	
 	// Activating selected input devices :
 	
 	if ( eventsFlag & CommonModule::UseJoystick )
 	{
-		_joystickHandler = new JoystickHandler() ;
+		_joystickHandler = new JoystickHandler( 
+			/* useClassicalJoysticks */ true ) ;
 	}	
+
 
 	if ( eventsFlag & CommonModule::UseKeyboard )
 	{
@@ -185,6 +190,13 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) :
 		_keyboardHandler = new KeyboardHandler( 
 			/* initialMode */ Events::rawInput,
 			/* useSmarterDefaultKeyHandler */ false ) ;
+	}
+		
+		
+	if ( eventsFlag & CommonModule::UseMouse )
+	{
+		_mouseHandler = new MouseHandler(
+			/* useClassicalMice */ true ) ;
 	}
 		
 	
@@ -217,6 +229,12 @@ EventsModule::~EventsModule() throw()
 	{
 		delete _keyboardHandler ;
 		_keyboardHandler = 0 ;
+	}	
+	
+	if ( _mouseHandler != 0 )
+	{
+		delete _mouseHandler ;
+		_mouseHandler = 0 ;
 	}	
 	
 	send( "Stopping and deleting any existing scheduler" ) ;
@@ -313,68 +331,6 @@ void EventsModule::useScheduler( bool on ) throw()
 
 
 
-bool EventsModule::hasKeyboardHandler() const throw()
-{
-	return ( _keyboardHandler != 0 ) ;
-}
-
-
-
-KeyboardHandler & EventsModule::getKeyboardHandler() const 
-	throw( EventsException )
-{
-
-	if ( _keyboardHandler == 0 )
-		throw EventsException( 
-			"EventsModule::getKeyboardHandler : no handler available." ) ;
-	
-	return * _keyboardHandler ;
-	
-}
-
-
-void EventsModule::setKeyboardHandler( KeyboardHandler & newHandler ) throw()
-{
-
-	if ( _keyboardHandler != 0 )
-		delete _keyboardHandler ;
-		
-	_keyboardHandler = & newHandler ;
-	
-}
-
-
-
-bool EventsModule::hasJoystickHandler() const throw()
-{
-	return ( _joystickHandler != 0 ) ;
-}
-
-
-JoystickHandler & EventsModule::getJoystickHandler() const 
-	throw( EventsException )
-{
-
-	if ( _joystickHandler == 0 )
-		throw EventsException( 
-			"EventsModule::getJoystickHandler : no handler available." ) ;
-	
-	return * _joystickHandler ;
-	
-}
-
-
-void EventsModule::setJoystickHandler( JoystickHandler & newHandler ) throw()
-{
-
-	if ( _joystickHandler != 0 )
-		delete _joystickHandler ;
-		
-	_joystickHandler = & newHandler ;
-	
-}
-
-
 void EventsModule::setIdleCallback( Ceylan::System::Callback idleCallback, 
 	void * callbackData ) throw()
 {
@@ -399,7 +355,9 @@ void EventsModule::setIdleCallback( Ceylan::System::Callback idleCallback,
 
 void EventsModule::setEventLoopTargetFrequency( Hertz targetFrequency ) throw()
 {
+
 	_loopTargetedFrequency = targetFrequency ;
+	
 }
 
 
@@ -469,6 +427,117 @@ void EventsModule::requestQuit() throw()
 	}	
 	
 }
+
+
+
+// Handler subsection.
+
+
+bool EventsModule::hasKeyboardHandler() const throw()
+{
+
+	return ( _keyboardHandler != 0 ) ;
+	
+}
+
+
+
+KeyboardHandler & EventsModule::getKeyboardHandler() const 
+	throw( EventsException )
+{
+
+	if ( _keyboardHandler == 0 )
+		throw EventsException( 
+			"EventsModule::getKeyboardHandler : no handler available : "
+			"did you specify 'CommonModule::UseKeyboard' "
+			"at the initialization of the common module ?" ) ;
+	
+	return * _keyboardHandler ;
+	
+}
+
+
+void EventsModule::setKeyboardHandler( KeyboardHandler & newHandler ) throw()
+{
+
+	if ( _keyboardHandler != 0 )
+		delete _keyboardHandler ;
+		
+	_keyboardHandler = & newHandler ;
+	
+}
+
+
+
+bool EventsModule::hasJoystickHandler() const throw()
+{
+
+	return ( _joystickHandler != 0 ) ;
+	
+}
+
+
+JoystickHandler & EventsModule::getJoystickHandler() const 
+	throw( EventsException )
+{
+
+	if ( _joystickHandler == 0 )
+		throw EventsException( 
+			"EventsModule::getJoystickHandler : no handler available : "
+			"did you specify 'CommonModule::UseJoystick' "
+			"at the initialization of the common module ?" ) ;
+	
+	return * _joystickHandler ;
+	
+}
+
+
+void EventsModule::setJoystickHandler( JoystickHandler & newHandler ) throw()
+{
+
+	if ( _joystickHandler != 0 )
+		delete _joystickHandler ;
+		
+	_joystickHandler = & newHandler ;
+	
+}
+
+
+
+bool EventsModule::hasMouseHandler() const throw()
+{
+
+	return ( _mouseHandler != 0 ) ;
+	
+}
+
+
+MouseHandler & EventsModule::getMouseHandler() const 
+	throw( EventsException )
+{
+
+	if ( _mouseHandler == 0 )
+		throw EventsException( 
+			"EventsModule::getMouseHandler : no handler available : "
+			"did you specify 'CommonModule::UseMouse' "
+			"at the initialization of the common module ?" ) ;
+	
+	return * _mouseHandler ;
+	
+}
+
+
+void EventsModule::setMouseHandler( MouseHandler & newHandler ) throw()
+{
+
+	if ( _mouseHandler != 0 )
+		delete _mouseHandler ;
+		
+	_mouseHandler = & newHandler ;
+	
+}
+
+
 
 
 void EventsModule::updateInputState() throw()
@@ -596,6 +665,12 @@ const string EventsModule::toString( Ceylan::VerbosityLevels level )
 	else
 		res += "not using any joystick handler, " ;
 	
+	if ( _mouseHandler != 0 )
+		res += "using a mouse handler, " ;
+	else
+		res += "not using any mouse handler, " ;
+	
+	
 	if ( _loopIdleCallback == 0 )
 		res += "using micro-sleep idle callback" ;
 	else
@@ -619,11 +694,18 @@ const string EventsModule::toString( Ceylan::VerbosityLevels level )
 	if ( _joystickHandler != 0 )
 		returned.push_back( _joystickHandler->toString() ) ;
 	
+	if ( _mouseHandler != 0 )
+		returned.push_back( _mouseHandler->toString() ) ;
+	
 	return Ceylan::formatStringList( returned ) ;
 	
 }
 
-					
+
+
+// Static section.		
+
+			
 string EventsModule::DescribeEnvironmentVariables() throw()
 {
 
@@ -772,7 +854,9 @@ Millisecond EventsModule::GetMillisecondsSinceStartup()
 
 
 
+
 // Protected section.
+
 
 
 void EventsModule::enterBasicMainLoop() throw( EventsException )
@@ -947,70 +1031,41 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 
 }
 
-		
-void EventsModule::onIdle() throw() 
-{		
 
-	_idleCallsCount++ ;
-	
-	if ( _loopIdleCallback != 0 )
-	{
-		OSDL_EVENT_LOG( 
-			"EventsModule::onIdle : calling now idle call-back." ) ;
-		
-		(*_loopIdleCallback)( _loopIdleCallbackData ) ;
-		
-		OSDL_EVENT_LOG( 
-			"EventsModule::onIdle : returned from idle call-back." ) ;
-		
-	}
-	else
-	{
-	
-		/*
-		 * Issues a basic sleep, chosen so that the minimum real sleeping 
-		 * time can be performed.
-		 *
-		 */
-		 basicSleep() ;
-		
-	}	
-		
+
+
+// Keyboard section.
+
+
+void EventsModule::onKeyboardFocusGained() throw()
+{
+
+	OSDL_EVENT_LOG( "Application gained keyboard focus." ) ;
+
+#if OSDL_DEBUG
+	if ( _keyboardHandler == 0 )
+		Ceylan::emergencyShutdown( "EventsModule::onKeyboardFocusGained called "
+			"whereas no handler is available." ) ;
+#endif // OSDL_DEBUG
+
+	_keyboardHandler->focusGained() ;
+
 }
 
 
-void EventsModule::onApplicationFocusChanged( 
-	const FocusEvent & focusEvent ) throw()
+void EventsModule::onKeyboardFocusLost() throw()
 {
 
-	OSDL_EVENT_LOG( "Application focus changed." ) ;
-	
-	// Maybe multiple gains or losses could be sent in one event :
+	OSDL_EVENT_LOG( "Application lost keyboard focus." ) ;
 
-	if ( focusEvent.state & _MouseFocus )
-	{
-		if ( focusEvent.gain == 1 )
-			onMouseFocusGained() ;
-		else
-			onMouseFocusLost() ;	
-	}
-	
-	if ( focusEvent.state & _KeyboardFocus )
-	{
-		if ( focusEvent.gain == 1 )
-			onKeyboardFocusGained() ;
-		else
-			onKeyboardFocusLost() ;	
-	}
-	
-	if ( focusEvent.state & _ApplicationFocus )
-	{
-		if ( focusEvent.gain == 1 )
-			onApplicationRestored() ;
-		else
-			onApplicationIconified() ;	
-	}
-		
+#if OSDL_DEBUG
+	if ( _keyboardHandler == 0 )
+		Ceylan::emergencyShutdown( "EventsModule::onKeyboardFocusLost called "
+			"whereas no handler is available." ) ;
+#endif // OSDL_DEBUG
+
+	_keyboardHandler->focusLost() ;
+
 }
 
 
@@ -1018,6 +1073,13 @@ void EventsModule::onKeyPressed( const KeyboardEvent & keyboardEvent ) throw()
 {
 
 	OSDL_EVENT_LOG( "Key pressed." ) ;
+
+#if OSDL_DEBUG
+	if ( _keyboardHandler == 0 )
+		Ceylan::emergencyShutdown( "EventsModule::onKeyPressed called "
+			"whereas no handler is available." ) ;
+#endif // OSDL_DEBUG
+
 	_keyboardHandler->keyPressed( keyboardEvent ) ;
 	
 }
@@ -1027,40 +1089,106 @@ void EventsModule::onKeyReleased( const KeyboardEvent & keyboardEvent ) throw()
 {
 
 	OSDL_EVENT_LOG( "Key released." ) ;
+
+#if OSDL_DEBUG
+	if ( _keyboardHandler == 0 )
+		Ceylan::emergencyShutdown( "EventsModule::onKeyReleased called "
+			"whereas no handler is available." ) ;
+#endif // OSDL_DEBUG
+
 	_keyboardHandler->keyReleased( keyboardEvent ) ;
 	
 }
 
 
 
+// Mouse section.
+
+
+void EventsModule::onMouseFocusGained( MouseNumber mouse ) throw()
+{
+
+	OSDL_EVENT_LOG( "Application gained mouse focus." ) ;
+
+#if OSDL_DEBUG
+	if ( _mouseHandler == 0 )
+		Ceylan::emergencyShutdown( "EventsModule::onMouseFocusGained called "
+			"whereas no handler is available." ) ;
+#endif // OSDL_DEBUG
+
+	_mouseHandler->focusGained( mouse ) ;
+	
+}
+
+
+void EventsModule::onMouseFocusLost( MouseNumber mouse) throw()
+{
+
+	OSDL_EVENT_LOG( "Application lost mouse focus." ) ;
+
+#if OSDL_DEBUG
+	if ( _mouseHandler == 0 )
+		Ceylan::emergencyShutdown( "EventsModule::onMouseFocusLost called "
+			"whereas no handler is available." ) ;
+#endif // OSDL_DEBUG
+
+	_mouseHandler->focusLost( mouse ) ;
+
+}
+
+
 void EventsModule::onMouseMotion( const MouseMotionEvent & mouseEvent ) throw()
 {
 
 	OSDL_EVENT_LOG( "Mouse motion." ) ;
-	// @todo: add mouse handler.
+
+#if OSDL_DEBUG
+	if ( _mouseHandler == 0 )
+		Ceylan::emergencyShutdown( "EventsModule::onMouseMotion called "
+			"whereas no handler is available." ) ;
+#endif // OSDL_DEBUG
+
+	_mouseHandler->mouseMoved( mouseEvent ) ;
 	
 }
 
 
-void EventsModule::onMouseButtonPressed( const MouseButtonEvent & mouveEvent )
+void EventsModule::onMouseButtonPressed( const MouseButtonEvent & mouseEvent )
 	throw()
 {
 
 	OSDL_EVENT_LOG( "Mouse button pressed." ) ;
-	// @todo: add mouse handler.
+
+#if OSDL_DEBUG
+	if ( _mouseHandler == 0 )
+		Ceylan::emergencyShutdown( "EventsModule::onMouseButtonPressed called "
+			"whereas no handler is available." ) ;
+#endif // OSDL_DEBUG
+
+	_mouseHandler->buttonPressed( mouseEvent ) ;
 	
 }
 
 
-void EventsModule::onMouseButtonReleased( const MouseButtonEvent & mouveEvent )
+void EventsModule::onMouseButtonReleased( const MouseButtonEvent & mouseEvent )
 	throw()
 {
 
 	OSDL_EVENT_LOG( "Mouse button released." ) ;
-	// @todo: add mouse handler.
+
+#if OSDL_DEBUG
+	if ( _mouseHandler == 0 )
+		Ceylan::emergencyShutdown( "EventsModule::onMouseButtonReleased called "
+			"whereas no handler is available." ) ;
+#endif // OSDL_DEBUG
+
+	_mouseHandler->buttonReleased( mouseEvent ) ;
 	
 }
 
+
+
+// Joystick section.
 
 
 void EventsModule::onJoystickAxisChanged( 
@@ -1151,40 +1279,92 @@ void EventsModule::onJoystickButtonReleased(
 }
 
 
-					
-void EventsModule::onMouseFocusGained() throw()
-{
-	OSDL_EVENT_LOG( "Application gained mouse focus." ) ;
+
+// Application-generic section.
+
+		
+void EventsModule::onIdle() throw() 
+{		
+
+	_idleCallsCount++ ;
+	
+	if ( _loopIdleCallback != 0 )
+	{
+		OSDL_EVENT_LOG( 
+			"EventsModule::onIdle : calling now idle call-back." ) ;
+		
+		(*_loopIdleCallback)( _loopIdleCallbackData ) ;
+		
+		OSDL_EVENT_LOG( 
+			"EventsModule::onIdle : returned from idle call-back." ) ;
+		
+	}
+	else
+	{
+	
+		/*
+		 * Issues a basic sleep, chosen so that the minimum real sleeping 
+		 * time can be performed.
+		 *
+		 */
+		 basicSleep() ;
+		
+	}	
+		
 }
 
 
-void EventsModule::onMouseFocusLost() throw()
+void EventsModule::onApplicationFocusChanged( 
+	const FocusEvent & focusEvent ) throw()
 {
-	OSDL_EVENT_LOG( "Application lost mouse focus." ) ;
-}
 
+	OSDL_EVENT_LOG( "Application focus changed." ) ;
+	
+	// Maybe multiple gains or losses could be sent in one event :
 
-void EventsModule::onKeyboardFocusGained() throw()
-{
-	OSDL_EVENT_LOG( "Application gained keyboard focus." ) ;
-}
-
-
-void EventsModule::onKeyboardFocusLost() throw()
-{
-	OSDL_EVENT_LOG( "Application lost keyboard focus." ) ;
+	if ( focusEvent.state & _MouseFocus )
+	{
+		
+		// DefaultMouse : only one mouse supported for the moment.
+		
+		if ( focusEvent.gain == 1 )
+			onMouseFocusGained( DefaultMouse ) ;
+		else
+			onMouseFocusLost( DefaultMouse ) ;	
+	}
+	
+	if ( focusEvent.state & _KeyboardFocus )
+	{
+		if ( focusEvent.gain == 1 )
+			onKeyboardFocusGained() ;
+		else
+			onKeyboardFocusLost() ;	
+	}
+	
+	if ( focusEvent.state & _ApplicationFocus )
+	{
+		if ( focusEvent.gain == 1 )
+			onApplicationRestored() ;
+		else
+			onApplicationIconified() ;	
+	}
+		
 }
 
 
 void EventsModule::onApplicationIconified() throw()
 {
-	OSDL_EVENT_LOG( "Application is iconified." ) ;
+
+	OSDL_EVENT_LOG( "Application is iconified (no handler registered)." ) ;
+	
 }
 
 
 void EventsModule::onApplicationRestored() throw()
 {
-	OSDL_EVENT_LOG( "Application is restored." ) ;
+
+	OSDL_EVENT_LOG( "Application is restored (no handler registered)." ) ;
+	
 }
 
 
@@ -1208,8 +1388,8 @@ void EventsModule::onSystemSpecificWindowManagerEvent(
 	 * with SDL_GetWMInfo.
 	 *
 	 */
-	OSDL_EVENT_LOG( 
-		"System specific window manager event received (ignored)." ) ;	 
+	OSDL_EVENT_LOG( "System specific window manager event received "
+		"(no handler registered)." ) ;	 
 
 }
 	
@@ -1252,8 +1432,7 @@ void EventsModule::onScreenNeedsRedraw() throw()
 	{
 		// Warn but continue nevertheless.
 		LogPlug::error( "EventsModule::onScreenNeedsRedraw : "
-			"error when requesting a redraw : "
-			+ e.toString() ) ;
+			"error when requesting a redraw : "	+ e.toString() ) ;
 	}
 
 }
@@ -1263,7 +1442,8 @@ void EventsModule::onUserEvent( const UserEvent & userEvent ) throw()
 {
 
 	OSDL_EVENT_LOG( "User event received, whose type is " << userEvent.type
-		<< " (ignored)." ) ;
+		<< " (no handler registered)." ) ;
+		
 }
 		
 					
@@ -1271,7 +1451,7 @@ void EventsModule::onUnknownEventType( const BasicEvent & unknownEvent ) throw()
 {
 
 	OSDL_EVENT_LOG( "Unknown event, type is " << unknownEvent.type 
-		<< " (ignored)." ) ;
+		<< " (no handler registered)." ) ;
 	
 }
 
@@ -1456,7 +1636,9 @@ string EventsModule::DescribeEvent( const JoystickButtonEvent & buttonEvent )
 
 string EventsModule::DescribeEvent( const UserRequestedQuitEvent & quitEvent )  
 {
+
 	return "User requested to quit." ;
+	
 }
 
 
@@ -1496,7 +1678,6 @@ string EventsModule::DescribeEvent( const UserEvent & userEvent )
 		+ Ceylan::toString( userEvent.code ) + ")." ;
 }
 
- 
  
 bool EventsModule::IsEventsInitialized() throw()
 {

@@ -175,7 +175,7 @@ void JoystickHandler::linkToController( JoystickNumber index,
 			+ " joystick(s) attached according to internal joystick list)." ) ;
 	
 #if OSDL_DEBUG
-	if (  _joysticks[ index ] == 0 )
+	if ( _joysticks[ index ] == 0 )
 		throw JoystickException( "JoystickHandler::linkToController : "
 			"no known joystick for index " + Ceylan::toString( index ) + "." ) ;
 #endif // OSDL_DEBUG
@@ -184,6 +184,50 @@ void JoystickHandler::linkToController( JoystickNumber index,
 	
 }
 	
+
+const string JoystickHandler::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
+{
+
+	string res ;
+	
+	if ( _joystickCount > 0 )
+		res = "Joystick handler managing " 
+		+ Ceylan::toString( _joystickCount ) + " joystick(s)" ;
+	else
+		return "Joystick handler does not manage any joystick" ;
+
+	if ( level == Ceylan::low ) 	
+		return res ;
+	
+	res += ". Listing detected joystick(s) : " ;
+		
+	list<string> joysticks ;
+		
+	for ( JoystickNumber i = 0; i < _joystickCount; i++ )
+		if ( _joysticks[i] != 0 )
+			joysticks.push_back( _joysticks[i]->toString( level ) ) ;
+		else
+			joysticks.push_back( "no joystick at index " 
+				+ Ceylan::toString( i ) + " (abnormal)" ) ;
+		
+	return res + Ceylan::formatStringList( joysticks ) ;
+		
+}
+
+
+
+JoystickNumber JoystickHandler::GetAvailableJoystickCount() throw() 
+{
+
+	return static_cast<JoystickNumber>( SDL_NumJoysticks() ) ;
+	
+}
+
+
+
+// Protected section.
+
 
 void JoystickHandler::axisChanged( const JoystickAxisEvent & joystickEvent )
 	const throw()
@@ -246,42 +290,6 @@ void JoystickHandler::buttonReleased(
 #endif // OSDL_DEBUG
 	
 	_joysticks[ joystickEvent.which ]->buttonReleased( joystickEvent ) ;
-	
-}
-
-
-const string JoystickHandler::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
-{
-
-	string res ;
-	
-	if ( _joystickCount > 0 )
-		res = "Joystick handler managing " 
-		+ Ceylan::toString( _joystickCount ) + " joystick(s)" ;
-	else
-		return "Joystick handler does not manage any joystick" ;
-
-	if ( level == Ceylan::low ) 	
-		return res ;
-	
-	res += ". Listing detected joystick(s) : " ;
-		
-	list<string> joysticks ;
-		
-	for ( JoystickNumber i = 0; i < _joystickCount; i++ )
-		joysticks.push_back( _joysticks[i]->toString( level ) ) ;
-	
-	return res + Ceylan::formatStringList( joysticks ) ;
-		
-}
-
-
-
-JoystickNumber JoystickHandler::GetAvailableJoystickCount() throw() 
-{
-
-	return static_cast<JoystickNumber>( SDL_NumJoysticks() ) ;
 	
 }
 

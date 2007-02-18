@@ -46,6 +46,10 @@ namespace OSDL
 		class JoystickHandler ;
 		
 		
+		// The event module can manage a mouse.
+		class MouseHandler ;
+		
+		
 		
 		/**
 		 * A tick is the most precise time unit that can be measured by 
@@ -206,6 +210,7 @@ namespace OSDL
 			friend class OSDL::CommonModule ;
 					
 			
+			
 			public:
 
 							
@@ -273,69 +278,6 @@ namespace OSDL
 				 virtual void useScheduler( bool on = true ) throw() ;
 				 				  
 
-
-				/**
-				 * Tells whether a keyboard handler is available.
-				 *
-				 */
-				virtual bool hasKeyboardHandler() const throw() ;
-				 
-				
-				/**
-				 * Returns the keyboard handler currently used.
-				 *
-				 * @throw EventsException if no keyboard handler is available.
-				 *
-				 */
-				virtual KeyboardHandler & getKeyboardHandler() const 
-					throw( EventsException ) ;
-				   				   							
-
-				/**
-				 * Sets a new keyboard handler.
-				 *
-				 * @param newHandler the new joystcik handler.
-				 *
-				 * @note If a keyboard handler was already registered, 
-				 * it is unregistered and deallocated first.
-				 *
-				 */
-				virtual void setKeyboardHandler( 
-					KeyboardHandler & newHandler ) throw() ;
-					
-									
-				 
-				 
-				/**
-				 * Tells whether a joystick handler is available.
-				 *
-				 */
-				virtual bool hasJoystickHandler() const throw() ;
-				 
-				
-				/**
-				 * Returns the joystick handler currently used.
-				 *
-				 * @throw EventsException if no joystick handler is available.
-				 *
-				 */
-				virtual JoystickHandler & getJoystickHandler() 
-					const throw( EventsException ) ;
-				   				   							
-
-				/**
-				 * Sets a new joystick handler.
-				 *
-				 * @param newHandler the new joystcik handler.
-				 *
-				 * @note If a joystick handler was already registered, 
-				 * it is unregistered and deallocated first.
-				 *
-				 */
-				virtual void setJoystickHandler( 
-					JoystickHandler & newHandler ) throw() ;
-					
-					
 				
 				/**
 				 * Sets the idle function, which is called whenever the 
@@ -410,6 +352,106 @@ namespace OSDL
 				 */
 				virtual	void requestQuit() throw() ;
 				
+
+
+
+				// Handler subsection.
+				
+				
+				/**
+				 * Tells whether a keyboard handler is available.
+				 *
+				 */
+				virtual bool hasKeyboardHandler() const throw() ;
+				 
+				
+				/**
+				 * Returns the keyboard handler currently used.
+				 *
+				 * @throw EventsException if no keyboard handler is available.
+				 *
+				 */
+				virtual KeyboardHandler & getKeyboardHandler() const 
+					throw( EventsException ) ;
+				   				   							
+
+				/**
+				 * Sets a new keyboard handler.
+				 *
+				 * @param newHandler the new keyboard handler.
+				 *
+				 * @note If a keyboard handler was already registered, 
+				 * it is unregistered and deallocated first.
+				 *
+				 */
+				virtual void setKeyboardHandler( 
+					KeyboardHandler & newHandler ) throw() ;
+					
+									
+				 
+				 
+				/**
+				 * Tells whether a joystick handler is available.
+				 *
+				 */
+				virtual bool hasJoystickHandler() const throw() ;
+				 
+				
+				/**
+				 * Returns the joystick handler currently used.
+				 *
+				 * @throw EventsException if no joystick handler is available.
+				 *
+				 */
+				virtual JoystickHandler & getJoystickHandler() 
+					const throw( EventsException ) ;
+				   				   							
+
+				/**
+				 * Sets a new joystick handler.
+				 *
+				 * @param newHandler the new joystick handler.
+				 *
+				 * @note If a joystick handler was already registered, 
+				 * it is unregistered and deallocated first.
+				 *
+				 */
+				virtual void setJoystickHandler( 
+					JoystickHandler & newHandler ) throw() ;
+					
+
+
+				/**
+				 * Tells whether a mouse handler is available.
+				 *
+				 */
+				virtual bool hasMouseHandler() const throw() ;
+				 
+				
+				/**
+				 * Returns the mouse handler currently used.
+				 *
+				 * @throw EventsException if no mouse handler is available.
+				 *
+				 */
+				virtual MouseHandler & getMouseHandler() const 
+					throw( EventsException ) ;
+				   				   							
+
+				/**
+				 * Sets a new mouse handler.
+				 *
+				 * @param newHandler the new joystcik handler.
+				 *
+				 * @note If a mouse handler was already registered, 
+				 * it is unregistered and deallocated first.
+				 *
+				 */
+				virtual void setMouseHandler( 
+					MouseHandler & newHandler ) throw() ;
+					
+					
+					
 									
 				/**
 				 * Updates the state of the various inputs of interest
@@ -580,6 +622,7 @@ namespace OSDL
 				/// Identifies the event corresponding to a mouse button press.
 				static const BasicEventType MouseButtonPressed ;
 				
+				
 				/**
 				 * Identifies the event corresponding to a mouse button 
 				 * release.
@@ -587,8 +630,10 @@ namespace OSDL
 				 */
 				static const BasicEventType MouseButtonReleased ;
 				
+				
 				/// Identifies the event corresponding to a joystick axis move.
 				static const BasicEventType JoystickAxisChanged ;
+				
 				
 				/**
 				 * Identifies the event corresponding to a joystick 
@@ -597,12 +642,14 @@ namespace OSDL
 				 */
 				static const BasicEventType JoystickTrackballChanged ;
 				
+				
 				/**
 				 * Identifies the event corresponding to a change of 
 				 * joystick hat position.
 				 *
 				 */
 				static const BasicEventType JoystickHatPositionChanged ;
+				
 				
 				/**
 				 * Identifies the event corresponding to a joystick button
@@ -611,12 +658,14 @@ namespace OSDL
 				 */
 				static const BasicEventType JoystickButtonPressed ;
 				
+				
 				/**
 				 * Identifies the event corresponding to a joystick button
 				 * being released.
 				 *
 				 */
 				static const BasicEventType JoystickButtonReleased ;
+				
 				
 				/**
 				 * Identifies the event corresponding to the user requesting
@@ -625,12 +674,14 @@ namespace OSDL
 				 */
 				static const BasicEventType UserRequestedQuit ;
 				
+				
 				/**
 				 * Identifies the event corresponding to system specific 
 				 * event.
 				 *
 				 */
 				static const BasicEventType SystemSpecificTriggered ;
+				
 				
 				/**
 				 * Identifies the event corresponding to a resize of user's
@@ -639,12 +690,14 @@ namespace OSDL
 				 */
 				static const BasicEventType UserResizedVideoMode ;
 				
+				
 				/**
 				 * Identifies the event corresponding to a need to redraw
 				 * screen.
 				 *
 				 */
 				static const BasicEventType ScreenNeedsRedraw ;
+				
 				
 				/// Identifies the first event that can be user-defined.
 				static const BasicEventType FirstUserEventTriggered ;
@@ -691,31 +744,31 @@ namespace OSDL
 				 *
 				 */
 				virtual void enterBasicMainLoop() throw( EventsException ) ;
-				 
-				 
+				 		
+		
+				
+				
+				// Keyboard section.
+				
+			
 				/**
-				 * Called whenever the application is deemed idle.
-				 * Applies the idle behaviour, which can be user-defined
-				 * (setIdleCallback), or otherwise which will default to
-				 * micro-sleeps.
+				 * Called whenever the application gained keyboard focus.
 				 *
-				 * @see setIdleCallback
+				 * @note Made to be overriden, basically just writes the
+				 * event in the standard output.
 				 *
 				 */
-				virtual void onIdle() throw() ;
-				 
-		
+				virtual void onKeyboardFocusGained() throw() ; 	
+
+				
 				/**
-				 * Called whenever at least one of the three focuses 
-				 * (mouse, keyboard or application visibility) changed.
+				 * Called whenever the application lost keyboard focus.
 				 *
-				 * @note Call specialized methods such as onMouseFocusGained
-				 * to handle each case.
+				 * @note Made to be overriden, basically just writes 
+				 * the event in the standard output.
 				 *
 				 */
-				virtual void onApplicationFocusChanged( 
-					const FocusEvent & focusEvent ) throw() ;
-		
+				virtual void onKeyboardFocusLost() throw() ; 	
 				
 				
 				/**
@@ -737,6 +790,35 @@ namespace OSDL
 				virtual void onKeyReleased( 
 					const KeyboardEvent & keyboardEvent ) throw() ;
 		
+	
+	
+	
+				// Mouse section.
+				
+							
+				/**
+				 * Called whenever the application gained mouse focus.
+				 *
+				 * @param mouse the mouse that gained focus.
+				 *
+				 * @note Made to be overriden, basically just writes the 
+				 * event in the standard output.
+				 *
+				 */
+				virtual void onMouseFocusGained( MouseNumber mouse ) throw() ; 	
+
+				
+				/**
+				 * Called whenever the application lost mouse focus.
+				 *
+				 * @param mouse the mouse that lost focus.
+				 *
+				 * @note Made to be overriden, basically just writes 
+				 * the event in the standard output.
+				 *
+				 */
+				virtual void onMouseFocusLost( MouseNumber mouse ) throw() ; 	
+				
 		
 		
 				/**
@@ -768,6 +850,10 @@ namespace OSDL
 				virtual void onMouseButtonReleased( 
 					const MouseButtonEvent & mouseEvent ) throw() ; 
 				
+				
+				
+
+				// Joystick section.
 				
 				
 				/**
@@ -831,47 +917,33 @@ namespace OSDL
 					throw() ; 
 				
 				
-				
-				/**
-				 * Called whenever the application gained mouse focus.
-				 *
-				 * @note Made to be overriden, basically just writes the 
-				 $ event in the standard output.
-				 *
-				 */
-				virtual void onMouseFocusGained() throw() ; 	
-
-				
-				/**
-				 * Called whenever the application lost mouse focus.
-				 *
-				 * @note Made to be overriden, basically just writes 
-				 * the event in the standard output.
-				 *
-				 */
-				virtual void onMouseFocusLost() throw() ; 	
-				
 			
-			
+				
+				// Application-generic section.
+				
+				 
 				/**
-				 * Called whenever the application gained keyboard focus.
+				 * Called whenever the application is deemed idle.
+				 * Applies the idle behaviour, which can be user-defined
+				 * (setIdleCallback), or otherwise which will default to
+				 * micro-sleeps.
 				 *
-				 * @note Made to be overriden, basically just writes the
-				 * event in the standard output.
+				 * @see setIdleCallback
 				 *
 				 */
-				virtual void onKeyboardFocusGained() throw() ; 	
-
-				
+				virtual void onIdle() throw() ;
+				 
+		
 				/**
-				 * Called whenever the application lost keyboard focus.
+				 * Called whenever at least one of the three focuses 
+				 * (mouse, keyboard or application visibility) changed.
 				 *
-				 * @note Made to be overriden, basically just writes 
-				 * the event in the standard output.
+				 * @note Call specialized methods such as onMouseFocusGained
+				 * to handle each case.
 				 *
 				 */
-				virtual void onKeyboardFocusLost() throw() ; 	
-				
+				virtual void onApplicationFocusChanged( 
+					const FocusEvent & focusEvent ) throw() ;
 				
 				
 				/**
@@ -983,6 +1055,13 @@ namespace OSDL
 				 */
 				JoystickHandler * _joystickHandler ;	
 								
+								
+				/**
+				 * The internal mouse handler, if any.
+				 *
+				 */
+				MouseHandler * _mouseHandler ;	
+								
 		
 		
 				/**
@@ -1060,6 +1139,7 @@ namespace OSDL
 				
 				/// Designates the application focus (iconified or restored).
 				static const Ceylan::Sint16 _ApplicationFocus ;
+			
 				
 				/**
 				 * Header of messages sent by default implementations 
@@ -1070,9 +1150,7 @@ namespace OSDL
 				
 				
 				/**
-				 * Records the number of buttons available on the current mouse.
-				 *
-				 * @fixme Put in MouseHandler
+				 * Records the total number of buttons supported for a mouse.
 				 *
 				 */
 				static const Ceylan::Uint32 _MouseButtonCount ;
@@ -1132,3 +1210,4 @@ namespace OSDL
 
 
 #endif // OSDL_EVENTS_H_
+

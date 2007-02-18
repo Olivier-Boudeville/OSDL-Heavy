@@ -220,201 +220,6 @@ void KeyboardHandler::linkToHandler( Ceylan::Unicode unicode,
 }
 	
 
-void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent ) throw()
-{
-
-
-	/*
-	 * In raw or text mode, use a controller if available, otherwise an handler
-	 * will be used, a specified one if any, else the default handler.
-	 *
-	 */
-	 
-	if ( _CurrentMode == rawInput )
-	{
-	
-		map<KeyIdentifier, OSDL::MVC::Controller *>::iterator itController
-			= _rawKeyControllerMap.find( 
-				static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
-			
-		if ( itController != _rawKeyControllerMap.end() )
-		{
-
-			OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed : "
-				"raw key sent to controller." ) ;
-
-			(*itController).second->rawKeyPressed( keyboardEvent ) ;
-			
-		}
-		else
-		{
-
-			// No controller registered, default to handler map :
-			
-			map<KeyIdentifier, KeyboardEventHandler>::iterator itHandler 
-				=  _rawKeyHandlerMap.find( 
-					static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
-			
-			if ( itHandler != _rawKeyHandlerMap.end() )
-			{
-
-				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
-					"sent to a raw key handler." ) ;
-
-				(*itHandler).second( keyboardEvent ) ;
-
-			}	
-			else
-			{
-			
-				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
-					"sent to default raw key handler." ) ;
-				
-				_defaultRawKeyHandler( keyboardEvent ) ;
-
-			}
-
-		
-		} 
-		
-		// Avoid handling the same key twice (ex : keyboard mode toggle...)		
-		return ;
-		
-					
-	} // _CurrentMode == rawInput
-	
-	
-	// Other possibility : in text input mode.
-	
-	if ( _CurrentMode == textInput )
-	{
-	
-		map<Ceylan::Unicode, OSDL::MVC::Controller *>::iterator itController
-			=  _unicodeControllerMap.find( 
-				static_cast<KeyIdentifier>( keyboardEvent.keysym.unicode ) ) ;
-			
-		if ( itController != _unicodeControllerMap.end() )
-		{
-
-			OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed : "
-				"Unicode sent to controller." ) ;
-	
-			(*itController).second->unicodeSelected( keyboardEvent ) ;
-			
-		}
-		else
-		{
-
-
-			// No controller registered, default to handler map :
-			
-			map<Ceylan::Unicode, KeyboardEventHandler>::iterator itHandler 
-				=  _unicodeHandlerMap.find( 
-					static_cast<KeyIdentifier>( 
-						keyboardEvent.keysym.unicode ) ) ;
-			
-			if ( itHandler != _unicodeHandlerMap.end() )
-			{
-
-				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
-					"sent to Unicode handler." ) ;
-
-				(*itHandler).second( keyboardEvent ) ;
-
-			}	
-			else
-			{
-			
-				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
-					"sent to default Unicode handler." ) ;
-
-				_defaultUnicodeHandler( keyboardEvent ) ;
-
-			}
-
-		
-		} 
-
-	
-	} // _CurrentMode == textInput
-			
-
-}
-
-
-void KeyboardHandler::keyReleased( const KeyboardEvent & keyboardEvent ) throw()
-{
-
-
-	/*
-	 * In raw mode, use a controller if available, otherwise an handler
-	 * will be used, a specified one if any, else the default handler.
-	 *
-	 */
-	 
-	 
-	if ( _CurrentMode == rawInput )
-	{
-	
-		map<KeyIdentifier, OSDL::MVC::Controller *>::iterator itController
-			=  _rawKeyControllerMap.find( 
-				static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
-			
-		if ( itController != _rawKeyControllerMap.end() )
-		{
-
-			OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyReleased : "
-				"raw key sent to controller." ) ;
-
-			(*itController).second->rawKeyReleased( keyboardEvent ) ;
-			
-		}
-		else
-		{
-
-			// No controller registered, default to handler map :
-			
-			map<KeyIdentifier, KeyboardEventHandler>::iterator itHandler 
-				=  _rawKeyHandlerMap.find( 
-					static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
-			
-			if ( itHandler != _rawKeyHandlerMap.end() )
-			{
-
-				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyReleased "
-					"sent to a raw key handler." ) ;
-
-				(*itHandler).second( keyboardEvent ) ;
-
-			}	
-			else
-			{
-			
-				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyReleased "
-					"sent to default raw key handler." ) ;
-				
-				_defaultRawKeyHandler( keyboardEvent ) ;
-
-			}
-		
-		}
-
-
-		// Avoid handling the same key twice (ex : keyboard mode toggle...)		
-		return ;
-			
-	} 
-	
-	/*
-	 * Release events do not have unicode information, so do nothing on 
-	 * text input mode.
-	 * They are handled differently, with key repeats.
-	 *
-	 */
-	 
-}
-
-
 void KeyboardHandler::setSmarterDefaultKeyHandlers() throw()
 {
 
@@ -628,4 +433,204 @@ string KeyboardHandler::DescribeUnicode( Ceylan::Unicode value ) throw()
 		return "International Unicode character" ;
 
 }			
+
+
+
+// Protected section.
+
+
+void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent ) throw()
+{
+
+
+	/*
+	 * In raw or text mode, use a controller if available, otherwise an handler
+	 * will be used, a specified one if any, else the default handler.
+	 *
+	 */
+	 
+	if ( _CurrentMode == rawInput )
+	{
+	
+		map<KeyIdentifier, OSDL::MVC::Controller *>::iterator itController
+			= _rawKeyControllerMap.find( 
+				static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
+			
+		if ( itController != _rawKeyControllerMap.end() )
+		{
+
+			OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed : "
+				"raw key sent to controller." ) ;
+
+			(*itController).second->rawKeyPressed( keyboardEvent ) ;
+			
+		}
+		else
+		{
+
+			// No controller registered, default to handler map :
+			
+			map<KeyIdentifier, KeyboardEventHandler>::iterator itHandler 
+				=  _rawKeyHandlerMap.find( 
+					static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
+			
+			if ( itHandler != _rawKeyHandlerMap.end() )
+			{
+
+				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
+					"sent to a raw key handler." ) ;
+
+				(*itHandler).second( keyboardEvent ) ;
+
+			}	
+			else
+			{
+			
+				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
+					"sent to default raw key handler." ) ;
+				
+				_defaultRawKeyHandler( keyboardEvent ) ;
+
+			}
+
+		
+		} 
+		
+		// Avoid handling the same key twice (ex : keyboard mode toggle...)		
+		return ;
+		
+					
+	} // _CurrentMode == rawInput
+	
+	
+	// Other possibility : in text input mode.
+	
+	if ( _CurrentMode == textInput )
+	{
+	
+		map<Ceylan::Unicode, OSDL::MVC::Controller *>::iterator itController
+			=  _unicodeControllerMap.find( 
+				static_cast<KeyIdentifier>( keyboardEvent.keysym.unicode ) ) ;
+			
+		if ( itController != _unicodeControllerMap.end() )
+		{
+
+			OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed : "
+				"Unicode sent to controller." ) ;
+	
+			(*itController).second->unicodeSelected( keyboardEvent ) ;
+			
+		}
+		else
+		{
+
+
+			// No controller registered, default to handler map :
+			
+			map<Ceylan::Unicode, KeyboardEventHandler>::iterator itHandler 
+				=  _unicodeHandlerMap.find( 
+					static_cast<KeyIdentifier>( 
+						keyboardEvent.keysym.unicode ) ) ;
+			
+			if ( itHandler != _unicodeHandlerMap.end() )
+			{
+
+				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
+					"sent to Unicode handler." ) ;
+
+				(*itHandler).second( keyboardEvent ) ;
+
+			}	
+			else
+			{
+			
+				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
+					"sent to default Unicode handler." ) ;
+
+				_defaultUnicodeHandler( keyboardEvent ) ;
+
+			}
+
+		
+		} 
+
+	
+	} // _CurrentMode == textInput
+			
+
+}
+
+
+
+void KeyboardHandler::keyReleased( const KeyboardEvent & keyboardEvent ) throw()
+{
+
+
+	/*
+	 * In raw mode, use a controller if available, otherwise an handler
+	 * will be used, a specified one if any, else the default handler.
+	 *
+	 */
+	 
+	 
+	if ( _CurrentMode == rawInput )
+	{
+	
+		map<KeyIdentifier, OSDL::MVC::Controller *>::iterator itController
+			=  _rawKeyControllerMap.find( 
+				static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
+			
+		if ( itController != _rawKeyControllerMap.end() )
+		{
+
+			OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyReleased : "
+				"raw key sent to controller." ) ;
+
+			(*itController).second->rawKeyReleased( keyboardEvent ) ;
+			
+		}
+		else
+		{
+
+			// No controller registered, default to handler map :
+			
+			map<KeyIdentifier, KeyboardEventHandler>::iterator itHandler 
+				=  _rawKeyHandlerMap.find( 
+					static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
+			
+			if ( itHandler != _rawKeyHandlerMap.end() )
+			{
+
+				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyReleased "
+					"sent to a raw key handler." ) ;
+
+				(*itHandler).second( keyboardEvent ) ;
+
+			}	
+			else
+			{
+			
+				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyReleased "
+					"sent to default raw key handler." ) ;
+				
+				_defaultRawKeyHandler( keyboardEvent ) ;
+
+			}
+		
+		}
+
+
+		// Avoid handling the same key twice (ex : keyboard mode toggle...)		
+		return ;
+			
+	} 
+	
+	/*
+	 * Release events do not have unicode information, so do nothing on 
+	 * text input mode.
+	 * They are handled differently, with key repeats.
+	 *
+	 */
+	 
+}
 

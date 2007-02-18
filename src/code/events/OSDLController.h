@@ -28,13 +28,12 @@ namespace OSDL
 		 * devices, all specific method handlers (such as axisChanged) have 
 		 * to be defined. 
 		 * Their default implementation is basically a do-nothing method, 
-		 * oly adding logs if in debug mode. 
+		 * only adding logs if in debug mode. 
 		 * This way, the controllers being instanciated in the application,
 		 * which are child classes of these OSDL::Events::Controller, just 
 		 * have to override the handlers corresponding to the specific 
-		 * events they want to listen to.
-		 * Hence not defining an handler does not prevent from instanciating
-		 * the controller.
+		 * events they want to listen to : not defining an handler does not
+		 * prevent from instanciating the controller.
 		 *
 		 * These controllers must have a total control of the input devices 
 		 * they are linked to.

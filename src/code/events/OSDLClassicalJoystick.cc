@@ -52,6 +52,44 @@ ClassicalJoystick::~ClassicalJoystick() throw()
 }
 
 
+void ClassicalJoystick::getDeadZoneValues( AxisPosition & firstAxisExtent, 
+	AxisPosition & secondAxisExtent ) const throw()
+{
+
+	firstAxisExtent  = _deadZoneExtentFirstAxis ;
+	secondAxisExtent = _deadZoneExtentSecondAxis ;
+	
+}
+	
+					
+void ClassicalJoystick::setDeadZoneValues( AxisPosition firstAxisExtent, 
+	AxisPosition secondAxisExtent )	throw()
+{
+
+	_deadZoneExtentFirstAxis  = firstAxisExtent ;
+	_deadZoneExtentSecondAxis = secondAxisExtent ;
+	
+}
+	
+
+const string ClassicalJoystick::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
+{
+
+	return "Classical joystick : " + Joystick::toString( level )
+		+ ". The first axis deadzone extent is "   
+		+ Ceylan::toString( _deadZoneExtentFirstAxis ) 
+		+ ", the second axis deadzone extent is " 
+		+ Ceylan::toString( _deadZoneExtentSecondAxis ) ;
+				
+}
+
+
+
+
+// Protected section.
+
+
 void ClassicalJoystick::axisChanged( const JoystickAxisEvent & joystickEvent )
 	throw()
 {
@@ -104,6 +142,7 @@ void ClassicalJoystick::axisChanged( const JoystickAxisEvent & joystickEvent )
 }
 
 
+
 void ClassicalJoystick::buttonPressed( 
 	const JoystickButtonEvent & joystickEvent ) throw()
 {
@@ -144,6 +183,7 @@ void ClassicalJoystick::buttonPressed(
 }
 
 
+
 void ClassicalJoystick::buttonReleased( 
 	const JoystickButtonEvent & joystickEvent ) throw()
 {
@@ -181,38 +221,5 @@ void ClassicalJoystick::buttonReleased(
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
 	}
 			
-}
-
-
-void ClassicalJoystick::getDeadZoneValues( AxisPosition & firstAxisExtent, 
-	AxisPosition & secondAxisExtent ) const throw()
-{
-
-	firstAxisExtent  = _deadZoneExtentFirstAxis ;
-	secondAxisExtent = _deadZoneExtentSecondAxis ;
-	
-}
-	
-					
-void ClassicalJoystick::setDeadZoneValues( AxisPosition firstAxisExtent, 
-	AxisPosition secondAxisExtent )	throw()
-{
-
-	_deadZoneExtentFirstAxis  = firstAxisExtent ;
-	_deadZoneExtentSecondAxis = secondAxisExtent ;
-	
-}
-	
-
-const string ClassicalJoystick::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
-{
-
-	return "Classical joystick : " + Joystick::toString( level )
-		+ ". The first axis deadzone extent is "   
-		+ Ceylan::toString( _deadZoneExtentFirstAxis ) 
-		+ ", the second axis deadzone extent is " 
-		+ Ceylan::toString( _deadZoneExtentSecondAxis ) ;
-				
 }
 

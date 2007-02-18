@@ -4,7 +4,7 @@
 
 
 #include "OSDLInputDeviceHandler.h"   // for inheritance
-#include "OSDLJoystickCommon.h"       // for JoystickNumber
+#include "OSDLJoystickCommon.h"       // for JoystickNumber, etc.
 
 
 #include <string>
@@ -50,6 +50,14 @@ namespace OSDL
 		class OSDL_DLL JoystickHandler : public InputDeviceHandler
 		{
 		
+		
+			/*
+			 * The events module has to trigger the joystick event callbacks
+			 * of this joystick handler.
+			 *
+			 */
+			friend class OSDL::::Events::EventsModule ;
+
 			
 			public:
 
@@ -125,54 +133,6 @@ namespace OSDL
 						OSDL::MVC::Controller & controller ) 
 					throw( JoystickException ) ;
 				 
-				 
-				/**
-				 * Called whenever a joystick axis changed, so that its
-				 * controller, if any, is notified.
-				 *
-				 */
-				virtual void axisChanged( 
-					const JoystickAxisEvent & joystickEvent ) const throw() ;
-							
-							
-				/**
-				 * Called whenever a joystick trackball changed, so that 
-				 * its controller, if any, is notified.
-				 *
-				 */
-				virtual void trackballChanged( 
-						const JoystickTrackballEvent & joystickEvent ) 
-					const throw() ;
-					
-							
-				/**
-				 * Called whenever a joystick hat changed, so that its
-				 * controller, if any, is notified.
-				 *
-				 */
-				virtual void hatChanged( 
-					const JoystickHatEvent & joystickEvent ) const throw() ;
-				
-				
-							
-				/**
-				 * Called whenever a joystick button was pressed, so 
-				 * that its controller, if any, is notified.
-				 *
-				 */
-				virtual void buttonPressed( 
-					const JoystickButtonEvent & joystickEvent )	const throw() ;
-						
-							
-				/**
-				 * Called whenever a joystick button was released, so 
-				 * that its controller, if any, is notified.
-				 *
-				 */
-				virtual void buttonReleased( 
-					const JoystickButtonEvent & joystickEvent )	const throw() ;
-						
-			
 			
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -207,6 +167,71 @@ namespace OSDL
 		protected :
 						 	
 				
+				/*
+				 * Event-driven callbacks for input propagation, from
+				 * the Events module to this handler.
+				 *
+				 */
+				 
+				 
+				/**
+				 * Called whenever a joystick axis changed, so that its
+				 * controller, if any, is notified.
+				 *
+				 * @note Expected to be triggered by the EventsModule.
+				 *
+				 */
+				virtual void axisChanged( 
+					const JoystickAxisEvent & joystickEvent ) const throw() ;
+							
+							
+				/**
+				 * Called whenever a joystick trackball changed, so that 
+				 * its controller, if any, is notified.
+				 *
+				 * @note Expected to be triggered by the EventsModule.
+				 *
+				 */
+				virtual void trackballChanged( 
+						const JoystickTrackballEvent & joystickEvent ) 
+					const throw() ;
+					
+							
+				/**
+				 * Called whenever a joystick hat changed, so that its
+				 * controller, if any, is notified.
+				 *
+				 * @note Expected to be triggered by the EventsModule.
+				 *
+				 */
+				virtual void hatChanged( 
+					const JoystickHatEvent & joystickEvent ) const throw() ;
+				
+				
+							
+				/**
+				 * Called whenever a joystick button was pressed, so 
+				 * that its controller, if any, is notified.
+				 *
+				 * @note Expected to be triggered by the EventsModule.
+				 *
+				 */
+				virtual void buttonPressed( 
+					const JoystickButtonEvent & joystickEvent )	const throw() ;
+						
+							
+				/**
+				 * Called whenever a joystick button was released, so 
+				 * that its controller, if any, is notified.
+				 *
+				 * @note Expected to be triggered by the EventsModule.
+				 *
+				 */
+				virtual void buttonReleased( 
+					const JoystickButtonEvent & joystickEvent )	const throw() ;
+						
+
+
 				/**
 				 * Blanks this joystick handler, i.e. makes it forget all
 				 * previously known joysticks.
@@ -237,6 +262,7 @@ namespace OSDL
 				 
 				/**
 				 * Records all known joysticks.
+				 *
 				 * A dynamic array is preferred to a list for performance
 				 * reasons.
 				 *

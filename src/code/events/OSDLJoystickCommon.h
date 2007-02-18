@@ -89,7 +89,7 @@ namespace OSDL
 		
 		
 		/// Mother class for all joystick exceptions. 		
-		class JoystickException: public EventsException 
+		class OSDL_DLL JoystickException: public EventsException 
 		{
 			public: 
 				explicit JoystickException( const std::string & reason ) 

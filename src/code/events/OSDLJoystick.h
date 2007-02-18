@@ -35,9 +35,10 @@ namespace OSDL
 		 *   - axis 1 : up-down direction, negative values are up, positive 
 		 * are down
 		 *
-		 * All events are propagated to the associated controller, if any, 
-		 * which allows to finely master all available informations, at the
-		 * expense of a higher complexity on the controller part.
+		 * All events for this joystick are propagated to the associated
+		 * controller, if any, which allows to finely master all available
+		 * informations, at the expense of a higher complexity on the 
+		 * controller part.
 		 *
 		 * For usual needs, ClassicalJoystick child class should be more
 		 * convenient, since it is a higher-level (but a little less
@@ -46,9 +47,17 @@ namespace OSDL
 		 * @see ClassicalJoystick
 		 *
 		 */
-		class Joystick : public OSDL::Events::InputDevice
+		class OSDL_DLL Joystick : public OSDL::Events::InputDevice
 		{
 		
+
+			/*
+			 * The joystick handler has to trigger the joystick event callbacks
+			 * for this joystick.
+			 *
+			 */
+			friend class OSDL::Events::JoystickHandler ;
+
 			
 			public:
 
@@ -103,60 +112,6 @@ namespace OSDL
 				virtual void close() throw( JoystickException ) ;
 
 
-				/**
-				 * Called whenever an axis of this joystick changed, and 
-				 * notifies the linked controller, if any.
-				 *
-				 * @param joystickEvent the corresponding joystick event.
-				 *
-				 */
-				virtual void axisChanged( 
-					const JoystickAxisEvent & joystickEvent ) throw() ;
-	
-							
-				/**
-				 * Called whenever a trackball of this joystick changed, and 
-				 * notifies the linked controller, if any.
-				 *
-				 * @param joystickEvent the corresponding joystick event.
-				 *
-				 */
-				virtual void trackballChanged( 
-					const JoystickTrackballEvent & joystickEvent ) throw() ;
-	
-							
-				/**
-				 * Called whenever a hat of this joystick changed, 
-				 * and notifies the linked controller, if any.
-				 *
-				 * @param joystickEvent the corresponding joystick event.
-				 *
-				 */
-				virtual void hatChanged( 
-					const JoystickHatEvent & joystickEvent ) throw() ;
-	
-	
-				/**
-				 * Called whenever a button of this joystick was pressed, 
-				 * and notifies the linked controller, if any.
-				 *
-				 * @param joystickEvent the corresponding joystick event.
-				 *
-				 */
-				virtual void buttonPressed( 
-					const JoystickButtonEvent & joystickEvent ) throw() ;
-	
-	
-				/**
-				 * Called whenever a button of this joystick was released, 
-				 * and notifies the linked controller, if any.
-				 *
-				 * @param joystickEvent the corresponding joystick event.
-				 *
-				 */
-				virtual void buttonReleased( 
-					const JoystickButtonEvent & joystickEvent ) throw() ;
-	
 											
 				/**
 				 * Returns the number of joystick axes.
@@ -333,6 +288,80 @@ namespace OSDL
 				 */
 				virtual JoystickNumber getIndex() const throw() ;
 	
+	
+	
+				/*
+				 * Event-driven callbacks for input propagation, from
+				 * the joystick handler to this joystick.
+				 *
+				 */
+				
+	
+				/**
+				 * Called whenever an axis of this joystick changed, and 
+				 * notifies the linked controller, if any.
+				 *
+				 * @param joystickEvent the corresponding joystick event.
+				 *
+				 * @note Expected to be triggered by the Joystick handler.
+				 *
+				 */
+				virtual void axisChanged( 
+					const JoystickAxisEvent & joystickEvent ) throw() ;
+	
+							
+				/**
+				 * Called whenever a trackball of this joystick changed, and 
+				 * notifies the linked controller, if any.
+				 *
+				 * @param joystickEvent the corresponding joystick event.
+				 *
+				 * @note Expected to be triggered by the Joystick handler.
+				 *
+				 */
+				virtual void trackballChanged( 
+					const JoystickTrackballEvent & joystickEvent ) throw() ;
+	
+							
+				/**
+				 * Called whenever a hat of this joystick changed, 
+				 * and notifies the linked controller, if any.
+				 *
+				 * @param joystickEvent the corresponding joystick event.
+				 *
+				 * @note Expected to be triggered by the Joystick handler.
+				 *
+				 */
+				virtual void hatChanged( 
+					const JoystickHatEvent & joystickEvent ) throw() ;
+	
+	
+				/**
+				 * Called whenever a button of this joystick was pressed, 
+				 * and notifies the linked controller, if any.
+				 *
+				 * @param joystickEvent the corresponding joystick event.
+				 *
+				 * @note Expected to be triggered by the Joystick handler.
+				 *
+				 */
+				virtual void buttonPressed( 
+					const JoystickButtonEvent & joystickEvent ) throw() ;
+	
+	
+				/**
+				 * Called whenever a button of this joystick was released, 
+				 * and notifies the linked controller, if any.
+				 *
+				 * @param joystickEvent the corresponding joystick event.
+				 *
+				 * @note Expected to be triggered by the Joystick handler.
+				 *
+				 */
+				virtual void buttonReleased( 
+					const JoystickButtonEvent & joystickEvent ) throw() ;
+	
+
 				
 				/**
 				 * The implementation dependent name of this joystick, if any.

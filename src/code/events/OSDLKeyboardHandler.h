@@ -3,9 +3,9 @@
 
 
 #include "OSDLInputDeviceHandler.h"   // for inheritance
-#include "OSDLEventsCommon.h"     // for KeyModifier
+#include "OSDLEventsCommon.h"         // for KeyModifier
 
-#include "Ceylan.h"               // for Unicode
+#include "Ceylan.h"                   // for Unicode
 
 #include <string>
 #include <list>
@@ -20,7 +20,11 @@ namespace OSDL
 	namespace MVC
 	{
 	
-		// Keyboard handler is linked to controllers.
+		/*
+		 * The keyboard handler can propagate keyboard events to the 
+		 * relevant controllers.
+		 *
+		 */
 		class Controller ;
 		
 	}
@@ -93,6 +97,14 @@ namespace OSDL
 		class OSDL_DLL KeyboardHandler : public InputDeviceHandler
 		{
 		
+		
+			/*
+			 * The events module has to trigger the keyboard event callbacks
+			 * of this keyboard handler.
+			 *
+			 */
+			friend class OSDL::::Events::EventsModule ;
+
 			
 			public:
 
@@ -583,39 +595,6 @@ namespace OSDL
 					KeyboardEventHandler handler ) throw() ;
 				
 				
-				/**
-				 * Called whenever a key was pressed, so that its 
-				 * controller, if any, is notified.
-				 *
-				 * If no controller is registered for this key, then : 
-				 *   - if a key handler is registered for this key, it will 
-				 * be called
-				 *   - otherwise (no handler for this key is found), then 
-				 * the default key handler will be called. 
-				 *
-				 * @note The actions taken depend on the current input mode.
-				 *
-				 */
-				virtual void keyPressed( const KeyboardEvent & keyboardEvent )
-					throw() ;
-				
-				
-				/**
-				 * Called whenever a key was released, so that its controller,
-				 * if any, is notified.
-				 *
-				 * If no controller is registered for this key, then : 
-				 *   - if a key handler is registered for this key, it 
-				 * will be called.
-				 *   - otherwise (no handler for this key is found), then 
-				 * the default key handler will be called. 
-				 *
-				 * @note The actions taken depend on the current input mode.
-				 *
-				 */
-				virtual void keyReleased( const KeyboardEvent & keyboardEvent )
-					throw() ;
-				
 				
 				/**
 				 * Sets the default key handlers to the smarter handlers.
@@ -751,6 +730,46 @@ namespace OSDL
 							
 		protected :
 		
+				
+				
+				/**
+				 * Called whenever a key was pressed, so that its 
+				 * controller, if any, is notified.
+				 *
+				 * If no controller is registered for this key, then : 
+				 *   - if a key handler is registered for this key, it will 
+				 * be called
+				 *   - otherwise (no handler for this key is found), then 
+				 * the default key handler will be called. 
+				 *
+				 * @note The actions taken depend on the current input mode.
+				 *
+				 * @note Expected to be triggered by the EventsModule.
+				 *
+				 */
+				virtual void keyPressed( const KeyboardEvent & keyboardEvent )
+					throw() ;
+				
+				
+				/**
+				 * Called whenever a key was released, so that its controller,
+				 * if any, is notified.
+				 *
+				 * If no controller is registered for this key, then : 
+				 *   - if a key handler is registered for this key, it 
+				 * will be called.
+				 *   - otherwise (no handler for this key is found), then 
+				 * the default key handler will be called. 
+				 *
+				 * @note The actions taken depend on the current input mode.
+				 *
+				 * @note Expected to be triggered by the EventsModule.
+				 *
+				 */
+				virtual void keyReleased( const KeyboardEvent & keyboardEvent )
+					throw() ;
+
+
 				
 				/// Stores the current keyboard interacting scheme.
 				static KeyboardMode _CurrentMode ;

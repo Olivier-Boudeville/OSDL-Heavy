@@ -41,6 +41,14 @@ namespace OSDL
 		{
 		
 			
+			/*
+			 * The joystick handler has to trigger the joystick event callbacks
+			 * for this classical joystick.
+			 *
+			 */
+			friend class OSDL::Events::JoystickHandler ;
+			
+			
 			public:
 
 
@@ -60,39 +68,6 @@ namespace OSDL
 				 *
 				 */
 				virtual ~ClassicalJoystick() throw() ;
-				
-				
-				/**
-				 * Called whenever an axis of this joystick changed, and 
-				 * notify the linked controller, if any.
-				 *
-				 * @param joystickEvent the corresponding joystick event.
-				 *
-				 */
-				virtual void axisChanged( 
-					const JoystickAxisEvent & joystickEvent ) throw() ;
-		
-		
-				/**
-				 * Called whenever a button of this joystick was pressed, 
-				 * and notify the linked controller, if any.
-				 *
-				 * @param joystickEvent the corresponding joystick event.
-				 *
-				 */
-				virtual void buttonPressed( 
-					const JoystickButtonEvent & joystickEvent ) throw() ;
-	
-	
-				/**
-				 * Called whenever a button of this joystick was released, 
-				 * and notify the linked controller, if any.
-				 *
-				 * @param joystickEvent the corresponding joystick event.
-				 *
-				 */
-				virtual void buttonReleased( 
-					const JoystickButtonEvent & joystickEvent ) throw() ;
 				
 
 
@@ -147,8 +122,57 @@ namespace OSDL
 				
 			
 			
+			
 		protected :
 		
+		
+
+				/*
+				 * Event-driven callbacks for input propagation, from
+				 * the joystick handler to this classical joystick.
+				 *
+				 */
+
+				
+				/**
+				 * Called whenever an axis of this joystick changed, and 
+				 * notify the linked controller, if any.
+				 *
+				 * @param joystickEvent the corresponding joystick event.
+				 *
+				 * @note Expected to be triggered by the Joystick handler.
+				 *
+				 */
+				virtual void axisChanged( 
+					const JoystickAxisEvent & joystickEvent ) throw() ;
+		
+		
+				/**
+				 * Called whenever a button of this joystick was pressed, 
+				 * and notify the linked controller, if any.
+				 *
+				 * @param joystickEvent the corresponding joystick event.
+				 *
+				 * @note Expected to be triggered by the Joystick handler.
+				 *
+				 */
+				virtual void buttonPressed( 
+					const JoystickButtonEvent & joystickEvent ) throw() ;
+	
+	
+				/**
+				 * Called whenever a button of this joystick was released, 
+				 * and notify the linked controller, if any.
+				 *
+				 * @param joystickEvent the corresponding joystick event.
+				 *
+				 * @note Expected to be triggered by the Joystick handler.
+				 *
+				 */
+				virtual void buttonReleased( 
+					const JoystickButtonEvent & joystickEvent ) throw() ;
+				
+
 
 				/**
 				 * Stores the dead zone extent for first axis. 
