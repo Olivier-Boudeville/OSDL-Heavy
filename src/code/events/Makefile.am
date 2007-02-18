@@ -23,7 +23,10 @@ EVENTS_INTERFACES = \
 	OSDLJoystickCommon.h                 \
 	OSDLJoystick.h                       \
 	OSDLJoystickHandler.h                \
-	OSDLKeyboardHandler.h
+	OSDLKeyboardHandler.h                \
+	OSDLMouseCommon.h                    \
+	OSDLMouse.h                          \
+	OSDLMouseHandler.h
 
 
 EVENTS_IMPLEMENTATIONS = \
@@ -35,4 +38,8 @@ EVENTS_IMPLEMENTATIONS = \
 	OSDLJoystick.cc                      \
 	OSDLJoystickCommon.cc                \
 	OSDLJoystickHandler.cc               \
-	OSDLKeyboardHandler.cc
+	OSDLKeyboardHandler.cc               \
+	OSDLMouseCommon.cc                   \
+	OSDLMouse.cc                         \
+	OSDLMouseHandler.cc
+	

@@ -15,6 +15,9 @@
 #include "OSDLJoystick.h"
 #include "OSDLJoystickHandler.h"
 #include "OSDLKeyboardHandler.h"
+#include "OSDLMouseCommon.h"
+#include "OSDLMouse.h"
+#include "OSDLMouseHandler.h"
 
 
 #endif // OSDL_EVENTS_INCLUDES_H_
