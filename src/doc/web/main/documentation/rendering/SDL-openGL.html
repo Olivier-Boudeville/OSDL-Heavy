@@ -48,7 +48,7 @@
 </center>
 
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 <h2>Overview</h2>
@@ -105,7 +105,7 @@ This section focuses on helping developers to use OpenGL with SDL.
 </p>
 
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 <a name="general"></a>
@@ -183,7 +183,8 @@ OpenGL is a state machine, which means you can set states and these will remain 
 
 
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
+
 
 
 <a name="availability"></a>
@@ -360,7 +361,7 @@ In order to compile a program using an OpenGL library, the related headers must 
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -371,8 +372,7 @@ In order to compile a program using an OpenGL library, the related headers must 
 <p>
 There are two ways to work with OpenGL and SDL :
 <ul>
-	<li>use <b>dynamic</b> library loading, with <code>SDL_GL_LoadLibrary</code> and then 
-retrieve function pointers for <b>all</b> OpenGL functions like shown in the SDL <code>testdyngl.c</code> sample code</li>
+	<li>use <b>dynamic</b> library loading, with <code>SDL_GL_LoadLibrary</code> and then retrieve function pointers for <b>all</b> OpenGL functions like shown in the SDL <code>testdyngl.c</code> sample code</li>
 	<li><b>link</b> (statically or dynamically) with an OpenGL library, and retrieve function pointers only for the extensions the application needs</li>
 </ul>
 </p>
@@ -411,8 +411,9 @@ Note that <code>SDL_SetVideoMode</code> should be called after <code>SDL_GL_Load
 
 
 <h4>Static linking</h4>
+
 <p>
-Static linking is pretty much out, unless you count on all users building from source, as some (most ?) platforms have driver-specific GL libraries.
+Static linking is pretty much out, unless you count on all users building from source, as some (most ?) platforms have driver-specific GL libraries. OpenGL should never be linked at compile-time, because you have to check if the appropriate OpenGL version or extensions are available before using any function that depends on them. This is impossible to do prior to execution. SDL provides the system-independent <code>SDL_GL_GetProcAddress()</code> function to load OpenGL calls.
 </p>
 
 
@@ -459,7 +460,7 @@ One's release could provide the user with two binaries : one with OpenGL support
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
  
  
@@ -583,7 +584,8 @@ They do the work for you : bloat or useful help ?
 <p>
 <ul>
   <li>
-  	<p><a href="http://glew.sourceforge.net/" target="_blank">GLEW</a>, maybe the easiest way to use extensions across all platforms (Windows, GNU/Linux, OS X, FreeBSD, etc.). It has Opengl 2.0 compatible header files with all the defines and function prototypes, and it loads the function pointers during startup for you.</p>
+  	<p><a href="http://glew.sourceforge.net/" target="_blank">GLEW</a>, maybe the easiest way to use extensions across all platforms (Windows, GNU/Linux, OS X, FreeBSD, etc.). It has Opengl 2.0 compatible header files with all the defines and function prototypes, and it loads the function pointers during startup for you. When you include <code>glew.h</code>, you do not need to include any GL headers, and you should not include <code>SDL_opengl.h</code>
+</p>
 	<p>If you do choose to load OpenGL at runtime, GLEW will not load it for you (you need to use the <code>SDL_GL_LoadLibrary(NULL)</code> behaviour for that [<a href="#loading">more infos</a>]), but the GLEW header does contain the names of the core OpenGL functions, and <code>glewInit()</code> hooks those up to the loaded library.</p>
   </li>
   <li><a href="http://elf-stone.com/downloads.php" target="_blank">GLEE</a></li>
@@ -595,7 +597,7 @@ They do the work for you : bloat or useful help ?
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -637,7 +639,7 @@ One can look at the source of SDL (the opengl_blit code is still in there), or a
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
  
  
@@ -710,7 +712,7 @@ After the window is created, you can see if you got what you wanted :
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -780,19 +782,55 @@ More informations in the <a href="#textures">texture</a> section.
 
 
 <h4>The upside-down issue</h4>
-<p>There is an example in <code>test/testgl.c</code> about how to convert your SDL surface to an OpenGL texture. Please note, though, that this example is not perfect, because the texture is constructed upside down. This is because SDL surfaces start at the top-left and OpenGL images start at the bottom-left corner :
+
+<p>
+In texture space, (0,0) is the "beginning" of the texture data fed to glTexImage. (x,0) always belongs to the first row of the texture data, (x,1) belongs to the second row, etc. glTexImage does not have any notion of directions as in up/down/left/right or or upper/lower corners. It only is given texture data as a sequence, and the only sensible thing to do with that is to map (0,0) to the beginning of that data.
 </p>
 
 
 <p>
+Indeed, this seems counter-intuitive if you map a rectangle with e.g. corners in (0,0), (1,0), (1,1), (1,0) and have texture coordinates set to the same as their vertex coordinates.
+</p>
+
+
+<p>
+Some confusion on this seems to stem from some NeHe tutorial, which used some really primitive BMP loader which did not flip the image data (BMPs are stored upside down for some reason), and thus (0,0) of those textures became the lower left corner. In some SDL port of those examples, the texture coordinates had to be flipped, and this was blamed on SDL (or SDL_image) even though it originally was due to usage of a primitive function where its flaws accidentally matched some incorrect assumptions.
+</p>
+
+
+<p>
+If you still like and want this kind of behaviour, you can of course flip 
+the image data manually before uploading it.
+</p>
+
+
+<p>
+In numerous 3D packages and with general OpenGL, the bottom-left texture
+coordinate convention is used. It matches up nicely with the default OpenGL coordinate system and cartesian coordinates in general. In an imaging sense it seems counter-intuitive, however in a 3-dimensional scene, it is often neater and more consistent to use this convention.
+</p>
+
+<p>There is an example in <code>test/testgl.c</code> about how to convert your SDL surface to an OpenGL texture. Please note, though, that this example is not perfect, because the texture is constructed upside down. This is because SDL surfaces start at the top-left and OpenGL images start at the bottom-left corner :
+</p>
+
+<p>
 <center>
-<pre>o(0, HEIGHT)-(WIDTH, HEIGHT)o
-    |                           |
-    |                           |
-    |                           |
-    |                           |
-    o(0, 0)-----------(WIDTH, 0)o
-</pre>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+o(0,HEIGHT)---(WIDTH,HEIGHT)o
+|                           |
+|                           |
+|                           |
+|                           |
+o(0,0)-------------(WIDTH,0)o
+
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
 </center>
 </p>
 
@@ -805,6 +843,27 @@ More informations in the <a href="#textures">texture</a> section.
 
 <p>Another solution is to turn the SDL surface upside-down before using it in <code>glTexImage2D</code>, so the rest of the program can use the normal OpenGL conventions. To do so, one can use a flip function, or directly save accordingly the flipped images beforehand.
 </p>
+
+<p>
+A third solution would be to call the following once, before you draw any objects with your flipped texture :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+  glMatrixMode( GL_TEXTURE ) ;
+  glLoadIdentity() ;
+  glScalef( 1, -1, 1 ) ;
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+
 
 
 <h4>The matching format issue</h4>
@@ -871,6 +930,34 @@ This has the obvious advantage that this works all the time, on all the OpenGL p
 <p>
 There is one issue with this method though : if your image has an alpha channel, you may loose it during blit. The example does not have this limitation because it makes use of a colorkeyed source surface.
 </p>
+
+
+
+<h6>Using 8-bit palettized textures</h6>
+
+<p>
+If you have 8 bit data originally, it is useless to store it as 32 bit in
+video memory, which is what happens by default, wasting video RAM and video bandwidth.
+</p>
+
+
+<p>
+Depending on the hardware you target, there are multiple ways to handle this efficiently :
+
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li>using the <a href="http://oss.sgi.com/projects/ogl-sample/registry/EXT/paletted_texture.txt" target="_blank">paletted texture Opengl extension</a>, which is supported from the first Geforce cards, and up to Geforce FX 5x00 cards</li>
+	
+	<li>using some kind of <b>pixel shader</b> and a lookup table holding the
+palette, for example a 1D texture with width of 256. That will work on not too old cards, you can get sufficient pixel shader support for this from Geforce 3. This is also the only way on ATI hardware. You have to check you actually are allowed to use that many values as shader attributes. For a Geforce 6600, <code>GL_MAX_FRAGMENT_UNIFORM_COMPONENTS = 512</code>, so only 512 components (i.e. floats or ints, etc.) are allowed. So if your image takes more than 256 pixels, you are going over this limit. OpenGL pixel shaders do not work in 8 bit frame buffer mode.</li>
+	
+</ul>
+
+
 
 <h6>Alpha channel &amp; texture</h6>
 
@@ -999,7 +1086,7 @@ All the texture memory in an OpenGL context is generally freed when the context 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1142,8 +1229,7 @@ Using the OpenGL texture uploading routines ensures that the actual transmission
 <h3>Texture size</h3>
 
 <p>
-OpenGL requires texture width and height to be a power of 2 (not necessarily the same : textures does not have to be square), border excluded. They must therefore have the form <code>2^m + 2.b</code>, where m is a non-negative integer and b, the border, is 0 or 1.
- For example : width x height = (512+2)x(64+2), or 256x256, etc.
+OpenGL requires texture width and height to be a power of 2 (not necessarily the same : textures does not have to be square), border excluded. They must therefore have the form <code>2^m + 2.b</code>, where m is a non-negative integer and b, the border, is 0 or 1. For example : width x height = (512+2)x(64+2), or 256x256, etc. Otherwise one may rely on the  <code>GL_ARB_texture_non_power_of_two</code> extension.
 </p>
 
 
@@ -1273,7 +1359,7 @@ Last resort is to apply a correctly alpha-blended texture to a surface more than
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1419,7 +1505,7 @@ Graphical User Interfaces can be built on top of OpenGL. They can be home-made, 
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1461,7 +1547,7 @@ Windows XP uses 60 Hz as a default OpenGL refresh rate. Setting it to another va
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1494,8 +1580,14 @@ Use <code>glFinish</code> so that <code>SDL_GL_SwapBuffers</code> waits until th
 
 
 <h3>Disabling vertical synchronization</h3>
- <p>
 
+<p>
+Vertical retrace syncing for OpenGL was not enabled in SDL 1.2.9. It could be enabled with <code>SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, n ) ;</code>, with n equal to 1. Setting it to n > 0 causes a buffer swap every n th retrace, setting it to 0 (the default) swaps immediately as before.
+</p>
+
+
+<p>
+There used to be platform-specific tricks to disable retrace syncing :
 <center>
     <table summary="vertical synchronization" style="border : none">
         <tr>
@@ -1521,7 +1613,7 @@ if ( wglSwapIntervalEXT != 0 )
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1545,7 +1637,7 @@ The 16 bit stencil buffer is not widely supported. One may try requesting a 32 b
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1556,11 +1648,11 @@ The 16 bit stencil buffer is not widely supported. One may try requesting a 32 b
 On several platforms, the OpenGL context is destroyed every time <a href="http://sdldoc.csn.ul.ie/sdlsetvideomode.php" target="_blank">SDL_SetVideoMode</a> is called. Depending on the platform, as soon as you change resolution and/or change the color depth and/or toggle fullscreen, you can loose the OpenGL context.
 </p>
 
-<p>This means that all the GL state is destroyed with it. This includes textures, among other things. To ensure portability is kept, the reloading of the OpenGL state has to be taken into account.
+<p>This means that all the GL state is destroyed with it. This includes textures, among other things. More precisely, on Windows the textures are corrupted, whereas Linux handles it correctly.
 </p>
 
 <p>
-There is no way to toggle fullscreen, in a portable way, without loosing the OpenGL context, so you will have to deal with that yourself. The same is true when switching the video resolution. 
+To ensure portability is kept, the reloading of the OpenGL state has to be taken into account. So you should free previous ressources (ex : texture) and upload them again. 
 </p>
 
 <p>
@@ -1569,7 +1661,7 @@ So you "just" have to reload your textures, restore your viewport and projection
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1607,7 +1699,7 @@ glViewport( 0, 0, newWidth, newHeight ) ;
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1626,7 +1718,7 @@ Running stock applications with the glSDL back-end might be extremely slow. Appl
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1654,7 +1746,7 @@ Floating point pixels are good for high resolution colors (color values are not 
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1672,7 +1764,7 @@ Floating point pixels are good for high resolution colors (color values are not 
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1688,9 +1780,14 @@ One could use <code>locate libgl.so</code> to have hints about the OpenGL driver
 
 <h3>Tuning driver, features and level of detail</h3>
 <p>
-Unfortunately, there is not any good way of telling what OpenGL driver is in use, and what features it accelerates in hardware.</p>
+Unfortunately, there is not any good way of telling what OpenGL driver is in use, and what features it accelerates in hardware. 
+</p>
 
-<p>Long story short, the best option is to provide some way of benchmarking the current configuration with the features you use, and see if it is fast enough. Make sure that you provide a way for the user to re-configure once drivers have been updated.
+<p>
+Starting from SDL 1.2.10 though, the <code>SDL_GL_ACCELERATED_VISUAL</code> flag was added to ensure the rendering is hardware-accelerated. For most cases this is enough, but there is certain situations where the drivers will fall back to software rendering. At the moment this happens mostly when using shaders. There are so many different hardware that will support the shaders in general, but some cases cannot be hardware accelerated.
+</p>
+
+<p>Long story short, the best option is to test drive the code, to provide some way of benchmarking the current configuration with the features you use, and see if it is fast enough. Make sure that you provide a way for the user to re-configure once drivers have been updated.
 </p>
 
 <p>
@@ -1708,7 +1805,7 @@ Do not call <code>glFlush()</code> before <b>SDL_GL_SwapBuffers</b> since the la
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1722,7 +1819,7 @@ Do not call <code>glFlush()</code> before <b>SDL_GL_SwapBuffers</b> since the la
 
 
     <dt>Is it better to use the SDL OpenGL headers or directly use the GL headers ?</dt>
-    <dd>Using the OpenGL headers directly is platform dependent. <code>SDL_opengl.h</code> is just a thin wrapper that does the right thing on whatever platform you are building on. Using it is the correct way to use OpenGL with current SDL versions.</dd>
+    <dd>Using the OpenGL headers directly is platform dependent. <code>SDL_opengl.h</code> is just a thin wrapper that does the right thing on whatever platform you are building on. Using it is the correct way to use OpenGL with current SDL versions, except if you are using extension loaders (ex : GLEW).</dd>
 
 	<dt>How to perform complex vector graphics with OpenGL ?</dt>
 	<dd>One can use a dedicated library, as explained <a href="SDL-libraries.html#vector">here</a>
@@ -1786,7 +1883,7 @@ The SDL gamma functions should work with OpenGL contexts.
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1849,7 +1946,7 @@ glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE ) ;
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 <a name="links"></a>
 <h2>OpenGL &amp; SDL links</h2>
 <p>
@@ -1863,7 +1960,7 @@ glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE ) ;
 </ul>
 
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
@@ -1884,7 +1981,7 @@ This documentation addresses generic OpenGL concerns, it is not specifically rel
 </p>
 
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 <h2>Documentation on 3D rendering in general</h2>
@@ -1902,168 +1999,19 @@ This documentation addresses generic OpenGL concerns, it is not specifically rel
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
 
-<!-------------------------- Section ---------------------------------------->  
+<!-- ##################################  Section ####################" -->  
 
 
 
 
 
-<!-------------------------- Cubbyhole (to integrate) 
-Is it required to create a new surface with SDL_SetVideoMode()
->> when the size of the window changes (by using the mouse on the window
->> border) ? 
-
-
-If you are using OpenGL, you will have to reload your texture pixels 
-(free and upload again), specially on windows as the texture become 
-corrupt.  Fortunately, linux is friendlier to the developer and takes 
-care of it.
-
-
-
-I use GLEW to import the extensions so that I can use vertex and fragment shaders but you can't #include "glew.h" if you #include "SDL_opengl.h". It's all swings and roundabouts. 
-When you include glew.h you don't need to include any GL headers.
-glew will do it for you.
-
-On OS X systems, the proper headers to include are:
-
-<OpenGL/gl.h>
-<OpenGL/glext.h>
-i want to use 8Bit Pallated Texture in OpenGL.
-Depending on the hardware you target, there are multiple ways ot achieve
-this :
-
-- using the paletted texture opengl extension :
-http://oss.sgi.com/projects/ogl-sample/registry/EXT/paletted_texture.txt
-that one is supported from the first geforces IIRC, and up to geforce FX
-5x00 cards
-
-- using some kind of pixel shader and a lookup table holding the
-palette. That will work on more recent cards (you can get sufficient
-pixel shader support for this from geforce 3 I think). This is also the
-only way on ATI hardware.
-
-If you have 8 bit data originally, it's useless to store it as 32bit in
-graphics memory (which is what happens when you don't do anything about
-it). So you actually :
-- save video ram
-- save video bandwidth
-So that can result in nice speedups.
-
-OpenGL pixel shaders do not work in 8bit frame buffer mode if you tried
-to do that (I think you didn't, but better to check anyway).
-
-And if you didn't did you check that you actually are allowed to use
-that many values as shader atributes. For my GF 6600
-
-GL_MAX_FRAGMENT_UNIFORM_COMPONENTS                 = 512
-
-so only 512 components ie floats or ints etc are allowed so if your
-image takes more than 256 pixels you are going over this limit.
-
-
-Why aren't you using textures for the data?
-
-Make the palette to be one 1D texture with width of 256.
-
-Make the image itself as a red texture or combine up to four images in
-one texture.
-You can then use one variable to select, which of these you want to use.
-You could even mix two of them. This way you don't waste the atribute
-space for useless stuff. Only thing you should remeber is to disable
-any filtering and mipmapping from the textures you use this way.
-
-Vertical retrace syncing for OpenGL was not enabled in SDL 1.2.9. 
-Support for it for Mac OS X, X11, and Windows just got into svn a few 
-days ago (see <http://bugzilla.libsdl.org/show_bug.cgi?id=2>, 
-<http://bugzilla.libsdl.org/show_bug.cgi?id=117>). It should be present 
-in the latest snapshot from <http://www.libsdl.org/svn.php>, or you can 
-wait for 1.2.10 to be released.
-
-You enable it using
-
-   SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
-
-Setting it to n > 0 causes a buffer swap every nth retrace, setting it 
-to 0 (the default) swaps immediately as before.
-
-Calling SDL_GL_LoadLibrary() with NULL as argument correctly loads the
-system OpenGL library at run-time, in a portable way. IIRC it's not
-documented, dunno why...
-
-OpenGL should never be linked at compile-time, because you have to
-check if the appropriate OpenGL version or extensions are available
-before using any function that depends on them. This is impossible to
-do prior to execution. SDL provides the system-independent
-SDL_GL_GetProcAddress() function to load OpenGL calls.
-
-
-There is no way of saying if OpenGL context has HW accelerated functions or no. Except the running speed of course.
-I believe 1.2.10 added the SDL_GL_ACCELERATED_VISUAL flag to ensure it is accelerated, no?
-
-
-That's better than nothing, but there is certain situations where the 
-drivers will fall back to software rendering. At the moment this hapens 
-mostly when using shaders. There is so many different HW that will 
-support the shaders in general, but some cases can't be HW accelerated. 
-
-So only way to know for sure is to test drive the code.
-
-PS. For basic GL operations SDL_GL_ACCELERATED_VISUAL should be enough.
-
-SDL_GL_DOUBLEBUFFER is not a SDL_SetVideoMode() flag. OpenGL
-doublebuffering is specified exclusively by the SDL_GL_SetAttribute()
-function (as you also do correctly).
-
-Under the section "SDL surface to OpenGL texture", I've found a very simple technique to flip the SDL-loaded texture (I'm not sure if it is listed in your article, I've not read every section):  just call the following once before you draw any objects with your flipped texture...
-
-  glMatrixMode(GL_TEXTURE);
-  glLoadIdentity();
-  glScalef(1,-1,1);
-
-
-  How to set SDL_GL_SWAP_CONTROL 
-  SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1)
-
->images that are correctly oriented for OpenGL conventions (ie
->>   the image starts in the lower left corner).
-
-
-Umm, this convention does not apply to textures, AFAIK.
-
-In texture space, (0,0) is the "beginning" of the texture data fed to 
-glTexImage. (x,0) always belongs to the first row of the texture data, 
-(x,1) belongs to the second row, etc. glTexImage does not have any notion 
-of directions as in up/down/left/right or or upper/lower corners. It only 
-is given texture data as a sequence, and the only sensible thing to do 
-with that is to map (0,0) to the beginning of that data.
-
-Indeed, this seems counter-intuitive if you map a rectangle with e.g. 
-corners in (0,0), (1,0), (1,1), (1,0) and have texture coordinates set to 
-the same as their vertex coordinates.
-
-Some confusion on this seems to stem from some NeHe tutorial, which used 
-some really primitive BMP loader which didn't flip the image data (BMPs 
-are stored upside down for some reason), and thus (0,0) of those textures 
-became the lower left corner. In some SDL port of those examples the 
-texture coordinates had to be flipped, and this was blamed on SDL (or 
-SDL_image) even though it originally was due to usage of a primitive 
-function where it's flaws accidentally matched some incorrect assumptions.
-
-If you still like and want this kind of behaviour, you can of course flip 
-the image data manually before uploading it.
-
-In all the 3d packages I've worked with, and AFAIK with general OpenGL,
-this convention is used. I tend to like it as it matches up nicely with
-the default OpenGL coordinate system and cartesian coordinates in general.
-In an imaging sense it seems counter-intuitive however in a 3-dimensional
-scene, it's often neater and more consistent to use the bottom-left texture
-coord conventions.
+<!-- ########################## Cubbyhole (to integrate) 
 
 
 
 
-End of Cubbyhole ---------------------------------------->  
+
+End of Cubbyhole ################## -->  
 
  <br>
  <br>
@@ -2081,7 +2029,7 @@ End of Cubbyhole ---------------------------------------->
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update : Friday, February 2, 2007
+  <em>Last update : Wednesday, February 22, 2007
 </em>
  </center>
 </body>
