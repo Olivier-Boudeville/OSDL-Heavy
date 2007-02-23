@@ -1,6 +1,9 @@
 #include "OSDLMouse.h"       
 
 #include "OSDLController.h"    // for mouseMoved, etc.
+#include "OSDLMouseCommon.h"   // for MouseButtonNumber, etc.
+
+#include "OSDLPoint2D.h"       // for Point2D
 
 #include "SDL.h"               // for SDL_GetMouseState, etc.
 
@@ -15,8 +18,11 @@ using std::string ;
 
 using namespace Ceylan::Log ;
 
+using namespace OSDL ;
 using namespace OSDL::Events ;
-using namespace OSDL::MVC ;     // for mouseAxisChanged, etc.
+using namespace OSDL::MVC ;     
+using namespace OSDL::Video ;
+using namespace OSDL::Video::TwoDimensional ;
 
 
 
@@ -32,27 +38,27 @@ using namespace OSDL::MVC ;     // for mouseAxisChanged, etc.
 #endif // OSDL_VERBOSE_MOUSE
 
 
+// Default : 3 buttons, 1 wheel.
+const MouseButtonNumber Mouse::DefaultButtonTotalNumber = 5 ;
 
-/*
- * Not used currently since event loop is prefered to polling :
- *   - SDL_MouseUpdate
- *	 - SDL_MouseEventState (used in OSDLmiceHandler)
- *
- */
+// Default : 3 buttons.
+const MouseButtonNumber Mouse::DefaultButtonActualNumber = 3 ;
 
-Mouse::Mouse( MouseNumber index ) throw() :
+// Default : 1 wheel.
+const MouseWheelNumber Mouse::DefaultWheelNumber = 1 ;
+
+
+
+
+Mouse::Mouse( MouseNumber index, bool classicalMouseMode ) throw() :
 	OSDL::Events::InputDevice(),
-	_name( SDL_MouseName( index ) ),
 	_index( index ),
-	_internalMouse( 0 ),
-	_axisCount( 0 ),
-	_trackballCount( 0 ),
-	_hatCount( 0 ),
-	_buttonCount( 0 )
+	_inClassicalMode( classicalMouseMode ),
+	_buttonTotalCount( DefaultButtonTotalNumber ),
+	_lastRelativeAbscissa( 0 ),
+	_lastRelativeOrdinate( 0 )
 {
 
-	if ( _name.empty() )
-		_name = "(unknown mouse)" ;
 	
 }
 
@@ -60,337 +66,120 @@ Mouse::Mouse( MouseNumber index ) throw() :
 Mouse::~Mouse() throw()
 {
 
-	if ( isOpen() )
-		close() ;
-		
-	/*
-	 * Does not seem to be owned :
-	 *
-	if ( _internalMouse != 0 )	
-		::free( _internalMouse ) ;
-	 *
-	 */
 	 	
 }
 
 
-const string & Mouse::getName() const throw()
-{
-	return _name ;
-}
+
+// Cursor position.
 
 
-bool Mouse::isOpen() const throw()
+Video::Coordinate Mouse::getCursorAbscissa() const throw()
 {
+
+	int x ;
 	
-	bool isOpened = ( SDL_MouseOpened( _index ) == 1 ) ;
+	SDL_GetMouseState( &x, /* y */ 0 ) ;
 	
-#if OSDL_DEBUG
-	if ( isOpened != ( _internalMouse != 0 ) ) 
-		LogPlug::error( "Mouse::isOpen : conflicting status : "
-			"back-end (makes authority) says " + Ceylan::toString( isOpened ) 
-			+ " whereas internal status says " 
-			+ Ceylan::toString( ( _internalMouse != 0 ) )
-			+ "." ) ;			
-#endif // OSDL_DEBUG 
-	
-	return isOpened ;
+	return static_cast<Video::Coordinate>( x ) ;
 	
 }
 
 
-void Mouse::open() throw( MouseException ) 
+Video::Coordinate Mouse::getCursorOrdinate() const throw()
 {
 
-	if ( isOpen() )
-		throw MouseException( 
-			"Mouse::open requested whereas was already open." ) ;
-		
-	_internalMouse = SDL_MouseOpen( _index ) ;
+	int y ;
 	
-	update() ;
+	SDL_GetMouseState( /* x */ 0, &y ) ;
 	
-}
-
- 
-void Mouse::close() throw( MouseException )
-{
-
-	if ( ! isOpen() )
-		throw MouseException( 
-			"Mouse::close requested whereas was not open." ) ;
-		
-	SDL_MouseClose( _internalMouse ) ;
-	
-	// Should not be a memory leak, according to SDL doc :
-	_internalMouse = 0 ;
-	
+	return static_cast<Video::Coordinate>( y ) ;
+	 	
 }
 
 
-void Mouse::axisChanged( const MouseAxisEvent & mouseEvent ) throw()
+void Mouse::setCursorPosition( const Point2D & newPosition ) const throw()
 {
-	
-	if ( isLinkedToController() )
-		getActualController().mouseAxisChanged( mouseEvent ) ;			
-	else
-	{
-		OSDL_MOUSE_LOG( "Axis changed for mouse #" 
-			+ Ceylan::toNumericalString( mouseEvent.which ) + " : "
-			+ EventsModule::DescribeEvent( mouseEvent ) ) ;
-	}
-			
-}
 
-
-void Mouse::trackballChanged( const MouseTrackballEvent & mouseEvent )
-	throw()
-{
-	
-	if ( isLinkedToController() )
-		getActualController().mouseTrackballChanged( mouseEvent ) ;			
-	else
-	{
-		OSDL_MOUSE_LOG( "Trackball changed for mouse #" 
-			+ Ceylan::toNumericalString( mouseEvent.which ) + " : "
-			+ EventsModule::DescribeEvent( mouseEvent ) ) ;
-	}
-			
-}
-
-
-void Mouse::hatChanged( const MouseHatEvent & mouseEvent ) throw()
-{
-	
-	if ( isLinkedToController() )
-		getActualController().mouseHatChanged( mouseEvent ) ;			
-	else
-	{
-		OSDL_MOUSE_LOG( "Hat changed for mouse #" 
-			+ Ceylan::toNumericalString( mouseEvent.which ) + " : "
-			+ EventsModule::DescribeEvent( mouseEvent ) ) ;
-	}		
-			
-}
-
-
-void Mouse::buttonPressed( const MouseButtonEvent & mouseEvent )
-	throw()
-{
-	
-	if ( isLinkedToController() )
-		getActualController().mouseButtonPressed( mouseEvent ) ;			
-	else
-	{
-		OSDL_MOUSE_LOG( "Button pressed for mouse #" 
-			+ Ceylan::toNumericalString( mouseEvent.which ) + " : "
-			+ EventsModule::DescribeEvent( mouseEvent ) ) ;
-	}
+	setCursorPosition( newPosition.getX(), newPosition.getY() ) ;
 		
 }
 
 
-void Mouse::buttonReleased( const MouseButtonEvent & mouseEvent )
-	throw()
-{
-	
-	if ( isLinkedToController() )
-		getActualController().mouseButtonReleased( mouseEvent ) ;			
-	else
-	{
-		OSDL_MOUSE_LOG( "Button released for mouse #" 
-			+ Ceylan::toNumericalString( mouseEvent.which ) + " : "
-			+ EventsModule::DescribeEvent( mouseEvent ) ) ;
-	}		
-			
-}
-
-
-MouseAxesCount Mouse::getNumberOfAxes() const throw()
+void Mouse::setCursorPosition( Coordinate x, Coordinate y ) const throw()
 {
 
-#if OSDL_DEBUG
-	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( 
-			"Mouse::getNumberOfAxes : mouse not open." ) ;	
-#endif // OSDL_DEBUG
-
-	return _axisCount ;
-	
-}
-
-
-MouseTrackballsCount Mouse::getNumberOfTrackballs() const throw()
-{
-
-#if OSDL_DEBUG
-	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( 
-			"Mouse::getNumberOfTrackballs : mouse not open." ) ;	
-#endif // OSDL_DEBUG
-
-	return _trackballCount ;
-	
-}
-
-
-MouseHatsCount Mouse::getNumberOfHats() const throw()
-{
-
-#if OSDL_DEBUG
-	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( 
-			"Mouse::getNumberOfHats : mouse not open." ) ;	
-#endif // OSDL_DEBUG
-	
-	return _hatCount ;
-	
-}
-
-
-MouseButtonsCount Mouse::getNumberOfButtons() const throw()
-{
-
-#if OSDL_DEBUG
-	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( 
-			"Mouse::getNumberOfButtons : mouse not open." ) ;	
-#endif // OSDL_DEBUG
-	
-	return _buttonCount ;
-	
-}
-
-
-AxisPosition Mouse::getAbscissaPosition() const throw() 
-{
-
-#if OSDL_DEBUG
-	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( 
-			"Mouse::getAbscissaPosition : mouse not open." ) ;
+	SDL_WarpMouse( static_cast<Ceylan::Uint16>( x ), 
+		static_cast<Ceylan::Uint16>( y ) ) ;
 		
-	if ( _axisCount == 0 )
-		Ceylan::emergencyShutdown( 
-			"Mouse::getAbscissaPosition : no X axe available." ) ;
-	
-#endif // OSDL_DEBUG
-	
-	return SDL_MouseGetAxis( _internalMouse, 0 ) ;
+}
+
+
+
+MouseButtonNumber Mouse::getNumberOfButtons() const throw()
+{
+
+	return DefaultButtonActualNumber ;
 	
 }
 
 
-AxisPosition Mouse::getOrdinatePosition() const throw() 
+MouseWheelNumber Mouse::getNumberOfWheels() const throw()
 {
 
-#if OSDL_DEBUG
-	if ( ! isOpen() )
-		Ceylan::emergencyShutdown( 
-			"Mouse::getOrdinatePosition : mouse not open." ) ;
-		
-	if ( _axisCount <= 1 )
-		Ceylan::emergencyShutdown( 
-			"Mouse::getOrdinatePosition : no Y axe available." ) ;
-	
-#endif // OSDL_DEBUG
-
-	return SDL_MouseGetAxis( _internalMouse, 1 ) ;
+	return DefaultWheelNumber ;
 	
 }
 
 
-AxisPosition Mouse::getPositionOfAxis( MouseAxesCount index ) 
-	const throw( MouseException )
+
+
+bool Mouse::isLeftButtonPressed() const throw()
 {
 
-	if ( ! isOpen() )
-		throw MouseException( 
-			"Mouse::getPositionOfAxis : mouse not open." ) ;
+	MouseButtonMask buttons = SDL_GetMouseState( /* x */ 0, /* y */ 0 ) ;
 	
-	if ( index >= _axisCount )
-		throw MouseException( "Mouse::getPositionOfAxis : axe index ( " 
-			+ Ceylan::toString( index ) + ") out of bounds." ) ;
-		
-	return SDL_MouseGetAxis( _internalMouse, index ) ;
+	return static_cast<bool>( buttons & SDL_BUTTON( 1 ) ) ;
 	
 }
 
 
-HatPosition Mouse::getPositionOfHat( MouseHatsCount index ) 
-	const throw( MouseException )
+bool Mouse::isMiddleButtonPressed() const throw()
 {
 
-	if ( ! isOpen() )
-		throw MouseException( 
-			"Mouse::getPositionOfHat : mouse not open." ) ;
+	MouseButtonMask buttons = SDL_GetMouseState( /* x */ 0, /* y */ 0 ) ;
 	
-	if ( index >= _hatCount )
-		throw MouseException( "Mouse::getPositionOfHat : hat index ( " 
-			+ Ceylan::toString( index ) + ") out of bounds." ) ;
-		
-	return SDL_MouseGetHat( _internalMouse, index ) ;
+	return static_cast<bool>( buttons & SDL_BUTTON( 2 ) ) ;
 	
 }
 
 
-bool Mouse::isButtonPressed( MouseButtonsCount buttonNumber ) 
-	const throw( MouseException )
+bool Mouse::isRightButtonPressed() const throw()
 {
 
-	if ( ! isOpen() )
-		throw MouseException( 
-			"Mouse::isButtonPressed : mouse not open." ) ;
+	MouseButtonMask buttons = SDL_GetMouseState( /* x */ 0, /* y */ 0 ) ;
 	
-	if ( buttonNumber >= _buttonCount )
-		throw MouseException( "Mouse::isButtonPressed : button number ( " 
-			+ Ceylan::toString( buttonNumber ) + ") out of bounds." ) ;
-
-	return ( SDL_MouseGetButton( _internalMouse, buttonNumber ) == 1 ) ;
+	return static_cast<bool>( buttons & SDL_BUTTON( 3 ) ) ;
 	
 }
 
 
-bool Mouse::getPositionOfTrackball( MouseTrackballsCount ball, 
-	BallMotion & deltaX, BallMotion & deltaY ) const throw( MouseException )				
+bool Mouse::isButtonPressed( MouseButtonNumber buttonNumber ) 
+					const throw( MouseException )
 {
 
-	if ( ! isOpen() )
-		throw MouseException( 
-			"Mouse::getPositionOfTrackball : mouse not open." ) ;
+	MouseButtonMask buttons = SDL_GetMouseState( /* x */ 0, /* y */ 0 ) ;
 	
-	if ( ball >= _trackballCount )
-		throw MouseException( 
-			"Mouse::getPositionOfTrackball : trackball number ( " 
-			+ Ceylan::toString( _trackballCount ) + ") out of bounds." ) ;
-			
- 	return ( SDL_MouseGetBall( 
-		_internalMouse, ball, & deltaX, & deltaY ) == 0 ) ;
-
+	return static_cast<bool>( buttons & SDL_BUTTON( buttonNumber ) ) ;
+	
 }
 
-	
-MouseNumber Mouse::getIndex() const throw()
+
+MouseButtonMask Mouse::getButtonStates() const throw()
 {
 
-	if ( _internalMouse == 0 )
-		Ceylan::emergencyShutdown( 
-			"Mouse::getIndex : no internal mouse registered." ) ;
-	
-	MouseNumber index = SDL_MouseIndex( _internalMouse ) ;
-	
-#if OSDL_DEBUG
-
-	if ( index != _index ) 
-		LogPlug::error( "Mouse::getIndex : conflicting status : "
-			"back-end (makes authority) says index is " 
-			+ Ceylan::toString( index ) 
-			+ " whereas internal index says " 
-			+ Ceylan::toString( _index ) + "." ) ;	
-					
-#endif // OSDL_DEBUG
-
-	return index ;
+	return static_cast<MouseButtonMask>( 
+		SDL_GetMouseState( /* x */ 0, /* y */ 0 ) ) ;
 	
 }
 
@@ -398,10 +187,13 @@ MouseNumber Mouse::getIndex() const throw()
 void Mouse::update() throw()
 {
 
-	_axisCount      = SDL_MouseNumAxes(    _internalMouse ) ;
-	_trackballCount = SDL_MouseNumBalls(   _internalMouse ) ;
-	_hatCount       = SDL_MouseNumHats(    _internalMouse ) ;
-	_buttonCount    = SDL_MouseNumButtons( _internalMouse ) ;
+	int abscissa, ordinate ;
+	
+	// Buttons state not stored :
+	SDL_GetRelativeMouseState( &abscissa, &ordinate ) ;
+	
+	_lastRelativeAbscissa = static_cast<Video::Coordinate>( abscissa ) ;
+	_lastRelativeOrdinate = static_cast<Video::Coordinate>( ordinate ) ;
 	
 }
 
@@ -409,17 +201,119 @@ void Mouse::update() throw()
 const string Mouse::toString( Ceylan::VerbosityLevels level ) const throw()
 {
 
-	if ( ! isOpen() )
-		return "Non-opened mouse whose index is #" 
-			+ Ceylan::toString( _index ) 
-			+ ", named '" + _name + "'";
+	string res = "Mouse " ;
+	
+	if ( ! _inClassicalMode )
+		res += "not in classical mode" ;
+	else	
+		res += "in classical mode" ;
 		
-	return "Opened mouse whose index is #" + Ceylan::toString( _index ) 
-		+ ", named '" + _name + "'. This mouse has "
-		+ Ceylan::toString( _axisCount ) + " axis, " 
-		+ Ceylan::toString( _trackballCount ) + " trackball(s), "
-		+ Ceylan::toString( _hatCount ) + " hat(s), and "
-		+ Ceylan::toString( _buttonCount ) + " button(s)" ;
+	res += ", with a total of " 
+		+ Ceylan::toNumericalString( _buttonTotalCount ) 
+		+ " buttons (to each wheel correspond two buttons)" ;
+		
+		
+	return res ;
 				
 }
+
+
+bool Mouse::IsPressed( MouseButtonMask mask, MouseButtonNumber buttonToInspect )
+	throw()
+{
+
+	return static_cast<bool>( mask && SDL_BUTTON( buttonToInspect ) ) ;
+	
+}
+
+
+
+
+// Protected section.
+
+	
+
+void Mouse::focusGained( const FocusEvent & mouseFocusEvent ) throw()
+{
+
+	if ( isLinkedToController() )
+		getActualController().mouseFocusGained( mouseFocusEvent ) ;			
+	else
+	{
+		OSDL_MOUSE_LOG( "Focus gained for mouse #" 
+			+ Ceylan::toNumericalString( DefaultMouse ) + " : "
+			+ EventsModule::DescribeEvent( mouseFocusEvent ) ) ;
+	}
+
+}
+
+
+void Mouse::focusLost( const FocusEvent & mouseFocusEvent ) throw()
+{
+
+	if ( isLinkedToController() )
+		getActualController().mouseFocusLost( mouseFocusEvent ) ;			
+	else
+	{
+		OSDL_MOUSE_LOG( "Focus lost for mouse #" 
+			+ Ceylan::toNumericalString( DefaultMouse ) + " : "
+			+ EventsModule::DescribeEvent( mouseFocusEvent ) ) ;
+	}
+
+}
+
+
+void Mouse::mouseMoved( const MouseMotionEvent & mouseEvent ) throw()
+{
+
+	if ( isLinkedToController() )
+		getActualController().mouseMoved( mouseEvent ) ;			
+	else
+	{
+		OSDL_MOUSE_LOG( "Motion for mouse #" 
+			+ Ceylan::toNumericalString( DefaultMouse ) + " : "
+			+ EventsModule::DescribeEvent( mouseEvent ) ) ;
+	}
+
+}
+
+				
+void Mouse::buttonPressed( const MouseButtonEvent & mouseEvent ) throw()
+{
+
+	if ( isLinkedToController() )
+		getActualController().mouseButtonPressed( mouseEvent ) ;			
+	else
+	{
+		OSDL_MOUSE_LOG( "Mouse button #" 
+			+ Ceylan::toNumericalString( mouseEvent.button ) + " pressed : "
+			+ EventsModule::DescribeEvent( mouseEvent ) ) ;
+	}
+
+}
+
+					
+void Mouse::buttonReleased( const MouseButtonEvent & mouseEvent ) throw()
+{
+
+	if ( isLinkedToController() )
+		getActualController().mouseButtonReleased( mouseEvent ) ;			
+	else
+	{
+		OSDL_MOUSE_LOG( "Mouse button #" 
+			+ Ceylan::toNumericalString( mouseEvent.button ) + " released : "
+			+ EventsModule::DescribeEvent( mouseEvent ) ) ;
+	}
+
+}
+																			
+					
+MouseNumber Mouse::getIndex() const throw()
+{
+
+	return _index ;
+	
+}
+
+
 
