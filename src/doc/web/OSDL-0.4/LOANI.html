@@ -807,6 +807,9 @@ To change your password, do the following:
     <dt>LOANI keeps on failing and I do not know what to do</dt>
     <dd>I guess it is time for you to read our <a href="#support">support section</a>.</dd>
 
+	<dt>No OpenGL operation succeeds, despite <code>glxinfo</code> showing direct rendering, fails with <code>X11 driver not configured with OpenGL</code></dt>
+	<dd>It is the sign that SDL was not built with OpenGL support, maybe because at the time of its configuration, the OpenGL setup was not correct. One can check it by running SDL configure again, and search for this target line : <code>checking for OpenGL (GLX) support... yes</code>.</dd>
+
 </dl>
 
 
@@ -877,7 +880,8 @@ We hope you will enjoy using LOANI and OSDL !
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update : Friday, January 5, 2007</em>
+    <em>Last update : Saturday, February 17, 2007
+</em>
   </center>
 </body>
 </html>
