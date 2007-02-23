@@ -39,7 +39,7 @@ EVENTS_IMPLEMENTATIONS = \
 	OSDLJoystickCommon.cc                \
 	OSDLJoystickHandler.cc               \
 	OSDLKeyboardHandler.cc               \
-	OSDLMouseCommon.cc                   \
 	OSDLMouse.cc                         \
+	OSDLMouseCommon.cc                   \
 	OSDLMouseHandler.cc
 	
