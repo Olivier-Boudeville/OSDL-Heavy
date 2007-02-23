@@ -18,7 +18,7 @@ namespace OSDL
 	 *
 	 */
 	OSDL_DLL const std::string actualOSDLHeaderLibtoolVersion 
-		= "0.4.0" ;
+		= "@OSDL_LIBTOOL_VERSION@" ;
 		
 }
 
