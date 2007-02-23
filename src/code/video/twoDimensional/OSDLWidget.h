@@ -42,7 +42,7 @@ namespace OSDL
 
 
 			/* To be added later, maybe :
-			class WidgetSettings : public Ceylan::TextDisplayable
+			class OSDL_DLL WidgetSettings : public Ceylan::TextDisplayable
 			{
 			
 				public:
@@ -127,7 +127,7 @@ namespace OSDL
 				public:
 						
 			
-					/*
+					/**
 					 * Describes the available modes for handling the 
 					 * base color of a widget.
 					 *
