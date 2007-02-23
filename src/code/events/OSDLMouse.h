@@ -17,6 +17,22 @@ namespace OSDL
 {
 
 
+	namespace Video
+	{
+	
+	
+		namespace TwoDimensional
+		{
+		
+			// For cursor position.
+			class Point2D ;
+		
+		}
+		
+		
+	}
+			
+		
 	namespace Events
 	{
 	
@@ -30,11 +46,9 @@ namespace OSDL
 		 * informations, at the expense of a higher complexity on the 
 		 * controller part.
 		 *
-		 * For usual needs, ClassicalMouse child class should be more
-		 * convenient, since it is a higher-level (but a little less
-		 * general-purpose) model.
-		 *
-		 * @see ClassicalMouse
+		 * For usual needs, Mouse instances should be set in classical
+		 * mode : it would be more convenient, since it is a higher-level
+		 * (but a little less general-purpose) model.
 		 *
 		 */
 		class OSDL_DLL Mouse : public OSDL::Events::InputDevice
@@ -54,12 +68,17 @@ namespace OSDL
 
 
 				/**
-				 * Constructs a new mouse manager.
+				 * Constructs a new mouse instance.
 				 *
 				 * @param index the index of this mouse in platform list.
 				 *
+				 * @param classicalMouseMode tells whether this mouse should
+				 * be in classical mode (higher level), or in normal mode
+				 * (low-level events only are propagated to controllers).
+				 *
 				 */
-				explicit Mouse( MouseNumber index ) throw() ;
+				explicit Mouse( MouseNumber index, 
+					bool classicalMouseMode = true ) throw() ;
 				
 				
 				/**
@@ -71,18 +90,49 @@ namespace OSDL
 				
 
 
+				// Cursor position.
+				
+				
 				/**
 				 * Returns the absolute abscissa of this mouse cursor.
 				 *
 				 */ 
 				virtual Video::Coordinate getCursorAbscissa() const throw() ;
-				 
-				 
+				 				
+				
 				/**
 				 * Returns the absolute ordinate of this mouse cursor.
 				 *
 				 */ 
 				virtual Video::Coordinate getCursorOrdinate() const throw() ;
+				 
+				 
+				/**
+				 * Sets the cursor position for this mouse.
+				 *
+				 * @param newPosition the new cursor position.
+				 *
+				 * @note Generation a mouse moved event.
+				 *
+				 */
+				virtual void setCursorPosition( 
+						const Video::TwoDimensional::Point2D & newPosition ) 
+					const throw() ;
+				 
+				 
+				/**
+				 * Sets the cursor position for this mouse.
+				 *
+				 * @param x the new cursor abscissa.
+				 *
+				 * @param y the new cursor ordinate.
+				 *
+				 *
+				 * @note Generation a mouse moved event.
+				 *
+				 */
+				virtual void setCursorPosition( Video::Coordinate x, 
+					Video::Coordinate y ) const throw() ;
 				 
 				 
 				 
@@ -91,9 +141,8 @@ namespace OSDL
 				
 				
 				/**
-				 * Returns the number of mouse buttons, wheels not included.
-				 *
-				 * @note Information not available yet, returns always three.
+				 * Returns the number of actual mouse buttons, wheels not
+				 * included.
 				 *
 				 */
 				virtual MouseButtonNumber getNumberOfButtons() 
@@ -106,8 +155,7 @@ namespace OSDL
 				 * @note Information not available yet, returns always one.
 				 *
 				 */
-				virtual MouseWheelNumber getNumberOfWheels() 
-					const throw() ;
+				virtual MouseWheelNumber getNumberOfWheels() const throw() ;
 				
 				
 				
@@ -153,7 +201,7 @@ namespace OSDL
 				 * already open or if the button number is out of bounds.
 				 *
 				 */ 
-				virtual bool isButtonPressed( MouseButtonsCount buttonNumber ) 
+				virtual bool isButtonPressed( MouseButtonNumber buttonNumber ) 
 					const throw( MouseException ) ;				 
 				 
 				 
@@ -169,10 +217,6 @@ namespace OSDL
 				 */ 
 				virtual MouseButtonMask getButtonStates() const throw() ;   
 				 				 			
-				
-									
-				
-				 				 
 							
 								 					
 				/**
@@ -216,7 +260,30 @@ namespace OSDL
 					MouseButtonNumber buttonToInspect ) throw() ;
 					
 					
-					
+				/**
+				 * By default, a mouse is supposed to have 5 buttons :
+				 * left, middle, right, wheel up and down. 
+				 *	
+				 */	
+				static const MouseButtonNumber DefaultButtonTotalNumber ;
+				
+				
+				/**
+				 * By default, a mouse is supposed to have 3 actual buttons :
+				 * left, middle, right. 
+				 *	
+				 */	
+				static const MouseButtonNumber DefaultButtonActualNumber ;
+				
+				
+				/**
+				 * By default, a mouse is supposed to have 1 wheel.
+				 *	
+				 */	
+				static const MouseWheelNumber DefaultWheelNumber ;
+				
+				
+				
 		protected :
 		
 		
@@ -244,16 +311,24 @@ namespace OSDL
 				 * Called whenever this mouse gained focus, and 
 				 * notifies the linked controller, if any.
 				 *
+				 * @param mouseFocusEvent the event about the change in 
+				 * mouse focus.
+				 *
 				 */
-				virtual void focusGained() throw() ;
+				virtual void focusGained( 
+					const FocusEvent & mouseFocusEvent ) throw() ;
 	
 	
 				/**
 				 * Called whenever this mouse lost focus, and 
 				 * notifies the linked controller, if any.
 				 *
+				 * @param mouseFocusEvent the event about the change in 
+				 * mouse focus.
+				 *
 				 */
-				virtual void focusLost() throw() ;
+				virtual void focusLost(
+					const FocusEvent & mouseFocusEvent ) throw() ;
 	
 	
 	
@@ -270,18 +345,7 @@ namespace OSDL
 				 */
 				virtual void mouseMoved( 
 					const MouseMotionEvent & mouseEvent ) throw() ;
-	
-							
-				/**
-				 * Called whenever this mouse moved, and 
-				 * notifies the linked controller, if any.
-				 *
-				 * @param mouseEvent the corresponding mouse event.
-				 *
-				 */
-				virtual void mouseMoved( 
-					const MouseMotionEvent & mouseEvent ) throw() ;
-	
+		
 
 				/**
 				 * Called whenever a button of this mouse was pressed, 
@@ -304,45 +368,26 @@ namespace OSDL
 				virtual void buttonReleased( 
 					const MouseButtonEvent & mouseEvent ) throw() ;
 				
-				/**
-				 * Returns the index of this mouse in the platform list.
-				 *
-				 * @note Should be useless.
-				 *
-				 */
-				virtual MouseNumber getIndex() const throw() ;
-	
-				
-				/**
-				 * The implementation dependent name of this mouse, if any.
-				 *
-				 */
-				std::string _name ;
 				
 				
 				/// The number of this mouse in platform list.				
 				MouseNumber _index ;
 				
-								
-				/// The internal raw mouse being used.
-				RawMouse * _internalMouse ;
-	
 				
-				/// The number of axes for this mouse.
-				MouseAxesCount _axisCount ;
+				/// Tells whether this mouse should be in classical mode.
+				bool _inClassicalMode ; 
 
 
-				/// The number of trackballs for this mouse.
-				MouseTrackballsCount _trackballCount ;
+				/// The number of total buttons for this mouse.
+				MouseButtonNumber _buttonTotalCount ;
 
 
-				/// The number of hats for this mouse.
-				MouseHatsCount _hatCount ;
-
-
-				/// The number of buttons for this mouse.
-				MouseButtonsCount _buttonCount ;
-
+				/// Records the last relative abscissa.
+				Video::Coordinate _lastRelativeAbscissa ;
+				
+				/// Records the last relative ordinate.
+				Video::Coordinate _lastRelativeOrdinate ;
+				
 
 
 		private:
