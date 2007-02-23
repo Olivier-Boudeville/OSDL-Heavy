@@ -23,6 +23,7 @@ TWO_DIMENSIONAL_INTERFACES = \
 	OSDLGLUprightRectangle.h              \
 	OSDLImage.h                           \
 	OSDLLine.h                            \
+	OSDLMouseCursor.h                     \
 	OSDLPoint2D.h                         \
 	OSDLPoint3D.h                         \
 	OSDLPoint.h                           \
@@ -44,6 +45,7 @@ TWO_DIMENSIONAL_IMPLEMENTATIONS = \
 	OSDLGLUprightRectangle.cc             \
 	OSDLImage.cc                          \
 	OSDLLine.cc                           \
+	OSDLMouseCursor.cc                    \
 	OSDLPoint2D.cc                        \
 	OSDLPoint3D.cc                        \
 	OSDLPoint.cc                          \
