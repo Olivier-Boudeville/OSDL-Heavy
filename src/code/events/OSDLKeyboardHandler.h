@@ -4,6 +4,7 @@
 
 #include "OSDLInputDeviceHandler.h"   // for inheritance
 #include "OSDLEventsCommon.h"         // for KeyModifier
+#include "OSDLEvents.h"               // for EventsModule friendship
 
 #include "Ceylan.h"                   // for Unicode
 
@@ -103,7 +104,7 @@ namespace OSDL
 			 * of this keyboard handler.
 			 *
 			 */
-			friend class OSDL::::Events::EventsModule ;
+			friend class OSDL::Events::EventsModule ;
 
 			
 			public:
@@ -564,6 +565,22 @@ namespace OSDL
 				
 				
 				/**
+				 * Links this keyboard hander to specified focus-tracking
+				 * controller, so that any further change to the keyboard
+				 * focus will be notified to the controller.
+				 *
+				 * Removes automatically any link previously defined between
+				 * this Unicode and any other controller.
+				 *
+				 * @param controller the OSDL controller which will be 
+				 * notified of the focus change.
+				 *
+				 */
+				virtual void linkToFocusController(
+					OSDL::MVC::Controller & controller ) throw() ;
+				
+				
+				/**
 				 * Links the specified raw key to specified keyboard event
 				 * handler, so that if no controller is linked to this 
 				 * raw key, the keyboard event handler is triggered.
@@ -733,6 +750,29 @@ namespace OSDL
 				
 				
 				/**
+				 * Called whenever this keyboard gained focus, so that its 
+				 * controller, if any, is notified.
+				 *
+				 * @note Expected to be triggered by the EventsModule.
+				 *
+				 */
+				virtual void focusGained(
+					const FocusEvent & keyboardFocusEvent ) throw() ;
+				
+				
+				/**
+				 * Called whenever this keyboard lost focus, so that its 
+				 * controller, if any, is notified.
+				 *
+				 * @note Expected to be triggered by the EventsModule.
+				 *
+				 */
+				virtual void focusLost( 
+					const FocusEvent & keyboardFocusEvent ) throw() ;
+				
+				
+				
+				/**
 				 * Called whenever a key was pressed, so that its 
 				 * controller, if any, is notified.
 				 *
@@ -886,6 +926,15 @@ namespace OSDL
 				 *
 				 */
 				KeyboardEventHandler _defaultUnicodeHandler ;
+				
+				
+				/**
+				 * The controller that will receive focus changes.
+				 *
+				 * No controller is owned by this handler.
+				 *
+				 */
+				OSDL::MVC::Controller * _focusController ;
 				
 				
 				/**
