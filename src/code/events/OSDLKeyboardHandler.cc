@@ -7,6 +7,11 @@
 #include "SDL.h"                 // for SDL_EnableUNICODE
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>          // for OSDL_DEBUG and al
+#endif // OSDL_USES_CONFIG_H
+
+
 using std::string ;
 using std::list ;
 using std::map ;
@@ -144,7 +149,8 @@ KeyboardHandler::KeyboardHandler( KeyboardMode initialMode,
 	_rawKeyControllerMap(),
 	_rawKeyHandlerMap(),
 	_unicodeControllerMap(),
-	_unicodeHandlerMap()
+	_unicodeHandlerMap(),
+	_focusController( 0 )
 {
 
 	send( "Initializing keyboard subsystem." ) ;
@@ -194,14 +200,28 @@ KeyboardHandler::~KeyboardHandler() throw()
 void KeyboardHandler::linkToController( KeyIdentifier rawKey, 
 	OSDL::MVC::Controller & controller ) throw()
 {
+
 	_rawKeyControllerMap[ rawKey ] = & controller ;
+	
 }
 
 					
 void KeyboardHandler::linkToController( Ceylan::Unicode unicode, 
 	OSDL::MVC::Controller & controller ) throw()
 {
+
 	_unicodeControllerMap[ unicode ] = & controller ;
+	
+}
+	
+
+	
+void KeyboardHandler::linkToFocusController(
+	OSDL::MVC::Controller & controller ) throw()
+{
+
+	_focusController = & controller ;
+	
 }
 	
 	
@@ -209,14 +229,18 @@ void KeyboardHandler::linkToController( Ceylan::Unicode unicode,
 void KeyboardHandler::linkToHandler( KeyIdentifier rawKey, 
 	KeyboardEventHandler handler ) throw()
 {
+
 	_rawKeyHandlerMap[ rawKey ] = handler ;
+	
 }
 
 					
 void KeyboardHandler::linkToHandler( Ceylan::Unicode unicode,
 	KeyboardEventHandler handler ) throw()
 {
+
 	_unicodeHandlerMap[ unicode ] = handler ;
+	
 }
 	
 
@@ -436,7 +460,28 @@ string KeyboardHandler::DescribeUnicode( Ceylan::Unicode value ) throw()
 
 
 
+
 // Protected section.
+
+
+void KeyboardHandler::focusGained( const FocusEvent & keyboardFocusEvent )
+	throw()
+{
+
+	if ( _focusController != 0 )
+		_focusController->keyboardFocusGained( keyboardFocusEvent ) ;
+		
+}
+
+
+void KeyboardHandler::focusLost( const FocusEvent & keyboardFocusEvent ) 
+	throw()
+{
+
+	if ( _focusController != 0 )
+		_focusController->keyboardFocusLost( keyboardFocusEvent ) ;
+		
+}
 
 
 void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent ) throw()
