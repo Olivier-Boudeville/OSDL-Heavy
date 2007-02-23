@@ -3,7 +3,6 @@
 
 
 #include "OSDLEventsCommon.h"    // for typedefs
-
 #include "OSDLTypes.h"           // for Flag
 #include "OSDLException.h"       // for OSDL::Exception
 
@@ -754,21 +753,28 @@ namespace OSDL
 				/**
 				 * Called whenever the application gained keyboard focus.
 				 *
+				 * @param keyboardFocusEvent the keyboard focus event.
+				 *
 				 * @note Made to be overriden, basically just writes the
 				 * event in the standard output.
 				 *
 				 */
-				virtual void onKeyboardFocusGained() throw() ; 	
+				virtual void onKeyboardFocusGained( 
+					const FocusEvent & keyboardFocusEvent ) throw() ; 	
 
 				
 				/**
 				 * Called whenever the application lost keyboard focus.
+				 * @param keyboardFocusEvent the keyboard focus event.
+				 *
+				 * @param keyboardFocusEvent the keyboard focus event.
 				 *
 				 * @note Made to be overriden, basically just writes 
 				 * the event in the standard output.
 				 *
 				 */
-				virtual void onKeyboardFocusLost() throw() ; 	
+				virtual void onKeyboardFocusLost(
+					const FocusEvent & keyboardFocusEvent ) throw() ; 	
 				
 				
 				/**
@@ -799,13 +805,14 @@ namespace OSDL
 				/**
 				 * Called whenever the application gained mouse focus.
 				 *
-				 * @param mouse the mouse that gained focus.
+				 * @param mouseFocus the mouse that gained focus.
 				 *
 				 * @note Made to be overriden, basically just writes the 
 				 * event in the standard output.
 				 *
 				 */
-				virtual void onMouseFocusGained( MouseNumber mouse ) throw() ; 	
+				virtual void onMouseFocusGained( 
+					const FocusEvent & mouseFocus ) throw() ; 	
 
 				
 				/**
@@ -817,7 +824,8 @@ namespace OSDL
 				 * the event in the standard output.
 				 *
 				 */
-				virtual void onMouseFocusLost( MouseNumber mouse ) throw() ; 	
+				virtual void onMouseFocusLost( 
+					const FocusEvent & mouseFocus ) throw() ; 	
 				
 		
 		
@@ -953,7 +961,8 @@ namespace OSDL
 				 * event in the standard output.
 				 *
 				 */
-				virtual void onApplicationIconified() throw() ; 	
+				virtual void onApplicationIconified(
+					 const FocusEvent & focusEvent ) throw() ; 	
 
 				
 				/**
@@ -963,7 +972,8 @@ namespace OSDL
 				 * the event in the standard output.
 				 *
 				 */
-				virtual void onApplicationRestored() throw() ; 	
+				virtual void onApplicationRestored( 
+					const FocusEvent & focusEvent ) throw() ; 	
 
 
 				/**
