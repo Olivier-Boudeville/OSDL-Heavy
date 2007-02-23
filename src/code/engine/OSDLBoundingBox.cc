@@ -34,7 +34,7 @@ BoundingBox::~BoundingBox() throw()
 }
 
 
-string BoundingBox::InterpertIntersectionResult( IntersectionResult result ) 
+string BoundingBox::InterpretIntersectionResult( IntersectionResult result ) 
 	throw( BoundingBoxException )
 {
 
@@ -65,7 +65,7 @@ string BoundingBox::InterpertIntersectionResult( IntersectionResult result )
 		
 		default:
 			throw BoundingBoxException(
-				"BoundingBox::InterpertIntersectionResult : "
+				"BoundingBox::InterpretIntersectionResult : "
 				"unknown intersection outcome." ) ;
 			break ;
 				
