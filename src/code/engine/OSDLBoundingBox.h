@@ -167,7 +167,7 @@ namespace OSDL
 				 * is not known, and therefore cannot be interpreted.
 				 *
 				 */
-				static std::string InterpertIntersectionResult(
+				static std::string InterpretIntersectionResult(
 					IntersectionResult result ) throw( BoundingBoxException ) ;
 					
 					
