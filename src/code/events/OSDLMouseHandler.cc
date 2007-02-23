@@ -6,6 +6,10 @@
 
 #include "SDL.h"                   // for SDL_Getmicetate, etc.
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>            // for OSDL_DEBUG and al
+#endif // OSDL_USES_CONFIG_H
+
 
 using std::string ;
 using std::list ;
@@ -51,7 +55,7 @@ MouseHandler::MouseHandler( bool useClassicalMice )
 	_mice = new Mouse *[ _miceCount ] ;
 	
 	for ( MouseNumber i = 0; i < _miceCount ; i++ )
-		_mice[i] = new Mouse( _useClassicalMice ) ;
+		_mice[i] = new Mouse( _useClassicalMice, i ) ;
 	
 	send( "Mouse subsystem initialized." ) ;
 
@@ -84,40 +88,35 @@ void MouseHandler::linkToController( OSDL::MVC::Controller & controller )
 }
 
 					
-void MouseHandler::linkToController( MouseNumber index,
-	OSDL::MVC::Controller & controller  ) throw()
+void MouseHandler::linkToController( MouseNumber mouseIndex,
+	OSDL::MVC::Controller & controller ) throw( MouseException )
 {
-	
-	if ( mouseIndex >= _miceCount )
-		throw MouseException( "MouseHandler::linkToController : "
-			"mouse #" + Ceylan::toString( mouseIndex ) 
-			+ " requested, whereas the total number of known mice is "
-			+ Ceylan::toString( _miceCount ) ) ;
 	
 	/*
 	 * Beware, mouse list might be out of synch, test is not exactly
 	 * equivalent to _miceCount.
 	 *
 	 */	
-	if ( mouseIndex >= static_cast<MouseNumber>( GetAvailableMouseCount() ) )
+	if ( mouseIndex >= static_cast<MouseNumber>( GetAvailableMiceCount() ) )
 		throw MouseException( "MouseHandler::linkToController : index " 
-			+ Ceylan::toString( index) + " out of bounds (" 
-			+ Ceylan::toString( GetAvailableMouseCount() )
+			+ Ceylan::toString( mouseIndex ) + " out of bounds (" 
+			+ Ceylan::toString( GetAvailableMiceCount() )
 			+ " mice attached)." ) ;
 			
-	if ( index >= _miceCount )
+	if ( mouseIndex >= _miceCount )
 		throw MouseException( "MouseHandler::linkToController : index " 
-			+ Ceylan::toString( index) + " out of bounds (" 
+			+ Ceylan::toString( mouseIndex ) + " out of bounds (" 
 			+ Ceylan::toString( _miceCount )
 			+ " mice attached according to internal mouse list)." ) ;
 	
 #if OSDL_DEBUG
-	if ( _mice[ index ] == 0 )
+	if ( _mice[ mouseIndex ] == 0 )
 		throw MouseException( "MouseHandler::linkToController : "
-			"no known mouse for index " + Ceylan::toString( index ) + "." ) ;
+			"no known mouse for index " 
+			+ Ceylan::toString( mouseIndex ) + "." ) ;
 #endif // OSDL_DEBUG
 
-	_mice[ index ]->setController( controller ) ;
+	_mice[ mouseIndex ]->setController( controller ) ;
 
 }
 	
@@ -171,36 +170,27 @@ MouseNumber MouseHandler::GetAvailableMiceCount() throw()
 
 
 
-void MouseHandler::focusGained( MouseNumber mouse ) const throw()
+void MouseHandler::focusGained( const FocusEvent & mouseFocusEvent ) 
+	const throw()
 {
-
-	/*
-	 * Warning : specified mouse index must match the SDL ones.
-	 *
-	 */
 	 
 #if OSDL_DEBUG
-	checkMouseAt( mouse ) ;
+	checkMouseAt( DefaultMouse ) ;
 #endif // OSDL_DEBUG
 	
-	_mice[ mouse ]->focusGained() ;
+	_mice[ DefaultMouse ]->focusGained( mouseFocusEvent ) ;
 	
 }
 
 
-void MouseHandler::focusLost( MouseNumber mouse ) const throw()
+void MouseHandler::focusLost( const FocusEvent & mouseFocusEvent ) const throw()
 {
-
-	/*
-	 * Warning : specified mouse index must match the SDL ones.
-	 *
-	 */
 	 
 #if OSDL_DEBUG
-	checkMouseAt( mouse ) ;
+	checkMouseAt( DefaultMouse ) ;
 #endif // OSDL_DEBUG
 	
-	_mice[ mouse ]->focusLost() ;
+	_mice[ DefaultMouse ]->focusLost( mouseFocusEvent ) ;
 	
 }
 
@@ -213,7 +203,7 @@ void MouseHandler:: mouseMoved( const MouseMotionEvent & mouseMovedEvent )
 	checkMouseAt( mouseMovedEvent.which ) ;
 #endif // OSDL_DEBUG
 	
-	_mice[ mouseEvent.which ]->mouseMoved( mouseMovedEvent ) ;
+	_mice[ mouseMovedEvent.which ]->mouseMoved( mouseMovedEvent ) ;
 	
 }
 
