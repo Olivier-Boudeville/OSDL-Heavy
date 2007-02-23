@@ -16,6 +16,9 @@ using std::string ;
 using std::list ;
 
 
+typedef Ceylan::Uint8 Direction ;
+
+
 /**
  * Tests the whole event-driven MVC framework :
  *   - a specific controller is registered, so that it manages both the 
@@ -34,11 +37,6 @@ using std::list ;
  * @see testScheduledOSDLAndMVC.cc
  *
  */
-
-
-typedef Ceylan::Uint8 Direction ;
-
-
 class MyMVCEvent : public Ceylan::MVCEvent
 {
 
@@ -437,7 +435,7 @@ int main( int argc, char * argv[] )
 
 		LogPlug::info( "Starting OSDL with joystick support." ) ;		
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseJoystick ) ;		
+			CommonModule::UseJoystick | CommonModule::UseKeyboard ) ;		
 		
 		LogPlug::info( "Testing basic event handling." ) ;
 		
@@ -446,7 +444,8 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "Events module : " + myEvents.toString() ) ;
 		
-		KeyboardHandler & myKeyboardHandler = myEvents.getKeyboardHandler() ;		
+		KeyboardHandler & myKeyboardHandler = myEvents.getKeyboardHandler() ;
+			
 		myKeyboardHandler.setSmarterDefaultKeyHandlers() ;
 
 		JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
