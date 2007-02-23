@@ -19,6 +19,7 @@
 #include "OSDLGLTexture.h"
 #include "OSDLImage.h"
 #include "OSDLLine.h"
+#include "OSDLMouseCursor.h"
 #include "OSDLPoint2D.h"
 #include "OSDLPoint3D.h"
 #include "OSDLPoint.h"
