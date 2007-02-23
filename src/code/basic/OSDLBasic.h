@@ -33,11 +33,11 @@ namespace OSDL
 	 *
 	 */
 	#define CHECK_OSDL_VERSIONS()                                            \
-        OSDL::LibtoolVersion headerVersion(                                  \
+        Ceylan::LibtoolVersion headerVersion(                                \
 			OSDL::actualOSDLHeaderLibtoolVersion ) ;                         \
         if ( ! /* library version */                                         \
                 OSDL::GetVersion().isCompatibleWith( headerVersion ) )       \
-            OSDL::emergencyShutdown(                                         \
+            Ceylan::emergencyShutdown(                                       \
                 "OSDL library version currently linked ("                    \
                 + OSDL::GetVersion().toString()                              \
                 + ") is not compatible with the one read from the OSDL "     \
