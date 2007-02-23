@@ -7,6 +7,8 @@
 #include "OSDLJoystickHandler.h"   // for JoystickHandler
 #include "OSDLKeyboardHandler.h"   // for KeyboardHandler
 #include "OSDLMouseHandler.h"      // for MouseHandler
+#include "OSDLMouseCommon.h"       // for DefaultMouse
+
 
 #include "Ceylan.h"                // for Flags, etc.
 
@@ -1037,7 +1039,8 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 // Keyboard section.
 
 
-void EventsModule::onKeyboardFocusGained() throw()
+void EventsModule::onKeyboardFocusGained(
+	const FocusEvent & keyboardFocusEvent ) throw()
 {
 
 	OSDL_EVENT_LOG( "Application gained keyboard focus." ) ;
@@ -1048,12 +1051,13 @@ void EventsModule::onKeyboardFocusGained() throw()
 			"whereas no handler is available." ) ;
 #endif // OSDL_DEBUG
 
-	_keyboardHandler->focusGained() ;
+	_keyboardHandler->focusGained( keyboardFocusEvent ) ;
 
 }
 
 
-void EventsModule::onKeyboardFocusLost() throw()
+void EventsModule::onKeyboardFocusLost(
+	const FocusEvent & keyboardFocusEvent ) throw()
 {
 
 	OSDL_EVENT_LOG( "Application lost keyboard focus." ) ;
@@ -1064,7 +1068,7 @@ void EventsModule::onKeyboardFocusLost() throw()
 			"whereas no handler is available." ) ;
 #endif // OSDL_DEBUG
 
-	_keyboardHandler->focusLost() ;
+	_keyboardHandler->focusLost( keyboardFocusEvent ) ;
 
 }
 
@@ -1105,7 +1109,8 @@ void EventsModule::onKeyReleased( const KeyboardEvent & keyboardEvent ) throw()
 // Mouse section.
 
 
-void EventsModule::onMouseFocusGained( MouseNumber mouse ) throw()
+void EventsModule::onMouseFocusGained( 
+	const FocusEvent & mouseFocusEvent ) throw()
 {
 
 	OSDL_EVENT_LOG( "Application gained mouse focus." ) ;
@@ -1116,12 +1121,13 @@ void EventsModule::onMouseFocusGained( MouseNumber mouse ) throw()
 			"whereas no handler is available." ) ;
 #endif // OSDL_DEBUG
 
-	_mouseHandler->focusGained( mouse ) ;
+	_mouseHandler->focusGained( mouseFocusEvent ) ;
 	
 }
 
 
-void EventsModule::onMouseFocusLost( MouseNumber mouse) throw()
+void EventsModule::onMouseFocusLost( 
+	const FocusEvent & mouseFocusEvent ) throw()
 {
 
 	OSDL_EVENT_LOG( "Application lost mouse focus." ) ;
@@ -1132,7 +1138,7 @@ void EventsModule::onMouseFocusLost( MouseNumber mouse) throw()
 			"whereas no handler is available." ) ;
 #endif // OSDL_DEBUG
 
-	_mouseHandler->focusLost( mouse ) ;
+	_mouseHandler->focusLost( mouseFocusEvent ) ;
 
 }
 
@@ -1328,42 +1334,46 @@ void EventsModule::onApplicationFocusChanged(
 		// DefaultMouse : only one mouse supported for the moment.
 		
 		if ( focusEvent.gain == 1 )
-			onMouseFocusGained( DefaultMouse ) ;
+			onMouseFocusGained( focusEvent ) ;
 		else
-			onMouseFocusLost( DefaultMouse ) ;	
+			onMouseFocusLost( focusEvent ) ;	
 	}
 	
 	if ( focusEvent.state & _KeyboardFocus )
 	{
 		if ( focusEvent.gain == 1 )
-			onKeyboardFocusGained() ;
+			onKeyboardFocusGained( focusEvent ) ;
 		else
-			onKeyboardFocusLost() ;	
+			onKeyboardFocusLost( focusEvent ) ;	
 	}
 	
 	if ( focusEvent.state & _ApplicationFocus )
 	{
 		if ( focusEvent.gain == 1 )
-			onApplicationRestored() ;
+			onApplicationRestored( focusEvent ) ;
 		else
-			onApplicationIconified() ;	
+			onApplicationIconified( focusEvent ) ;	
 	}
 		
 }
 
 
-void EventsModule::onApplicationIconified() throw()
+void EventsModule::onApplicationIconified( 
+	const FocusEvent & focusEvent ) throw()
 {
 
-	OSDL_EVENT_LOG( "Application is iconified (no handler registered)." ) ;
+	OSDL_EVENT_LOG( "Application is iconified (no handler registered) : "
+		+ DescribeEvent( focusEvent ) ) ;
 	
 }
 
 
-void EventsModule::onApplicationRestored() throw()
+void EventsModule::onApplicationRestored( 
+	const FocusEvent & focusEvent ) throw()
 {
 
-	OSDL_EVENT_LOG( "Application is restored (no handler registered)." ) ;
+	OSDL_EVENT_LOG( "Application is restored (no handler registered) : "
+		+ DescribeEvent( focusEvent ) ) ;
 	
 }
 
