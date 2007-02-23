@@ -116,6 +116,31 @@ namespace OSDL
 
 				// Keyboard section.
 				
+				
+				/**
+				 * Called whenever a keyboard linked to this controller has 
+				 * gained focus.
+				 *
+				 * @note This method is meant to be overriden so that this
+				 * controller can react to this event.
+				 *
+				 */
+				virtual void keyboardFocusGained( 
+					const FocusEvent & keyboardFocusEvent ) throw() ;
+
+
+				/**
+				 * Called whenever a keyboard linked to this controller has 
+				 * lost focus.
+				 *
+				 * @note This method is meant to be overriden so that this
+				 * controller can react to this event.
+				 *
+				 */
+				virtual void keyboardFocusLost( 
+					const FocusEvent & keyboardFocusEvent ) throw() ;
+
+
 			
 				/**
 				 * Called whenever a raw key linked to this controller has 
@@ -157,6 +182,31 @@ namespace OSDL
 
 				// Mouse section.
 				
+
+				
+				/**
+				 * Called whenever a mouse linked to this controller has 
+				 * gained focus.
+				 *
+				 * @note This method is meant to be overriden so that this
+				 * controller can react to this event.
+				 *
+				 */
+				virtual void mouseFocusGained( 
+					const FocusEvent & mouseFocusEvent ) throw() ;
+
+
+				/**
+				 * Called whenever a mouse linked to this controller has 
+				 * lost focus.
+				 *
+				 * @note This method is meant to be overriden so that this
+				 * controller can react to this event.
+				 *
+				 */
+				virtual void mouseFocusLost(
+					const FocusEvent & mouseFocusEvent ) throw() ;
+
 				
 				/**
 				 * Called whenever a mouse linked to this controller moved.
