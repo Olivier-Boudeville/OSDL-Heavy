@@ -2,7 +2,7 @@
 
 #include "OSDLEvents.h"       // for KeyPressed
 
-#include "SDL.h"
+//#include "SDL.h"
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -53,6 +53,46 @@ Controller::~Controller() throw()
 }
 
 
+
+// Keyboard section.
+
+
+void Controller::keyboardFocusGained( 
+	const FocusEvent & keyboardFocusEvent ) throw()
+{
+	
+#if OSDL_DEBUG
+
+	if ( keyboardFocusEvent.type != EventsModule::ApplicationFocusChanged )
+		Ceylan::emergencyShutdown( "Controller::keyboardFocusGained : "
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG
+	
+	OSDL_CONTROLLER_LOG( "OSDL controller : keyboard focus gained : " 
+		+ EventsModule::DescribeEvent( keyboardFocusEvent ) ) ;
+		
+}
+
+
+void Controller::keyboardFocusLost(
+	const FocusEvent & keyboardFocusEvent ) throw()
+{
+	
+#if OSDL_DEBUG
+
+	if ( keyboardFocusEvent.type != EventsModule::ApplicationFocusChanged )
+		Ceylan::emergencyShutdown( "Controller::keyboardFocusLost : "
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG
+	
+	OSDL_CONTROLLER_LOG( "OSDL controller : keyboard focus lost : " 
+		+ EventsModule::DescribeEvent( keyboardFocusEvent ) ) ;
+		
+}
+
+
 void Controller::rawKeyPressed( const KeyboardEvent & keyboardPressedEvent )
 	throw()
 {
@@ -63,7 +103,7 @@ void Controller::rawKeyPressed( const KeyboardEvent & keyboardPressedEvent )
 		Ceylan::emergencyShutdown( "Controller::rawKeyPressed : "
 			"unexpected event received instead." ) ;
 					
-#endif // OSDL_DEBUG // OSDL_DEBUG
+#endif // OSDL_DEBUG
 	
 	OSDL_CONTROLLER_LOG( "OSDL controller : raw key pressed : " 
 		+ EventsModule::DescribeEvent( keyboardPressedEvent ) ) ;
@@ -106,6 +146,43 @@ void Controller::unicodeSelected( const KeyboardEvent & keyboardPressedEvent )
 		
 }
 
+
+
+// Mouse section.
+
+
+void Controller::mouseFocusGained( const FocusEvent & mouseFocusEvent ) throw()
+{
+	
+#if OSDL_DEBUG
+
+	if ( mouseFocusEvent.type != EventsModule::ApplicationFocusChanged )
+		Ceylan::emergencyShutdown( "Controller::mouseFocusGained : "
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG
+	
+	OSDL_CONTROLLER_LOG( "OSDL controller : mouse focus gained : " 
+		+ EventsModule::DescribeEvent( mouseFocusEvent ) ) ;
+		
+}
+		
+
+void Controller::mouseFocusLost( const FocusEvent & mouseFocusEvent ) throw()
+{
+	
+#if OSDL_DEBUG
+
+	if ( mouseFocusEvent.type != EventsModule::ApplicationFocusChanged )
+		Ceylan::emergencyShutdown( "Controller::mouseFocusLost : "
+			"unexpected event received instead." ) ;
+					
+#endif // OSDL_DEBUG
+	
+	OSDL_CONTROLLER_LOG( "OSDL controller : mouse focus lost : " 
+		+ EventsModule::DescribeEvent( mouseFocusEvent ) ) ;
+		
+}
 
 
 void Controller::mouseMoved( const MouseMotionEvent & mouseMotionEvent ) 
