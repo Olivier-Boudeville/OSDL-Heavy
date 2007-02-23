@@ -98,8 +98,8 @@ AC_DEFUN([OSDL_PATH],
   OSDL_OLDEST_SUPPORTED_MINOR=4  
   # Setting the install path of the OSDL library :
   OSDL_LIBS=" -lOSDL "
-  AC_ARG_WITH(libOSDL,
-    AS_HELP_STRING([--with-libOSDL],[path to the OSDL library (prefix)]),
+  AC_ARG_WITH(osdl-prefix,
+    AS_HELP_STRING([--with-osdl-prefix],[Prefix where OSDL is installed (optional)]),
       [
         OSDL_CPPFLAGS="-I${withval}/include/OSDL"
         OSDL_LIBS="-L${withval}/lib -lOSDL"
@@ -163,7 +163,7 @@ AC_DEFUN([OSDL_PATH],
   AC_ARG_WITH(sdl_image-prefix,
     AS_HELP_STRING([--with-sdl_image-prefix=PFX],[Prefix where SDL_image is installed (optional)]),
       [
-        SDL_IMAGE_CPPFLAGS="-I${withval}/include"
+        SDL_IMAGE_CPPFLAGS="-I${withval}/include/SDL"
         SDL_IMAGE_LIBS="-L${withval}/lib -lSDL_image"
 		SDL_IMAGE_PREFIX="${withval}"
       ],[
@@ -227,7 +227,7 @@ AC_DEFUN([OSDL_PATH],
   AC_ARG_WITH(sdl_gfx-prefix,
     AS_HELP_STRING([--with-sdl_gfx-prefix=PFX],[Prefix where SDL_gfx is installed (optional)]),
       [
-        SDL_GFX_CPPFLAGS="-I${withval}/include"
+        SDL_GFX_CPPFLAGS="-I${withval}/include/SDL"
         SDL_GFX_LIBS="-L${withval}/lib -lSDL_gfx"
 		SDL_GFX_PREFIX="${withval}"
       ],[
@@ -243,7 +243,7 @@ AC_DEFUN([OSDL_PATH],
   AC_ARG_WITH(sdl_ttf-prefix,
     AS_HELP_STRING([--with-sdl_ttf-prefix=PFX],[Prefix where SDL_ttf is installed (optional)]),
       [
-        SDL_TTF_CPPFLAGS="-I${withval}/include"
+        SDL_TTF_CPPFLAGS="-I${withval}/include/SDL"
         SDL_TTF_LIBS="-L${withval}/lib -lSDL_ttf"
 		SDL_TTF_PREFIX="${withval}"
       ],[
@@ -259,7 +259,7 @@ AC_DEFUN([OSDL_PATH],
   AC_ARG_WITH(freetype-prefix,
     AS_HELP_STRING([--with-freetype-prefix=PFX],[Prefix where Freetype is installed (optional)]),
       [
-        FREETYPE_CPPFLAGS="-I${withval}/include"
+        # Not necessary : FREETYPE_CPPFLAGS="-I${withval}/include"
         FREETYPE_LIBS="-L${withval}/lib -lfreetype"
 		FREETYPE_PREFIX="${withval}"
       ],[
@@ -275,23 +275,7 @@ AC_DEFUN([OSDL_PATH],
   AC_ARG_WITH(sdl_mixer-prefix,
     AS_HELP_STRING([--with-sdl_mixer-prefix=PFX],[Prefix where SDL_mixer is installed (optional)]),
       [
-        SDL_MIXER_CPPFLAGS="-I${withval}/include"
-        SDL_MIXER_LIBS="-L${withval}/lib -lSDL_mixer"
-		SDL_MIXER_PREFIX="${withval}"
-      ],[
-	    SDL_MIXER_LIBS="-L${withval}/lib -lSDL_mixer"
-	  ]
-  )
-  
-  OSDL_CPPFLAGS="$OSDL_CPPFLAGS $SDL_MIXER_CPPFLAGS"
-  OSDL_LIBS="$OSDL_LIBS $SDL_MIXER_LIBS"
-
-
-  # 11. take care of SDL_mixer :
-  AC_ARG_WITH(sdl_mixer-prefix,
-    AS_HELP_STRING([--with-sdl_mixer-prefix=PFX],[Prefix where SDL_mixer is installed (optional)]),
-      [
-        SDL_MIXER_CPPFLAGS="-I${withval}/include"
+        SDL_MIXER_CPPFLAGS="-I${withval}/include/SDL"
         SDL_MIXER_LIBS="-L${withval}/lib -lSDL_mixer"
 		SDL_MIXER_PREFIX="${withval}"
       ],[
@@ -416,6 +400,14 @@ AC_DEFUN([OSDL_PATH],
   # AC_CHECK_HEADERS checks better than AC_PREPROC_IFELSE :
   # (compilable more interesting than only preprocessable)
   AC_LANG_PUSH([C++]) 
+
+  # Update the build flags for testing :
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  ac_save_LIBS="$LIBS"
+  
+  CPPFLAGS="$CPPFLAGS $OSDL_CPPFLAGS"
+  LIBS="$LIBS $OSDL_LIBS"
+  
   AC_CHECK_HEADERS([OSDL.h],[],[have_osdl=no])
   if test x$have_osdl = xno; then
     AC_MSG_ERROR([No usable OSDL header file (OSDL.h) found. If the OSDL library has been installed in a non-standard location (ex : when configuring it, --prefix=$HOME/myOSDLInstall was added), use the --with-osdl-prefix option, ex : --with-osdl-prefix=$HOME/myOSDLInstall.])
@@ -439,6 +431,8 @@ AC_DEFUN([OSDL_PATH],
     AC_MSG_RESULT([no])
     AC_MSG_ERROR([The OSDL library could not be successfully linked to.])  
   fi
+  # We can link to the OSDL library, but do the headers we see can work
+  # with the library we link to ?
   have_osdl_headers_matching_library_version=yes
   AC_RUN_IFELSE([
   	AC_LANG_PROGRAM(
@@ -452,10 +446,13 @@ AC_DEFUN([OSDL_PATH],
     AC_MSG_RESULT([no])
     AC_MSG_ERROR([The OSDL installation does not seem to be clean, since headers did not match the library version.])  
   fi
+  # We can link to the library, and it is compatible with the OSDL headers
+  # being used, but is this pack compatible with the OSDL version the user
+  # specified ? 
   have_compatible_osdl_version=yes
   AC_RUN_IFELSE([
   	AC_LANG_PROGRAM(
-	  [[#include "OSDL.h"]],[[OSDL::LibtoolVersion targetVersion( "$1.$2.$3" ) ; if ( ! OSDL::GetVersion().isCompatibleWith( targetVersion ) ) return 1 ;]])],
+	  [[#include "OSDL.h"]],[[Ceylan::LibtoolVersion targetVersion( "$1.$2.$3" ) ; if ( ! OSDL::GetVersion().isCompatibleWith( targetVersion ) ) return 1 ;]])],
 	[],[have_compatible_osdl_version=no],[AC_MSG_WARN([No OSDL version compatibility test run, since cross-compiling])])
   AC_MSG_CHECKING([whether we are linked to a $1.$2.$3-compatible OSDL version])
   if test x$have_compatible_osdl_version = xyes; then
@@ -464,5 +461,10 @@ AC_DEFUN([OSDL_PATH],
     AC_MSG_RESULT([no])
     AC_MSG_ERROR([The OSDL library we would link to is not compatible with the one expected by the program being configured])  
   fi
+
+  # Restore original settings, now that OSDL_* counterparts are validated :
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  LIBS="$ac_save_LIBS"
+  
   AC_LANG_POP([C++]) 
 ])
