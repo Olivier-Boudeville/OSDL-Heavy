@@ -21,17 +21,17 @@ namespace OSDL
 	
 
 		/// Number (index) of a mouse, or mice count.
-		typedef Ceylan::Uint32 MouseNumber ;
+		typedef Ceylan::Uint8 MouseNumber ;
 
 		/// Identifies the default mouse (the first one).
 		extern const MouseNumber DefaultMouse ;
 
 
 		/// Number (index) of a mouse button, or buttons count.
-		typedef Ceylan::Uint32 MouseButtonNumber ;
+		typedef Ceylan::Uint8 MouseButtonNumber ;
 
 		/// Number (index) of a mouse wheel, or wheels count.
-		typedef Ceylan::Uint32 MouseWheelNumber ;
+		typedef Ceylan::Uint8 MouseWheelNumber ;
 
 
 		/**
