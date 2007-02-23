@@ -58,7 +58,7 @@ namespace OSDL
 			 * of this mouse handler.
 			 *
 			 */
-			friend class OSDL::::Events::EventsModule ;
+			friend class OSDL::Events::EventsModule ;
 
 			
 			public:
@@ -177,24 +177,26 @@ namespace OSDL
 				 * Called whenever a mouse focus is gained by the 
 				 * application.
 				 *
-				 * @param mouse the mouse that gained focus.
+				 * @param mouseFocusEvent the mouse event about gained focus.
 				 *
 				 * @note Expected to be triggered by the EventsModule.
 				 *
 				 */ 
-				virtual void focusGained( MouseNumber mouse ) const throw() ;
+				virtual void focusGained( 
+					const FocusEvent & mouseFocusEvent ) const throw() ;
 				
 				
 				/**
 				 * Called whenever a mouse focus is lost by the 
 				 * application.
 				 *
-				 * @param mouse the mouse that lost focus.
+				 * @param mouseFocusEvent the mouse event about lost focus.
 				 *
 				 * @note Expected to be triggered by the EventsModule.
 				 *
 				 */ 
-				virtual void focusLost( MouseNumber mouse ) const throw() ;
+				virtual void focusLost( 
+					const FocusEvent & mouseFocusEvent ) const throw() ;
 				 
 						
 						 	
