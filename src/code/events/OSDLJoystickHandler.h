@@ -56,7 +56,7 @@ namespace OSDL
 			 * of this joystick handler.
 			 *
 			 */
-			friend class OSDL::::Events::EventsModule ;
+			friend class OSDL::Events::EventsModule ;
 
 			
 			public:
