@@ -15,7 +15,7 @@
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>            // for the actual OSDL_LIBTOOL_VERSION
+#include <OSDLConfig.h>             // for the actual OSDL_LIBTOOL_VERSION
 #endif // OSDL_USES_CONFIG_H
 
 
@@ -101,7 +101,7 @@ const Ceylan::Flags CommonModule::UseEventThread = SDL_INIT_EVENTTHREAD ;
 
 
 /*
- * Warning : OSDL added flags (if SDL adds flags they might collide and 
+ * Warning : OSDL added flags (if SDL adds flags, they might collide and 
  * create awkward bugs) : see 'testOSDLBasic' to check their value.
  *
  * SDL_INIT_TIMER		: 0x00000001 = 0b00000000000000000000000000000001
@@ -310,7 +310,8 @@ string CommonModule::InterpretFlags( Flags flags ) throw()
 		res.push_back( "Every subsystem is requested "
 			"(UseEverything is set)." ) ;
 	else
-		res.push_back( "No audio requested (UseEverything is not set)." ) ;
+		res.push_back( "Not all subsystems are requested "
+			"(UseEverything is not set)." ) ;
 		
 	if ( flags & NoParachute )
 		res.push_back( "No catching of fatal signals requested "
@@ -566,7 +567,7 @@ Flags CommonModule::AutoCorrectFlags( Flags inputFlags ) throw()
 			 */
 			
 			LogPlug::warning( "CommonModule::AutoCorrectFlags : "
-				"at least on input device was selected, "
+				"at least one input device was selected, "
 				"hence event support was requested, "
 				"whereas video was not specifically set. " 
 				"Since the event loop needs video, "
