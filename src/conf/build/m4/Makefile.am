@@ -4,7 +4,7 @@
 m4dir=${datadir}/@PROJECT_NAME@/aclocal
 dist_m4_DATA=acinclude-osdl.m4
 
-M4_FILES =
+M4_FILES = \
 	axinclude.m4 \
 	osdl.m4      \
 	pkg.m4       \
@@ -17,8 +17,8 @@ M4_FILES =
 			
 EXTRA_DIST = $(M4_FILES)
 
-
+	
 install-data-local:
-	@for f in $(M4_FILES); do cp -f $(srcdir)/$f @OSDL_INSTALL_SHARED_DIR@; done
+	@for f in $(M4_FILES); do cp -f $(srcdir)/$$f @OSDL_INSTALL_SHARED_DIR@; done
 	
 	
