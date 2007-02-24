@@ -23,19 +23,25 @@ UprightRectangle::UprightRectangle( const Point2D & upperLeftCorner,
 		const Point2D & lowerRightCorner ) throw( VideoException ) :
 	_x( upperLeftCorner.getX() ),
 	_y( upperLeftCorner.getY() ),
-	_width(  ( Length ) lowerRightCorner.getX() - upperLeftCorner.getX() ),
-	_height( ( Length ) lowerRightCorner.getY() - upperLeftCorner.getY() )
+	_width( static_cast<Length>( 
+		lowerRightCorner.getX() - upperLeftCorner.getX() ) ),
+	_height( static_cast<Length>(
+		lowerRightCorner.getY() - upperLeftCorner.getY() )
 {
 
 	if ( lowerRightCorner.getX() < upperLeftCorner.getX() )
 		throw VideoException( 
-			string ( "UprightRectangle constructor : width is negative ( " ) 
-				+  ( long ) ( lowerRightCorner.getX() - upperLeftCorner.getX() ) + " ) " ) ;
+			"UprightRectangle constructor : width is negative ("
+			+ static_cast<SignedLongInteger>( 
+				lowerRightCorner.getX() - upperLeftCorner.getX() )
+			+ ")." ) ;
 		
 	if ( lowerRightCorner.getY() < upperLeftCorner.getY() )
-		throw VideoException( 
-			string ( "UprightRectangle constructor : height is negative ( " )
-				+ ( long ) ( lowerRightCorner.getY() - upperLeftCorner.getY() ) + " ) " ) ;
+		throw VideoException(
+			"UprightRectangle constructor : height is negative (" )
+			+ static_cast<SignedLongInteger>(
+				lowerRightCorner.getY() - upperLeftCorner.getY() ) 
+			+ " )." ) ;
 		
 }
 
@@ -80,45 +86,60 @@ UprightRectangle::~UprightRectangle() throw()
 
 
 
+
 // Section for upper-left corner.
+
 
 
 Point2D UprightRectangle::getUpperLeftCorner() const throw()
 {
+
 	return Point2D( _x, _y ) ;
+	
 }
 
 
-void UprightRectangle::setUpperLeftCorner( Point2D & newUpperLeftCorner ) throw()
+void UprightRectangle::setUpperLeftCorner( Point2D & newUpperLeftCorner )
+	throw()
 {
+
 	_x = newUpperLeftCorner.getX() ;
 	_y = newUpperLeftCorner.getY() ;	
+	
 }
 
 
 
 Coordinate UprightRectangle::getUpperLeftAbscissa() const throw()
 {
+
 	return _x ;
+	
 }
 
  
 void UprightRectangle::setUpperLeftAbscissa( Coordinate newAbscissa ) throw()
 {
+
 	_x = newAbscissa ;
+	
 }
 
 
 
 Coordinate UprightRectangle::getUpperLeftOrdinate() const throw()
 {
+
 	return _y ;
+	
 }
 
  
 void UprightRectangle::setUpperLeftOrdinate( Coordinate newOrdinate ) throw()
 {
+
 	_y = newOrdinate ;
+	
 }
 
 
@@ -129,17 +150,21 @@ void UprightRectangle::setUpperLeftOrdinate( Coordinate newOrdinate ) throw()
 
 Point2D UprightRectangle::getLowerRightCorner() const throw()
 {
+
 	return Point2D( static_cast<Coordinate>( _x + getWidth() ), 
 		static_cast<Coordinate>( _y + getHeight() ) ) ;
+		
 }
 
 
-void UprightRectangle::setLowerRightCorner( Point2D & newLowerRightCorner ) throw( VideoException )
+void UprightRectangle::setLowerRightCorner( Point2D & newLowerRightCorner )
+	throw( VideoException )
 {
 
 	if ( newLowerRightCorner.getX() < _x || newLowerRightCorner.getY() < _y )
 		throw VideoException( "UprightRectangle::setLowerRightCorner : "
-			"misplaced lower right corner given (" + newLowerRightCorner.toString() 
+			"misplaced lower right corner given (" 
+			+ newLowerRightCorner.toString() 
 			+ ") for rectangle : " + toString() ) ;
 			
 	_width  = newLowerRightCorner.getX() - _x ;
@@ -151,16 +176,20 @@ void UprightRectangle::setLowerRightCorner( Point2D & newLowerRightCorner ) thro
 
 Coordinate UprightRectangle::getLowerRightAbscissa() const throw()
 {
+
 	return _x + getWidth() ;
+	
 }
 
  
-void UprightRectangle::setLowerRightAbscissa( Coordinate newAbscissa ) throw( VideoException )
+void UprightRectangle::setLowerRightAbscissa( Coordinate newAbscissa ) 
+	throw( VideoException )
 {
 
 	if ( newAbscissa < _x )
 		throw VideoException( "UprightRectangle::setLowerRightAbscissa : "
-			"misplaced lower right corner given (abscissa is " + Ceylan::toString( newAbscissa ) 
+			"misplaced lower right corner given (abscissa is " 
+			+ Ceylan::toString( newAbscissa ) 
 			+ ") for rectangle : " + toString() ) ;
 
 	_width = newAbscissa - _x ;
@@ -171,16 +200,20 @@ void UprightRectangle::setLowerRightAbscissa( Coordinate newAbscissa ) throw( Vi
 
 Coordinate UprightRectangle::getLowerRightOrdinate() const throw()
 {
+
 	return _y + getHeight() ;
+	
 }
 
  
-void UprightRectangle::setLowerRightOrdinate( Coordinate newOrdinate ) throw( VideoException )
+void UprightRectangle::setLowerRightOrdinate( Coordinate newOrdinate ) 
+	throw( VideoException )
 {
 
 	if ( newOrdinate < _y )
 		throw VideoException( "UprightRectangle::setLowerRightOrdinate : "
-			"misplaced lower right corner given (ordinate is " + Ceylan::toString( newOrdinate ) 
+			"misplaced lower right corner given (ordinate is " 
+			+ Ceylan::toString( newOrdinate ) 
 			+ ") for rectangle : " + toString() ) ;
 
 	_height = newOrdinate - _y ;
@@ -193,64 +226,82 @@ void UprightRectangle::setLowerRightOrdinate( Coordinate newOrdinate ) throw( Vi
  
 Length UprightRectangle::getWidth() const throw()
 {
+
 	return _width ;
+	
 }
 
 
 void UprightRectangle::setWidth( Length newWidth ) throw()
 {
+
 	_width = newWidth ;
+	
 }
 
 
 
 Length UprightRectangle::getHeight() const throw()
 {
+
 	return _height ;
+	
 }
 
 
 void UprightRectangle::setHeight( Length newHeight ) throw()
 {
+
 	_height = newHeight ;
+	
 }
 		
 	
 		
 bool UprightRectangle::draw( Surface & target, 
-	ColorElement red, ColorElement blue, ColorElement green, ColorElement alpha,
-	bool filled ) const throw()
+	ColorElement red, ColorElement blue, ColorElement green, 
+	ColorElement alpha,	bool filled ) const throw()
 {
 	
-	return draw( target, Pixels::convertRGBAToColorDefinition( red, green, blue, alpha ), filled ) ;
+	return draw( target, Pixels::convertRGBAToColorDefinition( 
+		red, green, blue, alpha ), filled ) ;
 	
 }
 
 
-bool UprightRectangle::draw( Surface & target, Pixels::ColorDefinition colorDef, bool filled ) 
-	const throw() 
+bool UprightRectangle::draw( Surface & target, 
+	Pixels::ColorDefinition colorDef, bool filled ) const throw() 
 {
 
-	#ifdef OSDL_DEBUG_RECTANGLES
+
+#if OSDL_DEBUG_RECTANGLES
+
 	LogPlug::trace( "Drawing a " + ( filled ? string( "" ) : string( "non " ) ) 
 		+ "filled rectangle from [" 
 		+ Ceylan::toString( _x ) + ";" + Ceylan::toString( _y ) 
 		+ "] to [" 
-		+ Ceylan::toString( _x + getWidth() ) + ";" + Ceylan::toString( _y + getHeight() ) 
+		+ Ceylan::toString( _x + getWidth() ) + ";" 
+		+ Ceylan::toString( _y + getHeight() ) 
 		+ "] with color " + Pixels::toString( colorDef ) ) ;
-	#endif
+		
+#endif // OSDL_DEBUG_RECTANGLES
+	
 	
 	/*
-	 * Do not forget to substract one from both lengths since starting from zero :
-	 * (ex : starting at 10, length 3 implies draw 10, 11, 12, and 12 = 10 + 3 - 1)
+	 * Do not forget to substract one from both lengths, since starting 
+	 * from zero :
+	 * (ex : starting at 10, length 3 implies draw 10, 11, 12, and 
+	 * 12 = 10 + 3 - 1)
 	 *
 	 */
 	
 	if ( filled )
 	{
+	
 		return ( ::boxColor( & target.getSDLSurface(), _x, _y, 
 			_x + getWidth() - 1, _y + getHeight() - 1,
 			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+			
 	}
 	else
 	{
@@ -265,15 +316,16 @@ bool UprightRectangle::draw( Surface & target, Pixels::ColorDefinition colorDef,
 
 
 
-bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidth,
-	Pixels::ColorDefinition edgeColorDef, Pixels::ColorDefinition backgroundColorDef ) const throw()
+bool UprightRectangle::drawWithRoundedCorners( Surface & target, 
+	Length edgeWidth, Pixels::ColorDefinition edgeColorDef,
+	Pixels::ColorDefinition backgroundColorDef ) const throw()
 {
 
 	/*
 	 * This method has led to way too many issues with color correctness.
 	 *
-	 * After much efforts, the result is pixel perfect at last, after much trouble, no matter if
-	 * alphablending is to be taken into account or not.
+	 * After much efforts, the result is pixel perfect at last, after much
+	 * trouble, no matter if alphablending is to be taken into account or not.
 	 *
 	 */
 	 	
@@ -281,9 +333,9 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 	// draw( target, Pixels::Yellow, /* filled */ false ) ;
 	
 	/*
-	 * First render a full disc with a ring in it (with correct edge and background colors), then
-	 * split it in four equal parts to build the corners, then finish with the drawing of the
-	 * edges.
+	 * First render a full disc with a ring in it (with correct edge and
+	 * background colors), then split it in four equal parts to build the
+	 * corners, then finish with the drawing of the edges.
 	 *
      */
 	
@@ -295,7 +347,8 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 	}
 	catch( const VideoException & e )
 	{
-		LogPlug::error( "UprightRectangle::drawWithRoundedCorners : nothing drawn : " 
+		LogPlug::error( 
+			"UprightRectangle::drawWithRoundedCorners : nothing drawn : " 
 			+ e.toString() ) ;
 	}
 		
@@ -304,8 +357,8 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 		
 			
 	/*
-	 * Note that 2 * radius is not always the same as Min( getWidth(), getHeight() ) due to
-	 * rounding.
+	 * Note that 2 * radius is not always the same as 
+	 * Min( getWidth(), getHeight() ) due to rounding.
 	 *
 	 */
 	
@@ -324,18 +377,22 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 		/*
 		 * We are here in the case where alphablending must be managed.
 		 * 
-		 * Using alpha used to lead to nasty rounding errors in colors that make corners (actually
-		 * the whole split disc) appear slightly differently from other parts of the rectangle.
+		 * Using alpha used to lead to nasty rounding errors in colors 
+		 * that make corners (actually the whole split disc) appear slightly
+		 * differently from other parts of the rectangle.
 		 *
-		 * One way of avoiding having different rounding errors for colors between the disc and the
-		 * rectangles would be to have the same pixel format for the disc than the target surface.
-		 * However the target surface may not have an alpha channel or room for it (ex : already 
-		 * fully packed 16 bit per pixel), hence we use a full 32 bit to make any new alpha fit in
-		 * overall pixel.
+		 * One way of avoiding having different rounding errors for colors
+		 * between the disc and the rectangles would be to have the same 
+		 * pixel format for the disc than the target surface.
+		 * However the target surface may not have an alpha channel or room 
+		 * for it (ex : already fully packed 16 bit per pixel), hence we 
+		 * use a full 32 bit to make any new alpha fit in overall pixel.
 		 *
-		 * So the ugly artifact is corrected now, at the expense of a rather complicated code, which
-		 * may fail with (very) uncommon pixel formats where there would be no room for a leading 
-		 * or trailing byte which could be dedicated to the alpha coordinate on a 32 bit pixel.
+		 * So the ugly artifact is corrected now, at the expense of a 
+		 * rather complicated code, which may fail with (very) uncommon 
+		 * pixel formats where there would be no room for a leading 
+		 * or trailing byte which could be dedicated to the alpha coordinate 
+		 * on a 32 bit pixel.
 		 *
 		 */
 		 
@@ -353,37 +410,57 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 			
 			if ( alphaMask & ( redMask | greenMask | blueMask ) )
 			{
-				// Damned, this one collides with other color masks, try last chance :
+			
+				/*
+				 * Damned, this one collides with other color masks, try 
+				 * last chance :
+				 *
+				 */
 				alphaMask = 0x000000ff ;
 				
 				if ( alphaMask & ( redMask | greenMask | blueMask ) )
 				{
-					LogPlug::error( "UprightRectangle::drawWithRoundedCorners : "
+					LogPlug::error( 
+						"UprightRectangle::drawWithRoundedCorners : "
 						"unable to correct alpha, blit will be opaque." ) ;
 					alphaMask = 0 ;	
 				}
 				else
 				{
-					// Second alpha proposal is ok, let's keep it. alphaShift is already ok (0).
+					/*
+					 * Second alpha proposal is ok, let's keep it. 
+					 * alphaShift is already ok (0).
+					 *
+					 */
 				}
 			}
 			else
 			{
 			
-				// First alpha proposal is ok, let's keep it (3 byte offset to have alpha) :
+				/*
+				 * First alpha proposal is ok, let's keep it (3 byte offset 
+				 * to have alpha) :
+				 *
+				 */
 				alphaShift = 24 ;
 				
 			}
 		}
 		
-		#ifdef OSDL_DEBUG_RECTANGLES
-		LogPlug::trace( "UprightRectangle::drawWithRoundedCorners : alpha mask is : " 
+		
+#if OSDL_DEBUG_RECTANGLES
+
+		LogPlug::trace( 
+			"UprightRectangle::drawWithRoundedCorners : alpha mask is : " 
 			+ Ceylan::toString( alphaMask, /* bitfield */ true )
-			+ ", alpha shift is : " + Ceylan::toNumericalString( alphaShift ) ) ;
-		#endif
+			+ ", alpha shift is : " 
+			+ Ceylan::toNumericalString( alphaShift ) ) ;
+			
+#endif // OSDL_DEBUG_RECTANGLES
 		
 		disc = new Surface( Surface::Software | Surface::AlphaBlendingBlit, 
-			2 * radius, 2 * radius, 32, redMask, greenMask, blueMask, alphaMask ) ;
+			2 * radius, 2 * radius, 32, 
+			redMask, greenMask, blueMask, alphaMask ) ;
 		
 		if ( alphaShiftModified )	
 			disc->getPixelFormat().Ashift = alphaShift ;
@@ -395,8 +472,9 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 		/*
 		 * No alphablending issue (full opaque colors).
 		 *
-		 * As the previous method does not work properly in this case (rounding errors which in this
-		 * case make corners appear with a slightly different color from the inner color, again !),
+		 * As the previous method does not work properly in this case 
+		 * (rounding errors which in this case make corners appear with a
+		 * slightly different color from the inner color, again !),
 		 * we use here a colorkey :
 		 *
 		 */
@@ -406,54 +484,76 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 			redMask, greenMask, blueMask, 0 ) ;
 		
 		/*
-		 * Picking a color key not corresponding to any of the two disc colors : rare colors 
-		 * (ex : Pixels::Bisque) are not used as color keys to avoid bugs very hard to detect.
+		 * Picking a color key not corresponding to any of the two disc 
+		 * colors : rare colors (ex : Pixels::Bisque) are not used as 
+		 * color keys to avoid bugs very hard to detect.
 		 *
 		 */		 
-		ColorDefinition colorKey = Pixels::selectColorDifferentFrom( edgeColorDef,		
-			backgroundColorDef ) ;
+		ColorDefinition colorKey = Pixels::selectColorDifferentFrom(
+			edgeColorDef, backgroundColorDef ) ;
 		
-		disc->setColorKey( Surface::ColorkeyBlit | Surface::RLEColorkeyBlit, colorKey ) ;
+		disc->setColorKey( Surface::ColorkeyBlit | Surface::RLEColorkeyBlit,
+			colorKey ) ;
 		
 		disc->fill( colorKey ) ;
 		
 	}
 
 		
-	#ifdef OSDL_DEBUG_RECTANGLES
+#if OSDL_DEBUG_RECTANGLES
+
 	LogPlug::trace( "UprightRectangle::drawWithRoundedCorners : "
-		"Pixel format of target surface is : " + Pixels::toString( target.getPixelFormat() ) ) ;
+		"Pixel format of target surface is : " 
+		+ Pixels::toString( target.getPixelFormat() ) ) ;
 	
 	LogPlug::trace( "UprightRectangle::drawWithRoundedCorners : "
-		"Pixel format of disc surface is : " + Pixels::toString( disc->getPixelFormat() ) ) ;
+		"Pixel format of disc surface is : " 
+		+ Pixels::toString( disc->getPixelFormat() ) ) ;
 		
 	LogPlug::trace( "UprightRectangle::drawWithRoundedCorners : "
 		"Center of disc location in target rectangle surface after creation : " 
-		+ disc->describePixelAt( radius, radius ) + " in " + disc->toString() ) ;
-	disc->savePNG( "disc-after-creation.png" ) ;
-	#endif
+		+ disc->describePixelAt( radius, radius ) 
+		+ " in " + disc->toString() ) ;
 		
-	if ( ! disc->drawDiscWithEdge( /* x */ radius, /* y */ radius, /* outer radius */ radius,
+	disc->savePNG( "disc-after-creation.png" ) ;
+	
+#endif // OSDL_DEBUG_RECTANGLES
+		
+	if ( ! disc->drawDiscWithEdge( 
+			/* x */ radius, 
+			/* y */ radius, 
+			/* outer radius */ radius,
 			/* inner radius */ radius - edgeWidth -1, 
-			/* ring */ edgeColorDef, /* disc */ backgroundColorDef, /* blended */ false ) )
+			/* ring */ edgeColorDef, 
+			/* disc */ backgroundColorDef, 
+			/* blended */ false ) )
 		 return false ;
 		 
-	#ifdef OSDL_DEBUG_RECTANGLES
+#if OSDL_DEBUG_RECTANGLES
+
 	LogPlug::trace( "UprightRectangle::drawWithRoundedCorners : "
 		"Center of disc location in target rectangle surface after drawing : " 
-		+ disc->describePixelAt( radius, radius ) + " in " + disc->toString() ) ;
+		+ disc->describePixelAt( radius, radius ) 
+		+ " in " + disc->toString() ) ;
+		
 	disc->savePNG( "disc-after-drawing.png" ) ;
-	#endif
+	
+#endif // OSDL_DEBUG_RECTANGLES
 
 		
-	// Blits in place the four corners (clipping might occur if 'target' is too small) :
+	/*
+	 * Blits in place the four corners (clipping might occur if 'target' 
+	 * is too small) :
+	 *
+	 */
 	
 	try 
 	{
 	
 		/*
-		 * Both following '1' have be added so that the upper pixel of the disk, alone in its row
-		 * (ordinate) does not seem to be a disturbing visual artefact.
+		 * Both following '1' have be added so that the upper pixel of 
+		 * the disk, alone in its row (ordinate) does not seem to be a
+		 * disturbing visual artefact.
 		 *
 		 */
 		 
@@ -490,12 +590,13 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 		if ( ! disc->blitTo( target, rectangleCorner, drawingPoint ) )
 			return false ;
 
+#if OSDL_DEBUG_RECTANGLES
 
-		#ifdef OSDL_DEBUG_RECTANGLES
 		LogPlug::trace( "UprightRectangle::drawWithRoundedCorners : "
 			"Point in blitted disc on target surface : " 
 			+ target.describePixelAt( _x + radius / 2, _y + radius / 2  ) ) ;
-		#endif
+			
+#endif // OSDL_DEBUG_RECTANGLES
 	
 	}
 	catch( const VideoException & e )
@@ -511,21 +612,27 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 	
 	UprightRectangle longerInnerRectangle( _x + edgeWidth + 1, _y + radius + 1, 
 		getWidth() - 2 * edgeWidth - 1, getHeight() - 2 * radius - 1 ) ;
+		
 	longerInnerRectangle.draw( target, backgroundColorDef, /* filled */ true ) ;
 	
 	UprightRectangle topInnerRectangle( _x + radius, _y + edgeWidth + 2, 
 		getWidth() - 2 * radius + 1, radius - edgeWidth - 1 ) ;
 	topInnerRectangle.draw( target, backgroundColorDef, /* filled */ true ) ;
 	
-	UprightRectangle bottomInnerRectangle( _x + radius, _y + getHeight() - radius, 
-		getWidth() - 2 * radius + 1, radius - edgeWidth ) ;
+	UprightRectangle bottomInnerRectangle( _x + radius, 
+		_y + getHeight() - radius, getWidth() - 2 * radius + 1, 
+		radius - edgeWidth ) ;
+		
 	bottomInnerRectangle.draw( target, backgroundColorDef, /* filled */ true ) ;
 
-	#ifdef OSDL_DEBUG_RECTANGLES
+#if OSDL_DEBUG_RECTANGLES
+
 	LogPlug::trace( "UprightRectangle::drawWithRoundedCorners : "
 		"Point in blitted rectangle on target surface : " 
-		+ target.describePixelAt( _x + getWidth() / 2, _y + getHeight() / 2  ) ) ;
-	#endif
+		+ target.describePixelAt( _x + getWidth() / 2, 
+			_y + getHeight() / 2  ) ) ;
+			
+#endif // OSDL_DEBUG_RECTANGLES
 	
 	
 	// Draw the parallel edges between the corners :
@@ -546,10 +653,12 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 	// Left vertical edge :
 	
 	/*
-	 * This edge seems, with careful watching, a little too on the left, but actually it is a
-	 * consequence of the disc drawing, which expands quite a lot of the left.
-	 * Moving the edge one pixel to the right would lead to an offset with the top and bottom 
-	 * fronteer with the disc.
+	 * This edge seems, with careful watching, a little too on the left, but
+	 * actually it is a consequence of the disc drawing, which expands 
+	 * quite a lot of the left.
+	 *
+	 * Moving the edge one pixel to the right would lead to an offset with 
+	 * the top and bottom fronteer with the disc.
 	 *
 	 */
 	rectangle.setUpperLeftAbscissa( _x ) ;
@@ -562,8 +671,9 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 	// Right vertical edge :
 	
 	/*
-	 * With very thin edges, one may notice this edge is thinner. It is the cost of having circles
-	 * that can finish on each side of a pixel. It can be hardly noticed, and prevents artefacts
+	 * With very thin edges, one may notice this edge is thinner. 
+	 * It is the cost of having circles that can finish on each side 
+	 * of a pixel. It can be hardly noticed, and prevents artefacts
 	 * that are a lot more visually disturbing.
 	 *
 	 */
@@ -577,16 +687,18 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target, Length edgeWidt
 }
 
 	
-Length UprightRectangle::computeRadiusForRoundRectangle( Length edgeWidth ) const 
-	throw( VideoException )
+Length UprightRectangle::computeRadiusForRoundRectangle( Length edgeWidth )
+	const throw( VideoException )
 {
 
 	/*
 	 * Radius must be :
 	 *  - necessarily, strictly superior to (edge width + 1) : edge is in circle
-	 *  - necessarily, less than half of the smallest dimensions (otherwise cannot fit)
+	 *  - necessarily, less than half of the smallest dimensions 
+	 * (otherwise cannot fit)
 	 *  - preferably, not too big (otherwise too much room lost in container)
-	 *  - preferably, not too close to edge width, so that there is really an inner disc
+	 *  - preferably, not too close to edge width, so that there is really 
+	 * an inner disc
 	 *
 	 */ 
 	Length min = edgeWidth + 1 ;
@@ -594,9 +706,10 @@ Length UprightRectangle::computeRadiusForRoundRectangle( Length edgeWidth ) cons
 	Length max = Ceylan::Maths::Min<Length>( getWidth(), getHeight() ) / 2 ;
 	
 	if ( min > max )
-		throw VideoException( "UprightRectangle::computeRadiusForRoundRectangle : "
-			"no radius could be found for edge width = " + Ceylan::toString( edgeWidth ) 
-			+ " and " + toString() ) ;
+		throw VideoException( 
+			"UprightRectangle::computeRadiusForRoundRectangle : "
+			"no radius could be found for edge width = " 
+			+ Ceylan::toString( edgeWidth ) + " and " + toString() ) ;
 	
 	// Mean value is a good choice : 
 	return ( min + max ) / 2 ;
@@ -609,10 +722,13 @@ SDL_Rect * UprightRectangle::toSDLRect() const throw( VideoException )
 
 	SDL_Rect * res = new SDL_Rect() ;
 	
-	#ifdef OSDL_DEBUG
+#if OSDL_DEBUG
+
 	if ( res == 0 )
-		throw VideoException( "UprightRectangle::toSDLRect() : not enough memory." ) ;
-	#endif
+		throw VideoException( 
+			"UprightRectangle::toSDLRect() : not enough memory." ) ;
+		
+#endif // OSDL_DEBUG
 	
 	res->x = _x ;
 	res->y = _y ;
@@ -624,16 +740,20 @@ SDL_Rect * UprightRectangle::toSDLRect() const throw( VideoException )
 }
 
 
-const string UprightRectangle::toString( Ceylan::VerbosityLevels level ) const throw()
+const string UprightRectangle::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {
 
-	return "Rectangle whose upper-left corner is " + Point2D( _x, _y ).toString( level ) 
+	return "Rectangle whose upper-left corner is " 
+		+ Point2D( _x, _y ).toString( level ) 
 		+ " ( width = "  + Ceylan::toString( getWidth() )
 		+ " ; height = " + Ceylan::toString( getHeight() ) + " )" ;
+		
 }
 	
 
-bool operator == ( const UprightRectangle & first, const UprightRectangle & second ) throw() 
+bool operator == ( const UprightRectangle & first, 
+	const UprightRectangle & second ) throw() 
 {
 
 	if ( first._x != second._x )
@@ -653,7 +773,8 @@ bool operator == ( const UprightRectangle & first, const UprightRectangle & seco
 }
 
 
-bool operator != ( const UprightRectangle & first, const UprightRectangle & second ) throw() 
+bool operator != ( const UprightRectangle & first, 
+	const UprightRectangle & second ) throw() 
 {
 
 	return ! ( first == second ) ;	
@@ -661,9 +782,11 @@ bool operator != ( const UprightRectangle & first, const UprightRectangle & seco
 }
 
 
-std::ostream & operator << ( std::ostream & os, UprightRectangle & rect ) throw()
+std::ostream & operator << ( std::ostream & os, UprightRectangle & rect )
+	throw()
 {
-    return os << rect.toString() ;
-}
 
+    return os << rect.toString() ;
+	
+}
 
