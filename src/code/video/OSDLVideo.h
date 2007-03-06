@@ -461,7 +461,14 @@ namespace OSDL
 				 *
 				 */
 				virtual void setFrameAccountingState( bool newState ) throw() ;	
+			
 				
+				/** 
+				 * Tells whether OpenGL is being used currently by this video
+				 * module.
+				 *
+				 */
+				virtual bool isUsingOpenGL() const throw() ;
 								
 								
 	            /**
@@ -762,7 +769,20 @@ namespace OSDL
 				 *
 				 */	
 				static std::string DescribeEnvironmentVariables() throw() ;	
+				
 					
+				/**
+				 * Returns whether OpenGL is being used, at least by one video
+				 * module.
+				 *
+				 * @throw VideoException if the information could not 
+				 * be obtained.
+				 *
+				 */
+				static bool IsUsingOpenGL() throw( VideoException ) ;
+				 
+				 
+				 
 				 
 				/*
 				 * These flags can apply to Surfaces <b>created by setMode</b>,
@@ -850,19 +870,13 @@ namespace OSDL
 				 */		
 				static const Ceylan::Flags NoFrame ;
 				
-						
-				
+							
+	
 			
 						
 			protected:
 	
-	
-				/** 
-				 * Tells whether OpenGL is being used.
-				 *
-				 */
-				//virtual bool useOpenGL() const throw() ;
-				
+			
 				
 				// Variables section.
 				
@@ -881,28 +895,42 @@ namespace OSDL
 				/// The video renderer being used, if any.
 				Rendering::VideoRenderer * _renderer ;
 							
-								
-				/// The current OpenGL context, if OpenGL is used.
-				OpenGL::OpenGLContext * _openGLcontext ;
+											
+				
+				/**
+				 * Caches the current state relative to the current use of
+				 * OpenGL.
+				 *
+				 * @note This cached value can be used to avoid overhead 
+				 * in case of very frequent reads with only one video
+				 * module instanciated (the general case).
+				 *
+				 */
+				static bool _IsUsingOpenGL ;
 				
 
 				/**
-				 * Records the current state relative to final pixel 
+				 * Caches the current state relative to final pixel 
 				 * drawing for lines.
 				 *
-				 * @note Default value : false.
+				 * @note This cached value can be used to avoid overhead 
+				 * in case of very frequent reads with only one video
+				 * module instanciated (the general case).
 				 *
 				 */
-				bool _drawEndPoint ;
-
+				static bool _DrawEndPoint ;
+				
 				
 				/**
-				 * Records the current antialiasing state.
+				 * Caches the current state relative to antialiasing.
 				 *
-				 * @note Default value : true.
+				 * @note This cached value can be used to avoid overhead 
+				 * in case of very frequent reads with only one video
+				 * module instanciated (the general case).
 				 *
 				 */
-				bool _antiAliasing ;
+				static bool _AntiAliasing ;
+
 
 
 				/**
@@ -954,7 +982,40 @@ namespace OSDL
 				
 				
 			private:
+
+
+				/**
+				 * The current OpenGL context, if OpenGL is used.
+				 *
+				 * @note Private to ensure cache consistency is enforced.
+				 *
+				 */
+				OpenGL::OpenGLContext * _openGLcontext ;
+
+				
+				/**
+				 * Records the current state relative to final pixel 
+				 * drawing for lines.
+				 *
+				 * @note Default value : false.
+				 *
+				 * @note Private to ensure cache consistency is enforced.
+				 *
+				 */
+				bool _drawEndPoint ;
 	
+	
+				/**
+				 * Records the current antialiasing state.
+				 *
+				 * @note Default value : true.
+				 *
+				 * @note Private to ensure cache consistency is enforced.
+				 *
+				 */
+				bool _antiAliasing ;
+
+
 	
 				/**
 				 * Private constructor to be sure it will not be implicitly
@@ -970,6 +1031,8 @@ namespace OSDL
 				/// Basic virtual private destructor.
 				virtual ~VideoModule() throw() ;
 		
+
+
 
 				/**
 				 * Copy constructor made private to ensure that it will 
@@ -992,6 +1055,7 @@ namespace OSDL
 				 */			 
 				VideoModule & operator = ( const VideoModule & source ) 
 					throw() ;
+
 		
 		
 				/**
