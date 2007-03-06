@@ -7,10 +7,6 @@
 #include "SDL.h"                 // for SDL_EnableUNICODE
 
 
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>          // for OSDL_DEBUG and al
-#endif // OSDL_USES_CONFIG_H
-
 
 using std::string ;
 using std::list ;
@@ -19,6 +15,25 @@ using std::map ;
 
 using namespace Ceylan::Log ;    // for LogPlug
 using namespace OSDL::Events ;
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>          // for OSDL_VERBOSE_KEYBOARD_HANDLER and al
+#endif // OSDL_USES_CONFIG_H
+
+
+
+#if OSDL_VERBOSE_KEYBOARD_HANDLER
+
+#include <iostream>
+#define OSDL_KEYBOARD_HANDLER_LOG( message ) std::cout << "[OSDL Keyboard Handler] " << message << std::endl ;
+
+#else // OSDL_VERBOSE_KEYBOARD_HANDLER
+
+#define OSDL_KEYBOARD_HANDLER_LOG( message )
+
+#endif // OSDL_VERBOSE_KEYBOARD_HANDLER
+
 
 
 const Ceylan::System::Millisecond KeyboardHandler::DefaultDelayBeforeKeyRepeat 
@@ -39,24 +54,12 @@ KeyboardException::KeyboardException( const string & message ) throw() :
 
 }
 
+
 KeyboardException::~KeyboardException() throw()
 {
 
 }
 
-
-
-#ifdef OSDL_VERBOSE_KEYBOARD_HANDLER
-
-
-#include <iostream>
-#define OSDL_KEYBOARD_HANDLER_LOG( message ) std::cout << "[OSDL Keyboard Handler] " << message << std::endl ;
-
-#else // OSDL_VERBOSE_KEYBOARD_HANDLER
-
-#define OSDL_KEYBOARD_HANDLER_LOG( message )
-
-#endif // OSDL_VERBOSE_KEYBOARD_HANDLER
 
 
 
@@ -70,7 +73,8 @@ KeyboardException::~KeyboardException() throw()
 void doNothingKeyHandler( const KeyboardEvent & keyboardEvent )
 {
 
-	OSDL_KEYBOARD_HANDLER_LOG( EventsModule::DescribeEvent( keyboardEvent ) ) ;		
+	OSDL_KEYBOARD_HANDLER_LOG( EventsModule::DescribeEvent( keyboardEvent ) ) ;
+		
 }
 
 
@@ -122,16 +126,19 @@ void smarterKeyHandler( const KeyboardEvent & keyboardEvent )
 			break ;	
 			
 		/*	
+		
 		case KeyboardHandler::F2Key:
 			// F2 : raw input mode :
 			EventsModule::DescribeEvent( keyboardEvent ) ;
 			KeyboardHandler::SetMode( rawInput ) ;
 			break ;	
+			
 		case KeyboardHandler::F3Key:
 			// F3 : text input mode :
 			EventsModule::DescribeEvent( keyboardEvent ) ;
 			KeyboardHandler::SetMode( textInput ) ;
 			break ;	
+			
 		*/
 			
 		default:
@@ -304,7 +311,9 @@ const string KeyboardHandler::toString( Ceylan::VerbosityLevels level )
 
 KeyboardMode KeyboardHandler::GetMode() throw()
 {
+
 	return _CurrentMode ;
+	
 }
 
 
