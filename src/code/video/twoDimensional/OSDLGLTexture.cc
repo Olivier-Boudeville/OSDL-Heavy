@@ -44,7 +44,7 @@ GLTextureException::~GLTextureException() throw()
 
 
 GLTexture::GLTexture( const std::string imageFilename, 
-	Textureflavour flavour, bool keep ) 
+	Textureflavour flavour ) 
 		throw( GLTextureException ) :
 	_source( 0 ),
 	_id( 0 )
@@ -69,7 +69,7 @@ GLTexture::GLTexture( const std::string imageFilename,
 			+ imageFilename + " : " + e.toString() ) ;
 	}
 	
-	upload( *loaded, flavour, keep ) ;
+	upload( *loaded, flavour ) ;
 	
 	// Texture not wanted any more, in all cases (it has been copied) :
 	delete loaded ;
@@ -84,12 +84,12 @@ GLTexture::GLTexture( const std::string imageFilename,
 
 
 
-GLTexture::GLTexture( Surface & sourceSurface, Textureflavour flavour, 
-		bool keep ) throw( GLTextureException ) :
+GLTexture::GLTexture( Surface & sourceSurface, Textureflavour flavour ) 
+		throw( GLTextureException ) :
 	_source( 0 )
 {
 
-	upload( sourceSurface, flavour, keep ) ;
+	upload( sourceSurface, flavour ) ;
 	
 }
 
@@ -130,7 +130,8 @@ void GLTexture::upload() throw( GLTextureException )
 		throw GLTextureException( "GLTexture::upload : "
 			"texture cannot be uploaded into OpenGL context." ) ;
 			
-	// @todo		
+	// @todo	
+	// if ( OpenGLContext::ContextCanBeLost	) ... else..
 
 #else // OSDL_USES_OPENGL
 
@@ -250,7 +251,7 @@ void GLTexture::SetTextureFlavour( Textureflavour flavour )
 
 
 void GLTexture::upload( Surface & sourceSurface, 
-	Textureflavour flavour, bool keep ) throw( GLTextureException ) 
+	Textureflavour flavour ) throw( GLTextureException ) 
 {
 
 #if OSDL_USES_OPENGL
