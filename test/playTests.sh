@@ -13,7 +13,6 @@ USAGE="`basename $0` [--interactive] : executes all tests for OSDL in a row.
  
 
 # In batch (non-interactive) mode by default (0) :
-# In batch (non-interactive) mode by default (0) :
 is_batch=0
 
 
@@ -74,7 +73,7 @@ display_launching()
 
 	test_name="$1"
 	
-	if [ "$is_batch" = "1" ] ; then
+	if [ $is_batch -eq 1 ] ; then
 		printColor "${term_primary_marker}Launching $test_name" $cyan_text $blue_back
 	else
 		printf "[${cyan_text}m%-${space_for_test_name}s" `echo $test_name|sed 's|^./||'`
@@ -93,7 +92,7 @@ display_test_result()
 	
 	if [ "$return_code" = 0 ] ; then
 		# Test succeeded :
-		if [ "$is_batch" = "1" ] ; then
+		if [ $is_batch -eq 1 ] ; then
 			echo
 			printColor "${term_offset}$test_name seems to be successful     " $green_text $black_back
 		else
@@ -104,7 +103,7 @@ display_test_result()
 			
 		# Test failed :
 		error_count=`expr $error_count + 1`
-		if [ "$is_batch" = "1" ] ; then
+		if [ $is_batch -eq 1 ] ; then
 			echo
 			printColor "${term_offset}$t seems to be failed (exit status $return_code)     " $white_text $red_back
 		else
@@ -143,7 +142,7 @@ run_test()
 	# The --interactive parameter is used to tell the test it is 
 	# run in interactive mode, so that those which are long 
 	# (ex : stress tests) are shorten.
-	if [ "$is_batch" = "0" ] ; then
+	if [ $is_batch -eq 0 ] ; then
 		echo "
 		
 		########### Running now $t" >>${TESTLOGFILE}
@@ -157,7 +156,7 @@ run_test()
 	display_test_result "$test_name" "$t" "$return_code"
 	
 		
-	if [ "$is_batch" = "1" ] ; then
+	if [ $is_batch -eq 1 ] ; then
 		printColor "${term_primary_marker}End of $test_name, press enter to continue" $cyan_text $blue_back
 		read 
 		clear
@@ -249,7 +248,7 @@ cd ${TEST_ROOT}
 TEST_DIR="tests-results-"`date '+%Y%m%d'`
 
 
-if [ "$is_batch" = "0" ] ; then
+if [ $is_batch -eq 0 ] ; then
 	echo "
 	Running in batch mode, tests will be short and silent, only results are to be output."
 else	
@@ -315,7 +314,7 @@ space_for_test_name=`expr ${COLUMNS} - 5`
 DEBUG_INTERNAL "Space for test names = ${space_for_test_name}"	
 
 
-if [ "$is_batch" = "0" ] ; then
+if [ $is_batch -eq 0 ] ; then
 	echo "
 		Test results established at "`date '+%A, %B %-e, %Y'`"\n\n" > ${TESTLOGFILE}
 fi
@@ -363,7 +362,7 @@ for m in ${TESTED_ROOT_MODULES} ; do
 	
 	DEBUG_INTERNAL "Tests in module ${m} are : '${TESTS}'"
 	
-	if [ "$is_batch" = "1" ] ; then
+	if [ $is_batch -eq 1 ] ; then
 	
 		# Lists all tests that are to be run :
 		for t in $TESTS ; do
