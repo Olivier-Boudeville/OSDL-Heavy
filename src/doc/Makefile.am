@@ -122,9 +122,9 @@ SCP_OPT      = "-p -r"
 
 		
 .PHONY: all install doc build inc web links site common loani-archives api \
-	check-dot fix-dox-conf tidy transfer toSF toSF-rsync toSF-scp      \
-	toMirror toMirror-rsync toMirror-scp check-scp remind-locations    \
-	info info-dirs info-files info-sf info-html info-tools             \
+	check-dot fix-dox-conf tidy transfer toSF toSF-rsync toSF-scp          \
+	toMirror toMirror-rsync toMirror-scp check-scp remind-locations        \
+	info info-dirs info-files info-sf info-html info-tools                 \
 	clean clean-web cleanobjs cleandeps clean-install real-clean
 	
 	
@@ -205,23 +205,23 @@ api: check-dot fix-dox-conf
 	@OSDL_DEFAULT_STYLE@"
 	@echo
 	@mkdir -p @OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@
-	-@PATH=`pwd`/$(DOT_ROOT)/bin:$$PATH\
+	-@PATH=`pwd`/$(DOT_ROOT)/bin:$$PATH \
 	LD_LIBRARY_PATH=`pwd`/$(GCC_ROOT)/lib:$$LD_LIBRARY_PATH \
 	$(DOXYGEN) $(DOXYGEN_GENERATED_CONF)
 	@rm -f @OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/doxygen.css
 	@cp -f $(srcdir)/web/common/css/doxygen-@PROJECT_NAME@.css \
 	@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/doxygen.css 
-	@cp -f $(srcdir)/web/common/doxygen/*.png\
+	@cp -f $(srcdir)/web/common/doxygen/*.png \
 	@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html
 	@echo
-	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark\
-	@OSDL_CURRENT_VERSION_PREFIX@ API, which is located in :\
+	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
+	@OSDL_CURRENT_VERSION_PREFIX@ API, which is located in : \
 file://@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/index.html@OSDL_DEFAULT_STYLE@"
 	
 			
 check-dot:
 	@[ -x "$(DOT)" ] \
-	|| ( echo; echo "@OSDL_ERROR_STYLE@    Unable to generate\
+	|| ( echo; echo "@OSDL_ERROR_STYLE@    Unable to generate \
 	any useful documentation from source code : \
 	dot tool not found [dot homepage : \
 	http://www.graphviz.org/].@OSDL_DEFAULT_STYLE@"; echo; false ) 
@@ -233,11 +233,11 @@ fix-dox-conf:
 		
 tidy:	
 	@[ -x "$(TIDY)" ] \
-	|| ( echo; echo "@OSDL_ERROR_STYLE@    Unable to enforce\
-	W3C compliance and formatting of html documentation files\
-	according to @PROJECT_NAME@'s conventions :\
+	|| ( echo; echo "@OSDL_ERROR_STYLE@    Unable to enforce \
+	W3C compliance and formatting of html documentation files \
+	according to @PROJECT_NAME@'s conventions : \
 	tidy tool not found.@OSDL_DEFAULT_STYLE@"; echo; false ) 
-	@echo "@OSDL_COMMAND_STYLE@    Tidying all html\
+	@echo "@OSDL_COMMAND_STYLE@    Tidying all html \
 	files@OSDL_DEFAULT_STYLE@"
 	@for f in $(HTML_FILES); do ( echo "  + tidying $$f";\
 	$(TIDY) -config @top_srcdir@/src/conf/doc/tidy.conf -m $$f ); done
@@ -262,27 +262,27 @@ toSF:
 
 toSF-rsync: site
 	@echo
-	@echo "@OSDL_INSTALL_STYLE@    Updating @PROJECT_NAME@\
-	Sourceforge's website from local web repository with rsync\
+	@echo "@OSDL_INSTALL_STYLE@    Updating @PROJECT_NAME@ \
+	Sourceforge's website from local web repository with rsync \
 	[@OSDL_LOCAL_WEB_DIR@] using rsync@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(RSYNC_OPT); $(RSYNC) $$opt @OSDL_LOCAL_WEB_DIR@/* \
 	$(SF_USER)@$(SF_SHELL_SERVER):$(SF_WEB_DIR)
-	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark\
-	@PROJECT_NAME@'s website on Sourceforge at\
+	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
+	@PROJECT_NAME@'s website on Sourceforge at \
 	$(SF_WEB_URL)@OSDL_DEFAULT_STYLE@"
 
 
 toSF-scp: check-scp site
 	@echo
-	@echo "@OSDL_INSTALL_STYLE@    Updating @PROJECT_NAME@\
-	Sourceforge's website from local web repository with scp\
+	@echo "@OSDL_INSTALL_STYLE@    Updating @PROJECT_NAME@ \
+	Sourceforge's website from local web repository with scp \
 	[@OSDL_LOCAL_WEB_DIR@] using scp@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(SCP_OPT); $(SCP) $$opt @OSDL_LOCAL_WEB_DIR@/* \
 	$(SF_USER)@$(SF_SHELL_SERVER):$(SF_WEB_DIR)
-	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark\
-	@PROJECT_NAME@'s website on Sourceforge at\
+	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
+	@PROJECT_NAME@'s website on Sourceforge at \
 	$(SF_WEB_URL)@OSDL_DEFAULT_STYLE@"
 
 
@@ -293,27 +293,27 @@ toMirror:
 
 toMirror-rsync: site
 	@echo
-	@echo; echo "@OSDL_INSTALL_STYLE@    Updating @PROJECT_NAME@\
-	$(MIRROR_HOSTNAME)'s website from local web repository\
+	@echo; echo "@OSDL_INSTALL_STYLE@    Updating @PROJECT_NAME@ \
+	$(MIRROR_HOSTNAME)'s website from local web repository \
 	[@OSDL_LOCAL_WEB_DIR@] using rsync@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(RSYNC_OPT); $(RSYNC) $$opt @OSDL_LOCAL_WEB_DIR@/* \
 	$(MIRROR_WEB_USER)@$(MIRROR_HOSTNAME):$(MIRROR_WEB_DIR)
-	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark\
-	@PROJECT_NAME@'s website on $(MIRROR_HOSTNAME) at\
+	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
+	@PROJECT_NAME@'s website on $(MIRROR_HOSTNAME) at \
 	$(MIRROR_WEB_URL)@OSDL_DEFAULT_STYLE@"
 
 
 toMirror-scp: check-scp site
 	@echo
-	@echo; echo "@OSDL_INSTALL_STYLE@    Updating @PROJECT_NAME@\
-	$(MIRROR_HOSTNAME)'s website from local web repository\
+	@echo; echo "@OSDL_INSTALL_STYLE@    Updating @PROJECT_NAME@ \
+	$(MIRROR_HOSTNAME)'s website from local web repository \
 	[@OSDL_LOCAL_WEB_DIR@] using scp@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(SCP_OPT); $(SCP) $$opt @OSDL_LOCAL_WEB_DIR@/* _
 	$(MIRROR_WEB_USER)@$(MIRROR_HOSTNAME):$(MIRROR_WEB_DIR)
-	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark\
-	@PROJECT_NAME@'s website on $(MIRROR_HOSTNAME) at\
+	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
+	@PROJECT_NAME@'s website on $(MIRROR_HOSTNAME) at \
 	$(MIRROR_WEB_URL)@OSDL_DEFAULT_STYLE@"
 
 
@@ -340,7 +340,7 @@ remind-locations:
 
 		
 show-found-tools:
-	@echo; echo "@OSDL_INSTALL_STYLE@    Listing found tools\
+	@echo; echo "@OSDL_INSTALL_STYLE@    Listing found tools \
 	@OSDL_DEFAULT_STYLE@"; echo
 	@if [ -x "$(DOXYGEN)" ]; \
 	then echo "  + doxygen found, using <$(DOXYGEN)> \
@@ -405,12 +405,14 @@ clean-local: clean-web
 
 
 clean-web:
-	@echo "@OSDL_CLEAN_STYLE@    Cleaning local doc repository [@OSDL_LOCAL_WEB_DIR@]@OSDL_DEFAULT_STYLE@"
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning local doc repository \
+	[@OSDL_LOCAL_WEB_DIR@]@OSDL_DEFAULT_STYLE@"
 	-@rm -rf @OSDL_LOCAL_WEB_DIR@
 
 
 clean-install: clean-web
-	@echo "@OSDL_CLEAN_STYLE@    Cleaning installed doc repository [@OSDL_LOCAL_DOC_DIR@]@OSDL_DEFAULT_STYLE@"
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning installed doc repository \
+	[@OSDL_LOCAL_DOC_DIR@]@OSDL_DEFAULT_STYLE@"
 	-@rm -rf @OSDL_LOCAL_DOC_DIR@
 
 
