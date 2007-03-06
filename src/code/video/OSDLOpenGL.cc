@@ -3,7 +3,8 @@
 #include "OSDLVideo.h"    // for VideoModule
 #include "OSDLUtils.h"    // for getBackendLastError
 
-#include "Ceylan.h"       // for CEYLAN_DETECTED_LITTLE_ENDIAN
+// for CEYLAN_DETECTED_LITTLE_ENDIAN, openGLContextsCanBeLost, etc. :
+#include "Ceylan.h"       
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -26,6 +27,7 @@ using namespace OSDL::Video::OpenGL ;
 using namespace OSDL::Video::OpenGL::GLU ;
 
 using namespace Ceylan::Log ;
+
 
 
 
@@ -63,6 +65,19 @@ OpenGLException::~OpenGLException() throw()
 
 }
 
+
+const bool OpenGLContext::ContextCanBeLost =
+	Ceylan::System::openGLContextsCanBeLost() ;
+	
+const bool OpenGLContext::ContextIsLostOnResize = 
+	Ceylan::System::openGLContextsLostOnResize() ;
+	
+const bool OpenGLContext::ContextIsLostOnApplicationSwitch =
+	Ceylan::System::openGLContextsLostOnApplicationSwitch() ;
+	
+const bool OpenGLContext::ContextIsLostOnColorDepthChange =
+	Ceylan::System::openGLContextsLostOnColorDepthChange() ;
+	
 
 
 const GLLength OpenGLContext::DefaultOrthographicWidth = 1000.0f ;
