@@ -24,7 +24,7 @@ namespace OSDL
 		typedef Ceylan::Uint8 MouseNumber ;
 
 		/// Identifies the default mouse (the first one).
-		extern const MouseNumber DefaultMouse ;
+		extern OSDL_DLL const MouseNumber DefaultMouse ;
 
 
 		/// Number (index) of a mouse button, or buttons count.
@@ -43,13 +43,13 @@ namespace OSDL
 
 
 		/// Identifies the left button of a mouse.
-		extern const MouseButtonNumber LeftButton ;
+		extern OSDL_DLL const MouseButtonNumber LeftButton ;
 				
 		/// Identifies the middle button of a mouse.
-		extern const MouseButtonNumber MiddleButton ;
+		extern OSDL_DLL const MouseButtonNumber MiddleButton ;
 				
 		/// Identifies the right button of a mouse.
-		extern const MouseButtonNumber RightButton ;
+		extern OSDL_DLL const MouseButtonNumber RightButton ;
 				
 				
 		/**
@@ -57,7 +57,7 @@ namespace OSDL
 		 * wheel being up.
 		 *
 		 */
-		extern const MouseButtonNumber WheelUp ;
+		extern OSDL_DLL const MouseButtonNumber WheelUp ;
 		
 				
 		/**
@@ -65,7 +65,7 @@ namespace OSDL
 		 * wheel being down.
 		 *
 		 */
-		extern const MouseButtonNumber WheelDown ;
+		extern OSDL_DLL const MouseButtonNumber WheelDown ;
 				
 				
 				
