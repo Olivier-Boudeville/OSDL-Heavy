@@ -1,13 +1,9 @@
 #include "OSDLJoystick.h"       
 
-#include "OSDLController.h"    // for joystickAxisChanged, etc.
+#include "OSDLController.h"     // for joystickAxisChanged, etc.
 
-#include "SDL.h"               // for SDL_JoystickOpened, etc.
+#include "SDL.h"                // for SDL_JoystickOpened, etc.
 
-
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
-#endif // OSDL_USES_CONFIG_H
 
 
 using std::string ;
@@ -19,8 +15,13 @@ using namespace OSDL::Events ;
 using namespace OSDL::MVC ;     // for joystickAxisChanged, etc.
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>         // for OSDL_VERBOSE_JOYSTICK and al 
+#endif // OSDL_USES_CONFIG_H
 
-#ifdef OSDL_VERBOSE_JOYSTICK
+
+
+#if OSDL_VERBOSE_JOYSTICK
 
 #include <iostream>
 #define OSDL_JOYSTICK_LOG( message ) std::cout << "[OSDL Joystick] " << message << std::endl ;
@@ -148,7 +149,7 @@ void Joystick::trackballChanged( const JoystickTrackballEvent & joystickEvent )
 {
 	
 	if ( isLinkedToController() )
-		getActualController().joystickTrackballChanged( joystickEvent ) ;			
+		getActualController().joystickTrackballChanged( joystickEvent ) ;		
 	else
 	{
 		OSDL_JOYSTICK_LOG( "Trackball changed for joystick #" 
