@@ -8,6 +8,10 @@
 #include "SDL_gfxPrimitives.h" // for rectangleRGBA
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>        // for OSDL_DEBUG_RECTANGLES and al 
+#endif // OSDL_USES_CONFIG_H
+
 
 using std::string ;
 
@@ -26,21 +30,21 @@ UprightRectangle::UprightRectangle( const Point2D & upperLeftCorner,
 	_width( static_cast<Length>( 
 		lowerRightCorner.getX() - upperLeftCorner.getX() ) ),
 	_height( static_cast<Length>(
-		lowerRightCorner.getY() - upperLeftCorner.getY() )
+		lowerRightCorner.getY() - upperLeftCorner.getY() ) )
 {
 
 	if ( lowerRightCorner.getX() < upperLeftCorner.getX() )
 		throw VideoException( 
 			"UprightRectangle constructor : width is negative ("
-			+ static_cast<SignedLongInteger>( 
-				lowerRightCorner.getX() - upperLeftCorner.getX() )
+			+ Ceylan::toString( static_cast<Ceylan::SignedLongInteger>( 
+				lowerRightCorner.getX() - upperLeftCorner.getX() ) )
 			+ ")." ) ;
 		
 	if ( lowerRightCorner.getY() < upperLeftCorner.getY() )
 		throw VideoException(
-			"UprightRectangle constructor : height is negative (" )
-			+ static_cast<SignedLongInteger>(
-				lowerRightCorner.getY() - upperLeftCorner.getY() ) 
+			"UprightRectangle constructor : height is negative ("
+			+ Ceylan::toString( static_cast<Ceylan::SignedLongInteger>(
+				lowerRightCorner.getY() - upperLeftCorner.getY() ) )
 			+ " )." ) ;
 		
 }
