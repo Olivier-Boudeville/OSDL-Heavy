@@ -14,16 +14,22 @@ using namespace OSDL::Events ;
 const AxisPosition ClassicalJoystick::DefaultDeadZoneExtent = 100 ;
 
 
-#ifdef OSDL_VERBOSE_JOYSTICK
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>        // for OSDL_VERBOSE_JOYSTICK and al 
+#endif // OSDL_USES_CONFIG_H
+
+
+
+#if OSDL_VERBOSE_JOYSTICK
 
 #include <iostream>
 #define OSDL_JOYSTICK_LOG( message ) std::cout << "[OSDL Joystick] " << message << std::endl ;
 
-#else
+#else // OSDL_VERBOSE_JOYSTICK
 
 #define OSDL_JOYSTICK_LOG( message )
 
-#endif
+#endif // OSDL_VERBOSE_JOYSTICK
 
 
 
@@ -31,7 +37,6 @@ const AxisPosition ClassicalJoystick::DefaultDeadZoneExtent = 100 ;
  * Not used currently since event loop is prefered to polling :
  *   - SDL_JoystickUpdate
  *	 - SDL_JoystickEventState (used in OSDLJoysticksHandler)
- *
  *
  */
  
