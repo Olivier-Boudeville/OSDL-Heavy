@@ -23,8 +23,57 @@ int main( int argc, char * argv[] )
     	LogPlug::info( "Testing OSDL CD-ROM services." ) ;
 	
 
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule( 
-			CommonModule::UseCDROM | CommonModule::UseKeyboard ) ;
+			CommonModule::UseCDROM ) ;
 			
 		LogPlug::info( "Informations about common module : " 
 			+ myOSDL.toString() ) ;
@@ -68,36 +117,49 @@ int main( int argc, char * argv[] )
 			return Ceylan::ExitSuccess ;
 		}	
 		
-		// A drive, a CD, let's attempt to play audio tracks (if any) :
+		/*
+		 * A drive, a CD, let's attempt to play audio tracks (if any and if
+		 * not in batch mode) :
+		 *
+		 */
 		
-		// Plays 'testDuration' seconds of each track :
-		Ceylan::System::Second testDuration = 10 ;
-		
-		TrackNumber trackCount = defaultDrive.getTracksCount() ;
-		
-		for ( TrackNumber i = 0; i < trackCount; i++ )
+		if ( ! isBatch )
 		{
 		
-			CDTrack * currentTrack = & defaultDrive.getTrack( i ) ;
-			LogPlug::info( "Current track is : " + currentTrack->toString() ) ;
+			// Plays 'testDuration' seconds of each track :
+			Ceylan::System::Second testDuration = 10 ;
+		
+			TrackNumber trackCount = defaultDrive.getTracksCount() ;
+		
+			for ( TrackNumber i = 0; i < trackCount; i++ )
+			{
+		
+				CDTrack * currentTrack = & defaultDrive.getTrack( i ) ;
+				LogPlug::info( "Current track is : " 
+					+ currentTrack->toString() ) ;
 			
-			/*
-			 * Not all configurations are able to play music directly from 
-			 * the CD-ROM drive to the soundcard (if any) : usually there 
-			 * must be a special cable between them.
-			 *
-			 */
-			defaultDrive.playTracks( i, /* number of tracks */ 0, 
-				/* starting offset */ 0, /* ending frame */ 
-				CDROMDrive::ConvertTimeToFrameCount( 
-					testDuration /* seconds */ ) ) ;
+				/*
+				 * Not all configurations are able to play music directly from 
+				 * the CD-ROM drive to the soundcard (if any) : usually there 
+				 * must be a special cable between them.
+				 *
+				 */
+				defaultDrive.playTracks( i, /* number of tracks */ 0, 
+					/* starting offset */ 0, /* ending frame */ 
+					CDROMDrive::ConvertTimeToFrameCount( 
+						testDuration /* seconds */ ) ) ;
+						
+				Ceylan::System::sleepForSeconds( 10 ) ;
 				
-			delete currentTrack ;
-			
-		}	
+				delete currentTrack ;
+							
+			}
+				
+			// Too annoying for the user :
+			// defaultDrive.eject() ;
 
-		// Too annoying for the user :
-		// defaultDrive.eject() ;
+		}
+		
 
         OSDL::stop() ;
 
