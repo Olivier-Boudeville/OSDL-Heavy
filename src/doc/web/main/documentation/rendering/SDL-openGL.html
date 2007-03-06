@@ -1587,20 +1587,26 @@ Vertical retrace syncing for OpenGL was not enabled in SDL 1.2.9. It could be en
 
 
 <p>
-There used to be platform-specific tricks to disable retrace syncing :
+There used to be platform-specific tricks to enable or disable retrace syncing, for example on Windows :
 <center>
     <table summary="vertical synchronization" style="border : none">
         <tr>
           <td>
             <div class="box">
 <code><pre>
-typedef void (APIENTRY * WGLSWAPINTERVALEXT) ( int ) ;
-WGLSWAPINTERVALEXT wglSwapIntervalEXT = (WGLSWAPINTERVALEXT) wglGetProcAddress( "wglSwapIntervalEXT" ) ;
-if ( wglSwapIntervalEXT != 0 ) 
+#include &lt;windows.h&gt;
+
+void VSyncOn(char On)
 {
- // Disable vertical synchronisation :
-  wglSwapIntervalEXT( 0 ) ;
-} 
+  typedef void (APIENTRY * WGLSWAPINTERVALEXT) (int);
+
+  WGLSWAPINTERVALEXT wglSwapIntervalEXT = (WGLSWAPINTERVALEXT) 
+  wglGetProcAddress("wglSwapIntervalEXT");
+  if (wglSwapIntervalEXT)
+  {
+     wglSwapIntervalEXT(On); // set vertical synchronisation
+  }
+}
 </pre></code>
             </div>
           </td>
@@ -1609,6 +1615,11 @@ if ( wglSwapIntervalEXT != 0 )
 </center>
 
 </p> 
+
+<p>
+That technique works only when the SDL_OPENGL flag is set. You can try 
+to use SDL_Delay to slow down the framerate.
+</p>
 
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
