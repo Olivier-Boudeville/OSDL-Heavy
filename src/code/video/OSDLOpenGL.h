@@ -3,12 +3,12 @@
 
 
 #include "OSDLVideoTypes.h"  // for VideoException
-#include "OSDLPixel.h"      // for ColorElement, ColorMask
-#include "OSDLPoint2D.h"    // for Point2D::Origin
+#include "OSDLPixel.h"       // for ColorElement, ColorMask
+#include "OSDLPoint2D.h"     // for Point2D::Origin
 
-#include "Ceylan.h"         // for Uint8, Uint32, inheritance
+#include "Ceylan.h"          // for Uint8, Uint32, inheritance
 
-#include "SDL_opengl.h"     // for GLfloat
+#include "SDL_opengl.h"      // for GLfloat
 
 #include <string>
 
@@ -469,7 +469,6 @@ namespace OSDL
 					 * @param newStatus if true, will enable the depth 
 					 * buffer, if false will disable it.
 					 *
-					 *
 					 */
 					virtual void setDepthBufferStatus( bool newStatus ) 
 						throw() ;
@@ -631,19 +630,55 @@ namespace OSDL
 						throw() ;	
 
 
+
+					// OpenGL context behaviour.
+
+
 					/**
-					 * Tells whether the OpenGL context is lost (and 
-					 * therefore must be reloaded) whenever the screen is
-					 * resized.
-					 *
-					 * @note The actual value should be set on a 
-					 * per-platform basis.
+					 * Tells whether the OpenGL context can be lost (and 
+					 * therefore must be reloaded) under certain unexpected
+					 * circumstances (ex : window resize, going to fullscreen,
+					 * switching to another application, etc.).
 					 *
 					 * @see OpenGL::Flavour, for Reload.
 					 *
 					 */
-					static const bool ContextIsLostOnResize = true ;
+					static const bool ContextCanBeLost ;
 			
+			
+					/**
+					 * Tells whether the OpenGL context is lost (and 
+					 * therefore must be reloaded) on resize.
+					 *
+					 * @see OpenGL::Flavour, for Reload.
+					 *
+					 */
+					static const bool ContextIsLostOnResize ;
+			
+
+			
+					/**
+					 * Tells whether the OpenGL context is lost (and 
+					 * therefore must be reloaded) when switching application.
+					 *
+					 * @see OpenGL::Flavour, for Reload.
+					 *
+					 */
+					static const bool ContextIsLostOnApplicationSwitch ;
+			
+			
+					/**
+					 * Tells whether the OpenGL context is lost (and 
+					 * therefore must be reloaded) when changing the color
+					 * depth.
+					 *
+					 * @see OpenGL::Flavour, for Reload.
+					 *
+					 */
+					static const bool ContextIsLostOnColorDepthChange ;
+			
+
+
 			
 					/**
 					 * Default width of the orthographic box is 1000
