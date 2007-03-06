@@ -139,18 +139,18 @@ namespace OSDL
 					 *
 					 * @param hotSpotAbscissa the abscissa of the hotspot, 
 					 * which must lie in the cursor-enclosing rectangle
-					 * ( 0 <= hotSpotAbscissa < width).
+					 * ( 0 <= hotSpotAbscissa < width ).
 					 * 
 					 * @param hotSpotOrdinate the ordinate of the hotspot, 
 					 * which must lie in the cursor-enclosing rectangle
-					 * ( 0 <= hotSpotOrdinate < height).
+					 * ( 0 <= hotSpotOrdinate < height ).
 					 *
 					 * @throw MouseCursorException if the operation failed.
 					 *
 					 */
-					explicit MouseCursor( 
+					MouseCursor( 
 							Length width,
-							Lenght height,
+							Length height,
 							const Ceylan::Uint8 & data,
 							const Ceylan::Uint8 & mask,
 							Coordinate hotSpotAbscissa,
@@ -178,12 +178,17 @@ namespace OSDL
 					 * @throw MouseCursorException if the operation failed.
 					 *
 					 */
-					explicit MouseCursor( const Surface & cursorSurface )
+					MouseCursor( const Surface & cursorSurface,
 							Coordinate hotSpotAbscissa,
 							Coordinate hotSpotOrdinate )
 						throw( MouseCursorException ) ;
 						
-						
+					
+					/// Virtual destructor.
+					virtual ~MouseCursor() throw() ;
+					
+					
+					
 					/**
 					 * Returns the type of this mouse cursor.
 					 *
@@ -220,25 +225,19 @@ namespace OSDL
 					
 					
 					/**
-					 * The data of the cursor shape, for SystemCursor type.
+					 * Back-end cursor, for SystemCursor type.
 					 *
 					 */
-					Ceylan::Uint8 * _data ;
+					SDL_Cursor * _systemCursor ;
 					
-					
-					/**
-					 * The mask of the cursor shape, for SystemCursor type.
-					 *
-					 */
-					Ceylan::Uint8 * _mask ;
-					
-					
+										
 					
 					/// The width of the cursor, for SystemCursor only.
 					Length _width ;
 					
-					/// The width of the cursor, for SystemCursor only.
+					/// The height of the cursor, for SystemCursor only.
 					Length _height ;
+					
 					
 					
 					/**
@@ -254,6 +253,13 @@ namespace OSDL
 					 */
 					OpenGL::GLTexture * _texture ;
 					
+					
+					
+					/// The abscissa of the cursor hot spot.
+					Coordinate _hotSpotAbscissa ;
+					
+					/// The ordinate of the cursor hot spot.
+					Coordinate _hotSpotOrdinate ;
 					
 					
 					
