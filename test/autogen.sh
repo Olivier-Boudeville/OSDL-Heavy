@@ -2,9 +2,10 @@
 
 
 USAGE="
-Usage : "`basename $0`" [ --with-osdl-environment <path> ] [ -n | --no-build ] [ -o | --only-prepare-dist] : (re)generates all the autotools-based build system for Ceylan tests.
+Usage : "`basename $0`" [ --with-osdl-environment <path> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist] : (re)generates all the autotools-based build system for Ceylan tests.
 
 	--with-osdl-environment : specify which OSDL environment file shall be used (OSDL-environment.sh full path)
+	--guess-osdl-environment : try to guess where the OSDL environment file lies. If one is found, then it is used, otherwise stops on failure
 	--no-build : stop just after having generated the configure script
 	--only-prepare-dist : perform only necessary operations so that the test directory can be distributed afterwards"
 
@@ -23,11 +24,78 @@ do_build=0
 do_install=0
 do_test=0
 
+
+# debug mode activated iff equal to true (0) :
+debug_mode=1
+
+debug()
+{
+	if [ $debug_mode -eq 0 ] ; then
+		echo "debug : $*"
+	fi	
+}
+
+
+warning()
+{
+	echo "warning : $*" 1>&2
+}
+
+
+# Wait-after-execution mode activated iff equal to true (0) :
+wait_activated=1
+
+wait()
+{
+
+	if [ $wait_activated -eq 0 ] ; then
+		echo "  <press enter key to continue>"
+		read
+	fi	
+	
+}
+
+
+RM="/bin/rm -f"
+
+COMMAND=$0
+
+# Always start from 'src/conf/build' directory :
+cd `dirname $COMMAND`
+
+
+# Default value guessed from current path :
+loani_repository=`pwd|sed 's|/osdl/OSDL/trunk/test||1'`
+#echo "loani_repository = $loani_repository"
+
+loani_installations=`dirname $loani_repository`/LOANI-installations
+#echo "loani_installations = $loani_installations"
+
+
+
 osdl_environment_file=""
 
 while [ $# -gt 0 ] ; do
 	token_eaten=1
 		
+		
+	if [ "$1" = "-g" -o "$1" = "--guess-osdl-environment" ] ; then
+	
+		osdl_environment_file=${loani_installations}/OSDL-environment.sh
+		
+		if [ ! -f "${osdl_environment_file}" ] ; then
+			echo "Error, guessed OSDL environment file not found (${osdl_environment_file}), please specify it.
+$USAGE" 1>&2		
+			exit 6
+		fi
+			
+		warning "Guessed OSDL environment file is ${osdl_environment_file}." 
+		. ${osdl_environment_file}
+		token_eaten=0
+		
+	fi
+	
+
 	if [ "$1" = "-n" -o "$1" = "--no-build" ] ; then
 		do_stop_after_configure=0
 		token_eaten=0
@@ -64,15 +132,7 @@ $USAGE" 1>&2
 done
 
 
-# debug mode activated iff equal to true (0) :
-debug_mode=1
 
-debug()
-{
-	if [ $debug_mode -eq 0 ] ; then
-		echo "debug : $*"
-	fi	
-}
 
 
 # Where the libraries should be found :
@@ -114,73 +174,13 @@ test_overriden_options=""
 configure_opt="-enable-strict-ansi --enable-debug $prerequesites_prefix_opt $test_install_location_opt $test_overriden_options"
 
 
-# debug mode activated iff equal to true (0) :
-debug_mode=1
-
-debug()
-{
-	if [ $debug_mode -eq 0 ] ; then
-		echo "debug : $*"
-	fi	
-}
-
-
-warning()
-{
-	echo "warning : $*" 1>&2
-}
-
-
-# Wait-after-execution mode activated iff equal to true (0) :
-wait_activated=1
-
-wait()
-{
-
-	if [ $wait_activated -eq 0 ] ; then
-		echo "  <press enter key to continue>"
-		read
-	fi	
-	
-}
-
-RM="/bin/rm -f"
-
-COMMAND=$0
-
-# Always start from 'src/conf/build' directory :
-cd `dirname $COMMAND`
-
-
-# Default value guessed from current path :
-loani_repository=`pwd|sed 's|/osdl/OSDL/trunk/test||1'`
-#echo "loani_repository = $loani_repository"
-
-loani_installations=`dirname $loani_repository`/LOANI-installations
-#echo "loani_installations = $loani_installations"
-
-
-if [ -z "$osdl_environment_file" ] ; then
-	
-	# Nothing specified, trying to guess where a OSDL-environment.sh file
-	# is to be found :
-
-	osdl_environment_file=${loani_installations}/OSDL-environment.sh
+if [ -n "$Ceylan_PREFIX" ] ; then
+	ceylan_location="$Ceylan_PREFIX"
+else
+	# Default prefix :
+	ceylan_location="/usr/local"
+fi
 		
-	if [ ! -f "${osdl_environment_file}" ] ; then
-		echo "Error, guessed OSDL environment file not found (${osdl_environment_file}), please specify it.
-$USAGE" 1>&2		
-		exit 6
-	fi
-			
-	warning "Guessed OSDL environment file is ${osdl_environment_file}." 
-	. ${osdl_environment_file}
-		
-fi	
-
-
-ceylan_location="$Ceylan_PREFIX"
-	
 if [ ! -d "$ceylan_location" ] ; then
 	
 	echo "Error, Ceylan prefix retrieved thanks to guessed OSDL environment file ($osdl_environment_file) does not exist ($ceylan_location)" 1>&2
@@ -188,7 +188,14 @@ if [ ! -d "$ceylan_location" ] ; then
 		
 fi	
 
-osdl_location="$OSDL_PREFIX"
+
+if [ -n "$OSDL_PREFIX" ] ; then
+	osdl_location="$OSDL_PREFIX"
+else
+	# Default prefix :
+	osdl_location="/usr/local"
+fi
+
 	
 if [ ! -d "$osdl_location" ] ; then
 	
@@ -202,7 +209,10 @@ fi
 CEYLAN_SUBSTITUTE_SCRIPT="$ceylan_location/share/Ceylan/scripts/shell/substitute.sh"
 
 if [ ! -x "${CEYLAN_SUBSTITUTE_SCRIPT}" ] ; then
-	echo "Error, no executable Ceylan substitute script found (${CEYLAN_SUBSTITUTE_SCRIPT})." 1>&2
+	echo "Error, no executable Ceylan substitute script found (searched for ${CEYLAN_SUBSTITUTE_SCRIPT})." 1>&2
+	if [ "$ceylan_location" = "/usr/local" ] ; then
+		echo "Forgot to specify an OSDL-environment file, or to request to guess it ?"  1>&2
+	fi
 	exit 1
 fi
 
@@ -451,6 +461,11 @@ generateCustom()
 	 	execute make check
 	fi
 	
+	
+	if [ -n "$osdl_environment_file" ] ; then
+		echo "Note that before running tests from the command-line, the runtime environment must be set (ex : OSDL-environment.sh must have been sourced beforehand)."
+	fi
+	 
 		
 }
 
