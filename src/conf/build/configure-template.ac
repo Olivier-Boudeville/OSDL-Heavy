@@ -447,11 +447,13 @@ if test x$enable_debug = xyes; then
 	DEBUG_AUDIO_RENDERER=0
 	DEBUG_BLIT=0
 	DEBUG_BOUNDING_BOX=0
+	DEBUG_CACHED_STATES=1
 	DEBUG_COLOR=0	
 	DEBUG_CONICS=0
 	DEBUG_EVENTS=0
 	DEBUG_FONT=0
 	DEBUG_PIXEL=0
+	DEBUG_RECTANGLES=0
 	DEBUG_SCHEDULER=0
 	DEBUG_SPRITE=0
 	DEBUG_SURFACE=0
@@ -462,9 +464,11 @@ if test x$enable_debug = xyes; then
 	VERBOSE_JOYSTICK=0
 	VERBOSE_JOYSTICK_HANDLER=0
 	VERBOSE_KEYBOARD_HANDLER=0
+	VERBOSE_MOUSE=0
+	VERBOSE_MOUSE_HANDLER=0
 	
 	COUNT_INSTANCES=0
-	
+	CACHE_OVERALL_SETTINGS=0
 		
 	AM_CXXFLAGS="$AM_CXXFLAGS -g" 
     if test x$ac_cv_cxx_compiler_gnu = xyes; then
@@ -482,11 +486,13 @@ else
 	DEBUG_AUDIO_RENDERER=0
 	DEBUG_BLIT=0
 	DEBUG_BOUNDING_BOX=0
+	DEBUG_CACHED_STATES=0	
 	DEBUG_COLOR=0	
 	DEBUG_CONICS=0
 	DEBUG_EVENTS=0
 	DEBUG_FONT=0
 	DEBUG_PIXEL=0
+	DEBUG_RECTANGLES=0
 	DEBUG_SCHEDULER=0
 	DEBUG_SPRITE=0
 	DEBUG_SURFACE=0
@@ -497,8 +503,11 @@ else
 	VERBOSE_JOYSTICK=0
 	VERBOSE_JOYSTICK_HANDLER=0
 	VERBOSE_KEYBOARD_HANDLER=0
+	VERBOSE_MOUSE=0
+	VERBOSE_MOUSE_HANDLER=0
 	
 	COUNT_INSTANCES=0
+	CACHE_OVERALL_SETTINGS=1
 	
     if test x$ac_cv_cxx_compiler_gnu = xyes; then
 		# -fomit-frame-pointer : may prevent debugging on some platforms
@@ -545,6 +554,10 @@ AC_DEFINE_UNQUOTED([DEBUG_BOUNDING_BOX],
 	[$DEBUG_BOUNDING_BOX],
 	[Define to 1 if debug mode for bounding boxes is to be enabled])
 
+AC_DEFINE_UNQUOTED([DEBUG_CACHED_STATES],
+	[$DEBUG_CACHED_STATES],
+	[Define to 1 if debug mode for cached states is to be enabled])
+
 AC_DEFINE_UNQUOTED([DEBUG_COLOR],
 	[$DEBUG_CONICS],
 	[Define to 1 if debug mode for colors is to be enabled])
@@ -564,6 +577,10 @@ AC_DEFINE_UNQUOTED([DEBUG_FONT],
 AC_DEFINE_UNQUOTED([DEBUG_PIXEL],
 	[$DEBUG_PIXEL],
 	[Define to 1 if debug mode for pixel-level operations is to be enabled])
+
+AC_DEFINE_UNQUOTED([DEBUG_RECTANGLES],
+	[$DEBUG_RECTANGLES],
+	[Define to 1 if debug mode for rectangle management is to be enabled])
 
 AC_DEFINE_UNQUOTED([DEBUG_SCHEDULER],
 	[$DEBUG_SCHEDULER],
@@ -603,13 +620,24 @@ AC_DEFINE_UNQUOTED([VERBOSE_KEYBOARD_HANDLER],
 	[$VERBOSE_KEYBOARD_HANDLER],
 	[Define to 1 if verbose mode for keyboard handler is to be enabled])
 	
+AC_DEFINE_UNQUOTED([VERBOSE_MOUSE],
+	[$VERBOSE_MOUSE],
+	[Define to 1 if verbose mode for mouse is to be enabled])
+
+AC_DEFINE_UNQUOTED([VERBOSE_MOUSE_HANDLER],
+	[$VERBOSE_MOUSE_HANDLER],
+	[Define to 1 if verbose mode for mouse handler is to be enabled])
+	
 	
 	
 AC_DEFINE_UNQUOTED([COUNT_INSTANCES],
 	[$COUNT_INSTANCES],
 	[Define to 1 if instance counting mode is to be enabled])
 
-	
+AC_DEFINE_UNQUOTED([CACHE_OVERALL_SETTINGS],
+	[$CACHE_OVERALL_SETTINGS],
+	[Define to 1 if overall settings should be cached instead of being retrieved on the fly])
+
 
 
 # LOANI section.
