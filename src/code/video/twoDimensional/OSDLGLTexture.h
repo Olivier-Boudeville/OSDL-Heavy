@@ -130,18 +130,14 @@ namespace OSDL
 					 * before loading this texture. 
 					 * Changes the texture settings if not 'None' (side-effect).
 					 *
-					 * @param keep tells whether the converted surface, 
-					 * whose source is the one loaded from specified filename,
-					 * should be kept back in this texture, so that
-					 * the texture can be reloaded in OpenGL context if
-					 * necessary. 
-					 * Otherwise (keep is false), after the image has been
-					 * loaded, converted and uploaded to OpenGL, it is
-					 * deallocated.
+					 * The internal surface, corresponding to the image, will
+					 * be, if needed, automatically kept back and managed by
+					 * this texture, so that it can be reloaded in an OpenGL
+					 * context if necessary, in case it is lost. 
 					 *
 					 */
 					explicit GLTexture( const std::string imageFilename, 
-							Textureflavour flavour = None, bool keep = true ) 
+							Textureflavour flavour = None ) 
 						throw( GLTextureException ) ;
 				
 				
@@ -160,18 +156,14 @@ namespace OSDL
 					 * before loading this texture. 
 					 * Changes the texture settings if not None (side-effect).
 					 *
-					 * @param keep tells whether the converted surface, 
-					 * whose source is the one loaded from specified filename,
-					 * should be kept back in this texture, so that
-					 * the texture can be reloaded in OpenGL context if
-					 * necessary. 
-					 * Otherwise (keep is false), after the image has been
-					 * loaded, converted and uploaded to OpenGL, it is
-					 * deallocated.
+					 * The internal surface, corresponding to the image, will
+					 * be, if needed, automatically kept back and managed by
+					 * this texture, so that it can be reloaded in an OpenGL
+					 * context if necessary, in case it is lost. 
 					 *
 					 */
 					explicit GLTexture( Surface & sourceSurface, 
-							Textureflavour flavour = None, bool keep = true ) 
+							Textureflavour flavour = None ) 
 						throw( GLTextureException ) ;
 				
 				
@@ -267,8 +259,9 @@ namespace OSDL
 				
 					/**
 					 * Uploads an adequately converted surface, copied 
-					 * from the specified one, and deallocates it iff keep 
-					 * is false, otherwise keeps it in texture cache.
+					 * from the specified one, and deallocates it iff no
+					 * OpenGL context can be lost, otherwise keeps it in 
+					 * texture cache.
 					 *
 					 * @param sourceSurface the surface to upload. 
 					 * In all cases it will be copied and converted, 
@@ -277,8 +270,10 @@ namespace OSDL
 					 * @param flavour the texture flavour to apply. 
 					 * See Textureflavour.
 					 *
-					 * @param keep tells whether the converted surface 
-					 * is to be kept for future reloading.
+					 * The internal surface, corresponding to the image, will
+					 * be, if needed, automatically kept back and managed by
+					 * this texture, so that it can be reloaded in an OpenGL
+					 * context if necessary, in case it is lost. 
 					 *
 					 * @note sourceSurface cannot be 'const' since 
 					 * per-surface alpha setting has to be modified 
@@ -287,8 +282,7 @@ namespace OSDL
 					 *
 					 */
 					void upload( Surface & sourceSurface, 
-							Textureflavour flavour, bool keep )
-						throw( GLTextureException ) ;
+						Textureflavour flavour ) throw( GLTextureException ) ;
 					
 					
 				
