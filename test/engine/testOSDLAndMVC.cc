@@ -22,7 +22,7 @@ typedef Ceylan::Uint8 Direction ;
 /**
  * Tests the whole event-driven MVC framework :
  *   - a specific controller is registered, so that it manages both the 
- * keyboard arrows and the first joystick
+ * keyboard arrows and the first joystick (if any)
  *  - whenever an event occurs with the keyboard arrows or the first joystick,
  * this controller activates the model which registers the corresponding
  * requested direction and changes its own state
@@ -53,13 +53,17 @@ class MyMVCEvent : public Ceylan::MVCEvent
 		
 		void setDirection( Direction newDirection ) throw()
 		{
+		
 			_direction = newDirection ;
+			
 		}
 		
 		
 		Direction getDirection() const throw() 
 		{
+		
 			return _direction ;
+			
 		}
 			
 		
@@ -87,7 +91,9 @@ class MyController : public OSDL::MVC::Controller
 		
 		Direction getDirection() const throw() 
 		{
+		
 			return _direction ;
+			
 		}	
 		
 		
@@ -139,43 +145,55 @@ class MyController : public OSDL::MVC::Controller
 		 */
 		void propagateState()
 		{
+		
 			_eventForModel.setDirection( _direction ) ;
 			notifyAllListeners( _eventForModel ) ;
+			
 		}
 		
 
 		void joystickFirstButtonPressed() throw()	
 		{
+		
 			_direction = 5 ;
 			propagateState() ;		
+			
 		}
 
 
 		void joystickUp( AxisPosition leftExtent ) throw()
 		{
+		
 			_direction = 1 ;
 			propagateState() ;
+			
 		}
 	
 		
 		void joystickDown( AxisPosition leftExtent ) throw()
 		{
+		
 			_direction = 2;
 			propagateState() ;
+			
 		}
 		
 		
 		void joystickLeft( AxisPosition leftExtent ) throw()
 		{
+		
 			_direction = 3 ;
 			propagateState() ;
+			
 		}
 		
 		
 		void joystickRight( AxisPosition leftExtent ) throw()
 		{
+		
 			_direction = 4 ;
 			propagateState() ;
+			
 		}
 		
 		
@@ -183,7 +201,9 @@ class MyController : public OSDL::MVC::Controller
 				const Ceylan::CallerEventListener & listener )	
 			throw( Ceylan::EventException )
 		{
+		
 			return _eventForModel ;
+			
 		}
 		
 		
@@ -243,7 +263,9 @@ class MyModel : public OSDL::MVC::Model
 			_actualDirection( 1 ),
 			_eventForView( * this )			
 		{
+		
 			// No registering since no scheduler is used.
+			
 		}
 		
 		
@@ -254,9 +276,7 @@ class MyModel : public OSDL::MVC::Model
 				& newEvent ) ;
 			
 			if ( event != 0 )
-			{
 				_actualDirection = event->getDirection() ;
-			}
 			
 			// We are event-driven here :
 			_eventForView.setDirection( _actualDirection ) ;			
@@ -269,13 +289,17 @@ class MyModel : public OSDL::MVC::Model
 				const Ceylan::CallerEventListener & listener )	
 			throw( Ceylan::EventException )
 		{
+		
 			return _eventForView ;
+			
 		}
 	
 	
 	 	virtual void onActivation( Events::SimulationTick newTick ) throw()
 		{
+		
 			// Will not be called without a scheduler.
+			
 		}
 
 	
@@ -432,10 +456,58 @@ int main( int argc, char * argv[] )
 	{
 			
 		LogPlug::info( "Testing OSDL event-driven MVC integration." ) ;
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
 
 		LogPlug::info( "Starting OSDL with joystick support." ) ;		
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseJoystick | CommonModule::UseKeyboard ) ;		
+			CommonModule::UseJoystick | CommonModule::UseKeyboard ) ;		
 		
 		LogPlug::info( "Testing basic event handling." ) ;
 		
@@ -452,15 +524,27 @@ int main( int argc, char * argv[] )
 
 		Ceylan::Uint32 joyCount = 
 			myJoystickHandler.GetAvailableJoystickCount() ;
-			
-		LogPlug::info( "There are " + Ceylan::toString( joyCount )
-			+ " attached joystick(s), opening them all." ) ;
-			
-		for ( Ceylan::Uint32 i = 0 ; i < joyCount; i++ )
-			myJoystickHandler.openJoystick( i ) ;
 		
-		LogPlug::info( "New joystick handler state is : " 
-			+ myJoystickHandler.toString( Ceylan::high ) ) ;
+		if ( joyCount > 0 )	
+		{
+		
+			LogPlug::info( "There are " + Ceylan::toString( joyCount )
+				+ " attached joystick(s), opening them all." ) ;
+			
+			for ( Ceylan::Uint32 i = 0 ; i < joyCount; i++ )
+				myJoystickHandler.openJoystick( i ) ;
+		
+			LogPlug::info( "New joystick handler state is : " 
+				+ myJoystickHandler.toString( Ceylan::high ) ) ;
+		
+		}
+		else
+		{
+		
+			LogPlug::info( "There is no joystick attached." ) ;
+		
+		}
+		
 		
 		LogPlug::info( "Displaying a dummy window "
 			"to have access to an event queue." ) ;
@@ -483,9 +567,11 @@ int main( int argc, char * argv[] )
 		 */
 		 
 		MyModel aModel ;
+		
 		MyView aView( aModel, myEvents ) ;
 		
 		MyController aController ;
+		
 		aModel.subscribeToController( aController ) ;
 		
 		
@@ -507,22 +593,37 @@ int main( int argc, char * argv[] )
 		myKeyboardHandler.linkToController( KeyboardHandler::EnterKeypadKey,
 			aController ) ;
 
-		myJoystickHandler.linkToController( /* JoystickNumber */ 0, 
-			aController ) ;
+		if ( joyCount > 0 )
+			myJoystickHandler.linkToController( /* JoystickNumber */ 0, 
+				aController ) ;
 		
-		LogPlug::info( "Entering the event loop for event waiting "
-			"so that Controller can act." ) ;
+		
+		if ( isBatch )
+		{
+			LogPlug::warning( "Main loop not launched, as in batch mode." ) ;
+		}
+		else
+		{
 
-		std::cout << "< Hit Enter or push the first button "
-			"of the first joystick (if any) "
-			"to end event-driven MVC test >" << std::endl ;
+			LogPlug::info( "Entering the event loop for event waiting "
+				"so that Controller can act." ) ;
+
+			std::cout << "< Hit Enter or push the first button "
+				"of the first joystick (if any) "
+				"to end event-driven MVC test >" << std::endl ;
 		
-		LogPlug::info( "Entering main loop." ) ;		
-		myEvents.enterMainLoop() ;
-		LogPlug::info( "Exiting main loop." ) ;		
+			myEvents.enterMainLoop() ;
+			LogPlug::info( "Exiting main loop." ) ;	
 				
+		}
+		
+					
 		LogPlug::info( "End of OSDL MVC test." ) ;
 		
+		LogPlug::warning( "The MVC were allocated on the stack, hence their "
+			"deallocation order is not mastered, messages in error log plug "
+			"may appear." ) ;
+			
 		LogPlug::info( "stopping OSDL." ) ;		
         OSDL::stop() ;
 
