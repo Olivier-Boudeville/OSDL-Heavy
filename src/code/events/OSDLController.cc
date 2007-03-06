@@ -2,13 +2,6 @@
 
 #include "OSDLEvents.h"       // for KeyPressed
 
-//#include "SDL.h"
-
-
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
-#endif // OSDL_USES_CONFIG_H
-
 
 using std::string ;
 
@@ -19,8 +12,13 @@ using namespace OSDL::Events ;  // for EventsModule, etc.
 using namespace OSDL::MVC ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
+#endif // OSDL_USES_CONFIG_H
 
-#ifdef OSDL_VERBOSE_CONTROLLER
+
+
+#if OSDL_VERBOSE_CONTROLLER
 
 #include <iostream>
 #define OSDL_CONTROLLER_LOG( message ) std::cout << "[OSDL controller] " << message << std::endl ;
