@@ -23,6 +23,12 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::OpenGL ;
 
 
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>         // for OSDL_CACHE_OVERALL_SETTINGS and al 
+#endif // OSDL_USES_CONFIG_H
+
+
 /*
  * These flags can be used for all Surfaces <b>created by setMode</b>.
  *
@@ -41,6 +47,10 @@ const Ceylan::Flags VideoModule::OpenGL           = SDL_OPENGL     ;
 const Ceylan::Flags VideoModule::Resizable        = SDL_RESIZABLE  ;
 const Ceylan::Flags VideoModule::NoFrame          = SDL_NOFRAME    ;
 
+bool VideoModule::_IsUsingOpenGL = false ;
+bool VideoModule::_DrawEndPoint  = false ;
+bool VideoModule::_AntiAliasing  = true  ;
+
 
 const Ceylan::Uint16 VideoModule::DriverNameMaximumLength = 50 ;
 
@@ -53,7 +63,6 @@ Point2D * VideoModule::FrameRateCounterOrigin
 PixelDefinition VideoModule::FrameRateCounterSpecifiedColor
 PixelColor VideoModule::FrameRateCounterActualColor
 */
-
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
 string VideoModule::_SDLEnvironmentVariables[] = 
@@ -89,10 +98,10 @@ VideoModule::VideoModule() throw( VideoException ) :
 	_screen( 0 ),
 	_displayInitialized( false ),
 	_renderer( 0 ),
+	_frameAccountingState( false ),		
 	_openGLcontext( 0 ),
 	_drawEndPoint( false ),
-	_antiAliasing( true ),
-	_frameAccountingState( false )		
+	_antiAliasing( true )
 {
 
 	send( "Initializing video subsystem." ) ;
@@ -232,6 +241,8 @@ void VideoModule::setOpenGLContext( OpenGL::OpenGLContext & newOpenGLContext )
 	
 	_openGLcontext = & newOpenGLContext ;
 	
+	_IsUsingOpenGL = true ;
+	
 }
 
 
@@ -313,29 +324,29 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 		case OpenGL::None:
 			if ( useOpenGLRequested )
 			{
-				if ( _openGLcontext == 0 )
-					_openGLcontext = new OpenGLContext( flavour ) ;
+				if ( ! hasOpenGLContext() )
+					setOpenGLContext( * new OpenGLContext( flavour ) ) ;
 				else
 					_openGLcontext->selectFlavour( flavour ) ;
 			}							
 			break ;
 				
 		case OpenGL::OpenGLFor2D:
-			if ( _openGLcontext == 0 )
-				_openGLcontext = new OpenGLContext( flavour ) ;
+			if ( ! hasOpenGLContext() )
+				setOpenGLContext( * new OpenGLContext( flavour ) ) ;
 			else
 				_openGLcontext->selectFlavour( flavour ) ;					
 			break ;
 			
 		case OpenGL::OpenGLFor3D:
-			if ( _openGLcontext == 0 )
-				_openGLcontext = new OpenGLContext( flavour ) ;
+			if ( ! hasOpenGLContext() )
+				setOpenGLContext( * new OpenGLContext( flavour ) ) ;
 			else
-				_openGLcontext->selectFlavour( flavour ) ;								
+				_openGLcontext->selectFlavour( flavour ) ;	
 			break ;
 			
 		case OpenGL::Reload:
-			if ( _openGLcontext != 0 )
+			if ( hasOpenGLContext() )
 				_openGLcontext->reload() ;
 			else
 				throw VideoException( "VideoModule::setMode : "
@@ -516,6 +527,9 @@ void VideoModule::setEndPointDrawState( bool newState ) throw()
 
 	_drawEndPoint = newState ;
 	
+	// Cached value :
+	_DrawEndPoint = newState ;
+	
 }
 
 
@@ -532,6 +546,9 @@ void VideoModule::setAntiAliasingState( bool newState ) throw()
 {
 
 	_antiAliasing = newState ;
+
+	// Cached value :
+	_AntiAliasing = newState ;
 	
 }
 
@@ -655,6 +672,13 @@ void VideoModule::setFrameAccountingState( bool newState ) throw()
 }
 
 
+bool VideoModule::isUsingOpenGL() const throw()
+{
+
+	return hasOpenGLContext() ;
+	
+}
+
 
 const string VideoModule::toString( Ceylan::VerbosityLevels level ) 
 	const throw() 
@@ -733,6 +757,14 @@ bool VideoModule::IsDisplayInitialized() throw()
 bool VideoModule::GetEndPointDrawState() throw() 
 {
 
+#if OSDL_CACHE_OVERALL_SETTINGS
+
+	return _DrawEndPoint ;
+	
+#else // OSDL_CACHE_OVERALL_SETTINGS
+
+	// Retrieves the video module to read the actual official value :
+	
 	if ( ! OSDL::hasExistingCommonModule() )
 		Ceylan::emergencyShutdown( 
 			"VideoModule::GetEndPointDrawState() called "
@@ -747,8 +779,26 @@ bool VideoModule::GetEndPointDrawState() throw()
 			"whereas no video module available." ) ;
 	
 	VideoModule & video = common.getVideoModule() ;
+
+#if OSDL_DEBUG_CACHED_STATES
+
+	bool realState = video.getEndPointDrawState() ;
+	
+	if ( realState != _DrawEndPoint )
+		Ceylan::emergencyShutdown( 
+			"VideoModule::GetEndPointDrawState() inconsistency detected : "
+			"cached value should have been " 
+			+ Ceylan::toString( realState ) + "." ) ;
+			
+	return realState ;
+	
+#else // OSDL_DEBUG_CACHED_STATES
 		
 	return video.getEndPointDrawState() ;
+
+#endif // OSDL_DEBUG_CACHED_STATES
+
+#endif // OSDL_CACHE_OVERALL_SETTINGS
 
 }
 
@@ -756,6 +806,12 @@ bool VideoModule::GetEndPointDrawState() throw()
 bool VideoModule::GetAntiAliasingState() throw()
 {
 
+#if OSDL_CACHE_OVERALL_SETTINGS
+
+	return _AntiAliasing ;
+	
+#else // OSDL_CACHE_OVERALL_SETTINGS
+
 	if ( ! OSDL::hasExistingCommonModule() )
 		Ceylan::emergencyShutdown( 
 			"VideoModule::GetAntiAliasingState() called "
@@ -771,7 +827,25 @@ bool VideoModule::GetAntiAliasingState() throw()
 	
 	VideoModule & video = common.getVideoModule() ;
 		
+#if OSDL_DEBUG_CACHED_STATES
+
+	bool realState = video.getAntiAliasingState() ;
+	
+	if ( realState != _AntiAliasing )
+		Ceylan::emergencyShutdown( 
+			"VideoModule::GetAntiAliasingState() inconsistency detected : "
+			"cached value should have been " 
+			+ Ceylan::toString( realState ) + "." ) ;
+			
+	return realState ;
+	
+#else // OSDL_DEBUG_CACHED_STATES
+		
 	return video.getAntiAliasingState() ;
+
+#endif // OSDL_DEBUG_CACHED_STATES
+
+#endif // OSDL_CACHE_OVERALL_SETTINGS
 
 }
 
@@ -1333,17 +1407,4 @@ string VideoModule::DescribeEnvironmentVariables() throw()
 	return result + Ceylan::formatStringList( variables ) ;
 	
 }
-
-
-
-// Protected section.
-
-
-/*
-bool VideoModule::useOpenGL() const throw()
-{
-	return ( _flags & OpenGL ) ;
-	return ( _openGLContext != 0 ) ;
-}
-*/
 
