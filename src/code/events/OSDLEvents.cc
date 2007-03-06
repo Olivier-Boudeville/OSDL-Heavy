@@ -194,12 +194,14 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) :
 			/* useSmarterDefaultKeyHandler */ false ) ;
 	}
 		
-		
-	if ( eventsFlag & CommonModule::UseMouse )
-	{
-		_mouseHandler = new MouseHandler(
-			/* useClassicalMice */ true ) ;
-	}
+	
+	/*
+	 * No 'if ( eventsFlag & CommonModule::UseMouse )...' test, as even if 
+	 * the UseMouse flag is not set, we may receive mouse-related events
+	 * (motion, focus, etc.), hence we need a handler for that :
+	 *
+	 */
+	_mouseHandler = new MouseHandler( /* useClassicalMice */ true ) ;
 		
 	
 	/* 
