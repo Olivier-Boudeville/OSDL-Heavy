@@ -453,13 +453,22 @@ namespace OSDL
 				 * @param callbackData the user-supplied data pointer 
 				 * that the idle callback will be given, if not null.
 				 *
+				 * @param callbackExpectedMaxDuration the maximum duration,
+				 * in microseconds, expected for this idle call-back. Helps
+				 * the scheduler enforcing its target frequency. If this value
+				 * is null, the idle callback will be launched once immediately
+				 * (during the call of this method), and the measured duration,
+				 * increased of 20%, will be kept as upper bound.
+				 *
 				 * Any prior callback or callback data will be replaced 
 				 * by the one specified.
 				 *
 				 */	
 				virtual void setIdleCallback( 
-					Ceylan::System::Callback idleCallback, 
-					void * callbackData = 0 ) throw() ;
+					Ceylan::System::Callback idleCallback = 0 , 
+					void * callbackData = 0,
+					Ceylan::System::Microsecond 
+						callbackExpectedMaxDuration = 0 ) throw() ;
 				
 				
 				
@@ -642,7 +651,7 @@ namespace OSDL
 				 * @see OSDL users'guide to know how to generate such a movie.
 				 *
 				 */
-				static const unsigned int DefaultMovieFrameFrequency = 25 ;
+				static const Ceylan::Uint32 DefaultMovieFrameFrequency = 25 ;
 				
 				
 				/**
@@ -1163,20 +1172,44 @@ namespace OSDL
 				Events::Hertz _desiredInputFrequency ;
 
 
+
+				
+				// Idle callback section.
+				
+				
+
 				/**
 				 * The idle callback, if any, to be called by the basic 
 				 * event loop.
 				 *
 				 */
-				Ceylan::System::Callback _loopIdleCallback ;
+				Ceylan::System::Callback _idleCallback ;
 						
 								
 				/**
-				 * The data, if any, to provide to the idle callback, 
-				 * should the basic event loop be used.
+				 * The data, if any, to provide to the idle callback.
 				 *
 				 */
-				void * _loopIdleCallbackData ;				
+				void * _idleCallbackData ;				
+		
+		
+				/**
+				 * An estimated upper bound of the duration of current idle
+				 * callback. 
+				 *
+				 * Helps the scheduler to respect its expected pace.
+				 *
+				 */
+				Ceylan::System::Microsecond _idleCallbackMaxDuration ;
+		
+		
+				/**
+				 * Count the number of idle calls made during the current
+				 * scheduler session.
+				 *
+				 */
+				Ceylan::Uint32 _idleCallsCount ;
+		
 		
 		
 				/// Tells whether the scheduler has been requested to stop.
