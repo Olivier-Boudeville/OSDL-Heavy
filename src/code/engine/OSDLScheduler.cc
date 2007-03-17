@@ -12,14 +12,10 @@ using std::ostringstream ;
 #include <iomanip> 				      // for std::ios::fixed
 
 
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>               // for OSDL_DEBUG_SCHEDULER and al
-#endif // OSDL_USES_CONFIG_H
-
 
 using namespace Ceylan::Log ;         // for LogPlug
 
-// for time units and calls (ex : Millisecond, basicSleep)
+// for time units and calls (ex : Millisecond, basicSleep) :
 using namespace Ceylan::System ;      
  
 using namespace OSDL::Events ;
@@ -32,6 +28,12 @@ using std::map ;
 
 
 Scheduler * Scheduler::_internalScheduler = 0 ;
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>               // for OSDL_DEBUG_SCHEDULER and al
+#endif // OSDL_USES_CONFIG_H
+
 
 
 #if OSDL_DEBUG_SCHEDULER
@@ -49,7 +51,9 @@ Scheduler * Scheduler::_internalScheduler = 0 ;
 
 bool Scheduler::hasRenderer() const throw()
 {
+
 	return ( _renderer != 0 ) ;
+	
 }
 
 
@@ -103,7 +107,9 @@ void Scheduler::setTimeSliceDuration( Microsecond engineTickDuration ) throw()
 
 Microsecond Scheduler::getTimeSliceDuration() const throw()
 {
+
 	return _engineTickDuration ;
+	
 }
 
 
@@ -112,15 +118,15 @@ void Scheduler::setSimulationFrequency( Hertz frequency )
 {
 
 	/*
-	 * f Hz correspond to 10E6/f microseconds, therefore to
-	 * 10E6 / ( f * _engineTickDuration ) engine ticks.
+	 * f Hz correspond to a period of 1E6/f microseconds , therefore to
+	 * 1E6 / ( f * _engineTickDuration ) engine ticks per period.
 	 *
 	 * For example, if f = 100 Hz and engine tick duration is 1000 microseconds,
-	 * there are 10E6/(100*1000) = 10 engine ticks for each simulation tick.
+	 * there are 1E6/(100*1000) = 10 engine ticks for each simulation tick.
 	 *
 	 */
 	 
-	 if ( frequency * _engineTickDuration > 1000000 )
+	 if ( frequency * _engineTickDuration > 1E6 )
 	 	throw SchedulingException( "Scheduler::setSimulationFrequency : "
 			" requested simulation frequency (" 
 			+ Ceylan::toString( frequency ) 
@@ -131,15 +137,25 @@ void Scheduler::setSimulationFrequency( Hertz frequency )
 	
 	_desiredSimulationFrequency = frequency	;
 	_simulationPeriod = static_cast<Period>( 
-		static_cast<Ceylan::Float32>( 1000000 ) / 
-			( frequency * _engineTickDuration ) ) ;
+		1E6 / ( frequency * _engineTickDuration ) ) ;
+
+#if OSDL_DEBUG
+
+	LogPlug::debug( "Scheduler::setSimulationFrequency : for a requested "
+		"simulation frequency of " + Ceylan::toString( frequency ) 
+		+ " Hz, the simulation period corresponds to " 
+		+ Ceylan::toString( _simulationPeriod ) + " engine ticks." ) ;
+		
+#endif // OSDL_DEBUG
 	
 }
 
 
 Period Scheduler::getSimulationTickCount() const throw()
 {
+
 	return _simulationPeriod ;
+	
 }
 
 
@@ -148,16 +164,16 @@ void Scheduler::setRenderingFrequency( Hertz frequency )
 {
 
 	/*
-	 * f Hz correspond to 10E6/f microseconds, therefore to
-	 * 10E6 / ( f * _engineTickDuration ) engine ticks.
+	 * f Hz correspond to 1E6/f microseconds, therefore to
+	 * 1E6 / ( f * _engineTickDuration ) engine ticks.
 	 *
 	 * For example, if f = 40 Hz = 40 frames per seconds and engine tick
-	 * duration is 1000 microseconds, there are 10E6/(40*1000) = 25 engine 
+	 * duration is 1000 microseconds, there are 1E6/(40*1000) = 25 engine 
 	 * ticks for each rendering tick.
 	 *
 	 */
 	 
-	 if ( frequency * _engineTickDuration > 1000000 )
+	 if ( frequency * _engineTickDuration > 1E6 )
 	 	throw SchedulingException( "Scheduler::setRenderingFrequency : "
 			"requested rendering frequency (" 
 			+ Ceylan::toString( frequency ) 
@@ -168,116 +184,196 @@ void Scheduler::setRenderingFrequency( Hertz frequency )
 			
 	_desiredRenderingFrequency = frequency ;		
 	_renderingPeriod = static_cast<Period>( 
-		static_cast<Ceylan::Float32>( 1000000 ) / ( frequency * _engineTickDuration ) ) ;
+		1E6 / ( frequency * _engineTickDuration ) ) ;
+
+#if OSDL_DEBUG
+
+	LogPlug::debug( "Scheduler::setRenderingFrequency : for a requested "
+		"rendering frequency of " + Ceylan::toString( frequency ) 
+		+ " Hz, the rendering period corresponds to " 
+		+ Ceylan::toString( _renderingPeriod ) + " engine ticks." ) ;
+		
+#endif // OSDL_DEBUG
 
 }
 
 
 Period Scheduler::getRenderingTickCount() const throw()
 {
+
 	return _renderingPeriod ;
+	
 }
 
 
-void Scheduler::setScreenshotFrequency( Hertz frequency ) throw( SchedulingException )
+void Scheduler::setScreenshotFrequency( Hertz frequency ) 
+	throw( SchedulingException )
 {
+
 	/*
-	 * f Hz correspond to 10E6/f microseconds, therefore to 10E6/(f*_engineTickDuration) 
-	 * engine ticks.
+	 * f Hz correspond to a period of 1E6/f microseconds , therefore to
+	 * 1E6 / ( f * _engineTickDuration ) engine ticks per period.
 	 *
-	 * For example, if f = 25 Hz = 25 frames per seconds and engine tick duration is 
-	 * 1000 microseconds, there are 10E6/(25*1000) = 40 engine ticks for each screenshot tick.
-	 * Screenshot task will be implemented as a periodic object calling rendering methods.
+	 * For example, if f = 25 Hz = 25 frames per seconds, and engine tick
+	 * duration is 1000 microseconds, there are 1E6/(25*1000) = 40 engine 
+	 * ticks for each screenshot tick.
+	 *
+	 * Screenshot task will be implemented as a periodic object calling
+	 * rendering methods.
 	 *
 	 */
+
 	 
-	 if ( frequency * _engineTickDuration > 1000000 )
-	 	throw SchedulingException( "Scheduler::setScreenshotFrequency : requested screenshot "
-			"frequency (" + Ceylan::toString( frequency ) + " Hz) is too high for engine tick,"
-			" which lasts for " + Ceylan::toString( _engineTickDuration ) + " microseconds." ) ;
+	 if ( frequency * _engineTickDuration > 1E6 )
+	 	throw SchedulingException( "Scheduler::setScreenshotFrequency : "
+			" requested screenshot frequency (" 
+			+ Ceylan::toString( frequency )
+			+ " Hz) is too high for engine tick,"
+			" which lasts for " + Ceylan::toString( _engineTickDuration ) 
+			+ " microseconds." ) ;
 			
 	_desiredScreenshotFrequency = frequency ;		
 	_screenshotPeriod = static_cast<Period>( 
-		static_cast<Ceylan::Float32>( 1000000 ) / ( frequency * _engineTickDuration ) ) ;
+		1E6 / ( frequency * _engineTickDuration ) ) ;
+
+
+#if OSDL_DEBUG
+
+	LogPlug::debug( "Scheduler::setScreenshotFrequency : for a requested "
+		"screenshot frequency of " + Ceylan::toString( frequency ) 
+		+ " Hz, the screenshot period corresponds to " 
+		+ Ceylan::toString( _screenshotPeriod ) + " engine ticks." ) ;
+		
+#endif // OSDL_DEBUG
 
 }
 
 
 Period Scheduler::getScreenshotTickCount() const throw()
 {
+
 	return _screenshotPeriod ;
+	
 }
 
 
-void Scheduler::setInputPollingFrequency( Hertz frequency ) throw( SchedulingException )
+void Scheduler::setInputPollingFrequency( Hertz frequency ) 
+	throw( SchedulingException )
 {
+
 	/*
-	 * f Hz correspond to 10E6/f microseconds, therefore to 10E6/(f*_engineTickDuration) 
-	 * engine ticks.
+	 * f Hz correspond to a period of 1E6/f microseconds , therefore to
+	 * 1E6 / ( f * _engineTickDuration ) engine ticks per period.
 	 *
-	 * For example, if f = 20 Hz = 20 frames per seconds and engine tick duration is 
-	 * 1000 microseconds, there are 10E6/(20*1000) = 50 engine ticks for each input tick.
+	 * For example, if f = 20 Hz = 20 frames per seconds and engine tick
+	 * duration is 1000 microseconds, there are 10E6/(20*1000) = 50 engine 
+	 * ticks for each input tick.
 	 *
 	 */
 	 
-	 if ( frequency * _engineTickDuration > 1000000 )
-	 	throw SchedulingException( "Scheduler::setInputPollingFrequency : requested input "
-			"frequency (" + Ceylan::toString( frequency ) + " Hz) is too high for engine tick,"
-			" which lasts for " + Ceylan::toString( _engineTickDuration ) + " microseconds." ) ;
+	 if ( frequency * _engineTickDuration > 1E6 )
+	 	throw SchedulingException( 
+			"Scheduler::setInputPollingFrequency : requested input "
+			"frequency (" + Ceylan::toString( frequency ) 
+			+ " Hz) is too high for engine tick,"
+			" which lasts for " 
+			+ Ceylan::toString( _engineTickDuration ) + " microseconds." ) ;
 			
 	_desiredInputFrequency = frequency ;		
 	_inputPeriod = static_cast<Period>( 
-		static_cast<Ceylan::Float32>( 1000000 ) / ( frequency * _engineTickDuration ) ) ;
+		1E6 / ( frequency * _engineTickDuration ) ) ;
+
+#if OSDL_DEBUG
+
+	LogPlug::debug( "Scheduler::setInputPollingFrequency : for a requested "
+		"input frequency of " + Ceylan::toString( frequency ) 
+		+ " Hz, the input period corresponds to " 
+		+ Ceylan::toString( _inputPeriod ) + " engine ticks." ) ;
+		
+#endif // OSDL_DEBUG
 
 }
 
 
-void Scheduler::setIdleCallback( Ceylan::System::Callback idleCallback, void * callbackData )
+void Scheduler::setIdleCallback( 
+		Ceylan::System::Callback idleCallback, 
+		void * callbackData, 
+		Ceylan::System::Microsecond callbackExpectedMaxDuration )
 	throw()
 {
-	_loopIdleCallback     = idleCallback ;
-	_loopIdleCallbackData = callbackData ;
+
+	_idleCallback            = idleCallback ;
+	_idleCallbackData        = callbackData ;
+	
+	if ( callbackExpectedMaxDuration != 0 )
+		_idleCallbackMaxDuration = callbackExpectedMaxDuration ;
+	else
+		_idleCallbackMaxDuration = EventsModule::EvaluateCallbackduration(
+			idleCallback, callbackData ) ;
+	
 }
 					
 					
 Period Scheduler::getInputPollingTickCount() const throw()
 {
+
 	return _inputPeriod ;
+	
 }
 
 
 EngineTick Scheduler::getCurrentEngineTick() const throw() 
 {
+
 	return _currentEngineTick ;
+	
 }
 
 
 SimulationTick Scheduler::getCurrentSimulationTick() const throw()
 {
+
 	return _currentSimulationTick ;
+	
 }
 
 
 RenderingTick Scheduler::getCurrentRenderingTick() const throw()
 {
+
 	return _currentRenderingTick ;
+	
 }
 
 
 RenderingTick Scheduler::getCurrentInputTick() const throw()
 {
+
 	return _currentInputTick ;
+	
 }
 
 
 void Scheduler::registerObject( ActiveObject & objectToRegister ) throw()
 {
 
+#if OSDL_DEBUG
+	if ( objectToRegister.getPeriod() == 0 
+			&& ! objectToRegister.hasProgrammedActivations() )
+		LogPlug::error( "Scheduler::registerObject : "
+			"following object will never be activated : "
+			+ objectToRegister.toString() ) ;
+#endif // OSDL_DEBUG
+	
+	
 	if ( objectToRegister.getPeriod() != 0 )
 	{
 		// This active object is to be periodically activated :
-		PeriodicSlot & slot = getPeriodicSlotFor( objectToRegister.getPeriod() ) ;
+		PeriodicSlot & slot = getPeriodicSlotFor( 
+			objectToRegister.getPeriod() ) ;
+			
 		slot.add( objectToRegister ) ;	
+
 	}
 	
 	
@@ -296,6 +392,7 @@ void Scheduler::registerObject( ActiveObject & objectToRegister ) throw()
 		}
 			
 	}
+	
 	objectToRegister.setBirthTime( _currentSimulationTick ) ;
 	
 }
@@ -306,7 +403,9 @@ void Scheduler::schedule() throw( SchedulingException )
 	
 	try
 	{
+	
 		_eventsModule = & OSDL::getExistingCommonModule().getEventsModule() ;
+		
 	}
 	catch( OSDL::Exception & e )
 	{
@@ -332,7 +431,7 @@ void Scheduler::schedule() throw( SchedulingException )
 				"no renderer nor video module available." ) ;
 		}
 		
-		send( "Scheduling now, using video module." ) ;
+		send( "Scheduling now, using video module (no renderer)." ) ;
 		
 	}
 	
@@ -347,7 +446,9 @@ void Scheduler::schedule() throw( SchedulingException )
 
 void Scheduler::stop() throw()
 {
+
 	_stopRequested = true ;
+	
 }
 
 
@@ -359,7 +460,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 
 	buf << setiosflags( std::ios::fixed ) 
 		<< "Basic scheduler, whose internal frequency is " 
-		<< static_cast<Ceylan::Float32>( 1000000 ) / _engineTickDuration
+		<< 1E6 / _engineTickDuration
 		<< " Hz (engine tick duration is " 
 		+ Ceylan::toString( _engineTickDuration )
 		+ " microseconds). Current engine tick is " 
@@ -397,10 +498,21 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 	else
 		buf << " No renderer registered, using directly video module" ;
 
-	if ( _loopIdleCallback == 0 )
-		buf << ". Using micro-sleep idle callback" ;
+	if ( _idleCallback == 0 )
+		buf << ". Using atomic sleep idle callback" ;
 	else
 		buf << ". Using user-specified idle callback" ;
+	
+	if ( _idleCallbackData )
+		if ( _idleCallback )
+			buf << ", callback data has been set as well." ;
+		else
+			buf << ", callback data has been set, "
+				" whereas it is not used by default idle callback (abnormal)." ;
+
+	buf << ". The estimated upper-bound for idle callback duration is "
+		+ Ceylan::toString( _idleCallbackMaxDuration )
+		+ " microseconds" ;
 				
 				
 	if ( level == Ceylan::low )
@@ -410,20 +522,20 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 			
 	buf <<  ". User-defined simulation frequency is " 
 		+ Ceylan::toString( 
-			static_cast<Ceylan::Float32>( 1000000 ) / 
+			1E6 / 
 				( _simulationPeriod * _engineTickDuration ), 
 			/* precision */ 2 )
 		+ " Hz (a period of " 
 		+ Ceylan::toString( _simulationPeriod ) 
 		+ " engine ticks), rendering frequency is "
 		+ Ceylan::toString( 
-			static_cast<Ceylan::Float32>( 1000000 ) / 
+			1E6 / 
 				( _renderingPeriod * _engineTickDuration ),
 			/* precision */ 2 ) 
 		+ " Hz (a period of " 
 		+ Ceylan::toString( _renderingPeriod ) 
 		+ " engine ticks), input polling frequency is "
-		+ Ceylan::toString( static_cast<Ceylan::Float32>( 1000000 ) /
+		+ Ceylan::toString( 1E6 /
 				( _inputPeriod * _engineTickDuration ),
 			/* precision */ 2 ) 
 		+ " Hz (a period of " 
@@ -439,7 +551,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		return buf.str() ;
 		
 		
-	if ( _periodicSlots.size() > 0 )
+	if ( ! _periodicSlots.empty() )
 	{
 		
 		buf << ". Enumerating scheduling periodic slots : " ;
@@ -454,7 +566,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 			
 	}
 	
-	if ( _programmedActivated.size() != 0 )
+	if ( ! _programmedActivated.empty() )
 	{
 	
 		buf << ". Enumerating scheduling programmed slots : " ;
@@ -479,7 +591,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		buf << ". Current movie frame period for screenshot mode is " 
 			+ Ceylan::toString( _screenshotPeriod ) 
 			+ " engine ticks, which corresponds to a frequency of "
-			+ Ceylan::toString( static_cast<Ceylan::Float32>( 1000000 ) /
+			+ Ceylan::toString( 1E6 /
 				( _screenshotPeriod * _engineTickDuration ) )
 			+ " frames per second" ;	
 
@@ -501,9 +613,9 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		buf << ". " + Ceylan::toString( _missedSimulationTicks ) 
 			+ " simulation ticks were missed, "
 			"it sums up to an actual average simulation frequency of " 	
-			<< 1000000 * ( _currentSimulationTick - _missedSimulationTicks ) / 
+			<< 1E6 * ( _currentSimulationTick - _missedSimulationTicks ) / 
 				static_cast<Ceylan::Float64>( 
-					( sec - _scheduleStartingSecond ) * 1000000
+					( sec - _scheduleStartingSecond ) * 1E6
 					+ microsec - _scheduleStartingMicrosecond ) 
 			<< " Hz" ;	
 							
@@ -522,9 +634,9 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		buf << ". " + Ceylan::toString( _missedRenderingTicks ) 
 			+ " rendering ticks were missed, "
 			"it sums up to an actual average rendering frequency of "
-			<< 1000000 * ( _currentRenderingTick - _missedRenderingTicks ) / 
+			<< 1E6 * ( _currentRenderingTick - _missedRenderingTicks ) / 
 				static_cast<Ceylan::Float64>( 
-					( sec - _scheduleStartingSecond ) * 1000000
+					( sec - _scheduleStartingSecond ) * 1E6
 					+ microsec - _scheduleStartingMicrosecond )
 			<< " Hz" ;	
 	}
@@ -542,9 +654,9 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		buf << ". " + Ceylan::toString( _missedInputTicks ) 
 			+ " input ticks were missed, "
 			"it sums up to an actual average input frequency of "
-			<< 1000000 * ( _currentInputTick - _missedInputTicks ) / 
+			<< 1E6 * ( _currentInputTick - _missedInputTicks ) / 
 				static_cast<Ceylan::Float64>( 
-					( sec - _scheduleStartingSecond ) * 1000000
+					( sec - _scheduleStartingSecond ) * 1E6
 					+ microsec - _scheduleStartingMicrosecond ) 
 			<< " Hz" ;	
 	}	 	
@@ -662,8 +774,10 @@ Scheduler::Scheduler() throw() :
 	_desiredSimulationFrequency( DefaultSimulationFrequency ),
 	_desiredRenderingFrequency( DefaultRenderingFrequency ),
 	_desiredInputFrequency( DefaultInputFrequency ),
-	_loopIdleCallback( 0 ),
-	_loopIdleCallbackData( 0 ),
+	_idleCallback( 0 ),
+	_idleCallbackData( 0 ),
+	_idleCallbackMaxDuration( 0 ),
+	_idleCallsCount( 0 ),
 	_stopRequested( false ),
 	_scheduleStartingSecond( 0 ),
 	_scheduleStartingMicrosecond( 0 ),
@@ -706,15 +820,32 @@ Scheduler::~Scheduler() throw()
 void Scheduler::scheduleBestEffort() throw( SchedulingException )
 {
 
+	/*
+	 * Set up idle callback (with default strategy) if not done already :
+	 * (will use atomic sleeps)
+	 *
+	 */
+	if ( _idleCallback == 0 && _idleCallbackMaxDuration == 0 )
+		_idleCallbackMaxDuration = 
+			static_cast<Microsecond>( 1.1 * getSchedulingGranularity() ) ;
+
+	EngineTick idleCallbackDuration = static_cast<EngineTick>( 
+		Ceylan::Maths::Ceil( 
+			static_cast<Ceylan::Float32>( _idleCallbackMaxDuration ) /
+			_engineTickDuration ) ) ;
+		
+	_idleCallsCount = 0 ;
+	
 	send( "Scheduler starting in soft real-time best effort mode. " 
-		"Scheduler infos : " + toString( Ceylan::high ) ) ;
+		"Scheduler informations : " + toString( Ceylan::low ) ) ;
 	
 	// Let's prepare to the run :
 	
-	_stopRequested = false ;	
+	_stopRequested = false ;
+		
 	_missedSimulationTicks = 0 ;
 	_missedRenderingTicks  = 0 ;
-	_missedInputTicks  = 0 ;
+	_missedInputTicks      = 0 ;
 	
 #if OSDL_DEBUG_SCHEDULER
 	
@@ -727,17 +858,16 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 
 	list<SimulationTick> metSimulations ;
 	list<SimulationTick> missedSimulations ;
+	
 	list<RenderingTick>  metRenderings ;	
-	list<RenderingTick>  missedRenderings ;	
+	list<RenderingTick>  missedRenderings ;
+		
 	list<InputTick>      metInputPollings ;	
 	list<InputTick>      missedInputPollings ;	
 	
 #endif // OSDL_DEBUG_SCHEDULER
 
 	EngineTick previousEngineTick ;
-	
-	// Store scheduling starting time : 
-	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
 	
 	
 	/*
@@ -752,21 +882,45 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 
 	// Starts with all zero	ticks :	
 	_currentEngineTick     = 0 ;	
+	
 	_currentSimulationTick = 0 ;	
 	_currentRenderingTick  = 0 ;
 	_currentInputTick      = 0 ;
 	
 	OSDL_SCHEDULE_LOG( "Simulation period : " << _simulationPeriod ) ;
 	OSDL_SCHEDULE_LOG( "Rendering period : "  << _renderingPeriod ) ;
-	OSDL_SCHEDULE_LOG( "Input period : "      << _inputPeriod ) ;
+	OSDL_SCHEDULE_LOG( "Input period : "      << _inputPeriod      ) ;
 		
 	EngineTick nextSimulationDeadline = _currentEngineTick + _simulationPeriod ;
 	EngineTick nextRenderingDeadline  = _currentEngineTick + _renderingPeriod ;
 	EngineTick nextInputDeadline      = _currentInputTick  + _inputPeriod ;
 	
+	EngineTick nextDeadline ;
+	
+	// Store scheduling starting time : 
+	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
+	
 	
 	// Enter the schedule loop :
 	
+	/*
+	 * @todo : by construction the actual frequencies can ony be less than the
+	 * expected ones, which are seldom enforced (i.e. we have never 100 Hz,
+	 * but often 95 Hz because of OS process switching). 
+	 *
+	 * The algorithm could check the delay D, if it is small (ex : D < 8 ms),
+	 * then do as if it had not existed (do not cancel anything, activate as
+	 * usual). 
+	 * Otherwise, if the actions are really triggered too late, use the 
+	 * on*Skip methods.
+	 *
+	 * Overloaded situations could be detected thanks to a kind of leaking 
+	 * bucket : each delay of d ms adds d to a sum s, each rendering tick
+	 * decreases s, if s exceeds say, 50, then the system is deemed overloaded
+	 * and more skips are triggered.
+	 *
+	 */
+	 
 	while ( ! _stopRequested )
 	{
 			
@@ -777,17 +931,22 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 * Similarly, for each rendering tick, either scheduleRendering 
 		 * or, if late, onRenderingSkipped are called.
 		 *
+		 * It is soft real-time because the engine tick is derived directly
+		 * from the system clock, it cannot drift.
+		 *
 		 */
 		 	
-		OSDL_SCHEDULE_LOG( "[ " << _currentEngineTick << " ; " 
-			<< _currentSimulationTick
+		OSDL_SCHEDULE_LOG( "[ " << _currentEngineTick 
+			<< " ; " << _currentSimulationTick
 			<< " ; " << _currentRenderingTick		
 			<< " ; " << _currentInputTick << " ]" ) ;
 					
 		// We hereby suppose we are just at the beginning of a new engine tick.
 		previousEngineTick = _currentEngineTick ;
 		
+		
 		// What is to be done on this new engine tick ?
+		
 		
 		// Perform all scheduling actions for this tick :
 		if ( _currentEngineTick == nextSimulationDeadline )
@@ -803,6 +962,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			_currentSimulationTick++ ;
 			nextSimulationDeadline += _simulationPeriod ;
 		}
+		// Time has elapsed....
+
 
 		if ( _currentEngineTick == nextRenderingDeadline )
 		{
@@ -817,6 +978,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			_currentRenderingTick++ ;
 			nextRenderingDeadline += _renderingPeriod ;
 		}
+		// Still more time elapsed....
+
 
 		if ( _currentEngineTick == nextInputDeadline )
 		{
@@ -831,15 +994,17 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			_currentInputTick++ ;
 			nextInputDeadline += _inputPeriod ;
 		}
+		// Everything done, hoping not too much time elapsed....
 
 		
 		/*
 		 * Check we did not miss any deadline : if these scheduling actions
-		 *  (notably, the rendering) last more than the current engine 
+		 * (notably, the rendering) last more than the current engine 
 		 * tick, it is not a problem.
 		 *
 		 * What must not occur is that these actions lasted so long that 
-		 * the first next deadline was missed.
+		 * the first next deadline (either simulation, rendering or input), 
+		 * was missed.
 		 *
 		 * The next '+1' is here because the soonest possible deadlines 
 		 * will be on next engine tick.
@@ -851,22 +1016,34 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 */
 		_currentEngineTick = computeEngineTickFromCurrentTime() ;
 		
-		while ( _currentEngineTick + 1 > nextSimulationDeadline )	
+		while ( nextSimulationDeadline < _currentEngineTick + 1 )	
 		{			
 		
 			// Cancel all missed simulation steps and warn :
+			EngineTick missedTicks = 
+				_currentEngineTick + 1 - nextSimulationDeadline ;
+				
+			OSDL_SCHEDULE_LOG( "##### Simulation deadline missed of "
+				+ Ceylan::toString( missedTicks )
+				+ " engine ticks (" 
+				+ Ceylan::toString( missedTicks * _engineTickDuration )  
+				+ " microseconds), cancelling activations." ) ;
 			
-			OSDL_SCHEDULE_LOG( 
-				"### Simulation deadline missed, cancelling activations." ) ;
 			
 #if OSDL_DEBUG_SCHEDULER
 			missedSimulations.push_back( _currentSimulationTick ) ;
 #endif // OSDL_DEBUG_SCHEDULER
-				
+			
+			/*
+			 * If ever this call is longer than the simulation period, the 	
+			 * scheduler will go in an infinite loop :
+			 *
+			 */
 			onSimulationSkipped( _currentSimulationTick ) ;
 			
 			_currentSimulationTick++ ;
 			nextSimulationDeadline += _simulationPeriod ;
+			
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
 						
 		}
@@ -883,13 +1060,18 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 * compared to rendering ticks.
 		 *
 		 */		 
-		while ( _currentEngineTick + 1 > nextRenderingDeadline )	
+		while ( nextRenderingDeadline < _currentEngineTick + 1 )	
 		{			
 		
 			// Cancel all missed rendering steps and warn :
+			EngineTick missedTicks = 
+				_currentEngineTick + 1 - nextRenderingDeadline ;
 
-			OSDL_SCHEDULE_LOG( 
-				"### Rendering deadline missed, cancelling rendering." ) ;
+			OSDL_SCHEDULE_LOG( "##### Rendering deadline missed of "
+				+ Ceylan::toString( missedTicks )
+				+ " engine ticks (" 
+				+ Ceylan::toString( missedTicks * _engineTickDuration )  
+				+ " microseconds), cancelling rendering." ) ;
 			
 #if OSDL_DEBUG_SCHEDULER
 			missedRenderings.push_back( _currentRenderingTick ) ;
@@ -899,7 +1081,9 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 			_currentRenderingTick++ ;
 			nextRenderingDeadline += _renderingPeriod ;
-			_currentEngineTick = computeEngineTickFromCurrentTime() ;			
+			
+			_currentEngineTick = computeEngineTickFromCurrentTime() ;
+						
 		}
 		
 		
@@ -907,7 +1091,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 * Lastly, take care of the input polling.
 		 *
 		 */
-		while ( _currentEngineTick + 1 > nextInputDeadline )	
+		while ( nextInputDeadline < _currentEngineTick + 1 )	
 		{			
 		
 			/*
@@ -915,9 +1099,14 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			 * serious skip) :
 			 *
 			 */
+			EngineTick missedTicks = 
+				_currentEngineTick + 1 - nextInputDeadline ;
 
-			OSDL_SCHEDULE_LOG( 
-				"### Input deadline missed, cancelling input polling." ) ;
+			OSDL_SCHEDULE_LOG( "##### Input deadline missed of "
+				+ Ceylan::toString( missedTicks )
+				+ " engine ticks (" 
+				+ Ceylan::toString( missedTicks * _engineTickDuration )  
+				+ " microseconds), cancelling input polling." ) ;
 			
 #if OSDL_DEBUG_SCHEDULER
 			missedInputPollings.push_back( _currentInputTick ) ;
@@ -927,17 +1116,32 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 			_currentInputTick++ ;
 			nextInputDeadline += _inputPeriod ;
-			_currentEngineTick = computeEngineTickFromCurrentTime() ;			
+			
+			_currentEngineTick = computeEngineTickFromCurrentTime() ;
+						
 		}
 		 		
 
 		/*
-		 * Wait for the end of this engine tick :
-		 * (active waiting used, Ceylan::Sytem::smartSleepUntil could be 
-		 * used instead)
+		 * Wait until next deadline, possibly skipping several engine ticks :
 		 *
-		 */		 
-		while ( computeEngineTickFromCurrentTime() == _currentEngineTick ) ;
+		 */
+		nextDeadline = Ceylan::Maths::Min( nextSimulationDeadline,
+			nextRenderingDeadline, nextInputDeadline ) ;
+		
+		OSDL_SCHEDULE_LOG( "Next deadline is " 
+			+ Ceylan::toString( nextDeadline - _currentEngineTick )
+			+ " engine tick(s) away." ) ;
+
+		/*
+		 * Do nothing : wait, first with idle callback (which results in
+		 * atomic sleeps by default), then for fine-grain with soft busy
+		 * waitings.
+		 *
+		 */
+		
+		// Atomic sleeps : 		 
+		while ( _currentEngineTick + idleCallbackDuration < nextDeadline )
 		{
 			
 			/*
@@ -945,22 +1149,16 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			 * "Waiting for the end of engine tick " << _currentEngineTick ) ;
 			 *
 			 */
-			 
-			// Do nothing : wait.
+			onIdle() ;
 			
-			/*
-			 * @fixme: use idle function from time to time ?
-			 *  1. know previously the expecte average duration of an idle
-			 * call, Tidle.
-			 *  2. measure the time left before next tick, no matter its type
-			 * (simulation, rendering, input, etc.), Tleft.
-			 *  3. if Tidle < Tleft + margin, then call onIdle().
-			 *
-			 */
+			_currentEngineTick = computeEngineTickFromCurrentTime() ;
 			
 		}	
 		
-		_currentEngineTick = computeEngineTickFromCurrentTime() ;
+		
+		// Then busy waiting :
+		while ( _currentEngineTick < nextDeadline )
+			_currentEngineTick = computeEngineTickFromCurrentTime() ;
 		
 		/*
 		 * OSDL_SCHEDULE_LOG( 
@@ -968,11 +1166,159 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 *
 		 */
 		
-	}
+	} // End of scheduler overall loop
+
+	Second scheduleStoppingSecond ;
+	Microsecond scheduleStoppingMicrosecond ;
+	
+	getPreciseTime( scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
+	
+	Microsecond totalRuntime = getDurationBetween( 
+		_scheduleStartingSecond, _scheduleStartingMicrosecond,
+		scheduleStoppingSecond,  scheduleStoppingMicrosecond ) ;
+	
+	string table = 
+		"<table border=1>"
+		"	<tr>"
+		"		<th>Tick types</th>"
+		" 		<th>Requested frequency</th>" 
+		" 		<th>Agreed frequency</th>" 
+		" 		<th>Measured frequency</th>" 
+		" 		<th>Tick duration (microsec)</th>" 
+		" 		<th>Tick duration (engine ticks)</th>" 
+		" 		<th>Stopped at tick</th>" 
+		" 		<th>Missed count</th>"
+		" 		<th>Missed percentage</th>"
+		"	</tr>" ;
 	
 	
-	send( "Scheduler stopping. Scheduler infos : " 
-		+ toString( Ceylan::high ) ) ;	
+	Ceylan::Uint8 precision = 2 /* digits after the dot */ ;
+	
+	// Engine :
+	table += 
+		"	<tr>"
+		"		<td>Engine tick</td>"
+		"		<td>" 
+		+ Ceylan::toString( 1E6 / DefaultEngineTickDuration, precision ) 
+		+ " Hz</td>"
+		"		<td>" 
+		+ Ceylan::toString( 1E6 / DefaultEngineTickDuration, precision ) 
+		+ " Hz</td>"
+		"		<td>" 
+		+ Ceylan::toString( _currentEngineTick * 1E6 / totalRuntime, precision )
+		+ " Hz</td>"
+		"		<td>" + Ceylan::toString( _engineTickDuration ) + "</td>"
+		"		<td>1</td>"
+		"		<td>" + Ceylan::toString( _currentEngineTick ) + "</td>"
+		"		<td>N/A</td>"		
+		"		<td>N/A</td>"		
+		"	</tr>" ;
+		
+		
+	// Simulation :	
+	table += 
+		"	<tr>"
+		"		<td>Simulation tick</td>"
+		"		<td>" 
+		+ Ceylan::toString( _desiredSimulationFrequency ) 
+		+ " Hz</td>"
+		"		<td>" 
+		+ Ceylan::toString(	1E6 / ( _simulationPeriod * _engineTickDuration ), 
+			precision ) + " Hz</td>"
+		"		<td>"
+		+ Ceylan::toString(	
+			1E6 * ( _currentSimulationTick - _missedSimulationTicks ) / 
+				totalRuntime, precision ) + " Hz</td>"
+		"		<td>" + Ceylan::toString( 
+			_simulationPeriod * _engineTickDuration ) + "</td>"
+		"		<td>" + Ceylan::toString( _simulationPeriod ) + "</td>"
+		"		<td>" + Ceylan::toString( _currentSimulationTick ) + "</td>"
+		"		<td>" + Ceylan::toString( _missedSimulationTicks ) + "</td>"	
+		"		<td>" + Ceylan::toString( 
+			100.0f * _missedSimulationTicks / _currentSimulationTick, 
+			precision ) 
+		+ "%</td>"	
+		"	</tr>" ;
+		
+		
+	// Rendering :	
+	table += 
+		"	<tr>"
+		"		<td>Rendering tick</td>"
+		"		<td>" 
+		+ Ceylan::toString( _desiredRenderingFrequency ) 
+		+ " Hz</td>"
+		"		<td>" 
+		+ Ceylan::toString(	1E6 / ( _renderingPeriod * _engineTickDuration ), 
+			precision ) + " Hz</td>"
+		"		<td>"
+		+ Ceylan::toString(	
+			1E6 * ( _currentRenderingTick - _missedRenderingTicks ) / 
+				totalRuntime, precision ) + " Hz</td>"
+		"		<td>" + Ceylan::toString( 
+			_renderingPeriod * _engineTickDuration ) + "</td>"
+		"		<td>" + Ceylan::toString( _renderingPeriod ) + "</td>"
+		"		<td>" + Ceylan::toString( _currentRenderingTick ) + "</td>"
+		"		<td>" + Ceylan::toString( _missedRenderingTicks ) + "</td>"	
+		"		<td>" + Ceylan::toString( 
+			100.0f * _missedRenderingTicks / _currentRenderingTick, precision ) 
+		+ "%</td>"	
+		"	</tr>" ;
+		
+	// Input :	
+	table += 
+		"	<tr>"
+		"		<td>Input polling tick</td>"
+		"		<td>" 
+		+ Ceylan::toString( _desiredInputFrequency ) 
+		+ " Hz</td>"
+		"		<td>" 
+		+ Ceylan::toString(	1E6 / ( _inputPeriod * _engineTickDuration ), 
+			precision ) + " Hz</td>"
+		"		<td>"
+		+ Ceylan::toString(	
+			1E6 * ( _currentInputTick - _missedInputTicks ) / 
+				totalRuntime, precision ) + " Hz</td>"
+		"		<td>" + Ceylan::toString( 
+			_inputPeriod * _engineTickDuration ) + "</td>"
+		"		<td>" + Ceylan::toString( _inputPeriod ) + "</td>"
+		"		<td>" + Ceylan::toString( _currentInputTick ) + "</td>"
+		"		<td>" + Ceylan::toString( _missedInputTicks ) + "</td>"	
+		"		<td>" + Ceylan::toString( 
+			100.0f * _missedInputTicks / _currentInputTick, precision ) 
+		+ "%</td>"	
+		"	</tr>" ;
+		
+	table += "</table>" ;	
+	
+	send( table ) ;
+	
+	list<string> summary ;
+	
+	if ( scheduleStoppingSecond - _scheduleStartingSecond >
+			MaximumDurationWithMicrosecondAccuracy )			
+		summary.push_back( "The scheduler ran for " 
+			+ Ceylan::toString( 
+				scheduleStoppingSecond - _scheduleStartingSecond )
+			+ " seconds." ) ;
+	else
+		summary.push_back( "The scheduler ran for " 
+			+ Ceylan::toString( 
+				scheduleStoppingSecond - _scheduleStartingSecond )
+			+ " seconds (precisely : " + Ceylan::toString( totalRuntime )
+			+ " microseconds)." ) ;
+	
+	summary.push_back( Ceylan::toString( _idleCallsCount ) 
+		+ " idle calls have been made." ) ;
+
+	summary.push_back( "Each idle call was expected to last for "
+		+ Ceylan::toString( _idleCallbackMaxDuration ) + " microseconds, i.e. "
+		+ Ceylan::toString( idleCallbackDuration ) + " engine ticks." ) ;
+	
+	send( "Scheduler stopping, run summary is : " 
+		+ Ceylan::formatStringList( summary ) ) ;
+	
+	send( "Full scheduler infos : " + toString( Ceylan::high ) ) ;	
 
 	_scheduleStartingSecond = 0 ;
 	_scheduleStartingMicrosecond = 0 ;
@@ -986,54 +1332,68 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 *
 	 */
 
-
+	bool beVerbose = true ;
+	bool beVeryVerbose = true ;
+	
+	
+	
 	// For simulation ticks :			
 	
+	Ceylan::Uint32 totalSimulationTicks = 
+		metSimulations.size() + missedSimulations.size() ;
+		
+	
 	LogPlug::debug( "Total simulation ticks : " 
-		+ Ceylan::toString( metSimulations.size() 
-		+ missedSimulations.size() ) + "." ) ;
+		+ Ceylan::toString( totalSimulationTicks ) + "." ) ;
 		
 	LogPlug::debug( "Met simulation ticks : " 
 		+ Ceylan::toString( metSimulations.size() ) 
 		+ " (" + Ceylan::toString( 100.0f * metSimulations.size() 
-			/ ( metSimulations.size() + missedSimulations.size() ) ) 
-		+ "%)." ) ;
+			/ totalSimulationTicks, /* precision */ 2 ) + "%)." ) ;
 				
 	LogPlug::debug( "Missed simulation ticks : " 
 		+ Ceylan::toString( missedSimulations.size() ) 
-		+ " ("
-		+ Ceylan::toString( 100.0f * missedSimulations.size() 
-			/ ( metSimulations.size() + missedSimulations.size() ) ) 
-		+ "%)." ) ;
+		+ " (" + Ceylan::toString( 100.0f * missedSimulations.size() 
+			/ totalSimulationTicks, /* precision */ 2 ) + "%)." ) ;
 	
 	string res ;
 	
-	/*
-	 * Useful but verbose :
-	 *
-	for ( list<SimulationTick>::const_iterator it = metSimulations.begin();
-			it != metSimulations.end(); it++ )
-		res += 	Ceylan::toString( *it ) + " - " ;
-		 
-	LogPlug::debug( "Met simulation ticks : " + res ) ;
 
-	res = "" ;
-	for ( list<SimulationTick>::const_iterator it = missedSimulations.begin();
-			it != missedSimulations.end(); it++ )
-		res += 	Ceylan::toString( *it ) + " - " ;
-
-	LogPlug::debug( "Missed simulation ticks : " + res ) ;
-	*/
+	if ( beVerbose )
+	{
 	
+		if ( beVeryVerbose )
+		{
+		
+			for ( list<SimulationTick>::const_iterator it 
+					= metSimulations.begin(); it != metSimulations.end(); it++ )
+				res += 	Ceylan::toString( *it ) + " - " ;
+		 
+			LogPlug::debug( "Met simulation ticks : " + res ) ;
+
+			res.clear() ;
+	
+		}
+		
+		for ( list<SimulationTick>::const_iterator it 
+				= missedSimulations.begin(); it != missedSimulations.end(); 
+				it++ )
+			res += 	Ceylan::toString( *it ) + " - " ;
+
+		LogPlug::debug( "Missed simulation ticks : " + res ) ;
+
+	}
+	
+		
 	/*
 	 * Check that all simulation ticks were handled one and only one time, 
-	 * one way or another :
-	 * (scheduled or skipped).
+	 * one way or another (scheduled or skipped).
 	 *
 	 */
 	SimulationTick newSimulationTick ;
 	
-	bool simulationTicks[ _currentSimulationTick ] ;
+	bool * simulationTicks = new bool[ _currentSimulationTick ] ;
+	
 	for ( Events::SimulationTick i = 0; i < _currentSimulationTick; i++ )
 		simulationTicks[i] = false ;
 		
@@ -1041,6 +1401,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		it != metSimulations.end(); it++ )
 	{
 		newSimulationTick = (*it) ;
+		
 		if ( simulationTicks[ newSimulationTick ] == false )
 			simulationTicks[ newSimulationTick ] = true ;
 		else
@@ -1055,11 +1416,12 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	{
 	
 		newSimulationTick = (*it) ;
+		
 		if ( simulationTicks[ newSimulationTick ] == false )
 			simulationTicks[ newSimulationTick ] = true ;
 		else
 			LogPlug::error( "Simulation tick #" 
-			+ Ceylan::toString( newSimulationTick ) 
+				+ Ceylan::toString( newSimulationTick ) 
 				+ " should not have been skipped, "
 				"since had already been taken into account." ) ;
 							
@@ -1070,47 +1432,54 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			LogPlug::error( "Simulation tick #" + Ceylan::toString( i ) 
 				+ " has never been scheduled." ) ;	
 				
-
+	delete simulationTicks ;
+	
 
 	// For rendering ticks :			
 
+	Ceylan::Uint32 totalRenderingTicks = 
+		metRenderings.size() + missedRenderings.size() ;
+
 	LogPlug::debug( "Total rendering ticks : " 
-		+ Ceylan::toString( metRenderings.size() 
-		+ missedRenderings.size() ) + "." ) ;
+		+ Ceylan::toString( totalRenderingTicks ) + "." ) ;
 		
 	LogPlug::debug( "Met rendering ticks : " 
 		+ Ceylan::toString( metRenderings.size() ) 
 		+ " (" + Ceylan::toString( 100.0f * metRenderings.size() 
-			/ ( metRenderings.size() + missedRenderings.size() ) ) 
-		+ "%)." ) ;
+			/ totalRenderingTicks, /* precision */ 2 ) + "%)." ) ;
 				
 	LogPlug::debug( "Missed rendering ticks : " 
 		+ Ceylan::toString( missedRenderings.size() ) 
-		+ " ("
-		+ Ceylan::toString( 100.0f * missedRenderings.size() 
-			/ ( metRenderings.size() + missedRenderings.size() ) ) 
-		+ "%)." ) ;
+		+ " (" + Ceylan::toString( 100.0f * missedRenderings.size() 
+			/ totalRenderingTicks, /* precision */ 2 ) + "%)." ) ;
 				
-	res = "" ;
+	res.clear() ;
 		
 				
-	/*
-	 * Useful but verbose :
-	 *
-	for ( list<RenderingTick>::const_iterator it = metRenderings.begin();
-			it != metRenderings.end(); it++ )
-		res += 	Ceylan::toString( *it ) + " - " ;
+	if ( beVerbose )
+	{
+	
+		if ( beVeryVerbose )
+		{
+		
+			for ( list<RenderingTick>::const_iterator it 
+					= metRenderings.begin(); it != metRenderings.end(); it++ )
+				res += 	Ceylan::toString( *it ) + " - " ;
 		 
-	LogPlug::debug( "Met rendering ticks : " + res ) ;	
-	
-	res = "" ;
-	
-	for ( list<RenderingTick>::const_iterator it = missedRenderings.begin();
-			it != missedRenderings.end(); it++ )
-		res += 	Ceylan::toString( *it ) + " - " ;
+			LogPlug::debug( "Met rendering ticks : " + res ) ;
 
-	LogPlug::debug( "Missed rendering ticks : " + res ) ;
-	*/
+			res.clear() ;
+	
+		}
+		
+		for ( list<RenderingTick>::const_iterator it 
+				= missedRenderings.begin(); it != missedRenderings.end(); it++ )
+			res += 	Ceylan::toString( *it ) + " - " ;
+
+		LogPlug::debug( "Missed rendering ticks : " + res ) ;
+
+	}
+	
 				
 	/*
 	 * Check that all rendering ticks were handled one and only one time, 
@@ -1121,7 +1490,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 	RenderingTick newRenderingTick ;
 	
-	bool renderingTicks[ _currentRenderingTick ] ;
+	bool * renderingTicks = new bool[ _currentRenderingTick ] ;
+	
 	for ( Events::RenderingTick i = 0; i < _currentRenderingTick; i++ )
 		renderingTicks[i] = false ;
 		
@@ -1158,47 +1528,58 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			LogPlug::error( "Rendering tick #" + Ceylan::toString( i ) 
 				+ " has never been scheduled." ) ;	
 
+	delete renderingTicks ;
+
 
 
 	// For input ticks :			
 
+
+	Ceylan::Uint32 totalInputTicks = 
+		metRenderings.size() + missedRenderings.size() ;
+
 	LogPlug::debug( "Total input ticks : " 
-		+ Ceylan::toString( metInputPollings.size() 
-		+ missedInputPollings.size() ) + "." ) ;
+		+ Ceylan::toString( totalInputTicks ) + "." ) ;
 		
 	LogPlug::debug( "Met input ticks : " 
 		+ Ceylan::toString( metInputPollings.size() ) 
 		+ " (" + Ceylan::toString( 100.0f * metInputPollings.size() 
-			/ ( metInputPollings.size() + missedInputPollings.size() ) ) 
-		+ "%)." ) ;
+			/ totalInputTicks, /* precision */ 2 ) + "%)." ) ;
 				
 	LogPlug::debug( "Missed input ticks : " 
 		+ Ceylan::toString( missedInputPollings.size() ) 
-		+ " ("
-		+ Ceylan::toString( 100.0f * missedInputPollings.size() 
-			/ ( metInputPollings.size() + missedInputPollings.size() ) ) 
-		+ "%)." ) ;
+		+ " (" + Ceylan::toString( 100.0f * missedInputPollings.size() 
+			/ totalInputTicks, /* precision */ 2 ) + "%)." ) ;
 				
-	res = "" ;
+	res.clear() ;
 		
 				
-	/*
-	 * Useful but verbose :
-	 *
-	for ( list<InputTick>::const_iterator it = metInputPollings.begin();
-			it != metInputPollings.end(); it++ )
-		res += 	Ceylan::toString( *it ) + " - " ;
+	if ( beVerbose )
+	{
+	
+		if ( beVeryVerbose )
+		{
+		
+			for ( list<InputTick>::const_iterator it 
+					= metInputPollings.begin(); 
+					it != metInputPollings.end(); it++ )
+				res += 	Ceylan::toString( *it ) + " - " ;
 		 
-	LogPlug::debug( "Met input ticks : " + res ) ;	
-	
-	res = "" ;
-	
-	for ( list<InputTick>::const_iterator it = missedInputPollings.begin();
-			it != missedInputPollings.end(); it++ )
-		res += 	Ceylan::toString( *it ) + " - " ;
+			LogPlug::debug( "Met input ticks : " + res ) ;
 
-	LogPlug::debug( "Missed input ticks : " + res ) ;
-	*/
+			res.clear() ;
+	
+		}
+		
+		for ( list<InputTick>::const_iterator it 
+				= missedInputPollings.begin(); 
+				it != missedInputPollings.end(); it++ )
+			res += 	Ceylan::toString( *it ) + " - " ;
+
+		LogPlug::debug( "Missed input ticks : " + res ) ;
+
+	}
+				
 				
 	/*
 	 * Check that all input ticks were handled one and only one time, one 
@@ -1209,7 +1590,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 	InputTick newInputTick ;
 	
-	bool inputTicks[ _currentInputTick ] ;
+	bool * inputTicks = new bool[ _currentInputTick ] ;
+	
 	for ( Events::InputTick i = 0; i < _currentInputTick; i++ )
 		inputTicks[i] = false ;
 		
@@ -1244,7 +1626,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			LogPlug::error( "Input tick #" + Ceylan::toString( i ) 
 				+ " has never been scheduled." ) ;	
 
-		
+	delete inputTicks ;
+	
 #endif // OSDL_DEBUG_SCHEDULER
 	
 }
@@ -1397,13 +1780,13 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	buf.precision( 4 ) ;
 		
 	buf	<< "Actual average engine frequency was "  
-		<< 1000000 * _currentEngineTick / totalScheduleDuration
+		<< 1E6 * _currentEngineTick / totalScheduleDuration
 		<< " Hz, average simulation frequency was " 
-		<< 1000000 * _currentSimulationTick / totalScheduleDuration
+		<< 1E6 * _currentSimulationTick / totalScheduleDuration
 		<< " Hz, average rendering frequency was " 
-		<< 1000000 * _currentRenderingTick / totalScheduleDuration
+		<< 1E6 * _currentRenderingTick / totalScheduleDuration
 		<< " Hz, average input frequency was " 
-		<< 1000000 * _currentInputTick / totalScheduleDuration 
+		<< 1E6 * _currentInputTick / totalScheduleDuration 
 		<< " Hz." ;
 		 
 	send( buf.str() ) ;
@@ -1436,7 +1819,8 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	 */
 	SimulationTick newSimulationTick ;
 	
-	bool simulationTicks[ _currentSimulationTick ] ;
+	bool * simulationTicks = new bool[ _currentSimulationTick ] ;
+	
 	for ( Events::SimulationTick i = 0; i < _currentSimulationTick; i++ )
 		simulationTicks[i] = false ;
 		
@@ -1459,6 +1843,8 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 		if ( simulationTicks[ i ] == false )
 			LogPlug::error( "Simulation tick #" + Ceylan::toString( i ) 
 				+ " has never been scheduled." ) ;	
+
+	delete simulationTicks ;
 				
 	LogPlug::debug( "Total rendering ticks : " 
 		+ Ceylan::toString( metRenderings.size() ) + "." ) ;
@@ -1481,7 +1867,8 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	
 	RenderingTick newRenderingTick ;
 	
-	bool renderingTicks[ _currentRenderingTick ] ;
+	bool * renderingTicks = new bool[ _currentRenderingTick ] ;
+	
 	for ( Events::RenderingTick i = 0; i < _currentRenderingTick; i++ )
 		renderingTicks[i] = false ;
 		
@@ -1499,11 +1886,14 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	}
 	
 	
+	
 	for ( Events::RenderingTick i = 0; i < _currentRenderingTick; i++ )
 		if ( renderingTicks[ i ] == false )
 			LogPlug::error( "Rendering tick #" + Ceylan::toString( i ) 
 				+ " has never been scheduled." ) ;	
 
+	delete renderingTicks ;
+	
 
 	/*
 	 * Check that all input ticks were scheduled one and only one time.
@@ -1511,9 +1901,11 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	 */
 	if ( pollInputs )
 	{
+	
 		InputTick newInputTick ;
 	
-		bool inputTicks[ _currentInputTick ] ;
+		bool * inputTicks = new bool[ _currentInputTick ] ;
+		
 		for ( Events::InputTick i = 0; i < _currentInputTick; i++ )
 			inputTicks[i] = false ;
 		
@@ -1534,6 +1926,9 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 			if ( inputTicks[ i ] == false )
 				LogPlug::error( "Input tick #" + Ceylan::toString( i ) 
 					+ " has never been scheduled." ) ;	
+		
+		delete inputTicks ;
+				
 	}
 						
 #endif // OSDL_DEBUG_SCHEDULER
@@ -1544,6 +1939,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 }
 
 
+
 EngineTick Scheduler::computeEngineTickFromCurrentTime() throw()
 {
 
@@ -1552,7 +1948,7 @@ EngineTick Scheduler::computeEngineTickFromCurrentTime() throw()
 	getPreciseTime( currentSecond, currentMicrosecond ) ;
 	
 	return static_cast<EngineTick>( 
-			( currentSecond - _scheduleStartingSecond ) * 1000000.0f 
+			( currentSecond - _scheduleStartingSecond ) * 1000000 
 			+ currentMicrosecond - _scheduleStartingMicrosecond ) 
 		/ _engineTickDuration ;
 		
@@ -1736,24 +2132,27 @@ void Scheduler::onInputSkipped( InputTick skipped )
 void Scheduler::onIdle() throw()
 {
 
-	if ( _loopIdleCallback != 0 )
+	OSDL_SCHEDULE_LOG( "--- idle callback called !" ) ;
+
+	_idleCallsCount++ ;
+
+	if ( _idleCallback != 0 )
 	{
-		(*_loopIdleCallback)( _loopIdleCallbackData ) ;
+	
+		// Call the user-supplied idle callback :
+		(*_idleCallback)( _idleCallbackData ) ;
+		
 	}
 	else
 	{
 	
 		/*
-		 * Issues a basic sleep, chosen so that the minimum real sleeping 
-		 * time can be performed :
-		 * we request less than a time-slice to have the opportunity to 
-		 * sleep for exactly one time slice.
-		 *
-		 * Avoid too small values which may lead to no time slice at all.
+		 * Issues an atomic sleep, chosen so that the minimum real predictable 
+		 * sleeping time can be performed, scheduler-wise :
 		 *
 		 */
-		 basicSleep( getSchedulingGranularity() / 3 ) ;
-		
+		 Ceylan::System::atomicSleep() ;
+		 
 	}	
 	
 }
