@@ -8,16 +8,16 @@ using namespace OSDL::Engine ;
 using std::string ;
 
 
-#ifdef OSDL_DEBUG_BOUNDING_BOX
+#if OSDL_DEBUG_BOUNDING_BOX
 
 using namespace Ceylan::Log ;
 #define OSDL_BOX_LOG(message) LogPlug::debug( message ) ;
 
-#else
+#else // OSDL_DEBUG_BOUNDING_BOX
 
 #define OSDL_BOX_LOG(message)
 
-#endif
+#endif // OSDL_DEBUG_BOUNDING_BOX
 
 
 using Ceylan::Maths::Real ;
