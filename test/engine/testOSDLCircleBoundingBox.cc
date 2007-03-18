@@ -21,8 +21,6 @@ using std::list ;
  * @see CircleBoundingBox
  *
  */
- 
- 
 int main( int argc, char * argv[] ) 
 {
 
@@ -40,13 +38,14 @@ int main( int argc, char * argv[] )
 		// Create a common absolutly defined father for the two boxes : 
 		Ceylan::Locatable2D father ;
 		
+		// First test : the two boxes have the same radius.
 		Real radius = 30 ;
 		
 		// Create the first bounding box.
-		CircleBoundingBox first(  father, Bipoint( 0, 0 ), radius ) ;
+		CircleBoundingBox first( father, Bipoint( 0, 0 ), radius ) ;
 		LogPlug::info( "First box is : " + first.toString() ) ;
 		
-		CircleBoundingBox second( father, Bipoint(), radius) ;
+		CircleBoundingBox second( father, Bipoint(), radius ) ;
 		
 		Real limitRadius = first.getRadius() + second.getRadius() ;
 		
@@ -87,6 +86,7 @@ int main( int argc, char * argv[] )
 					", there should be no intersection." ) ;				
 		}
 		
+
 
 
 		LogPlug::info( "Second test involves a second box "
@@ -143,6 +143,8 @@ int main( int argc, char * argv[] )
 					+ ", there should be no intersection." ) ;				
 		}
 		
+		
+
 
 		LogPlug::info( "Third test involves a second box bigger than first." ) ;
 
@@ -196,11 +198,11 @@ int main( int argc, char * argv[] )
 					+ ", there should be no intersection." ) ;				
 		}
 						
-		LogPlug::info( "stopping OSDL." ) ;		
+		LogPlug::info( "Stopping OSDL." ) ;		
 		
 		LogPlug::info( "End of OSDL circular bounding boxes test." ) ;
 
-   }
+    }
 	
     catch ( const OSDL::Exception & e )
     {
