@@ -2,29 +2,26 @@
 
 #include "OSDLMouse.h"             // for Mouse
 #include "OSDLController.h"        // for Controller
-//#include "OSDLEvents.h"          // for KeyPressed, EventsException
 
 #include "SDL.h"                   // for SDL_Getmicetate, etc.
 
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>            // for OSDL_DEBUG and al
-#endif // OSDL_USES_CONFIG_H
 
 
 using std::string ;
 using std::list ;
-using std::map ;
 
 
-using namespace Ceylan::Log ;    // for LogPlug
+using namespace Ceylan::Log ;      // for LogPlug
 using namespace OSDL::Events ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>            // for OSDL_VERBOSE_MOUSE_HANDLER and al
+#endif // OSDL_USES_CONFIG_H
 
 
 
-#ifdef OSDL_VERBOSE_MOUSE_HANDLER
-
+#if OSDL_VERBOSE_MOUSE_HANDLER
 
 #include <iostream>
 #define OSDL_MOUSE_HANDLER_LOG( message ) std::cout << "[OSDL Mouse Handler] " << message << std::endl ;
@@ -125,14 +122,25 @@ const string MouseHandler::toString( Ceylan::VerbosityLevels level )
 	const throw()
 {
 
-	string res ;
+	string res = "Mouse handler " ;
 	
-	if ( _miceCount > 0 )
-		res = "Mouse handler managing " 
-		+ Ceylan::toString( _miceCount ) + " mice" ;
-	else
-		return "Mouse handler does not manage any mouse" ;
-
+	switch( _miceCount )
+	{
+	
+		case 0:
+			res += "does not manage any mouse" ;
+			break ;
+			
+		case 1:
+			res += "managing one mouse" ;
+			break ;
+		
+		default:	
+			res += "managing " + Ceylan::toNumericalString( _miceCount ) 
+			+ " mice" ;
+			
+	}
+	
 	if ( level == Ceylan::low ) 	
 		return res ;
 	
@@ -195,7 +203,7 @@ void MouseHandler::focusLost( const FocusEvent & mouseFocusEvent ) const throw()
 }
 
 
-void MouseHandler:: mouseMoved( const MouseMotionEvent & mouseMovedEvent ) 
+void MouseHandler::mouseMoved( const MouseMotionEvent & mouseMovedEvent ) 
 	const throw()
 {
 	 
@@ -208,7 +216,7 @@ void MouseHandler:: mouseMoved( const MouseMotionEvent & mouseMovedEvent )
 }
 
 
-void MouseHandler:: buttonPressed( 
+void MouseHandler::buttonPressed( 
 		const MouseButtonEvent & mouseButtonPressedEvent ) 
 	const throw()
 {
@@ -223,7 +231,7 @@ void MouseHandler:: buttonPressed(
 }
 
 
-void MouseHandler:: buttonReleased( 
+void MouseHandler::buttonReleased( 
 		const MouseButtonEvent & mouseButtonReleasedEvent ) 
 	const throw()
 {
