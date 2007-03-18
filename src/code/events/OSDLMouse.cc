@@ -8,10 +8,6 @@
 #include "SDL.h"               // for SDL_GetMouseState, etc.
 
 
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
-#endif // OSDL_USES_CONFIG_H
-
 
 using std::string ;
 
@@ -25,8 +21,13 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
+#endif // OSDL_USES_CONFIG_H
 
-#ifdef OSDL_VERBOSE_MOUSE
+
+
+#if OSDL_VERBOSE_MOUSE
 
 #include <iostream>
 #define OSDL_MOUSE_LOG( message ) std::cout << "[OSDL Mouse] " << message << std::endl ;
@@ -59,13 +60,11 @@ Mouse::Mouse( MouseNumber index, bool classicalMouseMode ) throw() :
 	_lastRelativeOrdinate( 0 )
 {
 
-	
 }
 
 
 Mouse::~Mouse() throw()
 {
-
 	 	
 }
 
@@ -231,7 +230,6 @@ bool Mouse::IsPressed( MouseButtonMask mask, MouseButtonNumber buttonToInspect )
 
 // Protected section.
 
-	
 
 void Mouse::focusGained( const FocusEvent & mouseFocusEvent ) throw()
 {
@@ -314,6 +312,4 @@ MouseNumber Mouse::getIndex() const throw()
 	return _index ;
 	
 }
-
-
 
