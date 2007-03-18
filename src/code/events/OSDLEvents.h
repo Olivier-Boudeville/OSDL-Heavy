@@ -301,13 +301,22 @@ namespace OSDL
 				 * @param callbackData the user-supplied data pointer that
 				 * the idle callback will be given, if not null.
 				 *
+				 * @param callbackExpectedMaxDuration the maximum duration,
+				 * in microseconds, expected for this idle call-back. Helps
+				 * the main loop enforcing its target frequency. If this value
+				 * is null, the idle callback will be launched once immediately
+				 * (during the call of this method), and the measured duration,
+				 * increased of 20%, will be kept as upper bound.
+				 *
 				 * Any prior callback or callback data will be replaced 
 				 * by the one specified.
 				 *
 				 */	
 				virtual void setIdleCallback( 
 					Ceylan::System::Callback idleCallback, 
-					void * callbackData = 0 ) throw() ;
+					void * callbackData = 0, 
+					Ceylan::System::Microsecond 
+						callbackExpectedMaxDuration = 0 ) throw() ;
 							
 				
 				/**
@@ -590,6 +599,29 @@ namespace OSDL
 				static std::string DescribeEvent( 
 					const UserEvent & userEvent ) ;
 				
+				
+				/**
+				 * Tries to guess an upper-bound for the average duration of 
+				 * the execution of the specified callback.
+				 *
+				 * @param callback the callback whose duration will be 
+				 * evaluated.
+				 *
+				 * @param callbackData the data that will be given to the 
+				 * callback for the evaluation.
+				 *
+				 * @return A guessed upper-bound for the duration of the
+				 * callback.
+				 *
+				 * @note Will run the callback once, and return the measured
+				 * duration increased of 20%.
+				 *
+				 */
+				static Ceylan::System::Microsecond EvaluateCallbackduration(
+					Ceylan::System::Callback callback,
+					void * callbackData ) throw() ;
+	
+	
 	
 				/*
 				 * Basic event types, used to discriminate in the generic
@@ -1036,8 +1068,8 @@ namespace OSDL
 				virtual void onUnknownEventType( 
 					const BasicEvent & unknownEvent ) throw() ;
 				
-				 
-				 
+				 					
+					
 				 
 				// Section for protected attributes.
 								
@@ -1129,6 +1161,16 @@ namespace OSDL
 				void * _loopIdleCallbackData ;				
 				
 				
+				/**
+				 * An estimated upper bound of the duration of current idle
+				 * callback. 
+				 *
+				 * Helps the event loop to respect its expected pace.
+				 *
+				 */
+				Ceylan::System::Microsecond _loopIdleCallbackMaxDuration ;
+				
+				
 				
 				// Static section.
 				
@@ -1179,6 +1221,11 @@ namespace OSDL
 				 *
 				 * @throw EventsException if the initialization of an input
 				 * subsystem failed.
+				 *
+				 * @note Some input device handlers (ex : mouse or joystick)
+				 * may be created even though not specifically requested,
+				 * because some events may have to be managed anyway (ex :
+				 * keyboard or mouse focus lost, etc.).
 				 *
 				 */
 				explicit EventsModule( Ceylan::Flags eventsFlag ) 
