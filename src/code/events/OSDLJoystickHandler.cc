@@ -14,11 +14,6 @@
 #include "SDL.h"                    // for SDL_JoystickEventState
 
 
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>             // for OSDL_DEBUG and al
-#endif // OSDL_USES_CONFIG_H
-
-
 using std::string ;
 using std::list ;
 
@@ -30,7 +25,12 @@ using namespace OSDL::Events ;
 const string DebugPrefix = " " ;
 
 
-#ifdef OSDL_VERBOSE_JOYSTICK_HANDLER
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>             // for OSDL_VERBOSE_JOYSTICK_HANDLER and al
+#endif // OSDL_USES_CONFIG_H
+
+
+#if OSDL_VERBOSE_JOYSTICK_HANDLER
 
 #include <iostream>
 #define OSDL_JOYSTICK_HANDLER_LOG( message ) std::cout << "[OSDL Joystick Handler] " << message << std::endl ;
