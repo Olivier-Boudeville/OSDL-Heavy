@@ -1,6 +1,7 @@
 #include "OSDL.h"
 using namespace OSDL ;
 using namespace OSDL::Events ;
+using namespace OSDL::Video ;
 
 using namespace Ceylan::Log ;
 
@@ -16,11 +17,9 @@ using std::string ;
 using std::list ;
 
 
-//#define OSDL_TEST_VERBOSE
+#if OSDL_TEST_VERBOSE
 
-#ifdef OSDL_TEST_VERBOSE
-
-#define OSDL_DISPLAY_DEBUG( message ) std::cout << "[testOSDLScheduledMVC] " << message << endl ;
+#define OSDL_DISPLAY_DEBUG( message )
 
 #else // OSDL_TEST_VERBOSE
 
@@ -90,8 +89,10 @@ class MyBasicRenderer : public OSDL::Rendering::Renderer
 		
 		void registerView( Ceylan::View & newView ) throw()
 		{
+		
 			OSDL_DISPLAY_DEBUG( "View registered to renderer !" ) ;
 			_views.push_back( & newView	) ;	
+			
 		}
 		
 		
@@ -507,6 +508,57 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "Testing OSDL scheduled MVC integration." ) ;
 
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+
+
 		LogPlug::info( "Starting OSDL with joystick support." ) ;		
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
 			CommonModule::UseJoystick ) ;		
@@ -527,17 +579,32 @@ int main( int argc, char * argv[] )
 		
 		JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
 
-		Ceylan::Uint32 joyCount = 
+		JoystickNumber joyCount = 
 			myJoystickHandler.GetAvailableJoystickCount()  ;
 			
-		LogPlug::info( "There are " + Ceylan::toString( joyCount )
-			+ " attached joystick(s), opening them all." ) ;
+		if ( joyCount > 0 )	
+		{
+		
+			LogPlug::info( "There are " + Ceylan::toString( joyCount )
+				+ " attached joystick(s), opening them all." ) ;
 			
-		for ( Ceylan::Uint32 i = 0 ; i < joyCount; i++ )
-			myJoystickHandler.openJoystick( i ) ;
+			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
+				myJoystickHandler.openJoystick( i ) ;
+		
+			LogPlug::info( "New joystick handler state is : " 
+				+ myJoystickHandler.toString( Ceylan::high ) ) ;
+		
+		}
+		else
+		{
+		
+			LogPlug::info( "There is no joystick attached." ) ;
+		
+		}
 		
 		LogPlug::info( "New joystick handler state is : " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
+
 
 		LogPlug::info( "Displaying a dummy window "
 			"to have access to an event queue." ) ;
@@ -546,8 +613,8 @@ int main( int argc, char * argv[] )
 		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
 		// A SDL window is needed to have the SDL event system working :
-		myVideo.setMode( 640, 480, /* current depth */ 0, 
-			OSDL::Video::VideoModule::SoftwareSurface ) ;
+		myVideo.setMode( 640, 480, VideoModule::UseCurrentColorDepth, 
+			VideoModule::SoftwareSurface ) ;
 		
 		
 		/*
@@ -590,8 +657,9 @@ int main( int argc, char * argv[] )
 		myKeyboardHandler.linkToController( KeyboardHandler::EnterKeypadKey,
 			aController ) ;
 		
-		myJoystickHandler.linkToController( /* JoystickNumber */ 0, 
-			aController ) ;
+		if ( joyCount > 0 )
+			myJoystickHandler.linkToController( /* JoystickNumber */ 0, 
+				aController ) ;
 		
 		LogPlug::info( "Creating renderer." ) ;
 		
@@ -615,19 +683,28 @@ int main( int argc, char * argv[] )
 
 		LogPlug::debug( "Showing scheduler state before activation : " 
 			+ OSDL::Engine::Scheduler::GetExistingScheduler().toString() ) ;
-			
-		LogPlug::info( "Entering the event loop for event waiting "
-			"so that Controller can act." ) ;
 
-		std::cout << "< Hit Enter or push the first button of "
-			"the first joystick (if any) to end scheduled MVC test >" 
-			<< std::endl ;
+
+		if ( isBatch )
+		{
+			LogPlug::warning( "Main loop not launched, as in batch mode." ) ;
+		}
+		else
+		{
+
+			LogPlug::info( "Entering the event loop for event waiting "
+				"so that Controller can act." ) ;
+
+			std::cout << "< Hit Enter or push the first button "
+				"of the first joystick (if any) "
+				"to end scheduler-based MVC test >" << std::endl ;
 		
-		LogPlug::info( "Entering main loop." ) ;		
-		myEvents.enterMainLoop() ;
-		LogPlug::info( "Exiting main loop." ) ;		
+			myEvents.enterMainLoop() ;
+			LogPlug::info( "Exiting main loop." ) ;	
 				
-		LogPlug::info( "End of OSDL MVC test." ) ;
+		}
+				
+		LogPlug::info( "End of OSDL scheduled MVC test." ) ;
 		
 		LogPlug::info( "stopping OSDL." ) ;		
         OSDL::stop() ;
