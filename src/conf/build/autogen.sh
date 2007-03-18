@@ -1,7 +1,7 @@
 #!/bin/sh
 
 USAGE="
-Usage : "`basename $0`" --with-osdl-environment <path> || --ceylan-install-prefix <path> [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.
+Usage : "`basename $0`" [ --with-osdl-environment <path> || --ceylan-install-prefix <path> ] [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.
 
 	--with-osdl-environment : specify where the OSDL environment file (OSDL-environment.sh) should be read
 	--ceylan-install-prefix : specify where the Ceylan installation can be found
