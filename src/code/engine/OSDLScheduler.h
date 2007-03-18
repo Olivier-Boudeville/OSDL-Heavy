@@ -215,6 +215,10 @@ namespace OSDL
 		{
 		
 		
+			/// Used to measure time past deadlines.
+			typedef Ceylan::Uint32 Delay ;
+			
+			
 			public:
 			
 			
@@ -887,6 +891,37 @@ namespace OSDL
 				 */
 				virtual void onIdle() throw() ;
 
+
+				/**
+				 * Threshold for the level of delay bucket, above which the
+				 * scheduler will be stopped automatically.
+				 *
+				 */
+				static const Delay ShutdownBucketLevel ;
+				
+				
+				/**
+				 * Called whenever the scheduler does not succeed in keeping
+				 * up the pace with what the application demanded : if the
+				 * runtime resources are not high enough, then the scheduler
+				 * may fail regularly and progressively fill up its delay 
+				 * bucket.
+				 *
+				 * In this case this method - made to be overloaded - is called
+				 * with the current bucket value. It can then take 
+				 * countermeasures (preferably without taking too much time,
+				 * otherwise it will be responsible for the scheduling failure).
+				 *
+				 * The default implementation will send notifications in the
+				 * error log channel if below ShutdownBucketLevel, and will
+				 * stop the scheduler if higher.
+				 *
+				 * @see ShutdownBucketLevel
+				 *
+				 */
+				virtual void onScheduleFailure( Delay currentBucket ) throw() ;
+
+
 				
 				/**
 				 * Adds a programmed activation for <b>objectToProgram</b> 
@@ -1230,12 +1265,30 @@ namespace OSDL
 				Ceylan::System::Microsecond _scheduleStartingMicrosecond ;		
 		
 		
+		
+				/**
+				 * Records how many simulation ticks were recovered since 
+				 * the scheduler was started.
+				 *
+				 */
+				Ceylan::Uint32 _recoveredSimulationTicks ;
+		
+		
 				/**
 				 * Records how many simulation ticks were missed since 
 				 * the scheduler was started.
 				 *
 				 */
 				Ceylan::Uint32 _missedSimulationTicks ;
+		
+		
+		
+				/**
+				 * Records how many rendering ticks were recovered since 
+				 * the scheduler was started.
+				 *
+				 */
+				Ceylan::Uint32 _recoveredRenderingTicks ;
 		
 		
 				/**
@@ -1246,14 +1299,32 @@ namespace OSDL
 				Ceylan::Uint32 _missedRenderingTicks ;
 		
 		
+		
+				/**
+				 * Records how many input ticks were recovered since 
+				 * the scheduler was started.
+				 *
+				 */
+				Ceylan::Uint32 _recoveredInputPollingTicks ;
+		
+		
 				/**
 				 * Records how many input ticks were missed since 
 				 * the scheduler was started.
 				 *
 				 */
-				Ceylan::Uint32 _missedInputTicks ;
+				Ceylan::Uint32 _missedInputPollingTicks ;
 		
 		
+				/**
+				 * Records how many schedule failures were reported.
+				 *
+				 * Happens when the delay bucket reaches its first threashold.
+				 *
+				 */
+				Ceylan::Uint32 _scheduleFailureCount ;
+		
+
 				/**
 				 * References the events module, if necessary.
 				 *
