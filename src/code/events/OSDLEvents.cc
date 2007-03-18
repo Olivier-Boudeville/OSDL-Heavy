@@ -142,7 +142,7 @@ string EventsModule::_SDLEnvironmentVariables[] =
 		"SDL_MOUSEDEV_IMPS2",
 		"SDL_MOUSEDRV",
 		"SDL_NO_RAWKBD",
-		"SDL_NOMOUSE"
+		"SDL_NOMOUSE",
 		"SDL_JOYSTICK_DEVICE",
 		"SDL_LINUX_JOYSTICK"
 } ;
@@ -184,15 +184,17 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) :
 			/* useClassicalJoysticks */ true ) ;
 	}	
 
-
-	if ( eventsFlag & CommonModule::UseKeyboard )
-	{
 	
-		// Keyboard comes in default state :
-		_keyboardHandler = new KeyboardHandler( 
-			/* initialMode */ Events::rawInput,
-			/* useSmarterDefaultKeyHandler */ false ) ;
-	}
+	/*
+	 * No 'if ( eventsFlag & CommonModule::UseKeyboard )...' test, as even if 
+	 * the UseMouse flag is not set, we may receive mouse-related events
+	 * (motion, focus, etc.), hence we need a handler for that :
+	 *
+	 */
+	
+	// Keyboard comes in default state :
+	_keyboardHandler = new KeyboardHandler( /* initialMode */ Events::rawInput,
+		/* useSmarterDefaultKeyHandler */ false ) ;
 		
 	
 	/*
@@ -335,24 +337,36 @@ void EventsModule::useScheduler( bool on ) throw()
 
 
 
-void EventsModule::setIdleCallback( Ceylan::System::Callback idleCallback, 
-	void * callbackData ) throw()
+void EventsModule::setIdleCallback( 
+		Ceylan::System::Callback idleCallback, 
+		void * callbackData, 
+		Ceylan::System::Microsecond callbackExpectedMaxDuration ) 
+	throw()
 {
-
+	
+	
 	if ( _useScheduler )
 	{
 		
 		// Will create the scheduler if it is not already existing :
 		Scheduler::GetScheduler().setIdleCallback( idleCallback, 
-			callbackData ) ;
+			callbackData, callbackExpectedMaxDuration ) ;
 
 	}
 	else // the basic event loop is used :
 	{
-		_loopIdleCallback     = idleCallback ;
-		_loopIdleCallbackData = callbackData ;
 	
+		_loopIdleCallback            = idleCallback ;
+		_loopIdleCallbackData        = callbackData ;
+
+		if ( callbackExpectedMaxDuration != 0 )
+			_loopIdleCallbackMaxDuration = callbackExpectedMaxDuration ;
+		else
+			_loopIdleCallbackMaxDuration = EvaluateCallbackduration(
+				idleCallback, callbackData ) ;
+						
 	}
+	
 	
 }
 
@@ -382,8 +396,10 @@ void EventsModule::enterMainLoop() throw( EventsException )
 		
 		try
 		{
+		
 			// Will create a scheduler if necessary :
 			Scheduler::GetScheduler().schedule() ;
+			
 		}
 		catch( const SchedulingException & e )
 		{
@@ -391,12 +407,16 @@ void EventsModule::enterMainLoop() throw( EventsException )
 				"EventsModule::enterMainLoop : scheduler stopped on failure : "
 				+ e.toString() ) ;
 		}	
+		
 		LogPlug::debug( "EventsModule::enterMainLoop : scheduler returned." ) ;
+		
 	}
 	else
 	{
+	
 		LogPlug::debug( "EventsModule::enterMainLoop : "
 			"no scheduler requested, using basic event loop." ) ;
+		
 		enterBasicMainLoop() ;	
 			
 		LogPlug::debug( 
@@ -473,6 +493,7 @@ void EventsModule::setKeyboardHandler( KeyboardHandler & newHandler ) throw()
 
 
 
+
 bool EventsModule::hasJoystickHandler() const throw()
 {
 
@@ -505,6 +526,7 @@ void EventsModule::setJoystickHandler( JoystickHandler & newHandler ) throw()
 	_joystickHandler = & newHandler ;
 	
 }
+
 
 
 
@@ -943,23 +965,32 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 			/*
 			 * Force the scheduling granularity to be precomputed, to avoid
 			 * hiccups at loop start-up when needing granularity to adjust
-			 * delays :
+			 * sleeping delays in default idle callback :
+			 *
+			 * (a 10% margin is added)
 			 *
 			 */
-			getSchedulingGranularity() ;
+			_loopIdleCallbackMaxDuration = 
+				static_cast<Microsecond>( 1.1 * getSchedulingGranularity() ) ;
 			
 		}
 	
 	
-		// Compute the event loop period :
+		// Compute the event loop period, in microsecond (default : 100 Hz) :
 		Microsecond	loopExpectedDuration 
 			= static_cast<Microsecond>( 1000000.0f / _loopTargetedFrequency ) ; 
 		
+		// Default : 10ms, hence 10 000 microseconds :
+		LogPlug::debug( "Loop expected duration is " 
+			+ Ceylan::toString( loopExpectedDuration ) + " microseconds, "
+			"and idle callback expected duration is "
+			+ Ceylan::toString( _loopIdleCallbackMaxDuration ) 
+			+ " microseconds." ) ;
 	
 		getPreciseTime( lastSec, lastMicrosec ) ;
 		
+		startedSec      = lastSec ;
 		startedMicrosec = lastMicrosec ;
-		startedSec = lastSec ;
 		
 		
 	    while ( ! _quitRequested )
@@ -983,16 +1014,34 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 		
 			getPreciseTime( nowSec, nowMicrosec ) ;
 		
-			while ( getDurationBetween( lastSec, lastMicrosec, nowSec,
-				nowMicrosec ) < loopExpectedDuration )
+			// Do not call onIdle if it will likely make us miss the deadline :
+			while ( getDurationBetween( lastSec, lastMicrosec, 
+					nowSec,	nowMicrosec ) + _loopIdleCallbackMaxDuration 
+				< loopExpectedDuration )
 			{
 				onIdle() ;
 				getPreciseTime( nowSec, nowMicrosec ) ;			
 			}
 			
-			// Ready for next iteration
-		
-			lastSec = nowSec ;
+			/*
+			 * Burn any last few microseconds with a 'soft' (thanks to 
+			 * getPreciseTime) busy wait :
+			 *
+			 */
+			while ( getDurationBetween( lastSec, lastMicrosec, nowSec,
+					nowMicrosec ) < loopExpectedDuration )
+				getPreciseTime( nowSec, nowMicrosec ) ;			
+			
+			/*
+			 * Note that in all cases we stay equal or below to the requested
+			 * frequency : we can be late (if the idle callback last for too
+			 * long), but not early (we never stop before the current deadline),
+			 * so on a run we are a bit late on average.
+			 * 
+			 */
+			 
+			// Ready for next iteration :
+			lastSec      = nowSec ;
 			lastMicrosec = nowMicrosec ;
 		
 		}
@@ -1004,13 +1053,15 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 			+ e.toString() ) ;
 	}
 	
-	if ( ( lastSec - startedSec ) > 4100 )
+	if ( ( lastSec - startedSec ) >
+		Ceylan::System::MaximumDurationWithMicrosecondAccuracy )
 	{
 	
-		// Avoid overflow of getDurationBetween : 
+		// Avoid overflow of getDurationBetween, no average FPS computed : 
 		LogPlug::debug( "Exited from main loop after " 
-			+ Ceylan::toString( frameCount ) 
-			+ " frames, an average of " 
+			+ Ceylan::toString( frameCount ) + " frames and about " 
+			+ Ceylan::toString( lastSec - startedSec ) 
+			+ " seconds, an average of " 
 			+ Ceylan::toString( 
 				static_cast<Ceylan::Float64>( _idleCallsCount ) / frameCount, 
 				/* precision */ 3 )
@@ -1019,10 +1070,11 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	else
 	{
 		LogPlug::debug( "Exited from main loop after " 
-			+ Ceylan::toString( frameCount ) 
-			+ " frames, on average there were " 
+			+ Ceylan::toString( frameCount ) + " frames and about " 
+			+ Ceylan::toString( lastSec - startedSec ) 
+			+ " seconds, on average there were " 
 			+ Ceylan::toString( 
-				100.0f * 1000000 /* since microseconds */ * frameCount / 
+					1000000.0f /* since microseconds */ * frameCount / 
 					getDurationBetween( startedSec, startedMicrosec, lastSec,
 						lastMicrosec ),
 				/* precision */ 3 )
@@ -1311,11 +1363,11 @@ void EventsModule::onIdle() throw()
 	{
 	
 		/*
-		 * Issues a basic sleep, chosen so that the minimum real sleeping 
-		 * time can be performed.
+		 * Issues an atomic sleep, chosen so that the minimum real
+		 * sleeping time can be performed, scheduler-wise.
 		 *
 		 */
-		 basicSleep() ;
+		 Ceylan::System::atomicSleep() ;
 		
 	}	
 		
@@ -1698,3 +1750,36 @@ bool EventsModule::IsEventsInitialized() throw()
 	
 }
 
+
+Ceylan::System::Microsecond EventsModule::EvaluateCallbackduration(
+	Ceylan::System::Callback callback, void * callbackData ) throw()
+{
+
+	// Issue just a first and only run, to measure how long it takes :
+	Microsecond startedMicrosec ;
+	Second startedSec ;
+		
+	Microsecond endedMicrosec ;
+	Second endedSec ;
+		
+	getPreciseTime( startedSec, startedMicrosec ) ;
+			
+	(*callback)( callbackData ) ;
+		
+	getPreciseTime( endedSec, endedMicrosec ) ;
+			
+	Microsecond callbackExpectedMaxDuration =
+		static_cast<Microsecond>( 1.2 *
+			getDurationBetween( startedSec,	startedMicrosec,
+					endedSec, endedMicrosec ) ) ;
+			
+	LogPlug::debug( "EventsModule::EvaluateCallbackduration : duration for "
+		"idle callback evaluated to " 
+		+ Ceylan::toString( callbackExpectedMaxDuration )
+		+ " microseconds." ) ;
+	
+	return callbackExpectedMaxDuration ;
+
+}
+
+	
