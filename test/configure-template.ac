@@ -57,6 +57,8 @@ AC_ARG_ENABLE(debug,
 if test x$enable_debug = xyes; then
 
 	# Debug requested :
+	AM_CPPFLAGS="$AM_CPPFLAGS -DOSDL_TEST_VERBOSE=1"
+	
 	AM_CXXFLAGS="$AM_CXXFLAGS -g" 
     if test x$ac_cv_cxx_compiler_gnu = xyes; then
 		# Add -pg to manage profile information for gprof.
@@ -69,6 +71,7 @@ if test x$enable_debug = xyes; then
 else
 
 	# Aggressive optimizations :
+	AM_CPPFLAGS="$AM_CPPFLAGS -DOSDL_TEST_VERBOSE=0"
 	
     if test x$ac_cv_cxx_compiler_gnu = xyes; then
 		# -fomit-frame-pointer : may prevent debugging on some platforms
@@ -96,9 +99,8 @@ else
             fi
             ;;
     esac
+	
 fi
-
-
 
 
 if test x$ac_cv_cxx_compiler_gnu = xyes; then
@@ -148,6 +150,7 @@ AC_SUBST(CPPFLAGS)
 LIBS="$LIBS $OSDL_LIBS"
 AC_SUBST(LIBS)
 
+AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 AC_SUBST(AM_LDFLAGS)
 
