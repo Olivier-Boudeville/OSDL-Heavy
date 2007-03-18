@@ -232,8 +232,7 @@ namespace OSDL
 				 * manager decorations) of the application window.
 				 *
 				 * @param askedBpp the requested color depth, in bits per 
-				 * pixel.
-				 * If a null value (UseCurrentDepth) is specified, then 
+				 * pixel. If UseCurrentColorDepth (null) is specified, then 
 				 * the color depth of the display will be used.
 				 *
 				 * @param flags describes the desired features, such as
