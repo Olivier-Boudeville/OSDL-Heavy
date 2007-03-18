@@ -125,9 +125,13 @@ void MultimediaRenderer::render( Events::RenderingTick currentRenderingTick )
 	OSDL_MULTIMEDIA_RENDER_LOG( "Rendering ! " ) ;
 	
 	if ( _videoRenderer != 0 )
+		_videoRenderer->render( currentRenderingTick ) ;
+	else	
 		renderVideo( currentRenderingTick ) ;
 		
 	if ( _audioRenderer != 0 )	
+		_audioRenderer->render( currentRenderingTick ) ;
+	else	
 		renderAudio( currentRenderingTick ) ;
 		
 	/*
