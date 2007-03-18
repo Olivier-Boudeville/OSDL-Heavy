@@ -29,6 +29,8 @@ using std::map ;
 
 Scheduler * Scheduler::_internalScheduler = 0 ;
 
+const Scheduler::Delay Scheduler::ShutdownBucketLevel = 50000 ;
+
 
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>               // for OSDL_DEBUG_SCHEDULER and al
@@ -521,22 +523,17 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 	// Do not use desired frequencies, compute them instead from the periods :
 			
 	buf <<  ". User-defined simulation frequency is " 
-		+ Ceylan::toString( 
-			1E6 / 
-				( _simulationPeriod * _engineTickDuration ), 
+		+ Ceylan::toString( 1E6 / ( _simulationPeriod * _engineTickDuration ), 
 			/* precision */ 2 )
 		+ " Hz (a period of " 
 		+ Ceylan::toString( _simulationPeriod ) 
 		+ " engine ticks), rendering frequency is "
-		+ Ceylan::toString( 
-			1E6 / 
-				( _renderingPeriod * _engineTickDuration ),
+		+ Ceylan::toString( 1E6 / ( _renderingPeriod * _engineTickDuration ),
 			/* precision */ 2 ) 
 		+ " Hz (a period of " 
 		+ Ceylan::toString( _renderingPeriod ) 
 		+ " engine ticks), input polling frequency is "
-		+ Ceylan::toString( 1E6 /
-				( _inputPeriod * _engineTickDuration ),
+		+ Ceylan::toString( 1E6 / ( _inputPeriod * _engineTickDuration ),
 			/* precision */ 2 ) 
 		+ " Hz (a period of " 
 		+ Ceylan::toString( _inputPeriod ) 
@@ -588,11 +585,12 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 	
 	if ( _screenshotMode )
 	{
+	
 		buf << ". Current movie frame period for screenshot mode is " 
 			+ Ceylan::toString( _screenshotPeriod ) 
 			+ " engine ticks, which corresponds to a frequency of "
 			+ Ceylan::toString( 1E6 /
-				( _screenshotPeriod * _engineTickDuration ) )
+				( _screenshotPeriod * _engineTickDuration ), /* precision */ 2 )
 			+ " frames per second" ;	
 
 		// No simulation nor rendering tick can be missed in screenshot mode.
@@ -601,7 +599,11 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 	
 		
 	if ( _missedSimulationTicks == 0 )
+	{
+	
 		buf << ". No simulation tick was missed" ;
+	
+	}	
 	else
 	{
 	
@@ -642,7 +644,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 	}
 		 	
 			
-	if ( _missedInputTicks == 0 )
+	if ( _missedInputPollingTicks == 0 )
 		buf << ". No input tick was missed" ;
 	else
 	{
@@ -651,10 +653,10 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		Ceylan::System::Microsecond microsec ;
 		Ceylan::System::getPreciseTime( sec, microsec ) ;
 
-		buf << ". " + Ceylan::toString( _missedInputTicks ) 
+		buf << ". " + Ceylan::toString( _missedInputPollingTicks ) 
 			+ " input ticks were missed, "
 			"it sums up to an actual average input frequency of "
-			<< 1E6 * ( _currentInputTick - _missedInputTicks ) / 
+			<< 1E6 * ( _currentInputTick - _missedInputPollingTicks ) / 
 				static_cast<Ceylan::Float64>( 
 					( sec - _scheduleStartingSecond ) * 1E6
 					+ microsec - _scheduleStartingMicrosecond ) 
@@ -781,9 +783,13 @@ Scheduler::Scheduler() throw() :
 	_stopRequested( false ),
 	_scheduleStartingSecond( 0 ),
 	_scheduleStartingMicrosecond( 0 ),
+	_recoveredSimulationTicks( 0 ),
 	_missedSimulationTicks( 0 ),
+	_recoveredRenderingTicks( 0 ),
 	_missedRenderingTicks( 0 ),
-	_missedInputTicks( 0 ),
+	_recoveredInputPollingTicks( 0 ),
+	_missedInputPollingTicks( 0 ),
+	_scheduleFailureCount( 0 ),
 	_eventsModule( 0 ),
 	_renderer( 0 ),
 	_videoModule( 0 )
@@ -822,7 +828,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 	/*
 	 * Set up idle callback (with default strategy) if not done already :
-	 * (will use atomic sleeps)
+	 * (will use atomic sleeps, ith a 10% margin in anticipated delay)
 	 *
 	 */
 	if ( _idleCallback == 0 && _idleCallbackMaxDuration == 0 )
@@ -839,13 +845,20 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	send( "Scheduler starting in soft real-time best effort mode. " 
 		"Scheduler informations : " + toString( Ceylan::low ) ) ;
 	
+	
 	// Let's prepare to the run :
 	
 	_stopRequested = false ;
-		
-	_missedSimulationTicks = 0 ;
-	_missedRenderingTicks  = 0 ;
-	_missedInputTicks      = 0 ;
+	
+	_recoveredSimulationTicks = 0 ;
+	_missedSimulationTicks    = 0 ;
+	
+	_recoveredRenderingTicks = 0 ;
+	_missedRenderingTicks    = 0 ;
+	
+	_recoveredInputPollingTicks = 0 ;
+	_missedInputPollingTicks    = 0 ;
+	
 	
 #if OSDL_DEBUG_SCHEDULER
 	
@@ -857,17 +870,18 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 */
 	 
 	list<SimulationTick> metSimulations ;
+	list<SimulationTick> recoveredSimulations ;
 	list<SimulationTick> missedSimulations ;
 	
 	list<RenderingTick>  metRenderings ;	
+	list<RenderingTick>  recoveredRenderings ;	
 	list<RenderingTick>  missedRenderings ;
 		
 	list<InputTick>      metInputPollings ;	
+	list<InputTick>      recoveredInputPollings ;	
 	list<InputTick>      missedInputPollings ;	
 	
 #endif // OSDL_DEBUG_SCHEDULER
-
-	EngineTick previousEngineTick ;
 	
 	
 	/*
@@ -875,6 +889,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 * rendering and input times :
 	 * _currentEngineTick, for an engine tick duration of 1000 (microseconds),
 	 * should wrap around if the program runs for more than 49 days. 
+	 *
 	 * If engine tick duration is divided by two, then the period until
 	 * wrap-around will be divided by two as well.
 	 *
@@ -893,62 +908,80 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		
 	EngineTick nextSimulationDeadline = _currentEngineTick + _simulationPeriod ;
 	EngineTick nextRenderingDeadline  = _currentEngineTick + _renderingPeriod ;
-	EngineTick nextInputDeadline      = _currentInputTick  + _inputPeriod ;
+	EngineTick nextInputDeadline      = _currentEngineTick + _inputPeriod ;
 	
 	EngineTick nextDeadline ;
 	
-	// Store scheduling starting time : 
-	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
-	
-	
-	// Enter the schedule loop :
 	
 	/*
-	 * @todo : by construction the actual frequencies can ony be less than the
-	 * expected ones, which are seldom enforced (i.e. we have never 100 Hz,
-	 * but often 95 Hz because of OS process switching). 
+	 * By construction the actual frequencies can only be less than the
+	 * expected ones, which are difficult to enforce : we would never have 
+	 * 100 Hz, but often 95 Hz or so, because of OS process switching, if no 
+	 * tolerance was used for deadlines. 
 	 *
-	 * The algorithm could check the delay D, if it is small (ex : D < 8 ms),
-	 * then do as if it had not existed (do not cancel anything, activate as
-	 * usual). 
-	 * Otherwise, if the actions are really triggered too late, use the 
-	 * on*Skip methods.
+	 * The algorithm checks the delay D (time exceeding a missed deadline) for
+	 * a given tick, if the delay is small enough
+	 * (ex for rendering ticks : D < rendering tolerance = period / 4 = 6 ms ),
+	 * then the scheduler does as if the delay had not existed : it does not
+	 * cancel or skip anything, instead it activates the rendering as usual,
+	 * despite the delay. 
 	 *
-	 * Overloaded situations could be detected thanks to a kind of leaking 
-	 * bucket : each delay of d ms adds d to a sum s, each rendering tick
-	 * decreases s, if s exceeds say, 50, then the system is deemed overloaded
-	 * and more skips are triggered.
+	 * Otherwise, if the actions are really triggered too late (delay higher
+	 * than the tolerance), then the scheduler use the on*Skip methods.
+	 *
+	 *
+	 * Overloaded situations are detected thanks to a kind of leaking 
+	 * bucket : each delay of d ms fills the bucket by an amount that increase
+	 * with d (depending on the tolerance being exceeded or not), each elapsed
+	 * engine tick  makes the bucket leak a bit. 
+	 *
+	 * If the bucket gets filled up to a given threshold, then the system is
+	 * deemed overloaded (its ressources cannot keep up with what the 
+	 * application demands) and counter-measures are triggered (ex : more skips 
+	 * are triggered).
 	 *
 	 */
 	
 	// Delays will fill it, whereas it leaks regularly :
-	Ceylan::Uint32 delayBucket = 0 ;
+	Delay delayBucket = 0 ;
 	
 	// Maximum fill bucket encountered :
-	Ceylan::Uint32 maxDelayBucket = 0 ;
+	Delay maxDelayBucket = 0 ;
 
 	/*
 	 * Records all delays to compute average fill level 
 	 * (beware to the overflow) :
 	 *
 	 */
-	Ceylan::Uint32 delayCumulativeBucket = 0 ;
+	Delay delayCumulativeBucket = 0 ;
 	
 	// When the bucket reaches that level, the machine is actually overloaded :
-	const Ceylan::Uint32 bucketFillThreshold = 50 ;
+	const Delay bucketFillThreshold = 500 ;
 
+	/*
+	 * Leaking factor : at each engine tick, 
+	 * (current fill level) = (previous fill level) * bucketLeakingFactor
+	 *
+	 */
+	const Ceylan::Float32 bucketLeakingFactor = 0.9 ;
+	
+	_scheduleFailureCount = 0 ;
+	
 	
 	/*
-	 * If a simulation tick is late of up to 15 ms, it is considered on time
+	 * If a simulation tick is late of up to 50 ms, it is considered on time
 	 * neverthess, and activation takes place as normal.
 	 *
 	 * Higher delays will lead to simulation skips.
 	 *
 	 * The threshold is quite high, as we really want to avoid skipping 
-	 * simulation steps.
+	 * simulation steps. 
+	 *
+	 * For simulation, the threshold is based on an actual (soft-realtime)
+	 * delay, not a fraction of the simulation period.
 	 *
 	 */
-	const Microsecond simulationToleranceTime = 15000 ;
+	const Microsecond simulationToleranceTime = 50000 ;
 	
 	const EngineTick simulationToleranceTick = static_cast<EngineTick>( 
 		simulationToleranceTime / _engineTickDuration ) ; 
@@ -968,15 +1001,9 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 * serious : next rendering will replace it, we do not <b>have</b> to
 	 * force this particular rendering to happen.
 	 *
-	const Microsecond renderingToleranceTime = 2000 ;
-	
-	const EngineTick renderingToleranceTick = static_cast<EngineTick>( 
-		renderingToleranceTime / _engineTickDuration ) ; 
-
-	send( "Rendering tolerance time is " 
-		+ Ceylan::toString( renderingToleranceTime ) + " microseconds, i.e. "
-		+ Ceylan::toString( renderingToleranceTick ) + " engine ticks." ) ;
-
+	 * For rendering, the threshold is based on a fraction of the rendering
+	 * period, as what it searched for is stability between renderings.
+	 *
 	 */
 	
 	/*
@@ -987,7 +1014,10 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	const EngineTick renderingToleranceTick = _renderingPeriod / 4 ;
 	
 	send( "Rendering tolerance is "
-		+ Ceylan::toString( renderingToleranceTick ) + " engine ticks." ) ;
+		+ Ceylan::toString( renderingToleranceTick ) 
+		+ " engine ticks, which translates into a tolerance of " 
+		+ Ceylan::toString( renderingToleranceTick * _engineTickDuration )
+		+ " microseconds." ) ;
 		
 		
 	/*
@@ -1000,15 +1030,9 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 * serious : next input step will replace it, we do not <b>have</b> to
 	 * force this particular input polling to happen.
 	 *
-	const Microsecond inputToleranceTime = 2000 ;
-	
-	const EngineTick inputToleranceTick = static_cast<EngineTick>( 
-		inputToleranceTime / _engineTickDuration ) ; 
-
-	send( "Input polling tolerance time is " 
-		+ Ceylan::toString( inputToleranceTime ) + " microseconds, i.e. "
-		+ Ceylan::toString( inputToleranceTick ) + " engine ticks." ) ;
-
+	 * For input polling, the threshold is based on a fraction of the input
+	 * period, as what it searched for is stability between renderings.
+	 *
 	 */
 
 	/*
@@ -1019,9 +1043,17 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	const EngineTick inputToleranceTick = _inputPeriod / 2 ;
 	
 	send( "Input polling tolerance is "
-		+ Ceylan::toString( inputToleranceTick ) + " engine ticks." ) ;
+		+ Ceylan::toString( inputToleranceTick ) 
+		+ " engine ticks, which translates into a tolerance of " 
+		+ Ceylan::toString( inputToleranceTick * _engineTickDuration )
+		+ " microseconds." ) ;
 		
 		
+	// Store scheduling starting time : 
+	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
+	
+	
+	// Enter the schedule loop :
 	
 	while ( ! _stopRequested )
 	{
@@ -1035,8 +1067,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		delayCumulativeBucket += delayBucket ;
 		
 		// Bucket leaks regularly :
-		if ( delayBucket > 0 )
-			delayBucket-- ;
+		delayBucket = static_cast<Delay>( delayBucket * bucketLeakingFactor ) ;
 				
 		/* 
 		 * Normally, for each simulation tick, either scheduleSimulation 
@@ -1051,7 +1082,6 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 */
 		 						
 		// We hereby suppose we are just at the beginning of a new engine tick.
-		previousEngineTick = _currentEngineTick ;
 		
 		
 		// What is to be done on this new engine tick ?
@@ -1060,6 +1090,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		// Perform all scheduling actions for this tick :
 		if ( _currentEngineTick == nextSimulationDeadline )
 		{
+			
 			//OSDL_SCHEDULE_LOG( "--> Simulation deadline met" ) ;
 				
 #if OSDL_DEBUG_SCHEDULER
@@ -1070,12 +1101,14 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			
 			_currentSimulationTick++ ;
 			nextSimulationDeadline += _simulationPeriod ;
+			
 		}
-		// Time has elapsed....
+		// Time has elapsed during simulation....
 
 
 		if ( _currentEngineTick == nextRenderingDeadline )
 		{
+		
 			//OSDL_SCHEDULE_LOG( "--> Rendering deadline met" ) ;
 				
 #if OSDL_DEBUG_SCHEDULER
@@ -1086,12 +1119,14 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 			_currentRenderingTick++ ;
 			nextRenderingDeadline += _renderingPeriod ;
+			
 		}
-		// Still more time elapsed....
+		// Still more time elapsed in the rendering....
 
 
 		if ( _currentEngineTick == nextInputDeadline )
 		{
+		
 			//OSDL_SCHEDULE_LOG( "--> Input deadline met" ) ;
 				
 #if OSDL_DEBUG_SCHEDULER
@@ -1102,6 +1137,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 			_currentInputTick++ ;
 			nextInputDeadline += _inputPeriod ;
+			
 		}
 		// Everything done, hoping not too much time elapsed....
 
@@ -1128,7 +1164,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		while ( nextSimulationDeadline < _currentEngineTick + 1 )	
 		{			
 		
-			// Cancel all missed simulation steps and warn :
+			// Manage all missed simulation steps and warn :
 			EngineTick missedTicks = 
 				_currentEngineTick + 1 - nextSimulationDeadline ;
 			
@@ -1141,16 +1177,38 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds), cancelling activations." ) ;
 			
-				// Missing a simulation deadline is serious :
-				Ceylan::Uint32 delayPenalty = missedTicks * 5 ;
-				
-				delayBucket += delayPenalty ;
+				/*
+				 * Missing a simulation deadline is serious, so the bucket
+				 * needs to fill quickly if tolerance is exceeded. 
+				 *
+				 * However there happens sometimes rare glitches (Dirac peaks)
+				 * that lead to very significant delays.
+				 *
+				 * They are one-shot, and with an affine delay function they
+				 * would saturate for too long the bucket, whereas the 
+				 * computer can actually face the average load quite well.
+				 *
+				 * Hence we chose an increasing delay function which does not
+				 * lead to explosive values for high arguments : the square
+				 * root, more precisely f : d -> 35.log( d )
+				 * f(500) is about 138
+				 * 
+				 * (let's hope the square root is not too expensive)
+				 *
+				 * Check with gnuplot :
+				 * set xrange [0:1000]
+				 * set autoscale
+				 * plot 20 * log( 2 * x )
+				 *
+				 */
+				delayBucket += 20 * static_cast<Delay>( 
+					Ceylan::Maths::Log( 2.0f * missedTicks ) ) ;
 
 #if OSDL_DEBUG_SCHEDULER
 				missedSimulations.push_back( _currentSimulationTick ) ;
 #endif // OSDL_DEBUG_SCHEDULER
 			
-			
+				
 				/*
 				 * If ever this call is longer than the simulation period, the 	
 				 * scheduler will go in an infinite loop :
@@ -1163,6 +1221,9 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			else
 			{
 			
+				// No onSimulationRecovered really needed :
+				_recoveredSimulationTicks++ ;
+				
 				// This will not be resolved on next engine tick finally :
 				missedTicks-- ;
 				
@@ -1173,10 +1234,10 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 					+ " microseconds)." ) ;
 				
 				// Small constant penalty :	
-				delayBucket += 5 ;
+				delayBucket += 8 ;
 
 #if OSDL_DEBUG_SCHEDULER
-				metSimulations.push_back( _currentSimulationTick ) ;
+				recoveredSimulations.push_back( _currentSimulationTick ) ;
 #endif // OSDL_DEBUG_SCHEDULER
 			
 				scheduleSimulation( _currentSimulationTick ) ;
@@ -1206,7 +1267,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		while ( nextRenderingDeadline < _currentEngineTick + 1 )	
 		{			
 		
-			// Cancel all missed rendering steps and warn :
+			// Manage all missed rendering steps and warn :
 			EngineTick missedTicks = 
 				_currentEngineTick + 1 - nextRenderingDeadline ;
 
@@ -1220,9 +1281,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 					+ " microseconds), cancelling rendering." ) ;
 
 				// Missing a rendering deadline is annoying :
-				Ceylan::Uint32 delayPenalty = missedTicks * 2 ;
-				
-				delayBucket += delayPenalty ;
+				delayBucket += 2 * missedTicks ;
 			
 #if OSDL_DEBUG_SCHEDULER
 				missedRenderings.push_back( _currentRenderingTick ) ;
@@ -1234,6 +1293,9 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			else
 			{	
 			
+				// No onRenderingRecovered really needed :
+				_recoveredRenderingTicks++ ;
+			
 				// This will not be resolved on next engine tick finally :
 				missedTicks-- ;
 
@@ -1244,10 +1306,10 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 					+ " microseconds)." ) ;
 				
 				// Small constant penalty :	
-				delayBucket += 2 ;
+				delayBucket += 4 ;
 
 #if OSDL_DEBUG_SCHEDULER
-				metRenderings.push_back( _currentRenderingTick ) ;
+				recoveredRenderings.push_back( _currentRenderingTick ) ;
 #endif // OSDL_DEBUG_SCHEDULER
 
 				scheduleRendering( _currentRenderingTick ) ;
@@ -1264,14 +1326,14 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		
 		
 		/*
-		 * Lastly, take care of the input polling.
+		 * Lastly, take care of the input polling :
 		 *
 		 */
 		while ( nextInputDeadline < _currentEngineTick + 1 )	
 		{			
 		
 			/*
-			 * Cancel all missed input steps and warn (this is not too 
+			 * Manage all missed input steps and warn (this is not too 
 			 * serious skip) :
 			 *
 			 */
@@ -1288,7 +1350,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 					+ " microseconds), cancelling input polling." ) ;
 
 				// Missing an input deadline should be avoided :
-				delayBucket += missedTicks ;
+				delayBucket += 1 * missedTicks ;
 			
 #if OSDL_DEBUG_SCHEDULER
 				missedInputPollings.push_back( _currentInputTick ) ;
@@ -1300,6 +1362,9 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			else
 			{
 			
+				// No onInputPollingRecovered really needed :
+				_recoveredInputPollingTicks++ ;
+				
 				// This will not be resolved on next engine tick finally :
 				missedTicks-- ;
 
@@ -1313,7 +1378,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				delayBucket += 2 ;
 
 #if OSDL_DEBUG_SCHEDULER
-				metInputPollings.push_back( _currentInputTick ) ;
+				recoveredInputPollings.push_back( _currentInputTick ) ;
 #endif // OSDL_DEBUG_SCHEDULER
 
 				scheduleInput( _currentInputTick ) ;
@@ -1329,50 +1394,76 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 						
 		}
 		 		
+		if ( maxDelayBucket < delayBucket )
+			maxDelayBucket = delayBucket ;
 
-		// Maybe counter-measures could be taken here :
-		if ( delayBucket > bucketFillThreshold ) 
-			LogPlug::warning( "This computer does not seem able to satisfy "
-				"the load (bucket is " + Ceylan::toString( delayBucket ) 
-				+ ") for engine tick #" 
-				+ Ceylan::toString( _currentEngineTick ) + "." ) ;
-		
+		// Maybe counter-measures will be taken here :
+		if ( delayBucket > bucketFillThreshold )
+			onScheduleFailure( delayBucket ) ;
+
 		/*
-		 * Wait until next deadline, possibly skipping several engine ticks :
+		 * Will wait until next deadline, possibly skipping several engine
+		 * ticks :
 		 *
 		 */
 		nextDeadline = Ceylan::Maths::Min( nextSimulationDeadline,
 			nextRenderingDeadline, nextInputDeadline ) ;
 
-		/*
-		 * Computes the intermediate delays we are jumping over :
-		 *
-		 */
-		Ceylan::Uint32 jumpLength = nextDeadline - _currentEngineTick ;
-
-		OSDL_SCHEDULE_LOG( "Next deadline is " 
-			+ Ceylan::toString( jumpLength ) + " engine tick(s) away." ) ;
-		
-		Ceylan::Uint32 addedDelay = delayBucket ;
-		
-		while ( jumpLength > 0 && addedDelay > 0 )
+		if ( nextDeadline < _currentEngineTick )
 		{
-			delayCumulativeBucket += addedDelay ;
-			jumpLength-- ;
-			addedDelay-- ;
-		} ;
+		
+			string message = "We are at engine tick #" 
+				+ Ceylan::toString( _currentEngineTick ) 
+				+ ", already late for next deadline, which is at "
+				+ Ceylan::toString( nextDeadline ) + "." ;
 			
-
-		if ( maxDelayBucket < delayBucket )
-			maxDelayBucket = delayBucket ;
+			OSDL_SCHEDULE_LOG( message ) ;
+			LogPlug::warning( message ) ;
 			
-		// Leak it as if there had been no jump in engine ticks :
-		if ( delayBucket > jumpLength )
-			delayBucket -= jumpLength ;
+			// Delay will be taken care of at next iteration :
+			continue ;
+		}
+		else if ( nextDeadline <= _currentEngineTick + 1 )
+		{
+			
+			/*
+			 * nextDeadline is this current engine tick, or the next one.
+			 * In both cases it is to be handled immediately, no special
+			 * jump to perform :
+			 *
+			 */
+			OSDL_SCHEDULE_LOG( 
+				"No jump could be performed, just continuing." ) ;
+			
+		}
 		else
-			delayBucket = 0 ;
-			
+		{
+			// Here nextDeadline > _currentEngineTick + 1, hence jumpLength > 0.
+		
+			/*
+			 * Computes the intermediate delays we are jumping over :
+			 *
+			 */
+			EngineTick jumpLength = nextDeadline - _currentEngineTick - 1 ;
 
+			OSDL_SCHEDULE_LOG( "Next deadline is " 
+				+ Ceylan::toString( jumpLength + 1 ) 
+				+ " engine tick(s) away." ) ;
+
+
+			// Leaks as if there had been no jump in engine ticks :
+			while ( jumpLength > 0 )
+			{
+		
+				delayBucket = static_cast<Delay>( 
+					delayBucket * bucketLeakingFactor ) ;
+				delayCumulativeBucket += delayBucket ;
+				jumpLength-- ;
+			
+			} ;
+
+		}
+		
 		/*
 		 * Do nothing : wait, first with idle callback (which results in
 		 * atomic sleeps by default), then for fine-grain with soft busy
@@ -1396,7 +1487,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		}	
 		
 		
-		// Then busy waiting :
+		// Then busy waiting (still quite soft due to getPreciseTime calls) :
 		while ( _currentEngineTick < nextDeadline )
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
 		
@@ -1406,8 +1497,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 *
 		 */
 		
+		
 	} // End of scheduler overall loop
-
 
 
 	Second scheduleStoppingSecond ;
@@ -1417,7 +1508,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 	Microsecond totalRuntime = getDurationBetween( 
 		_scheduleStartingSecond, _scheduleStartingMicrosecond,
-		scheduleStoppingSecond,  scheduleStoppingMicrosecond ) ;
+		scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
 	
 	string table = 
 		"<table border=1>"
@@ -1429,6 +1520,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		" 		<th>Tick duration (microsec)</th>" 
 		" 		<th>Tick duration (engine ticks)</th>" 
 		" 		<th>Stopped at tick</th>" 
+		" 		<th>Recovered count</th>"
+		" 		<th>Recovered percentage</th>"
 		" 		<th>Missed count</th>"
 		" 		<th>Missed percentage</th>"
 		"	</tr>" ;
@@ -1454,6 +1547,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		"		<td>" + Ceylan::toString( _currentEngineTick ) + "</td>"
 		"		<td>N/A</td>"		
 		"		<td>N/A</td>"		
+		"		<td>N/A</td>"		
+		"		<td>N/A</td>"		
 		"	</tr>" ;
 		
 		
@@ -1475,6 +1570,11 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			_simulationPeriod * _engineTickDuration ) + "</td>"
 		"		<td>" + Ceylan::toString( _simulationPeriod ) + "</td>"
 		"		<td>" + Ceylan::toString( _currentSimulationTick ) + "</td>"
+		"		<td>" + Ceylan::toString( _recoveredSimulationTicks ) + "</td>"	
+		"		<td>" + Ceylan::toString( 
+			100.0f * _recoveredSimulationTicks / _currentSimulationTick, 
+			precision ) 
+		+ "%</td>"	
 		"		<td>" + Ceylan::toString( _missedSimulationTicks ) + "</td>"	
 		"		<td>" + Ceylan::toString( 
 			100.0f * _missedSimulationTicks / _currentSimulationTick, 
@@ -1501,6 +1601,11 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			_renderingPeriod * _engineTickDuration ) + "</td>"
 		"		<td>" + Ceylan::toString( _renderingPeriod ) + "</td>"
 		"		<td>" + Ceylan::toString( _currentRenderingTick ) + "</td>"
+		"		<td>" + Ceylan::toString( _recoveredRenderingTicks ) + "</td>"	
+		"		<td>" + Ceylan::toString( 
+			100.0f * _recoveredRenderingTicks / _currentRenderingTick, 
+				precision ) 
+		+ "%</td>"	
 		"		<td>" + Ceylan::toString( _missedRenderingTicks ) + "</td>"	
 		"		<td>" + Ceylan::toString( 
 			100.0f * _missedRenderingTicks / _currentRenderingTick, precision ) 
@@ -1519,15 +1624,21 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			precision ) + " Hz</td>"
 		"		<td>"
 		+ Ceylan::toString(	
-			1E6 * ( _currentInputTick - _missedInputTicks ) / 
+			1E6 * ( _currentInputTick - _missedInputPollingTicks ) / 
 				totalRuntime, precision ) + " Hz</td>"
 		"		<td>" + Ceylan::toString( 
 			_inputPeriod * _engineTickDuration ) + "</td>"
 		"		<td>" + Ceylan::toString( _inputPeriod ) + "</td>"
 		"		<td>" + Ceylan::toString( _currentInputTick ) + "</td>"
-		"		<td>" + Ceylan::toString( _missedInputTicks ) + "</td>"	
+		"		<td>" + Ceylan::toString( _recoveredInputPollingTicks ) 
+		+ "</td>"	
 		"		<td>" + Ceylan::toString( 
-			100.0f * _missedInputTicks / _currentInputTick, precision ) 
+			100.0f * _recoveredInputPollingTicks / _currentInputTick, 
+				precision ) 
+		+ "%</td>"	
+		"		<td>" + Ceylan::toString( _missedInputPollingTicks ) + "</td>"	
+		"		<td>" + Ceylan::toString( 
+			100.0f * _missedInputPollingTicks / _currentInputTick, precision ) 
 		+ "%</td>"	
 		"	</tr>" ;
 		
@@ -1560,9 +1671,16 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		+ Ceylan::toString( idleCallbackDuration ) + " engine ticks." ) ;
 
 	summary.push_back( "Average bucket level has been " 
-		+ Ceylan::toString( delayCumulativeBucket / _currentEngineTick ) 
+		+ Ceylan::toString( 1.0f * delayCumulativeBucket / _currentEngineTick,
+			/* precision */ 2 ) 
 		+ ", maximum bucket level has been "
-		+ Ceylan::toString( maxDelayBucket ) + "." ) ;
+		+ Ceylan::toString( maxDelayBucket ) 
+		+ ", bucket fill threshold is " 
+		+ Ceylan::toString( bucketFillThreshold )
+		+ ", this threshold has been reached "
+		+ Ceylan::toString( _scheduleFailureCount )
+		+ " times, shutdown bucket level is "
+		+ Ceylan::toString( ShutdownBucketLevel) + "." ) ;
 	
 	send( "Scheduler stopping, run summary is : " 
 		+ Ceylan::formatStringList( summary ) ) ;
@@ -1588,23 +1706,39 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 	// For simulation ticks :			
 	
-	Ceylan::Uint32 totalSimulationTicks = 
-		metSimulations.size() + missedSimulations.size() ;
+	SimulationTick totalSimulationTicks = metSimulations.size() 
+		+ recoveredSimulations.size() + missedSimulations.size() ;
 		
-	
 	LogPlug::debug( "Total simulation ticks : " 
 		+ Ceylan::toString( totalSimulationTicks ) + "." ) ;
-		
-	LogPlug::debug( "Met simulation ticks : " 
+
+	LogPlug::debug( "Directly met simulation ticks : " 
 		+ Ceylan::toString( metSimulations.size() ) 
 		+ " (" + Ceylan::toString( 100.0f * metSimulations.size() 
 			/ totalSimulationTicks, /* precision */ 2 ) + "%)." ) ;
+						
+	LogPlug::debug( "Recovered (indirectly met) simulation ticks : " 
+		+ Ceylan::toString( recoveredSimulations.size() ) 
+		+ " (" + Ceylan::toString( 100.0f * recoveredSimulations.size() 
+			/ totalSimulationTicks, /* precision */ 2 ) + "%)." ) ;
+
+	if ( recoveredSimulations.size() != _recoveredSimulationTicks )
+		LogPlug::error( "Inconsistency in recovered simulation count." ) ;
+
 				
 	LogPlug::debug( "Missed simulation ticks : " 
 		+ Ceylan::toString( missedSimulations.size() ) 
 		+ " (" + Ceylan::toString( 100.0f * missedSimulations.size() 
 			/ totalSimulationTicks, /* precision */ 2 ) + "%)." ) ;
 	
+	if ( missedSimulations.size() != _missedSimulationTicks )
+		LogPlug::error( "Inconsistency in missed simulation count." ) ;
+
+	if ( _currentSimulationTick - _recoveredSimulationTicks 
+			- _missedSimulationTicks != metSimulations.size() )
+		LogPlug::error( "Inconsistency in overall simulation count." ) ;
+			
+			 
 	string res ;
 	
 
@@ -1619,10 +1753,18 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				res += 	Ceylan::toString( *it ) + " - " ;
 		 
 			LogPlug::debug( "Met simulation ticks : " + res ) ;
-
 			res.clear() ;
 	
 		}
+		
+		
+		for ( list<SimulationTick>::const_iterator it 
+				= recoveredSimulations.begin(); 
+					it != recoveredSimulations.end(); it++ )
+			res += 	Ceylan::toString( *it ) + " - " ;
+
+		LogPlug::debug( "Recovered simulation ticks : " + res ) ;
+		res.clear() ;
 		
 		for ( list<SimulationTick>::const_iterator it 
 				= missedSimulations.begin(); it != missedSimulations.end(); 
@@ -1630,13 +1772,13 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			res += 	Ceylan::toString( *it ) + " - " ;
 
 		LogPlug::debug( "Missed simulation ticks : " + res ) ;
-
+		res.clear() ;
 	}
 	
 		
 	/*
 	 * Check that all simulation ticks were handled one and only one time, 
-	 * one way or another (scheduled or skipped).
+	 * one way or another (scheduled : met or recovered, or skipped).
 	 *
 	 */
 	SimulationTick newSimulationTick ;
@@ -1649,14 +1791,32 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	for ( list<SimulationTick>::const_iterator it = metSimulations.begin(); 
 		it != metSimulations.end(); it++ )
 	{
+	
 		newSimulationTick = (*it) ;
 		
 		if ( simulationTicks[ newSimulationTick ] == false )
 			simulationTicks[ newSimulationTick ] = true ;
 		else
-			LogPlug::error( "Simulation tick #" 
+			LogPlug::error( "Met simulation tick #" 
 				+ Ceylan::toString( newSimulationTick ) 
-				+ " should not have been scheduled more than once." ) ;			
+				+ " should not have been scheduled more than once." ) ;	
+						
+	}
+	
+	
+	for ( list<SimulationTick>::const_iterator it =
+		recoveredSimulations.begin(); it != recoveredSimulations.end(); it++ )
+	{
+	
+		newSimulationTick = (*it) ;
+		
+		if ( simulationTicks[ newSimulationTick ] == false )
+			simulationTicks[ newSimulationTick ] = true ;
+		else
+			LogPlug::error( "Recovered simulation tick #" 
+				+ Ceylan::toString( newSimulationTick ) 
+				+ " should not have been scheduled more than once." ) ;	
+						
 	}
 	
 	
@@ -1669,7 +1829,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		if ( simulationTicks[ newSimulationTick ] == false )
 			simulationTicks[ newSimulationTick ] = true ;
 		else
-			LogPlug::error( "Simulation tick #" 
+			LogPlug::error( "Missed simulation tick #" 
 				+ Ceylan::toString( newSimulationTick ) 
 				+ " should not have been skipped, "
 				"since had already been taken into account." ) ;
@@ -1684,25 +1844,41 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	delete simulationTicks ;
 	
 
+
 	// For rendering ticks :			
 
-	Ceylan::Uint32 totalRenderingTicks = 
-		metRenderings.size() + missedRenderings.size() ;
+	RenderingTick totalRenderingTicks = metRenderings.size() 
+		+ recoveredRenderings.size() + missedRenderings.size() ;
 
 	LogPlug::debug( "Total rendering ticks : " 
 		+ Ceylan::toString( totalRenderingTicks ) + "." ) ;
 		
-	LogPlug::debug( "Met rendering ticks : " 
+	LogPlug::debug( "Directly met rendering ticks : " 
 		+ Ceylan::toString( metRenderings.size() ) 
 		+ " (" + Ceylan::toString( 100.0f * metRenderings.size() 
 			/ totalRenderingTicks, /* precision */ 2 ) + "%)." ) ;
+				
+	LogPlug::debug( "Recovered (indirectly met) rendering ticks : " 
+		+ Ceylan::toString( recoveredRenderings.size() ) 
+		+ " (" + Ceylan::toString( 100.0f * recoveredRenderings.size() 
+			/ totalRenderingTicks, /* precision */ 2 ) + "%)." ) ;
+
+	if ( recoveredRenderings.size() != _recoveredRenderingTicks )
+		LogPlug::error( "Inconsistency in recovered rendering count." ) ;
+
 				
 	LogPlug::debug( "Missed rendering ticks : " 
 		+ Ceylan::toString( missedRenderings.size() ) 
 		+ " (" + Ceylan::toString( 100.0f * missedRenderings.size() 
 			/ totalRenderingTicks, /* precision */ 2 ) + "%)." ) ;
+
+	if ( missedRenderings.size() != _missedRenderingTicks )
+		LogPlug::error( "Inconsistency in missed rendering count." ) ;
+
+	if ( _currentRenderingTick - _recoveredRenderingTicks 
+			- _missedRenderingTicks != metRenderings.size() )
+		LogPlug::error( "Inconsistency in overall rendering count." ) ;
 				
-	res.clear() ;
 		
 				
 	if ( beVerbose )
@@ -1716,24 +1892,31 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				res += 	Ceylan::toString( *it ) + " - " ;
 		 
 			LogPlug::debug( "Met rendering ticks : " + res ) ;
-
 			res.clear() ;
 	
 		}
 		
 		for ( list<RenderingTick>::const_iterator it 
+				= recoveredRenderings.begin(); 
+				it != recoveredRenderings.end(); it++ )
+			res += 	Ceylan::toString( *it ) + " - " ;
+
+		LogPlug::debug( "Recovered rendering ticks : " + res ) ;
+		res.clear() ;
+
+		for ( list<RenderingTick>::const_iterator it 
 				= missedRenderings.begin(); it != missedRenderings.end(); it++ )
 			res += 	Ceylan::toString( *it ) + " - " ;
 
 		LogPlug::debug( "Missed rendering ticks : " + res ) ;
+		res.clear() ;
 
 	}
 	
 				
 	/*
 	 * Check that all rendering ticks were handled one and only one time, 
-	 * one way or another :
-	 * (scheduled or skipped).
+	 * one way or another (scheduled : met or recovered, or skipped).
 	 *
 	 */
 	
@@ -1752,9 +1935,23 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		if ( renderingTicks[ newRenderingTick ] == false )
 			renderingTicks[ newRenderingTick ] = true ;
 		else
-			LogPlug::error( "Rendering tick #" 
+			LogPlug::error( "Met rendering tick #" 
 				+ Ceylan::toString( newRenderingTick ) 
-				+ " should not have been scheduled more than one time." ) ;		
+				+ " should not have been scheduled more than once." ) ;		
+				
+	}
+	
+	for ( list<RenderingTick>::const_iterator it = 
+		recoveredRenderings.begin(); it != recoveredRenderings.end(); it++ )
+	{
+	
+		newRenderingTick = (*it) ;
+		if ( renderingTicks[ newRenderingTick ] == false )
+			renderingTicks[ newRenderingTick ] = true ;
+		else
+			LogPlug::error( "Recovered rendering tick #" 
+				+ Ceylan::toString( newRenderingTick ) 
+				+ " should not have been scheduled more than once." ) ;		
 				
 	}
 	
@@ -1766,10 +1963,11 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		if ( renderingTicks[ newRenderingTick ] == false )
 			renderingTicks[ newRenderingTick ] = true ;
 		else
-			LogPlug::error( "Rendering tick #" 
+			LogPlug::error( "Missed rendering tick #" 
 				+ Ceylan::toString( newRenderingTick ) 
 				+ " should not have been been skipped, "
-				"since had already been taken into account." ) ;			
+				"since had already been taken into account." ) ;
+							
 	}
 	
 	for ( Events::RenderingTick i = 0; i < _currentRenderingTick; i++ )
@@ -1784,23 +1982,37 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	// For input ticks :			
 
 
-	Ceylan::Uint32 totalInputTicks = 
-		metRenderings.size() + missedRenderings.size() ;
+	InputTick totalInputTicks = metInputPollings.size() 
+		+ recoveredInputPollings.size() + missedInputPollings.size() ;
 
 	LogPlug::debug( "Total input ticks : " 
 		+ Ceylan::toString( totalInputTicks ) + "." ) ;
 		
-	LogPlug::debug( "Met input ticks : " 
+	LogPlug::debug( "Directly met input ticks : " 
 		+ Ceylan::toString( metInputPollings.size() ) 
 		+ " (" + Ceylan::toString( 100.0f * metInputPollings.size() 
 			/ totalInputTicks, /* precision */ 2 ) + "%)." ) ;
+				
+	LogPlug::debug( "Recovered (indirectly met) input ticks : " 
+		+ Ceylan::toString( recoveredInputPollings.size() ) 
+		+ " (" + Ceylan::toString( 100.0f * recoveredInputPollings.size() 
+			/ totalInputTicks, /* precision */ 2 ) + "%)." ) ;
+
+	if ( recoveredInputPollings.size() != _recoveredInputPollingTicks )
+		LogPlug::error( "Inconsistency in recovered input polling count." ) ;
+			
 				
 	LogPlug::debug( "Missed input ticks : " 
 		+ Ceylan::toString( missedInputPollings.size() ) 
 		+ " (" + Ceylan::toString( 100.0f * missedInputPollings.size() 
 			/ totalInputTicks, /* precision */ 2 ) + "%)." ) ;
 				
-	res.clear() ;
+	if ( missedInputPollings.size() != _missedInputPollingTicks )
+		LogPlug::error( "Inconsistency in missed input polling count." ) ;
+
+	if ( _currentInputTick - _recoveredInputPollingTicks 
+			- _missedInputPollingTicks != metInputPollings.size() )
+		LogPlug::error( "Inconsistency in overall input polling count." ) ;
 		
 				
 	if ( beVerbose )
@@ -1815,17 +2027,25 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				res += 	Ceylan::toString( *it ) + " - " ;
 		 
 			LogPlug::debug( "Met input ticks : " + res ) ;
-
 			res.clear() ;
 	
 		}
 		
+		for ( list<InputTick>::const_iterator it 
+				= recoveredInputPollings.begin(); 
+				it != recoveredInputPollings.end(); it++ )
+			res += 	Ceylan::toString( *it ) + " - " ;
+
+		LogPlug::debug( "Recovered input ticks : " + res ) ;
+		res.clear() ;
+
 		for ( list<InputTick>::const_iterator it 
 				= missedInputPollings.begin(); 
 				it != missedInputPollings.end(); it++ )
 			res += 	Ceylan::toString( *it ) + " - " ;
 
 		LogPlug::debug( "Missed input ticks : " + res ) ;
+		res.clear() ;
 
 	}
 				
@@ -1852,7 +2072,22 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		if ( inputTicks[ newInputTick ] == false )
 			inputTicks[ newInputTick ] = true ;
 		else
-			LogPlug::error( "Input tick #" + Ceylan::toString( newInputTick ) 
+			LogPlug::error( "Met input tick #" 
+				+ Ceylan::toString( newInputTick ) 
+				+ " should not have been scheduled more than once." ) ;
+				
+	}
+	
+	for ( list<InputTick>::const_iterator it = recoveredInputPollings.begin(); 
+		it != recoveredInputPollings.end(); it++ )
+	{
+	
+		newInputTick = (*it) ;
+		if ( inputTicks[ newInputTick ] == false )
+			inputTicks[ newInputTick ] = true ;
+		else
+			LogPlug::error( "Recovered input tick #" 
+				+ Ceylan::toString( newInputTick ) 
 				+ " should not have been scheduled more than once." ) ;
 				
 	}
@@ -1865,9 +2100,11 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		if ( inputTicks[ newInputTick ] == false )
 			inputTicks[ newInputTick ] = true ;
 		else
-			LogPlug::error( "Input tick #" + Ceylan::toString( newInputTick ) 
+			LogPlug::error( "Missed input tick #" 
+				+ Ceylan::toString( newInputTick ) 
 				+ " should not have been been skipped, "
-				"since had already been taken into account." ) ;			
+				"since had already been taken into account." ) ;
+						
 	}
 	
 	for ( Events::InputTick i = 0; i < _currentInputTick; i++ )
@@ -1882,14 +2119,14 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 }
 
 	
+	
+	
+	
+	
 
 void Scheduler::scheduleNoDeadline( bool pollInputs ) 
 	throw( SchedulingException )
 {
-
-	send( "Scheduler starting, "
-		"in no deadline mode (a.k.a screenshot mode). Scheduler infos : " 
-		+ toString( Ceylan::high ) ) ;
 	
 	// Let's prepare to the run, for which no time is to be considered :
 	
@@ -1910,14 +2147,13 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	
 #endif // OSDL_DEBUG_SCHEDULER
 
-
-	EngineTick previousEngineTick ;
 	
 	// Store scheduling starting time : 
 	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
 		 
 	// Starts with all zero	ticks :	
-	_currentEngineTick     = 0 ;	
+	_currentEngineTick     = 0 ;
+		
 	_currentSimulationTick = 0 ;	
 	_currentRenderingTick  = 0 ;
 	_currentInputTick      = 0 ;
@@ -1931,12 +2167,20 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	EngineTick nextRenderingDeadline  = _currentEngineTick + _renderingPeriod ;
 	EngineTick nextInputDeadline      = _currentEngineTick + _inputPeriod ;
 	
+	EngineTick countBeforeSleep = 0 ;
 	
 	// Enter the schedule loop :
 	
 	while ( ! _stopRequested )
 	{
 			
+		OSDL_SCHEDULE_LOG( "[ E : " << _currentEngineTick 
+			<< " ; S : " << _currentSimulationTick
+			<< " ; R : " << _currentRenderingTick		
+			<< " ; I : " << _currentInputTick << " ]" ) ;
+
+		countBeforeSleep++ ;
+		
 		/* 
 		 * Normally, for each simulation tick, one scheduleSimulation is called.
 		 *
@@ -1946,13 +2190,8 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 		 *
 		 */
 		 	
-		OSDL_SCHEDULE_LOG( "[ " << _currentEngineTick << " ; " 
-			<< _currentSimulationTick
-			<< " ; " << _currentRenderingTick << " ; " 
-			<< _currentInputTick << " ]" ) ;
 					
 		// We hereby suppose we are just at the beginning of a new engine tick.
-		previousEngineTick = _currentEngineTick ;
 		
 		// What is to be done on this new engine tick ?
 		
@@ -1970,6 +2209,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 			
 			_currentSimulationTick++ ;
 			nextSimulationDeadline += _simulationPeriod ;
+			
 		}
 
 		if ( _currentEngineTick == nextRenderingDeadline )
@@ -2004,6 +2244,13 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 
 		_currentEngineTick++ ;
 		
+		// Be nice with the operating system :
+		if ( countBeforeSleep == 500 )
+		{
+			countBeforeSleep = 0 ;
+			atomicSleep() ;
+		}	
+		
 		/*
 		 * OSDL_SCHEDULE_LOG( "End of schedule loop, engine tick being " 
 		 * << _currentEngineTick ) ;
@@ -2014,33 +2261,39 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	
 	Second scheduleStoppingSecond ;
 	Microsecond scheduleStoppingMicrosecond ;
+	
 	getPreciseTime( scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
+
+	Microsecond totalRuntime = getDurationBetween( 
+		_scheduleStartingSecond, _scheduleStartingMicrosecond,
+		scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
 	
 	send( "Scheduler stopping. Scheduler infos : " 
 		+ toString( Ceylan::high ) ) ;	
 	
-	// Beware to the overflows !
-	Microsecond totalScheduleDuration = 
-		( scheduleStoppingSecond - _scheduleStartingSecond ) * 1000000
-		+ scheduleStoppingMicrosecond - _scheduleStartingMicrosecond ;
 
 	ostringstream buf ;
 	
 	buf.precision( 4 ) ;
 		
 	buf	<< "Actual average engine frequency was "  
-		<< 1E6 * _currentEngineTick / totalScheduleDuration
+		<< Ceylan::toString( 1E6 * _currentEngineTick / totalRuntime, 
+			/* precision */ 2 )
 		<< " Hz, average simulation frequency was " 
-		<< 1E6 * _currentSimulationTick / totalScheduleDuration
+		<< Ceylan::toString( 1E6 * _currentSimulationTick / totalRuntime,
+			/* precision */ 2 )
 		<< " Hz, average rendering frequency was " 
-		<< 1E6 * _currentRenderingTick / totalScheduleDuration
+		<< Ceylan::toString( 1E6 * _currentRenderingTick / totalRuntime,
+			/* precision */ 2 )
 		<< " Hz, average input frequency was " 
-		<< 1E6 * _currentInputTick / totalScheduleDuration 
+		<< Ceylan::toString( 1E6 * _currentInputTick / totalRuntime, 
+			/* precision */ 2 )
 		<< " Hz." ;
 		 
 	send( buf.str() ) ;
 			
 #if OSDL_DEBUG_SCHEDULER
+	
 	
 	/*
 	 * Collect some informations, and check them to assess the scheduler
@@ -2051,16 +2304,6 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	LogPlug::debug( "Total simulation ticks : " 
 		+ Ceylan::toString( metSimulations.size() ) + "." ) ;
 			
-	string res ;
-	
-	/*
-	for ( list<SimulationTick>::const_iterator it = metSimulations.begin();
-			it != metSimulations.end(); it++ )
-		res += 	Ceylan::toString( *it ) + " - " ;
-		 
-	LogPlug::debug( "Met simulation ticks : " + res ) ;
-	*/
-
 
 	/*
 	 * Check that all simulation ticks were scheduled one and only one time.
@@ -2083,10 +2326,9 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 		else
 			LogPlug::error( "Simulation tick #" 
 				+ Ceylan::toString( newSimulationTick ) 
-				+ " should not have been scheduled more than one time." ) ;		
+				+ " should not have been scheduled more than once." ) ;		
 				
-	}
-	
+	}	
 	
 	for ( Events::SimulationTick i = 0; i < _currentSimulationTick; i++ )
 		if ( simulationTicks[ i ] == false )
@@ -2095,19 +2337,11 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 
 	delete simulationTicks ;
 				
+				
+				
+				
 	LogPlug::debug( "Total rendering ticks : " 
 		+ Ceylan::toString( metRenderings.size() ) + "." ) ;
-	
-	/*	
-	res = "" ;
-				
-	for ( list<RenderingTick>::const_iterator it = metRenderings.begin();
-			it != metRenderings.end(); it++ )
-		res += 	Ceylan::toString( *it ) + " - " ;
-		 
-	LogPlug::debug( "Met rendering ticks : " + res ) ;
-	*/
-				
 				
 	/*
 	 * Check that all rendering ticks were scheduled one and only one time.
@@ -2124,17 +2358,16 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	for ( list<RenderingTick>::const_iterator it = metRenderings.begin(); 
 		it != metRenderings.end(); it++ )
 	{
+	
 		newRenderingTick = (*it) ;
 		if ( renderingTicks[ newRenderingTick ] == false )
 			renderingTicks[ newRenderingTick ] = true ;
 		else
 			LogPlug::error( "Rendering tick #" 
 				+ Ceylan::toString( newRenderingTick ) 
-				+ " should not have been scheduled more than one time." ) ;		
+				+ " should not have been scheduled more than once." ) ;
 				
 	}
-	
-	
 	
 	for ( Events::RenderingTick i = 0; i < _currentRenderingTick; i++ )
 		if ( renderingTicks[ i ] == false )
@@ -2143,6 +2376,10 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 
 	delete renderingTicks ;
 	
+	
+
+	LogPlug::debug( "Total input polling ticks : " 
+		+ Ceylan::toString( metInputPollings.size() ) + "." ) ;
 
 	/*
 	 * Check that all input ticks were scheduled one and only one time.
@@ -2161,13 +2398,14 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 		for ( list<InputTick>::const_iterator it = metInputPollings.begin(); 
 			it != metInputPollings.end(); it++ )
 		{
+		
 			newInputTick = (*it) ;
 			if ( inputTicks[ newInputTick ] == false )
 				inputTicks[ newInputTick ] = true ;
 			else
 				LogPlug::error( "Input tick #" 
 					+ Ceylan::toString( newInputTick ) 
-					+ " should not have been scheduled more than one time." ) ;	
+					+ " should not have been scheduled more than once." ) ;
 					
 		}
 		
@@ -2182,8 +2420,6 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 						
 #endif // OSDL_DEBUG_SCHEDULER
 
-	_scheduleStartingSecond = 0 ;
-	_scheduleStartingMicrosecond = 0 ;
 	
 }
 
@@ -2371,7 +2607,7 @@ void Scheduler::onInputSkipped( InputTick skipped )
 	throw( SchedulingException ) 
 {
 
-	_missedInputTicks++ ;
+	_missedInputPollingTicks++ ;
 		
 	// Do nothing else, skipped inputs do not matter that much.
 	
@@ -2403,6 +2639,51 @@ void Scheduler::onIdle() throw()
 		 Ceylan::System::atomicSleep() ;
 		 
 	}	
+	
+}
+
+
+void Scheduler::onScheduleFailure( Delay currentBucket ) throw()
+{
+
+	_scheduleFailureCount++ ;
+	
+	// One may loosen frequencies and simplify scheduled tasks as well :
+	
+	if ( currentBucket < ShutdownBucketLevel )
+	{
+	
+		string message = "Non-fatal schedule failure for engine tick #"
+			+ Ceylan::toString( _currentEngineTick )
+			+ ", delay bucket reached level "
+			+ Ceylan::toString( currentBucket ) 
+			+ ", this computer does not seem able to satisfy "
+			"the requested load." ;
+			
+		// Just warn :
+		OSDL_SCHEDULE_LOG( "!!!!! " + message ) ;
+		
+		LogPlug::error( message) ;	
+		
+	}
+	else
+	{
+
+		string message = "Fatal schedule failure for engine tick #"
+			+ Ceylan::toString( _currentEngineTick )
+			+ ", delay bucket reached level "
+			+ Ceylan::toString( currentBucket ) 
+			+ ", this computer cannot take in charge the requested load, "
+			"stopping the scheduler now." ;
+			
+		// Warn and stop :
+		OSDL_SCHEDULE_LOG( "XXXXX " + message ) ;
+		
+		LogPlug::fatal( message) ;	
+		
+		stop() ;
+	
+	}
 	
 }
 
