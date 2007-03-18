@@ -8,6 +8,10 @@ using namespace OSDL::Engine ;
 using std::string ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>               // for OSDL_DEBUG_BOUNDING_BOX and al
+#endif // OSDL_USES_CONFIG_H
+
 #if OSDL_DEBUG_BOUNDING_BOX
 
 using namespace Ceylan::Log ;
