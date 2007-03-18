@@ -1,6 +1,7 @@
 #include "OSDL.h"
 using namespace OSDL ;
 using namespace OSDL::Events ;
+using namespace OSDL::Video ;
 
 using namespace Ceylan::Log ;
 
@@ -20,7 +21,7 @@ typedef Ceylan::Uint8 Direction ;
 
 
 /**
- * Tests the whole event-driven MVC framework :
+ * Tests the whole event-driven MVC framework with the basic event loop :
  *   - a specific controller is registered, so that it manages both the 
  * keyboard arrows and the first joystick (if any)
  *  - whenever an event occurs with the keyboard arrows or the first joystick,
@@ -34,7 +35,7 @@ typedef Ceylan::Uint8 Direction ;
  * scheduler : it is only when an input event occurs that the whole MVC 
  * chain gets activated (controllers, then models, then views).
  *
- * @see testScheduledOSDLAndMVC.cc
+ * @see testScheduledOSDLAndMVC.cc the version with scheduler
  *
  */
 class MyMVCEvent : public Ceylan::MVCEvent
@@ -522,7 +523,7 @@ int main( int argc, char * argv[] )
 
 		JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
 
-		Ceylan::Uint32 joyCount = 
+		JoystickNumber joyCount = 
 			myJoystickHandler.GetAvailableJoystickCount() ;
 		
 		if ( joyCount > 0 )	
@@ -531,7 +532,7 @@ int main( int argc, char * argv[] )
 			LogPlug::info( "There are " + Ceylan::toString( joyCount )
 				+ " attached joystick(s), opening them all." ) ;
 			
-			for ( Ceylan::Uint32 i = 0 ; i < joyCount; i++ )
+			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
 				myJoystickHandler.openJoystick( i ) ;
 		
 			LogPlug::info( "New joystick handler state is : " 
@@ -545,6 +546,9 @@ int main( int argc, char * argv[] )
 		
 		}
 		
+		LogPlug::info( "New joystick handler state is : " 
+			+ myJoystickHandler.toString( Ceylan::high ) ) ;
+		
 		
 		LogPlug::info( "Displaying a dummy window "
 			"to have access to an event queue." ) ;
@@ -553,13 +557,14 @@ int main( int argc, char * argv[] )
 		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
 		// A SDL window is needed to have the SDL event system working :
-		myVideo.setMode( 640, 480, /* current depth */ 0, 
-			OSDL::Video::VideoModule::SoftwareSurface ) ;
+		myVideo.setMode( 640, 480, VideoModule::UseCurrentColorDepth, 
+			VideoModule::SoftwareSurface ) ;
 		
 		
 		/*
-		 * Create and link MVC instances : (new and pointers should be used 
+		 * Create and link MVC instances (new and pointers should be used 
 		 * to control deallocation order). 
+		 *
 		 * This test relies on OSDL's MVC ability to overcome faulty life 
 		 * cycle, see the Error log channel to understand why (therefore it 
 		 * is also a test for robustness to misuse).
@@ -618,13 +623,13 @@ int main( int argc, char * argv[] )
 		}
 		
 					
-		LogPlug::info( "End of OSDL MVC test." ) ;
+		LogPlug::info( "End of OSDL event-driven MVC test." ) ;
 		
 		LogPlug::warning( "The MVC were allocated on the stack, hence their "
 			"deallocation order is not mastered, messages in error log plug "
 			"may appear." ) ;
 			
-		LogPlug::info( "stopping OSDL." ) ;		
+		LogPlug::info( "Stopping OSDL." ) ;		
         OSDL::stop() ;
 
    }
