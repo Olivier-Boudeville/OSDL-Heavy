@@ -1,0 +1,4 @@
+The 6x12.fnt font file comes from SDL_gfx (version 2.0.15).
+
+Many thanks to Andreas Schiffler !
+
