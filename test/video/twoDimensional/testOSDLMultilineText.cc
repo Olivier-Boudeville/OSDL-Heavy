@@ -53,11 +53,12 @@ const std::string firstTrueTypeFontFile  = "cretino.ttf" ;
 int main( int argc, char * argv[] ) 
 {
 
-	bool gridWanted = false ;
-	bool screenshotWanted = true ;
+
 
 	LogHolder myLog( argc, argv ) ;
 	
+	bool gridWanted = false ;
+	bool screenshotWanted = true ;
 	
 	// Thanks to the 'fortune' program for these wise sentences !
 	
@@ -80,6 +81,66 @@ int main( int argc, char * argv[] )
 			
 
     	LogPlug::info( "Testing OSDL multiline text rendering service" ) ;	
+
+	
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+			
+				// Ignored for this test.
+				tokenEaten = true ;
+				
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+		
 		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         
@@ -93,17 +154,19 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
 	
 		if ( gridWanted )
 		{
+		
 			LogPlug::info( "Drawing a grid to check transparency of text." ) ;
+			
 			if ( ! screen.drawGrid() )
 				LogPlug::error( "Grid rendering failed." ) ;
+				
 		}
 		
 
@@ -189,11 +252,16 @@ int main( int argc, char * argv[] )
 		
 		if ( screenshotWanted )
 			screen.savePNG( argv[0] + std::string( ".png" ) ) ;
-			
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		
+		if ( ! isBatch )	
+			myOSDL.getEventsModule().waitForAnyKey() ;
 		
 		
-		LogPlug::info( "End of OSDL multiline text test" ) ;
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
+		
+		
+		LogPlug::info( "End of OSDL multiline text test." ) ;
 		
     }
 	
