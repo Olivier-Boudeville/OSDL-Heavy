@@ -19,7 +19,7 @@ using namespace OSDL::Video ;
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>     // for OSDL_DEBUG and al 
+#include <OSDLConfig.h>     // for OSDL_DEBUG_PALETTE and al 
 #endif // OSDL_USES_CONFIG_H
 
 
@@ -167,7 +167,9 @@ const Pixels::ColorDefinition & Palette::getColorDefinitionAt(
 
 Pixels::ColorDefinition * Palette::getColorDefinitions() const throw()
 {
+
 	return _colorDefs ;
+	
 }
 
 
@@ -178,6 +180,7 @@ void Palette::updatePixelColorsFrom( Pixels::PixelFormat & format ) throw()
 	{
 		LogPlug::warning(
 			 "Palette::updatePixelColorsFrom : no color available." ) ;
+			 
 		_converted = true ;
 		return ;		
 	}
@@ -297,11 +300,11 @@ Palette & Palette::CreateGradationPalette( Pixels::ColorDefinition colorStart,
 		Ceylan::emergencyShutdown( 
 			"Palette::CreateGradationPalette : not enough memory." ) ;
 	
-#if OSDL_DEBUG
+#if OSDL_DEBUG_PALETTE
 	LogPlug::debug( "Gradation ranging from " 
 		+ Pixels::toString( colorStart ) + " to "
 		+ Pixels::toString( colorEnd ) + "." ) ;		
-#endif // OSDL_DEBUG
+#endif // OSDL_DEBUG_PALETTE
 	
 	Ceylan::Float32 redIncrement   = ( 
 		static_cast<Ceylan::Float32>( colorEnd.r ) - colorStart.r ) 
