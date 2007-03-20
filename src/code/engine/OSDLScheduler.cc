@@ -29,7 +29,7 @@ using std::map ;
 
 Scheduler * Scheduler::_internalScheduler = 0 ;
 
-const Scheduler::Delay Scheduler::ShutdownBucketLevel = 50000 ;
+const Scheduler::Delay Scheduler::ShutdownBucketLevel = 100000 ;
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -104,6 +104,12 @@ void Scheduler::setTimeSliceDuration( Microsecond engineTickDuration ) throw()
 	setScreenshotFrequency(   _desiredScreenshotFrequency ) ;
 	setInputPollingFrequency( _desiredInputFrequency ) ;
 	
+	_secondToEngineTick = /* microsecond */ 1000000 / _engineTickDuration ;
+	
+	OSDL_SCHEDULE_LOG( 
+		"Multiplicative factor to convert seconds into engine ticks : "
+		+ Ceylan::toString( _secondToEngineTick ) ) ;
+		
 }
 
 
@@ -461,7 +467,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 	buf.precision( 2 ) ;
 
 	buf << setiosflags( std::ios::fixed ) 
-		<< "Basic scheduler, whose internal frequency is " 
+		<< "Scheduler, whose internal frequency is " 
 		<< 1E6 / _engineTickDuration
 		<< " Hz (engine tick duration is " 
 		+ Ceylan::toString( _engineTickDuration )
@@ -766,6 +772,7 @@ Scheduler::Scheduler() throw() :
 	_periodicSlots(),
 	_programmedActivated(),
 	_engineTickDuration( 0 ),
+	_secondToEngineTick( 0 ),
 	_currentEngineTick( 0 ),
 	_currentSimulationTick( 0 ),
 	_currentRenderingTick( 0 ),
@@ -888,29 +895,36 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 * Initial time is first measured and converted to engine, simulation,
 	 * rendering and input times :
 	 * _currentEngineTick, for an engine tick duration of 1000 (microseconds),
-	 * should wrap around if the program runs for more than 49 days. 
+	 * should wrap around if the program runs for more than 48 days. 
 	 *
 	 * If engine tick duration is divided by two, then the period until
 	 * wrap-around will be divided by two as well.
 	 *
 	 */	
+	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
 	 
-	// Starts with all zero	ticks :	
-	_currentEngineTick     = 0 ;	
+	/*
+	 * Starts with all zero	ticks :	
+	 * (not using 0 constants allows to tweak the engine to make it start at
+	 * arbitrary engine tick,for debugging).
+	 *
+	 */
+	_currentEngineTick     = computeEngineTickFromCurrentTime() ;	
 	
-	_currentSimulationTick = 0 ;	
-	_currentRenderingTick  = 0 ;
-	_currentInputTick      = 0 ;
+	_currentSimulationTick = _currentEngineTick / _simulationPeriod  ;	
+	_currentRenderingTick  = _currentEngineTick / _renderingPeriod;
+	_currentInputTick      = _currentEngineTick / _inputPeriod;
 	
 	OSDL_SCHEDULE_LOG( "Simulation period : " << _simulationPeriod ) ;
-	OSDL_SCHEDULE_LOG( "Rendering period : "  << _renderingPeriod ) ;
+	OSDL_SCHEDULE_LOG( "Rendering period : "  << _renderingPeriod  ) ;
 	OSDL_SCHEDULE_LOG( "Input period : "      << _inputPeriod      ) ;
 		
 	EngineTick nextSimulationDeadline = _currentEngineTick + _simulationPeriod ;
 	EngineTick nextRenderingDeadline  = _currentEngineTick + _renderingPeriod ;
 	EngineTick nextInputDeadline      = _currentEngineTick + _inputPeriod ;
 	
-	EngineTick nextDeadline ;
+	EngineTick nextDeadline = Ceylan::Maths::Min( nextSimulationDeadline,
+		nextRenderingDeadline, nextInputDeadline ) ;
 	
 	
 	/*
@@ -956,7 +970,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	Delay delayCumulativeBucket = 0 ;
 	
 	// When the bucket reaches that level, the machine is actually overloaded :
-	const Delay bucketFillThreshold = 500 ;
+	const Delay bucketFillThreshold = 750 ;
 
 	/*
 	 * Leaking factor : at each engine tick, 
@@ -1058,11 +1072,27 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	while ( ! _stopRequested )
 	{
 		
+		
 		OSDL_SCHEDULE_LOG( "[ E : " << _currentEngineTick 
 			<< " ; S : " << _currentSimulationTick
 			<< " ; R : " << _currentRenderingTick		
 			<< " ; I : " << _currentInputTick 
 			<< " ; B : " << delayBucket << " ]" ) ;
+
+
+#if OSDL_DEBUG_SCHEDULER
+
+		// Will default settings, one log per 1s :
+		if ( _currentEngineTick % 1000 == 0 )
+			LogPlug::debug( "[ E : " + Ceylan::toString( _currentEngineTick )
+				+ " ; S : " + Ceylan::toString( _currentSimulationTick )
+				+ " ; R : " + Ceylan::toString( _currentRenderingTick )
+				+ " ; I : " + Ceylan::toString( _currentInputTick )
+				+ " ; B : " + Ceylan::toString( delayBucket )
+				+ " ]" ) ;			
+				
+#endif // OSDL_DEBUG_SCHEDULER
+
 
 		delayCumulativeBucket += delayBucket ;
 		
@@ -1281,8 +1311,10 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 					+ " microseconds), cancelling rendering." ) ;
 
 				// Missing a rendering deadline is annoying :
-				delayBucket += 2 * missedTicks ;
-			
+				delayBucket += 2 * static_cast<Delay>( 
+					Ceylan::Maths::Log( 2.0f * missedTicks ) ) ;
+					
+								
 #if OSDL_DEBUG_SCHEDULER
 				missedRenderings.push_back( _currentRenderingTick ) ;
 #endif // OSDL_DEBUG_SCHEDULER
@@ -1350,7 +1382,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 					+ " microseconds), cancelling input polling." ) ;
 
 				// Missing an input deadline should be avoided :
-				delayBucket += 1 * missedTicks ;
+				delayBucket += static_cast<Delay>( 
+					Ceylan::Maths::Log( 2.0f * missedTicks ) ) ;
 			
 #if OSDL_DEBUG_SCHEDULER
 				missedInputPollings.push_back( _currentInputTick ) ;
@@ -1506,9 +1539,28 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 	getPreciseTime( scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
 	
-	Microsecond totalRuntime = getDurationBetween( 
-		_scheduleStartingSecond, _scheduleStartingMicrosecond,
-		scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
+	// It is equal to 1E6 / ( total runtime in microseconds ) :
+	Ceylan::Float64 totalRuntimeFactor ;
+	
+	// Avoid overflows :
+	if ( scheduleStoppingSecond - _scheduleStartingSecond <
+			MaximumDurationWithMicrosecondAccuracy )
+	{	
+		 
+		totalRuntimeFactor = 1E6 / getDurationBetween( 
+			_scheduleStartingSecond, _scheduleStartingMicrosecond,
+			scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
+			
+	}
+	else
+	{
+	
+		// It is just a (rather good , error below 1/4100) approximation :
+		totalRuntimeFactor =  1.0f / 
+			( scheduleStoppingSecond - _scheduleStartingSecond ) ;
+		
+	}
+	
 	
 	string table = 
 		"<table border=1>"
@@ -1540,7 +1592,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		+ Ceylan::toString( 1E6 / DefaultEngineTickDuration, precision ) 
 		+ " Hz</td>"
 		"		<td>" 
-		+ Ceylan::toString( _currentEngineTick * 1E6 / totalRuntime, precision )
+		+ Ceylan::toString( _currentEngineTick * totalRuntimeFactor,
+			precision )
 		+ " Hz</td>"
 		"		<td>" + Ceylan::toString( _engineTickDuration ) + "</td>"
 		"		<td>1</td>"
@@ -1564,8 +1617,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			precision ) + " Hz</td>"
 		"		<td>"
 		+ Ceylan::toString(	
-			1E6 * ( _currentSimulationTick - _missedSimulationTicks ) / 
-				totalRuntime, precision ) + " Hz</td>"
+			( _currentSimulationTick - _missedSimulationTicks ) *
+				totalRuntimeFactor, precision ) + " Hz</td>"
 		"		<td>" + Ceylan::toString( 
 			_simulationPeriod * _engineTickDuration ) + "</td>"
 		"		<td>" + Ceylan::toString( _simulationPeriod ) + "</td>"
@@ -1595,8 +1648,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			precision ) + " Hz</td>"
 		"		<td>"
 		+ Ceylan::toString(	
-			1E6 * ( _currentRenderingTick - _missedRenderingTicks ) / 
-				totalRuntime, precision ) + " Hz</td>"
+			( _currentRenderingTick - _missedRenderingTicks ) * 
+				totalRuntimeFactor, precision ) + " Hz</td>"
 		"		<td>" + Ceylan::toString( 
 			_renderingPeriod * _engineTickDuration ) + "</td>"
 		"		<td>" + Ceylan::toString( _renderingPeriod ) + "</td>"
@@ -1624,8 +1677,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			precision ) + " Hz</td>"
 		"		<td>"
 		+ Ceylan::toString(	
-			1E6 * ( _currentInputTick - _missedInputPollingTicks ) / 
-				totalRuntime, precision ) + " Hz</td>"
+			( _currentInputTick - _missedInputPollingTicks ) * 
+				totalRuntimeFactor, precision ) + " Hz</td>"
 		"		<td>" + Ceylan::toString( 
 			_inputPeriod * _engineTickDuration ) + "</td>"
 		"		<td>" + Ceylan::toString( _inputPeriod ) + "</td>"
@@ -1650,18 +1703,22 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 	list<string> summary ;
 	
-	if ( scheduleStoppingSecond - _scheduleStartingSecond >
+	string durationComment = "The scheduler ran for " 
+		+ Ceylan::Timestamp::DescribeDuration( 
+			scheduleStoppingSecond - _scheduleStartingSecond ) ;
+			
+	
+	if ( scheduleStoppingSecond - _scheduleStartingSecond <
 			MaximumDurationWithMicrosecondAccuracy )			
-		summary.push_back( "The scheduler ran for " 
-			+ Ceylan::toString( 
-				scheduleStoppingSecond - _scheduleStartingSecond )
-			+ " seconds." ) ;
+		durationComment += ", more precisely " 
+			+ Ceylan::toString( getDurationBetween(
+ 				_scheduleStartingSecond, _scheduleStartingMicrosecond,
+ 	 			scheduleStoppingSecond, scheduleStoppingMicrosecond ) )
+			+ " microseconds." ;
 	else
-		summary.push_back( "The scheduler ran for " 
-			+ Ceylan::toString( 
-				scheduleStoppingSecond - _scheduleStartingSecond )
-			+ " seconds (precisely : " + Ceylan::toString( totalRuntime )
-			+ " microseconds)." ) ;
+		durationComment += "." ;
+			
+	summary.push_back( durationComment ) ;
 	
 	summary.push_back( Ceylan::toString( _idleCallsCount ) 
 		+ " idle calls have been made." ) ;
@@ -1671,7 +1728,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		+ Ceylan::toString( idleCallbackDuration ) + " engine ticks." ) ;
 
 	summary.push_back( "Average bucket level has been " 
-		+ Ceylan::toString( 1.0f * delayCumulativeBucket / _currentEngineTick,
+		+ Ceylan::toString( 
+			( 1.0f * delayCumulativeBucket ) / _currentEngineTick,
 			/* precision */ 2 ) 
 		+ ", maximum bucket level has been "
 		+ Ceylan::toString( maxDelayBucket ) 
@@ -2264,9 +2322,29 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	
 	getPreciseTime( scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
 
-	Microsecond totalRuntime = getDurationBetween( 
-		_scheduleStartingSecond, _scheduleStartingMicrosecond,
-		scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
+
+	// It is equal to 1E6 / ( total runtime in microseconds ) :
+	Ceylan::Float64 totalRuntimeFactor ;
+	
+	// Avoid overflows :
+	if ( scheduleStoppingSecond - _scheduleStartingSecond <
+			MaximumDurationWithMicrosecondAccuracy )
+	{	
+		 
+		totalRuntimeFactor = 1E6 / getDurationBetween( 
+			_scheduleStartingSecond, _scheduleStartingMicrosecond,
+			scheduleStoppingSecond, scheduleStoppingMicrosecond ) ;
+			
+	}
+	else
+	{
+	
+		// It is just a (rather good , error below 1/4100) approximation :
+		totalRuntimeFactor =  1.0f / 
+			( scheduleStoppingSecond - _scheduleStartingSecond ) ;
+		
+	}
+
 	
 	send( "Scheduler stopping. Scheduler infos : " 
 		+ toString( Ceylan::high ) ) ;	
@@ -2277,16 +2355,16 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	buf.precision( 4 ) ;
 		
 	buf	<< "Actual average engine frequency was "  
-		<< Ceylan::toString( 1E6 * _currentEngineTick / totalRuntime, 
+		<< Ceylan::toString( totalRuntimeFactor * _currentEngineTick, 
 			/* precision */ 2 )
 		<< " Hz, average simulation frequency was " 
-		<< Ceylan::toString( 1E6 * _currentSimulationTick / totalRuntime,
+		<< Ceylan::toString( totalRuntimeFactor * _currentSimulationTick,
 			/* precision */ 2 )
 		<< " Hz, average rendering frequency was " 
-		<< Ceylan::toString( 1E6 * _currentRenderingTick / totalRuntime,
+		<< Ceylan::toString( totalRuntimeFactor * _currentRenderingTick,
 			/* precision */ 2 )
 		<< " Hz, average input frequency was " 
-		<< Ceylan::toString( 1E6 * _currentInputTick / totalRuntime, 
+		<< Ceylan::toString( totalRuntimeFactor * _currentInputTick, 
 			/* precision */ 2 )
 		<< " Hz." ;
 		 
@@ -2432,10 +2510,49 @@ EngineTick Scheduler::computeEngineTickFromCurrentTime() throw()
 	Microsecond currentMicrosecond ;
 	getPreciseTime( currentSecond, currentMicrosecond ) ;
 	
+	/*
+	 * _secondToEngineTick necessary to avoid overflow when duration in 
+	 * seconds exceeds 4200 !
+	 *
+	
+	LogPlug::debug( "Current : " + Ceylan::toString( currentSecond ) 
+		+ "s and " + Ceylan::toString( currentMicrosecond ) 
+		+ " microsec, started : " + Ceylan::toString( _scheduleStartingSecond ) 
+		+ "s and " + Ceylan::toString( _scheduleStartingMicrosecond ) 
+		+ "microsec." ) ;
+		
+	 */
+	
+	/*
+	 * Avoids that 'currentMicrosecond - _scheduleStartingMicrosecond'
+	 * becomes negative and overflows :
+	 *
+	 */
+	if ( currentMicrosecond < _scheduleStartingMicrosecond )
+	{
+		
+		// Normally that cannot happen at second #0 :
+#if OSDL_DEBUG_SCHEDULER
+		if ( currentSecond == 0 )
+		{
+		
+			LogPlug::fatal( "Scheduler::computeEngineTickFromCurrentTime : "
+				"abnormal clock skew." ) ;
+				
+			_stopRequested = true ;
+				
+		}	
+#endif // OSDL_DEBUG_SCHEDULER
+		
+		currentSecond-- ;
+		currentMicrosecond += 1000000 ;
+		
+	}
+		
 	return static_cast<EngineTick>( 
-			( currentSecond - _scheduleStartingSecond ) * 1000000 
-			+ currentMicrosecond - _scheduleStartingMicrosecond ) 
-		/ _engineTickDuration ;
+		( currentSecond - _scheduleStartingSecond ) * _secondToEngineTick
+		+ ( currentMicrosecond - _scheduleStartingMicrosecond ) 
+			/ _engineTickDuration ) ;
 		
 }
 
