@@ -823,11 +823,11 @@ namespace OSDL
 				
 				
 						/**
-						 * Returns the last error that occured relatively 
-						 * to Truetype fonts.
+						 * Returns a textual description of the last error 
+						 * that occured relatively to Truetype fonts.
 						 *
 						 */	
-						static std::string GetLastError() throw() ;
+						static std::string DescribeLastError() throw() ;
 						
 	
 						/**
