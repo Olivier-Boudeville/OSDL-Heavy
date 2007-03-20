@@ -11,10 +11,6 @@
 #include <list>
  
  
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>          // for OSDL_DEBUG_FONT and al 
-#endif // OSDL_USES_CONFIG_H
-
 
 
 using namespace OSDL::Video::TwoDimensional ;
@@ -24,6 +20,11 @@ using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 using std::string ;
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>          // for OSDL_DEBUG_FONT and al 
+#endif // OSDL_USES_CONFIG_H
 
 
 Ceylan::System::FileLocator Text::TrueTypeFont::TrueTypeFontFileLocator ;
@@ -112,10 +113,12 @@ TrueTypeFont::TrueTypeFont(
 	
 	if ( TTF_WasInit() == 0 )
 	{
+	
 		if ( TTF_Init()== -1 )
 			throw TextException( 
 				"TrueTypeFont constructor : unable to init font library : "
-				+ GetLastError() ) ;
+				+ DescribeLastError() ) ;
+				
 	}	
 	
 	_actualFont = TTF_OpenFont( fontFullPath.c_str(), pointSize ) ;
@@ -125,7 +128,7 @@ TrueTypeFont::TrueTypeFont(
 			+ fontFullPath 
 			+ "' with a point size of " 
 			+ Ceylan::toString( pointSize ) + " dots per inch : "
-			+ GetLastError() ) ;
+			+ DescribeLastError() ) ;
 	
 	_spaceWidth = static_cast<Width>( SpaceWidthFactor * getWidth( ' ' ) ) ;
 
@@ -205,7 +208,8 @@ Width TrueTypeFont::getWidth( Ceylan::Latin1Char character )
 	if ( TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			& minX, & maxX, 0, 0, 0 )  != 0 )
-		throw TextException( "TrueTypeFont::getWidth : " + GetLastError() ) ;
+		throw TextException( "TrueTypeFont::getWidth : " 
+			+ DescribeLastError() ) ;
 
 	return static_cast<Width>( maxX - minX ) ;	
 	
@@ -222,7 +226,7 @@ SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character )
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			& minX, 0, 0, 0, 0 )  != 0 )
 		throw TextException( "TrueTypeFont::getWidthOffset : " 
-			+ GetLastError() ) ;
+			+ DescribeLastError() ) ;
 			
 	return static_cast<SignedWidth>( minX ) ;	
 
@@ -239,7 +243,7 @@ SignedHeight TrueTypeFont::getHeightAboveBaseline(
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			0, 0, 0, & maxY, 0 )  != 0 )
 		throw TextException( "TrueTypeFont::getHeightAboveBaseline : " 
-			+ GetLastError() ) ;
+			+ DescribeLastError() ) ;
 	
 	return static_cast<SignedHeight>( maxY ) ;
 	
@@ -255,7 +259,8 @@ OSDL::Video::SignedLength TrueTypeFont::getAdvance(
 	if ( TTF_GlyphMetrics( _actualFont,
 		Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			0, 0, 0, 0, & advance ) != 0 )
-		throw TextException( "TrueTypeFont::getAdvance : " + GetLastError() ) ;
+		throw TextException( "TrueTypeFont::getAdvance : "
+			+ DescribeLastError() ) ;
 	
 	return static_cast<SignedLength>( advance ) ;
 	
@@ -340,7 +345,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor(
 	if ( TTF_GlyphMetrics( _actualFont, glyph, & minX, & maxX, 
 			& minY, & maxY, & intAdvance ) != 0 )
 		throw TextException( "TrueTypeFont::getClippingBoxFor (glyph) : " 
-			+ GetLastError() ) ;
+			+ DescribeLastError() ) ;
 	
 	advance = static_cast<SignedLength>( intAdvance ) ;
 	
@@ -362,7 +367,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor( const std::string & text )
 	if ( TTF_SizeText( _actualFont, text.c_str(), & width, & height ) != 0 )
 		throw TextException( 
 			"TrueTypeFont::getBoundingBoxFor (Latin-1 string) : " 
-			+ GetLastError() ) ;
+			+ DescribeLastError() ) ;
 	
 	return * new UprightRectangle( 0, 0, static_cast<Length>( width ), 
 		static_cast<Length>( height ) ) ;	
@@ -379,7 +384,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUTF8(
 	if ( TTF_SizeUTF8( _actualFont, text.c_str(), & width, & height ) != 0 )
 		throw TextException( 
 			"TrueTypeFont::getBoundingBoxFor (UTF-8 string) : " 
-			+ GetLastError() ) ;
+			+ DescribeLastError() ) ;
 	
 	return * new UprightRectangle( 0, 0, static_cast<Length>( width ), 
 		static_cast<Length>( height ) ) ;	
@@ -400,7 +405,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUnicode(
 	if ( TTF_SizeUNICODE( _actualFont, text, & width, & height ) != 0 )
 		throw TextException( 
 			"TrueTypeFont::getBoundingBoxFor (Unicode string) : " 
-			+ GetLastError() ) ;
+			+ DescribeLastError() ) ;
 	
 	return * new UprightRectangle( 0, 0, static_cast<Length>( width ), 
 		static_cast<Length>( height ) ) ;	
@@ -562,7 +567,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 			if ( textSurface == 0 )
 				throw TextException( 
 					"TrueTypeFont::renderLatin1Text (solid) : " 
-					+ GetLastError() ) ; 
+					"unable to render text '" + text
+					+ "' : " + DescribeLastError() ) ; 
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
 			// No colorkey added, since already there. 
@@ -575,7 +581,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 			if ( textSurface == 0 )
 				throw TextException( 
 					"TrueTypeFont::renderLatin1Text (shaded) : " 
-					+ GetLastError() ) ;
+					"unable to render text '" + text
+					+ "' : " + DescribeLastError() ) ; 
 					
 			/*
 			 * We have to create a new surface so that the surface returned by
@@ -632,7 +639,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 			if ( textSurface == 0 )
 				throw TextException( 
 					"TrueTypeFont::renderLatin1Text (blended) : " 
-					+ GetLastError() ) ; 
+					"unable to render text '" + text
+					+ "' : " + DescribeLastError() ) ; 
 					
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
@@ -738,7 +746,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 				
 			if ( textSurface == 0 )
 				throw TextException( "TrueTypeFont::renderUTF8Text (solid) : " 
-					+ GetLastError() ) ; 
+					"unable to render text '" + text
+					+ "' : " + DescribeLastError() ) ; 
 					
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
@@ -751,7 +760,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 				
 			if ( textSurface == 0 )
 				throw TextException( "TrueTypeFont::renderUTF8Text (shaded) : " 
-					+ GetLastError() ) ; 
+					"unable to render text '" + text
+					+ "' : " + DescribeLastError() ) ; 
 					
 			/*
 			 * We have to create a new surface so that the surface returned by
@@ -815,7 +825,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 			if ( textSurface == 0 )
 				throw TextException( 
 					"TrueTypeFont::renderUTF8Text (blended) : " 
-					+ GetLastError() ) ; 
+					"unable to render text '" + text
+					+ "' : " + DescribeLastError() ) ; 
 					
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
@@ -928,7 +939,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 			if ( textSurface == 0 )
 				throw TextException( 
 					"TrueTypeFont::renderUnicodeText (solid) : " 
-					+ GetLastError() ) ; 
+					"unable to render text : " + DescribeLastError() ) ; 
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
 			break ;
@@ -941,7 +952,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 			if ( textSurface == 0 )
 				throw TextException( 
 					"TrueTypeFont::renderUnicodeText (shaded) : " 
-					+ GetLastError() ) ; 
+					"unable to render text : " + DescribeLastError() ) ; 
 					
 			/*
 			 * We have to create a new surface so that the surface returned by
@@ -1003,7 +1014,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 			if ( textSurface == 0 )
 				throw TextException( 
 					"TrueTypeFont::renderUnicodeText (blended) : " 
-					+ GetLastError() ) ;
+					"unable to render text : " + DescribeLastError() ) ; 
 					 
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;
@@ -1136,8 +1147,8 @@ const string TrueTypeFont::toString( Ceylan::VerbosityLevels level )
 	else
 		res +=", and is not fixed width" ;
 	
-	res +=". The family name of the current face is " + getFaceFamilyName() 
-		+ ", and its style name is " + getFaceStyleName() ;
+	res +=". The family name of the current face is '" + getFaceFamilyName() 
+		+ "', and its style name is '" + getFaceStyleName() + "'" ;
 	
 	if 	( level == Ceylan::medium )
 		return res ;	 	
@@ -1190,7 +1201,7 @@ void TrueTypeFont::SetUnicodeSwapStatus( bool newStatus ) throw()
 }
 
 
-string TrueTypeFont::GetLastError() throw() 
+string TrueTypeFont::DescribeLastError() throw() 
 {
 
 	return TTF_GetError() ;
@@ -1213,13 +1224,28 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	
 	
 		case Solid:
+		
+			/*
+			 * @fixme : uncomment when SDL_ttf is fixed :
+			 
 			textSurface = TTF_RenderGlyph_Solid( _actualFont, character,
 				glyphColor ) ;
-				
+			 */
+			 
+			LogPlug::warning( "TrueTypeFont::basicRenderUnicodeGlyph : "
+				"work-around for SDL_ttf bug used, using "
+				"TTF_RenderGlyph_Shaded instead of TTF_RenderGlyph_Solid." ) ;
+			
+			// Remove me :	
+			textSurface = TTF_RenderGlyph_Shaded( _actualFont, character,
+				glyphColor, _backgroundColor ) ;
+			 	
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::basicRenderUnicodeGlyph (solid) : " 
-					+ GetLastError() ) ; 
+					"TrueTypeFont::basicRenderUnicodeGlyph (solid) : "
+					"unable to render character '" 
+					+ Ceylan::toString( character )
+					+ "' : " + DescribeLastError() ) ; 
 					
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
@@ -1235,7 +1261,9 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 			if ( textSurface == 0 )
 				throw TextException( 
 					"TrueTypeFont::basicRenderUnicodeGlyph (shaded) : " 
-					+ GetLastError() ) ;
+					"unable to render character '" 
+					+ Ceylan::toString( character )
+					+ "' : " + DescribeLastError() ) ; 
 					 
 			/*
 			 * We have to create a new surface so that the surface returned by
@@ -1301,7 +1329,9 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 			if ( textSurface == 0 )
 				throw TextException( 
 					"TrueTypeFont::basicRenderUnicodeGlyph (blended) : " 
-					+ GetLastError() ) ; 
+					"unable to render character '" 
+					+ Ceylan::toString( character )
+					+ "' : " + DescribeLastError() ) ; 
 			
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
@@ -1342,6 +1372,5 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 		
 	return * res ;	
 	
-
 }
 
