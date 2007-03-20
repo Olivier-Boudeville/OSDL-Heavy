@@ -7,6 +7,8 @@ EXTRA_DIST = \
 	OSDL-@OSDL_VERSION@-changes.txt       \
 	web
 
+# For doxygen and dot tool versions :
+include @OSDL_LOANI_INSTALLATIONS@/Ceylan-@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@/share/Ceylan/CeylanToolsSettings.inc
 
 # This section takes care of the web documentation.
 
@@ -200,7 +202,7 @@ api: check-dot fix-dox-conf
 	Unable to create source documentation : doxygen tool not found \
 	[doxygen homepage : http://www.doxygen.org].@OSDL_DEFAULT_STYLE@"; \
 	echo; false )
-	@echo; echo "@OSDL_COMMAND_STYLE@    Generating API\
+	@echo; echo "@OSDL_COMMAND_STYLE@    Generating API \
 	(doxygen configuration taken from $(DOXYGEN_GENERATED_CONF)) \
 	@OSDL_DEFAULT_STYLE@"
 	@echo
@@ -239,7 +241,7 @@ tidy:
 	tidy tool not found.@OSDL_DEFAULT_STYLE@"; echo; false ) 
 	@echo "@OSDL_COMMAND_STYLE@    Tidying all html \
 	files@OSDL_DEFAULT_STYLE@"
-	@for f in $(HTML_FILES); do ( echo "  + tidying $$f";\
+	@for f in $(HTML_FILES); do ( echo "  + tidying $$f"; \
 	$(TIDY) -config @top_srcdir@/src/conf/doc/tidy.conf -m $$f ); done
 
 
@@ -256,7 +258,7 @@ transfer: toSF toMirror
 # Updating doc manually is notably useful to instantaneously update
 # the website.
 toSF: 
-	@if [ -x "$(RSYNC)" ]; then $(MAKE) toSF-rsync;\
+	@if [ -x "$(RSYNC)" ]; then $(MAKE) toSF-rsync; \
 	else $(MAKE) toSF-scp; fi 
 	
 
@@ -287,7 +289,7 @@ toSF-scp: check-scp site
 
 
 toMirror:
-	@if [ -x "$(RSYNC)" ]; then $(MAKE) toMirror-rsync;\
+	@if [ -x "$(RSYNC)" ]; then $(MAKE) toMirror-rsync; \
 	else $(MAKE) toMirror-scp; fi 
 
 
@@ -365,11 +367,11 @@ info-dirs:
 	
 	
 info-files: info-html
-	@echo; echo "    + web documentation files are   : ";\
+	@echo; echo "    + web documentation files are   : "; \
 	echo "$(WEB_CONTENT_FILES)"
-	@echo; echo "    + common web files are          : ";\
+	@echo; echo "    + common web files are          : "; \
 	echo "$(COMMON_WEB_FILES)"
-	@echo; echo "    + doxygen configuration file is :\
+	@echo; echo "    + doxygen configuration file is : \
 	$(DOXYGEN_GENERATED_CONF)"
 
 	
