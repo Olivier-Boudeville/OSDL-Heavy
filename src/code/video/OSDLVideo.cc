@@ -279,9 +279,11 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	send( "Trying to set " 
 		+ Ceylan::toString( width )    + 'x' 
 		+ Ceylan::toString( height )   + " video mode, with "
-		+ Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) 
-		+ " bits per pixel, with user-defined flags. "
-		+ InterpretFlags( flags ) 
+		+ ( ( askedBpp == 0 ) ? 
+			string( "current screen color depth" ) : 
+			Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) 
+			+ " bits per pixel)" )
+		+ ", with user-defined flags. "	+ InterpretFlags( flags ) 
 		+ "The " + OpenGLContext::ToString( flavour ) 
 		+ " flavour is selected" ) ;
 
@@ -1255,9 +1257,11 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 {
 	
     SDL_Rect ** modes ;
-	
+
+#if OSDL_DEBUG_VIDEO	
     LogPlug::trace( "VideoModule::AreDefinitionsRestricted : "
 		"getting available modes.", 8 ) ; 
+#endif // OSDL_DEBUG_VIDEO
 		
     modes = SDL_ListModes( pixelFormat, flags ) ;
 	
@@ -1301,8 +1305,10 @@ string VideoModule::DescribeAvailableDefinitions( Flags flags,
 	
 	list<Definition> defList ;
 		
+#if OSDL_DEBUG_VIDEO	
     LogPlug::trace( "VideoModule::DescribeAvailableDefinitions : "
 		"getting available modes.", 8 ) ; 
+#endif // OSDL_DEBUG_VIDEO
  	
     // Checking whether there is any mode available. 
 
