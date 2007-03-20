@@ -60,7 +60,8 @@ const std::string fixedFontDirFromExec = "../../../../OSDL-data/fonts/fixed" ;
  * (to be reached from executable directory)
  *
  */
-const std::string fixedFontDirForPlayTests = "../../../OSDL-data/fonts/fixed" ;
+const std::string fixedFontDirForPlayTests = 
+	"../../../src/doc/web/common/fonts" ;
 
 
 
@@ -80,7 +81,65 @@ int main( int argc, char * argv[] )
 	{
 			
 
-    	LogPlug::info( "Testing all OSDL primitives for text output" ) ;	
+    	LogPlug::info( "Testing all OSDL primitives for text output." ) ;	
+
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+			
+				// Ignored for this test.
+				tokenEaten = true ;
+				
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
 		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         
@@ -94,8 +153,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
@@ -149,7 +207,8 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Testing TrueType font text output." ) ;
 		
 		const string firstTestSentence = 
-			"This is a test for OSDL's TrueType Font rendering. It is ok ?"	;		
+			"This is a test for OSDL's TrueType Font rendering. It is ok ?"	;
+			
 		const string secondTestSentence = "I hope so, coz it was quite "
 			"a nightmare to have it all workin'"	;		
 
@@ -234,11 +293,17 @@ int main( int argc, char * argv[] )
 		screen.unlock() ;
 				
 		screen.update() ;	
-		screen.savePNG( "testOSDLText-allfonts.png" ) ;
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		screen.savePNG( std::string( argv[0] ) + "-allfonts.png" ) ;
+		
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
+		
 					
-								
-		LogPlug::info( "End of OSDL Text test" ) ;
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
+				
+										
+		LogPlug::info( "End of OSDL test of primitives for text output." ) ;
 		
 		
     }
