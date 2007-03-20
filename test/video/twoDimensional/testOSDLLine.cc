@@ -25,7 +25,64 @@ int main( int argc, char * argv[] )
 	{
 			
 
-    	LogPlug::info( "Testing OSDL Lines" ) ;	
+    	LogPlug::info( "Testing OSDL lines." ) ;	
+
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+
 		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         
@@ -39,8 +96,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
@@ -52,7 +108,7 @@ int main( int argc, char * argv[] )
 		for ( Ceylan::Uint32 x = 0; x < 250; x++ )
 		{
 					
-			LogPlug::info( "drawing from abscissa " + Ceylan::toString( x ) 
+			LogPlug::info( "Drawing from abscissa " + Ceylan::toString( x ) 
 				+ " a vertical line whose color is [R,G,B] = [" 
 				+ Ceylan::toString( x ) + ", " + Ceylan::toString( x ) + ", "
 				+ Ceylan::toString( x ) + "] " ) ;
@@ -111,15 +167,22 @@ int main( int argc, char * argv[] )
 			alpha = colorRand.getNewValue() ;
 								
 			screen.drawLine( x1, y1, x2, y2, red, green, blue, alpha ) ;
+			
 		}
 	
 		screen.unlock() ;
 				
 		screen.update() ;	
 		
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
+		
+		
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
 				
 		LogPlug::info( "End of OSDL Lines test" ) ;
+		
 		
     }
 	
