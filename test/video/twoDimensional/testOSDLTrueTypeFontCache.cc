@@ -58,12 +58,12 @@ int main( int argc, char * argv[] )
 {
 
 
+	LogHolder myLog( argc, argv ) ;
+	
+
 	bool testGlyphCache = true ;
 	bool testWordCache  = true ;
 	bool testTextCache  = true ;
-	
-	
-	LogHolder myLog( argc, argv ) ;
 	
 	
     try 
@@ -72,8 +72,7 @@ int main( int argc, char * argv[] )
 
 		LogPlug::info( "Testing OSDL TrueType font cache : "
 			"inspect 'Debug' channel to check cache hits and misses" ) ;	
-
-
+			
 			
 		LogPlug::info( "At the end of this test, one should see red letters "
 			" ('a', 'b'), and two groups of two sentences, "
@@ -84,6 +83,66 @@ int main( int argc, char * argv[] )
 			"with the OSDL_DEBUG_FONT flag set "
 			"allows for far more debug informations." ) ;
 
+
+		LogPlug::info( "Testing OSDL video basic services." ) ;
+
+
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
 		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         
@@ -97,19 +156,12 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 		
 		Pixels::ColorDefinition textColor = Pixels::Red  ;
 
-
-		/*
-		 * Wanting to use at first '6x12.fnt', and to find it from various
-		 * locations.
-		 *
-		 */
 
 		TrueTypeFont::TrueTypeFontFileLocator.addPath( 
 			trueTypeFontDirFromExec ) ;
@@ -124,7 +176,9 @@ int main( int argc, char * argv[] )
 				
 		if ( gridWanted )
 		{
+		
 			LogPlug::info( "Drawing a grid to check transparency of text." ) ;
+			
 			if ( ! screen.drawGrid() )
 				LogPlug::error( "Grid rendering failed." ) ;
 		}
@@ -135,6 +189,7 @@ int main( int argc, char * argv[] )
 		
 		if ( testGlyphCache )
 		{
+		
 		
 			LogPlug::info( "First : testing cache for glyph rendering." ) ;
 					
@@ -150,8 +205,10 @@ int main( int argc, char * argv[] )
 		
 			mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph( 
 				'a', Font::Solid, textColor ) ;
+			
+			Coordinate ordinate = 55 ;
 				
-			mySurface->blitTo( screen, 20, 50 ) ;
+			mySurface->blitTo( screen, 20, ordinate ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after first render of 'a' : " 
@@ -160,7 +217,7 @@ int main( int argc, char * argv[] )
 			mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph( 
 				'a', Font::Solid, textColor ) ;
 				
-			mySurface->blitTo( screen, 40, 50 ) ;
+			mySurface->blitTo( screen, 40, ordinate ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after second render of 'a' : " 
@@ -169,26 +226,26 @@ int main( int argc, char * argv[] )
 			mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph( 
 				'a', Font::Solid, textColor ) ;
 				
-			mySurface->blitTo( screen, 60, 50 ) ;
+			mySurface->blitTo( screen, 60, ordinate ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after third render of 'a' : " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 		
-			myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 30, 50, 
+			myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 30, ordinate, 
 				'b', Font::Solid, textColor ) ; 
 				
 			LogPlug::info( "Font after first blit  of 'b' : " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
-			myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 50, 50, 
+			myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 50, ordinate, 
 				'b', Font::Solid, textColor ) ;
 				 
 			LogPlug::info( "Font after second blit  of 'b' : " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
-			myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 70, 50, 
+			myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 70, ordinate, 
 				'b', Font::Solid, textColor ) ; 
 				
 			LogPlug::info( "Font after third blit  of 'b' : " 
@@ -222,6 +279,8 @@ int main( int argc, char * argv[] )
 
 			mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
 				firstTestSentence, Font::Solid, textColor ) ;
+			
+			ordinate = 100 ;
 				
 			mySurface->blitTo( screen, 20, 100 ) ;
 			delete mySurface ;
@@ -347,9 +406,16 @@ int main( int argc, char * argv[] )
 				
 				
 		screen.update() ;	
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
+		
 			
-		LogPlug::info( "End of OSDL TrueType font cache test" ) ;
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
+			
+			
+		LogPlug::info( "End of OSDL TrueType font cache test." ) ;
 	
     }
 	
