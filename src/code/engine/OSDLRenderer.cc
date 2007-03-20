@@ -12,16 +12,20 @@ using namespace OSDL::Engine ;
 using std::string ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>       // for OSDL_DEBUG_RENDERER and al 
+#endif // OSDL_USES_CONFIG_H
 
-#ifdef OSDL_DEBUG_RENDERER
+
+#if OSDL_DEBUG_RENDERER
 
 #define OSDL_RENDER_LOG(message) send( message ) ;
 
-#else
+#else // OSDL_DEBUG_RENDERER
 
 #define OSDL_RENDER_LOG(message)
 
-#endif
+#endif // OSDL_DEBUG_RENDERER
 
 
 Renderer * Renderer::_internalRootRenderer = 0 ;
