@@ -68,7 +68,7 @@ namespace OSDL
 		
 				
 		/**
-		 * This basic scheduler manages active objects so that they are 
+		 * This scheduler manages active objects so that they are 
 		 * in turn granted with the processing power they requested.
 		 *
 		 * Two kinds of active objects can be scheduled : 
@@ -100,7 +100,7 @@ namespace OSDL
 		 * objects are provided a means of being noticed, in order to be 
 		 * able to take any counter-measures they can.
 		 *
-		 * The basic scheduler has two main data structures :
+		 * The scheduler has two main data structures :
 		 *  - the 'periodic' one, which is composed of lists of active 
 		 * objects for each used  periodicity, gathered thanks to periodic 
 		 * slots
@@ -209,6 +209,9 @@ namespace OSDL
 		 * long while when it detects a program running at 100%. 
 		 * However it would involve waiting regularly for 1ms (kernel 2.6) 
 		 * or 10ms (kernel 2.4), and many skips would occur.
+		 *
+		 * @note The scheduler can run continuously for up to 48 days : after,
+		 * engine ticks will overflow and it will lead to a scheduler shutdown.
 		 *
 		 */	
 		class OSDL_DLL Scheduler : public Ceylan::Object
@@ -1057,6 +1060,16 @@ namespace OSDL
 				
 				
 				/**
+				 * Multiplicative factor that allows to convert seconds into  
+				 * engine ticks.
+				 *
+				 * @note Useful to avoid overflow with conversions.
+				 *
+				 */
+				Ceylan::Uint32 _secondToEngineTick ;
+				
+				
+				/**
 				 * Records the current engine tick.
 				 *
 				 * Useful to determine how much time have elapsed since 
@@ -1214,8 +1227,7 @@ namespace OSDL
 				
 
 				/**
-				 * The idle callback, if any, to be called by the basic 
-				 * event loop.
+				 * The idle callback, if any, to be called by the scheduler.
 				 *
 				 */
 				Ceylan::System::Callback _idleCallback ;
