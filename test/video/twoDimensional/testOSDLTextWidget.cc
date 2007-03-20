@@ -12,12 +12,13 @@ using namespace Ceylan::Log ;
 #include <string>
 using std::string ;
 
+// The OSDL library should have been compiled accordingly to use it :
+#define OSDL_COUNT_INSTANCES 1
 
+#if OSDL_COUNT_INSTANCES
 
-
-#ifdef OSDL_COUNT_INSTANCES
-
-#define CHECKPOINT(message) CHECKPOINT( message )
+#include <iostream>
+#define CHECKPOINT(message) std::cout << "[testOSDLTextWidget] " << message << std::endl ;
 
 #else // OSDL_COUNT_INSTANCES
 
@@ -77,7 +78,8 @@ const std::string fixedFontDirFromExec = "../../../../OSDL-data/fonts/fixed" ;
  * (to be reached from executable directory)
  *
  */
-const std::string fixedFontDirForPlayTests = "../../../OSDL-data/fonts/fixed" ;
+const std::string fixedFontDirForPlayTests = 
+	"../../../src/doc/web/common/fonts";
 
 
 
@@ -101,6 +103,65 @@ int main( int argc, char * argv[] )
 
     	LogPlug::info( "Testing OSDL Text widget" ) ;	
 		
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+			
+				// Ignored for this test.
+				tokenEaten = true ;
+				
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         		 
 		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo 
@@ -113,8 +174,7 @@ int main( int argc, char * argv[] )
 	
 		CHECKPOINT( "Before setMode." ) ;	
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		CHECKPOINT( "Retrieving screen surface." ) ;	
 		Surface & screen = myVideo.getScreenSurface() ;
@@ -264,7 +324,8 @@ int main( int argc, char * argv[] )
 		
 		screen.savePNG( argv[0] + std::string( "-simple.png" ) ) ;
 		
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
 		
 		/*
 		 * If you do not want this widget to show up in second screen just
@@ -275,7 +336,7 @@ int main( int argc, char * argv[] )
 		
 		screen.clear() ;
 
-		std::string currentText = "A short sentence. "
+		std::string currentText = "A short sentence. " ;
 		
 		// Uncomment this to check that too long word are correctly managed :
 		/*
@@ -373,16 +434,20 @@ int main( int argc, char * argv[] )
 		
 		screen.savePNG( argv[0] + std::string( ".png" ) ) ;
 		
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
 								
-		LogPlug::info( "End of OSDL Text widget test" ) ;
 		
 		CHECKPOINT( "Before stopping OSDL " + Ceylan::Countable::ToString() ) ;	
 				
+		LogPlug::info( "Stopping OSDL." ) ;		
 		OSDL::stop() ;
 
 		CHECKPOINT( "After having stopped OSDL " 
 			+ Ceylan::Countable::ToString() ) ;	
+
+		LogPlug::info( "End of OSDL Text widget test." ) ;
+
 		
 		// Fonts are deallocated automatically.
 		
