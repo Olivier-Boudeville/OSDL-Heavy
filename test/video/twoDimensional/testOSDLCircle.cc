@@ -20,6 +20,7 @@ using namespace Ceylan::Log ;
 int main( int argc, char * argv[] ) 
 {
 
+
 	LogHolder myLog( argc, argv ) ;
 
     try 
@@ -28,6 +29,63 @@ int main( int argc, char * argv[] )
 
     	LogPlug::info( "Testing OSDL Circle" ) ;	
 		
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+
+
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
@@ -48,7 +106,7 @@ int main( int argc, char * argv[] )
  		
 		screen.lock() ;		
 	
-    	LogPlug::info( "Prerequesite : having three random generators" ) ;	
+    	LogPlug::info( "Pre requesite : having three random generators" ) ;	
 		
 		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, 
 			screenWidth ) ;
@@ -103,8 +161,13 @@ int main( int argc, char * argv[] )
 				
 		screen.update() ;	
 		
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
+			
 				
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
+
 		LogPlug::info( "End of OSDL Circle test" ) ;
 		
     }
