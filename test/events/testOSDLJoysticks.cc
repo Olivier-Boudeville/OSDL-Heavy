@@ -74,6 +74,63 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "Testing OSDL joystick services." ) ;
 
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+		
 		LogPlug::info( "Starting OSDL with joystick support." ) ;		
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
 			CommonModule::UseJoystick ) ;		
@@ -89,33 +146,34 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Current joystick handler is : " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 
-		Ceylan::Uint32 joyCount = 
+		JoystickNumber joyCount = 
 			myJoystickHandler.GetAvailableJoystickCount() ;
 			
-		LogPlug::info( "There are " + Ceylan::toString( joyCount )
-			+ " attached joystick(s), opening them all." ) ;
+		if ( joyCount > 0 )	
+		{
+		
+			LogPlug::info( "There are " + Ceylan::toString( joyCount )
+				+ " attached joystick(s), opening them all." ) ;
 			
-		for ( Ceylan::Uint32 i = 0 ; i < joyCount; i++ )
-			myJoystickHandler.openJoystick( i ) ;
+			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
+				myJoystickHandler.openJoystick( i ) ;
+		
+			LogPlug::info( "New joystick handler state is : " 
+				+ myJoystickHandler.toString( Ceylan::high ) ) ;
+		
+		}
+		else
+		{
+		
+			LogPlug::info( "No joystick to test, stopping test." ) ;
+			OSDL::stop() ;
+			return Ceylan::ExitSuccess ;		
+		
+		}
 		
 		LogPlug::info( "New joystick handler state is : " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 		
-		if ( joyCount == 0 )
-		{
-			LogPlug::info( "No joystick to test, stopping test." ) ;
-			OSDL::stop() ;
-			return Ceylan::ExitSuccess ;		
-		}
-		else
-		{
-			LogPlug::info( "Using the first joystick" ) ;
-		}
-		
-		MyController myController( myEvents ) ;
-		
-		myJoystickHandler.linkToController( /* first joystick */ 0,
-			 myController ) ;
 			
 		LogPlug::info( "Displaying a dummy window "
 			"to have access to an event queue." ) ;
@@ -123,23 +181,43 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Getting video." ) ;
 		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
 
+		// A window is needed to have the event system working :
+
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
-		// A SDL window is needed to have the SDL event system working :
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 		
-		LogPlug::info( "Entering the event loop for key press waiting." ) ;
-		//myEvents.waitForAnyKey() ;
+		LogPlug::info( "Using the first joystick" ) ;
 		
-		std::cout << "Push the first button of joystick "
-			"or hit any key to stop this test" << std::endl ;
+		MyController myController( myEvents ) ;
 		
-		LogPlug::info( "Entering main loop." ) ;		
-		myEvents.enterMainLoop() ;
-		LogPlug::info( "Exiting main loop." ) ;		
+		if ( joyCount > 0 )
+			myJoystickHandler.linkToController( /* first joystick */ 0,
+				myController ) ;
+
+		if ( isBatch )
+		{
+		
+			LogPlug::warning( "Main loop not launched, as in batch mode." ) ;
+			
+		}
+		else
+		{
+		
+			LogPlug::info( "Entering the event loop "
+				"for event waiting so that joystick can be tested." ) ;
+
+			std::cout << std::endl << "< Push the first button of joystick "
+			"or hit any key to stop this test >" << std::endl ;
+		
+			myEvents.enterMainLoop() ;
+			LogPlug::info( "Exiting main loop." ) ;	
+				
+		}
+
+		
 				
 		LogPlug::info( "End of joystick test." ) ;
 		
