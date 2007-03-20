@@ -23,6 +23,63 @@ int main( int argc, char * argv[] )
 	
 	
 		LogPlug::info( "Testing OSDL video basic services." ) ;
+
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+
 			
 		LogPlug::info( "Starting OSDL with video enabled." )	;
 			
@@ -36,10 +93,7 @@ int main( int argc, char * argv[] )
 		Coordinate y = 27 ;
 		
 		LogPlug::info( "Creation of a 2D point at ( " 
-			+ Ceylan::toString( x )  
-			+ " ; " 
-			+ Ceylan::toString( y )
-			+ ")" ) ;
+			+ Ceylan::toString( x ) + " ; " + Ceylan::toString( y )	+ ")" ) ;
 			
 		TwoDimensional::Point2D p( x, y ) ;
 		LogPlug::info( p.toString() ) ;
@@ -51,9 +105,7 @@ int main( int argc, char * argv[] )
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
 		myVideo.logState() ;
-		
-		LogPlug::debug( "myVideo class name is : " + myVideo.getClassName() ) ;
-		
+				
 		LogPlug::info( "Displaying available video definitions : " 
 			+ VideoModule::DescribeAvailableDefinitions( 
 					Surface::FullScreen | Surface::Hardware ) ) ;
@@ -74,8 +126,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 
 		LogPlug::info( "Displaying now new current video informations. "
 			+ VideoModule::DescribeVideoCapabilities() ) ;
@@ -100,7 +151,8 @@ int main( int argc, char * argv[] )
 		
 		screen.update() ;
 		
-		myEvents.waitForAnyKey() ;
+		if ( ! isBatch )
+			myEvents.waitForAnyKey() ;
 		
 		LogPlug::info( "Stopping OSDL." ) ;		
         OSDL::stop() ;
