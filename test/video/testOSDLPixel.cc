@@ -40,8 +40,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 
 		LogPlug::info( myVideo.toString() ) ;
 				
