@@ -280,7 +280,7 @@ void BackBufferedWidget::redrawInternal() throw()
 	else
 	{	
 	
-#ifdef OSDL_DEBUG_WIDGET
+#if OSDL_DEBUG_WIDGET
 
 		LogPlug::trace( "BackBufferedWidget::redrawInternal :"
 			" back-buffer already available." ) ; 
