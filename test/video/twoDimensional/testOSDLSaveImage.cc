@@ -12,7 +12,7 @@ using namespace Ceylan::Log ;
 
 
 /**
- * Small usage tests for Image class.
+ * Small usage tests for the saving of surfaces.
  *
  */
  int main( int argc, char * argv[] ) 
@@ -26,12 +26,69 @@ using namespace Ceylan::Log ;
 	{
 			
 
-    	LogPlug::info( "Testing OSDL save Image" ) ;	
+    	LogPlug::info( "Testing OSDL saving of surfaces." ) ;	
          
+		
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+			
+				// Ignored for this test.
+				tokenEaten = true ;
+				
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
 		 
-		OSDL::CommonModule & myOSDL = 
-			OSDL::getCommonModule( 
-				CommonModule::UseVideo | CommonModule::NoParachute ) ;		
+		OSDL::CommonModule & myOSDL = OSDL::getCommonModule( 
+			CommonModule::UseVideo | CommonModule::NoParachute ) ;		
 				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
@@ -40,16 +97,15 @@ using namespace Ceylan::Log ;
 		Length windowHeight = 480 ;
 		
 		myVideo.setMode( windowWidth, windowHeight,
-			VideoModule::UseCurrentColorDepth, 
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 
 		
-    	LogPlug::info( "Creating a silly image" ) ;	
+    	LogPlug::info( "Creating a silly image." ) ;	
 
 
-    	LogPlug::info( "Prerequesite : having three random generators" ) ;	
+    	LogPlug::info( "Pre requesite : having three random generators." ) ;	
 		
 		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, 
 			windowWidth ) ;
@@ -60,7 +116,7 @@ using namespace Ceylan::Log ;
 		Ceylan::Maths::Random::WhiteNoiseGenerator colorRand( 0, 256 ) ;
 		
 				
-    	LogPlug::info( "Drawing random pixels with random colors" ) ;	
+    	LogPlug::info( "Drawing random pixels with random colors." ) ;	
 		
 		screen.lock() ;
 		
@@ -92,20 +148,25 @@ using namespace Ceylan::Log ;
 		screen.unlock() ;
 
 		screen.update() ;
-						
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		
+		if ( ! isBatch )				
+			myOSDL.getEventsModule().waitForAnyKey() ;
 		
 		
-		std::string bmpFile = "screenshot.bmp" ;
-		std::string pngFile = "screenshot.png" ;
+		std::string bmpFile = std::string( argv[0] ) + ".bmp" ;
+		std::string pngFile = std::string( argv[0] ) + ".png" ;
 		
     	LogPlug::info( "Saving screen surface in " + bmpFile ) ;	
 		screen.saveBMP( bmpFile ) ;
 		
     	LogPlug::info( "Saving screen surface in " + pngFile ) ;	
 		screen.savePNG( pngFile ) ;
+
 					
-		LogPlug::info( "End of OSDL save Image test." ) ;
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
+					
+		LogPlug::info( "End of OSDL saving of surfaces." ) ;
 	
 		
     }
