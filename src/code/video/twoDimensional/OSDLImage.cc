@@ -80,8 +80,9 @@ Surface & Image::LoadIcon( const string & filename,
 
 	// Adapted from SDL example (testwm.c).
 	
-
+#if OSDL_DEBUG_IMAGE
 	LogPlug::debug( "Loading icon." ) ;
+#endif // OSDL_DEBUG_IMAGE
 
 	// Do not convert to display, setMode should not have been called already !
 	
@@ -90,10 +91,12 @@ Surface & Image::LoadIcon( const string & filename,
 		/* blitOnly */ false, /* convertToDisplay */ false ) ;
 
 	
+#if OSDL_DEBUG_IMAGE
 	LogPlug::debug( "Icon loaded." ) ;
 	
 	LogPlug::debug( "Displaying icon informations : " 
 		+ iconSurface.toString() ) ;
+#endif // OSDL_DEBUG_IMAGE
 	
 	if ( iconSurface.getPixelFormat().palette == 0 ) 
 	{
@@ -110,6 +113,8 @@ Surface & Image::LoadIcon( const string & filename,
 
 	ColorElement * pixels = (ColorElement *) iconSurface.getPixels() ;
 	
+#if OSDL_DEBUG_IMAGE
+
 	LogPlug::debug( "Image::LoadIcon : index of upper left pixel is "
 		+ Ceylan::toString( static_cast<unsigned short>( *pixels ) ) ) ;
 	
@@ -120,6 +125,8 @@ Surface & Image::LoadIcon( const string & filename,
 
 	LogPlug::debug( 
 		"Creating image mask (one bit per image pixel, rounded up)" ) ;
+		
+#endif // OSDL_DEBUG_IMAGE
 		
 	int maskLen = ( iconSurface.getWidth() * iconSurface.getHeight() + 7 ) / 8 ;
 	ColorElement * constructedMask = new ColorElement[ maskLen ] ;
@@ -167,12 +174,16 @@ Surface & Image::LoadIcon( const string & filename,
         }
 		
 	}	
-	
+
+#if OSDL_DEBUG_IMAGE	
 	LogPlug::debug( "Icon scanned." ) ;
+#endif // OSDL_DEBUG_IMAGE
 	
 	*mask = constructedMask ;
 	
+#if OSDL_DEBUG_IMAGE
 	LogPlug::debug( "Icon fully loaded." ) ;
+#endif // OSDL_DEBUG_IMAGE
 	
 	return iconSurface ;
 	
@@ -185,7 +196,9 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_DEBUG_IMAGE	
 	LogPlug::debug( "Image::Load : loading image from " + filename ) ;
+#endif // OSDL_DEBUG_IMAGE
 	
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load JPG file " + filename 
@@ -198,7 +211,9 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 			+ " thanks to IMG_Load : "
 			+ string( IMG_GetError() ) ) ;   
 			
+#if OSDL_DEBUG_IMAGE	
 	LogPlug::debug( "Image loaded." ) ;
+#endif // OSDL_DEBUG_IMAGE
 	
 	/*
 	 * If conversion to display format is needed, substitute the 
@@ -226,15 +241,21 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 		if ( convertWithAlpha )
 		{
 		
+#if OSDL_DEBUG_IMAGE	
 			LogPlug::debug( 
 				"Converting image to display format, with alpha." ) ;
+#endif // OSDL_DEBUG_IMAGE
+
 			formattedImage = SDL_DisplayFormatAlpha( image ) ;	
 			
 		}
 		else
 		{
 		
+#if OSDL_DEBUG_IMAGE	
 			LogPlug::debug( "Converting image to display format, no alpha." ) ;
+#endif // OSDL_DEBUG_IMAGE
+
 			formattedImage = SDL_DisplayFormat( image ) ;	
 
 		}	
@@ -260,7 +281,9 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 	{
 	
 		// We should blit the loaded image in already existing internal surface.
+#if OSDL_DEBUG_IMAGE	
 		LogPlug::debug( "Blitting loaded image to already existing surface." ) ;
+#endif // OSDL_DEBUG_IMAGE
 		
 #if OSDL_DEBUG
 
@@ -304,7 +327,9 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 	else
 	{
 	
+#if OSDL_DEBUG_IMAGE	
 		LogPlug::debug( "Replacing already existing image by loaded one." ) ; 
+#endif // OSDL_DEBUG
 		
 		/*
 		 * Simply replace the former internal surface by this new one.
@@ -330,7 +355,9 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 	 *
 	 */	 
 	
+#if OSDL_DEBUG_IMAGE	
 	LogPlug::debug( "Image loaded." ) ;
+#endif // OSDL_DEBUG
 	
 }
 	
