@@ -38,7 +38,7 @@ const CommonModule::BackendReturnCode CommonModule::BackendError   = -1 ;
 bool CommonModule::_BackendInitialized = false ;
 
 
-
+// Allows to debug OSDL version management :
 #define OSDL_DEBUG_VERSION 0
 
 const Ceylan::LibtoolVersion & OSDL::GetVersion() throw()
