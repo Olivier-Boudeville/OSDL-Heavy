@@ -457,6 +457,7 @@ int main( int argc, char * argv[] )
 	{
 			
 		LogPlug::info( "Testing OSDL event-driven MVC integration." ) ;
+
 		bool isBatch = false ;
 		
 		std::string executableName ;
@@ -490,6 +491,11 @@ int main( int argc, char * argv[] )
 				tokenEaten = true ;
 			}
 			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
 			
 			if ( LogHolder::IsAKnownPlugOption( token ) )
 			{
@@ -506,7 +512,8 @@ int main( int argc, char * argv[] )
 		
 		}
 
-		LogPlug::info( "Starting OSDL with joystick support." ) ;		
+		LogPlug::info( "Starting OSDL with keyboard and joystick support." ) ;	
+
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
 			CommonModule::UseJoystick | CommonModule::UseKeyboard ) ;		
 		
@@ -605,7 +612,9 @@ int main( int argc, char * argv[] )
 		
 		if ( isBatch )
 		{
+		
 			LogPlug::warning( "Main loop not launched, as in batch mode." ) ;
+			
 		}
 		else
 		{
