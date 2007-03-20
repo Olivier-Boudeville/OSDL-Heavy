@@ -23,18 +23,79 @@ using std::list ;
  */
 int main( int argc, char * argv[] ) 
 {
+	
+	
+	LogHolder myLog( argc, argv ) ;
+
 
 	bool plentyOfFlakes     = true ;
 	bool screenshotDemanded = true ;
-	
-	LogHolder myLog( argc, argv ) ;
+
 
     try 
 	{
 			
 			
-    	LogPlug::info( "Testing OSDL Polygon" ) ;	
+    	LogPlug::info( "Testing OSDL Polygon services." ) ;	
 		
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+			
+				// Ignored for this test.
+				tokenEaten = true ;
+				
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
@@ -46,8 +107,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
@@ -89,17 +149,24 @@ int main( int argc, char * argv[] )
 				
 			flake.draw( screen, 320, 200, Snow, true ) ;
 			delete & flake ;
+			
 			screen.unlock() ;				
 			screen.update() ;			
 			
 			if ( screenshotDemanded )
 				screen.savePNG( string( argv[0] ) + ".png" ) ;
-				
-			myOSDL.getEventsModule().waitForAnyKey() ;
 			
-			LogPlug::info( "End of OSDL Polygon test " ) ;
+			if ( ! isBatch )	
+				myOSDL.getEventsModule().waitForAnyKey() ;
 			
-			return 0 ;
+			
+			LogPlug::info( "Stopping OSDL." ) ;		
+       		OSDL::stop() ;
+			
+			LogPlug::info( "End of OSDL Polygon test." ) ;
+			
+			return Ceylan::ExitSuccess ;
+			
 			
 		}
 				
@@ -109,13 +176,17 @@ int main( int argc, char * argv[] )
 				abscissa += 50 )
 		{
 		
+		
+			LogPlug::info( "Drawin a flake at " 
+				+ Point2D( abscissa, ordinate ).toString() + "." ) ;
+			
 			currentFlake = & PolygonSet::CreateFlake( 
 				branchCountRand.getNewValue(),
 				lengthRand.getNewValue(), 
 				thicknessRand.getNewValue(), 
 				childAngleRand.getNewValue(),
-				( float ) branchingHeightRatioRand.getNewValue() / 10.0f, 
-				( float ) scaleRand.getNewValue() / 10.0f
+				branchingHeightRatioRand.getNewValue() / 10.0f, 
+				scaleRand.getNewValue() / 10.0f
 			) ; 
 			
 			currentFlake->draw( screen, abscissa, ordinate, 
@@ -132,9 +203,15 @@ int main( int argc, char * argv[] )
 				
 		screen.update() ;	
 		
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )	
+			myOSDL.getEventsModule().waitForAnyKey() ;
 
-		LogPlug::info( "End of OSDL Polygon test" ) ;
+		LogPlug::info( "Stopping OSDL." ) ;		
+       	OSDL::stop() ;
+
+
+		LogPlug::info( "End of OSDL Polygon test." ) ;
+		
 		
     }
 	
