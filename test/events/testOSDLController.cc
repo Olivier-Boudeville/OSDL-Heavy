@@ -24,6 +24,7 @@ class MyController : public OSDL::MVC::Controller
 	
 	
 		MyController( EventsModule & events ) throw() :
+			_direction( 1 ),
 			_events( & events )
 		{
 		
@@ -71,7 +72,7 @@ class MyController : public OSDL::MVC::Controller
 					break ;	
 			}	
 			
-			cout << "                  " << toString() ;	
+			cout << "                  " << toString() << std::endl ;	
 	
 				
 		}
@@ -206,8 +207,63 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "Testing OSDL controller to input device bridge." ) ;
 
+
+		bool isBatch = false ;
 		
-		LogPlug::info( "Starting OSDL with keyboard joystick support." ) ;	
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+		LogPlug::info( "Starting OSDL with keyboard and joystick support." ) ;	
 		
 		// Will trigger the video module as well for events :	
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule( 
@@ -226,12 +282,28 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Current joystick handler is : " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 
-		unsigned int joyCount = myJoystickHandler.GetAvailableJoystickCount()  ;
-		LogPlug::info( "There are " + Ceylan::toString( joyCount )
-			+ " attached joystick(s), opening them all." ) ;
+		JoystickNumber joyCount = 
+			myJoystickHandler.GetAvailableJoystickCount() ;
 			
-		for ( unsigned int i = 0 ; i < joyCount; i++ )
-			myJoystickHandler.openJoystick( i ) ;
+		if ( joyCount > 0 )	
+		{
+		
+			LogPlug::info( "There are " + Ceylan::toString( joyCount )
+				+ " attached joystick(s), opening them all." ) ;
+			
+			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
+				myJoystickHandler.openJoystick( i ) ;
+		
+			LogPlug::info( "New joystick handler state is : " 
+				+ myJoystickHandler.toString( Ceylan::high ) ) ;
+		
+		}
+		else
+		{
+		
+			LogPlug::info( "There is no joystick attached." ) ;
+		
+		}
 		
 		LogPlug::info( "New joystick handler state is : " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
@@ -253,6 +325,9 @@ int main( int argc, char * argv[] )
 		
 					
 		myEvents.getKeyboardHandler().linkToController(
+			KeyboardHandler::UpArrowKey, aController ) ;
+			
+		myEvents.getKeyboardHandler().linkToController(
 			KeyboardHandler::DownArrowKey, aController ) ;
 			
 		myEvents.getKeyboardHandler().linkToController(
@@ -265,27 +340,35 @@ int main( int argc, char * argv[] )
 			KeyboardHandler::EnterKey, aController ) ;
 
 		
-		if ( joyCount == 0 )
+		if ( joyCount > 0 )
+			myJoystickHandler.linkToController( /* first joystick */ 0, 
+				aController ) ;
+
+
+		if ( isBatch )
 		{
-			LogPlug::info( "No joystick detected, no test performed." ) ;
-			return 0 ;
-		}	
+		
+			LogPlug::warning( "Main loop not launched, as in batch mode." ) ;
+			
+		}
+		else
+		{
+		
+			LogPlug::info( "Entering the event loop "
+				"for event waiting so that Controller can act." ) ;
 
-		std::cout << "(when the joystick is pushed, a character "
-			"('<' or '>' or '^' or 'v', for left, right, up and down) "
-			"describes the direction it is aimed at)" << std::endl
-			<< "(press the enter key or a joystick button to exit)" ;
-
+			std::cout << std::endl
+				<< "When the joystick is pushed, a character "
+				"('<' or '>' or '^' or 'v', for left, right, up and down) "
+				"describes the direction it is aimed at." << std::endl
+				<< "< Hit Enter or push the first button "
+				"of the first joystick (if any) "
+				"to end OSDL controller test >" << std::endl ;
 		
-		myJoystickHandler.linkToController( /* JoystickNumber */ 0, 
-			aController ) ;
-		
-		LogPlug::info( "Entering the event loop "
-			"for event waiting so that Controller can act." ) ;
-		
-		LogPlug::info( "Entering main loop." ) ;		
-		myEvents.enterMainLoop() ;
-		LogPlug::info( "Exiting main loop." ) ;		
+			myEvents.enterMainLoop() ;
+			LogPlug::info( "Exiting main loop." ) ;	
+				
+		}
 				
 		LogPlug::info( "End of OSDL controller test." ) ;
 		
