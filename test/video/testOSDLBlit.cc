@@ -32,8 +32,65 @@ int main( int argc, char * argv[] )
 
     	LogPlug::info( "Testing OSDL blit" ) ;	
 		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
-	         
+ 
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+			
+					
+	   	LogPlug::info( "Pre requesite : initializing the display" ) ;	      
 		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
 			CommonModule::UseVideo | CommonModule::UseKeyboard ) ;				
@@ -44,8 +101,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
@@ -80,10 +136,15 @@ int main( int argc, char * argv[] )
 		screen.unlock() ;
 		 			
 		screen.update() ;	
-					
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		
+		if ( ! isBatch )			
+			myOSDL.getEventsModule().waitForAnyKey() ;
+		
+		
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
 				
-		LogPlug::info( "End of OSDL Lines test" ) ;
+		LogPlug::info( "End of OSDL blit test" ) ;
 		
     }
 	
