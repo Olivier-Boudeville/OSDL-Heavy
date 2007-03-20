@@ -142,7 +142,7 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "Testing OSDL scheduler services in real-time mode." ) ;
 
-		// Tells when the test will stop, by default after 30s (100 Hz) :
+		// Tells when the test will stop, by default after 10s (100 Hz) :
 		Events::SimulationTick stopTick = 10 * 100 ;
 	
 	
@@ -188,6 +188,13 @@ int main( int argc, char * argv[] )
 				tokenEaten = true ;
 			}
 			
+			if ( token == "--online" )
+			{
+			
+				// Ignored for this test.
+				tokenEaten = true ;
+				
+			}
 			
 			if ( LogHolder::IsAKnownPlugOption( token ) )
 			{
@@ -261,7 +268,7 @@ int main( int argc, char * argv[] )
 				it != stoppers.end() ; it++ ) 
 			delete (*it) ;
 				
-		LogPlug::info( "stopping OSDL." ) ;		
+		LogPlug::info( "Stopping OSDL." ) ;		
         OSDL::stop() ;
 		
 		LogPlug::info( "End of OSDL scheduler test." ) ;
