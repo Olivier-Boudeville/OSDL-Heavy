@@ -34,6 +34,64 @@ int main( int argc, char * argv[] )
 			
 
     	LogPlug::info( "Testing OSDL surface transformations" ) ;	
+
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+					
 		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         
@@ -47,8 +105,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, 
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 		
@@ -75,7 +132,8 @@ int main( int argc, char * argv[] )
 		
 		screen.update() ;
 
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
 		
 					
 		Surface & flipV = screen.flipVertical() ;
@@ -86,7 +144,8 @@ int main( int argc, char * argv[] )
 		delete & flipV ;
 		screen.update() ;
 
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
 
 
 		Surface & flipH = screen.flipHorizontal() ;
@@ -94,7 +153,8 @@ int main( int argc, char * argv[] )
 		delete & flipH ;
 		screen.update() ;
 						
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
 
 
 		// Relies on clipping :
@@ -114,7 +174,8 @@ int main( int argc, char * argv[] )
 		
 		screen.update() ;
 		
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
 		
 		
 		// Finish with a correct image :
@@ -146,7 +207,7 @@ int main( int argc, char * argv[] )
 		ColorElement blue ;
 		ColorElement alpha ;
 		
-		for ( int i = 0; i < 100; i++ )
+		for ( Ceylan::Uint32 i = 0; i < 100; i++ )
 		{
 								
 			x = abscissaRand.getNewValue() ;			
@@ -189,9 +250,13 @@ int main( int argc, char * argv[] )
 
 		screen.update() ;
 
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
 	
 				
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
+		
 		LogPlug::info( "End of OSDL Surface transformation test." ) ;
 		
 		
