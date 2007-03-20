@@ -14,13 +14,14 @@ using namespace Ceylan::Log ;
 int main( int argc, char * argv[] ) 
 {
 
+
 	LogHolder myLog( argc, argv ) ;
+
 
     try 
 	{
 			
-
-    	LogPlug::info( "Testing OSDL Point2D" ) ;	
+    	LogPlug::info( "Testing OSDL Point2D." ) ;	
 
         Point2D p1( static_cast<OSDL::Video::Coordinate>( 14 ), 34 ) ;
         
@@ -46,8 +47,10 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "Point now displays as " 
 			+ p1.toString() ) ;
+		
+		// OSDL not launched hence not stopped.
 				
-		LogPlug::info( "End of OSDL Point2D test" ) ;
+		LogPlug::info( "End of OSDL Point2D test." ) ;
 		
     }
 	
