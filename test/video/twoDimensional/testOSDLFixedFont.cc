@@ -25,19 +25,16 @@ const std::string fixedFontDirFromExec = "../../../../OSDL-data/fonts/fixed" ;
 
 
 /*
- * Fixed font directory is defined in LOANI as
- * ${alternate_prefix}/OSDL-data/fonts/fixed, usually this pathname 
- * relative to OSDL/OSDL-${OSDL_VERSION}/src/code where this test executable
- * should be executed by 'playTests.sh' is :
+ * This font directory is defined relatively to the build tree for this test :
  *
  */
-const std::string fixedFontDirForPlayTests = "../../../OSDL-data/fonts/fixed" ;
+const std::string fixedFontDirForPlayTests = 
+	"../../../src/doc/web/common/fonts" ;
 
 
 
 /**
  * Small usage tests for fixed font text output.
- *
  *
  */
 int main( int argc, char * argv[] ) 
@@ -56,6 +53,64 @@ int main( int argc, char * argv[] )
 			
 
     	LogPlug::info( "Testing OSDL Fixed font service" ) ;	
+		
+		
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+
+			
 		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         
@@ -217,8 +272,10 @@ int main( int argc, char * argv[] )
 		
 				
 			screen.update() ;	
-			screen.savePNG( "testOSDLFixedFont-random.png" ) ;
-			myOSDL.getEventsModule().waitForAnyKey() ;
+			screen.savePNG( std::string( argv[0] ) + "-random.png" ) ;
+			
+			if ( ! isBatch )
+				myOSDL.getEventsModule().waitForAnyKey() ;
 		
 		}
 		
@@ -380,10 +437,17 @@ int main( int argc, char * argv[] )
 			printBasic( toPrint, screen, 10, 470, textColor ) ;
 	
 			screen.update() ;
-			screen.savePNG( "testOSDLFixedFont-allfonts.png" ) ;
-			myOSDL.getEventsModule().waitForAnyKey() ;
+
+			screen.savePNG( std::string( argv[0] ) + "-allfonts.png" ) ;
+			
+			if ( ! isBatch )
+				myOSDL.getEventsModule().waitForAnyKey() ;
 		
 		}
+		
+		
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
 		
 		LogPlug::info( "End of OSDL FixedFont test" ) ;
 		
