@@ -10,6 +10,7 @@ using namespace Ceylan::Log ;
 const std::string textureFilename = "OSDL-icon.png" ;
 
 
+
 /**
  * Testing the basic services of the OSDL video using OpenGL.
  *
@@ -18,6 +19,7 @@ const std::string textureFilename = "OSDL-icon.png" ;
  */
 int main( int argc, char * argv[] ) 
 {
+
 
 	LogHolder myLog( argc, argv ) ;
 	
@@ -28,6 +30,63 @@ int main( int argc, char * argv[] )
 	
 		LogPlug::info( "Testing OSDL video OpenGL basic services." ) ;
 			
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+
 		LogPlug::info( "Starting OSDL with OpenGL enabled." )	;
 			
         CommonModule & myOSDL = getCommonModule( CommonModule::UseVideo ) ;		
@@ -40,9 +99,7 @@ int main( int argc, char * argv[] )
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
 		myVideo.logState() ;
-		
-		LogPlug::debug( "myVideo class name is : " + myVideo.getClassName() ) ;
-		
+				
 		LogPlug::info( "Displaying available video definitions : " 
 			+ VideoModule::DescribeAvailableDefinitions( 
 					Surface::FullScreen | Surface::Hardware ) ) ;     
@@ -96,7 +153,8 @@ int main( int argc, char * argv[] )
 		
 		screen.update() ;
 		
-		myEvents.waitForAnyKey() ;
+		if ( ! isBatch )
+			myEvents.waitForAnyKey() ;
 		
 		delete & texture ;
 		
