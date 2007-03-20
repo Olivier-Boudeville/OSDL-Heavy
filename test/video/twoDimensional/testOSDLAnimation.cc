@@ -15,12 +15,13 @@ using namespace Ceylan::Maths::Linear ;
 
 
 /**
- * Small usage tests for very basic animation.
+ * Small usage tests for very basic animation of a sunrise.
  *
  */
 
 Length screenWidth  = 640 ;
 Length screenHeight = 480 ;
+  
   
 /*
  
@@ -29,7 +30,8 @@ class Sun : public ActiveObject
 
 	public:
 	
-		Sun( Events::Milliseconds startingTime, Point2D & origin, Length initialRadius,
+		Sun( Events::Milliseconds startingTime, Point2D & origin, 
+				Length initialRadius,
 				Pixels::ColorDefinition initialColor ) throw() :
 			TimedDrawable( startingTime ),			
 			_origin( origin.getX(), origin.getY() ),
@@ -49,8 +51,9 @@ class Sun : public ActiveObject
 		
 		virtual void updatePosition() throw()
 		{
-			_currentPosition.setTo( _origin.getX() + EventsModule::getSimulationTime(),
-				 _origin.getX() + 2 * EventsModule::getSimulationTime() ) ;			
+			_currentPosition.setTo( 
+				_origin.getX()  +     EventsModule::getSimulationTime(),
+				_origin.getX() + 2 * EventsModule::getSimulationTime() ) ;			
 		}
 		
 		
@@ -85,6 +88,64 @@ int main( int argc, char * argv[] )
 			
 
     	LogPlug::info( "Testing OSDL Animation" ) ;	
+
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+					
 		
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
 	         
@@ -103,7 +164,11 @@ int main( int argc, char * argv[] )
 							
 		screen.update() ;	
 		
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		if ( ! isBatch )
+			myOSDL.getEventsModule().waitForAnyKey() ;
+
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
 				
 		LogPlug::info( "End of OSDL Animation test" ) ;
 		
