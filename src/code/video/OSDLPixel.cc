@@ -22,7 +22,7 @@ using namespace OSDL::Video ;
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>     // for OSDL_DEBUG and al 
+#include <OSDLConfig.h>          // for OSDL_DEBUG_PIXEL and al 
 #endif // OSDL_USES_CONFIG_H
 
 
@@ -479,7 +479,7 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 {
 
 
-#if OSDL_DEBUG
+#if OSDL_DEBUG_PIXEL
 
 	// Check endianness here just to output a log message :
 	
@@ -495,7 +495,7 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 		
 #endif // CEYLAN_DETECTED_LITTLE_ENDIAN
 
-#endif // OSDL_DEBUG
+#endif // OSDL_DEBUG_PIXEL
 	
 	/*
 	 * Ensure color masks are only defined once (in OpenGL module) to 
@@ -517,7 +517,7 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 {
 
 
-#if OSDL_DEBUG
+#if OSDL_DEBUG_PIXEL
 
 	// Check endianness here just to output a log message :
 	
@@ -533,7 +533,7 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 		
 #endif // CEYLAN_DETECTED_LITTLE_ENDIAN
 
-#endif // OSDL_DEBUG
+#endif // OSDL_DEBUG_PIXEL
 
 
 	redMask   = OpenGL::RedMask ;
