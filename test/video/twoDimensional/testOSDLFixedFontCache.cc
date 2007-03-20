@@ -23,13 +23,11 @@ const std::string fixedFontDirFromExec = "../../../../OSDL-data/fonts/fixed" ;
 
 
 /*
- * Fixed font directory is defined in LOANI as
- * ${alternate_prefix}/OSDL-data/fonts/fixed, usually this pathname relative to
- * OSDL/OSDL-${OSDL_VERSION}/src/code where this test executable should be
- * executed by 'playTests.sh' is :
+ * This font directory is defined relatively to the build tree for this test :
  *
  */
-const std::string fixedFontDirForPlayTests = "../../../OSDL-data/fonts/fixed" ;
+const std::string fixedFontDirForPlayTests = 
+	"../../../src/doc/web/common/fonts" ;
 
 
 const std::string firstTestSentence  = "Ceylan and OSDL rock !" ;
@@ -62,6 +60,62 @@ int main( int argc, char * argv[] )
 			"inspect 'Debug' channel to check cache hits and misses" ) ;	
 			
 			
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+
+			
 			
 		LogPlug::info( "At the end of this test, one should see red letters "
 			"('a', 'b'), and two groups of two sentences, "
@@ -80,8 +134,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 		
@@ -118,7 +171,8 @@ int main( int argc, char * argv[] )
 		{
 		
 			LogPlug::info( "First : testing cache for glyph rendering." ) ;
-					
+			
+			// Will lead to request '6x12.fnt' font file:		
 			FixedFont myGlyphCachedFixedFont( 6, 12,
 				/* renderingStyle */ Font::Normal, 
 				/* convertToDisplay */ true, 
@@ -325,8 +379,15 @@ int main( int argc, char * argv[] )
 		}
 				
 				
-		screen.update() ;	
-		myOSDL.getEventsModule().waitForAnyKey() ;
+		screen.update() ;
+		
+		if ( ! isBatch )	
+			myOSDL.getEventsModule().waitForAnyKey() ;
+		
+			
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
+			
 			
 		LogPlug::info( "End of OSDL fixed font cache test" ) ;
 	
