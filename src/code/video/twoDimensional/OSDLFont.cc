@@ -1178,7 +1178,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 			continue ;
 		}	
 		
-#ifdef OSDL_DEBUG_FONT
+#if OSDL_DEBUG_FONT
 
 		LogPlug::debug( "Font::renderLatin1TextWithWordCached : blitting '" 
 			+ (*it) + "'." ) ;
@@ -1226,7 +1226,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithTextCached(
 	Pixels::ColorDefinition textColor ) throw( TextException )
 {
 
-#ifdef OSDL_DEBUG_FONT
+#if OSDL_DEBUG_FONT
 
 	LogPlug::trace( "Font::renderLatin1TextWithTextCached" ) ;
 	
