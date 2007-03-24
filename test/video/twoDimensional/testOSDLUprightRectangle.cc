@@ -36,8 +36,65 @@ int main( int argc, char * argv[] )
 		
     	LogPlug::info( "Testing OSDL UprightRectangle" ) ;		
 
-		Point2D p1( (Coordinate) 14, 34 ) ;
-		Point2D p2( (Coordinate) 50, 45 ) ;
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
+
+		Point2D p1( 14, 34 ) ;
+		Point2D p2( 50, 45 ) ;
 		
         UprightRectangle r1( p1, p2 ) ;
 		
@@ -54,7 +111,9 @@ int main( int argc, char * argv[] )
 		
 		try 
 		{	
+		
 			UprightRectangle r2( p2, p1 ) ;
+			
 		}
 		catch( const OSDL::Video::VideoException & e )
 		{
@@ -68,6 +127,7 @@ int main( int argc, char * argv[] )
 				"Creating an abnormal UprightRectangle has not been detected !"
 		) ;
 				
+				
 		LogPlug::info( "Initializing display to draw rectangles." ) ;
 		
 		CommonModule & myOSDL = OSDL::getCommonModule( 
@@ -79,8 +139,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
@@ -99,7 +158,7 @@ int main( int argc, char * argv[] )
 	
 		
 		// Used for width and height, clipping is thus tested too :
-		Ceylan::Maths::Random::WhiteNoiseGenerator sizeRand( 0, 200 ) ;
+		Ceylan::Maths::Random::WhiteNoiseGenerator sizeRand( 1, 200 ) ;
 		
 	
 		Coordinate x, y ;
@@ -178,10 +237,11 @@ int main( int argc, char * argv[] )
 			screen.update() ;
 
 			if ( screenshotWanted )
-				screen.savePNG(
-					"testOSDLUprightRectangle-classical-examples.png" ) ;
+				screen.savePNG( std::string( argv[0] )
+					+ "-classical-examples.png" ) ;
 	
-			myOSDL.getEventsModule().waitForAnyKey() ;
+			if ( ! isBatch )
+				myOSDL.getEventsModule().waitForAnyKey() ;
 	
 		}
 
@@ -279,10 +339,11 @@ int main( int argc, char * argv[] )
 			screen.update() ;
 
 			if ( screenshotWanted )	
-				screen.savePNG( 
-					"testOSDLUprightRectangle-rounded-examples.png" ) ;
+				screen.savePNG( std::string( argv[0] )
+					+ "-rounded-examples.png" ) ;
 			
-			myOSDL.getEventsModule().waitForAnyKey() ;
+			if ( ! isBatch ) 
+				myOSDL.getEventsModule().waitForAnyKey() ;
 
 
 			if ( drawPlentyOfRandomRects )
@@ -344,15 +405,21 @@ int main( int argc, char * argv[] )
 	
 				screen.update() ;
 	
-				if ( screenshotWanted )
-					screen.savePNG(
-						"testOSDLUprightRectangle-rounded-plenty.png" ) ;
+				if ( screenshotWanted )	
+					screen.savePNG( std::string( argv[0] )
+						+ "-rounded-plenty.png" ) ;
+			
+				if ( ! isBatch ) 
+					myOSDL.getEventsModule().waitForAnyKey() ;
 
-				myOSDL.getEventsModule().waitForAnyKey() ;
 	
 			}
 		
 		}
+		
+		
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
 		
 		LogPlug::info( "End of OSDL UprightRectangle test" ) ;
 
