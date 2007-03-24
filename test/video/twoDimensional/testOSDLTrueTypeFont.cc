@@ -53,7 +53,8 @@ const std::string sixthTrueTypeFontFile  = "stilltim.ttf" ;
 
 
 void displayFont( Surface & screen, const std::string & fontFilename, 
-	bool convertToDisplay, Font::RenderCache cache )
+	bool convertToDisplay, Font::RenderCache cache, 
+		const std::string & executableName, bool screenshotWanted )
 {
 
 	screen.clear() ;
@@ -111,7 +112,9 @@ void displayFont( Surface & screen, const std::string & fontFilename,
 	}		
 
 	screen.update() ;	
-	screen.savePNG( "testOSDLTrueTypeFont-edges.png" ) ;
+
+	if ( screenshotWanted )	
+		screen.savePNG( executableName + "-edges.png" ) ;
 
 }
 
@@ -132,6 +135,8 @@ int main( int argc, char * argv[] )
 	
 	bool qualityTestWanted = true ;
 	
+	bool screenshotWanted = true ;
+	
 	bool edgeTestWanted = true ;
 		
 	bool gridWanted = true ;
@@ -148,10 +153,67 @@ int main( int argc, char * argv[] )
 		LogPlug::info( 
 			"Note that having compiled OSDL with the OSDL_DEBUG_FONT flag set "
 			"allows for far more debug informations." ) ;
-			
-			
+
+				
     	LogPlug::info( "Pre requesite : initializing the display" ) ;	
-	         
+	      
+		     
+
+		bool isBatch = false ;
+		
+		std::string executableName ;
+		std::list<std::string> options ;
+		
+		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+		
+		std::string token ;
+		bool tokenEaten ;
+		
+		
+		while ( ! options.empty() )
+		{
+		
+			token = options.front() ;
+			options.pop_front() ;
+
+			tokenEaten = false ;
+						
+			if ( token == "--batch" )
+			{
+			
+				LogPlug::info( "Batch mode selected" ) ;
+				isBatch = true ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--interactive" )
+			{
+				LogPlug::info( "Interactive mode selected" ) ;
+				isBatch = false ;
+				tokenEaten = true ;
+			}
+			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			if ( LogHolder::IsAKnownPlugOption( token ) )
+			{
+				// Ignores log-related (argument-less) options.
+				tokenEaten = true ;
+			}
+			
+			
+			if ( ! tokenEaten )
+			{
+				throw Ceylan::CommandLineParseException( 
+					"Unexpected command line argument : " + token ) ;
+			}
+		
+		}
+		
 		 
 		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo 
 			| CommonModule::UseKeyboard ) ;				
@@ -162,8 +224,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ; 
 		
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth,
-			VideoModule::SoftwareSurface ) ;
+			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 			
 		Surface & screen = myVideo.getScreenSurface() ;
 				
@@ -330,15 +391,21 @@ int main( int argc, char * argv[] )
 				Font::Shaded, Pixels::DarkOrange ) ;
 		
 			textSurface->blitTo( screen, 100, 100 ) ;
-			textSurface->savePNG( "testOSDLTrueTypeFont-text.png" ) ;
+
+			if ( screenshotWanted )	
+				textSurface->savePNG( std::string( argv[0] ) + "-text.png" ) ;
 			
 		
 			delete textSurface ;
 		
 				
-			screen.update() ;	
-			screen.savePNG( "testOSDLTrueTypeFont-random.png" ) ;
-			myOSDL.getEventsModule().waitForAnyKey() ;
+			screen.update() ;
+				
+			if ( screenshotWanted )	
+				screen.savePNG( std::string( argv[0] ) + "-random.png" ) ;
+				
+			if ( ! isBatch ) 
+				myOSDL.getEventsModule().waitForAnyKey() ;
 			
 		}
 		
@@ -400,11 +467,12 @@ int main( int argc, char * argv[] )
 					Pixels::Moccasin );
 			
 			screen.update() ;	
-			screen.savePNG( "testOSDLTrueTypeFont-qualities.png" ) ;
-			myOSDL.getEventsModule().waitForAnyKey() ;
+
+			if ( screenshotWanted )	
+				screen.savePNG( std::string( argv[0] ) + "-qualities.png" ) ;
 			
-			LogPlug::info( "End of OSDL TrueTypeFont test" ) ;
-	
+			if ( ! isBatch ) 
+				myOSDL.getEventsModule().waitForAnyKey() ;	
 	
 		}	
 		
@@ -424,9 +492,11 @@ int main( int argc, char * argv[] )
 			
 			displayFont( screen, firstTrueTypeFontFile, 
 				/* convertToDisplay */ true, 
-				/* render cache */ Font::GlyphCached ) ;
+				/* render cache */ Font::GlyphCached, 
+				std::string( argv[0] ), screenshotWanted ) ;
 
-			myOSDL.getEventsModule().waitForAnyKey() ;
+			if ( ! isBatch )
+				myOSDL.getEventsModule().waitForAnyKey() ;
 
 			
 			if ( manyKeysToHit )
@@ -434,24 +504,30 @@ int main( int argc, char * argv[] )
 			
 				displayFont( screen, firstTrueTypeFontFile, 
 					/* convertToDisplay */ true, 
-					/* render cache */ Font::WordCached ) ;
+					/* render cache */ Font::WordCached,
+					std::string( argv[0] ), screenshotWanted ) ;
 
-				myOSDL.getEventsModule().waitForAnyKey() ;
+				if ( ! isBatch )
+					myOSDL.getEventsModule().waitForAnyKey() ;
 
 				displayFont( screen, firstTrueTypeFontFile, 
 					/* convertToDisplay */ true, 
-					/* render cache */ Font::TextCached ) ;
+					/* render cache */ Font::TextCached,
+					std::string( argv[0] ), screenshotWanted ) ;
 
-				myOSDL.getEventsModule().waitForAnyKey() ;
+				if ( ! isBatch )
+					myOSDL.getEventsModule().waitForAnyKey() ;
 
 			}
 
 		
 			displayFont( screen, secondTrueTypeFontFile, 
 				/* convertToDisplay */ false, 
-				/* render cache */ Font::GlyphCached ) ;
+				/* render cache */ Font::GlyphCached,
+				std::string( argv[0] ), screenshotWanted ) ;
 
-			myOSDL.getEventsModule().waitForAnyKey() ;
+			if ( ! isBatch )
+				myOSDL.getEventsModule().waitForAnyKey() ;
 			
 			
 			if ( manyKeysToHit )
@@ -459,24 +535,30 @@ int main( int argc, char * argv[] )
 			
 				displayFont( screen, secondTrueTypeFontFile, 
 					/* convertToDisplay */ false, 
-					/* render cache */ Font::WordCached ) ;
+					/* render cache */ Font::WordCached,
+					std::string( argv[0] ), screenshotWanted ) ;
 
-				myOSDL.getEventsModule().waitForAnyKey() ;
+				if ( ! isBatch )
+					myOSDL.getEventsModule().waitForAnyKey() ;
 
 				displayFont( screen, secondTrueTypeFontFile, 
 					/* convertToDisplay */ false, 
-					/* render cache */ Font::TextCached ) ;
+					/* render cache */ Font::TextCached,
+					std::string( argv[0] ), screenshotWanted ) ;
 
-				myOSDL.getEventsModule().waitForAnyKey() ;
+				if ( ! isBatch )
+					myOSDL.getEventsModule().waitForAnyKey() ;
 		
 			}
 		
 		
 			displayFont( screen, thirdTrueTypeFontFile, 
 				/* convertToDisplay */ true, 
-				/* render cache */ Font::GlyphCached ) ;
+				/* render cache */ Font::GlyphCached,
+				std::string( argv[0] ), screenshotWanted ) ;
 
-			myOSDL.getEventsModule().waitForAnyKey() ;
+			if ( ! isBatch )
+				myOSDL.getEventsModule().waitForAnyKey() ;
 				
 		
 			if ( manyKeysToHit )
@@ -484,21 +566,31 @@ int main( int argc, char * argv[] )
 			
 				displayFont( screen, thirdTrueTypeFontFile, 
 					/* convertToDisplay */ true, 
-					/* render cache */ Font::WordCached ) ;
+					/* render cache */ Font::WordCached,
+					std::string( argv[0] ), screenshotWanted ) ;
 
-				myOSDL.getEventsModule().waitForAnyKey() ;
+				if ( ! isBatch ) 
+					myOSDL.getEventsModule().waitForAnyKey() ;
 				
 		
 				displayFont( screen, thirdTrueTypeFontFile, 
 					/* convertToDisplay */ true, 
-					/* render cache */ Font::TextCached ) ;
+					/* render cache */ Font::TextCached,
+					std::string( argv[0] ), screenshotWanted ) ;
 
-				myOSDL.getEventsModule().waitForAnyKey() ;
+				if ( ! isBatch ) 
+					myOSDL.getEventsModule().waitForAnyKey() ;
 				
 			}
 
-					
 		}		
+
+		
+		LogPlug::info( "Stopping OSDL." ) ;		
+        OSDL::stop() ;
+		
+		
+		LogPlug::info( "End of OSDL TrueTypeFont test." ) ;
 							
     }
 	
