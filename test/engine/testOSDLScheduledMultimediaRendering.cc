@@ -560,6 +560,13 @@ int main( int argc, char * argv[] )
 			}
 			
 			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
+			
 			if ( LogHolder::IsAKnownPlugOption( token ) )
 			{
 				// Ignores log-related (argument-less) options.
