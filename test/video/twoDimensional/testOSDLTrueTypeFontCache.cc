@@ -206,7 +206,7 @@ int main( int argc, char * argv[] )
 			mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph( 
 				'a', Font::Solid, textColor ) ;
 			
-			Coordinate ordinate = 55 ;
+			Coordinate ordinate = 60 ;
 				
 			mySurface->blitTo( screen, 20, ordinate ) ;
 			delete mySurface ;
@@ -280,9 +280,9 @@ int main( int argc, char * argv[] )
 			mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
 				firstTestSentence, Font::Solid, textColor ) ;
 			
-			ordinate = 100 ;
+			Coordinate ordinate = 100 ;
 				
-			mySurface->blitTo( screen, 20, 100 ) ;
+			mySurface->blitTo( screen, 20, ordinate ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after first render of first test sentence : " 
@@ -291,7 +291,7 @@ int main( int argc, char * argv[] )
 			mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
 				firstTestSentence, Font::Solid, textColor ) ;
 				
-			mySurface->blitTo( screen, 220, 100 ) ;
+			mySurface->blitTo( screen, 220, ordinate ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after second render of first test sentence : " 
@@ -300,7 +300,7 @@ int main( int argc, char * argv[] )
 			mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
 				firstTestSentence, Font::Solid, textColor ) ;
 				 
-			mySurface->blitTo( screen, 420, 100 ) ;
+			mySurface->blitTo( screen, 420, ordinate ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after third render of first test sentence : " 
@@ -352,12 +352,13 @@ int main( int argc, char * argv[] )
 			LogPlug::info( 
 				"Successfully loaded following font in initial state : " 
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-	
+
+			Coordinate ordinate = 200 ;	
 
 			mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
 				firstTestSentence, Font::Solid, textColor ) ;
 				 
-			mySurface->blitTo( screen, 20, 200 ) ;
+			mySurface->blitTo( screen, 20, ordinate ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after first render of first test sentence : " 
@@ -366,7 +367,7 @@ int main( int argc, char * argv[] )
 			mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
 				firstTestSentence, Font::Solid, textColor ) ;
 				
-			mySurface->blitTo( screen, 220, 200 ) ;
+			mySurface->blitTo( screen, 220, ordinate ) ;
 			delete mySurface ;
 		
 			LogPlug::info( "Font after second render of first test sentence : " 
@@ -375,7 +376,7 @@ int main( int argc, char * argv[] )
 			mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
 				firstTestSentence, Font::Solid, textColor ) ;
 				 
-			mySurface->blitTo( screen, 420, 200 ) ;
+			mySurface->blitTo( screen, 420, ordinate ) ;
 			delete mySurface ;
 		
 			LogPlug::info( 
@@ -383,19 +384,21 @@ int main( int argc, char * argv[] )
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
 
-			myTextCachedTrueTypeFont.blitLatin1Text( screen, 20, 250,
+			ordinate = 250 ;
+			
+			myTextCachedTrueTypeFont.blitLatin1Text( screen, 20, ordinate,
 				secondTestSentence, Font::Solid, textColor ) ;		
 				
 			LogPlug::info( "Font after first blit of second test sentence : " 
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
-			myTextCachedTrueTypeFont.blitLatin1Text( screen, 220, 250,
+			myTextCachedTrueTypeFont.blitLatin1Text( screen, 220, ordinate,
 				secondTestSentence, Font::Solid, textColor ) ;		
 				 
 			LogPlug::info( "Font after first blit of second test sentence : " 
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 			
-			myTextCachedTrueTypeFont.blitLatin1Text( screen, 420, 250,
+			myTextCachedTrueTypeFont.blitLatin1Text( screen, 420, ordinate,
 				secondTestSentence, Font::Solid, textColor ) ;		
 				
 			LogPlug::info( "Font after first blit of second test sentence : " 
