@@ -56,6 +56,12 @@ int main( int argc, char * argv[] )
 				tokenEaten = true ;
 			}
 			
+			if ( token == "--online" )
+			{
+				// Ignored :
+				tokenEaten = true ;
+			}
+			
 			
 			if ( LogHolder::IsAKnownPlugOption( token ) )
 			{
@@ -95,8 +101,10 @@ int main( int argc, char * argv[] )
 		// Nothing more to test ?
 		if ( driveNumber == 0 )
 		{
+		
 			LogPlug::info( "No drive available, stopping test." ) ;
 			return Ceylan::ExitSuccess ;
+			
 		}	
 			
 		// Open all available drives :
@@ -112,9 +120,11 @@ int main( int argc, char * argv[] )
 		
 		if ( ! defaultDrive.isCDInDrive() )
 		{
+		
 			LogPlug::info( 
 				"Drive available but no CD in tray, stopping test." ) ;
 			return Ceylan::ExitSuccess ;
+			
 		}	
 		
 		/*
