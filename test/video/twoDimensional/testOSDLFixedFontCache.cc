@@ -13,20 +13,20 @@ using namespace Ceylan::System ;
 #include <string>
 
 
-/*
- * Fixed font directory is defined in LOANI as
- * ${alternate_prefix}/OSDL-data/fonts/fixed, usually this pathname relative 
- * to the install directory where this test executable should lie is :
+/**
+ * This font directory is defined relatively to the place where the script
+ * automating the test suite will be run (trunk/test/playTests.sh, which
+ * changes its current directory to trunk/test in all cases) :
  *
  */
-const std::string fixedFontDirFromExec = "../../../../OSDL-data/fonts/fixed" ;
+const std::string fixedFontDirForPlayTests = "../src/doc/web/common/fonts" ;
 
 
-/*
+/**
  * This font directory is defined relatively to the build tree for this test :
  *
  */
-const std::string fixedFontDirForPlayTests = 
+const std::string fixedFontDirFromTestBuildLocation = 
 	"../../../src/doc/web/common/fonts" ;
 
 
@@ -146,8 +146,9 @@ int main( int argc, char * argv[] )
 		 *
 		 */
 
-		FixedFont::FixedFontFileLocator.addPath( fixedFontDirFromExec ) ;
 		FixedFont::FixedFontFileLocator.addPath( fixedFontDirForPlayTests ) ;
+		FixedFont::FixedFontFileLocator.addPath(
+			fixedFontDirFromTestBuildLocation ) ;
 			
 				
 		Surface * mySurface ;
