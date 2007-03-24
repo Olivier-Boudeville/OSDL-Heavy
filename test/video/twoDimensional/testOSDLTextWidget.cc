@@ -56,30 +56,22 @@ const std::string thirdTrueTypeFontName  = "earwigfa.ttf" ;
 
 
 
-
-/*
- * Wanting to use at first '9x18B.fnt'.
- * Fixed font directory is defined in LOANI as
- * ${alternate_prefix}/OSDL-data/fonts/fixed,
- * usually this pathname relative to the install directory where this test
- * executable should lie is :
- * (to be reached from executable directory)
+/**
+ * This font directory is defined relatively to the place where the script
+ * automating the test suite will be run (trunk/test/playTests.sh, which
+ * changes its current directory to trunk/test in all cases) :
  *
  */
-const std::string fixedFontDirFromExec = "../../../../OSDL-data/fonts/fixed" ;
+const std::string fixedFontDirForPlayTests = "../src/doc/web/common/fonts" ;
 
 
-/*
- * Wanting to use at first '9x18B.fnt'.
- * Fixed font directory is defined in LOANI as
- * ${alternate_prefix}/OSDL-data/fonts/fixed,
- * usually this pathname relative to the install directory where this test
- * executable should lie is :
- * (to be reached from executable directory)
+
+/**
+ * This font directory is defined relatively to the build tree for this test :
  *
  */
-const std::string fixedFontDirForPlayTests = 
-	"../../../src/doc/web/common/fonts";
+const std::string fixedFontDirFromTestBuildLocation = 
+	"../../../src/doc/web/common/fonts" ;
 
 
 
@@ -211,7 +203,9 @@ int main( int argc, char * argv[] )
 		
     	LogPlug::info( "Preparing Fixed font." ) ;	
 					
-		Text::FixedFont::FixedFontFileLocator.addPath( fixedFontDirFromExec ) ;
+		Text::FixedFont::FixedFontFileLocator.addPath(
+			fixedFontDirFromTestBuildLocation ) ;
+			
 		Text::FixedFont::FixedFontFileLocator.addPath( 
 			fixedFontDirForPlayTests ) ;
 				
