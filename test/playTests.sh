@@ -291,7 +291,7 @@ if [ `uname -s | cut -b1-6` = "CYGWIN" ] ; then
 fi	
 
 # This script will automatically run each test of each selected OSDL module.
-TESTED_ROOT_MODULES=`cd ${TEST_ROOT}; find . -type d | grep -v tmp | grep -v Debug | grep -v autom4te.cache | grep -v .svn | grep -v '.deps' | grep -v '.libs' | grep -v 'testOSDL'| grep -v '^\.$'`
+TESTED_ROOT_MODULES=`cd ${TEST_ROOT}; find . -type d | grep -v tmp | grep -v Debug | grep -v autom4te.cache | grep -v .svn | grep -v '.deps' | grep -v '.libs' | grep -v 'testOSDL'| grep -v '.exe-logs' | grep -v '^\.$'`
 
 # For debug purpose :
 #TESTED_ROOT_MODULES="generic logs interfaces modules system maths network middleware"
