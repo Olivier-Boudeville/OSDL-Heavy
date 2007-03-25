@@ -15,10 +15,11 @@ BUILD_SCRIPTS_SET = \
 
 
 EXTRA_DIST = \
-	$(BUILD_SCRIPTS_SET)   \
-	MakeConfigure          \
-	ToolsSettings.inc      \
+	$(BUILD_SCRIPTS_SET)       \
+	MakeConfigure              \
+	OSDLToolsSettings.inc      \
 	configure-template.ac
+	
 	
 noinst_SCRIPTS = $(BUILD_SCRIPTS_SET)
 
