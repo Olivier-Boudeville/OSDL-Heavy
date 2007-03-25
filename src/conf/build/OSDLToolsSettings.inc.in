@@ -33,12 +33,12 @@ libjpeg_MD5="dbd5f3b47ed13132f04c685d608a7547"
 
 # PNG library (libpng.so) : http://www.libpng.org/pub/png/libpng.html
 
-libpng_VERSION="1.2.14"
+libpng_VERSION="1.2.16"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
-libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/src/"
+libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_MD5="2ec1e1beb2e6376b09d090f74d259160"
+libpng_MD5="7a1ca4f49bcffdec60d50f48460642bd"
 
 
 
@@ -96,11 +96,11 @@ SDL_image_osx_precompiled_MD5=""
 # No binaries available !
 
 SDL_gfx_MAJOR_VERSION="2.0"
-SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.14"
+SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.16"
 SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
 SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_gfx_MD5="144b1190f5358ac50c62cd49031699fc"
+SDL_gfx_MD5="22dc2d9d916197829f9342c490d2d02b"
 
 
 
@@ -108,13 +108,13 @@ SDL_gfx_MD5="144b1190f5358ac50c62cd49031699fc"
 
 # Sources.
 
-freetype_VERSION="2.2.1"
+freetype_VERSION="2.3.2"
 freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
 freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_MD5="5b2f827082c544392a7701f7423f0781"
+freetype_MD5="119e1fe126fcfa5a70bc56db55f573d5"
 
 # Precompiled binaries of freetype for Windows.
 # See : http://gnuwin32.sourceforge.net/packages/freetype.htm
@@ -194,21 +194,25 @@ SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
 
 # Ceylan (libCeylan.so) : http://ceylan.sourceforge.net
 
+# Ceylan can be retrieved from SVN or from a source code archive.
+
 Ceylan_VERSION="@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@"
 Ceylan_ARCHIVE="ceylan-${Ceylan_VERSION}.tar.bz2"
+# OSDN is the first download location to be mirrored :
 Ceylan_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/ceylan"
 Ceylan_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/ceylan"
-Ceylan_MD5="xxx"
+Ceylan_MD5="(blanked)"
 Ceylan_SVN_SERVER=ceylan.svn.sourceforge.net
 
 
 
 # OSDL (libOSDL.so) : http://osdl.sourceforge.net
 
-# OSDL can be retrieved from CVS or from a source code archive.
+# OSDL can be retrieved from SVN or from a source code archive.
 
 OSDL_VERSION="0.4"
-OSDL_ARCHIVE="OSDL-${OSDL_VERSION}.${OSDL_RELEASE}.tar.bz2"
+OSDL_ARCHIVE="osdl-${OSDL_VERSION}.tar.bz2"
+# OSDN is the first download location to be mirrored :
 OSDL_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
 OSDL_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/osdl"
 OSDL_MD5="(blanked)"
