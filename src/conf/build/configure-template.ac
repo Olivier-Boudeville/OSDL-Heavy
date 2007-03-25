@@ -277,7 +277,11 @@ LOANI_VERSION=$OSDL_VERSION
 AC_SUBST(LOANI_VERSION)
 
 # LOANI installations default base directory.
-OSDL_LOANI_INSTALLATIONS="\${prefix}/.."
+OSDL_INSTALLATION="\${prefix}"
+
+# Needed to avoid a '..' in the path which would result in the includes not
+# found at build time, since the installed OSDL directory does not exist yet :
+OSDL_LOANI_INSTALLATIONS=`echo ${prefix} | sed 's|LOANI-installations/OSDL-.*$|LOANI-installations|1'`
 AC_SUBST(OSDL_LOANI_INSTALLATIONS)
 
 # Where the LOANI download cache will be put :
