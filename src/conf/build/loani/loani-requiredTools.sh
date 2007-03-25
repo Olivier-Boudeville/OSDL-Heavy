@@ -39,14 +39,6 @@ fi
 # choices and should be used instead.
 
 
-if [ $is_windows -eq 0 ] ; then
-        SDL_PREFIX=`cygpath -w ${prefix}/SDL-${SDL_VERSION} | ${SED} 's|\\\|/|g'`
-else
-        SDL_PREFIX="${prefix}/SDL-${SDL_VERSION}"
-fi
-
-DEBUG "Setting SDL_PREFIX to <$SDL_PREFIX>."
-
 # Creating retrieve list.
 target_list="$REQUIRED_TOOLS"
 
@@ -128,6 +120,7 @@ generateSDL()
 {
 
 	LOG_STATUS "Generating SDL..."
+
 	
 	cd "SDL-${SDL_VERSION}"
 	
@@ -135,8 +128,17 @@ generateSDL()
 		
 	if [ -n "$prefix" ] ; then	
 	{		
-		${MKDIR} -p ${prefix}/SDL-${SDL_VERSION}
-		setBuildEnv ./configure --prefix=${prefix}/SDL-${SDL_VERSION} --exec-prefix=${prefix}/SDL-${SDL_VERSION}
+
+		if [ $is_windows -eq 0 ] ; then
+        	SDL_PREFIX=`cygpath -w ${prefix}/SDL-${SDL_VERSION} | ${SED} 's|\\\|/|g'`
+		else
+			SDL_PREFIX="${prefix}/SDL-${SDL_VERSION}"
+		fi
+
+
+		${MKDIR} -p ${SDL_PREFIX}
+		
+		setBuildEnv ./configure --prefix=${SDL_PREFIX} --exec-prefix=${SDL_PREFIX}
 			
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -178,22 +180,22 @@ generateSDL()
 	
 		echo "# SDL section." >> ${OSDL_ENV_FILE}
 		
-		echo "SDL_PREFIX=${prefix}/SDL-${SDL_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "SDL_PREFIX=${SDL_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export SDL_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "PATH=\$SDL_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 		
 		echo "LD_LIBRARY_PATH=\$SDL_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		
-		PATH=${prefix}/SDL-${SDL_VERSION}/bin:${PATH}
+		PATH=${SDL_PREFIX}/bin:${PATH}
 		export PATH
 		
-		LD_LIBRARY_PATH=${prefix}/SDL-${SDL_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/SDL-${SDL_VERSION}/lib:${PATH}	
+			PATH=${SDL_PREFIX}/lib:${PATH}	
 			export PATH
 				
 			echo "PATH=\$SDL_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -201,14 +203,14 @@ generateSDL()
 		
 		echo "" >> ${OSDL_ENV_FILE}
 				
-        LIBPATH="-L${prefix}/SDL-${SDL_VERSION}/lib"
+        LIBPATH="-L${SDL_PREFIX}/lib"
         
 		# Do not ever imagine that to avoid bad nedit syntax highlighting 
 		# you could change :
 		# include/*.h to "include/*.h" in next line.
 		# It would fail at runtime with "include/*.h" not found...
 		
-		setBuildEnv ${MAKE} install && ${CP} -f include/*.h ${prefix}/SDL-${SDL_VERSION}/include/SDL
+		setBuildEnv ${MAKE} install && ${CP} -f include/*.h ${SDL_PREFIX}/include/SDL
 
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -225,7 +227,7 @@ generateSDL()
 	fi	
 	
 	if [ $is_windows -eq 0 ] ; then
-    	${MV} -f ${prefix}/SDL-${SDL_VERSION}/bin/*.dll ${prefix}/SDL-${SDL_VERSION}/lib
+    	${MV} -f ${SDL_PREFIX}/bin/*.dll ${SDL_PREFIX}/lib
     fi
 	    
 	printOK
@@ -363,7 +365,10 @@ generatelibjpeg()
 	
 	if [ -n "$prefix" ] ; then	
 	{		
-                        
+                   
+		
+		libjpeg_PREFIX=${prefix}/jpeg-${libjpeg_VERSION}
+				        
 		if [ $is_mingw -eq 0 ] ; then
 			OLD_LD=$LD  
 			LD=${MINGW_PATH}/ld						 
@@ -377,7 +382,7 @@ generatelibjpeg()
 
 		fi
                         
-		setBuildEnv --exportEnv ./configure --prefix=${prefix}/jpeg-${libjpeg_VERSION} --exec-prefix=${prefix}/jpeg-${libjpeg_VERSION} --enable-shared
+		setBuildEnv --exportEnv ./configure --prefix=${libjpeg_PREFIX} --exec-prefix=${libjpeg_PREFIX} --enable-shared
                  
 	 } 1>>"$LOG_OUTPUT" 2>&1		
 	 else
@@ -425,22 +430,22 @@ generatelibjpeg()
 	if [ -n "$prefix" ] ; then	
 	{		
 	
-		LIBFLAG="-L${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}"
+		LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
 		
 		echo "# libjpeg section." >> ${OSDL_ENV_FILE}
 		
-		echo "libjpeg_PREFIX=${prefix}/jpeg-${libjpeg_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "libjpeg_PREFIX=${libjpeg_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export libjpeg_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$libjpeg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		
 		# In order SDL_image configure does not fail :
-		LD_LIBRARY_PATH=${prefix}/jpeg-${libjpeg_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${libjpeg_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/jpeg-${libjpeg_VERSION}/lib:${PATH}	
+			PATH=${libjpeg_PREFIX}/lib:${PATH}	
 			export PATH
 				
 			echo "PATH=\$libjpeg_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -450,12 +455,12 @@ generatelibjpeg()
 		echo "" >> ${OSDL_ENV_FILE}
 	
 		
-		${MKDIR} -p ${prefix}/jpeg-${libjpeg_VERSION}/include		
-		${MKDIR} -p ${prefix}/jpeg-${libjpeg_VERSION}/bin
-		${MKDIR} -p ${prefix}/jpeg-${libjpeg_VERSION}/lib
-		${MKDIR} -p ${prefix}/jpeg-${libjpeg_VERSION}/man/man1
+		${MKDIR} -p ${libjpeg_PREFIX}/include		
+		${MKDIR} -p ${libjpeg_PREFIX}/bin
+		${MKDIR} -p ${libjpeg_PREFIX}/lib
+		${MKDIR} -p ${libjpeg_PREFIX}/man/man1
                 
-        setBuildEnv ${MAKE} install prefix=${prefix}/jpeg-${libjpeg_VERSION}
+        setBuildEnv ${MAKE} install prefix=${libjpeg_PREFIX}
                    
                 
 	    if [ $? != 0 ] ; then
@@ -583,13 +588,13 @@ generateSDL_image_win_precompiled()
 		# Let us suppose the precompiled version has for version libjpeg_VERSION.
 
 		# The libjpeg target should already have :
-		#       - created ${prefix}/jpeg-${libjpeg_VERSION}/lib
+		#       - created ${libjpeg_PREFIX}/lib
 		#       - defined :
-		# LIBFLAG="-L${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}"
+		# LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
 		#       - added the libjpeg section." in ${OSDL_ENV_FILE}
-		#       - updated LD_LIBRARY_PATH *and* PATH with ${prefix}/jpeg-${libjpeg_VERSION}/lib
+		#       - updated LD_LIBRARY_PATH *and* PATH with ${libjpeg_PREFIX}/lib
 		
-		${CP} -f lib/jpeg.dll ${prefix}/jpeg-${libjpeg_VERSION}/lib
+		${CP} -f lib/jpeg.dll ${libjpeg_PREFIX}/lib
                 	
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -706,7 +711,10 @@ generatezlib()
 
 	if [ -n "$prefix" ] ; then	
 	{		
-		setBuildEnv ./configure --shared --prefix=${prefix}/zlib-${zlib_VERSION} --exec_prefix=${prefix}/zlib-${zlib_VERSION}
+	
+		zlib_PREFIX=${prefix}/zlib-${zlib_VERSION}
+		
+		setBuildEnv ./configure --shared --prefix=${zlib_PREFIX} --exec_prefix=${zlib_PREFIX}
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{		
@@ -742,23 +750,23 @@ generatezlib()
 	
 	if [ -n "$prefix" ] ; then	
 	{		
-		LIBFLAG="-L${prefix}/zlib-${zlib_VERSION}/lib ${LIBFLAG}"
+		LIBFLAG="-L${zlib_PREFIX}/lib ${LIBFLAG}"
 		
 		echo "# zlib section." >> ${OSDL_ENV_FILE}
 		
-		echo "zlib_PREFIX=${prefix}/zlib-${zlib_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "zlib_PREFIX=${zlib_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export zlib_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$zlib_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
 		# In order SDL_image configure does not fail :
-		LD_LIBRARY_PATH=${prefix}/zlib-${zlib_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${zlib_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through
 			# the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/zlib-${zlib_VERSION}/lib:${PATH}	
+			PATH=${zlib_PREFIX}/lib:${PATH}	
 			export PATH
 			
 			echo "PATH=\$zlib_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}			
@@ -766,7 +774,7 @@ generatezlib()
 
 		echo "" >> ${OSDL_ENV_FILE}	
 	
-		setBuildEnv ${MAKE} install prefix=${prefix}/zlib-${zlib_VERSION} 
+		setBuildEnv ${MAKE} install prefix=${zlib_PREFIX} 
 		
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -872,7 +880,10 @@ generatelibpng()
 	cd libpng
 
 	printItem "configuring"
-		
+
+	if [ -n "$prefix" ] ; then	
+		libpng_PREFIX=${prefix}/PNG-${libpng_VERSION}
+	fi
 		
 	if [ $is_linux -eq 0 ] ; then
 		${CP} -f scripts/makefile.linux makefile
@@ -940,10 +951,10 @@ generatelibpng()
 	{
 		if [ $is_mingw -eq 0 ] ; then
 			# zLib Library version could be used.
-			setBuildEnv ${MAKE} ${BUILD_LOCATIONS} prefix=${prefix}/PNG-${libpng_VERSION} MINGW_CCFLAGS=${MINGW_CFLAGS} MINGW_LDFLAGS=${MINGW_LFLAGS} SHAREDLIB=libpng${PNG_NUMBER}.dll ZLIBINC=../zlib ZLIBLIB=../zlib 
+			setBuildEnv ${MAKE} ${BUILD_LOCATIONS} prefix=${libpng_PREFIX} MINGW_CCFLAGS=${MINGW_CFLAGS} MINGW_LDFLAGS=${MINGW_LFLAGS} SHAREDLIB=libpng${PNG_NUMBER}.dll ZLIBINC=../zlib ZLIBLIB=../zlib 
 		else
 			# LDFLAGS="-lgcc_s" not added.
-			setBuildEnv ${MAKE} ${BUILD_LOCATIONS} prefix=${prefix}/PNG-${libpng_VERSION}
+			setBuildEnv ${MAKE} ${BUILD_LOCATIONS} prefix=${libpng_PREFIX}
 		fi
  
 	} 1>>"$LOG_OUTPUT" 2>&1	 
@@ -961,22 +972,24 @@ generatelibpng()
 	
 	if [ -n "$prefix" ] ; then	
 	{	
-		LIBFLAG="-L${prefix}/PNG-${libpng_VERSION}/lib ${LIBFLAG}"	
+			
+		LIBFLAG="-L${libpng_PREFIX}/lib ${LIBFLAG}"	
 			
 		echo "# libpng section." >> ${OSDL_ENV_FILE}
 		
-		echo "libpng_PREFIX=${prefix}/PNG-${libpng_VERSION}" >> ${OSDL_ENV_FILE} 		echo "export libpng_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "libpng_PREFIX=${libpng_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export libpng_PREFIX" >> ${OSDL_ENV_FILE}
 
 		echo "LD_LIBRARY_PATH=\$libpng_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 	
 		# In order SDL_image configure does not fail :
-		LD_LIBRARY_PATH=${prefix}/PNG-${libpng_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
 		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through
 			# the PATH, not the LD_LIBRARY_PATH.
-			PATH=${prefix}/PNG-${libpng_VERSION}/lib:${PATH}	
+			PATH=${libpng_PREFIX}/lib:${PATH}	
 			export PATH	
 			
 			echo "PATH=\$libpng_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -984,18 +997,18 @@ generatelibpng()
 
 		echo "" >> ${OSDL_ENV_FILE}	
 				
-		${MKDIR} -p ${prefix}/PNG-${libpng_VERSION}/include
-		${MKDIR} -p ${prefix}/PNG-${libpng_VERSION}/lib
-		${MKDIR} -p ${prefix}/PNG-${libpng_VERSION}/man
-		${MKDIR} -p ${prefix}/PNG-${libpng_VERSION}/bin	
+		${MKDIR} -p ${libpng_PREFIX}/include
+		${MKDIR} -p ${libpng_PREFIX}/lib
+		${MKDIR} -p ${libpng_PREFIX}/man
+		${MKDIR} -p ${libpng_PREFIX}/bin	
 		                
 		if [ $is_mingw -eq 0 ] ; then
 			PNG_SHARED_LIB=libpng${PNG_NUMBER}.dll
-			setBuildEnv ${MAKE} install prefix=${prefix}/PNG-${libpng_VERSION} SHAREDLIB=${PNG_SHARED_LIB}
-			${CP} -f ${prefix}/PNG-${libpng_VERSION}/bin/${PNG_SHARED_LIB} ${prefix}/PNG-${libpng_VERSION}/lib/libpng.dll
-			${MV} -f ${prefix}/PNG-${libpng_VERSION}/include/libpng${PNG_NUMBER}/* ${prefix}/PNG-${libpng_VERSION}/include
+			setBuildEnv ${MAKE} install prefix=${libpng_PREFIX} SHAREDLIB=${PNG_SHARED_LIB}
+			${CP} -f ${libpng_PREFIX}/bin/${PNG_SHARED_LIB} ${libpng_PREFIX}/lib/libpng.dll
+			${MV} -f ${libpng_PREFIX}/include/libpng${PNG_NUMBER}/* ${libpng_PREFIX}/include
 		else
-			setBuildEnv ${MAKE} install prefix=${prefix}/PNG-${libpng_VERSION}
+			setBuildEnv ${MAKE} install prefix=${libpng_PREFIX}
 		fi
 			
 	} 1>>"$LOG_OUTPUT" 2>&1		
@@ -1137,11 +1150,14 @@ generatelibtiff()
 	
 	if [ -n "$prefix" ] ; then	
 	{	
-		${MKDIR} -p ${prefix}/TIFF-${libtiff_VERSION}/include
-		${MKDIR} -p ${prefix}/TIFF-${libtiff_VERSION}/lib
-		${MKDIR} -p ${prefix}/TIFF-${libtiff_VERSION}/man
-		${MKDIR} -p ${prefix}/TIFF-${libtiff_VERSION}/bin	
-		${MAKE} install prefix=${prefix}/TIFF-${libtiff_VERSION}
+	
+		libtiff_PREFIX=${prefix}/TIFF-${libtiff_VERSION}
+		
+		${MKDIR} -p ${libtiff_PREFIX}/include
+		${MKDIR} -p ${libtiff_PREFIX}/lib
+		${MKDIR} -p ${libtiff_PREFIX}/man
+		${MKDIR} -p ${libtiff_PREFIX}/bin	
+		${MAKE} install prefix=${libtiff_PREFIX}
 			
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -1246,11 +1262,11 @@ generateSDL_image()
 	
 		DEBUG "Correcting sdl-config for SDL_image."
 		
-        sdl_config=${prefix}/SDL-${SDL_VERSION}/bin/sdl-config
+        sdl_config=${SDL_PREFIX}/bin/sdl-config
         
         DEBUG "Correcting ${sdl_config}"
-        prefix_one=`cygpath -w ${prefix}/SDL-${SDL_VERSION} | ${SED} 's|\\\|/|g'`
-        prefix_two=`cygpath -w ${prefix}/SDL-${SDL_VERSION} | ${SED} 's|\\\|/|g'`
+        prefix_one=`cygpath -w ${SDL_PREFIX} | ${SED} 's|\\\|/|g'`
+        prefix_two=`cygpath -w ${SDL_PREFIX} | ${SED} 's|\\\|/|g'`
 
         ${CAT} ${sdl_config} | ${SED} "s|^prefix=.*$|prefix=$prefix_one|1" > sdl-config.tmp && ${CAT} sdl-config.tmp | ${SED} "s|^exec_prefix=.*$|exec_prefix=$prefix_two|1" > sdl-config.tmp2 && ${RM} -f ${sdl_config} sdl-config.tmp && ${MV} -f sdl-config.tmp2 ${sdl_config}
         
@@ -1273,40 +1289,42 @@ generateSDL_image()
 	if [ -n "$prefix" ] ; then	
 	{	
 	
+		SDL_image_PREFIX=${prefix}/SDL_image-${SDL_image_VERSION}
+		
 		# For debug purpose (should be set from other targets) :
 				
-		#LIBFLAG="-L${prefix}/SDL-${SDL_VERSION}/lib"
-		#LIBFLAG="-L${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}"
-		#LIBFLAG="-L${prefix}/zlib-${zlib_VERSION}/lib ${LIBFLAG}"
-		#LIBFLAG="-L${prefix}/PNG-${libpng_VERSION}/lib ${LIBFLAG}"
+		#LIBFLAG="-L${SDL_PREFIX}/lib"
+		#LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
+		#LIBFLAG="-L${zlib_PREFIX}/lib ${LIBFLAG}"
+		#LIBFLAG="-L${libpng_PREFIX}/lib ${LIBFLAG}"
 
 		if [ $is_windows -eq 0 ] ; then
 
-			LIBFLAG="-L`cygpath -w ${prefix}/SDL-${SDL_VERSION}/lib`"
-			LIBFLAG="-L`cygpath -w ${prefix}/jpeg-${libjpeg_VERSION}/lib ${LIBFLAG}`"
-			LIBFLAG="-L`cygpath -w ${prefix}/zlib-${zlib_VERSION}/lib ${LIBFLAG}`"
-			LIBFLAG="-L`cygpath -w ${prefix}/PNG-${libpng_VERSION}/lib ${LIBFLAG}`"
+			LIBFLAG="-L`cygpath -w ${SDL_PREFIX}/lib`"
+			LIBFLAG="-L`cygpath -w ${libjpeg_PREFIX}/lib ${LIBFLAG}`"
+			LIBFLAG="-L`cygpath -w ${zlib_PREFIX}/lib ${LIBFLAG}`"
+			LIBFLAG="-L`cygpath -w ${libpng_PREFIX}/lib ${LIBFLAG}`"
 
 			LIBFLAG=`echo $LIBFLAG | ${SED} 's|\\\|/|g'`
 			
 			# DLL are searched from PATH on Windows.
 			
-		    PATH=${prefix}/SDL-${SDL_VERSION}/lib:${PATH}			
-			PATH=${prefix}/jpeg-${libjpeg_VERSION}/lib:${PATH}
-			PATH=${prefix}/zlib-${zlib_VERSION}/lib:${PATH}			
-			PATH=${prefix}/PNG-${libpng_VERSION}/lib:${PATH}
+		    PATH=${SDL_PREFIX}/lib:${PATH}			
+			PATH=${libjpeg_PREFIX}/lib:${PATH}
+			PATH=${zlib_PREFIX}/lib:${PATH}			
+			PATH=${libpng_PREFIX}/lib:${PATH}
 			
 			export PATH
 	
 		fi
 
-		PATH=${prefix}/SDL-${SDL_VERSION}/bin:${PATH}
+		PATH=${SDL_PREFIX}/bin:${PATH}
 		export PATH
 		
-		LD_LIBRARY_PATH=${prefix}/SDL-${SDL_VERSION}/lib:${LD_LIBRARY_PATH}
-		LD_LIBRARY_PATH=${prefix}/jpeg-${libjpeg_VERSION}/lib:${LD_LIBRARY_PATH}				
-		LD_LIBRARY_PATH=${prefix}/zlib-${zlib_VERSION}/lib:${LD_LIBRARY_PATH}		 
-		LD_LIBRARY_PATH=${prefix}/PNG-${libpng_VERSION}/lib:${LD_LIBRARY_PATH}   
+		LD_LIBRARY_PATH=${SDL_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${libjpeg_PREFIX}/lib:${LD_LIBRARY_PATH}				
+		LD_LIBRARY_PATH=${zlib_PREFIX}/lib:${LD_LIBRARY_PATH}		 
+		LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}   
 		             
 		export LD_LIBRARY_PATH           
 
@@ -1336,7 +1354,7 @@ generateSDL_image()
 			# leading to errors such as : 
 			# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 			
-	  		setBuildEnv ./configure --with-sdl-prefix=${prefix}/SDL-${SDL_VERSION} --disable-tif --disable-sdltest "LDFLAGS=${LIBFLAG}"
+	  		setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif --disable-sdltest "LDFLAGS=${LIBFLAG}"
 			            
 		fi
  
@@ -1364,15 +1382,15 @@ generateSDL_image()
 		
 		if [ $is_windows -eq 0 ] ; then	
 
-			JPEG_INC=`cygpath -w ${prefix}/jpeg-${libjpeg_VERSION}/include | ${SED} 's|\\\|/|g'`
-			PNG_INC=`cygpath -w ${prefix}/PNG-${libpng_VERSION}/include | ${SED} 's|\\\|/|g'`
-			ZLIB_INC=`cygpath -w ${prefix}/zlib-${zlib_VERSION}/include | ${SED} 's|\\\|/|g'`
+			JPEG_INC=`cygpath -w ${libjpeg_PREFIX}/include | ${SED} 's|\\\|/|g'`
+			PNG_INC=`cygpath -w ${libpng_PREFIX}/include | ${SED} 's|\\\|/|g'`
+			ZLIB_INC=`cygpath -w ${zlib_PREFIX}/include | ${SED} 's|\\\|/|g'`
 		
 		else
 		
-			JPEG_INC="${prefix}/jpeg-${libjpeg_VERSION}/include"
-			ZLIB_INC="${prefix}/zlib-${zlib_VERSION}/include"
-			PNG_INC="${prefix}/PNG-${libpng_VERSION}/include"
+			JPEG_INC="${libjpeg_PREFIX}/include"
+			ZLIB_INC="${zlib_PREFIX}/include"
+			PNG_INC="${libpng_PREFIX}/include"
 			
 		fi
 		        
@@ -1401,17 +1419,17 @@ generateSDL_image()
 	{		
 		echo "# SDL_image section." >> ${OSDL_ENV_FILE}
 		
-		echo "SDL_image_PREFIX=${prefix}/SDL_image-${SDL_image_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "SDL_image_PREFIX=${SDL_image_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export SDL_image_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$SDL_image_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${prefix}/SDL_image-${SDL_image_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL_image_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched 
 			# through the PATH, not the LD_LIBRARY_PATH.
-			PATH=${prefix}/SDL_image-${SDL_image_VERSION}/lib:${PATH}	
+			PATH=${SDL_image_PREFIX}/lib:${PATH}	
 			export PATH
 				
 			echo "PATH=\$SDL_image_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -1419,9 +1437,9 @@ generateSDL_image()
 
 		echo "" >> ${OSDL_ENV_FILE}	
 		
-		${MKDIR} -p ${prefix}/SDL_image-${SDL_image_VERSION}
+		${MKDIR} -p ${SDL_image_PREFIX}
 			
-		setBuildEnv ${MAKE} install prefix=${prefix}/SDL_image-${SDL_image_VERSION}  
+		setBuildEnv ${MAKE} install prefix=${SDL_image_PREFIX}  
 		
 		if [ $? != 0 ] ; then
 			echo
@@ -1434,7 +1452,7 @@ generateSDL_image()
 		# such as :
 		# "libtool: link: warning: library `[...]/libSDL_image.la' was moved."
 		
-		${MV} -f ${prefix}/SDL_image-${SDL_image_VERSION}/lib/libSDL_image.la ${prefix}/SDL_image-${SDL_image_VERSION}/lib/libSDL_image.la-hidden-by-LOANI
+		${MV} -f ${SDL_image_PREFIX}/lib/libSDL_image.la ${SDL_image_PREFIX}/lib/libSDL_image.la-hidden-by-LOANI
 
 		if [ $? != 0 ] ; then
 			echo
@@ -1557,7 +1575,9 @@ generatelibogg()
 	if [ -n "$prefix" ] ; then	
 	{	
 	
-		setBuildEnv ./configure --prefix=${prefix}/libogg-${libogg_VERSION} --exec-prefix=${prefix}/libogg-${libogg_VERSION}
+		libogg_PREFIX=${prefix}/libogg-${libogg_VERSION}
+		
+		setBuildEnv ./configure --prefix=${libogg_PREFIX} --exec-prefix=${libogg_PREFIX}
  
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -1603,15 +1623,15 @@ generatelibogg()
 	if [ -n "$prefix" ] ; then	
 	{		
 
-		LIBFLAG="-L${prefix}/libogg-${libogg_VERSION}/lib ${LIBFLAG}"
+		LIBFLAG="-L${libogg_PREFIX}/lib ${LIBFLAG}"
 		INCLUDE
 		echo "# libogg section." >> ${OSDL_ENV_FILE}
 		
-		echo "libogg_PREFIX=${prefix}/libogg-${libogg_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "libogg_PREFIX=${libogg_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export libogg_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$libogg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${prefix}/libogg-${libogg_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${libogg_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
@@ -1619,7 +1639,7 @@ generatelibogg()
 			# Always remember that, on Windows, DLL are searched 
 			# through the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/libogg-${libogg_VERSION}/lib:${PATH}	
+			PATH=${libogg_PREFIX}/lib:${PATH}	
 			export PATH
 			
 			echo "PATH=\$libogg_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -1627,9 +1647,9 @@ generatelibogg()
 
 		echo "" >> ${OSDL_ENV_FILE}	
 		
-		${MKDIR} -p ${prefix}/libogg-${libogg_VERSION}
+		${MKDIR} -p ${libogg_PREFIX}
 			
-		setBuildEnv ${MAKE} install prefix=${prefix}/libogg-${libogg_VERSION}  
+		setBuildEnv ${MAKE} install prefix=${libogg_PREFIX}  
 		
 		if [ $? != 0 ] ; then
 			echo
@@ -1642,7 +1662,7 @@ generatelibogg()
 		# "libtool: link: warning: library `[...]/libogg.la' was moved."
 		
 		# Disabled since it would prevent SDL_mixer build :
-		#${MV} -f ${prefix}/libogg-${libogg_VERSION}/lib/libogg.la ${prefix}/libogg-${libogg_VERSION}/lib/libogg.la-hidden-by-LOANI
+		#${MV} -f ${libogg_PREFIX}/lib/libogg.la ${libogg_PREFIX}/lib/libogg.la-hidden-by-LOANI
 		#
 		#if [ $? != 0 ] ; then
 		#	echo
@@ -1766,7 +1786,9 @@ generatelibvorbis()
 	if [ -n "$prefix" ] ; then	
 	{	
 	
-		setBuildEnv ./configure --prefix=${prefix}/libvorbis-${libvorbis_VERSION} --exec-prefix=${prefix}/libvorbis-${libvorbis_VERSION} --with-ogg=${prefix}/libogg-${libogg_VERSION}
+		libvorbis_PREFIX=${prefix}/libvorbis-${libvorbis_VERSION}
+		
+		setBuildEnv ./configure --prefix=${libvorbis_PREFIX} --exec-prefix=${libvorbis_PREFIX} --with-ogg=${libogg_PREFIX}
  
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -1813,17 +1835,17 @@ generatelibvorbis()
 	{		
 		echo "# libvorbis section." >> ${OSDL_ENV_FILE}
 		
-		echo "libvorbis_PREFIX=${prefix}/libvorbis-${libvorbis_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "libvorbis_PREFIX=${libvorbis_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export libvorbis_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$libvorbis_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${prefix}/libvorbis-${libvorbis_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${libvorbis_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/libvorbis-${libvorbis_VERSION}/lib:${PATH}	
+			PATH=${libvorbis_PREFIX}/lib:${PATH}	
 			export PATH
 				
 			echo "PATH=\$libvorbis_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -1831,9 +1853,9 @@ generatelibvorbis()
 
 		echo "" >> ${OSDL_ENV_FILE}	
 		
-		${MKDIR} -p ${prefix}/libvorbis-${libvorbis_VERSION}
+		${MKDIR} -p ${libvorbis_PREFIX}
 			
-		setBuildEnv ${MAKE} install prefix=${prefix}/libvorbis-${libvorbis_VERSION}  
+		setBuildEnv ${MAKE} install prefix=${libvorbis_PREFIX}  
 		
 		if [ $? != 0 ] ; then
 			echo
@@ -1846,7 +1868,7 @@ generatelibvorbis()
 		# "libtool: link: warning: library `[...]/libvorbis.la' was moved."
 		
 		# Disabled since would prevent SDL_mixer build :
-		#${MV} -f ${prefix}/libvorbis-${libvorbis_VERSION}/lib/libvorbis.la ${prefix}/libvorbis-${libvorbis_VERSION}/lib/libvorbis.la-hidden-by-LOANI
+		#${MV} -f ${libvorbis_PREFIX}/lib/libvorbis.la ${libvorbis_PREFIX}/lib/libvorbis.la-hidden-by-LOANI
 		#
 		#if [ $? != 0 ] ; then
 		#	echo
@@ -1970,10 +1992,12 @@ generateSDL_mixer()
 	if [ -n "$prefix" ] ; then	
 	{	
 	
-		#LDFLAGS="-L${prefix}/libogg-${libogg_VERSION}/lib -L${prefix}/libvorbis-${libvorbis_VERSION}/lib ${LDFLAGS}"
+		SDL_mixer_PREFIX=${prefix}/SDL_mixer-${SDL_mixer_VERSION}
+		
+		#LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib ${LDFLAGS}"
 		#export LDFLAGS
 		
-		#CFLAGS="-I${prefix}/libogg-${libogg_VERSION}/include -I${prefix}/libvorbis-${libvorbis_VERSION}/include"
+		#CFLAGS="-I${libogg_PREFIX}/include -I${libvorbis_PREFIX}/include"
 		#export CFLAGS
 		
 		# Following features are deactivated automatically 
@@ -1988,7 +2012,7 @@ generateSDL_mixer()
 		#  - WAVE (for short samples)
 		#  - OggVorbis (for longer ones, including music).
 		#
-		setBuildEnv ./configure --prefix=${prefix}/SDL_mixer-${SDL_mixer_VERSION} --exec-prefix=${prefix}/SDL_mixer-${SDL_mixer_VERSION} -with-sdl-prefix=${prefix}/SDL-${SDL_VERSION}  --disable-static --disable-music-libmikmod --disable-music-mod --disable-music-midi --disable-music-timidity-midi --disable-music-native-midi --disable-music-native-midi-gpl --disable-music-mp3 --disable-smpegtest --enable-music-wave --enable-music-libogg LDFLAGS="-L${prefix}/libogg-${libogg_VERSION}/lib -L${prefix}/libvorbis-${libvorbis_VERSION}/lib" CFLAGS="-I${prefix}/libogg-${libogg_VERSION}/include -I${prefix}/libvorbis-${libvorbis_VERSION}/include"
+		setBuildEnv ./configure --prefix=${SDL_mixer_PREFIX} --exec-prefix=${SDL_mixer_PREFIX} -with-sdl-prefix=${SDL_PREFIX}  --disable-static --disable-music-libmikmod --disable-music-mod --disable-music-midi --disable-music-timidity-midi --disable-music-native-midi --disable-music-native-midi-gpl --disable-music-mp3 --disable-smpegtest --enable-music-wave --enable-music-libogg LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib" CFLAGS="-I${libogg_PREFIX}/include -I${libvorbis_PREFIX}/include"
  
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -2035,11 +2059,11 @@ generateSDL_mixer()
 	{		
 		echo "# SDL_mixer section." >> ${OSDL_ENV_FILE}
 		
-		echo "SDL_mixer_PREFIX=${prefix}/SDL_mixer-${SDL_mixer_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "SDL_mixer_PREFIX=${SDL_mixer_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export SDL_mixer_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$SDL_mixer_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL_mixer_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
@@ -2047,7 +2071,7 @@ generateSDL_mixer()
 			# Always remember that, on Windows, DLL are searched 
 			# through the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib:${PATH}	
+			PATH=${SDL_mixer_PREFIX}/lib:${PATH}	
 			export PATH
 				
 			echo "PATH=\$SDL_mixer_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -2055,9 +2079,9 @@ generateSDL_mixer()
 
 		echo "" >> ${OSDL_ENV_FILE}	
 		
-		${MKDIR} -p ${prefix}/SDL_mixer-${SDL_mixer_VERSION}
+		${MKDIR} -p ${SDL_mixer_PREFIX}
 			
-		setBuildEnv ${MAKE} install prefix=${prefix}/SDL_mixer-${SDL_mixer_VERSION}  
+		setBuildEnv ${MAKE} install prefix=${SDL_mixer_PREFIX}  
 		
 		if [ $? != 0 ] ; then
 			echo
@@ -2069,7 +2093,7 @@ generateSDL_mixer()
 		# issuing very annoying messages twice, such as :
 		# "libtool: link: warning: library `[...]/libSDL_mixer.la' was moved."
 		
-		${MV} -f ${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib/libSDL_mixer.la ${prefix}/SDL_mixer-${SDL_mixer_VERSION}/lib/libSDL_mixer.la-hidden-by-LOANI
+		${MV} -f ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la-hidden-by-LOANI
 
 		if [ $? != 0 ] ; then
 			echo
@@ -2198,7 +2222,10 @@ generateSDL_gfx()
 	fi
         
 	if [ -n "$prefix" ] ; then	
-	{		
+	{	
+	
+		SDL_gfx_PREFIX=${prefix}/SDL_gfx-${SDL_gfx_VERSION}
+		
 		# SDL_gfx uses wrongly SDL includes : asks for SDL/SDL.h 
 		# instead of SDL.h.
 		# Ugly hack :
@@ -2222,7 +2249,7 @@ generateSDL_gfx()
 		# could be chosen, leading to errors such as : 
 		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 		
-		setBuildEnv ./configure --prefix=${prefix}/SDL_gfx-${SDL_gfx_VERSION} --exec-prefix=${prefix}/SDL_gfx-${SDL_gfx_VERSION} --with-sdl-prefix=${SDL_PREFIX} --disable-sdltest
+		setBuildEnv ./configure --prefix=${SDL_gfx_PREFIX} --exec-prefix=${SDL_gfx_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --disable-sdltest
                  
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -2283,17 +2310,17 @@ generateSDL_gfx()
 	
 		echo "# SDL_gfx section." >> ${OSDL_ENV_FILE}
 		
-		echo "SDL_gfx_PREFIX=${prefix}/SDL_gfx-${SDL_gfx_VERSION}" >> ${OSDL_ENV_FILE} 
+		echo "SDL_gfx_PREFIX=${SDL_gfx_PREFIX}" >> ${OSDL_ENV_FILE} 
 		echo "export SDL_gfx_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$SDL_gfx_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 			
-		LD_LIBRARY_PATH=${prefix}/SDL_gfx-${SDL_gfx_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL_gfx_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 			
 		if [ $is_windows -eq 0 ] ; then
 			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/SDL_gfx-${SDL_gfx_VERSION}/lib:${PATH}	
+			PATH=${SDL_gfx_PREFIX}/lib:${PATH}	
 			export PATH
 			
 			echo "PATH=\$SDL_gfx_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -2301,7 +2328,7 @@ generateSDL_gfx()
 
 		echo "" >> ${OSDL_ENV_FILE}	
 		
-		setBuildEnv ${MAKE} install prefix=${prefix}/SDL_gfx-${SDL_gfx_VERSION} 
+		setBuildEnv ${MAKE} install prefix=${SDL_gfx_PREFIX} 
 			
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -2423,11 +2450,15 @@ generatefreetype()
 	LOG_STATUS "Generating freetype..."
 	
 	cd "freetype-${freetype_VERSION}"
+	
 	printItem "configuring"
 
 	if [ -n "$prefix" ] ; then	
 	{		
-		setBuildEnv ./configure --prefix=${prefix}/freetype-${freetype_VERSION} --exec-prefix=${prefix}/freetype-${freetype_VERSION}
+	
+		freetype_PREFIX=${prefix}/freetype-${freetype_VERSION}
+		
+		setBuildEnv ./configure --prefix=${freetype_PREFIX} --exec-prefix=${freetype_PREFIX}
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{		
@@ -2466,7 +2497,7 @@ generatefreetype()
 	{		
 		echo "# freetype section." >> ${OSDL_ENV_FILE}
 		
-		echo "freetype_PREFIX=${prefix}/freetype-${freetype_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "freetype_PREFIX=${freetype_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export freetype_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$freetype_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 	
@@ -2475,7 +2506,7 @@ generatefreetype()
 			# Always remember that, on Windows, DLL are searched through
 			# the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/freetype-${freetype_VERSION}/lib:${PATH}	
+			PATH=${freetype_PREFIX}/lib:${PATH}	
 			export PATH
 			
 			echo "PATH=\$freetype_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -2483,7 +2514,7 @@ generatefreetype()
 
 		echo "" >> ${OSDL_ENV_FILE}	
 		
-		LD_LIBRARY_PATH=${prefix}/freetype-${freetype_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${freetype_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 			
 		setBuildEnv ${MAKE} install 
@@ -2606,6 +2637,8 @@ generateSDL_ttf()
 	if [ -n "$prefix" ] ; then	
 	{		
 
+		SDL_ttf_PREFIX=${prefix}/SDL_ttf-${SDL_ttf_VERSION}
+
 		# --disable-sdltest added since configure tries to compile
 		# a test without letting the system libraries locations to
 		# be redefined. Therefore a wrong libstdc++.so
@@ -2615,7 +2648,7 @@ generateSDL_ttf()
 		# SDL_ttf.c needs freetype/internal/ftobjs.h, which is in the
 		# freetype sources only (not installed), hence the CPPFLAGS :
 		
-		setBuildEnv ./configure --prefix=${prefix}/SDL_ttf-${SDL_ttf_VERSION} --exec-prefix=${prefix}/SDL_ttf-${SDL_ttf_VERSION} --with-freetype-prefix=${prefix}/freetype-${freetype_VERSION} --with-freetype-exec-prefix=${prefix}/freetype-${freetype_VERSION} --with-sdl-prefix=${prefix}/SDL-${SDL_VERSION} --with-sdl-exec-prefix=${prefix}/SDL-${SDL_VERSION} --disable-sdltest CPPFLAGS="-I${repository}/freetype-${freetype_VERSION}/include"
+		setBuildEnv ./configure --prefix=${SDL_ttf_PREFIX} --exec-prefix=${SDL_ttf_PREFIX} --with-freetype-prefix=${freetype_PREFIX} --with-freetype-exec-prefix=${freetype_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --with-sdl-exec-prefix=${SDL_PREFIX} --disable-sdltest CPPFLAGS="-I${repository}/freetype-${freetype_VERSION}/include"
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{		
@@ -2667,9 +2700,11 @@ generateSDL_ttf()
 	
 	if [ -n "$prefix" ] ; then	
 	{		
+	
+		
 		echo "# SDL_ttf section." >> ${OSDL_ENV_FILE}
 		
-		echo "SDL_ttf_PREFIX=${prefix}/SDL_ttf-${SDL_ttf_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "SDL_ttf_PREFIX=${SDL_ttf_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export SDL_ttf_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$SDL_ttf_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
@@ -2678,7 +2713,7 @@ generateSDL_ttf()
 			# Always remember that, on Windows, DLL are searched 
 			# through the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/SDL_ttf-${SDL_ttf_VERSION}/lib:${PATH}	
+			PATH=${SDL_ttf_PREFIX}/lib:${PATH}	
 			export PATH
 				
 			echo "PATH=\$SDL_ttf_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -2686,10 +2721,10 @@ generateSDL_ttf()
 
 		echo "" >> ${OSDL_ENV_FILE}	
 		
-		LD_LIBRARY_PATH=${prefix}/SDL_ttf-${SDL_ttf_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL_ttf_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
-		setBuildEnv ${MAKE} install prefix=${prefix}/SDL_ttf-${SDL_ttf_VERSION}
+		setBuildEnv ${MAKE} install prefix=${SDL_ttf_PREFIX}
 			
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -2802,6 +2837,9 @@ generatelibtool()
 
 	if [ -n "$prefix" ] ; then	
 	{
+	
+		libtool_PREFIX=${prefix}/libtool-${libtool_VERSION}
+		
 		# configure calls libltdl configure and loose env.
 		old_path=$PATH
 		old_ld_path=$LD_LIBRARY_PATH
@@ -2832,7 +2870,7 @@ generatelibtool()
 		# A work-around could be to recurse make in ltdl directory
 		# before performing the global libtool make.
            
-		setBuildEnv ./configure --prefix=${prefix}/libtool-${libtool_VERSION} --exec-prefix=${prefix}/libtool-${libtool_VERSION} --disable-ltdl-install
+		setBuildEnv ./configure --prefix=${libtool_PREFIX} --exec-prefix=${libtool_PREFIX} --disable-ltdl-install
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{
@@ -2902,11 +2940,11 @@ generatelibtool()
 	
 	if [ -n "$prefix" ] ; then	
 	{		
-		${MKDIR} -p ${prefix}/libtool-${libtool_VERSION}
+		${MKDIR} -p ${libtool_PREFIX}
                 
 		echo "# libtool section." >> ${OSDL_ENV_FILE}
 		
-		echo "libtool_PREFIX=${prefix}/libtool-${libtool_VERSION}" >> ${OSDL_ENV_FILE}
+		echo "libtool_PREFIX=${libtool_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export libtool_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "PATH=\$libtool_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}		
 		echo "LD_LIBRARY_PATH=\$libtool_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
@@ -2916,7 +2954,7 @@ generatelibtool()
 			# Always remember that, on Windows, DLL are searched through
 			# the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${prefix}/libtool-${libtool_VERSION}/lib:${PATH}	
+			PATH=${libtool_PREFIX}/lib:${PATH}	
 			export PATH
 			
 			echo "PATH=\$libtool_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
@@ -2925,13 +2963,13 @@ generatelibtool()
 
 		echo "" >> ${OSDL_ENV_FILE}
 		
-		PATH=${prefix}/libtool-${libtool_VERSION}/bin:${PATH}
+		PATH=${libtool_PREFIX}/bin:${PATH}
 		export PATH
 		
-		LD_LIBRARY_PATH=${prefix}/libtool-${libtool_VERSION}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${libtool_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
-		setBuildEnv ${MAKE} install prefix=${prefix}/libtool-${libtool_VERSION} 
+		setBuildEnv ${MAKE} install prefix=${libtool_PREFIX} 
 		
 		#if [ $? -ne 0 ] ; then 
 		#	WARNING "First libtool install failed"
@@ -3432,7 +3470,7 @@ generateCeylan()
 		
 			Ceylan_PREFIX="${prefix}/Ceylan-${Ceylan_VERSION}"
 			
-			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${prefix}/Ceylan-${Ceylan_VERSION}
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${Ceylan_PREFIX}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 		{
@@ -3469,7 +3507,7 @@ generateCeylan()
 			
 			echo "# Ceylan section." >> ${OSDL_ENV_FILE}
 			
-			echo "Ceylan_PREFIX=${prefix}/Ceylan-${Ceylan_VERSION}" >> ${OSDL_ENV_FILE}
+			echo "Ceylan_PREFIX=${Ceylan_PREFIX}" >> ${OSDL_ENV_FILE}
 			echo "export Ceylan_PREFIX" >> ${OSDL_ENV_FILE}
 			
 			
@@ -3480,7 +3518,7 @@ generateCeylan()
 					
 				echo "PATH=\$Ceylan_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 
-				PATH=${prefix}/Ceylan-${Ceylan_VERSION}/lib:${PATH}	
+				PATH=${Ceylan_PREFIX}/lib:${PATH}	
 				export PATH	
 
 				echo "" >> ${OSDL_ENV_FILE}
@@ -3493,15 +3531,15 @@ generateCeylan()
 			
 				echo "" >> ${OSDL_ENV_FILE}
 			
-				PATH=${prefix}/Ceylan-${Ceylan_VERSION}/bin:${PATH}
+				PATH=${Ceylan_PREFIX}/bin:${PATH}
 				export PATH
 			
-				LD_LIBRARY_PATH=${prefix}/Ceylan-${Ceylan_VERSION}/lib:${LD_LIBRARY_PATH}
+				LD_LIBRARY_PATH=${Ceylan_PREFIX}/lib:${LD_LIBRARY_PATH}
 				export LD_LIBRARY_PATH
 
 			fi
 		
-			setBuildEnv ${MAKE} install prefix=${prefix}/Ceylan-${Ceylan_VERSION}
+			setBuildEnv ${MAKE} install prefix=${Ceylan_PREFIX}
 
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -3527,7 +3565,7 @@ generateCeylan()
 		# Here we are in the SVN tree, needing to generate the
 		# build system for tests :
 		{
-			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix $prefix/Ceylan-${Ceylan_VERSION}
+			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix ${Ceylan_PREFIX}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 		
 		if [ $? != 0 ] ; then
@@ -3543,7 +3581,7 @@ generateCeylan()
 	if [ -n "$prefix" ] ; then	
 		{				
 		
-			setBuildEnv --exportEnv --appendEnv ./configure --prefix=$prefix/Ceylan-${Ceylan_VERSION} --with-ceylan-prefix=$prefix/Ceylan-${Ceylan_VERSION} 
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${Ceylan_PREFIX} --with-ceylan-prefix=${Ceylan_PREFIX} 
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	else
 		{		
@@ -3838,10 +3876,12 @@ generateOSDL()
 	
 	if [ -n "$prefix" ] ; then	
 		{				
+				
+			OSDL_PREFIX="${prefix}/OSDL-${OSDL_VERSION}"
 		
 			echo "# OSDL section." >> ${OSDL_ENV_FILE}
 			
-			echo "OSDL_PREFIX=${prefix}/OSDL-${OSDL_VERSION}" >> ${OSDL_ENV_FILE}
+			echo "OSDL_PREFIX=${OSDL_PREFIX}" >> ${OSDL_ENV_FILE}
 			echo "export OSDL_PREFIX" >> ${OSDL_ENV_FILE}
 			
 			if [ $is_windows -eq 0 ] ; then
@@ -3851,7 +3891,7 @@ generateOSDL()
 					
 				echo "PATH=\$OSDL_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 
-				PATH=${prefix}/OSDL-${OSDL_VERSION}/lib:${PATH}	
+				PATH=${OSDL_PREFIX}/lib:${PATH}	
 				export PATH	
 
 				echo "" >> ${OSDL_ENV_FILE}
@@ -3864,10 +3904,10 @@ generateOSDL()
 			
 				echo "" >> ${OSDL_ENV_FILE}
 			
-				PATH=${prefix}/OSDL-${OSDL_VERSION}/bin:${PATH}
+				PATH=${OSDL_PREFIX}/bin:${PATH}
 				export PATH
 			
-				LD_LIBRARY_PATH=${prefix}/OSDL-${OSDL_VERSION}/lib:${LD_LIBRARY_PATH}
+				LD_LIBRARY_PATH=${OSDL_PREFIX}/lib:${LD_LIBRARY_PATH}
 				export LD_LIBRARY_PATH
 
 			fi
@@ -3932,7 +3972,8 @@ generateOSDL()
 
 	if [ -n "$prefix" ] ; then	
 		{
-			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${prefix}/OSDL-${OSDL_VERSION} --with-ceylan-prefix=${Ceylan_PREFIX}
+
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${OSDL_PREFIX} --with-ceylan-prefix=${Ceylan_PREFIX}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 		{
@@ -3969,7 +4010,7 @@ generateOSDL()
 		
 			# OSDL_ENV_FILE has already been updated here.		
 			
-			setBuildEnv ${MAKE} install prefix=${prefix}/OSDL-${OSDL_VERSION}
+			setBuildEnv ${MAKE} install prefix=${OSDL_PREFIX}
 
 
 		} 1>>"$LOG_OUTPUT" 2>&1		
@@ -3996,7 +4037,7 @@ generateOSDL()
 		# Here we are in the SVN tree, needing to generate the
 		# build system for tests :
 		{
-			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix ${Ceylan_PREFIX} --osdl-install-prefix $prefix/OSDL-${OSDL_VERSION}
+			setBuildEnv ./autogen.sh --no-build --with-osdl-environment ${OSDL_ENV_FILE}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 		
 		if [ $? != 0 ] ; then
@@ -4013,7 +4054,13 @@ generateOSDL()
 	if [ -n "$prefix" ] ; then	
 		{				
 
-			setBuildEnv --exportEnv --appendEnv ./configure --prefix=$prefix/OSDL-${OSDL_VERSION} --with-osdl-prefix=$prefix/OSDL-${OSDL_VERSION} --with-ceylan-prefix=${Ceylan_PREFIX}
+			# We suppose here that if we have a prefix, all tools use 
+			# prefixes :
+			
+			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX"
+			
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${OSDL_PREFIX} ${tools_prefixes}
+			
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	else
 		{		
