@@ -3429,6 +3429,9 @@ generateCeylan()
 
 	if [ -n "$prefix" ] ; then	
 		{
+		
+			Ceylan_PREFIX="${prefix}/Ceylan-${Ceylan_VERSION}"
+			
 			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${prefix}/Ceylan-${Ceylan_VERSION}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -3468,6 +3471,7 @@ generateCeylan()
 			
 			echo "Ceylan_PREFIX=${prefix}/Ceylan-${Ceylan_VERSION}" >> ${OSDL_ENV_FILE}
 			echo "export Ceylan_PREFIX" >> ${OSDL_ENV_FILE}
+			
 			
 			if [ $is_windows -eq 0 ] ; then
 		
@@ -3894,9 +3898,17 @@ generateOSDL()
 	
 		# Here we are in the SVN tree, needing to generate the build system :
 		cd $repository/osdl/OSDL/trunk/src/conf/build
-		{
-			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix $Ceylan_PREFIX
-		} 1>>"$LOG_OUTPUT" 2>&1		
+
+		if [ -n "$Ceylan_PREFIX" ] ; then	
+			{				
+				setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix $Ceylan_PREFIX
+		
+			} 1>>"$LOG_OUTPUT" 2>&1			
+		else
+			{	
+				setBuildEnv ./autogen.sh --no-build 				
+			} 1>>"$LOG_OUTPUT" 2>&1			
+		fi
 		
 		if [ $? != 0 ] ; then
 			echo
@@ -3920,7 +3932,7 @@ generateOSDL()
 
 	if [ -n "$prefix" ] ; then	
 		{
-			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${prefix}/OSDL-${OSDL_VERSION} --with-ceylan-prefix=${prefix}/Ceylan-${Ceylan_VERSION}
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${prefix}/OSDL-${OSDL_VERSION} --with-ceylan-prefix=${Ceylan_PREFIX}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 		{
@@ -3984,7 +3996,7 @@ generateOSDL()
 		# Here we are in the SVN tree, needing to generate the
 		# build system for tests :
 		{
-			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix $prefix/Ceylan-${Ceylan_VERSION} --osdl-install-prefix $prefix/OSDL-${OSDL_VERSION}
+			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix ${Ceylan_PREFIX} --osdl-install-prefix $prefix/OSDL-${OSDL_VERSION}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 		
 		if [ $? != 0 ] ; then
@@ -4001,7 +4013,7 @@ generateOSDL()
 	if [ -n "$prefix" ] ; then	
 		{				
 
-			setBuildEnv --exportEnv --appendEnv ./configure --prefix=$prefix/OSDL-${OSDL_VERSION} --with-osdl-prefix=$prefix/OSDL-${OSDL_VERSION} --with-ceylan-prefix=$prefix/Ceylan-${Ceylan_VERSION}
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=$prefix/OSDL-${OSDL_VERSION} --with-osdl-prefix=$prefix/OSDL-${OSDL_VERSION} --with-ceylan-prefix=${Ceylan_PREFIX}
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	else
 		{		
