@@ -1037,18 +1037,30 @@ retrieve_list=""
 
 for t in $target_list; do
 
+	res=0
+	
 	DEBUG "Examining <$t>"
 	
-	target_archive=${t}_ARCHIVE
-	target_md5=${t}_MD5
+	if [ $use_svn -eq 0 ] ; then
+		if [ "$t" = "Ceylan" -o "$t" = "OSDL" ] ; then
+			res=2
+		fi
+	fi
 	
-	eval actual_target_archive="\$$target_archive"
-	eval actual_target_md5="\$$target_md5"
+	if [ $res != 2 ] ; then
 	
-	#TRACE "Getting availability of ${actual_target_archive} whose expected MD5 is ${actual_target_md5}"
+		target_archive=${t}_ARCHIVE
+		target_md5=${t}_MD5
 	
-	getFileAvailability ${actual_target_archive} ${actual_target_md5}
-	res=$?
+		eval actual_target_archive="\$$target_archive"
+		eval actual_target_md5="\$$target_md5"
+	
+		#TRACE "Getting availability of ${actual_target_archive} whose expected MD5 is ${actual_target_md5}"
+	
+		getFileAvailability ${actual_target_archive} ${actual_target_md5}
+		res=$?
+		
+	fi	
 	
 	if [ "$res" -eq 0 ] ; then
 		# Avoid leading space in the beginning of the list :
