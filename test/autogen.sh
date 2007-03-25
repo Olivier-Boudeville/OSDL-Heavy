@@ -138,6 +138,9 @@ done
 # Where the libraries should be found :
 if [ -n "$osdl_environment_file" ] ; then
 
+	# If these lines are changed, change accordingly loani-requiredTools.sh,
+	# search for "Making tests for OSDL".
+	
 	osdl_install_prefix_opt="--with-osdl-prefix=$OSDL_PREFIX"	
 	ceylan_install_prefix_opt="--with-ceylan-prefix=$Ceylan_PREFIX"	
 	sdl_install_prefix_opt="--with-sdl-prefix=$SDL_PREFIX"
