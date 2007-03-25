@@ -19,6 +19,8 @@ EXTRA_DIST = $(M4_FILES)
 
 	
 install-data-local:
-	@for f in $(M4_FILES); do cp -f $(srcdir)/$$f @OSDL_INSTALL_SHARED_DIR@; done
+	@mkdir -p $(DESTDIR)@OSDL_INSTALL_SHARED_DIR@
+	@for f in $(M4_FILES); do \
+	cp -f $(srcdir)/$$f $(DESTDIR)@OSDL_INSTALL_SHARED_DIR@; done
 	
 	
