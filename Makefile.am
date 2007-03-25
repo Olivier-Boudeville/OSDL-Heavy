@@ -317,3 +317,10 @@ dist-hook:
 	-@cd $(distdir); rm -f config.log config.status libtool \
 	code/OSDLConfig.h
 	-@touch $(srcdir)/libtool.m4 $(srcdir)/ltdl.m4
+
+
+uninstall-hook:
+	@echo; echo "@OSDL_INSTALL_STYLE@    Uninstalling all OSDL shared \
+	files from $(DESTDIR)@OSDL_INSTALL_SHARED_DIR@ @OSDL_DEFAULT_STYLE@"
+	-@rm -rf $(DESTDIR)@OSDL_INSTALL_SHARED_DIR@
+
