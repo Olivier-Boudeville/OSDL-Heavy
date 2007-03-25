@@ -5,7 +5,7 @@ Usage : "`basename $0`" [ --with-osdl-environment <path> || --ceylan-install-pre
 
 	--with-osdl-environment : specify where the OSDL environment file (OSDL-environment.sh) should be read
 	--ceylan-install-prefix : specify where the Ceylan installation can be found
-	Note : if neither --with-osdl-environment nor --ceylan-install-prefix are specified, the location of OSDL environment file will .	
+	Note : if neither --with-osdl-environment nor --ceylan-install-prefix are specified, the location of OSDL environment file will be guessed, if possible.	
 	--no-build : stop just after having generated the configure script
 	--chain-test : build and install the library, build the test suite and run it against the installation
 	--full-test : build and install the library, perform all available tests, including 'make distcheck' and the full test suite
@@ -81,7 +81,7 @@ while [ $# -gt 0 ] ; do
 	
 	if [ "$1" = "-f" -o "$1" = "--full-test" ] ; then
 		do_chain_tests=0	
-		do_distcheck=1	
+		do_distcheck=0
 		token_eaten=0
 	fi
 	
@@ -631,7 +631,7 @@ generateCustom()
 		echo
 		echo " - generating configure for test suite"
 		cd test
-	 	execute ./autogen.sh --only-prepare-dist
+	 	execute ./autogen.sh --only-prepare-dist --with-osdl-environment $osdl_environment_file
 		cd .. 
 		echo " - making distribution package"
 		execute make dist-bzip2 
