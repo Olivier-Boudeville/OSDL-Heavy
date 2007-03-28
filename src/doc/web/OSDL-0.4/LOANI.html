@@ -39,7 +39,7 @@
 <h2>Three-step two-line quick guide for the impatient and the fearless UNIX OSDL end-user</h2>
 <p>
 
-Download either <a href="../../../download/LOANI-0.4.zip">LOANI-0.4.zip</a> or  <a href="../../../download/LOANI-0.4.tar.gz">LOANI-0.4.tar.gz</a>, extract it, execute <code>loani.sh --buildTools</code> as your normal user to have OSDL, Ceylan and all their prerequesites, including the whole build chain, automatically and safely downloaded, extracted, configured, compiled and built together for you. That's all !</p>
+Download either <a href="LOANI-0.4.zip">LOANI-0.4.zip</a> or  <a href="LOANI-0.4.tar.gz">LOANI-0.4.tar.gz</a>, extract it, execute <code>loani.sh --buildTools</code> as your normal user to have OSDL, Ceylan and all their prerequesites, including the whole build chain, automatically and safely downloaded, extracted, configured, compiled and built together for you. That's all !</p>
   
   <a name="toc"></a>
 <h2>Table of contents</h2>
@@ -157,19 +157,19 @@ LOANI is released under the <a href="http://www.gnu.org/licenses/gpl.html" targe
 </ul>
 
 
-<h4>The case of the Ceylan and OSDL libraries : source archive or CVS</h4>
+<h4>The case of the Ceylan and OSDL libraries : source archive or SVN</h4>
 	
 <p>
-Ceylan and OSDL can be both retrieved thanks to a source release archive or thanks to CVS. In the first case, a compressed archive is downloaded by LOANI (as it does for other tools), whereas with CVS the source tree is retrieved, according to the chosen version, developer or end user.
+Ceylan and OSDL can be both retrieved thanks to a source release archive or thanks to SVN. In the first case, a compressed archive is downloaded by LOANI (as it does for other tools), whereas with SVN the source tree is retrieved, according to the chosen version, developer or end user.
 </p>
 
 
-<h5>Retriving sources thanks to CVS</h5>	 
+<h5>Retriving sources thanks to SVN</h5>	 
 <p>
-Thanks to the <code>--sourceforge &lt;user name&gt;</code> option, our <b>project developers</b> can retrieve a fresh (coming from the always up-to-date developer CVS server) check-out version of Ceylan and OSDL, in order to have painlessly a developer-ready install, since CVS informations will be managed and retrieved too. Note that this option implies the <code>--currentCVS</code> option, which means that the cutting edge sources are wanted, even though the build tree is often broken during development.
+Thanks to the <code>--sourceforge &lt;user name&gt;</code> option, our <b>project developers</b> can retrieve a fresh (coming from the always up-to-date developer SVN server) check-out version of Ceylan and OSDL, in order to have painlessly a developer-ready install, since SVN informations will be managed and retrieved too. Note that this option implies the <code>--currentSVN</code> option, which means that the cutting edge sources are wanted, even though the build tree is often broken during development.
 </p>
 
-<p><b>End-users</b> that prefers CVS should use <code>--useCVS</code> instead of the two previous options. The retrieved sources will then be the result of a CVS export made from the anonymous CVS server, and no CVS metadata will be managed. Unless the <code>--currentCVS</code> option is specifically set, retrieved files for Ceylan and OSDL correspond to their respective last <b>stable</b> versions, as determined by CVS tags (ex : <code>STABLE_20040906</code>). If the <code>--currentCVS</code> option is set, then the latest version of each file is used. This is usually unsafe during development.
+<p><b>End-users</b> that prefers SVN should use <code>--useSVN</code> instead of the two previous options. The retrieved sources will then be the result of a SVN export made from the anonymous SVN server, and no SVN metadata will be managed. Unless the <code>--currentSVN</code> option is specifically set, retrieved files for Ceylan and OSDL correspond to their respective last <b>stable</b> versions, as determined by SVN tags (ex : <code>STABLE_20040906</code>). If the <code>--currentSVN</code> option is set, then the latest version of each file is used. This is usually unsafe during development.
 </p>
 
 
@@ -379,78 +379,35 @@ tester@testingHost LOANI-0.4 $ ./loani.sh --allTools
 
 This is the Lazy OSDL Automatic Net Installer, dedicated to the lazy and the fearless.
 
-Its purpose is to have OSDL and all its pre requesites installed with the minimum of time and effort. Some time is nevertheless n
-eded, since some downloads may have to be performed, and the related build is CPU-intensive, so often a bit long. Therefore, even
-with a powerful computer and broadband access, some patience will be needed.
-Warning : No prefix specified and not run as root (which is recommended indeed) : adding prefix /home/tester/20051111/LOANI-0.4/L
-ANI-installations.
+Its purpose is to have OSDL and all its pre requesites installed with the minimum of time and effort. Some time is nevertheless needed, since some downloads may have to be performed, and the related build is CPU-intensive, so often a bit long. Therefore, even with a powerful computer and broadband access, some patience will be needed.
+Warning : No prefix specified and not run as root (which is recommended indeed) : adding prefix /home/tester/LOANI-0.4/LOANI-installations.
 Retrieving all pre requesites, pipe-lining when possible.
-Target package list is &lt;gcc binutils gdb dot doxygen libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg livorbis SDL_mixer Ceylan OSDL&gt;.
-No tool already available in repository, will download them all (gcc binutils gdb dot doxygen libtool SDL libjpeg zlib libpng SDL
-image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL).
-      ----&gt; enqueuing gcc-3.4.4.tar.bz2 in download spool
-      ----&gt; enqueuing binutils-2.16.1.tar.gz in download spool
-      ----&gt; enqueuing gdb-6.3.tar.bz2 in download spool
-      ----&gt; enqueuing graphviz-2.6.tar.gz in download spool
-      ----&gt; enqueuing doxygen-1.4.5.src.tar.gz in download spool
-      ----&gt; enqueuing libtool-1.5.20.tar.gz in download spool
-      ----&gt; enqueuing SDL-1.2.9.tar.gz in download spool
-      ----&gt; enqueuing jpegsrc.v6b.tar.gz in download spool
-      ----&gt; enqueuing zlib-1.2.3.tar.gz in download spool
-      ----&gt; enqueuing libpng-1.2.8.tar.bz2 in download spool
-      ----&gt; enqueuing SDL_image-1.2.4.tar.gz in download spool
-      ----&gt; enqueuing SDL_gfx-2.0.13.tar.gz in download spool
-      ----&gt; enqueuing freetype-2.1.10.tar.bz2 in download spool
-      ----&gt; enqueuing SDL_ttf-2.0.7.tar.gz in download spool
-      ----&gt; enqueuing libogg-1.1.2.tar.gz in download spool
-      ----&gt; enqueuing libvorbis-1.1.1.tar.gz in download spool
-      ----&gt; enqueuing SDL_mixer-1.2.6.tar.gz in download spool
-      ----&gt; enqueuing Ceylan-0.4.1.tar.bz2 in download spool
-      ----&gt; enqueuing OSDL-0.4.1.tar.bz2 in download spool
-      &lt;---- libpng retrieved [libpng-1.2.8.tar.bz2]
-      &lt;---- zlib retrieved [zlib-1.2.3.tar.gz]
-      &lt;---- Ceylan retrieved [Ceylan-0.2.1.tar.bz2]
-      &lt;---- freetype retrieved [freetype-2.1.10.tar.bz2]
-      &lt;---- libjpeg retrieved [jpegsrc.v6b.tar.gz]
-      &lt;---- libogg retrieved [libogg-1.1.2.tar.gz]
-      &lt;---- doxygen retrieved [doxygen-1.4.5.src.tar.gz]
-      &lt;---- SDL_image retrieved [SDL_image-1.2.4.tar.gz]
-      &lt;---- SDL_mixer retrieved [SDL_mixer-1.2.6.tar.gz]
-      &lt;---- libtool retrieved [libtool-1.5.20.tar.gz]
-      &lt;---- libvorbis retrieved [libvorbis-1.1.1.tar.gz]
-      &lt;---- SDL_ttf retrieved [SDL_ttf-2.0.7.tar.gz]
-      &lt;---- OSDL retrieved [OSDL-0.4.1.tar.bz2]
-      &lt;---- SDL retrieved [SDL-1.2.9.tar.gz]
-      &lt;---- dot retrieved [graphviz-2.6.tar.gz]
-      &lt;---- gdb retrieved [gdb-6.3.tar.bz2]
-      &lt;---- binutils retrieved [binutils-2.16.1.tar.gz]
-      &lt;---- gcc retrieved [gcc-3.4.4.tar.bz2]
-      ----&gt; enqueuing SDL_gfx-2.0.13.tar.gz in download spool
-      &lt;---- SDL_gfx retrieved [SDL_gfx-2.0.13.tar.gz]
+Target package list is &lt;libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL&gt;.
+Some tools already available (libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer), others will be downloaded (Ceylan OSDL).
+Retrieving Ceylan from developer SVN with user name wondersye.
+      ----&gt; getting Ceylan from SVN with user name wondersye (check-out)
+      &lt;---- Ceylan retrieved [from SVN]
+Retrieving OSDL from developer SVN with user name wondersye.
+      ----&gt; getting OSDL from SVN with user name wondersye (check-out)
+      &lt;---- OSDL retrieved [from SVN]
 All pre requesites available.
-      ----&gt; gcc         : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; binutils    : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; gdb         : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; dot         : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; doxygen     : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; libtool     : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; SDL         : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; libjpeg     : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; libzlib     : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; libPNG      : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; SDL_image   : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; SDL_gfx     : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; freetype    : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; SDL_ttf     : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; libogg      : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; libvorbis   : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; SDL_mixer   : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; Ceylan      : extracting [OK] configuring [OK] building [OK] installing [OK] 
-      ----&gt; OSDL        : extracting [OK] configuring [OK] building [OK] installing [OK] 
+      ----&gt; libtool     : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL         : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libjpeg     : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libzlib     : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libPNG      : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL_image   : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL_gfx     : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; freetype    : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL_ttf     : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libogg      : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libvorbis   : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL_mixer   : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; Ceylan      : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; OSDL        : extracting [OK] configuring [OK] building [OK] installing [OK]
 Post-install cleaning of build trees.
-End of LOANI, started at 23:22:33, successfully ended at 00:39:03.
-You can now test the whole installation by executing /home/tester/20051111/LOANI-0.4/LOANI-installations/OSDL/OSDL-0.4/bin/playTests.sh
-</pre>
+End of LOANI, started at 19:00:44, successfully ended at 19:20:15.
+You can now test the whole installation by executing /home/tester/LOANI-0.4/LOANI-installations/OSDL-0.4/share/OSDL/scripts/shell/playTests.sh              </pre>
 
 
             </div>
@@ -474,7 +431,7 @@ On a side note, LOANI usually have to ask some more questions. The first is :
             <div class="box">
 <pre>
 
-The authenticity of host 'cvs.sourceforge.net (66.35.250.207)' can't be established.
+The authenticity of host 'osdl.svn.sourceforge.net (66.35.250.207)' can't be established.
 DSA key fingerprint is 02:ab:7c:aa:49:ed:0b:a8:50:13:10:c2:3e:92:0f:42.
 Are you sure you want to continue connecting (yes/no)? 
 
@@ -487,11 +444,11 @@ Are you sure you want to continue connecting (yes/no)?
 </p>
 
 <p> 
-Answer <code>yes</code> to this one, it is just the SSH-powered CVS client wanting the user to acknowledge the connection to SourceForge's CVS server, whereas the user host never before had been connected to that server. That should not be a problem for anybody.
+Answer <code>yes</code> to this one, it is just the SSH-powered SVN client wanting the user to acknowledge the connection to SourceForge's SVN server, whereas the user host never before had been connected to that server. That should not be a problem for anybody.
 </p>
 
 <p>
-The other question is, for the registered OSDL users that chose the CVS developer access (<code>--sourceforge</code> option) but did not set up authentification by SSH public key on Sourceforge'side (very few happen to use them), the following : 
+The other question is, for the registered OSDL users that chose the SVN developer access (<code>--sourceforge</code> option) but did not set up authentification by SSH public key on Sourceforge'side (very few happen to use them), the following : 
 </p>
 
 <p>
@@ -500,7 +457,7 @@ The other question is, for the registered OSDL users that chose the CVS develope
         <tr>
           <td>
             <div class="box">
-&lt;your sourceforge user&gt;@cvs.sourceforge.net's password:
+&lt;your sourceforge user&gt;@osdl.svn.sourceforge.net's password:
             </div>
           </td>
         </tr>
@@ -509,7 +466,7 @@ The other question is, for the registered OSDL users that chose the CVS develope
 
 </p>
 
-<p>This question may be asked more than two times (one for Ceylan, one for OSDL). It is due to SourceForge's CVS servers' hiccups, LOANI will try multiple times before aborting, in the case where there is an outage of SourceForge services. Each time, answer in an appropriate way and everything should work well.
+<p>This question may be asked more than two times (one for Ceylan, one for OSDL). It is due to SourceForge's SVN servers' hiccups, LOANI will try multiple times before aborting, in the case where there is an outage of SourceForge services. Each time, answer in an appropriate way and everything should work well.
 </p>
 
   
@@ -561,7 +518,7 @@ This is loani.sh, the famous Lazy OSDL Automatic Net Installer.
 </pre>
 
 <pre>
-Usage : loani.sh [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useCVS ] [ -c | --currentCVS ] [ 
+Usage : loani.sh [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ 
 -sourceforge &lt;user name&gt; ] [ --buildTools ] [ --optionalTools] [ --allTools] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix &lt;a
 path&gt; ] [ --repository &lt;a path&gt; ] [ --noLog ] [ --noClean ] [ -h | --help ]
 
@@ -570,8 +527,8 @@ Usage : loani.sh  [ -d | --debug ]
 		  [ -s | --strict ] 
 		  [ -q | --quiet ] 
 		  [ -w | --wizard ] 
-		  [ -u | --useCVS ] 		  
-		  [ -c | --currentCVS ]
+		  [ -u | --useSVN ] 		  
+		  [ -c | --currentSVN ]
 		  [ --sourceforge &lt;user name&gt; ]
 		  [ --buildTools ] 
 		  [ --optionalTools ] 
@@ -595,9 +552,9 @@ Options :
         -s or --strict            : be strict, stop on wrong md5 checksums or on unexpected tool locations
         -q or --quiet             : avoid being too verbose
         -w or --wizard            : enter wizard interactive mode, so that questions are asked to configure
-        -u or --useCVS            : retrieve Ceylan and OSDL from CVS, instead of downloading prepackaged source archives
-        -c or --currentCVS        : retrieve current CVS for Ceylan and OSDL, instead of latest CVS tagged stable release (implies --useCVS)
-        --sourceforge &lt;user name&gt; : uses SourceForge developer access to retrieve projects from CVS  (implies --currentCVS)
+        -u or --useSVN            : retrieve Ceylan and OSDL from SVN, instead of downloading prepackaged source archives
+        -c or --currentSVN        : retrieve current SVN for Ceylan and OSDL, instead of latest SVN tagged stable release (implies --useSVN)
+        --sourceforge &lt;user name&gt; : uses SourceForge developer access to retrieve projects from SVN  (implies --currentSVN)
         --buildTools              : retrieve and install common build tools too (ex : gcc, binutils, gdb)  
         --optionalTools           : retrieve and install optional tools too (ex : doxygen, dot, tidy)
         --allTools                : retrieve all tools (required, build, optional tools)
@@ -620,7 +577,7 @@ Options :
 There exist some hidden options, i.e. undocumented in the command line help, since seldom used :
 
 <ul>
-	<li><code>--noCVS</code> : do not retrieve Ceylan or OSDL from CVS, merely used for LOANI debugging (they will not be retrieved at all)</li>
+	<li><code>--noSVN</code> : do not retrieve Ceylan or OSDL from SVN, merely used for LOANI debugging (they will not be retrieved at all)</li>
 	<li><code>--onlyBuildTools</code> : only build tools will be installed</li>
 	<li><code>--onlyOptionalTools</code> : only optional tools will be installed</li>
 </ul>
@@ -650,10 +607,10 @@ The most common mistakes that are made or errors that occur are listed here, alo
 </dd>
 	  
 	  
-	<dt>LOANI seems to hang while downloading packages, notably whenever I am retrieving Ceyland and OSDL from CVS</dt>
+	<dt>LOANI seems to hang while downloading packages, notably whenever I am retrieving Ceyland and OSDL from SVN</dt>
 	<dd>
 
-	<p>The main culprit for that case seems to be Sourceforge's SVN which experiences some outages that lead to a never-ending check-out. A good workaround is to type <code>CTRL-C</code> in the terminal from which LOANI is run, it will force a CVS reset which will result in another CVS attempt of LOANI which, in most cases, then succeeds.
+	<p>The main culprit for that case seems to be Sourceforge's SVN which experiences some outages that lead to a never-ending check-out. A good workaround is to type <code>CTRL-C</code> in the terminal from which LOANI is run, it will force a SVN reset which will result in another SVN attempt of LOANI which, in most cases, then succeeds.
 	</p>
 
 	<p>	
@@ -665,7 +622,7 @@ The most common mistakes that are made or errors that occur are listed here, alo
           <td>
             <div class="box">
 <code><pre>
-Error validating server certificate for 'https://ceylan.svn.sourceforge.net:443':
+Error validating server certificate for 'https://osdl.svn.sourceforge.net:443':
  - The certificate is not issued by a trusted authority. Use the
    fingerprint to validate the certificate manually!
 Certificate information:
@@ -684,7 +641,7 @@ Certificate information:
 	
 	<p>   
    Most simple work-around is to accept manually the certificate from a terminal with 
-   <code>svn co https://ceylan.svn.sourceforge.net:/svnroot/ceylan</code> for example, to stop it after the certificate has been accepted, to remove any downloaded directory, and then to launch LOANI again.                          
+   <code>svn co https://osdl.svn.sourceforge.net:/svnroot/ceylan</code> for example, to stop it after the certificate has been accepted, to remove any downloaded directory, and then to launch LOANI again.                          
 	</p>
 	
 	<p>Otherwise the issue and its solution are mostly the same as for the previous case. Typically, LOANI succeeded in downloading most packages, but, for one or more, does not progress anymore. Using again <code>tail -f LOANI.log</code>, you may see LOANI regularly waiting for the lacking packages, and inspecting the various <code>wget-log.*</code> shows some messages like <code>failed: Connection timed out</code>.</p>
@@ -694,7 +651,7 @@ Certificate information:
 	<p>Otherwise, if LOANI seems really frozen (we have not experienced this behaviour for a few years now), you can download by your own means the relevant archives (for example <code>freetype-x.y.z.tar.bz2</code>) and move them directly into the cache directory (by default,  <code>LOANI-repository</code>), among the other archives. Next time LOANI will be launched, it will take them into account, provided that they are not corrupted (i.e. their MD5 codes are right) or provided that strict mode is not enabled.
 	</p>
 	
-    <p>Still frozen (this should really almost never occur after that step) ? After having waited enough (beware, some archives such as the one of gcc are very big), if the log files do not progress anymore, the downloads (CVS and/or wget ones ) may encounter a network problem which happens on the user side.
+    <p>Still frozen (this should really almost never occur after that step) ? After having waited enough (beware, some archives such as the one of gcc are very big), if the log files do not progress anymore, the downloads (SVN and/or wget ones ) may encounter a network problem which happens on the user side.
 	</p>
 	
 	<p>Then one may stop LOANI, possibly get rid of all <code>wget</code> processes still running (if any), and remove partially downloaded archives in <code>LOANI-repository</code> (if strict mode is not chosen, since otherwise these archives would be taken as they are, next time LOANI is run).
@@ -715,15 +672,15 @@ Certificate information:
 	  
 	<dt>LOANI seems to have downloaded the right tool versions, but Ceylan or OSDL build fails while asking for older versions</dt>
 	<dd>
-		<p>This can happen if CVS is being used but <code>--currentCVS</code> LOANI option is not selected, and if you have bad luck.
+		<p>This can happen if SVN is being used but <code>--currentSVN</code> LOANI option is not selected, and if you have bad luck.
 		</p>
 		
-		<p>Long story short, in the LOANI tarball there is a (often recent) version of <code>loani-versions.sh</code> which is the centralized place where tool versions are defined. If the <code>--currentCVS</code> option is <b>not</b> selected, then LOANI will use a CVS tag to retrieve tagged latest stable versions for all files, including a <code>loani-versions.sh</code> which dates back to this stable version.</p>
+		<p>Long story short, in the LOANI tarball there is a (often recent) version of <code>loani-versions.sh</code> which is the centralized place where tool versions are defined. If the <code>--currentSVN</code> option is <b>not</b> selected, then LOANI will use a SVN tag to retrieve tagged latest stable versions for all files, including a <code>loani-versions.sh</code> which dates back to this stable version.</p>
 		
 		<p>It might differ from the one of the tarball, which explains why conflicts may occur. Based on the tarball, recent tools would have already been downloaded indeed, whereas the tagged code would demand older ones.
 		</p>
 		
-		<p>This is clearly a bug (see <a href="#support">support</a>), whose origin is to be found in too few stable tags being put. Adding <code>--currentCVS</code> to the <code>loani.sh</code> command line could fix it, in the lucky and most unlikely case where the CVS tree is not broken at the moment. 
+		<p>This is clearly a bug (see <a href="#support">support</a>), whose origin is to be found in too few stable tags being put. Adding <code>--currentSVN</code> to the <code>loani.sh</code> command line could fix it, in the lucky and most unlikely case where the SVN tree is not broken at the moment. 
 		</p>
 </dd>
 
@@ -737,15 +694,14 @@ Certificate information:
 	  </dd>
 
 	<dt>If your are using the <b>--sourceforge</b> option and LOANI fails</dt>
-	<dd><p>Check that SourceForge really granted your user the right to access the developer CVS server, thanks to :
+	<dd><p>Check that SourceForge really granted your user the right to access the developer SVN server, thanks to :
 	
 	
-  <table summary="CVS and SSH guidelines" style="border: none">
+  <table summary="SVN and SSH guidelines" style="border: none">
     <tr>
       <td>
         <div class="box">
-          <code>export CVS_RSH=ssh ;<br>
-		  cvs -d:ext:YourSourceForgeUserName@cvs.sourceforge.net:/cvsroot/osdl co OSDL/OSDL-0.4/src/versions.inc</code>
+          <code>svn https://osdl.svn.sourceforge.net:/svnroot/osdl co --username=YourSourceForgeUserName</code>
         </div>
       </td>
     </tr>
@@ -754,7 +710,7 @@ Certificate information:
 	</p>
 	<p>(replace <b>YourSourceForgeUserName</b> by the real username you chose at SourceForge, everything should be typed on one line, most of SourceForge users will have to enter their password). </p>
 	  
-	<p>If that test fails, you might well be in the case described in "Project CVS Service: Impacted by Known Issue" :
+	<p>If that test fails, you might well be in the case described in "Project CVS Service: Impacted by Known Issue" (this applied to CVS but may occur with SVN) :
 	<em>
 There is an outstanding issue whereby upon user addition to a project or 
 new project creation, the user is not given permission to access the CVS 
@@ -785,8 +741,8 @@ To change your password, do the following:
 	
 	<p> See <a href="http://sourceforge.net/tracker/index.php?func=detail&aid=875403&group_id=1&atid=200001" target="_blank">this</a> for more details.</p></dd>
 	
-	<dt>If the previous CVS check-out test succeeds, but LOANI keeps on failing with CVS</dt>
-	<dd>Check your entered the right password when LOANI asked it (beware of caps-locks, num-locks, of hitting backspace to correct a typo in the password instead of CTRL-H, etc.). Take also a look at the <a href="http://sourceforge.net/docman/display_doc.php?docid=2352&group_id=1" target="_blank">Sourceforge CVS status page</a>, since some outages happen regularly.</dd>
+	<dt>If the previous SVN check-out test succeeds, but LOANI keeps on failing with SVN</dt>
+	<dd>Check your entered the right password when LOANI asked it (beware of caps-locks, num-locks, of hitting backspace to correct a typo in the password instead of CTRL-H, etc.). Take also a look at the <a href="http://sourceforge.net/docman/display_doc.php?docid=2352&group_id=1" target="_blank">Sourceforge SVN status page</a>, since some outages happen regularly.</dd>
 	
 	<dt>LOANI stops on random steps of the installation</dt>
 	<dd>Check you have <b>enough space </b> on your hard-drive (use for instance <code>df -k .</code>): LOANI performs some rough size estimates, but may be wrong. If it fails and little room remains, you have your first suspect. If the space left is not guilty, and if you are using Windows, some random errors actually seem to happen when using Cygwin. We noticed that sometimes some executables are not found whereas they are here, or some md5sum checkings fail whereas the sums should match. Try to re-launch LOANI, the outcome might be more satisfying, even though we are not fond of non-deterministic software.</dd>
@@ -880,9 +836,8 @@ We hope you will enjoy using LOANI and OSDL !
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update : Tuesday, March 20, 2007
-
-</em>
+    <em>Last update : Wednesday, March 28, 2007</em>
+	
   </center>
 </body>
 </html>
