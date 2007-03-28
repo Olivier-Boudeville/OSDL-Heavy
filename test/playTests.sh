@@ -232,13 +232,20 @@ fi
 
 TEST_ROOT=`dirname $0`
 
-TERM_PATH="$Ceylan_PREFIX/share/Ceylan/scripts/shell/termUtils.sh"
-if [ -f "$TERM_PATH" ] ; then
-	. $TERM_PATH
+SHELLS_LOCATION="$Ceylan_PREFIX/share/Ceylan/scripts/shell"
+
+# Triggers also termUtils.sh and platformDetection.sh :
+DEFAULT_LOCATIONS_PATH="$SHELLS_LOCATION/defaultLocations.sh"
+
+if [ -f "$DEFAULT_LOCATIONS_PATH" ] ; then
+	. $DEFAULT_LOCATIONS_PATH
 else
-	ERROR_INTERNAL "terminal utilities not found (tried $TERM_PATH)"
+	ERROR_INTERNAL "default location script not found (tried $DEFAULT_LOCATIONS_PATH)"
 	exit 3
 fi	
+
+# For ping :
+findSupplementaryShellTools
 
 # For tests that need to search relative paths :
 # (do not know why shell fails when doing a 'cd test' when run from trunk)
@@ -257,7 +264,7 @@ else
 fi
 
 # Test whether we are online (needed for DNS queries) :
-if ping google.com -c 2 1>/dev/null 2>&1; then
+if ${PING} ${PING_OPT} 2 google.com 1>/dev/null 2>&1; then
 	is_online=0
 	network_option="--online"
 	echo "
