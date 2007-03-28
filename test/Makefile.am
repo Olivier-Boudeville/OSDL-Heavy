@@ -12,6 +12,12 @@ check:
 	@$(srcdir)/playTests.sh
 
 
+install-data-local:
+	@echo; echo "@OSDL_INSTALL_STYLE@    Installing playTests.sh @OSDL_DEFAULT_STYLE@"
+	@mkdir -p $(DESTDIR)@OSDL_TEST_DIR@
+	@cp -f $(srcdir)/playTests.sh $(DESTDIR)@OSDL_TEST_DIR@
+
+
 clean-local:
 	@echo " Cleaning all test logs"	
 	-@/bin/rm -f  `find . -name 'testsOutcome.txt'`
