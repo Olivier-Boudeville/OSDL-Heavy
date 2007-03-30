@@ -42,15 +42,15 @@ all:
 	
 		
 check-configure: 
-	@echo "@OSDL_MAKE_STYLE@    Comparing configure\
+	@echo "@OSDL_MAKE_STYLE@    Comparing configure \
 	files@OSDL_DEFAULT_STYLE@"
 	@./checkConfigure.sh $(DIFF_TOOL)
-	@echo "@OSDL_COMMAND_STYLE@    Comparison finished,\
+	@echo "@OSDL_COMMAND_STYLE@    Comparison finished, \
 	$(CONFIGURE_FILE) may be updated now."
 
 
 download-config-scripts: clean-download
-	@echo "@OSDL_MAKE_STYLE@    Downloading latest\
+	@echo "@OSDL_MAKE_STYLE@    Downloading latest \
 	configure helper scripts@OSDL_DEFAULT_STYLE@"
 	@for f in $(DOWNLOADED_HELPERS); do \
 	wget --quiet $(CONFIGURE_SCRIPTS_BASE_URL)/$$f ; done
@@ -62,13 +62,13 @@ dist-hook:
 	
 	
 clean-local:
-	@echo "@OSDL_CLEAN_STYLE@    Cleaning generated config\
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning generated config \
 	files@OSDL_DEFAULT_STYLE@"
 	-@rm -f autoscan*.log autoscan.err configure.scan
 	
 	
 clean-download:
-	@echo "@OSDL_CLEAN_STYLE@    Cleaning downloaded config\
+	@echo "@OSDL_CLEAN_STYLE@    Cleaning downloaded config \
 	files@OSDL_DEFAULT_STYLE@"
 	-@rm -f $(DOWNLOADED_HELPERS)
 	
