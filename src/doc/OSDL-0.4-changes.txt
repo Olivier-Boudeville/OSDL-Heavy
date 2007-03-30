@@ -1,0 +1,13 @@
+Main OSDL 0.4 changes are :
+
+	* SVN used instead of CVS
+	
+	* The Autotools are used, instead of custom-made GNUMakefiles
+	
+	* integration to the Ceylan 0.5 version
+	
+	* OSDL scheduler robustified and enhanced a lot 
+
+	* numerous tests improved (full test suite added), and many bugs fixed
+	
+	
