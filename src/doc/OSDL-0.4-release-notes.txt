@@ -1,0 +1,6 @@
+A new OSDL version, at last !
+
+OSDL 0.4 is GNU/Linux only, and offers about the same features as the 0.3 version, but its build system has been completely revamped.
+
+OSDL 0.4 is somewhat an intermediary version, between the 0.3 which was truely ancient (dated back to 2005 Q3), and the upcoming OSDL versions, that should add the Windows XP support and the XML management with OpenGL of tilesets for animated sprites.
+
