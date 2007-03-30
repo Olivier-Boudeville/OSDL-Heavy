@@ -205,14 +205,21 @@ fi
 
 #echo "starting_dir = $starting_dir"
 
+# Suppose we are in the build tree : 
 loani_installations=`echo $starting_dir | sed 's|osdl/OSDL/trunk/test||1'`"../LOANI-installations"
 	
 #echo "loani_installations = $loani_installations"
 
 if [ ! -d "$loani_installations" ] ; then
 
-	ERROR_INTERNAL "unable to guess the LOANI installation repository (tried $loani_installations)"
-	exit 1
+	# No, maybe we are on an installed tree ?
+	loani_installations=`echo $starting_dir | sed 's|share/OSDL-test||1'`"../../LOANI-installations"
+
+	if [ ! -d "$loani_installations" ] ; then
+	
+		ERROR_INTERNAL "unable to guess the LOANI installation repository (tried finally $loani_installations)"
+		exit 1
+	fi
 	
 fi
 
