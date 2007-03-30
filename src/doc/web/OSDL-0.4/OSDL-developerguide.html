@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<!--    This document is a part of the OSDL project 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+<!--    
+        Creation date : 2003, December 19.
+        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by :  the author
+        Version number : 0.1
+        Adapted from : no previous document
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Developer Guide for the OSDL 0.4 version</title>
+  <meta http-equiv="Content-Type" content=
+  "text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, video game, GPL">
+  <link href="../images/OSDL-icon.png" rel="OSDL icon">
+  <link rel="STYLESHEET" type="text/css" href=
+  "../common/css/OSDL.css">
+</head>
+
+<body>
+  <div class="banner">
+    <em>General</em> <a href="../common/black.html" onclick= 
+    "parent.toolbar.location='../MainMenu.html'">home page</a>
+    <a href="../../../Map.html">site map</a> <a href=
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL-0.4]%20Developer's%20guide">
+    mail us</a>
+  </div><br>
+  <a name="_top_"></a> 
+
+
+<h1>Developer Guide for the OSDL 0.4 version</h1>
+
+
+<h2>Overview</h2>
+
+<p>
+The intended public for this document is OSDL <b>developers</b>, i.e. working on the library itself : OSDL <b>users</b> ought to refer to the <a href="OSDL-userguide.html">OSDL User Guide</a>.
+</p>
+
+<p>This developer's guide is still to be written, however here are a few hints about OSDL's inner working.</p>
+
+  
+<p>See also : <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html" target="_blank">Ceylan developer's guide</a> for common informations.
+</p>
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+Note : this documentation is quite deprecated, it would need some serious update and rewriting.
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+<p>
+<a name="toc"></a>
+  <center>
+  	<table style="border: none">
+  	<tr>
+		<td>
+			<div class="box" summary="Table of contents" style="padding: 8px">
+  				<a href="#conventions">Conventions</a><br>
+  				<a href="#customization">Customization</a><br>
+  				<a href="#hints">Random hints</a><br>
+    		</div>
+		</td>
+	</tr>
+  	</table>
+  </center>
+</p>
+ 
+
+  
+<a name="conventions"></a>  
+<h2>Conventions</h2>
+  
+ 
+<h3>Overall conventions</h3>
+<p>
+For some transverse subjects, such as the anti-aliasing mode (wanted or not), at least two ways of managing these informations were possible, having them static or not :
+<ul>
+	<li>If they were <b>static</b> to their module (ex : VideoModule), then their access would be easy, but if this module which behaves like a singleton was finally due to be able to be instanciated multiple times (ex : if the video back-end allowed, with its upcoming version, to open multiple windows), then some rewriting would have to be done</li>
+	<li>If they were <b>non-static</b>, then they would be relative to a particular module (instance members of that object), which would gracefully scale if, instead of one, there were two or more of these modules. However, each time one of the overall attributes is to be used, instead of being simply referenced thanks to a global symbol (say, <code>OSDL::VideoModule::GetAntialiasingState</code>), a specific instance of a module would have  to be used and, therefore, passed in some way to its caller. It would imply adding arguments to most methods or, preferably, use a kind of state machine where, unless specified otherwise, there would be a current instance of module to which operations would be applied.</li>
+</ul>
+
+</p>
+
+<p>
+The first solution was preferred, since the 'singleton to many instances' transition could be performed with a state machine indeed, but the call to static methods could handle that internally without needing to perform tremendous changes in the code that uses these features : that change could be transparent for user code.
+</p>
+  
+<h4>Endianness (byte order)</h4>
+<p>
+The endianness of the system is detected at <b>compile-time</b> (<code>#if SDL_BYTEORDER == SDL_BIG_ENDIAN...#else ... #endif</code>), not at "<b>run-time</b>" (<code> if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {... } else { ... }</code>). This does not change much, since even the second form, which should evaluate to a comparison between constants, should be translated by the compiler similarly to the first one.
+</p>
+
+  
+
+ <br><br>
+ <center>[<a href="#toc">Back to table of contents</a>]</center>
+ <br><br><br>
+
+ 
+
+<a name="customization"></a>
+<h2>Customization</h2>
+<p>
+To use another version of gcc than the one OSDL selected (use <code>make checktools</code> to check which would be used by default), redefine <code>GCC_ROOT</code> make variable so that it points to the compiler you want to use. Ex : if one wants to use the gcc compiler installed under <code>/usr/local</code> (i.e. <code>/usr/local/bin</code> for gcc executables and <code>/usr/local/lib</code> for its libraries), one would use : <code>make all GCC_ROOT=/usr/local</code>. If GCC_ROOT is not redefined, and if with its default value (GCC_ROOT being the directory where OSDL and Ceylan were extracted, i.e. <code>GCC_ROOT = OSDL/OSDL-x.y/src/../../..</code>) no compiler can be found, then it will be searched through the PATH. If gcc is to be found in the PATH, its corresponding libraries are supposed to be found in the LD_LIBRARY_PATH environment variable.
+</p>
+
+
+ <br><br>
+ <center>[<a href="#toc">Back to table of contents</a>]</center>
+ <br><br><br>
+
+
+
+
+
+<a name="hints"></a> 
+<h2>Random hints</h2>
+  
+<h3>Compilation flags</h3>
+
+<h4>Meaning</h4>
+
+<p>
+
+<center>
+  <table border="1" summary="table">
+    <caption>Main make variables that can be used to customize build</caption>
+
+    <tr>
+        <th>Make variable</th>
+        <th>Meaning</th>
+		<th>Used in build phase</th>
+    </tr>
+
+    <tr>
+        <td>INC</td>
+        <td>include flags</td>
+        <td>compilation</td>
+    </tr>
+
+    <tr>
+        <td>DFLAGS</td>
+        <td>debug flags</td>
+        <td>compilation and link</td>
+    </tr>
+
+    <tr>
+        <td>CFLAGS</td>
+        <td>compile flags</td>
+        <td>compilation</td>
+    </tr>
+
+    <tr>
+        <td>LDFLAGS</td>
+        <td>link flags</td>
+        <td>link</td>
+    </tr>
+
+    <tr>
+        <td>OPT</td>
+        <td>option flags</td>
+        <td>compilation and link</td>
+    </tr>
+
+
+  </table>
+</center>
+
+</p>
+
+<h4>Use</h4>
+
+<h5>Overall architecture of the Ceylan-OSDL pair</h5>
+
+<p>
+<center>
+    <img src="OSDL-Ceylan-class-diagram.png" alt="Image"></img>
+</center>
+</p>
+
+<p>
+With many projects, fine tuning of installation settings is difficult since usual make variables, such as <code>INC</code> or <code>LDFLAGS</code>, are set and used directly by the project.</p>
+
+<p>For example, often the configure step determines which series of library names and locations should be used. Too often, there is no way for the user to define his settings and to <b>add</b> directly what lacks.
+</p>
+
+<p>For example, users need to be able to add to LDFLAGS the following : <code>-L&lt;a path&gt; -l&lt;a library&gt;</code>. Unfortunately, they cannot use <code>make LDFLAGS="-L&lt;a path&gt; -l&lt;a library&gt;"</code> since LDFLAGS is used by most project, and it would erase any previous information hardcoded in LDFLAGS.</p>
+
+<p>An unsatisfying solution would be to take LDFLAGS's hardcoded value, to add the settings the user wants to add, and to define a full new LDFLAGS value, which would contain both informations, from the command line. This solution is a bad idea, since the hardcoded value, often set by the configure step, depends on the platform, therefore the user fix would break portability.
+</p>
+
+<p>
+To overcome this issue, we chose deliberatly not to use in OSDL internals the following variables :
+<ul>
+	<li><code>INC</code></li>
+	<li><code>DFLAGS</code></li>
+	<li><code>CFLAGS</code></li>
+	<li><code>LDFLAGS</code></li>
+	<li><code>OPT</code></li>
+</ul>
+  but to leave them blank (ex : <code>LDFLAGS=</code>) and
+to make us of variables with the same names, but suffixed with <code>_PRIV</code>, which stands for "private to the project" (ex : <code>LDFLAGS_PRIV</code>).
+</p>
+
+<p>
+That way, everywhere where library informations were needed, we used <code>$(LDFLAGS) $(LD_FLAGS_PRIV)</code>, in that order, letting the possibility to customize the build thanks to a <code>LD_FLAGS</code> which would not interfere with our <code>LD_FLAGS_PRIV</code>. So the user just has to specify <code>make LDFLAGS="-L&lt;a path&gt; -l&lt;a library&gt;"</code> to <b>add</b>, not <b>replace</b> library informations and such.</p>
+
+<p>Of course, if ever one wanted actually to <b>replace</b> these values, he just would have to specify 
+<code>make LDFLAGS_PRIV="-L&lt;a path&gt; -l&lt;a library&gt;"</code>.
+</p>
+
+<p>
+This procedure applies for the Ceylan library as well.
+</p>
+
+<h3>Build messages</h3>
+<p>
+One should not be afraid of those libtool warnings for various libraries :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+libtool: link: warning: library `&lt;your path&gt;/LOANI-installations/SDL_image-1.2.3/lib/libSDL_image.la' was moved.
+
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+For the moment, we did not manage to get rid of these messages, but they do not really matter since they do not denote any real problem.
+</p>
+
+
+<h3>Filenames</h3>
+
+  <p>The library itself, whether downloaded as binary or rebuilt from
+  sources, is named :</p>
+
+  <ul>
+    <li><strong>libOSDL.so.0.0.4</strong>, it is the full shared
+    library filename, with sonname and al, and the installation process
+    should have created links <code>libOSDL.so.0</code> and
+    <code>libOSDL.so</code> pointing directly towards
+    <code>libOSDL.so.0.0.4</code>.</li>
+
+    <li>similarly, there should be a <strong>libOSDL-0.4.0.a</strong>
+    for the static library, along with its exact copy
+    <code>libOSDL.a</code>, and with <code>libOSDL.la</code>, which
+    does respect GNU libtool's conventions (no links for them, .a
+    and .la are different files)</li>
+  </ul><br>
+  <br>
+
+  <p>Please keep in mind that OSDL is a multimedia-oriented library
+  built on top of <a href="#prereq">pre requesites</a>, so you should
+  install them priorly to have OSDL-0.4 working.</p><br>
+  
+  
+<h3>Setting up one's environment by script</h3>
+<p>
+One interesting file to source is <code>OSDL-environment.sh</code>, which is to be found under the prefix used by LOANI, <code>LOANI-installations</code> by default.  
+</p>
+
+<p>
+By sourcing this script, you set your shell environment so that all LOANI installed tools are selected, thanks to the <code>PATH</code> and <code>LD_LIBRARY_PATH</code> environment variable.
+</p>
+
+
+<h3>Debugging rendering code</h3>
+<p>
+When developing code that performs rendering, it is often difficult to know what is exactly drawn in each step, or what might be the culprit of an unintended behaviour : the graphic system (OSDL) or the user program performing the actual rendering ? One very easy way to tell it is to use the screenshot generating capabilities of the <code>Surface</code> class. For example, using <code>Surface::savePNG</code> allows to freeze graphics being generated at runtime, in order to understand what happens actually.
+</p>
+
+
+<h3>Tests</h3>
+<p>
+The build of tests is split from library's build, since we designed these tests to behave exactly as any other user application which would make use of Ceylan or OSDL.
+</p>
+    
+	                               			
+ 
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h3>Please react !</h3>
+
+  <p>If you have informations more detailed or more recent than those
+  presented in this document, if you noticed errors, neglects or points
+  insufficiently discussed, <a href=
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL-0.4]%20Developer's%20guide">  drop us a line</a>!</p><br>
+  <br>
+  <hr>
+
+  <center>
+    [<a href="#_top_">Top</a>]<br>
+    <br>
+    <em>Last update : Friday, March 30, 2007
+</em>
+  </center>
+</body>
+</html>
