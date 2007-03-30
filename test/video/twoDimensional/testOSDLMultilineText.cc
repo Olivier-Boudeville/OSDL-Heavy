@@ -17,9 +17,7 @@ using namespace Ceylan::System ;
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation 
- * tree, usually this pathname relative to the install directory where this 
- * test executable should lie is :
- * (to be reached from executable directory)
+ * tree, from executable build directory :
  *
  */
 const std::string trueTypeFontDirFromExec = 
@@ -28,13 +26,20 @@ const std::string trueTypeFontDirFromExec =
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * usually this pathname relative to the install directory where this test
- * executable should lie is :
- * (to be reached from OSDL/OSDL-${OSDL_VERSION}/src/code)
+ * from playTests.sh location in build tree :
  *
  */
-const std::string trueTypeFontDirForPlayTests = "../src/doc/web/common/fonts" ;
+const std::string trueTypeFontDirForBuildPlayTests 
+	= "../src/doc/web/common/fonts" ;
 
+
+/*
+ * TrueType font directory is defined relatively to OSDL documentation tree,
+ * from playTests.sh location in installed tree :
+ *
+ */
+const std::string trueTypeFontDirForInstalledPlayTests 
+	= "../OSDL/doc/web/common/fonts" ;
 
 
 /*
@@ -178,7 +183,10 @@ int main( int argc, char * argv[] )
 			trueTypeFontDirFromExec ) ;
 			
 		TrueTypeFont::TrueTypeFontFileLocator.addPath(
-			trueTypeFontDirForPlayTests ) ;
+			trueTypeFontDirForBuildPlayTests ) ;
+			
+		TrueTypeFont::TrueTypeFontFileLocator.addPath(
+			trueTypeFontDirForInstalledPlayTests ) ;
 			
 		LogPlug::info( "TrueType fonts will be found through : " 
 			+ TrueTypeFont::TrueTypeFontFileLocator.toString() ) ;
