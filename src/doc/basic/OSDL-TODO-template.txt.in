@@ -20,7 +20,6 @@ First concern : settle down a first limited engine able to power a first light-w
 * Overall properties to aim
 
 	[7] do not use internally CFLAGS, LDFLAGS, OPT and so on to allow user to redefine them
-	[7] should be as automatically installed as feasible : portable tested LOANI
 	[6] should run at adequate speeds on a Pentium 3 1.1 Ghz machine with 32 Mb GeForce 2 graphics card . That's our 'minimum spec,' or 'minimum technical requirements,' more or less. Much of the speed will depend on the game you run it with, though - a 3D shooter will obviously run slower than Tetris, even though they may be built on the same engine.
 	[4] provide a video console allowing to communicate directly with the 
 game engine during a game session : Quake-like console/SDL_console
@@ -32,13 +31,10 @@ game engine during a game session : Quake-like console/SDL_console
 	
 * Video functionnalities :	
 
-	[9] add run-time informations about effectivly SDL resources obtained (hardware, must lock, etc.) and about window manager
-	[6] add color conversion (ex : YUV, see test/testoverlay.c)
 	[6] add a specialized child Surface type, ScreenSurface, which automatically handles its specificities (ex : only blit, no deallocation, more methods such as display(), and so on). It will allow to be prepared for multiple ScreenSurfaces, in order to be ready for SDL 2.0 	
 	[5] add a set of special effects for images (appearing, vanishing, morphing, etc. : see list)
 	[5] add framework members : MediaContent, Sprite, Bitmap/Image, Geometry (Geometry2D/Geometry3D
 	[4] implements efficient frame rate measurement and limiter
-	[3] add basic pixel-level surface manipulation (mirror, flip, etc.)
 	[3] openGL support (choice of different back-ends) [glSDL ?]
 	[3] add gamma ramp handling (see SDL-1.2.7/test/testpalette.c, SDL-1.2.7/test/testgamma.c)
 	[0] add dynamic loading of OpenGL library (if ever it may be useful to anybody) (see SDL-1.2.7/test/testgl.c)
@@ -83,10 +79,9 @@ at will to support multiple layouts for multiple different players
 	
 * LOANI
 
-	[5] use CVS tags to retrieve only last stable versions, since CVS cannot be always non-broken
+	[5] use SVN tags to retrieve only last stable versions, since SVN cannot be always non-broken
 	[3] make a pure python (no shell, no tool such as wget) maybe graphical version of LOANI (from sources and/or from binaries), in order to ease LOANI's developement and ensure it is portable ? 
-	[3] add gdb to LOANI's installs in commonBuildTools
-	[3] have a LOANI's special mode retrieving Ceylan and OSDL *archives* (not from CVS) so that a full installation can be made without Internet access or behind a proxy that filters out CVS
+	[3] have a LOANI's special mode retrieving Ceylan and OSDL *archives* (not from CVS) so that a full installation can be made without Internet access or behind a proxy that filters out SVN
 	[3] add a cleanup mode which gets rid of the unnecessary files (ex : gcc build tree)
 	[0] autopatcher system (such as http://www.rakkarsoft.com/raknet/downloads/RakNet.zip)
 		
@@ -96,7 +91,7 @@ at will to support multiple layouts for multiple different players
 	[6] write yag-osdl's documentation
 	[5] update HTML documentation : architecture, high level API description
 	[5] inspect site's web page with Internet Explorer and its script debugger ('myWin' error)
-	[4] create OSDL's user guide
+	[4] update OSDL's user guide
 	[3] have a deep look at doxygen's result and improve from that the comments
 	[2] finish Yag-osdl integration to auto-generate gallery ressources
 	[2] add in header files something like :
@@ -122,7 +117,7 @@ at will to support multiple layouts for multiple different players
 
 * Website
 
-	[3] make a special page for game-over and game on	
+	[3] make a special page for 'game-over' and 'game on'	
 	[3] integrate value chain and console based pages in Video Game Knowledge Base
 	[2] integrate SDL knowledge base in website
 
