@@ -21,6 +21,7 @@ CREATE_CHANGELOG=false
 
 EXTRA_DIST = $(RAW_DOC_FILES) ${top_builddir}/ChangeLog
 
+
 RAW_DOC_FILES = ${top_builddir}/AUTHORS ${top_builddir}/COPYING.LIB        \
 	${top_builddir}/FAQ ${top_builddir}/INSTALL ${top_builddir}/MAINTENERS \
 	${top_builddir}/NEWS ${top_builddir}/README ${top_builddir}/THANKS     \
@@ -29,17 +30,17 @@ RAW_DOC_FILES = ${top_builddir}/AUTHORS ${top_builddir}/COPYING.LIB        \
 $(RAW_DOC_FILES): update-basic-doc-files
 
 update-basic-doc-files: update-changelog update-authors update-copying  \
-	update-faq update-install update-maint update-news                  \
-	update-readme update-thanks update-todo 
+	update-faq update-install update-maint update-news update-readme    \
+	update-thanks update-todo 
 
 
 install-data-local: $(RAW_DOC_FILES) # update-changelog
-	@if [ -d "@OSDL_LOCAL_DOC_DIR@" ] ; then \
-	chmod a+w @OSDL_LOCAL_DOC_DIR@; else \
-	chmod a+w `dirname @OSDL_LOCAL_DOC_DIR@`; \
-	mkdir -p @OSDL_LOCAL_DOC_DIR@ ; fi
+	@if [ -d "$(DESTDIR)@OSDL_LOCAL_DOC_DIR@" ] ; then \
+	chmod a+w $(DESTDIR)@OSDL_LOCAL_DOC_DIR@; else \
+	chmod a+w `dirname $(DESTDIR)@OSDL_LOCAL_DOC_DIR@`; \
+	mkdir -p $(DESTDIR)@OSDL_LOCAL_DOC_DIR@ ; fi
 	@cd ${top_builddir}; cp -f AUTHORS COPYING.LIB FAQ INSTALL MAINTENERS \
-	NEWS README THANKS TODO @OSDL_LOCAL_DOC_DIR@
+	NEWS README THANKS TODO $(DESTDIR)@OSDL_LOCAL_DOC_DIR@
  
  
 # Creates automatically a standard ChangeLog file from SVN logs :
@@ -51,7 +52,7 @@ CHANGELOG_COMMAND   = "$(CHANGELOG_GENERATOR)"
 
 
 update-changelog: 
-	@if [ "${CREATE_CHANGELOG}" = true ] ; then \
+	@if [ "${CREATE_CHANGELOG}" = true -a -z "$(DESTDIR)" ] ; then \
 	if [ ! -x "$(CHANGELOG_COMMAND)" ] ; then echo \
 	"@OSDL_WARNING_STYLE@    No ChangeLog tool \
 	available (svn2cl), nothing done@OSDL_DEFAULT_STYLE@"; \
@@ -67,9 +68,12 @@ effective-changelog-creation:
 	@if [ ! -x "$(CHANGELOG_COMMAND)" ] ; then echo \
 	"@OSDL_WARNING_STYLE@No Changelog tool \
 	available, nothing done@OSDL_DEFAULT_STYLE@"; else \
-	$(CHANGELOG_COMMAND) --linelen=10000 -o ${top_builddir}/ChangeLog \
-	${top_srcdir} ; fi
-	-@/bin/rm -f ${top_srcdir}/ChangeLog.bak
+	if [ -d "${top_srcdir}/.svn" ] ; then \
+	$(CHANGELOG_COMMAND) ${top_srcdir} --linelen=10000 \
+	-o ${top_builddir}/ChangeLog ; else \
+	echo "@OSDL_WARNING_STYLE@ No ChangeLog created as not in a SVN \
+	tree@OSDL_DEFAULT_STYLE@"; touch ${top_builddir}/ChangeLog ; fi ; fi
+	-@/bin/rm -f ${top_builddir}/ChangeLog.bak
 
 
 html-changelog:
