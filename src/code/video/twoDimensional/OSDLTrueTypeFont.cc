@@ -1224,21 +1224,8 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	
 	
 		case Solid:
-		
-			/*
-			 * @fixme : uncomment when SDL_ttf is fixed :
-			 
 			textSurface = TTF_RenderGlyph_Solid( _actualFont, character,
 				glyphColor ) ;
-			 */
-			 
-			LogPlug::warning( "TrueTypeFont::basicRenderUnicodeGlyph : "
-				"work-around for SDL_ttf bug used, using "
-				"TTF_RenderGlyph_Shaded instead of TTF_RenderGlyph_Solid." ) ;
-			
-			// Remove me :	
-			textSurface = TTF_RenderGlyph_Shaded( _actualFont, character,
-				glyphColor, _backgroundColor ) ;
 			 	
 			if ( textSurface == 0 )
 				throw TextException( 
