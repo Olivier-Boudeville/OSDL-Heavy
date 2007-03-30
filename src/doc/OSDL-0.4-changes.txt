@@ -9,5 +9,7 @@ Main OSDL 0.4 changes are :
 	* OSDL scheduler robustified and enhanced a lot 
 
 	* numerous tests improved (full test suite added), and many bugs fixed
+
 	
+See http://osdl.sourceforge.net/OSDL-0.4/ChangeLog.html for all details about changes.
 	
