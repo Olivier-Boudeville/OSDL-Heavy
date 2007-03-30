@@ -50,7 +50,7 @@ OSDL_RELEASE_DATE="Friday, March 30, 2007"
 OSDL_MAJOR_VERSION=0
 
 # (tag : ST_MINOR_VERSION)
-OSDL_MINOR_VERSION=4
+OSDL_MINOR_VERSION=5
 
 # Release number is only for project fine grain milestone,
 # for a given major.minor version (ex : release candidate).
