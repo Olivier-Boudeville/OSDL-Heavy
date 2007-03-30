@@ -135,13 +135,16 @@ int main( int argc, char * argv[] )
 		GLTexture::SetTextureMode( GLTexture::TwoDim ) ;
 
 		Ceylan::System::FileLocator textureFinder ;
-		
-		// When run from executable directory :
-		textureFinder.addPath( "../../src/doc/web/images" ) ;
-		
-		// When run from 'tests-results' directory :
+
+		// When run from playTests.sh build directory :
 		textureFinder.addPath( "../src/doc/web/images" ) ;
 		
+		// When run from executable build directory :
+		textureFinder.addPath( "../../src/doc/web/images" ) ;
+
+		// When run from executable install directory :
+		textureFinder.addPath( "../OSDL/doc/web/images" ) ;
+				
 		GLTexture & texture = * new GLTexture( 
 			textureFinder.find( textureFilename ) ) ;
 		
