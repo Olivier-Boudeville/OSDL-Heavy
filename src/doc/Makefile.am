@@ -15,15 +15,15 @@ include @OSDL_LOANI_INSTALLATIONS@/Ceylan-@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_REC
  
 # What is expected from the html documentation for the OSDL x.y version : 
 # 	- be accessible from '$BASE_URL' 
-# (ex : BASE_URL=http://osdl.sourceforge.net), under '$BASE_URL/OSDL-x.y'
-# 	- if x.y is the latest stable version, then it should be accessible
+# (ex : BASE_URL=http://osdl.sourceforge.net), under '$BASE_URL/OSDL-x.y'
+# 	- if x.y is the latest stable version, then it should be accessible
 # from '$BASE_URL/OSDL-latest' as well
 # 
 # The general documentation (not specific to any given version) should 
 # be found directly from '$BASE_URL'.
 #
 # The full website must be set to any given ROOT 
-# (ex : ROOT=/home/groups/o/os/OSDL/htdocs), 
+# (ex : ROOT=/home/groups/o/os/OSDL/htdocs), 
 
 
 # This documentation generation has been a pain and a mess for months. 
@@ -78,9 +78,9 @@ MIRROR_WEB_DIR       = /var/www/@PROJECT_NAME@
 # Web content should not contain 'common' section, since both doc and api 
 # need it.
 
-# A lot of complication (the creation of directories then the installation
+# A lot of complication (the creation of directories then the installation
 # of files) comes from distcheck and its setting the whole source tree
-# (including the directories) in read-only : it is a mess to handle with
+# (including the directories) in read-only : it is a mess to handle with
 # cp --parents and/or /bin/install.
 
 # These variable are made to be evaluated from $(srcdir)/web :
@@ -178,6 +178,7 @@ common:
 
 # Automatic creation of LOANI releases disabled, only 
 # to be done on user request :
+# (recommended method is to put LOANI on Sourceforge file release system)
 loani-archives:
 	cd $(top_srcdir)/src/conf/build/loani && $(MAKE) release
 	-@cp -f $(top_srcdir)/src/conf/build/loani/LOANI-*.zip \
@@ -187,8 +188,8 @@ loani-archives:
 	
 uninstall-hook:
 	@echo; echo "@OSDL_INSTALL_STYLE@    Uninstalling documentation from \
-	@OSDL_LOCAL_DOC_SHARED_DIR@ @OSDL_DEFAULT_STYLE@"
-	-@rm -rf @OSDL_LOCAL_DOC_DIR@
+	$(DESTDIR)@OSDL_LOCAL_DOC_SHARED_DIR@ @OSDL_DEFAULT_STYLE@"
+	-@rm -rf $(DESTDIR)@OSDL_LOCAL_DOC_DIR@
 	
 	
 # One must prevent doxygen from overwriting the master 
@@ -333,10 +334,12 @@ check-scp:
 remind-locations:
 	@echo; echo "@OSDL_INSTALL_STYLE@    + the following \
 	documentation repositories are available :"
-	@echo "      * local doc directory : @OSDL_LOCAL_DOC_DIR@"
-	@echo "      * local web site      : @OSDL_LOCAL_WEB_DIR@/main/index.html"
+	@echo "      * local doc directory : \
+	$(DESTDIR)@OSDL_LOCAL_DOC_DIR@"
+	@echo "      * local web site      : \
+	$(DESTDIR)@OSDL_LOCAL_WEB_DIR@/main/index.html"
 	@echo "      * local web API       : \
-	@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/index.html"
+	$(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/index.html"
 	@echo "      * official website    : @OSDL_SF_VERSION_URL@"
 	@echo "@OSDL_DEFAULT_STYLE@"		
 
@@ -344,8 +347,7 @@ remind-locations:
 show-found-tools:
 	@echo; echo "@OSDL_INSTALL_STYLE@    Listing found tools \
 	@OSDL_DEFAULT_STYLE@"; echo
-	@if [ -x "$(DOXYGEN)" ]; \
-	then echo "  + doxygen found, using <$(DOXYGEN)> \
+	@if [ -x "$(DOXYGEN)" ]; then echo "  + doxygen found, using <$(DOXYGEN)> \
 	with configuration file <$(DOXYGEN_CONF)>"; fi
 	@if [ -x "$(DOT)" ]; then  echo "  + dot found, using <$(DOT)>"; fi
 	@if [ -x "$(ASTYLE)" ]; then echo "  + astyle found, using <$(ASTYLE)> \
