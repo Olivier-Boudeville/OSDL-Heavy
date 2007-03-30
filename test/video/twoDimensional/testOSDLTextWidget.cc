@@ -29,10 +29,8 @@ using std::string ;
 
 
 /*
- * TrueType font directory is defined relatively to OSDL documentation tree,
- * usually this pathname relative to the install directory where this test
- * executable should lie is :
- * (to be reached from executable directory)
+ * TrueType font directory is defined relatively to OSDL documentation 
+ * tree, from executable build directory :
  *
  */
 const std::string trueTypeFontDirFromExec = 
@@ -41,12 +39,21 @@ const std::string trueTypeFontDirFromExec =
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * usually this pathname relative to the install directory where this test
- * executable should lie is :
- * (to be reached from OSDL/OSDL-${OSDL_VERSION}/src/code)
+ * from playTests.sh location in build tree :
  *
  */
-const std::string trueTypeFontDirForPlayTests = "../src/doc/web/common/fonts" ;
+const std::string trueTypeFontDirForBuildPlayTests 
+	= "../src/doc/web/common/fonts" ;
+
+
+/*
+ * TrueType font directory is defined relatively to OSDL documentation tree,
+ * from playTests.sh location in installed tree :
+ *
+ */
+const std::string trueTypeFontDirForInstalledPlayTests 
+	= "../OSDL/doc/web/common/fonts" ;
+
 
 
 const std::string firstTrueTypeFontName  = "stilltim.ttf" ;
@@ -56,22 +63,30 @@ const std::string thirdTrueTypeFontName  = "earwigfa.ttf" ;
 
 
 
-/**
- * This font directory is defined relatively to the place where the script
- * automating the test suite will be run (trunk/test/playTests.sh, which
- * changes its current directory to trunk/test in all cases) :
+/*
+ * Fixed font directory is defined relatively to OSDL documentation tree,
+ * from playTests.sh location in build tree :
  *
  */
-const std::string fixedFontDirForPlayTests = "../src/doc/web/common/fonts" ;
-
+const std::string fixedFontDirFromExec = "../../../src/doc/web/common/fonts" ;
 
 
 /**
  * This font directory is defined relatively to the build tree for this test :
  *
  */
-const std::string fixedFontDirFromTestBuildLocation = 
-	"../../../src/doc/web/common/fonts" ;
+const std::string fixedFontDirForBuildPlayTests = 
+	"../src/doc/web/common/fonts" ;
+
+
+/*
+ * Fixed font directory is defined relatively to OSDL documentation tree,
+ * from playTests.sh location in installed tree :
+ *
+ */
+const std::string fixedFontDirForInstalledPlayTests 
+	= "../OSDL/doc/web/common/fonts" ;
+
 
 
 
@@ -180,7 +195,11 @@ int main( int argc, char * argv[] )
 			trueTypeFontDirFromExec ) ;
 			
 		Text::TrueTypeFont::TrueTypeFontFileLocator.addPath(
-			trueTypeFontDirForPlayTests ) ;		
+			trueTypeFontDirForBuildPlayTests ) ;		
+	
+		Text::TrueTypeFont::TrueTypeFontFileLocator.addPath(
+			trueTypeFontDirForInstalledPlayTests ) ;		
+	
 	
 		Text::TrueTypeFont myFirstTrueTypeFont( firstTrueTypeFontName,
 			/* point size */ 26, 
@@ -203,11 +222,16 @@ int main( int argc, char * argv[] )
 		
     	LogPlug::info( "Preparing Fixed font." ) ;	
 					
+					
 		Text::FixedFont::FixedFontFileLocator.addPath(
-			fixedFontDirFromTestBuildLocation ) ;
+			fixedFontDirFromExec ) ;
 			
 		Text::FixedFont::FixedFontFileLocator.addPath( 
-			fixedFontDirForPlayTests ) ;
+			fixedFontDirForBuildPlayTests ) ;
+				
+		Text::FixedFont::FixedFontFileLocator.addPath( 
+			fixedFontDirForInstalledPlayTests ) ;
+				
 				
 		Text::FixedFont myFixedFont( 9, 18, 
 			/* renderingStyle */ Text::Font::Bold, 
