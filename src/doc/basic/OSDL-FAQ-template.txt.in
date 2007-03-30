@@ -38,4 +38,7 @@
 	Q: How can I regenerate the build system, with regards to the Autotools ? 
 	A: See the conf/build directory, notably autogen.sh
 	
+	Q: How can I have more developer informations ?
+	A: See our online developer guide for this version, located at @OSDL_SF_VERSION_URL@
+	
 	
