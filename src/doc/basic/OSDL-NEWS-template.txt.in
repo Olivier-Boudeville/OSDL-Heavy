@@ -6,15 +6,17 @@
 			 
 
 
-*** Main Changes in OSDL 0.4 [released in December 28, 2006] :
+*** Main Changes in OSDL 0.4 [released in Friday, March 30, 2007] :
 
 	* SVN used instead of CVS
 	
-	* The Autotools are used instead of custom-made GNUMakefiles
+	* The Autotools are used, instead of custom-made GNUMakefiles
 	
-	* integration of the Ceylan 0.4 version
+	* integration to the Ceylan 0.5 version
 	
-	* ported and tested to the Windows XP platform
+	* OSDL scheduler robustified and enhanced a lot 
+
+	* numerous tests improved (full test suite added), and many bugs fixed
 
 
 
