@@ -225,7 +225,7 @@
 
 /* Current Libtool version for the OSDL library */
 #ifndef OSDL_LIBTOOL_VERSION 
-#define OSDL_LIBTOOL_VERSION  "0.4.0" 
+#define OSDL_LIBTOOL_VERSION  "0.5.0" 
 #endif
 
 /* Define to 1 if `lstat' dereferences a symlink specified with a trailing
@@ -251,7 +251,7 @@
 
 /* Define to the full name and version of this package. */
 #ifndef OSDL_PACKAGE_STRING 
-#define OSDL_PACKAGE_STRING  "OSDL 0.4" 
+#define OSDL_PACKAGE_STRING  "OSDL 0.5" 
 #endif
 
 /* Define to the one symbol short name of this package. */
@@ -261,7 +261,7 @@
 
 /* Define to the version of this package. */
 #ifndef OSDL_PACKAGE_VERSION 
-#define OSDL_PACKAGE_VERSION  "0.4" 
+#define OSDL_PACKAGE_VERSION  "0.5" 
 #endif
 
 /* Define to necessary symbol if this constant uses a non-standard name on
@@ -328,7 +328,7 @@
 
 /* Version number of package */
 #ifndef OSDL_VERSION 
-#define OSDL_VERSION  "0.4" 
+#define OSDL_VERSION  "0.5" 
 #endif
 
 /* Define to empty if `const' does not conform to ANSI C. */
