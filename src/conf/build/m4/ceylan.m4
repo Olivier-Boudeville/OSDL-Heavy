@@ -23,7 +23,7 @@
 # downward-compatibility).
 
 
-# Ceylan users can execute 'aclocal' (ex : 'aclocal -I . --output=aclocal.m4)
+# Ceylan users can execute 'aclocal' (ex : 'aclocal -I . --output=aclocal.m4')
 # to have our macros added to their 'aclocal.m4', provided that 
 # CEYLAN_PATH is called from the user configure.ac.
 
@@ -34,7 +34,18 @@
 # script, ex : ./configure --with-ceylan-prefix=~/myPrefixedCeylanInstall
 
 #
-# CEYLAN_PATH( ac,rev,anc )
+# CEYLAN_PATH( major, revision, age, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]] )
+# 
+# The three arguments designate the minimum Ceylan version to be searched for,
+# according to libtool conventions :
+# 	major    : the major number for this version 
+#	revision : the revision number for this version 
+#   age      : the interface age for this version 
+# Note : age should not be needed if the libtool numbering scheme was really
+# used.
+#
+# A Ceylan library will be searched for, and its version will be checked 
+# against specified minimum version.
 #
 # Checks that the Ceylan library can be used, stops with AC_MSG_ERROR if 
 # it failed, otherwise defines the CEYLAN_CPPFLAGS and CEYLAN_LIBS variables
@@ -43,19 +54,20 @@
 # The CEYLAN_PREFIX variable will contain the actual prefix of Ceylan
 # installation.
 #
-# Example : in configure.ac, CEYLAN_PATH( 0,4,0 )
+# Example : in configure.ac, searching for Ceylan 0.4.0 is :
+# CEYLAN_PATH( 0,4,0 )
 #
 AC_DEFUN([CEYLAN_PATH],
 [
   # Here is specified for each given Ceylan release what are the most ancient
   # versions that are still compatible with this current version :
   CEYLAN_OLDEST_SUPPORTED_MAJOR=0
-  CEYLAN_OLDEST_SUPPORTED_MINOR=4
+  CEYLAN_OLDEST_SUPPORTED_MINOR=4  
   
   # Setting the install path of the Ceylan library :
   CEYLAN_LIBS=" -lCeylan "
   AC_ARG_WITH(ceylan-prefix,
-    AS_HELP_STRING([--with-ceylan-prefix],[path to the Ceylan installation (prefix)]),
+    AS_HELP_STRING([--with-ceylan-prefix=PFX],[Prefix where Ceylan is installed (optional)]),
       [
         CEYLAN_CPPFLAGS="-I${withval}/include/Ceylan"
         CEYLAN_LIBS="-L${withval}/lib -lCeylan"
@@ -228,8 +240,11 @@ AC_DEFUN([CEYLAN_PATH],
   
   # Uncomment to debug :
   #AC_MSG_NOTICE([CEYLAN_CPPFLAGS = $CEYLAN_CPPFLAGS])
-  #AC_MSG_NOTICE([CEYLAN_LIBS = $CEYLAN_LIBS])  
+  #AC_MSG_NOTICE([CEYLAN_LIBS     = $CEYLAN_LIBS])  
 
+  AC_SUBST(CEYLAN_CPPFLAGS)
+  AC_SUBST(CEYLAN_LIBS)
+  
   # Checking for Ceylan header files :
   have_ceylan=yes
   AC_MSG_NOTICE([checking for the Ceylan library])
@@ -266,6 +281,8 @@ AC_DEFUN([CEYLAN_PATH],
     AC_MSG_RESULT([no])
     AC_MSG_ERROR([The Ceylan library could not be successfully linked to.])  
   fi
+  # We can link to the Ceylan library, but do the headers we see can work
+  # with the library we link to ?
   have_ceylan_headers_matching_library_version=yes
   AC_RUN_IFELSE([
   	AC_LANG_PROGRAM(
@@ -279,6 +296,9 @@ AC_DEFUN([CEYLAN_PATH],
     AC_MSG_RESULT([no])
     AC_MSG_ERROR([The Ceylan installation does not seem to be clean, since headers did not match the library version.])  
   fi
+  # We can link to the library, and it is compatible with the Ceylan headers
+  # being used, but is this pack compatible with the Ceylan version the user
+  # specified ? 
   have_compatible_ceylan_version=yes
   AC_RUN_IFELSE([
   	AC_LANG_PROGRAM(
