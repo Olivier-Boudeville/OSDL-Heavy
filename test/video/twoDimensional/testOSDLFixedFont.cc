@@ -31,6 +31,12 @@ const std::string fixedFontDirFromTestBuildLocation =
 	"../../../src/doc/web/common/fonts" ;
 
 
+/**
+ * This font directory is defined relatively to the install tree for this test :
+ *
+ */
+const std::string fixedFontDirFromTestInstallLocation = 
+	"../OSDL/doc/web/common/fonts" ;
 
 
 /**
@@ -178,10 +184,15 @@ int main( int argc, char * argv[] )
 			 *
 			 */
 
-			FixedFont::FixedFontFileLocator.addPath( fixedFontDirForPlayTests ) ;
+			FixedFont::FixedFontFileLocator.addPath( 
+				fixedFontDirForPlayTests ) ;
 			
 			FixedFont::FixedFontFileLocator.addPath( 
 				fixedFontDirFromTestBuildLocation ) ;
+				
+			FixedFont::FixedFontFileLocator.addPath(
+				fixedFontDirFromTestInstallLocation	) ;
+				
 					
 			FixedFont existingFont( 6, 12, /* renderingStyle */ Font::Normal, 
 				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
