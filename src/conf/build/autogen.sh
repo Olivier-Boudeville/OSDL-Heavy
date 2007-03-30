@@ -81,7 +81,7 @@ while [ $# -gt 0 ] ; do
 	
 	if [ "$1" = "-f" -o "$1" = "--full-test" ] ; then
 		do_chain_tests=0	
-		do_distcheck=0
+		# No do_distcheck=0, as cannot succeed because of test sub-package.
 		token_eaten=0
 	fi
 	
