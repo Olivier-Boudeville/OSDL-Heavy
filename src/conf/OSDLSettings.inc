@@ -40,7 +40,9 @@ UNIX_PROJECT_NAME=osdl
 
 # Actuel release date.
 
-OSDL_RELEASE_DATE=ST_RELEASE_DATE
+# Full actual release date (not generated for better control).
+# (tag : ST_RELEASE_DATE)
+OSDL_RELEASE_DATE="Friday, March 30, 2007"
 
 # Usual versioning. 
 
