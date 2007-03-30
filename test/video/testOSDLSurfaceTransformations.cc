@@ -119,11 +119,14 @@ int main( int argc, char * argv[] )
 		
 		Ceylan::System::FileLocator imageFinder ;
 				
-		// When run from executable directory :
+		// When run from playTests.sh build directory :
 		imageFinder.addPath( "../../src/doc/web/images" ) ;
-	
-		// When run from tests-results directory :
+
+		// When run from executable build directory :
 		imageFinder.addPath( "../src/doc/web/images" ) ;
+	
+		// When run from executable install directory :
+		imageFinder.addPath( "../OSDL/doc/web/images" ) ;
 		
  		screen.loadImage( imageFinder.find( firstImageFile ), 
 			/* blit only */ true ) ;
