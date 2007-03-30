@@ -16,23 +16,26 @@ const std::string secondImageFile = "Battle-three-actors-small.jpg"  ;
 
 
 /*
- * Image directory is defined relatively to OSDL documentation tree, usually
- * this pathname relative to the install directory where this test 
- * executable should lie is :
- * (to be reached from executable directory)
+ * Image font directory is defined relatively to OSDL documentation 
+ * tree, from executable build directory :
  *
  */
 const std::string imageDirFromExec = "../../../src/doc/web/images" ;
 
 
 /*
- * Image directory is defined relatively to OSDL documentation tree, 
- * usually this pathname relative to the install directory where this 
- * test executable should lie is :
- * (to be reached from OSDL/OSDL-${OSDL_VERSION}/src/code)
+ * Image font directory is defined relatively to OSDL documentation tree,
+ * from playTests.sh location in build tree :
  *
  */
-const std::string imageDirForPlayTests = "../src/doc/web/images" ;
+const std::string imageDirForBuildPlayTests = "../src/doc/web/images" ;
+
+/*
+ * Image font directory is defined relatively to OSDL documentation tree,
+ * from playTests.sh location in installed tree :
+ *
+ */
+const std::string imageDirForInstalledPlayTests = "../OSDL/doc/web/images" ;
 
 
 
@@ -133,11 +136,9 @@ int main( int argc, char * argv[] )
 
 		Ceylan::System::FileLocator imageFinder ;
 		
-		// When run from executable directory :
 		imageFinder.addPath( imageDirFromExec ) ;
-	
-		// When run from tests-results directory :
-		imageFinder.addPath( imageDirForPlayTests ) ;
+		imageFinder.addPath( imageDirForBuildPlayTests ) ;
+		imageFinder.addPath( imageDirForInstalledPlayTests ) ;
 		
 		screen.drawGrid() ;
 
