@@ -30,6 +30,14 @@ const std::string fixedFontDirFromTestBuildLocation =
 	"../../../src/doc/web/common/fonts" ;
 
 
+/**
+ * This font directory is defined relatively to the install tree for this test :
+ *
+ */
+const std::string fixedFontDirFromTestInstallLocation = 
+	"../OSDL/doc/web/common/fonts" ;
+
+
 const std::string firstTestSentence  = "Ceylan and OSDL rock !" ;
 const std::string secondTestSentence = "Yeah man, they both rock" ;
 
@@ -147,10 +155,13 @@ int main( int argc, char * argv[] )
 		 */
 
 		FixedFont::FixedFontFileLocator.addPath( fixedFontDirForPlayTests ) ;
+
 		FixedFont::FixedFontFileLocator.addPath(
 			fixedFontDirFromTestBuildLocation ) ;
 			
-				
+		FixedFont::FixedFontFileLocator.addPath(
+			fixedFontDirFromTestInstallLocation	) ;
+						
 		Surface * mySurface ;
 		
 		bool gridWanted = true ;	
