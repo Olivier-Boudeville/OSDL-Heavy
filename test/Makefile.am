@@ -13,7 +13,7 @@ check:
 
 
 install-data-local:
-	@echo; echo "@OSDL_INSTALL_STYLE@    Installing playTests.sh @OSDL_DEFAULT_STYLE@"
+	@echo; echo " Installing playTests.sh"
 	@mkdir -p $(DESTDIR)@OSDL_TEST_DIR@
 	@cp -f $(srcdir)/playTests.sh $(DESTDIR)@OSDL_TEST_DIR@
 
