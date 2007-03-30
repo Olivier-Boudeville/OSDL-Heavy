@@ -146,6 +146,7 @@ run_test()
 		echo "
 		
 		########### Running now $t" >>${TESTLOGFILE}
+		ldd $t >>${TESTLOGFILE}
 		$t --batch ${network_option} 1>>${TESTLOGFILE} 2>&1
 	else
 		$t --interactive ${network_option}
