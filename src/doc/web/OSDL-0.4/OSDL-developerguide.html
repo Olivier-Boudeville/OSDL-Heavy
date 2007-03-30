@@ -69,6 +69,7 @@ Note : this documentation is quite deprecated, it would need some serious update
 		<td>
 			<div class="box" summary="Table of contents" style="padding: 8px">
   				<a href="#conventions">Conventions</a><br>
+  				<a href="#release">>Releasing a new OSDL version</a><br>
   				<a href="#customization">Customization</a><br>
   				<a href="#hints">Random hints</a><br>
     		</div>
@@ -103,13 +104,33 @@ The first solution was preferred, since the 'singleton to many instances' transi
 The endianness of the system is detected at <b>compile-time</b> (<code>#if SDL_BYTEORDER == SDL_BIG_ENDIAN...#else ... #endif</code>), not at "<b>run-time</b>" (<code> if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {... } else { ... }</code>). This does not change much, since even the second form, which should evaluate to a comparison between constants, should be translated by the compiler similarly to the first one.
 </p>
 
-  
-
  <br><br>
  <center>[<a href="#toc">Back to table of contents</a>]</center>
  <br><br><br>
 
+
+
+<a name="release"></a>
+<h2>OSDL release management</h2>
+
+
+<a name="release-before"></a>
+<h3>Releasing a new OSDL version</h3>
+<p>
+First of all, the 
+<a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html#release-before" target="_blank">Ceylan release guide</a> should be applied in the OSDL context as well.
+</p>
  
+<p>
+Then update both LOANI archives in Sourceforge file release system.
+</p>
+ 
+<a name="release-after"></a>
+<h3>Prepare for the next version</h3>
+<p>
+Follow again the <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html#release-after" target="_blank">Ceylan release guide.
+</p>
+
 
 <a name="customization"></a>
 <h2>Customization</h2>
