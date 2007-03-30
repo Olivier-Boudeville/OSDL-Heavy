@@ -69,7 +69,7 @@ Note : this documentation is quite deprecated, it would need some serious update
 		<td>
 			<div class="box" summary="Table of contents" style="padding: 8px">
   				<a href="#conventions">Conventions</a><br>
-  				<a href="#release">>Releasing a new OSDL version</a><br>
+  				<a href="#release">Releasing a new OSDL version</a><br>
   				<a href="#customization">Customization</a><br>
   				<a href="#hints">Random hints</a><br>
     		</div>
@@ -118,8 +118,143 @@ The endianness of the system is detected at <b>compile-time</b> (<code>#if SDL_B
 <h3>Releasing a new OSDL version</h3>
 <p>
 First of all, the 
-<a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html#release-before" target="_blank">Ceylan release guide</a> should be applied in the OSDL context as well.
+<a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html#release-before" target="_blank">Ceylan release guide</a> should be applied in the OSDL context as well. Additional actions are :
+<ul>
+
+<!--
+    <li></li>
+-->
+
+    <li>copy latest Ceylan's generated <code>ceylan.m4</code> in <code>trunk/src/conf/build/m4</code>.</li>
+	
+</ul>
+
 </p>
+
+<p>
+As for SVN, it leads to a tag command like :
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+svn copy https://osdl.svn.sourceforge.net/svnroot/osdl/OSDL/trunk https://osdl.svn.sourceforge.net/svnroot/osdl/OSDL/tags/release-0.4.0 -m "First release of the 0.4 series, with SVN support, autotools-based build system, integration to the Ceylan 0.5 version, improved OSDL scheduler."
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>
+Here is an example template for the osdl-announces@lists.sourceforge.net list :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+Subject : 
+OSDL 0.4 released !
+
+Body :
+
+Hi,
+
+we are proud to announce the 0.4.0 version of the OSDL library.
+
+OSDL 0.4 is for the moment GNU/Linux only, and offers about the same features as the 0.3 version, but its build system has been completely revamped.
+
+OSDL 0.4 is somewhat an intermediary version, between the 0.3 which was truely ancient (dated back to 2005 Q3), and the upcoming OSDL versions, that should add the Windows XP support and the XML management with OpenGL of tilesets for animated sprites.
+
+
+Main OSDL 0.4 changes are :
+
+	* SVN used instead of CVS
+	
+	* the Autotools are used, instead of custom-made GNUMakefiles
+	
+	* integration to the Ceylan 0.5 version
+	
+	* OSDL scheduler robustified and enhanced a lot 
+
+	* numerous tests improved (full test suite added), and many bugs fixed
+
+Feel free to download latest LOANI archive (ex :
+http://downloads.sourceforge.net/osdl/LOANI-0.4.tar.bz2) to test OSDL 0.4.
+       
+Support available through the osdl-support@lists.sourceforge.net mailing list.
+
+Report OSDL bugs to the osdl-bugs@lists.sourceforge.net mailing list.
+
+Homepage at http://osdl.sourceforge.net
+
+Enjoy !
+ 
+Wondersye, on Friday, March 30, 2007.
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>The corresponding news item could be :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+Summary: 
+OSDL 0.4 released ! 
+
+Body :
+we are proud to announce the 0.4.0 version of the OSDL library.
+
+OSDL 0.4 is for the moment GNU/Linux only, and offers about the same features as the 0.3 version, but its build system has been completely revamped.
+
+OSDL 0.4 is somewhat an intermediary version, between the 0.3 which was truely ancient (dated back to 2005 Q3), and the upcoming OSDL versions, that should add the Windows XP support and the XML management with OpenGL of tilesets for animated sprites.
+
+Main OSDL 0.4 changes are :
+
+	* SVN used instead of CVS
+	
+	* the Autotools are used, instead of custom-made GNUMakefiles
+	
+	* integration to the Ceylan 0.5 version
+	
+	* OSDL scheduler robustified and enhanced a lot 
+
+	* numerous tests improved (full test suite added), and many bugs fixed
+
+Feel free to download latest LOANI archive (ex :
+http://downloads.sourceforge.net/osdl/LOANI-0.4.tar.bz2) to test OSDL 0.4.
+       
+Support available through the osdl-support@lists.sourceforge.net mailing list.
+
+Report OSDL bugs to the osdl-bugs@lists.sourceforge.net mailing list.
+
+Homepage at http://osdl.sourceforge.net
+
+Enjoy !
+ 
+Wondersye, on Friday, March 30, 2007.
+
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+	
  
 <p>
 Then update both LOANI archives in Sourceforge file release system.
