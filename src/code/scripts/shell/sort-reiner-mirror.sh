@@ -115,6 +115,10 @@ mv mecha.zip T_mechanisms.zip
 mv SBitemchest.zip T_item_chest.zip
 mv SBspacepir.zip T_space_set.zip
 mv SBvoscheu.zip T_scarecrow.zip
+mv schriften.zip T_other_buttons.zip
+mv symbols.zip T_gui_symbols.zip
+mv T_ACTjewelpicker.zip T_jewel-picker-gui.zip
+mv T_ani_fir.zip T_ani_fir_tree.zip
 
 
 ##########################################################################
@@ -213,9 +217,20 @@ mkdir ${MINERS}
 THIEVES=${HUMANS}/Thieves
 mkdir ${THIEVES}
 
+BAKERS=${HUMANS}/Bakers
+mkdir ${BAKERS}
+
+CHILDREN=${HUMANS}/Children
+mkdir ${CHILDREN}
+
+BUILDERS=${HUMANS}/Builders
+mkdir ${BUILDERS}
+
+DOCTORS=${HUMANS}/Doctors
+mkdir ${DOCTORS}
+
 CHARACTERS=${HUMANS}/NamedCharacters
 mkdir ${CHARACTERS}
-
 
 
 # In NamedCharacters :
@@ -241,6 +256,18 @@ mkdir ${HORST}
 KATIE=${CHARACTERS}/Katie
 mkdir ${KATIE}
 
+ANNA=${CHARACTERS}/Anna
+mkdir ${ANNA}
+
+ARNO=${CHARACTERS}/Arno
+mkdir ${ARNO}
+
+BILLY=${CHARACTERS}/Billy
+mkdir ${BILLY}
+
+BURRA=${CHARACTERS}/Burra
+mkdir ${BURRA}
+
 
 # In Animals :
 
@@ -258,6 +285,9 @@ mkdir ${SPIDERS}
 
 LIONS=${ANIMALS}/Lions
 mkdir ${LIONS}
+
+SHEEP=${ANIMALS}/Sheep
+mkdir ${SHEEP}
 
 
 # In Insects :
@@ -289,6 +319,15 @@ mkdir ${ZOMBIES}
 RATS=${MONSTERS}/Rats
 mkdir ${RATS}
 
+CROCODILES=${MONSTERS}/Crocodiles
+mkdir ${CROCODILES}
+
+DINOSAURS=${MONSTERS}/Dinosaurs
+mkdir ${DINOSAURS}
+
+DOTEATERS=${MONSTERS}/DotEaters
+mkdir ${DOTEATERS}
+
 
 # In Objects :
 
@@ -297,6 +336,18 @@ mkdir ${TRAPS}
 
 VEHICLES=${OBJECTS}/Vehicles
 mkdir ${VEHICLES}
+
+FOOD=${OBJECTS}/Food
+mkdir ${FOOD}
+
+MECHANISMS=${OBJECTS}/Mechanisms
+mkdir ${MECHANISMS}
+
+WEAPONS=${OBJECTS}/Weapons
+mkdir ${WEAPONS}
+
+FURNITURE=${OBJECTS}/Furniture
+mkdir ${FURNITURE}
 
 
 # In Vehicles :
@@ -307,12 +358,20 @@ mkdir ${BOATS}
 SPACESHIPS=${VEHICLES}/Spaceships
 mkdir ${SPACESHIPS}
 
+CARS=${VEHICLES}/Cars
+mkdir ${CARS}
+
+TRAINS=${VEHICLES}/Trains
+mkdir ${TRAINS}
 
 
 # In Environments :
 
 CASTLES=${ENVIRONMENTS}/Castles
 mkdir ${CASTLES}
+
+HILLS=${ENVIRONMENTS}/Hills
+mkdir ${HILLS}
 
 WALLS=${ENVIRONMENTS}/Walls
 mkdir ${WALLS}
@@ -361,7 +420,7 @@ mkdir ${GUI}
 
 mv sounds/*   ${SOUND_ROOT}
 mv sprites/*  ${SPRITES}
-mv *menu* *button* *gui* ${GUI}
+mv *menu* *button* *gui* *butscr* ${GUI}
 mv tilesets/* ${TILESETS}
 
 
@@ -384,6 +443,10 @@ mv *farmer*         ${FARMERS}
 mv *hunter*         ${HUNTERS}
 mv *miner*          ${MINERS}
 mv *thief*          ${THIEVES}
+mv *baker.*         ${BAKERS}
+mv *boy* *girl*     ${CHILDREN}
+mv *builder*        ${BUILDERS}
+mv *doc.*           ${DOCTORS}
 
 
 # Named characters :
@@ -395,10 +458,15 @@ mv *stan*  ${STAN}
 mv *freya* ${FREYA}
 mv *horst* ${HORST}
 mv *katie* ${KATIE}
+mv *anna*  ${ANNA}
+mv *arno*  ${ARNO}
+mv *billy* ${BILLY}
+mv *burra* ${BURRA}
+
 
 # Animals :
 
-mv *donkey* ${ANIMALS}
+mv *donkey* *bat* *chicken* *cow* *crow* *deer* ${ANIMALS}
 
 mv *dragonfly* *butterfly* ${INSECTS}
 mv *fish*   ${FISH}
@@ -406,38 +474,33 @@ mv *wasp*   ${WASPS}
 mv *spider* ${SPIDERS}
 mv *wolf*   ${WOLVES}
 mv *lion*   ${LIONS}
+mv *sheep*  ${SHEEP}
 
 
 # Monsters :
 
-mv *dragon* ${DRAGONS}
-mv *dwarf*  ${DWARVES}
-mv *gnome*  ${GNOMES}
-mv *troll*  ${TROLLS}
-mv *skel*   ${SKELETONS}
-mv *zombie* ${ZOMBIES}
-mv *ratz*   ${RATS}
+mv *dragon*   ${DRAGONS}
+mv *dwarf*    ${DWARVES}
+mv *gnome*    ${GNOMES}
+mv *troll*    ${TROLLS}
+mv *skel*     ${SKELETONS}
+mv *zombie*   ${ZOMBIES}
+mv *ratz*     ${RATS}
+mv *crocy*    ${CROCODILES}
+mv *dino*     ${DINOSAURS}
+mv *doteater* ${DOTEATERS}
+
+mv *devil* *ogre* ${MONSTERS}
+
 
 # Objects :
 
-mv *flamewall*    ${OBJECTS}
-mv *doormask*     ${OBJECTS}
-mv *wallpictures* ${OBJECTS}
-mv *objects*      ${OBJECTS}
-mv *cannon*       ${OBJECTS}
-mv *box*          ${OBJECTS}
-mv *mecha*        ${OBJECTS}
-mv *item*         ${OBJECTS}
-mv *scare*        ${OBJECTS}
 
-# Vehicles :
-
-# Boats :
-mv *schiff* ${SPACESHIPS}
-
-# Spaceships :
-mv *spaceship* ${SPACESHIPS}
-
+# Weapons :
+mv *cannon* *arrow* *tnt* ${WEAPONS}
+ 
+# Mechanisms : 
+mv *mecha* *lever* ${MECHANISMS}
 
 # Traps :
 
@@ -445,29 +508,58 @@ mv *trap*  ${TRAPS}
 mv *mines* ${TRAPS}
 
 
+mv *flamewall* *doormask* *wallpictures* *objects* *box* *item* *scare* *aura* *things* *gym* ${OBJECTS}
+
+
+# Pieces of furniture :
+mv *beds* *carpet* *chest* *door* ${FURNITURE}
+
+
+# Vehicles :
+
+# Boats :
+mv *schiff* *boot* ${BOATS}
+
+# Spaceships :
+mv *spaceship* ${SPACESHIPS}
+
+# Cars :
+mv *rallye* ${CARS}
+
+# Trains :
+mv *waggon* ${TRAINS}
+
+
+
+# Food :
+mv *meat* ${FOOD}
+
+
 
 # Environments :
 
-mv *castlewall* ${CASTLES}
-mv *set*        ${SETS}
+mv *castle* ${CASTLES}
 
+mv *hills* ${HILLS}
+
+mv *set* *anitown* *beautiful_town* *casino* *cavestuff* ${SETS}
 
 # Walls :
 
 mv *inside_wall* ${INSIDE}
-mv *wall*        ${OUTSIDE}
+mv *wall* *parapet* ${OUTSIDE}
 
 
 # Buildings :
 
-mv *house* *mill* ${BUILDINGS}
+mv *house* *mill* *bakery* *barracks* *chapel* *crabuil* *building* ${BUILDINGS}
 
 
 # Plants :
 
-mv *tree*         ${TREES}
+mv *tree* *bush* ${TREES}
 mv **             ${FLOWERS}
 
 # Grounds :
-mv *earth* ${GROUNDS}
+mv *earth* *wall* *beach* *cobble* *creek* *sand* *ground* *stonepath* ${GROUNDS}
 
