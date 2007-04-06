@@ -17,11 +17,11 @@ latest_stable_osdl="release-0.5.0"
 
 if [ $is_windows -eq 0 ] ; then
   # Windows special case :
-  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
+  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
 
   #FIXME :
-  REQUIRED_TOOLS="SDL_win SDL_image_win"
-  
+  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win"
+
   WINDOWS_SOLUTIONS_ROOT="../build-for-windows"
   
 else
@@ -331,7 +331,7 @@ prepareSDL_win()
 		exit 10
 	fi
 	
-  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL-from-OSDL" "SDL-${SDL_VERSION}"
+  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL-from-OSDL" "SDL-${SDL_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL solution in build tree."
@@ -348,7 +348,7 @@ generateSDL_win()
 
 	LOG_STATUS "Generating SDL for windows..."
 
-	cd "SDL-${SDL_VERSION}"
+	cd "SDL-${SDL_win_VERSION}"
 
 	printItem "configuring"
  	printOK
@@ -373,7 +373,7 @@ generateSDL_win()
 cleanSDL_win()
 {
 	LOG_STATUS "Cleaning SDL build tree..."
-	${RM} -rf "SDL-${SDL_VERSION}"
+	${RM} -rf "SDL-${SDL_win_VERSION}"
 }
 
 
@@ -666,6 +666,7 @@ prepareSDL_image_win()
 {
 
 	LOG_STATUS "Preparing SDL_image for windows.."
+	
 	if findTool unzip ; then
 		UNZIP=$returnedString
 	else
@@ -687,12 +688,11 @@ prepareSDL_image_win()
 		ERROR "Unable to extract ${SDL_image_win_ARCHIVE}."
 		exit 10
 	fi
-
-
   
-  cd "SDL_image-${SDL_image_VERSION}"
+  cd "SDL_image-${SDL_image_win_VERSION}"
   
-  SDL_image_INST_DIR="../../LOANI-installations/SDL_image-${SDL_image_VERSION}/Debug"
+  SDL_image_INST_DIR="../../LOANI-installations/SDL_image-${SDL_image_win_VERSION}/Debug"
+  ${MKDIR} -p ${SDL_image_INST_DIR}
   
   # Needed for jpeg.h and al, and for DLL as well :
  	{
@@ -706,7 +706,7 @@ prepareSDL_image_win()
 
   cd $repository
   
-  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-OSDL" "SDL_image-${SDL_image_VERSION}"
+  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-OSDL" "SDL_image-${SDL_image_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_image solution in build tree."
@@ -723,7 +723,7 @@ generateSDL_image_win()
 
 	LOG_STATUS "Generating SDL_image for windows..."
 
-	cd "SDL_image-${SDL_image_VERSION}"
+	cd "SDL_image-${SDL_image_win_VERSION}"
 
 	printItem "configuring"
  	printOK
@@ -748,7 +748,7 @@ generateSDL_image_win()
 cleanSDL_image_win()
 {
 	LOG_STATUS "Cleaning SDL build tree..."
-	${RM} -rf "SDL_image-${SDL_image_VERSION}"
+	${RM} -rf "SDL_image-${SDL_image_win_VERSION}"
 }
 
 
@@ -2160,9 +2160,15 @@ cleanlibvorbis()
 
 
 ################################################################################
+################################################################################
 # SDL_mixer
 ################################################################################
+################################################################################
 
+
+################################################################################
+# SDL_mixer for non-Windows platforms
+################################################################################
 
 #TRACE "[loani-requiredTools] SDL_mixer"
 
@@ -2382,15 +2388,122 @@ cleanSDL_mixer()
 
 
 
+################################################################################
+# SDL_mixer build thanks to Visual Express.
+################################################################################
 
 
+getSDL_mixer_win()
+{
+	LOG_STATUS "Getting SDL_mixer for windows..."
+	launchFileRetrieval SDL_mixer_win
+	return $?
+}
+
+
+prepareSDL_mixer_win()
+{
+
+	LOG_STATUS "Preparing SDL_mixer for windows.."
+	
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "SDL_mixer  "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${SDL_mixer_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_mixer_win_ARCHIVE}."
+		exit 10
+	fi
+
+  cd "SDL_mixer-${SDL_mixer_win_VERSION}"
+
+  SDL_mixer_INST_DIR="../../LOANI-installations/SDL_mixer-${SDL_mixer_win_VERSION}/Debug"
+  ${MKDIR} -p ${SDL_mixer_INST_DIR}
+  
+  # Needed for vorbisfile.h and al, and for Ogg/Vorbis DLL as well :
+ 	{
+		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/vorbis/lib/*.dll ${SDL_mixer_INST_DIR}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_mixer_win_ARCHIVE} subpackages."
+		exit 10
+	fi
+
+  cd $repository
+  
+  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_mixer-from-OSDL" "SDL_mixer-${SDL_mixer_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy SDL_mixer solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generateSDL_mixer_win()
+{
+
+	LOG_STATUS "Generating SDL_mixer for windows..."
+
+	cd "SDL_mixer-${SDL_mixer_win_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+  SDL_mixer_SOLUTION=`pwd`"/SDL_mixer-from-OSDL/SDL_mixer-from-OSDL.sln"
+
+	printItem "building"
+  GenerateWithVisualExpress SDL_mixer ${SDL_mixer_SOLUTION}
+	printOK
+
+	printItem "installing"
+	printOK
+
+	printEndList
+
+	LOG_STATUS "SDL_mixer successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+cleanSDL_mixer_win()
+{
+	LOG_STATUS "Cleaning SDL_mixer build tree..."
+	${RM} -rf "SDL-${SDL_mixer_win_VERSION}"
+}
+
+
+
+################################################################################
 ################################################################################
 # SDL_gfx
 ################################################################################
+################################################################################
 
+
+################################################################################
+# SDL_gfx for non-Windows platforms :
+################################################################################
 
 #TRACE "[loani-requiredTools] SDL_gfx"
-
 
 getSDL_gfx()
 {
@@ -2404,6 +2517,247 @@ prepareSDL_gfx()
 {
 
 	LOG_STATUS "Preparing SDL_gfx..."
+	if findTool gunzip ; then
+		GUNZIP=$returnedString
+	else
+		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		exit 8
+	fi
+
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 9
+	fi
+
+	printBeginList "SDL_gfx    "
+
+	printItem "extracting"
+
+	cd $repository
+
+	# Prevent archive from disappearing because of gunzip.
+	{
+		${CP} -f ${SDL_gfx_ARCHIVE} ${SDL_gfx_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_ARCHIVE} && tar -xvf "SDL_gfx-${SDL_gfx_VERSION}.tar"
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_gfx_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL_gfx_ARCHIVE}."
+		${MV} -f ${SDL_gfx_ARCHIVE}.save ${SDL_gfx_ARCHIVE}
+		exit 10
+	fi
+
+	${MV} -f ${SDL_gfx_ARCHIVE}.save ${SDL_gfx_ARCHIVE}
+	${RM} -f "SDL_gfx-${SDL_gfx_VERSION}.tar"
+
+	printOK
+
+}
+
+
+generateSDL_gfx()
+{
+
+	LOG_STATUS "Generating SDL_gfx..."
+
+	cd "SDL_gfx-${SDL_gfx_VERSION}"
+
+	printItem "configuring"
+	{
+		setBuildEnv ./autogen.sh
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure SDL_gfx : autogen failed."
+		exit 11
+	fi
+
+	if [ -f "config.cache" ] ; then
+		${RM} -f config.cache
+	fi
+
+	if [ -n "$prefix" ] ; then
+	{
+
+		SDL_gfx_PREFIX=${prefix}/SDL_gfx-${SDL_gfx_VERSION}
+
+		# SDL_gfx uses wrongly SDL includes : asks for SDL/SDL.h
+		# instead of SDL.h.
+		# Ugly hack :
+		# (copy could be used instead, to avoid needing symbolic links for filesystems such as vfat)
+		${LN} -s ${SDL_PREFIX}/include/SDL ${SDL_PREFIX}/include/SDL/SDL
+
+		OLD_CPP_FLAGS=$CPP_FLAGS
+		CPP_FLAGS="-I${SDL_PREFIX}/include $CPP_FLAGS"
+		export CPP_FLAGS
+
+		OLD_LD_FLAGS=$LD_FLAGS
+
+		LDFLAGS="-L${SDL_PREFIX}/lib $LDFLAGS"
+		export LDFLAGS
+
+		LIBS=$LDFLAGS
+		export LIBS
+
+		# --disable-sdltest added since configure tries to compile a test without letting
+		# the system libraries locations to be redefined. Therefore a wrong libstdc++.so
+		# could be chosen, leading to errors such as :
+		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
+
+		setBuildEnv ./configure --prefix=${SDL_gfx_PREFIX} --exec-prefix=${SDL_gfx_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --disable-sdltest
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	else
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
+	fi
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure SDL_gfx."
+		exit 11
+	fi
+
+	if [ -n "$prefix" ] ; then
+
+		CPP_FLAGS=$OLD_CPP_FLAGS
+		export CPP_FLAGS
+
+		LD_FLAGS=$OLD_LD_FLAGS
+		export LD_FLAGS
+
+    fi
+
+	# SDL_gfx will not be compiled with debug machinery :
+	{
+		setBuildEnv ./nodebug.sh
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "SDL_gfx post-configure script failed (nodebug.sh)."
+		exit 12
+	fi
+
+	printOK
+
+	printItem "building"
+
+	{
+		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build SDL_gfx."
+		exit 12
+	fi
+
+	printOK
+
+
+	printItem "installing"
+
+	if [ -n "$prefix" ] ; then
+	{
+
+		echo "# SDL_gfx section." >> ${OSDL_ENV_FILE}
+
+		echo "SDL_gfx_PREFIX=${SDL_gfx_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL_gfx_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_gfx_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+
+		LD_LIBRARY_PATH=${SDL_gfx_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		if [ $is_windows -eq 0 ] ; then
+			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+
+			PATH=${SDL_gfx_PREFIX}/lib:${PATH}
+			export PATH
+
+			echo "PATH=\$SDL_gfx_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
+
+		echo "" >> ${OSDL_ENV_FILE}
+
+		setBuildEnv ${MAKE} install prefix=${SDL_gfx_PREFIX}
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	else
+	{
+		setBuildEnv ${MAKE} install
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	fi
+
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install SDL_gfx (application)."
+		exit 13
+	fi
+
+	FIXED_FONT_REPOSITORY="${OSDL_DATA_FULL_DIR_NAME}/fonts/fixed"
+	${MKDIR} -p "${FIXED_FONT_REPOSITORY}" && ${CP} -f Fonts/*.fnt "${FIXED_FONT_REPOSITORY}"
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install SDL_gfx fonts."
+		exit 14
+	fi
+
+	printOK
+
+	{
+		setBuildEnv ${MAKE} distclean
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		echo
+		WARNING "SDL_gfx post-install cleaning failed, non-fatal error."
+	fi
+
+	printEndList
+
+	LOG_STATUS "SDL_gfx successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanSDL_gfx()
+{
+	LOG_STATUS "Cleaning SDL gfx library build tree..."
+	${RM} -rf "SDL_gfx-${SDL_gfx_VERSION}"
+}
+
+
+
+getSDL_gfx()
+{
+	LOG_STATUS "Getting SDL_gfx..."
+	launchFileRetrieval SDL_gfx
+	return $?
+}
+
+
+
+################################################################################
+# SDL_gfx build thanks to Visual Express :
+################################################################################
+
+
+prepareSDL_gfx_win()
+{
+
+	LOG_STATUS "Preparing SDL_gfx_win..."
 	if findTool gunzip ; then
 		GUNZIP=$returnedString
 	else
@@ -2426,210 +2780,65 @@ prepareSDL_gfx()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_gfx_ARCHIVE} ${SDL_gfx_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_ARCHIVE} && tar -xvf "SDL_gfx-${SDL_gfx_VERSION}.tar" 
+		${CP} -f ${SDL_gfx_win_ARCHIVE} ${SDL_gfx_win_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_win_ARCHIVE} && tar -xvf "SDL_gfx-${SDL_gfx_win_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
-		
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_gfx_ARCHIVE}."
-		LOG_STATUS "Restoring ${SDL_gfx_ARCHIVE}."
-		${MV} -f ${SDL_gfx_ARCHIVE}.save ${SDL_gfx_ARCHIVE} 
+		ERROR "Unable to extract ${SDL_gfx_win_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL_gfx_win_ARCHIVE}."
+		${MV} -f ${SDL_gfx_win_ARCHIVE}.save ${SDL_gfx_win_ARCHIVE}
 		exit 10
 	fi
-	
-	${MV} -f ${SDL_gfx_ARCHIVE}.save ${SDL_gfx_ARCHIVE} 
-	${RM} -f "SDL_gfx-${SDL_gfx_VERSION}.tar"
+
+  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_gfx-from-OSDL" "SDL_gfx-${SDL_gfx_win_VERSION}"
+
+	${MV} -f ${SDL_gfx_win_ARCHIVE}.save ${SDL_gfx_win_ARCHIVE}
+	${RM} -f "SDL_gfx-${SDL_gfx_win_VERSION}.tar"
 	
 	printOK
 	
 }
 
 
-generateSDL_gfx()
+generateSDL_gfx_win()
 {
 
-	LOG_STATUS "Generating SDL_gfx..."
+	LOG_STATUS "Generating SDL_gfx_win..."
 	
-	cd "SDL_gfx-${SDL_gfx_VERSION}"
+	cd "SDL_gfx-${SDL_gfx_win_VERSION}"
 	
 	printItem "configuring"
-	{			
-		setBuildEnv ./autogen.sh
-	} 1>>"$LOG_OUTPUT" 2>&1			
+ 	printOK
 
-	if [ $? != 0 ] ; then
-		echo
-		ERROR "Unable to configure SDL_gfx : autogen failed."
-		exit 11
-	fi	
-	
-	if [ -f "config.cache" ] ; then
-		${RM} -f config.cache
-	fi
-        
-	if [ -n "$prefix" ] ; then	
-	{	
-	
-		SDL_gfx_PREFIX=${prefix}/SDL_gfx-${SDL_gfx_VERSION}
-		
-		# SDL_gfx uses wrongly SDL includes : asks for SDL/SDL.h 
-		# instead of SDL.h.
-		# Ugly hack :
-		# (copy could be used instead, to avoid needing symbolic links for filesystems such as vfat)	
-		${LN} -s ${SDL_PREFIX}/include/SDL ${SDL_PREFIX}/include/SDL/SDL
-		
-		OLD_CPP_FLAGS=$CPP_FLAGS
-		CPP_FLAGS="-I${SDL_PREFIX}/include $CPP_FLAGS"
-		export CPP_FLAGS
-                
-		OLD_LD_FLAGS=$LD_FLAGS
-		
-		LDFLAGS="-L${SDL_PREFIX}/lib $LDFLAGS"
-		export LDFLAGS
-		
-		LIBS=$LDFLAGS
-		export LIBS
-		
-		# --disable-sdltest added since configure tries to compile a test without letting
-		# the system libraries locations to be redefined. Therefore a wrong libstdc++.so
-		# could be chosen, leading to errors such as : 
-		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
-		
-		setBuildEnv ./configure --prefix=${SDL_gfx_PREFIX} --exec-prefix=${SDL_gfx_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --disable-sdltest
-                 
-	} 1>>"$LOG_OUTPUT" 2>&1		
-	else
-	{		
-		setBuildEnv ./configure
-	} 1>>"$LOG_OUTPUT" 2>&1			
-	fi
-	
-	if [ $? != 0 ] ; then
-		echo
-		ERROR "Unable to configure SDL_gfx."
-		exit 11
-	fi
-        
-	if [ -n "$prefix" ] ; then		
-	
-		CPP_FLAGS=$OLD_CPP_FLAGS
-		export CPP_FLAGS
-		
-		LD_FLAGS=$OLD_LD_FLAGS
-		export LD_FLAGS
-		
-    fi
-        
-	# SDL_gfx will not be compiled with debug machinery :	
-	{
-		setBuildEnv ./nodebug.sh
-	} 1>>"$LOG_OUTPUT" 2>&1	
-	
-	if [ $? != 0 ] ; then
-		echo
-		ERROR "SDL_gfx post-configure script failed (nodebug.sh)."
-		exit 12
-	fi
-	
-	printOK	
-	
+  SDL_gfx_SOLUTION=`pwd`"/SDL_gfx-from-OSDL/SDL_gfx-from-OSDL.sln"
+
 	printItem "building"
-	
-	{
-		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
-	} 1>>"$LOG_OUTPUT" 2>&1	 
-	
-	
-	if [ $? != 0 ] ; then
-		echo
-		ERROR "Unable to build SDL_gfx."
-		exit 12
-	fi
-
+  GenerateWithVisualExpress SDL_gfx ${SDL_gfx_SOLUTION}
 	printOK
-
 
 	printItem "installing"
-	
-	if [ -n "$prefix" ] ; then	
-	{		
-	
-		echo "# SDL_gfx section." >> ${OSDL_ENV_FILE}
-		
-		echo "SDL_gfx_PREFIX=${SDL_gfx_PREFIX}" >> ${OSDL_ENV_FILE} 
-		echo "export SDL_gfx_PREFIX" >> ${OSDL_ENV_FILE}
-		echo "LD_LIBRARY_PATH=\$SDL_gfx_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
-			
-		LD_LIBRARY_PATH=${SDL_gfx_PREFIX}/lib:${LD_LIBRARY_PATH}
-		export LD_LIBRARY_PATH
-			
-		if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
-			
-			PATH=${SDL_gfx_PREFIX}/lib:${PATH}	
-			export PATH
-			
-			echo "PATH=\$SDL_gfx_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-		fi
-
-		echo "" >> ${OSDL_ENV_FILE}	
-		
-		setBuildEnv ${MAKE} install prefix=${SDL_gfx_PREFIX} 
-			
-	} 1>>"$LOG_OUTPUT" 2>&1		
-	else
-	{		
-		setBuildEnv ${MAKE} install 
-			
-	} 1>>"$LOG_OUTPUT" 2>&1			
-	fi
-	
-	
-	if [ $? != 0 ] ; then
-		echo
-		ERROR "Unable to install SDL_gfx (application)."
-		exit 13
-	fi	
-	
-	FIXED_FONT_REPOSITORY="${OSDL_DATA_FULL_DIR_NAME}/fonts/fixed"
-	${MKDIR} -p "${FIXED_FONT_REPOSITORY}" && ${CP} -f Fonts/*.fnt "${FIXED_FONT_REPOSITORY}"
-	if [ $? != 0 ] ; then
-		echo
-		ERROR "Unable to install SDL_gfx fonts."
-		exit 14
-	fi	
-	
 	printOK
-	
-	{
-		setBuildEnv ${MAKE} distclean
-	} 1>>"$LOG_OUTPUT" 2>&1	
-			
-	if [ $? != 0 ] ; then
-		echo
-		WARNING "SDL_gfx post-install cleaning failed, non-fatal error."
-	fi	
-		
+
 	printEndList
-	
+
 	LOG_STATUS "SDL_gfx successfully installed."
-	
+
 	cd "$initial_dir"
-	
+
 }
 
 
-cleanSDL_gfx()
+cleanSDL_gfx_win()
 {
 	LOG_STATUS "Cleaning SDL gfx library build tree..."
-	${RM} -rf "SDL_gfx-${SDL_gfx_VERSION}"
+	${RM} -rf "SDL_gfx-${SDL_gfx_win_VERSION}"
 }
 
 
 
 
 ################################################################################
-# freetype
+# Freetype
 ################################################################################
 
 
@@ -2801,9 +3010,14 @@ cleanfreetype()
 
 
 ################################################################################
+################################################################################
 # SDL_ttf
 ################################################################################
+################################################################################
 
+################################################################################
+# SDL_ttf for non-Windows platforms
+################################################################################
 
 #TRACE "[loani-requiredTools] SDL_ttf"
 
@@ -3003,6 +3217,107 @@ cleanSDL_ttf()
 	${RM} -rf "SDL_ttf-${SDL_ttf_VERSION}"
 }
 
+
+################################################################################
+# SDL_ttf build thanks to Visual Express.
+################################################################################
+
+
+getSDL_ttf_win()
+{
+	LOG_STATUS "Getting SDL_ttf for windows..."
+	launchFileRetrieval SDL_ttf_win
+	return $?
+}
+
+
+prepareSDL_ttf_win()
+{
+
+	LOG_STATUS "Preparing SDL_ttf for windows.."
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "SDL_ttf    "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${SDL_ttf_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_ttf_win_ARCHIVE}."
+		exit 10
+	fi
+
+  cd "SDL_ttf-${SDL_ttf_win_VERSION}"
+  
+  SDL_ttf_INST_DIR="../../LOANI-installations/SDL_image-${SDL_image_win_VERSION}/Debug"
+  ${MKDIR} -p ${SDL_ttf_INST_DIR}
+  
+  # Needed for ftbuild*.h and al, and for freetype*MT.lib as well :
+ 	{
+		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/FreeType/lib/*.lib ${SDL_ttf_INST_DIR}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_ttf_win_ARCHIVE} subpackages."
+		exit 10
+	fi
+
+  cd $repository
+  
+  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-OSDL" "SDL_ttf-${SDL_ttf_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy SDL_ttf solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generateSDL_ttf_win()
+{
+
+	LOG_STATUS "Generating SDL_ttf for windows..."
+
+	cd "SDL_ttf-${SDL_ttf_win_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+  SDL_ttf_SOLUTION=`pwd`"/SDL_ttf-from-OSDL/SDL_ttf-from-OSDL.sln"
+
+	printItem "building"
+  GenerateWithVisualExpress SDL_ttf ${SDL_ttf_SOLUTION}
+	printOK
+
+	printItem "installing"
+	printOK
+
+	printEndList
+
+	LOG_STATUS "SDL_ttf successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+cleanSDL_ttf_win()
+{
+	LOG_STATUS "Cleaning SDL_ttf build tree..."
+	${RM} -rf "SDL_ttf-${SDL_ttf_win_VERSION}"
+}
 
 
 
