@@ -19,6 +19,12 @@ SDL_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
 SDL_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_MD5="418b42956b7cd103bfab1b9077ccc149"
 
+SDL_win_VERSION="@SDL_RECOMMENDED_VERSION@"
+SDL_win_ARCHIVE="SDL-$SDL_win_VERSION.zip"
+SDL_win_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
+SDL_win_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_win_MD5="4c4a9b60902c5beae74658a65c3d45c3"
+
 
 
 # JPEG library (libjpeg.so) : http://www.ijg.org/
@@ -69,11 +75,18 @@ SDL_image_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
 SDL_image_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_image_MD5="cd006109a73bf7dcc93e1c3ed15ee782"
 
+SDL_image_win_VERSION="@SDL_IMAGE_RECOMMENDED_VERSION@"
+SDL_image_win_ARCHIVE="SDL_image-${SDL_image_VERSION}.zip"
+SDL_image_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
+SDL_image_win_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_image_win_MD5="0755ec442ac242d6703384c9a78e7247"
+
 
 # SDL_image pre-built archives
 
 
-# Precompiled binaries of SDL_image, zlib, jpeg, png for Windows : http://www.libsdl.org/projects/SDL_image/release/
+# Precompiled binaries of SDL_image, zlib, jpeg, png for Windows :
+# http://www.libsdl.org/projects/SDL_image/release/
 
 SDL_image_win_precompiled_VERSION=1.2.4
 SDL_image_win_precompiled_ARCHIVE="SDL_image-devel-${SDL_image_win_precompiled_VERSION}-VC6.zip"
