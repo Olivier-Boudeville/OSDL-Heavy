@@ -10,13 +10,16 @@
 
 COMMON_BUILD_TOOLS="gcc binutils gdb"
 
-# Automake, autconf, aclocal, make, etc. are deemed most basic build tools
+# Automake, autoconf, aclocal, make, etc. are deemed most basic build tools
 # and are supposed to be available if needed.
 
 
 # Updating retrieve list.
-target_list="$COMMON_BUILD_TOOLS $target_list"
-
+if [ $is_windows -eq 0 ] ; then
+  WARNING "on Windows, no common build tool managed."
+else
+  target_list="$COMMON_BUILD_TOOLS $target_list"
+fi
 
 DEBUG "Scheduling retrieval of common build tools ($COMMON_BUILD_TOOLS)."
 
