@@ -115,9 +115,14 @@ SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MA
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_gfx_MD5="22dc2d9d916197829f9342c490d2d02b"
 
+SDL_gfx_win_VERSION="$SDL_gfx_VERSION"
+SDL_gfx_win_ARCHIVE="SDL_gfx-${SDL_gfx_win_VERSION}.tar.gz"
+SDL_gfx_win_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
+SDL_gfx_win_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_gfx_win_MD5="22dc2d9d916197829f9342c490d2d02b"
 
 
-# freetype (libfreetype.so) : http://freetype.sourceforge.net
+# Freetype (libfreetype.so) : http://freetype.sourceforge.net
 
 # Sources.
 
@@ -158,6 +163,13 @@ SDL_ttf_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}.tar.gz"
 SDL_ttf_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_ttf_MD5="094b6c08769e9842dbe1dfb5efa22df7"
+
+SDL_ttf_win_VERSION="@SDL_TTF_RECOMMENDED_VERSION@"
+SDL_ttf_win_ARCHIVE="SDL_ttf-${SDL_ttf_win_VERSION}.zip"
+SDL_ttf_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
+SDL_ttf_win_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL_ttf_win_MD5="b48efb4821710c471576fb1d322e19cc"
+
 
 
 # Precompiled binaries of SDL_ttf for Windows.
@@ -203,6 +215,10 @@ SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
 SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
 SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
 
+SDL_mixer_win_VERSION="1.2.7"
+SDL_mixer_win_ARCHIVE="SDL_mixer-${SDL_mixer_win_VERSION}.zip"
+SDL_mixer_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
+SDL_mixer_win_MD5="1b78fa15240ed14dc756f3168b757ccd"
 
 
 # Ceylan (libCeylan.so) : http://ceylan.sourceforge.net
