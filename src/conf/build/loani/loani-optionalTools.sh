@@ -17,8 +17,11 @@ OPTIONAL_TOOLS="dot doxygen"
 
 # Updating retrieve list :
 # (new tools are put ahead of those already selected, so that CVS retrievals do not delay them)
-target_list="$OPTIONAL_TOOLS $target_list"
-
+if [ $is_windows -eq 0 ] ; then
+  WARNING "on Windows, no optional tool managed."
+else
+  target_list="$OPTIONAL_TOOLS $target_list"
+fi
 
 DEBUG "Scheduling retrieval of optional tools ($OPTIONAL_TOOLS)."
 
