@@ -6,8 +6,8 @@
 
 
 # SVN tags to select versions to retrieve (if use_current_svn not selected) :
-latest_stable_ceylan="release-0.5.0"
-latest_stable_osdl="release-0.4.0"
+latest_stable_ceylan="release-0.6.0"
+latest_stable_osdl="release-0.5.0"
 
 ################################################################################
 
@@ -15,19 +15,18 @@ latest_stable_osdl="release-0.4.0"
 
 # Required tools section.
 
+if [ $is_windows -eq 0 ] ; then
+  # Windows special case :
+  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
 
-if [ $is_windows -eq 1 ] ; then
-     
-        # All non-windows platforms should build everything from sources :    
-        REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"	
-		
+  #FIXME :
+  REQUIRED_TOOLS="SDL_win SDL_image_win"
+  
+  WINDOWS_SOLUTIONS_ROOT="../build-for-windows"
+  
 else
-        # Windows special case :
-        REQUIRED_TOOLS="libtool SDL libjpeg SDL_image_win_precompiled zlib libpng SDL_image win_pthread"
-		
-		# Tools whose build is still to fix for Windows platform :
-		REMAINING_TOOLS="SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"
-		
+  # All non-windows platforms should build everything from sources :
+  REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"
 fi        
 
 # Maybe libmikmod should be added for SDL_mixer, if MOD music was to be
@@ -53,15 +52,59 @@ LOG_STATUS()
 
 LOG_STATUS "Scheduling retrieval of required tools ($REQUIRED_TOOLS)."
 
+GenerateWithVisualExpress()
+# Launches Visual Express 2005 with specified solution so that the user regenerates it.
+# Usage : GenerateWithVisualExpress <package name> <solution path>
+# Ex : GenerateWithVisualExpress SDL a/dir/SDL.sln
+{
+
+  PACKAGE_NAME="$1"
+  SOLUTION_PATH="$2"
+  
+  if [ ! -f "${SOLUTION_PATH}" ] ; then
+		ERROR "Unable to find solution ${SOLUTION_PATH} for ${PACKAGE_NAME}."
+		exit 20
+  fi
+  
+  WIN_SOLUTION_PATH=`cygpath -w ${SOLUTION_PATH}`
+
+  if [ $be_quiet -eq 1 ] ; then
+    DISPLAY "Visual Express will be launched now to generate ${PACKAGE_NAME}, choose 'Regenerate All' and exit on success."
+    DISPLAY "Hit enter and wait for the IDE to be launched"
+    #waitForKey
+  fi
+  
+  DEBUG "Loading solution in ${WIN_SOLUTION_PATH}"
+
+  PREVIOUS_PATH=`pwd`
+  
+  cd "${VISUAL_ROOT}"
+  
+  ./${VISUAL_CMD} "${WIN_SOLUTION_PATH}"
+  
+ 	if [ $? != 0 ] ; then
+		ERROR "Unable to generate ${PACKAGE_NAME} from solution ."${SOLUTION_PATH}
+		exit 21
+	fi
+
+  cd "${PREVIOUS_PATH}"
+  
+}
 
 
 
+################################################################################
 ################################################################################
 # SDL
 ################################################################################
+################################################################################
+
 
 #TRACE "[loani-requiredTools] SDL"
 
+################################################################################
+# SDL for non-Windows platforms :
+################################################################################
 
 getSDL()
 {
@@ -240,7 +283,6 @@ generateSDL()
 	
 }
 
-
 cleanSDL()
 {
 	LOG_STATUS "Cleaning SDL build tree..."
@@ -248,9 +290,105 @@ cleanSDL()
 }
 
 
-# Pre requesites of SDL_image : JPEG library, PNG library, zlib library.
-# TIFF support is disabled for the moment.
 
+
+################################################################################
+# SDL build thanks to Visual Express.
+################################################################################
+
+
+getSDL_win()
+{
+	LOG_STATUS "Getting SDL for windows..."
+	launchFileRetrieval SDL_win
+	return $?
+}
+
+
+prepareSDL_win()
+{
+
+	LOG_STATUS "Preparing SDL for windows.."
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "SDL        "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${SDL_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_win_ARCHIVE}."
+		exit 10
+	fi
+	
+  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL-from-OSDL" "SDL-${SDL_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy SDL solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generateSDL_win()
+{
+
+	LOG_STATUS "Generating SDL for windows..."
+
+	cd "SDL-${SDL_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+  SDL_SOLUTION=`pwd`"/SDL-from-OSDL/SDL-from-OSDL.sln"
+  
+	printItem "building"
+  GenerateWithVisualExpress SDL ${SDL_SOLUTION}
+	printOK
+
+	printItem "installing"
+	printOK
+
+	printEndList
+
+	LOG_STATUS "SDL successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+cleanSDL_win()
+{
+	LOG_STATUS "Cleaning SDL build tree..."
+	${RM} -rf "SDL-${SDL_VERSION}"
+}
+
+
+
+
+################################################################################
+################################################################################
+# SDL_image prequesites
+################################################################################
+################################################################################
+
+
+# Prerequesites of SDL_image : JPEG library, PNG library, zlib library.
+# TIFF support is disabled for the moment.
+# For Visual Express builds, these prerequesites are managed from SDL_image_win.
 
 
 
@@ -502,13 +640,121 @@ cleanlibjpeg()
 
 
 
+################################################################################
+################################################################################
+# SDL_image
+################################################################################
+################################################################################
+
+
+
+################################################################################
+# SDL_image build thanks to Visual Express.
+################################################################################
+
+#TRACE "[loani-requiredTools] SDL_image for Visual Express targets"
+
+getSDL_image_win()
+{
+	LOG_STATUS "Getting SDL_image for windows..."
+	launchFileRetrieval SDL_image_win
+	return $?
+}
+
+
+prepareSDL_image_win()
+{
+
+	LOG_STATUS "Preparing SDL_image for windows.."
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "SDL_image  "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${SDL_image_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_image_win_ARCHIVE}."
+		exit 10
+	fi
+
+
+  
+  cd "SDL_image-${SDL_image_VERSION}"
+  
+  SDL_image_INST_DIR="../../LOANI-installations/SDL_image-${SDL_image_VERSION}/Debug"
+  
+  # Needed for jpeg.h and al, and for DLL as well :
+ 	{
+		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/graphics/lib/*.dll ${SDL_image_INST_DIR}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_image_win_ARCHIVE} subpackages."
+		exit 10
+	fi
+
+  cd $repository
+  
+  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-OSDL" "SDL_image-${SDL_image_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy SDL_image solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generateSDL_image_win()
+{
+
+	LOG_STATUS "Generating SDL_image for windows..."
+
+	cd "SDL_image-${SDL_image_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+  SDL_image_SOLUTION=`pwd`"/SDL_image-from-OSDL/SDL_image-from-OSDL.sln"
+
+	printItem "building"
+  GenerateWithVisualExpress SDL_image ${SDL_image_SOLUTION}
+	printOK
+
+	printItem "installing"
+	printOK
+
+	printEndList
+
+	LOG_STATUS "SDL_image successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+cleanSDL_image_win()
+{
+	LOG_STATUS "Cleaning SDL build tree..."
+	${RM} -rf "SDL_image-${SDL_image_VERSION}"
+}
+
 
 ################################################################################
 # SDL_image_*_precompiled targets.
 ################################################################################
-
-#TRACE "[loani-requiredTools] SDL_image_*_precompiled targets"
-
 
 # Windows binaries.
 
