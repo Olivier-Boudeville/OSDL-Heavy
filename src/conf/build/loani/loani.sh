@@ -308,8 +308,7 @@ launchwizard()
 		DISPLAY "SVN mode activated."
 		use_svn=0
 		
-		if askDefaultNo "${OFFSET}Use current SVN, not last stable version,\
-	for Ceylan and OSDL ? [not recommended]" ; then 
+		if askDefaultNo "${OFFSET}Use current SVN, not last stable version, for Ceylan and OSDL ? [not recommended]" ; then
 	
 			DISPLAY "Current SVN will be used (let's hope the build is not currently broken)."
 			use_current_svn=0
@@ -417,7 +416,7 @@ launchwizard()
 }
 
 
-# Too early, no #TRACE available.
+# Too early, no TRACE available.
 
 
 # Checking own LOANI's pre requesites.
@@ -952,11 +951,10 @@ echo "" >> ${OSDL_ENV_FILE}
 
 
 
-# Anticipated checkings.
+# Anticipated checkings :
 
 findSupplementaryShellTools
 findBuildTools
-
 
 if [ ! -d "$repository" ] ; then
 	DEBUG "Creating non already existing repository ($repository)."
