@@ -581,6 +581,8 @@ WGET_OPT="--background $PROXY_CONF --passive-ftp"
 CVS_OPT="-Q -z6"
 CVS_RSH="ssh"
 
+# We may need to be prompted to accept credentials, but normally a dummy svn 
+# 'list' command is issued first to check them :
 SVN_OPT="--non-interactive"
 
 # Maximum count of attempts to retrieve a module by SVN
@@ -791,7 +793,7 @@ fi
 # Entering wizard mode if asked.
 #TRACE "Before wizard"
 
-if [ "$wizard" -eq 0 ] ; then
+if [ $wizard -eq 0 ] ; then
 	launchwizard
 fi
 
@@ -799,7 +801,7 @@ fi
 # file and/or on screen :
 do_debug=0
 
-if [ "$do_log" -eq 0 ] ; then
+if [ $do_log -eq 0 ] ; then
 
 	# Activates termUtils's debug facility :
 	
@@ -831,7 +833,7 @@ DEBUG "Specified command line was : ${SAVED_CMD_LINE}"
 # Pre requesites continued.
 
 # Check developer name is set if necessary.
-if [ "$developer_access" -eq 0 ] ; then
+if [ $developer_access -eq 0 ] ; then
 	if [ -z "$developer_name" ] ; then
 		ERROR "No developer name specified whereas SVN developer access demanded."
 		exit 2
@@ -886,7 +888,7 @@ fi
 
 # Manage OSDL-data repository :
 OSDL_DATA_FULL_DIR_NAME="${alternate_prefix}/${OSDL_DATA_DIR_NAME}"
-${MKDIR} -p "${OSDL_DATA_FULL_DIR_NAME}"
+#${MKDIR} -p "${OSDL_DATA_FULL_DIR_NAME}"
 DEBUG "OSDL data repository will be ${OSDL_DATA_FULL_DIR_NAME}."
 
 
@@ -905,9 +907,14 @@ else
 	BUILD_SILENT=""	
 fi
 
+if [ $is_windows -eq 0 ] ; then
+	# On Windows with Visual Express, sources available only from SVN
+	# at the moment :
+	use_svn=0
+fi
 
 # If developer access is selected, use current SVN is implied :
-if [ "$developer_access" -eq 0 ] ; then
+if [ $developer_access -eq 0 ] ; then
 	use_current_svn=0
 fi
 
@@ -976,18 +983,18 @@ DISPLAY "Retrieving all pre requesites, pipe-lining when possible."
 # Put the optional tools before the build tools so that their are taken 
 # into account in following order : 
 # build / optional / required (best both for download and build).
-if [ "$manage_optional_tools" -eq 0 ] ; then
+if [ $manage_optional_tools -eq 0 ] ; then
 	# Empty list only if optional tools are wanted :
-	if [ "$only_optional_tools" -eq 0 ] ; then
+	if [ $only_optional_tools -eq 0 ] ; then
 		target_list=""
 	fi
 	. ./loani-optionalTools.sh
 fi
 
 
-if [ "$manage_build_tools" -eq 0 ] ; then
+if [ $manage_build_tools -eq 0 ] ; then
 	# Empty list only if build tools are wanted :
-	if [ "$only_build_tools" -eq 0 ] ; then
+	if [ $only_build_tools -eq 0 ] ; then
 		target_list=""
 	fi
 	. ./loani-commonBuildTools.sh	
@@ -1020,13 +1027,11 @@ if [ $manage_optional_tools -eq 0 ] ; then
 	MINIMUM_SIZE=`expr $MINIMUM_SIZE + 200`
 fi
 
-
 if [ $AVAILABLE_SIZE -lt $MINIMUM_SIZE ] ; then
 	WARNING "According to the selected tools which are to install, a rough estimate for peek need of available disk space is $MINIMUM_SIZE megabytes, whereas only $AVAILABLE_SIZE megabytes are available in the current partition. Consider interrupting this script (CTRL-C) if you believe it will not suffice."
 else
 	DEBUG "Enough space on disk ($AVAILABLE_SIZE megabytes available for an estimation of $MINIMUM_SIZE needed)."
 fi 
-
 
 # Second, sort out which tools are available and which are not.
 
@@ -1040,12 +1045,12 @@ for t in $target_list; do
 	DEBUG "Examining <$t>"
 	
 	if [ $use_svn -eq 0 ] ; then
-		if [ "$t" = "Ceylan" -o "$t" = "OSDL" ] ; then
+		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "OSDL" -o "$t" = "OSDL_win" ] ; then
 			res=2
 		fi
 	fi
 	
-	if [ $res != 2 ] ; then
+	if [ ! $res -eq 2 ] ; then
 	
 		target_archive=${t}_ARCHIVE
 		target_md5=${t}_MD5
@@ -1053,16 +1058,16 @@ for t in $target_list; do
 		eval actual_target_archive="\$$target_archive"
 		eval actual_target_md5="\$$target_md5"
 	
-		#TRACE "Getting availability of ${actual_target_archive} whose expected MD5 is ${actual_target_md5}"
+		TRACE "Getting availability of ${actual_target_archive} whose expected MD5 is ${actual_target_md5}"
 	
 		getFileAvailability ${actual_target_archive} ${actual_target_md5}
 		res=$?
 		
 	fi	
 	
-	if [ "$res" -eq 0 ] ; then
+	if [ $res -eq 0 ] ; then
 		# Avoid leading space in the beginning of the list :
-		#DEBUG "Adding $t in available list."
+		DEBUG "Adding $t in available list."
 		if [ -z "$available_list" ] ; then
 			available_list="$t"
 		else
@@ -1070,17 +1075,17 @@ for t in $target_list; do
 		fi
 	else
 	
-		if [ "$res" -eq 1 ] ; then
+		if [ $res -eq 1 ] ; then
             target_file=${t}_ARCHIVE
 			eval actual_target_file="\$$target_file"
 			real_file="$repository/${actual_target_file}"
 			
 			WARNING "$t archive found in cache (${real_file}), but its md5 checksum does not match recorded one."
 
-			if [ "$do_strict_md5" -eq 0 ] ; then
+			if [ $do_strict_md5 -eq 0 ] ; then
 				WARNING "Erasing this faulty file and retrieving it from scratch (strict md5 checking mode is on)."                                
   				${RM} -f "${real_file}}"
-				#DEBUG "Adding $t in retrieve list."
+				DEBUG "Adding $t in retrieve list."
 				if [ -z "$retrieve_list" ] ; then
 					retrieve_list="$t"
 				else
@@ -1088,7 +1093,7 @@ for t in $target_list; do
 				fi				
 			else
 				WARNING "Will use $t file (${real_file}) nevertheless (strict md5 checking mode is off)."
-				#DEBUG "Adding $t in available list."
+				DEBUG "Adding $t in available list."
 				if [ -z "$available_list" ] ; then
 					available_list="$t"
 				else
@@ -1098,7 +1103,7 @@ for t in $target_list; do
 		
 		else
 			# res is 2, not in cache at all
-			#DEBUG "Adding $t in retrieve list."
+			DEBUG "Adding $t in retrieve list."
 			if [ -z "$retrieve_list" ] ; then
 				retrieve_list="$t"
 			else
@@ -1121,7 +1126,6 @@ else
 		DISPLAY "Some tools already available ($available_list), others will be downloaded ($retrieve_list)."
 	fi		
 fi
-
 
 # Check wget is available, that an internet connection is available
 # and there exist end-to-end web access. 
@@ -1287,16 +1291,16 @@ fi
 
 
 for t in $target_list; do
-	#DEBUG "Preparing $t"
+	DEBUG "Preparing $t"
 	prepare$t
-	#DEBUG "Generating $t"
+	DEBUG "Generating $t"
 	generate$t
 done
 
 
 # manage set_env too
 
-if [ "$set_env" -eq 0 ] ; then
+if [ $set_env -eq 0 ] ; then
 	RETRIEVE_SCRIPT="${repository}/ceylan/Ceylan/trunk/src/conf/environment/retrieveEnvironment.sh"
 	DISPLAY "Modifying environment to have it be developer-friendly."
 	if [ ! -x "$RETRIEVE_SCRIPT" ] ; then
@@ -1307,7 +1311,7 @@ if [ "$set_env" -eq 0 ] ; then
 fi
 
 
-if [ "$only_optional_tools" -eq 0 ] ; then
+if [ $only_optional_tools -eq 0 ] ; then
 	# Upgrade any previously existing environment file :
 	if [ -f "${OSDL_ENV_FILE_BACKUP}" ] ; then
 		${CAT} ${OSDL_ENV_FILE} >> ${OSDL_ENV_FILE_BACKUP}
@@ -1316,7 +1320,7 @@ if [ "$only_optional_tools" -eq 0 ] ; then
 fi
 
 
-if [ "$clean_on_success" -eq 0 ] ; then
+if [ $clean_on_success -eq 0 ] ; then
 	DISPLAY "Post-install cleaning of build trees."
 	for t in $target_list; do
 		clean$t
@@ -1329,7 +1333,6 @@ fi
 DISPLAY "End of LOANI, started at ${starting_time}, successfully ended at "`date '+%H:%M:%S'`"."
 
 DISPLAY "You can now test the whole installation by executing ${alternate_prefix}/share/OSDL/scripts/shell/playTests.sh"
-
 
 
 exit 0

@@ -6,7 +6,7 @@
 
 
 # SVN tags to select versions to retrieve (if use_current_svn not selected) :
-latest_stable_ceylan="release-0.6.0"
+latest_stable_ceylan="release-0.5.0"
 latest_stable_osdl="release-0.5.0"
 
 ################################################################################
@@ -16,12 +16,15 @@ latest_stable_osdl="release-0.5.0"
 # Required tools section.
 
 if [ $is_windows -eq 0 ] ; then
+
   # Windows special case :
   REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
 
   #FIXME :
-  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win"
-
+  REQUIRED_TOOLS="Ceylan_win"
+  # For Ceylan and OSDL :
+  use_svn=0
+  
   WINDOWS_SOLUTIONS_ROOT="../build-for-windows"
   
 else
@@ -3257,12 +3260,12 @@ prepareSDL_ttf_win()
 		exit 10
 	fi
 
-  cd "SDL_ttf-${SDL_ttf_win_VERSION}"
+	cd "SDL_ttf-${SDL_ttf_win_VERSION}"
   
-  SDL_ttf_INST_DIR="../../LOANI-installations/SDL_image-${SDL_image_win_VERSION}/Debug"
-  ${MKDIR} -p ${SDL_ttf_INST_DIR}
+	SDL_ttf_INST_DIR="../../LOANI-installations/SDL_image-${SDL_image_win_VERSION}/Debug"
+	${MKDIR} -p ${SDL_ttf_INST_DIR}
   
-  # Needed for ftbuild*.h and al, and for freetype*MT.lib as well :
+	# Needed for ftbuild*.h and al, and for freetype*MT.lib as well :
  	{
 		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/FreeType/lib/*.lib ${SDL_ttf_INST_DIR}
 	} 1>>"$LOG_OUTPUT" 2>&1
@@ -3272,9 +3275,9 @@ prepareSDL_ttf_win()
 		exit 10
 	fi
 
-  cd $repository
+	cd $repository
   
-  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-OSDL" "SDL_ttf-${SDL_ttf_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-OSDL" "SDL_ttf-${SDL_ttf_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_ttf solution in build tree."
@@ -3296,10 +3299,10 @@ generateSDL_ttf_win()
 	printItem "configuring"
  	printOK
 
-  SDL_ttf_SOLUTION=`pwd`"/SDL_ttf-from-OSDL/SDL_ttf-from-OSDL.sln"
+	SDL_ttf_SOLUTION=`pwd`"/SDL_ttf-from-OSDL/SDL_ttf-from-OSDL.sln"
 
 	printItem "building"
-  GenerateWithVisualExpress SDL_ttf ${SDL_ttf_SOLUTION}
+	GenerateWithVisualExpress SDL_ttf ${SDL_ttf_SOLUTION}
 	printOK
 
 	printItem "installing"
@@ -3432,6 +3435,7 @@ generatelibtool()
 		# before performing the global libtool make.
            
 		setBuildEnv ./configure --prefix=${libtool_PREFIX} --exec-prefix=${libtool_PREFIX} --disable-ltdl-install
+		
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{
@@ -3769,10 +3773,16 @@ cleanwin_pthread()
 }
 
 
+################################################################################
+################################################################################
+# Ceylan
+################################################################################
+################################################################################
+
 
 
 ################################################################################
-# Ceylan 
+# Ceylan on non-Windows platforms :
 ################################################################################
 
 
@@ -3800,7 +3810,6 @@ getCeylan()
 	
 	cd ${repository}
 
-
 	# Manage back-up directory if necessary :
 	
 	if [ -d "${repository}/ceylan" ] ; then
@@ -3810,7 +3819,9 @@ getCeylan()
 				exit 5
 			else	
 				WARNING "Deleting already existing back-up directory for ceylan (removing ${repository}/ceylan.save)"
-			 	${RM} -rf "${repository}/ceylan.save"
+			 	${RM} -rf "${repository}/ceylan.save" 2>/dev/null
+				# Sometimes rm fails apparently (long names or other reasons) :
+				${MV} -f ${repository}/ceylan.save ${repository}/ceylan.save-`date '+%H:%M:%S'`
 			fi
 		fi		
 		${MV} -f ${repository}/ceylan ${repository}/ceylan.save
@@ -3843,6 +3854,9 @@ getCeylan()
 			
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
+				# Made to force certificate checking before next non-interactive svn command :
+				${SVN} info https://${Ceylan_SVN_SERVER}:${SVN_URL} --username=${developer_name} 1>/dev/null
+				
 				{
 					DEBUG "SVN command : ${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name} ${SVN_OPT}"
 					${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name} ${SVN_OPT}
@@ -3860,7 +3874,7 @@ getCeylan()
 			
 			
 			if [ $success -ne 0 ] ; then
-				ERROR "Unable to retrieve Ceylan from SVN after $MAX_SVN_RETRY attempts."
+				ERROR "Unable to retrieve Ceylan from SVN after $MAX_SVN_RETRY attempts (did you accept permanently the Sourceforge certificate, if asked ?)."
 				exit 20
 			fi
 							
@@ -3874,10 +3888,10 @@ getCeylan()
 		fi
 
 	else			
-	
+		
+		# Not a developer access, anonymous :
 			
 		if [ $no_svn -eq 1 ] ; then
-
 
 			DISPLAY "      ----> getting Ceylan from anonymous SVN (export)"
 			
@@ -3897,9 +3911,12 @@ getCeylan()
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
 				{
-					DEBUG "${SVN} export https://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
-
-					${SVN} export https://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT} 
+					
+					# Remove any symbolic link coming from a previous attempt :
+					${RM} -f ${latest_stable_ceylan} 2>/dev/null
+					# No https, no credential required :
+					DEBUG "${SVN} export http://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
+					${SVN} export http://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT} 
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
@@ -4117,7 +4134,6 @@ generateCeylan()
 	
 	
 	LOG_STATUS "Making tests for Ceylan."
-	
 
 	cd test
 		
@@ -4141,7 +4157,6 @@ generateCeylan()
 
 	if [ -n "$prefix" ] ; then	
 		{				
-		
 			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${Ceylan_PREFIX} --with-ceylan-prefix=${Ceylan_PREFIX} 
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	else
@@ -4204,6 +4219,78 @@ cleanCeylan()
 	# Nothing to do : we want to be able to go on with the Ceylan build.
 }
 
+
+
+################################################################################
+# Ceylan build thanks to Visual Express, with SVN.
+################################################################################
+
+
+getCeylan_win()
+{
+	LOG_STATUS "Getting Ceylan for windows..."
+
+	Ceylan_win_ARCHIVE="from SVN"
+	# Cygwin let us do the same :
+	getCeylan
+	return $?
+}
+
+
+prepareCeylan_win()
+{
+
+	LOG_STATUS "Preparing Ceylan for windows.."
+
+	Ceylan_INST_DIR="../../LOANI-installations/Ceylan-${Ceylan_win_VERSION}/Debug"
+	${MKDIR} -p ${Ceylan_INST_DIR}
+	
+	printOK
+
+}
+
+
+generateCeylan_win()
+{
+
+	LOG_STATUS "Generating Ceylan for windows..."
+
+	if [ ${use_svn} -eq 0 ]; then
+	
+		# Here we are in the SVN tree :
+		cd $repository/ceylan/Ceylan/trunk
+	
+	else
+	
+		cd $repository/ceylan-${Ceylan_win_VERSION}
+	fi
+
+	
+	printItem "configuring"
+ 	printOK
+ 
+	Ceylan_SOLUTION=`pwd`"/src/Ceylan-${Ceylan_win_VERSION}.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress Ceylan ${Ceylan_SOLUTION}
+	printOK
+
+	printItem "installing"
+	printOK
+
+	printEndList
+
+	LOG_STATUS "Ceylan successfully installed."
+
+	cd "$repository"
+
+}
+
+cleanCeylan_win()
+{
+	LOG_STATUS "Cleaning Ceylan build tree..."
+	${RM} -rf "$repository/ceylan*"
+}
 
 
 
