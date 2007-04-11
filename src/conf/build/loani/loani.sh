@@ -1058,7 +1058,7 @@ for t in $target_list; do
 		eval actual_target_archive="\$$target_archive"
 		eval actual_target_md5="\$$target_md5"
 	
-		TRACE "Getting availability of ${actual_target_archive} whose expected MD5 is ${actual_target_md5}"
+		#TRACE "Getting availability of ${actual_target_archive} whose expected MD5 is ${actual_target_md5}"
 	
 		getFileAvailability ${actual_target_archive} ${actual_target_md5}
 		res=$?
