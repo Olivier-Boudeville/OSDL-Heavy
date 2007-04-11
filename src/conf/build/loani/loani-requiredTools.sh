@@ -21,7 +21,7 @@ if [ $is_windows -eq 0 ] ; then
   REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
 
   #FIXME :
-  REQUIRED_TOOLS="Ceylan_win"
+  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win"
   # For Ceylan and OSDL :
   use_svn=0
   
@@ -3842,11 +3842,26 @@ getCeylan()
 			svnAttemptNumber=1
 			success=1
 			
+			# Warning :
+			# cygwin uses a quite small MAX_PATH, which limits the maximum length
+			# of paths. It may cause, among others, a SVN error 
+			# ("svn: Can't open file 'XXX': File name too long)
+			# A work-around for the moment is to request directly the trunk,
+			# not all the Ceylan repository as a whole : its allows to
+			# avoid the release tags that result in long pathnames.
+			
 			if [ $use_current_svn -eq 0 ] ; then 
 				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				SVN_URL="/svnroot/ceylan"
+				CHECKOUT_LOCATION=ceylan/Ceylan/trunk
+				${MKDIR} -p ${CHECKOUT_LOCATION}
+				SVN_URL="/svnroot/${CHECKOUT_LOCATION}"
 			else
+			
+				# Should be quite uncommon for Ceylan developers :
 				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
+				
+				CHECKOUT_LOCATION=ceylan
+				${MKDIR} -p ${CHECKOUT_LOCATION}
 				SVN_URL="/svnroot/ceylan/Ceylan/tags/${latest_stable_ceylan}"
 			fi
 			
@@ -3858,8 +3873,8 @@ getCeylan()
 				${SVN} info https://${Ceylan_SVN_SERVER}:${SVN_URL} --username=${developer_name} 1>/dev/null
 				
 				{
-					DEBUG "SVN command : ${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name} ${SVN_OPT}"
-					${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${repository}/ceylan --username=${developer_name} ${SVN_OPT}
+					DEBUG "SVN command : ${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}"
+					${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}
 				} 1>>"$LOG_OUTPUT" 2>&1	
 				
 				if [ $? -eq 0 ] ; then
