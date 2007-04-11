@@ -21,7 +21,7 @@ if [ $is_windows -eq 0 ] ; then
   REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win OSDL_win"
 
   #FIXME :
-  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win"
+  REQUIRED_TOOLS="OSDL_win"
   
   # For Ceylan and OSDL :
   use_svn=0
@@ -3837,7 +3837,7 @@ getCeylan()
 	
 	if [ $developer_access -eq 0 ] ; then
 
-		DISPLAY "Retrieving Ceylan from developer SVN with user name ${developer_name}."
+		#DISPLAY "Retrieving Ceylan from developer SVN with user name ${developer_name}."
 		
 		if [ $no_svn -eq 1 ] ; then
 
@@ -3845,17 +3845,7 @@ getCeylan()
 		
 			svnAttemptNumber=1
 			success=1
-			
-			# Warning :
-			# cygwin uses a quite small MAX_PATH, which limits the maximum length
-			# of paths. It may cause, among others, a SVN error 
-			# ("svn: Can't open file 'XXX': File name too long)
-			# A work-around was to request directly the trunk,
-			# not all the Ceylan repository as a whole : its allows to
-			# avoid the release tags that result in long pathnames...
-			# but then the test names are too long, hence we are forced
-			# to request the user to update herself her repository.
-			
+						
 			if [ $use_current_svn -eq 0 ] ; then 
 				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
 				CHECKOUT_LOCATION=ceylan
@@ -3891,11 +3881,21 @@ getCeylan()
 					svnAttemptNumber=$(($svnAttemptNumber+1))	
 					LOG_STATUS "SVN command failed."
 					#${SLEEP} 3
+
+					# Warning :
+					# cygwin uses a quite small MAX_PATH, which limits the maximum length
+					# of paths. It may cause, among others, a SVN error 
+					# ("svn: Can't open file 'XXX': File name too long).
+					# A work-around is to request the user to update herself her repository
+					# with TortoiseSVN (this tool is not affected by the MAX_PATH issue), 
+					# as soon as an error occured.
 					
-					# Now ask the user to trigger the full update by itself with TortoiseSVN (bloody MAX_PATH limitation):
-					DISPLAY "Ceylan SVN checkout failed, maybe because of too long pathnames. Please use TortoiseSVN to update the full repository."
+					# Now ask the user to trigger the full update by herself, with TortoiseSVN :
+					DISPLAY "Ceylan SVN checkout failed, maybe because of too long pathnames."
+					DISPLAY "Please use TortoiseSVN to update manually the Ceylan repository."
 					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
 					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
+					# Suppose success :
 					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
 					success=0	
 				fi	
@@ -3944,6 +3944,7 @@ getCeylan()
 					
 					# Remove any symbolic link coming from a previous attempt :
 					${RM} -f ${latest_stable_ceylan} 2>/dev/null
+					
 					# No https, no credential required :
 					DEBUG "${SVN} export http://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
 					${SVN} export http://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT} 
@@ -4306,6 +4307,13 @@ generateCeylan_win()
 	printOK
 
 	printItem "installing"
+	
+	ceylan_build_dir=src/Debug
+	ceylan_install_dir=$repository/../LOANI-installations/Ceylan-${Ceylan_win_VERSION}/Debug
+	${MKDIR} -p ${ceylan_install_dir}
+	
+	${CP} -f ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.dll ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.lib ${ceylan_install_dir}
+	
 	printOK
 
 	printEndList
@@ -4323,9 +4331,16 @@ cleanCeylan_win()
 }
 
 
-
+################################################################################
 ################################################################################
 # OSDL
+################################################################################
+################################################################################
+
+
+
+################################################################################
+# OSDL on non-Windows platforms :
 ################################################################################
 
 
@@ -4336,7 +4351,6 @@ getOSDL()
 {
 
 	DEBUG "Getting OSDL..."
-
 
 	# OSDL can be obtained by downloading a release archive or by using SVN.
 	
@@ -4353,7 +4367,6 @@ getOSDL()
 	
 	cd ${repository}
 
-
 	# Manage back-up directory if necessary :
 	
 	if [ -d "${repository}/osdl" ] ; then
@@ -4363,19 +4376,21 @@ getOSDL()
 				exit 5
 			else	
 				WARNING "Deleting already existing back-up directory for osdl (removing ${repository}/osdl.save)"
-			 	${RM} -rf "${repository}/osdl.save"
+			 	${RM} -rf "${repository}/osdl.save" 2>/dev/null
+				# Sometimes rm fails apparently (long names or other reasons) :
+				${MV} -f ${repository}/osdl.save ${repository}/osdl.save-`date '+%Hh-%Mm-%Ss'`
+
 			fi
 		fi		
 		${MV} -f ${repository}/osdl ${repository}/osdl.save
 		WARNING "There already existed a directory for OSDL (${repository}/osdl), it has been moved to ${repository}/osdl.save." 
 	fi	
 	
-
 	LOG_STATUS "Getting OSDL in its source directory ${repository}..."
 	
 	if [ $developer_access -eq 0 ] ; then
 	
-		DISPLAY "Retrieving OSDL from developer SVN with user name ${developer_name}."
+		#DISPLAY "Retrieving OSDL from developer SVN with user name ${developer_name} (check-out)."
 		
 		if [ $no_svn -eq 1 ] ; then
 		
@@ -4384,34 +4399,65 @@ getOSDL()
 			svnAttemptNumber=1
 			success=1
 			
-			if [ $use_current_svn -eq 0 ] ; then 
+			if [ $use_current_svn -eq 0 ] ; then
 				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				SVN_URL="/svnroot/osdl"
+				CHECKOUT_LOCATION=osdl
+				${MKDIR} -p ${CHECKOUT_LOCATION}
+				SVN_URL="/svnroot/${CHECKOUT_LOCATION}"
 			else
+
+				# Should be quite uncommon for OSDL developers :
 				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
+
+				CHECKOUT_LOCATION=osdl
+				${MKDIR} -p ${CHECKOUT_LOCATION}
 				SVN_URL="/svnroot/osdl/OSDL/tags/${latest_stable_osdl}"
 			fi
 			
 			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+			
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
+
+				# Made to force certificate checking before next non-interactive svn command :
+				${SVN} info https://${OSDL_SVN_SERVER}:${SVN_URL} --username=${developer_name} 1>/dev/null
+
 				{
-					DEBUG "SVN command : ${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${repository}/osdl --username=${developer_name} ${SVN_OPT}"
-					${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${repository}/osdl --username=${developer_name} ${SVN_OPT} 
-				} 1>>"$LOG_OUTPUT" 2>&1	
-				
+					DEBUG "SVN command : ${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}"
+					${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}
+
+				} 1>>"$LOG_OUTPUT" 2>&1
+
 				if [ $? -eq 0 ] ; then
 					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
-					success=0	
+					success=0
 				else
-					svnAttemptNumber=$(($svnAttemptNumber+1))	
+					svnAttemptNumber=$(($svnAttemptNumber+1))
 					LOG_STATUS "SVN command failed."
-					${SLEEP} 3
-				fi	
+					#${SLEEP} 3
+
+					# Warning :
+					# cygwin uses a quite small MAX_PATH, which limits the maximum length
+					# of paths. It may cause, among others, a SVN error
+					# ("svn: Can't open file 'XXX': File name too long).
+					# A work-around is to request the user to update herself her repository
+					# with TortoiseSVN (this tool is not affected by the MAX_PATH issue),
+					# as soon as an error occured.
+
+					# Now ask the user to trigger the full update by herself, with TortoiseSVN :
+					DISPLAY "OSDL SVN checkout failed, maybe because of too long pathnames."
+					DISPLAY "Please use TortoiseSVN to update manually the OSDL repository."
+					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
+					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
+					# Suppose success :
+					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
+					success=0
+				fi
+
 			done
 			
 			
 			if [ $success -ne 0 ] ; then
-				ERROR "Unable to retrieve OSDL from SVN after $MAX_SVN_RETRY attempts."
+				ERROR "Unable to retrieve OSDL from SVN after $MAX_SVN_RETRY attempts (did you accept permanently the Sourceforge certificate, if asked ?)."
 				exit 20
 			fi
 							
@@ -4425,8 +4471,7 @@ getOSDL()
 		fi
 
 	else			
-			
-			
+				
 		if [ $no_svn -eq 1 ] ; then
 
 			DISPLAY "      ----> getting OSDL from anonymous SVN (export)"
@@ -4447,10 +4492,15 @@ getOSDL()
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
 				
 				{
-					DEBUG "${SVN} export https://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
 
-					${SVN} export https://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT} 
-
+					# Remove any symbolic link coming from a previous attempt :
+					${RM} -f ${latest_stable_osdl} 2>/dev/null
+					
+					# No https, no credential required :
+					DEBUG "${SVN} export http://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
+					${SVN} export http://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT}
+					
+					
 				} 1>>"$LOG_OUTPUT" 2>&1
 				
 				if [ $? -eq 0 ] ; then
@@ -4799,6 +4849,88 @@ cleanOSDL()
 	LOG_STATUS "Cleaning OSDL build tree..."
 	# Nothing to do : we want to be able to go on with the OSDL build.
 }
+
+
+
+################################################################################
+# OSDL build thanks to Visual Express, with SVN.
+################################################################################
+
+
+getOSDL_win()
+{
+	LOG_STATUS "Getting OSDL for windows..."
+
+	OSDL_win_ARCHIVE="from SVN"
+	# Cygwin let us do the same :
+	getOSDL
+	return $?
+}
+
+
+prepareOSDL_win()
+{
+
+	LOG_STATUS "Preparing OSDL for windows.."
+
+	OSDL_INST_DIR="../../LOANI-installations/OSDL-${OSDL_win_VERSION}/Debug"
+	${MKDIR} -p ${OSDL_INST_DIR}
+	
+	printOK
+
+}
+
+
+generateOSDL_win()
+{
+
+	LOG_STATUS "Generating OSDL for windows..."
+
+	if [ ${use_svn} -eq 0 ]; then
+	
+		# Here we are in the SVN tree :
+		cd $repository/OSDL/OSDL/trunk
+	
+	else
+	
+		cd $repository/OSDL-${OSDL_win_VERSION}
+	fi
+
+	
+	printItem "configuring"
+ 	printOK
+ 
+	OSDL_SOLUTION=`pwd`"/src/OSDL-${OSDL_win_VERSION}.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress OSDL ${OSDL_SOLUTION}
+	printOK
+
+	printItem "installing"
+
+	osdl_build_dir=src/Debug
+	osdl_install_dir=$repository/../LOANI-installations/OSDL-${OSDL_win_VERSION}/Debug
+	${MKDIR} -p ${osdl_install_dir}
+	
+	${CP} -f ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.dll ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.lib ${osdl_install_dir}
+
+	printOK
+
+	printEndList
+
+	LOG_STATUS "OSDL successfully installed."
+
+	cd "$repository"
+
+}
+
+
+cleanOSDL_win()
+{
+	LOG_STATUS "Cleaning OSDL build tree..."
+	${RM} -rf "$repository/OSDL*"
+}
+
 
 
 #TRACE "[loani-requiredTools] End"
