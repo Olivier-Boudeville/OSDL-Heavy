@@ -20,9 +20,6 @@ if [ $is_windows -eq 0 ] ; then
   # Windows special case :
   REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win OSDL_win"
 
-  #FIXME :
-  REQUIRED_TOOLS="OSDL_win"
-  
   # For Ceylan and OSDL :
   use_svn=0
   
@@ -75,7 +72,7 @@ GenerateWithVisualExpress()
   if [ $be_quiet -eq 1 ] ; then
     DISPLAY ""	
     DISPLAY "Visual Express will be launched now to generate ${PACKAGE_NAME}, choose 'Regenerate Solution' and exit on success."
-    waitForKey "< Hit enter and wait for the IDE to be launched >"
+    #waitForKey "< Hit enter and wait for the IDE to be launched >"
   fi
   
   DEBUG "Loading solution in ${WIN_SOLUTION_PATH}"
@@ -250,7 +247,7 @@ generateSDL()
 		
 		echo "" >> ${OSDL_ENV_FILE}
 				
-        LIBPATH="-L${SDL_PREFIX}/lib"
+		LIBPATH="-L${SDL_PREFIX}/lib"
         
 		# Do not ever imagine that to avoid bad nedit syntax highlighting 
 		# you could change :
@@ -274,8 +271,8 @@ generateSDL()
 	fi	
 	
 	if [ $is_windows -eq 0 ] ; then
-    	${MV} -f ${SDL_PREFIX}/bin/*.dll ${SDL_PREFIX}/lib
-    fi
+    		${MV} -f ${SDL_PREFIX}/bin/*.dll ${SDL_PREFIX}/lib
+	fi
 	    
 	printOK
 
@@ -286,6 +283,7 @@ generateSDL()
 	cd "$initial_dir"
 	
 }
+
 
 cleanSDL()
 {
@@ -335,7 +333,7 @@ prepareSDL_win()
 		exit 10
 	fi
 	
-  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL-from-OSDL" "SDL-${SDL_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL-from-OSDL" "SDL-${SDL_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL solution in build tree."
@@ -357,13 +355,17 @@ generateSDL_win()
 	printItem "configuring"
  	printOK
 
-  SDL_SOLUTION=`pwd`"/SDL-from-OSDL/SDL-from-OSDL.sln"
+	sdl_solution=`pwd`"/SDL-from-OSDL/SDL-from-OSDL.sln"
   
 	printItem "building"
-  GenerateWithVisualExpress SDL ${SDL_SOLUTION}
+	GenerateWithVisualExpress SDL ${sdl_solution}
 	printOK
 
 	printItem "installing"
+	
+	# Take care of the exported header files (API) :
+	${CP} -rf include ${alternate_prefix}/SDL-${SDL_win_VERSION}
+	
 	printOK
 
 	printEndList
@@ -373,6 +375,7 @@ generateSDL_win()
 	cd "$initial_dir"
 
 }
+
 
 cleanSDL_win()
 {
@@ -481,7 +484,7 @@ generatelibjpeg()
         
 	printItem "configuring"
 	
-    # Non windows : standard way of building.
+	# Non windows : standard way of building.
                 
 	# On some platforms, libtool is unable to guess the correct host type :
 	# config.guess fails to detect anything as soon as --enable-shared is added.
@@ -696,14 +699,17 @@ prepareSDL_image_win()
 		exit 10
 	fi
   
-  cd "SDL_image-${SDL_image_win_VERSION}"
+	cd "SDL_image-${SDL_image_win_VERSION}"
+
+	sdl_image_install_dir="${prefix}/SDL_image-${SDL_image_win_VERSION}"
+	
+	sdl_image_lib_install_dir="${sdl_image_install_dir}/Debug"
+	
+	${MKDIR} -p ${sdl_image_lib_install_dir}
   
-  SDL_image_INST_DIR="../../LOANI-installations/SDL_image-${SDL_image_win_VERSION}/Debug"
-  ${MKDIR} -p ${SDL_image_INST_DIR}
-  
-  # Needed for jpeg.h and al, and for DLL as well :
+	# Needed for jpeg.h and al, and for DLL as well :
  	{
-		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/graphics/lib/*.dll ${SDL_image_INST_DIR}
+		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/graphics/lib/*.dll ${sdl_image_lib_install_dir}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
@@ -711,9 +717,9 @@ prepareSDL_image_win()
 		exit 10
 	fi
 
-  cd $repository
+	cd $repository
   
-  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-OSDL" "SDL_image-${SDL_image_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-OSDL" "SDL_image-${SDL_image_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_image solution in build tree."
@@ -735,13 +741,19 @@ generateSDL_image_win()
 	printItem "configuring"
  	printOK
 
-  SDL_image_SOLUTION=`pwd`"/SDL_image-from-OSDL/SDL_image-from-OSDL.sln"
+	sdl_image_solution=`pwd`"/SDL_image-from-OSDL/SDL_image-from-OSDL.sln"
 
 	printItem "building"
-  GenerateWithVisualExpress SDL_image ${SDL_image_SOLUTION}
+	GenerateWithVisualExpress SDL_image ${sdl_image_solution}
 	printOK
 
 	printItem "installing"
+
+	# Take care of the exported header files (API) :
+	sdl_image_include_install_dir="${sdl_image_install_dir}/include"
+	${MKDIR} -p ${sdl_image_include_install_dir}
+	${CP} -f *.h ${sdl_image_include_install_dir}
+	
 	printOK
 
 	printEndList
@@ -751,6 +763,7 @@ generateSDL_image_win()
 	cd "$initial_dir"
 
 }
+
 
 cleanSDL_image_win()
 {
@@ -1515,13 +1528,13 @@ generateSDL_image()
 	
 		DEBUG "Correcting sdl-config for SDL_image."
 		
-        sdl_config=${SDL_PREFIX}/bin/sdl-config
+		sdl_config=${SDL_PREFIX}/bin/sdl-config
         
-        DEBUG "Correcting ${sdl_config}"
-        prefix_one=`cygpath -w ${SDL_PREFIX} | ${SED} 's|\\\|/|g'`
-        prefix_two=`cygpath -w ${SDL_PREFIX} | ${SED} 's|\\\|/|g'`
+		DEBUG "Correcting ${sdl_config}"
+		prefix_one=`cygpath -w ${SDL_PREFIX} | ${SED} 's|\\\|/|g'`
+		prefix_two=`cygpath -w ${SDL_PREFIX} | ${SED} 's|\\\|/|g'`
 
-        ${CAT} ${sdl_config} | ${SED} "s|^prefix=.*$|prefix=$prefix_one|1" > sdl-config.tmp && ${CAT} sdl-config.tmp | ${SED} "s|^exec_prefix=.*$|exec_prefix=$prefix_two|1" > sdl-config.tmp2 && ${RM} -f ${sdl_config} sdl-config.tmp && ${MV} -f sdl-config.tmp2 ${sdl_config}
+		${CAT} ${sdl_config} | ${SED} "s|^prefix=.*$|prefix=$prefix_one|1" > sdl-config.tmp && ${CAT} sdl-config.tmp | ${SED} "s|^exec_prefix=.*$|exec_prefix=$prefix_two|1" > sdl-config.tmp2 && ${RM} -f ${sdl_config} sdl-config.tmp && ${MV} -f sdl-config.tmp2 ${sdl_config}
         
 		if [ $? -ne 0 ] ; then
 			ERROR "Unable to correct sdl-config so that SDL_image can use it."
@@ -2438,14 +2451,17 @@ prepareSDL_mixer_win()
 		exit 10
 	fi
 
-  cd "SDL_mixer-${SDL_mixer_win_VERSION}"
+	cd "SDL_mixer-${SDL_mixer_win_VERSION}"
 
-  SDL_mixer_INST_DIR="../../LOANI-installations/SDL_mixer-${SDL_mixer_win_VERSION}/Debug"
-  ${MKDIR} -p ${SDL_mixer_INST_DIR}
-  
-  # Needed for vorbisfile.h and al, and for Ogg/Vorbis DLL as well :
+	sdl_mixer_install_dir="${prefix}/SDL_mixer-${SDL_mixer_win_VERSION}"
+	
+	sdl_mixer_lib_install_dir="${sdl_mixer_install_dir}/Debug"
+	
+	${MKDIR} -p ${sdl_mixer_lib_install_dir}
+	 
+	# Needed for vorbisfile.h and al, and for Ogg/Vorbis DLL as well :
  	{
-		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/vorbis/lib/*.dll ${SDL_mixer_INST_DIR}
+		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/vorbis/lib/*.dll ${sdl_mixer_lib_install_dir}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
@@ -2453,9 +2469,9 @@ prepareSDL_mixer_win()
 		exit 10
 	fi
 
-  cd $repository
+	cd $repository
   
-  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_mixer-from-OSDL" "SDL_mixer-${SDL_mixer_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_mixer-from-OSDL" "SDL_mixer-${SDL_mixer_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_mixer solution in build tree."
@@ -2477,13 +2493,18 @@ generateSDL_mixer_win()
 	printItem "configuring"
  	printOK
 
-  SDL_mixer_SOLUTION=`pwd`"/SDL_mixer-from-OSDL/SDL_mixer-from-OSDL.sln"
+	sdl_mixer_solution=`pwd`"/SDL_mixer-from-OSDL/SDL_mixer-from-OSDL.sln"
 
 	printItem "building"
-  GenerateWithVisualExpress SDL_mixer ${SDL_mixer_SOLUTION}
+	GenerateWithVisualExpress SDL_mixer ${sdl_mixer_solution}
 	printOK
 
 	printItem "installing"
+	
+	sdl_mixer_install_include_dir=${sdl_mixer_install_dir}/include
+	${MKDIR} -p ${sdl_mixer_install_include_dir}
+	${CP} -f SDL_mixer.h ${sdl_mixer_install_include_dir}
+	
 	printOK
 
 	printEndList
@@ -2493,6 +2514,7 @@ generateSDL_mixer_win()
 	cd "$initial_dir"
 
 }
+
 
 cleanSDL_mixer_win()
 {
@@ -2818,13 +2840,21 @@ generateSDL_gfx_win()
 	printItem "configuring"
  	printOK
 
-	SDL_gfx_SOLUTION=`pwd`"/SDL_gfx-from-OSDL/SDL_gfx-from-OSDL.sln"
+	sdl_gfx_solution=`pwd`"/SDL_gfx-from-OSDL/SDL_gfx-from-OSDL.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress SDL_gfx ${SDL_gfx_SOLUTION}
+	GenerateWithVisualExpress SDL_gfx ${sdl_gfx_solution}
 	printOK
 
 	printItem "installing"
+	
+	sdl_gfx_install_dir="${prefix}/SDL_gfx-${SDL_gfx_win_VERSION}"
+	sdl_gfx_include_install_dir="${sdl_gfx_install_dir}/include"
+
+	${MKDIR} -p "${sdl_gfx_include_install_dir}"
+
+	${CP} -f *.h "${sdl_gfx_include_install_dir}"	
+	
 	printOK
 
 	printEndList
@@ -3266,13 +3296,16 @@ prepareSDL_ttf_win()
 	fi
 
 	cd "SDL_ttf-${SDL_ttf_win_VERSION}"
-  
-	SDL_ttf_INST_DIR="../../LOANI-installations/SDL_ttf-${SDL_ttf_win_VERSION}/Debug"
-	${MKDIR} -p ${SDL_ttf_INST_DIR}
+ 
+	sdl_ttf_install_dir="${prefix}/SDL_ttf-${SDL_ttf_win_VERSION}"
+	
+	sdl_ttf_lib_install_dir="${sdl_ttf_install_dir}/Debug"
+	
+	${MKDIR} -p ${sdl_ttf_lib_install_dir}
   
 	# Needed for ftbuild*.h and al, and for freetype*MT.lib as well :
  	{
-		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/FreeType/lib/*.lib ${SDL_ttf_INST_DIR}
+		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/FreeType/lib/*.lib ${sdl_ttf_lib_install_dir}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
@@ -3304,13 +3337,18 @@ generateSDL_ttf_win()
 	printItem "configuring"
  	printOK
 
-	SDL_ttf_SOLUTION=`pwd`"/SDL_ttf-from-OSDL/SDL_ttf-from-OSDL.sln"
+	sdl_ttf_solution=`pwd`"/SDL_ttf-from-OSDL/SDL_ttf-from-OSDL.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress SDL_ttf ${SDL_ttf_SOLUTION}
+	GenerateWithVisualExpress SDL_ttf ${sdl_ttf_solution}
 	printOK
 
 	printItem "installing"
+	
+	sdl_ttf_include_install_dir="${sdl_ttf_install_dir}/include"
+	${MKDIR} -p ${sdl_ttf_include_install_dir}
+	${CP} -f SDL_ttf.h ${sdl_ttf_include_install_dir}
+	
 	printOK
 
 	printEndList
@@ -3320,6 +3358,7 @@ generateSDL_ttf_win()
 	cd "$initial_dir"
 
 }
+
 
 cleanSDL_ttf_win()
 {
@@ -4273,9 +4312,9 @@ prepareCeylan_win()
 
 	LOG_STATUS "Preparing Ceylan for windows.."
 
-	Ceylan_INST_DIR="../../LOANI-installations/Ceylan-${Ceylan_win_VERSION}/Debug"
-	${MKDIR} -p ${Ceylan_INST_DIR}
-	
+	ceylan_install_dir="${alternate_prefix}/Ceylan-${Ceylan_win_VERSION}"
+	${MKDIR} -p ${ceylan_install_dir}
+ 	
 	printOK
 
 }
@@ -4300,19 +4339,23 @@ generateCeylan_win()
 	printItem "configuring"
  	printOK
  
-	Ceylan_SOLUTION=`pwd`"/src/Ceylan-${Ceylan_win_VERSION}.sln"
+	ceylan_solution=`pwd`"/src/Ceylan-${Ceylan_win_VERSION}.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress Ceylan ${Ceylan_SOLUTION}
+	GenerateWithVisualExpress Ceylan ${ceylan_solution}
 	printOK
 
 	printItem "installing"
 	
 	ceylan_build_dir=src/Debug
-	ceylan_install_dir=$repository/../LOANI-installations/Ceylan-${Ceylan_win_VERSION}/Debug
-	${MKDIR} -p ${ceylan_install_dir}
 	
-	${CP} -f ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.dll ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.lib ${ceylan_install_dir}
+	ceylan_install_lib_dir=${ceylan_install_dir}/Debug
+	${MKDIR} -p ${ceylan_install_lib_dir}
+	${CP} -f ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.dll ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.lib ${ceylan_install_lib_dir}
+	
+	ceylan_install_include_dir=${ceylan_install_dir}/include
+	${MKDIR} -p ${ceylan_install_include_dir}
+	find . -name 'Ceylan*.h' -exec ${CP} -f '{}' ${ceylan_install_include_dir} ';'
 	
 	printOK
 
@@ -4323,6 +4366,7 @@ generateCeylan_win()
 	cd "$repository"
 
 }
+
 
 cleanCeylan_win()
 {
@@ -4873,8 +4917,8 @@ prepareOSDL_win()
 
 	LOG_STATUS "Preparing OSDL for windows.."
 
-	OSDL_INST_DIR="../../LOANI-installations/OSDL-${OSDL_win_VERSION}/Debug"
-	${MKDIR} -p ${OSDL_INST_DIR}
+	osdl_install_dir="${alternate_prefix}/OSDL-${OSDL_win_VERSION}"
+	${MKDIR} -p ${osdl_install_dir}
 	
 	printOK
 
@@ -4900,19 +4944,23 @@ generateOSDL_win()
 	printItem "configuring"
  	printOK
  
-	OSDL_SOLUTION=`pwd`"/src/OSDL-${OSDL_win_VERSION}.sln"
+	osdl_solution=`pwd`"/src/OSDL-${OSDL_win_VERSION}.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress OSDL ${OSDL_SOLUTION}
+	GenerateWithVisualExpress OSDL ${osdl_solution}
 	printOK
 
 	printItem "installing"
 
 	osdl_build_dir=src/Debug
-	osdl_install_dir=$repository/../LOANI-installations/OSDL-${OSDL_win_VERSION}/Debug
-	${MKDIR} -p ${osdl_install_dir}
 	
-	${CP} -f ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.dll ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.lib ${osdl_install_dir}
+	osdl_install_lib_dir=${osdl_install_dir}/Debug
+	${MKDIR} -p ${osdl_install_lib_dir}
+	${CP} -f ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.dll ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.lib ${osdl_install_lib_dir}
+	
+	osdl_install_include_dir=${osdl_install_dir}/include
+	${MKDIR} -p ${osdl_install_include_dir}
+	find . -name 'OSDL*.h' -exec ${CP} -f '{}' ${osdl_install_include_dir} ';'
 
 	printOK
 
