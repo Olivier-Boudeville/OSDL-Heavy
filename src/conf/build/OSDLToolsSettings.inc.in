@@ -221,6 +221,7 @@ SDL_mixer_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/releas
 SDL_mixer_win_MD5="1b78fa15240ed14dc756f3168b757ccd"
 
 
+
 # Ceylan (libCeylan.so) : http://ceylan.sourceforge.net
 
 # Ceylan can be retrieved from SVN or from a source code archive.
@@ -231,6 +232,14 @@ Ceylan_ARCHIVE="ceylan-${Ceylan_VERSION}.tar.bz2"
 Ceylan_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/ceylan"
 Ceylan_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/ceylan"
 Ceylan_MD5="(blanked)"
+
+Ceylan_win_VERSION="@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@"
+Ceylan_win_ARCHIVE="ceylan-${Ceylan_win_VERSION}.tar.bz2"
+# OSDN is the first download location to be mirrored :
+Ceylan_win_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/ceylan"
+Ceylan_win_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/ceylan"
+Ceylan_win_MD5="(blanked)"
+
 Ceylan_SVN_SERVER=ceylan.svn.sourceforge.net
 
 
@@ -245,7 +254,16 @@ OSDL_ARCHIVE="osdl-${OSDL_VERSION}.tar.bz2"
 OSDL_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
 OSDL_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/osdl"
 OSDL_MD5="(blanked)"
+
+OSDL_win_VERSION="@OSDL_VERSION@"
+OSDL_win_ARCHIVE="osdl-${OSDL_win_VERSION}.tar.bz2"
+# OSDN is the first download location to be mirrored :
+OSDL_win_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
+OSDL_win_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/osdl"
+OSDL_win_MD5="(blanked)"
+
 OSDL_SVN_SERVER=osdl.svn.sourceforge.net
+
 
 
 # Next to come may be : SDL_sound, PhysFS
