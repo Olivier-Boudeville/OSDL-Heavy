@@ -18,10 +18,11 @@ latest_stable_osdl="release-0.5.0"
 if [ $is_windows -eq 0 ] ; then
 
   # Windows special case :
-  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
+  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win OSDL_win"
 
   #FIXME :
-  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win"
+  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win"
+  
   # For Ceylan and OSDL :
   use_svn=0
   
@@ -72,9 +73,9 @@ GenerateWithVisualExpress()
   WIN_SOLUTION_PATH=`cygpath -w ${SOLUTION_PATH}`
 
   if [ $be_quiet -eq 1 ] ; then
-    DISPLAY "Visual Express will be launched now to generate ${PACKAGE_NAME}, choose 'Regenerate All' and exit on success."
-    DISPLAY "Hit enter and wait for the IDE to be launched"
-    #waitForKey
+    DISPLAY ""	
+    DISPLAY "Visual Express will be launched now to generate ${PACKAGE_NAME}, choose 'Regenerate Solution' and exit on success."
+    waitForKey "< Hit enter and wait for the IDE to be launched >"
   fi
   
   DEBUG "Loading solution in ${WIN_SOLUTION_PATH}"
@@ -653,6 +654,9 @@ cleanlibjpeg()
 
 ################################################################################
 # SDL_image build thanks to Visual Express.
+# Its prerequesites (notably JPEG, PNG, ZLIB libraries) are managed
+# here as well (these second or third order libraries are not built, they are 
+# just downloaded with the SDL_image package).
 ################################################################################
 
 #TRACE "[loani-requiredTools] SDL_image for Visual Express targets"
@@ -2393,6 +2397,9 @@ cleanSDL_mixer()
 
 ################################################################################
 # SDL_mixer build thanks to Visual Express.
+# Its prerequesites (Ogg/Vorbis libraries, including VorbisFile) are managed
+# here as well (these second order libraries are not built, they are just
+# downloaded with the SDL_mixer package).
 ################################################################################
 
 
@@ -2743,18 +2750,16 @@ cleanSDL_gfx()
 
 
 
-getSDL_gfx()
-{
-	LOG_STATUS "Getting SDL_gfx..."
-	launchFileRetrieval SDL_gfx
-	return $?
-}
-
-
-
 ################################################################################
 # SDL_gfx build thanks to Visual Express :
 ################################################################################
+
+getSDL_gfx_win()
+{
+	LOG_STATUS "Getting SDL_gfx_win..."
+	launchFileRetrieval SDL_gfx_win
+	return $?
+}
 
 
 prepareSDL_gfx_win()
@@ -2793,7 +2798,7 @@ prepareSDL_gfx_win()
 		exit 10
 	fi
 
-  ${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_gfx-from-OSDL" "SDL_gfx-${SDL_gfx_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_gfx-from-OSDL" "SDL_gfx-${SDL_gfx_win_VERSION}"
 
 	${MV} -f ${SDL_gfx_win_ARCHIVE}.save ${SDL_gfx_win_ARCHIVE}
 	${RM} -f "SDL_gfx-${SDL_gfx_win_VERSION}.tar"
@@ -2813,10 +2818,10 @@ generateSDL_gfx_win()
 	printItem "configuring"
  	printOK
 
-  SDL_gfx_SOLUTION=`pwd`"/SDL_gfx-from-OSDL/SDL_gfx-from-OSDL.sln"
+	SDL_gfx_SOLUTION=`pwd`"/SDL_gfx-from-OSDL/SDL_gfx-from-OSDL.sln"
 
 	printItem "building"
-  GenerateWithVisualExpress SDL_gfx ${SDL_gfx_SOLUTION}
+	GenerateWithVisualExpress SDL_gfx ${SDL_gfx_SOLUTION}
 	printOK
 
 	printItem "installing"
@@ -3262,7 +3267,7 @@ prepareSDL_ttf_win()
 
 	cd "SDL_ttf-${SDL_ttf_win_VERSION}"
   
-	SDL_ttf_INST_DIR="../../LOANI-installations/SDL_image-${SDL_image_win_VERSION}/Debug"
+	SDL_ttf_INST_DIR="../../LOANI-installations/SDL_ttf-${SDL_ttf_win_VERSION}/Debug"
 	${MKDIR} -p ${SDL_ttf_INST_DIR}
   
 	# Needed for ftbuild*.h and al, and for freetype*MT.lib as well :
@@ -3821,13 +3826,12 @@ getCeylan()
 				WARNING "Deleting already existing back-up directory for ceylan (removing ${repository}/ceylan.save)"
 			 	${RM} -rf "${repository}/ceylan.save" 2>/dev/null
 				# Sometimes rm fails apparently (long names or other reasons) :
-				${MV} -f ${repository}/ceylan.save ${repository}/ceylan.save-`date '+%H:%M:%S'`
+				${MV} -f ${repository}/ceylan.save ${repository}/ceylan.save-`date '+%Hh-%Mm-%Ss'`
 			fi
 		fi		
 		${MV} -f ${repository}/ceylan ${repository}/ceylan.save
 		WARNING "There already existed a directory for Ceylan (${repository}/ceylan), it has been moved to ${repository}/ceylan.save." 
 	fi	
-	
 	
 	LOG_STATUS "Getting Ceylan in its source directory ${repository}..."
 	
@@ -3846,13 +3850,15 @@ getCeylan()
 			# cygwin uses a quite small MAX_PATH, which limits the maximum length
 			# of paths. It may cause, among others, a SVN error 
 			# ("svn: Can't open file 'XXX': File name too long)
-			# A work-around for the moment is to request directly the trunk,
+			# A work-around was to request directly the trunk,
 			# not all the Ceylan repository as a whole : its allows to
-			# avoid the release tags that result in long pathnames.
+			# avoid the release tags that result in long pathnames...
+			# but then the test names are too long, hence we are forced
+			# to request the user to update herself her repository.
 			
 			if [ $use_current_svn -eq 0 ] ; then 
 				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				CHECKOUT_LOCATION=ceylan/Ceylan/trunk
+				CHECKOUT_LOCATION=ceylan
 				${MKDIR} -p ${CHECKOUT_LOCATION}
 				SVN_URL="/svnroot/${CHECKOUT_LOCATION}"
 			else
@@ -3875,16 +3881,25 @@ getCeylan()
 				{
 					DEBUG "SVN command : ${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}"
 					${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}
+					
 				} 1>>"$LOG_OUTPUT" 2>&1	
-				
+
 				if [ $? -eq 0 ] ; then
 					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
 					success=0	
 				else
 					svnAttemptNumber=$(($svnAttemptNumber+1))	
 					LOG_STATUS "SVN command failed."
-					${SLEEP} 3
+					#${SLEEP} 3
+					
+					# Now ask the user to trigger the full update by itself with TortoiseSVN (bloody MAX_PATH limitation):
+					DISPLAY "Ceylan SVN checkout failed, maybe because of too long pathnames. Please use TortoiseSVN to update the full repository."
+					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
+					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
+					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
+					success=0	
 				fi	
+					
 			done
 			
 			
