@@ -4,15 +4,13 @@
 	Version="8.00"
 	Name="OSDLProperties"
 	>
-	
 	<UserMacro
 		Name="LoaniDir"
-		Value="..\..\.."
+		Value="$(SolutionDir)\..\..\..\..\.."
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-	
 	<UserMacro
 		Name="LoaniRepoDir"
 		Value="$(LoaniDir)\LOANI-repository"
@@ -27,7 +25,6 @@
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-	
 	<UserMacro
 		Name="SDLVersion"
 		Value="1.2.11"
@@ -51,12 +48,11 @@
 	/>
 	<UserMacro
 		Name="SDLIncDir"
-		Value="$(SDLRepoDir)\include"
+		Value="$(SDLInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-
 	<UserMacro
 		Name="SDL_gfxVersion"
 		Value="2.0.16"
@@ -80,13 +76,12 @@
 	/>
 	<UserMacro
 		Name="SDL_gfxIncDir"
-		Value="$(SDL_gfxRepoDir)"
+		Value="$(SDL_gfxInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-
- 	<UserMacro
+	<UserMacro
 		Name="SDL_imageVersion"
 		Value="1.2.5"
 		InheritsFromParent="true"
@@ -109,25 +104,18 @@
 	/>
 	<UserMacro
 		Name="SDL_imageIncDir"
-		Value="$(SDL_imageRepoDir)/include"
+		Value="$(SDL_imageInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
 		Name="SDL_imageDepIncDir"
-		Value="$(SDL_imageRepoDir)/VisualC/graphics/include"
+		Value="$(SDL_imageRepoDir)\VisualC\graphics\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-		Name="SDL_imageDepLibDir"
-		Value="$(SDL_imageRepoDir)\VisualC\graphics\lib"
-		InheritsFromParent="true"
-		Delimiter=";"
-		PerformEnvironmentSet="true"
-	/>
-
 	<UserMacro
 		Name="SDL_ttfVersion"
 		Value="2.0.8"
@@ -151,12 +139,11 @@
 	/>
 	<UserMacro
 		Name="SDL_ttfIncDir"
-		Value="$(SDL_ttfRepoDir)"
+		Value="$(SDL_ttfInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-
 	<UserMacro
 		Name="FreetypeIncDir"
 		Value="$(SDL_ttfRepoDir)\VisualC\FreeType\include"
@@ -164,7 +151,6 @@
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-
 	<UserMacro
 		Name="FreetypeInstDir"
 		Value="$(SDL_ttfInstDir)"
@@ -172,8 +158,6 @@
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-
-
 	<UserMacro
 		Name="SDL_mixerVersion"
 		Value="1.2.7"
@@ -197,12 +181,11 @@
 	/>
 	<UserMacro
 		Name="SDL_mixerIncDir"
-		Value="$(SDL_mixerRepoDir)"
+		Value="$(SDL_mixerInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-
 	<UserMacro
 		Name="MikmodIncDir"
 		Value="$(SDL_mixerRepoDir)\mikmod"
@@ -210,7 +193,6 @@
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-	
 	<UserMacro
 		Name="TimidityIncDir"
 		Value="$(SDL_mixerRepoDir)\timidity"
@@ -218,29 +200,81 @@
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-
- 	<UserMacro
+	<UserMacro
 		Name="NativeMidiIncDir"
 		Value="$(SDL_mixerRepoDir)\native_midi"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-
- 	<UserMacro
+	<UserMacro
 		Name="VorbisIncDir"
 		Value="$(SDL_mixerRepoDir)\VisualC\vorbis\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-
- 	<UserMacro
+	<UserMacro
 		Name="SmpegIncDir"
 		Value="$(SDL_mixerRepoDir)\VisualC\smpeg\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
-	
+	<UserMacro
+		Name="CeylanVersion"
+		Value="0.5"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="CeylanRepoDir"
+		Value="$(LoaniRepoDir)\ceylan\Ceylan\trunk"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="CeylanInstDir"
+		Value="$(LoaniInstDir)\Ceylan-$(CeylanVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="CeylanIncDir"
+		Value="$(CeylanInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="OSDLVersion"
+		Value="0.5"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="OSDLRepoDir"
+		Value="$(LoaniRepoDir)\osdl\OSDL\trunk"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="OSDLInstDir"
+		Value="$(LoaniInstDir)\OSDL-$(OSDLVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="OSDLIncDir"
+		Value="$(OSDLInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
 </VisualStudioPropertySheet>
