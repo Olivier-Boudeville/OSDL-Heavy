@@ -52,14 +52,14 @@
  * To know to which OSDL version a set of installed headers corresponds, 
  * the OSDLHeaderVersion.h file (generated at configure time) should be read, 
  * for the actualOSDLHeaderLibtoolVersion variable. Including only OSDL.h 
- * is enough to have everything available. 
+ * is enough to have everything from OSDL available. 
  *
  * The OSDLConfig.h file (generated at configure time) cannot be read for
  * version informations, as it is on purpose not installed, to avoid clashes. 
  *
  * To know to which OSDL version an installed library corresponds, 
  * its OSDL::GetVersion function should be called. It is defined in
- * trunk/src/code/generic/OSDLBasic.h, and retrieves the version 
+ * trunk/src/code/basic/OSDLBasic.h, and retrieves the version 
  * information which was defined in its OSDL_LIBTOOL_VERSION when it was
  * compiled.
  *
@@ -70,19 +70,20 @@
  * default OSDLHeaderVersion.h file in the sources.
  *
  * A OSDL-using program can make use of the CHECK_OSDL_VERSIONS (defined in
- * trunk/src/code/generic/OSDLBasic.h) to check automatically whether
+ * trunk/src/code/basic/OSDLBasic.h) to check automatically whether
  * versions of library and headers match.
  *
- * It the test fails (header and library versions cannot work together), at
+ * It the test fails (header and library versions are not compatible), at
  * runtime the issue will be detected thanks to the macro, and a message will
  * explain the situation, ex :
- *
+ * """
  * Fatal error : OSDL is performing an emergency shutdown since an abnormal
  * situation occured. OSDL library version currently linked (Libtool version :
  * current interface number = 0, current revision number = 5, interface age = 0)
  * is not compatible with the one read from the OSDL header files used to
  * compile this application (Libtool version : current interface number = 1,
  * current revision number = 6, interface age = 0), aborting.
+ * """
  *
  * @see OSDLConfig.h, OSDLConfigForWindows.h, and basic/OSDLBasic.h
  * in the common module for more informations, including the macro
@@ -91,8 +92,6 @@
  * @see test/basic/testOSDLBasic.cc for the macro use.
  *
  */
-
-
 
 #include "OSDLAudioIncludes.h"
 #include "OSDLBasicIncludes.h"
