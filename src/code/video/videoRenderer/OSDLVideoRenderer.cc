@@ -112,7 +112,7 @@ void VideoRenderer::setCamera( Camera & newCamera ) throw()
 */
 
 
-void VideoRenderer::render( Events::RenderingTick currentRenderingTick ) 
+void VideoRenderer::render( RenderingTick currentRenderingTick ) 
 	throw()
 {
 
