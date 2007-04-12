@@ -18,7 +18,10 @@ latest_stable_osdl="release-0.5.0"
 if [ $is_windows -eq 0 ] ; then
 
   # Windows special case :
-  REQUIRED_TOOLS="SDL_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win OSDL_win"
+  REQUIRED_TOOLS="SDL_win zlib_win libpng_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win OSDL_win"
+
+  # FIXME :
+  REQUIRED_TOOLS="libpng_win"
 
   # For Ceylan and OSDL :
   use_svn=0
@@ -649,261 +652,8 @@ cleanlibjpeg()
 
 ################################################################################
 ################################################################################
-# SDL_image
+# zlib
 ################################################################################
-################################################################################
-
-
-
-################################################################################
-# SDL_image build thanks to Visual Express.
-# Its prerequesites (notably JPEG, PNG, ZLIB libraries) are managed
-# here as well (these second or third order libraries are not built, they are 
-# just downloaded with the SDL_image package).
-################################################################################
-
-#TRACE "[loani-requiredTools] SDL_image for Visual Express targets"
-
-getSDL_image_win()
-{
-	LOG_STATUS "Getting SDL_image for windows..."
-	launchFileRetrieval SDL_image_win
-	return $?
-}
-
-
-prepareSDL_image_win()
-{
-
-	LOG_STATUS "Preparing SDL_image for windows.."
-	
-	if findTool unzip ; then
-		UNZIP=$returnedString
-	else
-		ERROR "No unzip tool found, whereas some files have to be unzipped."
-		exit 8
-	fi
-
-	printBeginList "SDL_image  "
-
-	printItem "extracting"
-
-	cd $repository
-
-	{
-		${UNZIP} -o ${SDL_image_win_ARCHIVE}
-	} 1>>"$LOG_OUTPUT" 2>&1
-	
-	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_image_win_ARCHIVE}."
-		exit 10
-	fi
-  
-	cd "SDL_image-${SDL_image_win_VERSION}"
-
-	sdl_image_install_dir="${prefix}/SDL_image-${SDL_image_win_VERSION}"
-	
-	sdl_image_lib_install_dir="${sdl_image_install_dir}/Debug"
-	
-	${MKDIR} -p ${sdl_image_lib_install_dir}
-  
-	# Needed for jpeg.h and al, and for DLL as well :
- 	{
-		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/graphics/lib/*.dll ${sdl_image_lib_install_dir}
-	} 1>>"$LOG_OUTPUT" 2>&1
-
-	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_image_win_ARCHIVE} subpackages."
-		exit 10
-	fi
-
-	cd $repository
-  
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-OSDL" "SDL_image-${SDL_image_win_VERSION}"
-
-	if [ $? != 0 ] ; then
-		ERROR "Unable to copy SDL_image solution in build tree."
-		exit 11
-	fi
-
-	printOK
-
-}
-
-
-generateSDL_image_win()
-{
-
-	LOG_STATUS "Generating SDL_image for windows..."
-
-	cd "SDL_image-${SDL_image_win_VERSION}"
-
-	printItem "configuring"
- 	printOK
-
-	sdl_image_solution=`pwd`"/SDL_image-from-OSDL/SDL_image-from-OSDL.sln"
-
-	printItem "building"
-	GenerateWithVisualExpress SDL_image ${sdl_image_solution}
-	printOK
-
-	printItem "installing"
-
-	# Take care of the exported header files (API) :
-	sdl_image_include_install_dir="${sdl_image_install_dir}/include"
-	${MKDIR} -p ${sdl_image_include_install_dir}
-	${CP} -f *.h ${sdl_image_include_install_dir}
-	
-	printOK
-
-	printEndList
-
-	LOG_STATUS "SDL_image successfully installed."
-
-	cd "$initial_dir"
-
-}
-
-
-cleanSDL_image_win()
-{
-	LOG_STATUS "Cleaning SDL build tree..."
-	${RM} -rf "SDL_image-${SDL_image_win_VERSION}"
-}
-
-
-################################################################################
-# SDL_image_*_precompiled targets.
-################################################################################
-
-# Windows binaries.
-
-getSDL_image_win_precompiled()
-{
-        LOG_STATUS "Getting prebuilt JPEG library for windows (SDL_image package)..."
-        launchFileRetrieval SDL_image_win_precompiled              
-        return $?    
-}
-
-
-prepareSDL_image_win_precompiled()
-{
-
-	LOG_STATUS "Preparing prebuilt JPEG library..."
-	if findTool unzip ; then
-		UNZIP=$returnedString
-	else
-		ERROR "No unzip tool found, whereas some files have to be unzipped."
-		exit 8
-	fi	
-
-	printBeginList "Precompiled"
-        
-	printItem "extracting"
-	
-	cd $repository
-	
-	SDL_image_prebuilt_dir="SDL_image-${SDL_image_VERSION}-prebuilt"
-        
-	# Prevent archive from disappearing because of unzip.
-        # Create SDL_image-x.y.z-prebuilt directory with precompiled DLL in it.
-	{
-		${CP} -f ${SDL_image_win_precompiled_ARCHIVE} ${SDL_image_win_precompiled_ARCHIVE}.save && ${UNZIP} -o ${SDL_image_win_precompiled_ARCHIVE} && ${MV} -f SDL_image-${SDL_image_VERSION} ${SDL_image_prebuilt_dir} 
-	} 1>>"$LOG_OUTPUT" 2>&1
-	
- 
-	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_image_win_precompiled_ARCHIVE}."
-		LOG_STATUS "Restoring ${SDL_image_win_precompiled_ARCHIVE}."
-		${MV} -f ${SDL_image_win_precompiled_ARCHIVE}.save ${SDL_image_win_precompiled_ARCHIVE} 
-		exit 10
-	fi
-	
-	${MV} -f ${SDL_image_win_precompiled_ARCHIVE}.save ${SDL_image_win_precompiled_ARCHIVE} 
- 	
-	printOK
-	
-}
-
-
-generateSDL_image_win_precompiled()
-{
-
-	LOG_STATUS "Generating SDL_image_win_precompiled ..."
-	
-	cd "${SDL_image_prebuilt_dir}"
-	
-	printItem "configuring"
-	
-	# Nothing to do !
-	
-	printOK	
-
-	printItem "building"
-	
-	# Nothing to do !
-
-	printOK
-
-
-	printItem "installing"
-	
-	if [ -n "$prefix" ] ; then	
-	{		
-	
-		# Let us suppose the precompiled version has for version libjpeg_VERSION.
-
-		# The libjpeg target should already have :
-		#       - created ${libjpeg_PREFIX}/lib
-		#       - defined :
-		# LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
-		#       - added the libjpeg section." in ${OSDL_ENV_FILE}
-		#       - updated LD_LIBRARY_PATH *and* PATH with ${libjpeg_PREFIX}/lib
-		
-		${CP} -f lib/jpeg.dll ${libjpeg_PREFIX}/lib
-                	
-	} 1>>"$LOG_OUTPUT" 2>&1		
-	else
-	{		
-		if [ $is_windows -eq 1 ] ; then	
-			setBuildEnv ${MAKE} install 
-		else
-			DEBUG "Using ${windows_dll_location} as target Windows DLL location." 
-			${CP} -f lib/jpeg.dll ${windows_dll_location}
-		fi
-  
-	} 1>>"$LOG_OUTPUT" 2>&1			
-	fi
-
-	if [ $? != 0 ] ; then
-		echo
-		ERROR "Unable to install precompiled binaries."
-		exit 13
-	fi	
-				
-	printOK
-
-	printEndList
-	
-	LOG_STATUS "Precompiled binaries successfully installed."
-	
-	cd "$initial_dir"
-	
-}
-
-
-cleanSDL_image_win_precompiled()
-{
-	LOG_STATUS "Cleaning SDL_image precompiled for windows build tree..."
-	${RM} -rf "${SDL_image_prebuilt_dir}"
-}
-
-
-
-
-
-################################################################################
-# zlib library
 ################################################################################
 
 
@@ -1074,9 +824,104 @@ cleanzlib()
 
 
 
+################################################################################
+# zlib build thanks to Visual Express.
+################################################################################
+
+#TRACE "[loani-requiredTools] zlib for Visual Express targets"
+
+
+getzlib_win()
+{
+	LOG_STATUS "Getting zlib for windows..."
+	launchFileRetrieval zlib_win
+	return $?
+}
+
+
+preparezlib_win()
+{
+
+	LOG_STATUS "Preparing zlib for windows.."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "zlib       "
+
+	printItem "extracting"
+
+	cd $repository
+
+	zlib_source_dir="zlib-${zlib_win_VERSION}"	
+	${MKDIR} -p ${zlib_source_dir}
+	${CP} -f ${zlib_win_ARCHIVE} ${zlib_source_dir} 
+	cd ${zlib_source_dir}
+	
+	{
+		${UNZIP} -o ${zlib_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${zlib_win_ARCHIVE}."
+		exit 10
+	fi
+
+	zlib_install_dir="${prefix}/zlib-${zlib_win_VERSION}"
+
+	zlib_lib_install_dir="${zlib_install_dir}/Debug"
+
+	${MKDIR} -p ${zlib_lib_install_dir}
+
+	cd $repository
+
+	printOK
+
+}
+
+
+generatezlib_win()
+{
+
+	# Everything will be done in the libpng_win steps.
+	
+	LOG_STATUS "Generating zlib for windows..."
+
+	printItem "configuring"
+ 	printOK
+	
+	printItem "building"
+	printOK
+
+	printItem "installing"
+	printOK
+
+	printEndList
+
+	LOG_STATUS "zlib successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanzlib_win()
+{
+	LOG_STATUS "Cleaning SDL build tree..."
+	${RM} -rf "${zlib_source_dir}"
+}
+
+
+
 
 ################################################################################
-# PNG library
+################################################################################
+# libpng (PNG library)
+################################################################################
 ################################################################################
 
 
@@ -1308,10 +1153,114 @@ cleanlibpng()
 }
 
 
+################################################################################
+# libpng build thanks to Visual Express.
+# Its libpng and libpng prerequesites are managed seperatly, whereas libjpeg is
+# managed here (this second order library is not built, it is
+# just downloaded with the libpng package).
+################################################################################
+
+#TRACE "[loani-requiredTools] libpng for Visual Express targets"
+
+getlibpng_win()
+{
+	LOG_STATUS "Getting libpng for windows..."
+	launchFileRetrieval libpng_win
+	return $?
+}
+
+
+preparelibpng_win()
+{
+
+	LOG_STATUS "Preparing libpng for windows.."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "libpng  "
+
+	printItem "extracting"
+
+	cd $repository
+
+	libpng_source_dir="libpng-${libpng_win_VERSION}"	
+	${RM} -rf ${libpng_source_dir} 2>/dev/null
+
+	{
+		${UNZIP} -o ${libpng_win_ARCHIVE} && ${MV} -f lpng${libpng_win_archive_VERSION} ${libpng_source_dir}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${libpng_win_ARCHIVE}."
+		exit 10
+	fi
+exit
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libpng-from-OSDL" "libpng-${libpng_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy libpng solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generatelibpng_win()
+{
+
+	LOG_STATUS "Generating libpng for windows..."
+
+	cd "libpng-${libpng_win_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+	
+	
+	libpng_solution=`pwd`"/libpng-from-OSDL/libpng-from-OSDL.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress libpng ${libpng_solution}
+	printOK
+
+	printItem "installing"
+
+	# Take care of the exported header files (API for libpng and libjpeg) :
+	libpng_include_install_dir="${libpng_install_dir}/include"
+	${MKDIR} -p ${libpng_include_install_dir}
+	${CP} -f *.h VisualC\graphics\include\j*.h ${libpng_include_install_dir}
+
+	printOK
+
+	printEndList
+
+	LOG_STATUS "libpng successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanlibpng_win()
+{
+	LOG_STATUS "Cleaning SDL build tree..."
+	${RM} -rf "libpng-${libpng_win_VERSION}"
+}
+
 
 
 ################################################################################
-# TIFF library (disabled for the moment)
+################################################################################
+# libtiff (TIFF library)
+# Currently disabled.
+################################################################################
 ################################################################################
 
 
@@ -1457,9 +1406,10 @@ cleanlibtiff()
 
 
 
-
 ################################################################################
-# SDL_image itself
+################################################################################
+# SDL_image
+################################################################################
 ################################################################################
 
 
@@ -1758,6 +1708,253 @@ cleanSDL_image()
 	LOG_STATUS "Cleaning SDL_image library build tree..."
 	${RM} -rf "SDL_image-${SDL_image_VERSION}"
 }
+
+
+
+################################################################################
+# SDL_image build thanks to Visual Express.
+# Its libpng and zlib prerequesites are managed seperatly, whereas libjpeg is
+# managed here (this second order library is not built, it is 
+# just downloaded with the SDL_image package).
+################################################################################
+
+#TRACE "[loani-requiredTools] SDL_image for Visual Express targets"
+
+getSDL_image_win()
+{
+	LOG_STATUS "Getting SDL_image for windows..."
+	launchFileRetrieval SDL_image_win
+	return $?
+}
+
+
+prepareSDL_image_win()
+{
+
+	LOG_STATUS "Preparing SDL_image for windows.."
+	
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "SDL_image  "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${SDL_image_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_image_win_ARCHIVE}."
+		exit 10
+	fi
+  
+	cd "SDL_image-${SDL_image_win_VERSION}"
+
+	sdl_image_install_dir="${prefix}/SDL_image-${SDL_image_win_VERSION}"
+	
+	sdl_image_lib_install_dir="${sdl_image_install_dir}/Debug"
+	
+	${MKDIR} -p ${sdl_image_lib_install_dir}
+  
+	# Needed for jpeg.h and al, and for DLL as well :
+ 	{
+		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/graphics/lib/jpeg.dll ${sdl_image_lib_install_dir}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_image_win_ARCHIVE} subpackages."
+		exit 10
+	fi
+
+	cd $repository
+  
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-OSDL" "SDL_image-${SDL_image_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy SDL_image solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generateSDL_image_win()
+{
+
+	LOG_STATUS "Generating SDL_image for windows..."
+
+	cd "SDL_image-${SDL_image_win_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+	sdl_image_solution=`pwd`"/SDL_image-from-OSDL/SDL_image-from-OSDL.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress SDL_image ${sdl_image_solution}
+	printOK
+
+	printItem "installing"
+
+	# Take care of the exported header files (API for SDL_image and libjpeg) :
+	sdl_image_include_install_dir="${sdl_image_install_dir}/include"
+	${MKDIR} -p ${sdl_image_include_install_dir}
+	${CP} -f *.h VisualC\graphics\include\j*.h ${sdl_image_include_install_dir}
+	
+	printOK
+
+	printEndList
+
+	LOG_STATUS "SDL_image successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanSDL_image_win()
+{
+	LOG_STATUS "Cleaning SDL build tree..."
+	${RM} -rf "SDL_image-${SDL_image_win_VERSION}"
+}
+
+
+
+################################################################################
+# SDL_image_*_precompiled targets.
+################################################################################
+
+# Windows binaries.
+
+getSDL_image_win_precompiled()
+{
+        LOG_STATUS "Getting prebuilt JPEG library for windows (SDL_image package)..."
+        launchFileRetrieval SDL_image_win_precompiled              
+        return $?    
+}
+
+
+prepareSDL_image_win_precompiled()
+{
+
+	LOG_STATUS "Preparing prebuilt JPEG library..."
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi	
+
+	printBeginList "Precompiled"
+        
+	printItem "extracting"
+	
+	cd $repository
+	
+	SDL_image_prebuilt_dir="SDL_image-${SDL_image_VERSION}-prebuilt"
+        
+	# Prevent archive from disappearing because of unzip.
+        # Create SDL_image-x.y.z-prebuilt directory with precompiled DLL in it.
+	{
+		${CP} -f ${SDL_image_win_precompiled_ARCHIVE} ${SDL_image_win_precompiled_ARCHIVE}.save && ${UNZIP} -o ${SDL_image_win_precompiled_ARCHIVE} && ${MV} -f SDL_image-${SDL_image_VERSION} ${SDL_image_prebuilt_dir} 
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+ 
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${SDL_image_win_precompiled_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL_image_win_precompiled_ARCHIVE}."
+		${MV} -f ${SDL_image_win_precompiled_ARCHIVE}.save ${SDL_image_win_precompiled_ARCHIVE} 
+		exit 10
+	fi
+	
+	${MV} -f ${SDL_image_win_precompiled_ARCHIVE}.save ${SDL_image_win_precompiled_ARCHIVE} 
+ 	
+	printOK
+	
+}
+
+
+generateSDL_image_win_precompiled()
+{
+
+	LOG_STATUS "Generating SDL_image_win_precompiled ..."
+	
+	cd "${SDL_image_prebuilt_dir}"
+	
+	printItem "configuring"
+	
+	# Nothing to do !
+	
+	printOK	
+
+	printItem "building"
+	
+	# Nothing to do !
+
+	printOK
+
+
+	printItem "installing"
+	
+	if [ -n "$prefix" ] ; then	
+	{		
+	
+		# Let us suppose the precompiled version has for version libjpeg_VERSION.
+
+		# The libjpeg target should already have :
+		#       - created ${libjpeg_PREFIX}/lib
+		#       - defined :
+		# LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
+		#       - added the libjpeg section." in ${OSDL_ENV_FILE}
+		#       - updated LD_LIBRARY_PATH *and* PATH with ${libjpeg_PREFIX}/lib
+		
+		${CP} -f lib/jpeg.dll ${libjpeg_PREFIX}/lib
+                	
+	} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+	{		
+		if [ $is_windows -eq 1 ] ; then	
+			setBuildEnv ${MAKE} install 
+		else
+			DEBUG "Using ${windows_dll_location} as target Windows DLL location." 
+			${CP} -f lib/jpeg.dll ${windows_dll_location}
+		fi
+  
+	} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install precompiled binaries."
+		exit 13
+	fi	
+				
+	printOK
+
+	printEndList
+	
+	LOG_STATUS "Precompiled binaries successfully installed."
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleanSDL_image_win_precompiled()
+{
+	LOG_STATUS "Cleaning SDL_image precompiled for windows build tree..."
+	${RM} -rf "${SDL_image_prebuilt_dir}"
+}
+
 
 
 
