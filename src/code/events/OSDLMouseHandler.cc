@@ -52,7 +52,7 @@ MouseHandler::MouseHandler( bool useClassicalMice )
 	_mice = new Mouse *[ _miceCount ] ;
 	
 	for ( MouseNumber i = 0; i < _miceCount ; i++ )
-		_mice[i] = new Mouse( _useClassicalMice, i ) ;
+		_mice[i] = new Mouse( i, _useClassicalMice ) ;
 	
 	send( "Mouse subsystem initialized." ) ;
 
