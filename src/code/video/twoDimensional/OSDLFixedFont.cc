@@ -44,7 +44,7 @@ const OSDL::Video::Length
 string Text::FixedFont::FontFileExtension = ".fnt" ;
 
 
-const Ceylan::Float32 Text::FixedFont::SpaceWidthFactor = 0.7 ;
+const Ceylan::Float32 Text::FixedFont::SpaceWidthFactor = 0.7f ;
 
 
 const Ceylan::Uint16 Text::FixedFont::FontCharacterCount = 256 ;
@@ -250,7 +250,7 @@ Text::Height FixedFont::getLineSkip() const throw()
 {
 
 	return _height + static_cast<Text::Height>( 
-		Ceylan::Maths::Max<Ceylan::Float32>( 2 , 0.1 * _height ) ) ;
+		Ceylan::Maths::Max<Ceylan::Float32>( 2 , 0.1f * _height ) ) ;
 		
 }
 
