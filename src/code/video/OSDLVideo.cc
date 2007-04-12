@@ -20,6 +20,7 @@ using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Video ;
+using namespace OSDL::Rendering ;
 using namespace OSDL::Video::OpenGL ;
 
 
@@ -199,7 +200,7 @@ OSDL::Rendering::VideoRenderer & VideoModule::getRenderer() const
 }
 
 
-void VideoModule::setRenderer( Rendering::VideoRenderer & newRenderer ) throw()
+void VideoModule::setRenderer( VideoRenderer & newRenderer ) throw()
 {
 
 	if (  _renderer != 0 )
@@ -288,7 +289,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 		+ " flavour is selected" ) ;
 
 	
-	if ( ( flags & OpenGL == 0 ) && ( flavour != OpenGL::None ) )
+	if ( ( ( flags & OpenGL ) == 0 ) && ( flavour != OpenGL::None ) )
 	{
 		LogPlug::warning( "VideoModule::setMode : OpenGL flavour selected ("
 			+ OpenGLContext::ToString( flavour ) 
@@ -555,7 +556,7 @@ void VideoModule::setAntiAliasingState( bool newState ) throw()
 }
 
 
-const std::string VideoModule::getDriverName() const throw()
+const std::string VideoModule::getDriverName() const throw( VideoException )
 {
 
 	char driverName[ VideoModule::DriverNameMaximumLength + 1 ]  ;
@@ -853,7 +854,7 @@ bool VideoModule::GetAntiAliasingState() throw()
 
 
 
-const string VideoModule::GetDriverName() throw()
+const string VideoModule::GetDriverName() throw( VideoException )
 {
 
 	char driverName[ VideoModule::DriverNameMaximumLength + 1 ]  ;
@@ -1264,8 +1265,35 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 #endif // OSDL_DEBUG_VIDEO
 		
     modes = SDL_ListModes( pixelFormat, flags ) ;
-	
-    if ( reinterpret_cast<int>( modes ) == 0 ) 
+
+	/*
+	 * Beware to 64-bit machines.
+	 *
+	 * Basically we are trying to convert a pointer to an int, gcc on
+	 * Linux will not accept Ceylan::Uint32 to become Ceylan::Uint64,
+	 * whereas Visual C++ on 32 bit will find a pointer truncation
+	 * from 'SDL_Rect **' to Ceylan::SignedLongInteger :
+	 *
+	 */
+#if OSDL_RUNS_ON_WINDOWS
+
+	Ceylan::Uint64 numericModes = 
+		reinterpret_cast<Ceylan::Uint64>( modes ) ; 
+
+#else // OSDL_RUNS_ON_WINDOWS
+
+	/*
+	 * long and void * have the same size in 32 bit-platforms (4 bytes)
+	 * and on 64 bit ones (8 bytes).
+	 *
+	 */ 
+	Ceylan::SignedLongInteger numericModes = 
+		reinterpret_cast<Ceylan::Uint64>( modes ) ; 
+
+#endif // OSDL_RUNS_ON_WINDOWS
+
+
+    if ( numericModes == 0 ) 
 	{
 		LogPlug::debug( "No screen dimensions available for format " 
 			+ Pixels::toString( * pixelFormat ) + " !" ) ;
@@ -1278,7 +1306,7 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 	// From that point, at least one dimension will be available.	 
 	
 	// Checking whether our resolution is restricted. 
-    if ( reinterpret_cast<int>( modes ) == -1 ) 
+    if ( numericModes == -1 ) 
 	{
 		
 		// Any dimension is okay for the given format, not restricted :
@@ -1376,7 +1404,7 @@ string VideoModule::DescribeEnvironmentVariables() throw()
 		
 	string var, value ;
 	
-	bool htmlFormat = Ceylan::TextDisplayable::GetOutputFormat() ;
+	TextOutputFormat htmlFormat = Ceylan::TextDisplayable::GetOutputFormat() ;
 	
 	for ( Ceylan::Uint16 i = 0; i < varCount; i++ ) 
 	{
