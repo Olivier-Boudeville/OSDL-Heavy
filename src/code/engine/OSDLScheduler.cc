@@ -37,7 +37,6 @@ const Scheduler::Delay Scheduler::ShutdownBucketLevel = 100000 ;
 #endif // OSDL_USES_CONFIG_H
 
 
-
 #if OSDL_DEBUG_SCHEDULER
 
 #include <iostream>
@@ -1191,8 +1190,17 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 */
 		_currentEngineTick = computeEngineTickFromCurrentTime() ;
 		
-		while ( nextSimulationDeadline < _currentEngineTick + 1 )	
+		
+		/*
+		 * Should a computer be unable to stand the requested load, it
+		 * may be unable to catch up with the clock, using the delay bucket to
+		 * escape from this loop on desesperate cases :
+		 *
+		 */
+		while ( nextSimulationDeadline < _currentEngineTick + 1 
+			&& delayBucket < ShutdownBucketLevel )	
 		{			
+		
 		
 			// Manage all missed simulation steps and warn :
 			EngineTick missedTicks = 
@@ -1201,8 +1209,9 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			if ( missedTicks > simulationToleranceTick )
 			{
 			
-				OSDL_SCHEDULE_LOG( "##### Simulation deadline missed of "
-					+ Ceylan::toString( missedTicks )
+				OSDL_SCHEDULE_LOG( "##### Simulation deadline #"
+					+ Ceylan::toString( _currentSimulationTick ) 
+					+ " missed of "	+ Ceylan::toString( missedTicks )
 					+ " engine ticks (" 
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds), cancelling activations." ) ;
@@ -1219,20 +1228,29 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				 * computer can actually face the average load quite well.
 				 *
 				 * Hence we chose an increasing delay function which does not
-				 * lead to explosive values for high arguments : the square
-				 * root, more precisely f : d -> 35.log( d )
-				 * f(500) is about 138
+				 * lead to too explosive values for high arguments : the square
+				 * root, more precisely f : d -> 35.sqrt( 2 * d )
+				 * f(500) is about 1100.
 				 * 
-				 * (let's hope the square root is not too expensive)
-				 *
 				 * Check with gnuplot :
 				 * set xrange [0:1000]
 				 * set autoscale
-				 * plot 20 * log( 2 * x )
+				 * plot 35 * sqrt( 2 * x )
+				 *
+				 * We tried also f : d -> 20.log( 2*d ), but the log smoothes
+				 * too much the delay curve, which leads to a scheduler 
+				 * stopping too late.
+				 * For example, when making the scheduler fail because of logs 
+				 * synchronously written to disk with the classical plug, it
+				 * fails with a logarithm-based delay after roughly one minute
+				 * (far too long), whereas with square root it lasts for 
+				 * about 5 seconds (ok).
+				 * 
+				 * Previous setting : plot 20 * log( 2 * x )
 				 *
 				 */
-				delayBucket += 20 * static_cast<Delay>( 
-					Ceylan::Maths::Log( 2.0f * missedTicks ) ) ;
+				delayBucket += 35 * static_cast<Delay>( 
+					Ceylan::Maths::Sqrt( 2.0f * missedTicks ) ) ;
 
 #if OSDL_DEBUG_SCHEDULER
 				missedSimulations.push_back( _currentSimulationTick ) ;
@@ -1257,14 +1275,16 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				// This will not be resolved on next engine tick finally :
 				missedTicks-- ;
 				
-				OSDL_SCHEDULE_LOG( "@@@@@ Simulation deadline recovered from "
+				OSDL_SCHEDULE_LOG( "@@@@@ Simulation deadline #"
+					+ Ceylan::toString( _currentSimulationTick ) 
+					+ " recovered from "
 					+ Ceylan::toString( missedTicks )
 					+ " engine ticks delay (" 
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds)." ) ;
 				
 				// Small constant penalty :	
-				delayBucket += 8 ;
+				delayBucket += 20 ;
 
 #if OSDL_DEBUG_SCHEDULER
 				recoveredSimulations.push_back( _currentSimulationTick ) ;
@@ -1294,7 +1314,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 * compared to rendering ticks.
 		 *
 		 */		 
-		while ( nextRenderingDeadline < _currentEngineTick + 1 )	
+		while ( nextRenderingDeadline < _currentEngineTick + 1
+			&& delayBucket < ShutdownBucketLevel  )	
 		{			
 		
 			// Manage all missed rendering steps and warn :
@@ -1304,15 +1325,16 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			if ( missedTicks > renderingToleranceTick )
 			{
 
-				OSDL_SCHEDULE_LOG( "##### Rendering deadline missed of "
-					+ Ceylan::toString( missedTicks )
+				OSDL_SCHEDULE_LOG( "##### Rendering deadline #"
+					+ Ceylan::toString( _currentRenderingTick ) 
+					+ " missed of "	+ Ceylan::toString( missedTicks )
 					+ " engine ticks (" 
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds), cancelling rendering." ) ;
 
 				// Missing a rendering deadline is annoying :
-				delayBucket += 2 * static_cast<Delay>( 
-					Ceylan::Maths::Log( 2.0f * missedTicks ) ) ;
+				delayBucket += 5 * static_cast<Delay>( 
+					Ceylan::Maths::Sqrt( 2.0f * missedTicks ) ) ;
 					
 								
 #if OSDL_DEBUG_SCHEDULER
@@ -1331,14 +1353,15 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				// This will not be resolved on next engine tick finally :
 				missedTicks-- ;
 
-				OSDL_SCHEDULE_LOG( "@@@@@ Rendering deadline recovered from "
-					+ Ceylan::toString( missedTicks )
+				OSDL_SCHEDULE_LOG( "@@@@@ Rendering deadline #"
+					+ Ceylan::toString( _currentRenderingTick ) 
+					+ " recovered from "	+ Ceylan::toString( missedTicks )
 					+ " engine ticks delay (" 
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds)." ) ;
 				
 				// Small constant penalty :	
-				delayBucket += 4 ;
+				delayBucket += 10 ;
 
 #if OSDL_DEBUG_SCHEDULER
 				recoveredRenderings.push_back( _currentRenderingTick ) ;
@@ -1361,7 +1384,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 * Lastly, take care of the input polling :
 		 *
 		 */
-		while ( nextInputDeadline < _currentEngineTick + 1 )	
+		while ( nextInputDeadline < _currentEngineTick + 1	
+			&& delayBucket < ShutdownBucketLevel )	
 		{			
 		
 			/*
@@ -1375,15 +1399,16 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			if ( missedTicks > inputToleranceTick )
 			{
 			
-				OSDL_SCHEDULE_LOG( "##### Input deadline missed of "
-					+ Ceylan::toString( missedTicks )
+				OSDL_SCHEDULE_LOG( "##### Input deadline #"
+					+ Ceylan::toString( _currentInputTick ) 
+					+ " missed of "	+ Ceylan::toString( missedTicks )
 					+ " engine ticks (" 
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds), cancelling input polling." ) ;
 
 				// Missing an input deadline should be avoided :
 				delayBucket += static_cast<Delay>( 
-					Ceylan::Maths::Log( 2.0f * missedTicks ) ) ;
+					Ceylan::Maths::Sqrt( 2.0f * missedTicks ) ) ;
 			
 #if OSDL_DEBUG_SCHEDULER
 				missedInputPollings.push_back( _currentInputTick ) ;
@@ -1401,14 +1426,15 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				// This will not be resolved on next engine tick finally :
 				missedTicks-- ;
 
-				OSDL_SCHEDULE_LOG( "@@@@@ Input deadline recovered from "
-					+ Ceylan::toString( missedTicks )
+				OSDL_SCHEDULE_LOG( "@@@@@ Input deadline #"
+					+ Ceylan::toString( _currentInputTick ) 
+					+ " recovered from " + Ceylan::toString( missedTicks )
 					+ " engine ticks delay (" 
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds)." ) ;
 				
 				// Small constant penalty :	
-				delayBucket += 2 ;
+				delayBucket += 5 ;
 
 #if OSDL_DEBUG_SCHEDULER
 				recoveredInputPollings.push_back( _currentInputTick ) ;
@@ -2760,7 +2786,8 @@ void Scheduler::onIdle() throw()
 }
 
 
-void Scheduler::onScheduleFailure( Delay currentBucket ) throw()
+void Scheduler::onScheduleFailure( Delay currentBucket ) 
+	throw( SchedulingException )
 {
 
 	_scheduleFailureCount++ ;
@@ -2786,6 +2813,14 @@ void Scheduler::onScheduleFailure( Delay currentBucket ) throw()
 	else
 	{
 
+
+		OSDL_SCHEDULE_LOG( "Scheduling failure at [ E : " 
+			<< _currentEngineTick 
+			<< " ; S : " << _currentSimulationTick
+			<< " ; R : " << _currentRenderingTick		
+			<< " ; I : " << _currentInputTick 
+			<< " ; B : " << currentBucket << " ]" ) ;
+
 		string message = "Fatal schedule failure for engine tick #"
 			+ Ceylan::toString( _currentEngineTick )
 			+ ", delay bucket reached level "
@@ -2799,6 +2834,8 @@ void Scheduler::onScheduleFailure( Delay currentBucket ) throw()
 		LogPlug::fatal( message) ;	
 		
 		stop() ;
+		
+		throw SchedulingException( message ) ;
 	
 	}
 	
