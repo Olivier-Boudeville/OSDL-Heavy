@@ -394,6 +394,24 @@ To render the world, Views, the <b>V</b> of the MVC framework, are taken into ac
 
 <h3>Some more scheduling concerns</h3>
 
+<h4>Logs</h4>
+<p>
+When dealing with scheduling issues, one has to take a special care of logs : if ever some logs are output during a schedule phase (the most critical one being the simulation tick), then, depending on the chosen log plug (console, classical or HTML), the scheduler may fail constantly.
+</p>
+
+<p>
+More precisely, the combination of log-emitting scheduled objects (in simulation steps) and classical plug (which writes log to file, by default on the fly) leads most often to fatal scheduling failures : the OS cannot cope with such long and frequent disk I/O, and the scheduler is always late until it decides to give up (it is a good way of proof-testing the scheduler though).
+</p>
+
+<p>
+Log output to console is a lot faster, even when redirecting these logs to a file (thanks to <code>&gt; myLogFile.txt</code> or to <code> | tee myLogFile.txt</code>), most probably because these streams are buffered. It leads us to think that the classical plug could be used if ever the user set its classical plug and/or its raw log aggregator to <code>immediateWrite = false</code>, which would disable synchronous file I/O (but, in case of crashes, may cause the loss of log messages). 
+</p>
+
+<p>
+The HTML log plug is of course the fastest of all, since it only stores messages in memory, but at the expense of a RAM footprint that may be too high.
+</p>
+
+
 <h4>AI</h4>
 <p>
 Where does the AI thinking should take place ? The two candidates are obviously the simulation step (since simulating, say, a wolf, could include guessing what it decides) and the input step (in this case, the model of the wodel describes only its body, and this particular wolf, that could be controlled by, say, a joystick, happens to be controlled by a program).
@@ -584,7 +602,8 @@ If you are contributing from a LOANI-installed version of Ceylan or OSDL, and if
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update : Friday, March 30, 2007
+    <em>Last update : Thursday, April 12, 2007
+
 </em>
   </center>
 </body>
