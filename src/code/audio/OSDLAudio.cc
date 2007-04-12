@@ -1,8 +1,10 @@
 #include "OSDLAudio.h"
 
 
-#include "OSDLUtils.h"          // for getBackendLastError
+#include "OSDLUtils.h"   // for getBackendLastError
 #include "OSDLBasic.h"   // for OSDL::GetVersion
+
+#include "Ceylan.h"      // for GetOutputFormat
 
 
 #include "SDL.h"
@@ -145,7 +147,7 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 		
 	string var, value ;
 
-	bool htmlFormat = Ceylan::TextDisplayable::GetOutputFormat() ;
+	TextOutputFormat htmlFormat = Ceylan::TextDisplayable::GetOutputFormat() ;
 	
 	for ( Ceylan::Uint16 i = 0; i < varCount; i++ ) 
 	{
