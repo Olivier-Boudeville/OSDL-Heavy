@@ -118,7 +118,7 @@ void MultimediaRenderer::setAudioRenderer( AudioRenderer & newAudioRenderer )
 
 
 
-void MultimediaRenderer::render( Events::RenderingTick currentRenderingTick )
+void MultimediaRenderer::render( RenderingTick currentRenderingTick )
 	throw()
 {
 

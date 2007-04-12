@@ -77,7 +77,7 @@ Renderer::~Renderer() throw()
 }
 
 
-void Renderer::render( Events::RenderingTick currentRenderingTick ) throw()
+void Renderer::render( RenderingTick currentRenderingTick ) throw()
 {
 
 	OSDL_RENDER_LOG( "Rendering ! " ) ;
