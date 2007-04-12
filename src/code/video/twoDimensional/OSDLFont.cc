@@ -24,6 +24,7 @@ using std::string ;
 using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
+using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
@@ -358,7 +359,7 @@ Width Font::getInterGlyphWidth() const throw()
 
 	// Scales with the letter width, minimum is one :
 	static Width inter = static_cast<Width>( 
-		Ceylan::Maths::Max<float>( 1, 0.1 * getWidth( 'a' ) ) ) ;
+		Ceylan::Maths::Max<float>( 1, 0.1f * getWidth( 'a' ) ) ) ;
 
 	return inter ;
 
@@ -676,7 +677,9 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 			{
     	   
 				// Word accepted for this line :
-				renderIndex += currentWord.size() + /* trailing space */ 1 ;
+				renderIndex += static_cast<Text::TextIndex>( currentWord.size() )
+					+ /* trailing space */ 1 ;
+
 				totalWordWidth += wordWidth ;
     		   
 				if ( justified )
