@@ -6,6 +6,7 @@
 using std::string ;
 using std::list ;
 
+using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
