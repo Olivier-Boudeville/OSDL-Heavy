@@ -49,7 +49,6 @@ using TwoDimensional::UprightRectangle ;
 #endif // OSDL_USES_CONFIG_H
 
 
-
 SurfaceEvent::SurfaceEvent( Ceylan::EventSource & source ) throw() : 
 	Ceylan::Event( source )
 {
@@ -542,9 +541,9 @@ bool Surface::setPalette( Palette & newPalette, ColorCount startingColorIndex,
 		return false ;
 	}	
 
-	return static_cast<bool>( SDL_SetPalette( _surface, targettedPalettes, 
+	return ( SDL_SetPalette( _surface, targettedPalettes, 
 		newPalette.getColorDefinitions(), startingColorIndex, 
-		numberOfColors ) ) ;
+		numberOfColors ) == 1 ) ;
 		
 }
 					
@@ -1997,7 +1996,7 @@ void Surface::redrawInternal() throw()
 bool Surface::isInternalSurfaceAvailable() const throw()
 {
 
-	return _surface ;
+	return ( _surface != 0 ) ;
 	
 }
 
@@ -2442,7 +2441,8 @@ const string Surface::toString( Ceylan::VerbosityLevels level ) const throw()
 		+ UprightRectangle( _surface->clip_rect ).toString( level ) ) ;
 
 	surfaceList.push_back( "Size in memory : " 
-		+ Ceylan::toString( getSizeInMemory() ) + " bytes" ) ;
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( getSizeInMemory() ) ) + " bytes" ) ;
 		
 	/*
 	 * surfaceList.push_back( "Reference count : " 
