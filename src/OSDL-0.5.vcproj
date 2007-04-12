@@ -40,10 +40,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)code&quot;;&quot;$(ProjectDir)code\audio&quot;;&quot;$(ProjectDir)code\audio\audioRenderer&quot;;&quot;$(ProjectDir)code\basic&quot;;&quot;$(ProjectDir)code\engine&quot;;&quot;$(ProjectDir)code\events&quot;;&quot;$(ProjectDir)code\video&quot;;&quot;$(ProjectDir)code\video\twoDimensional&quot;;&quot;$(ProjectDir)code\video\videoRenderer&quot;;&quot;$(SDLIncDir)&quot;;&quot;$(SDL_imageIncDir)&quot;;&quot;$(SDL_gfxIncDir)&quot;;&quot;$(SDL_ttfIncDir)&quot;;&quot;$(SDL_mixerIncDir)&quot;;&quot;$(CeylanIncDir)&quot;"
-				PreprocessorDefinitions="OSDL_USES_CONFIG_H=1;&quot;CEYLAN_DLL=__declspec( dllimport )&quot;;CEYLAN_RUNS_ON_WINDOWS;&quot;OSDL_DLL=__declspec( dllexport )&quot;;WIN32;_DEBUG;_WINDOWS;_USRDLL"
+				PreprocessorDefinitions="OSDL_USES_CONFIG_H=1;OSDL_RUNS_ON_WINDOWS;&quot;OSDL_DLL=__declspec( dllexport )&quot;;CEYLAN_RUNS_ON_WINDOWS;&quot;CEYLAN_DLL=__declspec( dllimport )&quot;;WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				DisableLanguageExtensions="true"
+				DisableLanguageExtensions="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
@@ -62,8 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="Ceylan-$(CeylanVersion).lib SDL-from-OSDL.lib SDLmain-from-OSDL.lib SDL_image-from-OSDL.lib SDL_mixer-from-OSDL.lib SDL_gfx-from-OSDL.lib SDL_ttf-from-OSDL.lib png.lib opengl32.lib"
 				OutputFile="$(OutDir)\$(SolutionName).exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(CeylanInstDir)\Debug&quot;;&quot;$(SDLInstDir)\Debug&quot;;&quot;$(SDL_ttfInstDir)\Debug&quot;;&quot;$(SDL_mixerInstDir)\Debug&quot;;&quot;$(SDL_imageInstDir)\Debug&quot;;&quot;$(SDL_gfxInstDir)\Debug&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
