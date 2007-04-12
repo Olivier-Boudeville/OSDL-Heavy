@@ -108,7 +108,7 @@ void PeriodicSlot::remove( ActiveObject & object ) throw( SchedulingException )
 }
 
 
-void PeriodicSlot::onNextTick( Events::SimulationTick newTick ) throw()
+void PeriodicSlot::onNextTick( SimulationTick newTick ) throw()
 {
 	
 	/*
@@ -210,14 +210,16 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level )
 	if ( level == Ceylan::medium )
 	{
 		
-		unsigned int objectCount = 0 ;
+		Ceylan::Uint32 objectCount = 0 ;
 		Weight weightCount = 0 ;
 		
 	
 		for ( Period i = 0; i < _period; i++ )
 		{	
 			if ( _slots[i] != 0 )
-				objectCount += _slots[i]->size() ;
+				objectCount += 
+					static_cast<Ceylan::Uint32>( _slots[i]->size() ) ;
+
 			weightCount += _slotWeights[i] ;
 		}		
 	
@@ -233,7 +235,8 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level )
 	{	
 		if ( _slots[i] != 0 && _slots[i]->size() != 0 )
 			l.push_back( "slot #" + Ceylan::toString( i ) + " contains " 
-				+ Ceylan::toString( _slots[i]->size() ) 
+				+ Ceylan::toString( 
+					static_cast<Ceylan::Uint32>( _slots[i]->size() ) ) 
 				+ " active object(s), for a total weight of "
 				+ Ceylan::toString( _slotWeights[i] ) + "." ) ;
 		else
@@ -327,7 +330,7 @@ Period PeriodicSlot::getLeastBusySlot() const throw()
 
 
 void PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
-	Events::SimulationTick currentTime ) throw()
+	SimulationTick currentTime ) throw()
 {
 
 	if ( _slots[ subSlot ] == 0 )
