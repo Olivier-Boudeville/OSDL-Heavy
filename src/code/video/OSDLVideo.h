@@ -366,8 +366,11 @@ namespace OSDL
 				 *
 				 * @see GetDriverName
 				 *
+				 * @throw VideoException if the operation failed.
+				 *
 				 */
-				virtual const std::string getDriverName() const throw() ; 
+				virtual const std::string getDriverName() const 
+					throw( VideoException ) ; 
 		
 		
 					
@@ -542,8 +545,11 @@ namespace OSDL
 				 *
 				 * @see getDriverName.
 				 *
+				 * @throw VideoException if the operation failed.
+				 *
 				 */
-				static const std::string GetDriverName() throw() ;
+				static const std::string GetDriverName() 
+						throw( VideoException ) ;
 				
 				
 				/**
