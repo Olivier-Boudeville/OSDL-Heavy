@@ -15,14 +15,26 @@
 #include "SDL_opengl.h"   // for GL, GLU
 #endif // OSDL_HAVE_OPENGL
 
+#if OSDL_RUNS_ON_WINDOWS
 
+// Microsoft stupidly managed to redefine symbols in an header (windef.h) :
+
+#ifdef near
+#undef near
+#endif // near
+
+#ifdef far
+#undef far
+#endif // far
+
+#endif // OSDL_RUNS_ON_WINDOWS
 
 using std::string ;
 
 #include <list>
 using std::list ;
 
-
+using namespace OSDL::Video ;
 using namespace OSDL::Video::OpenGL ;
 using namespace OSDL::Video::OpenGL::GLU ;
 
