@@ -89,7 +89,7 @@ echo "  + removing non-wanted content"
 
 
 # M_* are MMF files :
-find . \( -name '*.exe' -o -name '*.htm*' -o -name '*.wmv' -o -name 'M*.zip'  \) -exec ${RM} -f '{}' ';'
+find . -depth \( -name '*.exe' -o -name '*.htm*' -o -name '*.wmv' -o -name 'M*.zip'  \) -exec ${RM} -f '{}' ';'
 
 # Supress non-wanted directories :
 ${RM} -rf forum *uvmappingtut* screenshots buttons handshaped_3d_tree_htm_files ext mmfabsbeg
@@ -112,7 +112,7 @@ done
 
 echo "    - correcting underscores #2"
 # No 'Tgrundvari.zip', we want 'T_grundvari.zip' :
-for f in `find . -name 'T*.zip'` ; do
+for f in `find . -depth -name 'T*.zip'` ; do
 	fourth_char=`echo $f | cut -b 4`
 	if [ "${fourth_char}" != "_" ] ; then
 		corrected=`echo $f | sed 's|^./T|./T_|1'`
