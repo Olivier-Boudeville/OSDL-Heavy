@@ -6,7 +6,7 @@
 	>
 	<UserMacro
 		Name="LoaniDir"
-		Value="$(SolutionDir)\..\..\..\..\.."
+		Value="$(SolutionDir)..\..\.."
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -273,6 +273,62 @@
 	<UserMacro
 		Name="OSDLIncDir"
 		Value="$(OSDLInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PNGVersion"
+		Value="1.2.16"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PNGRepoDir"
+		Value="$(LoaniRepoDir)\libpng-$(PNGVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PNGInstDir"
+		Value="$(LoaniInstDir)\libpng-$(PNGVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PNGIncDir"
+		Value="$(PNGInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="ZlibVersion"
+		Value="1.2.3"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="ZlibRepoDir"
+		Value="$(LoaniRepoDir)\zlib-$(ZlibVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="ZlibInstDir"
+		Value="$(LoaniInstDir)\zlib-$(ZlibVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="ZlibIncDir"
+		Value="$(ZlibInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
