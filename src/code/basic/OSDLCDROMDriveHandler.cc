@@ -136,8 +136,8 @@ const std::string CDROMDriveHandler::toString( Ceylan::VerbosityLevels level )
 	
 	return "Out of " + Ceylan::toString( driveNumber ) 
 		+ " available CD-ROM drive(s), " 
-		+ Ceylan::toString( _drives.size() ) + " is/are opened : " 
-		+ Ceylan::formatStringList( descriptions ) ;	
+		+ Ceylan::toString( static_cast<Ceylan::Uint32>( _drives.size() ) ) 
+		+ " is/are opened : " + Ceylan::formatStringList( descriptions ) ;	
 
 }				
 			
