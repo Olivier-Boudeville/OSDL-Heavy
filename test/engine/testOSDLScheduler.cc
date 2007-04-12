@@ -262,7 +262,7 @@ int main( int argc, char * argv[] )
 		{
 			// All stoppers will stop at simulation tick stopTick or later :
 			stoppers.push_back( new SchedulerStopper( 
-				stopTick + stopTickRand.getNewValue() ) ;		
+				stopTick + stopTickRand.getNewValue() ) ) ;		
 		}
 		
 							
