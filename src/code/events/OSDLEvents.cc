@@ -745,7 +745,7 @@ string EventsModule::DescribeEnvironmentVariables() throw()
 		
 	string var, value ;
 	
-	bool htmlFormat = TextDisplayable::GetOutputFormat() ;
+	TextOutputFormat htmlFormat = TextDisplayable::GetOutputFormat() ;
 	
 	for ( Ceylan::Uint16 i = 0; i < varCount; i++ ) 
 	{
