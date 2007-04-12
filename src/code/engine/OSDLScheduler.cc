@@ -17,7 +17,8 @@ using namespace Ceylan::Log ;         // for LogPlug
 
 // for time units and calls (ex : Millisecond, basicSleep) :
 using namespace Ceylan::System ;      
- 
+
+using namespace OSDL ;
 using namespace OSDL::Events ;
 using namespace OSDL::Rendering ;
 using namespace OSDL::Engine ;
@@ -543,9 +544,11 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		+ " Hz (a period of " 
 		+ Ceylan::toString( _inputPeriod ) 
 		+ " engine ticks). There are "
-		+ Ceylan::toString( _periodicSlots.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( _periodicSlots.size() ) ) 
 		+ " used periodic slot(s) and "
-		+ Ceylan::toString( _programmedActivated.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( _programmedActivated.size() ) )
 		+ " programmed object(s)" ;
 		
 		
@@ -579,8 +582,9 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 				= _programmedActivated.begin(); it 
 					!= _programmedActivated.end(); it++ )
 			programmed.push_back( "For simulation tick #" 
-				+ Ceylan::toString( (*it).first )
-				+ ", there are " + Ceylan::toString( (*it).second.size() ) 
+				+ Ceylan::toString( (*it).first ) + ", there are " 
+				+ Ceylan::toString( 
+					static_cast<Ceylan::Uint32>( (*it).second.size() ) )
 				+ " object(s) programmed" ) ;
 				
 		buf << Ceylan::formatStringList( programmed ) ;
@@ -976,7 +980,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 * (current fill level) = (previous fill level) * bucketLeakingFactor
 	 *
 	 */
-	const Ceylan::Float32 bucketLeakingFactor = 0.9 ;
+	const Ceylan::Float32 bucketLeakingFactor = 0.9f ;
 	
 	_scheduleFailureCount = 0 ;
 	
