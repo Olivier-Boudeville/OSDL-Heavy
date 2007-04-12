@@ -146,10 +146,18 @@ run_test()
 		echo "
 		
 		########### Running now $t" >>${TESTLOGFILE}
+		echo "Library dependenies : " >>${TESTLOGFILE}
 		ldd $t >>${TESTLOGFILE}
-		$t --batch ${network_option} 1>>${TESTLOGFILE} 2>&1
+		echo "Command line : $t --batch ${network_option} ${log_plug_option}" >>${TESTLOGFILE}
+		$t --batch ${network_option} ${log_plug_option} 1>>${TESTLOGFILE} 2>&1
+		
+		#FIXME
+		#if [ "$test_name" = "testOSDLScheduler" ] ; then
+		#	echo STOP
+		#	exit
+		#fi
 	else
-		$t --interactive ${network_option}
+		$t --interactive ${network_option} ${log_plug_option}
 	fi			
 		
 	return_code="$?"
@@ -206,7 +214,7 @@ fi
 
 #echo "starting_dir = $starting_dir"
 
-# Suppose we are in the build tree : 
+# Suppose we are in the build tree : 
 loani_installations=`echo $starting_dir | sed 's|osdl/OSDL/trunk/test||1'`"../LOANI-installations"
 	
 #echo "loani_installations = $loani_installations"
@@ -252,7 +260,7 @@ else
 	exit 3
 fi	
 
-# For ping :
+# For ping :
 findSupplementaryShellTools
 
 # For tests that need to search relative paths :
@@ -261,6 +269,13 @@ cd ${TEST_ROOT}
 
 # Creates a test directory to avoid polluting other directories :
 TEST_DIR="tests-results-"`date '+%Y%m%d'`
+
+
+# Specifies the log plug the tests should be run with. 
+# Note : avoid using the classical plug because it may cause scheduling 
+# failures (ex : with testOSDLScheduler) because of its default synchronous 
+# file I/O). 
+log_plug_option="--HTMLPlug"
 
 
 if [ $is_batch -eq 0 ] ; then
