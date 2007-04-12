@@ -9,6 +9,7 @@ EXTRA_DIST = osdl.m4 playTests.sh
 
 
 check:
+	@echo; echo " Checking OSDL installation with $(srcdir)/playTests.sh"
 	@$(srcdir)/playTests.sh
 
 
