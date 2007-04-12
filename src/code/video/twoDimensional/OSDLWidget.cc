@@ -110,8 +110,8 @@ Widget::Widget( Surface & container, const Point2D & relativePosition,
 	 * too already uses it.
 	 *
 	 */
-	convertToDisplay( /* useAlphaChannel */ static_cast<bool>( 
-		getFlags() & Surface::AlphaBlendingBlit ) ) ;
+	convertToDisplay( /* useAlphaChannel */ 
+		( getFlags() & Surface::AlphaBlendingBlit ) != 0 ) ;
 		
 	updateDecorationFlag() ;
 	
@@ -692,7 +692,8 @@ void Widget::drawDecorations( Surface & targetSurface ) throw()
 		default:
 			// No clipping performed :
 			startingAbscissa = targetSurface.getUpperLeftAbscissa() 
-				+ ( targetSurface.getWidth() - _title.size() 
+				+ ( targetSurface.getWidth() - 
+						static_cast<Coordinate>( _title.size() ) 
 					* Text::BasicFontCharacterWidth ) / 2 ;
 			break ;
 			
