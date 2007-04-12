@@ -921,8 +921,11 @@ namespace OSDL
 				 *
 				 * @see ShutdownBucketLevel
 				 *
+				 * @throw SchedulingException if the failure was deemed fatal.
+				 *
 				 */
-				virtual void onScheduleFailure( Delay currentBucket ) throw() ;
+				virtual void onScheduleFailure( Delay currentBucket )
+					throw( SchedulingException ) ;
 
 
 				
