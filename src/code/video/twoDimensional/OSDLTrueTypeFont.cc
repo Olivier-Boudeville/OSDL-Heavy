@@ -12,7 +12,7 @@
  
  
 
-
+using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::TwoDimensional::Text ;
 
@@ -302,7 +302,8 @@ Text::Height TrueTypeFont::getLineSkip() const throw()
 Ceylan::Uint16 TrueTypeFont::getFacesCount() const throw()
 {
 
-	return TTF_FontFaces( _actualFont ) ;
+	return static_cast<Ceylan::Uint16>( 
+			TTF_FontFaces( _actualFont ) ) ;
 	
 }
 
@@ -465,9 +466,13 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeGlyph(
 		 * First check that the character-quality-color combination is 
 		 * not already available in cache :
 		 *
+		 * @note 'character' is in Unicode, conversion to Latin1 is 
+		 * somewhat abusive...
+		 *
 		 */
-		
-		CharColorQualityKey renderKey( character, glyphColor, quality ) ;
+		CharColorQualityKey renderKey( 
+			static_cast<Ceylan::Latin1Char>( character ), 
+			glyphColor, quality ) ;
 			
 		SmartResource * res = _glyphCache->getClone( renderKey ) ;
 		
