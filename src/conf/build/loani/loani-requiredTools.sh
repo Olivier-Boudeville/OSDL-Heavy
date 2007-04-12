@@ -21,7 +21,7 @@ if [ $is_windows -eq 0 ] ; then
   REQUIRED_TOOLS="SDL_win zlib_win libpng_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win OSDL_win"
 
   # FIXME :
-  REQUIRED_TOOLS="libpng_win"
+  REQUIRED_TOOLS="zlib_win libpng_win"
 
   # For Ceylan and OSDL :
   use_svn=0
@@ -862,6 +862,7 @@ preparezlib_win()
 	${CP} -f ${zlib_win_ARCHIVE} ${zlib_source_dir} 
 	cd ${zlib_source_dir}
 	
+	# Archive content is not contained into a unique root directory ! 
 	{
 		${UNZIP} -o ${zlib_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
@@ -878,6 +879,13 @@ preparezlib_win()
 	${MKDIR} -p ${zlib_lib_install_dir}
 
 	cd $repository
+	
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/zlib-from-OSDL" "zlib-${zlib_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy zlib solution in build tree."
+		exit 11
+	fi
 
 	printOK
 
@@ -887,17 +895,27 @@ preparezlib_win()
 generatezlib_win()
 {
 
-	# Everything will be done in the libpng_win steps.
 	
 	LOG_STATUS "Generating zlib for windows..."
 
+	cd "zlib-${zlib_win_VERSION}"
+
 	printItem "configuring"
  	printOK
-	
-	printItem "building"
-	printOK
 
+	zlib_solution=`pwd`"/zlib-from-OSDL/zlib-from-OSDL.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress zlib ${zlib_solution}
+	printOK
+	
 	printItem "installing"
+
+	# Take care of the exported header files (API for zlib) :
+	zlib_include_install_dir="${zlib_install_dir}/include"
+	${MKDIR} -p ${zlib_include_install_dir}
+	${CP} -f *.h ${zlib_include_install_dir}
+
 	printOK
 
 	printEndList
