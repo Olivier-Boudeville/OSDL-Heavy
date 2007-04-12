@@ -64,7 +64,7 @@ class SchedulerStopper : public OSDL::Engine::ActiveObject
 					+ Ceylan::toString( desiredFrequency ) + " Hz, obtained "
 					+ Ceylan::toString( obtainedFrequency ) 
 					+ " Hz. Will stop at simulation tick #"
-					+ Ceylan::toString( stopSimulationTick ) + "."  ) ;
+					+ Ceylan::toString( _stopTick ) + "."  ) ;
 			
 			// This active object registers itself to the scheduler.
 			Scheduler::GetExistingScheduler().registerObject( * this ) ;
@@ -122,6 +122,7 @@ class SchedulerStopper : public OSDL::Engine::ActiveObject
 
 
 
+
 /**
  * Testing the services of the OSDL scheduler for active objects, in
  * real-time mode.
@@ -129,9 +130,9 @@ class SchedulerStopper : public OSDL::Engine::ActiveObject
  * @see ActiveObject
  *
  */
-
 int main( int argc, char * argv[] ) 
 {
+
 
 	LogHolder myLog( argc, argv ) ;
 	
@@ -219,7 +220,6 @@ int main( int argc, char * argv[] )
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
 			CommonModule::UseVideo ) ;		
 			
-		LogPlug::info( "Testing basic event handling." ) ;
 		
 		LogPlug::info( "Getting events module." ) ;
 		EventsModule & myEvents = myOSDL.getEventsModule() ; 
@@ -248,14 +248,21 @@ int main( int argc, char * argv[] )
 		list<SchedulerStopper *> stoppers ;
 		WhiteNoiseGenerator stopTickRand( 0, stoppersCount ) ;
 		
+		/*
+		 * Actually this first one will be the one that will stop the 
+		 * scheduler :
+		 *
+		 */
 		stoppers.push_back( new SchedulerStopper( 
-				stopTick + stopTickRand.getNewValue(), /* verbose */ true ) ) ;
+				stopTick, /* verbose */ true ) ) ;
+		
+		stopTick++ ;
 				
 		for ( Ceylan::Uint32 i = 1; i < stoppersCount; i++ )
 		{
-			// All stoppers will stop at simulation tick 200 or later :
+			// All stoppers will stop at simulation tick stopTick or later :
 			stoppers.push_back( new SchedulerStopper( 
-				stopTick + stopTickRand.getNewValue() ) ) ;		
+				stopTick + stopTickRand.getNewValue() ) ;		
 		}
 		
 							
