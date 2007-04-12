@@ -36,6 +36,21 @@ libjpeg_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
 libjpeg_MD5="dbd5f3b47ed13132f04c685d608a7547"
 
 
+# zlib library (libzlib.a) : http://www.zlib.net/
+
+zlib_VERSION="1.2.3"
+zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.bz2"
+zlib_DOWNLOAD_LOCATION="http://www.zlib.net"
+zlib_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
+zlib_MD5="dee233bf288ee795ac96a98cc2e369b6"
+
+zlib_win_VERSION="1.2.3"
+zlib_win_archive_VERSION="123"
+zlib_win_ARCHIVE="zlib${zlib_win_archive_VERSION}.zip"
+zlib_win_DOWNLOAD_LOCATION="http://www.zlib.net"
+zlib_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
+zlib_win_MD5="abbd0f2b456206da5e3ffd179324413a"
+
 
 # PNG library (libpng.so) : http://www.libpng.org/pub/png/libpng.html
 
@@ -46,15 +61,13 @@ libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/s
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
 libpng_MD5="7a1ca4f49bcffdec60d50f48460642bd"
 
-
-
-# zlib library (libzlib.a) : http://www.zlib.net/
-
-zlib_VERSION="1.2.3"
-zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.bz2"
-zlib_DOWNLOAD_LOCATION="http://www.zlib.net"
-zlib_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
-zlib_MD5="dee233bf288ee795ac96a98cc2e369b6"
+libpng_win_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
+libpng_win_archive_VERSION="1216"
+libpng_win_ARCHIVE="lpng${libpng_win_archive_VERSION}.zip"
+libpng_win_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
+libpng_win_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
+libpng_win_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
+libpng_win_MD5="22972ffdb38a7424af0c53f49ed46698"
 
 
 # TIFF library (libtiff.so) : http://www.remotesensing.org/libtiff/
