@@ -70,7 +70,8 @@ bool TwoDimensional::drawBezierCurve(
 	}
 	
 	int res = ::bezierColor( & targetSurface.getSDLSurface(), 
-		abscissaArray, ordinateArray, vertexCount, numberOfSteps, 
+		abscissaArray, ordinateArray, 
+		static_cast<int>( vertexCount ), numberOfSteps, 
 		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 	
 	delete [] abscissaArray ;
