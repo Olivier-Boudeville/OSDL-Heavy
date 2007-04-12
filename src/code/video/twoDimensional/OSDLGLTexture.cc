@@ -1,8 +1,13 @@
 #include "OSDLGLTexture.h"
 
-#include "OSDLSurface.h"    // for Surface
-#include "OSDLVideo.h"      // for VideoModule::SoftwareSurface
-
+/*
+ * The usual header order could not be respected : to remove
+ * the stupid '#define LoadImage' and al Microsoft put in their
+ * headers, OSDLConfig.h (whose Windows version corrects them) 
+ * must be included before OSDLSurface.h and the headers that
+ * include it (OSDLVideo.h).
+ *
+ */
 
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>     // for OSDL_USES_OPENGL and al 
@@ -12,6 +17,8 @@
 #include "SDL_opengl.h"     // for GL functions
 #endif // OSDL_HAVE_OPENGL
 
+#include "OSDLVideo.h"      // for VideoModule::SoftwareSurface
+#include "OSDLSurface.h"    // for Surface
 
 
 using std::string ;
@@ -21,6 +28,7 @@ using namespace Ceylan ;
 using namespace Ceylan::Log ;
 using namespace Ceylan::Maths ;
 
+using namespace OSDL::Video ;
 using namespace OSDL::Video::OpenGL ;
 
 
@@ -467,8 +475,8 @@ int main(int, char**)
 		
 	Pixels::ColorElement savedAlpha = sourceInternal->format->alpha ;
 	
-	bool mustModifyOverallAlpha = static_cast<bool>( 
-		savedFlags & Surface::AlphaBlendingBlit ) ;
+	bool mustModifyOverallAlpha =
+		( ( savedFlags & Surface::AlphaBlendingBlit ) != 0 ) ;
 	
 	if ( mustModifyOverallAlpha ) 
 	  	SDL_SetAlpha( sourceInternal, 0, 0 ) ;
