@@ -148,7 +148,7 @@ bool Mouse::isMiddleButtonPressed() const throw()
 
 	MouseButtonMask buttons = SDL_GetMouseState( /* x */ 0, /* y */ 0 ) ;
 	
-	return static_cast<bool>( buttons & SDL_BUTTON( 2 ) ) ;
+	return ( ( buttons & SDL_BUTTON( 2 ) ) != 0 ) ;
 	
 }
 
@@ -158,7 +158,7 @@ bool Mouse::isRightButtonPressed() const throw()
 
 	MouseButtonMask buttons = SDL_GetMouseState( /* x */ 0, /* y */ 0 ) ;
 	
-	return static_cast<bool>( buttons & SDL_BUTTON( 3 ) ) ;
+	return ( ( buttons & SDL_BUTTON( 3 ) ) != 0 ) ;
 	
 }
 
@@ -169,7 +169,7 @@ bool Mouse::isButtonPressed( MouseButtonNumber buttonNumber )
 
 	MouseButtonMask buttons = SDL_GetMouseState( /* x */ 0, /* y */ 0 ) ;
 	
-	return static_cast<bool>( buttons & SDL_BUTTON( buttonNumber ) ) ;
+	return ( ( buttons & SDL_BUTTON( buttonNumber ) ) != 0 ) ;
 	
 }
 
