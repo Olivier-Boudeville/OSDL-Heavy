@@ -1266,6 +1266,7 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 		
     modes = SDL_ListModes( pixelFormat, flags ) ;
 
+
 	/*
 	 * Beware to 64-bit machines.
 	 *
@@ -1275,7 +1276,7 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 	 * from 'SDL_Rect **' to Ceylan::SignedLongInteger :
 	 *
 	 */
-#if OSDL_RUNS_ON_WINDOWS
+#ifdef OSDL_RUNS_ON_WINDOWS
 
 	Ceylan::Uint64 numericModes = 
 		reinterpret_cast<Ceylan::Uint64>( modes ) ; 
@@ -1288,7 +1289,7 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 	 *
 	 */ 
 	Ceylan::SignedLongInteger numericModes = 
-		reinterpret_cast<Ceylan::Uint64>( modes ) ; 
+		reinterpret_cast<Ceylan::SignedLongInteger>( modes ) ; 
 
 #endif // OSDL_RUNS_ON_WINDOWS
 
