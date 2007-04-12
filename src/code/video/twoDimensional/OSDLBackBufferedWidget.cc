@@ -75,8 +75,8 @@ BackBufferedWidget::BackBufferedWidget(
 	 * (hence, the container too) already use it.
 	 *
 	 */
-	_overallSurface->convertToDisplay( /* useAlphaChannel */ 
-		static_cast<bool>( getFlags() & Surface::AlphaBlendingBlit ) ) ;
+	_overallSurface->convertToDisplay( /* useAlphaChannel */
+		( getFlags() & Surface::AlphaBlendingBlit ) != 0 ) ;
 		
 }
 
