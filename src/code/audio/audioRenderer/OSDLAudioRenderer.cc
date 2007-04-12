@@ -103,7 +103,7 @@ void AudioRenderer::setCamera( Camera & newCamera ) throw()
 }
 */
 
-void AudioRenderer::render( Events::RenderingTick currentRenderingTick ) throw()
+void AudioRenderer::render( RenderingTick currentRenderingTick ) throw()
 {
 
 	OSDL_AUDIO_RENDER_LOG( "Audio rendering ! " ) ;
