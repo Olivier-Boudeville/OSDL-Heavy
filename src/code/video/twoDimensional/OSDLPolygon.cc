@@ -258,7 +258,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	{
 		
 		int res = ::filledPolygonRGBA( & targetSurface.getSDLSurface(), 
-			abscissaArray, ordinateArray, vertexCount, 
+			abscissaArray, ordinateArray, static_cast<int>( vertexCount ), 
 			red, green, blue, alpha ) ;
 		
 		delete [] abscissaArray ;
@@ -274,7 +274,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		{
 		
 			int res = ::aapolygonRGBA( & targetSurface.getSDLSurface(), 
-				abscissaArray, ordinateArray, vertexCount, 
+				abscissaArray, ordinateArray, static_cast<int>( vertexCount ), 
 				red, green, blue, alpha ) ;
 
 			delete [] abscissaArray ;
@@ -287,7 +287,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		{
 		
 			int res = ::polygonRGBA( & targetSurface.getSDLSurface(),
-				abscissaArray, ordinateArray, vertexCount, 
+				abscissaArray, ordinateArray, static_cast<int>( vertexCount ), 
 				red, green, blue, alpha ) ;
 				
 			return ( res == 0 ) ;
@@ -336,7 +336,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	{
 		
 		int res = ::filledPolygonColor( & targetSurface.getSDLSurface(), 
-			abscissaArray, ordinateArray, vertexCount,
+			abscissaArray, ordinateArray, static_cast<int>( vertexCount ),
 			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 		
 		delete [] abscissaArray ; 			
@@ -352,7 +352,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		{
 		
 			int res = ::aapolygonColor( & targetSurface.getSDLSurface(), 
-				abscissaArray, ordinateArray, vertexCount,
+				abscissaArray, ordinateArray, static_cast<int>( vertexCount ),
 				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 
 			delete [] abscissaArray ; 			
@@ -365,7 +365,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		{
 		
 			int res = ::polygonColor( & targetSurface.getSDLSurface(),
-				abscissaArray, ordinateArray, vertexCount,
+				abscissaArray, ordinateArray, static_cast<int>( vertexCount ),
 				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 				 
 			delete [] abscissaArray ; 			
@@ -502,7 +502,9 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 	if ( _summits && ! _summits->empty() )
 	{
 
-		res = "Polygon defined by " + Ceylan::toString( _summits->size() ) 
+		res = "Polygon defined by " 
+			+ Ceylan::toString( 
+				static_cast<Ceylan::Uint32>( _summits->size() ) )
 			+ " summits" ;
 
 		if ( level == Ceylan::low )
@@ -541,7 +543,7 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 // Static section.
 
 
-Polygon & Polygon::CreateFlakeBranch( Length length, Length thickness,
+TwoDimensional::Polygon & Polygon::CreateFlakeBranch( Length length, Length thickness,
 		AngleInDegrees childAngle, Ratio branchingHeightRatio, Ratio scale ) 
 	throw()
 {
@@ -558,16 +560,16 @@ Polygon & Polygon::CreateFlakeBranch( Length length, Length thickness,
 	// Order of simpliest computation :
 		
 	Point2D * alpha = & Point2D::CreateFrom( 0, length ) ;
-	Point2D * beta  = & Point2D::CreateFrom( thickness / 2, length ) ;
+	Point2D * beta  = & Point2D::CreateFrom( thickness / 2.0f, length ) ;
 
-	Point2D * nu = & Point2D::CreateFrom( thickness / 2, 0 ) ;
-	Point2D * mu = & Point2D::CreateFrom( thickness / 2, 
+	Point2D * nu = & Point2D::CreateFrom( thickness / 2.0f, 0 ) ;
+	Point2D * mu = & Point2D::CreateFrom( thickness / 2.0f, 
 		length * branchingHeightRatio ) ;
 		
 	Point2D * omicron = & Point2D::CreateFrom( 0, 0 ) ;
 		
 	// gamma computed from the bottom :
-	Point2D * gamma = & Point2D::CreateFrom( thickness / 2, 
+	Point2D * gamma = & Point2D::CreateFrom( thickness / 2.0f, 
 		length * branchingHeightRatio + thickness * scale / Sin( realAngle ) ) ;
 
 	// epsilon calculated from mu :
@@ -792,7 +794,7 @@ PolygonSet::~PolygonSet() throw()
 
 
 
-void PolygonSet::addPointsOf( Polygon & newPolygon ) throw()
+void PolygonSet::addPointsOf( TwoDimensional::Polygon & newPolygon ) throw()
 {
 
 	if ( newPolygon.isListOwner() )
@@ -857,7 +859,8 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level )
 	{
 
 		res = "Polygon set made of " 
-			+ Ceylan::toString( _polygonList->size() ) 
+			+ Ceylan::toString( 
+				static_cast<Ceylan::Uint32>( _polygonList->size() ) ) 
 			+ " separate polygons" ;
 
 		if ( level == Ceylan::low )
@@ -935,7 +938,7 @@ PolygonSet & PolygonSet::CreateFlake(
 	 * (they are evenly placed) :
 	 *
 	 */
-	Linear::HomogeneousMatrix3 transformation( 360 / branchCount,
+	Linear::HomogeneousMatrix3 transformation( 360.0f / branchCount,
 		Linear::Vector2( 0, 0 ) ) ;
 
 	// Creates first branch element :
