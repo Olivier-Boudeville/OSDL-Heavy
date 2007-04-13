@@ -3,7 +3,17 @@
 
 
 /*
- * This file is meant to be only included internally by OSDLFromGfx.cc.
+ * All these functions come from SDL_gfx (2.0.16) : there were not
+ * exported, whereas they are useful here, for example to manage
+ * the endpoint drawing.
+ *
+ * @see http://www.ferzkopp.net/Software/SDL_gfx-2.0/
+ *
+ * Many thanks to Andreas Schiffler.
+ *
+ * This file is meant to be only included internally by OSDLFromGfx.cc
+ * and the (internal too) OSDL implementation files calling these 
+ * functions.
  *
  */
  
@@ -68,23 +78,23 @@ extern "C" {
 
 // Supplementary pixel-level primitives to declare (were internal) :
  
-OSDL_DLL int fastPixelColorNolock( SDL_Surface * dst, Ceylan::Sint16 x,
+int fastPixelColorNolock( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
 	
-OSDL_DLL int fastPixelColorNolockNoclip( SDL_Surface * dst, Ceylan::Sint16 x,
+int fastPixelColorNolockNoclip( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
 	
-OSDL_DLL int fastPixelColor( SDL_Surface * dst, Ceylan::Sint16 x, 
+int fastPixelColor( SDL_Surface * dst, Ceylan::Sint16 x, 
 	Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
 
 
 // This one is not used :
-OSDL_DLL int fastPixelRGBA( SDL_Surface * dst, Ceylan::Sint16 x, 
+int fastPixelRGBA( SDL_Surface * dst, Ceylan::Sint16 x, 
 	Ceylan::Sint16 y, Ceylan::Uint8 r, Ceylan::Uint8 g, Ceylan::Uint8 b,
 	 Ceylan::Uint8 a ) ;
  
 // This one is not used : 
-OSDL_DLL int fastPixelRGBANolock( SDL_Surface * dst, Ceylan::Sint16 x,
+int fastPixelRGBANolock( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Uint8 r, Ceylan::Uint8 g, Ceylan::Uint8 b,
 	Ceylan::Uint8 a ) ;
 
@@ -102,7 +112,7 @@ OSDL_DLL int fastPixelRGBANolock( SDL_Surface * dst, Ceylan::Sint16 x,
  * encoded to a specific pixel format.
  *
  */
-OSDL_DLL int putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x,
+int putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, OSDL::Video::Pixels::PixelColor color,
 	OSDL::Video::Pixels::ColorElement alpha ) ;
 	
@@ -114,17 +124,17 @@ OSDL_DLL int putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x,
  *
  */
  
-OSDL_DLL int pixelColorNolock( SDL_Surface * dst, Ceylan::Sint16 x,
+int pixelColorNolock( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
 
-OSDL_DLL int aalineColorInt( SDL_Surface * dst, Ceylan::Sint16 x1,
+int aalineColorInt( SDL_Surface * dst, Ceylan::Sint16 x1,
 	Ceylan::Sint16 y1, Ceylan::Sint16 x2, Ceylan::Sint16 y2, 
 	Ceylan::Uint32 color, int draw_endpoint ) ;
 
-OSDL_DLL int hlineColorStore( SDL_Surface * dst, Ceylan::Sint16 x1,
+int hlineColorStore( SDL_Surface * dst, Ceylan::Sint16 x1,
 	Ceylan::Sint16 x2, Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
 
-OSDL_DLL int filledCircleRGBANotBlended( SDL_Surface * dst, 
+int filledCircleRGBANotBlended( SDL_Surface * dst, 
 	Ceylan::Sint16 x, Ceylan::Sint16 y, Ceylan::Sint16 rad, 
 	Ceylan::Uint8 r, Ceylan::Uint8 g, Ceylan::Uint8 b, Ceylan::Uint8 a ) ;
 
