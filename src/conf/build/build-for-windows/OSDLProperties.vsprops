@@ -6,7 +6,7 @@
 	>
 	<UserMacro
 		Name="LoaniDir"
-		Value="$(SolutionDir)..\..\.."
+		Value="$(SolutionDir)$(LoaniOffset)..\..\.."
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
