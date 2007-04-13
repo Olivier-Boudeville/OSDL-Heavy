@@ -19,10 +19,7 @@ if [ $is_windows -eq 0 ] ; then
 
   # Windows special case :
   REQUIRED_TOOLS="SDL_win zlib_win libpng_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win OSDL_win"
-
-  # FIXME :
-  REQUIRED_TOOLS="zlib_win libpng_win"
-
+ 
   # For Ceylan and OSDL :
   use_svn=0
   
@@ -1218,7 +1215,15 @@ preparelibpng_win()
 		ERROR "Unable to extract ${libpng_win_ARCHIVE}."
 		exit 10
 	fi
-exit
+
+	libpng_install_dir="${prefix}/libpng-${libpng_win_VERSION}"
+
+	libpng_lib_install_dir="${libpng_install_dir}/Debug"
+
+	${MKDIR} -p ${libpng_lib_install_dir}
+
+	cd $repository
+	
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libpng-from-OSDL" "libpng-${libpng_win_VERSION}"
 
 	if [ $? != 0 ] ; then
@@ -1250,10 +1255,10 @@ generatelibpng_win()
 
 	printItem "installing"
 
-	# Take care of the exported header files (API for libpng and libjpeg) :
+	# Take care of the exported header files (API for libpng) :
 	libpng_include_install_dir="${libpng_install_dir}/include"
 	${MKDIR} -p ${libpng_include_install_dir}
-	${CP} -f *.h VisualC\graphics\include\j*.h ${libpng_include_install_dir}
+	${CP} -f *.h  ${libpng_include_install_dir}
 
 	printOK
 
@@ -4570,7 +4575,7 @@ generateCeylan_win()
 	
 	ceylan_install_include_dir=${ceylan_install_dir}/include
 	${MKDIR} -p ${ceylan_install_include_dir}
-	find . -name 'Ceylan*.h' -exec ${CP} -f '{}' ${ceylan_install_include_dir} ';'
+	${FIND} . -name 'Ceylan*.h' -exec ${CP} -f '{}' ${ceylan_install_include_dir} ';'
 	
 	printOK
 
@@ -5148,7 +5153,7 @@ generateOSDL_win()
 	if [ ${use_svn} -eq 0 ]; then
 	
 		# Here we are in the SVN tree :
-		cd $repository/OSDL/OSDL/trunk
+		cd $repository/osdl/OSDL/trunk
 	
 	else
 	
@@ -5175,7 +5180,7 @@ generateOSDL_win()
 	
 	osdl_install_include_dir=${osdl_install_dir}/include
 	${MKDIR} -p ${osdl_install_include_dir}
-	find . -name 'OSDL*.h' -exec ${CP} -f '{}' ${osdl_install_include_dir} ';'
+	${FIND} . -name 'OSDL*.h' -exec ${CP} -f '{}' ${osdl_install_include_dir} ';'
 
 	printOK
 
@@ -5191,7 +5196,7 @@ generateOSDL_win()
 cleanOSDL_win()
 {
 	LOG_STATUS "Cleaning OSDL build tree..."
-	${RM} -rf "$repository/OSDL*"
+	${RM} -rf "$repository/osdl*"
 }
 
 
