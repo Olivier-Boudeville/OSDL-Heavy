@@ -25,6 +25,9 @@ if [ $is_windows -eq 0 ] ; then
   
   WINDOWS_SOLUTIONS_ROOT="../build-for-windows"
   
+  dll_install_dir="${alternate_prefix}/OSDL-libraries"
+  ${MKDIR} -p ${dll_install_dir}
+  
 else
   # All non-windows platforms should build everything from sources :
   REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"
@@ -365,7 +368,7 @@ generateSDL_win()
 	
 	# Take care of the exported header files (API) :
 	${CP} -rf include ${alternate_prefix}/SDL-${SDL_win_VERSION}
-	
+	${CP} -f ${alternate_prefix}/SDL-${SDL_win_VERSION}/Debug/*.dll ${dll_install_dir}
 	printOK
 
 	printEndList
@@ -913,6 +916,8 @@ generatezlib_win()
 	${MKDIR} -p ${zlib_include_install_dir}
 	${CP} -f *.h ${zlib_include_install_dir}
 
+	${CP} -f ${alternate_prefix}/zlib-${zlib_win_VERSION}/Debug/*.dll ${dll_install_dir}
+	
 	printOK
 
 	printEndList
@@ -1260,6 +1265,8 @@ generatelibpng_win()
 	${MKDIR} -p ${libpng_include_install_dir}
 	${CP} -f *.h  ${libpng_include_install_dir}
 
+	${CP} -f ${alternate_prefix}/libpng-${libpng_win_VERSION}/Debug/*.dll ${dll_install_dir}
+	
 	printOK
 
 	printEndList
@@ -1831,7 +1838,9 @@ generateSDL_image_win()
 	# Take care of the exported header files (API for SDL_image and libjpeg) :
 	sdl_image_include_install_dir="${sdl_image_install_dir}/include"
 	${MKDIR} -p ${sdl_image_include_install_dir}
-	${CP} -f *.h VisualC\graphics\include\j*.h ${sdl_image_include_install_dir}
+	${CP} -f *.h VisualC/graphics/include/j*.h ${sdl_image_include_install_dir}
+
+	${CP} -f ${alternate_prefix}/SDL_image-${SDL_image_win_VERSION}/Debug/*.dll ${dll_install_dir}	
 	
 	printOK
 
@@ -2725,6 +2734,8 @@ generateSDL_mixer_win()
 	${MKDIR} -p ${sdl_mixer_install_include_dir}
 	${CP} -f SDL_mixer.h ${sdl_mixer_install_include_dir}
 	
+	${CP} -f ${alternate_prefix}/SDL_mixer-${SDL_mixer_win_VERSION}/Debug/*.dll ${dll_install_dir}
+	
 	printOK
 
 	printEndList
@@ -3071,6 +3082,8 @@ generateSDL_gfx_win()
 	sdl_gfx_install_dir="${prefix}/SDL_gfx-${SDL_gfx_win_VERSION}"
 	sdl_gfx_include_install_dir="${sdl_gfx_install_dir}/include"
 
+	${CP} -f ${alternate_prefix}/SDL_gfx-${SDL_gfx_win_VERSION}/Debug/*.dll ${dll_install_dir}
+	
 	${MKDIR} -p "${sdl_gfx_include_install_dir}"
 
 	${CP} -f *.h "${sdl_gfx_include_install_dir}"	
@@ -3568,6 +3581,8 @@ generateSDL_ttf_win()
 	sdl_ttf_include_install_dir="${sdl_ttf_install_dir}/include"
 	${MKDIR} -p ${sdl_ttf_include_install_dir}
 	${CP} -f SDL_ttf.h ${sdl_ttf_include_install_dir}
+
+	${CP} -f ${alternate_prefix}/SDL_ttf-${SDL_ttf_win_VERSION}/Debug/*.dll ${dll_install_dir}
 	
 	printOK
 
@@ -4085,10 +4100,10 @@ getCeylan()
 				WARNING "Deleting already existing back-up directory for ceylan (removing ${repository}/ceylan.save)"
 			 	${RM} -rf "${repository}/ceylan.save" 2>/dev/null
 				# Sometimes rm fails apparently (long names or other reasons) :
-				${MV} -f ${repository}/ceylan.save ${repository}/ceylan.save-`date '+%Hh-%Mm-%Ss'`
+				${MV} -f ${repository}/ceylan.save ${repository}/ceylan.save-`date '+%Hh-%Mm-%Ss'` 2>/dev/null
 			fi
 		fi		
-		${MV} -f ${repository}/ceylan ${repository}/ceylan.save
+		${MV} -f ${repository}/ceylan ${repository}/ceylan.save 2>/dev/null
 		WARNING "There already existed a directory for Ceylan (${repository}/ceylan), it has been moved to ${repository}/ceylan.save." 
 	fi	
 	
@@ -4572,7 +4587,8 @@ generateCeylan_win()
 	ceylan_install_lib_dir=${ceylan_install_dir}/Debug
 	${MKDIR} -p ${ceylan_install_lib_dir}
 	${CP} -f ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.dll ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.lib ${ceylan_install_lib_dir}
-	
+	${CP} -f ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.dll ${dll_install_dir}
+
 	ceylan_install_include_dir=${ceylan_install_dir}/include
 	${MKDIR} -p ${ceylan_install_include_dir}
 	${FIND} . -name 'Ceylan*.h' -exec ${CP} -f '{}' ${ceylan_install_include_dir} ';'
@@ -4642,11 +4658,11 @@ getOSDL()
 				WARNING "Deleting already existing back-up directory for osdl (removing ${repository}/osdl.save)"
 			 	${RM} -rf "${repository}/osdl.save" 2>/dev/null
 				# Sometimes rm fails apparently (long names or other reasons) :
-				${MV} -f ${repository}/osdl.save ${repository}/osdl.save-`date '+%Hh-%Mm-%Ss'`
+				${MV} -f ${repository}/osdl.save ${repository}/osdl.save-`date '+%Hh-%Mm-%Ss'` 2>/dev/null
 
 			fi
 		fi		
-		${MV} -f ${repository}/osdl ${repository}/osdl.save
+		${MV} -f ${repository}/osdl ${repository}/osdl.save 2>/dev/null
 		WARNING "There already existed a directory for OSDL (${repository}/osdl), it has been moved to ${repository}/osdl.save." 
 	fi	
 	
@@ -5177,6 +5193,7 @@ generateOSDL_win()
 	osdl_install_lib_dir=${osdl_install_dir}/Debug
 	${MKDIR} -p ${osdl_install_lib_dir}
 	${CP} -f ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.dll ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.lib ${osdl_install_lib_dir}
+	${CP} -f ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.dll ${dll_install_dir}
 	
 	osdl_install_include_dir=${osdl_install_dir}/include
 	${MKDIR} -p ${osdl_install_include_dir}
