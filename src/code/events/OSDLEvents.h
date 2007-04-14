@@ -8,7 +8,7 @@
 
 #include "Ceylan.h"              // for Uint32, Flags, etc.
 
-#include "SDL.h"                 // for SDL_Event
+#include "SDL.h"                 // for SDL_Event typedef (BasicEventType)
 
 #include <string>
 
