@@ -4,8 +4,8 @@
 
 #include "OSDLFont.h"         // for inheritance
 
-// for font primitives (no TTF_Font forward declaration possible)
-#include "SDL_ttf.h"          
+// Forward declaration :
+typedef struct _TTF_Font TTF_Font ;
 
 #include <string>
 

@@ -8,6 +8,8 @@
 #include "SDL_gfxPrimitives.h"   // for stringColor
 #include "SDL.h"                 // for SDL_Surface
 
+#include "SDL_ttf.h"             // for TTF_*
+
 #include <list>
  
  
