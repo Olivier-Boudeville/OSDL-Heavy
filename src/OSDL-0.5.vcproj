@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ceylan-$(CeylanVersion).lib SDL-from-OSDL.lib SDLmain-from-OSDL.lib SDL_image-from-OSDL.lib SDL_mixer-from-OSDL.lib SDL_gfx-from-OSDL.lib SDL_ttf-from-OSDL.lib libpng13d-from-OSDL.lib opengl32.lib glu32.lib"
-				OutputFile="$(OSDLInstDir)\Debug\OSDL-$(OSDLVersion).dll"
+				OutputFile="$(OutDir)\$(SolutionName).dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(CeylanInstDir)\Debug&quot;;&quot;$(SDLInstDir)\Debug&quot;;&quot;$(SDL_ttfInstDir)\Debug&quot;;&quot;$(SDL_mixerInstDir)\Debug&quot;;&quot;$(SDL_imageInstDir)\Debug&quot;;&quot;$(PNGInstDir)\Debug&quot;;&quot;$(SDL_gfxInstDir)\Debug&quot;"
 				GenerateDebugInformation="true"
