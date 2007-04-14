@@ -14,46 +14,45 @@
 #include "OSDLException.h"   // for OSDL::Exception
 
 #include "Ceylan.h"          // for string operators
-
-
-#include "SDL.h"             // for SDL_*
 				
 #include <string>
 
 
+// Forward declarations to avoid including SDL header :
+
 /// Encapsulated basic event, encapsulates all basic events.
-typedef SDL_Event BasicEvent ;
+typedef union SDL_Event BasicEvent ;
 			
 				
 /// Application losed or gained visibility.
-typedef SDL_ActiveEvent FocusEvent ;
+typedef struct SDL_ActiveEvent FocusEvent ;
 
 /// Key pressed or released.
-typedef SDL_KeyboardEvent KeyboardEvent ;
+typedef struct SDL_KeyboardEvent KeyboardEvent ;
 
 /// Mouse moved.
-typedef SDL_MouseMotionEvent MouseMotionEvent ;
+typedef struct SDL_MouseMotionEvent MouseMotionEvent ;
 
 /// Mouse button pressed or released.
-typedef SDL_MouseButtonEvent MouseButtonEvent ;
+typedef struct SDL_MouseButtonEvent MouseButtonEvent ;
 
 /// Joystick axis moved.
-typedef SDL_JoyAxisEvent JoystickAxisEvent ;
+typedef struct SDL_JoyAxisEvent JoystickAxisEvent ;
  
 /// Joystick trackball moved.
-typedef SDL_JoyBallEvent JoystickTrackballEvent ;
+typedef struct SDL_JoyBallEvent JoystickTrackballEvent ;
 
 /// Joystick hat position changed.
-typedef SDL_JoyHatEvent JoystickHatEvent ;
+typedef struct SDL_JoyHatEvent JoystickHatEvent ;
 
 /// Joystick button pressed or released.
-typedef SDL_JoyButtonEvent JoystickButtonEvent ;
+typedef struct SDL_JoyButtonEvent JoystickButtonEvent ;
 
 /// Quit is requested.
-typedef SDL_QuitEvent UserRequestedQuitEvent ;
+typedef struct SDL_QuitEvent UserRequestedQuitEvent ;
 
 /// A system specific window manager event has been received.
-typedef SDL_SysWMEvent SystemSpecificWindowManagerEvent ;
+typedef struct SDL_SysWMEvent SystemSpecificWindowManagerEvent ;
 
 
 /**
@@ -61,15 +60,15 @@ typedef SDL_SysWMEvent SystemSpecificWindowManagerEvent ;
  * mode with the new width and height.
  *
  */
-typedef SDL_ResizeEvent WindowResizedEvent ;
+typedef struct SDL_ResizeEvent WindowResizedEvent ;
 
 
 /// Screen has to be redrawn.
-typedef SDL_ExposeEvent ScreenExposedEvent ;
+typedef struct SDL_ExposeEvent ScreenExposedEvent ;
 	
 
 /// User-defined event.
-typedef SDL_UserEvent UserEvent ;
+typedef struct SDL_UserEvent UserEvent ;
 
 
 // Unicode values defined in Ceylan.
