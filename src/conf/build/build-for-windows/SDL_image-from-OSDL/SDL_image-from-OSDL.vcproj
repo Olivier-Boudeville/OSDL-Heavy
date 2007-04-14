@@ -49,7 +49,7 @@
 				AdditionalIncludeDirectories="&quot;$(SDLIncDir)&quot;;&quot;$(SDL_imageDepIncDir)&quot;"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;LOAD_BMP;LOAD_GIF;LOAD_JPG;LOAD_JPG_DYNAMIC=\&quot;jpeg.dll\&quot;;LOAD_LBM;LOAD_PCX;LOAD_PNG;LOAD_PNG_DYNAMIC=\&quot;libpng13d-from-OSDL.dll\&quot;;LOAD_PNM;LOAD_TGA;LOAD_XPM;LOAD_XV;PNG_USE_DLL;ZLIB_DLL;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\Debug/SDL_image.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"

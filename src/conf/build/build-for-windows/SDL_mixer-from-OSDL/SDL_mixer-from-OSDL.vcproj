@@ -49,7 +49,7 @@
 				AdditionalIncludeDirectories="&quot;$(SDLIncDir)&quot;;&quot;$(MikmodIncDir)&quot;;&quot;$(TimidityIncDir)&quot;;&quot;$(NativeMidiIncDir)&quot;;&quot;$(VorbisIncDir)&quot;;&quot;$(SmpegIncDir)&quot;"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;WAV_MUSIC;OGG_MUSIC;OGG_DYNAMIC=\&quot;vorbisfile.dll\&quot;;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\Debug/SDL_mixer.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
