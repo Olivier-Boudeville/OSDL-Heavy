@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="OSDLPropertiesForTests"
+	OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		Optimization="0"
+		AdditionalIncludeDirectories="&quot;$(OSDLIncDir)&quot;;&quot;$(CeylanIncDir)&quot;;&quot;$(SDLIncDir)&quot;"
+		PreprocessorDefinitions="&quot;OSDL_DLL=__declspec( dllimport )&quot;;&quot;OSDL_RUNS_ON_WINDOWS&quot;;&quot;CEYLAN_DLL=__declspec( dllimport )&quot;;&quot;CEYLAN_RUNS_ON_WINDOWS&quot;"
+		RuntimeLibrary="3"
+		WarningLevel="2"
+		WarnAsError="true"
+		Detect64BitPortabilityProblems="true"
+		DebugInformationFormat="3"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="OSDL-$(OSDLVersion).lib Ceylan-$(CeylanVersion).lib SDLmain-from-OSDL.lib SDL-from-OSDL.lib"
+		OutputFile="$(OSDLTestName)"
+		AdditionalLibraryDirectories="&quot;$(OSDLInstDir)\Debug&quot;;&quot;$(CeylanInstDir)\Debug&quot;;&quot;$(SDLInstDir)\Debug&quot;"
+		GenerateDebugInformation="true"
+		SubSystem="2"
+	/>
+	<UserMacro
+		Name="OSDLPropertiesForTests"
+		Value="loaded"
+	/>
+	<UserMacro
+		Name="OSDLTestName"
+		Value="$(OSDLTestDir)\$(ProjectName).exe"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="OSDLTestDir"
+		Value="$(LoaniInstDir)\OSDL-tests"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+</VisualStudioPropertySheet>
