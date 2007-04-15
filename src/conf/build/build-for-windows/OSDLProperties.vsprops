@@ -4,6 +4,25 @@
 	Version="8.00"
 	Name="OSDLProperties"
 	>
+	<Tool
+		Name="VCCLCompilerTool"
+		Optimization="0"
+		RuntimeLibrary="3"
+		DisableLanguageExtensions="false"
+		WarningLevel="4"
+		WarnAsError="false"
+		Detect64BitPortabilityProblems="true"
+		DebugInformationFormat="3"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		OutputFile="$(LoaniDLLPrefix)-$(FIXMEVersion)-$(LoaniDLLSuffix)"
+		AdditionalLibraryDirectories="$(LoaniLIBInstDir)"
+	/>
+	<UserMacro
+		Name="OSDLProperties"
+		Value="loaded"
+	/>
 	<UserMacro
 		Name="LoaniDir"
 		Value="$(SolutionDir)$(LoaniOffset)..\..\.."
@@ -21,6 +40,76 @@
 	<UserMacro
 		Name="LoaniInstDir"
 		Value="$(LoaniDir)\LOANI-installations"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniDebugTarget"
+		Value="debug"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniReleaseTarget"
+		Value="release"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniLibraryType"
+		Value="$(LoaniDebugTarget)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniLibrariesInstDir"
+		Value="$(LoaniInstDir)\OSDL-libraries\$(LoaniLibraryType)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniDLLInstDir"
+		Value="$(LoaniLibrariesInstDir)\dll"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniDLLPrefix"
+		Value="$(LoaniDLLInstDir)\$(ProjectName)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniDLLSuffix"
+		Value="from-LOANI-$(LoaniLibraryType).dll"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniLIBInstDir"
+		Value="$(LoaniLibrariesInstDir)\lib"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniLIBPrefix"
+		Value="$(LoaniLIBInstDir)\$(ProjectName)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LoaniLIBSuffix"
+		Value="from-LOANI-$(LoaniLibraryType).lib"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
