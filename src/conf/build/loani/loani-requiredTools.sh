@@ -375,7 +375,9 @@ generateSDL_win()
 	printItem "installing"
 	
 	# Take care of the exported header files (API) :
-	${CP} -rf include ${alternate_prefix}/SDL-${SDL_win_VERSION}
+	sdl_install=${alternate_prefix}/SDL-${SDL_win_VERSION}
+	${MKDIR} -p ${sdl_install}
+	${CP} -rf include ${sdl_install}
 	printOK
 
 	printEndList
@@ -864,7 +866,6 @@ preparezlib_win()
 
 	cd $repository
 
-	
 	# Archive content is not contained into a unique root directory ! 
 
 	zlib_source_dir="zlib-${zlib_win_VERSION}"	
@@ -924,8 +925,6 @@ generatezlib_win()
 	zlib_include_install_dir="${zlib_install_dir}/include"
 	${MKDIR} -p ${zlib_include_install_dir}
 	${CP} -f *.h ${zlib_include_install_dir}
-
-	${CP} -f ${alternate_prefix}/zlib-${zlib_win_VERSION}/${library_build_type}/*.dll ${dll_install_dir}
 	
 	printOK
 
@@ -1231,10 +1230,7 @@ preparelibpng_win()
 	fi
 
 	libpng_install_dir="${prefix}/libpng-${libpng_win_VERSION}"
-
-	libpng_lib_install_dir="${libpng_install_dir}/${library_build_type}"
-
-	${MKDIR} -p ${libpng_lib_install_dir}
+	${MKDIR} -p ${libpng_install_dir}
 
 	cd $repository
 	
@@ -1273,8 +1269,6 @@ generatelibpng_win()
 	libpng_include_install_dir="${libpng_install_dir}/include"
 	${MKDIR} -p ${libpng_include_install_dir}
 	${CP} -f *.h  ${libpng_include_install_dir}
-
-	${CP} -f ${alternate_prefix}/libpng-${libpng_win_VERSION}/${library_build_type}/*.dll ${dll_install_dir}
 	
 	printOK
 
@@ -1798,9 +1792,7 @@ prepareSDL_image_win()
 
 	sdl_image_install_dir="${prefix}/SDL_image-${SDL_image_win_VERSION}"
 	
-	sdl_image_lib_install_dir="${sdl_image_install_dir}/${library_build_type}"
-	
-	${MKDIR} -p ${sdl_image_lib_install_dir}
+	${MKDIR} -p ${sdl_image_install_dir}
   
 	# Needed for jpeg.h and al, and for DLL as well :
  	{
@@ -1848,8 +1840,6 @@ generateSDL_image_win()
 	sdl_image_include_install_dir="${sdl_image_install_dir}/include"
 	${MKDIR} -p ${sdl_image_include_install_dir}
 	${CP} -f *.h VisualC/graphics/include/j*.h ${sdl_image_include_install_dir}
-
-	${CP} -f ${alternate_prefix}/SDL_image-${SDL_image_win_VERSION}/${library_build_type}/SDL_image-from-OSDL.dll ${alternate_prefix}/SDL_image-${SDL_image_win_VERSION}/${library_build_type}/jpeg.dll ${dll_install_dir}	
 	
 	printOK
 
@@ -2692,10 +2682,8 @@ prepareSDL_mixer_win()
 	cd "SDL_mixer-${SDL_mixer_win_VERSION}"
 
 	sdl_mixer_install_dir="${prefix}/SDL_mixer-${SDL_mixer_win_VERSION}"
-	
-	sdl_mixer_lib_install_dir="${sdl_mixer_install_dir}/${library_build_type}"
-	
-	${MKDIR} -p ${sdl_mixer_lib_install_dir}
+		
+	${MKDIR} -p ${sdl_mixer_install_dir}
 	 
 	# Needed for vorbisfile.h and al, and for Ogg/Vorbis DLL as well :
  	{
@@ -2742,8 +2730,6 @@ generateSDL_mixer_win()
 	sdl_mixer_install_include_dir=${sdl_mixer_install_dir}/include
 	${MKDIR} -p ${sdl_mixer_install_include_dir}
 	${CP} -f SDL_mixer.h ${sdl_mixer_install_include_dir}
-	
-	${CP} -f ${alternate_prefix}/SDL_mixer-${SDL_mixer_win_VERSION}/${library_build_type}/*.dll ${dll_install_dir}
 	
 	printOK
 
@@ -3090,11 +3076,7 @@ generateSDL_gfx_win()
 	
 	sdl_gfx_install_dir="${prefix}/SDL_gfx-${SDL_gfx_win_VERSION}"
 	sdl_gfx_include_install_dir="${sdl_gfx_install_dir}/include"
-
-	${CP} -f ${alternate_prefix}/SDL_gfx-${SDL_gfx_win_VERSION}/${library_build_type}/*.dll ${dll_install_dir}
-	
 	${MKDIR} -p "${sdl_gfx_include_install_dir}"
-
 	${CP} -f *.h "${sdl_gfx_include_install_dir}"	
 	
 	printOK
@@ -3541,9 +3523,7 @@ prepareSDL_ttf_win()
  
 	sdl_ttf_install_dir="${prefix}/SDL_ttf-${SDL_ttf_win_VERSION}"
 	
-	sdl_ttf_lib_install_dir="${sdl_ttf_install_dir}/${library_build_type}"
-	
-	${MKDIR} -p ${sdl_ttf_lib_install_dir}
+	${MKDIR} -p ${sdl_ttf_install_dir}
   
 	# Needed for ftbuild*.h and al, and for freetype*MT.lib as well :
  	{
@@ -3590,8 +3570,6 @@ generateSDL_ttf_win()
 	sdl_ttf_include_install_dir="${sdl_ttf_install_dir}/include"
 	${MKDIR} -p ${sdl_ttf_include_install_dir}
 	${CP} -f SDL_ttf.h ${sdl_ttf_include_install_dir}
-
-	${CP} -f ${alternate_prefix}/SDL_ttf-${SDL_ttf_win_VERSION}/${library_build_type}/*.dll ${dll_install_dir}
 	
 	printOK
 
@@ -4591,13 +4569,6 @@ generateCeylan_win()
 
 	printItem "installing"
 	
-	ceylan_build_dir=src/${library_build_type}
-	
-	ceylan_install_lib_dir=${ceylan_install_dir}/${library_build_type}
-	${MKDIR} -p ${ceylan_install_lib_dir}
-	${CP} -f ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.dll ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.lib ${ceylan_install_lib_dir}
-	${CP} -f ${ceylan_build_dir}/Ceylan-${Ceylan_win_VERSION}.dll ${dll_install_dir}
-
 	ceylan_install_include_dir=${ceylan_install_dir}/include
 	${MKDIR} -p ${ceylan_install_include_dir}
 	${FIND} . -name 'Ceylan*.h' -exec ${CP} -f '{}' ${ceylan_install_include_dir} ';'
@@ -5197,13 +5168,6 @@ generateOSDL_win()
 
 	printItem "installing"
 
-	osdl_build_dir=src/${library_build_type}
-	
-	osdl_install_lib_dir=${osdl_install_dir}/${library_build_type}
-	${MKDIR} -p ${osdl_install_lib_dir}
-	${CP} -f ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.dll ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.lib ${osdl_install_lib_dir}
-	${CP} -f ${osdl_build_dir}/OSDL-${OSDL_win_VERSION}.dll ${dll_install_dir}
-	
 	osdl_install_include_dir=${osdl_install_dir}/include
 	${MKDIR} -p ${osdl_install_include_dir}
 	${FIND} . -name 'OSDL*.h' -exec ${CP} -f '{}' ${osdl_install_include_dir} ';'
