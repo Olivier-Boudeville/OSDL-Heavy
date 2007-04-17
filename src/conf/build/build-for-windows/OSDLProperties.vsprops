@@ -59,8 +59,15 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
+		Name="LoaniThreadingTarget"
+		Value="multithread"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
 		Name="LoaniLibraryType"
-		Value="$(LoaniDebugTarget)"
+		Value="$(LoaniDebugTarget)-$(LoaniThreadingTarget)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -138,6 +145,13 @@
 	<UserMacro
 		Name="SDLIncDir"
 		Value="$(SDLInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="SDLLibName"
+		Value="SDL-$(SDLVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
