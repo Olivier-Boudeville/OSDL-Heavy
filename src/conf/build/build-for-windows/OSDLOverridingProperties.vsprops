@@ -6,7 +6,7 @@
 	>
 	<UserMacro
 		Name="LoaniOffset"
-		Value="..\..\"
+		Value="..\..\..\..\..\"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
