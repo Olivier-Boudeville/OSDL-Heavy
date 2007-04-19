@@ -7,9 +7,11 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		Optimization="0"
+		MinimalRebuild="true"
+		BasicRuntimeChecks="3"
 		RuntimeLibrary="3"
 		DisableLanguageExtensions="false"
-		WarningLevel="4"
+		WarningLevel="3"
 		WarnAsError="false"
 		Detect64BitPortabilityProblems="true"
 		DebugInformationFormat="3"
@@ -60,7 +62,7 @@
 	/>
 	<UserMacro
 		Name="LoaniThreadingTarget"
-		Value="multithread"
+		Value="mt"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -326,7 +328,7 @@
 	/>
 	<UserMacro
 		Name="CeylanVersion"
-		Value="0.5"
+		Value="0.6"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -339,8 +341,29 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
+		Name="CeylanCodeRoot"
+		Value="$(CeylanRepoDir)\src\code"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
 		Name="CeylanInstDir"
 		Value="$(LoaniInstDir)\Ceylan-$(CeylanVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="CeylanDLLName"
+		Value="$(LoaniDLLInstDir)\Ceylan-$(CeylanVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="CeylanLIBName"
+		Value="$(LoaniLIBInstDir)\Ceylan-1.lib"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
