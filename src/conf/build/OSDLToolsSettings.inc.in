@@ -35,6 +35,12 @@ libjpeg_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
 libjpeg_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
 libjpeg_MD5="dbd5f3b47ed13132f04c685d608a7547"
 
+libjpeg_win_VERSION="6b"
+libjpeg_win_ARCHIVE="jpegsrc.v${libjpeg_win_VERSION}.tar.gz"
+libjpeg_win_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
+libjpeg_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
+libjpeg_win_MD5="dbd5f3b47ed13132f04c685d608a7547"
+
 
 # zlib library (libzlib.a) : http://www.zlib.net/
 
@@ -139,13 +145,21 @@ SDL_gfx_win_MD5="22dc2d9d916197829f9342c490d2d02b"
 
 # Sources.
 
-freetype_VERSION="2.3.2"
+freetype_VERSION="2.3.4"
 freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
 freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_MD5="119e1fe126fcfa5a70bc56db55f573d5"
+freetype_MD5="1a6c59a7723d637c78672e7784da865d"
+
+freetype_win_VERSION="2.3.4"
+freetype_win_ARCHIVE="freetype-${freetype_win_VERSION}.tar.bz2"
+freetype_win_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
+freetype_win_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
+freetype_win_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
+freetype_win_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
+freetype_win_MD5="1a6c59a7723d637c78672e7784da865d"
 
 # Precompiled binaries of freetype for Windows.
 # See : http://gnuwin32.sourceforge.net/packages/freetype.htm
