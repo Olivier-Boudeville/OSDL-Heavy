@@ -145,15 +145,22 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="SDLIncDir"
-		Value="$(SDLInstDir)\include"
+		Name="SDLDLLName"
+		Value="SDL-$(SDLVersion)-$(LoaniDLLSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="SDLLibName"
+		Name="SDLLIBName"
 		Value="SDL-$(SDLVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="SDLIncDir"
+		Value="$(SDLInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -175,6 +182,20 @@
 	<UserMacro
 		Name="SDL_gfxInstDir"
 		Value="$(LoaniInstDir)\SDL_gfx-$(SDL_gfxVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="SDL_gfxDLLName"
+		Value="SDL_gfx-$(SDL_gfxVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="SDL_gfxLIBName"
+		Value="SDL_gfx-$(SDL_gfxVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -208,6 +229,20 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
+		Name="SDL_imageDLLName"
+		Value="SDL_image-$(SDL_imageVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="SDL_imageLIBName"
+		Value="SDL_image-$(SDL_imageVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
 		Name="SDL_imageIncDir"
 		Value="$(SDL_imageInstDir)\include"
 		InheritsFromParent="true"
@@ -216,7 +251,7 @@
 	/>
 	<UserMacro
 		Name="SDL_imageDepIncDir"
-		Value="$(SDL_imageRepoDir)\VisualC\graphics\include"
+		Value="&quot;$(LibjpegIncDir)&quot;;&quot;$(libpngIncDir)&quot;"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -243,6 +278,20 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
+		Name="SDL_ttfDLLName"
+		Value="SDL_ttf-$(SDL_ttfVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="SDL_ttfLIBName"
+		Value="SDL_ttf-$(SDL_ttfVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
 		Name="SDL_ttfIncDir"
 		Value="$(SDL_ttfInstDir)\include"
 		InheritsFromParent="true"
@@ -250,15 +299,43 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="FreetypeIncDir"
-		Value="$(SDL_ttfRepoDir)\VisualC\FreeType\include"
+		Name="FreetypeVersion"
+		Value="2.3.2"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="FreetypeRepoDir"
+		Value="$(LoaniRepoDir)\"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
 		Name="FreetypeInstDir"
-		Value="$(SDL_ttfInstDir)"
+		Value="$(LoaniInstDir)\Freetype-$(FreetypeVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="FreetypeDLLName"
+		Value="Freetype-$(FreetypeVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="FreetypeLIBName"
+		Value="Freetype-$(FreetypeVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="FreetypeIncDir"
+		Value="$(FreeTypeInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -280,6 +357,20 @@
 	<UserMacro
 		Name="SDL_mixerInstDir"
 		Value="$(LoaniInstDir)\SDL_mixer-$(SDL_mixerVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="SDL_mixerDLLName"
+		Value="SDL_mixer-$(SDL_mixerVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="SDL_mixerLIBName"
+		Value="SDL_mixer-$(SDL_mixerVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -356,14 +447,14 @@
 	/>
 	<UserMacro
 		Name="CeylanDLLName"
-		Value="$(LoaniDLLInstDir)\Ceylan-$(CeylanVersion)-$(LoaniDLLSuffix)"
+		Value="Ceylan-$(CeylanVersion)-$(LoaniDLLSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
 		Name="CeylanLIBName"
-		Value="$(LoaniLIBInstDir)\Ceylan-$(CeylanVersion)-$(LoaniLIBSuffix)"
+		Value="Ceylan-$(CeylanVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -397,6 +488,20 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
+		Name="OSDLDLLName"
+		Value="OSDL-$(OSDLVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="OSDLLIBName"
+		Value="OSDL-$(OSDLVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
 		Name="OSDLIncDir"
 		Value="$(OSDLInstDir)\include"
 		InheritsFromParent="true"
@@ -404,29 +509,43 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="PNGVersion"
+		Name="libpngVersion"
 		Value="1.2.16"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="PNGRepoDir"
-		Value="$(LoaniRepoDir)\libpng-$(PNGVersion)"
+		Name="libpngRepoDir"
+		Value="$(LoaniRepoDir)\libpng-$(libpngVersion)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="PNGInstDir"
-		Value="$(LoaniInstDir)\libpng-$(PNGVersion)"
+		Name="libpngInstDir"
+		Value="$(LoaniInstDir)\libpng-$(libpngVersion)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="PNGIncDir"
-		Value="$(PNGInstDir)\include"
+		Name="libpngDLLName"
+		Value="libpng-$(LibpngVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="libpngLIBName"
+		Value="libpng-$(LibpngVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="libpngIncDir"
+		Value="$(libpngInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -453,8 +572,15 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
+		Name="ZlibDLLName"
+		Value="zlib-$(ZlibVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
 		Name="ZlibLIBName"
-		Value="$(LoaniLIBInstDir)\zlib-$(ZlibVersion)-$(LoaniLIBSuffix)"
+		Value="zlib-$(ZlibVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -488,8 +614,15 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
+		Name="LibjpegDLLName"
+		Value="libjpeg-$(LibjpegVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
 		Name="LibjpegLIBName"
-		Value="$(LoaniLIBInstDir)\libjpeg-$(LibjpegVersion)-$(LoaniLIBSuffix)"
+		Value="libjpeg-$(LibjpegVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
