@@ -407,13 +407,6 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="VorbisIncDir"
-		Value="$(SDL_mixerRepoDir)\VisualC\vorbis\include"
-		InheritsFromParent="true"
-		Delimiter=";"
-		PerformEnvironmentSet="true"
-	/>
-	<UserMacro
 		Name="SmpegIncDir"
 		Value="$(SDL_mixerRepoDir)\VisualC\smpeg\include"
 		InheritsFromParent="true"
@@ -633,6 +626,104 @@
 	<UserMacro
 		Name="LibjpegIncDir"
 		Value="$(LibjpegInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LiboggVersion"
+		Value="1.1.3"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LiboggRepoDir"
+		Value="$(LoaniRepoDir)\libogg-$(LiboggVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LiboggInstDir"
+		Value="$(LoaniInstDir)\libogg-$(LiboggVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LiboggDLLName"
+		Value="libogg-$(LiboggVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LiboggLIBName"
+		Value="libogg-$(LiboggVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LiboggIncDir"
+		Value="$(LiboggInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibvorbisVersion"
+		Value="1.1.2"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibvorbisRepoDir"
+		Value="$(LoaniRepoDir)\libvorbis-$(LibvorbisVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibvorbisInstDir"
+		Value="$(LoaniInstDir)\libvorbis-$(LibvorbisVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibvorbisDLLName"
+		Value="libvorbis-$(LibvorbisVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibvorbisLIBName"
+		Value="libvorbis-$(LibvorbisVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibvorbisfileDLLName"
+		Value="libvorbisfile-$(LibvorbisVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibvorbisfileLIBName"
+		Value="libvorbisfile-$(LibvorbisVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibvorbisIncDir"
+		Value="$(LibvorbisInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
