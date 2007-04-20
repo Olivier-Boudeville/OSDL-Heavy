@@ -5,6 +5,7 @@
 	Name="basic-testBasic"
 	ProjectGUID="{78F59833-9101-4563-90E1-D6E9BFC614B6}"
 	RootNamespace="testBasic"
+	AssemblyReferenceSearchPaths="&quot;..\..\..\..\..\..\..\LOANI-installations\OSDL-libraries&quot;"
 	>
 	<Platforms>
 		<Platform
@@ -38,9 +39,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/VERBOSE:LIB"
+				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(OSDLIncDir)&quot;;&quot;$(CeylanIncDir)&quot;;&quot;$(SDLIncDir)&quot;"
-				PreprocessorDefinitions="&quot;OSDL_DLL=__declspec( dllimport )&quot;;&quot;OSDL_RUNS_ON_WINDOWS&quot;;&quot;CEYLAN_DLL=__declspec( dllimport )&quot;;&quot;CEYLAN_RUNS_ON_WINDOWS&quot;"
 				RuntimeLibrary="3"
 			/>
 			<Tool
@@ -55,6 +55,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="OSDL-$(OSDLVersion).lib Ceylan-$(CeylanVersion).lib SDL-from-OSDL.lib SDLmain-from-OSDL.lib"
+				OutputFile="$(OSDLTestName)"
 				AdditionalLibraryDirectories="&quot;$(OSDLInstDir)\Debug&quot;;&quot;$(CeylanInstDir)\Debug&quot;;&quot;$(SDLInstDir)\Debug&quot;"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
