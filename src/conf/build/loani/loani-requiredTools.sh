@@ -18,23 +18,25 @@ latest_stable_osdl="release-0.5.0"
 if [ $is_windows -eq 0 ] ; then
 
   # Windows special case :
-  REQUIRED_TOOLS="SDL_win zlib_win libpng_win SDL_image_win SDL_gfx_win SDL_ttf_win SDL_mixer_win Ceylan_win OSDL_win"
- REQUIRED_TOOLS="SDL_win zlib_win"
+  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
+ REQUIRED_TOOLS="libogg_win"
  
   # For Ceylan and OSDL :
   use_svn=0
   
-  WINDOWS_SOLUTIONS_ROOT="../build-for-windows"
+  # Where LOANI-specific package solutions are stored :
+  WINDOWS_SOLUTIONS_ROOT="$repository/../build-for-windows"
   
-  # Build type for libraries (either Debug or Release) :
-  library_build_type="debug-multithread" 
+  # Build type for libraries :
+  #  - either bebug or release
+  #  - either classical or multithread (mt)
+  library_build_type="debug-mt" 
   
   dll_install_dir="${alternate_prefix}/OSDL-libraries/${library_build_type}/dll"
   ${MKDIR} -p ${dll_install_dir}
   
   lib_install_dir="${alternate_prefix}/OSDL-libraries/${library_build_type}/lib"
   ${MKDIR} -p ${lib_install_dir}
-  
   
 else
   # All non-windows platforms should build everything from sources :
@@ -344,7 +346,7 @@ prepareSDL_win()
 		exit 10
 	fi
 	
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL-from-OSDL" "SDL-${SDL_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL-from-LOANI" "SDL-${SDL_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL solution in build tree."
@@ -366,7 +368,7 @@ generateSDL_win()
 	printItem "configuring"
  	printOK
 
-	sdl_solution=`pwd`"/SDL-from-OSDL/SDL-from-OSDL.sln"
+	sdl_solution=`pwd`"/SDL-from-LOANI/SDL-from-LOANI.sln"
   
 	printItem "building"
 	GenerateWithVisualExpress SDL ${sdl_solution}
@@ -409,11 +411,12 @@ cleanSDL_win()
 # TIFF support is disabled for the moment.
 # For Visual Express builds, these prerequesites are managed from SDL_image_win.
 
-
-
 ################################################################################
-# JPEG library
 ################################################################################
+# JPEG (libjpeg)
+################################################################################
+################################################################################
+
 
 #TRACE "[loani-requiredTools] JPEG"
 
@@ -658,6 +661,118 @@ cleanlibjpeg()
 
 
 
+################################################################################
+# libjpeg build thanks to Visual Express.
+################################################################################
+
+
+getlibjpeg_win()
+{
+	LOG_STATUS "Getting libjpeg for windows..."
+	launchFileRetrieval libjpeg_win
+	return $?
+}
+
+
+preparelibjpeg_win()
+{
+
+	LOG_STATUS "Preparing libjpeg for windows.."
+	if findTool gunzip ; then
+		GUNZIP=$returnedString
+	else
+		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		exit 8
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 9
+	fi		
+	
+	printBeginList "libjpeg    "
+		
+	printItem "extracting"
+	
+	cd $repository
+	
+	# Prevent archive from disappearing because of gunzip.
+	{
+		${CP} -f ${libjpeg_win_ARCHIVE} ${libjpeg_win_ARCHIVE}.save && ${GUNZIP} -f ${libjpeg_win_ARCHIVE} && tar -xvf "jpegsrc.v${libjpeg_VERSION}.tar"
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${libjpeg_win_ARCHIVE}."
+		exit 10
+	fi
+
+	${MV} -f ${libjpeg_win_ARCHIVE}.save ${libjpeg_win_ARCHIVE} 
+	${RM} -f "jpegsrc.v${libjpeg_win_VERSION}.tar"
+	
+	libjpeg_source_dir="$repository/jpeg-${libjpeg_win_VERSION}"
+	
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libjpeg-from-LOANI" "${WINDOWS_SOLUTIONS_ROOT}/libjpeg-from-LOANI/jmorecfg.h" ${libjpeg_source_dir}
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy libjpeg solution in build tree."
+		exit 11
+	fi
+
+	# Prefer Visual-based config :
+	${CP} -f ${libjpeg_source_dir}/jconfig.vc ${libjpeg_source_dir}/jconfig.h
+	if [ $? != 0 ] ; then
+		ERROR "Unable to update libjpeg config header in build tree."
+		exit 12
+	fi
+	
+	printOK
+
+}
+
+
+generatelibjpeg_win()
+{
+
+	LOG_STATUS "Generating libjpeg for windows..."
+
+	cd ${libjpeg_source_dir}
+
+	printItem "configuring"
+ 	printOK
+
+	sdl_solution=`pwd`"/libjpeg-from-LOANI/libjpeg-from-LOANI.sln"
+  
+	printItem "building"
+	GenerateWithVisualExpress libjpeg ${sdl_solution}
+	printOK
+
+	printItem "installing"
+	
+	# Take care of the exported header files (API) :
+	libjpeg_install=${alternate_prefix}/libjpeg-${libjpeg_win_VERSION}
+	libjpeg_header_install=${libjpeg_install}/include
+	${MKDIR} -p ${libjpeg_header_install}
+	${CP} -f jpeglib.h jconfig.h jmorecfg.h jerror.h ${libjpeg_header_install}
+	printOK
+
+	printEndList
+
+	LOG_STATUS "libjpeg successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanlibjpeg_win()
+{
+	LOG_STATUS "Cleaning libjpeg build tree..."
+	${RM} -rf "jpeg-${libjpeg_VERSION}"
+}
+
+
+
 
 ################################################################################
 ################################################################################
@@ -883,14 +998,11 @@ preparezlib_win()
 	fi
 
 	zlib_install_dir="${prefix}/zlib-${zlib_win_VERSION}"
-
-	zlib_lib_install_dir="${zlib_install_dir}/${library_build_type}"
-
-	${MKDIR} -p ${zlib_lib_install_dir}
+	${MKDIR} -p ${zlib_install_dir}
 
 	cd $repository
 	
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/zlib-from-OSDL" "zlib-${zlib_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/zlib-from-LOANI" "zlib-${zlib_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy zlib solution in build tree."
@@ -913,7 +1025,7 @@ generatezlib_win()
 	printItem "configuring"
  	printOK
 
-	zlib_solution=`pwd`"/zlib-from-OSDL/zlib-from-OSDL.sln"
+	zlib_solution=`pwd`"/zlib-from-LOANI/zlib-from-LOANI.sln"
 
 	printItem "building"
 	GenerateWithVisualExpress zlib ${zlib_solution}
@@ -1234,7 +1346,7 @@ preparelibpng_win()
 
 	cd $repository
 	
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libpng-from-OSDL" "libpng-${libpng_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libpng-from-LOANI" "libpng-${libpng_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy libpng solution in build tree."
@@ -1256,8 +1368,7 @@ generatelibpng_win()
 	printItem "configuring"
  	printOK
 	
-	
-	libpng_solution=`pwd`"/libpng-from-OSDL/libpng-from-OSDL.sln"
+	libpng_solution=`pwd`"/libpng-from-LOANI/libpng-from-LOANI.sln"
 
 	printItem "building"
 	GenerateWithVisualExpress libpng ${libpng_solution}
@@ -1794,19 +1905,9 @@ prepareSDL_image_win()
 	
 	${MKDIR} -p ${sdl_image_install_dir}
   
-	# Needed for jpeg.h and al, and for DLL as well :
- 	{
-		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/graphics/lib/jpeg.dll ${sdl_image_lib_install_dir}
-	} 1>>"$LOG_OUTPUT" 2>&1
-
-	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_image_win_ARCHIVE} subpackages."
-		exit 10
-	fi
-
 	cd $repository
   
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-OSDL" "SDL_image-${SDL_image_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-LOANI" "SDL_image-${SDL_image_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_image solution in build tree."
@@ -1828,7 +1929,7 @@ generateSDL_image_win()
 	printItem "configuring"
  	printOK
 
-	sdl_image_solution=`pwd`"/SDL_image-from-OSDL/SDL_image-from-OSDL.sln"
+	sdl_image_solution=`pwd`"/SDL_image-from-LOANI/SDL_image-from-LOANI.sln"
 
 	printItem "building"
 	GenerateWithVisualExpress SDL_image ${sdl_image_solution}
@@ -1839,7 +1940,7 @@ generateSDL_image_win()
 	# Take care of the exported header files (API for SDL_image and libjpeg) :
 	sdl_image_include_install_dir="${sdl_image_install_dir}/include"
 	${MKDIR} -p ${sdl_image_include_install_dir}
-	${CP} -f *.h VisualC/graphics/include/j*.h ${sdl_image_include_install_dir}
+	${CP} -f *.h ${sdl_image_include_install_dir}
 	
 	printOK
 
@@ -1989,9 +2090,11 @@ cleanSDL_image_win_precompiled()
 
 
 
-
 ################################################################################
-# libogg (libogg)
+################################################################################
+################################################################################
+# libogg
+################################################################################
 ################################################################################
 
 
@@ -2198,13 +2301,17 @@ cleanlibogg()
 }
 
 
+################################################################################
+# libogg build thanks to Visual Express.
+################################################################################
 
 
 
 ################################################################################
-# libvorbis (libvorbis)
 ################################################################################
-
+# libvorbis
+################################################################################
+################################################################################
 
 #TRACE "[loani-requiredTools] libvorbis"
 
@@ -2403,6 +2510,10 @@ cleanlibvorbis()
 	${RM} -rf "libvorbis-${libvorbis_VERSION}"
 }
 
+
+################################################################################
+# libvorbis build thanks to Visual Express.
+################################################################################
 
 
 
@@ -2697,7 +2808,7 @@ prepareSDL_mixer_win()
 
 	cd $repository
   
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_mixer-from-OSDL" "SDL_mixer-${SDL_mixer_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_mixer-from-LOANI" "SDL_mixer-${SDL_mixer_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_mixer solution in build tree."
@@ -2719,7 +2830,7 @@ generateSDL_mixer_win()
 	printItem "configuring"
  	printOK
 
-	sdl_mixer_solution=`pwd`"/SDL_mixer-from-OSDL/SDL_mixer-from-OSDL.sln"
+	sdl_mixer_solution=`pwd`"/SDL_mixer-from-LOANI/SDL_mixer-from-LOANI.sln"
 
 	printItem "building"
 	GenerateWithVisualExpress SDL_mixer ${sdl_mixer_solution}
@@ -3046,7 +3157,7 @@ prepareSDL_gfx_win()
 		exit 10
 	fi
 
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_gfx-from-OSDL" "SDL_gfx-${SDL_gfx_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_gfx-from-LOANI" "SDL_gfx-${SDL_gfx_win_VERSION}"
 
 	${MV} -f ${SDL_gfx_win_ARCHIVE}.save ${SDL_gfx_win_ARCHIVE}
 	${RM} -f "SDL_gfx-${SDL_gfx_win_VERSION}.tar"
@@ -3066,7 +3177,7 @@ generateSDL_gfx_win()
 	printItem "configuring"
  	printOK
 
-	sdl_gfx_solution=`pwd`"/SDL_gfx-from-OSDL/SDL_gfx-from-OSDL.sln"
+	sdl_gfx_solution=`pwd`"/SDL_gfx-from-LOANI/SDL_gfx-from-LOANI.sln"
 
 	printItem "building"
 	GenerateWithVisualExpress SDL_gfx ${sdl_gfx_solution}
@@ -3098,9 +3209,10 @@ cleanSDL_gfx_win()
 
 
 
-
+################################################################################
 ################################################################################
 # Freetype
+################################################################################
 ################################################################################
 
 
@@ -3268,6 +3380,109 @@ cleanfreetype()
 	${RM} -rf "freetype-${freetype_VERSION}"
 }
 
+
+
+################################################################################
+# Freetype build thanks to Visual Express :
+################################################################################
+
+
+getfreetype_win()
+{
+	LOG_STATUS "Getting freetype_win..."
+	launchFileRetrieval freetype_win
+	return $?
+}
+
+
+preparefreetype_win()
+{
+
+	LOG_STATUS "Preparing freetype_win..."
+	
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
+	else
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
+		exit 14
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 15
+	fi		
+	
+	printBeginList "freetype   "
+	
+	printItem "extracting"
+	
+	cd $repository
+	
+	# Prevent archive from disappearing because of bunzip2.
+	{
+		${CP} -f ${freetype_win_ARCHIVE} ${freetype_win_ARCHIVE}.save && ${BUNZIP2} -f ${freetype_win_ARCHIVE} && tar -xvf "freetype-${freetype_win_VERSION}.tar" 
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+		
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${freetype_win_ARCHIVE}."
+		LOG_STATUS "Restoring ${freetype_win_ARCHIVE}."
+		${MV} -f ${freetype_win_ARCHIVE}.save ${freetype_win_ARCHIVE} 
+		exit 10
+	fi
+	
+	${MV} -f ${freetype_win_ARCHIVE}.save ${freetype_win_ARCHIVE} 
+	${RM} -f "freetype-${freetype_win_VERSION}.tar"
+
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/Freetype-from-LOANI" "freetype-${freetype_win_VERSION}"
+	${CP} -f "${WINDOWS_SOLUTIONS_ROOT}/Freetype-from-LOANI/ftoption.h" "freetype-${freetype_win_VERSION}/include/freetype/config"
+
+	printOK
+	
+}
+
+
+generatefreetype_win()
+{
+
+	LOG_STATUS "Generating freetype_win..."
+	
+	cd "freetype-${freetype_win_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+	freetype_solution=`pwd`"/Freetype-from-LOANI/Freetype-from-LOANI.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress freetype ${freetype_solution}
+	printOK
+
+	printItem "installing"
+	
+	freetype_install_dir="${prefix}/Freetype-${freetype_win_VERSION}"
+	freetype_include_install_dir="${freetype_install_dir}/include"
+	${MKDIR} -p "${freetype_include_install_dir}"
+	${CP} -rf include/* "${freetype_include_install_dir}"	
+	
+	printOK
+	
+	printEndList
+	
+	LOG_STATUS "freetype_win successfully installed."
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleanfreetype_win()
+{
+	LOG_STATUS "Cleaning Freetype library build tree..."
+	${RM} -rf "freetype-${freetype_win_VERSION}"
+}
 
 
 
@@ -3480,6 +3695,7 @@ cleanSDL_ttf()
 }
 
 
+
 ################################################################################
 # SDL_ttf build thanks to Visual Express.
 ################################################################################
@@ -3524,23 +3740,12 @@ prepareSDL_ttf_win()
 	sdl_ttf_install_dir="${prefix}/SDL_ttf-${SDL_ttf_win_VERSION}"
 	
 	${MKDIR} -p ${sdl_ttf_install_dir}
-  
-	# Needed for ftbuild*.h and al, and for freetype*MT.lib as well :
- 	{
-		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/FreeType/lib/*.lib ${lib_install_dir}
-	} 1>>"$LOG_OUTPUT" 2>&1
-
-	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_ttf_win_ARCHIVE} subpackages."
-		exit 10
-	fi
-
 	cd $repository
   
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-OSDL" "SDL_ttf-${SDL_ttf_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-LOANI" "SDL_ttf-${SDL_ttf_win_VERSION}" && ${CP} -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-LOANI/SDL_ttf.c" "SDL_ttf-${SDL_ttf_win_VERSION}"
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to copy SDL_ttf solution in build tree."
+		ERROR "Unable to copy SDL_ttf solution and fixes in build tree."
 		exit 11
 	fi
 
@@ -3559,7 +3764,7 @@ generateSDL_ttf_win()
 	printItem "configuring"
  	printOK
 
-	sdl_ttf_solution=`pwd`"/SDL_ttf-from-OSDL/SDL_ttf-from-OSDL.sln"
+	sdl_ttf_solution=`pwd`"/SDL_ttf-from-LOANI/SDL_ttf-from-LOANI.sln"
 
 	printItem "building"
 	GenerateWithVisualExpress SDL_ttf ${sdl_ttf_solution}
