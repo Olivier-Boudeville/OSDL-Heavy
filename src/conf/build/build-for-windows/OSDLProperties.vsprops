@@ -18,8 +18,11 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		OutputFile="$(LoaniDLLPrefix)-$(FIXMEVersion)-$(LoaniDLLSuffix)"
-		AdditionalLibraryDirectories="$(LoaniLIBInstDir)"
+		OutputFile="$(LoaniDLLInstDir)\$(FIXMEDLLName)"
+		AdditionalLibraryDirectories="&quot;$(LoaniLIBInstDir)&quot;"
+		SubSystem="2"
+		ImportLibrary="$(LoaniLIBInstDir)\$(FIXMELIBName)"
+		TargetMachine="1"
 	/>
 	<UserMacro
 		Name="OSDLProperties"
@@ -300,7 +303,7 @@
 	/>
 	<UserMacro
 		Name="FreetypeVersion"
-		Value="2.3.2"
+		Value="2.3.4"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
