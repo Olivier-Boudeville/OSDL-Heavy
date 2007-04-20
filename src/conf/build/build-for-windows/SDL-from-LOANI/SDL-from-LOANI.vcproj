@@ -63,7 +63,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="winmm.lib dxguid.lib"
-				OutputFile="$(SDLDLLName)"
+				OutputFile="$(LoaniDLLInstDir)\$(SDLDLLName)"
 				ImportLibrary="$(LoaniLIBInstDir)\$(SDLLIBName)"
 				CLRUnmanagedCodeCheck="false"
 			/>
