@@ -19,7 +19,7 @@ if [ $is_windows -eq 0 ] ; then
 
   # Windows special case :
   REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
- REQUIRED_TOOLS="libogg_win"
+ REQUIRED_TOOLS="SDL_mixer_win"
  
   # For Ceylan and OSDL :
   use_svn=0
@@ -2305,6 +2305,106 @@ cleanlibogg()
 # libogg build thanks to Visual Express.
 ################################################################################
 
+#TRACE "[loani-requiredTools] SDL_image for Visual Express targets"
+
+getlibogg_win()
+{
+	LOG_STATUS "Getting libogg for windows..."
+	launchFileRetrieval libogg_win
+	return $?
+}
+
+
+preparelibogg_win()
+{
+
+	LOG_STATUS "Preparing libogg for windows.."
+	
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "libogg  "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${libogg_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${libogg_win_ARCHIVE}."
+		exit 10
+	fi
+  
+	cd "libogg-${libogg_win_VERSION}"
+
+	libogg_install_dir="${prefix}/libogg-${libogg_win_VERSION}"
+	
+	${MKDIR} -p ${libogg_install_dir}
+  
+	cd $repository
+
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libogg-from-LOANI" "libogg-${libogg_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy libogg solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generatelibogg_win()
+{
+
+	LOG_STATUS "Generating libogg for windows..."
+
+	cd "libogg-${libogg_win_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+	libogg_solution=`pwd`"/libogg-from-LOANI/libogg-from-LOANI.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress libogg ${libogg_solution}
+	printOK
+
+	printItem "installing"
+
+	# Take care of the exported header files (API for libogg and libjpeg) :
+	libogg_include_install_dir="${libogg_install_dir}/include/ogg"
+	${MKDIR} -p ${libogg_include_install_dir}
+	
+	# vorbis includes are in the form "ogg/x.h" :
+	${CP} -f include/ogg/*.h ${libogg_include_install_dir}
+	
+	printOK
+
+	printEndList
+
+	LOG_STATUS "libogg successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanlibogg_win()
+{
+	LOG_STATUS "Cleaning SDL build tree..."
+	${RM} -rf "libogg-${libogg_win_VERSION}"
+}
+
+
 
 
 ################################################################################
@@ -2511,9 +2611,108 @@ cleanlibvorbis()
 }
 
 
+
 ################################################################################
 # libvorbis build thanks to Visual Express.
 ################################################################################
+
+
+#TRACE "[loani-requiredTools] libvorbis for Visual Express targets"
+
+getlibvorbis_win()
+{
+	LOG_STATUS "Getting libvorbis for windows..."
+	launchFileRetrieval libvorbis_win
+	return $?
+}
+
+
+preparelibvorbis_win()
+{
+
+	LOG_STATUS "Preparing libvorbis for windows.."
+	
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "libvorbis"
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${libvorbis_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${libvorbis_win_ARCHIVE}."
+		exit 10
+	fi
+  
+	cd "libvorbis-${libvorbis_win_VERSION}"
+
+	libvorbis_install_dir="${prefix}/libvorbis-${libvorbis_win_VERSION}"
+	
+	${MKDIR} -p ${libvorbis_install_dir}
+  
+	cd $repository
+ 
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libvorbis-from-LOANI" "libvorbis-${libvorbis_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy libvorbis solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generatelibvorbis_win()
+{
+
+	LOG_STATUS "Generating libvorbis for windows..."
+
+	cd "libvorbis-${libvorbis_win_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+	libvorbis_solution=`pwd`"/libvorbis-from-LOANI/libvorbis-from-LOANI.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress libvorbis ${libvorbis_solution}
+	printOK
+
+	printItem "installing"
+
+	# Take care of the exported header files (API for libvorbis and libjpeg) :
+	libvorbis_include_install_dir="${libvorbis_install_dir}/include/vorbis"
+	${MKDIR} -p ${libvorbis_include_install_dir}
+	${CP} -f include/vorbis/*.h ${libvorbis_include_install_dir}
+	
+	printOK
+
+	printEndList
+
+	LOG_STATUS "libvorbis successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanlibvorbis_win()
+{
+	LOG_STATUS "Cleaning SDL build tree..."
+	${RM} -rf "libvorbis-${libvorbis_win_VERSION}"
+}
 
 
 
@@ -2796,18 +2995,8 @@ prepareSDL_mixer_win()
 		
 	${MKDIR} -p ${sdl_mixer_install_dir}
 	 
-	# Needed for vorbisfile.h and al, and for Ogg/Vorbis DLL as well :
- 	{
-		${UNZIP} -o VisualC.zip && ${CP} -f VisualC/vorbis/lib/*.dll ${sdl_mixer_lib_install_dir}
-	} 1>>"$LOG_OUTPUT" 2>&1
-
-	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_mixer_win_ARCHIVE} subpackages."
-		exit 10
-	fi
-
 	cd $repository
-  
+ exit 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_mixer-from-LOANI" "SDL_mixer-${SDL_mixer_win_VERSION}"
 
 	if [ $? != 0 ] ; then
