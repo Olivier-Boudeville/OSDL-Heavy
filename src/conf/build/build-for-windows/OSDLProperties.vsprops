@@ -363,7 +363,7 @@
 	/>
 	<UserMacro
 		Name="CeylanLIBName"
-		Value="$(LoaniLIBInstDir)\Ceylan-1.lib"
+		Value="$(LoaniLIBInstDir)\Ceylan-$(CeylanVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -453,8 +453,50 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
+		Name="ZlibLIBName"
+		Value="$(LoaniLIBInstDir)\zlib-$(ZlibVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
 		Name="ZlibIncDir"
 		Value="$(ZlibInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibjpegVersion"
+		Value="6b"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibjpegRepoDir"
+		Value="$(LoaniRepoDir)\jpeg-$(LibjpegVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibjpegInstDir"
+		Value="$(LoaniInstDir)\libjpeg-$(LibjpegVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibjpegLIBName"
+		Value="$(LoaniLIBInstDir)\libjpeg-$(LibjpegVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="LibjpegIncDir"
+		Value="$(LibjpegInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
