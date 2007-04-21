@@ -165,12 +165,15 @@ class MyController : public OSDL::MVC::Controller
 	public:
 	
 	
-		MyController() throw() :
-			_eventForModel( * this )
+		MyController() throw()
 		{	
-		
+			_eventForModel = new MyMVCEvent( * this ) ;
 		}
 		
+		virtual ~MyController() throw()
+		{	
+			delete _eventForModel ;
+		}
 				
 		void rawKeyPressed( const KeyboardEvent & keyboardPressedEvent ) throw()
 		{
@@ -181,29 +184,29 @@ class MyController : public OSDL::MVC::Controller
 			
 				case KeyboardHandler::UpArrowKey:
 					OSDL_DISPLAY_DEBUG( "Controller updated with key up !" ) ;
-					_eventForModel.setDirection( 1 ) ;	
+					_eventForModel->setDirection( 1 ) ;	
 					break ;
 					
 				case KeyboardHandler::DownArrowKey:
 					OSDL_DISPLAY_DEBUG( "Controller updated with key down !" ) ;
-					_eventForModel.setDirection( 2 ) ;	
+					_eventForModel->setDirection( 2 ) ;	
 					break ;
 					
 				case KeyboardHandler::LeftArrowKey:
 					OSDL_DISPLAY_DEBUG( "Controller updated with key left !" ) ;
-					_eventForModel.setDirection( 3 ) ;	
+					_eventForModel->setDirection( 3 ) ;	
 					break ;
 					
 				case KeyboardHandler::RightArrowKey:
 					OSDL_DISPLAY_DEBUG( 
 						"Controller updated with key right !" ) ;
-					_eventForModel.setDirection( 4 ) ;	
+					_eventForModel->setDirection( 4 ) ;	
 					break ;
 				
 				case KeyboardHandler::EnterKey:
 					OSDL_DISPLAY_DEBUG( 
 						"Controller updated with enter key !" ) ;
-					_eventForModel.setDirection( 5 ) ;	
+					_eventForModel->setDirection( 5 ) ;	
 					break ;
 
 				default:
@@ -222,28 +225,28 @@ class MyController : public OSDL::MVC::Controller
 		void joystickUp( AxisPosition leftExtent ) throw()
 		{
 			OSDL_DISPLAY_DEBUG( "Controller updated !" ) ;
-			_eventForModel.setDirection( 1 ) ;
+			_eventForModel->setDirection( 1 ) ;
 		}
 	
 		
 		void joystickDown( AxisPosition leftExtent ) throw()
 		{
 			OSDL_DISPLAY_DEBUG( "Controller updated !" ) ;
-			_eventForModel.setDirection( 2 ) ;
+			_eventForModel->setDirection( 2 ) ;
 		}
 		
 		
 		void joystickLeft( AxisPosition leftExtent ) throw()
 		{
 			OSDL_DISPLAY_DEBUG( "Controller updated !" ) ;
-			_eventForModel.setDirection( 3 ) ;
+			_eventForModel->setDirection( 3 ) ;
 		}
 		
 		
 		void joystickRight( AxisPosition leftExtent ) throw()
 		{
 			OSDL_DISPLAY_DEBUG( "Controller updated !" ) ;
-			_eventForModel.setDirection( 4 ) ;
+			_eventForModel->setDirection( 4 ) ;
 		}
 		
 		
@@ -252,8 +255,8 @@ class MyController : public OSDL::MVC::Controller
 			throw( Ceylan::EventException )
 		{
 			OSDL_DISPLAY_DEBUG( "Controller interrogated, returning state " 
-				<< _eventForModel.getDirection() << " !" ) ;
-			return _eventForModel ;
+				<< _eventForModel->getDirection() << " !" ) ;
+			return * _eventForModel ;
 		}
 				
 		
@@ -262,7 +265,7 @@ class MyController : public OSDL::MVC::Controller
 			const throw()	
 		{
 		
-			switch( _eventForModel.getDirection() )
+			switch( _eventForModel->getDirection() )
 			{
 			
 				case 1:
@@ -283,17 +286,16 @@ class MyController : public OSDL::MVC::Controller
 			}
 			
 			return "(unexpected direction selected) : " 
-				+ Ceylan::toString( _eventForModel.getDirection() ) ;
+				+ Ceylan::toString( _eventForModel->getDirection() ) ;
 						
 		}
 		
 		
 		
 	protected:
-	
 
 		/// This event stores the current direction.
-		MyMVCEvent _eventForModel ;
+		MyMVCEvent * _eventForModel ;
 					
 } ;
 
@@ -308,13 +310,19 @@ class MyModel : public OSDL::MVC::Model
 	
 		MyModel() :
 			Model( /* autoRegister */ true, /* period */ 1, 
-				/* policy */ Engine::relaxed ),
-			_eventForView( * this )			
+				/* policy */ Engine::relaxed )
+					
 		{
-		
+			_eventForView = new MyMVCEvent( * this )	;
 		}
 		
-		
+
+		virtual ~MyModel()
+		{
+			delete _eventForView ;
+		}
+
+
 		// Not used there : not event-driven.
 		virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 		{
@@ -324,11 +332,11 @@ class MyModel : public OSDL::MVC::Model
 			
 			if ( event != 0 )
 			{
-				_eventForView.setDirection( event->getDirection() ) ;
+				_eventForView->setDirection( event->getDirection() ) ;
 			}
 			
 			// We are event-driven here :
-			notifyAllViews( _eventForView ) ;
+			notifyAllViews( *_eventForView ) ;
 			
 		}
 	
@@ -339,9 +347,9 @@ class MyModel : public OSDL::MVC::Model
 		{
 		
 			OSDL_DISPLAY_DEBUG( "Model interrogated, returning state " 
-				<< _eventForView.getDirection() << " !" ) ;
+				<< _eventForView->getDirection() << " !" ) ;
 				
-			return _eventForView ;
+			return *_eventForView ;
 		}
 		
 	
@@ -359,14 +367,14 @@ class MyModel : public OSDL::MVC::Model
 			const MyMVCEvent * myEvent = dynamic_cast<const MyMVCEvent *>( 
 				& myController->getEventFor( * this ) ) ;
 				
-			_eventForView.setDirection( myEvent->getDirection() ) ;
+			_eventForView->setDirection( myEvent->getDirection() ) ;
 			
 		}
 	
 	
 	private:
 			
-		MyMVCEvent _eventForView ;
+		MyMVCEvent * _eventForView ;
 					
 } ;
 
