@@ -20,6 +20,7 @@
 		Name="VCLinkerTool"
 		OutputFile="$(LoaniDLLInstDir)\$(FIXMEDLLName)"
 		AdditionalLibraryDirectories="&quot;$(LoaniLIBInstDir)&quot;"
+		GenerateDebugInformation="true"
 		SubSystem="2"
 		ImportLibrary=""
 		TargetMachine="1"
