@@ -1,13 +1,7 @@
 #include "OSDLGLTexture.h"
 
-/*
- * The usual header order could not be respected : to remove
- * the stupid '#define LoadImage' and al Microsoft put in their
- * headers, OSDLConfig.h (whose Windows version corrects them) 
- * must be included before OSDLSurface.h and the headers that
- * include it (OSDLVideo.h).
- *
- */
+#include "OSDLVideo.h"      // for VideoModule::SoftwareSurface
+#include "OSDLSurface.h"    // for Surface
 
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>     // for OSDL_USES_OPENGL and al 
@@ -17,12 +11,10 @@
 #include "SDL_opengl.h"     // for GL functions
 #endif // OSDL_HAVE_OPENGL
 
-#include "OSDLVideo.h"      // for VideoModule::SoftwareSurface
-#include "OSDLSurface.h"    // for Surface
-
+// To protect LoadImage :
+#include "OSDLIncludeCorrecter.h"
 
 using std::string ;
-
 
 using namespace Ceylan ;
 using namespace Ceylan::Log ;
