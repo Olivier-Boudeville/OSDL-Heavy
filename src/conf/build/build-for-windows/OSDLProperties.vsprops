@@ -477,6 +477,13 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
+		Name="OSDLCodeRoot"
+		Value="$(OSDLRepoDir)\src\code"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
 		Name="OSDLInstDir"
 		Value="$(LoaniInstDir)\OSDL-$(OSDLVersion)"
 		InheritsFromParent="true"
