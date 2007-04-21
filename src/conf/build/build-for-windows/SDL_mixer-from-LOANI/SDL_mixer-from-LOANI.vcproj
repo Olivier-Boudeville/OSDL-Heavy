@@ -46,8 +46,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SDLIncDir)&quot;;&quot;$(MikmodIncDir)&quot;;&quot;$(TimidityIncDir)&quot;;&quot;$(NativeMidiIncDir)&quot;;&quot;$(VorbisIncDir)&quot;;&quot;$(SmpegIncDir)&quot;"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;WAV_MUSIC;OGG_MUSIC;OGG_DYNAMIC=\&quot;vorbisfile.dll\&quot;;_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="&quot;$(SDLIncDir)&quot;;&quot;$(MikmodIncDir)&quot;;&quot;$(TimidityIncDir)&quot;;&quot;$(NativeMidiIncDir)&quot;;&quot;$(LiboggIncDir)&quot;;&quot;$(LibvorbisIncDir)&quot;;&quot;$(SmpegIncDir)&quot;"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;WAV_MUSIC;OGG_MUSIC;OGG_DYNAMIC=\&quot;$(LibvorbisfileDLLName)\&quot;;_CRT_SECURE_NO_DEPRECATE"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib SDL-$(SDLVersion)-$(LoaniLIBSuffix) "
-				OutputFile="$(LoaniDLLPrefix)-$(SDL_mixerVersion)-$(LoaniDLLSuffix)"
+				AdditionalDependencies="winmm.lib $(SDLLIBName)"
+				OutputFile="$(LoaniDLLInstDir)\$(SDL_mixerDLLName)"
 				AdditionalLibraryDirectories=""
-				ImportLibrary="$(LoaniLIBPrefix)-$(SDL_mixerVersion)-$(LoaniLIBSuffix)"
+				ImportLibrary="$(LoaniLIBInstDir)\$(SDL_mixerLIBName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
