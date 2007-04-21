@@ -93,12 +93,15 @@
  *
  */
 
+
 #include "OSDLAudioIncludes.h"
 #include "OSDLBasicIncludes.h"
 #include "OSDLEngineIncludes.h"
 #include "OSDLEventsIncludes.h"
 #include "OSDLVideoIncludes.h"
 
+// Help the user code staying clean :
+#include "OSDLIncludeCorrecter.h"
 
 #endif // OSDL_H_
 
