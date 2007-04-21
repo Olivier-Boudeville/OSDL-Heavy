@@ -21,7 +21,7 @@
 		OutputFile="$(LoaniDLLInstDir)\$(FIXMEDLLName)"
 		AdditionalLibraryDirectories="&quot;$(LoaniLIBInstDir)&quot;"
 		SubSystem="2"
-		ImportLibrary="$(LoaniLIBInstDir)\$(FIXMELIBName)"
+		ImportLibrary=""
 		TargetMachine="1"
 	/>
 	<UserMacro
@@ -157,6 +157,13 @@
 	<UserMacro
 		Name="SDLLIBName"
 		Value="SDL-$(SDLVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="SDLmainLIBName"
+		Value="SDLmain-$(SDLVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
