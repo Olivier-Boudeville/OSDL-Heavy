@@ -148,8 +148,9 @@ int main(int argc, char **argv)
       
       if ( ! tokenEaten )
       {
-    	  throw Ceylan::CommandLineParseException( 
-    		  "Unexpected command line argument : " + token ) ;
+		  // No exception can be thrown because of SDLmain declaration :
+		  LogPlug::fatal( "Unexpected command line argument : " + token ) ;
+		  exit( 1 ) ;
       }
 
   }
