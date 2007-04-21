@@ -6,8 +6,8 @@
 #include "OSDLUtils.h"          // for getBackendLastError
 #include "OSDLBasic.h"          // for getExistingCommonModule, GetVersion, etc.
 
-
 #include "SDL.h"
+
 
 #include <list>
 using std::list ;
@@ -28,6 +28,9 @@ using namespace OSDL::Video::OpenGL ;
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>         // for OSDL_CACHE_OVERALL_SETTINGS and al 
 #endif // OSDL_USES_CONFIG_H
+
+// To protect LoadIcon :
+#include "OSDLIncludeCorrecter.h"
 
 
 /*
