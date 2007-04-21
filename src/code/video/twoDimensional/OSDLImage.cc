@@ -15,6 +15,8 @@
 #include <OSDLConfig.h>             // for OSDL_DEBUG and al 
 #endif // OSDL_USES_CONFIG_H
 
+// To protect LoadIcon :
+#include "OSDLIncludeCorrecter.h"
 
 using std::string ;
 
