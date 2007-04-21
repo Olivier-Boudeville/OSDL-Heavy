@@ -83,12 +83,15 @@ class MyController : public OSDL::MVC::Controller
 	public:
 	
 	
-		MyController() throw() :
-			_eventForModel( * this )
+		MyController() throw()
 		{	
-		
+			_eventForModel = new MyMVCEvent( *this ) ;
 		}
 		
+		virtual ~MyController() throw()
+		{	
+			delete _eventForModel ;
+		}
 		
 		Direction getDirection() const throw() 
 		{
@@ -147,8 +150,8 @@ class MyController : public OSDL::MVC::Controller
 		void propagateState()
 		{
 		
-			_eventForModel.setDirection( _direction ) ;
-			notifyAllListeners( _eventForModel ) ;
+			_eventForModel->setDirection( _direction ) ;
+			notifyAllListeners( *_eventForModel ) ;
 			
 		}
 		
@@ -203,7 +206,7 @@ class MyController : public OSDL::MVC::Controller
 			throw( Ceylan::EventException )
 		{
 		
-			return _eventForModel ;
+			return *_eventForModel ;
 			
 		}
 		
@@ -245,7 +248,7 @@ class MyController : public OSDL::MVC::Controller
 		/// 1 : up, 2 : down, 3 : left, 4 : right, 5 : quit.
 		Direction _direction ;
 		
-		MyMVCEvent _eventForModel ;
+		MyMVCEvent * _eventForModel ;
 					
 } ;
 
@@ -261,15 +264,19 @@ class MyModel : public OSDL::MVC::Model
 	
 		MyModel() :
 			Model( /* autoRegister */ false ),
-			_actualDirection( 1 ),
-			_eventForView( * this )			
+			_actualDirection( 1 )
 		{
 		
+			_eventForView = new MyMVCEvent( * this ) ;
 			// No registering since no scheduler is used.
 			
 		}
-		
-		
+
+		virtual ~MyModel()
+		{
+			delete _eventForView ;
+		}
+
 		virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 		{
 		
@@ -280,8 +287,8 @@ class MyModel : public OSDL::MVC::Model
 				_actualDirection = event->getDirection() ;
 			
 			// We are event-driven here :
-			_eventForView.setDirection( _actualDirection ) ;			
-			notifyAllViews( _eventForView ) ;
+			_eventForView->setDirection( _actualDirection ) ;			
+			notifyAllViews( *_eventForView ) ;
 			
 		}
 	
@@ -291,7 +298,7 @@ class MyModel : public OSDL::MVC::Model
 			throw( Ceylan::EventException )
 		{
 		
-			return _eventForView ;
+			return *_eventForView ;
 			
 		}
 	
@@ -308,7 +315,7 @@ class MyModel : public OSDL::MVC::Model
 	
 		Direction _actualDirection ;
 		
-		MyMVCEvent _eventForView ;
+		MyMVCEvent * _eventForView ;
 			
 		
 } ;
