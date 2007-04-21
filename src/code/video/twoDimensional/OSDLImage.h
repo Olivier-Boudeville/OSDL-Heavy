@@ -11,6 +11,8 @@
 #include <string>
 
 
+// To protect LoadIcon :
+#include "OSDLIncludeCorrecter.h"
 
 namespace OSDL
 {
