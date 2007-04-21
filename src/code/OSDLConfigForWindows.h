@@ -25,18 +25,6 @@
 
 /* General section */
 
-
-// Microsoft stupidly managed to redefine symbols in an header (winuser.h) :
-
-#ifdef LoadIcon
-#undef LoadIcon
-#endif // LoadIcon
-
-#ifdef LoadImage
-#undef LoadImage
-#endif // LoadImage
-
-
 /* Define to 1 if the `closedir' function returns void instead of `int'. */
 /* #undef OSDL_CLOSEDIR_VOID */
 
