@@ -2,8 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLSurface"
+	Name="video-testOSDLSurface"
 	ProjectGUID="{B63399CC-E33D-45EF-AD7C-72BA1AD2D419}"
+	RootNamespace="video-testOSDLSurface"
 	>
 	<Platforms>
 		<Platform
