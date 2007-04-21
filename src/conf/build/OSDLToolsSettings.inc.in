@@ -217,12 +217,19 @@ SDL_ttf_osx_precompiled_MD5="xxx"
 
 
 # libvorbis (libvorbis.so) : http://www.xiph.org/vorbis/
+# (this ogg/vorbis order must be respected as ogg section uses vorbis variable)
+
 libvorbis_VERSION="1.1.2"
 libvorbis_ARCHIVE="libvorbis-${libvorbis_VERSION}.tar.gz"
 libvorbis_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/vorbis"
 libvorbis_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
 libvorbis_MD5="37847626b8e1b53ae79a34714c7b3211"
 
+libvorbis_win_VERSION="1.1.2"
+libvorbis_win_ARCHIVE="libvorbis-${libvorbis_win_VERSION}.zip"
+libvorbis_win_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/vorbis"
+libvorbis_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_win_VERSION}/unix"
+libvorbis_win_MD5="e014f9bc80de7cf70ab7d42eb6e29402"
 
 
 # libogg (libogg.so) : http://www.xiph.org/ogg/
@@ -232,6 +239,12 @@ libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.gz"
 libogg_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
 libogg_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
 libogg_MD5="eaf7dc6ebbff30975de7527a80831585"
+
+libogg_win_VERSION="1.1.3"
+libogg_win_ARCHIVE="libogg-${libogg_win_VERSION}.zip"
+libogg_win_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
+libogg_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_win_VERSION}/unix"
+libogg_win_MD5="d4a0364e7ea34803ccde8f37e4b21bc2"
 
 
 
