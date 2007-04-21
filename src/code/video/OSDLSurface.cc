@@ -22,6 +22,15 @@
 #include <cassert>                  // for assert
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>     // for OSDL_DEBUG_* and al 
+#endif // OSDL_USES_CONFIG_H
+
+
+// To protect LoadImage :
+#include "OSDLIncludeCorrecter.h"
+
+
 /*
  * Always remember to access the width and the height of a Surface thanks 
  * to their dedicated methods (getWidth/getHeight) since the '_width' and
@@ -43,10 +52,6 @@ using namespace OSDL::Video::TwoDimensional ;
 
 using TwoDimensional::UprightRectangle ;
 
-
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>     // for OSDL_DEBUG_* and al 
-#endif // OSDL_USES_CONFIG_H
 
 
 SurfaceEvent::SurfaceEvent( Ceylan::EventSource & source ) throw() : 

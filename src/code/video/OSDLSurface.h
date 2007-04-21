@@ -12,6 +12,8 @@
 #include <string>
 #include <list>
 
+// To protect LoadImage :
+#include "OSDLIncludeCorrecter.h"
 
 
 // The internal actual surface.
