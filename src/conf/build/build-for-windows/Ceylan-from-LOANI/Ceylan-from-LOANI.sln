@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual C++ Express 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ceylan-0.6-library", "Ceylan-0.6-from-LOANI.vcproj", "{021F8729-BF5B-4A73-B130-BEA1DDB68A89}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ceylan-library", "Ceylan-from-LOANI.vcproj", "{021F8729-BF5B-4A73-B130-BEA1DDB68A89}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanBasicResourceManager", "..\..\..\..\test\generic\testCeylanBasicResourceManager\testCeylanBasicResourceManager.vcproj", "{9774A4F8-ECE7-40AD-8873-3AF115B5060D}"
 EndProject
@@ -55,7 +55,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logs-testCeylanLogAggregato
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logs-testCeylanLogAggregatorRaw", "..\..\..\..\test\logs\testCeylanLogAggregatorRaw\testCeylanLogAggregatorRaw.vcproj", "{D801A033-1D0E-4EB6-9265-096F213ACD13}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logs-testCeylanLogAggregatorRawNonImmediate", "..\..\..\..\test\logs\testCeylanLogAggregatorRawNonImmediate\testCeylanLogAggregatorRawNonImmediate.vcproj", "{4752926C-275C-4C8D-A79C-A737165C706A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logs-testCeylanLogAggregatorRawCached", "..\..\..\..\test\logs\testCeylanLogAggregatorRawCached\testCeylanLogAggregatorRawCached.vcproj", "{4752926C-275C-4C8D-A79C-A737165C706A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logs-testCeylanLogHolder", "..\..\..\..\test\logs\testCeylanLogHolder\testCeylanLogHolder.vcproj", "{EADF6683-3217-4C28-882F-E43E08E61A78}"
 EndProject
@@ -83,11 +83,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maths-testCeylanRandomGener
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maths-testCeylanWhiteNoiseGenerator", "..\..\..\..\test\maths\testCeylanWhiteNoiseGenerator\testCeylanWhiteNoiseGenerator.vcproj", "{87DA4AE6-6610-452F-B901-BDCD7482A0B7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "middleware-testCeylanLightWeightMarshaller", "..\..\..\..\test\middleware\testCeylanLightWeightMarshaller\testCeylanLightWeightMarshaller.vcproj", "{84B9499D-10E9-4F89-8717-E18A50731EA1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "middleware-testCeylanLwMarshaller", "..\..\..\..\test\middleware\testCeylanLwMarshaller\testCeylanLwMarshaller.vcproj", "{84B9499D-10E9-4F89-8717-E18A50731EA1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "middleware-testCeylanMultiLwMarshalledServer", "..\..\..\..\test\middleware\testCeylanMultiLwMarshalledServer\testCeylanMultiLwMarshalledServer.vcproj", "{E680D7C8-479C-4C67-A423-E25BCEE250C0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "middleware-testCeylanMultiLwMrshSrv", "..\..\..\..\test\middleware\testCeylanMultiLwMrshSrv\testCeylanMultiLwMrshSrv.vcproj", "{E680D7C8-479C-4C67-A423-E25BCEE250C0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "middleware-testCeylanMultiLwProtocolServer", "..\..\..\..\test\middleware\testCeylanMultiLwProtocolServer\testCeylanMultiLwProtocolServer.vcproj", "{C0CABA39-5884-4A57-9D1A-94012C66BABA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "middleware-testCeylanMultiLwPtclSrv", "..\..\..\..\test\middleware\testCeylanMultiLwPtclSrv\testCeylanMultiLwPtclSrv.vcproj", "{C0CABA39-5884-4A57-9D1A-94012C66BABA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "middleware-testCeylanProtocolClient", "..\..\..\..\test\middleware\testCeylanProtocolClient\testCeylanProtocolClient.vcproj", "{6F24CE68-CB18-4C78-9658-AF5B23FB70AD}"
 EndProject
@@ -101,11 +101,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network-testCeylanClientStr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network-testCeylanIPAddressvFour", "..\..\..\..\test\network\testCeylanIPAddressvFour\testCeylanIPAddressvFour.vcproj", "{9C9FF6E4-C533-430C-9EFD-750AD63413CC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network-testCeylanMultiplexedServerStream", "..\..\..\..\test\network\testCeylanMultiplexedServerStream\testCeylanMultiplexedServerStream.vcproj", "{EDC75139-7338-4C64-B8E2-FEB41ED1F0C7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network-testCeylanMultiplexedSrvStream", "..\..\..\..\test\network\testCeylanMultiplexedSrvStream\testCeylanMultiplexedSrvStream.vcproj", "{EDC75139-7338-4C64-B8E2-FEB41ED1F0C7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network-testCeylanNetwork", "..\..\..\..\test\network\testCeylanNetwork\testCeylanNetwork.vcproj", "{7908EDE4-5465-48DA-911C-9089BE5C01B9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network-testCeylanSequentialServerStream", "..\..\..\..\test\network\testCeylanSequentialServerStream\testCeylanSequentialServerStream.vcproj", "{B69D645F-484F-48E6-815D-A9E4E428C48B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network-testCeylanSequentialSrvStream", "..\..\..\..\test\network\testCeylanSequentialSrvStream\testCeylanSequentialSrvStream.vcproj", "{B69D645F-484F-48E6-815D-A9E4E428C48B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "system-testCeylanFileAndDirectories", "..\..\..\..\test\system\testCeylanFileAndDirectories\testCeylanFileAndDirectories.vcproj", "{DCE46AF0-8D63-4488-A25F-BE1282FF328E}"
 EndProject
