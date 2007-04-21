@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLAndMVC"
+	Name="engine-testOSDLAndMVC"
 	ProjectGUID="{2D080563-D304-4F35-A316-5A15226556D1}"
 	>
 	<Platforms>

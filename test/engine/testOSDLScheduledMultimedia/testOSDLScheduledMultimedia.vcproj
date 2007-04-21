@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLScheduledMultimedia"
+	Name="engine-testOSDLScheduledMultimedia"
 	ProjectGUID="{AA53B564-407A-4B55-B406-4D6654CB336D}"
 	>
 	<Platforms>

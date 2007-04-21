@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLScheduler"
+	Name="engine-testOSDLScheduler"
 	ProjectGUID="{E6DB94EA-A7A5-4E9F-BE38-1581FC6E6D35}"
 	>
 	<Platforms>

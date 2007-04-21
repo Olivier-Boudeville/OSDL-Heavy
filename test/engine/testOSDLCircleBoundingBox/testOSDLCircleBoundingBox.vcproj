@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLCircleBoundingBox"
+	Name="engine-testOSDLCircleBoundingBox"
 	ProjectGUID="{FA4BE1DF-BAD8-466B-9D7D-48C46BBAE3BE}"
 	>
 	<Platforms>
