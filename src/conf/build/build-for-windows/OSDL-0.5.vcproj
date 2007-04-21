@@ -529,6 +529,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\code\basic\OSDLIncludeCorrecter.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\code\events\OSDLInputDevice.h"
 				>
 			</File>
