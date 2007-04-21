@@ -186,7 +186,7 @@ int main( int argc, char * argv[] )
 			/* thickness */ 10,
 			/* child angle */ 35,
 			/* height ratio */ 0.5,
-			/* scale */ 0.4	) ; 
+			/* scale */ 0.4f ) ; 
 			
 		flake->draw( screen, 450, 350, /* color name */ Snow, 
 			/* filled */ true ) ;
