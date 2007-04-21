@@ -19,7 +19,7 @@ if [ $is_windows -eq 0 ] ; then
 
   # Windows special case :
   REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
- REQUIRED_TOOLS="SDL_mixer_win"
+ REQUIRED_TOOLS="OSDL_win"
  
   # For Ceylan and OSDL :
   use_svn=0
@@ -2996,7 +2996,7 @@ prepareSDL_mixer_win()
 	${MKDIR} -p ${sdl_mixer_install_dir}
 	 
 	cd $repository
- exit 
+ 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_mixer-from-LOANI" "SDL_mixer-${SDL_mixer_win_VERSION}"
 
 	if [ $? != 0 ] ; then
@@ -3932,7 +3932,6 @@ prepareSDL_ttf_win()
 	cd $repository
   
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-LOANI" "SDL_ttf-${SDL_ttf_win_VERSION}" && ${CP} -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-LOANI/SDL_ttf.c" "SDL_ttf-${SDL_ttf_win_VERSION}"
-
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_ttf solution and fixes in build tree."
 		exit 11
@@ -4927,10 +4926,18 @@ prepareCeylan_win()
 {
 
 	LOG_STATUS "Preparing Ceylan for windows.."
-
+	
 	ceylan_install_dir="${alternate_prefix}/Ceylan-${Ceylan_win_VERSION}"
 	${MKDIR} -p ${ceylan_install_dir}
  	
+	ceylan_solution_dir="$repository/ceylan/Ceylan/trunk/src/conf/build/visual-express"
+	
+	${CP} -f "${WINDOWS_SOLUTIONS_ROOT}"/Ceylan-from-LOANI/* ${ceylan_solution_dir}
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy Ceylan solution in build tree."
+		exit 11
+	fi
+	
 	printOK
 
 }
@@ -4955,7 +4962,7 @@ generateCeylan_win()
 	printItem "configuring"
  	printOK
  
-	ceylan_solution=`pwd`"/src/Ceylan-${Ceylan_win_VERSION}.sln"
+	ceylan_solution="${ceylan_solution_dir}/Ceylan-from-LOANI.sln"
 
 	printItem "building"
 	GenerateWithVisualExpress Ceylan ${ceylan_solution}
@@ -5554,8 +5561,8 @@ generateOSDL_win()
 	printItem "configuring"
  	printOK
  
-	osdl_solution=`pwd`"/src/OSDL-${OSDL_win_VERSION}.sln"
-
+	osdl_solution=`pwd`"/src/conf/build/visual-express/OSDL-${OSDL_win_VERSION}.sln"
+exit
 	printItem "building"
 	GenerateWithVisualExpress OSDL ${osdl_solution}
 	printOK
