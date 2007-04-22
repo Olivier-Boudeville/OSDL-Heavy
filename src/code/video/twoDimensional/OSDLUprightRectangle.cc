@@ -354,6 +354,9 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target,
 		LogPlug::error( 
 			"UprightRectangle::drawWithRoundedCorners : nothing drawn : " 
 			+ e.toString() ) ;
+
+		return false ;
+
 	}
 		
 			
