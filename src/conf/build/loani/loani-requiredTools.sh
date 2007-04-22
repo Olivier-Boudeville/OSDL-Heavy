@@ -19,7 +19,6 @@ if [ $is_windows -eq 0 ] ; then
 
   # Windows special case :
   REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
-  REQUIRED_TOOLS="OSDL_win"
 
   # For Ceylan and OSDL :
   use_svn=0
