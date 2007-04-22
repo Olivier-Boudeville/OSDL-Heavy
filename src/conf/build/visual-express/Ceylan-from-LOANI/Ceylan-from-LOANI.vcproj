@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\..\..\..\..\..\..\..\build-for-windows\OSDLProperties.vsprops;..\..\..\..\..\..\..\..\build-for-windows\OSDLOverridingProperties.vsprops"
+			InheritedPropertySheets="..\..\..\..\..\..\..\..\visual-express\OSDLProperties.vsprops;..\..\..\..\..\..\..\..\visual-express\OSDLOverridingProperties.vsprops"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -88,7 +88,7 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\CeylanProperties.vsprops;..\..\..\..\..\..\..\..\build-for-windows\OSDLOverridingProperties.vsprops"
+			InheritedPropertySheets=".\CeylanProperties.vsprops;..\..\..\..\..\..\..\..\visual-express\OSDLOverridingProperties.vsprops"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
