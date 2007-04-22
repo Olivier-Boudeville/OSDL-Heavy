@@ -1,13 +1,15 @@
 #!/bin/sh
 
 TESTLOGFILE=`pwd`"/testsOutcome.txt"
+PLAYTEST_LOCAL_FILE="playTests-local.sh"
+
 
 USAGE="`basename $0` [--interactive] : executes all tests for OSDL in a row.
 	
 	If the --interactive option is used, tests will not be run in batch mode, and will prompt the user for various inputs. Otherwise only their final result will be output. In all cases their messages will be stored in file ${TESTLOGFILE}. The return code of this script will be the number of failed tests (beware to overflow of the return code)"
 
 
-# Please remember, when debugging it, to execute the playTests.sh from
+# Please remember, when debugging on UNIX playTests.sh, to execute it from
 # *installed* version, but to modify the playTests.sh from *source* code, 
 # and to copy back the latter to the former.
  
@@ -23,7 +25,7 @@ if [ "$#" -ge "2" ] ; then
 	exit 1
 fi	
 
-if [ "$#" = "1" ] ; then
+if [ "$#" -eq 1 ] ; then
 	if [ "$1" != "--interactive" ] ; then
 		echo "$1 : unknown option." 1>&2
 		echo "
@@ -90,7 +92,7 @@ display_test_result()
 	t="$2"
 	return_code="$3"
 	
-	if [ "$return_code" = 0 ] ; then
+	if [ "$return_code" -eq 0 ] ; then
 		# Test succeeded :
 		if [ $is_batch -eq 1 ] ; then
 			echo
@@ -108,9 +110,9 @@ display_test_result()
 			printColor "${term_offset}$t seems to be failed (exit status $return_code)     " $white_text $red_back
 		else
 		
-			if [ "$check_dependency" -eq "0" ] ; then
+			if [ "$check_dependency" -eq 0 ] ; then
 			
-				if [ "$on_cygwin" -eq "0" ] ; then
+				if [ "$on_cygwin" -eq 0 ] ; then
 					# See also : http://www.dependencywalker.com/
 					PATH="/cygdrive/c/Program Files/Microsoft Platform SDK for Windows Server 2003 R2/bin:$PATH"
 					depend_tool="Depends.exe"
@@ -121,8 +123,12 @@ display_test_result()
 						echo "No $depend_tool available, no dependency displayed."  >> ${TESTLOGFILE}
 					fi
 				else
-					echo "$t failed, whose shared library dependencies are : " >> ${TESTLOGFILE}
-					ldd $t >>${TESTLOGFILE}
+					if [ $has_ldd -eq 0 ] ; then
+						echo "$t failed, whose shared library dependencies are : " >> ${TESTLOGFILE}
+						${ldd_tool} $t >>${TESTLOGFILE}
+					else
+						echo "$t failed." >> ${TESTLOGFILE}
+					fi
 				fi
 			fi
 			
@@ -146,16 +152,14 @@ run_test()
 		echo "
 		
 		########### Running now $t" >>${TESTLOGFILE}
-		echo "Library dependenies : " >>${TESTLOGFILE}
-		ldd $t >>${TESTLOGFILE}
+		
+		if [ $has_ldd -eq 0 ] ; then
+			echo "Library dependenies : " >>${TESTLOGFILE}
+			${ldd_tool} $t >>${TESTLOGFILE}
+		fi
+		
 		echo "Command line : $t --batch ${network_option} ${log_plug_option}" >>${TESTLOGFILE}
 		$t --batch ${network_option} ${log_plug_option} 1>>${TESTLOGFILE} 2>&1
-		
-		#FIXME
-		#if [ "$test_name" = "testOSDLScheduler" ] ; then
-		#	echo STOP
-		#	exit
-		#fi
 	else
 		$t --interactive ${network_option} ${log_plug_option}
 	fi			
@@ -178,7 +182,7 @@ display_final_stats()
 {
 	echo 
 
-	if [ "$error_count" -eq "0" ] ; then
+	if [ "$error_count" -eq 0 ] ; then
 		echo "   Test result : [${green_text}m all $test_count tests succeeded[${white_text}m"
 	else
 		echo "   Test result : [${red_text}m $error_count out of $test_count tests failed[${white_text}m"
@@ -192,7 +196,7 @@ get_logical_test_name()
 # 'system-testOSDLX.exe' should become 'testOSDLX'
 {
 	
-	if [ "$on_cygwin" -eq "0" ] ; then
+	if [ "$on_cygwin" -eq 0 ] ; then
 		returned_string=`basename $t |sed 's|^.*-test|test|1' |sed 's|.exe$||1'`
 	else
 		returned_string=`basename $t |sed 's|.exe$||1'`
@@ -232,6 +236,8 @@ if [ ! -d "$loani_installations" ] ; then
 	
 fi
 
+loani_repository="$loani_installations/../LOANI-repository"
+
 osdl_environment_file="$loani_installations/OSDL-environment.sh"
 
 if [ ! -f "$osdl_environment_file" ] ; then
@@ -248,7 +254,19 @@ fi
 
 TEST_ROOT=`dirname $0`
 
-SHELLS_LOCATION="$Ceylan_PREFIX/share/Ceylan/scripts/shell"
+# Not using Cygwin by default to chain the tests :
+on_cygwin=1
+
+if [ `uname -s | cut -b1-6` = "CYGWIN" ] ; then
+	
+	on_cygwin=0
+	DEBUG_INTERNAL "Running tests in the Windows (Cygwin) context."
+
+	SHELLS_LOCATION="$loani_repository/ceylan/Ceylan/trunk/src/code/scripts/shell"
+else
+	SHELLS_LOCATION="$Ceylan_PREFIX/share/Ceylan/scripts/shell"
+fi
+
 
 # Triggers also termUtils.sh and platformDetection.sh :
 DEFAULT_LOCATIONS_PATH="$SHELLS_LOCATION/defaultLocations.sh"
@@ -263,9 +281,6 @@ fi
 # For ping :
 findSupplementaryShellTools
 
-# For tests that need to search relative paths :
-# (do not know why shell fails when doing a 'cd test' when run from trunk)
-cd ${TEST_ROOT}
 
 # Creates a test directory to avoid polluting other directories :
 TEST_DIR="tests-results-"`date '+%Y%m%d'`
@@ -303,28 +318,26 @@ fi
 test_count=0
 error_count=0
 
-# Not using Cygwin by default to chain the tests :
-on_cygwin=1
 
 # Tells whether link dependencies should be checked in case a test fails :
 check_dependency=1
 
 # Special case for tests generated on Windows :
-if [ `uname -s | cut -b1-6` = "CYGWIN" ] ; then
+if [ "$on_cygwin" -eq 0 ] ; then
 	
 	on_cygwin=0
 	DEBUG_INTERNAL "Running tests in the Windows (Cygwin) context."
 	
-	# Updated PATH needed to find the OSDL DLL :
-	export PATH="../src/Debug:$PATH"
+	# Tests with LOANI are by default run against the debug multithread libraries :
+	libraries_from_loani_tested_flavour="debug-mt"
+	
+	# Updated PATH needed to find the LOANI-built DLL :
+	export PATH="$loani_installations/OSDL-libraries/${libraries_from_loani_tested_flavour}/dll:$PATH"
 	
 fi	
 
 # This script will automatically run each test of each selected OSDL module.
 TESTED_ROOT_MODULES=`cd ${TEST_ROOT}; find . -type d | grep -v tmp | grep -v Debug | grep -v autom4te.cache | grep -v .svn | grep -v '.deps' | grep -v '.libs' | grep -v 'testOSDL'| grep -v '.exe-logs' | grep -v '^\.$'`
-
-# For debug purpose :
-#TESTED_ROOT_MODULES="generic logs interfaces modules system maths network middleware"
 
 DEBUG_INTERNAL "Tested modules are : ${TESTED_ROOT_MODULES}"
 
@@ -349,7 +362,7 @@ if [ $is_batch -eq 0 ] ; then
 		Test results established at "`date '+%A, %B %-e, %Y'`"\n\n" > ${TESTLOGFILE}
 fi
 
-if [ "$on_cygwin" -eq "0" ] ; then
+if [ "$on_cygwin" -eq 0 ] ; then
 	echo "
 	
 	Library search path is : PATH='$PATH'" >> ${TESTLOGFILE}
@@ -357,6 +370,13 @@ else
 	echo "
 	
 	Library search path is : LD_LIBRARY_PATH='$LD_LIBRARY_PATH'" >> ${TESTLOGFILE}
+fi
+
+has_ldd=1
+ldd_tool=`which ldd 2>/dev/null`
+
+if [ -x "${ldd_tool}" ] ; then
+	has_ldd=0
 fi
 
 # So that test plugin can be found :
@@ -384,7 +404,7 @@ for m in ${TESTED_ROOT_MODULES} ; do
 		. ${PLAYTEST_LOCAL}
 	fi
 		
-	if [ "$on_cygwin" -eq "0" ] ; then
+	if [ "$on_cygwin" -eq 0 ] ; then
 		TESTS=`ls ${TEST_ROOT}/$m/*-testOSDL*.exe 2>/dev/null`
 	else	
 		TESTS=`ls ${TEST_ROOT}/$m/testOSDL*.exe 2>/dev/null`	
@@ -421,7 +441,7 @@ for m in ${TESTED_ROOT_MODULES} ; do
 				fi	
 			done	
 		
-			if [ "$to_be_excluded" = "0" ] ; then
+			if [ "$to_be_excluded" -eq 0 ] ; then
 				# Skip this test, as PLAYTEST_LOCAL_FILE took care of it :
 				DEBUG_INTERNAL "Skipping test $t"
 				continue
