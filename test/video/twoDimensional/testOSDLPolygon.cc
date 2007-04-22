@@ -141,8 +141,8 @@ int main( int argc, char * argv[] )
 			
 			PolygonSet & flake = PolygonSet::CreateFlake( 5, 
 				/* length */ 50, /* thickness */ 10, 
-				/* childAngle */ 50, /* branchingHeightRatio */ 0.6, 
-				/* scale */ 0.4 ) ; 
+				/* childAngle */ 50, /* branchingHeightRatio */ 0.6f, 
+				/* scale */ 0.4f ) ; 
 				
 			LogPlug::info( "Flake polygon set displays as : " 
 				+ flake.toString() ) ;
@@ -184,7 +184,7 @@ int main( int argc, char * argv[] )
 				branchCountRand.getNewValue(),
 				lengthRand.getNewValue(), 
 				thicknessRand.getNewValue(), 
-				childAngleRand.getNewValue(),
+				static_cast<AngleInDegrees>( childAngleRand.getNewValue() ),
 				branchingHeightRatioRand.getNewValue() / 10.0f, 
 				scaleRand.getNewValue() / 10.0f
 			) ; 
