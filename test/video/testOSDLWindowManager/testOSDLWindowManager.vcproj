@@ -18,7 +18,7 @@
 			Name="Debug|Win32"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			InheritedPropertySheets="..\..\..\src\conf\build\build-for-windows\OSDLProperties.vsprops;..\..\..\src\conf\build\build-for-windows\OSDLPropertiesForTests.vsprops"
+			InheritedPropertySheets="..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -79,7 +79,7 @@
 			Name="Release|Win32"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			InheritedPropertySheets="..\..\..\src\conf\build\build-for-windows\OSDLProperties.vsprops;..\..\..\src\conf\build\build-for-windows\OSDLPropertiesForTests.vsprops"
+			InheritedPropertySheets="..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
