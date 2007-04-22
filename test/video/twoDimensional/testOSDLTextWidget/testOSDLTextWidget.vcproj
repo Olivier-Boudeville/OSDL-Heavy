@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLTextWidget"
+	Name="video-2D-testOSDLTextWidget"
 	ProjectGUID="{654B9C5C-69D3-4C25-8A09-D8D2E4FB67AF}"
 	>
 	<Platforms>

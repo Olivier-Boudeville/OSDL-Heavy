@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLPixels"
+	Name="video-2D-testOSDLPixels"
 	ProjectGUID="{031EF40C-2452-4099-AC0F-821FBD160C79}"
 	>
 	<Platforms>

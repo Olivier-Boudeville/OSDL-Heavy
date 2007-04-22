@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLBezier"
+	Name="video-2D-testOSDLBezier"
 	ProjectGUID="{C108E2F5-B2E2-4D21-AD3C-FF105E65DE71}"
 	>
 	<Platforms>

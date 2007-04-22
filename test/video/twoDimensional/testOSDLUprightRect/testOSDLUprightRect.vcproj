@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLUprightRect"
+	Name="video-2D-testOSDLUprightRect"
 	ProjectGUID="{D0D40D4A-CE54-49DF-ABC5-55C19F35647F}"
 	>
 	<Platforms>

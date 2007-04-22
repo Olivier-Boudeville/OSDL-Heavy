@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="testOSDLFixedFont"
+	Name="video-2D-testOSDLFixedFont"
 	ProjectGUID="{0792AA56-796F-4318-A941-67556C666F55}"
 	>
 	<Platforms>
