@@ -12,8 +12,6 @@ using namespace Ceylan::Log ;
 #include <string>
 using std::string ;
 
-// The OSDL library should have been compiled accordingly to use it :
-#define OSDL_COUNT_INSTANCES 1
 
 #if OSDL_COUNT_INSTANCES
 
