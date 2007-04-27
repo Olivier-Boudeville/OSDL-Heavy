@@ -15,7 +15,7 @@ testsvideo_PROGRAMS = \
 	testOSDLPixel.exe                           \
 	testOSDLSurface.exe                         \
 	testOSDLSurfacePrimitives.exe               \
-	testOSDLSurfaceTransformations.exe          \
+	testOSDLSurfaceTransforms.exe               \
 	testOSDLVideo.exe                           \
 	testOSDLWindowManager.exe
 
@@ -26,6 +26,6 @@ testOSDLPalette_exe_SOURCES                = testOSDLPalette.cc
 testOSDLPixel_exe_SOURCES                  = testOSDLPixel.cc
 testOSDLSurface_exe_SOURCES                = testOSDLSurface.cc
 testOSDLSurfacePrimitives_exe_SOURCES      = testOSDLSurfacePrimitives.cc
-testOSDLSurfaceTransformations_exe_SOURCES = testOSDLSurfaceTransformations.cc
+testOSDLSurfaceTransforms_exe_SOURCES      = testOSDLSurfaceTransforms.cc
 testOSDLVideo_exe_SOURCES                  = testOSDLVideo.cc
 testOSDLWindowManager_exe_SOURCES          = testOSDLWindowManager.cc
