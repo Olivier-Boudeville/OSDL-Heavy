@@ -13,16 +13,18 @@ using namespace Ceylan::Log ;
 using std::string ;
 
 
-#if OSDL_COUNT_INSTANCES
+#define OSDL_TEST_WIDGET_DEBUG 0
+
+#if OSDL_TEST_WIDGET_DEBUG
 
 #include <iostream>
 #define CHECKPOINT(message) std::cout << "[testOSDLTextWidget] " << message << std::endl ;
 
-#else // OSDL_COUNT_INSTANCES
+#else // OSDL_TEST_WIDGET_DEBUG
 
 #define CHECKPOINT(message) 
 
-#endif // OSDL_COUNT_INSTANCES
+#endif // OSDL_TEST_WIDGET_DEBUG
 
 
 
