@@ -22,9 +22,9 @@ teststwodimensional_PROGRAMS = \
 	testOSDLSaveImage.exe                        \
 	testOSDLText.exe                             \
 	testOSDLTextWidget.exe                       \
-	testOSDLTrueTypeFontCache.exe                \
-	testOSDLTrueTypeFont.exe                     \
-	testOSDLUprightRectangle.exe                 \
+	testOSDLTTFCache.exe                         \
+	testOSDLTTF.exe                              \
+	testOSDLUprightRect.exe                      \
 	testOSDLWidget.exe	
 
 
@@ -43,8 +43,8 @@ testOSDLPolygon_exe_SOURCES           = testOSDLPolygon.cc
 testOSDLSaveImage_exe_SOURCES         = testOSDLSaveImage.cc
 testOSDLText_exe_SOURCES              = testOSDLText.cc
 testOSDLTextWidget_exe_SOURCES        = testOSDLTextWidget.cc
-testOSDLTrueTypeFontCache_exe_SOURCES = testOSDLTrueTypeFontCache.cc
-testOSDLTrueTypeFont_exe_SOURCES      = testOSDLTrueTypeFont.cc
-testOSDLUprightRectangle_exe_SOURCES  = testOSDLUprightRectangle.cc
+testOSDLTTFCache_exe_SOURCES          = testOSDLTTFCache.cc
+testOSDLTTF_exe_SOURCES               = testOSDLTTF.cc
+testOSDLUprightRect_exe_SOURCES       = testOSDLUprightRect.cc
 testOSDLWidget_exe_SOURCES            = testOSDLWidget.cc
  
