@@ -1,0 +1,32 @@
+digraph finite_state_machine {
+
+	bgcolor=black
+
+	edge [color=white]
+	
+	node [fontcolor=white,color=white]
+
+
+	"Ceylan"    -> "OSDL"
+	"SDL"       -> "OSDL"
+	"SDL_image" -> "OSDL"
+	"SDL_mixer" -> "OSDL"
+	"SDL_ttf"   -> "OSDL"
+	"SDL_gfx"   -> "OSDL"
+
+	"SDL"       -> "SDL_mixer"
+	"libvorbis" -> "SDL_mixer"
+	"libogg"    -> "libvorbis"
+
+	"SDL"       -> "SDL_ttf"
+	"Freetype"  -> "SDL_ttf"
+
+	"SDL"       -> "SDL_gfx"
+
+	"libpng"    -> "SDL_image"
+	"libjpeg"   -> "SDL_image"
+	"SDL"       -> "SDL_image"
+
+	"zlib"      -> "libpng"
+
+}	

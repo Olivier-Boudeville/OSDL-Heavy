@@ -66,9 +66,9 @@ Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LO
 	<p>This is the manual page for LOANI version 0.5.</p>
 
   <p>LOANI stands for <b>Lazy OSDL's Automatic Net Installer</b>.
-  Its purpose is to simplify as much as possible the installation of OSDL and its pre requesites, on most UNIX platforms, including GNU/Linux. Human beings tend to be lazy, and we really understand there are much more enjoyable activities than to painfully install an intricate list of cyclic dependancies in order to have one's library working.</p>
+  Its purpose is to simplify as much as possible the installation of OSDL and its pre requesites on supported platforms, notably Windows and most UNIX platforms, including GNU/Linux. Human beings tend to be lazy, and we really understand there are much more enjoyable activities than to painfully install an intricate list of cyclic dependencies in order to have one's library working. That's why it ought to be automated.</p>
 
-  <p>Some operating systems, such as GNU/Linux with for example the Debian or Gentoo distributions, automate software installations with a package system. However it does not discard the need of tools like LOANI, as we must compile with dedicated options specific versions of helper libraries. Most often package managers do not let easily choose the options sets and/or offer too old versions. For example, SDL_image did not build with gcc higher than 3.4, and needs to be configured with JPEG, PNG support, but not TIFF one. LOANI takes in charge that task automatically and without complaining.</p>   
+  <p>Some operating systems, such as GNU/Linux with for example the Debian or Gentoo distributions, automate software installations with a package system. However it does not discard the need of tools like LOANI, as we must compile with dedicated options specific versions of helper libraries. Most often package managers do not let easily choose the options sets and/or offer too old versions and/or patch them inaccurately. For example, SDL_image did not build with gcc higher than 3.4, and needs to be configured with JPEG, PNG support, but not TIFF one. LOANI takes in charge that task automatically and without complaining.</p>   
   
   <p>
   That's why we imagined LOANI : the simpliest shell script (on the user side) that performs everything on your behalf and cooks you a brand new OSDL-compliant environment from scratch, with almost no effort but the typing of a simple line : <code>loani.sh</code>.
@@ -77,7 +77,7 @@ Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LO
   <p>Its main targeted audience is the developer community. For end users, a set of platform-specific binaries will be available in a vague future.</p>
 
   <p>
-  Even though all the tools used are available on the most common platforms, OSDL and, notably, Ceylan, are still to be ported so that they can be executed elsewhere than GNU/Linux. Our next targets are Windows (notably XP) and the various Mac OS X flavours, so that most gamers can be reached.
+  Even though all the tools used are available on the most common platforms, OSDL and, notably, Ceylan, are still to be ported so that they can be executed reliably elsewhere than on Windows or GNU/Linux. Our next targets will be the various Mac OS X flavours, so that most gamers can be reached.
   </p>
   
 
@@ -92,15 +92,14 @@ LOANI is released under the <a href="http://www.gnu.org/licenses/gpl.html" targe
   <h2>LOANI's own pre requesites</h2>
 
 <h3>Platforms</h3>
-	<p>LOANI has been thoroughfully tested on GNU/Linux platforms, with various hardware and distributions [<a href="../OSDL-generic/Quality.html#testing">More infos</a>]. Even if some bugs may appear (on error, please see <a href="#troubleshooting">troubleshooting</a>), we believe most of LOANI's users should experience a good behaviour of this tool with GNU/Linux.</p>
+	<p>LOANI has been thoroughfully tested first on GNU/Linux platforms, with various hardware and distributions [<a href="../main/documentation/OSDL/OSDL-generic/Quality.html#testing">More infos</a>]. Even if some bugs may appear (on error, please see <a href="#troubleshooting">troubleshooting</a>), we believe most of LOANI's users should experience a good behaviour of this tool.</p>
 	
 	<p>
-	The other main targeted platforms are Windows (98/Me/XP), using <a href="http://cygwin.com" target="_blank">Cygwin</a> as host environment and <a href="http://www.mingw.org/" target="_blank">MinGW</a> as compilation toolset, and Mac OSX. We will have to use both of them in a daily basis, so we expect they will be well supported soon. For the moment, the Windows build of prerequesites has been a real nightmare, so we may use cross-compilation from GNU/Linux instead.
+	The other main targeted platforms are the Windows ones (98/Me/XP), using <a href="http://cygwin.com" target="_blank">Cygwin</a> as host environment, and Visual Express 2005 as compilation toolset. Both are totally free. As on Windows this developer environment may be a bit difficult to settle down, we wrote a small step-by-step <a href="BuildForWindows.html">guide</a> to have one's build environment working. Windows users must apply it first before running LOANI.
 	</p>
 	
 	<p>
 	For others platforms, some adaptations may have to be performed. A general rule of thumb is to use as much as possible GNU tools, in order to be on the safe side. We will welcome reports of tests or, even better, patches to have LOANI working on other platforms.
-	
 	</p>
 	
 <h3>Other pre requesites</h3>	
@@ -140,20 +139,28 @@ LOANI is released under the <a href="http://www.gnu.org/licenses/gpl.html" targe
 
 	<h3>Required tools selection</h3>
 	<p>
-	This tool selection is mandatory for OSDL's functioning, therefore no specific option has to be passed to LOANI to have it managed.	
-	</p>
+	This tool selection is mandatory for OSDL's functioning, therefore no specific option has to be passed to LOANI to have it managed. Following prequesites are managed, with dependencies shown (LOANI manages all the dependency tree, i.e. the prerequesites of prerequesites, and so on) :
 	
+	<center>
+    <img src="LOANI-dependencies.png" alt="Depencies managed by LOANI"></img>
+	</center>
+	
+	</p>
+
+<p>
+Following first-order dependencies are selected :	
 <ul>
     <li><a href="http://www.libsdl.org/" target="_blank">SDL</a> : OSDL's low level back-end.</li>
 	<li><a href="http://www.libsdl.org/projects/SDL_image/" target="_blank">SDL_image</a> : a SDL helper library, allowing to support most common picture formats. Its installation involves setting up various needed libraries, such as <a href="http://www.libpng.org/pub/png/libpng.html" target="_blank">libpng</a>, <a href="http://www.ijg.org/" target="_blank">libjpeg</a> and  <a href="http://www.gzip.org/zlib/" target="_blank">zlib</a> libraries. LOANI does that for you.</li>
 	<li><a href="http://www.libsdl.org/projects/SDL_ttf/" target="_blank">SDL_ttf</a> : another SDL helper library, which provides Truetype font rendering thanks to <a href="http://www.freetype.org/" target="_blank">FreeType</a>, which is also managed automatically by LOANI.</li>
 	<li><a href="http://www.ferzkopp.net/Software/SDL_gfx-2.0/" target="_blank">SDL_gfx</a> : yet another SDL helper library, which is convenient to scale and rotate pictures, for basic 2D primitives and low-level pixel access.</li>
 	<li><a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a>, a multi-channel audio mixer which can use OggVorbis music thanks to <a href="http://www.xiph.org/ogg/" target="_blank">libogg</a> and <a href="http://www.xiph.org/vorbis/" target="_blank">libvorbis</a></li>
-	<li><a href="http://sources.redhat.com/pthreads-win32/" target="_blank">pthreads Win32</a> : a way to have Windows being POSIX-compliant for threads.</li>	
-	<li><a href="http://www.gnu.org/software/libtool/libtool.html" target="_blank">libtool</a>: GNU tool to perform cross-platform builds.</li>	
-    <li><a href="http://osdl.sourceforge.net/Ceylan/Ceylan-0.2/src/doc/web/index.html" target="_blank">Ceylan</a> : our generic all-purpose C++ library.</li>
+	<li><a href="http://sources.redhat.com/pthreads-win32/" target="_blank">pthreads Win32</a> : a way to have Windows being POSIX-compliant for threads (not used currently)</li>	
+	<li><a href="http://www.gnu.org/software/libtool/libtool.html" target="_blank">libtool</a>: GNU tool to perform builds in a cross-platform way (UNIX only)</li>	
+    <li><a href="http://ceylan.sourceforge.net/" target="_blank">Ceylan</a> : our generic all-purpose C++ library.</li>
     <li><a href="http://osdl.sourceforge.net/" target="_blank">OSDL</a> : our generic multimedia library. Of course, you need OSDL to have OSDL working !</li>
 </ul>
+</p>
 
 
 <h4>The case of the Ceylan and OSDL libraries : source archive or SVN</h4>
@@ -163,7 +170,7 @@ Ceylan and OSDL can be both retrieved thanks to a source release archive or than
 </p>
 
 
-<h5>Retriving sources thanks to SVN</h5>	 
+<h5>Retrieving sources thanks to SVN</h5>	 
 <p>
 Thanks to the <code>--sourceforge &lt;user name&gt;</code> option, our <b>project developers</b> can retrieve a fresh (coming from the always up-to-date developer SVN server) check-out version of Ceylan and OSDL, in order to have painlessly a developer-ready install, since SVN informations will be managed and retrieved too. Note that this option implies the <code>--currentSVN</code> option, which means that the cutting edge sources are wanted, even though the build tree is often broken during development.
 </p>
@@ -189,7 +196,8 @@ Thanks to the <code>--sourceforge &lt;user name&gt;</code> option, our <b>projec
     <li><a href="http://gcc.gnu.org/" target="_blank">gcc</a> : up-to-date C++ compiler</li>
     <li><a href="http://www.gnu.org/directory/GNU/binutils.html" target="_blank">binutils</a> : necessary to handle one's binaries, should be built by the compiler in use</li>
 	<li><a href="http://www.gnu.org/software/gdb/gdb.html" target="_blank">gdb</a> : the GNU debugger, useful to correct bugs and crashes</li> 
-    <li><a href="http://www.python.org" target="_blank">python</a> : the famous python interpreter [not supported yet]</li>
+    <li><a href="http://www.erlang.org" target="_blank">Erlang</a> : the amazing declarative language for concurrency [not supported yet]</li>
+    <li><a href="http://www.python.org" target="_blank">Python</a> : the famous python interpreter [not supported yet]</li>
 </ul>
 Another tool, not currently managed by LOANI but that we would recommend for fine quality checks, is <a href="http://valgrind.kde.org/" target="_blank">valgrind</a>, an amazing open-source memory debugger for x86-GNU/Linux, similar in some ways to the very expensive <code>purify</code>.
 
@@ -827,15 +835,14 @@ We hope you will enjoy using LOANI and OSDL !
   <h3>Please react !</h3>
 
   <p>If you have informations more detailed or more recent than those presented in this document, if you noticed errors, neglects or points
-  insufficiently discussed, <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">drop us
-  a line</a>!</p><br>
+  insufficiently discussed, <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">drop us a line</a>!</p><br>
   <br>
   <hr>
 
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update : Friday, March 30, 2007</em>
+    <em>Last update : Friday, April 27, 2007</em>
 	
   </center>
 </body>
