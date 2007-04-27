@@ -317,7 +317,7 @@ class MyModel : public OSDL::MVC::Model
 		}
 		
 
-		virtual ~MyModel()
+		virtual ~MyModel() throw()
 		{
 			delete _eventForView ;
 		}
