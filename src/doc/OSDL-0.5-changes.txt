@@ -1,0 +1,18 @@
+Created on Thursday, April 26, 2007.
+Updated on .
+
+
+
+		OSDL 0.5 main changes, compared to the 0.4 version
+	
+	
+
+Main changes are :
+
+	* Windows port of OSDL and LOANI
+	
+	* enhanced scheduler
+
+	
+For more details, see the ChangeLog file or go to http://osdl.sourceforge.net/OSDL-0.5/ChangeLog.html.
+	
