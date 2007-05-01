@@ -1111,7 +1111,7 @@ namespace OSDL
 				 * for the SDL back-end.
 				 *
 				 */
-				static std::string _SDLEnvironmentVariables[] ;
+				static const std::string _SDLEnvironmentVariables[] ;
 
 
 				/// Tells whether the user asked to quit.				

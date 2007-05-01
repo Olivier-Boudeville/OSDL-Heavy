@@ -69,7 +69,7 @@ PixelColor VideoModule::FrameRateCounterActualColor
 */
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
-string VideoModule::_SDLEnvironmentVariables[] = 
+const std::string VideoModule::_SDLEnvironmentVariables[] = 
 {
 
 		"SDL_FBACCEL", 
@@ -1399,11 +1399,12 @@ string VideoModule::DescribeEnvironmentVariables() throw()
 {
 
 	Ceylan::Uint16 varCount =
-		sizeof( _SDLEnvironmentVariables ) / sizeof (char * ) ;
+		sizeof( _SDLEnvironmentVariables ) / sizeof (string) ;
 		
 	string result = "Examining the " + Ceylan::toString( varCount )
 		+ " video-related environment variables for SDL backend :" ;
-	
+	return result ;
+
 	list<string> variables ;
 		
 	string var, value ;

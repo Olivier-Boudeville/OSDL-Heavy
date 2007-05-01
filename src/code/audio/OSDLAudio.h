@@ -155,7 +155,7 @@ namespace OSDL
 				 * for SDL back-end.
 				 *
 				 */
-				static std::string SDLEnvironmentVariables[] ;
+				static const std::string SDLEnvironmentVariables[] ;
 							
 							
 				// Common module must be able to create the audio module.		

@@ -422,7 +422,7 @@ namespace OSDL
 			 * for SDL back-end.
 			 *
 			 */
-			static std::string _SDLEnvironmentVariables[] ;
+			static const std::string _SDLEnvironmentVariables[] ;
 
 
 

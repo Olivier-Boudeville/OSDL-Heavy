@@ -122,7 +122,7 @@ CommonModule * CommonModule::_CurrentCommonModule = 0 ;
 
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
-string CommonModule::_SDLEnvironmentVariables[] = 
+const string CommonModule::_SDLEnvironmentVariables[] = 
 {
 		"SDL_DEBUG",
 		"SDL_CDROM"
@@ -486,7 +486,7 @@ string CommonModule::DescribeEnvironmentVariables() throw()
 {
 
 	Ceylan::Uint16 varCount = sizeof( _SDLEnvironmentVariables ) 
-		/ sizeof (char * ) ;
+		/ sizeof (string) ;
 	
 	string result = "Examining the " + Ceylan::toString( varCount )
 		+ " general-purpose environment variables for SDL backend :" ;

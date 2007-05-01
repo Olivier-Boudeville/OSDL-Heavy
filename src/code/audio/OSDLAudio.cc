@@ -51,7 +51,7 @@ Uint32 getChunkTimeMilliseconds(Mix_Chunk *chunk)
 
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
-string AudioModule::SDLEnvironmentVariables[] = 
+const string AudioModule::SDLEnvironmentVariables[] = 
 {
 	
 	"AUDIODEV",
@@ -138,7 +138,7 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 {
 
 	Ceylan::Uint16 varCount = 
-		sizeof( SDLEnvironmentVariables ) / sizeof (char * ) ;
+		sizeof( SDLEnvironmentVariables ) / sizeof (string) ;
 		
 	string result = "Examining the " + Ceylan::toString( varCount )
 		+ " audio-related environment variables for SDL backend :" ;

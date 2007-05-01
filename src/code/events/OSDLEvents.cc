@@ -135,7 +135,7 @@ const string EventsModule::_MessageHeader = "[OSDL event] " ;
  
  
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
-string EventsModule::_SDLEnvironmentVariables[] = 
+const string EventsModule::_SDLEnvironmentVariables[] = 
 {
 		"SDL_MOUSE_RELATIVE",
 		"SDL_MOUSEDEV",
@@ -736,7 +736,7 @@ string EventsModule::DescribeEnvironmentVariables() throw()
 {
 
 	Ceylan::Uint16 varCount = 
-		sizeof( _SDLEnvironmentVariables ) / sizeof (char * ) ;
+		sizeof( _SDLEnvironmentVariables ) / sizeof (string) ;
 		
 	string result = "Examining the " + Ceylan::toString( varCount )
 		+ " events-related environment variables for SDL backend :" ;
