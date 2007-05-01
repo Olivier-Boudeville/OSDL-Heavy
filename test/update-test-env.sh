@@ -2,7 +2,7 @@
 # the tests can be launched locally (where they are built) but
 # dynamically linked with the appropriate LOANI libraries.
 
-# This
+#Usage : source update-test-env.sh
 
 if [ ! -f "playTests.sh" ] ; then
   echo "Error, this script must be sourced from OSDL/trunk/test, nothing done." 1>&2
