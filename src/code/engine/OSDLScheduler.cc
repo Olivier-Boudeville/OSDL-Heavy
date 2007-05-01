@@ -1794,19 +1794,24 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 	// For simulation ticks :			
 	
-	SimulationTick totalSimulationTicks = metSimulations.size() 
-		+ recoveredSimulations.size() + missedSimulations.size() ;
+	SimulationTick totalSimulationTicks = static_cast<SimulationTick>( 
+		metSimulations.size() + recoveredSimulations.size() 
+		+ missedSimulations.size() ) ;
 		
 	LogPlug::debug( "Total simulation ticks : " 
-		+ Ceylan::toString( totalSimulationTicks ) + "." ) ;
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( totalSimulationTicks ) ) 
+		+ "." ) ;
 
 	LogPlug::debug( "Directly met simulation ticks : " 
-		+ Ceylan::toString( metSimulations.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( metSimulations.size() ) )
 		+ " (" + Ceylan::toString( 100.0f * metSimulations.size() 
 			/ totalSimulationTicks, /* precision */ 2 ) + "%)." ) ;
 						
 	LogPlug::debug( "Recovered (indirectly met) simulation ticks : " 
-		+ Ceylan::toString( recoveredSimulations.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( recoveredSimulations.size() ) )
 		+ " (" + Ceylan::toString( 100.0f * recoveredSimulations.size() 
 			/ totalSimulationTicks, /* precision */ 2 ) + "%)." ) ;
 
@@ -1815,7 +1820,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 				
 	LogPlug::debug( "Missed simulation ticks : " 
-		+ Ceylan::toString( missedSimulations.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( missedSimulations.size() ) )
 		+ " (" + Ceylan::toString( 100.0f * missedSimulations.size() 
 			/ totalSimulationTicks, /* precision */ 2 ) + "%)." ) ;
 	
@@ -1935,19 +1941,22 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 	// For rendering ticks :			
 
-	RenderingTick totalRenderingTicks = metRenderings.size() 
-		+ recoveredRenderings.size() + missedRenderings.size() ;
+	RenderingTick totalRenderingTicks = static_cast<RenderingTick>( 
+		metRenderings.size() + recoveredRenderings.size() 
+		+ missedRenderings.size() ) ;
 
 	LogPlug::debug( "Total rendering ticks : " 
 		+ Ceylan::toString( totalRenderingTicks ) + "." ) ;
 		
 	LogPlug::debug( "Directly met rendering ticks : " 
-		+ Ceylan::toString( metRenderings.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( metRenderings.size() ) )
 		+ " (" + Ceylan::toString( 100.0f * metRenderings.size() 
 			/ totalRenderingTicks, /* precision */ 2 ) + "%)." ) ;
 				
 	LogPlug::debug( "Recovered (indirectly met) rendering ticks : " 
-		+ Ceylan::toString( recoveredRenderings.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( recoveredRenderings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * recoveredRenderings.size() 
 			/ totalRenderingTicks, /* precision */ 2 ) + "%)." ) ;
 
@@ -1956,7 +1965,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 				
 	LogPlug::debug( "Missed rendering ticks : " 
-		+ Ceylan::toString( missedRenderings.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( missedRenderings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * missedRenderings.size() 
 			/ totalRenderingTicks, /* precision */ 2 ) + "%)." ) ;
 
@@ -2070,19 +2080,22 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	// For input ticks :			
 
 
-	InputTick totalInputTicks = metInputPollings.size() 
-		+ recoveredInputPollings.size() + missedInputPollings.size() ;
+	InputTick totalInputTicks = static_cast<InputTick>( 
+		metInputPollings.size() + recoveredInputPollings.size() 
+		+ missedInputPollings.size() ) ;
 
 	LogPlug::debug( "Total input ticks : " 
 		+ Ceylan::toString( totalInputTicks ) + "." ) ;
 		
 	LogPlug::debug( "Directly met input ticks : " 
-		+ Ceylan::toString( metInputPollings.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( metInputPollings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * metInputPollings.size() 
 			/ totalInputTicks, /* precision */ 2 ) + "%)." ) ;
 				
 	LogPlug::debug( "Recovered (indirectly met) input ticks : " 
-		+ Ceylan::toString( recoveredInputPollings.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( recoveredInputPollings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * recoveredInputPollings.size() 
 			/ totalInputTicks, /* precision */ 2 ) + "%)." ) ;
 
@@ -2091,7 +2104,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			
 				
 	LogPlug::debug( "Missed input ticks : " 
-		+ Ceylan::toString( missedInputPollings.size() ) 
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( missedInputPollings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * missedInputPollings.size() 
 			/ totalInputTicks, /* precision */ 2 ) + "%)." ) ;
 				
@@ -2410,7 +2424,9 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	 */
 	
 	LogPlug::debug( "Total simulation ticks : " 
-		+ Ceylan::toString( metSimulations.size() ) + "." ) ;
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( metSimulations.size() ) ) 
+		+ "." ) ;
 			
 
 	/*
@@ -2449,7 +2465,8 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 				
 				
 	LogPlug::debug( "Total rendering ticks : " 
-		+ Ceylan::toString( metRenderings.size() ) + "." ) ;
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( metRenderings.size() ) ) + "." ) ;
 				
 	/*
 	 * Check that all rendering ticks were scheduled one and only one time.
@@ -2487,7 +2504,9 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	
 
 	LogPlug::debug( "Total input polling ticks : " 
-		+ Ceylan::toString( metInputPollings.size() ) + "." ) ;
+		+ Ceylan::toString( 
+			static_cast<Ceylan::Uint32>( metInputPollings.size() ) ) 
+		+ "." ) ;
 
 	/*
 	 * Check that all input ticks were scheduled one and only one time.
