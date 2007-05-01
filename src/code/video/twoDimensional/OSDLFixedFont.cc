@@ -727,7 +727,7 @@ void FixedFont::loadFontFrom( const std::string & fontFilename )
 	try
 	{
 	
-		System::File fontFile( fontFullPath, System::File::Read ) ; 
+		System::File fontFile( fontFullPath, System::File::Read | System::File::Binary ) ; 
 		
 		System::Size dataSize = fontFile.size() ;
 		
@@ -739,10 +739,9 @@ void FixedFont::loadFontFrom( const std::string & fontFilename )
 		if ( _fontData == 0 )
 			throw TextException( 
 				"FixedFont::loadFontFrom : not enough memory." ) ;
-		
-		if ( fontFile.read( _fontData, dataSize ) != dataSize )
-			throw TextException( 
-				"FixedFont::loadFontFrom : error while reading font data." ) ;
+
+		fontFile.readExactLength( _fontData, dataSize ) ; 
+
 		
 	}
 	catch( const System::SystemException & e )
