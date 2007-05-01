@@ -717,36 +717,6 @@ Certificate information:
 	</p>
 	<p>(replace <b>YourSourceForgeUserName</b> by the real username you chose at SourceForge, everything should be typed on one line, most of SourceForge users will have to enter their password). </p>
 	  
-	<p>If that test fails, you might well be in the case described in "Project CVS Service: Impacted by Known Issue" (this applied to CVS but may occur with SVN) :
-	<em>
-There is an outstanding issue whereby upon user addition to a project or 
-new project creation, the user is not given permission to access the CVS 
-and shell services. We are currently investigating the cause of the 
-issue, however a workaround is available from the SR link that follows. 
-As a side effect of one of our resolution attempts, a small number of 
-user accounts that were already existing are having similar issues (the 
-LDAP re-import killed their password), so resetting the password will 
-fix those too.</em>
-
-</p>
-<p>In a nutshell, the workaround is simple : <em>it has been found that the user can self-resolve the issue by changing their password and
-waiting a small amount of time for the password change
-to go through. Changing the password (even to the same
-password as it is currently set) seems to fix the issue
-for most users. The only thing to be aware of is that
-the password should contain only letters and numbers to
-ensure proper password interpretation on all systems.
-
-To change your password, do the following:
-<ol>
-	<li>Log into the SourceForge.net website</li>
-	<li>Click the 'Account Options' link</li>
-	<li>Click the '[Change Password]' link</li>
-	<li>Fill out the form and click on the 'Update' button</li>
-</ol></em>	
-	</p>
-	
-	<p> See <a href="http://sourceforge.net/tracker/index.php?func=detail&aid=875403&group_id=1&atid=200001" target="_blank">this</a> for more details.</p></dd>
 	
 	<dt>If the previous SVN check-out test succeeds, but LOANI keeps on failing with SVN</dt>
 	<dd>Check your entered the right password when LOANI asked it (beware of caps-locks, num-locks, of hitting backspace to correct a typo in the password instead of CTRL-H, etc.). Take also a look at the <a href="http://sourceforge.net/docman/display_doc.php?docid=2352&group_id=1" target="_blank">Sourceforge SVN status page</a>, since some outages happen regularly.</dd>
@@ -755,20 +725,22 @@ To change your password, do the following:
 	<dd>Check you have <b>enough space </b> on your hard-drive (use for instance <code>df -k .</code>): LOANI performs some rough size estimates, but may be wrong. If it fails and little room remains, you have your first suspect. If the space left is not guilty, and if you are using Windows, some random errors actually seem to happen when using Cygwin. We noticed that sometimes some executables are not found whereas they are here, or some md5sum checkings fail whereas the sums should match. Try to re-launch LOANI, the outcome might be more satisfying, even though we are not fond of non-deterministic software.</dd>
 	
 	<dt>LOANI fails while configuring Ceylan and/or OSDL</dt>
-	<dd><p>If you have fancy compilers (for instance, <code>gcc 2.96</code>) or even better no C++ compiler, and if you did not select the <code>--buildTools</code> option (that would compile and install for you a recent gcc; by the way, please remember that a compiler is needed to compile a compiler !), expect having some trouble configuring Ceylan and OSDL. The solution is however simple : edit their <code>GNUmakevars.inc</code> (which are directly under their <code>src</code>
- directory) and update the <code>GCC_ROOT</code> variable with whatever path your gcc compiler is installed under (ex: to use <code>/usr/local/bin/gcc</code>, define <code>GCC_ROOT=/usr/local</code>).
+	<dd><p>If you have fancy compilers (for instance, <code>gcc 2.96</code>) or even better no C++ compiler, and if you did not select the <code>--buildTools</code> option (that would compile and install for you a recent gcc; by the way, please remember that a compiler is needed to compile a compiler !), expect having some trouble configuring Ceylan and OSDL.
  </p>
  
- <p>For Intel C++ users, check <code>COMPILER_FAMILY</code> to set the compiler family (icpc), and <code>CPP_COMPILER</code> for the actual location. For users of other compilers, add a new compiler family in the same way the gcc and icpc families are defined, and set accordingly your <code>COMPILER_FAMILY</code> and <code>CPP_COMPILER</code> environment variables. 
-</dd>
-
 
 	<dt>LOANI fails while building (compiling) Ceylan and/or OSDL</dt>
 	<dd>Some build failures have been encountered while trying to use old compilers, such as <code>gcc 2.95.4</code>, which seems to have problems handling some iostream operations (ex : with <code>istringstream</code>). As that same compiler seems to fail compiling a more recent version of itself (namely, the bootstrap of <code>3.3.3</code>), the <code>--buildTools</code> LOANI option might not help you. The most simple way of dealing with this issue is to upgrade first your compiler thanks to your distribution (rpm, apt-get, emerge etc.).
 </dd>
 
+	<dt>LOANI fails with : <code>Error : Unable to pass OSDL tests</code></dt>
+	<dd>
+	If most OSDL tests fail (inspect <code>OSDL/trunk/test/testsOutcome.txt</code> for <code>No available video device</code>), check that the user can display windows indeed, with respect to the X server (ex : test with xclock). 
+	</dd>
+
     <dt>LOANI keeps on failing and I do not know what to do</dt>
-    <dd>I guess it is time for you to read our <a href="#support">support section</a>.</dd>
+    <dd>I guess it is time for you to read our <a href="#support">support section</a>. Note that when using the <code>--sourceforge</code> option (useful for developers), you retrieve the current code, whereas regularly the SVN is broken, as one could expect for in-development versions.
+</dd>
 
 	<dt>No OpenGL operation succeeds, despite <code>glxinfo</code> showing direct rendering, fails with <code>X11 driver not configured with OpenGL</code></dt>
 	<dd>It is the sign that SDL was not built with OpenGL support, maybe because at the time of its configuration, the OpenGL setup was not correct. One can check it by running SDL configure again, and search for this target line : <code>checking for OpenGL (GLX) support... yes</code>.</dd>
@@ -842,7 +814,7 @@ We hope you will enjoy using LOANI and OSDL !
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update : Friday, April 27, 2007</em>
+    <em>Last update : Tuesday, May 1, 2007</em>
 	
   </center>
 </body>
