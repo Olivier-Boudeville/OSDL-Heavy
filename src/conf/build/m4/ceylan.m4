@@ -62,7 +62,7 @@ AC_DEFUN([CEYLAN_PATH],
   # Here is specified for each given Ceylan release what are the most ancient
   # versions that are still compatible with this current version :
   CEYLAN_OLDEST_SUPPORTED_MAJOR=0
-  CEYLAN_OLDEST_SUPPORTED_MINOR=4  
+  CEYLAN_OLDEST_SUPPORTED_MINOR=6  
   
   # Setting the install path of the Ceylan library :
   CEYLAN_LIBS=" -lCeylan "
