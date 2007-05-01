@@ -105,7 +105,7 @@ int main( int argc, char * argv[] )
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
 		myVideo.logState() ;
-				
+			
 		LogPlug::info( "Displaying available video definitions : " 
 			+ VideoModule::DescribeAvailableDefinitions( 
 					Surface::FullScreen | Surface::Hardware ) ) ;
@@ -144,12 +144,12 @@ int main( int argc, char * argv[] )
 		screen.unlock() ;
 		
 		LogPlug::info( VideoModule::DescribeEnvironmentVariables() ) ;
-		
+		screen.update() ;
+
 		OSDL::Events::EventsModule & myEvents = myOSDL.getEventsModule() ;
 		
 		myEvents.logState() ;
 		
-		screen.update() ;
 		
 		if ( ! isBatch )
 			myEvents.waitForAnyKey() ;
