@@ -838,18 +838,55 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 	/*
 	 * Set up idle callback (with default strategy) if not done already :
-	 * (will use atomic sleeps, ith a 10% margin in anticipated delay)
+	 * (will use atomic sleeps, with a 10% margin in anticipated delay)
 	 *
 	 */
 	if ( _idleCallback == 0 && _idleCallbackMaxDuration == 0 )
 		_idleCallbackMaxDuration = 
 			static_cast<Microsecond>( 1.1 * getSchedulingGranularity() ) ;
 
-	EngineTick idleCallbackDuration = static_cast<EngineTick>( 
+	/*
+	 * This is the default value for the duration of an idle callback,
+	 * it will be modulated according to runtime measures to be more accurate.
+	 *
+	 * Even under heavy loads, the measured scheduling granularity is stable
+	 * and accurate, hence it is a reliable reference. Let's call it Dstart.
+	 *
+	 * During the scheduler run, the machine can become more loaded than at
+	 * the scheduler startup. On average, each atomic sleep will last for
+	 * longer, and the scheduler has to adapt. Hence it measures the duration
+	 * Dlast of the latest atomic sleep as an indicator for next sleep.
+	 *
+	 * The forecast duration D for next atomic sleep will be :
+	 * D = (new Dlast) = ( Dstart + 5 * (previous Dlast) ) / 6 
+	 * (evaluated only when the scheduler is in the position of having time
+	 * to spend before next deadline)
+	 *
+	 * It allows to converge towards Dstart even if there were a punctual huge
+	 * artefact-like Dlast : otherwise the scheduler would remember only the
+	 * past artefact and would never trigger an idle call, as it would never
+	 * have a next deadline distant enough  to allow for such a duration.
+	 *
+	 * What is true for atomic sleeps is deemed true too for user-supplied
+	 * idle callbacks.
+	 *
+	 */
+	
+	// Corresponds to Dstart :
+	EngineTick baseIdleCallbackDuration = static_cast<EngineTick>( 
 		Ceylan::Maths::Ceil( 
 			static_cast<Ceylan::Float32>( _idleCallbackMaxDuration ) /
 			_engineTickDuration ) ) ;
+	
+	// Corresponds to D (new Dlast) :
+	EngineTick forecastIdleCallbackDuration ;
 		
+	Ceylan::System::Second idleStartingSecond, idleStoppingSecond ;
+	
+	Ceylan::System::Microsecond idleStartingMicrosecond, 
+		idleStoppingMicrosecond ;
+	
+	
 	_idleCallsCount = 0 ;
 	
 	send( "Scheduler starting in soft real-time best effort mode. " 
@@ -1096,7 +1133,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				
 #endif // OSDL_DEBUG_SCHEDULER
 
-
+		
 		delayCumulativeBucket += delayBucket ;
 		
 		// Bucket leaks regularly :
@@ -1319,7 +1356,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 *
 		 */		 
 		while ( nextRenderingDeadline < _currentEngineTick + 1
-			&& delayBucket < ShutdownBucketLevel  )	
+			&& delayBucket < ShutdownBucketLevel )	
 		{			
 		
 			// Manage all missed rendering steps and warn :
@@ -1501,6 +1538,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		}
 		else
 		{
+		
 			// Here nextDeadline > _currentEngineTick + 1, hence jumpLength > 0.
 		
 			/*
@@ -1533,17 +1571,49 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 * waitings.
 		 *
 		 */
-		
+		 
+		 // Will force to decrease even though no sleep is performed this time :
+		forecastIdleCallbackDuration = static_cast<EngineTick>(
+				( baseIdleCallbackDuration + 5 * forecastIdleCallbackDuration )
+					/ 6.0f ) ;
+	 	
+		OSDL_SCHEDULE_LOG( "Newly forecast idle callback duration is "
+			+ Ceylan::toString( static_cast<Ceylan::Uint32>( 
+					forecastIdleCallbackDuration ) ) 
+			+ " engine ticks." ) ;
+				
 		// Atomic sleeps : 		 
-		while ( _currentEngineTick + idleCallbackDuration < nextDeadline )
+		while ( _currentEngineTick + forecastIdleCallbackDuration 
+			< nextDeadline )
 		{
-			
+		
+			getPreciseTime( idleStartingSecond, idleStartingMicrosecond ) ;
+					
 			/*
 			 * OSDL_SCHEDULE_LOG( 
 			 * "Waiting for the end of engine tick " << _currentEngineTick ) ;
 			 *
 			 */
 			onIdle() ;
+
+			getPreciseTime( idleStoppingSecond, idleStoppingMicrosecond ) ;
+			
+			Microsecond idleDuration = getDurationBetween( 
+				idleStartingSecond, idleStartingMicrosecond,
+				idleStoppingSecond, idleStoppingMicrosecond ) ;
+				
+			OSDL_SCHEDULE_LOG( "Measured idle duration is "
+				+ Ceylan::toString( static_cast<Ceylan::Uint32>( 
+					idleDuration ) ) + " microseconds." ) ;
+					
+			/*
+			 * In this loop, previous idle duration is considered the best
+			 * estimate for next one :
+			 *
+			 */	
+			forecastIdleCallbackDuration = static_cast<EngineTick>(
+				Ceylan::Maths::Ceil( static_cast<Ceylan::Float32>(
+					idleDuration / _engineTickDuration ) ) ) ;
 			
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
 			
@@ -1755,7 +1825,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 	summary.push_back( "Each idle call was expected to last for "
 		+ Ceylan::toString( _idleCallbackMaxDuration ) + " microseconds, i.e. "
-		+ Ceylan::toString( idleCallbackDuration ) + " engine ticks." ) ;
+		+ Ceylan::toString( baseIdleCallbackDuration ) + " engine ticks." ) ;
 
 	summary.push_back( "Average bucket level has been " 
 		+ Ceylan::toString( 
