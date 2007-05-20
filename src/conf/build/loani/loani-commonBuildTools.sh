@@ -8,7 +8,12 @@
 
 # Basic common build tools section.
 
-COMMON_BUILD_TOOLS="gcc binutils gdb"
+if [ $target_nds -eq 1 ] ; then
+	COMMON_BUILD_TOOLS="gcc binutils gdb"
+else
+	# For the Nintendo DS we use to DevKitPro toolchain :
+	COMMON_BUILD_TOOLS="devkitarm libnds libnds_examples libfat dswifi"	
+fi		
 
 # Automake, autoconf, aclocal, make, etc. are deemed most basic build tools
 # and are supposed to be available if needed.
