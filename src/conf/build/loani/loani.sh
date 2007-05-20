@@ -32,6 +32,7 @@ Options :
 	--buildTools		  : retrieve and install common build tools too (ex : gcc, binutils, gdb)  
 	--optionalTools 	  : retrieve and install optional tools too (ex : doxygen, dot, tidy)
 	--allTools		  : retrieve all tools (required, build, optional tools)
+	--nds             : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
 	--setEnv		  : set full developer environment (ex : bash, nedit configuration)
 	--fetchonly		  : only retrieve (download in cache) pre requesite, do not install them
 	--all			  : install all and set all, including developer environment
@@ -390,7 +391,13 @@ launchwizard()
 		
 	fi	
 	
-		
+	if askDefaultNo "${OFFSET}Perform a cross-compilation build to the Nintendo DS ?" ; then 
+		DISPLAY "Using DevKitPro-based cross-compilation toolchain for the Nintendo DS."
+		target_nds=0
+	else
+		target_nds=1	
+	fi
+
 	if askDefaultYes "${OFFSET}Use an installation prefix ? [recommended]" ; then 
 		askString "${OFFSET}Please enter prefix directory where installations should be done (leave blank to let LOANI find automatically an appropriate prefix) :"
 		prefix="$returnedString"
@@ -553,6 +560,8 @@ only_build_tools=1
 # Install only optional tools : [default : false (1)] 
 only_optional_tools=1
 
+# Cross-compilation to Nintendo DS homebrew : [default : false (1)]
+target_nds=1
 
 # prefix is the directory where all files will be installed 
 prefix=""
@@ -695,15 +704,19 @@ while [ $# -gt 0 ] ; do
 		set_env=0
 		token_eaten=0		
 	fi
+
+	if [ "$1" = "--all" ] ; then
+		DEBUG "Everything will be set and installed."
+		manage_build_tools=0
+		manage_optional_tools=0		
+		set_env=0
+		token_eaten=0		
+	fi
+	
 		
-	if [ "$1" = "--prefix" ] ; then
-		shift
-		prefix="$1"
-		if [ -z "$prefix" ] ; then
-			ERROR "No prefix specified after --prefix option."
-			exit 1
-		fi
-		DEBUG "Prefix will be $prefix."
+	if [ "$1" = "--nds" ] ; then
+		DEBUG "Cross compilation to the Nintendo DS selected."
+		target_nds=0
 		token_eaten=0		
 	fi
 	
