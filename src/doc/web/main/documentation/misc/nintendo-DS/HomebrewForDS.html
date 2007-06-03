@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+
+<!--    Ce document fait partie du projet OSDL.
+		Pour toute remarque, envoyer un courriel à toshiba.laptop@esperide.com
+-->
+<!--    
+        Date de création : Saturday, June 2, 2007.
+        Auteur : Olivier Boudeville (toshiba.laptop@esperide.com)
+        Version : 0.1
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Mini-guide to homebrew development for the Nintendo DS</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, installation, laptop, multiboot">
+  <link rel="stylesheet" type="text/css" href="../../../../common/css/OSDL.css">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  
+  <div class="banner">
+  
+    <p><em>General</em> <a href="../../../../common/black.html" onclick="parent.toolbar.location='../../MainMenu.html'">home page</a>
+    <a href="../../../../Map.html">site map</a> <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Homebrew%20for%20Nintendo%20DS">mail us</a></p>
+	
+  </div><a name="_top_"></a>
+  
+
+<h1>Mini-guide to homebrew development for the Nintendo DS</h1>
+
+
+<a name="toc">
+<center>
+	<table summary="Table of content" style="border: none">
+        <tr>
+          <td>
+
+		   <div class="box">
+		       <a href="#overview">Overview</a><br><a name=""></a>
+		       <a href="#hardware">Hardware considerations</a><br>
+		       <a href="#toolchain">Toolchain</a>
+          </div>
+
+          </td>
+        </tr>
+      </table>
+</center>
+<!--
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+  -->
+
+  
+<a name="overview"></a>
+<h2>Overview</h2>
+
+<p>
+The goal here is to develop applications to be run on the <a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">Nintendo DS</a>, from the hobbyist point of view.
+</p>
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="hardware"></a>
+<h2>Hardware considerations</h2>
+ 
+<h3>What should be bought</h3>
+
+<h4>The console</h4>
+<p>
+First of course is the Nintendo DS itself (see a video <a href="http://www.youtube.com/watch?v=Xp7Be1qsblI" target="_blank">presentation</a>). It should be a DS <a href="http://en.wikipedia.org/wiki/Nintendo_DS_Lite" target="_blank">Lite</a>, which is quite superior to the previous "<a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">fat</a>" version : better screens, thiner, better autonomy, etc. The color does not matter, but the black version is quite sober, which opens it the possibility of somewhat faking a classical PDA. This is one of the intended uses for me, besides game programming.
+</p>
+
+
+<p>
+As most console manufacturers enforce a unique pricing for all vendors, choose the one with the better conditions (guarantee, return policy), preferably not online : dealing with real shop is convenient, especially to have its DS replaced whenever there are dead pixels. This happens quite often apparently, and not all vendors accept easily to replace it. As for me, I bought my DS lite in France, in a FNAC shop (I could cancel my buying during a 15-day period), in may 2007, for 150 euros, and had no dead pixel.
+</p>
+
+<p>
+Here is the content of the Nintendo box :
+<center>
+    <a href="content.jpeg" target="_blank"><img src="content-small.jpeg" alt="Image" width="40%"></img></a>
+</center>
+
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li>the <b>DS Lite</b></li>
+	<li>the <b>power supply</b> to charge the batteries</li>
+	<li>some (rather useless) <b>documentation</b></li>
+</ul>
+</p>
+
+<h4>Some recommended accessories</h4>
+
+<p>
+From the most useful to the least :
+
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li><b>screen protectors</b> necessary at least for the touch screen, whose life duration would be quite low otherwise (note : beware to the way they should be applied, I screwed up the first protection, and the second, for the touch screen, trapped nasty micro-bubbles of air; no, the screens do not have the same exact dimensions !). A kind of fabric could help cleaning the screens and the console itself : finger prints are quite visible on it</li>
+	
+	<li>a <b>case</b> for transporting safely your DS. Mine is in leather on purpose : wanting to look like a casual PDA</li>
+	
+	<li><b>replacement stylus</b>, in case you loose the only one provided</li>
+
+	<li><b>car power supply</b> : well, why not</li>
+
+	<li><b>headphones</b> are quite useless, as the DS has standard 3.5 jack. Would be interesting only if they had a microphone (seems to be a proprietary plug)</li>
+
+	<li><b>game stylus</b>, to be placed on the user thumb. Not helpful here</li>
+	
+	<li><b>boxes for game cartridges</b>. I bought the DS only to program it, I do not plan to buy any game (hope you do not sell the DS at loss, Nintendo : the razor and blades model won't work for homebrewers)</li>
+
+</ul>
+
+</p>
+
+<p>
+I bought a Bigben Interactive pack of 5 accessories (6 euros) and a (black) Subsonic Premium Pack (mostly for the leather case; 15 euros), both of course for DS Lite.
+</p>
+
+
+
+<h4>The add-on for homebrew development</h4>
+
+<p>
+Having a console is not enough to be able to program it : Nintendo, due to the fear of piracy, preferred to make the life of homebrewers more difficult than technically needed, notably thanks to hardened firmwares preventing modifications or execution of non-acknowledged code. Hence, to have access to a DS that can be programmed, one should use special cards, at least once. The discussion is quite long and many cases have to be taken into account, see <a href="http://en.wikipedia.org/wiki/Nintendo_DS_booting_tools" target="_blank">Booting Tools</a> on Wikipedia for details.
+</p>
+  
+<p>
+As for me, I intended to have GNU/Linux working on my DS, and the native 4 MB of RAM where quite small, so I preferred to have both 32 MB of RAM (the maximum size that can be addressed by the DS bus) and access to mass storage on removable media. The best and simplest bet was to use in the slot 1 (the DS-specific one, small and at the top of the console) a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperKey</a> (a kind of <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a>)
+as a fake game used to enable the execution of code from the slot 2 (the big one, for GBA compatiblity). This slot 2 would host a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperCard Lite</a>
+ (note : avoid the rumble series), which besides the 32 MB of RAM offers a micro-SD port.
+</p>
+  
+<p>
+I bought both the SuperKey and the SuperCard Lite (black version) from <a href="http://www.fl-games.com/" target="_blank">FL-games</a> for 65 euros (shipping included) and was quite happy of it (no compatibility issue to be afraid of).
+</p>
+
+<p>
+Here are the three boxes : the Nintendo DS Lite one, the Superpass and the Supercard. Notice the two-euro coin : there are quite small indeed.
+
+<center>
+    <a href="boxes.jpeg" target="_blank"><img src="boxes-small.jpeg" alt="Image" width="40%"></img></a>
+</center>
+</p>
+ 
+ 
+<p>
+Last be not least, one should have at least one micro-SD card, I bought a 2 GB Kingston one from <a href="http://www.pc-look.com/" target="_blank">PC-look</a> for 28 euros, shipping included). My laptop had a SD reader/writer (well, Ubuntu could not use it properly but it is another story) so no need to buy anything else. Separate USB reader/writer are quite inexpensive anyway. Check that your micro-SD card is sold with a SD adapter, so that the actual tiny micro-card can fit in a basic SD reader. 
+</p>
+
+<!--
+ 
+<center>
+    <a href="" target="_blank"><img src="" alt="Image" width="40%"></img></a>
+</center>
+
+-->
+
+
+<p>
+Finally in my case the full equipment cost me only 265 euros.
+</p>
+ 
+<center>
+    <a href="content.jpeg" target="_blank"><img src="content-small.jpeg" alt="Image" width="40%"></img></a>
+</center>
+
+<center>
+    <a href="accessories.jpeg" target="_blank"><img src="accessories-small.jpeg" alt="Image" width="40%"></img></a>
+</center>
+
+
+<center>
+    <a href="warning.jpeg" target="_blank"><img src="warning-small.jpeg" alt="Image" width="40%"></img></a>
+</center>
+
+  
+<center>
+    <a href="pictochat.jpeg" target="_blank"><img src="pictochat-small.jpeg" alt="Image" width="40%"></img></a>
+</center>
+
+<center>
+    <a href="supercard-run.jpeg" target="_blank"><img src="supercard-run-small.jpeg" alt="Image" width="40%"></img></a>
+</center>
+
+<center>
+    <a href="linux-global.jpeg" target="_blank"><img src="linux-global-small.jpeg" alt="Image" width="40%"></img></a>
+</center>
+ 
+<center>
+    <a href="linux-zoom.jpeg" target="_blank"><img src="linux-zoom-small.jpeg" alt="Image" width="40%"></img></a>
+</center>
+ 
+ 
+ 
+<p>
+
+
+<h3>Some interesting links</h3>
+<p>
+<ul>
+    <li><a href="http://distrowatch.com/dwres.php?resource=review-freebsd" target="_blank">Distrowatch review</a></li>
+    <li><a href="http://lists.freebsd.org/pipermail/freebsd-hackers/2004-May/006944.html" target="_blank">mini-howto: Grub on FreeBSD (UFS2)</a></li>
+</ul>
+
+</p>
+http://en.wikipedia.org/wiki/Nintendo_DS_homebrew
+http://en.wikipedia.org/wiki/Nintendo_DS_booting_tools
+
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
+  <br>
+  <br>
+  <br>
+  <br>
+
+ <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:toshiba.laptop@esperide.com?subject=[OSDL]%20Homebrew%20for%20Nintendo%20DS">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+  <br>
+ 
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update : Saturday, June 2, 2007</em>
+  </center>
+</body>
+</html>
