@@ -43,29 +43,27 @@
 
 		   <div class="box">
 		       <a href="#overview">Overview</a><br>
-		       <a href="#hardware">Hardware considerations</a><br>
+		       <a href="#tobuy">What should be bought</a> :<br>
 			   <ul>
 
 		<!--
 			<li><b></b> : </li>
 		-->
 
-					<li><a href="#tobuy">What should be bought</a></li>
-					<li><a href="#fortheprice">What you have for the price</a> : hardware resources</li>
+					<li>a <a href="#buytheconsole">console</a></li>
+					<li>some recommended <a href="#accessories">accessories</a></li>
+					<li>required <a href="#addons">add-ons</a></li>
 				</ul>
-
-			   <br>
+				<a href="#inaction">The console in action, with and without its add-ons</a><br>
+		       <a href="#hardware">Hardware resources</a><br>
+			   <ul>
+					<li>the console <a href="#innerconsole">inner workings</a></li>
+	
+				</ul>		   
 		       <a href="#thirdparty">Using some third-party software</a><br>
 		       <a href="#toolchain">Developing your own software : using the toolchain</a>
-
 		       <a href="#forlinux">Linux on DS</a><br>
-
 		       <a href="#applications">Homebrew applications &amp; games</a><br>
-		       <a href="#"></a><br>
-		       <a href="#"></a><br>
-		       <a href="#"></a><br>
-		       <a href="#"></a><br>
-		       <a href="#"></a><br>
 		       <a href="#otherlinks">Some interesting links</a><br>
 
           </div>
@@ -83,7 +81,11 @@
 <h2>Overview</h2>
 
 <p>
-The goal here is to develop applications to be run on the <a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">Nintendo DS</a>, from the hobbyist point of view.
+The goal here is to develop applications, mostly games, to be run on the <a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">Nintendo DS</a>, from the hobbyist point of view. These developments are called <a href="http://en.wikipedia.org/wiki/Homebrew_(video_games)" target="_blank">homebrew</a>.
+</p>
+
+<p>
+Portable development will be kept in mind, having one's game working both on a DS and on a PC is quite enjoyable.
 </p>
 
 
@@ -92,27 +94,33 @@ The goal here is to develop applications to be run on the <a href="http://en.wik
 
 
 
-<a name="hardware"></a>
-<h2>Hardware considerations</h2>
-
 <a name="tobuy"></a> 
-<h3>What should be bought</h3>
+<h2>What should be bought</h2>
 
-<h4>The console</h4>
+
+<a name="buytheconsole"></a> 
+<h3>The console</h3>
 <p>
-First of course is the Nintendo DS itself (see a video <a href="http://www.youtube.com/watch?v=Xp7Be1qsblI" target="_blank">presentation</a>). It should be a DS <a href="http://en.wikipedia.org/wiki/Nintendo_DS_Lite" target="_blank">Lite</a>, which is quite superior to the previous "<a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">fat</a>" version : better screens, thiner, better autonomy, etc. The color does not matter, but the black version is quite sober, which opens it the possibility of somewhat faking a classical PDA. This is one of the intended uses in my case, besides game programming.
+First of course is the Nintendo DS itself (see a video <a href="http://www.youtube.com/watch?v=Xp7Be1qsblI" target="_blank">presentation</a>). It should be a DS <a href="http://en.wikipedia.org/wiki/Nintendo_DS_Lite" target="_blank">Lite</a>, which is quite superior to the previous "<a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">fat</a>" version : better screens, thiner, lighter, better autonomy, more beautiful, etc. The color does not matter, but the black version is quite sober, which opens it the possibility of somewhat faking a classical PDA. This is one of the intended uses in my case, besides game programming.
 </p>
 
+<p>
+As most console manufacturers enforce a unique pricing for all vendors, choose the one with the better conditions (guarantee, return policy, etc.), preferably not online : dealing with real shops is convenient, especially to have its DS replaced whenever there are dead pixels. This happens quite often apparently, and not all vendors accept easily to replace it. 
+</p>
 
 <p>
-As most console manufacturers enforce a unique pricing for all vendors, choose the one with the better conditions (guarantee, return policy, etc.), preferably not online : dealing with real shops is convenient, especially to have its DS replaced whenever there are dead pixels. This happens quite often apparently, and not all vendors accept easily to replace it. As for me, I bought my DS lite in France, in a FNAC shop (I could cancel my buying during a 15-day period), in may 2007, for 150 euros, and had no dead pixel.
+As for me, I bought my DS Lite in France, in a FNAC shop (I could cancel my buying during a 15-day period), in may 2007, for 150 euros, and had no dead pixel.
 </p>
 
 <p>
 Here is the content of the Nintendo box :
 <center>
     <a href="content.jpeg" target="_blank"><img src="content-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
+</center>
 
+</p>
+
+<p>This box includes only :
 <ul>
 
 <!--
@@ -125,7 +133,13 @@ Here is the content of the Nintendo box :
 </ul>
 </p>
 
-<h4>Some recommended accessories</h4>
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
+
+
+
+
+<a name="accessories"></a>
+<h3>Some recommended accessories</h3>
 
 <p>
 You can make a better use of your DS potential thanks to them.
@@ -145,46 +159,52 @@ From the most useful to the least :
 	<li><b></b> : </li>
 -->
 
-	<li><b>screen protectors</b>, necessary at least for the touch screen, whose life duration would be quite low otherwise (note : beware to the way they should be applied, I screwed up the first protection, and the second, for the touch screen, trapped nasty micro-bubbles of air; no, the screens do not have the same exact dimensions !). A kind of fabric could help cleaning the screens and the console itself : finger prints are quite visible on it</li>
+	<li><b>screen protectors</b>, necessary at least for the touch screen, whose life duration would be quite low otherwise (note : beware to the way they should be applied, I screwed up the first protection, and the second, for the touch screen, trapped nasty micro-bubbles of air; no, the screens do not have the same exact dimensions !). A kind of fabric could help cleaning the screens and the console itself : finger prints are quite visible on it, especially on the black DS</li>
 	
 	<li>a <b>case</b> for transporting safely your DS. Mine is in leather on purpose : wanting to look like a casual PDA</li>
 	
-	<li><b>replacement stylus</b>, in case you loose the only one provided</li>
+	<li><b>replacement stylus</b>, in case you loose the only one provided (the smaller ones are for the "fat" DS)</li>
 
 	<li><b>car power supply</b> : well, why not...</li>
 
 	<li>specific <b>headphones</b> are quite useless, as the DS uses standard 3.5 jack. Would be interesting only if they included a microphone (seems to be a proprietary plug for audio input)</li>
 
-	<li><b>game stylus</b>, to be placed on the user thumb. Not helpful here for mostly non-gaming usage</li>
+	<li><b>game stylus</b>, to be placed on the user thumb. Not helpful here, for mostly non-gaming usage</li>
 	
-	<li><b>boxes for game cartridges</b>. I bought the DS only to program it, I do not plan to buy any game (hope you do not sell the DS at loss, Nintendo : the razor and blades model won't work for homebrewers)</li>
+	<li><b>boxes for game cartridges</b>. I bought the DS only to program it, I do not plan to buy any game (hope you do not sell the DS at loss, Nintendo : the razor and blades business model won't work for homebrewers)</li>
 
 </ul>
 
 </p>
 
 <p>
-I bought a Bigben Interactive pack of 5 accessories (6 euros) and a (black) Subsonic Premium Pack (mostly for the leather case; 15 euros), both of course for DS Lite. Hence one can have all these accessories for quite a low price :
+I bought a Bigben Interactive pack of 5 accessories (6 euros) and a (black) Subsonic Premium Pack (mostly for the leather case; 15 euros), both of course for DS Lite. Hence one can have all these recommended accessories for quite a low price.
 </p>
 
+<p>
+See also the Wikipedia <a href="http://en.wikipedia.org/wiki/Nintendo_DS_accessories" target="_blank">article</a> about DS accessories.
+</p>
+
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 
 
-<h4>The add-ons for homebrew development</h4>
+
+<a name="addons"></a>
+<h3>The add-ons for homebrew development</h3>
+
+<h4>Needing a console that can be programmed</h4>
+<p>
+Having a basic console is not enough to be able to program it : Nintendo, due to the fear of piracy, preferred to make the life of homebrewers more difficult than technically needed, notably thanks to hardened firmwares preventing modifications or execution of non-acknowledged code : apparently they are encrypted with a private key from Nintendo, the device uses the embedded public one to decipher the firmware before running it.
+</p>
 
 <p>
-Having a console is not enough to be able to program it : Nintendo, due to the fear of piracy, preferred to make the life of homebrewers more difficult than technically needed, notably thanks to hardened firmwares preventing modifications or execution of non-acknowledged code : apparently they are encrypted with a private key from Nintendo, the device uses the embedded public one to decipher the firmware before running it. Hence, to have access to a DS that can be programmed, one has to circumvent these protections. One of the simplest ways of doing so is to use special game-like cards, at least once. This is a vast subject and many cases have to be taken into account, see <a href="http://en.wikipedia.org/wiki/Nintendo_DS_booting_tools" target="_blank">Booting Tools</a> on Wikipedia for details.
+Hence, to have access to a DS that can be programmed, one has to circumvent these protections. One of the simplest ways of doing so is to use special game-like cards, at least once. This is a vast subject and many cases have to be taken into account, see <a href="http://en.wikipedia.org/wiki/Nintendo_DS_booting_tools" target="_blank">Booting Tools</a> on Wikipedia for details.
 </p>
   
+<h4>A rather cheap and easy solution</h4>
 <p>
-As for me, I intended to have GNU/Linux working on my DS, and the native 4 MB of RAM where quite small, so I preferred to have both 32 MB of RAM (the maximum size that can be addressed by the DS bus) and access to mass storage on removable media. The best and simplest bet was to use in the slot 1 (the DS-specific one, small and at the top of the console, a.k.a the DS card) a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperKey</a> (a kind of <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a>)
-as a fake game used to enable the execution of code from the slot 2 (the big one at the bottom, used for GBA compatiblity, a.k.a the GBA cartridge). This slot 2 would host a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperCard Lite</a>
- (note : avoid the rumble series, it does not provide more RAM), which besides the 32 MB of RAM offers a micro-SD port.
-</p>
+As for me, I intended to have Linux working on my DS, and for that the native 4 MB of RAM where quite small, so I preferred to have both 32 MB of additional RAM (the maximum size that can be addressed by the DS bus) and access to mass storage on removable media. The best and simplest bet was to use in the slot-1 (the DS-specific one, small and at the top of the console, a.k.a the DS card) a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperKey</a> (a kind of <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a>) as a fake game used to enable the execution of code from the slot-2 (the big one at the bottom, used for GBA compatiblity, a.k.a the GBA cartridge). This slot-2 would host a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperCard Lite</a> (note : avoid the rumble series, it does not provide more RAM), which indeed, besides the 32 MB of RAM, offers a <b>micro-SD</b> port.</p>
 
-<p>
-Such removable media are not the magic bullet for the homebrewers though : to anticipate a bit on further subjects, when generating programs for the DS from your PC, to test them you may either execute them "in place", directly on your PC thanks to <a href="#emulators" target="_blank">DS emulators</a> (but they do not behave always as a DS would behave) or you have to send them to the DS by one way or another. This can be done thanks to the aforementioned microSD card, but it soon becomes tedious to swap again and again the card and its adapter. An alternate way would be to use a Wifi access-point or a Wifi router, preferably not a mere Wifi adapter which has to embed a specific chip etc. in order to work with the DS. Such devices could be for example the famous <a href="http://en.wikipedia.org/wiki/WRT54G" target="_blank">Linksys WRT54G routers</a> or <a href="http://en.wikipedia.org/wiki/Fonera" target="_blank">La Fonera</a>, both of which are inexpensive and, on a side node, run Linux, whose firmware and software can be programmed, etc., in a very similar way to the one we are to program applications for the DS.
-</p>
-  
 <p>
 I bought both the SuperKey and the SuperCard Lite (black version) from <a href="http://www.fl-games.com/" target="_blank">FL-games</a> for 65 euros (shipping included) and was quite happy of it (no compatibility issue between the two cards to be afraid of).
 </p>
@@ -197,30 +217,6 @@ Here are the three boxes : the Nintendo DS Lite one, the SuperKey and the SuperC
 </center>
 </p>
  
- 
-<p>
-Last be not least, one should have at least one micro-SD card, I bought a 2 GB Kingston one from <a href="http://www.pc-look.com/" target="_blank">PC-look</a> for 28 euros, shipping included. My laptop had a SD reader/writer (well, Ubuntu could not use it properly but it is another story), so no real need to buy anything else. Separate USB reader/writer are quite inexpensive anyway. Check that your micro-SD card is sold with a SD adapter, so that the actual tiny micro-card can fit in a basic SD reader. 
-</p>
-
-<p>
-To use your micro-SD, one should first format it in FAT (i.e. FAT16, not FAT32) before use, as factory settings are not reliable in all cases, or not the expected ones. Formatting can be done both from Windows or from Linux. FAT is for the moment favored over other filesystems by most homebrewers, mainly for the sake of simplicity (there already exists a library for it on the DS, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>)
- and adequate for small size storage media.
-</p>
-
-<!--
- 
-<center>
-    <a href="" target="_blank"><img src="" alt="Image" width="40%"></img></a><br>(click to enlarge)
-</center>
-
--->
-
-
-<p>
-Finally in my case the full equipment cost me only 265 euros, not including the (very optional) Wifi router (a Linksys WRT54GL would cost 55 euros approximately).
-</p>
- 
-
 <p>
 Here is a view of a bare DS running the default firmware (hence the mandatory health and safety warning) and, below, the quite tiny SuperKey and SuperCarde Lite themselves :
 
@@ -228,6 +224,41 @@ Here is a view of a bare DS running the default firmware (hence the mandatory he
     <a href="warning.jpeg" target="_blank"><img src="warning-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
 </center>
 </p>
+
+ 
+<p>
+Last be not least, one should have at least one micro-SD card, I bought a 2 GB Kingston one from <a href="http://www.pc-look.com/" target="_blank">PC-look</a> for 28 euros, shipping included. My laptop had a SD reader/writer (well, Ubuntu could not use it properly but it is another story), so no real need to buy anything else. Separate USB reader/writer are quite inexpensive anyway. Check that your micro-SD card is sold with a SD adapter, so that the actual tiny micro-card can fit in a basic SD reader. 
+</p>
+
+<p>
+To use your micro-SD, you should first format it in <b>FAT</b> (i.e. FAT16, not FAT32), as factory settings are not reliable in all cases, or not the expected ones. Formatting can be done both from Windows or from Linux.
+</p>
+
+<p>
+FAT is for the moment favored over other filesystems by most homebrewers, mainly because it is adequate for small size storage media, and for the sake of simplicity : there already exists a library for it on the DS, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>.
+</p>
+
+<p>
+Finally in my case the full equipment cost me only 265 euros.
+</p>
+
+
+<h4>Some limitations for the seasoned homebrewer though</h4>
+
+<p>
+Such removable media (as microSD) are not the magic bullet for the frantic homebrewer : to anticipate a bit on further subjects, when generating programs for the DS from your PC, to test them you may either execute them "in place", directly on your PC thanks to <a href="#emulators" target="_blank">DS emulators</a> (but they do not behave always as a DS would behave) or you have to send them to the DS by one way or another. This can be done thanks to the aforementioned microSD card, but it soon becomes tedious to swap again and again the card and its adapter. 
+</p>
+
+<p>
+An alternate way would be to use a Wifi access point or a Wifi router, preferably not a mere Wifi adapter, which would have to embed a specific chip etc. in order to work with the DS. Such devices could be for example the famous <a href="http://en.wikipedia.org/wiki/WRT54G" target="_blank">Linksys WRT54G routers</a> (55 euros approximately) or <a href="http://en.wikipedia.org/wiki/Fonera" target="_blank">La Fonera</a>, both of which are inexpensive and, on a side node, run Linux, whose firmware and software can be programmed, etc., in a very similar way to the one we are to program applications for the DS.
+</p>
+  
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
+
+
+ 
+<a name="inaction"></a>
+<h2>The console in action, with and without its add-ons</h2>
 
 <p>
 The snapshot below shows the official main screen :  
@@ -245,13 +276,32 @@ When both cards are inserted, you can see the SuperCard splash screen, but here 
 <center>
     <a href="supercard-run.jpeg" target="_blank"><img src="supercard-run-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
 </center>
+</p>
+
+<p>
+Inserting the microSD card and rebooting is not really interesting, as this card  is still empty.
+</p>
+
+<p>
+We see nevertheless that our customized console works well and is ready to be used.
+</p>
+
+ <p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 
  
  
-<a name="fortheprice"></a> 
-<h3>What you have for the price : hardware resources</h3>
+ 
+ 
+<a name="hardware"></a> 
+<h2>Hardware resources</h2>
 
-<h4>The console</h4>
+<p>
+Buying things was quite easy. Now, let's try to use them ! First of all, let's learn what is available for our developments.
+</p>
+
+
+<a name="innerconsole"></a>
+<h3>The console inner workings</h3>
 <p>
 Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of features :
 <ul>
@@ -260,28 +310,27 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	<li><b></b> : </li>
 -->
 
-	<li><b>two 3-inch (61x46 mm, dot pitch of 0,24 mm) TFT back-lighted screens</b> (hence the DS means <em>Dual Screen</em>, although <em>Developer System</em> is mentioned sometimes) whose maximal resolution is 256x192, with up to 260 000 colors</li>
+	<li><b>two TFT back-lighted screens</b> (hence the DS meaning <em>Dual Screen</em>, although <em>Developer System</em> is mentioned sometimes), whose maximal resolution is 256x192, with up to 260 000 colors. These are 3-inch screens (61x46 mm), with a dot pitch of 0,24 mm. Screens are separated by about 21 mm. The DS Lite ones are far brighter and more resitant than the DS "fat" ones, and support four levels of brightness</li>
 	
-	<li>a <b>touchpad</b> integrated with the bottom screen. The resulting touchscreen can be used with a stylus</li>
+	<li>a resistive <b>touchpad</b> integrated with the bottom screen. The resulting touchscreen can be used with a stylus, the user's finger, wrist strap, etc. It can measure at most one press at a time, so it will average multiple presses, by reporting only a single one at their barycenter</li>
 	
 	<li>
 	<p>
 
 	<b>two all-purpose processors</b> :
 	  <ul>
-		<li>an <b>ARM9</b> : <a href="http://en.wikipedia.org/wiki/ARM9E" target="_blank">ARM946E-S</a>, main CPU, 67 MHz, between 200 and 300 MIPS, RISC 32 bit</li>
+		<li>an <b>ARM9</b> : <a href="http://en.wikipedia.org/wiki/ARM9E" target="_blank">ARM946E-S</a>, main CPU, 67 MHz, between 200 and 300 MIPS (<em>Million Instructions Per Second</em>), RISC 32 bit</li>
 		<li>an <b>ARM7</b> : <a href="http://en.wikipedia.org/wiki/ARM7TDMI" target="_blank">ARM7TDMI</a>, co-processor, 33 MHz, about 20 MIPS, 16-bit/32-bit RISC</li>
 	  </ul>
 	</p>
 	
 	<p>
-	The ARM (<em>Arcos Risc Machine</em>) family is quite widespread on embedded devices, and is known to be small, cheap and power-savvy. The Nintendo 64 offered roughly 100 MIPS (<em>Million Instructions Per Second</em>), PlayStation 2 and PSP (PlayStation Portable) roughly 560 MIPS, GameCube 980 MIPS. According to some sources, the DS processors are under-clocked to save some power. Some people <a href="http://youtube.com/watch?v=PYIvASbELkw" target="_blank">overclocked</a> them, which involves quite some electronical skills</p>
-
+	The ARM (<em>Arcos Risc Machine</em>) family is quite widespread on embedded devices, and is known to be small, cheap and power-savvy. The Nintendo 64 offered roughly 100 MIPS, PlayStation 2 and PSP (PlayStation Portable) roughly 560 MIPS, GameCube 980 MIPS. According to some sources, the DS processors are under-clocked to save some power. Some people <a href="http://youtube.com/watch?v=PYIvASbELkw" target="_blank">overclocked</a> them, which involves quite some electronical skills and risks</p>
 	</li>
 	
 	<li>several <b>memory banks</b>, notably 4 MB (4096 kB) of built-in RAM, whose layout is somewhat complex but for the most part is shared by the two processors. There is an additional 656 KB of video RAM</li>
 	
-	<li>an <b>advanced 2D rendering system</b> and a <b>3D rendering system</b>, able to offer cell-shading, fog, etc, up to 120 000 polygons rendered per second, i.e. a fill rate of about 30 millions pixels per second. The chip is adapted from the one of the Sega Dreamcast, a  120 MHz PowerVR MBX (RS version)</li>
+	<li>two <b>advanced 2D rendering systems</b> (one for each screen) and a <b>3D rendering system</b>, able to offer various <a href="#3D">3D features</a>. It can render up to 120 000 triangles per second at 60 frames per second, a fill rate of about 30 million pixels per second. The chip is adapted from the one of the Sega Dreamcast, a 120 MHz PowerVR MBX (RS version) [<a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">More info</a> (in French)</li>
 
 	<li>A <b>flashable</b> <a href="http://en.wikipedia.org/wiki/Firmware" target="_blank">firmware</a>, on NVRAM (Non-Volatile RAM)</li>
 	
@@ -295,9 +344,9 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	
 	<li>two <b>slots for FLASH cards</b> : the Slot-1 (DS specific, looking a bit like a small Compact Flash card, up to 1 GB of internal storage) and the Slot-2 (legacy GBA port, used by several add-ons)</li>
 	
-	<li><b>lithium-ion battery</b> : in DS mode, 6 to 10 hours of play, in GBA mode up to 12 hours, in sleep mode two weeks, all in the case of a fully charge battery (4 hours of charge). Of course autonomy decreases with slot-1/slot-2 cards being added.</li>
+	<li><b>lithium-ion battery</b> (1000 mAh battery; DS "fat" : 850 mAh) : with a DS Lite in DS mode, depending on the screen brightness, at least 6 to 10 hours of play, in GBA mode up to 12 hours, in sleep mode two weeks, all in the case of a fully charge battery (4 hours of charge). Of course autonomy decreases with slot-1/slot-2 cards being added. After five hundred charges, the battery capacity drops to about seventy percent and should be replaced</li>
 	
-	<li><b>small form factor</b> : 148,6 x 84,6 x 28,7 mm (closed) for 275g for the DS</li>
+	<li><b>small form factor</b> : the (closed) DS Lite is 133 mm × 73.9 mm × 21.5 mm (versus 148,6 x 84,6 x 28,7 mm for the DS "fat"), for 218g (275g for the DS "fat)</li>
 
 	<li><b>built-in realtime 33MHz clock</b>, maintaining time and date even when the DS has been shutdown</li>
 
@@ -311,16 +360,16 @@ The ARM RISC architecture is heavily inspired from the <em>GameBoy Advance</em> 
 </p>
 
 <p>
-Input handling can be done thanks to the traditional gamepad on the left, but also thanks to the touchscreen and/or the microphone (speaking, blowing air, etc.)
+Input handling can be done thanks to the traditional gamepad, but also thanks to the touchscreen (it can be used to offer a virtual keyboard, or with mouse-like interface, or as a handwriting tool, etc.) and/or the microphone (speaking, blowing, shouting, etc.)
 </p>
 
 <p>
 The two screens can be used also on their side, like an open book.
 </p>
 
-
+<a name="detailedhardware"></a>
 <p>
-More infos about the DS hardware : <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2" target="_blank">Dev-Scene tutorial</a> and <a href="http://neimod.com/dstek/" target="_blank">DS Tek</a>.
+More infos about the DS hardware : <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2" target="_blank">Dev-Scene tutorial</a>, <a href="http://neimod.com/dstek/" target="_blank">DS Tek</a> and <a href="http://nocash.emubase.de/gbatek.htm#dsiomaps" target="_blank">GBATEK</a>.
 </p>
 
 <p>
@@ -328,20 +377,32 @@ The main competitor for the DS is Sony's PlayStation Portable, PSP, although the
 </p>
 
 
-<h4>The Slot-1 NoPass</h4>
+<h3>The cartridges</h3>
 <p>
-Apart from allowing the use of the Slot-2 devices, nothing more is given by the SuperCard and its Slot-1 counterparts. On the contrary, it consumes some power that reduces the console autonomy. A flashed firmware can be used instead. 
+There are two different ports in which cards can be inserted : Slot-1 and Slot-2. In both cases, cards are mostly <a href="p://en.wikipedia.org/wiki/Read-only_memory" target="_blank">ROM</a>, but some of them have a small amount of non-volatile memory, usually <a href="http://en.wikipedia.org/wiki/EEPROM" target="_blank">EEPROM</a> (notably<a href="http://en.wikipedia.org/wiki/Flash_memory" target="_blank">Flash</a> memory), to save some data.
 </p>
 
-<h4>The Slot-2 linker (a.k.a. game cart, or flash cart)</h4>
+<h4>The Slot-1 port</h4>
 
 <p>
-There are several slot-2 add-ons, which all provides their own set of features. From the ARM9 point of view, they can offer up to 32 MB of ROM and 64 kB of RAM.</p>
-
-<p>
-The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (for DS Lite) and provides 32 MB of RAM and an access to removable storage, here a microSD card. Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. 
-
+Usual DS game cards are 33.0 × 35.0 × 3.8 mm, and weigh around 3,5 g. They can contain up to 128 MB, but in this case they are a smaller transfer rate than 64 MB ones.  
 </p>
+
+<p>
+SuperCard and its Slot-1 <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a> counterparts, apart from allowing the use of the Slot-2 devices, do not add any memory or feature. On the contrary, it consumes some power that reduces the console autonomy. A flashed firmware can be used instead.
+</p>
+
+
+<h4>The Slot-2 port (a.k.a. GBA cart, or Flash Cart)</h4>
+
+<p>
+There are several slot-2 add-ons, which all provides their own set of features. From the ARM9 point of view, they can offer up to 32 MB of ROM and 64 kB of RAM. This GBA slot bus only supports 16-bit writes, which leads to issues to perform 8-bit only operations.</p>
+
+<p>
+The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (for DS Lite) and provides an additional 32 MB of RAM and an access to removable storage, here a microSD card. Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. 
+</p>
+
+
 
 
 <a name="programming"></a>
@@ -349,7 +410,7 @@ The SuperCard Lite is one of the most interesting linkers, as it fits well in th
 
 <h3>Two general-purpose CPU to handle</h3>
 <p>
-For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations, the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to rendering.
+For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to rendering.
 </p>
 
 <p>
@@ -393,31 +454,129 @@ Second, most subsystems of the DS can be powered independently : sound speakers,
 Selective activation is useful notably to save energy.
 </p>
 
-<h3>Miscellaneous features</h3>
 
+<h3>Rendering</h3>
+
+<h4>2D Rendering</h3>
+
+<p>
+The system has two 2D engines, one per screen. These are each quite similar to the Game Boy Advance's single 2D engine, though more powerful.
+</p>
+
+<p>
+See also : <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_blank">LiraNuna's 2D tutorial</a>.
+</p>
+
+
+<a name="3D"></a>
+<h4>3D Rendering</h3>
+
+<p>
+The system's 3D hardware can perform a lot of operations :
+<ul>
+
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+    <li><a href="http://en.wikipedia.org/wiki/Transform_and_lighting" target="_blank">transform and lighting</a> : performs 3D space to screen conversion, including lighting. Having it hardware accelerated frees the CPU from this computation-intensive task</li>
+    <li>texture-coordinate transformation : so that textures (images used to wrap 3D shapes) can be used</li>
+    <li><a href="http://en.wikipedia.org/wiki/Texture_mapping" target="_blank">texture mapping</a> : applies a texture to a shape</li>
+    <li><a href="http://en.wikipedia.org/wiki/Alpha_blending" target="_blank">alpha blending</a> : combines an image with a background to create the appearance of partial transparency</li>
+    <li><a href="http://en.wikipedia.org/wiki/Anti-aliasing" target="_blank">anti-aliasing</a> : minimizes the distortion artifacts due to on-screen rendering (enhances the resulting image)</li>
+    <li><a href="" target="_blank">cel shading</a> : simulates hand-drawn ( like cartoon or comic books) computer-generated graphics</li>
+    <li><a href="http://en.wikipedia.org/wiki/Z-buffering" target="_blank">z-buffering</a> : management of image depth coordinates, one of the solutions to the visibility problem</li>
+</ul>
+</p>
+
+<p>
+According to <a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">this source</a> (in French), the 3D hardware is a <a href="http://www.arm.com/community/display_product.php?ProductId=2099&display=" target="_blank">PowerVR MBX R-S</a>, a.k.a. <em>PowerVR MBX Lite</em>, which would offer as well :
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+	<li>Bi-linear, tri-linear and anisotropic texture filtering</li>
+	<li>Ambient, diffuse and specular lighting</li>
+	<li>Multi-texturing</li>
+	<li>Environmental bump mapping</li>
+	<li>Full screen anti-aliasing, with a minimal overhead</li>
+	<li>Texture compression</li>
+	<li>Render to window, multiple windows</li>
+</ul>
+</p>
+
+<p>
+Character rendering might have a blocky appearance due to Point (nearest neighbor) texture filtering. 2D sub-pixel glyph rendering could be used though.
+</p>
+
+<p>
+The DS can render at most about 2048 triangles per scene as 60 frames per second. Rendering can occur only to a single screen at a time, so having 3D on both screens decrease performance significantly. The DS is more limited by its polygon budget than by its pixel fill rate.
+</p>
+
+<h3>Wireless networking</h3>
+<p>
+The built-in Wifi support allows the DS to communicate :
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li>with a <b>standard access point</b> (i.e. public non-<a href="http://en.wikipedia.org/wiki/Captive_portal" target="_blank">captive portal</a> hotspots or a personal 802.11b or 802.11g wireless routers) to access the Internet. The DS supports <a href="http://en.wikipedia.org/wiki/Wired_Equivalent_Privacy" target="_blank">WEP</a>
+ encryption but not <a href="http://en.wikipedia.org/wiki/Wi-Fi_Protected_Access" target="_blank">WPA</a></li>
+ 
+	<li>with <b>other DS</b> in the vicinity, through <a href="http://en.wikipedia.org/wiki/NiFi" target="_blank">Nifi</a>, a modified WiFi protocol created by Nintendo for the DS and the Wii, partially secured using RSA security signing. It is used in non-online multiplayer mode, and to download game demos or multiplayer game software</li>
+	
+</ul>
+
+</p>
+
+<h3>Miscellaneous informations</h3>
+
+<h4>MMU</h4>
+<p>
+The DS does not have a Memory Management Unit (<a href="http://en.wikipedia.org/wiki/Memory_management_unit" target="_blank">MMU</a>), a hardware component responsible for handling memory accesses requested by the CPU, notably to enable virtual memory management, memory protection, cache control, bus arbitration or bank switching.
+</p>
+
+<p>
+It reduces the potential stability of operating systems (as Linux; if they are to be used on a DS) and prevents to access to more memory through swap that would be stored in Slot-2-provided removable media. 
+</p>
+
+
+<h4>Non-rendering hardware accelerations</h4>
 <p>
 The DS contains both divide and square root accelerators.
 </p>
 
+
+<h4>16/32 bit</h4>
 <p>
-The ARM7 processor supports both 32-bit and 16-bit instructions via the ARM and Thumb instruction sets.
+The ARM7 processor supports both 32-bit and 16-bit instructions via the ARM and Thumb instruction sets. 16-bit code is smaller than 32-bit one and, in some specific cases, faster (usually slower though).
 </p>
 
+<p>
+The ARM9 is a full 32-bit CPU.
+</p>
+
+
+<h4>Power management</h4>
 <p>
 Various subsystems (power management, firmware, touchscreen, sound volume and control, microphone amplifier control and gain control, back-lighting of screens, power LED, battery status) can be accessed only thanks to the SPI (<em>Serial Peripheral Interface</em>) bus.
 </p>
 
+<h4>DMA</h4>
 <p>
 There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU, i.e. the ARM9, if it does not access to main memory, can continue its work while the DMA transfer is going on.
 </p>
 
+<h4>Timers</h4>
 <p>
 There are eight incrementing 16bit timers, four for each CPU.
 </p>
 
 <p>
-Most of these informations come from <a href="http://neimod.com/dstek/" target="_blank">DS Tek</a>.
-</p>
+Most of these informations come from the listed <a href="#detailedhardware">hardware resources</a>.</p>
 
 
 <a name="thirdparty"></a>
@@ -505,7 +664,8 @@ copy /b ndsloader.bin + rain.nds rain.ds.nds
 <!--
     <li><a href="" target="_blank"></a></li>
 -->
-    <li><a href="http://dslinux.org/" target="_blank">DS Linux</a></li>
+    <li><a href="http://dslinux.org/" target="_blank">DS Linux Official WebSite</a></li>
+    <li><a href="http://en.wikipedia.org/wiki/DSLinux" target="_blank">DS Linux on Wikipedia</a></li>
     <li><a href="http://www.debian.org/ports/arm/" target="_blank">ARM-dedicated Debian build</a></li>
     <li><a href="http://popcon.debian.org/" target="_blank">Popularity contest</a> for architectures supported by Debian (see ARM)</li>
 
@@ -581,6 +741,23 @@ http://www.ndsemulator.com
 
 </p>
 
+
+<!-- ########################################################################-->
+<a name="forums"></a> 
+<h3>Forums</h3>
+<p>
+<ul>
+
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+    <li><a href="http://forums.abxy.org/f/nintendo-ds" target="_blank">abxy DS forums</a></li>
+	
+</ul>
+
+</p>
+
 http://www.aaronrogers.com/nintendods
 <!-- ########################################################################-->
 <a name="applications"></a>
@@ -607,7 +784,7 @@ ScummVm
 
 	<li><a href="http://www.nintendods.com/" target="_blank">Nintendo official website</a></li>
 
-    <li><a href="http://www.warioworld.com/" target="_blank">WarioWorld</a>, software development support group (for professionals, authorized Nintendo developers and licensees)</li>
+    <li><a href="http://www.warioworld.com/" target="_blank">WarioWorld</a>, software development support group (for professionals, authorized Nintendo developers and licensees). Nintendo only accepts official companies with a game development team, and sufficient experience in certain areas for their official developer support program. Small structures are expected to find a "Nintendo-certified" publisher prior to submit their games</li>
 
 
     <li>Resources in French :
