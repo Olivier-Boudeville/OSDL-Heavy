@@ -53,12 +53,14 @@
 					<li>a <a href="#buytheconsole">console</a></li>
 					<li>some recommended <a href="#accessories">accessories</a></li>
 					<li>required <a href="#addons">add-ons</a></li>
+					
 				</ul>
 				<a href="#inaction">The console in action, with and without its add-ons</a><br>
 		       <a href="#hardware">Hardware resources</a><br>
 			   <ul>
+			   
 					<li>the console <a href="#innerconsole">inner workings</a></li>
-	
+					<li>the <a href="#cartridges">cartridges</a></li>
 				</ul>		   
 		       <a href="#thirdparty">Using some third-party software</a><br>
 		       <a href="#toolchain">Developing your own software : using the toolchain</a>
@@ -81,11 +83,11 @@
 <h2>Overview</h2>
 
 <p>
-The goal here is to develop applications, mostly games, to be run on the <a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">Nintendo DS</a>, from the hobbyist point of view. These developments are called <a href="http://en.wikipedia.org/wiki/Homebrew_(video_games)" target="_blank">homebrew</a>.
+The goal here is to develop applications, mostly games, to be run on the <a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">Nintendo DS</a>, from the hobbyist point of view, as opposed to a software/game production company. This kind of developments is called <a href="http://en.wikipedia.org/wiki/Homebrew_(video_games)" target="_blank">homebrew</a>. We do not support piracy or the illegal use of the copyrighted Nintendo SDK by non-licensed developers. We use here unofficial development kits, such as <a href="http://www.devkitpro.org/" target="_blank">devkitPro</a>. These coding efforts are to remain free and legal.
 </p>
 
 <p>
-Portable development will be kept in mind, having one's game working both on a DS and on a PC is quite enjoyable.
+Portable development will be kept in mind, as having one's game working both on a DS and on a PC is quite enjoyable.
 </p>
 
 
@@ -100,8 +102,13 @@ Portable development will be kept in mind, having one's game working both on a D
 
 <a name="buytheconsole"></a> 
 <h3>The console</h3>
+
 <p>
 First of course is the Nintendo DS itself (see a video <a href="http://www.youtube.com/watch?v=Xp7Be1qsblI" target="_blank">presentation</a>). It should be a DS <a href="http://en.wikipedia.org/wiki/Nintendo_DS_Lite" target="_blank">Lite</a>, which is quite superior to the previous "<a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">fat</a>" version : better screens, thiner, lighter, better autonomy, more beautiful, etc. The color does not matter, but the black version is quite sober, which opens it the possibility of somewhat faking a classical PDA. This is one of the intended uses in my case, besides game programming.
+</p>
+
+<p>
+The main competitor for the DS would be Sony's PlayStation Portable, PSP, although they are quite different in price, capabilities and market shares. The lack of input device other than the gamepad, the quite low autonomy, the price and Sony policies make a lot of people favour DS over PSP, at least for the intended usage (PDA and homebrew).
 </p>
 
 <p>
@@ -201,9 +208,19 @@ Having a basic console is not enough to be able to program it : Nintendo, due to
 Hence, to have access to a DS that can be programmed, one has to circumvent these protections. One of the simplest ways of doing so is to use special game-like cards, at least once. This is a vast subject and many cases have to be taken into account, see <a href="http://en.wikipedia.org/wiki/Nintendo_DS_booting_tools" target="_blank">Booting Tools</a> on Wikipedia for details.
 </p>
   
+  
 <h4>A rather cheap and easy solution</h4>
+
 <p>
-As for me, I intended to have Linux working on my DS, and for that the native 4 MB of RAM where quite small, so I preferred to have both 32 MB of additional RAM (the maximum size that can be addressed by the DS bus) and access to mass storage on removable media. The best and simplest bet was to use in the slot-1 (the DS-specific one, small and at the top of the console, a.k.a the DS card) a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperKey</a> (a kind of <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a>) as a fake game used to enable the execution of code from the slot-2 (the big one at the bottom, used for GBA compatiblity, a.k.a the GBA cartridge). This slot-2 would host a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperCard Lite</a> (note : avoid the rumble series, it does not provide more RAM), which indeed, besides the 32 MB of RAM, offers a <b>micro-SD</b> port.</p>
+Since the DS is not sold with a rewritable storage medium, some storage device is required to store homebrew. Though one could instead use <a href="http://en.wikipedia.org/wiki/Wireless_Multiboot" target="_blank">WMB</a> (<em>Wireless Multiboot</em>), which is a method to send programs to be run on the DS using a PC with specific Wi-Fi adaptors, but it would not be convenient enough : transferred content would be lost on DS power-off, a Ralink-compatible Wifi adaptor would be required, the sent applications could not occupy more than 4 MB, a hacked firmware would be needed, etc.
+</p>
+
+<p>
+As for me, I intended to have Linux working on my DS, and for that the native 4 MB of RAM where quite small, so I wanted to have both 32 MB of additional RAM (the maximum size that can be addressed by the DS bus) and access to <a href="http://en.wikipedia.org/wiki/Nintendo_DS_storage_devices" target="_blank">mass storage</a> on removable media. 
+</p>
+
+<p>
+The best and simplest bet was to use in the slot-1 (the DS-specific one, small and at the top of the console, a.k.a the DS card) a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperKey</a> (a kind of <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a>) as a fake game used to enable the execution of code from the slot-2 (the big one at the bottom, used for GBA compatiblity, a.k.a the GBA cartridge). This slot-2 would host a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperCard Lite</a> (note : avoid the rumble series, it does not provide more RAM), which indeed, besides the 32 MB of RAM, offers a <b>micro-SD</b> port.</p>
 
 <p>
 I bought both the SuperKey and the SuperCard Lite (black version) from <a href="http://www.fl-games.com/" target="_blank">FL-games</a> for 65 euros (shipping included) and was quite happy of it (no compatibility issue between the two cards to be afraid of).
@@ -317,7 +334,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	<li>
 	<p>
 
-	<b>two all-purpose processors</b> :
+	<b>two all-purpose processors (CPU)</b> :
 	  <ul>
 		<li>an <b>ARM9</b> : <a href="http://en.wikipedia.org/wiki/ARM9E" target="_blank">ARM946E-S</a>, main CPU, 67 MHz, between 200 and 300 MIPS (<em>Million Instructions Per Second</em>), RISC 32 bit</li>
 		<li>an <b>ARM7</b> : <a href="http://en.wikipedia.org/wiki/ARM7TDMI" target="_blank">ARM7TDMI</a>, co-processor, 33 MHz, about 20 MIPS, 16-bit/32-bit RISC</li>
@@ -328,25 +345,25 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	The ARM (<em>Arcos Risc Machine</em>) family is quite widespread on embedded devices, and is known to be small, cheap and power-savvy. The Nintendo 64 offered roughly 100 MIPS, PlayStation 2 and PSP (PlayStation Portable) roughly 560 MIPS, GameCube 980 MIPS. According to some sources, the DS processors are under-clocked to save some power. Some people <a href="http://youtube.com/watch?v=PYIvASbELkw" target="_blank">overclocked</a> them, which involves quite some electronical skills and risks</p>
 	</li>
 	
-	<li>several <b>memory banks</b>, notably 4 MB (4096 kB) of built-in RAM, whose layout is somewhat complex but for the most part is shared by the two processors. There is an additional 656 KB of video RAM</li>
+	<li>several <b>memory banks</b>, notably 4 MB (4096 kB) of built-in RAM, whose layout is somewhat complex but for the most part is shared by the two processors. There is an additional 656 KB of video RAM, and 64 kB of <a href="http://en.wikipedia.org/wiki/Static_random_access_memory" target="_blank">SRAM</a> intended for game saves</li>
 	
-	<li>two <b>advanced 2D rendering systems</b> (one for each screen) and a <b>3D rendering system</b>, able to offer various <a href="#3D">3D features</a>. It can render up to 120 000 triangles per second at 60 frames per second, a fill rate of about 30 million pixels per second. The chip is adapted from the one of the Sega Dreamcast, a 120 MHz PowerVR MBX (RS version) [<a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">More info</a> (in French)</li>
+	<li>one GPU (<em>Graphical Processing Unit</em>) made of two <b>advanced 2D rendering systems</b> (one for each screen) and a <b>3D rendering system</b>, able to offer various <a href="#3D">3D features</a>. It can render up to 120 000 triangles per second at 60 frames per second, a fill rate of about 30 million pixels per second. The chip is adapted from the one of the Sega Dreamcast, a 120 MHz PowerVR MBX (RS version) [<a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">More info</a> (in French)]</li>
 
 	<li>A <b>flashable</b> <a href="http://en.wikipedia.org/wiki/Firmware" target="_blank">firmware</a>, on NVRAM (Non-Volatile RAM)</li>
 	
-	<li>A <b>gamepad</b> (four-direction keys), with <b>6 bigger buttons</b> (X, Y, A, B in a cross layout; L and R on the far side of the DS) and <b>two smaller</b>(Start and Select)</li>
+	<li>A <b>gamepad</b> (four-direction keys), with <b>6 bigger buttons</b> (X, Y, A, B in a cross layout; L and R on the far side of the DS) and <b>two smaller</b> (Start and Select)</li>
 	
 	<li>integrated <b>wireless networking</b>, able to offer proprietary protocol (called <em>NiFi</em>, for Nintendo Wifi) and 802.11b Wifi connectivity, both for local exchanges between DS and communications through the Internet (range between 10 and 30 meters)</li>
 	
-	<li>a <b>16 hardware channel Virtual Surround sound output</b> with stereo speakers (whose quality is rather good) and standard headphone plug (3.5 mm jack). A sliding button allows to set the volume.</li>
+	<li>a <b>16 hardware channel Virtual Surround sound output</b> with stereo speakers (whose quality is rather good) and standard headphone plug (3.5 mm jack). A sliding button allows to set the volume</li>
 	
-	<li>a <b>microphone</b> for sound input, which allows speech-recognition</li>
+	<li>a <b>microphone</b> for sound input, which allows (application-specific) speech-recognition</li>
 	
 	<li>two <b>slots for FLASH cards</b> : the Slot-1 (DS specific, looking a bit like a small Compact Flash card, up to 1 GB of internal storage) and the Slot-2 (legacy GBA port, used by several add-ons)</li>
 	
-	<li><b>lithium-ion battery</b> (1000 mAh battery; DS "fat" : 850 mAh) : with a DS Lite in DS mode, depending on the screen brightness, at least 6 to 10 hours of play, in GBA mode up to 12 hours, in sleep mode two weeks, all in the case of a fully charge battery (4 hours of charge). Of course autonomy decreases with slot-1/slot-2 cards being added. After five hundred charges, the battery capacity drops to about seventy percent and should be replaced</li>
+	<li><b>lithium-ion battery</b> (1000 mAh battery, whereas the DS "fat" has 850 mAh) : with a DS Lite in DS mode, depending on the screen brightness, at least 6 to 10 hours of play, in GBA mode up to 12 hours, in sleep mode two weeks, all when starting from a fully charge battery (4 hours of charge). Of course autonomy decreases with slot-1/slot-2 cards being added. After five hundred charges, the battery capacity drops to about seventy percent and should be replaced</li>
 	
-	<li><b>small form factor</b> : the (closed) DS Lite is 133 mm × 73.9 mm × 21.5 mm (versus 148,6 x 84,6 x 28,7 mm for the DS "fat"), for 218g (275g for the DS "fat)</li>
+	<li><b>small form factor</b> : the (closed) DS Lite is 133 mm × 73.9 mm × 21.5 mm (versus 148,6 x 84,6 x 28,7 mm for the DS "fat"), for 218g (275g for the DS "fat")</li>
 
 	<li><b>built-in realtime 33MHz clock</b>, maintaining time and date even when the DS has been shutdown</li>
 
@@ -356,51 +373,74 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 </p>
 
 <p>
-The ARM RISC architecture is heavily inspired from the <em>GameBoy Advance</em> one. Both have an ARM7 (but the DS one is running at 66 MHz instead of 33 MHz), explaining partly the very good retrocompatibility of DS for GBA), and the DS hardware is quite close to the one of PocketPC devices. The performances are expected to be somewhat near the Nintendo 64 ones.
+The ARM RISC architecture is heavily inspired from the <em>GameBoy Advance</em> one. Both have an ARM7 (but the DS one is running at 66 MHz instead of 33 MHz), explaining partly the very good retrocompatibility of DS for GBA, and the DS hardware is quite close to the one of PocketPC devices. The performances are expected to be somewhat near the Nintendo 64 ones.
 </p>
 
 <p>
-Input handling can be done thanks to the traditional gamepad, but also thanks to the touchscreen (it can be used to offer a virtual keyboard, or with mouse-like interface, or as a handwriting tool, etc.) and/or the microphone (speaking, blowing, shouting, etc.)
+See the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">diagram explaining the DS memory layout</a> on Dev-Scene website.
 </p>
 
 <p>
-The two screens can be used also on their side, like an open book.
+Input handling can be done thanks to the traditional gamepad, but also thanks to the touchscreen (it can be used to offer a virtual keyboard, or with a mouse-like interface, or as an handwriting tool, etc.) and/or the microphone (speaking, blowing, shouting, etc.).
+</p>
+
+<p>
+The two screens can be used also with the DS rotated of 90 degrees, on its side, like an open book.
 </p>
 
 <a name="detailedhardware"></a>
 <p>
-More infos about the DS hardware : <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2" target="_blank">Dev-Scene tutorial</a>, <a href="http://neimod.com/dstek/" target="_blank">DS Tek</a> and <a href="http://nocash.emubase.de/gbatek.htm#dsiomaps" target="_blank">GBATEK</a>.
+More low-level informations about the DS hardware : 
+
+<ul>
+
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+	
+	<li><a href="http://neimod.com/dstek/" target="_blank">DS Tek</a></li>
+	<li><a href="http://nocash.emubase.de/gbatek.htm" target="_blank">GBATEK</a></li>
+    <li><a href="http://auia.net/ds/" target="_blank">NDSTech</a></li>
+	<li><a href="http://www.dev-scene.com/NDS/Tutorials_Day_2" target="_blank">Dev-Scene tutorial</a></li>
+	
+</ul>
 </p>
 
-<p>
-The main competitor for the DS is Sony's PlayStation Portable, PSP, although they are quite different in price, capabilities and market shares.
-</p>
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br>
 
 
+
+<a name="cartridges"></a>
 <h3>The cartridges</h3>
 <p>
-There are two different ports in which cards can be inserted : Slot-1 and Slot-2. In both cases, cards are mostly <a href="p://en.wikipedia.org/wiki/Read-only_memory" target="_blank">ROM</a>, but some of them have a small amount of non-volatile memory, usually <a href="http://en.wikipedia.org/wiki/EEPROM" target="_blank">EEPROM</a> (notably<a href="http://en.wikipedia.org/wiki/Flash_memory" target="_blank">Flash</a> memory), to save some data.
+There are two different ports in which cards can be inserted : Slot-1 and Slot-2. In both cases, cards are mostly <a href="p://en.wikipedia.org/wiki/Read-only_memory" target="_blank">ROM</a>, but some of them have a small amount of non-volatile memory, usually <a href="http://en.wikipedia.org/wiki/EEPROM" target="_blank">EEPROM</a> (notably <a href="http://en.wikipedia.org/wiki/Flash_memory" target="_blank">Flash</a> memory), to save some data (highscores, game saved, etc.).
 </p>
 
-<h4>The Slot-1 port</h4>
+<h4>The Slot-1 port (a.k.a. DS port)</h4>
 
 <p>
 Usual DS game cards are 33.0 × 35.0 × 3.8 mm, and weigh around 3,5 g. They can contain up to 128 MB, but in this case they are a smaller transfer rate than 64 MB ones.  
 </p>
 
 <p>
-SuperCard and its Slot-1 <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a> counterparts, apart from allowing the use of the Slot-2 devices, do not add any memory or feature. On the contrary, it consumes some power that reduces the console autonomy. A flashed firmware can be used instead.
+SuperKey and the other Slot-1 <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a> counterparts, apart from allowing the use of the Slot-2 devices, do not add any memory or feature. They just set the program counter so that it points to a memory location in the GBA slot, allowing programs to be run from storage there. On the contrary, they consume some power that reduces the console autonomy. A <a href="http://en.wikipedia.org/wiki/Flashme" target="_blank">flashed</a> firmware can be used instead, for the most daring.
 </p>
 
 
 <h4>The Slot-2 port (a.k.a. GBA cart, or Flash Cart)</h4>
 
 <p>
-There are several slot-2 add-ons, which all provides their own set of features. From the ARM9 point of view, they can offer up to 32 MB of ROM and 64 kB of RAM. This GBA slot bus only supports 16-bit writes, which leads to issues to perform 8-bit only operations.</p>
+There are several slot-2 add-ons, which all provide their own set of features. From the ARM9 point of view, they can offer up to 32 MB of additional ROM (which can be actually RAM) and 64 kB of RAM. This GBA slot bus only supports 16-bit writes, which leads to problems when needing to perform 8-bit only write operations.</p>
 
 <p>
-The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (for DS Lite) and provides an additional 32 MB of RAM and an access to removable storage, here a microSD card. Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. 
+The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (for DS Lite) and provides both the optimal 32 MB of RAM and an access to removable storage, here a microSD card. Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. 
 </p>
+
+<p>
+These linkers use their built-in RAM as a mock flash cartridge, as a cache fed from their mass storage. Some DS homebrew also uses this additional RAM, though addressing issues and speed make it less useful than the DS's built in memory. Some people complained about Supercard's built-in RAM being too slow for some GBA games.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
 
@@ -410,7 +450,7 @@ The SuperCard Lite is one of the most interesting linkers, as it fits well in th
 
 <h3>Two general-purpose CPU to handle</h3>
 <p>
-For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to rendering.
+For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even if both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to rendering.
 </p>
 
 <p>
@@ -418,21 +458,21 @@ The main built-in memory, consisting of one big block of 4MB memory, can be acce
 </p>
 
 <p>
-The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-process communication</em>) set of registers, managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. 
+The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-process communication</em>) based on a set of registers, managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. 
 </p>
 
 <p>
-Both CPU can trigger interrupts to each other (if the ARM9 allowed it). It is convenient to send a notification to the other CPU when for example there is data for it to be read on a shared RAM, once the calling CPU has finished filling it.
+Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is convenient to send a notification to the other CPU when for example there is data for it to be read on a shared area in RAM, once the calling CPU has finished filling it.
 </p>
 
 <p>
-The DS ROM has to include at least two executables, one for each of the ARM. At runtime they will have to work simultaneously, which involves often having to be synchronized and to share data. 
+As a consequence the DS ROM has to include at least two executables, one for each of the ARM (not mentioning application-specific data). At runtime the executables will have to work simultaneously, which involves often having to be synchronized and to share data. 
 </p>
  
 <h3>Activating only the relevant subsystems</h3>
 
 <p>
-First, the DS can run in different modes, including the GBA Mode (ARM9 not used), sleep (for the ARM7), stop, halt, etc. The DS can be waken up from various IRQ (<em>Interrupt Request</em>) :
+First, the DS can run in different modes, including the GBA Mode (ARM9 not used), sleep (for the ARM7), stop, halt, etc. The DS can be woken up from various IRQ (<em>Interrupt Requests</em>) :
 <ul>
 
 <!--
@@ -447,7 +487,7 @@ First, the DS can run in different modes, including the GBA Mode (ARM9 not used)
 </p>
 
 <p>
-Second, most subsystems of the DS can be powered independently : sound speakers, Wifi, LCD screens, the two 2D engines, the 3D rendering and geometry engines,
+Second, most subsystems of the DS can be powered independently : sound speakers, Wifi, LCD screens, the two 2D engines, the 3D rendering and geometry engines.
 </p>
 
 <p>
@@ -496,22 +536,22 @@ According to <a href="http://portables.p-nintendo.com/articles/D-232-1.html" tar
 <!--
 	<li><b></b> : </li>
 -->
-	<li>Bi-linear, tri-linear and anisotropic texture filtering</li>
-	<li>Ambient, diffuse and specular lighting</li>
-	<li>Multi-texturing</li>
-	<li>Environmental bump mapping</li>
-	<li>Full screen anti-aliasing, with a minimal overhead</li>
-	<li>Texture compression</li>
-	<li>Render to window, multiple windows</li>
+	<li>bi-linear, tri-linear and anisotropic texture filtering</li>
+	<li>ambient, diffuse and specular lighting</li>
+	<li>multi-texturing</li>
+	<li>environmental bump mapping</li>
+	<li>full screen anti-aliasing, with a minimal overhead</li>
+	<li>texture compression</li>
+	<li>render to window, multiple windows</li>
 </ul>
 </p>
 
 <p>
-Character rendering might have a blocky appearance due to Point (nearest neighbor) texture filtering. 2D sub-pixel glyph rendering could be used though.
+Character rendering might have a blocky appearance due to Point (nearest neighbor) texture filtering. 2D sub-pixel glyph rendering could be used though, as it is done with the TextViewer homebrew.
 </p>
 
 <p>
-The DS can render at most about 2048 triangles per scene as 60 frames per second. Rendering can occur only to a single screen at a time, so having 3D on both screens decrease performance significantly. The DS is more limited by its polygon budget than by its pixel fill rate.
+The DS can render at most about 2048 triangles per scene as 60 frames per second. Rendering can occur only to a single screen at a time, so having 3D on both screens decreases performance significantly. The DS is more limited by its polygon budget than by its pixel fill rate.
 </p>
 
 <h3>Wireless networking</h3>
@@ -534,17 +574,21 @@ The built-in Wifi support allows the DS to communicate :
 
 <h3>Miscellaneous informations</h3>
 
+<p>
+Most of these informations come from the listed <a href="#detailedhardware">hardware resources</a>.
+</p>
+
 <h4>MMU</h4>
 <p>
 The DS does not have a Memory Management Unit (<a href="http://en.wikipedia.org/wiki/Memory_management_unit" target="_blank">MMU</a>), a hardware component responsible for handling memory accesses requested by the CPU, notably to enable virtual memory management, memory protection, cache control, bus arbitration or bank switching.
 </p>
 
 <p>
-It reduces the potential stability of operating systems (as Linux; if they are to be used on a DS) and prevents to access to more memory through swap that would be stored in Slot-2-provided removable media. 
+It reduces the potential stability of operating systems (as Linux; if they are to be used on a DS), and prevents to access through swap to memory that would be available in Slot-2-provided removable media. 
 </p>
 
 
-<h4>Non-rendering hardware accelerations</h4>
+<h4>Non rendering-related hardware accelerations</h4>
 <p>
 The DS contains both divide and square root accelerators.
 </p>
@@ -567,7 +611,7 @@ Various subsystems (power management, firmware, touchscreen, sound volume and co
 
 <h4>DMA</h4>
 <p>
-There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU, i.e. the ARM9, if it does not access to main memory, can continue its work while the DMA transfer is going on.
+There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU : the ARM9, if it does not access to main memory, can continue its work while the DMA transfer is going on.
 </p>
 
 <h4>Timers</h4>
@@ -575,15 +619,13 @@ There are four prioritized DMA channels. They can transfer data asynchronously f
 There are eight incrementing 16bit timers, four for each CPU.
 </p>
 
-<p>
-Most of these informations come from the listed <a href="#detailedhardware">hardware resources</a>.</p>
 
 
 <a name="thirdparty"></a>
 <h2>Using some third-party software</h2>
 
 <p>
-Software distribution on the DS is mostly based on ROM images, which can be downloaded on a PC as unique files, but are read by DS software which see them as a kind of archive (a filesystem actually) containing possibly numerous files and directories.  
+Software distribution on the DS is mostly based on ROM images, which can be downloaded on a PC as unique files. These files are read by the DS system, which see them as a kind of archive (a filesystem actually) containing possibly numerous files and directories.  
 </p>
 
 <h3>The linker storage device issue</h3>
@@ -592,11 +634,15 @@ Before rushing for the numerous homebrew softwares available on the Internet, on
 </p>
 
 <p>
-As soon as an application has to access to a memory provided by the linker, as each linker offers its own memory interface the application has to be aware of the specific linker it will run with. Several solutions exist : one may build as many versions of one's software as supported linkers (it becomes soon tedious and messy), or one may use Chishm's DLDI, for FAT-based applications.
+As each linker offers its own memory interface (the way it writes to the Flash ROM), as soon as an application has to access to a memory provided by the linker, this homebrew has to be aware of the specific linker it will run with. Several solutions exist : one may build as many versions of one's software as supported linkers (it becomes soon tedious and messy), or one may use Chishm's DLDI, for FAT-based applications.
 </p>
 
 <p>
-<a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI</a> stands for <em>Dynamically Linked Device Interface for libfat</em>. The DLDI-aware software has just to be built once, and patched according to the target linker it is to run with, before being transferred to the DS. The point is that for the user it is quite easy to patch the software, and it frees the developer from having to take into account each and every linker variation on the market. Even linkers released years after one's software will be supported thanks to DLDI, with no additional efforts from the original author.
+<a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI</a> stands for <em>Dynamically Linked Device Interface for libfat</em>. The DLDI-aware software can be storage-agnostic. It has just to be built once, and patched according to the target linker it is to run with, before being transferred to the DS.
+</p>
+
+<p>
+The point is that for the user it is quite easy to patch the software, and it frees the developer from having to take into account each and every linker variation on the market. Even linkers released years after one's software will be supported thanks to DLDI, with no additional efforts from the original author.
 </p>
 
 <p>
@@ -622,26 +668,135 @@ In practice, the user will need :
 One just has to use the DLDI tool to patch the software according to its linker-specific patching specification. Another option for Windows users is to install <a href="http://psychowood.altervista.org/getDLDIrc.html" target="_blank">DLDIrc</a>, which is configured once for all with a target linker and adds to the contextual menus for each selected DS ROM (the menu obtained with the right-click) the possibility to patch it.
 </p>
 
-<h3>The extension issue</h3>
+
+<h3>The ROM file extension issue</h3>
+
 <p>
-Linked to the previous subject, one can find several file extensions for Nintendo ROM, each have <a href="http://www.ndshb.com/modules.php?name=Content&pa=showpage&pid=27" target="_blank">a specific meaning</a> and must be chosen adequately :
+Not directly linked to the previous subject, one can find several file extensions for Nintendo ROM. Each extension has a <a href="http://www.ndshb.com/modules.php?name=Content&pa=showpage&pid=27" target="_blank">specific meaning</a>, is associated to a specific executable format, and must be chosen adequately.
+</p>
+
+<p>
+Their sole purpose is to contain binaries (i.e. executables) for the two ARMs and, most often, application-specific data, stored as a unique flat file or as a full filesystems, in one or more files, each filesystem containing in turn files and directories. To be run from the GBA ROM (slot-2), they should include a loader that transfers them to the RAM.
+</p>
+
+<p>
+The most frequent extensions are :
 <ul>
 
 <!--
 	<li><b></b> : </li>
 -->
 
-	<li><b>.nds</b> (ex: <code>myGame.nds</code>) : boot with the <code>Start</code> key
-</li>
-	<li><b>.ds.gba</b> (ex: <code>myGame..ds.gba</code>) : a 512-byte header is added for a loader.  il suffit de le renommer en "ds.nds" boot with the <code>A</code> key</li>
-	<li><b></b> : </li>
-	<li><b></b> : </li>
-	<li><b></b> : </li>
+	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : 
+	this binary for the DS embeds the two executables needed, and optionally some appended data, but it was not designed to include any specific loader, as it was designed for the slot-1. Hence old generation .nds do not have a loader at all, and thus an external one must be used, generally provided by the menu loader of the flash cart device.</p>
+	
+	<p>Some newer .nds put nevertheless a loader, which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it's a corrupted GBA header. An external loader is then needed again.
+	</p>
+	<p>
+	.nds files are made of a (NDS) header, then a region dedicated to the ARM7, then a region dedicated to the ARM9, then the data, for example a filesystem. The FlashMe + WMB method and GBA Movie Player support .nds files. They are often used with slot-1 cards, such as M3 and DS-X
+	</p>
+	</li>
+	
+	<li><b>.ds.gba</b> (ex: <code>myGame.ds.gba</code>) : this binary for the DS is designed to run from GBA ROM. It is usually made of a small loader (to transfer thanks to the ARM7 the ROM content from the GBA card to the main RAM) contained in a 512-byte (GBA) header, then a .nds file, and zero or more appended data files. The code from the .nds reads from the appended data files using reads from GBA ROM space. GBA flash carts, M3, and SuperCard support this. They are often used with slot-2 cards, such as EZ4</li>
+	
+	<li><b>.gba.nds</b> : the SuperCard firmware seems to believe that the .ds.gba format is indicated by the .nds extension. Hence to run a .ds.gba program on a SuperCard, one has to rename it first so that its extension becomes .nds. However by doing so one could mix it up with real .nds. One work-around is then to rename that program with, for example, a .gba.nds extension, instead of a mere .nds. However for a SuperCard, an original <code>myGame.ds.gba</code> could be renamed preferably to <code>myGame.sc.nds</code> (see below)</li>
+
+	<li><b>.sc.nds</b> : extension to be used with SuperCard (sc) and, in some cases, G6 lite. This is a renamed .ds.gba (and maybe too DLDI-patched). The .sc.nds extension is a (better since clearer) alternative to the ds.gba one</li>
+	
 </ul>
-Si il n'y a que "rain.nds", je crois qu'il faut le passer au "ndsloader.bin" en tapant dans une fenetre de commande :
-CODE
-copy /b ndsloader.bin + rain.nds rain.ds.nds
 </p>
+
+	
+<p>
+Some quite uncommon names and extensions are :
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+	
+	
+	<li><b>.srl</b> : also called <em>clean dump</em>, it is a dump of commercial ROM, made of a .nds file and an appended file system, usually in Nitro-FAT format. The code in the .nds file reads from the appended file system, using block transfers, through the DS game card access registers. Homebrew tools do not generate .srl, and WMB does not support .srl. These clean dumps are sometimes distributed as .nds ROM, because they use the same header</li>
+	
+	<li><b>_BOOT_MP.nds</b> : the GBAMP (<em>GBA Movie Player</em>) will boot automatically on this file</li> 
+	 
+</ul>
+</p>
+
+<p>
+.nds programs can be converted into ds.gba programs. It involves prepending a loader, which may load the first appended .nds file, or allow selection of one of many .nds files.
+</p>
+
+<p>
+The other way round, from ds.gba to .nds, usually cannot be performed if not already done by the author, because most often the application relies on specific data meant to be embedded, which is not supported with a .nds file.
+</p>
+
+<p>
+There are some tools, such as the <a href="http://l33t.spod.org/ratx/DS/SC/scmhbp/" target="_blank">Supercard Magic Homebrew Patcher</a>, that turns your .nds / .ds.gba files into a fixed supercard .sc.nds file. 
+</p>
+
+<p>Finally, most of the recent FAT-based homebrew applications need to be patched according to the relevant DLDI script, before being run.
+</p>
+
+
+
+<!-- ########################################################################
+
+Following T2 and T3.2 :
+
+Packages to be downloaded from DevKitPro at Sourceforge :
+http://sourceforge.net/project/showfiles.php?group_id=114505
+
+devkitARM_r20-linux.tar.bz2 (released 2007-01-28) :
+http://downloads.sourceforge.net/devkitpro/devkitARM_r20-linux.tar.bz2?modtime=1170066539&big_mirror=0
+
+libnds-20070503.tar.bz2 (released 2007-05-03) :
+http://downloads.sourceforge.net/devkitpro/libnds-20070503.tar.bz2?modtime=1178236312&big_mirror=0
+
+PAlib070323.zip (released 2007-03-23)
+http://sourceforge.net/project/showfiles.php?group_id=142901&package_id=157025
+
+dswifi-0.3.1.tar.bz2 (released 2007-05-03)
+http://downloads.sourceforge.net/devkitpro/dswifi-0.3.1.tar.bz2?modtime=1178235032&big_mirror=0
+
+> ls /home/sye/Projects/LOANI-0.4/LOANI-installations/Nintendo-DS-development
+devkitARM_r20-linux.tar.bz2  libnds-20070503.tar.bz2
+dswifi-0.3.1.tar.bz2         PAlib070323.zip
+
+tar xvjf devkitARM_r20-linux.tar.bz2
+
+mkdir libnds && cd libnds && mv ../libnds-20070503.tar.bz2 . && tar xvjf libnds-20070503.tar.bz2
+
+renommer PAlib pour ne pas avoir PAlib/PAlib
+mkdir PAlib && cd PAlib && mv ../PAlib070323.zip && unzip PAlib070323.zip
+
+mkdir dswifi && cd dswifi && tar xvjf dswifi-0.3.1.tar.bz2  
+
+> ls /home/sye/Projects/LOANI-0.4/LOANI-installations/Nintendo-DS-development
+devkitARM/  dswifi/  libnds/  PAlib/
+
+mkdir -p PAlib/include/nds && cp dswifi/include/* PAlib/PAlib/include/nds
+mkdir PAlib/lib && cp dswifi/lib/* PAlib/lib
+
+In PAlib/PAlib/lib/arm7/ModFile.c : #include <NDS.h> -> #include <nds.h>
+
+
+Nouvel essai 
+
+Dans PAlib il y a déjà libnds, avec wifi, fat, etc. -> pas besoin de MAJ avec une version probablement incompatible !
+
+Donc on rajoute juste devkitarm
+dans PAlib/lib/arm7/ModFile.c : #include <NDS.h> -> #include <nds.h>
+puis cd PAlib
+
+make...ça marche !!!
+
+sous PAlib/Emulators on peut lancer un 'wine DeSmuME.exe'
+
+sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds via wine cela marche aussi
+
+
+-->
 
 
 <!-- ########################################################################-->
@@ -677,6 +832,19 @@ copy /b ndsloader.bin + rain.nds rain.ds.nds
 <!-- ########################################################################-->
 <a name="tools"></a> 
 <h3>Tools for homebrew</h3>
+
+
+<h4>libnds</h4>
+
+<p>
+<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>
+<a href="http://www.devkitpro.org/" target="_blank">Devkitpro</a>
+<a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>
+</p>
+
+
+<a href="http://tobw.net/dswiki" target="_blank">DS Developing Wiki</a>
+
 <p>
 <ul>
 <!--
@@ -687,6 +855,7 @@ copy /b ndsloader.bin + rain.nds rain.ds.nds
  libnds : 
  	http://www.devkitpro.org/
  	http://www.drunkencoders.com/documents/DS/ndslib.htm
+	 http://en.wikipedia.org/wiki/Libnds
  SDL port : http://gpf.dcemu.co.uk/ndsSDL.shtml
  DLDI : 
  	http://chishm.drunkencoders.com/DLDI/
@@ -752,6 +921,8 @@ http://www.ndsemulator.com
     <li><a href="" target="_blank"></a></li>
 -->
 
+    <li><a href="http://forum.gbadev.org/viewforum.php?f=18" target="_blank">gbadev forums</a></li>
+
     <li><a href="http://forums.abxy.org/f/nintendo-ds" target="_blank">abxy DS forums</a></li>
 	
 </ul>
@@ -763,8 +934,24 @@ http://www.aaronrogers.com/nintendods
 <a name="applications"></a>
 <h3>Homebrew applications &amp; games</h3>
 
+<p>
+<ul>
 
-ScummVm
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+	 <li><a href="http://scummvm.drunkencoders.com/" target="_blank">ScummVM DS</a></li>
+	 
+    <li><a href="" target="_blank"></a></li>
+	
+</ul>
+
+</p>
+
+NDS homebrew executables :
+ http://www.google.com/search?q=nintendo+ds+roms
+
 
 <!-- ########################################################################-->
 <a name="otherlinks"></a>
@@ -776,13 +963,23 @@ ScummVm
     <li><a href="" target="_blank"></a></li>
 -->
     <li><a href="http://en.wikipedia.org/wiki/Nintendo_DS_homebrew" target="_blank">Nintendo DS</a> on Wikipedia</li>
+	
     <li><a href="http://en.wikipedia.org/wiki/Nintendo_DS_booting_tools" target="_blank">DS booting tools</a> on Wikipedia</li>
+	
+    <li><a href="http://forum.gbadev.org/viewtopic.php?t=8353" target="_blank">Link repository from gbadev</a></li>
+
+    <li><a href="http://www.ndshb.com/modules.php?name=Content&pa=showpage&pid=27" target="_blank">Extension for DS ROMs explained</a> (twice)</li>
+	
     <li><a href="http://www.dev-scene.com" target="_blank">Dev-Scene</a></li>
+	
     <li><a href="http://www.aaronrogers.com/nintendods/" target="_blank">Aaron Rogers</a></li>
+	
     <li><a href="http://www.drunkencoders.com" target="_blank">Drunk Encoders</a></li>
+	
     <li><a href="http://nintendo-ds.dcemu.co.uk/" target="_blank">DS News</a></li>
 
 	<li><a href="http://www.nintendods.com/" target="_blank">Nintendo official website</a></li>
+
 
     <li><a href="http://www.warioworld.com/" target="_blank">WarioWorld</a>, software development support group (for professionals, authorized Nintendo developers and licensees). Nintendo only accepts official companies with a game development team, and sufficient experience in certain areas for their official developer support program. Small structures are expected to find a "Nintendo-certified" publisher prior to submit their games</li>
 
@@ -794,9 +991,13 @@ ScummVm
     	<li><a href="" target="_blank"></a></li>
 -->
 
-    	<li><a href="http://www.portabledev.com/pages/ds/tutoriels/tutos.-chris-double" target="_blank">Chris Double's tutorials</a> translated</li>
+    	<li><a href="http://www.gamebe.com/articles/lire/4/nintendo-ds-r-evolution/" target="_blank">Présentation de la DS</a></li>
+
+    	<li><a href="http://www.portabledev.com/pages/ds/tutoriels/tutos.-chris-double" target="_blank">Traduction des tutoriels de Chris Double</a> </li>
 	</ul>
-	
+    	<li>Les <a href="http://mobiles.gx-mod.com/modules/tutos/index.php?id=37" target="_blank">linkers pour DS</a></li>
+		
+    	<li><a href="http://www.playeradvance.org/forum/showthread.php?t=4277" target="_blank">Installation de PALib sous Linux</a></li>
 	
 	</li>
 
