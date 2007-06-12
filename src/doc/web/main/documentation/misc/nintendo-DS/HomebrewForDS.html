@@ -11,7 +11,7 @@
 
 <html lang="EN">
 <head>
-  <title>OSDL - Mini-guide to homebrew development for the Nintendo DS</title>
+  <title>OSDL - A guide to homebrew development for the Nintendo DS</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="description" content="OSDL">
   <meta name="keywords" content="OSDL, installation, laptop, multiboot">
@@ -29,7 +29,7 @@
   </div><a name="_top_"></a>
   
 
-<h1>Mini-guide to homebrew development for the Nintendo DS</h1>
+<h1>A guide to homebrew development for the Nintendo DS</h1>
 
 
 <a name="toc">
@@ -43,7 +43,7 @@
 
 		   <div class="box">
 		       <a href="#overview">Overview</a><br>
-		       <a href="#tobuy">What should be bought</a> :<br>
+		       <a href="#tobuy">What should be bought</a><br>
 			   <ul>
 
 		<!--
@@ -55,14 +55,36 @@
 					<li>required <a href="#addons">add-ons</a></li>
 					
 				</ul>
-				<a href="#inaction">The console in action, with and without its add-ons</a><br>
-		       <a href="#hardware">Hardware resources</a><br>
-			   <ul>
+		       <a href="#inaction">The console in action, with and without its add-ons</a><br>
 			   
+		       <a href="#hardware">Hardware resources</a><br>
+			   <ul>	   
 					<li>the console <a href="#innerconsole">inner workings</a></li>
 					<li>the <a href="#cartridges">cartridges</a></li>
-				</ul>		   
+				</ul>	
+					   
 		       <a href="#thirdparty">Using some third-party software</a><br>
+			   <ul>
+					<li>Understanding the various <a href="#romformats">ROM formats</a></li>
+					<li><a href="#linkerstorage">Linker storage &amp; DLDI</a></li>
+					<li>An example : <a href="#linuxonds">Linux on DS</a>
+				</ul>		   
+			   
+		       <a href="#programmingDS">Programming the DS</a><br>
+			   <ul>
+			   		<li>Gathering the adequate <a href="#tools">tools</a> for homebrew</li>
+					<li> <a href="#usinghardware">Using the hardware</a><br>
+			   		  <ul>
+						<li><a href="#twocpu">Two</a> general-purpose CPU to handle</li>					
+						<li>Activating only the relevant <a href="#subsystems">subsystems</a></li>			
+						<li>2D/3D <a href="#rendering">Rendering</a></li>		
+						<li><a href="#wireless">Wireless</a> networking</li>	
+						<li><a href="#miscellaneous">Miscellaneous</a></li>								  </ul>	
+					</li>
+					
+							   
+				</ul>		   
+			   
 		       <a href="#toolchain">Developing your own software : using the toolchain</a>
 		       <a href="#forlinux">Linux on DS</a><br>
 		       <a href="#applications">Homebrew applications &amp; games</a><br>
@@ -433,7 +455,7 @@ SuperKey and the other Slot-1 <a href="http://en.wikipedia.org/wiki/NoPass" targ
 There are several slot-2 add-ons, which all provide their own set of features. From the ARM9 point of view, they can offer up to 32 MB of additional ROM (which can be actually RAM) and 64 kB of RAM. This GBA slot bus only supports 16-bit writes, which leads to problems when needing to perform 8-bit only write operations.</p>
 
 <p>
-The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (for DS Lite) and provides both the optimal 32 MB of RAM and an access to removable storage, here a microSD card. Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. 
+The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (it does not protrude when used with DS Lite) and provides both the optimal 32 MB of RAM and an access to removable storage, here a microSD card. Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. 
 </p>
 
 <p>
@@ -445,10 +467,309 @@ These linkers use their built-in RAM as a mock flash cartridge, as a cache fed f
 
 
 
-<a name="programming"></a>
+
+
+<a name="thirdparty"></a>
+<h2>Using some third-party software</h2>
+
+<p>
+Software distribution on the DS is mostly based on ROM images, which can be downloaded on a PC as unique files. These files are read by the DS system, which see them as a kind of archive (a filesystem actually) containing possibly numerous files and directories.  
+</p>
+
+
+
+<a name="romformats"></a>
+<h3>Understanding the various ROM formats</h3>
+
+<p>
+One can find several file extensions for Nintendo ROM. Each extension has a <a href="http://www.ndshb.com/modules.php?name=Content&pa=showpage&pid=27" target="_blank">specific meaning</a>, is associated to a specific executable format, and must be chosen adequately.
+</p>
+
+<p>
+Their sole purpose is to contain binaries (i.e. executables) for the two ARMs and, most often, application-specific data, stored as a unique flat file or as a full filesystems, in one or more files, each filesystem containing in turn files and directories. To be run from the GBA ROM (slot-2), they should include a loader that transfers them to the RAM.
+</p>
+
+
+<h4>Known formats &amp; extensions</h4>
+
+<p>
+The most frequent extensions are :
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : 
+	this binary for the DS embeds the two executables needed, and optionally some appended data, but it was designed to be run from RAM filled from the slot-1, hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used, generally provided by the menu loader of the flash cart device.</p>
+	
+	<p>Some newer .nds put nevertheless a loader, which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it's a corrupted GBA header. An external loader is then needed again.
+	</p>
+	<p>
+	.nds files are made of a (NDS) header, then a region dedicated to the ARM7, then a region dedicated to the ARM9, then the data, for example a filesystem. The FlashMe + WMB method and GBA Movie Player support .nds files. They are often used with slot-1 cards, such as M3 and DS-X
+	</p>
+	</li>
+	
+	<li><b>.ds.gba</b> (ex: <code>myGame.ds.gba</code>) : this binary for the DS is designed to run from GBA ROM. It is usually made of a small loader (to transfer thanks to the ARM7 the ROM content from the GBA card to the main RAM) contained in a 512-byte (GBA) header, then a .nds file, and zero or more appended data files. The code from the .nds reads from the appended data files using reads from GBA ROM space. GBA flash carts, M3, and SuperCard support this. They are often used with slot-2 cards, such as EZ4</li>
+	
+	<li><b>.gba.nds</b> : the SuperCard firmware seems to believe that the .ds.gba format is indicated by the .nds extension. Hence to run a .ds.gba program on a SuperCard, one has to rename it first so that its extension becomes .nds. However by doing so one could mix it up with real .nds. One work-around is then to rename that program with, for example, a .gba.nds extension, instead of a mere .nds. However for a SuperCard, an original <code>myGame.ds.gba</code> could be renamed preferably to <code>myGame.sc.nds</code> (see below)</li>
+
+	<li><b>.sc.nds</b> : extension to be used with SuperCard (sc) and, in some cases, G6 lite. This is a renamed .ds.gba (and maybe too DLDI-patched, see below). The .sc.nds extension is a (better since clearer) alternative to the ds.gba one</li>
+	
+</ul>
+</p>
+
+	
+<p>
+Some quite uncommon names and extensions are :
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+	
+	
+	<li><b>.srl</b> : also called <em>clean dump</em>, it is a dump of commercial ROM, made of a .nds file and an appended file system, usually in Nitro-FAT format. The code in the .nds file reads from the appended file system, using block transfers, through the DS game card access registers. Homebrew tools do not generate .srl, and WMB does not support .srl. These clean dumps are sometimes distributed as .nds ROM, because they use the same header</li>
+	
+	<li><b>_BOOT_MP.nds</b> : the GBAMP (<em>GBA Movie Player</em>) will boot automatically on this file</li> 
+	 
+</ul>
+</p>
+
+
+<h4>Conversions between ROM formats</h4>
+
+<p>
+.nds programs can be converted into ds.gba programs. It involves prepending a loader, which may load the first appended .nds file, or allow selection of one of many .nds files.
+</p>
+
+<p>A loader can be a file named <em>ndsloader.bin</em>, which could be prepended that way :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+On Windows :
+copy /b ndsloader.bin &lt;the .nds file to convert&gt; &lt;the resulting merged file&gt; 
+
+For example :
+copy /b ndsloader.bin myGame.nds myGame.ds.gba
+
+On Linux :
+cat ndsloader.bin &lt;the .nds file to convert&gt; &gt; &lt;the resulting merged file&gt; 
+
+For example :
+cat ndsloader.bin myGame.nds > myGame.ds.gba
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>
+The other way round, from ds.gba to .nds, usually cannot be performed if not already done by the author, because most often the application relies on specific data meant to be embedded, which is not supported with a .nds file.
+</p>
+
+<p>
+There are some tools, such as the <a href="http://l33t.spod.org/ratx/DS/SC/scmhbp/" target="_blank">Supercard Magic Homebrew Patcher</a>, that turns your .nds / .ds.gba files into a fixed supercard .sc.nds file. 
+</p>
+
+<p>Finally, most of the recent FAT-based homebrew applications need to be patched according to the relevant DLDI script, before being run.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="linkerstorage"></a>
+<h3>Linker storage and DLDI</h3>
+
+<p>
+Before rushing for the numerous homebrew softwares available on the Internet, one must understand the problem encountered with the various <em>linkers</em>, the specific cards inserted in Slot-2 to provide dedicated storage. It therefore applies mostly to ROM using the .ds.gba format, including .gba.nds and .sc.nds. 
+</p>
+
+<p>
+As each linker offers its own memory interface (the way it writes to the Flash ROM), as soon as an application has to access to a memory provided by the linker, this homebrew has to be aware of the specific linker it will run with. Several solutions exist : one may build as many versions of one's software as supported linkers (it becomes soon tedious and messy), or one may use Chishm's DLDI, for FAT-based applications.
+</p>
+
+<p>
+<a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI</a> stands for <em>Dynamically Linked Device Interface for libfat</em>. The DLDI-aware software can be storage-agnostic. It has just to be built once, and patched according to the target linker it is to run with, before being transferred to the DS.
+</p>
+
+<p>
+The point is that for the user it is quite easy to patch the software, and it frees the developer from having to take into account each and every linker variation on the market. Even linkers released years after one's software will be supported thanks to DLDI, with no additional efforts from the original author.
+</p>
+
+<p>
+DLDI is needed whenever libfat versions more recent than Christmas 2006 are being used.
+</p>
+
+<p>
+In practice, the user will need :
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li>the target <b>DLDI-enabled software to patch</b> (of course)</li>
+	<li>a <b>patching tool</b> : the command-line or GUI <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">dlditool</a>, available for Windows, Linux and Mac OS X</li>
+	<li>the <b>device-specific patch file</b> which corresponds to your linker (see <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI Device patches</a>)</li>
+</ul>
+
+</p>
+
+<p>
+One just has to use the DLDI tool to patch the software according to its linker-specific patching specification. Another option for Windows users is to install <a href="http://psychowood.altervista.org/getDLDIrc.html" target="_blank">DLDIrc</a>, which is configured once for all with a target linker and adds to the contextual menus for each selected DS ROM (the menu obtained with the right-click) the possibility to patch it.
+</p>
+
+<p>
+More informations about DLDI : on <a href="http://www.dev-scene.com/NDS/Libfat_DLDI" target="_blank">Dev-Scene</a>
+</p>
+
+<p>
+Finally, some homebrew make use the SRAM (actually, a non-volatile RAM) that may be provided by a flash cart.
+</p>
+
+
+
+<a name="linuxonds"></a> 
+<h3>An example : Linux on DS</h3>
+
+<p>
+Even though most DS applications are to be run standalone (i.e. by themselves, not using any other specific operating system), one can nonetheless have its DS run a dedicated <a href="http://en.wikipedia.org/wiki/Operating_system" target="_blank">operating system</a> (OS). Beneath the fun experience, it may allow for multitasking, or may just provide an environment familiar to the user, with useful tools.
+</p>
+
+<p>
+Should an OS be used, it will have to be executed as any other application. This OS will then be able itself to run the applications it hosts. They may even run simultaneously, if the OS supports multitasking and if it does not monopolize too much of the DS resources for its own need, thus not letting enough CPU or RAM for these executables.  
+</p>
+
+<p>
+Among all other operating systems, homebrewers often favor <a href="http://en.wikipedia.org/wiki/Linux" target="_blank">Linux</a>.
+</p>
+
+<p>
+<center>
+    <a href="linux-global.jpeg" target="_blank"><img src="linux-global-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
+</center>
+ 
+<center>
+    <a href="linux-zoom.jpeg" target="_blank"><img src="linux-zoom-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
+</center>
+
+</p>
+
+<p>
+<ul>
+
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+    <li><a href="http://dslinux.org/" target="_blank">DS Linux Official WebSite</a>, including its <a href="http://dslinux.org/?page=faq" target="_blank">FAQ</a></li>
+	
+    <li><a href="http://en.wikipedia.org/wiki/DSLinux" target="_blank">DS Linux on Wikipedia</a></li>
+	
+    <li><a href="http://www.debian.org/ports/arm/" target="_blank">ARM-dedicated Debian build</a></li>
+	
+    <li><a href="http://popcon.debian.org/" target="_blank">Popularity contest</a> for architectures supported by Debian (see ARM)</li>
+
+</ul>
+ 
+</p>
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+
+<a name="programmingDS"></a>
 <h2>Programming the DS</h2>
 
-<h3>Two general-purpose CPU to handle</h3>
+
+
+<a name="tools"></a>
+<h3>Gathering the adequate <a href="#tools">tools</a> for homebrew</h3>
+
+
+<h4>libnds</h4>
+
+<p>
+<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>
+<a href="http://www.devkitpro.org/" target="_blank">Devkitpro</a>
+<a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>
+</p>
+
+<h4>PA_lib</h4>
+
+<p>
+<a href="https://sourceforge.net/projects/pands/" target="_blank">PA_lib on SourceForge</a>
+PA_Lib is a library, similar to HAM for the GameBoy Advance, that runs on top of libnds. Why another library? Well, because it makes Nintendo DS programming even simpler. If you are one of those hardcore coders, then you probably will not be interested in PA_Lib. However, if you want to dive right in to DS development, and you want to focus on coding and not figuring out all the ins and outs of the hardware, etc, then this is probably the way to go.
+</p>
+
+<a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib's DS Dev Wiki Tutorial</a>
+
+
+<a href="http://tobw.net/dswiki" target="_blank">DS Developing Wiki</a>
+
+<p>
+<ul>
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+ Devkitpro : compiler toolchain : http://www.devkitpro.org/
+ libnds : 
+ 	http://www.devkitpro.org/
+ 	http://www.drunkencoders.com/documents/DS/ndslib.htm
+	 http://en.wikipedia.org/wiki/Libnds
+ SDL port : http://gpf.dcemu.co.uk/ndsSDL.shtml
+ DLDI : 
+ 	http://chishm.drunkencoders.com/DLDI/
+	http://www.playeradvance.org/forum/archive/index.php/t-4813.html
+ libfat : http://chishm.drunkencoders.com/libfat/index.html
+
+</ul>
+ 
+</p>
+
+
+<!-- ########################################################################-->
+<a name="emulators"></a> 
+<h3>Emulators</h3>
+<p>
+<ul>
+http://www.ndsemulator.com
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+    <li><a href="http://dualis.1emu.net/dsti.html" target="_blank">Dualis</a></li>
+    <li><a href="http://www.desmume.com/" target="_blank">DeSmuME</a></li>
+    <li><a href="http://www.ndsemulator.com/nintendo-ds/ideas-download.htm" target="_blank">Ideas</a></li>
+    <li><a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a></li>
+    <li><a href="" target="_blank"></a></li>
+    <li><a href="" target="_blank"></a></li>
+</ul>
+ 
+</p>
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="usinghardware"></a>
+<h3>Using the hardware</h3>
+
+<a name="twocpu"></a>
+<h4>Two general-purpose CPU to handle</h4>
 <p>
 For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even if both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to rendering.
 </p>
@@ -468,8 +789,15 @@ Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is con
 <p>
 As a consequence the DS ROM has to include at least two executables, one for each of the ARM (not mentioning application-specific data). At runtime the executables will have to work simultaneously, which involves often having to be synchronized and to share data. 
 </p>
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
  
-<h3>Activating only the relevant subsystems</h3>
+<a name="subsystems"></a>
+<h4>Activating only the relevant subsystems</h4>
 
 <p>
 First, the DS can run in different modes, including the GBA Mode (ARM9 not used), sleep (for the ARM7), stop, halt, etc. The DS can be woken up from various IRQ (<em>Interrupt Requests</em>) :
@@ -495,9 +823,15 @@ Selective activation is useful notably to save energy.
 </p>
 
 
-<h3>Rendering</h3>
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
-<h4>2D Rendering</h3>
+
+
+
+<a name="rendering"></a>
+<h4>2D/3D Rendering</h4>
+
+<h5>2D Rendering</h5>
 
 <p>
 The system has two 2D engines, one per screen. These are each quite similar to the Game Boy Advance's single 2D engine, though more powerful.
@@ -509,7 +843,7 @@ See also : <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_bla
 
 
 <a name="3D"></a>
-<h4>3D Rendering</h3>
+<h5>3D Rendering</h5>
 
 <p>
 The system's 3D hardware can perform a lot of operations :
@@ -554,7 +888,14 @@ Character rendering might have a blocky appearance due to Point (nearest neighbo
 The DS can render at most about 2048 triangles per scene as 60 frames per second. Rendering can occur only to a single screen at a time, so having 3D on both screens decreases performance significantly. The DS is more limited by its polygon budget than by its pixel fill rate.
 </p>
 
-<h3>Wireless networking</h3>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="wireless"></a>
+<h4>Wireless networking</h4>
 <p>
 The built-in Wifi support allows the DS to communicate :
 <ul>
@@ -572,13 +913,20 @@ The built-in Wifi support allows the DS to communicate :
 
 </p>
 
-<h3>Miscellaneous informations</h3>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="miscellaneous"></a>
+<h4>Miscellaneous informations</h4>
 
 <p>
 Most of these informations come from the listed <a href="#detailedhardware">hardware resources</a>.
 </p>
 
-<h4>MMU</h4>
+<h5>MMU</h5>
 <p>
 The DS does not have a Memory Management Unit (<a href="http://en.wikipedia.org/wiki/Memory_management_unit" target="_blank">MMU</a>), a hardware component responsible for handling memory accesses requested by the CPU, notably to enable virtual memory management, memory protection, cache control, bus arbitration or bank switching.
 </p>
@@ -588,13 +936,13 @@ It reduces the potential stability of operating systems (as Linux; if they are t
 </p>
 
 
-<h4>Non rendering-related hardware accelerations</h4>
+<h5>Non rendering-related hardware accelerations</h5>
 <p>
 The DS contains both divide and square root accelerators.
 </p>
 
 
-<h4>16/32 bit</h4>
+<h5>16/32 bit</h5>
 <p>
 The ARM7 processor supports both 32-bit and 16-bit instructions via the ARM and Thumb instruction sets. 16-bit code is smaller than 32-bit one and, in some specific cases, faster (usually slower though).
 </p>
@@ -604,139 +952,23 @@ The ARM9 is a full 32-bit CPU.
 </p>
 
 
-<h4>Power management</h4>
+<h5>Power management</h5>
 <p>
 Various subsystems (power management, firmware, touchscreen, sound volume and control, microphone amplifier control and gain control, back-lighting of screens, power LED, battery status) can be accessed only thanks to the SPI (<em>Serial Peripheral Interface</em>) bus.
 </p>
 
-<h4>DMA</h4>
+<h5>DMA</h5>
 <p>
 There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU : the ARM9, if it does not access to main memory, can continue its work while the DMA transfer is going on.
 </p>
 
-<h4>Timers</h4>
+<h5>Timers</h5>
 <p>
 There are eight incrementing 16bit timers, four for each CPU.
 </p>
 
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
-
-<a name="thirdparty"></a>
-<h2>Using some third-party software</h2>
-
-<p>
-Software distribution on the DS is mostly based on ROM images, which can be downloaded on a PC as unique files. These files are read by the DS system, which see them as a kind of archive (a filesystem actually) containing possibly numerous files and directories.  
-</p>
-
-<h3>The linker storage device issue</h3>
-<p>
-Before rushing for the numerous homebrew softwares available on the Internet, one must understand the problem encountered with the various <em>linkers</em>, the specific cards inserted to regain control of your DS.
-</p>
-
-<p>
-As each linker offers its own memory interface (the way it writes to the Flash ROM), as soon as an application has to access to a memory provided by the linker, this homebrew has to be aware of the specific linker it will run with. Several solutions exist : one may build as many versions of one's software as supported linkers (it becomes soon tedious and messy), or one may use Chishm's DLDI, for FAT-based applications.
-</p>
-
-<p>
-<a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI</a> stands for <em>Dynamically Linked Device Interface for libfat</em>. The DLDI-aware software can be storage-agnostic. It has just to be built once, and patched according to the target linker it is to run with, before being transferred to the DS.
-</p>
-
-<p>
-The point is that for the user it is quite easy to patch the software, and it frees the developer from having to take into account each and every linker variation on the market. Even linkers released years after one's software will be supported thanks to DLDI, with no additional efforts from the original author.
-</p>
-
-<p>
-DLDI is needed whenever libfat versions more recent than Christmas 2006 are being used.
-</p>
-
-<p>
-In practice, the user will need :
-<ul>
-
-<!--
-	<li><b></b> : </li>
--->
-
-	<li>the target <b>DLDI-enabled software to patch</b> (of course)</li>
-	<li>a <b>patching tool</b> : the command-line or GUI <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">dlditool</a>, available for Windows, Linux and Mac OS X</li>
-	<li>the <b>device-specific patch file</b> which corresponds to your linker (see <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI Device patches</a>)</li>
-</ul>
-
-</p>
-
-<p>
-One just has to use the DLDI tool to patch the software according to its linker-specific patching specification. Another option for Windows users is to install <a href="http://psychowood.altervista.org/getDLDIrc.html" target="_blank">DLDIrc</a>, which is configured once for all with a target linker and adds to the contextual menus for each selected DS ROM (the menu obtained with the right-click) the possibility to patch it.
-</p>
-
-
-<h3>The ROM file extension issue</h3>
-
-<p>
-Not directly linked to the previous subject, one can find several file extensions for Nintendo ROM. Each extension has a <a href="http://www.ndshb.com/modules.php?name=Content&pa=showpage&pid=27" target="_blank">specific meaning</a>, is associated to a specific executable format, and must be chosen adequately.
-</p>
-
-<p>
-Their sole purpose is to contain binaries (i.e. executables) for the two ARMs and, most often, application-specific data, stored as a unique flat file or as a full filesystems, in one or more files, each filesystem containing in turn files and directories. To be run from the GBA ROM (slot-2), they should include a loader that transfers them to the RAM.
-</p>
-
-<p>
-The most frequent extensions are :
-<ul>
-
-<!--
-	<li><b></b> : </li>
--->
-
-	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : 
-	this binary for the DS embeds the two executables needed, and optionally some appended data, but it was not designed to include any specific loader, as it was designed for the slot-1. Hence old generation .nds do not have a loader at all, and thus an external one must be used, generally provided by the menu loader of the flash cart device.</p>
-	
-	<p>Some newer .nds put nevertheless a loader, which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it's a corrupted GBA header. An external loader is then needed again.
-	</p>
-	<p>
-	.nds files are made of a (NDS) header, then a region dedicated to the ARM7, then a region dedicated to the ARM9, then the data, for example a filesystem. The FlashMe + WMB method and GBA Movie Player support .nds files. They are often used with slot-1 cards, such as M3 and DS-X
-	</p>
-	</li>
-	
-	<li><b>.ds.gba</b> (ex: <code>myGame.ds.gba</code>) : this binary for the DS is designed to run from GBA ROM. It is usually made of a small loader (to transfer thanks to the ARM7 the ROM content from the GBA card to the main RAM) contained in a 512-byte (GBA) header, then a .nds file, and zero or more appended data files. The code from the .nds reads from the appended data files using reads from GBA ROM space. GBA flash carts, M3, and SuperCard support this. They are often used with slot-2 cards, such as EZ4</li>
-	
-	<li><b>.gba.nds</b> : the SuperCard firmware seems to believe that the .ds.gba format is indicated by the .nds extension. Hence to run a .ds.gba program on a SuperCard, one has to rename it first so that its extension becomes .nds. However by doing so one could mix it up with real .nds. One work-around is then to rename that program with, for example, a .gba.nds extension, instead of a mere .nds. However for a SuperCard, an original <code>myGame.ds.gba</code> could be renamed preferably to <code>myGame.sc.nds</code> (see below)</li>
-
-	<li><b>.sc.nds</b> : extension to be used with SuperCard (sc) and, in some cases, G6 lite. This is a renamed .ds.gba (and maybe too DLDI-patched). The .sc.nds extension is a (better since clearer) alternative to the ds.gba one</li>
-	
-</ul>
-</p>
-
-	
-<p>
-Some quite uncommon names and extensions are :
-<ul>
-
-<!--
-	<li><b></b> : </li>
--->
-	
-	
-	<li><b>.srl</b> : also called <em>clean dump</em>, it is a dump of commercial ROM, made of a .nds file and an appended file system, usually in Nitro-FAT format. The code in the .nds file reads from the appended file system, using block transfers, through the DS game card access registers. Homebrew tools do not generate .srl, and WMB does not support .srl. These clean dumps are sometimes distributed as .nds ROM, because they use the same header</li>
-	
-	<li><b>_BOOT_MP.nds</b> : the GBAMP (<em>GBA Movie Player</em>) will boot automatically on this file</li> 
-	 
-</ul>
-</p>
-
-<p>
-.nds programs can be converted into ds.gba programs. It involves prepending a loader, which may load the first appended .nds file, or allow selection of one of many .nds files.
-</p>
-
-<p>
-The other way round, from ds.gba to .nds, usually cannot be performed if not already done by the author, because most often the application relies on specific data meant to be embedded, which is not supported with a .nds file.
-</p>
-
-<p>
-There are some tools, such as the <a href="http://l33t.spod.org/ratx/DS/SC/scmhbp/" target="_blank">Supercard Magic Homebrew Patcher</a>, that turns your .nds / .ds.gba files into a fixed supercard .sc.nds file. 
-</p>
-
-<p>Finally, most of the recent FAT-based homebrew applications need to be patched according to the relevant DLDI script, before being run.
-</p>
 
 
 
@@ -800,92 +1032,7 @@ sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds 
 
 
 <!-- ########################################################################-->
-<a name="forlinux"></a> 
-<h3>Linux on DS</h3>
 
-<p>
-<center>
-    <a href="linux-global.jpeg" target="_blank"><img src="linux-global-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
-</center>
- 
-<center>
-    <a href="linux-zoom.jpeg" target="_blank"><img src="linux-zoom-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
-</center>
-
-</p>
-
-<p>
-<ul>
-<!--
-    <li><a href="" target="_blank"></a></li>
--->
-    <li><a href="http://dslinux.org/" target="_blank">DS Linux Official WebSite</a></li>
-    <li><a href="http://en.wikipedia.org/wiki/DSLinux" target="_blank">DS Linux on Wikipedia</a></li>
-    <li><a href="http://www.debian.org/ports/arm/" target="_blank">ARM-dedicated Debian build</a></li>
-    <li><a href="http://popcon.debian.org/" target="_blank">Popularity contest</a> for architectures supported by Debian (see ARM)</li>
-
-</ul>
- 
-</p>
-
-
-<!-- ########################################################################-->
-<a name="tools"></a> 
-<h3>Tools for homebrew</h3>
-
-
-<h4>libnds</h4>
-
-<p>
-<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>
-<a href="http://www.devkitpro.org/" target="_blank">Devkitpro</a>
-<a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>
-</p>
-
-
-<a href="http://tobw.net/dswiki" target="_blank">DS Developing Wiki</a>
-
-<p>
-<ul>
-<!--
-    <li><a href="" target="_blank"></a></li>
--->
- Devkitpro : compiler toolchain : http://www.devkitpro.org/
- PA_lib : http://www.palib.info/wiki/doku.php
- libnds : 
- 	http://www.devkitpro.org/
- 	http://www.drunkencoders.com/documents/DS/ndslib.htm
-	 http://en.wikipedia.org/wiki/Libnds
- SDL port : http://gpf.dcemu.co.uk/ndsSDL.shtml
- DLDI : 
- 	http://chishm.drunkencoders.com/DLDI/
-	http://www.playeradvance.org/forum/archive/index.php/t-4813.html
- libfat : http://chishm.drunkencoders.com/libfat/index.html
-
-</ul>
- 
-</p>
-
-
-<!-- ########################################################################-->
-<a name="emulators"></a> 
-<h3>Emulators</h3>
-<p>
-<ul>
-http://www.ndsemulator.com
-<!--
-    <li><a href="" target="_blank"></a></li>
--->
-
-    <li><a href="http://dualis.1emu.net/dsti.html" target="_blank">Dualis</a></li>
-    <li><a href="http://www.desmume.com/" target="_blank">DeSmuME</a></li>
-    <li><a href="http://www.ndsemulator.com/nintendo-ds/ideas-download.htm" target="_blank">Ideas</a></li>
-    <li><a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a></li>
-    <li><a href="" target="_blank"></a></li>
-    <li><a href="" target="_blank"></a></li>
-</ul>
- 
-</p>
 
 
 <!-- ########################################################################-->
@@ -901,11 +1048,19 @@ http://www.ndsemulator.com
     <li>[T1] <a href="http://www.double.co.nz/nintendo_ds/" target="_blank">Double</a> : interesting, well explained but often deprecated</li>
 	
     <li>[T2] <a href="http://www.dev-scene.com/NDS/Tutorials" target="_blank">Devoto</a>'s tutorial : a really good one</li>
+	
     <li>[T3] <a href="http://www.playeradvance.org/forum/showthread.php?t=4277" target="_blank">PA_lib for Linux</a></li>
+	
     <li>[T4] <a href="http://www.palib.info/wiki/doku.php" target="_blank">PA_lib for Linux</a></li>
+	
     <li>[T5] <a href="http://user.chem.tue.nl/jakvijn/tonc " target="_blank">TONC</a></li>
+	
     <li>[T6] <a href="http://www.patatersoft.info/manual_online.html" target="_blank">Patatersoft</a></li>
-    <li>[T7] <a href="" target="_blank"></a></li>
+	
+    <li>[T7] <a href="http://www.drunkencoders.com/index.php?system_id=1&page=Tutorials" target="_blank">drunkencoders</a> tutorials</li>
+
+    <li>[T8] <a href="http://scorpei.com/TBGTDSHB/The_Beginners_Guide_To_NDS_Homebrew.pdf" target="_blank">Running Nintendo DS homebrew</a>, by Simon van de Berg. Helps to understand and choose linkers [PDF]</li>
+	
 </ul>
 
 </p>
@@ -929,7 +1084,7 @@ http://www.ndsemulator.com
 
 </p>
 
-http://www.aaronrogers.com/nintendods
+
 <!-- ########################################################################-->
 <a name="applications"></a>
 <h3>Homebrew applications &amp; games</h3>
@@ -943,14 +1098,19 @@ http://www.aaronrogers.com/nintendods
 
 	 <li><a href="http://scummvm.drunkencoders.com/" target="_blank">ScummVM DS</a></li>
 	 
-    <li><a href="" target="_blank"></a></li>
+    <li><a href="http://www.mrdictionary.net/lemmings/" target="_blank">Lemmings DS</a></li>
+
+    <li><a href="http://mdxonline.dyndns.org/archives/nds/" target="_blank">Moonshell</a></li>
+
+    <li><a href="http://www.dragonminded.com/?loc=ndsdev/DSOrganize" target="_blank">DSOrganize</a>, transform your DS into a PDA</li>
+
+<!-- Apparently a piracy-related site ?
+    <li><a href="http://www.nintendo-ds-roms.com/" target="_blank">DS ROMs</a></li>
+-->
 	
 </ul>
 
 </p>
-
-NDS homebrew executables :
- http://www.google.com/search?q=nintendo+ds+roms
 
 
 <!-- ########################################################################-->
@@ -999,7 +1159,13 @@ NDS homebrew executables :
 		
     	<li><a href="http://www.playeradvance.org/forum/showthread.php?t=4277" target="_blank">Installation de PALib sous Linux</a></li>
 	
-	</li>
+    	<li>Présentation de <a href="http://playeradvance.org/forum/showthread.php?t=5340" target="_blank">Moonshell</a>, <a href="http://www.supercard-france.info/index.php?option=com_content&task=view&id=19&Itemid=78" target="_blank">installation</a> (sous Windows)</li>
+
+    	<li>Informations sur la <a href="http://www.supercard-france.info/" target="_blank">SuperCard</a>, notamment pour <a href="http://www.supercard-france.info/index.php?option=com_content&task=view&id=29&Itemid=141" target="_blank">la mettre à jour</a></li>
+
+-    	<li><a href="" target="_blank"></a></li>
+
+-	</li>
 
 		
 </ul>
