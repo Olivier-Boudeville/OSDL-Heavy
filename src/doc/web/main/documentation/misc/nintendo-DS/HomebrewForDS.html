@@ -112,6 +112,10 @@ The goal here is to develop applications, mostly games, to be run on the <a href
 Portable development will be kept in mind, as having one's game working both on a DS and on a PC is quite enjoyable.
 </p>
 
+<p>
+Most of the informations here came from homebrew websites and IRC discussions, many thanks to the fearless homebrewers !
+</p>
+
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
@@ -291,7 +295,24 @@ Such removable media (as microSD) are not the magic bullet for the frantic homeb
 <p>
 An alternate way would be to use a Wifi access point or a Wifi router, preferably not a mere Wifi adapter, which would have to embed a specific chip etc. in order to work with the DS. Such devices could be for example the famous <a href="http://en.wikipedia.org/wiki/WRT54G" target="_blank">Linksys WRT54G routers</a> (55 euros approximately) or <a href="http://en.wikipedia.org/wiki/Fonera" target="_blank">La Fonera</a>, both of which are inexpensive and, on a side node, run Linux, whose firmware and software can be programmed, etc., in a very similar way to the one we are to program applications for the DS.
 </p>
-  
+
+<p>
+Other still less usual methods would be :
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li>a <b>parallel-port cable</b> :  you can open your DS, solder about 10 points to the motherboard, and get a parallel-port cable. But that's quite a lot of work</li>
+
+	<li>the <a href="http://natrium42.com/blog/?p=38" target="_blank">dserial</a> ($45+shipping)</li>
+
+	<li>the <b>Ds Xtreme</b>, if available. It is quite expensive though</li>
+	
+</ul>
+
+
 <p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 
 
@@ -349,7 +370,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	<li><b></b> : </li>
 -->
 
-	<li><b>two TFT back-lighted screens</b> (hence the DS meaning <em>Dual Screen</em>, although <em>Developer System</em> is mentioned sometimes), whose maximal resolution is 256x192, with up to 260 000 colors. These are 3-inch screens (61x46 mm), with a dot pitch of 0,24 mm. Screens are separated by about 21 mm. The DS Lite ones are far brighter and more resitant than the DS "fat" ones, and support four levels of brightness</li>
+	<li><b>two TFT back-lighted screens</b> (hence the DS meaning <em>Dual Screen</em>, although <em>Developer System</em> is mentioned sometimes), whose maximal resolution is 256x192, with up to 260 000 colors (5 bit for each channel). These are 3-inch screens (61x46 mm), with a dot pitch of 0,24 mm (contrast is 162:1). Screens are separated by about 21 mm. The DS Lite ones are far brighter and more resitant than the DS "fat" ones, and support four levels of brightness</li>
 	
 	<li>a resistive <b>touchpad</b> integrated with the bottom screen. The resulting touchscreen can be used with a stylus, the user's finger, wrist strap, etc. It can measure at most one press at a time, so it will average multiple presses, by reporting only a single one at their barycenter</li>
 	
@@ -377,7 +398,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	
 	<li>integrated <b>wireless networking</b>, able to offer proprietary protocol (called <em>NiFi</em>, for Nintendo Wifi) and 802.11b Wifi connectivity, both for local exchanges between DS and communications through the Internet (range between 10 and 30 meters)</li>
 	
-	<li>a <b>16 hardware channel Virtual Surround sound output</b> with stereo speakers (whose quality is rather good) and standard headphone plug (3.5 mm jack). A sliding button allows to set the volume</li>
+	<li>a <b>16 hardware channel Virtual Surround sound output</b> with stereo speakers (whose quality is rather good) and standard headphone plug (3.5 mm jack). A sliding button allows to set the volume. DAC runs at 10-bit 32768 Hz stereo</li>
 	
 	<li>a <b>microphone</b> for sound input, which allows (application-specific) speech-recognition</li>
 	
@@ -654,10 +675,34 @@ Among all other operating systems, homebrewers often favor <a href="http://en.wi
 </p>
 
 <p>
+On the DS this OS is provided thanks to <a href="http://en.wikipedia.org/wiki/DSLinux" target="_blank">DSLinux</a>, based on <a href="http://en.wikipedia.org/wiki/UClinux" target="_blank">uClinux</a>.
+</p>
+
+<p>
+It can be <a href="http://kineox.free.fr/DS/" target="_blank">installed</a> quite easily :
+<ol>
+<!--
+	<li><b></b> : </li>
+-->
+	<li><b>download</b> <a href="http://kineox.free.fr/DS/dslinux-dldi.tgz" target="_blank">dslinux-dldi.tgz</a> on your computer
+ </li>
+	<li><b>extract</b> it in a new directory</li>
+	<li><b>patch</b> the extracted <code>dslinux.nds</code> with the adequate DLDI device patch (<a href="http://chishm.drunkencoders.com/DLDI/downloads/sclt.dldi" target="_blank">sclt.dldi</a> for SuperCard Lite SD Card, see <a href="http://chishm.drunkencoders.com/DLDI/index.html" target="_blank">DLDI page</a>)</li>
+	<li><b>copy</b> the full directory content (i.e. <code>dslinux.nds</code> and the <code>linux</code> directory extracted from the archive) at the root of your SD</li>
+	<li><b>reboot your DS</b>, select Linux and enjoy</li>
+</ol>
+ 
+</p>
+
+<p>
+See DSLinux running, with the virtual stylus-based keyboard on the bottom screen :
 <center>
     <a href="linux-global.jpeg" target="_blank"><img src="linux-global-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
 </center>
- 
+</p>
+
+<p>
+The terminal output is on the top screen :
 <center>
     <a href="linux-zoom.jpeg" target="_blank"><img src="linux-zoom-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
 </center>
@@ -746,6 +791,9 @@ PA_Lib is a library, similar to HAM for the GameBoy Advance, that runs on top of
 <p>
 <ul>
 http://www.ndsemulator.com
+
+ on Linux ? desmume or nocash with wine
+
 <!--
     <li><a href="" target="_blank"></a></li>
 -->
@@ -838,6 +886,10 @@ The system has two 2D engines, one per screen. These are each quite similar to t
 </p>
 
 <p>
+At most 128 sprites are supported at a time, and there are up to four background layers (text, rotating/scaling, bitmap). 
+</p>
+
+<p>
 See also : <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_blank">LiraNuna's 2D tutorial</a>.
 </p>
 
@@ -888,6 +940,10 @@ Character rendering might have a blocky appearance due to Point (nearest neighbo
 The DS can render at most about 2048 triangles per scene as 60 frames per second. Rendering can occur only to a single screen at a time, so having 3D on both screens decreases performance significantly. The DS is more limited by its polygon budget than by its pixel fill rate.
 </p>
 
+<p>
+There are 512 kB of texture memory per screen, and the maximum texture size is 1024x1024 pixels.
+</p>
+
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
@@ -897,7 +953,7 @@ The DS can render at most about 2048 triangles per scene as 60 frames per second
 <a name="wireless"></a>
 <h4>Wireless networking</h4>
 <p>
-The built-in Wifi support allows the DS to communicate :
+The built-in Wifi support allows the DS to communicate (with a theoretical bandwith of 1-2 Mbit per second) :
 <ul>
 
 <!--
@@ -1079,6 +1135,25 @@ sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds 
     <li><a href="http://forum.gbadev.org/viewforum.php?f=18" target="_blank">gbadev forums</a></li>
 
     <li><a href="http://forums.abxy.org/f/nintendo-ds" target="_blank">abxy DS forums</a></li>
+	
+</ul>
+
+</p>
+
+
+<!-- ########################################################################-->
+<a name="irc"></a> 
+<h3>IRC channels</h3>
+<p>
+<ul>
+
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+    <li><a href="irc://penguin.uk.eu.blitzed.org" target="_blank">Dev-Scene IRC</a> (channel : #dsdev)</li>
+
+    <li><a href="irc://irc.freenode.net" target="_blank">DSLinux IRC</a> (channel : #DSLinux)</li>
 	
 </ul>
 
