@@ -630,6 +630,8 @@ The point is that for the user it is quite easy to patch the software, and it fr
 DLDI is needed whenever libfat versions more recent than Christmas 2006 are being used.
 </p>
 
+
+<a name="dldiexample"></a>
 <p>
 In practice, the user will need :
 <ul>
@@ -639,18 +641,46 @@ In practice, the user will need :
 -->
 
 	<li>the target <b>DLDI-enabled software to patch</b> (of course)</li>
-	<li>a <b>patching tool</b> : the command-line or GUI <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">dlditool</a>, available for Windows, Linux and Mac OS X</li>
-	<li>the <b>device-specific patch file</b> which corresponds to your linker (see <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI Device patches</a>)</li>
+	<li>a <b>patching tool</b> : the command-line or GUI <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">dlditool</a>, available for Windows, <a href="http://chishm.drunkencoders.com/DLDI/downloads/dlditool-linux-x86.zip" target="_blank">Linux</a> and Mac OS X</li>
+	<li>the <b>device-specific patch file</b> which corresponds to your linker (see <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI Device patches</a>, including the one for <a href="http://chishm.drunkencoders.com/DLDI/downloads/sclt.dldi" target="_blank">SuperCard Lite (SD Card)</a>)</li>
 </ul>
 
 </p>
 
 <p>
-One just has to use the DLDI tool to patch the software according to its linker-specific patching specification. Another option for Windows users is to install <a href="http://psychowood.altervista.org/getDLDIrc.html" target="_blank">DLDIrc</a>, which is configured once for all with a target linker and adds to the contextual menus for each selected DS ROM (the menu obtained with the right-click) the possibility to patch it.
+Linux users just have to put the dlditool archive (here <code>dlditool-linux-x86.zip</code>) and the device-specific patch file (here <code>sclt.dldi</code>) in a new directory and prepare them. For example :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+mkdir ~/dldi
+mv ~/dlditool-linux-x86.zip ~/sclt.dldi ~/dldi
+cd ~/dldi
+unzip dlditool-linux-x86.zip
+chmod +x dlditool
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+
+
+<p>
+One just has then to use the DLDI tool to patch the software (here <code> myGame.nds</code>) according to its linker-specific patching specification : <code>./dlditool sclt.dldi myGame.nds</code> for example. Check that the tools returned that the operation was successfully performed.
 </p>
 
 <p>
-More informations about DLDI : on <a href="http://www.dev-scene.com/NDS/Libfat_DLDI" target="_blank">Dev-Scene</a>
+Another option for Windows users is to install <a href="http://psychowood.altervista.org/getDLDIrc.html" target="_blank">DLDIrc</a>, which is configured once for all with a target linker and adds to the contextual menus for each selected DS ROM (the menu obtained with the right-click) the possibility to patch it.
+</p>
+
+<p>
+More informations about DLDI : on <a href="http://www.dev-scene.com/NDS/Libfat_DLDI" target="_blank">Dev-Scene</a>.
 </p>
 
 <p>
@@ -687,7 +717,7 @@ It can be <a href="http://kineox.free.fr/DS/" target="_blank">installed</a> quit
 	<li><b>download</b> <a href="http://kineox.free.fr/DS/dslinux-dldi.tgz" target="_blank">dslinux-dldi.tgz</a> on your computer
  </li>
 	<li><b>extract</b> it in a new directory</li>
-	<li><b>patch</b> the extracted <code>dslinux.nds</code> with the adequate DLDI device patch (<a href="http://chishm.drunkencoders.com/DLDI/downloads/sclt.dldi" target="_blank">sclt.dldi</a> for SuperCard Lite SD Card, see <a href="http://chishm.drunkencoders.com/DLDI/index.html" target="_blank">DLDI page</a>)</li>
+	<li><b>patch</b> the extracted <code>dslinux.nds</code> with the adequate DLDI device patch (refer to our DLDI <a href="#dldiexample">nano-guide</a>)</li>
 	<li><b>copy</b> the full directory content (i.e. <code>dslinux.nds</code> and the <code>linux</code> directory extracted from the archive) at the root of your SD</li>
 	<li><b>reboot your DS</b>, select Linux and enjoy</li>
 </ol>
