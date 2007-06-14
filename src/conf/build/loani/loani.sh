@@ -7,7 +7,7 @@
 # Author : Olivier Boudeville (olivier.boudeville@online.fr)
 
 
-USAGE="Usage : "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools] [ --allTools] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
+USAGE="Usage : "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools] [ --allTools] [--nds] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
 
 EXAMPLE="    Recommended examples (long but safe) :
 	for a end-user  (export of last stable)        : ./"`basename $0`"
@@ -1030,10 +1030,21 @@ AVAILABLE_SIZE=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
 
 DEBUG "Detected available size on current disk is ${AVAILABLE_SIZE} megabytes."
 
-MINIMUM_SIZE=400
+# The cross-compilation for Nintendo DS requires less than mainstream :
+if [ $target_nds -eq 1 ] ; then
+	MINIMUM_SIZE=400
+else
+	MINIMUM_SIZE=100
+fi
 
 if [ $manage_build_tools -eq 0 ] ; then
-	MINIMUM_SIZE=`expr $MINIMUM_SIZE + 900`
+	 
+	if [ $target_nds -eq 1 ] ; then
+		MINIMUM_SIZE=`expr $MINIMUM_SIZE + 900`
+	else
+		# devkitARM & co are prebuilt and quite small :
+		MINIMUM_SIZE=`expr $MINIMUM_SIZE + 100`
+	fi		
 fi
 
 if [ $manage_optional_tools -eq 0 ] ; then
