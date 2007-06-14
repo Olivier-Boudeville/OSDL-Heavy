@@ -8,23 +8,35 @@
 
 # Basic common build tools section.
 
-if [ $target_nds -eq 1 ] ; then
-	COMMON_BUILD_TOOLS="gcc binutils gdb"
-else
-	# For the Nintendo DS we use to DevKitPro toolchain :
-	COMMON_BUILD_TOOLS="devkitarm libnds libnds_examples libfat dswifi"	
-fi		
 
 # Automake, autoconf, aclocal, make, etc. are deemed most basic build tools
 # and are supposed to be available if needed.
 
 
-# Updating retrieve list.
+# Updating retrieve list :
+
 if [ $is_windows -eq 0 ] ; then
+
   WARNING "on Windows, no common build tool managed."
+  COMMON_BUILD_TOOLS=""
+  
 else
-  target_list="$COMMON_BUILD_TOOLS $target_list"
-fi
+
+	# Not on Windows. Aiming at the DS ?
+	
+	if [ $target_nds -eq 1 ] ; then
+		COMMON_BUILD_TOOLS="gcc binutils gdb"
+	else
+
+		# For the Nintendo DS we use the devkitPro-based toolchain :
+		#COMMON_BUILD_TOOLS="devkitARM libnds libnds_examples libfat dswifi"	
+		COMMON_BUILD_TOOLS="devkitARM"	
+		
+	fi
+	
+fi		
+
+target_list="$COMMON_BUILD_TOOLS $target_list"
 
 DEBUG "Scheduling retrieval of common build tools ($COMMON_BUILD_TOOLS)."
 
@@ -546,6 +558,114 @@ cleangdb()
 }
 
 
-####################################################################################################
+
+
+################################################################################
+# devkitARM : the ARM toolchain for Nintendo DS
+################################################################################
+
+
+getdevkitARM()
+{
+	DEBUG "Getting devkitARM..."
+	launchFileRetrieval devkitARM
+	return $?
+}
+
+
+preparedevkitARM()
+{
+
+	DEBUG "Preparing devkitARM..."
+	
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
+	else
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
+		exit 14
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 15
+	fi		
+	
+	printBeginList "devkitARM  "
+	
+	printItem "extracting"
+	
+	cd $repository
+
+	if [ -n "$prefix" ] ; then	
+		devkitARM_PREFIX=${prefix}/devkitARM
+	else
+		devkitARM_PREFIX=devkitARM
+	fi
+
+	${MKDIR} -p ${devkitARM_PREFIX}
+	
+	TAR_FILE="devkitARM_r${devkitARM_VERSION}-linux.tar"
+	
+	# Prevent archive from disappearing because of bunzip2.
+	{
+	
+		${CP} -f ${devkitARM_ARCHIVE} ${devkitARM_ARCHIVE}.save && ${BUNZIP2} -f ${devkitARM_ARCHIVE} && cd ${devkitARM_PREFIX} && tar -xvf "$repository/${TAR_FILE}" 
+		
+	} 1>>"$LOG_OUTPUT" 2>&1
+		
+	if [ $? != "0" ] ; then
+		ERROR "Unable to extract ${devkitARM_ARCHIVE}."
+		DEBUG "Restoring ${devkitARM_ARCHIVE}."
+		cd $repository
+		${MV} -f ${devkitARM_ARCHIVE}.save ${devkitARM_ARCHIVE} 
+		exit 10
+	fi
+	
+	cd $repository
+	
+	${MV} -f ${devkitARM_ARCHIVE}.save ${devkitARM_ARCHIVE} 
+	${RM} -f "${TAR_FILE}"
+			
+	printOK
+	
+}
+
+
+generatedevkitARM()
+{
+
+	DEBUG "Generating devkitARM..."
+
+	
+	printItem "configuring"
+	printOK	
+	
+	printItem "building"
+	printOK
+	
+	printItem "installing"
+	printOK
+	
+	DEBUG "devkitARM successfully installed."
+	
+	printEndList
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleandevkitARM()
+{
+	LOG_STATUS "Cleaning devkitARM build tree..."
+}
+
+
+
+
+
+################################################################################
 # End of loani-commonBuildTools.sh
-####################################################################################################
+################################################################################
