@@ -38,8 +38,21 @@ if [ $is_windows -eq 0 ] ; then
   ${MKDIR} -p ${lib_install_dir}
   
 else
-  # All non-windows platforms should build everything from sources :
-  REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"
+
+  if [ $target_nds -eq 1 ] ; then
+  
+  	# All non-windows non-DS platforms should build everything from sources :
+	
+ 	REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"
+	
+  else
+  
+  	# Not on Windows and aiming at the Nintendo DS :
+	
+ 	REQUIRED_TOOLS="dlditool"
+  
+  fi
+  	
 fi        
 
 # Maybe libmikmod should be added for SDL_mixer, if MOD music was to be
@@ -4431,6 +4444,138 @@ cleanwin_pthread()
 }
 
 
+
+
+################################################################################
+# Nintendo DS section
+################################################################################
+
+
+################################################################################
+################################################################################
+# dlditool
+################################################################################
+################################################################################
+
+
+#TRACE "[loani-requiredTools] dlditool"
+
+getdlditool()
+{
+	LOG_STATUS "Getting dlditool and dldi_patch..."
+	
+	launchFileRetrieval dlditool
+	launchFileRetrieval dldi_patch
+	
+	return $?
+}
+
+
+preparedlditool()
+{
+
+	LOG_STATUS "Preparing dlditool..."
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi	
+		
+	printBeginList "dlditool   "
+		
+	printItem "extracting"
+	
+	cd $repository
+	
+	if [ -n "$prefix" ] ; then	
+		dlditool_PREFIX=${prefix}/dldi
+	else
+		dlditool_PREFIX=dldi
+	fi
+	
+	${MKDIR} -p ${dlditool_PREFIX}
+	
+	# Extract prebuilt executable in installation repository :
+	{
+		${UNZIP} ${dlditool_ARCHIVE} -d ${dlditool_PREFIX} 
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+		
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${dlditool_ARCHIVE}."
+		exit 11
+	fi
+		
+	printOK
+	
+}
+
+
+generatedlditool()
+{
+
+	LOG_STATUS "Generating dlditool..."
+
+		
+	printItem "configuring"
+		
+	${CP} -f ${dldi_patch_ARCHIVE} ${dlditool_PREFIX} 
+	
+		
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure dlditool."
+		exit 11
+	fi	
+	
+	printOK	
+	
+	
+	printItem "building"
+	
+	printOK
+
+
+	printItem "installing"  
+
+	if [ -n "$prefix" ] ; then	
+                
+		echo "# dlditool section." >> ${OSDL_ENV_FILE}
+		
+		echo "dlditool_PREFIX=${dlditool_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export dlditool_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$dlditool_PREFIX:\${PATH}" >> ${OSDL_ENV_FILE}		
+		
+		echo "" >> ${OSDL_ENV_FILE}
+		
+		PATH=${dlditool_PREFIX}:${PATH}
+		export PATH
+		
+	fi
+	
+	${CHMOD} +x ${dlditool_PREFIX}/dlditool
+	
+	printOK
+
+	printEndList
+	
+	LOG_STATUS "dlditool successfully installed."
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleandlditool()
+{
+	LOG_STATUS "Cleaning dlditool build tree..."
+}
+
+
+
+
+
 ################################################################################
 ################################################################################
 # Ceylan
@@ -4989,6 +5134,8 @@ cleanCeylan_win()
 	LOG_STATUS "Cleaning Ceylan build tree..."
 	${RM} -rf "$repository/ceylan*"
 }
+
+
 
 
 ################################################################################
@@ -5588,6 +5735,10 @@ cleanOSDL_win()
 	LOG_STATUS "Cleaning OSDL build tree..."
 	${RM} -rf "$repository/osdl*"
 }
+
+
+
+
 
 
 
