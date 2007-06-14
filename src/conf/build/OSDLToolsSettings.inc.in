@@ -262,6 +262,35 @@ SDL_mixer_win_MD5="1b78fa15240ed14dc756f3168b757ccd"
 
 
 
+# Nintendo DS section.
+
+
+# DLDI tool and device patches : http://chishm.drunkencoders.com/DLDI/
+
+#dlditool_VERSION=""
+dlditool_ARCHIVE="dlditool-linux-x86.zip"
+dlditool_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
+#dlditool_ALTERNATE_DOWNLOAD_LOCATION=""
+dlditool_MD5="2bd98c3c2edd2c20f11d18f18446b89b"
+
+dldi_patch_ARCHIVE="sclt.dldi"
+dldi_patch_DOWNLOAD_LOCATION="${dlditool_DOWNLOAD_LOCATION}"
+dldi_patch_MD5="54f7b7fb323466202e19815b7bf1a81c"
+
+
+
+# devkitARM : http://www.devkitpro.org/category/devkitarm/
+
+
+devkitARM_VERSION="20"
+devkitARM_ARCHIVE="devkitARM_r${devkitARM_VERSION}-linux.tar.bz2"
+devkitARM_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/devkitpro"
+devkitARM_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/devkitpro"
+devkitARM_MD5="8f6d19782a4710b0c2f43f633002f965"
+
+
+
+
 # Ceylan (libCeylan.so) : http://ceylan.sourceforge.net
 
 # Ceylan can be retrieved from SVN or from a source code archive.
@@ -306,8 +335,10 @@ OSDL_SVN_SERVER=osdl.svn.sourceforge.net
 
 
 
+
 # Next to come may be : SDL_sound, PhysFS
 
 
 
 # End of OSDL tools definitions.
+
