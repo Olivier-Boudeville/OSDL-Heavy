@@ -29,8 +29,10 @@ else
 	else
 
 		# For the Nintendo DS we use the devkitPro-based toolchain :
-		#COMMON_BUILD_TOOLS="devkitARM libnds libnds_examples libfat dswifi"	
-		COMMON_BUILD_TOOLS="devkitARM"	
+		# (libnds not listed here anymore as now is provided by PALib)
+		
+		#COMMON_BUILD_TOOLS="devkitARM PAlib libnds_examples libfat dswifi"	
+		COMMON_BUILD_TOOLS="devkitARM PAlib dswifi"	
 		
 	fi
 	
@@ -599,32 +601,32 @@ preparedevkitARM()
 	cd $repository
 
 	if [ -n "$prefix" ] ; then	
-		devkitARM_PREFIX=${prefix}/devkitARM
+		devkitPRO_PREFIX=${prefix}/devkitPro
 	else
-		devkitARM_PREFIX=devkitARM
+		devkitPRO_PREFIX=devkitPro
 	fi
-
-	${MKDIR} -p ${devkitARM_PREFIX}
+	
+	${MKDIR} -p ${devkitPRO_PREFIX}
+	
 	
 	TAR_FILE="devkitARM_r${devkitARM_VERSION}-linux.tar"
 	
 	# Prevent archive from disappearing because of bunzip2.
 	{
 	
-		${CP} -f ${devkitARM_ARCHIVE} ${devkitARM_ARCHIVE}.save && ${BUNZIP2} -f ${devkitARM_ARCHIVE} && cd ${devkitARM_PREFIX} && tar -xvf "$repository/${TAR_FILE}" 
+		${CP} -f ${devkitARM_ARCHIVE} ${devkitARM_ARCHIVE}.save && ${BUNZIP2} -f ${devkitARM_ARCHIVE} && cd ${devkitPRO_PREFIX} && tar -xvf "$repository/${TAR_FILE}" 
 		
 	} 1>>"$LOG_OUTPUT" 2>&1
 		
 	if [ $? != "0" ] ; then
 		ERROR "Unable to extract ${devkitARM_ARCHIVE}."
 		DEBUG "Restoring ${devkitARM_ARCHIVE}."
-		cd $repository
+		cd "$repository"
 		${MV} -f ${devkitARM_ARCHIVE}.save ${devkitARM_ARCHIVE} 
 		exit 10
 	fi
 	
-	cd $repository
-	
+	cd "$repository"
 	${MV} -f ${devkitARM_ARCHIVE}.save ${devkitARM_ARCHIVE} 
 	${RM} -f "${TAR_FILE}"
 			
@@ -646,6 +648,37 @@ generatedevkitARM()
 	printOK
 	
 	printItem "installing"
+
+	devkitARM_PREFIX=${devkitPRO_PREFIX}/devkitARM
+
+	# Not depending on a prefix being set, needed in all cases :
+                
+	echo "# devkitARM section." >> ${OSDL_ENV_FILE}
+
+	echo "devkitARM_PREFIX=${devkitARM_PREFIX}" >> ${OSDL_ENV_FILE}
+	echo "export devkitARM_PREFIX" >> ${OSDL_ENV_FILE}
+	echo "PATH=\$devkitARM_PREFIX:\${PATH}" >> ${OSDL_ENV_FILE}		
+	echo "" >> ${OSDL_ENV_FILE}
+	
+	echo "# Needed for PAlib :" >> ${OSDL_ENV_FILE}
+	
+	echo "DEVKITPRO=${devkitPRO_PREFIX}" >> ${OSDL_ENV_FILE}
+	echo "export DEVKITPRO" >> ${OSDL_ENV_FILE}	
+	echo "" >> ${OSDL_ENV_FILE}
+
+	echo "DEVKITARM=${devkitARM_PREFIX}" >> ${OSDL_ENV_FILE}
+	echo "export DEVKITARM" >> ${OSDL_ENV_FILE}	
+	echo "" >> ${OSDL_ENV_FILE}
+		
+	PATH=${devkitARM_PREFIX}:${PATH}
+	export PATH
+	
+	DEVKITPRO=${devkitPRO_PREFIX}
+	export DEVKITPRO
+	
+	DEVKITARM=${devkitARM_PREFIX}
+	export DEVKITARM
+
 	printOK
 	
 	DEBUG "devkitARM successfully installed."
@@ -663,6 +696,312 @@ cleandevkitARM()
 }
 
 
+
+
+################################################################################
+# libnds : the low level library for Nintendo DS
+# (note : installed now with the PAlib package)
+################################################################################
+
+
+getlibnds()
+{
+	DEBUG "Getting libnds..."
+	launchFileRetrieval libnds
+	return $?
+}
+
+
+preparelibnds()
+{
+
+	DEBUG "Preparing libnds..."
+	
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
+	else
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
+		exit 14
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 15
+	fi		
+	
+	printBeginList "libnds     "
+	
+	printItem "extracting"
+	
+	cd $repository
+	
+	libnds_PREFIX=${devkitPRO_PREFIX}/libnds
+
+	${MKDIR} -p ${libnds_PREFIX}
+	
+	TAR_FILE="libnds-${libnds_VERSION}.tar"
+	
+	# Prevent archive from disappearing because of bunzip2.
+	{
+	
+		${CP} -f ${libnds_ARCHIVE} ${libnds_ARCHIVE}.save && ${BUNZIP2} -f ${libnds_ARCHIVE} && cd ${libnds_PREFIX} && tar -xvf "$repository/${TAR_FILE}" 
+		
+	} 1>>"$LOG_OUTPUT" 2>&1
+		
+	if [ $? != "0" ] ; then
+		ERROR "Unable to extract ${libnds_ARCHIVE}."
+		DEBUG "Restoring ${libnds_ARCHIVE}."
+		cd $repository
+		${MV} -f ${libnds_ARCHIVE}.save ${libnds_ARCHIVE} 
+		exit 10
+	fi
+	
+	cd $repository
+	
+	${MV} -f ${libnds_ARCHIVE}.save ${libnds_ARCHIVE} 
+	${RM} -f "${TAR_FILE}"
+			
+	printOK
+	
+}
+
+
+generatelibnds()
+{
+
+	DEBUG "Generating libnds..."
+
+	
+	printItem "configuring"
+	printOK	
+	
+	printItem "building"
+	printOK
+	
+	printItem "installing"
+	printOK
+	
+	DEBUG "libnds successfully installed."
+	
+	printEndList
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleanlibnds()
+{
+	LOG_STATUS "Cleaning libnds build tree..."
+}
+
+
+
+
+################################################################################
+# PAlib : a higher level library for Nintendo DS
+################################################################################
+
+
+getPAlib()
+{
+	DEBUG "Getting PAlib..."
+	launchFileRetrieval PAlib
+	return $?
+}
+
+
+preparePAlib()
+{
+
+	DEBUG "Preparing PAlib..."
+	
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi	
+	
+	printBeginList "PAlib      "
+
+	printItem "extracting"
+
+	cd $repository
+	
+			
+	# Extract prebuilt executable in installation repository :
+	{
+		cd ${devkitPRO_PREFIX} && ${UNZIP} -o "$repository/${PAlib_ARCHIVE}"
+	} 1>>"$LOG_OUTPUT" 2>&1
+		
+	if [ $? != "0" ] ; then
+		ERROR "Unable to extract ${PAlib_ARCHIVE}."
+		exit 10
+	fi
+	
+	cd $repository
+				
+	printOK
+	
+}
+
+
+generatePAlib()
+{
+
+	DEBUG "Generating PAlib..."
+
+	
+	printItem "configuring"
+	printOK	
+	
+	printItem "building"
+	printOK
+	
+	printItem "installing"
+
+	PAlib_PREFIX=${devkitPRO_PREFIX}/PAlib
+
+	# Not depending on a prefix being set, needed in all cases :
+                
+	echo "# PAlib section." >> ${OSDL_ENV_FILE}
+		
+	echo "PAlib_PREFIX=${PAlib_PREFIX}" >> ${OSDL_ENV_FILE}
+	echo "export PAlib_PREFIX" >> ${OSDL_ENV_FILE}
+	echo "" >> ${OSDL_ENV_FILE}
+	
+	echo "# Needed for PAlib internal use :" >> ${OSDL_ENV_FILE}
+	echo "PAPATH=${PAlib_PREFIX}" >> ${OSDL_ENV_FILE}
+	echo "export PAPATH" >> ${OSDL_ENV_FILE}	
+	echo "" >> ${OSDL_ENV_FILE}
+			
+	PAPATH=${PAlib_PREFIX}
+	export PAPATH
+	
+	printOK
+	
+	DEBUG "PAlib successfully installed."
+	
+	printEndList
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleanPAlib()
+{
+	LOG_STATUS "Cleaning PAlib build tree..."
+}
+
+
+
+################################################################################
+# dswifi : a library for Wifi management on the Nintendo DS
+################################################################################
+
+
+getdswifi()
+{
+	DEBUG "Getting dswifi..."
+	launchFileRetrieval dswifi
+	return $?
+}
+
+
+preparedswifi()
+{
+
+	DEBUG "Preparing dswifi..."
+
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
+	else
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
+		exit 14
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 15
+	fi		
+	
+	printBeginList "dswifi     "
+	
+	printItem "extracting"
+	
+	cd $repository
+	
+	# Do not mess too much with LOANI repository :
+	dswifi_repository="$repository/dswifi-${dswifi_VERSION}"
+	
+	${MKDIR} -p ${dswifi_repository}
+	
+	TAR_FILE="dswifi-${dswifi_VERSION}.tar"
+	
+	# Prevent archive from disappearing because of bunzip2.
+	{
+		${CP} -f ${dswifi_ARCHIVE} ${dswifi_ARCHIVE}.save && ${BUNZIP2} -f ${dswifi_ARCHIVE} && ${CP} -f ${TAR_FILE} ${dswifi_repository} && cd ${dswifi_repository} && tar -xvf ${TAR_FILE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+		
+	if [ $? != "0" ] ; then
+		ERROR "Unable to extract ${dswifi_ARCHIVE}."
+		DEBUG "Restoring ${dswifi_ARCHIVE}."
+		cd $repository
+		${RM} -rf ${dswifi_repository}
+		${MV} -f ${dswifi_ARCHIVE}.save ${dswifi_ARCHIVE} 
+		exit 10
+	fi
+	
+	cd $repository
+	${MV} -f ${dswifi_ARCHIVE}.save ${dswifi_ARCHIVE} 
+	${RM} -f "dswifi-${dswifi_VERSION}.tar"
+						
+	printOK
+	
+}
+
+
+generatedswifi()
+{
+
+	DEBUG "Generating dswifi..."
+
+	printItem "configuring"
+	printOK	
+	
+	printItem "building"
+	printOK
+	
+	printItem "installing"
+
+	# No real dswifi_PREFIX : will be integrated in PAlib directories.
+
+	${CP} -rf ${dswifi_repository}/lib/* ${PAlib_PREFIX}/lib
+	${CP} -rf ${dswifi_repository}/include/* ${PAlib_PREFIX}/include/nds
+	
+	printOK
+		
+	DEBUG "dswifi successfully installed."
+	
+	printEndList
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleandswifi()
+{
+	LOG_STATUS "Cleaning dswifi build tree..."
+	${RM} -rf ${dswifi_repository}
+}
 
 
 
