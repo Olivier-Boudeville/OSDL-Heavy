@@ -4475,6 +4475,7 @@ preparedlditool()
 {
 
 	LOG_STATUS "Preparing dlditool..."
+	
 	if findTool unzip ; then
 		UNZIP=$returnedString
 	else
@@ -4498,7 +4499,7 @@ preparedlditool()
 	
 	# Extract prebuilt executable in installation repository :
 	{
-		${UNZIP} ${dlditool_ARCHIVE} -d ${dlditool_PREFIX} 
+		${UNZIP} -o ${dlditool_ARCHIVE} -d ${dlditool_PREFIX} 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
