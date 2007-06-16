@@ -88,7 +88,9 @@
 			   		  <ul>
 						<li><a href="#twocpu">Two</a> general-purpose CPU to handle</li>					
 						<li>Activating only the relevant <a href="#subsystems">subsystems</a></li>			
-						<li>2D/3D <a href="#rendering">Rendering</a></li>		
+						<li>2D/3D <a href="#rendering">Rendering</a></li>		<li><a href="#sound">Sound</a> input and output</li>
+						<li><a href="#datastorage">Data storage</a> &amp; application ressources</li>
+						<li><a href="#inputdevice">Input device</a> management</li>
 						<li><a href="#wireless">Wireless</a> networking</li>	
 						<li><a href="#miscellaneous">Miscellaneous</a></li>
 					  </ul>	
@@ -402,7 +404,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	
 	<li>several <b>memory banks</b>, notably 4 MB (4096 kB) of built-in RAM, whose layout is somewhat complex but for the most part is shared by the two processors. There is an additional 656 KB of video RAM, and 64 kB of <a href="http://en.wikipedia.org/wiki/Static_random_access_memory" target="_blank">SRAM</a> intended for game saves</li>
 	
-	<li>one GPU (<em>Graphical Processing Unit</em>) made of two <b>advanced 2D rendering systems</b> (one for each screen) and a <b>3D rendering system</b>, able to offer various <a href="#3D">3D features</a>. It can render up to 120 000 triangles per second at 60 frames per second, a fill rate of about 30 million pixels per second. This is a completely custom chip integrated in the same chip as both ARM. It is <b>not</b> the PowerVR MBX that was announced by some <a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">sources</a></li>
+	<li>one GPU (<em>Graphical Processing Unit</em>) made of two <b>advanced 2D rendering systems</b> (one for each screen) and a <b>3D rendering system</b>, able to offer various <a href="#3D">3D features</a>. It can render up to 120 000 triangles per second at 60 frames per second, a fill rate of about 30 million pixels per second. This is a completely custom chip integrated in the same chip as both ARM. It is <b>not</b>, sadly, the PowerVR MBX that was announced by some <a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">sources</a></li>
 
 	<li>A <b>flashable</b> <a href="http://en.wikipedia.org/wiki/Firmware" target="_blank">firmware</a>, on NVRAM (Non-Volatile RAM)</li>
 	
@@ -1104,6 +1106,17 @@ Having the general hardware specifications and the relevant toolchain is not eno
 For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even if both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to rendering.
 </p>
 
+<p>Roughly speaking, the ARM9 can be somewhere between 1.5 and about 4 times faster than the ARM7, depending on what task is involved. ARM7 and ARM9 are often configured to use thumb mode (16bit). The reason for this in both cases is memory space : ARM7 has limited program space, whereas ARM9 has limited instruction cache space.
+</p>
+
+<p>
+Some applications manage to rely on very tight 32-bit loops that fit in the instruction cache, so that they can benefit from a more "powerful" instruction set.
+</p>
+
+<p>
+Monitoring the ARM loads is not easy, even when using emulators. Profiling can be done via timers : one can start some hardware timers when a task starts, and then stop and read them when the task is done. That information is rather precise, and you can use it to provide a lot of information about how much of the CPU power is being used; but it's a bit of a hassle to set up.
+</p>
+
 <p>
 The main built-in memory, consisting of one big block of 4MB memory, can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other.
 </p>
@@ -1203,19 +1216,44 @@ Selective activation is useful notably to save energy.
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
-
-
 <a name="rendering"></a>
 <h4>2D/3D Rendering</h4>
 
-<h5>2D Rendering</h5>
-
+<h5>Rendering in general</h5>
 <p>
-The system has two 2D engines, one per screen. These are each quite similar to the Game Boy Advance's single 2D engine, though more powerful.
+If the rendering takes place during the screen are redrawn, then the user will see on its screens images partly updated, leading to unwanted visual artefacts. The solution is to modify the screen content only between two redraws.
 </p>
 
 <p>
+ This can be done by waiting the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure it does not last more than the period between two VBI, i.e. 16 ms at 60 Hz 
+</p>
+
+<a name="2D"></a>
+<h5>2D Rendering</h5>
+
+<p>
+The system has two 2D engines, one per screen. Each screen can be put into a variety of different modes, with different feature sets. These engines are each quite similar to the Game Boy Advance's single 2D engine, though more powerful.
+</p>
+
+<p>
+In software you manipulate a main screen abstraction, that can be mapped either to the top actual screen or to the bottom one, and a sub screen, which will correspond to the other hardware screen. They can be swapped at any time thanks to <code>lcdSwap()</code>.
+</p>
+
+<p>
+The framebuffer mode is the easiest to directly draw to. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area will immediately result in their appearing on the screen. If it remains quite simple, it does not offer the various useful features offered by other modes, such as sprites, scrollings, etc., not to mention 3D primitives.
+</p>
+
+<p>
+In a given mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (alphablending). There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial</a> for more details. 
+</p>
+
+
+<p>
 At most 128 sprites are supported at a time, and there are up to four background layers (text, rotating/scaling, bitmap). 
+</p>
+
+<p>
+2D/3D rendering requires images, geometries, textures, etc. to render, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needing by your application.
 </p>
 
 <p>
@@ -1257,11 +1295,89 @@ The DS can render at most about 2048 triangles per scene as 60 frames per second
 There are 512 kB of texture memory per screen, and the maximum texture size is 1024x1024 pixels.
 </p>
 
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+<a name="sound"></a>
+<h4>Sound</h4>
+<p>
+Sound tends to consume a lot of CPU and RAM resources, hence the best is often to target first the hardware-supported features. 
+</p>
+
+<p>
+Only the ARM7 can access the sound hardware, so we somehow have to have the ARM9 notify the ARM7 that it wants to play a sound. 
+</p>
+
+<h5>Sound output</h5>
+<p>
+The sound mixing hardware is the best bet : it can manage 16 channels with about 5% memory bandwidth usage. Therefore using MOD-like soundtracks is favored, even by commercial games.
+</p>
+
+<p>
+With ogg/mp3 decoding, one would eat around 50% ARM9 or almost 100% of the ARM7 with a pretty low bitrate.
+</p>
+
+<p>
+Sample data can be assigned independently to any of the 16 channels. For a given channel, the playback frequency of the sample (ex : 22 050 Hz), the sample size (ex : 8bit) and the sample data length can be set, among other informations (channel enabled or not, looping mode or one shot, etc.)
+</p>
+
+<p>
+Sound output requires sound to play, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needing by your application.
+</p>
+
+<a name="soundinput"></a>
+<h5>Sound input</h5>
+<p>
+The built-in microphone can be used to perform some limited speech-recognition.
+</p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
 
+<a name="datastorage"></a>
+<h4>Data storage &amp; application ressources</h4>
+<p>
+
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+<a name="inputdevice"></a>
+<h4>Input device management</h4>
+
+<h5>Keys</h5>
+<p>
+For all keys except X and Y, there is a read-only hardware register that can be read by either of the ARM to tell whether they are pressed or released. As for the X and Y keys, their state is available thanks to another register that can only be read from the ARM7.
+</p>
+
+<p>
+For the ARM9 to have these last two keys, the ARM7 can read their state during the VBI and send them to the ARM9 thanks to the IPC structure. Two non-key informations can be transmitted that way too : the hinge state (open or closed) and  the stylus state (down or up , i.e. whether on the touchscreen or not).
+</p>
+
+<p>
+ PAlib offers abstractions to read easily the key states, hiding the VBI interrupt, the ARM7/ARM9 IPC communication and the different bit set conventions. 
+</p>
+
+<p>
+Note that the key state is read 60 times per second. It implies that if a key was pressed and released fast enough (it would be quite difficult though), it would not be detected. Another method, more robust, is event-based : each keypress can be detected thanks to a specific interrupt. Then no key change can be lost.
+</p>
+
+
+<h5>Touchscreen</h5>
+<p>
+
+</p>
+
+<h5>Microphone</h5>
+<p>
+The built-in <a href="#soundinput">microphone</a> can be used to perform some limited speech-recognition, or to detect the user blowing air, shouting at it, etc..
+</p>
+
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 <a name="wireless"></a>
 <h4>Wireless networking</h4>
@@ -1295,6 +1411,20 @@ The built-in Wifi support allows the DS to communicate (with a theoretical bandw
 Most of these informations come from the listed <a href="#detailedhardware">hardware resources</a>.
 </p>
 
+<h5>Game Logic</h5>
+<p>
+We saw in the <a href="#rendering">rendering section</a> that screen updates are in most cases hard-realtime synchronized. For the overall game logic as well, a simple infinite <code>while()</code> loop in the <code>main()</code> function would not be very convenient, as either it would run at a random pace (depending on the amount of tasks to be performed on each iteration), or it would require to monitor the time interval between two iterations and to compute accordingly the behaviour of each simulated game actor. You then enter the realm of equation robustness against too high timesteps, etc.
+</p>
+
+<p>
+These are real issues in the PC world where no two hardware platforms behave the same and where uncoupling all subtasks (audio/video rendering, AI, input reading, network management, etc.) becomes soon a nightmare, but in the console world the situation is somewhat simpler : everything ought to be hardwired and paced according to the same clock, here the 60 Hz rhythm provided by the VBI. 
+</p>
+
+<p>
+Instead of putting that logic code is the VBI handler, the best way is to keep the <code>while()</code> loop in the <code>main()</code> function, but to make each iteration end with a request for the DS to sleep until next interrupt occurs (with libnds one would use <code>swiWaitForVBlank()</code>). Therefore both rendering and logic will run at a predictable 60 Hz, and thanks to the sleeps the DS will exhaust its batteries later.
+</p>
+
+
 <h5>MMU</h5>
 <p>
 The DS does not have a Memory Management Unit (<a href="http://en.wikipedia.org/wiki/Memory_management_unit" target="_blank">MMU</a>), a hardware component responsible for handling memory accesses requested by the CPU, notably to enable virtual memory management, memory protection, cache control, bus arbitration or bank switching.
@@ -1313,7 +1443,7 @@ The DS contains both divide and square root accelerators.
 
 <h5>16/32 bit</h5>
 <p>
-The ARM7 processor supports both 32-bit and 16-bit instructions via the ARM and Thumb instruction sets. 16-bit code is smaller than 32-bit one and, in some specific cases, faster (usually slower though).
+The ARM7 processor supports both 32-bit and 16-bit instructions via the ARM and Thumb instruction sets. 16-bit code is smaller than 32-bit one and, in some specific cases, faster (usually slower though). 16-bit code is often preferred, as it has more chances to fit in the tiny instruction caches.
 </p>
 
 <p>
