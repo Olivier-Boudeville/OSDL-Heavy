@@ -38,9 +38,9 @@
 <a name="quickstart"></a>
 <h2>Three-step two-line quick guide for the impatient and the fearless UNIX OSDL end-user</h2>
 <p>
-Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LOANI-0.5.zip</a> or  <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.gz">LOANI-0.5.tar.gz</a>, extract it, execute <code>loani.sh --buildTools</code> as your normal user to have OSDL, Ceylan and all their prerequesites, including the whole build chain, automatically and safely downloaded, extracted, configured, compiled and built together for you. That's all !</p>
+Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LOANI-0.5.zip</a> or  <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.gz">LOANI-0.5.tar.gz</a>, extract it, execute <code>loani.sh --buildTools</code> as your normal user to have OSDL, Ceylan and all their prerequesites, including the whole build chain, automatically and safely downloaded, extracted, configured, compiled and built together for you, when targeting the PC. If cross-compiling for the Nintendo DS, just add : <code>--nds</code>. That's all !</p>
   
-  <a name="toc"></a>
+<a name="toc"></a>
 <h2>Table of contents</h2>
 <p>
   <center>
@@ -68,8 +68,7 @@ Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LO
   <p>LOANI stands for <b>Lazy OSDL's Automatic Net Installer</b>.
   Its purpose is to simplify as much as possible the installation of OSDL and its pre requesites on supported platforms, notably Windows and most UNIX platforms, including GNU/Linux. Human beings tend to be lazy, and we really understand there are much more enjoyable activities than to painfully install an intricate list of cyclic dependencies in order to have one's library working. That's why it ought to be automated.</p>
 
-  <p>Some operating systems, such as GNU/Linux with for example the Debian or Gentoo distributions, automate software installations with a package system. However it does not discard the need of tools like LOANI, as we must compile with dedicated options specific versions of helper libraries. Most often package managers do not let easily choose the options sets and/or offer too old versions and/or patch them inaccurately. For example, SDL_image did not build with gcc higher than 3.4, and needs to be configured with JPEG, PNG support, but not TIFF one. LOANI takes in charge that task automatically and without complaining.</p>   
-  
+  <p>Some operating systems, such as GNU/Linux with for example the Debian or Gentoo distributions, automate software installations with a package system. However it does not discard the need of tools like LOANI, as we must compile with dedicated options specific versions of helper libraries. Most often package managers do not let easily choose the options sets and/or offer too old versions and/or patch them inaccurately. For example, SDL_image did not build with gcc higher than 3.4, and needs to be configured with JPEG, PNG support, but not TIFF one. LOANI takes in charge that task automatically and without complaining.</p>     
   <p>
   That's why we imagined LOANI : the simpliest shell script (on the user side) that performs everything on your behalf and cooks you a brand new OSDL-compliant environment from scratch, with almost no effort but the typing of a simple line : <code>loani.sh</code>.
   </p>
@@ -129,17 +128,19 @@ LOANI is released under the <a href="http://www.gnu.org/licenses/gpl.html" targe
 <a name="provide"></a>
   <h2>What LOANI provides</h2>
 
-  <p>LOANI is a user-friendly tool for OSDL, which can let you choose one or more tool selections and will automatically retrieve, configure, compile, install and link together the corresponding
-  tools in their relevant versions.</p>
+  <p>LOANI is a user-friendly tool for OSDL, which can let you choose one or more tool selections and will automatically retrieve, configure, compile, install and link together the corresponding tools in their relevant versions.</p>
   
   <p>
 	All the managed tools are free software (free of charge and open source). 
   </p>
 
+<p>
+Only basic settings are described here : should the Nintendo DS environment be selected (thanks to the <code>--nds</code> command-line option), the software set would differ drastically. The toolchain would then be based on devkitARM, dlditool, libnds, PA_lib, libfat, dswifi, etc., although it would lead finally to Ceylan and OSDL as well (after quite different paths). See our <a href="../main/documentation/misc/nintendo-DS/HomebrewForDS.html#tools" target="_blank">tool section</a> in our DS homebrew guide for more details.
+</p>
 
 	<h3>Required tools selection</h3>
 	<p>
-	This tool selection is mandatory for OSDL's functioning, therefore no specific option has to be passed to LOANI to have it managed. Following prequesites are managed, with dependencies shown (LOANI manages all the dependency tree, i.e. the prerequesites of prerequesites, and so on) :
+	This tool selection is mandatory for OSDL's functioning, therefore no specific option has to be passed to LOANI to have it taken into account. Following prequesites are managed, with dependencies shown (LOANI manages all the dependency tree, i.e. the prerequesites of prerequesites, and so on) :
 	
 	<center>
     <img src="LOANI-dependencies.png" alt="Depencies managed by LOANI"></img>
@@ -525,10 +526,6 @@ This is loani.sh, the famous Lazy OSDL Automatic Net Installer.
 </pre>
 
 <pre>
-Usage : loani.sh [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ 
--sourceforge &lt;user name&gt; ] [ --buildTools ] [ --optionalTools] [ --allTools] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix &lt;a
-path&gt; ] [ --repository &lt;a path&gt; ] [ --noLog ] [ --noClean ] [ -h | --help ]
-
 
 Usage : loani.sh  [ -d | --debug ] 
 		  [ -s | --strict ] 
@@ -539,7 +536,8 @@ Usage : loani.sh  [ -d | --debug ]
 		  [ --sourceforge &lt;user name&gt; ]
 		  [ --buildTools ] 
 		  [ --optionalTools ] 
-		  [ --allTools ] 
+		  [ --allTools ]
+		  [ --nds ] 
 		  [ --setEnv ] 
 		  [ --fetchonly ]
 		  [ --all ] 
@@ -565,6 +563,7 @@ Options :
         --buildTools              : retrieve and install common build tools too (ex : gcc, binutils, gdb)  
         --optionalTools           : retrieve and install optional tools too (ex : doxygen, dot, tidy)
         --allTools                : retrieve all tools (required, build, optional tools)
+        --nds                     : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
         --setEnv                  : set full developer environment (ex : bash, nedit configuration)
         --fetchonly               : only retrieve (download in cache) pre requesite, do not install them
         --all                     : install all and set all
@@ -814,7 +813,7 @@ We hope you will enjoy using LOANI and OSDL !
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update : Tuesday, May 1, 2007</em>
+    <em>Last update : Thursday, June 14, 2007</em>
 	
   </center>
 </body>
