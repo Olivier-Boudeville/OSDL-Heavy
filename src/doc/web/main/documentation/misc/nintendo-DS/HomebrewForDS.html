@@ -290,11 +290,11 @@ FAT is for the moment favored over other filesystems by most homebrewers, mainly
 </p>
 
 <p>
-Finally in my case the full equipment cost me only 265 euros.
+Finally in my case the full equipment cost only 265 euros.
 </p>
 
 <a name="limitations"></a>
-<h4>Some limitations for the seasoned homebrewer though : transfering files to the DS</h4>
+<h4>Some limitations for the seasoned homebrewer though : transferring files to the DS</h4>
 
 <p>
 Such removable media (as microSD) are not the magic bullet for the frantic homebrewer : to anticipate a bit on further subjects, when generating programs for the DS from your PC, to test them you may either execute them "in place", directly on your PC thanks to <a href="#emulators" target="_blank">DS emulators</a> (but they do not behave always as a DS would behave) or you have to send them to the DS by one way or another. This can be done thanks to the aforementioned microSD card, but it soon becomes tedious to swap again and again the card and its adapter. 
@@ -391,7 +391,11 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 		<li>an <b>ARM7</b> : <a href="http://en.wikipedia.org/wiki/ARM7TDMI" target="_blank">ARM7TDMI</a>, co-processor, 33 MHz, about 20 MIPS, 16-bit/32-bit RISC</li>
 	  </ul>
 	</p>
-	
+
+	<p>
+	Both can be running code at the same time. 
+	</p>
+
 	<p>
 	The ARM (<em>Arcos Risc Machine</em>) family is quite widespread on embedded devices, and is known to be small, cheap and power-savvy. The Nintendo 64 offered roughly 100 MIPS, PlayStation 2 and PSP (PlayStation Portable) roughly 560 MIPS, GameCube 980 MIPS. According to some sources, the DS processors are under-clocked to save some power. Some people <a href="http://youtube.com/watch?v=PYIvASbELkw" target="_blank">overclocked</a> them, which involves quite some electronical skills and risks</p>
 	</li>
@@ -452,7 +456,7 @@ More low-level informations about the DS hardware :
 	
 	<li><a href="http://neimod.com/dstek/" target="_blank">DS Tek</a></li>
 	<li><a href="http://nocash.emubase.de/gbatek.htm" target="_blank">GBATEK</a></li>
-    <li><a href="http://auia.net/ds/" target="_blank">NDSTech</a></li>
+	<li><a href="http://auia.net/ds/" target="_blank">NDSTech</a></li>
 	<li><a href="http://www.dev-scene.com/NDS/Tutorials_Day_2" target="_blank">Dev-Scene tutorial</a></li>
 	
 </ul>
@@ -516,7 +520,7 @@ One can find several file extensions for Nintendo ROM. Each extension has a <a h
 </p>
 
 <p>
-Their sole purpose is to contain binaries (i.e. executables) for the two ARMs and, most often, application-specific data, stored as a unique flat file or as a full filesystems, in one or more files, each filesystem containing in turn files and directories. To be run from the GBA ROM (slot-2), they should include a loader that transfers them to the RAM.
+Their sole purpose is to contain binaries (i.e. executables) for the two ARMs and, most often, application-specific data (icons, bitmaps, sounds, etc.), stored as a unique flat file or as a full filesystems, in one or more files, each filesystem containing in turn files and directories. To be run from the GBA ROM (slot-2), they should include a loader that transfers them to the RAM.
 </p>
 
 
@@ -1001,7 +1005,7 @@ More precisely main.o, that provides the <code>main()</code> function, will be l
 </p>
 
 <p>
-From <code>Keyboard.bin</code>, <code>Keyboard.nds</code> (at last, a ROM file !) will be generated thanks to <code>devkitARM/bin/ndstool</code>. Note that <code>Keyboard.bin</code> contains everything but the executable for the ARM7. This one is here retrieved from a precompiled default version, a kind of template, in <code>arm7.bin</code>.
+From <code>Keyboard.bin</code>, <code>Keyboard.nds</code> (at last, a ROM file !) will be generated thanks to <code>devkitARM/bin/ndstool</code>, whose role is to combine the two executables and the data resources into a single file ready for DS distribution. Note that <code>Keyboard.bin</code> contains everything but the executable for the ARM7. This one is retrieved here from a precompiled default version, a kind of template, located in <code>arm7.bin</code>.
 </p>
 
 <p>
@@ -1054,10 +1058,18 @@ Though the imitation is not always perfect, emulators have progressed a lot. For
 
 	<p>
 	To do so, <a href="http://www.desmume.com/download.htm" target="_blank">download</a> DeSmuME latest stable version, unzip it, and simply run <code>wine NDeSmuME.exe</code>. In the <code>File</code> menu, you can select <code>Open and Execute</code>, and choose your .nds file (ex : <code>Keyboard.nds</code>). You should then be able to test it immediately
+<center>
+    <img src="DeSmuME-screenshot.png" alt="DeSmuME"></img>
+</center>
 	</p>
 	</li>
 	
-     <li><a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a> should be used with Wine too. Just <a href="http://nocash.emubase.de/no$gba-w.zip" target="_blank">download</a> it, unzip it, run <code>wine NO\$GBA.EXE</code> and select, this time, your .ds.gba file (ex : <code>Keyboard.ds.gba</code>)</li>
+     <li><a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a> should be used with Wine too. Just <a href="http://nocash.emubase.de/no$gba-w.zip" target="_blank">download</a> it, unzip it, run <code>wine NO\$GBA.EXE</code> and select, this time, your .ds.gba file (ex : <code>Keyboard.ds.gba</code>)
+<center>
+    <img src="NoCashGBA-screenshot.png" alt="NO$GBA"></img>
+</center>
+
+</li>
 	 
     <li><a href="http://dualis.1emu.net/dsti.html" target="_blank">Dualis</a> (not tested; known to be faster than NO$GBA, but now unable to manage libfat unless FCSR drivers are used)</li>
 	
@@ -1101,11 +1113,58 @@ The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inte
 </p>
 
 <p>
-Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is convenient to send a notification to the other CPU when for example there is data for it to be read on a shared area in RAM, once the calling CPU has finished filling it.
+Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is convenient to send a notification to the other CPU when for example there is data for it waiting to be read on a shared area in RAM, once the calling CPU has finished filling it.
 </p>
 
 <p>
 As a consequence the DS ROM has to include at least two executables, one for each of the ARM (not mentioning application-specific data). At runtime the executables will have to work simultaneously, which involves often having to be synchronized and to share data. 
+</p>
+
+
+<h5>ARM7 role</h5>
+
+<p>
+The ARM7 is the only CPU that can be used for controlling the touchscreen. Most applications use boilerplate code that sets up an interrupt handler for the <em>Vertical Blank Interrupt</em> (VBI). This interrupt occurs once each frame (each time the screen is redrawn), hence it provides a hard real-time 60Hz time-base.
+VBI is useful to draw on the each screen while it is not being refreshed : doing so allows to avoid disturbing visual artefacts.
+</p>
+
+<p>
+This time-base can be used for synchronization too. It is what interests us here, so that an interrupt handler dedicated to ARM7 input reporting can be scheduled regularly. The ARM7 boilerplate code gets the value of the touchscreen parameters and stores them in a data structure we can access from the ARM9.
+</p>
+
+<p>
+devkitPro includes a default ARM7 program to handle basic tasks like interrupts, touchscreen, etc. It is the <code>arm7.bin</code> discussed in our <a href="#building">building</a> section. Usually there is no need to write custom ARM7 code. The standard Makefiles include this default ARM7 program.
+</p>
+
+
+<h5>ARM9 role</h5>
+
+<p>
+Due to its superior power compared to the ARM7, the ARM9 is the main processor and as such will take in charge most of the work. Application-specific code is expected to run on it.
+</p>
+
+<p>
+A single <code>main()</code> function defines usually :
+<ol>
+
+	<li>an <b>initialization</b> stage, to set screen modes, memory banks, interrupt handlers, to initialize various libraries (ex : PAlib, libfat, dswifi, etc.) and to perform as many tasks as possible (ex : loading the resources from mass storage, setting up Wifi connections, etc.)</li>
+
+	<li>a <b>main loop</b>, in charge of : 
+		<ul>
+
+		<!--
+		        <li><b></b> : </li>
+		-->
+
+  		     <li><b>game logic</b>, including any AI algorithms</li>
+  		     <li><b>input management</b>, partly read from the ARM7 (touchscreen, some keys)</li>
+  		     <li><b>audio and video rendering</b>, partly managed by the 2D/3D engines too</li>
+  		     <li><b>I/O exchanges</b> with a mass storage device, if any</li>
+		</ul>
+	</li>
+
+	<li>a <b>shutdown</b> stage, to stop all subsystems properly, including flushing write buffers (closing files, unmounting mass storage, etc.), stopping the Wifi connections, etc.</li>
+</ol>
 </p>
 
 
