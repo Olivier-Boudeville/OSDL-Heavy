@@ -50,17 +50,17 @@
 			<li><b></b> : </li>
 		-->
 
-					<li>a <a href="#buytheconsole">console</a></li>
-					<li>some recommended <a href="#accessories">accessories</a></li>
-					<li>required <a href="#addons">add-ons</a></li>
+					<li>A <a href="#buytheconsole">console</a></li>
+					<li>Some recommended <a href="#accessories">accessories</a></li>
+					<li>Required <a href="#addons">add-ons</a></li>
 					
 				</ul>
 		       <a href="#inaction">The console in action, with and without its add-ons</a><br>
 			   
 		       <a href="#hardware">Hardware resources</a><br>
 			   <ul>	   
-					<li>the console <a href="#innerconsole">inner workings</a></li>
-					<li>the <a href="#cartridges">cartridges</a></li>
+					<li>The console <a href="#innerconsole">inner workings</a></li>
+					<li>The <a href="#cartridges">cartridges</a></li>
 				</ul>	
 					   
 		       <a href="#thirdparty">Using some third-party software</a><br>
@@ -72,23 +72,31 @@
 			   
 		       <a href="#programmingDS">Programming the DS</a><br>
 			   <ul>
-			   		<li>Gathering the adequate <a href="#tools">tools</a> for homebrew</li>
-					<li> <a href="#usinghardware">Using the hardware</a><br>
+			   		<li>Gathering the <a href="#tools">adequate tools</a> for homebrew</li> 
+					<ul>
+						<li>the compiler toolchain, with <a href="#devkitarm">devkitARM</a>
+						<li>the low-level library, <a href="#libnds">libnds</a>
+						<li>a FAT library, <a href="#libfat">libfat</a> 
+						<li>a library to manage Wifi, <a href="#dswifi">dswifi</a> 
+						<li>an (optional) higher level library, <a href="#palib">PAlib</a></li>
+					</ul>
+						
+			   		<li><a href="#building">Building</a> your first DS program</li>
+					<li><a href="#testing">Testing</a> your first DS program</li>
+
+					<li> <a href="#usinghardware">Using effectively the hardware</a><br>
 			   		  <ul>
 						<li><a href="#twocpu">Two</a> general-purpose CPU to handle</li>					
 						<li>Activating only the relevant <a href="#subsystems">subsystems</a></li>			
 						<li>2D/3D <a href="#rendering">Rendering</a></li>		
 						<li><a href="#wireless">Wireless</a> networking</li>	
-						<li><a href="#miscellaneous">Miscellaneous</a></li>								  </ul>	
+						<li><a href="#miscellaneous">Miscellaneous</a></li>
+					  </ul>	
 					</li>
-					
 							   
-				</ul>		   
+			   </ul>		   
 			   
-		       <a href="#toolchain">Developing your own software : using the toolchain</a>
-		       <a href="#forlinux">Linux on DS</a><br>
-		       <a href="#applications">Homebrew applications &amp; games</a><br>
-		       <a href="#otherlinks">Some interesting links</a><br>
+		       <a href="#otherinfos">Some other information sources</a><br>
 
           </div>
 
@@ -109,7 +117,7 @@ The goal here is to develop applications, mostly games, to be run on the <a href
 </p>
 
 <p>
-Portable development will be kept in mind, as having one's game working both on a DS and on a PC is quite enjoyable.
+Portable development will be kept in mind, as having one's game working both on a DS and on a PC is quite enjoyable. In this guide the C/C++ language will be favored. The development platform will be a standard PC, preferably using GNU/Linux.
 </p>
 
 <p>
@@ -285,8 +293,8 @@ FAT is for the moment favored over other filesystems by most homebrewers, mainly
 Finally in my case the full equipment cost me only 265 euros.
 </p>
 
-
-<h4>Some limitations for the seasoned homebrewer though</h4>
+<a name="limitations"></a>
+<h4>Some limitations for the seasoned homebrewer though : transfering files to the DS</h4>
 
 <p>
 Such removable media (as microSD) are not the magic bullet for the frantic homebrewer : to anticipate a bit on further subjects, when generating programs for the DS from your PC, to test them you may either execute them "in place", directly on your PC thanks to <a href="#emulators" target="_blank">DS emulators</a> (but they do not behave always as a DS would behave) or you have to send them to the DS by one way or another. This can be done thanks to the aforementioned microSD card, but it soon becomes tedious to swap again and again the card and its adapter. 
@@ -390,7 +398,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	
 	<li>several <b>memory banks</b>, notably 4 MB (4096 kB) of built-in RAM, whose layout is somewhat complex but for the most part is shared by the two processors. There is an additional 656 KB of video RAM, and 64 kB of <a href="http://en.wikipedia.org/wiki/Static_random_access_memory" target="_blank">SRAM</a> intended for game saves</li>
 	
-	<li>one GPU (<em>Graphical Processing Unit</em>) made of two <b>advanced 2D rendering systems</b> (one for each screen) and a <b>3D rendering system</b>, able to offer various <a href="#3D">3D features</a>. It can render up to 120 000 triangles per second at 60 frames per second, a fill rate of about 30 million pixels per second. The chip is adapted from the one of the Sega Dreamcast, a 120 MHz PowerVR MBX (RS version) [<a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">More info</a> (in French)]</li>
+	<li>one GPU (<em>Graphical Processing Unit</em>) made of two <b>advanced 2D rendering systems</b> (one for each screen) and a <b>3D rendering system</b>, able to offer various <a href="#3D">3D features</a>. It can render up to 120 000 triangles per second at 60 frames per second, a fill rate of about 30 million pixels per second. This is a completely custom chip integrated in the same chip as both ARM. It is <b>not</b> the PowerVR MBX that was announced by some <a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">sources</a></li>
 
 	<li>A <b>flashable</b> <a href="http://en.wikipedia.org/wiki/Firmware" target="_blank">firmware</a>, on NVRAM (Non-Volatile RAM)</li>
 	
@@ -419,6 +427,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 The ARM RISC architecture is heavily inspired from the <em>GameBoy Advance</em> one. Both have an ARM7 (but the DS one is running at 66 MHz instead of 33 MHz), explaining partly the very good retrocompatibility of DS for GBA, and the DS hardware is quite close to the one of PocketPC devices. The performances are expected to be somewhat near the Nintendo 64 ones.
 </p>
 
+<a name="memorylayout"></a>
 <p>
 See the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">diagram explaining the DS memory layout</a> on Dev-Scene website.
 </p>
@@ -522,10 +531,11 @@ The most frequent extensions are :
 -->
 
 	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : 
-	this binary for the DS embeds the two executables needed, and optionally some appended data, but it was designed to be run from RAM filled from the slot-1, hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used, generally provided by the menu loader of the flash cart device.</p>
+	this binary for the DS embeds the two executables needed, one for each ARM, and optionally some appended data. This file format was designed to be run from RAM filled from the slot-1, hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used, generally provided by the menu loader of the flash cart device.</p>
 	
 	<p>Some newer .nds put nevertheless a loader, which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it's a corrupted GBA header. An external loader is then needed again.
 	</p>
+	
 	<p>
 	.nds files are made of a (NDS) header, then a region dedicated to the ARM7, then a region dedicated to the ARM9, then the data, for example a filesystem. The FlashMe + WMB method and GBA Movie Player support .nds files. They are often used with slot-1 cards, such as M3 and DS-X
 	</p>
@@ -709,7 +719,7 @@ On the DS this OS is provided thanks to <a href="http://en.wikipedia.org/wiki/DS
 </p>
 
 <p>
-It can be <a href="http://kineox.free.fr/DS/" target="_blank">installed</a> quite easily :
+It can be <a href="http://kineox.free.fr/DS/" target="_blank">installed</a> quite easily (this can be taken in charge through LOANI too, see <a href="#loaninds">below</a>) :
 <ol>
 <!--
 	<li><b></b> : </li>
@@ -769,73 +779,151 @@ The terminal output is on the top screen :
 <h2>Programming the DS</h2>
 
 
-
 <a name="tools"></a>
-<h3>Gathering the adequate <a href="#tools">tools</a> for homebrew</h3>
-
-
-<h4>libnds</h4>
+<h3>Gathering the adequate tools for homebrew</h3>
 
 <p>
-<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>
-<a href="http://www.devkitpro.org/" target="_blank">Devkitpro</a>
-<a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>
+Quite a few languages can use sources directly taken from the DS. They are mostly interpreted : there are ports for python, perl or lua, maybe one day Erlang. Some of them are expected to be run from DSLinux.  
 </p>
 
-<h4>PA_lib</h4>
-
 <p>
-<a href="https://sourceforge.net/projects/pands/" target="_blank">PA_lib on SourceForge</a>
-PA_Lib is a library, similar to HAM for the GameBoy Advance, that runs on top of libnds. Why another library? Well, because it makes Nintendo DS programming even simpler. If you are one of those hardcore coders, then you probably will not be interested in PA_Lib. However, if you want to dive right in to DS development, and you want to focus on coding and not figuring out all the ins and outs of the hardware, etc, then this is probably the way to go.
+As for C/C++, one would need a full build toolchain, since these languages are compiled instead of being interpreted. No native toolchain is available directly from the DS : it would demand more RAM than the built-in 4 MB (hence specific flash carts would be required), compilation would be long, and the development process would be quite painful.
 </p>
 
-<a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib's DS Dev Wiki Tutorial</a>
-
-
-<a href="http://tobw.net/dswiki" target="_blank">DS Developing Wiki</a>
+<p>
+Therefore the development process starts usually on a computer rather than on the DS : the built binaries are cross-compiled, i.e. they are generated on a PC but according to the conventions of another architecture, so that they can be executed finally on this target architecture (here, the DS). This is quite common in embedded environments.
+</p>
 
 <p>
-<ul>
-<!--
-    <li><a href="" target="_blank"></a></li>
--->
- Devkitpro : compiler toolchain : http://www.devkitpro.org/
- libnds : 
- 	http://www.devkitpro.org/
- 	http://www.drunkencoders.com/documents/DS/ndslib.htm
-	 http://en.wikipedia.org/wiki/Libnds
- SDL port : http://gpf.dcemu.co.uk/ndsSDL.shtml
- DLDI : 
- 	http://chishm.drunkencoders.com/DLDI/
-	http://www.playeradvance.org/forum/archive/index.php/t-4813.html
- libfat : http://chishm.drunkencoders.com/libfat/index.html
+Once the programs are compiled and linked, they can be tested in place, i.e. on the PC thanks to DS emulators, or they can be <a href="#limitations">transferred</a> to the DS and run on it.
+</p>
 
-</ul>
- 
+<p>
+We consider here that you have the basic tools installed on your computer, notably a text editor (vi, emacs, nedit, etc.) or an IDE (KDevelop, etc), and the <code>GNU make</code> program.
+</p>
+
+<p>
+Most of the tools that will be mentioned here (i.e. devkitARM, libnds, libfat, dswifi, PAlib, DeSmuME, NO$GBA), plus dlditool, can be installed by hand or thanks the <a href="http://osdl.sourceforge.net/OSDL-latest/LOANI.html" target="_blank">LOANI</a> script, provided by OSDL for GNU/Linux users. One just has to download latest LOANI archive and to run :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+./loani.sh --nds --buildTools
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+to have them automatically downloaded, extracted and installed in their OSDL reference version, ready to be used. All these tools are open source.
+</p>
+
+<p>
+See <a href="http://www.dev-scene.com/NDS/Tutorials_Day_1#Installation_Of_Tools" target="_blank">Dovoto's tutorial</a> and <a href="http://www.devkitpro.org/setup.shtml" target="_blank">Dave Murphy's guide</a> (maintainer of devkiptARM) for more information about the installation of tools.
+</p>
+
+<p>
+Note that the devkitARM tools are designed to run on 32-bit architectures. If your PC uses a 64-bit processor you will need the <code>ia32-libs</code> for Debian-based distributions.
 </p>
 
 
-<!-- ########################################################################-->
-<a name="emulators"></a> 
-<h3>Emulators</h3>
+
+
+<a name="devkitarm"></a>
+<h4>First : the compiler toolchain, with devkitARM</h4>
+
 <p>
-<ul>
-http://www.ndsemulator.com
+We need the common build tools to generate binaries from our C/C++ sources : a preprocessor, a (ARM) compiler and a linker (not related to the cartridges, just a software) that knows the DS ROM <a href="romformats">formats</a> and its <a href="#memorylayout">memory</a> layout.
+</p>
 
- on Linux ? desmume or nocash with wine
+<p>
+Tools for commercial developers are not available for homebrewers but, luckily, there is an alternative toolchain, whose name is <a href="http://www.devkitpro.org/" target="_blank">devkitpro</a>. This toolchain is adapted from the <a href="http://en.wikipedia.org/wiki/GNU_Compiler_Collection" target="_blank">GCC</a> one. Its supports many consoles besides the DS (GameBoy Advance, GP32, Playstation Portable and GameCube). DS are ARM-based, hence we need <a href="http://www.devkitpro.org/category/devkitarm/" target="_blank">devkitARM</a>, which provides everything we need (and more). </p>
 
-<!--
-    <li><a href="" target="_blank"></a></li>
--->
+<p>
+Installing devkitARM on UNIX is straightforward : one just has to <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=124207" target="_blank">download</a> latest stable version and extract it. Nothing more needs to be done, as the toolchain is prebuilt here : you downloaded the appropriate binaries, and there is not real point in recreating them from their sources.
+</p>
 
-    <li><a href="http://dualis.1emu.net/dsti.html" target="_blank">Dualis</a></li>
-    <li><a href="http://www.desmume.com/" target="_blank">DeSmuME</a></li>
-    <li><a href="http://www.ndsemulator.com/nintendo-ds/ideas-download.htm" target="_blank">Ideas</a></li>
-    <li><a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a></li>
-    <li><a href="" target="_blank"></a></li>
-    <li><a href="" target="_blank"></a></li>
-</ul>
- 
+<p>With devkitARM you will be able to write programs with the classical C/C++ constructs. But what about text output ? Graphics ? Touchpad or key input ? The C/C++ language and runtime do not really provide these features natively, but you can do everything yourself. You just have to figure out for example that at address <code>0x4000000</code> there is a 32-bit register that you can write to, in order to control the display. Even if most relevant <a href="detailedhardware">informations</a> are available, your time and patience might be quite quickly exhausted. Thus you can use a low level library instead, that would spare you these efforts. This is the task of libnds.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="libnds"></a>
+<h4>Second : the low-level library, libnds</h4>
+
+<p>
+<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touch screen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the dswifi library.
+</p>
+
+<p>
+It is not libnds purpose to give you advanced components that would do all the work for you. It is just a thin layer that will abstract a bit hardware facilities, thanks to suitable low-level primitives which will hide unwanted technical details, such as the actual location of registers in memory.
+</p>
+
+<p>
+libnds is thin enough not to imply tradeoffs : compared to ad hoc lowest level programming, using it will not hinder anything or result in a loss of performance. 
+</p>
+
+<p>
+Hence if you are not making a full use of libnds, most of the time it is that you chose to rely on higher level libraries.
+</p>
+
+<p>
+The installation of libnds is trivial (just a matter of extracting the latest <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608" target="_blank">archive</a>). If you plan to use PAlib, libnds will be provided with it, no need for a specific libnds install then.
+</p>
+
+<p>
+One can use also the <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=159894" target="_blank">libnds examples</a> to learn how to use the library. They are not installed by LOANI currently.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="libfat"></a>
+<h4>Third : a FAT library, libfat</h4>
+
+<p>
+Most applications and games need some way of reading and writing from and to non-volatile media, and to access it as a filesystem rather than, say, a sequence of data blocks. This is useful notably to read resource files (images, sounds, etc.) and to write highscores, settings and saved games.
+</p>
+
+<p>
+In the case of the DS many filesystems could be used, but one of them, FAT16, is by far the most common. To manage such filesystems, a dedicated library, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>, can be used. It depends on libnds, both of which being packaged as part of DevkitPro.
+</p>
+
+<p>
+With libfat files can be managed almost exactly as they would be on POSIX systems. Directories follows different conventions.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+<a name="dswifi"></a>
+<h4>Fourth : a library to manage Wifi, dswifi</h4>
+
+<p>
+<a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=199021" target="_blank">dswifi</a> offers a low level interface to the DS Wifi connectivity. Access points, connexions, IP adresses, frames and packets can be easily handled thanks to that library.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+<a name="palib"></a>
+<h4>Fifth : an (optional) higher level library, PAlib</h4>
+
+<p>
+<a href="http://www.palib.info" target="_blank">PAlib</a> (<a href="https://sourceforge.net/projects/pands/" target="_blank">alternate site</a> on Sourceforge) is one of those abstracting libraries. It is built on top of libnds and offers various higher-level integrated services to the homebrewer.
+</p>
+
+<p>
+Like HAM for the GameBoy Advance, its intended public is developers wanting to use the most time-effective methods to write their software. Hardware purists often consider any library beneath libnds being useless (bloating software), restrictive or performance-killer. One should try both ways. As for me, I found interesting to use first libnds only, to learn how things work. Once done, anything allowing to gain some time sounds interesting to me, and I would not like to reinvent the wheel too often. So I use PAlib for most of my needs.  
+</p>
+
+<p>
+To install it, follow <a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib's tutorial</a> or use LOANI.
 </p>
 
 
@@ -843,8 +931,160 @@ http://www.ndsemulator.com
 
 
 
+<a name="building"></a>
+<h3>Building your first DS program</h3>
+
+<p>
+Now has come the time for a first test. LOANI users should first source the <code>LOANI-installations/OSDL-environment.sh</code> file to update their environment : <center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+. OSDL-environment.sh
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+ 
+ 
+<p>
+Then let's build some tests : go for example in <code>devkitPro/PAlibExamples/Input/Keyboard/Keyboard</code> and just execute <code>make</code>. It will read the <code>Makefile</code> and generate, from the sources (in <code>source/main.c</code>), the corresponding ROM : <code>Keyboard.ds.gba</code>, <code>Keyboard.nds</code> and
+<code>Keyboard.sc.nds</code> (all occupying around 95 ko). Refer to our section about <a href="#romformats">ROM formats</a> for a reminder of their respective role.
+</p>
+
+<p>
+Something similar to this should occur :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+&gt; make<br>
+main.c<br>
+arm-eabi-g++ -g -mthumb-interwork -mno-fpu -LYourLOANIDir/LOANI-0.5/LOANI-installations/devkitPro/PAlib/lib -specs=ds_arm9.specs main.o -LYourLOANIDir/LOANI-0.5/LOANI-installations/devkitPro/PAlib/lib -lpa9 -LYourLOANIDir/LOANI-0.5/LOANI-installations/devkitPro/libnds/lib -lfat -lnds9 -ldswifi9 -o build.elf<br>
+Nintendo DS rom tool 1.33 - Jan 27 2007 16:00:04<br>
+by Rafael Vuijk, Dave Murphy,  Alexei Karpenko<br>
+built ... Keyboard.ds.gba<br>
+dsbuild 1.21 - Jan 28 2007<br>
+using default loader<br>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>
+To decrypt a bit, the Makefile will try to rebuild target <code>$(OUTPUT).ds.gba</code>, whose name is deduced from the current directory (here, Keyboard). To build <code>Keyboard.ds.gba</code>, <code>Keyboard.nds</code> is needed, which in turns implies <code>Keyboard.bin</code> exists, then <code>Keyboard.elf</code>, then <code>$(OFILES)</code>. This variable contains all the object files needed, deduced from the source code (<code>*.c, *.cpp</code>) but also from the resources to be embedded (ex : <code>*.jpg, *.bmp</code>, etc.).
+</p>
+
+<p>
+Thus the first thing is to obtain these object files. The C++ compiler for ARM (<code>arm-eabi-g++</code>) is called to generate an object file, main.o, for the ARM9, from main.c. Have a look at this file, this is the main one you are expected to write on the future. 
+</p>
+
+<p>
+Once all the object files are created, they can be aggregated by the linker (here, <code>arm-eabi-g++</code> again) in <code>Keyboard.elf</code> (ELF for <code>External Link Format</code>).
+</p>
+
+<p>
+More precisely main.o, that provides the <code>main()</code> function, will be linked (statically; no dynamic linking available on the DS) with PAlib (<code>-lpa9</code> refers to <code>libpa9.a</code>, 9 for the ARM9), which itself uses some helper libraries : libfat, libnds9, dswfi9, even if simple this example do not use them all. Linking with unused libraries will not make your ROM bigger : they will not be included if really not used.
+</p>
+
+<p>
+<code>Keyboard.elf</code> can then be converted in <code>Keyboard.bin</code> by <code>arm-eabi-objcopy</code>, whose role is to copy and translate object files from a given format to another.
+</p>
+
+<p>
+From <code>Keyboard.bin</code>, <code>Keyboard.nds</code> (at last, a ROM file !) will be generated thanks to <code>devkitARM/bin/ndstool</code>. Note that <code>Keyboard.bin</code> contains everything but the executable for the ARM7. This one is here retrieved from a precompiled default version, a kind of template, in <code>arm7.bin</code>.
+</p>
+
+<p>
+Finally the <code>devkitARM/bin/dsbuild</code> executable is used to generate <code>Keyboard.ds.gba</code> from <code>Keyboard.nds</code>. This involves adding a slot-2 loader. 
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="testing"></a>
+<h3>Testing your first DS program</h3>
+
+<p>
+You have two options here : either the ROM must come one way or another to the DS (transfer), or the DS must come to the ROM and the PC (emulation). 
+</p>
+
+
+<h4>Transferring</h4>
+<p>
+The most obvious method is to transfer your ROM, here <code>Keyboard.sc.nds</code>, to your DS : copy it to, say, your microSD card, insert that card in your DS and run the ROM, for example thanks to the SuperCard menu. That should work.
+</p>
+
+<p>
+This method has however two drawbacks. The minor one is that on some computers, notably laptops like mine, Linux support for SD card is still quite limited, and often you end up with mounting, reading or writing problems. The major drawback is, even if the SD are well recognized, it becomes soon tiedous to swap the card again and again between its adapter on PC and the DS. For most people, the developing process requires too frequent tests to do so.     
+</p>
+
+<p>
+Using a Wifi transfer, preferably thanks to a router, could do the trick, and be more convenient than the card swap. One could use DSLinux for a SSH or FTP transfer followed by a reboot. This is not necessarily the best solution ever though. As for cable (parallel, USB, etc.), as already discussed, they either require soldering efforts or are quite expensive. 
+</p>
+
+
+<h4>Emulating</h4>
+
+<p>
+The second method for testing your programs is to use an <a href="http://en.wikipedia.org/wiki/Emulator" target="_blank">emulator</a>. This will allow a PC to mimic your DS, so that you can test in-place the (approximated) result of your ROM.
+</p>
+
+<p>
+Though the imitation is not always perfect, emulators have progressed a lot. For the Linux user, in decreasing order of interest, one should use :
+<ol>
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+    <li>
+	<p>
+	<a href="http://www.desmume.org/" target="_blank">DeSmuME</a> : there is a <a href="http://desmume.org/?p=19" target="_blank">Linux</a> version and Debian packages, based on a <a href="http://gpf.dcemu.co.uk/ndsSDL.shtml" target="_blank">SDL</a> port. Some people prefer to run the Windows version from Wine (<code>apt-get install wine</code> for Debian-based distributions). 
+	</p>
+
+	<p>
+	To do so, <a href="http://www.desmume.com/download.htm" target="_blank">download</a> DeSmuME latest stable version, unzip it, and simply run <code>wine NDeSmuME.exe</code>. In the <code>File</code> menu, you can select <code>Open and Execute</code>, and choose your .nds file (ex : <code>Keyboard.nds</code>). You should then be able to test it immediately
+	</p>
+	</li>
+	
+     <li><a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a> should be used with Wine too. Just <a href="http://nocash.emubase.de/no$gba-w.zip" target="_blank">download</a> it, unzip it, run <code>wine NO\$GBA.EXE</code> and select, this time, your .ds.gba file (ex : <code>Keyboard.ds.gba</code>)</li>
+	 
+    <li><a href="http://dualis.1emu.net/dsti.html" target="_blank">Dualis</a> (not tested; known to be faster than NO$GBA, but now unable to manage libfat unless FCSR drivers are used)</li>
+	
+    <li><a href="http://www.ndsemulator.com/nintendo-ds/ideas-download.htm" target="_blank">Ideas</a> (not tested)</li>
+	
+    <li><a href="http://www.ndsemulator.com/nintendo-ds/ensata.htm" target="_blank">Ensata</a> (not tested; illegal material leaked from Nintendo, according to some sources)</li>
+	
+</ol>
+</p>
+
+<p>
+See also the <a href="http://www.ndsemulator.com/" target="_blank">NDSEmulator.com</a> site.
+</p>
+
+
+<p>
+Having the general hardware specifications and the relevant toolchain is not enough to be able to program effectively the DS : there is still additional informations to gather before being able to write full-blown applications for it.
+</p>
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
 <a name="usinghardware"></a>
-<h3>Using the hardware</h3>
+<h3>Using effectively the hardware</h3>
 
 <a name="twocpu"></a>
 <h4>Two general-purpose CPU to handle</h4>
@@ -945,22 +1185,6 @@ The system's 3D hardware can perform a lot of operations :
 </ul>
 </p>
 
-<p>
-According to <a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">this source</a> (in French), the 3D hardware is a <a href="http://www.arm.com/community/display_product.php?ProductId=2099&display=" target="_blank">PowerVR MBX R-S</a>, a.k.a. <em>PowerVR MBX Lite</em>, which would offer as well :
-<ul>
-
-<!--
-	<li><b></b> : </li>
--->
-	<li>bi-linear, tri-linear and anisotropic texture filtering</li>
-	<li>ambient, diffuse and specular lighting</li>
-	<li>multi-texturing</li>
-	<li>environmental bump mapping</li>
-	<li>full screen anti-aliasing, with a minimal overhead</li>
-	<li>texture compression</li>
-	<li>render to window, multiple windows</li>
-</ul>
-</p>
 
 <p>
 Character rendering might have a blocky appearance due to Point (nearest neighbor) texture filtering. 2D sub-pixel glyph rendering could be used though, as it is done with the TextViewer homebrew.
@@ -1058,66 +1282,9 @@ There are eight incrementing 16bit timers, four for each CPU.
 
 
 
-<!-- ########################################################################
 
-Following T2 and T3.2 :
-
-Packages to be downloaded from DevKitPro at Sourceforge :
-http://sourceforge.net/project/showfiles.php?group_id=114505
-
-devkitARM_r20-linux.tar.bz2 (released 2007-01-28) :
-http://downloads.sourceforge.net/devkitpro/devkitARM_r20-linux.tar.bz2?modtime=1170066539&big_mirror=0
-
-libnds-20070503.tar.bz2 (released 2007-05-03) :
-http://downloads.sourceforge.net/devkitpro/libnds-20070503.tar.bz2?modtime=1178236312&big_mirror=0
-
-PAlib070323.zip (released 2007-03-23)
-http://sourceforge.net/project/showfiles.php?group_id=142901&package_id=157025
-
-dswifi-0.3.1.tar.bz2 (released 2007-05-03)
-http://downloads.sourceforge.net/devkitpro/dswifi-0.3.1.tar.bz2?modtime=1178235032&big_mirror=0
-
-> ls /home/sye/Projects/LOANI-0.4/LOANI-installations/Nintendo-DS-development
-devkitARM_r20-linux.tar.bz2  libnds-20070503.tar.bz2
-dswifi-0.3.1.tar.bz2         PAlib070323.zip
-
-tar xvjf devkitARM_r20-linux.tar.bz2
-
-mkdir libnds && cd libnds && mv ../libnds-20070503.tar.bz2 . && tar xvjf libnds-20070503.tar.bz2
-
-renommer PAlib pour ne pas avoir PAlib/PAlib
-mkdir PAlib && cd PAlib && mv ../PAlib070323.zip && unzip PAlib070323.zip
-
-mkdir dswifi && cd dswifi && tar xvjf dswifi-0.3.1.tar.bz2  
-
-> ls /home/sye/Projects/LOANI-0.4/LOANI-installations/Nintendo-DS-development
-devkitARM/  dswifi/  libnds/  PAlib/
-
-mkdir -p PAlib/include/nds && cp dswifi/include/* PAlib/PAlib/include/nds
-mkdir PAlib/lib && cp dswifi/lib/* PAlib/lib
-
-In PAlib/PAlib/lib/arm7/ModFile.c : #include <NDS.h> -> #include <nds.h>
-
-
-Nouvel essai 
-
-Dans PAlib il y a déjà libnds, avec wifi, fat, etc. -> pas besoin de MAJ avec une version probablement incompatible !
-
-Donc on rajoute juste devkitarm
-dans PAlib/lib/arm7/ModFile.c : #include <NDS.h> -> #include <nds.h>
-puis cd PAlib
-
-make...ça marche !!!
-
-sous PAlib/Emulators on peut lancer un 'wine DeSmuME.exe'
-
-sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds via wine cela marche aussi
-
-
--->
-
-
-<!-- ########################################################################-->
+<a name="otherinfos"></a>
+<h2>Some other information sources</h2>
 
 
 
@@ -1135,9 +1302,9 @@ sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds 
 	
     <li>[T2] <a href="http://www.dev-scene.com/NDS/Tutorials" target="_blank">Devoto</a>'s tutorial : a really good one</li>
 	
-    <li>[T3] <a href="http://www.playeradvance.org/forum/showthread.php?t=4277" target="_blank">PA_lib for Linux</a></li>
+    <li>[T3] <a href="http://www.playeradvance.org/forum/showthread.php?t=4277" target="_blank">PAlib for Linux</a> (1/2)</li>
 	
-    <li>[T4] <a href="http://www.palib.info/wiki/doku.php" target="_blank">PA_lib for Linux</a></li>
+    <li>[T4] <a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib for Linux</a> (2/2)</li>
 	
     <li>[T5] <a href="http://user.chem.tue.nl/jakvijn/tonc " target="_blank">TONC</a></li>
 	
@@ -1145,7 +1312,7 @@ sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds 
 	
     <li>[T7] <a href="http://www.drunkencoders.com/index.php?system_id=1&page=Tutorials" target="_blank">drunkencoders</a> tutorials</li>
 
-    <li>[T8] <a href="http://scorpei.com/TBGTDSHB/The_Beginners_Guide_To_NDS_Homebrew.pdf" target="_blank">Running Nintendo DS homebrew</a>, by Simon van de Berg. Helps to understand and choose linkers [PDF]</li>
+    <li>[T8] <a href="http://scorpei.com/TBGTDSHB/The_Beginners_Guide_To_NDS_Homebrew.pdf" target="_blank">Running Nintendo DS homebrew</a> [PDF], by Simon van de Berg. Helps to understand and choose linkers</li>
 	
 </ul>
 
@@ -1181,7 +1348,7 @@ sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds 
     <li><a href="" target="_blank"></a></li>
 -->
 
-    <li><a href="irc://penguin.uk.eu.blitzed.org" target="_blank">Dev-Scene IRC</a> (channel : #dsdev)</li>
+    <li><a href="irc://irc.blitzed.org" target="_blank">Dev-Scene IRC</a> (channel : #dsdev)</li>
 
     <li><a href="irc://irc.freenode.net" target="_blank">DSLinux IRC</a> (channel : #DSLinux)</li>
 	
@@ -1248,6 +1415,7 @@ sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds 
 
     <li><a href="http://www.warioworld.com/" target="_blank">WarioWorld</a>, software development support group (for professionals, authorized Nintendo developers and licensees). Nintendo only accepts official companies with a game development team, and sufficient experience in certain areas for their official developer support program. Small structures are expected to find a "Nintendo-certified" publisher prior to submit their games</li>
 
+    <li><a href="http://tobw.net/dswiki" target="_blank">DS Developing Wiki</a></li>
 
     <li>Resources in French :
 	<ul>
@@ -1259,7 +1427,7 @@ sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds 
     	<li><a href="http://www.gamebe.com/articles/lire/4/nintendo-ds-r-evolution/" target="_blank">Présentation de la DS</a></li>
 
     	<li><a href="http://www.portabledev.com/pages/ds/tutoriels/tutos.-chris-double" target="_blank">Traduction des tutoriels de Chris Double</a> </li>
-	</ul>
+	
     	<li>Les <a href="http://mobiles.gx-mod.com/modules/tutos/index.php?id=37" target="_blank">linkers pour DS</a></li>
 		
     	<li><a href="http://www.playeradvance.org/forum/showthread.php?t=4277" target="_blank">Installation de PALib sous Linux</a></li>
@@ -1267,10 +1435,8 @@ sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds 
     	<li>Présentation de <a href="http://playeradvance.org/forum/showthread.php?t=5340" target="_blank">Moonshell</a>, <a href="http://www.supercard-france.info/index.php?option=com_content&task=view&id=19&Itemid=78" target="_blank">installation</a> (sous Windows)</li>
 
     	<li>Informations sur la <a href="http://www.supercard-france.info/" target="_blank">SuperCard</a>, notamment pour <a href="http://www.supercard-france.info/index.php?option=com_content&task=view&id=29&Itemid=141" target="_blank">la mettre à jour</a></li>
-
--    	<li><a href="" target="_blank"></a></li>
-
--	</li>
+	</ul>
+	</li>
 
 		
 </ul>
@@ -1295,7 +1461,7 @@ sous PAlibExamples/Text/Normal/HelloWorld make marche et produit HelloWorld.nds 
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Monday, June 11, 2007</em>
+    <em>Last update : Friday, June 15, 2007</em>
   </center>
 </body>
 </html>
