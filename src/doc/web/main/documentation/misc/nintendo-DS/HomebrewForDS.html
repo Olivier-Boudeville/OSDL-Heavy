@@ -288,7 +288,7 @@ To use your micro-SD, you should first format it in <b>FAT</b> (i.e. FAT16, not 
 </p>
 
 <p>
-FAT is for the moment favored over other filesystems by most homebrewers, mainly because it is adequate for small size storage media, and for the sake of simplicity : there already exists a library for it on the DS, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>.
+FAT is for the moment favored over other filesystems by most homebrewers, mainly because it is adequate for small size storage media, and for the sake of simplicity : there already exists a library for it on the DS, <a href="#libfat">libfat</a>.
 </p>
 
 <p>
@@ -836,7 +836,6 @@ Note that the devkitARM tools are designed to run on 32-bit architectures. If yo
 
 
 
-
 <a name="devkitarm"></a>
 <h4>First : the compiler toolchain, with devkitARM</h4>
 
@@ -1102,11 +1101,15 @@ Having the general hardware specifications and the relevant toolchain is not eno
 
 <a name="twocpu"></a>
 <h4>Two general-purpose CPU to handle</h4>
+
+<h5>Respective intended use &amp; performance</h5>
+
 <p>
 For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even if both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to rendering.
 </p>
 
-<p>Roughly speaking, the ARM9 can be somewhere between 1.5 and about 4 times faster than the ARM7, depending on what task is involved. ARM7 and ARM9 are often configured to use thumb mode (16bit). The reason for this in both cases is memory space : ARM7 has limited program space, whereas ARM9 has limited instruction cache space.
+<p>
+Roughly speaking, the ARM9 can be somewhere between 1.5 and about 4 times faster than the ARM7, depending on what task is involved. ARM7 and ARM9 are often configured to use thumb mode (16bit). The reason for this in both cases is memory space : ARM7 has limited program space, whereas ARM9 has limited instruction cache space.
 </p>
 
 <p>
@@ -1118,19 +1121,13 @@ Monitoring the ARM loads is not easy, even when using emulators. Profiling can b
 </p>
 
 <p>
-The main built-in memory, consisting of one big block of 4MB memory, can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other.
-</p>
-
-<p>
-The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-process communication</em>) based on a set of registers, managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. 
-</p>
-
-<p>
-Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is convenient to send a notification to the other CPU when for example there is data for it waiting to be read on a shared area in RAM, once the calling CPU has finished filling it.
-</p>
-
-<p>
 As a consequence the DS ROM has to include at least two executables, one for each of the ARM (not mentioning application-specific data). At runtime the executables will have to work simultaneously, which involves often having to be synchronized and to share data. 
+</p>
+
+
+<h5>CPU &amp; Memory</h5>
+<p>
+The main built-in memory, consisting of one big block of 4MB memory, can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other.
 </p>
 
 
@@ -1180,6 +1177,32 @@ A single <code>main()</code> function defines usually :
 </ol>
 </p>
 
+<h5>Inter-CPU communication</h5>
+
+<p>
+As each ARM has specific abilities (ex : the ARM7 is the only one that can access the hardware for sound and wireless), they have to communicate to send to the other ARM commands to be executed on the sender behalf.
+</p>
+
+<p>
+The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-process communication</em>) based on a set of registers, managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to a <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queue</a> with an asynchronous communication protocol.
+</p>
+
+<p>
+More precisely, commands can be described by the ARM9 in a data structure for the ARM7, for example a C union or a non-abstract C++ child class inheriting from an abstract command class. These commands should specify the requested action (ex : play sound) and its associated data (ex : a pointer to the samples stored in main memory). A set of commands can then be kept in shared memory, accessible by the ARM7 and ARM9. The command set can be implemented thanks to a circular C array or a C++ (FIFO) std::queue that would be instanciated into a specific memory region. libnds defines its starting address at <code>IPC</code> and its length thanks to <code>TransferRegion</code>.
+</p>
+
+<p>
+So the ARM9, after having initalized the queue, is expected to place a command in it whenever needed, whereas the ARM7 is expected to poll regularly the queue (ex : thanks to the VBI) in order to gather and execute commands.
+</p>
+
+<p>
+Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is convenient to send a notification to the other CPU when for example there is data for it waiting to be read on a shared area in RAM, once the calling CPU has finished filling it.
+</p>
+
+<p>
+See <a href="http://www.double.co.nz/nintendo_ds/nds_develop6.html" target="_blank">Chris Double tutorial</a> for more details about IPC. 
+</p>
+
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
@@ -1211,7 +1234,6 @@ Second, most subsystems of the DS can be powered independently : sound speakers,
 <p>
 Selective activation is useful notably to save energy.
 </p>
-
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
@@ -1247,7 +1269,6 @@ The framebuffer mode is the easiest to directly draw to. A <em>framebuffer</em> 
 In a given mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (alphablending). There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial</a> for more details. 
 </p>
 
-
 <p>
 At most 128 sprites are supported at a time, and there are up to four background layers (text, rotating/scaling, bitmap). 
 </p>
@@ -1282,7 +1303,6 @@ The system's 3D hardware can perform a lot of operations :
 </ul>
 </p>
 
-
 <p>
 Character rendering might have a blocky appearance due to Point (nearest neighbor) texture filtering. 2D sub-pixel glyph rendering could be used though, as it is done with the TextViewer homebrew.
 </p>
@@ -1310,15 +1330,19 @@ Only the ARM7 can access the sound hardware, so we somehow have to have the ARM9
 
 <h5>Sound output</h5>
 <p>
-The sound mixing hardware is the best bet : it can manage 16 channels with about 5% memory bandwidth usage. Therefore using MOD-like soundtracks is favored, even by commercial games.
+Relying on the sound mixing hardware is the best bet : it can manage 16 channels with about 5% memory bandwidth usage. Therefore using MOD-like soundtracks is favored, even by commercial games.
 </p>
-
+ 
 <p>
 With ogg/mp3 decoding, one would eat around 50% ARM9 or almost 100% of the ARM7 with a pretty low bitrate.
 </p>
 
 <p>
-Sample data can be assigned independently to any of the 16 channels. For a given channel, the playback frequency of the sample (ex : 22 050 Hz), the sample size (ex : 8bit) and the sample data length can be set, among other informations (channel enabled or not, looping mode or one shot, etc.)
+Sample data can be assigned independently to any of the 16 channels. For a given channel, the playback frequency of the sample (ex : 22 050 Hz), the sample size (ex : 8bit) and the sample data length can be set, among other informations (channel enabled or not, looping mode or one shot, etc.). Stereo sound can be output, with panning from left to right for example.
+</p>
+
+<p>
+Sample data also need to be passed to the hardware in raw format, i.e. as a series of uncompressed samples without any header. This is not the case of the most usual formats (wav, mp3, OggVorbis, etc.), therefore they have to be converted one way or another (beforehand or by the program itself, at start-up or in-game) to the expected raw format. This can be done thanks to the <a href="http://sox.sourceforge.net/" target="_blank">sox</a> tool, or thanks to the <code>wav2gba</code> tool. More info about the conversion can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
 </p>
 
 <p>
@@ -1337,31 +1361,120 @@ The built-in microphone can be used to perform some limited speech-recognition.
 
 <a name="datastorage"></a>
 <h4>Data storage &amp; application ressources</h4>
-<p>
 
+<h5>Linking the data directly in a ARM executable</h5>
+<p>
+This is the simplest method, but it provides only limited space, as the whole ROM (including the data) will have to fit in the 4MB of built-in RAM and as the executables for each ARM must be under specific thresholds (64 kB for the ARM7). Only read-only access to the data will be possible.
+</p>
+
+<p>
+The data has to be converted to an object file (*.o) thanks to objcopy (actually <code>arm-elf-objcopy</code>) before being linked with the other object files in the the executable that will need them, thanks to the linker (actually <code>arm-elf-g++</code>). For sounds it will be likely by the ARM7, the only one able to access the sound hardware, in the unlikely case where the only 64 kB permitted are enough. Otherwise the data can be linked to the ARM9 executable. More info about the data embedding in executables can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
+</p>
+
+
+<h5>Using the non-volatile RAM available in slot-2 cartridges</h5>
+
+<p>
+Gameboy Advance cartridges (slot-2) have a 64 kB place where data can be stored and retrieved, notably for game save. DS can use it, including in order to feed a program with data from the slot 2. 
+</p>
+
+<p>
+This area is called SRAM, but it should be understood as Save RAM, and not the usual <a href="http://en.wikipedia.org/wiki/Static_random_access_memory" target="_blank">Static RAM</a> : it is non-volatile memory, its data will be kept even if the DS is switched off.
+</p>
+
+<p>
+The GBA cartridge memory must be mapped to either the ARM7 or the ARM9 (then wait a few millisecond before accessing it). Before writing to it, the cartridge ID should be checked to ensure there is a cartridge indeed and that the homebrew (maybe downloaded by Wifime) will not write over a commercial cartridge. It is done by reading 4 bytes from a given address in ROM space and by <a href="http://www.double.co.nz/nintendo_ds/nds_develop5.html" target="_blank">checking</a> whether the four bytes form the string <code>PASS</code>.
+</p>
+
+<p>
+All reads and writes to the SRAM must be 8 bits at a time (neither 16 nor 32-bit). These accesses can be performed anywhere in the SRAM memory space, and do not have to follow any specific rule. Therefore anything can be stored here : texts, images, sounds, etc. A good practise is to write at the beginning of this memory a small header that helps identifying the structure of the data being stored.
+</p>
+
+<p>
+Some flash cartridges have more than one SRAM space, but apparently only one of them can be easily accessed.
+</p>
+
+<p>
+More info about reading from SRAM can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop5.html" target="_blank">here</a>.
+</p>
+
+
+<h5>Reading the data from a filesystem</h5>
+<p>
+Instead of decreasing the available RAM by adding data to executables, one may access selectively the cartridge, as a filesystem, and retrieve only the chunks of chosen files taken from a directory tree.
+</p>
+
+<p>
+With that method you can organize your data in as many files as you wish, and more important you are only limited by the size of the game cartridge, which is huge (up to 2 GB and more) compared to the other traditional storage locations in the DS. The main drawback is that it implies a cartridge must be used and your program must be stored on it. This method will not work for Wifi-downloadable applications.
+</p>
+
+
+<h6>Choosing a filesystem</h6>
+<p>
+The <a href="#romformats">.nds</a> ROM format and others offer space for a filesystem., and a buit-in filesystem too. The <em>ndstool</em> program can be used to add and remove files from it. Unfortunately there are no homebrew libraries available yet that allow reading this filesystem from the DS hardware.
+</p>
+
+<p>
+Fortunately several other filesystems can be used, including the ancestor GBFS (<em>Gameboy Advance Filesystem</em>) and its successor, and now recommended, <code>libfat</code>, a library to manage (read/write/list) the FAT16 filesystem. It features better reentrancy support, cleaner source code, is built as a proper library and packaged as part of <a href="#devkitARM">devkitPro</a>.
+</p>
+
+
+<h6>Using a filesystem</h6>
+<p>
+The method to use most filesystems is quite simple : one gathers first, on a PC, all the files to be stored on the ROM filesystem, sorted according to the target directory structure. 
+</p>
+
+<p>
+Then a tool is used to create a single file that contains the filesystem (including these files). That file is then simply appended to the program binary. In some cases the program binary must be padded to a 256 byte boundary beforehand, thanks to the  <code>padbin</code> tool, ex : <code>padbin 256 MyProgramBinary.nds</code>. Then the filesystem can be simply appended, ex : <code>cat MyProgramBinary.nds MyFileSystem.fat &gt; MyProgram.nds</code>.
+</p>
+
+<p>
+Finally the DS program have to use filesystem-specific code to manipulate its own ROM-embedded filesystem. It requires including the corresponding headers (ex : <code>#include &lt;fat.h&gt;</code>), initializing the filesystem support (ex : <code>fatInitDefault()</code>), and using the provided primitives to manipulate files (ex : <code>fopen</code>, <code>fread</code>, etc. like in POSIX systems) and directories (ex : <code>diropen</code>, <code>dirnext</code>, etc. here in a libfat-specific way).  
+</p>
+
+<p>
+Note that with libfat both slot-1 and slot-2 memory can be accessed, and simultaneously. More info about the recommended lifat can be found <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">here</a>.
+</p>
+
+<p>
+More info about the mostly deprecated GBFS can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop6.html" target="_blank">here</a>.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
 
 
 <a name="inputdevice"></a>
 <h4>Input device management</h4>
 
 <h5>Keys</h5>
+
 <p>
 For all keys except X and Y, there is a read-only hardware register that can be read by either of the ARM to tell whether they are pressed or released. As for the X and Y keys, their state is available thanks to another register that can only be read from the ARM7.
 </p>
 
 <p>
-For the ARM9 to have these last two keys, the ARM7 can read their state during the VBI and send them to the ARM9 thanks to the IPC structure. Two non-key informations can be transmitted that way too : the hinge state (open or closed) and  the stylus state (down or up , i.e. whether on the touchscreen or not).
-</p>
-
-<p>
- PAlib offers abstractions to read easily the key states, hiding the VBI interrupt, the ARM7/ARM9 IPC communication and the different bit set conventions. 
+For the ARM9 to have these last two keys, the ARM7 can read their state during the VBI and send them to the ARM9 thanks to the IPC structure. Two non-key informations can be transmitted that way too : the hinge state (open or closed) and  the stylus state (down or up , i.e. whether it is on the touchscreen or not).
 </p>
 
 <p>
 Note that the key state is read 60 times per second. It implies that if a key was pressed and released fast enough (it would be quite difficult though), it would not be detected. Another method, more robust, is event-based : each keypress can be detected thanks to a specific interrupt. Then no key change can be lost.
+</p>
+
+<p>
+On the contrary, most user keypresses last for more than a VBI period (16 ms). Such a keypress should not be interpreted as multiple keypresses though, even if multiple iterations of the main loop in a row saw that key pressed. 
+</p>
+
+<p>
+For example, if a key is used to pause/unpause a game, the user would press it once, but the program would interpret it as a series of pause and unpause requests, whose length would be random, depending how many VBI were elapsed. 
+</p>
+
+<p>
+Actually current key state is far less interesting than key transition : even if knowing that a key is pressed might be useful, knowing that this key just went from the released state to the pressed state (or the opposite) is still more useful. libnds allows that thanks to the <code>scanKeys</code>, <code>keysHeld</code>, <code>keysDown</code>, etc. primitives. 
+</p>
+
+<p>
+ PAlib offers abstractions to read easily the key states, hiding the VBI interrupt, the ARM7/ARM9 IPC communication and the different bit set conventions, and offering transitional reads. 
 </p>
 
 
@@ -1443,11 +1556,11 @@ The DS contains both divide and square root accelerators.
 
 <h5>16/32 bit</h5>
 <p>
-The ARM7 processor supports both 32-bit and 16-bit instructions via the ARM and Thumb instruction sets. 16-bit code is smaller than 32-bit one and, in some specific cases, faster (usually slower though). 16-bit code is often preferred, as it has more chances to fit in the tiny instruction caches.
+The ARM7 processor supports both 32-bit and 16-bit instructions via respectively the ARM and Thumb instruction sets. 16-bit code is smaller than 32-bit one and, in some specific cases, faster (usually slower though). 16-bit code is often preferred, as it has more chances to fit in the tiny instruction caches. Moreover the size of ARM7 code must be 64 kB or smaller.
 </p>
 
 <p>
-The ARM9 is a full 32-bit CPU.
+The ARM9 is a full 32-bit CPU, but may be programmed in 16-bit too.
 </p>
 
 
@@ -1457,8 +1570,13 @@ Various subsystems (power management, firmware, touchscreen, sound volume and co
 </p>
 
 <h5>DMA</h5>
+
 <p>
-There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU : the ARM9, if it does not access to main memory, can continue its work while the DMA transfer is going on.
+A <a href="http://en.wikipedia.org/wiki/Direct_memory_access" target="_blank">DMA</a> (<em>Direct Memory Access</em>) copy is basically a fast, CPU efficient, hardware accelerated copy : it allows certain hardware subsystems within the DS to access system memory for reading and/or writing independently of the CPU.
+</p>
+
+<p>
+There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU : the ARM9, if it does not access to main memory, can continue its work while the DMA transfer is going on, resulting in data transfer with much less CPU overhead.
 </p>
 
 <h5>Timers</h5>
