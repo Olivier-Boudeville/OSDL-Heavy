@@ -123,7 +123,7 @@ Portable development will be kept in mind, as having one's game working both on 
 </p>
 
 <p>
-Most of the informations here came from homebrew websites and IRC discussions, many thanks to the fearless homebrewers !
+Most of the informations here came from homebrew websites (many thanks to <a href="http://www.double.co.nz/nintendo_ds/" target="_blank">Chris Double</a> for his tutorials) and from IRC discussions (notably, thanks to <a href="" target="_blank">Wintermute</a> [Dave Murphy] and <a href="http://www.akkit.org/sgstair/" target="_blank">sgstair</a> [Stephen Stair]). More generally, many thanks to the fearless homebrewers !
 </p>
 
 
@@ -416,7 +416,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	
 	<li>a <b>microphone</b> for sound input, which allows (application-specific) speech-recognition</li>
 	
-	<li>two <b>slots for FLASH cards</b> : the Slot-1 (DS specific, looking a bit like a small Compact Flash card, up to 1 GB of internal storage) and the Slot-2 (legacy GBA port, used by several add-ons)</li>
+	<li>two <b>slots for FLASH cards</b> : the Slot-1 (DS specific, looking a bit like a small Compact Flash card, currently up to 128 GB of internal storage) and the Slot-2 (legacy GBA port, used by several add-ons)</li>
 	
 	<li><b>lithium-ion battery</b> (1000 mAh battery, whereas the DS "fat" has 850 mAh) : with a DS Lite in DS mode, depending on the screen brightness, at least 6 to 10 hours of play, in GBA mode up to 12 hours, in sleep mode two weeks, all when starting from a fully charge battery (4 hours of charge). Of course autonomy decreases with slot-1/slot-2 cards being added. After five hundred charges, the battery capacity drops to about seventy percent and should be replaced</li>
 	
@@ -709,7 +709,7 @@ Finally, some homebrew make use the SRAM (actually, a non-volatile RAM) that may
 <h3>An example : Linux on DS</h3>
 
 <p>
-Even though most DS applications are to be run standalone (i.e. by themselves, not using any other specific operating system), one can nonetheless have its DS run a dedicated <a href="http://en.wikipedia.org/wiki/Operating_system" target="_blank">operating system</a> (OS). Beneath the fun experience, it may allow for multitasking, or may just provide an environment familiar to the user, with useful tools.
+Even though most DS applications are to be run standalone (i.e. by themselves, not using any other specific operating system), one can nonetheless have its DS run a dedicated <a href="http://en.wikipedia.org/wiki/Operating_system" target="_blank">operating system</a> (OS). Beyond the fun experience, it may allow for multitasking, or may just provide an environment familiar to the user, with useful tools.
 </p>
 
 <p>
@@ -924,13 +924,16 @@ With libfat files can be managed almost exactly as they would be on POSIX system
 </p>
 
 <p>
-Like HAM for the GameBoy Advance, its intended public is developers wanting to use the most time-effective methods to write their software. Hardware purists often consider any library beneath libnds being useless (bloating software), restrictive or performance-killer. One should try both ways. As for me, I found interesting to use first libnds only, to learn how things work. Once done, anything allowing to gain some time sounds interesting to me, and I would not like to reinvent the wheel too often. So I use PAlib for most of my needs.  
+Like HAM for the GameBoy Advance, its intended public is developers wanting to use the most time-effective methods to write their software. Hardware purists often consider any library beyond libnds being useless (bloating software), restrictive or performance-killer. One should try both ways. As for me, I found interesting to use first libnds only, to learn how things work. Once done, anything allowing to gain some time sounds interesting to me, and I would not like to reinvent the wheel too often. So I use PAlib for most of my needs.  
 </p>
 
 <p>
 To install it, follow <a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib's tutorial</a> or use LOANI.
 </p>
 
+<p>
+There are still many other libraries, but they are less used. <a href="http://libsdl.org/" target="_blank">SDL</a> has been <a href="http://gpf.dcemu.co.uk/ndsSDL.shtml" target="_blank">ported to the DS</a>. This abstraction layer is very useful to port (often PC) applications to lesser known platforms such as the homebrew-enabled DS, but in our case a few issues remains : the DS SDL implementation is not complete, it uses a lot of memory with regard to what is available, and a lot of hardware acceleration would be bypassed because of the layer. SDL may be here a way of starting a port, even though finally the game ought not rely on it for performance reasons.
+</p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
@@ -1105,11 +1108,15 @@ Having the general hardware specifications and the relevant toolchain is not eno
 <h5>Respective intended use &amp; performance</h5>
 
 <p>
-For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even if both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to rendering.
+For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even if both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to visual rendering.
 </p>
 
 <p>
-Roughly speaking, the ARM9 can be somewhere between 1.5 and about 4 times faster than the ARM7, depending on what task is involved. ARM7 and ARM9 are often configured to use thumb mode (16bit). The reason for this in both cases is memory space : ARM7 has limited program space, whereas ARM9 has limited instruction cache space.
+Roughly speaking, the ARM9 can be somewhere between 1.5 and about 4 times faster than the ARM7, depending on what task is involved. ARM7 and ARM9 are often configured to use thumb mode (16bit). The reason for this, in both cases, is memory space : ARM7 has limited program space, whereas ARM9 has limited instruction cache space.
+</p>
+
+<p>
+As a consequence of having two CPU, the DS ROM has to include at least two executables, one for each of the ARM (not mentioning application-specific data). At runtime the executables will have to work simultaneously, which involves often having to be synchronized and to share data. 
 </p>
 
 <p>
@@ -1117,12 +1124,9 @@ Some applications manage to rely on very tight 32-bit loops that fit in the inst
 </p>
 
 <p>
-Monitoring the ARM loads is not easy, even when using emulators. Profiling can be done via timers : one can start some hardware timers when a task starts, and then stop and read them when the task is done. That information is rather precise, and you can use it to provide a lot of information about how much of the CPU power is being used; but it's a bit of a hassle to set up.
+Monitoring the ARM loads is not easy, even when using emulators. Profiling can be done via <a href="#timers">timers</a> : one can start some hardware timers when a task starts, and then stop and read them when the task is done. That information is rather precise, and you can use it to provide a lot of information about how much of the CPU power is being used; but it's a bit of a hassle to set up.
 </p>
 
-<p>
-As a consequence the DS ROM has to include at least two executables, one for each of the ARM (not mentioning application-specific data). At runtime the executables will have to work simultaneously, which involves often having to be synchronized and to share data. 
-</p>
 
 
 <h5>CPU &amp; Memory</h5>
@@ -1131,15 +1135,73 @@ The main built-in memory, consisting of one big block of 4MB memory, can be acce
 </p>
 
 
-<h5>ARM7 role</h5>
+<h5>Interrupts</h5>
+
+<h6>Interrupts in general</h6>
 
 <p>
-The ARM7 is the only CPU that can be used for controlling the touchscreen. Most applications use boilerplate code that sets up an interrupt handler for the <em>Vertical Blank Interrupt</em> (VBI). This interrupt occurs once each frame (each time the screen is redrawn), hence it provides a hard real-time 60Hz time-base.
-VBI is useful to draw on the each screen while it is not being refreshed : doing so allows to avoid disturbing visual artefacts.
+An interrupt (or IRQ, for <em>Interrupt Request</em>) is a way of stopping immediately the current execution of a CPU to run another function, called an interrupt handler. Hence when a hardware or software interrupt occurs, the processor saves first some information so that it knows where to go back and in which state, then the handler associated to this interrupt for that CPU is called at once and, when that function returns, the DS continues executing the piece of code it was executing before it was interrupted, as if nothing had happened.
 </p>
 
 <p>
-This time-base can be used for synchronization too. It is what interests us here, so that an interrupt handler dedicated to ARM7 input reporting can be scheduled regularly. The ARM7 boilerplate code gets the value of the touchscreen parameters and stores them in a data structure we can access from the ARM9.
+Therefore interrupts allow to perform tasks that should not wait, either because otherwise they might be missed (ex : a keypress described in a hardware register) or because the application must react directly to them (ex : a Vertical Blank Interrupt that would trigger rendering, see below).
+</p>
+
+<p>
+Interrupts allow also to use the CPU sleep mode, since they provide a way of waking it up as soon as it becomes needed again, thanks to a BIOS routine. In this low power mode, the ARM9 stops processing instructions and powers down some memory banks to save battery charge. There is a ARM instruction named SWI (for <em>SoftWare Interrupt</em>) with one numerical parameter that means : enter the SWI handler and pass that value to know  which interrupt or combination of interruption the CPU should be waiting for, from now on. Helper libraries, including libnds, offer higher-level interrupt management. If most of the program is in interrupt handlers, then the CPU may sleep most of the time, preserving the charge of the DS batteries.
+</p>
+
+<p>
+By default when an interrupt is triggered, the CPU jumps to the standard BIOS interrupt routine, a function which is stored in a special memory address that we can write to. By storing at this memory address a pointer to one of our own function, we can cause the interrupt to be processed by our own function, i.e. we can define our custom interrupt (IRQ) handler.
+</p>
+
+<p>
+The ARM7 stores the addresses of its interrupt handlers in a hardcoded memory location, whereas the ARM9 defines these addresses relativey to the DTCM, a special memory area in the ARM9 which can be mapped to reside at various actual physical addresses.
+</p>
+
+<p>
+Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is convenient to send a notification to the other CPU when for example there is data for it waiting to be read on a shared area in RAM, once the calling CPU has finished filling it.
+</p>
+
+<p>
+Beyond screens and sometimes keys, FIFO, IPC and <a href="#timers">timers</a> make heavy use of interrupts.
+</p>
+
+
+<h6>Screen-related interrupts : Horizontal &amp; Vertical Blank Interrupts</h6>
+
+<p>
+The DS screens are updated neither as a whole nor permanently : the graphics hardware draws pixels one by one, from the top left to the bottom right of each screen, line by line.
+</p>
+
+<p>
+If the framebuffer (the place in memory where the pixels are stored) is modified during this process, the user may see visual artefacts in the form of partly-updated images, the top-left part being rendered according to the previous state of the framebuffer, bottom-right with the current one.
+</p>
+
+<p>
+During a short duration after a line is drawn, during a longer one once a full screen is rendered, the hardware remains idle. These moments can be used to perform safe rendering : no partial redraw is to be feared.  
+</p>
+
+<p>
+Two special interrupts are fired so that the programs can use these two favorable periods : one, the <em>Horizontal Blank Interrupt</em>, occurs whenever a line has been rendered. Your program can use this first amount of time. The other one, more famous, is the <em>Vertical Blank Interrupt</em> (VBI) that is fired once a full screen has be redrawn. Your program should use this longer duration to perform at least framebuffer-related operations, while the hardware moves from the last line back up to the first line. At both screens are refreshed at 60 Hz, the period between two VBI is 16,7 ms long.
+</p>
+
+<p>
+Note that all other operations (input reading, sound output, application logic, etc.) can be performed regardless of these two interrupts. The VBI, beyond its use to avoid visual artefacts, provides a hard real-time 60Hz time-base too. This time base can be used to schedule operations on a regular basis.
+</p>
+
+
+<h6>Key Interrupts</h6>
+
+<p>
+Keys can be read thanks to <a href="#keys">several methods</a>, including the interrupt-based one. In this case a specific IRQ handler is registered. This handler will be triggered indeed when a key is pressed, but it will not be called when the key will be released, which reduces quite a lot the interest of this key handling method.
+</p>
+
+
+<h5>ARM7 role</h5>
+
+<p>
+The ARM7 is the only CPU that can be used for controlling the touchscreen. Most applications use boilerplate code that sets up an interrupt handler for the already mentioned <em>Vertical Blank Interrupt</em> (VBI). Not for rendering purpose here, but for synchronization, so that the interrupt handler dedicated to ARM7 input reporting can be scheduled regularly. The ARM7 boilerplate code gets the value of the touchscreen parameters and stores them in a data structure we can access from the ARM9.
 </p>
 
 <p>
@@ -1187,8 +1249,13 @@ As each ARM has specific abilities (ex : the ARM7 is the only one that can acces
 The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-process communication</em>) based on a set of registers, managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to a <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queue</a> with an asynchronous communication protocol.
 </p>
 
+<h6>Custom-made IPC (not recommended)</h6>
 <p>
-More precisely, commands can be described by the ARM9 in a data structure for the ARM7, for example a C union or a non-abstract C++ child class inheriting from an abstract command class. These commands should specify the requested action (ex : play sound) and its associated data (ex : a pointer to the samples stored in main memory). A set of commands can then be kept in shared memory, accessible by the ARM7 and ARM9. The command set can be implemented thanks to a circular C array or a C++ (FIFO) std::queue that would be instanciated into a specific memory region. libnds defines its starting address at <code>IPC</code> and its length thanks to <code>TransferRegion</code>.
+More precisely, commands can be described by the ARM9 in a data structure for the ARM7, for example a C union or a non-abstract C++ class inheriting from an abstract command class. These commands should specify the requested action (ex : play sound) and its associated data (ex : a pointer to the samples stored in main memory). A set of commands can then be kept in shared memory, accessible by the ARM7 and ARM9.
+</p>
+
+<p>
+The command set can be implemented thanks to a circular C array or a C++ (FIFO) std::queue that would be instanciated into the shared memory area, after the libnds IPC region, i.e. after the libnds-defined IPC starting address at the <code>IPC</code> symbol incremented of an offset equal to the length of <code>TransferRegion</code>.
 </p>
 
 <p>
@@ -1196,16 +1263,31 @@ So the ARM9, after having initalized the queue, is expected to place a command i
 </p>
 
 <p>
-Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is convenient to send a notification to the other CPU when for example there is data for it waiting to be read on a shared area in RAM, once the calling CPU has finished filling it.
+This IPC method has two drawbacks. First it is only one-way : the ARM7 cannot send commands or results to the ARM9, as no protection against concurrent accesses is available here. Second it requires the ARM7 to perform polling, at the expense of uselessly burnt CPU cycles.
+</p>
+
+
+<p>
+See <a href="http://www.double.co.nz/nintendo_ds/nds_develop6.html" target="_blank">Chris Double tutorial #6</a> for more details about custom-made IPC. 
+</p>
+
+
+<h6>Harware-based IPC (recommended)</h6>
+
+<p>
+The DS provides a built-in interrupt-based FIFO queue. Therefore the ARM7 can receive immediately interrupt notifications, instead of having to poll, which is rather inefficient. The FIFO handles concurrent accesses in hardware, which allows fast reliable bidirectional communications. This queue can only hold 16 items (<code>int</code>, that can be taken as integers or as pointers to user-defined data) on each side, so the other processor should be receiving these items in a timely manner.
 </p>
 
 <p>
-See <a href="http://www.double.co.nz/nintendo_ds/nds_develop6.html" target="_blank">Chris Double tutorial</a> for more details about IPC. 
+Each CPU has a queue which it can put data on. The other CPU can receive this data by reading from a register or thanks to an interrupt. It will get the oldest item that the original CPU put on the queue. A kind of small application-specific protocol could be specified to manage the queue exchanges.
+</p>
+
+<p>
+See <a href="http://www.double.co.nz/nintendo_ds/nds_develop7.html" target="_blank">Chris Double tutorial #7</a> for more details about hardware-based IPC. 
 </p>
 
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
-
 
 
  
@@ -1262,12 +1344,19 @@ In software you manipulate a main screen abstraction, that can be mapped either 
 </p>
 
 <p>
-The framebuffer mode is the easiest to directly draw to. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area will immediately result in their appearing on the screen. If it remains quite simple, it does not offer the various useful features offered by other modes, such as sprites, scrollings, etc., not to mention 3D primitives.
+In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (alphablending). There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial</a> for more details. 
 </p>
 
+
+<h5>Framebuffer mode</h5>
 <p>
-In a given mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (alphablending). There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial</a> for more details. 
+The framebuffer mode is the easiest to directly draw to. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area will immediately result in their appearing on the screen. If it remains quite simple, it does not offer the various useful features offered by other modes, such as sprites, scrollings, etc., not to mention 3D primitives. And only the main screen can use this framebuffer mode.
 </p>
+
+<h5>Extended Rotation Background</h5>
+<p>
+</p>
+
 
 <p>
 At most 128 sprites are supported at a time, and there are up to four background layers (text, rotating/scaling, bitmap). 
@@ -1351,8 +1440,13 @@ Sound output requires sound to play, see our <a href="#datastorage">data storage
 
 <a name="soundinput"></a>
 <h5>Sound input</h5>
+
 <p>
-The built-in microphone can be used to perform some limited speech-recognition.
+Once the amplifier has been powered on, the DS microphone is accessed through the <em>Serial Peripheral Interface</em> (SPI) on the ARM7, in a very similar way to the touchscreen is read. However helper libraries hide this inner working under higher level interfaces.
+</p>
+
+<p>
+The built-in microphone can be used to perform some limited speech-recognition, as it is done in a few games.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1447,6 +1541,7 @@ More info about the mostly deprecated GBFS can be found <a href="http://www.doub
 <a name="inputdevice"></a>
 <h4>Input device management</h4>
 
+<a name="keys"></a>
 <h5>Keys</h5>
 
 <p>
@@ -1510,7 +1605,6 @@ The built-in Wifi support allows the DS to communicate (with a theoretical bandw
 </ul>
 
 </p>
-
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
@@ -1576,12 +1670,14 @@ A <a href="http://en.wikipedia.org/wiki/Direct_memory_access" target="_blank">DM
 </p>
 
 <p>
-There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU : the ARM9, if it does not access to main memory, can continue its work while the DMA transfer is going on, resulting in data transfer with much less CPU overhead.
+There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU : the ARM9 initiates the transfer and, if it does not access to main memory, can continue its work while the DMA transfer is going on. Then it will receive an interrupt from the DMA controller once the operation has been done. It results in data transfer with much less CPU overhead. Note though that during a DMA transfer the CPU is locked off the bus, thus restraining a lot what it can done in the mean time.
 </p>
 
+
+<a name="timers"></a>
 <h5>Timers</h5>
 <p>
-There are eight incrementing 16bit timers, four for each CPU.
+A timer is a hardware function that can be set to raise an interrupt at regular intervals, once enabled. There are eight incrementing 16bit timers, four for each CPU.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1768,7 +1864,7 @@ There are eight incrementing 16bit timers, four for each CPU.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Friday, June 15, 2007</em>
+    <em>Last update : Wednesday, June 20, 2007</em>
   </center>
 </body>
 </html>
