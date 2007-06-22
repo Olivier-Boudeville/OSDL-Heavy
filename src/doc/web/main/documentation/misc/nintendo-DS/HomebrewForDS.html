@@ -784,6 +784,9 @@ The terminal output is on the top screen :
 <a name="programmingDS"></a>
 <h2>Programming the DS</h2>
 
+<p>
+Programming the DS is quite fun because it is rather down to the metal : being that close to the hardware, with no operating system, no drivers, no hardware incompatibilities (well, until we look at the flash carts), it is a good pretext to struggle against low level details. Probably a very good way to practise embedded developments as well. Not to mention that having its own programs working on a console is quite satisfactory.
+</p>
 
 <a name="tools"></a>
 <h3>Gathering the adequate tools for homebrew</h3>
@@ -1112,22 +1115,33 @@ For newcomers, one of the most disturbing specificities of the DS is its having 
 </p>
 
 <p>
-Roughly speaking, the ARM9 can be somewhere between 1.5 and about 4 times faster than the ARM7, depending on what task is involved. ARM7 and ARM9 are often configured to use thumb mode (16bit). The reason for this, in both cases, is memory space : ARM7 has limited program space, whereas ARM9 has limited instruction cache space.
+Roughly speaking, the ARM9 can be somewhere between 1.5 and about 4 times faster than the ARM7, depending on what task is involved.
+</p>
+
+<p>
+ARM7 and ARM9 are often configured to use thumb mode (16 bit). The reason for this, in both cases, is memory space : ARM7 has limited program space, whereas ARM9 has limited instruction cache space. As for the 16-bit wide bus accesses (there are severa of them), ARM (32-bit) instructions would saturate the bandwidth and seriously decrease overall performance.
+</p>
+
+<p>
+Some applications manage to rely on very tight 32-bit loops that fit in the instruction cache (IWRAM), so that they can benefit from a more "powerful" instruction set, for critical parts. Apart from the 32-bit memory regions fed by 32-bit buses, one should prefer Thumb (16-bit) instructions.
+</p>
+
+<p>
+Neither CPU of the DS has a Floating Point Unit (FPU), so all floating-point operations must be emulated, which is very slow. Most computations use therefore (fixed-point) integer arithmetics and (precomputed) Look-Up Tables (LUT).
 </p>
 
 <p>
 As a consequence of having two CPU, the DS ROM has to include at least two executables, one for each of the ARM (not mentioning application-specific data). At runtime the executables will have to work simultaneously, which involves often having to be synchronized and to share data. 
 </p>
 
-<p>
-Some applications manage to rely on very tight 32-bit loops that fit in the instruction cache, so that they can benefit from a more "powerful" instruction set.
-</p>
 
 <p>
 Monitoring the ARM loads is not easy, even when using emulators. Profiling can be done via <a href="#timers">timers</a> : one can start some hardware timers when a task starts, and then stop and read them when the task is done. That information is rather precise, and you can use it to provide a lot of information about how much of the CPU power is being used; but it's a bit of a hassle to set up.
 </p>
 
-
+<p>
+Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_blank">guidelines</a> should be applied to write effective code for the DS.
+</p>
 
 <h5>CPU &amp; Memory</h5>
 <p>
@@ -1183,7 +1197,7 @@ During a short duration after a line is drawn, during a longer one once a full s
 </p>
 
 <p>
-Two special interrupts are fired so that the programs can use these two favorable periods : one, the <em>Horizontal Blank Interrupt</em>, occurs whenever a line has been rendered. Your program can use this first amount of time. The other one, more famous, is the <em>Vertical Blank Interrupt</em> (VBI) that is fired once a full screen has be redrawn. Your program should use this longer duration to perform at least framebuffer-related operations, while the hardware moves from the last line back up to the first line. At both screens are refreshed at 60 Hz, the period between two VBI is 16,7 ms long.
+Two special interrupts are fired so that the programs can use these two favorable periods : one, the <em>Horizontal Blank Interrupt</em>, occurs whenever a line has been rendered. Your program can use this first amount of time. The other one, more famous, is the <em>Vertical Blank Interrupt</em> (VBI) that is fired once a full screen has be redrawn. Your program should use this longer duration to perform at least framebuffer-related operations, while the hardware moves from the last line back up to the first line. At both screens are refreshed at 60 Hz, the period between two VBI is 16,7 ms long. More <a href="http://www.coranac.com/tonc/text/video.htm#sec-blanks" target="_blank">info</a> (coming from GBA but still applies here). The VBI is called also vsync, since it allows for vertical synchronisation.
 </p>
 
 <p>
@@ -1320,21 +1334,37 @@ Selective activation is useful notably to save energy.
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
+
+
+
 <a name="rendering"></a>
 <h4>2D/3D Rendering</h4>
 
 <h5>Rendering in general</h5>
-<p>
-If the rendering takes place during the screen are redrawn, then the user will see on its screens images partly updated, leading to unwanted visual artefacts. The solution is to modify the screen content only between two redraws.
-</p>
-
-<p>
- This can be done by waiting the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure it does not last more than the period between two VBI, i.e. 16 ms at 60 Hz.
-</p>
 
 <p>
 Most of the informations related to the graphical rendering are stored in the VRAM, for <em>Video RAM</em>.
 </p>
+
+<p>
+2D/3D rendering requires images, geometries, textures, etc. to render, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needing by your application.
+</p>
+
+<p>
+If the rendering takes place during the screen are redrawn, then the user will see on its screens images partly updated, leading to unwanted visual artefacts. The solution is either to modify the screen content only between two redraws or to use <a href="#pageflipping">page flipping</a>.
+</p>
+
+<p>
+ The first approach can be implemented by waiting the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure it does not last more than the period between two VBI, i.e. 16 ms at 60 Hz.
+</p>
+
+
+<a name="pageflipping"></a>
+<h6>Page flipping</h6>
+<p>
+When rendering is not trivial, it might not be short enough to fit in the VBI. <a href="http://www.coranac.com/tonc/text/bitmaps.htm#sec-page" target="_blank">Page flipping</a> (not to be mixed up with the more expensive double-buffering, which involves an extra screen copy) is a method so that the software can create a screen buffer while the hardware, simultaneously, displays another buffer. At each VBI buffers are exchanged so that they can both continue their task. Page flipping is thus a way of eliminating nasty artefacts like tearing in animations. 
+</p>
+
 
 <h6>Screens</h6>
 
@@ -1350,7 +1380,7 @@ Both cores can be set in various <em>video modes</em>, each with different capab
 </p>
 
 <p>
- In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (alphablending). There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial #2</a> for more details. 
+ In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (based on an alpha bit), that dictates whether a given pixel should be displayed or not. There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial #2</a> for more details. 
 </p>
 
 
@@ -1421,7 +1451,6 @@ These are <em>address</em> regions (i.e. a lower and higher addresses), but by d
 </p>
 
 
-
 <a name="2D"></a>
 <h5>2D Rendering</h5>
 
@@ -1434,7 +1463,7 @@ The system has two 2D engines, one per screen. Each screen can be put into a var
 <h6>Backgrounds</h6>
 
 <p>
-Each video mode has a number of <em>backgrounds</em> (BG) that can be used. A background is a surface that, when drawn upon, displays on the hardware. Modes that have multiple backgrounds allow these backgrounds to be overlayed, so that they are drawn on top of each other. This, and the support of transparency, enables for example a background with text to be overlayed on top of a background displaying an image.
+Each video mode has a number of <em>backgrounds</em> (BG) that can be used. A background is a surface that, when drawn upon, displays on the hardware like a layer. Modes that have multiple backgrounds allow these backgrounds to be overlayed, so that they are drawn on top of each other. This, and the support of transparency, enables for example a background with text to be overlayed on top of a background displaying an image. Backgrounds are opposed to sprites : the former take care of the decoration, the often static environment that may take the entire screen, whereas the later take care of the living entities (small moving objects, like animated characters).
 </p>
 
 <p>
@@ -1443,7 +1472,7 @@ There are three types of backgrounds : Rotoscale, Extended Rotoscale and Text.
 
 <h7>Rotoscale backgrounds</h7>
 <p>
-<em>Rotoscale</em> backgrounds are framebuffer-like bitmaps (or surfaces, in SDL-like language) that can be manipulated (scrolled, scaled in or out, rotated, sheared, thanks a <a href="http://user.chem.tue.nl/jakvijn/tonc/affine.htm" target="_blank">transformation matrix</a>) and displayed directly on screen, all in hardware, i.e. with little overhead for the CPUs, no additional VRAM copy and no specific developing effort (it only involves setting some registers). They can be smaller or bigger than a screen, in which case only the relevant parts will be shown (clipping). 
+<em>Rotoscale</em> backgrounds are framebuffer-like bitmaps (or surfaces, in SDL-like language) that can be manipulated (affine transformations : 2-axis scrolled, scaled in or out, rotated, sheared, thanks a <a href="http://user.chem.tue.nl/jakvijn/tonc/affine.htm" target="_blank">transformation matrix</a>) and displayed directly on screen, all in hardware, i.e. with little overhead for the CPUs, no additional VRAM copy and no specific developing effort (it only involves setting some registers). They can be smaller or bigger than a screen, in which case only the relevant parts will be shown (clipping). 
 </p>
 
 <p>
@@ -1458,6 +1487,10 @@ One may use for example a 16-bit 256x256 background size, which is larger than t
 When using tiles, rotoscale backgrounds can use only up to 256 of them.
 </p>
 
+<p>
+Finally, hardware scrolling can be of great help to implement parallax scrolling (a fake sense of depth), when having multiple backgrounds sliding at different paces.
+</p>
+
 
 <h7>Extended Rotoscale backgrounds</h7>
 <p>
@@ -1470,7 +1503,7 @@ ERB can be used as normal (non-extended) rotate-scale backgrounds, even with til
 </p>
 
 
-<h7>Tiled backgrounds</h7>
+<h7>Text backgrounds</h7>
 
 <p>
 In a very similar way to palettized surfaces, that contain color index instead of pixels, some backgrounds can be <em>tiled</em> : instead of being a kind of array of pixels they are a kind of array of references to tiles, each tile being a fixed-size array of pixels (a rectangle 8 pixels wide and 8 pixels tall, i.e. 64 pixels). 
@@ -1480,7 +1513,7 @@ In a very similar way to palettized surfaces, that contain color index instead o
 Thus a tiled background (also called a text background) is made of :
 <ul>
         <li>a <b>tileset</b> : a collection of up to 1024 tiles. Each tile is identified by its index, which is its number in the set, ranging from 0 to 1023</li>
-        <li>a <b>map</b>, which is mainly a 2D array, whose size is at least 32x32 (depending on the background setup), that specifies for each of its cells which tile from the tileset should be rendered (blitted). A tile entry occupies two bytes</li>
+        <li>a <b>map</b>, which is mainly a 2D array, whose size is at least 32x32 (depending on the background setup), that specifies for each of its cells which tile from the tileset should be rendered (blitted). A tile entry occupies two bytes (16 bits) : the first ten encode the tile index (<code>2^10=1024</code>), and the 6 remaining bits records the tile attributes (more on that later)</li>
 </ul>
 </p>
 
@@ -1490,11 +1523,14 @@ The pixels of a tile are described as color index taken from a palette. As palet
         <li>a <b>256-color mode</b> (a.k.a. 8-bit color mode) :  a pixel is an index to the 256-color palette. The index is then an 8-bit integer, ranging for 0 to 255</li>
         <li>a <b>16-color mode</b> (a.k.a. 4-bit color mode) :  a pixel is an index to a 16-color palette. The index is then an 4-bit integer, ranging for 0 to 15. Less memory is required, thus making room for more tiles and other elements in VRAM, but with only 16 possible colors per tile the rendering quality of the result might be poor</li>
 </ul>
-
 </p>
 
 <p>
-In the VRAM (Video RAM) there are locations dedicated to the storage of map data, in <em>map bases</em> (2 Kbytes each), or tile data, in <em>tile bases</em> (16 Kbytes each). Map and tile bases share the same region in VRAM, whose layout must be carefully planned.
+The DS tiling engine is quite feature-rich : beyond displaying tiles as they are, it can flip them (horizontally and/or vertically), and use different palettes to render the same tile, for example for palette-based animation. These per-tile informations are stored in the aforementioned 6-bit attributes : one bit for each flip (on/off) and 4 bits to designate one of the 16 sub-palettes. 
+</p>
+
+<p>
+In the VRAM (Video RAM) there are locations dedicated to the storage of map data, in <em>map bases</em> (2 Kbytes each), or tile data, in <em>tile bases</em> (16 Kbytes each). Map and tile bases share the same region in VRAM, whose layout must be carefully planned. Usually one counts in map base units, for example the size of a tile base is 8 map bases.
 </p>
 
 <p>
@@ -1509,25 +1545,81 @@ The tileset of a given map can refer up to 1024 tiles : more than a tile base ca
 Map bases always have 32×32 entries. To create bigger backgrounds (like 64×64), you need to use several map bases.
 </p>
 
-
 <h6>Framebuffer mode</h6>
 <p>
-The framebuffer mode is the easiest to directly draw to. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area will immediately result in their appearing on the screen. If it remains quite simple, it does not offer the various useful features offered by other modes, such as sprites, scrollings, etc., not to mention 3D primitives. And only the main screen can use this framebuffer mode.
+The framebuffer mode, or bitmap mode, is the easiest to directly draw to, but the less powerful of all modes. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area will immediately result in their appearing on the screen. If it remains quite simple, it does not offer the various useful features offered by other modes, such as sprites, scrollings, etc., not to mention 3D primitives : with the framebuffer only software rendering is performed. And only the main screen can use this framebuffer mode.
+</p>
+
+<p>
+Hence a good practise is to prefer sprites and tiled backgrounds over bitmap modes, very few 2D games do not rely on the hardware acceleration.
 </p>
 
 
 
+<h6>Format conversions</h6>
+
 <p>
-At most 128 sprites are supported at a time, and there are up to four background layers (text, rotating/scaling, bitmap). 
+Finally, the graphics to render are most of the time available first in general-purpose formats (png, jpeg, etc.). They have therefore to be converted into data that the DS may use natively, i.e. split into the appropriate palettes, tilesets, etc. This can be either precomputed (done at build time, once for all) or done at runtime, which may allow to benefit from the features of the general-purpose format, for example for compression.
+</p>
+
+
+<h7>Precomputed conversions</h7>
+
+<p>
+Tools include <a href="http://www.aaronrogers.com/ham/gfx2gba_readme.php" target="_blank">gfx2gba</a> which, when given a file in 16 or 256-color PCX, TGA, SPR, BMP or TIM formats (one may use The Gimp to preconvert PNG and JPEG files beforehand), can create a binary tileset (<code>*.raw</code>) with 8x8 tiles), a binary background map (<code>*.map</code>) and a 256-color palette file (<code>*.bin</code>) :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+gfx2gba -c256 -m -t8 -pmyPalette.bin myImage.bmp
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
 </p>
 
 <p>
-2D/3D rendering requires images, geometries, textures, etc. to render, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needing by your application.
+These converted graphics will then have to be <a href="#datastorage">stored</a> so that the DS application will find it. 
+</p>
+
+
+<h7>Runtime conversions</h7>
+
+<p>
+Tools include <a href="http://www.aaronrogers.com/ham/gfx2gba_readme.php" target="_blank">gba-jpeg</a>.
 </p>
 
 <p>
 See also : <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_blank">LiraNuna's 2D tutorial</a> and <a href="http://www.double.co.nz/nintendo_ds/nds_develop10.html" target="_blank">Chris Double tutorial #10</a> for more details. 
 </p>
+
+
+<h6>Sprites</h6>
+
+<p>
+Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transformed independently from each other and can be used in conjunction with either bitmap or tiles background types (which are mutually exclusive). Like backgrounds, sprites are built out of tiles, but each has its own set of tiles. 
+</p>
+
+<p>
+OAM means <em>Object Attribute Memory</em>. This is where you control the sprites. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM).
+</p>
+
+<p>
+Each sprite behaves a bit like a big tile : it has an identifier and some overall informations such as flipping flags and palette-info for 16-color sprites. It is nevertheless made from several real tiles.
+</p>
+
+<p>
+Each sprite has also its own affine 2x2 transformation matrix, which defines if it should be rotated, scaled or sheared when being rendered. This matrix transforms points expressed in screen space into points in texture space, not the other way round. More infos about that can be read from <a href="http://www.coranac.com/tonc/text/affine.htm" target="_blank">TONC</a>.
+</p>
+
+<p>
+More infos on <a href="http://www.coranac.com/tonc/text/video.htm#sec-vid-types" target="_blank">bitmaps, backgrounds and sprites</a>, coming from the GBA but mostly relevant for the DS as well.
+</p>
+
 
 
 <a name="3D"></a>
@@ -1621,7 +1713,7 @@ This is the simplest method, but it provides only limited space, as the whole RO
 </p>
 
 <p>
-The data has to be converted to an object file (*.o) thanks to objcopy (actually <code>arm-elf-objcopy</code>) before being linked with the other object files in the the executable that will need them, thanks to the linker (actually <code>arm-elf-g++</code>). For sounds it will be likely by the ARM7, the only one able to access the sound hardware, in the unlikely case where the only 64 kB permitted are enough. Otherwise the data can be linked to the ARM9 executable. More info about the data embedding in executables can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
+The data has to be converted to an object file (*.o) thanks to objcopy (actually <code>arm-eabi-objcopy</code>) before being linked with the other object files in the the executable that will need them, thanks to the linker (actually <code>arm-eabi-g++</code>). For sounds it will be likely by the ARM7, the only one able to access the sound hardware, in the unlikely case where the only 64 kB permitted are enough. Otherwise the data can be linked to the ARM9 executable. More info about the data embedding in executables can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
 </p>
 
 
@@ -1693,6 +1785,10 @@ Note that with libfat both slot-1 and slot-2 memory can be accessed, and simulta
 More info about the mostly deprecated GBFS can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop6.html" target="_blank">here</a>.
 </p>
 
+<p>
+More info on embedded <a href="http://www.coranac.com/tonc/text/bitmaps.htm#sec-data" target="_blank">external data</a> (written for GBA but applies to the DS too).
+</p>
+
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
@@ -1704,7 +1800,7 @@ More info about the mostly deprecated GBFS can be found <a href="http://www.doub
 <h5>Keys</h5>
 
 <p>
-For all keys except X and Y, there is a read-only hardware register that can be read by either of the ARM to tell whether they are pressed or released. As for the X and Y keys, their state is available thanks to another register that can only be read from the ARM7.
+For all keys (or buttons) except X and Y, there is a read-only hardware register that can be read by either of the ARM to tell whether they are pressed or released. As for the X and Y keys, their state is available thanks to another register that can only be read from the ARM7.
 </p>
 
 <p>
@@ -1809,12 +1905,17 @@ The DS contains both divide and square root accelerators.
 
 <h5>16/32 bit</h5>
 <p>
-The ARM7 processor supports both 32-bit and 16-bit instructions via respectively the ARM and Thumb instruction sets. 16-bit code is smaller than 32-bit one and, in some specific cases, faster (usually slower though). 16-bit code is often preferred, as it has more chances to fit in the tiny instruction caches. Moreover the size of ARM7 code must be 64 kB or smaller.
+The ARM7 processor supports both 32-bit and 16-bit instructions via respectively the ARM and Thumb instruction sets (the later is a subset of the former). 16-bit code is smaller than 32-bit one and, in some specific cases, faster (usually slower though). 16-bit code is often preferred, as it has more chances to fit in the tiny instruction caches. Moreover the size of ARM7 code must be 64 kB or smaller.
 </p>
 
 <p>
 The ARM9 is a full 32-bit CPU, but may be programmed in 16-bit too.
 </p>
+
+<p>
+An important developing rule is to prefer using the <code>CPU native words</code> (16-bit datatype if the CPU is in 16-bit mode, 32-bit datatype if the CPU is in 32-bit mode) for most of your calculations, loop index, etc. : then the bus, the CPU registers and the instruction set will be "inline", as efficient as obtainable, whereas smaller datatypes would lead to runtime performance penalties. Unless they are packed in a structure, they will not be any smaller. Using such words only requires careful casting, because the ARM CPU are quite picky about memory alignment.
+</p>
+
 
 
 <h5>Power management</h5>
@@ -1868,7 +1969,7 @@ A timer is a hardware function that can be set to raise an interrupt at regular 
 	
     <li>[T4] <a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib for Linux</a> (2/2)</li>
 	
-    <li>[T5] <a href="http://user.chem.tue.nl/jakvijn/tonc " target="_blank">TONC</a></li>
+    <li>[T5] <a href="http://www.coranac.com/tonc/text/" target="_blank">TONC</a> : lots of GBA informations, most of which still applies to the DS</li>
 	
     <li>[T6] <a href="http://www.patatersoft.info/manual_online.html" target="_blank">Patatersoft</a></li>
 	
@@ -2023,7 +2124,7 @@ A timer is a hardware function that can be set to raise an interrupt at regular 
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Wednesday, June 20, 2007</em>
+    <em>Last update : Friday, June 22, 2007</em>
   </center>
 </body>
 </html>
