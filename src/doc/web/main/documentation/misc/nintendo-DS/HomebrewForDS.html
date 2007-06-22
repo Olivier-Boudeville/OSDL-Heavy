@@ -1329,8 +1329,98 @@ If the rendering takes place during the screen are redrawn, then the user will s
 </p>
 
 <p>
- This can be done by waiting the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure it does not last more than the period between two VBI, i.e. 16 ms at 60 Hz 
+ This can be done by waiting the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure it does not last more than the period between two VBI, i.e. 16 ms at 60 Hz.
 </p>
+
+<p>
+Most of the informations related to the graphical rendering are stored in the VRAM, for <em>Video RAM</em>.
+</p>
+
+<h6>Screens</h6>
+
+<p>
+In software you manipulate a <em>main</em> screen abstraction (main rendering core), that can be mapped either to the top actual screen or to the bottom one, and a <em>sub</em> screen (sub rendering core), which will correspond to the other hardware screen. They can be swapped at any time thanks to <code>lcdSwap()</code>.
+</p>
+
+
+<h6>Video modes</h6>
+
+<p>
+Both cores can be set in various <em>video modes</em>, each with different capabilities and features. The <em>sub core</em> has only five different video modes, whereas the  <em>main core</em> is more powerful : it is able to reallocate more VRAM, and has the ability to render basic vertex 3D (with a 2048 polygon limit) and several vertex shaders, such as Toon Shading. It also has an extra video mode called Mode6. In addition, the display capture device is capable to take a capture screen only from this core. See <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/lesson-1" target="_blank">LiraNuna's 2D tutorial</a> for more details.
+</p>
+
+<p>
+ In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (alphablending). There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial #2</a> for more details. 
+</p>
+
+
+<h6>VRAM Memory Banks</h6>
+
+<p>
+Depending on the video mode, each rendering core will retrieve its video-related informations (ex : bitmaps, sprites, tiles) from hardcoded regions defined in memory address space.
+</p>
+
+<p>
+These are <em>address</em> regions (i.e. a lower and higher addresses), but by default at these adresses there is no actual memory. You therefore need to map predefined chunks of actual video RAM into these areas for the cores to use them. Each of these chunks is called a bank, there are nine of them, labelled VRAM_A through to VRAM_I. Each of these has a particular size and are best suited for different purposes. The banks are:
+<center>
+  <table border="1" summary="VRAM Memory Banks">
+    <caption>VRAM Memory Banks</caption>
+
+    <tr>
+        <th>Bank name</th>
+        <th>Bank size (in Kilobytes)</th>
+    </tr>
+
+    <tr>
+        <td>VRAM_A</td>
+        <td>128</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_B</td>
+        <td>128</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_C</td>
+        <td>128</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_D</td>
+        <td>128</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_E</td>
+        <td>64</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_F</td>
+        <td>16</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_G</td>
+        <td>16</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_H</td>
+        <td>32</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_I</td>
+        <td>16</td>
+   </tr>
+
+  </table>
+</center>
+</p>
+
+
 
 <a name="2D"></a>
 <h5>2D Rendering</h5>
@@ -1339,23 +1429,92 @@ If the rendering takes place during the screen are redrawn, then the user will s
 The system has two 2D engines, one per screen. Each screen can be put into a variety of different modes, with different feature sets. These engines are each quite similar to the Game Boy Advance's single 2D engine, though more powerful.
 </p>
 
+
+
+<h6>Backgrounds</h6>
+
 <p>
-In software you manipulate a main screen abstraction, that can be mapped either to the top actual screen or to the bottom one, and a sub screen, which will correspond to the other hardware screen. They can be swapped at any time thanks to <code>lcdSwap()</code>.
+Each video mode has a number of <em>backgrounds</em> (BG) that can be used. A background is a surface that, when drawn upon, displays on the hardware. Modes that have multiple backgrounds allow these backgrounds to be overlayed, so that they are drawn on top of each other. This, and the support of transparency, enables for example a background with text to be overlayed on top of a background displaying an image.
 </p>
 
 <p>
-In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (alphablending). There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial</a> for more details. 
+There are three types of backgrounds : Rotoscale, Extended Rotoscale and Text.
+</p>
+
+<h7>Rotoscale backgrounds</h7>
+<p>
+<em>Rotoscale</em> backgrounds are framebuffer-like bitmaps (or surfaces, in SDL-like language) that can be manipulated (scrolled, scaled in or out, rotated, sheared, thanks a <a href="http://user.chem.tue.nl/jakvijn/tonc/affine.htm" target="_blank">transformation matrix</a>) and displayed directly on screen, all in hardware, i.e. with little overhead for the CPUs, no additional VRAM copy and no specific developing effort (it only involves setting some registers). They can be smaller or bigger than a screen, in which case only the relevant parts will be shown (clipping). 
+</p>
+
+<p>
+As they can be accessed (read and write) like the framebuffer and they provide additional hardware capabilities, they tend to make it useless.
+</p>
+
+<p>
+One may use for example a 16-bit 256x256 background size, which is larger than the DS screen (256x192), to demonstrate scrolling around an image. It would use 128 kilobytes to store the image, VRAM_A could be used. 
+</p>
+
+<p>
+When using tiles, rotoscale backgrounds can use only up to 256 of them.
 </p>
 
 
-<h5>Framebuffer mode</h5>
+<h7>Extended Rotoscale backgrounds</h7>
+<p>
+<em>Extended Rotation Backgrounds</em> (ERB) are more powerful versions of Rotoscale backgrounds.
+If in 256-color mode, the ERB uses a palette.
+</p>
+
+<p>
+ERB can be used as normal (non-extended) rotate-scale backgrounds, even with tiles, but with a full 1024-tile set in a full 256-color palette mode, whereas normal rotoscale backgrounds are limited to 256 tiles.
+</p>
+
+
+<h7>Tiled backgrounds</h7>
+
+<p>
+In a very similar way to palettized surfaces, that contain color index instead of pixels, some backgrounds can be <em>tiled</em> : instead of being a kind of array of pixels they are a kind of array of references to tiles, each tile being a fixed-size array of pixels (a rectangle 8 pixels wide and 8 pixels tall, i.e. 64 pixels). 
+</p>
+
+<p>
+Thus a tiled background (also called a text background) is made of :
+<ul>
+        <li>a <b>tileset</b> : a collection of up to 1024 tiles. Each tile is identified by its index, which is its number in the set, ranging from 0 to 1023</li>
+        <li>a <b>map</b>, which is mainly a 2D array, whose size is at least 32x32 (depending on the background setup), that specifies for each of its cells which tile from the tileset should be rendered (blitted). A tile entry occupies two bytes</li>
+</ul>
+</p>
+
+<p> 
+The pixels of a tile are described as color index taken from a palette. As palettes here are a collection of either 256 colors or 16 sub-palettes of 16 colors each, there are two color modes for tiles in text backgrounds :
+<ul>
+        <li>a <b>256-color mode</b> (a.k.a. 8-bit color mode) :  a pixel is an index to the 256-color palette. The index is then an 8-bit integer, ranging for 0 to 255</li>
+        <li>a <b>16-color mode</b> (a.k.a. 4-bit color mode) :  a pixel is an index to a 16-color palette. The index is then an 4-bit integer, ranging for 0 to 15. Less memory is required, thus making room for more tiles and other elements in VRAM, but with only 16 possible colors per tile the rendering quality of the result might be poor</li>
+</ul>
+
+</p>
+
+<p>
+In the VRAM (Video RAM) there are locations dedicated to the storage of map data, in <em>map bases</em> (2 Kbytes each), or tile data, in <em>tile bases</em> (16 Kbytes each). Map and tile bases share the same region in VRAM, whose layout must be carefully planned.
+</p>
+
+<p>
+As each tile base occupies 16 Kbytes, in 256-color mode there can be no more than 256 tiles per tile base (<code>16*1024/(64*1)</code>), whereas in 16-color mode there can be 512 tiles per tile base (<code>16*1024/(64*0.5)</code>).
+</p>
+
+<p>
+The tileset of a given map can refer up to 1024 tiles : more than a tile base can be referred to by a map base. Therefore in 256-color mode, there can be up to 4 tile bases per map base (<code>1024/256</code>), whereas in 16-color mode there can be up to 2 tile bases per map base (<code>1024/512</code>).
+</p>
+
+<p>
+Map bases always have 32×32 entries. To create bigger backgrounds (like 64×64), you need to use several map bases.
+</p>
+
+
+<h6>Framebuffer mode</h6>
 <p>
 The framebuffer mode is the easiest to directly draw to. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area will immediately result in their appearing on the screen. If it remains quite simple, it does not offer the various useful features offered by other modes, such as sprites, scrollings, etc., not to mention 3D primitives. And only the main screen can use this framebuffer mode.
 </p>
 
-<h5>Extended Rotation Background</h5>
-<p>
-</p>
 
 
 <p>
@@ -1367,7 +1526,7 @@ At most 128 sprites are supported at a time, and there are up to four background
 </p>
 
 <p>
-See also : <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_blank">LiraNuna's 2D tutorial</a>.
+See also : <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_blank">LiraNuna's 2D tutorial</a> and <a href="http://www.double.co.nz/nintendo_ds/nds_develop10.html" target="_blank">Chris Double tutorial #10</a> for more details. 
 </p>
 
 
