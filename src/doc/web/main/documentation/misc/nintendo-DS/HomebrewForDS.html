@@ -123,7 +123,7 @@ Portable development will be kept in mind, as having one's game working both on 
 </p>
 
 <p>
-Most of the informations here came from homebrew websites (many thanks to <a href="http://www.double.co.nz/nintendo_ds/" target="_blank">Chris Double</a> for his tutorials) and from IRC discussions (notably, thanks to <a href="" target="_blank">Wintermute</a> [Dave Murphy] and <a href="http://www.akkit.org/sgstair/" target="_blank">sgstair</a> [Stephen Stair]). More generally, many thanks to the fearless homebrewers !
+Most of the informations here came from homebrew websites (many thanks to Cearn for <a href="http://www.coranac.com/tonc/text/" target="_blank">TONC</a> and to Chris Double for his <a href="http://www.double.co.nz/nintendo_ds/" target="_blank">tutorial</a>) and from IRC discussions (notably, thanks to <a href="" target="_blank">Wintermute</a> [Dave Murphy] and <a href="http://www.akkit.org/sgstair/" target="_blank">sgstair</a> [Stephen Stair]). More generally, many thanks to the fearless homebrewers !
 </p>
 
 
@@ -853,7 +853,11 @@ Tools for commercial developers are not available for homebrewers but, luckily, 
 Installing devkitARM on UNIX is straightforward : one just has to <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=124207" target="_blank">download</a> latest stable version and extract it. Nothing more needs to be done, as the toolchain is prebuilt here : you downloaded the appropriate binaries, and there is not real point in recreating them from their sources.
 </p>
 
-<p>With devkitARM you will be able to write programs with the classical C/C++ constructs. But what about text output ? Graphics ? Touchpad or key input ? The C/C++ language and runtime do not really provide these features natively, but you can do everything yourself. You just have to figure out for example that at address <code>0x4000000</code> there is a 32-bit register that you can write to, in order to control the display. Even if most relevant <a href="detailedhardware">informations</a> are available, your time and patience might be quite quickly exhausted. Thus you can use a low level library instead, that would spare you these efforts. This is the task of libnds.
+<p>With devkitARM you will be able to write programs with the classical C/C++ constructs. But what about text output ? Graphics ? Touchpad or key input ? The C/C++ language and runtime do not really provide these features natively, but you can do everything yourself. You just have to figure out for example that at address <code>0x4000000</code> there is a 32-bit register that you can write to, in order to control the display. Even if most relevant <a href="#detailedhardware">informations</a> are available, your time and patience might be quite quickly exhausted. Thus you can use a low level library instead, that would spare you these efforts. This is the task of libnds.
+</p>
+
+<p>
+Note that dynamic libraries are not supported on the DS. Therefore each executable has to be statically linked with the libraries it uses. It is not a real drawback on such a platform where OS multitasking (see <a href="#linuxonds">DSLinux</a>) is not widely used. The size of your executables should not explode anormally due to the (static) linking to multi-purpose libraries, since only the symbols effectively referred to will be kept : if a library function is not used by the executable, its code will be stripped off automatically.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1127,7 +1131,13 @@ Some applications manage to rely on very tight 32-bit loops that fit in the inst
 </p>
 
 <p>
-Neither CPU of the DS has a Floating Point Unit (FPU), so all floating-point operations must be emulated, which is very slow. Most computations use therefore (fixed-point) integer arithmetics and (precomputed) Look-Up Tables (LUT).
+Neither CPU of the DS has a Floating Point Unit (FPU), so all floating-point operations must be emulated (they have to be done in software), which is very slow. Most computations use therefore :
+<ul>
+        <li><b>fixed-point (integer) arithmetics</b> for basic operations (addition, substraction, multiplication and division), see <a href="http://www.coranac.com/tonc/text/fixed.htm" target="_blank">TONC</a> and <a href="http://en.wikipedia.org/wiki/Fixed-point_arithmetic" target="_blank">Wikipedia</a> for further informations on this subject</li>
+
+       <li><b>(precomputed) Look-Up Tables</b> (LUT) for other computations, such as trigonometric ones (<code>cos</code>, <code>sin</code>, etc.). See <a href="http://www.coranac.com/tonc/text/fixed.htm#sec-lut" target="_blank">TONC</a> for more details on this</li>
+
+</ul>
 </p>
 
 <p>
@@ -1148,6 +1158,9 @@ Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_bla
 The main built-in memory, consisting of one big block of 4MB memory, can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other.
 </p>
 
+<p>
+Depending on a data being const or not, the linker will place it respectively either on an average memory rather unconstrained or in IWRAM, which is the fastest but one of the smallest. Therefore each time one forgets to specify the <code>const</code> qualifier for an actual constant, it may use unnecessarily the most researched IWRAM instead of low-end memory.
+</p>
 
 <h5>Interrupts</h5>
 
@@ -1197,7 +1210,11 @@ During a short duration after a line is drawn, during a longer one once a full s
 </p>
 
 <p>
-Two special interrupts are fired so that the programs can use these two favorable periods : one, the <em>Horizontal Blank Interrupt</em>, occurs whenever a line has been rendered. Your program can use this first amount of time. The other one, more famous, is the <em>Vertical Blank Interrupt</em> (VBI) that is fired once a full screen has be redrawn. Your program should use this longer duration to perform at least framebuffer-related operations, while the hardware moves from the last line back up to the first line. At both screens are refreshed at 60 Hz, the period between two VBI is 16,7 ms long. More <a href="http://www.coranac.com/tonc/text/video.htm#sec-blanks" target="_blank">info</a> (coming from GBA but still applies here). The VBI is called also vsync, since it allows for vertical synchronisation.
+Two special interrupts are fired so that the programs can use these two favorable periods : one, the <em>Horizontal Blank Interrupt</em>, occurs whenever a line has been rendered. Your program can use this first amount of time. The other one, more famous, is the <em>Vertical Blank Interrupt</em> (VBI) that is fired once a full screen has be redrawn. Your program should use this longer duration to perform at least framebuffer-related operations, while the hardware moves from the last line back up to the first line. This stage is called Vblank, as opposed to Vdraw, the screen refresh time.
+</p>
+
+<p>
+ At both screens are refreshed at 60 Hz, the period between two VBI is 16,7 ms long. More <a href="http://www.coranac.com/tonc/text/video.htm#sec-blanks" target="_blank">info</a> (coming from GBA but still applies here). The VBI is called also vsync, since it allows for vertical synchronisation.
 </p>
 
 <p>
@@ -1515,6 +1532,7 @@ Thus a tiled background (also called a text background) is made of :
         <li>a <b>tileset</b> : a collection of up to 1024 tiles. Each tile is identified by its index, which is its number in the set, ranging from 0 to 1023</li>
         <li>a <b>map</b>, which is mainly a 2D array, whose size is at least 32x32 (depending on the background setup), that specifies for each of its cells which tile from the tileset should be rendered (blitted). A tile entry occupies two bytes (16 bits) : the first ten encode the tile index (<code>2^10=1024</code>), and the 6 remaining bits records the tile attributes (more on that later)</li>
 </ul>
+So with text backgrounds you have nothing like an overall screen buffer that could be written at the pixel level : you just can manipulate tiles and maps, and it is the DS hardware that will read it to recompose the screen.
 </p>
 
 <p> 
@@ -1530,11 +1548,11 @@ The DS tiling engine is quite feature-rich : beyond displaying tiles as they are
 </p>
 
 <p>
-In the VRAM (Video RAM) there are locations dedicated to the storage of map data, in <em>map bases</em> (2 Kbytes each), or tile data, in <em>tile bases</em> (16 Kbytes each). Map and tile bases share the same region in VRAM, whose layout must be carefully planned. Usually one counts in map base units, for example the size of a tile base is 8 map bases.
+In the VRAM (Video RAM) there are locations dedicated to the storage of map data, in <em>map bases</em> (2 Kbytes each), or tile data, in <em>tile bases</em> (16 Kbytes each, a.k.a. charblock). Map and tile bases share the same region in VRAM, whose layout must be carefully planned. Usually one counts in map base units, for example the size of a tile base is 8 map bases.
 </p>
 
 <p>
-As each tile base occupies 16 Kbytes, in 256-color mode there can be no more than 256 tiles per tile base (<code>16*1024/(64*1)</code>), whereas in 16-color mode there can be 512 tiles per tile base (<code>16*1024/(64*0.5)</code>).
+As each tile base occupies 16 Kbytes, in 256-color mode there can be no more than 256 tiles per tile base  (<code>16*1024/(64*1)</code>), whereas in 16-color mode there can be 512 tiles per tile base (<code>16*1024/(64*0.5)</code>).
 </p>
 
 <p>
@@ -1542,8 +1560,9 @@ The tileset of a given map can refer up to 1024 tiles : more than a tile base ca
 </p>
 
 <p>
-Map bases always have 32×32 entries. To create bigger backgrounds (like 64×64), you need to use several map bases.
+Map bases always have 32×32 entries. To create bigger backgrounds (like 64×64), you need to use several map bases. More infos on <a href="http://www.coranac.com/tonc/text/regbg.htm" target="_blank">regular tiled backgrounds</a> can be found in TONC.
 </p>
+
 
 <h6>Framebuffer mode</h6>
 <p>
@@ -1553,7 +1572,6 @@ The framebuffer mode, or bitmap mode, is the easiest to directly draw to, but th
 <p>
 Hence a good practise is to prefer sprites and tiled backgrounds over bitmap modes, very few 2D games do not rely on the hardware acceleration.
 </p>
-
 
 
 <h6>Format conversions</h6>
@@ -1566,7 +1584,7 @@ Finally, the graphics to render are most of the time available first in general-
 <h7>Precomputed conversions</h7>
 
 <p>
-Tools include <a href="http://www.aaronrogers.com/ham/gfx2gba_readme.php" target="_blank">gfx2gba</a> which, when given a file in 16 or 256-color PCX, TGA, SPR, BMP or TIM formats (one may use The Gimp to preconvert PNG and JPEG files beforehand), can create a binary tileset (<code>*.raw</code>) with 8x8 tiles), a binary background map (<code>*.map</code>) and a 256-color palette file (<code>*.bin</code>) :
+Tools include <a href="http://www.coranac.com/projects.php#grit" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>, new name for git) and <a href="http://www.aaronrogers.com/ham/gfx2gba_readme.php" target="_blank">gfx2gba</a> which, when given a file in 16 or 256-color PCX, TGA, SPR, BMP or TIM formats (one may use The Gimp to preconvert PNG and JPEG files beforehand), can create a binary tileset (<code>*.raw</code>) with 8x8 tiles), a binary background map (<code>*.map</code>) and a 256-color palette file (<code>*.bin</code>) :
 <center>
     <table summary="Code" style="border : none">
         <tr>
@@ -1601,19 +1619,39 @@ See also : <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_bla
 <h6>Sprites</h6>
 
 <p>
-Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transformed independently from each other and can be used in conjunction with either bitmap or tiles background types (which are mutually exclusive). Like backgrounds, sprites are built out of tiles, but each has its own set of tiles. 
+Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transformed independently from each other and can be used in conjunction with either bitmap or tiles background types (which are mutually exclusive). Like backgrounds, sprites are built out of tiles, but both have their own set of tiles. The tiles available for sprites are stored in object VRAM, or OVRAM for short.
 </p>
 
 <p>
-OAM means <em>Object Attribute Memory</em>. This is where you control the sprites. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM).
+To perform animations, one should better have its sprites refer to different tiles, rather than considering that a sprite owns the tiles it uses, and therefore updating these tiles.
 </p>
 
 <p>
-Each sprite behaves a bit like a big tile : it has an identifier and some overall informations such as flipping flags and palette-info for 16-color sprites. It is nevertheless made from several real tiles.
+OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM).
 </p>
 
 <p>
-Each sprite has also its own affine 2x2 transformation matrix, which defines if it should be rotated, scaled or sheared when being rendered. This matrix transforms points expressed in screen space into points in texture space, not the other way round. More infos about that can be read from <a href="http://www.coranac.com/tonc/text/affine.htm" target="_blank">TONC</a>.
+Generally speaking, the OAM is not directly read or written to, as during the VDraw this memory area is locked and cannot be accessed. This is less a limitation than a protection, as visual artefacts could be seen if the OAM was changed during screen update. Therefore programmers usually relies on OAM double buffering : they have their own shadow copy in RAM of the OAM attributes, they can modify it at any time (including Vdraw), and during Vblank they update the real OAM from their shadow copy.
+</p>
+
+<p>
+Each sprite behaves a bit like a big tile : it has an identifier and some overall informations such as flipping flags and palette-info for 16-color sprites. It is nevertheless made from several real tiles, which can be stored in memory according to two <a href="http://www.coranac.com/tonc/text/regobj.htm#sec-tiles" target="_blank">conventions</a> : 1D mapping or 2D mapping.
+</p>
+
+<p>
+To follow TONC naming conventions, each sprite is either regular (standard, basic) or affine (being able to be rotated, scaled, sheared).
+</p>
+
+
+<h7>Regular sprites</h7>
+<p>
+A regular sprite has several attributes that define its size, actual shape (depending both on the shape and size attributes), position (x,y of the top-left sprite corner in screen space), background priority (higher priorities are drawn first, hence are below smaller ones), flipping (horizontal and/or vertical), base tile, bit depth (palette range), activation (shown/hidden), alpha-blending status, mosaïc effect status, and more.
+</p>
+
+
+<h7>Affine sprites</h7>
+<p>
+Affine sprites are extended regular sprites. They have all regular attributes, and additional affine-specific informations. Each affine sprite is transformable : it has its own affine 2x2 transformation matrix, which defines how it should be rotated, scaled or sheared when being rendered. This matrix transforms points expressed in screen space into points in texture space, not the other way round. More infos about that can be read from <a href="http://www.coranac.com/tonc/text/affine.htm" target="_blank">TONC</a>.
 </p>
 
 <p>
@@ -2124,7 +2162,7 @@ A timer is a hardware function that can be set to raise an interrupt at regular 
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Friday, June 22, 2007</em>
+    <em>Last update : Saturday, June 23, 2007</em>
   </center>
 </body>
 </html>
