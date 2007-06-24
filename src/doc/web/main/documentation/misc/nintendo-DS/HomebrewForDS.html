@@ -237,7 +237,7 @@ See also the Wikipedia <a href="http://en.wikipedia.org/wiki/Nintendo_DS_accesso
 
 <h4>Needing a console that can be programmed</h4>
 <p>
-Having a basic console is not enough to be able to program it : Nintendo, due to the fear of piracy, preferred to make the life of homebrewers more difficult than technically needed, notably thanks to hardened firmwares preventing modifications or execution of non-acknowledged code : apparently they are encrypted with a private key from Nintendo, the device uses the embedded public one to decipher the firmware before running it.
+Having a basic console is not enough to be able to program it : Nintendo, due to the fear of piracy, preferred to make the life of homebrewers more difficult than technically needed, notably thanks to hardened firmwares preventing modifications or execution of non-acknowledged code. For example, Wifi demos are apparently protected by a RSA check (at least parts of them are encrypted with a private key from Nintendo), and the DS uses the embedded public key to decipher these demos before running them.
 </p>
 
 <p>
@@ -406,7 +406,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	
 	<li>one GPU (<em>Graphical Processing Unit</em>) made of two <b>advanced 2D rendering systems</b> (one for each screen) and a <b>3D rendering system</b>, able to offer various <a href="#3D">3D features</a>. It can render up to 120 000 triangles per second at 60 frames per second, a fill rate of about 30 million pixels per second. This is a completely custom chip integrated in the same chip as both ARM. It is <b>not</b>, sadly, the PowerVR MBX that was announced by some <a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">sources</a></li>
 
-	<li>A <b>flashable</b> <a href="http://en.wikipedia.org/wiki/Firmware" target="_blank">firmware</a>, on NVRAM (Non-Volatile RAM)</li>
+	<li>A <b>flashable</b> <a href="http://en.wikipedia.org/wiki/Firmware" target="_blank">firmware</a>, on NVRAM (Non-Volatile RAM). Alternative custom firmwares allow to run homebrew executables sent thanks to Wifi, as if they were officially signed. Upgrading the firmware is an easy and relatively safe process now</li>
 	
 	<li>A <b>gamepad</b> (four-direction keys), with <b>6 bigger buttons</b> (X, Y, A, B in a cross layout; L and R on the far side of the DS) and <b>two smaller</b> (Start and Select)</li>
 	
@@ -435,7 +435,7 @@ The ARM RISC architecture is heavily inspired from the <em>GameBoy Advance</em> 
 
 <a name="memorylayout"></a>
 <p>
-See the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">diagram explaining the DS memory layout</a> on Dev-Scene website.
+See the excellent <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">diagram explaining the DS memory layout</a> on Dev-Scene website.
 </p>
 
 <p>
@@ -460,6 +460,8 @@ More low-level informations about the DS hardware :
 	<li><a href="http://nocash.emubase.de/gbatek.htm" target="_blank">GBATEK</a></li>
 	<li><a href="http://auia.net/ds/" target="_blank">NDSTech</a></li>
 	<li><a href="http://www.dev-scene.com/NDS/Tutorials_Day_2" target="_blank">Dev-Scene tutorial</a></li>
+	<li><a href="http://dualis.1emu.net/dsti.html" target="_blank">Dualis</a></li>
+
 	
 </ul>
 </p>
@@ -792,7 +794,7 @@ Programming the DS is quite fun because it is rather down to the metal : being t
 <h3>Gathering the adequate tools for homebrew</h3>
 
 <p>
-Quite a few languages can use sources directly taken from the DS. They are mostly interpreted : there are ports for python, perl or lua, maybe one day Erlang. Some of them are expected to be run from DSLinux.  
+Quite a few languages can use sources directly taken from the DS. They are mostly interpreted : there are ports for python, perl or lua, maybe one day Erlang. Some of them are expected to be run from DSLinux. One of course could use  <a href="http://www.coranac.com/tonc/text/asm.htm" target="_blank">ARM assembly</a> code, but most needs it would be fatal overkill, as the development duration would explode for no real gain. Even with higher level language, some knowledge of <a href="http://www.coranac.com/tonc/text/numbers.htm" target="_blank">bit operations</a> is required.
 </p>
 
 <p>
@@ -1082,7 +1084,7 @@ Though the imitation is not always perfect, emulators have progressed a lot. For
 
 </li>
 	 
-    <li><a href="http://dualis.1emu.net/dsti.html" target="_blank">Dualis</a> (not tested; known to be faster than NO$GBA, but now unable to manage libfat unless FCSR drivers are used)</li>
+    <li><a href="http://dualis.1emu.net/" target="_blank">Dualis</a> (not tested; known to be faster than NO$GBA, but now unable to manage libfat unless FCSR drivers are used)</li>
 	
     <li><a href="http://www.ndsemulator.com/nintendo-ds/ideas-download.htm" target="_blank">Ideas</a> (not tested)</li>
 	
@@ -1111,6 +1113,11 @@ Having the general hardware specifications and the relevant toolchain is not eno
 
 <a name="twocpu"></a>
 <h4>Two general-purpose CPU to handle</h4>
+
+<p>
+ARM CPU are RISC (<em>Reduced Instruction Set Computer</em>) processors, as opposed to CISC processors (<em>Complex Instruction Set Computer</em>). Most ARM instructions are expected to be executed in one clock cycle, thanks to a simpler and constant structure. 
+</p>
+
 
 <h5>Respective intended use &amp; performance</h5>
 
@@ -1150,17 +1157,22 @@ Monitoring the ARM loads is not easy, even when using emulators. Profiling can b
 </p>
 
 <p>
-Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_blank">guidelines</a> should be applied to write effective code for the DS.
+Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_blank">guidelines</a> should be applied to write effective code for the DS. See also another TONC section about <a href="http://www.coranac.com/tonc/text/asm.htm" target="_blank">ARM assembly</a>.
 </p>
 
 <h5>CPU &amp; Memory</h5>
 <p>
-The main built-in memory, consisting of one big block of 4MB memory, can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other.
+The main built-in memory, consisting of one big block of 4MB memory, can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other (by default, the ARM7 has priority over the ARM9), leading the other to wait until the first has finished its operation.
 </p>
 
 <p>
-Depending on a data being const or not, the linker will place it respectively either on an average memory rather unconstrained or in IWRAM, which is the fastest but one of the smallest. Therefore each time one forgets to specify the <code>const</code> qualifier for an actual constant, it may use unnecessarily the most researched IWRAM instead of low-end memory.
+On the main memory there is generally the ARM9 executable, as well as most game data.
 </p>
+
+<p>
+The ARM7 executable can be as well in main memory, but for performance reasons it is often placed (its code together with its data) into the IWRAM (64 kbytes of fast memory, 32-bit wide) that only the ARM7 can access. This is the case with devkitARM. Code has to be small enough to fit in the IWRAM.
+</p>
+
 
 <h5>Interrupts</h5>
 
@@ -1236,7 +1248,19 @@ More infos on interrupts can be found in this TONC <a href="http://www.coranac.c
 <h5>ARM7 role</h5>
 
 <p>
+The processor's full name is ARM7TDMI, meaning it's an ARM 7 code (a.k.a. ARM v4), which can read THUMB code, has a Debug mode and a fast Multiplier. On the DS it has neither an instruction cache nor a data cache, but it is a bit compensated by the fast memory it owns, the 64-kilobyte IWRAM linked with a 32-bit wide bus.
+</p>
+
+<p>
+There are also two 16-kilobyte WRAM banks that can be assigned independently to the ARM7 or ARM9, with a 32-bit wide bus in both cases. The two ARMs cannot access to these banks at the same time. Commonly, both banks will be mapped to the ARM7; as they form a continuous block with the ARM7 IWRAM, effectively giving this processor 96 kilobytes of fast memory.
+</p>
+
+<p>
 The ARM7 is the only CPU that can be used for controlling the touchscreen. Most applications use boilerplate code that sets up an interrupt handler for the already mentioned <em>Vertical Blank Interrupt</em> (VBI). Not for rendering purpose here, but for synchronization, so that the interrupt handler dedicated to ARM7 input reporting can be scheduled regularly. The ARM7 boilerplate code gets the value of the touchscreen parameters and stores them in a data structure we can access from the ARM9.
+</p>
+
+<p>
+Depending on a data being const or not, the linker will place it respectively either on an average memory rather unconstrained or in IWRAM, which is the fastest but one of the smallest. Therefore each time one forgets to specify the <code>const</code> qualifier for an actual constant, it may use unnecessarily the most researched IWRAM instead of low-end memory.
 </p>
 
 <p>
@@ -1244,14 +1268,19 @@ devkitPro includes a default ARM7 program to handle basic tasks like interrupts,
 </p>
 
 
+
 <h5>ARM9 role</h5>
 
 <p>
-Due to its superior power compared to the ARM7, the ARM9 is the main processor and as such will take in charge most of the work. Application-specific code is expected to run on it.
+Due to its superior power compared to the ARM7, the ARM9 is the main processor and as such will take in charge most of the work. Most of application-specific code is expected to run on it.
 </p>
 
 <p>
-A single <code>main()</code> function defines usually :
+The ARM9 uses two built-in caches, one for the instructions (ITCM, 32 kilobytes), the other for the data (DTCM, 16 kilobytes). Each is accessed by a dedicated 32-bit wide bus. Both cache accesses to the main memory and increase the ARM9 performances a lot, at the expense of a small additional level of complexity : as neither the ARM7 nor the DMA circuits are aware of these two caches, care must be taken not to create inconsistencies with the ARM9. To make a better use of these caches, various primitives are provided to ensure they stay in sync with the main memory, including a mirror of main memory that is not cacheable and a way of flushing the data cache.
+</p>
+
+<p>
+A single ARM9 <code>main()</code> function defines usually :
 <ol>
 
 	<li>an <b>initialization</b> stage, to set screen modes, memory banks, interrupt handlers, to initialize various libraries (ex : PAlib, libfat, dswifi, etc.) and to perform as many tasks as possible (ex : loading the resources from mass storage, setting up Wifi connections, etc.)</li>
@@ -1281,8 +1310,10 @@ As each ARM has specific abilities (ex : the ARM7 is the only one that can acces
 </p>
 
 <p>
-The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-process communication</em>) based on a set of registers, managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to a <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queue</a> with an asynchronous communication protocol.
+The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-process communication</em>) based on a set of registers, managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to a <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queue</a> with an asynchronous communication protocol. Communication between ARM can be tricky : beyond the classical issues of synchronization of the concurrent accesses, one has to keep in mind the ARM7 is not aware of the ARM9 caches, which may lead to inconsistencies if using the main memory to share data.
 </p>
+
+
 
 <h6>Custom-made IPC (not recommended)</h6>
 <p>
@@ -1364,7 +1395,7 @@ Selective activation is useful notably to save energy.
 <h5>Rendering in general</h5>
 
 <p>
-Most of the informations related to the graphical rendering are stored in the VRAM, for <em>Video RAM</em>.
+Most of the informations related to the graphical rendering are stored in the VRAM, for <em>Video RAM</em>. Its size is 656 kilobytes.
 </p>
 
 <p>
@@ -1393,6 +1424,15 @@ When rendering is not trivial, it might not be short enough to fit in the VBI. <
 In software you manipulate a <em>main</em> screen abstraction (main rendering core), that can be mapped either to the top actual screen or to the bottom one, and a <em>sub</em> screen (sub rendering core), which will correspond to the other hardware screen. They can be swapped at any time thanks to <code>lcdSwap()</code>.
 </p>
 
+<p>
+Compared to the sub core, the main core offers following additional features :
+
+<ul>
+       <li>it adds <b>two more video modes</b> able to render large bitmaps</li>
+       <li>it can render <b>directly from memory to the screen</b> : the 2D engine is then bypassed (framebuffer mode)</li>
+      <li>one of its background layers can be <b>given to the 3D engine </b></li>
+ </ul>
+</p>
 
 <h6>Video modes</h6>
 
@@ -1404,15 +1444,21 @@ Both cores can be set in various <em>video modes</em>, each with different capab
  In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (based on an alpha bit), that dictates whether a given pixel should be displayed or not. There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial #2</a> for more details. 
 </p>
 
+<p>
+<a href="" target="_blank"></a>
+
+
+</p>
+
 
 <h6>VRAM Memory Banks</h6>
 
 <p>
-Depending on the video mode, each rendering core will retrieve its video-related informations (ex : bitmaps, sprites, tiles) from hardcoded regions defined in memory address space.
+Depending on the video mode, each rendering core will retrieve its video-related informations (ex : bitmaps, sprites, tiles, textures, maps) from hardcoded regions defined in memory address space.
 </p>
 
 <p>
-These are <em>address</em> regions (i.e. a lower and higher addresses), but by default at these adresses there is no actual memory. You therefore need to map predefined chunks of actual video RAM into these areas for the cores to use them. Each of these chunks is called a bank, there are nine of them, labelled VRAM_A through to VRAM_I. Each of these has a particular size and are best suited for different purposes. The banks are:
+These are <em>address</em> regions (i.e. a lower and higher addresses), but by default at these adresses there is no actual memory : the engines have almost no memory on their own. You therefore need to map predefined chunks of actual video RAM into these areas for the cores to use them. Each of these chunks is called a bank, there are nine of them, labelled VRAM_A through to VRAM_I. Each of these has a particular size and are best suited for different purposes : choosing the appropriate layout and settings is all the more important that memory space is tiny. The banks are:
 <center>
   <table border="1" summary="VRAM Memory Banks">
     <caption>VRAM Memory Banks</caption>
@@ -1471,6 +1517,11 @@ These are <em>address</em> regions (i.e. a lower and higher addresses), but by d
 </center>
 </p>
 
+<p>
+See also the <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" target="_blank">VRAM bank mapping</a> from Dovoto's tutorial.
+</p>
+
+
 
 <a name="2D"></a>
 <h5>2D Rendering</h5>
@@ -1488,12 +1539,13 @@ Each video mode has a number of <em>backgrounds</em> (BG) that can be used. A ba
 </p>
 
 <p>
-There are three types of backgrounds : Rotoscale, Extended Rotoscale and Text.
+There are three types of backgrounds : Rotoscale (a.k.a. Rotation), Extended Rotoscale (a.k.a. Extended) and Text.
+See the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#2D" target="_blank">table of graphic modes</a> from Dovoto's tutorial.
 </p>
 
 <h7>Rotoscale backgrounds</h7>
 <p>
-<em>Rotoscale</em> backgrounds are framebuffer-like bitmaps (or surfaces, in SDL-like language) that can be manipulated (affine transformations : 2-axis scrolled, scaled in or out, rotated, sheared, thanks a <a href="http://user.chem.tue.nl/jakvijn/tonc/affine.htm" target="_blank">transformation matrix</a>) and displayed directly on screen, all in hardware, i.e. with little overhead for the CPUs, no additional VRAM copy and no specific developing effort (it only involves setting some registers). They can be smaller or bigger than a screen, in which case only the relevant parts will be shown (clipping). 
+<em>Rotoscale</em> backgrounds are tile-based backgrounds (or surfaces, in SDL-like language) that can be manipulated (affine transformations : 2-axis scrolled, scaled in or out, rotated, sheared, thanks a <a href="http://user.chem.tue.nl/jakvijn/tonc/affine.htm" target="_blank">transformation matrix</a>) and displayed directly on screen, all in hardware, i.e. with little overhead for the CPUs, no additional VRAM copy and no specific developing effort (it only involves setting some registers). They can be smaller or bigger than a screen, in which case only the relevant parts will be shown (clipping). 
 </p>
 
 <p>
@@ -1505,7 +1557,7 @@ One may use for example a 16-bit 256x256 background size, which is larger than t
 </p>
 
 <p>
-When using tiles, rotoscale backgrounds can use only up to 256 of them.
+Rotoscale backgrounds can use only up to 256 tiles.
 </p>
 
 <p>
@@ -1515,19 +1567,15 @@ Finally, hardware scrolling can be of great help to implement parallax scrolling
 
 <h7>Extended Rotoscale backgrounds</h7>
 <p>
-<em>Extended Rotation Backgrounds</em> (ERB) are more powerful versions of Rotoscale backgrounds.
-If in 256-color mode, the ERB uses a palette.
+<em>Extended Rotation Backgrounds</em> (ERB) are more powerful versions of Rotoscale backgrounds : they support larger tilesets (1024 instead of 256, which induces larger maps), they support more palettes (256-color ones), and they can operate in a bitmap mode as well as tiled modes.
 </p>
 
-<p>
-ERB can be used as normal (non-extended) rotate-scale backgrounds, even with tiles, but with a full 1024-tile set in a full 256-color palette mode, whereas normal rotoscale backgrounds are limited to 256 tiles.
-</p>
 
 
 <h7>Text backgrounds</h7>
 
 <p>
-In a very similar way to palettized surfaces, that contain color index instead of pixels, some backgrounds can be <em>tiled</em> : instead of being a kind of array of pixels they are a kind of array of references to tiles, each tile being a fixed-size array of pixels (a rectangle 8 pixels wide and 8 pixels tall, i.e. 64 pixels). 
+They are general-purpose tiled backgrounds. In a very similar way to palettized surfaces, that contain color index instead of pixels, some backgrounds can be <em>tiled</em> : instead of being a kind of array of pixels they are a kind of array of references to tiles, each tile being a fixed-size array of pixels (a rectangle 8 pixels wide and 8 pixels tall, i.e. 64 pixels). 
 </p>
 
 <p>
@@ -1707,7 +1755,12 @@ The DS can render at most about 2048 triangles per scene as 60 frames per second
 There are 512 kB of texture memory per screen, and the maximum texture size is 1024x1024 pixels.
 </p>
 
+<p>
+See also the TONC section about <a href="http://www.coranac.com/tonc/text/matrix.htm" target="_blank">basic linear algebra</a> and its <a href="http://www.coranac.com/tonc/text/mode7ex.htm" target="_blank">3D section</a> for theoritical elements about 3D rendering.
+</p>
+
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
 
 
 <a name="sound"></a>
@@ -1720,9 +1773,10 @@ Sound tends to consume a lot of CPU and RAM resources, hence the best is often t
 Only the ARM7 can access the sound hardware, so we somehow have to have the ARM9 notify the ARM7 that it wants to play a sound. 
 </p>
 
+
 <h5>Sound output</h5>
 <p>
-Relying on the sound mixing hardware is the best bet : it can manage 16 channels with about 5% memory bandwidth usage. Therefore using MOD-like soundtracks is favored, even by commercial games.
+Relying on the sound mixing hardware is the best bet : it can manage 16 independent audio channels with about 5% memory bandwidth usage. Therefore using <a href="http://modarchive.org/" target="_blank">MOD</a>-like soundtracks is favored, even by commercial games. Supported formats are 8 bit, 16 bit, or <a href="http://en.wikipedia.org/wiki/ADPCM" target="_blank">ADPCM</a>.
 </p>
  
 <p>
@@ -1730,7 +1784,7 @@ With ogg/mp3 decoding, one would eat around 50% ARM9 or almost 100% of the ARM7 
 </p>
 
 <p>
-Sample data can be assigned independently to any of the 16 channels. For a given channel, the playback frequency of the sample (ex : 22 050 Hz), the sample size (ex : 8bit) and the sample data length can be set, among other informations (channel enabled or not, looping mode or one shot, etc.). Stereo sound can be output, with panning from left to right for example.
+Sample data can be assigned independently to any of the 16 channels. For a given channel, the playback frequency of the sample (ex : 22 050 Hz), the sample size (ex : 8bit) and the sample data length can be set, among other informations (channel enabled or not, looping mode or one shot, volume, etc.). Stereo sound can be output, with panning from left to right for example.
 </p>
 
 <p>
@@ -1740,6 +1794,7 @@ Sample data also need to be passed to the hardware in raw format, i.e. as a seri
 <p>
 Sound output requires sound to play, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needing by your application.
 </p>
+
 
 <a name="soundinput"></a>
 <h5>Sound input</h5>
@@ -1882,7 +1937,7 @@ Actually current key state is far less interesting than key transition : even if
 
 <h5>Touchscreen</h5>
 <p>
-
+The touchpad communicates to the DS via a serial interface to the ARM7. For example thanks to libnds-provided default ARM7 binary, the measured screen coordinates can be read once per frame and made available to the ARM9.
 </p>
 
 <h5>Microphone</h5>
@@ -1890,9 +1945,14 @@ Actually current key state is far less interesting than key transition : even if
 The built-in <a href="#soundinput">microphone</a> can be used to perform some limited speech-recognition, or to detect the user blowing air, shouting at it, etc..
 </p>
 
-
+<h5>Real-time clock</h5>
+<p>
+The DS keeps track of the date and of the time of day to the second. Applications can react differently based on user time, duration since last use, etc.
+</p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
 
 <a name="wireless"></a>
 <h4>Wireless networking</h4>
@@ -1904,8 +1964,8 @@ The built-in Wifi support allows the DS to communicate (with a theoretical bandw
 	<li><b></b> : </li>
 -->
 
-	<li>with a <b>standard access point</b> (i.e. public non-<a href="http://en.wikipedia.org/wiki/Captive_portal" target="_blank">captive portal</a> hotspots or a personal 802.11b or 802.11g wireless routers) to access the Internet. The DS supports <a href="http://en.wikipedia.org/wiki/Wired_Equivalent_Privacy" target="_blank">WEP</a>
- encryption but not <a href="http://en.wikipedia.org/wiki/Wi-Fi_Protected_Access" target="_blank">WPA</a></li>
+	<li>with a <b>802.11 standard access point</b> (i.e. public non-<a href="http://en.wikipedia.org/wiki/Captive_portal" target="_blank">captive portal</a> hotspots or a personal 802.11b or 802.11g wireless routers) to access the Internet. The DS supports <a href="http://en.wikipedia.org/wiki/Wired_Equivalent_Privacy" target="_blank">WEP</a>
+ encryption but not <a href="http://en.wikipedia.org/wiki/Wi-Fi_Protected_Access" target="_blank">WPA</a>. A full socket library has been implemented in the <a href="http://akkit.org/dswifi/" target="_blank">dswifi</a> library, which allows to port PC-originating network code to the DS</li>
  
 	<li>with <b>other DS</b> in the vicinity, through <a href="http://en.wikipedia.org/wiki/NiFi" target="_blank">Nifi</a>, a modified WiFi protocol created by Nintendo for the DS and the Wii, partially secured using RSA security signing. It is used in non-online multiplayer mode, and to download game demos or multiplayer game software</li>
 	
@@ -1983,7 +2043,11 @@ A <a href="http://en.wikipedia.org/wiki/Direct_memory_access" target="_blank">DM
 </p>
 
 <p>
-There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU : the ARM9 initiates the transfer and, if it does not access to main memory, can continue its work while the DMA transfer is going on. Then it will receive an interrupt from the DMA controller once the operation has been done. It results in data transfer with much less CPU overhead. Note though that during a DMA transfer the CPU is locked off the bus, thus restraining a lot what it can done in the mean time.
+There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU : the ARM9 initiates the transfer and, if it does not access to main memory, can continue its work while the DMA transfer is going on. Then it will receive an interrupt from the DMA controller once the operation has been done. It results in data transfer with much less CPU overhead. 
+</p>
+
+<p>
+Note though that during a DMA transfer the CPU is locked off the bus, thus restraining a lot what it can done in the mean time. Note also that the DMA circuits are not aware of the ARM9 caches, leading to potential inconsistencies.
 </p>
 
 <p>
@@ -2140,7 +2204,9 @@ More infos on timers can be found in this TONC <a href="http://www.coranac.com/t
     <li><a href="http://www.warioworld.com/" target="_blank">WarioWorld</a>, software development support group (for professionals, authorized Nintendo developers and licensees). Nintendo only accepts official companies with a game development team, and sufficient experience in certain areas for their official developer support program. Small structures are expected to find a "Nintendo-certified" publisher prior to submit their games</li>
 
     <li><a href="http://tobw.net/dswiki" target="_blank">DS Developing Wiki</a></li>
-
+ 
+    <li><a href="http://www.coranac.com/tonc/text/refs.htm" target="_blank">TONC references</a></li>
+   
     <li>Resources in French :
 	<ul>
 
@@ -2185,7 +2251,7 @@ More infos on timers can be found in this TONC <a href="http://www.coranac.com/t
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Saturday, June 23, 2007</em>
+    <em>Last update : Sunday, June 24, 2007</em>
   </center>
 </body>
 </html>
