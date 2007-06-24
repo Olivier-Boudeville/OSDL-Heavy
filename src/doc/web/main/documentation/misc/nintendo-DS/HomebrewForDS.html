@@ -857,7 +857,7 @@ Installing devkitARM on UNIX is straightforward : one just has to <a href="http:
 </p>
 
 <p>
-Note that dynamic libraries are not supported on the DS. Therefore each executable has to be statically linked with the libraries it uses. It is not a real drawback on such a platform where OS multitasking (see <a href="#linuxonds">DSLinux</a>) is not widely used. The size of your executables should not explode anormally due to the (static) linking to multi-purpose libraries, since only the symbols effectively referred to will be kept : if a library function is not used by the executable, its code will be stripped off automatically.
+Note that dynamic libraries are not supported on the DS. Therefore each executable has to be statically linked with the libraries it uses. It is not a real drawback on such a platform where OS multitasking (see <a href="#linuxonds">DSLinux</a>) is not widely used. The size of your executables should not explode anormally due to the (static) linking to multi-purpose libraries, since only object files defining symbols effectively referred to will be kept. The inclusion is per object file and not per symbol, so as soon as a symbol is used, all the other symbols defined together in its objet file will be added too, even if they are not used.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1179,7 +1179,7 @@ Interrupts allow also to use the CPU sleep mode, since they provide a way of wak
 </p>
 
 <p>
-By default when an interrupt is triggered, the CPU jumps to the standard BIOS interrupt routine, a function which is stored in a special memory address that we can write to. By storing at this memory address a pointer to one of our own function, we can cause the interrupt to be processed by our own function, i.e. we can define our custom interrupt (IRQ) handler.
+By default when an interrupt is triggered, the CPU jumps to the standard <a href="http://www.coranac.com/tonc/text/swi.htm" target="_blank">BIOS</a> interrupt routine, a function which is stored in a special memory address that we can write to. By storing at this memory address a pointer to one of our own function, we can cause the interrupt to be processed by our own function, i.e. we can define our custom interrupt (IRQ) handler.
 </p>
 
 <p>
@@ -1226,6 +1226,10 @@ Note that all other operations (input reading, sound output, application logic, 
 
 <p>
 Keys can be read thanks to <a href="#keys">several methods</a>, including the interrupt-based one. In this case a specific IRQ handler is registered. This handler will be triggered indeed when a key is pressed, but it will not be called when the key will be released, which reduces quite a lot the interest of this key handling method.
+</p>
+
+<p>
+More infos on interrupts can be found in this TONC <a href="http://www.coranac.com/tonc/text/interrupts.htm" target="_blank">section</a>.
 </p>
 
 
@@ -1645,15 +1649,25 @@ To follow TONC naming conventions, each sprite is either regular (standard, basi
 
 <h7>Regular sprites</h7>
 <p>
-A regular sprite has several attributes that define its size, actual shape (depending both on the shape and size attributes), position (x,y of the top-left sprite corner in screen space), background priority (higher priorities are drawn first, hence are below smaller ones), flipping (horizontal and/or vertical), base tile, bit depth (palette range), activation (shown/hidden), alpha-blending status, mosaïc effect status, and more.
+A regular sprite has several attributes that define its size, actual shape (depending both on the shape and size attributes), position (x,y of the top-left sprite corner in screen space), background priority (higher priorities are drawn first, hence are below smaller ones), flipping (horizontal and/or vertical), base tile, bit depth (palette range), activation (shown/hidden), <a href="http://www.coranac.com/tonc/text/gfx.htm#sec-blend" target="_blank">alpha-blending</a> status, <a href="http://www.coranac.com/tonc/text/gfx.htm#sec-mos" target="_blank">mosaïc</a> (blocky) effect status, <a href="http://www.coranac.com/tonc/text/gfx.htm#sec-win" target="_blank">windowing</a>, and more.
 </p>
 
 
 <h7>Affine sprites</h7>
 <p>
-Affine sprites are extended regular sprites. They have all regular attributes, and additional affine-specific informations. Each affine sprite is transformable : it has its own affine 2x2 transformation matrix, which defines how it should be rotated, scaled or sheared when being rendered. This matrix transforms points expressed in screen space into points in texture space, not the other way round. More infos about that can be read from <a href="http://www.coranac.com/tonc/text/affine.htm" target="_blank">TONC</a>.
+Affine sprites are extended regular sprites. They have all regular attributes, and additional affine-specific informations. Each affine sprite is transformable : it has its own affine 2x2 transformation matrix, which defines how it should be rotated, scaled or sheared when being rendered. This matrix transforms points expressed in screen space into points in texture space, not the other way round. 
 </p>
 
+<p>
+Because of round-off errors due to fixed point matrix multiplications, one should avoid to compute multiple transforms in a row by reusing the previous affine matrix to compute the newer one : the error would soon grow too much. One should keep track of current transformation settings (angles, zoom factor, etc.) and recompute from them an affine matrix instead.
+</p>
+
+<p>
+More infos about that can be read from <a href="http://www.coranac.com/tonc/text/affine.htm" target="_blank">TONC</a>, especially the <a href="http://www.coranac.com/tonc/text/affobj.htm" target="_blank">affine sprite</a> section about clipping, discretization and wrapping artefacts.
+</p>
+
+
+<h7>Additional 2D informations</h7>
 <p>
 More infos on <a href="http://www.coranac.com/tonc/text/video.htm#sec-vid-types" target="_blank">bitmaps, backgrounds and sprites</a>, coming from the GBA but mostly relevant for the DS as well.
 </p>
@@ -1961,6 +1975,7 @@ An important developing rule is to prefer using the <code>CPU native words</code
 Various subsystems (power management, firmware, touchscreen, sound volume and control, microphone amplifier control and gain control, back-lighting of screens, power LED, battery status) can be accessed only thanks to the SPI (<em>Serial Peripheral Interface</em>) bus.
 </p>
 
+
 <h5>DMA</h5>
 
 <p>
@@ -1971,11 +1986,19 @@ A <a href="http://en.wikipedia.org/wiki/Direct_memory_access" target="_blank">DM
 There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU : the ARM9 initiates the transfer and, if it does not access to main memory, can continue its work while the DMA transfer is going on. Then it will receive an interrupt from the DMA controller once the operation has been done. It results in data transfer with much less CPU overhead. Note though that during a DMA transfer the CPU is locked off the bus, thus restraining a lot what it can done in the mean time.
 </p>
 
+<p>
+More infos on DMA can be found in this TONC <a href="http://www.coranac.com/tonc/text/dma.htm" target="_blank">section</a>.
+</p>
+
 
 <a name="timers"></a>
 <h5>Timers</h5>
 <p>
 A timer is a hardware function that can be set to raise an interrupt at regular intervals, once enabled. There are eight incrementing 16bit timers, four for each CPU.
+</p>
+
+<p>
+More infos on timers can be found in this TONC <a href="http://www.coranac.com/tonc/text/timers.htm" target="_blank">section</a>.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
