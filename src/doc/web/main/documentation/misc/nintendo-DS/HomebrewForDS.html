@@ -120,6 +120,10 @@ The goal here is to develop applications, mostly games, to be run on the <a href
 </p>
 
 <p>
+This document is a guide rather than a tutorial or a reference book : somewhat in between these two kinds of writings, informations are thematically organized (instead of being introduced incrementally like in a tutorial) without aiming at the exhaustiveness of a reference source (they already exist and links to them are provided).
+</p>
+
+<p>
 Portable development will be kept in mind, as having one's game working both on a DS and on a PC is quite enjoyable. In this guide the C/C++ language will be favored. The development platform will be a standard PC, preferably using GNU/Linux.
 </p>
 
@@ -539,14 +543,11 @@ The most frequent extensions are :
 	<li><b></b> : </li>
 -->
 
-	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : this binary for the DS is used by official game carts. It embeds a small header referring to a logo, a short description of the ROM content in several languages, followed eventually by the two executable binaries needed (one for each ARM), and optionally some appended data. The logo and description texts are used when booting a game card from the firmware, or when starting to download one over wireless multiboot. This file format was designed to be run from RAM filled from the slot-1, hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used, generally provided by the menu loader of the flash cart device.</p>
+	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : this binary for the DS is used by official game carts. It embeds a small header referring to a logo, a short description of the ROM content in several languages, followed eventually by the two executable binaries needed (a region dedicated to the ARM7, then a region dedicated to the ARM9), and optionally some appended data, for example a filesystem. The logo and description texts are used when booting a game card from the firmware, or when starting to download one over wireless multiboot : GBA Movie Player and the FlashMe + WMB method support .nds files. This file format was primarily designed to be run from RAM filled from the slot-1 (ex : M3 and DS-X), hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used when run from the GBA port, generally provided by the menu loader of the flash cart device.</p>
 	
 	<p>Some newer .nds put nevertheless a loader, which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it's a corrupted GBA header. An external loader is then needed again.
 	</p>
 	
-	<p>
-	.nds files are made of a (NDS) header, then a region dedicated to the ARM7, then a region dedicated to the ARM9, then the data, for example a filesystem. The FlashMe + WMB method and GBA Movie Player support .nds files. They are often used with slot-1 cards, such as M3 and DS-X
-	</p>
 	</li>
 	
 	<li><b>.ds.gba</b> (ex: <code>myGame.ds.gba</code>) : this binary for the DS is designed to run from GBA ROM. It is usually made of a small loader (to transfer thanks to the ARM7 the ROM content from the GBA card to the main RAM) contained in a 512-byte (GBA) header, then a .nds file, and zero or more appended data files. The code from the .nds reads from the appended data files using reads from GBA ROM space. GBA flash carts, M3, and SuperCard support this. They are often used with slot-2 cards, such as EZ4</li>
@@ -810,7 +811,8 @@ Once the programs are compiled (from the C/C++ sources to a set of object files)
 </p>
 
 <p>
-We consider here that you have the basic tools installed on your computer, notably a text editor (vi, emacs, nedit, etc.) or an IDE (KDevelop, etc), and the <code>GNU make</code> program.
+We consider here that you have the basic tools installed on your computer, notably a text editor (vi, emacs, nedit, etc.) or an <a href="http://en.wikipedia.org/wiki/Integrated_development_environment" target="_blank">IDE</a>
+ (for <em>Integrated Development Environment</em>, ex : KDevelop, etc), and the <code>GNU make</code> program. The associated makefiles, which specify how the different targets for an application should be built (which steps, which tools, which options, etc.), are essential, as way too many commands are involved in the repetitive development process to type them directly when needed. 
 </p>
 
 <p>
@@ -855,6 +857,10 @@ Tools for commercial developers are not available for homebrewers but, luckily, 
 Installing devkitARM on UNIX is straightforward : one just has to <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=124207" target="_blank">download</a> latest stable version and extract it. Nothing more needs to be done, as the toolchain is prebuilt here : you downloaded the appropriate binaries, and there is not real point in recreating them from their sources.
 </p>
 
+<p>
+To use the standard functions devkitARM offers (ex : abs, atoi, free, getenv, rand, etc.), one should specify in the source file <code>#include &lt;stdlib.h&gt;</code>.
+</p>
+
 <p>With devkitARM you will be able to write programs with the classical C/C++ constructs. But what about text output ? Graphics ? Touchpad or key input ? The C/C++ language and runtime do not really provide these features natively, but you can do everything yourself. You just have to figure out for example that at address <code>0x4000000</code> there is a 32-bit register that you can write to, in order to control the display. Even if most relevant <a href="#detailedhardware">informations</a> are available, your time and patience might be quite quickly exhausted. Thus you can use a low level library instead, that would spare you these efforts. This is the task of libnds.
 </p>
 
@@ -870,7 +876,7 @@ Note that dynamic libraries are not supported on the DS. Therefore each executab
 <h4>Second : the low-level library, libnds</h4>
 
 <p>
-<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touch screen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the dswifi library.
+<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touchscreen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the dswifi library.
 </p>
 
 <p>
@@ -886,7 +892,33 @@ Hence if you are not making a full use of libnds, most of the time it is that yo
 </p>
 
 <p>
-The installation of libnds is trivial (just a matter of extracting the latest <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608" target="_blank">archive</a>). If you plan to use PAlib, libnds will be provided with it, no need for a specific libnds install then.
+The installation of libnds is trivial (just a matter of extracting the latest <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608" target="_blank">archive</a>). If you plan to use PAlib, libnds will be provided with it, no need for a specific libnds install then. 
+</p>
+
+<p>
+Apart from the numerical constants (ex : addresses of registers), libnds defines several useful primitives (functions, defined in header files stored in <code>libnds/include/nds</code>) such as :
+<ul>
+
+<!--
+
+       <li><code></code> : </li>
+<-->
+
+        <li><code>consoleDemoInit</code>, <code>consoleInitDefault</code> or <code>consoleInit</code> : initializes a text-based console so that <code>printf</code> can be used directly to write strings on a DS sub screen. See also : <code>consoleClear</code></li>
+
+       <li><code>videoSetMode</code>, <code>vramSetBankA</code>, <code>lcdMainOnBottom</code>, etc. are used to set-up the video rendering</li>
+
+       <li><code>irqInit</code>, <code>irqEnable</code>, etc. allow to setup the interrupt handler and manage interrupt status, for example to enable the VBI (<code>IRQ_VBLANK</code>).  See also : <code>swiWaitForVBlank</code> (<a href="#interrupts">more infos</a>)</li>
+
+       <li><code>swi* functions</code> (ex : <code>swiWaitForVBlank</code>) provide access to BIOS functions</li>
+
+       <li><code>scanKeys</code>, <code>keysHeld</code>, <code>keysDown</code>, etc. simplify quite a lot key handling, with regard to positive logic, transitional states and so on (<a href="#keys">more infos</a>)</li>
+
+</ul>
+
+</p>
+
+<p>One just has to include the libnds header (<code>#include &lt;nds.h&gt;</code> with the appropriate <code>-IPath/To/Libnds/Headers</code>) to compile against the library. To link to it the <code>-LPath/To/Libnds/Library -lnds</code> switches have to be added, at the end of the line (libnds does not depend on any other system-specific library, but higher level ones, such as PAlib, use libnds) when linking executables.
 </p>
 
 <p>
@@ -1014,7 +1046,7 @@ More precisely main.o, that provides the <code>main()</code> function, will be l
 </p>
 
 <p>
-<code>Keyboard.elf</code> can then be converted in <code>Keyboard.bin</code> by <code>arm-eabi-objcopy</code>, whose role is to copy and translate object files from a given format to another.
+<code>Keyboard.elf</code> can then be converted in <code>Keyboard.bin</code> by <code>arm-eabi-objcopy</code>, whose role is to copy and translate object files from a given format to another, here stripping extra informations not needed and not handled by the toolchain.
 </p>
 
 <p>
@@ -1081,7 +1113,7 @@ Though the imitation is not always perfect, emulators have progressed a lot. For
 <center>
     <img src="NoCashGBA-screenshot.png" alt="NO$GBA"></img>
 </center>
-
+	NO$GBA can provide a source level debugger.
 </li>
 	 
     <li><a href="http://dualis.1emu.net/" target="_blank">Dualis</a> (not tested; known to be faster than NO$GBA, but now unable to manage libfat unless FCSR drivers are used)</li>
@@ -1160,6 +1192,21 @@ Monitoring the ARM loads is not easy, even when using emulators. Profiling can b
 Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_blank">guidelines</a> should be applied to write effective code for the DS. See also another TONC section about <a href="http://www.coranac.com/tonc/text/asm.htm" target="_blank">ARM assembly</a>.
 </p>
 
+
+<a name="registers"></a>
+<h5>Registers</h5>
+<p>
+Hardware memory-mapped <a href="http://www.dev-scene.com/NDS/Tutorials_Day_3#What_is_a_register" target="_blank">registers</a> are a way for the CPUs to interact with other components of the DS, such as the sound or video hardware.
+</p>
+
+<p>
+These registers behave like special memory addresses that can be read and/or written by the CPU, but the associated bits, instead of being actual memory, are I/O ports of the chips the CPU is interacting with. This can be used so that the CPU can set the playback frequency of the sound hardware for example, or so that it can read which keys are pressed.
+</p>
+
+<p>
+Most useful registers are defined by libnds, to manipule abstract plain names (ex : <code>DISPLAY_CR</code>) instead of raw addresses (ex : <code>0x4000000</code>). Such addresses must be declared <em>volatile</em>, as the compiler cannot rely their value remaining constant between two accesses : registers are directly controlled by other chips that can modify them at any time, hence their value should not be cached as usual bytes in memory. Finally, in this case, using the preprocessor to set these adresses as immediate values (<code>#define DISPLAY_CR XXXX .... DISPLAY_CR = aValue ;</code>) instead of using constants (<code>const unsigned int DisplayCR = XXXX ; DisplayCR = aValue ;</code>) might involve less operations (stored directly in the instruction opcode instead of being retrieved from memory), depending on the compiler optimization.
+</p>
+
 <h5>CPU &amp; Memory</h5>
 <p>
 The main built-in memory, consisting of one big block of 4MB memory (sometimes named EWRAM, for <em>External Working RAM</em>), can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other (by default, the ARM7 has priority over the ARM9), leading the other to wait until the first has finished its operation.
@@ -1185,7 +1232,7 @@ The DTCM, for <em>Data Tightly Coupled Memory </em>, is a special 16 KB memory a
 The ITCM, for <em>Instruction Tightly Coupled Memory </em>, is a special 32 KB memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small functions that are computation-intensive and/or frequently called. For example libdns uses that region to store the interrupt dispatcher.
 </p>
 
-
+<a name="interrupts"></a>
 <h5>Interrupts</h5>
 
 <h6>Interrupts in general</h6>
@@ -1276,7 +1323,7 @@ Depending on a data being const or not, the linker will place it respectively ei
 </p>
 
 <p>
-devkitPro includes a default ARM7 program to handle basic tasks like interrupts, touchscreen, etc. It is the <code>arm7.bin</code> discussed in our <a href="#building">building</a> section. Usually there is no need to write custom ARM7 code. The standard Makefiles include this default ARM7 program.
+devkitPro includes a default ARM7 program to handle basic tasks like managing interrupts, reading the touchscreen and the realtime clock, performing very simple sound playback, etc. It is the <code>arm7.bin</code> discussed in our <a href="#building">building</a> section. Usually there is no need to write custom ARM7 code. The standard Makefiles include this default ARM7 program.
 </p>
 
 
@@ -1446,6 +1493,10 @@ Compared to the sub core, the main core offers following additional features :
  </ul>
 </p>
 
+<p>
+Both screen can be seen from software like 2D Cartesian coordinate systems, the abscissa (X axis) ranging from 0 (left) to 255 (right), the ordinate (Y axis) ranging from 0 (top) to 191 (bottom). 
+</p>
+
 <h6>Video modes</h6>
 
 <p>
@@ -1453,7 +1504,27 @@ Both cores can be set in various <em>video modes</em>, each with different capab
 </p>
 
 <p>
- In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (based on an alpha bit), that dictates whether a given pixel should be displayed or not. There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial #2</a> for more details. 
+ In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : 
+<ul>
+
+<!--
+        <li><b></b> : </li>
+-->
+
+        <li>the <b>size</b> of their description (ex : 16 bits per pixel) </li>
+        <li>their <b>type</b>, either direct color (direct definition in RGB space) or palette index (reference to a color defined elsewhere)
+        <li>the <b>ordering</b> in memory of the color components, say, GBR ordering (Red is in least significant bits, then Bluen then Green in most significant ones)</li>
+        <li>the <b>size</b> of each color component, ex : 5 bit per component, each component ranges from 0 to 31, as in <code>xBBBBBGGGGGRRRRR</code></li>
+       <li>the <b>meaning of the most significant bit</b> (the 'x' is the previous component layout), which is either ignored or, most of the time, taken as an alpha bit which tells whether thid pixel is transparent (if 0) or if it should be displayed (if 1)</li>
+</ul>
+</p>
+
+<p>
+Direct color modes are simple but use a lot of memory space when stored and a lot of bus bandwidth when blitted, compared to palette-based ones with 4-bit or 8-bit index, which are therefore often favoured.
+</p>
+
+<p>
+There are libnds-provided macros (ex : <code>RGB15</code>) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial #2</a> for more details. 
 </p>
 
 
@@ -1461,11 +1532,19 @@ Both cores can be set in various <em>video modes</em>, each with different capab
 <h6>VRAM Memory Banks</h6>
 
 <p>
-Depending on the video mode, each rendering core will retrieve its video-related informations (ex : bitmaps, sprites, tiles, textures, maps) from hardcoded regions defined in memory address space.
+Depending on the video mode, each rendering core will retrieve its video-related informations (ex : bitmaps, sprites, tiles, textures, maps) from hardcoded regions defined in overall memory address space.
 </p>
 
 <p>
-These are <em>address</em> regions (i.e. a lower and higher addresses), but by default at these adresses there is no actual memory : the engines have almost no memory on their own. You therefore need to map predefined chunks of actual video RAM into these areas for the cores to use them. Each of these chunks is called a bank, there are nine of them, labelled VRAM_A through to VRAM_I. Each of these has a particular size and are best suited for different purposes : choosing the appropriate layout and settings is all the more important that memory space is tiny. The banks are:
+These are <em>address</em> regions (i.e. a lower and higher addresses), but by default at these adresses there is no actual memory : the engines have almost no memory on their own (except for sprite attributes and base palettes).
+</p>
+
+<p>
+You therefore need to map predefined chunks of actual video RAM into these specified address regions for the cores to use them. Each of these chunks is called a bank, there are nine of them, labelled VRAM_A through to VRAM_I. Each of these has a particular size and are best suited for different purposes : choosing the appropriate layout and settings is all the more important that memory space is tiny.
+</p>
+
+<p>
+The banks are:
 <center>
   <table border="1" summary="VRAM Memory Banks">
     <caption>VRAM Memory Banks</caption>
@@ -1537,6 +1616,31 @@ See also the <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" targ
 The system has two 2D engines, one per screen. Each screen can be put into a variety of different modes, with different feature sets. These engines are each quite similar to the Game Boy Advance's single 2D engine, though more powerful.
 </p>
 
+<p>
+The VRAM banks previously mentioned are to be mapped according to the expected layout for 2D memory, which is mostly made of :
+<ul>
+
+<!--
+        <li><b></b> : </li>
+-->
+
+        <li><b>background</b> memory, which contains tilesets (32 blocks), tile maps (32 blocks), and bitmaps</li>
+        <li><b>sprite</b>memory, which contains tiles for each sprite</li>
+</ul>
+</p>
+
+<p>
+As for sprite attributes, as said previously each 2D core has its own built-in dedicated memory, which contains 128 entries (one entry per possible sprite). Each entry is made of four 16-bit attributes, storing the size, shape, location, rotation and scale of the associated sprite.
+</p>
+
+<p>
+Base palettes have their own per-engine memory too. Each 2D engine has two base palettes, one for the background, one for the sprites. Each base palette contains 512 16-bit color entries, in x555 BGR format.
+</p>
+
+<p>
+See also the <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" target="_blank">2D memory layout</a> (see after the VRAM table) from Dovoto's tutorial.
+</p>
+
 
 
 <h6>Backgrounds</h6>
@@ -1560,7 +1664,7 @@ As they can be accessed (read and write) like the framebuffer and they provide a
 </p>
 
 <p>
-One may use for example a 16-bit 256x256 background size, which is larger than the DS screen (256x192), to demonstrate scrolling around an image. It would use 128 kilobytes to store the image, VRAM_A could be used. 
+One may use for example a 16-bit (with one alpha bit) 256x256 background size, which is larger than the DS screen (256x192), to demonstrate scrolling around an image. It would use 128 kilobytes to store the image, VRAM_A could be chosen for that. 
 </p>
 
 <p>
@@ -1574,7 +1678,7 @@ Finally, hardware scrolling can be of great help to implement parallax scrolling
 
 <h7>Extended Rotoscale backgrounds</h7>
 <p>
-<em>Extended Rotation Backgrounds</em> (ERB) are more powerful versions of Rotoscale backgrounds : they support larger tilesets (1024 instead of 256, which induces larger maps), they support more palettes (256-color ones), and they can operate in a bitmap mode as well as tiled modes.
+<em>Extended Rotation Backgrounds</em> (ERB) are more powerful versions of Rotoscale backgrounds : they support larger tilesets (1024 instead of 256, which induces larger maps), they support more palettes (256-color ones), and they can operate in a bitmap mode (linear frame buffer) as well as tiled modes.
 </p>
 
 
@@ -1625,7 +1729,11 @@ Map bases always have 32×32 entries. To create bigger backgrounds (like 64×64), 
 
 <h6>Framebuffer mode</h6>
 <p>
-The framebuffer mode, or bitmap mode, is the easiest to directly draw to, but the less powerful of all modes. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area will immediately result in their appearing on the screen. If it remains quite simple, it does not offer the various useful features offered by other modes, such as sprites, scrollings, etc., not to mention 3D primitives : with the framebuffer only software rendering is performed. And only the main screen can use this framebuffer mode.
+The framebuffer mode, or bitmap mode, is the easiest to directly draw to, but the less powerful of all modes. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area in 15-bit Direct color format will immediately result in their appearing on the screen. Therefore to plot a pixel, whose color is defined in a 16-bit integer c, at screen location (x,y), one just would have to write c at <code>FramebufferBaseAddress + y * ScreenPitch + x</code>, ScreenPitch being equal here to the screen width (no extra per-scanline bytes), 256. 
+</p>
+
+<p>
+If it remains quite simple, it does not offer the various useful features offered by other modes, such as sprites, scrollings, etc., not to mention 3D primitives : with the framebuffer only software rendering is performed. And only the main screen can use this framebuffer mode.
 </p>
 
 <p>
@@ -1671,7 +1779,11 @@ Tools include <a href="http://www.aaronrogers.com/ham/gfx2gba_readme.php" target
 </p>
 
 <p>
-See also : <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_blank">LiraNuna's 2D tutorial</a> and <a href="http://www.double.co.nz/nintendo_ds/nds_develop10.html" target="_blank">Chris Double tutorial #10</a> for more details. 
+To read easily headers (preferably fixed-size), one may use in-place structure reading, known as (packed) overlay.
+</p>
+
+<p>
+See also : Dovoto's tutorial about <a href="http://www.dev-scene.com/NDS/Tutorials_Day_3#Working_With_Graphics_Files" target="_blank">BMP decoding</a>, <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_blank">LiraNuna's 2D tutorial</a>, and <a href="http://www.double.co.nz/nintendo_ds/nds_develop10.html" target="_blank">Chris Double tutorial #10</a> for more details. 
 </p>
 
 
@@ -1831,7 +1943,11 @@ This is the simplest method, but it provides only limited space, as the whole RO
 </p>
 
 <p>
-The data has to be converted to an object file (*.o) thanks to objcopy (actually <code>arm-eabi-objcopy</code>) before being linked with the other object files in the the executable that will need them, thanks to the linker (actually <code>arm-eabi-g++</code>). For sounds it will be likely by the ARM7, the only one able to access the sound hardware, in the unlikely case where the only 64 kB permitted are enough. Otherwise the data can be linked to the ARM9 executable. More info about the data embedding in executables can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
+The data has to be converted to an object file (*.o) thanks to objcopy (actually <code>arm-eabi-objcopy</code>) before being linked with the other object files in the the executable that will need them, thanks to the linker (actually <code>arm-eabi-g++</code>). With devkitARM makefiles, the inclusion of such object files is automated : if one creates a directory named <code>data</code> in the project folder (right next to <code>source</code> and <code>include</code>) and put in this <code>data</code> directory one's resource files renamed so that their final extension is <code>.bin</code>, then the Makefile will take them in charge automatically : it will apply <code>arm-eabi-objcopy</code> and create an appropriate associated header file.
+</p>
+
+<p>
+Sounds would be likely embedded within the ARM7 executable, as this CPU is the only one able to access the sound hardware, in the unlikely case where the only 64 kB permitted would be enough. Otherwise the data can be linked to the ARM9 executable. More info about the data embedding in executables can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
 </p>
 
 
@@ -1922,7 +2038,7 @@ For all keys (or buttons) except X and Y, there is a read-only hardware register
 </p>
 
 <p>
-For the ARM9 to have these last two keys, the ARM7 can read their state during the VBI and send them to the ARM9 thanks to the IPC structure. Two non-key informations can be transmitted that way too : the hinge state (open or closed) and  the stylus state (down or up , i.e. whether it is on the touchscreen or not).
+For the ARM9 to have these last two keys, the ARM7 can read their state during the VBI and send them to the ARM9 thanks to the IPC structure. Two non-key informations can be transmitted that way too : the hinge state (DS lid open or closed) and  the stylus state (down or up , i.e. whether it is on the touchpad or not).
 </p>
 
 <p>
@@ -1947,8 +2063,13 @@ Actually current key state is far less interesting than key transition : even if
 
 
 <h5>Touchscreen</h5>
+
 <p>
-The touchpad communicates to the DS via a serial interface to the ARM7. For example thanks to libnds-provided default ARM7 binary, the measured screen coordinates can be read once per frame and made available to the ARM9.
+The touchpad is made of a resistive coating whose conduction changes depending on the area of the contacting object. This change is measured and converted into numerical values by an <a href="Analog-to-digital converter" target="_blank">Analog-to-digital converter</a>, then translated to an onscreen location. These measurements can also be used to determine the area of the contact point which, to some degree, can be translated into pressure. If the only information wanted is whether the stylus hits the touchscreen, one should use the <code>scanKeys</code> macro. This is only if the pen is down that the stylus position can be of interest.
+</p>
+
+<p>
+The touchpad communicates to the DS only via a serial interface to the ARM7. For example thanks to libnds-provided default ARM7 binary, the measured screen coordinates can be read once per frame and made available to the ARM9 (see default ARM7 template and the <code>touchReadXY</code> function).
 </p>
 
 <h5>Microphone</h5>
@@ -1995,6 +2116,7 @@ The built-in Wifi support allows the DS to communicate (with a theoretical bandw
 <p>
 Most of these informations come from the listed <a href="#detailedhardware">hardware resources</a>.
 </p>
+
 
 <h5>Game Logic</h5>
 <p>
