@@ -88,7 +88,8 @@
 			   		  <ul>
 						<li><a href="#twocpu">Two</a> general-purpose CPU to handle</li>					
 						<li>Activating only the relevant <a href="#subsystems">subsystems</a></li>			
-						<li>2D/3D <a href="#rendering">Rendering</a></li>		<li><a href="#sound">Sound</a> input and output</li>
+						<li><a href="#2D">2D</a>/<a href="#3D">3D</a> <a href="#rendering">Rendering</a></li>		
+						<li><a href="#sound">Sound</a> input and output</li>
 						<li><a href="#datastorage">Data storage</a> &amp; application ressources</li>
 						<li><a href="#inputdevice">Input device</a> management</li>
 						<li><a href="#wireless">Wireless</a> networking</li>	
@@ -538,8 +539,7 @@ The most frequent extensions are :
 	<li><b></b> : </li>
 -->
 
-	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : 
-	this binary for the DS embeds the two executables needed, one for each ARM, and optionally some appended data. This file format was designed to be run from RAM filled from the slot-1, hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used, generally provided by the menu loader of the flash cart device.</p>
+	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : this binary for the DS is used by official game carts. It embeds a small header referring to a logo, a short description of the ROM content in several languages, followed eventually by the two executable binaries needed (one for each ARM), and optionally some appended data. The logo and description texts are used when booting a game card from the firmware, or when starting to download one over wireless multiboot. This file format was designed to be run from RAM filled from the slot-1, hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used, generally provided by the menu loader of the flash cart device.</p>
 	
 	<p>Some newer .nds put nevertheless a loader, which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it's a corrupted GBA header. An external loader is then needed again.
 	</p>
@@ -806,7 +806,7 @@ Therefore the development process starts usually on a computer rather than on th
 </p>
 
 <p>
-Once the programs are compiled and linked, they can be tested in place, i.e. on the PC thanks to DS emulators, or they can be <a href="#limitations">transferred</a> to the DS and run on it.
+Once the programs are compiled (from the C/C++ sources to a set of object files) and linked (thanks to DS-specific <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Linker" target="_blank">linkscripts</a> telling, depending on the ARM, which and how memory regions must be used at runtime), they can be tested in place, i.e. on the PC thanks to DS emulators, or they can be <a href="#limitations">transferred</a> to the DS and run on it.
 </p>
 
 <p>
@@ -1162,15 +1162,27 @@ Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_bla
 
 <h5>CPU &amp; Memory</h5>
 <p>
-The main built-in memory, consisting of one big block of 4MB memory, can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other (by default, the ARM7 has priority over the ARM9), leading the other to wait until the first has finished its operation.
+The main built-in memory, consisting of one big block of 4MB memory (sometimes named EWRAM, for <em>External Working RAM</em>), can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other (by default, the ARM7 has priority over the ARM9), leading the other to wait until the first has finished its operation.
 </p>
 
 <p>
-On the main memory there is generally the ARM9 executable, as well as most game data.
+On the main memory there is generally the ARM9 executable, as well as most game data. Everything except the stack (placed in DTCM) and the data declared to be read-only (placed in ROM space) is stored in the 4 MB of main memory by default, including code, non-const variables, global data, C++ constructors and destructors, etc. This memory is rather slow, at least compared to the ARM9 caches.
 </p>
 
 <p>
 The ARM7 executable can be as well in main memory, but for performance reasons it is often placed (its code together with its data) into the IWRAM (64 kbytes of fast memory, 32-bit wide) that only the ARM7 can access. This is the case with devkitARM. Code has to be small enough to fit in the IWRAM.
+</p>
+
+<p>
+From the point of view of the ARMs, the GBA cartridges are expected to be a ROM area of up to 32 MB. Linkers making use of removable media fake a 32 MB-only memory by loading dynamically relevant memory chunks from their mass storage media. 
+</p>
+
+<p>
+The DTCM, for <em>Data Tightly Coupled Memory </em>, is a special 16 KB memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so the standard ARM9 linkscript places its stack in DTCM. Due to the small size of this memory region, local variables should be used carefully.
+</p>
+
+<p>
+The ITCM, for <em>Instruction Tightly Coupled Memory </em>, is a special 32 KB memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small functions that are computation-intensive and/or frequently called. For example libdns uses that region to store the interrupt dispatcher.
 </p>
 
 
@@ -1195,7 +1207,7 @@ By default when an interrupt is triggered, the CPU jumps to the standard <a href
 </p>
 
 <p>
-The ARM7 stores the addresses of its interrupt handlers in a hardcoded memory location, whereas the ARM9 defines these addresses relativey to the DTCM, a special memory area in the ARM9 which can be mapped to reside at various actual physical addresses.
+The ARM7 stores the addresses of its interrupt handlers in a hardcoded memory location, whereas the ARM9 defines these addresses relativey to the DTCM.
 </p>
 
 <p>
@@ -1444,11 +1456,6 @@ Both cores can be set in various <em>video modes</em>, each with different capab
  In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : their length (ex : 16 bit per pixel), their convention (ex : RGB-color space with, say, GBR ordering), the size of each color component (ex : 5 bit per component, 555, components range each from 0 to 31), and some other informations including transparency (based on an alpha bit), that dictates whether a given pixel should be displayed or not. There are libnds-provided macros (ex : RGB15) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial #2</a> for more details. 
 </p>
 
-<p>
-<a href="" target="_blank"></a>
-
-
-</p>
 
 
 <h6>VRAM Memory Banks</h6>
@@ -1735,11 +1742,11 @@ The system's 3D hardware can perform a lot of operations :
 
     <li><a href="http://en.wikipedia.org/wiki/Transform_and_lighting" target="_blank">transform and lighting</a> : performs 3D space to screen conversion, including lighting. Having it hardware accelerated frees the CPU from this computation-intensive task</li>
     <li>texture-coordinate transformation : so that textures (images used to wrap 3D shapes) can be used</li>
-    <li><a href="http://en.wikipedia.org/wiki/Texture_mapping" target="_blank">texture mapping</a> : applies a texture to a shape</li>
+    <li><a href="http://en.wikipedia.org/wiki/Texture_mapping" target="_blank">texture mapping</a> : applies a texture to a shape, here without blending</li>
     <li><a href="http://en.wikipedia.org/wiki/Alpha_blending" target="_blank">alpha blending</a> : combines an image with a background to create the appearance of partial transparency</li>
-    <li><a href="http://en.wikipedia.org/wiki/Anti-aliasing" target="_blank">anti-aliasing</a> : minimizes the distortion artifacts due to on-screen rendering (enhances the resulting image)</li>
-    <li><a href="" target="_blank">cel shading</a> : simulates hand-drawn ( like cartoon or comic books) computer-generated graphics</li>
-    <li><a href="http://en.wikipedia.org/wiki/Z-buffering" target="_blank">z-buffering</a> : management of image depth coordinates, one of the solutions to the visibility problem</li>
+    <li><a href="http://en.wikipedia.org/wiki/Anti-aliasing" target="_blank">anti-aliasing</a> : minimizes the distortion artifacts due to on-screen rendering (enhances the resulting image). Here available for edge drawings, not full-screen</li>
+    <li><a href="http://en.wikipedia.org/wiki/Cel-shading" target="_blank">cel shading</a> (a.k.a. toon shading) : simulates hand-drawn ( like cartoon or comic books) computer-generated graphics </li>
+    <li><a href="http://en.wikipedia.org/wiki/Z-buffering" target="_blank">z-buffering</a> : management of image depth coordinates, one of the solutions to the visibility problem. Hardware fog is available</li>
 </ul>
 </p>
 
@@ -1748,11 +1755,15 @@ Character rendering might have a blocky appearance due to Point (nearest neighbo
 </p>
 
 <p>
-The DS can render at most about 2048 triangles per scene as 60 frames per second. Rendering can occur only to a single screen at a time, so having 3D on both screens decreases performance significantly. The DS is more limited by its polygon budget than by its pixel fill rate.
+The DS can render at most about 6144 vertexes per frame (which translates to roughly 2048 triangles per scene or 1536 quads), at 60 frames per second. Rendering can occur only to a single screen at a time, so having 3D on both screens decreases performance significantly. The DS is more limited by its polygon budget than by its pixel fill rate.
 </p>
 
 <p>
 There are 512 kB of texture memory per screen, and the maximum texture size is 1024x1024 pixels.
+</p>
+
+<p>
+The 3D core behaves a lot like an <a href="http://en.wikipedia.org/wiki/OpenGL" target="_blank">OpenGL</a> state machine, allowing for wrappers and the reuse of rendering code and data. Actually <a href="http://www.khronos.org/opengles/" target="_blank">OpenGL ES</a> would be the closest encapsulation, as there is no support on the DS for floating point computations. Fixed-point is used instead.
 </p>
 
 <p>
@@ -2251,7 +2262,7 @@ More infos on timers can be found in this TONC <a href="http://www.coranac.com/t
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Sunday, June 24, 2007</em>
+    <em>Last update : Wednesday, June 27, 2007</em>
   </center>
 </body>
 </html>
