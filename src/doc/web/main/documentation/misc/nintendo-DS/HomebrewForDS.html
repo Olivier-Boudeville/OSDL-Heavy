@@ -1,11 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 
 <!--    Ce document fait partie du projet OSDL.
-		Pour toute remarque, envoyer un courriel à ds@esperide.com
+		Pour toute remarque, envoyer un courriel à homebrew@esperide.com
 -->
 <!--    
         Date de création : Saturday, June 2, 2007.
-        Auteur : Olivier Boudeville (ds@esperide.com)
+        Auteur : Olivier Boudeville (homebrew@esperide.com)
         Version : 0.1
 -->
 
@@ -120,7 +120,7 @@ The goal here is to develop applications, mostly games, to be run on the <a href
 </p>
 
 <p>
-This document is a guide rather than a tutorial or a reference book : somewhat in between these two kinds of writings, informations are thematically organized (instead of being introduced incrementally like in a tutorial) without aiming at the exhaustiveness of a reference source (they already exist and links to them are provided).
+This document is a guide rather than a tutorial or a reference book : somewhat in between these two kinds of writings, informations are thematically organized (instead of being introduced incrementally like in a tutorial) without aiming at the exhaustiveness of a reference source (they already exist and links to them are provided). Only DS-specific knowledge is gathered here, the reader is expected to be already familiar with basic C programming.
 </p>
 
 <p>
@@ -547,18 +547,18 @@ The most frequent extensions are :
 	<li><b></b> : </li>
 -->
 
-	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : this binary for the DS is used by official game carts. It embeds a small header referring to a logo, a short description of the ROM content in several languages, followed eventually by the two executable binaries needed (a region dedicated to the ARM7, then a region dedicated to the ARM9), and optionally some appended data, for example a filesystem. The logo and description texts are used when booting a game card from the firmware, or when starting to download one over wireless multiboot : GBA Movie Player and the FlashMe + WMB method support .nds files. This file format was primarily designed to be run from RAM filled from the slot-1 (ex : M3 and DS-X), hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used when run from the GBA port, generally provided by the menu loader of the flash cart device.</p>
+	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : this binary for the DS (slot-1) is used by official game carts and most emulators. It embeds a small header referring to a logo, a short description of the ROM content in several languages, followed eventually by the two executable binaries needed (a region dedicated to the ARM7, then a region dedicated to the ARM9), and optionally some appended data, for example a filesystem. The logo and description texts are used when booting a game card from the firmware, or when starting to download one over wireless multiboot : GBA Movie Player and the FlashMe + WMB method support .nds files. This file format was primarily designed to be run from RAM filled from the slot-1 (ex : M3 and DS-X), hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used when run from the GBA port, generally provided by the menu loader of the flash cart device.</p>
 	
-	<p>Some newer .nds put nevertheless a loader, which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it's a corrupted GBA header. An external loader is then needed again.
+	<p>Some newer .nds put nevertheless a loader (often <code>ndsloader.bin</code>, see our dedicated <a href="#loader" target="_blank">section</a>), which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it's a corrupted GBA header. An external loader is then needed again.
 	</p>
 	
 	</li>
 	
-	<li><b>.ds.gba</b> (ex: <code>myGame.ds.gba</code>) : this binary for the DS is designed to run from GBA ROM. It is usually made of a small loader (to transfer thanks to the ARM7 the ROM content from the GBA card to the main RAM) contained in a 512-byte (GBA) header, then a .nds file, and zero or more appended data files. The code from the .nds reads from the appended data files using reads from GBA ROM space. GBA flash carts, M3, and SuperCard support this. They are often used with slot-2 cards, such as EZ4</li>
+	<li><b>.ds.gba</b> (ex: <code>myGame.ds.gba</code>) : this binary for the DS is designed to run from GBA ROM. It is usually made of a small loader (to transfer thanks to the ARM7 the ROM content from the GBA card to the main RAM) contained in a 512-byte (GBA) header, then a .nds file, and zero or more appended data files. The code from the .nds reads from the appended data files using reads from GBA ROM space. GBA flash carts, M3, and SuperCard support this. They are often used with slot-2 cards, such as EZ4. Some may require you rename the ROM to .ds.nds</li>
 	
 	<li><b>.gba.nds</b> : the SuperCard firmware seems to believe that the .ds.gba format is indicated by the .nds extension. Hence to run a .ds.gba program on a SuperCard, one has to rename it first so that its extension becomes .nds. However by doing so one could mix it up with real .nds. One work-around is then to rename that program with, for example, a .gba.nds extension, instead of a mere .nds. However for a SuperCard, an original <code>myGame.ds.gba</code> could be renamed preferably to <code>myGame.sc.nds</code> (see below)</li>
 
-	<li><b>.sc.nds</b> : extension to be used with SuperCard (sc) and, in some cases, G6 lite. This is a renamed .ds.gba (and maybe too DLDI-patched, see below). The .sc.nds extension is a (better since clearer) alternative to the ds.gba one</li>
+	<li><b>.sc.nds</b> : extension to be used with SuperCard (sc) and, in some cases, G6 lite and M3. This is a renamed .ds.gba (and maybe too DLDI-patched, see below). The .sc.nds extension is a (better since clearer) alternative to the ds.gba one</li>
 	
 </ul>
 </p>
@@ -583,11 +583,12 @@ Some quite uncommon names and extensions are :
 
 <h4>Conversions between ROM formats</h4>
 
+<a name="loader"></a>
 <p>
 .nds programs can be converted into ds.gba programs. It involves prepending a loader, which may load the first appended .nds file, or allow selection of one of many .nds files.
 </p>
 
-<p>A loader can be a file named <em>ndsloader.bin</em>, which could be prepended that way :
+<p>The loader can be <a href="http://l33t.spod.org/ratx/DS/dslazy/dslazy.zip" target="_blank">ndsloader.bin</a>, which could be prepended that way :
 <center>
     <table summary="Code" style="border : none">
         <tr>
@@ -814,7 +815,7 @@ Once the programs are compiled (from the C/C++ sources to a set of object files)
 
 <p>
 We consider here that you have the basic tools installed on your computer, notably a text editor (vi, emacs, nedit, etc.) or an <a href="http://en.wikipedia.org/wiki/Integrated_development_environment" target="_blank">IDE</a>
- (for <em>Integrated Development Environment</em>, ex : KDevelop, etc), and the <code>GNU make</code> program. The associated makefiles, which specify how the different targets for an application should be built (which steps, which tools, which options, etc.), are essential, as way too many commands are involved in the repetitive development process to type them directly when needed. Other generic tools should be used as well, for source control (CVS, SVN), for documentation generation (doxygen), etc.
+ (for <em>Integrated Development Environment</em>, ex : KDevelop, VisualHAM or <a href="http://www.palib.info/wiki/doku.php?id=day1#using_palib_with_visual_c_2005_express" target="_blank">Visual C++ 2005 Express</a>, etc), and the <code>GNU make</code> program. The associated makefiles, which specify how the different targets for an application should be built (which steps, which tools, which options, etc.), are essential, as way too many commands are involved in the repetitive development process to type them directly when needed. Other generic tools should be used as well, for source control (CVS, SVN), for documentation generation (doxygen), etc.
 </p>
 
 <p>
@@ -962,20 +963,122 @@ With libfat files can be managed almost exactly as they would be on POSIX system
 <a name="palib"></a>
 <h4>Fifth : an (optional) higher level library, PAlib</h4>
 
+<h5>What PAlib is</h5>
 <p>
 <a href="http://www.palib.info" target="_blank">PAlib</a> (<a href="https://sourceforge.net/projects/pands/" target="_blank">alternate site</a> on Sourceforge) is one of those abstracting libraries. It is built on top of libnds and offers various higher-level integrated services to the homebrewer.
 </p>
 
+
+<h5>Who should use PAlib</h5>
 <p>
-Like HAM for the GameBoy Advance, its intended public is developers wanting to use the most time-effective methods to write their software. Hardware purists often consider any library beyond libnds being useless (bloating software), restrictive or performance-killer. One should try both ways. As for me, I found interesting to use first libnds only, to learn how things work. Once done, anything allowing to gain some time sounds interesting to me, and I would not like to reinvent the wheel too often. So I use PAlib for most of my needs.  
+Like HAM for the <em>GameBoy Advance</em>, its intended public is developers wanting to use the most time-effective methods to write their software. Hardware purists often consider any library beyond libnds being useless (bloating software), restrictive or performance-killer. One should try both ways.
 </p>
 
 <p>
-To install it, follow <a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib's tutorial</a> or use LOANI.
+As for me, I found interesting to use first libnds only, to learn how things work. Once done, anything allowing to gain some time sounds interesting to me, and I would not like to reinvent the wheel too often. So I use PAlib quite frequently, often after studying the sources to understand how each of its primitives is implemented.
+</p>
+
+<h5>What PAlib provides</h5>
+
+<p>
+The PAlib library encapsulates hardware-related operations into higher level C structures and functions, whose suffix is <code>PA_</code>. The full API documentation is available <a href="http://www.palib.info/Doc/PAlibDoc Eng/main.html" target="_blank">here</a>.
 </p>
 
 <p>
-There are still many other libraries, but they are less used. <a href="http://libsdl.org/" target="_blank">SDL</a> has been <a href="http://gpf.dcemu.co.uk/ndsSDL.shtml" target="_blank">ported to the DS</a>. This abstraction layer is very useful to port (often PC) applications to lesser known platforms such as the homebrew-enabled DS, but in our case a few issues remains : the DS SDL implementation is not complete, it uses a lot of memory with regard to what is available, and a lot of hardware acceleration would be bypassed because of the layer. SDL may be here a way of starting a port, even though finally the game ought not rely on it for performance reasons.
+Some of the most common services (not all) offered by PAlib will be discussed here.
+</p>
+
+<h6>Conventions</h6>
+<p>
+<ul>
+        <li><b>Screens</b> are designated by a bool : true (1) for the top one, false (0) for the bottom one</li>
+        <li><b>Tile coordinates</b> range from 0 to 31 horizontally, and from 0 to 23 vertically. They are encoded in 16-bit unsigned int (u16)</li>
+        <li><b>Backgrounds</b> range from 0 to 3</li>
+        <li>PAlib behaves somewhat like a <b>state machine</b>. For example, after <code>PA_InitText</code> specified which background is to be used for a given screen, text rendering on that screen will use implicitly that background</li>
+        <li>The <b>headers</b> where symbols are declared, the <b>implementation</b> files where they are defined (filenames are separated by "-" when a symbol is defined more than once, for example one time for each ARM) are specified between brackets. Ex : [Header : <code>PA_General.h</code> ; Implementation : <code>armX/PA.c</code>]. The X in armX signifies either 7 or 9, as both define it</li>
+        <li>there is a <b>FPS</b> counter for each screen, which keeps track of the number of frames per second (60 is using the VBL)</li>
+</ul>
+</p>
+
+<!--
+        <li><b></b> : </li>
+-->
+
+<!--
+<h6></h6>
+<p>
+<ul>
+        <li><code></code> : [Header : <code></code>; Implementation : <code></code>]</li>
+</ul>
+
+</p>
+-->
+
+<h6>Basic primitives</h6>
+<p>
+<ul>
+
+        <li><code>PA_Init()</code> : initializes the library. Must be used at the beginning or main(). [Header : <code>PA_General.h</code>; Implementation : <code>armX/PA.c</code>]
+	<ul>
+
+		<li><b>ARM7</b> : real-time clock read, enables sound (subsystem powered on, volume set, IPC set, microphone on), IPC set</li>
+
+        	<li><b>ARM9</b> : 2D subsytem initialized, lid state updated, real-time clock read from ARM7, random generator seeded from current time, VBL counter reset, stylus coordinates initialized to screen center, interrupts initialized (including VBL), IPC set, for each screen : brightness set to visible, state initialized</li>
+	</ul>
+	</li>
+</ul>
+
+</p>
+
+<h6>Synchronization</h6>
+<p>
+<ul>
+
+        <li><code>PA_InitVBL()</code> : prepares the use of the VBL to synchronize operations, by setting VBL PAlib handler and enabling the VBL [Header and Implementation : <code>arm9/PA_Interrupt.h</code> - <code>arm7/PA.c</code>]</li>
+
+        <li><code>PA_WaitForVBL()</code> : puts the DS in sleep mode, waiting to be awoken by the VBL interrupt. It powers off some subsystems (starting from the ARMs), which saves battery charge. Lid might be checked here [Header and Implementation: <code>arm9/PA_General.h</code>]</li>
+
+       <li><code>PA_SetAutoCheckLid</code>, <code>PA_CheckLid</code>, <code>PA_LidClosed</code> : lid can be automatically checked at each VBL. Should it be closed, the DS will be shutdown until the lid is opened again [Header and Implementation: <code>arm9/PA_General.h</code>]</li>
+
+</ul>
+
+</p>
+
+<h6>Text output</h6>
+<p>
+<ul>
+
+        <li><code>PA_InitText(u8 screenNumber, u8 backgroundNumber)</code> : initializes the Palib module dedicated to text rendering, incuding a 10-color palette. It loads the appropriate font data in VRAM, select the specified screen and backgrounds. [Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>PA_OutputSimpleText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text)</code> : renders the specified C-string (null terminated) in specified screen, after having removed any previous text that would be in the target location. Returns the number of letters rendered. [Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>PA_OutputSimpleText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text, ...)</code> : renders the specified C-string, respecting a specified printf-like format, in specified screen, after having removed any previous text that would be in the target location. Manages the extra variable-length parameters like printf (va_start, va_end, etc.). Returns the number of letters rendered. [Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>PA_ClearTextBg(u8 screenNumber)</code> : clears all text tile entries in the map, resets the print states [Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+</ul>
+
+</p>
+
+<h5>Using PAlib</h5>
+<p>
+At compile time, PAlib overall headers must be included : <code>#include &lt;PA9.h&gt;</code> for the ARM9, with the <code>-IPath/To/PAlib/include/nds</code> command-line switch. A PAlib general header will in turn include all the specialized headers, like <code>PA_Interrupt.h</code>.
+</p>
+
+<p>
+At link time, the PAlib (static) library <code></code> must be specified. As it depends on libdns, following switches should be used : <code>-LPath/To/PAlib/lib -lpa9 -LPath/To/Libnds/lib -lnds</code> for the ARM9.
+</p>
+
+
+<h5>Installing PAlib</h5>
+<p>
+To install PAlib, follow <a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib's tutorial</a> or use LOANI.
+</p>
+
+
+<h5>Alternate choices to PAlib</h5>
+<p>
+There are still many other libraries, but they are less used. <a href="http://libsdl.org/" target="_blank">SDL</a> has been <a href="http://gpf.dcemu.co.uk/ndsSDL.shtml" target="_blank">ported to the DS</a>. This abstraction layer is very useful to port (often PC) applications to lesser known platforms such as the homebrew-enabled DS, but in our case a few issues remains : the DS SDL implementation is not complete, it uses a lot of memory with regard to what is available, and a lot of hardware acceleration would be bypassed because of the layer. SDL may be here a way of starting a port, even though finally the game ought not to rely on it, for performance reasons.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1108,7 +1211,7 @@ Though the imitation is not always perfect (sadly, programs may work when emulat
 
 	<li>
 	<p>
-	<a href="http://www.desmume.org/" target="_blank">DeSmuME</a> : probably the fastest of all. Does not support zooming and rotation. There is a <a href="http://desmume.org/?p=19" target="_blank">Linux</a> version and Debian packages, based on a <a href="http://gpf.dcemu.co.uk/ndsSDL.shtml" target="_blank">SDL</a> port. Some people prefer to run the Windows version from Wine . It is one of the few emulators to allow for the reconfiguration of key mappings
+	<a href="http://www.desmume.org/" target="_blank">DeSmuME</a> : probably the fastest of all. Does not support zooming and rotation. There is a <a href="http://desmume.org/?p=19" target="_blank">Linux</a> version and even Debian packages, based on a SDL port. Some people prefer to run the Windows version from Wine . It is one of the few emulators to allow for the reconfiguration of key mappings
 	</p>
 
 	<p>
@@ -1799,7 +1902,7 @@ Finally, the graphics to render are most of the time available first in general-
 <h7>Precomputed conversions</h7>
 
 <p>
-Tools include <a href="http://www.coranac.com/projects.php#grit" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>, new name for git) and <a href="http://www.aaronrogers.com/ham/gfx2gba_readme.php" target="_blank">gfx2gba</a> which, when given a file in 16 or 256-color PCX, TGA, SPR, BMP or TIM formats, can create a binary tileset (<code>*.raw</code>) with 8x8 tiles), a binary background map (<code>*.map</code>) and a 256-color palette file (<code>*.bin</code>) :
+Tools include <a href="http://www.coranac.com/projects.php#grit" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>, new name for git) and <a href="http://www.aaronrogers.com/ham/gfx2gba_readme.php" target="_blank">gfx2gba</a> (Linux port available) which, when given a file in 16 or 256-color PCX, TGA, SPR, BMP or TIM formats, can create a binary tileset (<code>*.raw</code>) with 8x8 tiles), a binary background map (<code>*.map</code>) and a 256-color palette file (<code>*.bin</code>) :
 <center>
     <table summary="Code" style="border : none">
         <tr>
@@ -1817,6 +1920,14 @@ gfx2gba -c256 -m -t8 -pmyPalette.bin myImage.bmp
 
 <p>
 One may use <a href="http://www.gimp.org/" target="_blank">The Gimp</a> to preconvert PNG and JPEG files to formats recognized by gfx2gba. There are also Python-Fu scripts for that tool, to convert images to formats appropriate for tiles and sprites. See this <a href="http://www.dspassme.com/programmers_guide/tutorial/using_tiles.html" target="_blank">guide</a> for further hints to use The Gimp with regard to the DS.
+</p>
+
+<p>
+Another tool useful to convert sprites and backgrounds is PAGfx, which has been ported to GNU/Linux (download <a href="http://www.palib.info/downloads/PAGfx/Linux/" target="_blank">here</a>).
+</p>
+
+<p>
+Other tools include <a href="http://www.neoflash.com/forum/index.php?PHPSESSID=88241d0d50076371429b199bc63948f9&topic=3016.0" target="_blank">GbaGraphics</a>, by Brunni, which works when run from Wine.
 </p>
 
 <p>
@@ -2444,7 +2555,7 @@ More infos on timers can be found in this TONC <a href="http://www.coranac.com/t
 
  <h3>Please react !</h3>
 
-  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:toshiba.laptop@esperide.com?subject=[OSDL]%20Homebrew%20for%20Nintendo%20DS">drop us a line</a>!</p><br>
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Homebrew%20for%20Nintendo%20DS">drop us a line</a>!</p><br>
   <br>
   <hr>
   <br>
@@ -2453,7 +2564,7 @@ More infos on timers can be found in this TONC <a href="http://www.coranac.com/t
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Thursday, June 28, 2007</em>
+    <em>Last update : Friday, June 29, 2007</em>
   </center>
 </body>
 </html>
