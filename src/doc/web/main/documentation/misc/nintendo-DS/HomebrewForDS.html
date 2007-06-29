@@ -1057,6 +1057,8 @@ See also the API documentation for <a href="http://www.palib.info/Doc/PAlibDoc E
 
 <h6>Text output</h6>
 
+<h7>Tile-based font rendering</h7>
+
 <p>
 There is a 10-color <b>preset palette</b> for text rendering. From 0 to 9 : white, red, green, blue, magenta, cyan, yellow, lightgray, darkgray, black.
 </p>
@@ -1065,6 +1067,26 @@ There is a 10-color <b>preset palette</b> for text rendering. From 0 to 9 : whit
 Text can be cleared by printing at the same location a string containing as many spaces as there were characters in the previously rendered string.
 </p>
 
+
+<h7>Software-rendered fonts</h7>
+<p>
+Most text primitives are tile-based. If it allows them to be simple and fast (since they are hardware-accelerated), they are fixed-width and have to fit in 8x8 tiles. So software-rendered fonts have been added, see for example <code>PA_SmartText</code>.
+</p>
+
+<p>
+These are plotted in framebuffer mode, and allows for fonts of different sizes and, in a given font, for characters themselves of different sizes (variable width). PAlib offers by default five different font sizes, numbered 0 to 4, starting from characters 4 or 5 pixels wide and tall (probably too small to be readable without efforts) to far bigger fonts.
+</p>
+
+<p>
+Last choice with these framebuffer-based fonts is the color depth they use. They can be either in 16 colors only, for better speed and lower memory footprint (see <code>PA_16cText</code>). Or they may have a 8-bit color depth, to benefit from 256 colors and from the possibility of being rotated by the hardware of +Pi/4 or -Pi/4, so that the DS can be held in portrait mode rather than in landscape mode (see <code>PA_SmartText</code>).
+</p>
+
+<p>
+Variable character spacing leads to better looking and more compact text renderings, at the expense of : speed (such software rendering is a lot slower), simplicity of use (for example with these fonts the background has to be cleared first), and absence of direct printf-like formatting (which would be still slower, though it can done separatly if needed, with <code>sprintf</code> for example).
+</p>
+
+
+<h7>Rendering primitives</h7>
 
 <p>
 <ul>
@@ -1135,7 +1157,7 @@ Other functions include <code>PA_CompareText</code> (to compare two strings), <c
 </p>
 
 <p>
-One may use <code>PAFont</code> to create custom fonts, see this <a href="http://www.palib.info/wiki/doku.php?id=day3#custom_font section" target="_blank">section</a> of PAlib tutorial.
+One may use <code>PAFont</code> to create custom fonts, see this <a href="http://www.palib.info/wiki/doku.php?id=day3#custom_font section" target="_blank">section</a> of PAlib tutorial. Another more recent tool is <a href="http://palib.info/forum/modules/newbb/viewtopic.php?viewmode=flat&type=&topic_id=3108&forum=10" target="_blank">dsFont</a>.
 </p>
 
 <p>
@@ -1154,22 +1176,98 @@ Button states can be read from the <code>Pad</code> structure. Here K will be th
 For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#pad" target="_blank">pad tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keys.html" target="_blank">Key input system</a> section of the API. Main header is <code>arm9/PA_Keys.h</code>, main implementation is <code>arm9/PA/PA_Keys.c</code>.
 </p>
 
+
 <h7>Touchscreen</h7>
 <p>
-The stylus is managed 
+The stylus is managed in a very similar way to the keys : it is updated once per frame, and in <code>Stylus.Held</code>, <code>Stylus.Released</code> and <code>Stylus.Newpress</code> one can know whether it is up or down, and if it is just after a transition or if it has been already so for a while.
+</p>
+
+<p>
+For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#stylus" target="_blank">stylus tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keys.html" target="_blank">Key input system</a> section of the API. Main header is <code>arm9/PA_Keys.h</code>, main implementation is <code>arm9/PA/PA_Keys.c</code>.
 </p>
 
 <h7>Virtual keyboard</h7>
 <p>
+This is in my opinion one of the most interesting features of Palib. This module displays a keyboard bitmap on the touchscreen and allows the stylus to select keys, so that text can be input in a rather convenient way.
+</p>
 
+<p>
+After having been set-up in a free background thanks to <code>PA_InitKeyboard</code>, the keyboard can be smoothly scrolled to a given position when created with <code>PA_KeyboardIn</code> : it slides in from the bottom, and can slide out with <code>PA_KeyboardOut</code>. Its two colors can be changed thanks to <code>PA_SetKeyboardColor</code> (as for the background color, one should use <code>PA_SetBgPalCol</code>. <code>PA_CheckKeyboard</code> allows finally to read the characters being hit : any non-null return code designates directly the newly read key. 
+</p>
+
+<p>
+The keyboard pictures (two of them are necessary, to show the available characters depending on the shift key being selected on not) are located in <code>lib/arm9/PA/keyboard.bmp</code>, which allows for skinnable keyboards (see also the <code>PA_InitCustomKeyboard</code> macro).
 </p>
 
 <p>
 For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#keyboard" target="_blank">pad tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keyboard.html" target="_blank">Keyboard</a> section of the API.
 </p>
 
+<h7>Hand-written shape recognition</h7>
+<p>
+This is another quite amazing feature : powerful and really easy to use. Priceless for games needing to draw specific shapes (ex : runes) or as an alternative to the virtual keyboard.
+</p>
 
-<h5>Using PAlib</h5>
+<p>
+Shape recognition can be used either to input <a href="http://www.palib.info/wiki/doku.php?id=day3#pa_graffiti" target="_blank">PA Graffiti</a> (standard shapes that map to letters) or custom-made patterns.
+</p>
+
+<p>
+For PA Graffiti input, one just has to call each frame <code>PA_CheckLetter</code>, and everything will behave like in the case of <code>PA_CheckKeyboard</code>, when the virtual keyboard was used.
+</p>
+
+<p>
+For recognition of custom-made shapes, one just has to first disable the PA Graffiti input (thanks to <code>PA_UsePAGraffiti(0)</code>), then to associate shapes to letters before reading recognized symbols thanks to <code>PA_CheckLetter</code> once again. Quite impossible to be simpler.
+</p>
+
+<p>
+But how can such a custom-shape be described ? Just draw it yourself on the touchscreen, and make it be read by the system with <code>PA_RecoShape</code>. It will return an encoded string describing the shape you drew. You then just have to store it in your program, and register it thanks to <code>PA_RecoAddShape</code> so that the module will be able to recognize this shape afterwards.
+</p>
+
+<p>
+In the <code>PA_RecoInfo</code> structure, which is updated when the stylus is just released, some other informations are stored : the total length in pixels of the drawing, the starting and ending points, and a bounding box of the drawing, the smallest upright rectangle that encloses the shape.
+</p>
+
+<p>
+I found this feature really impressive indeed.
+</p>
+
+<p>
+For further informations on shape recognition, refer to the dedicated section in <a href="http://www.palib.info/wiki/doku.php?id=day3#shape_recognition" target="_blank">PAlib tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___reco.html" target="_blank">Shape Recognition</a> section of the API.
+</p>
+
+
+<h6>Sprite management</h6>
+<p>
+Sprite palettes can be loaded thanks to <code>PA_LoadSpritePal</code>, then sprites using them can be created with <code>PA_CreateSprite</code>. Once done they can be moved, either thanks to the stylus with <code>PA_MoveSprite</code> (touching the sprite will link it to the stylus and make it follow the movements of the stylus until released, see also <code>PA_SpriteTouched</code>), or, more frequently, with the very simple <code>PA_SetSpriteXY</code> (or <code>PA_SetSpriteX</code>, or <code>PA_SetSpriteY</code>).
+</p>
+
+<p>
+One just has not to forget they set the upper-left corner of the sprite, whereas often it is moved center-wise, and that coordinates are wrapped around. Reciprocally sprite positions can be read, thanks to <code>PA_GetSpriteX</code> and <code>PA_GetSpriteY</code>.
+</p>
+
+<p>
+Sprites can be as well rotated and scaled (both from their center point), when associated to one of the 32 rotsets. (0..31). <code>PA_SetSpriteRotEnable</code> allows to associate a sprite to a rotset, knowing that multiple sprites can share the same rotset, if they are to be rotated and scaled the same way.
+</p>
+
+<p>
+Then rotsets can be modified, with regard to scale, zoom and both by, respectively, <code>PA_SetRotsetNoZoom</code>, <code>PA_SetRotsetNoAngle</code> and <code>PA_SetRotset</code>. The specified angles are in 0..511, counter-clockwise. The zoom factors can be 256 (normal size), 512 (half size), 128 (double size), and can be set independently for abscissa and ordinates. Finally a sprite can be detached from its rotset thanks to <code>PA_SetSpriteRotDisable</code>.
+</p>
+
+<p>
+When rotated and/or scaled up, the sprite might exceed the rectangular size declared at its creation (ex : 32x32). In this case it will be clipped (exceeding parts will be cut), unless <code>PA_SetSpriteDblsize</code> is used to double the dimensions of its clipping rectangle (hence quadrupling the clipping area). One must then take into accound the fact that it will offset the sprite position, as the sprite is always located relatively to the upper left corner of its clipping box.
+</p>
+
+<p>Sprites can be flipped horizontally (<code>PA_SetSpriteHflip</code>) and/or vertically (<code>PA_SetSpriteVflip</code>). The mosaïc effect can be used on them, thanks to <code>PA_SetSpriteMosaic</code> first, then <code>PA_SetSpriteMosaicXY</code> (the specified mosaïc settings will be common to all sprites having the mosaïc effect enabled). The same stands for transparency (alpha-blending, whose level ranges from 0 for transparent to 15 for the default, solid) : all sprites having it enabled (thanks to <code>PA_SetSpriteMode</code>), once the option is activated on the backgrounds (with <code>PA_EnableSpecialFx</code>), share the same transparency level (set by <code>PA_SetSFXAlpha</code>) 
+</p>
+
+<p>
+For further informations on sprites with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day4#palib_sprites" target="_blank">tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___sprite.html" target="_blank">Sprite system</a> section of the API.
+</p>
+
+
+
+<h5>Building with PAlib</h5>
 <p>
 At compile time, PAlib overall headers must be included : <code>#include &lt;PA9.h&gt;</code> for the ARM9, with the <code>-IPath/To/PAlib/include/nds</code> command-line switch. A PAlib general header will in turn include all the specialized headers, like <code>PA_Interrupt.h</code>.
 </p>
@@ -1857,7 +1955,7 @@ The VRAM banks previously mentioned are to be mapped according to the expected l
 </p>
 
 <p>
-As for sprite attributes, as said previously each 2D core has its own built-in dedicated memory, which contains 128 entries (one entry per possible sprite). Each entry is made of four 16-bit attributes, storing the size, shape and location of the associated sprite. Up to 32 out of the 128 entries can correspond to affine sprites, whose additional attributes specify their rotation and scale 
+As for sprite attributes, as said previously each 2D core has its own built-in dedicated memory, which contains 128 entries (one entry per possible sprite). Each entry is made of four 16-bit attributes, storing the size, shape and location of the associated sprite. Up to 32 out of the 128 entries can correspond to affine transformations (named <em>rotsets</em>), whose additional attributes specify rotation and scale. Hence up to 32 rotsets can be defined, but more than one sprite can be associated to a given rotset.
 </p>
 
 <p>
@@ -2008,6 +2106,7 @@ Finally, the graphics to render are most of the time available first in general-
 </p>
 
 
+<a name="conversions"></a>
 <h7>Precomputed conversions</h7>
 
 <p>
@@ -2032,7 +2131,11 @@ One may use <a href="http://www.gimp.org/" target="_blank">The Gimp</a> to preco
 </p>
 
 <p>
-Another tool useful to convert sprites and backgrounds is PAGfx, which has been ported to GNU/Linux (download <a href="http://www.palib.info/downloads/PAGfx/Linux/" target="_blank">here</a>).
+Another tool useful to convert sprites, backgrounds and textures is PAGfx, which has been ported to GNU/Linux (download <a href="http://www.palib.info/downloads/PAGfx/Linux/" target="_blank">here</a>). Use just has to update <code>PAGfx.ini</code> and then to run <code>PAGfx.exe</code> that will read it to perform its image manipulations. Prefer for example the magenta colorkey (<em>transparent color</em>). This will result in various .h and .c files to be used when building, so that the corresponding resources are embedded. This implies <a href="#datastorage">linking these data directly</a> in the executable, which is rarely the best way to manage resources.
+</p>
+
+<p>
+More info about PAGfx can be found in <a href="http://www.palib.info/wiki/doku.php?id=day4#converting_with_pagfx" target="_blank">this section</a> of PAlib tutorial.
 </p>
 
 <p>
@@ -2066,7 +2169,7 @@ Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transforme
 </p>
 
 <p>
-OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM).
+OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM), including its onscreen position (top-left corner of the sprite) expressed in pixels. This position ranges between 0 and 511 for the abcissa, and between 0 and 191 for the ordinate. This means the sprite can be out of the screen bounds (256x192). Coordinates wrap around : a 512 abcissa is managed as if it was 0, some thing for a 192 ordinate.
 </p>
 
 <p>
@@ -2074,7 +2177,28 @@ Generally speaking, the OAM is not directly read or written to, as during the VD
 </p>
 
 <p>
-Each sprite behaves a bit like a big tile : it has an identifier and some overall informations such as flipping flags and palette-info for 16-color sprites. It is nevertheless made from several real tiles, which can be stored in memory according to two <a href="http://www.coranac.com/tonc/text/regobj.htm#sec-tiles" target="_blank">conventions</a> : 1D mapping or 2D mapping.
+There are three available color modes for sprites : 
+<ul>
+        <li><b>16 palettes, each of 16 colors</b> : inherited from the GBA, this mode is of little use on the DS</li>
+        <li><b>16 palettes, each of 256 colors</b> : uses twice as much memory, but is indeed the better trade-off. It is used by most of the time</li>
+        <li><b>16-bit direct color</b> : no palette, each pixel can have its own color. Main problem is the very significant memory consumption</li>
+</ul>
+</p>
+
+<p>
+A special color can be elected in each of the color modes, the <em>colorkey</em>, so that the pixels that exactly match that color are not drawned at all : they will be fully transparent, which enables to have sprites which do not color all their bitmap area, i.e. who can have a non-rectangle shape. For example a disc sprite should not overwrite the background inside its clipping rectangle but outside of the disc : in this area we need to view the background behind it. A good and quite usual colorkey choice is the "pure" magenta (full red, full blue, no green), as it is seldom used for real colors.
+</p>
+
+<p>
+As for the size of sprites, each dimension can be either 8, 16, 32 or 64 pixels (i.e. 1,2,4 or 8 tiles), but if a dimension is 64, then the other must be either 32 or 4 (not 8, not 16).
+</p>
+
+<p>
+Each sprite must be given a number in 0..127 that identifies it, and that defines as well its priority. The smaller a sprite number is, the highest is its priority : a given sprite will be on top of the sprites with higher numbers, as if the engine rendered the sprites incrementally, from 127 to 0.
+</p>
+
+<p>
+Each sprite behaves a bit like a big tile : it has an identifier and some overall informations such as flipping flags and palette-info for 16-color sprites. It is nevertheless made from several real tiles, which can be stored in memory according to two <a href="http://www.coranac.com/tonc/text/regobj.htm#sec-tiles" target="_blank">conventions</a> : 1D mapping or 2D mapping. Specific <a href="#conversions">tools</a> can be used to turn any bitmap into a suitable tileset for DS sprites.
 </p>
 
 <p>
@@ -2091,14 +2215,10 @@ A regular sprite has several attributes that define its size, actual shape (depe
 The size of sprites can be 64x64 (the default), 64x32, 32x64.
 </p>
 
-<p>
-Sprites are discussed as well in Dovoto's <a href="http://www.dev-scene.com/NDS/Tutorials/Captain_Apathy/Tiling#Sprites" target="_blank">tutorial</a>.
-</p>
-
 
 <h7>Affine sprites</h7>
 <p>
-Affine sprites are extended regular sprites. They have all regular attributes, and additional affine-specific informations. Each affine sprite is transformable : it has its own affine 2x2 transformation matrix, which defines how it should be rotated, scaled or sheared when being rendered. This matrix transforms points expressed in screen space into points in texture space, not the other way round. 
+Affine sprites are extended regular sprites. They have all regular attributes, and refer to additional affine-specific informations, the previously mentioned rotsets. Each affine sprite is transformable : it references an affine 2x2 transformation matrix, which defines how it should be rotated, scaled or sheared when being rendered. This matrix transforms points expressed in screen space into points in texture space, not the other way round.
 </p>
 
 <p>
@@ -2107,6 +2227,10 @@ Because of round-off errors due to fixed point matrix multiplications, one shoul
 
 <p>
 More infos about these affine operations can be read from <a href="http://www.coranac.com/tonc/text/affine.htm" target="_blank">TONC</a>, especially the <a href="http://www.coranac.com/tonc/text/affobj.htm" target="_blank">affine sprite</a> section about clipping, discretization and wrapping artefacts.
+</p>
+
+<p>
+Sprites are discussed as well in Dovoto's <a href="http://www.dev-scene.com/NDS/Tutorials/Captain_Apathy/Tiling#Sprites" target="_blank">tutorial</a> and in this <a href="http://www.palib.info/wiki/doku.php?id=day4" target="_blank">section</a> of PAlib tutorial.
 </p>
 
 <h7>Sprite animation</h7>
