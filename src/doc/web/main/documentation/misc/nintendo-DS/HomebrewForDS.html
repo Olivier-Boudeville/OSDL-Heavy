@@ -978,10 +978,11 @@ Like HAM for the <em>GameBoy Advance</em>, its intended public is developers wan
 As for me, I found interesting to use first libnds only, to learn how things work. Once done, anything allowing to gain some time sounds interesting to me, and I would not like to reinvent the wheel too often. So I use PAlib quite frequently, often after studying the sources to understand how each of its primitives is implemented.
 </p>
 
+
 <h5>What PAlib provides</h5>
 
 <p>
-The PAlib library encapsulates hardware-related operations into higher level C structures and functions, whose suffix is <code>PA_</code>. The full API documentation is available <a href="http://www.palib.info/Doc/PAlibDoc Eng/main.html" target="_blank">here</a>.
+The PAlib library encapsulates hardware-related operations into higher level C structures and functions, whose suffix is <code>PA_</code>. One should read the <a href="http://www.palib.info/wiki/doku.php" target="_blank">official tutorial</a> first, before consulting the full API documentation is available <a href="http://www.palib.info/Doc/PAlibDoc Eng/main.html" target="_blank">here</a>. There are a lot of useful examples in the <code>PAlibExamples</code> package.
 </p>
 
 <p>
@@ -992,11 +993,12 @@ Some of the most common services (not all) offered by PAlib will be discussed he
 <p>
 <ul>
         <li><b>Screens</b> are designated by a bool : true (1) for the top one, false (0) for the bottom one</li>
-        <li><b>Tile coordinates</b> range from 0 to 31 horizontally, and from 0 to 23 vertically. They are encoded in 16-bit unsigned int (u16)</li>
+        <li><b>Tile coordinates</b> range from 0 to 31 horizontally, and from 0 to 19 (not the expected 23) vertically. They are encoded in 16-bit unsigned int (u16)</li>
         <li><b>Backgrounds</b> range from 0 to 3</li>
         <li>PAlib behaves somewhat like a <b>state machine</b>. For example, after <code>PA_InitText</code> specified which background is to be used for a given screen, text rendering on that screen will use implicitly that background</li>
         <li>The <b>headers</b> where symbols are declared, the <b>implementation</b> files where they are defined (filenames are separated by "-" when a symbol is defined more than once, for example one time for each ARM) are specified between brackets. Ex : [Header : <code>PA_General.h</code> ; Implementation : <code>armX/PA.c</code>]. The X in armX signifies either 7 or 9, as both define it</li>
-        <li>there is a <b>FPS</b> counter for each screen, which keeps track of the number of frames per second (60 is using the VBL)</li>
+        <li>There is a <b>FPS</b> counter for each screen, which keeps track of the number of frames per second (60 is using the VBL)</li>
+
 </ul>
 </p>
 
@@ -1030,6 +1032,10 @@ Some of the most common services (not all) offered by PAlib will be discussed he
 
 </p>
 
+<p>
+See also the API documentation for <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___general.html" target="_blank">general functions</a>.
+</p>
+
 <h6>Synchronization</h6>
 <p>
 <ul>
@@ -1044,21 +1050,124 @@ Some of the most common services (not all) offered by PAlib will be discussed he
 
 </p>
 
+<p>
+See also the API documentation for <a href="http://www.palib.info/Doc/PAlibDoc Eng/_p_a___interrupt_8h.html" target="_blank">interrupts</a>.
+</p>
+
+
 <h6>Text output</h6>
+
+<p>
+There is a 10-color <b>preset palette</b> for text rendering. From 0 to 9 : white, red, green, blue, magenta, cyan, yellow, lightgray, darkgray, black.
+</p>
+
+<p>
+Text can be cleared by printing at the same location a string containing as many spaces as there were characters in the previously rendered string.
+</p>
+
+
 <p>
 <ul>
 
-        <li><code>PA_InitText(u8 screenNumber, u8 backgroundNumber)</code> : initializes the Palib module dedicated to text rendering, incuding a 10-color palette. It loads the appropriate font data in VRAM, select the specified screen and backgrounds. [Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+        <li><code>void PA_InitText(u8 screenNumber, u8 backgroundNumber)</code> : initializes the Palib module dedicated to text rendering, including a preset 10-color palette. It loads the appropriate font data in VRAM, select the specified screen and backgrounds. That same background will be used for all next text renderings to this screen. Works only in modes 0, 1 and 2. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
 
-        <li><code>PA_OutputSimpleText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text)</code> : renders the specified C-string (null terminated) in specified screen, after having removed any previous text that would be in the target location. Returns the number of letters rendered. [Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+        <li><code>void PA_SetTextTileCol(u8 screenNumber, u8 color)</code> : sets the specified color (0 to 9) from preset palette as current text color for next renderings. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+ 
+       <li><code>PA_SetTextCol(u8 screenNumber, u16 r, u16 g, u16 b)</code> : sets the specified RGB color as current text color for all text renderings (next and already rendered ones). Each color component should be in 0..31. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+ 
+       <li><code>void PA_SetTileLetter(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, char letter)</code> : renders the specified letter in specified screen to specified location. [Header and Implementation (macro) : <code>arm9/PA_Text.h</code>]</li>
 
-        <li><code>PA_OutputSimpleText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text, ...)</code> : renders the specified C-string, respecting a specified printf-like format, in specified screen, after having removed any previous text that would be in the target location. Manages the extra variable-length parameters like printf (va_start, va_end, etc.). Returns the number of letters rendered. [Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+        <li><code>u16 PA_OutputSimpleText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text)</code> : renders the specified C-string (null terminated) in specified screen to specified location, after having removed any previous text that would be already in the target location. Returns the number of letters rendered. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
 
-        <li><code>PA_ClearTextBg(u8 screenNumber)</code> : clears all text tile entries in the map, resets the print states [Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+        <li><code>void PA_OutputText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text, ...)</code> : renders the specified C-string, respecting a specified printf-like format, in specified screen, after having removed any previous text that would be in the target location. Manages the extra variable-length parameters a bit like printf : %s to output another string, %d to output a value, %fX to output a float with X digits, \n to go to the next line, %cX to choose one of the 0..9 colors from the preset palette. Here's the API example :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+PA_OutputText(0, 0, 1, "My name is %s and I have only %d teeth", "Mollusk", 20);
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+ Far richer than <code>PA_OutputSimpleText</code>, but quite slower. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+ 
+        <li><code>u32 PA_BoxText(u8 screenNumber, u16 basex, u16 basey, u16 maxx, u16 maxy, const char *text, s32 limit)</code> : renders the specified C-string so that it fits in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), using word-wrapping. No more than <code>limit</code> characters will be rendered. [Header : <code>arm9/PA_Text.h</code>; Implementation : <code>arm9/PA/PA_TextSpecial.c</code>]</li>
+
+        <li><code>u32 PA_BoxTextNoWrap(u8 screenNumber, u16 basex, u16 basey, u16 maxx, u16 maxy, const char *text, u32 limit)</code> : renders the specified C-string so that it fits in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), even by cutting words (no word-wrapping). No more than <code>limit</code> characters will be rendered. [Header : <code>arm9/PA_Text.h</code>; Implementation : <code>arm9/PA/PA_TextSpecial.c</code>]</li>
+
+        <li><code>void PA_ClearTextBg(u8 screenNumber)</code> : clears all text tile entries in the map, resets the print states [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>void PA_InitCustomTextEx(u8 screenNumber, u8 bg_select, void *tiles, text)</code> : initializes the font module with specied custom font, made thanks to PAGfx. <code>text</code> is a symbol name corresponding to the filename of the font image converted with PAGfx. [Header and Implementation (macro) : <code>arm9/PA_Text.h</code>]</li>
+
+        <li><code>void PA_ShowFont(u8 screenNumber)</code> : displays the full font being currently, useful for debugging purposes [Header and Implementation (macro) : <code>arm9/PA/PA_Text.c</code>]</li>
+ 
+        <li><code>s16 PA_SmartText(u8 screenNumber, s16 basex, s16 basey, s16 maxx, s16 maxy, char* text, u8 color, u8 size, u8 transp, s32 limit)</code> : renders the specified C-string so that it fits in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), using word-wrapping and a <b>variable-width</b> font on an 8 bit background (see <code>PA_Init8bitBg</code>). <code>color</code> is the color index in the palette (0..255). <code>size</code> is the font size and ranges from 0 (really small) to 4 (pretty big). No more than <code>limit</code> characters will be rendered. <code>transp</code> will clear the text location before rendering if equal to zero, will render on top of previous content it if one, will not render anything but count the letters if two, will rotate of Pi/4 the text if three, of -Pi/4 if four. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>s16 PA_CenterSmartText(u8 screenNumber, s16 basex, s16 basey, s16 maxx, s16 maxy, char* text, u8 color, u8 size, u8 transp)</code> : renders the specified C-string so that it fits <b>centered</b> in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), using word-wrapping and a <b>variable-width</b> font on an 8 bit background (see <code>PA_Init8bitBg</code>). <code>color</code> is the color index in the palette (0..255). <code>size</code> is the font size and ranges from 0 (really small) to 4 (pretty big). No more than <code>limit</code> characters will be rendered. <code>transp</code> will clear the text location before rendering if equal to zero, will render on top of previous content it if one, will not render anything but count the letters if two, will rotate of Pi/4 the text if three, of -Pi/4 if four. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>void PA_8bitCustomFont(bit8_slot, bit8_fontName)</code> : adds a custom font to the 8-bit font system. The specified font must have been converted with PAGfx. The 0-4 font slots are set by PAlib (but may be reset if needed), whereas the 5-9 slots are left free for the user. [Header and Implementation (macro) : <code>arm9/PA_Text.h</code>]</li>
+
+        <li><code>void PA_InitTextBorders(u8 screenNumber, u8 x1, u8 y1, u8 x2, u8 y2)</code> : defines a text box with borders, so that primitives for box font rendering can be used in it. Up to one such box can be used. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_TextSpecial.c</code>]</li>
+
+        <li><code>void PA_EraseTextBox(u8 screenNumber)</code> : erases the text in the text box defined thanks to <code>PA_InitTextBorders</code>. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_TextSpecial.c</code>]</li>
+
+        <li><code>u32 PA_SimpleBoxText(u8 screen, const char *text, u32 limit)</code> : renders the specified C-string so that it fits in the previously initiliazed textbox, using word-wrapping. No more than <code>limit</code> characters will be rendered. Same as <code>PA_BoxText</code>, but using text borders already defined. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>void PA_ClearTextBg(u8 screenNumber)</code> : clears all text tile entries in the map, resets the print states [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
 
 </ul>
+</p>
+
+<p>
+Text output primitives taking an argument for size (text length) are useful to perform per-character progressive typing, by incrementing this size at each VBL for example. One has to ensure with boxed text that the string is not too long : its size must not be higher than <code>(maxx - basex)*(maxy - basey)</code>.
+</p>
+
+<p>
+Colored texts can be rendered per letter (see the <code>%cX</code> format switch with primitives like <code>PA_OutputText</code>) or per-string (see <code>PA_SetTextTileCol</code>). In all cases the color definition of a palette index can be redefined, see <code>PA_SetTextCol</code>.
+</p>
+
+<p>
+Other functions include <code>PA_CompareText</code> (to compare two strings), <code>PA_CopyText</code> (to copy one string into another, <code>PA_Print</code> (to print text without specifying a location), <code>PA_PrintLetter</code> (same thing for one letter instead of a text). There are some special effects for font rendering, defined in <code>PA_OutputTextSpecialX</code>, with X in 0..5. 
+</p>
+
+<p>
+One may use <code>PAFont</code> to create custom fonts, see this <a href="http://www.palib.info/wiki/doku.php?id=day3#custom_font section" target="_blank">section</a> of PAlib tutorial.
+</p>
+
+<p>
+A PAlib text tutorial can be found <a href="http://www.palib.info/wiki/doku.php?id=day3" target="_blank">here</a>, and the associated API for text output is <a href="http://www.palib.info/Doc/PAlibDoc Eng/_p_a___text_8h.html" target="_blank">here</a>.
+</p>
+
+
+<h6>Input device management</h6>
+
+<h7>Keys</h7>
+<p>
+Button states can be read from the <code>Pad</code> structure. Here K will be the name of a key, in {Left, Right,Up,Down,A,B,Select,Start,X,Y,L,R}. For each key, both the current state (in <code>Pad.Held.K</code>) and the transitional state (in <code>Pad.Released.K</code> and <code>Pad.Newpress.K</code>) will be automatically updated (as boolean values) during the VBL (once per frame), to know respectively if this key is currently pressed, if it just went from pressed to released, or from released to pressed. Transitions last just for one frame.
+</p>
+
+<p>
+For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#pad" target="_blank">pad tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keys.html" target="_blank">Key input system</a> section of the API. Main header is <code>arm9/PA_Keys.h</code>, main implementation is <code>arm9/PA/PA_Keys.c</code>.
+</p>
+
+<h7>Touchscreen</h7>
+<p>
+The stylus is managed 
+</p>
+
+<h7>Virtual keyboard</h7>
+<p>
 
 </p>
+
+<p>
+For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#keyboard" target="_blank">pad tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keyboard.html" target="_blank">Keyboard</a> section of the API.
+</p>
+
 
 <h5>Using PAlib</h5>
 <p>
