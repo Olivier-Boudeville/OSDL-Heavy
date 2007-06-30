@@ -997,7 +997,7 @@ Some of the most common services (not all) offered by PAlib will be discussed he
         <li><b>Backgrounds</b> range from 0 to 3</li>
         <li>PAlib behaves somewhat like a <b>state machine</b>. For example, after <code>PA_InitText</code> specified which background is to be used for a given screen, text rendering on that screen will use implicitly that background</li>
         <li>The <b>headers</b> where symbols are declared, the <b>implementation</b> files where they are defined (filenames are separated by "-" when a symbol is defined more than once, for example one time for each ARM) are specified between brackets. Ex : [Header : <code>PA_General.h</code> ; Implementation : <code>armX/PA.c</code>]. The X in armX signifies either 7 or 9, as both define it</li>
-        <li>There is a <b>FPS</b> counter for each screen, which keeps track of the number of frames per second (60 is using the VBL)</li>
+        <li>There is a <b>FPS</b> counter for each screen, which keeps track of the number of frames per second (60 if using the VBL and not taking longer than 16.7ms to execute). This allows to perform time-based animations, and to <a href="http://www.palib.info/wiki/doku.php?id=day6#get_the_fps" target="_blank">monitor</a> actual FPS</li>
 
 </ul>
 </p>
@@ -1028,6 +1028,16 @@ Some of the most common services (not all) offered by PAlib will be discussed he
         	<li><b>ARM9</b> : 2D subsytem initialized, lid state updated, real-time clock read from ARM7, random generator seeded from current time, VBL counter reset, stylus coordinates initialized to screen center, interrupts initialized (including VBL), IPC set, for each screen : brightness set to visible, state initialized</li>
 	</ul>
 	</li>
+
+        <li><code>PA_InitRand</code>, and <code>PA_Rand</code>, <code>PA_RandMax</code>, <code>PA_RandMinMax</code>: they allow respectively to seed for the real-time clock the random number generator (to avoid obtaining always the same random sequences), and to generate random values between specified bounds [Header and Implementation : <code>arm9/PA_Math.h</code>]</li>
+
+        <li><code>PA_GetAngle</code>, <code>PA_Sin</code> and <code>PA_Cos</code> : fast trigonometric-related functions, explained <a href="http://www.palib.info/wiki/doku.php?id=day6#trajectories_and_angles" target="_blank">here</a></li>
+
+        <li><code>PA_RTC</code> : to read time and date</li>
+        <li><code>PA_UserInfo</code> : to read user informations (name, birthday, language, message, alarm)</li>
+        <li><code>PA_SetScreenLight</code> : to set the screen backlighting</li>
+        <li>your homebrew can be customized thanks to <code>TEXT1, TEXT2 and TEXT3</code> : see the root makefile</li>
+
 </ul>
 
 </p>
@@ -1086,7 +1096,7 @@ Variable character spacing leads to better looking and more compact text renderi
 </p>
 
 
-<h7>Rendering primitives</h7>
+<h7>Text rendering primitives</h7>
 
 <p>
 <ul>
@@ -1308,9 +1318,25 @@ This can be obtained by using the <code>Dual</code> prefix (ex : <code>PA_DualCr
 The hinge space between the two screens can be abstracted (as if it did not exist, the two screen being directly one on top of the other) or, on the contrary, managed as if it were a hidden part of the overall logical screen. For the first case <code>PA_SetScreenSpace</code> would be called with a zero parameter, whereas on the second case the default value, 48 pixels, could be kept, or extended to 64 pixels.
 </p>
 
+<h7>Sprite collisions</h7>
+<p>
+One thing is to be able to move sprites around, another one is to detect when they collide. PAlib provides two ways of detecting collisions : circular or rectangular bounding boxes, explained <a href="http://www.palib.info/wiki/doku.php?id=day6#sprite_collisions" target="_blank">here</a>. If neither of them is pixel-perfect, they are most of the time quite sufficient.
+</p>
+
+<p>
+Circular detection is obtained thanks to <code>PA_Distance</code>, to compare the (square) distance between the centers of the (circle) bounding-boxes to the (square of the) sum of their radius.
+</p>
+
+<p>
+Rectangular detection is obtained thanks to up to four comparisons, without need of a specific function.
+</p>
+
 <p>
 For further informations on sprites with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day4#palib_sprites" target="_blank">tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___sprite.html" target="_blank">Sprite system</a> section of the API.
 </p>
+
+
+
 
 <h6>Background management</h6>
 
@@ -1363,6 +1389,36 @@ After <code>PA_SetVideoMode</code> is used to set an appropriate video mode (up 
 
 <p>
 For further informations on backgrounds with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day5" target="_blank">tutorial</a> and to the following sections  of the API : <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_tiles.html" target="_blank">Normal Tiled Background Modes</a>, <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_rot.html" target="_blank">Rotating Backgrounds</a> and <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___tile_dual.html" target="_blank">Background Modes on two Screens</a>.
+</p>
+
+<h6>Sound</h6>
+<p>
+There are two kinds of PAlib sound output : raw output and MOD playback, which are rather complementary. Both need the sound system to be initialized, thanks to a call to <code>PA_InitSound</code>. There are 16 hardware channels that can playback simultaneously, by default 8 of which are reserved by PAlib for raw output, the remaining 8 being used by the MOD player.
+</p>
+
+<p>
+Raw output is like reading a .wav file : easy and perfect for special effects, but not adequate for musics due to the very significant size of these longer sounds. When having a sound to be output on the DS, it must be converted first. An appropriate target format could be mono 8-bit signed samples at 11025 Hz (but stereo sound and higher sample rate are supported). To play that sound on the DS, once the sound subsystem is initialized, use simply <code>PA_PlaySimpleSound</code>. One of the 8 (0..7) hardware channels reserved by PAlib should be then specified.
+</p>
+
+<p>
+On the contrary, MOD is perfect for music playback, since musics are encoded in very small sizes. Once the sound system is initialized, one just has to use <code>PA_PlayMod</code> to play a MOD file, that should not have more than 8 channels.
+</p>
+
+<h6>Filesystem</h6>
+<p>
+PAlib includes a filesystem named PAFS (<em>PAlib File System</em>), although the older <a href="http://www.pineight.com/gba/#gbfs" target="_blank">GBFS</a> filesystem could be used too (PAlib provides a <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___g_b_f_s.html" target="_blank">GBFS</a> wrapper for backward compatibility). PAFS allows to read files from the ROM, or directly from the RAM (embedded filesystem in the executable), which allows to use it with WMB and emulators as well. Running from RAM implies a maximum total size for the executable of 4 megabytes, and to specify the RAM size you want to reserve for the user filesystem.
+</p>
+
+<p>
+<a href="#libfat" target="_blank">libfat</a> is quite an interesting alternative to the less commonly used PAFS.
+</p>
+
+<p>
+First the PAFS image must be created with PAFS.exe, by appending files to the archive. Then various primitives allow to initialize the filesystem module on the DS (either from slot-2 thanks to <code>PA_FSInit</code> or from RAM thanks to <code>PA_FSRamInit</code>) and to read/write files and directories. For ROM, see the <code>PA_PAFSFile</code> and <code>PA_FSSys</code> array structures. For RAM, see <code>PA_FSRam</code> (to define the allocated size in RAM for the filesystem) and <code>PAFSStart</code> to read the RAM instead of the ROM.
+</p>
+
+<p>
+More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day9" target="_blank">PAFS section</a> of the PAlib tutorial.
 </p>
 
 
@@ -1585,7 +1641,7 @@ Some applications manage to rely on very tight 32-bit loops that fit in the inst
 </p>
 
 <p>
-Neither CPU of the DS has a Floating Point Unit (FPU), so all floating-point operations must be emulated (they have to be done in software), which is very slow. Most computations use therefore :
+Neither CPU of the DS has a Floating Point Unit (FPU), so all floating-point operations must be emulated (they have to be done in software), which is very slow (so : avoid by all means floats and doubles). Most computations use therefore :
 <ul>
         <li><b>fixed-point (integer) arithmetics</b> for basic operations (addition, substraction, multiplication and division), see <a href="http://www.coranac.com/tonc/text/fixed.htm" target="_blank">TONC</a> and <a href="http://en.wikipedia.org/wiki/Fixed-point_arithmetic" target="_blank">Wikipedia</a> for further informations on this subject</li>
 
@@ -1604,7 +1660,7 @@ Monitoring the ARM loads is not easy, even when using emulators. Profiling can b
 </p>
 
 <p>
-Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_blank">guidelines</a> should be applied to write effective code for the DS. See also another TONC section about <a href="http://www.coranac.com/tonc/text/asm.htm" target="_blank">ARM assembly</a>.
+Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_blank">guidelines</a> should be applied to write effective code for the DS. Then include favoring bit shifts (&lt;&lt; and &gt;&gt;), avoiding branching (<code>if</code>) and using  &amp; instead of % whenever possible. See also another TONC section about <a href="http://www.coranac.com/tonc/text/asm.htm" target="_blank">ARM assembly</a>.
 </p>
 
 
@@ -2488,11 +2544,11 @@ More info about reading from SRAM can be found <a href="http://www.double.co.nz/
 
 <h5>Reading the data from a filesystem</h5>
 <p>
-Instead of decreasing the available RAM by adding data to executables, one may access selectively the cartridge, as a filesystem, and retrieve only the chunks of chosen files taken from a directory tree.
+Instead of decreasing the available RAM by adding data to executables, one may access selectively the GBA cartridge, as a filesystem, and retrieve only the chunks of chosen files taken from a directory tree.
 </p>
 
 <p>
-With that method you can organize your data in as many files as you wish, and more important you are only limited by the size of the game cartridge, which is huge (up to 2 GB and more) compared to the other traditional storage locations in the DS. The main drawback is that it implies a cartridge must be used and your program must be stored on it. This method will not work for Wifi-downloadable applications.
+With that method you can organize your data in as many files as you wish, and more important you are only limited by the size of the game cartridge, which is huge (up to 2 GB and more) compared to the other traditional storage locations in the DS. The main drawback is that it implies a cartridge must be used and your program must be stored on it. This method will not work for Wifi-downloadable applications (WMB).
 </p>
 
 
