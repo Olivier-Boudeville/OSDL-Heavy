@@ -1237,15 +1237,24 @@ For further informations on shape recognition, refer to the dedicated section in
 </p>
 
 
+
 <h6>Sprite management</h6>
+
+
+<h7>Sprite basics</h7>
 <p>
-Sprite palettes can be loaded thanks to <code>PA_LoadSpritePal</code>, then sprites using them can be created with <code>PA_CreateSprite</code>. Once done they can be moved, either thanks to the stylus with <code>PA_MoveSprite</code> (touching the sprite will link it to the stylus and make it follow the movements of the stylus until released, see also <code>PA_SpriteTouched</code>), or, more frequently, with the very simple <code>PA_SetSpriteXY</code> (or <code>PA_SetSpriteX</code>, or <code>PA_SetSpriteY</code>).
+Sprite palettes can be loaded thanks to <code>PA_LoadSpritePal</code>, then sprites using them can be created with <code>PA_CreateSprite</code>, which sets the number of the sprite, thus its priority in its background. Once done they can be moved, either thanks to the stylus with <code>PA_MoveSprite</code> (touching the sprite will link it to the stylus and make it follow the movements of the stylus until released, see also <code>PA_SpriteTouched</code>), or, more frequently, with the very simple <code>PA_SetSpriteXY</code> (or <code>PA_SetSpriteX</code>, or <code>PA_SetSpriteY</code>).
 </p>
 
 <p>
 One just has not to forget they set the upper-left corner of the sprite, whereas often it is moved center-wise, and that coordinates are wrapped around. Reciprocally sprite positions can be read, thanks to <code>PA_GetSpriteX</code> and <code>PA_GetSpriteY</code>.
 </p>
 
+<p>
+As opposed to the previous per-sprite priority in a given background (default one is background #0), a sprite can be associated with the background having another (lower) priority thanks to <code>PA_SetSpritePrio</code>.
+</p>
+
+<h7>Rotation &amp; scaling</h7>
 <p>
 Sprites can be as well rotated and scaled (both from their center point), when associated to one of the 32 rotsets. (0..31). <code>PA_SetSpriteRotEnable</code> allows to associate a sprite to a rotset, knowing that multiple sprites can share the same rotset, if they are to be rotated and scaled the same way.
 </p>
@@ -1258,13 +1267,103 @@ Then rotsets can be modified, with regard to scale, zoom and both by, respective
 When rotated and/or scaled up, the sprite might exceed the rectangular size declared at its creation (ex : 32x32). In this case it will be clipped (exceeding parts will be cut), unless <code>PA_SetSpriteDblsize</code> is used to double the dimensions of its clipping rectangle (hence quadrupling the clipping area). One must then take into accound the fact that it will offset the sprite position, as the sprite is always located relatively to the upper left corner of its clipping box.
 </p>
 
+<h7>Flipping, mosaïc, alpha-blending</h7>
+
 <p>Sprites can be flipped horizontally (<code>PA_SetSpriteHflip</code>) and/or vertically (<code>PA_SetSpriteVflip</code>). The mosaïc effect can be used on them, thanks to <code>PA_SetSpriteMosaic</code> first, then <code>PA_SetSpriteMosaicXY</code> (the specified mosaïc settings will be common to all sprites having the mosaïc effect enabled). The same stands for transparency (alpha-blending, whose level ranges from 0 for transparent to 15 for the default, solid) : all sprites having it enabled (thanks to <code>PA_SetSpriteMode</code>), once the option is activated on the backgrounds (with <code>PA_EnableSpecialFx</code>), share the same transparency level (set by <code>PA_SetSFXAlpha</code>) 
+</p>
+
+<h7>Frames &amp; animations</h7>
+<p>
+Frames are basically animation steps for a given sprite. All such frames should be put on a tall unique image, each being on top of the other after the conversion (as a consequence all the frames have to share the same palette). The sprite itself would be created as if it was made of only one image, then <code>PA_SetSpriteAnim</code> would be used to select one of the sprite frames, which will be the sprite current bitmap. Note that selecting a new frame triggers the copy of this frame to tile memory, an operation that takes some resources and may slow down an application should too many frames be replaced.
+</p>
+
+<p>
+Thus frames allow to choose directly, for each sprite, which of its multiple images will to be displayed. But it is still up to the developer to manage the overall animation, with regard to frame selection and timing.
+</p>
+
+<p>
+Animations push one step further the process : they automate the frame management. The developer just has to specify the starting frame, the ending frame, the pace (animation speed, expressed in frames per second) to
+<code>PA_StartSpriteAnim</code>. Then at this function return, the animation will start and perform an infinite looping, until either <code>PA_StopSpriteAnim</code> or <code>PA_PauseSpriteAnim</code> is called, respectively to stop or pause the animation.
+</p>
+
+<p>
+To spare some memory, symetrical frames can be included only in one version, using the hardware-accelerated <code>PA_SetSpriteHflip</code> and <code>PA_SetSpriteVflip</code> to flip them horizontally and/or vertically just before their animation step comes.
+</p>
+
+<p>
+Lastly, one may choose, thanks to the two extra options offered by <code>PA_StartSpriteAnimEx</code>, the animation type, i.e. whether the frames are displayed in a basic loop (<code>ANIM_LOOP</code>, frame #1 to #n, then #1 to #n, etc.), in a back and forth way (<code>ANIM_UPDOWN</code>, frame #1 to #n, then #n to #1, then #1 to #n, etc.) or just once (<code>ANIM_ONESHOT</code>). The number of cycles can be chosen with the second extra option, with <code>-1</code> for infinite cycling, and a positive number to set the number of cycles to that value. Note that with <code>ANIM_UPDOWN</code>, going back and forth uses two cycles.
+</p>
+
+<h7>Virtual double screen : dual sprites</h7>
+
+<p>
+This features allows to manage both screens as if they formed a single double-sized one : ordinates ranges from 0 to 383 (starting from the top-left pixel of the top screen), instead of 0 to 191 (twice).
+</p>
+
+<p>
+This can be obtained by using the <code>Dual</code> prefix (ex : <code>PA_DualCreateSprite</code>, <code>PA_DualSetSpriteXY</code>, etc.). In this case no screen parameter is to be specified, as there is only one logical screen. 
+</p>
+
+<p>
+The hinge space between the two screens can be abstracted (as if it did not exist, the two screen being directly one on top of the other) or, on the contrary, managed as if it were a hidden part of the overall logical screen. For the first case <code>PA_SetScreenSpace</code> would be called with a zero parameter, whereas on the second case the default value, 48 pixels, could be kept, or extended to 64 pixels.
 </p>
 
 <p>
 For further informations on sprites with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day4#palib_sprites" target="_blank">tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___sprite.html" target="_blank">Sprite system</a> section of the API.
 </p>
 
+<h6>Background management</h6>
+
+<h7>Three types of backgrounds</h7>
+<p>
+PAlib makes use mainly of 256-color tiled backgrounds (up to four of them, named bg0..bg3; tiled background #0, i.e bg0, will be drawn on top of #1, etc.), with their traditional tile maps and tilesets. 8-bit or 16-bit framebuffer backgrounds are less used (using respectively 3/8 and 3/4 of a 128-kilobytes VRAM bank, up to one per screen), and rotation backgrounds (either regular or ERB, up to two per screen) are even less used. 
+</p>
+
+<h7>Tiled backgrounds</h7>
+<p>
+Tiled backgrounds can be loaded directly thanks to <code>PA_EasyBgLoad</code> or <code>PA_LoadTiledBg</code> (including their palette), if they have been produced by PAGfx (see this <a href="http://www.palib.info/wiki/doku.php?id=day5#converting" target="_blank">section</a> of PAlib tutorial). Otherwise <code>PA_LoadSimpleBg</code> and <code>PA_LoadBgPal</code> should be used, for example with data (maps, palettes, tiles) produced by gfx2gba. With both tools, .h and .c files can be produced and included in the executable, which is one of the ways to embed resources (the simplest, though with limitations).
+</p>
+
+<p>
+As PAGfx makes an optimized use of tiles, their index may vary, and one should better read them from the map directly, if possible. Once a tile index is known, any map position can be set to the corresponding tile thanks to <code>PA_SetMapTileEx</code>.
+</p>
+
+
+<h7>Tiled background scrollings</h7>
+<p>
+Classical scrollings can be achieved thanks to <code>PA_BGScrollXY</code> or <code>PA_EasyBgScrollXY</code>, both of which specifies the position the background should scroll to (both have counterparts to scroll only horizontally or vertically, ex : <code>PA_BGScrollX</code>). Backgrounds are wrapped around, but on 256 pixel boundaries : if your background is, say, 256+X pixel wide, there will be a 256-X blank space until the 512 pixel boundary allows it to wrap.
+</p>
+
+<p>
+PAlib introduced special tiled backgrounds named <em>LargeMap</em>, which can exceed the 512x512 tile size offered by the hardware. To do so, during the scrolling, PAlib loads dynamically next tiles. Such backgrounds should be loaded with <code>PA_LoadPAGfxLargeBg</code>, and scrolled with <code>PA_LargeScrollXY</code> (not too slow, but does not wrap around) or with <code>PA_InfLargeScrollXY</code> (wraps around, but is quite slow).
+</p>
+
+<p>
+Parallax scrollings (where different backgrounds scroll at different speeds, the closest the fastest to create a 3D/depth effect) are implemented as well : use for example <code>PA_InitParallaxY</code> to initialize a vertical parallax scrolling and then <code>PA_ParallaxScrollY</code> to perform the actual scrolling. LargeMap backgrounds can be parallax scrolled too.
+</p>
+
+<h7>8-bit &amp; 16-bit framebuffer backgrounds</h7>
+<p>
+They take a lot of memory, their rendering is slow, but : they allow to display pictures in common formats (with PAlib : 16-bit .jpeg, 8/16-bit .gif, 16-bit .bmp, 8/16-bit .raw are supported) without prior conversion, and/or to easily draw shapes with the stylus, and 16-bit framebufferst got rid of the palette (as many colors as pixels, thanks to direct colors).
+</p>
+
+<p>
+Images for framebuffers must be 256×192 to avoid their being distorted. PAGfx should be used for them. For 8-bit framebuffers, use <code>PA_Init8bitBg</code> to setup the background mode, <code>PA_LoadNormalBgPal</code> to load the palette and <code>PA_Load8bitBitmap</code> to load the bitmap itself. For 16-bit framebuffers, no palette is needed, thus use just <code>PA_Init16bitBg</code> to setup the background mode and <code>PA_Load16bitBitmap</code> to load the bitmap itself. 
+</p>
+
+<p>
+Images can be included from header files (automatically produced from images found in the <code>data</code> directory) and displayed with, for example, <code>PA_LoadGif</code> and <code>PA_LoadGifXY</code>.
+</p>
+
+
+<h7>Rotation background</h7>
+<p>
+After <code>PA_SetVideoMode</code> is used to set an appropriate video mode (up to two rotating backgrounds can be used at once, they can be wrap-around or not), these backgrounds (and their palettes) must be loaded with <code>PA_LoadPAGfxRotBg</code> (if produced by PAGfx), before being rotated (around any given point) and/or scaled and/or moved with <code>PA_SetBgRot</code>.<code></code><code></code>
+</p>
+
+<p>
+For further informations on backgrounds with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day5" target="_blank">tutorial</a> and to the following sections  of the API : <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_tiles.html" target="_blank">Normal Tiled Background Modes</a>, <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_rot.html" target="_blank">Rotating Backgrounds</a> and <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___tile_dual.html" target="_blank">Background Modes on two Screens</a>.
+</p>
 
 
 <h5>Building with PAlib</h5>
@@ -1963,7 +2062,7 @@ Base palettes have their own per-engine memory too. Each 2D engine has two base 
 </p>
 
 <p>
-See also the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_4#Background_Memory_Layout_and_VRAM_Management" target="_blank">memory layout</a> as seen from the 2D engines, taken from Dovoto's tutorial.
+See also the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_4#Background_Memory_Layout_and_VRAM_Management" target="_blank">memory layout</a> as seetn from the 2D engines, taken from Dovoto's tutorial.
 </p>
 
 
@@ -2165,11 +2264,11 @@ See also : Dovoto's tutorial about <a href="http://www.dev-scene.com/NDS/Tutoria
 <h6>Sprites</h6>
 
 <p>
-Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transformed independently from each other and can be used in conjunction with either bitmap or tiles background types (which are mutually exclusive). Like backgrounds, sprites are built out of tiles, but backgrounds and sprites cannot share tiles. The tiles available for sprites are stored in object VRAM, or OVRAM for short.
+Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transformed independently from each other and can be used in conjunction with either bitmap or tiles background types (which are mutually exclusive). Like backgrounds, sprites are built out of tiles, but backgrounds and sprites cannot share tiles. The tiles available for sprites are stored in object VRAM, or OVRAM for short. They can be shared between different sprites, thus changing them will change them for all sprites (ex : when performing animations). The same is true for palettes.
 </p>
 
 <p>
-OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM), including its onscreen position (top-left corner of the sprite) expressed in pixels. This position ranges between 0 and 511 for the abcissa, and between 0 and 191 for the ordinate. This means the sprite can be out of the screen bounds (256x192). Coordinates wrap around : a 512 abcissa is managed as if it was 0, some thing for a 192 ordinate.
+OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM), including its onscreen position (top-left corner of the sprite) expressed in pixels. This position ranges between 0 and 511 for the abcissa, and between 0 and 191 for the ordinate. This means the sprite can be out of the screen bounds (256x192). Coordinates wrap around : a 512 abcissa is managed as if it was 0, some thing for a 192 ordinate. Other per-sprite informations in OAM are shape, size, requested flipping, and if a rotset is used. If yes, its number, in 0..31, is specified. In each rotset, a transformation matrix is specified, with zoom factors and rotation angle.
 </p>
 
 <p>
@@ -2194,7 +2293,7 @@ As for the size of sprites, each dimension can be either 8, 16, 32 or 64 pixels 
 </p>
 
 <p>
-Each sprite must be given a number in 0..127 that identifies it, and that defines as well its priority. The smaller a sprite number is, the highest is its priority : a given sprite will be on top of the sprites with higher numbers, as if the engine rendered the sprites incrementally, from 127 to 0.
+Each sprite must be given a number in 0..127 that identifies it, and that defines as well its priority in its background. The smaller a sprite number is, the highest is its priority : in a given background, a given sprite will be on top of the sprites with higher numbers, as if the engine rendered the sprites incrementally, from 127 to 0. In addition to this per-sprite priority, sprites can be associated with one background in 0..3. Similarly, a background with a smaller number will be on top of other backgrounds, and its associated sprites as well. Thus, as for priority, the sprites are first sorted by backgrounds, and in a given background they are sorted by their own priority. For example sprite #0 of background #0 will be always on top of all other sprites.
 </p>
 
 <p>
@@ -2797,7 +2896,7 @@ More infos on timers can be found in this TONC <a href="http://www.coranac.com/t
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Friday, June 29, 2007</em>
+    <em>Last update : Saturday, June 30, 2007</em>
   </center>
 </body>
 </html>
