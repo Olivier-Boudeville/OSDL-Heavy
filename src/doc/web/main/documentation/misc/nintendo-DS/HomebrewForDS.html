@@ -289,7 +289,7 @@ Last be not least, one should have at least one micro-SD card, I bought a 2 GB K
 </p>
 
 <p>
-To use your micro-SD, you should first format it in <b>FAT</b> (i.e. FAT16, not FAT32), as factory settings are not reliable in all cases, or not the expected ones. Formatting can be done both from Windows or from Linux.
+To use your micro-SD, you should first format it in <b>FAT</b> (i.e. FAT16, not FAT32), as factory settings are not reliable in all cases, or not the expected ones. Formatting can be done both from Windows or from Linux. 
 </p>
 
 <p>
@@ -495,14 +495,38 @@ SuperKey and the other Slot-1 <a href="http://en.wikipedia.org/wiki/NoPass" targ
 <h4>The Slot-2 port (a.k.a. GBA cart, or Flash Cart)</h4>
 
 <p>
-There are several slot-2 add-ons (called linkers), which all provide their own set of features. From the ARM9 point of view, they can offer up to 32 megabytes of additional ROM (which can be actually RAM) and 64 kilobytes of RAM. This GBA slot bus only supports 16-bit writes, which leads to problems when needing to perform 8-bit only write operations.</p>
+There are several slot-2 add-ons (called <em>linkers</em>), which all provide their own set of features. From the ARM9 point of view, they can offer up to 32 megabytes of additional ROM (which can be actually RAM) and 64 kilobytes of RAM. Any mass storage they include cannot be seen directly by the ARMs. There are various systems that upload any desired chunk from this hidden mass storage in the ARM-visible 32-megabyte address space. The GBA slot bus only supports 16-bit writes, which leads to issues when needing to perform 8-bit only write operations.</p>
 
 <p>
-The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (it does not protrude when used with DS Lite) and provides both the optimal 32 megabytes of RAM and an access to removable storage, here a microSD card. Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. Note that a DSLinux nug work-around would require making partitions strictly smaller than 2 GB.
+The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (it does not protrude when used with DS Lite) and provides both the optimal 32 megabytes of RAM and an access to removable storage, here a microSD card. Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. Note that a work-around for a DSLinux bug would require making partitions strictly smaller than 2 GB. This can be done from Linux thanks to, for example, <code>fdisk /dev/mmcblk0</code>, then deleting previous partition (<code>d</code>), creating two new primary partitions (1/2), first with only 1020 megabytes, the second with the rest of the space, then setting them to FAT16 (<code>t</code> option, with value <code>6</code> for filesystem type). You should then have a partition like :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+Disk /dev/mmcblk0: 2000 MB, 2000683008 bytes
+10 heads, 9 sectors/track, 43417 cylinders
+Units = cylinders of 90 * 512 = 46080 bytes
+
+        Device Boot      Start         End      Blocks   Id  System
+/dev/mmcblk0p1               1       22136      996115+   6  FAT16
+/dev/mmcblk0p2           22137       43417      957645    6  FAT16
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+Finally both filesystems have to be created, thanks to, for example, <code>mkdosfs -c -F 16 -n DS-homebrew -v /dev/mmcblk0p1</code> and <code>mkdosfs -c -F 16 -n DS-storage -v /dev/mmcblk0p2</code>.
 </p>
 
 <p>
 These linkers use their built-in RAM as a mock flash cartridge, as a cache fed from their mass storage. Some DS homebrew also uses this additional RAM, though addressing issues and speed make it less useful than the DS's built in memory. Some people complained about Supercard's built-in RAM being too slow for some GBA games.
+</p>
+
+<p>
+The Supercard itself may have its firmware upgraded, which is generally an interesting operation. To do so, download latest firmware from <a href="http://eng.supercard.cn/soft_scl.htm" target="_blank">here</a> (ex : <code>microsd_eng_181.rar</code>, for 1.81), extract it with unrar (installed with <code>apt-get install unrar</code>) thanks to <code>unrar e microsd_eng_181.rar</code>. Put the result (<code>my_micro_eng_181.bin</code>) at the root of, here, your microSD card, before booting the DS with it. Then the firmware should be upgraded by selecting this file in the Supercard menu, and pressing the A key. 
 </p>
 
 <p>
