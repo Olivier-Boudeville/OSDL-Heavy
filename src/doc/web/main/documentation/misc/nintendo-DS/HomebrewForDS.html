@@ -982,7 +982,7 @@ As for me, I found interesting to use first libnds only, to learn how things wor
 <h5>What PAlib provides</h5>
 
 <p>
-The PAlib library encapsulates hardware-related operations into higher level C structures and functions, whose suffix is <code>PA_</code>. One should read the <a href="http://www.palib.info/wiki/doku.php" target="_blank">official tutorial</a> first, before consulting the full API documentation is available <a href="http://www.palib.info/Doc/PAlibDoc Eng/main.html" target="_blank">here</a>. There are a lot of useful examples in the <code>PAlibExamples</code> package.
+The PAlib library encapsulates hardware-related operations into higher level C structures and functions, whose suffix is <code>PA_</code>. One should read the <a href="http://www.palib.info/wiki/doku.php" target="_blank">official tutorial</a> first, before consulting the full API documentation is available <a href="http://www.palib.info/Doc/PAlibDoc Eng/main.html" target="_blank">here</a>. There are a lot of useful examples in the <code>PAlibExamples</code> package, and in the following sections : <a href="http://www.palib.info/wiki/doku.php?id=day12" target="_blank">Quick Demos</a>, Platform Game (<a href="http://www.palib.info/wiki/doku.php?id=day13" target="_blank">first</a> version, <a href="http://www.palib.info/wiki/doku.php?id=day15" target="_blank">second</a> one) and <a href="http://www.palib.info/wiki/doku.php?id=day14" target="_blank">Carré Rouge</a>.
 </p>
 
 <p>
@@ -1034,11 +1034,15 @@ Some of the most common services (not all) offered by PAlib will be discussed he
         <li><code>PA_GetAngle</code>, <code>PA_Sin</code> and <code>PA_Cos</code> : fast trigonometric-related functions, explained <a href="http://www.palib.info/wiki/doku.php?id=day6#trajectories_and_angles" target="_blank">here</a></li>
 
         <li><code>PA_RTC</code> : to read time and date</li>
+
         <li><code>PA_UserInfo</code> : to read user informations (name, birthday, language, message, alarm)</li>
         <li><code>PA_SetScreenLight</code> : to set the screen backlighting</li>
+
         <li>your homebrew can be customized thanks to <code>TEXT1, TEXT2 and TEXT3</code> : see the root makefile</li>
 
-</ul>
+        <li><code>Hardware windows</code> can be managed, see this <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___window.html#ga1" target="_blank">API</a>. [Header and Implementation : <code>PA_Window.h</code>]</li>
+
+/ul>
 
 </p>
 
@@ -1253,7 +1257,7 @@ For further informations on shape recognition, refer to the dedicated section in
 
 <h7>Sprite basics</h7>
 <p>
-Sprite palettes can be loaded thanks to <code>PA_LoadSpritePal</code>, then sprites using them can be created with <code>PA_CreateSprite</code>, which sets the number of the sprite, thus its priority in its background. Once done they can be moved, either thanks to the stylus with <code>PA_MoveSprite</code> (touching the sprite will link it to the stylus and make it follow the movements of the stylus until released, see also <code>PA_SpriteTouched</code>), or, more frequently, with the very simple <code>PA_SetSpriteXY</code> (or <code>PA_SetSpriteX</code>, or <code>PA_SetSpriteY</code>).
+Sprite palettes can be loaded thanks to <code>PA_LoadSpritePal</code>, then sprites using them can be created with <code>PA_CreateSprite</code>, which sets the number of the sprite, thus its priority in its background. Once done they can be moved, either thanks to the stylus with <code>PA_MoveSprite</code> (touching the sprite will link its center to the stylus and make it follow its movements until released, see also <code>PA_SpriteTouched</code>), or, more frequently, with the very simple <code>PA_SetSpriteXY</code> (or <code>PA_SetSpriteX</code>, or <code>PA_SetSpriteY</code>).
 </p>
 
 <p>
@@ -1311,7 +1315,7 @@ This features allows to manage both screens as if they formed a single double-si
 </p>
 
 <p>
-This can be obtained by using the <code>Dual</code> prefix (ex : <code>PA_DualCreateSprite</code>, <code>PA_DualSetSpriteXY</code>, etc.). In this case no screen parameter is to be specified, as there is only one logical screen. 
+This can be obtained by using the <code>Dual</code> prefix (ex : <code>PA_DualCreateSprite</code>, <code>PA_DualSetSpriteXY</code>, <code>PA_DualSetSpriteRotEnable</code>, etc.). In this case no screen parameter is to be specified, as there is only one logical screen. 
 </p>
 
 <p>
@@ -1332,7 +1336,11 @@ Rectangular detection is obtained thanks to up to four comparisons, without need
 </p>
 
 <p>
-For further informations on sprites with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day4#palib_sprites" target="_blank">tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___sprite.html" target="_blank">Sprite system</a> section of the API.
+Most tile-based games should implement a collision map, a 2D array of boolean values that tells if at a given tile location [p,q] the corresponding tile is walkable for example.
+</p>
+
+<p>
+For further informations on collision with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day6#sprite_collisions" target="_blank">tutorial</a>.
 </p>
 
 
@@ -1391,6 +1399,38 @@ After <code>PA_SetVideoMode</code> is used to set an appropriate video mode (up 
 For further informations on backgrounds with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day5" target="_blank">tutorial</a> and to the following sections  of the API : <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_tiles.html" target="_blank">Normal Tiled Background Modes</a>, <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_rot.html" target="_blank">Rotating Backgrounds</a> and <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___tile_dual.html" target="_blank">Background Modes on two Screens</a>.
 </p>
 
+<h6>3D</h6>
+
+<p>
+Even if there is a pseudo-3D video mode (the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___mode7.html" target="_blank">Mode 7</a>, that can be used for example to implement interesting special effects), there is a real 3D subsystem on the DS, that can be used with PAlib.
+</p>
+
+<p>
+No need any more to define <code>USE_3D</code> in PA_Config.h. One just has to use <code>PA_Init3D</code> to initialize the 3D subsystem on the bottom screen (use <code>PA_SwitchScreens</code> to target the top screen). Then <code>PA_Init3DDrawing</code> should be used to define where the camera is and in which direction it is looking at.
+</p>
+
+<p>
+To see something, at least one object is to be created in an adequate location. First the current transform matrix should be saved thanks to <code>glPushMatrix</code>, then the object should be defined (ex : with <code>PA_3DBox</code>), then the saved trasnform matrix should be restored (<code>glPopMatrix</code>) before requesting the rendering to take place (<code>glFlush</code>).
+</p>
+
+<p>
+PAlib's current 3D layer uses floating-point coordinates, which is somewhat a performance-killer. <a href="www.khronos.org/opengles/" target="_blank">OpenGL ES</a> version for platforms with no hardware floating-point support (FPU-less, hence using fixed-point) could be use instead. Some tricks couls allow to have 3D on both screens "simultaneously", but it would be rather limited.
+</p>
+
+<p>
+More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day10" target="_blank">3D section</a> of the PAlib tutorial and in the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___d.html" target="_blank">related section</a> in the API documentation.
+</p>
+
+<h6>Movie playback</h6>
+
+<p>
+First the original movie has to be converted from the .avi to various .vid files and a header. Then a template should be used to include the movie in a GBFS filesystem before playing it with <code>PA_LoadMultiVidGBFS</code>, after having initialized GBFS (<code> PA_InitGBFS</code>) and the adequate video mode (either <code>PA_Init16bitBg(1, 3)</code> or <code>PA_Init16bitBg(0, 3)</code>).
+</p>
+
+<p>
+More informations about movie playback can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day11" target="_blank">Video section</a> of the PAlib tutorial.
+</p>
+
 <h6>Sound</h6>
 <p>
 There are two kinds of PAlib sound output : raw output and MOD playback, which are rather complementary. Both need the sound system to be initialized, thanks to a call to <code>PA_InitSound</code>. There are 16 hardware channels that can playback simultaneously, by default 8 of which are reserved by PAlib for raw output, the remaining 8 being used by the MOD player.
@@ -1410,7 +1450,7 @@ PAlib includes a filesystem named PAFS (<em>PAlib File System</em>), although th
 </p>
 
 <p>
-<a href="#libfat" target="_blank">libfat</a> is quite an interesting alternative to the less commonly used PAFS.
+<a href="#libfat" target="_blank">libfat</a> is quite an interesting alternative to the less commonly used PAFS. PAlib offers a few helper functions to be with with libfat (see <code>arm9/PA_IO.h</code> and <code>arm9/PA/PA_IO.c</code>).
 </p>
 
 <p>
@@ -1421,6 +1461,19 @@ First the PAFS image must be created with PAFS.exe, by appending files to the ar
 More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day9" target="_blank">PAFS section</a> of the PAlib tutorial.
 </p>
 
+
+<h6>Wifi communications</h6>
+<p>
+<a href="http://www.palib.info/hosted/delfare/PAlibwifi.zip" target="_blank">PAlibwifi</a> is used for this. The corresponding header file (<code></code>) and library (<code>libdswifi9r.a</code>, i.e. <code>LIBSPA := -lpa9 -ldswifi9r</code>) should be specified.
+</p>
+
+<p>
+Initialization of the library should be done thanks to <code>PA_InitWifi</code>, and connection with <code>PA_ConnectWifiWFC</code>, before a socket connected to a remote host can be created with <code>PA_InitSocket</code>. Then data can be sent and received, thanks to <code>send</code> and <code>recv</code>. <code>PA_GetHTTP</code> allows to retrieve a file thanks to the HTTP protocol. The IP address of the DS, as seen by the outside (Internet), can use <code>PA_GetHTTP</code> to call a server returning the IP of the client.
+</p>
+
+<p>
+More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day20" target="_blank">Data Transfer and Multiplayer</a> section of the PAlib tutorial.
+</p>
 
 <h5>Building with PAlib</h5>
 <p>
@@ -1587,7 +1640,7 @@ Though the imitation is not always perfect (sadly, programs may work when emulat
 	 
     <li><a href="http://dualis.1emu.net/" target="_blank">Dualis</a> (not tested). Known to be less accurate but faster than NO$GBA, now unable to manage libfat unless FCSR drivers are used. Maybe a bit too permissive compared to the DS</li>
 	
-    <li><a href="http://www.ndsemulator.com/nintendo-ds/ideas-download.htm" target="_blank">Ideas</a> (not tested). One of the first and only to support 3D and sounds, still true at the time of this writing</li>
+    <li><a href="http://spazioinwind.libero.it/linoma/ideas.html" target="_blank">Ideas</a> (not tested). One of the first and only to support 3D and sounds, still true at the time of this writing</li>
 	
     <li><a href="http://www.ndsemulator.com/nintendo-ds/ensata.htm" target="_blank">Ensata</a> (not tested; illegal material leaked from Nintendo SDK, according to some sources)</li>
 
@@ -2952,7 +3005,7 @@ More infos on timers can be found in this TONC <a href="http://www.coranac.com/t
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Saturday, June 30, 2007</em>
+    <em>Last update : Sunday, July 1, 2007</em>
   </center>
 </body>
 </html>
