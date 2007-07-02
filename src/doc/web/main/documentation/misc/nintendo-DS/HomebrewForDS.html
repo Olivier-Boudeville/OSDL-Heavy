@@ -32,7 +32,7 @@
 <h1>A guide to homebrew development for the Nintendo DS</h1>
 
 
-<a name="toc">
+<a name="toc"></a>
 <center>
 	<table summary="Table of content" style="border: none">
         <tr>
@@ -50,9 +50,9 @@
 			<li><b></b> : </li>
 		-->
 
-					<li>A <a href="#buytheconsole">console</a></li>
+					<li>The <a href="#buytheconsole">console</a></li>
 					<li>Some recommended <a href="#accessories">accessories</a></li>
-					<li>Required <a href="#addons">add-ons</a></li>
+					<li>the <a href="#addons">add-ons</a> for homebrew development</li>
 					
 				</ul>
 		       <a href="#inaction">The console in action, with and without its add-ons</a><br>
@@ -72,6 +72,20 @@
 			   
 		       <a href="#programmingDS">Programming the DS</a><br>
 			   <ul>
+
+					<li> <a href="#understandinghardware">Using effectively the hardware</a><br>
+			   		  <ul>
+						<li><a href="#twocpu">Two</a> general-purpose CPU to handle</li>					
+						<li>Activating only the relevant <a href="#subsystems">subsystems</a></li>			
+						<li><a href="#2D">2D</a>/<a href="#3D">3D</a> <a href="#rendering">Rendering</a></li>		
+						<li><a href="#sound">Sound</a> input and output</li>
+						<li><a href="#datastorage">Data storage</a> &amp; application ressources</li>
+						<li><a href="#inputdevice">Input device</a> management</li>
+						<li><a href="#wireless">Wireless</a> networking</li>	
+						<li><a href="#miscellaneous">Miscellaneous</a></li>
+					  </ul>	
+					</li>
+
 			   		<li>Gathering the <a href="#tools">adequate tools</a> for homebrew</li> 
 					<ul>
 						<li>the compiler toolchain, with <a href="#devkitarm">devkitARM</a>
@@ -84,18 +98,6 @@
 			   		<li><a href="#building">Building</a> your first DS program</li>
 					<li><a href="#testing">Testing</a> your first DS program</li>
 
-					<li> <a href="#usinghardware">Using effectively the hardware</a><br>
-			   		  <ul>
-						<li><a href="#twocpu">Two</a> general-purpose CPU to handle</li>					
-						<li>Activating only the relevant <a href="#subsystems">subsystems</a></li>			
-						<li><a href="#2D">2D</a>/<a href="#3D">3D</a> <a href="#rendering">Rendering</a></li>		
-						<li><a href="#sound">Sound</a> input and output</li>
-						<li><a href="#datastorage">Data storage</a> &amp; application ressources</li>
-						<li><a href="#inputdevice">Input device</a> management</li>
-						<li><a href="#wireless">Wireless</a> networking</li>	
-						<li><a href="#miscellaneous">Miscellaneous</a></li>
-					  </ul>	
-					</li>
 							   
 			   </ul>		   
 			   
@@ -116,11 +118,15 @@
 <h2>Overview</h2>
 
 <p>
-The goal here is to develop applications, mostly games, to be run on the <a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">Nintendo DS</a>, from the hobbyist point of view, as opposed to a software/game production company. This kind of developments is called <a href="http://en.wikipedia.org/wiki/Homebrew_(video_games)" target="_blank">homebrew</a>. We do not support piracy or the illegal use of the copyrighted Nintendo SDK by non-licensed developers. We use here unofficial development kits, such as <a href="http://www.devkitpro.org/" target="_blank">devkitPro</a>. These coding efforts are to remain free and legal.
+The goal here is to develop applications, mostly games, to be run on the <a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">Nintendo DS</a>, from the hobbyist point of view, as opposed to a software/game production company. This kind of development is called <a href="http://en.wikipedia.org/wiki/Homebrew_(video_games)" target="_blank">homebrew</a>. 
 </p>
 
 <p>
-This document is a guide rather than a tutorial or a reference book : somewhat in between these two kinds of writings, informations are thematically organized (instead of being introduced incrementally like in a tutorial) without aiming at the exhaustiveness of a reference source (they already exist and links to them are provided). Only DS-specific knowledge is gathered here, the reader is expected to be already familiar with basic C programming.
+We do not support piracy or the illegal use of the copyrighted Nintendo SDK by non-licensed developers. We use here unofficial development kits, such as <a href="http://www.devkitpro.org/" target="_blank">devkitPro</a>. These coding efforts are to remain free and legal.
+</p>
+
+<p>
+This document is a guide rather than a tutorial or a reference book : somewhat in between these two kinds of writing, informations are thematically organized (instead of being introduced incrementally like in a tutorial) without aiming at the exhaustiveness of a reference source (such sources already exist, and links to them are provided). Only DS-specific knowledge is gathered here, the reader is expected to be already familiar with at least some form of programming.
 </p>
 
 <p>
@@ -128,7 +134,7 @@ Portable development will be kept in mind, as having one's game working both on 
 </p>
 
 <p>
-Most of the informations here came from homebrew websites (many thanks to Cearn for <a href="http://www.coranac.com/tonc/text/" target="_blank">TONC</a> and to Chris Double for his <a href="http://www.double.co.nz/nintendo_ds/" target="_blank">tutorial</a>) and from IRC discussions (notably, thanks to Wintermute [Dave Murphy] and <a href="http://www.akkit.org/sgstair/" target="_blank">sgstair</a> [Stephen Stair]). More generally, many thanks to the fearless homebrewers !
+Most of the informations here came from several homebrew websites (many thanks to Cearn for <a href="http://www.coranac.com/tonc/text/" target="_blank">TONC</a>, to <a href="http://www.dev-scene.com/NDS/Tutorials" target="_blank">Dovoto</a>, <a href="http://www.double.co.nz/nintendo_ds/" target="_blank">Chris Double</a> and <a href="http://www.palib.info/wiki/doku.php" target="_blank">Mollusk</a> for their respective tutorials) and from IRC discussions (notably, thanks to Wintermute [Dave Murphy] and <a href="http://www.akkit.org/sgstair/" target="_blank">sgstair</a> [Stephen Stair]). More generally, many thanks to the fearless homebrewers !
 </p>
 
 
@@ -145,15 +151,15 @@ Most of the informations here came from homebrew websites (many thanks to Cearn 
 <h3>The console</h3>
 
 <p>
-First of course is the Nintendo DS itself (see a video <a href="http://www.youtube.com/watch?v=Xp7Be1qsblI" target="_blank">presentation</a>). It should be a DS <a href="http://en.wikipedia.org/wiki/Nintendo_DS_Lite" target="_blank">Lite</a>, which is quite superior to the previous "<a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">fat</a>" version : better screens, thiner, lighter, better autonomy, more beautiful, etc. The color does not matter, but the black version is quite sober, which opens it the possibility of somewhat faking a classical PDA. This is one of the intended uses in my case, besides game programming.
+First of course is the Nintendo DS itself (see a video <a href="http://www.youtube.com/watch?v=Xp7Be1qsblI" target="_blank">presentation</a>). It should be a DS <a href="http://en.wikipedia.org/wiki/Nintendo_DS_Lite" target="_blank">Lite</a>, which is quite superior to the previous "<a href="http://en.wikipedia.org/wiki/Nintendo_DS" target="_blank">fat</a>" version : better screens, thiner, lighter, better autonomy, more beautiful, etc. The color does not matter, but we found the black version quite sober, which opens it the possibility of somewhat faking a classical PDA. This is one of the intended uses in my case, besides game programming.
 </p>
 
 <p>
-The main competitor for the DS would be Sony's PlayStation Portable, PSP, although they are quite different in price, capabilities and market shares. The lack of input device other than the gamepad, the quite low autonomy, the price and Sony policies make a lot of people favour DS over PSP, at least for the intended usage (PDA and homebrew).
+The main competitor for the DS would be Sony's <em>PlayStation Portable</em>, PSP, although they are quite different in price, capabilities and market shares. The lack of input device other than the gamepad, the quite low autonomy, the price and Sony policies make a lot of people favour DS over PSP, at least for the usage intended here (PDA and homebrew).
 </p>
 
 <p>
-As most console manufacturers enforce a unique pricing for all vendors, choose the one with the better conditions (guarantee, return policy, etc.), preferably not online : dealing with real shops is convenient, especially to have its DS replaced whenever there are dead pixels. This happens quite often apparently, and not all vendors accept easily to replace it. 
+As most console manufacturers enforce a unique pricing for all vendors, choose the one with the better conditions (guarantee, return policy, etc.), preferably not online : dealing with real shops is convenient, especially to have one's DS replaced whenever there are dead pixels. This happens quite often apparently, and not all vendors accept easily to replace it. 
 </p>
 
 <p>
@@ -209,7 +215,7 @@ From the most useful to the least :
 
 	<li><b>screen protectors</b>, necessary at least for the touch screen, whose life duration would be quite low otherwise (note : beware to the way they should be applied, I screwed up the first protection, and the second, for the touch screen, trapped nasty micro-bubbles of air; no, the screens do not have the same exact dimensions !). A kind of fabric could help cleaning the screens and the console itself : finger prints are quite visible on it, especially on the black DS</li>
 	
-	<li>a <b>case</b> for transporting safely your DS. Mine is in leather on purpose : wanting to look like a casual PDA</li>
+	<li>a <b>case</b> for transporting safely your DS. Mine is made of leather on purpose : wanting to look like a casual PDA</li>
 	
 	<li><b>replacement stylus</b>, in case you loose the only one provided (the smaller ones are for the "fat" DS)</li>
 
@@ -217,9 +223,9 @@ From the most useful to the least :
 
 	<li>specific <b>headphones</b> are quite useless, as the DS uses standard 3.5 jack. Would be interesting only if they included a microphone (seems to be a proprietary plug for audio input)</li>
 
-	<li><b>game stylus</b>, to be placed on the user Thumb. Not helpful here, for mostly non-gaming usage</li>
+	<li><b>game stylus</b>, to be placed on the user thumb. Not helpful here, they are mostly for gaming usage</li>
 	
-	<li><b>boxes for game cartridges</b>. I bought the DS only to program it, I do not plan to buy any game (hope you do not sell the DS at loss, Nintendo : the razor and blades business model won't work for homebrewers)</li>
+	<li><b>boxes for game cartridges</b>. Useless here since the DS is bought only to program it. The "razor and blades" business model (some consoles being sold at loss) does not work well with homebrewers</li>
 
 </ul>
 
@@ -238,11 +244,11 @@ See also the Wikipedia <a href="http://en.wikipedia.org/wiki/Nintendo_DS_accesso
 
 
 <a name="addons"></a>
-<h3>The add-ons for homebrew development</h3>
+<h3>The necessary add-ons for homebrew development</h3>
 
 <h4>Needing a console that can be programmed</h4>
 <p>
-Having a basic console is not enough to be able to program it : Nintendo, due to the fear of piracy, preferred to make the life of homebrewers more difficult than technically needed, notably thanks to hardened firmwares preventing modifications or execution of non-acknowledged code. For example, Wifi demos are apparently protected by a RSA check (at least parts of them are encrypted with a private key from Nintendo), and the DS uses the embedded public key to decipher these demos before running them.
+Having a basic console is not enough to be able to program it : Nintendo, probably due to the fear of piracy, preferred to make the life of homebrewers more difficult than technically needed, notably thanks to hardened firmwares preventing modifications or execution of non-acknowledged code. For example, Wifi demos are apparently protected by a RSA check (at least parts of them are encrypted with a private key from Nintendo), and the DS uses the embedded public key to decipher these demos before running them.
 </p>
 
 <p>
@@ -253,22 +259,22 @@ Hence, to have access to a DS that can be programmed, one has to circumvent thes
 <h4>A rather cheap and easy solution</h4>
 
 <p>
-Since the DS is not sold with a rewritable storage medium, some storage device is required to store homebrew. Though one could instead use <a href="http://en.wikipedia.org/wiki/Wireless_Multiboot" target="_blank">WMB</a> (<em>Wireless Multiboot</em>), which is a method to send programs to be run on the DS using a PC with specific Wi-Fi adaptors, but it would not be convenient enough : transferred content would be lost on DS power-off, a Ralink-compatible Wifi adaptor would be required, the sent applications could not occupy more than 4 megabytes, a hacked firmware would be needed, etc.
+Since the DS is not sold with a rewritable storage medium or anything like it (no standard card reader, no USB port, etc.), some specific device is required so that the DS can load homebrew applications. Though one could instead use <a href="http://en.wikipedia.org/wiki/Wireless_Multiboot" target="_blank">WMB</a> (<em>Wireless Multiboot</em>), which is a method to send programs to be run on the DS using a PC with specific Wi-Fi adaptors, this method would not be convenient enough : transferred content would be lost on the DS as soon as it is powered off, a Ralink-compatible Wifi adaptor would be required, the sent applications could not occupy more than 4 megabytes, a hacked firmware would be needed, etc.
 </p>
 
 <p>
-As for me, I intended to have Linux working on my DS, and for that the native 4 megabytes of RAM where quite small, so I wanted to have both 32 megabytes of additional RAM (the maximum size that can be addressed by the DS bus) and access to <a href="http://en.wikipedia.org/wiki/Nintendo_DS_storage_devices" target="_blank">mass storage</a> on removable media. 
+As for me, I intended to have Linux working on my DS, and for that the native 4 megabytes of RAM where quite small, so I wanted to have both 32 megabytes of additional RAM (the maximum size that can be addressed by the related DS bus) and access to <a href="http://en.wikipedia.org/wiki/Nintendo_DS_storage_devices" target="_blank">mass storage</a> on removable media. 
 </p>
 
 <p>
-The best and simplest bet was to use in the slot-1 (the DS-specific one, small and at the top of the console, a.k.a the DS card) a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperKey</a> (a kind of <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a>) as a fake game used to enable the execution of code from the slot-2 (the big one at the bottom, used for <em>Game Boy Advance</em> compatibility, a.k.a. the GBA cartridge). This slot-2 would host a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperCard Lite</a> (note : avoid the rumble series, it does not provide more RAM), which indeed, besides the 32 megabytes of RAM, offers a <b>micro-SD</b> port.</p>
+The best and simplest bet for me was to use, in the slot-1 (the DS-specific one, small and at the top of the console, a.k.a the DS card), a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperKey</a> (a kind of <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a>) as a fake game used to enable the execution of code from the slot-2 (the big one at the bottom, used for <em>Game Boy Advance</em> compatibility, a.k.a. the GBA cartridge). This slot-2 would host a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperCard Lite</a> (note : avoid the rumble series, it does not provide more RAM) which, besides the 32 megabytes of RAM, offers a <b>micro-SD</b> port. It is micro indeed (not mini), and SD stands for <em>Secure Digital</em>.</p>
 
 <p>
 I bought both the SuperKey and the SuperCard Lite (black version) from <a href="http://www.fl-games.com/" target="_blank">FL-games</a> for 65 euros (shipping included) and was quite happy of it (no compatibility issue between the two cards to be afraid of).
 </p>
 
 <p>
-Here are the three boxes : the Nintendo DS Lite one, the SuperKey and the SuperCard. Note the two-euro coin : there are quite small indeed.
+Here are the three boxes, for the Nintendo DS Lite, for the SuperKey and for the SuperCard. Note the two-euro coin : they are quite small indeed.
 
 <center>
     <a href="boxes.jpeg" target="_blank"><img src="boxes-small.jpeg" alt="Image" width="40%"></img></a><br>(click to enlarge)
@@ -818,878 +824,9 @@ The terminal output is on the top screen :
 Programming the DS is quite fun because it is rather down to the metal : being that close to the hardware, with no operating system, no drivers, no hardware incompatibilities (well, until we look at the flash carts), it is a good pretext to struggle against low level details. Probably a very good way to practise embedded developments as well. Not to mention that having its own programs working on a console is quite satisfactory.
 </p>
 
-<a name="tools"></a>
-<h3>Gathering the adequate tools for homebrew</h3>
 
-<p>
-Quite a few languages can use sources directly taken from the DS. They are mostly interpreted : there are ports for python, perl or lua, maybe one day Erlang. Some of them are expected to be run from DSLinux. One of course could use  <a href="http://www.coranac.com/tonc/text/asm.htm" target="_blank">ARM assembly</a> code, but most needs it would be fatal overkill, as the development duration would explode for no real gain. Even with higher level language, some knowledge of <a href="http://www.coranac.com/tonc/text/numbers.htm" target="_blank">bit operations</a> is required.
-</p>
-
-<p>
-As for C/C++, one would need a full build toolchain, since these languages are compiled instead of being interpreted. No native toolchain is available directly from the DS : it would demand more RAM than the built-in 4 megabytes (hence specific flash carts would be required), compilation would be long, and the development process would be quite painful.
-</p>
-
-<p>
-Therefore the development process starts usually on a computer rather than on the DS : the built binaries are cross-compiled, i.e. they are generated on a PC but according to the conventions of another architecture, so that they can be executed finally on this target architecture (here, the DS). This is quite common in embedded environments.
-</p>
-
-<p>
-Once the programs are compiled (from the C/C++ sources to a set of object files) and linked (thanks to DS-specific <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Linker" target="_blank">linkscripts</a> telling, depending on the ARM, which and how memory regions must be used at runtime), they can be tested in place, i.e. on the PC thanks to DS emulators, or they can be <a href="#limitations">transferred</a> to the DS and run on it.
-</p>
-
-<p>
-We consider here that you have the basic tools installed on your computer, notably a text editor (vi, emacs, nedit, etc.) or an <a href="http://en.wikipedia.org/wiki/Integrated_development_environment" target="_blank">IDE</a>
- (for <em>Integrated Development Environment</em>, ex : KDevelop, VisualHAM or <a href="http://www.palib.info/wiki/doku.php?id=day1#using_palib_with_visual_c_2005_express" target="_blank">Visual C++ 2005 Express</a>, etc), and the <code>GNU make</code> program. The associated makefiles, which specify how the different targets for an application should be built (which steps, which tools, which options, etc.), are essential, as way too many commands are involved in the repetitive development process to type them directly when needed. Other generic tools should be used as well, for source control (CVS, SVN), for documentation generation (doxygen), etc.
-</p>
-
-<p>
-Most of the tools that will be mentioned here (i.e. devkitARM, libnds, libfat, dswifi, PAlib, DeSmuME, NO$GBA), plus dlditool, can be installed by hand or thanks the <a href="http://osdl.sourceforge.net/OSDL-latest/LOANI.html" target="_blank">LOANI</a> script, provided by OSDL for GNU/Linux users. One just has to download latest LOANI archive and to run :
-<center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-<code><pre>
-./loani.sh --nds --buildTools
-</pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-to have them automatically downloaded, extracted and installed in their OSDL reference version, ready to be used. All these tools are open source.
-</p>
-
-<p>
-See <a href="http://www.dev-scene.com/NDS/Tutorials_Day_1#Installation_Of_Tools" target="_blank">Dovoto's tutorial</a> and <a href="http://www.devkitpro.org/setup.shtml" target="_blank">Dave Murphy's guide</a> (maintainer of devkiptARM) for more information about the installation of tools.
-</p>
-
-<p>
-Note that the devkitARM tools are designed to run on 32-bit architectures. If your PC uses a 64-bit processor you will need the <code>ia32-libs</code> for Debian-based distributions.
-</p>
-
-
-
-<a name="devkitarm"></a>
-<h4>First : the compiler toolchain, with devkitARM</h4>
-
-<p>
-We need the common build tools to generate binaries from our C/C++ sources : a preprocessor, a (ARM) compiler and a linker (not related to the cartridges, just a software) that knows the DS ROM <a href="romformats">formats</a> and its <a href="#memorylayout">memory</a> layout.
-</p>
-
-<p>
-Tools for commercial developers are not available for homebrewers but, luckily, there is an alternative toolchain, whose name is <a href="http://www.devkitpro.org/" target="_blank">devkitpro</a>. This toolchain is adapted from the <a href="http://en.wikipedia.org/wiki/GNU_Compiler_Collection" target="_blank">GCC</a> one. Its supports many consoles besides the DS (GameBoy Advance, GP32, Playstation Portable and GameCube). DS are ARM-based, hence we need <a href="http://www.devkitpro.org/category/devkitarm/" target="_blank">devkitARM</a>, which provides everything we need (and more). </p>
-
-<p>
-Installing devkitARM on UNIX is straightforward : one just has to <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=124207" target="_blank">download</a> latest stable version and extract it. Nothing more needs to be done, as the toolchain is prebuilt here : you downloaded the appropriate binaries, and there is not real point in recreating them from their sources.
-</p>
-
-<p>
-To use the standard functions devkitARM offers (ex : abs, atoi, free, getenv, rand, etc.), one should specify in the source file <code>#include &lt;stdlib.h&gt;</code>.
-</p>
-
-<p>With devkitARM you will be able to write programs with the classical C/C++ constructs. But what about text output ? Graphics ? Touchpad or key input ? The C/C++ language and runtime do not really provide these features natively, but you can do everything yourself. You just have to figure out for example that at address <code>0x4000000</code> there is a 32-bit register that you can write to, in order to control the display. Even if most relevant <a href="#detailedhardware">informations</a> are available, your time and patience might be quite quickly exhausted. Thus you can use a low level library instead, that would spare you these efforts. This is the task of libnds.
-</p>
-
-<p>
-Note that dynamic libraries are not supported on the DS. Therefore each executable has to be statically linked with the libraries it uses. It is not a real drawback on such a platform where OS multitasking (see <a href="#linuxonds">DSLinux</a>) is not widely used. The size of your executables should not explode anormally due to the (static) linking to multi-purpose libraries, since only object files defining symbols effectively referred to will be kept. The inclusion is per object file and not per symbol, so as soon as a symbol is used, all the other symbols defined together in its objet file will be added too, even if they are not used.
-</p>
-
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
-
-
-
-<a name="libnds"></a>
-<h4>Second : the low-level library, libnds</h4>
-
-<p>
-<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touchscreen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the dswifi library.
-</p>
-
-<p>
-It is not libnds purpose to give you advanced components that would do all the work for you. It is just a thin layer that will abstract a bit hardware facilities, thanks to suitable low-level primitives which will hide unwanted technical details, such as the actual location of registers in memory.
-</p>
-
-<p>
-libnds is thin enough not to imply tradeoffs : compared to ad hoc lowest level programming, using it will not hinder anything or result in a loss of performance. 
-</p>
-
-<p>
-Hence if you are not making a full use of libnds, most of the time it is that you chose to rely on higher level libraries.
-</p>
-
-<p>
-The installation of libnds is trivial (just a matter of extracting the latest <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608" target="_blank">archive</a>). If you plan to use PAlib, libnds will be provided with it, no need for a specific libnds install then. 
-</p>
-
-<p>
-Apart from the numerical constants (ex : addresses of registers), libnds defines several useful primitives (functions, defined in header files stored in <code>libnds/include/nds</code>) such as :
-<ul>
-
-<!--
-
-       <li><code></code> : </li>
-<-->
-
-        <li><code>consoleDemoInit</code>, <code>consoleInitDefault</code> or <code>consoleInit</code> : initializes a text-based console so that <code>printf</code> can be used directly to write strings on a DS sub screen. See also : <code>consoleClear</code></li>
-
-       <li><code>videoSetMode</code>, <code>vramSetBankA</code>, <code>lcdMainOnBottom</code>, etc. are used to set-up the video rendering</li>
-
-       <li><code>irqInit</code>, <code>irqEnable</code>, etc. allow to setup the interrupt handler and manage interrupt status, for example to enable the VBI (<code>IRQ_VBLANK</code>).  See also : <code>swiWaitForVBlank</code> (<a href="#interrupts">more infos</a>)</li>
-
-       <li><code>swi* functions</code> (ex : <code>swiWaitForVBlank</code>, <code>swiCopy</code>) provide access to BIOS functions</li>
-
-       <li><code>scanKeys</code>, <code>keysHeld</code>, <code>keysDown</code>, etc. simplify quite a lot key handling, with regard to positive logic, transitional states and so on (<a href="#keys">more infos</a>)</li>
-
-</ul>
-
-</p>
-
-<p>One just has to include the libnds header (<code>#include &lt;nds.h&gt;</code> with the appropriate <code>-IPath/To/Libnds/Headers</code>) to compile against the library. To link to it the <code>-LPath/To/Libnds/Library -lnds</code> switches have to be added, at the end of the line (libnds does not depend on any other system-specific library, but higher level ones, such as PAlib, use libnds) when linking executables.
-</p>
-
-<p>
-One can use also the <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=159894" target="_blank">libnds examples</a> to learn how to use the library. They are not installed by LOANI currently.
-</p>
-
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
-
-
-
-<a name="libfat"></a>
-<h4>Third : a FAT library, libfat</h4>
-
-<p>
-Most applications and games need some way of reading and writing from and to non-volatile media, and to access it as a filesystem rather than, say, a sequence of data blocks. This is useful notably to read resource files (images, sounds, etc.) and to write highscores, settings and saved games.
-</p>
-
-<p>
-In the case of the DS many filesystems could be used, but one of them, FAT16, is by far the most common. To manage such filesystems, a dedicated library, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>, can be used. It depends on libnds, both of which being packaged as part of DevkitPro.
-</p>
-
-<p>
-With libfat files can be managed almost exactly as they would be on POSIX systems. Directories follows different conventions.
-</p>
-
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
-
-
-<a name="dswifi"></a>
-<h4>Fourth : a library to manage Wifi, dswifi</h4>
-
-<p>
-<a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=199021" target="_blank">dswifi</a> offers a low level interface to the DS Wifi connectivity. Access points, connexions, IP adresses, frames and packets can be easily handled thanks to that library.
-</p>
-
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
-
-
-<a name="palib"></a>
-<h4>Fifth : an (optional) higher level library, PAlib</h4>
-
-<h5>What PAlib is</h5>
-<p>
-<a href="http://www.palib.info" target="_blank">PAlib</a> (<a href="https://sourceforge.net/projects/pands/" target="_blank">alternate site</a> on Sourceforge) is one of those abstracting libraries. It is built on top of libnds and offers various higher-level integrated services to the homebrewer.
-</p>
-
-
-<h5>Who should use PAlib</h5>
-<p>
-Like HAM for the <em>GameBoy Advance</em>, its intended public is developers wanting to use the most time-effective methods to write their software. Hardware purists often consider any library beyond libnds being useless (bloating software), restrictive or performance-killer. One should try both ways.
-</p>
-
-<p>
-As for me, I found interesting to use first libnds only, to learn how things work. Once done, anything allowing to gain some time sounds interesting to me, and I would not like to reinvent the wheel too often. So I use PAlib quite frequently, often after studying the sources to understand how each of its primitives is implemented.
-</p>
-
-
-<h5>What PAlib provides</h5>
-
-<p>
-The PAlib library encapsulates hardware-related operations into higher level C structures and functions, whose suffix is <code>PA_</code>. One should read the <a href="http://www.palib.info/wiki/doku.php" target="_blank">official tutorial</a> first, before consulting the full API documentation is available <a href="http://www.palib.info/Doc/PAlibDoc Eng/main.html" target="_blank">here</a>. There are a lot of useful examples in the <code>PAlibExamples</code> package, and in the following sections : <a href="http://www.palib.info/wiki/doku.php?id=day12" target="_blank">Quick Demos</a>, Platform Game (<a href="http://www.palib.info/wiki/doku.php?id=day13" target="_blank">first</a> version, <a href="http://www.palib.info/wiki/doku.php?id=day15" target="_blank">second</a> one) and <a href="http://www.palib.info/wiki/doku.php?id=day14" target="_blank">Carré Rouge</a>.
-</p>
-
-<p>
-Some of the most common services (not all) offered by PAlib will be discussed here.
-</p>
-
-<h6>Conventions</h6>
-<p>
-<ul>
-        <li><b>Screens</b> are designated by a bool : true (1) for the top one, false (0) for the bottom one</li>
-        <li><b>Tile coordinates</b> range from 0 to 31 horizontally, and from 0 to 19 (not the expected 23) vertically. They are encoded in 16-bit unsigned int (u16)</li>
-        <li><b>Backgrounds</b> range from 0 to 3</li>
-        <li>PAlib behaves somewhat like a <b>state machine</b>. For example, after <code>PA_InitText</code> specified which background is to be used for a given screen, text rendering on that screen will use implicitly that background</li>
-        <li>The <b>headers</b> where symbols are declared, the <b>implementation</b> files where they are defined (filenames are separated by "-" when a symbol is defined more than once, for example one time for each ARM) are specified between brackets. Ex : [Header : <code>PA_General.h</code> ; Implementation : <code>armX/PA.c</code>]. The X in armX signifies either 7 or 9, as both define it</li>
-        <li>There is a <b>FPS</b> counter for each screen, which keeps track of the number of frames per second (60 if using the VBL and not taking longer than 16.7ms to execute). This allows to perform time-based animations, and to <a href="http://www.palib.info/wiki/doku.php?id=day6#get_the_fps" target="_blank">monitor</a> actual FPS</li>
-
-</ul>
-</p>
-
-<!--
-        <li><b></b> : </li>
--->
-
-<!--
-<h6></h6>
-<p>
-<ul>
-        <li><code></code> : [Header : <code></code>; Implementation : <code></code>]</li>
-</ul>
-
-</p>
--->
-
-<h6>Basic primitives</h6>
-<p>
-<ul>
-
-        <li><code>PA_Init()</code> : initializes the library. Must be used at the beginning or main(). [Header : <code>PA_General.h</code>; Implementation : <code>armX/PA.c</code>]
-	<ul>
-
-		<li><b>ARM7</b> : real-time clock read, enables sound (subsystem powered on, volume set, IPC set, microphone on), IPC set</li>
-
-        	<li><b>ARM9</b> : 2D subsytem initialized, lid state updated, real-time clock read from ARM7, random generator seeded from current time, VBL counter reset, stylus coordinates initialized to screen center, interrupts initialized (including VBL), IPC set, for each screen : brightness set to visible, state initialized</li>
-	</ul>
-	</li>
-
-        <li><code>PA_InitRand</code>, and <code>PA_Rand</code>, <code>PA_RandMax</code>, <code>PA_RandMinMax</code>: they allow respectively to seed for the real-time clock the random number generator (to avoid obtaining always the same random sequences), and to generate random values between specified bounds [Header and Implementation : <code>arm9/PA_Math.h</code>]</li>
-
-        <li><code>PA_GetAngle</code>, <code>PA_Sin</code> and <code>PA_Cos</code> : fast trigonometric-related functions, explained <a href="http://www.palib.info/wiki/doku.php?id=day6#trajectories_and_angles" target="_blank">here</a></li>
-
-        <li><code>PA_RTC</code> : to read time and date</li>
-
-        <li><code>PA_UserInfo</code> : to read user informations (name, birthday, language, message, alarm)</li>
-        <li><code>PA_SetScreenLight</code> : to set the screen backlighting</li>
-
-        <li>your homebrew can be customized thanks to <code>TEXT1, TEXT2 and TEXT3</code> : see the root makefile</li>
-
-        <li><code>Hardware windows</code> can be managed, see this <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___window.html#ga1" target="_blank">API</a>. [Header and Implementation : <code>PA_Window.h</code>]</li>
-
-/ul>
-
-</p>
-
-<p>
-See also the API documentation for <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___general.html" target="_blank">general functions</a>.
-</p>
-
-<h6>Synchronization</h6>
-<p>
-<ul>
-
-        <li><code>PA_InitVBL()</code> : prepares the use of the VBL to synchronize operations, by setting VBL PAlib handler and enabling the VBL [Header and Implementation : <code>arm9/PA_Interrupt.h</code> - <code>arm7/PA.c</code>]</li>
-
-        <li><code>PA_WaitForVBL()</code> : puts the DS in sleep mode, waiting to be awoken by the VBL interrupt. It powers off some subsystems (starting from the ARMs), which saves battery charge. Lid might be checked here [Header and Implementation: <code>arm9/PA_General.h</code>]</li>
-
-       <li><code>PA_SetAutoCheckLid</code>, <code>PA_CheckLid</code>, <code>PA_LidClosed</code> : lid can be automatically checked at each VBL. Should it be closed, the DS will be shutdown until the lid is opened again [Header and Implementation: <code>arm9/PA_General.h</code>]</li>
-
-</ul>
-
-</p>
-
-<p>
-See also the API documentation for <a href="http://www.palib.info/Doc/PAlibDoc Eng/_p_a___interrupt_8h.html" target="_blank">interrupts</a>.
-</p>
-
-
-<h6>Text output</h6>
-
-<h7>Tile-based font rendering</h7>
-
-<p>
-There is a 10-color <b>preset palette</b> for text rendering. From 0 to 9 : white, red, green, blue, magenta, cyan, yellow, lightgray, darkgray, black.
-</p>
-
-<p>
-Text can be cleared by printing at the same location a string containing as many spaces as there were characters in the previously rendered string.
-</p>
-
-
-<h7>Software-rendered fonts</h7>
-<p>
-Most text primitives are tile-based. If it allows them to be simple and fast (since they are hardware-accelerated), they are fixed-width and have to fit in 8x8 tiles. So software-rendered fonts have been added, see for example <code>PA_SmartText</code>.
-</p>
-
-<p>
-These are plotted in framebuffer mode, and allows for fonts of different sizes and, in a given font, for characters themselves of different sizes (variable width). PAlib offers by default five different font sizes, numbered 0 to 4, starting from characters 4 or 5 pixels wide and tall (probably too small to be readable without efforts) to far bigger fonts.
-</p>
-
-<p>
-Last choice with these framebuffer-based fonts is the color depth they use. They can be either in 16 colors only, for better speed and lower memory footprint (see <code>PA_16cText</code>). Or they may have a 8-bit color depth, to benefit from 256 colors and from the possibility of being rotated by the hardware of +Pi/4 or -Pi/4, so that the DS can be held in portrait mode rather than in landscape mode (see <code>PA_SmartText</code>).
-</p>
-
-<p>
-Variable character spacing leads to better looking and more compact text renderings, at the expense of : speed (such software rendering is a lot slower), simplicity of use (for example with these fonts the background has to be cleared first), and absence of direct printf-like formatting (which would be still slower, though it can done separatly if needed, with <code>sprintf</code> for example).
-</p>
-
-
-<h7>Text rendering primitives</h7>
-
-<p>
-<ul>
-
-        <li><code>void PA_InitText(u8 screenNumber, u8 backgroundNumber)</code> : initializes the Palib module dedicated to text rendering, including a preset 10-color palette. It loads the appropriate font data in VRAM, select the specified screen and backgrounds. That same background will be used for all next text renderings to this screen. Works only in modes 0, 1 and 2. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
-
-        <li><code>void PA_SetTextTileCol(u8 screenNumber, u8 color)</code> : sets the specified color (0 to 9) from preset palette as current text color for next renderings. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
- 
-       <li><code>PA_SetTextCol(u8 screenNumber, u16 r, u16 g, u16 b)</code> : sets the specified RGB color as current text color for all text renderings (next and already rendered ones). Each color component should be in 0..31. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
- 
-       <li><code>void PA_SetTileLetter(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, char letter)</code> : renders the specified letter in specified screen to specified location. [Header and Implementation (macro) : <code>arm9/PA_Text.h</code>]</li>
-
-        <li><code>u16 PA_OutputSimpleText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text)</code> : renders the specified C-string (null terminated) in specified screen to specified location, after having removed any previous text that would be already in the target location. Returns the number of letters rendered. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
-
-        <li><code>void PA_OutputText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text, ...)</code> : renders the specified C-string, respecting a specified printf-like format, in specified screen, after having removed any previous text that would be in the target location. Manages the extra variable-length parameters a bit like printf : %s to output another string, %d to output a value, %fX to output a float with X digits, \n to go to the next line, %cX to choose one of the 0..9 colors from the preset palette. Here's the API example :
-<center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-<code><pre>
-PA_OutputText(0, 0, 1, "My name is %s and I have only %d teeth", "Mollusk", 20);
-</pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
- Far richer than <code>PA_OutputSimpleText</code>, but quite slower. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
- 
-        <li><code>u32 PA_BoxText(u8 screenNumber, u16 basex, u16 basey, u16 maxx, u16 maxy, const char *text, s32 limit)</code> : renders the specified C-string so that it fits in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), using word-wrapping. No more than <code>limit</code> characters will be rendered. [Header : <code>arm9/PA_Text.h</code>; Implementation : <code>arm9/PA/PA_TextSpecial.c</code>]</li>
-
-        <li><code>u32 PA_BoxTextNoWrap(u8 screenNumber, u16 basex, u16 basey, u16 maxx, u16 maxy, const char *text, u32 limit)</code> : renders the specified C-string so that it fits in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), even by cutting words (no word-wrapping). No more than <code>limit</code> characters will be rendered. [Header : <code>arm9/PA_Text.h</code>; Implementation : <code>arm9/PA/PA_TextSpecial.c</code>]</li>
-
-        <li><code>void PA_ClearTextBg(u8 screenNumber)</code> : clears all text tile entries in the map, resets the print states [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
-
-        <li><code>void PA_InitCustomTextEx(u8 screenNumber, u8 bg_select, void *tiles, text)</code> : initializes the font module with specied custom font, made thanks to PAGfx. <code>text</code> is a symbol name corresponding to the filename of the font image converted with PAGfx. [Header and Implementation (macro) : <code>arm9/PA_Text.h</code>]</li>
-
-        <li><code>void PA_ShowFont(u8 screenNumber)</code> : displays the full font being currently, useful for debugging purposes [Header and Implementation (macro) : <code>arm9/PA/PA_Text.c</code>]</li>
- 
-        <li><code>s16 PA_SmartText(u8 screenNumber, s16 basex, s16 basey, s16 maxx, s16 maxy, char* text, u8 color, u8 size, u8 transp, s32 limit)</code> : renders the specified C-string so that it fits in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), using word-wrapping and a <b>variable-width</b> font on an 8 bit background (see <code>PA_Init8bitBg</code>). <code>color</code> is the color index in the palette (0..255). <code>size</code> is the font size and ranges from 0 (really small) to 4 (pretty big). No more than <code>limit</code> characters will be rendered. <code>transp</code> will clear the text location before rendering if equal to zero, will render on top of previous content it if one, will not render anything but count the letters if two, will rotate of Pi/4 the text if three, of -Pi/4 if four. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
-
-        <li><code>s16 PA_CenterSmartText(u8 screenNumber, s16 basex, s16 basey, s16 maxx, s16 maxy, char* text, u8 color, u8 size, u8 transp)</code> : renders the specified C-string so that it fits <b>centered</b> in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), using word-wrapping and a <b>variable-width</b> font on an 8 bit background (see <code>PA_Init8bitBg</code>). <code>color</code> is the color index in the palette (0..255). <code>size</code> is the font size and ranges from 0 (really small) to 4 (pretty big). No more than <code>limit</code> characters will be rendered. <code>transp</code> will clear the text location before rendering if equal to zero, will render on top of previous content it if one, will not render anything but count the letters if two, will rotate of Pi/4 the text if three, of -Pi/4 if four. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
-
-        <li><code>void PA_8bitCustomFont(bit8_slot, bit8_fontName)</code> : adds a custom font to the 8-bit font system. The specified font must have been converted with PAGfx. The 0-4 font slots are set by PAlib (but may be reset if needed), whereas the 5-9 slots are left free for the user. [Header and Implementation (macro) : <code>arm9/PA_Text.h</code>]</li>
-
-        <li><code>void PA_InitTextBorders(u8 screenNumber, u8 x1, u8 y1, u8 x2, u8 y2)</code> : defines a text box with borders, so that primitives for box font rendering can be used in it. Up to one such box can be used. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_TextSpecial.c</code>]</li>
-
-        <li><code>void PA_EraseTextBox(u8 screenNumber)</code> : erases the text in the text box defined thanks to <code>PA_InitTextBorders</code>. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_TextSpecial.c</code>]</li>
-
-        <li><code>u32 PA_SimpleBoxText(u8 screen, const char *text, u32 limit)</code> : renders the specified C-string so that it fits in the previously initiliazed textbox, using word-wrapping. No more than <code>limit</code> characters will be rendered. Same as <code>PA_BoxText</code>, but using text borders already defined. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
-
-        <li><code>void PA_ClearTextBg(u8 screenNumber)</code> : clears all text tile entries in the map, resets the print states [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
-
-</ul>
-</p>
-
-<p>
-Text output primitives taking an argument for size (text length) are useful to perform per-character progressive typing, by incrementing this size at each VBL for example. One has to ensure with boxed text that the string is not too long : its size must not be higher than <code>(maxx - basex)*(maxy - basey)</code>.
-</p>
-
-<p>
-Colored texts can be rendered per letter (see the <code>%cX</code> format switch with primitives like <code>PA_OutputText</code>) or per-string (see <code>PA_SetTextTileCol</code>). In all cases the color definition of a palette index can be redefined, see <code>PA_SetTextCol</code>.
-</p>
-
-<p>
-Other functions include <code>PA_CompareText</code> (to compare two strings), <code>PA_CopyText</code> (to copy one string into another, <code>PA_Print</code> (to print text without specifying a location), <code>PA_PrintLetter</code> (same thing for one letter instead of a text). There are some special effects for font rendering, defined in <code>PA_OutputTextSpecialX</code>, with X in 0..5. 
-</p>
-
-<p>
-One may use <code>PAFont</code> to create custom fonts, see this <a href="http://www.palib.info/wiki/doku.php?id=day3#custom_font section" target="_blank">section</a> of PAlib tutorial. Another more recent tool is <a href="http://palib.info/forum/modules/newbb/viewtopic.php?viewmode=flat&type=&topic_id=3108&forum=10" target="_blank">dsFont</a>.
-</p>
-
-<p>
-A PAlib text tutorial can be found <a href="http://www.palib.info/wiki/doku.php?id=day3" target="_blank">here</a>, and the associated API for text output is <a href="http://www.palib.info/Doc/PAlibDoc Eng/_p_a___text_8h.html" target="_blank">here</a>.
-</p>
-
-
-<h6>Input device management</h6>
-
-<h7>Keys</h7>
-<p>
-Button states can be read from the <code>Pad</code> structure. Here K will be the name of a key, in {Left, Right,Up,Down,A,B,Select,Start,X,Y,L,R}. For each key, both the current state (in <code>Pad.Held.K</code>) and the transitional state (in <code>Pad.Released.K</code> and <code>Pad.Newpress.K</code>) will be automatically updated (as boolean values) during the VBL (once per frame), to know respectively if this key is currently pressed, if it just went from pressed to released, or from released to pressed. Transitions last just for one frame.
-</p>
-
-<p>
-For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#pad" target="_blank">pad tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keys.html" target="_blank">Key input system</a> section of the API. Main header is <code>arm9/PA_Keys.h</code>, main implementation is <code>arm9/PA/PA_Keys.c</code>.
-</p>
-
-
-<h7>Touchscreen</h7>
-<p>
-The stylus is managed in a very similar way to the keys : it is updated once per frame, and in <code>Stylus.Held</code>, <code>Stylus.Released</code> and <code>Stylus.Newpress</code> one can know whether it is up or down, and if it is just after a transition or if it has been already so for a while.
-</p>
-
-<p>
-For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#stylus" target="_blank">stylus tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keys.html" target="_blank">Key input system</a> section of the API. Main header is <code>arm9/PA_Keys.h</code>, main implementation is <code>arm9/PA/PA_Keys.c</code>.
-</p>
-
-<h7>Virtual keyboard</h7>
-<p>
-This is in my opinion one of the most interesting features of Palib. This module displays a keyboard bitmap on the touchscreen and allows the stylus to select keys, so that text can be input in a rather convenient way.
-</p>
-
-<p>
-After having been set-up in a free background thanks to <code>PA_InitKeyboard</code>, the keyboard can be smoothly scrolled to a given position when created with <code>PA_KeyboardIn</code> : it slides in from the bottom, and can slide out with <code>PA_KeyboardOut</code>. Its two colors can be changed thanks to <code>PA_SetKeyboardColor</code> (as for the background color, one should use <code>PA_SetBgPalCol</code>. <code>PA_CheckKeyboard</code> allows finally to read the characters being hit : any non-null return code designates directly the newly read key. 
-</p>
-
-<p>
-The keyboard pictures (two of them are necessary, to show the available characters depending on the shift key being selected on not) are located in <code>lib/arm9/PA/keyboard.bmp</code>, which allows for skinnable keyboards (see also the <code>PA_InitCustomKeyboard</code> macro).
-</p>
-
-<p>
-For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#keyboard" target="_blank">pad tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keyboard.html" target="_blank">Keyboard</a> section of the API.
-</p>
-
-<h7>Hand-written shape recognition</h7>
-<p>
-This is another quite amazing feature : powerful and really easy to use. Priceless for games needing to draw specific shapes (ex : runes) or as an alternative to the virtual keyboard.
-</p>
-
-<p>
-Shape recognition can be used either to input <a href="http://www.palib.info/wiki/doku.php?id=day3#pa_graffiti" target="_blank">PA Graffiti</a> (standard shapes that map to letters) or custom-made patterns.
-</p>
-
-<p>
-For PA Graffiti input, one just has to call each frame <code>PA_CheckLetter</code>, and everything will behave like in the case of <code>PA_CheckKeyboard</code>, when the virtual keyboard was used.
-</p>
-
-<p>
-For recognition of custom-made shapes, one just has to first disable the PA Graffiti input (thanks to <code>PA_UsePAGraffiti(0)</code>), then to associate shapes to letters before reading recognized symbols thanks to <code>PA_CheckLetter</code> once again. Quite impossible to be simpler.
-</p>
-
-<p>
-But how can such a custom-shape be described ? Just draw it yourself on the touchscreen, and make it be read by the system with <code>PA_RecoShape</code>. It will return an encoded string describing the shape you drew. You then just have to store it in your program, and register it thanks to <code>PA_RecoAddShape</code> so that the module will be able to recognize this shape afterwards.
-</p>
-
-<p>
-In the <code>PA_RecoInfo</code> structure, which is updated when the stylus is just released, some other informations are stored : the total length in pixels of the drawing, the starting and ending points, and a bounding box of the drawing, the smallest upright rectangle that encloses the shape.
-</p>
-
-<p>
-I found this feature really impressive indeed.
-</p>
-
-<p>
-For further informations on shape recognition, refer to the dedicated section in <a href="http://www.palib.info/wiki/doku.php?id=day3#shape_recognition" target="_blank">PAlib tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___reco.html" target="_blank">Shape Recognition</a> section of the API.
-</p>
-
-
-
-<h6>Sprite management</h6>
-
-
-<h7>Sprite basics</h7>
-<p>
-Sprite palettes can be loaded thanks to <code>PA_LoadSpritePal</code>, then sprites using them can be created with <code>PA_CreateSprite</code>, which sets the number of the sprite, thus its priority in its background. Once done they can be moved, either thanks to the stylus with <code>PA_MoveSprite</code> (touching the sprite will link its center to the stylus and make it follow its movements until released, see also <code>PA_SpriteTouched</code>), or, more frequently, with the very simple <code>PA_SetSpriteXY</code> (or <code>PA_SetSpriteX</code>, or <code>PA_SetSpriteY</code>).
-</p>
-
-<p>
-One just has not to forget they set the upper-left corner of the sprite, whereas often it is moved center-wise, and that coordinates are wrapped around. Reciprocally sprite positions can be read, thanks to <code>PA_GetSpriteX</code> and <code>PA_GetSpriteY</code>.
-</p>
-
-<p>
-As opposed to the previous per-sprite priority in a given background (default one is background #0), a sprite can be associated with the background having another (lower) priority thanks to <code>PA_SetSpritePrio</code>.
-</p>
-
-<h7>Rotation &amp; scaling</h7>
-<p>
-Sprites can be as well rotated and scaled (both from their center point), when associated to one of the 32 rotsets. (0..31). <code>PA_SetSpriteRotEnable</code> allows to associate a sprite to a rotset, knowing that multiple sprites can share the same rotset, if they are to be rotated and scaled the same way.
-</p>
-
-<p>
-Then rotsets can be modified, with regard to scale, zoom and both by, respectively, <code>PA_SetRotsetNoZoom</code>, <code>PA_SetRotsetNoAngle</code> and <code>PA_SetRotset</code>. The specified angles are in 0..511, counter-clockwise. The zoom factors can be 256 (normal size), 512 (half size), 128 (double size), and can be set independently for abscissa and ordinates. Finally a sprite can be detached from its rotset thanks to <code>PA_SetSpriteRotDisable</code>.
-</p>
-
-<p>
-When rotated and/or scaled up, the sprite might exceed the rectangular size declared at its creation (ex : 32x32). In this case it will be clipped (exceeding parts will be cut), unless <code>PA_SetSpriteDblsize</code> is used to double the dimensions of its clipping rectangle (hence quadrupling the clipping area). One must then take into accound the fact that it will offset the sprite position, as the sprite is always located relatively to the upper left corner of its clipping box.
-</p>
-
-<h7>Flipping, mosaïc, alpha-blending</h7>
-
-<p>Sprites can be flipped horizontally (<code>PA_SetSpriteHflip</code>) and/or vertically (<code>PA_SetSpriteVflip</code>). The mosaïc effect can be used on them, thanks to <code>PA_SetSpriteMosaic</code> first, then <code>PA_SetSpriteMosaicXY</code> (the specified mosaïc settings will be common to all sprites having the mosaïc effect enabled). The same stands for transparency (alpha-blending, whose level ranges from 0 for transparent to 15 for the default, solid) : all sprites having it enabled (thanks to <code>PA_SetSpriteMode</code>), once the option is activated on the backgrounds (with <code>PA_EnableSpecialFx</code>), share the same transparency level (set by <code>PA_SetSFXAlpha</code>) 
-</p>
-
-<h7>Frames &amp; animations</h7>
-<p>
-Frames are basically animation steps for a given sprite. All such frames should be put on a tall unique image, each being on top of the other after the conversion (as a consequence all the frames have to share the same palette). The sprite itself would be created as if it was made of only one image, then <code>PA_SetSpriteAnim</code> would be used to select one of the sprite frames, which will be the sprite current bitmap. Note that selecting a new frame triggers the copy of this frame to tile memory, an operation that takes some resources and may slow down an application should too many frames be replaced.
-</p>
-
-<p>
-Thus frames allow to choose directly, for each sprite, which of its multiple images will to be displayed. But it is still up to the developer to manage the overall animation, with regard to frame selection and timing.
-</p>
-
-<p>
-Animations push one step further the process : they automate the frame management. The developer just has to specify the starting frame, the ending frame, the pace (animation speed, expressed in frames per second) to
-<code>PA_StartSpriteAnim</code>. Then at this function return, the animation will start and perform an infinite looping, until either <code>PA_StopSpriteAnim</code> or <code>PA_PauseSpriteAnim</code> is called, respectively to stop or pause the animation.
-</p>
-
-<p>
-To spare some memory, symetrical frames can be included only in one version, using the hardware-accelerated <code>PA_SetSpriteHflip</code> and <code>PA_SetSpriteVflip</code> to flip them horizontally and/or vertically just before their animation step comes.
-</p>
-
-<p>
-Lastly, one may choose, thanks to the two extra options offered by <code>PA_StartSpriteAnimEx</code>, the animation type, i.e. whether the frames are displayed in a basic loop (<code>ANIM_LOOP</code>, frame #1 to #n, then #1 to #n, etc.), in a back and forth way (<code>ANIM_UPDOWN</code>, frame #1 to #n, then #n to #1, then #1 to #n, etc.) or just once (<code>ANIM_ONESHOT</code>). The number of cycles can be chosen with the second extra option, with <code>-1</code> for infinite cycling, and a positive number to set the number of cycles to that value. Note that with <code>ANIM_UPDOWN</code>, going back and forth uses two cycles.
-</p>
-
-<h7>Virtual double screen : dual sprites</h7>
-
-<p>
-This features allows to manage both screens as if they formed a single double-sized one : ordinates ranges from 0 to 383 (starting from the top-left pixel of the top screen), instead of 0 to 191 (twice).
-</p>
-
-<p>
-This can be obtained by using the <code>Dual</code> prefix (ex : <code>PA_DualCreateSprite</code>, <code>PA_DualSetSpriteXY</code>, <code>PA_DualSetSpriteRotEnable</code>, etc.). In this case no screen parameter is to be specified, as there is only one logical screen. 
-</p>
-
-<p>
-The hinge space between the two screens can be abstracted (as if it did not exist, the two screen being directly one on top of the other) or, on the contrary, managed as if it were a hidden part of the overall logical screen. For the first case <code>PA_SetScreenSpace</code> would be called with a zero parameter, whereas on the second case the default value, 48 pixels, could be kept, or extended to 64 pixels.
-</p>
-
-<h7>Sprite collisions</h7>
-<p>
-One thing is to be able to move sprites around, another one is to detect when they collide. PAlib provides two ways of detecting collisions : circular or rectangular bounding boxes, explained <a href="http://www.palib.info/wiki/doku.php?id=day6#sprite_collisions" target="_blank">here</a>. If neither of them is pixel-perfect, they are most of the time quite sufficient.
-</p>
-
-<p>
-Circular detection is obtained thanks to <code>PA_Distance</code>, to compare the (square) distance between the centers of the (circle) bounding-boxes to the (square of the) sum of their radius.
-</p>
-
-<p>
-Rectangular detection is obtained thanks to up to four comparisons, without need of a specific function.
-</p>
-
-<p>
-Most tile-based games should implement a collision map, a 2D array of boolean values that tells if at a given tile location [p,q] the corresponding tile is walkable for example.
-</p>
-
-<p>
-For further informations on collision with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day6#sprite_collisions" target="_blank">tutorial</a>.
-</p>
-
-
-
-
-<h6>Background management</h6>
-
-<h7>Three types of backgrounds</h7>
-<p>
-PAlib makes use mainly of 256-color tiled backgrounds (up to four of them, named bg0..bg3; tiled background #0, i.e bg0, will be drawn on top of #1, etc.), with their traditional tile maps and tilesets. 8-bit or 16-bit framebuffer backgrounds are less used (using respectively 3/8 and 3/4 of a 128-kilobytes VRAM bank, up to one per screen), and rotation backgrounds (either regular or ERB, up to two per screen) are even less used. 
-</p>
-
-<h7>Tiled backgrounds</h7>
-<p>
-Tiled backgrounds can be loaded directly thanks to <code>PA_EasyBgLoad</code> or <code>PA_LoadTiledBg</code> (including their palette), if they have been produced by PAGfx (see this <a href="http://www.palib.info/wiki/doku.php?id=day5#converting" target="_blank">section</a> of PAlib tutorial). Otherwise <code>PA_LoadSimpleBg</code> and <code>PA_LoadBgPal</code> should be used, for example with data (maps, palettes, tiles) produced by gfx2gba. With both tools, .h and .c files can be produced and included in the executable, which is one of the ways to embed resources (the simplest, though with limitations).
-</p>
-
-<p>
-As PAGfx makes an optimized use of tiles, their index may vary, and one should better read them from the map directly, if possible. Once a tile index is known, any map position can be set to the corresponding tile thanks to <code>PA_SetMapTileEx</code>.
-</p>
-
-
-<h7>Tiled background scrollings</h7>
-<p>
-Classical scrollings can be achieved thanks to <code>PA_BGScrollXY</code> or <code>PA_EasyBgScrollXY</code>, both of which specifies the position the background should scroll to (both have counterparts to scroll only horizontally or vertically, ex : <code>PA_BGScrollX</code>). Backgrounds are wrapped around, but on 256 pixel boundaries : if your background is, say, 256+X pixel wide, there will be a 256-X blank space until the 512 pixel boundary allows it to wrap.
-</p>
-
-<p>
-PAlib introduced special tiled backgrounds named <em>LargeMap</em>, which can exceed the 512x512 tile size offered by the hardware. To do so, during the scrolling, PAlib loads dynamically next tiles. Such backgrounds should be loaded with <code>PA_LoadPAGfxLargeBg</code>, and scrolled with <code>PA_LargeScrollXY</code> (not too slow, but does not wrap around) or with <code>PA_InfLargeScrollXY</code> (wraps around, but is quite slow).
-</p>
-
-<p>
-Parallax scrollings (where different backgrounds scroll at different speeds, the closest the fastest to create a 3D/depth effect) are implemented as well : use for example <code>PA_InitParallaxY</code> to initialize a vertical parallax scrolling and then <code>PA_ParallaxScrollY</code> to perform the actual scrolling. LargeMap backgrounds can be parallax scrolled too.
-</p>
-
-<h7>8-bit &amp; 16-bit framebuffer backgrounds</h7>
-<p>
-They take a lot of memory, their rendering is slow, but : they allow to display pictures in common formats (with PAlib : 16-bit .jpeg, 8/16-bit .gif, 16-bit .bmp, 8/16-bit .raw are supported) without prior conversion, and/or to easily draw shapes with the stylus, and 16-bit framebufferst got rid of the palette (as many colors as pixels, thanks to direct colors).
-</p>
-
-<p>
-Images for framebuffers must be 256×192 to avoid their being distorted. PAGfx should be used for them. For 8-bit framebuffers, use <code>PA_Init8bitBg</code> to setup the background mode, <code>PA_LoadNormalBgPal</code> to load the palette and <code>PA_Load8bitBitmap</code> to load the bitmap itself. For 16-bit framebuffers, no palette is needed, thus use just <code>PA_Init16bitBg</code> to setup the background mode and <code>PA_Load16bitBitmap</code> to load the bitmap itself. 
-</p>
-
-<p>
-Images can be included from header files (automatically produced from images found in the <code>data</code> directory) and displayed with, for example, <code>PA_LoadGif</code> and <code>PA_LoadGifXY</code>.
-</p>
-
-
-<h7>Rotation background</h7>
-<p>
-After <code>PA_SetVideoMode</code> is used to set an appropriate video mode (up to two rotating backgrounds can be used at once, they can be wrap-around or not), these backgrounds (and their palettes) must be loaded with <code>PA_LoadPAGfxRotBg</code> (if produced by PAGfx), before being rotated (around any given point) and/or scaled and/or moved with <code>PA_SetBgRot</code>.<code></code><code></code>
-</p>
-
-<p>
-For further informations on backgrounds with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day5" target="_blank">tutorial</a> and to the following sections  of the API : <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_tiles.html" target="_blank">Normal Tiled Background Modes</a>, <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_rot.html" target="_blank">Rotating Backgrounds</a> and <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___tile_dual.html" target="_blank">Background Modes on two Screens</a>.
-</p>
-
-<h6>3D</h6>
-
-<p>
-Even if there is a pseudo-3D video mode (the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___mode7.html" target="_blank">Mode 7</a>, that can be used for example to implement interesting special effects), there is a real 3D subsystem on the DS, that can be used with PAlib.
-</p>
-
-<p>
-No need any more to define <code>USE_3D</code> in PA_Config.h. One just has to use <code>PA_Init3D</code> to initialize the 3D subsystem on the bottom screen (use <code>PA_SwitchScreens</code> to target the top screen). Then <code>PA_Init3DDrawing</code> should be used to define where the camera is and in which direction it is looking at.
-</p>
-
-<p>
-To see something, at least one object is to be created in an adequate location. First the current transform matrix should be saved thanks to <code>glPushMatrix</code>, then the object should be defined (ex : with <code>PA_3DBox</code>), then the saved trasnform matrix should be restored (<code>glPopMatrix</code>) before requesting the rendering to take place (<code>glFlush</code>).
-</p>
-
-<p>
-PAlib's current 3D layer uses floating-point coordinates, which is somewhat a performance-killer. <a href="www.khronos.org/opengles/" target="_blank">OpenGL ES</a> version for platforms with no hardware floating-point support (FPU-less, hence using fixed-point) could be use instead. Some tricks couls allow to have 3D on both screens "simultaneously", but it would be rather limited.
-</p>
-
-<p>
-More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day10" target="_blank">3D section</a> of the PAlib tutorial and in the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___d.html" target="_blank">related section</a> in the API documentation.
-</p>
-
-<h6>Movie playback</h6>
-
-<p>
-First the original movie has to be converted from the .avi to various .vid files and a header. Then a template should be used to include the movie in a GBFS filesystem before playing it with <code>PA_LoadMultiVidGBFS</code>, after having initialized GBFS (<code> PA_InitGBFS</code>) and the adequate video mode (either <code>PA_Init16bitBg(1, 3)</code> or <code>PA_Init16bitBg(0, 3)</code>).
-</p>
-
-<p>
-More informations about movie playback can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day11" target="_blank">Video section</a> of the PAlib tutorial.
-</p>
-
-<h6>Sound</h6>
-<p>
-There are two kinds of PAlib sound output : raw output and MOD playback, which are rather complementary. Both need the sound system to be initialized, thanks to a call to <code>PA_InitSound</code>. There are 16 hardware channels that can playback simultaneously, by default 8 of which are reserved by PAlib for raw output, the remaining 8 being used by the MOD player.
-</p>
-
-<p>
-Raw output is like reading a .wav file : easy and perfect for special effects, but not adequate for musics due to the very significant size of these longer sounds. When having a sound to be output on the DS, it must be converted first. An appropriate target format could be mono 8-bit signed samples at 11025 Hz (but stereo sound and higher sample rate are supported). To play that sound on the DS, once the sound subsystem is initialized, use simply <code>PA_PlaySimpleSound</code>. One of the 8 (0..7) hardware channels reserved by PAlib should be then specified.
-</p>
-
-<p>
-On the contrary, MOD is perfect for music playback, since musics are encoded in very small sizes. Once the sound system is initialized, one just has to use <code>PA_PlayMod</code> to play a MOD file, that should not have more than 8 channels.
-</p>
-
-<h6>Filesystem</h6>
-<p>
-PAlib includes a filesystem named PAFS (<em>PAlib File System</em>), although the older <a href="http://www.pineight.com/gba/#gbfs" target="_blank">GBFS</a> filesystem could be used too (PAlib provides a <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___g_b_f_s.html" target="_blank">GBFS</a> wrapper for backward compatibility). PAFS allows to read files from the ROM, or directly from the RAM (embedded filesystem in the executable), which allows to use it with WMB and emulators as well. Running from RAM implies a maximum total size for the executable of 4 megabytes, and to specify the RAM size you want to reserve for the user filesystem.
-</p>
-
-<p>
-<a href="#libfat" target="_blank">libfat</a> is quite an interesting alternative to the less commonly used PAFS. PAlib offers a few helper functions to be with with libfat (see <code>arm9/PA_IO.h</code> and <code>arm9/PA/PA_IO.c</code>).
-</p>
-
-<p>
-First the PAFS image must be created with PAFS.exe, by appending files to the archive. Then various primitives allow to initialize the filesystem module on the DS (either from slot-2 thanks to <code>PA_FSInit</code> or from RAM thanks to <code>PA_FSRamInit</code>) and to read/write files and directories. For ROM, see the <code>PA_PAFSFile</code> and <code>PA_FSSys</code> array structures. For RAM, see <code>PA_FSRam</code> (to define the allocated size in RAM for the filesystem) and <code>PAFSStart</code> to read the RAM instead of the ROM.
-</p>
-
-<p>
-More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day9" target="_blank">PAFS section</a> of the PAlib tutorial.
-</p>
-
-
-<h6>Wifi communications</h6>
-<p>
-<a href="http://www.palib.info/hosted/delfare/PAlibwifi.zip" target="_blank">PAlibwifi</a> is used for this. The corresponding header file (<code></code>) and library (<code>libdswifi9r.a</code>, i.e. <code>LIBSPA := -lpa9 -ldswifi9r</code>) should be specified.
-</p>
-
-<p>
-Initialization of the library should be done thanks to <code>PA_InitWifi</code>, and connection with <code>PA_ConnectWifiWFC</code>, before a socket connected to a remote host can be created with <code>PA_InitSocket</code>. Then data can be sent and received, thanks to <code>send</code> and <code>recv</code>. <code>PA_GetHTTP</code> allows to retrieve a file thanks to the HTTP protocol. The IP address of the DS, as seen by the outside (Internet), can use <code>PA_GetHTTP</code> to call a server returning the IP of the client.
-</p>
-
-<p>
-More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day20" target="_blank">Data Transfer and Multiplayer</a> section of the PAlib tutorial.
-</p>
-
-<h5>Building with PAlib</h5>
-<p>
-At compile time, PAlib overall headers must be included : <code>#include &lt;PA9.h&gt;</code> for the ARM9, with the <code>-IPath/To/PAlib/include/nds</code> command-line switch. A PAlib general header will in turn include all the specialized headers, like <code>PA_Interrupt.h</code>.
-</p>
-
-<p>
-At link time, the PAlib (static) library <code></code> must be specified. As it depends on libdns, following switches should be used : <code>-LPath/To/PAlib/lib -lpa9 -LPath/To/Libnds/lib -lnds</code> for the ARM9.
-</p>
-
-
-<h5>Installing PAlib</h5>
-<p>
-To install PAlib, follow <a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib's tutorial</a> or use LOANI.
-</p>
-
-
-<h5>Alternate choices to PAlib</h5>
-<p>
-There are still many other libraries, but they are less used. <a href="http://libsdl.org/" target="_blank">SDL</a> has been <a href="http://gpf.dcemu.co.uk/ndsSDL.shtml" target="_blank">ported to the DS</a>. This abstraction layer is very useful to port (often PC) applications to lesser known platforms such as the homebrew-enabled DS, but in our case a few issues remains : the DS SDL implementation is not complete, it uses a lot of memory with regard to what is available, and a lot of hardware acceleration would be bypassed because of the layer. SDL may be here a way of starting a port, even though finally the game ought not to rely on it, for performance reasons.
-</p>
-
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
-
-
-
-<a name="building"></a>
-<h3>Building your first DS program</h3>
-
-<p>
-Now has come the time for a first test. LOANI users should first source the <code>LOANI-installations/OSDL-environment.sh</code> file to update their environment : <center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-<code><pre>
-. OSDL-environment.sh
-</pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-
-</p>
- 
- 
-<p>
-Then let's build some tests : go for example in <code>devkitPro/PAlibExamples/Input/Keyboard/Keyboard</code> and just execute <code>make</code>. It will read the <code>Makefile</code> and generate, from the sources (in <code>source/main.c</code>), the corresponding ROM : <code>Keyboard.ds.gba</code>, <code>Keyboard.nds</code> and
-<code>Keyboard.sc.nds</code> (all occupying around 95 ko). Refer to our section about <a href="#romformats">ROM formats</a> for a reminder of their respective role.
-</p>
-
-<p>
-Something similar to this should occur :
-<center>
-    <table summary="a box" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-&gt; make<br>
-main.c<br>
-arm-eabi-g++ -g -mThumb-interwork -mno-fpu -LYourLOANIDir/LOANI-0.5/LOANI-installations/devkitPro/PAlib/lib -specs=ds_arm9.specs main.o -LYourLOANIDir/LOANI-0.5/LOANI-installations/devkitPro/PAlib/lib -lpa9 -LYourLOANIDir/LOANI-0.5/LOANI-installations/devkitPro/libnds/lib -lfat -lnds9 -ldswifi9 -o build.elf<br>
-Nintendo DS rom tool 1.33 - Jan 27 2007 16:00:04<br>
-by Rafael Vuijk, Dave Murphy,  Alexei Karpenko<br>
-built ... Keyboard.ds.gba<br>
-dsbuild 1.21 - Jan 28 2007<br>
-using default loader<br>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-
-</p>
-
-<p>
-To decrypt a bit, the Makefile will try to rebuild target <code>$(OUTPUT).ds.gba</code>, whose name is deduced from the current directory (here, Keyboard). To build <code>Keyboard.ds.gba</code>, <code>Keyboard.nds</code> is needed, which in turns implies <code>Keyboard.bin</code> exists, then <code>Keyboard.elf</code>, then <code>$(OFILES)</code>. This variable contains all the object files needed, deduced from the source code (<code>*.c, *.cpp</code>) but also from the resources to be embedded (ex : <code>*.jpg, *.bmp</code>, etc.).
-</p>
-
-<p>
-Thus the first thing is to obtain these object files. The C++ compiler for ARM (<code>arm-eabi-g++</code>) is called to generate an object file, main.o, for the ARM9, from main.c. Have a look at this file, this is the main one you are expected to write on the future. 
-</p>
-
-<p>
-Once all the object files are created, they can be aggregated by the linker (here, <code>arm-eabi-g++</code> again) in <code>Keyboard.elf</code> (ELF for <code>External Link Format</code>).
-</p>
-
-<p>
-More precisely main.o, that provides the <code>main()</code> function, will be linked (statically; no dynamic linking available on the DS) with PAlib (<code>-lpa9</code> refers to <code>libpa9.a</code>, 9 for the ARM9), which itself uses some helper libraries : libfat, libnds9, dswfi9, even if simple this example do not use them all. Linking with unused libraries will not make your ROM bigger : they will not be included if really not used.
-</p>
-
-<p>
-<code>Keyboard.elf</code> can then be converted in <code>Keyboard.bin</code> by <code>arm-eabi-objcopy</code>, whose role is to copy and translate object files from a given format to another, here stripping extra informations not needed and not handled by the toolchain.
-</p>
-
-<p>
-From <code>Keyboard.bin</code>, <code>Keyboard.nds</code> (at last, a ROM file !) will be generated thanks to <code>devkitARM/bin/ndstool</code>, whose role is to combine the two executables and the data resources into a single file ready for DS distribution. Note that <code>Keyboard.bin</code> contains everything but the executable for the ARM7. This one is retrieved here from a precompiled default version, a kind of template, located in <code>arm7.bin</code>.
-</p>
-
-<p>
-Finally the <code>devkitARM/bin/dsbuild</code> executable is used to generate <code>Keyboard.ds.gba</code> from <code>Keyboard.nds</code>. This involves adding a slot-2 loader. 
-</p>
-
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
-
-
-
-<a name="testing"></a>
-<h3>Testing your first DS program</h3>
-
-<p>
-You have two options here : either the ROM must come one way or another to the DS (transfer), or the DS must come to the ROM and the PC (emulation). 
-</p>
-
-
-<h4>Transferring</h4>
-<p>
-The most obvious method is to transfer your ROM, here <code>Keyboard.sc.nds</code>, to your DS : copy it to, say, your microSD card, insert that card in your DS and run the ROM, for example thanks to the SuperCard menu. That should work.
-</p>
-
-<p>
-This method has however two drawbacks. The minor one is that on some computers, notably laptops like mine, Linux support for SD card is still quite limited, and often you end up with mounting, reading or writing problems. The major drawback is, even if the SD are well recognized, it becomes soon tiedous to swap the card again and again between its adapter on PC and the DS. For most people, the developing process requires too frequent tests to do so.     
-</p>
-
-<p>
-Using a Wifi transfer, preferably thanks to a router, could do the trick, and be more convenient than the card swap. One could use DSLinux for a SSH or FTP transfer followed by a reboot. This is not necessarily the best solution ever though. As for cable (parallel, USB, etc.), as already discussed, they either require soldering efforts or are quite expensive. 
-</p>
-
-
-<a name="emulators"></a>
-<h4>Emulating</h4>
-
-<p>
-The second method for testing your programs is to use an <a href="http://en.wikipedia.org/wiki/Emulator" target="_blank">emulator</a>. This will allow a PC to mimic your DS, so that you can test in-place the (approximated) result of your ROM.
-</p>
-
-<p>
-Though the imitation is not always perfect (sadly, programs may work when emulated, but not on the actual DS device), emulators have progressed a lot. For the Linux user, in decreasing order of interest, one should use :
-<ol>
-<!--
-    <li><a href="" target="_blank"></a></li>
--->
-
-	<li><a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a>, probably the best emulator around, with a very complete and accurate 2D support, a fast improving 3D support, able to run many commercial games. On Linux it should be used with Wine (<code>apt-get install wine</code> for Debian-based distributions). Just <a href="http://nocash.emubase.de/no$gba-w.zip" target="_blank">download</a> it, unzip it, run <code>wine NO\$GBA.EXE</code> and select your .ds.gba file (ex : <code>Keyboard.ds.gba</code>)
-	<center>
-    	<img src="NoCashGBA-screenshot.png" alt="NO$GBA"></img>
-	</center>
-	NO$GBA can provide a source level debugger as well. The colors might seem different from the expected ones due to a kind of DS screen emulation filter. This can be deactivated in <code>Options -&gt; Emulation Setup -&gt; GBA Mode</code> (or press F11) by selecting <code>VGA (poppy bright)</code>
-	</li>
-
-	<li>
-	<p>
-	<a href="http://www.desmume.org/" target="_blank">DeSmuME</a> : probably the fastest of all. Does not support zooming and rotation. There is a <a href="http://desmume.org/?p=19" target="_blank">Linux</a> version and even Debian packages, based on a SDL port. Some people prefer to run the Windows version from Wine . It is one of the few emulators to allow for the reconfiguration of key mappings
-	</p>
-
-	<p>
-	To do so, <a href="http://www.desmume.com/download.htm" target="_blank">download</a> DeSmuME latest stable version, unzip it, and simply run <code>wine NDeSmuME.exe</code>. In the <code>File</code> menu, you can select <code>Open and Execute</code>, and choose,this time, your .nds file (ex : <code>Keyboard.nds</code>). You should then be able to test it immediately
-	<center>
-    	<img src="DeSmuME-screenshot.png" alt="DeSmuME"></img>
-	</center>
-	</p>
-	</li>
-	
-	 
-    <li><a href="http://dualis.1emu.net/" target="_blank">Dualis</a> (not tested). Known to be less accurate but faster than NO$GBA, now unable to manage libfat unless FCSR drivers are used. Maybe a bit too permissive compared to the DS</li>
-	
-    <li><a href="http://spazioinwind.libero.it/linoma/ideas.html" target="_blank">Ideas</a> (not tested). One of the first and only to support 3D and sounds, still true at the time of this writing</li>
-	
-    <li><a href="http://www.ndsemulator.com/nintendo-ds/ensata.htm" target="_blank">Ensata</a> (not tested; illegal material leaked from Nintendo SDK, according to some sources)</li>
-
-    <li>DSEmu, despite its plugin feature, is probably deprecated now (not tested)</li>
-	
-</ol>
-</p>
-
-<p>
-See also the <a href="http://www.ndsemulator.com/" target="_blank">NDSEmulator.com</a> site.
-</p>
-
-
-<p>
-Having the general hardware specifications and the relevant toolchain is not enough to be able to program effectively the DS : there is still additional informations to gather before being able to write full-blown applications for it.
-</p>
-
-
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
-
-
-
-
-<a name="usinghardware"></a>
-<h3>Using effectively the hardware</h3>
+<a name="understandinghardware"></a>
+<h3>Understanding the hardware</h3>
 
 <a name="twocpu"></a>
 <h4>Two general-purpose CPU to handle</h4>
@@ -2840,6 +1977,878 @@ More infos on timers can be found in this TONC <a href="http://www.coranac.com/t
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="tools"></a>
+<h3>Gathering the adequate tools for homebrew</h3>
+
+<p>
+Quite a few languages can use sources directly taken from the DS. They are mostly interpreted : there are ports for python, perl or lua, maybe one day Erlang. Some of them are expected to be run from DSLinux. One of course could use  <a href="http://www.coranac.com/tonc/text/asm.htm" target="_blank">ARM assembly</a> code, but most needs it would be fatal overkill, as the development duration would explode for no real gain. Even with higher level language, some knowledge of <a href="http://www.coranac.com/tonc/text/numbers.htm" target="_blank">bit operations</a> is required.
+</p>
+
+<p>
+As for C/C++, one would need a full build toolchain, since these languages are compiled instead of being interpreted. No native toolchain is available directly from the DS : it would demand more RAM than the built-in 4 megabytes (hence specific flash carts would be required), compilation would be long, and the development process would be quite painful.
+</p>
+
+<p>
+Therefore the development process starts usually on a computer rather than on the DS : the built binaries are cross-compiled, i.e. they are generated on a PC but according to the conventions of another architecture, so that they can be executed finally on this target architecture (here, the DS). This is quite common in embedded environments.
+</p>
+
+<p>
+Once the programs are compiled (from the C/C++ sources to a set of object files) and linked (thanks to DS-specific <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Linker" target="_blank">linkscripts</a> telling, depending on the ARM, which and how memory regions must be used at runtime), they can be tested in place, i.e. on the PC thanks to DS emulators, or they can be <a href="#limitations">transferred</a> to the DS and run on it.
+</p>
+
+<p>
+We consider here that you have the basic tools installed on your computer, notably a text editor (vi, emacs, nedit, etc.) or an <a href="http://en.wikipedia.org/wiki/Integrated_development_environment" target="_blank">IDE</a>
+ (for <em>Integrated Development Environment</em>, ex : KDevelop, VisualHAM or <a href="http://www.palib.info/wiki/doku.php?id=day1#using_palib_with_visual_c_2005_express" target="_blank">Visual C++ 2005 Express</a>, etc), and the <code>GNU make</code> program. The associated makefiles, which specify how the different targets for an application should be built (which steps, which tools, which options, etc.), are essential, as way too many commands are involved in the repetitive development process to type them directly when needed. Other generic tools should be used as well, for source control (CVS, SVN), for documentation generation (doxygen), etc.
+</p>
+
+<p>
+Most of the tools that will be mentioned here (i.e. devkitARM, libnds, libfat, dswifi, PAlib, DeSmuME, NO$GBA), plus dlditool, can be installed by hand or thanks the <a href="http://osdl.sourceforge.net/OSDL-latest/LOANI.html" target="_blank">LOANI</a> script, provided by OSDL for GNU/Linux users. One just has to download latest LOANI archive and to run :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+./loani.sh --nds --buildTools
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+to have them automatically downloaded, extracted and installed in their OSDL reference version, ready to be used. All these tools are open source.
+</p>
+
+<p>
+See <a href="http://www.dev-scene.com/NDS/Tutorials_Day_1#Installation_Of_Tools" target="_blank">Dovoto's tutorial</a> and <a href="http://www.devkitpro.org/setup.shtml" target="_blank">Dave Murphy's guide</a> (maintainer of devkiptARM) for more information about the installation of tools.
+</p>
+
+<p>
+Note that the devkitARM tools are designed to run on 32-bit architectures. If your PC uses a 64-bit processor you will need the <code>ia32-libs</code> for Debian-based distributions.
+</p>
+
+
+
+<a name="devkitarm"></a>
+<h4>First : the compiler toolchain, with devkitARM</h4>
+
+<p>
+We need the common build tools to generate binaries from our C/C++ sources : a preprocessor, a (ARM) compiler and a linker (not related to the cartridges, just a software) that knows the DS ROM <a href="romformats">formats</a> and its <a href="#memorylayout">memory</a> layout.
+</p>
+
+<p>
+Tools for commercial developers are not available for homebrewers but, luckily, there is an alternative toolchain, whose name is <a href="http://www.devkitpro.org/" target="_blank">devkitpro</a>. This toolchain is adapted from the <a href="http://en.wikipedia.org/wiki/GNU_Compiler_Collection" target="_blank">GCC</a> one. Its supports many consoles besides the DS (GameBoy Advance, GP32, Playstation Portable and GameCube). DS are ARM-based, hence we need <a href="http://www.devkitpro.org/category/devkitarm/" target="_blank">devkitARM</a>, which provides everything we need (and more). </p>
+
+<p>
+Installing devkitARM on UNIX is straightforward : one just has to <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=124207" target="_blank">download</a> latest stable version and extract it. Nothing more needs to be done, as the toolchain is prebuilt here : you downloaded the appropriate binaries, and there is not real point in recreating them from their sources.
+</p>
+
+<p>
+To use the standard functions devkitARM offers (ex : abs, atoi, free, getenv, rand, etc.), one should specify in the source file <code>#include &lt;stdlib.h&gt;</code>.
+</p>
+
+<p>With devkitARM you will be able to write programs with the classical C/C++ constructs. But what about text output ? Graphics ? Touchpad or key input ? The C/C++ language and runtime do not really provide these features natively, but you can do everything yourself. You just have to figure out for example that at address <code>0x4000000</code> there is a 32-bit register that you can write to, in order to control the display. Even if most relevant <a href="#detailedhardware">informations</a> are available, your time and patience might be quite quickly exhausted. Thus you can use a low level library instead, that would spare you these efforts. This is the task of libnds.
+</p>
+
+<p>
+Note that dynamic libraries are not supported on the DS. Therefore each executable has to be statically linked with the libraries it uses. It is not a real drawback on such a platform where OS multitasking (see <a href="#linuxonds">DSLinux</a>) is not widely used. The size of your executables should not explode anormally due to the (static) linking to multi-purpose libraries, since only object files defining symbols effectively referred to will be kept. The inclusion is per object file and not per symbol, so as soon as a symbol is used, all the other symbols defined together in its objet file will be added too, even if they are not used.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="libnds"></a>
+<h4>Second : the low-level library, libnds</h4>
+
+<p>
+<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touchscreen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the dswifi library.
+</p>
+
+<p>
+It is not libnds purpose to give you advanced components that would do all the work for you. It is just a thin layer that will abstract a bit hardware facilities, thanks to suitable low-level primitives which will hide unwanted technical details, such as the actual location of registers in memory.
+</p>
+
+<p>
+libnds is thin enough not to imply tradeoffs : compared to ad hoc lowest level programming, using it will not hinder anything or result in a loss of performance. 
+</p>
+
+<p>
+Hence if you are not making a full use of libnds, most of the time it is that you chose to rely on higher level libraries.
+</p>
+
+<p>
+The installation of libnds is trivial (just a matter of extracting the latest <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608" target="_blank">archive</a>). If you plan to use PAlib, libnds will be provided with it, no need for a specific libnds install then. 
+</p>
+
+<p>
+Apart from the numerical constants (ex : addresses of registers), libnds defines several useful primitives (functions, defined in header files stored in <code>libnds/include/nds</code>) such as :
+<ul>
+
+<!--
+
+       <li><code></code> : </li>
+<-->
+
+        <li><code>consoleDemoInit</code>, <code>consoleInitDefault</code> or <code>consoleInit</code> : initializes a text-based console so that <code>printf</code> can be used directly to write strings on a DS sub screen. See also : <code>consoleClear</code></li>
+
+       <li><code>videoSetMode</code>, <code>vramSetBankA</code>, <code>lcdMainOnBottom</code>, etc. are used to set-up the video rendering</li>
+
+       <li><code>irqInit</code>, <code>irqEnable</code>, etc. allow to setup the interrupt handler and manage interrupt status, for example to enable the VBI (<code>IRQ_VBLANK</code>).  See also : <code>swiWaitForVBlank</code> (<a href="#interrupts">more infos</a>)</li>
+
+       <li><code>swi* functions</code> (ex : <code>swiWaitForVBlank</code>, <code>swiCopy</code>) provide access to BIOS functions</li>
+
+       <li><code>scanKeys</code>, <code>keysHeld</code>, <code>keysDown</code>, etc. simplify quite a lot key handling, with regard to positive logic, transitional states and so on (<a href="#keys">more infos</a>)</li>
+
+</ul>
+
+</p>
+
+<p>One just has to include the libnds header (<code>#include &lt;nds.h&gt;</code> with the appropriate <code>-IPath/To/Libnds/Headers</code>) to compile against the library. To link to it the <code>-LPath/To/Libnds/Library -lnds</code> switches have to be added, at the end of the line (libnds does not depend on any other system-specific library, but higher level ones, such as PAlib, use libnds) when linking executables.
+</p>
+
+<p>
+One can use also the <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=159894" target="_blank">libnds examples</a> to learn how to use the library. They are not installed by LOANI currently.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="libfat"></a>
+<h4>Third : a FAT library, libfat</h4>
+
+<p>
+Most applications and games need some way of reading and writing from and to non-volatile media, and to access it as a filesystem rather than, say, a sequence of data blocks. This is useful notably to read resource files (images, sounds, etc.) and to write highscores, settings and saved games.
+</p>
+
+<p>
+In the case of the DS many filesystems could be used, but one of them, FAT16, is by far the most common. To manage such filesystems, a dedicated library, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>, can be used. It depends on libnds, both of which being packaged as part of DevkitPro.
+</p>
+
+<p>
+With libfat files can be managed almost exactly as they would be on POSIX systems. Directories follows different conventions.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+<a name="dswifi"></a>
+<h4>Fourth : a library to manage Wifi, dswifi</h4>
+
+<p>
+<a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=199021" target="_blank">dswifi</a> offers a low level interface to the DS Wifi connectivity. Access points, connexions, IP adresses, frames and packets can be easily handled thanks to that library.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+<a name="palib"></a>
+<h4>Fifth : an (optional) higher level library, PAlib</h4>
+
+<h5>What PAlib is</h5>
+<p>
+<a href="http://www.palib.info" target="_blank">PAlib</a> (<a href="https://sourceforge.net/projects/pands/" target="_blank">alternate site</a> on Sourceforge) is one of those abstracting libraries. It is built on top of libnds and offers various higher-level integrated services to the homebrewer.
+</p>
+
+
+<h5>Who should use PAlib</h5>
+<p>
+Like HAM for the <em>GameBoy Advance</em>, its intended public is developers wanting to use the most time-effective methods to write their software. Hardware purists often consider any library beyond libnds being useless (bloating software), restrictive or performance-killer. One should try both ways.
+</p>
+
+<p>
+As for me, I found interesting to use first libnds only, to learn how things work. Once done, anything allowing to gain some time sounds interesting to me, and I would not like to reinvent the wheel too often. So I use PAlib quite frequently, often after studying the sources to understand how each of its primitives is implemented.
+</p>
+
+
+<h5>What PAlib provides</h5>
+
+<p>
+The PAlib library encapsulates hardware-related operations into higher level C structures and functions, whose suffix is <code>PA_</code>. One should read the <a href="http://www.palib.info/wiki/doku.php" target="_blank">official tutorial</a> first, before consulting the full API documentation is available <a href="http://www.palib.info/Doc/PAlibDoc Eng/main.html" target="_blank">here</a>. There are a lot of useful examples in the <code>PAlibExamples</code> package, and in the following sections : <a href="http://www.palib.info/wiki/doku.php?id=day12" target="_blank">Quick Demos</a>, Platform Game (<a href="http://www.palib.info/wiki/doku.php?id=day13" target="_blank">first</a> version, <a href="http://www.palib.info/wiki/doku.php?id=day15" target="_blank">second</a> one) and <a href="http://www.palib.info/wiki/doku.php?id=day14" target="_blank">Carré Rouge</a>.
+</p>
+
+<p>
+Some of the most common services (not all) offered by PAlib will be discussed here.
+</p>
+
+<h6>Conventions</h6>
+<p>
+<ul>
+        <li><b>Screens</b> are designated by a bool : true (1) for the top one, false (0) for the bottom one</li>
+        <li><b>Tile coordinates</b> range from 0 to 31 horizontally, and from 0 to 19 (not the expected 23) vertically. They are encoded in 16-bit unsigned int (u16)</li>
+        <li><b>Backgrounds</b> range from 0 to 3</li>
+        <li>PAlib behaves somewhat like a <b>state machine</b>. For example, after <code>PA_InitText</code> specified which background is to be used for a given screen, text rendering on that screen will use implicitly that background</li>
+        <li>The <b>headers</b> where symbols are declared, the <b>implementation</b> files where they are defined (filenames are separated by "-" when a symbol is defined more than once, for example one time for each ARM) are specified between brackets. Ex : [Header : <code>PA_General.h</code> ; Implementation : <code>armX/PA.c</code>]. The X in armX signifies either 7 or 9, as both define it</li>
+        <li>There is a <b>FPS</b> counter for each screen, which keeps track of the number of frames per second (60 if using the VBL and not taking longer than 16.7ms to execute). This allows to perform time-based animations, and to <a href="http://www.palib.info/wiki/doku.php?id=day6#get_the_fps" target="_blank">monitor</a> actual FPS</li>
+
+</ul>
+</p>
+
+<!--
+        <li><b></b> : </li>
+-->
+
+<!--
+<h6></h6>
+<p>
+<ul>
+        <li><code></code> : [Header : <code></code>; Implementation : <code></code>]</li>
+</ul>
+
+</p>
+-->
+
+<h6>Basic primitives</h6>
+<p>
+<ul>
+
+        <li><code>PA_Init()</code> : initializes the library. Must be used at the beginning or main(). [Header : <code>PA_General.h</code>; Implementation : <code>armX/PA.c</code>]
+	<ul>
+
+		<li><b>ARM7</b> : real-time clock read, enables sound (subsystem powered on, volume set, IPC set, microphone on), IPC set</li>
+
+        	<li><b>ARM9</b> : 2D subsytem initialized, lid state updated, real-time clock read from ARM7, random generator seeded from current time, VBL counter reset, stylus coordinates initialized to screen center, interrupts initialized (including VBL), IPC set, for each screen : brightness set to visible, state initialized</li>
+	</ul>
+	</li>
+
+        <li><code>PA_InitRand</code>, and <code>PA_Rand</code>, <code>PA_RandMax</code>, <code>PA_RandMinMax</code>: they allow respectively to seed for the real-time clock the random number generator (to avoid obtaining always the same random sequences), and to generate random values between specified bounds [Header and Implementation : <code>arm9/PA_Math.h</code>]</li>
+
+        <li><code>PA_GetAngle</code>, <code>PA_Sin</code> and <code>PA_Cos</code> : fast trigonometric-related functions, explained <a href="http://www.palib.info/wiki/doku.php?id=day6#trajectories_and_angles" target="_blank">here</a></li>
+
+        <li><code>PA_RTC</code> : to read time and date</li>
+
+        <li><code>PA_UserInfo</code> : to read user informations (name, birthday, language, message, alarm)</li>
+        <li><code>PA_SetScreenLight</code> : to set the screen backlighting</li>
+
+        <li>your homebrew can be customized thanks to <code>TEXT1, TEXT2 and TEXT3</code> : see the root makefile</li>
+
+        <li><code>Hardware windows</code> can be managed, see this <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___window.html#ga1" target="_blank">API</a>. [Header and Implementation : <code>PA_Window.h</code>]</li>
+
+/ul>
+
+</p>
+
+<p>
+See also the API documentation for <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___general.html" target="_blank">general functions</a>.
+</p>
+
+<h6>Synchronization</h6>
+<p>
+<ul>
+
+        <li><code>PA_InitVBL()</code> : prepares the use of the VBL to synchronize operations, by setting VBL PAlib handler and enabling the VBL [Header and Implementation : <code>arm9/PA_Interrupt.h</code> - <code>arm7/PA.c</code>]</li>
+
+        <li><code>PA_WaitForVBL()</code> : puts the DS in sleep mode, waiting to be awoken by the VBL interrupt. It powers off some subsystems (starting from the ARMs), which saves battery charge. Lid might be checked here [Header and Implementation: <code>arm9/PA_General.h</code>]</li>
+
+       <li><code>PA_SetAutoCheckLid</code>, <code>PA_CheckLid</code>, <code>PA_LidClosed</code> : lid can be automatically checked at each VBL. Should it be closed, the DS will be shutdown until the lid is opened again [Header and Implementation: <code>arm9/PA_General.h</code>]</li>
+
+</ul>
+
+</p>
+
+<p>
+See also the API documentation for <a href="http://www.palib.info/Doc/PAlibDoc Eng/_p_a___interrupt_8h.html" target="_blank">interrupts</a>.
+</p>
+
+
+<h6>Text output</h6>
+
+<h7>Tile-based font rendering</h7>
+
+<p>
+There is a 10-color <b>preset palette</b> for text rendering. From 0 to 9 : white, red, green, blue, magenta, cyan, yellow, lightgray, darkgray, black.
+</p>
+
+<p>
+Text can be cleared by printing at the same location a string containing as many spaces as there were characters in the previously rendered string.
+</p>
+
+
+<h7>Software-rendered fonts</h7>
+<p>
+Most text primitives are tile-based. If it allows them to be simple and fast (since they are hardware-accelerated), they are fixed-width and have to fit in 8x8 tiles. So software-rendered fonts have been added, see for example <code>PA_SmartText</code>.
+</p>
+
+<p>
+These are plotted in framebuffer mode, and allows for fonts of different sizes and, in a given font, for characters themselves of different sizes (variable width). PAlib offers by default five different font sizes, numbered 0 to 4, starting from characters 4 or 5 pixels wide and tall (probably too small to be readable without efforts) to far bigger fonts.
+</p>
+
+<p>
+Last choice with these framebuffer-based fonts is the color depth they use. They can be either in 16 colors only, for better speed and lower memory footprint (see <code>PA_16cText</code>). Or they may have a 8-bit color depth, to benefit from 256 colors and from the possibility of being rotated by the hardware of +Pi/4 or -Pi/4, so that the DS can be held in portrait mode rather than in landscape mode (see <code>PA_SmartText</code>).
+</p>
+
+<p>
+Variable character spacing leads to better looking and more compact text renderings, at the expense of : speed (such software rendering is a lot slower), simplicity of use (for example with these fonts the background has to be cleared first), and absence of direct printf-like formatting (which would be still slower, though it can done separatly if needed, with <code>sprintf</code> for example).
+</p>
+
+
+<h7>Text rendering primitives</h7>
+
+<p>
+<ul>
+
+        <li><code>void PA_InitText(u8 screenNumber, u8 backgroundNumber)</code> : initializes the Palib module dedicated to text rendering, including a preset 10-color palette. It loads the appropriate font data in VRAM, select the specified screen and backgrounds. That same background will be used for all next text renderings to this screen. Works only in modes 0, 1 and 2. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>void PA_SetTextTileCol(u8 screenNumber, u8 color)</code> : sets the specified color (0 to 9) from preset palette as current text color for next renderings. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+ 
+       <li><code>PA_SetTextCol(u8 screenNumber, u16 r, u16 g, u16 b)</code> : sets the specified RGB color as current text color for all text renderings (next and already rendered ones). Each color component should be in 0..31. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+ 
+       <li><code>void PA_SetTileLetter(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, char letter)</code> : renders the specified letter in specified screen to specified location. [Header and Implementation (macro) : <code>arm9/PA_Text.h</code>]</li>
+
+        <li><code>u16 PA_OutputSimpleText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text)</code> : renders the specified C-string (null terminated) in specified screen to specified location, after having removed any previous text that would be already in the target location. Returns the number of letters rendered. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>void PA_OutputText(u8 screenNumber, u16 tileAbscissa, u16 tileOrdinate, const char * text, ...)</code> : renders the specified C-string, respecting a specified printf-like format, in specified screen, after having removed any previous text that would be in the target location. Manages the extra variable-length parameters a bit like printf : %s to output another string, %d to output a value, %fX to output a float with X digits, \n to go to the next line, %cX to choose one of the 0..9 colors from the preset palette. Here's the API example :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+PA_OutputText(0, 0, 1, "My name is %s and I have only %d teeth", "Mollusk", 20);
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+ Far richer than <code>PA_OutputSimpleText</code>, but quite slower. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+ 
+        <li><code>u32 PA_BoxText(u8 screenNumber, u16 basex, u16 basey, u16 maxx, u16 maxy, const char *text, s32 limit)</code> : renders the specified C-string so that it fits in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), using word-wrapping. No more than <code>limit</code> characters will be rendered. [Header : <code>arm9/PA_Text.h</code>; Implementation : <code>arm9/PA/PA_TextSpecial.c</code>]</li>
+
+        <li><code>u32 PA_BoxTextNoWrap(u8 screenNumber, u16 basex, u16 basey, u16 maxx, u16 maxy, const char *text, u32 limit)</code> : renders the specified C-string so that it fits in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), even by cutting words (no word-wrapping). No more than <code>limit</code> characters will be rendered. [Header : <code>arm9/PA_Text.h</code>; Implementation : <code>arm9/PA/PA_TextSpecial.c</code>]</li>
+
+        <li><code>void PA_ClearTextBg(u8 screenNumber)</code> : clears all text tile entries in the map, resets the print states [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>void PA_InitCustomTextEx(u8 screenNumber, u8 bg_select, void *tiles, text)</code> : initializes the font module with specied custom font, made thanks to PAGfx. <code>text</code> is a symbol name corresponding to the filename of the font image converted with PAGfx. [Header and Implementation (macro) : <code>arm9/PA_Text.h</code>]</li>
+
+        <li><code>void PA_ShowFont(u8 screenNumber)</code> : displays the full font being currently, useful for debugging purposes [Header and Implementation (macro) : <code>arm9/PA/PA_Text.c</code>]</li>
+ 
+        <li><code>s16 PA_SmartText(u8 screenNumber, s16 basex, s16 basey, s16 maxx, s16 maxy, char* text, u8 color, u8 size, u8 transp, s32 limit)</code> : renders the specified C-string so that it fits in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), using word-wrapping and a <b>variable-width</b> font on an 8 bit background (see <code>PA_Init8bitBg</code>). <code>color</code> is the color index in the palette (0..255). <code>size</code> is the font size and ranges from 0 (really small) to 4 (pretty big). No more than <code>limit</code> characters will be rendered. <code>transp</code> will clear the text location before rendering if equal to zero, will render on top of previous content it if one, will not render anything but count the letters if two, will rotate of Pi/4 the text if three, of -Pi/4 if four. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>s16 PA_CenterSmartText(u8 screenNumber, s16 basex, s16 basey, s16 maxx, s16 maxy, char* text, u8 color, u8 size, u8 transp)</code> : renders the specified C-string so that it fits <b>centered</b> in the specified box (whose upper-left corner is (basex, basey), lower-right corner being (maxx,maxy)), using word-wrapping and a <b>variable-width</b> font on an 8 bit background (see <code>PA_Init8bitBg</code>). <code>color</code> is the color index in the palette (0..255). <code>size</code> is the font size and ranges from 0 (really small) to 4 (pretty big). No more than <code>limit</code> characters will be rendered. <code>transp</code> will clear the text location before rendering if equal to zero, will render on top of previous content it if one, will not render anything but count the letters if two, will rotate of Pi/4 the text if three, of -Pi/4 if four. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>void PA_8bitCustomFont(bit8_slot, bit8_fontName)</code> : adds a custom font to the 8-bit font system. The specified font must have been converted with PAGfx. The 0-4 font slots are set by PAlib (but may be reset if needed), whereas the 5-9 slots are left free for the user. [Header and Implementation (macro) : <code>arm9/PA_Text.h</code>]</li>
+
+        <li><code>void PA_InitTextBorders(u8 screenNumber, u8 x1, u8 y1, u8 x2, u8 y2)</code> : defines a text box with borders, so that primitives for box font rendering can be used in it. Up to one such box can be used. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_TextSpecial.c</code>]</li>
+
+        <li><code>void PA_EraseTextBox(u8 screenNumber)</code> : erases the text in the text box defined thanks to <code>PA_InitTextBorders</code>. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_TextSpecial.c</code>]</li>
+
+        <li><code>u32 PA_SimpleBoxText(u8 screen, const char *text, u32 limit)</code> : renders the specified C-string so that it fits in the previously initiliazed textbox, using word-wrapping. No more than <code>limit</code> characters will be rendered. Same as <code>PA_BoxText</code>, but using text borders already defined. [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+        <li><code>void PA_ClearTextBg(u8 screenNumber)</code> : clears all text tile entries in the map, resets the print states [Header : <code>arm9/PA_Text.h</code>; Implementation: <code>arm9/PA/PA_Text.c</code>]</li>
+
+</ul>
+</p>
+
+<p>
+Text output primitives taking an argument for size (text length) are useful to perform per-character progressive typing, by incrementing this size at each VBL for example. One has to ensure with boxed text that the string is not too long : its size must not be higher than <code>(maxx - basex)*(maxy - basey)</code>.
+</p>
+
+<p>
+Colored texts can be rendered per letter (see the <code>%cX</code> format switch with primitives like <code>PA_OutputText</code>) or per-string (see <code>PA_SetTextTileCol</code>). In all cases the color definition of a palette index can be redefined, see <code>PA_SetTextCol</code>.
+</p>
+
+<p>
+Other functions include <code>PA_CompareText</code> (to compare two strings), <code>PA_CopyText</code> (to copy one string into another, <code>PA_Print</code> (to print text without specifying a location), <code>PA_PrintLetter</code> (same thing for one letter instead of a text). There are some special effects for font rendering, defined in <code>PA_OutputTextSpecialX</code>, with X in 0..5. 
+</p>
+
+<p>
+One may use <code>PAFont</code> to create custom fonts, see this <a href="http://www.palib.info/wiki/doku.php?id=day3#custom_font section" target="_blank">section</a> of PAlib tutorial. Another more recent tool is <a href="http://palib.info/forum/modules/newbb/viewtopic.php?viewmode=flat&type=&topic_id=3108&forum=10" target="_blank">dsFont</a>.
+</p>
+
+<p>
+A PAlib text tutorial can be found <a href="http://www.palib.info/wiki/doku.php?id=day3" target="_blank">here</a>, and the associated API for text output is <a href="http://www.palib.info/Doc/PAlibDoc Eng/_p_a___text_8h.html" target="_blank">here</a>.
+</p>
+
+
+<h6>Input device management</h6>
+
+<h7>Keys</h7>
+<p>
+Button states can be read from the <code>Pad</code> structure. Here K will be the name of a key, in {Left, Right,Up,Down,A,B,Select,Start,X,Y,L,R}. For each key, both the current state (in <code>Pad.Held.K</code>) and the transitional state (in <code>Pad.Released.K</code> and <code>Pad.Newpress.K</code>) will be automatically updated (as boolean values) during the VBL (once per frame), to know respectively if this key is currently pressed, if it just went from pressed to released, or from released to pressed. Transitions last just for one frame.
+</p>
+
+<p>
+For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#pad" target="_blank">pad tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keys.html" target="_blank">Key input system</a> section of the API. Main header is <code>arm9/PA_Keys.h</code>, main implementation is <code>arm9/PA/PA_Keys.c</code>.
+</p>
+
+
+<h7>Touchscreen</h7>
+<p>
+The stylus is managed in a very similar way to the keys : it is updated once per frame, and in <code>Stylus.Held</code>, <code>Stylus.Released</code> and <code>Stylus.Newpress</code> one can know whether it is up or down, and if it is just after a transition or if it has been already so for a while.
+</p>
+
+<p>
+For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#stylus" target="_blank">stylus tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keys.html" target="_blank">Key input system</a> section of the API. Main header is <code>arm9/PA_Keys.h</code>, main implementation is <code>arm9/PA/PA_Keys.c</code>.
+</p>
+
+<h7>Virtual keyboard</h7>
+<p>
+This is in my opinion one of the most interesting features of Palib. This module displays a keyboard bitmap on the touchscreen and allows the stylus to select keys, so that text can be input in a rather convenient way.
+</p>
+
+<p>
+After having been set-up in a free background thanks to <code>PA_InitKeyboard</code>, the keyboard can be smoothly scrolled to a given position when created with <code>PA_KeyboardIn</code> : it slides in from the bottom, and can slide out with <code>PA_KeyboardOut</code>. Its two colors can be changed thanks to <code>PA_SetKeyboardColor</code> (as for the background color, one should use <code>PA_SetBgPalCol</code>. <code>PA_CheckKeyboard</code> allows finally to read the characters being hit : any non-null return code designates directly the newly read key. 
+</p>
+
+<p>
+The keyboard pictures (two of them are necessary, to show the available characters depending on the shift key being selected on not) are located in <code>lib/arm9/PA/keyboard.bmp</code>, which allows for skinnable keyboards (see also the <code>PA_InitCustomKeyboard</code> macro).
+</p>
+
+<p>
+For further informations, refer to PAlib <a href="http://www.palib.info/wiki/doku.php?id=day3#keyboard" target="_blank">pad tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___keyboard.html" target="_blank">Keyboard</a> section of the API.
+</p>
+
+<h7>Hand-written shape recognition</h7>
+<p>
+This is another quite amazing feature : powerful and really easy to use. Priceless for games needing to draw specific shapes (ex : runes) or as an alternative to the virtual keyboard.
+</p>
+
+<p>
+Shape recognition can be used either to input <a href="http://www.palib.info/wiki/doku.php?id=day3#pa_graffiti" target="_blank">PA Graffiti</a> (standard shapes that map to letters) or custom-made patterns.
+</p>
+
+<p>
+For PA Graffiti input, one just has to call each frame <code>PA_CheckLetter</code>, and everything will behave like in the case of <code>PA_CheckKeyboard</code>, when the virtual keyboard was used.
+</p>
+
+<p>
+For recognition of custom-made shapes, one just has to first disable the PA Graffiti input (thanks to <code>PA_UsePAGraffiti(0)</code>), then to associate shapes to letters before reading recognized symbols thanks to <code>PA_CheckLetter</code> once again. Quite impossible to be simpler.
+</p>
+
+<p>
+But how can such a custom-shape be described ? Just draw it yourself on the touchscreen, and make it be read by the system with <code>PA_RecoShape</code>. It will return an encoded string describing the shape you drew. You then just have to store it in your program, and register it thanks to <code>PA_RecoAddShape</code> so that the module will be able to recognize this shape afterwards.
+</p>
+
+<p>
+In the <code>PA_RecoInfo</code> structure, which is updated when the stylus is just released, some other informations are stored : the total length in pixels of the drawing, the starting and ending points, and a bounding box of the drawing, the smallest upright rectangle that encloses the shape.
+</p>
+
+<p>
+I found this feature really impressive indeed.
+</p>
+
+<p>
+For further informations on shape recognition, refer to the dedicated section in <a href="http://www.palib.info/wiki/doku.php?id=day3#shape_recognition" target="_blank">PAlib tutorial</a> and to the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___reco.html" target="_blank">Shape Recognition</a> section of the API.
+</p>
+
+
+
+<h6>Sprite management</h6>
+
+
+<h7>Sprite basics</h7>
+<p>
+Sprite palettes can be loaded thanks to <code>PA_LoadSpritePal</code>, then sprites using them can be created with <code>PA_CreateSprite</code>, which sets the number of the sprite, thus its priority in its background. Once done they can be moved, either thanks to the stylus with <code>PA_MoveSprite</code> (touching the sprite will link its center to the stylus and make it follow its movements until released, see also <code>PA_SpriteTouched</code>), or, more frequently, with the very simple <code>PA_SetSpriteXY</code> (or <code>PA_SetSpriteX</code>, or <code>PA_SetSpriteY</code>).
+</p>
+
+<p>
+One just has not to forget they set the upper-left corner of the sprite, whereas often it is moved center-wise, and that coordinates are wrapped around. Reciprocally sprite positions can be read, thanks to <code>PA_GetSpriteX</code> and <code>PA_GetSpriteY</code>.
+</p>
+
+<p>
+As opposed to the previous per-sprite priority in a given background (default one is background #0), a sprite can be associated with the background having another (lower) priority thanks to <code>PA_SetSpritePrio</code>.
+</p>
+
+<h7>Rotation &amp; scaling</h7>
+<p>
+Sprites can be as well rotated and scaled (both from their center point), when associated to one of the 32 rotsets. (0..31). <code>PA_SetSpriteRotEnable</code> allows to associate a sprite to a rotset, knowing that multiple sprites can share the same rotset, if they are to be rotated and scaled the same way.
+</p>
+
+<p>
+Then rotsets can be modified, with regard to scale, zoom and both by, respectively, <code>PA_SetRotsetNoZoom</code>, <code>PA_SetRotsetNoAngle</code> and <code>PA_SetRotset</code>. The specified angles are in 0..511, counter-clockwise. The zoom factors can be 256 (normal size), 512 (half size), 128 (double size), and can be set independently for abscissa and ordinates. Finally a sprite can be detached from its rotset thanks to <code>PA_SetSpriteRotDisable</code>.
+</p>
+
+<p>
+When rotated and/or scaled up, the sprite might exceed the rectangular size declared at its creation (ex : 32x32). In this case it will be clipped (exceeding parts will be cut), unless <code>PA_SetSpriteDblsize</code> is used to double the dimensions of its clipping rectangle (hence quadrupling the clipping area). One must then take into accound the fact that it will offset the sprite position, as the sprite is always located relatively to the upper left corner of its clipping box.
+</p>
+
+<h7>Flipping, mosaïc, alpha-blending</h7>
+
+<p>Sprites can be flipped horizontally (<code>PA_SetSpriteHflip</code>) and/or vertically (<code>PA_SetSpriteVflip</code>). The mosaïc effect can be used on them, thanks to <code>PA_SetSpriteMosaic</code> first, then <code>PA_SetSpriteMosaicXY</code> (the specified mosaïc settings will be common to all sprites having the mosaïc effect enabled). The same stands for transparency (alpha-blending, whose level ranges from 0 for transparent to 15 for the default, solid) : all sprites having it enabled (thanks to <code>PA_SetSpriteMode</code>), once the option is activated on the backgrounds (with <code>PA_EnableSpecialFx</code>), share the same transparency level (set by <code>PA_SetSFXAlpha</code>) 
+</p>
+
+<h7>Frames &amp; animations</h7>
+<p>
+Frames are basically animation steps for a given sprite. All such frames should be put on a tall unique image, each being on top of the other after the conversion (as a consequence all the frames have to share the same palette). The sprite itself would be created as if it was made of only one image, then <code>PA_SetSpriteAnim</code> would be used to select one of the sprite frames, which will be the sprite current bitmap. Note that selecting a new frame triggers the copy of this frame to tile memory, an operation that takes some resources and may slow down an application should too many frames be replaced.
+</p>
+
+<p>
+Thus frames allow to choose directly, for each sprite, which of its multiple images will to be displayed. But it is still up to the developer to manage the overall animation, with regard to frame selection and timing.
+</p>
+
+<p>
+Animations push one step further the process : they automate the frame management. The developer just has to specify the starting frame, the ending frame, the pace (animation speed, expressed in frames per second) to
+<code>PA_StartSpriteAnim</code>. Then at this function return, the animation will start and perform an infinite looping, until either <code>PA_StopSpriteAnim</code> or <code>PA_PauseSpriteAnim</code> is called, respectively to stop or pause the animation.
+</p>
+
+<p>
+To spare some memory, symetrical frames can be included only in one version, using the hardware-accelerated <code>PA_SetSpriteHflip</code> and <code>PA_SetSpriteVflip</code> to flip them horizontally and/or vertically just before their animation step comes.
+</p>
+
+<p>
+Lastly, one may choose, thanks to the two extra options offered by <code>PA_StartSpriteAnimEx</code>, the animation type, i.e. whether the frames are displayed in a basic loop (<code>ANIM_LOOP</code>, frame #1 to #n, then #1 to #n, etc.), in a back and forth way (<code>ANIM_UPDOWN</code>, frame #1 to #n, then #n to #1, then #1 to #n, etc.) or just once (<code>ANIM_ONESHOT</code>). The number of cycles can be chosen with the second extra option, with <code>-1</code> for infinite cycling, and a positive number to set the number of cycles to that value. Note that with <code>ANIM_UPDOWN</code>, going back and forth uses two cycles.
+</p>
+
+<h7>Virtual double screen : dual sprites</h7>
+
+<p>
+This features allows to manage both screens as if they formed a single double-sized one : ordinates ranges from 0 to 383 (starting from the top-left pixel of the top screen), instead of 0 to 191 (twice).
+</p>
+
+<p>
+This can be obtained by using the <code>Dual</code> prefix (ex : <code>PA_DualCreateSprite</code>, <code>PA_DualSetSpriteXY</code>, <code>PA_DualSetSpriteRotEnable</code>, etc.). In this case no screen parameter is to be specified, as there is only one logical screen. 
+</p>
+
+<p>
+The hinge space between the two screens can be abstracted (as if it did not exist, the two screen being directly one on top of the other) or, on the contrary, managed as if it were a hidden part of the overall logical screen. For the first case <code>PA_SetScreenSpace</code> would be called with a zero parameter, whereas on the second case the default value, 48 pixels, could be kept, or extended to 64 pixels.
+</p>
+
+<h7>Sprite collisions</h7>
+<p>
+One thing is to be able to move sprites around, another one is to detect when they collide. PAlib provides two ways of detecting collisions : circular or rectangular bounding boxes, explained <a href="http://www.palib.info/wiki/doku.php?id=day6#sprite_collisions" target="_blank">here</a>. If neither of them is pixel-perfect, they are most of the time quite sufficient.
+</p>
+
+<p>
+Circular detection is obtained thanks to <code>PA_Distance</code>, to compare the (square) distance between the centers of the (circle) bounding-boxes to the (square of the) sum of their radius.
+</p>
+
+<p>
+Rectangular detection is obtained thanks to up to four comparisons, without need of a specific function.
+</p>
+
+<p>
+Most tile-based games should implement a collision map, a 2D array of boolean values that tells if at a given tile location [p,q] the corresponding tile is walkable for example.
+</p>
+
+<p>
+For further informations on collision with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day6#sprite_collisions" target="_blank">tutorial</a>.
+</p>
+
+
+
+
+<h6>Background management</h6>
+
+<h7>Three types of backgrounds</h7>
+<p>
+PAlib makes use mainly of 256-color tiled backgrounds (up to four of them, named bg0..bg3; tiled background #0, i.e bg0, will be drawn on top of #1, etc.), with their traditional tile maps and tilesets. 8-bit or 16-bit framebuffer backgrounds are less used (using respectively 3/8 and 3/4 of a 128-kilobytes VRAM bank, up to one per screen), and rotation backgrounds (either regular or ERB, up to two per screen) are even less used. 
+</p>
+
+<h7>Tiled backgrounds</h7>
+<p>
+Tiled backgrounds can be loaded directly thanks to <code>PA_EasyBgLoad</code> or <code>PA_LoadTiledBg</code> (including their palette), if they have been produced by PAGfx (see this <a href="http://www.palib.info/wiki/doku.php?id=day5#converting" target="_blank">section</a> of PAlib tutorial). Otherwise <code>PA_LoadSimpleBg</code> and <code>PA_LoadBgPal</code> should be used, for example with data (maps, palettes, tiles) produced by gfx2gba. With both tools, .h and .c files can be produced and included in the executable, which is one of the ways to embed resources (the simplest, though with limitations).
+</p>
+
+<p>
+As PAGfx makes an optimized use of tiles, their index may vary, and one should better read them from the map directly, if possible. Once a tile index is known, any map position can be set to the corresponding tile thanks to <code>PA_SetMapTileEx</code>.
+</p>
+
+
+<h7>Tiled background scrollings</h7>
+<p>
+Classical scrollings can be achieved thanks to <code>PA_BGScrollXY</code> or <code>PA_EasyBgScrollXY</code>, both of which specifies the position the background should scroll to (both have counterparts to scroll only horizontally or vertically, ex : <code>PA_BGScrollX</code>). Backgrounds are wrapped around, but on 256 pixel boundaries : if your background is, say, 256+X pixel wide, there will be a 256-X blank space until the 512 pixel boundary allows it to wrap.
+</p>
+
+<p>
+PAlib introduced special tiled backgrounds named <em>LargeMap</em>, which can exceed the 512x512 tile size offered by the hardware. To do so, during the scrolling, PAlib loads dynamically next tiles. Such backgrounds should be loaded with <code>PA_LoadPAGfxLargeBg</code>, and scrolled with <code>PA_LargeScrollXY</code> (not too slow, but does not wrap around) or with <code>PA_InfLargeScrollXY</code> (wraps around, but is quite slow).
+</p>
+
+<p>
+Parallax scrollings (where different backgrounds scroll at different speeds, the closest the fastest to create a 3D/depth effect) are implemented as well : use for example <code>PA_InitParallaxY</code> to initialize a vertical parallax scrolling and then <code>PA_ParallaxScrollY</code> to perform the actual scrolling. LargeMap backgrounds can be parallax scrolled too.
+</p>
+
+<h7>8-bit &amp; 16-bit framebuffer backgrounds</h7>
+<p>
+They take a lot of memory, their rendering is slow, but : they allow to display pictures in common formats (with PAlib : 16-bit .jpeg, 8/16-bit .gif, 16-bit .bmp, 8/16-bit .raw are supported) without prior conversion, and/or to easily draw shapes with the stylus, and 16-bit framebufferst got rid of the palette (as many colors as pixels, thanks to direct colors).
+</p>
+
+<p>
+Images for framebuffers must be 256×192 to avoid their being distorted. PAGfx should be used for them. For 8-bit framebuffers, use <code>PA_Init8bitBg</code> to setup the background mode, <code>PA_LoadNormalBgPal</code> to load the palette and <code>PA_Load8bitBitmap</code> to load the bitmap itself. For 16-bit framebuffers, no palette is needed, thus use just <code>PA_Init16bitBg</code> to setup the background mode and <code>PA_Load16bitBitmap</code> to load the bitmap itself. 
+</p>
+
+<p>
+Images can be included from header files (automatically produced from images found in the <code>data</code> directory) and displayed with, for example, <code>PA_LoadGif</code> and <code>PA_LoadGifXY</code>.
+</p>
+
+
+<h7>Rotation background</h7>
+<p>
+After <code>PA_SetVideoMode</code> is used to set an appropriate video mode (up to two rotating backgrounds can be used at once, they can be wrap-around or not), these backgrounds (and their palettes) must be loaded with <code>PA_LoadPAGfxRotBg</code> (if produced by PAGfx), before being rotated (around any given point) and/or scaled and/or moved with <code>PA_SetBgRot</code>.<code></code><code></code>
+</p>
+
+<p>
+For further informations on backgrounds with PAlib, refer to the dedicated section in its <a href="http://www.palib.info/wiki/doku.php?id=day5" target="_blank">tutorial</a> and to the following sections  of the API : <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_tiles.html" target="_blank">Normal Tiled Background Modes</a>, <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___bg_rot.html" target="_blank">Rotating Backgrounds</a> and <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___tile_dual.html" target="_blank">Background Modes on two Screens</a>.
+</p>
+
+<h6>3D</h6>
+
+<p>
+Even if there is a pseudo-3D video mode (the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___mode7.html" target="_blank">Mode 7</a>, that can be used for example to implement interesting special effects), there is a real 3D subsystem on the DS, that can be used with PAlib.
+</p>
+
+<p>
+No need any more to define <code>USE_3D</code> in PA_Config.h. One just has to use <code>PA_Init3D</code> to initialize the 3D subsystem on the bottom screen (use <code>PA_SwitchScreens</code> to target the top screen). Then <code>PA_Init3DDrawing</code> should be used to define where the camera is and in which direction it is looking at.
+</p>
+
+<p>
+To see something, at least one object is to be created in an adequate location. First the current transform matrix should be saved thanks to <code>glPushMatrix</code>, then the object should be defined (ex : with <code>PA_3DBox</code>), then the saved trasnform matrix should be restored (<code>glPopMatrix</code>) before requesting the rendering to take place (<code>glFlush</code>).
+</p>
+
+<p>
+PAlib's current 3D layer uses floating-point coordinates, which is somewhat a performance-killer. <a href="www.khronos.org/opengles/" target="_blank">OpenGL ES</a> version for platforms with no hardware floating-point support (FPU-less, hence using fixed-point) could be use instead. Some tricks couls allow to have 3D on both screens "simultaneously", but it would be rather limited.
+</p>
+
+<p>
+More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day10" target="_blank">3D section</a> of the PAlib tutorial and in the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___d.html" target="_blank">related section</a> in the API documentation.
+</p>
+
+<h6>Movie playback</h6>
+
+<p>
+First the original movie has to be converted from the .avi to various .vid files and a header. Then a template should be used to include the movie in a GBFS filesystem before playing it with <code>PA_LoadMultiVidGBFS</code>, after having initialized GBFS (<code> PA_InitGBFS</code>) and the adequate video mode (either <code>PA_Init16bitBg(1, 3)</code> or <code>PA_Init16bitBg(0, 3)</code>).
+</p>
+
+<p>
+More informations about movie playback can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day11" target="_blank">Video section</a> of the PAlib tutorial.
+</p>
+
+<h6>Sound</h6>
+<p>
+There are two kinds of PAlib sound output : raw output and MOD playback, which are rather complementary. Both need the sound system to be initialized, thanks to a call to <code>PA_InitSound</code>. There are 16 hardware channels that can playback simultaneously, by default 8 of which are reserved by PAlib for raw output, the remaining 8 being used by the MOD player.
+</p>
+
+<p>
+Raw output is like reading a .wav file : easy and perfect for special effects, but not adequate for musics due to the very significant size of these longer sounds. When having a sound to be output on the DS, it must be converted first. An appropriate target format could be mono 8-bit signed samples at 11025 Hz (but stereo sound and higher sample rate are supported). To play that sound on the DS, once the sound subsystem is initialized, use simply <code>PA_PlaySimpleSound</code>. One of the 8 (0..7) hardware channels reserved by PAlib should be then specified.
+</p>
+
+<p>
+On the contrary, MOD is perfect for music playback, since musics are encoded in very small sizes. Once the sound system is initialized, one just has to use <code>PA_PlayMod</code> to play a MOD file, that should not have more than 8 channels.
+</p>
+
+<h6>Filesystem</h6>
+<p>
+PAlib includes a filesystem named PAFS (<em>PAlib File System</em>), although the older <a href="http://www.pineight.com/gba/#gbfs" target="_blank">GBFS</a> filesystem could be used too (PAlib provides a <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___g_b_f_s.html" target="_blank">GBFS</a> wrapper for backward compatibility). PAFS allows to read files from the ROM, or directly from the RAM (embedded filesystem in the executable), which allows to use it with WMB and emulators as well. Running from RAM implies a maximum total size for the executable of 4 megabytes, and to specify the RAM size you want to reserve for the user filesystem.
+</p>
+
+<p>
+<a href="#libfat" target="_blank">libfat</a> is quite an interesting alternative to the less commonly used PAFS. PAlib offers a few helper functions to be with with libfat (see <code>arm9/PA_IO.h</code> and <code>arm9/PA/PA_IO.c</code>).
+</p>
+
+<p>
+First the PAFS image must be created with PAFS.exe, by appending files to the archive. Then various primitives allow to initialize the filesystem module on the DS (either from slot-2 thanks to <code>PA_FSInit</code> or from RAM thanks to <code>PA_FSRamInit</code>) and to read/write files and directories. For ROM, see the <code>PA_PAFSFile</code> and <code>PA_FSSys</code> array structures. For RAM, see <code>PA_FSRam</code> (to define the allocated size in RAM for the filesystem) and <code>PAFSStart</code> to read the RAM instead of the ROM.
+</p>
+
+<p>
+More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day9" target="_blank">PAFS section</a> of the PAlib tutorial.
+</p>
+
+
+<h6>Wifi communications</h6>
+<p>
+<a href="http://www.palib.info/hosted/delfare/PAlibwifi.zip" target="_blank">PAlibwifi</a> is used for this. The corresponding header file (<code></code>) and library (<code>libdswifi9r.a</code>, i.e. <code>LIBSPA := -lpa9 -ldswifi9r</code>) should be specified.
+</p>
+
+<p>
+Initialization of the library should be done thanks to <code>PA_InitWifi</code>, and connection with <code>PA_ConnectWifiWFC</code>, before a socket connected to a remote host can be created with <code>PA_InitSocket</code>. Then data can be sent and received, thanks to <code>send</code> and <code>recv</code>. <code>PA_GetHTTP</code> allows to retrieve a file thanks to the HTTP protocol. The IP address of the DS, as seen by the outside (Internet), can use <code>PA_GetHTTP</code> to call a server returning the IP of the client.
+</p>
+
+<p>
+More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day20" target="_blank">Data Transfer and Multiplayer</a> section of the PAlib tutorial.
+</p>
+
+<h5>Building with PAlib</h5>
+<p>
+At compile time, PAlib overall headers must be included : <code>#include &lt;PA9.h&gt;</code> for the ARM9, with the <code>-IPath/To/PAlib/include/nds</code> command-line switch. A PAlib general header will in turn include all the specialized headers, like <code>PA_Interrupt.h</code>.
+</p>
+
+<p>
+At link time, the PAlib (static) library <code></code> must be specified. As it depends on libdns, following switches should be used : <code>-LPath/To/PAlib/lib -lpa9 -LPath/To/Libnds/lib -lnds</code> for the ARM9.
+</p>
+
+
+<h5>Installing PAlib</h5>
+<p>
+To install PAlib, follow <a href="http://www.palib.info/wiki/doku.php" target="_blank">PAlib's tutorial</a> or use LOANI.
+</p>
+
+
+<h5>Alternate choices to PAlib</h5>
+<p>
+There are still many other libraries, but they are less used. <a href="http://libsdl.org/" target="_blank">SDL</a> has been <a href="http://gpf.dcemu.co.uk/ndsSDL.shtml" target="_blank">ported to the DS</a>. This abstraction layer is very useful to port (often PC) applications to lesser known platforms such as the homebrew-enabled DS, but in our case a few issues remains : the DS SDL implementation is not complete, it uses a lot of memory with regard to what is available, and a lot of hardware acceleration would be bypassed because of the layer. SDL may be here a way of starting a port, even though finally the game ought not to rely on it, for performance reasons.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="building"></a>
+<h3>Building your first DS program</h3>
+
+<p>
+Now has come the time for a first test. LOANI users should first source the <code>LOANI-installations/OSDL-environment.sh</code> file to update their environment : <center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+. OSDL-environment.sh
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+ 
+ 
+<p>
+Then let's build some tests : go for example in <code>devkitPro/PAlibExamples/Input/Keyboard/Keyboard</code> and just execute <code>make</code>. It will read the <code>Makefile</code> and generate, from the sources (in <code>source/main.c</code>), the corresponding ROM : <code>Keyboard.ds.gba</code>, <code>Keyboard.nds</code> and
+<code>Keyboard.sc.nds</code> (all occupying around 95 ko). Refer to our section about <a href="#romformats">ROM formats</a> for a reminder of their respective role.
+</p>
+
+<p>
+Something similar to this should occur :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+&gt; make<br>
+main.c<br>
+arm-eabi-g++ -g -mThumb-interwork -mno-fpu -LYourLOANIDir/LOANI-0.5/LOANI-installations/devkitPro/PAlib/lib -specs=ds_arm9.specs main.o -LYourLOANIDir/LOANI-0.5/LOANI-installations/devkitPro/PAlib/lib -lpa9 -LYourLOANIDir/LOANI-0.5/LOANI-installations/devkitPro/libnds/lib -lfat -lnds9 -ldswifi9 -o build.elf<br>
+Nintendo DS rom tool 1.33 - Jan 27 2007 16:00:04<br>
+by Rafael Vuijk, Dave Murphy,  Alexei Karpenko<br>
+built ... Keyboard.ds.gba<br>
+dsbuild 1.21 - Jan 28 2007<br>
+using default loader<br>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>
+To decrypt a bit, the Makefile will try to rebuild target <code>$(OUTPUT).ds.gba</code>, whose name is deduced from the current directory (here, Keyboard). To build <code>Keyboard.ds.gba</code>, <code>Keyboard.nds</code> is needed, which in turns implies <code>Keyboard.bin</code> exists, then <code>Keyboard.elf</code>, then <code>$(OFILES)</code>. This variable contains all the object files needed, deduced from the source code (<code>*.c, *.cpp</code>) but also from the resources to be embedded (ex : <code>*.jpg, *.bmp</code>, etc.).
+</p>
+
+<p>
+Thus the first thing is to obtain these object files. The C++ compiler for ARM (<code>arm-eabi-g++</code>) is called to generate an object file, main.o, for the ARM9, from main.c. Have a look at this file, this is the main one you are expected to write on the future. 
+</p>
+
+<p>
+Once all the object files are created, they can be aggregated by the linker (here, <code>arm-eabi-g++</code> again) in <code>Keyboard.elf</code> (ELF for <code>External Link Format</code>).
+</p>
+
+<p>
+More precisely main.o, that provides the <code>main()</code> function, will be linked (statically; no dynamic linking available on the DS) with PAlib (<code>-lpa9</code> refers to <code>libpa9.a</code>, 9 for the ARM9), which itself uses some helper libraries : libfat, libnds9, dswfi9, even if simple this example do not use them all. Linking with unused libraries will not make your ROM bigger : they will not be included if really not used.
+</p>
+
+<p>
+<code>Keyboard.elf</code> can then be converted in <code>Keyboard.bin</code> by <code>arm-eabi-objcopy</code>, whose role is to copy and translate object files from a given format to another, here stripping extra informations not needed and not handled by the toolchain.
+</p>
+
+<p>
+From <code>Keyboard.bin</code>, <code>Keyboard.nds</code> (at last, a ROM file !) will be generated thanks to <code>devkitARM/bin/ndstool</code>, whose role is to combine the two executables and the data resources into a single file ready for DS distribution. Note that <code>Keyboard.bin</code> contains everything but the executable for the ARM7. This one is retrieved here from a precompiled default version, a kind of template, located in <code>arm7.bin</code>.
+</p>
+
+<p>
+Finally the <code>devkitARM/bin/dsbuild</code> executable is used to generate <code>Keyboard.ds.gba</code> from <code>Keyboard.nds</code>. This involves adding a slot-2 loader. 
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="testing"></a>
+<h3>Testing your first DS program</h3>
+
+<p>
+You have two options here : either the ROM must come one way or another to the DS (transfer), or the DS must come to the ROM and the PC (emulation). 
+</p>
+
+
+<h4>Transferring</h4>
+<p>
+The most obvious method is to transfer your ROM, here <code>Keyboard.sc.nds</code>, to your DS : copy it to, say, your microSD card, insert that card in your DS and run the ROM, for example thanks to the SuperCard menu. That should work.
+</p>
+
+<p>
+This method has however two drawbacks. The minor one is that on some computers, notably laptops like mine, Linux support for SD card is still quite limited, and often you end up with mounting, reading or writing problems. The major drawback is, even if the SD are well recognized, it becomes soon tiedous to swap the card again and again between its adapter on PC and the DS. For most people, the developing process requires too frequent tests to do so.     
+</p>
+
+<p>
+Using a Wifi transfer, preferably thanks to a router, could do the trick, and be more convenient than the card swap. One could use DSLinux for a SSH or FTP transfer followed by a reboot. This is not necessarily the best solution ever though. As for cable (parallel, USB, etc.), as already discussed, they either require soldering efforts or are quite expensive. 
+</p>
+
+
+<a name="emulators"></a>
+<h4>Emulating</h4>
+
+<p>
+The second method for testing your programs is to use an <a href="http://en.wikipedia.org/wiki/Emulator" target="_blank">emulator</a>. This will allow a PC to mimic your DS, so that you can test in-place the (approximated) result of your ROM.
+</p>
+
+<p>
+Though the imitation is not always perfect (sadly, programs may work when emulated, but not on the actual DS device), emulators have progressed a lot. For the Linux user, in decreasing order of interest, one should use :
+<ol>
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+	<li><a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a>, probably the best emulator around, with a very complete and accurate 2D support, a fast improving 3D support, able to run many commercial games. On Linux it should be used with Wine (<code>apt-get install wine</code> for Debian-based distributions). Just <a href="http://nocash.emubase.de/no$gba-w.zip" target="_blank">download</a> it, unzip it, run <code>wine NO\$GBA.EXE</code> and select your .ds.gba file (ex : <code>Keyboard.ds.gba</code>)
+	<center>
+    	<img src="NoCashGBA-screenshot.png" alt="NO$GBA"></img>
+	</center>
+	NO$GBA can provide a source level debugger as well. The colors might seem different from the expected ones due to a kind of DS screen emulation filter. This can be deactivated in <code>Options -&gt; Emulation Setup -&gt; GBA Mode</code> (or press F11) by selecting <code>VGA (poppy bright)</code>
+	</li>
+
+	<li>
+	<p>
+	<a href="http://www.desmume.org/" target="_blank">DeSmuME</a> : probably the fastest of all. Does not support zooming and rotation. There is a <a href="http://desmume.org/?p=19" target="_blank">Linux</a> version and even Debian packages, based on a SDL port. Some people prefer to run the Windows version from Wine . It is one of the few emulators to allow for the reconfiguration of key mappings
+	</p>
+
+	<p>
+	To do so, <a href="http://www.desmume.com/download.htm" target="_blank">download</a> DeSmuME latest stable version, unzip it, and simply run <code>wine NDeSmuME.exe</code>. In the <code>File</code> menu, you can select <code>Open and Execute</code>, and choose,this time, your .nds file (ex : <code>Keyboard.nds</code>). You should then be able to test it immediately
+	<center>
+    	<img src="DeSmuME-screenshot.png" alt="DeSmuME"></img>
+	</center>
+	</p>
+	</li>
+	
+	 
+    <li><a href="http://dualis.1emu.net/" target="_blank">Dualis</a> (not tested). Known to be less accurate but faster than NO$GBA, now unable to manage libfat unless FCSR drivers are used. Maybe a bit too permissive compared to the DS</li>
+	
+    <li><a href="http://spazioinwind.libero.it/linoma/ideas.html" target="_blank">Ideas</a> (not tested). One of the first and only to support 3D and sounds, still true at the time of this writing</li>
+	
+    <li><a href="http://www.ndsemulator.com/nintendo-ds/ensata.htm" target="_blank">Ensata</a> (not tested; illegal material leaked from Nintendo SDK, according to some sources)</li>
+
+    <li>DSEmu, despite its plugin feature, is probably deprecated now (not tested)</li>
+	
+</ol>
+</p>
+
+<p>
+See also the <a href="http://www.ndsemulator.com/" target="_blank">NDSEmulator.com</a> site.
+</p>
+
+
+<p>
+Having the general hardware specifications and the relevant toolchain is not enough to be able to program effectively the DS : there is still additional informations to gather before being able to write full-blown applications for it.
+</p>
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
 
 
 
