@@ -23,8 +23,8 @@
   
   <div class="banner">
   
-    <p><em>General</em> <a href="../../../../common/black.html" onclick="parent.toolbar.location='../../MainMenu.html'">home page</a>
-    <a href="../../../../Map.html">site map</a> <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Homebrew%20for%20Nintendo%20DS">mail us</a></p>
+    <p><em>General</em> <a href="../../../../common/black.html" onclick="parent.toolbar.location='../../../MainMenu.html'">home page</a>
+    <a href="../../../Map.html">site map</a> <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Homebrew%20for%20Nintendo%20DS">mail us</a></p>
 	
   </div><a name="_top_"></a>
   
@@ -259,7 +259,7 @@ Hence, to have access to a DS that can be programmed, one has to circumvent thes
 <h4>A rather cheap and easy solution</h4>
 
 <p>
-Since the DS is not sold with a rewritable storage medium or anything like it (no standard card reader, no USB port, etc.), some specific device is required so that the DS can load homebrew applications. Though one could instead use <a href="http://en.wikipedia.org/wiki/Wireless_Multiboot" target="_blank">WMB</a> (<em>Wireless Multiboot</em>), which is a method to send programs to be run on the DS using a PC with specific Wi-Fi adaptors, this method would not be convenient enough : transferred content would be lost on the DS as soon as it is powered off, a Ralink-compatible Wifi adaptor would be required, the sent applications could not occupy more than 4 megabytes, a hacked firmware would be needed, etc.
+As the DS is not sold with a rewritable storage medium or anything like it (no standard card reader, no USB port, etc.), some specific device is required so that the DS can load homebrew applications. Though one could instead use <a href="http://en.wikipedia.org/wiki/Wireless_Multiboot" target="_blank">WMB</a> (<em>Wireless Multiboot</em>), which is a method to send programs to be run on the DS using a PC with specific Wi-Fi adaptors, this method would not be convenient enough : transferred content would be lost on the DS as soon as it is powered off, a Ralink-compatible Wifi adaptor would be required, the sent applications could not occupy more than 4 megabytes, a hacked firmware would be needed, etc.
 </p>
 
 <p>
@@ -267,7 +267,11 @@ As for me, I intended to have Linux working on my DS, and for that the native 4 
 </p>
 
 <p>
-The best and simplest bet for me was to use, in the slot-1 (the DS-specific one, small and at the top of the console, a.k.a the DS card), a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperKey</a> (a kind of <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a>) as a fake game used to enable the execution of code from the slot-2 (the big one at the bottom, used for <em>Game Boy Advance</em> compatibility, a.k.a. the GBA cartridge). This slot-2 would host a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperCard Lite</a> (note : avoid the rumble series, it does not provide more RAM) which, besides the 32 megabytes of RAM, offers a <b>micro-SD</b> port. It is micro indeed (not mini), and SD stands for <em>Secure Digital</em>.</p>
+The best and simplest bet for me was to use, in the slot-1 (the DS-specific one, small and at the top of the console, a.k.a the DS card), a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperKey</a> (a kind of <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a>) as a fake game used to enable the execution of code from the slot-2 (the big one at the bottom, used for <em>Game Boy Advance</em> compatibility, a.k.a. the GBA cartridge). This slot-2 would host a <a href="http://eng.supercard.cn/products.htm" target="_blank">SuperCard Lite</a> (note : avoid the rumble series, it does not provide more RAM) which, besides the 32 megabytes of RAM, offers a <b>microSD</b> port. It is micro indeed (not mini), and SD stands for <em>Secure Digital</em>.</p>
+
+<p>
+Homebrewers not interested in running Linux on their DS and searching a cheap and well-supported solution may choose the <a href="http://en.wikipedia.org/wiki/Nintendo_DS_storage_devices#R4DS_.26_M3_DS_Simply" target="_blank">R4DS</a>, a slot-1 linker, using also microSD cards. 
+</p>
 
 <p>
 I bought both the SuperKey and the SuperCard Lite (black version) from <a href="http://www.fl-games.com/" target="_blank">FL-games</a> for 65 euros (shipping included) and was quite happy of it (no compatibility issue between the two cards to be afraid of).
@@ -291,11 +295,11 @@ Here is a view of a bare DS running the default firmware (hence the mandatory he
 
  
 <p>
-Last be not least, one should have at least one micro-SD card, I bought a 2 GB Kingston one from <a href="http://www.pc-look.com/" target="_blank">PC-look</a> for 28 euros, shipping included. My laptop had a SD reader/writer (well, Ubuntu could not use it properly but it is another story), so no real need to buy anything else. Separate USB reader/writer are quite inexpensive anyway. Check that your micro-SD card is sold with a SD adapter, so that the actual tiny micro-card can fit in a basic SD reader. 
+Last but not least, one should have one micro-SD card at least, I bought a 2 gigabytes Kingston one from <a href="http://www.pc-look.com/" target="_blank">PC-look</a> for 28 euros, shipping included. My laptop had a SD reader/writer (well, Ubuntu could not use it properly but it is another story), so there was no real need to buy anything else. Separate USB reader/writer are quite inexpensive anyway, and it is hard to buy a R4DS with no such card reader/writer included. Check that your micro-SD card is sold with a SD adapter, so that the actual tiny micro-card can fit in a basic SD reader. 
 </p>
 
 <p>
-To use your micro-SD, you should first format it in <b>FAT</b> (i.e. FAT16, not FAT32), as factory settings are not reliable in all cases, or not the expected ones. Formatting can be done both from Windows or from Linux. 
+To use your micro-SD, you should first format it in <b>FAT</b> (i.e. FAT16, not FAT32), as factory settings are not reliable in all cases, or are not the expected ones. Formatting can be done both from Windows or from Linux (see our <a href="#fatformatting">FAT-dedicated section</a>).
 </p>
 
 <p>
@@ -310,15 +314,15 @@ Finally in my case the full equipment cost only 265 euros.
 <h4>Some limitations for the seasoned homebrewer though : transferring files to the DS</h4>
 
 <p>
-Such removable media (as microSD) are not the magic bullet for the frantic homebrewer : to anticipate a bit on further subjects, when generating programs for the DS from your PC, to test them you may either execute them "in place", directly on your PC thanks to <a href="#emulators">DS emulators</a> (but they do not behave always as a DS would behave) or you have to send them to the DS by one way or another. This can be done thanks to the aforementioned microSD card, but it soon becomes tedious to swap again and again the card and its adapter. 
+Such removable media (as microSD) are not the magic bullet for the frantic homebrewer : to anticipate a bit on further subjects, when generating programs for the DS from your PC, to test them you may either execute them "in place", directly on your PC thanks to <a href="#emulators">DS emulators</a> (but they do not behave always as a DS would behave) or you have to send them to the DS, one way or another. This can be done thanks to the aforementioned microSD card, but it soon becomes tedious to swap again and again the card and its adapter. 
 </p>
 
 <p>
-An alternate way would be to use a Wifi access point or a Wifi router, preferably not a mere Wifi adapter, which would have to embedded a specific chip etc. in order to work with the DS. Such devices could be for example the famous <a href="http://en.wikipedia.org/wiki/WRT54G" target="_blank">Linksys WRT54G routers</a> (55 euros approximately) or <a href="http://en.wikipedia.org/wiki/Fonera" target="_blank">La Fonera</a>, both of which are inexpensive and, on a side node, run Linux, whose firmware and software can be programmed, etc., in a very similar way to the one we are to program applications for the DS.
+An alternate way would be to use a Wifi access point or a Wifi router, preferably not a mere Wifi adapter, which would have to embedded a specific chip etc. in order to work with the DS. Such devices could be for example the famous <a href="http://en.wikipedia.org/wiki/WRT54G" target="_blank">Linksys WRT54G routers</a> (55 euros approximately) or <a href="http://en.wikipedia.org/wiki/Fonera" target="_blank">La Fonera</a>, both of which are inexpensive and, on a side node, run Linux, whose firmware and software can be programmed, etc., in a very similar way to the one we are to program applications for the DS. Note this may involve running specific software on the DS (ex : DSLinux) to transfer ROM wirelessly, which may or may not be more convenient than the basic card swap.
 </p>
 
 <p>
-Other still less usual methods would be :
+Other still less usual methods would be to rely on :
 <ul>
 
 <!--
@@ -329,7 +333,7 @@ Other still less usual methods would be :
 
 	<li>the <a href="http://natrium42.com/blog/?p=38" target="_blank">dserial</a> ($45+shipping)</li>
 
-	<li>the <b>Ds Xtreme</b>, if available. It is quite expensive though</li>
+	<li>the <b>DS-Xtreme</b>, although the device is often considered overpriced, or the <b>DS Linker 8G / 16G</b>, released by the Supercard team. Note it is unclear whether the USB cable has to be unplugged so that either the PC or the DS gains access to the card memory (in that case it would remove the main advantage of these cards over the microSD-based ones).</li>
 	
 </ul>
 
@@ -504,7 +508,12 @@ SuperKey and the other Slot-1 <a href="http://en.wikipedia.org/wiki/NoPass" targ
 There are several slot-2 add-ons (called <em>linkers</em>), which all provide their own set of features. From the ARM9 point of view, they can offer up to 32 megabytes of additional ROM (which can be actually RAM) and 64 kilobytes of RAM. Any mass storage they include cannot be seen directly by the ARMs. There are various systems that upload any desired chunk from this hidden mass storage in the ARM-visible 32-megabyte address space. The GBA slot bus only supports 16-bit writes, which leads to issues when needing to perform 8-bit only write operations.</p>
 
 <p>
-The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (it does not protrude when used with DS Lite) and provides both the optimal 32 megabytes of RAM and an access to removable storage, here a microSD card. Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. Note that a work-around for a DSLinux bug would require making partitions strictly smaller than 2 GB. This can be done from Linux thanks to, for example, <code>fdisk /dev/mmcblk0</code>, then deleting previous partition (<code>d</code>), creating two new primary partitions (1/2), first with only 1020 megabytes, the second with the rest of the space, then setting them to FAT16 (<code>t</code> option, with value <code>6</code> for filesystem type). You should then have a partition like :
+The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (it does not protrude when used with DS Lite) and provides both the optimal 32 megabytes of RAM and an access to removable storage, here a microSD card.
+</p>
+
+<a name="fatformatting"></a>
+<p>
+Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. Note that a work-around for a DSLinux bug would require making partitions strictly smaller than 2 GB. This can be done from Linux thanks to, for example, <code>fdisk /dev/mmcblk0</code>, then deleting previous partition (<code>d</code>), creating two new primary partitions (1/2), first with only 1020 megabytes, the second with the rest of the space, then setting them to FAT16 (<code>t</code> option, with value <code>6</code> for filesystem type). You should then have a partition like :
 <center>
     <table summary="Code" style="border : none">
         <tr>
@@ -3038,7 +3047,7 @@ Having the general hardware specifications and the relevant toolchain is not eno
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Sunday, July 1, 2007</em>
+    <em>Last update : Wednesday, July 4, 2007</em>
   </center>
 </body>
 </html>
