@@ -368,7 +368,7 @@ Inserting the microSD card and rebooting is not really interesting, as this card
 </p>
 
 <p>
-We see nevertheless that our customized console works well and is ready to be used.
+We see nevertheless that our customized console works well and is almost ready to be used. Last step may be to upgrade the Supercard firmware, to benefit from improvements whose interest should be evaluated beforehand (beware to regressions though, check the assessment of other users first). To upgrade the firmware, download its targeted version from the <a href="http://eng.supercard.cn/soft_scl.htm" target="_blank">official site</a> (ex : <code>microsd_eng_181.rar</code>, for the 1.81 version), extract it with <code>unrar</code> (installed with <code>apt-get install unrar</code>) thanks to <code>unrar e microsd_eng_181.rar</code>. Put the result (<code>my_micro_eng_181.bin</code>) at the root of, here, your microSD card, before booting the DS with it. Then the firmware should be upgraded by selecting this file in the Supercard menu, and pressing the A key. 
 </p>
 
  <p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
@@ -395,7 +395,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	<li><b></b> : </li>
 -->
 
-	<li><b>two TFT back-lighted screens</b> (hence the DS meaning <em>Dual Screen</em>, although <em>Developer System</em> is mentioned sometimes), whose maximal resolution is 256x192, with up to 260 000 colors (5 bit for each channel). These are 3-inch screens (61x46 mm), with a dot pitch of 0,24 mm (contrast is 162:1). Screens are separated by about 21 mm. The DS Lite ones are far brighter and more resitant than the DS "fat" ones, and support four levels of brightness</li>
+	<li><b>two TFT back-lighted screens</b> (hence the DS meaning <em>Dual Screen</em>, although <em>Developer System</em> is mentioned sometimes), whose maximal resolution is 256x192 each, with up to 260 000 colors (5 bit for each channel). These are 3-inch screens (61x46 mm), with a dot pitch of 0,24 mm (contrast is 162:1). Screens are separated by about 21 mm. The DS Lite ones are far brighter and more enduring than the DS "fat" ones, and support four levels of brightness</li>
 	
 	<li>a resistive <b>touchpad</b> integrated with the bottom screen. The resulting touchscreen can be used with a stylus, the user's finger, wrist strap, etc. It can measure at most one press at a time, so it will average multiple presses, by reporting only a single one at their barycenter</li>
 	
@@ -404,8 +404,8 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 
 	<b>two all-purpose processors (CPU)</b> :
 	  <ul>
-		<li>an <b>ARM9</b> : <a href="http://en.wikipedia.org/wiki/ARM9E" target="_blank">ARM946E-S</a>, main CPU, 67 MHz, between 200 and 300 MIPS (<em>Million Instructions Per Second</em>), RISC 32 bit</li>
-		<li>an <b>ARM7</b> : <a href="http://en.wikipedia.org/wiki/ARM7TDMI" target="_blank">ARM7TDMI</a>, co-processor, 33 MHz, about 20 MIPS, 16-bit/32-bit RISC</li>
+		<li>an <b>ARM9</b> : <a href="http://en.wikipedia.org/wiki/ARM9E" target="_blank">ARM946E-S</a>, the main CPU, 67 MHz, between 200 and 300 MIPS (<em>Million Instructions Per Second</em>), RISC 32 bit</li>
+		<li>an <b>ARM7</b> : <a href="http://en.wikipedia.org/wiki/ARM7TDMI" target="_blank">ARM7TDMI</a>, a co-processor, 33 MHz, about 20 MIPS, 16-bit/32-bit RISC</li>
 	  </ul>
 	</p>
 
@@ -417,17 +417,17 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	The ARM (<em>Arcos Risc Machine</em>) family is quite widespread on embedded devices, and is known to be small, cheap and power-savvy. The Nintendo 64 offered roughly 100 MIPS, PlayStation 2 and PSP (PlayStation Portable) roughly 560 MIPS, GameCube 980 MIPS. According to some sources, the DS processors are under-clocked to save some power. Some people <a href="http://youtube.com/watch?v=PYIvASbELkw" target="_blank">overclocked</a> them, which involves quite some electronical skills and risks</p>
 	</li>
 	
-	<li>several <b>memory banks</b>, notably 4 megabytes (4096 kilobytes) of built-in RAM, whose layout is somewhat complex but for the most part is shared by the two processors. There is an additional 656 kilobytes of video RAM, and 64 kilobytes of <a href="http://en.wikipedia.org/wiki/Static_random_access_memory" target="_blank">SRAM</a> intended for game saves</li>
+	<li>several <b>memory banks</b>, notably 4 megabytes (4096 kilobytes) of built-in RAM, whose layout is somewhat complex but for the most part is shared by the two processors. There is an additional 656 kilobytes of video RAM, and some non-volatile memory dedicated to user preferences. See the excellent <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">memory layout</a> diagram from Dev-Scene website</li>
 	
 	<li>one GPU (<em>Graphical Processing Unit</em>) made of two <b>advanced 2D rendering systems</b> (one for each screen) and a <b>3D rendering system</b>, able to offer various <a href="#3D">3D features</a>. It can render up to 120 000 triangles per second at 60 frames per second, a fill rate of about 30 million pixels per second. This is a completely custom chip integrated in the same chip as both ARM. It is <b>not</b>, sadly, the PowerVR MBX that was announced by some <a href="http://portables.p-nintendo.com/articles/D-232-1.html" target="_blank">sources</a></li>
 
-	<li>A <b>flashable</b> <a href="http://en.wikipedia.org/wiki/Firmware" target="_blank">firmware</a>, on NVRAM (Non-Volatile RAM). Alternative custom firmwares allow to run homebrew executables sent thanks to Wifi, as if they were officially signed. Upgrading the firmware is an easy and relatively safe process now</li>
+	<li>A <b>flashable</b> <a href="http://en.wikipedia.org/wiki/Firmware" target="_blank">firmware</a>, on NVRAM (<em>Non-Volatile RAM</em>). Alternative custom firmwares allow to run homebrew executables sent thanks to Wifi, as if they were officially signed. Upgrading the firmware is an easy and relatively safe process now</li>
 	
 	<li>A <b>gamepad</b> (four-direction keys), with <b>6 bigger buttons</b> (X, Y, A, B in a cross layout; L and R on the far side of the DS) and <b>two smaller</b> (Start and Select)</li>
 	
-	<li>integrated <b>wireless networking</b>, able to offer proprietary protocol (called <em>NiFi</em>, for Nintendo Wifi) and 802.11b Wifi connectivity, both for local exchanges between DS and communications through the Internet (range between 10 and 30 meters)</li>
+	<li>integrated <b>wireless networking</b>, able to offer proprietary protocol (called <em>NiFi</em>, for Nintendo Wifi) and 802.11b Wifi connectivity, respectively for local exchanges between DS and communications through the Internet (range between 10 and 30 meters)</li>
 	
-	<li>a <b>16 hardware channel Virtual Surround sound output</b> with stereo speakers (whose quality is rather good) and standard headphone plug (3.5 mm jack). A sliding button allows to set the volume. DAC runs at 10-bit 32768 Hz stereo</li>
+	<li>a <b>16 hardware channel sound output</b> with stereo speakers (whose quality is rather good) and standard headphone plug (3.5 mm jack). A sliding button allows to set the volume. DAC runs at 10-bit 32768 Hz, stereo</li>
 	
 	<li>a <b>microphone</b> for sound input, which allows (application-specific) speech-recognition</li>
 	
@@ -437,7 +437,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	
 	<li><b>small form factor</b> : the (closed) DS Lite is 133 mm × 73.9 mm × 21.5 mm (versus 148,6 x 84,6 x 28,7 mm for the DS "fat"), for 218g (275g for the DS "fat")</li>
 
-	<li><b>built-in realtime 33MHz clock</b>, maintaining time and date even when the DS has been shutdown</li>
+	<li><b>built-in realtime 33 MHz clock</b>, maintaining time and date even when the DS has been switched off</li>
 
 	<li><b>two green/orange/red LEDs</b> are available, they can be seen both when the console is open or closed. By default they inform about the Wifi and the battery status</li>
 		
@@ -445,21 +445,9 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 </p>
 
 <p>
-The ARM RISC architecture is heavily inspired from the <em>GameBoy Advance</em> one. Both have an ARM7 (but the DS one is running at 66 MHz instead of 33 MHz), explaining partly the very good retrocompatibility of DS for GBA, and the DS hardware is quite close to the one of PocketPC devices. The performances are expected to be somewhat near the Nintendo 64 ones.
+The overall architecture (including the ARM, the rendering engine, the keys, etc.) took as a starting point the one of the <em>GameBoy Advance</em>. Both have an ARM7 (but the DS one is running at 66 MHz instead of 33 MHz), explaining partly the very good retrocompatibility of DS for GBA. More generally the DS hardware is quite close to the one of PocketPC devices. The performances are expected to be somewhat near the Nintendo 64 ones.
 </p>
 
-<a name="memorylayout"></a>
-<p>
-See the excellent <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">diagram explaining the DS memory layout</a> on Dev-Scene website.
-</p>
-
-<p>
-Input handling can be done thanks to the traditional gamepad, but also thanks to the touchscreen (it can be used to offer a virtual keyboard, or with a mouse-like interface, or as an handwriting tool, etc.) and/or the microphone (speaking, blowing, shouting, etc.).
-</p>
-
-<p>
-The two screens can be used also with the DS rotated of 90 degrees, on its side, like an open book.
-</p>
 
 <a name="detailedhardware"></a>
 <p>
@@ -475,9 +463,8 @@ More low-level informations about the DS hardware :
 	<li><a href="http://nocash.emubase.de/gbatek.htm" target="_blank">GBATEK</a></li>
 	<li><a href="http://auia.net/ds/" target="_blank">NDSTech</a></li>
 	<li><a href="http://www.dev-scene.com/NDS/Tutorials_Day_2" target="_blank">Dev-Scene tutorial</a></li>
-	<li><a href="http://dualis.1emu.net/dsti.html" target="_blank">Dualis</a></li>
+	<li><a href="http://dualis.1emu.net/dsti.html" target="_blank">Dualis</a> hardware section</li>
 
-	
 </ul>
 </p>
 
@@ -494,26 +481,40 @@ There are two different ports in which cards can be inserted : Slot-1 and Slot-2
 <h4>The Slot-1 port (a.k.a. DS port)</h4>
 
 <p>
-Usual DS game cards are 33.0 × 35.0 × 3.8 mm, and weigh around 3,5 g. They can contain up to 128 megabytes, but in this case they are a smaller transfer rate than 64 megabytes ones.  
+Usual DS game cards are 33.0 × 35.0 × 3.8 mm, and weigh around 3,5 g. They can contain up to 128 megabytes, but in this case their transfer rates are smaller than the ones of 64-megabyte cards. 
 </p>
 
 <p>
-SuperKey and the other Slot-1 <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a> counterparts, apart from allowing the use of the Slot-2 devices, do not add any memory or feature. They just set the program counter so that it points to a memory location in the GBA slot, allowing programs to be run from storage there. On the contrary, they consume some power that reduces the console autonomy. A <a href="http://en.wikipedia.org/wiki/Flashme" target="_blank">flashed</a> firmware can be used instead, for the most daring.
+SuperKey and the other Slot-1 <a href="http://en.wikipedia.org/wiki/NoPass" target="_blank">NoPass</a> counterparts, apart from allowing the use of the Slot-2 devices, do not add any memory or feature. They just set the program counter so that it points to a memory location in the GBA slot, allowing programs to be run from storage there. They consume some power that reduces the console autonomy. A <a href="http://en.wikipedia.org/wiki/Flashme" target="_blank">flashed</a> firmware can be used instead, for the most daring.
 </p>
 
 
 <h4>The Slot-2 port (a.k.a. GBA cart, or Flash Cart)</h4>
 
 <p>
-There are several slot-2 add-ons (called <em>linkers</em>), which all provide their own set of features. From the ARM9 point of view, they can offer up to 32 megabytes of additional ROM (which can be actually RAM) and 64 kilobytes of RAM. Any mass storage they include cannot be seen directly by the ARMs. There are various systems that upload any desired chunk from this hidden mass storage in the ARM-visible 32-megabyte address space. The GBA slot bus only supports 16-bit writes, which leads to issues when needing to perform 8-bit only write operations.</p>
+There are several slot-2 add-ons (called <em>linkers</em>), which all provide their own set of features. From the ARM9 point of view, they can offer up to 32 megabytes of additional ROM (which can be actually RAM) and up to 64 kilobytes of <a href="http://en.wikipedia.org/wiki/Static_random_access_memory" target="_blank">SRAM</a>, intended for game saves, preferences, etc.. Any other storage these cards may include cannot be seen directly by the ARMs.
+</p>
 
 <p>
-The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (it does not protrude when used with DS Lite) and provides both the optimal 32 megabytes of RAM and an access to removable storage, here a microSD card.
+Therefore these slot-2 linkers use their built-in RAM as a mock flash cartridge, i.e. as a cache fed from their hidden mass storage. There are various systems that upload in the ARM-visible 32-megabyte address space any desired chunk from any hidden mass storage. Some DS homebrew (ex : DSLinux) also use this additional RAM, though bus and speed issues make it less useful than the DS built-in memory.
 </p>
+
+<p>
+More precisely, the GBA slot bus only supports 16-bit writes, which leads to issues when needing to perform 8-bit only write operations. As for speed, some people complained about Supercard's built-in RAM or some versions of microSD cards being too slow for some GBA games.
+</p>
+
+<p>
+The SuperCard Lite is one of the most interesting linkers, as it fits well in the GBA port (it does not protrude when inserted in a DS Lite) and provides both the optimal 32 megabytes of RAM and an access to removable storage, here a microSD card.
+</p>
+
 
 <a name="fatformatting"></a>
 <p>
-Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies no more than 2 GB can be managed. Note that a work-around for a DSLinux bug would require making partitions strictly smaller than 2 GB. This can be done from Linux thanks to, for example, <code>fdisk /dev/mmcblk0</code>, then deleting previous partition (<code>d</code>), creating two new primary partitions (1/2), first with only 1020 megabytes, the second with the rest of the space, then setting them to FAT16 (<code>t</code> option, with value <code>6</code> for filesystem type). You should then have a partition like :
+Most of these removable cards are formatted in <a href="http://en.wikipedia.org/wiki/File_Allocation_Table" target="_blank">FAT</a> (i.e. FAT16, not FAT32), which implies that no more than 2 gigabytes can be managed. Some linkers, like the R4DS / M3 Simply, may use FAT32 and take advantage of 4-gigabyte cards. Some other linkers are discussed in this <a href="http://www.palib.info/wiki/doku.php?id=day1#putting_the_homebrew_on_the_ds" target="_blank">PAlib</a> tutorial 
+</p>
+
+<p>
+Note that a supposed work-around for a DSLinux bug would require making partitions strictly smaller than 2 gigabytes. This can be done from a PC running GNU/Linux thanks to, for example, <code>fdisk /dev/mmcblk0</code>, then deleting previous partition (<code>d</code>), creating two new primary partitions (1 and 2), first with only 1020 megabytes, the second with the rest of the space, then setting them to FAT16 (<code>t</code> option, with value <code>6</code> for filesystem type). You should then have partitions like :
 <center>
     <table summary="Code" style="border : none">
         <tr>
@@ -533,20 +534,9 @@ Units = cylinders of 90 * 512 = 46080 bytes
         </tr>
     </table>
 </center>
-Finally both filesystems have to be created, thanks to, for example, <code>mkdosfs -c -F 16 -n DS-homebrew -v /dev/mmcblk0p1</code> and <code>mkdosfs -c -F 16 -n DS-storage -v /dev/mmcblk0p2</code>.
+Finally both filesystems have to be created, thanks to, for example, <code>mkdosfs -c -F 16 -n DS-homebrew -v /dev/mmcblk0p1</code> and <code>mkdosfs -c -F 16 -n DS-storage -v /dev/mmcblk0p2</code>. Using <code>pmount</code> and <code>udev</code> allows to mount these filesystems without needing a root access.
 </p>
 
-<p>
-These linkers use their built-in RAM as a mock flash cartridge, as a cache fed from their mass storage. Some DS homebrew also uses this additional RAM, though addressing issues and speed make it less useful than the DS's built in memory. Some people complained about Supercard's built-in RAM being too slow for some GBA games.
-</p>
-
-<p>
-The Supercard itself may have its firmware upgraded, which is generally an interesting operation. To do so, download latest firmware from <a href="http://eng.supercard.cn/soft_scl.htm" target="_blank">here</a> (ex : <code>microsd_eng_181.rar</code>, for 1.81), extract it with unrar (installed with <code>apt-get install unrar</code>) thanks to <code>unrar e microsd_eng_181.rar</code>. Put the result (<code>my_micro_eng_181.bin</code>) at the root of, here, your microSD card, before booting the DS with it. Then the firmware should be upgraded by selecting this file in the Supercard menu, and pressing the A key. 
-</p>
-
-<p>
-Some linkers are discussed in this <a href="http://www.palib.info/wiki/doku.php?id=day1#putting_the_homebrew_on_the_ds" target="_blank">PAlib</a> tutorial 
-</p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
@@ -559,7 +549,16 @@ Some linkers are discussed in this <a href="http://www.palib.info/wiki/doku.php?
 <h2>Using some third-party software</h2>
 
 <p>
-Software distribution on the DS is mostly based on ROM images, which can be downloaded on a PC as unique files. These files are read by the DS system, which see them as a kind of archive (a filesystem actually) containing possibly numerous files and directories.  
+Software distribution on the DS is mostly based on ROM images, which can be downloaded on a PC as unique files. These files are read by the DS system, which see them as a kind of archive (a filesystem actually) containing possibly numerous files and directories.
+</p>
+
+<p>
+Note that there are often more than one filesystem involved here : 
+<ul>
+        <li>first there is the filesystem used by the <b>linker</b>, which allows to manage as individual files the various ROM transferred in the linker mass storage</li>
+        <li>then there are the filesystems potentially used internally by these <b>ROM</b> : each ROM may organize its data in a set of files, in its own inner file hierarchy</li>
+</ul>
+Different ROM may use different filesystem types, depending on various choices including the ROM format, as stated below.
 </p>
 
 
@@ -1155,6 +1154,10 @@ Selective activation is useful notably to save energy.
 <h4>2D/3D Rendering</h4>
 
 <h5>Rendering in general</h5>
+
+<p>
+The two screens can be separatly managed, or considered to form a taller single screen. They can be used also with the DS rotated of 90 degrees, on its side, like an open book.
+</p>
 
 <p>
 Most of the informations related to the graphical rendering are stored in the VRAM, for <em>Video RAM</em>. Its size is 656 kilobytes, and it only accepts 16 or 32-bit writes.
@@ -1817,6 +1820,11 @@ More info on embedded <a href="http://www.coranac.com/tonc/text/bitmaps.htm#sec-
 <a name="inputdevice"></a>
 <h4>Input device management</h4>
 
+<p>
+Input handling can be done thanks to the traditional gamepad, but also thanks to the touchscreen (it can be used to offer a virtual keyboard, or with a mouse-like interface, or as an handwriting tool, etc.) and/or the microphone (speaking, blowing, shouting, etc.).
+</p>
+
+
 <a name="keys"></a>
 <h5>Keys</h5>
 
@@ -1864,13 +1872,14 @@ The touchpad communicates to the DS only via a serial interface to the ARM7. For
 The built-in <a href="#soundinput">microphone</a> can be used to perform some limited speech-recognition, or to detect the user blowing air, shouting at it, etc..
 </p>
 
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+<a name="rtc"></a>
 <h5>Real-time clock</h5>
 <p>
 The DS keeps track of the date and of the time of day to the second. Applications can react differently based on user time, duration since last use, etc.
 </p>
-
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
-
 
 
 <a name="wireless"></a>
@@ -2045,7 +2054,7 @@ Note that the devkitARM tools are designed to run on 32-bit architectures. If yo
 <h4>First : the compiler toolchain, with devkitARM</h4>
 
 <p>
-We need the common build tools to generate binaries from our C/C++ sources : a preprocessor, a (ARM) compiler and a linker (not related to the cartridges, just a software) that knows the DS ROM <a href="romformats">formats</a> and its <a href="#memorylayout">memory</a> layout.
+We need the common build tools to generate binaries from our C/C++ sources : a preprocessor, a (ARM) compiler and a linker (not related to the cartridges, just a software) that knows the DS ROM <a href="romformats">formats</a> and its <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">memory</a> layout.
 </p>
 
 <p>
