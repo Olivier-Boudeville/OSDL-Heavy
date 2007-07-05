@@ -75,7 +75,17 @@
 
 					<li> <a href="#understandinghardware">Using effectively the hardware</a><br>
 			   		  <ul>
-						<li><a href="#twocpu">Two</a> general-purpose CPU to handle</li>					
+						<li><a href="#twocpu">Two</a> general-purpose CPU to handle
+						<ul>
+							<li><a href="#intendeduse">Intended use &amp; performance</a></li>
+							<li><a href="#registers">Registers</a></li>
+							<li><a href="#cpuandmem">CPU &amp; Memory</a></li>
+							<li><a href="#interrupts">Interrupts</a></li>
+							<li><a href="#arm7role">ARM7 role</a></li>
+							<li><a href="#arm9role">ARM9 role</a></li>
+							<li><a href="#ipc">Inter-CPU communications</a></li>
+						</ul>
+											
 						<li>Activating only the relevant <a href="#subsystems">subsystems</a></li>			
 						<li><a href="#2D">2D</a>/<a href="#3D">3D</a> <a href="#rendering">Rendering</a></li>		
 						<li><a href="#sound">Sound</a> input and output</li>
@@ -567,11 +577,11 @@ Different ROM may use different filesystem types, depending on various choices i
 <h3>Understanding the various ROM formats</h3>
 
 <p>
-One can find several file extensions for Nintendo ROM. Each extension has a <a href="http://www.ndshb.com/modules.php?name=Content&pa=showpage&pid=27" target="_blank">specific meaning</a>, is associated to a specific executable format, and must be chosen adequately.
+There are several file extensions for Nintendo ROM. Each extension has a <a href="http://www.ndshb.com/modules.php?name=Content&pa=showpage&pid=27" target="_blank">specific meaning</a>, is associated to a specific executable format, and must be chosen adequately.
 </p>
 
 <p>
-Their sole purpose is to contain binaries (i.e. executables) for the two ARMs and, most often, application-specific data (icons, bitmaps, sounds, etc.), stored as a unique flat file or as a full filesystems, in one or more files, each filesystem containing in turn files and directories. To be run from the GBA ROM (slot-2), they should include a loader that transfers them to the RAM.
+The sole purpose of ROM is to contain binaries (i.e. executables) for the two ARMs and, most often, application-specific data (icons, bitmaps, sounds, etc.), stored either as a unique flat file or as full filesystems, in one or more files, each filesystem containing in turn files and directories. Usually there is at most one filesystem. To be run from the GBA cart (slot-2), these ROM should include a loader that transfers them to the RAM.
 </p>
 
 
@@ -585,25 +595,32 @@ The most frequent extensions are :
 	<li><b></b> : </li>
 -->
 
-	<li><p><b>.nds</b> (ex: <code>myGame.nds</code>) : this binary for the DS (slot-1) is used by official game carts and most emulators. It embeds a small header referring to a logo, a short description of the ROM content in several languages, followed eventually by the two executable binaries needed (a region dedicated to the ARM7, then a region dedicated to the ARM9), and optionally some appended data, for example a filesystem. The logo and description texts are used when booting a game card from the firmware, or when starting to download one over wireless multiboot : GBA Movie Player and the FlashMe + WMB method support .nds files. This file format was primarily designed to be run from RAM filled from the slot-1 (ex : M3 and DS-X), hence it does not include any specific loader. Therefore old generation .nds do not have a loader at all, and thus an external one must be used when run from the GBA port, generally provided by the menu loader of the flash cart device.</p>
+	<li>
+	<p><b>.nds</b> (ex: <code>myGame.nds</code>) : 
 	
-	<p>Some newer .nds put nevertheless a loader (often <code>ndsloader.bin</code>, see our dedicated <a href="#loader" target="_blank">section</a>), which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it's a corrupted GBA header. An external loader is then needed again.
+	this binary for the DS (slot-1) is used by official game cards and most emulators. It embeds a small header referring to a logo, a short description of the ROM content in several languages, followed eventually by the two executable binaries needed (a region dedicated to the ARM7, then a region dedicated to the ARM9), and optionally some appended data, for example a filesystem. The logo and description texts are used when booting a game card from the firmware, or when starting to download one over wireless multiboot : GBA Movie Player and the FlashMe + WMB method support .nds files.
+	</p>
+
+	<p>	
+	This file format was primarily designed to be run from RAM filled from the slot-1 (ex : M3 and DS-X), hence it did not need any specific loader. Therefore old generation .nds do not have a loader at all, and an external one must be used when run from the GBA port. This loader is generally provided by the menu loader of the flash cart device.</p>
+	
+	<p>Some newer .nds to be run from the GBA cart put nevertheless a loader (often <code>ndsloader.bin</code>, see our dedicated <a href="#loader">section</a>), which they store into some unused space of the header. Sadly, many GBA flashers mess up the NDS header, thinking it is a corrupted GBA header. An external loader is then needed again
 	</p>
 	
 	</li>
 	
-	<li><b>.ds.gba</b> (ex: <code>myGame.ds.gba</code>) : this binary for the DS is designed to run from GBA ROM. It is usually made of a small loader (to transfer thanks to the ARM7 the ROM content from the GBA card to the main RAM) contained in a 512-byte (GBA) header, then a .nds file, and zero or more appended data files. The code from the .nds reads from the appended data files using reads from GBA ROM space. GBA flash carts, M3, and SuperCard support this. They are often used with slot-2 cards, such as EZ4. Some may require you rename the ROM to .ds.nds</li>
+	<li><b>.ds.gba</b> (ex: <code>myGame.ds.gba</code>) : this binary for the DS is designed to run from GBA ROM. It is usually made of a small loader (to transfer thanks to the ARM7 the ROM content from the GBA card to the main RAM) contained in a 512-byte (GBA) header, then a .nds file, and zero or more appended data files. The code from the .nds accesses the appended data files thanks to reads from GBA ROM space. GBA flash carts, M3, and SuperCard support this. Some linkers may require the ROM to be renamed to .ds.nds</li>
 	
 	<li><b>.gba.nds</b> : the SuperCard firmware seems to believe that the .ds.gba format is indicated by the .nds extension. Hence to run a .ds.gba program on a SuperCard, one has to rename it first so that its extension becomes .nds. However by doing so one could mix it up with real .nds. One work-around is then to rename that program with, for example, a .gba.nds extension, instead of a mere .nds. However for a SuperCard, an original <code>myGame.ds.gba</code> could be renamed preferably to <code>myGame.sc.nds</code> (see below)</li>
 
-	<li><b>.sc.nds</b> : extension to be used with SuperCard (sc) and, in some cases, G6 lite and M3. This is a renamed .ds.gba (and maybe too DLDI-patched, see below). The .sc.nds extension is a (better since clearer) alternative to the ds.gba one</li>
+	<li><b>.sc.nds</b> : extension to be used with SuperCard (sc) and, in some cases, G6 lite and M3. This is a renamed .ds.gba, and maybe it is DLDI-patched too, see below. The .sc.nds extension is a better (since clearer) alternative to the ds.gba one</li>
 	
 </ul>
 </p>
 
 	
 <p>
-Some quite uncommon names and extensions are :
+Some quite uncommon formats and extensions are :
 <ul>
 
 <!--
@@ -611,7 +628,7 @@ Some quite uncommon names and extensions are :
 -->
 	
 	
-	<li><b>.srl</b> : also called <em>clean dump</em>, it is a dump of commercial ROM, made of a .nds file and an appended file system, usually in Nitro-FAT format. The code in the .nds file reads from the appended file system, using block transfers, through the DS game card access registers. Homebrew tools do not generate .srl, and WMB does not support .srl. These clean dumps are sometimes distributed as .nds ROM, because they use the same header</li>
+	<li><b>.srl</b> : also called <em>clean dump</em>, it is a dump of commercial ROM, made of a .nds file and an appended file system, usually in Nitro-FAT format. The code in the .nds file reads from the appended file system, using block transfers, through the DS game card access registers. Homebrew tools do not generate .srl, and WMB does not support them. These clean dumps are sometimes distributed as .nds ROM, because they use the same header</li>
 	
 	<li><b>_BOOT_MP.nds</b> : the GBAMP (<em>GBA Movie Player</em>) will boot automatically on this file</li> 
 	 
@@ -623,7 +640,7 @@ Some quite uncommon names and extensions are :
 
 <a name="loader"></a>
 <p>
-.nds programs can be converted into ds.gba programs. It involves prepending a loader, which may load the first appended .nds file, or allow selection of one of many .nds files.
+.nds programs can be converted into ds.gba programs, i.e. ROM designed to run from slot-1 may run from slot-2. It involves prepending a loader, which may load the first appended .nds file, or allow selection of one of the .nds files.
 </p>
 
 <p>The loader can be <a href="http://l33t.spod.org/ratx/DS/dslazy/dslazy.zip" target="_blank">ndsloader.bin</a>, which could be prepended that way :
@@ -633,13 +650,13 @@ Some quite uncommon names and extensions are :
           <td>
             <div class="box">
 <code><pre>
-On Windows :
+On <b>Windows</b> :
 copy /b ndsloader.bin &lt;the .nds file to convert&gt; &lt;the resulting merged file&gt; 
 
 For example :
 copy /b ndsloader.bin myGame.nds myGame.ds.gba
 
-On Linux :
+On <b>Linux</b> :
 cat ndsloader.bin &lt;the .nds file to convert&gt; &gt; &lt;the resulting merged file&gt; 
 
 For example :
@@ -654,14 +671,14 @@ cat ndsloader.bin myGame.nds > myGame.ds.gba
 </p>
 
 <p>
-The other way round, from ds.gba to .nds, usually cannot be performed if not already done by the author, because most often the application relies on specific data meant to be embedded, which is not supported with a .nds file.
+The other way round (from ds.gba to .nds) usually cannot be performed if not already done by the author, because most often the application relies on specific data meant to be embedded, which is not supported with a .nds file.
 </p>
 
 <p>
 There are some tools, such as the <a href="http://l33t.spod.org/ratx/DS/SC/scmhbp/" target="_blank">Supercard Magic Homebrew Patcher</a>, that turns your .nds / .ds.gba files into a fixed supercard .sc.nds file. 
 </p>
 
-<p>Finally, most of the recent FAT-based homebrew applications need to be patched according to the relevant DLDI script, before being run.
+<p>Finally, most of the recent FAT-based homebrew applications need to be patched according to the relevant DLDI script, before being run. See next section.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -673,11 +690,11 @@ There are some tools, such as the <a href="http://l33t.spod.org/ratx/DS/SC/scmhb
 <h3>Linker storage and DLDI</h3>
 
 <p>
-Before rushing for the numerous homebrew softwares available on the Internet, one must understand the problem encountered with the various <em>linkers</em>, the specific cards inserted in Slot-2 to provide dedicated storage. It therefore applies mostly to ROM using the .ds.gba format, including .gba.nds and .sc.nds. 
+Before rushing for the numerous homebrew softwares available on the Internet, one must understand the problem encountered with the various linkers, be them slot-1 or slot-2. This section therefore applies mostly to the ROM using the .ds.gba format, including .gba.nds and .sc.nds. 
 </p>
 
 <p>
-As each linker offers its own memory interface (the way it writes to the Flash ROM), as soon as an application has to access to a memory provided by the linker, this homebrew has to be aware of the specific linker it will run with. Several solutions exist : one may build as many versions of one's software as supported linkers (it becomes soon tedious and messy), or one may use Chishm's DLDI, for FAT-based applications.
+As each linker offers its own memory interface (the way it writes to its Flash memory), as soon as an application has to access to a memory provided by the linker, the homebrew has to be aware of the specific linker it will run with. Several solutions exist : the developer may build as many versions of his software as there are supported linkers (it becomes soon tedious and messy), or the end-user may use Chishm's DLDI, for FAT-based applications.
 </p>
 
 <p>
@@ -685,7 +702,7 @@ As each linker offers its own memory interface (the way it writes to the Flash R
 </p>
 
 <p>
-The point is that for the user it is quite easy to patch the software, and it frees the developer from having to take into account each and every linker variation on the market. Even linkers released years after one's software will be supported thanks to DLDI, with no additional efforts from the original author.
+The point is that it is quite easy for the user to patch the software, and it frees the developer from having to take into account each and every linker variation on the market. Even linkers released years after one's software will be supported thanks to DLDI, with no additional efforts from the original author.
 </p>
 
 <p>
@@ -702,15 +719,15 @@ In practice, the user will need :
 	<li><b></b> : </li>
 -->
 
-	<li>the target <b>DLDI-enabled software to patch</b> (of course)</li>
+	<li>the target <b>DLDI-enabled software (ROM) to patch</b> (of course)</li>
 	<li>a <b>patching tool</b> : the command-line or GUI <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">dlditool</a>, available for Windows, <a href="http://chishm.drunkencoders.com/DLDI/downloads/dlditool-linux-x86.zip" target="_blank">Linux</a> and Mac OS X</li>
-	<li>the <b>device-specific patch file</b> which corresponds to your linker (see <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI Device patches</a>, including the one for <a href="http://chishm.drunkencoders.com/DLDI/downloads/sclt.dldi" target="_blank">SuperCard Lite (SD Card)</a>)</li>
+	<li>the <b>device-specific patch file</b> which corresponds to his linker (see <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI Device patches</a>, including the one for <a href="http://chishm.drunkencoders.com/DLDI/downloads/sclt.dldi" target="_blank">SuperCard Lite (SD Card)</a>)</li>
 </ul>
 
 </p>
 
 <p>
-Linux users just have to put the dlditool archive (here <code>dlditool-linux-x86.zip</code>) and the device-specific patch file (here <code>sclt.dldi</code>) in a new directory and prepare them. For example :
+Our LOANI script can take in charge everything needed to use directly the DLDI tool on a Linux platform, see <a href="#loani">below</a>. Otherwise Linux users just have to put the dlditool archive (here <code>dlditool-belowlinux-x86.zip</code>) and the device-specific patch file (here <code>sclt.dldi</code>) in a new directory and prepare them. For example :
 <center>
     <table summary="Code" style="border : none">
         <tr>
@@ -732,7 +749,7 @@ chmod +x dlditool
 </p>
 
 <p>
-One just has then to use the DLDI tool to patch the software (here <code> myGame.nds</code>) according to its linker-specific patching specification : <code>./dlditool sclt.dldi myGame.nds</code> for example. Check that the tools returned that the operation was successfully performed.
+One just has then to use the DLDI tool to patch the software (here <code> myGame.nds</code>) according to its linker-specific patching specification : <code>./dlditool sclt.dldi myGame.nds</code> for example. Check that the tools returned that the operation was successfully performed. The patched ROM can then be used at once.
 </p>
 
 <p>
@@ -740,24 +757,25 @@ Another option for Windows users is to install <a href="http://psychowood.alterv
 </p>
 
 <p>
-More informations about DLDI : on <a href="http://www.dev-scene.com/NDS/Libfat_DLDI" target="_blank">Dev-Scene</a>.
+More informations about DLDI : read this <a href="http://www.dev-scene.com/NDS/Libfat_DLDI" target="_blank">section</a> on Dev-Scene.
 </p>
 
 <p>
-Finally, some homebrew make use the SRAM (actually, a non-volatile RAM) that may be provided by a flash cart.
+Finally, some homebrew make use of the SRAM (actually, a non-volatile RAM) that may be provided by a flash cartridge.
 </p>
 
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
 <a name="linuxonds"></a> 
 <h3>An example : Linux on DS</h3>
 
 <p>
-Even though most DS applications are to be run standalone (i.e. by themselves, not using any other specific operating system), one can nonetheless have its DS run a dedicated <a href="http://en.wikipedia.org/wiki/Operating_system" target="_blank">operating system</a> (OS). Beyond the fun experience, it may allow for multitasking, or may just provide an environment familiar to the user, with useful tools.
+Even though most DS applications are to be run standalone (i.e. by themselves, not using any other specific operating system), one can nonetheless have its DS run a dedicated <a href="http://en.wikipedia.org/wiki/Operating_system" target="_blank">operating system</a> (OS). Beyond the fun experience, it may allow for multitasking, or may just provide an environment familiar to the user, with useful tools and interfaces.
 </p>
 
 <p>
-Should an OS be used, it will have to be executed as any other application. This OS will then be able itself to run the applications it hosts. They may even run simultaneously, if the OS supports multitasking and if it does not monopolize too much of the DS resources for its own need, thus not letting enough CPU or RAM for these executables.  
+Should an OS be used, it will have to be executed as any other DS application. This OS will then be able itself to run the applications it is hosting. They may even run simultaneously, if the OS supports multitasking and if it does not monopolize for its own purpose too much the DS resources, not letting enough CPU or RAM for the hosted applications.  
 </p>
 
 <p>
@@ -765,11 +783,11 @@ Among all other operating systems, homebrewers often favor <a href="http://en.wi
 </p>
 
 <p>
-On the DS this OS is provided thanks to <a href="http://en.wikipedia.org/wiki/DSLinux" target="_blank">DSLinux</a>, based on <a href="http://en.wikipedia.org/wiki/UClinux" target="_blank">uClinux</a>.
+On the DS, this OS is provided thanks to <a href="http://en.wikipedia.org/wiki/DSLinux" target="_blank">DSLinux</a>, based on <a href="http://en.wikipedia.org/wiki/UClinux" target="_blank">uClinux</a>.
 </p>
 
 <p>
-It can be <a href="http://kineox.free.fr/DS/" target="_blank">installed</a> quite easily (this can be taken in charge through LOANI too, see <a href="#loaninds">below</a>) :
+It can be <a href="http://kineox.free.fr/DS/" target="_blank">installed</a> quite easily :
 <ol>
 <!--
 	<li><b></b> : </li>
@@ -778,7 +796,7 @@ It can be <a href="http://kineox.free.fr/DS/" target="_blank">installed</a> quit
  </li>
 	<li><b>extract</b> it in a new directory</li>
 	<li><b>patch</b> the extracted <code>dslinux.nds</code> with the adequate DLDI device patch (refer to our DLDI <a href="#dldiexample">nano-guide</a>)</li>
-	<li><b>copy</b> the full directory content (i.e. <code>dslinux.nds</code> and the <code>linux</code> directory extracted from the archive) at the root of your SD</li>
+	<li><b>copy</b> the full directory content (i.e. <code>dslinux.nds</code> and the <code>linux</code> directory extracted from the archive, including its own content) at the root of your SD card</li>
 	<li><b>reboot your DS</b>, select Linux and enjoy</li>
 </ol>
  
@@ -800,8 +818,8 @@ The terminal output is on the top screen :
 </p>
 
 <p>
+See also :
 <ul>
-
 <!--
     <li><a href="" target="_blank"></a></li>
 -->
@@ -829,7 +847,7 @@ The terminal output is on the top screen :
 <h2>Programming the DS</h2>
 
 <p>
-Programming the DS is quite fun because it is rather down to the metal : being that close to the hardware, with no operating system, no drivers, no hardware incompatibilities (well, until we look at the flash carts), it is a good pretext to struggle against low level details. Probably a very good way to practise embedded developments as well. Not to mention that having its own programs working on a console is quite satisfactory.
+Programming the DS is quite fun because it is rather down to the metal : being that close to the hardware, with no operating system, no drivers, no hardware incompatibilities (well, until we look at the flash carts) to take into account is a good pretext indeed to struggle against low level details. Probably a very good way to practise embedded developments as well. Not to mention that having its own programs working on a console is quite satisfactory.
 </p>
 
 
@@ -844,10 +862,11 @@ ARM CPU are RISC (<em>Reduced Instruction Set Computer</em>) processors, as oppo
 </p>
 
 
-<h5>Respective intended use &amp; performance</h5>
+<a name="intendeduse"></a>
+<h5>Intended use &amp; performance</h5>
 
 <p>
-For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even if both ARM are rather general-purpose, the ARM9 should take the most of computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation, whereas the 2D/3D engines will be dedicated to visual rendering.
+For newcomers, one of the most disturbing specificities of the DS is its having multiple processors. They are expected to share the load : even if both ARM are rather general-purpose, the ARM9 should take care of most computation-intensive tasks, including graphic-related operations (it is the only one that can interact with the 3D rendering engine), whereas the ARM7 should concentrate on input management (touchscreen, most keys), wireless communications, audio output and any GameBoy emulation. As for the 2D/3D engines, they are dedicated as expected to visual rendering.
 </p>
 
 <p>
@@ -855,35 +874,37 @@ Roughly speaking, the ARM9 can be somewhere between 1.5 and about 4 times faster
 </p>
 
 <p>
-ARM7 and ARM9 are often configured to use Thumb mode (16 bit). The reason for this, in both cases, is memory space : ARM7 has limited program space, whereas ARM9 has limited instruction cache space. As for the 16-bit wide bus accesses (there are severa of them), ARM (32-bit) instructions would saturate the bandwidth and seriously decrease overall performance.
+ARM7 and ARM9 are often configured to use Thumb mode (16 bit mode), instead of the ARM mode (32 bit mode). The reason for this, in both cases, is memory space : ARM7 has limited program space, whereas ARM9 has limited instruction cache space. As for the 16bit-wide bus accesses (there are <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">several</a> buses), ARM (32-bit) instructions would saturate the bandwidth and seriously decrease overall performance.
 </p>
 
 <p>
-Some applications manage to rely on very tight 32-bit loops that fit in the instruction cache (IWRAM), so that they can benefit from a more "powerful" instruction set, for critical parts. Apart from the 32-bit memory regions fed by 32-bit buses, one should prefer Thumb (16-bit) instructions.
+Some applications manage to rely on very tight 32-bit loops that fit in the ARM9 instruction cache (IWRAM), so that they can benefit from a more "powerful" instruction set, for critical parts. Apart from the 32-bit memory regions fed by 32-bit buses, one should prefer Thumb (16-bit) instructions.
 </p>
 
 <p>
-Neither CPU of the DS has a Floating Point Unit (FPU), so all floating-point operations must be emulated (they have to be done in software), which is very slow (so : avoid by all means floats and doubles). Most computations use therefore :
+Neither CPU of the DS has a <em>Floating Point Unit</em> (FPU), so all floating-point operations must be emulated (not hardware support, they have to be done in software), which is very slow (so avoid by all means <code>float</code> and <code>double</code> variables). Most computations use therefore :
 <ul>
-        <li><b>fixed-point (integer) arithmetics</b> for basic operations (addition, substraction, multiplication and division), see <a href="http://www.coranac.com/tonc/text/fixed.htm" target="_blank">TONC</a> and <a href="http://en.wikipedia.org/wiki/Fixed-point_arithmetic" target="_blank">Wikipedia</a> for further informations on this subject</li>
+        <li><b>fixed-point (integer) arithmetics</b> for basic operations (addition, substraction, multiplication and division), see these sections in <a href="http://www.coranac.com/tonc/text/fixed.htm" target="_blank">TONC</a> and in <a href="http://en.wikipedia.org/wiki/Fixed-point_arithmetic" target="_blank">Wikipedia</a> for further informations</li>
 
-       <li><b>(precomputed) Look-Up Tables</b> (LUT) for other computations, such as trigonometric ones (<code>cos</code>, <code>sin</code>, etc.). See <a href="http://www.coranac.com/tonc/text/fixed.htm#sec-lut" target="_blank">TONC</a> for more details on this</li>
+       <li><b>(precomputed) Look-Up Tables</b> (LUT) for other computations, such as trigonometric ones (<code>cos</code>, <code>sin</code>, etc.). See this TONC <a href="http://www.coranac.com/tonc/text/fixed.htm#sec-lut" target="_blank">section</a> for more details</li>
 
 </ul>
 </p>
 
 <p>
-As a consequence of having two CPU, the DS ROM has to include at least two executables, one for each of the ARM (not mentioning application-specific data). At runtime the executables will have to work simultaneously, which involves often having to be synchronized and to share data. 
+As a consequence of having two CPU, a DS ROM has to include at least two executables, one for each of the ARM (not mentioning application-specific data). At runtime the executables will have to work simultaneously, which involves often having to be synchronized and to share data. 
 </p>
 
 
 <p>
-Monitoring the ARM loads is not easy, even when using emulators. Profiling can be done via <a href="#timers">timers</a> : one can start some hardware timers when a task starts, and then stop and read them when the task is done. That information is rather precise, and you can use it to provide a lot of information about how much of the CPU power is being used; but it's a bit of a hassle to set up.
+Monitoring the ARM loads is not easy, even when using emulators. Profiling can be done via <a href="#timers">timers</a> : one can start some hardware timers when a task starts, and then stop and read them when the task is done. That information is rather precise, and you can use it to provide a lot of information about how much of the CPU power is being used, even though setting it up is a bit tedious.
 </p>
 
 <p>
-Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_blank">guidelines</a> should be applied to write effective code for the DS. Then include favoring bit shifts (&lt;&lt; and &gt;&gt;), avoiding branching (<code>if</code>) and using  &amp; instead of % whenever possible. See also another TONC section about <a href="http://www.coranac.com/tonc/text/asm.htm" target="_blank">ARM assembly</a>.
+Some <a href="http://www.coranac.com/tonc/text/first.htm#sec-notes" target="_blank">guidelines</a> should be applied to write effective code for the DS. They include favoring when possible bit shifts (&lt;&lt; and &gt;&gt;), avoiding branching (<code>if</code> and <code>switch</code> replaced by arithmetic operations) and using  &amp; instead of % whenever possible. See also TONC section about <a href="http://www.coranac.com/tonc/text/asm.htm" target="_blank">ARM assembly</a>.
 </p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
 <a name="registers"></a>
@@ -893,13 +914,25 @@ Hardware memory-mapped <a href="http://www.dev-scene.com/NDS/Tutorials_Day_3#Wha
 </p>
 
 <p>
-These registers behave like special memory addresses that can be read and/or written by the CPU, but the associated bits, instead of being actual memory, are I/O ports of the chips the CPU is interacting with. This can be used so that the CPU can set the playback frequency of the sound hardware for example, or so that it can read which keys are pressed.
+These registers behave like special memory addresses that can be read and/or written by the CPU, but the associated bits, instead of being actual memory, are in fact I/O ports of the chips the CPU is interacting with. These registers can be used for example so that the CPU sets the playback frequency of the sound hardware, or so that it reads which keys are pressed.
 </p>
 
 <p>
-Most useful registers are defined by libnds, to manipule abstract plain names (ex : <code>DISPLAY_CR</code>) instead of raw addresses (ex : <code>0x4000000</code>). Such addresses must be declared <em>volatile</em>, as the compiler cannot rely their value remaining constant between two accesses : registers are directly controlled by other chips that can modify them at any time, hence their value should not be cached as usual bytes in memory. Finally, in this case, using the preprocessor to set these adresses as immediate values (<code>#define DISPLAY_CR XXXX .... DISPLAY_CR = aValue ;</code>) instead of using constants (<code>const unsigned int DisplayCR = XXXX ; DisplayCR = aValue ;</code>) might involve less operations (stored directly in the instruction opcode instead of being retrieved from memory), depending on the compiler optimization.
+Most useful registers are defined by the low level library named <a href="#libnds">libnds</a>, to manipule abstract plain names (ex : <code>DISPLAY_CR</code>) instead of raw addresses (ex : <code>0x4000000</code>).
 </p>
 
+<p>
+Such addresses must be declared <em>volatile</em>, as the compiler cannot rely their value remaining constant between two accesses : registers are directly controlled by other chips that can modify them at any time, hence their value should not be cached as are usual bytes in memory.
+</p>
+
+<p>
+Finally, in this case, using the preprocessor to set these adresses as immediate values (<code>#define DISPLAY_CR XXXX .... DISPLAY_CR = aValue ;</code>) instead of using constants (<code>const unsigned int DisplayCR = XXXX ; *DisplayCR = aValue ;</code>) might involve less operations (stored directly in the instruction opcode instead of being retrieved from memory), depending on the compiler optimization.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+<a name="cpuandmem"></a>
 <h5>CPU &amp; Memory</h5>
 <p>
 The main built-in memory, consisting of one big block of 4 megabytes memory (sometimes named EWRAM, for <em>External Working RAM</em>), can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other (by default, the ARM7 has priority over the ARM9), leading the other to wait until the first has finished its operation.
@@ -924,6 +957,9 @@ The DTCM, for <em>Data Tightly Coupled Memory </em>, is a special 16 kilobytes m
 <p>
 The ITCM, for <em>Instruction Tightly Coupled Memory </em>, is a special 32 kilobytes memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small functions that are computation-intensive and/or frequently called. For example libdns uses that region to store the interrupt dispatcher.
 </p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
 
 <a name="interrupts"></a>
 <h5>Interrupts</h5>
@@ -996,7 +1032,11 @@ Keys can be read thanks to <a href="#keys">several methods</a>, including the in
 More infos on interrupts can be found in this TONC <a href="http://www.coranac.com/tonc/text/interrupts.htm" target="_blank">section</a>.
 </p>
 
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
+
+
+<a name="arm7role"></a>
 <h5>ARM7 role</h5>
 
 <p>
@@ -1023,8 +1063,11 @@ Depending on a data being const or not, the linker will place it respectively ei
 devkitPro includes a default ARM7 program to handle basic tasks like managing interrupts, reading the touchscreen, the microphone and the realtime clock, performing very simple sound playback, etc. It is the <code>arm7.bin</code> discussed in our <a href="#building">building</a> section. Usually there is no need to write custom ARM7 code. The standard Makefiles include this default ARM7 program.
 </p>
 
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
+
+<a name="arm9role"></a>
 <h5>ARM9 role</h5>
 
 <p>
@@ -1063,8 +1106,11 @@ A single ARM9 <code>main()</code> function defines usually :
 In GBA mode, the ARM9 is not powered, only the ARM7 can be used.
 </p>
 
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
-<h5>Inter-CPU communication</h5>
+
+<a name="ipc"></a>
+<h5>Inter-CPU communications</h5>
 
 <p>
 As each ARM has specific abilities (ex : the ARM7 is the only one that can access the hardware for sound and wireless), they have to communicate to send to the other ARM commands to be executed on the sender behalf.
@@ -1115,6 +1161,8 @@ See <a href="http://www.double.co.nz/nintendo_ds/nds_develop7.html" target="_bla
 
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
 
 
  
@@ -2022,6 +2070,8 @@ We consider here that you have the basic tools installed on your computer, notab
  (for <em>Integrated Development Environment</em>, ex : KDevelop, VisualHAM or <a href="http://www.palib.info/wiki/doku.php?id=day1#using_palib_with_visual_c_2005_express" target="_blank">Visual C++ 2005 Express</a>, etc), and the <code>GNU make</code> program. The associated makefiles, which specify how the different targets for an application should be built (which steps, which tools, which options, etc.), are essential, as way too many commands are involved in the repetitive development process to type them directly when needed. Other generic tools should be used as well, for source control (CVS, SVN), for documentation generation (doxygen), etc.
 </p>
 
+
+<a name="loani"></a>
 <p>
 Most of the tools that will be mentioned here (i.e. devkitARM, libnds, libfat, dswifi, PAlib, DeSmuME, NO$GBA), plus dlditool, can be installed by hand or thanks the <a href="http://osdl.sourceforge.net/OSDL-latest/LOANI.html" target="_blank">LOANI</a> script, provided by OSDL for GNU/Linux users. One just has to download latest LOANI archive and to run :
 <center>
@@ -3056,7 +3106,7 @@ Having the general hardware specifications and the relevant toolchain is not eno
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Wednesday, July 4, 2007</em>
+    <em>Last update : Thursday, July 5, 2007</em>
   </center>
 </body>
 </html>
