@@ -878,7 +878,7 @@ ARM7 and ARM9 are often configured to use Thumb mode (16 bit mode), instead of t
 </p>
 
 <p>
-Some applications manage to rely on very tight 32-bit loops that fit in the ARM9 instruction cache (IWRAM), so that they can benefit from a more "powerful" instruction set, for critical parts. Apart from the 32-bit memory regions fed by 32-bit buses, one should prefer Thumb (16-bit) instructions.
+Some applications manage to rely on very tight 32-bit loops that fit in the ARM9 instruction cache (ITCM) or in the ARM7 dedicated fast RAM (IWRAM), so that they can benefit from a more "powerful" instruction set, for critical parts. Apart from the 32-bit memory regions fed by 32-bit buses, one should prefer Thumb (16-bit) instructions.
 </p>
 
 <p>
@@ -935,27 +935,27 @@ Finally, in this case, using the preprocessor to set these adresses as immediate
 <a name="cpuandmem"></a>
 <h5>CPU &amp; Memory</h5>
 <p>
-The main built-in memory, consisting of one big block of 4 megabytes memory (sometimes named EWRAM, for <em>External Working RAM</em>), can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other (by default, the ARM7 has priority over the ARM9), leading the other to wait until the first has finished its operation.
+The main DS built-in memory, consisting of one big 4-megabyte block (sometimes named EWRAM, for <em>External Working RAM</em>) can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other (by default, the ARM7 has priority over the ARM9), leading the other to wait until the first has finished its operation.
 </p>
 
 <p>
-On the main memory there is generally the ARM9 executable, as well as most game data. Everything except the stack (placed in DTCM) and the data declared to be read-only (placed in ROM space) is stored in the 4 megabytes of main memory by default, including code, non-const variables, global data, C++ constructors and destructors, etc. This memory is rather slow, at least compared to the ARM9 caches.
+On the main memory there is generally, regarding the ARM9, its corresponding executable, as well as most game data. Everything except its stack (placed in DTCM, see below) and the data declared to be read-only (placed in ROM space) is stored by default in these 4 megabytes of main memory, including application-specific code, non-const variables, global data, C++ constructors and destructors, etc. This memory is rather slow, at least compared to the ARM9 caches.
 </p>
 
 <p>
-The ARM7 executable can be as well in main memory, but for performance reasons it is often placed (its code together with its data) into the IWRAM (64 kilobytes of fast memory, 32-bit wide) that only the ARM7 can access. This is the case with devkitARM. Code has to be small enough to fit in the IWRAM.
+The ARM7 executable can be as well in main memory, but for performance reasons its code, together with its data, are often placed into the IWRAM (64 kilobytes of fast RAM, 32-bit wide, that only the ARM7 can access). This is the case with devkitARM. Code has to be small enough to fit in this IWRAM.
 </p>
 
 <p>
-From the point of view of the ARMs, the GBA cartridges are expected to be a ROM area of up to 32 megabytes. Linkers making use of removable media fake a 32 megabytes-only memory by loading dynamically relevant memory chunks from their mass storage media. 
+From the point of view of the ARMs, the GBA cartridges are expected to be a ROM area of up to 32 megabytes. Linkers making use of removable media fake a 32-megabytes only memory, by loading dynamically relevant memory chunks from their mass storage media. 
 </p>
 
 <p>
-The DTCM, for <em>Data Tightly Coupled Memory </em>, is a special 16 kilobytes memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so the standard ARM9 linkscript places its stack in DTCM. Due to the small size of this memory region, local variables should be used carefully.
+The DTCM, for <em>Data Tightly Coupled Memory</em>, is a special 16-kilobyte memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, therefore the standard ARM9 linkscript places its stack in DTCM. Due to the small size of this memory region, local variables should be used carefully. One should avoid for example declaring too many of them (ex : local arrays) or having too deep recursions.
 </p>
 
 <p>
-The ITCM, for <em>Instruction Tightly Coupled Memory </em>, is a special 32 kilobytes memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small functions that are computation-intensive and/or frequently called. For example libdns uses that region to store the interrupt dispatcher.
+As for the ITCM, for <em>Instruction Tightly Coupled Memory</em>, it is a special 32-kilobyte memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small (preferably 32-bit) functions that are computation-intensive and/or frequently called. For example, libdns uses that region to store the interrupt dispatcher.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -967,7 +967,7 @@ The ITCM, for <em>Instruction Tightly Coupled Memory </em>, is a special 32 kilo
 <h6>Interrupts in general</h6>
 
 <p>
-An interrupt (or IRQ, for <em>Interrupt Request</em>) is a way of stopping immediately the current execution of a CPU to run another function, called an interrupt handler. Hence when a hardware or software interrupt occurs, the processor saves first some information so that it knows where to go back and in which state, then the handler associated to this interrupt for that CPU is called at once and, when that function returns, the DS continues executing the piece of code it was executing before it was interrupted, as if nothing had happened.
+An interrupt (or IRQ, for <em>Interrupt Request</em>) is a way for a CPU to stop immediately the current execution in order to run another function, called an interrupt handler, instead. Hence when a hardware or software interrupt occurs, the processor saves first some information so that it knows where to go back and in which state, then the handler associated to this interrupt for that CPU is called at once and, when that function returns, this CPU continues executing the piece of code it was executing before it was interrupted, as if nothing had happened.
 </p>
 
 <p>
@@ -975,11 +975,11 @@ Therefore interrupts allow to perform tasks that should not wait, either because
 </p>
 
 <p>
-Interrupts allow also to use the CPU sleep mode, since they provide a way of waking it up as soon as it becomes needed again, thanks to a BIOS routine. In this low power mode, the ARM9 stops processing instructions and powers down some memory banks to save battery charge. There is a ARM instruction named SWI (for <em>SoftWare Interrupt</em>) with one numerical parameter that means : enter the SWI handler and pass that value to know  which interrupt or combination of interruption the CPU should be waiting for, from now on. Helper libraries, including libnds, offer higher-level interrupt management. If most of the program is in interrupt handlers, then the CPU may sleep most of the time, preserving the charge of the DS batteries.
+Interrupts allow also to use the CPU sleep mode, since they provide a way of waking it up as soon as it becomes needed again, thanks to a BIOS routine. In this low power mode, the ARM9 stops processing instructions and powers down some memory banks to save battery charge. There is an ARM instruction named SWI (for <em>SoftWare Interrupt</em>) with one numerical parameter that means : enter the SWI handler and pass that value in order to know which interrupt or combination of interrupts the CPU should be waiting for, from now on. Helper libraries, including libnds, offer higher-level interrupt management. If most of the program is in interrupt handlers, then the CPU may sleep most of the time, preserving the charge of the DS batteries. Note that interrupt handlers are meant to be executed in a short time though, as otherwise they might be interrupted themselves. Too many cascading long interrupts might prevent the DS from ever returning to the main interrupted code.
 </p>
 
 <p>
-By default when an interrupt is triggered, the CPU jumps to the standard <a href="http://www.coranac.com/tonc/text/swi.htm" target="_blank">BIOS</a> interrupt routine, a function which is stored in a special memory address that we can write to. By storing at this memory address a pointer to one of our own function, we can cause the interrupt to be processed by our own function, i.e. we can define our custom interrupt (IRQ) handler.
+By default when an interrupt is triggered, the CPU jumps to the standard <a href="http://www.coranac.com/tonc/text/swi.htm" target="_blank">BIOS</a> interrupt routine, a function which is stored in a special memory address that we can write to. By storing here a pointer to one of our own functions, we can cause the interrupt to be processed by an user-specified function, i.e. we can define our custom interrupt (IRQ) handler.
 </p>
 
 <p>
@@ -987,45 +987,45 @@ The ARM7 stores the addresses of its interrupt handlers in a hardcoded memory lo
 </p>
 
 <p>
-Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is convenient to send a notification to the other CPU when for example there is data for it waiting to be read on a shared area in RAM, once the calling CPU has finished filling it.
-</p>
-
-<p>
-Beyond screens and sometimes keys, FIFO, IPC and <a href="#timers">timers</a> make heavy use of interrupts.
+Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is convenient to send a notification to the other CPU when, for example, there is data for it waiting to be read on a shared area in RAM, once the calling CPU has finished filling it.
 </p>
 
 
 <h6>Screen-related interrupts : Horizontal &amp; Vertical Blank Interrupts</h6>
 
 <p>
-The DS screens are updated neither as a whole nor permanently : the graphics hardware draws pixels one by one, from the top left to the bottom right of each screen, line by line.
+The DS screens are updated neither as a whole nor permanently : the graphics hardware draws pixels one by one, from the top left to the bottom right of each screen, line by line. It then waits for a while (a fixed duration) before starting to draw again. 
 </p>
 
 <p>
-If the framebuffer (the place in memory where the pixels are stored) is modified during this process, the user may see visual artefacts in the form of partly-updated images, the top-left part being rendered according to the previous state of the framebuffer, bottom-right with the current one.
+If the framebuffer (the place in memory where the pixels are stored) is modified during the redrawing process, the user may see visual artefacts in the form of partly-updated images, the top-left part being rendered according to the previous state of the framebuffer, bottom-right with the current one.
 </p>
 
 <p>
-During a short duration after a line is drawn, during a longer one once a full screen is rendered, the hardware remains idle. These moments can be used to perform safe rendering : no partial redraw is to be feared.  
+During a short duration after a line is drawn, during a longer one once a full screen is rendered, the hardware remains idle. These moments can be used to perform safe rendering : no partial redraw is to be feared then. 
 </p>
 
 <p>
-Two special interrupts are fired so that the programs can use these two favorable periods : one, the <em>Horizontal Blank Interrupt</em>, occurs whenever a line has been rendered. Your program can use this first amount of time. The other one, more famous, is the <em>Vertical Blank Interrupt</em> (VBI) that is fired once a full screen has be redrawn. Your program should use this longer duration to perform at least framebuffer-related operations, while the hardware moves from the last line back up to the first line. This stage is called Vblank, as opposed to Vdraw, the screen refresh time.
+Two special interrupts are regularly fired, so that the programs can use these two favorable periods : one, the <em>Horizontal Blank Interrupt</em>, occurs whenever a line has been rendered. Your program can use this first idle duration to perform rendering operations. The other one, more famous, is the <em>Vertical Blank Interrupt</em> (VBI) that is fired once a full screen has be redrawn. Your program should use this longer duration to perform at least framebuffer-related operations, while the hardware moves from the last line back up to the first line. This idle stage is called <em>Vblank</em>, as opposed to <em>Vdraw</em>, the screen refresh time.
 </p>
 
 <p>
- At both screens are refreshed at 60 Hz, the period between two VBI is 16,7 ms long. More <a href="http://www.coranac.com/tonc/text/video.htm#sec-blanks" target="_blank">info</a> (coming from GBA but still applies here). The VBI is called also vsync, since it allows for vertical synchronisation.
+ At both screens are refreshed at 60 Hz, the period between two VBI is 16,7 ms long. See more <a href="http://www.coranac.com/tonc/text/video.htm#sec-blanks" target="_blank">information</a> about the GBA, which still applies here. The VBI is called also <em>vsync</em>, since it allows for vertical synchronisation.
 </p>
 
 <p>
-Note that all other operations (input reading, sound output, application logic, etc.) can be performed regardless of these two interrupts. The VBI, beyond its use to avoid visual artefacts, provides a hard real-time 60Hz time-base too. This time base can be used to schedule operations on a regular basis.
+Note that all other operations (input reading, sound output, application logic, etc.) can be performed regardless of these two interrupts. But the VBI, beyond its use to avoid visual artefacts, provides too a hard real-time 60Hz time-base. This time base can be used to schedule operations on a regular basis.
 </p>
 
 
 <h6>Key Interrupts</h6>
 
 <p>
-Keys can be read thanks to <a href="#keys">several methods</a>, including the interrupt-based one. In this case a specific IRQ handler is registered. This handler will be triggered indeed when a key is pressed, but it will not be called when the key will be released, which reduces quite a lot the interest of this key handling method.
+Keys can be read thanks to <a href="#keys">several methods</a>, including the interrupt-based one. In this case a specific IRQ handler is registered. This handler will be triggered indeed when a key is pressed, but it will not be called when the key is released, which reduces quite a lot the interest of this method for key handling.
+</p>
+
+<p>
+Beyond screens and sometimes keys, FIFO, IPC and <a href="#timers">timers</a> make heavy use of interrupts.
 </p>
 
 <p>
@@ -1040,15 +1040,15 @@ More infos on interrupts can be found in this TONC <a href="http://www.coranac.c
 <h5>ARM7 role</h5>
 
 <p>
-The processor's full name is ARM7TDMI, meaning it's an ARM 7 code (a.k.a. ARM v4), which can read Thumb code, has a Debug mode and a fast Multiplier. On the DS it has neither an instruction cache nor a data cache, but it is a bit compensated by the fast memory it owns, the 64-kilobyte IWRAM linked with a 32-bit wide bus.
+The full name of this processor is <code>ARM7TDMI</code>, meaning it is an ARM 7 core (a.k.a. ARM v4), which can read Thumb (16-bit) code, has a Debug mode and a fast Multiplier. On the DS it has neither an instruction cache nor a data cache, but it is a bit compensated by the fast memory it owns, the 64-kilobyte IWRAM linked with a 32-bit wide bus.
 </p>
 
 <p>
-There are also two 16-kilobyte WRAM banks that can be assigned independently to the ARM7 or ARM9, with a 32-bit wide bus in both cases. The two ARMs cannot access to these banks at the same time. Commonly, both banks will be mapped to the ARM7; as they form a continuous block with the ARM7 IWRAM, effectively giving this processor 96 kilobytes of fast memory.
+There are also two 16-kilobyte WRAM banks that can be assigned independently to the ARM7 or ARM9, with a 32-bit wide bus in both cases. The two ARMs cannot access these banks at the same time. Commonly, both banks will be mapped to the ARM7 : as they form then a continuous block with the ARM7 IWRAM, this processor is effectively given 96 kilobytes of fast memory.
 </p>
 
 <p>
-The ARM7 is the only CPU that can be used for controlling the touchscreen. Most applications use boilerplate code that sets up an interrupt handler for the already mentioned <em>Vertical Blank Interrupt</em> (VBI). Not for rendering purpose here, but for synchronization, so that the interrupt handler dedicated to ARM7 input reporting can be scheduled regularly. The ARM7 boilerplate code gets the value of the touchscreen parameters and stores them in a data structure we can access from the ARM9.
+The ARM7 is the only CPU that can be used for controlling the touchscreen. Most applications use boilerplate code that sets up an interrupt handler for the already mentioned <em>Vertical Blank Interrupt</em> (VBI). Not for rendering purpose here, but for synchronization, so that the interrupt handler dedicated to ARM7 input reporting can be scheduled regularly. The ARM7 boilerplate code gets the value of the touchscreen parameters and stores them in a data structure the ARM9 can access to.
 </p>
 
 <p>
@@ -1060,7 +1060,7 @@ Depending on a data being const or not, the linker will place it respectively ei
 </p>
 
 <p>
-devkitPro includes a default ARM7 program to handle basic tasks like managing interrupts, reading the touchscreen, the microphone and the realtime clock, performing very simple sound playback, etc. It is the <code>arm7.bin</code> discussed in our <a href="#building">building</a> section. Usually there is no need to write custom ARM7 code. The standard Makefiles include this default ARM7 program.
+The free toolchain <a href="#devkitARM">devkitPro</a> includes a default ARM7 program to handle basic tasks like managing interrupts, reading the touchscreen, the microphone and the realtime clock, performing very simple sound playback, etc. It is the <code>arm7.bin</code> file discussed in our <a href="#building">building</a> section. Usually there is no need to write custom ARM7 code. The standard Makefiles include this default ARM7 program.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1075,7 +1075,7 @@ Due to its superior power compared to the ARM7, the ARM9 is the main processor a
 </p>
 
 <p>
-The ARM9 uses two built-in caches, one for the instructions (ITCM, 32 kilobytes), the other for the data (DTCM, 16 kilobytes). Each is accessed by a dedicated 32-bit wide bus. Both cache accesses to the main memory and increase the ARM9 performances a lot, at the expense of a small additional level of complexity : as neither the ARM7 nor the DMA circuits are aware of these two caches, care must be taken not to create inconsistencies with the ARM9. To make a better use of these caches, various primitives are provided to ensure they stay in sync with the main memory, including a mirror of main memory that is not cacheable and a way of flushing the data cache.
+The ARM9 uses two built-in caches, one for the instructions (ITCM, 32 kilobytes), the other for the data (DTCM, 16 kilobytes). Each is accessed thanks to a dedicated 32-bit wide bus. Both are caching accesses to the main memory and increase the ARM9 performances a lot, at the expense of a small additional level of complexity : as neither the ARM7 nor the DMA circuits are aware of these two caches, care must be taken not to create inconsistencies with their wiew and the one of the ARM9. To make a better use of these caches, various primitives are provided to ensure they stay in sync with the main memory. This includes a mirror of main memory that is not cacheable, and a way of flushing the data cache.
 </p>
 
 <p>
@@ -1103,7 +1103,7 @@ A single ARM9 <code>main()</code> function defines usually :
 </p>
 
 <p>
-In GBA mode, the ARM9 is not powered, only the ARM7 can be used.
+Finally, in GBA mode the ARM9 is not powered, only the ARM7 can be used.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1117,14 +1117,14 @@ As each ARM has specific abilities (ex : the ARM7 is the only one that can acces
 </p>
 
 <p>
-The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-process communication</em>) based on a set of registers, managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to a <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queue</a> with an asynchronous communication protocol. Communication between ARM can be tricky : beyond the classical issues of synchronization of the concurrent accesses, one has to keep in mind the ARM7 is not aware of the ARM9 caches, which may lead to inconsistencies if using the main memory to share data.
+The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-Process Communications</em>) based on a set of registers managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to a <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queue</a> with an asynchronous communication protocol. Communication between ARMs can be tricky : beyond the classical issues of synchronization of the concurrent accesses, one has to keep in mind the ARM7 is not aware of the ARM9 caches, which may lead to inconsistencies if using the main memory to share data.
 </p>
 
 
 
 <h6>Custom-made IPC (not recommended)</h6>
 <p>
-More precisely, commands can be described by the ARM9 in a data structure for the ARM7, for example a C union or a non-abstract C++ class inheriting from an abstract command class. These commands should specify the requested action (ex : play sound) and its associated data (ex : a pointer to the samples stored in main memory). A set of commands can then be kept in shared memory, accessible by the ARM7 and ARM9.
+Commands can be described by the ARM9 in a data structure for the ARM7, for example a C union or a non-abstract C++ class inheriting from an abstract command class. These commands should specify the requested action (ex : play sound) and its associated data (ex : a pointer to the samples stored in main memory). A set of commands can then be kept in shared memory, accessible by the ARM7 and ARM9.
 </p>
 
 <p>
@@ -1148,11 +1148,11 @@ See <a href="http://www.double.co.nz/nintendo_ds/nds_develop6.html" target="_bla
 <h6>Harware-based IPC (recommended)</h6>
 
 <p>
-The DS provides a built-in interrupt-based FIFO queue. Therefore the ARM7 can receive immediately interrupt notifications, instead of having to poll, which is rather inefficient. The FIFO handles concurrent accesses in hardware, which allows fast reliable bidirectional communications. This queue can only hold 16 items (<code>int</code>, that can be taken as integers or as pointers to user-defined data) on each side, so the other processor should be receiving these items in a timely manner.
+The DS provides a built-in interrupt-based FIFO queue. Therefore the ARM7 can receive immediately interrupt notifications, instead of having to poll, which would be rather inefficient. The FIFO handles concurrent accesses in hardware, which allows fast reliable bidirectional communications. This queue can only hold 16 items (<code>int</code>, that can be taken as integers or as pointers to user-defined data) on each side, so the other processor should be receiving these items in a timely manner.
 </p>
 
 <p>
-Each CPU has a queue which it can put data on. The other CPU can receive this data by reading from a register or thanks to an interrupt. It will get the oldest item that the original CPU put on the queue. A kind of small application-specific protocol could be specified to manage the queue exchanges.
+Each CPU has a queue which it can put data on. The other CPU can receive this data by reading from a register, or thanks to an interrupt. It will get the oldest item that the other CPU put on the queue. A kind of small application-specific protocol could be specified to manage the queue exchanges.
 </p>
 
 <p>
@@ -1204,15 +1204,15 @@ Selective activation is useful notably to save energy.
 <h5>Rendering in general</h5>
 
 <p>
-The two screens can be separatly managed, or considered to form a taller single screen. They can be used also with the DS rotated of 90 degrees, on its side, like an open book.
+The two screens can be managed separatly, or considered as two halves of a taller single screen. They can be used also with the DS rotated of 90 degrees, on its side (portrait mode), like an open book.
 </p>
 
 <p>
-Most of the informations related to the graphical rendering are stored in the VRAM, for <em>Video RAM</em>. Its size is 656 kilobytes, and it only accepts 16 or 32-bit writes.
+Most of the informations related to the graphical rendering are stored in the VRAM, for <em>Video RAM</em>. Its size is 656 kilobytes, and it only accepts 16 or 32-bit writes (no 8-bit writes allowed).
 </p>
 
 <p>
-2D/3D rendering requires images, geometries, textures, etc. to render, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needing by your application.
+2D/3D rendering requires images, geometries, textures, etc. to render, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needed by your application.
 </p>
 
 <p>
@@ -1220,14 +1220,14 @@ If the rendering takes place during the screen are redrawn, then the user will s
 </p>
 
 <p>
- The first approach can be implemented by waiting the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure rendering does not last more than the period between two VBI, i.e. 16 ms at 60 Hz. This is not always possible. In this case page flipping should be preferred.
+ The first approach can be implemented by waiting for the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure that rendering does not last more than the period between two VBI, i.e. 16 ms at 60 Hz. This is not always possible, except for the most simple renderings. Otherwise page flipping should be preferred.
 </p>
 
 
 <a name="pageflipping"></a>
 <h6>Page flipping</h6>
 <p>
-When rendering is not trivial, it might not be short enough to fit in the VBI. <a href="http://www.coranac.com/tonc/text/bitmaps.htm#sec-page" target="_blank">Page flipping</a> (not to be mixed up with the more expensive double-buffering, which involves an extra screen copy) is a method so that the software can create a screen buffer while the hardware, simultaneously, displays another buffer. At each VBI buffers are exchanged so that they can both continue their task. Page flipping is thus a way of eliminating nasty artefacts like tearing in animations. Palettes may have to be flipped as well as bitmaps.
+When rendering is not trivial, this task might not be short enough to fit in the VBI. <a href="http://www.coranac.com/tonc/text/bitmaps.htm#sec-page" target="_blank">Page flipping</a> (not to be mixed up with the more expensive double-buffering, which involves an extra screen copy) is a method that consists on rendering in a screen buffer while the hardware, simultaneously, displays another buffer. At each VBI, buffers are exchanged so that both tasks can continue. Page flipping is thus a way of eliminating nasty artefacts like tearing in animations. Palettes may have to be flipped as well as bitmaps.
 </p>
 
 
@@ -3106,7 +3106,7 @@ Having the general hardware specifications and the relevant toolchain is not eno
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Thursday, July 5, 2007</em>
+    <em>Last update : Friday, July 6, 2007</em>
   </center>
 </body>
 </html>
