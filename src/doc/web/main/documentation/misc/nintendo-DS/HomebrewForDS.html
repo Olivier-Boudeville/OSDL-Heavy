@@ -343,7 +343,7 @@ Other still less usual methods would be to rely on :
 
 	<li>the <a href="http://natrium42.com/blog/?p=38" target="_blank">dserial</a> ($45+shipping)</li>
 
-	<li>the <b>DS-Xtreme</b>, although the device is often considered overpriced, or the <b>DS Linker 8G / 16G</b>, released by the Supercard team. Note it is unclear whether the USB cable has to be unplugged so that either the PC or the DS gains access to the card memory (in that case it would remove the main advantage of these cards over the microSD-based ones).</li>
+	<li>the <b>DS-Xtreme</b>, although the device is often considered overpriced and subject to reliability issues, or the <b>DS Linker 8G / 16G</b>, released by the Supercard team. Note it is unclear whether the USB cable has to be unplugged so that either the PC or the DS gains access to the card memory (in that case it would remove the main advantage of these cards over the microSD-based ones).</li>
 	
 </ul>
 
@@ -671,7 +671,7 @@ cat ndsloader.bin myGame.nds > myGame.ds.gba
 </p>
 
 <p>
-The other way round (from ds.gba to .nds) usually cannot be performed if not already done by the author, because most often the application relies on specific data meant to be embedded, which is not supported with a .nds file.
+The other way round (from ds.gba to .nds, i.e. from slot-2 to slot-1) usually cannot be performed if not already done by the author, because most often the application relies on specific data meant to be embedded, which is not supported with a .nds file.
 </p>
 
 <p>
@@ -847,7 +847,7 @@ See also :
 <h2>Programming the DS</h2>
 
 <p>
-Programming the DS is quite fun because it is rather down to the metal : being that close to the hardware, with no operating system, no drivers, no hardware incompatibilities (well, until we look at the flash carts) to take into account is a good pretext indeed to struggle against low level details. Probably a very good way to practise embedded developments as well. Not to mention that having its own programs working on a console is quite satisfactory.
+Programming the DS is quite fun because it is rather down to the metal : being that close to the hardware, with no operating system, no drivers, no hardware incompatibilities (well, until we look at the flash carts) to take into account is a good pretext indeed to struggle against low level details. It is probably a very good way to practise embedded developments as well. Not to mention that having one's own programs working on a console is quite satisfactory.
 </p>
 
 
@@ -939,7 +939,7 @@ The main DS built-in memory, consisting of one big 4-megabyte block (sometimes n
 </p>
 
 <p>
-On the main memory there is generally, regarding the ARM9, its corresponding executable, as well as most game data. Everything except its stack (placed in DTCM, see below) and the data declared to be read-only (placed in ROM space) is stored by default in these 4 megabytes of main memory, including application-specific code, non-const variables, global data, C++ constructors and destructors, etc. This memory is rather slow, at least compared to the ARM9 caches.
+Regarding the ARM9, in the main memory there is generally  its corresponding executable as well as most game data. Everything except its stack (placed in DTCM, see below) and the data declared to be read-only (placed in ROM space) is stored by default in these 4 megabytes of main memory, including application-specific code, non-const variables, global data, C++ constructors and destructors, etc. This memory is rather slow, at least compared to the ARM9 caches.
 </p>
 
 <p>
@@ -947,7 +947,7 @@ The ARM7 executable can be as well in main memory, but for performance reasons i
 </p>
 
 <p>
-From the point of view of the ARMs, the GBA cartridges are expected to be a ROM area of up to 32 megabytes. Linkers making use of removable media fake a 32-megabytes only memory, by loading dynamically relevant memory chunks from their mass storage media. 
+From the point of view of the ARMs, the GBA cartridges are expected to be a ROM area of up to 32 megabytes. Linkers making use of removable media fake a 32-megabytes only memory by loading dynamically the relevant memory chunks from their mass storage media. 
 </p>
 
 <p>
@@ -967,7 +967,7 @@ As for the ITCM, for <em>Instruction Tightly Coupled Memory</em>, it is a specia
 <h6>Interrupts in general</h6>
 
 <p>
-An interrupt (or IRQ, for <em>Interrupt Request</em>) is a way for a CPU to stop immediately the current execution in order to run another function, called an interrupt handler, instead. Hence when a hardware or software interrupt occurs, the processor saves first some information so that it knows where to go back and in which state, then the handler associated to this interrupt for that CPU is called at once and, when that function returns, this CPU continues executing the piece of code it was executing before it was interrupted, as if nothing had happened.
+An interrupt (or IRQ, for <em>Interrupt Request</em>) is a way for a CPU to stop immediately the current execution path in order to run another function, called an interrupt handler, instead. Hence when a hardware or software interrupt occurs, the processor saves first some information so that it knows where to go back and in which state, then the handler associated to this interrupt for that CPU is called at once and, when that function returns, this CPU continues executing the piece of code it was executing before it was interrupted, as if nothing had happened.
 </p>
 
 <p>
@@ -975,7 +975,11 @@ Therefore interrupts allow to perform tasks that should not wait, either because
 </p>
 
 <p>
-Interrupts allow also to use the CPU sleep mode, since they provide a way of waking it up as soon as it becomes needed again, thanks to a BIOS routine. In this low power mode, the ARM9 stops processing instructions and powers down some memory banks to save battery charge. There is an ARM instruction named SWI (for <em>SoftWare Interrupt</em>) with one numerical parameter that means : enter the SWI handler and pass that value in order to know which interrupt or combination of interrupts the CPU should be waiting for, from now on. Helper libraries, including libnds, offer higher-level interrupt management. If most of the program is in interrupt handlers, then the CPU may sleep most of the time, preserving the charge of the DS batteries. Note that interrupt handlers are meant to be executed in a short time though, as otherwise they might be interrupted themselves. Too many cascading long interrupts might prevent the DS from ever returning to the main interrupted code.
+Interrupts allow also to use the CPU sleep mode, since they provide a way of waking it up as soon as it becomes needed again, thanks to a BIOS routine. In this low power mode, the ARM9 stops processing instructions and powers down some memory banks to save battery charge. There is an ARM instruction named SWI (for <em>SoftWare Interrupt</em>) with one numerical parameter that means : enter the SWI handler and pass that value in order to know which interrupt or combination of interrupts the CPU should be waiting for, from now on.
+</p>
+
+<p>
+Helper libraries, including libnds, offer higher-level interrupt management. If most of the program is in interrupt handlers, then the CPU may sleep most of the time, preserving the charge of the DS batteries. Note that interrupt handlers are meant to be executed in a short time though, as otherwise they might be interrupted themselves. Too many cascading long interrupts might prevent the DS from ever returning to the main interrupted code.
 </p>
 
 <p>
@@ -1006,15 +1010,15 @@ During a short duration after a line is drawn, during a longer one once a full s
 </p>
 
 <p>
-Two special interrupts are regularly fired, so that the programs can use these two favorable periods : one, the <em>Horizontal Blank Interrupt</em>, occurs whenever a line has been rendered. Your program can use this first idle duration to perform rendering operations. The other one, more famous, is the <em>Vertical Blank Interrupt</em> (VBI) that is fired once a full screen has be redrawn. Your program should use this longer duration to perform at least framebuffer-related operations, while the hardware moves from the last line back up to the first line. This idle stage is called <em>Vblank</em>, as opposed to <em>Vdraw</em>, the screen refresh time.
+Two special interrupts are regularly fired, so that the programs can use these two favorable periods : one, the <em>Horizontal Blank Interrupt</em>, occurs whenever a line has been rendered. Your program can use this first idle duration to perform rendering operations. The other one, more famous, is the <em>Vertical Blank Interrupt</em> (VBI), that is fired once a full screen has been redrawn. Your program should use this longer duration to perform at least framebuffer-related operations, while the hardware moves from the last line back up to the first line. This idle stage is called <em>Vblank</em>, as opposed to <em>Vdraw</em>, the screen refresh time.
 </p>
 
 <p>
- At both screens are refreshed at 60 Hz, the period between two VBI is 16,7 ms long. See more <a href="http://www.coranac.com/tonc/text/video.htm#sec-blanks" target="_blank">information</a> about the GBA, which still applies here. The VBI is called also <em>vsync</em>, since it allows for vertical synchronisation.
+ At both screens are refreshed at 60 Hz, the period between two VBI is 16,7 ms long. See more <a href="http://www.coranac.com/tonc/text/video.htm#sec-blanks" target="_blank">information</a> about the GBA, which still applies here. The VBI is called also <em>vsync</em>, since it allows for <em>vertical synchronisation</em>.
 </p>
 
 <p>
-Note that all other operations (input reading, sound output, application logic, etc.) can be performed regardless of these two interrupts. But the VBI, beyond its use to avoid visual artefacts, provides too a hard real-time 60Hz time-base. This time base can be used to schedule operations on a regular basis.
+Note that all other operations (input reading, sound output, application logic, etc.) can be performed regardless of these two interrupts. But the VBI, beyond its use to avoid visual artefacts, provides too a hard real-time 60Hz time-base. This time base can be used to schedule operations on a regular basis. <a href="#timers">Timers</a> are useful for that task too.
 </p>
 
 
@@ -1056,7 +1060,7 @@ The ARM7 is also the only CPU that can make use of the microphone, the sound pla
 </p>
 
 <p>
-Depending on a data being const or not, the linker will place it respectively either on an average memory rather unconstrained or in IWRAM, which is the fastest but one of the smallest. Therefore each time one forgets to specify the <code>const</code> qualifier for an actual constant, it may use unnecessarily the most researched IWRAM instead of low-end memory.
+Depending on a data being const or not, the linker will place that variable respectively either on an average memory rather unconstrained or in IWRAM, which is the fastest but one of the smallest. Therefore each time one forgets to specify the <code>const</code> qualifier for an actual constant, it may use unnecessarily the most researched IWRAM instead of low-end memory.
 </p>
 
 <p>
@@ -1075,7 +1079,7 @@ Due to its superior power compared to the ARM7, the ARM9 is the main processor a
 </p>
 
 <p>
-The ARM9 uses two built-in caches, one for the instructions (ITCM, 32 kilobytes), the other for the data (DTCM, 16 kilobytes). Each is accessed thanks to a dedicated 32-bit wide bus. Both are caching accesses to the main memory and increase the ARM9 performances a lot, at the expense of a small additional level of complexity : as neither the ARM7 nor the DMA circuits are aware of these two caches, care must be taken not to create inconsistencies with their wiew and the one of the ARM9. To make a better use of these caches, various primitives are provided to ensure they stay in sync with the main memory. This includes a mirror of main memory that is not cacheable, and a way of flushing the data cache.
+The ARM9 uses two built-in caches, one for the instructions (ITCM, 32 kilobytes), the other for the data (DTCM, 16 kilobytes). Each is accessed thanks to a dedicated 32-bit wide bus. Both are caching accesses to the main memory and increase the ARM9 performances a lot, at the expense of a small additional level of complexity : as neither the ARM7 nor the DMA circuits are aware of these two caches, care must be taken not to create inconsistencies with their view and the one of the ARM9. To make a better use of these caches, various primitives are provided to ensure they stay in sync with the main memory. This includes a mirror of main memory that is not cacheable, and a way of flushing the data cache.
 </p>
 
 <p>
@@ -1103,7 +1107,7 @@ A single ARM9 <code>main()</code> function defines usually :
 </p>
 
 <p>
-Finally, in GBA mode the ARM9 is not powered, only the ARM7 can be used.
+In GBA mode the ARM9 is not powered, only the ARM7 can be used.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1177,7 +1181,7 @@ First, the DS can run in different modes, including the GBA Mode (ARM9 not used)
 	<li><b></b> : </li>
 -->
 
-	<li>timer triggered</li>
+	<li>a timer being triggered</li>
 	<li>screen being opened</li>
 	<li>slot-1 or slot-2 card being removed</li>
 	<li>certain key combination pressed (with the exception of X and Y)</li>
@@ -1204,7 +1208,7 @@ Selective activation is useful notably to save energy.
 <h5>Rendering in general</h5>
 
 <p>
-The two screens can be managed separatly, or considered as two halves of a taller single screen. They can be used also with the DS rotated of 90 degrees, on its side (portrait mode), like an open book.
+The two screens can be managed separatly, or considered as two halves of a taller single screen. They can be used also with the DS being rotated of 90 degrees, on its side (portrait mode), like an open book.
 </p>
 
 <p>
@@ -1212,23 +1216,28 @@ Most of the informations related to the graphical rendering are stored in the VR
 </p>
 
 <p>
-2D/3D rendering requires images, geometries, textures, etc. to render, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needed by your application.
+2D/3D rendering requires images, geometries, textures, etc., see our <a href="#datastorage">data storage</a> section explaining how to access the resources needed by your application.
 </p>
 
 <p>
-If the rendering takes place during the screen are redrawn, then the user will see on its screens images partly updated, leading to unwanted visual artefacts. The solution is either to modify the screen content only between two redraws or to use <a href="#pageflipping">page flipping</a>.
+If the rendering takes place while the screens are redrawn, then the user will see on its screens images partly updated, leading to unwanted visual artefacts. The solution is either to modify the screen content only between two redraws or to use <a href="#pageflipping">page flipping</a>.
 </p>
 
 <p>
- The first approach can be implemented by waiting for the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure that rendering does not last more than the period between two VBI, i.e. 16 ms at 60 Hz. This is not always possible, except for the most simple renderings. Otherwise page flipping should be preferred.
+ The first approach can be implemented by waiting for the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure that rendering does not last more than the Vblank, which is rather short. This is not always possible, except for the most simple renderings. Otherwise page flipping should be preferred.
 </p>
 
 
 <a name="pageflipping"></a>
 <h6>Page flipping</h6>
 <p>
-When rendering is not trivial, this task might not be short enough to fit in the VBI. <a href="http://www.coranac.com/tonc/text/bitmaps.htm#sec-page" target="_blank">Page flipping</a> (not to be mixed up with the more expensive double-buffering, which involves an extra screen copy) is a method that consists on rendering in a screen buffer while the hardware, simultaneously, displays another buffer. At each VBI, buffers are exchanged so that both tasks can continue. Page flipping is thus a way of eliminating nasty artefacts like tearing in animations. Palettes may have to be flipped as well as bitmaps.
+When rendering is not trivial, this task might not be short enough to fit in the Vblank. <a href="http://www.coranac.com/tonc/text/bitmaps.htm#sec-page" target="_blank">Page flipping</a> (not to be mixed up with the more expensive double-buffering, which involves an extra screen copy) is a method that consists on rendering in a screen buffer while the hardware, simultaneously, displays another buffer. At each VBI, buffers are exchanged so that both tasks can continue. Page flipping is thus a way of eliminating nasty artefacts like tearing in animations. Palettes may have to be flipped as well as bitmaps.
 </p>
+
+<p>
+Page flipping allows to have a lot more time to render than when rendering only during Vblank : here 16 ms (at 60 Hz) are available.
+</p>
+
 
 
 <h6>Screens</h6>
@@ -1248,17 +1257,17 @@ Compared to the sub core, the main core offers following additional features :
 </p>
 
 <p>
-Both screen can be seen from software like 2D Cartesian coordinate systems, the abscissa (X axis) ranging from 0 (left) to 255 (right), the ordinate (Y axis) ranging from 0 (top) to 191 (bottom). 
+Both screens can be seen from software like 2D Cartesian coordinate systems, the abscissa (X axis) ranging from 0 (left) to 255 (right), the ordinate (Y axis) ranging from 0 (top) to 191 (bottom). 
 </p>
 
 <h6>Video modes</h6>
 
 <p>
-Both cores can be set in various <em>video modes</em>, each with different capabilities and features. The <em>sub core</em> has only five different video modes, whereas the  <em>main core</em> is more powerful : it is able to reallocate more VRAM, and has the ability to render basic vertex 3D (with a 2048 polygon limit) and several vertex shaders, such as Toon Shading. It also has an extra video mode called Mode6. In addition, the display capture device is capable to take a capture screen only from this core. See <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/lesson-1" target="_blank">LiraNuna's 2D tutorial</a> for more details.
+Both cores can be set in various <em>video modes</em>, each with different capabilities and features. The <em>sub core</em> has only five different video modes, whereas the  <em>main core</em> is more powerful : it is able to reallocate more VRAM, and has the ability to render basic vertex 3D (with a 2048 polygon limit) and several vertex shaders, such as <em>Toon Shading</em>. The main core also has an extra video mode called Mode 6 for large bitmaps. In addition, the display capture device is capable to take a capture screen only from this core. See <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/lesson-1" target="_blank">LiraNuna's 2D tutorial</a> for more details.
 </p>
 
 <p>
- In a given screen mode, pixels are described according to a specific pixel format, that dictates their memory layout : 
+ In a given screen mode, pixels are described according to a specific pixel format, that dictates their layout in memory  : 
 <ul>
 
 <!--
@@ -1267,14 +1276,14 @@ Both cores can be set in various <em>video modes</em>, each with different capab
 
         <li>the <b>size</b> of their description (ex : 16 bits per pixel) </li>
         <li>their <b>type</b>, either direct color (direct definition in RGB space) or palette index (reference to a color defined elsewhere)
-        <li>the <b>ordering</b> in memory of the color components, say, GBR ordering (Red is in least significant bits, then Bluen then Green in most significant ones)</li>
-        <li>the <b>size</b> of each color component, ex : 5 bit per component, each component ranges from 0 to 31, as in <code>xBBBBBGGGGGRRRRR</code></li>
-       <li>the <b>meaning of the most significant bit</b> (the 'x' is the previous component layout), which is either ignored or, most of the time, taken as an alpha bit which tells whether thid pixel is transparent (if 0) or if it should be displayed (if 1)</li>
+        <li>the <b>ordering</b> in memory of the color components, say, GBR ordering (Red is in least significant bits, then Blue, then Green in most significant ones)</li>
+        <li>the <b>size</b> of each color component, ex : 5 bits per component, each component ranges from 0 to 31, as in <code>xBBBBBGGGGGRRRRR</code></li>
+       <li>the <b>meaning of the most significant bit</b> (the 'x' is the previous component layout), which is either ignored or, most of the time, taken as an alpha bit which tells whether this pixel is fully transparent (if 0) or if it should be displayed (if 1)</li>
 </ul>
 </p>
 
 <p>
-Direct color modes are simple but use a lot of memory space when stored and a lot of bus bandwidth when blitted, compared to palette-based ones with 4-bit or 8-bit index, which are therefore often favoured.
+Direct color modes are simple, but use a lot of memory space when stored and a lot of bus bandwidth when blitted, compared to palette-based ones with 4-bit or 8-bit index, which are therefore often favoured.
 </p>
 
 <p>
@@ -1294,7 +1303,7 @@ These are <em>address</em> regions (i.e. a lower and higher addresses), but by d
 </p>
 
 <p>
-You therefore need to map predefined chunks of actual video RAM into these specified address regions for the cores to use them. Each of these chunks is called a bank, there are nine of them, labelled VRAM_A through to VRAM_I. Each of these has a particular size and are best suited for different purposes : choosing the appropriate layout and settings is all the more important that memory space is tiny.
+You therefore need to map predefined chunks of actual video RAM into these specified address regions for the cores to use them. Each of these chunks is called a bank, there are nine of them, labelled VRAM_A through to VRAM_I. Each of these has a particular size and is best suited for specific purposes : choosing the appropriate layout and settings is all the more important that memory space is tiny.
 </p>
 
 <p>
@@ -1361,10 +1370,15 @@ The banks are:
 See also the <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" target="_blank">VRAM bank mapping</a> from Dovoto's tutorial.
 </p>
 
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
 
 
 <a name="2D"></a>
 <h5>2D Rendering</h5>
+
+<h6>Overview</h6>
 
 <p>
 The system has two 2D engines, one per screen. Each screen can be put into a variety of different modes, with different feature sets. These engines are each quite similar to the Game Boy Advance's single 2D engine, though more powerful.
@@ -1379,7 +1393,7 @@ The VRAM banks previously mentioned are to be mapped according to the expected l
 -->
 
         <li><b>background</b> memory, which contains either tilesets (32 blocks, 16 kilobytes each) and tile maps (32 blocks), or bitmaps</li>
-        <li><b>sprite</b>memory, which contains tiles for each sprite</li>
+        <li><b>sprite</b> memory, which contains tiles for each sprite</li>
 </ul>
 </p>
 
@@ -1392,7 +1406,7 @@ Base palettes have their own per-engine memory too. Each 2D engine has two base 
 </p>
 
 <p>
-See also the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_4#Background_Memory_Layout_and_VRAM_Management" target="_blank">memory layout</a> as seetn from the 2D engines, taken from Dovoto's tutorial.
+See also the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_4#Background_Memory_Layout_and_VRAM_Management" target="_blank">memory layout</a> as seen from the 2D engines, taken from Dovoto's tutorial.
 </p>
 
 
@@ -1400,15 +1414,19 @@ See also the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_4#Background_Me
 <h6>Backgrounds</h6>
 
 <p>
-Each video mode has a number of <em>backgrounds</em> (BG) that can be used. A background is a surface that, when drawn upon, displays on the hardware like a layer. Modes that have multiple backgrounds allow these backgrounds to be overlayed, so that they are drawn on top of each other. This, and the support of per-pixel transparency, enables for example a background with text to be overlayed on top of a background displaying an image. Backgrounds are opposed to sprites : the former take care of the decoration, the often static environment that may take the entire screen, whereas the later take care of the living entities (small moving objects, like animated characters).
+Each video mode has a number of <em>backgrounds</em> (BG) that can be used. A background is a surface that, when drawn upon, displays on the hardware like a layer. Modes that have multiple backgrounds allow these backgrounds to be overlayed, so that they are drawn on top of each other. This, and the support of per-pixel transparency, enables for example a background with text to be overlayed on top of a background displaying an image.
 </p>
 
 <p>
-Some backgrounds behave like framebuffers (per-pixel software rendering), others are tiled. Such backgrounds, in a very similar way to palettized surfaces (that contain, instead of pixels, a palette and color indices referring to that palette) are composed of a set of tiles (the "palette") and a map, which for each cell of its grid tells which tile should be placed here. This is like if the screens were divided into a series of 8x8 squares. Expressed in tile units, each screen is thus 32x24.
+Backgrounds are opposed to sprites : the formers take care of the decoration, the environment often static that may take the entire screen, whereas the laters represent the living entities (small moving objects, like animated characters).
 </p>
 
 <p>
-More precisely, instead of being a kind of array of pixels, a tile-based background is a kind of array of references to tiles, each tile being a fixed-size array of pixels (a rectangle 8 pixels wide and 8 pixels tall, i.e. 64 pixels). The 2D engine will thus sweep the background as if it was a grid of tiles : for each cell of the grid, it will read in the map array the corresponding tile entry, and will blit the tile being mentioned in that entry to the cell. Hence tiles will perform a full pavage of the background. 
+Some backgrounds behave like framebuffers (per-pixel software rendering), others are tiled. Such backgrounds, in a very similar way to palettized surfaces (that contain, instead of pixels, a palette and color indices referring to that palette) are composed of a set of tiles (the "palette") and a map, which for each cell of its grid tells which tile should be placed here, as if the screens were divided into a series of 8x8 squares. Expressed in tile units, each screen is thus 32x24.
+</p>
+
+<p>
+More precisely, instead of being a kind of array of pixels, a tile-based background is a kind of array of references to tiles, each tile being a fixed-size array of pixels (a rectangle 8 pixels wide and 8 pixels tall, i.e. 64 pixels). The 2D engine will thus sweep the background as if it was a grid of tiles : for each cell of the grid, it will read in the map array the corresponding tile entry, and will blit the tile being mentioned in that entry to the cell. Hence tiles allow to perform a full pavage of the background. 
 </p>
 
 <p>
@@ -1416,7 +1434,7 @@ The DS excels at tile-based rendering, which is the way to go for most games as 
 </p>
 
 <p>
-There are three types of backgrounds : Rotoscale (a.k.a. Rotation), Extended Rotoscale (a.k.a. Extended) and Text. See the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#2D" target="_blank">table of graphic modes</a> from Dovoto's tutorial.
+There are three types of backgrounds : <em>Rotoscale </em>(a.k.a. Rotation), <em>Extended Rotoscale</em> (a.k.a. Extended) and <em>Text</em>. See the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#2D" target="_blank">table of graphic modes</a> from Dovoto's tutorial.
 </p>
 
 
@@ -1427,15 +1445,7 @@ There are three types of backgrounds : Rotoscale (a.k.a. Rotation), Extended Rot
 </p>
 
 <p>
-Such regular rotoscale backgrounds use 8-bit tile entries. They can therefore use only up to 256 tiles. Each entry designates simply the number of its tile into character memory.
-</p>
-
-<p>
-To demonstrate scrolling around an image, one may use for example a 256x256 background size (in pixels), with 16-bit color tiles (with one alpha bit), thanks to palette color indices. That background would be larger than the DS screen (256x192), but it would use only 128 kilobytes to store the image. VRAM_A could be chosen for that. 
-</p>
-
-<p>
-Finally, hardware scrolling can be of great help to implement parallax scrolling (a fake sense of depth), when having multiple backgrounds sliding at different paces.
+Such regular rotoscale backgrounds use 8-bit tile entries. They can therefore use only up to 256 tiles. Each tile entry designates simply the number of its tile into character memory.
 </p>
 
 
@@ -1447,7 +1457,15 @@ Finally, hardware scrolling can be of great help to implement parallax scrolling
 </p>
 
 <p>
-As ERB backgrounds can be accessed (read and write) like the framebuffer and they provide additional hardware capabilities, they tend to make it useless.
+As ERB backgrounds can be accessed (read and write) like the framebuffer, as they provide additional hardware capabilities, they tend to make the framebuffer modes useless.
+</p>
+
+<p>
+To demonstrate scrolling around an image, one may use for example a 256x256 background size (in pixels), with 16-bit color tiles (with one alpha bit). That background would be larger than the DS screen (256x192), but it would use only 128 kilobytes to store the image. VRAM_A could be chosen for that. 
+</p>
+
+<p>
+Finally, hardware scrolling can be of great help to implement parallax scrolling (a fake sense of depth), when having multiple backgrounds sliding at different paces.
 </p>
 
 <p>
@@ -3106,7 +3124,7 @@ Having the general hardware specifications and the relevant toolchain is not eno
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Friday, July 6, 2007</em>
+    <em>Last update : Thursday, July 12, 2007</em>
   </center>
 </body>
 </html>
