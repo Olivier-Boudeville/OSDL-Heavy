@@ -1,4 +1,4 @@
-# Centralized version and release informations about used tools for OSDL. 
+# Centralized version and release informations about tools used by OSDL. 
 
 # This file is intended to be included both in Makefiles and in Bourne shell
 # scripts.
@@ -265,28 +265,72 @@ SDL_mixer_win_MD5="1b78fa15240ed14dc756f3168b757ccd"
 # Nintendo DS section.
 
 
-# DLDI tool and device patches : http://chishm.drunkencoders.com/DLDI/
+# DLDI tool and device patches : http://dldi.drunkencoders.com/
 
 #dlditool_VERSION=""
-dlditool_ARCHIVE="dlditool-linux-x86.zip"
-dlditool_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
-#dlditool_ALTERNATE_DOWNLOAD_LOCATION=""
+dlditool_ARCHIVE="Dlditool-linux-x86.zip"
+dlditool_DOWNLOAD_LOCATION="http://dldi.drunkencoders.com/uploads/a/ab"
+dlditool_ALTERNATE_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
 dlditool_MD5="2bd98c3c2edd2c20f11d18f18446b89b"
 
-dldi_patch_ARCHIVE="sclt.dldi"
-dldi_patch_DOWNLOAD_LOCATION="${dlditool_DOWNLOAD_LOCATION}"
+dldi_patch_ARCHIVE="Sclt.dldi"
+dldi_patch_DOWNLOAD_LOCATION="http://dldi.drunkencoders.com/uploads/c/c6"
+dldi_patch_ALTERNATE_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
 dldi_patch_MD5="54f7b7fb323466202e19815b7bf1a81c"
 
 
-
 # devkitARM : http://www.devkitpro.org/category/devkitarm/
-
 
 devkitARM_VERSION="20"
 devkitARM_ARCHIVE="devkitARM_r${devkitARM_VERSION}-linux.tar.bz2"
 devkitARM_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/devkitpro"
 devkitARM_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/devkitpro"
 devkitARM_MD5="8f6d19782a4710b0c2f43f633002f965"
+
+
+# libnds :
+# http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608
+# (provided by PALib now, therefore not updated anymore here)
+libnds_VERSION="20070503"
+libnds_ARCHIVE="libnds-${libnds_VERSION}.tar.bz2"
+libnds_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/devkitpro"
+libnds_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/devkitpro"
+libnds_MD5="dcb60a051c6490bf1f05c99135913cb8"
+
+
+# PAlib : http://palib.info/
+
+PAlib_VERSION="070615"
+PAlib_ARCHIVE="PAlib_${PAlib_VERSION}.zip"
+PAlib_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/pands"
+PAlib_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/pands"
+PAlib_MD5="1b76293dcaae1caae03da5c99c62f350"
+
+
+# dswifi :
+# http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=199021
+
+dswifi_VERSION="0.3.2"
+dswifi_ARCHIVE="dswifi-${dswifi_VERSION}.tar.bz2"
+dswifi_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/devkitpro"
+dswifi_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/devkitpro"
+dswifi_MD5="0c81600970a1eb9ae69b2c309b350c01"
+
+
+# DeSmuME : http://www.desmume.com/
+
+DeSmuME_VERSION="0.4.0"
+DeSmuME_ARCHIVE="DeSmuME.${DeSmuME_VERSION}.zip"
+DeSmuME_DOWNLOAD_LOCATION="http://www.robsgames.com/nds"
+DeSmuME_MD5="d4f89865db95e2f3c820f12e41958792"
+
+
+# NO$GBA : http://nocash.emubase.de/gba.htm
+
+NoCashGBA_VERSION="w"
+NoCashGBA_ARCHIVE="no\$gba-${NoCashGBA_VERSION}.zip"
+NoCashGBA_DOWNLOAD_LOCATION="http://nocash.emubase.de"
+NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 
 
