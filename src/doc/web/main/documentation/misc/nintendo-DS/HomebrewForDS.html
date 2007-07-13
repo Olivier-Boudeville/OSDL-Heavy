@@ -112,9 +112,9 @@
 						
 			   		<li><a href="#building">Building</a> your first DS program</li>
 					<li><a href="#testing">Testing</a> your first DS program</li>
-			   
 			   </ul>		   
-			   
+
+		       <a href="#andnow">And now ?</a><br>		   
 		       <a href="#otherinfos">Some other information sources</a><br>
 
           </div>
@@ -3154,7 +3154,7 @@ There are still many other libraries, but they are less used. <a href="http://li
 <h3>Building your first DS program</h3>
 
 <p>
-Now has come the time for a first test. LOANI users should first source the <code>LOANI-installations/OSDL-environment.sh</code> file to update their environment : <center>
+Now has come the time for a first test, here directly with PAlib. LOANI users should first source the <code>LOANI-installations/OSDL-environment.sh</code> file to update their environment : <center>
     <table summary="Code" style="border : none">
         <tr>
           <td>
@@ -3204,7 +3204,7 @@ To decrypt a bit, the Makefile will try to rebuild target <code>$(OUTPUT).ds.gba
 </p>
 
 <p>
-Thus the first thing is to obtain these object files. The C++ compiler for ARM (<code>arm-eabi-g++</code>) is called to generate an object file, main.o, for the ARM9, from main.c. Have a look at this file, this is the main one you are expected to write on the future. 
+Thus the first thing is to obtain these object files. The C++ compiler for ARM (<code>arm-eabi-g++</code>) is called to generate an object file for the ARM9, main.o, from main.c. Have a look at this file, this is the main one you are expected to write on the future. 
 </p>
 
 <p>
@@ -3212,15 +3212,15 @@ Once all the object files are created, they can be aggregated by the linker (her
 </p>
 
 <p>
-More precisely main.o, that provides the <code>main()</code> function, will be linked (statically; no dynamic linking available on the DS) with PAlib (<code>-lpa9</code> refers to <code>libpa9.a</code>, 9 for the ARM9), which itself uses some helper libraries : libfat, libnds9, dswfi9, even if simple this example do not use them all. Linking with unused libraries will not make your ROM bigger : they will not be included if really not used.
+More precisely main.o, that provides the <code>main()</code> function, will be linked (statically; no dynamic linking available on the DS) with PAlib (<code>-lpa9</code> refers to <code>libpa9.a</code>, 9 for the ARM9), which itself uses some helper libraries : libfat, libnds9, dswfi9, even if this simple example does not use them all. Linking with unused libraries will not make your ROM bigger : they will not be included if really not referred to.
 </p>
 
 <p>
-<code>Keyboard.elf</code> can then be converted in <code>Keyboard.bin</code> by <code>arm-eabi-objcopy</code>, whose role is to copy and translate object files from a given format to another, here stripping extra informations not needed and not handled by the toolchain.
+<code>Keyboard.elf</code> can then be converted in <code>Keyboard.bin</code> by <code>arm-eabi-objcopy</code>, whose role is to copy and translate object files from a given binary format to another, here stripping extra informations not needed and not handled by the toolchain.
 </p>
 
 <p>
-From <code>Keyboard.bin</code>, <code>Keyboard.nds</code> (at last, a ROM file !) will be generated thanks to <code>devkitARM/bin/ndstool</code>, whose role is to combine the two executables and the data resources into a single file ready for DS distribution. Note that <code>Keyboard.bin</code> contains everything but the executable for the ARM7. This one is retrieved here from a precompiled default version, a kind of template, located in <code>arm7.bin</code>.
+From <code>Keyboard.bin</code>, <code>Keyboard.nds</code> (at last, a ROM file !) will be generated thanks to <code>devkitARM/bin/ndstool</code>, whose role is to combine the two ARM executables and the data resources into a single file ready for DS distribution. Note that <code>Keyboard.bin</code> contains everything but the executable for the ARM7. This one is retrieved here from a precompiled default version, a kind of template, located in <code>arm7.bin</code>.
 </p>
 
 <p>
@@ -3241,7 +3241,7 @@ You have two options here : either the ROM must come one way or another to the D
 
 <h4>Transferring</h4>
 <p>
-The most obvious method is to transfer your ROM, here <code>Keyboard.sc.nds</code>, to your DS : copy it to, say, your microSD card, insert that card in your DS and run the ROM, for example thanks to the SuperCard menu. That should work.
+The most obvious method is to transfer your ROM, here <code>Keyboard.sc.nds</code> (renamed for the Supercard, from <code>Keyboard.ds.gba</code>), to your DS : copy it to, say, your microSD card, insert that card in your DS and run the ROM, for example thanks to the SuperCard menu. That should work.
 </p>
 
 <p>
@@ -3249,7 +3249,7 @@ This method has however two drawbacks. The minor one is that on some computers, 
 </p>
 
 <p>
-Using a Wifi transfer, preferably thanks to a router, could do the trick, and be more convenient than the card swap. One could use DSLinux for a SSH or FTP transfer followed by a reboot. This is not necessarily the best solution ever though. As for cable (parallel, USB, etc.), as already discussed, they either require soldering efforts or are quite expensive. 
+Using a Wifi transfer, preferably thanks to a router, could do the trick, and be more convenient than the card swap. One could use DSLinux for a SSH or FTP transfer followed by a reboot. This is not necessarily the best solution ever though. As for cable (parallel, USB, etc.), as already discussed, they either require soldering efforts, or are quite expensive and require still some user action (to plug/unplug the cable seems to be required). 
 </p>
 
 
@@ -3261,26 +3261,37 @@ The second method for testing your programs is to use an <a href="http://en.wiki
 </p>
 
 <p>
-Though the imitation is not always perfect (sadly, programs may work when emulated, but not on the actual DS device), emulators have progressed a lot. For the Linux user, in decreasing order of interest, one should use :
+Though the imitation is not always perfect (sadly, programs may work when emulated, but not on the actual DS device; the other way round is possible of course), emulators have progressed a lot. For the Linux user, in decreasing order of interest, one should use :
 <ol>
 <!--
     <li><a href="" target="_blank"></a></li>
 -->
 
-	<li><a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a>, probably the best emulator around, with a very complete and accurate 2D support, a fast improving 3D support, able to run many commercial games. On Linux it should be used with Wine (<code>apt-get install wine</code> for Debian-based distributions). Just <a href="http://nocash.emubase.de/no$gba-w.zip" target="_blank">download</a> it, unzip it, run <code>wine NO\$GBA.EXE</code> and select your .ds.gba file (ex : <code>Keyboard.ds.gba</code>)
+	<li>
+
+<p>
+<a href="http://nocash.emubase.de/gba.htm" target="_blank">NO$GBA</a>, probably the best emulator around, with a very complete and accurate 2D support, a fast improving 3D support, able to run many commercial games. On Linux it should be used with Wine (<code>apt-get install wine</code> for Debian-based distributions). Just use LOANI, or <a href="http://nocash.emubase.de/no$gba-w.zip" target="_blank">download</a> it, unzip it, run <code>wine NO\$GBA.EXE</code> and select your .ds.gba file (ex : <code>Keyboard.ds.gba</code>)
+</p>
+
+<p>
 	<center>
     	<img src="NoCashGBA-screenshot.png" alt="NO$GBA"></img>
 	</center>
+</p>
+
+<p>
 	NO$GBA can provide a source level debugger as well. The colors might seem different from the expected ones due to a kind of DS screen emulation filter. This can be deactivated in <code>Options -&gt; Emulation Setup -&gt; GBA Mode</code> (or press F11) by selecting <code>VGA (poppy bright)</code>
+</p>
 	</li>
+
 
 	<li>
 	<p>
-	<a href="http://www.desmume.org/" target="_blank">DeSmuME</a> : probably the fastest of all. Does not support zooming and rotation. There is a <a href="http://desmume.org/?p=19" target="_blank">Linux</a> version and even Debian packages, based on a SDL port. Some people prefer to run the Windows version from Wine . It is one of the few emulators to allow for the reconfiguration of key mappings
+	<a href="http://www.desmume.org/" target="_blank">DeSmuME</a> : probably the fastest of all emulators. Does not support zooming and rotation. There is a <a href="http://desmume.org/?p=19" target="_blank">Linux</a> version and even Debian packages, based on a SDL port. Some people prefer to run the Windows version from Wine. It is one of the few emulators to allow for the reconfiguration of key mappings
 	</p>
 
 	<p>
-	To do so, <a href="http://www.desmume.com/download.htm" target="_blank">download</a> DeSmuME latest stable version, unzip it, and simply run <code>wine NDeSmuME.exe</code>. In the <code>File</code> menu, you can select <code>Open and Execute</code>, and choose,this time, your .nds file (ex : <code>Keyboard.nds</code>). You should then be able to test it immediately
+	To do so, use LOANI or <a href="http://www.desmume.com/download.htm" target="_blank">download</a> DeSmuME latest stable version, unzip it, and simply run <code>wine NDeSmuME.exe</code>. In the <code>File</code> menu, you can select <code>Open and Execute</code>, and choose, this time, your .nds file (ex : <code>Keyboard.nds</code>). You should then be able to test it immediately :
 	<center>
     	<img src="DeSmuME-screenshot.png" alt="DeSmuME"></img>
 	</center>
@@ -3304,17 +3315,33 @@ See also the <a href="http://www.ndsemulator.com/" target="_blank">NDSEmulator.c
 </p>
 
 
-<p>
-Having the general hardware specifications and the relevant toolchain is not enough to be able to program effectively the DS : there is still additional informations to gather before being able to write full-blown applications for it.
-</p>
-
-
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
 
 
+<a name="andnow"></a>
+<h3>And now ?</h3>
 
+<p>
+Thanks to this guide and the listed <a href="#tutorials">tutorials</a>, you should be more than ready to write your own DS application. Often starting simple and building up works well. Thanks to <a href="#forums">forums</a> and <a href="#irc">IRC</a> channels, you should have kind support if needed.
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+As a final word, have fun programmin' the DS !
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+
+</p>
 
 
 
