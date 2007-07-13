@@ -7,8 +7,6 @@
 
 # Optional tools section.
 
-#OPTIONAL_TOOLS="dot doxygen tidy"
-
 # tidy deactivated since seldom used and causes problems 
 # (configure step fails with libtool, md5sum not constant since no 
 # version number provided)
