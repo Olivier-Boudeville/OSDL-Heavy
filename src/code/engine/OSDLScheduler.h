@@ -596,8 +596,11 @@ namespace OSDL
 				* to avoid any abnormal deallocation by its users, that 
 				* should never deallocate the scheduler.
 	         	*
+				* @throw SchedulingException if the scheduler could not be
+				* returned.
+				*
 	         	*/
-	        	static Scheduler & GetScheduler() throw() ;
+	        	static Scheduler & GetScheduler() throw( SchedulingException ) ;
 
 
 				/**
@@ -681,8 +684,12 @@ namespace OSDL
 				 * @note Protected to ensure the singleton pattern is 
 				 * respected.
 				 *
+				 * @throw SchedulingException if the scheduler could not be
+				 * returned, for example if no subsecond sleep is available
+				 * on this platform.
+				 *
 				 */
-				explicit Scheduler() throw() ;
+				explicit Scheduler() throw( SchedulingException ) ;
 				
 				
 				/**
@@ -1370,6 +1377,14 @@ namespace OSDL
 				 */
 				Video::VideoModule * _videoModule ;
 				
+				
+				/**
+				 * Tells whether sub-second sleeps can be used, to avoid 
+				 * monopolizing the CPU.
+				 *
+				 */
+				bool _subSecondSleepsAvailable ;
+				 
 				
 				 
 			private:
