@@ -720,6 +720,17 @@ while [ $# -gt 0 ] ; do
 		token_eaten=0		
 	fi
 	
+	if [ "$1" = "--prefix" ] ; then
+		shift
+		prefix="$1"
+		if [ -z "$prefix" ] ; then
+			ERROR "No prefix specified after --prefix option."
+			exit 1
+		fi
+		DEBUG "Prefix will be $prefix."
+		token_eaten=0		
+	fi
+	
 	if [ "$1" = "--repository" ] ; then
 		shift
 		repository="$1"
@@ -867,6 +878,8 @@ else
 fi
 
 
+alternate_prefix=$HOME/LOANI-installations
+
 
 # Manage prefix choice.
 # alternate_prefix is required so that project tools (OSDL, Ceylan, etc.)
@@ -876,7 +889,6 @@ if [ -z "$prefix" ] ; then
 	if [ `${ID} -u` -eq 0 ] ; then
 		WARNING "The user running LOANI is root."
 		if askDefaultNo "For safety reason, we do not recommend running this script as root, continue nevertheless (few users choose that, errors might more easily occur) ?" ; then 
-			alternate_prefix=$HOME/LOANI-installations
 			DEBUG "Run as root, all tools being installed in their default locations except projet ones which will be in ${alternate_prefix}."
 		else
 			echo "We advise you to re-run LOANI as a non-privileged user."
@@ -890,12 +902,27 @@ if [ -z "$prefix" ] ; then
 	fi
 
 else
+
 	${MKDIR} -p "$prefix"	
 	if [ $? -ne "0" ] ; then
 		ERROR "Unable to create prefix directory $prefix."
 		exit 2
 	fi
 	alternate_prefix="$prefix"
+
+fi
+
+
+if [ $target_nds -eq 0 ] ; then
+	
+	ds_prefix=${alternate_prefix}/Nintendo-DS-development
+		
+	${MKDIR} -p "$ds_prefix"	
+	if [ $? -ne "0" ] ; then
+		ERROR "Unable to create DS prefix directory $ds_prefix."
+		exit 3
+	fi
+		
 fi
 
 
@@ -978,7 +1005,7 @@ findBuildTools
 
 if [ ! -d "$repository" ] ; then
 	DEBUG "Creating non already existing repository ($repository)."
-	${MKDIR} -p $repository
+	${MKDIR} -p $repository	
 fi
 
 
@@ -1356,8 +1383,12 @@ fi
 
 DISPLAY "End of LOANI, started at ${starting_time}, successfully ended at "`date '+%H:%M:%S'`"."
 
-DISPLAY "You can now test the whole installation by executing ${alternate_prefix}/share/OSDL/scripts/shell/playTests.sh"
 
+ if [ $target_nds -eq 1 ] ; then
+ 
+	DISPLAY "You can now test the whole installation by executing ${alternate_prefix}/share/OSDL/scripts/shell/playTests.sh"
+	
+fi
 
 exit 0
 
