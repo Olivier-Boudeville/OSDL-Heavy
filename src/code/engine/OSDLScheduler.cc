@@ -15,7 +15,7 @@ using std::ostringstream ;
 
 using namespace Ceylan::Log ;         // for LogPlug
 
-// for time units and calls (ex : Millisecond, basicSleep) :
+// for time units and calls (ex : Millisecond, atomicSleep) :
 using namespace Ceylan::System ;      
 
 using namespace OSDL ;
@@ -693,7 +693,7 @@ Scheduler & Scheduler::GetExistingScheduler() throw( SchedulingException )
 }
 
 
-Scheduler & Scheduler::GetScheduler() throw()
+Scheduler & Scheduler::GetScheduler() throw( SchedulingException )
 {
 
     if ( Scheduler::_internalScheduler == 0 )
@@ -768,7 +768,7 @@ void Scheduler::DeleteScheduler() throw()
 // Protected members below :
 
 
-Scheduler::Scheduler() throw() :
+Scheduler::Scheduler() throw( SchedulingException ) :
 	_screenshotMode( false ),
 	_desiredScreenshotFrequency( DefaultMovieFrameFrequency ),
 	_screenshotPeriod( 0 ),
@@ -805,6 +805,13 @@ Scheduler::Scheduler() throw() :
 	_videoModule( 0 )
 {
 
+	_subSecondSleepsAvailable = Ceylan::System::areSubSecondSleepsAvailable() ;
+
+	if ( ! _subSecondSleepsAvailable )
+		throw SchedulingException( "Scheduler constructor : "
+			"scheduler could not be created as no subsecond sleep is "
+			"available on this platform." ) ;
+		
 	// Force precomputation for scheduling granularity, since it takes time :
 	send( "On scheduler creation, "
 		"detected operating system scheduling granularity is about "
@@ -812,7 +819,7 @@ Scheduler::Scheduler() throw() :
 
 	// Update _simulationPeriod, _renderingPeriod and _screenshotPeriod :
 	setTimeSliceDuration( DefaultEngineTickDuration ) ;
-	
+		
 	send( "Scheduler created." ) ;
 	
 }
@@ -2417,7 +2424,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 		_currentEngineTick++ ;
 		
 		// Be nice with the operating system :
-		if ( countBeforeSleep == 500 )
+		if ( _subSecondSleepsAvailable && countBeforeSleep == 500 )
 		{
 			countBeforeSleep = 0 ;
 			atomicSleep() ;
@@ -2872,7 +2879,8 @@ void Scheduler::onIdle() throw()
 		 * sleeping time can be performed, scheduler-wise :
 		 *
 		 */
-		 Ceylan::System::atomicSleep() ;
+		 if ( _subSecondSleepsAvailable )
+		 	Ceylan::System::atomicSleep() ;
 		 
 	}	
 	
