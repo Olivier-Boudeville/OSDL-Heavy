@@ -4490,7 +4490,7 @@ preparedlditool()
 	cd $repository
 	
 	if [ -n "$prefix" ] ; then	
-		dlditool_PREFIX=${prefix}/dldi
+		dlditool_PREFIX=${ds_prefix}/dldi
 	else
 		dlditool_PREFIX=dldi
 	fi
