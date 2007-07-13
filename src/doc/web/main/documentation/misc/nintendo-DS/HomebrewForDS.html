@@ -87,7 +87,7 @@
 						</ul>
 											
 						<li>Activating only the relevant <a href="#subsystems">subsystems</a></li>			
-						<li><a href="#2D">2D</a>/<a href="#3D">3D</a> <a href="#rendering">Rendering</a></li>		
+						<li><a href="#rendering">2D/3D rendering</a></li>
 						<li><a href="#sound">Sound</a> input and output</li>
 						<li><a href="#datastorage">Data storage</a> &amp; application ressources</li>
 						<li><a href="#inputdevice">Input device</a> management</li>
@@ -107,8 +107,7 @@
 						
 			   		<li><a href="#building">Building</a> your first DS program</li>
 					<li><a href="#testing">Testing</a> your first DS program</li>
-
-							   
+			   
 			   </ul>		   
 			   
 		       <a href="#otherinfos">Some other information sources</a><br>
@@ -757,7 +756,7 @@ Another option for Windows users is to install <a href="http://psychowood.alterv
 </p>
 
 <p>
-More informations about DLDI : read this <a href="http://www.dev-scene.com/NDS/Libfat_DLDI" target="_blank">section</a> on Dev-Scene.
+More information about DLDI : read this <a href="http://www.dev-scene.com/NDS/Libfat_DLDI" target="_blank">section</a> on Dev-Scene.
 </p>
 
 <p>
@@ -1033,7 +1032,7 @@ Beyond screens and sometimes keys, FIFO, IPC and <a href="#timers">timers</a> ma
 </p>
 
 <p>
-More infos on interrupts can be found in this TONC <a href="http://www.coranac.com/tonc/text/interrupts.htm" target="_blank">section</a>.
+More information on interrupts can be found in this TONC <a href="http://www.coranac.com/tonc/text/interrupts.htm" target="_blank">section</a>.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1205,6 +1204,69 @@ Selective activation is useful notably to save energy.
 <a name="rendering"></a>
 <h4>2D/3D Rendering</h4>
 
+<a name="renderingtoc"></a>
+<center>
+        <table summary="Table of contents" style="border: none">
+        <tr>
+          <td>
+<!--
+                       <a href="#"></a><br>
+-->
+<!--
+    				<li><a href="#"></a></li>
+-->
+
+                   <div class="box">
+                       <a href="#ingeneral">Rendering in general</a>
+
+			<ul>
+    				<li><a href="#pageflipping">Page flipping</a></li>
+    				<li><a href="#screensandcores">Screens &amp; cores</a></li>
+    				<li><a href="#videomodes">Video modes</a></li>
+    				<li><a href="#memorybanks">VRAM Memory Banks</a></li>
+			</ul>
+
+                       <a href="#2D">2D Rendering</a>
+
+			<ul>
+    				<li><a href="#2Doverview">Overview</a></li>
+    				<li><a href="#backgrounds">Backgrounds</a></li>
+				<ul>
+     					<li><a href="#rotoscale">Rotoscale backgrounds</a></li>
+    					<li><a href="#erb">Extended Rotoscale backgrounds</a></li>
+   					<li><a href="#textbackgrounds">Text backgrounds</a></li>
+				</ul>
+    				<li><a href="#framebuffermode">Framebuffer mode</a></li>
+    				<li><a href="#formatconversions">Format conversions</a></li>
+				<ul>
+     					<li><a href="#preconversions">Precomputed conversions</a></li>
+    					<li><a href="#runtimeconversions">Runtime conversions</a></li>
+				</ul>
+    				<li><a href="#sprites">Sprites</a></li>
+				<ul>
+     					<li><a href="#regularsprites">Regular sprites</a></li>
+    					<li><a href="#affinesprites">Affine sprites</a></li>
+    					<li><a href="#spriteanimation">Sprite animation</a></li>
+				</ul>
+    				<li><a href="#additional2D">Additional 2D information</a></li>
+ 			</ul>
+
+                      <a href="#3D">3D Rendering</a>
+          </div>
+
+          </td>
+        </tr>
+      </table>
+</center>
+
+<br><p><center>[<a href="#toc">Back to the general table of contents</a>]</center></p><br><br>
+
+<!--
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
+-->
+
+
+<a name="ingeneral"></a>
 <h5>Rendering in general</h5>
 
 <p>
@@ -1227,6 +1289,9 @@ If the rendering takes place while the screens are redrawn, then the user will s
  The first approach can be implemented by waiting for the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure that rendering does not last more than the Vblank, which is rather short. This is not always possible, except for the most simple renderings. Otherwise page flipping should be preferred.
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
+
+
 
 <a name="pageflipping"></a>
 <h6>Page flipping</h6>
@@ -1238,9 +1303,12 @@ When rendering is not trivial, this task might not be short enough to fit in the
 Page flipping allows to have a lot more time to render than when rendering only during Vblank : here 16 ms (at 60 Hz) are available.
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
-<h6>Screens</h6>
+
+<a name="screensandcores"></a>
+<h6>Screens &amp; cores</h6>
 
 <p>
 In software you manipulate a <em>main</em> screen abstraction (main rendering core), that can be mapped either to the top actual screen or to the bottom one, and a <em>sub</em> screen (sub rendering core), which will correspond to the other hardware screen. They can be swapped at any time thanks to <code>lcdSwap()</code>.
@@ -1260,6 +1328,10 @@ Compared to the sub core, the main core offers following additional features :
 Both screens can be seen from software like 2D Cartesian coordinate systems, the abscissa (X axis) ranging from 0 (left) to 255 (right), the ordinate (Y axis) ranging from 0 (top) to 191 (bottom). 
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
+
+
+<a name="videomodes"></a>
 <h6>Video modes</h6>
 
 <p>
@@ -1290,8 +1362,11 @@ Direct color modes are simple, but use a lot of memory space when stored and a l
 There are libnds-provided macros (ex : <code>RGB15</code>) that help defining pixels according to specific formats. See <a href="http://www.double.co.nz/nintendo_ds/nds_develop2.html" target="_blank">Chris Double tutorial #2</a> for more details. 
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
+
+<a name="memorybanks"></a>
 <h6>VRAM Memory Banks</h6>
 
 <p>
@@ -1370,7 +1445,7 @@ The banks are:
 See also the <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" target="_blank">VRAM bank mapping</a> from Dovoto's tutorial.
 </p>
 
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
 
@@ -1378,6 +1453,7 @@ See also the <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" targ
 <a name="2D"></a>
 <h5>2D Rendering</h5>
 
+<a name="2Doverview"></a>
 <h6>Overview</h6>
 
 <p>
@@ -1409,8 +1485,11 @@ Base palettes have their own per-engine memory too. Each 2D engine has two base 
 See also the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_4#Background_Memory_Layout_and_VRAM_Management" target="_blank">memory layout</a> as seen from the 2D engines, taken from Dovoto's tutorial.
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
+
+<a name="backgrounds"></a>
 <h6>Backgrounds</h6>
 
 <p>
@@ -1437,8 +1516,10 @@ The DS excels at tile-based rendering, which is the way to go for most games as 
 There are three types of backgrounds : <em>Rotoscale </em>(a.k.a. Rotation), <em>Extended Rotoscale</em> (a.k.a. Extended) and <em>Text</em>. See the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#2D" target="_blank">table of graphic modes</a> from Dovoto's tutorial.
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
+<a name="rotoscale"></a>
 <h7>Rotoscale backgrounds</h7>
 <p>
 <em>Rotoscale</em> backgrounds are tile-based backgrounds (or surfaces, in SDL-like language) that can be manipulated (affine transformations : 2-axis scrolled, scaled in or out, rotated, sheared, thanks a <a href="http://user.chem.tue.nl/jakvijn/tonc/affine.htm" target="_blank">transformation matrix</a>) and displayed directly on screen, all in hardware, i.e. with little overhead for the CPUs, no additional VRAM copy and no specific developing effort (it only involves setting some registers). They can be smaller or bigger than a screen, in which case only the relevant parts will be shown (clipping). 
@@ -1448,8 +1529,11 @@ There are three types of backgrounds : <em>Rotoscale </em>(a.k.a. Rotation), <em
 Such regular rotoscale backgrounds use 8-bit tile entries. They can therefore use only up to 256 tiles. Each tile entry designates simply the number of its tile into character memory.
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
+
+<a name="erb"></a>
 <h7>Extended Rotoscale backgrounds</h7>
 
 <p>
@@ -1472,8 +1556,10 @@ Finally, hardware scrolling can be of great help to implement parallax scrolling
 In tile mode, ERB use the same 16-bit tile entries as the text backgrounds (see below).
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
+<a name="textbackgrounds"></a>
 <h7>Text backgrounds</h7>
 
 <p>
@@ -1485,7 +1571,7 @@ They are general-purpose tiled backgrounds. A text background is made of :
 </p>
 
 <p>
-The DS tiling engine is quite feature-rich : beyond displaying tiles as they are, it can flip them (horizontally and/or vertically), and use different palettes to render the same tile, for example for palette-based animation. These per-tile informations are stored in the aforementioned 6-bit attributes of tile entries (the control bits) : one bit (on/off) for each flip (horizontal/vertical), and 4 bits to designate one of the 16 sub-palettes. 
+The DS tiling engine is quite feature-rich : beyond displaying tiles as they are, it can flip them (horizontally and/or vertically), and use different palettes to render the same tile, for example for palette-based animations. These per-tile informations are stored in the aforementioned 6-bit attributes of tile entries (the control bits) : one bit (on/off) for each flip (horizontal/vertical), and 4 bits to designate one of the 16 sub-palettes. 
 </p>
 
 <p>
@@ -1495,8 +1581,8 @@ So with text backgrounds you have nothing like an overall screen buffer that cou
 <p> 
 The pixels of a tile are described as color indices taken from a palette. As palettes here are a collection of either 256 colors or 16 sub-palettes of 16 colors each, there are two color modes for tiles in text backgrounds :
 <ul>
-        <li>a <b>256-color mode</b> (a.k.a. 8-bit color mode) :  a pixel is an index to the 256-color palette. The index is then an 8-bit integer, ranging for 0 to 255</li>
-        <li>a <b>16-color mode</b> (a.k.a. 4-bit color mode) :  a pixel is an index to a 16-color palette. The index is then an 4-bit integer, ranging for 0 to 15. Less memory is required, thus making room for more tiles and other elements in VRAM, but with only 16 possible colors per tile the rendering quality of the result might be poor</li>
+        <li>a <b>256-color mode</b> (a.k.a. 8-bit color mode) :  a pixel is an index to the 256-color palette. The index is then a 8-bit integer, ranging for 0 to 255</li>
+        <li>a <b>16-color mode</b> (a.k.a. 4-bit color mode) :  a pixel is an index to a 16-color palette. The index is then an 4-bit integer, ranging for 0 to 15. Less memory is required, thus making room for more tiles and other elements in VRAM, but, with only 16 possible colors per tile, the rendering quality of the result might be poor</li>
 </ul>
 </p>
 
@@ -1506,7 +1592,7 @@ In the 512-kilobyte VRAM (Video RAM), there are locations dedicated to the stora
 </p>
 
 <p>
-As maps can be placed anywhere in the first 64 kilobytes of background memory, and tiles anywhere in the first 256 kilobytes, a good practise may be to reserve the first 16 kilobytes of background memory to your maps (hence 8 map bases), and, starting at tile base #1 instead of #0, to use the remaining 496 kilobytes (31*16) to store your tiles.
+As maps can be placed anywhere in the first 64 kilobytes of background memory, and tiles anywhere in the first 256 kilobytes, a good practise may be to reserve the first 16 kilobytes of background memory to your maps (hence 8 map bases, which therefore correspond to the first tile base), and, starting at tile base #1 (instead of #0), to use the remaining 496 kilobytes (31*16) to store your tiles.
 </p>
 
 <p>
@@ -1518,7 +1604,7 @@ The tileset of a given map can refer up to 1024 tiles : more than a tile base ca
 </p>
 
 <p>
-Map bases always have 32×32 entries. By default, the DS will be using a 32x32 tile map, a size of 256x256 pixels. It would be exactly as wide as a DS screen, and taller : screen height is 192 pixels, therefore there would be 64 extra rows. 
+Map bases always have 32×32 tile entries. By default, the DS will be using a 32x32 tile map, a size of 256x256 pixels. It would be exactly as wide as a DS screen, and taller : screen height is 192 pixels, therefore there would be 64 extra rows. 
 </p>
 
 <p>
@@ -1526,34 +1612,44 @@ When wanting to perform (hardware) scrolling, one has to have a logical screen b
 </p>
 
 <p>
-More infos on <a href="http://www.coranac.com/tonc/text/regbg.htm" target="_blank">regular tiled backgrounds</a> can be found in TONC and in Dovoto's <a href="http://www.dev-scene.com/NDS/Tutorials_Day_4" target="_blank">tutorial</a>.</p>
+More information on <a href="http://www.coranac.com/tonc/text/regbg.htm" target="_blank">regular tiled backgrounds</a> can be found in TONC and in Dovoto's <a href="http://www.dev-scene.com/NDS/Tutorials_Day_4" target="_blank">tutorial</a>.
+</p>
+
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
+<a name="framebuffermode"></a>
 <h6>Framebuffer mode</h6>
 <p>
-The framebuffer mode, or bitmap mode, is the easiest to directly draw to, but the less powerful of all modes. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area in 15-bit Direct color format will immediately result in their appearing on the screen. Therefore to plot a pixel, whose color is defined in a 16-bit integer c, at screen location (x,y), one just would have to write c at <code>FramebufferBaseAddress + y * ScreenPitch + x</code>, ScreenPitch being equal here to the screen width (no extra per-scanline bytes), 256. 
+The framebuffer mode, or bitmap mode, is the easiest to directly draw to, but the less powerful of all modes. A <em>framebuffer</em> is a mode where the screen is mapped directly to a portion of main memory. Pixel informations written to this memory area in 15-bit direct color format will immediately result in their appearing on the screen. Therefore to plot a pixel, whose color is defined in a 16-bit integer c, at screen location (x,y), one just would have to write c at <code>FramebufferBaseAddress + y * ScreenPitch + x</code>, ScreenPitch being equal here to the screen width (no extra per-scanline bytes), 256. 
 </p>
 
 <p>
-If it remains quite simple, it does not offer the various useful features offered by other modes, such as sprites, scrollings, etc., not to mention 3D primitives : with the framebuffer only software rendering is performed (raster graphics). And only the main screen can use this framebuffer mode.
+If it remains quite simple, it does not offer the various useful features supported by other modes, such as sprites, scrollings, etc., not to mention 3D primitives : with the framebuffer only software rendering is performed (raster graphics). And only the main screen can use this framebuffer mode.
 </p>
 
 <p>
-Hence a good practise is to prefer sprites and tiled backgrounds over bitmap modes, very few 2D games do not rely on the hardware acceleration.
+Hence a good practise is to prefer sprites and tiled backgrounds over bitmap modes. Very few 2D games do not rely on the hardware acceleration.
 </p>
 
 <p>
 See Dovoto's tutorial about software-based <a href="http://www.dev-scene.com/NDS/Tutorials_Day_3#Bresenham_Lines" target="_blank">line rendering</a> using the Bresenham algorithm. 
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
+
+
+
+<a name="formatconversions"></a>
 <h6>Format conversions</h6>
 
 <p>
-Finally, the graphics to render are most of the time available first in general-purpose formats (png, jpeg, etc.). They have therefore to be converted into data that the DS may use natively, i.e. split into the appropriate palettes, tilesets, etc. This can be either precomputed (done at build time, once for all) or done at runtime, which may allow to benefit from the features of the general-purpose format, for example for compression.
+Finally, the graphics to render are most of the time available first in general-purpose formats (png, jpeg, etc.). They have therefore to be converted into data that the DS may use natively, i.e. split into the appropriate palettes, tilesets, etc. This can be either precomputed (done at build time, once for all) or done at runtime, which may allow to benefit from the features of the general-purpose format, for example compression.
 </p>
 
 
-<a name="conversions"></a>
+
+<a name="preconversions"></a>
 <h7>Precomputed conversions</h7>
 
 <p>
@@ -1578,11 +1674,11 @@ One may use <a href="http://www.gimp.org/" target="_blank">The Gimp</a> to preco
 </p>
 
 <p>
-Another tool useful to convert sprites, backgrounds and textures is PAGfx, which has been ported to GNU/Linux (download <a href="http://www.palib.info/downloads/PAGfx/Linux/" target="_blank">here</a>). Use just has to update <code>PAGfx.ini</code> and then to run <code>PAGfx.exe</code> that will read it to perform its image manipulations. Prefer for example the magenta colorkey (<em>transparent color</em>). This will result in various .h and .c files to be used when building, so that the corresponding resources are embedded. This implies <a href="#datastorage">linking these data directly</a> in the executable, which is rarely the best way to manage resources.
+Another tool useful to convert sprites, backgrounds and textures is PAGfx, which has been ported to GNU/Linux (download <a href="http://www.palib.info/downloads/PAGfx/Linux/" target="_blank">here</a>). Its user just has to update <code>PAGfx.ini</code> and then to run <code>PAGfx.exe</code> that will read it and perform its image manipulations. Prefer for example the magenta colorkey (<em>transparent color</em>). This will result in various .h and .c files to be used when building, so that the corresponding resources are embedded. This implies <a href="#datastorage">linking these data directly</a> in the executable, which is rarely the best way to manage resources.
 </p>
 
 <p>
-More info about PAGfx can be found in <a href="http://www.palib.info/wiki/doku.php?id=day4#converting_with_pagfx" target="_blank">this section</a> of PAlib tutorial.
+More information about PAGfx can be found in <a href="http://www.palib.info/wiki/doku.php?id=day4#converting_with_pagfx" target="_blank">this section</a> of PAlib tutorial.
 </p>
 
 <p>
@@ -1593,7 +1689,11 @@ Other tools include <a href="http://www.neoflash.com/forum/index.php?PHPSESSID=8
 These converted graphics will then have to be <a href="#datastorage">stored</a> so that the DS application will find it. 
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
+
+
+<a name="runtimeconversions"></a>
 <h7>Runtime conversions</h7>
 
 <p>
@@ -1601,14 +1701,18 @@ Tools include <a href="http://www.aaronrogers.com/ham/gfx2gba_readme.php" target
 </p>
 
 <p>
-To read easily headers (preferably fixed-size), one may use in-place structure reading, known as (packed) overlay.
+When developing a decoder, to read easily headers (notably fixed-size ones), one may use in-place structure reading, known as (packed) overlay : it maps directly a sequence of bytes being read from file into a C structure, provided the compiler is instructed about how data is padded.
 </p>
 
 <p>
 See also : Dovoto's tutorial about <a href="http://www.dev-scene.com/NDS/Tutorials_Day_3#Working_With_Graphics_Files" target="_blank">BMP decoding</a>, <a href="http://liranuna.drunkencoders.com/nds-2d-tuts/" target="_blank">LiraNuna's 2D tutorial</a>, and <a href="http://www.double.co.nz/nintendo_ds/nds_develop10.html" target="_blank">Chris Double tutorial #10</a> for more details. 
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
+
+
+<a name="sprites"></a>
 <h6>Sprites</h6>
 
 <p>
@@ -1645,14 +1749,17 @@ Each sprite must be given a number in 0..127 that identifies it, and that define
 </p>
 
 <p>
-Each sprite behaves a bit like a big tile : it has an identifier and some overall informations such as flipping flags and palette-info for 16-color sprites. It is nevertheless made from several real tiles, which can be stored in memory according to two <a href="http://www.coranac.com/tonc/text/regobj.htm#sec-tiles" target="_blank">conventions</a> : 1D mapping or 2D mapping. Specific <a href="#conversions">tools</a> can be used to turn any bitmap into a suitable tileset for DS sprites.
+Each sprite behaves a bit like a big tile : it has an identifier and some overall informations such as flipping flags and palette-info for 16-color sprites. It is nevertheless made from several real tiles, which can be stored in memory according to two <a href="http://www.coranac.com/tonc/text/regobj.htm#sec-tiles" target="_blank">conventions</a> : 1D mapping or 2D mapping. Specific <a href="#preconversions">tools</a> can be used to turn any bitmap into a suitable tileset for DS sprites.
 </p>
 
 <p>
 To follow TONC naming conventions, each sprite is either regular (standard, basic) or affine (being able to be rotated, scaled, sheared).
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
+
+<a name="regularsprites"></a>
 <h7>Regular sprites</h7>
 <p>
 A regular sprite has several attributes that define its size, actual shape (depending both on the shape and size attributes), position (x,y of the top-left sprite corner in screen space), background priority (higher priorities are drawn first, hence are below lower-priority ones), flipping (horizontal and/or vertical), base tile, bit depth (palette range), activation (shown/hidden), <a href="http://www.coranac.com/tonc/text/gfx.htm#sec-blend" target="_blank">alpha-blending</a> status, <a href="http://www.coranac.com/tonc/text/gfx.htm#sec-mos" target="_blank">mosaïc</a> (blocky) effect status, <a href="http://www.coranac.com/tonc/text/gfx.htm#sec-win" target="_blank">windowing</a>, and more.
@@ -1662,7 +1769,11 @@ A regular sprite has several attributes that define its size, actual shape (depe
 The size of sprites can be 64x64 (the default), 64x32, 32x64.
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
+
+
+<a name="affinesprites"></a>
 <h7>Affine sprites</h7>
 <p>
 Affine sprites are extended regular sprites. They have all regular attributes, and refer to additional affine-specific informations, the previously mentioned rotsets. Each affine sprite is transformable : it references an affine 2x2 transformation matrix, which defines how it should be rotated, scaled or sheared when being rendered. This matrix transforms points expressed in screen space into points in texture space, not the other way round.
@@ -1673,13 +1784,18 @@ Because of round-off errors due to fixed point matrix multiplications, one shoul
 </p>
 
 <p>
-More infos about these affine operations can be read from <a href="http://www.coranac.com/tonc/text/affine.htm" target="_blank">TONC</a>, especially the <a href="http://www.coranac.com/tonc/text/affobj.htm" target="_blank">affine sprite</a> section about clipping, discretization and wrapping artefacts.
+More information about these affine operations can be read from <a href="http://www.coranac.com/tonc/text/affine.htm" target="_blank">TONC</a>, especially the <a href="http://www.coranac.com/tonc/text/affobj.htm" target="_blank">affine sprite</a> section about clipping, discretization and wrapping artefacts.
 </p>
 
 <p>
 Sprites are discussed as well in Dovoto's <a href="http://www.dev-scene.com/NDS/Tutorials/Captain_Apathy/Tiling#Sprites" target="_blank">tutorial</a> and in this <a href="http://www.palib.info/wiki/doku.php?id=day4" target="_blank">section</a> of PAlib tutorial.
 </p>
 
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
+
+
+
+<a name="spriteanimation"></a>
 <h7>Sprite animation</h7>
 
 <p>
@@ -1690,10 +1806,16 @@ To perform animations, one should better have its sprites refer to different til
 Another method would be to load dynamically the tiles for the animations, for example thanks to DMA copies, either directly to VRAM, or in a kind of back-buffer located in main RAM that can be swapped with the current sprite buffer when the animation needs its data.
 </p>
 
-<h7>Additional 2D informations</h7>
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
+
+
+<a name="additional2D"></a>
+<h6>Additional 2D information</h6>
 <p>
-More infos on <a href="http://www.coranac.com/tonc/text/video.htm#sec-vid-types" target="_blank">bitmaps, backgrounds and sprites</a>, coming from the GBA but mostly relevant for the DS as well.
+More information on <a href="http://www.coranac.com/tonc/text/video.htm#sec-vid-types" target="_blank">bitmaps, backgrounds and sprites</a>, coming from the GBA but mostly relevant for the DS as well.
 </p>
+
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
 
@@ -1738,7 +1860,9 @@ The 3D core behaves a lot like an <a href="http://en.wikipedia.org/wiki/OpenGL" 
 See also the TONC section about <a href="http://www.coranac.com/tonc/text/matrix.htm" target="_blank">basic linear algebra</a> and its <a href="http://www.coranac.com/tonc/text/mode7ex.htm" target="_blank">3D section</a> for theoritical elements about 3D rendering.
 </p>
 
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p>
+
+<br><p><center>[<a href="#toc">Back to the main table of contents</a>]</center></p><br><br>
 
 
 
@@ -1767,7 +1891,7 @@ Sample data can be assigned independently to any of the 16 channels. For a given
 </p>
 
 <p>
-Sample data also need to be passed to the hardware in raw format, i.e. as a series of uncompressed samples without any header. This is not the case of the most usual formats (wav, mp3, OggVorbis, etc.), therefore they have to be converted one way or another (beforehand or by the program itself, at start-up or in-game) to the expected raw format. This can be done thanks to the <a href="http://sox.sourceforge.net/" target="_blank">sox</a> tool, or thanks to the <code>wav2gba</code> tool. More info about the conversion can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
+Sample data also need to be passed to the hardware in raw format, i.e. as a series of uncompressed samples without any header. This is not the case of the most usual formats (wav, mp3, OggVorbis, etc.), therefore they have to be converted one way or another (beforehand or by the program itself, at start-up or in-game) to the expected raw format. This can be done thanks to the <a href="http://sox.sourceforge.net/" target="_blank">sox</a> tool, or thanks to the <code>wav2gba</code> tool. More information about the conversion can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
 </p>
 
 <p>
@@ -1803,7 +1927,7 @@ The data has to be converted to an object file (*.o) thanks to objcopy (actually
 </p>
 
 <p>
-Sounds would be likely embedded within the ARM7 executable, as this CPU is the only one able to access the sound hardware, in the unlikely case where the only 64 kilobytes permitted would be enough. Otherwise the data can be linked to the ARM9 executable. More info about the data embedding in executables can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
+Sounds would be likely embedded within the ARM7 executable, as this CPU is the only one able to access the sound hardware, in the unlikely case where the only 64 kilobytes permitted would be enough. Otherwise the data can be linked to the ARM9 executable. More information about the data embedding in executables can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
 </p>
 
 
@@ -1830,7 +1954,7 @@ Some flash cartridges have more than one SRAM space, but apparently only one of 
 </p>
 
 <p>
-More info about reading from SRAM can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop5.html" target="_blank">here</a>.
+More information about reading from SRAM can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop5.html" target="_blank">here</a>.
 </p>
 
 
@@ -1868,15 +1992,15 @@ Finally the DS program have to use filesystem-specific code to manipulate its ow
 </p>
 
 <p>
-Note that with libfat both slot-1 and slot-2 memory can be accessed, and simultaneously. More info about the recommended lifat can be found <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">here</a>.
+Note that with libfat both slot-1 and slot-2 memory can be accessed, and simultaneously. More information about the recommended lifat can be found <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">here</a>.
 </p>
 
 <p>
-More info about the mostly deprecated GBFS can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop6.html" target="_blank">here</a>.
+More information about the mostly deprecated GBFS can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop6.html" target="_blank">here</a>.
 </p>
 
 <p>
-More info on embedded <a href="http://www.coranac.com/tonc/text/bitmaps.htm#sec-data" target="_blank">external data</a> (written for GBA but applies to the DS too).
+More information on embedded <a href="http://www.coranac.com/tonc/text/bitmaps.htm#sec-data" target="_blank">external data</a> (written for GBA but applies to the DS too).
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -2046,7 +2170,7 @@ Note though that during a DMA transfer the CPU is locked off the bus, thus restr
 </p>
 
 <p>
-More infos on DMA can be found in this TONC <a href="http://www.coranac.com/tonc/text/dma.htm" target="_blank">section</a>.
+More information on DMA can be found in this TONC <a href="http://www.coranac.com/tonc/text/dma.htm" target="_blank">section</a>.
 </p>
 
 
@@ -2057,7 +2181,7 @@ A timer is a hardware function that can be set to raise an interrupt at regular 
 </p>
 
 <p>
-More infos on timers can be found in this TONC <a href="http://www.coranac.com/tonc/text/timers.htm" target="_blank">section</a>.
+More information on timers can be found in this TONC <a href="http://www.coranac.com/tonc/text/timers.htm" target="_blank">section</a>.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -2183,11 +2307,11 @@ Apart from the numerical constants (ex : addresses of registers), libnds defines
 
        <li><code>videoSetMode</code>, <code>vramSetBankA</code>, <code>lcdMainOnBottom</code>, etc. are used to set-up the video rendering</li>
 
-       <li><code>irqInit</code>, <code>irqEnable</code>, etc. allow to setup the interrupt handler and manage interrupt status, for example to enable the VBI (<code>IRQ_VBLANK</code>).  See also : <code>swiWaitForVBlank</code> (<a href="#interrupts">more infos</a>)</li>
+       <li><code>irqInit</code>, <code>irqEnable</code>, etc. allow to setup the interrupt handler and manage interrupt status, for example to enable the VBI (<code>IRQ_VBLANK</code>).  See also : <code>swiWaitForVBlank</code> (<a href="#interrupts">more information</a>)</li>
 
        <li><code>swi* functions</code> (ex : <code>swiWaitForVBlank</code>, <code>swiCopy</code>) provide access to BIOS functions</li>
 
-       <li><code>scanKeys</code>, <code>keysHeld</code>, <code>keysDown</code>, etc. simplify quite a lot key handling, with regard to positive logic, transitional states and so on (<a href="#keys">more infos</a>)</li>
+       <li><code>scanKeys</code>, <code>keysHeld</code>, <code>keysDown</code>, etc. simplify quite a lot key handling, with regard to positive logic, transitional states and so on (<a href="#keys">more information</a>)</li>
 
 </ul>
 
@@ -2690,7 +2814,7 @@ PAlib's current 3D layer uses floating-point coordinates, which is somewhat a pe
 </p>
 
 <p>
-More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day10" target="_blank">3D section</a> of the PAlib tutorial and in the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___d.html" target="_blank">related section</a> in the API documentation.
+More information can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day10" target="_blank">3D section</a> of the PAlib tutorial and in the <a href="http://www.palib.info/Doc/PAlibDoc Eng/group___d.html" target="_blank">related section</a> in the API documentation.
 </p>
 
 <h6>Movie playback</h6>
@@ -2700,7 +2824,7 @@ First the original movie has to be converted from the .avi to various .vid files
 </p>
 
 <p>
-More informations about movie playback can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day11" target="_blank">Video section</a> of the PAlib tutorial.
+More information about movie playback can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day11" target="_blank">Video section</a> of the PAlib tutorial.
 </p>
 
 <h6>Sound</h6>
@@ -2730,7 +2854,7 @@ First the PAFS image must be created with PAFS.exe, by appending files to the ar
 </p>
 
 <p>
-More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day9" target="_blank">PAFS section</a> of the PAlib tutorial.
+More information can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day9" target="_blank">PAFS section</a> of the PAlib tutorial.
 </p>
 
 
@@ -2744,7 +2868,7 @@ Initialization of the library should be done thanks to <code>PA_InitWifi</code>,
 </p>
 
 <p>
-More informations can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day20" target="_blank">Data Transfer and Multiplayer</a> section of the PAlib tutorial.
+More information can be found in the <a href="http://www.palib.info/wiki/doku.php?id=day20" target="_blank">Data Transfer and Multiplayer</a> section of the PAlib tutorial.
 </p>
 
 <h5>Building with PAlib</h5>
@@ -3124,7 +3248,7 @@ Having the general hardware specifications and the relevant toolchain is not eno
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Thursday, July 12, 2007</em>
+    <em>Last update : Friday, July 13, 2007</em>
   </center>
 </body>
 </html>
