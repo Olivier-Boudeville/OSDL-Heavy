@@ -30,9 +30,9 @@ else
 
 		# For the Nintendo DS we use the devkitPro-based toolchain :
 		# (libnds not listed here anymore as now is provided by PALib)
-		
-		#COMMON_BUILD_TOOLS="devkitARM PAlib libnds_examples libfat dswifi"	
-		COMMON_BUILD_TOOLS="devkitARM PAlib dswifi"	
+		# (libfat not listed here anymore as now is provided by libnds)
+		# (libnds_examples not listed here)
+		COMMON_BUILD_TOOLS="devkitARM PAlib dswifi DeSmuME NoCashGBA"	
 		
 	fi
 	
@@ -601,7 +601,7 @@ preparedevkitARM()
 	cd $repository
 
 	if [ -n "$prefix" ] ; then	
-		devkitPRO_PREFIX=${prefix}/devkitPro
+		devkitPRO_PREFIX=${ds_prefix}/devkitPro
 	else
 		devkitPRO_PREFIX=devkitPro
 	fi
@@ -1003,6 +1003,165 @@ cleandswifi()
 	${RM} -rf ${dswifi_repository}
 }
 
+
+
+################################################################################
+# DeSmuME : a Nintendo DS emulator
+################################################################################
+
+
+getDeSmuME()
+{
+	DEBUG "Getting DeSmuME..."
+	launchFileRetrieval DeSmuME
+	return $?
+}
+
+
+prepareDeSmuME()
+{
+
+	DEBUG "Preparing DeSmuME..."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi	
+	
+	printBeginList "DeSmuME    "
+	
+	printItem "extracting"
+	
+	DeSmuME_prefix="$ds_prefix/DeSmuME-${DeSmuME_VERSION}"
+	${MKDIR} -p ${DeSmuME_prefix}
+
+	# Extract prebuilt executable in installation repository :
+	{
+		cd ${DeSmuME_prefix} && ${UNZIP} -o "$repository/${DeSmuME_ARCHIVE}"
+	} 1>>"$LOG_OUTPUT" 2>&1
+		
+	if [ $? != "0" ] ; then
+		ERROR "Unable to extract ${DeSmuME_ARCHIVE}."
+		exit 10
+	fi
+		
+	cd $repository
+							
+	printOK
+	
+}
+
+
+generateDeSmuME()
+{
+
+	DEBUG "Generating DeSmuME..."
+
+	printItem "configuring"
+	printOK	
+	
+	printItem "building"
+	printOK
+	
+	printItem "installing"
+	printOK
+		
+	DEBUG "DeSmuME successfully installed."
+	
+	printEndList
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleanDeSmuME()
+{
+	LOG_STATUS "Cleaning DeSmuME build tree..."
+}
+
+
+
+################################################################################
+# NoCashGBA : another Nintendo DS emulator
+################################################################################
+
+
+getNoCashGBA()
+{
+	DEBUG "Getting NoCashGBA..."
+	launchFileRetrieval NoCashGBA
+	return $?
+}
+
+
+prepareNoCashGBA()
+{
+
+	DEBUG "Preparing NoCashGBA..."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi	
+	
+	printBeginList "NoCashGBA  "
+	
+	printItem "extracting"
+	
+
+	NoCashGBA_prefix="$ds_prefix/NoCashGBA-${NoCashGBA_VERSION}"
+	${MKDIR} -p ${NoCashGBA_prefix}
+
+	# Extract prebuilt executable in installation repository :
+	{
+		cd ${NoCashGBA_prefix} && ${UNZIP} -o "$repository/${NoCashGBA_ARCHIVE}"
+	} 1>>"$LOG_OUTPUT" 2>&1
+		
+		
+	if [ $? != "0" ] ; then
+		ERROR "Unable to extract ${NoCashGBA_ARCHIVE}."
+		exit 10
+	fi
+							
+	printOK
+
+	cd $repository
+		
+}
+
+
+generateNoCashGBA()
+{
+
+	DEBUG "Generating NoCashGBA..."
+
+	printItem "configuring"
+	printOK	
+	
+	printItem "building"
+	printOK
+	
+	printItem "installing"
+	printOK
+		
+	DEBUG "NoCashGBA successfully installed."
+	
+	printEndList
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleanNoCashGBA()
+{
+	LOG_STATUS "Cleaning NoCashGBA build tree..."
+}
 
 
 ################################################################################
