@@ -446,7 +446,7 @@ Even though Nintendo designed a low-cost handheld, the DS offers quite a lot of 
 	
 	<li>a <b>microphone</b> for sound input, which allows (application-specific) speech-recognition</li>
 	
-	<li>two <b>slots for FLASH cards</b> : the Slot-1 (DS specific, looking a bit like a small Compact Flash card, currently up to 128 GB of internal storage) and the Slot-2 (legacy GBA port, used by several add-ons)</li>
+	<li>two <b>slots for FLASH cards</b> : the Slot-1 (DS specific, looking a bit like a small Compact Flash card, currently up to 128 GB of internal storage) and the Slot-2 (legacy GBA port, used by several add-ons, including so-called Pak, flash carts, etc.)</li>
 	
 	<li><b>lithium-ion battery</b> (1000 mAh battery, whereas the DS "fat" has 850 mAh) : with a DS Lite in DS mode, depending on the screen brightness, at least 6 to 10 hours of play, in GBA mode up to 12 hours, in sleep mode two weeks, all when starting from a fully charge battery (4 hours of charge). Of course autonomy decreases with slot-1/slot-2 cards being added. After five hundred charges, the battery capacity drops to about seventy percent and should be replaced</li>
 	
@@ -703,7 +703,7 @@ As each linker offers its own memory interface (the way it writes to its Flash m
 </p>
 
 <p>
-<a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI</a> stands for <em>Dynamically Linked Device Interface for libfat</em>. The DLDI-aware software can be storage-agnostic. It has just to be built once, and patched according to the target linker it is to run with, before being transferred to the DS.
+<a href="http://dldi.drunkencoders.com/" target="_blank">DLDI</a> stands for <em>Dynamically Linked Device Interface for libfat</em>. The DLDI-aware software can be storage-agnostic. It has just to be built once, and patched according to the target linker it is to run with, before being transferred to the DS.
 </p>
 
 <p>
@@ -725,8 +725,8 @@ In practice, the user will need :
 -->
 
 	<li>the target <b>DLDI-enabled software (ROM) to patch</b> (of course)</li>
-	<li>a <b>patching tool</b> : the command-line or GUI <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">dlditool</a>, available for Windows, <a href="http://chishm.drunkencoders.com/DLDI/downloads/dlditool-linux-x86.zip" target="_blank">Linux</a> and Mac OS X</li>
-	<li>the <b>device-specific patch file</b> which corresponds to his linker (see <a href="http://chishm.drunkencoders.com/DLDI/" target="_blank">DLDI Device patches</a>, including the one for <a href="http://chishm.drunkencoders.com/DLDI/downloads/sclt.dldi" target="_blank">SuperCard Lite (SD Card)</a>)</li>
+	<li>a <b>patching tool</b> : the command-line or GUI <a href="http://dldi.drunkencoders.com/index.php?title=Category:Tools" target="_blank">dlditool</a>, available for Windows, <a href="http://dldi.drunkencoders.com/uploads/a/ab/Dlditool-linux-x86.zip" target="_blank">Linux</a> and Mac OS X</li>
+	<li>the <b>device-specific patch file</b> which corresponds to his linker (see <a href="http://dldi.drunkencoders.com/index.php?title=Category:Devices" target="_blank">DLDI Device patches</a>, including the one for <a href="http://dldi.drunkencoders.com/index.php?title=SuperCard_Lite_%28SD_Card%29" target="_blank">SuperCard Lite (SD Card)</a>)</li>
 </ul>
 
 </p>
@@ -2312,7 +2312,7 @@ Note that <em>dynamic</em> libraries are not supported on the DS. Therefore each
 <h4>Second : the low-level library, libnds</h4>
 
 <p>
-<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly named <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touchscreen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the dswifi library (which will be detailed below).
+<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly named <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touchscreen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the dswifi library (which will be detailed below). See also the libnds <a href="http://devkitpro.sourceforge.net/devkitProWiki/libnds/" target="_blank">API</a>.
 </p>
 
 <p>
@@ -2328,7 +2328,7 @@ Hence if you are not making a full use of libnds, most of the time it is that yo
 </p>
 
 <p>
-The installation of libnds is trivial (just a matter of extracting the latest <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608" target="_blank">archive</a>). If you plan to use PAlib (discussed later), libnds will be provided with it, no need for a specific libnds install then. 
+The installation of libnds is trivial (just a matter of extracting the latest <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608" target="_blank">archive</a>). If you plan to use PAlib (discussed later), libnds will be provided with it, no need for a specific libnds install then (although the PAlib-included version is often quite outdated). 
 </p>
 
 <p>
@@ -3280,7 +3280,11 @@ Though the imitation is not always perfect (sadly, programs may work when emulat
 </p>
 
 <p>
-	NO$GBA can provide a source level debugger as well. The colors might seem different from the expected ones due to a kind of DS screen emulation filter. This can be deactivated in <code>Options -&gt; Emulation Setup -&gt; GBA Mode</code> (or press F11) by selecting <code>VGA (poppy bright)</code>
+	The colors might seem different from the expected ones due to a kind of DS screen emulation filter. This can be deactivated in <code>Options -&gt; Emulation Setup -&gt; GBA Mode</code> (or press F11) by selecting <code>VGA (poppy bright).
+</p>
+
+<p>
+	NO$GBA can provide a <a href="http://nocash.emubase.de/gba-dev.htm" target="_blank">source level debugger</a> as well, for professionals (this advanced tool is not free of charge). </code>
 </p>
 	</li>
 
@@ -3509,10 +3513,25 @@ As a final word, have fun programmin' the DS !
 		
 </ul>
 
- 
  </p>
 
 <p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
+
+
+<a name="misc"></a>
+<h3>Miscellaneous</h3>
+
+<p>
+When designing a GUI, for example for a game, one often draws quickly some sketches to figure out various organizations. To help that process, we designed a quick and dirty DS graphics suitable for printing (two DS per sheet) : 
+
+<center>
+    <a href="Nintendo-DS.png" target="_blank"><img src="Nintendo-DS.png" alt="Nintendo DS sketch" height="300" border=2></img></a><br>
+(click to enlarge)
+</center>
+Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
+</p>
+
+
   <br>
   <br>
   <br>
@@ -3529,7 +3548,7 @@ As a final word, have fun programmin' the DS !
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Friday, July 13, 2007</em>
+    <em>Last update : Saturday, July 14, 2007</em>
   </center>
 </body>
 </html>
