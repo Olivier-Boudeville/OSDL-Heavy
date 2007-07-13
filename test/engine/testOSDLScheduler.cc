@@ -212,7 +212,16 @@ int main( int argc, char * argv[] )
 		
 		}
 		
+
+		if ( ! Ceylan::System::areSubSecondSleepsAvailable() )
+		{
 		
+			LogPlug::info( "No subsecond sleep available, "
+				"scheduler cannot run, test finished." ) ;
+			
+			return Ceylan::ExitSuccess ;				
+			
+		}
 		
 		LogPlug::info( 
 			"Starting OSDL with video and, therefore, events enabled." ) ;
