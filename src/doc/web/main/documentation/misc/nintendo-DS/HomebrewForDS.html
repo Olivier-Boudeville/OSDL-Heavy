@@ -116,7 +116,7 @@
 
 		       <a href="#andnow">And now ?</a><br>		   
 		       <a href="#otherinfos">Some other information sources</a><br>
-
+		       <a href="#appendices">Appendices</a>
           </div>
 
           </td>
@@ -3227,6 +3227,10 @@ From <code>Keyboard.bin</code>, <code>Keyboard.nds</code> (at last, a ROM file !
 Finally the <code>devkitARM/bin/dsbuild</code> executable is used to generate <code>Keyboard.ds.gba</code> from <code>Keyboard.nds</code>. This involves adding a slot-2 loader. 
 </p>
 
+<p>
+See also our more <a href="#buildindepth">in-depth build example</a>.
+</p>
+
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
@@ -3518,11 +3522,403 @@ As a final word, have fun programmin' the DS !
 <p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 
 
-<a name="misc"></a>
-<h3>Miscellaneous</h3>
+
+
+<a name="appendices"></a>
+<h3>Appendices</h3>
 
 <p>
-When designing a GUI, for example for a game, one often draws quickly some sketches to figure out various organizations. To help that process, we designed a quick and dirty DS graphics suitable for printing (two DS per sheet) : 
+<a name="appendixtoc"></a>
+<center>
+        <table summary="Table of contents" style="border: none">
+        <tr>
+          <td>
+<!--
+                       <a href="#"></a><br>
+-->
+
+                   <div class="box">
+                       <a href="#buildindepth">Appendix 1</a> : in-depth example of the usual cross-compilation build process<br>
+                       <a href="#sketches">Appendix 2</a> : DS sketches
+          	   </div>
+          </td>
+        </tr>
+      </table>
+
+[<a href="#toc">Back to the main table of contents</a>]
+</center>
+</p>
+<br><br>
+
+<!--
+<br><p><center>[<a href="#appendixtoc">Back to the appendix table of contents</a>]</center></p><br><br>
+-->
+
+
+<a name="buildindepth"></a>
+<h4>Appendix 1 : in-depth example of the usual cross-compilation build process</h3>
+
+<p>
+This explanation is based first on a PAlib example (an executable using PAlib is built), then on examples taken from libdns (the build of the library itself, and the one of a program using it).
+</p>
+
+<p>
+The Make versions have been modified to remove the '@' characters at the beginning of actual make target commands, so that their output can be seen on a terminal.
+</p>
+
+<p>
+Some output have been shorten (indicated by <code>[..]</code>), and LOCAL and PREFIX shell variables have been substituted for better readability.
+</p>
+
+
+<h5>PAlib example build</h5>
+<p>
+The PAlib example discussed here is taken from <code>PAlibExamples/Sprites/Movement/MoveSpritewithStylus</code>. The vast majority of PAlib Makefiles are exactly the same. 
+</p>
+
+
+
+<p>The Makefile is taken into account from the build subdirectory :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+&gt; make
+
+[ -d build ] || mkdir -p build
+
+make --no-print-directory -C build -f ${LOCAL}/Makefile
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+
+<p>
+First the dependancies of main.o are determined with devkitARM gcc (<code>-MM</code> option), and requested to be stored them in the <code>build/main.d</code> file thanks to the following command-line :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-gcc -MM -g -Wformat=2 -Winline -Wall -O2 -I${LOCAL}/include -I${LOCAL}/build -I${LOCAL}/data -I${PREFIX}/libnds/include -I${PREFIX}/libnds/include/nds -I${PREFIX}/PAlib/include/nds -I${LOCAL}/build -DARM9 -I${PREFIX}/PAlib/include/nds -o main.d ${LOCAL}/source/main.c
+
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+This is nothing DS-specific here. See GCC <a href="http://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html#Option-Summary" target="_blank">Option Summary</a> to look-up switches : 
+<ul>
+<!--
+        <li> <code></code> : </li>
+-->
+        <li> <code>-g</code> : adds debugging information</li>
+        <li> <code>-Wformat=2</code> : checks calls to printf and scanf, strftime, etc.</li>
+        <li> <code>-Winline</code> : warns if a function can not be inlined whereas it was declared as inline</li>
+        <li> <code>-Wall</code> : enables most general warnings</li>
+        <li> <code>-O2</code> : attempts to improve the performance and/or code size</li>
+</ul>
+
+</p>
+
+<p>
+The result in <code>build/main.d</code> is :
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+ main.o:  \
+  ${LOCAL}/source/main.c \
+  ${PREFIX}/PAlib/include/nds/PA9.h \
+  ${PREFIX}/libnds/include/nds.h \
+ [..] (many PAlib and libnds includes skipped) 
+  ${LOCAL}/source/gfx/all_gfx.c \
+  ${LOCAL}/source/gfx/vaisseau.c \
+  ${LOCAL}/source/gfx/sprite0.pal.c \
+  ${LOCAL}/source/gfx/all_gfx.h
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+It states basically that as soon as at least one of the files listed after the <code>main.o:</code> target is modified, this <code>main.o</code> should be rebuilt.
+</p>
+
+<p>
+Once these dependencies have been computed in <code>main.d</code>, <code>main.o</code> is to be compiled. This gcc, adapted for DS cross-compilation, transforms main.c into main.o, an ELF 32-bit LSB relocatable object file, ARM, version 1 (SYSV), not stripped. Same command-line than previous one, except there is no -MM switch and the main.o target is specified :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-gcc -g -Wformat=2 -Winline -Wall -O2 -I${LOCAL}/include -I${LOCAL}/build -I${LOCAL}/data -I${PREFIX}/libnds/include -I${PREFIX}/libnds/include/nds -I${PREFIX}/PAlib/include/nds -I${LOCAL}/build -DARM9 -I${PREFIX}/PAlib/include/nds -c ${LOCAL}/source/main.c -o main.o
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>Then <code>main.o</code> is linked to the libraries it refers to, which results in the generation of  <code>build.elf</code>, an ELF 32-bit LSB executable, ARM, version 1 (SYSV), statically linked, not stripped :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-g++ -g -mthumb-interwork -mno-fpu -L${PREFIX}/PAlib/lib -specs=ds_arm9.specs main.o -L${PREFIX}/PAlib/lib -lpa9 -L${PREFIX}/libnds/lib -lfat -lnds9 -ldswifi9 -o build.elf
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+Here <code>-mthumb-interwork</code> requires that a given program can use both the ARM and Thumb instruction sets. See GCC <a href="http://gcc.gnu.org/onlinedocs/gcc/ARM-Options.html#ARM-Options" target="_blank">ARM options</a> for more details. <code>-mno-fpu</code> should mean that no floating-point unit is available, although this does not seem to be the proper switch to be used here. <code>-specs</code> specifies the DS link script that shall be used (to take into account the DS memory layout and al), and the various libraries are listed in order, from the most specific to the least (<code>PAlib, libfat, libnds, dswifi</code>). All these settings are to be used only for the ARM9.
+</p>
+
+<p>The result is an executable in the ELF format, which has to be transformed into a format directly suitable for the DS thanks to <code>arm-eabi-objcopy</code> :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+arm-eabi-objcopy -O binary build.elf build.bin
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+Finally the target .nds file can be obtained from the ARM9 executable just built (build.bin) and from the template ARM7 executable (prebuilt <code>arm7.bin</code>) with some additional metadata (logo, sentences, etc.) :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+ndstool -c ${LOCAL}/MoveSpritewithStylus.nds -9 build.bin -7 ${PREFIX}/PAlib/lib/arm7/arm7.bin -o ${LOCAL}/build/../logo_wifi.bmp -b ${LOCAL}/build/../logo.bmp "PAlib Project;using PAlib;www.palib.info"
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+The output tells us it succeeded :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+Nintendo DS rom tool 1.33 - Jan 27 2007 16:00:04
+by Rafael Vuijk, Dave Murphy,  Alexei Karpenko
+built ... MoveSpritewithStylus.ds.gba
+dsbuild ${LOCAL}/MoveSpritewithStylus.nds
+dsbuild 1.21 - Jan 28 2007
+using default loader
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+Last step is to create an exact copy of the .ds.gba into a .sc.nds file, as a work-around to SuperCard faulty format identification :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+cp ${LOCAL}/build/../MoveSpritewithStylus.ds.gba ../MoveSpritewithStylus.sc.nds
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<br><p><center>[<a href="#appendixtoc">Back to the appendix table of contents</a>]</center></p><br><br>
+
+
+
+<h5>Libnds build</h5>
+
+<p>
+When creating the actual library, code for both ARM is to be compiled.
+</p>
+
+<h6>ARM7</h6>
+<p>
+Here is an example of compilation :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-gcc -MMD -MP -MF ${PREFIX}/libnds-sources/deps/arm7/clock.d -g -Wall -O2 -fomit-frame-pointer -ffast-math -I${PREFIX}/libnds-sources/include -mthumb -mthumb-interwork -mcpu=arm7tdmi -mtune=arm7tdmi -DARM7 -I${DEVKITPRO}/libnds-sources/build/arm7 -c ${DEVKITPRO}/libnds-sources/source/arm7/clock.c -o clock.o
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+<p>
+here is a link example for library creation :
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-ar -rc ${DEVKITPRO}/libnds-sources/lib/libnds7.a audio.o clock.o microphone.o spi.o touch.o card.o gbfs.o interrupts.o biosCalls.o interruptDispatcher.o
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+<p>
+and here an example where an executable is (statically) linked against a library :
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-gcc -specs=ds_arm7.specs -g -mthumb -mthumb-interwork -Wl,-Map,basic.map defaultARM7.o  -L${DEVKITPRO}/libnds-sources/lib -lnds7 -o ${DEVKITPRO}/libnds-sources/basic.elf
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+The map-related settings tell which object files of the static libraries must be embedded in the executable, due to which symbols being used by this executable. These .map files are generated by the linker, thanks to a <code>-Map myMap.map</code> option. Here this option has to be passed by the compiler to the linker, so the <code>-Wl,</code> switch is added. 
+</p>
+
+
+
+
+<h6>ARM9</h6>
+<p>
+For the ARM9, here is an example of compilation :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-gcc -MMD -MP -MF ${DEVKITPRO}/libnds-sources/deps/arm9/boxtest.d -g -Wall -O2 -fomit-frame-pointer -ffast-math -I${DEVKITPRO}/libnds-sources/include -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s -DARM9 -I${DEVKITPRO}/libnds-sources/build/arm9 -c ${DEVKITPRO}/libnds-sources/source/arm9/boxtest.c -o boxtest.o
+console.c
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+<p>
+here is a link example for library creation :
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-ar -rc ${DEVKITPRO}/libnds-sources/lib/libnds9.a COS.o default_font.o SIN.o TAN.o boxtest.o console.o exceptions.o gurumeditation.o image.o keys.o ndsmotion.o pcx.o rumble.o sound.o system.o touch.o video.o videoGL.o card.o gbfs.o interrupts.o dcache.o exceptionHandler.o icache.o biosCalls.o interruptDispatcher.o
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+and here an example where an executable is (statically) linked against a library :
+
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-gcc  -specs=ds_arm9.specs -g -mthumb -mthumb-interwork -Wl,-Map,TouchTest.map balldata.bin.o ballpalette.bin.o  main.o  -L${DEVKITPRO}/libnds/lib -lnds9 -o ${DEVKITPRO}/libnds-examples/input/TouchTest/TouchTest.elf
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<br><p><center>[<a href="#appendixtoc">Back to the appendix table of contents</a>]</center></p><br><br>
+
+
+
+<h5>Synthesis</h5>
+<p>
+For compilation, following switches are recommended : 
+<ul>
+        <li><b>ARM7</b> : 
+	   <ul>
+		<li>in debug mode : <code>-g -Winline -Wall -O0 -mthumb -mthumb-interwork -mcpu=arm7tdmi -mtune=arm7tdmi -DARM7 -DDEBUG</code></li>
+		<li>in release mode : <code> -Winline -Wall -O3 -fomit-frame-pointer -ffast-math -mthumb -mthumb-interwork -mcpu=arm7tdmi -mtune=arm7tdmi -DARM7</code></li>
+	   </ul>
+	</li>
+
+        <li><b>ARM9</b> : 
+	   <ul>
+		<li>in debug mode : <code>-g -Winline -Wall -O0 -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s -DARM9 -DDEBUG</code></li>
+		<li>in release mode : <code> -Winline -Wall -O3 -fomit-frame-pointer -ffast-math -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s -DARM9</code></li>
+	   </ul>Sometimes alternate flags, <code>-mcpu=arm9tdmi -mtune=arm9tdmi</code> are used, but they should be not favoured, as less accurate.
+	</li>
+</ul>
+
+C++ code not using RTTI nor exceptions may add : <code>-fno-rtti -fno-exceptions</code>.
+</p>
+
+<p>
+To create a library X from a set of object files (generated as explained previously), use <code>arm-eabi-ar -rc libXp.a a.o b.o c.o [...]</code>, with p being 7 or 9 for the ARM7 or the ARM9 (recommended convention).
+</p>
+
+<p>
+To link an executable against a library X (generated as explained previously), use :
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+arm-eabi-gcc -specs=ds_arm9.specs -g -mthumb -mthumb-interwork -Wl,-Map,MyExecMap.map a.o b.o [..] -L${DEVKITPRO}/libnds/lib -lnds9 -o MyExec.elf
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+with being 9 being replaced by 7 depending on the ARM.
+</p>
+
+<br><p><center>[<a href="#appendixtoc">Back to the appendix table of contents</a>]</center></p><br><br>
+
+
+
+<a name="sketches"></a>
+<h4>Appendix 2 : DS sketches</h3>
+
+<p>
+When designing a GUI, for example for a game, one often draws quickly some sketches to figure out various organizations, with pen and paper. To help that process, we designed a quick and dirty DS-Lite representation suitable for printing (two DS per sheet) : 
 
 <center>
     <a href="Nintendo-DS.png" target="_blank"><img src="Nintendo-DS.png" alt="Nintendo DS sketch" height="300" border=2></img></a><br>
@@ -3530,6 +3926,10 @@ When designing a GUI, for example for a game, one often draws quickly some sketc
 </center>
 Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
 </p>
+
+<br><p><center>[<a href="#appendixtoc">Back to the appendix table of contents</a>]</center></p><br>
+
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
   <br>
@@ -3548,7 +3948,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : Saturday, July 14, 2007</em>
+    <em>Last update : Sunday, July 15, 2007</em>
   </center>
 </body>
 </html>
