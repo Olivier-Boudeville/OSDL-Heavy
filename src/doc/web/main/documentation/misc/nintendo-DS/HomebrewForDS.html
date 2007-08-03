@@ -84,6 +84,7 @@
 							<li><a href="#arm7role">ARM7 role</a></li>
 							<li><a href="#arm9role">ARM9 role</a></li>
 							<li><a href="#ipc">Inter-CPU communications</a></li>
+							<li><a href="#datatransfer">Data transfers</a></li>
 						</ul>
 											
 						<li>Activating only the relevant <a href="#subsystems">subsystems</a></li>			
@@ -150,6 +151,10 @@ Portable development will be kept in mind, as having one's game working both on 
 
 <p>
 Most of the informations here came from several homebrew websites (many thanks to Cearn for <a href="http://www.coranac.com/tonc/text/" target="_blank">TONC</a>, to <a href="http://www.dev-scene.com/NDS/Tutorials" target="_blank">Dovoto</a>, <a href="http://www.double.co.nz/nintendo_ds/" target="_blank">Chris Double</a> and <a href="http://www.palib.info/wiki/doku.php" target="_blank">Mollusk</a> for their respective tutorials) and from IRC discussions (notably, thanks to Wintermute [Dave Murphy] and <a href="http://www.akkit.org/sgstair/" target="_blank">sgstair</a> [Stephen Stair]). More generally, many thanks to the fearless homebrewers !
+</p>
+
+<p>
+This guide has been created by Olivier Boudeville (a.k.a. sye).
 </p>
 
 
@@ -976,7 +981,7 @@ Regarding the ARM9, in the main memory there is generally  its corresponding exe
 </p>
 
 <p>
-The ARM7 executable can be as well in main memory, but for performance reasons its code, together with its data, are often placed into the IWRAM (64 kilobytes of fast RAM, 32-bit wide, that only the ARM7 can access). This is the case with devkitARM. Code has to be small enough to fit in this IWRAM.
+The ARM7 executable can be as well in main memory, but for performance reasons its code, together with its data, are often placed into the IWRAM (for <em>Internal Working RAM</em>, 64 kilobytes of fast RAM, 32-bit wide, that only the ARM7 can access). This is the case with devkitARM. Code has to be small enough to fit in this IWRAM.
 </p>
 
 <p>
@@ -1200,7 +1205,48 @@ See <a href="http://www.double.co.nz/nintendo_ds/nds_develop7.html" target="_bla
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
+<a name="datatransfer"></a>
+<h5>Data transfers</h5>
+<p>
+Programming the DS involves performing numerous data transfers, for graphics, sounds, application data, etc., from various regions in address space to various other regions (memory banks, slot-1, slot-2, IWRAM, etc.). 
+</p>
 
+<p>
+These transfers can be achieved thanks to various means, each with its own forces and weaknesses. Starting from the most often favoured transfer method to the least in case of a significant transfer:
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li><b>(asynchronous) DMA transfers</b> : 
+<p>
+although "only" up to four of them can run simultaneously, DMA transfers (open to both ARM) are interesting because they offset this load from a CPU. They run in background and trigger an interrupt when having finished, letting the CPU perform other tasks in the mean time. There are not necessarily the fastest of all transfer methods, but this is more than compensated by their parallel execution feature.
+</p>
+
+<p>
+A drawback is that, as long as the DMA transfer is running, both CPU will be locked off the bus to the main RAM, to prevent the CPU and the DMA controller from trying to access the bus at the same time, causing a collision.
+</p>
+
+<p>
+Thus the ARM9 should execute from its instruction cache (ITCM) reading/writing data from its data cache (DTCM), otherwise it will be frozen, waiting for the bus.
+</p>
+
+<p>
+As for the ARM7, apparently, even when executing from its IWRAM, it will be frozen.
+</p>
+
+  </li>
+	<li><b>memcpy</b> : simple and usual method, yet rather efficient</li>
+	<li><b>basic 'for' loop</b> : little use for that, as previous methods are faster and offer at least the same features anyway</li>
+	<li><b>swiFastCopy</b> : this libnds-provided call branches to a DS BIOS routine. According to that <a href="http://www.tobw.net/dswiki/index.php?title=How_to_clear_the_s" target="_blank">source</a>, should be ruled out due to a bug leading to poor performance. Transfers more quickly than <code>swiCopy</code>, but has higher interrupt latency</li>
+	<li><b>swiCopy</b> : as <code>swiFastCopy</code>, suffers from a bug apparently</li>
+</ul>
+
+</p>
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
  
 <a name="subsystems"></a>
@@ -2340,7 +2386,7 @@ Note that <em>dynamic</em> libraries are not supported on the DS. Therefore each
 <h4>Second: the low-level library, libnds</h4>
 
 <p>
-<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly named <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touchscreen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the dswifi library (which will be detailed below). See also the libnds <a href="http://devkitpro.sourceforge.net/devkitProWiki/libnds/" target="_blank">API</a>.
+<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly named <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touchscreen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the <a href="#dswifi">dswifi</a> library (detailed below). See also the libnds <a href="http://devkitpro.sourceforge.net/devkitProWiki/libnds/" target="_blank">API</a>.
 </p>
 
 <p>
@@ -2360,7 +2406,435 @@ The installation of libnds is trivial (just a matter of extracting the latest <a
 </p>
 
 <p>
-Apart from the numerical constants (ex: addresses of registers), libnds defines several useful primitives (functions, defined in header files stored in <code>libnds/include/nds</code>) such as:
+Apart from the numerical constants (ex: addresses of registers), libnds defines several useful primitives (functions, defined in header files stored in <code>libnds/include/nds</code>) discussed here. Links that are given refer to the cutting-edge CVS version of libnds source files.
+</p>
+
+
+<p>
+Here are listed most services offered by libnds:
+
+<a name="libndstoc"></a>
+<center>
+	<table summary="Libnds Table of contents" style="border: none">
+        <tr>
+          <td>
+<!--
+		       <a href="#"></a><br>
+-->
+
+
+		   <div class="box">
+		       <a href="#libnds_fs">Filesystem management</a><br>
+		       <a href="#libnds_bios">Access to BIOS functions</a><br>
+		       <a href="#libnds_card">Card read/write operations</a><br>
+		       <a href="#libnds_ipc">IPC</a><br>
+		       <a href="#libnds_input">Input management</a><br>
+		       <a href="#libnds_video">Video</a><br>
+		       <a href="#libnds_audio">Audio</a><br>
+		       <a href="#libnds_timers">Timers</a><br>
+		       <a href="#"></a><br>
+		       <a href="#"></a><br>
+		       <a href="#libnds_misc">Miscellaneous</a>
+          </div>
+
+          </td>
+        </tr>
+      </table>
+[<a href="#toc">Back to the main table of contents</a>]
+</center>
+</p>
+
+
+<a name="libnds_fs"></a>
+<h5>Filesystem management</h5>
+
+
+<a name="gbfs"></a>
+<p>
+Even if <a href="#libfat">libfat</a> is probably a better alternative, libnds provides support for <a href="http://www.pineight.com/gba/#gbfs" target="_blank">GBFS</a> (<em>Gameboy Advance Filesystem</em>). GBFS is a portable uncompressed archive format, a read-only filesystem. Released with the GPL license, it is similar in principle to GNU 'tar' but is much simpler in structure, has an order of magnitude less overhead per stored object (32 bytes vs. 500 bytes), and can be searched in O(log n) time, rather than O(n) time.
+</p>
+
+<p>
+A GBFS archive can be seen as a flat ordered list of GBFS files, each of which referring to any number of GBFS objects (entries), which are sequences of bytes. GBFS entries are sorted according to their name, which allows for a quick <code>bsearch</code>-based binary search.
+</p>
+
+<p>
+Related code in libnds seems to be the same as in GBFS. It is declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/gbfs.h?view=markup" target="_blank">include/gbfs.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/gbfs.c?view=markup" target="_blank">source/common/gbfs.c</a>. In libnds examples, see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/examples/nds/filesystem/embedded_gbfs/source/main.c?view=markup" target="_blank">filesystem/embedded_gbfs/source/main.c</a>.
+</p>
+
+<p>
+Thanks to the structures <code>GBFS_FILE</code> (referring to the GBFS overall filesystem of interest) and <code>GBFS_ENTRY</code> (an actual file in a GBFS_FILE), operations such as file look-up (<code>gbfs_search_range/find_first_gbfs_file/skip_gbfs_file</code>), opening (<code>gbfs_get_obj/gbfs_get_nth_obj</code>), copy (<code>gbfs_copy_obj</code>) and file count (<code>gbfs_count_objs</code>) are available.
+</p>
+
+<p>
+Most relevant informations about GBFS usage can be found in <code>readme.txt</code>, extracted from the GBFS <a href="http://www.pineight.com/gba/gbfs.zip">archive</a>.
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+<a name="libnds_bios"></a>
+<h5>Access to BIOS functions</h5>
+<p>
+Declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/bios.h?view=markup" target="_blank">include/nds/bios.h</a>, defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/biosCalls.s?view=markup" target="_blank">source/common/biosCalls.s</a>, these libnds functions branch directly to the ones defined in the DS BIOS. Being defined in BIOS does not imply being hardware-accelerated, they should be rather optimized though, and allow programs (including the firmware) to be smaller. 
+</p>
+
+<p>
+These functions deal notably with:
+<ul>
+
+<!--
+	<li><b></b> : <code></code>, <code></code></li>
+-->
+
+	<li><b>basic maths</b> : <code>swiDivide / swiRemainder / swiDivMod</code>, <code>swiSqrt</code>, <code>swiGetSineTable</code></li>
+	
+	<li><b>interrupt waiting</b> : <code>swiDelay</code>, <code>swiIntrWait / swiWaitForIRQ / swiWaitForVBlank</code></li>
+	
+	<li><b>DS working mode</b> : <code>swiSoftReset</code>, <code>swiSetHaltCR</code>, <code>swiHalt</code>, <code>swiSwitchToGBAMode</code></li>
+	
+	<li><b>copy</b> : <code>swiCopy</code>, <code>swiFastCopy</code> (see our <a href="#datatransfer">data transfer</a> section)</li>
+	
+	<li><b>hash</b> (CRC): <code>swiCRC16</code></li>
+	
+	<li><b>debugger use</b> : <code>swiIsDebugger</code></li>
+	
+	<li><b>stream decompression</b> : 
+	<ul>
+
+	<!--
+		<li></li>
+	-->
+
+		<li><code>swiUnpackBits</code>, for structures defined at the bit level</li>
+		
+		<li><code>swiDecompressLZSSWram / swiDecompressLZSSVram</code>, for the <a href="http://en.wikipedia.org/wiki/LZSS" target="_blank">Lempel-Ziv-Storer-Szymanski</a> algorithm</li>
+		
+		<li><code>swiDecompressHuffman</code>, for the <a href="http://en.wikipedia.org/wiki/Huffman_coding" target="_blank">Huffman coding</a></li>
+		
+		<li><code>swiDecompressRLEWram / swiDecompressRLEVram</code>, for the simplistic <a href="http://en.wikipedia.org/wiki/Run-length_encoding" target="_blank">Run-length encoding</a></li>
+		
+		<li><code>swiDecodeDelta8 /swiDecodeDelta16 </code>, probaby linked to <a href="http://en.wikipedia.org/wiki/Delta_encoding" target="_blank">Delta encoding</a></li>
+		
+	</ul>
+	</li>
+
+	<li><b>sound settings</b> : <code>swiGetPitchTable</code>, <code>swiGetVolumeTable</code>, <code>swiChangeSoundBias</code></li>
+	
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="libnds_card"></a>
+<h5>Card read/write operations</h5>
+<p>
+These operations are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/card.h?view=markup" target="_blank">include/nds/card.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/card.c?view=markup" target="_blank">source/common/card.c</a>. Example available in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/examples/nds/card/eeprom/source/main.cpp?view=markup" target="_blank">card/eeprom/source/main.cpp</a>.
+</p>
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : <code></code>, <code></code></li>
+-->
+
+	<li><b>card I/O</b> : <code>cardPolledTransfer</code> (blocking), <code>cardStartTransfer</code> (non-blocking), <code>cardWriteAndRead</code></li>
+	
+	<li><b>card read at initialization</b> : <code>cardReadHeader</code> (reads the 512-byte header), <code>cardReadID</code></li>
+	
+	<li><b>EEPROM management</b> : <code>cardReadEeprom</code>, <code>cardWriteEeprom</code>, <code>cardEepromReadID</code>, <code>cardEepromGetType</code>, <code>cardEepromGetSize</code>, <code>cardEepromChipErase</code>, <code>cardEepromSectorErase</code>
+
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="libnds_dma"></a>
+<h5>DMA management</h5>
+<p>
+All DMA functions are declared inline, and thus defined in the same file: <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/dma.h?view=markup" target="_blank">include/nds/dma.h</a>.
+</p>
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li><b>DMA copy</b> : synchronous (<code>dmaCopyWords</code>, <code>dmaCopyHalfWords</code>, <code>dmaCopy</code>) or asynchronous (<code>dmaCopyWordsAsynch</code>, <code>dmaCopyHalfWordsAsynch</code>, <code>dmaCopyAsynch</code>)</li>
+
+	<li><b>DMA fill</b> : <code>dmaFillWords</code>, <code>dmaFillHalfWords</code></li>
+	
+	<li><b>DMA state</b> : <code>dmaBusy</code></li>
+
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="libnds_interrupts"></a>
+<h5>Interrupts</h5>
+<p>
+Interrupt functions are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/interrupts.h?view=markup" target="_blank">include/nds/interrupts.h</a>, and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/interrupts.c?view=markup" target="_blank">source/common/interrupts.c</a> and in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/interruptDispatcher.s?view=markup" target="_blank">source/common/interruptDispatcher.s</a>.
+</p>
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li><b>Interrupt subsystem</b> : <code>irqInit</code></li>
+	
+	<li><b>Interrupt activation</b> : <code>irqEnable</code>, <code>irqDisable</code></li>
+	
+	<li><b>Handler association</b> : <code>irqSet</code>, <code>irqClear</code></li>
+	
+	<li><b>User interrupt dispatcher</b> : <code>irqInitHandler</code></li>
+	
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="libnds_ipc"></a>
+<h5>IPC</h5>
+<p>IPC are mainly here defines, structures and inline functions defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/ipc.h?view=markup" target="_blank">include/nds/ipc.h</a>.
+</p>
+
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : <code></code>, <code></code></li>
+-->
+
+	<li><b>Generic IPC</b> : <code>TransferRegion</code> structure defined, <code>getIPC</code> and <code>FIFO</code> also</li>
+	
+	<li><b>Synchronization</b> : <code>IPC_SendSync</code>, <code>IPC_GetSync</code></li>
+	
+	<li><b>Sound</b> : <code>TransferSound</code> structure defined for sound metadata transfer</li>
+	
+	<li><b>Time &amp; RTC</b> : <code>time</code> and <code>time</code> structures defined</li>
+	
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+
+
+<a name="libnds_input"></a>
+<h5>Input management</h5>
+<p><a href="" target="_blank"></a>
+</p>
+
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : <code></code>, <code></code></li>
+-->
+
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b>Key input registers</b> (<code>REG_KEYINPUT</code>, <code>REG_KEYCNT</code>) are defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a></li>
+
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+<a name="libnds_audio"></a>
+<h5>Audio</h5>
+<p><a href="" target="_blank"></a>
+</p>
+
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : <code></code>, <code></code></li>
+-->
+
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+<a name="libnds_video"></a>
+<h5>Video</h5>
+<p><a href="" target="_blank"></a>
+</p>
+
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : <code></code>, <code></code></li>
+-->
+
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+<a name="libnds_timers"></a>
+<h5>Timers</h5>
+<p>Defines are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/timers.h?view=markup" target="_blank">include/nds/timers.h</a>. Timers are triggered by a 33.514 MHz source on the ARM9, and probably also for the ARM7.
+</p>
+
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : <code></code>, <code></code></li>
+-->
+
+	<li><b>Macro for frequency settings</b> : <code>TIMER_FREQ</code>, <code>TIMER_FREQ_64</code>, etc.</li>
+	
+	<li><b>Timer registers</b> : <code>TIMER_DATA</code>, <code>TIMER0_CR</code>, <code>TIMER_IRQ_REQ</code>, <code>TIMER_DIV_1</code>
+etc.</li>
+	
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+<a name="libnds_"></a>
+<h5></h5>
+<p><a href="" target="_blank"></a>
+</p>
+
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : <code></code>, <code></code></li>
+-->
+
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+
+<a name="libnds_misc"></a>
+<h5>Miscellaneous</h5>
+<p>
+Various useful constructs defined in various places in the source.
+</p>
+
+
+<p>
+<ul>
+
+<!--
+	<li><b></b> : <code></code>, <code></code></li>
+-->
+
+	<li><b>Common types and macros</b> : see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/jtypes.h?view=markup" target="_blank">include/nds/jtypes.h</a> for basic type declarations (int32, vuint32, touchPosition, etc.), and for most macros and defines (ITCM_CODE, GETRAW, etc.). Some of these macros allow to set parts of the program (code, data, etc.) in specific memory regions (ITCM, DTCM, etc.)</li>
+	
+	<li><b>Memory region defines and console-specific headers</b> : see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/memory.h?view=markup" target="_blank">include/nds/memory.h</a> for symbols designating memory regions (ex: GBAROM, SPRITE_PALETTE) and for structures mapping to headers (ex: <code>GBAHeader</code>, <code>NDSHeader</code>)</li>
+	
+	<li><b>Bus ownership</b> : see also <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/memory.h?view=markup" target="_blank">include/nds/memory.h</a>, for <code>sysSetCartOwner</code>, <code>sysSetCardOwner</code>, <code>sysSetBusOwners</code></li>
+	
+	<li><b>Reload feature</b> : see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/reload.h?view=markup" target="_blank">include/nds/reload.h</a> to be able to return to the main menu, when using appropriate loaders (darkains loader or compatible), thanks to <code>LOADNDS</code></li>
+	
+	<li><b>Power control</b> : see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a> for <code>powerON</code>, <code>powerSET</code>, <code>powerOFF</code> and power defines for each subsystem</li>
+	
+	<li><b>Rendering core and screen control</b> : see also <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a> for <code>lcdSwap</code>, <code>lcdMainOnTop</code>, <code>lcdMainOnBottom</code> and various LCD status registers (ex: <code>DISP_VBLANK_IRQ</code>). <code>SetYtrigger</code> defined here too</li>
+
+	<li><b>User settings</b> : again in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a>, the <code>readUserSettings</code> function is defined, and the <code>PERSONAL_DATA</code> structures as well</li>
+	
+	<li><b>Command-line parameters</b> : again in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a>, see the <code>__argv</code>structure (not very useful yet)</li>
+
+	<li><b></b> : <code></code>, <code></code></li>
+	
+	<li><b></b> : <code></code>, <code></code></li>
+
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+
+
 <ul>
 
 <!--
@@ -2401,7 +2875,11 @@ Most applications and games need some way of reading and writing from and to non
 </p>
 
 <p>
-In the case of the DS, many filesystems could be used, but one of them, FAT16, is by far the most common. To manage such filesystems, a dedicated library, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>, can be used. It depends on libnds, both of which being packaged as part of DevkitARM.
+The good news is that the cards already offer an underlying filesystem (usually FAT-based, but might be ext2 or anything else), and that the homebrew applications can usually make use of it.
+</p>
+
+<p>
+In the case of the DS, among the many filesystems that could be used, one of them, FAT16, is by far the most common. To manage such filesystems, a dedicated library, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>, can be used. It depends on libnds, both of which being packaged as part of DevkitARM.
 </p>
 
 <p>
@@ -2409,7 +2887,11 @@ With libfat files can be managed almost exactly as they would be on POSIX system
 </p>
 
 <p>
-Note that libfat allows only to read directly the filesystems in the first partition of slot-1 and slot-2 cards: it does not allow to read a FAT filesystem embedded in a ROM, i.e. directly stored in the application executable. Using embedded filesystems can be convenient, so that the application is entirely self-contained (as commercial games for example) and the user does not have to and cannot mess with the various application files. To use a FAT filesystem embedded in a ROM, one may use <a href="#libefs">libefs</a>.
+Note that libfat allows only to read directly the filesystems in the first partition of slot-1 and slot-2 cards: it does not allow to read a FAT filesystem embedded in a ROM, i.e. directly stored in the application executable (except when using <code>fcsr</code>-appended FAT images on slot-2).
+</p>
+
+<p>
+Using embedded filesystems can be convenient, so that the application is entirely self-contained (as commercial games for example) and the user does not have to and cannot mess with the various application files. To use a filesystem embedded in a ROM itself stored in a FAT filesystem, one may use <a href="#libefs">libefs</a>.
 </p>
 
 <p>
@@ -2423,8 +2905,13 @@ Note also that in its current form, libfat cannot be used by default nor efficie
 
 <a name="libefs"></a>
 <h4>Fourth: a library to manage ROM-embedded filesystems, libefs</h4>
+
 <p>
-libefs allows to manage a ROM-appended file system, on slot-1 or slot-2 cards. It is, to a certain extent, a homebrew counterpart to the official (Nintendo proprietary) NitroFS filesystem.
+libefs allows to manage a ROM-appended NitroFS-based file system, on slot-1 or slot-2 cards. It is, to a certain extent, a homebrew counterpart offering a libfat-aware variation to the official (Nintendo proprietary) NitroFS filesystem.
+</p>
+
+<p>
+Explained differently: with libefs you can append a file hierarchy to your ROM and acccess it quite simply, from your homebrew, thanks to libefs functions. That ROM is expected to be placed in a FAT-based slot-1 or slot-2 card filesystem. As a matter of fact, the ROM-embedded filesystem storing your content is NitroFS.
 </p>
 
 <p>
@@ -2489,7 +2976,7 @@ The build process is a bit different if using a slot-2 device that does not have
 </p>
 
 <p>
-Once your .ds.gba ROM padded to a 512-byte boundary (<code>devkitPro/devkitARM/bin/padbin 512 MyGame.ds.gba</code>), just append your FAT image (ex: <code>cat MyGame.ds.gba MyFATImage.img &gt; MyGameWithFS.nds</code>). Finally one just to apply the <code>fcsr</code> DLDI patch to enjoy its ROM. Apparently it uses the <code>gba_nds_fat</code> system to read the FAT image. See these <a href="http://forum.gbadev.org/viewtopic.php?p=114090&highlight=fcsr+dldi#114090" target="_blank">posts</a> for more information.
+Once your .ds.gba ROM padded to a 512-byte boundary (<code>devkitPro/devkitARM/bin/padbin 512 MyGame.ds.gba</code>), just append your FAT image (ex: <code>cat MyGame.ds.gba MyFATImage.img &gt; MyGameWithFS.nds</code>). Finally one just to apply the <code>fcsr</code> DLDI patch to enjoy its ROM. Apparently it uses the quite widely supported <code>gba_nds_fat</code> system to read the FAT image. See these <a href="http://forum.gbadev.org/viewtopic.php?p=114090&highlight=fcsr+dldi#114090" target="_blank">posts</a> for more information.
 </p>
 
 
