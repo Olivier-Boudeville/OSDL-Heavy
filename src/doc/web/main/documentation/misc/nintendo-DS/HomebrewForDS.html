@@ -993,7 +993,7 @@ The DTCM, for <em>Data Tightly Coupled Memory</em>, is a special 16-kilobyte mem
 </p>
 
 <p>
-As for the ITCM, for <em>Instruction Tightly Coupled Memory</em>, it is a special 32-kilobyte memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small (preferably 32-bit) functions that are computation-intensive and/or frequently called. For example, libdns uses that region to store the interrupt dispatcher.
+As for the ITCM, for <em>Instruction Tightly Coupled Memory</em>, it is a special 32-kilobyte memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small (preferably 32-bit) functions that are computation-intensive and/or frequently called. For example, libnds uses that region to store the interrupt dispatcher.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1216,10 +1216,10 @@ These transfers can be achieved thanks to various means, each with its own force
 <ul>
 
 <!--
-	<li><b></b> : </li>
+	<li><b></b>: </li>
 -->
 
-	<li><b>(asynchronous) DMA transfers</b> : 
+	<li><b>(asynchronous) DMA transfers</b>: 
 <p>
 although "only" up to four of them can run simultaneously, DMA transfers (open to both ARM) are interesting because they offset this load from a CPU. They run in background and trigger an interrupt when having finished, letting the CPU perform other tasks in the mean time. There are not necessarily the fastest of all transfer methods, but this is more than compensated by their parallel execution feature.
 </p>
@@ -1237,10 +1237,10 @@ As for the ARM7, apparently, even when executing from its IWRAM, it will be froz
 </p>
 
   </li>
-	<li><b>memcpy</b> : simple and usual method, yet rather efficient</li>
-	<li><b>basic 'for' loop</b> : little use for that, as previous methods are faster and offer at least the same features anyway</li>
-	<li><b>swiFastCopy</b> : this libnds-provided call branches to a DS BIOS routine. According to that <a href="http://www.tobw.net/dswiki/index.php?title=How_to_clear_the_s" target="_blank">source</a>, should be ruled out due to a bug leading to poor performance. Transfers more quickly than <code>swiCopy</code>, but has higher interrupt latency</li>
-	<li><b>swiCopy</b> : as <code>swiFastCopy</code>, suffers from a bug apparently</li>
+	<li><b>memcpy</b>: simple and usual method, yet rather efficient</li>
+	<li><b>basic 'for' loop</b>: little use for that, as previous methods are faster and offer at least the same features anyway</li>
+	<li><b>swiFastCopy</b>: this libnds-provided call branches to a DS BIOS routine. According to that <a href="http://www.tobw.net/dswiki/index.php?title=How_to_clear_the_s" target="_blank">source</a>, should be ruled out due to a bug leading to poor performance. Transfers more quickly than <code>swiCopy</code>, but has higher interrupt latency</li>
+	<li><b>swiCopy</b>: as <code>swiFastCopy</code>, suffers from a bug apparently</li>
 </ul>
 
 </p>
@@ -1423,7 +1423,7 @@ Both cores can be set in various <em>video modes</em>, each with different capab
 </p>
 
 <p>
- In a given screen mode, pixels are described according to a specific pixel format, that dictates their layout in memory : 
+ In a given screen mode, pixels are described according to a specific pixel format, that dictates their layout in memory: 
 <ul>
 
 <!--
@@ -2349,6 +2349,11 @@ We will now list all the major software that might be involved in homebrew devel
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
+
+
+<!-- ####################################################################### -->
+
+
 <a name="devkitarm"></a>
 <h4>First: the compiler toolchain, with devkitARM</h4>
 
@@ -2382,11 +2387,18 @@ Note that <em>dynamic</em> libraries are not supported on the DS. Therefore each
 
 
 
+
+<!-- ####################################################################### -->
+
+
+
+
+
 <a name="libnds"></a>
 <h4>Second: the low-level library, libnds</h4>
 
 <p>
-<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly named <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touchscreen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the <a href="#dswifi">dswifi</a> library (detailed below). See also the libnds <a href="http://devkitpro.sourceforge.net/devkitProWiki/libnds/" target="_blank">API</a>.
+<a href="http://en.wikipedia.org/wiki/Libnds" target="_blank">Libnds</a>, formerly named <a href="http://www.drunkencoders.com/documents/DS/ndslib.htm" target="_blank">ndslib</a>, supports nearly all features of the Nintendo DS, including: touchscreen, microphone, 2D/3D hardware, and 802.11b Wi-Fi via the <a href="#dswifi">dswifi</a> library (detailed below). See also the libnds <a href="http://devkitpro.sourceforge.net/devkitProWiki/libnds/" target="_blank">API</a>. Its license is very permissive, see it in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds.h?view=markup" target="_blank">include/nds.h</a>.
 </p>
 
 <p>
@@ -2405,13 +2417,20 @@ Hence if you are not making a full use of libnds, most of the time it is that yo
 The installation of libnds is trivial (just a matter of extracting the latest <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608" target="_blank">archive</a>). If you plan to use PAlib (discussed later), libnds will be provided with it, no need for a specific libnds install then (although the PAlib-included version is often quite outdated). 
 </p>
 
+
+<p>To make use of libnds, one just has to include the libnds header (<code>#include &lt;nds.h&gt;</code> with the appropriate command-line switch <code>-IPath/To/Libnds/Headers</code>) to compile against the library. To link to it the <code>-LPath/To/Libnds/Library -lnds</code> switches have to be added, at the end of the link line (libnds does not depend on any other system-specific library, but higher level ones, such as PAlib, use libnds).
+</p>
+
+<p>
+One can read also the <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=159894" target="_blank">libnds examples</a> to learn how to use the library. They are not installed by LOANI currently.
+</p>
+
 <p>
 Apart from the numerical constants (ex: addresses of registers), libnds defines several useful primitives (functions, defined in header files stored in <code>libnds/include/nds</code>) discussed here. Links that are given refer to the cutting-edge CVS version of libnds source files.
 </p>
 
-
 <p>
-Here are listed most services offered by libnds:
+Here are listed most of the services offered by libnds:
 
 <a name="libndstoc"></a>
 <center>
@@ -2427,13 +2446,15 @@ Here are listed most services offered by libnds:
 		       <a href="#libnds_fs">Filesystem management</a><br>
 		       <a href="#libnds_bios">Access to BIOS functions</a><br>
 		       <a href="#libnds_card">Card read/write operations</a><br>
+		       <a href="#libnds_dma">DMA management</a><br>
+		       <a href="#libnds_interrupts">Interrupts</a><br>
 		       <a href="#libnds_ipc">IPC</a><br>
 		       <a href="#libnds_input">Input management</a><br>
+		       <a href="#libnds_time">Time management</a><br>
 		       <a href="#libnds_video">Video</a><br>
 		       <a href="#libnds_audio">Audio</a><br>
 		       <a href="#libnds_timers">Timers</a><br>
-		       <a href="#"></a><br>
-		       <a href="#"></a><br>
+		       <a href="#libnds_console">Console output</a><br>
 		       <a href="#libnds_misc">Miscellaneous</a>
           </div>
 
@@ -2443,6 +2464,7 @@ Here are listed most services offered by libnds:
 [<a href="#toc">Back to the main table of contents</a>]
 </center>
 </p>
+
 
 
 <a name="libnds_fs"></a>
@@ -2463,11 +2485,11 @@ Related code in libnds seems to be the same as in GBFS. It is declared in <a hre
 </p>
 
 <p>
-Thanks to the structures <code>GBFS_FILE</code> (referring to the GBFS overall filesystem of interest) and <code>GBFS_ENTRY</code> (an actual file in a GBFS_FILE), operations such as file look-up (<code>gbfs_search_range/find_first_gbfs_file/skip_gbfs_file</code>), opening (<code>gbfs_get_obj/gbfs_get_nth_obj</code>), copy (<code>gbfs_copy_obj</code>) and file count (<code>gbfs_count_objs</code>) are available.
+Thanks to the structures <code>GBFS_FILE</code> (referring to the GBFS overall filesystem of interest) and <code>GBFS_ENTRY</code> (an actual file in a GBFS_FILE), operations such as file look-up (<code>gbfs_search_range / find_first_gbfs_file/skip_gbfs_file</code>), opening (<code>gbfs_get_obj / gbfs_get_nth_obj</code>), copy (<code>gbfs_copy_obj</code>) and file count (<code>gbfs_count_objs</code>) are available.
 </p>
 
 <p>
-Most relevant informations about GBFS usage can be found in <code>readme.txt</code>, extracted from the GBFS <a href="http://www.pineight.com/gba/gbfs.zip">archive</a>.
+Most relevant information about GBFS usage can be found in <code>readme.txt</code>, extracted from the GBFS <a href="http://www.pineight.com/gba/gbfs.zip">archive</a>.
 </p>
 
 <p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
@@ -2477,7 +2499,7 @@ Most relevant informations about GBFS usage can be found in <code>readme.txt</co
 <a name="libnds_bios"></a>
 <h5>Access to BIOS functions</h5>
 <p>
-Declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/bios.h?view=markup" target="_blank">include/nds/bios.h</a>, defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/biosCalls.s?view=markup" target="_blank">source/common/biosCalls.s</a>, these libnds functions branch directly to the ones defined in the DS BIOS. Being defined in BIOS does not imply being hardware-accelerated, they should be rather optimized though, and allow programs (including the firmware) to be smaller. 
+Declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/bios.h?view=markup" target="_blank">include/nds/bios.h</a>, defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/biosCalls.s?view=markup" target="_blank">source/common/biosCalls.s</a>, these libnds functions branch directly to the ones defined in the DS BIOS. Though being defined in BIOS does not imply being hardware-accelerated, they should be rather optimized though, and they allow programs (including the firmware) to be smaller. 
 </p>
 
 <p>
@@ -2485,22 +2507,22 @@ These functions deal notably with:
 <ul>
 
 <!--
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b></b>: <code></code>, <code></code></li>
 -->
-
-	<li><b>basic maths</b> : <code>swiDivide / swiRemainder / swiDivMod</code>, <code>swiSqrt</code>, <code>swiGetSineTable</code></li>
+<a name="libnds_bios_maths"></a>
+	<li><b>basic maths</b>: <code>swiDivide / swiRemainder / swiDivMod</code>, <code>swiSqrt</code>, <code>swiGetSineTable</code></li>
 	
-	<li><b>interrupt waiting</b> : <code>swiDelay</code>, <code>swiIntrWait / swiWaitForIRQ / swiWaitForVBlank</code></li>
+	<li><b>interrupt waiting</b>: <code>swiDelay</code> (unit for the RTC access), <code>swiIntrWait / swiWaitForIRQ / swiWaitForVBlank</code></li>
 	
-	<li><b>DS working mode</b> : <code>swiSoftReset</code>, <code>swiSetHaltCR</code>, <code>swiHalt</code>, <code>swiSwitchToGBAMode</code></li>
+	<li><b>DS working mode</b>: <code>swiSoftReset</code>, <code>swiSetHaltCR</code>, <code>swiHalt</code>, <code>swiSwitchToGBAMode</code></li>
 	
-	<li><b>copy</b> : <code>swiCopy</code>, <code>swiFastCopy</code> (see our <a href="#datatransfer">data transfer</a> section)</li>
+	<li><b>copy</b>: <code>swiCopy</code>, <code>swiFastCopy</code> (see our <a href="#datatransfer">data transfer</a> section)</li>
 	
 	<li><b>hash</b> (CRC): <code>swiCRC16</code></li>
 	
-	<li><b>debugger use</b> : <code>swiIsDebugger</code></li>
+	<li><b>debugger use</b>: <code>swiIsDebugger</code></li>
 	
-	<li><b>stream decompression</b> : 
+	<li><b>stream decompression</b>: 
 	<ul>
 
 	<!--
@@ -2515,12 +2537,13 @@ These functions deal notably with:
 		
 		<li><code>swiDecompressRLEWram / swiDecompressRLEVram</code>, for the simplistic <a href="http://en.wikipedia.org/wiki/Run-length_encoding" target="_blank">Run-length encoding</a></li>
 		
-		<li><code>swiDecodeDelta8 /swiDecodeDelta16 </code>, probaby linked to <a href="http://en.wikipedia.org/wiki/Delta_encoding" target="_blank">Delta encoding</a></li>
+		<li><code>swiDecodeDelta8 / swiDecodeDelta16 </code>, probaby linked to <a href="http://en.wikipedia.org/wiki/Delta_encoding" target="_blank">Delta encoding</a></li>
 		
 	</ul>
 	</li>
 
-	<li><b>sound settings</b> : <code>swiGetPitchTable</code>, <code>swiGetVolumeTable</code>, <code>swiChangeSoundBias</code></li>
+<a name="libnds_bios_audio"></a>
+	<li><b>sound settings</b>: <code>swiGetPitchTable</code>, <code>swiGetVolumeTable</code>, <code>swiChangeSoundBias</code></li>
 	
 </ul>
 </p>
@@ -2533,21 +2556,20 @@ These functions deal notably with:
 <a name="libnds_card"></a>
 <h5>Card read/write operations</h5>
 <p>
-These operations are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/card.h?view=markup" target="_blank">include/nds/card.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/card.c?view=markup" target="_blank">source/common/card.c</a>. Example available in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/examples/nds/card/eeprom/source/main.cpp?view=markup" target="_blank">card/eeprom/source/main.cpp</a>.
+These operations are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/card.h?view=markup" target="_blank">include/nds/card.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/card.c?view=markup" target="_blank">source/common/card.c</a>. An example is available in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/examples/nds/card/eeprom/source/main.cpp?view=markup" target="_blank">card/eeprom/source/main.cpp</a>.
 </p>
 
 <p>
 <ul>
 
 <!--
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b></b>: <code></code>, <code></code></li>
 -->
+	<li><b>card read at initialization</b>: <code>cardReadHeader</code> (reads the 512-byte header), <code>cardReadID</code></li>
 
-	<li><b>card I/O</b> : <code>cardPolledTransfer</code> (blocking), <code>cardStartTransfer</code> (non-blocking), <code>cardWriteAndRead</code></li>
-	
-	<li><b>card read at initialization</b> : <code>cardReadHeader</code> (reads the 512-byte header), <code>cardReadID</code></li>
-	
-	<li><b>EEPROM management</b> : <code>cardReadEeprom</code>, <code>cardWriteEeprom</code>, <code>cardEepromReadID</code>, <code>cardEepromGetType</code>, <code>cardEepromGetSize</code>, <code>cardEepromChipErase</code>, <code>cardEepromSectorErase</code>
+	<li><b>card I/O</b>: <code>cardPolledTransfer</code> (blocking), <code>cardStartTransfer</code> (non-blocking), <code>cardWriteAndRead</code></li>
+		
+	<li><b>EEPROM management</b>: <code>cardReadEeprom</code>, <code>cardWriteEeprom</code>, <code>cardEepromReadID</code>, <code>cardEepromGetType</code>, <code>cardEepromGetSize</code>, <code>cardEepromChipErase</code>, <code>cardEepromSectorErase</code>
 
 </ul>
 </p>
@@ -2560,21 +2582,21 @@ These operations are declared in <a href="http://devkitpro.cvs.sourceforge.net/d
 <a name="libnds_dma"></a>
 <h5>DMA management</h5>
 <p>
-All DMA functions are declared inline, and thus defined in the same file: <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/dma.h?view=markup" target="_blank">include/nds/dma.h</a>.
+All DMA functions are declared inline, and thus defined in the same header file: <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/dma.h?view=markup" target="_blank">include/nds/dma.h</a>.
 </p>
 
 <p>
 <ul>
 
 <!--
-	<li><b></b> : </li>
+	<li><b></b>: </li>
 -->
 
-	<li><b>DMA copy</b> : synchronous (<code>dmaCopyWords</code>, <code>dmaCopyHalfWords</code>, <code>dmaCopy</code>) or asynchronous (<code>dmaCopyWordsAsynch</code>, <code>dmaCopyHalfWordsAsynch</code>, <code>dmaCopyAsynch</code>)</li>
+	<li><b>DMA copy</b>: synchronous (<code>dmaCopyWords</code>, <code>dmaCopyHalfWords</code>, <code>dmaCopy</code>) or asynchronous (<code>dmaCopyWordsAsynch</code>, <code>dmaCopyHalfWordsAsynch</code>, <code>dmaCopyAsynch</code>)</li>
 
-	<li><b>DMA fill</b> : <code>dmaFillWords</code>, <code>dmaFillHalfWords</code></li>
+	<li><b>DMA fill</b>: <code>dmaFillWords</code>, <code>dmaFillHalfWords</code> (both synchronous)</li>
 	
-	<li><b>DMA state</b> : <code>dmaBusy</code></li>
+	<li><b>DMA state</b>: <code>dmaBusy</code></li>
 
 </ul>
 </p>
@@ -2587,23 +2609,23 @@ All DMA functions are declared inline, and thus defined in the same file: <a hre
 <a name="libnds_interrupts"></a>
 <h5>Interrupts</h5>
 <p>
-Interrupt functions are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/interrupts.h?view=markup" target="_blank">include/nds/interrupts.h</a>, and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/interrupts.c?view=markup" target="_blank">source/common/interrupts.c</a> and in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/interruptDispatcher.s?view=markup" target="_blank">source/common/interruptDispatcher.s</a>.
+Interrupt functions are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/interrupts.h?view=markup" target="_blank">include/nds/interrupts.h</a>, defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/interrupts.c?view=markup" target="_blank">source/common/interrupts.c</a> and in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/common/interruptDispatcher.s?view=markup" target="_blank">source/common/interruptDispatcher.s</a>.
 </p>
 
 <p>
 <ul>
 
 <!--
-	<li><b></b> : </li>
+	<li><b></b>: </li>
 -->
 
-	<li><b>Interrupt subsystem</b> : <code>irqInit</code></li>
+	<li><b>Interrupt subsystem initialization</b>: <code>irqInit</code></li>
 	
-	<li><b>Interrupt activation</b> : <code>irqEnable</code>, <code>irqDisable</code></li>
+	<li><b>Per-interrupt activation</b>: <code>irqEnable</code>, <code>irqDisable</code></li>
 	
-	<li><b>Handler association</b> : <code>irqSet</code>, <code>irqClear</code></li>
+	<li><b>Handler association</b>: <code>irqSet</code>, <code>irqClear</code></li>
 	
-	<li><b>User interrupt dispatcher</b> : <code>irqInitHandler</code></li>
+	<li><b>User-specified interrupt dispatcher</b>: <code>irqInitHandler</code></li>
 	
 </ul>
 </p>
@@ -2623,16 +2645,16 @@ Interrupt functions are declared in <a href="http://devkitpro.cvs.sourceforge.ne
 <ul>
 
 <!--
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b></b>: <code></code>, <code></code></li>
 -->
 
-	<li><b>Generic IPC</b> : <code>TransferRegion</code> structure defined, <code>getIPC</code> and <code>FIFO</code> also</li>
+	<li><b>Generic IPC</b>: <code>TransferRegion</code> structure defined, <code>getIPC</code> and <code>FIFO</code> also</li>
 	
-	<li><b>Synchronization</b> : <code>IPC_SendSync</code>, <code>IPC_GetSync</code></li>
+	<li><b>Synchronization</b>: <code>IPC_SendSync</code>, <code>IPC_GetSync</code></li>
 	
-	<li><b>Sound</b> : <code>TransferSound</code> structure defined for sound metadata transfer</li>
+	<li><b>Sound</b>: <code>TransferSound</code> structure defined for sound metadata transfer</li>
 	
-	<li><b>Time &amp; RTC</b> : <code>time</code> and <code>time</code> structures defined</li>
+	<li><b>Time &amp; RTC</b>: <code>time</code> and <code>time</code> structures defined</li>
 	
 </ul>
 </p>
@@ -2648,36 +2670,67 @@ Interrupt functions are declared in <a href="http://devkitpro.cvs.sourceforge.ne
 <p><a href="" target="_blank"></a>
 </p>
 
+<h6>Touchscreen</h6>
+<p>
+Related (ARM7) code is to be found notably in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm7/touch.h?view=markup" target="_blank">include/nds/arm7/touch.h</a> and <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm7/touch.c?view=markup" target="_blank">/source/arm7/touch.c</a>
+</p>
+
+
+<ul>
+
+<!--
+	<li><b></b>: <code></code>, <code></code></li>
+-->
+
+	<li><b>Defines</b>: <code>TSC_MEASURE_TEMP1</code>, <code>TSC_MEASURE_X</code>, etc.</li>
+	
+	<li><b>Functions</b>: for the ARM7, <code>touchReadXY</code>, <code>touchRead</code>, <code>touchReadTemperature</code> are available, whereas for the ARM9 another <code>touchReadXY</code> is declared (in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/input.h?view=markup" target="_blank">include/nds/arm9/input.h</a>) and defined (in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/touch.c?view=markup" target="_blank">source/arm9/touch.c</a>). It reads the result from its ARM7 counterpart thanks to IPC</li>
+	
+
+</ul>
+</p>
+
+
+<h6>Keys</h6>
+<p>
+Key management is mostly declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/input.h?view=markup" target="_blank">include/nds/arm9/input.h</a>, and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/keys.c?view=markup" target="_blank">source/arm9/keys.c</a>. Keys have be read at the lowest level thanks to both ARMs, but are usually managed with the ARM9 to update directly the application state. Thus libnds focuses on the ARM9 for its exported functions.
+</p>
 
 <p>
 <ul>
 
 <!--
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b></b>: <code></code>, <code></code></li>
 -->
 
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b>Key defines</b>: <code>KEYPAD_BITS</code>, <code>KEY_A</code>, etc.</li>
 	
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b>Key reading</b>: <code>scanKeys</code> (update key states), <code>keysHeld</code>, <code>keysDown</code>, <code>keysDownRepeat</code>, <code>keysUp</code><code></code></li>
 	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b>Key settings</b>: <code>keysSetRepeat</code> to set the key repeat parameters</li>
 	
 	<li><b>Key input registers</b> (<code>REG_KEYINPUT</code>, <code>REG_KEYCNT</code>) are defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a></li>
 
 </ul>
 </p>
 
+
+<h6>DS motion sensor</h6>
+<p>
+The DS Motion Card/DS Motion Pak can be managed thanks to a large number of functions (<code>motion_init</code>, <code>motion_read_x</code>, <code>motion_read_gyro</code>, <code>motion_acceleration_x</code>, etc.). They are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/ndsmotion.h?view=markup" target="_blank">include/nds/arm9/ndsmotion.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/ndsmotion.c?view=markup" target="_blank">source/arm9/ndsmotion.c</a>
+</p>
+
+
 <p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
 
 
 
-<a name="libnds_audio"></a>
-<h5>Audio</h5>
-<p><a href="" target="_blank"></a>
+
+
+<a name="libnds_time"></a>
+<h5>Time management</h5>
+
+<p>Time is mostly taken care of by the ARM7. Most time primitives are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm7/clock.h?view=markup" target="_blank">include/nds/arm7/clock.h</a>, and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm7/clock.c?view=markup" target="_blank">source/arm7/clock.c</a>. See also the structure for RTC defined for <a href="#libnds_ipc">IPC</a>.
 </p>
 
 
@@ -2685,53 +2738,122 @@ Interrupt functions are declared in <a href="http://devkitpro.cvs.sourceforge.ne
 <ul>
 
 <!--
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b></b>: <code></code>, <code></code></li>
 -->
 
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b>RTC management</b>: <code>rtcReset</code>, <code>rtcTransaction</code> (helper), <code>rtcGetTime / rtcSetTime</code>, <code>rtcGetTimeAndDate / rtcSetTimeAndDate</code>, <code>rtcGetData</code></li>
 	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
-	
+	<li><b>Clock interrupt</b>: <code>initClockIRQ</code></li>
+
 </ul>
 </p>
 
+
 <p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
 
 
 
 <a name="libnds_video"></a>
 <h5>Video</h5>
-<p><a href="" target="_blank"></a>
+<p>
+Rendering, both 2D and 3D, is controlled directly by the ARM9, which drives the specialized rendering cores.
 </p>
 
+<p>
+As for generic (non-2D/non-3D) video defines, see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a> for <code>lcdSwap</code>, <code>lcdMainOnTop</code>, <code>lcdMainOnBottom</code> and various LCD status registers (ex: <code>DISP_VBLANK_IRQ</code>). The <code>SetYtrigger</code> function defined here too.
+</p>
+
+
+
+<h6>2D</h6>
+<p>
+<ul>
+
+<!--
+	<li><b></b>: <code></code>, <code></code></li>
+-->
+
+	<li><b>2D video defines</b> (ex: <code>RGB15</code>, <code>VRAM_A_CR</code>, <code>VRAM_A_MAIN_SPRITE</code>, <code>MODE_5_2D</code>) are set in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/video.h?view=markup" target="_blank">include/nds/arm9/video.h</a></li>
+	
+	<li><b>2D video functions</b> (ex: <code>vramSetMainBanks</code>, <code>vramRestoreMainBanks</code>, <code>vramSetBankA</code>, etc.) are also declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/video.h?view=markup" target="_blank">include/nds/arm9/video.h</a>, and declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/video.c?view=markup" target="_blank">source/arm9/video.c</a></li>
+
+	<li><b>Background defines</b> (ex: <code>BG_COLOR_256</code>, <code>TEXTBG_SIZE_256x256</code>, etc.) are set in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/background.h?view=markup" target="_blank">include/nds/arm9/background.h</a></li>
+
+	<li><b>Colors and images</b>: the <code>RGB_24</code> structure and  the <code>image</code> structure are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/image.h?view=markup" target="_blank">include/nds/arm9/image.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/image.c?view=markup" target="_blank">source/arm9/image.c</a></li>
+
+	<li><b>PCX loading</b> can be performed thanks to <code>loadPCX</code>, declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/pcx.h?view=markup" target="_blank">include/nds/arm9/pcx.h</a>, defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/pcx.c?view=markup" target="_blank">source/arm9/pcx.c</a></li>
+	
+	<li><b>Conversion between pixel formats</b> (color depths: 8, 16, 24 and colorkey-based transparency) are available thanks to the <code>image24to16</code>, <code>image8to16</code>, <code>image8to16trans</code>, <code>imageDestroy</code>, and <code>imageTileData</code> (remaps a normal image into a tiled one) functions, declared also in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/image.h?view=markup" target="_blank">include/nds/arm9/image.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/image.c?view=markup" target="_blank">source/arm9/image.c</a></li>
+	
+	
+	<li><b>Sprite defines</b>, such as <code>ATTR0_ROTSCALE</code>, <code>ATTR2_PALETTE</code>, enumerations (ex: <code>tObjMode</code>, <code>tObjShape</code>, <code>tObjSize</code>, etc.), structures and unions (ex: <code>SpriteEntry</code>, <code>SpriteRotation</code>, <code>tOAM</code>) are defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/sprite.h?view=markup" target="_blank">include/nds/arm9/sprite.h</a></li>
+	
+</ul>
+</p>
+
+
+<h6>3D</h6>
+<p>
+libnds provides a 3D API somewhat similar to a subset of OpenGL.
+</p>
 
 <p>
 <ul>
 
 <!--
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b></b>: <code></code>, <code></code></li>
 -->
+	
+	<li><b>OpenGL-like support</b>: numerous structures (ex: <code>GLvector</code>), enumerations (ex: <code>GL_MATRIX_MODE_ENUM</code>), etc. are defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/videoGL.h?view=markup" target="_blank">include/nds/arm9/videoGL.h</a>. Contains as well the FIFO command defines aimed at the 3D core (ex: <code>FIFO_DIFFUSE_AMBIENT</code>, <code>FIFO_VIEWPORT</code>) and the GL-like functions (ex: <code>glTexImage2D</code>, <code>gluTexLoadPal</code>, <code>glBindTexture</code>)</li>
+	
+	<li><b>Hardware box testing</b>: thanks to a dedicated chip, 3D box test against viewing frustrum can be performed, either synchronously (<code>BoxTest / BoxTestf</code>), or, better, asynchronously (<code>BoxTest_Asynch / BoxTestf_Asynch</code>). Results can be obtained for asynchronous calls thanks to <code>BoxTestResult</code>. Declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/boxtest.h?view=markup" target="_blank">include/nds/arm9/boxtest.h</a>, defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/boxtest.c?view=markup" target="_blank">source/arm9/boxtest.c</a></li>
+	
+	<li><b>Hardware position testing</b>: thanks to a dedicated chip, 3D position test can be performed, either synchronously (<code>PosTest</code>), or, better, asynchronously (<code>PosTest_Asynch / PosTestBusy</code>). Various pieces of information can be obtained, thanks to <code>PosTestWresult</code> function (camera distance), and to the <code>PosTestXresult</code>, <code>PosTestYresult</code> and <code>PosTestZresult</code> functions. Declared and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/postest.h?view=markup" target="_blank">include/nds/arm9/postest.h</a></li>
 
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b>3D video defines</b> (ex: <code>GFX_VERTEX_XY</code>, <code>GFX_FOG_TABLE</code>, <code>MATRIX_LOAD4x4</code>) are set in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/video.h?view=markup" target="_blank">include/nds/arm9/video.h</a></li>
 	
 </ul>
 </p>
 
 <p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+
+
+<a name="libnds_audio"></a>
+<h5>Audio</h5>
+<p>
+Audio is to be managed by the ARM7. Audio can be driven from the ARM9 though. libnds audio primitives are mostly declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm7/audio.h?view=markup" target="_blank">include/nds/arm7/audio.h</a>, and defined in the rather empty <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm7/audio.c?view=markup" target="_blank">source/arm7/audio.c</a>. See also the <a href="#libnds_bios_audio">audio BIOS support</a>.
+</p>
+
+<p>
+
+</p>
+
+<p>
+<ul>
+
+<!--
+	<li><b></b>: <code></code>, <code></code></li>
+-->
+
+	<li><b>Audio registers and macros</b>: <code>SOUND_VOL</code>, <code>SCHANNEL_CR</code>, etc.</li>
+	
+	<li><b>Sound input</b>: the microphone can be managed thanks to <code>MIC_ReadData</code>, <code>StartRecording</code>, <code>StopRecording</code>, <code>ProcessMicrophoneTimerIRQ</code>, <code>PM_SetAmp</code> (gain control), <code>MIC_On</code> <code>MIC_Off</code>. See <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm7/microphone.c?view=markup" target="_blank">source/arm7/microphone.c</a></li>
+	
+	<li><b>ARM9 audio control</b>: the commands are forwarded to the ARM7 thanks to IPC. The <code>playSound</code>, <code>setGenericSound</code>, <code>playGenericSound</code> functions are declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/sound.h?view=markup" target="_blank">include/nds/arm9/sound.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/sound.c?view=markup" target="_blank">source/arm9/sound.c</a></li>
+		
+</ul>
+</p>
+
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+
+
+
+
 
 
 
@@ -2745,12 +2867,12 @@ Interrupt functions are declared in <a href="http://devkitpro.cvs.sourceforge.ne
 <ul>
 
 <!--
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b></b>: <code></code>, <code></code></li>
 -->
 
-	<li><b>Macro for frequency settings</b> : <code>TIMER_FREQ</code>, <code>TIMER_FREQ_64</code>, etc.</li>
+	<li><b>Macro for frequency settings</b>: <code>TIMER_FREQ</code>, <code>TIMER_FREQ_64</code>, etc.</li>
 	
-	<li><b>Timer registers</b> : <code>TIMER_DATA</code>, <code>TIMER0_CR</code>, <code>TIMER_IRQ_REQ</code>, <code>TIMER_DIV_1</code>
+	<li><b>Timer registers</b>: <code>TIMER_DATA</code>, <code>TIMER0_CR</code>, <code>TIMER_IRQ_REQ</code>, <code>TIMER_DIV_1</code>
 etc.</li>
 	
 </ul>
@@ -2759,9 +2881,9 @@ etc.</li>
 <p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
 
 
-<a name="libnds_"></a>
-<h5></h5>
-<p><a href="" target="_blank"></a>
+<a name="libnds_console"></a>
+<h5>Console output</h5>
+<p>The console support is declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/console.h?view=markup" target="_blank">include/nds/arm9/console.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/console.c?view=markup" target="_blank">source/arm9/console.c</a>. Cursor and escape sequences are supported.
 </p>
 
 
@@ -2769,20 +2891,14 @@ etc.</li>
 <ul>
 
 <!--
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b></b>: <code></code>, <code></code></li>
 -->
 
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b>Console initialization</b>: the <code>consoleInit</code>, <code>consoleInitDefault</code> and <code>consoleDemoInit</code> functions allow to use default settings or to set specifically the font, the address location where it will be loaded, its palette and bit depth, the console map, and to specify the number of glyphs defined in the font and the ASCII code of its first character. Default font is stored in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/default_font.bin?view=markup" target="_blank">source/arm9/default_font.bin</a></li>
 	
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b>Screen clear</b>: <code>consoleClear</code></li>
 	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b>Text output</b>: <code>iprintf</code></li>
 
 </ul>
 </p>
@@ -2795,75 +2911,64 @@ etc.</li>
 <a name="libnds_misc"></a>
 <h5>Miscellaneous</h5>
 <p>
-Various useful constructs defined in various places in the source.
-</p>
+Here are various useful constructs defined in various places in the source:
 
-
-<p>
 <ul>
 
 <!--
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b></b>: <code></code>, <code></code></li>
 -->
 
-	<li><b>Common types and macros</b> : see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/jtypes.h?view=markup" target="_blank">include/nds/jtypes.h</a> for basic type declarations (int32, vuint32, touchPosition, etc.), and for most macros and defines (ITCM_CODE, GETRAW, etc.). Some of these macros allow to set parts of the program (code, data, etc.) in specific memory regions (ITCM, DTCM, etc.)</li>
+	<li><b>Common types and macros</b>: see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/jtypes.h?view=markup" target="_blank">include/nds/jtypes.h</a> for basic type declarations (int32, vuint32, touchPosition, etc.), and for most macros and defines (ITCM_CODE, GETRAW, etc.). Some of these macros allow to tell the linker to put parts of the program (code, data, etc.) in specific memory regions (ITCM, DTCM, etc.)</li>
 	
-	<li><b>Memory region defines and console-specific headers</b> : see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/memory.h?view=markup" target="_blank">include/nds/memory.h</a> for symbols designating memory regions (ex: GBAROM, SPRITE_PALETTE) and for structures mapping to headers (ex: <code>GBAHeader</code>, <code>NDSHeader</code>)</li>
+	<li><b>Memory region defines and console-specific headers</b>: see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/memory.h?view=markup" target="_blank">include/nds/memory.h</a> for symbols designating memory regions (ex: GBAROM, SPRITE_PALETTE) and for structures mapping to headers (ex: <code>GBAHeader</code>, <code>NDSHeader</code>)</li>
 	
-	<li><b>Bus ownership</b> : see also <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/memory.h?view=markup" target="_blank">include/nds/memory.h</a>, for <code>sysSetCartOwner</code>, <code>sysSetCardOwner</code>, <code>sysSetBusOwners</code></li>
+	<li><b>Bus ownership</b>: see also <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/memory.h?view=markup" target="_blank">include/nds/memory.h</a>, for <code>sysSetCartOwner</code>, <code>sysSetCardOwner</code>, <code>sysSetBusOwners</code></li>
 	
-	<li><b>Reload feature</b> : see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/reload.h?view=markup" target="_blank">include/nds/reload.h</a> to be able to return to the main menu, when using appropriate loaders (darkains loader or compatible), thanks to <code>LOADNDS</code></li>
+	<li><b>Reload feature</b>: see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/reload.h?view=markup" target="_blank">include/nds/reload.h</a> to be able to return to the main menu, when using appropriate loaders (darkains loader or compatible), thanks to <code>LOADNDS</code></li>
 	
-	<li><b>Power control</b> : see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a> for <code>powerON</code>, <code>powerSET</code>, <code>powerOFF</code> and power defines for each subsystem</li>
+	<li><b>Power control</b>: see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a> for <code>powerON</code>, <code>powerSET</code>, <code>powerOFF</code> and power defines for each subsystem. See also, for the ARM7, power management defines (ex: <code>PM_SOUND_AMP</code>),
+<code>writePowerManagement</code> and <code>readPowerManagement</code> in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm7/serial.h?view=markup" target="_blank">include/nds/arm7/serial.h</a></li>
 	
-	<li><b>Rendering core and screen control</b> : see also <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a> for <code>lcdSwap</code>, <code>lcdMainOnTop</code>, <code>lcdMainOnBottom</code> and various LCD status registers (ex: <code>DISP_VBLANK_IRQ</code>). <code>SetYtrigger</code> defined here too</li>
+	<li><b>User settings</b>: again in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a>,
+the <code>PERSONAL_DATA</code> structures are defined and the <code>readUserSettings</code> function is declared. It is implemented in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm7/userSettings.c?view=markup" target="_blank">source/arm7/userSettings.c</a></li>
+	
+	<li><b>Command-line parameters</b>: again in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a>, see the <code>__argv</code> structure (not very useful yet)</li>
 
-	<li><b>User settings</b> : again in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a>, the <code>readUserSettings</code> function is defined, and the <code>PERSONAL_DATA</code> structures as well</li>
+	<li><b>Numerical conversions</b>: for BCD conversions, see <code>BCDToInteger</code> and  <code>integerToBCD</code>, declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm7/clock.h?view=markup" target="_blank">include/nds/arm7/clock.h</a>. For various fixed-point conversions, see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/videoGL.h?view=markup" target="_blank">include/nds/arm9/videoGL.h</a></li>
 	
-	<li><b>Command-line parameters</b> : again in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/system.h?view=markup" target="_blank">include/nds/system.h</a>, see the <code>__argv</code>structure (not very useful yet)</li>
+	<li><b>Firmware read</b>: see <code>readFirmware</code> and firmware commands (ex: <code>FIRMWARE_WREN</code>) in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm7/serial.h?view=markup" target="_blank">include/nds/arm7/serial.h</a></li>
+	
+	<li><b>Serial control</b>: defines regarding the SPI (ex: <code>REG_SPIDATA</code>, <code>SPI_BAUD_4MHZ</code>) and associated function (<code>SerialWaitBusy</code>) are in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm7/serial.h?view=markup" target="_blank">include/nds/arm7/serial.h</a>. The implementation is in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm7/spi.c?view=markup" target="_blank">source/arm7/spi.c</a>
+</li>
+	
+	<li><b>Maths functions</b>: numerous defines (ex: <code>SQRT_CR</code>), scalar fixed-point and integer operations (ex: <code>divf32</code>, <code>div32</code>) and 3D vectors operators (ex: <code>crossf32</code>, <code>dotf32</code>, <code>normalizef32</code>) are defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/math.h?view=markup" target="_blank">include/nds/arm9/math.h</a>. Most of them are hardware-accelerated. See also the maths support in the <a href="#libnds_bios_maths" target="_blank">BIOS</a> section, and the access to precomputed trigonometric values provided by <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/trig_lut.h?view=markup" target="_blank">include/nds/arm9/trig_lut.h</a>. It refers to cosinus (<a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/COS.bin?view=markup" target="_blank">source/arm9/COS.bin</a>), sinus (<a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/SIN.bin?view=markup" target="_blank">source/arm9/SIN.bin</a>) and tangent (<a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/TAN.bin?view=markup" target="_blank">source/arm9/TAN.bin</a>)</li>
+	
+	<li><b>Rumble management</b>: the two types of rumble devices (Rumble/WarioWare) can be controlled, thanks to <code>isRumbleInserted</code> and <code>setRumble</code>, declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/rumble.h?view=markup" target="_blank">include/nds/arm9/rumble.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/rumble.c?view=markup" target="_blank">source/arm9/rumble.c</a></li>
 
-	<li><b></b> : <code></code>, <code></code></li>
-	
-	<li><b></b> : <code></code>, <code></code></li>
+	<li><b>Exception management</b>: thanks to the <code>enterException</code>, <code>setExceptionHandler</code>, <code>defaultExceptionHandler</code> and <code>getCPSR</code> functions, a stack of exception vectors is available. It is declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/exceptions.h?view=markup" target="_blank">include/nds/arm9/exceptions.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/exceptions.c?view=markup" target="_blank">exceptions.c</a>. An exception handler is defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/exceptionHandler.s?view=markup" target="_blank">source/arm9/exceptionHandler.s</a></li>
+
+	<li><b>ARM9 cache management</b>: the ARM9 instruction cache (<code>IC_InvalidateAll</code>, <code>IC_InvalidateRange</code>)) and the data cache (<code>DC_FlushAll</code>, <code>DC_FlushRange</code>, <code>DC_InvalidateAll</code>, <code>DC_InvalidateRange</code>) can be flushed and invalidated (partially or as a whole), so that they stay in synch with the main RAM, for example for DMA transfers. Declared in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/arm9/cache.h?view=markup" target="_blank">include/nds/arm9/cache.h</a> and defined in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/icache.s?view=markup" target="_blank">source/arm9/icache.s</a> and in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/dcache.s?view=markup" target="_blank">source/arm9/dcache.s</a>
+</li>
+
+	<li><b>Debug helper</b>: in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/gurumeditation.c?view=markup" target="_blank">source/arm9/gurumeditation.c</a>, one can see a few (unexported) functions that may help debugging, notably by displaying the DS state in case an exception was thrown</li>
 
 </ul>
 </p>
 
-<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
+<p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p>
+
+
+<p><center>[<a href="#toc">Back to the main table of contents</a>]</center></p><br><br>
 
 
 
 
+<!-- ####################################################################### -->
 
-<ul>
 
-<!--
 
-       <li><code></code>: </li>
-<-->
 
-        <li><code>consoleDemoInit</code>, <code>consoleInitDefault</code> or <code>consoleInit</code>: initializes a text-based console so that <code>printf</code> can be used directly to write strings on a DS sub screen. See also: <code>consoleClear</code></li>
-
-       <li><code>videoSetMode</code>, <code>vramSetBankA</code>, <code>lcdMainOnBottom</code>, etc. are used to set-up the video rendering</li>
-
-       <li><code>irqInit</code>, <code>irqEnable</code>, etc. allow to setup the interrupt handler and manage interrupt status, for example to enable the VBI (<code>IRQ_VBLANK</code>).  See also: <code>swiWaitForVBlank</code> (<a href="#interrupts">more information</a> on interrupts)</li>
-
-       <li>other <code>swi* functions</code> (ex: <code>swiCopy</code>) provide access to BIOS functions</li>
-
-       <li><code>scanKeys</code>, <code>keysHeld</code>, <code>keysDown</code>, etc. simplify quite a lot key handling, with regard to positive logic, transitional states and so on (<a href="#keys">more information</a> on keys)</li>
-
-</ul>
-
-</p>
-
-<p>One just has to include the libnds header (<code>#include &lt;nds.h&gt;</code> with the appropriate command-line switch <code>-IPath/To/Libnds/Headers</code>) to compile against the library. To link to it the <code>-LPath/To/Libnds/Library -lnds</code> switches have to be added, at the end of the link line (libnds does not depend on any other system-specific library, but higher level ones, such as PAlib, use libnds).
-</p>
-
-<p>
-One can use also the <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=159894" target="_blank">libnds examples</a> to learn how to use the library. They are not installed by LOANI currently.
-</p>
-
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
 
@@ -2902,6 +3007,10 @@ Note also that in its current form, libfat cannot be used by default nor efficie
 
 
 
+<!-- ####################################################################### -->
+
+
+
 
 <a name="libefs"></a>
 <h4>Fourth: a library to manage ROM-embedded filesystems, libefs</h4>
@@ -2921,7 +3030,7 @@ libefs has to know the target card filesystem (most generally FAT, in that case 
 <p>
 Once libefs is initialized, reading files and listing directories in that embedded filesystem is supported. Writing to files can be performed (self-modifying ROM), provided that a file with the target name already exists and was created with a sufficient size (space must be already allocated). Thus filenames must be planned, and sizes too: at ROM generation, just create a file with random content (or, better, all zero) of the right size, and modify its content at runtime. For example, 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -2949,7 +3058,7 @@ Creation and appending of the filesystem is performed directly by <code>ndstool<
 <p>
 All the files and directories to be put in the ROM filesystem should be copied in a root dedicated directory (ex: <code>MyFutureNitroFS</code>) in your project directory, on your PC, with the desired organization (file hierarchy). Then, when creating your .nds ROM with <code>ndstool</code>, you have to specify of course your ARM7 and ARM9 executables, but also here your content directory, as "data files", i.e. with the <code>-d</code> option. For example:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -2996,6 +3105,12 @@ for more details.
 
 
 
+<!-- ####################################################################### -->
+
+
+
+
+
 
 <a name="dswifi"></a>
 <h4>Fifth: a useful library to manage Wifi, dswifi</h4>
@@ -3006,6 +3121,14 @@ for more details.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<!-- ####################################################################### -->
+
+
+
+
 
 
 <a name="palib"></a>
@@ -3733,7 +3856,7 @@ At compile time, PAlib overall headers must be included: <code>#include &lt;PA9.
 </p>
 
 <p>
-At link time, the PAlib (static) library <code></code> must be specified. As it depends on libdns, following switches should be used: <code>-LPath/To/PAlib/lib -lpa9 -LPath/To/Libnds/lib -lnds</code> for the ARM9.
+At link time, the PAlib (static) library <code></code> must be specified. As it depends on libnds, following switches should be used: <code>-LPath/To/PAlib/lib -lpa9 -LPath/To/Libnds/lib -lnds</code> for the ARM9.
 </p>
 
 <br><p><center>[<a href="#palibtoc">Back to the PAlib table of contents</a>]</center></p><br><br>
@@ -3762,6 +3885,12 @@ There are still many other libraries, but they are less used. <a href="http://li
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
+
+
+
+<!-- ####################################################################### -->
+<!-- ####################################################################### -->
+<!-- ####################################################################### -->
 
 
 
@@ -4184,7 +4313,7 @@ As a final word, have fun programmin' the DS !
 <h4>Appendix 1: in-depth example of the usual cross-compilation build process</h3>
 
 <p>
-This explanation is based first on a PAlib example (an executable using PAlib is built), then on examples taken from libdns (the build of the library itself, and the one of a program using it).
+This explanation is based first on a PAlib example (an executable using PAlib is built), then on examples taken from libnds (the build of the library itself, and the one of a program using it).
 </p>
 
 <p>
