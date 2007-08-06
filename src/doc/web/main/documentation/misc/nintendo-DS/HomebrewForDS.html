@@ -1025,6 +1025,53 @@ By default when an interrupt is triggered, the CPU jumps to the standard <a href
 </p>
 
 <p>
+More information on interrupts in general can be found in this TONC <a href="http://www.coranac.com/tonc/text/interrupts.htm" target="_blank">section</a>.
+</p>
+
+
+
+<h6>Hardware Interrupts</h6>
+<p>
+The DS supports 23 different hardware interrupts, named here according to the libnds convention (unless specified otherwise, these interrupts are available both for the ARM7 and the ARM9):
+<ul>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li><b>screen-related</b> : triggered when an horizontal blank, a vertical one occurred, or when a user-specified number of scanlines (set in <code>DISPSTAT</code>, compared to <code>REG_VCOUNT</code>) were displayed (<code>IRQ_HBLANK / IRQ_VBLANK / IRQ_VCOUNT</code>)</li>
+	
+	<li><b>timer-related</b>: triggered when a timer overflows (<code>IRQ_TIMER0 / IRQ_TIMER1 / IRQ_TIMER2 / IRQ_TIMER3</code>)</li>
+	
+	<li><b>network-related: </b>: triggered when (supposedly) a generic network or Wifi-specific event occurred (<code>IRQ_NETWORK / IRQ_WIFI</code> ) [ARM7-specific]</li>
+	
+	<li><b>DMA-related</b>: triggered when a DMA transfer is over (<code>IRQ_DMA0 / IRQ_DMA1 / IRQ_DMA2 / IRQ_DMA3</code>)</li>
+	
+	<li><b>input-related</b>: triggered when keys being pressed match a user-specified mask, <code>REG_KEYCNT</code> (<code>IRQ_KEYS</code>)</li>
+	
+	<li><b>card-related</b>: triggered when an event occurred in the GBA port, when a data transfer for the DS card is completed, or in another event occurred on the DS card (<code>IRQ_CART / IRQ_CARD / IRQ_CARD_LINE</code>)</li>
+	
+	<li><b>IPC and FIFO-related</b>: triggered when the IPC is synchronized, when receive FIFO is not empty, or when send FIFO is not empty (<code>IRQ_IPC_SYNC / IRQ_FIFO_EMPTY / IRQ_FIFO_NOT_EMPTY</code>)</li>
+	
+	<li><b>render-related</b>: triggered when an event occurred in the geometry engine (<code>IRQ_GEOMETRY_FIFO</code>) [ARM9 only]</li>
+	
+	<li><b>SPI-related</b>: triggered when an event occurred in the SPI bus (<code>IRQ_SPI</code>) [ARM7 only]</li>
+	
+	<li><b>lid-related</b>: triggered when the lid state changed (<code>IRQ_LID</code>) [ARM7 only]</li>
+		
+</ul>
+
+</p>
+
+<p>
+Once the IRQ subsystem has been initialized (<code>irqInit</code>), handlers can be associated to interrupts (<code>irqSet</code>, <code>irqClear</code>). libnds provides a default overall interrupt dispatcher that can be overriden (<code>irqInitHandler</code>). 
+</p>
+
+<p>
+Interrupts can be enabled/disabled separately (using <code>REG_IE</code>, or <code>irqEnable</code>, <code>irqDisable</code>), and temporarily disabled as a whole (<code>REG_IME</code>). 
+</p>
+
+<p>
 The ARM7 stores the addresses of its interrupt handlers in a hardcoded memory location, whereas the ARM9 defines these addresses relativey to the DTCM.
 </p>
 
@@ -1033,7 +1080,7 @@ Both CPU can trigger interrupts to each other (if the ARM9 allows it). It is con
 </p>
 
 
-<h6>Screen-related interrupts: Horizontal &amp; Vertical Blank Interrupts</h6>
+<h7>Screen-related interrupts: Horizontal &amp; Vertical Blank Interrupts</h7>
 
 <p>
 The DS screens are updated neither as a whole nor permanently: the graphics hardware draws pixels one by one, from the top left to the bottom right of each screen, line by line. It then waits for a while (a fixed duration) before starting to draw again. 
@@ -1060,7 +1107,7 @@ Note that all other operations (input reading, sound output, application logic, 
 </p>
 
 
-<h6>Key Interrupts</h6>
+<h7>Key Interrupts</h7>
 
 <p>
 Keys can be read thanks to <a href="#keys">several methods</a>, including the interrupt-based one. In this case a specific IRQ handler is registered. This handler will be triggered indeed when a key is pressed, but it will not be called when the key is released, which reduces quite a lot the interest of this method for key handling.
@@ -1070,9 +1117,20 @@ Keys can be read thanks to <a href="#keys">several methods</a>, including the in
 Beyond screens and sometimes keys, FIFO, IPC and <a href="#timers">timers</a> make heavy use of interrupts.
 </p>
 
+
+<h6>Software Interrupts</h6>
 <p>
-More information on interrupts can be found in this TONC <a href="http://www.coranac.com/tonc/text/interrupts.htm" target="_blank">section</a>.
+These SWI (for <code>SoftWare Interrupt</code>) are triggered by the program itself, thanks to the ARM instruction named <code>swi</code>, and result in a DS BIOS function being called.
 </p>
+
+<p>
+One would prefer to use pre-made encapsulations for these BIOS calls, for example the ones provided by libnds (ex: <code>swiSoftReset</code>).
+</p>
+
+<p>
+The DS supports 25 different software interrupts, they are described in the libnds <a href="#libnds_bios">BIOS</a> section.
+</p>
+
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
@@ -2254,6 +2312,7 @@ Various subsystems (power management, firmware, touchscreen, sound volume and co
 </p>
 
 
+<a name="dma"></a>
 <h5>DMA</h5>
 
 <p>
@@ -2261,7 +2320,11 @@ A <a href="http://en.wikipedia.org/wiki/Direct_memory_access" target="_blank">DM
 </p>
 
 <p>
-There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU: the ARM9 initiates the transfer and, if it does not access to main memory, can continue its work while the DMA transfer is going on. Then it will receive an interrupt from the DMA controller once the operation has been done. It results in data transfer with much less CPU overhead. 
+There are four prioritized DMA channels. They can transfer data asynchronously from the main CPU: the ARM9 initiates the transfer and, if it does not access to main memory, can continue its work while the DMA transfer is going on. Then it will receive an interrupt from the DMA controller once the operation has been done. It results in data transfer with much less CPU overhead.
+</p>
+
+<p>
+For each DMA channel, the status (enabled/disabled), the start of transfer (immediately/at next HBL/at next VBL), the size of each atomic transfer (16/32 bits), the trigger of an interrupt when the transfer is over, the source and destination transfer pattern (fixed/ascending/descending) can be chosen. All these informations are set thanks to a register (<code>DMA_CR</code> in libnds) that tells too whether a given DMA channel is busy (<code>dmaBusy</code> in libnds).
 </p>
 
 <p>
@@ -2277,6 +2340,14 @@ More information on DMA can be found in this TONC <a href="http://www.coranac.co
 <h5>Timers</h5>
 <p>
 A timer is a hardware function that can be set to raise an interrupt at regular intervals, once enabled. There are eight incrementing 16bit timers, four for each CPU.
+</p>
+
+<p>
+Timers are useful to wait for a given duration, or to schedule an action regularly. There are four timers in the DS, each running at up to 33.514 MHz. This frequency can be scaled down of various powers of two, and timers can cascade: then for example timer #1 would increase only on timer #0 overflow. If needed, a timer may trigger an interrupt when it overflows.
+</p>
+
+<p>
+Timers can be managed thanks to two registers, named in libnds <code>TIMER_CR(x)</code> and <code>TIMER_DATA(x)</code> with x in 0..3.
 </p>
 
 <p>
@@ -2489,7 +2560,7 @@ Thanks to the structures <code>GBFS_FILE</code> (referring to the GBFS overall f
 </p>
 
 <p>
-Most relevant information about GBFS usage can be found in <code>readme.txt</code>, extracted from the GBFS <a href="http://www.pineight.com/gba/gbfs.zip">archive</a>.
+Most relevant information about GBFS usage can be found in <code>readme.txt</code>, extracted from the GBFS <a href="http://www.pineight.com/gba/gbfs.zip">archive</a>. There is also an helpful <a href="http://www.playeradvance.org/forum/showthread.php?t=4284" target="_blank">tutorial</a>, in French.
 </p>
 
 <p><center>[<a href="#libndstoc">Back to the libnds table of contents</a>]</center></p><br><br>
@@ -2592,7 +2663,7 @@ All DMA functions are declared inline, and thus defined in the same header file:
 	<li><b></b>: </li>
 -->
 
-	<li><b>DMA copy</b>: synchronous (<code>dmaCopyWords</code>, <code>dmaCopyHalfWords</code>, <code>dmaCopy</code>) or asynchronous (<code>dmaCopyWordsAsynch</code>, <code>dmaCopyHalfWordsAsynch</code>, <code>dmaCopyAsynch</code>)</li>
+	<li><b>DMA copy</b>: synchronous (<code>dmaCopyWords</code>, <code>dmaCopyHalfWords</code>, <code>dmaCopy</code>) or asynchronous (<code>dmaCopyWordsAsynch</code>, <code>dmaCopyHalfWordsAsynch</code>, <code>dmaCopyAsynch</code>). <code>dmaCopy</code> and <code>dmaCopyAsynch</code> use the third DMA channel, other let the developer select the channel</li>
 
 	<li><b>DMA fill</b>: <code>dmaFillWords</code>, <code>dmaFillHalfWords</code> (both synchronous)</li>
 	
@@ -2898,7 +2969,7 @@ etc.</li>
 	
 	<li><b>Screen clear</b>: <code>consoleClear</code></li>
 	
-	<li><b>Text output</b>: <code>iprintf</code></li>
+	<li><b>Text output</b>: <code>iprintf</code> (defined in devkitARM's <code>stdio.h</code>)</li>
 
 </ul>
 </p>
@@ -2952,6 +3023,8 @@ the <code>PERSONAL_DATA</code> structures are defined and the <code>readUserSett
 </li>
 
 	<li><b>Debug helper</b>: in <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/source/arm9/gurumeditation.c?view=markup" target="_blank">source/arm9/gurumeditation.c</a>, one can see a few (unexported) functions that may help debugging, notably by displaying the DS state in case an exception was thrown</li>
+
+	<li><b>Default ARM7 implementation</b>: for those who just want a basic ARM7 executable, libnds provides <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/basicARM7/source/defaultARM7.c?view=markup" target="_blank">source/defaultARM7.c</a></li>
 
 </ul>
 </p>
@@ -3367,7 +3440,7 @@ These are plotted in framebuffer mode, and allows for fonts of different sizes a
 </p>
 
 <p>
-Last choice with these framebuffer-based fonts is the color depth they use. They can be either in 16 colors only, for better speed and lower memory footprint (see <code>PA_16cText</code>). Or they may have a 8-bit color depth, to benefit from 256 colors and from the possibility of being rotated by the hardware of +Pi/4 or -Pi/4, so that the DS can be held in portrait mode rather than in landscape mode (see <code>PA_SmartText</code>).
+Last choice with these framebuffer-based fonts is the color depth they use. They can be either in 16 colors only, for better speed and lower memory footprint (see <code>PA_16cText</code>). Or they may have a 8-bit color depth, to benefit from 256 colors and from the possibility of being rotated by the hardware of +Pi/2 or -Pi/2, so that the DS can be held in portrait mode rather than in landscape mode (see <code>PA_SmartText</code>).
 </p>
 
 <p>
@@ -4702,7 +4775,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Friday, August 3, 2007</em>
+    <em>Last update: Monday, August 6, 2007</em>
   </center>
 </body>
 </html>
