@@ -257,7 +257,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	if ( filled )
 	{
 		
-		int res = ::filledPolygonRGBA( & targetSurface.getSDLSurface(), 
+		int res =::filledPolygonRGBA( & targetSurface.getSDLSurface(), 
 			abscissaArray, ordinateArray, static_cast<int>( vertexCount ), 
 			red, green, blue, alpha ) ;
 		
@@ -273,7 +273,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		if ( VideoModule::GetAntiAliasingState() )
 		{
 		
-			int res = ::aapolygonRGBA( & targetSurface.getSDLSurface(), 
+			int res =::aapolygonRGBA( & targetSurface.getSDLSurface(), 
 				abscissaArray, ordinateArray, static_cast<int>( vertexCount ), 
 				red, green, blue, alpha ) ;
 
@@ -286,7 +286,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		else
 		{
 		
-			int res = ::polygonRGBA( & targetSurface.getSDLSurface(),
+			int res =::polygonRGBA( & targetSurface.getSDLSurface(),
 				abscissaArray, ordinateArray, static_cast<int>( vertexCount ), 
 				red, green, blue, alpha ) ;
 				
@@ -335,7 +335,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	if ( filled )
 	{
 		
-		int res = ::filledPolygonColor( & targetSurface.getSDLSurface(), 
+		int res =::filledPolygonColor( & targetSurface.getSDLSurface(), 
 			abscissaArray, ordinateArray, static_cast<int>( vertexCount ),
 			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 		
@@ -351,7 +351,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		if ( VideoModule::GetAntiAliasingState() )
 		{
 		
-			int res = ::aapolygonColor( & targetSurface.getSDLSurface(), 
+			int res =::aapolygonColor( & targetSurface.getSDLSurface(), 
 				abscissaArray, ordinateArray, static_cast<int>( vertexCount ),
 				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 
@@ -364,7 +364,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		else
 		{
 		
-			int res = ::polygonColor( & targetSurface.getSDLSurface(),
+			int res =::polygonColor( & targetSurface.getSDLSurface(),
 				abscissaArray, ordinateArray, static_cast<int>( vertexCount ),
 				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 				 
@@ -387,7 +387,7 @@ using namespace OSDL::Video::TwoDimensional ;
 
 
 
-Polygon::Polygon( listPoint2D & summits, bool listOwner ) throw() :
+Polygon::Polygon( listPoint2D & summits, bool listOwner ) throw():
 	Locatable2D(),
 	_summits( & summits ),
 	_listOwner( listOwner )
@@ -415,7 +415,7 @@ Polygon::~Polygon() throw()
 
 			/*
 			 * Even the list should be deallocated, <b>only</b> if list 
-			 * owner  :
+			 * owner :
 			 *
 			 */
 			delete _summits ;
@@ -434,7 +434,7 @@ bool Polygon::draw( Surface & targetSurface,
 {
 
      /*
-	  * Could be added to the API :
+	  * Could be added to the API:
 	  *
 	  * @param transform tells whether the polygon should 
 	  * be transformed against referential matrix (if true) 
@@ -450,7 +450,7 @@ bool Polygon::draw( Surface & targetSurface,
 	
 	/*
 	 * [0;0] origin specified since center must have been taken into 
-	 * account within the homogeneous matrix :
+	 * account within the homogeneous matrix:
 	 *
 	 */
 	return drawPolygon( targetSurface, * vertices, 0, 0, colorDef, filled ) ;
@@ -510,7 +510,7 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 		if ( level == Ceylan::low )
 			return res ;
 		
-		res += ". Its summits are : " ;
+		res += ". Its summits are: " ;
 			
 		list<string> summitsCoordinates ;
 		
@@ -522,13 +522,13 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 		
 			count++ ;
 			summitsCoordinates.push_back( "summit #" 
-				+ Ceylan::toString( count ) + " : " 
+				+ Ceylan::toString( count ) + ": " 
 				+ (*it)->toString( level ) ) ;				
 		}
 		
 		res += Ceylan::formatStringList( summitsCoordinates ) ; 
 		
-		return res + "This polygon has for referential : " 
+		return res + "This polygon has for referential: " 
 			+ Locatable2D::toString( level ) ;
 			
 	}
@@ -543,7 +543,8 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 // Static section.
 
 
-TwoDimensional::Polygon & Polygon::CreateFlakeBranch( Length length, Length thickness,
+TwoDimensional::Polygon & Polygon::CreateFlakeBranch( 
+		Length length, Length thickness,
 		AngleInDegrees childAngle, Ratio branchingHeightRatio, Ratio scale ) 
 	throw()
 {
@@ -553,11 +554,21 @@ TwoDimensional::Polygon & Polygon::CreateFlakeBranch( Length length, Length thic
 	 * Points will be created, put in a list that will have to be 
 	 * deallocated explicitly by the caller.
 	 *
+	 *  - length corresponds to the height of a main branch
+	 *  - thickness corresponds to the width of a main branch
+	 *  - childAngle corresponds to the angle between a main branch and its
+	 * right child branch
+	 *  - branchingHeightRatio corresponds to the height, measured from the 
+	 * root of a main branch, from which a child branch starts, relative to 
+	 * the total height of the main branch (hence the ratio)
+	 *  - scale corresponds to the factor by which the height of the main branch
+	 * is multiplied to obtain the height of a child branch
+	 *
 	 */
 	
 	AngleInRadians realAngle = Ceylan::Maths::DegreeToRadian( childAngle ) ;
 	
-	// Order of simpliest computation :
+	// Order of simpliest computation:
 		
 	Point2D * alpha = & Point2D::CreateFrom( 0, length ) ;
 	Point2D * beta  = & Point2D::CreateFrom( thickness / 2.0f, length ) ;
@@ -568,16 +579,16 @@ TwoDimensional::Polygon & Polygon::CreateFlakeBranch( Length length, Length thic
 		
 	Point2D * omicron = & Point2D::CreateFrom( 0, 0 ) ;
 		
-	// gamma computed from the bottom :
+	// gamma computed from the bottom:
 	Point2D * gamma = & Point2D::CreateFrom( thickness / 2.0f, 
 		length * branchingHeightRatio + thickness * scale / Sin( realAngle ) ) ;
 
-	// epsilon calculated from mu :
+	// epsilon calculated from mu:
 	Point2D * epsilon = & Point2D::CreateFrom( 
 		thickness / 2 + length * scale * Sin( realAngle ),
 		length * branchingHeightRatio  + scale * length * Cos( realAngle ) ) ;
 		
-	// delta calculated from epsilon :
+	// delta calculated from epsilon:
 	Point2D * delta = & Point2D::CreateFrom( 
 		epsilon->getX() - thickness * scale * Cos( realAngle ), 
 		epsilon->getY() + thickness * scale * Sin( realAngle )  ) ;
@@ -595,7 +606,7 @@ TwoDimensional::Polygon & Polygon::CreateFlakeBranch( Length length, Length thic
 	
 	
 	 /*
-	  * Useful for debugging purpose on a test application :
+	  * Useful for debugging purpose on a test application:
 	  *
 	  
 	 screen.drawCross( alpha,	Red ) ;
@@ -611,7 +622,7 @@ TwoDimensional::Polygon & Polygon::CreateFlakeBranch( Length length, Length thic
 	  */
 		
 		
-	// Copy constructors :
+	// Copy constructors:
 		
 	Point2D * alpha1 = new Point2D( * alpha ) ;
 	alpha1->flipX() ;
@@ -650,7 +661,7 @@ TwoDimensional::Polygon & Polygon::CreateFlakeBranch( Length length, Length thic
 	summits->push_back( nu1 ) ;
 	summits->push_back( omicron1 ) ;
 	
-	// Neither the summit list nor its points are owned by this polygon :
+	// Neither the summit list nor its points are owned by this polygon:
 	return * new Polygon( * summits, /* pointOwner */ false ) ;
 
 }
@@ -705,7 +716,7 @@ listPoint2D & Polygon::Append( listPoint2D & toBeAugmented,
 		
 	}
 	
-	// Non-necessary but useful for chaining :
+	// Non-necessary but useful for chaining:
 	
 	return toBeAugmented ;
 	
@@ -724,7 +735,7 @@ listPoint2D & Polygon::Apply(
 	
 		/*
 		 * Linear operations performed on floating-point Vector2, 
-		 * not on integer Point2D :
+		 * not on integer Point2D:
 		 *
 		 */
 		Linear::Vector2 temp( static_cast<Real>( (*it)->getX()), 
@@ -733,7 +744,7 @@ listPoint2D & Polygon::Apply(
 		
 	}
 
-	// Non-necessary but useful for chaining :
+	// Non-necessary but useful for chaining:
 	
 	return sourceList ;
 
@@ -745,7 +756,7 @@ listPoint2D & Polygon::Apply(
 // Polygon set.
 						
 
-PolygonSet::PolygonSet( bool listOwner ) throw() :
+PolygonSet::PolygonSet( bool listOwner ) throw():
 	Locatable2D(),
 	_polygonList( 0 ),
 	_listOwner( listOwner )
@@ -775,7 +786,7 @@ PolygonSet::~PolygonSet() throw()
 		if ( _listOwner )
 		{
 		 
-		 	// Deletes both lists and point in lists :
+		 	// Deletes both lists and point in lists:
 			for ( list<listPoint2D *>::iterator it = _polygonList->begin(); 
 				it != _polygonList->end(); it++ )
 			{
@@ -798,7 +809,7 @@ void PolygonSet::addPointsOf( TwoDimensional::Polygon & newPolygon ) throw()
 {
 
 	if ( newPolygon.isListOwner() )
-		Ceylan::emergencyShutdown( "PolygonSet::addPointsOf : "
+		Ceylan::emergencyShutdown( "PolygonSet::addPointsOf: "
 			"added polygon should not own its points." ) ;
 	
 	addPointList( newPolygon.getPoints() ) ;	
@@ -866,7 +877,7 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level )
 		if ( level == Ceylan::low )
 			return res ;
 		
-		res += ". Its polygons are : " ;
+		res += ". Its polygons are: " ;
 			
 		list<string> summitsCoordinates ;
 		
@@ -881,7 +892,7 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level )
 			polygonCount++ ;
 			
 			res += "For polygon #" 
-				+ Ceylan::toString( polygonCount ) + " : " ;
+				+ Ceylan::toString( polygonCount ) + ": " ;
 			 
 			summitCount = 0 ;
 			summitsCoordinates.clear() ;
@@ -892,7 +903,7 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level )
 			
 				summitCount++ ;
 				summitsCoordinates.push_back( "summit #" 
-					+ Ceylan::toString( summitCount ) + " : " 
+					+ Ceylan::toString( summitCount ) + ": " 
 					+ (*it)->toString( level ) ) ;		
 							
 			}
@@ -901,7 +912,7 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level )
 		
 		}	
 		
-		return res + "This polygon set has for referential : " 
+		return res + "This polygon set has for referential: " 
 			+ Locatable2D::toString( level ) ;
 	}
 	
@@ -918,7 +929,7 @@ PolygonSet & PolygonSet::CreateFlake(
 {
 
 	if ( branchCount == 0 )
-		Ceylan::emergencyShutdown( "PolygonSet::CreateFlake : "
+		Ceylan::emergencyShutdown( "PolygonSet::CreateFlake: "
 			"snow flakes should have at least one branch." ) ;
 			
 	// Flake branches do not own their points.		
@@ -927,7 +938,7 @@ PolygonSet & PolygonSet::CreateFlake(
 	
 	/*
 	 * List owner ensures all points and lists will be deleted when 
-	 * appropriate :
+	 * appropriate:
 	 *
 	 */
 	PolygonSet & result = * new PolygonSet( /* listOwner */ true ) ;	
@@ -935,13 +946,13 @@ PolygonSet & PolygonSet::CreateFlake(
 
 	/*
 	 * Creates the relevant transformation for branches 
-	 * (they are evenly placed) :
+	 * (they are evenly placed):
 	 *
 	 */
 	Linear::HomogeneousMatrix3 transformation( 360.0f / branchCount,
 		Linear::Vector2( 0, 0 ) ) ;
 
-	// Creates first branch element :
+	// Creates first branch element:
 	listPoint2D * lastlyCreatedBranchPoints = & modelBranch.getPoints() ;
 	result.addPointList( * lastlyCreatedBranchPoints ) ;
 	
@@ -949,7 +960,7 @@ PolygonSet & PolygonSet::CreateFlake(
 	
 	/*
 	 * Rotates in turn each of the other branches until a complete circle 
-	 * is made :	
+	 * is made:	
 	 *
 	 */
 	for ( Ceylan::Uint8 count = 1; count < branchCount; count++ )
