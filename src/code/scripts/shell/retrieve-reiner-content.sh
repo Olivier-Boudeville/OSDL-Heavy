@@ -8,7 +8,7 @@ DF=df
 AWK=awk
 TAIL=tail
 
-# Available size in megabytes (1048576 is 1024^2) :
+# Available size in megabytes (1048576 is 1024^2):
 AVAILABLE_SIZE=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
 
 ESTIMATED_SIZE=1024
@@ -29,7 +29,8 @@ date
 
 WGET=wget
 
-WGET_OPT="--limit-rate=10k --wait=5 --random-wait --retry-connrefused --recursive --level=10 --reject 'M_*.zip' --exclude-directories=forum"
+# M_*.zip are MMF files, not wanted:
+WGET_OPT="--limit-rate=10k --wait=5 --random-wait --retry-connrefused --recursive --level=10 --reject exe,"M_*.zip" --exclude-directories=forum,buttons,meshes,screenshots"
 
 ${WGET} ${WGET_OPT} ${TARGET_URL}
  
