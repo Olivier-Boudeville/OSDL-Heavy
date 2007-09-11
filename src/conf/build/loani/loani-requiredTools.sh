@@ -1,11 +1,11 @@
 # This script is made to be sourced by LOANI when retrieving required tools.
 # Therefore, all tools managed here should be strict LOANI pre-requesites.
 
-# Creation date : 2004, February 22.
-# Author : Olivier Boudeville (olivier.boudeville@online.fr)
+# Creation date: 2004, February 22.
+# Author: Olivier Boudeville (olivier.boudeville@online.fr)
 
 
-# SVN tags to select versions to retrieve (if use_current_svn not selected) :
+# SVN tags to select versions to retrieve (if use_current_svn not selected):
 latest_stable_ceylan="release-0.5.0"
 latest_stable_osdl="release-0.5.0"
 
@@ -17,16 +17,16 @@ latest_stable_osdl="release-0.5.0"
 
 if [ $is_windows -eq 0 ] ; then
 
-  # Windows special case :
+  # Windows special case:
   REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
 
-  # For Ceylan and OSDL :
+  # For Ceylan and OSDL:
   use_svn=0
   
-  # Where LOANI-specific package solutions are stored :
+  # Where LOANI-specific package solutions are stored:
   WINDOWS_SOLUTIONS_ROOT="$repository/../visual-express"
   
-  # Build type for libraries :
+  # Build type for libraries:
   #  - either bebug or release
   #  - either classical or multithread (mt)
   library_build_type="debug-mt" 
@@ -41,13 +41,13 @@ else
 
   if [ $target_nds -eq 1 ] ; then
   
-  	# All non-windows non-DS platforms should build everything from sources :
+  	# All non-windows non-DS platforms should build everything from sources:
 	
  	REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"
 	
   else
   
-  	# Not on Windows and aiming at the Nintendo DS :
+  	# Not on Windows and aiming at the Nintendo DS:
 	
  	REQUIRED_TOOLS="dlditool"
   
@@ -60,7 +60,7 @@ fi
 
 
 # TIFF library was removed from the list, since its build is a nonsense 
-# and that image format is not compulsory : PNG and JPEG are better 
+# and that image format is not compulsory: PNG and JPEG are better 
 # choices and should be used instead.
 
 
@@ -80,8 +80,8 @@ LOG_STATUS "Scheduling retrieval of required tools ($REQUIRED_TOOLS)."
 
 GenerateWithVisualExpress()
 # Launches Visual Express 2005 with specified solution so that the user regenerates it.
-# Usage : GenerateWithVisualExpress <package name> <solution path>
-# Ex : GenerateWithVisualExpress SDL a/dir/SDL.sln
+# Usage: GenerateWithVisualExpress <package name> <solution path>
+# Ex: GenerateWithVisualExpress SDL a/dir/SDL.sln
 {
 
   PACKAGE_NAME="$1"
@@ -129,7 +129,7 @@ GenerateWithVisualExpress()
 #TRACE "[loani-requiredTools] SDL"
 
 ################################################################################
-# SDL for non-Windows platforms :
+# SDL for non-Windows platforms:
 ################################################################################
 
 getSDL()
@@ -275,7 +275,7 @@ generateSDL()
 		LIBPATH="-L${SDL_PREFIX}/lib"
         
 		# Do not ever imagine that to avoid bad nedit syntax highlighting 
-		# you could change :
+		# you could change:
 		# include/*.h to "include/*.h" in next line.
 		# It would fail at runtime with "include/*.h" not found...
 		
@@ -388,7 +388,7 @@ generateSDL_win()
 
 	printItem "installing"
 	
-	# Take care of the exported header files (API) :
+	# Take care of the exported header files (API):
 	sdl_install=${alternate_prefix}/SDL-${SDL_win_VERSION}
 	${MKDIR} -p ${sdl_install}
 	${CP} -rf include ${sdl_install}
@@ -419,7 +419,7 @@ cleanSDL_win()
 ################################################################################
 
 
-# Prerequesites of SDL_image : JPEG library, PNG library, zlib library.
+# Prerequesites of SDL_image: JPEG library, PNG library, zlib library.
 # TIFF support is disabled for the moment.
 # For Visual Express builds, these prerequesites are managed from SDL_image_win.
 
@@ -511,9 +511,9 @@ generatelibjpeg()
         
 	printItem "configuring"
 	
-	# Non windows : standard way of building.
+	# Non windows: standard way of building.
                 
-	# On some platforms, libtool is unable to guess the correct host type :
+	# On some platforms, libtool is unable to guess the correct host type:
 	# config.guess fails to detect anything as soon as --enable-shared is added.
 	# One attempt is being made in case of failure, to test whether it cannot 
 	# be the most common platform used for OSDL by far, i686-pc-linux-gnu.
@@ -576,12 +576,12 @@ generatelibjpeg()
 	printItem "building"
 	
 	# On Windows (Cygwin/MinGW), the configure step will pretend 
-	# shared libraries cannot be generated :
+	# shared libraries cannot be generated:
 	# checking for ld used by GCC... no
 	# ltconfig: error: no acceptable ld found in $PATH
 	# so jpeg dll won't be created. 
-	# Nevertheless some other generated files (ex : jconfig.h)
-	# will be needed to build libraries using JPEG, such as SDL_image : 
+	# Nevertheless some other generated files (ex: jconfig.h)
+	# will be needed to build libraries using JPEG, such as SDL_image: 
 	# it remains useful.
         
 	{
@@ -610,7 +610,7 @@ generatelibjpeg()
 		echo "export libjpeg_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$libjpeg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 		
-		# In order SDL_image configure does not fail :
+		# In order SDL_image configure does not fail:
 		LD_LIBRARY_PATH=${libjpeg_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
@@ -731,7 +731,7 @@ preparelibjpeg_win()
 		exit 11
 	fi
 
-	# Prefer Visual-based config :
+	# Prefer Visual-based config:
 	${CP} -f ${libjpeg_source_dir}/jconfig.vc ${libjpeg_source_dir}/jconfig.h
 	if [ $? != 0 ] ; then
 		ERROR "Unable to update libjpeg config header in build tree."
@@ -761,7 +761,7 @@ generatelibjpeg_win()
 
 	printItem "installing"
 	
-	# Take care of the exported header files (API) :
+	# Take care of the exported header files (API):
 	libjpeg_install=${alternate_prefix}/libjpeg-${libjpeg_win_VERSION}
 	libjpeg_header_install=${libjpeg_install}/include
 	${MKDIR} -p ${libjpeg_header_install}
@@ -855,7 +855,7 @@ generatezlib()
 
 	LOG_STATUS "Generating zlib..."
 	
-	# Not all platforms have symbolic links :
+	# Not all platforms have symbolic links:
 	${MV} -f "zlib-${zlib_VERSION}" zlib
 	cd zlib
 	
@@ -910,7 +910,7 @@ generatezlib()
 		echo "export zlib_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$zlib_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		# In order SDL_image configure does not fail :
+		# In order SDL_image configure does not fail:
 		LD_LIBRARY_PATH=${zlib_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 		
@@ -1045,7 +1045,7 @@ generatezlib_win()
 	
 	printItem "installing"
 
-	# Take care of the exported header files (API for zlib) :
+	# Take care of the exported header files (API for zlib):
 	zlib_include_install_dir="${zlib_install_dir}/include"
 	${MKDIR} -p ${zlib_include_install_dir}
 	${CP} -f *.h ${zlib_include_install_dir}
@@ -1138,7 +1138,7 @@ generatelibpng()
 
 	LOG_STATUS "Generating libpng..."
 	
-	# Not all platforms support symbolic links :
+	# Not all platforms support symbolic links:
 	${MV} -f "libpng-${libpng_VERSION}" libpng
 	cd libpng
 
@@ -1191,7 +1191,7 @@ generatelibpng()
 	fi
 		
 	if [ ! -f "makefile" ] ; then
-		ERROR "Your platform does not seem to be supported by LOANI. If you want to continue nevertheless, you must select in "`pwd`"/scripts the makefile.XXX where XXX matches your platform, and copy and rename it in "`pwd`" : cd "`pwd`"; cp -f scripts/makefile.XXX makefile"
+		ERROR "Your platform does not seem to be supported by LOANI. If you want to continue nevertheless, you must select in "`pwd`"/scripts the makefile.XXX where XXX matches your platform, and copy and rename it in "`pwd`": cd "`pwd`"; cp -f scripts/makefile.XXX makefile"
 		if ! askDefaultYes "Do you want to continue ? [press y only when the relevant makefile has been copied, n or CTRL-C to stop " ; then
 			ERROR "Installation cancelled."
 			exit 0
@@ -1245,7 +1245,7 @@ generatelibpng()
 
 		echo "LD_LIBRARY_PATH=\$libpng_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 	
-		# In order SDL_image configure does not fail :
+		# In order SDL_image configure does not fail:
 		LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
@@ -1388,7 +1388,7 @@ generatelibpng_win()
 
 	printItem "installing"
 
-	# Take care of the exported header files (API for libpng) :
+	# Take care of the exported header files (API for libpng):
 	libpng_include_install_dir="${libpng_install_dir}/include"
 	${MKDIR} -p ${libpng_include_install_dir}
 	${CP} -f *.h  ${libpng_include_install_dir}
@@ -1663,7 +1663,7 @@ generateSDL_image()
 	
 		SDL_image_PREFIX=${prefix}/SDL_image-${SDL_image_VERSION}
 		
-		# For debug purpose (should be set from other targets) :
+		# For debug purpose (should be set from other targets):
 				
 		#LIBFLAG="-L${SDL_PREFIX}/lib"
 		#LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
@@ -1723,7 +1723,7 @@ generateSDL_image()
 			# --disable-sdltest added since configure tries to compile
 			# a test without letting the system libraries locations to be
 			# redefined. Therefore a wrong libstdc++.so could be chosen, 
-			# leading to errors such as : 
+			# leading to errors such as: 
 			# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 			
 	  		setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif --disable-sdltest "LDFLAGS=${LIBFLAG}"
@@ -1821,7 +1821,7 @@ generateSDL_image()
 		
 		# Rename 'libSDL_image.la', to prevent libtool from detecting
 		# it when linking OSDL and issuing very annoying messages twice, 
-		# such as :
+		# such as:
 		# "libtool: link: warning: library `[...]/libSDL_image.la' was moved."
 		
 		${MV} -f ${SDL_image_PREFIX}/lib/libSDL_image.la ${SDL_image_PREFIX}/lib/libSDL_image.la-hidden-by-LOANI
@@ -1949,7 +1949,7 @@ generateSDL_image_win()
 
 	printItem "installing"
 
-	# Take care of the exported header files (API for SDL_image and libjpeg) :
+	# Take care of the exported header files (API for SDL_image and libjpeg):
 	sdl_image_include_install_dir="${sdl_image_install_dir}/include"
 	${MKDIR} -p ${sdl_image_include_install_dir}
 	${CP} -f *.h ${sdl_image_include_install_dir}
@@ -2054,9 +2054,9 @@ generateSDL_image_win_precompiled()
 	
 		# Let us suppose the precompiled version has for version libjpeg_VERSION.
 
-		# The libjpeg target should already have :
+		# The libjpeg target should already have:
 		#       - created ${libjpeg_PREFIX}/lib
-		#       - defined :
+		#       - defined:
 		# LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
 		#       - added the libjpeg section." in ${OSDL_ENV_FILE}
 		#       - updated LD_LIBRARY_PATH *and* PATH with ${libjpeg_PREFIX}/lib
@@ -2267,10 +2267,10 @@ generatelibogg()
 		fi	
 		
 		# Rename 'libogg.la', to prevent libtool from detecting it when
-		# linking OSDL and issuing very annoying messages twice, such as :
+		# linking OSDL and issuing very annoying messages twice, such as:
 		# "libtool: link: warning: library `[...]/libogg.la' was moved."
 		
-		# Disabled since it would prevent SDL_mixer build :
+		# Disabled since it would prevent SDL_mixer build:
 		#${MV} -f ${libogg_PREFIX}/lib/libogg.la ${libogg_PREFIX}/lib/libogg.la-hidden-by-LOANI
 		#
 		#if [ $? != 0 ] ; then
@@ -2392,11 +2392,11 @@ generatelibogg_win()
 
 	printItem "installing"
 
-	# Take care of the exported header files (API for libogg and libjpeg) :
+	# Take care of the exported header files (API for libogg and libjpeg):
 	libogg_include_install_dir="${libogg_install_dir}/include/ogg"
 	${MKDIR} -p ${libogg_include_install_dir}
 	
-	# vorbis includes are in the form "ogg/x.h" :
+	# vorbis includes are in the form "ogg/x.h":
 	${CP} -f include/ogg/*.h ${libogg_include_install_dir}
 	
 	printOK
@@ -2577,10 +2577,10 @@ generatelibvorbis()
 		fi	
 		
 		# Rename 'libvorbis.la', to prevent libtool from detecting it
-		# when linking OSDL and issuing very annoying messages twice, such as :
+		# when linking OSDL and issuing very annoying messages twice, such as:
 		# "libtool: link: warning: library `[...]/libvorbis.la' was moved."
 		
-		# Disabled since would prevent SDL_mixer build :
+		# Disabled since would prevent SDL_mixer build:
 		#${MV} -f ${libvorbis_PREFIX}/lib/libvorbis.la ${libvorbis_PREFIX}/lib/libvorbis.la-hidden-by-LOANI
 		#
 		#if [ $? != 0 ] ; then
@@ -2704,7 +2704,7 @@ generatelibvorbis_win()
 
 	printItem "installing"
 
-	# Take care of the exported header files (API for libvorbis and libjpeg) :
+	# Take care of the exported header files (API for libvorbis and libjpeg):
 	libvorbis_include_install_dir="${libvorbis_install_dir}/include/vorbis"
 	${MKDIR} -p ${libvorbis_include_install_dir}
 	${CP} -f include/vorbis/*.h ${libvorbis_include_install_dir}
@@ -2825,12 +2825,12 @@ generateSDL_mixer()
 		# Following features are deactivated automatically 
 		# (their companion library is not installed
 		# by LOANI yet, and they are currently considered as less 
-		# useful than the ones of the core selection) : 
+		# useful than the ones of the core selection): 
 		#  - MOD support (including libmikmod), 
 		#  - MIDI support (including native and timidity), 
 		#  - MP3 support (including SMPEG) 
 		#
-		# The recommended sound encodings are : 
+		# The recommended sound encodings are: 
 		#  - WAVE (for short samples)
 		#  - OggVorbis (for longer ones, including music).
 		#
@@ -2912,7 +2912,7 @@ generateSDL_mixer()
 		fi	
 		
 		# Rename 'libSDL_mixer.la', to prevent libtool from detecting it when linking OSDL and 
-		# issuing very annoying messages twice, such as :
+		# issuing very annoying messages twice, such as:
 		# "libtool: link: warning: library `[...]/libSDL_mixer.la' was moved."
 		
 		${MV} -f ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la-hidden-by-LOANI
@@ -3070,7 +3070,7 @@ cleanSDL_mixer_win()
 
 
 ################################################################################
-# SDL_gfx for non-Windows platforms :
+# SDL_gfx for non-Windows platforms:
 ################################################################################
 
 #TRACE "[loani-requiredTools] SDL_gfx"
@@ -3142,7 +3142,7 @@ generateSDL_gfx()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to configure SDL_gfx : autogen failed."
+		ERROR "Unable to configure SDL_gfx: autogen failed."
 		exit 11
 	fi
 
@@ -3155,9 +3155,9 @@ generateSDL_gfx()
 
 		SDL_gfx_PREFIX=${prefix}/SDL_gfx-${SDL_gfx_VERSION}
 
-		# SDL_gfx uses wrongly SDL includes : asks for SDL/SDL.h
+		# SDL_gfx uses wrongly SDL includes: asks for SDL/SDL.h
 		# instead of SDL.h.
-		# Ugly hack :
+		# Ugly hack:
 		# (copy could be used instead, to avoid needing symbolic links for filesystems such as vfat)
 		${LN} -s ${SDL_PREFIX}/include/SDL ${SDL_PREFIX}/include/SDL/SDL
 
@@ -3175,7 +3175,7 @@ generateSDL_gfx()
 
 		# --disable-sdltest added since configure tries to compile a test without letting
 		# the system libraries locations to be redefined. Therefore a wrong libstdc++.so
-		# could be chosen, leading to errors such as :
+		# could be chosen, leading to errors such as:
 		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 
 		setBuildEnv ./configure --prefix=${SDL_gfx_PREFIX} --exec-prefix=${SDL_gfx_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --disable-sdltest
@@ -3203,7 +3203,7 @@ generateSDL_gfx()
 
     fi
 
-	# SDL_gfx will not be compiled with debug machinery :
+	# SDL_gfx will not be compiled with debug machinery:
 	{
 		setBuildEnv ./nodebug.sh
 	} 1>>"$LOG_OUTPUT" 2>&1
@@ -3311,7 +3311,7 @@ cleanSDL_gfx()
 
 
 ################################################################################
-# SDL_gfx build thanks to Visual Express :
+# SDL_gfx build thanks to Visual Express:
 ################################################################################
 
 getSDL_gfx_win()
@@ -3584,7 +3584,7 @@ cleanfreetype()
 
 
 ################################################################################
-# Freetype build thanks to Visual Express :
+# Freetype build thanks to Visual Express:
 ################################################################################
 
 
@@ -3768,7 +3768,7 @@ generateSDL_ttf()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to configure SDL_ttf : autogen failed."
+		ERROR "Unable to configure SDL_ttf: autogen failed."
 		exit 11
 	fi	
 	
@@ -3780,11 +3780,11 @@ generateSDL_ttf()
 		# --disable-sdltest added since configure tries to compile
 		# a test without letting the system libraries locations to
 		# be redefined. Therefore a wrong libstdc++.so
-		# could be chosen, leading to errors such as : 
+		# could be chosen, leading to errors such as: 
 		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 	
 		# SDL_ttf.c needs freetype/internal/ftobjs.h, which is in the
-		# freetype sources only (not installed), hence the CPPFLAGS :
+		# freetype sources only (not installed), hence the CPPFLAGS:
 		
 		setBuildEnv ./configure --prefix=${SDL_ttf_PREFIX} --exec-prefix=${SDL_ttf_PREFIX} --with-freetype-prefix=${freetype_PREFIX} --with-freetype-exec-prefix=${freetype_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --with-sdl-exec-prefix=${SDL_PREFIX} --disable-sdltest CPPFLAGS="-I${repository}/freetype-${freetype_VERSION}/include"
 	} 1>>"$LOG_OUTPUT" 2>&1		
@@ -3804,14 +3804,14 @@ generateSDL_ttf()
 	
 	printItem "building"
 	
-	# SDL_ttf will not compile if not patched :
+	# SDL_ttf will not compile if not patched:
 	# Ugly tr-based hack to prevent the numerous versions of sed to 
-	# panic when having a newline in replacement string :
-	# This modification used to work with previous SDL_ttf releases :
+	# panic when having a newline in replacement string:
+	# This modification used to work with previous SDL_ttf releases:
 	#${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/freetype.h>|#include <ft2build.h>?#include FT_FREETYPE_H??#include <freetype/freetype.h>|1' | ${TR} "?" "\n" > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c
 	
-	# This one works, at least for SDL_ttf-2.0.8 :
-	# See also :
+	# This one works, at least for SDL_ttf-2.0.8:
+	# See also:
 	#    - http://www.freetype.org/freetype2/freetype-2.2.0.html
 	#    - http://www.freetype.org/freetype2/patches/rogue-patches.html
 	${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/internal/ftobjs.h>||g' | sed 's|library->memory|NULL|g' > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c                                                                                  
@@ -4002,7 +4002,7 @@ cleanSDL_ttf_win()
 
 #TRACE "[loani-requiredTools] Libtool"
 
-#TRACE "[loani-requiredTools] Libtool : getlibtool"
+#TRACE "[loani-requiredTools] Libtool: getlibtool"
 
 getlibtool()
 {
@@ -4011,7 +4011,7 @@ getlibtool()
 }
 
 
-#TRACE "[loani-requiredTools] Libtool : preparelibtool"
+#TRACE "[loani-requiredTools] Libtool: preparelibtool"
 
 preparelibtool()
 {
@@ -4059,7 +4059,7 @@ preparelibtool()
 }
 
 
-#TRACE "[loani-requiredTools] Libtool : generatelibtool"
+#TRACE "[loani-requiredTools] Libtool: generatelibtool"
 
 generatelibtool()
 {
@@ -4237,7 +4237,7 @@ generatelibtool()
 }
 
 
-#TRACE "[loani-requiredTools] Libtool : cleanlibtool"
+#TRACE "[loani-requiredTools] Libtool: cleanlibtool"
 
 cleanlibtool()
 {
@@ -4272,9 +4272,9 @@ getwin_pthread()
 		DEBUG "Not all parts of win_pthread available, downloading them."
          
 		# The following is commented out, it would have to be updated
-		# before use :
+		# before use:
 						
-		# Needs to download recursively the FTP root :
+		# Needs to download recursively the FTP root:
 		#OLD_WGET_OPT="${WGET_OPT}"
 		#WGET_OPT="-r ${WGET_OPT}"
 	 
@@ -4332,13 +4332,13 @@ generatewin_pthread()
 
 	real_download_target=${win_pthread_wget_dir}/pub/${PTHREADS_WIN32_DIR}
 		
-	# If win_pthread repository is not sane, rebuild it : 
+	# If win_pthread repository is not sane, rebuild it: 
 	
 	if [ -s "${repository}/${PTHREADS_WIN32_DIR}/lib/${win_pthread_DLL}" -a -s "${repository}/${PTHREADS_WIN32_DIR}/include/${win_pthread_HEADER_MAIN}" -a -s "${repository}/${PTHREADS_WIN32_DIR}/include/${win_pthread_HEADER_SCHED}" -a -s "${repository}/${PTHREADS_WIN32_DIR}/include/${win_pthread_HEADER_SEM}" ] ; then
 		DEBUG "win_pthread installation in repository is ok."
 	else  
 	      
-		# Clean-up wget mess :
+		# Clean-up wget mess:
 		 {
 			sleep 5
 			${MKDIR} -p $repository/${PTHREADS_WIN32_DIR} 
@@ -4354,7 +4354,7 @@ generatewin_pthread()
 				exit 16
 			fi
                                        
-			# The include and/or lib directory might not be already retrieved :                       
+			# The include and/or lib directory might not be already retrieved:                       
 			if ls ${real_download_target}/${win_pthread_ftp_dir}/include 1>/dev/null 2>&1 ; then      
 				${CP} -f ${real_download_target}/${win_pthread_ftp_dir}/* $repository/${PTHREADS_WIN32_DIR} 
 			else
@@ -4435,7 +4435,7 @@ cleanwin_pthread()
 {
 	LOG_STATUS "Cleaning Win pthread library build tree..."
 	
-	# Should have been copied to ${prefix} :
+	# Should have been copied to ${prefix}:
 	pthread_build_dir=${repository}/${PTHREADS_WIN32_DIR}
 	
 	if [ -d "${pthread_build_dir}" ]; then
@@ -4462,10 +4462,12 @@ cleanwin_pthread()
 
 getdlditool()
 {
-	LOG_STATUS "Getting dlditool and dldi_patch..."
+	LOG_STATUS "Getting dlditool and DLDI patches..."
 	
 	launchFileRetrieval dlditool
-	launchFileRetrieval dldi_patch
+	launchFileRetrieval dldi_patch_sc
+	launchFileRetrieval dldi_patch_r4
+	launchFileRetrieval dldi_patch_fcsr
 	
 	return $?
 }
@@ -4497,7 +4499,7 @@ preparedlditool()
 	
 	${MKDIR} -p ${dlditool_PREFIX}
 	
-	# Extract prebuilt executable in installation repository :
+	# Extract prebuilt executable in installation repository:
 	{
 		${UNZIP} -o ${dlditool_ARCHIVE} -d ${dlditool_PREFIX} 
 	} 1>>"$LOG_OUTPUT" 2>&1
@@ -4521,9 +4523,17 @@ generatedlditool()
 		
 	printItem "configuring"
 		
-	${CP} -f ${dldi_patch_ARCHIVE} ${dlditool_PREFIX} 
+	${CP} -f ${dldi_patch_sc_ARCHIVE}   ${dlditool_PREFIX} 
+	${CP} -f ${dldi_patch_r4_ARCHIVE}   ${dlditool_PREFIX} 
+	${CP} -f ${dldi_patch_fcsr_ARCHIVE} ${dlditool_PREFIX} 
+
+	cd ${dlditool_PREFIX}
 	
-		
+	# Extract fcsr archive:
+	{
+		${UNZIP} -o ${dldi_patch_fcsr_ARCHIVE} && ${CP} -f fcsr/fcsr.dldi .
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
 	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure dlditool."
@@ -4539,6 +4549,9 @@ generatedlditool()
 
 
 	printItem "installing"  
+
+	cd $repository
+		
 
 	if [ -n "$prefix" ] ; then	
                 
@@ -4586,7 +4599,7 @@ cleandlditool()
 
 
 ################################################################################
-# Ceylan on non-Windows platforms :
+# Ceylan on non-Windows platforms:
 ################################################################################
 
 
@@ -4602,19 +4615,19 @@ getCeylan()
 	# Ceylan can be obtained by downloading a release archive or by using SVN.
 	
 	if [ ${use_svn} -eq 1 ]; then
-		# Use archive instead of SVN : 
+		# Use archive instead of SVN: 
 		launchFileRetrieval Ceylan
 		return $?
 	fi
 	
-	# Here we are to use SVN :
+	# Here we are to use SVN:
 	
-	# To avoid a misleading message when the retrieval is finished :
+	# To avoid a misleading message when the retrieval is finished:
 	Ceylan_ARCHIVE="from SVN"
 	
 	cd ${repository}
 
-	# Manage back-up directory if necessary :
+	# Manage back-up directory if necessary:
 	
 	if [ -d "${repository}/ceylan" ] ; then
 		if [ -d "${repository}/ceylan.save" ] ; then
@@ -4624,7 +4637,7 @@ getCeylan()
 			else	
 				WARNING "Deleting already existing back-up directory for ceylan (removing ${repository}/ceylan.save)"
 			 	${RM} -rf "${repository}/ceylan.save" 2>/dev/null
-				# Sometimes rm fails apparently (long names or other reasons) :
+				# Sometimes rm fails apparently (long names or other reasons):
 				${MV} -f ${repository}/ceylan.save ${repository}/ceylan.save-`date '+%Hh-%Mm-%Ss'` 2>/dev/null
 			fi
 		fi		
@@ -4652,7 +4665,7 @@ getCeylan()
 				SVN_URL="/svnroot/${CHECKOUT_LOCATION}"
 			else
 			
-				# Should be quite uncommon for Ceylan developers :
+				# Should be quite uncommon for Ceylan developers:
 				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
 				
 				CHECKOUT_LOCATION=ceylan
@@ -4664,11 +4677,11 @@ getCeylan()
 			
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
-				# Made to force certificate checking before next non-interactive svn command :
+				# Made to force certificate checking before next non-interactive svn command:
 				${SVN} info https://${Ceylan_SVN_SERVER}:${SVN_URL} --username=${developer_name} 1>/dev/null
 				
 				{
-					DEBUG "SVN command : ${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}"
+					DEBUG "SVN command: ${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}"
 					${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}
 					
 				} 1>>"$LOG_OUTPUT" 2>&1	
@@ -4681,7 +4694,7 @@ getCeylan()
 					LOG_STATUS "SVN command failed."
 					#${SLEEP} 3
 
-					# Warning :
+					# Warning:
 					# cygwin uses a quite small MAX_PATH, which limits the maximum length
 					# of paths. It may cause, among others, a SVN error 
 					# ("svn: Can't open file 'XXX': File name too long).
@@ -4689,12 +4702,12 @@ getCeylan()
 					# with TortoiseSVN (this tool is not affected by the MAX_PATH issue), 
 					# as soon as an error occured.
 					
-					# Now ask the user to trigger the full update by herself, with TortoiseSVN :
+					# Now ask the user to trigger the full update by herself, with TortoiseSVN:
 					DISPLAY "Ceylan SVN checkout failed, maybe because of too long pathnames."
 					DISPLAY "Please use TortoiseSVN to update manually the Ceylan repository."
 					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
 					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
-					# Suppose success :
+					# Suppose success:
 					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
 					success=0	
 				fi	
@@ -4718,7 +4731,7 @@ getCeylan()
 
 	else			
 		
-		# Not a developer access, anonymous :
+		# Not a developer access, anonymous:
 			
 		if [ $no_svn -eq 1 ] ; then
 
@@ -4741,10 +4754,10 @@ getCeylan()
 				
 				{
 					
-					# Remove any symbolic link coming from a previous attempt :
+					# Remove any symbolic link coming from a previous attempt:
 					${RM} -f ${latest_stable_ceylan} 2>/dev/null
 					
-					# No https, no credential required :
+					# No https, no credential required:
 					DEBUG "${SVN} export http://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
 					${SVN} export http://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT} 
 
@@ -4802,7 +4815,7 @@ prepareCeylan()
 
 	if [ ${use_svn} -eq 1 ]; then
 
-		# Here we use source archives :
+		# Here we use source archives:
 				
 		if findTool bunzip2 ; then
 			BUNZIP2=$returnedString
@@ -4847,7 +4860,7 @@ generateCeylan()
 
 	if [ ${use_svn} -eq 0 ]; then
 	
-		# Here we are in the SVN tree, needing to generate the build system :
+		# Here we are in the SVN tree, needing to generate the build system:
 		cd $repository/ceylan/Ceylan/trunk/src/conf/build
 		{
 			setBuildEnv ./autogen.sh --no-build
@@ -4859,7 +4872,7 @@ generateCeylan()
 			exit 10
 		fi	
 		
-		# Going to the root of the source to continue the normal build process :
+		# Going to the root of the source to continue the normal build process:
 		cd $repository/ceylan/Ceylan/trunk
 	
 	else
@@ -4868,7 +4881,7 @@ generateCeylan()
 	fi
 	
 	
-	# Rest of the build is common to autogen-based and release-based trees :
+	# Rest of the build is common to autogen-based and release-based trees:
 		
 	
 	printItem "configuring"
@@ -4970,7 +4983,7 @@ generateCeylan()
 	if [ ${use_svn} -eq 0 ]; then
 	
 		# Here we are in the SVN tree, needing to generate the
-		# build system for tests :
+		# build system for tests:
 		{
 			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix ${Ceylan_PREFIX}
 		} 1>>"$LOG_OUTPUT" 2>&1		
@@ -4983,7 +4996,7 @@ generateCeylan()
 		
 	fi
 		
-	# Rest of the build is common to autogen-based and release-based trees :
+	# Rest of the build is common to autogen-based and release-based trees:
 
 	if [ -n "$prefix" ] ; then	
 		{				
@@ -5046,7 +5059,7 @@ generateCeylan()
 cleanCeylan()
 {
 	LOG_STATUS "Cleaning Ceylan build tree..."
-	# Nothing to do : we want to be able to go on with the Ceylan build.
+	# Nothing to do: we want to be able to go on with the Ceylan build.
 }
 
 
@@ -5061,7 +5074,7 @@ getCeylan_win()
 	LOG_STATUS "Getting Ceylan for windows..."
 
 	Ceylan_win_ARCHIVE="from SVN"
-	# Cygwin let us do the same :
+	# Cygwin let us do the same:
 	getCeylan
 	return $?
 }
@@ -5095,7 +5108,7 @@ generateCeylan_win()
 
 	if [ ${use_svn} -eq 0 ]; then
 	
-		# Here we are in the SVN tree :
+		# Here we are in the SVN tree:
 		cd $repository/ceylan/Ceylan/trunk
 	
 	else
@@ -5148,7 +5161,7 @@ cleanCeylan_win()
 
 
 ################################################################################
-# OSDL on non-Windows platforms :
+# OSDL on non-Windows platforms:
 ################################################################################
 
 
@@ -5163,19 +5176,19 @@ getOSDL()
 	# OSDL can be obtained by downloading a release archive or by using SVN.
 	
 	if [ ${use_svn} -eq 1 ]; then
-		# Use archive instead of SVN : 
+		# Use archive instead of SVN: 
 		launchFileRetrieval OSDL
 		return $?
 	fi
 	
-	# Here we are to use SVN :
+	# Here we are to use SVN:
 	
-	# To avoid a misleading message when the retrieval is finished :
+	# To avoid a misleading message when the retrieval is finished:
 	OSDL_ARCHIVE="from SVN"
 	
 	cd ${repository}
 
-	# Manage back-up directory if necessary :
+	# Manage back-up directory if necessary:
 	
 	if [ -d "${repository}/osdl" ] ; then
 		if [ -d "${repository}/osdl.save" ] ; then
@@ -5185,7 +5198,7 @@ getOSDL()
 			else	
 				WARNING "Deleting already existing back-up directory for osdl (removing ${repository}/osdl.save)"
 			 	${RM} -rf "${repository}/osdl.save" 2>/dev/null
-				# Sometimes rm fails apparently (long names or other reasons) :
+				# Sometimes rm fails apparently (long names or other reasons):
 				${MV} -f ${repository}/osdl.save ${repository}/osdl.save-`date '+%Hh-%Mm-%Ss'` 2>/dev/null
 
 			fi
@@ -5214,7 +5227,7 @@ getOSDL()
 				SVN_URL="/svnroot/${CHECKOUT_LOCATION}"
 			else
 
-				# Should be quite uncommon for OSDL developers :
+				# Should be quite uncommon for OSDL developers:
 				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
 
 				CHECKOUT_LOCATION=osdl
@@ -5226,11 +5239,11 @@ getOSDL()
 			
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
 
-				# Made to force certificate checking before next non-interactive svn command :
+				# Made to force certificate checking before next non-interactive svn command:
 				${SVN} info https://${OSDL_SVN_SERVER}:${SVN_URL} --username=${developer_name} 1>/dev/null
 
 				{
-					DEBUG "SVN command : ${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}"
+					DEBUG "SVN command: ${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}"
 					${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
@@ -5243,7 +5256,7 @@ getOSDL()
 					LOG_STATUS "SVN command failed."
 					#${SLEEP} 3
 
-					# Warning :
+					# Warning:
 					# cygwin uses a quite small MAX_PATH, which limits the maximum length
 					# of paths. It may cause, among others, a SVN error
 					# ("svn: Can't open file 'XXX': File name too long).
@@ -5251,12 +5264,12 @@ getOSDL()
 					# with TortoiseSVN (this tool is not affected by the MAX_PATH issue),
 					# as soon as an error occured.
 
-					# Now ask the user to trigger the full update by herself, with TortoiseSVN :
+					# Now ask the user to trigger the full update by herself, with TortoiseSVN:
 					DISPLAY "OSDL SVN checkout failed, maybe because of too long pathnames."
 					DISPLAY "Please use TortoiseSVN to update manually the OSDL repository."
 					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
 					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
-					# Suppose success :
+					# Suppose success:
 					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
 					success=0
 				fi
@@ -5301,10 +5314,10 @@ getOSDL()
 				
 				{
 
-					# Remove any symbolic link coming from a previous attempt :
+					# Remove any symbolic link coming from a previous attempt:
 					${RM} -f ${latest_stable_osdl} 2>/dev/null
 					
-					# No https, no credential required :
+					# No https, no credential required:
 					DEBUG "${SVN} export http://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
 					${SVN} export http://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT}
 					
@@ -5363,7 +5376,7 @@ prepareOSDL()
 
 	if [ ${use_svn} -eq 1 ]; then
 
-		# Here we use source archives :
+		# Here we use source archives:
 		
 		if findTool bunzip2 ; then
 			BUNZIP2=$returnedString
@@ -5408,7 +5421,7 @@ generateOSDL()
 
 
 	# Premature generation of OSDL-environment.sh so that it is available
-	# for autogen.sh :
+	# for autogen.sh:
 	
 	if [ -n "$prefix" ] ; then	
 		{				
@@ -5448,7 +5461,7 @@ generateOSDL()
 
 			fi
 			
-			# OSDL_ENV_FILE finishes with the needed exports :
+			# OSDL_ENV_FILE finishes with the needed exports:
 			echo "" >> ${OSDL_ENV_FILE}
 			echo "export PATH" >> ${OSDL_ENV_FILE}
 			echo "export LD_LIBRARY_PATH" >> ${OSDL_ENV_FILE}
@@ -5472,7 +5485,7 @@ generateOSDL()
 	
 	if [ ${use_svn} -eq 0 ]; then
 	
-		# Here we are in the SVN tree, needing to generate the build system :
+		# Here we are in the SVN tree, needing to generate the build system:
 		cd $repository/osdl/OSDL/trunk/src/conf/build
 
 		if [ -n "$Ceylan_PREFIX" ] ; then	
@@ -5492,7 +5505,7 @@ generateOSDL()
 			exit 11
 		fi	
 	
-		# Going to the root of the source to continue the normal build process :
+		# Going to the root of the source to continue the normal build process:
 		cd $repository/osdl/OSDL/trunk
 	
 	else
@@ -5501,7 +5514,7 @@ generateOSDL()
 	fi
 		
 		
-	# Rest of the build is common to autogen-based and release-based trees :
+	# Rest of the build is common to autogen-based and release-based trees:
 		
 		
 	printItem "configuring"
@@ -5571,7 +5584,7 @@ generateOSDL()
 	if [ ${use_svn} -eq 0 ]; then
 	
 		# Here we are in the SVN tree, needing to generate the
-		# build system for tests :
+		# build system for tests:
 		{
 			setBuildEnv ./autogen.sh --no-build --with-osdl-environment ${OSDL_ENV_FILE}
 		} 1>>"$LOG_OUTPUT" 2>&1		
@@ -5584,14 +5597,14 @@ generateOSDL()
 		
 	fi
 		
-	# Rest of the build is common to autogen-based and release-based trees :
+	# Rest of the build is common to autogen-based and release-based trees:
 
 
 	if [ -n "$prefix" ] ; then	
 		{				
 
 			# We suppose here that if we have a prefix, all tools use 
-			# prefixes :
+			# prefixes:
 			
 			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX"
 			
@@ -5655,7 +5668,7 @@ generateOSDL()
 cleanOSDL()
 {
 	LOG_STATUS "Cleaning OSDL build tree..."
-	# Nothing to do : we want to be able to go on with the OSDL build.
+	# Nothing to do: we want to be able to go on with the OSDL build.
 }
 
 
@@ -5670,7 +5683,7 @@ getOSDL_win()
 	LOG_STATUS "Getting OSDL for windows..."
 
 	OSDL_win_ARCHIVE="from SVN"
-	# Cygwin let us do the same :
+	# Cygwin let us do the same:
 	getOSDL
 	return $?
 }
@@ -5696,7 +5709,7 @@ generateOSDL_win()
 
 	if [ ${use_svn} -eq 0 ]; then
 	
-		# Here we are in the SVN tree :
+		# Here we are in the SVN tree:
 		cd $repository/osdl/OSDL/trunk
 	
 	else
