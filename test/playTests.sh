@@ -154,7 +154,7 @@ run_test()
 		########### Running now $t" >>${TESTLOGFILE}
 		
 		if [ $has_ldd -eq 0 ] ; then
-			echo "Library dependenies : " >>${TESTLOGFILE}
+			echo "Library dependencies : " >>${TESTLOGFILE}
 			${ldd_tool} $t >>${TESTLOGFILE}
 		fi
 		
