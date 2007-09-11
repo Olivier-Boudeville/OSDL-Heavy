@@ -20,6 +20,7 @@ using namespace OSDL::Video::TwoDimensional::Text ;
 
 using namespace Ceylan ;
 using namespace Ceylan::Log ;
+using namespace Ceylan::System ;
 
 using std::string ;
 
@@ -48,7 +49,7 @@ TrueTypeFont::TrueTypeFont(
 	FontIndex index, 
 	bool convertToDisplay, 
 	RenderCache cacheSettings ) 
-			throw( TextException ) :
+			throw( TextException ):
 	Font( convertToDisplay, cacheSettings ),	
 	_pointSize( pointSize ),
 	_actualFont( 0 )
@@ -56,11 +57,11 @@ TrueTypeFont::TrueTypeFont(
 	
 	string fontFullPath = fontFilename ;
 	
-	// Search directly in current working directory :
+	// Search directly in current working directory:
 	if ( ! System::File::ExistsAsFileOrSymbolicLink( fontFilename ) )
 	{
 		
-		// On failure use the dedicated TrueType font locator :
+		// On failure use the dedicated TrueType font locator:
 		try
 		{
 		
@@ -71,7 +72,7 @@ TrueTypeFont::TrueTypeFont(
 		catch( const System::FileLocatorException & e )
 		{
 				
-			// Last hope is general font locator :
+			// Last hope is general font locator:
 			try
 			{
 				fontFullPath = Font::FontFileLocator.find( fontFilename ) ;
@@ -85,19 +86,18 @@ TrueTypeFont::TrueTypeFont(
 				
 				try
 				{
-					currentDir =
-						System::Directory::GetCurrentWorkingDirectoryName() ;
+					currentDir = Directory::GetCurrentWorkingDirectoryPath() ;
 				}
-				catch( const System::Directory::DirectoryException & exc )
+				catch( const DirectoryException & exc )
 				{
 					throw TextException( 
-						"TrueTypeFont constructor : unable to load '" 
+						"TrueTypeFont constructor: unable to load '" 
 						+ fontFilename 
-						+ "', exception generation triggered another failure : "
+						+ "', exception generation triggered another failure: "
 						+ exc.toString() + "." ) ;
 				}
 				
-				throw TextException( "TrueTypeFont constructor : '" 
+				throw TextException( "TrueTypeFont constructor: '" 
 					+ fontFilename 
 					+ "' is not a regular file or a symbolic link "
 					"relative to the current directory (" + currentDir
@@ -105,7 +105,7 @@ TrueTypeFont::TrueTypeFont(
 					+ TrueTypeFont::TrueTypeFontFileLocator.toString() 
 					+ ") nor through general font locator based on "
 					"font path environment variable ("
-					+ Font::FontPathEnvironmentVariable + ") : " 
+					+ Font::FontPathEnvironmentVariable + "): " 
 					+ Font::FontFileLocator.toString() + "." ) ;
 					
 			}		
@@ -118,7 +118,7 @@ TrueTypeFont::TrueTypeFont(
 	
 		if ( TTF_Init()== -1 )
 			throw TextException( 
-				"TrueTypeFont constructor : unable to init font library : "
+				"TrueTypeFont constructor: unable to init font library: "
 				+ DescribeLastError() ) ;
 				
 	}	
@@ -126,15 +126,15 @@ TrueTypeFont::TrueTypeFont(
 	_actualFont = TTF_OpenFont( fontFullPath.c_str(), pointSize ) ;
 	
 	if ( _actualFont == 0 )
-		throw TextException( "TrueTypeFont constructor : unable to open '" 
+		throw TextException( "TrueTypeFont constructor: unable to open '" 
 			+ fontFullPath 
 			+ "' with a point size of " 
-			+ Ceylan::toString( pointSize ) + " dots per inch : "
+			+ Ceylan::toString( pointSize ) + " dots per inch: "
 			+ DescribeLastError() ) ;
 	
 	_spaceWidth = static_cast<Width>( SpaceWidthFactor * getWidth( ' ' ) ) ;
 
-	// By default, the width of an alinea is a multiple of a space width :
+	// By default, the width of an alinea is a multiple of a space width:
 	_alineaWidth = DefaultSpaceBasedAlineaWidth * _spaceWidth ;	
 	
 	FontCounter++ ;
@@ -182,7 +182,7 @@ void TrueTypeFont::setRenderingStyle( RenderingStyle newStyle )
 
 	/* 
 	 * It would flush the internal cache of previously rendered glyphs, 
-	 * even if there is no change in style otherwise :
+	 * even if there is no change in style otherwise:
 	 *
 	 */
 	 
@@ -210,7 +210,7 @@ Width TrueTypeFont::getWidth( Ceylan::Latin1Char character )
 	if ( TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			& minX, & maxX, 0, 0, 0 )  != 0 )
-		throw TextException( "TrueTypeFont::getWidth : " 
+		throw TextException( "TrueTypeFont::getWidth: " 
 			+ DescribeLastError() ) ;
 
 	return static_cast<Width>( maxX - minX ) ;	
@@ -227,7 +227,7 @@ SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character )
 	if ( TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			& minX, 0, 0, 0, 0 )  != 0 )
-		throw TextException( "TrueTypeFont::getWidthOffset : " 
+		throw TextException( "TrueTypeFont::getWidthOffset: " 
 			+ DescribeLastError() ) ;
 			
 	return static_cast<SignedWidth>( minX ) ;	
@@ -244,7 +244,7 @@ SignedHeight TrueTypeFont::getHeightAboveBaseline(
 	if ( TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			0, 0, 0, & maxY, 0 )  != 0 )
-		throw TextException( "TrueTypeFont::getHeightAboveBaseline : " 
+		throw TextException( "TrueTypeFont::getHeightAboveBaseline: " 
 			+ DescribeLastError() ) ;
 	
 	return static_cast<SignedHeight>( maxY ) ;
@@ -261,7 +261,7 @@ OSDL::Video::SignedLength TrueTypeFont::getAdvance(
 	if ( TTF_GlyphMetrics( _actualFont,
 		Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			0, 0, 0, 0, & advance ) != 0 )
-		throw TextException( "TrueTypeFont::getAdvance : "
+		throw TextException( "TrueTypeFont::getAdvance: "
 			+ DescribeLastError() ) ;
 	
 	return static_cast<SignedLength>( advance ) ;
@@ -347,7 +347,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor(
 
 	if ( TTF_GlyphMetrics( _actualFont, glyph, & minX, & maxX, 
 			& minY, & maxY, & intAdvance ) != 0 )
-		throw TextException( "TrueTypeFont::getClippingBoxFor (glyph) : " 
+		throw TextException( "TrueTypeFont::getClippingBoxFor (glyph): " 
 			+ DescribeLastError() ) ;
 	
 	advance = static_cast<SignedLength>( intAdvance ) ;
@@ -369,7 +369,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor( const std::string & text )
 	
 	if ( TTF_SizeText( _actualFont, text.c_str(), & width, & height ) != 0 )
 		throw TextException( 
-			"TrueTypeFont::getBoundingBoxFor (Latin-1 string) : " 
+			"TrueTypeFont::getBoundingBoxFor (Latin-1 string): " 
 			+ DescribeLastError() ) ;
 	
 	return * new UprightRectangle( 0, 0, static_cast<Length>( width ), 
@@ -386,7 +386,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUTF8(
 	
 	if ( TTF_SizeUTF8( _actualFont, text.c_str(), & width, & height ) != 0 )
 		throw TextException( 
-			"TrueTypeFont::getBoundingBoxFor (UTF-8 string) : " 
+			"TrueTypeFont::getBoundingBoxFor (UTF-8 string): " 
 			+ DescribeLastError() ) ;
 	
 	return * new UprightRectangle( 0, 0, static_cast<Length>( width ), 
@@ -400,14 +400,14 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUnicode(
 {
 
 	if ( text == 0 )
-		throw TextException( "TrueTypeFont::getBoundingBoxForUnicode : "
+		throw TextException( "TrueTypeFont::getBoundingBoxForUnicode: "
 			"null pointer for Unicode string." ) ;
 
 	int width, height ;
 	
 	if ( TTF_SizeUNICODE( _actualFont, text, & width, & height ) != 0 )
 		throw TextException( 
-			"TrueTypeFont::getBoundingBoxFor (Unicode string) : " 
+			"TrueTypeFont::getBoundingBoxFor (Unicode string): " 
 			+ DescribeLastError() ) ;
 	
 	return * new UprightRectangle( 0, 0, static_cast<Length>( width ), 
@@ -440,7 +440,7 @@ void TrueTypeFont::blitLatin1Glyph(
 	Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
 
-	// Could be easily optimized (even though Freetype has a cache feature) :
+	// Could be easily optimized (even though Freetype has a cache feature):
 	
 	Surface & res = renderUnicodeGlyph(
 		Ceylan::UnicodeString::ConvertFromLatin1( character ),
@@ -459,14 +459,14 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeGlyph(
 	Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
 
-	// Two different cases, depending on a glyph cache being used or not :
+	// Two different cases, depending on a glyph cache being used or not:
 	
 	if ( _cacheSettings == GlyphCached )
 	{
 		
 		/*
 		 * First check that the character-quality-color combination is 
-		 * not already available in cache :
+		 * not already available in cache:
 		 *
 		 * @note 'character' is in Unicode, conversion to Latin1 is 
 		 * somewhat abusive...
@@ -485,11 +485,11 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeGlyph(
 			
 #if OSDL_DEBUG_FONT
 
-			LogPlug::debug( "TrueTypeFont::renderUnicodeGlyph : cache hit, "
+			LogPlug::debug( "TrueTypeFont::renderUnicodeGlyph: cache hit, "
 				"returning clone of prerendered glyph." ) ;
 			
 			if ( returned == 0 )
-				Ceylan::emergencyShutdown( "TrueTypeFont::renderUnicodeGlyph : "
+				Ceylan::emergencyShutdown( "TrueTypeFont::renderUnicodeGlyph: "
 					"clone is not a Surface." ) ;
 					
 #endif // OSDL_DEBUG_FONT
@@ -500,16 +500,16 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeGlyph(
 		
 #if OSDL_DEBUG_FONT
 
-		LogPlug::debug( "TrueTypeFont::renderUnicodeGlyph : "
+		LogPlug::debug( "TrueTypeFont::renderUnicodeGlyph: "
 			"cache miss, creating new glyph rendering." ) ;
 			
 #endif // OSDL_DEBUG_FONT
 
-		// Here it its a cache miss, we therefore have to generate the glyph :
+		// Here it its a cache miss, we therefore have to generate the glyph:
 		Surface & newSurface = basicRenderUnicodeGlyph( character, quality,
 			glyphColor ) ;
 		
-		// Give the cache a chance of being fed :		
+		// Give the cache a chance of being fed:		
 		_glyphCache->scanForAddition( renderKey, newSurface ) ;
 		
 		
@@ -519,7 +519,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeGlyph(
 
 	/*
 	 * Here we are not using a glyph cache, we have simply to generate 
-	 * the glyph :	
+	 * the glyph:	
 	 *
 	 */
 	return basicRenderUnicodeGlyph( character, quality, glyphColor ) ;	
@@ -538,9 +538,9 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 
 	/*
 	 * Test to compare both implementations 
-	 * (OSDL glyph-based versus SDL_ttf whole string) : 
-	 *  - next line uncommented : OSDL glyph-based 
-	 *  - next line commented : SDL_ttf whole string
+	 * (OSDL glyph-based versus SDL_ttf whole string): 
+	 *  - next line uncommented: OSDL glyph-based 
+	 *  - next line commented: SDL_ttf whole string
 	 *
 	 * Whole string (this actual method) may be preferred since rendering 
 	 * is maybe a bit better (maybe kerning better supported, alpha 
@@ -550,7 +550,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	 * wise.
 	 *
 	 * Default selected implementation (when next line not commented) is 
-	 * the OSDL's one :
+	 * the OSDL's one:
 	 *
 	 */	 
 	return Font::renderLatin1Text( text, quality, textColor ) ;
@@ -558,7 +558,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	
 	/*
 	 * Following SDL_ttf whole string rendering deactivated if previous 
-	 * line not commented :
+	 * line not commented:
 	 *
 	 */
 	
@@ -573,9 +573,9 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 				text.c_str(), textColor ) ;
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::renderLatin1Text (solid) : " 
+					"TrueTypeFont::renderLatin1Text (solid): " 
 					"unable to render text '" + text
-					+ "' : " + DescribeLastError() ) ; 
+					+ "': " + DescribeLastError() ) ; 
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
 			// No colorkey added, since already there. 
@@ -587,13 +587,13 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 				text.c_str(), textColor, _backgroundColor ) ;
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::renderLatin1Text (shaded) : " 
+					"TrueTypeFont::renderLatin1Text (shaded): " 
 					"unable to render text '" + text
-					+ "' : " + DescribeLastError() ) ; 
+					+ "': " + DescribeLastError() ) ; 
 					
 			/*
 			 * We have to create a new surface so that the surface returned by
-			 * 'TTF_RenderText_Shaded' will no more be palettized : we need a
+			 * 'TTF_RenderText_Shaded' will no more be palettized: we need a
 			 * color key to have transparent blits.
 			 *
 			 */	 
@@ -604,7 +604,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 				textSurface->w, textSurface->h, /* bpp */ 32, 
 				redMask, greenMask, blueMask, /* no alpha wanted */ 0 ) ;
 
-			// Avoid messing text color with color key :
+			// Avoid messing text color with color key:
 			Pixels::ColorDefinition colorKey ;
 	
 			if ( Pixels::areEqual( textColor, Pixels::Black, 
@@ -633,8 +633,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 			catch( const Video::VideoException & e )
 			{
 				throw TextException( 
-					"TrueTypeFont::renderLatin1Text (shaded) : "
-					"color keying failed : " + e.toString() ) ; 
+					"TrueTypeFont::renderLatin1Text (shaded): "
+					"color keying failed: " + e.toString() ) ; 
 			}
 			SDL_BlitSurface( textSurface, 0, & res->getSDLSurface(), 0 ) ;
 			break ;
@@ -645,23 +645,23 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 				text.c_str(), textColor ) ;
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::renderLatin1Text (blended) : " 
+					"TrueTypeFont::renderLatin1Text (blended): " 
 					"unable to render text '" + text
-					+ "' : " + DescribeLastError() ) ; 
+					+ "': " + DescribeLastError() ) ; 
 					
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
 
-			// Not defined by default :
+			// Not defined by default:
 #ifdef OSDL_ADDS_COLOR_KEY
 
 			/*
 			 * Alpha should be preserved since the blending is the 
-			 * point of this quality, but adding a color key should not harm :
+			 * point of this quality, but adding a color key should not harm:
 			 *
 			 */
 			 
-			// Avoid messing text color with color key :
+			// Avoid messing text color with color key:
 			Pixels::ColorDefinition colorKey ;
 	
 			if ( Pixels::areEqual( textColor, Pixels::Black, 
@@ -691,8 +691,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 			catch( const Video::VideoException & e )
 			{
 				throw TextException( 
-					"TrueTypeFont::renderLatin1Text (blended) : "
-					"color keying failed : " + e.toString() ) ; 
+					"TrueTypeFont::renderLatin1Text (blended): "
+					"color keying failed: " + e.toString() ) ; 
 			}
 			
 #endif // OSDL_ADDS_COLOR_KEY
@@ -701,8 +701,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	
 	
 		default:
-			throw TextException( "TrueTypeFont::renderLatin1Text : "
-				"unknown quality requested : " 
+			throw TextException( "TrueTypeFont::renderLatin1Text: "
+				"unknown quality requested: " 
 				+ Ceylan::toString( quality ) + "." ) ; 
 			break ;	
 			
@@ -716,7 +716,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 		 * We want to keep our colorkey (if any), so we choose to add 
 		 * alpha only if no colorkey is used.
 		 *
-		 * Surface will be RLE encoded here :
+		 * Surface will be RLE encoded here:
 		 *	
 		 */
 		if ( quality == Blended )
@@ -752,9 +752,9 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 				textColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( "TrueTypeFont::renderUTF8Text (solid) : " 
+				throw TextException( "TrueTypeFont::renderUTF8Text (solid): " 
 					"unable to render text '" + text
-					+ "' : " + DescribeLastError() ) ; 
+					+ "': " + DescribeLastError() ) ; 
 					
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
@@ -766,13 +766,13 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 				textColor, _backgroundColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( "TrueTypeFont::renderUTF8Text (shaded) : " 
+				throw TextException( "TrueTypeFont::renderUTF8Text (shaded): " 
 					"unable to render text '" + text
-					+ "' : " + DescribeLastError() ) ; 
+					+ "': " + DescribeLastError() ) ; 
 					
 			/*
 			 * We have to create a new surface so that the surface returned by
-			 * 'TTF_RenderUTF8_Shaded' will no more be palettized : 
+			 * 'TTF_RenderUTF8_Shaded' will no more be palettized: 
 			 * we need a color key to have transparent blits.
 			 *
 			 */
@@ -783,7 +783,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 				textSurface->w, textSurface->h, 32, 
 				redMask, greenMask, blueMask, /* no alpha wanted */ 0 ) ;
 				
-			// Avoid messing text color with color key :
+			// Avoid messing text color with color key:
 			Pixels::ColorDefinition colorKey ;
 	
 			if ( Pixels::areEqual( textColor, Pixels::Black, 
@@ -817,8 +817,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 			}
 			catch( const Video::VideoException & e )
 			{
-				throw TextException( "TrueTypeFont::renderUTF8Text (shaded) : "
-					"color keying failed : " + e.toString() ) ; 
+				throw TextException( "TrueTypeFont::renderUTF8Text (shaded): "
+					"color keying failed: " + e.toString() ) ; 
 			}
 			
 			SDL_BlitSurface( textSurface, 0, & res->getSDLSurface(), 0 ) ;
@@ -831,24 +831,24 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 				
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::renderUTF8Text (blended) : " 
+					"TrueTypeFont::renderUTF8Text (blended): " 
 					"unable to render text '" + text
-					+ "' : " + DescribeLastError() ) ; 
+					+ "': " + DescribeLastError() ) ; 
 					
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
 
 
-			// Not defined by default :
+			// Not defined by default:
 #ifdef OSDL_ADDS_COLOR_KEY
 
 			/*
 			 * Alpha should be preserved since the blending is the 
-			 * point of this quality, but adding a color key should not harm :
+			 * point of this quality, but adding a color key should not harm:
 			 *
 			 */
 			 
-			// Avoid messing text color with color key :
+			// Avoid messing text color with color key:
 			Pixels::ColorDefinition colorKey ;
 	
 			if ( Pixels::areEqual( textColor, Pixels::Black, 
@@ -880,8 +880,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 			catch( const Video::VideoException & e )
 			{
 			
-				throw TextException( "TrueTypeFont::renderUTF8Text (blended) : "
-					"color keying failed : " + e.toString() ) ;
+				throw TextException( "TrueTypeFont::renderUTF8Text (blended): "
+					"color keying failed: " + e.toString() ) ;
 					 
 			}
 			
@@ -891,8 +891,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 	
 	
 		default:
-			throw TextException( "TrueTypeFont::renderUTF8Text : "
-				"unknown quality requested : " 
+			throw TextException( "TrueTypeFont::renderUTF8Text: "
+				"unknown quality requested: " 
 				+ Ceylan::toString( quality ) + "." ) ; 
 			break ;	
 			
@@ -906,7 +906,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 		 * We want to keep our colorkey (if any), so we choose to add 
 		 * alpha only if no colorkey is used.
 		 *
-		 * Surface will be RLE encoded here :
+		 * Surface will be RLE encoded here:
 		 *	
 		 */
 		if ( quality == Blended )
@@ -931,7 +931,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 
 	if ( text == 0 )
 		throw TextException( 
-			"TrueTypeFont::renderUnicode : null pointer for Unicode string." ) ;
+			"TrueTypeFont::renderUnicode: null pointer for Unicode string." ) ;
 		
 	SDL_Surface * textSurface ;
 	Surface * res ;
@@ -945,8 +945,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 				
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::renderUnicodeText (solid) : " 
-					"unable to render text : " + DescribeLastError() ) ; 
+					"TrueTypeFont::renderUnicodeText (solid): " 
+					"unable to render text: " + DescribeLastError() ) ; 
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
 			break ;
@@ -958,12 +958,12 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 				
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::renderUnicodeText (shaded) : " 
-					"unable to render text : " + DescribeLastError() ) ; 
+					"TrueTypeFont::renderUnicodeText (shaded): " 
+					"unable to render text: " + DescribeLastError() ) ; 
 					
 			/*
 			 * We have to create a new surface so that the surface returned by
-			 * 'TTF_RenderUNICODE_Shaded' will no more be palettized : 
+			 * 'TTF_RenderUNICODE_Shaded' will no more be palettized: 
 			 * we need a color key to have transparent blits.
 			 *
 			 */	 			 
@@ -974,7 +974,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 				textSurface->w, textSurface->h, 32, 
 				redMask, greenMask, blueMask, /* no alpha wanted */ 0 ) ;
 
-			// Avoid messing text color with color key :
+			// Avoid messing text color with color key:
 			Pixels::ColorDefinition colorKey ;
 	
 			if ( Pixels::areEqual( textColor, Pixels::Black, 
@@ -1007,8 +1007,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 			catch( const Video::VideoException & e )
 			{
 				throw TextException( 
-					"TrueTypeFont::renderUnicodeText (shaded) : "
-					"color keying failed : " + e.toString() ) ; 
+					"TrueTypeFont::renderUnicodeText (shaded): "
+					"color keying failed: " + e.toString() ) ; 
 			}
 			SDL_BlitSurface( textSurface, 0, & res->getSDLSurface(), 0 ) ;
 			break ;
@@ -1020,23 +1020,23 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 				
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::renderUnicodeText (blended) : " 
-					"unable to render text : " + DescribeLastError() ) ; 
+					"TrueTypeFont::renderUnicodeText (blended): " 
+					"unable to render text: " + DescribeLastError() ) ; 
 					 
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;
 
 
-			// Not defined by default :
+			// Not defined by default:
 #ifdef OSDL_ADDS_COLOR_KEY
 
 			/*
 			 * Alpha should be preserved since the blending is the 
-			 * point of this quality, but adding a color key should not harm :
+			 * point of this quality, but adding a color key should not harm:
 			 *
 			 */
 			 
-			// Avoid messing text color with color key :
+			// Avoid messing text color with color key:
 			Pixels::ColorDefinition colorKey ;
 	
 			if ( Pixels::areEqual( textColor, Pixels::Black,
@@ -1062,7 +1062,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 				
 			/*
 			 * Alpha should be preserved since the blending is the point 
-			 * of this quality, but adding a color key should not harm :
+			 * of this quality, but adding a color key should not harm:
 			 *
 			 */
 			try
@@ -1077,8 +1077,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 			catch( const Video::VideoException & e )
 			{
 				throw TextException( 
-					"TrueTypeFont::renderUnicodeText (blended) : "
-					"color keying failed : " + e.toString() ) ; 
+					"TrueTypeFont::renderUnicodeText (blended): "
+					"color keying failed: " + e.toString() ) ; 
 			}
 			
 #endif // OSDL_ADDS_COLOR_KEY
@@ -1087,8 +1087,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 	
 	
 		default:
-			throw TextException( "TrueTypeFont::renderUnicodeText : "
-				"unknown quality requested : " 
+			throw TextException( "TrueTypeFont::renderUnicodeText: "
+				"unknown quality requested: " 
 				+ Ceylan::toString( quality ) + "." ) ; 
 			break ;	
 
@@ -1102,7 +1102,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 		 * We want to keep our colorkey (if any), so we choose to add
 		 *  alpha only if no colorkey is used.
 		 *
-		 * Surface will be RLE encoded here :
+		 * Surface will be RLE encoded here:
 		 *	
 		 */
 		if ( quality == Blended )
@@ -1221,7 +1221,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
 
-	// Render unconditionnally here :
+	// Render unconditionnally here:
 	
 	SDL_Surface * textSurface ;
 	Surface * res ;
@@ -1236,10 +1236,10 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 			 	
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::basicRenderUnicodeGlyph (solid) : "
+					"TrueTypeFont::basicRenderUnicodeGlyph (solid): "
 					"unable to render character '" 
 					+ Ceylan::toString( character )
-					+ "' : " + DescribeLastError() ) ; 
+					+ "': " + DescribeLastError() ) ; 
 					
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
@@ -1254,14 +1254,14 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 				
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::basicRenderUnicodeGlyph (shaded) : " 
+					"TrueTypeFont::basicRenderUnicodeGlyph (shaded): " 
 					"unable to render character '" 
 					+ Ceylan::toString( character )
-					+ "' : " + DescribeLastError() ) ; 
+					+ "': " + DescribeLastError() ) ; 
 					 
 			/*
 			 * We have to create a new surface so that the surface returned by
-			 * 'TTF_RenderGlyph_Shaded' will no more be palettized : 
+			 * 'TTF_RenderGlyph_Shaded' will no more be palettized: 
 			 * we need a color key to have transparent blits.
 			 *
 			 */	 
@@ -1273,7 +1273,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 				textSurface->w, textSurface->h, /* bpp */ 32, 
 				redMask, greenMask, blueMask, /* no alpha wanted */ 0 ) ;
 
-			// Avoid messing text color with color key :
+			// Avoid messing text color with color key:
 			Pixels::ColorDefinition colorKey ;
 	
 			if ( Pixels::areEqual( glyphColor, Pixels::Black, 
@@ -1308,8 +1308,8 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 			{
 			
 				throw TextException( 
-					"TrueTypeFont::basicRenderUnicodeGlyph (shaded) : "
-					"color keying failed : " + e.toString() ) ; 
+					"TrueTypeFont::basicRenderUnicodeGlyph (shaded): "
+					"color keying failed: " + e.toString() ) ; 
 					
 			}
 			SDL_BlitSurface( textSurface, 0, & res->getSDLSurface(), 0 ) ;
@@ -1322,10 +1322,10 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 				
 			if ( textSurface == 0 )
 				throw TextException( 
-					"TrueTypeFont::basicRenderUnicodeGlyph (blended) : " 
+					"TrueTypeFont::basicRenderUnicodeGlyph (blended): " 
 					"unable to render character '" 
 					+ Ceylan::toString( character )
-					+ "' : " + DescribeLastError() ) ; 
+					+ "': " + DescribeLastError() ) ; 
 			
 			res = new Surface( * textSurface, 
 				/* display type */ Surface::BackBuffer ) ;	
@@ -1336,8 +1336,8 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	
 	
 		default:
-			throw TextException( "TrueTypeFont::basicRenderUnicodeGlyph : "
-				"unknown quality requested : " 
+			throw TextException( "TrueTypeFont::basicRenderUnicodeGlyph: "
+				"unknown quality requested: " 
 				+ Ceylan::toString( quality ) + "." ) ; 
 			break ;	
 			
@@ -1351,7 +1351,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 		 * We want to keep our colorkey (if any), so we choose to add 
 		 * alpha only if no colorkey is used.
 		 *
-		 * Surface will be RLE encoded here :
+		 * Surface will be RLE encoded here:
 		 *	
 		 */
 		if ( quality == Blended )
@@ -1361,7 +1361,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 			
 	}	
 	
-	// Uncomment next line to debug character bounding-box :
+	// Uncomment next line to debug character bounding-box:
 	//res->drawEdges() ;
 		
 	return * res ;	
