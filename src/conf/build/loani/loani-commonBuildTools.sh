@@ -865,13 +865,29 @@ generatePAlib()
 
 	PAlib_PREFIX=${devkitPRO_PREFIX}/PAlib
 
+	libnds_PREFIX=${devkitPRO_PREFIX}/libnds
+	
+	
 	# Not depending on a prefix being set, needed in all cases :
+
+	LD_LIBRARY_PATH=$libnds_PREFIX/lib:${LD_LIBRARY_PATH}
+	export LD_LIBRARY_PATH
+
+	echo "# PAlib & prerequesites section." >> ${OSDL_ENV_FILE}
                 
-	echo "# PAlib section." >> ${OSDL_ENV_FILE}
+	echo "libnds_PREFIX=${libnds_PREFIX}" >> ${OSDL_ENV_FILE}
+	echo "export libnds_PREFIX" >> ${OSDL_ENV_FILE}
+	echo "LD_LIBRARY_PATH=\$libnds_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}	
+	echo "" >> ${OSDL_ENV_FILE}
 		
 	echo "PAlib_PREFIX=${PAlib_PREFIX}" >> ${OSDL_ENV_FILE}
 	echo "export PAlib_PREFIX" >> ${OSDL_ENV_FILE}
+	echo "LD_LIBRARY_PATH=\$PAlib_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}	
 	echo "" >> ${OSDL_ENV_FILE}
+
+	LD_LIBRARY_PATH=$PAlib_PREFIX/lib:${LD_LIBRARY_PATH}
+	export LD_LIBRARY_PATH
+	
 	
 	echo "# Needed for PAlib internal use :" >> ${OSDL_ENV_FILE}
 	echo "PAPATH=${PAlib_PREFIX}" >> ${OSDL_ENV_FILE}
@@ -1034,12 +1050,12 @@ prepareDeSmuME()
 	
 	printItem "extracting"
 	
-	DeSmuME_prefix="$ds_prefix/DeSmuME-${DeSmuME_VERSION}"
-	${MKDIR} -p ${DeSmuME_prefix}
+	DeSmuME_PREFIX="$ds_prefix/DeSmuME-${DeSmuME_VERSION}"
+	${MKDIR} -p ${DeSmuME_PREFIX}
 
 	# Extract prebuilt executable in installation repository :
 	{
-		cd ${DeSmuME_prefix} && ${UNZIP} -o "$repository/${DeSmuME_ARCHIVE}"
+		cd ${DeSmuME_PREFIX} && ${UNZIP} -o "$repository/${DeSmuME_ARCHIVE}"
 	} 1>>"$LOG_OUTPUT" 2>&1
 		
 	if [ $? != "0" ] ; then
@@ -1066,6 +1082,19 @@ generateDeSmuME()
 	printOK
 	
 	printItem "installing"
+                
+	echo "# DeSmuME section." >> ${OSDL_ENV_FILE}
+
+	echo "DeSmuME_PREFIX=${DeSmuME_PREFIX}" >> ${OSDL_ENV_FILE}
+	echo "export DeSmuME_PREFIX" >> ${OSDL_ENV_FILE}
+	echo "PATH=\$DeSmuME_PREFIX:\${PATH}" >> ${OSDL_ENV_FILE}		
+	echo "alias desmume=\"wine $DeSmuME_PREFIX/NDeSmuME.exe\"" >> ${OSDL_ENV_FILE}		
+	echo "" >> ${OSDL_ENV_FILE}
+			
+	PATH=${DeSmuME_PREFIX}:${PATH}
+	export PATH
+	
+	alias desmume="wine $DeSmuME_PREFIX/NDeSmuME.exe"
 	printOK
 		
 	DEBUG "DeSmuME successfully installed."
@@ -1114,12 +1143,12 @@ prepareNoCashGBA()
 	printItem "extracting"
 	
 
-	NoCashGBA_prefix="$ds_prefix/NoCashGBA-${NoCashGBA_VERSION}"
-	${MKDIR} -p ${NoCashGBA_prefix}
+	NoCashGBA_PREFIX="$ds_prefix/NoCashGBA-${NoCashGBA_VERSION}"
+	${MKDIR} -p ${NoCashGBA_PREFIX}
 
 	# Extract prebuilt executable in installation repository :
 	{
-		cd ${NoCashGBA_prefix} && ${UNZIP} -o "$repository/${NoCashGBA_ARCHIVE}"
+		cd ${NoCashGBA_PREFIX} && ${UNZIP} -o "$repository/${NoCashGBA_ARCHIVE}"
 	} 1>>"$LOG_OUTPUT" 2>&1
 		
 		
@@ -1147,6 +1176,25 @@ generateNoCashGBA()
 	printOK
 	
 	printItem "installing"
+
+
+	${MV} -f ${NoCashGBA_PREFIX}/'NO$GBA.EXE' ${NoCashGBA_PREFIX}/NoCashGBA.EXE
+	
+	# Not depending on a prefix being set, needed in all cases :
+                
+	echo "# NoCashGBA section." >> ${OSDL_ENV_FILE}
+
+	echo "NoCashGBA_PREFIX=${NoCashGBA_PREFIX}" >> ${OSDL_ENV_FILE}
+	echo "export NoCashGBA_PREFIX" >> ${OSDL_ENV_FILE}
+	echo "PATH=\$NoCashGBA_PREFIX:\${PATH}" >> ${OSDL_ENV_FILE}		
+	echo "alias nocashgba=\"wine $NoCashGBA_PREFIX/NoCashGBA.EXE\"" >> ${OSDL_ENV_FILE}		
+	echo "" >> ${OSDL_ENV_FILE}
+			
+	PATH=${NoCashGBA_PREFIX}:${PATH}
+	export PATH
+	
+	alias nocashgba="wine $NoCashGBA_PREFIX/NoCashGBA.EXE"
+	
 	printOK
 		
 	DEBUG "NoCashGBA successfully installed."
