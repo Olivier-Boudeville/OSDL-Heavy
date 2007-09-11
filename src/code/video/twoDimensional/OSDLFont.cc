@@ -37,8 +37,8 @@ Ceylan::System::FileLocator Text::Font::FontFileLocator(
 
 
 
-TextException::TextException( const string & reason ) throw() :
-	VideoException( "TextException : " + reason ) 
+TextException::TextException( const string & reason ) throw():
+	VideoException( "TextException: " + reason ) 
 {
 
 }
@@ -79,7 +79,7 @@ Font::Font(
 		RenderCache cacheSettings, 
 		AllowedCachePolicy cachePolicy, 
 		Ceylan::System::Size quota 
-			) throw() :			
+			) throw():			
 	_renderingStyle( Normal ),
 	_convertToDisplay( convertToDisplay ),
 	_cacheSettings( cacheSettings ),
@@ -103,7 +103,7 @@ Font::Font(
 	
 		/*
 		 * The several sub-switches allow to get rid of following parameter 
-		 * in signature :
+		 * in signature:
 		 * 'Ceylan::SmartResourceManager<CharColorQualityKey>::CachePolicy
 		 * cachePolicy = Ceylan::SmartResourceManager<CharColorQualityKey>::
 		 * DropLessRequestedFirst' which would not be compliant with a
@@ -137,7 +137,7 @@ Font::Font(
 				
 			/*
 			 * Let's convert our allowed cache policy into a 
-			 * templated-ready cache policy :
+			 * templated-ready cache policy:
 			 *
 			 */
 			switch( cachePolicy )
@@ -155,7 +155,7 @@ Font::Font(
 				default:
 					Ceylan::emergencyShutdown(
 						"OSDL::Video::TwoDimensional::Font constructor "
-						"with glych cache : forbidden cache settings" ) ;		
+						"with glych cache: forbidden cache settings" ) ;		
 						
 					break ;	
 			}		
@@ -179,7 +179,7 @@ Font::Font(
 				
 			/*
 			 * Let's convert our allowed cache policy into a 
-			 * templated-ready cache policy :
+			 * templated-ready cache policy:
 			 *
 			 */
 			switch( cachePolicy )
@@ -198,7 +198,7 @@ Font::Font(
 				default:
 					Ceylan::emergencyShutdown(
 						"OSDL::Video::TwoDimensional::Font constructor "
-						"with word cache : forbidden cache settings" ) ;		
+						"with word cache: forbidden cache settings" ) ;		
 						
 					break ;	
 			}		
@@ -222,11 +222,12 @@ Font::Font(
 				
 			/*
 			 * Let's convert our allowed cache policy into a 
-			 * templated-ready cache policy :
+			 * templated-ready cache policy:
 			 *
 			 */
 			switch( cachePolicy )
 			{	
+			
 				case NeverDrop:
 					actualTextPolicy =
 						SmartResourceManager<StringColorQualityKey>::NeverDrop ;
@@ -240,8 +241,9 @@ Font::Font(
 				default:
 					Ceylan::emergencyShutdown(
 						"OSDL::Video::TwoDimensional::Font constructor "
-						"with text cache : forbidden cache settings" ) ;		
+						"with text cache: forbidden cache settings" ) ;		
 					break ;	
+					
 			}	
 				
 			_textCache = new SmartResourceManager<StringColorQualityKey>( 
@@ -251,7 +253,7 @@ Font::Font(
 			
 		default:
 			Ceylan::emergencyShutdown( 
-				"OSDL::Video::TwoDimensional::Font constructor : "
+				"OSDL::Video::TwoDimensional::Font constructor: "
 				"unexpected cache settings" ) ;
 			break ;
 					
@@ -304,6 +306,7 @@ void Font::setBackgroundColor( Pixels::ColorDefinition newBackgroundColor )
 }
 
 
+
 OSDL::Video::Pixels::ColorDefinition Font::getBackgroundColor() const throw()
 {
 
@@ -347,7 +350,7 @@ std::string Font::describeGlyphFor( Ceylan::Latin1Char character ) const throw()
 		+ Ceylan::toString( getHeightAboveBaseline( character ) ) ) ;
 		
 	return "Informations about the glyph corresponding to the character '" 
-		+ Ceylan::toString( character ) + "' : " 
+		+ Ceylan::toString( character ) + "': " 
 		+ Ceylan::formatStringList( res ) ;
 		
 }
@@ -357,7 +360,7 @@ std::string Font::describeGlyphFor( Ceylan::Latin1Char character ) const throw()
 Width Font::getInterGlyphWidth() const throw()
 {
 
-	// Scales with the letter width, minimum is one :
+	// Scales with the letter width, minimum is one:
 	static Width inter = static_cast<Width>( 
 		Ceylan::Maths::Max<float>( 1, 0.1f * getWidth( 'a' ) ) ) ;
 
@@ -373,7 +376,7 @@ OSDL::Video::Surface & Font::renderLatin1Text( const std::string & text,
 {
 
 	
-	// Different cases, depending on cache settings :
+	// Different cases, depending on cache settings:
 
 	switch( _cacheSettings )
 	{
@@ -403,14 +406,14 @@ OSDL::Video::Surface & Font::renderLatin1Text( const std::string & text,
 			
 		default:
 			Ceylan::emergencyShutdown(
-				"OSDL::Video::TwoDimensional::Font::renderLatin1Text : "
+				"OSDL::Video::TwoDimensional::Font::renderLatin1Text: "
 				"unexpected cache settings" ) ;
 			break ;
 					
 	}
 	
-	// Avoid a warning :
-	throw TextException( "Font::renderLatin1Text : unexpected end of method" ) ;
+	// Avoid a warning:
+	throw TextException( "Font::renderLatin1Text: unexpected end of method" ) ;
 		
 }
 
@@ -422,12 +425,12 @@ void Font::blitLatin1Text( Surface & targetSurface, Coordinate x, Coordinate y,
 {
 	 	
 	/*
-	 * Shortcut :
+	 * Shortcut:
 	 * Tests if one can retrieve and blit its target from the text cache 
 	 * instead of creating, blitting and destroying a Surface just for
 	 * this blit (if the text cache is used; word cache has far
 	 * too few chances of having 'text', it is not interrogated here as a
-	 * shortcut) :
+	 * shortcut):
 	 *
 	 */ 
 	if ( _cacheSettings == TextCached )
@@ -445,11 +448,11 @@ void Font::blitLatin1Text( Surface & targetSurface, Coordinate x, Coordinate y,
 			
 #if OSDL_DEBUG_FONT
 
-			LogPlug::debug( "Font::blitLatin1Text : cache hit, "
+			LogPlug::debug( "Font::blitLatin1Text: cache hit, "
 				"returning clone of prerendered text." ) ;
 			
 			if ( toReturn == 0 )
-				Ceylan::emergencyShutdown( "Font::blitLatin1Text : "
+				Ceylan::emergencyShutdown( "Font::blitLatin1Text: "
 					"clone is not a Surface." ) ;
 					
 #endif // OSDL_DEBUG_FONT
@@ -465,12 +468,12 @@ void Font::blitLatin1Text( Surface & targetSurface, Coordinate x, Coordinate y,
 	
 	/*
 	 * Here we have to ask a full one-shot rendered surface 
-	 * (possibly with cache help) :
+	 * (possibly with cache help):
 	 *
 	 */
 	Surface & res = renderLatin1Text( text, quality, textColor ) ;
 	
-	// Useful for testing : 
+	// Useful for testing: 
 	// res.savePNG( Ceylan::toString( y ) + ".png" ) ;
 	
 	try
@@ -479,8 +482,8 @@ void Font::blitLatin1Text( Surface & targetSurface, Coordinate x, Coordinate y,
 	}
 	catch( const VideoException & e )
 	{
-		// Would not be safe : delete & res ;
-		throw TextException( "Font::blitLatin1Text : blit failed : " 
+		// Would not be safe: delete & res ;
+		throw TextException( "Font::blitLatin1Text: blit failed: " 
 			+ e.toString() ) ;
 	}	
 	
@@ -497,6 +500,11 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 		throw( TextException )
 {
 
+	/*
+	 * @see also Ceylan/trunk/src/code/generic/CeylanTextBuffer.cc
+	 *
+	 */
+	 
 	ColorMask redMask, greenMask, blueMask ;
 	
 	Pixels::getRecommendedColorMasks( redMask, greenMask, blueMask ) ;
@@ -535,13 +543,13 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	
 	/*
 	 * This integer division returns the maximum usable number of lines 
-	 * in this box :
+	 * in this box:
 	 *
 	 */
 	LineNumber maxLines = height / lineSkip ;
 	
 	if ( maxLines == 0 )
-		throw TextException( "Font::renderLatin1MultiLineText : box height ("
+		throw TextException( "Font::renderLatin1MultiLineText: box height ("
 			+ Ceylan::toString( height ) 
 			+ ") is not enough even for one line of text, whose height is "
 			+ Ceylan::toString( lineSkip )  + "." ) ;
@@ -550,9 +558,9 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	
 #if OSDL_DEBUG_FONT
 
-	LogPlug::debug( "Font::renderLatin1MultiLineText : " 
+	LogPlug::debug( "Font::renderLatin1MultiLineText: " 
 		+ Ceylan::toString( maxLines )
-		+ " line(s) available to render following text : '" + text + "'." ) ;
+		+ " line(s) available to render following text: '" + text + "'." ) ;
 		
 #endif // OSDL_DEBUG_FONT
 	
@@ -562,13 +570,13 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	 * should not be enforced here since it would hinder placing the 
 	 * returned surface exactly where appropriate in its container.
 	 *
-	 * Hence disabled : 
+	 * Hence disabled: 
 	 * 'Height lineHeight = ( height - maxLines * lineSkip ) / 2 ;'
 	 *
 	 */
 	Height lineHeight = 0 ; 
 
-	// Each paragraph in turn will be split into a list of words :
+	// Each paragraph in turn will be split into a list of words:
 	list<string> words ;
 	
 	string currentWord ;
@@ -577,22 +585,17 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	
 	Width wordWidth ;
 	const Surface * wordSurface ;
-	
-	Width totalWordWidth ;
-	
-	list<string> wordsOnTheLine ;
-
-	bool lineFull ;
+		
 	
 	/*
 	 * Having a justified text implies that all words in a line of text 
 	 * must be rendered before starting the blits for this line. 
 	 *
 	 * If word or text caches are used, then word renderings are directly
-	 * taken from them : it prevents from creating, rendering and 
+	 * taken from them: it prevents from creating, rendering and 
 	 * destroying uselessly as many surfaces as words.
 	 *
-	 * If no word or text cache is used, these renderings have to be kept
+	 * If no word nor text cache is used, these renderings have to be kept
 	 * nonetheless, whether only a glyph cache is used or not. 
 	 * Therefore a word cache is temporarily used to speed up this 
 	 * two-pass line rendering. 
@@ -610,11 +613,11 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 #if OSDL_DEBUG_FONT
 
 		if ( _textCache != 0 )
-			throw TextException( "Font::renderLatin1MultiLineText : "
+			throw TextException( "Font::renderLatin1MultiLineText: "
 				"unable to create temporary word cache 
 				"since already existing." ) ;
 
-		LogPlug::debug( "Font::renderLatin1MultiLineText : "
+		LogPlug::debug( "Font::renderLatin1MultiLineText: "
 			"creating a temporary word cache" ) ;
 
 #endif // OSDL_DEBUG_FONT
@@ -635,19 +638,25 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
 	words = Ceylan::splitIntoWords( paragraphs.front() ) ;
 	paragraphs.pop_front() ;
+	
 	currentWidth = _alineaWidth ;
 
+	list<string> wordsOnTheLine ;
 
-	// Here we use a (word) cache, and we draw the lines one by one :
+	Width totalWordWidth ;
+
+	bool lineFull ;
+
+	// Here we use a (word) cache, and we draw the lines one by one:
 	for ( TextIndex currentLine = 0; currentLine < maxLines; currentLine++ )
 	{
 
-		// Save current width for later restore :
+		// Save current width for later restore:
 		storedWidth = currentWidth ;
 	
 		/*
 		 * Start from the left edge, and select as many words as possible 
-		 * within this line :
+		 * within this line:
 		 *
 		 */
 		totalWordWidth = 0 ;
@@ -660,7 +669,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
        
 			currentWord = words.front() ;
     	   
-			// Multiple whitespaces in a row can lead to empty words :
+			// Multiple whitespaces in a row can lead to empty words:
 			if ( currentWord.empty() )
 			{
 				wordSurface = 0 ;
@@ -676,8 +685,9 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 			if ( currentWidth + wordWidth <= width ) 
 			{
     	   
-				// Word accepted for this line :
-				renderIndex += static_cast<Text::TextIndex>( currentWord.size() )
+				// Word accepted for this line:
+				renderIndex += 
+					static_cast<Text::TextIndex>( currentWord.size() )
 					+ /* trailing space */ 1 ;
 
 				totalWordWidth += wordWidth ;
@@ -693,7 +703,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 			}
 			else
 			{
-				// With this last word, the line would be too long :
+				// With this last word, the line would be too long:
 				lineFull = true ;
 			}
     							   
@@ -705,7 +715,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 		currentWidth = storedWidth ;
        
 		/*
-		 * Last part of a paragraph should not be justified : it would 
+		 * Last part of a paragraph should not be justified: it would 
 		 * result in huge inter-word spaces, instead the text can stop 
 		 * anywhere before the line's end.
 		 * Hence we check that 'words' is not empty.
@@ -748,7 +758,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 				 * would accumulate if a constant corrected space width 
 				 * was used, and the last word of the line would not end
 				 * perfectly at the end of it, which would lead to a rather
-				 * unpleasant visual effect : the right edge of the text 
+				 * unpleasant visual effect: the right edge of the text 
 				 * would not be vertically aligned.
 				 *
 				 * To correct that, after each word the perfect space width 
@@ -783,7 +793,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 		else 
 		{   
        
-			// We do not justify text here :
+			// We do not justify text here:
     	   
 			for ( list<string>::const_iterator it = wordsOnTheLine.begin();
 				it != wordsOnTheLine.end(); it++ ) 
@@ -814,7 +824,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 			words = Ceylan::splitIntoWords( paragraphs.front() ) ;
 			paragraphs.pop_front() ;
     	   
-			// One empty line between paragraphs :
+			// One empty line between paragraphs:
 			currentLine++ ;
 			lineHeight += lineSkip ;
 			currentWidth = _alineaWidth ;
@@ -834,8 +844,8 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
 #if OSDL_DEBUG_FONT
 
-		LogPlug::debug( "Font::renderLatin1MultiLineText : "
-			"deleting temporary word cache : " + _textCache->toString() ) ;
+		LogPlug::debug( "Font::renderLatin1MultiLineText: "
+			"deleting temporary word cache: " + _textCache->toString() ) ;
 			
 #endif // OSDL_DEBUG_FONT
 		
@@ -845,19 +855,19 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	}
 
 	
-	// No ordinate beyond container height should be retured :
+	// No ordinate beyond container height should be retured:
 	lastOrdinateUsed = lineHeight ;
 	
-	// To inspect justified text :
+	// To inspect justified text:
 	//res.drawEdges() ;
 	
 #if OSDL_DEBUG_FONT
 
 	if ( renderIndex == text.size() )
 		LogPlug::debug( 
-			"Font::renderLatin1MultiLineText : full text fit in box." ) ;
+			"Font::renderLatin1MultiLineText: full text fit in box." ) ;
 	else	
-		LogPlug::debug( "Font::renderLatin1MultiLineText : only " 
+		LogPlug::debug( "Font::renderLatin1MultiLineText: only " 
 			+ Ceylan::toString( renderIndex ) + " characters out of "
 			+ Ceylan::toString( text.size() ) 
 			+ " characters of the full text could be rendered in the box." ) ;
@@ -880,7 +890,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	
 		/*
 		 * We want to keep our colorkey, so we do not choose to add alpha.
-		 * Surface will be RLE encoded here :
+		 * Surface will be RLE encoded here:
 		 *	
 		 */
 		res.convertToDisplay( /* alphaChannelWanted */ false ) ;
@@ -901,7 +911,7 @@ void Font::blitLatin1MultiLineText( Surface & targetSurface,
 
 #if OSDL_DEBUG_FONT
 
-	LogPlug::debug( "Font::blitLatin1MultiLineText : rendering multiline text '"
+	LogPlug::debug( "Font::blitLatin1MultiLineText: rendering multiline text '"
 		+ text + "' on location " + clientArea.toString() + " of target " 
 		+ targetSurface.toString( Ceylan::low ) + "." ) ;
 		
@@ -924,7 +934,7 @@ void Font::blitLatin1MultiLineText( Surface & targetSurface,
 	throw( TextException )
 {
 	
-	// Not used here :
+	// Not used here:
 	Coordinate lastOrdinateUsed ;
 	
 	/*
@@ -946,7 +956,7 @@ void Font::blitLatin1MultiLineText( Surface & targetSurface,
 const string Font::toString( Ceylan::VerbosityLevels level ) const throw()
 { 
 
-	string res = "Rendering style : " ;
+	string res = "Rendering style: " ;
 	
 	if ( _renderingStyle == Normal )
 		res += "normal" ;
@@ -1004,7 +1014,7 @@ const string Font::toString( Ceylan::VerbosityLevels level ) const throw()
 		return res ;	
 		
 		
-	// Cache pointers should be ok, hence are not tested beforehand :
+	// Cache pointers should be ok, hence are not tested beforehand:
 	switch( _cacheSettings )
 	{
 		
@@ -1012,16 +1022,16 @@ const string Font::toString( Ceylan::VerbosityLevels level ) const throw()
 			break ;
 			
 		case GlyphCached:
-			res += ". Glyph cache state is : " 
+			res += ". Glyph cache state is: " 
 				+ _glyphCache->toString( level ) ;
 			break ;
 	
 		case WordCached:
-			res += ". Word cache state is : " + _textCache->toString( level )  ;
+			res += ". Word cache state is: " + _textCache->toString( level )  ;
 			break ;
 	
 		case TextCached:
-			res += ". Text cache state is : " + _textCache->toString( level )  ;
+			res += ". Text cache state is: " + _textCache->toString( level )  ;
 			break ;
 	
 		default:
@@ -1066,12 +1076,12 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 	/*
 	 * The difficulty here is that we cannot know the total width a priori.
 	 *
-	 * Two passes are therefore needed : one to know the size and create 
+	 * Two passes are therefore needed: one to know the size and create 
 	 * the overall surface, the other to blit words onto it.
 	 *
 	 */
 	
-	// Splits text into a list of words :
+	// Splits text into a list of words:
 	list<string> words = Ceylan::split( text, ' ' ) ;
 	
 	
@@ -1079,7 +1089,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 	
 #if OSDL_DEBUG_FONT
 
-	LogPlug::debug( "Font::renderLatin1TextWithWordCached : will render '"
+	LogPlug::debug( "Font::renderLatin1TextWithWordCached: will render '"
 		+ text + "', space width is " + Ceylan::toString( _spaceWidth ) ) ;
 		
 #endif // OSDL_DEBUG_FONT
@@ -1087,8 +1097,8 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 	const Surface * wordRendered ;
 		
 	/*
-	 * First iteration : feeds the cache with word renderings and 
-	 * computes the total width :
+	 * First iteration: feeds the cache with word renderings and 
+	 * computes the total width:
 	 *
 	 */
 	for ( list<string>::const_iterator it = words.begin(); 
@@ -1101,7 +1111,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 #if OSDL_DEBUG_FONT
 
 			LogPlug::debug( 
-				"Font::renderLatin1TextWithWordCached : jumping a space." ) ;
+				"Font::renderLatin1TextWithWordCached: jumping a space." ) ;
 				
 #endif // OSDL_DEBUG_FONT
 
@@ -1111,7 +1121,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 		
 #if OSDL_DEBUG_FONT
 
-		LogPlug::debug( "Font::renderLatin1TextWithWordCached : examining '" 
+		LogPlug::debug( "Font::renderLatin1TextWithWordCached: examining '" 
 			+ (*it) + "'." ) ;
 			
 #endif // OSDL_DEBUG_FONT
@@ -1129,7 +1139,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 	}
 	
 	
-	// We have the final width, let's create the overall surface :
+	// We have the final width, let's create the overall surface:
 	
 	ColorMask redMask, greenMask, blueMask ;
 	Pixels::getRecommendedColorMasks( redMask, greenMask, blueMask ) ;
@@ -1138,7 +1148,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 		currentWidth, getLineSkip() - getDescent(), 32, 
 		redMask, greenMask, blueMask, /* no alpha wanted */ 0 ) ;
 
-	// Avoid messing text color with color key :
+	// Avoid messing text color with color key:
 	Pixels::ColorDefinition colorKey ;
 	
 	if ( Pixels::areEqual( textColor, Pixels::Black, /* use alpha */ false ) )
@@ -1163,7 +1173,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 	currentWidth = 0 ;
 		
 	/*
-	 * Second iteration : blit the word renderings. 
+	 * Second iteration: blit the word renderings. 
 	 *
 	 * Surfaces from first iteration could have been stored to save 
 	 * the efforts needed to find them in cache, but depending on the 
@@ -1183,7 +1193,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 		
 #if OSDL_DEBUG_FONT
 
-		LogPlug::debug( "Font::renderLatin1TextWithWordCached : blitting '" 
+		LogPlug::debug( "Font::renderLatin1TextWithWordCached: blitting '" 
 			+ (*it) + "'." ) ;
 			
 #endif // OSDL_DEBUG_FONT
@@ -1202,7 +1212,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 	
 	/*
 	 * Uncomment next line to debug computation of bounding boxes for 
-	 * renderings :
+	 * renderings:
 	 *
 	 */
 	//res.drawEdges() ;
@@ -1212,7 +1222,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 	
 		/*
 		 * We want to keep our colorkey, so we do not choose to add alpha.
-		 * Surface will be RLE encoded here :
+		 * Surface will be RLE encoded here:
 		 *	
 		 */
 		res.convertToDisplay( /* alphaChannelWanted */ false ) ;
@@ -1237,7 +1247,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithTextCached(
 	
 	/*
 	 * First check that the text-quality-color combination is not already
-	 * available in cache :
+	 * available in cache:
 	 *
 	 */
 		
@@ -1253,11 +1263,11 @@ OSDL::Video::Surface & Font::renderLatin1TextWithTextCached(
 		 
 #if OSDL_DEBUG_FONT
 
-		LogPlug::debug( "Font::renderLatin1TextWithTextCached : cache hit, "
+		LogPlug::debug( "Font::renderLatin1TextWithTextCached: cache hit, "
 			"returning clone of prerendered text." ) ;
 			
 		if ( returned == 0 )
-			Ceylan::emergencyShutdown( "Font::renderLatin1TextWithTextCached : "
+			Ceylan::emergencyShutdown( "Font::renderLatin1TextWithTextCached: "
 				"clone is not a Surface." ) ;
 				
 #endif // OSDL_DEBUG_FONT
@@ -1267,14 +1277,14 @@ OSDL::Video::Surface & Font::renderLatin1TextWithTextCached(
 	}	
 	
 #if OSDL_DEBUG_FONT
-	LogPlug::debug( "Font::renderLatin1TextWithTextCached : "
+	LogPlug::debug( "Font::renderLatin1TextWithTextCached: "
 		"cache miss, creating new text rendering." ) ;
 #endif // OSDL_DEBUG_FONT
 		
-	// Here it its a cache miss, we therefore have to generate the text :
+	// Here it its a cache miss, we therefore have to generate the text:
 	Surface & newSurface = basicRenderLatin1Text( text, quality, textColor ) ;
 		
-	// Give the cache a chance of being fed :		
+	// Give the cache a chance of being fed:		
 	_textCache->scanForAddition( renderKey, newSurface ) ;
 		
 	return newSurface  ; 
@@ -1290,17 +1300,17 @@ void Font::blitLatin1Word( Surface & targetSurface, Coordinate x, Coordinate y,
 
 
 	/*
-	 * We do not expect a given word to be already in cache if text-cached : 
+	 * We do not expect a given word to be already in cache if text-cached: 
 	 * OSDL_WORD_LOOKUP_IN_TEXT_CACHE is not defined by default.
 	 *
-	 * Hence there are two different cases : either we are word-cached, 
+	 * Hence there are two different cases: either we are word-cached, 
 	 * and we may have a rendering in cache, or not.
 	 *
 	 */
 	 
 	/*
 	 * Uncomment to search in text cache too 
-	 * (not recommended since not more efficient) : 
+	 * (not recommended since not more efficient): 
 	 *
 	 */
 	//#define OSDL_WORD_LOOKUP_IN_TEXT_CACHE
@@ -1318,7 +1328,7 @@ void Font::blitLatin1Word( Surface & targetSurface, Coordinate x, Coordinate y,
 	}
 	else
 	{
-		// Here we cannot cache words, we blit it as directly as possible :
+		// Here we cannot cache words, we blit it as directly as possible:
 		basicRenderLatin1Text( word, quality, wordColor ).blitTo( 
 			targetSurface, x, y ) ;
 	}
@@ -1328,7 +1338,7 @@ void Font::blitLatin1Word( Surface & targetSurface, Coordinate x, Coordinate y,
 
 /*
  * This method cannot exist since the caller should never have to deallocate 
- * the returned surface :
+ * the returned surface:
  *
 const OSDL::Video::Surface & Font::getConstRenderingForLatin1Word( 
 	const std::string & word,
@@ -1370,12 +1380,12 @@ const OSDL::Video::Surface & Font::getConstLatin1WordFromCache(
 		
 #if OSDL_DEBUG_FONT
 
-		LogPlug::debug( "Font::getConstLatin1WordFromCache : "
+		LogPlug::debug( "Font::getConstLatin1WordFromCache: "
 			"cache hit for '" + word 
 			+ "', returning 'const' prerendered word." ) ;
 			
 		if ( wordSurface == 0 )
-			Ceylan::emergencyShutdown( "Font::getConstLatin1WordFromCache : "
+			Ceylan::emergencyShutdown( "Font::getConstLatin1WordFromCache: "
 				"cache did not return a Surface." ) ;
 				
 #endif // OSDL_DEBUG_FONT
@@ -1386,13 +1396,13 @@ const OSDL::Video::Surface & Font::getConstLatin1WordFromCache(
 
 #if OSDL_DEBUG_FONT
 
-	LogPlug::debug( "Font::getConstLatin1WordFromCache : "
+	LogPlug::debug( "Font::getConstLatin1WordFromCache: "
 		"cache miss for '" + word 
 		+ "', rendering it and submitting it to cache." ) ;
 		
 #endif // OSDL_DEBUG_FONT
 	
-	// Here we know the word rendering is not in cache, we need to put it in :	
+	// Here we know the word rendering is not in cache, we need to put it in:	
 	Surface & wordSurface = basicRenderLatin1Text( word, quality, wordColor ) ;
 		
 	try
@@ -1403,16 +1413,16 @@ const OSDL::Video::Surface & Font::getConstLatin1WordFromCache(
 	{
 	
 		/*
-		 * This really should never happen : we know this word rendering 
+		 * This really should never happen: we know this word rendering 
 		 * is not in cache.
 		 *
 		 */
-		throw TextException( "Font::getConstLatin1WordFromCache : "
-			"cache submitting failed (abnormal) : " + e.toString() ) ;
+		throw TextException( "Font::getConstLatin1WordFromCache: "
+			"cache submitting failed (abnormal): " + e.toString() ) ;
 
 	}
 	
-	// Cache still owns that (const) surface :		
+	// Cache still owns that (const) surface:		
 	return wordSurface ;
 
 }	
@@ -1431,13 +1441,13 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 
 #if OSDL_DEBUG_FONT
 
-	LogPlug::debug( "Font::basicRenderLatin1Text : rendering '" 
+	LogPlug::debug( "Font::basicRenderLatin1Text: rendering '" 
 		+ text + "'." ) ;
 		
-	LogPlug::debug( "Font::basicRenderLatin1Text : line skip is " 
+	LogPlug::debug( "Font::basicRenderLatin1Text: line skip is " 
 		+ Ceylan::toString( lineSkip ) ) ;
 		
-	LogPlug::debug( "Font::basicRenderLatin1Text : ascent is " 
+	LogPlug::debug( "Font::basicRenderLatin1Text: ascent is " 
 		+ Ceylan::toString( ascent ) ) ;
 		
 #endif // OSDL_DEBUG_FONT
@@ -1446,16 +1456,16 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 
 
 	/*
-	 * When adding a letter y after a letter x, y has to be drawn at : 
+	 * When adding a letter y after a letter x, y has to be drawn at: 
 	 * abscissa of x plus x's advance, so that if x leaves room in the 
 	 * baseline, y can start as left as possible, even if x spreads on the 
-	 * right of the position where y starts (ex : if x is a capital 'L' whose
+	 * right of the position where y starts (ex: if x is a capital 'L' whose
 	 * bottom line goes under the baseline).
 	 *
 	 * However when a letter is the last in a surface, one should use its 
 	 $ width instead of its advance, so that the letter is not truncated. 
 	 * Moreover, the (n-1) letter might spread more to the right than the 
-	 * n one (ex : 'y.', the dot can be placed at the left of the rightmost
+	 * n one (ex: 'y.', the dot can be placed at the left of the rightmost
 	 * branch of the 'y'), so the best solution is to record max width 
 	 * at each step (instead of replacing the advance by the width for the 
 	 * last glyph).
@@ -1472,7 +1482,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	Length             currentAdvance ;
 	
 	/*
-	 * First iteration : guess width and height of the resulting surface :
+	 * First iteration: guess width and height of the resulting surface:
 	 * (widths are stored for later use)
 	 *
 	 */
@@ -1484,7 +1494,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 		currentAdvance = getAdvance( currentChar ) ;
 		
 		/*
-		 * First letters may have a negative offset that should be corrected :
+		 * First letters may have a negative offset that should be corrected:
 		 * (otherwise leftmost part of first letter could be truncated)
 		 *
 		 */
@@ -1494,7 +1504,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 			
 			firstLetter = false ;
 			
-			// Uses 0 instead of currentOffset :			
+			// Uses 0 instead of currentOffset:			
 			horizSteps[charCount] = 0 ;
 			
 		}
@@ -1514,18 +1524,18 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 				
 #if OSDL_DEBUG_FONT
 
-		LogPlug::debug( "Font::basicRenderLatin1Text : adding " 
+		LogPlug::debug( "Font::basicRenderLatin1Text: adding " 
 			+ Ceylan::toString( currentAdvance ) 
 			+ " width for char '" +  Ceylan::toString( currentChar ) + "'" ) ;
 			
 #endif // OSDL_DEBUG_FONT
 				
-		// The new real abscissa than can be written is : 
+		// The new real abscissa than can be written is: 
 		width += currentAdvance ;
 					
 		/*
 		 * Previously using next addition, which leads to too much space 
-		 * between letters and not to compact uppercase letters (ex : 'OSDL')
+		 * between letters and not to compact uppercase letters (ex: 'OSDL')
 		 * whereas they should be 
 		 * (see with cursive fonts with really wide uppercase glyphs, such 
 		 * as 'cretino.ttf').
@@ -1536,7 +1546,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	}
 	
 	/*
-	 * Retrieves the rightmost abscissa that could be drawn :  
+	 * Retrieves the rightmost abscissa that could be drawn:  
 	 * (character width should be used instead of advance so that its 
 	 * rightmost part is not truncated).
 	 *
@@ -1546,7 +1556,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 			
 #if OSDL_DEBUG_FONT
 
-	LogPlug::debug( "Font::basicRenderLatin1Text : text width will be " 
+	LogPlug::debug( "Font::basicRenderLatin1Text: text width will be " 
 		+ Ceylan::toString( maxWidth ) 
 		+ ", height will be " + Ceylan::toString( lineSkip ) + "." ) ;
 		 
@@ -1554,7 +1564,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	
 	/*
 	 * Must be filled with glyphs now 
-	 * (lineskip is used to avoid complex blits of lines) :
+	 * (lineskip is used to avoid complex blits of lines):
 	 *
 	 */
 
@@ -1573,11 +1583,11 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	{
 		delete [] horizSteps ;
 		throw TextException( 
-			"Font::basicRenderLatin1Text : surface creation failed : "
+			"Font::basicRenderLatin1Text: surface creation failed: "
 			+ e.toString() ) ;
 	}
 	
-	// Avoid messing text color with color key :
+	// Avoid messing text color with color key:
 	Pixels::ColorDefinition colorKey ;
 	
 	if ( Pixels::areEqual( textColor, Pixels::Black, /* use alpha */ false ) )
@@ -1596,7 +1606,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	}	
 
 	
-	// Second pass : actual rendering :
+	// Second pass: actual rendering:
 	charCount = 0 ;
 	
 	for ( string::const_iterator it = text.begin(); it != text.end(); it++ )
@@ -1605,7 +1615,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 		
 #if OSDL_DEBUG_FONT
 
-		LogPlug::debug( "Font::basicRenderLatin1Text : rendering '" 
+		LogPlug::debug( "Font::basicRenderLatin1Text: rendering '" 
 			+ Ceylan::toString( currentChar )
 			+ "' at width "  + Ceylan::toString( horizSteps[charCount] )
 			+ ", at height " 
@@ -1631,7 +1641,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	
 		/*
 		 * We want to keep our colorkey, so we do not choose to add alpha.
-		 * Surface will be RLE encoded here :
+		 * Surface will be RLE encoded here:
 		 *	
 		 */
 		res->convertToDisplay( /* alphaChannelWanted */ false ) ;
@@ -1639,7 +1649,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	
 	/*
 	 * Uncomment next line to debug computation of bounding boxes for 
-	 * renderings :
+	 * renderings:
 	 *
 	 */
 	//res->drawEdges() ;
