@@ -4,11 +4,11 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2003, December 19.
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2003, December 19.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -40,21 +40,21 @@
 <h2>Overview</h2>
 
 <p>
-The intended public for this document is OSDL <b>developers</b>, i.e. working on the library itself : OSDL <b>users</b> ought to refer to the <a href="OSDL-userguide.html">OSDL User Guide</a>.
+The intended public for this document is OSDL <b>developers</b>, i.e. working on the library itself: OSDL <b>users</b> ought to refer to the <a href="OSDL-userguide.html">OSDL User Guide</a>.
 </p>
 
 <p>This developer's guide is still to be written, however here are a few hints about OSDL's inner working.</p>
 
   
-<p>See also : <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html" target="_blank">Ceylan developer's guide</a> for common informations.
+<p>See also: <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html" target="_blank">Ceylan developer's guide</a> for common informations.
 </p>
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
-Note : this documentation is quite deprecated, it would need some serious update and rewriting.
+Note: this documentation is quite deprecated, it would need some serious update and rewriting.
             </div>
           </td>
         </tr>
@@ -87,16 +87,16 @@ Note : this documentation is quite deprecated, it would need some serious update
  
 <h3>Overall conventions</h3>
 <p>
-For some transverse subjects, such as the anti-aliasing mode (wanted or not), at least two ways of managing these informations were possible, having them static or not :
+For some transverse subjects, such as the anti-aliasing mode (wanted or not), at least two ways of managing these informations were possible, having them static or not:
 <ul>
-	<li>If they were <b>static</b> to their module (ex : VideoModule), then their access would be easy, but if this module which behaves like a singleton was finally due to be able to be instanciated multiple times (ex : if the video back-end allowed, with its upcoming version, to open multiple windows), then some rewriting would have to be done</li>
+	<li>If they were <b>static</b> to their module (ex: VideoModule), then their access would be easy, but if this module which behaves like a singleton was finally due to be able to be instanciated multiple times (ex: if the video back-end allowed, with its upcoming version, to open multiple windows), then some rewriting would have to be done</li>
 	<li>If they were <b>non-static</b>, then they would be relative to a particular module (instance members of that object), which would gracefully scale if, instead of one, there were two or more of these modules. However, each time one of the overall attributes is to be used, instead of being simply referenced thanks to a global symbol (say, <code>OSDL::VideoModule::GetAntialiasingState</code>), a specific instance of a module would have  to be used and, therefore, passed in some way to its caller. It would imply adding arguments to most methods or, preferably, use a kind of state machine where, unless specified otherwise, there would be a current instance of module to which operations would be applied.</li>
 </ul>
 
 </p>
 
 <p>
-The first solution was preferred, since the 'singleton to many instances' transition could be performed with a state machine indeed, but the call to static methods could handle that internally without needing to perform tremendous changes in the code that uses these features : that change could be transparent for user code.
+The first solution was preferred, since the 'singleton to many instances' transition could be performed with a state machine indeed, but the call to static methods could handle that internally without needing to perform tremendous changes in the code that uses these features: that change could be transparent for user code.
 </p>
   
 <h4>Endianness (byte order)</h4>
@@ -118,7 +118,7 @@ The endianness of the system is detected at <b>compile-time</b> (<code>#if SDL_B
 <h3>Releasing a new OSDL version</h3>
 <p>
 First of all, the 
-<a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html#release-before" target="_blank">Ceylan release guide</a> should be applied in the OSDL context as well. Additional actions are :
+<a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html#release-before" target="_blank">Ceylan release guide</a> should be applied in the OSDL context as well. Additional actions are:
 <ul>
 
 <!--
@@ -132,10 +132,10 @@ First of all, the
 </p>
 
 <p>
-As for SVN, it leads to a tag command like :
+As for SVN, it leads to a tag command like:
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -151,17 +151,17 @@ svn copy https://osdl.svn.sourceforge.net/svnroot/osdl/OSDL/trunk https://osdl.s
 </p>
 
 <p>
-Here is an example template for the osdl-announces@lists.sourceforge.net list :
+Here is an example template for the osdl-announces@lists.sourceforge.net list:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
 <code><pre>
-Subject : 
+Subject: 
 OSDL 0.5 released !
 
-Body :
+Body:
 
 Hi,
 
@@ -172,7 +172,7 @@ OSDL 0.5 is for the moment GNU/Linux only, and offers about the same features as
 OSDL 0.5 is somewhat an intermediary version, between the 0.4 which was truely ancient (dated back to 2005 Q3), and the upcoming OSDL versions, that should add the Windows XP support and the XML management with OpenGL of tilesets for animated sprites.
 
 
-Main OSDL 0.5 changes are :
+Main OSDL 0.5 changes are:
 
 	* SVN used instead of CVS
 	
@@ -184,7 +184,7 @@ Main OSDL 0.5 changes are :
 
 	* numerous tests improved (full test suite added), and many bugs fixed
 
-Feel free to download latest LOANI archive (ex :
+Feel free to download latest LOANI archive (ex:
 http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.bz2) to test OSDL 0.5.
        
 Support available through the osdl-support@lists.sourceforge.net mailing list.
@@ -204,9 +204,9 @@ Wondersye, on Friday, March 30, 2007.
 </center>
 </p>
 
-<p>The corresponding news item could be :
+<p>The corresponding news item could be:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -214,14 +214,14 @@ Wondersye, on Friday, March 30, 2007.
 Summary: 
 OSDL 0.5 released ! 
 
-Body :
+Body:
 we are proud to announce the 0.5.0 version of the OSDL library.
 
 OSDL 0.5 is for the moment GNU/Linux only, and offers about the same features as the 0.4 version, but its build system has been completely revamped.
 
 OSDL 0.5 is somewhat an intermediary version, between the 0.4 which was truely ancient (dated back to 2005 Q3), and the upcoming OSDL versions, that should add the Windows XP support and the XML management with OpenGL of tilesets for animated sprites.
 
-Main OSDL 0.5 changes are :
+Main OSDL 0.5 changes are:
 
 	* SVN used instead of CVS
 	
@@ -233,7 +233,7 @@ Main OSDL 0.5 changes are :
 
 	* numerous tests improved (full test suite added), and many bugs fixed
 
-Feel free to download latest LOANI archive (ex :
+Feel free to download latest LOANI archive (ex:
 http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.bz2) to test OSDL 0.5.
        
 Support available through the osdl-support@lists.sourceforge.net mailing list.
@@ -270,7 +270,7 @@ Follow again the <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-dev
 <a name="customization"></a>
 <h2>Customization</h2>
 <p>
-To use another version of gcc than the one OSDL selected (use <code>make checktools</code> to check which would be used by default), redefine <code>GCC_ROOT</code> make variable so that it points to the compiler you want to use. Ex : if one wants to use the gcc compiler installed under <code>/usr/local</code> (i.e. <code>/usr/local/bin</code> for gcc executables and <code>/usr/local/lib</code> for its libraries), one would use : <code>make all GCC_ROOT=/usr/local</code>. If GCC_ROOT is not redefined, and if with its default value (GCC_ROOT being the directory where OSDL and Ceylan were extracted, i.e. <code>GCC_ROOT = OSDL/OSDL-x.y/src/../../..</code>) no compiler can be found, then it will be searched through the PATH. If gcc is to be found in the PATH, its corresponding libraries are supposed to be found in the LD_LIBRARY_PATH environment variable.
+To use another version of gcc than the one OSDL selected (use <code>make checktools</code> to check which would be used by default), redefine <code>GCC_ROOT</code> make variable so that it points to the compiler you want to use. Ex: if one wants to use the gcc compiler installed under <code>/usr/local</code> (i.e. <code>/usr/local/bin</code> for gcc executables and <code>/usr/local/lib</code> for its libraries), one would use: <code>make all GCC_ROOT=/usr/local</code>. If GCC_ROOT is not redefined, and if with its default value (GCC_ROOT being the directory where OSDL and Ceylan were extracted, i.e. <code>GCC_ROOT = OSDL/OSDL-x.y/src/../../..</code>) no compiler can be found, then it will be searched through the PATH. If gcc is to be found in the PATH, its corresponding libraries are supposed to be found in the LD_LIBRARY_PATH environment variable.
 </p>
 
 
@@ -284,7 +284,23 @@ To use another version of gcc than the one OSDL selected (use <code>make checkto
 
 <a name="hints"></a> 
 <h2>Random hints</h2>
-  
+ 
+<h3>Retrieving cutting-edge OSDL code</h3>
+<p> One should get latest OSDL sources from SVN:
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+svn [--username YourSFUserName] co https://osdl.svn.sourceforge.net/svnroot/osdl osdl
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
 <h3>Compilation flags</h3>
 
 <h4>Meaning</h4>
@@ -353,13 +369,13 @@ With many projects, fine tuning of installation settings is difficult since usua
 <p>For example, often the configure step determines which series of library names and locations should be used. Too often, there is no way for the user to define his settings and to <b>add</b> directly what lacks.
 </p>
 
-<p>For example, users need to be able to add to LDFLAGS the following : <code>-L&lt;a path&gt; -l&lt;a library&gt;</code>. Unfortunately, they cannot use <code>make LDFLAGS="-L&lt;a path&gt; -l&lt;a library&gt;"</code> since LDFLAGS is used by most project, and it would erase any previous information hardcoded in LDFLAGS.</p>
+<p>For example, users need to be able to add to LDFLAGS the following: <code>-L&lt;a path&gt; -l&lt;a library&gt;</code>. Unfortunately, they cannot use <code>make LDFLAGS="-L&lt;a path&gt; -l&lt;a library&gt;"</code> since LDFLAGS is used by most project, and it would erase any previous information hardcoded in LDFLAGS.</p>
 
 <p>An unsatisfying solution would be to take LDFLAGS's hardcoded value, to add the settings the user wants to add, and to define a full new LDFLAGS value, which would contain both informations, from the command line. This solution is a bad idea, since the hardcoded value, often set by the configure step, depends on the platform, therefore the user fix would break portability.
 </p>
 
 <p>
-To overcome this issue, we chose deliberatly not to use in OSDL internals the following variables :
+To overcome this issue, we chose deliberatly not to use in OSDL internals the following variables:
 <ul>
 	<li><code>INC</code></li>
 	<li><code>DFLAGS</code></li>
@@ -367,8 +383,8 @@ To overcome this issue, we chose deliberatly not to use in OSDL internals the fo
 	<li><code>LDFLAGS</code></li>
 	<li><code>OPT</code></li>
 </ul>
-  but to leave them blank (ex : <code>LDFLAGS=</code>) and
-to make us of variables with the same names, but suffixed with <code>_PRIV</code>, which stands for "private to the project" (ex : <code>LDFLAGS_PRIV</code>).
+  but to leave them blank (ex: <code>LDFLAGS=</code>) and
+to make us of variables with the same names, but suffixed with <code>_PRIV</code>, which stands for "private to the project" (ex: <code>LDFLAGS_PRIV</code>).
 </p>
 
 <p>
@@ -384,9 +400,9 @@ This procedure applies for the Ceylan library as well.
 
 <h3>Build messages</h3>
 <p>
-One should not be afraid of those libtool warnings for various libraries :
+One should not be afraid of those libtool warnings for various libraries:
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -407,7 +423,7 @@ For the moment, we did not manage to get rid of these messages, but they do not 
 <h3>Filenames</h3>
 
   <p>The library itself, whether downloaded as binary or rebuilt from
-  sources, is named :</p>
+  sources, is named:</p>
 
   <ul>
     <li><strong>libOSDL.so.0.0.5</strong>, it is the full shared
@@ -441,7 +457,7 @@ By sourcing this script, you set your shell environment so that all LOANI instal
 
 <h3>Debugging rendering code</h3>
 <p>
-When developing code that performs rendering, it is often difficult to know what is exactly drawn in each step, or what might be the culprit of an unintended behaviour : the graphic system (OSDL) or the user program performing the actual rendering ? One very easy way to tell it is to use the screenshot generating capabilities of the <code>Surface</code> class. For example, using <code>Surface::savePNG</code> allows to freeze graphics being generated at runtime, in order to understand what happens actually.
+When developing code that performs rendering, it is often difficult to know what is exactly drawn in each step, or what might be the culprit of an unintended behaviour: the graphic system (OSDL) or the user program performing the actual rendering ? One very easy way to tell it is to use the screenshot generating capabilities of the <code>Surface</code> class. For example, using <code>Surface::savePNG</code> allows to freeze graphics being generated at runtime, in order to understand what happens actually.
 </p>
 
 
@@ -469,8 +485,7 @@ The build of tests is split from library's build, since we designed these tests 
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update : Friday, March 30, 2007
-</em>
+    <em>Last update: Tuesday, August 7, 2007</em>
   </center>
 </body>
 </html>
