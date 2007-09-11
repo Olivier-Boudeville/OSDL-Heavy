@@ -22,7 +22,7 @@ namespace OSDL
 	 * version expected by a user program is found in this OSDL header file,
 	 * according to the version being used to compile it.
 	 *
-	 * Use this macro in your application that way : 
+	 * Use this macro in your application that way: 
 	 * 'CHECK_OSDL_VERSIONS() ;'
 	 * for example in the first lines of your 'main' function. Of course the 
 	 * main OSDL header file ('OSDL.h') should have been included
@@ -92,14 +92,14 @@ namespace OSDL
 	 * From this common module, all other modules can be triggered.
 	 *
 	 */
-	class OSDL_DLL CommonModule : public Ceylan::Module
+	class OSDL_DLL CommonModule: public Ceylan::Module
 	{
 
 
 
 		/**
 		 * This friend function is intended to be the initial means of getting
-		 * a reference to the common module : this is the entry point to 
+		 * a reference to the common module: this is the entry point to 
 		 * the whole OSDL system.
 		 *
 		 * @param flags The requested flags for this common root module, 
@@ -156,7 +156,7 @@ namespace OSDL
 		public:
 		
 		
-			/// Data type of back-end return code :
+			/// Data type of back-end return code:
 			typedef Ceylan::Sint32 BackendReturnCode ;
 
 
@@ -167,7 +167,7 @@ namespace OSDL
 			/**
 			 * Exported logical value for back-end success/
 			 *
-			 * Prefer only testing against SDLSuccess :
+			 * Prefer only testing against SDLSuccess:
 			 * <code>if ( [...] != BackendSuccess ) ...</code>
 			 *
 			 */
@@ -394,20 +394,25 @@ namespace OSDL
 			/// Pointer to the current video module used, if any.
 			Video::VideoModule * _video ;
 			
+			
 			/// Pointer to the current events module used, if any.			
 			Events::EventsModule * _events ;			
+			
 			
 			/// Pointer to the current video module used, if any.
 			Audio::AudioModule * _audio ;
 			
+			
 			/// Flags used for this common module.
 			Ceylan::Flags _flags ;	
+			
 			
 			/// Pointer to the current CD-ROM drive handler used, if any.
 			CDROMDriveHandler * _cdromHandler ;
 			
 			
-			// Static attributes :	
+			
+			// Static attributes:	
 
 
 			/// Tells whether the back-end used by OSDL is initialized.
