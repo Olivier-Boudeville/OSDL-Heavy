@@ -4,14 +4,14 @@
 # scripts.
 
 # When the version of a tool is changed in trunk/src/conf/OSDLSettings.inc,
-# the corresponding section must be updated here (ex : for the MD5 code).
+# the corresponding section must be updated here (ex: for the MD5 code).
 
 
 
-# ----------- For required tools :
+# ----------- For required tools:
 
 
-# SDL : http://www.libsdl.org
+# SDL: http://www.libsdl.org
 
 SDL_VERSION="@SDL_RECOMMENDED_VERSION@"
 SDL_ARCHIVE="SDL-$SDL_VERSION.tar.gz"
@@ -27,7 +27,7 @@ SDL_win_MD5="4c4a9b60902c5beae74658a65c3d45c3"
 
 
 
-# JPEG library (libjpeg.so) : http://www.ijg.org/
+# JPEG library (libjpeg.so): http://www.ijg.org/
 
 libjpeg_VERSION="6b"
 libjpeg_ARCHIVE="jpegsrc.v${libjpeg_VERSION}.tar.gz"
@@ -42,7 +42,7 @@ libjpeg_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
 libjpeg_win_MD5="dbd5f3b47ed13132f04c685d608a7547"
 
 
-# zlib library (libzlib.a) : http://www.zlib.net/
+# zlib library (libzlib.a): http://www.zlib.net/
 
 zlib_VERSION="1.2.3"
 zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.bz2"
@@ -58,7 +58,7 @@ zlib_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
 zlib_win_MD5="abbd0f2b456206da5e3ffd179324413a"
 
 
-# PNG library (libpng.so) : http://www.libpng.org/pub/png/libpng.html
+# PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
@@ -76,8 +76,8 @@ libpng_win_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
 libpng_win_MD5="22972ffdb38a7424af0c53f49ed46698"
 
 
-# TIFF library (libtiff.so) : http://www.remotesensing.org/libtiff/
-# (TIFF support for OSDL not maintained anymore : use PNG or JPEG instead)
+# TIFF library (libtiff.so): http://www.remotesensing.org/libtiff/
+# (TIFF support for OSDL not maintained anymore: use PNG or JPEG instead)
 libtiff_VERSION="3.7.3"
 libtiff_ARCHIVE="tiff-v${libtiff_VERSION}.tar.gz"
 libtiff_DOWNLOAD_LOCATION="ftp://ftp.remotesensing.org/pub/libtiff/"
@@ -86,7 +86,7 @@ libtiff_MD5="xxx"
 
 
 
-# SDL_image : http://www.libsdl.org/projects/SDL_image/release/
+# SDL_image: http://www.libsdl.org/projects/SDL_image/release/
 
 SDL_image_VERSION="@SDL_IMAGE_RECOMMENDED_VERSION@"
 SDL_image_ARCHIVE="SDL_image-${SDL_image_VERSION}.tar.gz"
@@ -104,7 +104,7 @@ SDL_image_win_MD5="0755ec442ac242d6703384c9a78e7247"
 # SDL_image pre-built archives
 
 
-# Precompiled binaries of SDL_image, zlib, jpeg, png for Windows :
+# Precompiled binaries of SDL_image, zlib, jpeg, png for Windows:
 # http://www.libsdl.org/projects/SDL_image/release/
 
 SDL_image_win_precompiled_VERSION=1.2.4
@@ -114,7 +114,7 @@ SDL_image_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_image_win_precompiled_MD5=""
 
 
-# Precompiled binaries of SDL_image, zlib, jpeg, png for Mac OS X : http://www.libsdl.org/projects/SDL_image/release/
+# Precompiled binaries of SDL_image, zlib, jpeg, png for Mac OS X: http://www.libsdl.org/projects/SDL_image/release/
 
 SDL_image_osx_precompiled_VERSION=1.2.4-1
 SDL_image_osx_precompiled_ARCHIVE="SDL_image-devel-${SDL_image_osx_precompiled_VERSION}.ppc.rpm"
@@ -124,7 +124,7 @@ SDL_image_osx_precompiled_MD5=""
 
 
 
-# SDL_gfx (libSDL_gfx.so) : http://www.ferzkopp.net/Software/SDL_gfx-2.0/
+# SDL_gfx (libSDL_gfx.so): http://www.ferzkopp.net/Software/SDL_gfx-2.0/
 # No binaries available !
 
 SDL_gfx_MAJOR_VERSION="@SDL_GFX_MAJOR_VERSION@"
@@ -141,7 +141,7 @@ SDL_gfx_win_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_gfx_win_MD5="22dc2d9d916197829f9342c490d2d02b"
 
 
-# Freetype (libfreetype.so) : http://freetype.sourceforge.net
+# Freetype (libfreetype.so): http://freetype.sourceforge.net
 
 # Sources.
 
@@ -162,7 +162,7 @@ freetype_win_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/
 freetype_win_MD5="1a6c59a7723d637c78672e7784da865d"
 
 # Precompiled binaries of freetype for Windows.
-# See : http://gnuwin32.sourceforge.net/packages/freetype.htm
+# See: http://gnuwin32.sourceforge.net/packages/freetype.htm
 freetype_win_precompiled_VERSION="2.2.1"
 freetype_win_precompiled_ARCHIVE="freetype-${freetype_VERSION}-1-bin.zip"
 freetype_win_precompiled_ARCHIVE_SECOND="freetype-${freetype_VERSION}-1-lib.zip"
@@ -181,7 +181,7 @@ freetype_osx_precompiled_MD5="xxx"
 
 
 
-# SDL_ttf (libSDL_ttf.so) : http://www.libsdl.org/projects/SDL_ttf/
+# SDL_ttf (libSDL_ttf.so): http://www.libsdl.org/projects/SDL_ttf/
 
 # Sources.
  
@@ -216,7 +216,7 @@ SDL_ttf_osx_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_ttf_osx_precompiled_MD5="xxx"
 
 
-# libvorbis (libvorbis.so) : http://www.xiph.org/vorbis/
+# libvorbis (libvorbis.so): http://www.xiph.org/vorbis/
 # (this ogg/vorbis order must be respected as ogg section uses vorbis variable)
 
 libvorbis_VERSION="1.1.2"
@@ -232,7 +232,7 @@ libvorbis_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorb
 libvorbis_win_MD5="e014f9bc80de7cf70ab7d42eb6e29402"
 
 
-# libogg (libogg.so) : http://www.xiph.org/ogg/
+# libogg (libogg.so): http://www.xiph.org/ogg/
 
 libogg_VERSION="1.1.3"
 libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.gz"
@@ -248,7 +248,7 @@ libogg_win_MD5="d4a0364e7ea34803ccde8f37e4b21bc2"
 
 
 
-# SDL_mixer (libSDL_mixer.so) : http://www.libsdl.org/projects/SDL_mixer/
+# SDL_mixer (libSDL_mixer.so): http://www.libsdl.org/projects/SDL_mixer/
 
 SDL_mixer_VERSION="1.2.7"
 SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
@@ -265,7 +265,7 @@ SDL_mixer_win_MD5="1b78fa15240ed14dc756f3168b757ccd"
 # Nintendo DS section.
 
 
-# DLDI tool and device patches : http://dldi.drunkencoders.com/
+# DLDI tool and device patches: http://dldi.drunkencoders.com/
 
 #dlditool_VERSION=""
 dlditool_ARCHIVE="Dlditool-linux-x86.zip"
@@ -273,13 +273,29 @@ dlditool_DOWNLOAD_LOCATION="http://dldi.drunkencoders.com/uploads/a/ab"
 dlditool_ALTERNATE_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
 dlditool_MD5="2bd98c3c2edd2c20f11d18f18446b89b"
 
-dldi_patch_ARCHIVE="Sclt.dldi"
-dldi_patch_DOWNLOAD_LOCATION="http://dldi.drunkencoders.com/uploads/c/c6"
-dldi_patch_ALTERNATE_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
-dldi_patch_MD5="54f7b7fb323466202e19815b7bf1a81c"
+
+# DLDI patch for SuperCard:
+dldi_patch_sc_ARCHIVE="Sclt.dldi"
+dldi_patch_sc_DOWNLOAD_LOCATION="http://dldi.drunkencoders.com/uploads/c/c6"
+dldi_patch_sc_ALTERNATE_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
+dldi_patch_sc_MD5="54f7b7fb323466202e19815b7bf1a81c"
 
 
-# devkitARM : http://www.devkitpro.org/category/devkitarm/
+# DLDI patch for R4DS/M3 Simply:
+dldi_patch_r4_ARCHIVE="R4tf.dldi"
+dldi_patch_r4_DOWNLOAD_LOCATION="http://dldi.drunkencoders.com/uploads/0/03"
+dldi_patch_r4_ALTERNATE_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
+dldi_patch_r4_MD5="7070791d23ae5c92f7e4115f76e8a52d"
+
+
+# DLDI patch to be used with NoCashGBA emulator:
+dldi_patch_fcsr_ARCHIVE="fcsrDLDI.zip"
+dldi_patch_fcsr_DOWNLOAD_LOCATION="http://gpf.dcemu.co.uk/files/pc"
+dldi_patch_fcsr_MD5="b92ed16b14d7c4dc813ed26bbe4b5cb8"
+
+
+
+# devkitARM: http://www.devkitpro.org/category/devkitarm/
 
 devkitARM_VERSION="20"
 devkitARM_ARCHIVE="devkitARM_r${devkitARM_VERSION}-linux.tar.bz2"
@@ -288,7 +304,7 @@ devkitARM_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/source
 devkitARM_MD5="8f6d19782a4710b0c2f43f633002f965"
 
 
-# libnds :
+# libnds:
 # http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608
 # (provided by PALib now, therefore not updated anymore here)
 libnds_VERSION="20070503"
@@ -298,7 +314,7 @@ libnds_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourcefor
 libnds_MD5="dcb60a051c6490bf1f05c99135913cb8"
 
 
-# PAlib : http://palib.info/
+# PAlib: http://palib.info/
 
 PAlib_VERSION="070615"
 PAlib_ARCHIVE="PAlib_${PAlib_VERSION}.zip"
@@ -307,7 +323,7 @@ PAlib_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforg
 PAlib_MD5="1b76293dcaae1caae03da5c99c62f350"
 
 
-# dswifi :
+# dswifi:
 # http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=199021
 
 dswifi_VERSION="0.3.2"
@@ -317,7 +333,7 @@ dswifi_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourcefor
 dswifi_MD5="0c81600970a1eb9ae69b2c309b350c01"
 
 
-# DeSmuME : http://www.desmume.com/
+# DeSmuME: http://www.desmume.com/
 
 DeSmuME_VERSION="0.4.0"
 DeSmuME_ARCHIVE="DeSmuME.${DeSmuME_VERSION}.zip"
@@ -325,7 +341,7 @@ DeSmuME_DOWNLOAD_LOCATION="http://www.robsgames.com/nds"
 DeSmuME_MD5="d4f89865db95e2f3c820f12e41958792"
 
 
-# NO$GBA : http://nocash.emubase.de/gba.htm
+# NO$GBA: http://nocash.emubase.de/gba.htm
 
 NoCashGBA_VERSION="w"
 NoCashGBA_ARCHIVE="no\$gba-${NoCashGBA_VERSION}.zip"
@@ -335,20 +351,20 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 
 
-# Ceylan (libCeylan.so) : http://ceylan.sourceforge.net
+# Ceylan (libCeylan.so): http://ceylan.sourceforge.net
 
 # Ceylan can be retrieved from SVN or from a source code archive.
 
 Ceylan_VERSION="@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@"
 Ceylan_ARCHIVE="ceylan-${Ceylan_VERSION}.tar.bz2"
-# OSDN is the first download location to be mirrored :
+# OSDN is the first download location to be mirrored:
 Ceylan_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/ceylan"
 Ceylan_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/ceylan"
 Ceylan_MD5="(blanked)"
 
 Ceylan_win_VERSION="@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@"
 Ceylan_win_ARCHIVE="ceylan-${Ceylan_win_VERSION}.tar.bz2"
-# OSDN is the first download location to be mirrored :
+# OSDN is the first download location to be mirrored:
 Ceylan_win_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/ceylan"
 Ceylan_win_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/ceylan"
 Ceylan_win_MD5="(blanked)"
@@ -357,20 +373,20 @@ Ceylan_SVN_SERVER=ceylan.svn.sourceforge.net
 
 
 
-# OSDL (libOSDL.so) : http://osdl.sourceforge.net
+# OSDL (libOSDL.so): http://osdl.sourceforge.net
 
 # OSDL can be retrieved from SVN or from a source code archive.
 
 OSDL_VERSION="@OSDL_VERSION@"
 OSDL_ARCHIVE="osdl-${OSDL_VERSION}.tar.bz2"
-# OSDN is the first download location to be mirrored :
+# OSDN is the first download location to be mirrored:
 OSDL_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
 OSDL_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/osdl"
 OSDL_MD5="(blanked)"
 
 OSDL_win_VERSION="@OSDL_VERSION@"
 OSDL_win_ARCHIVE="osdl-${OSDL_win_VERSION}.tar.bz2"
-# OSDN is the first download location to be mirrored :
+# OSDN is the first download location to be mirrored:
 OSDL_win_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
 OSDL_win_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/osdl"
 OSDL_win_MD5="(blanked)"
@@ -380,7 +396,7 @@ OSDL_SVN_SERVER=osdl.svn.sourceforge.net
 
 
 
-# Next to come may be : SDL_sound, PhysFS
+# Next to come may be: SDL_sound, PhysFS
 
 
 
