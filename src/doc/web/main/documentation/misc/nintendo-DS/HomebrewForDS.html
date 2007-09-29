@@ -631,7 +631,6 @@ The most frequent extensions are:
 
 	<li>
 	<p><b>.nds</b> (ex: <code>myGame.nds</code>): 
-	
 	this binary for the DS (slot-1) is used by official game cards and most emulators. It embeds a small header referring to a logo, a short description of the ROM content in several languages, followed eventually by the two executable binaries needed (a region dedicated to the ARM7, then a region dedicated to the ARM9), and optionally some appended data, for example a filesystem. The logo and description texts are used when booting a game card from the firmware, or when starting to download one over wireless multiboot: GBA Movie Player and the FlashMe + WMB method support .nds files.
 	</p>
 
@@ -1279,7 +1278,7 @@ These transfers can be achieved thanks to various means, each with its own force
 
 	<li><b>(asynchronous) DMA transfers</b>: 
 <p>
-although "only" up to four of them can run simultaneously, DMA transfers (open to both ARM) are interesting because they offset this load from a CPU. They run in background and trigger an interrupt when having finished, letting the CPU perform other tasks in the mean time. There are not necessarily the fastest of all transfer methods, but this is more than compensated by their parallel execution feature.
+although "only" up to four of them can run simultaneously, DMA transfers (open to both ARM, ex: <code>dmaCopy</code>) are interesting because they offset this load from a CPU. They run in background and trigger an interrupt when having finished, letting the CPU perform other tasks in the mean time. There are not necessarily the fastest of all transfer methods, but this is more than compensated by their parallel execution feature.
 </p>
 
 <p>
@@ -1287,17 +1286,21 @@ A drawback is that, as long as the DMA transfer is running, both CPU will be loc
 </p>
 
 <p>
-Thus the ARM9 should execute from its instruction cache (ITCM) reading/writing data from its data cache (DTCM), otherwise it will be frozen, waiting for the bus.
+Thus the ARM9 should execute from its instruction cache (ITCM) reading/writing data from its data cache (DTCM), otherwise it will be frozen, waiting for the bus. <code>dmaCopy</code> cannot access the DTCM region of the ARM9, which is where the stack is placed. 
 </p>
 
 <p>
-As for the ARM7, apparently, even when executing from its IWRAM, it will be frozen.
+As for the ARM7, apparently, even when executing from its IWRAM, it will be frozen
 </p>
 
   </li>
+  
 	<li><b>memcpy</b>: simple and usual method, yet rather efficient</li>
+	
 	<li><b>basic 'for' loop</b>: little use for that, as previous methods are faster and offer at least the same features anyway</li>
+	
 	<li><b>swiFastCopy</b>: this libnds-provided call branches to a DS BIOS routine. According to that <a href="http://www.tobw.net/dswiki/index.php?title=How_to_clear_the_s" target="_blank">source</a>, should be ruled out due to a bug leading to poor performance. Transfers more quickly than <code>swiCopy</code>, but has higher interrupt latency</li>
+	
 	<li><b>swiCopy</b>: as <code>swiFastCopy</code>, suffers from a bug apparently</li>
 </ul>
 
@@ -3057,7 +3060,7 @@ The good news is that the cards already offer an underlying filesystem (usually 
 </p>
 
 <p>
-In the case of the DS, among the many filesystems that could be used, one of them, FAT16, is by far the most common. To manage such filesystems, a dedicated library, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>, can be used. It depends on libnds, both of which being packaged as part of DevkitARM.
+In the case of the DS, among the many filesystems that could be used, one of them, FAT16, is by far the most common. To manage such filesystems, a dedicated library, <a href="http://chishm.drunkencoders.com/libfat/" target="_blank">libfat</a>, can be used. It depends on libnds, both of which being packaged as part of DevkitARM. libfat library and sources can also be  downloaded directly from <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=197264" target="_blank">here</a>.
 </p>
 
 <p>
@@ -3074,6 +3077,10 @@ Using embedded filesystems can be convenient, so that the application is entirel
 
 <p>
 Note also that in its current form, libfat cannot be used by default nor efficiently with the ARM7: the library is too large to fit in its at most 96 kB of fast RAM. To use libfat nevertheless with the ARM7, the linker script should be modified so that the ARM7 executable is stored in main memory. But this RAM is quite slower than the IWRAM.
+</p>
+
+<p>
+With libfat on the SuperCard Lite, the <code>X.ds.gba</code> cannot be run at all, the <code>X.sc.nds</code> will freeze when <code>fatInit</code> is called. Only the <code>X.nds</code> can run correctly.
 </p>
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -4775,7 +4782,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Monday, August 6, 2007</em>
+    <em>Last update: Friday, September 28, 2007</em>
   </center>
 </body>
 </html>
