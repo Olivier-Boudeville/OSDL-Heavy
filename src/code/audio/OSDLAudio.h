@@ -39,7 +39,7 @@ namespace OSDL
 		 * Root module for all audio services.
 		 *
 		 */
-		class OSDL_DLL AudioModule : public Ceylan::Module
+		class OSDL_DLL AudioModule: public Ceylan::Module
 		{
 		
 		
@@ -67,6 +67,8 @@ namespace OSDL
 						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
 			
+			
+			
 				
 				// Static section.
 	
@@ -87,7 +89,7 @@ namespace OSDL
 				 * Tells whether audio has already been initialized.
 				 *
 				 * @note This method is static so that calling it is 
-				 * convenient : no need to explicitly retrieve the common
+				 * convenient: no need to explicitly retrieve the common
 				 * module, then audio module before knowing the result. 
 				 *
 				 * The need to retrieve the right module from scratch at 
@@ -170,5 +172,5 @@ namespace OSDL
 
 
 
-
 #endif // OSDL_AUDIO_H_
+

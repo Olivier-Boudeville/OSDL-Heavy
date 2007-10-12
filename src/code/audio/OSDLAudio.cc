@@ -7,7 +7,18 @@
 #include "Ceylan.h"      // for GetOutputFormat
 
 
-#include "SDL.h"
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+#if OSDL_USES_SDL
+#include "SDL.h"         // for SDL_InitSubSystem
+#endif // OSDL_USES_SDL
 
 
 #include <list>
@@ -50,6 +61,9 @@ Uint32 getChunkTimeMilliseconds(Mix_Chunk *chunk)
 */
 
 
+
+#if OSDL_USES_SDL
+
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
 const string AudioModule::SDLEnvironmentVariables[] = 
 {
@@ -62,6 +76,13 @@ const string AudioModule::SDLEnvironmentVariables[] =
 	"SDL_PATH_DSP"
 	
 } ;
+
+#else // OSDL_USES_SDL
+
+const string AudioModule::SDLEnvironmentVariables[] = {} ;
+
+#endif // OSDL_USES_SDL
+
 
 
 
@@ -78,6 +99,7 @@ AudioException::~AudioException() throw()
 }
 
 
+
 AudioModule::AudioModule() throw( AudioException ) :
 	Ceylan::Module( 
 		"OSDL Audio module",
@@ -91,11 +113,28 @@ AudioModule::AudioModule() throw( AudioException ) :
 
 	send( "Initializing audio subsystem." ) ;
 
+#if OSDL_USES_SDL
+
 	if ( SDL_InitSubSystem( 
 			CommonModule::UseAudio ) != CommonModule::BackendSuccess )
 		throw AudioException( "AudioModule constructor : "
 			"unable to initialize audio subsystem : " 
 			+ Utils::getBackendLastError() ) ;
+
+#else // OSDL_USES_SDL
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+#endif // OSDL_RUNS_ON_ARM7
+
+#endif // OSDL_ARCH_NINTENDO_DS
+	
+#endif // OSDL_USES_SDL
 
 	_AudioInitialized = true ;
 	
@@ -111,7 +150,24 @@ AudioModule::~AudioModule() throw()
 
 	send( "Stopping audio subsystem." ) ;
 	
+#if OSDL_USES_SDL
+
 	SDL_QuitSubSystem( CommonModule::UseAudio ) ;
+
+#else // OSDL_USES_SDL
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+#endif // OSDL_RUNS_ON_ARM7
+
+#endif // OSDL_ARCH_NINTENDO_DS
+	
+#endif // OSDL_USES_SDL
 	
 	send( "Audio subsystem stopped." ) ;
 	
@@ -136,6 +192,8 @@ const string AudioModule::toString( Ceylan::VerbosityLevels level )
 
 string AudioModule::DescribeEnvironmentVariables() throw()
 {
+
+#if OSDL_USES_SDL
 
 	Ceylan::Uint16 varCount = 
 		sizeof( SDLEnvironmentVariables ) / sizeof (string) ;
@@ -181,6 +239,11 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 	}
 	
 	return result + Ceylan::formatStringList( variables ) ;
+#else // OSDL_USES_SDL
+
+	return "(not using SDL)" ;
+	
+#endif // OSDL_USES_SDL
 	
 }
 
