@@ -1,0 +1,26 @@
+TOP = ../../../..
+
+.PHONY:
+
+
+CPP_FLAGS_COMMON = \
+	$(OSDL_CODE_ROOT_INC)  \
+	$(OSDL_BASIC_INC)      \
+	$(OSDL_VIDEO_INC)      \
+	$(OSDL_EVENTS_INC)
+	 
+
+all: compile
+
+install: install-headers
+
+
+# Small hack that allows to retrieve from autoconf files the relevant targets:
+include Makefile.am
+
+
+ARM7_OBJ_FILES = $(patsubst %.cc,%.arm7.o,$(TWO_DIMENSIONAL_IMPLEMENTATIONS))
+ARM9_OBJ_FILES = $(patsubst %.cc,%.arm9.o,$(TWO_DIMENSIONAL_IMPLEMENTATIONS))
+
+
+include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makerules.inc
