@@ -298,7 +298,8 @@ namespace OSDL
 			 * @note These flags are not to be mixed up with the Surface 
 			 * flags' ones.
 			 *
-			 * @see OSDL::Video::Surface			 
+			 * @see OSDL::Video::Surface
+			 *			 
 			 */
 
 
@@ -337,6 +338,17 @@ namespace OSDL
 			 *
 			 */
 			static const Ceylan::Flags UseMouse ;			   
+
+
+			/**
+			 * Initializes the events subsystem, implies initializing 
+			 * the video (UseVideo).
+			 *
+			 * This is just a convenience flag gathering all event-related flags
+			 * (UseJoystick, UseKeyboard, UseMouse, etc.)
+			 *
+			 */
+			static const Ceylan::Flags UseEvents ;			   
 
 
 			/// Initializes all above subsystems.

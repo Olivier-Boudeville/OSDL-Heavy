@@ -2,7 +2,7 @@
 #define OSDL_CD_ROM_DRIVE_H_
 
 
-// for OSDL::CDROMDriveException, CDROMDriveNumber :
+// for OSDL::CDROMDriveException, CDROMDriveNumber:
 #include "OSDLCDROMDriveHandler.h"   
 
 #include "Ceylan.h"                  // for inheritance
@@ -12,16 +12,40 @@
 #include <map>
 
 
-// Forward declaration.
-struct SDL_CD ;
 
-// Forward declaration.
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+// No need to include SDL header here:
+struct SDL_CD ;
 struct SDL_CDtrack ;
+
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 
 
 namespace OSDL
 {
+	
+	
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+	/*
+	 * No way of forward declaring LowLevelCDROM apparently:
+	 * we would have liked to specify 'struct LowLevelThing ;' here and in the
+	 * implementation file (.cc): 'typedef BackendThing LowLevelThing' but then
+	 * the compiler finds they are conflicting declarations.
+	 *
+	 */
+	typedef ::SDL_CD LowLevelCDROM ;
+	typedef ::SDL_CDtrack LowLevelCDROMTrack ;
+	
+#else // OSDL_USES_SDL	
+
+	struct LowLevelCDROM {} ;
+	struct LowLevelCDROMTrack {} ;
+		
+#endif // OSDL_USES_SDL 
+
 	
 	
 	// Tracks are parts of CD data that can be counted.	
@@ -42,7 +66,7 @@ namespace OSDL
 	 * actual track.
 	 *
 	 */
-	class OSDL_DLL CDTrack : public Ceylan::TextDisplayable
+	class OSDL_DLL CDTrack: public Ceylan::TextDisplayable
 	{
 	
 		
@@ -54,8 +78,12 @@ namespace OSDL
 			 *
 			 * Does not take ownership of the specified track.
 			 *
+			 * @throw CDROMDriveException if the operation failed or is not
+			 * supported.
+			 *
 			 */
-			CDTrack( const SDL_CDtrack & track ) throw() ;
+			CDTrack( const LowLevelCDROMTrack & track ) 
+				throw( CDROMDriveException ) ;
 			
 			/// Virtual destructor, does not deallocate the track data.
 			virtual ~CDTrack() throw() ;
@@ -64,8 +92,16 @@ namespace OSDL
 			/// Return this track number (0-99).
 			virtual TrackNumber getTrackNumber() const throw() ;
 			
-			/// Returns this track type.
-			virtual TrackType getTrackType() const throw() ;
+			
+			/**
+			 * Returns this track type.
+			 *
+			 * @throw CDROMDriveException if the operation failed.
+			 *
+			 */
+			virtual TrackType getTrackType() const 
+				throw( CDROMDriveException ) ;
+			
 			
 			/// Returns the length, in frames, of this track.
 			virtual FrameCount getLength() const throw() ;
@@ -92,7 +128,7 @@ namespace OSDL
 		protected:
 		
 		
-			const SDL_CDtrack * _trackData ;
+			const LowLevelCDROMTrack * _trackData ;
 					
 						
 			
@@ -130,7 +166,7 @@ namespace OSDL
 	 * attached to the system.
 	 *
 	 */
-	class OSDL_DLL CDROMDrive : public Ceylan::Object
+	class OSDL_DLL CDROMDrive: public Ceylan::Object
 	{
 	
 	
@@ -391,7 +427,7 @@ namespace OSDL
 			 * or not (if null).
 			 *
 			 */
-			SDL_CD * _driveStatus ;
+			LowLevelCDROM * _driveStatus ;
 			
 			
 			/**

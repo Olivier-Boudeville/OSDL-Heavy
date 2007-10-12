@@ -17,7 +17,7 @@ namespace OSDL
 	
 	
 	/// Exception returned whenever an error concerning a CD-ROM drive occured.
-	class OSDL_DLL CDROMDriveException : public OSDL::Exception
+	class OSDL_DLL CDROMDriveException: public OSDL::Exception
 	{
 	
 		public:
@@ -47,7 +47,7 @@ namespace OSDL
 	 * one CD-ROM drive object is associated to an actual device.
 	 *
 	 */
-	class OSDL_DLL CDROMDriveHandler : public Ceylan::Object
+	class OSDL_DLL CDROMDriveHandler: public Ceylan::Object
 	{
 	
 		
@@ -127,7 +127,7 @@ namespace OSDL
  * 
  */
 #pragma warning( push )
-#pragma warning( disable : 4251 )
+#pragma warning( disable: 4251 )
 			
 			/**
 			 * Keeps track of drive numbers, so no CD-ROM device can be 
@@ -171,3 +171,4 @@ namespace OSDL
 
 
 #endif // OSDL_CD_ROM_DRIVE_HANDLER_H_
+

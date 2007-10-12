@@ -6,7 +6,19 @@
 #include "OSDLUtils.h"       // for getBackendLastError
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+#if OSDL_USES_SDL
 #include "SDL.h"             // for CD-ROM primitives
+#endif // OSDL_USES_SDL
+
 
 #include <list>  
 
@@ -20,7 +32,7 @@ using namespace OSDL ;
 
 
 CDROMDriveException::CDROMDriveException( const std::string & message ) 
-		throw() :
+		throw():
 	OSDL::Exception( message )
 {
 
@@ -35,26 +47,37 @@ CDROMDriveException::~CDROMDriveException() throw()
 
 
 
-CDROMDriveHandler::CDROMDriveHandler() throw( CDROMDriveException ) :
+CDROMDriveHandler::CDROMDriveHandler() throw( CDROMDriveException ):
 	 Object(),
 	 _drives()
 {
+
+#if OSDL_USES_SDL
 	
 	send( "Initializing CD-ROM subsystem" ) ;
 		
 	if ( SDL_InitSubSystem( CommonModule::UseCDROM ) 
 			!= CommonModule::BackendSuccess ) 
-		throw CDROMDriveException( "CDROMDriveHandler constructor : "
-				"unable to initialize CD-ROM subsystem : " 
+		throw CDROMDriveException( "CDROMDriveHandler constructor: "
+				"unable to initialize CD-ROM subsystem: " 
 				+ Utils::getBackendLastError() ) ;
 				
-	send( "CD-ROM subsystem initialized" ) ;				
+	send( "CD-ROM subsystem initialized" ) ;	
+				
+#else // OSDL_USES_SDL
+
+	throw CDROMDriveException( "CDROMDriveHandler constructor: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
 
 }
 
 
 CDROMDriveHandler::~CDROMDriveHandler() throw()
 {
+
+#if OSDL_USES_SDL
 
 	send( "Stopping CD-ROM subsystem." ) ;
 
@@ -64,12 +87,13 @@ CDROMDriveHandler::~CDROMDriveHandler() throw()
 		delete (*it).second ;
 	}
 	
-	// Useless but deemed safer :
+	// Useless but deemed safer:
 	_drives.clear() ;
 		
 	SDL_QuitSubSystem( CommonModule::UseCDROM ) ;
 
 	send( "CD-ROM subsystem stopped." ) ;
+#endif // OSDL_USES_SDL
 
 }
 			
@@ -77,7 +101,17 @@ CDROMDriveHandler::~CDROMDriveHandler() throw()
 
 CDROMDriveNumber CDROMDriveHandler::GetAvailableCDROMDrivesCount() throw()
 {
+
+#if OSDL_USES_SDL
+
 	return SDL_CDNumDrives() ;
+	
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL
+
 }
 
 
@@ -85,28 +119,37 @@ CDROMDrive & CDROMDriveHandler::getCDROMDrive( CDROMDriveNumber number )
 	throw( CDROMDriveException )
 {
 	
+#if OSDL_USES_SDL
+
 	map<CDROMDriveNumber, CDROMDrive *>::const_iterator it 
 		= _drives.find( number ) ;
 	
 	if ( it != _drives.end() )
 	{
 		
-		// Drive found :
+		// Drive found:
 		return * (*it).second ;
 	
 	}
 		
-	// Else : drive not already created, let's try to create it :
+	// Else: drive not already created, let's try to create it:
 	CDROMDrive * newDrive = new CDROMDrive( number ) ;
 	
 	/*
 	 * Here the creation succeeded (otherwise an exception is propagated 
-	 * as expected) :
+	 * as expected):
 	 *
 	 */
 	_drives[ number ] = newDrive ;
 	
 	return *newDrive ;
+
+#else // OSDL_USES_SDL
+
+	throw CDROMDriveException( " CDROMDriveHandler::getCDROMDrive: "
+		"no SDL support available" ) ;
+	
+#endif // OSDL_USES_SDL
 	
 }
 
@@ -114,6 +157,8 @@ CDROMDrive & CDROMDriveHandler::getCDROMDrive( CDROMDriveNumber number )
 const std::string CDROMDriveHandler::toString( Ceylan::VerbosityLevels level )
 	const throw()
 {
+
+#if OSDL_USES_SDL
 		
 	CDROMDriveNumber driveNumber = GetAvailableCDROMDrivesCount() ;
 	
@@ -124,7 +169,7 @@ const std::string CDROMDriveHandler::toString( Ceylan::VerbosityLevels level )
 		return "None of the " + Ceylan::toString( driveNumber ) 
 			+ " available drive(s) is currently opened." ;
 	
-	// At least a drive is available, at least one is opened :
+	// At least a drive is available, at least one is opened:
 			
 	list<string> descriptions ;
 	
@@ -137,7 +182,13 @@ const std::string CDROMDriveHandler::toString( Ceylan::VerbosityLevels level )
 	return "Out of " + Ceylan::toString( driveNumber ) 
 		+ " available CD-ROM drive(s), " 
 		+ Ceylan::toString( static_cast<Ceylan::Uint32>( _drives.size() ) ) 
-		+ " is/are opened : " + Ceylan::formatStringList( descriptions ) ;	
+		+ " is/are opened: " + Ceylan::formatStringList( descriptions ) ;	
+
+#else // OSDL_USES_SDL
+
+	return "" ;
+	
+#endif // OSDL_USES_SDL
 
 }				
 			

@@ -3,9 +3,19 @@
 
 #include "OSDLUtils.h"   // for getBackendLastError
 
-#include "SDL.h"         // for CD-ROM primitives
+
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
 
 #include <list>  
+
 
 using std::list ;
 using std::string ;
@@ -14,13 +24,44 @@ using std::string ;
 using namespace OSDL ;
 
 
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+#include "SDL.h"					 // for SDL_CD, SDL_CDtrack, etc.
+
+#endif // OSDL_USES_SDL
+
+
+
+/** 
+ * Dummy values will be returned by non-static methods in case there is no
+ * SDL support available.
+ *
+ * It is not a problem as these methods cannot be called: constructors always
+ * throw exceptions in that case, thus no instance can be available for these
+ * method calls.
+ *
+ */ 
+
+
+
+
 // CD track section.
 
-CDTrack::CDTrack( const SDL_CDtrack & track ) throw() :
+
+CDTrack::CDTrack( const LowLevelCDROMTrack & track ) 
+		throw( CDROMDriveException ):
 	_trackData( & track )
 {
 
+#if ! OSDL_USES_SDL
+
+	throw CDROMDriveException( "CDTrack constructor failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 CDTrack::~CDTrack() throw() 
@@ -31,16 +72,28 @@ CDTrack::~CDTrack() throw()
 }
 
 
+
 TrackNumber CDTrack::getTrackNumber() const throw()
 {
 
+#if OSDL_USES_SDL
+
 	return _trackData->id ; 
+	
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL	
 	
 }
 
 
-TrackType CDTrack::getTrackType() const throw()
+
+TrackType CDTrack::getTrackType() const throw( CDROMDriveException )
 {
+
+#if OSDL_USES_SDL
 
 	switch( _trackData->type )
 	{
@@ -54,38 +107,65 @@ TrackType CDTrack::getTrackType() const throw()
 			break ;
 		
 		default:
-			Ceylan::emergencyShutdown( 
-				"CDTrack::getTrackType : unexpected type (abnormal)." ) ;
-			// Do not care, just to avoid a warning :
-			return dataTrack ;
+			throw CDROMDriveException( "CDTrack::getTrackType failed: "
+				"unexpected type (abnormal)." ) ;
 			break ;
 	
 	}
+
+#else // OSDL_USES_SDL
+
+	throw CDROMDriveException( "CDTrack::getTrackType failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL	
 				
 }
+
 
 
 FrameCount CDTrack::getLength() const throw()
 {
 
+#if OSDL_USES_SDL
+
 	return _trackData->length ;
+	
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL	
 	 
 }
+
 
 
 FrameCount CDTrack::getFrameOffset() const throw()
 {
 
-	return _trackData->offset ; 
+#if OSDL_USES_SDL
+
+	return _trackData->offset ;
+	 
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL	
 	
 }
+
 
 
 const string CDTrack::toString( Ceylan::VerbosityLevels level ) const throw()
 {
 	
+	
+#if OSDL_USES_SDL
+
 	string res = "Track #" + Ceylan::toString( getTrackNumber() ) 
-		+ " : this is " ;
+		+ ": this is " ;
 	
 	switch( getTrackType() )
 	{
@@ -114,8 +194,15 @@ const string CDTrack::toString( Ceylan::VerbosityLevels level ) const throw()
 	res += ". Current frame offset is " + Ceylan::toString( getFrameOffset() ) ;
 	
 	return res ;
+
+#else // OSDL_USES_SDL
+	
+	return "" ;
+
+#endif // OSDL_USES_SDL	
 	
 }
+
 
 
 
@@ -124,18 +211,35 @@ const string CDTrack::toString( Ceylan::VerbosityLevels level ) const throw()
 // CD-ROM drive section.		
 	
 	
+#if OSDL_USES_SDL
+
 const FrameCount CDROMDrive::FramesPerSecond = CD_FPS ;
 
+#else // OSDL_USES_SDL
+
+const FrameCount CDROMDrive::FramesPerSecond = 75 ;
+
+#endif // OSDL_USES_SDL
+	
+	
 				
 CDROMDrive::CDROMDrive( CDROMDriveNumber driveNumber ) 
-		throw( CDROMDriveException ) :
+		throw( CDROMDriveException ):
 	Object(),
 	_driveNumber( driveNumber ),
 	_statusUpdated( false ),
 	_driveStatus( 0 )
 {
-	
+
+#if ! OSDL_USES_SDL
+
+	throw CDROMDriveException( "CDROMDrive constructor failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+		
 }
+
 
 
 CDROMDrive::~CDROMDrive() throw()
@@ -147,49 +251,64 @@ CDROMDrive::~CDROMDrive() throw()
 }
 
 
+
 void CDROMDrive::open() throw( CDROMDriveException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( _driveStatus != 0 )
 		throw CDROMDriveException( 
-			"CDROMDrive::open : drive already opened." ) ;
+			"CDROMDrive::open: drive already opened." ) ;
 		
 	_driveStatus = SDL_CDOpen( _driveNumber ) ;
 	
 	if ( _driveStatus == 0 )
-		throw CDROMDriveException( "CDROMDrive::open : open failed : "
+		throw CDROMDriveException( "CDROMDrive::open: open failed: "
 			+ Utils::getBackendLastError() ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void CDROMDrive::close() throw( CDROMDriveException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( _driveStatus == 0 )
 		throw CDROMDriveException( 
-			"CDROMDrive::close : drive was not already opened." ) ;
+			"CDROMDrive::close: drive was not already opened." ) ;
 		
 	SDL_CDClose( _driveStatus ) ;
 	
-	// Owned ? ::free( _driveStatus ) ?
+	// Owned ?::free( _driveStatus ) ?
 	_driveStatus = 0 ;
+	
+#endif // OSDL_USES_SDL
 		
 }
+
 
 
 void CDROMDrive::eject() const throw( CDROMDriveException )
 {
 
+#if OSDL_USES_SDL
 	if ( _driveStatus == 0 )
 		throw CDROMDriveException( 
-			"CDROMDrive::eject : drive was not already opened." ) ;
+			"CDROMDrive::eject: drive was not already opened." ) ;
 
 	if ( SDL_CDEject( _driveStatus ) != 0 )
 		throw CDROMDriveException( 
-			"CDROMDrive::eject : " + Utils::getBackendLastError() ) ;
+			"CDROMDrive::eject: " + Utils::getBackendLastError() ) ;
 		
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 CDROMDrive::Status CDROMDrive::getStatus() throw( CDROMDriveException )
@@ -203,14 +322,17 @@ CDROMDrive::Status CDROMDrive::getStatus() throw( CDROMDriveException )
 	
 }
 		
+		
 
 CDROMDrive::Status CDROMDrive::getConstStatus() const 
 	throw( CDROMDriveException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( _driveStatus == 0 )
 		throw CDROMDriveException( 
-			"CDROMDrive::getConstStatus : drive was not already opened." ) ;
+			"CDROMDrive::getConstStatus: drive was not already opened." ) ;
 
 		
 	switch( SDL_CDStatus( _driveStatus ) )
@@ -237,14 +359,18 @@ CDROMDrive::Status CDROMDrive::getConstStatus() const
 			break ;
 			
 		default:
-			Ceylan::emergencyShutdown( 
-				"CDROMDrive::getConstStatus : unknown status read" ) ;
-			// Do not care, just to avoid a warning :
-			return InError ;			
+			throw CDROMDriveException( 
+				"CDROMDrive::getConstStatus: unknown status read" ) ;
 			break ;
 				
 	}
 	
+#else // OSDL_USES_SDL
+
+	return InError ;
+		
+#endif // OSDL_USES_SDL
+
 }
 
 
@@ -258,61 +384,96 @@ bool CDROMDrive::isCDInDrive() throw( CDROMDriveException )
 	
 }
 
+
+
 TrackNumber CDROMDrive::getTracksCount() const throw( CDROMDriveException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( _driveStatus == 0 )
 		throw CDROMDriveException( 
-			"CDROMDrive::getTracksCount : drive was not already opened." ) ;
+			"CDROMDrive::getTracksCount: drive was not already opened." ) ;
 
 	return _driveStatus->numtracks ;
 	
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 FrameCount CDROMDrive::getTrackDuration( TrackNumber targetTrack ) 
 	const throw( CDROMDriveException )
 {
 	
-	// Checks as well that the drive is opened :
+#if OSDL_USES_SDL
+
+	// Checks as well that the drive is opened:
 	if ( targetTrack >= getTracksCount() )
-		throw CDROMDriveException( "CDROMDrive::getTrackDuration : "
-			"specified track (" 
-			+ Ceylan::toString( targetTrack ) + ") out of range." ) ;
+		throw CDROMDriveException( "CDROMDrive::getTrackDuration: "
+			"specified track (" + Ceylan::toString( targetTrack ) 
+			+ ") out of range." ) ;
 		
-	return _driveStatus->track[targetTrack].length ; 		
+	return _driveStatus->track[targetTrack].length ; 
+			
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL
 	
 }
+
 
 	
 CDTrack & CDROMDrive::getTrack( TrackNumber targetTrack ) const 
 	throw( CDROMDriveException )
 {
 
-	// Checks as well that the drive is opened :
+#if OSDL_USES_SDL
+
+	// Checks as well that the drive is opened:
 	if ( targetTrack >= getTracksCount() )
-		throw CDROMDriveException( "CDROMDrive::getTrack : "
+		throw CDROMDriveException( "CDROMDrive::getTrack: "
 			"specified track (" + Ceylan::toString( targetTrack )
 			+ ") out of range." ) ;
 
 	return * new CDTrack( _driveStatus->track[ targetTrack ] ) ;
 	
+#else // OSDL_USES_SDL
+
+	throw CDROMDriveException( "CDROMDrive::getTrack: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+	
 }
 
+	
 					
 void CDROMDrive::playFrames( FrameCount startingFrame, 
 	FrameCount durationInFrames ) throw( CDROMDriveException )		
 {
 
+#if OSDL_USES_SDL
+
 	if ( _driveStatus == 0 )
 		throw CDROMDriveException( 
-			"CDROMDrive::playFrames : drive was not already opened." ) ;
+			"CDROMDrive::playFrames: drive was not already opened." ) ;
 
 	if ( SDL_CDPlay( _driveStatus, startingFrame, durationInFrames) != 0 )
-		throw CDROMDriveException( "CDROMDrive::playFrames failed : " 
+		throw CDROMDriveException( "CDROMDrive::playFrames failed: " 
 			+ Utils::getBackendLastError() ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void CDROMDrive::playTracks( TrackNumber startingTrack, 
@@ -320,51 +481,68 @@ void CDROMDrive::playTracks( TrackNumber startingTrack,
 	FrameCount stoppingFrameOffset ) throw( CDROMDriveException )	
 {
 
-	// Updated status needed to play tracks (check that drive is opened too) :
+#if OSDL_USES_SDL
+
+	// Updated status needed to play tracks (check that drive is opened too):
 	if ( ! _statusUpdated )
 		getStatus() ;
 	
 	if ( SDL_CDPlayTracks( _driveStatus, startingTrack, startingFrameOffset,
 		numberOfTracks,	stoppingFrameOffset ) != 0 )
 	{		
-		throw CDROMDriveException( "CDROMDrive::playTracks failed : " 
+		throw CDROMDriveException( "CDROMDrive::playTracks failed: " 
 			+ Utils::getBackendLastError() ) ;
 	}		
 
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void CDROMDrive::pause() const throw( CDROMDriveException )
 {
 	
+#if OSDL_USES_SDL
+
 	if ( _driveStatus == 0 )
 		throw CDROMDriveException( 
-			"CDROMDrive::pause : drive was not already opened." ) ;
+			"CDROMDrive::pause: drive was not already opened." ) ;
 		
 	if ( SDL_CDPause( _driveStatus ) != 0 )
-		throw CDROMDriveException( "CDROMDrive::pause failed : "
+		throw CDROMDriveException( "CDROMDrive::pause failed: "
 			+ Utils::getBackendLastError() ) ;
+
+#endif // OSDL_USES_SDL
 		
 }
+
 
 
 void CDROMDrive::resume() const throw( CDROMDriveException )
 {
 	
+#if OSDL_USES_SDL
+
 	if ( _driveStatus == 0 )
 		throw CDROMDriveException( 
-			"CDROMDrive::resume : drive was not already opened." ) ;
+			"CDROMDrive::resume: drive was not already opened." ) ;
 		
 	if ( SDL_CDResume( _driveStatus ) != 0 )
-		throw CDROMDriveException( "CDROMDrive::resume failed : "
+		throw CDROMDriveException( "CDROMDrive::resume failed: "
 			+ Utils::getBackendLastError() ) ;
+
+#endif // OSDL_USES_SDL
 		
 }
+
 
 		
 const string CDROMDrive::toString( Ceylan::VerbosityLevels level ) const throw()
 {
 	
+#if OSDL_USES_SDL
+
 	string res ;
 
 	if ( _driveNumber == 0 )
@@ -421,7 +599,7 @@ const string CDROMDrive::toString( Ceylan::VerbosityLevels level ) const throw()
 			
 		TrackNumber count = getTracksCount() ;
 		
-		res += ". There is/are " + Ceylan::toString( count ) + " track(s) : " ;
+		res += ". There is/are " + Ceylan::toString( count ) + " track(s): " ;
 		
 		list<string> tracks ;
 		
@@ -430,7 +608,7 @@ const string CDROMDrive::toString( Ceylan::VerbosityLevels level ) const throw()
 			
 			CDTrack currentTrack( _driveStatus->track[ i ] ) ;
 			
-			tracks.push_back( "Track #" + Ceylan::toString( i ) + " : " 
+			tracks.push_back( "Track #" + Ceylan::toString( i ) + ": " 
 				+ currentTrack.toString( level ) ) ;
 				
 		}
@@ -439,6 +617,12 @@ const string CDROMDrive::toString( Ceylan::VerbosityLevels level ) const throw()
 	} 
 		
 	return res ;	
+	
+#else // OSDL_USES_SDL
+
+	return "" ;
+	
+#endif // OSDL_USES_SDL
 		
 }
 			   				
