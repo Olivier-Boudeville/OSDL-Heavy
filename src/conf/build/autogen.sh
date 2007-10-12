@@ -1,8 +1,9 @@
 #!/bin/sh
 
 USAGE="
-Usage : "`basename $0`" [ --with-osdl-environment <path> || --ceylan-install-prefix <path> ] [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.
+Usage : "`basename $0`" [ --nds ] [ --with-osdl-environment <path> || --ceylan-install-prefix <path> ] [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full-test ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ] : (re)generates all the autotools-based build system.
 
+	--nds: cross-compile the OSDL library so that it can be run on the Nintendo DS (LOANI installation of all prerequesites and of the DS cross-build chain is assumed)
 	--with-osdl-environment : specify where the OSDL environment file (OSDL-environment.sh) should be read
 	--ceylan-install-prefix : specify where the Ceylan installation can be found
 	Note : if neither --with-osdl-environment nor --ceylan-install-prefix are specified, the location of OSDL environment file will be guessed, if possible.	
@@ -49,11 +50,18 @@ do_installcheck=0
 do_distcheck=1
 do_chain_tests=1
 do_only_prepare_dist=1
+do_target_nds=1
 
 
 while [ $# -gt 0 ] ; do
 	token_eaten=1
 	
+	if [ "$1" = "--nds" ] ; then
+		# Cross-compilation for the Nintendo DS requested:
+		do_target_nds=0
+		token_eaten=0
+	fi
+
 	if [ "$1" = "-v" -o "$1" = "--verbose" ] ; then
 		be_verbose=0
 		token_eaten=0
@@ -254,6 +262,42 @@ else
 	
 	fi
 fi
+
+
+
+# Nintendo DS special case:
+if [ $do_target_nds -eq 0 ] ; then
+
+
+	# First attempt was relying on the autotools, but it was a nightmare.
+	# Hence basic specific Makefiles (Makefile.cross) are used and it works
+	# great.
+		
+	echo "Cross-compiling for the Nintendo DS."
+	
+	# Go back in trunk directory:
+	cd ${SOURCE_OFFSET}	
+	
+	# Quite convenient:
+	alias mn='make -f Makefile.cross CROSS_TARGET=nintendo-ds'
+
+	# Clean everything:
+	make -f Makefile.cross CROSS_TARGET=nintendo-ds clean
+
+	# Build everything:
+	make -f Makefile.cross CROSS_TARGET=nintendo-ds
+	result=$?
+	
+	if [ $result -eq 0 ] ; then
+		echo "Successful cross-compiling for the Nintendo DS."
+	else	
+		echo "Cross-compiling for the Nintendo DS failed."
+	fi
+	
+	exit ${result}
+	
+fi
+
 
 
 # Retrieving Ceylan substitute.sh script, needed by MakeConfigure :
