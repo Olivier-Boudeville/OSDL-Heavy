@@ -2,7 +2,7 @@
 
 
 USAGE="
-Usage : "`basename $0`" [ --with-osdl-environment <path> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist] : (re)generates all the autotools-based build system for Ceylan tests.
+Usage : "`basename $0`" [ --with-osdl-environment <path> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist] : (re)generates all the autotools-based build system for OSDL tests.
 
 	--with-osdl-environment : specify which OSDL environment file shall be used (OSDL-environment.sh full path)
 	--guess-osdl-environment : try to guess where the OSDL environment file lies. If one is found, then it is used, otherwise stops on failure
@@ -220,7 +220,7 @@ if [ ! -x "${CEYLAN_SUBSTITUTE_SCRIPT}" ] ; then
 fi
 
 
-# Searches for the Ceylan settings file :
+# Searches for the OSDL settings file :
 OSDL_SETTINGS_FILE="../src/conf/OSDLSettings.inc"
 if [ ! -f "${OSDL_SETTINGS_FILE}" ] ; then
 	echo "Error, no OSDL settings file found (${OSDL_SETTINGS_FILE})." 1>&2
@@ -449,10 +449,10 @@ generateCustom()
 	 	execute make install
 	else
 	
-		if [ -n "$ceylan_install_prefix_opt" ] ; then
+		if [ -n "$osdl_install_prefix_opt" ] ; then
 			echo 1>&2
-			echo "Warning : not installing tests and using $ceylan_install_prefix_opt implies updating library search paths to select the correct library, for example one may enter : " 1>&2
-			echo "export LD_LIBRARY_PATH=$ceylan_install_prefix/lib:\$LD_LIBRARY_PATH" 1>&2
+			echo "Warning : not installing tests and using $osdl_install_prefix_opt implies updating library search paths to select the correct library, for example one may enter : " 1>&2
+			echo "export LD_LIBRARY_PATH=$osdl_install_prefix/lib:\$LD_LIBRARY_PATH" 1>&2
 		fi
 		
 	fi
