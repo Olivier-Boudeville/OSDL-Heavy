@@ -1,0 +1,26 @@
+TOP = ../../..
+
+.PHONY:
+
+NDS_SUBDIRS = audioRenderer
+
+
+CPP_FLAGS_COMMON = \
+	$(OSDL_CODE_ROOT_INC)  \
+	$(OSDL_BASIC_INC)       
+
+
+all: compile
+
+install: install-headers
+
+
+# Small hack that allows to retrieve from autoconf files the relevant targets:
+include Makefile.am
+
+
+ARM7_OBJ_FILES = $(patsubst %.cc,%.arm7.o,$(AUDIO_IMPLEMENTATIONS))
+ARM9_OBJ_FILES = $(patsubst %.cc,%.arm9.o,$(AUDIO_IMPLEMENTATIONS))
+
+
+include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makerules.inc
