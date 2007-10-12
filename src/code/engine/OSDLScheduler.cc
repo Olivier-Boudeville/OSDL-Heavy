@@ -765,6 +765,7 @@ void Scheduler::DeleteScheduler() throw()
 
 
 
+
 // Protected members below :
 
 
@@ -825,6 +826,7 @@ Scheduler::Scheduler() throw( SchedulingException ) :
 }
 
 
+
 Scheduler::~Scheduler() throw()
 {
 
@@ -838,6 +840,7 @@ Scheduler::~Scheduler() throw()
 	send( "Scheduler deleted." ) ;
 	
 }
+
 
 
 void Scheduler::scheduleBestEffort() throw( SchedulingException )
@@ -886,7 +889,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			_engineTickDuration ) ) ;
 	
 	// Corresponds to D (new Dlast) :
-	EngineTick forecastIdleCallbackDuration ;
+	EngineTick forecastIdleCallbackDuration = baseIdleCallbackDuration ;
 		
 	Ceylan::System::Second idleStartingSecond, idleStoppingSecond ;
 	
