@@ -2024,11 +2024,28 @@ Only the ARM7 can access the sound hardware, so we somehow have to have the ARM9
 
 <h5>Sound output</h5>
 <p>
-Relying on the sound mixing hardware is the best bet: it can manage 16 independent audio channels with about 5% memory bandwidth usage. Therefore using <a href="http://modarchive.org/" target="_blank">MOD</a>-like soundtracks is favored, even by commercial games. Supported formats are 8 bit, 16 bit, or <a href="http://en.wikipedia.org/wiki/ADPCM" target="_blank">ADPCM</a>.
+Relying on the sound mixing hardware is the best bet: it can manage 16 independent audio channels with about 5% memory bandwidth usage. Therefore using <a href="http://modarchive.org/" target="_blank">MOD</a>-like soundtracks is favored, even by commercial games. Supported formats are 8 bit, 16 bit, or <a href="http://en.wikipedia.org/wiki/ADPCM" target="_blank">ADPCM</a>. Any sound played through the DS sound hardware at a frequency other than 32768 Hz will be resampled to 32768 Hz with nearest-neighbor algorithm.
 </p>
  
 <p>
-On the other side, with ogg/mp3 decoding, one would eat around 50% of the ARM9 CPU power, or almost 100% of the ARM7, with a pretty low bitrate. One could use the <a href="http://xiph.org/vorbis/" target="_blank">Tremor</a> implementation to benefit from a FPU-less OggVorbis decoder (check that memory leak issues have been solved). Tight 32bit (ARM, not Thumb) loops should be favoured.
+On the other side, with ogg/mp3 decoding, one would eat around 50% of the ARM9 CPU power, or almost 100% of the ARM7, with a pretty low bitrate. One could use the <a href="http://xiph.org/vorbis/" target="_blank">Tremor</a> implementation to benefit from a FPU-less OggVorbis decoder (check that memory leak issues have been solved). Tight 32bit (ARM, not Thumb) loops should be favoured. OggVorbis decoding on the ARM7 is not proven to be feasible. If game are interested in shifting the load to the ARM7, other applications may just let the decoding take place on the ARM9.
+</p>
+
+<p>
+There is a second solution to use highly encoded music on the ARM7: use a mp3 decoder, which is expected to need generally less CPU resources than OggVorbis ones.
+</p>
+ 
+<p>
+This may be done thanks to:
+<ul>
+
+	<li><a href="http://www.underbit.com/products/mad/" target="_blank">libmad</a> (GPL, see also <a href="http://sourceforge.net/projects/mad/" target="_blank">here</a>), but it is deemed not too much optimized for the ARM7</li>
+	
+	<li><a href="https://datatype.helixcommunity.org/mp3dec.html" target="_blank">helix mp3dec</a>, which is small, fast, uses only fixed point maths, and can decode 128 kbps mp3 on ARM7 realtime. As mentioned <a href="https://helixcommunity.org/projects/datatype/summary" target="_blank">here</a>, this software is available under the <em>RealNetworks Community Source License - RCSL 1.2</em>
+and <em>RealNetworks Public Source License - RPSL 1.0</em> licenses. Although they are specified <a href="https://helixcommunity.org/licenses/" target="_blank">here</a> and partly discussed <a href="https://helixcommunity.org/licenses/open_source" target="_blank">here</a> and <a href="https://community.helixcommunity.org/2002/intro/getting-started-4" target="_blank">here</a>, they remain rather difficult to understand</li>
+
+</ul>
+
 </p>
 
 <p>
@@ -4782,7 +4799,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Friday, September 28, 2007</em>
+    <em>Last update: Friday, October 12, 2007</em>
   </center>
 </body>
 </html>
