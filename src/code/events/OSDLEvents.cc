@@ -1,23 +1,34 @@
 #include "OSDLEvents.h"
 
-#include "OSDLBasic.h"             // for OSDL::GetVersion
-#include "OSDLVideo.h"             // for resize
-#include "OSDLScheduler.h"         // for GetScheduler
-#include "OSDLRenderer.h"          // for Renderer
-#include "OSDLJoystickHandler.h"   // for JoystickHandler
-#include "OSDLKeyboardHandler.h"   // for KeyboardHandler
-#include "OSDLMouseHandler.h"      // for MouseHandler
-#include "OSDLMouseCommon.h"       // for DefaultMouse
+#include "OSDLBasic.h"               // for OSDL::GetVersion
+#include "OSDLVideo.h"               // for resize
+#include "OSDLScheduler.h"           // for GetScheduler
+#include "OSDLRenderer.h"            // for Renderer
+#include "OSDLJoystickHandler.h"     // for JoystickHandler
+#include "OSDLKeyboardHandler.h"     // for KeyboardHandler
+#include "OSDLMouseHandler.h"        // for MouseHandler
+#include "OSDLMouseCommon.h"         // for DefaultMouse
 
 
-#include "Ceylan.h"                // for Flags, etc.
+#include "Ceylan.h"                  // for Flags, etc.
 
 #include <list>
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>            // for OSDL_DEBUG and al (private header)
+#include <OSDLConfig.h>              // for OSDL_DEBUG and al (private header)
 #endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+#if OSDL_USES_SDL
+
+#include "SDL.h"                     // for SDL_ACTIVEEVENT, etc.
+
+#endif // OSDL_USES_SDL
 
 
 using std::string ;
@@ -25,7 +36,7 @@ using std::string ;
 using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
-// for time units and calls (ex : Millisecond, basicSleep) :
+// for time units and calls (ex: Millisecond, basicSleep):
 using namespace Ceylan::System ;   
 
 
@@ -47,14 +58,17 @@ using namespace OSDL::Engine ;
 #endif // OSDL_DEBUG_EVENTS
 
 
+const std::string NoSDLSupportAvailable = "(no SDL support available)" ;
 
 
 bool EventsModule::_EventsInitialized = false ;
 
-// @todo: wrap all SDL constants (ex : scan codes).
 
 
-// Basic event types :
+
+#if OSDL_USES_SDL
+
+// Basic event types:
 	
 const BasicEventType EventsModule::ApplicationFocusChanged      =
 	SDL_ACTIVEEVENT     ;
@@ -101,13 +115,6 @@ const BasicEventType EventsModule::UserResizedVideoMode         =
 const BasicEventType EventsModule::ScreenNeedsRedraw            =
 	SDL_VIDEOEXPOSE     ;
 
-
-/*
- * User events can range from FirstUserEventTriggered to 
- * LastUserEventTriggered :
- *
- */
-
 const BasicEventType EventsModule::FirstUserEventTriggered      = 
 	SDL_USEREVENT       ;
 
@@ -115,25 +122,13 @@ const BasicEventType EventsModule::FirstUserEventTriggered      =
 const BasicEventType EventsModule::LastUserEventTriggered       = 
 	SDL_NUMEVENTS - 1   ;
 
-
-
-// User event types :
-
-const UserEventType EventsModule::NoEvent                       = 0 ;
-const UserEventType EventsModule::QuitRequested                 = 1 ;
- 
- 
-// Focus flags :
+// Focus flags:
  
 const Ceylan::Sint16 EventsModule::_MouseFocus       = SDL_APPMOUSEFOCUS ;
 const Ceylan::Sint16 EventsModule::_KeyboardFocus    = SDL_APPINPUTFOCUS ;
 const Ceylan::Sint16 EventsModule::_ApplicationFocus = SDL_APPACTIVE ;
 
 
-const string EventsModule::_MessageHeader = "[OSDL event] " ;
- 
- 
- 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
 const string EventsModule::_SDLEnvironmentVariables[] = 
 {
@@ -148,12 +143,79 @@ const string EventsModule::_SDLEnvironmentVariables[] =
 } ;
 
 
+
+
+#else // OSDL_USES_SDL
+
+
+
+// Matches SDL defines:
+
+const BasicEventType EventsModule::ApplicationFocusChanged      =  1 ;
+const BasicEventType EventsModule::KeyPressed                   =  2 ;
+const BasicEventType EventsModule::KeyReleased                  =  3 ;
+const BasicEventType EventsModule::MouseMoved                   =  4 ;
+const BasicEventType EventsModule::MouseButtonPressed           =  5 ;
+const BasicEventType EventsModule::MouseButtonReleased          =  6 ;
+const BasicEventType EventsModule::JoystickAxisChanged          =  7 ;
+const BasicEventType EventsModule::JoystickTrackballChanged     =  8 ;
+const BasicEventType EventsModule::JoystickHatPositionChanged   =  9 ;
+const BasicEventType EventsModule::JoystickButtonPressed        = 10 ;
+const BasicEventType EventsModule::JoystickButtonReleased       = 11 ;
+const BasicEventType EventsModule::UserRequestedQuit            = 12 ;
+const BasicEventType EventsModule::SystemSpecificTriggered      = 13 ;
+// 14 reserved.
+// 15 reserved.
+const BasicEventType EventsModule::UserResizedVideoMode         = 16 ;
+const BasicEventType EventsModule::ScreenNeedsRedraw            = 17 ;
+
+const BasicEventType EventsModule::FirstUserEventTriggered      = 24 ;
+
+// No SDL_MAXEVENTS available, using SDL_NUMEVENTS instead. 
+const BasicEventType EventsModule::LastUserEventTriggered       = 31 ;
+
+// Focus flags:
+ 
+const Ceylan::Sint16 EventsModule::_MouseFocus        = 0x01 ;
+const Ceylan::Sint16 EventsModule::_KeyboardFocus     = 0x02 ;
+const Ceylan::Sint16 EventsModule::_ApplicationFocus  = 0x04 ;
+
+/// See http://sdldoc.csn.ul.ie/sdlenvvars.php
+const string EventsModule::_SDLEnvironmentVariables[] = {} ;
+
+
+#endif // OSDL_USES_SDL
+
+
+
+/*
+ * User events can range from FirstUserEventTriggered to 
+ * LastUserEventTriggered:
+ *
+ */
+
+
+
+// User event types:
+
+const UserEventType EventsModule::NoEvent       = 0 ;
+const UserEventType EventsModule::QuitRequested = 1 ;
+ 
+ 
+
+
+const string EventsModule::_MessageHeader = "[OSDL event] " ;
+ 
+ 
+ 
+
+
 /// Includes left, middle, right, wheel up, wheel down buttons.
 const Ceylan::Uint32 EventsModule::_MouseButtonCount = 5 ;
 
 
 
-EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) : 
+EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ): 
 	Ceylan::Module( 
 		"OSDL events module",
 		"This is the module of OSDL dedicated to events management",
@@ -176,7 +238,7 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) :
 	send( "Initializing events subsystem." ) ;
 	
 	
-	// Activating selected input devices :
+	// Activating selected input devices:
 	
 	if ( eventsFlag & CommonModule::UseJoystick )
 	{
@@ -188,11 +250,11 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) :
 	/*
 	 * No 'if ( eventsFlag & CommonModule::UseKeyboard )...' test, as even if 
 	 * the UseMouse flag is not set, we may receive mouse-related events
-	 * (motion, focus, etc.), hence we need a handler for that :
+	 * (motion, focus, etc.), hence we need a handler for that:
 	 *
 	 */
 	
-	// Keyboard comes in default state :
+	// Keyboard comes in default state:
 	_keyboardHandler = new KeyboardHandler( /* initialMode */ Events::rawInput,
 		/* useSmarterDefaultKeyHandler */ false ) ;
 		
@@ -200,14 +262,14 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) :
 	/*
 	 * No 'if ( eventsFlag & CommonModule::UseMouse )...' test, as even if 
 	 * the UseMouse flag is not set, we may receive mouse-related events
-	 * (motion, focus, etc.), hence we need a handler for that :
+	 * (motion, focus, etc.), hence we need a handler for that:
 	 *
 	 */
 	_mouseHandler = new MouseHandler( /* useClassicalMice */ true ) ;
 		
 	
 	/* 
-	 * Activating UseEventThread (SDL_INIT_EVENTTHREAD) :
+	 * Activating UseEventThread (SDL_INIT_EVENTTHREAD):
 	 * Preferring avoiding it on Windows and OSX, not clear under GNU/Linux,
 	 * hence preferring no for all platforms, if not explicitly specified.
 	 *
@@ -218,6 +280,7 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ) :
 	dropIdentifier() ;
 	
 }	
+
 
 
 EventsModule::~EventsModule() throw()
@@ -251,9 +314,12 @@ EventsModule::~EventsModule() throw()
 }
 
 
-void EventsModule::waitForAnyKey( bool displayWaitingMessage ) const throw()
+
+void EventsModule::waitForAnyKey( bool displayWaitingMessage ) const 
+	throw( EventsException )
 {
 
+#if OSDL_USES_SDL
 
 	/*
 	 * No need to check that events and video are initialized, since we 
@@ -268,21 +334,48 @@ void EventsModule::waitForAnyKey( bool displayWaitingMessage ) const throw()
 		Ceylan::display( "< Press any key on OSDL window to continue >" ) ;
 	}
 	
+	
 	/*
 	 * Simpler than integrating into the keyboard handler 
-	 * (and works without it) :
+	 * (and works without it):
 	 *
 	 */
 	do 
 	{
 	
-		// Waiting, not polling, avoids taking 100% of the CPU for nothing :	
+		// Waiting, not polling, avoids taking 100% of the CPU for nothing:	
 		SDL_WaitEvent( & currentEvent ) ;
 		
 	} 
 	while ( currentEvent.type != KeyPressed ) ;
 	
+#else // OSDL_USES_SDL
+
+
+	// Reusing Ceylan counterpart:
+	
+	try
+	{
+	
+		if ( displayWaitingMessage )
+			Ceylan::waitForKey( "< Press any key to continue >" ) ;
+		else	
+			Ceylan::waitForKey( "" ) ;
+	
+	}
+	catch( const UtilsException & e )
+	{
+	
+		throw EventsException( "EventsModule::waitForAnyKey failed: "
+			+ e.toString() ) ;	
+
+	}
+	
+	
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 bool EventsModule::sleepFor( Second seconds, Microsecond micros ) 
@@ -298,7 +391,7 @@ bool EventsModule::sleepFor( Second seconds, Microsecond micros )
 	try
 	{
 	
-		// Avoid owerflow for smartSleep :
+		// Avoid owerflow for smartSleep:
 		while ( seconds > 4100 )
 		{
 			Ceylan::System::smartSleep( 4100, 0 ) ;
@@ -310,10 +403,12 @@ bool EventsModule::sleepFor( Second seconds, Microsecond micros )
 	}
 	catch( const Ceylan::System::SystemException & e )
 	{
-		throw EventsException( "EventsModule::sleepFor : " + e.toString() ) ;
+		throw EventsException( "EventsModule::sleepFor failed: " 
+			+ e.toString() ) ;
 	}	
 	
 }
+
 
 
 void EventsModule::useScheduler( bool on ) throw()
@@ -321,13 +416,13 @@ void EventsModule::useScheduler( bool on ) throw()
 
 	if ( on && ! _useScheduler )
 	{
-		// Force scheduler creation :
+		// Force scheduler creation:
 		Scheduler::GetScheduler() ;
 	}	
 	
 	if ( ! on && _useScheduler )
 	{
-		// Force scheduler removal :
+		// Force scheduler removal:
 		Scheduler::DeleteScheduler() ;	
 	}	
 	
@@ -348,12 +443,12 @@ void EventsModule::setIdleCallback(
 	if ( _useScheduler )
 	{
 		
-		// Will create the scheduler if it is not already existing :
+		// Will create the scheduler if it is not already existing:
 		Scheduler::GetScheduler().setIdleCallback( idleCallback, 
 			callbackData, callbackExpectedMaxDuration ) ;
 
 	}
-	else // the basic event loop is used :
+	else // the basic event loop is used:
 	{
 	
 		_loopIdleCallback            = idleCallback ;
@@ -371,12 +466,14 @@ void EventsModule::setIdleCallback(
 }
 
 
+
 void EventsModule::setEventLoopTargetFrequency( Hertz targetFrequency ) throw()
 {
 
 	_loopTargetedFrequency = targetFrequency ;
 	
 }
+
 
 
 void EventsModule::enterMainLoop() throw( EventsException )
@@ -387,44 +484,45 @@ void EventsModule::enterMainLoop() throw( EventsException )
 			"whereas back-end not initialized." ) ;
 	
 		
-	// If a scheduler is available, delegate the task to it :
+	// If a scheduler is available, delegate the task to it:
 	if ( _useScheduler )
 	{
 	
 		LogPlug::debug( 
-			"EventsModule::enterMainLoop : delegating to scheduler." ) ;
+			"EventsModule::enterMainLoop: delegating to scheduler." ) ;
 		
 		try
 		{
 		
-			// Will create a scheduler if necessary :
+			// Will create a scheduler if necessary:
 			Scheduler::GetScheduler().schedule() ;
 			
 		}
 		catch( const SchedulingException & e )
 		{
 			throw EventsException( 
-				"EventsModule::enterMainLoop : scheduler stopped on failure : "
+				"EventsModule::enterMainLoop: scheduler stopped on failure: "
 				+ e.toString() ) ;
 		}	
 		
-		LogPlug::debug( "EventsModule::enterMainLoop : scheduler returned." ) ;
+		LogPlug::debug( "EventsModule::enterMainLoop: scheduler returned." ) ;
 		
 	}
 	else
 	{
 	
-		LogPlug::debug( "EventsModule::enterMainLoop : "
+		LogPlug::debug( "EventsModule::enterMainLoop: "
 			"no scheduler requested, using basic event loop." ) ;
 		
 		enterBasicMainLoop() ;	
 			
 		LogPlug::debug( 
-			"EventsModule::enterMainLoop : exiting now from main loop." ) ;
+			"EventsModule::enterMainLoop: exiting now from main loop." ) ;
 			
 	}	
 
 }
+
 
 
 void EventsModule::requestQuit() throw()
@@ -443,14 +541,15 @@ void EventsModule::requestQuit() throw()
 		}
 		catch (	const SchedulingException & e )
 		{
-			LogPlug::error( "EventsModule::requestQuit : "
-				"no scheduler found, none stopped, or stop failed : " 
+			LogPlug::error( "EventsModule::requestQuit: "
+				"no scheduler found, none stopped, or stop failed: " 
 				+ e.toString() ) ;
 		}
 		
 	}	
 	
 }
+
 
 
 
@@ -472,7 +571,7 @@ KeyboardHandler & EventsModule::getKeyboardHandler() const
 
 	if ( _keyboardHandler == 0 )
 		throw EventsException( 
-			"EventsModule::getKeyboardHandler : no handler available : "
+			"EventsModule::getKeyboardHandler: no handler available: "
 			"did you specify 'CommonModule::UseKeyboard' "
 			"at the initialization of the common module ?" ) ;
 	
@@ -493,7 +592,6 @@ void EventsModule::setKeyboardHandler( KeyboardHandler & newHandler ) throw()
 
 
 
-
 bool EventsModule::hasJoystickHandler() const throw()
 {
 
@@ -502,19 +600,21 @@ bool EventsModule::hasJoystickHandler() const throw()
 }
 
 
+
 JoystickHandler & EventsModule::getJoystickHandler() const 
 	throw( EventsException )
 {
 
 	if ( _joystickHandler == 0 )
 		throw EventsException( 
-			"EventsModule::getJoystickHandler : no handler available : "
+			"EventsModule::getJoystickHandler: no handler available: "
 			"did you specify 'CommonModule::UseJoystick' "
 			"at the initialization of the common module ?" ) ;
 	
 	return * _joystickHandler ;
 	
 }
+
 
 
 void EventsModule::setJoystickHandler( JoystickHandler & newHandler ) throw()
@@ -538,19 +638,21 @@ bool EventsModule::hasMouseHandler() const throw()
 }
 
 
+
 MouseHandler & EventsModule::getMouseHandler() const 
 	throw( EventsException )
 {
 
 	if ( _mouseHandler == 0 )
 		throw EventsException( 
-			"EventsModule::getMouseHandler : no handler available : "
+			"EventsModule::getMouseHandler: no handler available: "
 			"did you specify 'CommonModule::UseMouse' "
 			"at the initialization of the common module ?" ) ;
 	
 	return * _mouseHandler ;
 	
 }
+
 
 
 void EventsModule::setMouseHandler( MouseHandler & newHandler ) throw()
@@ -565,14 +667,15 @@ void EventsModule::setMouseHandler( MouseHandler & newHandler ) throw()
 
 
 
-
 void EventsModule::updateInputState() throw()
 {
+
+#if OSDL_USES_SDL
 		
 	BasicEvent currentEvent ;
 	
 	
-	// Checks for all pending events :
+	// Checks for all pending events:
 
 	while ( SDL_PollEvent( & currentEvent ) )
 	{
@@ -667,7 +770,11 @@ void EventsModule::updateInputState() throw()
 				
 		}	
 	}
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 const string EventsModule::toString( Ceylan::VerbosityLevels level ) 
@@ -735,11 +842,13 @@ const string EventsModule::toString( Ceylan::VerbosityLevels level )
 string EventsModule::DescribeEnvironmentVariables() throw()
 {
 
+#if OSDL_USES_SDL
+
 	Ceylan::Uint16 varCount = 
 		sizeof( _SDLEnvironmentVariables ) / sizeof (string) ;
 		
 	string result = "Examining the " + Ceylan::toString( varCount )
-		+ " events-related environment variables for SDL backend :" ;
+		+ " events-related environment variables for SDL backend:" ;
 	
 	std::list<string> variables ;
 		
@@ -781,12 +890,20 @@ string EventsModule::DescribeEnvironmentVariables() throw()
 	
 	return result + Ceylan::formatStringList( variables ) ;
 	
+#else // OSDL_USES_SDL
+
+	return "(not using SDL)" ;
+
+#endif // OSDL_USES_SDL
+	
 }
 
 
 
 string EventsModule::DescribeEvent( BasicEvent anEvent ) throw() 
 {
+
+#if OSDL_USES_SDL
 
 	switch( anEvent.type )
 	{
@@ -857,6 +974,13 @@ string EventsModule::DescribeEvent( BasicEvent anEvent ) throw()
 	}
 	 
 	return "Unexpected event type." ;
+
+#else // OSDL_USES_SDL
+
+	return "(not using SDL)" ;
+
+#endif // OSDL_USES_SDL
+
 }	
 
 
@@ -865,7 +989,9 @@ Millisecond EventsModule::GetMillisecondsSinceStartup()
 	throw( EventsException ) 
 {
 
-	// Do not slow down too much on release mode :
+#if OSDL_USES_SDL
+
+	// Do not slow down too much on release mode:
 
 #if OSDL_DEBUG
 	if ( ! OSDL::CommonModule::IsBackendInitialized() )
@@ -876,6 +1002,13 @@ Millisecond EventsModule::GetMillisecondsSinceStartup()
 	
 	return static_cast<Millisecond>( SDL_GetTicks() ) ;
 	
+#else // OSDL_USES_SDL
+
+	throw EventsException( "EventsModule::GetMillisecondsSinceStartup failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
+
 }
 
 
@@ -916,7 +1049,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	catch ( const OSDL::Exception & e )
 	{	
 		throw EventsException( 
-			"EventsModule::enterBasicMainLoop : no video module available ("
+			"EventsModule::enterBasicMainLoop: no video module available ("
 			+ e.toString() ) ;
 	}
 	
@@ -926,12 +1059,12 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	{
 		renderer = & Rendering::Renderer::GetExistingRootRenderer() ;
 		LogPlug::debug( 
-			"EventsModule::enterBasicMainLoop : using root renderer ("
+			"EventsModule::enterBasicMainLoop: using root renderer ("
 			+ renderer->toString() + ")" ) ;
 	}
 	else
 	{
-		LogPlug::debug( "EventsModule::enterBasicMainLoop : "
+		LogPlug::debug( "EventsModule::enterBasicMainLoop: "
 			"not using any root renderer." ) ;	
 	}
 		
@@ -940,7 +1073,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	 * No scheduler, using classical event loop.
 	 *
 	 * We believe we have a better accuracy than 'SDL_framerate' from 
-	 * SDL_gfx with that mechanism :
+	 * SDL_gfx with that mechanism:
 	 *
 	 */
 
@@ -965,7 +1098,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 			/*
 			 * Force the scheduling granularity to be precomputed, to avoid
 			 * hiccups at loop start-up when needing granularity to adjust
-			 * sleeping delays in default idle callback :
+			 * sleeping delays in default idle callback:
 			 *
 			 * (a 10% margin is added)
 			 *
@@ -976,11 +1109,11 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 		}
 	
 	
-		// Compute the event loop period, in microsecond (default : 100 Hz) :
+		// Compute the event loop period, in microsecond (default: 100 Hz):
 		Microsecond	loopExpectedDuration 
 			= static_cast<Microsecond>( 1000000.0f / _loopTargetedFrequency ) ; 
 		
-		// Default : 10ms, hence 10 000 microseconds :
+		// Default: 10ms, hence 10 000 microseconds:
 		LogPlug::debug( "Loop expected duration is " 
 			+ Ceylan::toString( loopExpectedDuration ) + " microseconds, "
 			"and idle callback expected duration is "
@@ -996,7 +1129,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	    while ( ! _quitRequested )
 		{
 		
-			// Checks for all pending events :
+			// Checks for all pending events:
 			updateInputState() ;
 			
 			/*
@@ -1014,7 +1147,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 		
 			getPreciseTime( nowSec, nowMicrosec ) ;
 		
-			// Do not call onIdle if it will likely make us miss the deadline :
+			// Do not call onIdle if it will likely make us miss the deadline:
 			while ( getDurationBetween( lastSec, lastMicrosec, 
 					nowSec,	nowMicrosec ) + _loopIdleCallbackMaxDuration 
 				< loopExpectedDuration )
@@ -1025,7 +1158,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 			
 			/*
 			 * Burn any last few microseconds with a 'soft' (thanks to 
-			 * getPreciseTime) busy wait :
+			 * getPreciseTime) busy wait:
 			 *
 			 */
 			while ( getDurationBetween( lastSec, lastMicrosec, nowSec,
@@ -1034,13 +1167,13 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 			
 			/*
 			 * Note that in all cases we stay equal or below to the requested
-			 * frequency : we can be late (if the idle callback last for too
+			 * frequency: we can be late (if the idle callback last for too
 			 * long), but not early (we never stop before the current deadline),
 			 * so on a run we are a bit late on average.
 			 * 
 			 */
 			 
-			// Ready for next iteration :
+			// Ready for next iteration:
 			lastSec      = nowSec ;
 			lastMicrosec = nowMicrosec ;
 		
@@ -1049,7 +1182,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	} 
 	catch ( const SystemException & e )
 	{	
-		throw EventsException( "EventsModule::enterBasicMainLoop : " 
+		throw EventsException( "EventsModule::enterBasicMainLoop: " 
 			+ e.toString() ) ;
 	}
 	
@@ -1057,7 +1190,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 		Ceylan::System::MaximumDurationWithMicrosecondAccuracy )
 	{
 	
-		// Avoid overflow of getDurationBetween, no average FPS computed : 
+		// Avoid overflow of getDurationBetween, no average FPS computed: 
 		LogPlug::debug( "Exited from main loop after " 
 			+ Ceylan::toString( frameCount ) + " frames and about " 
 			+ Ceylan::toString( lastSec - startedSec ) 
@@ -1097,6 +1230,8 @@ void EventsModule::onKeyboardFocusGained(
 	const FocusEvent & keyboardFocusEvent ) throw()
 {
 
+#if OSDL_USES_SDL
+
 	OSDL_EVENT_LOG( "Application gained keyboard focus." ) ;
 
 #if OSDL_DEBUG
@@ -1107,12 +1242,17 @@ void EventsModule::onKeyboardFocusGained(
 
 	_keyboardHandler->focusGained( keyboardFocusEvent ) ;
 
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void EventsModule::onKeyboardFocusLost(
 	const FocusEvent & keyboardFocusEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Application lost keyboard focus." ) ;
 
@@ -1124,11 +1264,16 @@ void EventsModule::onKeyboardFocusLost(
 
 	_keyboardHandler->focusLost( keyboardFocusEvent ) ;
 
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void EventsModule::onKeyPressed( const KeyboardEvent & keyboardEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Key pressed." ) ;
 
@@ -1139,12 +1284,17 @@ void EventsModule::onKeyPressed( const KeyboardEvent & keyboardEvent ) throw()
 #endif // OSDL_DEBUG
 
 	_keyboardHandler->keyPressed( keyboardEvent ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
 
 
+
 void EventsModule::onKeyReleased( const KeyboardEvent & keyboardEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Key released." ) ;
 
@@ -1155,6 +1305,8 @@ void EventsModule::onKeyReleased( const KeyboardEvent & keyboardEvent ) throw()
 #endif // OSDL_DEBUG
 
 	_keyboardHandler->keyReleased( keyboardEvent ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
 
@@ -1167,6 +1319,8 @@ void EventsModule::onMouseFocusGained(
 	const FocusEvent & mouseFocusEvent ) throw()
 {
 
+#if OSDL_USES_SDL
+
 	OSDL_EVENT_LOG( "Application gained mouse focus." ) ;
 
 #if OSDL_DEBUG
@@ -1176,13 +1330,18 @@ void EventsModule::onMouseFocusGained(
 #endif // OSDL_DEBUG
 
 	_mouseHandler->focusGained( mouseFocusEvent ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void EventsModule::onMouseFocusLost( 
 	const FocusEvent & mouseFocusEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Application lost mouse focus." ) ;
 
@@ -1194,11 +1353,16 @@ void EventsModule::onMouseFocusLost(
 
 	_mouseHandler->focusLost( mouseFocusEvent ) ;
 
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void EventsModule::onMouseMotion( const MouseMotionEvent & mouseEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Mouse motion." ) ;
 
@@ -1209,13 +1373,18 @@ void EventsModule::onMouseMotion( const MouseMotionEvent & mouseEvent ) throw()
 #endif // OSDL_DEBUG
 
 	_mouseHandler->mouseMoved( mouseEvent ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void EventsModule::onMouseButtonPressed( const MouseButtonEvent & mouseEvent )
 	throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Mouse button pressed." ) ;
 
@@ -1226,13 +1395,18 @@ void EventsModule::onMouseButtonPressed( const MouseButtonEvent & mouseEvent )
 #endif // OSDL_DEBUG
 
 	_mouseHandler->buttonPressed( mouseEvent ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void EventsModule::onMouseButtonReleased( const MouseButtonEvent & mouseEvent )
 	throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Mouse button released." ) ;
 
@@ -1243,6 +1417,8 @@ void EventsModule::onMouseButtonReleased( const MouseButtonEvent & mouseEvent )
 #endif // OSDL_DEBUG
 
 	_mouseHandler->buttonReleased( mouseEvent ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
 
@@ -1255,6 +1431,8 @@ void EventsModule::onJoystickAxisChanged(
 	const JoystickAxisEvent & joystickEvent ) throw()
 {
 
+#if OSDL_USES_SDL
+
 	OSDL_EVENT_LOG( "Joystick axis moved." ) ;
 	
 #if OSDL_DEBUG
@@ -1264,13 +1442,18 @@ void EventsModule::onJoystickAxisChanged(
 #endif // OSDL_DEBUG
 	
 	_joystickHandler->axisChanged( joystickEvent ) ;
-	
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void EventsModule::onJoystickTrackballChanged( 
 	const JoystickTrackballEvent & joystickEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Joystick trackball moved." ) ;
 
@@ -1283,12 +1466,17 @@ void EventsModule::onJoystickTrackballChanged(
 	
 	_joystickHandler->trackballChanged( joystickEvent ) ;
 
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void EventsModule::onJoystickHatChanged( 
 	const JoystickHatEvent & joystickEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Joystick hat moved." ) ;
 
@@ -1299,13 +1487,18 @@ void EventsModule::onJoystickHatChanged(
 #endif // OSDL_DEBUG
 	
 	_joystickHandler->hatChanged( joystickEvent ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void EventsModule::onJoystickButtonPressed( 
 	const JoystickButtonEvent & joystickEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Joystick button pressed." ) ;
 
@@ -1318,12 +1511,17 @@ void EventsModule::onJoystickButtonPressed(
 	
 	_joystickHandler->buttonPressed( joystickEvent ) ;
 
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void EventsModule::onJoystickButtonReleased( 
 	const JoystickButtonEvent & joystickEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Joystick button released." ) ;
 
@@ -1336,6 +1534,8 @@ void EventsModule::onJoystickButtonReleased(
 	
 	_joystickHandler->buttonReleased( joystickEvent ) ;
 
+#endif // OSDL_USES_SDL
+
 }
 
 
@@ -1346,17 +1546,19 @@ void EventsModule::onJoystickButtonReleased(
 void EventsModule::onIdle() throw() 
 {		
 
+#if OSDL_USES_SDL
+
 	_idleCallsCount++ ;
 	
 	if ( _loopIdleCallback != 0 )
 	{
 		OSDL_EVENT_LOG( 
-			"EventsModule::onIdle : calling now idle call-back." ) ;
+			"EventsModule::onIdle: calling now idle call-back." ) ;
 		
 		(*_loopIdleCallback)( _loopIdleCallbackData ) ;
 		
 		OSDL_EVENT_LOG( 
-			"EventsModule::onIdle : returned from idle call-back." ) ;
+			"EventsModule::onIdle: returned from idle call-back." ) ;
 		
 	}
 	else
@@ -1370,22 +1572,27 @@ void EventsModule::onIdle() throw()
 		 Ceylan::System::atomicSleep() ;
 		
 	}	
+
+#endif // OSDL_USES_SDL
 		
 }
+
 
 
 void EventsModule::onApplicationFocusChanged( 
 	const FocusEvent & focusEvent ) throw()
 {
 
+#if OSDL_USES_SDL
+
 	OSDL_EVENT_LOG( "Application focus changed." ) ;
 	
-	// Maybe multiple gains or losses could be sent in one event :
+	// Maybe multiple gains or losses could be sent in one event:
 
 	if ( focusEvent.state & _MouseFocus )
 	{
 		
-		// DefaultMouse : only one mouse supported for the moment.
+		// DefaultMouse: only one mouse supported for the moment.
 		
 		if ( focusEvent.gain == 1 )
 			onMouseFocusGained( focusEvent ) ;
@@ -1408,43 +1615,62 @@ void EventsModule::onApplicationFocusChanged(
 		else
 			onApplicationIconified( focusEvent ) ;	
 	}
+
+#endif // OSDL_USES_SDL
 		
 }
+
 
 
 void EventsModule::onApplicationIconified( 
 	const FocusEvent & focusEvent ) throw()
 {
 
-	OSDL_EVENT_LOG( "Application is iconified (no handler registered) : "
+#if OSDL_USES_SDL
+
+	OSDL_EVENT_LOG( "Application is iconified (no handler registered): "
 		+ DescribeEvent( focusEvent ) ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void EventsModule::onApplicationRestored( 
 	const FocusEvent & focusEvent ) throw()
 {
 
-	OSDL_EVENT_LOG( "Application is restored (no handler registered) : "
+#if OSDL_USES_SDL
+
+	OSDL_EVENT_LOG( "Application is restored (no handler registered): "
 		+ DescribeEvent( focusEvent ) ) ;
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void EventsModule::onQuitRequested() throw()
 {
 
+#if OSDL_USES_SDL
+
 	OSDL_EVENT_LOG( "Application is requested to stop." ) ;
 
 	requestQuit() ;
 	
+#endif // OSDL_USES_SDL
+	
 }
+
 
 
 void EventsModule::onSystemSpecificWindowManagerEvent( 
 	const SystemSpecificWindowManagerEvent & wmEvent ) throw()
 {
+
+#if OSDL_USES_SDL
 
 	/*
 	 * @see http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fSysWMEvent to 
@@ -1454,13 +1680,18 @@ void EventsModule::onSystemSpecificWindowManagerEvent(
 	 */
 	OSDL_EVENT_LOG( "System specific window manager event received "
 		"(no handler registered)." ) ;	 
+		
+#endif // OSDL_USES_SDL
 
 }
+
 	
 					
 void EventsModule::onResizedWindow( const WindowResizedEvent & resizeEvent )
 	throw()
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "Resizing, new width is " << resizeEvent.w 
 		<< ", new height is " << resizeEvent.h << "." ) ;
@@ -1472,15 +1703,18 @@ void EventsModule::onResizedWindow( const WindowResizedEvent & resizeEvent )
 	} 
 	catch( const Video::VideoException & e )
 	{
-		// Warn but continue nevertheless :
+		// Warn but continue nevertheless:
 		LogPlug::error( 
-			"EventsModule::onResizedWindow : error when resizing to "
+			"EventsModule::onResizedWindow: error when resizing to "
 			+ Ceylan::toString( resizeEvent.w ) + ", " 
-			+ Ceylan::toString( resizeEvent.h ) + ") : "
+			+ Ceylan::toString( resizeEvent.h ) + "): "
 			+ e.toString() ) ;
 	}
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void EventsModule::onScreenNeedsRedraw() throw()
@@ -1495,37 +1729,51 @@ void EventsModule::onScreenNeedsRedraw() throw()
 	catch( const Video::VideoException & e )
 	{
 		// Warn but continue nevertheless.
-		LogPlug::error( "EventsModule::onScreenNeedsRedraw : "
-			"error when requesting a redraw : "	+ e.toString() ) ;
+		LogPlug::error( "EventsModule::onScreenNeedsRedraw: "
+			"error when requesting a redraw: "	+ e.toString() ) ;
 	}
 
 }
 
 
+
 void EventsModule::onUserEvent( const UserEvent & userEvent ) throw() 
 {
+
+#if OSDL_USES_SDL
 
 	OSDL_EVENT_LOG( "User event received, whose type is " << userEvent.type
 		<< " (no handler registered)." ) ;
 		
+#endif // OSDL_USES_SDL
+
 }
+
 		
 					
 void EventsModule::onUnknownEventType( const BasicEvent & unknownEvent ) throw()
 {
 
+#if OSDL_USES_SDL
+
 	OSDL_EVENT_LOG( "Unknown event, type is " << unknownEvent.type 
 		<< " (no handler registered)." ) ;
 	
+#endif // OSDL_USES_SDL
+
 }
 
 
 
-// Static section :
+
+// Static section:
+
 
 string EventsModule::DescribeEvent( const FocusEvent & focusEvent )
 {
 	
+#if OSDL_USES_SDL
+
 	string res = "Focus changed" ;
 	
 	if ( focusEvent.state & _MouseFocus )
@@ -1554,20 +1802,29 @@ string EventsModule::DescribeEvent( const FocusEvent & focusEvent )
 	
 	return res ;
 	
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+	
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 string EventsModule::DescribeEvent( const KeyboardEvent & keyboardEvent )
 {
 	
+#if OSDL_USES_SDL
+
 	string res = "Key " + KeyboardHandler::DescribeKey( 
 		static_cast<KeyboardHandler::KeyIdentifier>( 
 			keyboardEvent.keysym.sym ) ) 
-		+ ", with modifier(s) : " 
+		+ ", with modifier(s): " 
 		+ KeyboardHandler::DescribeModifier( 
 			static_cast<KeyboardHandler::KeyModifier>( 
 				keyboardEvent.keysym.mod ) )
-		+ " (scancode :  " 
+		+ " (scancode:  " 
 			+ Ceylan::toNumericalString( keyboardEvent.keysym.scancode ) 
 			+ ") was " ;
 	
@@ -1581,12 +1838,21 @@ string EventsModule::DescribeEvent( const KeyboardEvent & keyboardEvent )
 			keyboardEvent.keysym.unicode ) ;
 		
 	return res + "." ;
+
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
 	
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 string EventsModule::DescribeEvent( const MouseMotionEvent & mouseMotionEvent )
 {
+
+#if OSDL_USES_SDL
 
 	string res = "Mouse moved to (" + Ceylan::toString( mouseMotionEvent.x ) 
 		+ ";"
@@ -1602,11 +1868,20 @@ string EventsModule::DescribeEvent( const MouseMotionEvent & mouseMotionEvent )
 			
 	return res ;
 	
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
+	
 }
+
 
 
 string EventsModule::DescribeEvent( const MouseButtonEvent & mouseButtonEvent )
 {
+
+#if OSDL_USES_SDL
 
 	string res ;
 	
@@ -1616,19 +1891,19 @@ string EventsModule::DescribeEvent( const MouseButtonEvent & mouseButtonEvent )
 		case SDL_BUTTON_LEFT:
 			res = "Left mouse button " 
 				+ ( mouseButtonEvent.state == SDL_PRESSED ) ? 
-					"pressed" : "released" ;
+					"pressed": "released" ;
 			break ;
 			
 		case SDL_BUTTON_MIDDLE:
 			res = "Middle mouse button " 
 				+ ( mouseButtonEvent.state == SDL_PRESSED ) ? 
-					"pressed" : "released" ;
+					"pressed": "released" ;
 			break ;
 			
 		case SDL_BUTTON_RIGHT:
 			res = "Right mouse button " 
 				+ ( mouseButtonEvent.state == SDL_PRESSED ) ? 
-					"pressed" : "released" ;
+					"pressed": "released" ;
 			break ;
 			
 		case SDL_BUTTON_WHEELUP:
@@ -1652,21 +1927,39 @@ string EventsModule::DescribeEvent( const MouseButtonEvent & mouseButtonEvent )
 					
 	return res ;
 
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 string EventsModule::DescribeEvent( const JoystickAxisEvent & axisEvent )
 {
 
+#if OSDL_USES_SDL
+
 	return "Joystick #" + Ceylan::toNumericalString( axisEvent.which ) 
 		+ " had axis #" + Ceylan::toNumericalString( axisEvent.axis ) 
 		+ " moved to " 	+ Ceylan::toString( axisEvent.value ) + "." ; 
+
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
 		
 }
 
 
+
 string EventsModule::DescribeEvent( const JoystickTrackballEvent & ballEvent )
 {
+
+#if OSDL_USES_SDL
 
 	return "Joystick #" + Ceylan::toNumericalString( ballEvent.which ) 
 		+ " had trackball #" + Ceylan::toNumericalString( ballEvent.ball ) 
@@ -1674,41 +1967,77 @@ string EventsModule::DescribeEvent( const JoystickTrackballEvent & ballEvent )
 		+ Ceylan::toString( ballEvent.xrel ) + ";" 
 		+ Ceylan::toString( ballEvent.yrel ) + ")." ; 
 
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 string EventsModule::DescribeEvent( const JoystickHatEvent & hatEvent )
 {
 
+#if OSDL_USES_SDL
+
 	return "Joystick #" + Ceylan::toString( hatEvent.which ) + " had hat #"
 		+ Ceylan::toNumericalString( hatEvent.hat ) + " set to position " 
 		+ Ceylan::toString( hatEvent.value ) + "." ; 
 
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 string EventsModule::DescribeEvent( const JoystickButtonEvent & buttonEvent )
 {
 
+#if OSDL_USES_SDL
+
 	return "Joystick #" + Ceylan::toNumericalString( buttonEvent.which ) 
 		+ " had button #" + Ceylan::toNumericalString( buttonEvent.button ) 
 		+ ( ( buttonEvent.state == SDL_PRESSED ) ? 
-			" pressed." : " released." ) ;
+			" pressed.": " released." ) ;
 		 
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 string EventsModule::DescribeEvent( const UserRequestedQuitEvent & quitEvent )  
 {
 
+#if OSDL_USES_SDL
+
 	return "User requested to quit." ;
 	
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 string EventsModule::DescribeEvent( 
 	const SystemSpecificWindowManagerEvent & windowManagerEvent ) 
 {
+
+#if OSDL_USES_SDL
 
 	/* 
 	 * @todo add int SDL_GetWMInfo(SDL_SysWMinfo *info); 
@@ -1717,31 +2046,69 @@ string EventsModule::DescribeEvent(
 	 */
 	 
 	return "System-specific window manager event occured." ;
+
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 string EventsModule::DescribeEvent( const WindowResizedEvent & resizeEvent )
 {
 
+#if OSDL_USES_SDL
+
 	return "Window resized to (" + Ceylan::toString( resizeEvent.w )
 		+ ";" + Ceylan::toString( resizeEvent.h ) + ")." ;
 		
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 string EventsModule::DescribeEvent( const ScreenExposedEvent & redrawEvent )
 {
+
+#if OSDL_USES_SDL
+
 	return "Window exposed, needs to be redrawn." ;
+	
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 string EventsModule::DescribeEvent( const UserEvent & userEvent ) 
 {
+
+#if OSDL_USES_SDL
+
 	return "User-defined event occured (code #" 
 		+ Ceylan::toString( userEvent.code ) + ")." ;
+
+#else // OSDL_USES_SDL
+
+	return NoSDLSupportAvailable ;
+
+#endif // OSDL_USES_SDL
+
 }
 
+ 
  
 bool EventsModule::IsEventsInitialized() throw()
 {
@@ -1751,11 +2118,12 @@ bool EventsModule::IsEventsInitialized() throw()
 }
 
 
+
 Ceylan::System::Microsecond EventsModule::EvaluateCallbackduration(
 	Ceylan::System::Callback callback, void * callbackData ) throw()
 {
 
-	// Issue just a first and only run, to measure how long it takes :
+	// Issue just a first and only run, to measure how long it takes:
 	Microsecond startedMicrosec ;
 	Second startedSec ;
 		
@@ -1773,7 +2141,7 @@ Ceylan::System::Microsecond EventsModule::EvaluateCallbackduration(
 			getDurationBetween( startedSec,	startedMicrosec,
 					endedSec, endedMicrosec ) ) ;
 			
-	LogPlug::debug( "EventsModule::EvaluateCallbackduration : duration for "
+	LogPlug::debug( "EventsModule::EvaluateCallbackduration: duration for "
 		"idle callback evaluated to " 
 		+ Ceylan::toString( callbackExpectedMaxDuration )
 		+ " microseconds." ) ;

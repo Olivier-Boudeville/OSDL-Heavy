@@ -8,7 +8,6 @@
 
 #include "Ceylan.h"              // for Uint32, Flags, etc.
 
-#include "SDL.h"                 // for SDL_Event typedef (BasicEventType)
 
 #include <string>
 
@@ -128,7 +127,7 @@ namespace OSDL
 		/**
 		 * Basic event type, describing what technically happened.
 		 *
-		 * @example : 'Escape key was pressed'.
+		 * @example: 'Escape key was pressed'.
 		 *
 		 */
 		typedef Ceylan::Uint8 BasicEventType  ;
@@ -137,7 +136,7 @@ namespace OSDL
 		/**
 		 * Higher level event type, describing what happened with the user.
 		 *
-		 * @example : 'The user requested to exit'.
+		 * @example: 'The user requested to exit'.
 		 *
 		 */
 		typedef Ceylan::Uint8 UserEventType ;
@@ -172,12 +171,12 @@ namespace OSDL
 		 * (better multiple idle calls than too long too few), otherwise 
 		 * the scheduling may constantly fail. 
 		 *
-		 * Event module notes :
+		 * Event module notes:
 		 *
 		 * The event modules comes with no joystick handler registered, but 
 		 * with a keyboard handler.
 		 *
-		 * Scheduler notes :
+		 * Scheduler notes:
 		 *
 		 * @note Even though logic and rendering are not as tightly linked 
 		 * as they often are, if the sum of their processing needs exceeds 
@@ -187,21 +186,21 @@ namespace OSDL
 		 * jerked graphics will be preferred by the scheduler to
 		 * frame-rate dependent logic.
 		 *
-		 * Basic settings are as follow :
-		 *   - an engine tick lasts for 1 millisecond (engine frequency : 1 kHz)
-		 *   - a simulation tick lasts for 10 engine ticks (logic frequency :
+		 * Basic settings are as follow:
+		 *   - an engine tick lasts for 1 millisecond (engine frequency: 1 kHz)
+		 *   - a simulation tick lasts for 10 engine ticks (logic frequency:
 		 * 100 Hz)
 		 *   - a rendering tick lasts for 25 engine ticks (rendering frequency,
-		 * also known as framerate : 40 Hz, i.e. 40 frames per second), if 
+		 * also known as framerate: 40 Hz, i.e. 40 frames per second), if 
 		 * there is enough processing power
-		 *   - an input tick lasts for 20 ticks (input frequency : 50 Hz)
+		 *   - an input tick lasts for 20 ticks (input frequency: 50 Hz)
 		 *
 		 * @note With the SDL back-end, a created window (see
 		 * VideoModule::setMode) is needed to have the event system working.
 		 *
 		 *
 		 */
-		class OSDL_DLL EventsModule : public Ceylan::Module
+		class OSDL_DLL EventsModule: public Ceylan::Module
 		{
 		
 		
@@ -217,17 +216,24 @@ namespace OSDL
 				 * Waits for any key to be hit.
 			 	 * 
 			 	 * Will not work with the SDL back-end unless a window is 
-				 * opened thanks to VideoModule::setMode : otherwise, no 
+				 * opened thanks to VideoModule::setMode: otherwise, no 
 				 * event would be generated.
 				 *
-			 	 * @note This waiting method does not <b>poll</b> indefinitively
-			 	 * for events, which would use 100% of the CPU all the time. 
+				 * @param displayWaitingMessage the default waiting message
+				 * will be displayed iff true.
+				 *
+			 	 * @note This waiting method does not <b>poll</b>
+				 * indefinitively for events, which would use 100% of the CPU
+				 * all the time. 
 				 * It just <b>waits</b> for an event, consuming almost no
-				 * ressource.
+				 * ressource on most platforms.
 			 	 *
+				 * @throw EventsException if the operation failed or is not
+				 * supported.
+				 *
 				 */ 						
-				virtual void waitForAnyKey( bool displayWaitingMessage = true ) 
-					const throw() ; 
+				virtual void waitForAnyKey( bool displayWaitingMessage = true )
+					const throw( EventsException ) ; 
 
 
 				/**
@@ -481,7 +487,8 @@ namespace OSDL
 	             *
 				 * @param level the requested verbosity level.
 				 *
-				 * @note Text output format is determined from overall settings.
+				 * @note Text output format is determined from overall
+				 * settings.
 				 *
 				 * @see Ceylan::TextDisplayable
 	             *
@@ -511,7 +518,7 @@ namespace OSDL
 				 * Tells whether event system has already been initialized.
 				 *
 				 * @note This method is static so that calling it is 
-				 * convenient : no need to explicitly retrieve the common
+				 * convenient: no need to explicitly retrieve the common
 				 * module, then events module before knowing the result. 
 				 *
 				 * The need to retrieve the right module from scratch at 
@@ -532,8 +539,8 @@ namespace OSDL
 				 * initialized.
 				 *
 				 */ 						
-				static Ceylan::System::Millisecond GetMillisecondsSinceStartup()
-					throw( EventsException ) ; 
+				static Ceylan::System::Millisecond
+					GetMillisecondsSinceStartup() throw( EventsException ) ; 
 
 
 				/// Describes a focus event.
@@ -631,7 +638,8 @@ namespace OSDL
 				 								
 				
 				/// Returns a string describing the specified basic event.
-				static std::string DescribeEvent( BasicEvent anEvent ) throw() ;
+				static std::string DescribeEvent( BasicEvent anEvent ) 
+					throw() ;
 				  
 	
 				/**
@@ -737,7 +745,7 @@ namespace OSDL
 				static const BasicEventType LastUserEventTriggered ;
 				
 								
-				// User event types :
+				// User event types:
 				
 				/**
 				 * Void event, useful to return when no event should be
@@ -751,13 +759,13 @@ namespace OSDL
 				static const UserEventType QuitRequested ;
 				
 											
-				///	The default frequency targeted by the basic event loop.		
+				///	The default frequency targeted by the basic event loop.
 				static const Hertz DefaultEventLoopTargetedFrequency = 100 ;
 				
 				
 				
 				
-		protected :
+		protected:
 		
 		
 
@@ -1024,7 +1032,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onSystemSpecificWindowManagerEvent( 
-					const SystemSpecificWindowManagerEvent & wmEvent ) throw() ;
+						const SystemSpecificWindowManagerEvent & wmEvent ) 
+					throw() ;
 					
 				
 				/**
@@ -1195,7 +1204,7 @@ namespace OSDL
 				
 				/**
 				 * Header of messages sent by default implementations 
-				 * (ex : onMouseFocusGained).
+				 * (ex: onMouseFocusGained).
 				 *
 				 */
 				static const std::string _MessageHeader ;
@@ -1222,9 +1231,9 @@ namespace OSDL
 				 * @throw EventsException if the initialization of an input
 				 * subsystem failed.
 				 *
-				 * @note Some input device handlers (ex : mouse or joystick)
+				 * @note Some input device handlers (ex: mouse or joystick)
 				 * may be created even though not specifically requested,
-				 * because some events may have to be managed anyway (ex :
+				 * because some events may have to be managed anyway (ex:
 				 * keyboard or mouse focus lost, etc.).
 				 *
 				 */
@@ -1257,6 +1266,7 @@ namespace OSDL
 				 */			 
 				EventsModule & operator = ( const EventsModule & source )
 					throw() ;
+				
 				
 		} ;
 	

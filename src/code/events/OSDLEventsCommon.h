@@ -17,8 +17,13 @@
 				
 #include <string>
 
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+#include "SDL.h"             // for SDL events
+#endif // OSDL_USES_SDL
 
-// Forward declarations to avoid including SDL header :
+
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 /// Encapsulated basic event, encapsulates all basic events.
 typedef union SDL_Event BasicEvent ;
@@ -71,6 +76,64 @@ typedef struct SDL_ExposeEvent ScreenExposedEvent ;
 typedef struct SDL_UserEvent UserEvent ;
 
 
+#else // OSDL_USES_SDL 
+
+
+/// Encapsulated basic event, encapsulates all basic events.
+typedef union BasicEvent {} ;
+			
+				
+/// Application losed or gained visibility.
+typedef struct FocusEvent {} ;
+
+/// Key pressed or released.
+typedef struct KeyboardEvent {} ;
+
+/// Mouse moved.
+typedef struct MouseMotionEvent {} ;
+
+/// Mouse button pressed or released.
+typedef struct MouseButtonEvent {} ;
+
+/// Joystick axis moved.
+typedef struct JoystickAxisEvent {} ;
+ 
+/// Joystick trackball moved.
+typedef struct JoystickTrackballEvent {} ;
+
+/// Joystick hat position changed.
+typedef struct JoystickHatEvent {} ;
+
+/// Joystick button pressed or released.
+typedef struct JoystickButtonEvent {} ;
+
+/// Quit is requested.
+typedef struct UserRequestedQuitEvent {} ;
+
+/// A system specific window manager event has been received.
+typedef struct SystemSpecificWindowManagerEvent {} ;
+
+
+/**
+ * Window resized, application is responsible for setting a new video
+ * mode with the new width and height.
+ *
+ */
+typedef struct WindowResizedEvent {} ;
+
+
+/// Screen has to be redrawn.
+typedef struct ScreenExposedEvent {} ;
+	
+
+/// User-defined event.
+typedef struct UserEvent {} ;
+
+
+#endif // OSDL_USES_SDL 
+
+
+
 // Unicode values defined in Ceylan.
 
 
@@ -80,8 +143,8 @@ class OSDL_DLL EventsException: public OSDL::Exception
 
 	public: 
 	
-		explicit EventsException( const std::string & reason ) throw() :
-			OSDL::Exception( "Event exception : " + reason )
+		explicit EventsException( const std::string & reason ) throw():
+			OSDL::Exception( "Event exception: " + reason )
 		{
 		
 		} 

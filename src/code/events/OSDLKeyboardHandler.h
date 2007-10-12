@@ -8,6 +8,17 @@
 
 #include "Ceylan.h"                   // for Unicode
 
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+#include "SDL.h"                      // for SDL key constants
+#endif // OSDL_USES_SDL
+
+
+#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h"  // for DS key constants
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
 #include <string>
 #include <list>
 #include <map>
@@ -43,7 +54,7 @@ namespace OSDL
 		 * OSDLKeyboardHandler.cc.
 		 * 
 		 * @note The compiler refuses to force exception specification in
-		 * typedef thanks to a 'throw()' : 
+		 * typedef thanks to a 'throw()': 
 		 * "error: OSDL::Events::KeyboardEventHandler declared with an exception
 		 * specification."
 		 *
@@ -92,10 +103,10 @@ namespace OSDL
 		 * Handler for keyboard.
 		 *
 		 * Keyboard input are managed according to the current keyboard mode
-		 * (example : raw input, text input with unicode support, etc.)
+		 * (example: raw input, text input with unicode support, etc.)
 		 *
 		 */
-		class OSDL_DLL KeyboardHandler : public InputDeviceHandler
+		class OSDL_DLL KeyboardHandler: public InputDeviceHandler
 		{
 		
 		
@@ -112,7 +123,7 @@ namespace OSDL
 
 
 				/**
-				 * List of all currently available key identifiers : allows 
+				 * List of all currently available key identifiers: allows 
 				 * to identify a keyboard key being pressed or released.
 				 *
 				 * First column lists the key identifiers which are to be
@@ -123,18 +134,23 @@ namespace OSDL
 				 * The source of the complete list is the SDL back-end
 				 * (SDL_keysym.h).
 				 *
+				 * @see also generic/CeylanUtils.h for the Nintendo keys,
+				 * they have been duplicated here for a simpler use of OSDL.
+				 *
 				 */			
 				enum KeyIdentifier
 				{
 				
 				
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
 					/*
-					 * The keyboard identifiers have been cleverly chosen to 
-					 * map to ASCII :
+					 * The keyboard identifiers have been cleverly chosen 
+					 * by SDL to map to ASCII:
 					 *
 					 */
 				
-					// For unknown keys :	
+					// For unknown keys:	
 					//UnknownKey        = SDLK_UNKNOWN      ,  
 					
 					//FirstKey          = SDLK_FIRST        , // 
@@ -143,10 +159,10 @@ namespace OSDL
 					TabKey              = SDLK_TAB          , // 
 					ClearKey            = SDLK_CLEAR        , // 
 					
-					// See also : EnterKeypadKey
+					// See also: EnterKeypadKey
 					EnterKey            = SDLK_RETURN       , 
 					
-					 // Synonym of EnterKey :
+					 // Synonym of EnterKey:
 					ReturnKey           = SDLK_RETURN       ,
 					
 					PauseKey            = SDLK_PAUSE        , // 
@@ -224,7 +240,7 @@ namespace OSDL
 					// End of ASCII mapped key identifiers.
 					
 					
-					// International keyboard identifiers :
+					// International keyboard identifiers:
 
 					International0Key = SDLK_WORLD_0        , // 0xA0.
 					International1Key = SDLK_WORLD_1        ,
@@ -335,7 +351,7 @@ namespace OSDL
 					// End of international keyboard identifiers.
 					
 					
-					// Numeric keypad :
+					// Numeric keypad:
 					ZeroKeypadKey       = SDLK_KP0          , // 
 					OneKeypadKey        = SDLK_KP1          , // 
 					TwoKeypadKey        = SDLK_KP2          , // 
@@ -348,19 +364,19 @@ namespace OSDL
 					NineKeypadKey       = SDLK_KP9          , // 
 
 
-					// Rest of keypad :
+					// Rest of keypad:
 					PeriodKeypadKey     = SDLK_KP_PERIOD    , // 
 					DivideKeypadKey     = SDLK_KP_DIVIDE    , // 
 					MultiplyKeypadKey   = SDLK_KP_MULTIPLY  , // 
 					MinusKeypadKey      = SDLK_KP_MINUS     , // 
 					PlusKeypadKey       = SDLK_KP_PLUS      , //
 					
-					// See also : EnterKey. 
+					// See also: EnterKey. 
 					EnterKeypadKey      = SDLK_KP_ENTER     , 
 					EqualsKeypadKey     = SDLK_KP_EQUALS    , // 
 
 
-					// Arrows and Home/End pad :
+					// Arrows and Home/End pad:
 					UpArrowKey          = SDLK_UP           , // 
 					DownArrowKey        = SDLK_DOWN         , // 
 					LeftArrowKey        = SDLK_LEFT         , // 
@@ -372,7 +388,7 @@ namespace OSDL
 					PageDownKey         = SDLK_PAGEDOWN     , //  
 
 
-					// Function keys :
+					// Function keys:
  					F1Key               = SDLK_F1           , // 
  					F2Key               = SDLK_F2           , // 
  					F3Key               = SDLK_F3           , // 
@@ -390,7 +406,7 @@ namespace OSDL
  					F15Key              = SDLK_F15          , // 
 					
 					
-					// Key state modifier keys :
+					// Key state modifier keys:
 					NumLockKey          = SDLK_NUMLOCK      , // 
 					CapsLockKey         = SDLK_CAPSLOCK     , // 
 					ScrolLockKey        = SDLK_SCROLLOCK    , // 
@@ -403,35 +419,71 @@ namespace OSDL
 					LeftMetaKey         = SDLK_LMETA        , // 
 					RightMetaKey        = SDLK_RMETA        , // 
 					
-					// Left "Windows" key :
+					// Left "Windows" key:
 					LeftSuperKey        = SDLK_LSUPER       ,
 					
-					// Right "Windows" key : 
+					// Right "Windows" key: 
 					RightSuperKey       = SDLK_RSUPER       , 
 					ModeKey             = SDLK_MODE         , // "Alt Gr" key.
 					
-					// Multi-key compose key :
+					// Multi-key compose key:
 					ComposeKey          = SDLK_COMPOSE      ,  
 					
 					
-					// Miscellaneous function keys :
+					// Miscellaneous function keys:
 					HelpKey             = SDLK_HELP         , // 
 					PrintKey            = SDLK_PRINT        , // 
 					SysReqKey           = SDLK_SYSREQ       , // 
 					BreakKey            = SDLK_BREAK        , // 
 					MenuKey             = SDLK_MENU         , // 
 					
-					// Power Macintosh power key :
+					// Power Macintosh power key:
 					PowerKey            = SDLK_POWER        ,
 					
-					// Some european keyboards : 
+					// Some european keyboards: 
 					EuroKey             = SDLK_EURO         ,
 					
-					// Atari keyboard has Undo : 
+					// Atari keyboard has Undo: 
 					UndoKey             = SDLK_UNDO
 
 	
 					// Add any other keys here.
+
+					
+#else // OSDL_USES_SDL 
+
+#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
+
+#if defined(OSDL_RUNS_ON_ARM9) && OSDL_RUNS_ON_ARM9
+
+
+					ButtonX 			= KEY_X ,
+					ButtonY 			= KEY_Y ,
+
+					ButtonA 			= KEY_A ,
+					ButtonB 			= KEY_B ,
+
+					ButtonStart 		= KEY_START ,
+					ButtonSelect		= KEY_SELECT ,
+
+					ButtonLeft  		= KEY_LEFT ,
+					ButtonRight 		= KEY_RIGHT ,
+
+					ButtonUp			= KEY_UP ,
+					ButtonDown  		= KEY_DOWN ,
+
+					ShoulderButtonLeft  = KEY_L ,
+					ShoulderButtonRight = KEY_R ,
+
+					StylusContact		= KEY_TOUCH ,
+					LidOpen 			= KEY_LID 
+
+#endif // defined(OSDL_RUNS_ON_ARM9) && OSDL_RUNS_ON_ARM9
+
+#endif // defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
+
+#endif // OSDL_USES_SDL 
+
 
 				} ;
 
@@ -444,13 +496,15 @@ namespace OSDL
 				 * They can be OR'd together, since modifiers can be 
 				 * pressed simultaneously.
 				 *
-				 * @example : if ( mod == ( LeftShiftModifier 
+				 * @example: if ( mod == ( LeftShiftModifier 
 				 *	| RightAltModifier ) )...
 				 *
 				 */
 				enum KeyModifier
 				{
+				
 					
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 					
 					NoneModifier         = KMOD_NONE        ,
 					
@@ -474,7 +528,7 @@ namespace OSDL
 					
 					/*
 					 * Virtual modifiers, when left and right versions of 
-					 * the modifier mean the same :
+					 * the modifier mean the same:
 					 *
 					 */
 					ShiftModifier        = LeftShiftModifier   
@@ -489,6 +543,8 @@ namespace OSDL
 					MetaModifier         = LeftMetaModifier    
 						| RightMetaModifier
 				
+#endif // OSDL_USES_SDL 
+
 				
 				} ;
 				
@@ -664,7 +720,7 @@ namespace OSDL
 
 
 
-				// Static section :
+				// Static section:
 
 
 				/**
@@ -734,7 +790,7 @@ namespace OSDL
 	
 				/**
 				 * Specifies how many milliseconds by default should be 
-				 * waited until two repeated keys : once a key is hold long
+				 * waited until two repeated keys: once a key is hold long
 				 * enough to repeat, this will be the time between two repeats
 				 * of this key.
 				 *
@@ -745,7 +801,7 @@ namespace OSDL
 				 		
 
 							
-		protected :
+		protected:
 		
 				
 				
@@ -776,7 +832,7 @@ namespace OSDL
 				 * Called whenever a key was pressed, so that its 
 				 * controller, if any, is notified.
 				 *
-				 * If no controller is registered for this key, then : 
+				 * If no controller is registered for this key, then: 
 				 *   - if a key handler is registered for this key, it will 
 				 * be called
 				 *   - otherwise (no handler for this key is found), then 
@@ -795,7 +851,7 @@ namespace OSDL
 				 * Called whenever a key was released, so that its controller,
 				 * if any, is notified.
 				 *
-				 * If no controller is registered for this key, then : 
+				 * If no controller is registered for this key, then: 
 				 *   - if a key handler is registered for this key, it 
 				 * will be called.
 				 *   - otherwise (no handler for this key is found), then 
@@ -823,7 +879,7 @@ namespace OSDL
  * 
  */
 #pragma warning( push )
-#pragma warning( disable : 4251 )
+#pragma warning( disable: 4251 )
 		
 		
 				/** 
@@ -843,7 +899,7 @@ namespace OSDL
 				/** 
 				 * Fall-back map used whenever a raw key was pressed or 
 				 * released without being registered in the map making 
-				 * raw keys correspond to controllers : it may then be 
+				 * raw keys correspond to controllers: it may then be 
 				 * linked to a specific keyboard event handler.
 				 *
 				 * When a key has been pressed or released, but no controller
@@ -882,7 +938,7 @@ namespace OSDL
 				/** 
 				 * Fall-back map used whenever a Unicode was selected 
 				 * by the user without being registered in the map making
-				 * Unicodes correspond to controllers : it may then be 
+				 * Unicodes correspond to controllers: it may then be 
 				 * linked to a specific keyboard event handler.
 				 *
 				 * When a Unicode is selected, but no controller was linked 

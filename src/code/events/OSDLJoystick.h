@@ -5,11 +5,13 @@
 #include "OSDLJoystickCommon.h"    // for JoystickNumber, etc.
 #include "OSDLInputDevice.h"       // for inheritance
 
-#include "SDL.h"                   // for SDL_Joystick
 
 #include <string>
 #include <list>
 
+
+
+// 'struct SDL_Joystick ;' already forward-declared.
 
 
 
@@ -19,20 +21,35 @@ namespace OSDL
 
 	namespace Events
 	{
+
+		
+		#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 	
-	
-		/// Low level joystick object.
-		typedef SDL_Joystick RawJoystick  ;
-				
+		/*
+		 * No way of forward declaring LowLevelJoystick apparently:
+		 * we would have liked to specify 'struct LowLevelThing ;' here and
+		 * in the implementation file (.cc): 'typedef BackendThing
+		 * LowLevelThing' but then the compiler finds they are conflicting
+		 * declarations.
+		 *
+		 */
+		typedef ::SDL_Joystick LowLevelJoystick ;
+
+		#else // OSDL_USES_SDL
+
+		struct LowLevelJoystick {} ;
+
+		#endif // OSDL_USES_SDL
+		
 		
 		/**
 		 * Models a basic joystick, including relevant axes, hats, balls and
 		 * buttons.
 		 *
-		 * Usually, joystick directions should be interpreted this way :
-		 *   - axis 0 : left-right direction, negative values are left, 
+		 * Usually, joystick directions should be interpreted this way:
+		 *   - axis 0: left-right direction, negative values are left, 
 		 * positive are right
-		 *   - axis 1 : up-down direction, negative values are up, positive 
+		 *   - axis 1: up-down direction, negative values are up, positive 
 		 * are down
 		 *
 		 * All events for this joystick are propagated to the associated
@@ -47,7 +64,7 @@ namespace OSDL
 		 * @see ClassicalJoystick
 		 *
 		 */
-		class OSDL_DLL Joystick : public OSDL::Events::InputDevice
+		class OSDL_DLL Joystick: public OSDL::Events::InputDevice
 		{
 		
 
@@ -67,8 +84,12 @@ namespace OSDL
 				 *
 				 * @param index the index of this joystick in platform list.
 				 *
+				 * @throw JoystickException if the operation failed or is
+				 * not supported.
+				 *
 				 */
-				explicit Joystick( JoystickNumber index ) throw() ;
+				explicit Joystick( JoystickNumber index )
+					throw( JoystickException ) ;
 				
 				
 				/**
@@ -277,7 +298,7 @@ namespace OSDL
 				
 				
 			
-		protected :
+		protected:
 		
 				
 				/**
@@ -375,7 +396,7 @@ namespace OSDL
 				
 								
 				/// The internal raw joystick being used.
-				RawJoystick * _internalJoystick ;
+				LowLevelJoystick * _internalJoystick ;
 	
 				
 				/// The number of axes for this joystick.

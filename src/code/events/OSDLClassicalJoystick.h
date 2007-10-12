@@ -37,7 +37,7 @@ namespace OSDL
 		 * joystick, since the joystick index is not propagated.
 		 *
 		 */
-		class OSDL_DLL ClassicalJoystick : public Joystick
+		class OSDL_DLL ClassicalJoystick: public Joystick
 		{
 		
 			
@@ -57,10 +57,15 @@ namespace OSDL
 				 *
 				 * @param index the index of this joystick in platform list.
 				 *
+				 * @param deadZoneExtent the extent of the joystick dead zone.
+				 *
+				 * @throw JoystickException if the operation failed or is
+				 * not supported.
+				 *
 				 */
 				explicit ClassicalJoystick( JoystickNumber index, 
 						AxisPosition deadZoneExtent = DefaultDeadZoneExtent )
-					throw() ;
+					throw( JoystickException ) ;
 				
 				
 				/**
@@ -123,7 +128,7 @@ namespace OSDL
 			
 			
 			
-		protected :
+		protected:
 		
 		
 
@@ -177,7 +182,7 @@ namespace OSDL
 				/**
 				 * Stores the dead zone extent for first axis. 
 				 * If d is the dead zone value, then a reported joystick 
-				 * axis value in :
+				 * axis value in:
 				 *  - ]32768; -d[ will notify the controller to the joystick 
 				 * is on the left
 				 *  - [-d;d] will not notify the controller of anything
@@ -191,7 +196,7 @@ namespace OSDL
 				/**
 				 * Stores the dead zone extent for first axis. 
 				 * If d is the dead zone value, then a reported joystick 
-				 * axis value in :
+				 * axis value in:
 				 *  - ]32768; -d[ will notify the controller to the joystick 
 				 * is up
 				 *  - [-d;d] will not notify the controller of anything

@@ -49,7 +49,7 @@ namespace OSDL
 		 * @note No multiple mice are managed for the moment.
 		 *
 		 */
-		class OSDL_DLL MouseHandler : public InputDeviceHandler
+		class OSDL_DLL MouseHandler: public InputDeviceHandler
 		{
 		
 
@@ -163,7 +163,7 @@ namespace OSDL
 				
 				
 				
-		protected :
+		protected:
 						
 					
 				/*
@@ -319,3 +319,4 @@ namespace OSDL
 
 
 #endif // OSDL_MOUSE_HANDLER_H_
+

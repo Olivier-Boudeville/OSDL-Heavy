@@ -19,6 +19,19 @@ const AxisPosition ClassicalJoystick::DefaultDeadZoneExtent = 100 ;
 #endif // OSDL_USES_CONFIG_H
 
 
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+
+#if OSDL_USES_SDL
+
+#include "SDL.h"         // for CD-ROM primitives
+
+#endif // OSDL_USES_SDL
+
+
 
 #if OSDL_VERBOSE_JOYSTICK
 
@@ -34,7 +47,7 @@ const AxisPosition ClassicalJoystick::DefaultDeadZoneExtent = 100 ;
 
 
 /*
- * Not used currently since event loop is prefered to polling :
+ * Not used currently since event loop is prefered to polling:
  *   - SDL_JoystickUpdate
  *	 - SDL_JoystickEventState (used in OSDLJoysticksHandler)
  *
@@ -42,11 +55,19 @@ const AxisPosition ClassicalJoystick::DefaultDeadZoneExtent = 100 ;
  
 
 ClassicalJoystick::ClassicalJoystick( 
-		JoystickNumber index, AxisPosition deadZoneExtent ) throw() :
+	JoystickNumber index, AxisPosition deadZoneExtent ) 
+		throw( JoystickException ):
 	Joystick( index ),
 	_deadZoneExtentFirstAxis( deadZoneExtent ),
 	_deadZoneExtentSecondAxis( deadZoneExtent )
 {
+
+#if ! OSDL_USES_SDL
+
+	throw JoystickException( "ClassicalJoystick constructor failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
 
 }
 
@@ -81,7 +102,7 @@ const string ClassicalJoystick::toString( Ceylan::VerbosityLevels level )
 	const throw()
 {
 
-	return "Classical joystick : " + Joystick::toString( level )
+	return "Classical joystick: " + Joystick::toString( level )
 		+ ". The first axis deadzone extent is "   
 		+ Ceylan::toString( _deadZoneExtentFirstAxis ) 
 		+ ", the second axis deadzone extent is " 
@@ -99,6 +120,8 @@ void ClassicalJoystick::axisChanged( const JoystickAxisEvent & joystickEvent )
 	throw()
 {
 	
+#if OSDL_USES_SDL
+
 	if ( isLinkedToController() )
 	{
 	
@@ -140,10 +163,12 @@ void ClassicalJoystick::axisChanged( const JoystickAxisEvent & joystickEvent )
 	{
 		OSDL_JOYSTICK_LOG( 
 			"Axis changed for controller-less classical joystick #" 
-			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
+			+ Ceylan::toNumericalString( joystickEvent.which ) + ": "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
 	}
 		
+#endif // OSDL_USES_SDL
+
 }
 
 
@@ -152,6 +177,8 @@ void ClassicalJoystick::buttonPressed(
 	const JoystickButtonEvent & joystickEvent ) throw()
 {
 	
+#if OSDL_USES_SDL
+
 	if ( isLinkedToController() )
 	{
 	
@@ -170,7 +197,7 @@ void ClassicalJoystick::buttonPressed(
 				OSDL_JOYSTICK_LOG( 
 					"Button (neither first or second, hence ignored) "
 					"pressed for classical joystick #" 
-					+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
+					+ Ceylan::toNumericalString( joystickEvent.which ) + ": "
 					+ EventsModule::DescribeEvent( joystickEvent ) ) ;
 				break ;
 		}
@@ -181,9 +208,11 @@ void ClassicalJoystick::buttonPressed(
 	{
 		OSDL_JOYSTICK_LOG( 
 			"Button pressed for controller-less classical joystick #" 
-			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
+			+ Ceylan::toNumericalString( joystickEvent.which ) + ": "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
 	}
+
+#endif // OSDL_USES_SDL
 			
 }
 
@@ -193,6 +222,8 @@ void ClassicalJoystick::buttonReleased(
 	const JoystickButtonEvent & joystickEvent ) throw()
 {
 	
+#if OSDL_USES_SDL
+
 	if ( isLinkedToController() )
 	{
 	
@@ -211,7 +242,7 @@ void ClassicalJoystick::buttonReleased(
 				OSDL_JOYSTICK_LOG( 
 					"Button (neither first or second, hence ignored) "
 					"released for classical joystick #" 
-					+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
+					+ Ceylan::toNumericalString( joystickEvent.which ) + ": "
 					+ EventsModule::DescribeEvent( joystickEvent ) ) ;
 				break ;
 		}
@@ -222,9 +253,11 @@ void ClassicalJoystick::buttonReleased(
 	
 		OSDL_JOYSTICK_LOG( 
 			"Button released for controller-less classical joystick #" 
-			+ Ceylan::toNumericalString( joystickEvent.which ) + " : "
+			+ Ceylan::toNumericalString( joystickEvent.which ) + ": "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
 	}
+
+#endif // OSDL_USES_SDL
 			
 }
 

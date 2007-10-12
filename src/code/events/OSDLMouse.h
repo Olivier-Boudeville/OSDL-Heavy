@@ -47,11 +47,11 @@ namespace OSDL
 		 * controller part.
 		 *
 		 * For usual needs, Mouse instances should be set in classical
-		 * mode : it would be more convenient, since it is a higher-level
+		 * mode: it would be more convenient, since it is a higher-level
 		 * (but a little less general-purpose) model.
 		 *
 		 */
-		class OSDL_DLL Mouse : public OSDL::Events::InputDevice
+		class OSDL_DLL Mouse: public OSDL::Events::InputDevice
 		{
 		
 		
@@ -76,9 +76,12 @@ namespace OSDL
 				 * be in classical mode (higher level), or in normal mode
 				 * (low-level events only are propagated to controllers).
 				 *
+				 * @throw MouseException if the operation failed or is not
+				 * supported.
+				 *
 				 */
 				explicit Mouse( MouseNumber index, 
-					bool classicalMouseMode = true ) throw() ;
+					bool classicalMouseMode = true ) throw( MouseException ) ;
 				
 				
 				/**
@@ -261,7 +264,7 @@ namespace OSDL
 					
 					
 				/**
-				 * By default, a mouse is supposed to have 5 buttons :
+				 * By default, a mouse is supposed to have 5 buttons:
 				 * left, middle, right, wheel up and down. 
 				 *	
 				 */	
@@ -269,7 +272,7 @@ namespace OSDL
 				
 				
 				/**
-				 * By default, a mouse is supposed to have 3 actual buttons :
+				 * By default, a mouse is supposed to have 3 actual buttons:
 				 * left, middle, right. 
 				 *	
 				 */	
@@ -284,7 +287,7 @@ namespace OSDL
 				
 				
 				
-		protected :
+		protected:
 		
 		
 				/**
@@ -424,3 +427,4 @@ namespace OSDL
 
 
 #endif // OSDL_MOUSE_H_
+
