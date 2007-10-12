@@ -11,8 +11,10 @@
 #include <string>
 
 
-// To protect LoadIcon :
+// To protect LoadIcon:
 #include "OSDLIncludeCorrecter.h"
+
+
 
 namespace OSDL
 {
@@ -30,7 +32,7 @@ namespace OSDL
 			
 			
 			/// Mother class for all image exceptions. 		
-			class OSDL_DLL ImageException : public OSDL::Video::VideoException 
+			class OSDL_DLL ImageException: public OSDL::Video::VideoException 
 			{ 
 				public: 
 				
@@ -48,7 +50,7 @@ namespace OSDL
 			 * 
 			 * @see Surface::LoadImage
 			 *
-			 * Supported images formats are :
+			 * Supported images formats are:
 			 *		- JPG (recommended)
 			 *		- PNG (recommended)
 			 * 		- BMP
@@ -64,14 +66,14 @@ namespace OSDL
 			 *
 			 * We therefore recommend using two of them, which moreover 
 			 * are patent-less standards and should cover most if not all 
-			 * needs :
-			 *		- JPG : to compress, with little loss, full-blown images
+			 * needs:
+			 *		- JPG: to compress, with little loss, full-blown images
 			 * such as photographies, with high color depth
-			 *		- PNG : to compress without loss computer-generated 
+			 *		- PNG: to compress without loss computer-generated 
 			 * images, with or without alpha channel
 			 *
 			 */
-			class OSDL_DLL Image : public Ceylan::TextDisplayable
+			class OSDL_DLL Image: public Ceylan::TextDisplayable
 			{
 				
 				
@@ -151,7 +153,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen
@@ -201,7 +203,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen
@@ -253,7 +255,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen
@@ -305,7 +307,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen
@@ -357,7 +359,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen
@@ -409,7 +411,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen
@@ -461,7 +463,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen
@@ -513,7 +515,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen
@@ -565,7 +567,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen
@@ -617,7 +619,7 @@ namespace OSDL
 					 * if ever that surface was to be blitted 
 					 * multiple times to the screen (one-time-for-all
 					 * conversion). 
-					 * <b>Beware</b> : setMode must have been called before
+					 * <b>Beware</b>: setMode must have been called before
 					 * convertToDisplay is chosen.
 					 *
 					 * @param convertWithAlpha if the conversion to screen

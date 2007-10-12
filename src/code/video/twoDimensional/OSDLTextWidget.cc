@@ -44,14 +44,14 @@ TextWidget::TextWidget(
 		bool minMaximizable, 
 		bool draggable, 
 		bool wrappable, 
-		bool closable ) throw( VideoException ) :
+		bool closable ) throw( VideoException ):
 	BackBufferedWidget( 
 			 container,
 			 relativePosition, 
 			 width, 
 			 maximumHeight   /* height and maximum height start equal */, 
 			 NotInitialized  /* will be set later in this constructor */,
-			 /* will be set later in this constructor for RoundCorners : */
+			 /* will be set later in this constructor for RoundCorners: */
 			 backgroundColor, 
 			 title,
 			 minMaximizable,
@@ -86,7 +86,7 @@ TextWidget::TextWidget(
 			break ;
 			
 		case RoundCorners:			
-			// Activates a color key which cannot collide with other colors :
+			// Activates a color key which cannot collide with other colors:
 			setBaseColorMode( Colorkey, 
 				Pixels::selectColorDifferentFrom( _textColor, _edgeColor,
 				_backColorForRoundCorners ) ) ;
@@ -94,7 +94,7 @@ TextWidget::TextWidget(
 			
 		default:
 			LogPlug::error( 
-				"TextWidget constructor : unexpected shape specified." ) ;
+				"TextWidget constructor: unexpected shape specified." ) ;
 			break ;
 			
 	}		
@@ -102,7 +102,7 @@ TextWidget::TextWidget(
 	
 	/*
 	 * Must be called in this constructor as well, so that the overriden 
-	 * version is used :
+	 * version is used:
 	 *
 	 */
 	updateClientArea() ;
@@ -137,7 +137,7 @@ void TextWidget::setText( const std::string & newText ) throw()
 
 	_text = newText ;
 	
-	// Reset the height to the user-provided one :
+	// Reset the height to the user-provided one:
 	setHeight( _maximumHeight ) ;
 	
 	updateClientArea() ;
@@ -172,14 +172,14 @@ void TextWidget::redrawBackBuffer() throw()
 #endif // OSDL_DEBUG_WIDGET
 
 	Coordinate lastOrdinateUsed ;
-	Surface * renderedText ;
+	Surface * renderedText = 0 ;
 	
 	Coordinate blitWidth, blitHeight ;
 			
 	try
 	{
 			
-		// First have the text rendered in a separate surface :	
+		// First have the text rendered in a separate surface:	
 		renderedText = & _font->renderLatin1MultiLineText( 
 			_clientArea.getWidth(), _clientArea.getHeight(), _text, 
 			/* render index */ _currentIndex, lastOrdinateUsed, 
@@ -188,10 +188,10 @@ void TextWidget::redrawBackBuffer() throw()
 	}
 	catch( const TextException & e )
 	{
-		LogPlug::error( "TextWidget::redrawBackBuffer : " + e.toString() ) ;
+		LogPlug::error( "TextWidget::redrawBackBuffer: " + e.toString() ) ;
 	}
 
-	// Uncomment to see text box and to check lowest pixel row used by text :
+	// Uncomment to see text box and to check lowest pixel row used by text:
 	/*
 	renderedText->drawEdges( Pixels::Green ) ;
 	renderedText->drawHorizontalLine( 0, renderedText->getWidth(),
@@ -212,7 +212,7 @@ void TextWidget::redrawBackBuffer() throw()
 
 		/*
 		 * Reduce the height if requested and possible 
-		 * (i.e. if text smaller than client area) :
+		 * (i.e. if text smaller than client area):
 		 *
 		 */
 		if ( _minimumHeight && ( lastOrdinateUsed < _clientArea.getHeight() ) )
@@ -220,17 +220,17 @@ void TextWidget::redrawBackBuffer() throw()
 				
 #if OSDL_DEBUG_WIDGET
 
-			// Should never happen :
+			// Should never happen:
 			if ( lastOrdinateUsed + 2 * _ClientOffsetHeight 
 					+ _TitleBarOffsetOrdinate >	getHeight() )
-				Ceylan::emergencyShutdown( "TextWidget::redrawBackBuffer : "
+				Ceylan::emergencyShutdown( "TextWidget::redrawBackBuffer: "
 					"specified maximum height exceeded whereas shrinking" ) ;
 					
 #endif // OSDL_DEBUG_WIDGET
 				
 			/*
 			 * Recompute total height from newer client height
-			 * (automatically updates client area) :
+			 * (automatically updates client area):
 			 *
 			 */
 			setHeight( lastOrdinateUsed + 2 * _ClientOffsetHeight 
@@ -238,7 +238,7 @@ void TextWidget::redrawBackBuffer() throw()
 			
 			/*
 			 * Resize operation erased all, hence draw the basic widget
-			 * decorations in back-buffer :
+			 * decorations in back-buffer:
 			 *
 			 */
 			drawFundamentals( *this ) ;
@@ -281,7 +281,7 @@ void TextWidget::redrawBackBuffer() throw()
 		 
 		/*
 		 * Reduce the height if requested and possible 
-		 * (i.e. if text smaller than client area) :
+		 * (i.e. if text smaller than client area):
 		 *
 		 */
 		if ( _minimumHeight && ( lastOrdinateUsed < _clientArea.getHeight() ) )
@@ -290,7 +290,7 @@ void TextWidget::redrawBackBuffer() throw()
 #if OSDL_DEBUG_WIDGET
 
 			LogPlug::trace( 
-				"TextWidget::redrawBackBuffer for round rectangle : "
+				"TextWidget::redrawBackBuffer for round rectangle: "
 				"lastOrdinateUsed = " + Ceylan::toString( lastOrdinateUsed ) 
 				+ ", client area height = " 
 				+ Ceylan::toString( _clientArea.getHeight() ) ) ;
@@ -299,7 +299,7 @@ void TextWidget::redrawBackBuffer() throw()
 				
 			/*
 			 * Recompute total height from newer client height 
-			 * (automatically updates client area) :
+			 * (automatically updates client area):
 			 *
 			 */
 			setHeight( lastOrdinateUsed + 2 * _roundOffset ) ;
@@ -308,17 +308,17 @@ void TextWidget::redrawBackBuffer() throw()
 #if OSDL_DEBUG_WIDGET
 			
 			if ( _clientArea.getWidth() < renderedText->getWidth() )
-				Ceylan::emergencyShutdown( "TextWidget::redrawBackBuffer : "
+				Ceylan::emergencyShutdown( "TextWidget::redrawBackBuffer: "
 					"resize for round rectangle led to a client area "
-					"not wide enough : client area width = " 
+					"not wide enough: client area width = " 
 					+ Ceylan::toString( _clientArea.getWidth() ) 
 					+ ", rendered text width = " 
 					+ Ceylan::toString( renderedText->getWidth() ) ) ;
 					
 			if ( _clientArea.getHeight() < lastOrdinateUsed )
-				Ceylan::emergencyShutdown( "TextWidget::redrawBackBuffer : "
+				Ceylan::emergencyShutdown( "TextWidget::redrawBackBuffer: "
 					"resize for round rectangle led to a client area "
-					"not tall enough : client area height = " 
+					"not tall enough: client area height = " 
 					+ Ceylan::toString( _clientArea.getHeight() ) 
 					+ ", rendered text height = " 
 					+ Ceylan::toString( renderedText->getHeight() ) ) ;
@@ -333,20 +333,20 @@ void TextWidget::redrawBackBuffer() throw()
 		 * does not hide anything behind it.
 		 *
 		 * Hence we fill this surface (the back-buffer) with the already
-		 * selected color key :
+		 * selected color key:
 		 *
 		 */		
 		fill( _baseColor ) ;
 		
 						
-		// Let's draw the overall rounded rectangle :
+		// Let's draw the overall rounded rectangle:
 		drawWithRoundedCorners( *this, DefaultEdgeWidth, 
 			_edgeColor, _backColorForRoundCorners ) ;
 
 
 		/*
 		 * Force alignment for both dimensions (_verticallyAligned 
-		 * deemed always true here) :
+		 * deemed always true here):
 		 *
 		 */
 				
@@ -370,7 +370,7 @@ void TextWidget::redrawBackBuffer() throw()
 	
 	count++ ;
 
-	LogPlug::debug( "TextWidget::redrawBackBuffer : client area is " 
+	LogPlug::debug( "TextWidget::redrawBackBuffer: client area is " 
 		+ _clientArea.toString() 
 		+ ", starting abscissa is "+ Ceylan::toString( blitWidth ) 
 		+ ", starting ordinate is "+ Ceylan::toString( blitHeight ) 
@@ -382,7 +382,7 @@ void TextWidget::redrawBackBuffer() throw()
 #endif // OSDL_DEBUG_WIDGET
 		
 
-	// Uncomment to check client area :
+	// Uncomment to check client area:
 	//drawBox( _clientArea, Pixels::Yellow, /* filled */ false ) ;
 	//_overallSurface->drawBox( _clientArea, Pixels::Yellow, 
 	//	/* filled */ false ) ;
@@ -392,7 +392,7 @@ void TextWidget::redrawBackBuffer() throw()
 	delete renderedText ;
 		
 		
-	// Uncomment to see client area and save back-buffer / front-buffer :
+	// Uncomment to see client area and save back-buffer / front-buffer:
 	//drawBox( _clientArea, Pixels::Yellow, /* filled */ false ) ;
 	/*
 	savePNG( "backbuffer.png" ) ;	
@@ -436,7 +436,7 @@ const string TextWidget::toString( Ceylan::VerbosityLevels level ) const throw()
 	
 	if ( _minimumHeight )
 	{
-		textWidgetList.push_back( "Widget height (currently : " 
+		textWidgetList.push_back( "Widget height (currently: " 
 			+ Ceylan::toString( getHeight() )
 			+ ") will shrink, if text is short enough, "
 			"for recorded maximum height, "
@@ -458,7 +458,7 @@ const string TextWidget::toString( Ceylan::VerbosityLevels level ) const throw()
 
 	textWidgetList.push_back( "Text to display is '" + _text + "'." ) ;
 	
-	textWidgetList.push_back( "Font informations : " 
+	textWidgetList.push_back( "Font informations: " 
 		+ _font->toString( level ) ) ;
 	
 	if ( _justified )	
@@ -498,7 +498,7 @@ const string TextWidget::toString( Ceylan::VerbosityLevels level ) const throw()
 	}
 	
 		
-	string res = "Text widget : " + Ceylan::formatStringList( textWidgetList ) ;
+	string res = "Text widget: " + Ceylan::formatStringList( textWidgetList ) ;
 	
 	if ( level == Ceylan::low )		
 		return res ;
@@ -516,14 +516,14 @@ void TextWidget::updateClientArea() throw()
 	LogPlug::trace( "TextWidget::updateClientArea" ) ;
 #endif // OSDL_DEBUG_WIDGET
 	
-	// For square corners, client area is the basic one :
+	// For square corners, client area is the basic one:
 	if ( _shape == SquareCorners )
 	{
 		Widget::updateClientArea() ;
 		return ;
 	}	
 		
-	// Here we suppose _shape == RoundCorners :
+	// Here we suppose _shape == RoundCorners:
 	
 	/*
 	 * We have to compute what is the biggest upright rectangle that 
@@ -531,13 +531,13 @@ void TextWidget::updateClientArea() throw()
 	 * to the inner part of the widget, due to edge width).
 	 *
 	 * Each corner of the rectangular client area should be half-way 
-	 * of its associated arc of circle : the corner is defined by 
+	 * of its associated arc of circle: the corner is defined by 
 	 * the radius  DefaultEdgeWidth.
 	 *
 	 * @see UprightRectangle::drawWithRoundedCorners
 	 *
 	 */
-	Length radius ;
+	Length radius = 0 ;
 	
 	try
 	{ 
@@ -546,7 +546,7 @@ void TextWidget::updateClientArea() throw()
 	catch( const VideoException & e )
 	{
 	
-		LogPlug::error( "TextWidget::updateClientArea : no possible radius : " 
+		LogPlug::error( "TextWidget::updateClientArea: no possible radius: " 
 			+ e.toString() ) ;
 		// Defaults to the whole rectangular shape (emergency measure):	
 		Widget::updateClientArea() ; 
@@ -565,7 +565,7 @@ void TextWidget::updateClientArea() throw()
 	_clientArea.setUpperLeftOrdinate( _roundOffset ) ;
 	_clientArea.setHeight( getHeight() - 2 * _roundOffset ) ;
 	
-	//LogPlug::debug( "Client area :" + _clientArea.toString() ) ;
+	//LogPlug::debug( "Client area:" + _clientArea.toString() ) ;
 	
 }
 

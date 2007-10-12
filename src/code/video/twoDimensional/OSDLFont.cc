@@ -3,16 +3,27 @@
 #include "OSDLSurface.h"         // for Surface
 #include "OSDLPixel.h"           // for ColorDefinition
 
-#include "SDL_gfxPrimitives.h"   // for stringColor
-
-#include "SDL_ttf.h"             // for TTF_STYLE_NORMAL and others
 
 #include <list>
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>          // for OSDL_DEBUG_FONT and al 
+#include <OSDLConfig.h>              // for OSDL_DEBUG_FONT and al 
 #endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+//#include "SDL_gfxPrimitives.h"   // for stringColor
+
+
+#if OSDL_USES_SDL_TTF
+
+#include "SDL_ttf.h"             // for TTF_STYLE_NORMAL and others
+
+#endif // OSDL_USES_SDL_TTF
 
 
 using std::list ;
@@ -60,10 +71,25 @@ using namespace OSDL::Video::TwoDimensional::Text ;
 // Font section.
 
 
+#if OSDL_USES_SDL_TTF
+
 const RenderingStyle Font::Normal    = TTF_STYLE_NORMAL    ;
 const RenderingStyle Font::Bold      = TTF_STYLE_BOLD      ;
 const RenderingStyle Font::Italic    = TTF_STYLE_ITALIC    ;
 const RenderingStyle Font::Underline = TTF_STYLE_UNDERLINE ;
+
+#else // OSDL_USES_SDL_TTF
+
+
+// Same as in SDL_ttf:
+
+const RenderingStyle Font::Normal    = 0x00 ;
+const RenderingStyle Font::Bold      = 0x01 ;
+const RenderingStyle Font::Italic    = 0x02 ;
+const RenderingStyle Font::Underline = 0x04 ;
+
+#endif // OSDL_USES_SDL_TTF
+
 
 
 const Ceylan::System::Size Font::DefaultGlyphCachedQuota = 4 * 1024 * 1024 ;
@@ -89,6 +115,7 @@ Font::Font(
 	_spaceWidth( 0 ),
 	_alineaWidth( 0 )
 {
+	
 	
 	/*
 	 * _spaceWidth and _alineaWidth cannot be initialized in this Font
@@ -362,7 +389,7 @@ Width Font::getInterGlyphWidth() const throw()
 
 	// Scales with the letter width, minimum is one:
 	static Width inter = static_cast<Width>( 
-		Ceylan::Maths::Max<float>( 1, 0.1f * getWidth( 'a' ) ) ) ;
+		Ceylan::Maths::Max<Ceylan::Float32>( 1, 0.1f * getWidth( 'a' ) ) ) ;
 
 	return inter ;
 
@@ -1477,8 +1504,8 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 			
 	bool firstLetter = true ;
 	
-	Ceylan::Latin1Char currentChar ;		
-	SignedLength       currentOffset ;
+	Ceylan::Latin1Char currentChar = 0 ;		
+	SignedLength       currentOffset = 0 ;
 	Length             currentAdvance ;
 	
 	/*

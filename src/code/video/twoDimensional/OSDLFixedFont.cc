@@ -5,18 +5,34 @@
 #include "OSDLVideoTypes.h"      // for Length, SignedLength, etc.
 #include "OSDLUtils.h"           // for getBackendLastError.
 
-#include "SDL_gfxPrimitives.h"   // for stringColor
-
-#include "SDL.h"                 // for SDL_Surface
 
 #include <list>
  
-#include <ctype.h>               // for isdigit
+#include <ctype.h>                   // for isdigit
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>          // for OSDL_DEBUG_FONT and al 
+#include <OSDLConfig.h>              // for OSDL_DEBUG_FONT and al 
 #endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+
+#if OSDL_USES_SDL_GFX
+
+#include "SDL_gfxPrimitives.h"       // for stringColor
+
+#endif // OSDL_USES_SDL_GFX
+
+
+#if OSDL_USES_SDL
+
+#include "SDL.h"                     // for SDL_CreateRGBSurface
+
+#endif // OSDL_USES_SDL
 
 
 
@@ -52,31 +68,46 @@ const Ceylan::Uint16 Text::FixedFont::FontCharacterCount = 256 ;
 
 
 
+
 // First, the two basic fixed font primitives.
 
 
+
 bool Text::printBasic( const std::string & text, Surface & targetSurface,
-	Coordinate x, Coordinate y, Pixels::ColorDefinition colorDef ) throw()
+		Coordinate x, Coordinate y, Pixels::ColorDefinition colorDef ) 
+	throw( VideoException )
 {	
+
+#if OSDL_USES_SDL_GFX
 
 	FixedFont::SetFontSettings( /* no font data: built-in */ 0, /* width */ 8, 
 		/* height */ 8 ) ;
 			
-	bool result =::stringColor( & targetSurface.getSDLSurface(), 
+	bool result = ::stringColor( & targetSurface.getSDLSurface(), 
 		x, y, text.c_str(),
 		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ;
 		
 	return result ;
+
+#else // OSDL_USES_SDL_GFX
+
+	throw VideoException( "Text::printBasic failed: "
+		"no SDL_gfx support available" ) ;
 	
+#endif // OSDL_USES_SDL_GFX
+
 }
 
 
+
 bool Text::printBasic( const std::string & text, Surface & targetSurface,
-	Coordinate x, Coordinate y, 
-	Pixels::ColorElement red, Pixels::ColorElement blue,
-	Pixels::ColorElement green, Pixels::ColorElement alpha ) throw()
+		Coordinate x, Coordinate y, 
+		Pixels::ColorElement red, Pixels::ColorElement blue,
+		Pixels::ColorElement green, Pixels::ColorElement alpha )
+	throw( VideoException )
 {	
 
+#if OSDL_USES_SDL_GFX
 	
 	FixedFont::SetFontSettings( /* no font data: built-in */ 0, /* width */ 8, 
 		/* height */ 8 ) ;
@@ -87,12 +118,20 @@ bool Text::printBasic( const std::string & text, Surface & targetSurface,
 	 *
 	 */
 		
-	bool result =::stringRGBA( & targetSurface.getSDLSurface(), x, y,
+	bool result = ::stringRGBA( & targetSurface.getSDLSurface(), x, y,
 		text.c_str(), red, green, blue, alpha ) == 0 ;
 		
 	return result ;
 	
+#else // OSDL_USES_SDL_GFX
+
+	throw VideoException( "Text::printBasic failed: "
+		"no SDL_gfx support available" ) ;
+	
+#endif // OSDL_USES_SDL_GFX
+	
 }
+
 
 
 
@@ -110,7 +149,6 @@ bool Text::printBasic( const std::string & text, Surface & targetSurface,
  * efficient.
  *
  */
-
 FixedFont::FixedFont( 
 		Length characterWidth, 
 		Length characterHeight, 
@@ -131,6 +169,7 @@ FixedFont::FixedFont(
 		renderingStyle ) ) ;
 	
 }
+
 
 							  
 FixedFont::FixedFont( 
@@ -154,6 +193,7 @@ FixedFont::FixedFont(
 }
 
 
+
 FixedFont::~FixedFont() throw()
 {		
 		
@@ -172,12 +212,14 @@ Width FixedFont::getWidth() const throw()
 }
 
 
+
 Width FixedFont::getWidth( Ceylan::Latin1Char character ) const throw()
 {
 
 	return _width ;
 	
 }
+
 
 
 SignedWidth FixedFont::getWidthOffset( Ceylan::Latin1Char character ) 
@@ -199,12 +241,14 @@ SignedHeight FixedFont::getHeightAboveBaseline( Ceylan::Latin1Char character )
 }
 
 
+
 SignedLength FixedFont::getAdvance() const throw( TextException )
 {
 
 	return _width ;
 	
 }
+
 
 
 SignedLength FixedFont::getAdvance( Ceylan::Latin1Char character ) 
@@ -217,12 +261,14 @@ SignedLength FixedFont::getAdvance( Ceylan::Latin1Char character )
 }
 
 
+
 Width FixedFont::getInterGlyphWidth() const throw()
 {
 
 	return 0 ;
 	
 }
+
 
 
 Text::Height FixedFont::getHeight() const throw()
@@ -233,10 +279,12 @@ Text::Height FixedFont::getHeight() const throw()
 }
 
 
+
 SignedHeight FixedFont::getAscent() const throw()
 {
 	return _height ;
 }
+
 
 
 SignedHeight FixedFont::getDescent() const throw()
@@ -247,13 +295,16 @@ SignedHeight FixedFont::getDescent() const throw()
 }
 
 
+
 Text::Height FixedFont::getLineSkip() const throw()
 {
 
 	return _height + static_cast<Text::Height>( 
-		Ceylan::Maths::Max<Ceylan::Float32>( 2 , 0.1f * _height ) ) ;
+		Ceylan::Maths::Max<Ceylan::Float32>( 2, 0.1f * _height ) ) ;
 		
 }
+
+
 
 
 
@@ -266,6 +317,7 @@ UprightRectangle & FixedFont::getBoundingBox() const throw( TextException )
 	return * new UprightRectangle( 0, 0, getAdvance(), getLineSkip() ) ;
 	
 }
+
 
 
 UprightRectangle & FixedFont::getBoundingBoxFor( const std::string & word )
@@ -359,6 +411,7 @@ OSDL::Video::Surface & FixedFont::renderLatin1Glyph(
 }
 
 
+
 void FixedFont::blitLatin1Glyph( Surface & targetSurface, 
 	Coordinate x, Coordinate y, 
 	Ceylan::Latin1Char character, RenderQuality quality, 
@@ -404,7 +457,9 @@ void FixedFont::blitLatin1Glyph( Surface & targetSurface,
 			
 			try
 			{
+			
 				cachedSurface->blitTo( targetSurface, x, y ) ;
+				
 			}
 			catch( const VideoException & e )
 			{
@@ -454,6 +509,8 @@ OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha(
 	Ceylan::Latin1Char character, RenderQuality quality,
 	Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
+
+#if OSDL_USES_SDL_GFX
 
 	/*
 	 * This method should not be used, since it does not do what was expected.
@@ -558,8 +615,16 @@ OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha(
 	*/
 	
 	return res ;	
-	
+
+#else // OSDL_USES_SDL_GFX
+
+	throw TextException( "FixedFont::renderLatin1GlyphAlpha failed: "
+		"no SDL_gfx support available" ) ;
+		
+#endif // OSDL_USES_SDL_GFX
+
 }
+
 
 
 const string FixedFont::toString( Ceylan::VerbosityLevels level ) const throw()
@@ -597,9 +662,12 @@ Font::RenderQuality FixedFont::GetObtainedQualityFor(
 }
 
 
+
 void FixedFont::SetFontSettings( const Ceylan::Byte * fontData, 
-	Length characterWidth, Length characterHeight ) throw()	
+	Length characterWidth, Length characterHeight ) throw( TextException )	
 {
+
+#if OSDL_USES_SDL_GFX
 
 	static const char * lastFontData  = 0 ;
 	static Length lastCharacterWidth  = 0 ;
@@ -639,6 +707,13 @@ void FixedFont::SetFontSettings( const Ceylan::Byte * fontData,
 #endif // OSDL_DEBUG_FONT
 
 	}
+
+#else // OSDL_USES_SDL_GFX
+
+	throw TextException( "FixedFont::SetFontSettings failed: "
+		"no SDL_gfx support available" ) ;
+		
+#endif // OSDL_USES_SDL_GFX
 
 }							
 
@@ -869,12 +944,15 @@ Surface & FixedFont::basicRenderLatin1Glyph( Ceylan::Latin1Char character,
 	return res ;
 	
 }	
+		
 								
 							
 void FixedFont::basicBlitLatin1Glyph( Surface & targetSurface,
 	 Coordinate x, Coordinate y, Ceylan::Latin1Char character,
 	 Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
+
+#if OSDL_USES_SDL_GFX
 
 	/*
 	 * SDL_gfx internal cache may have to be reset, since another fixed 
@@ -895,6 +973,13 @@ void FixedFont::basicBlitLatin1Glyph( Surface & targetSurface,
 			"FixedFont::basicBlitLatin1Glyph: blit of glyph failed, " 
 			+ Utils::getBackendLastError() ) ;	
 
+#else // OSDL_USES_SDL_GFX
+
+	throw TextException( "FixedFont::basicBlitLatin1Glyph failed: "
+		"no SDL_gfx support available" ) ;
+		
+#endif // OSDL_USES_SDL_GFX
+
 }
 	
 							
@@ -910,7 +995,7 @@ string FixedFont::BuildFontFilenameFor(
 	{
 	
 		if ( renderingStyle & ~Bold )
-			throw TextException( "FixedFont::buildFontFilenameFor: "
+			throw TextException( "FixedFont::BuildFontFilenameFor: "
 				"too many rendering styles selected: " 
 				+ Ceylan::toString( renderingStyle ) + "." ) ;
 				
@@ -922,7 +1007,7 @@ string FixedFont::BuildFontFilenameFor(
 	{
 	
 		if ( renderingStyle & ~Italic )
-			throw TextException( "FixedFont::buildFontFilenameFor: "
+			throw TextException( "FixedFont::BuildFontFilenameFor: "
 				"too many rendering styles selected: " 
 				+ Ceylan::toString( renderingStyle ) + "." ) ;
 				
@@ -934,7 +1019,7 @@ string FixedFont::BuildFontFilenameFor(
 	{
 	
 		if ( renderingStyle & ~Underline )
-			throw TextException( "FixedFont::buildFontFilenameFor: "
+			throw TextException( "FixedFont::BuildFontFilenameFor: "
 				"too many rendering styles selected: " 
 				+ Ceylan::toString( renderingStyle ) + "." ) ;
 				
@@ -949,6 +1034,7 @@ string FixedFont::BuildFontFilenameFor(
 }
 
 
+
 void FixedFont::GetFontAttributesFrom( const string & filename, 
 	Length & characterWidth, Length & characterHeight, 
 	RenderingStyle & renderingStyle ) throw( TextException )
@@ -959,7 +1045,7 @@ void FixedFont::GetFontAttributesFrom( const string & filename,
 
 	if ( filename.substr( size - 4 ) != FontFileExtension )
 		throw TextException( 
-			"FixedFont::getFontAttributesFrom: expected extension ("
+			"FixedFont::GetFontAttributesFrom: expected extension ("
 			+ FontFileExtension + "), not found in '" + filename + "'." ) ;
 	
 	string width, height ;
@@ -979,7 +1065,7 @@ void FixedFont::GetFontAttributesFrom( const string & filename,
 	{
 	
 		throw TextException( 
-			"FixedFont::getFontAttributesFrom: unable to guess width from '"
+			"FixedFont::GetFontAttributesFrom: unable to guess width from '"
 			+ filename + "': " + e.toString() ) ;
 	}
 	
@@ -1000,7 +1086,7 @@ void FixedFont::GetFontAttributesFrom( const string & filename,
 	catch( const Ceylan::Exception & e )
 	{
 		throw TextException( 
-			"FixedFont::getFontAttributesFrom: unable to guess height from '"
+			"FixedFont::GetFontAttributesFrom: unable to guess height from '"
 			+ filename + "': " + e.toString() ) ;
 	}
 	

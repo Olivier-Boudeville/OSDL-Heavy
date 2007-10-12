@@ -9,8 +9,13 @@
 #include <string>
 
 
-// Forward declaration.
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+// No need to include SDL header here:
 struct SDL_Overlay ;
+
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 
 namespace OSDL
@@ -20,10 +25,23 @@ namespace OSDL
 	namespace Video
 	{
 	
-	
+		
+		
+		/// Low-level overlay being used.
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+		typedef ::SDL_Overlay LowLevelOverlay ;
+		
+#else // OSDL_USES_SDL	
+
+		struct LowLevelOverlay {} ;
+
+#endif // OSDL_USES_SDL
+
+
 	
 		/// Thrown when an error regarding overlays occured.
-		class OSDL_DLL OverlayException : public VideoException
+		class OSDL_DLL OverlayException: public VideoException
 		{
 		
 			public:
@@ -35,11 +53,12 @@ namespace OSDL
 	
 	
 	
+	
 		/**
 		 * An overlay is an image, encoded in a specific format, that can 
 		 * be blitted onto a Surface.
 		 * 
-		 * The encoding is based on YUV, which stands for : 
+		 * The encoding is based on YUV, which stands for: 
 		 *  - Y=Luminance
 		 *  - U=Normalised BY
 		 *  - V=Normalised RY. 
@@ -58,7 +77,7 @@ namespace OSDL
 		 * be overwritten when the overlay is displayed.
 		 *
 		 */
-		class OSDL_DLL Overlay : public Ceylan::Lockable
+		class OSDL_DLL Overlay: public Ceylan::Lockable
 		{
 		
 		
@@ -68,14 +87,14 @@ namespace OSDL
 				/**
 				 * Describes the encoding format used by an overlay.
 				 *
-				 * Planar modes :
-				 * - YV12 : Y + V + U
-				 * - IYUV : Y + U + V
+				 * Planar modes:
+				 * - YV12: Y + V + U
+				 * - IYUV: Y + U + V
 				 *
-				 * Packed modes :
-				 * - YUY2 : Y0 + U0 + Y1 + V0
-				 * - UYVY : U0 + Y0 + V0 + Y1
-				 * - YVYU : Y0 + V0 + Y1 + U0
+				 * Packed modes:
+				 * - YUY2: Y0 + U0 + Y1 + V0
+				 * - UYVY: U0 + Y0 + V0 + Y1
+				 * - YVYU: Y0 + V0 + Y1 + U0
 				 *
 				 */
 				enum EncodingFormat { YV12, IYUV, YUY2,UYVY, YVYU } ;
@@ -194,7 +213,7 @@ namespace OSDL
 			
 			
 				/// The inner back-end overlay, if any.
-				SDL_Overlay * _overlay ;
+				LowLevelOverlay * _overlay ;
 			
 			
 				/// The original width of the overlay.

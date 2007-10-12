@@ -6,12 +6,24 @@
 
 #include "Ceylan.h"          // for TextDisplayable, Uint32, etc.
 
+
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+// No need to include SDL header here:
+struct SDL_Palette ;
+
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+
+
 #include <string>
 
 
 
 namespace OSDL
 {
+
 	
 	namespace Video
 	{
@@ -21,8 +33,34 @@ namespace OSDL
 		typedef Ceylan::Uint32 ColorCount ;
 		
 		
+		
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+		/// SDL low-level palette being used.
+		typedef ::SDL_Palette LowLevelPalette ;
+		
+#else // OSDL_USES_SDL	
+
+
+		/// Low-level palette being used.
+		struct LowLevelPalette
+		{
+		
+			// Number of color defined.
+			ColorCount ncolors ;
+			
+			// Array definitions.
+			Pixels::ColorDefinition *colors ;
+			
+		} ;
+
+#endif // OSDL_USES_SDL
+		
+		
+		
+		
 		/// Exception raised when palette operation failed.
-		class OSDL_DLL PaletteException : public VideoException
+		class OSDL_DLL PaletteException: public VideoException
 		{
 		
 			public:
@@ -57,7 +95,7 @@ namespace OSDL
 		 * to getNumberOfColors()-1.
 		 *
 		 */
-		class OSDL_DLL Palette : public Ceylan::TextDisplayable
+		class OSDL_DLL Palette: public Ceylan::TextDisplayable
 		{
 		
 			public:
@@ -90,12 +128,12 @@ namespace OSDL
 				/**
 				 * Constructs a palette from an already existing SDL palette.
 				 *
-				 * @note Takes ownership of the SDL_Palette's color buffer.
-				 * The SDL_Palette object itself is still to be deallocated
+				 * @note Takes ownership of the LowLevelPalette's color buffer.
+				 * The LowLevelPalette object itself is still to be deallocated
 				 * by the caller, as if it had no color buffer.
 				 *
 				 */				
-				explicit Palette( SDL_Palette & palette ) 
+				explicit Palette( LowLevelPalette & palette ) 
 					throw( PaletteException ) ;
 				
 				
@@ -107,7 +145,7 @@ namespace OSDL
 				 * Loads from memory a new palette.
 				 *
 				 * @param colors the color array, which should have been
-				 * allocated like : 
+				 * allocated like: 
 				 * 'Pixels::ColorDefinition * colors 
 				 *    = new Pixels::ColorDefinition[ numberOfColors ] ;'
 				 *

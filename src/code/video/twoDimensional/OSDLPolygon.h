@@ -42,11 +42,11 @@ namespace OSDL
 				
 			
 			/**
-		 	 * Some polygone-based shapes :
+		 	 * Some polygone-based shapes:
 			 * - polygon-approximation of a pie
 			 * - triangle
-			 * - Polygon : true locatable polygon class
-			 * - PolygonSet : set of polygons defined in a same shared
+			 * - Polygon: true locatable polygon class
+			 * - PolygonSet: set of polygons defined in a same shared
 			 * referential
 			 *
 			 */
@@ -339,7 +339,7 @@ namespace OSDL
 			 * The points themselves are left as they are.
 			 *
 			 */
-			class OSDL_DLL Polygon : public Ceylan::Locatable2D
+			class OSDL_DLL Polygon: public Ceylan::Locatable2D
 			{
 			
 				public:
@@ -489,7 +489,7 @@ namespace OSDL
 					
 					
 					/**
-					 * Duplicates specified list of points : returns 
+					 * Duplicates specified list of points: returns 
 					 * another list containing clones of each points in
 					 * <b>source</b>.
 					 *
@@ -521,7 +521,7 @@ namespace OSDL
 					 * @return toBeAugmented after it has been augmented 
 					 * by toAppend's points.
 					 * It is the same list as specified in argument, but
-					 * modified : no copy is made. 
+					 * modified: no copy is made. 
 					 * Hence the returned value can be ignored, it is just
 					 * convenient when chaining functions.
 					 *
@@ -543,7 +543,7 @@ namespace OSDL
 					 * @return sourceList after all its points have been
 					 * transformed. 
 					 * It is the same list as specified in argument, but
-					 * modified : no copy is made. 
+					 * modified: no copy is made. 
 					 * Hence the returned value can be ignored, it is just
 					 * convenient when chaining functions.
 					 *
@@ -567,7 +567,7 @@ namespace OSDL
  * 
  */
 #pragma warning( push )
-#pragma warning( disable : 4251 )
+#pragma warning( disable: 4251 )
 
 					/// List of the summits of the polygon.
 					listPoint2D * _summits ;
@@ -624,7 +624,7 @@ namespace OSDL
 			 * @see Polygon
 			 *
 			 */
-			class OSDL_DLL PolygonSet : public Ceylan::Locatable2D
+			class OSDL_DLL PolygonSet: public Ceylan::Locatable2D
 			{
 			
 			
@@ -793,7 +793,7 @@ namespace OSDL
  * 
  */
 #pragma warning( push )
-#pragma warning( disable : 4251 )
+#pragma warning( disable: 4251 )
 				
 					/// List of the summits of the polygon.
 					std::list<listPoint2D *> * _polygonList ;

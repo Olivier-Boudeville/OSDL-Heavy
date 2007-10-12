@@ -72,7 +72,7 @@ namespace OSDL
 		 * available video mode. 
 		 *
 		 */
-		class OSDL_DLL VideoModule : public Ceylan::Module
+		class OSDL_DLL VideoModule: public Ceylan::Module
 		{
 		
 
@@ -93,7 +93,7 @@ namespace OSDL
 				/**
 				 * Returns the current screen surface, if any.
 				 *
-				 * The video module keeps ownership of the returned surface :
+				 * The video module keeps ownership of the returned surface:
 				 * the caller should not deallocate it.
 				 *
 				 * @throw VideoException if no screen surface is available.
@@ -362,7 +362,7 @@ namespace OSDL
 
 				/**
 				 * Returns the name of the video driver being currently 
-				 * used (example : 'x11').
+				 * used (example: 'x11').
 				 *
 				 * @see GetDriverName
 				 *
@@ -405,7 +405,7 @@ namespace OSDL
 				 * Sets the icon for the display window. 
 				 *
 				 * @param filename the name of the file containing the icon. 
-				 * Its format (ex : PNG) should be auto-detected.
+				 * Its format (ex: PNG) should be auto-detected.
 				 *
 				 * @note Win32 icons must be 32x32.
 				 *
@@ -499,7 +499,7 @@ namespace OSDL
 				 * (VideoModule::setMode called).
 				 *
 				 * @note This method is static so that calling it is 
-				 * convenient : no need to explicitly retrieve the common
+				 * convenient: no need to explicitly retrieve the common
 				 * module, then the video module, before knowing the result. 
 				 *
 				 * The need to retrieve the right module from scratch at each
@@ -514,7 +514,7 @@ namespace OSDL
 				 * be drawn.
 				 *
 				 * @note This method is static so that calling it is 
-				 * convenient : no need to explicitly retrieve the common
+				 * convenient: no need to explicitly retrieve the common
 				 * module, then the video module, before knowing the result. 
 				 *
 				 * The need to retrieve the right module from scratch at each
@@ -528,7 +528,7 @@ namespace OSDL
 				 * Tells whether antialiasing is wanted.
 				 *
 				 * @note This method is static so that calling it is 
-				 * convenient : no need to explicitly retrieve the common
+				 * convenient: no need to explicitly retrieve the common
 				 * module, then the video module, before knowing the result. 
 				 *
 				 * The need to retrieve the right module from scratch at each
@@ -541,7 +541,7 @@ namespace OSDL
 
 				/**
 				 * Returns the name of the video driver being currently 
-				 * used (example : 'x11').
+				 * used (example: 'x11').
 				 *
 				 * @see getDriverName.
 				 *
@@ -735,16 +735,19 @@ namespace OSDL
 				 * @param flags describes the desired screen surface, with 
 				 * the same meaning as the setMode flags.
 				 *
-				 * @param format : desired pixel format. If format is null (0),
+				 * @param format: desired pixel format. If format is null (0),
 				 * the definition list will correspond to the "best" mode
 				 * available.
+				 *
+				 * @throw VideoException if the operation failed or is not
+				 * supported.
 				 *
 				 */
 				static bool AreDefinitionsRestricted( 
 						std::list<Definition> & definitions,
 						Ceylan::Flags flags, 
 						Pixels::PixelFormat * pixelFormat = 0 ) 
-					throw() ;		
+					throw( VideoException ) ;		
 			
 					
 				/**
@@ -754,14 +757,17 @@ namespace OSDL
 				 * @param flags describes a target screen surface, with the 
 				 * same meaning as the setMode flags.
 				 *
-				 * @param format : desired pixel format. 
+				 * @param format: desired pixel format. 
 				 * If format is null (0), the definition list will 
 				 * correspond to the "best" mode available.
 				 *
+				 * @throw VideoException if the operation failed.
+				 *
 				 */
 				static std::string DescribeAvailableDefinitions( 
-					Ceylan::Flags flags, 
-					Pixels::PixelFormat * pixelFormat = 0 ) throw() ;
+						Ceylan::Flags flags, 
+						Pixels::PixelFormat * pixelFormat = 0 ) 
+					throw( VideoException ) ;
 					
 					
 				/**
@@ -942,7 +948,7 @@ namespace OSDL
 				 * Records the current frame-accounting state, which 
 				 * tells if frame rate is to be monitored.
 				 *
-				 * @note Default value : true.
+				 * @note Default value: true.
 				 *
 				 */
 				bool _frameAccountingState ;
@@ -963,7 +969,7 @@ namespace OSDL
 				
 
 				/// Top-left corner of the frame rate counter.
-				// @fixme : be widget static Point2D * FrameRateCounterOrigin ;
+				// @fixme: be widget static Point2D * FrameRateCounterOrigin ;
 		
 				
 				/**
@@ -1002,7 +1008,7 @@ namespace OSDL
 				 * Records the current state relative to final pixel 
 				 * drawing for lines.
 				 *
-				 * @note Default value : false.
+				 * @note Default value: false.
 				 *
 				 * @note Private to ensure cache consistency is enforced.
 				 *
@@ -1013,7 +1019,7 @@ namespace OSDL
 				/**
 				 * Records the current antialiasing state.
 				 *
-				 * @note Default value : true.
+				 * @note Default value: true.
 				 *
 				 * @note Private to ensure cache consistency is enforced.
 				 *

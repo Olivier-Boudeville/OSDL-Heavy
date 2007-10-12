@@ -23,7 +23,7 @@ namespace OSDL
 					
 		
 			/**
-		 	 * Conics section includes support for :
+		 	 * Conics section includes support for:
 			 *  - circle
 			 *  - ellipse
 			 *
@@ -48,7 +48,7 @@ namespace OSDL
 			 * specified color should be blended with the one of the target
 			 * pixel (if true), or if the disc color should replace the target
 			 * one, regardless of any blending (if false). 
-			 * Note that only discs may be drawn without being blended : 
+			 * Note that only discs may be drawn without being blended: 
 			 * circles are always blended, therefore if filled is false, 
 			 * blended does not matter.
 			 *
@@ -63,13 +63,16 @@ namespace OSDL
 			 *
 			 * @see VideoModule::GetAntiAliasingState
 			 *
+			 * @throw VideoException if the operation is not supported.
+			 *
 			 */
 			OSDL_DLL bool drawCircle( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter, Length radius, 
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
 				Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-				bool filled = true, bool blended = true ) throw() ;
+				bool filled = true, bool blended = true ) 
+					throw( VideoException ) ;
 	
 	
 			/**
@@ -85,7 +88,7 @@ namespace OSDL
 			 * specified color should be blended with the one of the target
 			 * pixel (if true), or if the disc color should replace the target
 			 * one, regardless of any blending (if false). 
-			 * Note that only discs may be drawn without being blended : 
+			 * Note that only discs may be drawn without being blended: 
 			 * circles are always blended, therefore if filled is false, 
 			 * blended does not matter.
 			 *
@@ -100,12 +103,14 @@ namespace OSDL
 			 *
 			 * @see VideoModule::GetAntiAliasingState
 			 *
+			 * @throw VideoException if the operation is not supported.
+			 *
 			 */
 			OSDL_DLL bool drawCircle( Surface & targetSurface, 
-				Coordinate xCenter, Coordinate yCenter, Length radius, 
-				Pixels::ColorDefinition colorDef, bool filled = true, 
-				bool blended = true ) 
-					throw() ;
+					Coordinate xCenter, Coordinate yCenter, Length radius, 
+					Pixels::ColorDefinition colorDef, bool filled = true, 
+					bool blended = true ) 
+				throw( VideoException ) ;
 	
 		
 			/**
@@ -149,14 +154,16 @@ namespace OSDL
 			 *
 			 * @see VideoModule::GetAntiAliasingState
 			 *
+			 * @throw VideoException if the operation is not supported.
+			 *
 			 */
 			OSDL_DLL bool drawDiscWithEdge( Surface & targetSurface,
-				Coordinate xCenter, Coordinate yCenter, 
-				Length outerRadius, Length innerRadius, 
-				Pixels::ColorDefinition ringColorDef = Pixels::Blue, 
-				Pixels::ColorDefinition discColorDef = Pixels::White, 
-				bool blended = true )
-					throw() ;
+					Coordinate xCenter, Coordinate yCenter, 
+					Length outerRadius, Length innerRadius, 
+					Pixels::ColorDefinition ringColorDef = Pixels::Blue, 
+					Pixels::ColorDefinition discColorDef = Pixels::White, 
+					bool blended = true )
+				throw( VideoException ) ;
 		
 		
 			/**
@@ -181,6 +188,8 @@ namespace OSDL
 			 *
 			 * @see VideoModule::GetAntiAliasingState
 			 *
+			 * @throw VideoException if the operation is not supported.
+			 *
 			 */
 			OSDL_DLL bool drawEllipse( Surface & targetSurface, 
 				Coordinate xCenter, Coordinate yCenter,
@@ -188,7 +197,7 @@ namespace OSDL
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
 				Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-				bool filled = true ) throw() ;
+				bool filled = true ) throw( VideoException ) ;
 
 
 			/**
@@ -213,11 +222,14 @@ namespace OSDL
 			 *
 			 * @see VideoModule::GetAntiAliasingState
 			 *
+			 * @throw VideoException if the operation is not supported.
+			 *
 			 */
 			OSDL_DLL bool drawEllipse( Surface & targetSurface, 
-				Coordinate xCenter, Coordinate yCenter, 
-				Length horizontalRadius, Length verticalRadius,
-				Pixels::ColorDefinition colorDef, bool filled = true ) throw() ;
+					Coordinate xCenter, Coordinate yCenter, 
+					Length horizontalRadius, Length verticalRadius,
+					Pixels::ColorDefinition colorDef, bool filled = true ) 
+				throw( VideoException ) ;
 
 				
 		}
@@ -225,6 +237,7 @@ namespace OSDL
 	}
 	
 }
+
 
 
 #endif // OSDL_CONIC_H_

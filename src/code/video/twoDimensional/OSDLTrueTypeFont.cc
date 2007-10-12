@@ -5,14 +5,31 @@
 
 #include "Ceylan.h"              // for Uint32, inheritance
 
-#include "SDL_gfxPrimitives.h"   // for stringColor
-#include "SDL.h"                 // for SDL_Surface
-
-#include "SDL_ttf.h"             // for TTF_*
 
 #include <list>
  
  
+ 
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for OSDL_DEBUG_FONT and al 
+#endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+ 
+
+
+#if OSDL_USES_SDL_GFX
+#include "SDL_gfxPrimitives.h"   // for stringColor
+#endif // OSDL_USES_SDL_GFX
+
+
+#if OSDL_USES_SDL
+#include "SDL.h"                 // for SDL_Surface
+#endif // OSDL_USES_SDL
+
+
 
 using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
@@ -25,9 +42,6 @@ using namespace Ceylan::System ;
 using std::string ;
 
 
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>          // for OSDL_DEBUG_FONT and al 
-#endif // OSDL_USES_CONFIG_H
 
 
 Ceylan::System::FileLocator Text::TrueTypeFont::TrueTypeFontFileLocator ;
@@ -55,6 +69,8 @@ TrueTypeFont::TrueTypeFont(
 	_actualFont( 0 )
 {
 	
+#if OSDL_USES_SDL_TTF
+
 	string fontFullPath = fontFilename ;
 	
 	// Search directly in current working directory:
@@ -138,12 +154,23 @@ TrueTypeFont::TrueTypeFont(
 	_alineaWidth = DefaultSpaceBasedAlineaWidth * _spaceWidth ;	
 	
 	FontCounter++ ;
+
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont constructor failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
 	
 }
 
 
+
 TrueTypeFont::~TrueTypeFont() throw()
 {
+
+#if OSDL_USES_SDL_TTF
 
 	if ( _actualFont != 0 )
 		TTF_CloseFont( _actualFont ) ;
@@ -152,6 +179,8 @@ TrueTypeFont::~TrueTypeFont() throw()
 	
 	if ( FontCounter == 0 && TTF_WasInit() != 0 )
 		TTF_Quit() ;	
+
+#endif // OSDL_USES_SDL_TTF
 		
 }
 
@@ -168,15 +197,24 @@ PointSize TrueTypeFont::getPointSize() const throw()
 RenderingStyle TrueTypeFont::getRenderingStyle() const throw()
 {
 
+#if OSDL_USES_SDL_TTF
+
 	return TTF_GetFontStyle( _actualFont ) ;
+#else // OSDL_USES_SDL_TTF
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL_TTF
 	
 }
+
 
 
 void TrueTypeFont::setRenderingStyle( RenderingStyle newStyle ) 
 	throw( TextException )
 {
 
+#if OSDL_USES_SDL_TTF
 
 	// Cannot guess whether the specified style is supported.
 
@@ -188,13 +226,23 @@ void TrueTypeFont::setRenderingStyle( RenderingStyle newStyle )
 	 
 	if ( newStyle != getRenderingStyle() )
 		TTF_SetFontStyle( _actualFont, newStyle ) ;
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::setRenderingStyle failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
 		
 }	
+
 
 	 
 Width TrueTypeFont::getWidth( Ceylan::Latin1Char character ) 
 	const throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	/*
 	 * Not using the advance parameter except for space, whose width 
@@ -215,12 +263,22 @@ Width TrueTypeFont::getWidth( Ceylan::Latin1Char character )
 
 	return static_cast<Width>( maxX - minX ) ;	
 	
+#else // OSDL_USES_SDL_TTF
+	
+	throw TextException( "TrueTypeFont::getWidth failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
+
 }
+
 
 
 SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character ) 
 	const throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
  	int minX ;
 	
@@ -232,12 +290,22 @@ SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character )
 			
 	return static_cast<SignedWidth>( minX ) ;	
 
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::getWidthOffset failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
+
 }
+
 
 							
 SignedHeight TrueTypeFont::getHeightAboveBaseline( 
 	Ceylan::Latin1Char character ) const throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	int maxY ;
 	
@@ -248,13 +316,23 @@ SignedHeight TrueTypeFont::getHeightAboveBaseline(
 			+ DescribeLastError() ) ;
 	
 	return static_cast<SignedHeight>( maxY ) ;
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::getHeightAboveBaseline failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
 	
 }
+
 
 
 OSDL::Video::SignedLength TrueTypeFont::getAdvance( 
 	Ceylan::Latin1Char character ) const throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	int advance ;
 	
@@ -266,37 +344,80 @@ OSDL::Video::SignedLength TrueTypeFont::getAdvance(
 	
 	return static_cast<SignedLength>( advance ) ;
 	
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::getAdvance failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
+
 }
+
 
 
 Text::Height TrueTypeFont::getHeight() const throw()
 {
 
+#if OSDL_USES_SDL_TTF
+
 	return TTF_FontHeight( _actualFont ) ;
+
+#else // OSDL_USES_SDL_TTF
+
+	return 0 ;
+		
+#endif // OSDL_USES_SDL_TTF
 	
 }
+
 
 
 Text::SignedHeight TrueTypeFont::getAscent() const throw()
 {
 
+#if OSDL_USES_SDL_TTF
+
 	return TTF_FontAscent( _actualFont ) ;
 	
+#else // OSDL_USES_SDL_TTF
+
+	return 0 ;
+		
+#endif // OSDL_USES_SDL_TTF
+	
 }
+
 
 
 Text::SignedHeight TrueTypeFont::getDescent() const throw()
 {
 
+#if OSDL_USES_SDL_TTF
+
 	return TTF_FontDescent( _actualFont ) ;
 	
+#else // OSDL_USES_SDL_TTF
+
+	return 0 ;
+		
+#endif // OSDL_USES_SDL_TTF
+	
 }
+
 
 
 Text::Height TrueTypeFont::getLineSkip() const throw()
 {
 
+#if OSDL_USES_SDL_TTF
+
 	return TTF_FontLineSkip( _actualFont ) ;
+	
+#else // OSDL_USES_SDL_TTF
+
+	return 0 ;
+		
+#endif // OSDL_USES_SDL_TTF
 	
 }
 
@@ -304,34 +425,69 @@ Text::Height TrueTypeFont::getLineSkip() const throw()
 Ceylan::Uint16 TrueTypeFont::getFacesCount() const throw()
 {
 
-	return static_cast<Ceylan::Uint16>( 
-			TTF_FontFaces( _actualFont ) ) ;
+#if OSDL_USES_SDL_TTF
+
+	return static_cast<Ceylan::Uint16>( TTF_FontFaces( _actualFont ) ) ;
+			
+#else // OSDL_USES_SDL_TTF
+
+	return 0 ;
+		
+#endif // OSDL_USES_SDL_TTF
 	
 }
+
 
 
 bool TrueTypeFont::isFixedWidth() const throw()
 {
 
+#if OSDL_USES_SDL_TTF
+
 	return ( TTF_FontFaceIsFixedWidth( _actualFont ) > 0 ) ;
 	
+#else // OSDL_USES_SDL_TTF
+
+	return 0 ;
+		
+#endif // OSDL_USES_SDL_TTF
+	
 }
+
 
 
 string TrueTypeFont::getFaceFamilyName() const throw()
 {
 
+#if OSDL_USES_SDL_TTF
+
 	return TTF_FontFaceFamilyName( _actualFont ) ;
 	
+#else // OSDL_USES_SDL_TTF
+
+	return 0 ;
+		
+#endif // OSDL_USES_SDL_TTF
+	
 }
+
 
 
 string TrueTypeFont::getFaceStyleName() const throw()
 {
 
+#if OSDL_USES_SDL_TTF
+
 	return TTF_FontFaceStyleName( _actualFont ) ;
 	
+#else // OSDL_USES_SDL_TTF
+
+	return 0 ;
+		
+#endif // OSDL_USES_SDL_TTF
+	
 }
+
 
 
 
@@ -342,6 +498,8 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor(
 		Ceylan::Unicode glyph, SignedLength & advance ) 
 	const throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	int minX, maxX, minY, maxY, intAdvance ;
 
@@ -357,13 +515,23 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor(
 		static_cast<Coordinate>( maxY ),
 		static_cast<Length>( maxX - minX ), 
 		static_cast<Length>( maxY - minY ) ) ;
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::getBoundingBoxFor failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
 		 
 }
+
 
 
 UprightRectangle & TrueTypeFont::getBoundingBoxFor( const std::string & text )
 	const throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	int width, height ;
 	
@@ -373,14 +541,24 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor( const std::string & text )
 			+ DescribeLastError() ) ;
 	
 	return * new UprightRectangle( 0, 0, static_cast<Length>( width ), 
-		static_cast<Length>( height ) ) ;	
+		static_cast<Length>( height ) ) ;			
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::getBoundingBoxFor failed: "
+		"no SDL_ttf support available" ) ;
 		
+#endif // OSDL_USES_SDL_TTF
+
 }
+
 
 
 UprightRectangle & TrueTypeFont::getBoundingBoxForUTF8( 
 	const std::string & text ) const throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	int width, height ;
 	
@@ -391,13 +569,23 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUTF8(
 	
 	return * new UprightRectangle( 0, 0, static_cast<Length>( width ), 
 		static_cast<Length>( height ) ) ;	
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::getBoundingBoxForUTF8 failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
 		
 }
+
 
 
 UprightRectangle & TrueTypeFont::getBoundingBoxForUnicode( 
 	const Ceylan::Unicode * text ) const throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	if ( text == 0 )
 		throw TextException( "TrueTypeFont::getBoundingBoxForUnicode: "
@@ -412,8 +600,16 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUnicode(
 	
 	return * new UprightRectangle( 0, 0, static_cast<Length>( width ), 
 		static_cast<Length>( height ) ) ;	
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::getBoundingBoxForUnicode failed: "
+		"no SDL_ttf support available" ) ;
 		
+#endif // OSDL_USES_SDL_TTF
+				
 }
+
 
 
 
@@ -434,6 +630,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Glyph(
 }
 
 
+
 void TrueTypeFont::blitLatin1Glyph( 
 	Surface & targetSurface, Coordinate x, Coordinate y, 
 	Ceylan::Latin1Char character, RenderQuality quality, 
@@ -451,6 +648,7 @@ void TrueTypeFont::blitLatin1Glyph(
 	delete & res ;
 		
 }
+
 
 
 OSDL::Video::Surface & TrueTypeFont::renderUnicodeGlyph( 
@@ -535,6 +733,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	throw( TextException )
 {
 
+#if OSDL_USES_SDL_TTF
 
 	/*
 	 * Test to compare both implementations 
@@ -727,9 +926,15 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	}	
 
 	return * res ;	
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::renderLatin1Text failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
 			
 }
-
 
 
 
@@ -739,6 +944,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 		Pixels::ColorDefinition textColor )
 	throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	SDL_Surface * textSurface ;
 	Surface * res ;
@@ -917,6 +1124,13 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 	}	
 
 	return * res ;	
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::renderUTF8Text failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
 	
 }
 
@@ -928,6 +1142,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 		Pixels::ColorDefinition textColor ) 
 	throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	if ( text == 0 )
 		throw TextException( 
@@ -1113,6 +1329,13 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 	}	
 
 	return * res ;	
+
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::renderUnicodeText failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
 	
 }
 
@@ -1121,6 +1344,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 const string TrueTypeFont::toString( Ceylan::VerbosityLevels level ) 
 	const throw()
 {
+
+#if OSDL_USES_SDL_TTF
 
 	string res = "Truetype font, whose point size is " 
 		+ Ceylan::toString( _pointSize ) + " dots per inch" ;
@@ -1180,6 +1405,11 @@ const string TrueTypeFont::toString( Ceylan::VerbosityLevels level )
 		
 	return res ;
 		
+#else // OSDL_USES_SDL_TTF
+
+	return "" ;
+		
+#endif // OSDL_USES_SDL_TTF
 		
 }
 
@@ -1197,29 +1427,46 @@ Font::RenderQuality TrueTypeFont::GetObtainedQualityFor(
 }
 
 
+
 void TrueTypeFont::SetUnicodeSwapStatus( bool newStatus ) throw()
 {
+
+#if OSDL_USES_SDL_TTF
 
 	if ( newStatus )
 		TTF_ByteSwappedUNICODE( 1 ) ;
 	else	
 		TTF_ByteSwappedUNICODE( 0 ) ;
 		
+#endif // OSDL_USES_SDL_TTF
+
 }
+
 
 
 string TrueTypeFont::DescribeLastError() throw() 
 {
 
+#if OSDL_USES_SDL_TTF
+
 	return TTF_GetError() ;
+
+#else // OSDL_USES_SDL_TTF
+
+	return "(no SDL_ttf support available)" ;
+			
+#endif // OSDL_USES_SDL_TTF
 	
 }
+
 
 
 OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph( 
 	Ceylan::Unicode character, RenderQuality quality, 
 	Pixels::ColorDefinition glyphColor ) throw( TextException )
 {
+
+#if OSDL_USES_SDL_TTF
 
 	// Render unconditionnally here:
 	
@@ -1365,6 +1612,13 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	//res->drawEdges() ;
 		
 	return * res ;	
+	
+#else // OSDL_USES_SDL_TTF
+
+	throw TextException( "TrueTypeFont::basicRenderUnicodeGlyph failed: "
+		"no SDL_ttf support available" ) ;
+		
+#endif // OSDL_USES_SDL_TTF
 	
 }
 

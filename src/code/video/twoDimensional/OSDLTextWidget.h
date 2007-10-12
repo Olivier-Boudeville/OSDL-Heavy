@@ -34,11 +34,11 @@ namespace OSDL
 			 * Text widgets are back-buffered widget which display full 
 			 * texts, i.e. sets of paragraphs.
 			 *
-			 * Many attributes of the text (ex : text color) are 
+			 * Many attributes of the text (ex: text color) are 
 			 * determined from the provided font.
 			 *
 			 */
-			class OSDL_DLL TextWidget : public BackBufferedWidget
+			class OSDL_DLL TextWidget: public BackBufferedWidget
 			{
 			
 					
@@ -46,16 +46,16 @@ namespace OSDL
 					
 					
 					/**
-					 * Describes the shape of a text container :
-					 *	- SquareCorners : the text is in a rectangular box
-					 *  - RoundCorners : the text is in a box with round 
+					 * Describes the shape of a text container:
+					 *	- SquareCorners: the text is in a rectangular box
+					 *  - RoundCorners: the text is in a box with round 
 					 * corners
 					 *
 					 */
 					enum Shape { SquareCorners, RoundCorners } ;	
 			
 			
-					/// The default edge width for the 'RoundCorners' shape :
+					/// The default edge width for the 'RoundCorners' shape:
 					static const Length DefaultEdgeWidth ;
 			
 					

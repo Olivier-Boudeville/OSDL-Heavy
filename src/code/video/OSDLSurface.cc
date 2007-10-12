@@ -1,33 +1,44 @@
 #include "OSDLSurface.h"
 
-#include "OSDLTypes.h"				// for Flags
+#include "OSDLTypes.h"				 // for Flags
 #include "OSDLVideo.h"
-#include "OSDLVideoTypes.h"         // for BitsPerPixel
+#include "OSDLVideoTypes.h"          // for BitsPerPixel
 
-#include "OSDLVideoTypes.h"         // for Length, etc.
-#include "OSDLUprightRectangle.h"   // for UprightRectangle
-#include "OSDLPoint2D.h"            // for Point2D
-#include "OSDLLine.h"               // for Line : drawHorizontal, etc.
-#include "OSDLFixedFont.h"          // for printBasic
-#include "OSDLConic.h"              // for drawCircle, drawEllipse
-#include "OSDLPixel.h"              // for getColorMasks, ColorMask, etc.
-#include "OSDLPolygon.h"            // for drawPie
-#include "OSDLWidget.h"             // for Widget
-#include "OSDLUtils.h"              // for getBackendLastError
+#include "OSDLVideoTypes.h"          // for Length, etc.
+#include "OSDLUprightRectangle.h"    // for UprightRectangle
+#include "OSDLPoint2D.h"             // for Point2D
+#include "OSDLLine.h"                // for Line: drawHorizontal, etc.
+#include "OSDLFixedFont.h"           // for printBasic
+#include "OSDLConic.h"               // for drawCircle, drawEllipse
+#include "OSDLPixel.h"               // for getColorMasks, ColorMask, etc.
+#include "OSDLPolygon.h"             // for drawPie
+#include "OSDLWidget.h"              // for Widget
+#include "OSDLUtils.h"               // for getBackendLastError
 
-#include "Ceylan.h"                 // for Ceylan::Uint8, etc.
+#include "Ceylan.h"                  // for Ceylan::Uint8, etc.
 
-#include "SDL_rotozoom.h"           // for zoom, rotozoom
 
-#include <cassert>                  // for assert
+#include <cassert>                   // for assert
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>     // for OSDL_DEBUG_* and al 
+#include <OSDLConfig.h>              // for OSDL_DEBUG_* and al 
 #endif // OSDL_USES_CONFIG_H
 
 
-// To protect LoadImage :
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+#if OSDL_USES_SDL_GFX
+
+#include "SDL_rotozoom.h"            // for zoom, rotozoom
+
+#endif // OSDL_USES_SDL_GFX
+
+
+// To protect LoadImage:
 #include "OSDLIncludeCorrecter.h"
 
 
@@ -35,7 +46,7 @@
  * Always remember to access the width and the height of a Surface thanks 
  * to their dedicated methods (getWidth/getHeight) since the '_width' and
  * '_height' attributes, inherited from  UprightRectangle, are never 
- * updated : the values are to be read directly from the internal 
+ * updated: the values are to be read directly from the internal 
  * back-end surface.
  *
  */
@@ -54,11 +65,12 @@ using TwoDimensional::UprightRectangle ;
 
 
 
-SurfaceEvent::SurfaceEvent( Ceylan::EventSource & source ) throw() : 
+SurfaceEvent::SurfaceEvent( Ceylan::EventSource & source ) throw(): 
 	Ceylan::Event( source )
 {
 
 }
+
 
 
 SurfaceEvent::~SurfaceEvent() throw()
@@ -68,19 +80,22 @@ SurfaceEvent::~SurfaceEvent() throw()
 
 
 
+
 VideoMemoryLostException::VideoMemoryLostException( 
-		const std::string & message ) throw() :
+		const std::string & message ) throw():
 	VideoException( message ) 
 {
 
 }
 
 
-VideoMemoryLostException::VideoMemoryLostException() throw() :
+
+VideoMemoryLostException::VideoMemoryLostException() throw():
 	VideoException( "Video memory lost, content needs to be reblitted" ) 
 {
 
 }
+	
 	
 	
 VideoMemoryLostException::~VideoMemoryLostException() throw()
@@ -90,22 +105,27 @@ VideoMemoryLostException::~VideoMemoryLostException() throw()
 
 
 
+
 /*
  * These flags can be used for all Surfaces.
  *
  * @note They are defined relatively as SDL back-end.
  *
  */
+#if OSDL_USES_SDL_GFX
 
-const Ceylan::Flags Surface::Software                 = SDL_SWSURFACE   ;
-const Ceylan::Flags Surface::Hardware                 = SDL_HWSURFACE   ;
-const Ceylan::Flags Surface::AsynchronousBlit         = SDL_ASYNCBLIT   ;
-const Ceylan::Flags Surface::ExclusivePalette         = SDL_HWPALETTE   ;
-const Ceylan::Flags Surface::HardwareAcceleratedBlit  = SDL_HWACCEL     ;
-const Ceylan::Flags Surface::ColorkeyBlit             = SDL_SRCCOLORKEY ;
-const Ceylan::Flags Surface::RLEColorkeyBlit          = SDL_RLEACCEL    ;
-const Ceylan::Flags Surface::AlphaBlendingBlit        = SDL_SRCALPHA    ;
-const Ceylan::Flags Surface::Preallocated             = SDL_PREALLOC    ;
+
+const Ceylan::Flags Surface::Software                = SDL_SWSURFACE   ;
+const Ceylan::Flags Surface::Hardware                = SDL_HWSURFACE   ;
+const Ceylan::Flags Surface::AsynchronousBlit        = SDL_ASYNCBLIT   ;
+const Ceylan::Flags Surface::ExclusivePalette        = SDL_HWPALETTE   ;
+const Ceylan::Flags Surface::HardwareAcceleratedBlit = SDL_HWACCEL     ;
+const Ceylan::Flags Surface::ColorkeyBlit            = SDL_SRCCOLORKEY ;
+const Ceylan::Flags Surface::RLEColorkeyBlit         = SDL_RLEACCEL    ;
+const Ceylan::Flags Surface::AlphaBlendingBlit       = SDL_SRCALPHA    ;
+const Ceylan::Flags Surface::Preallocated            = SDL_PREALLOC    ;
+
+const Ceylan::Flags OpenGLBlit = SDL_OPENGLBLIT ;
 
 
 // Private flag.
@@ -124,6 +144,47 @@ const Ceylan::Flags Surface::DoubleBuffered = SDL_DOUBLEBUF  ;
 const Ceylan::Flags Surface::FullScreen     = SDL_FULLSCREEN ;
 const Ceylan::Flags Surface::OpenGL         = SDL_OPENGL     ;
 const Ceylan::Flags Surface::Resizable      = SDL_RESIZABLE  ;
+
+
+#else // OSDL_USES_SDL_GFX
+
+
+// Same constants as SDL:
+
+const Ceylan::Flags Surface::Software                = 0x00000000 ;
+const Ceylan::Flags Surface::Hardware                = 0x00000001 ;
+const Ceylan::Flags Surface::AsynchronousBlit        = 0x00000004 ;
+const Ceylan::Flags Surface::ExclusivePalette        = 0x20000000 ;
+const Ceylan::Flags Surface::HardwareAcceleratedBlit = 0x00000100 ;
+const Ceylan::Flags Surface::ColorkeyBlit            = 0x00001000 ;
+const Ceylan::Flags Surface::RLEColorkeyBlit         = 0x00004000 ;
+const Ceylan::Flags Surface::AlphaBlendingBlit       = 0x00010000 ;
+const Ceylan::Flags Surface::Preallocated            = 0x01000000 ;
+
+const Ceylan::Flags OpenGLBlit = 0x0000000A ;
+
+
+// Private flag.
+const Ceylan::Flags Surface::RLEColorkeyBlitAvailable = 0x00002000 ;
+
+
+/*
+ * These flags can only be used for display Surfaces.
+ *
+ * @note SDL_OPENGLBLIT has been deprecated.
+ *
+ */
+
+const Ceylan::Flags Surface::AnyPixelFormat = 0x10000000 ;
+const Ceylan::Flags Surface::DoubleBuffered = 0x40000000 ;
+const Ceylan::Flags Surface::FullScreen     = 0x80000000 ;
+const Ceylan::Flags Surface::OpenGL         = 0x00000002 ;
+const Ceylan::Flags Surface::Resizable      = 0x00000010 ;
+
+
+#endif // OSDL_USES_SDL_GFX
+
+	
 	
 
 const Length Surface::graphAbscissaOffset   = 10 ;
@@ -131,6 +192,7 @@ const Length Surface::graphOrdinateOffset   = 15 ;
 
 const Length Surface::captionAbscissaOffset = 5  ;
 const Length Surface::captionOrdinateOffset	= 10 ;
+	
 	
 	
 	
@@ -144,8 +206,11 @@ const Length Surface::captionOrdinateOffset	= 10 ;
 
 #endif // OSDL_COUNT_INSTANCES
  
+
  
-Surface::Surface( SDL_Surface & surface, DisplayType displayType ) throw() : 
+ 
+Surface::Surface( LowLevelSurface & surface, DisplayType displayType )
+		throw( VideoException ): 
 	UprightRectangle( 0, 0, 0, 0 ),
 	EventSource(),
 	Lockable(),
@@ -155,6 +220,8 @@ Surface::Surface( SDL_Surface & surface, DisplayType displayType ) throw() :
 	_needsRedraw( true )  
 {
 
+#if OSDL_USES_SDL
+
 #if OSDL_DEBUG_WIDGET
 
 	CHECKPOINT( "Surface constructor from SDL surface." ) ; 
@@ -163,15 +230,23 @@ Surface::Surface( SDL_Surface & surface, DisplayType displayType ) throw() :
 	 
 #endif // OSDL_DEBUG_WIDGET
 
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Surface constructor failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 	Pixels::ColorMask redMask, Pixels::ColorMask greenMask,
 	Pixels::ColorMask blueMask, Pixels::ColorMask alphaMask ) 
-			throw( VideoException ) :
+			throw( VideoException ):
 		UprightRectangle( 0, 0, 
-			/* width and height not stored, computed from surface : */ 0, 0 ),
+			/* width and height not stored, computed from surface: */ 0, 0 ),
 		EventSource(),
 		Lockable(),
 		_surface( 0 ),
@@ -180,6 +255,8 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
  		_needsRedraw( true )  
 {
 
+
+#if OSDL_USES_SDL
 
 #if OSDL_DEBUG_WIDGET
 
@@ -211,7 +288,7 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 		
 		/*
 		 * All other masks are zero too ? 
-		 * Choose them according to endianess, then :
+		 * Choose them according to endianess, then:
 		 *
 		 */
 		if ( redMask == 0 && greenMask == 0 && blueMask == 0 )
@@ -222,7 +299,7 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 		
 #if OSDL_DEBUG_WIDGET
 
-	LogPlug::trace( "Surface constructor : actual surface flags are " 
+	LogPlug::trace( "Surface constructor: actual surface flags are " 
 		+ Ceylan::toString( flags, /* bit field */ true ) 
 		+ ", red mask is "   + Ceylan::toHexString( redMask )  
 		+ ", green mask is " + Ceylan::toHexString( greenMask )  
@@ -237,9 +314,17 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 	if ( _surface == 0 )
 		throw VideoException( "Blank surface constructor failed (width = " 
 			+ Ceylan::toString( width ) 
-			+ ", height = " + Ceylan::toString( height ) + ") : " 
+			+ ", height = " + Ceylan::toString( height ) + "): " 
 			+ Utils::getBackendLastError() ) ; 
+		
 			
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Surface constructor failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
+
 }
 
 
@@ -249,7 +334,7 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
  * special cases.	
  *
  */			
-Surface::Surface() throw() :
+Surface::Surface() throw( VideoException ):
 	UprightRectangle( 0, 0, 0, 0 ),
 	EventSource(),
 	_surface( 0 ),
@@ -258,6 +343,7 @@ Surface::Surface() throw() :
 	_needsRedraw( true )  
 {
 
+#if OSDL_USES_SDL
 	
 	// Empty surface.
 
@@ -266,7 +352,15 @@ Surface::Surface() throw() :
 	LogPlug::trace( "Empty Surface constructor." ) ;
 #endif // OSDL_DEBUG_WIDGET
 
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Surface empty constructor failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
+
 }			
+	
 	
 						
 Surface::~Surface() throw()
@@ -285,7 +379,7 @@ Surface::~Surface() throw()
 	// Do not use iterators for this delete task !
 	
 	/*
-	 * Listeners will be removed one by one thanks to unsubscribeFrom calls :
+	 * Listeners will be removed one by one thanks to unsubscribeFrom calls:
 	 * this is because it is rather unusual that sources detach themselves 
 	 * for listeners, it is usually the opposite.
 	 *
@@ -298,8 +392,8 @@ Surface::~Surface() throw()
 		widget->unsubscribeFrom( *this ) ;
 		
 		/*
-		 * Do not use : '_listeners.pop_back() ;' since this widget has 
-		 * already been removed thanks to the call to unsubscribeFrom : it 
+		 * Do not use: '_listeners.pop_back() ;' since this widget has 
+		 * already been removed thanks to the call to unsubscribeFrom: it 
 		 * would pop next listener !
 		 *
 		 */
@@ -307,41 +401,43 @@ Surface::~Surface() throw()
 		
 	}
 	
-	// Never let invalid structures in the way :
+	// Never let invalid structures in the way:
 	_listeners.clear() ;
 	
-	// Do not deallocate if screen surface :
+	// Do not deallocate if screen surface:
 	if ( _displayType == BackBuffer )
 		flush() ;
 	
 }
 
 
+
 Clonable & Surface::clone() const throw( ClonableException )
 {
 	
+#if OSDL_USES_SDL
 	
 	if ( _surface != 0 )
 	{
 	
 #ifdef OSDL_USE_DEPRECATED_CLONING
 		
-		// Previous implementation :
+		// Previous implementation:
 		
-		// Retrieve the state of this source surface :
+		// Retrieve the state of this source surface:
 		Pixels::ColorMask redMask, greenMask, blueMask, alphaMask ;		
 		Pixels::getCurrentColorMasks( getPixelFormat(), 
 			redMask, greenMask, blueMask, alphaMask ) ;
 		
-		// Create a similar but blank surface :
-		SDL_Surface * copied = SDL_CreateRGBSurface( getFlags(), 
+		// Create a similar but blank surface:
+		LowLevelSurface * copied = SDL_CreateRGBSurface( getFlags(), 
 			getWidth(), getHeight(), getBitsPerPixel(), 
 			redMask, greenMask, blueMask, alphaMask ) ;
 		 
 		/*
-		 * Blit the source content onto it :
+		 * Blit the source content onto it:
 		 *
-		 * "The blit function should not be called on a locked surface" : 
+		 * "The blit function should not be called on a locked surface": 
 		 * which one ?
 		 * Supposing it is the target surface, 'copied', which is not locked.
 		 *
@@ -349,30 +445,30 @@ Clonable & Surface::clone() const throw( ClonableException )
 		 
 		int returned = SDL_BlitSurface( _surface, 0, copied, 0 ) ;
 		if ( returned != 0 )
-			throw ClonableException( "Surface::clone : blit failed (returned " 
-				+ Ceylan::toString( returned ) + ") : " 
+			throw ClonableException( "Surface::clone: blit failed (returned " 
+				+ Ceylan::toString( returned ) + "): " 
 				+ Utils::getBackendLastError() + "." ) ;
 		
 		
 		/*
-		 * Ensures that the clone has a colorkey if the original has it :
+		 * Ensures that the clone has a colorkey if the original has it:
 		 *
 			if ( copied... )
 				copied.setColorKey( [...] ) ;
-		 *
+		 * ... return * new Surface( * copied,...
 		 */
 		 
 #endif // OSDL_USE_DEPRECATED_CLONING
 		
 		
-		// Far better and simpler version :
-		SDL_Surface * copied = SDL_ConvertSurface( _surface, 
+		// Far better and simpler version:
+		LowLevelSurface * copied = SDL_ConvertSurface( _surface, 
 			& getPixelFormat(), getFlags() ) ;
 		
 		
 		if ( copied == 0 )
 			throw ClonableException( 
-				"Surface::clone : creation of clone surface failed : " 
+				"Surface::clone: creation of clone surface failed: " 
 				+ Utils::getBackendLastError() + "." ) ;
 				 
 		return * new Surface( * copied, 
@@ -381,14 +477,22 @@ Clonable & Surface::clone() const throw( ClonableException )
 	}
 	else
 	{
-		LogPlug::warning( "Surface::clone : cloning a mostly blank surface." ) ;
+		LogPlug::warning( "Surface::clone: cloning a mostly blank surface." ) ;
 		return * new Surface() ; 
 	}	
+
+#else // OSDL_USES_SDL
+
+	throw ClonableException( "Surface::clone failed:"
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
 		
 }
 
 
-SDL_Surface & Surface::getSDLSurface() const throw()
+
+LowLevelSurface & Surface::getSDLSurface() const throw()
 {
 
 	// addRef 	
@@ -397,7 +501,8 @@ SDL_Surface & Surface::getSDLSurface() const throw()
 }
 
 
-void Surface::setSDLSurface( SDL_Surface & newSurface, 
+
+void Surface::setSDLSurface( LowLevelSurface & newSurface, 
 	DisplayType displayType ) throw()
 {
 			
@@ -410,12 +515,14 @@ void Surface::setSDLSurface( SDL_Surface & newSurface,
 }
 
 
+
 Surface::DisplayType Surface::getDisplayType() const throw()
 {
 
 	return _displayType ;
 	
 }
+
 
 
 void Surface::setDisplayType( DisplayType newDisplayType ) throw()
@@ -426,32 +533,49 @@ void Surface::setDisplayType( DisplayType newDisplayType ) throw()
 }
 
 
+
 Ceylan::Flags Surface::getFlags() const throw()
 {
 
+#if OSDL_USES_SDL
+
 	return _surface->flags ;
 	
+#else // OSDL_USES_SDL	
+
+	return 0 ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void Surface::setFlags( Flags newFlags ) throw()
 {
 
-	// Use with caution : internal SDL_Surface not changed.
+#if OSDL_USES_SDL
+
+	// Use with caution: internal LowLevelSurface not changed.
 	_surface->flags = newFlags ;
 	
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void Surface::convertToDisplay( bool alphaChannelWanted ) 
 	throw( VideoException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( _surface == 0 )
 		throw VideoException( 
-			"Surface::convertToDisplay : no available internal surface." ) ;
+			"Surface::convertToDisplay: no available internal surface." ) ;
 		
-	SDL_Surface * old = _surface ;
+	LowLevelSurface * old = _surface ;
 	
 	if ( alphaChannelWanted )
 		_surface = SDL_DisplayFormatAlpha( old ) ;
@@ -462,36 +586,67 @@ void Surface::convertToDisplay( bool alphaChannelWanted )
 	
 	if ( _surface == 0 )
 		throw VideoException( 
-			"Surface::convertToDisplay : conversion failed." ) ;		
+			"Surface::convertToDisplay: conversion failed." ) ;		
+
+#else // OSDL_USES_SDL	
+
+	throw VideoException( "Surface::convertToDisplay failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
 				
 }
+
 
 
 void Surface::setAlpha( Flags flags, Pixels::ColorElement newAlpha ) 
 	throw( VideoException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( SDL_SetAlpha( _surface, flags, newAlpha ) != 0 )
-		throw VideoException( "Surface::setAlpha failed : " 
+		throw VideoException( "Surface::setAlpha failed: " 
 			+ Utils::getBackendLastError() ) ;
+
+#else // OSDL_USES_SDL	
+
+	throw VideoException( "Surface::setAlpha failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
 			 
 }
+
 
 
 void Surface::setColorKey( Flags flags, Pixels::PixelColor keyPixelColor )
 	throw( VideoException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( SDL_SetColorKey( _surface, flags, keyPixelColor ) != 0 )
-		throw VideoException( "Surface::setColorKey (pixel color) failed : "
+		throw VideoException( "Surface::setColorKey (pixel color) failed: "
 			+ Utils::getBackendLastError() ) ; 
+
+#else // OSDL_USES_SDL	
+
+	throw VideoException( "Surface::setColorKey failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
+			 
 			
 }
+
 
 
 void Surface::setColorKey( Flags flags, Pixels::ColorDefinition keyColorDef ) 
 	throw( VideoException )
 {
+
+#if OSDL_USES_SDL
 
 	Pixels::PixelColor keyPixelColor = 
 		Pixels::convertColorDefinitionToPixelColor( getPixelFormat(),
@@ -499,18 +654,26 @@ void Surface::setColorKey( Flags flags, Pixels::ColorDefinition keyColorDef )
 		
 	if ( SDL_SetColorKey( _surface, flags, keyPixelColor ) != 0 )
 		throw VideoException( 
-			"Surface::setColorKey (color definition) failed : "
+			"Surface::setColorKey (color definition) failed: "
 			+ Utils::getBackendLastError() ) ; 
-			
+
+#else // OSDL_USES_SDL	
+
+	throw VideoException( "Surface::setColorKey failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
+			 
 }
+
 
 
 void Surface::convertFromColorKeyToAlphaChannel() throw( VideoException )
 {
 	
 	if ( ( getFlags() & ColorkeyBlit ) == 0 )
-		throw VideoException( "Surface::convertFromColorKeyToAlphaChannel : "
-			"this surface does not use color key apparently : " 
+		throw VideoException( "Surface::convertFromColorKeyToAlphaChannel: "
+			"this surface does not use color key apparently: " 
 			+ toString( Ceylan::low ) ) ;
 			
 	convertToDisplay( /* alphaChannelWanted */ true ) ;
@@ -518,9 +681,12 @@ void Surface::convertFromColorKeyToAlphaChannel() throw( VideoException )
 }
 
 
+
 bool Surface::setPalette( Palette & newPalette, ColorCount startingColorIndex,
 	ColorCount numberOfColors, Flags targettedPalettes ) throw() 
 {
+
+#if OSDL_USES_SDL
 
 	if ( numberOfColors == 0 )
 	{
@@ -533,7 +699,7 @@ bool Surface::setPalette( Palette & newPalette, ColorCount startingColorIndex,
 		else
 		{
 			LogPlug::error( 
-				"Surface::setPalette : starting index out of bounds." );
+				"Surface::setPalette: starting index out of bounds." );
 			return false ;
 		}
 			
@@ -542,33 +708,58 @@ bool Surface::setPalette( Palette & newPalette, ColorCount startingColorIndex,
 		newPalette.getNumberOfColors() )
 	{
 		LogPlug::error( 
-			"Surface::setPalette : too many color indexes, out of bounds." );
+			"Surface::setPalette: too many color indexes, out of bounds." );
 		return false ;
 	}	
 
 	return ( SDL_SetPalette( _surface, targettedPalettes, 
 		newPalette.getColorDefinitions(), startingColorIndex, 
 		numberOfColors ) == 1 ) ;
+
+#else // OSDL_USES_SDL	
+
+	throw VideoException( "Surface::setPalette failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
 		
 }
 					
 
-Pixels::PixelFormat & Surface::getPixelFormat() const throw()
+
+Pixels::PixelFormat & Surface::getPixelFormat() const throw( VideoException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( _surface->format == 0 )
-		Ceylan::emergencyShutdown( "Surface::getPixelFormat called "
-			"whereas no pixel format available." ) ;
+		throw VideoException( "Surface::getPixelFormat failed: "
+			"no pixel format available." ) ;
 	
 	return * _surface->format ;
+
+#else // OSDL_USES_SDL	
+
+	throw VideoException( "Surface::getPixelFormat failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void Surface::setPixelFormat( Pixels::PixelFormat & newFormat ) throw() 
 {
+
+#if OSDL_USES_SDL
+
 	_surface->format = & newFormat ;
+
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 bool Surface::fill( Pixels::ColorDefinition colorDef ) throw()
@@ -584,11 +775,12 @@ bool Surface::fill( Pixels::ColorDefinition colorDef ) throw()
 		 
 #endif // OSDL_DEBUG_SURFACE
 	
-	// Ignores clipping area :
+	// Ignores clipping area:
 	return drawBox( /* the surface *is* an UprightRectangle */ *this,
 		colorDef, /* filled */ true ) ;
 		
 }
+
 
 
 bool Surface::clear() throw()
@@ -599,10 +791,13 @@ bool Surface::clear() throw()
 }
 
 
-Surface & Surface::flipVertical() const throw()
+
+Surface & Surface::flipVertical() const throw( VideoException )
 {    
 
-	SDL_Surface * result = SDL_CreateRGBSurface( 
+#if OSDL_USES_SDL
+	
+	LowLevelSurface * result = SDL_CreateRGBSurface( 
 		_surface->flags, 
 		_surface->w, 
 		_surface->h,
@@ -627,7 +822,7 @@ Surface & Surface::flipVertical() const throw()
 	
 	/*
 	 * Line by line, stores the copied pixel from right to left in target
-	 * surface :
+	 * surface:
 	 *
 	 */
 	
@@ -637,14 +832,24 @@ Surface & Surface::flipVertical() const throw()
 				src + ( ( scanline * y ) + ( x * bpp ) ), bpp ) ;
 				
 	return * new Surface( * result ) ;
+
+#else //  OSDL_USES_SDL
+
+	throw VideoException( "Surface::flipVertical failed: "
+		"no SDL support available" ) ;
 	
+#endif //  OSDL_USES_SDL
+		
 }
 
 
-Surface & Surface::flipHorizontal() const throw()
+
+Surface & Surface::flipHorizontal() const throw( VideoException )
 {
 
-	SDL_Surface * result = SDL_CreateRGBSurface( 
+#if OSDL_USES_SDL
+
+	LowLevelSurface * result = SDL_CreateRGBSurface( 
 		_surface->flags, 
 		_surface->w, 
 		_surface->h,
@@ -665,7 +870,7 @@ Surface & Surface::flipHorizontal() const throw()
 
   	const Coordinate height = result->h ;
   
-  	// Changes simply the order of the lines :
+  	// Changes simply the order of the lines:
 	
 	for ( Coordinate y = 0; y < height; y++ )
 		::memcpy ( target - ( scanline * y ), 
@@ -673,48 +878,80 @@ Surface & Surface::flipHorizontal() const throw()
 
 	return * new Surface( * result ) ;
 
+#else //  OSDL_USES_SDL
+
+	throw VideoException( "Surface::flipHorizontal failed: "
+		"no SDL support available" ) ;
+	
+#endif //  OSDL_USES_SDL
+	
 }
+
 
 
 string Surface::describePixelAt( Coordinate x, Coordinate y ) throw()
 {
 
 	string res = "Pixel at [" + Ceylan::toString( x ) + ";" 
-		+ Ceylan::toString( y ) + "] : " ;
+		+ Ceylan::toString( y ) + "]: " ;
 	
 	lock() ;
 	PixelColor p = getPixelColorAt( x, y ) ;
 	unlock() ;
 	
-	res += "pixel color is " + Ceylan::toHexString( p ) + " : " ;
+	res += "pixel color is " + Ceylan::toHexString( p ) + ": " ;
 	
 	return res + Pixels::toString( p, getPixelFormat() ) ;
 	
 }
 
 
+
 Pitch Surface::getPitch() const throw()
 {
 
+#if OSDL_USES_SDL
+
 	return  _surface->pitch ;
 	
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 void Surface::setPitch( Pitch newPitch ) throw() 
 {
 
+#if OSDL_USES_SDL
+
 	_surface->pitch = newPitch ;
+		
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 Length Surface::getWidth() const throw() 
 {
 
+#if OSDL_USES_SDL
+
 	return _surface->w ;
+
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void Surface::setWidth( Length newWidth ) throw()
@@ -725,10 +962,20 @@ void Surface::setWidth( Length newWidth ) throw()
 }
 
 
+
 Length Surface::getHeight() const throw()
 {
 
+#if OSDL_USES_SDL
+
 	return _surface->h ;
+
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL
+	
 }
 
 
@@ -741,39 +988,43 @@ void Surface::setHeight( Length newHeight ) throw()
 }
 
 
+
 void Surface::resize( Length newWidth, Length newHeight, bool scaleContent )
-	throw()	
+	throw( VideoException )	
 {	
+
+
+#if OSDL_USES_SDL
 	
 	if ( ( newWidth == getWidth() ) && ( newHeight == getHeight() ) )
 		return ;
 		
-	// Retrieve the state of this current surface :
+	// Retrieve the state of this current surface:
 	Pixels::ColorMask redMask, greenMask, blueMask, alphaMask ;	
 		
 	Pixels::getCurrentColorMasks( getPixelFormat(), 
 		redMask, greenMask, blueMask, alphaMask ) ;
 		
-	// Create a similar surface whose size is the requested one  :
-	SDL_Surface * resized = SDL_CreateRGBSurface( getFlags(), 
+	// Create a similar surface whose size is the requested one :
+	LowLevelSurface * resized = SDL_CreateRGBSurface( getFlags(), 
 		newWidth, newHeight, getBitsPerPixel(), 
 			redMask, greenMask, blueMask, alphaMask ) ;
 	
-	// Cannot throw exception since inherited setWidth/Height methods cannot :
+	// Cannot throw exception since inherited setWidth/Height methods cannot:
 	if ( resized == 0 )
 		Ceylan::emergencyShutdown( 
-			"Surface::resize : creation of newer internal surface failed : "
+			"Surface::resize: creation of newer internal surface failed: "
 			+ Utils::getBackendLastError() ) ; 
 
 	
-	// Needed to fix colorkey afterwards (copied exactly as is) :
+	// Needed to fix colorkey afterwards (copied exactly as is):
 	Flags colorKeyFlags = getFlags() & ( ColorkeyBlit | RLEColorkeyBlit ) ;
 	Pixels::PixelColor colorkey = _surface->format->colorkey ;
 	
-	// Fixing per-alpha settings :
+	// Fixing per-alpha settings:
 	resized->format->alpha = _surface->format->alpha ;
 	
-	// @todo : fix other alpha settings (if any) and maybe lock as well ?
+	// @todo: fix other alpha settings (if any) and maybe lock as well ?
 	
 	Surface * zoomed ;
 	
@@ -792,7 +1043,7 @@ void Surface::resize( Length newWidth, Length newHeight, bool scaleContent )
 		catch( const VideoException & e )
 		{
 			Ceylan::emergencyShutdown( 
-				"Surface::resize : creation of scaled surface failed : "
+				"Surface::resize: creation of scaled surface failed: "
 				+ e.toString() ) ; 		
 		}	
 		
@@ -817,7 +1068,7 @@ void Surface::resize( Length newWidth, Length newHeight, bool scaleContent )
 		catch( const VideoException & e )
 		{
 			Ceylan::emergencyShutdown( 
-				"Surface::resize : blit of scaled surface failed : "
+				"Surface::resize: blit of scaled surface failed: "
 				+ e.toString() ) ; 		
 		}	
 		
@@ -827,50 +1078,93 @@ void Surface::resize( Length newWidth, Length newHeight, bool scaleContent )
 		setRedrawState( true ) ;	
 	}
 	
+#else //  OSDL_USES_SDL
+
+	throw VideoException( "Surface::resize failed: "
+		"no SDL support available" ) ;
+	
+#endif //  OSDL_USES_SDL
 	
 }
+
 
 
 BitsPerPixel Surface::getBitsPerPixel() const throw()
 {
 
+#if OSDL_USES_SDL
+
 	return _surface->format->BitsPerPixel ;
 	
+#else //  OSDL_USES_SDL
+
+	return 0 ;
+
+#endif //  OSDL_USES_SDL
+
 }
+
 
 
 void Surface::setBitsPerPixel( BitsPerPixel newBitsPerPixel ) throw() 
 {
 
+#if OSDL_USES_SDL
+
 	_surface->format->BitsPerPixel = newBitsPerPixel ;
 	
 	// SDL surface's BytesPerPixel left untouched.
+
+#endif //  OSDL_USES_SDL
 	
 }
+
 
 
 BytesPerPixel Surface::getBytesPerPixel() const throw()
 {
 
+#if OSDL_USES_SDL
+
 	return _surface->format->BytesPerPixel ;
 	
+#else //  OSDL_USES_SDL
+
+	return 0 ;
+
+#endif //  OSDL_USES_SDL
+	
 }
+
 
 
 void Surface::setBytesPerPixel( BytesPerPixel newBytesPerPixel ) throw() 
 {
 
+#if OSDL_USES_SDL
+
 	_surface->format->BytesPerPixel = newBytesPerPixel ;
 	
 	// SDL surface's BitsPerPixel left untouched.
 	
+#endif //  OSDL_USES_SDL
+	
 }
+
 
 
 void * Surface::getPixels() const throw() 
 {
 
+#if OSDL_USES_SDL
+
 	return _surface->pixels ;
+
+#else //  OSDL_USES_SDL
+
+	return 0 ;
+
+#endif //  OSDL_USES_SDL
 		
 }
 
@@ -879,9 +1173,14 @@ void * Surface::getPixels() const throw()
 void Surface::setPixels( void * newPixels ) throw()
 {
 
-	_surface->pixels = newPixels ;
-	
+#if OSDL_USES_SDL
+
+	_surface->pixels = newPixels ;	
+
+#endif //  OSDL_USES_SDL
+
 }
+
 
 
 
@@ -896,6 +1195,7 @@ Pixels::PixelColor Surface::getPixelColorAt( Coordinate x, Coordinate y ) const
 	return Pixels::getPixelColor( *this, x, y ) ;
 	  
 }
+
 
 
 Pixels::ColorDefinition Surface::getColorDefinitionAt( 
@@ -933,6 +1233,7 @@ void Surface::putColorDefinitionAt( Coordinate x, Coordinate y,
 }
 
 
+
 void Surface::putPixelColorAt( Coordinate x, Coordinate y,
 		PixelColor convertedColor, ColorElement alpha,
 		bool blending, bool clipping, bool locking ) throw( VideoException ) 
@@ -952,7 +1253,7 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 #if OSDL_DEBUG_COLOR
 
 	LogPlug::trace( 
-		"Surface::setAlphaForColor : scanning for color definition " 
+		"Surface::setAlphaForColor: scanning for color definition " 
 		+ Pixels::toString( colorDef ) 
 		+ ", so that its alpha coordinate gets replaced by "
 		+ Ceylan::toNumericalString( newAlpha ) ) ;
@@ -961,7 +1262,7 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 		
 	/*
 	 * Useless if surface has no alpha coordinate (maybe the alpha mask 
-	 * could be checked too) :	
+	 * could be checked too):	
 	 *
 	 */
 	if ( ( getFlags() & AlphaBlendingBlit ) == 0 )
@@ -980,7 +1281,7 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 				
 			currentDef = getColorDefinitionAt( x, y ) ;
 			
-			// Replace the pixel with a new alpha only if RGB matches :
+			// Replace the pixel with a new alpha only if RGB matches:
 			if ( Pixels::areEqual( currentDef, colorDef, 
 				/* use alpha */ false ) )
 			{	
@@ -988,7 +1289,7 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 #if OSDL_DEBUG_PIXEL
 				if ( x % 20 == 0 && y % 20 == 0 )
 					LogPlug::debug( 
-						"Surface::setAlphaForColor : replacing alpha of " 
+						"Surface::setAlphaForColor: replacing alpha of " 
 						+ Pixels::toString( currentDef ) + " with new alpha = " 
 						+ Ceylan::toNumericalString( newAlpha ) + " at ["
 						+ Ceylan::toString( x ) + ";" + Ceylan::toString( y ) 
@@ -1003,7 +1304,7 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 				
 #if OSDL_DEBUG_PIXEL
 
-				// Re-read to check modification :
+				// Re-read to check modification:
 				if ( x % 20 == 0 && y % 20 == 0 )
 				{
 				
@@ -1011,8 +1312,8 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 					
 					if ( ! Pixels::areEqual( readDef, currentDef, 
 							/* use alpha */ true ) )
-						LogPlug::error( "Surface::setAlphaForColor : "
-							"alpha replacement failed : expecting " 
+						LogPlug::error( "Surface::setAlphaForColor: "
+							"alpha replacement failed: expecting " 
 							+ Pixels::toString( readDef ) 
 							+ ", read " + Pixels::toString( currentDef ) ) ;
 				}
@@ -1025,7 +1326,7 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 			
 				/*
 				if ( x % 10 == 0 && y % 10 == 0 )
-					LogPlug::debug( "Surface::setAlphaForColor : pixel in ["
+					LogPlug::debug( "Surface::setAlphaForColor: pixel in ["
 						+ Ceylan::toString( x ) + ";" + Ceylan::toString( y ) 
 						+ "], whose color definition is " 
 						+ Pixels::toString( currentDef ) 
@@ -1042,6 +1343,8 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 }
 
 
+
+
 bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 	Coordinate y, Pixels::ColorElement red, Pixels::ColorElement green, 
 	Pixels::ColorElement blue, Pixels::ColorElement alpha ) throw()
@@ -1053,6 +1356,7 @@ bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 }
 
 
+
 bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 	Coordinate y, Pixels::PixelColor actualColor ) throw()
 {
@@ -1062,6 +1366,7 @@ bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 }
 
 
+
 bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 	Coordinate y, Pixels::ColorDefinition colorDef ) throw()
 {
@@ -1069,6 +1374,7 @@ bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 	return Line::drawHorizontal( *this,  xStart, xStop, y, colorDef ) ;
 	
 }
+
 
 
 
@@ -1082,6 +1388,7 @@ bool Surface::drawVerticalLine( Coordinate x, Coordinate yStart,
 		
 }
 	
+
 	
 bool Surface::drawVerticalLine( Coordinate x, Coordinate yStart,
 	 Coordinate yStop, Pixels::ColorDefinition colorDef ) throw()
@@ -1091,6 +1398,7 @@ bool Surface::drawVerticalLine( Coordinate x, Coordinate yStart,
 	
 }
 
+	
 	
 	
 bool Surface::drawLine( Coordinate xStart, Coordinate yStart,
@@ -1105,6 +1413,7 @@ bool Surface::drawLine( Coordinate xStart, Coordinate yStart,
 }
 
 
+
 bool Surface::drawLine( Coordinate xStart, Coordinate yStart,
 		Coordinate xStop, Coordinate yStop, Pixels::ColorDefinition colorDef )
 	throw()
@@ -1113,6 +1422,8 @@ bool Surface::drawLine( Coordinate xStart, Coordinate yStart,
 	return Line::draw( *this, xStart, yStart, xStop, yStop, colorDef ) ;
 	
 }
+
+
 
 
 bool Surface::drawCross( const Point2D & center, 
@@ -1124,6 +1435,7 @@ bool Surface::drawCross( const Point2D & center,
 }
 
 
+
 bool Surface::drawCross( Coordinate xCenter, Coordinate yCenter,
 	Pixels::ColorDefinition colorDef, Length squareEdge ) throw() 
 {
@@ -1132,6 +1444,7 @@ bool Surface::drawCross( Coordinate xCenter, Coordinate yCenter,
 	
 }
 	
+
 
 bool Surface::drawEdges( Pixels::ColorDefinition edgeColor, Length edgeWidth )
 	throw()	
@@ -1172,6 +1485,7 @@ bool Surface::drawEdges( Pixels::ColorDefinition edgeColor, Length edgeWidth )
 }
 
 
+
 bool Surface::drawBox( const UprightRectangle & rectangle, 
 		Pixels::ColorElement red, Pixels::ColorElement green, 
 		Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) 
@@ -1183,6 +1497,7 @@ bool Surface::drawBox( const UprightRectangle & rectangle,
 }
 	
 	
+	
 bool Surface::drawBox( const UprightRectangle & rectangle, 
 	Pixels::ColorDefinition colorDef, bool filled ) throw()
 {
@@ -1191,6 +1506,7 @@ bool Surface::drawBox( const UprightRectangle & rectangle,
 	
 }
 	
+
 
 
 bool Surface::drawCircle( Coordinate xCenter, Coordinate yCenter, 
@@ -1205,6 +1521,7 @@ bool Surface::drawCircle( Coordinate xCenter, Coordinate yCenter,
 }
 
 
+
 bool Surface::drawCircle( Coordinate xCenter, Coordinate yCenter, 
 	Length radius, Pixels::ColorDefinition colorDef, 
 	bool filled, bool blended ) throw()
@@ -1214,6 +1531,7 @@ bool Surface::drawCircle( Coordinate xCenter, Coordinate yCenter,
 		colorDef, filled, blended ) ;
 						
 }
+
 
 
 bool Surface::drawDiscWithEdge( Coordinate xCenter, Coordinate yCenter, 
@@ -1228,6 +1546,7 @@ bool Surface::drawDiscWithEdge( Coordinate xCenter, Coordinate yCenter,
 }	
 					
 
+
 bool Surface::drawEllipse( Coordinate xCenter, Coordinate yCenter, 
 	Length horizontalRadius, Length verticalRadius,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
@@ -1238,6 +1557,7 @@ bool Surface::drawEllipse( Coordinate xCenter, Coordinate yCenter,
 		horizontalRadius, verticalRadius, red, green, blue, alpha, filled ) ;	
 			
 }
+
 
 
 bool Surface::drawEllipse( Coordinate xCenter, Coordinate yCenter, 
@@ -1265,6 +1585,7 @@ bool Surface::drawPie( Coordinate xCenter, Coordinate yCenter, Length radius,
 }
 
 
+
 bool Surface::drawPie( Coordinate xCenter, Coordinate yCenter, Length radius, 
 	Ceylan::Maths::AngleInDegrees angleStart, 
 	Ceylan::Maths::AngleInDegrees angleStop, 
@@ -1275,6 +1596,7 @@ bool Surface::drawPie( Coordinate xCenter, Coordinate yCenter, Length radius,
 		radius, angleStart, angleStop, colorDef ) ;
 		
 }
+
 
 
 
@@ -1359,7 +1681,7 @@ bool Surface::drawGrid( Length columnStride, Length rowStride,
 	bool fillBackground, Pixels::ColorDefinition backColor ) throw()
 {
 
-	// Take into account the grid line itself :
+	// Take into account the grid line itself:
 	columnStride++ ;
 	rowStride++ ; 
 	
@@ -1374,7 +1696,7 @@ bool Surface::drawGrid( Length columnStride, Length rowStride,
 
 	Coordinate x = 0 ;
 	
-	// Draw columns :
+	// Draw columns:
 	while ( x < xBorder )
 	{
 		if ( ! drawVerticalLine( x, 0, yBorder, lineColor ) )
@@ -1384,7 +1706,7 @@ bool Surface::drawGrid( Length columnStride, Length rowStride,
 
 	Coordinate y = 0 ;
 	
-	// Draw rows :
+	// Draw rows:
 	while ( y < yBorder )
 	{
 		if ( ! drawHorizontalLine( 0, xBorder, y, lineColor ) )
@@ -1419,6 +1741,7 @@ bool Surface::printText( const std::string & text, Coordinate x, Coordinate y,
 }
 
 
+
 bool Surface::blitTo( Surface & targetSurface ) const throw( VideoException )
 {
 
@@ -1427,13 +1750,16 @@ bool Surface::blitTo( Surface & targetSurface ) const throw( VideoException )
 }
 
 
+
 bool Surface::blitTo( Surface & targetSurface, Coordinate x, Coordinate y ) 
 	const throw( VideoException )
 {
 
+#if OSDL_USES_SDL
+
 #if OSDL_DEBUG_WIDGET
 
-	LogPlug::trace( "Surface::blitTo : blitting to [" + Ceylan::toString( x )
+	LogPlug::trace( "Surface::blitTo: blitting to [" + Ceylan::toString( x )
 		+ ";" + Ceylan::toString( y ) + "]."  ) ; 
 		
 #endif // OSDL_DEBUG_WIDGET
@@ -1465,7 +1791,7 @@ bool Surface::blitTo( Surface & targetSurface, Coordinate x, Coordinate y )
 		case -2:
 			/*
 			 * VideoMemoryLostException is a child class of VideoException, 
-			 * no special message to deliver :
+			 * no special message to deliver:
 			 *
 			 */
 			throw VideoMemoryLostException() ;
@@ -1473,7 +1799,7 @@ bool Surface::blitTo( Surface & targetSurface, Coordinate x, Coordinate y )
 	
 		case -1:
 			throw VideoException( 
-				"Surface::blitTo with no source rectangle : error in blit, " 
+				"Surface::blitTo with no source rectangle: error in blit, " 
 				+ Utils::getBackendLastError() ) ;
 			break ;
 	
@@ -1485,6 +1811,12 @@ bool Surface::blitTo( Surface & targetSurface, Coordinate x, Coordinate y )
 	}
 					
 	return false ;	
+	
+#else // OSDL_USES_SDL
+
+	return false ;
+	
+#endif // OSDL_USES_SDL
 		
 }
 
@@ -1505,6 +1837,8 @@ bool Surface::blitTo( Surface & targetSurface,
 		const TwoDimensional::Point2D & destinationLocation ) 
 	const throw( VideoException )
 {
+
+#if OSDL_USES_SDL
 
 #if OSDL_DEBUG
 
@@ -1529,8 +1863,9 @@ bool Surface::blitTo( Surface & targetSurface,
 	destinationRect.y = destinationLocation.getY() ;
 	// destinationRect width and height do not matter for SDL_BlitSurface.
 	
-	switch( SDL_BlitSurface( & getSDLSurface(), sourceRectangle.toSDLRect(), 
-		& targetSurface.getSDLSurface(), & destinationRect ) )
+	switch( SDL_BlitSurface( & getSDLSurface(),
+		sourceRectangle.toLowLevelRect(), & targetSurface.getSDLSurface(), 
+		& destinationRect ) )
 	{
 	
 		case 0:
@@ -1539,13 +1874,13 @@ bool Surface::blitTo( Surface & targetSurface,
 			break ;
 				
 		case -2:
-			// VideoMemoryLostException is a child class of VideoException :
+			// VideoMemoryLostException is a child class of VideoException:
 			throw VideoMemoryLostException() ;
 			break ;
 	
 		case -1:
 			throw VideoException( 
-				"Surface::blitTo with source rectangle : error in blit, " 
+				"Surface::blitTo with source rectangle: error in blit, " 
 				+ Utils::getBackendLastError() ) ;
 			break ;
 	
@@ -1557,6 +1892,13 @@ bool Surface::blitTo( Surface & targetSurface,
 	}
 	
 	return false ;
+
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Surface::blitTo failed :"
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
 		
 }
 	
@@ -1567,23 +1909,33 @@ Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor,
 	const throw( VideoException )
 {
 
-	// Antialiasing not supported with flipping :
+#if OSDL_USES_SDL_GFX
+
+	// Antialiasing not supported with flipping:
 	if ( abscissaZoomFactor < 0 || ordinateZoomFactor < 0 )
 		antialiasing = false ;
 	
-	SDL_Surface * res = ::zoomSurface( 
-		const_cast<SDL_Surface *>( _surface ), 
+	LowLevelSurface * res =::zoomSurface( 
+		const_cast<LowLevelSurface *>( _surface ), 
 		abscissaZoomFactor,
 		 ordinateZoomFactor,
-		antialiasing ? SMOOTHING_ON : SMOOTHING_OFF ) ;
+		antialiasing ? SMOOTHING_ON: SMOOTHING_OFF ) ;
 	
 	if ( res == 0 )
-		throw VideoException( "Surface::zoom : unable to zoom surface." ) ;
+		throw VideoException( "Surface::zoom: unable to zoom surface." ) ;
 	
-	// Creates a new back-buffer surface :
+	// Creates a new back-buffer surface:
 	return * new Surface( *res ) ;
+
+#else // OSDL_USES_SDL_GFX
+
+	throw VideoException( "Surface::zoom failed :"
+		"no SDL_gfx support available" ) ;
 		
+#endif // OSDL_USES_SDL_GFX
+				
 }
+
 	
 					
 Surface & Surface::rotoZoom( Ceylan::Maths::AngleInDegrees angle, 
@@ -1604,33 +1956,56 @@ Surface & Surface::rotoZoom(
 	const throw( VideoException )
 {
 
-	// Antialiasing not supported with flipping :
+#if OSDL_USES_SDL_GFX
+
+	// Antialiasing not supported with flipping:
 	if ( abscissaZoomFactor < 0 || ordinateZoomFactor < 0 )
 		antialiasing = false ;
 	
-	SDL_Surface * res = ::rotozoomSurfaceXY( 
-		const_cast<SDL_Surface *>( _surface ), angle, abscissaZoomFactor,
-		ordinateZoomFactor,	antialiasing ? SMOOTHING_ON : SMOOTHING_OFF ) ;
+	LowLevelSurface * res =::rotozoomSurfaceXY( 
+		const_cast<LowLevelSurface *>( _surface ), angle, abscissaZoomFactor,
+		ordinateZoomFactor,	antialiasing ? SMOOTHING_ON: SMOOTHING_OFF ) ;
 	
 	if ( res == 0 )
 		throw VideoException( 
-			"Surface::rotoZoom : unable to rotozoom surface." ) ;
+			"Surface::rotoZoom: unable to rotozoom surface." ) ;
 	
 	return * new Surface( *res ) ;
+
+#else // OSDL_USES_SDL_GFX
+
+	throw VideoException( "Surface::rotoZoom failed :"
+		"no SDL_gfx support available" ) ;
+		
+#endif // OSDL_USES_SDL_GFX
 
 }
 
 	
+	
 						
-UprightRectangle & Surface::getClippingArea() const throw() 
+UprightRectangle & Surface::getClippingArea() const throw( VideoException ) 
 {
+
+#if OSDL_USES_SDL
+
 	return * new UprightRectangle( _surface->clip_rect ) ;
+	
+#else // OSDL_USES_SDL
+	
+	throw VideoException( "Surface::getClippingArea failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
 }
 						
 		
 					
 void Surface::setClippingArea( UprightRectangle & newClippingArea ) throw() 
 {	
+
+#if OSDL_USES_SDL
 
 	TwoDimensional::Point2D corner = newClippingArea.getUpperLeftCorner() ;
 	
@@ -1639,6 +2014,8 @@ void Surface::setClippingArea( UprightRectangle & newClippingArea ) throw()
 	 
 	_surface->clip_rect.w = newClippingArea.getWidth() ; 
 	_surface->clip_rect.h = newClippingArea.getHeight() ; 
+
+#endif // OSDL_USES_SDL
 	
 }
 
@@ -1659,6 +2036,7 @@ void Surface::loadImage( const string & filename, bool blitOnly,
 }
 
 
+
 void Surface::loadJPG( const string & filename, bool blitOnly,
 		bool convertToDisplayFormat, bool convertWithAlpha ) 
 	throw( TwoDimensional::ImageException )
@@ -1668,6 +2046,7 @@ void Surface::loadJPG( const string & filename, bool blitOnly,
 		convertToDisplayFormat, convertWithAlpha  ) ; 
 		
 }
+
 
 
 void Surface::loadPNG( const string & filename, bool blitOnly,
@@ -1681,6 +2060,7 @@ void Surface::loadPNG( const string & filename, bool blitOnly,
 }
 
 
+
 void Surface::loadBMP( const string & filename, bool blitOnly,
 		bool convertToDisplayFormat, bool convertWithAlpha ) 
 	throw( TwoDimensional::ImageException )
@@ -1690,6 +2070,7 @@ void Surface::loadBMP( const string & filename, bool blitOnly,
 		convertToDisplayFormat, convertWithAlpha  ) ; 
 		
 }
+
 
 
 void Surface::loadGIF( const string & filename, bool blitOnly,
@@ -1703,6 +2084,7 @@ void Surface::loadGIF( const string & filename, bool blitOnly,
 }
 
 
+
 void Surface::loadLBM( const string & filename, bool blitOnly,
 		bool convertToDisplayFormat, bool convertWithAlpha ) 
 	throw( TwoDimensional::ImageException )
@@ -1712,6 +2094,7 @@ void Surface::loadLBM( const string & filename, bool blitOnly,
 		convertToDisplayFormat, convertWithAlpha  ) ; 
 		
 }
+
 
 
 void Surface::loadPCX( const string & filename, bool blitOnly,
@@ -1725,6 +2108,7 @@ void Surface::loadPCX( const string & filename, bool blitOnly,
 }
 
 
+
 void Surface::loadPNM( const string & filename, bool blitOnly,
 		bool convertToDisplayFormat, bool convertWithAlpha ) 
 	throw( TwoDimensional::ImageException )
@@ -1734,6 +2118,7 @@ void Surface::loadPNM( const string & filename, bool blitOnly,
 		convertToDisplayFormat, convertWithAlpha  ) ; 
 		
 }
+
 
 
 void Surface::loadTGA( const string & filename, bool blitOnly,
@@ -1747,6 +2132,7 @@ void Surface::loadTGA( const string & filename, bool blitOnly,
 }
 
 
+
 void Surface::loadXPM( const string & filename, bool blitOnly,
 		bool convertToDisplayFormat, bool convertWithAlpha ) 
 	throw( TwoDimensional::ImageException )
@@ -1758,6 +2144,7 @@ void Surface::loadXPM( const string & filename, bool blitOnly,
 }
 
 
+
 void Surface::savePNG( const std::string & filename, bool overwrite ) 
 	throw( TwoDimensional::ImageException )
 {
@@ -1767,24 +2154,40 @@ void Surface::savePNG( const std::string & filename, bool overwrite )
 }
 
 
+
 void Surface::saveBMP( const std::string & filename, bool overwrite ) 
 	throw( TwoDimensional::ImageException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( ( overwrite == false ) && Ceylan::System::File::Exists( filename ) )
 		throw TwoDimensional::ImageException( 
-			"Surface::saveBMP : target file " + filename 
+			"Surface::saveBMP: target file " + filename 
 			+ " already exists, and overwrite mode is off." ) ;
 			
 	if ( SDL_SaveBMP( _surface, filename.c_str() ) == -1 ) 
 		throw TwoDimensional::ImageException( 
-			"Surface::saveBMP : unable to save image : " 
+			"Surface::saveBMP: unable to save image: " 
 			+ Utils::getBackendLastError() ) ;
+			
+#else // OSDL_USES_SDL
+
+	throw TwoDimensional::ImageException( "Surface::saveBMP failed :"
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
 }
+
 
 					
 void Surface::update() throw( VideoException )
 {
+
+
+#if OSDL_USES_SDL
+
 
 #if OSDL_DEBUG_WIDGET
 	LogPlug::trace( "Surface::update" ) ; 
@@ -1797,7 +2200,7 @@ void Surface::update() throw( VideoException )
 			"Surface::update called whereas surface is locked." ) ;
 #endif // OSDL_DEBUG
 
-	// Updates the internal video buffer before display :
+	// Updates the internal video buffer before display:
 	redraw() ;
 
 	switch( _displayType )
@@ -1813,18 +2216,18 @@ void Surface::update() throw( VideoException )
 		case ClassicalScreenSurface:
 #if OSDL_DEBUG_WIDGET
 			LogPlug::trace( 
-				"Surface::update : flipping classical screen buffer" ) ; 
+				"Surface::update: flipping classical screen buffer" ) ; 
 #endif // OSDL_DEBUG_WIDGET
 		
-			// Double-buffered : flip, others : update the whole rectangle.
+			// Double-buffered: flip, others: update the whole rectangle.
 			if ( SDL_Flip( _surface ) != 0 )
 				throw VideoException( 
-					"Surface::update : unable to flip classical screen : "
+					"Surface::update: unable to flip classical screen: "
 					+ Utils::getBackendLastError() ) ;
 		
 			/*
 			 * If a rectangle area was known to include all changes in the
-			 * screen surface, we could use :
+			 * screen surface, we could use:
 			 *
 		 		
 			if ( _surface->flags & SDL_DOUBLEBUF ) 
@@ -1844,7 +2247,7 @@ void Surface::update() throw( VideoException )
 		case OpenGLScreenSurface:
 #if OSDL_DEBUG_WIDGET
 			LogPlug::trace( 
-				"Surface::update : flipping OpenGL screen buffer" ) ; 
+				"Surface::update: flipping OpenGL screen buffer" ) ; 
 #endif // OSDL_DEBUG_WIDGET
 			
 			// What to do if OpenGL without double buffering is used ?
@@ -1854,12 +2257,21 @@ void Surface::update() throw( VideoException )
 		
 		default:
 			LogPlug::error( 
-				"Surface::update : unknown display type, nothing done." ) ;	
+				"Surface::update: unknown display type, nothing done." ) ;	
 			break ;
 			
 	}		
+
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Surface::update failed :"
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+	
 		
 }
+
 
 
 void Surface::updateRectangles( const list<UprightRectangle *> & listRects )
@@ -1879,7 +2291,7 @@ void Surface::updateRectangles( const list<UprightRectangle *> & listRects )
 #if OSDL_DEBUG		
 		if ( *it == 0 )
 		{
-			LogPlug::error( "Surface::updateRectangles : "
+			LogPlug::error( "Surface::updateRectangles: "
 				"null pointer in rectangle list." ) ;
 			break ;
 		}	
@@ -1890,6 +2302,7 @@ void Surface::updateRectangles( const list<UprightRectangle *> & listRects )
 	}
 
 }
+	
 			
 					
 void Surface::updateRectangle( const UprightRectangle & rect ) 
@@ -1902,9 +2315,12 @@ void Surface::updateRectangle( const UprightRectangle & rect )
 }
 
 
+
 void Surface::updateRectangle( Coordinate x, Coordinate y, 
 	Length width, Length height ) throw( VideoException ) 
 {	
+
+#if OSDL_USES_SDL
 
 #if OSDL_DEBUG
 	if ( isLocked() )
@@ -1921,8 +2337,16 @@ void Surface::updateRectangle( Coordinate x, Coordinate y,
 		throw VideoException( 
 			"Surface::updateRectangle requested on a non-screen surface" ) ;
 	}
+
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Surface::updateRectangle failed :"
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
 		
 }
+	
 	
 	
 void Surface::setRedrawState( bool needsToBeRedrawn ) throw()
@@ -1931,6 +2355,7 @@ void Surface::setRedrawState( bool needsToBeRedrawn ) throw()
 	_needsRedraw = needsToBeRedrawn ;
 	
 }
+
 
 	
 bool Surface::getRedrawState() const throw()
@@ -1941,15 +2366,16 @@ bool Surface::getRedrawState() const throw()
 }
 
 	
+	
 void Surface::redraw() throw()
 {
 
 
 	/*
-	 * Far too verbose :
+	 * Far too verbose:
 	 
 #if OSDL_DEBUG_WIDGET
-	LogPlug::trace( "Surface::redraw : needs redraw attribute is " 
+	LogPlug::trace( "Surface::redraw: needs redraw attribute is " 
 		+ Ceylan::toString(_needsRedraw ) + "." ) ; 
 #endif // OSDL_DEBUG_WIDGET
 
@@ -1959,10 +2385,10 @@ void Surface::redraw() throw()
 	if ( getRedrawState() )
 	{
 		
-		// First redraw thyself :	
+		// First redraw thyself:	
 		redrawInternal() ;
 	
-		// Then request the sub-components to do so recursively :
+		// Then request the sub-components to do so recursively:
 		RedrawRequestEvent redrawEvent( *this ) ;
 	
 		/*
@@ -1982,6 +2408,7 @@ void Surface::redraw() throw()
 }
 
 
+
 void Surface::redrawInternal() throw()
 {
 
@@ -1997,6 +2424,7 @@ void Surface::redrawInternal() throw()
 	 	 
 }
 	
+
 					
 bool Surface::isInternalSurfaceAvailable() const throw()
 {
@@ -2006,12 +2434,13 @@ bool Surface::isInternalSurfaceAvailable() const throw()
 }
 
 
+
 void Surface::addWidget( TwoDimensional::Widget & widget ) 
 	throw( VideoException )
 {
 
 #if OSDL_DEBUG_WIDGET
-	LogPlug::trace( "Surface::addWidget : adding " + widget.toString() ) ; 
+	LogPlug::trace( "Surface::addWidget: adding " + widget.toString() ) ; 
 #endif // OSDL_DEBUG_WIDGET
 
 	/*
@@ -2027,11 +2456,12 @@ void Surface::addWidget( TwoDimensional::Widget & widget )
 	catch( const Ceylan::EventException & e )
 	{
 		throw VideoException( 
-			"Surface::addWidget : unable to add new listener widget : "
+			"Surface::addWidget: unable to add new listener widget: "
 			+ e.toString() ) ;
 	}
 	
 }
+
 
 
 Surface & Surface::getWidgetRenderTarget() throw()	
@@ -2039,12 +2469,13 @@ Surface & Surface::getWidgetRenderTarget() throw()
 
 	/*
 	 * For simple surfaces (and widgets), subwidgets should target 
-	 * this surface :
+	 * this surface:
 	 *
 	 */
 	return *this ;
 	
 }	
+
 
 	
 void Surface::putWidgetToFront( TwoDimensional::Widget & widget ) 
@@ -2058,10 +2489,11 @@ void Surface::putWidgetToFront( TwoDimensional::Widget & widget )
 	 */
 	_listeners.remove( & widget ) ;
 	
-	// Put this widget in last slot (top-level) :
+	// Put this widget in last slot (top-level):
 	_listeners.push_back( & widget ) ;	
 	 
 }
+
 
 					
 void Surface::putWidgetToBack( TwoDimensional::Widget & widget ) 
@@ -2076,10 +2508,11 @@ void Surface::putWidgetToBack( TwoDimensional::Widget & widget )
 	 */
 	_listeners.remove( & widget ) ;
 	
-	// Put this widget in last (bottom-level) slot :
+	// Put this widget in last (bottom-level) slot:
 	_listeners.push_front( & widget ) ;	
 
 }
+
 
 
 void Surface::centerMousePosition() throw()
@@ -2090,70 +2523,101 @@ void Surface::centerMousePosition() throw()
 }
 
 
-void Surface::setMousePosition( Coordinate newX, Coordinate newY ) throw() 
+
+void Surface::setMousePosition( Coordinate newX, Coordinate newY ) 
+	throw( VideoException ) 
 {
+
+#if OSDL_USES_SDL
 
 #if OSDL_DEBUG
 
 	if ( _displayType == BackBuffer )
-	{
-		Ceylan::emergencyShutdown( 
-			"Surface::setMousePosition called on a non-screen surface." ) ;
-	}
+		throw VideoException( "Surface::setMousePosition failed: "
+			"called on a non-screen surface." ) ;
 	
 #endif // OSDL_DEBUG
 	
 	SDL_WarpMouse( newX, newY ) ;
 	
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Surface::setMousePosition failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+	
 }
 
+	
 										
 bool Surface::mustBeLocked() const throw() 
 {
 
+#if OSDL_USES_SDL
+
 	// Not stored once for all, since may change during the surface life ?
 	return SDL_MUSTLOCK( _surface ) ;
+	
+#else // OSDL_USES_SDL
+
+	return true ;
+		
+#endif // OSDL_USES_SDL
 	 
 }
+
 
 
 void Surface::preUnlock() throw()
 {
 
+#if OSDL_USES_SDL
+
 	/*
 	 * Lockable framework ensures it is called only if necessary 
-	 * (i.e. only if 'must be locked') :
+	 * (i.e. only if 'must be locked'):
 	 *
 	 */
 	SDL_UnlockSurface( _surface ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void Surface::postLock() throw()
 {
 	
+#if OSDL_USES_SDL
+
 	/*
 	 * Lockable framework ensures it is called only if necessary 
-	 * (i.e. only if 'must be locked') :
+	 * (i.e. only if 'must be locked'):
 	 *
 	 */
 	SDL_LockSurface( _surface ) ;
 
+#endif // OSDL_USES_SDL
+
 }
+
 
 
 Ceylan::System::Size Surface::getSizeInMemory() const throw()
 {
+
+#if OSDL_USES_SDL
 
 	Ceylan::System::Size currentSize = sizeof( Surface ) ;
 	
 	if ( _surface != 0 )
 	{
 	
-		currentSize += sizeof( SDL_Surface ) ;
+		currentSize += sizeof( LowLevelSurface ) ;
 
-		// PixelFormat are supposed never shared :
+		// PixelFormat are supposed never shared:
 		if ( _surface->format != 0 )
 		{
 		
@@ -2171,14 +2635,21 @@ Ceylan::System::Size Surface::getSizeInMemory() const throw()
 					_surface->format->BytesPerPixel ;
 						
 		}
-		// else : count might be wrong.
+		// else: count might be wrong.
 	}
 
 	// Do not count same pointed block more than once !
 		 
 	return currentSize ;
+
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
@@ -2188,7 +2659,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	const string & caption, const UprightRectangle * inBox ) throw()
 {
 	
-	// No debug requested by default :
+	// No debug requested by default:
 #define	OSDL_DEBUG_DISPLAY_DATA 0
 
 	Coordinate x, y ;
@@ -2219,19 +2690,19 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	UprightRectangle drawingArea( x, y, width, height ) ;
 	
 #if OSDL_DEBUG_DISPLAY_DATA
-	LogPlug::debug( "Drawing area will be : " + drawingArea.toString() ) ;
+	LogPlug::debug( "Drawing area will be: " + drawingArea.toString() ) ;
 #endif // OSDL_DEBUG_DISPLAY_DATA
 			
-	// Draw first the background :	
+	// Draw first the background:	
 	drawBox( drawingArea, backgroundColor, /* filled */ true ) ;
 	
-	// Then draw its border with pencil color :	
+	// Then draw its border with pencil color:	
 	drawBox( drawingArea, pencilColor, /* filled */ false ) ;
 	
 	
-	// Now draw the curve :	
+	// Now draw the curve:	
 	
-	// Abscissa : one pixel corresponds to one value.
+	// Abscissa: one pixel corresponds to one value.
 	Coordinate xstart = drawingArea.getUpperLeftAbscissa() 
 		+ graphAbscissaOffset ;	
 	
@@ -2242,7 +2713,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	
 	/*
 	 * Number of pixel in abscissa for each sample 
-	 * (auto-adjust to largest possible) :
+	 * (auto-adjust to largest possible):
 	 *
 	 */
 	Coordinate stride = static_cast<Coordinate>( 
@@ -2258,7 +2729,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	if ( stride < 1 )
 	{
 		LogPlug::error( 
-			"Surface::displayData : available width too small to draw." ) ;
+			"Surface::displayData: available width too small to draw." ) ;
 		return false ;
 	}	
 	
@@ -2266,7 +2737,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	if ( xstart + static_cast<Coordinate>( dataCount ) > xmax )
 	{
 		LogPlug::warning( 
-			"Surface::displayData : graph will be truncated to x = "
+			"Surface::displayData: graph will be truncated to x = "
 			+ Ceylan::toString( xmax ) + " (insufficient width)." ) ;
 		xstop = xmax ;	
 	}
@@ -2280,12 +2751,12 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	{
 	
 		LogPlug::error( 
-			"Surface::displayData : available width too small to draw." ) ;
+			"Surface::displayData: available width too small to draw." ) ;
 		return false ;
 	}	
 
 	
-	// Searching for extremas :
+	// Searching for extremas:
 	
 	Ceylan::Maths::IntegerData maxData = dataArray[ 0 ] ;
 	Ceylan::Maths::IntegerData minData = dataArray[ 0 ] ;
@@ -2312,7 +2783,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	
 	if ( ordinateDrawRange < 0 )
 	{
-		LogPlug::error( "Surface::displayData : height too small to draw." ) ;
+		LogPlug::error( "Surface::displayData: height too small to draw." ) ;
 		return false ;
 	}	
 	
@@ -2368,7 +2839,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	
 	/*
 	 * These are not real axes 
-	 * (they are not set so that they are y=0 for example) :
+	 * (they are not set so that they are y=0 for example):
 	 *
 	 */
 	
@@ -2395,9 +2866,12 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	
 }
 	
+	
 		 
 const string Surface::toString( Ceylan::VerbosityLevels level ) const throw()
 {
+
+#if OSDL_USES_SDL
 
 	std::list<string> surfaceList ;
 
@@ -2425,41 +2899,47 @@ const string Surface::toString( Ceylan::VerbosityLevels level ) const throw()
 		
 	}
 			
-	surfaceList.push_back( "Dimensions : ( width = " 
+	surfaceList.push_back( "Dimensions: ( width = " 
 		+ Ceylan::toString( getWidth() ) + " ; height = "
 		+ getHeight() + " )" ) ; 
 	
 	if ( level == Ceylan::low )
-		return "Surface description : " 
+		return "Surface description: " 
 			+ Ceylan::formatStringList( surfaceList ) ;
 		
-	surfaceList.push_back( "Pitch : " + Ceylan::toString( getPitch() ) ) ;
+	surfaceList.push_back( "Pitch: " + Ceylan::toString( getPitch() ) ) ;
 	
-	surfaceList.push_back( "Pixel format : bits per pixel = " 
+	surfaceList.push_back( "Pixel format: bits per pixel = " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint16>( getBitsPerPixel() ) ) ) ;
 	
-	surfaceList.push_back( "Video flags : " + InterpretFlags( getFlags() ) ) ;
+	surfaceList.push_back( "Video flags: " + InterpretFlags( getFlags() ) ) ;
 	
 		
-	surfaceList.push_back( "Clipping area : " 
+	surfaceList.push_back( "Clipping area: " 
 		+ UprightRectangle( _surface->clip_rect ).toString( level ) ) ;
 
-	surfaceList.push_back( "Size in memory : " 
+	surfaceList.push_back( "Size in memory: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( getSizeInMemory() ) ) + " bytes" ) ;
 		
 	/*
-	 * surfaceList.push_back( "Reference count : " 
+	 * surfaceList.push_back( "Reference count: " 
 	 	+ Ceylan::toString( _refcount ) ) ;
 	 *
 	 */
 	
-	surfaceList.push_back( "Widget relationship : " 
+	surfaceList.push_back( "Widget relationship: " 
 		+ EventSource::toString( level ) ) ;
 	
 	
-	return "Surface description : " + Ceylan::formatStringList( surfaceList ) ;
+	return "Surface description: " + Ceylan::formatStringList( surfaceList ) ;
+
+#else // OSDL_USES_SDL
+
+	return "" ;
+	
+#endif // OSDL_USES_SDL
 	
 }
 
@@ -2486,6 +2966,7 @@ Surface & Surface::LoadImage( const std::string & filename,
 	return * toLoad ;
 	
 }
+
 	
 	
 string Surface::InterpretFlags( Flags flags ) throw() 
@@ -2493,7 +2974,7 @@ string Surface::InterpretFlags( Flags flags ) throw()
 
 
 	/*
-	 * Indicates surely that these flags corresponds to a screen surface :
+	 * Indicates surely that these flags corresponds to a screen surface:
 	 * (sufficient but not necessary) 
 	 *
 	 */
@@ -2501,7 +2982,7 @@ string Surface::InterpretFlags( Flags flags ) throw()
 	std::list<string> res ;
 	
 	if ( flags & ( AnyPixelFormat | DoubleBuffered 
-		| FullScreen | OpenGL | SDL_OPENGLBLIT ) )
+		| FullScreen | OpenGL | OpenGLBlit ) )
 	{
 	
 		res.push_back( "This surface should be a display surface." ) ;
@@ -2529,12 +3010,12 @@ string Surface::InterpretFlags( Flags flags ) throw()
 		else
 			res.push_back( "Display surface has no OpenGL context." ) ;
 		
-		if ( flags & SDL_OPENGLBLIT )
+		if ( flags & OpenGLBlit )
 			res.push_back( 
 				"Display surface supports OpenGL blitting (deprecated)." ) ;
 			
 		/*
-		 * Ignore if SDL_OPENGLBLIT is not used : avoid useless publicity 
+		 * Ignore if OpenGLBlit is not used: avoid useless publicity 
 		 * for bad habits.
 		 * 
 	 	
@@ -2619,7 +3100,7 @@ string Surface::InterpretFlags( Flags flags ) throw()
 		
 	return "The specified surface flags, whose value is " 
 		+ Ceylan::toString( flags, /* bit field */ true ) 
-		+ ", means : " + Ceylan::formatStringList( res ) ;
+		+ ", means: " + Ceylan::formatStringList( res ) ;
 		
 }
 
@@ -2629,15 +3110,28 @@ string Surface::InterpretFlags( Flags flags ) throw()
 Offset Surface::getOffset() const throw()
 {
 
-	return  _surface->offset ;
+#if OSDL_USES_SDL
+
+	return _surface->offset ;
+	
+#else // OSDL_USES_SDL
+
+	return 0 ;
+	
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 void Surface::setOffset( Offset offset ) throw()
 {
 
+#if OSDL_USES_SDL
+
 	 _surface->offset = offset ;
+	 
+#endif // OSDL_USES_SDL
 	 
 }
 	
@@ -2646,21 +3140,26 @@ void Surface::setOffset( Offset offset ) throw()
 void Surface::flush() throw() 
 {
 	
+#if OSDL_USES_SDL
+
 	if ( _surface != 0 )
 	{
 
 #if OSDL_DEBUG_SURFACE
-		LogPlug::trace( "Surface::flush : flushing surface." ) ;
+		LogPlug::trace( "Surface::flush: flushing surface." ) ;
 #endif // OSDL_DEBUG_SURFACE
 
 		if ( _displayType != BackBuffer )
 			inconsistencyDetected( 
-				"Surface::flush : trying to delete a screen surface." ) ;
+				"Surface::flush: trying to delete a screen surface." ) ;
  		
 		SDL_FreeSurface( _surface ) ;
 		_surface = 0 ;
 		
 	}	
+
+#endif // OSDL_USES_SDL
+
 }
 
 
@@ -2668,13 +3167,14 @@ void Surface::flush() throw()
 void Surface::inconsistencyDetected( const string & message ) const throw()	
 {
 
-	Ceylan::emergencyShutdown( "Incoherence detected in OSDL Surface : "
+	Ceylan::emergencyShutdown( "Inconsistency detected in OSDL Surface: "
 		+ message ) ;
 		
 }
 
 
-Surface::Surface( const Surface & source ) throw() :
+
+Surface::Surface( const Surface & source ) throw():
 	TwoDimensional::UprightRectangle( 0, 0, 0, 0 ),
 	Ceylan::EventSource(),
 	Ceylan::Lockable(),

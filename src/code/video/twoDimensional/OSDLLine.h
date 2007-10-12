@@ -33,7 +33,7 @@ namespace OSDL
 			 * 32-bit color must respect the 0xRRGGBBAA structure, i.e. 
 			 * one byte for each of the four color components.
 			 *
-			 * @note Line clipping is elementary : a line will not be drawn
+			 * @note Line clipping is elementary: a line will not be drawn
 			 * unless both endpoints are in clipped area. 
 			 * However, a line might be partially visible even if neither of
 			 * them are in clipping area, therefore an improvement would be 

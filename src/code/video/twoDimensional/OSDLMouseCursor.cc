@@ -6,8 +6,6 @@
 
 #include "Ceylan.h"            // for LogPlug
 
-#include "SDL.h"               // for SDL_*Cursor
-
 
 
 using std::string ;
@@ -18,9 +16,23 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+#if OSDL_USES_SDL 
+#include "SDL.h"					 // for SDL_Cursor, etc.
+#endif // OSDL_USES_SDL
+
+
 
 MouseCursorException::MouseCursorException( const std::string & reason ) 
-		throw() :
+		throw():
 	VideoException( reason )
 {
 
@@ -38,7 +50,7 @@ MouseCursorException::~MouseCursorException() throw()
 MouseCursor::MouseCursor( Length width,	Length height,
 	const Ceylan::Uint8 & data,	const Ceylan::Uint8 & mask,
 	Coordinate hotSpotAbscissa,	Coordinate hotSpotOrdinate ) 
-		throw( MouseCursorException ) :
+		throw( MouseCursorException ):
 	_type( SystemCursor ),
 	_systemCursor(),	
 	_width( width ),
@@ -48,6 +60,8 @@ MouseCursor::MouseCursor( Length width,	Length height,
 	_hotSpotAbscissa( hotSpotAbscissa ),
 	_hotSpotOrdinate( hotSpotOrdinate )
 {
+
+#if OSDL_USES_SDL
 
 	_systemCursor = SDL_CreateCursor( 
 		const_cast<Ceylan::Uint8 *>( & data ), 
@@ -59,15 +73,23 @@ MouseCursor::MouseCursor( Length width,	Length height,
 		
 	if ( _systemCursor == 0 )
 		throw MouseCursorException( 
-			"MouseCursor constructor failed for system cursor : "
+			"MouseCursor constructor failed for system cursor: "
 			+ Utils::getBackendLastError() ) ;
+
+#else // OSDL_USES_SDL
+
+	throw MouseCursorException( "MouseCursor constructor failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
 			
 }
 
 
+
 MouseCursor::MouseCursor( const Surface & cursorSurface,
 	Coordinate hotSpotAbscissa,	Coordinate hotSpotOrdinate )
-		throw( MouseCursorException ) :
+		throw( MouseCursorException ):
 	_type( BlittedCursor ),
 	_systemCursor( 0 ),	
 	_width(),
@@ -78,7 +100,9 @@ MouseCursor::MouseCursor( const Surface & cursorSurface,
 	_hotSpotOrdinate( hotSpotOrdinate )
 {
 
-	// @fixme develop it for 2D and OpenGL case :
+#if OSDL_USES_SDL
+
+	// @fixme develop it for 2D and OpenGL case:
 #if 0
 
 	
@@ -96,16 +120,28 @@ MouseCursor::MouseCursor( const Surface & cursorSurface,
 	
 	}
 
-#endif	
+#endif // 0
+
+#else // OSDL_USES_SDL
+
+	throw MouseCursorException( "MouseCursor constructor failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
 	
 }
 
 	
+	
 MouseCursor::~MouseCursor() throw()
 {
 
+#if OSDL_USES_SDL
+
 	if ( _systemCursor != 0 )
 		SDL_FreeCursor( _systemCursor ) ;
+
+#endif // OSDL_USES_SDL
 	
 	
 	if ( _surface != 0 )
@@ -116,6 +152,7 @@ MouseCursor::~MouseCursor() throw()
 		delete _texture ;
 		
 }
+
 
 
 MouseCursor::CursorType MouseCursor::getType() const throw()

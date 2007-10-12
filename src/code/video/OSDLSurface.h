@@ -12,12 +12,17 @@
 #include <string>
 #include <list>
 
-// To protect LoadImage :
+// To protect LoadImage:
 #include "OSDLIncludeCorrecter.h"
 
 
-// The internal actual surface.
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+// No need to include SDL header here:
 struct SDL_Surface ;
+
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 
 
@@ -40,6 +45,29 @@ namespace OSDL
 		}
 		
 		
+
+		#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+	
+		/*
+		 * No way of forward declaring LowLevelSurface apparently:
+		 * we would have liked to specify 'struct LowLevelThing ;' here and 
+		 * in the implementation file (.cc): 'typedef BackendThing
+		 * LowLevelThing' but then the compiler finds they are conflicting
+		 * declarations.
+		 *
+		 */
+		 
+		/// The internal actual surface.
+		typedef ::SDL_Surface LowLevelSurface ;
+
+		#else // OSDL_USES_SDL
+
+		struct LowLevelSurface {} ;
+
+		#endif // OSDL_USES_SDL
+
+
+		
 		// Surfaces can be palettized.
 		class Palette ;
 		
@@ -51,7 +79,7 @@ namespace OSDL
 		 * to its widgets (listeners).
 		 *
 		 */
-		class OSDL_DLL SurfaceEvent : public Ceylan::Event
+		class OSDL_DLL SurfaceEvent: public Ceylan::Event
 		{
 		
 			public:
@@ -66,7 +94,7 @@ namespace OSDL
 	
 		
 		/// Thrown when video memory has been lost.
-		class OSDL_DLL VideoMemoryLostException : public VideoException
+		class OSDL_DLL VideoMemoryLostException: public VideoException
 		{
 		
 			public:
@@ -133,7 +161,7 @@ namespace OSDL
 		 * twice, so that both buffers are filled.
 		 *
 		 * Surface is firstly a mere proxy-object of its backend counterpart,
-		 * SDL_Surface. 
+		 * LowLevelSurface. 
 		 * However advanced services have been added, to provide higher level
 		 * abstractions of video buffers.
 		 *
@@ -149,12 +177,12 @@ namespace OSDL
 		 * bottom to top. 
 		 * Therefore, to redraw the whole surface once it has been primarily
 		 * rendered, its widgets are in turn redraw, thanks to a simple
-		 * iteration on listener ordered list : they should be then drawn 
+		 * iteration on listener ordered list: they should be then drawn 
 		 * from bottom to top, so that widget overlapping is properly managed.
 		 * 
 		 * Obviously no widget should be registered more than once.
 		 *
-		 * Images can be loaded in Surfaces, supported formats are :
+		 * Images can be loaded in Surfaces, supported formats are:
 		 *		- JPG (recommended for snapshots)
 		 *		- PNG (recommended for everything else) [Portable Network
 		 * Graphics, lossless compression]
@@ -177,7 +205,7 @@ namespace OSDL
 		 * Screen surfaces have also methods to control the mouse position.
 		 *
 		 */
-		class OSDL_DLL Surface : 
+		class OSDL_DLL Surface: 
 			public TwoDimensional::UprightRectangle, 
 			public Ceylan::EventSource,
 			public Ceylan::Lockable, 
@@ -189,14 +217,15 @@ namespace OSDL
 			
 			
 				/**
-				 * Describes the display type of a surface :
+				 * Describes the display type of a surface:
 				 *
 				 *   - BackBuffer for non display surfaces
 				 *   - ClassicalScreenSurface for usual screen surfaces
 				 *   - OpenGLScreenSurface for OpenGL-based screen surfaces 
 				 *
 				 */
-				enum DisplayType { 
+				enum DisplayType
+				{ 
 					BackBuffer, 
 					ClassicalScreenSurface, 
 					OpenGLScreenSurface 
@@ -324,9 +353,13 @@ namespace OSDL
 				 * the provided surface, i.e. whether it is a backbuffer 
 				 * or a screen surface, usual or OpenGL-based.
 				 *
+				 * @throw VideoException if the operation failed or is not
+				 * supported.
+				 *
 				 */
-				explicit Surface( SDL_Surface & surface, 
-					DisplayType displayType = BackBuffer ) throw() ;
+				explicit Surface( LowLevelSurface & surface, 
+						DisplayType displayType = BackBuffer ) 
+					throw( VideoException ) ;
 				
 				
 				
@@ -334,7 +367,7 @@ namespace OSDL
 				 * Creates an empty surface, whose display type is 
 				 * back-buffer.
 				 *
-				 * On creation this Surface will contain only black pixels :
+				 * On creation this Surface will contain only black pixels:
 				 *  - for RGB surfaces, RGB = [0;0;0]
 				 *  - for RGBA surfaces, RGBA = [0;0;0;Pixels::AlphaTransparent]
 				 *
@@ -350,7 +383,7 @@ namespace OSDL
 				 * It in turn implies that the AlphaBlending flag is set.
 				 *
 				 * @param flags specify the type of Surface that should be
-				 * created. This can be any combination of :
+				 * created. This can be any combination of:
 				 *		- Surface::Software
 				 *		- Surface::Hardware
 				 *		- Surface::ColorkeyBlit
@@ -415,7 +448,7 @@ namespace OSDL
 	
 				
 				/**
-				 * Clones this Surface : creates a new Surface, exact copy 
+				 * Clones this Surface: creates a new Surface, exact copy 
 				 * of this Surface, but with no data shared with it at all. 
 				 * The display type of the clone will be back-buffer.
 				 *
@@ -443,7 +476,7 @@ namespace OSDL
 				 * @return the SDL surface corresponding to that surface.
 				 *
 				 */
-				virtual SDL_Surface & getSDLSurface() const throw() ;
+				virtual LowLevelSurface & getSDLSurface() const throw() ;
 				
 				
 				/**
@@ -458,7 +491,7 @@ namespace OSDL
 				 * @note Deallocates any previously held surface.
 				 *
 				 */
-				virtual void setSDLSurface( SDL_Surface & newSurface, 
+				virtual void setSDLSurface( LowLevelSurface & newSurface, 
 					DisplayType displayType = BackBuffer ) throw() ;
 	
 	
@@ -527,12 +560,12 @@ namespace OSDL
 	
 	
 				/**
-				 * Adjusts the alpha properties of the surface : sets the
+				 * Adjusts the alpha properties of the surface: sets the
 				 * per-surface alpha value and/or enables or disables 
 				 * alpha blending.
 				 *
 				 * @param flags can be an OR'd combination of the following 
-				 * two options, one of these options, or 0 (none) :
+				 * two options, one of these options, or 0 (none):
 				 *  - Surface::AlphaBlendingBlit
 				 *  - Surface::RLEColorkeyBlit
 				 *
@@ -563,7 +596,7 @@ namespace OSDL
 				 * The key must be defined accoring to the same pixel format 
 				 * as the surface.
 				 *
-				 * @param flag can be a OR'ed combination :
+				 * @param flag can be a OR'ed combination:
 				 *		- if Surface::ColorkeyBlit is set, then the key is 
 				 * the transparent pixel value in the source image of a blit.
 				 *		- if Surface::RLEColorkeyBlit is set, RLE acceleration
@@ -593,7 +626,7 @@ namespace OSDL
 				 * The key must be defined accoring to the same pixel format 
 				 * as the surface.
 				 *
-				 * @param flag can be a OR'ed combination :
+				 * @param flag can be a OR'ed combination:
 				 *		- if Surface::ColorkeyBlit is set, then the key is 
 				 * the transparent pixel value in the source image of a blit.
 				 *		- if Surface::RLEColorkeyBlit is set, RLE 
@@ -605,6 +638,10 @@ namespace OSDL
 				 * If flag is 0, this function clears any current color key.
 				 *
 				 * @param keyColorDef the color definition of the color key.
+				 *
+				 * @throw VideoException if the operation failed or is not
+				 * supported.
+				 *
 				 */
 				virtual void setColorKey( Ceylan::Flags flags, 
 						Pixels::ColorDefinition keyColorDef ) 
@@ -657,8 +694,15 @@ namespace OSDL
 				
 				
 				
-				/// Returns this surface's pixel format.
-				virtual PixelFormat & getPixelFormat() const throw() ;
+				/**
+				 * Returns this surface's pixel format.
+				 *
+				 * @throw VideoException if the operation failed, including
+				 * if there is no pixel format to retrieve.
+				 *
+				 */
+				virtual PixelFormat & getPixelFormat() const 
+					throw( VideoException ) ;
 				
 				/// Sets this surface's pixel format.
 				virtual void setPixelFormat( PixelFormat & newFormat ) throw() ;
@@ -724,9 +768,12 @@ namespace OSDL
 				 * If true, current content will be scaled, and antialiased 
 				 * if the Video module state machine says so.
 				 *
+				 * @throw VideoException if the operation failed or is not
+				 * supported.
+				 *
 				 */
 				virtual void resize( Length newWidth, Length newHeight, 
-					bool scaleContent = false ) throw() ;
+					bool scaleContent = false ) throw( VideoException ) ;
 
 
 				/**
@@ -825,7 +872,7 @@ namespace OSDL
 
 				/**
 				 * Returns the result of a vertical flip of this source 
-				 * surface : the result will contain the original image 
+				 * surface: the result will contain the original image 
 				 * mirrored according to a vertical line splitting this 
 				 * surface into a left and right area of equal size.
 				 *
@@ -838,13 +885,17 @@ namespace OSDL
 				 * @note The returned surface will have to be deallocated 
 				 * by the caller.
 				 *
+				 * @throw VideoException if the operation failed or is not
+				 * supported.
+				 *
 				 */
-				virtual Surface & flipVertical() const throw() ; 
+				virtual Surface & flipVertical() const 
+					throw( VideoException ) ;
 
 
 				/**
 				 * Returns the result of an horizontal flip of this source
-				 * surface : the result will contain the original image 
+				 * surface: the result will contain the original image 
 				 * mirrored according to an horizontal line splitting 
 				 * this surface into a top and bottom area of equal size.
 				 *
@@ -857,8 +908,12 @@ namespace OSDL
 				 * @note The returned surface will have to be deallocated
 				 * by the caller.
 				 *
+				 * @throw VideoException if the operation failed or is not
+				 * supported.
+				 *
 				 */
-				virtual Surface & flipHorizontal() const throw() ; 
+				virtual Surface & flipHorizontal() const 
+					throw( VideoException ) ; 
 
 
 
@@ -1014,7 +1069,7 @@ namespace OSDL
 				 * specified as an already converted RGBA color.
 				 *
 				 * @param alpha the alpha coordinate of the pixel to be put 
-				 * with full precision : the alpha encoded in the converted
+				 * with full precision: the alpha encoded in the converted
 				 * color may not be reliable.
 				 *
 			 	 * @param blending tells whether the alpha channel must be 
@@ -1056,7 +1111,7 @@ namespace OSDL
 				 * @param newAlpha the alpha coordinate that must be 
 				 * assigned to matching pixels.
 				 *
-				 * @return false iff something went wrong (ex : this is not 
+				 * @return false iff something went wrong (ex: this is not 
 				 * a RGBA surface).
 				 *
 				 * @note This method is rather expensive (slow) but useful 
@@ -1074,7 +1129,7 @@ namespace OSDL
 				 * in this surface.
 				 *
 				 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -1104,7 +1159,7 @@ namespace OSDL
 				 * pixel color, in this surface.
 				 *
 				 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -1130,7 +1185,7 @@ namespace OSDL
 				 * endpoint drawing mode is set, with specified RGBA color, 
 				 * in this surface.
 				 *
-				 * @return false if and only if something went wrong (ex :
+				 * @return false if and only if something went wrong (ex:
 				 * surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
@@ -1158,7 +1213,7 @@ namespace OSDL
 				 * endpoint drawing mode is set, with specified RGBA color, 
 				 * in this surface.
 				 *
-				 * @return false if and only if something went wrong (ex :
+				 * @return false if and only if something went wrong (ex:
 				 * surface lock failed).
 				 *
 				 * @note Locks surface if needed.
@@ -1188,7 +1243,7 @@ namespace OSDL
 				 * endpoint drawing mode is set, with specified RGBA color, 
 				 * in this surface.
 				 *
-				 * @return false if and only if something went wrong (ex :
+				 * @return false if and only if something went wrong (ex:
 				 * surface lock failed).
 				 *
 				 * @note Locks surface if needed.
@@ -1217,7 +1272,7 @@ namespace OSDL
 				 * with specified RGBA color.
 				 *
 				 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 *
 				 * @note Locks surface if needed.
 				 *
@@ -1247,7 +1302,7 @@ namespace OSDL
 				 * with specified RGBA color.
 				 *
 				 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 *
 				 * @note Locks surface if needed.
 				 *
@@ -1377,10 +1432,10 @@ namespace OSDL
 				 * target pixel (if true), or if the specified color
 			 	 * should replace the former one, regardless of any blending 
 				 *(if false). 
-				 * Note that only discs may be drawn without being blended :
+				 * Note that only discs may be drawn without being blended:
 				 * circles are always blended.
 				 *
-			 	 * @return false if and only if something went wrong (ex :
+			 	 * @return false if and only if something went wrong (ex:
 				 * surface lock failed).
 			 	 * 
 			 	 * @note Locks surface if needed.
@@ -1415,10 +1470,10 @@ namespace OSDL
 				 * the target pixel (if true), or if the specified color
 			 	 * should replace the former one, regardless of any blending 
 				 * (if false). 
-				 * Note that only discs may be drawn without being blended :
+				 * Note that only discs may be drawn without being blended:
 				 * circles are always blended.
 				 *
-			 	 * @return false if and only if something went wrong (ex :
+			 	 * @return false if and only if something went wrong (ex:
 				 * surface lock failed).
 			 	 * 
 			 	 * @note Locks surface if needed.
@@ -1467,7 +1522,7 @@ namespace OSDL
 				 * of any blending (if false).
 				 *
 			 	 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 			 	 * 
 				 * @note This method is rather expensive (slow), especially 
 				 * if 'discColorDef' is not fully opaque and if 'blended' 
@@ -1496,7 +1551,7 @@ namespace OSDL
 				 *
 				 * @param filled tells whether the ellipse should be filled.
 				 *
-				 * @return false if and only if something went wrong (ex :
+				 * @return false if and only if something went wrong (ex:
 				 * surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
@@ -1527,7 +1582,7 @@ namespace OSDL
 				 * @param filled tells whether the ellipse should be filled.
 				 *
 				 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -1572,7 +1627,7 @@ namespace OSDL
 				 * @param alpha the alpha color coordinate of fill color.
 				 *
 				 *
-				 * @return false if and only if something went wrong (ex :
+				 * @return false if and only if something went wrong (ex:
 				 * surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
@@ -1613,7 +1668,7 @@ namespace OSDL
 				 * @param colorDef the color definition of fill color.
 				 *
 				 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 *
 				 * @note Locks surface if needed.
 				 *
@@ -1639,7 +1694,7 @@ namespace OSDL
 				 * (disc).
 				 *
 				 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -1669,7 +1724,7 @@ namespace OSDL
 				 * filled (disc).
 				 *
 				 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -1697,7 +1752,7 @@ namespace OSDL
 				 * filled (disc).
 				 *
 				 * @return false if and only if something went wrong
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -1727,7 +1782,7 @@ namespace OSDL
 				 * filled (disc).
 				 *
 				 * @return false if and only if something went wrong 
-				 * (ex : surface lock failed).
+				 * (ex: surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
 				 *
@@ -1764,7 +1819,7 @@ namespace OSDL
 				 *
 				 * @param filled tells whether the polygon should be filled.
 				 *
-				 * @return false if and only if something went wrong (ex :
+				 * @return false if and only if something went wrong (ex:
 				 * surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
@@ -1803,7 +1858,7 @@ namespace OSDL
 				 *
 				 * @param filled tells whether the polygon should be filled.
 				 *
-				 * @return false if and only if something went wrong (ex :
+				 * @return false if and only if something went wrong (ex:
 				 * surface lock failed).
 				 * 
 				 * @note Locks surface if needed.
@@ -1899,18 +1954,18 @@ namespace OSDL
 				 * destination surface. 
 				 * This means that you cannot compose two arbitrary RGBA
 				 * surfaces this way and get the result you would expect 
-				 * from "overlaying" them : the destination alpha will 
+				 * from "overlaying" them: the destination alpha will 
 				 * work as a mask. 
 				 * Hence one might set the alpha of the destination surface 
 				 * to targeted value before the blit.
 				 *
 				 * @param targetSurface the destination surface this 
 				 * surface will be blitted to, starting at [0;0] in the
-				 * destination surface : both upper left corners will
+				 * destination surface: both upper left corners will
 				 * correspond.
 				 *
 				 * @throw VideoMemoryLostException if either of the surfaces
-				 * was in video memory, and if the video memory was lost :
+				 * was in video memory, and if the video memory was lost:
 				 * it then should be reloaded with content and re-blitted.
 				 * Otherwise, if blit went wrong differently, throw a commented
 				 * VideoException.
@@ -1930,7 +1985,7 @@ namespace OSDL
 				 * destination surface. 
 				 * This means that you cannot compose two arbitrary RGBA
 				 * surfaces this way and get the result you would expect from
-				 * "overlaying" them : the destination alpha will work as a
+				 * "overlaying" them: the destination alpha will work as a
 				 * mask. 
 				 * Hence one might set the alpha of the destination surface
 				 * to targeted value before the blit.
@@ -1945,7 +2000,7 @@ namespace OSDL
 				 * surface will be blitted
 				 *
 				 * @throw VideoMemoryLostException if either of the surfaces
-				 * were in video memory, and if the video memory was lost : 
+				 * were in video memory, and if the video memory was lost: 
 				 * it then should be reloaded with content and re-blitted.
 				 * Otherwise, if blit went wrong differently, throw a 
 				 * commented VideoException.
@@ -1968,7 +2023,7 @@ namespace OSDL
 				 *
 				 * @throw VideoMemoryLostException if either of the 
 				 * surfaces was in video memory, and if the video memory was
-				 * lost : it then should be reloaded with content and
+				 * lost: it then should be reloaded with content and
 				 * re-blitted. 
 				 * Otherwise, if blit went wrong differently, throw a 
 				 * commented VideoException.
@@ -1995,7 +2050,7 @@ namespace OSDL
 				 *
 				 * @throw VideoMemoryLostException if either of the 
 				 * surfaces were in video memory, and if the video memory 
-				 * was lost : it then should be reloaded with content and
+				 * was lost: it then should be reloaded with content and
 				 * re-blitted.
 				 *
 				 * @note Should not be called on a locked surface.
@@ -2043,7 +2098,7 @@ namespace OSDL
 				 *
 				 * A surface is returned instead of zooming directly this
 				 * surface to avoid accumulating rounding errors when 
-				 * zooming multiple times the same image : better use a 
+				 * zooming multiple times the same image: better use a 
 				 * constant source surface from which zoomed ones are 
 				 * created with various zoom factors than changing the 
 				 * same surface again and again.
@@ -2090,7 +2145,7 @@ namespace OSDL
 				 *
 				 * A surface is returned instead of rotating this surface to
 				 * avoid accumulating rounding errors when rotozooming 
-				 * multiple times the same image : better use a constant 
+				 * multiple times the same image: better use a constant 
 				 * source surface from which rotozoomed ones are created 
 				 * with various angles and zoom factors than changing the 
 				 * same surface again and again.
@@ -2135,7 +2190,7 @@ namespace OSDL
 				 *
 				 * A surface is returned instead of rotating this surface 
 				 * to avoid accumulating rounding errors when rotozooming
-				 * multiple times the same image : better use a constant 
+				 * multiple times the same image: better use a constant 
 				 * source surface from which rotozoomed ones are created 
 				 * with various angles and zoom factors than changing the 
 				 * same surface again and again.
@@ -2182,8 +2237,12 @@ namespace OSDL
 				 * transferred to the caller, who therefore has to 
 				 * deallocate it when having finished with it.
 				 *
+				 * @throw VideoException if the operation failed or is not 
+				 * supported.
+				 *
 				 */
-				virtual UprightRectangle & getClippingArea() const throw() ;
+				virtual UprightRectangle & getClippingArea() const 
+					throw( VideoException ) ;
 				
 	
 				/**
@@ -2635,7 +2694,7 @@ namespace OSDL
 				 * Saves the current content of this surface into a PNG file.
 				 *
 				 * @param filename the name of the PNG file to be created 
-				 * (ex : 'screenshot.png')
+				 * (ex: 'screenshot.png')
 				 * 
 				 * @param overwrite tells whether an existing file
 				 * <b>filename</b> should be overwritten, or if an 
@@ -2660,7 +2719,7 @@ namespace OSDL
 				 *Saves the current content of this surface into a BMP file.
 				 *
 				 * @param filename the name of the BMP file to create 
-				 * (ex : 'screenshot.bmp')
+				 * (ex: 'screenshot.bmp')
 				 * 
 				 * @param overwrite tells whether an existing file
 				 * <b>filename</b> should be overwritten, or if an exception
@@ -2914,9 +2973,13 @@ namespace OSDL
 				 * @note Must be called on a screen surface, 
 				 * with mouse enabled of course.
 				 *
+				 * @throw VideoException if the operation failed or is not
+				 * supported.
+				 *
 				 */
 				virtual void setMousePosition( 
-					Coordinate newX = 0, Coordinate newY = 0 ) throw() ;
+						Coordinate newX = 0, Coordinate newY = 0 ) 
+					throw( VideoException ) ;
 
 
 	
@@ -2969,7 +3032,7 @@ namespace OSDL
 				 * @note When choosing the width of the container (inBox), 
 				 * to avoid truncating the graph, add 2*graphAbscissaOffset 
 				 * to the number of samples that describes the curve,
-				 * and it will fit at best : both left and right boundaries 
+				 * and it will fit at best: both left and right boundaries 
 				 * will be taken into account.
 				 *
 				 */
@@ -3005,7 +3068,7 @@ namespace OSDL
 
 				
 				/**
-				 * Surface factory : creates a new Surface instance from
+				 * Surface factory: creates a new Surface instance from
 				 * specified image file.
 				 *
 				 * @note The caller takes ownership of the created Surface, 
@@ -3097,8 +3160,11 @@ namespace OSDL
 				 *
 				 * @see Surface::loadPNG
 				 *
+				 * @throw VideoException if the operation failed or is not
+				 * supported.
+				 *
 				 */	
-				explicit Surface() throw() ;
+				explicit Surface() throw( VideoException ) ;
 		
 		
 				 
@@ -3131,13 +3197,13 @@ namespace OSDL
 				 * not used here.
 				 *
 				 */
-				SDL_Surface * _surface ;
+				LowLevelSurface * _surface ;
 	
 	
 				/**
 				 * Tells what is the display type of this surface.
 				 *
-				 * The display type has to be recorded since :
+				 * The display type has to be recorded since:
 				 *  - screen surfaces are not managed like backbuffers, 
 				 * since the formers have to update the screen
 				 *  - classical screen surfaces and OpenGL ones must be

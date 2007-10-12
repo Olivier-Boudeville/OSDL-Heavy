@@ -12,6 +12,10 @@
 
 #include <string>
 
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+#include "SDL.h"              // for SDL_Color and al
+#endif // OSDL_USES_SDL
 	
 
 
@@ -78,7 +82,7 @@ namespace OSDL
 				
 				
 				/// Describes the rendering style of a font.
-				typedef int RenderingStyle ;
+				typedef Ceylan::Uint32 RenderingStyle ;
 				
 								
 				/**
@@ -131,7 +135,7 @@ namespace OSDL
 				 *
 				 * The principle of these rendering methods is to return a
 				 * surface with the chosen glyph(s) drawn with the specified
-				 * color, with no visible background : thanks to color key or
+				 * color, with no visible background: thanks to color key or
 				 * alpha-blending, only the text can be seen, so that this
 				 * returned surface can be directly blitted onto any already
 				 * existing background that will be hidden only by the 
@@ -142,7 +146,7 @@ namespace OSDL
 				 * surfaces of different height. 
 				 * Hence drawing a text is more difficult than just blitting 
 				 * all glyphs from the same height, and usually applications 
-				 * do not use direct glyph rendering : most of the time
+				 * do not use direct glyph rendering: most of the time
 				 * words or texts are preferably rendered as a whole.
 				 *
 				 * As a returned surface is encoded with a RLE-color key 
@@ -165,7 +169,7 @@ namespace OSDL
 				 * and therefore they can be negative.
 				 *
 				 * The signatures detail rendering parameters in the names 
-				 * (ex : 'renderUTF8Text' instead of simply 'render'), 
+				 * (ex: 'renderUTF8Text' instead of simply 'render'), 
 				 * since otherwise there would be methods whose names 
 				 * would be hidden in child classes.
 				 * 
@@ -174,7 +178,7 @@ namespace OSDL
 				 * level of this Font mother class.
 				 *
 				 */
-				class OSDL_DLL Font : public Ceylan::TextDisplayable
+				class OSDL_DLL Font: public Ceylan::TextDisplayable
 				{
 				
 				
@@ -195,9 +199,9 @@ namespace OSDL
 						 *
 						 * These informations on the internal format of the
 						 * rendered surfaces are valid only as long as no
-						 * conversion to display occurs :
+						 * conversion to display occurs:
 						 *
-						 * - Solid : Quick and Dirty
+						 * - Solid: Quick and Dirty
 						 *
 						 * Creates an 8-bit palettized surface and renders 
 						 * the given text at fast quality with the given 
@@ -221,7 +225,7 @@ namespace OSDL
 						 *
 						 * This results in no box around the text, but the 
 						 * text is not as smooth as obtained with other
-						 * qualities : the 'Solid' one is quite poor. 
+						 * qualities: the 'Solid' one is quite poor. 
 						 * By using a render cache, at the expense of more
 						 * memory used, other qualities could demand low CPU
 						 * resources as well.
@@ -231,7 +235,7 @@ namespace OSDL
 						 * Use this mode for frame per second counters and 
 						 * other fast changing text displays.
 						 *
-						 * - Shaded : Slow and Nice (and Recommended quality 
+						 * - Shaded: Slow and Nice (and Recommended quality 
 						 * for most outputs)
 						 *
 						 * Creates a 32-bit RGB RLE-colorkeyed surface 
@@ -252,7 +256,7 @@ namespace OSDL
 						 * as Solid, once it is made. 
 						 * Use this when you need nice text.
 						 *
-						 * - Blended : Slow Slow Slow, but Ultra Nice over
+						 * - Blended: Slow Slow Slow, but Ultra Nice over
 						 * another image.
 						 *
 						 * Creates a 32-bit ARGB surface and render the 
@@ -295,8 +299,8 @@ namespace OSDL
 						 *
 						 * The key therefore is a composite type (a text, a
 						 * color and a quality), which could be modeled at 
-						 * least thanks to two patterns :
-						 *   - a triple made from STL : when quality was not
+						 * least thanks to two patterns:
+						 *   - a triple made from STL: when quality was not
 						 * specifically managed, a
 						 * std::pair<Latin1Char,ColorDefinition> could be 
 						 * used, since the STL pairs have the '<' (less)
@@ -333,7 +337,7 @@ namespace OSDL
 								CharColorQualityKey( 
 										Ceylan::Latin1Char character, 
 										Pixels::ColorDefinition color,
-										RenderQuality quality ) throw() :
+										RenderQuality quality ) throw():
 									_character( character ),
 									_color( color ),
 									_quality( quality )
@@ -396,7 +400,7 @@ namespace OSDL
 									const std::string & text, 
 									Pixels::ColorDefinition color, 
 									RenderQuality quality )
-										throw() :
+										throw():
 									_text( text ),
 									_color( color ),
 									_quality( quality )
@@ -452,16 +456,16 @@ namespace OSDL
 						 * they can be put in cache so that the same request 
 						 * is not rendered twice.
 						 *
-						 * The various settings for the render cache are :
+						 * The various settings for the render cache are:
 						 *
-						 * - None : when no caching is wanted (prefer memory 
+						 * - None: when no caching is wanted (prefer memory 
 						 * to CPU)
-						 * - GlyphCached : put in cache individual glyphs
-						 * - WordCached : put in cache full words. This can be
+						 * - GlyphCached: put in cache individual glyphs
+						 * - WordCached: put in cache full words. This can be
 						 * useful for example with Truetype fonts, since a 
 						 * word cannot be easily rendered from the set of
 						 * its glyphs, due, for instance, to kerning.
-						 * - TextCached : allows for full lines, including
+						 * - TextCached: allows for full lines, including
 						 * whitespaces, to be cached as blocks. Useful when 
 						 * the same sequence of words has to be rendered
 						 * multiple times.
@@ -482,10 +486,10 @@ namespace OSDL
 						 * This enum is a convenient way too of overcoming 
 						 * the impossibility of specifying a cache policy
 						 * independently of the key chosen to instantiate
-						 * the manager : this is an additional level of
+						 * the manager: this is an additional level of
 						 * indirection, so that in the font constructor the
 						 * cache policy can be specified directly, and
-						 * not as :
+						 * not as:
 						 * Ceylan::SmartResourceManager
 						 * <StringColorQualityKey>::CachePolicy
 						 * for example, which would prevent to be able to
@@ -562,7 +566,7 @@ namespace OSDL
 						 * @throw TextException if the specified style is 
 						 * not supported.
 						 *
-						 * @note Some fonts (ex : some fixed fonts) support 
+						 * @note Some fonts (ex: some fixed fonts) support 
 						 * only the rendering style they had at their creation.
 						 * In this case, this method throws systematically 
 						 * an exception if the rendering style is changed.
@@ -973,14 +977,14 @@ namespace OSDL
 						 * index of the first character from the specified 
 						 * text that could not have been rendered, if any. 
 						 *
-						 * Words are not broken : only full words are rendered.
+						 * Words are not broken: only full words are rendered.
 						 *						 
 						 * The caller is responsible for deleting the returned
 						 * surface.
 						 *
 						 * @note Multiline text rendering is recommended for 
 						 * use with one of the two most useful cases 
-						 * regarding text caches : the 'WordCached' and
+						 * regarding text caches: the 'WordCached' and
 						 * 'TextCached' policies. 
 						 * Using 'GlyphCached' or no cache at all works but
 						 * is far less efficient. 
@@ -1011,7 +1015,7 @@ namespace OSDL
 						 *
 						 * @param lastOrdinateUsed the method will assign 
 						 * this user-provided variable the ordinate of 
-						 * the last row used in the returned surface : 
+						 * the last row used in the returned surface: 
 						 * depending on the text, the requested surface will 
 						 * be filled at different levels. 
 						 * This ordinate is useful for example to align
@@ -1060,11 +1064,11 @@ namespace OSDL
 						 * of the first character from the specified text 
 						 * that could not have been rendered, if any. 
 						 *
-						 * Words are not broken : only full words are rendered.
+						 * Words are not broken: only full words are rendered.
 						 *						 
 						 * @note Multiline text rendering is for the moment 
 						 * only implemented for the two most useful cases
-						 * regarding text caches : this rendering is 
+						 * regarding text caches: this rendering is 
 						 * available for the 'WordCached' and 'TextCached'
 						 * policies. 
 						 * It is not implemented for 'GlyphCached', or no 
@@ -1128,11 +1132,11 @@ namespace OSDL
 						 * of the first character from the specified text 
 						 * that could not have been rendered, if any. 
 						 *
-						 * Words are not broken : only full words are rendered.
+						 * Words are not broken: only full words are rendered.
 						 *						 
 						 * @note Multiline text rendering is for the moment 
 						 * only implemented for the two most useful cases
-						 * regarding text caches : this rendering is 
+						 * regarding text caches: this rendering is 
 						 * available for the 'WordCached' and 'TextCached'
 						 * policies. 
 						 * It is not implemented for 'GlyphCached', or no 
@@ -1249,7 +1253,7 @@ namespace OSDL
 						
 						
 						/*
-						 * Rendering styles can be combined for some fonts : 
+						 * Rendering styles can be combined for some fonts: 
 						 * 'Bold | Italic' selects for example a bold italic
 						 * rendering style.
 						 * 
@@ -1426,7 +1430,7 @@ namespace OSDL
 
 						/**
 						 * Ensures that specified word rendering is in 
-						 * text cache, and returns a 'const' reference to it :
+						 * text cache, and returns a 'const' reference to it:
 						 * if the rendering is not already in text cache,
 						 * it will be added.
 						 *
@@ -1470,7 +1474,7 @@ namespace OSDL
 						/**
 						 * Renders specified Latin-1 text with specified
 						 * quality, in specified color, directly thanks to 
-						 * the font backend : no cache is taken into account.
+						 * the font backend: no cache is taken into account.
 						 *
 						 * This method is meant to be used as an helper 
 						 * function so that user-exposed methods can be 

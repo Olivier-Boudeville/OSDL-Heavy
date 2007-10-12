@@ -8,7 +8,38 @@
 
 #include "Ceylan.h"          // for Uint8, Uint32, inheritance
 
-#include "SDL_opengl.h"      // for GLfloat
+
+
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+	#include "SDL_opengl.h"      // for GLfloat
+
+#else // OSDL_USES_SDL
+
+	/*
+	 * libnds defines it already foor the ARM9 in videoGL.h: 
+	 * '#define GLfloat float'
+	 *
+	 */
+	 
+	#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
+
+		#include "OSDLConfigForNintendoDS.h"
+		
+		#ifdef OSDL_RUNS_ON_ARM7
+
+			typedef Ceylan::Float32 GLfloat ;
+
+		#endif// on ARM9
+
+
+	#endif // on CEYLAN_ARCH_NINTENDO_DS
+
+
+#endif // OSDL_USES_SDL not available
+
+
 
 #include <string>
 
@@ -40,7 +71,7 @@ namespace OSDL
 		
 		
 			/// Exception to be raised when OpenGL operations fail.
-			class OSDL_DLL OpenGLException : public VideoException
+			class OSDL_DLL OpenGLException: public VideoException
 			{
 			
 				public:
@@ -112,14 +143,14 @@ namespace OSDL
 			 * The flavour must be selected before or during the call to
 			 * setMode, and will not take effect until that call.
 			 *
-			 * Following flavours are available :
-			 *   - None : no further action taken after basic OpenGL
+			 * Following flavours are available:
+			 *   - None: no further action taken after basic OpenGL
 			 * initialization
-			 *   - OpenGLFor2D : dedicated for accelerated 2D with OpenGL
-			 *   - OpenGLFor3D : classical full-blown 3D 
-			 *   - Reload : designates the same settings as the ones that 
+			 *   - OpenGLFor2D: dedicated for accelerated 2D with OpenGL
+			 *   - OpenGLFor3D: classical full-blown 3D 
+			 *   - Reload: designates the same settings as the ones that 
 			 * were lastly used, just set them back in the state machine. 
-			 * This is useful for example when a resize occurs : the 
+			 * This is useful for example when a resize occurs: the 
 			 * actual OpenGL context of the state machine is lost on some
 			 * platforms, so the OSDL OpenGLContext object must set them 
 			 * again during the setMode call.
@@ -147,7 +178,7 @@ namespace OSDL
 			 * OpenGL context provided by the SDL back-end.
 			 *
 			 */
-			class OSDL_DLL OpenGLContext : public Ceylan::TextDisplayable
+			class OSDL_DLL OpenGLContext: public Ceylan::TextDisplayable
 			{
 
 			
@@ -155,10 +186,10 @@ namespace OSDL
 				
 					
 					/**
-					 * Describes a projection mode :
-					 *    - Orthographic : 
+					 * Describes a projection mode:
+					 *    - Orthographic: 
 					 * http://en.wikipedia.org/wiki/Orthographic_projection
-					 *    - Perspective :
+					 *    - Perspective:
 					 * http://en.wikipedia.org/wiki/Perspective_(graphical)
 					 *
 					 */
@@ -501,7 +532,7 @@ namespace OSDL
 					 * coordinates to window coordinates. 
 					 *
 					 * The recomputation of the projection is automatically
-					 * triggered accordingly, to avoid distorted graphics : 
+					 * triggered accordingly, to avoid distorted graphics: 
 					 * it ensures that the viewport aspect ratio is the same
 					 * as the one of the viewing volume.
 					 *
@@ -533,7 +564,7 @@ namespace OSDL
 					 * The viewer is located at the origin, looking towards 
 					 * the negative z values, his up vector being (0;1;0).
 					 *
-					 * The box will be set so that :
+					 * The box will be set so that:
 					 *   - the viewport ratio is preserved, to avoid distorted
 					 * graphics
 					 *   - the box is cut in two equal parts by the axes x=0 
@@ -544,7 +575,7 @@ namespace OSDL
 					 * Therefore, for a box width of w, the box will range
 					 * between -w/2 and w/2 on the x axis, and between 
 					 * -w*r/2 and w*r/2 on the y axis, where r is the 
-					 * viewport aspect ratio : 
+					 * viewport aspect ratio: 
 					 * r = (viewport height) / (viewport width).
 					 *
 					 * @param width the length of the box edge which is 
@@ -637,7 +668,7 @@ namespace OSDL
 					/**
 					 * Tells whether the OpenGL context can be lost (and 
 					 * therefore must be reloaded) under certain unexpected
-					 * circumstances (ex : window resize, going to fullscreen,
+					 * circumstances (ex: window resize, going to fullscreen,
 					 * switching to another application, etc.).
 					 *
 					 * @see OpenGL::Flavour, for Reload.
@@ -832,11 +863,11 @@ namespace OSDL
 			 * for better integration into OSDL.
 			 *
 			 * Some of them are defined here just to use GLU conventions 
-			 * (ex : GLUint) without needing to include GLU headers, that may
+			 * (ex: GLUint) without needing to include GLU headers, that may
 			 * or may not be available.
 			 *
 			 * This is a form of code duplication, but GLU conventions are not
-			 * expected to change often, and the other solutions are worse :
+			 * expected to change often, and the other solutions are worse:
 			 * hiding actual datatypes behind indirection pointers (would need
 			 * a lot of code for that and would decrease runtime performance) 
 			 * or including GLU headers (would require to include as well

@@ -1,22 +1,31 @@
 #include "OSDLFromGfx.h"  
 
-#include "Ceylan.h"    // for Ceylan::Sint16, Ceylan::Uint32, etc.
+#include "OSDLPixel.h"  // for convertRGBAToColorDefinition, etc.
 
-#include "SDL.h"       // for SDL_Surface, etc.
+#include "Ceylan.h"      // for Ceylan::Sint16, Ceylan::Uint32, etc.
 
 
 
-using namespace Ceylan ;
-using namespace Ceylan::Log ;
-
-using namespace OSDL::Video ;
 
 
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>     // for OSDL_DEBUG_PIXEL and al 
-
 #endif // OSDL_USES_CONFIG_H
 
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+
+#if OSDL_USES_SDL
+
+#include "SDL.h"                     // for SDL_Surface, etc.
+
+using namespace OSDL::Video ;
+
+using namespace Ceylan ;
+using namespace Ceylan::Log ;
 
 
 /* 
@@ -25,8 +34,8 @@ using namespace OSDL::Video ;
  * except that everything has been reformatted, and the function  
  * int pixelColor( SDL_Surface * dst, Ceylan::Ceylan::Sint16 x,
  * Ceylan::Ceylan::Sint16 y, Ceylan::Uint32 color ) 
- * which was already exported, and Ceylan::Sint16, Ceylan::Uint8, Ceylan::Uint16 and Ceylan::Uint32 which 
- * have been prefixed by 'Ceylan::' 
+ * which was already exported, and Ceylan::Sint16, Ceylan::Uint8, 
+ * Ceylan::Uint16 and Ceylan::Uint32 which have been prefixed by 'Ceylan::' 
  *
  */
 
@@ -45,10 +54,13 @@ int VLineAlpha(SDL_Surface * dst, Ceylan::Sint16 x, Ceylan::Sint16 y1, Ceylan::S
 int filledRectAlpha(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 y1, Ceylan::Sint16 x2, Ceylan::Sint16 y2, Ceylan::Uint32 color) ;
 
 int lineColor(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 y1, Ceylan::Sint16 x2, Ceylan::Sint16 y2, Ceylan::Uint32 color) ;
+
 int hlineColor(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 x2, Ceylan::Sint16 y, Ceylan::Uint32 color) ;
+
 int vlineColor(SDL_Surface * dst, Ceylan::Sint16 x, Ceylan::Sint16 y1, Ceylan::Sint16 y2, Ceylan::Uint32 color) ;
 
 int pixelColorWeightNolock(SDL_Surface * dst, Ceylan::Sint16 x, Ceylan::Sint16 y, Ceylan::Uint32 color, Ceylan::Uint32 weight) ;
+
 int _putPixelAlpha(SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y, Ceylan::Uint32 color, Ceylan::Uint8 alpha) ;
 
 
@@ -57,7 +69,7 @@ int _putPixelAlpha(SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y, Ce
  * - filledCircleRGBANotBlended, aacircleRGBANotBlended and 
  * circleRGBANotBlended adapted from their SDL_gfx original counterparts
  * (filledCircleRGBA, aacircleRGBA, circleRGBA) except that the
- * circle pixels are not blended with the ones of the target surface : 
+ * circle pixels are not blended with the ones of the target surface: 
  * they simply replace them.
  *
  */
@@ -130,7 +142,7 @@ int putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y,
 
 	if ( x % 20 == 0 && y % 20 == 0 )
 	{
-		LogPlug::trace( "putPixelAlpha (OSDLFromGfx.cc) : putting at [" 
+		LogPlug::trace( "putPixelAlpha (OSDLFromGfx.cc): putting at [" 
 			+ Ceylan::toString( x )	+ ";" + Ceylan::toString( y ) 
 			+ "] pixel color " + Pixels::toString( 
 				Pixels::convertPixelColorToColorDefinition( 
@@ -308,7 +320,7 @@ int putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y,
 	    break;
 		
 	default:
-	  	LogPlug::error( "putPixelAlpha : unexpected bpp (" 
+	  	LogPlug::error( "putPixelAlpha: unexpected bpp (" 
 			+ Ceylan::toString( surface->format->BytesPerPixel ) + ")" ) ;
 	  	break ;
 		
@@ -320,9 +332,9 @@ int putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y,
 	else
 	{
 	
-		// Clipped-out pixel :
+		// Clipped-out pixel:
 #if OSDL_DEBUG_PIXEL
-		LogPlug::trace( "putPixelAlpha (OSDLFromGfx.cc) : "
+		LogPlug::trace( "putPixelAlpha (OSDLFromGfx.cc): "
 			"pixel clipped out since location [" 
 			+ Ceylan::toString( x ) + ";" + Ceylan::toString( y ) 
 			+ "] is out of surface bounds" ) ;
@@ -342,9 +354,9 @@ int filledCircleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
 {
 
     /*
-     * Draw :
+     * Draw:
      */
-    return ::filledCircleColorNotBlended( dst, x, y, rad, 
+    return::filledCircleColorNotBlended( dst, x, y, rad, 
 		Pixels::convertRGBAToColorDefinition( r, g, b, a ) ) ;
 		
 }
@@ -376,7 +388,7 @@ int pixelColorNolock(SDL_Surface * dst, Ceylan::Sint16 x, Ceylan::Sint16 y, Ceyl
 
 /*
  * Not implemented yet (mostly useless since only non blended discs 
- * interest us here) :
+ * interest us here):
  *
  */
 
@@ -389,24 +401,24 @@ int aacircleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
 {
 
     /*
-     * Draw :
+     * Draw:
      */
-    return ::aaellipseColorNotBlended( dst, x, y, rad, rad, 
+    return::aaellipseColorNotBlended( dst, x, y, rad, rad, 
 		Pixels::convertRGBAToColorDefinition( r, g, b, a ) ) ;
 		
 }
 
 
 
-int ::circleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x, 
+int::circleRGBANotBlended( SDL_Surface * dst, Ceylan::Sint16 x, 
 	Ceylan::Sint16 y, Ceylan::Sint16 rad, Ceylan::Uint8 r, 
 	Ceylan::Uint8 g, Ceylan::Uint8 b, Ceylan::Uint8 a)
 {
 
     /*
-     * Draw :
+     * Draw:
      */
-    return ::circleColor( dst, x, y, rad, 
+    return::circleColor( dst, x, y, rad, 
 		Pixels::convertRGBAToColorDefinition( r, g, b, a ) ) ;
 	
 }
@@ -422,7 +434,7 @@ int filledCircleColorNotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
 
 #if OSDL_DEBUG_PIXEL
 
-	LogPlug::trace( "filledCircleColorNotBlended : "
+	LogPlug::trace( "filledCircleColorNotBlended: "
 		"drawing a non-blended disc at ["
 		+ Ceylan::toString( x ) + ";" + Ceylan::toString( y ) 
 		+ "], with radius = " + Ceylan::toString( r ) 
@@ -459,9 +471,9 @@ int filledCircleColorNotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
     if (r == 0) {
 
 		/*
-		 * was : 'return (pixelColor(dst, x, y, color));' : locks, clips and blends
+		 * was: 'return (pixelColor(dst, x, y, color));': locks, clips and blends
 		 *
-		 * Locks, clips and does not blend instead :
+		 * Locks, clips and does not blend instead:
 		 *
 		 */
 		fastPixelColor( dst, x, y, convertedColor ) ;
@@ -512,7 +524,7 @@ int filledCircleColorNotBlended( SDL_Surface * dst, Ceylan::Sint16 x,
 		/*
 		 * hlineColorNotBlended is already available and called
 		 * 'hlineColorStore', it replaces here
-		 * 'hlineColor' :
+		 * 'hlineColor':
 		 */
 		 
 		result |= hlineColorStore(dst, xmcx, xpcx, ypcy, convertedColor);
@@ -1671,7 +1683,7 @@ int hlineColor(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 x2, Ceylan::
 /* by Pete Shinners, pete@shinners.org                       */
 /* Originally from pygame, http://pygame.seul.org            */
 
-#define ABS(a) (((a)<0) ? -(a) : (a))
+#define ABS(a) (((a)<0) ? -(a): (a))
 
 int lineColor(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 y1, Ceylan::Sint16 x2, Ceylan::Sint16 y2, Ceylan::Uint32 color)
 {
@@ -1993,3 +2005,7 @@ int _putPixelAlpha(SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y, Ce
 
     return (0);
 }
+
+
+#endif // OSDL_USES_SDL
+

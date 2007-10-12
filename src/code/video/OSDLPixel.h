@@ -7,7 +7,16 @@
 #include "Ceylan.h"          // for Ceylan::Uint8, etc.
 
 
-#include "SDL.h"             // for SDL_PixelFormat
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+// No need to include SDL header here:
+struct SDL_Color ;
+struct SDL_PixelFormat ;
+
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+
 
 #include <string>
 
@@ -25,6 +34,11 @@ namespace OSDL
 		class Surface ;
 	
 	
+		// Pixel formats may refer to a palette.
+		class Palette ;
+		
+		
+		
 		/**
 		 * Allows to handle the various pixel colors and formats.
 		 *
@@ -41,30 +55,6 @@ namespace OSDL
 
 
 
-			/**
-			 * Describes a pixel format.
-			 *
-			 */
-			typedef SDL_PixelFormat PixelFormat ;
-		
-	
-	
-			/**
-			 * Format-independent color description.
-			 *
-			 * Corresponds to the RBGA information describing a color 
-			 * defined in 32-bit color space, in this order : the latest
-			 * coordinate is the pixel's alpha channel.
-			 *
-			 * @note The alpha coordinate is not always taken into account
-			 * and reliable.
-			 *
-			 * @see The list of color names (ex : Pixels::RoyalBlue).
-			 *
-			 */		
-			typedef SDL_Color ColorDefinition ;
-
-		
 			/**
 			 * Corresponds to an actual pixel color, i.e. a color definition
 			 * which is encoded according to a pixel format.
@@ -83,11 +73,13 @@ namespace OSDL
 			typedef Ceylan::Uint32 ColorMask ;
 			
 			
+			
 			/**
 			 * Describes a coordinate used in color space, including alpha.
 			 *
 			 */
 			typedef Ceylan::Uint8 ColorElement ;
+					
 									 
 			
 			/**
@@ -99,6 +91,7 @@ namespace OSDL
 			const ColorElement AlphaTransparent = 0 ; 
 			
 			
+			
 			/**
 			 * The alpha coordinate which corresponds to opaque (solid) 
 			 * pixels.		
@@ -108,7 +101,97 @@ namespace OSDL
 			 */
 			const ColorElement AlphaOpaque = 255 ; 
 			
+
+	
+			/**
+			 * Format-independent color description.
+			 *
+			 * Corresponds to the RBGA information describing a color 
+			 * defined in 32-bit color space, in this order: the latest
+			 * coordinate is the pixel's alpha channel.
+			 *
+			 * @note The alpha coordinate is not always taken into account
+			 * and reliable.
+			 *
+			 * @see The list of color names (ex: Pixels::RoyalBlue).
+			 *
+			 */		
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+			/**
+			 * Describes a color definition, not converted to a specific
+			 * format.
+			 *
+			 */
+			typedef ::SDL_Color ColorDefinition ;
+
+
+			/**
+			 * Describes a pixel format.
+			 *
+			 */
+			typedef ::SDL_PixelFormat PixelFormat ;
 			
+#else // OSDL_USES_SDL
+
+
+			/**
+			 * Describes a color definition, not converted to a specific
+			 * format.
+			 *
+			 */
+			struct ColorDefinition
+			{
+	
+				ColorElement r ;
+				ColorElement g ;
+				ColorElement b ;
+				
+				// Useful for alpha though:
+				ColorElement unused ;
+				
+			} ;
+
+
+			/**
+			 * Describes a pixel format.
+			 *
+			 */
+			typedef struct PixelFormat 
+			{
+			
+				Video::Palette * palette ;
+				
+				Video::BitsPerPixel BitsPerPixel ;
+				Video::BytesPerPixel BytesPerPixel ;
+				
+				Ceylan::Uint8 Rloss ;
+				Ceylan::Uint8 Gloss ;
+				Ceylan::Uint8 Bloss ;
+				Ceylan::Uint8 Aloss ;
+				
+				Ceylan::Uint8 Rshift ;
+				Ceylan::Uint8 Gshift ;
+				Ceylan::Uint8 Bshift ;
+				Ceylan::Uint8 Ashift ;
+				
+				ColorMask Rmask ;
+				ColorMask Gmask ;
+				ColorMask Bmask ;
+				ColorMask Amask ;
+
+				// RGB color key information.
+				PixelColor colorkey ;
+				
+				// Alpha value information (per-surface alpha):
+				ColorElement alpha ;
+			
+			} ;
+	
+	
+#endif // OSDL_USES_SDL
+		
+					
 			
 			/**
 			 * Gamma controls the brightness/contrast of colors displayed 
@@ -130,7 +213,7 @@ namespace OSDL
 			 * @note Not all display hardware are able to change gamma.
 			 *
 			 * @return true iff the operation is a success. An error could 
-			 * be that gamma adjustment is not supported : not all display
+			 * be that gamma adjustment is not supported: not all display
 			 * hardware support it.
 			 *
 			 */
@@ -197,7 +280,7 @@ namespace OSDL
 			
 
 			/**
-			 * Returns the RBGA masks which are recommended on this platform :
+			 * Returns the RBGA masks which are recommended on this platform:
 			 * the endianness is taken into account, regardless of any 
 			 * specific pixel format. 
 			 *
@@ -228,7 +311,7 @@ namespace OSDL
 
 
 			/**
-			 * Returns the RBG masks which are recommended on this platform :
+			 * Returns the RBG masks which are recommended on this platform:
 			 * the endianness is taken into account, regardless of any 
 			 * specific pixel format. 
 			 *
@@ -350,9 +433,13 @@ namespace OSDL
 			 * directly read (myPixelDefinition.r, myPixelDefinition.g,
 			 * myPixelDefinition.b and myPixelDefinition.unused for alpha)
 			 *
+			 * @throw VideoException if the operation failed or is not 
+			 * supported.
+			 *
 			 */
 			OSDL_DLL ColorDefinition convertPixelColorToColorDefinition( 
-				const PixelFormat & format,	PixelColor pixel ) throw() ;
+					const PixelFormat & format,	PixelColor pixel ) 
+				throw( VideoException ) ;
 	
 					
 			/**
@@ -751,7 +838,7 @@ namespace OSDL
 			
 			
 			/**
-			 * Main color definitions : 115 different colors described by name.
+			 * Main color definitions: 115 different colors described by name.
 			 *
 			 * Come from http://eies.njit.edu/~walsh 
 			 * Copyright © 2001 Kevin J. Walsh
@@ -770,7 +857,7 @@ namespace OSDL
 			extern OSDL_DLL const ColorDefinition Transparent ;          
 			
 			 
-			/// Shades of Grey :
+			/// Shades of Grey:
 
 			extern OSDL_DLL const ColorDefinition Black ;          
 			extern OSDL_DLL const ColorDefinition Grey ;           
@@ -781,7 +868,7 @@ namespace OSDL
 
 
 
-			/// Shades of Blue :
+			/// Shades of Blue:
 			
 			extern OSDL_DLL const ColorDefinition AliceBlue ;      
 			extern OSDL_DLL const ColorDefinition BlueViolet ;     
@@ -807,7 +894,7 @@ namespace OSDL
 
 
 
-			/// Shades of Brown :
+			/// Shades of Brown:
 
 			extern OSDL_DLL const ColorDefinition Brown ;      
 			extern OSDL_DLL const ColorDefinition RosyBrown ;      
@@ -821,7 +908,7 @@ namespace OSDL
 
 
 
-			/// Shades of Green :
+			/// Shades of Green:
 
 			extern OSDL_DLL const ColorDefinition DarkGreen ;      
 			extern OSDL_DLL const ColorDefinition DarkOliveGreen ; 
@@ -841,7 +928,7 @@ namespace OSDL
 
 
 
-			/// Shades of Orange :
+			/// Shades of Orange:
 
 			extern OSDL_DLL const ColorDefinition DarkOrange ;     
 			extern OSDL_DLL const ColorDefinition DarkSalmon ;     
@@ -857,7 +944,7 @@ namespace OSDL
 
 
 
-			/// Shades of Red :
+			/// Shades of Red:
 
 			extern OSDL_DLL const ColorDefinition DeepPink ;       
 			extern OSDL_DLL const ColorDefinition HotPink ;       
@@ -874,7 +961,7 @@ namespace OSDL
 
 
 
-			/// Shades of Violet :
+			/// Shades of Violet:
 
 			extern OSDL_DLL const ColorDefinition DarkOrchid ;     
 			extern OSDL_DLL const ColorDefinition DarkViolet ;     
@@ -892,7 +979,7 @@ namespace OSDL
 
 
 
-			/// Shades of White :
+			/// Shades of White:
 
 			extern OSDL_DLL const ColorDefinition AntiqueWhite ;   
 			extern OSDL_DLL const ColorDefinition FloralWhite ;    
@@ -910,7 +997,7 @@ namespace OSDL
 
 
 
-			/// Shades of Yellow :
+			/// Shades of Yellow:
 
 			extern OSDL_DLL const ColorDefinition BlanchedAlmond ; 
 			extern OSDL_DLL const ColorDefinition DarkGoldenrod ;  

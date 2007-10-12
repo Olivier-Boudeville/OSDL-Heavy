@@ -53,8 +53,10 @@ namespace OSDL
 				 * characters.
 				 *
 				 * @note The printBasic methods are very lightweight, since 
-				 * they rely onto built-in basic fonts : no need to 
+				 * they rely onto built-in basic fonts: no need to 
 				 * instanciate a FixedFont class to use them.
+				 *
+				 * @throw VideoException if the operation is not supported.
 				 *
 				 */
 				OSDL_DLL bool printBasic( const std::string & text, 
@@ -62,7 +64,7 @@ namespace OSDL
 					Pixels::ColorElement red, Pixels::ColorElement blue,
 					Pixels::ColorElement green, 
 					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw() ; 
+						throw( VideoException ) ; 
 				
 				
 				/**
@@ -76,14 +78,16 @@ namespace OSDL
 				 * characters.
 				 *
 				 * @note The printBasic methods are very lightweight, since 
-				 * they rely onto built-in basic fonts : no need to 
+				 * they rely onto built-in basic fonts: no need to 
 				 * instanciate a FixedFont class to use them.
+				 *
+				 * @throw VideoException if the operation is not supported.
 				 *
 				 */
 				OSDL_DLL bool printBasic( const std::string & text, 
 					Surface & targetSurface,
 					Coordinate x, Coordinate y, 
-					Pixels::ColorDefinition colorDef ) throw() ; 
+					Pixels::ColorDefinition colorDef ) throw( VideoException ) ;
 					
 
 
@@ -99,7 +103,7 @@ namespace OSDL
 				 * encoded according to Latin-1.
 				 *
 				 * For these fonts, the baseline is chosen to be at the 
-				 * very bottom of the glyph : no glyph goes below the 
+				 * very bottom of the glyph: no glyph goes below the 
 				 * baseline.
 				 *
 				 * These fonts are loaded from font files, whose extension 
@@ -111,7 +115,7 @@ namespace OSDL
 				 * 
 				 * The principle of these rendering methods is to return a
 				 * surface with the chosen glyph(s) drawn with the specified
-				 * color, with no visible background : thanks to color key 
+				 * color, with no visible background: thanks to color key 
 				 * or alpha-blending, only the text can be seen, so that 
 				 * this returned surface can be directly blitted onto any
 				 * already existing background that will by hidden only by
@@ -143,7 +147,7 @@ namespace OSDL
 				 * and therefore they can be negative.
 				 *
 				 */	
-				class OSDL_DLL FixedFont : public Font
+				class OSDL_DLL FixedFont: public Font
 				{
 				
 				
@@ -198,37 +202,37 @@ namespace OSDL
 						 * is specified, then the actual quota being used 
 						 * will be 'DefaultWordCachedQuota'.
 						 *
-						 * There are 21 most common fixed fonts :
-						 * (descriptions must be read as : 
-						 * 'width x height : available styles', styles
-						 * cannot be combined) :
-						 *	- 5x7   : Normal
-						 *	- 5x8   : Normal
-						 *	- 6x9   : Normal
-						 *	- 6x10  : Normal
-						 *	- 6x12  : Normal
-						 *	- 6x13  : Normal, or Bold, or Italic
-						 *	- 7x13  : Normal, or Bold, or Italic
-						 *	- 7x14  : Normal, or Bold
-						 *	- 8x13  : Normal, or Bold, or Italic
-						 *	- 9x15  : Normal, or Bold
-						 *	- 9x18  : Normal, or Bold
-						 *  - 10x20 : Normal
+						 * There are 21 most common fixed fonts:
+						 * (descriptions must be read as: 
+						 * 'width x height: available styles', styles
+						 * cannot be combined):
+						 *	- 5x7  : Normal
+						 *	- 5x8  : Normal
+						 *	- 6x9  : Normal
+						 *	- 6x10 : Normal
+						 *	- 6x12 : Normal
+						 *	- 6x13 : Normal, or Bold, or Italic
+						 *	- 7x13 : Normal, or Bold, or Italic
+						 *	- 7x14 : Normal, or Bold
+						 *	- 8x13 : Normal, or Bold, or Italic
+						 *	- 9x15 : Normal, or Bold
+						 *	- 9x18 : Normal, or Bold
+						 *  - 10x20: Normal
 						 *
-						 * Rendering styles encoding is :
+						 * Rendering styles encoding is:
 						 *   - 'B' for Bold
 						 *   - 'O' for Italic (sorry for the back-end poor
 						 * choice)
 						 *	 - 'U' for Underline
 						 *
 						 * The filename of a font file describes the font, 
-						 * its form is :
+						 * its form is:
 						 * 'width'x'height'[rendering style]'.fnt'. 
 						 *
 						 * @example '10x20.fnt' is a normal 10x20 font, whereas
 						 * '8x13B.fnt' is a 8x13 bold font and '8x13O.fnt' is
 						 * font without bold but with italic. 
-						 * Rendering style mixing (ex : 'BO') is not allowed, 
+						 * Rendering style mixing (ex: 'BO') is not allowed, 
 						 * a font has at most one rendering style.
 						 *
 						 * @throw TextException if no corresponding font 
@@ -774,11 +778,14 @@ namespace OSDL
 						 * to know whether it had been reset between the
 						 * rendering of the two glyphs.
 						 *
+						 * @throw TextException if the operation failed or is
+						 * not supported.
+						 *
 						 */
 						static void SetFontSettings( 
 							const Ceylan::Byte * fontData, 
 							Length characterWidth, 
-							Length characterHeight ) throw() ;
+							Length characterHeight ) throw( TextException ) ;
 
 						 
 						/**
@@ -876,7 +883,7 @@ namespace OSDL
 						/**
 						 * Renders specified glyph (Latin-1 character) in
 						 * specified color, on a new surface, directly 
-						 * thanks to the font backend : no quality nor cache
+						 * thanks to the font backend: no quality nor cache
 						 * are taken into account. 
 						 *
 						 * Colorkeys and conversion to display are however
@@ -896,7 +903,7 @@ namespace OSDL
 						/**
 						 * Blits specified glyph (Latin-1 character) in
 						 * specified color, on specified location of given
-						 * surface, directly thanks to the font backend : 
+						 * surface, directly thanks to the font backend: 
 						 * no quality nor cache are taken into account.
 						 *
 						 * This method is meant to be used as an helper 
@@ -979,7 +986,7 @@ namespace OSDL
 						 * guessed from the filename.
 						 *
 						 * @param the input filename, without any path
-						 * (ex : '10x20.fnt', '8x13B.fnt', etc.)
+						 * (ex: '10x20.fnt', '8x13B.fnt', etc.)
 						 *
 						 * @param characterWidth where the guessed width 
 						 * is stored.

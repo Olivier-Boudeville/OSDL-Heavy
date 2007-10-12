@@ -1,17 +1,30 @@
 #include "OSDLGLTexture.h"
 
-#include "OSDLVideo.h"      // for VideoModule::SoftwareSurface
-#include "OSDLSurface.h"    // for Surface
+#include "OSDLVideo.h"               // for VideoModule::SoftwareSurface
+#include "OSDLSurface.h"             // for Surface
+
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>     // for OSDL_USES_OPENGL and al 
+#include <OSDLConfig.h>              // for OSDL_USES_OPENGL and al 
 #endif // OSDL_USES_CONFIG_H
 
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_OPENGL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+#if OSDL_USES_SDL 
+#include "SDL.h"					 // for SDL_Surface, etc.
+#endif // OSDL_USES_SDL
+
+
 #ifdef OSDL_HAVE_OPENGL
-#include "SDL_opengl.h"     // for GL functions
+#include "SDL_opengl.h"              // for GL functions
 #endif // OSDL_HAVE_OPENGL
 
-// To protect LoadImage :
+
+
+// To protect LoadImage:
 #include "OSDLIncludeCorrecter.h"
 
 using std::string ;
@@ -28,7 +41,7 @@ GLTexture::TextureMode GLTexture::CurrentTextureMode = TwoDim ;
 
 
 
-GLTextureException::GLTextureException( const std::string & reason ) throw() :
+GLTextureException::GLTextureException( const std::string & reason ) throw():
 	OpenGLException( reason )
 {
 
@@ -45,7 +58,7 @@ GLTextureException::~GLTextureException() throw()
 
 GLTexture::GLTexture( const std::string imageFilename, 
 	Textureflavour flavour ) 
-		throw( GLTextureException ) :
+		throw( GLTextureException ):
 	_source( 0 ),
 	_id( 0 )
 {
@@ -65,13 +78,13 @@ GLTexture::GLTexture( const std::string imageFilename,
 	{
 	
 		throw GLTextureException( 
-			"GLTexture constructor : unable to load source image from file "
-			+ imageFilename + " : " + e.toString() ) ;
+			"GLTexture constructor: unable to load source image from file "
+			+ imageFilename + ": " + e.toString() ) ;
 	}
 	
 	upload( *loaded, flavour ) ;
 	
-	// Texture not wanted any more, in all cases (it has been copied) :
+	// Texture not wanted any more, in all cases (it has been copied):
 	delete loaded ;
 
 #else // OSDL_USES_OPENGL
@@ -85,7 +98,7 @@ GLTexture::GLTexture( const std::string imageFilename,
 
 
 GLTexture::GLTexture( Surface & sourceSurface, Textureflavour flavour ) 
-		throw( GLTextureException ) :
+		throw( GLTextureException ):
 	_source( 0 )
 {
 
@@ -127,7 +140,7 @@ void GLTexture::upload() throw( GLTextureException )
 #if OSDL_USES_OPENGL
 
 	if ( ! canBeUploaded() )
-		throw GLTextureException( "GLTexture::upload : "
+		throw GLTextureException( "GLTexture::upload: "
 			"texture cannot be uploaded into OpenGL context." ) ;
 			
 	// @todo	
@@ -202,28 +215,28 @@ void GLTexture::SetTextureFlavour( Textureflavour flavour )
 		case Basic:
 		
 		 	/*
-			 * Minifying function : weighted average of the four closest 
+			 * Minifying function: weighted average of the four closest 
 			 * texture elements.
 			 *
 			 */
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ) ;
 			
 		 	/*
-			 * Magnifying function : weighted average of the four closest
+			 * Magnifying function: weighted average of the four closest
 			 * texture elements.
 			 *
 			 */
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ) ;
 	
 			/*
-			 * Wrap parameter for texture coordinate s : clamped to the range
+			 * Wrap parameter for texture coordinate s: clamped to the range
 			 * [0,1].
 			 *
 			 */
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP ) ;
 			
 			/*
-			 * Wrap parameter for texture coordinate t : clamped to the 
+			 * Wrap parameter for texture coordinate t: clamped to the 
 			 * range [0,1].
 			 *
 			 */
@@ -234,7 +247,7 @@ void GLTexture::SetTextureFlavour( Textureflavour flavour )
 	
 		default:
 			LogPlug::warning( 
-				"GLTexture::SetTextureFlavour : unknown flavour : "
+				"GLTexture::SetTextureFlavour: unknown flavour: "
 				+ Ceylan::toString( flavour ) + "." ) ;
 			break ;	
 			
@@ -257,7 +270,7 @@ void GLTexture::upload( Surface & sourceSurface,
 #if OSDL_USES_OPENGL
 
 	/*
-inspiration : 	
+inspiration: 	
 GLuint loadTextureCK(char *filepath, int ckr, int ckg, int ckb){
   GLuint texture;
   SDL_Surface *imagesurface;
@@ -299,9 +312,7 @@ GLuint loadTextureCK(char *filepath, int ckr, int ckg, int ckb){
   SDL_FreeSurface(tmpsurface);
 
   return texture;
-	
-	
-	
+		
 	*/
 
 
@@ -461,7 +472,7 @@ int main(int, char**)
 
 	// Colorkey not managed.
 	
-	// Saves the alpha blending attributes :
+	// Saves the alpha blending attributes:
 	Flags savedFlags = sourceInternal->flags & ( 
 		Surface::AlphaBlendingBlit | Surface::RLEColorkeyBlitAvailable ) ;
 		
@@ -484,35 +495,35 @@ int main(int, char**)
 	
 	if ( convertedSurface == 0 )
 		throw GLTextureException( 
-			"GLTexture::upload : RGB surface creation failed." ) ;
+			"GLTexture::upload: RGB surface creation failed." ) ;
 		
 		 
 	int res = SDL_BlitSurface( sourceInternal, 0, convertedSurface, 0 ) ;
 
-	// Restores the alpha blending attributes :
+	// Restores the alpha blending attributes:
 	if ( mustModifyOverallAlpha ) 
 		SDL_SetAlpha( sourceInternal, savedFlags, savedAlpha ) ;
 	
 	if ( res != 0 )
 	{
 		SDL_FreeSurface( convertedSurface ) ;
-		throw GLTextureException( "GLTexture::upload : blit failed (returned "
+		throw GLTextureException( "GLTexture::upload: blit failed (returned "
 			+ Ceylan::toString( res ) + ")." ) ;
 	}
 
 	
-	// Generates a new name for this texture :
+	// Generates a new name for this texture:
 	glGenTextures( 1, & _id ) ;
 	
 	glBindTexture( GL_TEXTURE_2D, _id ) ;
 	
-	// Apply the wanted settings :
+	// Apply the wanted settings:
 	SetTextureFlavour( flavour ) ;
 	
 	if ( IsAPowerOfTwo( width ) && IsAPowerOfTwo( height ) )
         glTexImage2D( 
 			/* mandatory */ GL_TEXTURE_2D, 
-			/* level : base image */  0, 
+			/* level: base image */  0, 
 			/* number of color components */ GL_RGBA, 
 			width, 
 			height, 

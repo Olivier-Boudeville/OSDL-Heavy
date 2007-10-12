@@ -4,7 +4,6 @@
 
 #include "Ceylan.h"       // for Ceil
 
-#include "SDL.h"          // for SDL_PixelFormat
 
 
 #include <list>
@@ -19,17 +18,34 @@ using namespace OSDL::Video ;
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>     // for OSDL_DEBUG_PALETTE and al 
+#include <OSDLConfig.h>   // for OSDL_DEBUG_PALETTE and al 
 #endif // OSDL_USES_CONFIG_H
 
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+
+#if OSDL_USES_SDL
+
+#include "SDL.h"          // for SDL_PixelFormat, SDL_LOGPAL, etc.
 
 const Ceylan::Flags Palette::Logical  = SDL_LOGPAL ;
 const Ceylan::Flags Palette::Physical = SDL_PHYSPAL ;
 
+#else // OSDL_USES_SDL
+
+// Same as SDL:
+const Ceylan::Flags Palette::Logical  = 0x01 ;
+const Ceylan::Flags Palette::Physical = 0x02 ;
+
+#endif // OSDL_USES_SDL
 
 
-PaletteException::PaletteException( const string & message ) throw() : 
-	VideoException( "Palette exception : " + message ) 
+
+PaletteException::PaletteException( const string & message ) throw(): 
+	VideoException( "Palette exception: " + message ) 
 {
 
 }
@@ -44,27 +60,47 @@ PaletteException::~PaletteException() throw()
 			
 			
 Palette::Palette( ColorCount numberOfColors, Pixels::ColorDefinition * colors, 
-		Pixels::PixelFormat * format ) throw( PaletteException ) :
+		Pixels::PixelFormat * format ) throw( PaletteException ):
 	_numberOfColors( 0 ), 
 	_colorDefs( 0 ),
 	_pixelColors( 0 ),
 	_converted( false )
 {
 
+#if OSDL_USES_SDL
+
 	load( numberOfColors, colors ) ;
 	
 	if ( format != 0 )
 		updatePixelColorsFrom( * format ) ;
 		
+#else // OSDL_USES_SDL
+
+	throw PaletteException( "Palette constructor failed :"
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
 }
 
 
-Palette::Palette( SDL_Palette & palette ) throw( PaletteException )
+
+Palette::Palette( LowLevelPalette & palette ) throw( PaletteException )
 {
 
+#if OSDL_USES_SDL
+
 	load( palette.ncolors, palette.colors ) ;
+		
+#else // OSDL_USES_SDL
+
+	throw PaletteException( "Palette constructor failed :"
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
 	
 }
+
 
 
 Palette::~Palette() throw()
@@ -83,12 +119,13 @@ Palette::~Palette() throw()
 }
 
 
+
 void Palette::load( ColorCount numberOfColors, 
 	Pixels::ColorDefinition * colors ) throw( PaletteException )
 {
 
 	if ( colors == 0 )
-		throw PaletteException( "Palette::load : "
+		throw PaletteException( "Palette::load: "
 			"specified pointer to color definitions is null." ) ;
 			
 	_converted = false ;
@@ -118,6 +155,7 @@ void Palette::load( ColorCount numberOfColors,
 }
 
 
+
 ColorCount Palette::getNumberOfColors() const throw()
 {
 
@@ -126,19 +164,21 @@ ColorCount Palette::getNumberOfColors() const throw()
 }
 
 
+
 const Pixels::PixelColor & Palette::getPixelColorAt( ColorCount index ) 
 	const throw( PaletteException )
 {
 
 	if ( index >= _numberOfColors )
 		 throw PaletteException( 
-		 	"Palette::getPixelColorAt : out of bounds : specified index ("
+		 	"Palette::getPixelColorAt: out of bounds: specified index ("
 		 	+ Ceylan::toString( index ) + ") greater or equal to upper index ("
 			+ Ceylan::toString( _numberOfColors ) + ")." ) ;
 			
 	return _pixelColors[ index ] ;	
 	
 }
+
 
 
 Pixels::PixelColor * Palette::getPixelColors() const throw()
@@ -149,13 +189,14 @@ Pixels::PixelColor * Palette::getPixelColors() const throw()
 }
  
  
+ 
 const Pixels::ColorDefinition & Palette::getColorDefinitionAt(
 	ColorCount index ) const throw( PaletteException )
 {
 
 	if ( index >= _numberOfColors )
 		 throw PaletteException( 
-		 	"Palette::getColorDefinitionAt : out of bounds : "
+		 	"Palette::getColorDefinitionAt: out of bounds: "
 		 	"specified index ("
 		 	+ Ceylan::toString( index ) + ") greater or equal to upper index ("
 			+ Ceylan::toString( _numberOfColors ) + ")." ) ;
@@ -163,6 +204,7 @@ const Pixels::ColorDefinition & Palette::getColorDefinitionAt(
 	return _colorDefs[ index ] ;
 		
 }
+
 
 
 Pixels::ColorDefinition * Palette::getColorDefinitions() const throw()
@@ -173,13 +215,14 @@ Pixels::ColorDefinition * Palette::getColorDefinitions() const throw()
 }
 
 
+
 void Palette::updatePixelColorsFrom( Pixels::PixelFormat & format ) throw()
 {
 	
 	if ( _numberOfColors == 0 )
 	{
 		LogPlug::warning(
-			 "Palette::updatePixelColorsFrom : no color available." ) ;
+			 "Palette::updatePixelColorsFrom: no color available." ) ;
 			 
 		_converted = true ;
 		return ;		
@@ -200,6 +243,7 @@ void Palette::updatePixelColorsFrom( Pixels::PixelFormat & format ) throw()
 	_converted = true ;
 	
 }
+
 
 
 bool Palette::draw( Surface & targetSurface, 
@@ -234,6 +278,7 @@ bool Palette::draw( Surface & targetSurface,
 }
 
 
+
 const string Palette::toString( Ceylan::VerbosityLevels level ) const throw()	
 {
 
@@ -243,7 +288,7 @@ const string Palette::toString( Ceylan::VerbosityLevels level ) const throw()
 	if ( _colorDefs == 0 )
 	{
 	
-		LogPlug::error( "Palette::toString : palette should have " 
+		LogPlug::error( "Palette::toString: palette should have " 
 			+ Ceylan::toString( _numberOfColors ) + " color definitions, "
 			"but no definition is registered (null pointer)." ) ;
 			
@@ -262,17 +307,18 @@ const string Palette::toString( Ceylan::VerbosityLevels level ) const throw()
 	if ( level == Ceylan::low )
 		return result ;
 		
-	result += ". Listing registered color definitions :" ;
+	result += ". Listing registered color definitions:" ;
 	
 	std::list<string> l ;
 	
 	for ( ColorCount index = 0; index < _numberOfColors; index++ )
-		l.push_back( "Color #" + Ceylan::toString( index ) + " : " 
+		l.push_back( "Color #" + Ceylan::toString( index ) + ": " 
 			+ Pixels::toString( _colorDefs[index] ) ) ;
 			
 	return result + Ceylan::formatStringList( l ) ;
 	
 }
+
 
 
 
@@ -288,6 +334,7 @@ Palette & Palette::CreateGreyScalePalette( ColorCount numberOfColors ) throw()
 }
 
 
+
 Palette & Palette::CreateGradationPalette( Pixels::ColorDefinition colorStart,
 	Pixels::ColorDefinition colorEnd, ColorCount numberOfColors ) throw()
 {
@@ -298,7 +345,7 @@ Palette & Palette::CreateGradationPalette( Pixels::ColorDefinition colorStart,
 	
 	if ( colorBuffer == 0 )
 		Ceylan::emergencyShutdown( 
-			"Palette::CreateGradationPalette : not enough memory." ) ;
+			"Palette::CreateGradationPalette: not enough memory." ) ;
 	
 #if OSDL_DEBUG_PALETTE
 	LogPlug::debug( "Gradation ranging from " 
@@ -348,6 +395,7 @@ Palette & Palette::CreateGradationPalette( Pixels::ColorDefinition colorStart,
 	return * new Palette( numberOfColors, colorBuffer ) ;
 		
 }
+
 
 					
 Palette & Palette::CreateLandscapePalette( ColorCount numberOfColors ) throw()

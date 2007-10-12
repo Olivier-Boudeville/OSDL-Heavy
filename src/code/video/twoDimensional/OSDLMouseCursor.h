@@ -10,8 +10,14 @@
 #include <string>
 
 
-// Cursor may embed an SDL cursor :
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+// No need to include SDL header here:
 struct SDL_Cursor ;
+
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
 
 
 namespace OSDL
@@ -19,7 +25,28 @@ namespace OSDL
 
 	namespace Video
 	{
+
 		
+		#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+	
+		/*
+		 * No way of forward declaring LowLevelCursor apparently:
+		 * we would have liked to specify 'struct LowLevelThing ;' here and 
+		 * in the implementation file (.cc): 'typedef BackendThing
+		 * LowLevelThing' but then the compiler finds they are conflicting
+		 * declarations.
+		 *
+		 */
+		 
+		/// The internal actual surface.
+		typedef SDL_Cursor LowLevelCursor ;
+
+		#else // OSDL_USES_SDL
+
+		struct LowLevelCursor {} ;
+
+		#endif // OSDL_USES_SDL
+
 		
 		// Cursor shape may be a surface.
 		class Surface ;
@@ -43,7 +70,7 @@ namespace OSDL
 			 * Exception raised whenever a mouse cursor operation failed.
 			 *
 			 */
-			class OSDL_DLL MouseCursorException : public VideoException
+			class OSDL_DLL MouseCursorException: public VideoException
 			{
 				public:
 				
@@ -60,7 +87,7 @@ namespace OSDL
 			/**
 			 * Encapsulates a mouse cursor.
 			 *
-			 * There are two types of mouse cursors :
+			 * There are two types of mouse cursors:
 			 *   - system (hardware-based) ones, which are black and white only
 			 *   - OSDL-powered ones, that are color cursors, and that are
 			 * managed as specific surfaces/textured quads being rendered
@@ -70,7 +97,7 @@ namespace OSDL
 			 * and a mask, which both represent the same rectangle enclosing the
 			 * cursor shape, with one bit per pixel, and a width which must 
 			 * be a multiple of 8. 
-			 * On a given coordinate, if the bit in the data is :
+			 * On a given coordinate, if the bit in the data is:
 			 *   - 0, then if the bit in the mask is 0, the corresponding pixel
 			 * will be transparent. If the bit in the mask is 1, the
 			 * corresponding pixel is white
@@ -91,7 +118,7 @@ namespace OSDL
 			 * pointer.
 			 *
 			 */
-			class OSDL_DLL MouseCursor : public Ceylan::TextDisplayable
+			class OSDL_DLL MouseCursor: public Ceylan::TextDisplayable
 			{
 			
 					
@@ -99,13 +126,13 @@ namespace OSDL
 						
 					
 					/**
-					 * Describes the different cursor types :
-					 *    - SystemCursor : the cursor is black-and-white,
+					 * Describes the different cursor types:
+					 *    - SystemCursor: the cursor is black-and-white,
 					 * and it is managed by the system directly,
-					 *    - BlittedCursor : the cursor is defined by a surface,
+					 *    - BlittedCursor: the cursor is defined by a surface,
 					 * which is blitted automatically by OSDL whenever 
 					 * associated with a mouse,
-					 *    - TexturedCursor : the cursor is rendered
+					 *    - TexturedCursor: the cursor is rendered
 					 * automatically by OSDL through OpenGL as a textured
 					 * quad, whenever associated with a mouse.
 					 *
@@ -228,7 +255,7 @@ namespace OSDL
 					 * Back-end cursor, for SystemCursor type.
 					 *
 					 */
-					SDL_Cursor * _systemCursor ;
+					LowLevelCursor * _systemCursor ;
 					
 										
 					

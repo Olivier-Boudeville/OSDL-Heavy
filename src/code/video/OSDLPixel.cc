@@ -7,11 +7,24 @@
 #include "OSDLFromGfx.h"         // taken from SDL_gfx
 
 #include "Ceylan.h"              // for CEYLAN_DETECTED_LITTLE_ENDIAN
-#include "SDL_gfxPrimitives.h"   // for all graphics primitives
 
 #include <list>
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"          // for OSDL_DEBUG_PIXEL and al 
+#endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+#if OSDL_USES_SDL_GFX
+
+#include "SDL_gfxPrimitives.h"   // for all graphics primitives
+
+#endif // OSDL_USES_SDL_GFX
 
 
 using std::string ;
@@ -21,16 +34,13 @@ using namespace Ceylan::Log ;
 using namespace OSDL::Video ;
 
 
-#ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>          // for OSDL_DEBUG_PIXEL and al 
-#endif // OSDL_USES_CONFIG_H
 
 
 // Different colors described by name.
 
 
 
-/// Fully Transparent special color :
+/// Fully Transparent special color:
 
 extern const ColorDefinition OSDL::Video::Pixels::Transparent     = 
 	{   0,   0,   0,  0  } ; 
@@ -38,7 +48,7 @@ extern const ColorDefinition OSDL::Video::Pixels::Transparent     =
 
 
 
-/// Shades of Grey :
+/// Shades of Grey:
 
 extern const ColorDefinition OSDL::Video::Pixels::Black           = 
 	{   0,   0,   0, 255 } ; 
@@ -61,7 +71,7 @@ extern const ColorDefinition OSDL::Video::Pixels::Silver          =
 
 
 
-/// Shades of Blue :
+/// Shades of Blue:
 
 extern const ColorDefinition OSDL::Video::Pixels::AliceBlue       = 
 	{ 240, 248, 255, 255 } ;
@@ -129,7 +139,7 @@ extern const ColorDefinition OSDL::Video::Pixels::MidnightBlue    =
 
 
 
-/// Shades of Brown :
+/// Shades of Brown:
 
 extern const ColorDefinition OSDL::Video::Pixels::Brown           = 
 	{ 165,  42,  42, 255 } ; 
@@ -161,7 +171,7 @@ extern const ColorDefinition OSDL::Video::Pixels::Copper          =
 
 
 
-/// Shades of Green :
+/// Shades of Green:
 
 extern const ColorDefinition OSDL::Video::Pixels::DarkGreen       = 
 	{	0, 100,   0, 255 } ; 
@@ -211,7 +221,7 @@ extern const ColorDefinition OSDL::Video::Pixels::Khaki           =
 
 
 
-/// Shades of Orange :
+/// Shades of Orange:
 
 extern const ColorDefinition OSDL::Video::Pixels::DarkOrange      = 
 	{ 255, 140,   0, 255 } ; 
@@ -249,7 +259,7 @@ extern const ColorDefinition OSDL::Video::Pixels::Sienna          =
 
 
 
-/// Shades of Red :
+/// Shades of Red:
 
 extern const ColorDefinition OSDL::Video::Pixels::DeepPink        = 
 	{ 255,  20, 147, 255 } ;
@@ -290,7 +300,7 @@ extern const ColorDefinition OSDL::Video::Pixels::Tomato          =
 
 
 
-/// Shades of Violet :
+/// Shades of Violet:
 
 extern const ColorDefinition OSDL::Video::Pixels::DarkOrchid      = 
 	{ 153,  50, 204, 255 } ;
@@ -334,7 +344,7 @@ extern const ColorDefinition OSDL::Video::Pixels::Violet          =
 
 
 
-/// Shades of White :
+/// Shades of White:
 
 extern const ColorDefinition OSDL::Video::Pixels::AntiqueWhite    = 
 	{ 250, 235, 215, 255 } ;
@@ -378,7 +388,7 @@ extern const ColorDefinition OSDL::Video::Pixels::White           =
 
 
 
-/// Shades of Yellow :
+/// Shades of Yellow:
 
 extern const ColorDefinition OSDL::Video::Pixels::BlanchedAlmond  = 
 	{ 255, 235, 205, 255 } ;
@@ -419,18 +429,27 @@ extern const ColorDefinition OSDL::Video::Pixels::Yellow          =
 
 
 
+
 bool Pixels::setGamma( GammaFactor red, GammaFactor green, GammaFactor blue )
 	throw()
 {
 
+#if OSDL_USES_SDL
+
 	if ( SDL_SetGamma( red, green, blue ) == -1 )
 	{
-		LogPlug::error( "Pixels::setGamma : " 
+		LogPlug::error( "Pixels::setGamma: " 
 			+ Utils::getBackendLastError() ) ;
 		return false ;
 	}
 	
 	return true ;
+
+#else // OSDL_USES_SDL
+
+	return false ;
+	
+#endif // OSDL_USES_SDL
 	
 }
 
@@ -440,15 +459,23 @@ bool Pixels::setGammaRamp( GammaRampElement * redRamp,
 	GammaRampElement * greenRamp, GammaRampElement * blueRamp ) throw()
 {
 
+#if OSDL_USES_SDL
+
 	if ( SDL_SetGammaRamp( redRamp, greenRamp, blueRamp ) == -1 )
 	{
-		LogPlug::error( "Pixels::setGammaRamp : " 
+		LogPlug::error( "Pixels::setGammaRamp: " 
 			+ Utils::getBackendLastError() ) ;
 		return false ;
 	}
 	
 	return true ;
 
+#else // OSDL_USES_SDL
+
+	return false ;
+	
+#endif // OSDL_USES_SDL
+	
 }	
 
 
@@ -457,14 +484,22 @@ bool Pixels::getGammaRamp( GammaRampElement * redRamp,
 	GammaRampElement * greenRamp, GammaRampElement * blueRamp ) throw()
 {
 
+#if OSDL_USES_SDL
+
 	if ( SDL_GetGammaRamp( redRamp, greenRamp, blueRamp ) == -1 )
 	{
-		LogPlug::error( "Pixels::getGammaRamp : " 
+		LogPlug::error( "Pixels::getGammaRamp: " 
 			+ Utils::getBackendLastError() ) ;
 		return false ;
 	}
 	
 	return true ;
+
+#else // OSDL_USES_SDL
+
+	return false ;
+	
+#endif // OSDL_USES_SDL
 
 }	
 
@@ -478,10 +513,9 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 	ColorMask & alphaMask ) throw()
 {
 
-
 #if OSDL_DEBUG_PIXEL
 
-	// Check endianness here just to output a log message :
+	// Check endianness here just to output a log message:
 	
 #if CEYLAN_DETECTED_LITTLE_ENDIAN
 
@@ -499,7 +533,7 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 	
 	/*
 	 * Ensure color masks are only defined once (in OpenGL module) to 
-	 * avoid disaster :
+	 * avoid disaster:
 	 *
 	 */
 	
@@ -519,7 +553,7 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 
 #if OSDL_DEBUG_PIXEL
 
-	// Check endianness here just to output a log message :
+	// Check endianness here just to output a log message:
 	
 #if CEYLAN_DETECTED_LITTLE_ENDIAN
 
@@ -574,6 +608,7 @@ ColorDefinition Pixels::convertRGBAToColorDefinition(
 	result.unused = alpha ;	
 	
 	return result ;
+	
 }
 	
 	
@@ -597,9 +632,11 @@ PixelColor Pixels::convertRGBAToPixelColor( const Pixels::PixelFormat & format,
 	ColorElement alpha ) throw() 
 {	
 
+#if OSDL_USES_SDL
+
 	/*
 	
-	LogPlug::debug( "convertRGBAToPixelColor : pixel format is " 
+	LogPlug::debug( "convertRGBAToPixelColor: pixel format is " 
 		+ Pixels::toString( format ) + ", pixel is [ R, G, B, A ] = [ "
 				+ Ceylan::toString( static_cast<Uint16>( red ) ) )   + " ; "
 				+ Ceylan::toString( static_cast<Uint16>( green ) ) + " ; "
@@ -609,14 +646,24 @@ PixelColor Pixels::convertRGBAToPixelColor( const Pixels::PixelFormat & format,
 				
 	return SDL_MapRGBA( const_cast<Pixels::PixelFormat *>( & format ), 
 		red, green, blue, alpha ) ;
+
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Pixels::convertRGBAToPixelColor failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
 	
 }
 
 
 
 ColorDefinition Pixels::convertPixelColorToColorDefinition(
-	 const PixelFormat & format, PixelColor pixel )	throw()
+	 const PixelFormat & format, PixelColor pixel )	throw( VideoException )
 {
+
+#if OSDL_USES_SDL
 
 	ColorDefinition pixDef ;
 
@@ -625,6 +672,13 @@ ColorDefinition Pixels::convertPixelColorToColorDefinition(
 	
 	return pixDef ;
 	
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Pixels::convertPixelColorToColorDefinition failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
 }
 
 
@@ -633,8 +687,17 @@ PixelColor Pixels::convertColorDefinitionToPixelColor(
 	const PixelFormat & format, ColorDefinition colorDef ) throw()
 {
 
+#if OSDL_USES_SDL
+
 	return SDL_MapRGBA( const_cast<Pixels::PixelFormat *>( & format ),
 		colorDef.r, colorDef.g, colorDef.b, colorDef.unused ) ;
+	
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Pixels::convertColorDefinitionToPixelColor failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
 	
 }
 
@@ -645,14 +708,14 @@ PixelColor Pixels::convertColorDefinitionToRawPixelColor(
 {
 
 	/*
-	 * This is a very artificial transformation, requested by the compiler :
+	 * This is a very artificial transformation, requested by the compiler:
 	 * from a set of four bytes (struct SDL_Color) to a Uint32...
 	 *
 	 */
 	return ((Ceylan::Uint32) colorDef.r << 24) 
-		 | ((Ceylan::Uint32) colorDef.g << 16) 
-		 | ((Ceylan::Uint32) colorDef.b << 8 ) 
-		 | ((Ceylan::Uint32) colorDef.unused ) ;
+		| ((Ceylan::Uint32) colorDef.g << 16) 
+		| ((Ceylan::Uint32) colorDef.b << 8 ) 
+		| ((Ceylan::Uint32) colorDef.unused ) ;
 		 
 }
 
@@ -662,8 +725,8 @@ PixelColor Pixels::convertRGBAToRawPixelColor(
 	ColorElement red, ColorElement green, ColorElement blue, 
 	ColorElement alpha ) throw()
 {
-	return ((Uint32) red << 24) | ((Uint32) green << 16) 
-		 | ((Uint32) blue << 8) | ((Uint32) alpha ) ;
+	return ((Ceylan::Uint32) red << 24) | ((Ceylan::Uint32) green << 16) 
+		| ((Ceylan::Uint32) blue << 8) | ((Ceylan::Uint32) alpha ) ;
 	
 }
 
@@ -679,10 +742,10 @@ bool Pixels::areEqual( ColorDefinition first, ColorDefinition second,
 	
 
 #if OSDL_DEBUG_COLOR
-	LogPlug::trace( "Pixels::areEqual : comparing " 
+	LogPlug::trace( "Pixels::areEqual: comparing " 
 		+ Pixels::toString( first ) + " with "
 		+ Pixels::toString( second ) 
-		+ ( useAlpha ? " (alpha taken into account)" : " (alpha ignored)" ) ) ;
+		+ ( useAlpha ? " (alpha taken into account)": " (alpha ignored)" ) ) ;
 #endif // OSDL_DEBUG_COLOR
 	
 	if ( first.r != second.r )
@@ -752,7 +815,7 @@ ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first,
 	ColorDefinition second ) throw() 	
 {
 
-	// Three different choices are always enough :
+	// Three different choices are always enough:
 	ColorDefinition res = Pixels::Red ;
 	
 	if ( ( ! areEqual( res, first, /* useAlpha */ false ) ) 
@@ -775,7 +838,7 @@ ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first,
 	ColorDefinition second, ColorDefinition third ) throw() 	
 {
 
-	// Four different choices are always enough :
+	// Four different choices are always enough:
 	ColorDefinition res = Pixels::Red ;
 	
 	if ( ( ! areEqual( res, first, /* useAlpha */ false ) ) 
@@ -810,11 +873,13 @@ Pixels::PixelColor Pixels::getPixelColor( const Surface & fromSurface,
 	Coordinate x, Coordinate y ) throw ( VideoException )
 {
 
+#if OSDL_USES_SDL
+	
     BytesPerPixel bpp = fromSurface.getBytesPerPixel() ;
 	
     /*
 	 * Here p is the address to the pixel whose color we want to 
-	 * retrieve :
+	 * retrieve:
 	 *
 	 */
     Uint8 * p = reinterpret_cast<Uint8 *>( fromSurface.getPixels() )
@@ -840,9 +905,16 @@ Pixels::PixelColor Pixels::getPixelColor( const Surface & fromSurface,
    	  		return *( Uint32 * ) p ;
  	
     	default:
-        	throw VideoException( "Abnormal bit per pixel detected "
-				"in Pixels::getPixelColor" ) ;
+        	throw VideoException( "Pixels::getPixelColor: "
+				"abnormal bit per pixel detected" ) ;
     }
+
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Pixels::getPixelColor failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
 	
 } 
 
@@ -897,13 +969,15 @@ void Pixels::putPixelColor( Surface & targetSurface,
 	throw( VideoException )
 {
 	
+#if OSDL_USES_SDL_GFX
+	
 	/*
 	 * The lock method is conditional, mustBeLocked() tests could not be used.
 	 *
 	 */
 
 	/* 
-	 * Selects the right SDL_gfx primitive to call :
+	 * Selects the right SDL_gfx primitive to call:
 	 * [ blending, clipping, locking ] = [ B, C, L ]
 	 *
 	 */
@@ -935,7 +1009,7 @@ void Pixels::putPixelColor( Surface & targetSurface,
 				}
 				
 			}
-			else // blending is false :
+			else // blending is false:
 			{
 			
 				// [ B, C, L ] = [ 0, 1, 1 ]
@@ -958,7 +1032,7 @@ void Pixels::putPixelColor( Surface & targetSurface,
 			} // end blending
 		
 		} 
-		else // clipping is false (beware !) :
+		else // clipping is false (beware !):
 		{
 		
 			if ( blending )
@@ -987,7 +1061,7 @@ void Pixels::putPixelColor( Surface & targetSurface,
 			
 			
 			}
-			else // blending is false :
+			else // blending is false:
 			{
 			
 				// [ B, C, L ] = [ 0, 0, 1 ]
@@ -1017,7 +1091,7 @@ void Pixels::putPixelColor( Surface & targetSurface,
 		
 		
 	} 
-	else // locking is false :
+	else // locking is false:
 	{
 
 		if ( clipping )
@@ -1036,7 +1110,7 @@ void Pixels::putPixelColor( Surface & targetSurface,
 					convertedColor, alpha ) ;			
 					
 			}
-			else // blending is false :
+			else // blending is false:
 			{		
 			
 				// [ B, C, L ] = [ 0, 1, 0 ]
@@ -1047,7 +1121,7 @@ void Pixels::putPixelColor( Surface & targetSurface,
 			} // end blending
 	
 		} 
-		else // clipping is false (beware !) :
+		else // clipping is false (beware !):
 		{
 		
 			if ( blending )
@@ -1060,7 +1134,7 @@ void Pixels::putPixelColor( Surface & targetSurface,
 					convertedColor, alpha ) ;	
 				
 			}
-			else // blending is false :
+			else // blending is false:
 			{
 			
 				// [ B, C, L ] = [ 0, 0, 0 ]
@@ -1077,6 +1151,14 @@ void Pixels::putPixelColor( Surface & targetSurface,
 	} // end locking
 
 
+#else // OSDL_USES_SDL_GFX
+
+	throw VideoException( "Pixels::putPixelColor failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL_GFX
+
+
 }
 
 
@@ -1085,7 +1167,9 @@ void Pixels::alternativePutPixelColor( Surface & targetSurface,
 	Coordinate x, Coordinate y, PixelColor color, bool mapToSurfaceFormat )
 		throw()
 {
-
+	
+#if OSDL_USES_SDL
+	
 	/*
 	
 	LogPlug::debug( "Pixels::alternativePut called for point in [ "
@@ -1111,7 +1195,7 @@ void Pixels::alternativePutPixelColor( Surface & targetSurface,
 					
 	BytesPerPixel bytes = targetSurface.getBytesPerPixel() ;
 	
-    // Here p is the address of the pixel whose color is to be set :
+    // Here p is the address of the pixel whose color is to be set:
     ColorElement * p = reinterpret_cast<ColorElement *>(
 			targetSurface.getPixels() )	
 			+ y * targetSurface.getPitch() + x * bytes ;
@@ -1144,7 +1228,7 @@ void Pixels::alternativePutPixelColor( Surface & targetSurface,
         	break ;
 			
 		default:
-			LogPlug::error( "Pixels::alternativePut : "
+			LogPlug::error( "Pixels::alternativePut: "
 				"unexpected bytes per pixel specified ("
 				+ Ceylan::toString( 
 					static_cast<Ceylan::Uint16>( bytes ) ) 
@@ -1152,6 +1236,15 @@ void Pixels::alternativePutPixelColor( Surface & targetSurface,
 			break ;
 			
     }
+
+
+#else // OSDL_USES_SDL
+
+	throw VideoException( "Pixels::alternativePutPixelColor failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
 }
 
 
@@ -1163,7 +1256,7 @@ string Pixels::toString( const Pixels::PixelFormat & format ) throw()
 		"(masks are binary masks used to retrieve individual color values, "
 		"loss is the precision loss of each color component, "
 		"shift correspond to binary left shifts of each "
-		"color component in the pixel value) : " ;
+		"color component in the pixel value): " ;
 
 	std::list<string> l ;
 
@@ -1174,7 +1267,7 @@ string Pixels::toString( const Pixels::PixelFormat & format ) throw()
 		+ " bytes per pixel." ) ;
 
 	l.push_back( "Colorkey (pixel value of transparent pixels) is " 
-		+ Ceylan::toNumericalString( format.colorkey ) + "." ) ;
+		+ toString( format.colorkey, format ) + "." ) ;
 		
 	l.push_back( "Overall alpha is " 
 		+ Ceylan::toNumericalString( format.alpha ) + "." ) ;
@@ -1253,11 +1346,11 @@ string Pixels::toString( ColorDefinition color ) throw()
 		
 		/*
 		 * Some characters have to be displayed so that the HTML table 
-		 * cell is drawn :
+		 * cell is drawn:
 		 *
 		 */
-		result += "<table><tr><td style=\"background : #" 
-			+ hexcolor + "; color : #" 
+		result += "<table><tr><td style=\"background: #" 
+			+ hexcolor + "; color: #" 
 			+ hexcolor + "\">OSDL rocks !</td></tr></table>" ;
 
 	}

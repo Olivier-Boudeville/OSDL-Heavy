@@ -11,10 +11,12 @@
 #include <string>
 
 
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
-
-// Forward declaration.
+// No need to include SDL header here:
 struct SDL_Rect ;
+
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 
 namespace OSDL 
@@ -27,8 +29,23 @@ namespace OSDL
 		namespace TwoDimensional
 		{
 		
+		
 			// Forward declaration to be able to define the operator ==.
 			class UprightRectangle ;
+			
+			
+			#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
+			
+			struct ::SDL_Rect ;
+			
+			// The internal actual rectangle object.
+			typedef SDL_Rect LowLevelRect ;
+				
+			#else // OSDL_USES_SDL
+
+			struct LowLevelRect {} ;
+				
+			#endif // OSDL_USES_SDL
 			
 		}
 				
@@ -96,11 +113,11 @@ namespace OSDL
 			 * an example).
 			 *
 			 */
-			class OSDL_DLL UprightRectangle : public Ceylan::TextDisplayable
+			class OSDL_DLL UprightRectangle: public Ceylan::TextDisplayable
 			{
 					
 									
-				friend bool ::operator == ( const UprightRectangle & first, 
+				friend bool::operator == ( const UprightRectangle & first, 
 					const UprightRectangle & second ) throw() ;
 						
 						
@@ -132,9 +149,14 @@ namespace OSDL
 						 Length height ) throw() ;
 					 
 					 
-					/// An SDL_Rect defines an UprightRectangle.
-					explicit UprightRectangle( const SDL_Rect & source ) 
-						throw() ;
+					/**
+					 * A LowLevelRect defines an UprightRectangle.
+					 *
+					 * @throw VideoException if the operation is not supported.
+					 *
+					 */
+					explicit UprightRectangle( const LowLevelRect & source ) 
+						throw( VideoException ) ;
 		
 		
 		
@@ -363,17 +385,19 @@ namespace OSDL
 					
 					
 					/**
-					 * Returns the SDL counterpart of this UprightRectangle.
+					 * Returns the back-end counterpart of this
+					 * UprightRectangle.
 					 *
 					 * It is up to the caller to release memory for this
-					 * SDL_Rect.
+					 * LowLevelRect.
 					 *
-					 * @example : SDL_Rect * myRect = aSurface.toSDLRect();
+					 * @example: LowLevelRect * myRect =
+					 * aSurface.toLowLevelRect();
 					 * ...
 					 $ delete myRect ;
 					 *
 					 */
-					virtual SDL_Rect * toSDLRect() const 
+					virtual LowLevelRect * toLowLevelRect() const 
 						throw( VideoException ) ;
 
 				
@@ -454,11 +478,13 @@ namespace OSDL
 }
 
 
-	
+
 
 /// To output its state in an output stream.
 std::ostream & operator << ( std::ostream & os, 
 	OSDL::Video::TwoDimensional::UprightRectangle & rect ) throw() ;
 
 
+
 #endif // OSDL_UPRIGHT_RECTANGLE_H_
+

@@ -4,8 +4,18 @@
 #include "OSDLPoint2D.h"  // for Point2D
 #include "OSDLVideo.h"    // for VideoModule
 
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
 
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+#if OSDL_USES_SDL_GFX
 #include "SDL_gfxPrimitives.h"  // for graphic primitives exported by SDL_gfx
+#endif // OSDL_USES_SDL_GFX
 
 
 
@@ -32,10 +42,18 @@ bool TwoDimensional::drawPie( Surface & targetSurface,
 	Pixels::ColorElement blue, Pixels::ColorElement alpha ) throw()
 {
 
+#if OSDL_USES_SDL_GFX
+
 	return ( ::filledPieRGBA( & targetSurface.getSDLSurface(), 
 		xCenter, yCenter, radius, static_cast<Coordinate>( angleStart ),
 		static_cast<Coordinate>( angleStop ), red, green, blue, alpha ) == 0 ) ;
 		
+#else // OSDL_USES_SDL_GFX
+
+	return false ;
+			
+#endif // OSDL_USES_SDL_GFX
+
 }
 
 
@@ -47,11 +65,19 @@ bool TwoDimensional::drawPie( Surface & targetSurface,
 	Pixels::ColorDefinition colorDef ) throw()
 {
 
+#if OSDL_USES_SDL_GFX
+
 	return ( ::filledPieColor( & targetSurface.getSDLSurface(), 
 		xCenter, yCenter, radius, 
 		static_cast<Coordinate>( angleStart ),
 		static_cast<Coordinate>( angleStop ),
 		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
+		
+#else // OSDL_USES_SDL_GFX
+
+	return false ;
+			
+#endif // OSDL_USES_SDL_GFX
 
 }
 
@@ -64,6 +90,8 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
 	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) throw()
 {
+
+#if OSDL_USES_SDL_GFX
 
 	if ( filled )
 	{
@@ -89,6 +117,12 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 		}
 	
 	}
+		
+#else // OSDL_USES_SDL_GFX
+
+	return false ;
+			
+#endif // OSDL_USES_SDL_GFX
 
 }
 
@@ -100,6 +134,8 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	Coordinate x3, Coordinate y3, 
 	Pixels::ColorDefinition colorDef, bool filled ) throw()
 {
+
+#if OSDL_USES_SDL_GFX
 
 	if ( filled )
 	{
@@ -132,6 +168,12 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 		}
 	
 	}
+		
+#else // OSDL_USES_SDL_GFX
+
+	return false ;
+			
+#endif // OSDL_USES_SDL_GFX
 
 }
 
@@ -143,6 +185,8 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	Pixels::ColorElement blue, Pixels::ColorElement alpha, 
 	bool filled ) throw()
 {
+
+#if OSDL_USES_SDL_GFX
 
 	if ( filled )
 	{
@@ -171,6 +215,12 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 		}
 	
 	}
+		
+#else // OSDL_USES_SDL_GFX
+
+	return false ;
+			
+#endif // OSDL_USES_SDL_GFX
 
 }
 
@@ -180,6 +230,8 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	const Point2D & p1, const Point2D & p2, const Point2D & p3, 
 	Pixels::ColorDefinition colorDef, bool filled ) throw()
 {
+
+#if OSDL_USES_SDL_GFX
 
 	if ( filled )
 	{
@@ -213,6 +265,12 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 		}
 	
 	}
+		
+#else // OSDL_USES_SDL_GFX
+
+	return false ;
+			
+#endif // OSDL_USES_SDL_GFX
 
 }
 
@@ -225,6 +283,8 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 {
 	
 	
+#if OSDL_USES_SDL_GFX
+
 	// First, prepare data structure.
 	
 	
@@ -257,7 +317,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	if ( filled )
 	{
 		
-		int res =::filledPolygonRGBA( & targetSurface.getSDLSurface(), 
+		int res = ::filledPolygonRGBA( & targetSurface.getSDLSurface(), 
 			abscissaArray, ordinateArray, static_cast<int>( vertexCount ), 
 			red, green, blue, alpha ) ;
 		
@@ -273,7 +333,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		if ( VideoModule::GetAntiAliasingState() )
 		{
 		
-			int res =::aapolygonRGBA( & targetSurface.getSDLSurface(), 
+			int res = ::aapolygonRGBA( & targetSurface.getSDLSurface(), 
 				abscissaArray, ordinateArray, static_cast<int>( vertexCount ), 
 				red, green, blue, alpha ) ;
 
@@ -286,7 +346,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		else
 		{
 		
-			int res =::polygonRGBA( & targetSurface.getSDLSurface(),
+			int res = ::polygonRGBA( & targetSurface.getSDLSurface(),
 				abscissaArray, ordinateArray, static_cast<int>( vertexCount ), 
 				red, green, blue, alpha ) ;
 				
@@ -295,6 +355,12 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		}
 	
 	}
+		
+#else // OSDL_USES_SDL_GFX
+
+	return false ;
+			
+#endif // OSDL_USES_SDL_GFX
 
 }	
 
@@ -305,6 +371,8 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	Pixels::ColorDefinition colorDef, bool filled ) throw()
 {
 
+
+#if OSDL_USES_SDL_GFX
 
 	/*
 	 * If a large number of summits is to be used, dynamic allocation
@@ -335,7 +403,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	if ( filled )
 	{
 		
-		int res =::filledPolygonColor( & targetSurface.getSDLSurface(), 
+		int res = ::filledPolygonColor( & targetSurface.getSDLSurface(), 
 			abscissaArray, ordinateArray, static_cast<int>( vertexCount ),
 			Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 		
@@ -351,7 +419,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		if ( VideoModule::GetAntiAliasingState() )
 		{
 		
-			int res =::aapolygonColor( & targetSurface.getSDLSurface(), 
+			int res = ::aapolygonColor( & targetSurface.getSDLSurface(), 
 				abscissaArray, ordinateArray, static_cast<int>( vertexCount ),
 				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 
@@ -364,7 +432,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		else
 		{
 		
-			int res =::polygonColor( & targetSurface.getSDLSurface(),
+			int res = ::polygonColor( & targetSurface.getSDLSurface(),
 				abscissaArray, ordinateArray, static_cast<int>( vertexCount ),
 				Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) ;
 				 
@@ -376,6 +444,12 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 		}
 	
 	}
+		
+#else // OSDL_USES_SDL_GFX
+
+	return false ;
+			
+#endif // OSDL_USES_SDL_GFX
 	
 }
 
@@ -415,7 +489,7 @@ Polygon::~Polygon() throw()
 
 			/*
 			 * Even the list should be deallocated, <b>only</b> if list 
-			 * owner :
+			 * owner:
 			 *
 			 */
 			delete _summits ;

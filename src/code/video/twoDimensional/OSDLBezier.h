@@ -6,6 +6,7 @@
 #include "OSDLPolygon.h"   // for listPoint2D
 
 
+
 namespace OSDL
 {
 
@@ -32,7 +33,7 @@ namespace OSDL
 			 * @param controlPoints a list of points controlling the shape 
 			 * of the curve, which will start at the location of the first
 			 * point, end at the location of the last point, but will not
-			 * necessarily go through intermediate points : they will only
+			 * necessarily go through intermediate points: they will only
 			 * "attract" the curve. 
 			 * There must be at least three control points, i.e. at least
 			 * one intermediate point.
@@ -56,6 +57,8 @@ namespace OSDL
 			 *
 			 * @note Clipping is performed.
 			 *
+			 * @throw VideoException if the operation is not supported.
+			 *
 			 */
 			OSDL_DLL bool drawBezierCurve( 
 				Surface & targetSurface,
@@ -65,7 +68,7 @@ namespace OSDL
 				Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
 				Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-					throw() ;
+					throw( VideoException ) ;
 	
 	
 	
@@ -79,7 +82,7 @@ namespace OSDL
 			 * @param controlPoints a list of points controlling the shape 
 			 * of the curve, which will start at the location of the first
 			 * point, end at the location of the last point, but will not
-			 * necessarily go through intermediate points : they will only
+			 * necessarily go through intermediate points: they will only
 			 * "attract" the curve. 
 			 * There must be at least three control points, i.e. at least
 			 * one intermediate point.
@@ -97,12 +100,14 @@ namespace OSDL
 			 *
 			 * @note Clipping is performed.
 			 *
+			 * @throw VideoException if the operation is not supported.
+			 *
 			 */
 			OSDL_DLL bool drawBezierCurve( 
 				Surface & targetSurface, 
 				const listPoint2D & controlPoints,
 				Ceylan::Uint16 numberOfSteps, 
-				Pixels::ColorDefinition colorDef ) throw() ;
+				Pixels::ColorDefinition colorDef ) throw( VideoException ) ;
 
 				
 		}
@@ -110,6 +115,7 @@ namespace OSDL
 	}
 	
 }
+
 
 
 #endif // OSDL_BEZIER_H_

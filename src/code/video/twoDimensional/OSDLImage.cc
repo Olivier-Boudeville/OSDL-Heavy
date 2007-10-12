@@ -1,22 +1,34 @@
 #include "OSDLImage.h"
 
-#include "OSDLVideo.h"              // for VideoModule
-#include "OSDLUtils.h"              // for getBackendLastError
+#include "OSDLVideo.h"               // for VideoModule
+#include "OSDLUtils.h"               // for getBackendLastError
 #include "OSDLSurface.h"
 #include "OSDLPixel.h"
 
 
-#include "SDL_image.h"              // for IMG_GetError and al
-
-#include "png.h"                    // for png_structp and many others
-
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>             // for OSDL_DEBUG and al 
+#include <OSDLConfig.h>              // for OSDL_DEBUG and al 
 #endif // OSDL_USES_CONFIG_H
 
-// To protect LoadIcon :
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_* and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+
+#if OSDL_USES_SDL_IMAGE
+#include "SDL_image.h"               // for IMG_GetError and al
+#endif // OSDL_USES_SDL_IMAGE
+
+#if OSDL_USES_LIBPNG
+#include "png.h"                     // for png_structp and many others
+#endif // OSDL_USES_LIBPNG
+
+
+// To protect LoadIcon:
 #include "OSDLIncludeCorrecter.h"
+
 
 using std::string ;
 
@@ -27,13 +39,13 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
-/// JPG and PNG are the two recommended formats :
+/// JPG and PNG are the two recommended formats:
 
 const string Image::JPGTag  = "JPG" ;
 const string Image::PNGTag  = "PNG" ;
 
 
-/// Other supported formats are :
+/// Other supported formats are:
 
 const string Image::BMPTag  = "BMP" ;
 const string Image::GIFTag  = "GIF" ;
@@ -45,11 +57,12 @@ const string Image::XPMTag  = "XPM" ;
 
 
 
-ImageException::ImageException( const std::string & reason ) throw() :
+ImageException::ImageException( const std::string & reason ) throw():
 	VideoException( reason )
 {
 
 }
+
 
 
 ImageException::~ImageException() throw()
@@ -63,17 +76,18 @@ ImageException::~ImageException() throw()
  * @see http://jcatki.no-ip.org/SDL_image/SDL_image.html
  *
  */
-
 Image::Image( const string & filename ) throw( ImageException ) 
 {
 
 }
 
 
+
 Image::~Image() throw() 
 {
 
 }	
+
 
 
 Surface & Image::LoadIcon( const string & filename, 
@@ -88,7 +102,7 @@ Surface & Image::LoadIcon( const string & filename,
 
 	// Do not convert to display, setMode should not have been called already !
 	
-	// Image format should be auto-detected :
+	// Image format should be auto-detected:
 	Surface & iconSurface = Surface::LoadImage( filename, 
 		/* blitOnly */ false, /* convertToDisplay */ false ) ;
 
@@ -96,7 +110,7 @@ Surface & Image::LoadIcon( const string & filename,
 #if OSDL_DEBUG_IMAGE
 	LogPlug::debug( "Icon loaded." ) ;
 	
-	LogPlug::debug( "Displaying icon informations : " 
+	LogPlug::debug( "Displaying icon informations: " 
 		+ iconSurface.toString() ) ;
 #endif // OSDL_DEBUG_IMAGE
 	
@@ -104,23 +118,24 @@ Surface & Image::LoadIcon( const string & filename,
 	{
 	
 		delete & iconSurface ;
-		throw ImageException( "Image::LoadIcon : image " + filename
+		throw ImageException( "Image::LoadIcon: image " + filename
 			+ " does not seem to have a palette as it should." ) ;
 						
 	}
 	
-	// Use upper left pixel index as color key :
+	// Use upper left pixel index as color key:
 	iconSurface.setColorKey( Surface::ColorkeyBlit, 
 			* ( (Pixels::ColorElement *) iconSurface.getPixels() ) ) ;
 
-	ColorElement * pixels = (ColorElement *) iconSurface.getPixels() ;
+	ColorElement * pixels = static_cast<ColorElement *>(
+		 iconSurface.getPixels() ) ;
 	
 #if OSDL_DEBUG_IMAGE
 
-	LogPlug::debug( "Image::LoadIcon : index of upper left pixel is "
+	LogPlug::debug( "Image::LoadIcon: index of upper left pixel is "
 		+ Ceylan::toString( static_cast<unsigned short>( *pixels ) ) ) ;
 	
-	LogPlug::debug( "Image::LoadIcon : transparent pixel is : "
+	LogPlug::debug( "Image::LoadIcon: transparent pixel is: "
 		+ Pixels::toString(
 			iconSurface.getPixelFormat().palette->colors[*pixels] ) ) ;
 
@@ -136,7 +151,7 @@ Surface & Image::LoadIcon( const string & filename,
 	if ( constructedMask == 0 ) 
 	{
 		delete & iconSurface ;
-		throw ImageException( "Image::LoadIcon : not enough memory." ) ;
+		throw ImageException( "Image::LoadIcon: not enough memory." ) ;
 	}
 	
 	::memset( constructedMask, 0, maskLen ) ;
@@ -167,7 +182,7 @@ Surface & Image::LoadIcon( const string & filename,
 			
 			/*
 			 * Write the corresponding bit to 1 when current pixel is 
-			 * not the color key :
+			 * not the color key:
 			 *
 			 */
             if ( pixels[ paletteIndex ] != *pixels )
@@ -198,19 +213,21 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 #if OSDL_DEBUG_IMAGE	
-	LogPlug::debug( "Image::Load : loading image from " + filename ) ;
+	LogPlug::debug( "Image::Load: loading image from " + filename ) ;
 #endif // OSDL_DEBUG_IMAGE
 	
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load JPG file " + filename 
-			+ " : file not found." ) ;
+			+ ": file not found." ) ;
 			
 	SDL_Surface * image = IMG_Load( filename.c_str() ) ; 	
 		
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load image stored in " + filename 
-			+ " thanks to IMG_Load : "
+			+ " thanks to IMG_Load: "
 			+ string( IMG_GetError() ) ) ;   
 			
 #if OSDL_DEBUG_IMAGE	
@@ -219,7 +236,7 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 	
 	/*
 	 * If conversion to display format is needed, substitute the 
-	 * converted image to the loaded one :
+	 * converted image to the loaded one:
 	 *
 	 */
 	
@@ -236,7 +253,7 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is 
-		 * to be deallocated :
+		 * to be deallocated:
 		 *
 		 */
 		
@@ -275,7 +292,7 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -290,7 +307,7 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::Load : trying to blit image "
+			throw ImageException( "Image::Load: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -298,10 +315,10 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::Load : trying to blit an image "
+			throw ImageException( "Image::Load: trying to blit an image "
 				"whereas target surface is locked" ) ;
 				
 #endif // OSDL_DEBUG
@@ -310,16 +327,16 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 			& targetSurface.getSDLSurface(), 0 ) ;
 		
 		if ( result == -1)
-			throw ImageException( "Image::Load : error in blit : " 
+			throw ImageException( "Image::Load: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::Load : video memory was lost during blit." ) ;
+				"Image::Load: video memory was lost during blit." ) ;
 	
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -348,7 +365,7 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 	
 	
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change anything for that, and replacement triggers
 	 * deallocation
@@ -360,6 +377,13 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG_IMAGE	
 	LogPlug::debug( "Image loaded." ) ;
 #endif // OSDL_DEBUG
+
+#else // OSDL_USES_SDL_IMAGE
+	
+	throw ImageException( "Image::Load failed: "
+		"no SDL_image support available" ) ;
+		
+#endif // OSDL_USES_SDL_IMAGE
 	
 }
 	
@@ -370,9 +394,11 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load JPG file " 
-			+ filename + " : file not found." ) ;
+			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
 	
@@ -381,13 +407,13 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 					
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load JPG image stored in " + filename 
-			+ " thanks to IMG_Load_RW : "
+			+ " thanks to IMG_Load_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
 	/*
 	 * If conversion to display format is needed, substitute the 
-	 * converted image to the loaded one :
+	 * converted image to the loaded one:
 	 *
 	 */
 	
@@ -404,7 +430,7 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is to 
-		 * be deallocated :
+		 * be deallocated:
 		 *
 		 */
 		
@@ -429,7 +455,7 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -441,7 +467,7 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::LoadJPG : trying to blit image "
+			throw ImageException( "Image::LoadJPG: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -449,10 +475,10 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::LoadJPG : trying to blit an image "
+			throw ImageException( "Image::LoadJPG: trying to blit an image "
 				"whereas target surface is locked" ) ;
 				
 #endif // OSDL_DEBUG
@@ -462,17 +488,17 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 			& targetSurface.getSDLSurface(), 0 ) ;
 		
 		if ( result == -1)
-			throw ImageException( "Image::LoadJPG : error in blit : " 
+			throw ImageException( "Image::LoadJPG: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::LoadJPG : video memory was lost during blit." ) ;
+				"Image::LoadJPG: video memory was lost during blit." ) ;
 	
 
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -495,7 +521,7 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 	
 	
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change anything for that, and replacement triggers
 	 * deallocation
@@ -503,6 +529,13 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 	 * for display format conversion and for blitted image)
 	 *
 	 */	 
+
+#else // OSDL_USES_SDL_IMAGE
+
+	throw ImageException( "Image::LoadJPG failed: "
+		"no SDL_image support available" ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
 	
 }
 	
@@ -513,9 +546,11 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load PNG file " 
-			+ filename + " : file not found." ) ;
+			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
 		
@@ -524,13 +559,13 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 	
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load PNG image stored in " 
-			+ filename + " thanks to IMG_Load_RW : "
+			+ filename + " thanks to IMG_Load_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
 	/*
 	 * If conversion to display format is needed, substitute the 
-	 * converted image to the loaded one :
+	 * converted image to the loaded one:
 	 *
 	 */
 	
@@ -547,7 +582,7 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is 
-		 * to be deallocated :
+		 * to be deallocated:
 		 *
 		 */
 		
@@ -572,7 +607,7 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -584,7 +619,7 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::LoadPNG : trying to blit image "
+			throw ImageException( "Image::LoadPNG: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -592,10 +627,10 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::LoadPNG : trying to blit an image "
+			throw ImageException( "Image::LoadPNG: trying to blit an image "
 				"whereas target surface is locked" ) ;
 				
 #endif // OSDL_DEBUG
@@ -604,16 +639,16 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 			& targetSurface.getSDLSurface(), 0 ) ;
 		
 		if ( result == -1)
-			throw ImageException( "Image::LoadPNG : error in blit : " 
+			throw ImageException( "Image::LoadPNG: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::LoadPNG : video memory was lost during blit." ) ;
+				"Image::LoadPNG: video memory was lost during blit." ) ;
 
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -636,7 +671,7 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 	}
 	
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change
 	 * anything for that, and replacement triggers deallocation
@@ -645,7 +680,15 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 	 *
 	 */	
 	
+#else // OSDL_USES_SDL_IMAGE
+
+	throw ImageException( "Image::LoadPNG failed: "
+		"no SDL_image support available" ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
+
 }
+	
 	
 	
 void Image::LoadBMP( Surface & targetSurface, const std::string & filename, 
@@ -653,9 +696,11 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load BMP file " 
-			+ filename + " : file not found." ) ;
+			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
 	
@@ -665,13 +710,13 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load BMP image stored in " 
 			+ filename 
-			+ " thanks to IMG_Load_RW : "
+			+ " thanks to IMG_Load_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
 	/*
 	 * If conversion to display format is needed, substitute the 
-	 * converted image to the loaded one :
+	 * converted image to the loaded one:
 	 *
 	 */
 	
@@ -688,7 +733,7 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is 
-		 * to be deallocated :
+		 * to be deallocated:
 		 *
 		 */
 		
@@ -713,7 +758,7 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -725,7 +770,7 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::LoadBMP : trying to blit image "
+			throw ImageException( "Image::LoadBMP: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -733,10 +778,10 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::LoadBMP : trying to blit an image "
+			throw ImageException( "Image::LoadBMP: trying to blit an image "
 				"whereas target surface is locked" ) ;
 				
 #endif // OSDL_DEBUG
@@ -745,16 +790,16 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 			& targetSurface.getSDLSurface(), 0 ) ;
 		
 		if ( result == -1)
-			throw ImageException( "Image::LoadBMP : error in blit : " 
+			throw ImageException( "Image::LoadBMP: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::LoadBMP : video memory was lost during blit." ) ;
+				"Image::LoadBMP: video memory was lost during blit." ) ;
 
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -777,7 +822,7 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 	}
 	
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change
 	 * anything for that, and replacement triggers deallocation
@@ -786,6 +831,13 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 	 *
 	 */		 
 	
+#else // OSDL_USES_SDL_IMAGE
+
+	throw ImageException( "Image::LoadBMP failed: "
+		"no SDL_image support available" ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
+
 }
 		
 	
@@ -795,9 +847,11 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load GIF file " 
-			+ filename + " : file not found." ) ;
+			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
 	
@@ -806,13 +860,13 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 	
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load GIF image stored in " + filename 
-			+ " thanks to IMG_Load_RW : "
+			+ " thanks to IMG_Load_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
 	/*
 	 * If conversion to display format is needed, substitute the 
-	 * converted image to the loaded one :
+	 * converted image to the loaded one:
 	 *
 	 */
 	
@@ -829,7 +883,7 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is to 
-		 * be deallocated :
+		 * be deallocated:
 		 *
 		 */
 		
@@ -854,7 +908,7 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -865,7 +919,7 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::LoadGIF : trying to blit image "
+			throw ImageException( "Image::LoadGIF: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -873,10 +927,10 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::LoadGIF : trying to blit an image "
+			throw ImageException( "Image::LoadGIF: trying to blit an image "
 				"whereas target surface is locked" ) ;
 				
 #endif // OSDL_DEBUG
@@ -885,16 +939,16 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 			& targetSurface.getSDLSurface(), 0 ) ;
 		
 		if ( result == -1)
-			throw ImageException( "Image::LoadGIF : error in blit : " 
+			throw ImageException( "Image::LoadGIF: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::LoadGIF : video memory was lost during blit." ) ;
+				"Image::LoadGIF: video memory was lost during blit." ) ;
 
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -918,16 +972,24 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 	
 	
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change anything for that, and replacement triggers
 	 * deallocation
 	 *  - any used temporary surface got deallocated (it is the case for 
 	 * display format conversion and for blitted image)
 	 *
-	 */	 
+	 */	
+	  
+#else // OSDL_USES_SDL_IMAGE
+
+	throw ImageException( "Image::LoadGIF failed: "
+		"no SDL_image support available" ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
 	
 }
+	
 	
 	
 void Image::LoadLBM( Surface & targetSurface, const std::string & filename, 
@@ -935,9 +997,11 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load LBM file " 
-			+ filename + " : file not found." ) ;
+			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
 		
@@ -946,13 +1010,13 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 			
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load LBM image stored in " + filename 
-			+ " thanks to IMG_Load_RW : "
+			+ " thanks to IMG_Load_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
 	/*
 	 * If conversion to display format is needed, substitute the converted 
-	 * image to the loaded one :
+	 * image to the loaded one:
 	 *
 	 */
 	
@@ -969,7 +1033,7 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is 
-		 * to be deallocated :
+		 * to be deallocated:
 		 *
 		 */
 		
@@ -994,7 +1058,7 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -1005,7 +1069,7 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::LoadLBM : trying to blit image "
+			throw ImageException( "Image::LoadLBM: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -1013,10 +1077,10 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::LoadLBM : trying to blit an image "
+			throw ImageException( "Image::LoadLBM: trying to blit an image "
 				"whereas target surface is locked" ) ;
 				
 #endif // OSDL_DEBUG
@@ -1025,16 +1089,16 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 			& targetSurface.getSDLSurface(), 0 ) ;
 		
 		if ( result == -1)
-			throw ImageException( "Image::LoadLBM : error in blit : " 
+			throw ImageException( "Image::LoadLBM: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::LoadLBM : video memory was lost during blit." ) ;
+				"Image::LoadLBM: video memory was lost during blit." ) ;
 
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -1059,7 +1123,7 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 	
 		 
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change anything for that, and replacement triggers
 	 * deallocation
@@ -1067,6 +1131,13 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 	 * display format conversion and for blitted image)
 	 *
 	 */	 
+
+#else // OSDL_USES_SDL_IMAGE
+
+	throw ImageException( "Image::LoadLBM failed: "
+		"no SDL_image support available" ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
 	 
 }
 	
@@ -1077,9 +1148,11 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load PCX file " 
-			+ filename + " : file not found." ) ;
+			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
 	  
@@ -1088,13 +1161,13 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 			
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load PCX image stored in " + filename 
-			+ " thanks to IMG_Load_RW : "
+			+ " thanks to IMG_Load_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
 	/*
 	 * If conversion to display format is needed, substitute the converted 
-	 * image to the loaded one :
+	 * image to the loaded one:
 	 *
 	 */
 	
@@ -1112,7 +1185,7 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is 
-		 * to be deallocated :
+		 * to be deallocated:
 		 *
 		 */
 		
@@ -1137,7 +1210,7 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -1148,7 +1221,7 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::LoadPCX : trying to blit image "
+			throw ImageException( "Image::LoadPCX: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -1156,10 +1229,10 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::LoadPCX : trying to blit an image "
+			throw ImageException( "Image::LoadPCX: trying to blit an image "
 				"whereas target surface is locked" ) ;
 				
 #endif // OSDL_DEBUG
@@ -1168,16 +1241,16 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 			& targetSurface.getSDLSurface(), 0 ) ;
 		
 		if ( result == -1)
-			throw ImageException( "Image::LoadPCX : error in blit : " 
+			throw ImageException( "Image::LoadPCX: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::LoadPCX : video memory was lost during blit." ) ;
+				"Image::LoadPCX: video memory was lost during blit." ) ;
 
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -1201,7 +1274,7 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 	}
 	
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change anything for that, and replacement triggers
 	 * deallocation
@@ -1210,8 +1283,15 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 	 *
 	 */	 
 	 
+#else // OSDL_USES_SDL_IMAGE
+
+	throw ImageException( "Image::LoadPCX failed: "
+		"no SDL_image support available" ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
 	
 }
+	
 	
 	
 void Image::LoadPNM( Surface & targetSurface, const std::string & filename, 
@@ -1219,9 +1299,11 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load PNM file " 
-			+ filename + " : file not found." ) ;
+			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
 		
@@ -1230,13 +1312,13 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 	
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load PNM image stored in " + filename 
-			+ " thanks to IMG_Load_RW : "
+			+ " thanks to IMG_Load_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
 	/*
 	 * If conversion to display format is needed, substitute the converted 
-	 * image to the loaded one :
+	 * image to the loaded one:
 	 *
 	 */
 	
@@ -1253,7 +1335,7 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is 
-		 * to be deallocated :
+		 * to be deallocated:
 		 *
 		 */
 		
@@ -1278,7 +1360,7 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -1289,7 +1371,7 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::LoadPNM : trying to blit image "
+			throw ImageException( "Image::LoadPNM: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -1297,10 +1379,10 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::LoadPNM : trying to blit an image "
+			throw ImageException( "Image::LoadPNM: trying to blit an image "
 				"whereas target surface is locked" ) ;
 #endif // OSDL_DEBUG
 		
@@ -1308,16 +1390,16 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 			& targetSurface.getSDLSurface(), 0 ) ;
 		
 		if ( result == -1)
-			throw ImageException( "Image::LoadPNM : error in blit : " 
+			throw ImageException( "Image::LoadPNM: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::LoadPNM : video memory was lost during blit." ) ;
+				"Image::LoadPNM: video memory was lost during blit." ) ;
 
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -1341,7 +1423,7 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 	}
 	
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change anything for that, and replacement triggers
 	 * deallocation
@@ -1350,7 +1432,15 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 	 *
 	 */	 
  	
+#else // OSDL_USES_SDL_IMAGE
+
+	throw ImageException( "Image::LoadPNM failed: "
+		"no SDL_image support available" ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
+
 }
+	
 	
 	
 void Image::LoadTGA( Surface & targetSurface, const std::string & filename, 
@@ -1358,9 +1448,11 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load TGA file " 
-			+ filename + " : file not found." ) ;
+			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
 		
@@ -1369,13 +1461,13 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 		
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load TGA image stored in " + filename 
-			+ " thanks to IMG_Load_RW : "
+			+ " thanks to IMG_Load_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
 	/*
 	 * If conversion to display format is needed, substitute the converted 
-	 * image to the loaded one :
+	 * image to the loaded one:
 	 *
 	 */
 	
@@ -1392,7 +1484,7 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is 
-		 * to be deallocated :
+		 * to be deallocated:
 		 *
 		 */
 		
@@ -1417,7 +1509,7 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -1428,7 +1520,7 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::LoadTGA : trying to blit image "
+			throw ImageException( "Image::LoadTGA: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -1436,10 +1528,10 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::LoadTGA : trying to blit an image "
+			throw ImageException( "Image::LoadTGA: trying to blit an image "
 				"whereas target surface is locked" ) ;
 				
 #endif // OSDL_DEBUG
@@ -1448,16 +1540,16 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 			& targetSurface.getSDLSurface(), 0 ) ;
 		
 		if ( result == -1)
-			throw ImageException( "Image::LoadTGA : error in blit : " 
+			throw ImageException( "Image::LoadTGA: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::LoadTGA : video memory was lost during blit." ) ;
+				"Image::LoadTGA: video memory was lost during blit." ) ;
 
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -1482,7 +1574,7 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 	
 	
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change anything for that, and replacement triggers
 	 * deallocation
@@ -1490,6 +1582,14 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 	 * display format conversion and for blitted image)
 	 *
 	 */	 
+	 
+#else // OSDL_USES_SDL_IMAGE
+
+	throw ImageException( "Image::LoadTGA failed: "
+		"no SDL_image support available" ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
+
 }
 	
 
@@ -1499,9 +1599,11 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 	throw( ImageException )
 {
 
+#if OSDL_USES_SDL_IMAGE
+
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load XPM file " 
-			+ filename + " : file not found." ) ;
+			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
 		
@@ -1510,13 +1612,13 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 		
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load XPM image stored in " + filename 
-			+ " thanks to IMG_Load_RW : "
+			+ " thanks to IMG_Load_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
 	/*
 	 * If conversion to display format is needed, substitute the converted 
-	 * image to the loaded one :
+	 * image to the loaded one:
 	 *
 	 */
 	
@@ -1533,7 +1635,7 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 		
 		/*
 		 * SDL_DisplayFormat* copies the surface, which therefore is 
-		 * to be deallocated :
+		 * to be deallocated:
 		 *
 		 */
 		
@@ -1558,7 +1660,7 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 		
 	/*
 	 * Now we have our image surface, we can either blit it or have 
-	 * it replace the former one :
+	 * it replace the former one:
 	 *
 	 */
 			
@@ -1569,7 +1671,7 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 #if OSDL_DEBUG
 
 		if ( ! targetSurface.isInternalSurfaceAvailable() )
-			throw ImageException( "Image::LoadXPM : trying to blit image "
+			throw ImageException( "Image::LoadXPM: trying to blit image "
 				"whereas target SDL_surface pointer is null" ) ;
 				
 #endif // OSDL_DEBUG
@@ -1577,10 +1679,10 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 			
 #if OSDL_DEBUG
 		
-		// The target surface should not be locked :	
+		// The target surface should not be locked:	
 
 		if ( targetSurface.isLocked() )
-			throw ImageException( "Image::LoadXPM : trying to blit an image "
+			throw ImageException( "Image::LoadXPM: trying to blit an image "
 				"whereas target surface is locked" ) ;
 				
 #endif // OSDL_DEBUG
@@ -1590,16 +1692,16 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 		
 		if ( result == -1)
 			throw ImageException( 
-				"Image::LoadXPM : error in blit : " 
+				"Image::LoadXPM: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 	
 		if ( result == -2 )
 			throw ImageException( 
-				"Image::LoadXPM : video memory was lost during blit." ) ;
+				"Image::LoadXPM: video memory was lost during blit." ) ;
 
 		/*
 		 * In this case, the loaded image has been used and therefore 
-		 * is not needed any more :
+		 * is not needed any more:
 		 *
 		 */
 	 
@@ -1624,7 +1726,7 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 	
 	
 	/*
-	 * In all cases :
+	 * In all cases:
 	 *	- no memory leak should occur with the internal surface, since 
 	 * blit does not change anything for that, and replacement triggers
 	 * deallocation
@@ -1632,6 +1734,13 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 	 * display format conversion and for blitted image)
 	 *
 	 */	 
+
+#else // OSDL_USES_SDL_IMAGE
+
+	throw ImageException( "Image::LoadXPM failed: "
+		"no SDL_image support available" ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
 	 
 }	
 
@@ -1641,49 +1750,51 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	bool overwrite ) throw( ImageException )
 {
 
+#if OSDL_USES_LIBPNG
+
 	// See png.h and http://www.libpng.org/pub/png/libpng.html for more details.
 	
 	if ( ! overwrite && Ceylan::System::File::Exists( filename ) )
 		throw TwoDimensional::ImageException( 
-			"Surface::savePNG : target file '" + filename 
+			"Surface::SavePNG: target file '" + filename 
 			+ "' already exists, and overwrite mode is off." ) ;
 
 	png_structp png_ptr ;
 	png_infop info_ptr ;
 
-	png_ptr = ::png_create_write_struct( PNG_LIBPNG_VER_STRING, 0, 0, 0 ) ;
+	png_ptr =::png_create_write_struct( PNG_LIBPNG_VER_STRING, 0, 0, 0 ) ;
 
 	if ( png_ptr == 0 )
 	{  
 		::png_destroy_write_struct( & png_ptr, (png_infopp) 0 ) ;
 		throw TwoDimensional::ImageException( 
-			"Surface::savePNG : unable to save image '"
+			"Surface::SavePNG: unable to save image '"
 			+ filename + "' (step 1)" ) ;
 	}
 	
-	info_ptr = ::png_create_info_struct( png_ptr ) ;
+	info_ptr =::png_create_info_struct( png_ptr ) ;
 	
 	if ( info_ptr == 0 )
 	{  
 		::png_destroy_write_struct( & png_ptr, (png_infopp) 0 ) ;
 		throw TwoDimensional::ImageException( 
-			"Surface::savePNG : unable to save image '"
+			"Surface::SavePNG: unable to save image '"
 				+ filename + "' (step 2)" ) ;
 	}
 
 
-    if ( ::setjmp( png_jmpbuf( png_ptr ) ) )
+    if (::setjmp( png_jmpbuf( png_ptr ) ) )
 	{  
 		::png_destroy_write_struct( & png_ptr, (png_infopp) 0 ) ;
 		throw TwoDimensional::ImageException( 
-			"Surface::savePNG : unable to save image '"
+			"Surface::SavePNG: unable to save image '"
 			+ filename + "' (step 3)" ) ;
 	}
 	
-	// Let's create a file with C-style :
+	// Let's create a file with C-style:
 	
 	/*
-	 * Something as :
+	 * Something as:
 	 
 	std::ifstream outputFile = open( filename.c_str(), ifstream::out ) ;
 
@@ -1695,14 +1806,14 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	 *
 	 */
 
-	FILE * outputFile = ::fopen( filename.c_str(), "wb" ) ;
+	FILE * outputFile =::fopen( filename.c_str(), "wb" ) ;
 	
 	if ( outputFile == 0 )
 	{  
 		::png_destroy_write_struct( & png_ptr, (png_infopp) 0 ) ;
 		throw TwoDimensional::ImageException( 
-			"Surface::savePNG : unable to save image '"
-			+ filename + "' (step 4) : " + Ceylan::System::explainError() ) ;
+			"Surface::SavePNG: unable to save image '"
+			+ filename + "' (step 4): " + Ceylan::System::explainError() ) ;
 	}
 	
    	::png_init_io( png_ptr, outputFile ) ;
@@ -1710,15 +1821,15 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
     info_ptr->width  = targetSurface.getWidth() ;
     info_ptr->height = targetSurface.getHeight() ;
 	
-	// Superfluity :
+	// Superfluity:
 	//info_ptr->rowbytes = _width ;
 	
 	
-	// The choice might be not as generic as wished :
+	// The choice might be not as generic as wished:
     info_ptr->bit_depth = 8 ;
 	
 	/* 
-	 * At least two other color type should be managed :
+	 * At least two other color type should be managed:
 	 *	- PNG_COLOR_TYPE_GRAY
 	 *  - PNG_COLOR_TYPE_PALETTE
 	 *
@@ -1728,7 +1839,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
     info_ptr->color_type = PNG_COLOR_TYPE_RGB ;
 
 
-	/* Thanks to Murlock, this method could be a little more generic :
+	/* Thanks to Murlock, this method could be a little more generic:
 	
     switch( type_img )
     {
@@ -1753,7 +1864,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
      		info_ptr->palette     =(png_color*)
 				malloc(nb_col*sizeof(png_color));
 			
-			// Use OSDLPalette instead :
+			// Use OSDLPalette instead:
 			
      		for ( unsigned int i=0; i < nb_col; i++ )
      		{
@@ -1765,16 +1876,16 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 		
 		default:
 			throw TwoDimensional::ImageException( 
-				"Surface::savePNG : unexpected image type." ) ;
+				"Surface::SavePNG: unexpected image type." ) ;
 			break ;	
      }
 	 
 	*/
 	 	
-	// Could be PNG_INTERLACE_NONE or PNG_INTERLACE_ADAM7 :
+	// Could be PNG_INTERLACE_NONE or PNG_INTERLACE_ADAM7:
     info_ptr->interlace_type = PNG_INTERLACE_ADAM7 ;
 	
-	// No palette used :
+	// No palette used:
 	info_ptr->num_palette = 0 ;
 	info_ptr->palette     = 0 ;
 	
@@ -1784,7 +1895,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	::png_write_info( png_ptr, info_ptr ) ;
 
 
-	// Now write the pixels, one by one :
+	// Now write the pixels, one by one:
 	targetSurface.lock() ;
 	
 	unsigned char ** png_rows = new unsigned char * 
@@ -1827,6 +1938,12 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	
 	::fclose( outputFile ) ;
 
+#else // OSDL_USES_LIBPNG
+
+	throw ImageException( "Image::SavePNG failed: "
+		"no libpng support available" ) ;
+
+#endif // OSDL_USES_LIBPNG
 
 }
 
@@ -1836,15 +1953,24 @@ void Image::SaveBMP( Surface & targetSurface, const std::string & filename,
 	bool overwrite ) throw( ImageException )
 {
 
+#if OSDL_USES_SDL
+
 	if ( ! overwrite && Ceylan::System::File::Exists( filename ) )
 		throw TwoDimensional::ImageException( 
-			"Surface::saveBMP : target file '" + filename 
+			"Surface::SaveBMP: target file '" + filename 
 			+ "' already exists, and overwrite mode is off." ) ;
 			
 	if ( SDL_SaveBMP( & targetSurface.getSDLSurface(), filename.c_str() ) != 0 )
 		throw TwoDimensional::ImageException( 
-			"Surface::saveBMP : error while saving BMP file '" 
-			+ filename + "' : "	+ OSDL::Utils::getBackendLastError() ) ;
+			"Surface::SaveBMP: error while saving BMP file '" 
+			+ filename + "': "	+ OSDL::Utils::getBackendLastError() ) ;
+
+#else // OSDL_USES_SDL
+
+	throw ImageException( "Image::SaveBMP failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
 
 }
 

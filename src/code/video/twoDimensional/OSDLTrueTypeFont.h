@@ -4,11 +4,12 @@
 
 #include "OSDLFont.h"         // for inheritance
 
-// Forward declaration :
-typedef struct _TTF_Font TTF_Font ;
 
 #include <string>
 
+#if ! defined(OSDL_USES_SDL_TTF) || OSDL_USES_SDL_TTF 
+#include "SDL_ttf.h"                     // for TTF_Font
+#endif // OSDL_USES_SDL_TTF
 
 
 
@@ -36,6 +37,19 @@ namespace OSDL
 			
 
 
+				#if ! defined(OSDL_USES_SDL_TTF) || OSDL_USES_SDL_TTF 
+
+				// The internal actual font object.
+				typedef struct _TTF_Font TTF_Font ;
+				typedef TTF_Font LowLevelTTFFont ;
+				
+				#else // OSDL_USES_SDL_TTF
+
+				struct LowLevelTTFFont {} ;
+				
+				#endif // OSDL_USES_SDL_TTF
+				
+
 				/**
 				 * Truetype font.
 				 *
@@ -53,7 +67,7 @@ namespace OSDL
 				 *
 				 * The principle of these rendering methods is to return a
 				 * surface with the chosen glyph, word or full text drawn 
-				 * with the specified color, with no visible background : 
+				 * with the specified color, with no visible background: 
 				 * thanks to color key or alpha-blending, only the text can 
 				 * be seen so that this returned surface can be directly 
 				 * blitted onto any already existing background that will 
@@ -64,7 +78,7 @@ namespace OSDL
 				 * surfaces of different height. 
 				 * Hence drawing a text is more difficult than just blitting 
 				 * all glyphs at the same height, and usually applications 
-				 * do not use direct glyph rendering : most of the time
+				 * do not use direct glyph rendering: most of the time
 				 * words or texts are rendered as a whole.
 				 *
 				 * As a returned surface is encoded with a RLE-color key 
@@ -93,7 +107,7 @@ namespace OSDL
 				 * FixedFont class too. 
 				 *
 				 */	
-				class OSDL_DLL TrueTypeFont : public Font
+				class OSDL_DLL TrueTypeFont: public Font
 				{
 				
 				
@@ -369,7 +383,7 @@ namespace OSDL
 						 * characters that exist in the font have the same 
 						 * width, thus you can assume that a rendered 
 						 * string's width is going to be the result of a 
-						 * simple calculation :
+						 * simple calculation:
 						 * <code>stringWidth = glyphWidth * stringLength</code>.
 						 *
 						 */
@@ -409,7 +423,7 @@ namespace OSDL
 						 * The metrics are described as an upright 
 						 * rectangle which contains the glyph, defined from
 						 * its upper left corner (xMin, yMax) to its lower
-						 * right corner, (xMax, yMin) as shown in :
+						 * right corner, (xMax, yMin) as shown in:
 						 * http://jcatki.no-ip.org/SDL_ttf/metrics.png
 						 *
 						 * @return an upright rectangle enclosing the glyph
@@ -859,7 +873,7 @@ namespace OSDL
 						/**
 						 * Renders specified glyph (Unicode character) in
 						 * specified color, on a new surface, directly 
-						 * thanks to the font backend : no cache is taken 
+						 * thanks to the font backend: no cache is taken 
 						 * into account. 
 						 *
 						 * Colorkeys and conversion to display are however
@@ -892,7 +906,7 @@ namespace OSDL
 						
 						
 						/// Stores the actual TTF font.
-						TTF_Font * _actualFont ;
+						LowLevelTTFFont * _actualFont ;
 						
 						
 						/**

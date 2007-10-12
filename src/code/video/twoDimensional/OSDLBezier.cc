@@ -6,12 +6,31 @@
 
 #include "Ceylan.h"             // for Ceylan::LogPlug
 
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include <OSDLConfig.h>              // for OSDL_USES_SDL_GFX and al 
+#endif // OSDL_USES_CONFIG_H
+
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL_GFX and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+
+#if OSDL_USES_SDL_GFX
+
 #include "SDL_gfxPrimitives.h"  // for graphic primitives exported by SDL_gfx
+
+#endif // OSDL_USES_SDL_GFX
+
 
 
 using namespace OSDL::Video ;
 
 using namespace Ceylan::Log ;
+
 
 
 
@@ -26,7 +45,7 @@ bool TwoDimensional::drawBezierCurve(
 	Pixels::ColorElement red, 
 	Pixels::ColorElement green, 
 	Pixels::ColorElement blue, 
-	Pixels::ColorElement alpha ) throw()
+	Pixels::ColorElement alpha ) throw( VideoException )
 {
 		
 	return drawBezierCurve( targetSurface, controlPoints, numberOfSteps, 
@@ -35,13 +54,15 @@ bool TwoDimensional::drawBezierCurve(
 }	
 
 
+
 bool TwoDimensional::drawBezierCurve( 
 	Surface & targetSurface, 
 	const listPoint2D & controlPoints,
 	Ceylan::Uint16 numberOfSteps, 
-	Pixels::ColorDefinition colorDef ) throw()
+	Pixels::ColorDefinition colorDef ) throw( VideoException )
 {
 
+#if OSDL_USES_SDL_GFX
 
 	/*
 	 * If a large number of summits is to be used, dynamic allocation
@@ -78,8 +99,14 @@ bool TwoDimensional::drawBezierCurve(
 	delete [] ordinateArray ;
 		
 	return ( res == 0 ) ;	
+	
+#else // OSDL_USES_SDL_GFX
+
+	throw VideoException( "TwoDimensional::drawBezierCurve failed: "
+		"no SDL_gfx support available" ) ;
+		
+#endif // OSDL_USES_SDL_GFX
 
 }	
-
 
 
