@@ -67,7 +67,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
@@ -89,7 +89,8 @@ int main( int argc, char * argv[] )
 
 		LogPlug::info( "Starting OSDL with OpenGL enabled." )	;
 			
-        CommonModule & myOSDL = getCommonModule( CommonModule::UseVideo ) ;		
+        CommonModule & myOSDL = getCommonModule( 
+			CommonModule::UseVideo | CommonModule::UseEvents ) ;		
 			
 		myOSDL.logState() ;
 					
@@ -100,21 +101,21 @@ int main( int argc, char * argv[] )
 		
 		myVideo.logState() ;
 				
-		LogPlug::info( "Displaying available video definitions : " 
+		LogPlug::info( "Displaying available video definitions: " 
 			+ VideoModule::DescribeAvailableDefinitions( 
 					Surface::FullScreen | Surface::Hardware ) ) ;     
 		
 		LogPlug::info( "Displaying configuration informations, "
-			"including best available pixel format : "
+			"including best available pixel format: "
 			+ VideoModule::DescribeVideoCapabilities() ) ;
 						
-		LogPlug::info( "Displaying video driver name : "
+		LogPlug::info( "Displaying video driver name: "
 			+ VideoModule::GetDriverName() + "." ) ;
 		
 
-		// Going from potential to real :
+		// Going from potential to real:
 					
-		LogPlug::info( "Entering visual tests : "
+		LogPlug::info( "Entering visual tests: "
 			"initializing the screen with OpenGL." ) ;
 
 
@@ -136,13 +137,13 @@ int main( int argc, char * argv[] )
 
 		Ceylan::System::FileLocator textureFinder ;
 
-		// When run from playTests.sh build directory :
+		// When run from playTests.sh build directory:
 		textureFinder.addPath( "../src/doc/web/images" ) ;
 		
-		// When run from executable build directory :
+		// When run from executable build directory:
 		textureFinder.addPath( "../../src/doc/web/images" ) ;
 
-		// When run from executable install directory :
+		// When run from executable install directory:
 		textureFinder.addPath( "../OSDL/doc/web/images" ) ;
 				
 		GLTexture & texture = * new GLTexture( 
@@ -171,7 +172,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -180,7 +181,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -189,7 +190,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 

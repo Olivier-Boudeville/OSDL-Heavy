@@ -38,7 +38,7 @@ using std::list ;
  * @note A scheduler already exists before any of these objects is created.
  *
  */
-class SchedulerStopper : public OSDL::Engine::ActiveObject
+class SchedulerStopper: public OSDL::Engine::ActiveObject
 {
 
 	public:
@@ -46,20 +46,20 @@ class SchedulerStopper : public OSDL::Engine::ActiveObject
 	
 		SchedulerStopper( SimulationTick stopSimulationTick, 
 			bool verbose = false ) 
-				throw( SchedulingException ) :
+				throw( SchedulingException ):
 			ActiveObject( stopSimulationTick, /* absolutlyDefined */ true ),
 			_stopTick( stopSimulationTick ),
 			_verbose( verbose ) 
 		{
 
-			// Be also a periodic object :
+			// Be also a periodic object:
 			
 			const Hertz desiredFrequency = 10 ;
 			
 			Hertz obtainedFrequency = setFrequency( desiredFrequency ) ;
 			
 			if ( _verbose )
-				LogPlug::info( "SchedulerStopper constructor : "
+				LogPlug::info( "SchedulerStopper constructor: "
 					"for a desired activation frequency of "
 					+ Ceylan::toString( desiredFrequency ) + " Hz, obtained "
 					+ Ceylan::toString( obtainedFrequency ) 
@@ -76,13 +76,13 @@ class SchedulerStopper : public OSDL::Engine::ActiveObject
 		{
 		
 			if ( _verbose )
-				LogPlug::info( "SchedulerStopper::onActivation : "
+				LogPlug::info( "SchedulerStopper::onActivation: "
 					"activated for simulation tick "
 					+ Ceylan::toString( newTick ) + "." ) ;
 			
 			if ( newTick == _stopTick )
 			{	
-				LogPlug::info( "SchedulerStopper::onActivation : "
+				LogPlug::info( "SchedulerStopper::onActivation: "
 					"stopping scheduler." ) ;
 				Scheduler::GetExistingScheduler().stop() ;
 			}	
@@ -93,7 +93,7 @@ class SchedulerStopper : public OSDL::Engine::ActiveObject
 		virtual void onSkip( Events::SimulationTick newTick ) throw()
 		{
 		
-			LogPlug::warning( "SchedulerStopper::onSkip : the simulation tick "
+			LogPlug::warning( "SchedulerStopper::onSkip: the simulation tick "
 				+ Ceylan::toString( newTick ) + " had been skipped !" ) ;
 				
 			onActivation( newTick ) ;
@@ -143,7 +143,7 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "Testing OSDL scheduler services in real-time mode." ) ;
 
-		// Tells when the test will stop, by default after 10s (100 Hz) :
+		// Tells when the test will stop, by default after 10s (100 Hz):
 		Events::SimulationTick stopTick = 10 * 100 ;
 	
 	
@@ -207,7 +207,7 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
@@ -227,7 +227,7 @@ int main( int argc, char * argv[] )
 			"Starting OSDL with video and, therefore, events enabled." ) ;
 					
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseVideo ) ;		
+			CommonModule::UseVideo | CommonModule::UseEvents ) ;		
 			
 		
 		LogPlug::info( "Getting events module." ) ;
@@ -241,7 +241,7 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Getting video." ) ;
 		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
-		// A SDL window is needed to have the SDL event system working :
+		// A SDL window is needed to have the SDL event system working:
 		myVideo.setMode( 640, 480, VideoModule::UseCurrentColorDepth, 
 			VideoModule::SoftwareSurface ) ;
 		
@@ -259,7 +259,7 @@ int main( int argc, char * argv[] )
 		
 		/*
 		 * Actually this first one will be the one that will stop the 
-		 * scheduler :
+		 * scheduler:
 		 *
 		 */
 		stoppers.push_back( new SchedulerStopper( 
@@ -269,7 +269,7 @@ int main( int argc, char * argv[] )
 				
 		for ( Ceylan::Uint32 i = 1; i < stoppersCount; i++ )
 		{
-			// All stoppers will stop at simulation tick stopTick or later :
+			// All stoppers will stop at simulation tick stopTick or later:
 			stoppers.push_back( new SchedulerStopper( 
 				stopTick + stopTickRand.getNewValue() ) ) ;		
 		}
@@ -294,7 +294,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -303,7 +303,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -312,7 +312,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
