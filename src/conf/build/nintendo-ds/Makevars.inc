@@ -29,8 +29,8 @@ devkitARM_DIR = $(devkitPro_DIR)/devkitARM
 libnds_DIR    = $(devkitPro_DIR)/libnds
 libfat_DIR    = $(libnds_DIR)
 
-ceylan_used_version = 0.7
-ceylan_DIR          = $(LOANI_INSTALLATIONS)/Ceylan-$(ceylan_used_version)
+CEYLAN_USED_VERSION = 0.7
+ceylan_DIR          = $(LOANI_INSTALLATIONS)/Nintendo-DS-development/Ceylan-$(CEYLAN_USED_VERSION)
 
 build_tool_DIR    = ${devkitARM_DIR}/bin
 build_tool_PREFIX =arm-eabi-
@@ -230,7 +230,7 @@ CPP_OTHER_DEFINES:= \
 
 
 CPP_FLAGS_COMMON:= $(CPP_DEFINES) -I. $(CPP_FLAGS_COMMON)  \
-	-I$(ceylan_DIR)/include/Ceylan -I$(libfat_DIR)/include \
+	-I$(ceylan_DIR)/include -I$(libfat_DIR)/include        \
 	-I$(libnds_DIR)/include  
 
 
