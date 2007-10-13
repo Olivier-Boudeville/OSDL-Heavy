@@ -867,6 +867,7 @@ generatezlib()
 		zlib_PREFIX=${prefix}/zlib-${zlib_VERSION}
 		
 		setBuildEnv ./configure --shared --prefix=${zlib_PREFIX} --exec_prefix=${zlib_PREFIX}
+		
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{		
@@ -1713,7 +1714,7 @@ generateSDL_image()
         	LDFLAGS=${LIBFLAG}
         	export LDFLAGS
 			
-			setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif "LDFLAGS=${LDFLAGS}"
+			setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif "LDFLAGS=${LDFLAGS}" 
 			
 			LDFLAGS=${OLD_LDFLAGS}
 			export LDFLAGS
@@ -1726,8 +1727,8 @@ generateSDL_image()
 			# leading to errors such as: 
 			# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 			
-	  		setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif --disable-sdltest "LDFLAGS=${LIBFLAG}"
-			            
+	  		setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif --disable-sdltest LDFLAGS="${LIBFLAG} -lz" CPPFLAGS="-I${libjpeg_PREFIX}/include -I${libpng_PREFIX}/include -I${zlib_PREFIX}/include"
+			         
 		fi
  
 	} 1>>"$LOG_OUTPUT" 2>&1		
