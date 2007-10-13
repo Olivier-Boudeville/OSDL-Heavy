@@ -9,9 +9,9 @@
 
 USAGE="Usage : "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools] [ --allTools] [ --nds ] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
 
-EXAMPLE="    Recommended examples (long but safe) :
-	for a end-user  (export of last stable)        : ./"`basename $0`"
-	for a developer (check-out of current sources) : ./"`basename $0`" --allTools --sourceforge <your developer login> --currentSVN 
+EXAMPLE="    Recommended examples (long but safe):
+	for a end-user  (export of last stable)       : ./"`basename $0`"
+	for a developer (check-out of current sources): ./"`basename $0`" --allTools --sourceforge <your developer login> --currentSVN 
 	"
 
 # For testing purposes :
@@ -29,11 +29,11 @@ Options :
 	-u or --useSVN            : retrieve Ceylan and OSDL from SVN, instead of downloading prepackaged source archives
 	-c or --currentSVN        : retrieve current SVN for Ceylan and OSDL, instead of latest SVN tagged stable release (implies --useSVN)
 	--sourceforge <user name> : uses SourceForge developer access to retrieve projects from SVN  (implies --currentSVN)
-	--buildTools		  : retrieve and install common build tools too (ex : gcc, binutils, gdb)  
-	--optionalTools 	  : retrieve and install optional tools too (ex : doxygen, dot, tidy)
+	--buildTools		  : retrieve and install common build tools too (ex: gcc, binutils, gdb)  
+	--optionalTools 	  : retrieve and install optional tools too (ex: doxygen, dot, tidy)
 	--allTools		  : retrieve all tools (required, build, optional tools)
-	--nds             : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
-	--setEnv		  : set full developer environment (ex : bash, nedit configuration)
+	--nds		          : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
+	--setEnv		  : set full developer environment (ex: bash, nedit configuration)
 	--fetchonly		  : only retrieve (download in cache) pre requesite, do not install them
 	--all			  : install all and set all, including developer environment
 	--prefix <a path>	  : install everything under <a path> 
@@ -98,7 +98,7 @@ launchFileRetrieval()
 		# File not here, having to guess the download location to be used :
 
 		# Will set 'current_download_location' 
-		# (iterate through mirrors if needed) :
+		# (iterate through mirrors if needed):
 		getDownloadLocation ${package_name}
 		
 		download_url="${current_download_location}/${archive_file}"
@@ -152,7 +152,7 @@ getDownloadLocation()
 	# Trying first the main site :
 	if [ -z "${location_value}" ] ; then
 		
-		# Not available ? Try the mirror (if any) :
+		# Not available ? Try the mirror (if any):
 		location_name="${package_name}_ALTERNATE_DOWNLOAD_LOCATION"
 		eval actual_location_name="\$$location_name"
 		location_value="${actual_location_name}"
@@ -175,7 +175,7 @@ getDownloadLocation()
 			saved="${location_value}"
 			eval ${location_name}=""
 			current_download_location=${saved}
-			DEBUG "Selected download location (mirror) : ${current_download_location}"
+			DEBUG "Selected download location (mirror): ${current_download_location}"
 			return
 
 		fi		
@@ -184,7 +184,7 @@ getDownloadLocation()
 		saved=${location_value}
 		eval ${location_name}=""
 		current_download_location=${saved}
-		DEBUG "Selected download location (main site) : ${current_download_location}"
+		DEBUG "Selected download location (main site): ${current_download_location}"
 		return
 	fi
 	
@@ -347,7 +347,7 @@ launchwizard()
 			manage_build_tools=0	
 			manage_optional_tools=0			
 		else
-			if askDefaultNo "${OFFSET}Install build tools ? (ex : gcc, binutils) [this is the recommended setting]" ; then 
+			if askDefaultNo "${OFFSET}Install build tools ? (ex: gcc, binutils) [this is the recommended setting]" ; then 
 				DISPLAY "Build tools will be installed."
 				manage_build_tools=0	
 			else
@@ -356,7 +356,7 @@ launchwizard()
 			fi
 	
 	
-			if askDefaultNo "${OFFSET}Install optional tools ? (ex : doxygen, dot, tidy)" ; then 
+			if askDefaultNo "${OFFSET}Install optional tools ? (ex: doxygen, dot, tidy)" ; then 
 				DISPLAY "Optional tools will be installed."
 				manage_optional_tools=0	
 			else
@@ -373,7 +373,7 @@ launchwizard()
 			fetch_only=1
 		fi		
 			
-		if askDefaultNo "${OFFSET}Set full developer environment ? (ex : bash, nedit configuration)" ; then 
+		if askDefaultNo "${OFFSET}Set full developer environment ? (ex: bash, nedit configuration)" ; then 
 			DISPLAY "Full developer environment will be set."
 			set_env=0
 		else
@@ -399,7 +399,7 @@ launchwizard()
 	fi
 
 	if askDefaultYes "${OFFSET}Use an installation prefix ? [recommended]" ; then 
-		askString "${OFFSET}Please enter prefix directory where installations should be done (leave blank to let LOANI find automatically an appropriate prefix) :"
+		askString "${OFFSET}Please enter prefix directory where installations should be done (leave blank to let LOANI find automatically an appropriate prefix):"
 		prefix="$returnedString"
 		if [ -z "${prefix}" ] ; then
 			DISPLAY "Prefix will be set automatically."	
@@ -897,7 +897,7 @@ if [ -z "$prefix" ] ; then
 	else
 		prefix=`pwd`"/LOANI-installations"
 		alternate_prefix="$prefix"
-		WARNING "No prefix specified and not run as root (which is recommended indeed) : adding prefix $prefix."	
+		WARNING "No prefix specified and not run as root (which is recommended indeed): adding prefix $prefix."	
 		${MKDIR} -p "${alternate_prefix}"		
 	fi
 
@@ -1051,7 +1051,7 @@ DISPLAY "Target package list is <$target_list>."
 
 # Checks that there is enough available space on disk :
 
-# Available size in megabytes (1048576 is 1024^2) :
+# Available size in megabytes (1048576 is 1024^2):
 AVAILABLE_SIZE=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
 
 
