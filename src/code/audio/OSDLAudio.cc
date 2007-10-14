@@ -20,17 +20,171 @@
 #include "SDL.h"         // for SDL_InitSubSystem
 #endif // OSDL_USES_SDL
 
+#if OSDL_USES_SDL_MIXER
+#include "SDL_mixer.h"   // for Mix_OpenAudio and al
+#endif // OSDL_USES_SDL_MIXER
+
 
 #include <list>
 using std::list ;
 
 using std::string ;
 
+using Ceylan::Maths::Hertz ;
 
 
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Audio ;
+
+
+
+#if OSDL_USES_SDL
+
+const SampleFormat AudioModule::Uint8SampleFormat		 = AUDIO_U8 ;
+const SampleFormat AudioModule::Sint8SampleFormat		 = AUDIO_S8 ;
+
+
+const SampleFormat AudioModule::LittleUint16SampleFormat = AUDIO_U16LSB ;
+const SampleFormat AudioModule::LittleSint16SampleFormat = AUDIO_S16LSB ;
+
+const SampleFormat AudioModule::BigUint16SampleFormat	 = AUDIO_U16MSB ;
+const SampleFormat AudioModule::BigSint16SampleFormat	 = AUDIO_S16MSB ;
+
+const SampleFormat AudioModule::NativeUint16SampleFormat = AUDIO_U16SYS ;
+const SampleFormat AudioModule::NativeSint16SampleFormat = AUDIO_S16SYS ;
+
+#else // OSDL_USES_SDL
+
+
+// Same values as in SDL:
+
+const SampleFormat AudioModule::Uint8SampleFormat		 = 0x0008 ;
+const SampleFormat AudioModule::Sint8SampleFormat		 = 0x8008 ;
+
+
+const SampleFormat AudioModule::LittleUint16SampleFormat = 0x0010 ;
+const SampleFormat AudioModule::LittleSint16SampleFormat = 0x8010 ;
+
+const SampleFormat AudioModule::BigUint16SampleFormat	 = 0x1010 ;
+const SampleFormat AudioModule::BigSint16SampleFormat	 = 0x9010 ;
+
+
+#if CEYLAN_DETECTED_LITTLE_ENDIAN
+
+const SampleFormat AudioModule::NativeUint16SampleFormat = 0x0010 ;
+const SampleFormat AudioModule::NativeSint16SampleFormat = 0x8010 ;
+
+#else // CEYLAN_DETECTED_LITTLE_ENDIAN
+
+const SampleFormat AudioModule::NativeUint16SampleFormat = 0x1010 ;
+const SampleFormat AudioModule::NativeSint16SampleFormat = 0x9010 ;
+
+#endif // CEYLAN_DETECTED_LITTLE_ENDIAN
+
+
+#endif // OSDL_USES_SDL
+
+
+/*
+ * These values are identifiers, not a number of channels: different formats
+ * may have the same number of channels.
+ *
+ * @see GetChannelCountFor
+ *
+ * More than 2 channels means surround.
+ *
+ */
+const ChannelFormat AudioModule::Mono	= 1 ;
+const ChannelFormat AudioModule::Stereo = 2 ;
+
+
+
+std::string OSDL::Audio::sampleFormatToString( SampleFormat format )
+	throw( AudioException )
+{
+
+	switch( format )
+	{
+	
+		case AudioModule::Uint8SampleFormat:
+			return "unsigned 8-bit" ;
+			break ;
+			
+		case AudioModule::Sint8SampleFormat:
+			return "signed 8-bit" ;
+			break ;
+			
+		case AudioModule::LittleUint16SampleFormat:
+#if CEYLAN_DETECTED_LITTLE_ENDIAN
+			return "little-endian unsigned 16-bit (native)" ;
+#else // CEYLAN_DETECTED_LITTLE_ENDIAN
+			return "little-endian unsigned 16-bit (non native)" ;
+#endif // CEYLAN_DETECTED_LITTLE_ENDIAN
+			break ;
+			
+		case AudioModule::LittleSint16SampleFormat:
+#if CEYLAN_DETECTED_LITTLE_ENDIAN
+			return "little-endian signed 16-bit (native)" ;
+#else // CEYLAN_DETECTED_LITTLE_ENDIAN
+			return "little-endian signed 16-bit (non native)" ;
+#endif // CEYLAN_DETECTED_LITTLE_ENDIAN
+			break ;
+			
+		case AudioModule::BigUint16SampleFormat:
+#if CEYLAN_DETECTED_LITTLE_ENDIAN
+			return "big-endian unsigned 16-bit (non native)" ;
+#else // CEYLAN_DETECTED_LITTLE_ENDIAN
+			return "big-endian unsigned 16-bit (native)" ;
+#endif // CEYLAN_DETECTED_LITTLE_ENDIAN
+			break ;
+			
+		case AudioModule::BigSint16SampleFormat:
+#if CEYLAN_DETECTED_LITTLE_ENDIAN
+			return "big-endian signed 16-bit (non native)" ;
+#else // CEYLAN_DETECTED_LITTLE_ENDIAN
+			return "big-endian signed 16-bit (native)" ;
+#endif // CEYLAN_DETECTED_LITTLE_ENDIAN
+			break ;
+		
+		default:
+			throw AudioException( "OSDL::Audio::sampleFormatToString failed: "
+				"unknown sample format (" + Ceylan::toString( format ) + ")" ) ;
+			break ;	
+	
+	}
+
+}
+
+
+
+std::string OSDL::Audio::channelFormatToString( SampleFormat format )
+	throw( AudioException )
+{
+
+	switch( format )
+	{
+	
+		case AudioModule::Mono:
+			return "mono" ;
+			break ;
+			
+		case AudioModule::Stereo:
+			return "stereo" ;
+			break ;
+			
+		default:
+			throw AudioException( "OSDL::Audio::channelFormatToString failed: "
+				"unknown channel format (" 
+				+ Ceylan::toString( format ) + ")" ) ;
+			break ;	
+	
+	}
+
+}
+	
+
+			
 
 
 bool AudioModule::_AudioInitialized = false ;
@@ -84,13 +238,16 @@ const string AudioModule::SDLEnvironmentVariables[] = {} ;
 #endif // OSDL_USES_SDL
 
 
+const Ceylan::Uint16 AudioModule::DriverNameMaximumLength = 50 ;
 
 
-AudioException::AudioException( const string & reason ) throw() :
+
+AudioException::AudioException( const string & reason ) throw():
 	OSDL::Exception( reason )
 {
 
 }
+
 
 
 AudioException::~AudioException() throw()
@@ -100,7 +257,8 @@ AudioException::~AudioException() throw()
 
 
 
-AudioModule::AudioModule() throw( AudioException ) :
+
+AudioModule::AudioModule() throw( AudioException ):
 	Ceylan::Module( 
 		"OSDL Audio module",
 		"This is the root audio module of OSDL",
@@ -108,7 +266,9 @@ AudioModule::AudioModule() throw( AudioException ) :
 		"Olivier Boudeville",
 		"olivier.boudeville@online.fr",
 		OSDL::GetVersion(),
-		"LGPL" )		
+		"LGPL" ),
+	_mixerInitialized( false ),
+	_chunkSize( 0 )			
 {
 
 	send( "Initializing audio subsystem." ) ;
@@ -117,9 +277,29 @@ AudioModule::AudioModule() throw( AudioException ) :
 
 	if ( SDL_InitSubSystem( 
 			CommonModule::UseAudio ) != CommonModule::BackendSuccess )
-		throw AudioException( "AudioModule constructor : "
-			"unable to initialize audio subsystem : " 
+		throw AudioException( "AudioModule constructor: "
+			"unable to initialize audio subsystem: " 
 			+ Utils::getBackendLastError() ) ;
+
+#if OSDL_USES_SDL_MIXER
+	
+	SDL_version compileTimeSDLMixerVersion ;
+	MIX_VERSION( & compileTimeSDLMixerVersion ) ;
+
+	SDL_version linkTimeSDLMixerVersion = *Mix_Linked_Version() ;
+	
+	send( "Using SDL_mixer backend, compiled against the " 
+		+ Ceylan::toNumericalString( compileTimeSDLMixerVersion.major) + "."
+		+ Ceylan::toNumericalString( compileTimeSDLMixerVersion.minor) + "."
+		+ Ceylan::toNumericalString( compileTimeSDLMixerVersion.patch) 
+		+ " version, linked against the "
+		+ Ceylan::toNumericalString( linkTimeSDLMixerVersion.major) + "."
+		+ Ceylan::toNumericalString( linkTimeSDLMixerVersion.minor) + "."
+		+ Ceylan::toNumericalString( linkTimeSDLMixerVersion.patch) 
+		+ " version." ) ;
+	
+#endif // OSDL_USES_SDL_MIXER
+
 
 #else // OSDL_USES_SDL
 
@@ -128,7 +308,11 @@ AudioModule::AudioModule() throw( AudioException ) :
 		
 #ifdef OSDL_RUNS_ON_ARM7
 
+	// Nothing special to initialize on the ARM7.
+	
 #elif defined(OSDL_RUNS_ON_ARM9)
+
+	// Nothing special to initialize on the ARM9.
 
 #endif // OSDL_RUNS_ON_ARM7
 
@@ -145,11 +329,30 @@ AudioModule::AudioModule() throw( AudioException ) :
 }	
 
 
+
 AudioModule::~AudioModule() throw()
 {
 
 	send( "Stopping audio subsystem." ) ;
 	
+	if ( _mixerInitialized )
+	{
+	
+		try 
+		{
+		
+			unsetMode() ;
+		
+		}
+		catch( const AudioException & e )
+		{
+		
+			LogPlug::error( "AudioModule destructor: "
+				"unsetting of the mixer failed: " + e.toString() ) ;
+		}
+	
+	}	
+
 #if OSDL_USES_SDL
 
 	SDL_QuitSubSystem( CommonModule::UseAudio ) ;
@@ -174,12 +377,127 @@ AudioModule::~AudioModule() throw()
 }
 
 
+
+void AudioModule::setMode( Hertz outputFrequency, 
+		SampleFormat outputSampleFormat, ChannelFormat outputChannel,
+		ChunkSize outputBufferSize ) 
+	throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	if ( _mixerInitialized )
+		throw AudioException( "AudioModule::setMode failed: "
+			"mixing mode already set, and not unset yet" ) ;
+	if ( ::Mix_OpenAudio( outputFrequency, outputSampleFormat,
+			GetChannelCountFor( outputChannel ), outputBufferSize ) != 0 )
+		throw AudioException( "AudioModule::setMode failed: "
+			+ string( ::Mix_GetError() ) ) ;
+
+	_chunkSize = outputBufferSize ;
+			
+	_mixerInitialized = true ;	
+	
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::setMode failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+Ceylan::System::Millisecond AudioModule::getObtainedMode( 
+	Hertz & actualOutputFrequency, SampleFormat & actualOutputSampleFormat,
+	ChannelCount & actualOutputChannelCount ) throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	// Because of sign conversion:
+	int channelCount, frequency ;
+	
+	if ( ::Mix_QuerySpec( & frequency, & actualOutputSampleFormat, 
+			& channelCount ) == 0 )
+		throw AudioException( "	AudioModule::getObtainedMode failed: "
+			+  string( ::Mix_GetError() ) ) ;
+	
+	actualOutputChannelCount = channelCount	;
+	actualOutputFrequency = frequency ;
+	
+	// The mean latency is half the buffer to wait:
+	return static_cast<Ceylan::System::Millisecond>( 
+		1000.0f / 2 * _chunkSize / 
+			( actualOutputFrequency * actualOutputChannelCount 
+				* GetSampleSizeFor( actualOutputSampleFormat ) ) ) ;
+	
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::getObtainedMode failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+		
+}
+
+
+
+void AudioModule::unsetMode() throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	if ( _mixerInitialized )
+	{
+	
+		::Mix_CloseAudio() ;
+		_mixerInitialized = false ;
+		_chunkSize = 0 ;
+
+	}	
+	else
+	{
+		
+		LogPlug::warning( "AudioModule::unsetMode called "
+			"whereas not already initialized, nothing done." ) ;
+		
+	}
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::unsetMode failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+	
+std::string AudioModule::getDriverName() const throw( AudioException )
+{
+
+	return AudioModule::GetDriverName() ;
+
+}
+
+
+
 const string AudioModule::toString( Ceylan::VerbosityLevels level ) 
 	const throw()
 {
 	
-	string res = "Audio module" ;
-		
+	string res = "Audio module, " ;
+	
+	if ( _mixerInitialized )
+		res += "mixer is initialized" ;
+	else
+		res += "mixer not initialized" ;
+	
+	res += ". Chunk size is " + Ceylan::toString( _chunkSize ) + " bytes" ;
+	 	
 	if ( level == Ceylan::low )
 		return res ;
 				
@@ -188,6 +506,7 @@ const string AudioModule::toString( Ceylan::VerbosityLevels level )
 	return res ;
 	
 }
+
 
 
 string AudioModule::DescribeEnvironmentVariables() throw()
@@ -199,7 +518,7 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 		sizeof( SDLEnvironmentVariables ) / sizeof (string) ;
 		
 	string result = "Examining the " + Ceylan::toString( varCount )
-		+ " audio-related environment variables for SDL backend :" ;
+		+ " audio-related environment variables for SDL backend:" ;
 	
 	list<string> variables ;
 		
@@ -239,6 +558,7 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 	}
 	
 	return result + Ceylan::formatStringList( variables ) ;
+	
 #else // OSDL_USES_SDL
 
 	return "(not using SDL)" ;
@@ -248,10 +568,97 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 }
 
 
+
 bool AudioModule::IsAudioInitialized() throw()
 {
 
 	return _AudioInitialized ;
 	
+}
+
+
+
+string AudioModule::GetDriverName() throw( AudioException )
+{
+
+#if OSDL_USES_SDL
+
+	char driverName[ DriverNameMaximumLength + 1 ]  ;
+	
+	if ( SDL_AudioDriverName( driverName, DriverNameMaximumLength ) == 0 )
+		throw AudioException( "AudioModule::GetDriverName failed: "
+			"the audio driver is probably not initialized." ) ;
+			
+	return std::string( driverName ) ;
+	
+#else // OSDL_USES_SDL
+
+	return "unknown (not using SDL)" ;
+	
+#endif // OSDL_USES_SDL
+		
+}
+
+
+
+ChannelCount AudioModule::GetChannelCountFor( ChannelFormat format )
+	throw( AudioException )
+{
+
+	switch( format )
+	{
+	
+		case Mono:
+			return 1 ;
+			break ;
+			
+		case Stereo:
+			return 2 ;
+			break ;
+			
+		default:
+			throw AudioException( "AudioModule::GetChannelCountFor failed: "
+				"unknown channel format (" + Ceylan::toString( format ) 
+				+ ")" ) ;
+			break ;	
+			
+	}
+
+}
+
+
+	
+ChunkSize AudioModule::GetSampleSizeFor( SampleFormat format ) 
+	throw( AudioException )
+{
+
+	switch( format )
+	{
+	
+		case Uint8SampleFormat:
+		case Sint8SampleFormat:
+			return 1 ;
+			break ;
+			
+		case LittleUint16SampleFormat:
+		case LittleSint16SampleFormat:
+		case BigUint16SampleFormat:
+		case BigSint16SampleFormat:
+		/* 
+			Are duplicates of a previous pair:
+		case NativeUint16SampleFormat:
+		case NativeSint16SampleFormat:
+		*/
+			return 2 ;
+			break ;
+			
+		default:
+			throw AudioException( "AudioModule::GetSampleSizeFor failed: "
+				"unknown sample format (" + Ceylan::toString( format ) 
+				+ ")" ) ;
+			break ;	
+			
+	}
+
 }
 
