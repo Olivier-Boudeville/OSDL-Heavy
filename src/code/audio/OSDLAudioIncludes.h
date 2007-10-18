@@ -4,7 +4,12 @@
 
 /// This include repository keeps track of headers for the 'audio' module.
 
+#include "OSDLAudible.h"
+#include "OSDLAudioChannel.h"
 #include "OSDLAudio.h"
+#include "OSDLMusic.h"
+#include "OSDLSound.h"
+
 #include "OSDLAudioRendererIncludes.h"
 
 
