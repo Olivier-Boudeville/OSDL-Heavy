@@ -16,11 +16,18 @@ libOSDLAudioInclude_HEADERS = $(AUDIO_INTERFACES)
 
 
 AUDIO_INTERFACES = \
+	OSDLAudible.h                        \
+	OSDLAudioChannel.h                   \
 	OSDLAudio.h                          \
+	OSDLMusic.h                          \
+	OSDLSound.h                          \
 	OSDLAudioIncludes.h
 
 
 AUDIO_IMPLEMENTATIONS = \
-	OSDLAudio.cc
-	
+	OSDLAudible.cc                       \
+	OSDLAudio.cc                         \
+	OSDLAudioChannel.cc                  \
+	OSDLMusic.cc                         \
+	OSDLSound.cc
 	
