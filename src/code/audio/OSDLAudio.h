@@ -2,13 +2,12 @@
 #define OSDL_AUDIO_H_
 
 
-#include "OSDLTypes.h"       // for Flags
 #include "OSDLException.h"   // for OSDL::Exception 
 
 #include "Ceylan.h"          // for inheritance, Hertz
 
 #include <string>
-#include <list>
+#include <vector>
 
 
 
@@ -33,6 +32,10 @@ namespace OSDL
 				virtual ~AudioException() throw() ; 
 		} ;
 			
+		
+		
+		// The audio module uses channels to mix input sources.
+		class AudioChannel ;
 				
 				
 		/**
@@ -82,12 +85,14 @@ namespace OSDL
 
 	
 		/**
-		 * Describe a number of channel.
+		 * Describe a number of channel, either for input (mixing channels) or
+		 * for output (playback channels of a given channel format).
 		 *
-		 * @example: for mono sound, it is 1, for stereo, 2.
+		 * @example: there can be 16 input mixing channels. Regarding output,
+		 * for mono sound, there is 1 playback channel, and for stereo, 2.
 		 *
 		 */
-		typedef Ceylan::Uint16 ChannelCount ;
+		typedef Ceylan::Uint16 ChannelNumber ;
 	
 	
 		/**
@@ -95,6 +100,16 @@ namespace OSDL
 		 *
 		 */
 		typedef Ceylan::Uint32 ChunkSize ;
+		
+		
+		/**
+		 * Describes the volume for the playback of an audible.
+		 *
+		 * Ranges from MinVolume (0) to MaxVolume (128).
+		 *
+		 */
+		typedef Ceylan::Uint8 Volume ;
+		
 		
 								
 		/**
@@ -111,6 +126,26 @@ namespace OSDL
 		
 			// The common module has to create the audio module.
 			friend class OSDL::CommonModule ;
+		
+			
+		
+			/**
+			 * This friend function is intended to be the usual means of
+			 * getting a reference to the audio module, which must already
+			 * exist. It is called in contexts where this module has to exist.
+			 *
+			 * If not, a fatal error will be triggered (not an exception to 
+			 * avoid handling it in all user methods).
+			 * 
+			 * @note This function is mainly useful for the OSDL internals, 
+			 * for example for channel callbacks.
+			 *
+			 * @note This method is not static to avoid pitfalls of static
+			 * initializer ordering.
+			 *
+			 */			
+			OSDL_DLL friend AudioModule & getExistingAudioModule() throw() ;
+		
 		
 		
 			public:
@@ -161,7 +196,18 @@ namespace OSDL
 				static const ChannelFormat Stereo ;
 				
 
+				/// The smallest volume possible (mute).
+				static const Volume MinVolume ;
+				
+				/// The highest volume possible (full throttle).
+				static const Volume MaxVolume ;
 
+
+				/// Allows to store the number (identifier) of a mixing channel.
+				typedef Ceylan::Uint16 ChannelNumber ;
+				
+				
+				
 				/**
 				 * Tries to sets up an audio mode with the specified output
 				 * sampling frequency, output sample format, number of sound
@@ -206,6 +252,9 @@ namespace OSDL
 				 * only, the buffer may be chosen quite big (say, 2048 samples
 				 * at 22 050 Hz for each channel). 
 				 *
+				 * @param mixingChannelNumber the number of mixer (input)
+				 * channels that must be created.
+				 *
 				 * @throw AudioException if the setting of the new mode
 				 * failed, including if the operation is not supported.
 				 *
@@ -214,7 +263,8 @@ namespace OSDL
 						Ceylan::Maths::Hertz outputFrequency,
 						SampleFormat         outputSampleFormat,
 						ChannelFormat        outputChannel,
-						ChunkSize            outputBufferSize ) 
+						ChunkSize            outputBufferSize,
+						ChannelNumber        mixingChannelNumber = 16 ) 
 					throw( AudioException ) ;
 
 
@@ -228,7 +278,7 @@ namespace OSDL
 				 * @param actualOutputSampleFormat will be set to the sample
 				 * format that will be output.
 				 *
-				 * @param actualOutputChannelCount will be set to the number of
+				 * @param actualOutputChannelNumber will be set to the number of
 				 * channels obtained (note that is not the channel format)
 				 *
 				 * @return the mean latency, in milliseconds, that corresponds
@@ -240,7 +290,7 @@ namespace OSDL
 				virtual Ceylan::System::Millisecond getObtainedMode( 
 						Ceylan::Maths::Hertz & actualOutputFrequency,
 						SampleFormat & actualOutputSampleFormat,
-						ChannelCount & actualOutputChannelCount ) 
+						ChannelNumber & actualOutputChannelNumber ) 
 					throw( AudioException ) ;
 				 
 				 
@@ -256,6 +306,143 @@ namespace OSDL
 
 
 
+
+
+				// Channel section.
+
+
+
+				/**
+				 * Returns the number of input mixing channels.
+				 *
+				 * @throw AudioException if the operation failed.
+				 *
+				 */
+				virtual ChannelNumber getMixingChannelCount() const 
+					throw( AudioException ) ; 
+
+
+				/**
+				 * Returns the specified input mixing channel.
+				 *
+				 * @param index the number of the target channel.
+				 *
+				 * @throw AudioException if the operation failed, including if
+				 * index is out of bounds.
+				 *
+				 */
+				virtual AudioChannel & getMixingChannelAt( ChannelNumber index )
+					const throw( AudioException ) ; 
+
+
+				/**
+				 * Sets the volume for all the input mixing channels at once.
+				 *
+				 * @param newVolume the volume to set all channels to.
+				 * 				 
+				 * @throw AudioException if the operation failed.
+				 *
+				 */
+				virtual void setVolumeForAllMixingChannels( Volume newVolume )
+					throw( AudioException ) ;
+					
+				
+				/**
+				 * Returns the number of channels being currently playing
+				 * (including those which are paused).
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual ChannelNumber getPlayingChannelCount() const 
+					throw( AudioException ) ;
+					
+					
+				/**
+				 * Returns the number of channels being currently paused
+				 * (including those which were paused and halted afterwards).
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual ChannelNumber getPausedChannelCount() const 
+					throw( AudioException ) ;
+					
+					
+				/**
+				 * Pauses all mixing channels being actively playing.
+				 *
+				 * A paused channel can still be halted.
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual void pauseAllChannels() throw( AudioException ) ;
+					
+					
+				/**
+				 * Resumes the playing on all paused mixing channels.
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual void resumeAllChannels() throw( AudioException ) ;
+					
+					
+				/**
+				 * Halts the playing on all mixing channels.
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual void haltAllChannels() throw( AudioException ) ;
+					
+					
+				/**
+				 * Makes all mixing channels stop after the specified 
+				 * duration is elapsed.
+				 *
+				 * @param expireDuration the duration, in milliseconds, until
+				 * the channels are stopped.
+				 *
+				 * @return the number of channels set to expire, whether or 
+				 * not they are active.
+				 *
+				 * @throw AudioChannelException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual ChannelNumber expireAllChannelsIn( 
+						Ceylan::System::Millisecond expireDuration )
+					throw( AudioException ) ;
+		
+		
+				/**
+				 * Makes all mixing channels fade-out during the specified
+				 * duration elapsed.
+				 *
+				 * @param fadeOutDuration the duration, in milliseconds, of the
+				 * fade-out, which will start immediately.
+				 *
+				 * @return the number of channels set to fade-out, whether or 
+				 * not they are active.
+				 *
+				 * @throw AudioException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual ChannelNumber fadeOutAllChannelsDuring( 
+						Ceylan::System::Millisecond fadeOutDuration )
+					throw( AudioException ) ;
+					
+					
+					
+					
 				/**
 				 * Returns the name of the audio driver being currently 
 				 * used (example: 'dsp').
@@ -291,6 +478,14 @@ namespace OSDL
 				// Static section.
 	
 	
+				/**
+				 *
+				 *
+				 *
+				 *
+				 */
+				
+				 
 				/**
 				 * Returns a summary about the possible use of 
 				 * video-related environment variables, for the selected
@@ -345,6 +540,23 @@ namespace OSDL
 				ChunkSize _chunkSize ;
 				
 				
+/* 
+ * Takes care of the awful issue of Windows DLL with templates.
+ *
+ * @see Ceylan's developer guide and README-build-for-windows.txt 
+ * to understand it, and to be aware of the associated risks. 
+ * 
+ */
+#pragma warning( push )
+#pragma warning( disable: 4251 )
+			
+
+				/// The input mixing channels.
+				std::vector<AudioChannel *> _inputChannels ;				
+				
+#pragma warning( pop ) 
+				
+				
 				
 				/**
 				 * Returns the number of channels corresponding to the specified
@@ -358,7 +570,7 @@ namespace OSDL
 				 * @throw AudioException if the operation failed.
 				 *
 				 */
-				static ChannelCount GetChannelCountFor( ChannelFormat format )
+				static ChannelNumber GetChannelCountFor( ChannelFormat format )
 					throw( AudioException ) ;
 	
 	
@@ -448,6 +660,27 @@ namespace OSDL
 			
 			
 		} ;
+
+	
+	
+		/**
+		 * This function is intended to be the usual means of
+		 * getting a reference to the audio module, which must already exist.
+		 * If not, a fatal error will be triggered (not an exception to 
+		 * avoid handling it in all user methods).
+		 * 
+		 * @note This function is mainly useful for the OSDL internals, 
+		 * if sub-modules, such as the event module, needed access to 
+		 * the common module.
+		 *
+		 * @see hasCommonModule()
+		 * 
+		 * @note This method is not static to avoid pitfalls of static
+		 * initializer ordering.
+		 *
+		 */			
+		OSDL_DLL AudioModule & getExistingAudioModule() throw() ;
+		
 		
 	}	
 	

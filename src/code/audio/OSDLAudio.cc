@@ -1,10 +1,10 @@
 #include "OSDLAudio.h"
 
 
-#include "OSDLUtils.h"   // for getBackendLastError
-#include "OSDLBasic.h"   // for OSDL::GetVersion
+#include "OSDLUtils.h"               // for getBackendLastError
+#include "OSDLBasic.h"               // for OSDL::GetVersion, etc.
+#include "OSDLAudioChannel.h"        // for AudioChannel
 
-#include "Ceylan.h"      // for GetOutputFormat
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -17,11 +17,11 @@
 
 
 #if OSDL_USES_SDL
-#include "SDL.h"         // for SDL_InitSubSystem
+#include "SDL.h"                     // for SDL_InitSubSystem
 #endif // OSDL_USES_SDL
 
 #if OSDL_USES_SDL_MIXER
-#include "SDL_mixer.h"   // for Mix_OpenAudio and al
+#include "SDL_mixer.h"               // for Mix_OpenAudio and al
 #endif // OSDL_USES_SDL_MIXER
 
 
@@ -29,6 +29,7 @@
 using std::list ;
 
 using std::string ;
+using std::vector ;
 
 using Ceylan::Maths::Hertz ;
 
@@ -36,6 +37,7 @@ using Ceylan::Maths::Hertz ;
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Audio ;
+
 
 
 
@@ -86,6 +88,8 @@ const SampleFormat AudioModule::NativeSint16SampleFormat = 0x9010 ;
 #endif // OSDL_USES_SDL
 
 
+
+
 /*
  * These values are identifiers, not a number of channels: different formats
  * may have the same number of channels.
@@ -97,6 +101,11 @@ const SampleFormat AudioModule::NativeSint16SampleFormat = 0x9010 ;
  */
 const ChannelFormat AudioModule::Mono	= 1 ;
 const ChannelFormat AudioModule::Stereo = 2 ;
+
+
+const Volume AudioModule::MinVolume = 0   ;
+const Volume AudioModule::MaxVolume = 128 ;
+
 
 
 
@@ -155,6 +164,7 @@ std::string OSDL::Audio::sampleFormatToString( SampleFormat format )
 	}
 
 }
+
 
 
 
@@ -238,6 +248,8 @@ const string AudioModule::SDLEnvironmentVariables[] = {} ;
 #endif // OSDL_USES_SDL
 
 
+
+
 const Ceylan::Uint16 AudioModule::DriverNameMaximumLength = 50 ;
 
 
@@ -254,6 +266,9 @@ AudioException::~AudioException() throw()
 {
 
 }
+
+
+
 
 
 
@@ -335,6 +350,7 @@ AudioModule::~AudioModule() throw()
 
 	send( "Stopping audio subsystem." ) ;
 	
+	
 	if ( _mixerInitialized )
 	{
 	
@@ -353,6 +369,7 @@ AudioModule::~AudioModule() throw()
 	
 	}	
 
+	
 #if OSDL_USES_SDL
 
 	SDL_QuitSubSystem( CommonModule::UseAudio ) ;
@@ -372,6 +389,8 @@ AudioModule::~AudioModule() throw()
 	
 #endif // OSDL_USES_SDL
 	
+	_AudioInitialized = false ;
+	
 	send( "Audio subsystem stopped." ) ;
 	
 }
@@ -380,7 +399,7 @@ AudioModule::~AudioModule() throw()
 
 void AudioModule::setMode( Hertz outputFrequency, 
 		SampleFormat outputSampleFormat, ChannelFormat outputChannel,
-		ChunkSize outputBufferSize ) 
+		ChunkSize outputBufferSize, ChannelNumber mixingChannelCount ) 
 	throw( AudioException )
 {
 
@@ -389,13 +408,39 @@ void AudioModule::setMode( Hertz outputFrequency,
 	if ( _mixerInitialized )
 		throw AudioException( "AudioModule::setMode failed: "
 			"mixing mode already set, and not unset yet" ) ;
+			
 	if ( ::Mix_OpenAudio( outputFrequency, outputSampleFormat,
 			GetChannelCountFor( outputChannel ), outputBufferSize ) != 0 )
 		throw AudioException( "AudioModule::setMode failed: "
 			+ string( ::Mix_GetError() ) ) ;
 
 	_chunkSize = outputBufferSize ;
-			
+	
+	ChannelNumber channelCount = ::Mix_AllocateChannels( mixingChannelCount ) ;
+	
+	if ( channelCount != mixingChannelCount )
+		throw AudioException( "AudioModule::setMode: wanted " 
+			+ Ceylan::toString( mixingChannelCount ) 
+			+ " input mixing channel(s), but got "  
+			+ Ceylan::toString( _inputChannels.size() ) 
+			+ " channel(s) instead" ) ;
+	
+	try
+	{	
+		
+		for ( ChannelNumber i = 0; i < channelCount; i++ )
+			_inputChannels.push_back( new AudioChannel( i ) ) ;
+	
+	}
+	catch( const AudioChannelException & e )
+	{
+	
+		throw AudioException( 
+			"AudioModule::setMode failed when creating mixing channels: " 
+			+ e.toString() ) ;
+					
+	}			
+		 		
 	_mixerInitialized = true ;	
 	
 #else // OSDL_USES_SDL_MIXER
@@ -411,20 +456,20 @@ void AudioModule::setMode( Hertz outputFrequency,
 
 Ceylan::System::Millisecond AudioModule::getObtainedMode( 
 	Hertz & actualOutputFrequency, SampleFormat & actualOutputSampleFormat,
-	ChannelCount & actualOutputChannelCount ) throw( AudioException )
+	ChannelNumber & actualOutputChannelCount ) throw( AudioException )
 {
 
 #if OSDL_USES_SDL_MIXER
 
 	// Because of sign conversion:
-	int channelCount, frequency ;
+	int channelNumber, frequency ;
 	
 	if ( ::Mix_QuerySpec( & frequency, & actualOutputSampleFormat, 
-			& channelCount ) == 0 )
+			& channelNumber ) == 0 )
 		throw AudioException( "	AudioModule::getObtainedMode failed: "
 			+  string( ::Mix_GetError() ) ) ;
 	
-	actualOutputChannelCount = channelCount	;
+	actualOutputChannelCount = channelNumber	;
 	actualOutputFrequency = frequency ;
 	
 	// The mean latency is half the buffer to wait:
@@ -455,7 +500,13 @@ void AudioModule::unsetMode() throw( AudioException )
 		::Mix_CloseAudio() ;
 		_mixerInitialized = false ;
 		_chunkSize = 0 ;
-
+		
+		for ( vector<AudioChannel *>::iterator it = _inputChannels.begin();
+				it != _inputChannels.end(); it++ )
+			delete (*it) ;
+			
+		_inputChannels.clear() ;
+				
 	}	
 	else
 	{
@@ -475,7 +526,212 @@ void AudioModule::unsetMode() throw( AudioException )
 }
 
 
+
+
+
+// Channel section.
+
+
+
+ChannelNumber AudioModule::getMixingChannelCount() const throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+#if OSDL_DEBUG
+
+	if ( ::Mix_AllocateChannels( /* just read */ -1 ) != 
+			static_cast<int>( _inputChannels.size() ) )
+		throw AudioException( "AudioModule::getMixingChannelCount failed: "
+			"inconsistency in channel count" ) ;
+		
+#endif // OSDL_DEBUG
+
+	// Should match _inputChannels.size():
+	return ::Mix_AllocateChannels( /* just read */ -1 ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::getMixingChannelCount failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+AudioChannel & AudioModule::getMixingChannelAt( ChannelNumber index )
+	const throw( AudioException )
+{
+
+	try
+	{
 	
+		return *_inputChannels.at( index ) ;
+	
+	}
+	catch( const std::exception & e )
+	{
+	
+		throw AudioException( "AudioModule::getMixingChannelAt out of bounds: "
+			+ string( e.what() ) ) ;
+	}
+	
+}
+
+
+
+void AudioModule::setVolumeForAllMixingChannels( Volume newVolume )
+	throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	::Mix_Volume( /* all channels */ -1, newVolume ) ;
+				
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::setVolumeForAllMixingChannels failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+ChannelNumber AudioModule::getPlayingChannelCount() const 
+	throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	return ::Mix_Playing( /* all channels */ -1 ) ;
+				
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::getPlayingChannelCount failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+ChannelNumber AudioModule::getPausedChannelCount() const 
+	throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	return ::Mix_Paused( /* all channels */ -1 ) ;
+				
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::getPausedChannelCount failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+	
+					
+
+void AudioModule::pauseAllChannels() throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	::Mix_Pause( /* all channels */ -1 ) ;
+
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::pauseAllChannels failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+	
+}
+
+
+
+void AudioModule::resumeAllChannels() throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	::Mix_Resume( /* all channels */ -1 ) ;
+
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::resumeAllChannels failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+	
+}
+
+
+
+void AudioModule::haltAllChannels() throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	::Mix_HaltChannel( /* all channels */ -1 ) ;
+
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::haltAllChannels failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+	
+}
+	
+	
+	
+ChannelNumber AudioModule::expireAllChannelsIn( 
+	Ceylan::System::Millisecond expireDuration ) throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	return ::Mix_ExpireChannel( /* all channels */ -1, expireDuration ) ;
+
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::expireAllChannelsIn failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+	
+}
+	
+	
+					
+ChannelNumber AudioModule::fadeOutAllChannelsDuring( 
+	Ceylan::System::Millisecond fadeOutDuration ) throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	return ::Mix_FadeOutChannel( /* all channels */ -1, fadeOutDuration ) ;
+
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::fadeOutAllChannelsDuring failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+	
+}
+					
+					
+											
+											
 std::string AudioModule::getDriverName() const throw( AudioException )
 {
 
@@ -496,7 +752,9 @@ const string AudioModule::toString( Ceylan::VerbosityLevels level )
 	else
 		res += "mixer not initialized" ;
 	
-	res += ". Chunk size is " + Ceylan::toString( _chunkSize ) + " bytes" ;
+	res += ". Chunk size is " + Ceylan::toString( _chunkSize ) 
+		+ " bytes. There are " + Ceylan::toString( _inputChannels.size() )
+		+ " input mixing channel(s)" ;
 	 	
 	if ( level == Ceylan::low )
 		return res ;
@@ -601,7 +859,7 @@ string AudioModule::GetDriverName() throw( AudioException )
 
 
 
-ChannelCount AudioModule::GetChannelCountFor( ChannelFormat format )
+ChannelNumber AudioModule::GetChannelCountFor( ChannelFormat format )
 	throw( AudioException )
 {
 
@@ -660,5 +918,27 @@ ChunkSize AudioModule::GetSampleSizeFor( SampleFormat format )
 			
 	}
 
+}
+
+
+
+
+AudioModule & OSDL::Audio::getExistingAudioModule() throw()
+{
+
+	try
+	{
+		
+		return OSDL::getExistingCommonModule().getAudioModule() ;
+	
+	}
+	catch( const OSDL::Exception & e )
+	{
+		
+		Ceylan::emergencyShutdown( "OSDL::Audio::getExistingAudioModule: "
+			"no audio module available: " + e.toString() ) ;
+	
+	}
+	
 }
 
