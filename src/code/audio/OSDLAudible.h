@@ -7,7 +7,6 @@
 #include "Ceylan.h"          // for inheritance, Millisecond, etc.
 
 #include <string>
-#include <list>
 
 
 
@@ -57,7 +56,7 @@ namespace OSDL
 				/**
 				 * Creates a new audible instance.
 				 *
-				 * @param convertedInOutputFormat must be true iff the internal
+				 * @param convertedToOutputFormat must be true iff the internal
 				 * samples of this audible have been converted already to the
 				 * sample format used for audio output.
 				 *
@@ -65,7 +64,7 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				explicit Audible( bool convertedInOutputFormat = true ) 
+				explicit Audible( bool convertedToOutputFormat = true ) 
 					throw( AudibleException ) ;
 				
 				
@@ -128,7 +127,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual void playForAtMost( Ceylan::Millisecond maxDuration, 
+				virtual void playForAtMost( 
+						Ceylan::System::Millisecond maxDuration, 
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) = 0 ; 
 				
@@ -150,7 +150,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeIn( 
-						Ceylan::Millisecond fadeInMaxDuration, 
+						Ceylan::System::Millisecond fadeInMaxDuration, 
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) = 0 ; 
 					
@@ -175,8 +175,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeInForAtMost( 
-						Ceylan::Millisecond playbackMaxDuration,
-						Ceylan::Millisecond fadeInMaxDuration, 
+						Ceylan::System::Millisecond playbackMaxDuration,
+						Ceylan::System::Millisecond fadeInMaxDuration, 
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) = 0 ; 
 				
@@ -185,13 +185,13 @@ namespace OSDL
 				
 				/**
 				 * Tells whether the internal samples of this audible have 
-				 * been converted already to the sample format used for audio
+				 * already been converted to the sample format used for audio
 				 * output.
 				 * 
 				 * @return true iff the samples are already converted.
 				 *
 				 */
-				virtual bool convertedInOutputFormat() throw() ;
+				virtual bool isConvertedToOutputFormat() const throw() ;
 				
 				
 	            /**
@@ -212,6 +212,7 @@ namespace OSDL
 			
 			
 			
+			
 			protected:
 			
 			
@@ -220,7 +221,8 @@ namespace OSDL
 				 * already to the sample format used for audio output.
 				 *
 				 */
-				bool _convertedInOutputFormat ;
+				bool _convertedToOutputFormat ;
+			
 			
 			
 			
