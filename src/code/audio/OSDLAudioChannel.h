@@ -2,7 +2,7 @@
 #define OSDL_AUDIO_CHANNEL_H_
 
 
-#include "OSDLAudio.h"       // for AudioException
+#include "OSDLAudioCommon.h" // for AudioException, FadingStatus, etc.
 
 #include "Ceylan.h"          // for inheritance
 
@@ -32,19 +32,7 @@ namespace OSDL
 				virtual ~AudioChannelException() throw() ; 
 		} ;
 			
-			
-			
-		/// Describes a fading status.	
-		enum FadingStatus
-		{
-		
-			In,
-			Out,
-			None
-			
-		} ;
-			
-				
+							
 												
 		/**
 		 * Corresponds to a mixing audio channel.
@@ -116,6 +104,124 @@ namespace OSDL
 		
 		
 				/**
+				 * Activates stereo panning and sets the specified distribution
+				 * between left/right output channels for this input mixing
+				 * channel.
+				 * 
+				 * @note This effect will only work on stereo audio output. On
+				 * mono audio device, nothing will be done.
+				 *
+				 * @param leftPercentage, between 0 and 100 (%). Right 
+				 * percentage will be equal to 100 - leftPercentage.
+				 *
+				 * @throw AudioChannelException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void setPanning( 
+						Ceylan::Maths::Percentage leftPercentage )
+					throw( AudioChannelException ) ;
+					
+					
+				/**
+				 * Deactivates stereo panning effect for this channel.
+				 *
+				 * @throw AudioChannelException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void unsetPanning() throw( AudioChannelException ) ;
+		
+
+				/**
+				 * Activates or deactivates reverse stereo: if activated, 
+				 * swaps left and right output for this channel.
+				 * 
+				 * @note This effect will only work on stereo audio output. On
+				 * mono audio device, nothing will be done.
+				 *
+				 * @param reverse if true, left channel will be output into
+				 * right one, and right channel into left one, for this input
+				 * mixing channel only.
+				 *
+				 * @throw AudioChannelException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void setReverseStereo( bool reverse = true )
+					throw( AudioChannelException ) ;
+		
+		
+				/**
+				 * Activates distance attenuation for this input mixing
+				 * channel.
+				 * 
+				 * @param distance corresponds to the distance between the 
+				 * audio sources (deemed all at the same location) and the
+				 * listener. It ranges for 0 (closest possible) to 255 (far).
+				 * A distance of 0  unregisters this effect (volume continuity
+				 * is then ensured).
+				 *
+				 * @throw AudioChannelException if the operation failed,
+				 * including if not supported.
+				 *
+				 * @see ListenerDistance
+				 *
+				 */
+				virtual void setDistanceAttenuation( ListenerDistance distance )
+					throw( AudioChannelException ) ;
+					
+					
+				/**
+				 * Deactivates distance attenuation effect for this mixing
+				 * channel.
+				 *
+				 * @throw AudioChannelException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void unsetDistanceAttenuation()	
+					throw( AudioChannelException ) ;
+		
+
+
+				/**
+				 * Activates attenuation based on distance and angle for 
+				 * this input mixing channel.
+				 * 
+				 * @param distance corresponds to the distance between the 
+				 * audio sources (deemed all at the same location) and the
+				 * listener. It ranges for 0 (closest possible) to 255 (far).
+				 *
+				 * @param angle corresponds to the angle between the 
+				 * audio sources (deemed all at the same location) and the
+				 * listener. Larger angles will be reduced to the [0..360[
+				 * range using the 'modulo 360' (angle % 360 ) operator.
+				 *
+				 * @throw AudioChannelException if the operation failed,
+				 * including if not supported.
+				 *
+				 * @see ListenerDistance, ListenerAngle
+				 *
+				 */
+				virtual void setPositionAttenuation( ListenerDistance distance,
+					ListenerAngle angle ) throw( AudioChannelException ) ;
+					
+					
+				/**
+				 * Deactivates position attenuation effect for this mixing
+				 * channel.
+				 *
+				 * @throw AudioChannelException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void unsetPositionAttenuation()	
+					throw( AudioChannelException ) ;
+
+
+		
+				/**
 				 * Returns true iff this channel is currently playing (not
 				 * halted), including if it is playing but paused.
 				 *
@@ -165,6 +271,8 @@ namespace OSDL
 				
 				/**
 				 * Halts the playing on this channel.
+				 *
+				 * @note onPlaybackFinished will be automatically called.
 				 *
 				 * @throw AudioChannelException if the operation failed,
 				 * including if not supported.
@@ -229,7 +337,7 @@ namespace OSDL
 			
 				
 				/**
-				 * Tbis method will be automatically called as soon as this
+				 * This method will be automatically called as soon as this
 				 * channel stops playback.
 				 *
 				 * This method is meant to be overriden, in order to be able 
@@ -239,6 +347,8 @@ namespace OSDL
 				 * from the callback.
 				 *
 				 * This default implementation is do-nothing.
+				 *
+				 * @throw AudioChannelException if the operation failed.
 				 *
 				 */
 				virtual void onPlaybackFinished()

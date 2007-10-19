@@ -132,6 +132,160 @@ void AudioChannel::setVolume( Volume newVolume )
 
 
 
+void AudioChannel::setPanning( Ceylan::Maths::Percentage leftPercentage )
+	throw( AudioChannelException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	Ceylan::Uint8 left = static_cast<Ceylan::Uint8>( 
+		( leftPercentage * 254 ) / 100 ) ;
+	
+	if ( ::Mix_SetPanning( _channelNumber, left,
+			/* right */ 254 - left ) == 0 )
+		throw AudioChannelException( "AudioChannel::setPanning failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioChannelException( "AudioChannel::setPanning failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+	
+					
+					
+void AudioChannel::unsetPanning() throw( AudioChannelException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetPanning( _channelNumber, 255,	255 ) == 0 )
+		throw AudioChannelException( "AudioChannel::unsetPanning failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioChannelException( "AudioChannel::unsetPanning failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+void AudioChannel::setReverseStereo( bool reverse )
+	throw( AudioChannelException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetReverseStereo( _channelNumber, 
+			( ( reverse == true ) ? 1 : 0 ) ) == 0 )
+		throw AudioException( "AudioChannel::setReverseStereo failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioChannelException( "AudioChannel::setReverseStereo failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+void AudioChannel::setDistanceAttenuation( ListenerDistance distance ) 
+	throw( AudioChannelException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetDistance( _channelNumber, distance ) == 0 )
+		throw AudioChannelException( 
+			"AudioChannel::setDistanceAttenuation failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioChannelException( "AudioChannel::setDistanceAttenuation failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+void AudioChannel::unsetDistanceAttenuation() throw( AudioChannelException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetDistance( _channelNumber, 0 ) == 0 )
+		throw AudioChannelException( 
+			"AudioChannel::unsetDistanceAttenuation failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioChannelException( 
+		"AudioChannel::unsetDistanceAttenuation failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+void AudioChannel::setPositionAttenuation( ListenerDistance distance,
+	ListenerAngle angle ) throw( AudioChannelException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetPosition( _channelNumber, distance, angle ) == 0 )
+		throw AudioChannelException( 
+			"AudioChannel::setPositionAttenuation failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioChannelException( "AudioChannel::setPositionAttenuation failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+void AudioChannel::unsetPositionAttenuation() throw( AudioChannelException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetPosition( _channelNumber, 0, 0 ) == 0 )
+		throw AudioChannelException( 
+			"AudioChannel::unsetPositionAttenuation failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioChannelException( 
+		"AudioChannel::unsetPositionAttenuation failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
 bool AudioChannel::isPlaying() const throw()
 {
 
@@ -177,21 +331,21 @@ FadingStatus AudioChannel::getFadingStatus() const throw()
 	{
 	
 		case MIX_NO_FADING:
-			return None;
+			return None ;
 			break ;	
 	
 		case MIX_FADING_OUT:
-			return Out;
+			return Out ;
 			break ;	
 	
 		case MIX_FADING_IN:
-			return In;
+			return In ;
 			break ;	
 	
 		default:
 			LogPlug::error( 
 				"AudioChannel::getFadingStatus: unexpected status" ) ;
-			return None;
+			return None ;
 			break ;	
 				
 	}
@@ -308,12 +462,13 @@ void AudioChannel::onPlaybackFinished()	throw( AudioChannelException )
 {
 
 	/*
-	 * Does nothing, meant to be overriden.
+	 * Does nothing on purpose, meant to be overriden.
 	 *
 	 * @note Nevercall SDL_Mixer functions, nor SDL_LockAudio, from a callback
 	 * function.
 	 *
 	 */
+	 
 }
 
 
