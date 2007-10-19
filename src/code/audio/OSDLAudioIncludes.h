@@ -6,6 +6,7 @@
 
 #include "OSDLAudible.h"
 #include "OSDLAudioChannel.h"
+#include "OSDLAudioCommon.h"
 #include "OSDLAudio.h"
 #include "OSDLMusic.h"
 #include "OSDLSound.h"
