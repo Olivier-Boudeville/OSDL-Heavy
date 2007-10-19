@@ -68,3 +68,21 @@ const string Audible::toString( Ceylan::VerbosityLevels level )
 	
 }
 
+
+
+int Audible::GetLoopsForPlayCount( PlaybackCount playCount )
+	throw( AudibleException )
+{
+
+	if ( playCount == 0 || playCount < -1 )
+		throw AudibleException( "Audible::GetLoopsForPlayCount failed: "
+			"the play count is out of bounds (" 
+			+ Ceylan::toString( playCount ) + ")" ) ;
+ 
+ 	if ( playCount == -1 )
+		return  -1 ;
+	else
+		return ( playCount - 1 ) ;	
+				
+}
+

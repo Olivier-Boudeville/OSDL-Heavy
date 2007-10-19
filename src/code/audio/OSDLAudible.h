@@ -2,7 +2,7 @@
 #define OSDL_AUDIBLE_H_
 
 
-#include "OSDLAudio.h"       // for AudioException
+#include "OSDLAudioCommon.h" // for AudioException
 
 #include "Ceylan.h"          // for inheritance, Millisecond, etc.
 
@@ -76,8 +76,11 @@ namespace OSDL
 				/**
 				 * Returns the volume associated to this audible instance.
 				 *
+				 * @throw AudibleException if the operation failed or is not
+				 * supported.
+				 *
 				 */
-				virtual Volume getVolume() const throw() = 0 ;
+				virtual Volume getVolume() const throw( AudibleException ) = 0 ;
 		
 		
 				/**
@@ -85,8 +88,12 @@ namespace OSDL
 				 *
 				 * @param newVolume the new volume to be set.
 				 *
+				 * @throw AudibleException if the operation failed or is not
+				 * supported.
+				 *
 				 */
-				virtual void setVolume( Volume newVolume ) throw() = 0 ;
+				virtual void setVolume( Volume newVolume ) 
+					throw( AudibleException ) = 0 ;
 		
 		
 		
@@ -100,7 +107,9 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this audible should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1 or
+				 * below -1).
 				 *
 				 * @throw AudibleException if the operation failed or is not
 				 * supported.
@@ -109,29 +118,7 @@ namespace OSDL
 				virtual void play( PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) = 0 ; 
 	
-				
-				/**
-				 * Plays this audible instance at once on any appropriate output
-				 * (ex: channel number) within specified duration.
-				 *
-				 * @param maxDuration the maximum duration during which this
-				 * audible will be played, in milliseconds. 
-				 * It may stop earlier if:
-				 * (audible duration).playCount < maxDuration
-				 *
-				 * @param playCount the number of times this audible should be 
-				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
-				 *
-				 * @throw AudibleException if the operation failed or is not
-				 * supported.
-				 *
-				 */
-				virtual void playForAtMost( 
-						Ceylan::System::Millisecond maxDuration, 
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) = 0 ; 
-				
+								
 				
 				/**
 				 * Plays this audible instance at once on any appropriate output
@@ -143,7 +130,8 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this audible should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
 				 * @throw AudibleException if the operation failed or is not
 				 * supported.
@@ -153,34 +141,7 @@ namespace OSDL
 						Ceylan::System::Millisecond fadeInMaxDuration, 
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) = 0 ; 
-					
-					
-				/**
-				 * Plays this audible instance at once on any appropriate output
-				 * (ex: channel number), beginning with a fade-in effect.
-				 *
-				 * @param playbackMaxDuration the maximum duration during which
-				 * this audible will be played, in milliseconds.
-				 *
-				 * @param fadeInMaxDuration duration in milliseconds during
-				 * which the fade-in effect should take to go from silence to
-				 * full volume.
-				 *
-				 * @param playCount the number of times this audible should be 
-				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
-				 *
-				 * @throw AudibleException if the operation failed or is not
-				 * supported.
-				 *
-				 */
-				virtual void playWithFadeInForAtMost( 
-						Ceylan::System::Millisecond playbackMaxDuration,
-						Ceylan::System::Millisecond fadeInMaxDuration, 
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) = 0 ; 
-				
-				
+									
 				
 				
 				/**
@@ -215,7 +176,7 @@ namespace OSDL
 			
 			protected:
 			
-			
+							
 				/**
 				 * Tells whether the internal samples have been converted
 				 * already to the sample format used for audio output.
@@ -224,6 +185,17 @@ namespace OSDL
 				bool _convertedToOutputFormat ;
 			
 			
+				/**
+				 * Helper methods to factorize conversion of play counts into
+				 * a number of loops.
+				 *
+				 * @throw AudibleException if the play count is out of bounds
+				 * (must be either -1 for infinite looping or strictly 
+				 * superior to zero).
+				 *
+				 */
+				static int GetLoopsForPlayCount( PlaybackCount playCount )
+					throw( AudibleException ) ;
 			
 			
 			private:
