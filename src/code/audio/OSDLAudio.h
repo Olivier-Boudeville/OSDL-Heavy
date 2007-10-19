@@ -2,7 +2,8 @@
 #define OSDL_AUDIO_H_
 
 
-#include "OSDLException.h"   // for OSDL::Exception 
+#include "OSDLAudioCommon.h" // for AudioException, etc.
+#include "OSDLMusic.h"       // for MusicType, etc.
 
 #include "Ceylan.h"          // for inheritance, Hertz
 
@@ -23,31 +24,11 @@ namespace OSDL
 	{
 			
 			
-		/// Mother class for all audio exceptions. 		
-		class OSDL_DLL AudioException: public OSDL::Exception 
-		{ 
-			public: 
-			
-				AudioException( const std::string & reason ) throw() ; 
-				virtual ~AudioException() throw() ; 
-		} ;
-			
-		
+	
 		
 		// The audio module uses channels to mix input sources.
 		class AudioChannel ;
-				
-				
-		/**
-		 * Describes the encoding (format) of a given sample.
-		 * A sample has a size (8-bit or 16-bit generally), is signed or not,
-		 * and, if using more than one byte, an endianness (little or big).
-		 *
-		 * @example: Uint8SampleFormat, LittleSint16SampleFormat, etc.
-		 *
-		 */
-		typedef Ceylan::Uint16 SampleFormat ;
-	
+					
 	
 		/**
 		 * Returns a textual description of the specified sample format.
@@ -60,19 +41,6 @@ namespace OSDL
 			
 			
 		
-		/**
-		 * Specifies the channel organization of an audio output.
-		 * 
-		 * It includes the number of channels (ex: mono, stereo) and the role
-		 * of each channel.
-		 *
-		 * @example: 
-		 *
-		 * @note This has nothing to do with mixing (input) channels.
-		 *
-		 */
-		typedef Ceylan::Uint16 ChannelFormat ;
-
 	
 		/**
 		 * Returns a textual description of the specified channel format.
@@ -84,33 +52,7 @@ namespace OSDL
 			throw( AudioException ) ;
 
 	
-		/**
-		 * Describe a number of channel, either for input (mixing channels) or
-		 * for output (playback channels of a given channel format).
-		 *
-		 * @example: there can be 16 input mixing channels. Regarding output,
-		 * for mono sound, there is 1 playback channel, and for stereo, 2.
-		 *
-		 */
-		typedef Ceylan::Uint16 ChannelNumber ;
-	
-	
-		/**
-		 * Describes the size, in bytes, of a sample chunk.
-		 *
-		 */
-		typedef Ceylan::Uint32 ChunkSize ;
-		
-		
-		/**
-		 * Describes the volume for the playback of an audible.
-		 *
-		 * Ranges from MinVolume (0) to MaxVolume (128).
-		 *
-		 */
-		typedef Ceylan::Uint8 Volume ;
-		
-		
+			
 								
 		/**
 		 * Root module for all audio services.
@@ -305,11 +247,133 @@ namespace OSDL
 				virtual void unsetMode() throw( AudioException ) ; 
 
 
+					
+				/**
+				 * Activates stereo panning and sets the specified distribution
+				 * between left/right output channels for the overall mixing
+				 * output.
+				 * All input mixing channels and the music output will be
+				 * therefore panned that same way.
+				 * 
+				 * @note This effect will only work on stereo audio output. On
+				 * mono audio device, nothing will be done.
+				 *
+				 * @param leftPercentage, between 0 and 100 (%). Right 
+				 * percentage will be equal to 100 - leftPercentage.
+				 *
+				 * @throw AudioException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void setPanning( 
+						Ceylan::Maths::Percentage leftPercentage )
+					throw( AudioException ) ;
+					
+					
+				/**
+				 * Deactivates stereo panning effect.
+				 *
+				 * @throw AudioException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void unsetPanning()	throw( AudioException ) ;
+
+
+				/**
+				 * Activates or deactivates reverse stereo: if activated, 
+				 * swaps left and right channel output channels.
+				 * 
+				 * @note This effect will only work on stereo audio output. On
+				 * mono audio device, nothing will be done.
+				 *
+				 * @param reverse if true, left channel will be output into
+				 * right one, and right channel into left one.
+				 *
+				 * @throw AudioException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void setReverseStereo( bool reverse = true )
+					throw( AudioException ) ;
+					
+
+					
+				/**
+				 * Activates distance attenuation for the overall mixing
+				 * output.
+				 * All input mixing channels and the music output will be
+				 * therefore attenuated that same way.
+				 * 
+				 * @param distance corresponds to the distance between the 
+				 * audio sources (deemed all at the same location) and the
+				 * listener. It ranges for 0 (closest possible) to 255 (far).
+				 * A distance of 0  unregisters this effect (volume continuity
+				 * is then ensured).
+				 *
+				 * @throw AudioException if the operation failed,
+				 * including if not supported.
+				 *
+				 * @see ListenerDistance
+				 *
+				 */
+				virtual void setDistanceAttenuation( ListenerDistance distance )
+					throw( AudioException ) ;
+					
+					
+				/**
+				 * Deactivates distance attenuation effect for the overall
+				 * mixing output.
+				 *
+				 * @throw AudioException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void unsetDistanceAttenuation()	
+					throw( AudioException ) ;
+
+
+
+				/**
+				 * Activates attenuation based on distance and angle for the
+				 * overall mixing output.
+				 * All input mixing channels and the music output will be
+				 * therefore attenuated that same way.
+				 * 
+				 * @param distance corresponds to the distance between the 
+				 * audio sources (deemed all at the same location) and the
+				 * listener. It ranges for 0 (closest possible) to 255 (far).
+				 *
+				 * @param angle corresponds to the angle between the 
+				 * audio sources (deemed all at the same location) and the
+				 * listener. Larger angles will be reduced to the [0..360[
+				 * range using the 'modulo 360' (angle % 360 ) operator.
+				 *
+				 * @throw AudioException if the operation failed,
+				 * including if not supported.
+				 *
+				 * @see ListenerDistance, ListenerAngle
+				 *
+				 */
+				virtual void setPositionAttenuation( ListenerDistance distance,
+					ListenerAngle angle ) throw( AudioException ) ;
+					
+					
+				/**
+				 * Deactivates position attenuation effect for the overall
+				 * mixing output.
+				 *
+				 * @throw AudioException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void unsetPositionAttenuation()	
+					throw( AudioException ) ;
+
 
 
 
 				// Channel section.
-
 
 
 				/**
@@ -396,6 +460,9 @@ namespace OSDL
 				/**
 				 * Halts the playing on all mixing channels.
 				 *
+				 * @note AudioChannel::onPlaybackFinished will be 
+				 * automatically called on halted channels.
+				 *
 				 * @throw AudioException if the operation failed or is not 
 				 * supported.
 				 *
@@ -441,8 +508,61 @@ namespace OSDL
 					throw( AudioException ) ;
 					
 					
+				
+				// Music section.
+				
+				
+				/**
+				 * Returns the type of the music currently played (if any),
+				 * otherwise returns NoMusic.
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual MusicType getTypeOfCurrentMusic() const
+					throw( AudioException ) ;
 					
-					
+				
+				/**
+				 * Returns whether music is actively playing.
+				 *
+				 * @note Does not check if the music has been paused.
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual bool isMusicPlaying() const throw( AudioException ) ;
+
+
+				/**
+				 * Returns whether music is paused.
+				 *
+				 * @note Does not check if the music has been halted after it
+				 * was paused.
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual bool isMusicPaused() const throw( AudioException ) ;
+
+
+				/**
+				 * Returns whether music is fading in, out, or not at all. 
+				 *
+				 * @note Does not tell if the channel is playing anything, or
+				 * paused, so that must be tested separately.
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual FadingStatus getMusicFadingStatus() const
+					 throw( AudioException ) ;
+				
+				
 				/**
 				 * Returns the name of the audio driver being currently 
 				 * used (example: 'dsp').
@@ -476,15 +596,7 @@ namespace OSDL
 			
 				
 				// Static section.
-	
-	
-				/**
-				 *
-				 *
-				 *
-				 *
-				 */
-				
+					
 				 
 				/**
 				 * Returns a summary about the possible use of 
@@ -559,6 +671,25 @@ namespace OSDL
 				
 				
 				/**
+				 * This method will be automatically called as soon as the
+				 * music playback stops.
+				 *
+				 * This method is meant to be overriden, in order to be able 
+				 * to react when this event occurs (like a call-back).
+				 *
+				 * @note Never call back-end functions (ex: SDL or SDL_mixer)
+				 * from the callback.
+				 *
+				 * This default implementation is do-nothing.
+				 *
+				 * @throw AudioException if the operation failed.
+				 *
+				 */
+				virtual void onMusicPlaybackFinished() throw( AudioException ) ;
+			
+					
+				
+				/**
 				 * Returns the number of channels corresponding to the specified
 				 * channel format.
 				 *
@@ -605,6 +736,15 @@ namespace OSDL
 
 			private:
 
+
+
+				/**
+				 * Callback to catch the end of the music playback.
+				 *
+				 * This signature is mandatory.
+				 *
+				 */
+				static void HandleMusicPlaybackFinishedCallback() ;
 
 	
 				/**

@@ -3,7 +3,9 @@
 
 #include "OSDLUtils.h"               // for getBackendLastError
 #include "OSDLBasic.h"               // for OSDL::GetVersion, etc.
+
 #include "OSDLAudioChannel.h"        // for AudioChannel
+#include "OSDLMusic.h"               // for GetTypeOf
 
 
 
@@ -249,26 +251,7 @@ const string AudioModule::SDLEnvironmentVariables[] = {} ;
 
 
 
-
 const Ceylan::Uint16 AudioModule::DriverNameMaximumLength = 50 ;
-
-
-
-AudioException::AudioException( const string & reason ) throw():
-	OSDL::Exception( reason )
-{
-
-}
-
-
-
-AudioException::~AudioException() throw()
-{
-
-}
-
-
-
 
 
 
@@ -302,6 +285,11 @@ AudioModule::AudioModule() throw( AudioException ):
 	MIX_VERSION( & compileTimeSDLMixerVersion ) ;
 
 	SDL_version linkTimeSDLMixerVersion = *Mix_Linked_Version() ;
+
+
+	// Registers callback-like method:
+	::Mix_HookMusicFinished( HandleMusicPlaybackFinishedCallback ) ;
+
 	
 	send( "Using SDL_mixer backend, compiled against the " 
 		+ Ceylan::toNumericalString( compileTimeSDLMixerVersion.major) + "."
@@ -527,6 +515,177 @@ void AudioModule::unsetMode() throw( AudioException )
 
 
 
+void AudioModule::setPanning( Ceylan::Maths::Percentage leftPercentage )
+	throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	Ceylan::Uint8 left = static_cast<Ceylan::Uint8>( 
+		( leftPercentage * 254 ) / 100 ) ;
+	
+	if ( ::Mix_SetPanning( /* postmix stream */ MIX_CHANNEL_POST, left,
+			/* right */ 254 - left ) == 0 )
+		throw AudioException( "AudioModule::setPanning failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::setPanning failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+void AudioModule::unsetPanning() throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetPanning( /* postmix stream */ MIX_CHANNEL_POST, 255,
+			255 ) == 0 )
+		throw AudioException( "AudioModule::unsetPanning failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::unsetPanning failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+	
+void AudioModule::setReverseStereo( bool reverse ) throw( AudioException )	
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetReverseStereo( /* postmix stream */ MIX_CHANNEL_POST, 
+			( ( reverse == true ) ? 1 : 0 ) ) == 0 )
+		throw AudioException( "AudioModule::setReverseStereo failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::setReverseStereo failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+	
+void AudioModule::setDistanceAttenuation( ListenerDistance distance ) 
+	throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetDistance( /* postmix stream */ MIX_CHANNEL_POST, distance ) 
+			== 0 )
+		throw AudioException( "AudioModule::setDistanceAttenuation failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::setDistanceAttenuation failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+void AudioModule::unsetDistanceAttenuation() throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetDistance( /* postmix stream */ MIX_CHANNEL_POST, 0 ) == 0 )
+		throw AudioException( "AudioModule::unsetDistanceAttenuation failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::unsetDistanceAttenuation failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+	
+	
+	
+void AudioModule::setPositionAttenuation( ListenerDistance distance,
+	ListenerAngle angle ) throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetPosition( /* postmix stream */ MIX_CHANNEL_POST, 
+			distance, angle ) == 0 )
+		throw AudioException( "AudioModule::setPositionAttenuation failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::setPositionAttenuation failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+void AudioModule::unsetPositionAttenuation() throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+	
+	if ( ::Mix_SetPosition( /* postmix stream */ MIX_CHANNEL_POST, 0, 0 ) == 0 )
+		throw AudioException( "AudioModule::unsetPositionAttenuation failed: " 
+			+ string( ::Mix_GetError() ) ) ;
+		
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::unsetPositionAttenuation failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+	
+	
+	
+MusicType AudioModule::getTypeOfCurrentMusic() const throw( AudioException )	
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	return Music::GetTypeOf( /* current music */ 0 ) ;
+
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::getTypeOfCurrentMusic failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}				
+
+
+					
+
+
 
 
 // Channel section.
@@ -728,9 +887,83 @@ ChannelNumber AudioModule::fadeOutAllChannelsDuring(
 #endif // OSDL_USES_SDL_MIXER
 	
 }
-					
-					
-											
+
+
+
+bool AudioModule::isMusicPlaying() const throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	return ( ::Mix_PlayingMusic() == 1 ) ;  ;
+
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::isMusicPlaying failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+bool AudioModule::isMusicPaused() const throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	return ( ::Mix_PausedMusic() == 1 ) ;  ;
+
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::isMusicPaused failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+
+
+FadingStatus AudioModule::getMusicFadingStatus() const throw( AudioException )
+{
+
+#if OSDL_USES_SDL_MIXER
+
+	switch( ::Mix_FadingMusic() )
+	{
+	
+		case MIX_NO_FADING:
+			return None ;
+			break ;	
+	
+		case MIX_FADING_OUT:
+			return Out ;
+			break ;	
+	
+		case MIX_FADING_IN:
+			return In ;
+			break ;	
+	
+		default:
+			LogPlug::error( 
+				" AudioModule::getMusicFadingStatus: unexpected status" ) ;
+			return None ;
+			break ;	
+				
+	}
+
+#else // OSDL_USES_SDL_MIXER
+
+	throw AudioException( "AudioModule::getMusicFadingStatus failed: "
+		"no SDL_mixer support available" ) ;
+		
+#endif // OSDL_USES_SDL_MIXER
+
+}
+
+	
 											
 std::string AudioModule::getDriverName() const throw( AudioException )
 {
@@ -859,6 +1092,24 @@ string AudioModule::GetDriverName() throw( AudioException )
 
 
 
+void AudioModule::onMusicPlaybackFinished() throw( AudioException )
+{
+
+	/*
+	 * Does nothing on purpose, meant to be overriden.
+	 *
+	 * @note Nevercall SDL_Mixer functions, nor SDL_LockAudio, from a callback
+	 * function.
+	 *
+	 */
+	 
+}
+
+
+
+
+// Static section.
+
 ChannelNumber AudioModule::GetChannelCountFor( ChannelFormat format )
 	throw( AudioException )
 {
@@ -922,6 +1173,30 @@ ChunkSize AudioModule::GetSampleSizeFor( SampleFormat format )
 
 
 
+// Non-static method or classical function needed for call-back:
+void AudioModule::HandleMusicPlaybackFinishedCallback()
+{
+
+	try
+	{
+	
+		OSDL::Audio::getExistingAudioModule().onMusicPlaybackFinished() ;
+			
+	}
+	catch( const AudioException & e )
+	{
+	
+		LogPlug::error( 
+			"AudioModule::HandleMusicPlaybackFinishedCallback failed: "
+			+ e.toString() ) ;
+	
+	}
+	
+}
+
+
+
+// Friend function.
 
 AudioModule & OSDL::Audio::getExistingAudioModule() throw()
 {
@@ -941,4 +1216,7 @@ AudioModule & OSDL::Audio::getExistingAudioModule() throw()
 	}
 	
 }
+
+
+
 
