@@ -2,12 +2,13 @@
 #define OSDL_SOUND_H_
 
 
+#include "OSDLAudioCommon.h" // for 
 #include "OSDLAudible.h"     // for AudibleException, inheritance
 
-#include "Ceylan.h"          // for Hertz
+#include "Ceylan.h"          // for LoadableWithContent
 
 #include <string>
-#include <list>
+
 
 
 #if ! defined(OSDL_USES_SDL_MIXER) || OSDL_USES_SDL_MIXER 
@@ -18,11 +19,11 @@ struct Mix_Chunk ;
 #endif //  ! defined(OSDL_USES_SDL_MIXER) || OSDL_USES_SDL_MIXER 
 
 
+
 namespace OSDL
 {
 
 	
-		
 	
 	namespace Audio 
 	{
@@ -57,10 +58,14 @@ namespace OSDL
 		 * Sound is punctual audible content, as opposed to music.  
 		 * Both are Audible instances.
 		 *
-		 * They are also objects containing a low level sound sample, which
-		 * can be loaded, unloaded, reloaded from file at will.
+		 * They are also objects containing a low level sample (here a sound),
+		 * which can be loaded, unloaded, reloaded from file at will.
 		 * Therefore a Sound is (indirectly) a Loadable instance (mother class
 		 * of the LoadableWithContent template).
+		 *
+		 * Methods for playing sounds are non-blocking: they trigger the 
+		 * playing and return immediately, the execution continues while the
+		 * playback goes on, unless specified otherwise.
 		 *
 		 * @see Music
 		 *
@@ -77,11 +82,15 @@ namespace OSDL
 				/**
 				 * Creates a new sound instance from specified file.
 				 *
-				 * @param soundFile the file contained the targeted sound.
+				 * @param soundFile the file containing the targeted sound.
+				 * On all PC-like platforms (including Windows and most UNIX),
+				 * the supported formats are WAVE, AIFF, RIFF, OGG, and VOC.
+				 * WAVE and, to a lesser extent, OGG, are recommended for 
+				 * sounds. 
 				 *
 				 * @param preload the sound will be loaded directly by this
 				 * constructor iff true, otherwise only its path will be
-				 * stored for later loading.
+				 * stored to allow for later loading.
 				 *
 				 * @throw SoundException if the operation failed or is not
 				 * supported.
@@ -106,10 +115,10 @@ namespace OSDL
 				 * @return true iff the sound had to be actually loaded
 				 * (otherwise it was already loaded and nothing was done).
 				 *
-				 * @throw LoadableException whenever the loading fails.
+				 * @throw Ceylan::LoadableException whenever the loading fails.
 				 *
 				 */
-				virtual bool load() throw( LoadableException ) ;
+				virtual bool load() throw( Ceylan::LoadableException ) ;
 		
 		
  	           /**
@@ -118,10 +127,13 @@ namespace OSDL
 				* @return true iff the sound had to be actually unloaded
 				* (otherwise it was not already available and nothing was done).
 				*
-				* @throw LoadableException whenever the unloading fails.
+				* @note One has to ensure the sound is not playing before
+				* calling this method.
+				*
+				* @throw Ceylan::LoadableException whenever the unloading fails.
 				*
 				*/
-				virtual bool unload() throw( LoadableException ) ;
+				virtual bool unload() throw( Ceylan::LoadableException ) ;
 		
 
 
@@ -142,6 +154,8 @@ namespace OSDL
 		
 				/**
 				 * Sets the volume associated to this sound instance.
+				 * The volume setting will take effect when this sound will be
+				 * used on a channel, being mixed into the output.
 				 *
 				 * @param newVolume the new volume to be set.
 				 *
@@ -156,7 +170,24 @@ namespace OSDL
 		
 		
 		
-				// Play section.
+				/*
+				 * Play section.
+				 *
+				 * Each subsection includes three methods :
+				 *
+				 * 1. one inherited from Audible with automatic channel choice,
+				 * this choice not being returned
+				 *
+				 * 2. one with automatic channel choice, this choice being
+				 * returned
+				 *
+				 * 3. one with the target channel being specified
+				 *
+				 */
+				
+				
+				
+				// Simple play subsection.
 				
 				
 				/**
@@ -165,9 +196,10 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 * @see playReturnChannel if the chosen channel needs to be
@@ -184,9 +216,12 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @return the number of the channel number being used.
+				 *
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 * @note Cannot be inherited from Audible as they have no
@@ -194,7 +229,7 @@ namespace OSDL
 				 *
 				 */
 				virtual ChannelNumber playReturnChannel( 
-					PlaybackCount playCount = 1 ) throw( SoundException ) ; 
+					PlaybackCount playCount = 1 ) throw( AudibleException ) ; 
 
 
 				/**
@@ -206,15 +241,20 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 */
 				virtual void play( 
 					ChannelNumber mixingChannelNumber, 
-					PlaybackCount playCount = 1 ) throw( SoundException ) ; 
+					PlaybackCount playCount = 1 ) throw( AudibleException ) ; 
+
+
+
+				// Play with time-out subsection.
 
 		
 				/**
@@ -228,14 +268,41 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 */
 				virtual void playForAtMost( 
-						Ceylan::Millisecond maxDuration, 
+						Ceylan::System::Millisecond maxDuration, 
+						PlaybackCount playCount = 1 ) 
+					throw( AudibleException ) ; 
+	
+		
+				/**
+				 * Plays this sound instance at once on any channel number
+				 * within specified duration.
+				 *
+				 * @param maxDuration the maximum duration during which this
+				 * sound will be played, in milliseconds. 
+				 * It may stop earlier if: 
+				 * (sound duration).playCount < maxDuration
+				 *
+				 * @param playCount the number of times this sound should be 
+				 * played, unless stopped by halt, fade out, expiration time or
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
+				 *
+				 * @return the number of the channel number being used.
+				 *
+				 * @throw AudibleException if the operation failed, including
+				 * if not supported or if no free channel is available.
+				 *
+				 */
+				virtual ChannelNumber playForAtMostReturnChannel( 
+						Ceylan::System::Millisecond maxDuration, 
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) ; 
 	
@@ -254,18 +321,22 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 */
 				virtual void playForAtMost(
-						Ceylan::Millisecond maxDuration, 
+						Ceylan::System::Millisecond maxDuration, 
 						ChannelNumber mixingChannelNumber,
 						PlaybackCount playCount = 1 ) 
-					throw( SoundException ) ; 
+					throw( AudibleException ) ; 
 		
+	
+		
+				// Play with fade-in subsection.
 		
 		
 				/**
@@ -278,9 +349,10 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 * @see playWithFadeInReturnChannel if the chosen channel 
@@ -288,7 +360,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeIn( 
-						Ceylan::Millisecond fadeInMaxDuration,
+						Ceylan::System::Millisecond fadeInMaxDuration,
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) ; 
 		
@@ -303,11 +375,12 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
 				 * @return the channel number on which this sound is played.
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 * @note Cannot be inherited from Audible as they have no
@@ -315,9 +388,9 @@ namespace OSDL
 				 *
 				 */
 				virtual ChannelNumber playWithFadeInReturnChannel( 
-						Ceylan::Millisecond fadeInMaxDuration,
+						Ceylan::System::Millisecond fadeInMaxDuration,
 						PlaybackCount playCount = 1 ) 
-					throw( SoundException ) ; 
+					throw( AudibleException ) ; 
 		
 				
 				/**
@@ -333,9 +406,10 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 * @see playWithFadeInReturnChannel if the chosen channel 
@@ -343,10 +417,14 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeIn( 
-						Ceylan::Millisecond fadeInMaxDuration,
+						Ceylan::System::Millisecond fadeInMaxDuration,
 						ChannelNumber mixingChannelNumber,
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) ; 
+
+
+
+				// Play with time-out and fade-in subsection.
 
 
 				/**
@@ -362,9 +440,10 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 * @see playWithFadeInForAtMostReturnChannel if the chosen
@@ -372,8 +451,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeInForAtMost( 
-						Ceylan::Millisecond playbackMaxDuration,
-						Ceylan::Millisecond fadeInMaxDuration,
+						Ceylan::System::Millisecond playbackMaxDuration,
+						Ceylan::System::Millisecond fadeInMaxDuration,
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) ; 
 
@@ -391,11 +470,12 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
 				 * @return the channel number on which this sound is played.
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *				 
 				 * @note Cannot be inherited from Audible as they have no
@@ -403,10 +483,10 @@ namespace OSDL
 				 *
 				 */
 				virtual ChannelNumber playWithFadeInForAtMostReturnChannel( 
-						Ceylan::Millisecond playbackMaxDuration,
-						Ceylan::Millisecond fadeInMaxDuration,
+						Ceylan::System::Millisecond playbackMaxDuration,
+						Ceylan::System::Millisecond fadeInMaxDuration,
 						PlaybackCount playCount = 1 ) 
-					throw( SoundException ) ; 
+					throw( AudibleException ) ; 
 
 
 				/**
@@ -425,21 +505,24 @@ namespace OSDL
 				 *
 				 * @param playCount the number of times this sound should be 
 				 * played, unless stopped by halt, fade out, expiration time or
-				 * audio module stop. -1 means forever.
+				 * audio module stop. -1 means forever. Otherwise it must be
+				 * strictly positive (exception thrown if zero or below -1).
 				 *
-				 * @throw SoundException if the operation failed, including
+				 * @throw AudibleException if the operation failed, including
 				 * if not supported or if no free channel is available.
 				 *
 				 * @see playWithFadeInReturnChannel if the chosen channel 
 				 * needs to be known.
 				 *
 				 */
-				virtual void playWithFadeIn( 
-						Ceylan::Millisecond playbackMaxDuration,
-						Ceylan::Millisecond fadeInMaxDuration,
+				virtual void playWithFadeInForAtMost( 
+						Ceylan::System::Millisecond playbackMaxDuration,
+						Ceylan::System::Millisecond fadeInMaxDuration,
 						ChannelNumber mixingChannelNumber,
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) ; 
+		
+		
 		
 		
 	            /**
@@ -463,13 +546,16 @@ namespace OSDL
 			protected:
 			
 			
-				/// The internal audio chunk is inherited from the template.
+				/**
+				 * The internal low level sound is defined through the
+				 * template.
+				 *
+				 */
 				
+			
 			
 			private:
 
-
-	
 	
 				/**
 				 * Copy constructor made private to ensure that it will 
