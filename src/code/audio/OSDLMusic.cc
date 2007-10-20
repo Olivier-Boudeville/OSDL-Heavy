@@ -133,8 +133,20 @@ bool Music::load() throw( Ceylan::LoadableException )
 		
 #if OSDL_USES_SDL_MIXER
 
-	_content = ::Mix_LoadMUS( _contentPath.c_str() ) ;
+	try
+	{
+		// Misleading, supports WAVE but other formats as well:
+		_content = ::Mix_LoadMUS( FindAudiblePath( _contentPath ).c_str() ) ;
 	
+	}
+	catch( const AudibleException & e )
+	{
+	
+		throw Ceylan::LoadableException( "Music::load failed: '"
+			"unable to locate '" + _contentPath + "': " + e.toString() ) ;
+			
+	}	
+
 	if ( _content == 0 )
 		throw Ceylan::LoadableException( "Music::load failed: "
 			+ string( ::Mix_GetError() ) ) ;
@@ -490,9 +502,9 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const throw()
 			Volume v = getVolume() ;
 	
 			return "Loaded music whose volume is " + Ceylan::toString( v )
-				+ "(" + Ceylan::toString( 100 * v 
+				+ "(" + Ceylan::toNumericalString( 100 * v 
 					/ ( AudioModule::MaxVolume - AudioModule::MinVolume ) )
-				+ "%)" ;
+				+ "%) and whose type is " + DescribeMusicType( getType() ) ;
 			
 		}
 		else
@@ -587,5 +599,51 @@ MusicType Music::GetTypeOf( const Music * music ) throw( AudioException )
 	
 #endif // OSDL_USES_SDL_MIXER
 
+}
+
+
+
+string Music::DescribeMusicType( MusicType type ) throw( AudioException )
+{
+	
+	switch( type )
+	{
+	
+		case Wave: 
+			return "waveform audio format (WAVE/RIFF)" ;
+			break ;
+			
+		case MOD:
+			return "soundtrack Module (MOD)" ;
+			break ;
+			
+		case MIDI: 
+			return "Musical Instrument Digital Interface (MIDI)" ;
+			break ;
+			
+		case OggVorbis: 
+			return "Vorbis encoding over Ogg container (OggVorbis)" ;
+			break ;
+			
+		case MP3: 
+			return "MPEG-1 Audio Layer 3 (MP3)" ;
+			break ;
+						
+		case CommandBased: 
+			return "music managed externally by a third-party player" ;
+			break ;
+			
+		case NoMusic: 
+			return "no music" ;
+			break ;
+			
+		default: 
+			return "unknown music type (abnormal)" ;
+			break ;
+	
+	
+	}
+	
+	
 }
 
