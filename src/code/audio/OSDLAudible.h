@@ -185,8 +185,25 @@ namespace OSDL
 				bool _convertedToOutputFormat ;
 			
 			
+			
 				/**
-				 * Helper methods to factorize conversion of play counts into
+				 * Helper method to find the audible specified by its filename,
+				 * using audio locators.
+				 *
+				 * @param audibleFilename the filename of the file where
+				 * the audible is stored.
+				 *
+				 * @throw AudibleException if the operation failed, including
+				 * if the file could not be found.
+				 *
+				 */
+				static std::string FindAudiblePath( 
+						const std::string & audibleFilename ) 
+					throw( AudibleException ) ;
+				
+				
+				/**
+				 * Helper method to factorize conversion of play counts into
 				 * a number of loops.
 				 *
 				 * @throw AudibleException if the play count is out of bounds
