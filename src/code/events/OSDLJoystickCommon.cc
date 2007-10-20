@@ -21,29 +21,38 @@ using namespace OSDL::Events ;
 
 // The eight possible directions for a hat:
 
-const HatPosition Centered  = SDL_HAT_CENTERED ;
-const HatPosition Up        = SDL_HAT_UP ;
-const HatPosition Right     = SDL_HAT_RIGHT ;
-const HatPosition Down      = SDL_HAT_DOWN ;
-const HatPosition Left      = SDL_HAT_LEFT ;
-const HatPosition RightUp   = SDL_HAT_RIGHTUP ;
-const HatPosition RightDown = SDL_HAT_RIGHTDOWN ;
-const HatPosition LeftUp    = SDL_HAT_LEFTUP ;
-const HatPosition LeftDown  = SDL_HAT_LEFTDOWN ;
+extern const HatPosition OSDL::Events::Centered  = SDL_HAT_CENTERED ;
+extern const HatPosition OSDL::Events::Up		 = SDL_HAT_UP ;
+extern const HatPosition OSDL::Events::Right	 = SDL_HAT_RIGHT ;
+extern const HatPosition OSDL::Events::Down 	 = SDL_HAT_DOWN ;
+extern const HatPosition OSDL::Events::Left 	 = SDL_HAT_LEFT ;
+
+extern const HatPosition OSDL::Events::RightUp   = SDL_HAT_RIGHTUP ;
+extern const HatPosition OSDL::Events::RightDown = SDL_HAT_RIGHTDOWN ;
+extern const HatPosition OSDL::Events::LeftUp	 = SDL_HAT_LEFTUP ;
+extern const HatPosition OSDL::Events::LeftDown  = SDL_HAT_LEFTDOWN ;
 
 #else // OSDL_USES_SDL
 
 // Same values as SDL:
 
-const HatPosition Centered  = 0x00 ;
-const HatPosition Up        = 0x01 ;
-const HatPosition Right     = 0x02 ;
-const HatPosition Down      = 0x04 ;
-const HatPosition Left      = 0x08 ;
-const HatPosition RightUp   = (OSDL::Events::Right|OSDL::Events::Up) ;
-const HatPosition RightDown = (OSDL::Events::Right|OSDL::Events::Down) ;
-const HatPosition LeftUp    = (OSDL::Events::Left|OSDL::Events::Up) ; ;
-const HatPosition LeftDown  = (OSDL::Events::Left|OSDL::Events::Down) ; ;
+extern const OSDL::Events::HatPosition OSDL::Events::Centered  = 0x00 ;
+extern const OSDL::Events::HatPosition OSDL::Events::Up        = 0x01 ;
+extern const OSDL::Events::HatPosition OSDL::Events::Right     = 0x02 ;
+extern const OSDL::Events::HatPosition OSDL::Events::Down      = 0x04 ;
+extern const OSDL::Events::HatPosition OSDL::Events::Left      = 0x08 ;
+
+extern const OSDL::Events::HatPosition OSDL::Events::RightUp   =
+	(OSDL::Events::Right|OSDL::Events::Up) ;
+	
+extern const OSDL::Events::HatPosition OSDL::Events::RightDown =
+	(OSDL::Events::Right|OSDL::Events::Down) ;
+	
+extern const OSDL::Events::HatPosition OSDL::Events::LeftUp    =
+	(OSDL::Events::Left|OSDL::Events::Up) ;
+	
+extern const OSDL::Events::HatPosition OSDL::Events::LeftDown  =
+	(OSDL::Events::Left|OSDL::Events::Down) ; ;
 
 #endif // OSDL_USES_SDL
 
