@@ -48,11 +48,12 @@
 
 
 // Not available on the DS:
-#define OSDL_USES_SDL_GFX 0
-#define OSDL_USES_SDL_TTF 0
-#define OSDL_USES_SDL_IMAGE 0
 #define OSDL_USES_LIBPNG 0
+#define OSDL_USES_MIXER 0
 #define OSDL_USES_SDL 0
+#define OSDL_USES_SDL_GFX 0
+#define OSDL_USES_SDL_IMAGE 0
+#define OSDL_USES_SDL_TTF 0
 
  
 #endif // OSDL_CONFIG_FOR_NINTENDO_DS
