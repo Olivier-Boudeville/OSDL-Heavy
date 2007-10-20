@@ -13,7 +13,7 @@
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>              // for the actual OSDL_LIBTOOL_VERSION
+#include "OSDLConfig.h"              // for the actual OSDL_LIBTOOL_VERSION
 #endif // OSDL_USES_CONFIG_H
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -35,6 +35,7 @@ using namespace Ceylan::Log ;
 using namespace OSDL ;
 
 
+
 // Backend section.
 	
 const CommonModule::BackendReturnCode CommonModule::BackendSuccess =  0 ;
@@ -43,6 +44,7 @@ const CommonModule::BackendReturnCode CommonModule::BackendError   = -1 ;
 
 // Tells whether the SDL backend is initialized (SDL_Init called).
 bool CommonModule::_BackendInitialized = false ;
+
 
 
 // Allows to debug OSDL version management:
@@ -80,6 +82,7 @@ const Ceylan::LibtoolVersion & OSDL::GetVersion() throw()
 #endif // OSDL_DEBUG_VERSION	
 	
 }
+
 
 
 
@@ -145,6 +148,7 @@ const Ceylan::Flags CommonModule::UseEvents =
  */
 
 
+
 CommonModule * CommonModule::_CurrentCommonModule = 0 ;
 
 #if OSDL_USES_SDL
@@ -161,6 +165,7 @@ const string CommonModule::_SDLEnvironmentVariables[] =
 const string CommonModule::_SDLEnvironmentVariables[] = {} ;
 
 #endif // OSDL_USES_SDL
+
 
 
 
@@ -185,7 +190,25 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 	 
 	send( "Starting OSDL version " + OSDL::GetVersion().toString() + ". " 
 		+ InterpretFlags( flags ) ) ; 
-				
+
+#if OSDL_USES_SDL
+	
+	SDL_version compileTimeSDLVersion ;
+	SDL_VERSION( & compileTimeSDLVersion ) ;
+
+	SDL_version linkTimeSDLVersion = *SDL_Linked_Version() ;
+	
+	send( "Using SDL backend, compiled against the " 
+		+ Ceylan::toNumericalString( compileTimeSDLVersion.major) + "."
+		+ Ceylan::toNumericalString( compileTimeSDLVersion.minor) + "."
+		+ Ceylan::toNumericalString( compileTimeSDLVersion.patch) 
+		+ " version, linked against the "
+		+ Ceylan::toNumericalString( linkTimeSDLVersion.major) + "."
+		+ Ceylan::toNumericalString( linkTimeSDLVersion.minor) + "."
+		+ Ceylan::toNumericalString( linkTimeSDLVersion.patch) + " version." ) ;
+	
+#endif // OSDL_USES_SDL
+
 	/*
 	 * UseEverything flag is 0x0000FFFF, therefore not to be specifically
 	 * managed.
@@ -296,6 +319,7 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 }
 
 
+
 CommonModule::~CommonModule() throw ()
 {	
 
@@ -332,6 +356,7 @@ CommonModule::~CommonModule() throw ()
     send( "OSDL successfully stopped" ) ;		
 	
 }
+
 
 
 string CommonModule::InterpretFlags( Flags flags ) throw() 
@@ -407,12 +432,14 @@ string CommonModule::InterpretFlags( Flags flags ) throw()
 }
 
 
+
 bool CommonModule::hasVideoModule() const throw()
 {
 
 	return ( _video != 0 ) ;
 	
 }
+
 
 
 Video::VideoModule & CommonModule::getVideoModule() const 
@@ -437,6 +464,7 @@ bool CommonModule::hasEventsModule() const throw()
 }
 
 
+
 Events::EventsModule & CommonModule::getEventsModule() const 
 	throw( OSDL::Exception )
 {
@@ -457,6 +485,7 @@ bool CommonModule::hasAudioModule() const throw()
 	return ( _audio != 0 ) ;
 	
 }
+ 
  
  
 Audio::AudioModule & CommonModule::getAudioModule() const 
@@ -501,6 +530,7 @@ CDROMDriveHandler & CommonModule::getCDROMDriveHandler()
 	return * _cdromHandler ;
 
 }
+
 
 
 const string CommonModule::toString( Ceylan::VerbosityLevels level ) 
@@ -565,6 +595,7 @@ const string CommonModule::toString( Ceylan::VerbosityLevels level )
 }
 
 
+
 string CommonModule::DescribeEnvironmentVariables() throw()
 {
 
@@ -625,12 +656,14 @@ string CommonModule::DescribeEnvironmentVariables() throw()
 }
 
 
+
 bool CommonModule::IsBackendInitialized() throw()
 {
 
 	return _BackendInitialized ;
 	
 }
+
 
 
 Flags CommonModule::AutoCorrectFlags( Flags inputFlags ) throw()
@@ -747,12 +780,14 @@ CommonModule & OSDL::getCommonModule( Flags flags ) throw()
 }
 
 
+
 bool OSDL::hasExistingCommonModule() throw()
 {
 
 	return ( CommonModule::_CurrentCommonModule != 0 ) ;
 	
 }
+
 
 
 CommonModule & OSDL::getExistingCommonModule() throw()
@@ -765,6 +800,7 @@ CommonModule & OSDL::getExistingCommonModule() throw()
 	return * CommonModule::_CurrentCommonModule ;
 	
 }
+
 
 
 void OSDL::stop() throw()
