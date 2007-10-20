@@ -41,6 +41,12 @@ using namespace Ceylan::Log ;
 using namespace OSDL::Audio ;
 
 
+string OSDL::Audio::AudioModule::AudioPathEnvironmentVariable = "AUDIO_PATH" ;
+
+
+Ceylan::System::FileLocator OSDL::Audio::AudioModule::AudioFileLocator(
+	AudioPathEnvironmentVariable ) ;
+
 
 
 #if OSDL_USES_SDL
@@ -980,14 +986,21 @@ const string AudioModule::toString( Ceylan::VerbosityLevels level )
 	
 	string res = "Audio module, " ;
 	
-	if ( _mixerInitialized )
-		res += "mixer is initialized" ;
-	else
+	if ( ! _mixerInitialized )
+	{
+	
 		res += "mixer not initialized" ;
 	
-	res += ". Chunk size is " + Ceylan::toString( _chunkSize ) 
-		+ " bytes. There are " + Ceylan::toString( _inputChannels.size() )
-		+ " input mixing channel(s)" ;
+	}	
+	else
+	{
+	
+		res += "mixer is initialized. Chunk size is " 
+			+ Ceylan::toString( _chunkSize ) 
+			+ " bytes. There are " + Ceylan::toString( _inputChannels.size() )
+			+ " input mixing channel(s)" ;
+	 
+	}
 	 	
 	if ( level == Ceylan::low )
 		return res ;
