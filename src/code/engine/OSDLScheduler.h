@@ -3,13 +3,13 @@
 
 
 
-// for ListOfActiveObjects, SchedulingException, etc. :
+// for ListOfActiveObjects, SchedulingException, etc.:
 #include "OSDLEngineCommon.h"         
 #include "OSDLEvents.h"               // for SimulationTick
 #include "OSDLPeriodicSlot.h"         // for PeriodicSlot
 
 
-// for inheritance, SingletonException, time units :
+// for inheritance, SingletonException, Hertz and time units:
 #include "Ceylan.h"                   
 
 
@@ -71,7 +71,7 @@ namespace OSDL
 		 * This scheduler manages active objects so that they are 
 		 * in turn granted with the processing power they requested.
 		 *
-		 * Two kinds of active objects can be scheduled : 
+		 * Two kinds of active objects can be scheduled: 
 		 *   - periodically activated objects. They just have to define 
 		 * their period, expressed in simulation time
 		 *   - objects whose activation is specifically determined, as a 
@@ -100,7 +100,7 @@ namespace OSDL
 		 * objects are provided a means of being noticed, in order to be 
 		 * able to take any counter-measures they can.
 		 *
-		 * The scheduler has two main data structures :
+		 * The scheduler has two main data structures:
 		 *  - the 'periodic' one, which is composed of lists of active 
 		 * objects for each used  periodicity, gathered thanks to periodic 
 		 * slots
@@ -108,15 +108,15 @@ namespace OSDL
 		 *  behaviour to plan themselves their activation at specific 
 		 * simulation ticks
 		 *
-		 * Our scheduler can follow two different behaviours :
+		 * Our scheduler can follow two different behaviours:
 		 *  - the default one, which focuses on interactive applications, 
 		 * trying to give the user the best possible logic and, if possible,
 		 * framerate, on soft real time (best effort)
 		 *  - the screenshot mode, where rendering targets a particular
 		 * framerate, and generates PNG screenshots meant to be gathered 
-		 * in a movie (ex : MPEG). 
+		 * in a movie (ex: MPEG). 
 		 * This is a batch (non-interactive) mode, where the time necessary 
-		 * to update the logic and the frames does not matter : no deadline 
+		 * to update the logic and the frames does not matter: no deadline 
 		 * is to be respected in this mode.
 		 * 
 		 * Choosing a high logic frequency, and moreover higher than the
@@ -144,7 +144,7 @@ namespace OSDL
 		 * and synchronize itself on the display refresh rate. 
 		 * It would have to manage a decrease in the frame rate if the scene
 		 * complexity comes too close to have a rendering duration of the 
-		 * magic times (1/60 of second, 1/30 etc.) : because of random
+		 * magic times (1/60 of second, 1/30 etc.): because of random
 		 * variations, some frames would go slightly over or under the
 		 * time, leading to an irregular framerate which may be visually
 		 * disturbing. 
@@ -177,7 +177,7 @@ namespace OSDL
 		 * @note With default settings, simulation frequency granularity 
 		 * should be less than + or -3 Hz on average.
 		 *
-		 * @note The Scheduler is meant to be used as a singleton : having
+		 * @note The Scheduler is meant to be used as a singleton: having
 		 * multiple scheduler instances on activity would be meaningless, 
 		 * and they would probably fail collectively. 
 		 * 
@@ -187,7 +187,7 @@ namespace OSDL
 		 * numerous active objects that could take advantage of hyperthreading,
 		 * dual cores etc.
 		 * 
-		 * For the simulation step, there could be too a two-pass algorithm :
+		 * For the simulation step, there could be too a two-pass algorithm:
 		 * first compute, but do not apply, all the newer states of all 
 		 * objects, then, second pass, apply them. 
 		 * The problem is indeed that an object whose state depends on the 
@@ -210,11 +210,11 @@ namespace OSDL
 		 * However it would involve waiting regularly for 1ms (kernel 2.6) 
 		 * or 10ms (kernel 2.4), and many skips would occur.
 		 *
-		 * @note The scheduler can run continuously for up to 48 days : after,
+		 * @note The scheduler can run continuously for up to 48 days: after,
 		 * engine ticks will overflow and it will lead to a scheduler shutdown.
 		 *
 		 */	
-		class OSDL_DLL Scheduler : public Ceylan::Object
+		class OSDL_DLL Scheduler: public Ceylan::Object
 		{
 		
 		
@@ -282,7 +282,7 @@ namespace OSDL
 				 * interactively.
 				 *
 				 * @param frameFilenamePrefix determines which prefix will 
-				 * be used to name successive screenshots, in the form :
+				 * be used to name successive screenshots, in the form:
 				 * 'frameFilenamePrefix'-n.png, n being the frame count of the
 				 * animation. 
 				 *
@@ -298,7 +298,7 @@ namespace OSDL
 				 */
 				virtual void setScreenshotMode( bool on, 
 					const std::string & frameFilenamePrefix, 
-					Events::Hertz frameFrequency = 25 ) throw() ;
+					Ceylan::Maths::Hertz frameFrequency = 25 ) throw() ;
 				
 				
 				/**
@@ -340,13 +340,16 @@ namespace OSDL
 				 * of engine ticks to be associated to one simulation tick 
 				 * for <b>frequency</b> to be met.
 				 *
+				 * @param frequency the new simulation frequency.
+				 *
 				 * @throw SchedulingException if requested frequency is 
 				 * superior to engine frequency.
 				 *
 				 * @see DefaultSimulationFrequency
 				 *
 				 */
-				virtual void setSimulationFrequency( Events::Hertz frequency ) 
+				virtual void setSimulationFrequency( 
+						Ceylan::Maths::Hertz frequency ) 
 					throw( SchedulingException ) ;
 
 				
@@ -365,13 +368,16 @@ namespace OSDL
 				 * Sets the rendering frequency, by evaluating the number 
 				 * of engine ticks to be associated to one rendering tick.
 				 *
+				 * @param frequency the new rendering frequency.
+				 *
 				 * @throw SchedulingException if requested frequency is 
 				 * superior to engine frequency.
 				 *
 				 * @see DefaultRenderingFrequency
 				 *
 				 */
-				virtual void setRenderingFrequency( Events::Hertz frequency ) 
+				virtual void setRenderingFrequency( 
+						Ceylan::Maths::Hertz frequency ) 
 					throw( SchedulingException ) ;
 
 				
@@ -391,13 +397,16 @@ namespace OSDL
 				 * of engine ticks to be associated to one screenshot tick 
 				 * for <b>frequency</b> to be met.
 				 *
+				 * @param frequency the new screenshot frequency.
+				 *
 				 * @throw SchedulingException if requested frequency is 
 				 * superior to engine frequency.
 				 *
-				 * @see DefaultSimulationFrequency
+				 * @see DefaultMovieFrameFrequency
 				 *
 				 */
-				virtual void setScreenshotFrequency( Events::Hertz frequency ) 
+				virtual void setScreenshotFrequency( 
+						Ceylan::Maths::Hertz frequency ) 
 					throw( SchedulingException ) ;
 
 				
@@ -419,11 +428,14 @@ namespace OSDL
 				 * @throw SchedulingException if requested frequency is 
 				 * superior to engine frequency.
 				 *
+				 * @param frequency the new input polling frequency.
+				 *
 				 * @see DefaultInputFrequency
 				 *
 				 */
 				virtual void setInputPollingFrequency( 
-					Events::Hertz frequency ) throw( SchedulingException ) ;
+						Ceylan::Maths::Hertz frequency )
+					throw( SchedulingException ) ;
 
 
 				/**
@@ -640,7 +652,8 @@ namespace OSDL
 				 * @note A value of 100 Hz implies a 10 ms scheduling.
 				 *
 				 */	
-				static const Events::Hertz DefaultSimulationFrequency = 100 ;
+				static const Ceylan::Maths::Hertz DefaultSimulationFrequency 
+					= 100 ;
 					
 					
 				/**
@@ -650,7 +663,8 @@ namespace OSDL
 				 * 25 ms scheduling.
 				 *
 				 */	
-				static const Events::Hertz DefaultRenderingFrequency = 40 ;
+				static const Ceylan::Maths::Hertz DefaultRenderingFrequency 
+					= 40 ;
 					
 					
 				/**
@@ -671,7 +685,7 @@ namespace OSDL
 				 * implies a 50 ms scheduling.
 				 *
 				 */	
-				static const Events::Hertz DefaultInputFrequency = 20 ;
+				static const Ceylan::Maths::Hertz DefaultInputFrequency = 20 ;
 					
 
 					
@@ -834,7 +848,7 @@ namespace OSDL
 				 * simulation step has been skipped their onSkip method.
 				 *
 				 * @note If an object is registered multiple times for a 
-				 * given skipped simulation tick (ex : multiple periodic 
+				 * given skipped simulation tick (ex: multiple periodic 
 				 * and/or programmed activations), then its onSkip
 				 * method will be called as many times as it should have 
 				 * been activated.
@@ -912,7 +926,7 @@ namespace OSDL
 				
 				/**
 				 * Called whenever the scheduler does not succeed in keeping
-				 * up the pace with what the application demanded : if the
+				 * up the pace with what the application demanded: if the
 				 * runtime resources are not high enough, then the scheduler
 				 * may fail regularly and progressively fill up its delay 
 				 * bucket.
@@ -967,7 +981,7 @@ namespace OSDL
 				
 				
 				/**
-				 * Tells whether screenshot mode is activated (default :
+				 * Tells whether screenshot mode is activated (default:
 				 * deactivated).
 				 *
 				 * @note Screenshot mode is also known as 'no deadline' 
@@ -983,7 +997,7 @@ namespace OSDL
 				 * screenshot files. 
 				 * 
 				 * The purpose of these files is mainly to be gathered in a
-				 * movie (ex : MPEG).
+				 * movie (ex: MPEG).
 				 *
 				 */
 				std::string _frameFilenamePrefix ;		
@@ -997,7 +1011,7 @@ namespace OSDL
 				 * again after the engine tick duration changed.
 				 *
 				 */
-				Events::Hertz _desiredScreenshotFrequency ;
+				Ceylan::Maths::Hertz _desiredScreenshotFrequency ;
 				
 				
 				/**
@@ -1020,7 +1034,7 @@ namespace OSDL
  * 
  */
 #pragma warning( push )
-#pragma warning( disable : 4251 )
+#pragma warning( disable: 4251 )
 			
 			
 				/**
@@ -1050,7 +1064,7 @@ namespace OSDL
 				 * 0(1)), insertion times are much faster, (0(n.log n) 
 				 * instead of 0(n)). 
 				 *
-				 * As there may be numerous programmed triggers (ex : for
+				 * As there may be numerous programmed triggers (ex: for
 				 * playing sound delayed by distance), the map might be
 				 * helpful here. 
 				 *
@@ -1088,13 +1102,13 @@ namespace OSDL
 				 * @note Under normal circumstances (not too heavy load), 
 				 * the current engine tick multiplied by the engine tick
 				 * duration should correspond to the current user time, 
-				 * with the offset of the library initialization time t0 :
+				 * with the offset of the library initialization time t0:
 				 * (current time) - t0 = 
 				 *  ( current engine tick ) * ( engine tick duration )
 				 *
 				 * The scheduler has for purpose to enforce this property, 
 				 * but insufficient processing resources can make the engine
-				 * time drift : hence one should not rely on this property 
+				 * time drift: hence one should not rely on this property 
 				 * being verified. 
 				 *
 				 * Therefore, this data member is the only one that is
@@ -1113,13 +1127,13 @@ namespace OSDL
 				 * @note Under ideal circumstances (not too heavy load), 
 				 * the current simulation tick multiplied by the simulation 
 				 * tick duration should correspond to the current user time,
-				 * with the offset of the library initialization time t0 :
+				 * with the offset of the library initialization time t0:
 				 * (current time) - t0 = 
 				 *	( current simulation tick ) * ( simulation tick duration )
 				 *
 				 * The scheduler has for purpose to enforce this property, 
 				 * but insufficient processing resources can make the 
-				 * simulation time drift : one should not rely on this 
+				 * simulation time drift: one should not rely on this 
 				 * property being verified. 
 				 * Therefore, this data member is the only one that
 				 * is authoritative (the only actual value).
@@ -1143,7 +1157,7 @@ namespace OSDL
 				 *
 				 * The scheduler has for purpose to enforce this property, 
 				 * but insufficient processing resources can make the 
-				 * rendering time drift : one should not rely on this property
+				 * rendering time drift: one should not rely on this property
 				 * being verified. 
 				 * Therefore, this data member is the only one that
 				 * is authoritative (the only actual value).
@@ -1167,7 +1181,7 @@ namespace OSDL
 				 *
 				 * The scheduler has for purpose to enforce this property, 
 				 * but insufficient processing resources can make the 
-				 * input time drift : one should not rely on this property 
+				 * input time drift: one should not rely on this property 
 				 * being verified. 
 				 * Therefore, this data member is the only one that
 				 * is authoritative (the only actual value).
@@ -1207,7 +1221,7 @@ namespace OSDL
 				 * again after the engine tick duration changed.
 				 *
 				 */
-				Events::Hertz _desiredSimulationFrequency ;
+				Ceylan::Maths::Hertz _desiredSimulationFrequency ;
 				
 				
 				/**
@@ -1217,7 +1231,7 @@ namespace OSDL
 				 * again after the engine tick duration changed.
 				 *
 				 */
-				Events::Hertz _desiredRenderingFrequency ;
+				Ceylan::Maths::Hertz _desiredRenderingFrequency ;
 		
 		
 				/**
@@ -1227,7 +1241,7 @@ namespace OSDL
 				 * again after the engine tick duration changed.
 				 *
 				 */
-				Events::Hertz _desiredInputFrequency ;
+				Ceylan::Maths::Hertz _desiredInputFrequency ;
 
 
 
