@@ -253,7 +253,12 @@ libogg_win_MD5="d4a0364e7ea34803ccde8f37e4b21bc2"
 SDL_mixer_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
 SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
 SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_MD5="0b5b91015d0f3bd9597e094ba67c4d65"
+
+# For 1.2.8:
+#SDL_mixer_MD5="0b5b91015d0f3bd9597e094ba67c4d65"
+
+# For 1.2.7 (temporary downgrade due to vorbis issues):
+SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
 
 SDL_mixer_win_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
 SDL_mixer_win_ARCHIVE="SDL_mixer-${SDL_mixer_win_VERSION}.zip"
