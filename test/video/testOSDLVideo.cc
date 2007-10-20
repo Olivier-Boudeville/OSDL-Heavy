@@ -8,7 +8,7 @@ using namespace Ceylan::Log ;
 
 
 /**
- * Testing the basic services of the OSDL video.
+ * Testing the basic services of the OSDL video module.
  *
  */
 int main( int argc, char * argv[] ) 
@@ -137,7 +137,7 @@ int main( int argc, char * argv[] )
 			
 		screen.lock() ;	
 		
-		for ( Ceylan::Uint32 n = 0 ; n < 1000 ; n++) 
+		for ( Ceylan::Uint32 n = 0; n < 1000; n++) 
 		{
 			// Here should be put all drawings.
 		}		
