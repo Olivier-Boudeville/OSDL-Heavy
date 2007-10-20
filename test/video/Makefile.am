@@ -29,3 +29,4 @@ testOSDLSurfacePrimitives_exe_SOURCES      = testOSDLSurfacePrimitives.cc
 testOSDLSurfaceTransforms_exe_SOURCES      = testOSDLSurfaceTransforms.cc
 testOSDLVideo_exe_SOURCES                  = testOSDLVideo.cc
 testOSDLWindowManager_exe_SOURCES          = testOSDLWindowManager.cc
+
