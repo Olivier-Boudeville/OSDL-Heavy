@@ -132,8 +132,19 @@ bool Sound::load() throw( Ceylan::LoadableException )
 		
 #if OSDL_USES_SDL_MIXER
 
-	// Misleading, supports WAVE but other formats as well:
-	_content = ::Mix_LoadWAV( _contentPath.c_str() ) ;
+	try
+	{
+		// Misleading, supports WAVE but other formats as well:
+		_content = ::Mix_LoadWAV( FindAudiblePath( _contentPath ).c_str() ) ;
+	
+	}
+	catch( const AudibleException & e )
+	{
+	
+		throw Ceylan::LoadableException( "Sound::load failed: '"
+			"unable to locate '" + _contentPath + "': " + e.toString() ) ;
+			
+	}	
 	
 	if ( _content == 0 )
 		throw Ceylan::LoadableException( "Sound::load failed: "
@@ -580,8 +591,9 @@ const string Sound::toString( Ceylan::VerbosityLevels level ) const throw()
 		
 			Volume v = getVolume() ;
 	
-			return "Loaded sound whose volume is " + Ceylan::toString( v )
-				+ "(" + Ceylan::toString( 100 * v 
+			return "Loaded sound whose volume is " 
+				+ Ceylan::toNumericalString( v )
+				+ " (" + Ceylan::toString( 100 * v 
 					/ ( AudioModule::MaxVolume - AudioModule::MinVolume ) )
 				+ "%)" ;
 			
