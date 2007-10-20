@@ -236,7 +236,7 @@ namespace OSDL
 				 * the color depth of the display will be used.
 				 *
 				 * @param flags describes the desired features, such as
-				 *  SoftwareSurface, Resizable, etc. 
+				 * SoftwareSurface, Resizable, etc. 
 				 * One particularly useful feature is DoubleBuffered, since 
 				 * it allows to suppress most of the tearing on most platforms.
 				 *
@@ -246,7 +246,7 @@ namespace OSDL
 				 *
 				 * @return the flags that were actually obtained
 				 *
-				 * @throw VideoException if the new setting of the new mode
+				 * @throw VideoException if the setting of the new mode
 				 * failed.
 				 *
 				 * @see SDL counter-part, SDL_SetVideoMode
@@ -369,7 +369,7 @@ namespace OSDL
 				 * @throw VideoException if the operation failed.
 				 *
 				 */
-				virtual const std::string getDriverName() const 
+				virtual std::string getDriverName() const 
 					throw( VideoException ) ; 
 		
 		
@@ -548,8 +548,7 @@ namespace OSDL
 				 * @throw VideoException if the operation failed.
 				 *
 				 */
-				static const std::string GetDriverName() 
-						throw( VideoException ) ;
+				static std::string GetDriverName() throw( VideoException ) ;
 				
 				
 				/**
