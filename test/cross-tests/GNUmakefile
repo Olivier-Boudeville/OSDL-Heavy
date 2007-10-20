@@ -100,8 +100,10 @@ TEST_ARCH_FLAGS_COMMON = -mthumb -mthumb-interwork
 
 # Preprocessor section: exports TEST_CPP_FLAGS_ARM7 / TEST_CPP_FLAGS_ARM9
 
-TEST_CPP_FLAGS_COMMON = -I. -I$(OSDL_INSTALL_INC) \
-	-I$(libfat_DIR)/include -I$(libnds_DIR)/include -DOSDL_ARCH_NINTENDO_DS
+TEST_CPP_FLAGS_COMMON = -I. -I$(OSDL_INSTALL_INC) -I$(ceylan_DIR)/include   \
+	-I$(libfat_DIR)/include -I$(libnds_DIR)/include -DOSDL_ARCH_NINTENDO_DS \
+	-DOSDL_USES_SDL=0 -DOSDL_USES_SDL_GFX=0 -DOSDL_USES_SDL_IMAGE=0         \
+	-DOSDL_USES_SDL_TTF=0 -DOSDL_USES_LIBPNG=0 -DCEYLAN_DLL= -DOSDL_DLL=
 
 TEST_CPP_FLAGS_ARM7 = $(TEST_CPP_FLAGS_COMMON) -DOSDL_RUNS_ON_ARM7
 
@@ -165,7 +167,7 @@ TEST_LD_FLAGS_ARM9:= $(TEST_LD_FLAGS_COMMON) $(TEST_LD_FLAGS_ARM9)
 # TEST_LIBPATHS_ARM7 and TEST_LIBPATHS_ARM9 section:
 
 # Let the possibility for the user to define his own LIBPATHS:
-TEST_LIBPATHS_COMMON = $(LIBPATHS) -L$(libfat_DIR)/lib -L$(libnds_DIR)/lib
+TEST_LIBPATHS_COMMON = $(LIBPATHS) -L$(ceylan_DIR)/lib -L$(libfat_DIR)/lib -L$(libnds_DIR)/lib
 
 TEST_LIBPATHS_ARM7 = -L$(OSDL_INSTALL_LIB) $(TEST_LIBPATHS_COMMON) 
 TEST_LIBPATHS_ARM9 = -L$(OSDL_INSTALL_LIB) $(TEST_LIBPATHS_COMMON) 
@@ -177,7 +179,7 @@ TEST_LIBPATHS_ARM9 = -L$(OSDL_INSTALL_LIB) $(TEST_LIBPATHS_COMMON)
 # Let the possibility for the user to define his own LIBS.
 # Not libfat for the ARM7 yet (library too big):
 TEST_BASE_LIBS_ARM7:= $(LIBS) -lnds7
-TEST_BASE_LIBS_ARM9:= $(LIBS) -lfat -lnds9
+TEST_BASE_LIBS_ARM9:= $(LIBS) -lCeylan-${CEYLAN_USED_VERSION}-release-arm9 -lfat -lnds9
 
 
 TEST_LIBS_ARM7 = \
@@ -232,7 +234,7 @@ info-run:
 	
 %-$(TEST_PREFIX).arm9.o: %.arm9.cc
 	@echo "    Compiling $< into $@"
-	@$(CXX) $(TEST_CXX_FLAGS_ARM9) $(TEST_CPP_FLAGS_ARM9) -c $< -o $@
+	$(CXX) $(TEST_CXX_FLAGS_ARM9) $(TEST_CPP_FLAGS_ARM9) -c $< -o $@
 
 
 
