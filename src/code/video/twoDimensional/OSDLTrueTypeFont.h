@@ -8,7 +8,19 @@
 #include <string>
 
 #if ! defined(OSDL_USES_SDL_TTF) || OSDL_USES_SDL_TTF 
-#include "SDL_ttf.h"                     // for TTF_Font
+
+/*
+ * No need to include SDL_ttf header here.
+ *
+ * 'struct TTF_Font' could not be forward-declared, as SDL_ttf.h defines 
+ * it as 'typedef struct _TTF_Font TTF_Font;' which leads to the error
+ * "'struct TTF_Font' has a previous declaration as 'struct TTF_Font'",
+ * as soon as an implementation file includes SDL_ttf.h.
+ * So we use _TTF_Font instead of TTF_Font.
+ *
+ */
+struct _TTF_Font ;
+
 #endif // OSDL_USES_SDL_TTF
 
 
@@ -37,11 +49,10 @@ namespace OSDL
 			
 
 
+				// The internal actual font object.
 				#if ! defined(OSDL_USES_SDL_TTF) || OSDL_USES_SDL_TTF 
 
-				// The internal actual font object.
-				typedef struct _TTF_Font TTF_Font ;
-				typedef TTF_Font LowLevelTTFFont ;
+				typedef ::_TTF_Font LowLevelTTFFont ;
 				
 				#else // OSDL_USES_SDL_TTF
 
