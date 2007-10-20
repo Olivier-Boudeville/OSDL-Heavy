@@ -1,11 +1,14 @@
 #include "OSDLAudible.h"
 
 
+#include "OSDLAudio.h" // for AudioModule
+
 
 using std::string ;
 
 
 using namespace Ceylan::Log ;
+using namespace Ceylan::System ;
 
 using namespace OSDL::Audio ;
 
@@ -69,6 +72,64 @@ const string Audible::toString( Ceylan::VerbosityLevels level )
 }
 
 
+
+string Audible::FindAudiblePath( const string & audibleFilename ) 
+	throw( AudibleException )
+{
+	
+	string audibleFullPath = audibleFilename ;
+
+	// Search directly in current working directory:
+	if ( ! File::ExistsAsFileOrSymbolicLink( audibleFullPath ) )
+	{
+		
+		// On failure use the audio locator:
+		try
+		{
+		
+			audibleFullPath = AudioModule::AudioFileLocator.find( 
+				audibleFullPath ) ;
+				
+		}
+		catch( const FileLocatorException & e )
+		{
+				
+			// Not found !
+				
+			string currentDir ;
+				
+			try
+			{
+				currentDir = Directory::GetCurrentWorkingDirectoryPath() ;
+			}
+			catch( const DirectoryException & exc )
+			{
+				
+				throw AudibleException( 
+					"Audible::FindAudiblePath: unable to find '"
+					+ audibleFilename 
+					+ "', exception generation triggered another failure: "
+					+ exc.toString() + "." ) ;
+			}
+				
+			throw AudibleException( "Audible::FindAudiblePath: '" 
+					+ audibleFilename 
+					+ "' is not a regular file or a symbolic link "
+					"relative to the current directory (" + currentDir
+					+ ") and cannot be found through audio locator ("
+					+ AudioModule::AudioFileLocator.toString() 
+					+ ") based on audio path environment variable ("
+					+ AudioModule::AudioPathEnvironmentVariable + ")." ) ;
+					
+		}		
+	}
+
+
+	return audibleFullPath ;
+	
+}
+
+					
 
 int Audible::GetLoopsForPlayCount( PlaybackCount playCount )
 	throw( AudibleException )
