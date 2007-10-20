@@ -6,7 +6,7 @@
 
 
 # SVN tags to select versions to retrieve (if use_current_svn not selected):
-latest_stable_ceylan="release-0.5.0"
+latest_stable_ceylan="release-0.7.0"
 latest_stable_osdl="release-0.5.0"
 
 ################################################################################
@@ -2835,6 +2835,16 @@ generateSDL_mixer()
 		#  - WAVE (for short samples)
 		#  - OggVorbis (for longer ones, including music).
 		#
+		
+		# Saturday, October 20, 2007: there is a problem with SDL_mixer (1.2.8)
+		# and libvorbis (1.2.0): at first SDL_mixer configure disables vorbis
+		# support due to a lacking symbol. Fixing it (by downgrading libvorbis
+		# to 1.1.2 re-enable vorbis support in SDL_mixer configure but still
+		# at runtime says 'Unrecognized sound file type' with .ogg.
+		# Only solution seems to downgrade SDL_mixer to 1.2.7 with either of the
+		# vorbis versions.
+		
+		
 		setBuildEnv ./configure --prefix=${SDL_mixer_PREFIX} --exec-prefix=${SDL_mixer_PREFIX} -with-sdl-prefix=${SDL_PREFIX}  --disable-static --disable-music-libmikmod --disable-music-mod --disable-music-midi --disable-music-timidity-midi --disable-music-native-midi --disable-music-native-midi-gpl --disable-music-mp3 --disable-smpegtest --enable-music-wave --enable-music-libogg LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib" CFLAGS="-I${libogg_PREFIX}/include -I${libvorbis_PREFIX}/include"
  
 	} 1>>"$LOG_OUTPUT" 2>&1		
