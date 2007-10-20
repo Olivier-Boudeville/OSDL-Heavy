@@ -8,6 +8,8 @@
 using std::string ;
 using std::list ;
 
+using Ceylan::Maths::Hertz ;
+
 
 #include "Ceylan.h"               // for Log
 using namespace Ceylan::Log ;
@@ -19,7 +21,7 @@ using namespace OSDL::Events ;
 
 
 ActiveObject::ActiveObject( Period period, ObjectSchedulingPolicy policy, 
-		Weight weight ) throw() : 
+		Weight weight ) throw(): 
 	_policy( policy ),
 	_weight( weight ),
 	_period( period ),
@@ -31,9 +33,10 @@ ActiveObject::ActiveObject( Period period, ObjectSchedulingPolicy policy,
 }
 
 
+
 ActiveObject::ActiveObject( const SimulationTickList & triggeringTicks, 
 	bool absolutlyDefined, ObjectSchedulingPolicy policy, Weight weight )
-		throw() :
+		throw():
 	_policy( policy ),
 	_weight( weight ),
 	_period( 0 ),
@@ -41,12 +44,15 @@ ActiveObject::ActiveObject( const SimulationTickList & triggeringTicks,
 	_absoluteTriggers( absolutlyDefined ),
 	_birthTime( 0 )
 {
+
 	_programmedTriggerTicks = new SimulationTickList( triggeringTicks ) ;
+	
 }	
+
 
 
 ActiveObject::ActiveObject( SimulationTick triggerTick, bool absolutlyDefined, 
-		ObjectSchedulingPolicy policy, Weight weight ) throw() :
+		ObjectSchedulingPolicy policy, Weight weight ) throw():
 	_policy( policy ),
 	_weight( weight ),
 	_period( 0 ),
@@ -55,53 +61,72 @@ ActiveObject::ActiveObject( SimulationTick triggerTick, bool absolutlyDefined,
 	_birthTime( 0 )
 
 {
+
 	_programmedTriggerTicks = new SimulationTickList ;
 	_programmedTriggerTicks->push_back( triggerTick ) ;
+	
 }	
+
 
 
 ActiveObject::~ActiveObject() throw()
 {
+
 	if ( _programmedTriggerTicks != 0 )
 		delete _programmedTriggerTicks ;
+		
 }
+
 
 
 ObjectSchedulingPolicy ActiveObject::getPolicy() const throw()
 {
+
 	return _policy ;
+	
 }
+
 
 
 Weight ActiveObject::getWeight() const throw()
 {
+
 	return _weight ;
+	
 }
+
 
 
 Period ActiveObject::getPeriod() const throw()
 {
+
 	return _period ;
+	
 }
+
 
 
 void ActiveObject::setPeriod( Period newPeriod ) throw()
 {
+
 	_period = newPeriod ;
+	
 }
+
 
 
 Hertz ActiveObject::setFrequency( Hertz newFrequency ) 
 	throw( SchedulingException )
 {
 
-	// Throw exception if scheduler not already existing :
+
+	// Throw exception if scheduler not already existing:
 	Scheduler & scheduler = Scheduler::GetExistingScheduler() ;
 	
 	/*
 	 * Target period is 1/newFrequency, one needs to divide it by 
 	 * simulation period duration to know how many simulation periods 
-	 * it will need :
+	 * it will need:
 	 * _period = (1/newFrequency) / simulatickDuration 
 	 * = simulatickDuration / newFrequency
 	 *
@@ -115,7 +140,7 @@ Hertz ActiveObject::setFrequency( Hertz newFrequency )
 	 	( newFrequency * scheduler.getSimulationTickCount() 
 			* scheduler.getTimeSliceDuration() ) ) ) ;
 	 
-	 // Clamp for too high frequencies :
+	 // Clamp for too high frequencies:
 	 if ( _period < 1 )
 	 	_period = 1 ;
 	 
@@ -131,23 +156,33 @@ Hertz ActiveObject::setFrequency( Hertz newFrequency )
 }
 
 
+
 bool ActiveObject::hasProgrammedActivations() const throw()
 {
+
 	return ! ( _programmedTriggerTicks == 0 
 		|| _programmedTriggerTicks->size() == 0 ) ;
+		
 }
+
 
 
 bool ActiveObject::areProgrammedActivationsAbsolute() const throw()
 {
+
 	return _absoluteTriggers ;
+	
 }
+
 
 
 void ActiveObject::absoluteProgrammedActivationsWanted( bool on ) throw()
 {
+
 	_absoluteTriggers = on ;
+	
 }
+
 
 
 const ActiveObject::SimulationTickList &
@@ -155,13 +190,14 @@ const ActiveObject::SimulationTickList &
 {
 
 	if ( _programmedTriggerTicks == 0 )
-		throw SchedulingException( "ActiveObject::getProgrammedActivations : "
+		throw SchedulingException( "ActiveObject::getProgrammedActivations: "
 			"no activation available." ) ;
 			
-	// Can be an empty list :		
+	// Can be an empty list:		
 	return * _programmedTriggerTicks ;
 	
 }
+
 
 
 void ActiveObject::setProgrammedActivations( 
@@ -176,12 +212,14 @@ void ActiveObject::setProgrammedActivations(
 }
 
 
+
 void ActiveObject::addProgrammedActivations( 
 	const SimulationTickList & additionalActivationsList ) throw()	
 {
+
 	if ( _programmedTriggerTicks != 0 )
 	{
-		// Do not trust 'merge' to be efficient :
+		// Do not trust 'merge' to be efficient:
 		for ( SimulationTickList::const_iterator it 
 					= _programmedTriggerTicks->begin();
 				it != _programmedTriggerTicks->end(); it++ )
@@ -194,23 +232,33 @@ void ActiveObject::addProgrammedActivations(
 }
 
 
+
 void ActiveObject::setUniqueProgrammedTicks() throw()
 {
+
 	if ( _programmedTriggerTicks != 0 )
 		_programmedTriggerTicks->unique() ;
+		
 }
 
 	
+	
 SimulationTick ActiveObject::getBirthTime() const throw()
 {
+
 	return _birthTime ;
+	
 }
+
 
 
 void ActiveObject::setBirthTime( SimulationTick birthSimulationTick ) throw()
 {
+
 	_birthTime = birthSimulationTick ;
+	
 }
+
 
 
 void ActiveObject::onSkip( SimulationTick skippedStep ) 
@@ -225,6 +273,7 @@ void ActiveObject::onSkip( SimulationTick skippedStep )
 }
 
 
+
 void ActiveObject::onImpossibleActivation( SimulationTick missedStep ) 
 	throw( SchedulingException )
 {
@@ -236,10 +285,13 @@ void ActiveObject::onImpossibleActivation( SimulationTick missedStep )
 }
 
 
+
 const string ActiveObject::toString( Ceylan::VerbosityLevels level )
 	const throw()
 {	
+
 	return "Active object, whose date of birth is " 
 		+ Ceylan::toString( _birthTime ) ;
+		
 }
 
