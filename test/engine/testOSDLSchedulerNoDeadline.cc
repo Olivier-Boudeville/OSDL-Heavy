@@ -6,6 +6,7 @@ using namespace OSDL::Engine ;
 
 
 using namespace Ceylan::Log ;
+using namespace Ceylan::Maths ;
 using namespace Ceylan::Maths::Random ;
 
 
