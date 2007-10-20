@@ -635,24 +635,10 @@ void VideoModule::setAntiAliasingState( bool newState ) throw()
 
 
 
-const std::string VideoModule::getDriverName() const throw( VideoException )
+std::string VideoModule::getDriverName() const throw( VideoException )
 {
 
-#if OSDL_USES_SDL
-
-	char driverName[ VideoModule::DriverNameMaximumLength + 1 ]  ;
-	
-	if ( SDL_VideoDriverName( driverName, sizeof( driverName ) ) == 0 )
-		throw VideoException( "Video::getDriverName failed: "
-			"video was probably not initialized." ) ;
-			
-	return std::string( driverName ) ;
-
-#else // OSDL_USES_SDL
-
-	return "" ;
-	
-#endif // OSDL_USES_SDL
+	return VideoModule::GetDriverName() ;
 
 }
 
@@ -972,24 +958,23 @@ bool VideoModule::GetAntiAliasingState() throw()
 
 
 
-const string VideoModule::GetDriverName() throw( VideoException )
+string VideoModule::GetDriverName() throw( VideoException )
 {
 
 #if OSDL_USES_SDL
 
 	char driverName[ VideoModule::DriverNameMaximumLength + 1 ]  ;
 	
-	if ( SDL_VideoDriverName( driverName, sizeof( driverName ) ) == 0 )
-		throw VideoException( "Video::GetDriverName failed: "
-			"video was probably not initialized." ) ;
+	if ( SDL_VideoDriverName( driverName, DriverNameMaximumLength ) == 0 )
+		throw VideoException( "VideoModule::GetDriverName failed: "
+			"the video driver is probably not initialized." ) ;
 			
 	return std::string( driverName ) ;
 
 #else // OSDL_USES_SDL
 
-	throw VideoException( "VideoModule::GetDriverName failed: "
-		"no SDL support available" ) ;
-
+	return "unknown (not using SDL)" ;
+	
 #endif // OSDL_USES_SDL
 
 }
