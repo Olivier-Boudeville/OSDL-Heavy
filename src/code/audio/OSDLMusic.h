@@ -526,6 +526,17 @@ namespace OSDL
 				static MusicType GetTypeOf( const Music * music )
 					throw( AudioException ) ;
 					
+					
+				/**
+				 * Returns a textual description of the specified music type.
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				static std::string DescribeMusicType( MusicType type )
+					throw( AudioException ) ;
+					
 			
 			
 			protected:
