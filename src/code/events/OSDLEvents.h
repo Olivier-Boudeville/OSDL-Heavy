@@ -6,7 +6,7 @@
 #include "OSDLTypes.h"           // for Flag
 #include "OSDLException.h"       // for OSDL::Exception
 
-#include "Ceylan.h"              // for Uint32, Flags, etc.
+#include "Ceylan.h"              // for Uint32, Hertz, Flags, etc.
 
 
 #include <string>
@@ -100,18 +100,6 @@ namespace OSDL
 		 */
 		typedef Tick InputTick ;
 		
-
-		/**
-		 * Unit for frequencies (Hz). 
-		 *
-		 * For example, a periodical event whose frequency is 100 Hz would
-		 * happen once on each period P = 1/100 s = 10 ms.
-		 *
-		 * @note For our needs, it is an integer type.
-		 *
-		 */
-		typedef Ceylan::Uint32 Hertz ;
-
 
 		/**
 		 * Allows to count how many engine ticks should be waited by the
@@ -334,7 +322,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void setEventLoopTargetFrequency( 
-					Hertz targetFrequency ) throw() ;
+					Ceylan::Maths::Hertz targetFrequency ) throw() ;
 				
 				 										
 				/**
@@ -760,7 +748,8 @@ namespace OSDL
 				
 											
 				///	The default frequency targeted by the basic event loop.
-				static const Hertz DefaultEventLoopTargetedFrequency = 100 ;
+				static const Ceylan::Maths::Hertz DefaultEventLoopTargetedFrequency 
+					= 100 ;
 				
 				
 				
@@ -1143,7 +1132,7 @@ namespace OSDL
 				 * which is at least 1 millisecond with Linux 2.6 kernels.
 				 *
 				 */
-				Hertz _loopTargetedFrequency ;				
+				Ceylan::Maths::Hertz _loopTargetedFrequency ;				
 				
 				
 				/**
