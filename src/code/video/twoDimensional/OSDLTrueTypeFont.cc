@@ -1,9 +1,9 @@
 #include "OSDLTrueTypeFont.h"
 
-#include "OSDLSurface.h"         // for Surface
-#include "OSDLPixel.h"           // for ColorDefinition
+#include "OSDLSurface.h"             // for Surface
+#include "OSDLPixel.h"               // for ColorDefinition
 
-#include "Ceylan.h"              // for Uint32, inheritance
+#include "Ceylan.h"                  // for Uint32, inheritance
 
 
 #include <list>
@@ -21,12 +21,15 @@
 
 
 #if OSDL_USES_SDL_GFX
-#include "SDL_gfxPrimitives.h"   // for stringColor
+#include "SDL_gfxPrimitives.h"       // for stringColor
 #endif // OSDL_USES_SDL_GFX
 
+#if OSDL_USES_SDL_TTF
+#include "SDL_ttf.h"                 // for TTF_GlyphMetrics and al
+#endif // OSDL_USES_SDL_TTF
 
 #if OSDL_USES_SDL
-#include "SDL.h"                 // for SDL_Surface
+#include "SDL.h"                     // for SDL_Surface
 #endif // OSDL_USES_SDL
 
 
@@ -129,17 +132,17 @@ TrueTypeFont::TrueTypeFont(
 	}
 	
 	
-	if ( TTF_WasInit() == 0 )
+	if ( ::TTF_WasInit() == 0 )
 	{
 	
-		if ( TTF_Init()== -1 )
+		if ( ::TTF_Init()== -1 )
 			throw TextException( 
 				"TrueTypeFont constructor: unable to init font library: "
 				+ DescribeLastError() ) ;
 				
 	}	
 	
-	_actualFont = TTF_OpenFont( fontFullPath.c_str(), pointSize ) ;
+	_actualFont = ::TTF_OpenFont( fontFullPath.c_str(), pointSize ) ;
 	
 	if ( _actualFont == 0 )
 		throw TextException( "TrueTypeFont constructor: unable to open '" 
@@ -173,12 +176,12 @@ TrueTypeFont::~TrueTypeFont() throw()
 #if OSDL_USES_SDL_TTF
 
 	if ( _actualFont != 0 )
-		TTF_CloseFont( _actualFont ) ;
+		::TTF_CloseFont( _actualFont ) ;
 		
 	FontCounter-- ;
 	
-	if ( FontCounter == 0 && TTF_WasInit() != 0 )
-		TTF_Quit() ;	
+	if ( FontCounter == 0 && ::TTF_WasInit() != 0 )
+		::TTF_Quit() ;	
 
 #endif // OSDL_USES_SDL_TTF
 		
@@ -199,7 +202,8 @@ RenderingStyle TrueTypeFont::getRenderingStyle() const throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return TTF_GetFontStyle( _actualFont ) ;
+	return ::TTF_GetFontStyle( _actualFont ) ;
+	
 #else // OSDL_USES_SDL_TTF
 
 	return 0 ;
@@ -225,7 +229,7 @@ void TrueTypeFont::setRenderingStyle( RenderingStyle newStyle )
 	 */
 	 
 	if ( newStyle != getRenderingStyle() )
-		TTF_SetFontStyle( _actualFont, newStyle ) ;
+		::TTF_SetFontStyle( _actualFont, newStyle ) ;
 
 #else // OSDL_USES_SDL_TTF
 
@@ -255,7 +259,7 @@ Width TrueTypeFont::getWidth( Ceylan::Latin1Char character )
 		
  	int minX, maxX ;
 	
-	if ( TTF_GlyphMetrics( _actualFont,
+	if ( ::TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			& minX, & maxX, 0, 0, 0 )  != 0 )
 		throw TextException( "TrueTypeFont::getWidth: " 
@@ -282,7 +286,7 @@ SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character )
 
  	int minX ;
 	
-	if ( TTF_GlyphMetrics( _actualFont,
+	if ( ::TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			& minX, 0, 0, 0, 0 )  != 0 )
 		throw TextException( "TrueTypeFont::getWidthOffset: " 
@@ -309,7 +313,7 @@ SignedHeight TrueTypeFont::getHeightAboveBaseline(
 
 	int maxY ;
 	
-	if ( TTF_GlyphMetrics( _actualFont,
+	if ( ::TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			0, 0, 0, & maxY, 0 )  != 0 )
 		throw TextException( "TrueTypeFont::getHeightAboveBaseline: " 
@@ -336,7 +340,7 @@ OSDL::Video::SignedLength TrueTypeFont::getAdvance(
 
 	int advance ;
 	
-	if ( TTF_GlyphMetrics( _actualFont,
+	if ( ::TTF_GlyphMetrics( _actualFont,
 		Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			0, 0, 0, 0, & advance ) != 0 )
 		throw TextException( "TrueTypeFont::getAdvance: "
@@ -360,7 +364,7 @@ Text::Height TrueTypeFont::getHeight() const throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return TTF_FontHeight( _actualFont ) ;
+	return ::TTF_FontHeight( _actualFont ) ;
 
 #else // OSDL_USES_SDL_TTF
 
@@ -377,7 +381,7 @@ Text::SignedHeight TrueTypeFont::getAscent() const throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return TTF_FontAscent( _actualFont ) ;
+	return ::TTF_FontAscent( _actualFont ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -394,7 +398,7 @@ Text::SignedHeight TrueTypeFont::getDescent() const throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return TTF_FontDescent( _actualFont ) ;
+	return ::TTF_FontDescent( _actualFont ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -411,7 +415,7 @@ Text::Height TrueTypeFont::getLineSkip() const throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return TTF_FontLineSkip( _actualFont ) ;
+	return ::TTF_FontLineSkip( _actualFont ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -427,7 +431,7 @@ Ceylan::Uint16 TrueTypeFont::getFacesCount() const throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return static_cast<Ceylan::Uint16>( TTF_FontFaces( _actualFont ) ) ;
+	return static_cast<Ceylan::Uint16>( ::TTF_FontFaces( _actualFont ) ) ;
 			
 #else // OSDL_USES_SDL_TTF
 
@@ -444,7 +448,7 @@ bool TrueTypeFont::isFixedWidth() const throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return ( TTF_FontFaceIsFixedWidth( _actualFont ) > 0 ) ;
+	return ( ::TTF_FontFaceIsFixedWidth( _actualFont ) > 0 ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -461,7 +465,7 @@ string TrueTypeFont::getFaceFamilyName() const throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return TTF_FontFaceFamilyName( _actualFont ) ;
+	return ::TTF_FontFaceFamilyName( _actualFont ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -478,7 +482,7 @@ string TrueTypeFont::getFaceStyleName() const throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return TTF_FontFaceStyleName( _actualFont ) ;
+	return ::TTF_FontFaceStyleName( _actualFont ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -503,7 +507,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor(
 
 	int minX, maxX, minY, maxY, intAdvance ;
 
-	if ( TTF_GlyphMetrics( _actualFont, glyph, & minX, & maxX, 
+	if ( ::TTF_GlyphMetrics( _actualFont, glyph, & minX, & maxX, 
 			& minY, & maxY, & intAdvance ) != 0 )
 		throw TextException( "TrueTypeFont::getClippingBoxFor (glyph): " 
 			+ DescribeLastError() ) ;
@@ -535,7 +539,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor( const std::string & text )
 
 	int width, height ;
 	
-	if ( TTF_SizeText( _actualFont, text.c_str(), & width, & height ) != 0 )
+	if ( ::TTF_SizeText( _actualFont, text.c_str(), & width, & height ) != 0 )
 		throw TextException( 
 			"TrueTypeFont::getBoundingBoxFor (Latin-1 string): " 
 			+ DescribeLastError() ) ;
@@ -562,7 +566,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUTF8(
 
 	int width, height ;
 	
-	if ( TTF_SizeUTF8( _actualFont, text.c_str(), & width, & height ) != 0 )
+	if ( ::TTF_SizeUTF8( _actualFont, text.c_str(), & width, & height ) != 0 )
 		throw TextException( 
 			"TrueTypeFont::getBoundingBoxFor (UTF-8 string): " 
 			+ DescribeLastError() ) ;
@@ -593,7 +597,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUnicode(
 
 	int width, height ;
 	
-	if ( TTF_SizeUNICODE( _actualFont, text, & width, & height ) != 0 )
+	if ( ::TTF_SizeUNICODE( _actualFont, text, & width, & height ) != 0 )
 		throw TextException( 
 			"TrueTypeFont::getBoundingBoxFor (Unicode string): " 
 			+ DescribeLastError() ) ;
@@ -768,7 +772,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	{	
 	
 		case Solid:
-			textSurface = TTF_RenderText_Solid( _actualFont, 
+			textSurface = ::TTF_RenderText_Solid( _actualFont, 
 				text.c_str(), textColor ) ;
 			if ( textSurface == 0 )
 				throw TextException( 
@@ -782,7 +786,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	
 	
 		case Shaded:
-			textSurface = TTF_RenderText_Shaded( _actualFont, 
+			textSurface = ::TTF_RenderText_Shaded( _actualFont, 
 				text.c_str(), textColor, _backgroundColor ) ;
 			if ( textSurface == 0 )
 				throw TextException( 
@@ -792,7 +796,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 					
 			/*
 			 * We have to create a new surface so that the surface returned by
-			 * 'TTF_RenderText_Shaded' will no more be palettized: we need a
+			 * '::TTF_RenderText_Shaded' will no more be palettized: we need a
 			 * color key to have transparent blits.
 			 *
 			 */	 
@@ -840,7 +844,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 
 
 		case Blended:
-			textSurface = TTF_RenderText_Blended( _actualFont, 
+			textSurface = ::TTF_RenderText_Blended( _actualFont, 
 				text.c_str(), textColor ) ;
 			if ( textSurface == 0 )
 				throw TextException( 
@@ -955,7 +959,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 	
 	
 		case Solid:
-			textSurface = TTF_RenderUTF8_Solid( _actualFont, text.c_str(),
+			textSurface = ::TTF_RenderUTF8_Solid( _actualFont, text.c_str(),
 				textColor ) ;
 				
 			if ( textSurface == 0 )
@@ -969,7 +973,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 	
 	
 		case Shaded:
-			textSurface = TTF_RenderUTF8_Shaded( _actualFont, text.c_str(),
+			textSurface = ::TTF_RenderUTF8_Shaded( _actualFont, text.c_str(),
 				textColor, _backgroundColor ) ;
 				
 			if ( textSurface == 0 )
@@ -979,7 +983,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 					
 			/*
 			 * We have to create a new surface so that the surface returned by
-			 * 'TTF_RenderUTF8_Shaded' will no more be palettized: 
+			 * '::TTF_RenderUTF8_Shaded' will no more be palettized: 
 			 * we need a color key to have transparent blits.
 			 *
 			 */
@@ -1033,7 +1037,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 
 
 		case Blended:
-			textSurface = TTF_RenderUTF8_Blended( _actualFont, text.c_str(),
+			textSurface = ::TTF_RenderUTF8_Blended( _actualFont, text.c_str(),
 				textColor ) ;
 				
 			if ( textSurface == 0 )
@@ -1156,7 +1160,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 	{
 	
 		case Solid:
-			textSurface = TTF_RenderUNICODE_Solid( _actualFont, text, 
+			textSurface = ::TTF_RenderUNICODE_Solid( _actualFont, text, 
 				textColor ) ;
 				
 			if ( textSurface == 0 )
@@ -1169,7 +1173,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 	
 	
 		case Shaded:
-			textSurface = TTF_RenderUNICODE_Shaded( _actualFont, text,
+			textSurface = ::TTF_RenderUNICODE_Shaded( _actualFont, text,
 				textColor, _backgroundColor ) ;
 				
 			if ( textSurface == 0 )
@@ -1179,7 +1183,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 					
 			/*
 			 * We have to create a new surface so that the surface returned by
-			 * 'TTF_RenderUNICODE_Shaded' will no more be palettized: 
+			 * '::TTF_RenderUNICODE_Shaded' will no more be palettized: 
 			 * we need a color key to have transparent blits.
 			 *
 			 */	 			 
@@ -1231,7 +1235,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 
 
 		case Blended:
-			textSurface = TTF_RenderUNICODE_Blended( _actualFont, text,
+			textSurface = ::TTF_RenderUNICODE_Blended( _actualFont, text,
 				textColor ) ;
 				
 			if ( textSurface == 0 )
@@ -1389,7 +1393,7 @@ const string TrueTypeFont::toString( Ceylan::VerbosityLevels level )
 	
 	TTF_VERSION( & compileVersion ) ;	
 	
-	const SDL_version * linkedVersion = TTF_Linked_Version() ;
+	const SDL_version * linkedVersion = ::TTF_Linked_Version() ;
 	
 	res += ". The OSDL font module is compiled with SDL_ttf version " 
 		+ Ceylan::toNumericalString( compileVersion.major ) + "."
@@ -1400,7 +1404,7 @@ const string TrueTypeFont::toString( Ceylan::VerbosityLevels level )
 		+ Ceylan::toNumericalString( linkedVersion->minor ) + "."
 		+ Ceylan::toNumericalString( linkedVersion->patch ) ;
 		+ ". Rendering style is " 
-		+ InterpretRenderingStyle( TTF_GetFontStyle( _actualFont ) ) ;
+		+ InterpretRenderingStyle( ::TTF_GetFontStyle( _actualFont ) ) ;
 		
 		
 	return res ;
@@ -1434,9 +1438,9 @@ void TrueTypeFont::SetUnicodeSwapStatus( bool newStatus ) throw()
 #if OSDL_USES_SDL_TTF
 
 	if ( newStatus )
-		TTF_ByteSwappedUNICODE( 1 ) ;
+		::TTF_ByteSwappedUNICODE( 1 ) ;
 	else	
-		TTF_ByteSwappedUNICODE( 0 ) ;
+		::TTF_ByteSwappedUNICODE( 0 ) ;
 		
 #endif // OSDL_USES_SDL_TTF
 
@@ -1449,7 +1453,7 @@ string TrueTypeFont::DescribeLastError() throw()
 
 #if OSDL_USES_SDL_TTF
 
-	return TTF_GetError() ;
+	return ::TTF_GetError() ;
 
 #else // OSDL_USES_SDL_TTF
 
@@ -1478,7 +1482,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	
 	
 		case Solid:
-			textSurface = TTF_RenderGlyph_Solid( _actualFont, character,
+			textSurface = ::TTF_RenderGlyph_Solid( _actualFont, character,
 				glyphColor ) ;
 			 	
 			if ( textSurface == 0 )
@@ -1496,7 +1500,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	
 	
 		case Shaded:
-			textSurface = TTF_RenderGlyph_Shaded( _actualFont, character,
+			textSurface = ::TTF_RenderGlyph_Shaded( _actualFont, character,
 				glyphColor, _backgroundColor ) ;
 				
 			if ( textSurface == 0 )
@@ -1508,7 +1512,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 					 
 			/*
 			 * We have to create a new surface so that the surface returned by
-			 * 'TTF_RenderGlyph_Shaded' will no more be palettized: 
+			 * '::TTF_RenderGlyph_Shaded' will no more be palettized: 
 			 * we need a color key to have transparent blits.
 			 *
 			 */	 
@@ -1564,7 +1568,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 
 
 		case Blended:
-			textSurface = TTF_RenderGlyph_Blended( _actualFont, character,
+			textSurface = ::TTF_RenderGlyph_Blended( _actualFont, character,
 				glyphColor ) ;
 				
 			if ( textSurface == 0 )
