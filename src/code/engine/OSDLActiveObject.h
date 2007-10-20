@@ -39,7 +39,7 @@ namespace OSDL
 		 *
 		 * An active object can be implemented according to one of the two
 		 * classic approaches. 
-		 * For a given simulation time n, the object behaviour can be computed :
+		 * For a given simulation time n, the object behaviour can be computed:
 		 *  1. only from the current simulation time, n
 		 *  2. from the state of the object as it was on simulation time (n-1),
 		 * and maybe other parameters.
@@ -61,7 +61,7 @@ namespace OSDL
 		 * angular speed times the simulation time elapsed since the 
 		 * birth of this active object. Alas, not all behaviours can follow
 		 * the first approach. For the corresponding unfortunate objects, 
-		 * there is however a last chance to correct a simulation skip : the
+		 * there is however a last chance to correct a simulation skip: the
 		 * scheduler will call their onSkip method, which may be used to
 		 * overcome such scheduling hiccups.    
 		 *
@@ -70,14 +70,14 @@ namespace OSDL
 		 * after their creation. Objects will start to live as soon 
 		 * as they are registered to the scheduler. 
 		 * The simpler way of registering an active object to the
-		 * already-existing scheduler is : 
+		 * already-existing scheduler is: 
 		 * <code>Scheduler::GetExistingScheduler().registerObject( 
 		 * * this )</code>.
 		 *
 		 * @see Scheduler::registerAsPeriodic, Scheduler::registerAsProgrammed
 		 * 
 		 */
-		class OSDL_DLL ActiveObject : public Ceylan::TextDisplayable
+		class OSDL_DLL ActiveObject: public Ceylan::TextDisplayable
 		{
 		
 		
@@ -254,8 +254,9 @@ namespace OSDL
 				 * scheduler available.
 				 *
 				 */ 
-				virtual Events::Hertz setFrequency( 
-					Events::Hertz newFrequency ) throw( SchedulingException ) ; 
+				virtual Ceylan::Maths::Hertz setFrequency( 
+						Ceylan::Maths::Hertz newFrequency ) 
+					throw( SchedulingException ) ; 
 					
 					
 				/**
@@ -325,7 +326,7 @@ namespace OSDL
 				 * simulation ticks which will activate the object too.
 				 *
 				 * @note The method will not ensure that each tick is 
-				 * present at most one time in the object activation list : 
+				 * present at most one time in the object activation list: 
 				 * one object can by programmed multiple times in a single
 				 * simulation tick.
 				 *
@@ -373,7 +374,7 @@ namespace OSDL
 				 * Pure virtual method, which is called when this active 
 				 * object gets activated on behalf of the scheduler.
 				 *
-				 * @note This is where the objects are to live actually : 
+				 * @note This is where the objects are to live actually: 
 				 * their time slice is spent here.
 				 *
 				 * @note If, for any reason, there is a simulation skip, 
@@ -392,7 +393,7 @@ namespace OSDL
 				 * Called whenever the scheduler had to skip a period of
 				 * activation for this object. 
 				 *
-				 * Default behaviour for this method is : do nothing except
+				 * Default behaviour for this method is: do nothing except
 				 * complain in the warning channel.
 				 *
 				 * @param skippedStep tells which step was skipped.
@@ -417,7 +418,7 @@ namespace OSDL
 				 * step is specified whereas the current time is already 
 				 * in its future.
 				 *
-				 * Default behaviour for this method is : throw a
+				 * Default behaviour for this method is: throw a
 				 * SchedulingException.
 				 *
 				 * @param missedStep tells which step is out of range.
@@ -532,3 +533,4 @@ namespace OSDL
 
 
 #endif // OSDL_ACTIVE_OBJECT_H_
+
