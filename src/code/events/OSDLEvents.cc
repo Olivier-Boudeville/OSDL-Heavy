@@ -32,9 +32,12 @@
 
 
 using std::string ;
+using Ceylan::Maths::Hertz ;
+
 
 using namespace Ceylan ;
 using namespace Ceylan::Log ;
+
 
 // for time units and calls (ex: Millisecond, basicSleep):
 using namespace Ceylan::System ;   
