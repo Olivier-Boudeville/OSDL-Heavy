@@ -3,7 +3,7 @@
 			OSDL README
 			
 			
-This is the @OSDL_FULL_VERSION@ version of the OSDL (Object-oriented Simple DirectMedia Layer) library, released on @OSDL_RELEASE_DATE@ under the LGPL license, as stated in COPYING.LIB.
+This is the @OSDL_FULL_VERSION@ version of the OSDL (Object-oriented Simple DirectMedia Layer) library, released on @OSDL_RELEASE_DATE@ under the LGPL/GPL disjunctive bi-license, as stated in COPYING.LIB.
 
 OSDL is a high level open source portable multimedia library, built upon Sam Lantinga's SDL. Its goal is to provide a high level C++ framework to ease game development.
  
