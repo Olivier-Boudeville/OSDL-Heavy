@@ -995,6 +995,12 @@ The DTCM, for <em>Data Tightly Coupled Memory</em>, is a special 16-kilobyte mem
 As for the ITCM, for <em>Instruction Tightly Coupled Memory</em>, it is a special 32-kilobyte memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small (preferably 32-bit) functions that are computation-intensive and/or frequently called. For example, libnds uses that region to store the interrupt dispatcher.
 </p>
 
+<p>
+Finally, see the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">memory layout</a> diagram from Dev-Scene website to better understand the various buses between the various memories.
+</p>
+
+
+
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
@@ -1143,7 +1149,7 @@ The full name of this processor is <code>ARM7TDMI</code>, meaning it is an ARM 7
 </p>
 
 <p>
-There are also two 16-kilobyte WRAM banks that can be assigned independently to the ARM7 or ARM9, with a 32-bit wide bus in both cases. The two ARMs cannot access these banks at the same time. Commonly, both banks will be mapped to the ARM7: as they form then a continuous block with the ARM7 IWRAM, this processor is effectively given 96 kilobytes of fast memory.
+There are also two 16-kilobyte WRAM banks that can be assigned independently to the ARM7 or ARM9, with a 32-bit wide bus in both cases. The two ARMs cannot access these banks at the same time. Commonly, both banks will be mapped to the ARM7 (devkitARM defaults): as they form then a continuous block with the ARM7 IWRAM, this processor is effectively given 96 kilobytes of fast memory.
 </p>
 
 <p>
@@ -2023,12 +2029,31 @@ Only the ARM7 can access the sound hardware, so we somehow have to have the ARM9
 
 
 <h5>Sound output</h5>
+
+
+<p>
+Sample data can be assigned independently to any of the 16 channels. For a given channel, the playback frequency of the sample (ex: 22 050 Hz), the sample size (ex: 8bit) and the sample data length can be set, among other informations (channel enabled or not, looping mode or one shot, volume, etc.). Stereo sound can be output, with panning from left to right for example.
+</p>
+
+
+<p>
+Sound output requires sound to play, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needed by your application.
+</p>
+
+
+<p>
+Sample data also need to be passed to the hardware in raw format, i.e. as a series of uncompressed samples without any header. This is not the case of the most usual formats (wav, mp3, OggVorbis, etc.), therefore they have to be converted one way or another to the expected raw format (beforehand or by the program itself, at start-up or in-game). This can be done thanks to the <a href="http://sox.sourceforge.net/" target="_blank">sox</a> tool, or thanks to the <code>wav2gba</code> tool. More information about the conversion can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
+</p>
+
+
+<h6>MOD, 8/16-bit, ADPCM</h6>
 <p>
 Relying on the sound mixing hardware is the best bet: it can manage 16 independent audio channels with about 5% memory bandwidth usage. Therefore using <a href="http://modarchive.org/" target="_blank">MOD</a>-like soundtracks is favored, even by commercial games. Supported formats are 8 bit, 16 bit, or <a href="http://en.wikipedia.org/wiki/ADPCM" target="_blank">ADPCM</a>. Any sound played through the DS sound hardware at a frequency other than 32768 Hz will be resampled to 32768 Hz with nearest-neighbor algorithm.
 </p>
  
+<h6>Codecs</h6>
 <p>
-On the other side, with ogg/mp3 decoding, one would eat around 50% of the ARM9 CPU power, or almost 100% of the ARM7, with a pretty low bitrate. One could use the <a href="http://xiph.org/vorbis/" target="_blank">Tremor</a> implementation to benefit from a FPU-less OggVorbis decoder (check that memory leak issues have been solved). Tight 32bit (ARM, not Thumb) loops should be favoured. OggVorbis decoding on the ARM7 is not proven to be feasible. If game are interested in shifting the load to the ARM7, other applications may just let the decoding take place on the ARM9.
+With ogg/mp3 decoding, one would eat around 50% of the ARM9 CPU power, or almost 100% of the ARM7, with a pretty low bitrate. One could use the <a href="http://xiph.org/vorbis/" target="_blank">Tremor</a> implementation to benefit from a FPU-less OggVorbis decoder (check that memory leak issues have been solved). Tight 32 bit (ARM, not Thumb) loops should be favoured. OggVorbis decoding on the ARM7 is not proven to be feasible. If game are interested in shifting the load to the ARM7, other applications may just let the decoding take place on the ARM9.
 </p>
 
 <p>
@@ -2048,17 +2073,121 @@ and <em>RealNetworks Public Source License - RPSL 1.0</em> licenses. Although th
 
 </p>
 
+
+<h7>Using Helix</h7>
+
 <p>
-Sample data can be assigned independently to any of the 16 channels. For a given channel, the playback frequency of the sample (ex: 22 050 Hz), the sample size (ex: 8bit) and the sample data length can be set, among other informations (channel enabled or not, looping mode or one shot, volume, etc.). Stereo sound can be output, with panning from left to right for example.
+Before using the sources, one must agree with at least one of the three <a href="https://helixcommunity.org/licenses/" target="_blank">licences</a>. Even though Helix can be obtained from 
+<a href="https://helixcommunity.org/developers/get_connected_to_cvs/quickstart.html" target="_blank">CVS</a>, probably the more convenient method is to download the <a href="https://helixcommunity.org/developers/getting_started/httpdownload.html" target="_blank">zip archive</a> (ex: select the stable version for GNU/Linux). 
+Helix in itself is located in the <code>datatype/mp3/codec/fixpt</code> directory. One can obtain the sources from their <a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/" target="_blank">ViewCVS</a> as well.
 </p>
 
 <p>
-Sample data also need to be passed to the hardware in raw format, i.e. as a series of uncompressed samples without any header. This is not the case of the most usual formats (wav, mp3, OggVorbis, etc.), therefore they have to be converted one way or another to the expected raw format (beforehand or by the program itself, at start-up or in-game). This can be done thanks to the <a href="http://sox.sourceforge.net/" target="_blank">sox</a> tool, or thanks to the <code>wav2gba</code> tool. More information about the conversion can be found <a href="http://www.double.co.nz/nintendo_ds/nds_develop4.html" target="_blank">here</a>.
+Helix being quite feature-rich, if targeting stereo output then joint-stereo should be preferred to simple stereo, as it takes advantages of the correlation between the two channels. Use the <code>-m j</code> option with LAME to generate appropriate audio data.
 </p>
 
 <p>
-Sound output requires sound to play, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needed by your application.
+The MPEG-2.5 extension is not useful here as apparently it targets lower sampling frequencies (less than 12 kHz).
 </p>
+
+<p>
+Variable bitrates, as opposed to constant ones, are supported by Helix and may be preferred too, so that the bitrate can vary according to the audio needs and thus be more efficient. Use the <code>--vbr-new -V quality</code> option with LAME, with quality between 0 and 9.
+</p>
+
+
+
+<h7>Building Helix</h7>
+
+<p>
+To build Helix, one should read first the <a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/readme.txt?view=markup" target="_blank">readme.txt</a> file which gives useful explanations. 
+</p>
+
+<p>
+Obviously we want an ARM build, not a x86 one. We target the 32-bit ARM mode, not the (16-bit) Thumb one, as it is a 32-bit codec. Real (RealNetworks) code is what we want here, as IPP (<code>Intel Integrated Performance Primitives</code>) must not be available here. So the library should gather, as mentioned, <code>mp3dec.c + mp3tabs.c + real/*.c + real/arm/[files].s</code>
+</p>
+
+
+<p>
+The 
+<a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/testwrap/main.c?view=markup" target="_blank">sources</a> of a test program using Helix should help using it correctly.
+</p>
+
+
+<h6>Audio transformations</h6>
+<p>
+When developping a game, after the audio content has been secured (i.e. obtained with an appropriate licence), in general it has to be transformed. On GNU/Linux, powerful sound editors are <a href="http://sox.sourceforge.net/" target="_blank">sox</a> (a command-line tool) and <a href="http://audacity.sourceforge.net/" target="_blank">Audacity</a> (a graphical tool). Quite often the audio files do not conform totally to their expected format and/or are somewhat corrupted, causing various post-processing tools to fail. Audacity can be used to fix them, by first importing and then exporting them as are.
+</p>
+
+<p>
+After the audio content has been manipulated (cut, cleaned, and possibly run through various effects), it has to be converted, format-wise. Quality has to be lessen, as the handheld resources are scarce. 
+</p>
+
+<p>
+When targeting an embedded MP3 decoder on the DS, lightening and conversion can be performed in a single step. For that we use the <a href="http://lame.sourceforge.net/index.php" target="_blank">LAME</a> encoder, whose reputation is quite good.
+</p>
+
+<p>
+For example if you have a <code>YourLongMusic.wav</code>, with following format: <code>RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit, stereo 44100 Hz</code> (use the UNIX <code>file</code> command to figure it out), and if its size is about 145 megabytes (13'50 of high-quality music), you may use LAME to obtain a <code>YourLongMusic.mp3</code> of only 8 megabytes, i.e. a compression ratio of about 1800%. 
+</p>
+
+<p>
+To reach that ratio, a quite low bitrate has to be used (80 kbps). The bitrate determines the bandwidth budget you chose, and in this budget you have to select which features are to be available. You can play mainly onto two variables: the number of output channels (ex: mono or stereo) and the output sampling frequency (ex: 22.05, 44.1 kHz, etc.).  
+</p>
+
+<p>
+Of course, for the same bandwidth budget, choosing stereo at 44.1 kHz will cause the encoding to loose a lot of audio details. So with a tiny budget of 80 kbps, to preserve the sound quality, one should probably prefer mono at 22.05 kHz. The following command can be used for such a conversion:
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+lame YourLongMusic.wav --verbose -m m -b 96 -q 0 --resample 22.05 YourLongMusic.mp3
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+Heard on a hifi player, the quality of the result, compared to the original, is obviously lower. But it remains, in my opinion, above the minimal expectations for a game background music that will be mixed with special effects and output by the DS, with either the plugged earphones or the internal speakers (which are neither bad nor good).
+</p>
+
+<p>
+Low bitrates use less space on storage, are lighter for the memory buses and should require less overall CPU.
+</p>
+
+
+<h6>Full loading or streaming audio</h6>
+
+<p>
+Often two kinds of audio content are discussed:
+<ul>
+
+	<li><b>sounds</b>, which are contextual short sound samples, with often effects applied to them at runtime. They are mixed together, as more than one can be output at the same time</li>
+	
+	<li><b>music</b>, longer samples, up to one playing at any time</li>
+
+</ul>
+</p>
+
+<p>
+Sounds, being shorted hence smaller, are often either fully loaded or fully unloaded. Musics, on the contrary, will not fit entirely loaded in the DS 4 megabytes of RAM, be they heavily encoded (ex: mp3) or not. 
+</p>
+
+<p>
+The solution is therefore to stream them, i.e. to read them from file chunk after chunk, in a well-sized buffer (usually a few kilobytes, see <a href="../../rendering/SDL-audio.html#size" target="_blank">this discussion</a> about the latency versus skip tradeoff). Each chunk should be available no later than when the samples it contains are to be played. Once read by the audio layer the chunk can be discarded and replaced by the next loaded one.
+</p>
+
+<p>
+As often a chunk loading lasts a bit, it must be anticipated (the audio layer cannot wait for this loading to take place), either by using a <a href="http://elonen.iki.fi/code/misc-notes/ringbuffer/" target="_blank">ring buffer</a> or by double-buffering audio.
+</p>
+
+<p>
+As if it was not difficult enough, on the DS the samples are to be read on the ARM9 (libfat does not fit in ARM7 executable) but must be sent to the audio hardware by the ARM7 (the only one that can access it). Any decoding must therefore take place in-between, either sooner (on the ARM9) or later (on the ARM7). This requires a lot of synchronization between the two ARM.
+</p>
+
+
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
@@ -2397,7 +2526,7 @@ Therefore application development starts usually on a computer rather than on th
 </p>
 
 <p>
-Once the programs are compiled (from the C/C++ sources to a set of object files) and linked (thanks to DS-specific <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Linker" target="_blank">linkscripts</a> telling, depending on the ARM, which and how memory regions should be used at runtime), they can be tested in place, i.e. on the PC, thanks to DS <a href="#emulators">emulators</a>, or they can be <a href="#limitations">transferred</a> to the DS and run on it.
+Once the programs are compiled (from the C/C++ sources to a set of object files) and linked (thanks to DS-specific <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Linker" target="_blank">linkscripts</a> telling, depending on the ARM, which and how memory regions should be used at runtime, see <code>ds_arm7.ld</code> and <code>ds_arm9.ld</code> in <code>devkitPro/devkitARM/arm-eabi/lib</code>), they can be tested in place, i.e. on the PC, thanks to DS <a href="#emulators">emulators</a>, or they can be <a href="#limitations">transferred</a> to the DS and run on it.
 </p>
 
 <p>
@@ -4799,7 +4928,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Friday, October 12, 2007</em>
+    <em>Last update: Sunday, October 21, 2007</em>
   </center>
 </body>
 </html>
