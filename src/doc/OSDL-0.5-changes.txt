@@ -13,6 +13,10 @@ Main changes are :
 	
 	* enhanced scheduler
 
+	* license extended, went from pure LGPL to disjunctive bi-license LGPL/GPL. It allows developers using GPL software to use OSDL as well
+
+	* integration to the Ceylan 0.7 version
+
 	
 For more details, see the ChangeLog file or go to http://osdl.sourceforge.net/OSDL-0.5/ChangeLog.html.
 	
