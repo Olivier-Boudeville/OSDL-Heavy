@@ -5,8 +5,13 @@
 	(Organized release by release, from the latest to the oldest)
 			 
 
+*** Main Changes in OSDL 0.5 [released on ] :
+	
+	* license extended, went from pure LGPL to disjunctive bi-license LGPL/GPL. It allows developers using GPL software to use OSDL as well
 
-*** Main Changes in OSDL 0.4 [released in Friday, March 30, 2007] :
+
+
+*** Main Changes in OSDL 0.4 [released on Friday, March 30, 2007] :
 
 	* SVN used instead of CVS
 	
