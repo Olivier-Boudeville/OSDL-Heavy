@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+
+<!--    This document is part of the OSDL project. 
+        For any comment, please mail to olivier.boudeville@online.fr
+-->
+
+<!--    
+        Creation date: 2003 April, 23.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Helix-OSDL</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, library, video, game, quality, LGPL">
+  <link rel="stylesheet" type="text/css" href="../../../../../common/css/OSDL.css">
+  <link href="../../../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+
+  <div class="banner">
+    <p><em>General</em> <a href="../../../../../common/black.html" onclick="parent.toolbar.location=&#39;../../../../MainMenu.html&#39;">home page</a>
+    <a href="../../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Helix-OSDL">mail us</a></p>
+  </div><a name="_top_"></a> 
+
+<h1>Helix-OSDL</h1>
+
+<h2>Overview</h2>
+
+<p>
+<b>Helix-OSDL</b> is a GPL library to be run from the ARM7 processor of the Nintendo DS so that MP3 playback can be performed using the <a href="http://datatype.helixcommunity.org/mp3dec.html" target="_blank">Helix MP3 decoder</a>. 
+</p>
+
+<p>
+Helix-OSDL offers a way of having rather high-quality music playback on the DS, while loading the main processor (ARM9) as little as possible. The otherwise often under-used ARM7 takes in charge the actual decoding, instead of being mostly idle.
+</p>
+
+<p>
+Helix-OSDL is developed in pure C, not C++, to fit in the up to 96 kilobytes of RAM available for the ARM7. A library is used to avoid being too intrusive by relying in an ARM7 full-blown dedicated executable.
+</p>
+
+
+<p>
+MP3 encoding is used, as RAW/WAV files would use a lot of place in the storage medium (ex: linker) and eat of lot of I/O bandwidth for playback. OggVorbis is not used (although we prefer it to MP3) as its decoding apparently requires more CPU resources than MP3, even with the <a href="http://xiph.org/vorbis/" target="_blank">Tremor</a> implementation, and that it might be too demanding for the ARM7.
+</p>
+
+
+<p>
+Helix is used because open-source lightweight MP3 decoders for low-end devices (with no floating-point hardware support) are not common, and because this one offers quite impressive performances (128 kbps playback realtime on the ARM7) and features (variable bitrate and joint stereo). It is heavily optimized Its <a href="https://helixcommunity.org/licenses/" target="_blank">licences</a>, commercial and open-source, are however a bit restrictive and actually quite hard to understand. They imply that Helix-OSDL is released under the GPL, and not the LGPL. One has to ensure that one's project is compatible with at least one Helix license before using Helix-OSDL.
+</p>
+
+
+
+
+<h2>Usage</h2>
+<p>
+The ARM9 drives the high-level process: it decides when a given music must be played, paused, stopped, etc. and the ARM7 performs the actual decoding. 
+</p>
+
+
+
+<h2>Inner working</h2>
+<p>
+The ARM9 is the only CPU able to access the storage media (the linker), at least when using the libfat, since it cannot fit in the ARM7 memory. Thus the music has to be loaded from the ARM9.
+</p>
+
+<p>
+The ARM7 is the only CPU able to access the sound hardware (mixer), so the last part of the audio pipeline has to be located in the ARM7. Consequently:
+<ul>
+
+	<li>the actual <b>decoding</b> has to be performed somewhere in-between, either on the ARM9 or, preferably, on the ARM7</li>
+	
+	<li>both <b>processors</b> have to be synchronized to exchange commands and data, here we chose to use the most appropriate solution, the hardware FIFO with interrupt-based management (no polling)</li>
+
+</ul>
+
+</p>
+
+<p>
+The following constraints made us design the solution that way:
+
+<center>
+    <img src="audio-pipeline.png" alt="Audio Pipeline"></img>
+</center>
+
+</p>
+
+  
+<br>
+<br>
+<br>
+<br>
+  
+<h3>Please react !</h3>
+
+<p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, or if you would like to contribute and help us, even a little bit, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Helix-OSDL">drop us a line</a> !</p>
+
+<br>
+<br>
+
+<hr>
+
+<center>
+  [<a href="#_top_">Top</a>]
+  <br>
+  <br>
+  <em>Last update: Friday, October 26, 2007</em>
+</center>
+
+</body>
+</html>
