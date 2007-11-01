@@ -26,6 +26,7 @@
     <a href="../../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Helix-OSDL">mail us</a></p>
   </div><a name="_top_"></a> 
 
+
 <h1>Helix-OSDL</h1>
 
 <h2>Overview</h2>
@@ -35,21 +36,32 @@
 </p>
 
 <p>
-Helix-OSDL offers a way of having rather high-quality music playback on the DS, while loading the main processor (ARM9) as little as possible. The otherwise often under-used ARM7 takes in charge the actual decoding, instead of being mostly idle.
+Helix-OSDL offers a way of having rather high-quality music playback on the DS, while loading as little as possible the main processor (ARM9). The otherwise often under-used ARM7 takes in charge the actual decoding on the MP3 stream, instead of being mostly idle.
 </p>
 
 <p>
-Helix-OSDL is developed in pure C, not C++, to fit in the up to 96 kilobytes of RAM available for the ARM7. A library is used to avoid being too intrusive by relying in an ARM7 full-blown dedicated executable.
-</p>
-
-
-<p>
-MP3 encoding is used, as RAW/WAV files would use a lot of place in the storage medium (ex: linker) and eat of lot of I/O bandwidth for playback. OggVorbis is not used (although we prefer it to MP3) as its decoding apparently requires more CPU resources than MP3, even with the <a href="http://xiph.org/vorbis/" target="_blank">Tremor</a> implementation, and that it might be too demanding for the ARM7.
+Helix-OSDL is developed in pure C, not C++, to fit in the up to 96 kilobytes of RAM available for the ARM7 and to ease its integration in third-party code. A library is used to avoid being too intrusive in the user code, although one can rely directly on our ARM7 full-blown dedicated example executable.
 </p>
 
 
 <p>
-Helix is used because open-source lightweight MP3 decoders for low-end devices (with no floating-point hardware support) are not common, and because this one offers quite impressive performances (128 kbps playback realtime on the ARM7) and features (variable bitrate and joint stereo). It is heavily optimized Its <a href="https://helixcommunity.org/licenses/" target="_blank">licences</a>, commercial and open-source, are however a bit restrictive and actually quite hard to understand. They imply that Helix-OSDL is released under the GPL, and not the LGPL. One has to ensure that one's project is compatible with at least one Helix license before using Helix-OSDL.
+MP3 encoding is used, as RAW/WAV files would use a lot of place in the storage medium (ex: linker) and eat of lot of I/O bandwidth for playback. OggVorbis is not used (although we would prefer it to MP3) as its decoding apparently requires more CPU resources than MP3, even with the <a href="http://xiph.org/vorbis/" target="_blank">Tremor</a> implementation, and that it might be too demanding for the ARM7.
+</p>
+
+
+<p>
+<a href="http://datatype.helixcommunity.org/mp3dec.html" target="_blank">Helix </a> is used because open-source lightweight MP3 decoders for low-end devices (with no floating-point hardware support and little memory) are not common, and because this one, being heavily optimized notably for the ARM processors, offers quite impressive performances (a <a href="http://forum.gbadev.org/viewtopic.php?t=13299" target="_blank">reported</a>
+128 kbps 44.1 kHz joint stereo playback realtime on the ARM7, with only fixed point maths) and features (variable bitrate and joint stereo), while remaining tiny in memory.
+</p>
+
+
+<p>
+The Helix <a href="https://helixcommunity.org/licenses/" target="_blank">licences</a>, commercial and open-source, are however a bit restrictive. As mentioned <a href="https://helixcommunity.org/projects/datatype/summary" target="_blank">here</a>, this software is available under the <em>RealNetworks Community Source License - RCSL 1.2</em>
+and <em>RealNetworks Public Source License - RPSL 1.0</em> licenses. Although they are specified <a href="https://helixcommunity.org/licenses/" target="_blank">here</a> and partly discussed <a href="https://helixcommunity.org/licenses/open_source" target="_blank">here</a> and <a href="https://community.helixcommunity.org/2002/intro/getting-started-4" target="_blank">here</a>, they remain rather difficult to understand (the <a href="https://helixcommunity.org/licenses/licensing_faq" target="_blank">licensing FAQ</a> can help). They imply that Helix-OSDL is released under the GPL, and not the LGPL. One has to ensure that one's project is compatible with at least one Helix license before using Helix-OSDL.
+</p>
+
+<p>
+See also our <a href="../../../misc/nintendo-DS/HomebrewForDS.html" target="_blank">homebrew guide for the DS</a>, including the discussions about <a href="../../../misc/nintendo-DS/HomebrewForDS.html#sound" target="_blank">sound</a> and <a href="../../../misc/nintendo-DS/HomebrewForDS.html#audio-transformations" target="_blank">audio transformations</a>.
 </p>
 
 
@@ -64,7 +76,7 @@ The ARM9 drives the high-level process: it decides when a given music must be pl
 
 <h2>Inner working</h2>
 <p>
-The ARM9 is the only CPU able to access the storage media (the linker), at least when using the libfat, since it cannot fit in the ARM7 memory. Thus the music has to be loaded from the ARM9.
+The ARM9 is the only CPU able to access the storage media (the linker), at least when using the libfat, since this library cannot fit in the ARM7 memory. Thus the music has to be loaded from the ARM9.
 </p>
 
 <p>
@@ -73,8 +85,10 @@ The ARM7 is the only CPU able to access the sound hardware (mixer), so the last 
 
 	<li>the actual <b>decoding</b> has to be performed somewhere in-between, either on the ARM9 or, preferably, on the ARM7</li>
 	
-	<li>both <b>processors</b> have to be synchronized to exchange commands and data, here we chose to use the most appropriate solution, the hardware FIFO with interrupt-based management (no polling)</li>
-
+	<li>both <b>processors</b> have to be synchronized to exchange commands and data, here we chose to use the most appropriate solution, the hardware FIFO with interrupt-based management (no polling for more efficiency). As some lengthy I/O operations should not be performed from interrupt handlers, FIFO interrupts just notify (by setting appropriate booleans) the ARM9 main loop about the need to perform some action, notably to load chunks of encoded data</li>
+	
+	<li>the actual <b>data streaming</b> thus occurs from the ARM9 (libfat) to the ARM7, either for direct playback (RAW sounds) or for Helix decoding (MP3 musics)</li>
+	
 </ul>
 
 </p>
@@ -88,7 +102,104 @@ The following constraints made us design the solution that way:
 
 </p>
 
-  
+
+<h3>Building Helix</h3>
+
+<p>
+To build Helix, one should read first the <a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/readme.txt?view=markup" target="_blank">readme.txt</a> file which gives useful explanations. 
+</p>
+
+<p>
+Before using the sources, one must agree with at least one of the three <a href="https://helixcommunity.org/licenses/" target="_blank">licences</a>. Even though Helix can be obtained from 
+<a href="https://helixcommunity.org/developers/get_connected_to_cvs/quickstart.html" target="_blank">CVS</a>, probably the more convenient method is to download the <a href="https://helixcommunity.org/developers/getting_started/httpdownload.html" target="_blank">zip archive</a> (ex: select the stable version for GNU/Linux). 
+Helix in itself is located in the <code>datatype/mp3/codec/fixpt</code> directory. One can obtain the sources from their <a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/" target="_blank">ViewCVS</a> as well.
+</p>
+
+
+<p>
+Obviously we want an ARM build, not a x86 one. We target the 32-bit ARM mode, not the (16-bit) Thumb one, as it is a 32-bit codec. Real (RealNetworks) code is what we want here, as IPP (<code>Intel Integrated Performance Primitives</code>) is not expected to be available here. So the library should gather, as mentioned, <code>mp3dec.c + mp3tabs.c + real/*.c + real/arm/[files].s</code>
+</p>
+
+
+
+<h3>Using Helix</h3>
+
+
+<p>
+Helix being quite feature-rich, if targeting stereo output then joint-stereo should be preferred to simple stereo, as it takes advantages of the correlation between the two channels. Use the <code>-m j</code> option with LAME to generate appropriate audio data.
+</p>
+
+<p>
+The MPEG-2.5 extension is not useful here, as apparently it targets still lower sampling frequencies (less than 12 kHz).
+</p>
+
+<p>
+Variable bitrates, as opposed to constant ones, are supported by Helix and may be preferred too, so that the bitrate can vary according to the audio needs and thus be more efficient. Use the <code>--vbr-new -V quality</code> option with LAME, with quality between 0 and 9.
+</p>
+
+<p>
+The 
+<a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/testwrap/main.c?view=markup" target="_blank">sources</a> of a test program using Helix should help using it correctly.
+</p>
+
+
+
+<h2>Sources</h2>
+
+<p>
+A lot of information about Helix can be found directly in its dedicated website, including:
+
+<ul>
+
+    <li>the Helix MP3 decoder <a href="https://datatype.helixcommunity.org/mp3dec.html" target="_blank">main page</a></li>
+	
+    <li>the Helix <a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/readme.txt?view=markup" target="_blank">README</a></li>
+	
+    <li>the Helix <a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/testwrap/main.c?view=markup" target="_blank">test example</a></li>
+	
+    <li>the Helix <a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/LICENSE.txt?view=markup" target="_blank">LICENSE.txt</a> file</li>
+	
+
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+</ul>
+</p>
+
+
+<p>
+Integration of Helix and various issues are discussed in following threads of the <a href="http://forum.gbadev.org" target="_blank">gbadev</a> forums (chronological order):
+
+<ul>
+
+    <li><a href="http://forum.gbadev.org/viewtopic.php?t=13007" target="_blank">Proper sound streaming implementation</a>, about sound streaming</li>
+
+    <li><a href="http://forum.gbadev.org/viewtopic.php?t=13299" target="_blank"> Helix MP3 decoder</a>, about Helix build and performances</li>
+ 
+    <li><a href="http://forum.gbadev.org/viewtopic.php?t=13430" target="_blank">FIFO handler library</a>, to synchronize the two ARMs</li>
+
+    <li><a href="http://forum.gbadev.org/viewtopic.php?t=13448" target="_blank">mp3 playback examples (was: Problems using the helix mp3dec)</a>, about integration of Helix and numerous hints and tricks</li>
+
+    <li><a href="http://forum.gbadev.org/viewtopic.php?t=14204" target="_blank"> Sound Streaming</a>, again about sound streaming</li>
+
+    <li><a href="http://forum.gbadev.org/viewtopic.php?t=14222" target="_blank">Multiple timer interrupts and sound corruption</a>, about timer issues</li>
+
+    <li><a href="http://forum.gbadev.org/viewtopic.php?t=14287" target="_blank">About MP3 Decoding...</a>, about streaming for Helix</li>
+		
+	
+
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+</ul>
+</p>
+
+<p>
+Most of the work has been done by <b>ThomasS</b>, <b>DekuTree64</b>, <b>Noda</b>, <b>DragonMinded</b>, <b>tepples</b>,  <b>simonjhall</b>, <b>Lazy1</b>, many thanks to them for sharing their knowledge.
+</p>
+
 <br>
 <br>
 <br>
@@ -107,7 +218,7 @@ The following constraints made us design the solution that way:
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update: Friday, October 26, 2007</em>
+  <em>Last update: Thursday, November 1, 2007</em>
 </center>
 
 </body>
