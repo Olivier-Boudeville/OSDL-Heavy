@@ -551,8 +551,10 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	
 	if ( Pixels::areEqual( textColor, Pixels::Black, /* use alpha */ false ) )
 	{
+	
 		colorKey = Pixels::White ;
 		res.fill( colorKey ) ;
+		
 	}	
 	else
 	{
@@ -695,18 +697,35 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 		{
        
 			currentWord = words.front() ;
+			
     	   
 			// Multiple whitespaces in a row can lead to empty words:
 			if ( currentWord.empty() )
 			{
+			
 				wordSurface = 0 ;
 				wordWidth = 0 ;
+				
 			}
 			else
 			{   
+			
 				wordSurface = & getConstLatin1WordFromCache( currentWord,
 					quality, textColor ) ;
-				wordWidth   = wordSurface->getWidth() ;
+				wordWidth = wordSurface->getWidth() ;
+				
+				/*
+				 * Check it is at least possible to fit that word alone:
+				 * (better an error log than an exception that would prevent
+				 * any rendering to take place: at least the previous words
+				 * can be displayed).
+				 *
+				 */
+				if ( wordWidth > width )
+					LogPlug::error( "Font::renderLatin1MultiLineText: "
+						"the rendering of word '" + currentWord 
+						+ "' cannot fit in one line." ) ;
+	
 			}
     	   
 			if ( currentWidth + wordWidth <= width ) 
@@ -730,6 +749,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 			}
 			else
 			{
+			
 				// With this last word, the line would be too long:
 				lineFull = true ;
 			}
