@@ -1033,6 +1033,10 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose ownership 
 						 * is transferred to the caller.
 						 *
+						 * @note if there is a word too long to fit (even
+						 * alone) on one line, the rendering will not fail but
+						 * will stop before that word.
+						 *
 						 * @throw TextException on error.
 						 *
 						 */
