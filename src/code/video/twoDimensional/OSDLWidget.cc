@@ -46,14 +46,14 @@ Text::VerticalAlignment Widget::_TitleVerticalAlignment
 
 /*
  * By default, the client area takes almost the full room 
- * (edges are one pixel thick) :
+ * (edges are one pixel thick):
  *
  */
 
-// One more pixel on width increases readability :
+// One more pixel on width increases readability:
 Length Widget::_ClientOffsetWidth = 2 ;
 
-// Not too much margin since too few lines could be displayed otherwise :
+// Not too much margin since too few lines could be displayed otherwise:
 Length Widget::_ClientOffsetHeight = 1 ;
 
 
@@ -71,7 +71,7 @@ Widget::Widget( Surface & container, const Point2D & relativePosition,
 		Pixels::ColorDefinition baseColor,
 		const string & title, bool minMaximizable, bool draggable, 
 		bool wrappable, bool closable ) 
-			throw( VideoException ) :
+			throw( VideoException ):
 	Surface( 
 		container.getFlags(), 
 		width, 
@@ -106,7 +106,7 @@ Widget::Widget( Surface & container, const Point2D & relativePosition,
 	setBaseColorMode( baseColorMode, baseColor ) ;	
 	
 	/*
-	 * Speed boost : an alpha channel will be used iff the container 
+	 * Speed boost: an alpha channel will be used iff the container 
 	 * too already uses it.
 	 *
 	 */
@@ -117,7 +117,7 @@ Widget::Widget( Surface & container, const Point2D & relativePosition,
 	
 	updateClientArea() ;
 
-	// Force the container to have to be redrawn as well :
+	// Force the container to have to be redrawn as well:
 	getContainer().setRedrawState( true ) ;
 		
 }
@@ -161,13 +161,13 @@ void Widget::resize( Length newWidth, Length newHeight, bool ignored ) throw()
 
 	/*
 	 * This test is needed so that the client area is updated only if 
-	 * necessary :
+	 * necessary:
 	 *
 	 */
 	if ( ( newWidth == getWidth() ) && ( newHeight == getHeight() ) )
 		return ;
 
-	// Will set _needsRedraw to true :
+	// Will set _needsRedraw to true:
 	Surface::resize( newWidth, newHeight ) ;
 	
 	updateClientArea() ;
@@ -198,9 +198,9 @@ void Widget::setBaseColorMode( BaseColorMode newBaseColorMode,
 	if ( newBaseColorMode != _baseColorMode )
 	{
 	
-		// Here the base color mode changed :
+		// Here the base color mode changed:
 		
-		// Deactivate color key if needed :
+		// Deactivate color key if needed:
 		if ( _baseColorMode == Colorkey )
 		{
 		
@@ -211,7 +211,7 @@ void Widget::setBaseColorMode( BaseColorMode newBaseColorMode,
 		else
 		{
 		
-			// Activate color key if needed :
+			// Activate color key if needed:
 			if ( newBaseColorMode == Colorkey )
 				mustUpdateColorKey = true ;
 				
@@ -222,7 +222,7 @@ void Widget::setBaseColorMode( BaseColorMode newBaseColorMode,
 	}
 	else
 	{
-		// Here the base color mode did not change, but base color may have :
+		// Here the base color mode did not change, but base color may have:
 		
 		if ( ( _baseColorMode == Colorkey ) && mustUpdateColor )
 			mustUpdateColorKey = true ;
@@ -292,7 +292,7 @@ bool Widget::clean() throw()
 	switch( _baseColorMode )
 	{
 		
-		// Both are the same here :
+		// Both are the same here:
 		case BackgroundColor:
 		case Colorkey:
 			return ( fill( _baseColor ) ) ;
@@ -304,11 +304,11 @@ bool Widget::clean() throw()
 		
 		case NotInitialized:
 			LogPlug::error( 
-				"Widget::clean : base color mode not initialized." ) ;
+				"Widget::clean: base color mode not initialized." ) ;
 			return false ;
 		
 		default:
-			LogPlug::error( "Widget::clean : unknown base color mode." ) ;
+			LogPlug::error( "Widget::clean: unknown base color mode." ) ;
 			return false ;
 			break ;		
 			
@@ -327,16 +327,16 @@ void Widget::beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 	{
 		
 #if OSDL_DEBUG_WIDGET
-		LogPlug::trace( "Widget::beNotifiedOf : redraw event received" ) ; 
+		LogPlug::trace( "Widget::beNotifiedOf: redraw event received" ) ; 
 #endif // OSDL_DEBUG_WIDGET
 
-		// Takes in charge the recursive redraw as well for sub-widgets :
+		// Takes in charge the recursive redraw as well for sub-widgets:
 		redraw() ;
 		
 		return ;
 	}
 	
-	LogPlug::error( "Widget::beNotifiedOf : unexpected event received : " 
+	LogPlug::error( "Widget::beNotifiedOf: unexpected event received: " 
 		+ newEvent.toString( Ceylan::high ) ) ;
 
 }
@@ -347,7 +347,7 @@ void Widget::setRedrawState( bool needsToBeRedrawn ) throw()
 
 	/*
 	 * If redraw state goes from false to true, then propagate the 
-	 * need of redraw to the container :
+	 * need of redraw to the container:
 	 *
 	 */
 	if ( ( ! getRedrawState() ) && needsToBeRedrawn )
@@ -363,24 +363,24 @@ void Widget::redraw() throw()
 
 #if OSDL_DEBUG_WIDGET
 
-	LogPlug::trace( "Widget::redraw : needs redraw attribute is " 
+	LogPlug::trace( "Widget::redraw: needs redraw attribute is " 
 		+ Ceylan::toString( getRedrawState() ) + "." ) ; 
 		
 #endif // OSDL_DEBUG_WIDGET
 
 	/*
 	 * Triggers its own redraw then the full recursive redraw for any 
-	 * internal subwidgets :
+	 * internal subwidgets:
 	 *
 	 */
 	Surface::redraw() ;
 	
-	// Once done, draw the result on the container :
+	// Once done, draw the result on the container:
 	try
 	{
 	
 #if OSDL_DEBUG_WIDGET
-		LogPlug::trace( "Widget::redraw : blitting to container" ) ;
+		LogPlug::trace( "Widget::redraw: blitting to container" ) ;
 #endif // OSDL_DEBUG_WIDGET
 
 		blitTo( getContainer().getWidgetRenderTarget(), _upperLeftCorner ) ;
@@ -388,7 +388,7 @@ void Widget::redraw() throw()
 	}
 	catch( const VideoException & e )
 	{
-		LogPlug::error( "Widget::redraw : blit to container failed : " 
+		LogPlug::error( "Widget::redraw: blit to container failed: " 
 			+ e.toString() ) ;
 	}	
 	
@@ -404,7 +404,7 @@ void Widget::redrawInternal() throw()
 	
 	drawFundamentals( /* target directly the surface widget */ *this ) ;
 	
-	// _needsRedraw is updated :
+	// _needsRedraw is updated:
 	if ( _decorated ) 
 		drawDecorations( /* target directly the surface widget */ *this ) ;
 	
@@ -434,7 +434,7 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 		+ _upperLeftCorner.toString( Ceylan::medium )
 		+ " in the referential of its container." ) ;
 		
-	widgetList.push_back( "Widget dimensions : ( width = " 
+	widgetList.push_back( "Widget dimensions: ( width = " 
 		+ Ceylan::toString( getWidth() ) 
 		+ " ; height = " + Ceylan::toString( getHeight() ) + " )" ) ; 
 	
@@ -443,7 +443,7 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 	else
 		widgetList.push_back( "Widget is not decorated." ) ;
 		
-	widgetList.push_back( "Widget client area : " + _clientArea.toString() ) ;
+	widgetList.push_back( "Widget client area: " + _clientArea.toString() ) ;
 	
 	if ( _title.empty() )
 		widgetList.push_back( "Widget has no title." ) ;
@@ -508,10 +508,10 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 		+ Surface::toString( Ceylan::medium ) ) ;			
 		
 		
-	widgetList.push_back( "Widget container is : " 
+	widgetList.push_back( "Widget container is: " 
 		+ getConstContainer().toString( Ceylan::low ) ) ;	
 		
-	return "Widget : " + Ceylan::formatStringList( widgetList ) ;
+	return "Widget: " + Ceylan::formatStringList( widgetList ) ;
 	
 }
 
@@ -544,7 +544,7 @@ void Widget::SetEdgeColor( Pixels::ColorDefinition edgeColorDef ) throw()
 void Widget::updateDecorationFlag() throw() 
 {
 	
-	// True iff already true or at least a decorated attribute selected :
+	// True iff already true or at least a decorated attribute selected:
 	if ( ! _decorated && 
 		( _minMaximizable || _draggable || _wrappable || _closable 
 			|| ( ! _title.empty() ) ) )
@@ -558,7 +558,7 @@ void Widget::updateClientArea() throw()
 
 	/*
 	 * Defines the biggest possible inner upright rectangle available 
-	 * for rendering :
+	 * for rendering:
 	 *
 	 */
 	
@@ -595,19 +595,19 @@ Surface & Widget::getContainer() throw()
 #if OSDL_DEBUG_WIDGET
 
 	if ( _sources.size() != 1 )
-		Ceylan::emergencyShutdown( "Widget::getContainer : "
-			"not exactly one registered source : " 
+		Ceylan::emergencyShutdown( "Widget::getContainer: "
+			"not exactly one registered source: " 
 			+ Ceylan::toString( _sources.size() )
 			+ " sources in listener list." ) ;
 			
 #endif // OSDL_DEBUG_WIDGET
 	
-	// List with only one element :
+	// List with only one element:
 	 
 	Surface * container = dynamic_cast<Surface *>( _sources.back() ) ;
 	
 	if ( container == 0 )
-		Ceylan::emergencyShutdown( "Widget::getContainer : "
+		Ceylan::emergencyShutdown( "Widget::getContainer: "
 			"listener source was not a surface container." ) ;
 	
 	return * container ;
@@ -623,19 +623,19 @@ const Surface & Widget::getConstContainer() const throw()
 #if OSDL_DEBUG_WIDGET
 	
 	if ( _sources.size() != 1 )
-		Ceylan::emergencyShutdown( "Widget::getConstContainer : "
-			"not exactly one registered source : " 
+		Ceylan::emergencyShutdown( "Widget::getConstContainer: "
+			"not exactly one registered source: " 
 			+ Ceylan::toString( _sources.size() )
 			+ " sources in listener list." ) ;
 			
 #endif // OSDL_DEBUG_WIDGET
 	
-	// List with only one element :
+	// List with only one element:
 	 
 	const Surface * container = dynamic_cast<Surface *>( _sources.back() ) ;
 	
 	if ( container == 0 )
-		Ceylan::emergencyShutdown( "Widget::getConstContainer : "
+		Ceylan::emergencyShutdown( "Widget::getConstContainer: "
 			"listener source was not a surface container." ) ;
 	
 	return * container ;
@@ -648,10 +648,10 @@ void Widget::drawFundamentals( Surface & targetSurface ) throw()
 
 	clean() ;
 	
-	// Draw the widget window edges :
+	// Draw the widget window edges:
 	targetSurface.drawEdges( _EdgeColor ) ;
 
-	// Uncomment to see client area :
+	// Uncomment to see client area:
 	//drawBox( _clientArea, Pixels::Yellow, /* filled */ false ) ;
 	
 }
@@ -680,7 +680,7 @@ void Widget::drawDecorations( Surface & targetSurface ) throw()
 	switch( _TitleHorizontalAlignment )
 	{
 	
-		// Right not implemented yet since mostly useless :
+		// Right not implemented yet since mostly useless:
 		
 		case Text::Left:
 			startingAbscissa = targetSurface.getUpperLeftAbscissa() 
@@ -690,7 +690,7 @@ void Widget::drawDecorations( Surface & targetSurface ) throw()
 		case Text::WidthCentered:
 		case Text::Right:
 		default:
-			// No clipping performed :
+			// No clipping performed:
 			startingAbscissa = targetSurface.getUpperLeftAbscissa() 
 				+ ( targetSurface.getWidth() - 
 						static_cast<Coordinate>( _title.size() ) 
@@ -703,7 +703,7 @@ void Widget::drawDecorations( Surface & targetSurface ) throw()
 	switch ( _TitleVerticalAlignment )
 	{
 	
-		// Bottom not implemented yet since mostly useless :
+		// Bottom not implemented yet since mostly useless:
 		
 		case Text::Top:
 		 	startingOrdinate = targetSurface.getUpperLeftOrdinate() 
@@ -713,7 +713,7 @@ void Widget::drawDecorations( Surface & targetSurface ) throw()
 		case Text::HeightCentered:
 		case Text::Bottom:
 		default:
-			// No clipping performed :
+			// No clipping performed:
 			startingOrdinate = targetSurface.getUpperLeftOrdinate() 
 				+ /* to compensate for widget border */ 1 
 				+ ( _TitleBarOffsetOrdinate - Text::BasicFontCharacterHeight ) 
