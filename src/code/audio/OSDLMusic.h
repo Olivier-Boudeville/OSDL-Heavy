@@ -372,7 +372,8 @@ namespace OSDL
 				 * which the fade-in effect should take to go from silence to
 				 * full volume.
 				 *
-				 * @param position the position to play from.
+				 * @param position the position to play from, expressed in
+				 * seconds.
 				 *
 				 * @param playCount the number of times this music should be 
 				 * played, unless stopped by halt, fade out, expiration time or
@@ -387,6 +388,8 @@ namespace OSDL
 				 *
 				 * @note Cannot be inherited from Audible as they have no
 				 * concept of a position.
+				 *
+				 * @note Works only for OggVorbis-encoded musics.
 				 *
 				 */
 				virtual void playWithFadeInFromPosition( 
