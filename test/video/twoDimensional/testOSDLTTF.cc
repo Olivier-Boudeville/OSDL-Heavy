@@ -16,7 +16,7 @@ using namespace Ceylan::System ;
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation 
- * tree, from executable build directory :
+ * tree, from executable build directory:
  *
  */
 const std::string trueTypeFontDirFromExec = 
@@ -25,7 +25,7 @@ const std::string trueTypeFontDirFromExec =
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in build tree :
+ * from playTests.sh location in build tree:
  *
  */
 const std::string trueTypeFontDirForBuildPlayTests 
@@ -34,7 +34,7 @@ const std::string trueTypeFontDirForBuildPlayTests
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in installed tree :
+ * from playTests.sh location in installed tree:
  *
  */
 const std::string trueTypeFontDirForInstalledPlayTests 
@@ -44,7 +44,7 @@ const std::string trueTypeFontDirForInstalledPlayTests
 
 /*
  * Those are Larabie splendid fonts, see read_me.html under
- * trueTypeFontDirFromExec :
+ * trueTypeFontDirFromExec:
  *
  */
 const std::string firstTrueTypeFontFile  = "cretino.ttf" ;
@@ -136,7 +136,7 @@ int main( int argc, char * argv[] )
 
 	bool randomTestWanted  = true ;
 	
-	// Should be the only situation where blit blocks appear (if true) :
+	// Should be the only situation where blit blocks appear (if true):
 	bool randomBackgroundColor = true ;
 	
 	bool qualityTestWanted = true ;
@@ -161,7 +161,7 @@ int main( int argc, char * argv[] )
 			"allows for far more debug informations." ) ;
 
 				
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Pre requesite: initializing the display" ) ;	
 	      
 		     
 
@@ -201,7 +201,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -215,7 +215,7 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
@@ -248,7 +248,7 @@ int main( int argc, char * argv[] )
 		catch( const TextException & e )
 		{
 			LogPlug::info( 
-				"Asking for a non-existing font failed as expected : " 
+				"Asking for a non-existing font failed as expected: " 
 				+ e.toString() ) ;
 			correct = true ;
 		}
@@ -258,7 +258,7 @@ int main( int argc, char * argv[] )
 				"Requesting a non-existing font did not fail as expected." ) ;
 				
 		/*
-		 * Find a valid TrueType font :
+		 * Find a valid TrueType font:
 		 *
 		 */
 		TrueTypeFont::TrueTypeFontFileLocator.addPath( 
@@ -271,7 +271,7 @@ int main( int argc, char * argv[] )
 			trueTypeFontDirForInstalledPlayTests ) ;
 			
 			
-		LogPlug::info( "TrueType fonts will be found through : " 
+		LogPlug::info( "TrueType fonts will be found through: " 
 			+ TrueTypeFont::TrueTypeFontFileLocator.toString() ) ;		
 		
 		
@@ -281,7 +281,7 @@ int main( int argc, char * argv[] )
 	    	LogPlug::info( 
 				"Writing at random places text with random color." ) ;	
 		
-	    	LogPlug::info( "Prerequesite : having four random generators" ) ;	
+	    	LogPlug::info( "Prerequesite: having four random generators" ) ;	
 		
 			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0,
 				screenWidth ) ;
@@ -298,7 +298,7 @@ int main( int argc, char * argv[] )
 				/* point size */ 50, /* font index */ 0, 
 				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
 						
-			LogPlug::info( "Successfully loaded following font : " 
+			LogPlug::info( "Successfully loaded following font: " 
 				+ existingFont.toString() ) ;
 		
 		
@@ -364,7 +364,7 @@ int main( int argc, char * argv[] )
 						
 				}
 				
-				// Avoid too much logs :
+				// Avoid too much logs:
 				if ( i % 10 == 0 )
 					LogPlug::debug( "Requesting rendering for character '" 
 						+ Ceylan::toString( toRender )
@@ -375,8 +375,8 @@ int main( int argc, char * argv[] )
 				// Try renderLatin1GlyphAlpha instead to see it is not correct.
 
 				/*
-				 * Test both : generates an intermediate texture and blit it, 
-				 * or blit directly :
+				 * Test both: generates an intermediate texture and blit it, 
+				 * or blit directly:
 				 *
 				 */
 				if ( i % 2 == 0 )
@@ -430,7 +430,7 @@ int main( int argc, char * argv[] )
 					LogPlug::error( "Grid rendering failed." ) ;
 
 			/*
-			 * Find a valid TrueType font :
+			 * Find a valid TrueType font:
 			 *
 			 */
 			TrueTypeFont::TrueTypeFontFileLocator.addPath(
@@ -443,14 +443,14 @@ int main( int argc, char * argv[] )
 				trueTypeFontDirForInstalledPlayTests ) ;
 				
 				
-			LogPlug::info( "TrueType fonts will be found through : " 
+			LogPlug::info( "TrueType fonts will be found through: " 
 				+ TrueTypeFont::TrueTypeFontFileLocator.toString() ) ;
 					
 			TrueTypeFont existingFont( firstTrueTypeFontFile, 50, 
 				/* font index */ 0, /* convertToDisplay */ true, 
 				/* render cache */ Font::None ) ;
 						
-			LogPlug::info( "Successfully loaded following font : " 
+			LogPlug::info( "Successfully loaded following font: " 
 				+ existingFont.toString() ) ;
 
 		
@@ -611,7 +611,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -620,7 +620,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -629,7 +629,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
