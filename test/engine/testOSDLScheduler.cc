@@ -25,7 +25,9 @@ using std::list ;
  * examine the skip behaviour.
  *
  * This test applies only to the scheduler on soft real-time (best effort) 
- * mode.
+ * mode. It is not interactive though.
+ *
+ * @note If not in batch mode, this test should last for exactly 10 seconds.
  *
  * @see testOSDLSchedulerNoDeadline.cc for the batch (screenshot) version.
  *
@@ -224,12 +226,13 @@ int main( int argc, char * argv[] )
 			
 		}
 		
+		
+			
 		LogPlug::info( 
 			"Starting OSDL with video and, therefore, events enabled." ) ;
 					
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
 			CommonModule::UseVideo | CommonModule::UseEvents ) ;		
-			
 		
 		LogPlug::info( "Getting events module." ) ;
 		EventsModule & myEvents = myOSDL.getEventsModule() ; 
@@ -245,6 +248,19 @@ int main( int argc, char * argv[] )
 		// A SDL window is needed to have the SDL event system working:
 		myVideo.setMode( 640, 480, VideoModule::UseCurrentColorDepth, 
 			VideoModule::SoftwareSurface ) ;
+
+			
+		if ( ! isBatch )
+		{
+		
+			std::cout << std::endl
+				<< "Warning: this test should last for exactly 10 seconds"
+				<< "(and it is not interactive)" << std::endl ;
+				
+			myOSDL.getEventsModule().waitForAnyKey() ;
+		
+		}
+
 		
 		LogPlug::info( "Asking for a scheduler to be used." ) ;
 		myEvents.useScheduler() ;
@@ -270,9 +286,11 @@ int main( int argc, char * argv[] )
 				
 		for ( Ceylan::Uint32 i = 1; i < stoppersCount; i++ )
 		{
+		
 			// All stoppers will stop at simulation tick stopTick or later:
 			stoppers.push_back( new SchedulerStopper( 
-				stopTick + stopTickRand.getNewValue() ) ) ;		
+				stopTick + stopTickRand.getNewValue() ) ) ;	
+					
 		}
 		
 							
