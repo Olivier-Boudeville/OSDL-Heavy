@@ -254,6 +254,16 @@ int main( int argc, char * argv[] )
 			"and if I find that I cannot horrify, I'll go for the gross-out "
 			"(Stephen King)." ;
 
+		/*
+		 * Very long words could be tested as well, but it would lead to partial
+		 * renderings (as expected by the API).
+		 *
+			"Testing long words: "
+			"Happinessistwinfloppies.IntelCPUsarenotdefective,"
+			"theyjustactthatway. "
+			"YouwillvisittheDungPitsofGlivesoon. "
+		 *
+		 */
 
 		const string mySecondText = 
 			"This is an example of a text widget with round corners. "
