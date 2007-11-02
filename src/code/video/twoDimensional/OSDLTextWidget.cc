@@ -188,7 +188,12 @@ void TextWidget::redrawBackBuffer() throw()
 	}
 	catch( const TextException & e )
 	{
-		LogPlug::error( "TextWidget::redrawBackBuffer: " + e.toString() ) ;
+	
+		LogPlug::error( "TextWidget::redrawBackBuffer failed: " 
+			+ e.toString() ) ;
+		
+		return ;	
+		
 	}
 
 	// Uncomment to see text box and to check lowest pixel row used by text:
