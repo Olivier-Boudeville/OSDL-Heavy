@@ -17,14 +17,14 @@ using namespace Ceylan::System ;
 /**
  * This font directory is defined relatively to the place where the script
  * automating the test suite will be run (trunk/test/playTests.sh, which
- * changes its current directory to trunk/test in all cases) :
+ * changes its current directory to trunk/test in all cases):
  *
  */
 const std::string fixedFontDirForPlayTests = "../src/doc/web/common/fonts" ;
 
 
 /**
- * This font directory is defined relatively to the build tree for this test :
+ * This font directory is defined relatively to the build tree for this test:
  *
  */
 const std::string fixedFontDirFromTestBuildLocation = 
@@ -32,7 +32,7 @@ const std::string fixedFontDirFromTestBuildLocation =
 
 
 /**
- * This font directory is defined relatively to the install tree for this test :
+ * This font directory is defined relatively to the install tree for this test:
  *
  */
 const std::string fixedFontDirFromTestInstallLocation = 
@@ -97,7 +97,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -111,18 +111,18 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 
 			
 		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Pre requesite: initializing the display" ) ;	
 	         
 		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
-			CommonModule::UseVideo ) ;				
+			CommonModule::UseVideo | CommonModule::UseEvents ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
@@ -144,7 +144,7 @@ int main( int argc, char * argv[] )
 	    	LogPlug::info( 
 				"Writing at random places text with random color." ) ;	
 		
-    		LogPlug::info( "Prerequesite : having four random generators" ) ;	
+    		LogPlug::info( "Prerequesite: having four random generators" ) ;	
 		
 			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0,
 				screenWidth ) ;
@@ -169,7 +169,7 @@ int main( int argc, char * argv[] )
 			{
 			
 				LogPlug::info( 
-					"Asking for a non-existing font failed as expected : " 
+					"Asking for a non-existing font failed as expected: " 
 					+ e.toString() ) ;
 				correct = true ;
 			}
@@ -197,7 +197,7 @@ int main( int argc, char * argv[] )
 			FixedFont existingFont( 6, 12, /* renderingStyle */ Font::Normal, 
 				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
 						
-			LogPlug::info( "Successfully loaded following font : " 
+			LogPlug::info( "Successfully loaded following font: " 
 				+ existingFont.toString() ) ;
 			
 			ColorElement red ;
@@ -227,7 +227,7 @@ int main( int argc, char * argv[] )
 			Ceylan::Latin1Char toRender ;
 		
 		
-			// Generates an intermediate texture and blit it, or blit directly :
+			// Generates an intermediate texture and blit it, or blit directly:
 			bool useBlit = false ;
 		
 			for ( Ceylan::Uint32 i = 0; i < 600; i++ )
@@ -246,7 +246,7 @@ int main( int argc, char * argv[] )
 				textColor = convertRGBAToColorDefinition( red, green, blue, 
 					Pixels::AlphaOpaque ) ;
 			
-				// Avoid too much logs :
+				// Avoid too much logs:
 				if ( i % 10 == 0 )
 					LogPlug::debug( "Requesting rendering for character '" 
 						+ Ceylan::toString( toRender )
@@ -318,9 +318,9 @@ int main( int argc, char * argv[] )
 			FixedFont::FixedFontFileLocator.addPath( 
 				fixedFontDirFromTestBuildLocation ) ;
 			
-			// Test in turn all known font files :
+			// Test in turn all known font files:
 		
-			// Width : 5
+			// Width: 5
 			FixedFont one( 5, 7, /* renderingStyle */ Font::Normal, 
 				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
 				
@@ -334,7 +334,7 @@ int main( int argc, char * argv[] )
 				textColor ) ;
 			
 			
-			// Width : 6
+			// Width: 6
 			FixedFont three( 6, 9, /* renderingStyle */ Font::Normal, 
 				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
 				
@@ -370,7 +370,7 @@ int main( int argc, char * argv[] )
 				textColor ) ;
 				
 				
-			// Width : 7
+			// Width: 7
 			FixedFont nine( 7, 13, /* renderingStyle */ Font::Normal, 
 				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
 			nine.blitLatin1Text( screen, 10, 115, toPrint, Font::Solid,
@@ -397,7 +397,7 @@ int main( int argc, char * argv[] )
 				textColor ) ;
 				
 				
-			// Width : 8
+			// Width: 8
 			
 			FixedFont fourteen( 8, 13, /* renderingStyle */ Font::Normal, 
 				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
@@ -415,7 +415,7 @@ int main( int argc, char * argv[] )
 				textColor ) ;
 	
 	
-			// Width : 9
+			// Width: 9
 	
 			FixedFont seventeen( 9, 15, /* renderingStyle */ Font::Normal,
 				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
@@ -438,14 +438,14 @@ int main( int argc, char * argv[] )
 				textColor ) ;
 	
 	
-			// Width : 10
+			// Width: 10
 	
 			FixedFont twentyone( 9, 18, /* renderingStyle */ Font::Normal,
 				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
 			twentyone.blitLatin1Text( screen, 10, 325, toPrint, Font::Solid,
 				textColor ) ;
 	
-			// Also the built-in font :
+			// Also the built-in font:
 			printBasic( toPrint, screen, 10, 470, textColor ) ;
 	
 			screen.update() ;
@@ -468,7 +468,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -477,7 +477,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -486,7 +486,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
