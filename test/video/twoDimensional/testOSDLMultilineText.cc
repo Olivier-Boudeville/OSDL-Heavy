@@ -17,7 +17,7 @@ using namespace Ceylan::System ;
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation 
- * tree, from executable build directory :
+ * tree, from executable build directory:
  *
  */
 const std::string trueTypeFontDirFromExec = 
@@ -26,7 +26,7 @@ const std::string trueTypeFontDirFromExec =
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in build tree :
+ * from playTests.sh location in build tree:
  *
  */
 const std::string trueTypeFontDirForBuildPlayTests 
@@ -35,7 +35,7 @@ const std::string trueTypeFontDirForBuildPlayTests
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in installed tree :
+ * from playTests.sh location in installed tree:
  *
  */
 const std::string trueTypeFontDirForInstalledPlayTests 
@@ -44,7 +44,7 @@ const std::string trueTypeFontDirForInstalledPlayTests
 
 /*
  * Those are Larabie splendid fonts, see read_me.html under
- * trueTypeFontDirFromExec :
+ * trueTypeFontDirFromExec:
  *
  */
 const std::string firstTrueTypeFontFile  = "cretino.ttf" ;
@@ -80,7 +80,16 @@ int main( int argc, char * argv[] )
 		"Cats are intended to teach us that not everything in nature "
 		"has a function. This end of text is written so that "
 		"it cannot fit into the box at all" ;
-		
+
+	/*
+	 * Very long words could be tested as well, but it would lead to partial
+	 * renderings (as expected by the API).
+	 *
+		"youhaveanunusualunderstandingoftheproblemsofhumanrelationships." 
+	 *
+	 */
+	 
+	 		
     try 
 	{
 			
@@ -140,14 +149,14 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 		
 		
 		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Pre requesite: initializing the display" ) ;	
 	         
 		 
 		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo 
@@ -176,7 +185,7 @@ int main( int argc, char * argv[] )
 		
 
 		/*
-		 * Find a valid TrueType font :
+		 * Find a valid TrueType font:
 		 *
 		 */
 		TrueTypeFont::TrueTypeFontFileLocator.addPath( 
@@ -188,7 +197,7 @@ int main( int argc, char * argv[] )
 		TrueTypeFont::TrueTypeFontFileLocator.addPath(
 			trueTypeFontDirForInstalledPlayTests ) ;
 			
-		LogPlug::info( "TrueType fonts will be found through : " 
+		LogPlug::info( "TrueType fonts will be found through: " 
 			+ TrueTypeFont::TrueTypeFontFileLocator.toString() ) ;
 			
 		/*
@@ -196,7 +205,7 @@ int main( int argc, char * argv[] )
 		 * interesting to test) since not only a glyph-cache has to used, 
 		 * but a temporary word cache has also to be used.
 		 *
-		 * Other possibility : RenderCache testedCache = Font::WordCached ;
+		 * Other possibility: RenderCache testedCache = Font::WordCached ;
 		 *
 		 */
 		Font::RenderCache testedCache = Font::GlyphCached ;
@@ -205,7 +214,7 @@ int main( int argc, char * argv[] )
 			/* font index */ 0, /* convertToDisplay */ true, 
 			/* render cache */ testedCache ) ;
 					
-		LogPlug::info( "Successfully loaded following font : " 
+		LogPlug::info( "Successfully loaded following font: " 
 			+ myFont.toString() ) ;
 		
 		Ceylan::Uint16 index ;
@@ -276,7 +285,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -285,7 +294,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -294,7 +303,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
