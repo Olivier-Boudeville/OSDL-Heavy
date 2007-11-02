@@ -21,9 +21,15 @@ using std::list ;
  * Test of OSDL scheduler, in batch (non-interactive, non-real time) mode, 
  * also known as screenshot no-deadline mode.
  *
- * Some useful testing can be made during the two seconds this test should 
- * last, including running it with various machine loads to check it does 
- * not change anything on the result (still no skip, only an extended duration).
+ * Some useful testing can be made during the two *virtual* seconds this test
+ * should last (in batch mode; in interactive mode it should last for 30 
+ * virtual seconds), including running it with various machine loads to check 
+ * it does not change anything on the result (still no skip, only an extended
+ * duration).
+ *
+ * @note As the scheduler has no deadline to meet, on most platforms it will
+ * be far faster than the clock, and 30 virtual seconds may last for less than
+ * 2 real seconds.
  *
  * @see testOSDLScheduler.cc for the soft realtime version.
  *
@@ -119,6 +125,8 @@ class SchedulerStopper: public OSDL::Engine::ActiveObject
 
 
 
+
+
 /**
  * Testing the services of the OSDL scheduler for active objects, in batch
  * mode.
@@ -163,17 +171,19 @@ int main( int argc, char * argv[] )
 						
 			if ( token == "--batch" )
 			{
+			
 				LogPlug::info( "Batch mode selected" ) ;
 				isBatch = true ;
 				
 				/*
-				 * Will stop the scheduler after 1 second 
-				 * (100 simulation ticks, since logic frequency is 100 Hz here).
+				 * Will stop the scheduler after 2 seconds 
+				 * (200 simulation ticks, since logic frequency is 100 Hz here).
 				 *
 				 */
-				stopTick = 100 ;
+				stopTick = 2*100 ;
 				
 				tokenEaten = true ;
+				
 			}
 			
 			if ( token == "--interactive" )
