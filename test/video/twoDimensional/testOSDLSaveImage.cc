@@ -81,14 +81,14 @@ using namespace Ceylan::Log ;
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 		
 		 
 		OSDL::CommonModule & myOSDL = OSDL::getCommonModule( 
-			CommonModule::UseVideo | CommonModule::NoParachute ) ;		
+			CommonModule::UseVideo | CommonModule::UseEvents ) ;		
 				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
@@ -105,7 +105,7 @@ using namespace Ceylan::Log ;
     	LogPlug::info( "Creating a silly image." ) ;	
 
 
-    	LogPlug::info( "Pre requesite : having three random generators." ) ;	
+    	LogPlug::info( "Pre requesite: having three random generators." ) ;	
 		
 		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, 
 			windowWidth ) ;
@@ -174,7 +174,7 @@ using namespace Ceylan::Log ;
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -183,7 +183,7 @@ using namespace Ceylan::Log ;
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -192,7 +192,7 @@ using namespace Ceylan::Log ;
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
