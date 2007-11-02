@@ -66,7 +66,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -80,16 +80,16 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 
 
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Pre requesite: initializing the display" ) ;	
 	         		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
-			CommonModule::UseVideo ) ;				
+			CommonModule::UseVideo | CommonModule::UseEvents ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
@@ -106,7 +106,7 @@ int main( int argc, char * argv[] )
  		
 		screen.lock() ;		
 	
-    	LogPlug::info( "Pre requesite : having three random generators" ) ;	
+    	LogPlug::info( "Pre requesite: having three random generators" ) ;	
 		
 		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, 
 			screenWidth ) ;
@@ -116,7 +116,7 @@ int main( int argc, char * argv[] )
 			
 		Ceylan::Maths::Random::WhiteNoiseGenerator radiusRand( 0, 100 ) ;
 		
-		// Returns 0 or 1, as a coin :
+		// Returns 0 or 1, as a coin:
 		Ceylan::Maths::Random::WhiteNoiseGenerator coinRand( 0, 2 ) ;
 		
 		Ceylan::Maths::Random::WhiteNoiseGenerator colorRand( 0, 256 ) ;
@@ -175,7 +175,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -184,7 +184,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -193,7 +193,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
