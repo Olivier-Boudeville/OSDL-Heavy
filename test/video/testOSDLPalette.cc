@@ -65,7 +65,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
@@ -87,7 +87,7 @@ int main( int argc, char * argv[] )
 					
 
 		OSDL::CommonModule & myOSDL = OSDL::getCommonModule( 
-				CommonModule::UseVideo | CommonModule::NoParachute ) ;	
+				CommonModule::UseVideo | CommonModule::UseEvents ) ;	
 				
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
@@ -104,7 +104,7 @@ int main( int argc, char * argv[] )
 		Palette & greyPal = Palette::CreateGreyScalePalette( screenHeight ) ;
 
 
-		LogPlug::info( "Displaying greyscale palette : " 
+		LogPlug::info( "Displaying greyscale palette: " 
 			+ greyPal.toString() ) ;		
 
 		greyPal.draw( screen ) ;
@@ -121,7 +121,7 @@ int main( int argc, char * argv[] )
 		Palette & colorPal = Palette::CreateGradationPalette(
 			Pixels::MidnightBlue, Pixels::DeepPink, screenHeight ) ;
 
-		LogPlug::info( "Displaying colored palette : " + colorPal.toString() ) ;
+		LogPlug::info( "Displaying colored palette: " + colorPal.toString() ) ;
 		
 		colorPal.draw( screen ) ;
 		
@@ -142,7 +142,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -151,7 +151,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -160,7 +160,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
