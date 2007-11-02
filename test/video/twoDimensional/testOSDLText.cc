@@ -22,14 +22,14 @@ const std::string trueTypeFourthFontName = "cretino.ttf" ;
 
 /*
  * Fixed font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in build tree :
+ * from playTests.sh location in build tree:
  *
  */
 const std::string fixedFontDirFromExec = "../../../src/doc/web/common/fonts" ;
 
 
 /**
- * This font directory is defined relatively to the build tree for this test :
+ * This font directory is defined relatively to the build tree for this test:
  *
  */
 const std::string fixedFontDirForBuildPlayTests = 
@@ -38,7 +38,7 @@ const std::string fixedFontDirForBuildPlayTests =
 
 /*
  * Fixed font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in installed tree :
+ * from playTests.sh location in installed tree:
  *
  */
 const std::string fixedFontDirForInstalledPlayTests 
@@ -48,7 +48,7 @@ const std::string fixedFontDirForInstalledPlayTests
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation 
- * tree, from executable build directory :
+ * tree, from executable build directory:
  *
  */
 const std::string trueTypeFontDirFromExec = 
@@ -57,7 +57,7 @@ const std::string trueTypeFontDirFromExec =
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in build tree :
+ * from playTests.sh location in build tree:
  *
  */
 const std::string trueTypeFontDirForBuildPlayTests 
@@ -66,7 +66,7 @@ const std::string trueTypeFontDirForBuildPlayTests
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in installed tree :
+ * from playTests.sh location in installed tree:
  *
  */
 const std::string trueTypeFontDirForInstalledPlayTests 
@@ -77,7 +77,7 @@ const std::string trueTypeFontDirForInstalledPlayTests
 
 
 /**
- * Small global tests for all graphical text output : useful to check at a
+ * Small global tests for all graphical text output: useful to check at a
  * glance that everything is still working.
  *
  */
@@ -147,12 +147,12 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Pre requesite: initializing the display" ) ;	
 	         
 		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
@@ -175,6 +175,7 @@ int main( int argc, char * argv[] )
 		screen.lock() ;
 		
 		bool gridWanted = true ;		
+		
 		if ( gridWanted )
 		{
 			LogPlug::info( "Drawing a grid to check transparency of text." ) ;
@@ -209,7 +210,7 @@ int main( int argc, char * argv[] )
 			/* renderingStyle */ Text::Font::Bold, /* convertToDisplay */ true,
 			/* render cache */ Text::Font::None ) ;
 					
-		LogPlug::info( "Successfully loaded following font : " 
+		LogPlug::info( "Successfully loaded following font: " 
 			+ myFixedFont.toString() ) ;
 
 		myFixedFont.blitLatin1Text( screen, 10, 50, 
@@ -252,7 +253,7 @@ int main( int argc, char * argv[] )
 				/* convertToDisplay */ true, 
 				/* render cache */ cache ) ;
 
-		LogPlug::info( "Successfully loaded following font : " 
+		LogPlug::info( "Successfully loaded following font: " 
 			+ myFirstTrueTypeFont.toString() ) ;
 
 		myFirstTrueTypeFont.blitLatin1Text( screen, 10, 100, 
@@ -269,7 +270,7 @@ int main( int argc, char * argv[] )
 				/* convertToDisplay */ true, 
 				/* render cache */ cache ) ;
 
-		LogPlug::info( "Successfully loaded following font : " 
+		LogPlug::info( "Successfully loaded following font: " 
 			+ mySecondTrueTypeFont.toString() ) ;
 
 		mySecondTrueTypeFont.blitLatin1Text( screen, 10, 200, 
@@ -286,7 +287,7 @@ int main( int argc, char * argv[] )
 				/* convertToDisplay */ true, 
 				/* render cache */ cache ) ;
 
-		LogPlug::info( "Successfully loaded following font : " 
+		LogPlug::info( "Successfully loaded following font: " 
 			+ myThirdTrueTypeFont.toString() ) ;
 
 		myThirdTrueTypeFont.blitLatin1Text( screen, 10, 300, firstTestSentence,
@@ -302,7 +303,7 @@ int main( int argc, char * argv[] )
 				/* convertToDisplay */ true, 
 				/* render cache */ cache ) ;
 
-		LogPlug::info( "Successfully loaded following font : " 
+		LogPlug::info( "Successfully loaded following font: " 
 			+ myFourthTrueTypeFont.toString() ) ;
 
 		myFourthTrueTypeFont.blitLatin1Text( screen, 10, 400, 
@@ -333,7 +334,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -342,7 +343,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -351,7 +352,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
