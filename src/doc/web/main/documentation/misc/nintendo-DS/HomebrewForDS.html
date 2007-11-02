@@ -1180,7 +1180,11 @@ Due to its superior power compared to the ARM7, the ARM9 is the main processor a
 </p>
 
 <p>
-The ARM9 uses two built-in caches, one for the instructions (ITCM, 32 kilobytes), the other for the data (DTCM, 16 kilobytes). Each is accessed thanks to a dedicated 32-bit wide bus. Both are caching accesses to the main memory and increase the ARM9 performances a lot, at the expense of a small additional level of complexity: as neither the ARM7 nor the DMA circuits are aware of these two caches, care must be taken not to create inconsistencies with their view and the one of the ARM9. To make a better use of these caches, various primitives are provided to ensure they stay in sync with the main memory. This includes a mirror of main memory that is not cacheable, and a way of flushing the data cache.
+The ARM9 uses two built-in caches, one for the instructions (ITCM, 32 kilobytes), the other for the data (DTCM, 16 kilobytes). Each is accessed thanks to a dedicated 32-bit wide bus. Both are caching accesses to the main memory and increase the ARM9 performances a lot, at the expense of a small additional level of complexity: as neither the ARM7 nor the DMA circuits are aware of these two caches, care must be taken not to create inconsistencies with their view and the one of the ARM9.
+</p>
+
+<p>
+To make a better use of these caches, various primitives are provided to ensure they stay in sync with the main memory. This includes a mirror of main memory that is not cacheable (<code>02400000-027FFFFF</code>), and a way of flushing the data cache (<code>DC_FlushAll</code>).
 </p>
 
 <p>
@@ -1218,12 +1222,30 @@ In GBA mode the ARM9 is not powered, only the ARM7 can be used.
 <h5>Inter-CPU communications</h5>
 
 <p>
-As each ARM has specific abilities (ex: the ARM7 is the only one that can access the hardware for sound and wireless), they have to communicate to send to the other ARM commands to be executed on the sender behalf.
+As each ARM has specific abilities (ex: the ARM7 is the only one that can access the hardware for sound and wireless), they have to communicate one way or another to send to the other ARM commands to be executed on the sender behalf.
 </p>
 
 <p>
-The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-Process Communications</em>) based on a set of registers managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to a <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queue</a> with an asynchronous communication protocol. Communication between ARMs can be tricky: beyond the classical issues of synchronization of the concurrent accesses, one has to keep in mind the ARM7 is not aware of the ARM9 caches, which may lead to inconsistencies if using the main memory to share data.
+The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-Process Communications</em>) based on a set of registers managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to a <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queue</a> with an asynchronous communication protocol.
 </p>
+
+<p>
+Communication between ARMs can be tricky: beyond the classical issues of synchronization of the concurrent accesses, one has to keep in mind the ARM7 is not aware of the ARM9 caches, which may lead to inconsistencies if using the main memory to share data.
+</p>
+
+<p>
+One solution is:
+<ol>
+<!--
+	<li><b></b> : </li>
+-->
+	<li>to allocate memory <b>from the ARM9</b>: with the default linking, any allocation done from the ARM7 would return a block in the ARM7 private memory, not addressable from the ARM9</li>
+
+	<li><b>and</b> to ensure the allocated memory is out of the ARM9 data cache (otherwise, if not flushed, the ARM7 may see non-updated memory) by using the <b>non-cached main memory mirror</b> (<code>02400000-027FFFFF</code>, add <code>0x400000</code> to the normal main RAM address to get to the uncached mirror), even if the ARM9 access to the data will be slower</li>
+	
+</ol>
+</p>
+
 
 
 
@@ -2028,11 +2050,12 @@ Only the ARM7 can access the sound hardware, so we somehow have to have the ARM9
 </p>
 
 
+
 <h5>Sound output</h5>
 
 
 <p>
-Sample data can be assigned independently to any of the 16 channels. For a given channel, the playback frequency of the sample (ex: 22 050 Hz), the sample size (ex: 8bit) and the sample data length can be set, among other informations (channel enabled or not, looping mode or one shot, volume, etc.). Stereo sound can be output, with panning from left to right for example.
+Sample data can be assigned independently to any of the 16 hardware channels. For a given channel, the playback frequency of the sample (ex: 22 050 Hz), the sample size (ex: 8bit) and the sample data length can be set, among other informations (channel enabled or not, looping mode or one shot, volume, etc.). Stereo sound can be output, with panning from left to right for example.
 </p>
 
 
@@ -2048,16 +2071,22 @@ Sample data also need to be passed to the hardware in raw format, i.e. as a seri
 
 <h6>MOD, 8/16-bit, ADPCM</h6>
 <p>
-Relying on the sound mixing hardware is the best bet: it can manage 16 independent audio channels with about 5% memory bandwidth usage. Therefore using <a href="http://modarchive.org/" target="_blank">MOD</a>-like soundtracks is favored, even by commercial games. Supported formats are 8 bit, 16 bit, or <a href="http://en.wikipedia.org/wiki/ADPCM" target="_blank">ADPCM</a>. Any sound played through the DS sound hardware at a frequency other than 32768 Hz will be resampled to 32768 Hz with nearest-neighbor algorithm.
+Relying on the sound mixing hardware is the best bet: it can manage the 16 independent audio channels with about 5% memory bandwidth usage. Therefore using <a href="http://modarchive.org/" target="_blank">MOD</a>-like soundtracks is favored, even by commercial games (moreover, according to some sources, using the official SDK implies being unable to program the ARM7, so they endure worse limitations than homebrew). Supported formats are 8 bit, 16 bit, or <a href="http://en.wikipedia.org/wiki/ADPCM" target="_blank">ADPCM</a>. Any sound played through the DS sound hardware at a frequency other than 32768 Hz will be resampled to 32768 Hz with nearest-neighbor algorithm.
 </p>
  
+ 
 <h6>Codecs</h6>
+
 <p>
-With ogg/mp3 decoding, one would eat around 50% of the ARM9 CPU power, or almost 100% of the ARM7, with a pretty low bitrate. One could use the <a href="http://xiph.org/vorbis/" target="_blank">Tremor</a> implementation to benefit from a FPU-less OggVorbis decoder (check that memory leak issues have been solved). Tight 32 bit (ARM, not Thumb) loops should be favoured. OggVorbis decoding on the ARM7 is not proven to be feasible. If game are interested in shifting the load to the ARM7, other applications may just let the decoding take place on the ARM9.
+With advanced decoding like OggVorbis or MP3, one would probably eat around 50% of the ARM9 CPU power, or almost 100% of the ARM7, still with a pretty low bitrate.
 </p>
 
 <p>
-There is a second solution to use highly encoded music on the ARM7: use a mp3 decoder, which is expected to need generally less CPU resources than OggVorbis ones.
+One could use the <a href="http://xiph.org/vorbis/" target="_blank">Tremor</a> implementation to benefit from a FPU-less OggVorbis decoder (check then that memory leak issues have been solved), even if OggVorbis decoding on the ARM7 is not proven to be feasible, CPU-wise. 
+</p>
+
+<p>
+There is an alternate solution to OggVorbis, in order to use highly encoded music on the ARM7: use a mp3 decoder, which is expected to need generally less CPU resources than OggVorbis ones.
 </p>
  
 <p>
@@ -2066,60 +2095,25 @@ This may be done thanks to:
 
 	<li><a href="http://www.underbit.com/products/mad/" target="_blank">libmad</a> (GPL, see also <a href="http://sourceforge.net/projects/mad/" target="_blank">here</a>), but it is deemed not too much optimized for the ARM7</li>
 	
-	<li><a href="https://datatype.helixcommunity.org/mp3dec.html" target="_blank">helix mp3dec</a>, which is small, fast, uses only fixed point maths, and can decode 128 kbps mp3 on ARM7 realtime. As mentioned <a href="https://helixcommunity.org/projects/datatype/summary" target="_blank">here</a>, this software is available under the <em>RealNetworks Community Source License - RCSL 1.2</em>
-and <em>RealNetworks Public Source License - RPSL 1.0</em> licenses. Although they are specified <a href="https://helixcommunity.org/licenses/" target="_blank">here</a> and partly discussed <a href="https://helixcommunity.org/licenses/open_source" target="_blank">here</a> and <a href="https://community.helixcommunity.org/2002/intro/getting-started-4" target="_blank">here</a>, they remain rather difficult to understand</li>
+	<li><a href="https://datatype.helixcommunity.org/mp3dec.html" target="_blank">Helix mp3dec</a>, which is small, fast, uses only fixed point maths, and can decode 128 kbps mp3 on ARM7 realtime. One should check that the decoder <a href="https://helixcommunity.org/licenses/" target="_blank">license</a> is compatible with one's use beforehand. Then one may use Helix directly, or use our already-integrated and adapted <a href="../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a> library</li>
 
 </ul>
 
 </p>
 
-
-<h7>Using Helix</h7>
-
 <p>
-Before using the sources, one must agree with at least one of the three <a href="https://helixcommunity.org/licenses/" target="_blank">licences</a>. Even though Helix can be obtained from 
-<a href="https://helixcommunity.org/developers/get_connected_to_cvs/quickstart.html" target="_blank">CVS</a>, probably the more convenient method is to download the <a href="https://helixcommunity.org/developers/getting_started/httpdownload.html" target="_blank">zip archive</a> (ex: select the stable version for GNU/Linux). 
-Helix in itself is located in the <code>datatype/mp3/codec/fixpt</code> directory. One can obtain the sources from their <a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/" target="_blank">ViewCVS</a> as well.
-</p>
-
-<p>
-Helix being quite feature-rich, if targeting stereo output then joint-stereo should be preferred to simple stereo, as it takes advantages of the correlation between the two channels. Use the <code>-m j</code> option with LAME to generate appropriate audio data.
-</p>
-
-<p>
-The MPEG-2.5 extension is not useful here as apparently it targets lower sampling frequencies (less than 12 kHz).
-</p>
-
-<p>
-Variable bitrates, as opposed to constant ones, are supported by Helix and may be preferred too, so that the bitrate can vary according to the audio needs and thus be more efficient. Use the <code>--vbr-new -V quality</code> option with LAME, with quality between 0 and 9.
+When using the ARM7 for that purpose, tight 32 bit (ARM, not Thumb) loops should be favoured. If games are generally interested in shifting the load to the ARM7, other applications, less CPU-bound, may just let the decoding take place on the ARM9.
 </p>
 
 
-
-<h7>Building Helix</h7>
-
-<p>
-To build Helix, one should read first the <a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/readme.txt?view=markup" target="_blank">readme.txt</a> file which gives useful explanations. 
-</p>
-
-<p>
-Obviously we want an ARM build, not a x86 one. We target the 32-bit ARM mode, not the (16-bit) Thumb one, as it is a 32-bit codec. Real (RealNetworks) code is what we want here, as IPP (<code>Intel Integrated Performance Primitives</code>) must not be available here. So the library should gather, as mentioned, <code>mp3dec.c + mp3tabs.c + real/*.c + real/arm/[files].s</code>
-</p>
-
-
-<p>
-The 
-<a href="https://helixcommunity.org/viewcvs/datatype/mp3/codec/fixpt/testwrap/main.c?view=markup" target="_blank">sources</a> of a test program using Helix should help using it correctly.
-</p>
-
-
+<a name="audio-transformations"></a>
 <h6>Audio transformations</h6>
 <p>
-When developping a game, after the audio content has been secured (i.e. obtained with an appropriate licence), in general it has to be transformed. On GNU/Linux, powerful sound editors are <a href="http://sox.sourceforge.net/" target="_blank">sox</a> (a command-line tool) and <a href="http://audacity.sourceforge.net/" target="_blank">Audacity</a> (a graphical tool). Quite often the audio files do not conform totally to their expected format and/or are somewhat corrupted, causing various post-processing tools to fail. Audacity can be used to fix them, by first importing and then exporting them as are.
+When developping a game, after the audio content has been secured (i.e. obtained with an appropriate licence), in general it has to be transformed. On GNU/Linux, powerful sound editors are <a href="http://sox.sourceforge.net/" target="_blank">sox</a> (a command-line tool) and <a href="http://audacity.sourceforge.net/" target="_blank">Audacity</a> (a graphical tool). Quite often the audio files do not conform totally to their expected format and/or are somewhat corrupted, causing various post-processing tools or playback to fail. Audacity can be used to fix them, by first importing and then exporting them directly, as are.
 </p>
 
 <p>
-After the audio content has been manipulated (cut, cleaned, and possibly run through various effects), it has to be converted, format-wise. Quality has to be lessen, as the handheld resources are scarce. 
+After the audio content has been manipulated (cut, cleaned, and possibly run through various effects), it has to be converted, format-wise. Quality has often to be lessen, as the handheld resources are scarce. 
 </p>
 
 <p>
@@ -2150,7 +2144,7 @@ lame YourLongMusic.wav --verbose -m m -b 96 -q 0 --resample 22.05 YourLongMusic.
 </p>
 
 <p>
-Heard on a hifi player, the quality of the result, compared to the original, is obviously lower. But it remains, in my opinion, above the minimal expectations for a game background music that will be mixed with special effects and output by the DS, with either the plugged earphones or the internal speakers (which are neither bad nor good).
+Heard on a hifi player, the quality of the result, compared to the one of the original, is obviously lower. But it remains, in our opinion, well above the minimal expectations for a game background music that will be mixed with special effects and output by the DS, with either the plugged earphones or the internal speakers (which are neither bad nor good).
 </p>
 
 <p>
@@ -2176,7 +2170,7 @@ Sounds, being shorted hence smaller, are often either fully loaded or fully unlo
 </p>
 
 <p>
-The solution is therefore to stream them, i.e. to read them from file chunk after chunk, in a well-sized buffer (usually a few kilobytes, see <a href="../../rendering/SDL-audio.html#size" target="_blank">this discussion</a> about the latency versus skip tradeoff). Each chunk should be available no later than when the samples it contains are to be played. Once read by the audio layer the chunk can be discarded and replaced by the next loaded one.
+The solution is therefore to stream them, i.e. to read them from file, chunk after chunk, in a well-sized buffer (usually a few kilobytes, see <a href="../../rendering/SDL-audio.html#size" target="_blank">this discussion</a> about the latency versus skip tradeoff). Each chunk should be available no later than when the samples it contains are to be played. Once read by the audio layer the chunk can be discarded and replaced by the next loaded one.
 </p>
 
 <p>
@@ -2184,7 +2178,7 @@ As often a chunk loading lasts a bit, it must be anticipated (the audio layer ca
 </p>
 
 <p>
-As if it was not difficult enough, on the DS the samples are to be read on the ARM9 (libfat does not fit in ARM7 executable) but must be sent to the audio hardware by the ARM7 (the only one that can access it). Any decoding must therefore take place in-between, either sooner (on the ARM9) or later (on the ARM7). This requires a lot of synchronization between the two ARM.
+As if it was not difficult enough, on the DS the samples are to be read on the ARM9 (libfat does not fit in ARM7 executable) but must be sent to the audio hardware by the ARM7 (the only one that can access it). Any decoding must therefore take place in-between, either sooner (on the ARM9) or later (on the ARM7). This requires a lot of synchronization between the two ARM. See our <a href="../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a> library for more details.
 </p>
 
 
