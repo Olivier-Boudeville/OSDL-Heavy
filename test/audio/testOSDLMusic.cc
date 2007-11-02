@@ -173,18 +173,28 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "Loaded music: " + myFirstMusic.toString() ) ;
 		
-		LogPlug::info( "Playing music now." ) ;
+		if ( ! isBatch )
+		{
 		
-		myFirstMusic.play() ;
+			LogPlug::info( "Playing music now." ) ;
 		
-		LogPlug::info( "Waiting for this music to finish." ) ;
+			myFirstMusic.play() ;
 		
-		while ( myAudio.isMusicPlaying() )
-			Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
+			LogPlug::info( "Waiting for this music to finish." ) ;
+		
+			while ( myAudio.isMusicPlaying() )
+				Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
 
-		LogPlug::info( "Music finished." ) ;
-
-
+			LogPlug::info( "Music finished." ) ;
+		
+		}
+		else
+		{
+		
+			LogPlug::info( "In batch mode, hence first music not played." ) ;
+			
+		}
+		
 		targetMusic = "welcome-to-OSDL.ogg" ;
 
 		LogPlug::info( "Loading second music file '" + targetMusic 
@@ -204,8 +214,17 @@ int main( int argc, char * argv[] )
 			LogPlug::info( "Playing music now, with fade in "
 				"and from a position around the middle, and repeat once." ) ;
 		
+		
+			// Position in seconds:
+			MusicPosition startPosition ;
+			
+			if ( isBatch )
+				startPosition = 5 ;
+			else
+				startPosition = 1 ;
+				
 			mySecondMusic.playWithFadeInFromPosition( 
-				/* fadeInMaxDuration */ 5000, /* position in seconds */ 2,
+				/* fadeInMaxDuration */ 5000, startPosition, 
 				/* playCount */ 2 ) ;
 		
 			LogPlug::info( "Waiting for this music to finish." ) ;
