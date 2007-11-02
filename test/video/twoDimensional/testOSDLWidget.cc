@@ -66,7 +66,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -80,16 +80,16 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 		
 		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Pre requesite: initializing the display" ) ;	
 	         		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
-			CommonModule::UseVideo ) ;				
+			CommonModule::UseVideo | CommonModule::UseEvents ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
@@ -104,7 +104,7 @@ int main( int argc, char * argv[] )
     	LogPlug::info( "Drawing widget." ) ;		
  		
 		
-		LogPlug::info( "Before adding widget, screen surface is : "
+		LogPlug::info( "Before adding widget, screen surface is: "
 			 + screen.toString() ) ;
 
 		screen.lock() ;		
@@ -113,7 +113,7 @@ int main( int argc, char * argv[] )
 		 * Widgets will be owned (and deallocated) by their container, here 
 		 * the screen surface.
 		 *
-		 * Widget width is only 100, so 'Heimdal' will be truncated to 'Heimd' :
+		 * Widget width is only 100, so 'Heimdal' will be truncated to 'Heimd':
 		 *
 		 */
 		new Widget( /* container */ screen,
@@ -125,7 +125,7 @@ int main( int argc, char * argv[] )
 			"Eye of Heimdal" ) ;
 
 
-		// Made to overlap :
+		// Made to overlap:
 		
 		new Widget( /* container */ screen,
 			/* location */ Point2D( 100, 100 ), 
@@ -136,7 +136,7 @@ int main( int argc, char * argv[] )
 			"Hello world" ) ;
 		
 		
-		LogPlug::info( "After adding widget, screen surface is : " 
+		LogPlug::info( "After adding widget, screen surface is: " 
 			+ screen.toString() ) ;
 
 		
@@ -165,7 +165,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -174,7 +174,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -183,7 +183,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
