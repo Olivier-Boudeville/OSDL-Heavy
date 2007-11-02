@@ -72,7 +72,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -86,16 +86,16 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 
 		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Pre requesite: initializing the display" ) ;	
 	         		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
-			CommonModule::UseVideo ) ;				
+			CommonModule::UseVideo | CommonModule::UseEvents ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 
@@ -129,10 +129,10 @@ int main( int argc, char * argv[] )
 			ColorDefinition blue  = Pixels::convertRGBAToColorDefinition( 0, 
 				0, 255, 128 ) ;
 			
-			// Both green must look the same :
+			// Both green must look the same:
 			screen.drawCircle( 550, 400, 80, green, /* filled */ true ) ;
 
-			// Both red must look the same :
+			// Both red must look the same:
 			screen.drawCircle( 550, 80, 80, red, /* filled */ true ) ;
 
 			if ( ! screen.drawDiscWithEdge( /* x */ 240, /* y */ 240, 
@@ -167,7 +167,7 @@ int main( int argc, char * argv[] )
 				"Testing random ellipses, circles with our without edges" ) ;
 			
 			
-    		LogPlug::info( "Prerequesite : having three random generators" ) ;	
+    		LogPlug::info( "Prerequesite: having three random generators" ) ;	
 		
 			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0,
 				screenWidth ) ;
@@ -177,7 +177,7 @@ int main( int argc, char * argv[] )
 				
 			Ceylan::Maths::Random::WhiteNoiseGenerator radiusRand( 0, 200 ) ;
 	
-			// Returns 0 or 1, as a coin :
+			// Returns 0 or 1, as a coin:
 			Ceylan::Maths::Random::WhiteNoiseGenerator coinRand( 0, 2 ) ;
 			
 			Ceylan::Maths::Random::WhiteNoiseGenerator typeRand( 0, 3 ) ;
@@ -267,7 +267,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -276,7 +276,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -285,7 +285,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
