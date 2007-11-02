@@ -84,17 +84,17 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 		
 		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Pre requesite: initializing the display" ) ;	
 	         
 		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
-			CommonModule::UseVideo ) ;				
+			CommonModule::UseVideo | CommonModule::UseEvents ) ;				
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
@@ -110,7 +110,7 @@ int main( int argc, char * argv[] )
 		if ( randomTest	)
 		{	
 		
-    		LogPlug::info( "Prerequesite : having three random generators" ) ;	
+    		LogPlug::info( "Prerequesite: having three random generators" ) ;	
 		
 			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 
 				0, screenWidth ) ;
@@ -134,7 +134,7 @@ int main( int argc, char * argv[] )
 			ColorElement alpha ;
 	
 	
-			LogPlug::info( "Displaying pixel format : " 
+			LogPlug::info( "Displaying pixel format: " 
 				+ Pixels::toString( screen.getPixelFormat() ) ) ;
 	
 	
@@ -167,7 +167,7 @@ int main( int argc, char * argv[] )
 					+ Ceylan::toNumericalString( blue )  + " ; "
 					+ Ceylan::toNumericalString( alpha ) + " ]" ) ;
 	
-				LogPlug::info( "Reading afterwards : actual pixel color is "
+				LogPlug::info( "Reading afterwards: actual pixel color is "
 					+ Pixels::toString( 
 						screen.getColorDefinitionAt( abscissa, ordinate ) ) ) ;
 
@@ -201,12 +201,12 @@ int main( int argc, char * argv[] )
 			
 			LogPlug::info( "First color, " + Pixels::toString( firstColorDef ) 
 				+ ", converted to screen pixel format "
-				"and then de-converted, displays as : " 
+				"and then de-converted, displays as: " 
 				+ Pixels::toString( Pixels::convertPixelColorToColorDefinition(
 					screen.getPixelFormat(), firstPixelColor ) ) 
 					+ "." ) ;
 				 
-			// Reddish :
+			// Reddish:
 			ColorElement red   = 249 ;
 			ColorElement green =   2 ;
 			ColorElement blue  =  14 ;
@@ -228,7 +228,7 @@ int main( int argc, char * argv[] )
 			{
 				throw Ceylan::TestException( "This color definition " 
 					+ Pixels::toString( secondColorDef ) 
-					+ " should be strictly equal to this RGBA coordinates : [ " 
+					+ " should be strictly equal to this RGBA coordinates: [ " 
 					+ Ceylan::toNumericalString( red   ) + " ; "
 					+ Ceylan::toNumericalString( green ) + " ; "
 					+ Ceylan::toNumericalString( blue  ) + " ; "
@@ -243,7 +243,7 @@ int main( int argc, char * argv[] )
 			LogPlug::info( "Second color, " 
 				+ Pixels::toString( secondColorDef ) 
 				+ ", converted to pixel format and then de-converted, "
-				"displays as : " 
+				"displays as: " 
 				+ Pixels::toString( Pixels::convertPixelColorToColorDefinition(
 					screen.getPixelFormat(), secondPixelColor ) ) + "." ) ;
 			
@@ -290,7 +290,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -299,7 +299,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -308,7 +308,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
