@@ -17,13 +17,13 @@ using std::string ;
 
 
 
-class MyController : public OSDL::MVC::Controller
+class MyController: public OSDL::MVC::Controller
 {
 
 	public:
 	
 	
-		MyController( EventsModule & events ) throw() :
+		MyController( EventsModule & events ) throw():
 			_direction( 1 ),
 			_events( & events )
 		{
@@ -120,7 +120,7 @@ class MyController : public OSDL::MVC::Controller
 			throw( Ceylan::EventException )
 		{
 		
-			throw Ceylan::EventException( "MyController::getEventFor : "
+			throw Ceylan::EventException( "MyController::getEventFor: "
 				"not expected to be called." ) ;
 				
 		}
@@ -128,13 +128,13 @@ class MyController : public OSDL::MVC::Controller
 		
 		/* 
 		
-		 If no classical joystick is to be used :
+		 If no classical joystick is to be used:
 		 
 		void joystickAxisChanged( const JoystickAxisEvent & joystickAxisEvent )
 			throw()
 		{
 		
-			// Dead zones : [-1000; 1000] 
+			// Dead zones: [-1000; 1000] 
 		
 			if ( joystickAxisEvent.axis == 0 )
 			{
@@ -166,11 +166,11 @@ class MyController : public OSDL::MVC::Controller
 			{
 				case 1:
 					return "^" ;
-				case 2 : 
+				case 2: 
 					return "v" ;
-				case 3 :
+				case 3:
 					return "<" ;
-				case 4 :
+				case 4:
 					return ">" ;
 			}
 			
@@ -181,7 +181,7 @@ class MyController : public OSDL::MVC::Controller
 		
 	protected:
 	
-		/// 1 : up, 2 : down, 3 : left, 4 : right.
+		/// 1: up, 2: down, 3: left, 4: right.
 		Ceylan::Uint8 _direction ;
 		
 		EventsModule * _events ;
@@ -244,7 +244,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -258,14 +258,14 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 		
 		LogPlug::info( "Starting OSDL with keyboard and joystick support." ) ;	
 		
-		// Will trigger the video module as well for events :	
+		// Will trigger the video module as well for events:	
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule( 
 			CommonModule::UseJoystick | CommonModule::UseKeyboard ) ;		
 		
@@ -274,12 +274,12 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Getting events module." ) ;
 		EventsModule & myEvents = myOSDL.getEventsModule() ; 
 		
-		LogPlug::info( "Events module : " + myEvents.toString() ) ;
+		LogPlug::info( "Events module: " + myEvents.toString() ) ;
 		
 		myEvents.getKeyboardHandler().setSmarterDefaultKeyHandlers() ;
 		
 		JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
-		LogPlug::info( "Current joystick handler is : " 
+		LogPlug::info( "Current joystick handler is: " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 
 		JoystickNumber joyCount = 
@@ -294,7 +294,7 @@ int main( int argc, char * argv[] )
 			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
 				myJoystickHandler.openJoystick( i ) ;
 		
-			LogPlug::info( "New joystick handler state is : " 
+			LogPlug::info( "New joystick handler state is: " 
 				+ myJoystickHandler.toString( Ceylan::high ) ) ;
 		
 		}
@@ -305,7 +305,7 @@ int main( int argc, char * argv[] )
 		
 		}
 		
-		LogPlug::info( "New joystick handler state is : " 
+		LogPlug::info( "New joystick handler state is: " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 		
 		LogPlug::info( "Displaying a dummy window "
@@ -314,7 +314,7 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Getting video." ) ;
 		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
-		// A window is needed to have the event system working :
+		// A window is needed to have the event system working:
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
 		
@@ -361,7 +361,7 @@ int main( int argc, char * argv[] )
 				<< "When the joystick is pushed, a character "
 				"('<' or '>' or '^' or 'v', for left, right, up and down) "
 				"describes the direction it is aimed at." << std::endl
-				<< "< Hit Enter or push the first button "
+				<< "< Hit Enter on the OSDL window, or push the first button "
 				"of the first joystick (if any) "
 				"to end OSDL controller test >" << std::endl ;
 		
@@ -380,7 +380,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -389,7 +389,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -398,7 +398,7 @@ int main( int argc, char * argv[] )
 	catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
