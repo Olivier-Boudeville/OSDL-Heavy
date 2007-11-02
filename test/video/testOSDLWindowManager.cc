@@ -67,7 +67,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -81,16 +81,16 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 
 			
-		LogPlug::info( "Pre requesite : starting OSDL with video enabled." ) ;
+		LogPlug::info( "Pre requesite: starting OSDL with video enabled." ) ;
 			
         CommonModule & myOSDL = getCommonModule( 
-			CommonModule::UseVideo | CommonModule::NoParachute  ) ;		
+			CommonModule::UseVideo | CommonModule::UseEvents ) ;		
 		
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
@@ -99,18 +99,18 @@ int main( int argc, char * argv[] )
 				
 		myVideo.getWindowCaption( title, iconName ) ;
 					
-		LogPlug::info( "Reading window caption : title is '" + title 
+		LogPlug::info( "Reading window caption: title is '" + title 
 			+ "', icon name is '" + iconName + "'." )	;
 					
 		title    = "OSDL is great" ;
 		iconName = "OSDL window manager test" ;
 		
-		LogPlug::info( "Writing window caption : title will be '" + title 
+		LogPlug::info( "Writing window caption: title will be '" + title 
 			+ "', icon name will be '" + iconName + "'." ) ;
 			
 		myVideo.setWindowCaption( title, iconName ) ;
 									
-		LogPlug::info( "Reading window caption : title is '" + title 
+		LogPlug::info( "Reading window caption: title is '" + title 
 			+ "', icon name is '" + iconName + "'." )	;
 			
 		LogPlug::info( "Setting icon image." ) ;
@@ -118,13 +118,13 @@ int main( int argc, char * argv[] )
 		Ceylan::System::FileLocator imageFinder ;
 				
 
-		// When run from playTests.sh build directory :
+		// When run from playTests.sh build directory:
 		imageFinder.addPath( "../src/doc/web/images" ) ;
 
-		// When run from executable build directory :
+		// When run from executable build directory:
 		imageFinder.addPath( "../../src/doc/web/images" ) ;
 
-		// When run from executable install directory :
+		// When run from executable install directory:
 		imageFinder.addPath( "../OSDL/doc/web/images" ) ;
 
 		myVideo.setWindowIcon( imageFinder.find( iconFile ) ) ;
@@ -153,7 +153,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -162,7 +162,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -171,7 +171,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
