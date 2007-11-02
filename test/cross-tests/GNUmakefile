@@ -9,7 +9,7 @@ TOP = ../..
 
 
 .PHONY: test emulate emulate-with-NoCashGBA emulate-with-DeSmuME transfer \
-	patch umount export info-target clean info-flags info-debug info-run
+	patch umount export clean info info-target info-flags info-debug info-run
 
 
 CROSS_TARGET=nintendo-ds
@@ -34,7 +34,7 @@ OSDL_TESTED_VERSION    = $(OSDL_VERSION)
 OSDL_TESTED_BUILD_MODE = $(OSDL_BUILD_MODE)
 
 # Use 'make emulate TEST_NAME=testOSDLTextConsole' for example to override:
-TEST_NAME = testOSDLLibfatFilesystem
+TEST_NAME = testOSDLMusic
 
 TEST_FULL_NAME = $(TEST_NAME)-$(TEST_PREFIX)
 
@@ -189,7 +189,10 @@ TEST_LIBS_ARM7 = \
 TEST_LIBS_ARM9 = \
        -lOSDL-$(OSDL_TESTED_VERSION)-$(OSDL_TESTED_BUILD_MODE)-arm9 \
        $(TEST_BASE_LIBS_ARM9)
+
 	
+info: info-target info-flags info-debug info-run
+
 
 info-flags:
 	@echo "TEST_CPP_FLAGS_ARM7 = $(TEST_CPP_FLAGS_ARM7)"
