@@ -13,8 +13,12 @@
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
 
+
 #if OSDL_ARCH_NINTENDO_DS
+
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#include <nds/arm9/sound.h>		     // for libnds sound functions
+
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
@@ -264,13 +268,13 @@ const Ceylan::Uint16 AudioModule::DriverNameMaximumLength = 50 ;
 
 AudioModule::AudioModule() throw( AudioException ):
 	Ceylan::Module( 
-		"OSDL Audio module",
-		"This is the root audio module of OSDL",
+		"OSDL audio module",
+		"This is the audio module of OSDL",
 		"http://osdl.sourceforge.net",
 		"Olivier Boudeville",
 		"olivier.boudeville@online.fr",
 		OSDL::GetVersion(),
-		"LGPL" ),
+		"disjunctive LGPL/GPL" ),
 	_mixerInitialized( false ),
 	_chunkSize( 0 )			
 {
@@ -317,7 +321,7 @@ AudioModule::AudioModule() throw( AudioException ):
 		
 #ifdef OSDL_RUNS_ON_ARM7
 
-	// Nothing special to initialize on the ARM7.
+	// @see testOSDLRawSound.arm7.c
 	
 #elif defined(OSDL_RUNS_ON_ARM9)
 
@@ -330,6 +334,7 @@ AudioModule::AudioModule() throw( AudioException ):
 #endif // OSDL_USES_SDL
 
 	_AudioInitialized = true ;
+	
 	
 	send( "Audio subsystem initialized." ) ;
 	
@@ -983,6 +988,7 @@ std::string AudioModule::getDriverName() const throw( AudioException )
 const string AudioModule::toString( Ceylan::VerbosityLevels level ) 
 	const throw()
 {
+	
 	
 	string res = "Audio module, " ;
 	
