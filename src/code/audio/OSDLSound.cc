@@ -28,6 +28,7 @@ using Ceylan::System::Millisecond ;
 
 
 using namespace Ceylan::Log ;
+using namespace Ceylan::System ;
 
 using namespace OSDL::Audio ;
 
@@ -67,8 +68,6 @@ Sound::Sound( const std::string & soundFile, bool preload )
 		throw SoundException( "Sound constructor failed: "
 			"audio module not already initialized" ) ;
 			 
-#if OSDL_USES_SDL_MIXER
-
 	if ( preload )
 	{
 	
@@ -87,13 +86,6 @@ Sound::Sound( const std::string & soundFile, bool preload )
 			
 	}
 	
-#else // OSDL_USES_SDL_MIXER
-
-	throw SoundException( "Sound constructor failed: "
-		"no SDL_mixer support available" ) ;
-		
-#endif // OSDL_USES_SDL_MIXER
-
 }
 
 
@@ -129,6 +121,55 @@ bool Sound::load() throw( Ceylan::LoadableException )
 
 	if ( hasContent() )
 		return false ;
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw Ceylan::LoadableException( "Sound::load failed: "
+		"not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	try
+	{
+	
+		_content = new LowLevelSound() ;
+		
+		// Inits all _content members here.
+		
+		File & soundFile = File::Open( _contentPath ) ;
+		
+		Ceylan::Uint32 readSize = soundFile.size() ;
+		
+		// Force sound buffer to match the boundaries of ARM9 cache line:		
+		_content->_samples = CacheProtectedNew( readSize ) ;   
+		
+		soundFile.readExactLength( _content->_samples, readSize ) ;
+
+		_content->_size = readSize ;   
+
+		// All .raw files are expected to respect this frequency:
+		_content->_frequency = 22050 ;
+		
+		delete & soundFile ;	
+	
+	}
+	catch( const Ceylan::System::SystemException & e )
+	{
+	
+		throw Ceylan::LoadableException( "Sound::load failed: "
+			+ e.toString() ) ;
+	
+	}
+
+	_convertedToOutputFormat = true ;
+	
+	return true ;
+			
+#endif // OSDL_RUNS_ON_ARM7
+
+#else // OSDL_ARCH_NINTENDO_DS
 		
 #if OSDL_USES_SDL_MIXER
 
@@ -161,6 +202,8 @@ bool Sound::load() throw( Ceylan::LoadableException )
 	
 #endif // OSDL_USES_SDL_MIXER
 
+#endif // OSDL_ARCH_NINTENDO_DS
+
 }
 
 
@@ -172,13 +215,29 @@ bool Sound::unload() throw( Ceylan::LoadableException )
 		return false ;
 
 	// There is content to unload here:
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw Ceylan::LoadableException( "Sound::unload failed: "
+		"not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	if ( _content->_samples != 0 )
+		CacheProtectedDelete( _content->_samples ) ;
+
+	delete _content ;
+
+	
+#endif // OSDL_RUNS_ON_ARM7
+
+#else // OSDL_ARCH_NINTENDO_DS
 	
 #if OSDL_USES_SDL_MIXER
 
 	::Mix_FreeChunk( _content ) ;
-	_content = 0 ;
-	
-	return true ;
 	
 #else // OSDL_USES_SDL_MIXER
 
@@ -186,6 +245,12 @@ bool Sound::unload() throw( Ceylan::LoadableException )
 		"Sound::unload failed: no SDL_mixer support available." ) ;
 	
 #endif // OSDL_USES_SDL_MIXER
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+	_content = 0 ;
+	
+	return true ;
 
 }
 
