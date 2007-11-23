@@ -19,8 +19,16 @@ namespace OSDL
 	 */
 	OSDL_DLL const std::string actualOSDLHeaderLibtoolVersion 
 		= "@OSDL_LIBTOOL_VERSION@" ;
+
+
+	/*
+	 * NEVER check-in this file if there is no more OSDL_LIBTOOL_VERSION 
+	 * above !
+	 *
+	 */
 		
 }
 
 
 #endif // OSDL_HEADER_VERSION_H_
+
