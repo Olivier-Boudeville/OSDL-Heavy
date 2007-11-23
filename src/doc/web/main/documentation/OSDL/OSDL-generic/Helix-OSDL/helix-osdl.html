@@ -61,6 +61,10 @@ and <em>RealNetworks Public Source License - RPSL 1.0</em> licenses. Although th
 </p>
 
 <p>
+Helix-OSDL is based upon our Ceylan-based <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-userguide.html#ds-ipc" target="_blank">generic high-level IPC system</a>, to convey audio commands between the ARMs.
+</p>
+
+<p>
 See also our <a href="../../../misc/nintendo-DS/HomebrewForDS.html" target="_blank">homebrew guide for the DS</a>, including the discussions about <a href="../../../misc/nintendo-DS/HomebrewForDS.html#sound" target="_blank">sound</a> and <a href="../../../misc/nintendo-DS/HomebrewForDS.html#audio-transformations" target="_blank">audio transformations</a>.
 </p>
 
@@ -74,7 +78,8 @@ The ARM9 drives the high-level process: it decides when a given music must be pl
 
 
 
-<h2>Inner working</h2>
+<h2>Inner workings</h2>
+
 <p>
 The ARM9 is the only CPU able to access the storage media (the linker), at least when using the libfat, since this library cannot fit in the ARM7 memory. Thus the music has to be loaded from the ARM9.
 </p>
@@ -83,12 +88,12 @@ The ARM9 is the only CPU able to access the storage media (the linker), at least
 The ARM7 is the only CPU able to access the sound hardware (mixer), so the last part of the audio pipeline has to be located in the ARM7. Consequently:
 <ul>
 
-	<li>the actual <b>decoding</b> has to be performed somewhere in-between, either on the ARM9 or, preferably, on the ARM7</li>
+	<li>the actual <b>decoding</b> has to be performed somewhere in-between, either on the ARM9 or, preferably, on the otherwise often idle ARM7, to unload as much as possible the ARM9</li>
 	
 	<li>both <b>processors</b> have to be synchronized to exchange commands and data, here we chose to use the most appropriate solution, the hardware FIFO with interrupt-based management (no polling for more efficiency). As some lengthy I/O operations should not be performed from interrupt handlers, FIFO interrupts just notify (by setting appropriate booleans) the ARM9 main loop about the need to perform some action, notably to load chunks of encoded data</li>
 	
-	<li>the actual <b>data streaming</b> thus occurs from the ARM9 (libfat) to the ARM7, either for direct playback (RAW sounds) or for Helix decoding (MP3 musics)</li>
-	
+	<li>the actual <b>data streaming</b> thus occurs from the ARM9 (libfat) to the ARM7, either for direct playback (RAW sounds) or for Helix decoding (MP3 musics). Loaded data has to be shared between the ARMs, so it has to be allocated on the ARM9 side and in the non-cacheable address space (see our <a href="../../../misc/nintendo-DS/HomebrewForDS.html#ipc" target="_blank">IPC</a> section for general details, see below for more specific ones)</li>
+		
 </ul>
 
 </p>
@@ -101,6 +106,8 @@ The following constraints made us design the solution that way:
 </center>
 
 </p>
+
+
 
 
 <h3>Building Helix</h3>
@@ -197,6 +204,10 @@ Integration of Helix and various issues are discussed in following threads of th
 </p>
 
 <p>
+Some more information can be found in this PAlib thread: <a href="http://www.palib.info/forum/modules/newbb/viewtopic.php?topic_id=3428" target="_blank">How to use helix mp3 decoder with PAlib?</a>
+</p>
+
+<p>
 Most of the work has been done by <b>ThomasS</b>, <b>DekuTree64</b>, <b>Noda</b>, <b>DragonMinded</b>, <b>tepples</b>,  <b>simonjhall</b>, <b>Lazy1</b>, many thanks to them for sharing their knowledge.
 </p>
 
@@ -218,7 +229,7 @@ Most of the work has been done by <b>ThomasS</b>, <b>DekuTree64</b>, <b>Noda</b>
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update: Thursday, November 1, 2007</em>
+  <em>Last update: Sunday, November 18, 2007</em>
 </center>
 
 </body>
