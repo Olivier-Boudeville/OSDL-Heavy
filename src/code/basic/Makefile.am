@@ -13,13 +13,16 @@ libOSDLBasicInclude_HEADERS = $(BASIC_INTERFACES)
 
 
 BASIC_INTERFACES = \
+	OSDLARM7Codes.h                      \
 	OSDLBasic.h                          \
 	OSDLBasicIncludes.h                  \
 	OSDLCDROMDrive.h                     \
 	OSDLCDROMDriveHandler.h              \
+	OSDLCommandManager.h                 \
 	OSDLException.h                      \
 	OSDLHeaderVersion.h                  \
 	OSDLIncludeCorrecter.h               \
+	OSDLIPCCommands.h                    \
 	OSDLTestException.h                  \
 	OSDLTypes.h                          \
 	OSDLUtils.h
@@ -29,6 +32,7 @@ BASIC_IMPLEMENTATIONS = \
 	OSDLBasic.cc                         \
 	OSDLCDROMDrive.cc                    \
 	OSDLCDROMDriveHandler.cc             \
+	OSDLCommandManager.cc                \
 	OSDLException.cc                     \
 	OSDLTestException.cc                 \
 	OSDLUtils.cc
