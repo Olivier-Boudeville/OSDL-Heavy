@@ -226,7 +226,7 @@ EventsModule::EventsModule( Flags eventsFlag ) throw( EventsException ):
 		"Olivier Boudeville",
 		"olivier.boudeville@online.fr",
 		OSDL::GetVersion(),
-		"LGPL" ),
+		"disjunctive LGPL/GPL" ),
 	_useScheduler( false ),	
 	_keyboardHandler( 0 ),
 	_joystickHandler( 0 ),
