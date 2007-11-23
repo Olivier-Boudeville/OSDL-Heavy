@@ -338,13 +338,17 @@ Finally, in my case, the full equipment cost only 265 euros.
 </p>
 
 <p>
-An alternative setup to the SuperKey/SuperCard is to use the <a href="http://en.wikipedia.org/wiki/R4_D" target="_blank">R4DS</a> linker:
+An alternative setup to the SuperKey/SuperCard is to use the <a href="http://en.wikipedia.org/wiki/Nintendo_DS_storage_devices#R4DS_and_M3_DS_Simply" target="_blank">R4DS</a> linker:
 
 <center>
     <a href="R4DS.jpeg" target="_blank"><img src="R4DS-small.jpeg" alt="Image" width="40%"></img><br>(click to enlarge)</a>
 </center>
 
-The package is composed of a mini-CD, the R4DS itself in a kind of blueish key ring, and a very nifty USB 2.0 microSD card reader (no need for SD adaptor). This package costs about 35 euros (cheaper than the SuperKey+SuperCard pair) and is very useful when having problems with the SD support on Linux, thanks to the USB interface. A drawback is that the R4DS, being slot-1, will not provide additional RAM to applications such as DSLinux, whereas the SuperCard does.
+The package is composed of a mini-CD, the R4DS itself in a kind of blueish key ring, and a very nifty USB 2.0 microSD card reader (no need for SD adaptor).
+</p>
+
+<p>
+This package costs about 35 euros (cheaper than the SuperKey+SuperCard pair) and is very useful when having problems with the SD support on Linux, thanks to the USB interface. A drawback is that the R4DS, being slot-1, will not provide additional RAM to applications such as DSLinux, whereas the SuperCard does. However DSLinux works well on the R4 DS.
 </p>
 
 
@@ -354,7 +358,11 @@ The package is composed of a mini-CD, the R4DS itself in a kind of blueish key r
 <h4>Some limitations for the seasoned homebrewer though: transferring files to the DS</h4>
 
 <p>
-Such removable media (as microSD) are not the magic bullet for the frantic homebrewer: to anticipate a bit on further subjects, when generating programs for the DS from your PC, to test them you may either execute them "in place", directly on your PC thanks to <a href="#emulators">DS emulators</a> (but they do not behave always as a DS would behave) or you have to send them to the DS, one way or another. This can be done thanks to the aforementioned microSD card, but it soon becomes tedious to swap again and again the card and its adapter. 
+Such removable media (as microSD) are not the magic bullet for the frantic homebrewer: to anticipate a bit on further subjects, when generating programs for the DS from your PC, to test them you may either execute them "in place", directly on your PC thanks to <a href="#emulators">DS emulators</a> (but they do not behave always as a DS would behave) or you have to send them to the DS, one way or another.
+</p>
+
+<p>
+This can be done thanks to the aforementioned microSD card, but it soon becomes tedious to swap again and again the card and its adapter. Furthermore some linkers, like the R4 DS, use a spring-based microSD slot. It makes the swap still harder, as in order to remove the microSD, one has to push it first, which may push as well the R4; in that case one may pull the full linker instead of just the microSD. Annoying when performing trial and error debugging. 
 </p>
 
 <p>
@@ -714,6 +722,8 @@ There are some tools, such as the <a href="http://l33t.spod.org/ratx/DS/SC/scmhb
 <p>Finally, most of the recent FAT-based homebrew applications need to be patched according to the relevant DLDI script, before being run. See next section.
 </p>
 
+
+
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
@@ -760,7 +770,7 @@ In practice, the user will need:
 </p>
 
 <p>
-Our LOANI script can take in charge everything needed to use directly the DLDI tool on a Linux platform, see <a href="#loani">below</a>. Otherwise Linux users just have to put the dlditool archive (here <code>dlditool-belowlinux-x86.zip</code>) and the device-specific patch file (here <code>sclt.dldi</code>) in a new directory and prepare them. For example:
+Our LOANI script can take in charge everything needed to use directly the DLDI tool on a Linux platform, see <a href="#loani">below</a>. Otherwise Linux users just have to put the dlditool archive (here <code>dlditool-belowlinux-x86.zip</code>) and the device-specific patch file (here <code>Sclt.dldi</code>, it could be R4tf.dldi) in a new directory and prepare them. For example:
 <center>
     <table summary="Code" style="border: none">
         <tr>
@@ -768,7 +778,7 @@ Our LOANI script can take in charge everything needed to use directly the DLDI t
             <div class="box">
 <code><pre>
 mkdir ~/dldi
-mv ~/dlditool-linux-x86.zip ~/sclt.dldi ~/dldi
+mv ~/dlditool-linux-x86.zip ~/Sclt.dldi ~/dldi
 cd ~/dldi
 unzip dlditool-linux-x86.zip
 chmod +x dlditool
@@ -782,8 +792,17 @@ chmod +x dlditool
 </p>
 
 <p>
-One just has then to use the DLDI tool to patch the software (here <code> myGame.nds</code>) according to its linker-specific patching specification: <code>./dlditool sclt.dldi myGame.nds</code> for example. Check that the tools returned that the operation was successfully performed. The patched ROM can then be used at once.
+One just has then to use the DLDI tool to patch the software (here <code> myGame.nds</code>) according to its linker-specific patching specification: <code>./dlditool Sclt.dldi myGame.nds</code> for example. Check that the tools returned that the operation was successfully performed. The patched ROM can then be used at once.
 </p>
+
+<p>
+Sadly things are sometimes more complicated, for example some linkers perform auto-patching, and it may depend on their firmware version. For example starting from the 1.10 firmware version, R4 DS auto-patch their ROM.
+</p>
+
+<p>
+One should also avoid with this R4 with prior firmware versions (ex: 1.09) to transform its .nds into a .ds.gba and then to DLDI-patch it: the resulting ROM will not even load on the R4, which is a slot 1, and thus is unrelated to the .ds.gba format.
+</p>
+
 
 <p>
 Another option for Windows users is to install <a href="http://psychowood.altervista.org/getDLDIrc.html" target="_blank">DLDIrc</a>, which is configured once for all with a target linker and adds to the contextual menus for each selected DS ROM (the menu obtained with the right-click) the possibility to patch it.
@@ -915,6 +934,33 @@ Some applications manage to rely on very tight 32-bit loops that fit in the ARM9
 </p>
 
 <p>
+One can use the ITCM (32-kilobyte of fast memory for the ARM9) by either naming the file <code>*.itcm.c</code> or <code>*.itcm.cpp</code> or using the <code>ITCM_CODE</code> macro in the libnds headers. For example: 
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+void myITCMfunction() ITCM_CODE ; 
+ 
+void myITCMfunction()
+{ 
+...
+} 
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+One should separate ITCM code from other code by using separate files. The file naming option automatically switches to ARM (32 bit) mode.
+</p>
+
+<p>
+The latest devkitARM linkscripts and the default ARM7 core reserve the switchable IWRAM for ARM7 exclusive use. Nintendo official code also does this. 
+</p>
+
+<p>
 Neither CPU of the DS has a <em>Floating Point Unit</em> (FPU), so all floating-point operations must be emulated (not hardware support, they have to be done in software), which is very slow (so avoid by all means <code>float</code> and <code>double</code> variables). Most computations use therefore:
 <ul>
         <li><b>fixed-point (integer) arithmetics</b> for basic operations (addition, substraction, multiplication and division), see these sections in <a href="http://www.coranac.com/tonc/text/fixed.htm" target="_blank">TONC</a> and in <a href="http://en.wikipedia.org/wiki/Fixed-point_arithmetic" target="_blank">Wikipedia</a> for further informations</li>
@@ -972,7 +1018,7 @@ Finally, in this case, using the preprocessor to set these adresses as immediate
 <a name="cpuandmem"></a>
 <h5>CPU &amp; Memory</h5>
 <p>
-The main DS built-in memory, consisting of one big 4-megabyte block (sometimes named EWRAM, for <em>External Working RAM</em>) can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other (by default, the ARM7 has priority over the ARM9), leading the other to wait until the first has finished its operation.
+The main DS built-in memory, consisting of one big 4-megabyte block (sometimes named EWRAM, for <em>External Working RAM</em>) can be accessed by both ARM's, but one at a time. When both CPUs are trying to read main memory, one will have priority over the other (by default, the ARM7 has priority over the ARM9, with is a reasonable and safer setting), leading the other to wait until the first has finished its operation.
 </p>
 
 <p>
@@ -994,6 +1040,11 @@ The DTCM, for <em>Data Tightly Coupled Memory</em>, is a special 16-kilobyte mem
 <p>
 As for the ITCM, for <em>Instruction Tightly Coupled Memory</em>, it is a special 32-kilobyte memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small (preferably 32-bit) functions that are computation-intensive and/or frequently called. For example, libnds uses that region to store the interrupt dispatcher.
 </p>
+
+<p>
+Both ARM9 caches (DTCM/ITCM) seem to rely on 32-byte cache lines. As a cache line cannot be partially read or written apparently, special care mustbe taken when invalidating or flushing them.
+</p>
+
 
 <p>
 Finally, see the <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">memory layout</a> diagram from Dev-Scene website to better understand the various buses between the various memories.
@@ -1218,6 +1269,7 @@ In GBA mode the ARM9 is not powered, only the ARM7 can be used.
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
+
 <a name="ipc"></a>
 <h5>Inter-CPU communications</h5>
 
@@ -1226,11 +1278,11 @@ As each ARM has specific abilities (ex: the ARM7 is the only one that can access
 </p>
 
 <p>
-The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-Process Communications</em>) based on a set of registers managed thanks to a <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to a <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queue</a> with an asynchronous communication protocol.
+The ARM CPU can communicate thanks to <a href="http://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">IPC</a> (<em>Inter-Process Communications</em>) based on a set of registers managed thanks to a (possibily bidirectional) <a href="http://en.wikipedia.org/wiki/FIFO" target="_blank">FIFO</a> (<em>First In, First Out</em>) data structure. It corresponds actually to <a href="http://en.wikipedia.org/wiki/Message_queue" target="_blank">message queues</a> with an asynchronous communication protocol.
 </p>
 
 <p>
-Communication between ARMs can be tricky: beyond the classical issues of synchronization of the concurrent accesses, one has to keep in mind the ARM7 is not aware of the ARM9 caches, which may lead to inconsistencies if using the main memory to share data.
+Communication between ARMs is tricky: beyond the classical issues of synchronization of the concurrent accesses (parallelism between the ARMs), one has to keep in mind the ARM7 is not aware of the ARM9 data cache (DTCM), which may lead to inconsistencies if using the main memory to share data.
 </p>
 
 <p>
@@ -1239,13 +1291,37 @@ One solution is:
 <!--
 	<li><b></b> : </li>
 -->
-	<li>to allocate memory <b>from the ARM9</b>: with the default linking, any allocation done from the ARM7 would return a block in the ARM7 private memory, not addressable from the ARM9</li>
+	<li>to allocate memory <b>from the ARM9</b>: with the default link script, any allocation done from the ARM7 would return a block in the ARM7 private memory, not addressable from the ARM9</li>
 
-	<li><b>and</b> to ensure the allocated memory is out of the ARM9 data cache (otherwise, if not flushed, the ARM7 may see non-updated memory) by using the <b>non-cached main memory mirror</b> (<code>02400000-027FFFFF</code>, add <code>0x400000</code> to the normal main RAM address to get to the uncached mirror), even if the ARM9 access to the data will be slower</li>
+	<li><b>and</b> to ensure the allocated memory is out of the ARM9 data cache (otherwise, if not flushed, the ARM7 may see non-updated memory) by using, on this processor, the <b>non-cached main memory mirror</b> (<code>0x02400000-0x027fffff</code>, add <code>0x400000</code> to the normal main RAM address to get to the uncached mirror), even if thus the ARM9 access to the data will be slower. An alternative solution to the mirror would be to flush/invalidate the cache manually, although this approach does not seem 100% reliable</li>
 	
 </ol>
 </p>
 
+<p>
+Note that as soon as IRQ and/or inter-ARM accesses to shared variables in main RAM are involved, one has to rely on variables declared <code>volatile</code>, so that the compiler does not suppose it can avoid sometimes avoid to read from main RAM. As code for the DS is usually compiled with deepest optimisations activated (ex: <code>-03</code>), these issues must be managed.
+</p>
+
+<p>
+A pointer to a volatile variable of type T should be declared as <code>volatile T *</code> (ex: data in main RAM). If the pointer is itself volatile (ex: set from an IRQ), then declare it volatile as well: <code>volatile T * volatile</code>. Despite these safety measures, the data cache will still cause problems though.
+</p>
+
+
+<p>
+The shared memory could also be located in the so-called IPC region, which starts at the address <code>0x027ff000</code>. Its purpose is to provide a safe memory area dedicated to shared variables. The usual allocators (ex: <code>malloc</code>, <code>new</code>, etc.) do not readily provide ways of specifying the target address (for in-place allocation in this area), so a given structure has to be mapped directly to the relevant part of this IPC region.
+</p>
+
+<p>
+If using libnds, then this library will reserve the beginning of this IPC for its inner workings. This is done thanks to their <code>TransferRegion</code> structure. Thus user data should start no before than <code>(uint32)(IPC) + sizeof(TransferRegion)</code>, to avoid memory corruption.
+</p>
+
+<p>
+Note that the link scripts for both ARMs leave only a 4 kilobyte-space for this IPC area: the size of main RAM is restricted <code>4MB - 4KB</code>, then the IPC struct is defined as address <code>0x027ff000</code>, i.e. 4 kilobytes before the end of the non-cached mirror of main RAM. The libnds IPC struct itself is pretty small (less than 500 bytes), but user variables (and, possibly, all other libraries used besides libnds) may run over it, if larger than the remaining space (about 3 500 bytes). 
+</p>
+
+<p>
+Finally, as already explained, memory areas in the main RAM (not in the IPC area) can be used instead of this so-called IPC region, provided the usual precautions are respected (allocated from the ARM9, accessed from the non-cacheable mirror or with a DTCM management) and provided a means of notifying the ARM7 is used (ex: the hardware FIFO).
+</p>
 
 
 
@@ -1263,7 +1339,7 @@ So the ARM9, after having initalized the queue, is expected to place a command i
 </p>
 
 <p>
-This IPC method has two drawbacks. First it is only one-way: the ARM7 cannot send commands or results to the ARM9, as no protection against concurrent accesses is available here. Second it requires the ARM7 to perform polling, at the expense of uselessly burnt CPU cycles.
+This IPC method has three drawbacks. First it is only one-way: the ARM7 cannot send commands or results to the ARM9, as no protection against concurrent accesses is available here. Second it requires the ARM7 to perform polling, at the expense of uselessly burnt CPU cycles. Third it has to fit in the tiny IPC region.
 </p>
 
 
@@ -1272,10 +1348,11 @@ See <a href="http://www.double.co.nz/nintendo_ds/nds_develop6.html" target="_bla
 </p>
 
 
-<h6>Harware-based IPC (recommended)</h6>
+
+<h6>Hardware-based IPC (recommended)</h6>
 
 <p>
-The DS provides a built-in interrupt-based FIFO queue. Therefore the ARM7 can receive immediately interrupt notifications, instead of having to poll, which would be rather inefficient. The FIFO handles concurrent accesses in hardware, which allows fast reliable bidirectional communications. This queue can only hold 16 items (<code>int</code>, that can be taken as integers or as pointers to user-defined data) on each side, so the other processor should be receiving these items in a timely manner.
+The DS provides a built-in interrupt-based FIFO queue. Therefore the ARM7 can receive immediately interrupt notifications, instead of having to poll, which would be rather inefficient. The FIFO handles concurrent accesses in hardware, which allows fast reliable bidirectional communications. This queue can only hold 16 items (<code>32-bit int</code>, that can be taken as integers or as pointers to user-defined data) on each side, so the other processor should be receiving these items in a timely manner.
 </p>
 
 <p>
@@ -1283,7 +1360,7 @@ Each CPU has a queue which it can put data on. The other CPU can receive this da
 </p>
 
 <p>
-See <a href="http://www.double.co.nz/nintendo_ds/nds_develop7.html" target="_blank">Chris Double tutorial #7</a> for more details about hardware-based IPC. 
+See <a href="http://www.double.co.nz/nintendo_ds/nds_develop7.html" target="_blank">Chris Double tutorial #7</a> for more details about hardware-based IPC, and also our Ceylan-based <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-userguide.html#ds-ipc" target="_blank">generic high-level IPC system</a>. 
 </p>
 
 
@@ -1330,6 +1407,7 @@ As for the ARM7, apparently, even when executing from its IWRAM, it will be froz
 	<li><b>swiFastCopy</b>: this libnds-provided call branches to a DS BIOS routine. According to that <a href="http://www.tobw.net/dswiki/index.php?title=How_to_clear_the_s" target="_blank">source</a>, should be ruled out due to a bug leading to poor performance. Transfers more quickly than <code>swiCopy</code>, but has higher interrupt latency</li>
 	
 	<li><b>swiCopy</b>: as <code>swiFastCopy</code>, suffers from a bug apparently</li>
+	
 </ul>
 
 </p>
@@ -2636,7 +2714,7 @@ The installation of libnds is trivial (just a matter of extracting the latest <a
 </p>
 
 <p>
-One can read also the <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=159894" target="_blank">libnds examples</a> to learn how to use the library. They are not installed by LOANI currently.
+A convenient way of browsing the latest libnds sources is to make use of their <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/" target="_blank">web CVS</a>. One can read also the <a href="http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=159894" target="_blank">libnds examples</a> to learn how to use the library. They are not installed by LOANI currently.
 </p>
 
 <p>
@@ -3133,7 +3211,7 @@ Here are various useful constructs defined in various places in the source:
 	<li><b></b>: <code></code>, <code></code></li>
 -->
 
-	<li><b>Common types and macros</b>: see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/jtypes.h?view=markup" target="_blank">include/nds/jtypes.h</a> for basic type declarations (int32, vuint32, touchPosition, etc.), and for most macros and defines (ITCM_CODE, GETRAW, etc.). Some of these macros allow to tell the linker to put parts of the program (code, data, etc.) in specific memory regions (ITCM, DTCM, etc.)</li>
+	<li><b>Common types and macros</b>: see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/jtypes.h?view=markup" target="_blank">include/nds/jtypes.h</a> for basic type declarations (int32, vuint32, touchPosition, etc.), and for most macros and defines (ITCM_CODE, GETRAW, etc.). Some of these macros allow to tell the linker to put parts of the program (code, data, etc.) in specific memory regions (ITCM, DTCM, etc.). Using the default linking, on the ARM9, both your global data and dynamically allocated (new/malloc) memory will be in main memory, whereas on the ARM7 they will be both in the ARM7 private RAM</li>
 	
 	<li><b>Memory region defines and console-specific headers</b>: see <a href="http://devkitpro.cvs.sourceforge.net/devkitpro/libnds/include/nds/memory.h?view=markup" target="_blank">include/nds/memory.h</a> for symbols designating memory regions (ex: GBAROM, SPRITE_PALETTE) and for structures mapping to headers (ex: <code>GBAHeader</code>, <code>NDSHeader</code>)</li>
 	
@@ -4922,7 +5000,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Sunday, October 21, 2007</em>
+    <em>Last update: Saturday, November 17, 2007</em>
   </center>
 </body>
 </html>
