@@ -127,7 +127,7 @@ VideoModule::VideoModule() throw( VideoException ):
 		"Olivier Boudeville",
 		"olivier.boudeville@online.fr",
 		OSDL::GetVersion(),
-		"LGPL" ),
+		"disjunctive LGPL/GPL" ),
 	_screen( 0 ),
 	_displayInitialized( false ),
 	_renderer( 0 ),
