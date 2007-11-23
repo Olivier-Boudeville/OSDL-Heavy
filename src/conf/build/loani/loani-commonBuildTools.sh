@@ -2,8 +2,8 @@
 # common build tools.
 # Most of them is expected to be already available in user'system.
 
-# Creation date : 2004, February 22.
-# Author : Olivier Boudeville (olivier.boudeville@online.fr)
+# Creation date: 2004, February 22.
+# Author: Olivier Boudeville (olivier.boudeville@online.fr)
 
 
 # Basic common build tools section.
@@ -13,7 +13,7 @@
 # and are supposed to be available if needed.
 
 
-# Updating retrieve list :
+# Updating retrieve list:
 
 if [ $is_windows -eq 0 ] ; then
 
@@ -28,10 +28,13 @@ else
 		COMMON_BUILD_TOOLS="gcc binutils gdb"
 	else
 
-		# For the Nintendo DS we use the devkitPro-based toolchain :
+		# For the Nintendo DS we use the devkitPro-based toolchain:
 		# (libnds not listed here anymore as now is provided by PALib)
 		# (libfat not listed here anymore as now is provided by libnds)
 		# (libnds_examples not listed here)
+		# Note: PAlib comes often with deprecated versions of its prerequesites
+		# (notably: libnds), hence installing it directly can be interesting
+		# if not using PAlib.
 		COMMON_BUILD_TOOLS="devkitARM PAlib dswifi DeSmuME NoCashGBA"	
 		
 	fi
@@ -182,7 +185,7 @@ generategcc()
 	
 	printOK
 	
-	# Now updating all build-related environment variables :
+	# Now updating all build-related environment variables:
 	 
 	COMPILER_FAMILY=gcc
 	export COMPILER_FAMILY
@@ -221,7 +224,7 @@ generategcc()
 	MAKE_CPP="COMPILER_FAMILY=${COMPILER_FAMILY} GCC_ROOT=${GCC_ROOT} CC=${CPP_COMPILER}"
 	export MAKE_CPP
 	
-	# Updates build variables accordingly : 
+	# Updates build variables accordingly: 
 	findBuildTools
 	
 				
@@ -250,7 +253,7 @@ cleangcc()
 
 
 # If binutils is not compiled with the compiler-in-use, expect link errors. 
-# (ex : DWARF unhandled form error).
+# (ex: DWARF unhandled form error).
 
 
 getbinutils()
@@ -411,7 +414,7 @@ cleanbinutils()
 
 
 ################################################################################
-# GNU gdb : the GNU debugger
+# GNU gdb: the GNU debugger
 ################################################################################
 
 
@@ -506,10 +509,10 @@ generategdb()
 	
 	if [ $? != "0" ] ; then
 		echo
-		# Make may fail because libncurses if lacking :
-		# Debian users can try : 'apt-get build-dep gdb'
+		# Make may fail because libncurses if lacking:
+		# Debian users can try: 'apt-get build-dep gdb'
 		# before re-running LOANI.
-		ERROR "Unable to build gdb (hint : is libncurses5-dev available ?)."
+		ERROR "Unable to build gdb (hint: is libncurses5-dev available ?)."
 		exit 12
 	fi
 
@@ -563,7 +566,7 @@ cleangdb()
 
 
 ################################################################################
-# devkitARM : the ARM toolchain for Nintendo DS
+# devkitARM: the ARM toolchain for Nintendo DS
 ################################################################################
 
 
@@ -651,7 +654,7 @@ generatedevkitARM()
 
 	devkitARM_PREFIX=${devkitPRO_PREFIX}/devkitARM
 
-	# Not depending on a prefix being set, needed in all cases :
+	# Not depending on a prefix being set, needed in all cases:
                 
 	echo "# devkitARM section." >> ${OSDL_ENV_FILE}
 
@@ -660,7 +663,7 @@ generatedevkitARM()
 	echo "PATH=\$devkitARM_PREFIX:\${PATH}" >> ${OSDL_ENV_FILE}		
 	echo "" >> ${OSDL_ENV_FILE}
 	
-	echo "# Needed for PAlib :" >> ${OSDL_ENV_FILE}
+	echo "# Needed for PAlib:" >> ${OSDL_ENV_FILE}
 	
 	echo "DEVKITPRO=${devkitPRO_PREFIX}" >> ${OSDL_ENV_FILE}
 	echo "export DEVKITPRO" >> ${OSDL_ENV_FILE}	
@@ -699,8 +702,8 @@ cleandevkitARM()
 
 
 ################################################################################
-# libnds : the low level library for Nintendo DS
-# (note : installed now with the PAlib package)
+# libnds: the low level library for Nintendo DS
+# (note: installed now with the PAlib package)
 ################################################################################
 
 
@@ -801,7 +804,7 @@ cleanlibnds()
 
 
 ################################################################################
-# PAlib : a higher level library for Nintendo DS
+# PAlib: a higher level library for Nintendo DS
 ################################################################################
 
 
@@ -832,7 +835,7 @@ preparePAlib()
 	cd $repository
 	
 			
-	# Extract prebuilt executable in installation repository :
+	# Extract prebuilt executable in installation repository:
 	{
 		cd ${devkitPRO_PREFIX} && ${UNZIP} -o "$repository/${PAlib_ARCHIVE}"
 	} 1>>"$LOG_OUTPUT" 2>&1
@@ -868,7 +871,7 @@ generatePAlib()
 	libnds_PREFIX=${devkitPRO_PREFIX}/libnds
 	
 	
-	# Not depending on a prefix being set, needed in all cases :
+	# Not depending on a prefix being set, needed in all cases:
 
 	LD_LIBRARY_PATH=$libnds_PREFIX/lib:${LD_LIBRARY_PATH}
 	export LD_LIBRARY_PATH
@@ -889,7 +892,7 @@ generatePAlib()
 	export LD_LIBRARY_PATH
 	
 	
-	echo "# Needed for PAlib internal use :" >> ${OSDL_ENV_FILE}
+	echo "# Needed for PAlib internal use:" >> ${OSDL_ENV_FILE}
 	echo "PAPATH=${PAlib_PREFIX}" >> ${OSDL_ENV_FILE}
 	echo "export PAPATH" >> ${OSDL_ENV_FILE}	
 	echo "" >> ${OSDL_ENV_FILE}
@@ -916,7 +919,7 @@ cleanPAlib()
 
 
 ################################################################################
-# dswifi : a library for Wifi management on the Nintendo DS
+# dswifi: a library for Wifi management on the Nintendo DS
 ################################################################################
 
 
@@ -953,7 +956,7 @@ preparedswifi()
 	
 	cd $repository
 	
-	# Do not mess too much with LOANI repository :
+	# Do not mess too much with LOANI repository:
 	dswifi_repository="$repository/dswifi-${dswifi_VERSION}"
 	
 	${MKDIR} -p ${dswifi_repository}
@@ -997,7 +1000,7 @@ generatedswifi()
 	
 	printItem "installing"
 
-	# No real dswifi_PREFIX : will be integrated in PAlib directories.
+	# No real dswifi_PREFIX: will be integrated in PAlib directories.
 
 	${CP} -rf ${dswifi_repository}/lib/* ${PAlib_PREFIX}/lib
 	${CP} -rf ${dswifi_repository}/include/* ${PAlib_PREFIX}/include/nds
@@ -1022,7 +1025,7 @@ cleandswifi()
 
 
 ################################################################################
-# DeSmuME : a Nintendo DS emulator
+# DeSmuME: a Nintendo DS emulator
 ################################################################################
 
 
@@ -1053,7 +1056,7 @@ prepareDeSmuME()
 	DeSmuME_PREFIX="$ds_prefix/DeSmuME-${DeSmuME_VERSION}"
 	${MKDIR} -p ${DeSmuME_PREFIX}
 
-	# Extract prebuilt executable in installation repository :
+	# Extract prebuilt executable in installation repository:
 	{
 		cd ${DeSmuME_PREFIX} && ${UNZIP} -o "$repository/${DeSmuME_ARCHIVE}"
 	} 1>>"$LOG_OUTPUT" 2>&1
@@ -1114,7 +1117,7 @@ cleanDeSmuME()
 
 
 ################################################################################
-# NoCashGBA : another Nintendo DS emulator
+# NoCashGBA: another Nintendo DS emulator
 ################################################################################
 
 
@@ -1146,7 +1149,7 @@ prepareNoCashGBA()
 	NoCashGBA_PREFIX="$ds_prefix/NoCashGBA-${NoCashGBA_VERSION}"
 	${MKDIR} -p ${NoCashGBA_PREFIX}
 
-	# Extract prebuilt executable in installation repository :
+	# Extract prebuilt executable in installation repository:
 	{
 		cd ${NoCashGBA_PREFIX} && ${UNZIP} -o "$repository/${NoCashGBA_ARCHIVE}"
 	} 1>>"$LOG_OUTPUT" 2>&1
@@ -1180,7 +1183,7 @@ generateNoCashGBA()
 
 	${MV} -f ${NoCashGBA_PREFIX}/'NO$GBA.EXE' ${NoCashGBA_PREFIX}/NoCashGBA.EXE
 	
-	# Not depending on a prefix being set, needed in all cases :
+	# Not depending on a prefix being set, needed in all cases:
                 
 	echo "# NoCashGBA section." >> ${OSDL_ENV_FILE}
 
