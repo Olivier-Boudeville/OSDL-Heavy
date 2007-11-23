@@ -36,7 +36,24 @@ namespace OSDL
 		
 #else // OSDL_USES_SDL_MIXER	
 
-		struct LowLevelSound {} ;
+		/**
+		 * The OSDL fallback sound structure.
+		 *
+		 */
+		struct LowLevelSound 
+		{
+		
+			/// The actual sound data:
+			Ceylan::Byte * _samples ;
+		
+			/// The size, in bytes, of sound data:
+			Ceylan::Uint32 _size ;
+		
+			/// The sound sampling frequency, in Hertz:
+			Ceylan::Uint16 _frequency ;
+			
+			 
+		} ;
 
 #endif // OSDL_USES_SDL_MIXER
 
