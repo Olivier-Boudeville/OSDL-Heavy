@@ -302,21 +302,21 @@ dldi_patch_fcsr_MD5="b92ed16b14d7c4dc813ed26bbe4b5cb8"
 
 # devkitARM: http://www.devkitpro.org/category/devkitarm/
 # (includes libnds and libfat now)
-devkitARM_VERSION="20"
+devkitARM_VERSION="21"
 devkitARM_ARCHIVE="devkitARM_r${devkitARM_VERSION}-linux.tar.bz2"
 devkitARM_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/devkitpro"
 devkitARM_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/devkitpro"
-devkitARM_MD5="8f6d19782a4710b0c2f43f633002f965"
+devkitARM_MD5="836313873c10d56bf910607a23cb3757"
 
 
 # libnds:
 # http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608
 # (provided by PALib now, therefore not updated anymore here)
-libnds_VERSION="20070503"
+libnds_VERSION="20071023"
 libnds_ARCHIVE="libnds-${libnds_VERSION}.tar.bz2"
 libnds_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/devkitpro"
 libnds_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/devkitpro"
-libnds_MD5="dcb60a051c6490bf1f05c99135913cb8"
+libnds_MD5="a80939e113c6fdc70032ed4b39f449e6"
 
 
 # PAlib: http://palib.info/
