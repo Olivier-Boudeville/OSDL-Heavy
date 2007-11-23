@@ -8,14 +8,15 @@
  *
  */
 
-
+#include "OSDLARM7Codes.h"
 #include "OSDLBasic.h"
 #include "OSDLCDROMDrive.h"
+#include "OSDLCommandManager.h"
 #include "OSDLException.h"
 #include "OSDLHeaderVersion.h"
+#include "OSDLIPCCommands.h"
 #include "OSDLTestException.h"
 #include "OSDLTypes.h"
 #include "OSDLUtils.h"
-
 
 #endif // OSDL_BASIC_INCLUDES_H_
