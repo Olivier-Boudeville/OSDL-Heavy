@@ -9,6 +9,9 @@
 #include "OSDLUtils.h"               // for getBackendLastError
 
 
+#include "Ceylan.h"                  // for FIFOException
+
+
 #include <list>
 
 
@@ -16,9 +19,14 @@
 #include "OSDLConfig.h"              // for the actual OSDL_LIBTOOL_VERSION
 #endif // OSDL_USES_CONFIG_H
 
+
 #if OSDL_ARCH_NINTENDO_DS
+
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#include "OSDLCommandManager.h"      // for CommandManager
+
 #endif // OSDL_ARCH_NINTENDO_DS
+
 
 
 #if OSDL_USES_SDL
@@ -177,7 +185,7 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 		"Olivier Boudeville",
 		"olivier.boudeville@online.fr",
 		OSDL::GetVersion(),
-		"LGPL" ),		
+		"disjunctive LGPL/GPL" ),		
 	_video(  0 ), 
 	_events( 0 ), 
 	_audio(  0 ), 
@@ -185,6 +193,8 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 	_cdromHandler( 0 ) 
 {
 
+	LogPlug::trace( "CommonModule constructor" ) ;
+		
 	// For the sake of safety:
 	flags = AutoCorrectFlags( flags ) ;
 	 
@@ -208,6 +218,35 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 		+ Ceylan::toNumericalString( linkTimeSDLVersion.patch) + " version." ) ;
 	
 #endif // OSDL_USES_SDL
+
+
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	try
+	{
+	
+		// Initializes and activates the IPC system:
+		CommandManager::GetCommandManager().activate() ;
+	
+	}
+	catch( const Ceylan::System::FIFO::FIFOException & e )
+	{
+	
+		throw OSDL::Exception( "CommonModule constructor failed: "
+			+ e.toString() ) ;
+	
+	}
+			
+#endif // OSDL_RUNS_ON_ARM7
+
+#endif // OSDL_ARCH_NINTENDO_DS
+	
+
 
 	/*
 	 * UseEverything flag is 0x0000FFFF, therefore not to be specifically
@@ -238,7 +277,7 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 #ifdef OSDL_RUNS_ON_ARM7
 
 #elif defined(OSDL_RUNS_ON_ARM9)
-
+		
 #endif // OSDL_RUNS_ON_ARM7
 
 #endif // OSDL_ARCH_NINTENDO_DS
@@ -254,7 +293,9 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 	
 	if ( flags & UseCDROM ) 
 	{
+	
 		_cdromHandler = new OSDL::CDROMDriveHandler() ;
+		
 	}
 
 #if OSDL_USES_SDL
@@ -286,11 +327,13 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 		 			
 	if ( flags & UseVideo ) 
 	{
+	
 		_video = new Video::VideoModule() ;	
+		
 		 		
 	}
 	
-	// Relies on the job of AutoCorrectFlags (video added if necessary):
+	// Relies on the job of AutoCorrectFlags (video already added if necessary):
 	if ( flags & UseEvents ) 
 	{
 	
@@ -306,7 +349,9 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 	 */	
 	if ( flags & UseAudio )
 	{
+	
 		_audio = new Audio::AudioModule() ;
+		
 	}	
 	
 	
