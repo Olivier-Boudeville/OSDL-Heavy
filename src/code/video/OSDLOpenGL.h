@@ -18,21 +18,24 @@
 #else // OSDL_USES_SDL
 
 	/*
-	 * libnds defines it already foor the ARM9 in videoGL.h: 
-	 * '#define GLfloat float'
+	 * libnds used to define it already for the ARM9 in videoGL.h: 
+	 * '#define GLfloat float'. Not true anymore.
 	 *
 	 */
+	
 	 
 	#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
 
 		#include "OSDLConfigForNintendoDS.h"
 		
-		#ifdef OSDL_RUNS_ON_ARM7
-
-			typedef Ceylan::Float32 GLfloat ;
-
-		#endif// on ARM9
-
+		/*
+		 * Currently not using int instead of Ceylan::Float32 to (possibly)
+		 * avoid adding a floating-point emulation library: it would require
+		 * to eliminate many warnings (converting to 'GLLength' or
+		 * 'GLCoordinate' from 'float').
+		 *
+		 */
+		typedef Ceylan::Float32 GLfloat ;
 
 	#endif // on CEYLAN_ARCH_NINTENDO_DS
 
