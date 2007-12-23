@@ -31,20 +31,20 @@ TEST_ARM9_SOURCES = $(wildcard *.arm9.cc)
 
 
 #TEST_TARGETS = $(patsubst %.arm9.cc,%-$(TEST_PREFIX)-patched.$(TEST_EXEC_EXTENSION),$(TEST_ARM9_SOURCES))
-TEST_TARGETS = testOSDLRawSound-0.5-release-patched.$(TARGET_LINKER).nds
-
-RESOURCES = OSDL.raw
-
-FILES_TO_TRANSFER = $(TEST_TARGETS) $(RESOURCES)
+TEST_TARGETS = testOSDLMusic-0.5-release-patched.$(TARGET_LINKER).nds
 
 # Some are patched, the others not:
 #TESTS_TO_TRANSFER = $(wildcard *.$(CURRENT_LINKER).nds)
+
+RESOURCES = OSDL.osdl.sound
+
+FILES_TO_TRANSFER = $(TEST_TARGETS) $(RESOURCES)
 
 OSDL_TESTED_VERSION    = $(OSDL_VERSION)
 OSDL_TESTED_BUILD_MODE = $(OSDL_BUILD_MODE)
 
 # Use 'make emulate TEST_NAME=testOSDLTextConsole' for example to override:
-TEST_NAME = testOSDLRawSound
+TEST_NAME = testOSDLMusic
 
 TEST_FULL_NAME = $(TEST_NAME)-$(TEST_PREFIX)
 
@@ -105,6 +105,7 @@ info-target:
 
 # Build common section.
 
+# By default, use THUMB mode (16 bit), not ARM one (32 bit):
 TEST_ARCH_FLAGS_COMMON = -mthumb -mthumb-interwork
 
 
@@ -125,17 +126,20 @@ TEST_CPP_FLAGS_ARM9 = $(TEST_CPP_FLAGS_COMMON) -DCEYLAN_RUNS_ON_ARM9 \
 
 
 
-# Compiler section: exports TEST_CXX_FLAGS_ARM7 /TEST_CXX_FLAGS_ARM9
+# Compiler section: exports TEST_CXX_FLAGS_ARM7 / TEST_CXX_FLAGS_ARM9
 
 
 # Long but safe:
 # (-Winline removed, caused warning when inlining of test methods failed)
 TEST_CXX_FLAGS_COMMON = $(TEST_ARCH_FLAGS_COMMON) -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
+
 # -Wconversion had to be removed because of incomprehensible warnings like:
 # 'passing argument 1 of XXX with different width due to prototype'
 TEST_CC_FLAGS_COMMON = $(TEST_ARCH_FLAGS_COMMON) -Winline -Wall -Werror  -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
+# Same as TEST_CC_FLAGS_COMMON, but with non-blocking warnings (no -Werror):
+TEST_CC_FLAGS_COMMON_RELAXED = $(TEST_ARCH_FLAGS_COMMON) -Winline -Wall -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
 # Tests will follow the release mode of the OSDL library:
 ifeq ($(OSDL_TESTED_BUILD_MODE),debug)
@@ -148,7 +152,9 @@ else
 
 # Flags common to the ARM7 and the ARM9 for compilation in release mode:
 TEST_CXX_FLAGS_MODE = -O3 -fomit-frame-pointer -ffast-math
-TEST_CC_FLAGS_MODE = -O3 -fomit-frame-pointer -ffast-math
+
+TEST_CC_FLAGS_MODE          = -O3 -fomit-frame-pointer -ffast-math
+TEST_CC_FLAGS_MODE_FOR_SIZE = -Os -fomit-frame-pointer -ffast-math
 
 endif
 
@@ -157,6 +163,7 @@ TEST_CXX_FLAGS_ARM7 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -mcpu=arm7
 
 TEST_CC_FLAGS_ARM7 = $(TEST_CC_FLAGS_COMMON) $(TEST_CC_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi 
 
+TEST_CC_FLAGS_ARM7_RELAXED= $(TEST_CC_FLAGS_COMMON_RELAXED) $(TEST_CC_FLAGS_MODE_FOR_SIZE) -mcpu=arm7tdmi -mtune=arm7tdmi 
 
 TEST_CXX_FLAGS_ARM9 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -march=armv5te -mtune=arm946e-s 
 
@@ -222,8 +229,8 @@ CEYLAN_ARM9_INSTALLED_LIB := $(CEYLAN_INSTALL_LIB)/$(CEYLAN_ARM9_LIB_NAME)
 
 
 # Let the possibility for the user to define his own LIBS.
-# Not libfat for the ARM7 yet (library too big):
-TEST_BASE_LIBS_ARM7:= $(LIBS) -lnds7
+# Not libfat for the ARM7 yet (library too big), but Helix-OSDL:
+TEST_BASE_LIBS_ARM7:= $(LIBS) -lHelix-OSDL-arm7 -lnds7
 TEST_BASE_LIBS_ARM9:= $(LIBS) -l$(CEYLAN_BASE_LIB_NAME)-arm9 -lfat -lnds9
 
 
@@ -276,6 +283,12 @@ info-run:
 
 # From source files specific to either ARM to object files:
 
+# Exception rules to avoid otherwise blocking warnings:
+testOSDLMusic-$(TEST_PREFIX).arm7.o: testOSDLMusic.arm7.c
+	@echo "    Compiling (overriden rule) $< into $@"
+	$(CC) $(TEST_CC_FLAGS_ARM7_RELAXED) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
+
+
 %-$(TEST_PREFIX).arm7.o: %.arm7.c
 	@echo "    Compiling $< into $@"
 	$(CC) $(TEST_CC_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
@@ -297,8 +310,10 @@ info-run:
 # From object files to fully linked ELF executables:
 
 # No $(CEYLAN_ARM7_INSTALLED_LIB) linked for the moment (too big):
-%.arm7.elf: %.arm7.o $(OSDL_ARM7_INSTALLED_LIB)
-	@echo "    Creating OSDL library-user ARM7 ELF executable $@ from $< and from OSDL ARM7 library"
+
+# Disabled dependency: $(OSDL_ARM7_INSTALLED_LIB), would not fit in ARM7 RAM.
+%.arm7.elf: %.arm7.o $(HELIX_OSDL_ARM7_INSTALLED_LIB)
+	@echo "    Creating OSDL library-user ARM7 ELF executable $@ from $< and from Helix library"
 	@$(CXX) $(TEST_LD_FLAGS_ARM7) -Wl,-Map,$@.map $< $(TEST_LIBPATHS_ARM7) $(TEST_LIBS_ARM7) -o $@
 
 
@@ -324,14 +339,15 @@ info-run:
 
 
 # Neither basic logo, wifi logo nor sentences embedded:
+# (sed removes the first dependency, leaving only the ARM9 one)
 %.nds: %.arm7.bin %.arm9.bin
 	@echo "    Creating final slot-1 DS ROM $@ from $^"
 	@$(NDSTOOL) -c $@ -7 $< -9 `echo $^| sed 's|^.* ||1'`
 
 
-# Rules overriden to use raw sound-specific ARM7 executable:
-testOSDLRawSound-$(TEST_PREFIX).nds: testOSDLRawSound-$(TEST_PREFIX).arm7.bin \
-		testOSDLRawSound-$(TEST_PREFIX).arm9.bin
+# Rules overriden to use sound-specific ARM7 executable:
+testOSDLSound-$(TEST_PREFIX).nds: testOSDLSound-$(TEST_PREFIX).arm7.bin \
+		testOSDLSound-$(TEST_PREFIX).arm9.bin
 	@echo "    Creating final slot-1 DS ROM $@ from $^"
 	@$(NDSTOOL) -c $@ -7 $< -9 `echo $^| sed 's|^.* ||1'`
 
