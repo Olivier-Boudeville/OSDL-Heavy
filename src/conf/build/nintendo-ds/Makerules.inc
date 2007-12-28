@@ -15,7 +15,7 @@ include $(TOP)/src/conf/build/nintendo-ds/Makevars.inc
 # Compilation.
 
 
-# For source files common to both ARM:
+# For C++ source files common to both ARM (uses THUMB 16-bit mode):
 
 %.arm7.o: %.cc %.h 
 	@echo "      Compiling $^ into $@"
@@ -35,7 +35,39 @@ include $(TOP)/src/conf/build/nintendo-ds/Makevars.inc
 	$(CXX) $(CXX_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
 
 
-# For source files specific to either ARM:
+# Object files from assembler:
+
+%.arm7.o: %.s
+	@echo "      Compiling $^ into $@"
+	$(CC) -x assembler-with-cpp $(ASM_FLAGS) -c $< -o $@
+
+%.arm9.o: %.s
+	@echo "      Compiling $^ into $@"
+	$(CC) -x assembler-with-cpp $(ASM_FLAGS) -c $< -o $@
+
+
+
+# For C source files common to both ARM (uses ARM 32-bit mode):
+
+%.arm7.o: %.c %.h 
+	@echo "      Compiling in 32-bit mode $^ into $@"
+	$(CC) $(CC_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
+	
+%.arm9.o: %.c %.h 
+	@echo "      Compiling in 32-bit mode $^ into $@"
+	$(CC) $(CC_FLAGS_ARM9_32_BIT) $(CPP_FLAGS_ARM9) -c $< -o $@
+
+
+%.arm7.o: %.c
+	@echo "      Compiling in 32-bit $^ into $@"
+	$(CC) $(CC_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
+	
+%.arm9.o: %.c
+	@echo "      Compiling in 32-bit $^ into $@"
+	$(CC) $(CC_FLAGS_ARM9_32_BIT) $(CPP_FLAGS_ARM9) -c $< -o $@
+
+
+# For C++ source files specific to either ARM:
 
 %.arm7.o: %.arm7.cc %.arm7.h 
 	@echo "      Compiling $^ into $@"
@@ -143,7 +175,7 @@ install: install-recurse
 install-headers:
 	@echo "    Installing headers from "$(shell basename `pwd`)
 	@mkdir -p $(OSDL_INSTALL_INC)
-	@cp -f OSDL*.h $(OSDL_INSTALL_INC)
+	-@/bin/cp -f OSDL*.h $(OSDL_INSTALL_INC) 2>/dev/null
 	
 	
 install-recurse:
