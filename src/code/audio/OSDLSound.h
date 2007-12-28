@@ -36,6 +36,7 @@ namespace OSDL
 		
 #else // OSDL_USES_SDL_MIXER	
 
+
 		/**
 		 * The OSDL fallback sound structure.
 		 *
@@ -43,16 +44,21 @@ namespace OSDL
 		struct LowLevelSound 
 		{
 		
+			/// The sound sampling frequency, in Hertz:
+			Ceylan::Uint16 _frequency ;
+
+			/// The sound bit depth, in bit (8bit/16bit):
+			Ceylan::Uint8 _bitDepth ;
+
+			/// The mode, i.e. the number of channels (mono:1/stereo:2):
+			Ceylan::Uint8 _mode ;
+			
 			/// The actual sound data:
 			Ceylan::Byte * _samples ;
 		
 			/// The size, in bytes, of sound data:
 			Ceylan::Uint32 _size ;
-		
-			/// The sound sampling frequency, in Hertz:
-			Ceylan::Uint16 _frequency ;
-			
-			 
+					 
 		} ;
 
 #endif // OSDL_USES_SDL_MIXER
@@ -104,6 +110,10 @@ namespace OSDL
 				 * the supported formats are WAVE, AIFF, RIFF, OGG, and VOC.
 				 * WAVE and, to a lesser extent, OGG, are recommended for 
 				 * sounds. 
+				 * On the Nintendo DS, only one format is supported, the 
+				 * .osdl.sound format.
+				 *
+				 * @see trunk/tools/mediaraw2osdlsound.cc for a description.
 				 *
 				 * @param preload the sound will be loaded directly by this
 				 * constructor iff true, otherwise only its path will be
