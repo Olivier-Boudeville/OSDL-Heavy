@@ -2184,6 +2184,8 @@ When using the ARM7 for that purpose, tight 32 bit (ARM, not Thumb) loops should
 </p>
 
 
+
+
 <a name="audio-transformations"></a>
 <h6>Audio transformations</h6>
 <p>
@@ -2199,11 +2201,14 @@ When targeting an embedded MP3 decoder on the DS, lightening and conversion can 
 </p>
 
 <p>
-For example if you have a <code>YourLongMusic.wav</code>, with following format: <code>RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit, stereo 44100 Hz</code> (use the UNIX <code>file</code> command to figure it out), and if its size is about 145 megabytes (13'50 of high-quality music), you may use LAME to obtain a <code>YourLongMusic.mp3</code> of only 8 megabytes, i.e. a compression ratio of about 1800%. 
+For example if you have a <code>YourLongMusic.wav</code>, with following format: <code>RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit, stereo 44100 Hz</code> (use the UNIX <code>file</code> command to figure it out), and if its size is about 145 megabytes (13'50 of high-quality music), you may use LAME to obtain a <code>YourLongMusic.mp3</code> of only 8 megabytes or less, i.e. a compression ratio at least equal to 1800%. 
 </p>
 
+
+
+<h7>MP3 encoding with constant bitrate</h7>
 <p>
-To reach that ratio, a quite low bitrate has to be used (80 kbps). The bitrate determines the bandwidth budget you chose, and in this budget you have to select which features are to be available. You can play mainly onto two variables: the number of output channels (ex: mono or stereo) and the output sampling frequency (ex: 22.05, 44.1 kHz, etc.).  
+To reach the previous ratio, a quite low (constant) bitrate has to be used (80 kbps). The bitrate determines the bandwidth budget you chose, and in this budget you have to select which features are to be available. You can play mainly onto two variables: the number of output channels (ex: mono or stereo) and the output sampling frequency (ex: 22.05, 44.1 kHz, etc.).  
 </p>
 
 <p>
@@ -2221,6 +2226,7 @@ lame YourLongMusic.wav --verbose -m m -b 96 -q 0 --resample 22.05 YourLongMusic.
 </center>
 </p>
 
+
 <p>
 Heard on a hifi player, the quality of the result, compared to the one of the original, is obviously lower. But it remains, in our opinion, well above the minimal expectations for a game background music that will be mixed with special effects and output by the DS, with either the plugged earphones or the internal speakers (which are neither bad nor good).
 </p>
@@ -2228,6 +2234,41 @@ Heard on a hifi player, the quality of the result, compared to the one of the or
 <p>
 Low bitrates use less space on storage, are lighter for the memory buses and should require less overall CPU.
 </p>
+
+
+
+<h7>MP3 encoding with variable bitrate</h7>
+<p>
+Another option, if your decoder supports it, is to use variable bitrate (VBR) instead of a constant one (CBR). Adapting dynamically the actual bitrate to match the instant needs of the sound leads to still better compression/quality ratio.
+</p>
+
+<p>
+For example using VBR instead of CBR on the previous long music results in a file of about 3 megabytes, i.e. a deflating ratio of 4800%, with still a music that sounds quite good, even on a hifi system. 
+</p>
+
+
+<p>To do so with the lame encoder, one can use the following command:
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+lame YourLongMusic.wav --verbose -m m --vbr-new -V 5 -q 0 --resample 22.05 YourLongMusic.mp3
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+Note that <code>--vbr-new</code> can be replaced by <code>--vbr-old</code> to check whether the previous algorithm is better for your sounds. Some mp3 players (ex: xmms) may have trouble to compute the actual duration of a VBR-encoded sound. The sound is not truncated, its duration is just often underestimated.
+</p>
+
+
+
 
 
 <h6>Full loading or streaming audio</h6>
@@ -2258,7 +2299,6 @@ As often a chunk loading lasts a bit, it must be anticipated (the audio layer ca
 <p>
 As if it was not difficult enough, on the DS the samples are to be read on the ARM9 (libfat does not fit in ARM7 executable) but must be sent to the audio hardware by the ARM7 (the only one that can access it). Any decoding must therefore take place in-between, either sooner (on the ARM9) or later (on the ARM7). This requires a lot of synchronization between the two ARM. See our <a href="../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a> library for more details.
 </p>
-
 
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -5000,7 +5040,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Saturday, November 17, 2007</em>
+    <em>Last update: Friday, November 30, 2007</em>
   </center>
 </body>
 </html>
