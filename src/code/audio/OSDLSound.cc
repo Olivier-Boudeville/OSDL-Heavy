@@ -131,6 +131,14 @@ bool Sound::load() throw( Ceylan::LoadableException )
 
 #elif defined(OSDL_RUNS_ON_ARM9)
 
+
+	/*
+	 * We expect here a file respecting the .osdl.sound format.
+	 *
+	 * @see trunk/tools/media/raw2osdlsound.cc
+	 *
+	 */
+
 	try
 	{
 	
@@ -140,18 +148,73 @@ bool Sound::load() throw( Ceylan::LoadableException )
 		
 		File & soundFile = File::Open( _contentPath ) ;
 		
-		Ceylan::Uint32 readSize = soundFile.size() ;
 		
+		// Frequency:
+		_content->_frequency = soundFile.readUint16() ;
+
+
+		// Format, bit depth (8 bit/16 bit):
+		SampleFormat readFormat = soundFile.readUint16() ;
+		
+		/*
+		 * Commented-out because of:
+		 * '0SDL::Audio::AudioModule::LittleSint16SampleFormat' cannot appear
+		 * in a constant-expression...
+
+		switch( readFormat )
+		{
+		
+			case AudioModule::LittleSint16SampleFormat:
+				_content->_bitDepth = 16 ;
+				break ;
+				
+			case AudioModule::Sint8SampleFormat:
+				_content->_bitDepth = 8 ;
+				break ;
+				
+			default:
+				throw Ceylan::LoadableException( "Sound::load failed: "
+					"unexpected bit depth (" + Ceylan::toString( readFormat )
+					+ ") read from sound file '" + _contentPath + "'" ) ;
+				break ;
+		
+		}
+		*/
+		
+		if ( readFormat == AudioModule::LittleSint16SampleFormat )
+			_content->_bitDepth = 16 ;
+		else if ( readFormat == AudioModule::Sint8SampleFormat )
+			_content->_bitDepth = 8 ;
+		else
+			throw Ceylan::LoadableException( "Sound::load failed: "
+				"unexpected bit depth (" + Ceylan::toString( readFormat )
+				+ ") read from sound file '" + _contentPath + "'" ) ;
+			
+			
+		// Mode (number of channels):
+		ChannelFormat readMode = soundFile.readUint16() ;
+		
+		if ( readMode != AudioModule::Mono
+			 	&& readMode != AudioModule::Stereo )
+			throw Ceylan::LoadableException( "Sound::load failed: "
+				"unexpected channel format read from sound file '" 
+				+ _contentPath + "'" ) ;
+			 
+		_content->_mode = static_cast<Ceylan::Uint8>( readMode ) ;
+		
+		// Substracts the header size:
+		Ceylan::Uint32 readSize = soundFile.size() - 6 ;
+		
+		_content->_size = readSize ;   
+			
 		// Force sound buffer to match the boundaries of ARM9 cache line:		
 		_content->_samples = CacheProtectedNew( readSize ) ;   
 		
 		soundFile.readExactLength( _content->_samples, readSize ) ;
 
-		_content->_size = readSize ;   
-
-		// All .raw files are expected to respect this frequency:
-		_content->_frequency = 22050 ;
-		
+		// Flush the ARM9 data cache for the ARM7:
+		DC_FlushRange( (void*) _content->_samples, readSize ) ;
+				
 		delete & soundFile ;	
 	
 	}
@@ -163,6 +226,17 @@ bool Sound::load() throw( Ceylan::LoadableException )
 	
 	}
 
+
+	/*
+	LogPlug::debug( "Sound::load for '" + _contentPath 
+		+ "': read a frequency of " + Ceylan::toString( _content->_frequency )
+		+ " Hz, a bit depth of " 
+		+ Ceylan::toNumericalString( _content->_bitDepth )
+		+ " bit, a number of channel of " 
+		+ Ceylan::toNumericalString( _content->_mode )
+		+ ", and a size of " + _content->_size + " bytes." ) ;
+	 */
+	 	
 	_convertedToOutputFormat = true ;
 	
 	return true ;
