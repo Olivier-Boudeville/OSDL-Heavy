@@ -73,6 +73,8 @@ WINE = wine
 #TRANSFER_MOUNT_POINT = /media/disk
 TRANSFER_MOUNT_POINT = /media/DS-homebrew
 
+TRANSFER_DIRECTORY= $(TRANSFER_MOUNT_POINT)/NDS
+
 
 
 # Module settings.
@@ -113,22 +115,33 @@ OSDL_VIDEO_RENDERER_INC        := -I$(OSDL_VIDEO_RENDERER)
 # For OSDL versions and al:
 include $(TOP)/src/conf/OSDLSettings.inc
 
-OSDL_LT_CURRENT := $(OSDL_MAJOR_VERSION)
-OSDL_LT_REVISION:= $(OSDL_MINOR_VERSION)
-OSDL_LT_AGE     := $(shell expr $(OSDL_MAJOR_VERSION) - $(OSDL_MAJOR_ANCESTOR))
+OSDL_LT_CURRENT  := $(OSDL_MAJOR_VERSION)
+OSDL_LT_REVISION := $(OSDL_MINOR_VERSION)
+OSDL_LT_AGE      := $(shell expr $(OSDL_MAJOR_VERSION) - $(OSDL_MAJOR_ANCESTOR))
 
-OSDL_VERSION:= $(OSDL_LT_CURRENT).$(OSDL_LT_REVISION)
-OSDL_LT_VERSION:= $(OSDL_LT_CURRENT).$(OSDL_LT_REVISION).$(OSDL_LT_AGE)
+OSDL_VERSION    := $(OSDL_LT_CURRENT).$(OSDL_LT_REVISION)
+OSDL_LT_VERSION := $(OSDL_LT_CURRENT).$(OSDL_LT_REVISION).$(OSDL_LT_AGE)
 
 
 # Architecture-related flags.
 
+# By default prefer THUMB mode (16 bit) to ARM mode (32 bit):
 ARCH_FLAGS_COMMON = -mthumb -mthumb-interwork
 
+# To force ARM mode (ex: on the ARM7 for the Helix decoder):
+ARCH_FLAGS_COMMON_32_BIT = 
+
+
 # The -DARM7/-DARM flags are needed by libnds but set by OSDL DS header:
+
 ARCH_FLAGS_ARM7   = $(ARCH_FLAGS_COMMON) -mcpu=arm7tdmi -mtune=arm7tdmi -DOSDL_RUNS_ON_ARM7=1
 
+ARCH_FLAGS_ARM7_32_BIT = $(ARCH_FLAGS_COMMON_32_BIT) -mcpu=arm7tdmi -mtune=arm7tdmi -DOSDL_RUNS_ON_ARM7=1
+
+
 ARCH_FLAGS_ARM9   = $(ARCH_FLAGS_COMMON) -march=armv5te -mtune=arm946e-s -DOSDL_RUNS_ON_ARM9=1
+
+ARCH_FLAGS_ARM9_32_BIT   = $(ARCH_FLAGS_COMMON_32_BIT) -march=armv5te -mtune=arm946e-s -DOSDL_RUNS_ON_ARM9=1
 
 
 # Determines which kind of build is expected:
@@ -157,6 +170,23 @@ OSDL_LIB_LOCATION:= $(TOP)/src/code
 
 OSDL_ARM7_LIB_FULL_PATH:=$(OSDL_LIB_LOCATION)/$(OSDL_ARM7_LIB_NAME)
 OSDL_ARM9_LIB_FULL_PATH:=$(OSDL_LIB_LOCATION)/$(OSDL_ARM9_LIB_NAME)
+
+
+# Helix OSDL library names.
+
+HELIX_OSDL_BASE_LIB_NAME:=Helix-OSDL
+
+HELIX_OSDL_ARM7_LINK_NAME:=$(HELIX_OSDL_BASE_LIB_NAME)-arm7
+HELIX_OSDL_ARM9_LINK_NAME:=$(HELIX_OSDL_BASE_LIB_NAME)-arm9
+
+
+HELIX_OSDL_ARM7_LIB_NAME:=lib$(HELIX_OSDL_ARM7_LINK_NAME).a
+HELIX_OSDL_ARM9_LIB_NAME:=lib$(HELIX_OSDL_ARM9_LINK_NAME).a
+
+HELIX_OSDL_LIB_LOCATION:= $(TOP)/src/code/audio/helix
+
+HELIX_OSDL_ARM7_LIB_FULL_PATH:=$(HELIX_OSDL_LIB_LOCATION)/$(HELIX_OSDL_ARM7_LIB_NAME)
+HELIX_OSDL_ARM9_LIB_FULL_PATH:=$(HELIX_OSDL_LIB_LOCATION)/$(HELIX_OSDL_ARM9_LIB_NAME)
 
 
 # Preprocessor flags.
@@ -240,10 +270,26 @@ CPP_FLAGS_ARM7  := $(CPP_FLAGS) $(CPP_FLAGS_COMMON)
 CPP_FLAGS_ARM9  := $(CPP_FLAGS) $(CPP_FLAGS_COMMON)
 
 
+# ARM assembler flags.
+ASM_FLAGS = -g -marm -mthumb-interwork
 
-# C++ Compile flags.
+
+# C and C++ Compile flags.
 
 # Compile flags always used, for both ARM, both in debug and release modes:
+
+# @fixme Needing to gain some room in ARM7 binary, using -Os instead of -O3
+# implies removing -Winline:
+CC_FLAGS_COMMON:=  -Wall -Werror -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
+
+# Removed: 
+#   -Wcast-qual: cause Helix code to issue warnings (cast discards qualifiers) 
+#   -Wconversion: cause Helix code to issue warnings (prototype/memmove)
+#   -Wcast-align: too many warnings due to STL casts
+#   -Wpacked: too many warnings about 'packed attribute causes inefficient
+# alignment' in libnds headers
+
+
 CXX_FLAGS_COMMON:= -Winline -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
 # Removed: 
@@ -255,24 +301,45 @@ CXX_FLAGS_COMMON:= -Winline -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal 
 ifeq ($(OSDL_BUILD_MODE),debug)
 
 # Flags common to the ARM7 and the ARM9 for compilation in debug mode:
+CC_FLAGS_COMMON:= $(CC_FLAGS_COMMON) -g -O0 -DOSDL_DEBUG=1
+
+# Flags common to the ARM7 and the ARM9 for compilation in debug mode:
 CXX_FLAGS_COMMON:= $(CXX_FLAGS_COMMON) -g -O0 -DOSDL_DEBUG=1
 
 else
 
 # Flags common to the ARM7 and the ARM9 for compilation in release mode:
+
+# @fixme Needing to gain some room in ARM7 binary, using -Os instead of -O3:
+CC_FLAGS_COMMON:= $(CC_FLAGS_COMMON) -Os -fomit-frame-pointer -ffast-math -DOSDL_DEBUG=0
+
 CXX_FLAGS_COMMON:= $(CXX_FLAGS_COMMON) -O3 -fomit-frame-pointer -ffast-math -DOSDL_DEBUG=0
 
 endif
 
 
+# Let the possibility for the user to define his own CC_FLAGS:
+
+CC_FLAGS_ARM7        := $(CC_FLAGS) $(CC_FLAGS_COMMON) $(ARCH_FLAGS_ARM7)
+
+CC_FLAGS_ARM7_32_BIT := $(CC_FLAGS) $(CC_FLAGS_COMMON) $(ARCH_FLAGS_ARM7_32_BIT)
+
+CC_FLAGS_ARM9        := $(CC_FLAGS) $(CC_FLAGS_COMMON) $(ARCH_FLAGS_ARM9)
+CC_FLAGS_ARM9_32_BIT := $(CC_FLAGS) $(CC_FLAGS_COMMON) $(ARCH_FLAGS_ARM9_32_BIT)
+
+
 # Let the possibility for the user to define his own CXX_FLAGS:
-CXX_FLAGS_ARM7  := $(CXX_FLAGS) $(CXX_FLAGS_COMMON) $(ARCH_FLAGS_ARM7)
-CXX_FLAGS_ARM9  := $(CXX_FLAGS) $(CXX_FLAGS_COMMON) $(ARCH_FLAGS_ARM9)
+
+CXX_FLAGS_ARM7        := $(CXX_FLAGS) $(CXX_FLAGS_COMMON) $(ARCH_FLAGS_ARM7)
+CXX_FLAGS_ARM7_32_BIT := $(CXX_FLAGS) $(CXX_FLAGS_COMMON) $(ARCH_FLAGS_ARM7_32_BIT)
+
+CXX_FLAGS_ARM9        := $(CXX_FLAGS) $(CXX_FLAGS_COMMON) $(ARCH_FLAGS_ARM9)
+CXX_FLAGS_ARM9_32_BIT := $(CXX_FLAGS) $(CXX_FLAGS_COMMON) $(ARCH_FLAGS_ARM9_32_BIT)
 
 
 
 
-# C++ Link flags.
+# C/C++ Link flags.
 
 
 # Generating a library:
@@ -295,4 +362,7 @@ OSDL_INSTALL_LIB  := $(OSDL_INSTALL_ROOT)/lib
 
 OSDL_ARM7_INSTALLED_LIB := $(OSDL_INSTALL_LIB)/$(OSDL_ARM7_LIB_NAME)
 OSDL_ARM9_INSTALLED_LIB := $(OSDL_INSTALL_LIB)/$(OSDL_ARM9_LIB_NAME)
+
+HELIX_OSDL_ARM7_INSTALLED_LIB := $(OSDL_INSTALL_LIB)/$(HELIX_OSDL_ARM7_LIB_NAME)
+HELIX_OSDL_ARM9_INSTALLED_LIB := $(OSDL_INSTALL_LIB)/$(HELIX_OSDL_ARM9_LIB_NAME)
 
