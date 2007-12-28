@@ -2,21 +2,21 @@
 
 
 USAGE="
-Usage : "`basename $0`" [ --with-osdl-environment <path> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist] : (re)generates all the autotools-based build system for OSDL tests.
+Usage: "`basename $0`" [ --with-osdl-environment <path> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist]: (re)generates all the autotools-based build system for OSDL tests.
 
-	--with-osdl-environment : specify which OSDL environment file shall be used (OSDL-environment.sh full path)
-	--guess-osdl-environment : try to guess where the OSDL environment file lies. If one is found, then it is used, otherwise stops on failure
-	--no-build : stop just after having generated the configure script
-	--only-prepare-dist : perform only necessary operations so that the test directory can be distributed afterwards"
+	--with-osdl-environment: specify which OSDL environment file shall be used (OSDL-environment.sh full path)
+	--guess-osdl-environment: try to guess where the OSDL environment file lies. If one is found, then it is used, otherwise stops on failure
+	--no-build: stop just after having generated the configure script
+	--only-prepare-dist: perform only necessary operations so that the test directory can be distributed afterwards"
 
-# These tests must rely on a related Ceylan source directory, since they :
+# These tests must rely on a related Ceylan source directory, since they:
 #	- need to know which Ceylan version is to be tested
-#	- use some Ceylan facilities (ex : Ceylan substitute script)
+#	- use some Ceylan facilities (ex: Ceylan substitute script)
 
 
 # Main settings section.
 
-# 0 means true, 1 means false :
+# 0 means true, 1 means false:
 do_remove_generated=0
 do_stop_after_configure=1
 do_clean=0
@@ -25,24 +25,24 @@ do_install=0
 do_test=0
 
 
-# debug mode activated iff equal to true (0) :
+# debug mode activated iff equal to true (0):
 debug_mode=1
 
 debug()
 {
 	if [ $debug_mode -eq 0 ] ; then
-		echo "debug : $*"
+		echo "debug: $*"
 	fi	
 }
 
 
 warning()
 {
-	echo "warning : $*" 1>&2
+	echo "warning: $*" 1>&2
 }
 
 
-# Wait-after-execution mode activated iff equal to true (0) :
+# Wait-after-execution mode activated iff equal to true (0):
 wait_activated=1
 
 wait()
@@ -60,11 +60,11 @@ RM="/bin/rm -f"
 
 COMMAND=$0
 
-# Always start from 'src/conf/build' directory :
+# Always start from 'src/conf/build' directory:
 cd `dirname $COMMAND`
 
 
-# Default value guessed from current path :
+# Default value guessed from current path:
 loani_repository=`pwd|sed 's|/osdl/OSDL/trunk/test||1'`
 #echo "loani_repository = $loani_repository"
 
@@ -135,7 +135,7 @@ done
 
 
 
-# Where the libraries should be found :
+# Where the libraries should be found:
 if [ -n "$osdl_environment_file" ] ; then
 
 	# If these lines are changed, change accordingly loani-requiredTools.sh,
@@ -160,7 +160,7 @@ if [ -n "$osdl_environment_file" ] ; then
 fi
 
 
-# Where these tests should be installed :
+# Where these tests should be installed:
 test_install_location="$OSDL_PREFIX"
 
 if [ -n "$test_install_location" ] ; then
@@ -170,7 +170,7 @@ else
 fi
 
 
-# To check the user can override them :
+# To check the user can override them:
 #test_overriden_options="CPPFLAGS=\"-DTEST_CPPFLAGS\" LDFLAGS=\"-LTEST_LDFLAGS\""
 test_overriden_options=""
 
@@ -180,7 +180,7 @@ configure_opt="-enable-strict-ansi --enable-debug $prerequesites_prefix_opt $tes
 if [ -n "$Ceylan_PREFIX" ] ; then
 	ceylan_location="$Ceylan_PREFIX"
 else
-	# Default prefix :
+	# Default prefix:
 	ceylan_location="/usr/local"
 fi
 		
@@ -195,7 +195,7 @@ fi
 if [ -n "$OSDL_PREFIX" ] ; then
 	osdl_location="$OSDL_PREFIX"
 else
-	# Default prefix :
+	# Default prefix:
 	osdl_location="/usr/local"
 fi
 
@@ -208,7 +208,7 @@ if [ ! -d "$osdl_location" ] ; then
 fi	
 
 
-# Searches for the Ceylan substitute script :
+# Searches for the Ceylan substitute script:
 CEYLAN_SUBSTITUTE_SCRIPT="$ceylan_location/share/Ceylan/scripts/shell/substitute.sh"
 
 if [ ! -x "${CEYLAN_SUBSTITUTE_SCRIPT}" ] ; then
@@ -220,7 +220,7 @@ if [ ! -x "${CEYLAN_SUBSTITUTE_SCRIPT}" ] ; then
 fi
 
 
-# Searches for the OSDL settings file :
+# Searches for the OSDL settings file:
 OSDL_SETTINGS_FILE="../src/conf/OSDLSettings.inc"
 if [ ! -f "${OSDL_SETTINGS_FILE}" ] ; then
 	echo "Error, no OSDL settings file found (${OSDL_SETTINGS_FILE})." 1>&2
@@ -228,7 +228,7 @@ if [ ! -f "${OSDL_SETTINGS_FILE}" ] ; then
 fi
 
 
-# Log-on-file mode activated iff equal to true (0) :
+# Log-on-file mode activated iff equal to true (0):
 log_on_file=1
 
 log_filename="autogen.log"
@@ -239,21 +239,21 @@ if [ -f "$log_filename" ]; then
 fi
 
 
-# Overall autotools settings :
+# Overall autotools settings:
 
-# Be verbose for debug purpose :
+# Be verbose for debug purpose:
 #verbose="--verbose"
 verbose=""
 
-# Copy files instead of using symbolic link :
+# Copy files instead of using symbolic link:
 copy="--copy"
 #copy=""
 
-# Replace existing files :
+# Replace existing files:
 #force="--force"
 force=""
 
-# Warning selection : 
+# Warning selection: 
 warnings="--warnings=all"
 #warnings=""
 
@@ -289,7 +289,7 @@ execute()
 			echo "Error while executing '$*'" 1>&2
 			if [ "$1" = "./configure" ]; then
 				echo "
-Note : check the following log :" test/config.log	
+Note: check the following log:" test/config.log	
   			fi
 		fi
 			
@@ -302,7 +302,7 @@ Note : check the following log :" test/config.log
     
 	                                                 
 generateCustom()
-# Old-fashioned way of regenerating the build system from scratch : 
+# Old-fashioned way of regenerating the build system from scratch: 
 {
 
 
@@ -314,7 +314,7 @@ generateCustom()
 		./cleanGeneratedConfigFiles.sh
 	fi
 	
-	# Update timestamps since SVN may mess them up :
+	# Update timestamps since SVN may mess them up:
 	CONFIG_SOURCE=configure-template.ac
 	CONFIG_TARGET=configure.ac
 	
@@ -324,7 +324,7 @@ generateCustom()
 	echo
 	echo " - generating $CONFIG_TARGET, by filling $CONFIG_SOURCE with ${OSDL_SETTINGS_FILE}"
 
-	# Generates 'configure.ac' with an already cooked dedicated Makefile :
+	# Generates 'configure.ac' with an already cooked dedicated Makefile:
 	make -f MakeConfigure clean config-files SETTINGS_FILE=${OSDL_SETTINGS_FILE} SUBSTITUTE=${CEYLAN_SUBSTITUTE_SCRIPT}
 
 	echo
@@ -364,15 +364,15 @@ generateCustom()
 		exit 22
 	}
 
-	# Where ceylan.m4, pkg.m4, etc. should be found : 
+	# Where ceylan.m4, pkg.m4, etc. should be found: 
 	CEYLAN_M4_DIR=$ceylan_location/share/Ceylan
 	
-	# Where osdl.m4, sdl.m4, etc. should be found : 
+	# Where osdl.m4, sdl.m4, etc. should be found: 
 	OSDL_M4_DIR=$osdl_location/share/OSDL
 	
 	ACLOCAL_OUTPUT=aclocal.m4
 	
-	# Do not use '--acdir=.' since it prevents aclocal from writing its file :
+	# Do not use '--acdir=.' since it prevents aclocal from writing its file:
 	execute aclocal -I $CEYLAN_M4_DIR -I $OSDL_M4_DIR --output=$ACLOCAL_OUTPUT $force $verbose
 	
 	echo
@@ -451,7 +451,7 @@ generateCustom()
 	
 		if [ -n "$osdl_install_prefix_opt" ] ; then
 			echo 1>&2
-			echo "Warning : not installing tests and using $osdl_install_prefix_opt implies updating library search paths to select the correct library, for example one may enter : " 1>&2
+			echo "Warning: not installing tests and using $osdl_install_prefix_opt implies updating library search paths to select the correct library, for example one may enter: " 1>&2
 			echo "export LD_LIBRARY_PATH=$osdl_install_prefix/lib:\$LD_LIBRARY_PATH" 1>&2
 		fi
 		
@@ -466,7 +466,7 @@ generateCustom()
 	
 	
 	if [ -n "$osdl_environment_file" ] ; then
-		echo "Note that before running tests from the command-line, the runtime environment must be set (ex : OSDL-environment.sh must have been sourced beforehand)."
+		echo "Note that before running tests from the command-line, the runtime environment must be set (ex: OSDL-environment.sh must have been sourced beforehand)."
 	fi
 	 
 		
