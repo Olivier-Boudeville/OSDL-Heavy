@@ -74,9 +74,9 @@ patch: $(TEST_FULL_NAME).sc.nds
 	
 	
 transfer: $(FILES_TO_TRANSFER)
-	@echo "    Transferring $^ to $(TRANSFER_MOUNT_POINT)"
-	@/bin/ls $(TRANSFER_MOUNT_POINT) 1>/dev/null 2>&1
-	@cp -f $^ $(TRANSFER_MOUNT_POINT)
+	@echo "    Transferring $^ to $(TRANSFER_DIRECTORY)"
+	@/bin/ls $(TRANSFER_DIRECTORY) 1>/dev/null 2>&1
+	@cp -f $^ $(TRANSFER_DIRECTORY)
 
 
 umount: 	
