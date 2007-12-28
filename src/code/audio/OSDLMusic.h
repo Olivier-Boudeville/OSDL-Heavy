@@ -2,11 +2,12 @@
 #define OSDL_MUSIC_H_
 
 
-#include "OSDLAudioCommon.h" // for MusicType, etc.
-#include "OSDLAudible.h"     // for AudibleException, inheritance
+#include "OSDLAudioCommon.h"    // for MusicType, etc.
+#include "OSDLAudible.h"        // for AudibleException, inheritance
 
+#include "OSDLCommandManager.h" // for friend declaration.
 
-#include "Ceylan.h"          // for LoadableWithContent
+#include "Ceylan.h"             // for LoadableWithContent
 
 
 #include <string>
@@ -41,6 +42,9 @@ namespace OSDL
 	{
 
 			
+		/// For buffer sizes, in bytes (prefer full 32-bit words, faster).
+		typedef Ceylan::Uint32 BufferSize ;
+
 
 		/// Low-level music being used internally.
 #if ! defined(OSDL_USES_SDL_MIXER) || OSDL_USES_SDL_MIXER 
@@ -49,7 +53,83 @@ namespace OSDL
 		
 #else // OSDL_USES_SDL_MIXER	
 
-		struct LowLevelMusic {} ;
+		
+		/**
+		 * Double-buffered music.
+		 *
+		 */
+		struct LowLevelMusic
+		{
+		
+			// Music-specific section.
+		
+			/// The file from which music samples will be streamed:
+			Ceylan::System::File * _musicFile ;
+			
+			/// The music sampling frequency, in Hertz:
+			Ceylan::Uint16 _frequency ;
+
+			/// The music bit depth, in bits (8bit/16bit):
+			Ceylan::Uint8 _bitDepth ;
+
+			/**
+			 * The mode, i.e. the number of channels (mono:1/stereo:2):
+			 * (only mono supported currently)
+			 *
+			 */
+			Ceylan::Uint8 _mode ;
+
+
+			/// The total size of music, in bytes:
+			BufferSize _size ;
+			
+			
+			// Buffer-specific section.
+
+			/// The size of a (simple) buffer, in bytes:
+			BufferSize _bufferSize ;
+			
+			/// The smallest upper bound chosen to a MP3 frame size.
+			BufferSize _frameSizeUpperBound ;
+			
+			
+			/**
+			 * The actual double sound buffer, two simple buffers, one after the
+			 * other (so the first half buffer has the same address as this
+			 * double one)
+			 *
+			 */
+			Ceylan::Byte * _doubleBuffer ;
+		
+		
+			/// Tells whether the first buffer is filled with unplayed content.
+			bool _firstFilled ;
+			
+			/// Tells how many bytes can be read from first buffer.
+			BufferSize _availableInFirst ;
+			
+			/*
+			 * Precomputes the start of the first buffer, after the delta 
+			 * zone.
+			 *
+			 */
+			Ceylan::Byte * _startAfterDelta ;
+			
+			/// Precomputes delta-wise the refill size of first buffer.
+			BufferSize _firstActualRefillSize ;
+			
+			
+			/// The address of the second buffer:
+			Ceylan::Byte * _secondBuffer ;
+
+			/// Tells whether the second buffer is filled with unplayed content.
+			bool _secondFilled ;
+		
+			/// Tells how many bytes can be read from second buffer.
+			BufferSize _availableInSecond ;
+			
+			
+		} ;
 
 #endif // OSDL_USES_SDL_MIXER
 
@@ -196,7 +276,9 @@ namespace OSDL
 			public Ceylan::LoadableWithContent<LowLevelMusic>
 		{
 		
-				
+			
+			// So that the manager can call onPlaybackEnded and al:
+			friend class OSDL::CommandManager ;
 			
 			public:
 				
@@ -214,13 +296,17 @@ namespace OSDL
 				 * constructor iff true, otherwise only its path will be
 				 * stored to allow for later loading.
 				 *
+				 * @note On some platforms, like the Nintendo DS, too few
+				 * RAM is available to load a full music in it. Thus the music
+				 * will always be streamed, and the preload flag will be
+				 * ignored. 
+				 *
 				 * @throw MusicException if the operation failed or is not
 				 * supported.
 				 *
 				 */
 				explicit Music( const std::string & musicFile, 
-						bool preload = true )
-					throw( MusicException ) ;
+						bool preload = true ) throw( MusicException ) ;
 				
 				
 				/// Virtual destructor.
@@ -309,11 +395,13 @@ namespace OSDL
 				 */
 				
 				
+				
 				// Simple play subsection.
 				
 				
 				/**
 				 * Plays this music instance at once.
+				 *
 				 * The previous music will be halted, or, if fading out, this
 				 * music waits (blocking) for the previous to finish.
 				 *
@@ -323,6 +411,9 @@ namespace OSDL
 				 * (blocking) for that to finish. A count of -1 means forever. 
 				 * Otherwise it must be strictly positive (exception thrown if
 				 * zero or below -1).
+				 *
+				 * On the Nintendo DS, a command manager is expected to be
+				 * already available before playback.
 				 *
 				 * @throw AudibleException if the operation failed, including
 				 * if not supported .
@@ -398,6 +489,14 @@ namespace OSDL
 						PlaybackCount playCount = 1 ) 
 					throw( AudibleException ) ; 
 		
+
+				/**
+				 * Tells whether this music is being played.
+				 *
+				 * @note A paused music is deemed playing.
+				 *
+				 */
+				virtual bool isPlaying() throw() ;
 				
 				
 				/** 
@@ -497,7 +596,39 @@ namespace OSDL
 					throw( MusicException ) ; 
 
 				
+				/**
+				 * Sets this music as the current one. 
+				 *
+				 * Any already current music will be replaced immediately, and
+				 * be notified of it.
+				 *
+				 * @see onNoMoreCurrent
+				 *
+				 */
+				virtual void setAsCurrent() throw( AudioException ) ;
+
 			
+				/**
+				 * Sets a corresponding flag in this music instance to notify
+				 * the main loop the first buffer should be refilled.
+				 *
+				 * Called by the CommandManager from an IRQ.
+				 *
+				 */
+				virtual void requestFillOfFirstBuffer() throw() ;
+				
+				
+				/**
+				 * Sets a corresponding flag in this music instance to notify
+				 * the main loop the second buffer should be refilled.
+				 *
+				 * Called by the CommandManager from an IRQ.
+				 *
+				 */
+				virtual void requestFillOfSecondBuffer() throw() ;
+				
+								
+				 
 	            /**
 	             * Returns an user-friendly description of the state of 
 				 * this object.
@@ -515,6 +646,16 @@ namespace OSDL
 					const throw() ;
 			
 			
+				/**
+				 * Manages the current music, including regarding the refilling
+				 * of buffers.
+				 *
+				 * To be called from the main loop.
+				 *
+				 */
+				static void ManageCurrentMusic() throw( AudioException ) ;
+				
+				 
 				/**
 				 * Returns the type of the specified music (if parameter is not
 				 * null), or the one of the currently played music (if null).
@@ -545,6 +686,123 @@ namespace OSDL
 			protected:
 			
 			
+				/// Tells whether this music is being played.
+				bool _isPlaying ;
+				
+				
+				/// To trigger a refill by the main loop.
+				bool _requestFillOfFirstBuffer ;
+				
+				/// To trigger a refill by the main loop.
+				bool _requestFillOfSecondBuffer ;
+				
+			
+				/// The music currently being played (if any).
+				static Music * _CurrentMusic ;
+				
+				
+				
+				/**
+				 * Callback automatically called whenever the playback of this
+				 * music is over.
+				 *
+				 * @note Made to be overriden.
+				 *
+				 * @throw AudioException if the operation failed.
+				 *
+				 */
+				virtual void onPlaybackEnded() throw( AudioException ) ;
+				
+				
+				/**
+				 * Callback automatically called whenever this music was the
+				 * current one, but it is not anymore.
+				 *
+				 * @note Made to be overriden.
+				 *
+				 * @throw AudioException if the operation failed.
+				 *
+				 * @see setAsCurrent
+				 *
+				 */
+				virtual void onNoMoreCurrent() throw( AudioException ) ;
+				
+				
+				/**
+				 * Triggers any buffer refill, if necessary.
+				 *
+				 * Helper method to be used by the main loop.
+				 *
+				 * @throw AudioException if a refill failed.
+				 *
+				 */
+				virtual void manageBufferRefill() throw( AudioException ) ;
+
+
+				
+				/**
+				 * Returns the first encoded buffer of this music.
+				 *
+				 * @throw AudioException if the operation failed, including 
+				 * if no buffer is available.
+				 *
+				 */
+				//Ceylan::Byte * getFirstBuffer() throw( AudioException ) ;
+
+
+				/**
+				 * Returns the number of bytes that are available to read in 
+				 * first encoded buffer.
+				 *
+				 * @throw AudioException if the operation failed.
+				 *
+				 */
+				//BufferSize getAvailableSizeInFirstBuffer() 
+				//	throw( AudioException ) ;
+				
+				
+				/**
+				 * Returns the second encoded buffer of this music.
+				 *
+				 * @throw AudioException if the operation failed, including 
+				 * if no buffer is available.
+				 *
+				 */
+				//Ceylan::Byte * getSecondBuffer() throw( AudioException ) ;
+				
+				
+				/**
+				 * Returns the number of bytes that are available to read in 
+				 * second encoded buffer.
+				 *
+				 * @throw AudioException if the operation failed.
+				 *
+				 */
+				//BufferSize getAvailableSizeInSecondBuffer() 
+				//	throw( AudioException ) ;
+				
+				
+				/**
+				 * Fills the first half of the double buffer with
+				 * encoded data read from the music file.
+				 *
+				 * Updates the corresponding size available for reading.
+				 *
+				 */
+				void fillFirstBuffer() throw( AudioException ) ; 
+				
+				
+				/**
+				 * Fills the second half of the double buffer with
+				 * encoded data read from the music file.
+				 *
+				 * Updates the corresponding size available for reading.
+				 *
+				 */
+				void fillSecondBuffer() throw( AudioException ) ; 
+				
+						
+				
 				/**
 				 * The internal low level music is defined through the
 				 * template.
