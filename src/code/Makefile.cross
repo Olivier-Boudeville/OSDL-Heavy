@@ -7,7 +7,7 @@ TOP = ../..
 NDS_SUBDIRS = audio basic engine events video
 
 
-# Library content.
+# Library content (do not select Helix files).
 ARM7_LIB_CONTENT := $(shell find . -name 'OSDL*.arm7.o')
 ARM9_LIB_CONTENT := $(shell find . -name 'OSDL*.arm9.o')
 	
