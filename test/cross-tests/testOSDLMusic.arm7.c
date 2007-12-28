@@ -280,6 +280,14 @@ volatile BufferSize bufferSize ;
 volatile BufferSize frameSizeUpperBound ;
 
 
+/* The minimum size read for a MP3 frame, including the frame and its sync: */
+volatile BufferSize minWholeFrameLength = (BufferSize) -1 ;
+
+/* The maximum size read for a MP3 frame, including the frame and its sync: */
+volatile BufferSize maxWholeFrameLength = 0 ;
+
+
+
 /*
  * The actual double sound buffer, two simple buffers, one after the
  * other (so the first half buffer has the same address as this
@@ -824,8 +832,7 @@ void handleStatusInitRequest()
 	 * The ARM9 will send the address of the shared ARM7
 	 * status word in next element: 
 	 */
-	statusWordPointer = (volatile ARM7StatusWord*)
-		readBlocking() ;
+	statusWordPointer = (volatile ARM7StatusWord*) readBlocking() ;
 	
 	if ( *statusWordPointer != NoStatusAvailable )
 	{
@@ -910,7 +917,7 @@ void handlePlaySoundRequest( FIFOElement firstElement )
 	
 		/* Notifies the ARM9 the playback could not be performed: */
 		
-		/* Interrupts already disabled in this handler*/
+		/* Interrupts already disabled in this handler */
 
 		writeBlocking( prepareFIFOCommand( NoAvailableChannelNotification ) ) ;
 	
@@ -948,7 +955,11 @@ void handlePlaySoundRequest( FIFOElement firstElement )
 void triggerFirstBufferRefill()
 {
 				
+	InterruptMask previous = setEnabledInterrupts( AllInterruptsDisabled ) ;
+
 	writeBlocking( prepareFIFOCommand( FirstBufferFillRequest ) ) ; 
+
+	setEnabledInterrupts( previous ) ;
 	
 	notifyCommandToARM9() ;
 
@@ -963,13 +974,18 @@ void triggerFirstBufferRefill()
 void triggerSecondBufferRefill()
 {
 				
+	InterruptMask previous = setEnabledInterrupts( AllInterruptsDisabled ) ;
+
 	writeBlocking( prepareFIFOCommand( SecondBufferFillRequest ) ) ; 
 	
+	setEnabledInterrupts( previous ) ;
+
 	notifyCommandToARM9() ;
 
 }
 
 
+int counter = 0 ;
 
 /**
  * Decodes next MP3 frame and handles state variables accordingly.
@@ -1001,9 +1017,9 @@ bool decodeNextMP3Frame()
 		 *   = readPointer - ( 2*bufferSize - frameSizeUpperBound )
 		 *   = readPointer - destinationOffset
 		 *
-		 * - for the size: from readPointer to the end of buffer,
-		 * Size is doubleBuffer + 2 * bufferSize - readPointer 
-		 *   = sizeOffset - readPointer
+		 * - for the size: from readPointer to the end of buffer, Size is:
+		 * doubleBuffer + 2 * bufferSize - readPointer 
+		 * i.e. Size = sizeOffset - readPointer
 		 *
 		 * @note Unable to remove the warning
 		 * 'cast discards qualifiers from pointer target type' for
@@ -1015,20 +1031,25 @@ bool decodeNextMP3Frame()
 			/* size */ (size_t) ( sizeOffset - (int) readPointer ) ) ;
 		
 		/* 
+		 * Preparing that second buffer refill immediately.
+		 * 
 		 * The ARM9 should have already refilled the first buffer and possibly
 		 * triggered the end of stream, thus last data will be in first buffer:
 		 * (and second buffer just fully taken into account now)
+		 *
 		 */
 		if ( ! endOfStreamDetected )
 			triggerSecondBufferRefill() ;
 
-		/* Go to the destination point in first buffer: */
+		/* Go to the memmove-destination point in first buffer: */
 		readPointer = (Byte *) (readPointer - ((Byte *) destinationOffset)) ;
 		
 		readingFirstBuffer = true ;
 			
 	}
 
+	BufferSize deltaReadPointer = (BufferSize) readPointer ;
+	
 	
 	/*
 	 * Locates the next byte-aligned sync word in the raw mp3 stream: 
@@ -1040,7 +1061,7 @@ bool decodeNextMP3Frame()
 	 */
 	int syncOffset = MP3FindSyncWord( 
 		/* start */ (unsigned char *) readPointer,
-		/* max readable length: full rest of buffer  */ 
+		/* max readable length: full rest of buffer, memmove-size */ 
 			sizeOffset - readPointer ) ;
 	
 	if ( syncOffset < 0 )
@@ -1054,7 +1075,7 @@ bool decodeNextMP3Frame()
 	
 	/* 
 	 * Same assumption here, already refilled if needed: 
-	 * (will be updated, but not used here afterwards)
+	 * (variable will be updated by Helix, but not used here afterwards)
 	 *
 	 */
 	int bytesLeft = sizeOffset - readPointer ;
@@ -1125,21 +1146,51 @@ bool decodeNextMP3Frame()
 	 * readPointer = readPointer + U = sizeOffset - bytesLeft
 	readPointer = sizeOffset - bytesLeft ;
 	 */
-	 
+	deltaReadPointer = ( (BufferSize) readPointer ) - deltaReadPointer ;
+	
+	if ( deltaReadPointer > maxWholeFrameLength )
+		maxWholeFrameLength = deltaReadPointer ;
+	
+	if ( deltaReadPointer < minWholeFrameLength )
+		minWholeFrameLength = deltaReadPointer ;
+			
+	
 	/* Detects transition from first to second read buffer: */
 	if ( readingFirstBuffer && ( readPointer > secondBuffer ) 
-			&& ( ! endOfStreamDetected ) )
+		&& ( ! endOfStreamDetected ) )
 	{	
+	
 		triggerFirstBufferRefill() ;
 		readingFirstBuffer = false ;
+		
 	}	
 
-	/* Updates frame informations :*/
+	/* Updates frame informations: */
 	MP3GetLastFrameInfo( currentDecoder, &frameInfo ) ;
+	
+	if ( counter++ % 20 == 0 )
+	{
+	
+		InterruptMask previous = setEnabledInterrupts( AllInterruptsDisabled ) ;
+	
+		writeBlocking( prepareFIFOCommand( MusicFrameInformation )
+			| ( frameInfo.outputSamps & 0x0000ffff ) ) ;
+	
+		writeBlocking( deltaReadPointer ) ;
+	
+		setEnabledInterrupts( previous ) ;
+
+		notifyCommandToARM9() ;
+	
+	}
+
+	if ( 2 * frameInfo.outputSamps != DecodedFrameLength )
+		setError( HelixUnexpectedDecodedLength ) ;
 	
 	return true ;
 	
 }
+
 
  
 /**
@@ -1198,7 +1249,7 @@ void handlePlayMusicRequest( FIFOElement firstElement )
 	 * MAX_NCHAN = 2 (stereo), MAX_NGRAN = 2 granules, MAX_NSAMP = 576 samples,
 	 * hence 2*1152 = 2*DecodedFrameLength
 	 *
-	 * @note Use only 1152 if mono.
+	 * @note Use only  2 * MAX_NGRAN * MAX_NSAMP = 2 * 1152 if mono.
 	 *
 	 */
 	decodedBuffer = (Byte *) malloc( 2 * MAX_NCHAN * MAX_NGRAN * MAX_NSAMP ) ;
@@ -1590,7 +1641,8 @@ void initOSDLSound()
 	writePowerManagement( PM_CONTROL_REG, ( readPowerManagement(PM_CONTROL_REG)
 		& ~PM_SOUND_MUTE ) | PM_SOUND_AMP ) ;
 	
-	SOUND_CR = SOUND_ENABLE | SOUND_VOL( 0x7F ) ;
+	SOUND_CR = SOUND_ENABLE | SOUND_VOL( 0x7f ) ;
+	
 	IPC->soundData = 0 ;
 
 	setEnabledInterrupts( previous ) ;
@@ -1628,8 +1680,6 @@ void shutdownOSDLSound()
 	
 	}	
 	
-
-
 }
 
 
@@ -1641,16 +1691,23 @@ void shutdownOSDLSound()
 void manageMP3Playback()
 {
 
+	/* 
+	 * The ARM7 main loop will be hijacked here as long as the music playback
+	 * is not over.
+	 *
+	 */
 	startMP3PlaybackRequested = false ;
 	
 
 	/* 
-	 * Starts by decoding the first two frames:
+	 * Starts by decoding the first two frames, so that as soon as the second
+	 * is played (overflow of timer 2), the third starts being decoded)
 	 *
 	 */
 	if ( ! decodeNextMP3Frame() )
 		return ;
 	
+	/* Second one: */
 	decodeNextMP3Frame() ;
 		
 	SCHANNEL_REPEAT_POINT( MusicChannel ) = 0 ;
@@ -1658,18 +1715,22 @@ void manageMP3Playback()
 	/* Requests the audio hardware to read its data from decoded buffer: */	
 	SCHANNEL_SOURCE( MusicChannel ) = ( u32 ) decodedBuffer ;
 	
-	/* DecodedFrameLength samples per frame, 2 frames, 16 bits per sample: */
-	SCHANNEL_LENGTH( MusicChannel ) = ( DecodedFrameLength * 2 * 2 ) >> 2 ;
+	/* 
+	 * DecodedFrameLength samples per frame, 2 frames, 16 bits per sample: 
+	 * (length is in 32-bit words, hence the division by 4 with >>2)
+	 *
+	 */
+	SCHANNEL_LENGTH( MusicChannel ) = ( DecodedFrameLength * 2 ) >> 2 ;
 	
 	/* Reads sample rate from decoded frame info, set by decoding: */
 	SCHANNEL_TIMER( MusicChannel ) = SOUND_FREQ( frameInfo.samprate ) ;
-	
+  	
 	/* Main point here is the repeat setting, over the decode buffer: */
 	SCHANNEL_CR( MusicChannel ) = SCHANNEL_ENABLE | SOUND_REPEAT | SOUND_16BIT
-		| SOUND_VOL( 0x7F ) | SOUND_PAN( 0 ) ;
+		| SOUND_VOL( 0x7f ) | SOUND_PAN( 0 ) ;
 	
 	/* First timer must run at twice the sample rate since 16-bit samples: */	
-	TIMER0_DATA = SOUND_FREQ( frameInfo.samprate ) * 2 ;
+	TIMER0_DATA = SOUND_FREQ( frameInfo.samprate )  ;
 	TIMER0_CR = TIMER_ENABLE | TIMER_DIV_1 ;
 	
 	/*
@@ -1696,11 +1757,11 @@ void manageMP3Playback()
 		 * half:
 		 *
 		 */
-		if ( CurrentFrameCounter > LastFrameCounter ) 
+		while ( CurrentFrameCounter > LastFrameCounter ) 
 		{
 		
 			decodeNextMP3Frame() ;	
-			LastFrameCounter = CurrentFrameCounter ;
+			LastFrameCounter++ ;
 			
 		}
 		
@@ -1715,7 +1776,19 @@ void manageMP3Playback()
 	/* Stop channel: */
 	SCHANNEL_CR( MusicChannel ) = 0 ;
 	
-	/* ARM9 could be notified of the music end here. */
+	
+	/* Let the ARM9 be notified of the music end here: */
+	
+	InterruptMask previous = setEnabledInterrupts( AllInterruptsDisabled ) ;
+
+	writeBlocking( prepareFIFOCommand( MusicEndedNotification ) ) ; 
+	
+	writeBlocking( minWholeFrameLength ) ;
+	writeBlocking( maxWholeFrameLength ) ;
+	
+	setEnabledInterrupts( previous ) ;
+
+	notifyCommandToARM9() ;	
 	
 }
 

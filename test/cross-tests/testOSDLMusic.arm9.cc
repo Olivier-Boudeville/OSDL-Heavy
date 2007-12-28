@@ -57,7 +57,9 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Current ARM7 status just after OSDL activation is: "
 			 + myCommandManager.interpretLastARM7StatusWord() ) ;
 
-		const string musicFilename = "Grieg-safe.mp3" ;
+		//const string musicFilename = "Grieg-safe.mp3" ;
+		//const string musicFilename = "morrowind_title-safe.mp3" ;
+		const string musicFilename = "de_bon_matin.mp3" ;
 
 		LogPlug::info( "Creating test music instance from the '"
 			+ musicFilename + "' file." ) ;
@@ -65,8 +67,24 @@ int main( int argc, char * argv[] )
 		Music testMusic( musicFilename ) ;
 		
 		LogPlug::info( "Sending to the ARM7 a command request to play it." ) ;
-		myCommandManager.playMusic( testMusic ) ;
+		testMusic.play() ;
 			
+		/*
+		 * The main loop has to refill buffers when appropriate, as it should
+		 * not be done in IRQ handlers.
+		 *
+		 */
+		
+		
+		LogPlug::info( "Refilling now buffers while playing." ) ;
+		
+		while ( testMusic.isPlaying() )
+		{
+		
+			Music::ManageCurrentMusic() ;
+			atomicSleep() ;
+		
+		}
 		
 		if ( interactive )
 		{
