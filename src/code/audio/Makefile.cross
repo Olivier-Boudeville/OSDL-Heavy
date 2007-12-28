@@ -2,7 +2,7 @@ TOP = ../../..
 
 .PHONY:
 
-NDS_SUBDIRS = audioRenderer
+NDS_SUBDIRS = audioRenderer helix
 
 
 CPP_FLAGS_COMMON = \
