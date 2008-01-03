@@ -9,10 +9,11 @@
  */
 
 #include "OSDLARM7Codes.h"
-#include "OSDLBasic.h"
+#include "OSDLBasic.h"s
 #include "OSDLCDROMDrive.h"
 #include "OSDLCommandManager.h"
 #include "OSDLException.h"
+#include "OSDLFileTags.h"
 #include "OSDLHeaderVersion.h"
 #include "OSDLIPCCommands.h"
 #include "OSDLTestException.h"
