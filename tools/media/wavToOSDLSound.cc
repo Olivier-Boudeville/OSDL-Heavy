@@ -14,13 +14,13 @@ using namespace std ;
 #include <iostream>  // for cout
 
 
-const std::string Usage = " [ -f frequency ] [ -m mode ] [ -b bitdepth ] X.raw\nConverts a .raw file (header-less PCM wave file) into a .osdl.sound file by appending an OSDL header filled with informations specified from the command-line."
+const std::string Usage = " [ -f frequency ] [ -m mode ] [ -b bitdepth ] X.raw\nConverts a Wave file (*.wav) into a .osdl.sound file by replacing the Wave header by an OSDL header filled with informations specified from the command-line."
 	"\n\t -f: specifies the output sampling frequency, in Hz, ex: -f 22050 (the default)" 
 	"\n\t -m: specifies the output mode, mono or stereo, ex: -m mono (the default)" 
 	"\n\t -b: specifies the sample (PCM) bit depth, in bits, ex: -b 16 (the default). A bit depth of 4 corresponds by convention to the IMA ADPCM sample format." 
-	"\nOne may use the sox command-line tool to convert beforehand a .wav into a .raw, and to retrieve the relevant audio settings for that sound."
+	"\nOne may use the sox command-line tool to retrieve the relevant audio settings for the source sound."
 	"\n\tEx: 'sox -V OSDL.wav OSDL.raw' converts the sound and outputs its metadata than can be used to fill the next command line." 
-	"\nThen 'rawToOSDLSound.exe -f 44100 -m stereo -b 8 OSDL.raw' results in the creation of 'OSDL.osdl.sound'" 
+	"\nThen 'wavToOSDLSound.exe -f 44100 -m stereo -b 8 OSDL.wav' results in the creation of 'OSDL.osdl.sound'" 
 	;
 
 
@@ -202,8 +202,17 @@ int main( int argc, char * argv[] )
 			
 		string outputFilename = inputFilename ;
 		
-		Ceylan::substituteInString( outputFilename, "-ima.wav", 
+		Ceylan::substituteInString( outputFilename, ".wav", 
 			".osdl.sound" ) ;
+		
+		if ( inputFilename == outputFilename )
+		{
+		
+			cerr << "Error, input file '" << inputFilename 
+				<< "' does not have an appropriate name (*.wav)." << endl ;
+			exit( 6 ) ;	
+		
+		}
 		
 		cout << "Converting '" << inputFilename << "' into '" << outputFilename 
 			<< "', using frequency " << frequency << " Hz, mode " 
@@ -214,7 +223,7 @@ int main( int argc, char * argv[] )
 		File & outputFile = File::Create( outputFilename ) ;
 		
 		// First write the relevant tag:
-		outputFile.writeUint16( OSDL::SoundPCMTag ) ;
+		outputFile.writeUint16( OSDL::SoundTag ) ;
 		
 		outputFile.writeUint16( frequency ) ;
 		outputFile.writeUint16( format ) ;
@@ -230,7 +239,7 @@ int main( int argc, char * argv[] )
 		
 			cerr << "Error, input file '" << inputFilename 
 				<< "' is even smaller than the WAVE header." << endl ;
-			exit( 6 ) ;	
+			exit( 7 ) ;	
 		
 		}
 
@@ -246,12 +255,14 @@ int main( int argc, char * argv[] )
 		delete & outputFile ;
 		delete & inputFile ;
 		
+		cout << "Generation of '" << outputFilename << "' succeeded !" 
+			<< endl ;
 
    }
 	
     catch ( const OSDL::Exception & e )
     {
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -259,7 +270,7 @@ int main( int argc, char * argv[] )
 
     catch ( const Ceylan::Exception & e )
     {
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -267,7 +278,7 @@ int main( int argc, char * argv[] )
 
     catch ( const std::exception & e )
     {
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
