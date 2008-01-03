@@ -7,9 +7,9 @@ mediatools_CXXFLAGS = @AM_CXXFLAGS@
 
 
 mediatools_PROGRAMS = \
-	rawToOSDLSound.exe \              
+	wavToOSDLSound.exe \
 	mp3ToOSDLMusic.exe
 	
 
-rawToOSDLSound_exe_SOURCES = rawToOSDLSound.cc
+wavToOSDLSound_exe_SOURCES = wavToOSDLSound.cc
 mp3ToOSDLMusic_exe_SOURCES = mp3ToOSDLMusic.cc
