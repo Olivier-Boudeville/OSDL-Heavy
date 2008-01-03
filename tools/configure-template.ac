@@ -1,0 +1,165 @@
+
+
+AC_PREREQ(2.59)
+
+
+# Declaration section for the Autotools macros.
+
+
+# The OSDL-tool version is independent from the OSDL version:
+AC_INIT([OSDL-tool],[ST_OSDL_FOR_TOOL_VERSION],[ST_MAILING_LIST_BUGTRACKING])
+
+AC_CONFIG_SRCDIR([media])
+
+# Detects the canonical host and target build environment:
+AC_CANONICAL_TARGET
+
+AM_INIT_AUTOMAKE
+
+
+
+
+# If the user did not override CXXFLAGS, provide our own default settings:
+# (in all cases the clumsy "-g -O2" automake default is removed) 
+CXXFLAGS=${CXXFLAGS-""}
+
+
+# Checks for programs:
+AC_PROG_CXX
+AC_PROG_AWK
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+
+
+
+# Tells the libtool machinery that the package supports DLLs on Windows:
+AC_LIBTOOL_WIN32_DLL
+
+AC_LIBTOOL_DLOPEN
+AM_PROG_LIBTOOL
+
+
+OSDL_TOOL_DIR="\${prefix}/share/OSDL-tools"
+AC_SUBST(OSDL_TOOL_DIR)
+
+
+
+# Compiler-specific optimization flags.
+
+
+# Debug versus optimizations section.
+
+# See if the user wants aggressive optimizations of the code:
+AC_ARG_ENABLE(debug,
+	AS_HELP_STRING(--enable-debug,[disable aggressive optimizations [[default=yes]]]),,enable_debug=yes)
+if test x$enable_debug = xyes; then
+
+	# Debug requested:
+	AM_CPPFLAGS="$AM_CPPFLAGS -DOSDL_TOOL_VERBOSE=1"
+	
+	AM_CXXFLAGS="$AM_CXXFLAGS -g" 
+    if test x$ac_cv_cxx_compiler_gnu = xyes; then
+		# Add -pg to manage profile information for gprof.
+		# -fstack-check used to be specified but wroke havoc in generated code,
+		# causing crashes and various valgrind reports.
+		#AM_CXXFLAGS="$AM_CXXFLAGS -ggdb -O0 -fno-inline -fbounds-check -ftrapv -fnon-call-exceptions"
+		# Safest settings:
+		AM_CXXFLAGS="$AM_CXXFLAGS -ggdb -O0 -fno-inline"		
+	fi	 
+else
+
+	# Aggressive optimizations:
+	AM_CPPFLAGS="$AM_CPPFLAGS -DOSDL_TOOL_VERBOSE=0"
+	
+    if test x$ac_cv_cxx_compiler_gnu = xyes; then
+		# -fomit-frame-pointer: may prevent debugging on some platforms
+		# -ffast-math: not requesting exact IEEE or ISO implementation rules/specifications
+        AM_CXXFLAGS="$AM_CXXFLAGS -g0 -O3 -fexpensive-optimizations -fomit-frame-pointer -ffast-math -funroll-loops"
+    fi
+	
+	AM_LDFLAGS="$AM_LDFLAGS --strip-all"
+	
+	
+    case "$target" in
+        i486-*-*)
+            if test x$ac_cv_cxx_compiler_gnu = xyes; then
+                AM_CXXFLAGS="$AM_CXXFLAGS -march=i486"
+            fi
+            ;;
+        i?86-*-*)
+            if test x$ac_cv_cxx_compiler_gnu = xyes; then
+                AM_CXXFLAGS="$AM_CXXFLAGS -march=pentium -mcpu=pentiumpro"
+            fi
+            ;;
+        *-*-osf*)
+            if test x$ac_cv_cxx_compiler_gnu != xyes; then
+                AM_CXXFLAGS="$AM_CXXFLAGS -g3 -fast -arch host"
+            fi
+            ;;
+    esac
+	
+fi
+
+
+if test x$ac_cv_cxx_compiler_gnu = xyes; then
+	# Path to the static archive for the Standard Library needed for plugins:
+	# See: test/modules/Makefile.am
+	OSDL_LIBSTDCPLUSPLUS=`$CXX -print-file-name=libstdc++.a`
+	AC_SUBST(OSDL_LIBSTDCPLUSPLUS)
+fi
+
+
+# Warning and error section.
+
+# Add verbose warnings by default, and allow ANSI compliance checking:
+AC_ARG_ENABLE(strict-ansi,
+	AS_HELP_STRING(--enable-strict-ansi,[enable strict ANSI compliance build [[default=yes]]]),,enable_strict_ansi=yes)
+if test x$ac_cv_cxx_compiler_gnu = xyes; then
+	# Basically paranoïd in all cases:
+	
+	# Following warnings are not used, explanations follow: 
+	#    -Weffc++: the standard library headers trigger zillions of warnings.
+	#    -Waggregate-return: even a simple std::string is an aggregate.
+	#    -Wunused-parameter: inherited methods may not use some of their
+	# parameters, not wanting to freeze API with "__attribute__" keyword.
+	#    -Wpadded: add it if wanting to reorder fields of structures to save
+	# some bytes.
+	#    -Wmissing-noreturn: would force declaring __attribute__ ((noreturn))
+	# in every method which throws exceptions about unimplemented feature
+	#	 -Wold-style-cast: some standard macros (WIFEXITED, WEXITSTATUS, 
+	# etc.) expand into old-style C casts
+	#    -Wunreachable-code: temporarily removed because of gcc 4.0.1
+	# incorrecly complaining: 'warning: will never be executed' in
+	# TestResourceException constructor
+	#
+    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute -Wpacked -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas"
+    if test x$enable_strict_ansi = xyes; then
+		# Do not know what "-D_XOPEN_SOURCE" would change.
+        AM_CXXFLAGS="$AM_CXXFLAGS -ansi -pedantic-errors"
+    fi
+fi
+
+
+OSDL_PATH(ST_OSDL_FOR_TOOL_LT_CURRENT_VERSION,ST_OSDL_FOR_TOOL_LT_REVISION_VERSION,ST_OSDL_FOR_TOOL_LT_AGE_VERSION)
+
+CPPFLAGS="$CPPFLAGS $OSDL_CPPFLAGS"
+AC_SUBST(CPPFLAGS)
+
+LIBS="$LIBS $OSDL_LIBS"
+AC_SUBST(LIBS)
+
+AC_SUBST(AM_CPPFLAGS)
+AC_SUBST(AM_CXXFLAGS)
+AC_SUBST(AM_LDFLAGS)
+
+
+AC_CONFIG_FILES([ 
+	Makefile
+	media/Makefile
+])
+
+
+AC_OUTPUT
+
