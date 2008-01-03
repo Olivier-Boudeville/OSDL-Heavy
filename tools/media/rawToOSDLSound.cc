@@ -14,13 +14,13 @@ using namespace std ;
 #include <iostream>  // for cout
 
 
-const std::string Usage = " [ -f frequency ] [ -m mode ] [ -b bitdepth ] X.raw\nConverts a .raw file into a .osdl.sound file by appending an header filled with informations specified from the command-line."
+const std::string Usage = " [ -f frequency ] [ -m mode ] [ -b bitdepth ] X.raw\nConverts a .raw file (header-less PCM wave file) into a .osdl.sound file by appending an OSDL header filled with informations specified from the command-line."
 	"\n\t -f: specifies the output sampling frequency, in Hz, ex: -f 22050 (the default)" 
 	"\n\t -m: specifies the output mode, mono or stereo, ex: -m mono (the default)" 
-	"\n\t -b: specifies the sample bit depth, in bits, ex: -b 16 (the default)" 
+	"\n\t -b: specifies the sample (PCM) bit depth, in bits, ex: -b 16 (the default). A bit depth of 4 corresponds by convention to the IMA ADPCM sample format." 
 	"\nOne may use the sox command-line tool to convert beforehand a .wav into a .raw, and to retrieve the relevant audio settings for that sound."
-	"\n\tEx: 'sox -V OSDL.wav OSDL.raw' converts the sound and outputs its metadata." 
-	"\nThen 'raw2osdlsound.exe -f 44100 -m stereo -b 8 OSDL.raw' results in the creation of 'OSDL.osdl.sound'" 
+	"\n\tEx: 'sox -V OSDL.wav OSDL.raw' converts the sound and outputs its metadata than can be used to fill the next command line." 
+	"\nThen 'rawToOSDLSound.exe -f 44100 -m stereo -b 8 OSDL.raw' results in the creation of 'OSDL.osdl.sound'" 
 	;
 
 
@@ -55,7 +55,7 @@ int main( int argc, char * argv[] )
 	{
 
 		
-		LogPlug::info( "Testing OSDL events basic services." ) ;
+		LogPlug::info( "Converting a raw PCM file into an OSDL sound." ) ;
 
 		
 		std::string executableName ;
@@ -131,6 +131,8 @@ int main( int argc, char * argv[] )
 					format = AudioModule::LittleSint16SampleFormat ;
 				else if ( bitDepth == 8 )
 					format = AudioModule::Sint8SampleFormat ;
+				else if ( bitDepth == 4 )
+					format = AudioModule::IMAADPCMSampleFormat ;
 				else
 				{
 					
@@ -200,7 +202,8 @@ int main( int argc, char * argv[] )
 			
 		string outputFilename = inputFilename ;
 		
-		Ceylan::substituteInString( outputFilename, ".raw", ".osdl.sound" ) ;
+		Ceylan::substituteInString( outputFilename, "-ima.wav", 
+			".osdl.sound" ) ;
 		
 		cout << "Converting '" << inputFilename << "' into '" << outputFilename 
 			<< "', using frequency " << frequency << " Hz, mode " 
@@ -211,7 +214,7 @@ int main( int argc, char * argv[] )
 		File & outputFile = File::Create( outputFilename ) ;
 		
 		// First write the relevant tag:
-		outputFile.writeUint16( OSDL::SoundTag ) ;
+		outputFile.writeUint16( OSDL::SoundPCMTag ) ;
 		
 		outputFile.writeUint16( frequency ) ;
 		outputFile.writeUint16( format ) ;
@@ -221,8 +224,23 @@ int main( int argc, char * argv[] )
 		File & inputFile = File::Open( inputFilename ) ;
 		
 		Ceylan::System::Size inputSize = inputFile.size() ;
+
+		if ( inputSize < 44 )
+		{
 		
-		for ( Ceylan::System::Size i = 0; i < inputSize; i++ )
+			cerr << "Error, input file '" << inputFilename 
+				<< "' is even smaller than the WAVE header." << endl ;
+			exit( 6 ) ;	
+		
+		}
+
+		// Skip the first 44 bytes of the wav header:
+		Ceylan::System::Size i ;
+		 
+		for ( i = 0; i < 44; i++ )
+			inputFile.readUint8() ;
+			
+		for ( ; i < inputSize; i++ )
 			outputFile.writeUint8( inputFile.readUint8() ) ;
 					
 		delete & outputFile ;
