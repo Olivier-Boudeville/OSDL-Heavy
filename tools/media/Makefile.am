@@ -13,3 +13,8 @@ mediatools_PROGRAMS = \
 
 wavToOSDLSound_exe_SOURCES = wavToOSDLSound.cc
 mp3ToOSDLMusic_exe_SOURCES = mp3ToOSDLMusic.cc
+
+clean:clean-local
+
+clean-local: 
+	@rm -f *.osdl.sound *.osdl.music *.log
