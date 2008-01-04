@@ -6,7 +6,7 @@
 #include "OSDLException.h"  // for OSDL::Exception
 
 
-#include "Ceylan.h"         // for inheritance
+#include "CeylanFIFO.h"     // for inheritance
 
 #include <string>
 
