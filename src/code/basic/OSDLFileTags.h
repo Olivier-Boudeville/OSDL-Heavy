@@ -14,6 +14,7 @@
 namespace OSDL
 {
 
+
 	/*
 	 * File tags are used to identify OSDL-specific file formats.
 	 *
@@ -39,29 +40,30 @@ namespace OSDL
 	/**
 	 * Tag corresponding to OSDL punctual sounds, not longer musics.
 	 *
-	 * It is the lightweight counterpart of a Wave file, based on a header
-	 * followed by the raw samples.
+	 * It is the lightweight counterpart of a Wave file, based on an OSDL
+	 * header followed by the raw PCM or IMA ADPCM (not Microsoft ADPCM) encoded
+	 * samples.
 	 *
 	 * The corresponding header after this tag is:
 	 * - 1 Uint16: frequency, in Hertz (ex: 22 050 Hz)
-	 * - 1 Uint16: format, i.e. bit depth (ex: 8 bit/16 bit), supposed signed
-	 * little endian
+	 * - 1 Uint16: format, i.e. bit depth for PCM samples (ex: 8 bit/16 bit),
+	 * supposed signed little endian, or IMA ADPCM.
 	 * - 1 Uint16: mode, i.e. number of channels (ex: mono, stereo)
 	 *
 	 * @see code/audio/OSDLSound.cc, in Sound::load for the actual decoding.
 	 *
 	 */
 	extern OSDL_DLL const FileTag SoundTag ;
-	
+		
 	
 	/**
-	 * Tag corresponding to OSDL musics, not shorter punctual sounds.
+	 * Tag corresponding to MP3-based OSDL musics, not shorter punctual sounds.
 	 *
-	 * It is the lightweight counterpart of a Wave file.
+	 * It is a MP3 file prepended by a header.
 	 *
 	 * The corresponding header after this tag is:
 	 *
-	 * @see code/audio/OSDLSound.cc, in Sound::load for the actual decoding.
+	 * @see code/audio/OSDLMusic.cc, in Music::load for the actual decoding.
 	 *
 	 */
 	extern OSDL_DLL const FileTag MusicTag ;
