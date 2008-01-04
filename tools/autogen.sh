@@ -462,7 +462,7 @@ generateCustom()
 	
 	
 	if [ -n "$osdl_environment_file" ] ; then
-		echo "Note that before running tests from the command-line, the runtime environment must be set (ex: OSDL-environment.sh must have been sourced beforehand)."
+		echo "Note that before running tools from the command-line, the runtime environment must be set (ex: OSDL-environment.sh must have been sourced beforehand)."
 	fi
 	 
 		
