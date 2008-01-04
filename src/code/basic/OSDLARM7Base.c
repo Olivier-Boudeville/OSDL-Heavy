@@ -1,10 +1,8 @@
-#include "OSDLARM7Base.h"
+/* To have Ceylan defines so that Ceylan C headers can be directly included: */
+#include "OSDLConfigForNintendoDS.h"
 
-/*
- * Implementation notes:
- * 
- *
- */
+/* Must be on second position (needs Ceylan defines). */
+#include "OSDLARM7Base.h"
 
 
 /* Defines the actual OSDL ARM7 status words and error codes. */
@@ -14,6 +12,13 @@
 #include "OSDLIPCCommands.h"
 
 
+
+/*
+ * Implementation notes:
+ * CeylanARM7Base.c counterpart, gathers all OSDL-specific add-ons to the IPC
+ * system, notably for sounds.
+ *
+ */
 
 
 /*
