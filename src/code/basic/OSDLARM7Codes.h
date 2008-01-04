@@ -6,6 +6,8 @@
  * For Ceylan base codes.
  *
  */
+ 
+
 #include "CeylanARM7Codes.h"
 
 
@@ -45,6 +47,9 @@
 
 /* ARM7 detected an unexpected OSDL-specific command */
 const ARM7ErrorCode UnexpectedOSDLCommand = 1024 ;
+
+/* The sound playback handler encountered an unknown sample format */
+const ARM7ErrorCode UnexpectedSampleFormat = 1025 ;
 
 
 /**
@@ -97,6 +102,31 @@ const ARM7ErrorCode HelixDecodingError = 1061 ;
  *
  */
 const ARM7ErrorCode HelixUnexpectedDecodedLength = 1062 ;
+
+
+
+/*
+ * Ensures CEYLAN_SAFE_FIFO is deactivated, as the second byte of the command
+ * FIFO element is used by OSDL.
+ *
+ */
+ 
+#ifdef CEYLAN_SAFE_FIFO 
+
+
+	#if CEYLAN_SAFE_FIFO
+
+		#error OSDL needs the Ceylan FIFO debugging feature to be turned off.
+
+	#endif // CEYLAN_SAFE_FIFO
+
+
+#else // CEYLAN_SAFE_FIFO
+
+	#define CEYLAN_SAFE_FIFO 0
+
+#endif // ifdef CEYLAN_SAFE_FIFO
+
 
 
 #endif // OSDL_ARM7_CODES_H_
