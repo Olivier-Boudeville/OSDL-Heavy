@@ -2,14 +2,22 @@
 
 #include "OSDLAudio.h"               // for AudioModule
 
+#include "OSDLFileTags.h"            // for sound file tag
+
+
 
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
 
+
 #if OSDL_ARCH_NINTENDO_DS
+
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#include "OSDLCommandManager.h"      // for CommandManager
+
 #endif // OSDL_ARCH_NINTENDO_DS
+
 
 
 #if OSDL_USES_SDL
@@ -135,7 +143,7 @@ bool Sound::load() throw( Ceylan::LoadableException )
 	/*
 	 * We expect here a file respecting the .osdl.sound format.
 	 *
-	 * @see trunk/tools/media/raw2osdlsound.cc
+	 * @see trunk/tools/media/rawToOSDLSound.cc
 	 *
 	 */
 
@@ -148,12 +156,21 @@ bool Sound::load() throw( Ceylan::LoadableException )
 		
 		File & soundFile = File::Open( _contentPath ) ;
 		
+		// First check the OSDL sound tag:
+		FileTag readTag = soundFile.readUint16() ;
 		
+		if ( readTag != SoundTag )
+			throw Ceylan::LoadableException( 
+				"Sound::load: expected sound tag not found ("
+				+ Ceylan::toString( SoundTag ) + "), read instead "
+				+ Ceylan::toString( readTag ) + ", which corresponds to: "
+				+ DescribeFileTag( readTag ) ) ;
+			
 		// Frequency:
 		_content->_frequency = soundFile.readUint16() ;
 
 
-		// Format, bit depth (8 bit/16 bit):
+		// Format, bit depth (8 bit/16 bit PCM, IMA ADPCM, etc.):
 		SampleFormat readFormat = soundFile.readUint16() ;
 		
 		/*
@@ -185,12 +202,14 @@ bool Sound::load() throw( Ceylan::LoadableException )
 			_content->_bitDepth = 16 ;
 		else if ( readFormat == AudioModule::Sint8SampleFormat )
 			_content->_bitDepth = 8 ;
+		else if ( readFormat == AudioModule::IMAADPCMSampleFormat )
+			_content->_bitDepth = 4 /* convention for IMA ADPCM */ ;
 		else
 			throw Ceylan::LoadableException( "Sound::load failed: "
 				"unexpected bit depth (" + Ceylan::toString( readFormat )
 				+ ") read from sound file '" + _contentPath + "'" ) ;
 			
-			
+				
 		// Mode (number of channels):
 		ChannelFormat readMode = soundFile.readUint16() ;
 		
@@ -202,8 +221,17 @@ bool Sound::load() throw( Ceylan::LoadableException )
 			 
 		_content->_mode = static_cast<Ceylan::Uint8>( readMode ) ;
 		
-		// Substracts the header size:
-		Ceylan::Uint32 readSize = soundFile.size() - 6 ;
+		// Substracts the tag plus header size:
+		Ceylan::Uint32 readSize = soundFile.size() - 4*sizeof(Ceylan::Uint16) ;
+
+		LogPlug::debug( "Sound::load: for '" + _contentPath 
+			+ "', bit depth is " 
+			+ Ceylan::toNumericalString( _content->_bitDepth ) 
+			+ ", channel mode is " 
+			+ Ceylan::toNumericalString( _content->_mode )
+			+ ", frequency is " + Ceylan::toString( _content->_frequency ) 
+			+ " Hz, size of all samples is " + Ceylan::toString( readSize )
+			+ " bytes." ) ;
 		
 		_content->_size = readSize ;   
 			
@@ -415,8 +443,37 @@ void Sound::setVolume( Volume newVolume ) throw( SoundException )
 void Sound::play( PlaybackCount playCount ) throw( AudibleException )
 {
 
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw SoundException( "Sound::play failed: not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+
+	try
+	{
+	
+		CommandManager::GetExistingCommandManager().playSound( *this ) ;
+		
+	}
+	catch( const CommandException & e )
+	{
+	
+		throw SoundException( "Sound::play failed: " + e.toString() ) ;
+		
+	}
+	
+		
+#endif // OSDL_RUNS_ON_ARM7
+
+#else // OSDL_ARCH_NINTENDO_DS
+
 	// Returned value ignored:
 	playReturnChannel( playCount ) ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
 
 }
 
