@@ -94,7 +94,12 @@ namespace OSDL
 
 
 
-				// Sample format section.
+				/*
+				 * Sample format section.
+				 *
+				 * Unless specified otherwise, sample formats are PCM-based.
+				 *
+				 */
 				
 				
 				/// Unsigned 8-bit sample.
@@ -124,6 +129,10 @@ namespace OSDL
 			
 				/// Signed 16-bit sample, native byte order (big or little).
 				static const SampleFormat NativeSint16SampleFormat ;
+			
+			
+				/// IMA ADPCM (not Microsoft) sample.
+				static const SampleFormat IMAADPCMSampleFormat ;
 			
 
 
