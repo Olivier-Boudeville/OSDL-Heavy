@@ -2,16 +2,21 @@
 
 #include "OSDLAudio.h"               // for AudioModule
 
-#include "OSDLCommandManager.h"      // for CommandManager
 
 
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
 
+
 #if OSDL_ARCH_NINTENDO_DS
+
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#include "OSDLCommandManager.h"      // for CommandManager
+
 #endif // OSDL_ARCH_NINTENDO_DS
+
+
 
 #include "Ceylan.h"                  // for prepareFIFOCommand, etc.
 
@@ -478,8 +483,7 @@ void Music::play( PlaybackCount playCount ) throw( AudibleException )
 		
 #ifdef OSDL_RUNS_ON_ARM7
 
-	throw AudibleException( "Music::play failed: "
-		"not supported on the ARM7" ) ;
+	throw MusicException( "Music::play failed: not supported on the ARM7" ) ;
 
 #elif defined(OSDL_RUNS_ON_ARM9)
 
@@ -1169,7 +1173,7 @@ void Music::fillFirstBuffer() throw( AudioException )
 					
 	
 	}
-	catch( const InputStream::ReadFailedException & e )
+	catch( const SystemException & e )
 	{
 		
 		throw AudioException( "Music::fillFirstBuffer failed: " 
@@ -1256,7 +1260,7 @@ void Music::fillSecondBuffer() throw( AudioException )
 				
 	
 	}
-	catch( const InputStream::ReadFailedException & e )
+	catch( const SystemException & e )
 	{
 		
 		throw AudioException( "Music::fillSecondBuffer failed: " 
