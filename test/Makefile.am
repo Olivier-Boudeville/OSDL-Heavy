@@ -24,3 +24,5 @@ clean-local:
 	-@/bin/rm -f  `find . -name 'testsOutcome.txt'`
 	-@/bin/rm -f  `find . -name 'test*.log'`
 	-@/bin/rm -rf `find . -name 'testOSDL*-logs'`
+	-@/bin/rm -f granularity.dat
+	@( cd cross-tests && $(MAKE) clean )
