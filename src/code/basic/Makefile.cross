@@ -22,7 +22,10 @@ install: install-headers
 include Makefile.am
 
 
-ARM7_OBJ_FILES = $(patsubst %.cc,%.arm7.o,$(BASIC_IMPLEMENTATIONS))
+ARM7_OBJ_FILES = \
+	OSDLARM7Base.arm7.o \
+	$(patsubst %.cc,%.arm7.o,$(BASIC_IMPLEMENTATIONS))
+	
 ARM9_OBJ_FILES = $(patsubst %.cc,%.arm9.o,$(BASIC_IMPLEMENTATIONS))
 
 
