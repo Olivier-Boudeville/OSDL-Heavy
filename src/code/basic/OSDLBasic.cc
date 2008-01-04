@@ -269,18 +269,7 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 				"unable to initialize timer subsystem: " 
 				+ Utils::getBackendLastError() ) ;
 				
-#else // OSDL_USES_SDL
-
-#if OSDL_ARCH_NINTENDO_DS
-		
-		
-#ifdef OSDL_RUNS_ON_ARM7
-
-#elif defined(OSDL_RUNS_ON_ARM9)
-		
-#endif // OSDL_RUNS_ON_ARM7
-
-#endif // OSDL_ARCH_NINTENDO_DS
+	// OSDL_ARCH_NINTENDO_DS: No need to initialize timers beforehand.	
 	
 #endif // OSDL_USES_SDL
 				
