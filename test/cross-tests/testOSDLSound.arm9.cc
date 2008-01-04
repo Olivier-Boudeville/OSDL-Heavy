@@ -71,7 +71,7 @@ int main( int argc, char * argv[] )
 		testSound.load() ;
 		
 		LogPlug::info( "Sending to the ARM7 a command request to play it." ) ;
-		myCommandManager.playSound( testSound ) ;
+		testSound.play() ;
 			
 		
 		if ( interactive )
@@ -86,7 +86,7 @@ int main( int argc, char * argv[] )
 			 + myCommandManager.interpretLastARM7StatusWord() ) ;
 
 		bool testFailed = false ;		
-		
+
 							
 		if ( interactive )
 		{
@@ -96,7 +96,6 @@ int main( int argc, char * argv[] )
 		
 		}
 				
-		
 		
 		if ( testFailed )
 			throw OSDL::TestException( "Test failed because of error(s) "
