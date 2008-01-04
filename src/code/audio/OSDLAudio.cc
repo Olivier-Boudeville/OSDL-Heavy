@@ -100,6 +100,7 @@ const SampleFormat AudioModule::NativeSint16SampleFormat = 0x9010 ;
 #endif // OSDL_USES_SDL
 
 
+const SampleFormat AudioModule::IMAADPCMSampleFormat     = 0x0012 ;
 
 
 /*
@@ -168,6 +169,10 @@ std::string OSDL::Audio::sampleFormatToString( SampleFormat format )
 #endif // CEYLAN_DETECTED_LITTLE_ENDIAN
 			break ;
 		
+		case AudioModule::IMAADPCMSampleFormat:
+			return "IMA ADPCM (non Microsoft)" ;
+			break ;
+			
 		default:
 			throw AudioException( "OSDL::Audio::sampleFormatToString failed: "
 				"unknown sample format (" + Ceylan::toString( format ) + ")" ) ;
@@ -321,13 +326,14 @@ AudioModule::AudioModule() throw( AudioException ):
 		
 #ifdef OSDL_RUNS_ON_ARM7
 
-	// @see testOSDLRawSound.arm7.c
+	// @see testOSDLSound.arm7.c if C++ OSDL is ported to the ARM7.
 	
 #elif defined(OSDL_RUNS_ON_ARM9)
 
 	// Nothing special to initialize on the ARM9.
 
 #endif // OSDL_RUNS_ON_ARM7
+
 
 #endif // OSDL_ARCH_NINTENDO_DS
 	
@@ -411,7 +417,8 @@ void AudioModule::setMode( Hertz outputFrequency,
 	if ( ::Mix_OpenAudio( outputFrequency, outputSampleFormat,
 			GetChannelCountFor( outputChannel ), outputBufferSize ) != 0 )
 		throw AudioException( "AudioModule::setMode failed: "
-			+ string( ::Mix_GetError() ) ) ;
+			+ string( ::Mix_GetError() ) 
+			+ ". Maybe the audio driver is used by another application ?"  ) ;
 
 	_chunkSize = outputBufferSize ;
 	
@@ -1097,7 +1104,8 @@ string AudioModule::GetDriverName() throw( AudioException )
 	
 	if ( SDL_AudioDriverName( driverName, DriverNameMaximumLength ) == 0 )
 		throw AudioException( "AudioModule::GetDriverName failed: "
-			"the audio driver is probably not initialized." ) ;
+			"the audio driver is probably not initialized, "
+			"or used by another application." ) ;
 			
 	return std::string( driverName ) ;
 	
