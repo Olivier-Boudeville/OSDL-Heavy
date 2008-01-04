@@ -1,0 +1,23 @@
+TOP = ../../../../..
+
+.PHONY: install-helix-headers
+
+
+
+all: compile
+
+install: install-helix-headers
+
+install-helix-headers:
+	@echo "    Installing Helix headers from "$(shell basename `pwd`)
+	@mkdir -p $(OSDL_INSTALL_INC)/Helix
+	@cp -f *.h $(OSDL_INSTALL_INC)/Helix
+	
+	
+HELIX_ROOT = ..
+
+ARCH_FLAGS_COMMON =
+
+
+
+include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makerules.inc

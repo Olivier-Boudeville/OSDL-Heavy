@@ -1,0 +1,39 @@
+TOP = ../../../../..
+
+.PHONY:
+
+NDS_SUBDIRS = arm
+
+all: compile
+
+install: install-headers
+
+HELIX_ROOT = ..
+
+ARCH_FLAGS_COMMON =
+
+CPP_FLAGS_COMMON := $(CPP_FLAGS_COMMON) \
+        -I $(HELIX_ROOT)/pub
+	
+
+HELIX_IMPLEMENTATIONS = \
+	bitstream.c         \
+	buffers.c           \
+	dct32.c             \
+	dequant.c           \
+	dqchan.c            \
+	huffman.c           \
+	hufftabs.c          \
+	imdct.c             \
+	scalfact.c          \
+	stproc.c            \
+	subband.c           \
+	trigtabs.c
+
+
+ARM7_OBJ_FILES = $(patsubst %.c,%.arm7.o,$(HELIX_IMPLEMENTATIONS))
+ARM9_OBJ_FILES = $(patsubst %.c,%.arm9.o,$(HELIX_IMPLEMENTATIONS))
+
+
+
+include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makerules.inc

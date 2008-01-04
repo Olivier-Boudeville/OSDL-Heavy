@@ -1,0 +1,27 @@
+TOP = ../../../../../..
+
+.PHONY:
+
+
+all: compile
+
+install: install-headers
+
+HELIX_ROOT = ../..
+
+ARCH_FLAGS_COMMON =
+
+CPP_FLAGS_COMMON := $(CPP_FLAGS_COMMON) \
+        -I $(HELIX_ROOT)/pub
+	
+
+HELIX_IMPLEMENTATIONS = \
+	asmpoly_gcc.s
+
+
+ARM7_OBJ_FILES = $(patsubst %.s,%.arm7.o,$(HELIX_IMPLEMENTATIONS))
+ARM9_OBJ_FILES = $(patsubst %.s,%.arm9.o,$(HELIX_IMPLEMENTATIONS))
+
+
+
+include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makerules.inc

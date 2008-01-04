@@ -1,0 +1,103 @@
+TOP = ../../../..
+
+
+.PHONY: lib install-helix-lib info-lib
+
+
+NDS_SUBDIRS = pub real 
+
+
+all: compile lib
+
+
+install: install-headers install-helix-lib
+
+
+HELIX_ROOT = .
+
+CPP_FLAGS_COMMON := $(CPP_FLAGS_COMMON) \
+        -I $(HELIX_ROOT)/pub
+	
+
+ARM7_OBJ_FILES = \
+	mp3dec.arm7.o                        \
+	mp3tabs.arm7.o
+
+ARM9_OBJ_FILES = \
+	mp3dec.arm9.o                        \
+	mp3tabs.arm9.o
+
+
+HELIX_ARM7_OBJECT_FILES = \
+	$(HELIX_ROOT)/mp3dec.arm7.o          \
+	$(HELIX_ROOT)/mp3tabs.arm7.o         \
+	$(HELIX_ROOT)/real/bitstream.arm7.o  \
+	$(HELIX_ROOT)/real/buffers.arm7.o    \
+	$(HELIX_ROOT)/real/dct32.arm7.o      \
+	$(HELIX_ROOT)/real/dequant.arm7.o    \
+	$(HELIX_ROOT)/real/dqchan.arm7.o     \
+	$(HELIX_ROOT)/real/huffman.arm7.o    \
+	$(HELIX_ROOT)/real/hufftabs.arm7.o   \
+	$(HELIX_ROOT)/real/imdct.arm7.o      \
+	$(HELIX_ROOT)/real/scalfact.arm7.o   \
+	$(HELIX_ROOT)/real/stproc.arm7.o     \
+	$(HELIX_ROOT)/real/subband.arm7.o    \
+	$(HELIX_ROOT)/real/trigtabs.arm7.o   \
+	$(HELIX_ROOT)/real/arm/asmpoly_gcc.arm7.o
+
+HELIX_ARM9_OBJECT_FILES = \
+	$(HELIX_ROOT)/mp3dec.arm9.o          \
+	$(HELIX_ROOT)/mp3tabs.arm9.o         \
+	$(HELIX_ROOT)/real/bitstream.arm9.o  \
+	$(HELIX_ROOT)/real/buffers.arm9.o    \
+	$(HELIX_ROOT)/real/dct32.arm9.o      \
+	$(HELIX_ROOT)/real/dequant.arm9.o    \
+	$(HELIX_ROOT)/real/dqchan.arm9.o     \
+	$(HELIX_ROOT)/real/huffman.arm9.o    \
+	$(HELIX_ROOT)/real/hufftabs.arm9.o   \
+	$(HELIX_ROOT)/real/imdct.arm9.o      \
+	$(HELIX_ROOT)/real/scalfact.arm9.o   \
+	$(HELIX_ROOT)/real/stproc.arm9.o     \
+	$(HELIX_ROOT)/real/subband.arm9.o    \
+	$(HELIX_ROOT)/real/trigtabs.arm9.o   \
+	$(HELIX_ROOT)/real/arm/asmpoly_gcc.arm9.o
+
+
+
+
+include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makerules.inc
+
+
+
+lib: $(HELIX_OSDL_ARM7_LIB_NAME) $(HELIX_OSDL_ARM9_LIB_NAME)
+
+
+install-helix-lib:
+	@mkdir -p $(OSDL_INSTALL_LIB) 
+	@echo "    Installing Helix-OSDL library in $(OSDL_INSTALL_LIB)"
+	@cp -f $(HELIX_OSDL_ARM7_LIB_NAME) $(HELIX_OSDL_ARM9_LIB_NAME) \
+		$(OSDL_INSTALL_LIB)
+
+
+$(HELIX_OSDL_ARM7_LIB_NAME): libcontent
+	@echo "    Linking" $(shell echo $(HELIX_ARM7_OBJECT_FILES) | wc -w) \
+	"ARM7 object files into $@"
+	@$(AR) $(AR_FLAGS_ARM7) $@ $(HELIX_ARM7_OBJECT_FILES)
+	
+	
+$(HELIX_OSDL_ARM9_LIB_NAME): libcontent
+	@echo "    Linking" $(shell echo $(HELIX_ARM9_OBJECT_FILES) | wc -w) \
+	"ARM9 object files into $@"
+	@$(AR) $(AR_FLAGS_ARM9) $@ $(HELIX_ARM9_OBJECT_FILES)
+
+
+libcontent:
+	@for d in $(NDS_SUBDIRS); do cd $$d ; if ! $(MAKE) -f Makefile.cross CROSS_TARGET=$(CROSS_TARGET) all; then return 1; false ; else cd ..; fi ; done
+	
+	 
+info-lib:
+	@echo "HELIX_OSDL_ARM7_LIB_NAME = '$(HELIX_OSDL_ARM7_LIB_NAME)'"
+	@echo "HELIX_OSDL_ARM9_LIB_NAME = '$(HELIX_OSDL_ARM9_LIB_NAME)'"
+
+
+install-headers:
