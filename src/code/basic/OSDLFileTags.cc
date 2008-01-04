@@ -7,14 +7,14 @@ using namespace OSDL ;
 
 using std::string ;
 
-extern const FileTag OSDL::SoundTag     = 1 ;
-extern const FileTag OSDL::MusicTag     = 2 ;
+extern const FileTag OSDL::SoundTag      = 1 ;
+extern const FileTag OSDL::MusicTag      = 2 ;
 
 
-const std::string SoundTagDescription	= "raw sound" ;
-const std::string MusicTagDescription	= "MP3-based music" ;
+const std::string SoundTagDescription	 = "PCM or IMA ADPCM sound" ;
+const std::string MusicTagDescription    = "MP3 music" ;
 
-const std::string UnknownTagDescription = "unknown file format" ;
+const std::string UnknownTagDescription  = "unknown file format" ;
 
 
 
