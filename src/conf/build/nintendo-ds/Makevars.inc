@@ -134,7 +134,7 @@ ARCH_FLAGS_COMMON_32_BIT =
 
 # The -DARM7/-DARM flags are needed by libnds but set by OSDL DS header:
 
-ARCH_FLAGS_ARM7   = $(ARCH_FLAGS_COMMON) -mcpu=arm7tdmi -mtune=arm7tdmi -DOSDL_RUNS_ON_ARM7=1
+ARCH_FLAGS_ARM7   = $(ARCH_FLAGS_COMMON) -mcpu=arm7tdmi -mtune=arm7tdmi -DOSDL_RUNS_ON_ARM7=1 
 
 ARCH_FLAGS_ARM7_32_BIT = $(ARCH_FLAGS_COMMON_32_BIT) -mcpu=arm7tdmi -mtune=arm7tdmi -DOSDL_RUNS_ON_ARM7=1
 
@@ -203,18 +203,19 @@ CPP_ARCH_DEFINES:= \
 	-DOSDL_ARCH_NINTENDO_DS=1      \
 	-DOSDL_ARCH_WINDOWS=0          \
 	-DOSDL_ARCH_MACOSX=0           \
-	-DOSDL_RUNS_ON_LITTLE_ENDIAN=1 
+	-DOSDL_RUNS_ON_LITTLE_ENDIAN=1
+	
 
 
 # Defined here rather than in OSDLConfigForNintendoDS.h as headers may mention
 # these includes (ex: '#include "SDL.h"' for a necessary typedef):
 CPP_FEATURE_DEFINES:= \
-	-DOSDL_USES_LIBPNG=0    \
-	-DOSDL_USES_OPENGL=0    \
-	-DOSDL_USES_SDL=0       \
-	-DOSDL_USES_SDL_GFX=0   \
-	-DOSDL_USES_SDL_IMAGE=0 \
-	-DOSDL_USES_SDL_MIXER=0 \
+	-DOSDL_USES_LIBPNG=0         \
+	-DOSDL_USES_OPENGL=0         \
+	-DOSDL_USES_SDL=0            \
+	-DOSDL_USES_SDL_GFX=0        \
+	-DOSDL_USES_SDL_IMAGE=0      \
+	-DOSDL_USES_SDL_MIXER=0      \
 	-DOSDL_USES_SDL_TTF=0
 		
 		
@@ -278,7 +279,7 @@ ASM_FLAGS = -g -marm -mthumb-interwork
 
 # Compile flags always used, for both ARM, both in debug and release modes:
 
-# @fixme Needing to gain some room in ARM7 binary, using -Os instead of -O3
+# @fixme When needing to gain some room in ARM7 binary, using -Os instead of -O3
 # implies removing -Winline:
 CC_FLAGS_COMMON:=  -Wall -Werror -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
