@@ -17,10 +17,17 @@ cd $BASE_DIR
 #pwd
 
  
+ 
 # Only the Makefile (if any) knows which executables should be removed :
 cd test
 make clean 1>/dev/null 2>&1
 cd ..
+
+
+cd tools
+make clean
+cd ..
+
 
 # Directories :
 $FIND . \( -name 'autom4te.cache' -o -name '.deps' -o -name '.libs' -o -name 'test*.exe-logs' \) -exec $RM -rf '{}' ';' 2>/dev/null
