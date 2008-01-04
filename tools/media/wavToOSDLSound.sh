@@ -80,7 +80,7 @@ if [ $do_encode -eq 0 ] ; then
 	
 	NEW_SOURCE_FILE=${SOURCE_FILE_PREFIX}-tmp.wav
 	
-	echo "Encoding ${SOURCE_WAVE_FILE} to IMA-ADPCM, in ${NEW_SOURCE_FILE}"
+	echo "    Encoding ${SOURCE_WAVE_FILE} to IMA-ADPCM"
 	
 	ENCODER_MSG=`${ENCODER} -y -i ${SOURCE_WAVE_FILE} -acodec adpcm_ima_wav ${NEW_SOURCE_FILE} 2>&1`
 	
