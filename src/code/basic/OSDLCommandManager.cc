@@ -4,7 +4,6 @@
 #include "OSDLSound.h"               // for Sound
 #include "OSDLMusic.h"               // for Music
 
-#include "OSDLIPCCommands.h"         // for IPC commands
 
 #include "Ceylan.h"                  // for LogPlug
 
@@ -17,6 +16,12 @@
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
 #endif // OSDL_ARCH_NINTENDO_DS
 
+
+/**
+ * For IPC commands, must be after OSDLConfigForNintendoDS.h include as some
+ * Ceylan defines are needed for its included IPC counterpart.
+ */
+#include "OSDLIPCCommands.h"         
 
 
 using namespace OSDL ;
@@ -121,10 +126,18 @@ void CommandManager::playSound( Audio::Sound & sound ) throw( CommandException )
 
 	const Audio::LowLevelSound & actualSound = sound.getContent() ;
 	
-	// Add bit depth in first four bits of the second byte:
+	/*
+	 * Add bit depth in first four bits of the second byte, encoded that way:
+	 *   0b0000 = 0x0: IMA ADPCM (bit depth of 4 by convention)
+	 *   0b0001 = 0x1: 8 bit
+	 *   0b0010 = 0x2: 16 bit
+	 *
+	 */
+	 
+	// if ( actualSound._bitDepth == 4 ): nothing to do (already zero)
 	if ( actualSound._bitDepth == 8 )
 		commandElement |= 0x00100000 ; 
-	else // suppose 16-bit (16):
+	else if ( actualSound._bitDepth == 16 )
 		commandElement |= 0x00200000 ; 
 
 
@@ -470,10 +483,10 @@ void CommandManager::handleReceivedIntegratingLibrarySpecificCommand(
 			break ;
 		
 		case MusicEndedNotification:
-			_currentMusic->onPlaybackEnded() ;
 			LogPlug::debug( "Music ended, minimum whole frame length was "
 				+ Ceylan::toString( readBlocking() ) + " bytes, maximum was "
 				+ Ceylan::toString( readBlocking() ) + " bytes." ) ;
+			_currentMusic->onPlaybackEnded() ;
 			break ;
 			
 		case MusicFrameInformation:
