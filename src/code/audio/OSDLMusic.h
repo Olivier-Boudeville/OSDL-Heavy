@@ -5,7 +5,6 @@
 #include "OSDLAudioCommon.h"    // for MusicType, etc.
 #include "OSDLAudible.h"        // for AudibleException, inheritance
 
-#include "OSDLCommandManager.h" // for friend declaration.
 
 #include "Ceylan.h"             // for LoadableWithContent
 
@@ -14,7 +13,6 @@
 
 
 
-#if ! defined(OSDL_USES_SDL_MIXER) || OSDL_USES_SDL_MIXER 
 
 /*
  * No need to include SDL_Mixer header here.
@@ -28,8 +26,12 @@
  */
 struct _Mix_Music ;
 
-#endif //  ! defined(OSDL_USES_SDL_MIXER) || OSDL_USES_SDL_MIXER 
 
+#if defined(CEYLAN_ARCH_NINTENDO_DS) && CEYLAN_ARCH_NINTENDO_DS == 1
+
+#include "OSDLCommandManager.h" // for friend declaration.
+
+#endif // defined(CEYLAN_ARCH_NINTENDO_DS) && CEYLAN_ARCH_NINTENDO_DS == 1
 
 
 
@@ -46,9 +48,9 @@ namespace OSDL
 		typedef Ceylan::Uint32 BufferSize ;
 
 
-		/// Low-level music being used internally.
 #if ! defined(OSDL_USES_SDL_MIXER) || OSDL_USES_SDL_MIXER 
 
+		/// Low-level music being used internally.
 		typedef ::_Mix_Music LowLevelMusic ;
 		
 #else // OSDL_USES_SDL_MIXER	
@@ -275,10 +277,14 @@ namespace OSDL
 		class OSDL_DLL Music: public Audible, 
 			public Ceylan::LoadableWithContent<LowLevelMusic>
 		{
-		
-			
+	
+#if defined(CEYLAN_ARCH_NINTENDO_DS) && CEYLAN_ARCH_NINTENDO_DS == 1
+
 			// So that the manager can call onPlaybackEnded and al:
 			friend class OSDL::CommandManager ;
+
+#endif // defined(CEYLAN_ARCH_NINTENDO_DS) && CEYLAN_ARCH_NINTENDO_DS == 1
+	
 			
 			public:
 				
