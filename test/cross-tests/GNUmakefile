@@ -230,7 +230,8 @@ CEYLAN_ARM9_INSTALLED_LIB := $(CEYLAN_INSTALL_LIB)/$(CEYLAN_ARM9_LIB_NAME)
 
 # Let the possibility for the user to define his own LIBS.
 # Not libfat for the ARM7 yet (library too big), but Helix-OSDL:
-TEST_BASE_LIBS_ARM7:= $(LIBS) -lHelix-OSDL-arm7 -lnds7
+TEST_BASE_LIBS_ARM7:= $(LIBS) -l$(CEYLAN_BASE_LIB_NAME)-arm7 -lHelix-OSDL-arm7 -lnds7
+	
 TEST_BASE_LIBS_ARM9:= $(LIBS) -l$(CEYLAN_BASE_LIB_NAME)-arm9 -lfat -lnds9
 
 
@@ -309,10 +310,8 @@ testOSDLMusic-$(TEST_PREFIX).arm7.o: testOSDLMusic.arm7.c
 
 # From object files to fully linked ELF executables:
 
-# No $(CEYLAN_ARM7_INSTALLED_LIB) linked for the moment (too big):
 
-# Disabled dependency: $(OSDL_ARM7_INSTALLED_LIB), would not fit in ARM7 RAM.
-%.arm7.elf: %.arm7.o $(HELIX_OSDL_ARM7_INSTALLED_LIB)
+%.arm7.elf: %.arm7.o $(CEYLAN_ARM7_INSTALLED_LIB) $(HELIX_OSDL_ARM7_INSTALLED_LIB) $(OSDL_ARM7_INSTALLED_LIB)
 	@echo "    Creating OSDL library-user ARM7 ELF executable $@ from $< and from Helix library"
 	@$(CXX) $(TEST_LD_FLAGS_ARM7) -Wl,-Map,$@.map $< $(TEST_LIBPATHS_ARM7) $(TEST_LIBS_ARM7) -o $@
 
