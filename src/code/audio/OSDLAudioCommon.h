@@ -54,7 +54,7 @@ namespace OSDL
 		 * It includes the number of channels (ex: mono, stereo) and the role
 		 * of each channel.
 		 *
-		 * @example: 
+		 * @example: Mono, Stereo.
 		 *
 		 * @note This has nothing to do with mixing (input) channels.
 		 *
