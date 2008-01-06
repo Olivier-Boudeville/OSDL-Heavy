@@ -40,6 +40,9 @@
 
 		#define OSDL_DS_LOG(messageString) ::iprintf( "[Debug] %s\n", ((messageString).c_str()) )
 
+		// Only included in the DS ARM9 case:
+		#include "OSDLCommandManager.h"
+		
 	#else // OSDL_RUNS_ON_ARM9
 
 		#error OSDLConfigForNintendoDS.h: either OSDL_RUNS_ON_ARM7 or OSDL_RUNS_ON_ARM9 must be defined.
