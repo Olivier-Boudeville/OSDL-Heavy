@@ -126,7 +126,24 @@ TEST_CPP_FLAGS_ARM9 = $(TEST_CPP_FLAGS_COMMON) -DCEYLAN_RUNS_ON_ARM9 \
 
 
 
-# Compiler section: exports TEST_CXX_FLAGS_ARM7 / TEST_CXX_FLAGS_ARM9
+# Compiler section: 
+
+
+# -Wconversion had to be removed because of incomprehensible warnings like:
+# 'passing argument 1 of XXX with different width due to prototype'
+TEST_CC_FLAGS_COMMON_BASE = -Winline -Wall -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
+
+# (relaxed, as using non-blocking warnings: no -Werror set):
+TEST_CC_FLAGS_COMMON_RELAXED = $(TEST_ARCH_FLAGS_COMMON) $(TEST_CC_FLAGS_COMMON_BASE)
+
+TEST_CC_FLAGS_COMMON = $(TEST_CC_FLAGS_COMMON_RELAXED) -Werror
+
+# (32-bit, as no $(TEST_ARCH_FLAGS_COMMON) specified):
+# (relaxed, as using non-blocking warnings: no -Werror set):
+TEST_CC_FLAGS_COMMON_32_BIT_RELAXED = $(TEST_CC_FLAGS_COMMON_BASE)
+
+TEST_CC_FLAGS_COMMON_32_BIT = $(TEST_CC_FLAGS_COMMON_32_BIT_RELAXED) -Werror
+
 
 
 # Long but safe:
@@ -134,12 +151,6 @@ TEST_CPP_FLAGS_ARM9 = $(TEST_CPP_FLAGS_COMMON) -DCEYLAN_RUNS_ON_ARM9 \
 TEST_CXX_FLAGS_COMMON = $(TEST_ARCH_FLAGS_COMMON) -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
 
-# -Wconversion had to be removed because of incomprehensible warnings like:
-# 'passing argument 1 of XXX with different width due to prototype'
-TEST_CC_FLAGS_COMMON = $(TEST_ARCH_FLAGS_COMMON) -Winline -Wall -Werror  -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
-
-# Same as TEST_CC_FLAGS_COMMON, but with non-blocking warnings (no -Werror):
-TEST_CC_FLAGS_COMMON_RELAXED = $(TEST_ARCH_FLAGS_COMMON) -Winline -Wall -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
 # Tests will follow the release mode of the OSDL library:
 ifeq ($(OSDL_TESTED_BUILD_MODE),debug)
@@ -161,9 +172,13 @@ endif
 
 TEST_CXX_FLAGS_ARM7 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi 
 
+
 TEST_CC_FLAGS_ARM7 = $(TEST_CC_FLAGS_COMMON) $(TEST_CC_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi 
 
-TEST_CC_FLAGS_ARM7_RELAXED= $(TEST_CC_FLAGS_COMMON_RELAXED) $(TEST_CC_FLAGS_MODE_FOR_SIZE) -mcpu=arm7tdmi -mtune=arm7tdmi 
+TEST_CC_FLAGS_ARM7_RELAXED = $(TEST_CC_FLAGS_COMMON_RELAXED) $(TEST_CC_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi 
+
+TEST_CC_FLAGS_ARM7_32_BIT = $(TEST_CC_FLAGS_COMMON_32_BIT) $(TEST_CC_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi
+
 
 TEST_CXX_FLAGS_ARM9 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -march=armv5te -mtune=arm946e-s 
 
@@ -286,13 +301,17 @@ info-run:
 
 # Exception rules to avoid otherwise blocking warnings:
 testOSDLMusic-$(TEST_PREFIX).arm7.o: testOSDLMusic.arm7.c
-	@echo "    Compiling (overriden rule) $< into $@"
+	@echo "    Compiling in 32-bit mode $< into $@"
+	$(CC) $(TEST_CC_FLAGS_ARM7_32_BIT) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
+
+getMP3Settings-$(TEST_PREFIX).arm7.o: getMP3Settings.arm7.c
+	@echo "    Compiling (relaxed non-fatal warning rule) $< into $@"
 	$(CC) $(TEST_CC_FLAGS_ARM7_RELAXED) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
 
 
 %-$(TEST_PREFIX).arm7.o: %.arm7.c
 	@echo "    Compiling $< into $@"
-	$(CC) $(TEST_CC_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
+	@$(CC) $(TEST_CC_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
 
 %-$(TEST_PREFIX).arm7.o: %.arm7.cc
 	@echo "    Compiling $< into $@"
@@ -305,7 +324,7 @@ testOSDLMusic-$(TEST_PREFIX).arm7.o: testOSDLMusic.arm7.c
 	
 %-$(TEST_PREFIX).arm9.o: %.arm9.cc
 	@echo "    Compiling $< into $@"
-	$(CXX) $(TEST_CXX_FLAGS_ARM9) $(TEST_CPP_FLAGS_ARM9) -c $< -o $@
+	@$(CXX) $(TEST_CXX_FLAGS_ARM9) $(TEST_CPP_FLAGS_ARM9) -c $< -o $@
 
 
 # From object files to fully linked ELF executables:
@@ -318,7 +337,7 @@ testOSDLMusic-$(TEST_PREFIX).arm7.o: testOSDLMusic.arm7.c
 
 %.arm9.elf: %.arm9.o $(CEYLAN_ARM9_INSTALLED_LIB) $(OSDL_ARM9_INSTALLED_LIB)
 	@echo "    Creating OSDL library-user ARM9 ELF executable $@ from $< and from Ceylan and OSDL ARM9 libraries"
-	@$(CXX) $(TEST_LD_FLAGS_ARM9) -Wl,-Map,$@.map $< $(TEST_LIBPATHS_ARM9) $(TEST_LIBS_ARM9)  -o $@
+	@$(CXX) $(TEST_LD_FLAGS_ARM9) -Wl,-Map,$@.map $< $(TEST_LIBPATHS_ARM9) $(TEST_LIBS_ARM9) -o $@
 
 
 
@@ -345,10 +364,10 @@ testOSDLMusic-$(TEST_PREFIX).arm7.o: testOSDLMusic.arm7.c
 
 
 # Rules overriden to use sound-specific ARM7 executable:
-testOSDLSound-$(TEST_PREFIX).nds: testOSDLSound-$(TEST_PREFIX).arm7.bin \
-		testOSDLSound-$(TEST_PREFIX).arm9.bin
-	@echo "    Creating final slot-1 DS ROM $@ from $^"
-	@$(NDSTOOL) -c $@ -7 $< -9 `echo $^| sed 's|^.* ||1'`
+#testOSDLSound-$(TEST_PREFIX).nds: testOSDLSound-$(TEST_PREFIX).arm7.bin \
+#		testOSDLSound-$(TEST_PREFIX).arm9.bin
+#	@echo "    Creating final slot-1 DS ROM $@ from $^"
+#	@$(NDSTOOL) -c $@ -7 $< -9 `echo $^| sed 's|^.* ||1'`
 
 
 # Neither basic logo, wifi logo nor sentences embedded:
