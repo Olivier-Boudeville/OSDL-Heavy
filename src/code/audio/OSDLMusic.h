@@ -27,19 +27,16 @@
 struct _Mix_Music ;
 
 
-#if defined(CEYLAN_ARCH_NINTENDO_DS) && CEYLAN_ARCH_NINTENDO_DS == 1
-
-#include "OSDLCommandManager.h" // for friend declaration.
-
-#endif // defined(CEYLAN_ARCH_NINTENDO_DS) && CEYLAN_ARCH_NINTENDO_DS == 1
-
 
 
 namespace OSDL
 {
 
-		
 	
+	// Forward-declaration for friend declaration.	
+	class CommandManager ;
+	 
+	 
 	namespace Audio 
 	{
 
@@ -104,8 +101,8 @@ namespace OSDL
 			Ceylan::Byte * _doubleBuffer ;
 		
 		
-			/// Tells whether the first buffer is filled with unplayed content.
-			bool _firstFilled ;
+			/// Tells whether the filling of first buffer has been requested.
+			bool _requestFillOfFirstBuffer ;
 			
 			/// Tells how many bytes can be read from first buffer.
 			BufferSize _availableInFirst ;
@@ -124,8 +121,8 @@ namespace OSDL
 			/// The address of the second buffer:
 			Ceylan::Byte * _secondBuffer ;
 
-			/// Tells whether the second buffer is filled with unplayed content.
-			bool _secondFilled ;
+			/// Tells whether the filling of second buffer has been requested.
+			bool _requestFillOfSecondBuffer ;
 		
 			/// Tells how many bytes can be read from second buffer.
 			BufferSize _availableInSecond ;
@@ -694,14 +691,7 @@ namespace OSDL
 			
 				/// Tells whether this music is being played.
 				bool _isPlaying ;
-				
-				
-				/// To trigger a refill by the main loop.
-				bool _requestFillOfFirstBuffer ;
-				
-				/// To trigger a refill by the main loop.
-				bool _requestFillOfSecondBuffer ;
-				
+								
 			
 				/// The music currently being played (if any).
 				static Music * _CurrentMusic ;
@@ -744,49 +734,6 @@ namespace OSDL
 				 */
 				virtual void manageBufferRefill() throw( AudioException ) ;
 
-
-				
-				/**
-				 * Returns the first encoded buffer of this music.
-				 *
-				 * @throw AudioException if the operation failed, including 
-				 * if no buffer is available.
-				 *
-				 */
-				//Ceylan::Byte * getFirstBuffer() throw( AudioException ) ;
-
-
-				/**
-				 * Returns the number of bytes that are available to read in 
-				 * first encoded buffer.
-				 *
-				 * @throw AudioException if the operation failed.
-				 *
-				 */
-				//BufferSize getAvailableSizeInFirstBuffer() 
-				//	throw( AudioException ) ;
-				
-				
-				/**
-				 * Returns the second encoded buffer of this music.
-				 *
-				 * @throw AudioException if the operation failed, including 
-				 * if no buffer is available.
-				 *
-				 */
-				//Ceylan::Byte * getSecondBuffer() throw( AudioException ) ;
-				
-				
-				/**
-				 * Returns the number of bytes that are available to read in 
-				 * second encoded buffer.
-				 *
-				 * @throw AudioException if the operation failed.
-				 *
-				 */
-				//BufferSize getAvailableSizeInSecondBuffer() 
-				//	throw( AudioException ) ;
-				
 				
 				/**
 				 * Fills the first half of the double buffer with
