@@ -93,6 +93,16 @@
  *
  */
 
+// Only defined and set to 1 when cross-compiling for the Nintendo DS:
+#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS == 1
+
+// So that DS-specific defines are readily available to the user:
+#include "OSDLConfigForNintendoDS.h"
+
+#endif // defined(CEYLAN_ARCH_NINTENDO_DS) && CEYLAN_ARCH_NINTENDO_DS == 1
+
+
+// Include below all header files to be exported for Ceylan users.
 
 #include "OSDLAudioIncludes.h"
 #include "OSDLBasicIncludes.h"
