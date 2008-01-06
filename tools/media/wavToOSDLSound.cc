@@ -14,12 +14,12 @@ using namespace std ;
 #include <iostream>  // for cout
 
 
-const std::string Usage = " [ -f frequency ] [ -m mode ] [ -b bitdepth ] X.raw\nConverts a Wave file (*.wav) into a .osdl.sound file by replacing the Wave header by an OSDL header filled with informations specified from the command-line."
+const std::string Usage = " [ -f frequency ] [ -m mode ] [ -b bitdepth ] A_WAVE_FILE\nConverts a Wave file (*.wav) into a .osdl.sound file by replacing the Wave header by an OSDL header filled with informations specified from the command-line."
 	"\n\t -f: specifies the output sampling frequency, in Hz, ex: -f 22050 (the default)" 
 	"\n\t -m: specifies the output mode, mono or stereo, ex: -m mono (the default)" 
 	"\n\t -b: specifies the sample (PCM) bit depth, in bits, ex: -b 16 (the default). A bit depth of 4 corresponds by convention to the IMA ADPCM sample format." 
 	"\nOne may use the sox command-line tool to retrieve the relevant audio settings for the source sound."
-	"\n\tEx: 'sox -V OSDL.wav OSDL.raw' converts the sound and outputs its metadata than can be used to fill the next command line." 
+	"\n\tEx: 'sox -V OSDL.wav -n' converts the sound and outputs its metadata than can be used to fill the next command line." 
 	"\nThen 'wavToOSDLSound.exe -f 44100 -m stereo -b 8 OSDL.wav' results in the creation of 'OSDL.osdl.sound'" 
 	;
 
