@@ -1,3 +1,12 @@
+/*
+ * Must be in first position as OSDLCommandManager.h refers to Ceylan.h for
+ * the FIFO class definition, and this header needs CEYLAN_ARCH_NINTENDO_DS.
+ *
+ */
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
 #include "OSDLCommandManager.h"
 
 
@@ -5,16 +14,10 @@
 #include "OSDLMusic.h"               // for Music
 
 
-#include "Ceylan.h"                  // for LogPlug
-
-
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
 
-#if OSDL_ARCH_NINTENDO_DS
-#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
-#endif // OSDL_ARCH_NINTENDO_DS
 
 
 /**
