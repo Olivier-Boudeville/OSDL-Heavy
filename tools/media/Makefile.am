@@ -7,12 +7,15 @@ mediatools_CXXFLAGS = @AM_CXXFLAGS@
 
 
 mediatools_PROGRAMS = \
-	wavToOSDLSound.exe \
-	mp3ToOSDLMusic.exe
+	wavToOSDLSound.exe   \
+	mp3ToOSDLMusic.exe   \
+	identifyOSDLFile.exe
 	
 
-wavToOSDLSound_exe_SOURCES = wavToOSDLSound.cc
-mp3ToOSDLMusic_exe_SOURCES = mp3ToOSDLMusic.cc
+wavToOSDLSound_exe_SOURCES   = wavToOSDLSound.cc
+mp3ToOSDLMusic_exe_SOURCES   = mp3ToOSDLMusic.cc
+identifyOSDLFile_exe_SOURCES = identifyOSDLFile.cc
+
 
 clean:clean-local
 
