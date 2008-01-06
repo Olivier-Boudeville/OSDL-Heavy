@@ -18,16 +18,24 @@ HELIX_ROOT = .
 CPP_FLAGS_COMMON := $(CPP_FLAGS_COMMON) \
         -I $(HELIX_ROOT)/pub
 	
-
+	
+# Object files for this directory:
 ARM7_OBJ_FILES = \
 	mp3dec.arm7.o                        \
 	mp3tabs.arm7.o
 
-ARM9_OBJ_FILES = \
+
+# No Helix ARM9 object files kept, as would be compiled in 32-bit mode,
+# whereas default for the ARM9 is thumb mode.
+ARM9_OBJ_FILES =
+
+DISABLED_ARM9_OBJ_FILES = \
 	mp3dec.arm9.o                        \
 	mp3tabs.arm9.o
 
 
+
+# All Helix object files:
 HELIX_ARM7_OBJECT_FILES = \
 	$(HELIX_ROOT)/mp3dec.arm7.o          \
 	$(HELIX_ROOT)/mp3tabs.arm7.o         \
@@ -45,7 +53,13 @@ HELIX_ARM7_OBJECT_FILES = \
 	$(HELIX_ROOT)/real/trigtabs.arm7.o   \
 	$(HELIX_ROOT)/real/arm/asmpoly_gcc.arm7.o
 
-HELIX_ARM9_OBJECT_FILES = \
+
+# No Helix ARM9 object files kept, as would be compiled in 32-bit mode,
+# whereas default for the ARM9 is thumb mode.
+HELIX_ARM9_OBJECT_FILES = 
+
+
+DISABLED_HELIX_ARM9_OBJECT_FILES = \
 	$(HELIX_ROOT)/mp3dec.arm9.o          \
 	$(HELIX_ROOT)/mp3tabs.arm9.o         \
 	$(HELIX_ROOT)/real/bitstream.arm9.o  \
