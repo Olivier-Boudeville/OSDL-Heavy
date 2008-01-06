@@ -1,24 +1,35 @@
-#include "OSDLMusic.h"
 
-#include "OSDLAudio.h"               // for AudioModule
+/*
+ * This include order is compulsory: Ceylan.h must not be included (directly
+ * or not) before OSDLConfigForNintendoDS.h is included, because this latter
+ * set the Ceylan defines that trigger the including of CeylanFIFO.h 
+ * (necessary for OSDLCommandManager.h on the ARM9) by Ceylan.h.
+ *
+ *
+ */
+#if OSDL_ARCH_NINTENDO_DS
 
-
+// Allows to have CEYLAN_ARCH_NINTENDO_DS defined: ARM9 needs Ceylan FIFO.
+#include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
 
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
 
 
-#if OSDL_ARCH_NINTENDO_DS
 
-#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+// No FIFO class on the ARM7:
+#ifdef OSDL_RUNS_ON_ARM9
 #include "OSDLCommandManager.h"      // for CommandManager
+#endif // OSDL_RUNS_ON_ARM9
 
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+#include "OSDLMusic.h"               // implies including Ceylan.h
+#include "OSDLAudio.h"               // for AudioModule
 
-#include "Ceylan.h"                  // for prepareFIFOCommand, etc.
+
 
 
 #if OSDL_USES_SDL
@@ -215,10 +226,7 @@ bool Music::load() throw( Ceylan::LoadableException )
 #elif defined(OSDL_RUNS_ON_ARM9)
 
 	// Preparing MP3 encoded streaming from the ARM9:
-	
-	_requestFillOfFirstBuffer  = false ;
-	_requestFillOfSecondBuffer = true  ;
-	
+		
 	try
 	{
 
@@ -243,7 +251,7 @@ bool Music::load() throw( Ceylan::LoadableException )
 		// Upper bound might be reduced ? Value used is from Helix example.
 		// On a sample mp3, had 314 bytes
 		//_content->_frameSizeUpperBound = 2 * 1940 ;
-		_content->_frameSizeUpperBound = 350 ;
+		_content->_frameSizeUpperBound = 500 ;
 		
 		if ( _content->_bufferSize <= _content->_frameSizeUpperBound )
 			throw Ceylan::LoadableException( "Music::load: "
@@ -259,14 +267,18 @@ bool Music::load() throw( Ceylan::LoadableException )
 		_content->_firstActualRefillSize = 
 			_content->_bufferSize - _content->_frameSizeUpperBound ;			
 			
-		// Let's start by loading a first half:
+		/*
+		 * First buffer will be filled now, second after a corresponding ARM7
+		 * request:
+		 *
+		 */
 		fillFirstBuffer() ;
 		
 		_content->_secondBuffer = _content->_doubleBuffer 
 			+ _content->_bufferSize ;
 			
-		_content->_secondFilled = false ;
-	
+		_content->_requestFillOfSecondBuffer = true  ;
+		
 	}
 	catch( const Ceylan::System::SystemException & e )
 	{
@@ -500,6 +512,7 @@ void Music::play( PlaybackCount playCount ) throw( AudibleException )
 		
 	}
 	
+	return ;
 		
 #endif // OSDL_RUNS_ON_ARM7
 
@@ -726,7 +739,7 @@ void Music::setAsCurrent() throw( AudioException )
 		
 	_CurrentMusic = this ;	
 
-	LogPlug::debug( "Music::setAsCurrent: " + toString( Ceylan::low) +
+	LogPlug::debug( "Music::setAsCurrent: " + toString( Ceylan::low ) +
 		" set as current." ) ;	
 		
 }
@@ -736,7 +749,7 @@ void Music::setAsCurrent() throw( AudioException )
 void Music::requestFillOfFirstBuffer() throw() 
 {
 
-	_requestFillOfFirstBuffer = true ;
+	_content->_requestFillOfFirstBuffer = true ;
 	
 }
 
@@ -745,7 +758,7 @@ void Music::requestFillOfFirstBuffer() throw()
 void Music::requestFillOfSecondBuffer() throw()
 {
 
-	_requestFillOfSecondBuffer = true ;
+	_content->_requestFillOfSecondBuffer = true ;
 	
 }
 
@@ -948,154 +961,14 @@ void Music::onNoMoreCurrent() throw( AudioException )
 void Music::manageBufferRefill() throw( AudioException )
 {
  
-	if ( _requestFillOfFirstBuffer )
-	{
-	
-		_requestFillOfFirstBuffer = false ;
+	if ( _content->_requestFillOfFirstBuffer )
 		fillFirstBuffer() ;
-		
-	}
 	
-	
-	if ( _requestFillOfSecondBuffer )
-	{
-	
-		_requestFillOfSecondBuffer = false ;
+	if ( _content->_requestFillOfSecondBuffer )
 		fillSecondBuffer() ;
-		
-	}
 	
 }
  
- 
- 
-/*
-Ceylan::Byte * Music::getFirstBuffer() throw( AudioException )
-{
-
-#if OSDL_ARCH_NINTENDO_DS
-
-#ifdef OSDL_RUNS_ON_ARM7
-
-	throw AudioException( "Music::getFirstBuffer: "
-		"not supported on the ARM7" ) ;
-
-#elif defined(OSDL_RUNS_ON_ARM9)
-
-	if ( _content != 0 )
-		return _content->_doubleBuffer ;
-	else
-		throw AudioException( "Music::getFirstBuffer: no content available" ) ;
-
-#endif // OSDL_RUNS_ON_ARM7
-
-#else // OSDL_ARCH_NINTENDO_DS
-
-	throw AudioException( "Music::getFirstBuffer: "
-		"not supported on this platform" ) ;
-	
-#endif // OSDL_ARCH_NINTENDO_DS
-	
-}
-
-
-
-BufferSize Music::getAvailableSizeInFirstBuffer() throw( AudioException )
-{
-
-	// fixme use _firstFilled ?
-
-#if OSDL_ARCH_NINTENDO_DS
-
-#ifdef OSDL_RUNS_ON_ARM7
-
-	throw AudioException( "Music::getAvailableSizeInFirstBuffer: "
-		"not supported on the ARM7" ) ;
-
-#elif defined(OSDL_RUNS_ON_ARM9)
-
-	if ( _content != 0 )
-		return _content->_availableInFirst ;
-	else
-		throw AudioException( 
-			"Music::getAvailableSizeInFirstBuffer: no content available" ) ;
-
-#endif // OSDL_RUNS_ON_ARM7
-
-#else // OSDL_ARCH_NINTENDO_DS
-
-	throw AudioException( "Music::getAvailableSizeInFirstBuffer: "
-		"not supported on this platform" ) ;
-	
-#endif // OSDL_ARCH_NINTENDO_DS
-	
-}
-
-
-					
-Ceylan::Byte * Music::getSecondBuffer() throw( AudioException )
-{
-
-#if OSDL_ARCH_NINTENDO_DS
-
-#ifdef OSDL_RUNS_ON_ARM7
-
-	throw AudioException( "Music::getSecondBuffer: "
-		"not supported on the ARM7" ) ;
-
-#elif defined(OSDL_RUNS_ON_ARM9)
-
-	if ( _content != 0 )
-		return _content->_secondBuffer ;
-	else
-		throw AudioException( "Music::getSecondBuffer: no content available" ) ;
-
-#endif // OSDL_RUNS_ON_ARM7
-
-#else // OSDL_ARCH_NINTENDO_DS
-
-	throw AudioException( "Music::getSecondBuffer: "
-		"not supported on this platform" ) ;
-	
-#endif // OSDL_ARCH_NINTENDO_DS
-	
-}
-
-
-
-BufferSize Music::getAvailableSizeInSecondBuffer() throw( AudioException )
-{
-
-	// fixme use _firstFilled ?
-
-#if OSDL_ARCH_NINTENDO_DS
-
-#ifdef OSDL_RUNS_ON_ARM7
-
-	throw AudioException( "Music::getAvailableSizeInSecondBuffer: "
-		"not supported on the ARM7" ) ;
-
-#elif defined(OSDL_RUNS_ON_ARM9)
-
-	if ( _content != 0 )
-		return _content->_availableInSecond ;
-	else
-		throw AudioException( 
-			"Music::getAvailableSizeInSecondBuffer: no content available" ) ;
-
-#endif // OSDL_RUNS_ON_ARM7
-
-#else // OSDL_ARCH_NINTENDO_DS
-
-	throw AudioException( "Music::getAvailableSizeInSecondBuffer: "
-		"not supported on this platform" ) ;
-	
-#endif // OSDL_ARCH_NINTENDO_DS
-	
-}
-
-*/		
-
 
 		
 void Music::fillFirstBuffer() throw( AudioException )
@@ -1170,7 +1043,8 @@ void Music::fillFirstBuffer() throw( AudioException )
 				music._firstActualRefillSize ) ;
 		
 		}
-					
+		
+		_content->_requestFillOfFirstBuffer = false ;			
 	
 	}
 	catch( const SystemException & e )
@@ -1258,6 +1132,7 @@ void Music::fillSecondBuffer() throw( AudioException )
 		
 		}
 				
+		_content->_requestFillOfSecondBuffer = false ;
 	
 	}
 	catch( const SystemException & e )
