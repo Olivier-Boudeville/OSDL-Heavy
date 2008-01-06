@@ -70,12 +70,19 @@ namespace OSDL
 	
 	
 	/**
+	 * Tells whether specified tag is a valid OSDL one.
+	 *
+	 */
+	OSDL_DLL bool IsAValidOSDLFileTag( FileTag tag ) throw( OSDL::Exception ) ;
+	
+		
+	/**
 	 * Returns a textual description of specified file tag.
 	 *
 	 * @throw OSDL::Exception if the tag is not known.
 	 *
 	 */
-	const std::string & DescribeFileTag( FileTag tag ) 
+	OSDL_DLL const std::string & DescribeFileTag( FileTag tag ) 
 		throw( OSDL::Exception ) ;
 		
 		
