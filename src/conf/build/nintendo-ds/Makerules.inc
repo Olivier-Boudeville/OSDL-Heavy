@@ -14,77 +14,94 @@ include $(TOP)/src/conf/build/nintendo-ds/Makevars.inc
 
 # Compilation.
 
+# Generally, all ARM7 object files are to be built in 32-bit mode (ex: for
+# Helix integration), whereas all ARM9 ones are in thumb mode.
+# All prerequesites, including Ceylan, must respect this rule.
 
-# For C++ source files common to both ARM (uses THUMB 16-bit mode):
+
+# For C++ source files common to both ARM:
+
+# C++ for the ARM7 is in 32-bit mode by default (but ARM7 C++ library no used).
+# C++ for the ARM9 is in thumb mode by default (ARM9 C++ library used).
 
 %.arm7.o: %.cc %.h 
-	@echo "      Compiling $^ into $@"
-	$(CXX) $(CXX_FLAGS_ARM7) $(CPP_FLAGS_ARM7) -c $< -o $@
-	
+	@echo "      Compiling in 32-bit mode $^ into $@"
+	@$(CXX) $(CXX_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
+
 %.arm9.o: %.cc %.h 
-	@echo "      Compiling $^ into $@"
-	$(CXX) $(CXX_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
+	@echo "      Compiling in thumb mode $^ into $@"
+	@$(CXX) $(CXX_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
 
 
 %.arm7.o: %.cc
-	@echo "      Compiling $^ into $@"
-	$(CXX) $(CXX_FLAGS_ARM7) $(CPP_FLAGS_ARM7) -c $< -o $@
+	@echo "      Compiling in 32-bit mode $^ into $@"
+	@$(CXX) $(CXX_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
 	
 %.arm9.o: %.cc
-	@echo "      Compiling $^ into $@"
-	$(CXX) $(CXX_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
+	@echo "      Compiling in thumb mode $^ into $@"
+	@$(CXX) $(CXX_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
 
 
 # Object files from assembler:
 
 %.arm7.o: %.s
-	@echo "      Compiling $^ into $@"
-	$(CC) -x assembler-with-cpp $(ASM_FLAGS) -c $< -o $@
+	@echo "      Assembling $^ into $@"
+	@$(CC) -x assembler-with-cpp $(ASM_FLAGS) -c $< -o $@
 
 %.arm9.o: %.s
-	@echo "      Compiling $^ into $@"
-	$(CC) -x assembler-with-cpp $(ASM_FLAGS) -c $< -o $@
+	@echo "      Assembling $^ into $@"
+	@$(CC) -x assembler-with-cpp $(ASM_FLAGS) -c $< -o $@
 
 
 
-# For C source files common to both ARM (uses ARM 32-bit mode):
+# For C source files common to both ARM:
+
+# C for the ARM7 is in 32-bit mode by default.
+# C for the ARM9 is in Thumb mode by default.
+
+
+OSDLARM7Base.arm7.o: OSDLARM7Base.c OSDLARM7Base.h 
+	@echo "      Compiling in 32-bit non-fatal warning mode $^ into $@"
+	@$(CC) $(CC_FLAGS_ARM7_32_BIT_RELAXED) $(CPP_FLAGS_ARM7) -c $< -o $@
 
 %.arm7.o: %.c %.h 
 	@echo "      Compiling in 32-bit mode $^ into $@"
-	$(CC) $(CC_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
+	@$(CC) $(CC_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
 	
 %.arm9.o: %.c %.h 
-	@echo "      Compiling in 32-bit mode $^ into $@"
-	$(CC) $(CC_FLAGS_ARM9_32_BIT) $(CPP_FLAGS_ARM9) -c $< -o $@
+	@echo "      Compiling in thumb mode $^ into $@"
+	@$(CC) $(CC_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
 
 
 %.arm7.o: %.c
-	@echo "      Compiling in 32-bit $^ into $@"
-	$(CC) $(CC_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
+	@echo "      Compiling in 32-bit mode $^ into $@"
+	@$(CC) $(CC_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
 	
 %.arm9.o: %.c
-	@echo "      Compiling in 32-bit $^ into $@"
-	$(CC) $(CC_FLAGS_ARM9_32_BIT) $(CPP_FLAGS_ARM9) -c $< -o $@
+	@echo "      Compiling in thumb mode $^ into $@"
+	@$(CC) $(CC_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
 
 
-# For C++ source files specific to either ARM:
 
-%.arm7.o: %.arm7.cc %.arm7.h 
-	@echo "      Compiling $^ into $@"
-	$(CXX) $(CXX_FLAGS_ARM7) $(CPP_FLAGS_ARM7) -c $< -o $@
-	
-%.arm9.o: %.arm9.cc %.arm9.h 
-	@echo "      Compiling $^ into $@"
-	$(CXX) $(CXX_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
-
+# For source files specific to either ARM:
 
 %.arm7.o: %.arm7.cc %.arm7.h 
-	@echo "      Compiling $^ into $@"
-	$(CXX) $(CXX_FLAGS_ARM7) $(CPP_FLAGS_ARM7) -c $< -o $@
+	@echo "      Compiling in 32-bit mode $^ into $@"
+	@$(CXX) $(CXX_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
 	
 %.arm9.o: %.arm9.cc %.arm9.h 
-	@echo "      Compiling $^ into $@"
-	$(CXX) $(CXX_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
+	@echo "      Compiling in thumb mode $^ into $@"
+	@$(CXX) $(CXX_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
+
+
+%.arm7.o: %.arm7.cc %.arm7.h 
+	@echo "      Compiling in 32-bit mode $^ into $@"
+	@$(CXX) $(CXX_FLAGS_ARM7_32_BIT) $(CPP_FLAGS_ARM7) -c $< -o $@
+	
+%.arm9.o: %.arm9.cc %.arm9.h 
+	@echo "      Compiling in thumb mode $^ into $@"
+	@$(CXX) $(CXX_FLAGS_ARM9) $(CPP_FLAGS_ARM9) -c $< -o $@
+
 
 	
 
