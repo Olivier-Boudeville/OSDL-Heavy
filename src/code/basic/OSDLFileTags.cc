@@ -11,11 +11,19 @@ extern const FileTag OSDL::SoundTag      = 1 ;
 extern const FileTag OSDL::MusicTag      = 2 ;
 
 
-const std::string SoundTagDescription	 = "PCM or IMA ADPCM sound" ;
-const std::string MusicTagDescription    = "MP3 music" ;
+const std::string SoundTagDescription	 = "sound (PCM or IMA ADPCM)" ;
+const std::string MusicTagDescription    = "music (MP3)" ;
 
 const std::string UnknownTagDescription  = "unknown file format" ;
 
+
+
+bool OSDL::IsAValidOSDLFileTag( FileTag tag ) throw( OSDL::Exception )
+{
+
+	return ( tag < 3 ) ;
+	
+}
 
 
 const std::string & OSDL::DescribeFileTag( FileTag tag ) throw( Exception )
