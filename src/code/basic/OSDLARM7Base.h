@@ -38,5 +38,12 @@ void handleReceivedIntegratingLibrarySpecificCommand( FIFOCommandID commandID,
 void initOSDL() ;
 
 
+/**
+ * Manages the MP3 playback when requested.
+ *
+ */
+void manageMP3Playback() ;
+
+
 #endif // OSDL_ARM7_BASE_H_
 
