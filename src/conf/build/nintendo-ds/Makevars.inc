@@ -279,9 +279,15 @@ ASM_FLAGS = -g -marm -mthumb-interwork
 
 # Compile flags always used, for both ARM, both in debug and release modes:
 
-# @fixme When needing to gain some room in ARM7 binary, using -Os instead of -O3
+
+# No -Werror here, as some warnings could not be removed
+# (ex: in OSDLARM7Base.c).
+CC_FLAGS_COMMON_RELAXED:=  -Wall -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
+
+# When needing to gain some room in ARM7 binary, using -Os instead of -O3
 # implies removing -Winline:
-CC_FLAGS_COMMON:=  -Wall -Werror -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
+CC_FLAGS_COMMON:= $(CC_FLAGS_COMMON_RELAXED) -Werror
+
 
 # Removed: 
 #   -Wcast-qual: cause Helix code to issue warnings (cast discards qualifiers) 
@@ -324,6 +330,9 @@ endif
 CC_FLAGS_ARM7        := $(CC_FLAGS) $(CC_FLAGS_COMMON) $(ARCH_FLAGS_ARM7)
 
 CC_FLAGS_ARM7_32_BIT := $(CC_FLAGS) $(CC_FLAGS_COMMON) $(ARCH_FLAGS_ARM7_32_BIT)
+
+CC_FLAGS_ARM7_32_BIT_RELAXED := $(CC_FLAGS) $(CC_FLAGS_COMMON_RELAXED) $(ARCH_FLAGS_ARM7_32_BIT)
+
 
 CC_FLAGS_ARM9        := $(CC_FLAGS) $(CC_FLAGS_COMMON) $(ARCH_FLAGS_ARM9)
 CC_FLAGS_ARM9_32_BIT := $(CC_FLAGS) $(CC_FLAGS_COMMON) $(ARCH_FLAGS_ARM9_32_BIT)
