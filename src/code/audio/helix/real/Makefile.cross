@@ -32,7 +32,13 @@ HELIX_IMPLEMENTATIONS = \
 
 
 ARM7_OBJ_FILES = $(patsubst %.c,%.arm7.o,$(HELIX_IMPLEMENTATIONS))
-ARM9_OBJ_FILES = $(patsubst %.c,%.arm9.o,$(HELIX_IMPLEMENTATIONS))
+
+
+# No Helix ARM9 object files kept, as would be compiled in 32-bit mode,
+# whereas default for the ARM9 is thumb mode.
+ARM9_OBJ_FILES =
+
+DISABLED_ARM9_OBJ_FILES = $(patsubst %.c,%.arm9.o,$(HELIX_IMPLEMENTATIONS))
 
 
 
