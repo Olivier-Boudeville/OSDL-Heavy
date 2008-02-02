@@ -1,9 +1,28 @@
-#include "OSDLSound.h"
+/*
+ * This include order is compulsory: Ceylan.h must not be included (directly
+ * or not) before OSDLConfigForNintendoDS.h is included, because this latter
+ * set the Ceylan defines that trigger the including of CeylanFIFO.h 
+ * (necessary for OSDLCommandManager.h on the ARM9) by Ceylan.h.
+ *
+ *
+ */
+#ifdef OSDL_ARCH_NINTENDO_DS
 
-#include "OSDLAudio.h"               // for AudioModule
+// Allows to have CEYLAN_ARCH_NINTENDO_DS defined: ARM9 needs Ceylan FIFO.
+#include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
 
-#include "OSDLFileTags.h"            // for sound file tag
 
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
+// No FIFO class on the ARM7:
+#ifdef OSDL_RUNS_ON_ARM9
+#include "OSDLCommandManager.h"      // for CommandManager
+#endif // OSDL_RUNS_ON_ARM9
+
+
+#else // OSDL_ARCH_NINTENDO_DS
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -11,12 +30,13 @@
 #endif // OSDL_USES_CONFIG_H
 
 
-#if OSDL_ARCH_NINTENDO_DS
-
-#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
-#include "OSDLCommandManager.h"      // for CommandManager
-
 #endif // OSDL_ARCH_NINTENDO_DS
+
+
+
+#include "OSDLSound.h"
+#include "OSDLAudio.h"               // for AudioModule
+#include "OSDLFileTags.h"            // for sound file tag
 
 
 
@@ -167,7 +187,7 @@ bool Sound::load() throw( Ceylan::LoadableException )
 				+ DescribeFileTag( readTag ) ) ;
 			
 		// Frequency:
-		_content->_frequency = soundFile.readUint16() ;
+		_content->_frequency = soundFile.readUint16() /* Hz */ ;
 
 
 		// Format, bit depth (8 bit/16 bit PCM, IMA ADPCM, etc.):
