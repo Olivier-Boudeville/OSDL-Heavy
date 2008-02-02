@@ -46,6 +46,29 @@ void interpretSoundFile( File & inputFile )
 
 
 
+void interpretMusicFile( File & inputFile ) 
+{
+
+	cout << "  + Sampling frequency: " << inputFile.readUint16() << " Hz." 
+		<< endl ;
+	
+	cout << "  + Channel format: " 
+		<< channelFormatToString( inputFile.readUint16() ) << "." << endl ;
+	
+	cout << "  + Bitrate type: " 
+		<< Music::DescribeBitrateType( inputFile.readUint8() ) << "." << endl ;
+	
+	cout << "  + Upper bound of encoded frame size: " 
+		<< inputFile.readUint16() << " bytes." << endl ;
+	
+	cout << "  + Size of actual mp3 content: " 
+		<< inputFile.size() - 4*sizeof(Ceylan::Uint16) 
+			- sizeof(Ceylan::Uint8)<< " bytes." << endl ;
+	
+}
+
+
+
 int main( int argc, char * argv[] ) 
 {
 	
@@ -131,8 +154,6 @@ int main( int argc, char * argv[] )
 		// Clumsy, slow, but working:
 		File & inputFile = File::Open( inputFilename ) ;
 		
-		//Ceylan::System::Size inputSize = inputFile.size() ;
-
 		FileTag tag = inputFile.readUint16() ;
 		
 		if ( ! OSDL::IsAValidOSDLFileTag( tag ) )
@@ -156,7 +177,8 @@ int main( int argc, char * argv[] )
 		 */
 		if ( tag == OSDL::SoundTag )
 			interpretSoundFile( inputFile ) ;
-			
+		else if ( tag == OSDL::MusicTag )
+			interpretMusicFile( inputFile ) ;	
 				
 		delete & inputFile ;
 		
