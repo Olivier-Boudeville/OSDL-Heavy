@@ -926,15 +926,15 @@ Roughly speaking, the ARM9 can be somewhere between 1.5 and about 4 times faster
 </p>
 
 <p>
-ARM7 and ARM9 are often configured to use Thumb mode (16 bit mode), instead of the ARM mode (32 bit mode). The reason for this, in both cases, is memory space: ARM7 has limited program space, whereas ARM9 has limited instruction cache space. As for the 16bit-wide bus accesses (there are <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">several</a> buses), ARM (32-bit) instructions would saturate the bandwidth and seriously decrease overall performance.
+ARM7 and ARM9 are often configured to use Thumb mode (16 bit mode), instead of the ARM mode (32 bit mode). The reason for this, in both cases, is memory space: ARM7 has limited program space, whereas ARM9 has limited instruction cache space. As for the 16 bit-wide bus accesses (there are <a href="http://www.dev-scene.com/NDS/Tutorials_Day_2#Memory_Layout" target="_blank">several</a> buses), ARM (32-bit) instructions would saturate the bandwidth and seriously decrease overall performance.
 </p>
 
 <p>
-Some applications manage to rely on very tight 32-bit loops that fit in the ARM9 instruction cache (ITCM) or in the ARM7 dedicated fast RAM (IWRAM), so that they can benefit from a more "powerful" instruction set, for critical parts. Apart from the 32-bit memory regions fed by 32-bit buses, one should prefer Thumb (16-bit) instructions.
+Some applications manage to rely on very tight 32-bit loops that fit in the ARM9  fast memory dedicated to instructions (<a href="#ITCM">ITCM</a>, 32-kilobyte) or in the ARM7 dedicated fast RAM (IWRAM), so that they can benefit from a more "powerful" instruction set, for critical parts. Apart from the 32-bit memory regions fed by 32-bit buses, one should prefer Thumb (16-bit) instructions.
 </p>
 
 <p>
-One can use the ITCM (32-kilobyte of fast memory for the ARM9) by either naming the file <code>*.itcm.c</code> or <code>*.itcm.cpp</code> or using the <code>ITCM_CODE</code> macro in the libnds headers. For example: 
+One can use the <a href="#ITCM">ITCM</a> by either naming the file <code>*.itcm.c</code> or <code>*.itcm.cpp</code> or using the <code>ITCM_CODE</code> macro in the libnds headers. For example: 
 <center>
     <table summary="Code" style="border : none">
         <tr>
@@ -1033,16 +1033,31 @@ The ARM7 executable can be as well in main memory, but for performance reasons i
 From the point of view of the ARMs, the GBA cartridges are expected to be a ROM area of up to 32 megabytes. Linkers making use of removable media fake a 32-megabytes only memory by loading dynamically the relevant memory chunks from their mass storage media. 
 </p>
 
+
+<p>
+There are two memory banks of <em>Tightly Coupled Memory</em> (TCM) is the ARM9. They are high-speed memory, directly contained in the ARM CPU core.
+</p>
+
+<a name="DTCM"></a>
 <p>
 The DTCM, for <em>Data Tightly Coupled Memory</em>, is a special 16-kilobyte memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, therefore the standard ARM9 linkscript places its stack in DTCM. Due to the small size of this memory region, local variables should be used carefully. One should avoid for example declaring too many of them (ex: local arrays) or having too deep recursions.
 </p>
 
+<a name="ITCM"></a>
 <p>
 As for the ITCM, for <em>Instruction Tightly Coupled Memory</em>, it is a special 32-kilobyte memory area in the ARM9 which can be mapped to reside at various actual physical addresses. It is a lot faster than the main RAM, so it should be used for small (preferably 32-bit) functions that are computation-intensive and/or frequently called. For example, libnds uses that region to store the interrupt dispatcher.
 </p>
 
 <p>
-Both ARM9 caches (DTCM/ITCM) seem to rely on 32-byte cache lines. As a cache line cannot be partially read or written apparently, special care mustbe taken when invalidating or flushing them.
+Although these two tightly coupled memories (TCM) are faster memories than RAM, are internal to the ARM9, and are used for storing high performance code/data, they are actually completely separate areas of memory than the instruction and data (L1) caches of the ARM9.
+</p>
+
+<p>
+So from the ARM9 point of view, the memory hierarchy is, from closest/fastest/smallest to farest/slowest/biggest: ARM9 caches (L1) &gt; ARM9 TCM caches ("L2") &gt; RAM and other memories.
+</p>
+
+<p>
+Both ARM9 TCM seem to rely on 32-byte cache lines. As a cache line cannot be partially read or written apparently, special care must be taken when invalidating or flushing them.
 </p>
 
 
@@ -1231,7 +1246,7 @@ Due to its superior power compared to the ARM7, the ARM9 is the main processor a
 </p>
 
 <p>
-The ARM9 uses two built-in caches, one for the instructions (ITCM, 32 kilobytes), the other for the data (DTCM, 16 kilobytes). Each is accessed thanks to a dedicated 32-bit wide bus. Both are caching accesses to the main memory and increase the ARM9 performances a lot, at the expense of a small additional level of complexity: as neither the ARM7 nor the DMA circuits are aware of these two caches, care must be taken not to create inconsistencies with their view and the one of the ARM9.
+The ARM9 uses two additional built-in caches (beyond the usual CPU L1 caches): one for the instructions (<a href="#ITCM">ITCM</a>, 32 kilobytes), the other for the data (<a href="#DTCM">DTCM</a>, 16 kilobytes). Each is accessed thanks to a dedicated 32-bit wide bus. Both are caching accesses to the main memory and increase the ARM9 performances a lot, at the expense of a small additional level of complexity: as neither the ARM7 nor the DMA circuits are aware of these two caches, care must be taken not to create inconsistencies with their view and the one of the ARM9.
 </p>
 
 <p>
@@ -1391,7 +1406,7 @@ A drawback is that, as long as the DMA transfer is running, both CPU will be loc
 </p>
 
 <p>
-Thus the ARM9 should execute from its instruction cache (ITCM) reading/writing data from its data cache (DTCM), otherwise it will be frozen, waiting for the bus. <code>dmaCopy</code> cannot access the DTCM region of the ARM9, which is where the stack is placed. 
+Thus the ARM9 should execute from its "second-level" instruction cache (ITCM) reading/writing data from/to its "second-level" data cache (DTCM), otherwise it will be frozen, waiting for the bus. <code>dmaCopy</code> cannot access the DTCM region of the ARM9, which is where the stack is placed. Thus if the source of a DMA transfer is the main RAM from the ARM9, the DTCM must be flushed beforehand. Some interference between DMA transfers and interrupt handling have been reported, when in doubt swap to <b>memcpy</b> to see whether it improves stability.
 </p>
 
 <p>
@@ -1400,7 +1415,7 @@ As for the ARM7, apparently, even when executing from its IWRAM, it will be froz
 
   </li>
   
-	<li><b>memcpy</b>: simple and usual method, yet rather efficient</li>
+	<li><b>memcpy</b>: simple and usual method, yet rather efficient (see also <code>memset</code> for setting instead of copying)</li>
 	
 	<li><b>basic 'for' loop</b>: little use for that, as previous methods are faster and offer at least the same features anyway</li>
 	
@@ -2193,7 +2208,7 @@ When developping a game, after the audio content has been secured (i.e. obtained
 </p>
 
 <p>
-After the audio content has been manipulated (cut, cleaned, and possibly run through various effects), it has to be converted, format-wise. Quality has often to be lessen, as the handheld resources are scarce. 
+After the audio content has been manipulated (cut, cleaned, and possibly run through various effects, including volume adjustment), it has to be converted, format-wise. Quality has often to be lessen, as the handheld resources are scarce. 
 </p>
 
 <p>
@@ -2239,7 +2254,7 @@ Low bitrates use less space on storage, are lighter for the memory buses and sho
 
 <h7>MP3 encoding with variable bitrate</h7>
 <p>
-Another option, if your decoder supports it, is to use variable bitrate (VBR) instead of a constant one (CBR). Adapting dynamically the actual bitrate to match the instant needs of the sound leads to still better compression/quality ratio.
+Another option, if your decoder supports it (it is the case of <a href="../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a>), is to use variable bitrate (VBR) instead of a constant one (CBR). Adapting dynamically the actual bitrate to match the instant needs of the sound leads to still better compression/quality ratio.
 </p>
 
 <p>
@@ -2247,14 +2262,14 @@ For example using VBR instead of CBR on the previous long music results in a fil
 </p>
 
 
-<p>To do so with the lame encoder, one can use the following command:
+<p>To do so with the lame encoder, one can use the following command (mono, 22.05 kHz, intermediate quality [V=5], best algorithm [q=0], with a maximum bit rate set to 128 kpbs, no lame tag):
 <center>
     <table summary="Code" style="border : none">
         <tr>
           <td>
             <div class="box">
 <code><pre>
-lame YourLongMusic.wav --verbose -m m --vbr-new -V 5 -q 0 --resample 22.05 YourLongMusic.mp3
+lame YourLongMusic.wav --verbose -m m --vbr-new -V 5 -q 0 -B 128 -t --resample 22.05 YourLongMusic.mp3
 </pre></code>
             </div>
           </td>
@@ -2265,6 +2280,10 @@ lame YourLongMusic.wav --verbose -m m --vbr-new -V 5 -q 0 --resample 22.05 YourL
 
 <p>
 Note that <code>--vbr-new</code> can be replaced by <code>--vbr-old</code> to check whether the previous algorithm is better for your sounds. Some mp3 players (ex: xmms) may have trouble to compute the actual duration of a VBR-encoded sound. The sound is not truncated, its duration is just often underestimated.
+</p>
+
+<p>
+Note also that clamping the maximum bitrate is useful, as it allows to reduce the upper bound of encoded mp3 frames. It results in fewer bytes having to be moved each time the decoder reaches the end of the frame buffer.
 </p>
 
 
@@ -5040,7 +5059,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Friday, November 30, 2007</em>
+    <em>Last update: Sunday, January 27, 2008</em>
   </center>
 </body>
 </html>
