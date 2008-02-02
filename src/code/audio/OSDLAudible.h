@@ -39,7 +39,15 @@ namespace OSDL
 		 */
 		typedef Ceylan::Sint32 PlaybackCount ;		
 		
-												
+		
+		/**
+		 * This playback count corresponds to an infinite loop, unlimited
+		 * repetitions.
+		 *
+		 */ 
+		extern OSDL_DLL const PlaybackCount Loop ;  
+				
+									
 												
 		/**
 		 * Mother class of all audible content, including sound and music.
