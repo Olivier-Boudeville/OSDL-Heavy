@@ -1,3 +1,19 @@
+/*
+ * This include order is compulsory: Ceylan.h must not be included (directly
+ * or not) before OSDLConfigForNintendoDS.h is included, because this latter
+ * set the Ceylan defines that trigger the including of CeylanFIFO.h 
+ * (necessary for OSDLCommandManager.h on the ARM9) by Ceylan.h.
+ *
+ *
+ */
+#ifdef OSDL_ARCH_NINTENDO_DS
+
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#include <nds/arm9/sound.h>		     // for libnds sound functions
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
 #include "OSDLAudio.h"
 
 
@@ -14,12 +30,6 @@
 #endif // OSDL_USES_CONFIG_H
 
 
-#if OSDL_ARCH_NINTENDO_DS
-
-#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
-#include <nds/arm9/sound.h>		     // for libnds sound functions
-
-#endif // OSDL_ARCH_NINTENDO_DS
 
 
 #if OSDL_USES_SDL
@@ -330,7 +340,7 @@ AudioModule::AudioModule() throw( AudioException ):
 	
 #elif defined(OSDL_RUNS_ON_ARM9)
 
-	// Nothing special to initialize on the ARM9.
+	CommandManager::GetCommandManager().enableMusicSupport() ;
 
 #endif // OSDL_RUNS_ON_ARM7
 
@@ -1125,7 +1135,7 @@ void AudioModule::onMusicPlaybackFinished() throw( AudioException )
 	/*
 	 * Does nothing on purpose, meant to be overriden.
 	 *
-	 * @note Nevercall SDL_Mixer functions, nor SDL_LockAudio, from a callback
+	 * @note Never call SDL_Mixer functions, nor SDL_LockAudio, from a callback
 	 * function.
 	 *
 	 */
