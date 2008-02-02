@@ -3,10 +3,11 @@
 
 
 
-#include "OSDLException.h"  // for OSDL::Exception
+#include "OSDLAudioCommon.h" // for BufferSize       
+#include "OSDLException.h"   // for OSDL::Exception
 
 
-#include "Ceylan.h"         // for inheritance
+#include "Ceylan.h"          // for inheritance
 
 #include <string>
 
@@ -35,9 +36,56 @@ namespace OSDL
 	 		 
 			virtual ~CommandException() throw() ; 
 	} ;
+	
+	
+	// Defined afterwards.
+	class CommandManager ;
+	
 		
-		
-		
+	/**
+	 * Persistant settings about the command manager, not related to a 
+	 * particular music.
+     *
+     * @note References to buffers point towards the internal buffers of
+     * the command manager.
+     *
+     */
+    struct CommandManagerSettings
+    {
+
+    	/**
+    	 * Actual sample buffers are managed directly by the command manager
+    	 * so that if no music is played, no memory is reserved, but the
+    	 * first played music will trigger the buffer reservation, once for
+    	 * all.
+    	 *
+    	 */
+
+    	/// Pointer to the shared command manager (cache).
+    	CommandManager * _commandManager ;
+
+
+    	/// The size of a (simple) CommandManager buffer, in bytes:
+    	Audio::BufferSize _bufferSize ;
+
+
+    	/**
+    	 * The actual double sound buffer, two simple buffers, one after the
+    	 * other (so the first half buffer has the same address as this
+    	 * double one).
+    	 *
+    	 * @note Pointer to the internal buffer of the CommandManager.
+    	 *
+    	 */
+    	Ceylan::Byte * _doubleBuffer ;
+
+
+    	/// The address of the second buffer:
+    	Ceylan::Byte * _secondBuffer ;
+
+    } ;
+
+	
 			
 	/**
 	 * IPC-based command manager, between the two ARMs of the Nintendo DS.
@@ -83,6 +131,43 @@ namespace OSDL
 				throw( CommandException ) ;
 			
 			
+			
+			/**
+			 * Allocates the adequate memory for music playback, and creates
+			 * a shared structure to expose settings needed by musics.
+			 *
+			 */
+			virtual void enableMusicSupport() throw( CommandException ) ;
+			
+			
+			/**
+			 * Deallocates the memory dedicated to music playback, and
+			 * deallocates the shared structure to expose settings needed by
+			 * musics.
+			 *
+			 */
+			virtual void disableMusicSupport() throw( CommandException ) ;
+			
+			
+			
+			/**
+			 * Returns the size of an internal (simple) buffer for music, in
+			 * bytes.
+			 *
+			 */
+			virtual Audio::BufferSize getMusicBufferSize() const throw() ;
+
+
+			/**
+			 * Returns the address of internal double buffer for music.
+			 *
+			 * @throw CommandException if no buffer is available.
+			 *
+			 */
+			virtual Ceylan::Byte * getMusicBuffer() const
+				throw( CommandException ) ;
+
+
 			/**
 			 * Requests the ARM7 to play the specified music at once.
 			 *
@@ -97,6 +182,7 @@ namespace OSDL
 				throw( CommandException ) ;
 			
 			
+			
 			/**
 			 * Requests the ARM7 to stop at once any currently music being
 			 * played.
@@ -107,6 +193,26 @@ namespace OSDL
 			 */
 			virtual void stopMusic() throw( CommandException ) ;
 			
+
+
+			/**
+			 * Requests the ARM7 to pause the playback of current music 
+			 * (if any) at once.
+			 *
+			 * @note Will last until unPauseMusic or stopMusic is called.
+			 *
+			 */
+			virtual void pauseMusic() throw( CommandException ) ;
+
+			
+			/**
+			 * Requests the ARM7 to unpause the playback of current music 
+			 * (if any) at once, so that the playback resumes.
+			 *
+			 */
+			virtual void unpauseMusic() throw( CommandException ) ;
+			
+
 			
 			/**
 			 * Notifies the ARM7 that the end of encoded stream was reached
@@ -118,7 +224,17 @@ namespace OSDL
 			virtual void notifyEndOfEncodedStreamReached() 
 				throw( CommandException ) ;
 				
-				
+			
+			
+			/**
+			 * Unsets specified music if it was current, so that it is not
+			 * current anymore from this manager point of view.
+			 *
+			 */
+			virtual void unsetCurrentMusic( Audio::Music & music ) throw() ;
+			
+			
+			
 			/**
 			 * Returns an interpretation of the latest error code set by
 			 * the ARM7, taking into account OSDL error codes as well.
@@ -190,6 +306,23 @@ namespace OSDL
 			Audio::Music * _currentMusic ;
 		
 		
+			/**
+			 * The actual double sound buffer for musics, two simple buffers, 
+			 * one after the other (so the first half buffer has the same
+			 * address as this double one).
+			 *
+			 */
+			Ceylan::Byte * _doubleBuffer ;
+		
+		
+			/// The size of a (simple) buffer, in bytes:
+			Audio::BufferSize _bufferSize ;
+		
+		
+			/// The settings to share with all musics.
+			CommandManagerSettings * _settings ;
+			
+			
 			/**
 			 * Method responsible for the actual decoding and management of
 			 * an incoming command specific to OSDL.
