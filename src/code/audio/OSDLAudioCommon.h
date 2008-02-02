@@ -36,6 +36,10 @@ namespace OSDL
 				
 		} ;
 
+			
+		/// For buffer sizes, in bytes (prefer full 32-bit words, faster).
+		typedef Ceylan::Uint32 BufferSize ;
+
 
 		/**
 		 * Describes the encoding (format) of a given sample.
