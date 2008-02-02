@@ -30,13 +30,21 @@ TEST_EXEC_EXTENSION = $(TARGET_LINKER).nds
 TEST_ARM9_SOURCES = $(wildcard *.arm9.cc)
 
 
-#TEST_TARGETS = $(patsubst %.arm9.cc,%-$(TEST_PREFIX)-patched.$(TEST_EXEC_EXTENSION),$(TEST_ARM9_SOURCES))
-TEST_TARGETS = testOSDLMusic-0.5-release-patched.$(TARGET_LINKER).nds
+TEST_SUFFIX = $(TEST_PREFIX)-patched.$(TEST_EXEC_EXTENSION)
+
+#TEST_TARGETS = $(patsubst %.arm9.cc,%-$(TEST_SUFFIX),$(TEST_ARM9_SOURCES))
+#TEST_TARGETS = \
+#	getMP3Settings-$(TEST_SUFFIX)  \
+#	testOSDLMusic-$(TEST_SUFFIX)   \
+
+TEST_TARGETS = \
+	testOSDLMusic-$(TEST_SUFFIX)   \
+	
 
 # Some are patched, the others not:
 #TESTS_TO_TRANSFER = $(wildcard *.$(CURRENT_LINKER).nds)
 
-RESOURCES = OSDL.osdl.sound
+#RESOURCES = test.osdl.sound
 
 FILES_TO_TRANSFER = $(TEST_TARGETS) $(RESOURCES)
 
