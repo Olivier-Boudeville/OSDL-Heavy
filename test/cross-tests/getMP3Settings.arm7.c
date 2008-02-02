@@ -145,6 +145,9 @@ volatile Byte * sizeOffset ;
 /** Tells whether the end of the MP3 stream has been detected by the ARM9. */
 volatile bool endOfStreamDetected ;
 
+/** Tells whether the end of the MP3 stream has been detected by the ARM9. */
+volatile bool endOfLastBufferReached ;
+
 /** Tells whether the decoding encountered a fatal error. */
 volatile bool decodingInError ;
 
@@ -173,7 +176,7 @@ volatile Byte * decodePointer ;
  * (multiplied by two as 16-bit).
  *
  */
-const uint16 DecodedFrameLength = 576 * 2 ;
+const uint16 DecodedFrameLength = 576 * sizeof(uint16) ;
 
 
 /** Last channel (15) is the one reserved to music (mono) */
@@ -304,6 +307,8 @@ bool decodeNextMP3Frame()
 		 */
 		if ( ! endOfStreamDetected )
 			triggerSecondBufferRefill() ;
+		else
+			endOfLastBufferReached = true ;	
 
 		/* Go to the memmove-destination point in first buffer: */
 		readPointer = (Byte *) (readPointer - ((Byte *) destinationOffset)) ;
@@ -420,19 +425,31 @@ bool decodeNextMP3Frame()
 			
 	
 	/* Detects transition from first to second read buffer: */
-	if ( readingFirstBuffer && ( readPointer > secondBuffer ) 
-		&& ( ! endOfStreamDetected ) )
+	if ( readingFirstBuffer && ( readPointer > secondBuffer ) )
 	{	
 	
-		triggerFirstBufferRefill() ;
-		readingFirstBuffer = false ;
+		if ( endOfStreamDetected )
+		{
+	
+			endOfLastBufferReached = true ;
 		
-	}	
-
+		}
+		else
+		{	
+				
+			triggerFirstBufferRefill() ;
+			readingFirstBuffer = false ;
+		
+		}	
+		
+	}
+	
+	
 	/* Updates frame informations: */
 	MP3GetLastFrameInfo( currentDecoder, &frameInfo ) ;
 	
-	if ( counter++ % 20 == 0 )
+	/* Sends the current frame size from time to time: */
+	if ( counter++ % 11 == 0 )
 	{
 	
 		InterruptMask previous = setEnabledInterrupts( AllInterruptsDisabled ) ;
@@ -447,7 +464,7 @@ bool decodeNextMP3Frame()
 		notifyCommandToARM9() ;
 	
 	}
-
+	
 	if ( sizeof(uint16) * frameInfo.outputSamps != DecodedFrameLength )
 		setError( HelixUnexpectedDecodedLength ) ;
 	
@@ -506,6 +523,7 @@ void handlePlayMusicRequest( FIFOElement firstElement )
 	/* Set control flags: */
 	startMP3PlaybackRequested = true ;
 	endOfStreamDetected = false ;
+	endOfLastBufferReached = false ;
 	decodingInError = false ;
 	
 	/* 
@@ -517,7 +535,7 @@ void handlePlayMusicRequest( FIFOElement firstElement )
 	 *
 	 */
 	decodedBuffer = (Byte *) malloc( 
-		2 * /* MAX_NCHAN 1*/ 2 * MAX_NGRAN * MAX_NSAMP ) ;
+		2 * /* MAX_NCHAN */ 2 * MAX_NGRAN * MAX_NSAMP ) ;
 	
 	/* Starts the output at the beginning: */
 	decodePointer = decodedBuffer ;
@@ -633,7 +651,22 @@ void handleReceivedApplicationCommand( FIFOCommandID commandID,
 void initOSDL()
 {
 
+	/* Includes IPC and basic sound setup: */
 	initCeylan() ;
+
+	/* Initializes the Helix MP3 decoder: */
+	currentDecoder = MP3InitDecoder() ;
+
+	if ( currentDecoder == 0 )
+	{
+		
+		setError( HelixInitializationFailed ) ;
+		return ;
+	
+	}	
+		
+	/* Wait a bit to let sound hardware be initialized: */
+	atomicSleep() ;
 		
 }
 
@@ -705,6 +738,7 @@ void manageMP3Playback()
 	
 	/* First timer must run at twice the sample rate since 16-bit samples: */	
 	TIMER0_DATA = SOUND_FREQ( frameInfo.samprate )  ;
+	
 	TIMER0_CR = TIMER_ENABLE | TIMER_DIV_1 ;
 	
 	/*
@@ -739,13 +773,13 @@ void manageMP3Playback()
 			
 		}
 		
-	} while ( ! endOfStreamDetected && ! decodingInError ) ;
+	} while ( ! endOfLastBufferReached && ! decodingInError ) ;
 	
-	/* Wait for the playback of final buffer : */
+	/* Wait for the playback of final frame: */
 	CurrentFrameCounter = ( TIMER2_DATA + 1 ) ;
 	
 	while ( TIMER2_DATA == CurrentFrameCounter )
-		swiWaitForVBlank() ;
+		atomicSleep() ;
 	
 	/* Stop channel: */
 	SCHANNEL_CR( MusicChannel ) = 0 ;
