@@ -776,15 +776,12 @@ void manageMP3Playback()
 	int CurrentFrameCounter ;
 	int LastFrameCounter = 0 ;
 	
-	bool stopPlayback = false ;
 	
 	do 
 	{
 		
 		CurrentFrameCounter = TIMER2_DATA ;
 	
-		if ( endOfProcessingReached )
-			stopPlayback = true ;
 			
 		/*
 		 * As soon as we change of half in the output buffer, decode the other
@@ -803,7 +800,7 @@ void manageMP3Playback()
 		while ( pauseMP3PlaybackRequested )
 			atomicSleep() ;
 		
-	} while ( ! stopPlayback && ! decodingInError ) ;
+	} while ( ! endOfProcessingReached  && ! decodingInError ) ;
 	
 	if ( ! decodingInError )
 	{
@@ -819,6 +816,9 @@ void manageMP3Playback()
 	/* Stop channel: */
 	SCHANNEL_CR( MusicChannel ) = 0 ;
 	
+	TIMER0_CR = 0 ;
+	TIMER1_CR = 0 ;
+	TIMER2_CR = 0 ;
 	
 	/* Let the ARM9 be notified of the music end here: */
 	
