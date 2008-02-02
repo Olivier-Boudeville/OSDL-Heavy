@@ -61,7 +61,7 @@ const ARM9CommandID PlaySoundRequest = 33 ;
  *
  * No answer expected.
  *
- * @see StopCurrentMusic
+ * @see StopMusicRequest
  *
  */
 const ARM9CommandID PlayMusicRequest = 34 ;
@@ -76,7 +76,31 @@ const ARM9CommandID PlayMusicRequest = 34 ;
  * @see PlayMusicRequest
  *
  */
-const ARM9CommandID StopCurrentMusic = 35 ;
+const ARM9CommandID StopMusicRequest = 35 ;
+
+
+/**
+ * Request the ARM7 to pause the playback of current music.
+ *
+ * No parameters set in the command element, no other element sent, no answer
+ * expected.
+ *
+ * @see UnpauseMusicRequest
+ *
+ */
+const ARM9CommandID PauseMusicRequest = 36 ;
+
+
+/**
+ * Request the ARM7 to unpause the playback of current music.
+ *
+ * No parameters set in the command element, no other element sent, no answer
+ * expected.
+ *
+ * @see PauseMusicRequest
+ *
+ */
+const ARM9CommandID UnpauseMusicRequest = 37 ;
 
 
 /**
@@ -87,7 +111,7 @@ const ARM9CommandID StopCurrentMusic = 35 ;
  * expected.
  *
  */
-const ARM9CommandID EndOfEncodedStreamReached = 36 ;
+const ARM9CommandID EndOfEncodedStreamReached = 38 ;
 
 
 /**
@@ -100,7 +124,7 @@ const ARM9CommandID EndOfEncodedStreamReached = 36 ;
  * @see FirstBufferFillRequest
  *
  */
-//const ARM9CommandID FirstBufferFilled = 36 ;
+//const ARM9CommandID FirstBufferFilled = ;
 
 
 /**
@@ -113,7 +137,7 @@ const ARM9CommandID EndOfEncodedStreamReached = 36 ;
  * @see SecondBufferFillRequest
  *
  */
-//const ARM9CommandID SecondBufferFilled = 37 ;
+//const ARM9CommandID SecondBufferFilled = ;
 
 
 
