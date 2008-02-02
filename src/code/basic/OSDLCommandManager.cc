@@ -26,6 +26,9 @@
  */
 #include "OSDLIPCCommands.h"         
 
+#include "OSDLARM7Codes.h"           // for Helix error codes
+
+
 
 using namespace OSDL ;
 using namespace OSDL::Audio ;
@@ -58,13 +61,18 @@ CommandException::~CommandException() throw()
 
 CommandManager::CommandManager() throw( CommandException ):
 	FIFO(),
-	_currentMusic(0)
+	_currentMusic(0),
+	_doubleBuffer(0),
+	_bufferSize(4096 * 2),
+	_settings(0)
 {
-
 
 #if OSDL_ARCH_NINTENDO_DS
 
 #ifdef OSDL_RUNS_ON_ARM9
+
+	// _bufferSize could be optimized according to libfat cache size.
+	enableMusicSupport() ;
 	
 	if ( _IPCManager != 0 )
 		throw CommandException( "CommandManager constructor failed: "
@@ -99,6 +107,8 @@ CommandManager::~CommandManager() throw()
 
 	// _currentMusic not to be managed by the command manager (cached value).
 	
+	disableMusicSupport() ;
+		
 }
 
 
@@ -186,10 +196,111 @@ void CommandManager::playSound( Audio::Sound & sound ) throw( CommandException )
 
 
 
-void CommandManager::playMusic( Audio::Music & music ) throw( CommandException )
+void CommandManager::enableMusicSupport() throw( CommandException )
 {
 
-	// @fixme: on music end notification, make it ready to be reloaded
+#if OSDL_ARCH_NINTENDO_DS
+
+#ifdef OSDL_RUNS_ON_ARM9
+	
+	// Force music buffer to match the boundaries of ARM9 cache line:		
+	_doubleBuffer = CacheProtectedNew( _bufferSize * 2 ) ;
+
+	_settings = new CommandManagerSettings() ;
+
+	_settings->_commandManager = this ; 
+	_settings->_bufferSize = _bufferSize ; 
+	_settings->_doubleBuffer = _doubleBuffer ; 
+	_settings->_secondBuffer = _doubleBuffer + _bufferSize ; 
+	
+	Music::SetCommandManagerSettings( *_settings ) ;
+	
+#else // OSDL_RUNS_ON_ARM9
+
+	throw CommandException( "CommandManager::enableMusicSupport failed: "
+		"not available on the ARM7." ) ;
+
+#endif // OSDL_RUNS_ON_ARM9
+		
+		
+#else // OSDL_ARCH_NINTENDO_DS
+
+	throw CommandException( "CommandManager::enableMusicSupport failed: "
+		"not available on this platform." ) ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+}
+
+
+
+void CommandManager::disableMusicSupport() throw( CommandException )
+{
+
+#if OSDL_ARCH_NINTENDO_DS
+
+#ifdef OSDL_RUNS_ON_ARM9
+	
+	if ( _doubleBuffer != 0 )
+	{
+		
+		CacheProtectedDelete( _doubleBuffer ) ;
+		_doubleBuffer = 0 ;
+	
+	}	
+
+	if ( _settings != 0 )
+	{
+	
+		delete _settings ;
+		_settings = 0 ;
+		
+	}
+	
+#else // OSDL_RUNS_ON_ARM9
+
+	throw CommandException( "CommandManager::disableMusicSupport failed: "
+		"not available on the ARM7." ) ;
+
+#endif // OSDL_RUNS_ON_ARM9
+		
+		
+#else // OSDL_ARCH_NINTENDO_DS
+
+	throw CommandException( "CommandManager::disableMusicSupport failed: "
+		"not available on this platform." ) ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+}
+
+
+
+BufferSize CommandManager::getMusicBufferSize() const throw()
+{
+
+	return _bufferSize ;
+	
+}
+
+
+
+Ceylan::Byte * CommandManager::getMusicBuffer() const 
+	throw( CommandException )
+{
+
+	if ( _doubleBuffer == 0 )
+		throw CommandException( "CommandManager::getMusicBuffer failed: "
+			"no available buffer." ) ;
+			
+	return _doubleBuffer ;
+	
+}
+
+
+
+void CommandManager::playMusic( Audio::Music & music ) throw( CommandException )
+{
 			
 #if OSDL_ARCH_NINTENDO_DS
 
@@ -205,7 +316,6 @@ void CommandManager::playMusic( Audio::Music & music ) throw( CommandException )
 	LowLevelMusic & actualMusic = music.getContent() ;
 
 	/*
-	 *
 	 * A boolean parameter is set in the command element: its last bit tells
 	 * whether the playback should start from first buffer (if 1) or from
 	 * second (if 0).
@@ -221,12 +331,10 @@ void CommandManager::playMusic( Audio::Music & music ) throw( CommandException )
 	writeBlocking( ( commandElement | 0x00000001 ) ) ;
 
 	// Specifies to the ARM7 the address of encoded double buffer:
-	writeBlocking( 
-		reinterpret_cast<FIFOElement>( actualMusic._doubleBuffer ) ) ;
+	writeBlocking( reinterpret_cast<FIFOElement>( _doubleBuffer ) ) ;
 
 	// Sends the size of a half buffer and the one of the 'delta zone':
-	writeBlocking( (FIFOElement) ( 
-		( ( (Ceylan::Uint16) actualMusic._bufferSize ) << 16 ) 
+	writeBlocking( (FIFOElement) ( ( ( (Ceylan::Uint16) _bufferSize ) << 16 ) 
 			| ( (Ceylan::Uint16) actualMusic._frameSizeUpperBound ) ) ) ;
 
 	SetEnabledInterrupts( previous ) ;
@@ -264,18 +372,22 @@ void CommandManager::stopMusic() throw( CommandException )
 #if OSDL_ARCH_NINTENDO_DS
 
 #ifdef OSDL_RUNS_ON_ARM9
-
-	// Counterpart of the reference value, Music::_CurrentMusic:
 	
 	// Anything to stop ?
 	if ( _currentMusic == 0 )
 		return ;	
 
-	// @fixme send IPC stop
-	//Music * toStop = _currentMusic ;
-	//toStop->onNoMoreCurrent() ;
-	_currentMusic = 0 ;
+	_currentMusic->manageNoMoreCurrent() ;
+
+	InterruptMask previous = SetEnabledInterrupts( AllInterruptsDisabled ) ;
+	 
+	writeBlocking( prepareFIFOCommand( StopMusicRequest ) ) ;
+
+	SetEnabledInterrupts( previous ) ;
 	
+	notifyCommandToARM7() ;
+		
+	_currentMusic = 0 ;
 	
 #else // OSDL_RUNS_ON_ARM9
 
@@ -294,6 +406,82 @@ void CommandManager::stopMusic() throw( CommandException )
 	
 }
 
+
+
+void CommandManager::pauseMusic() throw( CommandException )
+{
+
+#if OSDL_ARCH_NINTENDO_DS
+
+#ifdef OSDL_RUNS_ON_ARM9
+	
+	// Anything to pause ?
+	if ( _currentMusic == 0 )
+		return ;	
+
+	InterruptMask previous = SetEnabledInterrupts( AllInterruptsDisabled ) ;
+	 
+	writeBlocking( prepareFIFOCommand( PauseMusicRequest ) ) ;
+
+	SetEnabledInterrupts( previous ) ;
+	
+	notifyCommandToARM7() ;
+			
+#else // OSDL_RUNS_ON_ARM9
+
+	throw CommandException( "CommandManager::pauseMusic failed: "
+		"not available on the ARM7." ) ;
+
+#endif // OSDL_RUNS_ON_ARM9
+		
+		
+#else // OSDL_ARCH_NINTENDO_DS
+
+	throw CommandException( "CommandManager::pauseMusic failed: "
+		"not available on this platform." ) ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+}
+
+
+				
+void CommandManager::unpauseMusic() throw( CommandException )
+{
+
+#if OSDL_ARCH_NINTENDO_DS
+
+#ifdef OSDL_RUNS_ON_ARM9
+	
+	// Anything to resume ?
+	if ( _currentMusic == 0 )
+		return ;	
+
+	InterruptMask previous = SetEnabledInterrupts( AllInterruptsDisabled ) ;
+	 
+	writeBlocking( prepareFIFOCommand( UnpauseMusicRequest ) ) ;
+
+	SetEnabledInterrupts( previous ) ;
+	
+	notifyCommandToARM7() ;
+			
+#else // OSDL_RUNS_ON_ARM9
+
+	throw CommandException( "CommandManager::unpauseMusic failed: "
+		"not available on the ARM7." ) ;
+
+#endif // OSDL_RUNS_ON_ARM9
+		
+		
+#else // OSDL_ARCH_NINTENDO_DS
+
+	throw CommandException( "CommandManager::unpauseMusic failed: "
+		"not available on this platform." ) ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+}
+								
 
 
 void CommandManager::notifyEndOfEncodedStreamReached() throw( CommandException )
@@ -330,6 +518,16 @@ void CommandManager::notifyEndOfEncodedStreamReached() throw( CommandException )
 
 
 
+void CommandManager::unsetCurrentMusic( Music & music ) throw()
+{
+
+	if ( _currentMusic == &music )
+		_currentMusic = 0 ;
+		
+}
+
+
+
 string CommandManager::interpretLastARM7ErrorCode() throw()
 {
 
@@ -341,7 +539,41 @@ string CommandManager::interpretLastARM7ErrorCode() throw()
 	
 	switch( error )
 	{
+
+		case HelixInitializationFailed:
+			return "Helix initialization failed "
+				"(most probably not enough memory available on the ARM7)" ;
+			break ;
+
+		case HelixSyncWordNotFound:
+			return "Helix decoder could not find "
+				"the next sync word in the mp3 stream" ;
+			break ;
 			
+		case HelixFoundTruncatedFrame:
+			return "Helix decoder is out of data, "
+				"found a truncated or last frame in the mp3 stream" ;
+			break ;
+			
+		case HelixLacksDataInBitReservoir:
+			return "Helix decoder does not have enough data "
+				"in bit reservoir from previous frames" ;
+			break ;
+			
+		case HelixLacksFreeBitrateSlot:
+			return "Helix decoder lacks a free bitrate slot" ;
+			break ;
+			
+		case HelixDecodingError:
+			return "Helix decoding failed" ;
+			break ;
+			
+		case HelixUnexpectedDecodedLength:
+			return 
+				"Helix decoder found a decoded mp3 frame "
+				"with an unexpected length" ;
+			break ;
+						
 		default:
 			return "unexpected OSDL ARM7 error code (" 
 				+ Ceylan::toString( error ) + ")" ;
@@ -425,6 +657,7 @@ void CommandManager::handleReceivedIntegratingLibrarySpecificCommand(
 		case NoAvailableChannelNotification:
 			LogPlug::warning( 
 				"No more free sound channel, playback cancelled" ) ;
+			_currentMusic->managePlaybackEnded() ;
 			break ;
 		
 		/*
@@ -486,10 +719,14 @@ void CommandManager::handleReceivedIntegratingLibrarySpecificCommand(
 			break ;
 		
 		case MusicEndedNotification:
-			LogPlug::debug( "Music ended, minimum whole frame length was "
-				+ Ceylan::toString( readBlocking() ) + " bytes, maximum was "
-				+ Ceylan::toString( readBlocking() ) + " bytes." ) ;
-			_currentMusic->onPlaybackEnded() ;
+			LogPlug::debug( "Music ended." ) ;
+			if ( _currentMusic != 0 )
+				_currentMusic->managePlaybackEnded() ;
+			else 
+				LogPlug::error( 
+			"CommandManager::handleReceivedIntegratingLibrarySpecificCommand "
+			"failed: notification of end of music received, but there is "
+			"no current music" ) ;
 			break ;
 			
 		case MusicFrameInformation:
