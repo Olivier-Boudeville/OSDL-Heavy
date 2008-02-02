@@ -35,21 +35,20 @@ namespace OSDL
 	
 	// Forward-declaration for friend declaration.	
 	class CommandManager ;
-	 
+	
+	class CommandManagerSettings ;
+	
 	 
 	namespace Audio 
 	{
 
-			
-		/// For buffer sizes, in bytes (prefer full 32-bit words, faster).
-		typedef Ceylan::Uint32 BufferSize ;
 
 
 #if ! defined(OSDL_USES_SDL_MIXER) || OSDL_USES_SDL_MIXER 
 
 		/// Low-level music being used internally.
 		typedef ::_Mix_Music LowLevelMusic ;
-		
+				
 #else // OSDL_USES_SDL_MIXER	
 
 		
@@ -62,6 +61,7 @@ namespace OSDL
 		
 			// Music-specific section.
 		
+			
 			/// The file from which music samples will be streamed:
 			Ceylan::System::File * _musicFile ;
 			
@@ -85,28 +85,15 @@ namespace OSDL
 			
 			// Buffer-specific section.
 
-			/// The size of a (simple) buffer, in bytes:
-			BufferSize _bufferSize ;
-			
+
 			/// The smallest upper bound chosen to a MP3 frame size.
 			BufferSize _frameSizeUpperBound ;
 			
-			
-			/**
-			 * The actual double sound buffer, two simple buffers, one after the
-			 * other (so the first half buffer has the same address as this
-			 * double one)
-			 *
-			 */
-			Ceylan::Byte * _doubleBuffer ;
 		
 		
 			/// Tells whether the filling of first buffer has been requested.
 			bool _requestFillOfFirstBuffer ;
-			
-			/// Tells how many bytes can be read from first buffer.
-			BufferSize _availableInFirst ;
-			
+						
 			/*
 			 * Precomputes the start of the first buffer, after the delta 
 			 * zone.
@@ -118,17 +105,21 @@ namespace OSDL
 			BufferSize _firstActualRefillSize ;
 			
 			
-			/// The address of the second buffer:
-			Ceylan::Byte * _secondBuffer ;
-
 			/// Tells whether the filling of second buffer has been requested.
 			bool _requestFillOfSecondBuffer ;
-		
-			/// Tells how many bytes can be read from second buffer.
-			BufferSize _availableInSecond ;
+				
+					
+			/**
+			 * The number of times this music should be played, in [0..127].
+			 * (-1: infinite).
+			 *
+			 */
+			PlaybackCount _playbackCount ;
 			
 			
 		} ;
+		
+		
 
 #endif // OSDL_USES_SDL_MIXER
 
@@ -251,6 +242,19 @@ namespace OSDL
 		} ;
 	
 		
+		/**
+		 * Bitrate types, for formats that use them (ex: MP3).
+		 *
+		 */
+		typedef Ceylan::Uint8 BitrateType ;
+		 
+		 
+		// For constant bitrate: 
+		extern OSDL_DLL const BitrateType CBR ;  
+		
+		// For variable bitrate: 
+		extern OSDL_DLL const BitrateType VBR ;  
+
 												
 		/**
 		 * Music is continuous audible content, as opposed to sound.  
@@ -405,6 +409,9 @@ namespace OSDL
 				/**
 				 * Plays this music instance at once.
 				 *
+				 * Returns immediately, the playback taking place on the
+				 * background.
+				 *
 				 * The previous music will be halted, or, if fading out, this
 				 * music waits (blocking) for the previous to finish.
 				 *
@@ -432,6 +439,10 @@ namespace OSDL
 		
 				/**
 				 * Plays this music instance at once.
+				 *
+				 * Returns immediately, the playback taking place on the
+				 * background.
+				 *
 				 * The previous music will be halted, or, if fading out, this
 				 * music waits (blocking) for the previous to finish.
 				 *
@@ -461,6 +472,10 @@ namespace OSDL
 				 * Plays this music instance at once from specified position.
 				 * The previous music will be halted, or, if fading out, this
 				 * music waits (blocking) for the previous to finish.
+				 *
+				 * Returns immediately, the playback taking place on the
+				 * background.
+				 *
 				 *
 				 * @param fadeInMaxDuration duration in milliseconds during
 				 * which the fade-in effect should take to go from silence to
@@ -523,7 +538,7 @@ namespace OSDL
 				 * if not supported.
 				 *
 				 */
-				virtual void resume() throw( MusicException ) ; 
+				virtual void unpause() throw( MusicException ) ; 
 		
 		
 		
@@ -563,7 +578,7 @@ namespace OSDL
 		
 		
 				/** 
-				 * Halt playback of music.
+				 * Halts playback of music.
 				 * This interrupts music fader effects. 
 				 *
 				 * @note Audio::onMusicPlaybackFinished will be automatically
@@ -574,7 +589,7 @@ namespace OSDL
 				 * if not supported.
 				 *
 				 */
-				virtual void halt() throw( MusicException ) ; 
+				virtual void stop() throw( MusicException ) ; 
 
 				
 				/** 
@@ -599,38 +614,7 @@ namespace OSDL
 					throw( MusicException ) ; 
 
 				
-				/**
-				 * Sets this music as the current one. 
-				 *
-				 * Any already current music will be replaced immediately, and
-				 * be notified of it.
-				 *
-				 * @see onNoMoreCurrent
-				 *
-				 */
-				virtual void setAsCurrent() throw( AudioException ) ;
-
-			
-				/**
-				 * Sets a corresponding flag in this music instance to notify
-				 * the main loop the first buffer should be refilled.
-				 *
-				 * Called by the CommandManager from an IRQ.
-				 *
-				 */
-				virtual void requestFillOfFirstBuffer() throw() ;
-				
-				
-				/**
-				 * Sets a corresponding flag in this music instance to notify
-				 * the main loop the second buffer should be refilled.
-				 *
-				 * Called by the CommandManager from an IRQ.
-				 *
-				 */
-				virtual void requestFillOfSecondBuffer() throw() ;
-				
-								
+	
 				 
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -649,6 +633,14 @@ namespace OSDL
 					const throw() ;
 			
 			
+				/**
+				 * Sets the shared command manager settings for musics.
+				 *
+				 */
+				static void SetCommandManagerSettings( 
+					const CommandManagerSettings & settings ) throw() ;
+				
+				
 				/**
 				 * Manages the current music, including regarding the refilling
 				 * of buffers.
@@ -684,6 +676,18 @@ namespace OSDL
 				static std::string DescribeMusicType( MusicType type )
 					throw( AudioException ) ;
 					
+					
+				/**
+				 * Returns a textual description of the specified bitrate type.
+				 *
+				 * @throw AudioException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				static std::string DescribeBitrateType( BitrateType type )
+					throw( AudioException ) ;
+					
+			
 			
 			
 			protected:
@@ -691,8 +695,17 @@ namespace OSDL
 			
 				/// Tells whether this music is being played.
 				bool _isPlaying ;
-								
-			
+				
+				/**
+				 * Shared settings about the command manager, used by all
+				 * musics, and initialized at the command manager creation.
+				 *
+				 * The command manager owns these data.
+				 *
+				 */				
+				static const CommandManagerSettings * _CommandManagerSettings ;
+				
+				
 				/// The music currently being played (if any).
 				static Music * _CurrentMusic ;
 				
@@ -702,19 +715,43 @@ namespace OSDL
 				 * Callback automatically called whenever the playback of this
 				 * music is over.
 				 *
-				 * @note Made to be overriden.
+				 * @note Will be called each time the music ends, including if
+				 * multiple playbacks in a row were requested. 
+				 * Ex: called 3 times if requested play count is 3.
+				 *
+				 * @note Made to be overriden, this default implementation does
+				 * nothing except logging the call.
 				 *
 				 * @throw AudioException if the operation failed.
+				 *
+				 * @seemanagePlaybackEnded
 				 *
 				 */
 				virtual void onPlaybackEnded() throw( AudioException ) ;
 				
 				
 				/**
+				 * Manages the notification of a playback end, notably regarding
+				 * play count.
+				 *
+				 * Called by the Command Manager.
+				 * Calls the possibly user-overriden onPlaybackEnded.
+				 *
+				 */
+				virtual void managePlaybackEnded() throw( AudioException ) ;
+
+				
+				
+				/**
 				 * Callback automatically called whenever this music was the
 				 * current one, but it is not anymore.
 				 *
-				 * @note Made to be overriden.
+				 * When playing a music more than once, it always remains 
+				 * current during the whole playback (current status not
+				 * toggled when stopping and restarting).
+				 *
+				 * @note Made to be overriden, this default implementation does
+				 * nothing except logging the call.
 				 *
 				 * @throw AudioException if the operation failed.
 				 *
@@ -722,7 +759,19 @@ namespace OSDL
 				 *
 				 */
 				virtual void onNoMoreCurrent() throw( AudioException ) ;
+
 				
+				/**
+				 * Manages the notification that a music is not current 
+				 * anymore.
+				 *
+				 * Called by the Command Manager.
+				 * Calls the possibly user-overriden onNoMoreCurrent.
+				 *
+				 */
+				virtual void manageNoMoreCurrent() throw( AudioException ) ;
+
+					
 				
 				/**
 				 * Triggers any buffer refill, if necessary.
@@ -754,11 +803,52 @@ namespace OSDL
 				 */
 				void fillSecondBuffer() throw( AudioException ) ; 
 				
+
+				/**
+				 * Sets this music as the current one. 
+				 *
+				 * Any already current music will be replaced immediately, and
+				 * be notified of it.
+				 *
+				 * @see onNoMoreCurrent
+				 *
+				 * @note Used by the Command Manager thanks to the friend
+				 * declaration.
+				 *
+				 */
+				virtual void setAsCurrent() throw( AudioException ) ;
+
+			
+				/**
+				 * Sets a corresponding flag in this music instance to notify
+				 * the main loop the first buffer should be refilled.
+				 *
+				 * Called by the CommandManager from an IRQ.
+				 *
+				 * @note Used by the Command Manager thanks to the friend
+				 * declaration.
+				 *
+				 */
+				virtual void requestFillOfFirstBuffer() throw() ;
+				
+				
+				/**
+				 * Sets a corresponding flag in this music instance to notify
+				 * the main loop the second buffer should be refilled.
+				 *
+				 * Called by the CommandManager from an IRQ.
+				 *
+				 * @note Used by the Command Manager thanks to the friend
+				 * declaration.
+				 *
+				 */
+				virtual void requestFillOfSecondBuffer() throw() ;
+				
 						
 				
 				/**
 				 * The internal low level music is defined through the
-				 * template.
+				 * Ceylan::LoadableWithContent<LowLevelMusic> template.
 				 *
 				 */
 				
