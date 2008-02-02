@@ -20,8 +20,27 @@ using namespace Ceylan::System ;
 typedef Ceylan::Uint32 BufferSize ;
 
 
+
 /**
- * Double-buffered music.
+ * This program reads vanilla mp3 files, whereas all other OSDL programs read
+ * OSDL.music files, i.e. mp3 files with an OSDL header.
+ *
+ * The purpose of this program is to determine the best decoding settings of 
+ * a given mp3 file so that its playback by OSDL uses as few resources as 
+ * possible.
+ *
+ * As such it has to use its own routines, not the OSDL ones.
+ *
+ * To use it, just put at the root of your removable card the mp3 file whose
+ * settings have to be determined, renamed as 'test.mp3', and run this program.
+ * The mp3 will be played-back from start to end, then the settings will be
+ * displayed. Next step would then be to run the tools/media/mp3ToOSDLMusic.exe
+ * tool to generate the appropriate *.osdl.music file.
+ *
+ */
+ 
+ 
+/*
  * 
  * @note taken from OSDLMusic.h
  */
@@ -69,8 +88,9 @@ struct LowLevelMusic
 	Ceylan::Byte * _doubleBuffer ;
 
 	
-	/// Tells how many bytes can be read from first buffer.
-	BufferSize _availableInFirst ;
+	/// Tells whether the filling of first buffer has been requested.
+	volatile bool _requestFillOfFirstBuffer ;
+
 	
 	/*
 	 * Precomputes the start of the first buffer, after the delta 
@@ -86,23 +106,24 @@ struct LowLevelMusic
 	/// The address of the second buffer:
 	Ceylan::Byte * _secondBuffer ;
 
-
-	/// Tells how many bytes can be read from second buffer.
-	BufferSize _availableInSecond ;
+	/// Tells whether the filling of second buffer has been requested.
+	volatile bool _requestFillOfSecondBuffer ;
 	
 	
 } ;
 
 
-
-const FIFOCommandID PlayMusicRequest = 34 ;
+// From ARM9:
+const FIFOCommandID PlayMusicRequest          = 34 ;
 const FIFOCommandID EndOfEncodedStreamReached = 36 ;
+
 	
+// From ARM7:	
 const FIFOCommandID NoAvailableChannelNotification = 33 ;
-const FIFOCommandID FirstBufferFillRequest = 34 ;
-const FIFOCommandID SecondBufferFillRequest = 35 ;
-const FIFOCommandID MusicEndedNotification = 36 ;
-const FIFOCommandID MusicFrameInformation = 37 ;
+const FIFOCommandID FirstBufferFillRequest         = 34 ;
+const FIFOCommandID SecondBufferFillRequest        = 35 ;
+const FIFOCommandID MusicEndedNotification         = 36 ;
+const FIFOCommandID MusicFrameInformation          = 37 ;
 
 
 
@@ -120,9 +141,7 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 	  SimplifiedCommandManager() throw( FIFOException ):
 		FIFO(),
 	  	_isPlaying(false),
-		_requestFillOfFirstBuffer( true ),
-		_requestFillOfSecondBuffer( true )
-		
+		_message()
 	  {
 	
 	  }
@@ -160,12 +179,19 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 	  {
 	
 		  _music = & actualMusic ;
-		  
-		  // Fill the two buffers:
-		  manageBuffers() ;
-		  
+
 		  _isPlaying = true ;
 		  
+		  // Fill only the first buffer:
+		  _music->_requestFillOfFirstBuffer  = true  ;
+		  _music->_requestFillOfSecondBuffer = false  ;
+		  
+		  // Fill the first buffer:
+		  manageBuffers() ;
+		  
+		  // Plan second refill:
+		  _music->_requestFillOfSecondBuffer = true  ;
+		   
 		   
 	      InterruptMask previous = 
 		  	SetEnabledInterrupts( AllInterruptsDisabled ) ;
@@ -182,7 +208,7 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 	       * bits).
 	       *
 	       */
-	      FIFOElement commandElement = prepareFIFOCommand( PlayMusicRequest ) ;
+		  FIFOElement commandElement = prepareFIFOCommand( PlayMusicRequest ) ;
 
 	      // Uses last bit to tell to start with first buffer:
 	      writeBlocking( ( commandElement | 0x00000001 ) ) ;
@@ -216,12 +242,12 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 		try
 	    {
 
-		  if ( _requestFillOfFirstBuffer )
+		  if ( _music->_requestFillOfFirstBuffer )
 		  {
 	
-			  LogPlug::trace( "Filling first buffer." ) ;
+			  //LogPlug::trace( "Filling first buffer." ) ;
 			  
-		      _requestFillOfFirstBuffer = false ;
+		      _music-> _requestFillOfFirstBuffer = false ;
 
 			  /*
 			  LogPlug::trace( "manageBuffers: Attempting to read " 
@@ -250,25 +276,32 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 			      ::memset(
 			    	  /* start */ _music->_startAfterDelta + readSize,
 			    	  /* filler */ 0,
-			    	  /* length */ _music->_bufferSize - (BufferSize)
-			    		  ( _music->_startAfterDelta + readSize )
-			      ) ;
+			    	  /* length */ _music->_bufferSize 
+					  	- _music->_frameSizeUpperBound - readSize ) ;
+				  
 	
 			      // Flush the ARM9 data cache for the ARM7 (full first buffer):
 			      DC_FlushRange( (void*) _music->_startAfterDelta,
-			    	  _music->_firstActualRefillSize  ) ;
+			    	  _music->_firstActualRefillSize ) ;
 	
+			      InterruptMask previous = 
+				  	SetEnabledInterrupts( AllInterruptsDisabled ) ;
+					
 				  // Notify the ARM7 that the end of encoded data was reached:
 				  writeBlocking( prepareFIFOCommand( 
 						EndOfEncodedStreamReached ) ) ; 
 	
+		     	  SetEnabledInterrupts( previous ) ;
+				  
 				  notifyCommandToARM7() ;	
+				  
+				  //LogPlug::trace( "Padding first buffer ok." ) ;
 				  
 			  }			  
 			  else
 			  {
 	
-				  LogPlug::trace( "Flushing." ) ;
+				  //LogPlug::trace( "Flushing." ) ;
 				  
 			      /*
 				   * Full or encoded data, flush the ARM9 data cache for the
@@ -283,12 +316,12 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 		  }
 	
 	
-		  if ( _requestFillOfSecondBuffer )
+		  if (  _music->_requestFillOfSecondBuffer )
 		  {
 	
-			  LogPlug::trace( "Filling second buffer." ) ;
+			  //LogPlug::trace( "Filling second buffer." ) ;
 			  
-		      _requestFillOfSecondBuffer = false ;
+		       _music->_requestFillOfSecondBuffer = false ;
 			  
 	    	  /*
 	    	   * Start at the half of double buffer to its end:
@@ -315,11 +348,16 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 	
 	    		  // Flush the ARM9 data cache for the ARM7:
 	    		  DC_FlushRange( (void*) _music->_secondBuffer, 
-				  	_music->_bufferSize  ) ;
+				  	_music->_bufferSize ) ;
+
+			      InterruptMask previous = 
+				  	SetEnabledInterrupts( AllInterruptsDisabled ) ;
 
 				  // Notify the ARM7 that the end of encoded data was reached:
-				  writeBlocking( prepareFIFOCommand( 
-						EndOfEncodedStreamReached ) ) ; 
+				  writeBlocking( 
+						prepareFIFOCommand( EndOfEncodedStreamReached ) ) ; 
+	
+	     		  SetEnabledInterrupts( previous ) ;
 	
 				  notifyCommandToARM7() ;	
 	
@@ -329,7 +367,7 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 				  
 	    		  // Flush the ARM9 data cache for the ARM7:
 	    		  DC_FlushRange( (void*) _music->_secondBuffer, 
-				  	_music->_bufferSize  ) ;
+				  	_music->_bufferSize ) ;
 	
 	    	  }
 	
@@ -369,27 +407,34 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 			 */
 	
 			case FirstBufferFillRequest:
-				_requestFillOfFirstBuffer = true ;
+				_music->_requestFillOfFirstBuffer = true ;
 				break ;
 	
 			case SecondBufferFillRequest:
-				_requestFillOfSecondBuffer = true ;
+				_music->_requestFillOfSecondBuffer = true ;
 				break ;
 	
 			case MusicEndedNotification:
-				LogPlug::info( "Music ended, minimum whole frame length was "
+				_isPlaying = false ;	
+				_message = "Music ended, minimum whole frame length was " 
 					+ Ceylan::toString( readBlocking() ) 
 					+ " bytes, maximum was "
 					+ Ceylan::toString( readBlocking() ) + " bytes "
-					"(this number can be given to mp3ToOSDLMusic.exe)."	) ;
+					"(this last number can be given to mp3ToOSDLMusic.exe)." ;
 				break ;
 	
 			case MusicFrameInformation:
-				LogPlug::debug( "Music frame informations: "
-					+ Ceylan::toString( firstElement & 0x0000ffff )
-					+ " output samples, "
-					+ Ceylan::toString( readBlocking() ) + " bytes read." ) ;
-				_isPlaying = false ;
+				if ( firstElement & 0x0000ffff != 576 )
+					_message = "MP3 frame output an unexpected number "
+						"of sample: "
+						+ Ceylan::toString( firstElement & 0x0000ffff )
+						+ " samples, with "
+						+ Ceylan::toString( readBlocking() ) 
+						+ " bytes read." ;
+				else
+					_message = "MP3 frame: "
+						+ Ceylan::toString( readBlocking() ) 
+						+ " bytes read." ;
 				break ;
 	
 			default:
@@ -401,20 +446,24 @@ class SimplifiedCommandManager: public Ceylan::System::FIFO
 				break ;
 		
 		}
-	}
+	  }
 	 
-	 	
+	 
+	  std::string & getMessage()
+	  {
+	  
+	  	return _message ;
+		
+	  }	
 	
 	  private:
 	  	
 		volatile LowLevelMusic * _music ;
 		
 		volatile bool _isPlaying ;
-		
-		volatile bool _requestFillOfFirstBuffer ;
-		
-		volatile bool _requestFillOfSecondBuffer ;
-
+	
+		std::string _message ;
+			
 } ;
 
 
@@ -437,8 +486,6 @@ int main( int argc, char * argv[] )
     try
     {
 				
-		
-		bool interactive = true ;
 				
 		const string musicFilename = "test.mp3" ;
 
@@ -466,7 +513,8 @@ int main( int argc, char * argv[] )
 		
 		music->_mode = /* mono */ 1 ;
 		
-		music->_size = music->_musicFile->size() ; 
+		music->_size = music->_musicFile->size() ;
+		 
 		LogPlug::trace( "File size is " + Ceylan::toString( music->_size ) 
 			+ " bytes." ) ;		
 		
@@ -497,17 +545,14 @@ int main( int argc, char * argv[] )
 					
 		music->_secondBuffer = music->_doubleBuffer 
 			+ music->_bufferSize ;
-			
-		
-		// Fill first buffer before playing:
-		LogPlug::trace( "Initial fill." ) ;		
-
+					
 		
 		LogPlug::info( "Sending to the ARM7 a command request to play it." ) ;
 		
 		LogPlug::info( "Current ARM7 status before playing: "
 			 + myManager.interpretLastARM7StatusWord() ) ;
 
+		LogPlug::info( "Refilling now buffers while playing." ) ;
 		myManager.playMusic( *music ) ;
 		
 		
@@ -517,58 +562,39 @@ int main( int argc, char * argv[] )
 		 *
 		 */
 		
-		
-		LogPlug::info( "Refilling now buffers while playing." ) ;
+		uint16 count = 0 ;
 		
 		while ( myManager.isPlaying() )
 		{
-		
-			LogPlug::info( "Current ARM7 status while playing: "
-			  + myManager.interpretLastARM7StatusWord() ) ;
-			  
+					  
 			myManager.manageBuffers() ;
 			
+			// Avoid sending logs from an IRQ, as log system no reentrant:
+			if ( count++ % 60 == 0 )
+				LogPlug::info( myManager.getMessage() ) ;
+			
+			/*
+			LogPlug::info( "Current ARM7 status while playing: "
+			  + myManager.interpretLastARM7StatusWord() ) ;
+			 */
+			 
 			atomicSleep() ;
 		
 		}
 
+		/*
 		LogPlug::info( "Current ARM7 status after playing: "
 			 + myManager.interpretLastARM7StatusWord() ) ;
+		 */
+		 
+		LogPlug::info( myManager.getMessage() ) ;
 		
-		if ( interactive )
-		{
 		
-			LogPlug::info( "Press any key to stop waiting" ) ;
-			waitForKey() ;
-		
-		}
-		
+		/*
 		LogPlug::info( "Current ARM7 status: "
 			 + myManager.interpretLastARM7StatusWord() ) ;
+		 */
 
-		bool testFailed = false ;		
-		
-							
-		if ( interactive )
-		{
-		
-			LogPlug::info( "Press any key to stop waiting" ) ;
-			waitForKey() ;
-		
-		}
-				
-				
-		if ( testFailed )
-			throw TestException( "Test failed because of error(s) "
-				"previously displayed." ) ;
-								
-		if ( interactive )
-		{
-		
-			LogPlug::info( "Press any key to end the test" ) ;
-			waitForKey() ;
-		
-		}
 			
 		// LogHolder out of scope: log browser triggered.
 		
