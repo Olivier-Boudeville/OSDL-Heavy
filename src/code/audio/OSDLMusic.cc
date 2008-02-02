@@ -7,7 +7,8 @@
  *
  *
  */
-#if OSDL_ARCH_NINTENDO_DS
+#ifdef OSDL_ARCH_NINTENDO_DS
+
 
 // Allows to have CEYLAN_ARCH_NINTENDO_DS defined: ARM9 needs Ceylan FIFO.
 #include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
@@ -16,19 +17,26 @@
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
 
-
-
 // No FIFO class on the ARM7:
 #ifdef OSDL_RUNS_ON_ARM9
 #include "OSDLCommandManager.h"      // for CommandManager
 #endif // OSDL_RUNS_ON_ARM9
+
+
+#else // OSDL_ARCH_NINTENDO_DS
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
 
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
 #include "OSDLMusic.h"               // implies including Ceylan.h
 #include "OSDLAudio.h"               // for AudioModule
-
+#include "OSDLFileTags.h"            // for music file tag
 
 
 
@@ -99,6 +107,9 @@ using namespace OSDL::Audio ;
  */
 
 
+extern const BitrateType OSDL::Audio::CBR = 1 ;
+extern const BitrateType OSDL::Audio::VBR = 2 ;
+
 
 MusicException::MusicException( const string & reason ) throw():
 	AudibleException( reason )
@@ -118,6 +129,7 @@ MusicException::~MusicException() throw()
 /// Starts with no current music:
 Music * Music::_CurrentMusic = 0 ;
 
+const OSDL::CommandManagerSettings * Music::_CommandManagerSettings = 0 ;
 
 
 
@@ -131,17 +143,12 @@ Music::Music( const std::string & musicFile, bool preload )
 	if ( ! AudioModule::IsAudioInitialized() )
 		throw MusicException( "Music constructor failed: "
 			"audio module not already initialized" ) ;
-			 
-#if OSDL_ARCH_NINTENDO_DS
 
-	// Music is streamed on the DS, preloading or not cannot be chosen:
-	if ( true )
-	
-#else // OSDL_ARCH_NINTENDO_DS
+	// Music is streamed on the DS, preloading cannot be chosen.
+		 
+#if ! OSDL_ARCH_NINTENDO_DS
 
 	if ( preload )
-
-#endif // OSDL_ARCH_NINTENDO_DS
 	{
 	
 		try
@@ -158,6 +165,8 @@ Music::Music( const std::string & musicFile, bool preload )
 		}
 			
 	}
+
+#endif // OSDL_ARCH_NINTENDO_DS
 			
 }
 
@@ -171,7 +180,7 @@ Music::~Music() throw()
 
 		try
 		{	
-			onNoMoreCurrent() ;
+			manageNoMoreCurrent() ;
 		
 		}
 		catch( const AudioException & e )
@@ -181,9 +190,7 @@ Music::~Music() throw()
 				"while unsetting 'current music' status: " + e.toString() ) ;
 				
 		}
-		
-		_CurrentMusic = 0 ;
-		
+				
 	}
 	
 	
@@ -213,59 +220,84 @@ Music::~Music() throw()
 bool Music::load() throw( Ceylan::LoadableException )
 {
 
-	if ( hasContent() )
-		return false ;
 		
 #if OSDL_ARCH_NINTENDO_DS
 		
 #ifdef OSDL_RUNS_ON_ARM7
 
-	throw Ceylan::LoadableException( "Sound::load failed: "
+	throw Ceylan::LoadableException( "Music::load failed: "
 		"not supported on the ARM7" ) ;
 		
 #elif defined(OSDL_RUNS_ON_ARM9)
 
-	// Preparing MP3 encoded streaming from the ARM9:
+	/*
+	 * Preparing MP3 encoded streaming from the ARM9.
+	 *
+	 * Loading is to be performed only when about to play.
+	 *
+	 */
+	 
+	/*
+	 * We know here that a command manager is available (implied by the audio
+	 * module availability, checked by the Music constructor).
+	 *
+	 */
+	 
+	_content = new LowLevelMusic() ;
+
+	LowLevelMusic & music = *_content ;
+	
 		
 	try
 	{
 
-		_content = new LowLevelMusic() ;
 		
-		// Inits all _content members here, settings are hardcoded here:
+		// Inits all _content members here, some settings are hardcoded:
 		
-		_content->_musicFile = & File::Open( _contentPath ) ;
-		
-		_content->_frequency = 22050 /* kHz */ ;	
-		
-		_content->_bitDepth	= 16 /* bits */ ;
-		
-		_content->_mode	= /* mono */ 1 ;
-		
-		_content->_size = _content->_musicFile->size() ; 
-		
-		// Could be optimized according to libfat cache size:
-		_content->_bufferSize = 4096 ;
-		//_content->_bufferSize = 4096 * 8 ;
+		music._musicFile = & File::Open( _contentPath ) ;
 
-		// Upper bound might be reduced ? Value used is from Helix example.
-		// On a sample mp3, had 314 bytes
-		//_content->_frameSizeUpperBound = 2 * 1940 ;
-		_content->_frameSizeUpperBound = 500 ;
+		// First check the OSDL music tag:
+		FileTag readTag = music._musicFile->readUint16() ;
 		
-		if ( _content->_bufferSize <= _content->_frameSizeUpperBound )
+		if ( readTag != MusicTag )
+			throw Ceylan::LoadableException( 
+				"Music::load: expected music tag not found ("
+				+ Ceylan::toString( MusicTag ) + "), read instead "
+				+ Ceylan::toString( readTag ) + ", which corresponds to: "
+				+ DescribeFileTag( readTag ) ) ;
+		
+		LogPlug::debug( "Music::load: correct tag found." ) ;
+			
+		// Frequency:
+		music._frequency = music._musicFile->readUint16() /* Hz */ ;
+				
+		// Always 16-bit:		
+		music._bitDepth	= 16 /* bits */ ;
+		
+		// Most probably mono:
+		music._mode	= music._musicFile->readUint16() ;
+		
+		// Bitrate type (CBR/VBR) not used:
+		music._musicFile->readUint8() ;
+		
+		music._size = music._musicFile->size() ; 
+
+		// Upper bound, as determined by the getMP3Settings program:
+		music._frameSizeUpperBound = music._musicFile->readUint16() ;
+
+
+		// _CommandManagerSettings already created at audio module startup:
+		if ( _CommandManagerSettings->_bufferSize <=
+				music._frameSizeUpperBound )
 			throw Ceylan::LoadableException( "Music::load: "
 				"buffer to small compared to frame size upper bound." ) ;
 					
-		// Force music buffer to match the boundaries of ARM9 cache line:		
-		_content->_doubleBuffer = 
-			CacheProtectedNew( _content->_bufferSize * 2 ) ;
 		
-		_content->_startAfterDelta = 
-			_content->_doubleBuffer + _content->_frameSizeUpperBound ;
+		music._startAfterDelta = _CommandManagerSettings->_doubleBuffer 
+			+ music._frameSizeUpperBound ;
 		
-		_content->_firstActualRefillSize = 
-			_content->_bufferSize - _content->_frameSizeUpperBound ;			
+		music._firstActualRefillSize = 
+			_CommandManagerSettings->_bufferSize - music._frameSizeUpperBound ;	
 			
 		/*
 		 * First buffer will be filled now, second after a corresponding ARM7
@@ -273,24 +305,24 @@ bool Music::load() throw( Ceylan::LoadableException )
 		 *
 		 */
 		fillFirstBuffer() ;
+					
+		music._requestFillOfSecondBuffer = true  ;
 		
-		_content->_secondBuffer = _content->_doubleBuffer 
-			+ _content->_bufferSize ;
-			
-		_content->_requestFillOfSecondBuffer = true  ;
+		// Not to let it uninitialized:
+		music._playbackCount = 1 ;
 		
 	}
 	catch( const Ceylan::System::SystemException & e )
 	{
 	
-		throw Ceylan::LoadableException( "Sound::load failed: "
+		throw Ceylan::LoadableException( "Music::load failed: "
 			+ e.toString() ) ;
 	
 	}
 
 	LogPlug::debug( "Music::load: read first chunk of " + _contentPath + 
-		+ " (" + Ceylan::toString( _content->_firstActualRefillSize) 
-		+ " out of a total of "	+ Ceylan::toString( _content->_size ) 
+		+ " (" + Ceylan::toString( music._firstActualRefillSize) 
+		+ " out of a total of "	+ Ceylan::toString( music._size ) 
 		+ " bytes)." ) ;
 	
 	
@@ -303,6 +335,9 @@ bool Music::load() throw( Ceylan::LoadableException )
 #else // OSDL_ARCH_NINTENDO_DS
 
 #if OSDL_USES_SDL_MIXER
+
+	if ( hasContent() )
+		return false ;
 
 	try
 	{
@@ -355,9 +390,6 @@ bool Music::unload() throw( Ceylan::LoadableException )
 
 #elif defined(OSDL_RUNS_ON_ARM9)
 
-	if ( _content->_doubleBuffer != 0 )
-		CacheProtectedDelete( _content->_doubleBuffer ) ;
-	
 	// Closes automatically the file if needed:
 	if ( _content->_musicFile != 0 )
 		delete _content->_musicFile ;
@@ -488,7 +520,10 @@ MusicType Music::getType() const throw( AudioException )
 
 void Music::play( PlaybackCount playCount ) throw( AudibleException )
 {
-
+	
+	if ( playCount == 0 )
+		return ;
+	
 	_isPlaying = true ;
 	
 #if OSDL_ARCH_NINTENDO_DS
@@ -499,10 +534,20 @@ void Music::play( PlaybackCount playCount ) throw( AudibleException )
 
 #elif defined(OSDL_RUNS_ON_ARM9)
 
+	if ( hasContent() )
+		unload() ;
+		
+	load() ;
+	
+	_content->_playbackCount = playCount ;
+
 	try
 	{
-	
-		CommandManager::GetExistingCommandManager().playMusic( *this ) ;
+
+		if ( _content->_playbackCount != Loop )
+			_content->_playbackCount-- ;
+			
+		_CommandManagerSettings->_commandManager->playMusic( *this ) ;
 		
 	}
 	catch( const CommandException & e )
@@ -521,7 +566,7 @@ void Music::play( PlaybackCount playCount ) throw( AudibleException )
 #if OSDL_USES_SDL_MIXER
 			
 	if ( ! hasContent() )
-		throw AudibleException( "Music::play failed: "
+		throw MusicException( "Music::play failed: "
 			"no loaded music available" ) ;
 			
 	if ( ::Mix_PlayMusic( _content, GetLoopsForPlayCount( playCount ) ) == -1 )
@@ -615,6 +660,37 @@ bool Music::isPlaying() throw()
 void Music::pause() throw( MusicException )
 {
 
+#if OSDL_ARCH_NINTENDO_DS
+		
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw MusicException( "Music::pause failed: "
+		"not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+
+	try
+	{
+		if ( hasContent() )	
+			_CommandManagerSettings->_commandManager->pauseMusic() ;
+		
+	}
+	catch( const CommandException & e )
+	{
+	
+		throw MusicException( "Music::pause failed: " + e.toString() ) ;
+		
+	}
+	
+	return ;
+
+#endif // OSDL_RUNS_ON_ARM7
+
+
+#else // OSDL_ARCH_NINTENDO_DS
+
 #if OSDL_USES_SDL_MIXER
 	
 	// No test performed about music availability:
@@ -627,12 +703,46 @@ void Music::pause() throw( MusicException )
 	
 #endif // OSDL_USES_SDL_MIXER
 
+#endif // OSDL_ARCH_NINTENDO_DS
+
 }
 
 
 
-void Music::resume() throw( MusicException )
+void Music::unpause() throw( MusicException )
 {
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw MusicException( "Music::unpause failed: "
+		"not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+
+	try
+	{
+		
+		if ( hasContent() )	
+			_CommandManagerSettings->_commandManager->unpauseMusic() ;
+		
+	}
+	catch( const CommandException & e )
+	{
+	
+		throw MusicException( "Music::unpause failed: " + e.toString() ) ;
+		
+	}
+	
+	return ;
+
+#endif // OSDL_RUNS_ON_ARM7
+
+
+#else // OSDL_ARCH_NINTENDO_DS
 
 #if OSDL_USES_SDL_MIXER
 	
@@ -641,10 +751,12 @@ void Music::resume() throw( MusicException )
 			
 #else // OSDL_USES_SDL_MIXER
 
-	throw MusicException( "Music::resume failed: "
+	throw MusicException( "Music::unpause failed: "
 		"no SDL_mixer support available." ) ;
 	
 #endif // OSDL_USES_SDL_MIXER
+
+#endif // OSDL_ARCH_NINTENDO_DS
 
 }
 
@@ -690,20 +802,55 @@ void Music::setPosition( MusicPosition newPosition ) throw( MusicException )
 
 
 
-void Music::halt() throw( MusicException )		
+void Music::stop() throw( MusicException )		
 {
+
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw MusicException( "Music::stop failed: "
+		"not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+
+	try
+	{
+		
+		if ( hasContent() )	
+			_CommandManagerSettings->_commandManager->stopMusic() ;
+		
+	}
+	catch( const CommandException & e )
+	{
+	
+		throw MusicException( "Music::stop failed: " + e.toString() ) ;
+		
+	}
+	
+	return ;
+
+#endif // OSDL_RUNS_ON_ARM7
+
+
+#else // OSDL_ARCH_NINTENDO_DS
 
 #if OSDL_USES_SDL_MIXER
 	
 	// No test performed about music availability:
 	::Mix_HaltMusic() ;
-				
+			
 #else // OSDL_USES_SDL_MIXER
 
-	throw MusicException( "Music::halt failed: "
+	throw MusicException( "Music::stop failed: "
 		"no SDL_mixer support available." ) ;
 	
 #endif // OSDL_USES_SDL_MIXER
+
+#endif // OSDL_ARCH_NINTENDO_DS
 
 }
 
@@ -734,9 +881,15 @@ void Music::fadeOut( Ceylan::System::Millisecond fadeOutMaxDuration )
 void Music::setAsCurrent() throw( AudioException )
 {
 
-	if ( _CurrentMusic != 0 )
-		_CurrentMusic->onNoMoreCurrent() ;
-		
+	// A music can be repeated:
+	if ( _CurrentMusic != 0 && _CurrentMusic != this )
+		_CurrentMusic->manageNoMoreCurrent() ;
+	
+	/*
+	 * The command manager (the caller) is expected to update its cached 
+	 * current music as well:
+	 *
+	 */	
 	_CurrentMusic = this ;	
 
 	LogPlug::debug( "Music::setAsCurrent: " + toString( Ceylan::low ) +
@@ -749,7 +902,11 @@ void Music::setAsCurrent() throw( AudioException )
 void Music::requestFillOfFirstBuffer() throw() 
 {
 
+#if ! OSDL_USES_SDL_MIXER
+
 	_content->_requestFillOfFirstBuffer = true ;
+
+#endif // OSDL_USES_SDL_MIXER
 	
 }
 
@@ -758,8 +915,12 @@ void Music::requestFillOfFirstBuffer() throw()
 void Music::requestFillOfSecondBuffer() throw()
 {
 
+#if ! OSDL_USES_SDL_MIXER
+
 	_content->_requestFillOfSecondBuffer = true ;
 	
+#endif // OSDL_USES_SDL_MIXER
+
 }
 
 
@@ -770,7 +931,6 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const throw()
 	if ( level == Ceylan::low )
 		return "Music read from '" + _contentPath + "'" ;
 
-	// @todo Manage _isPlaying
 	 
 	try
 	{
@@ -783,7 +943,9 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const throw()
 			return "Loaded music whose volume is " + Ceylan::toString( v )
 				+ "(" + Ceylan::toNumericalString( 100 * v 
 					/ ( AudioModule::MaxVolume - AudioModule::MinVolume ) )
-				+ "%) and whose type is " + DescribeMusicType( getType() ) ;
+				+ "%) and whose type is " + DescribeMusicType( getType() )
+				+ string( ", currently " ) 
+				+ ( _isPlaying ? "playing" : "not playing" ) ;
 			
 		}
 		else
@@ -800,6 +962,16 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const throw()
 		return "Music::toString failed (abnormal): " + e.toString() ;
 		 
 	}
+	
+}
+
+
+
+void Music::SetCommandManagerSettings( const CommandManagerSettings & settings )
+	throw()
+{
+
+	_CommandManagerSettings = & settings ;
 	
 }
 
@@ -937,13 +1109,76 @@ string Music::DescribeMusicType( MusicType type ) throw( AudioException )
 
 
 
+string Music::DescribeBitrateType( BitrateType type ) throw( AudioException )
+{
+	
+	switch( type )
+	{
+	
+		case CBR: 
+			return "CBR (constant bitrate)" ;
+			break ;
+			
+		case VBR:
+			return "VBR (variable bitrate)" ;
+			break ;
+						
+		default: 
+			return "unknown bitrate type (abnormal)" ;
+			break ;
+	
+	}
+	
+	
+}
+
+
+
 void Music::onPlaybackEnded() throw( AudioException )
 {
 
+	// Made to be overriden.
 	LogPlug::trace( "Music::onPlaybackEnded" ) ;
+		
+}
+
+
+
+void Music::managePlaybackEnded() throw( AudioException )
+{
 	
 	_isPlaying = false ;
 	
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw AudioException( "Music::managePlaybackEnded: "
+		"not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+		
+	PlaybackCount count = _content->_playbackCount ;
+	
+	unload() ;
+	onPlaybackEnded() ;
+	
+	/*
+	LogPlug::debug( "Music::managePlaybackEnded: count = " 
+		+ Ceylan::toString(count) ) ;
+	 */
+		
+	// Includes the -1 case (infinite); count already decremented:
+	if ( count != 0 )
+		play( count ) ;
+	else
+		manageNoMoreCurrent() ;
+		
+#endif // OSDL_RUNS_ON_ARM7
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+		
 }
 
 
@@ -958,14 +1193,59 @@ void Music::onNoMoreCurrent() throw( AudioException )
 
 
 
+void Music::manageNoMoreCurrent() throw( AudioException )
+{
+	
+	LogPlug::trace( "Music::manageNoMoreCurrent" ) ;
+		
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw AudioException( "Music::manageNoMoreCurrent: "
+		"not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	_isPlaying = false ;
+	
+	if ( _CurrentMusic == this )
+	{
+	
+		_CurrentMusic = 0 ;
+		_CommandManagerSettings->_commandManager->unsetCurrentMusic( *this ) ;
+		
+	}
+	
+#endif // OSDL_RUNS_ON_ARM7
+
+#else // OSDL_ARCH_NINTENDO_DS
+
+	_isPlaying = false ;
+	
+	if ( _CurrentMusic == this )
+		_CurrentMusic = 0 ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+	onNoMoreCurrent() ;
+		
+}
+
+
+
 void Music::manageBufferRefill() throw( AudioException )
 {
  
+#if OSDL_ARCH_NINTENDO_DS
+
 	if ( _content->_requestFillOfFirstBuffer )
 		fillFirstBuffer() ;
 	
 	if ( _content->_requestFillOfSecondBuffer )
 		fillSecondBuffer() ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
 	
 }
  
@@ -983,9 +1263,12 @@ void Music::fillFirstBuffer() throw( AudioException )
 
 #elif defined(OSDL_RUNS_ON_ARM9)
 		
+
 	LogPlug::trace( "Music::fillFirstBuffer." ) ;
 
 	LowLevelMusic & music = getContent() ;
+
+	music._requestFillOfFirstBuffer = false ;			
 	
 	try
 	{
@@ -998,19 +1281,23 @@ void Music::fillFirstBuffer() throw( AudioException )
 			/* start after delta zone */ music._startAfterDelta,
 			/* max length */ music._firstActualRefillSize ) ;
 		
+		LogPlug::debug( "Music::fillFirstBuffer: read " 
+			+ Ceylan::toString( readSize ) + " bytes." ) ;
+			
 		/*
 		 * Zero-pad to avoid finding false sync word after last frame 
 		 * (from previous data in this first buffer):
 		 */
 		if ( readSize < music._firstActualRefillSize )
 		{
+			
+			LogPlug::trace( "Padding first buffer." ) ;
 		
 			::memset( 
 				/* start */ music._startAfterDelta + readSize,
 				/* filler */ 0, 
-				/* length */ music._bufferSize - (BufferSize)
-					( music._startAfterDelta + readSize )
-			) ;
+				/* length */ _CommandManagerSettings->_bufferSize 
+					- music._frameSizeUpperBound - readSize ) ;
 			
 			// Flush the ARM9 data cache for the ARM7 (full first buffer):
 			DC_FlushRange( (void*) music._startAfterDelta,
@@ -1019,12 +1306,9 @@ void Music::fillFirstBuffer() throw( AudioException )
 			try
 			{	
 			
-				CommandManager & commandManager =
-					CommandManager::GetExistingCommandManager() ;
-			
-				// Here we know the stream has been fully read:
-				commandManager.notifyEndOfEncodedStreamReached() ;
-				
+	_CommandManagerSettings->_commandManager->notifyEndOfEncodedStreamReached()
+		;
+					
 			}
 			catch( const CommandException & e )
 			{
@@ -1044,8 +1328,7 @@ void Music::fillFirstBuffer() throw( AudioException )
 		
 		}
 		
-		_content->_requestFillOfFirstBuffer = false ;			
-	
+		
 	}
 	catch( const SystemException & e )
 	{
@@ -1079,6 +1362,8 @@ void Music::fillSecondBuffer() throw( AudioException )
 		
 	LowLevelMusic & music = getContent() ;
 	
+	music._requestFillOfSecondBuffer = false ;
+	
 	try
 	{
 			
@@ -1086,39 +1371,42 @@ void Music::fillSecondBuffer() throw( AudioException )
 		 * Start at the half of double buffer to its end:
 		 */ 
 		BufferSize readSize = music._musicFile->read( 
-			/* start */ music._secondBuffer,
-			/* max length */ music._bufferSize ) ;
+			/* start */ _CommandManagerSettings->_secondBuffer,
+			/* max length */ _CommandManagerSettings->_bufferSize ) ;
 		
+		LogPlug::debug( "Music::fillSecondBuffer: read " 
+			+ Ceylan::toString( readSize ) + " bytes." ) ;
+
 		/*
 		 * Zero-pad to avoid finding false sync word after last frame 
 		 * (from previous data in this first buffer):
 		 */
-		if ( readSize < music._bufferSize )
+		if ( readSize < _CommandManagerSettings->_bufferSize )
 		{
+			
+			LogPlug::trace( "Padding second buffer." ) ;
 		
 			::memset( 
-				/* start */ music._secondBuffer + readSize,
+				/* start */ _CommandManagerSettings->_secondBuffer + readSize,
 				/* filler */ 0, 
-				/* length */ music._bufferSize - readSize 
+				/* length */_CommandManagerSettings->_bufferSize - readSize 
 			) ;
 				    		
 					
 			// Flush the ARM9 data cache for the ARM7:
-			DC_FlushRange( (void*) music._secondBuffer,	music._bufferSize  ) ;
+			DC_FlushRange( (void*) _CommandManagerSettings->_secondBuffer,
+				_CommandManagerSettings->_bufferSize  ) ;
 				    	
 			try
 			{	
 			
-				CommandManager & commandManager =
-					CommandManager::GetExistingCommandManager() ;
-			
-				commandManager.notifyEndOfEncodedStreamReached() ;
-				
+				_CommandManagerSettings->_commandManager->notifyEndOfEncodedStreamReached() ;
+					
 			}
 			catch( const CommandException & e )
 			{
 			
-				throw AudioException( "Music::fillFirstBuffer failed: "
+				throw AudioException( "Music::fillSecondBuffer failed: "
 					+ e.toString() ) ;
 			
 			}	
@@ -1128,11 +1416,11 @@ void Music::fillSecondBuffer() throw( AudioException )
 		{
 
 			// Flush the ARM9 data cache for the ARM7:
-			DC_FlushRange( (void*) music._secondBuffer,	music._bufferSize  ) ;
+			DC_FlushRange( (void*) _CommandManagerSettings->_secondBuffer,
+				_CommandManagerSettings->_bufferSize  ) ;
 		
 		}
 				
-		_content->_requestFillOfSecondBuffer = false ;
 	
 	}
 	catch( const SystemException & e )
