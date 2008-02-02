@@ -37,6 +37,9 @@
 /** Tells whether a MP3 play command is being processed. */
 volatile bool startMP3PlaybackRequested = false ;
 
+/** Tells whether a MP3 pause command is being processed. */
+volatile bool pauseMP3PlaybackRequested = false ;
+
 
 /**
  * The state of the Helix decoder instance.
@@ -59,13 +62,6 @@ volatile BufferSize bufferSize ;
 
 /** The smallest upper bound chosen to a MP3 frame size: */
 volatile BufferSize frameSizeUpperBound ;
-
-
-/** The minimum size read for a MP3 frame, including the frame and its sync: */
-volatile BufferSize minWholeFrameLength = (BufferSize) -1 ;
-
-/** The maximum size read for a MP3 frame, including the frame and its sync: */
-volatile BufferSize maxWholeFrameLength = 0 ;
 
 
 
@@ -113,6 +109,20 @@ volatile Byte * sizeOffset ;
 /** Tells whether the end of the MP3 stream has been detected by the ARM9. */
 volatile bool endOfStreamDetected ;
 
+
+/** Tells whether, after an end of stream, we are reading last buffer. */
+volatile bool readingLastBuffer ;
+
+
+/** 
+ * Tells whether the end of processing of mp3 frames is requested, either
+ * because the last frame of the last buffer has been processed or the ARM9
+ * requested to stop.
+ *
+ */
+volatile bool endOfProcessingReached ;
+
+
 /** Tells whether the decoding encountered a fatal error. */
 volatile bool decodingInError ;
 
@@ -125,6 +135,8 @@ volatile bool decodingInError ;
  * The buffer where decoded music will be output.
  * 
  * Will be directly played by the sound hardware.
+ *
+ * @note Allocated directly from the ARM7.
  *
  */
 volatile Byte * decodedBuffer ;
@@ -146,8 +158,15 @@ volatile Byte * decodePointer ;
 const uint16 DecodedFrameLength = 576 * sizeof(uint16) ;
 
 
-/** Last channel (15) is the one reserved to music (mono). */
-const uint8 MusicChannel = 15 ;
+/** 
+ * First music channel (0) is the one reserved to music (mono PCM). 
+ *
+ * Using preferably the first one as channels 8-15 are special channels: 
+ * 8-13 are the only channels that can also play PSG sounds and 14-15 the 
+ * only that can generate noise.
+ * 
+ */
+const uint8 MusicChannel = 0 ;
 
 
 /**
@@ -161,7 +180,8 @@ s32 getFreeSoundChannel()
 
 	int i ;
 	
-	for ( i=0; i<15; i++ )
+	/* Music channel never free (start at 1): */	
+	for ( i=1; i<16; i++ )
 	{
 	
 		if ( ( SCHANNEL_CR(i) & SCHANNEL_ENABLE ) == 0 )
@@ -268,7 +288,20 @@ bool decodeNextMP3Frame()
 		 *
 		 */
 		if ( ! endOfStreamDetected )
+		{
+		
 			triggerSecondBufferRefill() ;
+		
+		}	
+		else
+		{
+			
+			if ( readingLastBuffer )
+				endOfProcessingReached = true ;
+			else	
+				readingLastBuffer = true ;
+
+		}		
 
 		/* Go to the memmove-destination point in first buffer: */
 		readPointer = (Byte *) (readPointer - ((Byte *) destinationOffset)) ;
@@ -276,8 +309,6 @@ bool decodeNextMP3Frame()
 		readingFirstBuffer = true ;
 			
 	}
-
-	BufferSize deltaReadPointer = (BufferSize) readPointer ;
 	
 	
 	/*
@@ -295,9 +326,17 @@ bool decodeNextMP3Frame()
 	
 	if ( syncOffset < 0 )
 	{
+		
+		/*
+		 * Decoding proven to be functional, not freezing the ARM7 if the 
+		 * mp3 encoding is incorrect:
+		 *
+		 */
 		setError( HelixSyncWordNotFound ) ;
+
 		decodingInError = true ;
 		return false ;
+		
 	}
 	
 	readPointer += syncOffset ;
@@ -319,10 +358,17 @@ bool decodeNextMP3Frame()
 		/* buffer for decoded data */ (short*) decodePointer,
 		/* useSize: normal MPEG format */ 0 ) ;
 
+
 	if ( errorCode != 0 )
 	{
 		
 		decodingInError = true ;
+		
+		/*
+		 * Decoding proven to be functional, not freezing the ARM7 if the 
+		 * mp3 encoding is incorrect:
+		 *
+	 	 */
 
 		switch ( errorCode )
 		{
@@ -342,24 +388,27 @@ bool decodeNextMP3Frame()
 				return false ;
 				break ;
 		
-			/* For:
-			 	ERR_MP3_NULL_POINTER, 
-				ERR_MP3_INVALID_FRAMEHEADER, 
-				ERR_MP3_INVALID_SIDEINFO, 
-				ERR_MP3_INVALID_SCALEFACT, 
-				ERR_MP3_INVALID_HUFFCODES, 
-				ERR_MP3_INVALID_DEQUANTIZE, 
-				ERR_MP3_INVALID_IMDCT, 
-				ERR_MP3_INVALID_SUBBAND 
-				and any other
-			 */
+			// For:
+			// 	ERR_MP3_NULL_POINTER, 
+			//	ERR_MP3_INVALID_FRAMEHEADER, 
+			//	ERR_MP3_INVALID_SIDEINFO, 
+			//	ERR_MP3_INVALID_SCALEFACT, 
+			//	ERR_MP3_INVALID_HUFFCODES, 
+			//	ERR_MP3_INVALID_DEQUANTIZE, 
+			//	ERR_MP3_INVALID_IMDCT, 
+			//	ERR_MP3_INVALID_SUBBAND 
+			//	and any other
+
 			default:
 				setError( HelixDecodingError ) ;
 				return false ;
 				break ;
 			
 		}
+		
+		 
 	}
+
 	
 	/* Toggle halves in decoded buffer: */
 	if ( decodePointer == decodedBuffer )
@@ -374,49 +423,48 @@ bool decodeNextMP3Frame()
 	 * Takes into account the data read by MP3Decode: MP3Decode used 
 	 * U =( sizeOffset - readPointer ) - bytesLeft bytes, thus 
 	 * readPointer = readPointer + U = sizeOffset - bytesLeft
+	 
 	readPointer = sizeOffset - bytesLeft ;
+	
 	 */
-	deltaReadPointer = ( (BufferSize) readPointer ) - deltaReadPointer ;
-	
-	if ( deltaReadPointer > maxWholeFrameLength )
-		maxWholeFrameLength = deltaReadPointer ;
-	
-	if ( deltaReadPointer < minWholeFrameLength )
-		minWholeFrameLength = deltaReadPointer ;
-			
+	 				
 	
 	/* Detects transition from first to second read buffer: */
-	if ( readingFirstBuffer && ( readPointer > secondBuffer ) 
-		&& ( ! endOfStreamDetected ) )
+	if ( readingFirstBuffer && ( readPointer > secondBuffer ) )
 	{	
 	
-		triggerFirstBufferRefill() ;
+		if ( endOfStreamDetected )
+		{
+	
+			if ( readingLastBuffer )
+				endOfProcessingReached = true ;
+			else	
+				readingLastBuffer = true ;
+
+		}
+		else
+		{	
+				
+			triggerFirstBufferRefill() ;
+		
+		}	
+		
 		readingFirstBuffer = false ;
 		
-	}	
+	}
 
 	/* Updates frame informations: */
 	MP3GetLastFrameInfo( currentDecoder, &frameInfo ) ;
 	
-	if ( counter++ % 20 == 0 )
-	{
-	
-		InterruptMask previous = setEnabledInterrupts( AllInterruptsDisabled ) ;
-	
-		writeBlocking( prepareFIFOCommand( MusicFrameInformation )
-			| ( frameInfo.outputSamps & 0x0000ffff ) ) ;
-	
-		writeBlocking( deltaReadPointer ) ;
-	
-		setEnabledInterrupts( previous ) ;
-
-		notifyCommandToARM9() ;
-	
-	}
-
+	/*
+	 * Should never occur:
+	 *
+	 
 	if ( 2 * frameInfo.outputSamps != DecodedFrameLength )
 		setError( HelixUnexpectedDecodedLength ) ;
-	
+	 *
+	 */
+	 
 	return true ;
 	
 }
@@ -503,7 +551,7 @@ void handlePlaySoundRequest( FIFOElement firstElement )
  *
  * No answer expected.
  *
- * @see StopCurrentMusic
+ * @see StopMusicRequest
  *
  */
 void handlePlayMusicRequest( FIFOElement firstElement )
@@ -537,27 +585,42 @@ void handlePlayMusicRequest( FIFOElement firstElement )
 	endOfSafeRead = doubleBuffer + (int) destinationOffset ;
 	
 	/* Set control flags: */
-	startMP3PlaybackRequested = true ;
+	pauseMP3PlaybackRequested = false ;
 	endOfStreamDetected = false ;
+	readingLastBuffer = false ;
+	endOfProcessingReached = false ;
 	decodingInError = false ;
 	
-	/* 
-	 * Must be able to contain two full decoded frames: 
-	 * MAX_NCHAN = 2 (stereo), MAX_NGRAN = 2 granules, MAX_NSAMP = 576 samples,
-	 * hence 2*1152 = 2*DecodedFrameLength
-	 *
-	 * @note Use only  2 * MAX_NGRAN * MAX_NSAMP = 2 * 1152 if mono.
-	 *
-	 */
-	decodedBuffer = (Byte *) malloc( 2 * MAX_NCHAN * MAX_NGRAN * MAX_NSAMP ) ;
+	/* decodedBuffer already allocated in initialization. */
 	
 	/* Starts the output at the beginning: */
 	decodePointer = decodedBuffer ;
+
+	/* Release it last, as this is the one the main loop is waiting for: */
+	startMP3PlaybackRequested = true ;
 	
 }
 
 
 
+void handlePauseMusicRequest()
+{
+
+	pauseMP3PlaybackRequested = true ;
+
+}
+
+
+
+void handleUnpauseMusicRequest()
+{
+
+	pauseMP3PlaybackRequested = false ;
+
+}
+
+
+	
 /**
  * Handles the ARM9 notification that the end of encoded buffer has been 
  * reached.
@@ -599,15 +662,15 @@ void handleReceivedIntegratingLibrarySpecificCommand( FIFOCommandID commandID,
 		case PlayMusicRequest:
 			handlePlayMusicRequest( firstElement ) ;
 			break ;
+		
+		case PauseMusicRequest:
+			handlePauseMusicRequest() ;
+			break ;	
 			
-		case EndOfEncodedStreamReached:
-			handleEndOfEncodedStreamReached() ;
-			break ;
-			
-		default:
-			setError( UnexpectedOSDLCommand ) ;
-			break ;
-				
+		case UnpauseMusicRequest:
+			handleUnpauseMusicRequest() ;
+			break ;	
+
 	}
 	
 	*/
@@ -616,12 +679,17 @@ void handleReceivedIntegratingLibrarySpecificCommand( FIFOCommandID commandID,
 		handlePlaySoundRequest( firstElement ) ;
 	else if ( commandID == PlayMusicRequest )
 		handlePlayMusicRequest( firstElement ) ;
+	else if ( commandID == PauseMusicRequest )
+		handlePauseMusicRequest() ;
+	else if ( commandID == UnpauseMusicRequest )
+		handleUnpauseMusicRequest() ;		
 	else if ( commandID == EndOfEncodedStreamReached )
 		handleEndOfEncodedStreamReached() ;
 	else
 		setError( UnexpectedOSDLCommand ) ;
 		
 }
+
 
 
 /**
@@ -660,7 +728,7 @@ void manageMP3Playback()
 
 	/* 
 	 * Starts by decoding the first two frames, so that as soon as the second
-	 * is played (overflow of timer 2), the third starts being decoded)
+	 * is played (overflow of timer 2), the third starts being decoded.
 	 *
 	 */
 	if ( ! decodeNextMP3Frame() )
@@ -688,8 +756,10 @@ void manageMP3Playback()
 	SCHANNEL_CR( MusicChannel ) = SCHANNEL_ENABLE | SOUND_REPEAT | SOUND_16BIT
 		| SOUND_VOL( 0x7f ) | SOUND_PAN( 0 ) ;
 	
-	/* First timer must run at twice the sample rate since 16-bit samples: */	
+	/* First timer must run at twice the sample rate, since 16-bit samples: */	
+	
 	TIMER0_DATA = SOUND_FREQ( frameInfo.samprate )  ;
+	
 	TIMER0_CR = TIMER_ENABLE | TIMER_DIV_1 ;
 	
 	/*
@@ -706,11 +776,16 @@ void manageMP3Playback()
 	int CurrentFrameCounter ;
 	int LastFrameCounter = 0 ;
 	
+	bool stopPlayback = false ;
+	
 	do 
 	{
 		
 		CurrentFrameCounter = TIMER2_DATA ;
 	
+		if ( endOfProcessingReached )
+			stopPlayback = true ;
+			
 		/*
 		 * As soon as we change of half in the output buffer, decode the other
 		 * half:
@@ -724,13 +799,22 @@ void manageMP3Playback()
 			
 		}
 		
-	} while ( ! endOfStreamDetected && ! decodingInError ) ;
+		/* Manages playback pause: */
+		while ( pauseMP3PlaybackRequested )
+			atomicSleep() ;
+		
+	} while ( ! stopPlayback && ! decodingInError ) ;
 	
-	/* Wait for the playback of final buffer : */
-	CurrentFrameCounter = ( TIMER2_DATA + 1 ) ;
+	if ( ! decodingInError )
+	{
 	
-	while ( TIMER2_DATA == CurrentFrameCounter )
-		swiWaitForVBlank() ;
+		/* Wait for the playback of final buffer : */
+		CurrentFrameCounter = ( TIMER2_DATA + 1 ) ;
+	
+		while ( TIMER2_DATA <= CurrentFrameCounter )
+			atomicSleep() ;
+			
+	}
 	
 	/* Stop channel: */
 	SCHANNEL_CR( MusicChannel ) = 0 ;
@@ -741,10 +825,7 @@ void manageMP3Playback()
 	InterruptMask previous = setEnabledInterrupts( AllInterruptsDisabled ) ;
 
 	writeBlocking( prepareFIFOCommand( MusicEndedNotification ) ) ; 
-	
-	writeBlocking( minWholeFrameLength ) ;
-	writeBlocking( maxWholeFrameLength ) ;
-	
+		
 	setEnabledInterrupts( previous ) ;
 
 	notifyCommandToARM9() ;	
@@ -753,6 +834,10 @@ void manageMP3Playback()
 
 
 
+/**
+ * Sets-up the sound software, including the Helix decoder.
+ *
+ */
 void initOSDLSound()
 {
 
@@ -766,6 +851,18 @@ void initOSDLSound()
 		return ;
 	
 	}	
+
+	
+	/* 
+	 * Must be able to contain two full decoded frames: 
+	 * MAX_NCHAN = 2 (stereo), MAX_NGRAN = 2 granules, MAX_NSAMP = 576 samples,
+	 * hence 2*1152 = 2*DecodedFrameLength
+	 *
+	 * @note Use only 2 * MAX_NGRAN * MAX_NSAMP = 2 * 1152 if mono, otherwise
+	 * use 2 * MAX_NCHAN * MAX_NGRAN * MAX_NSAMP if stereo.
+	 *
+	 */
+	decodedBuffer = (Byte *) malloc( 2 * MAX_NCHAN * MAX_NGRAN * MAX_NSAMP ) ;
 		
 	/* Wait a bit to let sound hardware be initialized: */
 	atomicSleep() ;
