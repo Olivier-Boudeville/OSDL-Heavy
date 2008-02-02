@@ -13,6 +13,9 @@ using namespace Ceylan::System ;
 using namespace OSDL::Audio ;
 
 
+// Corresponds to an infinite count.
+extern const PlaybackCount OSDL::Audio::Loop = -1 ;
+
 
 AudibleException::AudibleException( const std::string & reason ) throw():
 	AudioException( reason )
@@ -135,13 +138,13 @@ int Audible::GetLoopsForPlayCount( PlaybackCount playCount )
 	throw( AudibleException )
 {
 
-	if ( playCount == 0 || playCount < -1 )
+	if ( playCount == 0 || playCount < Loop )
 		throw AudibleException( "Audible::GetLoopsForPlayCount failed: "
 			"the play count is out of bounds (" 
 			+ Ceylan::toString( playCount ) + ")" ) ;
  
- 	if ( playCount == -1 )
-		return  -1 ;
+ 	if ( playCount == Loop )
+		return Loop ;
 	else
 		return ( playCount - 1 ) ;	
 				
