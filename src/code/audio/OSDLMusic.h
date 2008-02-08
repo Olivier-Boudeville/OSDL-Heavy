@@ -358,6 +358,7 @@ namespace OSDL
 				
 				/**
 				 * Returns the volume associated to this music instance.
+				 * Ranges from MinVolume to MaxVolume.
 				 *
 				 * @throw MusicException if the operation failed, including
 				 * if not supported or if no previously loaded music is
@@ -371,7 +372,8 @@ namespace OSDL
 				 * Sets the volume associated to this music instance.
 				 * Setting the volume during a fade will do nothing.
 				 *
-				 * @param newVolume the new volume to be set.
+				 * @param newVolume the new volume to be set, must range from
+				 * MinVolume to MaxVolume.
 				 *
 				 * @throw MusicException if the operation failed, including
 				 * if not supported or if no previously loaded music is
@@ -460,6 +462,8 @@ namespace OSDL
 				 *
 				 * @throw AudibleException if the operation failed, including
 				 * if not supported.
+				 *
+				 * @note On the Nintendo DS, the fade-in duration cannot be set.
 				 *
 				 */
 				virtual void playWithFadeIn( 
@@ -592,6 +596,26 @@ namespace OSDL
 				virtual void stop() throw( MusicException ) ; 
 
 				
+				
+				/** 
+				 * Gradually fades in the music over specified duration,
+				 * starting from now.
+				 * Does nothing if not playing or already fading.
+				 *
+				 * @param fadeInMaxDuration duration in milliseconds that the
+				 * fade-in effect should take to go to full volume from
+				 * silence, starting now.
+				 *
+				 * @throw MusicException if the operation failed, including
+				 * if not supported.
+				 *
+				 */
+				virtual void fadeIn( 
+						Ceylan::System::Millisecond fadeInMaxDuration ) 
+					throw( MusicException ) ; 
+
+
+				
 				/** 
 				 * Gradually fades out the music over specified duration,
 				 * starting from now.
@@ -599,11 +623,11 @@ namespace OSDL
 				 * The music will be halted after the fade out is completed.
 				 *
 				 * @param fadeOutMaxDuration duration in milliseconds that the
-				 * fade-out effect should take to go to silence, starting now.
+				 * fade-out effect should take to go to silence, starting now,
+				 * and from current volume.
 				 *
-				 * @note Audio::onMusicPlaybackFinished will be automatically
-				 * called when the current music (be it this one or another)
-				 * stops.
+				 * @note The onPlaybackEnded method will be automatically
+				 * called when the current music stops.
 				 *
 				 * @throw MusicException if the operation failed, including
 				 * if not supported.
@@ -613,7 +637,6 @@ namespace OSDL
 						Ceylan::System::Millisecond fadeOutMaxDuration ) 
 					throw( MusicException ) ; 
 
-				
 	
 				 
 	            /**
