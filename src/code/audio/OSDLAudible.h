@@ -47,6 +47,20 @@ namespace OSDL
 		 */ 
 		extern OSDL_DLL const PlaybackCount Loop ;  
 				
+				
+		/**
+		 * The minimum volume level (zero).
+		 *
+		 */ 
+		extern OSDL_DLL const Volume MinVolume ;  
+				
+				
+		/**
+		 * The maximum volume level (depends on the platform, 127 or 128).
+		 *
+		 */ 
+		extern OSDL_DLL const Volume MaxVolume ;  
+				
 									
 												
 		/**
