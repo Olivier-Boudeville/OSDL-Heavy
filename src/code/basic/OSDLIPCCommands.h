@@ -68,6 +68,35 @@ const ARM9CommandID PlayMusicRequest = 34 ;
 
 
 /**
+ * Request the ARM7 to fade-in current music, from volume zero to full volume.
+ *
+ * The last 16 bits of the command element contain the requested fade-in
+ * duration, in milliseconds.
+ *
+ * No answer expected.
+ *
+ * @see FadeOutMusicRequest
+ *
+ */
+const ARM9CommandID FadeInMusicRequest = 35 ;
+
+
+/**
+ * Request the ARM7 to fade-out current music, from current volume to zero
+ * volume.
+ *
+ * The last 16 bits of the command element contain the requested fade-out
+ * duration, in milliseconds.
+ *
+ * No answer expected.
+ *
+ * @see FadeInMusicRequest
+ *
+ */
+const ARM9CommandID FadeOutMusicRequest = 36 ;
+
+
+/**
  * Request the ARM7 to stop the playback of current music.
  *
  * No parameters set in the command element, no other element sent, no answer
@@ -76,7 +105,7 @@ const ARM9CommandID PlayMusicRequest = 34 ;
  * @see PlayMusicRequest
  *
  */
-const ARM9CommandID StopMusicRequest = 35 ;
+const ARM9CommandID StopMusicRequest = 37 ;
 
 
 /**
@@ -88,7 +117,7 @@ const ARM9CommandID StopMusicRequest = 35 ;
  * @see UnpauseMusicRequest
  *
  */
-const ARM9CommandID PauseMusicRequest = 36 ;
+const ARM9CommandID PauseMusicRequest = 38 ;
 
 
 /**
@@ -100,7 +129,7 @@ const ARM9CommandID PauseMusicRequest = 36 ;
  * @see PauseMusicRequest
  *
  */
-const ARM9CommandID UnpauseMusicRequest = 37 ;
+const ARM9CommandID UnpauseMusicRequest = 39 ;
 
 
 /**
@@ -111,34 +140,16 @@ const ARM9CommandID UnpauseMusicRequest = 37 ;
  * expected.
  *
  */
-const ARM9CommandID EndOfEncodedStreamReached = 38 ;
+const ARM9CommandID EndOfEncodedStreamReached = 40 ;
 
 
 /**
- * Notification to the ARM7: first music encoded buffer has been filled.
+ * Request the ARM7 to set the volume of current music to specified value.
  *
- * The two last bytes of the command element correspond to the size available
- * for the ARM7 to read in this buffer, no other element sent, no direct answer
- * expected.
- *
- * @see FirstBufferFillRequest
+ * The new volume is set in the last byte of command element.
  *
  */
-//const ARM9CommandID FirstBufferFilled = ;
-
-
-/**
- * Notification to the ARM7: second music encoded buffer has been filled.
- *
- * The two last bytes of the command element correspond to the size available
- * for the ARM7 to read in this buffer, no other element sent, no direct answer
- * expected.
- *
- * @see SecondBufferFillRequest
- *
- */
-//const ARM9CommandID SecondBufferFilled = ;
-
+const ARM9CommandID SetMusicVolumeRequest = 41 ;
 
 
 
