@@ -174,11 +174,35 @@ namespace OSDL
 			 * If a music was already playing, stop it and start immediately
 			 * the specified one.
 			 *
+			 * @param music the music to play.
+			 *		 
 			 * Returns just after having sent the request, i.e. without waiting
 			 * for the music to finish or even to start.
 			 *
 			 */
 			virtual void playMusic( Audio::Music & music ) 
+				throw( CommandException ) ;
+			
+			
+			/**
+			 * Requests the ARM7 to play the specified music with a fade-in.
+			 *
+			 * If a music was already playing, stop it and start immediately
+			 * the specified one.
+			 *
+			 * @param music the music to play.
+			 *
+			 * @param fadeInMaxDuration duration in milliseconds during
+			 * which the fade-in effect should take to go from silence to
+			 * full volume. The fade in effect only applies to the first
+			 * loop.
+			 *
+			 * Returns just after having sent the request, i.e. without waiting
+			 * for the music to finish or even to start.
+			 *
+			 */
+			virtual void playMusicWithFadeIn( Audio::Music & music, 
+					Ceylan::System::Millisecond fadeInMaxDuration ) 
 				throw( CommandException ) ;
 			
 			
@@ -193,6 +217,43 @@ namespace OSDL
 			 */
 			virtual void stopMusic() throw( CommandException ) ;
 			
+			
+			/**
+			 * Requests the ARM7 to start at once a fade-in effect on the
+			 * music over specified duration.
+			 *
+			 * Returns just after having sent the request, i.e. without waiting
+			 * for the fade-in to complete.
+			 *
+			 */
+			virtual void fadeInMusic( 
+					Ceylan::System::Millisecond fadeInMaxDuration ) 
+				throw( CommandException ) ;
+			
+			
+			/**
+			 * Requests the ARM7 to start at once a fade-out effect on the
+			 * music over specified duration.
+			 *
+			 * Returns just after having sent the request, i.e. without waiting
+			 * for the fade-out to complete.
+			 *
+			 */
+			virtual void fadeOutMusic( 
+					Ceylan::System::Millisecond fadeOutMaxDuration ) 
+				throw( CommandException ) ;
+			
+			
+			/**
+			 * Requests the ARM7 to set the volume of music channel to
+			 * specified value.
+			 *
+			 * @note Will affect all musics played afterwards this one as well.
+			 *
+			 */
+			virtual void setMusicVolume( Audio::Volume newVolume ) 
+				throw( CommandException ) ;
+
 
 
 			/**
