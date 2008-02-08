@@ -366,6 +366,89 @@ void CommandManager::playMusic( Audio::Music & music ) throw( CommandException )
 
 
 
+void CommandManager::playMusicWithFadeIn( Audio::Music & music,
+		Ceylan::System::Millisecond fadeInMaxDuration ) 
+	throw( CommandException )
+{
+			
+#if OSDL_ARCH_NINTENDO_DS
+
+#ifdef OSDL_RUNS_ON_ARM9
+	
+	/*
+	 * Like playMusic, but immediately followed by a fade-in request: 
+	 *
+	 * @note Most probably the fade-in request will arrive too soon to use the
+	 * actual sample rate, the default one might be always taken instead.
+	 *
+	 */
+	
+	music.setAsCurrent() ;
+	
+	// Forget any past cached current music:
+	_currentMusic = & music ;
+	
+	InterruptMask previous = SetEnabledInterrupts( AllInterruptsDisabled ) ;
+	 
+	LowLevelMusic & actualMusic = music.getContent() ;
+
+	/*
+	 * A boolean parameter is set in the command element: its last bit tells
+	 * whether the playback should start from first buffer (if 1) or from
+	 * second (if 0).
+	 *
+	 * The second element is a pointer to the cache-aligned sound buffer,
+	 * third is composed of the full size of the encoded buffer (16 first bits),
+	 * then the delta value (the MP3 frame size upper bound, 16 last bits).
+	 *
+	 */
+	FIFOElement commandElement = prepareFIFOCommand( PlayMusicRequest ) ;
+
+	// Uses last bit to tell to start with first buffer:
+	writeBlocking( ( commandElement | 0x00000001 ) ) ;
+
+	// Specifies to the ARM7 the address of encoded double buffer:
+	writeBlocking( reinterpret_cast<FIFOElement>( _doubleBuffer ) ) ;
+
+	// Sends the size of a half buffer and the one of the 'delta zone':
+	writeBlocking( (FIFOElement) ( ( ( (Ceylan::Uint16) _bufferSize ) << 16 ) 
+			| ( (Ceylan::Uint16) actualMusic._frameSizeUpperBound ) ) ) ;
+
+	
+	// Now adding the fade-in (second command in a row):
+	writeBlocking( prepareFIFOCommand( FadeInMusicRequest ) 
+		| ( fadeInMaxDuration & 0x0000ffff ) ) ;
+	
+	SetEnabledInterrupts( previous ) ;
+	
+	notifyCommandToARM7() ;
+	
+	/*
+	 * Here the decoding will be triggered on the ARM7, the ARM9 main loop is
+	 * responsible for the refilling of encoded buffers.
+	 *
+	 */
+	
+	 	
+#else // OSDL_RUNS_ON_ARM9
+
+	throw CommandException( "CommandManager::playMusicWithFadeIn failed: "
+		"not available on the ARM7." ) ;
+
+#endif // OSDL_RUNS_ON_ARM9
+		
+		
+#else // OSDL_ARCH_NINTENDO_DS
+
+	throw CommandException( "CommandManager::playMusicWithFadeIn failed: "
+		"not available on this platform." ) ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+	
+}
+
+
+
 void CommandManager::stopMusic() throw( CommandException )
 {
 			
@@ -375,10 +458,15 @@ void CommandManager::stopMusic() throw( CommandException )
 	
 	// Anything to stop ?
 	if ( _currentMusic == 0 )
+	{
+
+		LogPlug::warning( 
+			"CommandManager::stopMusic: no current music to stop." ) ;
+
 		return ;	
 
-	_currentMusic->manageNoMoreCurrent() ;
-
+	}
+	
 	InterruptMask previous = SetEnabledInterrupts( AllInterruptsDisabled ) ;
 	 
 	writeBlocking( prepareFIFOCommand( StopMusicRequest ) ) ;
@@ -387,7 +475,11 @@ void CommandManager::stopMusic() throw( CommandException )
 	
 	notifyCommandToARM7() ;
 		
-	_currentMusic = 0 ;
+	/*
+	 * manageNoMoreCurrent and al will be called when the ARM7 notifies the
+	 * end of playback.
+	 *
+	 */
 	
 #else // OSDL_RUNS_ON_ARM9
 
@@ -408,6 +500,151 @@ void CommandManager::stopMusic() throw( CommandException )
 
 
 
+void CommandManager::fadeInMusic(
+		Ceylan::System::Millisecond fadeInMaxDuration )
+	throw( CommandException )
+{
+			
+#if OSDL_ARCH_NINTENDO_DS
+
+#ifdef OSDL_RUNS_ON_ARM9
+	
+	// Anything to stop ?
+	if ( _currentMusic == 0 )
+	{
+
+		LogPlug::warning( 
+			"CommandManager::fadeInMusic: no current music to fade-in." ) ;
+
+		return ;	
+
+	}
+	
+	InterruptMask previous = SetEnabledInterrupts( AllInterruptsDisabled ) ;
+	 
+	writeBlocking( 
+		prepareFIFOCommand( FadeInMusicRequest ) | fadeInMaxDuration ) ;
+
+	SetEnabledInterrupts( previous ) ;
+	
+	notifyCommandToARM7() ;
+		
+	/*
+	 * manageNoMoreCurrent and al will be called when the ARM7 notifies the
+	 * end of playback.
+	 *
+	 */
+	
+#else // OSDL_RUNS_ON_ARM9
+
+	throw CommandException( "CommandManager::fadeInMusic failed: "
+		"not available on the ARM7." ) ;
+
+#endif // OSDL_RUNS_ON_ARM9
+		
+		
+#else // OSDL_ARCH_NINTENDO_DS
+
+	throw CommandException( "CommandManager::fadeInMusic failed: "
+		"not available on this platform." ) ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+	
+}
+
+
+
+void CommandManager::fadeOutMusic(
+		Ceylan::System::Millisecond fadeOutMaxDuration)
+	throw( CommandException )
+{
+			
+#if OSDL_ARCH_NINTENDO_DS
+
+#ifdef OSDL_RUNS_ON_ARM9
+	
+	// Anything to stop ?
+	if ( _currentMusic == 0 )
+	{
+
+		LogPlug::warning( 
+			"CommandManager::fadeOutMusic: no current music to fade-out." ) ;
+
+		return ;	
+
+	}
+	
+	InterruptMask previous = SetEnabledInterrupts( AllInterruptsDisabled ) ;
+	 
+	writeBlocking( 
+		prepareFIFOCommand( FadeOutMusicRequest ) | fadeOutMaxDuration ) ;
+
+	SetEnabledInterrupts( previous ) ;
+	
+	notifyCommandToARM7() ;
+		
+	/*
+	 * manageNoMoreCurrent and al will be called when the ARM7 notifies the
+	 * end of playback.
+	 *
+	 */
+	
+#else // OSDL_RUNS_ON_ARM9
+
+	throw CommandException( "CommandManager::fadeInMusic failed: "
+		"not available on the ARM7." ) ;
+
+#endif // OSDL_RUNS_ON_ARM9
+		
+		
+#else // OSDL_ARCH_NINTENDO_DS
+
+	throw CommandException( "CommandManager::fadeInMusic failed: "
+		"not available on this platform." ) ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+	
+}
+
+
+
+void CommandManager::setMusicVolume( Volume newVolume ) 
+	throw( CommandException )
+{
+
+#if OSDL_ARCH_NINTENDO_DS
+
+#ifdef OSDL_RUNS_ON_ARM9
+	
+	
+	InterruptMask previous = SetEnabledInterrupts( AllInterruptsDisabled ) ;
+	 
+	writeBlocking( prepareFIFOCommand( SetMusicVolumeRequest ) | newVolume ) ;
+
+	SetEnabledInterrupts( previous ) ;
+	
+	notifyCommandToARM7() ;
+		
+	
+#else // OSDL_RUNS_ON_ARM9
+
+	throw CommandException( "CommandManager::setMusicVolume failed: "
+		"not available on the ARM7." ) ;
+
+#endif // OSDL_RUNS_ON_ARM9
+		
+		
+#else // OSDL_ARCH_NINTENDO_DS
+
+	throw CommandException( "CommandManager::setMusicVolume failed: "
+		"not available on this platform." ) ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+}
+
+
+	
 void CommandManager::pauseMusic() throw( CommandException )
 {
 
