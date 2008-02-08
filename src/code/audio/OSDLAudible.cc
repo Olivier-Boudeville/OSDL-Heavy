@@ -16,6 +16,21 @@ using namespace OSDL::Audio ;
 // Corresponds to an infinite count.
 extern const PlaybackCount OSDL::Audio::Loop = -1 ;
 
+extern const Volume OSDL::Audio::MinVolume = 0 ;
+
+
+#ifdef OSDL_ARCH_NINTENDO_DS
+
+extern const Volume OSDL::Audio::MaxVolume = 127 ;
+
+#else // OSDL_ARCH_NINTENDO_DS
+
+// SDL_mixer convention:
+extern const Volume OSDL::Audio::MaxVolume = 128 ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
 
 AudibleException::AudibleException( const std::string & reason ) throw():
 	AudioException( reason )
