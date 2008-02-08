@@ -461,6 +461,25 @@ Volume Music::getVolume() const throw( MusicException )
 void Music::setVolume( Volume newVolume ) throw( MusicException )
 {
 
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw MusicException( 
+		"Music::setVolume failed: not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	
+	_CommandManagerSettings->_commandManager->setMusicVolume( newVolume ) ;
+	
+
+#endif // OSDL_RUNS_ON_ARM7
+
+
+#else // OSDL_ARCH_NINTENDO_DS
+
+
 #if OSDL_USES_SDL_MIXER
 	
 	try
@@ -487,6 +506,8 @@ void Music::setVolume( Volume newVolume ) throw( MusicException )
 		"Music::setVolume failed: no SDL_mixer support available." ) ;
 	
 #endif // OSDL_USES_SDL_MIXER
+
+#endif // OSDL_ARCH_NINTENDO_DS
 
 }
 
@@ -595,6 +616,47 @@ void Music::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
 
 	_isPlaying = true ;
 
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw MusicException( 
+		"Music::playWithFadeIn failed: not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	if ( hasContent() )
+		unload() ;
+		
+	load() ;
+	
+	_content->_playbackCount = playCount ;
+
+	try
+	{
+
+		if ( _content->_playbackCount != Loop )
+			_content->_playbackCount-- ;
+			
+		_CommandManagerSettings->_commandManager->playMusicWithFadeIn( *this,
+			fadeInMaxDuration ) ;
+		
+	}
+	catch( const CommandException & e )
+	{
+	
+		throw MusicException( "Music::playWithFadeIn failed: " 
+			+ e.toString() ) ;
+		
+	}
+	
+	return ;
+
+#endif // OSDL_RUNS_ON_ARM7
+
+#else // OSDL_ARCH_NINTENDO_DS
+
+
 #if OSDL_USES_SDL_MIXER
 			
 	if ( ! hasContent() )
@@ -613,6 +675,7 @@ void Music::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
 	
 #endif // OSDL_USES_SDL_MIXER
 
+#endif // OSDL_ARCH_NINTENDO_DS
 	
 }
 
@@ -820,8 +883,13 @@ void Music::stop() throw( MusicException )
 	try
 	{
 		
-		if ( hasContent() )	
+		if ( hasContent() )
+		{
+		
+			_content->_playbackCount = 0 ;	
 			_CommandManagerSettings->_commandManager->stopMusic() ;
+		
+		}	
 		
 	}
 	catch( const CommandException & e )
@@ -856,9 +924,59 @@ void Music::stop() throw( MusicException )
 
 
 
+void Music::fadeIn( Ceylan::System::Millisecond fadeInMaxDuration ) 
+	throw( MusicException )
+{
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw MusicException( "Music::fadeIn failed: "
+		"not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	_CommandManagerSettings->_commandManager->fadeInMusic( fadeInMaxDuration ) ;
+
+#endif // OSDL_RUNS_ON_ARM7
+
+
+#else // OSDL_ARCH_NINTENDO_DS
+
+	// No ::Mix_FadeInMusic, even with OSDL_USES_SDL_MIXER.
+
+	throw MusicException( "Music::fadeIn failed: "
+		"not available on this platform." ) ;
+	
+#endif // OSDL_ARCH_NINTENDO_DS
+
+}
+
+
+
 void Music::fadeOut( Ceylan::System::Millisecond fadeOutMaxDuration ) 
 	throw( MusicException )
 {
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw MusicException( "Music::fadeOut: "
+		"not supported on the ARM7" ) ;
+
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	_CommandManagerSettings->_commandManager->fadeOutMusic( 
+		fadeOutMaxDuration ) ;
+
+#endif // OSDL_RUNS_ON_ARM7
+
+
+#else // OSDL_ARCH_NINTENDO_DS
 
 #if OSDL_USES_SDL_MIXER
 	
@@ -869,10 +987,12 @@ void Music::fadeOut( Ceylan::System::Millisecond fadeOutMaxDuration )
 				
 #else // OSDL_USES_SDL_MIXER
 
-	throw MusicException( "Music::halt failed: "
+	throw MusicException( "Music::fadeOut failed: "
 		"no SDL_mixer support available." ) ;
 	
 #endif // OSDL_USES_SDL_MIXER
+
+#endif // OSDL_ARCH_NINTENDO_DS
 
 }
 
