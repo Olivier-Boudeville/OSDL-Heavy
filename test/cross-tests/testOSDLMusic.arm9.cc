@@ -96,13 +96,14 @@ int main( int argc, char * argv[] )
 		if ( interactive )
 		{
 		
-			LogPlug::info( "First playback ended, press any key to continue" ) ;
+			LogPlug::info( "First playback ended, "
+				"press any key to play it again with a fade-in." ) ;
 			waitForKey() ;
 		
 		}
 		
-		LogPlug::info( "Playing music again, once." ) ;
-		testMusic.play() ;
+		LogPlug::info( "Playing music again, once, with a 2-second fade-in." ) ;
+		testMusic.playWithFadeIn( 2000 /* milliseconds */ ) ;
 
 		while ( testMusic.isPlaying() )
 		{
@@ -118,14 +119,12 @@ int main( int argc, char * argv[] )
 		if ( interactive )
 		{
 		
-			LogPlug::info( 
-				"Second playback ended, press any key to continue" ) ;
+			LogPlug::info( "Second playback ended, "
+				"press any key to play it twice in a row." ) ;
 			waitForKey() ;
 		
 		}
 
-		return 0 ;
-		
 		
 		LogPlug::info( "Now playing that music twice." ) ;
 		testMusic.play( 2 ) ;
@@ -145,14 +144,15 @@ int main( int argc, char * argv[] )
 		{
 		
 
-			LogPlug::info( "Third playback ended, press any key to continue" ) ;
+			LogPlug::info( "Third playback ended, press any key to continue "
+				"with pause/unpause" ) ;
 			waitForKey() ;
 		
 		}
 		
 		
 		LogPlug::info( "Now playing once, pausing after one second, "
-			"waiting two seconds, then unpausing." ) ;
+			"waiting five seconds, then unpausing." ) ;
 		testMusic.play( 1 ) ;
 		
 		
@@ -167,8 +167,8 @@ int main( int argc, char * argv[] )
 		}
 		
 		testMusic.pause() ;
-		LogPlug::info( "Paused ! Sleeping 2s..." ) ;
-		Ceylan::System::sleepForSeconds( 2 ) ;
+		LogPlug::info( "Paused ! Sleeping 4 seconds..." ) ;
+		Ceylan::System::sleepForSeconds( 4 ) ;
 		testMusic.unpause() ;
 		LogPlug::info( "...unpaused !" ) ;
 		
@@ -188,11 +188,10 @@ int main( int argc, char * argv[] )
 		{
 		
 			LogPlug::info( 
-				"Fourth playback ended, press any key to continue" ) ;
+				"Fourth playback ended, press any key to play and stop." ) ;
 			waitForKey() ;
 		
 		}
-
 
 
 		LogPlug::info( "Now playing once, stopping music after one second." ) ;
@@ -213,21 +212,66 @@ int main( int argc, char * argv[] )
 		LogPlug::info( 
 			"Current ARM7 status after fifth (stopped) playback: "
 			 + myCommandManager.interpretLastARM7StatusWord() ) ;
-		
+
 		if ( interactive )
 		{
 		
 			LogPlug::info( 
-				"Fifth playback ended, press any key to continue" ) ;
+				"Fifth playback ended, press any key to test fade-out." ) ;
+			waitForKey() ;
+		
+		}
+
+	
+		LogPlug::info( "Now playing once, fading-out music after a half second "
+			"and for 2 seconds." ) ;
+		testMusic.play( 1 ) ;
+		VBICount = 30 ;
+		
+		while ( testMusic.isPlaying() && VBICount-- > 0 )
+		{
+		
+			Music::ManageCurrentMusic() ;
+			atomicSleep() ;
+		
+		}
+
+		LogPlug::info( "Requesting the fade-out." ) ;
+		testMusic.fadeOut( 2000 /* milliseconds */ ) ;
+
+		while ( testMusic.isPlaying() )
+		{
+		
+			Music::ManageCurrentMusic() ;
+			atomicSleep() ;
+		
+		}
+		
+		LogPlug::info( 
+			"Current ARM7 status after sixth (faded-out) playback: "
+			 + myCommandManager.interpretLastARM7StatusWord() ) ;
+		
+		LogPlug::info(
+			"Setting volume to maximum, now that fade-out is over "
+			"(new volume is " 
+			+ Ceylan::toNumericalString( Audio::MaxVolume ) + ")." ) ;
+		testMusic.setVolume( Audio::MaxVolume ) ;
+			
+		if ( interactive )
+		{
+		
+			LogPlug::info( 
+				"Sixth playback ended, press any key to play in a loop." ) ;
 			waitForKey() ;
 		
 		}
 		
 		LogPlug::info( "Now playing in a loop, for ever "
-			"(clamped to 1 minute)." ) ;
+			"(clamped to 30s)." ) ;
+			
 		testMusic.play( Loop ) ;
 
-		VBICount = 60 ;
+		VBICount = 60 * 30 ;
 		
 		while ( testMusic.isPlaying() && VBICount-- > 0 )
 		{
