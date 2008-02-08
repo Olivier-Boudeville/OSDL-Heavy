@@ -110,7 +110,7 @@ namespace OSDL
 		/**
 		 * Describes the volume for the playback of an audible.
 		 *
-		 * Ranges from MinVolume (0) to MaxVolume (128).
+		 * Ranges from MinVolume to MaxVolume.
 		 *
 		 */
 		typedef Ceylan::Uint8 Volume ;
