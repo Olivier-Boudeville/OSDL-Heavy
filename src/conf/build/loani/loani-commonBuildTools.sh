@@ -29,13 +29,13 @@ else
 	else
 
 		# For the Nintendo DS we use the devkitPro-based toolchain:
-		# (libnds not listed here anymore as now is provided by PALib)
+		# (libnds listed here again: the PALib-provided version is ancient)
 		# (libfat not listed here anymore as now is provided by libnds)
 		# (libnds_examples not listed here)
 		# Note: PAlib comes often with deprecated versions of its prerequesites
-		# (notably: libnds), hence installing it directly can be interesting
+		# (notably: libnds), hence installing them directly can be interesting,
 		# if not using PAlib.
-		COMMON_BUILD_TOOLS="devkitARM PAlib dswifi DeSmuME NoCashGBA"	
+		COMMON_BUILD_TOOLS="devkitARM libnds grit PAlib dswifi DeSmuME NoCashGBA"	
 		
 	fi
 	
@@ -702,8 +702,134 @@ cleandevkitARM()
 
 
 ################################################################################
+# grit: an image transformation program for the GBA/DS
+################################################################################
+
+
+getgrit()
+{
+	DEBUG "Getting grit..."
+	launchFileRetrieval grit
+	return $?
+}
+
+
+preparegrit()
+{
+
+	DEBUG "Preparing grit..."
+	
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi	
+	
+	printBeginList "grit       "
+
+	printItem "extracting"
+
+	cd $repository
+
+	grit_PREFIX=${ds_prefix}/grit-${grit_VERSION}
+
+	${MKDIR} -p ${grit_PREFIX}
+					
+	# Extract grit sources in installation repository:
+	{
+		cd ${grit_PREFIX} && ${UNZIP} -o "$repository/${grit_ARCHIVE}"
+	} 1>>"$LOG_OUTPUT" 2>&1
+		
+	if [ $? != "0" ] ; then
+		ERROR "Unable to extract ${grit_ARCHIVE}."
+		exit 10
+	fi
+	
+	cd $repository
+
+	printOK
+	
+}
+
+
+generategrit()
+{
+
+	DEBUG "Generating grit..."
+
+	cd ${grit_PREFIX}/grit_src
+	
+	printItem "configuring"
+	
+	# Needing freeimage, use for example: 'apt-get install libfreeimage3'
+	# Library link apparently not created on install (at least on Ubuntu Gutsy):
+	# 'cd /usr/lib && ln -s libfreeimage.so.3 libfreeimage.so'
+
+	# In grit_src/Makefile:
+	# - change 'LDFLAGS += -s -static' into 
+	# 'LDFLAGS += -s #-static' as we are using a shared library for freeimage
+	# - in 'Build rules', for the $(TARGET) rule, remove '-upx $@'. 
+	# The command is therefore: '$(CXX) $(LDFLAGS) -o $@ $(GRIT_OBJ) $(LIBPATHS) -lgrit -lcldib -lfreeimage'
+	# upx seems to be an executable packer (see 
+	# http://upx.sourceforge.net/#overview)
+	
+	# In case of a build error in libgrit/pathfun.cpp about the sys/params.h
+	# include not being found, in libgrit/pathfun.cpp add, just after 
+	# '#include <sys/params.h>':
+	
+	#ifndef MAXPATHLEN
+	#define MAXPATHLEN 1024
+	#endif
+	
+	
+	printOK	
+	
+	printItem "building"
+	
+	${MAKE}
+	printOK
+	
+	
+	printItem "installing"
+	
+	echo "# grit section." >> ${OSDL_DS_ENV_FILE}
+		
+	echo "grit_PREFIX=${grit_PREFIX}" >> ${OSDL_DS_ENV_FILE}
+	echo "export grit_PREFIX" >> ${OSDL_DS_ENV_FILE}
+	echo "PATH=\$grit_PREFIX/bin:\${PATH}" >> ${OSDL_DS_ENV_FILE}
+				
+	PATH=${grit_PREFIX}/bin:${PATH}
+	export PATH
+		
+	echo "" >> ${OSDL_DS_ENV_FILE}
+				
+	${MKDIR} -p ${grit_PREFIX}/bin
+	${CP} -f grit ${grit_PREFIX}/bin
+
+
+	printOK
+	
+	DEBUG "grit successfully installed."
+	
+	printEndList
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleangrit()
+{
+	LOG_STATUS "Cleaning grit build tree..."
+	cd ${grit_PREFIX}/grit_src
+	${MAKE} clean
+}
+
+
+
+################################################################################
 # libnds: the low level library for Nintendo DS
-# (note: installed now with the PAlib package)
 ################################################################################
 
 
