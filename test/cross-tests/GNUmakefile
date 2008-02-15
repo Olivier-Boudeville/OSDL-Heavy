@@ -33,12 +33,10 @@ TEST_ARM9_SOURCES = $(wildcard *.arm9.cc)
 TEST_SUFFIX = $(TEST_PREFIX)-patched.$(TEST_EXEC_EXTENSION)
 
 #TEST_TARGETS = $(patsubst %.arm9.cc,%-$(TEST_SUFFIX),$(TEST_ARM9_SOURCES))
-#TEST_TARGETS = \
-#	getMP3Settings-$(TEST_SUFFIX)  \
-#	testOSDLMusic-$(TEST_SUFFIX)   \
-
 TEST_TARGETS = \
+	getMP3Settings-$(TEST_SUFFIX)  \
 	testOSDLMusic-$(TEST_SUFFIX)   \
+
 	
 
 # Some are patched, the others not:
