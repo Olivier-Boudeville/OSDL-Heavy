@@ -1,17 +1,12 @@
-/*
- * Must be in first position as OSDLCommandManager.h refers to Ceylan.h for
- * the FIFO class definition, and this header needs CEYLAN_ARCH_NINTENDO_DS.
- *
- */
-#if OSDL_ARCH_NINTENDO_DS
-#include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
-#endif // OSDL_ARCH_NINTENDO_DS
-
 #include "OSDLCommandManager.h"
 
 
 #include "OSDLSound.h"               // for Sound
 #include "OSDLMusic.h"               // for Music
+
+#include "OSDLIPCCommands.h"         
+
+#include "OSDLARM7Codes.h"           // for Helix error codes
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -19,14 +14,11 @@
 #endif // OSDL_USES_CONFIG_H
 
 
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
+#endif // OSDL_ARCH_NINTENDO_DS
 
-/**
- * For IPC commands, must be after OSDLConfigForNintendoDS.h include as some
- * Ceylan defines are needed for its included IPC counterpart.
- */
-#include "OSDLIPCCommands.h"         
 
-#include "OSDLARM7Codes.h"           // for Helix error codes
 
 
 
@@ -591,7 +583,7 @@ void CommandManager::fadeOutMusic(
 	
 #else // OSDL_RUNS_ON_ARM9
 
-	throw CommandException( "CommandManager::fadeInMusic failed: "
+	throw CommandException( "CommandManager::fadeOutMusic failed: "
 		"not available on the ARM7." ) ;
 
 #endif // OSDL_RUNS_ON_ARM9
@@ -599,7 +591,7 @@ void CommandManager::fadeOutMusic(
 		
 #else // OSDL_ARCH_NINTENDO_DS
 
-	throw CommandException( "CommandManager::fadeInMusic failed: "
+	throw CommandException( "CommandManager::fadeOutMusic failed: "
 		"not available on this platform." ) ;
 
 #endif // OSDL_ARCH_NINTENDO_DS
