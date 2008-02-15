@@ -20,4 +20,4 @@ identifyOSDLFile_exe_SOURCES = identifyOSDLFile.cc
 clean:clean-local
 
 clean-local: 
-	@rm -f *.osdl.sound *.osdl.music *.log
+	@rm -f *.log
