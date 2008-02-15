@@ -18,12 +18,12 @@ AC_INIT([ST_PROJECT_NAME],[ST_VERSION],[ST_MAILING_LIST_BUGTRACKING])
 AC_CONFIG_SRCDIR([ST_CONFIG_HEADER.in])
 AC_CONFIG_AUX_DIR([src/conf/build])
 
-# Detects the canonical host and target build environment :
+# Detects the canonical host and target build environment:
 AC_CANONICAL_TARGET
 
 # 'tar-ustar' selects the ustar format defined by POSIX 1003.1-1988. 
 # This format is believed to be old enough to be portable, and allows
-# for paths longer than 99 characters :
+# for paths longer than 99 characters:
 AM_INIT_AUTOMAKE([tar-ustar])
 
 # OSDLTemporaryConfig.h is the first basic config file to be generated,
@@ -43,10 +43,10 @@ OSDL_CPPFLAGS="-DOSDL_USES_CONFIG_H $OSDL_CPPFLAGS"
 # OSDLConfig.h will be the only config header to be installed.
 # It is obtained from ST_CONFIG_HEADER by renaming all entries that may 
 # clash when included by some user code.
-# Ex : HAVE_CTIME is ultimately renamed to OSDL_USES_CTIME
+# Ex: HAVE_CTIME is ultimately renamed to OSDL_USES_CTIME
 AX_PREFIX_CONFIG_H([src/code/OSDLConfig.h])
 
-# How to use it remains unclear : #AC_CONFIG_HEADERS([ST_CONFIG_HEADER:src/conf/build/OSDLConfig-header.in:src/conf/build/OSDLConfig-footer.in])
+# How to use it remains unclear: #AC_CONFIG_HEADERS([ST_CONFIG_HEADER:src/conf/build/OSDLConfig-header.in:src/conf/build/OSDLConfig-footer.in])
 
 
 
@@ -95,7 +95,7 @@ AC_SUBST(OSDL_FULL_VERSION)
 OSDL_MAJOR_ANCESTOR=ST_MAJOR_ANCESTOR
 AC_SUBST(OSDL_MAJOR_ANCESTOR)
 
-# From previous variables Libtool version can be deduced :
+# From previous variables Libtool version can be deduced:
 
 OSDL_LT_RELEASE=$OSDL_VERSION
 AC_SUBST(OSDL_LT_RELEASE)
@@ -115,13 +115,13 @@ OSDL_LIBTOOL_VERSION="$OSDL_LT_CURRENT.$OSDL_LT_REVISION.$OSDL_LT_AGE"
 # The OSDL_LIBTOOL_VERSION symbol is used to update
 # generic/OSDLHeaderVersion.cc with the actual OSDL libtool version, 
 # so that this header-embedded version can be compared with the library
-# version (see : test/osdl.m4). 
+# version (see: test/osdl.m4). 
 AC_SUBST(OSDL_LIBTOOL_VERSION)
 
 
 # The value must be quoted with "" since it will be an argument of a C++ 
 # function call.
-# See : generic/OSDLUtils.cc for the library-embedded version.
+# See: generic/OSDLUtils.cc for the library-embedded version.
 AC_DEFINE_UNQUOTED([LIBTOOL_VERSION],
 	["$OSDL_LIBTOOL_VERSION"],
 	[Current Libtool version for the OSDL library])
@@ -135,16 +135,16 @@ AC_SUBST(OSDL_PKGCONFIG_FILE)
 OSDL_ARCHIVE_DIR="\${HOME}/Archive/${PROJECT_NAME}"
 AC_SUBST(OSDL_ARCHIVE_DIR)
 
-# Local shared directory for OSDL :
+# Local shared directory for OSDL:
 # If the user wants to redefine his prefix, then he should reconfigure the
-# package : if not hardcoding the prefix at the configure step, then for
+# package: if not hardcoding the prefix at the configure step, then for
 # example we could not use autoconf to generate doxygen.conf which needs
 # a fully expanded output path (hence not containing '${prefix}').
 OSDL_INSTALL_SHARED_DIR="\${prefix}/share/${PROJECT_NAME}"
 AC_SUBST(OSDL_INSTALL_SHARED_DIR)
 
 
-# The OSDL source archive downloaded by LOANI :
+# The OSDL source archive downloaded by LOANI:
 OSDL_CURRENT_SOURCE_ARCHIVE="osdl-$OSDL_VERSION.tar.bz2"
 AC_SUBST(OSDL_CURRENT_SOURCE_ARCHIVE)
 
@@ -163,7 +163,7 @@ AC_SUBST(OSDL_SF_VERSION_URL)
 OSDL_MIRROR_WEB_SERVER="esperide.com"
 AC_SUBST(OSDL_MIRROR_WEB_SERVER)
 
-# Used not to mix projects and versions :
+# Used not to mix projects and versions:
 OSDL_CURRENT_VERSION_PREFIX="${PROJECT_NAME}-${OSDL_VERSION}"
 AC_SUBST(OSDL_CURRENT_VERSION_PREFIX)
 
@@ -171,35 +171,35 @@ AC_SUBST(OSDL_CURRENT_VERSION_PREFIX)
 # Local directories.
 # They are gathered here since doxygen configuration file needs them also.
 
-# Local root of the whole OSDL documentation :
+# Local root of the whole OSDL documentation:
 # If the user wants to redefine his prefix, then he should reconfigure the
-# package : if not hardcoding the prefix at the configure step, then for
+# package: if not hardcoding the prefix at the configure step, then for
 # example we could not use autoconf to generate doxygen.conf which needs
 # a full expanded output path (hence not containing ${prefix}).
 OSDL_LOCAL_DOC_DIR="\${prefix}/share/${PROJECT_NAME}/doc"
 AC_SUBST(OSDL_LOCAL_DOC_DIR)
 
-# Local root of the whole OSDL html documentation :
-# (ex : PREFIX/doc/web)
+# Local root of the whole OSDL html documentation:
+# (ex: PREFIX/doc/web)
 OSDL_LOCAL_WEB_DIR=$OSDL_LOCAL_DOC_DIR/web
 AC_SUBST(OSDL_LOCAL_WEB_DIR)
 
-# Local root of the whole OSDL general html documentation :
+# Local root of the whole OSDL general html documentation:
 # (not specific to any version; no special subdirectory used)
-# (ex : PREFIX/doc/web)
+# (ex: PREFIX/doc/web)
 OSDL_LOCAL_WEB_SHARED_DIR=$OSDL_LOCAL_WEB_DIR
 AC_SUBST(OSDL_LOCAL_WEB_SHARED_DIR)
 
 
-# Local root of the OSDL HTML documentation specific to this current version :
-# (ex : PREFIX/doc/web/OSDL-u.v)
+# Local root of the OSDL HTML documentation specific to this current version:
+# (ex: PREFIX/doc/web/OSDL-u.v)
 OSDL_LOCAL_WEB_CURRENT_VERSION_DIR=$OSDL_LOCAL_WEB_DIR/$OSDL_CURRENT_VERSION_PREFIX
 AC_SUBST(OSDL_LOCAL_WEB_CURRENT_VERSION_DIR)
 
 
 # Local root of the OSDL API HTML documentation specific to this current
-# version :
-# (ex : PREFIX/doc/web/OSDL-u.v/api)
+# version:
+# (ex: PREFIX/doc/web/OSDL-u.v/api)
 OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR=$OSDL_LOCAL_WEB_DIR/$OSDL_CURRENT_VERSION_PREFIX/api
 AC_SUBST(OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR)
 
@@ -215,12 +215,12 @@ AC_SUBST(OSDL_MAILING_LIST_BUGTRACKING)
 
 
 
-# If the user did not override CXXFLAGS, provide our own default settings :
+# If the user did not override CXXFLAGS, provide our own default settings:
 # (in all cases the clumsy "-g -O2" automake default is removed) 
 CXXFLAGS=${CXXFLAGS-""}
 
 
-# Checks for programs :
+# Checks for programs:
 AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_CPP
@@ -234,7 +234,7 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 
-# Only headers independent from all OSDL features are checked here : 
+# Only headers independent from all OSDL features are checked here: 
 # (actually nothing to test, everything is provided by Ceylan)
 #AC_CHECK_HEADERS([])
 
@@ -257,7 +257,7 @@ AC_C_VOLATILE
 AC_FUNC_CLOSEDIR_VOID
 AC_FUNC_ERROR_AT_LINE
 AC_FUNC_FORK
-# No, 'malloc' was only in a comment : AC_FUNC_MALLOC
+# No, 'malloc' was only in a comment: AC_FUNC_MALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_TYPE_SIGNAL
 AC_FUNC_STAT
@@ -272,7 +272,7 @@ AC_FUNC_UTIME_NULL
 # LOANI section.
 # (defines OSDL_LOANI_INSTALLATIONS hence must be before prerequesites)
 
-# The version of LOANI is the same as the one of OSDL :
+# The version of LOANI is the same as the one of OSDL:
 LOANI_VERSION=$OSDL_VERSION
 AC_SUBST(LOANI_VERSION)
 
@@ -280,23 +280,23 @@ AC_SUBST(LOANI_VERSION)
 OSDL_INSTALLATION="\${prefix}"
 
 # Needed to avoid a '..' in the path which would result in the includes not
-# found at build time, since the installed OSDL directory does not exist yet :
+# found at build time, since the installed OSDL directory does not exist yet:
 OSDL_LOANI_INSTALLATIONS=`echo ${prefix} | sed 's|LOANI-installations/OSDL-.*$|LOANI-installations|1'`
 AC_SUBST(OSDL_LOANI_INSTALLATIONS)
 
-# Where the LOANI download cache will be put :
+# Where the LOANI download cache will be put:
 LOANI_REPOSITORY_DIR="${OSDL_LOANI_INSTALLATIONS}/../LOANI-repository"
 AC_SUBST(LOANI_REPOSITORY_DIR)
 
-# Where LOANI will install packages :
+# Where LOANI will install packages:
 LOANI_INSTALL_DIR="${OSDL_LOANI_INSTALLATIONS}"
 AC_SUBST(LOANI_INSTALL_DIR)
 
-# The LOANI documentation page :
+# The LOANI documentation page:
 LOANI_WEB_HOMEPAGE="$OSDL_SF_VERSION_URL/LOANI.html"
 AC_SUBST(LOANI_WEB_HOMEPAGE)
 
-# The LOANI mailing-list for bug reports :
+# The LOANI mailing-list for bug reports:
 LOANI_MAILING_LIST=ST_MAILING_LIST_LOANI
 AC_SUBST(LOANI_MAILING_LIST)
 
@@ -305,7 +305,7 @@ AC_SUBST(LOANI_MAILING_LIST)
 # Prerequesites section.
 
 # The versions must be specified here, as they are needed to call the
-# m4 configure macros (ex : AM_PATH_SDL( 1.2.11 ...)) and they are used
+# m4 configure macros (ex: AM_PATH_SDL( 1.2.11 ...)) and they are used
 # to generate OSDLToolsSettings.inc.
 
 # As soon as the autotools are used, the whole SDL family and its own
@@ -461,7 +461,7 @@ CEYLAN_OLDEST_SUPPORTED_RELEASE="$CEYLAN_RECOMMENDED_RELEASE"
 AC_SUBST(CEYLAN_OLDEST_SUPPORTED_RELEASE)
 
 
-# The Ceylan source archive downloaded by LOANI :
+# The Ceylan source archive downloaded by LOANI:
 CEYLAN_CURRENT_SOURCE_ARCHIVE="ceylan-$CEYLAN_OLDEST_SUPPORTED_VERSION.tar.bz2"
 AC_SUBST(CEYLAN_CURRENT_SOURCE_ARCHIVE)
 
@@ -469,7 +469,7 @@ AC_SUBST(CEYLAN_CURRENT_SOURCE_ARCHIVE)
 # Checks for the Ceylan library (see ceylan.m4)
 CEYLAN_PATH($CEYLAN_OLDEST_SUPPORTED_MAJOR,$CEYLAN_OLDEST_SUPPORTED_MINOR,$CEYLAN_OLDEST_SUPPORTED_RELEASE)
 
-# CEYLAN_PREFIX is set by CEYLAN_PATH :
+# CEYLAN_PREFIX is set by CEYLAN_PATH:
 CEYLAN_INSTALL_ROOT="$CEYLAN_PREFIX"
 AC_SUBST(CEYLAN_INSTALL_ROOT)
 
@@ -525,13 +525,14 @@ AC_SUBST(OSDL_VIDEO_TWO_DIMENSIONAL)
 
 # Debug versus optimizations section.
 
-# See if the user wants aggressive optimizations of the code :
+# See if the user wants aggressive optimizations of the code:
 AC_ARG_ENABLE(debug,
 	AS_HELP_STRING(--enable-debug,[disable aggressive optimizations [[default=yes]]]),,enable_debug=yes)
 if test x$enable_debug = xyes; then
 
-	# Debug requested :
+	# Debug requested:
 	DEBUG=1
+	DEBUG_AUDIO_PLAYBACK=0
 	DEBUG_AUDIO_RENDERER=0
 	DEBUG_BLIT=0
 	DEBUG_BOUNDING_BOX=0
@@ -553,6 +554,12 @@ if test x$enable_debug = xyes; then
 	DEBUG_VIDEO_RENDERER=0
 	DEBUG_WIDGET=0
 	
+	VERBOSE_AUDIO_MODULE=1
+	VERBOSE_BASIC_MODULE=1
+	VERBOSE_ENGINE_MODULE=1
+	VERBOSE_EVENTS_MODULE=1
+	VERBOSE_VIDEO_MODULE=1
+	
 	VERBOSE_CONTROLLER=0
 	VERBOSE_JOYSTICK=0
 	VERBOSE_JOYSTICK_HANDLER=0
@@ -569,13 +576,14 @@ if test x$enable_debug = xyes; then
 		# -fstack-check used to be specified but wroke havoc in generated code,
 		# causing crashes and various valgrind reports.
 		#AM_CXXFLAGS="$AM_CXXFLAGS -ggdb -O0 -fno-inline -fbounds-check -ftrapv -fnon-call-exceptions"
-		# Safest settings :
+		# Safest settings:
 		AM_CXXFLAGS="$AM_CXXFLAGS -ggdb -O0 -fno-inline"				
 	fi	 
 else
 
-	# Aggressive optimizations :
+	# Aggressive optimizations:
 	DEBUG=0
+	DEBUG_AUDIO_PLAYBACK=0
 	DEBUG_AUDIO_RENDERER=0
 	DEBUG_BLIT=0
 	DEBUG_BOUNDING_BOX=0
@@ -596,6 +604,12 @@ else
 	DEBUG_VIDEO=0
 	DEBUG_VIDEO_RENDERER=0
 	DEBUG_WIDGET=0
+
+	VERBOSE_AUDIO_MODULE=0
+	VERBOSE_BASIC_MODULE=0
+	VERBOSE_ENGINE_MODULE=0
+	VERBOSE_EVENTS_MODULE=0
+	VERBOSE_VIDEO_MODULE=0
 	
 	VERBOSE_CONTROLLER=0
 	VERBOSE_JOYSTICK=0
@@ -608,8 +622,8 @@ else
 	CACHE_OVERALL_SETTINGS=1
 	
     if test x$ac_cv_cxx_compiler_gnu = xyes; then
-		# -fomit-frame-pointer : may prevent debugging on some platforms
-		# -ffast-math : not requesting exact IEEE or ISO implementation
+		# -fomit-frame-pointer: may prevent debugging on some platforms
+		# -ffast-math: not requesting exact IEEE or ISO implementation
 		# rules/specifications
         AM_CXXFLAGS="$AM_CXXFLAGS -g0 -O3 -fexpensive-optimizations -fomit-frame-pointer -ffast-math -funroll-loops"
     fi
@@ -639,6 +653,10 @@ fi
 AC_DEFINE_UNQUOTED([DEBUG],
 	[$DEBUG],
 	[Define to 1 if generic debug mode is to be enabled])
+
+AC_DEFINE_UNQUOTED([DEBUG_AUDIO_PLAYBACK],
+	[$DEBUG_AUDIO_PLAYBACK],
+	[Define to 1 if debug mode for sound/music playback is to be enabled])
 
 AC_DEFINE_UNQUOTED([DEBUG_AUDIO_RENDERER],
 	[$DEBUG_AUDIO_RENDERER],
@@ -719,7 +737,27 @@ AC_DEFINE_UNQUOTED([DEBUG_VIDEO_RENDERER],
 AC_DEFINE_UNQUOTED([DEBUG_WIDGET],
 	[$DEBUG_WIDGET],
 	[Define to 1 if debug mode for widgets is to be enabled])
+
 	
+AC_DEFINE_UNQUOTED([VERBOSE_AUDIO_MODULE],
+	[$VERBOSE_AUDIO_MODULE],
+	[Define to 1 if verbose mode for audio module is to be enabled])
+	
+AC_DEFINE_UNQUOTED([VERBOSE_BASIC_MODULE],
+	[$VERBOSE_BASIC_MODULE],
+	[Define to 1 if verbose mode for basic module is to be enabled])
+	
+AC_DEFINE_UNQUOTED([VERBOSE_ENGINE_MODULE],
+	[$VERBOSE_ENGINE_MODULE],
+	[Define to 1 if verbose mode for engine module is to be enabled])
+	
+AC_DEFINE_UNQUOTED([VERBOSE_EVENTS_MODULE],
+	[$VERBOSE_EVENTS_MODULE],
+	[Define to 1 if verbose mode for events module is to be enabled])
+	
+AC_DEFINE_UNQUOTED([VERBOSE_VIDEO_MODULE],
+	[$VERBOSE_VIDEO_MODULE],
+	[Define to 1 if verbose mode for video module is to be enabled])
 	
 	
 AC_DEFINE_UNQUOTED([VERBOSE_CONTROLLER],
@@ -762,25 +800,25 @@ AC_DEFINE_UNQUOTED([CACHE_OVERALL_SETTINGS],
 
 # Warning and error section.
 
-# Add verbose warnings by default, and allow ANSI compliance checking :
+# Add verbose warnings by default, and allow ANSI compliance checking:
 AC_ARG_ENABLE(strict-ansi,
 	AS_HELP_STRING(--enable-strict-ansi,[enable strict ANSI compliance build [[default=yes]]]),,enable_strict_ansi=yes)
 if test x$ac_cv_cxx_compiler_gnu = xyes; then
-	# Basically paranoïd in all cases :
+	# Basically paranoïd in all cases:
 	
-	# Following warnings are not used, explanations follow : 
-	#    -Weffc++ : the standard library headers trigger zillions of warnings.
-	#    -Waggregate-return : even a simple std::string is an aggregate.
-	#    -Wunused-parameter : inherited methods may not use some of their
+	# Following warnings are not used, explanations follow: 
+	#    -Weffc++: the standard library headers trigger zillions of warnings.
+	#    -Waggregate-return: even a simple std::string is an aggregate.
+	#    -Wunused-parameter: inherited methods may not use some of their
 	# parameters, not wanting to freeze API with "__attribute__" keyword.
-	#    -Wpadded : add it if wanting to reorder fields of structures to save
+	#    -Wpadded: add it if wanting to reorder fields of structures to save
 	# some bytes.
-	#    -Wmissing-noreturn : would force declaring __attribute__ ((noreturn))
+	#    -Wmissing-noreturn: would force declaring __attribute__ ((noreturn))
 	# in every method which throws exceptions about unimplemented feature
-	#	 -Wold-style-cast : some standard macros (WIFEXITED, WEXITSTATUS, 
+	#	 -Wold-style-cast: some standard macros (WIFEXITED, WEXITSTATUS, 
 	# etc.) expand into old-style C casts
-	#    -Wunreachable-code : temporarily removed because of gcc 4.0.2
-	# incorrecly complaining : 'warning: will never be executed' in Exception
+	#    -Wunreachable-code: temporarily removed because of gcc 4.0.2
+	# incorrecly complaining: 'warning: will never be executed' in Exception
 	# constructor
 	#
     AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute -Wpacked -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
@@ -796,13 +834,13 @@ fi
 
 # Some color definitions, to be more readable.
 
-# In the case your terminal does not support color, use :
+# In the case your terminal does not support color, use:
 # --disable-colored-build
 
-# See also : function updateColorSupport of
+# See also: function updateColorSupport of
 # Ceylan/trunk/src/code/scripts/shell/termUtils.sh 
 
-# Text color codes :
+# Text color codes:
 
 black_text=30
 red_text=31
@@ -814,7 +852,7 @@ cyan_text=36
 white_text=37
 
 
-# Background color codes :
+# Background color codes:
 
 black_back=40
 red_back=41
@@ -826,7 +864,7 @@ cyan_back=46
 white_back=47
 
 
-# Text attributes :
+# Text attributes:
 
 none_att=00
 bold_att=01
@@ -838,14 +876,14 @@ concealed_att=08
 default_att=$none_att
 
 
-# Pre defined text styles :
+# Pre defined text styles:
 
-# Uses terminal features such as fancy make colors by default :
+# Uses terminal features such as fancy make colors by default:
 AC_ARG_ENABLE(colored-build,
 	AS_HELP_STRING(--enable-colored-build,[enable colored build [[default=yes]]]),,enable_colored_build=yes)
 if test x$enable_colored_build = xyes; then
 
-	# The quadrigram '@<:@' is needed to allow for an unbalanced '[' :
+	# The quadrigram '@<:@' is needed to allow for an unbalanced '[':
 	
 	OSDL_DEFAULT_STYLE="@<:@${default_att};${white_text};${black_back}m"
 	OSDL_TITLE_STYLE="@<:@${default_att};${magenta_text};${black_back}m"
@@ -891,7 +929,7 @@ AC_SUBST(OSDL_WARNING_STYLE)
 
 # Detects underlying platform and configures build accordingly.
 #
-# Still needing platform detection for some specificities :
+# Still needing platform detection for some specificities:
 #   - need to define OSDL_DLL for the Windows platform, for
 # Visual C++-based builds
 #	- set various system-dependent paths
@@ -900,10 +938,10 @@ CheckPlatform()
 {
 	
 	# This symbol ought to be specifically defined only so that Windows
-	# builds declare correctly import/export defines :
+	# builds declare correctly import/export defines:
 	OSDL_DLL=""
 	
-	# Needed when building a library on Windows platforms :
+	# Needed when building a library on Windows platforms:
 	OSDL_DLL_EXPORT_WINDOWS="__declspec( dllexport )"
 
 	OSDL_ARCH_NINTENDO_DS=0
@@ -981,7 +1019,7 @@ CheckOpenGL()
 	if test x$opengl = xyes; then
         AC_MSG_RESULT([yes])
         have_opengl=yes
-        # Defined in opengl.m4 :
+        # Defined in opengl.m4:
         AX_CHECK_GL
 		if test x$no_gl = xyes; then 
 			AC_MSG_WARN([OpenGL use requested but not available, disabling it])
@@ -1000,7 +1038,7 @@ CheckOpenGL()
 		AC_MSG_CHECKING([whether OpenGL and GLU are enabled])
 		AC_MSG_RESULT([$have_opengl])
 	else
-		# OpenGL not wanted here :
+		# OpenGL not wanted here:
 		AC_MSG_RESULT([no])	
 	fi
 	
@@ -1024,7 +1062,7 @@ CheckOpenGL
  
 
 
-# TODO : use CXXCOMPILE/CXXLINK to customize build output.
+# TODO: use CXXCOMPILE/CXXLINK to customize build output.
 
 
 
@@ -1032,10 +1070,10 @@ CheckOpenGL
 
 AC_SUBST(SYSTEM_LIBS)
 
-# Directories conditionnally selected by the configure step :
+# Directories conditionnally selected by the configure step:
 AC_SUBST(OSDL_EXTRA_DIRS)
 
-# Libraries conditionnally selected by the configure step :
+# Libraries conditionnally selected by the configure step:
 AC_SUBST(OSDL_EXTRA_LIBS)
 
 AC_MSG_NOTICE([OSDL_CPPFLAGS = $OSDL_CPPFLAGS])
@@ -1050,8 +1088,8 @@ AC_SUBST(LIBS)
 AC_SUBST(AM_CXXFLAGS)
 AC_SUBST(AM_LDFLAGS)
 
-# Updates the config file generated by AX_PREFIX_CONFIG_H :
-AC_CONFIG_COMMANDS([configprefix],[cat src/code/OSDLConfig.h | sed 's|OSDL_HAVE_|OSDL_USES_|g' > .OSDLConfig.h; echo "/* Note : NEVER commit (check-in) this generated file ! */" >> .OSDLConfig.h; /bin/mv -f .OSDLConfig.h src/code/OSDLConfig.h; /bin/rm -f _configs.sed])
+# Updates the config file generated by AX_PREFIX_CONFIG_H:
+AC_CONFIG_COMMANDS([configprefix],[cat src/code/OSDLConfig.h | sed 's|OSDL_HAVE_|OSDL_USES_|g' > .OSDLConfig.h; echo "/* Note: NEVER commit (check-in) this generated file ! */" >> .OSDLConfig.h; /bin/mv -f .OSDLConfig.h src/code/OSDLConfig.h; /bin/rm -f _configs.sed])
 
 AC_CONFIG_FILES([
 	Makefile
