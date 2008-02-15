@@ -311,12 +311,20 @@ devkitARM_MD5="836313873c10d56bf910607a23cb3757"
 
 # libnds:
 # http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=151608
-# (provided by PALib now, therefore not updated anymore here)
 libnds_VERSION="20071023"
 libnds_ARCHIVE="libnds-${libnds_VERSION}.tar.bz2"
 libnds_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/devkitpro"
 libnds_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/devkitpro"
 libnds_MD5="a80939e113c6fdc70032ed4b39f449e6"
+
+
+# grit:
+# http://www.coranac.com/projects/#grit
+grit_VERSION="0.7.1"
+grit_ARCHIVE="grit-src-${grit_VERSION}.zip"
+grit_DOWNLOAD_LOCATION="http://www.coranac.com/files/grit/"
+grit_ALTERNATE_DOWNLOAD_LOCATION=""
+grit_MD5="ef0449353eb3829da28694d391584f5a"
 
 
 # PAlib: http://palib.info/
