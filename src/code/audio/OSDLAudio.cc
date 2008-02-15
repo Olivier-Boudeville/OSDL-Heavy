@@ -1,19 +1,3 @@
-/*
- * This include order is compulsory: Ceylan.h must not be included (directly
- * or not) before OSDLConfigForNintendoDS.h is included, because this latter
- * set the Ceylan defines that trigger the including of CeylanFIFO.h 
- * (necessary for OSDLCommandManager.h on the ARM9) by Ceylan.h.
- *
- *
- */
-#ifdef OSDL_ARCH_NINTENDO_DS
-
-#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
-#include <nds/arm9/sound.h>		     // for libnds sound functions
-
-#endif // OSDL_ARCH_NINTENDO_DS
-
-
 #include "OSDLAudio.h"
 
 
@@ -29,6 +13,10 @@
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
 
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
 
 
 
@@ -53,6 +41,22 @@ using Ceylan::Maths::Hertz ;
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Audio ;
+
+
+// Replicating these defines allows to enable them on a per-class basis:
+#if OSDL_VERBOSE_AUDIO_MODULE
+
+#define LOG_DEBUG_AUDIO(message)   LogPlug::debug(message)
+#define LOG_TRACE_AUDIO(message)   LogPlug::trace(message)
+#define LOG_WARNING_AUDIO(message) LogPlug::warning(message)
+
+#else // OSDL_DEBUG_AUDIO_PLAYBACK
+
+#define LOG_DEBUG_AUDIO(message)
+#define LOG_TRACE_AUDIO(message)
+#define LOG_WARNING_AUDIO(message)
+
+#endif // OSDL_DEBUG_AUDIO_PLAYBACK
 
 
 string OSDL::Audio::AudioModule::AudioPathEnvironmentVariable = "AUDIO_PATH" ;
@@ -527,7 +531,7 @@ void AudioModule::unsetMode() throw( AudioException )
 	else
 	{
 		
-		LogPlug::warning( "AudioModule::unsetMode called "
+		LOG_WARNING_AUDIO( "AudioModule::unsetMode called "
 			"whereas not already initialized, nothing done." ) ;
 		
 	}
