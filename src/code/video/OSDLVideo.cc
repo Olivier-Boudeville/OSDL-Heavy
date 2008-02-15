@@ -33,6 +33,24 @@ using namespace OSDL::Video::OpenGL ;
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+
+// Replicating these defines allows to enable them on a per-class basis:
+#if OSDL_VERBOSE_VIDEO_MODULE
+
+#define LOG_DEBUG_VIDEO(message)   LogPlug::debug(message)
+#define LOG_TRACE_VIDEO(message)   LogPlug::trace(message)
+#define LOG_WARNING_VIDEO(message) LogPlug::warning(message)
+
+#else // OSDL_DEBUG_AUDIO_PLAYBACK
+
+#define LOG_DEBUG_VIDEO(message)
+#define LOG_TRACE_VIDEO(message)
+#define LOG_WARNING_VIDEO(message)
+
+#endif // OSDL_DEBUG_AUDIO_PLAYBACK
+
+
+
 #if OSDL_USES_SDL
 
 #include "SDL.h"
@@ -354,7 +372,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	
 	if ( ( ( flags & OpenGL ) == 0 ) && ( flavour != OpenGL::None ) )
 	{
-		LogPlug::warning( "VideoModule::setMode: OpenGL flavour selected ("
+		LOG_WARNING_VIDEO( "VideoModule::setMode: OpenGL flavour selected ("
 			+ OpenGLContext::ToString( flavour ) 
 			+ ") whereas OpenGL flag not set, adding it." ) ;  
 		flags |= OpenGL ;
@@ -489,7 +507,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	
 	// A zero bit per pixel request means any depth, no warning in this case:
 	if ( askedBpp != bpp && askedBpp != 0 ) 
-		LogPlug::warning( "Color depth is " + Ceylan::toString( bpp ) 
+		LOG_WARNING_VIDEO( "Color depth is " + Ceylan::toString( bpp ) 
 			+ " bits per pixel (instead of the asked " 
 			+ Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) 
 			+ " bits per pixel)." ) ;
@@ -721,7 +739,7 @@ void VideoModule::setWindowIcon( const std::string & filename )
 			+ e.toString() ) ;
 	}
 	
-	LogPlug::debug( "Setting icon now" ) ;
+	LOG_DEBUG_VIDEO( "Setting icon now" ) ;
 	
 	SDL_WM_SetIcon( & iconSurface->getSDLSurface(), mask ) ;
 	// No error status available.
@@ -1498,7 +1516,7 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
     SDL_Rect ** modes ;
 
 #if OSDL_DEBUG_VIDEO	
-    LogPlug::trace( "VideoModule::AreDefinitionsRestricted: "
+    LOG_TRACE_VIDEO( "VideoModule::AreDefinitionsRestricted: "
 		"getting available modes.", 8 ) ; 
 #endif // OSDL_DEBUG_VIDEO
 		
@@ -1534,7 +1552,7 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 
     if ( numericModes == 0 ) 
 	{
-		LogPlug::debug( "No screen dimensions available for format " 
+		LOG_DEBUG_VIDEO( "No screen dimensions available for format " 
 			+ Pixels::toString( * pixelFormat ) + " !" ) ;
 			
 		// List stays empty, and restricted result is true: nothing available.
@@ -1583,7 +1601,7 @@ string VideoModule::DescribeAvailableDefinitions( Flags flags,
 	list<Definition> defList ;
 		
 #if OSDL_DEBUG_VIDEO	
-    LogPlug::trace( "VideoModule::DescribeAvailableDefinitions: "
+    LOG_TRACE_VIDEO( "VideoModule::DescribeAvailableDefinitions: "
 		"getting available modes.", 8 ) ; 
 #endif // OSDL_DEBUG_VIDEO
  	
