@@ -1612,7 +1612,7 @@ Both cores can be set in various <em>video modes</em>, each with different capab
         <li><b></b>: </li>
 -->
 
-        <li>the <b>size</b> of their description (ex: 16 bits per pixel) </li>
+        <li>the <b>size</b> of a pixel description (ex: 16 bits per pixel) </li>
         <li>their <b>type</b>, either direct color (direct definition in RGB space) or palette index (reference to a color defined elsewhere)
         <li>the <b>ordering</b> in memory of the color components, say, GBR ordering (Red is in least significant bits, then Blue, then Green in most significant ones)</li>
         <li>the <b>size</b> of each color component, ex: 5 bits per component, each component ranges from 0 to 31, as in <code>xBBBBBGGGGGRRRRR</code></li>
@@ -1708,7 +1708,7 @@ The banks are:
 </p>
 
 <p>
-See also the <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" target="_blank">VRAM bank mapping</a> from Dovoto's tutorial.
+Total is thus 656 kilobytes. See also the <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" target="_blank">VRAM bank mapping</a> from Dovoto's tutorial.
 </p>
 
 <br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
@@ -1775,7 +1775,7 @@ More precisely, instead of being a kind of array of pixels, a tile-based backgro
 </p>
 
 <p>
-The DS excels at tile-based rendering, which is the way to go for most games as it is hardware-accelerated, whereas framebuffer access implies slow software rendering. A few basic tiles can create complex displays quite nicely.
+The DS excels at tile-based rendering, which is the way to go for most games, as it is hardware-accelerated, whereas framebuffer access implies slow software rendering. A few basic tiles can create complex displays quite nicely.
 </p>
 
 <p>
@@ -1792,7 +1792,7 @@ There are three types of backgrounds: <em>Rotoscale </em>(a.k.a. Rotation), <em>
 </p>
 
 <p>
-Such regular rotoscale backgrounds use 8-bit tile entries. They can therefore use only up to 256 tiles. Each tile entry designates simply the number of its tile into character memory.
+Such regular rotoscale backgrounds use 8-bit tile entries. They can therefore reference only up to 256 different tiles. Each tile entry designates simply the number of its tile into character memory.
 </p>
 
 <br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
@@ -1982,11 +1982,11 @@ See also: Dovoto's tutorial about <a href="http://www.dev-scene.com/NDS/Tutorial
 <h6>Sprites</h6>
 
 <p>
-Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transformed independently from each other and can be used in conjunction with either bitmap or tiles background types (which are mutually exclusive). Like backgrounds, sprites are built out of tiles, but backgrounds and sprites cannot share tiles. The tiles available for sprites are stored in object VRAM, or OVRAM for short. They can be shared between different sprites, thus changing them will change them for all sprites (ex: when performing animations). The same is true for palettes.
+Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transformed independently from each other and can be used in conjunction with either bitmap or tiles background types (which are mutually exclusive). Like backgrounds, sprites are built out of tiles, but backgrounds and sprites cannot share tiles. The tiles available for sprites are stored in Object VRAM, or OVRAM for short. They can be shared between different sprites, thus changing them will change them for all sprites (ex: when performing animations). The same is true for palettes.
 </p>
 
 <p>
-OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM), including its onscreen position (top-left corner of the sprite) expressed in pixels. This position ranges between 0 and 511 for the abcissa, and between 0 and 191 for the ordinate. This means the sprite can be out of the screen bounds (256x192). Coordinates wrap around: a 512 abcissa is managed as if it was 0, some thing for a 192 ordinate. Other per-sprite informations in OAM are shape, size, requested flipping, and if a rotset is used. If yes, its number, in 0..31, is specified. In each rotset, a transformation matrix is specified, with zoom factors and rotation angle.
+OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM), including its onscreen position (top-left corner of the sprite) expressed in pixels. This position ranges between 0 and 511 for the abcissa, and between 0 and 191 for the ordinate. This means the sprite can be out of the screen bounds (256x192). Coordinates wrap around: a 512 abcissa is managed as if it was 0, same thing for a 192 ordinate. Other per-sprite informations in OAM are shape, size, requested flipping, and if a rotset is used. If yes, its number, in 0..31, is specified. In each rotset, a transformation matrix is specified, with zoom factors and rotation angle.
 </p>
 
 <p>
@@ -1997,7 +1997,7 @@ Generally speaking, the OAM is not directly read or written to, as during the VD
 There are three available color modes for sprites: 
 <ul>
         <li><b>16 palettes, each of 16 colors</b>: inherited from the GBA, this mode is of little use on the DS</li>
-        <li><b>16 palettes, each of 256 colors</b>: uses twice as much memory, but is indeed the better trade-off. It is used by most of the time</li>
+        <li><b>16 palettes, each of 256 colors</b>: uses twice as much memory, but is indeed the better trade-off. It is used most of the time</li>
         <li><b>16-bit direct color</b>: no palette, each pixel can have its own color. Main problem is the very significant memory consumption</li>
 </ul>
 </p>
@@ -2011,7 +2011,7 @@ As for the size of sprites, each dimension can be either 8, 16, 32 or 64 pixels 
 </p>
 
 <p>
-Each sprite must be given a number in 0..127 that identifies it, and that defines as well its priority in its background. The smaller a sprite number is, the highest is its priority: in a given background, a given sprite will be on top of the sprites with higher numbers, as if the engine rendered the sprites incrementally, from 127 to 0. In addition to this per-sprite priority, sprites can be associated with one background in 0..3. Similarly, a background with a smaller number will be on top of other backgrounds, and its associated sprites as well. Thus, as for priority, the sprites are first sorted by backgrounds, and in a given background they are sorted by their own priority. For example sprite #0 of background #0 will be always on top of all other sprites.
+Each sprite must be given a number in 0..127 that identifies it, and that defines as well its priority in its background. The smaller a sprite number is, the highest its priority will be: in a given background, a given sprite will be on top of the sprites with higher numbers, as if the engine rendered the sprites incrementally, from 127 to 0. In addition to this per-sprite priority, sprites can be associated with one background in 0..3. Similarly, a background with a smaller number will be on top of other backgrounds, and its associated sprites as well. Thus, as for priority, the sprites are first sorted by backgrounds, and in a given background they are sorted by their own priority. For example sprite #0 of background #0 will be always on top of all other sprites.
 </p>
 
 <p>
@@ -2153,7 +2153,7 @@ Sample data can be assigned independently to any of the 16 hardware channels. Fo
 
 
 <p>
-Sound output requires sound to play, see our <a href="#datastorage">data storage</a> section explaining how to access the resources needed by your application.
+Sound output requires sound to play, see our <a href="#datastorage">data storage</a> section explaining how to access the audio resources needed by your application.
 </p>
 
 
@@ -2171,7 +2171,7 @@ Relying on the sound mixing hardware is the best bet: it can manage the 16 indep
 <h6>Codecs</h6>
 
 <p>
-With advanced decoding like OggVorbis or MP3, one would probably eat around 50% of the ARM9 CPU power, or almost 100% of the ARM7, still with a pretty low bitrate.
+With advanced decoding like OggVorbis or MP3, one may eat around 50% of the ARM9 CPU power, or almost 100% of the ARM7, still with a pretty low bitrate. However with careful design and appopriate settings, as we will see for example with <a href="../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a>, one can have highly-compressed high quality music on the DS with quite a low resource consumption (CPU, RAM, storage-wise).
 </p>
 
 <p>
@@ -2204,7 +2204,7 @@ When using the ARM7 for that purpose, tight 32 bit (ARM, not Thumb) loops should
 <a name="audio-transformations"></a>
 <h6>Audio transformations</h6>
 <p>
-When developping a game, after the audio content has been secured (i.e. obtained with an appropriate licence), in general it has to be transformed. On GNU/Linux, powerful sound editors are <a href="http://sox.sourceforge.net/" target="_blank">sox</a> (a command-line tool) and <a href="http://audacity.sourceforge.net/" target="_blank">Audacity</a> (a graphical tool). Quite often the audio files do not conform totally to their expected format and/or are somewhat corrupted, causing various post-processing tools or playback to fail. Audacity can be used to fix them, by first importing and then exporting them directly, as are.
+When developping a game, after the audio content has been secured (i.e. obtained with an appropriate licence), in general it has to be transformed. On GNU/Linux, powerful sound editors are <a href="http://sox.sourceforge.net/" target="_blank">Sox</a> (a command-line tool) and <a href="http://audacity.sourceforge.net/" target="_blank">Audacity</a> (a graphical tool). Quite often the audio files do not conform totally to their expected format and/or are somewhat corrupted, causing various post-processing tools or playback to fail. Audacity can be used to fix them, by first importing and then exporting them directly, as are.
 </p>
 
 <p>
@@ -2223,7 +2223,7 @@ For example if you have a <code>YourLongMusic.wav</code>, with following format:
 
 <h7>MP3 encoding with constant bitrate</h7>
 <p>
-To reach the previous ratio, a quite low (constant) bitrate has to be used (80 kbps). The bitrate determines the bandwidth budget you chose, and in this budget you have to select which features are to be available. You can play mainly onto two variables: the number of output channels (ex: mono or stereo) and the output sampling frequency (ex: 22.05, 44.1 kHz, etc.).  
+To reach the previous ratio, a quite low (here constant) bitrate has to be used (80 kbps). The bitrate determines the bandwidth budget you chose, and in this budget you have to select which features are to be available. You can play mainly onto two variables: the number of output channels (ex: mono or stereo) and the output sampling frequency (ex: 22.05, 44.1 kHz, etc.).  
 </p>
 
 <p>
@@ -2254,7 +2254,7 @@ Low bitrates use less space on storage, are lighter for the memory buses and sho
 
 <h7>MP3 encoding with variable bitrate</h7>
 <p>
-Another option, if your decoder supports it (it is the case of <a href="../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a>), is to use variable bitrate (VBR) instead of a constant one (CBR). Adapting dynamically the actual bitrate to match the instant needs of the sound leads to still better compression/quality ratio.
+Another option, if your decoder supports it (it is the case of <a href="../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a>, thanks to Helix), is to use variable bitrate (VBR) instead of a constant one (CBR). Adapting dynamically the actual bitrate to match the instant needs of the sound leads to still better compression/quality ratio.
 </p>
 
 <p>
@@ -2262,7 +2262,7 @@ For example using VBR instead of CBR on the previous long music results in a fil
 </p>
 
 
-<p>To do so with the lame encoder, one can use the following command (mono, 22.05 kHz, intermediate quality [V=5], best algorithm [q=0], with a maximum bit rate set to 128 kpbs, no lame tag):
+<p>To do so with the lame encoder, one can use the following command (settings are mono, 22.05 kHz, intermediate quality [V=5], best algorithm [q=0], with a maximum bit rate set to 128 kpbs, no lame tag):
 <center>
     <table summary="Code" style="border : none">
         <tr>
@@ -2308,7 +2308,7 @@ Sounds, being shorted hence smaller, are often either fully loaded or fully unlo
 </p>
 
 <p>
-The solution is therefore to stream them, i.e. to read them from file, chunk after chunk, in a well-sized buffer (usually a few kilobytes, see <a href="../../rendering/SDL-audio.html#size" target="_blank">this discussion</a> about the latency versus skip tradeoff). Each chunk should be available no later than when the samples it contains are to be played. Once read by the audio layer the chunk can be discarded and replaced by the next loaded one.
+The solution is therefore to stream them, i.e. to read them from file, chunk after chunk, in a well-sized buffer (usually a few kilobytes, see <a href="../../rendering/SDL-audio.html#size" target="_blank">this discussion</a> about the latency versus skip tradeoff; for music usually latency is not a problem). Each chunk should be available no later than when the samples it contains are to be played. Once read by the audio layer the chunk can be discarded and replaced by the next loaded one.
 </p>
 
 <p>
@@ -4591,7 +4591,7 @@ As a final word, have fun programmin' the DS !
 	
     <li><a href="http://www.aaronrogers.com/nintendods/" target="_blank">Aaron Rogers</a></li>
 	
-    <li><a href="http://www.drunkencoders.com" target="_blank">Drunk Encoders</a></li>
+    <li><a href="http://www.drunkencoders.com" target="_blank">Drunken Coders</a></li>
 	
     <li><a href="http://nintendo-ds.dcemu.co.uk/" target="_blank">DS News</a></li>
 
@@ -5059,7 +5059,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Sunday, January 27, 2008</em>
+    <em>Last update: Friday, February 15, 2008</em>
   </center>
 </body>
 </html>
