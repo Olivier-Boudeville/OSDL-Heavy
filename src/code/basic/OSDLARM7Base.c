@@ -714,12 +714,15 @@ void handleFadeInMusicRequest( FIFOElement firstElement )
 	
 	/*
 	 * Number of frames necessary to go from zero volume to full volume: 
-	 * Ex: 3000*22050/(1000*1152) = 57
+	 * Ex: 2*3000*22050/(1000*1152) = 114
+	 * (factor 2 is because DecodedFrameLength is in bytes whereas usedRate
+	 * counts 16-bit samples)
+	 *
 	 */
 	uint16 frameCount = 
-		requestedDuration * usedRate / ( 1000 * DecodedFrameLength ) ;
+		2 * requestedDuration * usedRate / ( 1000 * DecodedFrameLength ) ;
 	
-	/* Actually 2.2 for the example, rounded to 2: */
+	/* Actually 1.1 for the example, rounded to 1: */
 	musicFadeInIncrement = 127 / frameCount ;
 	
 	if ( musicFadeInIncrement == 0 )
@@ -757,9 +760,20 @@ void handleFadeOutMusicRequest( FIFOElement firstElement )
 		
 	}
 	
-	uint16 frameCount = requestedDuration * usedRate 
+	/*
+	 * Number of frames necessary far specified duration: 
+	 * Ex: 2*3000*22050/(1000*1152) = 114
+	 * (factor 2 is because DecodedFrameLength is in bytes whereas usedRate
+	 * counts 16-bit samples)
+	 *
+	 */
+	uint16 frameCount = 2 * requestedDuration * usedRate 
 		/ ( 1000 * DecodedFrameLength ) ;
 	
+	/* Just for safety: */
+	if ( frameCount == 0 )
+		frameCount = 1 ;
+		
 	/* Starts from current volume: */
 	musicFadeOutDecrement = currentMusicVolume / frameCount ;
 
@@ -1044,7 +1058,7 @@ void manageMusicFadeEffect()
 			musicFadeOutDecrement = 0 ;
 			
 			/* Stops decoding, halts the music: */
-			endOfProcessingReached = 0 ;
+			endOfProcessingReached = true ;
 		}
 		else
 		{
