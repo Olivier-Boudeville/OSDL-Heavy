@@ -49,16 +49,21 @@ using namespace OSDL::Engine ;
 //const Ceylan::Uint32 EventModule::FrameTimingSlots = 200 ;
 
 
-#if OSDL_DEBUG_EVENTS
+// Replicating these defines allows to enable them on a per-class basis:
+#if OSDL_VERBOSE_EVENTS_MODULE
 
-#include <iostream>
-#define OSDL_EVENT_LOG( message ) std::cout << "[OSDL events] " << message << std::endl ;
+#define LOG_DEBUG_EVENTS(message)   LogPlug::debug(message)
+#define LOG_TRACE_EVENTS(message)   LogPlug::trace(message)
+#define LOG_WARNING_EVENTS(message) LogPlug::warning(message)
 
-#else // OSDL_DEBUG_EVENTS
+#else // OSDL_DEBUG_AUDIO_PLAYBACK
 
-#define OSDL_EVENT_LOG( message )
+#define LOG_DEBUG_EVENTS(message)
+#define LOG_TRACE_EVENTS(message)
+#define LOG_WARNING_EVENTS(message)
 
-#endif // OSDL_DEBUG_EVENTS
+#endif // OSDL_DEBUG_AUDIO_PLAYBACK
+
 
 
 const std::string NoSDLSupportAvailable = "(no SDL support available)" ;
@@ -491,7 +496,7 @@ void EventsModule::enterMainLoop() throw( EventsException )
 	if ( _useScheduler )
 	{
 	
-		LogPlug::debug( 
+		LOG_DEBUG_EVENTS( 
 			"EventsModule::enterMainLoop: delegating to scheduler." ) ;
 		
 		try
@@ -508,18 +513,18 @@ void EventsModule::enterMainLoop() throw( EventsException )
 				+ e.toString() ) ;
 		}	
 		
-		LogPlug::debug( "EventsModule::enterMainLoop: scheduler returned." ) ;
+		LOG_DEBUG_EVENTS( "EventsModule::enterMainLoop: scheduler returned." ) ;
 		
 	}
 	else
 	{
 	
-		LogPlug::debug( "EventsModule::enterMainLoop: "
+		LOG_DEBUG_EVENTS( "EventsModule::enterMainLoop: "
 			"no scheduler requested, using basic event loop." ) ;
 		
 		enterBasicMainLoop() ;	
 			
-		LogPlug::debug( 
+		LOG_DEBUG_EVENTS( 
 			"EventsModule::enterMainLoop: exiting now from main loop." ) ;
 			
 	}	
@@ -1061,13 +1066,13 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	if ( Rendering::Renderer::HasExistingRootRenderer() )
 	{
 		renderer = & Rendering::Renderer::GetExistingRootRenderer() ;
-		LogPlug::debug( 
+		LOG_DEBUG_EVENTS( 
 			"EventsModule::enterBasicMainLoop: using root renderer ("
 			+ renderer->toString() + ")" ) ;
 	}
 	else
 	{
-		LogPlug::debug( "EventsModule::enterBasicMainLoop: "
+		LOG_DEBUG_EVENTS( "EventsModule::enterBasicMainLoop: "
 			"not using any root renderer." ) ;	
 	}
 		
@@ -1117,7 +1122,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 			= static_cast<Microsecond>( 1000000.0f / _loopTargetedFrequency ) ; 
 		
 		// Default: 10ms, hence 10 000 microseconds:
-		LogPlug::debug( "Loop expected duration is " 
+		LOG_DEBUG_EVENTS( "Loop expected duration is " 
 			+ Ceylan::toString( loopExpectedDuration ) + " microseconds, "
 			"and idle callback expected duration is "
 			+ Ceylan::toString( _loopIdleCallbackMaxDuration ) 
@@ -1194,7 +1199,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	{
 	
 		// Avoid overflow of getDurationBetween, no average FPS computed: 
-		LogPlug::debug( "Exited from main loop after " 
+		LOG_DEBUG_EVENTS( "Exited from main loop after " 
 			+ Ceylan::toString( frameCount ) + " frames and about " 
 			+ Ceylan::toString( lastSec - startedSec ) 
 			+ " seconds, an average of " 
@@ -1205,7 +1210,7 @@ void EventsModule::enterBasicMainLoop() throw( EventsException )
 	}
 	else
 	{
-		LogPlug::debug( "Exited from main loop after " 
+		LOG_DEBUG_EVENTS( "Exited from main loop after " 
 			+ Ceylan::toString( frameCount ) + " frames and about " 
 			+ Ceylan::toString( lastSec - startedSec ) 
 			+ " seconds, on average there were " 
@@ -1235,7 +1240,7 @@ void EventsModule::onKeyboardFocusGained(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Application gained keyboard focus." ) ;
+	LOG_DEBUG_EVENTS( "Application gained keyboard focus." ) ;
 
 #if OSDL_DEBUG
 	if ( _keyboardHandler == 0 )
@@ -1257,7 +1262,7 @@ void EventsModule::onKeyboardFocusLost(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Application lost keyboard focus." ) ;
+	LOG_DEBUG_EVENTS( "Application lost keyboard focus." ) ;
 
 #if OSDL_DEBUG
 	if ( _keyboardHandler == 0 )
@@ -1278,7 +1283,7 @@ void EventsModule::onKeyPressed( const KeyboardEvent & keyboardEvent ) throw()
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Key pressed." ) ;
+	LOG_DEBUG_EVENTS( "Key pressed." ) ;
 
 #if OSDL_DEBUG
 	if ( _keyboardHandler == 0 )
@@ -1299,7 +1304,7 @@ void EventsModule::onKeyReleased( const KeyboardEvent & keyboardEvent ) throw()
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Key released." ) ;
+	LOG_DEBUG_EVENTS( "Key released." ) ;
 
 #if OSDL_DEBUG
 	if ( _keyboardHandler == 0 )
@@ -1324,7 +1329,7 @@ void EventsModule::onMouseFocusGained(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Application gained mouse focus." ) ;
+	LOG_DEBUG_EVENTS( "Application gained mouse focus." ) ;
 
 #if OSDL_DEBUG
 	if ( _mouseHandler == 0 )
@@ -1346,7 +1351,7 @@ void EventsModule::onMouseFocusLost(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Application lost mouse focus." ) ;
+	LOG_DEBUG_EVENTS( "Application lost mouse focus." ) ;
 
 #if OSDL_DEBUG
 	if ( _mouseHandler == 0 )
@@ -1367,7 +1372,7 @@ void EventsModule::onMouseMotion( const MouseMotionEvent & mouseEvent ) throw()
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Mouse motion." ) ;
+	LOG_DEBUG_EVENTS( "Mouse motion." ) ;
 
 #if OSDL_DEBUG
 	if ( _mouseHandler == 0 )
@@ -1389,7 +1394,7 @@ void EventsModule::onMouseButtonPressed( const MouseButtonEvent & mouseEvent )
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Mouse button pressed." ) ;
+	LOG_DEBUG_EVENTS( "Mouse button pressed." ) ;
 
 #if OSDL_DEBUG
 	if ( _mouseHandler == 0 )
@@ -1411,7 +1416,7 @@ void EventsModule::onMouseButtonReleased( const MouseButtonEvent & mouseEvent )
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Mouse button released." ) ;
+	LOG_DEBUG_EVENTS( "Mouse button released." ) ;
 
 #if OSDL_DEBUG
 	if ( _mouseHandler == 0 )
@@ -1436,7 +1441,7 @@ void EventsModule::onJoystickAxisChanged(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Joystick axis moved." ) ;
+	LOG_DEBUG_EVENTS( "Joystick axis moved." ) ;
 	
 #if OSDL_DEBUG
 	if ( _joystickHandler == 0 )
@@ -1458,7 +1463,7 @@ void EventsModule::onJoystickTrackballChanged(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Joystick trackball moved." ) ;
+	LOG_DEBUG_EVENTS( "Joystick trackball moved." ) ;
 
 #if OSDL_DEBUG
 	if ( _joystickHandler == 0 )
@@ -1481,7 +1486,7 @@ void EventsModule::onJoystickHatChanged(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Joystick hat moved." ) ;
+	LOG_DEBUG_EVENTS( "Joystick hat moved." ) ;
 
 #if OSDL_DEBUG
 	if ( _joystickHandler == 0 )
@@ -1503,7 +1508,7 @@ void EventsModule::onJoystickButtonPressed(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Joystick button pressed." ) ;
+	LOG_DEBUG_EVENTS( "Joystick button pressed." ) ;
 
 #if OSDL_DEBUG
 	if ( _joystickHandler == 0 )
@@ -1526,7 +1531,7 @@ void EventsModule::onJoystickButtonReleased(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Joystick button released." ) ;
+	LOG_DEBUG_EVENTS( "Joystick button released." ) ;
 
 #if OSDL_DEBUG
 	if ( _joystickHandler == 0 )
@@ -1555,12 +1560,12 @@ void EventsModule::onIdle() throw()
 	
 	if ( _loopIdleCallback != 0 )
 	{
-		OSDL_EVENT_LOG( 
+		LOG_DEBUG_EVENTS( 
 			"EventsModule::onIdle: calling now idle call-back." ) ;
 		
 		(*_loopIdleCallback)( _loopIdleCallbackData ) ;
 		
-		OSDL_EVENT_LOG( 
+		LOG_DEBUG_EVENTS( 
 			"EventsModule::onIdle: returned from idle call-back." ) ;
 		
 	}
@@ -1588,7 +1593,7 @@ void EventsModule::onApplicationFocusChanged(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Application focus changed." ) ;
+	LOG_DEBUG_EVENTS( "Application focus changed." ) ;
 	
 	// Maybe multiple gains or losses could be sent in one event:
 
@@ -1631,7 +1636,7 @@ void EventsModule::onApplicationIconified(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Application is iconified (no handler registered): "
+	LOG_DEBUG_EVENTS( "Application is iconified (no handler registered): "
 		+ DescribeEvent( focusEvent ) ) ;
 
 #endif // OSDL_USES_SDL
@@ -1646,7 +1651,7 @@ void EventsModule::onApplicationRestored(
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Application is restored (no handler registered): "
+	LOG_DEBUG_EVENTS( "Application is restored (no handler registered): "
 		+ DescribeEvent( focusEvent ) ) ;
 #endif // OSDL_USES_SDL
 	
@@ -1659,7 +1664,7 @@ void EventsModule::onQuitRequested() throw()
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Application is requested to stop." ) ;
+	LOG_DEBUG_EVENTS( "Application is requested to stop." ) ;
 
 	requestQuit() ;
 	
@@ -1681,7 +1686,7 @@ void EventsModule::onSystemSpecificWindowManagerEvent(
 	 * with SDL_GetWMInfo.
 	 *
 	 */
-	OSDL_EVENT_LOG( "System specific window manager event received "
+	LOG_DEBUG_EVENTS( "System specific window manager event received "
 		"(no handler registered)." ) ;	 
 		
 #endif // OSDL_USES_SDL
@@ -1696,8 +1701,9 @@ void EventsModule::onResizedWindow( const WindowResizedEvent & resizeEvent )
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Resizing, new width is " << resizeEvent.w 
-		<< ", new height is " << resizeEvent.h << "." ) ;
+	LOG_DEBUG_EVENTS( "Resizing, new width is " 
+		+ Ceylan::toString( resizeEvent.w ) + ", new height is " 
+		+ Ceylan::toString( resizeEvent.h ) ) ;
 		
 	try
 	{	
@@ -1723,7 +1729,7 @@ void EventsModule::onResizedWindow( const WindowResizedEvent & resizeEvent )
 void EventsModule::onScreenNeedsRedraw() throw()
 {
 
-	OSDL_EVENT_LOG( "Screen needs redraw." ) ;
+	LOG_DEBUG_EVENTS( "Screen needs redraw." ) ;
 
 	try
 	{	
@@ -1745,8 +1751,9 @@ void EventsModule::onUserEvent( const UserEvent & userEvent ) throw()
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "User event received, whose type is " << userEvent.type
-		<< " (no handler registered)." ) ;
+	LOG_DEBUG_EVENTS( "User event received, whose type is " 
+		+ Ceylan::toNumericalString( userEvent.type )
+		+ " (no handler registered)." ) ;
 		
 #endif // OSDL_USES_SDL
 
@@ -1759,8 +1766,9 @@ void EventsModule::onUnknownEventType( const BasicEvent & unknownEvent ) throw()
 
 #if OSDL_USES_SDL
 
-	OSDL_EVENT_LOG( "Unknown event, type is " << unknownEvent.type 
-		<< " (no handler registered)." ) ;
+	LOG_DEBUG_EVENTS( "Unknown event, type is " 
+		+ Ceylan::toNumericalString( unknownEvent.type )
+		+ " (no handler registered)." ) ;
 	
 #endif // OSDL_USES_SDL
 
@@ -2144,7 +2152,7 @@ Ceylan::System::Microsecond EventsModule::EvaluateCallbackduration(
 			getDurationBetween( startedSec,	startedMicrosec,
 					endedSec, endedMicrosec ) ) ;
 			
-	LogPlug::debug( "EventsModule::EvaluateCallbackduration: duration for "
+	LOG_DEBUG_EVENTS( "EventsModule::EvaluateCallbackduration: duration for "
 		"idle callback evaluated to " 
 		+ Ceylan::toString( callbackExpectedMaxDuration )
 		+ " microseconds." ) ;
