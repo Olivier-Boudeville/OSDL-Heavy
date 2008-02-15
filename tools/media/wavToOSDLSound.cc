@@ -14,13 +14,13 @@ using namespace std ;
 #include <iostream>  // for cout
 
 
-const std::string Usage = " [ -f frequency ] [ -m mode ] [ -b bitdepth ] X.wav\nConverts a Wave file (*.wav) into a .osdl.sound file by replacing the Wave header by an OSDL header filled with informations specified from the command-line."
+const std::string Usage = " [ -f frequency ] [ -m mode ] [ -b bitdepth ] X.wav\nConverts a WAVE file (*.wav) into a .osdl.sound file by replacing the WAVE header by an OSDL header filled with informations specified from the command-line."
 	"\n\t -f: specifies the output sampling frequency, in Hz, ex: -f 22050 (the default)" 
 	"\n\t -m: specifies the output mode, mono or stereo, ex: -m mono (the default)" 
 	"\n\t -b: specifies the sample (PCM) bit depth, in bits, ex: -b 16 (the default). A bit depth of 4 corresponds by convention to the IMA ADPCM sample format." 
 	"\nOne may use the sox command-line tool to retrieve the relevant audio settings for the source sound."
-	"\n\tEx: 'sox -V YourSound.wav -n' converts the sound and outputs its metadata than can be used to fill the next command line." 
-	"\nThen 'wavToOSDLSound.exe -f 44100 -m stereo -b 8 YourSound.wav' results in the creation of 'YourSound.osdl.sound'.Alternatively, use the wavToOSDLSound.sh script: 'wavToOSDLSound.sh YourSound.wav' takes care of everything and results in YourSound.osdl.sound." 
+	"\n\tEx: 'sox -V YourSound.wav -n' converts the sound and outputs its metadata that can be used to fill the next command line." 
+	"\nThen 'wavToOSDLSound.exe -f 44100 -m stereo -b 8 YourSound.wav' results in the creation of 'YourSound.osdl.sound'. Alternatively, use the wavToOSDLSound.sh script: 'wavToOSDLSound.sh YourSound.wav' takes care of everything and results in the YourSound.osdl.sound file." 
 	;
 
 
