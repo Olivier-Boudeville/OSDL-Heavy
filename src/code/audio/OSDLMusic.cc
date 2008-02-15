@@ -1,42 +1,17 @@
-
-/*
- * This include order is compulsory: Ceylan.h must not be included (directly
- * or not) before OSDLConfigForNintendoDS.h is included, because this latter
- * set the Ceylan defines that trigger the including of CeylanFIFO.h 
- * (necessary for OSDLCommandManager.h on the ARM9) by Ceylan.h.
- *
- *
- */
-#ifdef OSDL_ARCH_NINTENDO_DS
-
-
-// Allows to have CEYLAN_ARCH_NINTENDO_DS defined: ARM9 needs Ceylan FIFO.
-#include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
-
-#ifdef OSDL_USES_CONFIG_H
-#include "OSDLConfig.h"              // for configure-time settings (SDL)
-#endif // OSDL_USES_CONFIG_H
-
-// No FIFO class on the ARM7:
-#ifdef OSDL_RUNS_ON_ARM9
-#include "OSDLCommandManager.h"      // for CommandManager
-#endif // OSDL_RUNS_ON_ARM9
-
-
-#else // OSDL_ARCH_NINTENDO_DS
-
-
-#ifdef OSDL_USES_CONFIG_H
-#include "OSDLConfig.h"              // for configure-time settings (SDL)
-#endif // OSDL_USES_CONFIG_H
-
-
-#endif // OSDL_ARCH_NINTENDO_DS
-
-
 #include "OSDLMusic.h"               // implies including Ceylan.h
+
 #include "OSDLAudio.h"               // for AudioModule
 #include "OSDLFileTags.h"            // for music file tag
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
 
 
 
@@ -47,6 +22,22 @@
 #if OSDL_USES_SDL_MIXER
 #include "SDL_mixer.h"               // for Mix_OpenAudio and al
 #endif // OSDL_USES_SDL_MIXER
+
+
+// Replicating these defines allows to enable them on a per-class basis:
+#if OSDL_DEBUG_AUDIO_PLAYBACK
+
+#define LOG_DEBUG_AUDIO(message)   LogPlug::debug(message)
+#define LOG_TRACE_AUDIO(message)   LogPlug::trace(message)
+#define LOG_WARNING_AUDIO(message) LogPlug::warning(message)
+
+#else // OSDL_DEBUG_AUDIO_PLAYBACK
+
+#define LOG_DEBUG_AUDIO(message)
+#define LOG_TRACE_AUDIO(message)
+#define LOG_WARNING_AUDIO(message)
+
+#endif // OSDL_DEBUG_AUDIO_PLAYBACK
 
 
 
@@ -266,7 +257,7 @@ bool Music::load() throw( Ceylan::LoadableException )
 				+ Ceylan::toString( readTag ) + ", which corresponds to: "
 				+ DescribeFileTag( readTag ) ) ;
 		
-		LogPlug::debug( "Music::load: correct tag found." ) ;
+		LOG_DEBUG_AUDIO( "Music::load: correct tag found." ) ;
 			
 		// Frequency:
 		music._frequency = music._musicFile->readUint16() /* Hz */ ;
@@ -320,7 +311,7 @@ bool Music::load() throw( Ceylan::LoadableException )
 	
 	}
 
-	LogPlug::debug( "Music::load: read first chunk of " + _contentPath + 
+	LOG_DEBUG_AUDIO( "Music::load: read first chunk of " + _contentPath + 
 		+ " (" + Ceylan::toString( music._firstActualRefillSize) 
 		+ " out of a total of "	+ Ceylan::toString( music._size ) 
 		+ " bytes)." ) ;
@@ -1012,7 +1003,7 @@ void Music::setAsCurrent() throw( AudioException )
 	 */	
 	_CurrentMusic = this ;	
 
-	LogPlug::debug( "Music::setAsCurrent: " + toString( Ceylan::low ) +
+	LOG_DEBUG_AUDIO( "Music::setAsCurrent: " + toString( Ceylan::low ) +
 		" set as current." ) ;	
 		
 }
@@ -1258,7 +1249,7 @@ void Music::onPlaybackEnded() throw( AudioException )
 {
 
 	// Made to be overriden.
-	LogPlug::trace( "Music::onPlaybackEnded" ) ;
+	LOG_TRACE_AUDIO( "Music::onPlaybackEnded" ) ;
 		
 }
 
@@ -1283,10 +1274,8 @@ void Music::managePlaybackEnded() throw( AudioException )
 	unload() ;
 	onPlaybackEnded() ;
 	
-	/*
-	LogPlug::debug( "Music::managePlaybackEnded: count = " 
+	LOG_DEBUG_AUDIO( "Music::managePlaybackEnded: count = " 
 		+ Ceylan::toString(count) ) ;
-	 */
 		
 	// Includes the -1 case (infinite); count already decremented:
 	if ( count != 0 )
@@ -1306,7 +1295,7 @@ void Music::managePlaybackEnded() throw( AudioException )
 void Music::onNoMoreCurrent() throw( AudioException )
 {
 
-	LogPlug::warning( "Music::onNoMoreCurrent: " + toString( Ceylan::low ) 
+	LOG_WARNING_AUDIO( "Music::onNoMoreCurrent: " + toString( Ceylan::low ) 
 		+ " not current anymore." ) ;
 	
 }
@@ -1316,7 +1305,7 @@ void Music::onNoMoreCurrent() throw( AudioException )
 void Music::manageNoMoreCurrent() throw( AudioException )
 {
 	
-	LogPlug::trace( "Music::manageNoMoreCurrent" ) ;
+	LOG_TRACE_AUDIO( "Music::manageNoMoreCurrent" ) ;
 		
 #if OSDL_ARCH_NINTENDO_DS
 		
@@ -1384,7 +1373,7 @@ void Music::fillFirstBuffer() throw( AudioException )
 #elif defined(OSDL_RUNS_ON_ARM9)
 		
 
-	LogPlug::trace( "Music::fillFirstBuffer." ) ;
+	LOG_TRACE_AUDIO( "Music::fillFirstBuffer." ) ;
 
 	LowLevelMusic & music = getContent() ;
 
@@ -1401,9 +1390,10 @@ void Music::fillFirstBuffer() throw( AudioException )
 			/* start after delta zone */ music._startAfterDelta,
 			/* max length */ music._firstActualRefillSize ) ;
 		
-		LogPlug::debug( "Music::fillFirstBuffer: read " 
+		LOG_DEBUG_AUDIO( "Music::fillFirstBuffer: read " 
 			+ Ceylan::toString( readSize ) + " bytes." ) ;
-			
+		 
+		 		
 		/*
 		 * Zero-pad to avoid finding false sync word after last frame 
 		 * (from previous data in this first buffer):
@@ -1411,7 +1401,7 @@ void Music::fillFirstBuffer() throw( AudioException )
 		if ( readSize < music._firstActualRefillSize )
 		{
 			
-			LogPlug::trace( "Padding first buffer." ) ;
+			LOG_TRACE_AUDIO( "Padding first buffer." ) ;
 		
 			::memset( 
 				/* start */ music._startAfterDelta + readSize,
@@ -1478,7 +1468,7 @@ void Music::fillSecondBuffer() throw( AudioException )
 
 #elif defined(OSDL_RUNS_ON_ARM9)
 	
-	LogPlug::trace( "Music::fillSecondBuffer." ) ;
+	LOG_TRACE_AUDIO( "Music::fillSecondBuffer." ) ;
 		
 	LowLevelMusic & music = getContent() ;
 	
@@ -1494,9 +1484,9 @@ void Music::fillSecondBuffer() throw( AudioException )
 			/* start */ _CommandManagerSettings->_secondBuffer,
 			/* max length */ _CommandManagerSettings->_bufferSize ) ;
 		
-		LogPlug::debug( "Music::fillSecondBuffer: read " 
+		LOG_DEBUG_AUDIO( "Music::fillSecondBuffer: read " 
 			+ Ceylan::toString( readSize ) + " bytes." ) ;
-
+		 
 		/*
 		 * Zero-pad to avoid finding false sync word after last frame 
 		 * (from previous data in this first buffer):
@@ -1504,7 +1494,7 @@ void Music::fillSecondBuffer() throw( AudioException )
 		if ( readSize < _CommandManagerSettings->_bufferSize )
 		{
 			
-			LogPlug::trace( "Padding second buffer." ) ;
+			LOG_TRACE_AUDIO( "Padding second buffer." ) ;
 		
 			::memset( 
 				/* start */ _CommandManagerSettings->_secondBuffer + readSize,
