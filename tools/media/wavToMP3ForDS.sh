@@ -3,11 +3,11 @@
 THIS_SCRIPT=`basename $0`
 
 USAGE="Usage: ${THIS_SCRIPT} [-h|--help] SOURCE_WAVE_FILE
-Converts specified wave file into a mp3 file appropriate for playback on the DS.
-  Example: ${THIS_SCRIPT} hello.wav uses hello.wav to generate its hello.mp3 counterpart (needs the lame encoder).
+Converts specified WAVE file into a mp3 file appropriate for playback on the DS.
+  Example: '${THIS_SCRIPT} hello.wav' uses hello.wav to generate its hello.mp3 counterpart (needs the LAME encoder).
     -h/--help: displays this help
   One may use the audacity tool to preprocess the wave sound beforehand (cleaning, volume adjustment, correct export in format, etc.)
-  Running this script is often the first step of a process: once having a mp3, one usually plays it on the Nintendo DS thanks to the getMP3Settings tools (copy the generated mp3 file to the root of your removable DS card, under the name 'test.mp3'), which will return an upper bound to the size of encoded frames for this mp3.
+  Running this script is often the first step of a process: once having a mp3, one usually plays it on the Nintendo DS thanks to the getMP3Settings tool (copy the generated mp3 file to the root of your removable DS card, under the name 'test.mp3'), which will return an upper bound to the size of encoded frames for this mp3.
   Then this value can be used with the mp3ToOSDLMusic.exe tool (using the -u parameter) to finally produce an OSDL music file ready to be played back by the OSDL-Helix engine on the DS, with reduced resource needs.
 "
 
