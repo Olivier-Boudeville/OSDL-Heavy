@@ -12,6 +12,7 @@ CPP_FLAGS_COMMON = \
 	$(OSDL_VIDEO_INC)                 \
 	$(OSDL_VIDEO_TWO_DIMENSIONAL_INC) \
 	$(OSDL_VIDEO_RENDERER_INC)        \
+	$(OSDL_AUDIO_INC)                 \
 	$(OSDL_AUDIO_RENDERER_INC)
 
 

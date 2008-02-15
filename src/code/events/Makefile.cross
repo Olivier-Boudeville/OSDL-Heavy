@@ -8,6 +8,7 @@ NDS_SUBDIRS =
 CPP_FLAGS_COMMON = \
 	$(OSDL_CODE_ROOT_INC)             \
 	$(OSDL_BASIC_INC)                 \
+	$(OSDL_AUDIO_INC)                 \
 	$(OSDL_VIDEO_INC)                 \
 	$(OSDL_VIDEO_TWO_DIMENSIONAL_INC) \
 	$(OSDL_ENGINE_INC)

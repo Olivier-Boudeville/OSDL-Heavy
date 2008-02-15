@@ -7,6 +7,7 @@ CPP_FLAGS_COMMON = \
 	$(OSDL_CODE_ROOT_INC)  \
 	$(OSDL_BASIC_INC)      \
 	$(OSDL_VIDEO_INC)      \
+	$(OSDL_AUDIO_INC)      \
 	$(OSDL_EVENTS_INC)
 	 
 
