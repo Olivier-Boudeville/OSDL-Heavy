@@ -4,6 +4,16 @@
 #include "OSDLAudio.h" // for AudioModule
 
 
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
 using std::string ;
 
 
@@ -19,7 +29,7 @@ extern const PlaybackCount OSDL::Audio::Loop = -1 ;
 extern const Volume OSDL::Audio::MinVolume = 0 ;
 
 
-#ifdef OSDL_ARCH_NINTENDO_DS
+#if OSDL_ARCH_NINTENDO_DS
 
 extern const Volume OSDL::Audio::MaxVolume = 127 ;
 
