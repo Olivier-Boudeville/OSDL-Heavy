@@ -1,42 +1,17 @@
-/*
- * This include order is compulsory: Ceylan.h must not be included (directly
- * or not) before OSDLConfigForNintendoDS.h is included, because this latter
- * set the Ceylan defines that trigger the including of CeylanFIFO.h 
- * (necessary for OSDLCommandManager.h on the ARM9) by Ceylan.h.
- *
- *
- */
-#ifdef OSDL_ARCH_NINTENDO_DS
-
-// Allows to have CEYLAN_ARCH_NINTENDO_DS defined: ARM9 needs Ceylan FIFO.
-#include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
-
-
-#ifdef OSDL_USES_CONFIG_H
-#include "OSDLConfig.h"              // for configure-time settings (SDL)
-#endif // OSDL_USES_CONFIG_H
-
-// No FIFO class on the ARM7:
-#ifdef OSDL_RUNS_ON_ARM9
-#include "OSDLCommandManager.h"      // for CommandManager
-#endif // OSDL_RUNS_ON_ARM9
-
-
-#else // OSDL_ARCH_NINTENDO_DS
-
-
-#ifdef OSDL_USES_CONFIG_H
-#include "OSDLConfig.h"              // for configure-time settings (SDL)
-#endif // OSDL_USES_CONFIG_H
-
-
-#endif // OSDL_ARCH_NINTENDO_DS
-
-
-
 #include "OSDLSound.h"
+
 #include "OSDLAudio.h"               // for AudioModule
 #include "OSDLFileTags.h"            // for sound file tag
+
+
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
 
 
 
@@ -47,6 +22,23 @@
 #if OSDL_USES_SDL_MIXER
 #include "SDL_mixer.h"               // for Mix_OpenAudio and al
 #endif // OSDL_USES_SDL_MIXER
+
+
+
+// Replicating these defines allows to enable them on a per-class basis:
+#if OSDL_DEBUG_AUDIO_PLAYBACK
+
+#define LOG_DEBUG_AUDIO(message)   LogPlug::debug(message)
+#define LOG_TRACE_AUDIO(message)   LogPlug::trace(message)
+#define LOG_WARNING_AUDIO(message) LogPlug::warning(message)
+
+#else // OSDL_DEBUG_AUDIO_PLAYBACK
+
+#define LOG_DEBUG_AUDIO(message)
+#define LOG_TRACE_AUDIO(message)
+#define LOG_WARNING_AUDIO(message)
+
+#endif // OSDL_DEBUG_AUDIO_PLAYBACK
 
 
 
@@ -244,7 +236,7 @@ bool Sound::load() throw( Ceylan::LoadableException )
 		// Substracts the tag plus header size:
 		Ceylan::Uint32 readSize = soundFile.size() - 4*sizeof(Ceylan::Uint16) ;
 
-		LogPlug::debug( "Sound::load: for '" + _contentPath 
+		LOG_DEBUG_AUDIO( "Sound::load: for '" + _contentPath 
 			+ "', bit depth is " 
 			+ Ceylan::toNumericalString( _content->_bitDepth ) 
 			+ ", channel mode is " 
@@ -273,17 +265,6 @@ bool Sound::load() throw( Ceylan::LoadableException )
 			+ e.toString() ) ;
 	
 	}
-
-
-	/*
-	LogPlug::debug( "Sound::load for '" + _contentPath 
-		+ "': read a frequency of " + Ceylan::toString( _content->_frequency )
-		+ " Hz, a bit depth of " 
-		+ Ceylan::toNumericalString( _content->_bitDepth )
-		+ " bit, a number of channel of " 
-		+ Ceylan::toNumericalString( _content->_mode )
-		+ ", and a size of " + _content->_size + " bytes." ) ;
-	 */
 	 	
 	_convertedToOutputFormat = true ;
 	
