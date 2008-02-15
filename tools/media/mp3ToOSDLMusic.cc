@@ -14,13 +14,13 @@ using namespace std ;
 #include <iostream>  // for cout
 
 
-const std::string Usage = " [ -f frequency ] [ -m mode ] [ -t {cbr|vbr} ] -u BYTE_COUNT X.mp3\nConverts a .mp3 file into a .osdl.music file by appending an header filled with informations specified from the command-line."
+const std::string Usage = " [ -f frequency ] [ -m mode ] [ -t {CBR|VBR} ] -u BYTE_COUNT X.mp3\nConverts a .mp3 file into a .osdl.music file by appending a header filled with informations specified from the command-line."
 	"\n\t -f: specifies the output sampling frequency, in Hz, ex: -f 22050 (the default)" 
 	"\n\t -m: specifies the output mode, mono or stereo, ex: -m mono (the default)" 
 	"\n\t -t: specifies the bitrate type, either constant bit rate (CBR) or variable bitrate (VBR) (the default)" 
 	"\n\t -u: specifies the upper bound of the size of an encoded mp3 frame in this music, in bytes." 
 	"\nOne may use the wavToMP3ForDS.sh script, or directly the lame command-line tool, to convert beforehand a .wav into a .mp3."
-	"\n\tEx: 'lame YourLongMusic.wav --verbose -m m --vbr-new -V 5 -q 0 -B 112 -t --resample 22.05 YourLongMusic.mp3' converts the music." 
+	"\n\tEx: 'lame YourLongMusic.wav --verbose -m m --vbr-new -V 5 -q 0 -B 96 -t --resample 22.05 YourLongMusic.mp3' converts the music." 
 	"\nThen 'mp3ToOSDLMusic.exe -f 22050 -m mono -t vbr -u 314 YourLongMusic.mp3' results in the creation of 'YourLongMusic.osdl.music'" 
 	"\nThe upper bound of the size of an encoded mp3 frame can be determined thanks to the getMP3Settings OSDL media tool. It runs on the DS, plays the mp3 and, once done, displays that upper bound."
 	;
@@ -128,9 +128,9 @@ int main( int argc, char * argv[] )
 				string type = options.front() ;
 				options.pop_front() ;
 				
-				if ( type == "vbr" )
+				if ( type == "VBR" )
 					bitrateType = VBR ;
-				else if ( type == "cbr" )
+				else if ( type == "CBR" )
 					bitrateType = CBR ;
 				else
 				{
