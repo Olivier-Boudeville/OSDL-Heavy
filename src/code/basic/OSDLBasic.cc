@@ -16,17 +16,13 @@
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include "OSDLConfig.h"              // for the actual OSDL_LIBTOOL_VERSION
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
 
 
 #if OSDL_ARCH_NINTENDO_DS
-
-#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
-#include "OSDLCommandManager.h"      // for CommandManager
-
+#include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
 #endif // OSDL_ARCH_NINTENDO_DS
-
 
 
 #if OSDL_USES_SDL
@@ -41,6 +37,22 @@ using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 using namespace OSDL ;
+
+
+// Replicating these defines allows to enable them on a per-class basis:
+#if OSDL_VERBOSE_BASIC_MODULE
+
+#define LOG_DEBUG_BASIC(message)   LogPlug::debug(message)
+#define LOG_TRACE_BASIC(message)   LogPlug::trace(message)
+#define LOG_WARNING_BASIC(message) LogPlug::warning(message)
+
+#else // OSDL_DEBUG_AUDIO_PLAYBACK
+
+#define LOG_DEBUG_BASIC(message)
+#define LOG_TRACE_BASIC(message)
+#define LOG_WARNING_BASIC(message)
+
+#endif // OSDL_DEBUG_AUDIO_PLAYBACK
 
 
 
@@ -193,7 +205,7 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 	_cdromHandler( 0 ) 
 {
 
-	LogPlug::trace( "CommonModule constructor" ) ;
+	LOG_TRACE_BASIC( "CommonModule constructor" ) ;
 		
 	// For the sake of safety:
 	flags = AutoCorrectFlags( flags ) ;
@@ -725,7 +737,7 @@ Flags CommonModule::AutoCorrectFlags( Flags inputFlags ) throw()
 			 *
 			 */
 			
-			LogPlug::warning( "CommonModule::AutoCorrectFlags: "
+			LOG_WARNING_BASIC( "CommonModule::AutoCorrectFlags: "
 				"at least one input device was selected, "
 				"hence event support was requested, "
 				"whereas video was not specifically set. " 
