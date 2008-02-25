@@ -1,11 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 
-<!--    Ce document fait partie du projet OSDL.
-		Pour toute remarque, envoyer un courriel à homebrew@esperide.com
+<!--    This document is part of the OSDL project.
+		For any question, send a mail to homebrew@esperide.com
 -->
 <!--    
-        Date de création: Saturday, June 2, 2007.
-        Auteur: Olivier Boudeville (homebrew@esperide.com)
+        Creation date: Saturday, June 2, 2007.
+        Author: Olivier Boudeville (homebrew@esperide.com)
         Version: 0.1
 -->
 
@@ -14,7 +14,7 @@
   <title>OSDL - A guide to homebrew development for the Nintendo DS</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="description" content="OSDL">
-  <meta name="keywords" content="OSDL, installation, laptop, multiboot">
+  <meta name="keywords" content="OSDL, Nintendo, DS, GBA, homebrew">
   <link rel="stylesheet" type="text/css" href="../../../../common/css/OSDL.css">
   <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
 </head>
@@ -122,7 +122,7 @@
 
           </td>
         </tr>
-      </table>
+    </table>
 </center>
 <!--
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -1555,6 +1555,10 @@ If the rendering takes place while the screens are redrawn, then the user will s
  The first approach can be implemented by waiting for the aforementioned VBI (<em>Vertical Blank Interrupt</em>) and performing the rendering only in its handler, i.e. in hard real time. One has just to ensure that rendering does not last more than the Vblank, which is rather short. This is not always possible, except for the most simple renderings. Otherwise page flipping should be preferred.
 </p>
 
+<p>
+As there are many technical choices that lead to poor trade-offs, one may benefit from some thoughts we gathered about <a href="../graphical-chain/OSDL-graphical-chain.html" target="_blank">organization and toolchain for graphical assets on the DS</a>.
+</p>
+
 <br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
@@ -1955,6 +1959,10 @@ Other tools include <a href="http://www.neoflash.com/forum/index.php?PHPSESSID=8
 These converted graphics will then have to be <a href="#datastorage">stored</a> so that the DS application will find it. 
 </p>
 
+<p>
+Setting up a full toolchain for graphical assets is a difficult task, we described our approach <a href="../graphical-chain/OSDL-graphical-chain.html" target="_blank">here</a>.
+</p>
+
 <br><p><center>[<a href="#renderingtoc">Back to the rendering table of contents</a>]</center></p><br><br>
 
 
@@ -1993,6 +2001,7 @@ OAM means <em>Object Attribute Memory</em>. This is where you control the sprite
 Generally speaking, the OAM is not directly read or written to, as during the VDraw this memory area is locked and cannot be accessed. This is less a limitation than a protection, as visual artefacts could be seen if the OAM was changed during screen update. Therefore programmers usually relies on an OAM double buffering: they have their own shadow copy in RAM of the OAM attributes, they can modify it at any time (including Vdraw), and during Vblank they update the real OAM from their shadow copy.
 </p>
 
+<a name="sprite-color"></a>
 <p>
 There are three available color modes for sprites: 
 <ul>
@@ -2006,8 +2015,9 @@ There are three available color modes for sprites:
 A special color can be elected in each of the color modes, the <em>colorkey</em>, so that the pixels that exactly match that color are not drawned at all: they will be fully transparent, which enables to have sprites which do not color all their bitmap area, i.e. who can have a non-rectangle shape. For example a disc sprite should not overwrite the background inside its clipping rectangle but outside of the disc: in this area we need to view the background behind it. A good and quite usual colorkey choice is the "pure" magenta (full red, full blue, no green), as it is seldom used for real colors.
 </p>
 
+<a name="sprite-size"></a>
 <p>
-As for the size of sprites, each dimension can be either 8, 16, 32 or 64 pixels (i.e. 1,2,4 or 8 tiles), but if a dimension is 64, then the other must be either 32 or 4 (not 8, not 16).
+As for the size of sprites, each dimension can be either 8, 16, 32 or 64 pixels (i.e. 1,2,4 or 8 tiles), but if a dimension is 64, then the other must be either 32 or 4 (not 8, not 16). See the corresponding <a href="http://www.palib.info/wiki/doku.php?id=day4#sprite_sizes" target="_blank">table</a> from PAlib documentation.
 </p>
 
 <p>
@@ -5059,7 +5069,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Friday, February 15, 2008</em>
+    <em>Last update: Saturday, February 16, 2008</em>
   </center>
 </body>
 </html>
