@@ -1,0 +1,307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+
+<!--    This document is part of the OSDL project.
+		For any question, send a mail to homebrew@esperide.com
+-->
+<!--    
+        Creation date: Sunday, February 17, 2008.
+        Author: Olivier Boudeville (homebrew@esperide.com)
+        Version: 0.1
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Graphical rendering &amp; asset pipeline for the Nintendo DS</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, Nintendo, DS, GBA, homebrew, graphics">
+  <link rel="stylesheet" type="text/css" href="../../../../../common/css/OSDL.css">
+  <link href="../../../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  
+  <div class="banner">
+  
+    <p><em>General</em> <a href="../../../../../common/black.html" onclick="parent.toolbar.location='../../../../MainMenu.html'">home page</a>
+    <a href="../../../../Map.html">site map</a> <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Graphical%20rendering%20for%20the%20DS">mail us</a></p>
+	
+  </div><a name="_top_"></a>
+  
+
+<h1>Graphical rendering &amp; asset pipeline for the Nintendo DS</h1>
+
+
+<a name="toc"></a>
+<center>
+	<table summary="Table of content" style="border: none">
+        <tr>
+          <td>
+		<!--
+		       <a href="#"></a><br>
+		-->
+
+		   <div class="box">
+		       <a href="#overview">Overview</a><br>
+		       <a href="#design-choices">Design choices</a><br>
+		       <a href="#technical-architecture">Technical architecture</a><br>
+		       <a href="#in-world-rendering">In-world rendering</a><br>
+		       <a href="#user-interface">User interface</a><br>
+          </td>
+        </tr>
+    </table>
+</center>
+<!--
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+  -->
+
+
+  
+<a name="overview"></a>
+<h2>Overview</h2>
+<p>
+Our goal here is to describe a way of managing graphical rendering on the Nintendo DS that may be relevant for some types of games, notably a lightweight isometric engine suitable for RPG-like games.
+</p>
+
+<p>
+This consists on:
+<ul>
+
+	<li><b>designing the proper rendering layer</b> on the DS</li>
+	<li><b>setting up the corresponding tools</b> on the PC to generate the relevant assets</li>
+
+<!--
+	<li><b></b>: </li>
+-->
+
+</ul>
+</p>
+
+<p>
+We based most of the technical choices on our <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html" target="_blank">guide to homebrew development for the Nintendo DS</a>.
+</p>
+
+
+<a name="design-choices"></a> 
+<h2>Design choices</h2>
+
+<p>
+The game will use a lot of 2D assets, including many animated sprites from various sources, including converted versions from <a href="http://reinerstileset.4players.de/" target="_blank">Reiner's Tilesets</a>. </p>
+
+<p>
+Even if most sprites will be scaled down and some animation frames may be removed due to space constraint, one of the main challenges will be to keep a lower enough memory footprint so that the graphical content fits in the scarce memory resources of the DS.
+</p>
+
+<p>
+This will involve using fully all the VRAM banks of the DS, but also using a double-layered level of cache, as these banks will not suffice: first level of cache will be the DS main RAM, second one the DS cartridge.
+</p>
+
+
+<a name="technical-architecture"></a>
+<h2>Technical architecture</h2>
+
+<h3>Screen roles</h3>
+<p>
+We plan to have one screen (the top one) of the DS dedicated to the <a href="#in-world-rendering">In-world rendering</a> (top-down isometric view), whereas the bottom one will display the game <a href="#user-interface">user interface</a> (stats, input device, textual descriptions, etc.).
+</p>
+
+<h3>Rendering Cores</h3>
+<p>
+In-world rendering being the most intensive task, the main 2D core will be devoted to it (so it will be associated to the top screen). Thus the user interface will rely on the sub core, on the bottom screen. No 3D rendering is planned.
+</p>
+
+
+<h3>VRAM banks</h3>
+
+<p>
+Based on the bank <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" target="_blank">abilities</a>, the in-game bank layout we chose is:
+<center>
+  <table border="1" summary="VRAM Memory Banks">
+    <caption>VRAM Memory Banks</caption>
+
+    <tr>
+        <th>Bank name</th>
+        <th>Bank size (in Kilobytes)</th>
+        <th>Bank owner</th>
+        <th>Intended role</th>
+    </tr>
+
+    <tr>
+        <td>VRAM_A</td>
+        <td>128</td>
+		<td>Main engine</td>
+		<td>Sprite Graphics</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_B</td>
+        <td>128</td>
+		<td>Main engine</td>
+		<td>Sprite Graphics</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_C</td>
+        <td>128</td>
+		<td>Sub engine</td>
+		<td>Background</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_D</td>
+        <td>128</td>
+		<td>Main engine</td>
+		<td>Background</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_E</td>
+        <td>64</td>
+		<td>Main engine</td>
+		<td>Sprite Graphics</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_F</td>
+        <td>16</td>
+		<td>Main engine</td>
+		<td>Sprite Graphics</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_G</td>
+        <td>16</td>
+		<td>Main engine</td>
+		<td>Sprite Graphics</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_H</td>
+        <td>32</td>
+		<td>Sub engine</td>
+		<td>Background</td>
+   </tr>
+
+    <tr>
+        <td>VRAM_I</td>
+        <td>16</td>
+		<td>Main engine</td>
+		<td>Extended palettes</td>
+   </tr>
+
+  </table>
+</center>
+</p>
+
+<p>
+Main reasons for that is that we want to dedicate as much as possible memory for the main core, notably to hold as much sprites as possible. Bank C is the only one of the four main banks to be able to hold the sub background, D cannot contain main sprite graphics, etc. The sub engine does not need any sprite.
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+<a name="in-world-rendering"></a> 
+<h2>In-world rendering</h2>
+
+<p>
+The game scenes will be made of a static background for environment (grounds, stairs, walls, non-interactive elements, i.e. non-breakable non-movable) on top of which several layers of elements will exist (characters, monsters, furnitures, doors, carpets, objects, etc.).
+</p>
+
+<p>
+Static backgrounds will be stored in background memory, whereas all other elements will be sprites.
+</p>
+
+
+<h3>Backgrounds</h3>
+<p>
+These static elements 
+</p>
+
+<h3>Sprites</h3>
+
+<h4>Sprite color modes</h4>
+<p>
+Among the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-color" target="_blank">available sprite color schemes</a>, the mode usually chosen is the one with 16 palettes, each of 256 colors. It is a good trade-off indeed. Simple implementations could cope with one general-purpose palette for all sprites, whereas more complex ones could associate a palette to a given sprite (usually, animated character). The problem is that it would imply that no more than 16 types of sprites could be displayed simultaneously in the in-world view.  
+</p>
+
+<p>
+We keep in mind most of our sprites will come from the aforementioned Reiner's Tilesets. If we take <a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">Swordstan</a> as an example (most probably our main character, as having multiple animations with multiple outside appearances), the source image (in 24 Bit TrueColor), could be:
+<center>
+    <img src="swordstan-original.png" alt="Original image"></img>
+</center>
+The same image with a 256-color palette 
+
+<h4>Sprite sizes</h4>
+<p>
+Here is a screenshot of our <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/testOSDLVideoFramebuffer.arm9.cc?view=markup" target="_blank">testOSDLVideoFramebuffer</a> test program taken with NO$GBA:
+
+<center>
+    <img src="sprite-sizes.png" alt="Sprite sizes"></img>
+</center>
+
+</p>
+
+<p>
+It allows to better figure out the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-size" target="_blank">available sprite sizes</a>: yellow is for height of 8 pixels, white for 16, blue of 32 and cyan for 64. We deemed the most appropriate size of a character is in general the third blue shape, the 32x32 square: with its 4x4=16 tiles, its memory footprint should be bearable, and, compared to the rest of the screen, there is enough room to display the environment of the character (not too big, not too small).
+</p>
+
+<p>
+Using Swordstan again as an example, knowing that Reiner's Tilesets offer bigger frames, the source image could be:
+<center>
+    <img src="swordstan-original.png" alt="Original image"></img>
+</center>
+This is 96x96. If we reduced the original directly to 32x32, it would result in:
+<center>
+    <img src="swordstan-direct-32x32.png" alt="Original image"></img>
+</center>
+which is too small. Instead if we first crop the frame (the actual original content could fit in a 75x85 rectangle):
+<center>
+    <img src="swordstan-cropped-original.png" alt="Original Cropped Image"></img>
+</center>
+then we reduce it to 20x32 (preserving the ratio), we have:
+<center>
+    <img src="swordstan-cropped-32.png" alt="Image"></img>
+</center>
+which is better.
+</p>
+
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+
+
+
+<!-- ###################################################################### -->
+
+<a name="user-interface"></a> 
+<h2>User interface</h2>
+
+<h3></h3>
+<p>
+
+</p>
+
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+  <br>
+  <br>
+  <br>
+  <br>
+
+ <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Graphical%20rendering%20for%20the%20DS">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+  <br>
+ 
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update: Monday, February 25, 2008</em>
+  </center>
+</body>
+</html>
