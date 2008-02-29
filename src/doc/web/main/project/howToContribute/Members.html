@@ -4,11 +4,11 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2003, June 29.
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2003, June 29.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -34,69 +34,54 @@
 
   <h2>Services overview</h2>
 
-  <p>Some more services are available to the members :</p>
+  <p>Some more services are available to the members:
 
   <ul>
     <li>all services kindly provided to project members by <a href="http://www.sourceforge.net" target="_blank">Sourceforge</a>
-    [<a href="http://www.sourceforge.net/projects/osdl" target="_blank">OSDL at Sourceforge</a>], notably CVS [read our
-       <a href="#CVSmember">CVS nano-guide for project members</a>].</li>
+    [<a href="http://www.sourceforge.net/projects/osdl" target="_blank">OSDL at Sourceforge</a>], notably SVN [read our
+       <a href="#SVNmember">SVN nano-guide for project members</a>].</li>
     <li>an account on our own gateway (osdl.esperide.com), usable via ssh only. Allows for FTP &amp; web access to project resources</li>
   </ul>
+</p>
+
   
-  <br>
-  <br>
-  <a name="CVSmember"></a> 
+  <a name="SVNmember"></a> 
 
   <h2>Services available at Sourceforge for OSDL project members</h2>
 
   <h3>Shell access</h3>
   <p>
-  When connecting to the shell services at Sourceforge, it may be a little boring to type each time your user password. Moreover, it prevents from writing scripts that automatically connect to these computers, for example to update the website or the documentation generated for the API, or to retrieve automatically sources from CVS.</p>
+  When connecting to the shell services at Sourceforge, it may be a little boring to type each time your user password. Moreover, it prevents from writing scripts that automatically connect to these computers, for example to update the website or the documentation generated for the API, or to retrieve automatically sources from SVN.</p>
   
-  <p>To avoid having to enter a password, one might generate on one's computer a key pair (for example thanks to <code>ssh-keygen</code>) and transfer the public key to the shell server (with SSH). Simply, one just has to append one's public key to <code>~/.ssh/authorized_keys</code> (for example : <code>cat id_rsa.pub >> ~/.ssh/authorized_keys</code> ) and, if the permissions on one's files and directories are well set, the system should not ask his password anymore.
+  <p>To avoid having to enter a password, one might generate on one's computer a key pair (for example thanks to <code>ssh-keygen</code>) and transfer the public key to the shell server (with SSH). Simply, one just has to append one's public key to <code>~/.ssh/authorized_keys</code> (for example: <code>cat id_rsa.pub >> ~/.ssh/authorized_keys</code> ) and, if the permissions on one's files and directories are well set, the system should not ask his password anymore.
   </p>
   
   	
-  <h3>CVS</h3>
-  <ul>
-    <li>CVS access to Ceylan and OSDL repository at Sourceforge
-    (remember to use <code>export CVS_RSH=ssh</code>, and replace
-    <code>yourCommand</code> with appropriate command such as
-    <code>co OSDL</code> for instance) :<br>
+  <h3>SVN</h3>
 
-      <table summary="Proposed CVS commands" style="border: none">
+<p>
+A SVN check-out of OSDL repository at Sourceforge can be performed thanks to:
+<center>
+    <table summary="Code" style="border : none">
         <tr>
           <td>
             <div class="box">
-              <code>cvs -z3 -d
-              :ext:yourMemberName@cvs.sourceforge.net:/cvsroot/osdl yourCommand</code><br>
-              <br>
-
-              <div class="c1">
-                <strong>- or -</strong>
-              </div>
-              <pre>
-<code>alias cvsosdl=&#39;cvs -z3 -d :ext:yourMemberName@cvs.sourceforge.net:/cvsroot/osdl&#39; cvsosdl yourCommand     
-</code>
-</pre>
+<code><pre>
+svn co https://osdl.svn.sourceforge.net/svnroot/osdl/trunk
+</pre></code>
             </div>
           </td>
         </tr>
-      </table>
-    </li>
-  </ul>
+    </table>
+</center>
+
+</p>
   
   <p>
   Some common procedures (such as how to release a new OSDL version) are detailed <a href="../../documentation/OSDL/OSDL-generic/NewRelease.html">here</a>.
   </p>
   
   
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
 
   <h3>Please react !</h3>
 
@@ -107,7 +92,7 @@
   <center><a href="#_top_">[Top]</a>
 	<br>
     <br>
-    <em>Last update : 2005, November 11</em>
+    <em>Last update: Friday, February 29, 2008</em>
   </center>
 </body>
 </html>

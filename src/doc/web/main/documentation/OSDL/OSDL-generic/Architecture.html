@@ -20,9 +20,6 @@
   "../../../../common/css/OSDL.css">
   <link href="../../../../images/OSDL-icon.png" rel=
   "OSDL icon">
-  <style type="text/css">
-  div.c1 {text-align: center}
-  </style>
 </head>
 
 <body>
@@ -32,66 +29,63 @@
     <a href="../../../Map.html">Plan du site</a> <a href=
     "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Architecture%20d'OSDL">
     écrivez-nous</a></p>
-  </div><a name="_top_"></a> <span class="c1"><br>
-  <br></span> 
+  </div><a name="_top_"></a>
 
-  <h1>Architecture d'OSDL</h1><br>
-  <br>
+
+<h1>Architecture d'OSDL</h1>
+
  
-  
 <h2>Présentation</h2>
-  <p>Ce document décrit l'architecture générale choisie pour agencer les modules et classes de la bibliothèque OSDL. Cette vue d'ensemble peut servir de guide pour explorer la documentation complète de l'<a href="../../../../../../../html/index.html">API OSDL</a> et des développements correspondants.</p>
-  
-  <p>
-  La structure générale d'OSDL est celle d'un paquetage qui fédère un ensemble de services. Chaque service se définit comme une unité fonctionnelle prise en charge par un ensemble de modules et classes. Bien que quelques services observent une logique autosuffisante, la plupart s'appuient sur d'autres services, soit en provenance directe d'OSDL, soit de <a href="http://osdl.sourceforge.net/Ceylan/Ceylan-0.2/src/doc/web/" target="_blank">Ceylan</a> [<a href="http://osdl.sourceforge.net/Ceylan/Ceylan-0.2/src/doc/web/main/documentation/Architecture.html" target="_blank">lien direct vers la description de son architecture</a>], soit de travaux tiers.
-  </p>
 
- <p>
- Le panorama esquissé ici décompose la bibliothèque en services, eux-même rassemblant un ou plusieurs modules. Cette description retrace à grands traits ce qu'il serait idéal d'implémenter, sachant que ce recensement, à mi-chemin entre une liste à la Prévert et une lettre au Père Noël, sera douloureusement mis à mal par sa réalisation pratique, qui nous contraindra à réduire de beaucoup nos ambitions et à ne développer que les modules strictement nécessaires.</p>
+<p>Ce document décrit l'architecture générale choisie pour agencer les modules et classes de la bibliothèque OSDL. Cette vue d'ensemble peut servir de guide pour explorer la documentation complète de l'<a href="../../../../OSDL-latest/api/html/index.html">API OSDL</a> et des développements correspondants.
+</p>
  
- <p>
- Rien n'interdit toutefois d'imaginer ce que pourrait être la vue d'ensemble avant d'affronter le monde réel et ses inévitables concessions.
- 
- </p>
- 
- 
- <h2>Vue d'ensemble</h2>
- 
- <p>
- <center>
-    <img src="../../../../images/osdl-zoom-inverted.png" alt="OSDL framework"></img>
-</center>
+<p>
+La structure générale d'OSDL est celle d'un paquetage qui fédère un ensemble de services. Chaque service se définit comme une unité fonctionnelle prise en charge par un ensemble de modules et classes. Bien que quelques services observent une logique autosuffisante, la plupart s'appuient sur d'autres services, soit en provenance directe d'OSDL, soit de <a href="http://ceylan.sourceforge.net/" target="_blank">Ceylan</a> [<a href="http://ceylan.sourceforge.net/main/documentation/Architecture.html" target="_blank">lien direct</a> vers la description de son architecture], soit de travaux tiers.
+</p>
 
- 
- 
- </p> 
-  
-  <a name="servicesList"></a>
- <h2>Liste des services</h2>
- 
+<p>
+Le panorama esquissé ici décompose la bibliothèque en services, eux-même rassemblant un ou plusieurs modules. Cette description retrace à grands traits ce qu'il serait idéal d'implémenter, sachant que ce recensement, à mi-chemin entre une liste à la Prévert et une lettre au Père Noël, sera douloureusement mis à mal par sa réalisation pratique, qui nous contraindra à réduire de beaucoup nos ambitions et à ne développer que les modules strictement nécessaires.</p>
+
+<p>
+Rien n'interdit toutefois d'imaginer ce que pourrait être la vue d'ensemble avant d'affronter le monde réel et ses inévitables concessions.
+</p>
+
+
+<h2>Vue d'ensemble</h2>
+
+<p>
  <center>
- <table summary="Service table of contents" style="border : none">
-    <tr>
-      <td>
-        <div class="box">
-	
-    <a href="#EventService">EventService</a> : gestion des événements<br>
-    <a href="#GraphicService">GraphicService</a> : rendu graphique<br>
-    <a href="#LinearService">LinearService</a> : algèbre linéaire<br>	
-    <a href="#SoundService">SoundService</a> : rendu sonore<br>
-    <a href="#InputService">InputService</a> : gestion des périphériques d'entrée<br>
-    <a href="#SimulationService">SimulationService</a> : simulations physiques<br>
-    <a href="#BehaviourService">BehaviourService</a> : comportement des créatures<br>
-    <a href="#ContentGeneratorService">ContentGeneratorService</a> : génération automatique de contenu<br>
-	
-        </div>
-      </td>
-    </tr>
-</table>
-</center> 
-  
-  
- <h2>Descriptif des services</h2>
+   <img src="../../../../images/osdl-zoom-inverted.png" alt="OSDL framework"></img>
+ </center>
+</p> 
+ 
+ <a name="servicesList"></a>
+<h2>Liste des services</h2>
+
+<center>
+<table summary="Service table of contents" style="border : none">
+   <tr>
+	 <td>
+	   <div class="box">
+
+   <a href="#EventService">EventService</a> : gestion des événements<br>
+   <a href="#GraphicService">GraphicService</a> : rendu graphique<br>
+   <a href="#LinearService">LinearService</a> : algèbre linéaire<br>   
+   <a href="#SoundService">SoundService</a> : rendu sonore<br>
+   <a href="#InputService">InputService</a> : gestion des périphériques d'entrée<br>
+   <a href="#SimulationService">SimulationService</a> : simulations physiques<br>
+   <a href="#BehaviourService">BehaviourService</a> : comportement des créatures<br>
+   <a href="#ContentGeneratorService">ContentGeneratorService</a> : génération automatique de contenu<br>
+
+	   </div>
+	 </td>
+   </tr>
+ </table>
+ </center> 
+ 
+ 
+<h2>Descriptif des services</h2>
 <br>
 
 <!-- Template :
@@ -150,7 +144,6 @@
           <td>
             <div class="box">
  <h3>EventService : gestion des événements</h3>
-
             </div>
           </td>
         </tr>
@@ -158,170 +151,186 @@
 </center>
 
  
- <h4>Objectif</h4>
- <p>
- Ce service a pour tâche d'implémenter la figure d'architecture (<em>design pattern</em>) Obervateur/Observé, ou <em>Listener/Source</em>, afin de doter OSDL, et donc les applications qui l'utilisent, d'un système de propagation d'événements asynchrone de type <em>publish and subscribe</em>, proche de celui des interfaces graphiques.</p>
- 
- <p>
- Ce système offrira des ponts vers les événements de plus bas niveau manipulés par SDL (par exemple via <code>SDL_EventState()</code> ou<code> SDL_PumpEvents()</code>).
- 
- </p>
+<h4>Objectif</h4>
+<p>
+Ce service a pour tâche d'implémenter la figure d'architecture (<em>design pattern</em>) Obervateur/Observé, ou <em>Listener/Source</em>, afin de doter OSDL, et donc les applications qui l'utilisent, d'un système de propagation d'événements asynchrone de type <em>publish and subscribe</em>, proche de celui des interfaces graphiques.
+</p>
+
+<p>
+Ce système offre des ponts vers les événements de plus bas niveau manipulés par SDL (par exemple via <code>SDL_EventState()</code> ou<code> SDL_PumpEvents()</code>).
+</p>
 
 <h4>Principe</h4>
 <p>
-Le principe d'un tel système est simple : ceux des objets de l'application qui peuvent être générateurs d'événements doivent implémenter l'interface <em>EventSource</em> ou l'une de ses spécialisations (ex : <em>ContinuousEventSource</em>). Les objets potentiellement intéressés (les observateurs, <code>EventListeners</code>, EventSinks, ce sont ici des synonymes) s'inscrivent auprès des générateurs de ces événements (<em>subscribe</em>). Dès lors, toute arrivée d'un nouvel événement émis par la source, l'observée, sera notifié à chacun des observateurs s'étant enregistrés.
- </p>
+Son principe de fonctionnement simple : ceux des objets de l'application qui peuvent être générateurs d'événements doivent implémenter l'interface <em>EventSource</em> ou l'une de ses spécialisations (ex : <em>ContinuousEventSource</em>).
+</p>
+
+<p>
+Les objets potentiellement intéressés (les observateurs, <code>EventListeners</code>, EventSinks, ce sont ici des synonymes) s'inscrivent auprès des générateurs de ces événements (<em>subscribe</em>). Dès lors, toute arrivée d'un nouvel événement émis par la source, l'observée, sera notifié à chacun des observateurs s'étant enregistrés.
+</p>
  
 
  
 <h4>Cas d'utilisation</h4>
  <p>
- En pratique, ce système de gestion d'événements peut nervurer l'application, en permettant de tenir informés les objets devant être à l'écoute d'autres objets. Son champ d'application est large : il peut servir à notifier, quand le paladin furtif trébuche sur un casque en ferraille, la survenue de ce son à tous les monstres du secteur qui, en fonction de leur perception, seront à même de le détecter ou non et, le cas échéant, d'agir, en prenant la fuite ou leurs responsabilités de monstres malveillants. Dans ce cadre, toute créature s'inscrirait automatiquement en tant qu'observateur de ses voisins. Similairement, un objet horloge/minuterie (<em>Timer</em>)
- peut envoyer, lorsque le monde du jeu atteint minuit, un même événement qui fera carillonner les coucous et se transformer les lycanthropes. Cette même faculté d'horodatage des événements, conjuguée avec le cache intelligent décrit dans <a href="#DataService">DataService</a>, serait aussi particulièrement utile pour la synchronisation sons/images et images/temps de la bande-annonce, une problématique qui pourrait être traitée par un composant dédié.</p>
+ En pratique, ce système de gestion d'événements peut nervurer l'application, en permettant de tenir informés les objets devant être à l'écoute d'autres objets. Son champ d'application est large : il peut servir à notifier, quand le paladin furtif trébuche sur un casque en ferraille, la survenue de ce son à tous les monstres du secteur qui, en fonction de leur perception, seront à même de le détecter ou non et, le cas échéant, d'agir, en prenant la fuite ou leurs responsabilités de monstres malveillants.
+</p>
+
+<p>
  
- <p>Ce système polyvalent peut aussi être mis à profit pour transmettre les changements d'état des périphériques d'entrée de l'application, en coordination avec <a href="#InputService">InputService</a>. Il est ainsi possible de considérer la frappe d'une touche ou le clic sur une icône comme un événement (au sens SDL), au moins intéressant (observé) pour la logique du jeu, qui pourra le traduire par un événement de plus haut niveau, comme par exemple l'expression de la volonté du joueur de faire faire à son personnage un pas en avant.  
- </p>
+Dans ce cadre, toute créature s'inscrirait automatiquement en tant qu'observateur de ses voisins. Similairement, un objet horloge/minuterie (<em>Timer</em>) peut envoyer, lorsque le monde du jeu atteint minuit, un même événement qui fera carillonner les coucous et se transformer les lycanthropes. Cette même faculté d'horodatage des événements, conjuguée avec le cache intelligent décrit dans <a href="#DataService">DataService</a>, serait aussi particulièrement utile pour la synchronisation sons/images et images/temps de la bande-annonce, une problématique qui pourrait être traitée par un composant dédié.
+</p>
  
- <h5>Causalité</h5>
-<p>Notons que d'une part un observateur ne recevra jamais un événement posté par une source avant qu'il s'inscrive à cette source, et d'autre part que ces événements sont conçus afin de modéliser des changements d'états (qui sont ponctuels) et non pas des états (qui sont durables).
+<p>Ce système polyvalent peut aussi être mis à profit pour transmettre les changements d'état des périphériques d'entrée de l'application, en coordination avec <a href="#InputService">InputService</a>. Il est ainsi possible de considérer la frappe d'une touche ou le clic sur une icône comme un événement (au sens SDL), au moins intéressant (observé) pour la logique du jeu, qui pourra le traduire par un événement de plus haut niveau, comme par exemple l'expression de la volonté du joueur de faire faire à son personnage un pas en avant.  
+</p>
+ 
+
+<h5>Causalité</h5>
+
+<p>
+Notons que d'une part un observateur ne recevra jamais un événement posté par une source avant qu'il s'inscrive à cette source, et d'autre part que ces événements sont conçus afin de modéliser des changements d'états (qui sont ponctuels) et non pas des états (qui sont durables).
 </p>
 
 
-<p>Par exemple, si on souhaite exprimer avec ce système le fait qu'un son continu retentit pendant dix secondes, cela se fera au moyen de deux événements, un qui consistera à notifier les observateurs du début de la propagation du son et le deuxième de sa fin. Le corollaire de ces deux remarques est qu'une créature, par exemple à l'occasion d'une entrée en zone, qui s'abonnerait à l'émetteur du son entre son début et sa fin n'aurait a priori aucun moyen de savoir qu'un son est en train d'être émis. C'est le signe que le système événementiel ne s'applique pas tel quel à ce cas particulier.
+<p>
+Par exemple, si on souhaite exprimer avec ce système le fait qu'un son continu retentit pendant dix secondes, cela se fera au moyen de deux événements, un qui consistera à notifier les observateurs du début de la propagation du son et le deuxième de sa fin. Le corollaire de ces deux remarques est qu'une créature, par exemple à l'occasion d'une entrée en zone, qui s'abonnerait à l'émetteur du son entre son début et sa fin n'aurait a priori aucun moyen de savoir qu'un son est en train d'être émis. C'est le signe que le système événementiel ne s'applique pas tel quel à ce cas particulier.
 </p>
 
 <p>Une solution technique serait de considérer que de tels phénomènes peuvent être interprétés comme une génération continue d'événements (ex : "un son est en cours d'émission"). Pour éviter de poster sans arrêt des événements aux observateurs enregistrés, on pourrait imaginer que de telles sources continues d'événements, à l'inscription d'un observateur en cours en session, lui postent spécifiquement l'événement ayant marqué le début de la session pour que cet observateur rattrape son contexte. Il s'agirait donc en l'occurence d'une spécialisation des sources simples d'événements, qui posséderait une référence sur chacun de ses événements aussi longtemps qu'il est en cours et qu'au moins un observateur abonné n'a pas consommé la référence qu'il détient. 
- </p>
+</p>
   
  
- <p>
+<p>
 Plus généralement, une telle gestion événementielle couvre un besoin commun à de nombreux modules de l'application, il est donc valable de le traiter une fois pour toutes de manière générique, avant de l'instancier sur chacun des cas où cette gestion se révèlera nécessaire. 
- </p>
+</p>
  
  
- <h4>Implémentation</h4>
- 
- <p>
- Ce système, puissant et polyvalent mais consommant un peu de ressources, s'applique principalement aux événements de fréquence de survenue faible ou moyenne, de manière à ce que le temps de traitement d'un événement reste toujours négligeable devant la durée moyenne entre deux de ses survenues. Ainsi, ce n'est pas le bon système pour détecter chaque changement de microseconde de l'horloge système.
- 
- </p>
- 
- <p>L'implémentation sous-jacente aux événements est simple : d'une classe-mère abstraite <em>Event</em>, descendent tous les événements, qui sont des objets typés. Chaque source d'événements implémente l'interface <em>EventSource</em>, chaque observateur implémente l'interface <em>EventListener</em>. Chacune des sources contient une file d'événements, dans laquelle elle place  ceux qu'elle génère, les uns à la suite des autres. A chaque dépôt d'événement, la source parcourt la liste de ses observateurs du moment, et les avertit en leur fournissant la référence du nouvel événement (qui n'est donc pas recopié). Le coût total du système, outre les inscriptions / désisncriptions préalables, est donc d'une instanciation d'un objet événement et d'autant d'appels de méthodes que d'observateurs. Le jeu en vaut la chandelle dans de nombreux cas.
+<h4>Implémentation</h4>
 
+<p>
+Ce système, puissant et polyvalent mais consommant un peu de ressources, s'applique principalement aux événements de fréquence de survenue faible ou moyenne, de manière à ce que le temps de traitement d'un événement reste toujours négligeable devant la durée moyenne entre deux de ses survenues. Ainsi, ce n'est pas le bon système pour détecter chaque changement de microseconde de l'horloge système.
+</p>
+
+<p>L'implémentation sous-jacente aux événements est simple : d'une classe-mère abstraite <em>Event</em>, descendent tous les événements, qui sont des objets typés. Chaque source d'événements implémente l'interface <em>EventSource</em>, chaque observateur implémente l'interface <em>EventListener</em>. Chacune des sources contient une file d'événements, dans laquelle elle place  ceux qu'elle génère, les uns à la suite des autres. A chaque dépôt d'événement, la source parcourt la liste de ses observateurs du moment, et les avertit en leur fournissant la référence du nouvel événement (qui n'est donc pas recopié). Le coût total du système, outre les inscriptions / désinscriptions préalables, est donc d'une instanciation d'un objet événement et d'autant d'appels de méthodes que d'observateurs. Le jeu en vaut la chandelle dans de nombreux cas.
 </p>
 
 <p>
 Plus précisément, au niveau de la gestion mémoire, un événement d'une source implémente l'interface Ceylan <code>RefCountable</code>, c'est-à-dire qu'il comporte un compteur de références. A chaque fois qu'un observateur consomme (traite) un événement dont il détient une référence, cette référence est supprimée de la file d'attente de son observateur, ce qui décrémente le compteur de référence de l'événement correspondant. De ce fait, quand tous les observateurs ont consommé leur référence sur cet événement, si on a affaire à une source simple (non continue), plus personne ne peut détenir de référence sur l'événement, qui peut donc être détruit. Notons enfin qu'un observateur doit à sa destruction relâcher toutes les références qu'il détient, sous peine de fausser le comptage et de gaspiller de la mémoire.   
+</p>
+
+
+<br>
+<center>[<a href="#servicesList">retour à la liste des services</a>]</center>
+<br><br>
+
+
+
+
+
+<br>
+<a name="GraphicService"></a>
+
+<center>
+   <table summary="a box" style="border : none">
+	   <tr>
+		 <td>
+		   <div class="box">
+<h3>GraphicService : rendu graphique</h3>
+		   </div>
+		 </td>
+	   </tr>
+   </table>
+</center>
+
+ 
+<h4>Objectif</h4>
+<p>
+Le service de rendu graphique doit gérer les affichages de l'application en masquant leur complexité sous-jacente aux autres modules. Il vise notamment à fournir des primitives de haut niveau, c'est-à-dire dont chaque appel prend en charge de nombreux traitements, au contact direct de l'utilisateur.
+</p>
+
+
+<p>
+Ce service regroupe le chargement et la sauvegarde d'images, la gestion de surfaces (zones de mémoires vidéo), les filtres graphiques, la formation d'images composites, les calques et la transparence, les effets spéciaux, tels que différents enchaînements (ex : fondus-enchaînés), des effets de lumière ou du <em>morphing</em> élémentaire. Il proposera notamment un moteur de rendu rudimentaire, dans un premier temps 2D (3D isométrique), s'appuyant pour partie sur <a href="#LinearService">LinearService</a> pour ses calculs.
+</p>
+
+<h4>Cas d'utilisation</h4>
+<p>
+L'écran sera partitionné en zones dotées chacune de leurs attributs graphiques, avec possibilité d'en effectuer le rendu isolément. La zone principale sera celle de la vue subjective d'un joueur se déplaçant sur un plan quadrillé de manière régulière par autant de cases que de positions possibles pour les créatures et les objets.
 
 </p>
 
 
- <br>
- <center>[<a href="#servicesList">retour à la liste des services</a>]</center>
-<br><br>
- 
- 
 
- <br>
- <a name="GraphicService"></a>
- 
- <center>
-    <table summary="a box" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
- <h3>GraphicService : rendu graphique</h3>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
+<h4>Implémentation</h4>
+<p>
+Fondée sur SDL, l'implémentation s'aidera de <a href="http://www.libsdl.org/projects/SDL_image/" target="_blank">SDL_image</a> pour la gestion des fichiers graphiques, et de <a href="http://www.libsdl.org/projects/SDL_ttf/" target="_blank">SDL_ttf</a> pour le rendu des fontes de caractères. Le moteur rudimentaire permettra d'obtenir des vues de l'environnement <em>à la Dungeon Master</em> (vue subjective) ou en "3D" isométrique. L'algorithme du peintre sera employé, c'est-à-dire qu'en deça d'une distance maximale, les constituants du monde (murs, portes, créatures, objets, etc.) seront dessinés dans l'ordre croissant de proximité au point de vue, i.e. des plus lointains aux plus proches.
+</p>
 
- 
- <h4>Objectif</h4>
- <p>
- Le service de rendu graphique a pour objectif de gérer les affichages de l'application en masquant leur complexité sous-jacente aux autres modules. Il vise notamment à fournir des primitives de haut niveau, c'est-à-dire qui en peu de lignes réalisent beaucoup de traitements, au contact direct de l'utilisateur.
- 
- </p>
- 
- 
- <p>
- Ce service regroupe le chargement et la sauvegarde d'images, la gestion de surfaces (zones de mémoires vidéo), les filtres graphiques, la formation d'images composites, les calques et la transparence, les effets spéciaux, tels que différents enchaînements (ex : fondus-enchaînés), des effets de lumière ou du <em>morphing</em> élémentaire. Il proposera notamment un moteur de rendu rudimentaire, dans un premier temps 2D (3D isométrique), s'appuyant pour partie sur <a href="#LinearService">LinearService</a> pour ses calculs.
- </p>
- 
- <h4>Cas d'utilisation</h4>
- <p>
- L'écran sera partitionné en zones dotées chacune de leurs attributs graphiques, avec possibilité d'en effectuer le rendu isolément. La zone principale sera celle de la vue subjective d'un joueur se déplaçant sur un plan quadrillé de manière régulière par autant de cases que de positions possibles pour les créatures et les objets.
- 
- </p>
- 
- 
- 
- <h4>Implémentation</h4>
- <p>
- Fondée sur SDL, l'implémentation s'aidera de <a href="http://www.libsdl.org/projects/SDL_image/" target="_blank">SDL_image</a> pour la gestion des fichiers graphiques, et de <a href="http://www.libsdl.org/projects/SDL_ttf/" target="_blank">SDL_ttf</a> pour le rendu des fontes de caractères. Le moteur rudimentaire permettra d'obtenir des vues de l'environnement "à la Dungeon Master". L'algorithme du peintre sera employé, c'est-à-dire qu'en deça d'une distance maximale, les constituants du monde (murs, portes, créatures, objets, etc.) seront dessinés dans l'ordre de proximité du point de vue croissante, c'est des plus lointains aux plus proches.
- 
- </p>
- 
 <p>Au-delà de l'horizon de perception, c'est-à-dire pour les objets dans le cône de vision placés au delà de la distance maximale, un brouillard indistinct en extérieur et une obscurité en intérieur règneront, de manière à borner le nombre d'éléments à afficher.
 </p>
 
-<p>Pour chaque objet à rendre dans la fenêtre principale, au minimum trois vues en haute résolution devront être disponibles : vue de face, vue de profil (la symètrique s'en déduisant par réflexion), et vue de derrière. Les effets de la distance seront traduits par une mise à l'échelle de cette image en résolution maximale, par application du thérorème de Thalès.
+<p>Pour chaque objet à rendre dans la fenêtre principale, au minimum trois vues en haute résolution devront être disponibles : vue de face, vue de profil (la symétrique s'en déduisant par réflexion si l'objet graphique est lui-même symétrique), et vue de derrière. Les effets de la distance seront traduits par une mise à l'échelle de cette image en résolution maximale, par application du thérorème de Thalès.
 </p>
 
-<p>Si l'implémentation en pur SDL classique devait être trop lente (car l'accélération matérielle ne sera pas utilisable ainsi), <a href="http://www.opengl.org/OpenGL" target="_blank">openGL</a> serait employé, via les réécritures de SDL de type <a href="http://olofson.net/mixed.html" target="blank">glSDL</a>. 
+<p>Si l'implémentation en pur SDL classique devait être trop lente (car l'accélération matérielle ne sera pas utilisable ainsi), <a href="../../rendering/SDL-openGL.html" target="_blank">OpenGL</a> serait employé, via les réécritures de SDL de type <a href="http://olofson.net/mixed.html" target="blank">glSDL</a>. 
 </p>
 
+<p>
+Enfin, ce service proposera des abstractions orientées objet des objets principaux utilisés par SDL, comme par exemple les surfaces, afin de proposer en C++ des primitives plus riches et permettant de réaliser plus facilement des traitements complexes.
+</p>
 
-<p>Enfin, ce service proposera des abstractions orientées objet des objets principaux utilisés par SDL, comme par exemple les surfaces, afin de proposer en C++ des primitives plus riches et permettant de réaliser plus facilement des traitements complexes.</p>
-
-
- <br>
- <center>[<a href="#servicesList">retour à la liste des services</a>]</center>
+<br>
+<center>[<a href="#servicesList">retour à la liste des services</a>]</center>
 <br><br>
 
 
- <a name="LinearService"></a>
- 
- <center>
-    <table summary="a box" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
- <h3>LinearService : algèbre linéaire</h3>
 
-            </div>
-          </td>
-        </tr>
-    </table>
+
+<a name="LinearService"></a>
+
+<center>
+   <table summary="a box" style="border : none">
+	   <tr>
+		 <td>
+		   <div class="box">
+<h3>LinearService : algèbre linéaire</h3>
+		   </div>
+		 </td>
+	   </tr>
+   </table>
 </center>
 
  
  
- 
- <h4>Objectif</h4>
- <p>
- Ce service regroupe la gestion de l'algèbre matricielle élémentaire, en dimension 2, 3 voire 4, avec support des matrices homogènes. Ces dernières sont utiles pour implémenter dans des espaces de dimension supérieure des opérations faisant intervenir des compositions de transformations non nécessairement toutes linéaires. L'exemple le plus classique est de calculer des produits de matrices 4x4 par bloc pour représenter un monde modélisé en trois dimensions, la dimension supplémentaire permettant d'introduire des translations dans les transformations. Ainsi, une matrice de passage 4x4 pourrait à elle seule, en 3D, translater un référentiel local dans un référentiel global, lui faire subir une rotation quelconque et le replacer par rapport à l'observateur, le tout en une seule opération.
- 
- </p>
- 
- 
- <h4>Cas d'utilisation</h4>
- <p>
- Même pour un jeu en deux dimensions, les problèmes similaires se posent, comme les référentiels locaux (définir une trajectoire dans un bon référentiel est toujours plus facile), la détection des collisions, le <em>clipping</em>, la gestion de la profondeur, l'élimination des faces cachées, etc. (même dans un petit moteur de rendu en 3D isomètrique à la <em>Dungeon Master</em> !)
+<h4>Objectif</h4>
+<p>
+Ce service regroupe la gestion de l'algèbre matricielle élémentaire, en dimension 2, 3 voire 4, avec support des matrices homogènes. Ces dernières sont utiles pour implémenter dans des espaces de dimension supérieure des opérations faisant intervenir des compositions de transformations non nécessairement toutes linéaires.
+</p>
 
- </p>
+<p>
+L'exemple le plus classique est de calculer des produits de matrices 4x4 par bloc pour représenter un monde modélisé en trois dimensions, la dimension supplémentaire permettant d'introduire des translations (opérations pourtant non-linéaires) dans les transformations.
+</p>
+
+<p>
+Ainsi, une matrice de passage 4x4 pourrait à elle seule, en 3D, translater un référentiel local dans un référentiel global, lui faire subir une rotation quelconque et le replacer par rapport à l'observateur, le tout en une seule opération.
+</p>
+
+
+<h4>Cas d'utilisation</h4>
+<p>
+Même pour un jeu en deux dimensions, les problèmes similaires à ceux rencontrés en 3D se posent, comme les référentiels locaux (définir une trajectoire dans un bon référentiel est toujours plus facile), la détection des collisions, le <em>clipping</em>, la gestion de la profondeur, l'élimination des faces cachées, etc. (même dans un petit moteur de rendu à la <em>Dungeon Master</em> !)
+</p>
  
  
- 
- <h4>Implémentation</h4>
- <p>
+
+<h4>Implémentation</h4>
+<p>
 Extrêmement classique, cela revient en C++ à définir des objets de type matrices et vecteurs, avec les opérateurs que l'on juge adéquats, comme appliquer un vecteur à une matrice, normaliser, inverser, produits scalaire et vectoriels, construire une matrice de rotation, les transformer/transposer, etc.
- </p>
- 
+</p>
 
- <br>
- <center>[<a href="#servicesList">retour à la liste des services</a>]</center>
+
+<br>
+<center>[<a href="#servicesList">retour à la liste des services</a>]</center>
 <br><br>
 
 
@@ -341,91 +350,98 @@ Extrêmement classique, cela revient en C++ à définir des objets de type matrices
 </center>
 
  
- <h4>Objectif</h4>
- <p>
- Ce module aura en charge la gestion du son pour le compte des applications. Cela inclut notamment la possibilité de jouer simultanément plusieurs sources de plusieurs formats simultanément, via un mixage entièrement paramètrable. Les formats supportés seront a minima les <b>wav</b> (sons bruts) et les <a href="http://www.vorbis.com/" target="_blank">Ogg Vorbis</a>, encodage et compression du son plus efficace que le mp3 et librement utilisable (sans licence). Les sources audio pourront être jouées en <em>streaming</em> (lecture en continu) ou avec chargement préalable des données, avec interfaçage avec le système de cache proposé par <a href="#DataService">DataService</a>. 
- 
- <p>
- Un support limité de la diffusion du son pourra être proposé (moteur de rendu sonore), notamment afin de gérer automatiquement l'affaiblissement du son avec la distance, voire sa directionnalité. Enfin, une gestion basique de la stéréo sera disponible.
- </p>
- 
- <p>Quelques effets spéciaux, de type filtres basiques issus du traitement du signal, pourront être produits, tels que les chorus, flanger, pitch bend, échos familiers des musiciens. Autres possibilités : distorsions, son spatial, fading.</p>
- 
- 
- 
- <h4>Cas d'utilisation</h4>
- <p>
- Une scène avec plusieurs sources sonores : un forgeron à mi-distance créant des bruits ponctuels quand il tape sur son enclume, le murmure ambient et permanent d'une cascade assez lointaine, la voix du garde toute proche sur notre droite, donc articulièrement audible de l'oreille droite, avec potentiellement en fond sonore une sonate baroque interprétée à la cythare.
- 
- </p>
- 
- 
- 
- <h4>Implémentation</h4>
- <p>
- Le support audio de SDL sera mis à contribution, ainsi que des bibliothèques spécialisées telles que <a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a> [<a hrf="http://jcatki.no-ip.org/SDL_mixer/SDL_mixer.html">doc</a>], MikMod MOD, Timidity MIDI et SMPEG.
- 
- </p>
- 
+<h4>Objectif</h4>
+<p>
+Ce module aura en charge la gestion du son pour le compte des applications. Cela inclut notamment la possibilité de jouer simultanément plusieurs sources de plusieurs formats simultanément, via un mixage entièrement paramètrable. Les formats supportés seront a minima les <b>wav</b> (sons bruts) et les <a href="http://www.vorbis.com/" target="_blank">Ogg Vorbis</a>, encodage et compression du son plus efficace que le mp3 et librement utilisable (sans licence). Les sources audio pourront être jouées en <em>streaming</em> (lecture en continu) ou avec chargement préalable des données, avec interfaçage avec le système de cache proposé par <a href="#DataService">DataService</a>. 
 
- <br>
- <center>[<a href="#servicesList">retour à la liste des services</a>]</center>
+<p>
+Un support limité de la diffusion du son pourra être proposé (moteur de rendu sonore), notamment afin de gérer automatiquement l'affaiblissement du son avec la distance, voire sa directionnalité. Enfin, une gestion basique de la stéréo sera disponible.
+</p>
+
+<p>Quelques effets spéciaux, de type filtres basiques issus du traitement du signal, pourront être produits, tels que les chorus, flanger, pitch bend, échos familiers des musiciens. Autres possibilités : distorsions, son spatial, fading (in, out, enchaîné).
+</p>
+
+<p>
+Pour certaines plate-formes (ex: la Nintendo DS), certains compromis doivent être trouvés : pas ou peu de stéréo, mp3 plutôt que OggVorbis, etc. [<a href="Helix-OSDL/helix-osdl.html" target="_blank">Plus d'infos</a>].
+</p>
+
+
+
+<h4>Cas d'utilisation</h4>
+<p>
+Une scène avec plusieurs sources sonores : un forgeron à mi-distance créant des bruits ponctuels quand il tape sur son enclume, le murmure ambient et permanent d'une cascade assez lointaine, la voix du garde toute proche sur notre droite, donc articulièrement audible de l'oreille droite, avec potentiellement en fond sonore une sonate baroque interprétée à la cythare.
+</p>
+
+
+
+<h4>Implémentation</h4>
+<p>
+Le support audio de SDL sera mis à contribution, ainsi que des bibliothèques spécialisées telles que <a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a> [<a hrf="http://jcatki.no-ip.org/SDL_mixer/SDL_mixer.html">doc</a>], MikMod MOD, Timidity MIDI et SMPEG.
+</p>
+
+<br>
+<center>[<a href="#servicesList">retour à la liste des services</a>]</center>
 <br><br>
 
 
-<br>
- <a name="InputService"></a>
- <center>
-    <table summary="a box" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
- <h3>InputService : gestion des périphériques d'entrée</h3>
 
-            </div>
-          </td>
-        </tr>
-    </table>
+<br>
+<a name="InputService"></a>
+<center>
+   <table summary="a box" style="border : none">
+	   <tr>
+		 <td>
+		   <div class="box">
+<h3>InputService : gestion des périphériques d'entrée</h3>
+		   </div>
+		 </td>
+	   </tr>
+   </table>
 </center>
 
 
- <h4>Objectif</h4>
- <p>
- Fournir un service qui permette de prendre en compte les actions du joueurs et qui soit de haut niveau, c'est-à-dire aidant autant que possible à faire abstraction des périphériques sous-jacents. Plus précisément, le service supportera principalement les périphériques suivants :
+<h4>Objectif</h4>
+<p>
+Fournir un service qui permette de prendre en compte les actions du joueurs et qui soit de haut niveau, c'est-à-dire aidant autant que possible à faire abstraction des périphériques d'entrée sous-jacents. Plus précisément, le service supportera principalement les périphériques suivants :
  <ul>
+ 
 	<li><b>clavier</b> : identification Unicode de toute touche ou combinaison de touches frappées</li>
+	
 	<li><b>souris</b> : gestion des boutons, accélération, curseur voire molette</li>
+	
 	<li><b>joystick</b> et <b>pads</b> : analogique ou digital, multi-boutons voire avec retour de force</li>
+	
+	<li><b>écran tactile</b> (pour la Nintendo DS) : émulation d'une souris et d'un clavier virtuel (image de clavier ou reconnaissance de glyphes à la PAlib)</li>
+	
 </ul>
  </p>
  
  <p>Les événements (changements d'état) pourront s'interfacer avec <a href="#EventService">EventService</a>, de manière à ce que du point de vue de la logique du jeu les événements bas niveau tels que l'appui de la touche "flèche vers le haut", le mouvement de la souris ou l'inclinaison du joystick se traduisent par l'événement de plus haut niveau "le joueur souhaite que son personnage avance". Toutefois, on parle d'interfaçage des systèmes d'événements, et non pas d'incorporation pure et simple, car les événements bas niveau ne se prêtent pas à prendre la forme d'objets-événements tels que ceux proposés par EventService : trop nombreux et indépendants du contexte, les modéliser sous forme d'objets plénipotentiaires serait un gaspillage de ressources. Il est en revanche important de se ménager la possibilité de les convertir, tel que décrit plus haut.
- 
- </p>
- 
- <p>
- Un autre sous-produit de ce service est de fournir un boucle d'événements (appelée aussi <em>reactor</em> pour les IHM) optimisée, qui permette de prendre tour-à-tour et de manière efficace les remontées d'information en provenance des périphériques d'entrée.
+</p>
 
- </p>
- 
- <h4>Cas d'utilisation</h4>
- <p>
- Toutes les applications interactives nécessitent de prendre en compte les entrées du ou des participants !
- 
- </p>
- 
- 
- 
- <h4>Implémentation</h4>
- <p>
- SDL suffira amplement à implémenter ce service, bien cloisonné, isolé du reste.
- 
- </p>
- 
+<p>
+Un autre sous-produit de ce service est de fournir un boucle d'événements (appelée aussi <em>reactor</em> pour les IHM) optimisée, qui permette de prendre tour-à-tour et de manière efficace les remontées d'information en provenance des périphériques d'entrée.
 
- <br>
- <center>[<a href="#servicesList">retour à la liste des services</a>]</center>
+</p>
+
+<h4>Cas d'utilisation</h4>
+<p>
+Toutes les applications interactives nécessitent de prendre en compte les entrées du ou des participants !
+
+</p>
+
+
+
+<h4>Implémentation</h4>
+<p>
+SDL suffira amplement à implémenter ce service, bien cloisonné, isolé du reste.
+</p>
+
+
+<br>
+<center>[<a href="#servicesList">retour à la liste des services</a>]</center>
 <br><br>
+
 
 
 <br>
@@ -443,45 +459,45 @@ Extrêmement classique, cela revient en C++ à définir des objets de type matrices
     </table>
 </center>
  
- <h4>Objectif</h4>
- <p>
- Ce service fait office d'esquisse moteur physique. Il permet de gérer les mouvements et trajectoires, la notion de zone ainsi que quelques contraintes élémentaires telles que, dans une certaine mesure, les frottements solides, la masse et sa traduction sous forme de force, le poids. Il gèrerait aussi les collisions, chocs élastiques ou non, moments d'inertie. Tout cela serait rudimentaire et s'appliquerait exclusivement aux objets indéformables (cinématique des solides rigides).
- </p>
+<h4>Objectif</h4>
+<p>
+Ce service fait office d'esquisse de moteur de jeu et de moteur physique. Il permet de gérer les mouvements et trajectoires, la notion de zone ainsi que quelques contraintes élémentaires telles que, dans une certaine mesure, les frottements solides, la masse et sa traduction sous forme de force, le poids. Il gèrerait aussi les collisions, chocs élastiques ou non, moments d'inertie. Tout cela serait rudimentaire et s'appliquerait exclusivement aux objets indéformables (cinématique des solides rigides).
+</p>
  
- <p>
- Les zones définiraient des abstractions géométriques autorisant une modélisation algorithmique simplificatrice. Par exemple, dans un monde tridimensionnel, elles pourraient être utilisées aussi bien pour délimiter l'espace enserré par le cône de vision que pour définir des sphères englobantes (<em>bounding boxes</em>) permettant de classer géométriquement la plupart des objets trivialement. Plus simplement, elles prendraient aussi la forme de surfaces pouvant délimiter la zone d'effet d'un phénomène physique (ex : zone de propagation d'un son) ou aidant le moteur de rendu à charger précocement (<em>prefetching</em>) du contenu (textures, modèles, sons, etc.) en fonction de la présence du point de vue dans une zone frontalière d'autres zones.
- </p>
+<p>
+Les zones définiraient des abstractions géométriques autorisant une modélisation algorithmique simplificatrice. Par exemple, dans un monde tridimensionnel, elles pourraient être utilisées aussi bien pour délimiter l'espace enserré par le cône de vision que pour définir des sphères englobantes (<em>bounding boxes</em>) permettant de classer géométriquement la plupart des objets trivialement.
+</p>
  
- 
- <p>
- La vocation de ce service est donc d'aider à simuler le comportement des objets du jeu.
- 
- </p>
- 
- 
- <h4>Cas d'utilisation</h4>
- <p>
- Notre prince en armure se balade inconsidérément sur une dalle en bois pourri et chute d'un étage. La roue à aubes tourne doucement avec le cours du ruisseau. 
- 
- </p>
- 
- 
- 
- <h4>Implémentation</h4>
- <p>
- Pour quelque chose d'aussi simple que notre premier jeu, un simple test de résistance du matériau comparée au poids s'exerçant sur une zone fera l'affaire. La gestion des trajectoires et des forces nécessitera un petit module de calcul matriciel 2D et 3D, avec prise en compte des référentiels, via des matrices homogènes, des vitesse et des accélération, ainsi que des trajectoires paramétrées.
- 
- </p>
- 
+<p>
+Plus simplement, elles prendraient aussi la forme de surfaces pouvant délimiter la zone d'effet d'un phénomène physique (ex : zone de propagation d'un son) ou aidant le moteur de rendu à charger précocement (<em>prefetching</em>) du contenu (textures, modèles, sons, etc.) en fonction de la présence du point de vue dans une zone frontalière d'autres zones.
+</p>
 
- <br>
- <center>[<a href="#servicesList">retour à la liste des services</a>]</center>
+
+<p>
+La vocation de ce service est donc d'aider à simuler le comportement des objets du jeu.
+</p>
+
+
+<h4>Cas d'utilisation</h4>
+<p>
+Notre prince en armure se balade inconsidérément sur une dalle en bois pourri et chute d'un étage. La roue à aubes tourne doucement avec le cours du ruisseau. 
+</p>
+
+
+
+<h4>Implémentation</h4>
+<p>
+Pour quelque chose d'aussi simple que notre premier jeu, un simple test de résistance du matériau comparée au poids s'exerçant sur une zone fera l'affaire. La gestion des trajectoires et des forces nécessitera un petit module de calcul matriciel 2D et 3D, avec prise en compte des référentiels, via des matrices homogènes, des vitesses et des accélérations (cf le service <a href="#LinearService"></a>), ainsi que des trajectoires paramétrées.
+</p>
+
+<br>
+<center>[<a href="#servicesList">retour à la liste des services</a>]</center>
 <br><br>
+
 
 
 <br>
  <a name="BehaviourService"></a>
-
  <center>
     <table summary="a box" style="border : none">
         <tr>
@@ -495,90 +511,84 @@ Extrêmement classique, cela revient en C++ à définir des objets de type matrices
     </table>
 </center>
 
- 
- 
- 
- <h4>Objectif</h4>
- <p>
- Ce service aide à gérer la notion de perception et l'implémentation de comportements. La perception reposerait sur la propagation d'événements (cf <a href="#EventService">EventService</a>), la plupart du temps relatifs à des zones d'effets (cf <a href="#SimulationService">SimulationService</a>). Elle serait multi-modale, c'est-à-dire qu'elle serait la synthèse de plusieurs moyens de percevoir, tels que la vision, l'ouïe, le toucher ou l'odorat. Elle dépendrait par ailleurs du récepteur (ex : acuité auditive du sujet) et du contexte (ex : milieu de propagation du son, sons environnants).
- 
- </p>
- 
- 
- <p>
- Concernant l'implémentation de comportements, ce service fournirait quelques primitives de relativement haut niveau (ex : recherche, fuite, attaque) et quelques systèmes utiles à la définition de comportements effectifs (ex : automates à états finis, moteur d'inférences).
- 
- </p>
- 
- 
- <h4>Cas d'utilisation</h4>
- <p>
- Le joueur, malgré ses compétences de furtivité et son silence parfait, est entraperçu par un monstre (perception multi-modale). Ce monstre adopte un comportement (la fuite), causé par une appréciation de la situation (l'évaluation de la dangerosité du nouveau venu, l'instinct de conservation et la peur), comportement qui se traduit par l'acte de se déplacer dans la direction opposée à son assaillant.
 
- </p>
- 
- 
- 
- <h4>Implémentation</h4>
- <p>
- Elle serait le résultat d'un effort de modélisation de la causalité dans le monde virtuel (ex : <code>&lt;Probabilité de perception&gt; = 1 - &lt;somme des probabilités de non-perception pour chacun des sens&gt;</code>) aboutissant à définir des notions élémentaires permettant de décrire perceptions et comportements (ex : zones). Pour plus de commodité, les objets de base issus de cette réflexion bénéficieront d'une définition qui les rendra accessibles depuis les modules en C++ mais aussi et surtout depuis ceux en Python, par l'intermédiaire de l'encapsulation PythonService de notre bibliothèque Ceylan qui délègue le travail effectif à Boost.Python.
- 
- </p>
- 
 
- <br>
- <center>[<a href="#servicesList">retour à la liste des services</a>]</center>
+
+<h4>Objectif</h4>
+<p>
+Ce service aide à gérer la notion de perception et l'implémentation de comportements. La perception reposerait sur la propagation d'événements (cf <a href="#EventService">EventService</a>), la plupart du temps relatifs à des zones d'effets (cf <a href="#SimulationService">SimulationService</a>). Elle serait multi-modale, c'est-à-dire qu'elle serait la synthèse de plusieurs moyens de percevoir, tels que la vision, l'ouïe, le toucher ou l'odorat. Elle dépendrait par ailleurs du récepteur (ex : acuité auditive du sujet) et du contexte (ex : milieu de propagation du son, sons environnants).
+</p>
+
+<p>
+Concernant l'implémentation de comportements, ce service fournirait quelques primitives de relativement haut niveau (ex : planification de chemins, recherche, fuite, attaque) et quelques systèmes utiles à la définition de comportements effectifs (ex : automates à états finis, moteur d'inférences).
+</p>
+ 
+ 
+<h4>Cas d'utilisation</h4>
+<p>
+Le joueur, malgré ses compétences de furtivité et son silence parfait, est entraperçu par un monstre (perception multi-modale). Ce monstre adopte un comportement (la fuite), causé par une appréciation de la situation (l'évaluation de la dangerosité du nouveau venu, l'instinct de conservation et la peur), comportement qui se traduit par l'acte de se déplacer dans la direction opposée à son assaillant.
+</p>
+ 
+ 
+ 
+<h4>Implémentation</h4>
+<p>
+Elle serait le résultat d'un effort de modélisation de la causalité dans le monde virtuel (ex : <code>&lt;Probabilité de perception&gt; = 1 - &lt;somme des probabilités de non-perception pour chacun des sens&gt;</code>) aboutissant à définir des notions élémentaires permettant de décrire perceptions et comportements (ex : zones).
+</p>
+
+<p>
+Pour plus de commodité, les objets de base issus de cette réflexion bénéficieront d'une définition qui les rendra accessibles depuis les modules en C++ mais aussi et surtout depuis ceux en Python, par l'intermédiaire de l'encapsulation PythonService de notre bibliothèque Ceylan qui pourrait déléguer le travail effectif à Boost.Python. Dans le contexte d'un jeu multi-joueurs, ces éléments d'intelligence artificielle seraient effectués côté serveur, c'est-à-dire très probablement en Erlang.
+</p>
+
+
+<br>
+<center>[<a href="#servicesList">retour à la liste des services</a>]</center>
 <br><br>
 
 
- <a name="ContentGeneratorService"></a>
- 
- <center>
-    <table summary="a box" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
- <h3>ContentGeneratorService : génération automatique de contenu</h3>
 
-            </div>
-          </td>
-        </tr>
-    </table>
+
+<a name="ContentGeneratorService"></a>
+
+<center>
+   <table summary="a box" style="border : none">
+	   <tr>
+		 <td>
+		   <div class="box">
+<h3>ContentGeneratorService : génération automatique de contenu</h3>
+		   </div>
+		 </td>
+	   </tr>
+   </table>
 </center>
 
  
  
  
- <h4>Objectif</h4>
- <p>
- Générer du contenu pour les jeux à partir de diverses sources, notamment en s'appuyant sur la panoplie de générateurs pseudo-aléatoires fournis par Ceylan.
- </p>
- 
- 
- <h4>Cas d'utilisation</h4>
- <p>
- L'exemple typique est l'algorithme qui à partir d'un "générateur de flux aléatoire" (une source de hasard) forge des noms aux consonnances proches d'une langue connue du générateur (ex : langue des noms elfiques utilisés par Tolkien).
- 
- </p>
- 
- 
- 
- <h4>Implémentation</h4>
- <p>
- Elles existent déjà, pour certaines, en licence open-source, et seraient réutilisables pour nos propres besoins, ne serait-ce que pour nommer des PNJ (personnages non-joueurs) générés par le moteur d'histoire.
-  </p>
- 
+<h4>Objectif</h4>
+<p>
+Générer du contenu pour les jeux à partir de diverses sources, notamment en s'appuyant sur la panoplie de générateurs pseudo-aléatoires fournis par Ceylan.
+</p>
 
- <br>
- <center>[<a href="#servicesList">retour à la liste des services</a>]</center>
+
+<h4>Cas d'utilisation</h4>
+<p>
+L'exemple typique est l'algorithme qui, à partir d'un "générateur de flux aléatoire" (une source de hasard), forge des noms aux consonnances proches d'une langue connue du générateur (ex : langue des noms elfiques utilisés par Tolkien). Voir par exemple : <a href="http://www.bay12games.com/dwarves/" target="_blank">Dwarf Fortress</a>.
+</p>
+
+
+
+<h4>Implémentation</h4>
+<p>
+Elles existent déjà, pour certaines, en licence open-source, et seraient réutilisables pour nos propres besoins, ne serait-ce que pour nommer des PNJ (personnages non-joueurs) générés par le moteur d'histoire.
+</p>
+
+
+<br>
+<center>[<a href="#servicesList">retour à la liste des services</a>]</center>
 <br><br>
 
-  
-  <br>
-  <br>
-  <br>
-  <br>
-
+ 
   <h3>N'hésitez pas à nous faire part de votre avis !</h3>
 
   <p>Si vous disposez d'informations plus détaillées ou plus récentes que celles présentées dans ce document, si vous avez remarqué des erreurs, oublis, ou points insuffisamment traités, <a href=
@@ -586,10 +596,12 @@ Extrêmement classique, cela revient en C++ à définir des objets de type matrices
   <br>
   <hr>
 
-  <div class="c1">
-    <a href="#_top_">Haut de page</a><br>
+  <center>
+    [<a href="#_top_">Haut de page</a>]
+	<br>
     <br>
-    <em>Dernière mise à jour : 16 Février 2004</em>
-  </div>
+    <em>Dernière mise à jour : vendredi 29 février 2008</em>
+  </center>
+  
 </body>
 </html>

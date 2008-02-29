@@ -5,8 +5,8 @@
 -->
 
 <!--    
-        Creation date : 2003 April, 23.
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Creation date: 2003 April, 23.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
 -->
 
 <html lang="EN">
@@ -48,7 +48,7 @@ We do our best to torture-test, as far as possible, the whole LOANI's tool chain
 </p>
 
 <p>
-We run through the whole process on the following hardware and software configurations, which happen to be varied and, we hope, representative of the users' configurations (various technological generations, processors, video cards, kernels, and distributions) :
+We run through the whole process on the following hardware and software configurations, which happen to be varied and, we hope, representative of the users' configurations (various technological generations, processors, video cards, kernels, and distributions):
 
 
 <center>
@@ -138,16 +138,29 @@ We run through the whole process on the following hardware and software configur
         <td>Debian Woody-based</td>
     </tr>
 
-  </table>
+     <tr>
+        <td>Nintendo DS (Lite)</td>
+        <td>ARM9 and ARM7</td>
+        <td>none, but two rendering cores</td>
+        <td>none</td>
+        <td>none</td>
+    </tr>
+
+ </table>
 </center>
 
 </p>
 
 <p>
-We have access to two other sets of computers as well, even though we test our developments on their platforms less frequently. These are two <em>compile farms</em>, kindly provided by :
+We have access to two other sets of computers as well, even though we test our developments on their platforms less frequently. These are two <em>compile farms</em>, kindly provided by:
 <ul>
-    <li><a href="http://sourceforge.net" target="_blank">Sourceforge</a>, which provides its dedicated <a href="http://sourceforge.net/docs/compile_farm#hosts" target="_blank">12-host compile farm</a></li>
-    <li><a href="http://www.testdrive.hp.com/" target="_blank">Hewlett Packard</a>, which provides a dedicated <a href="http://www.testdrive.hp.com/current.shtml" target="_blank">Testdrive compile farm</a> with more than 30 hosts</li>
+
+
+    <li><a href="http://www.testdrive.hp.com/" target="_blank">Hewlett Packard</a>, which provides a dedicated <a href="http://www.testdrive.hp.com/current.shtml" target="_blank">Testdrive 
+compile farm</a> with more than 30 hosts</li>
+
+    <li><a href="http://sourceforge.net" target="_blank">Sourceforge</a>, which used to provide its dedicated <a href="http://sourceforge.net/docs/compile_farm#hosts" target="_blank">12-host compile farm</a>. Sadly they discontinued this useful service</li>
+
 </ul>
 </p>
 
@@ -160,15 +173,19 @@ Thanks to these structures, we believe we have access to most operating system/s
 <h3>Full testing process</h3>
 
 <p>
-For each new test, our process is to create a brand new user (<code>adduser tester</code>) and to behave exactly as a new LOANI user would behave (<code>su - tester</code>) : install everything thanks to <a href="../OSDL-0.3/LOANI.html">LOANI</a>, and run the full test suite thanks to <code>playTest.sh</code>.
+For each new test, our process is to create a brand new user (<code>adduser tester</code>) and to behave exactly as a new LOANI user would behave (<code>su - tester</code>): install everything thanks to <a href="../../../../OSDL-latest/LOANI.html">LOANI</a>, and run the full test suite thanks to <code>playTest.sh</code>.
 </p>
 
 <p>
-That way, we can get rid of side-effects such as configuration files (ex : <code>.cvsrc</code>) or shell environment (ex : does the user include '.' in his <code>PATH</code> ?). It allows us to feel a little bit more confident with our tests, since we closely emulate OSDL's average user.
+That way, we can get rid of side-effects such as configuration files (ex: <code>.*rc</code>) or shell environment (ex: does the user include '.' in his <code>PATH</code> ?). It allows us to feel a little bit more confident with our tests, since we closely emulate OSDL's average user.
 </p>
 
 <p>
-With tests made regularly with different other GNU/Linux machines, we believe that this platform is well supported. For the other platforms (we target first Windows, then Mac OS X), a port is still to be done, but it should mostly impact Ceylan, since OSDL relies on cross-platform tools. If you would have liked testing Ceylan and OSDL on those platforms, <a href="mailto:osdl-rfe@esperide.com?subject=[OSDL]%20Other%20platforms">send us a mail</a> !
+With tests made regularly with different other GNU/Linux machines, we believe that this platform is well supported. We fully ported Ceylan and OSDL to Windows (notably XP), and we fix from time to time the Windows build (due to the new code coming from Linux), notably before new release. We ported a while ago both libraries to BSD systems (FreeBSD, OpenBSD mainly).
+</p>
+
+<p>
+For the other platforms (we target Mac OS X and others), a port is still to be done, but it should mostly impact Ceylan, since OSDL relies on cross-platform tools. If you would have liked testing Ceylan and OSDL on those platforms, <a href="mailto:osdl-rfe@esperide.com?subject=[OSDL]%20Other%20platforms">send us a mail</a> !
 </p>
   
 
@@ -179,12 +196,7 @@ With tests made regularly with different other GNU/Linux machines, we believe th
 From time to time, we check our website for dead links, thanks to the W3C <a href="http://validator.w3.org/checklink" target="_blank">Link Checker</a> tool, with a recursion depth of 10.
 </p>
 
-  
-<br>
-<br>
-<br>
-<br>
-  
+    
 <h3>Please react !</h3>
 
 <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, or if you would like to contribute and help us, even a little bit, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Quality">drop us a line</a> !</p>
@@ -198,7 +210,7 @@ From time to time, we check our website for dead links, thanks to the W3C <a hre
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update : Tuesday, March 20, 2007
+  <em>Last update: Friday, February 29, 2008
 </em>
 </center>
 

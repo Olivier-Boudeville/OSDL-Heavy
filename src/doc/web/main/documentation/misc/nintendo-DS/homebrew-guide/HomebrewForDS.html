@@ -1739,6 +1739,7 @@ The VRAM banks previously mentioned are to be mapped according to the expected l
 -->
 
         <li><b>background</b> memory, which contains either tilesets (32 blocks, 16 kilobytes each) and tile maps (32 blocks), or bitmaps</li>
+		
         <li><b>sprite</b> memory, which contains tiles for each sprite</li>
 </ul>
 </p>
@@ -1994,7 +1995,11 @@ Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transforme
 </p>
 
 <p>
-OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM), including its onscreen position (top-left corner of the sprite) expressed in pixels. This position ranges between 0 and 511 for the abcissa, and between 0 and 191 for the ordinate. This means the sprite can be out of the screen bounds (256x192). Coordinates wrap around: a 512 abcissa is managed as if it was 0, same thing for a 192 ordinate. Other per-sprite informations in OAM are shape, size, requested flipping, and if a rotset is used. If yes, its number, in 0..31, is specified. In each rotset, a transformation matrix is specified, with zoom factors and rotation angle.
+OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM), including its onscreen position (top-left corner of the sprite) expressed in pixels (hence sprites, even if they are made out of tiles, can be blitted to any screen location, not only on tile intersection).
+</p>
+
+<p>
+This position ranges between 0 and 511 for the abcissa, and between 0 and 191 for the ordinate. This means the sprite can be out of the screen bounds (256x192). Coordinates wrap around: a 512 abcissa is managed as if it was 0, same thing for a 192 ordinate. Other per-sprite informations in OAM are shape, size, requested flipping, and if a rotset is used. If yes, its number, in 0..31, is specified. In each rotset, a transformation matrix is specified, with zoom factors and rotation angle.
 </p>
 
 <p>
