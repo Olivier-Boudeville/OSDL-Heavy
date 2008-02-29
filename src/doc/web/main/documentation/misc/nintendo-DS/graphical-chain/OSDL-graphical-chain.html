@@ -46,7 +46,10 @@
 		       <a href="#design-choices">Design choices</a><br>
 		       <a href="#technical-architecture">Technical architecture</a><br>
 		       <a href="#in-world-rendering">In-world rendering</a><br>
+		       <a href="#graphic-pipeline">Graphic pipeline</a><br>
 		       <a href="#user-interface">User interface</a><br>
+		       <a href="#tools">Tools used here</a><br>
+
           </td>
         </tr>
     </table>
@@ -55,6 +58,10 @@
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
   -->
 
+
+
+
+<!-- ###################################################################### -->
 
   
 <a name="overview"></a>
@@ -78,7 +85,12 @@ This consists on:
 </p>
 
 <p>
-We based most of the technical choices on our <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html" target="_blank">guide to homebrew development for the Nintendo DS</a>.
+We based most of the technical choices on our <a href="../homebrew-guide/HomebrewForDS.html" target="_blank">guide to homebrew development for the Nintendo DS</a>.
+</p>
+
+<p>
+We are discussing here only about the graphical rendering of the underlying game world, which is to be managed by the <a href="../game-engine/OSDL-game-engine.html" target="_blank">game engine</a>.
+
 </p>
 
 
@@ -97,12 +109,17 @@ This will involve using fully all the VRAM banks of the DS, but also using a dou
 </p>
 
 
+
+
+<!-- ###################################################################### -->
+
+
 <a name="technical-architecture"></a>
 <h2>Technical architecture</h2>
 
 <h3>Screen roles</h3>
 <p>
-We plan to have one screen (the top one) of the DS dedicated to the <a href="#in-world-rendering">In-world rendering</a> (top-down isometric view), whereas the bottom one will display the game <a href="#user-interface">user interface</a> (stats, input device, textual descriptions, etc.).
+We plan to have one screen (the top one) of the DS dedicated to the <a href="#in-world-rendering">in-world rendering</a> (top-down isometric view), whereas the bottom one will display the game <a href="#user-interface">user interface</a> (stats, input device as mouse-like pointer or virtual keyboard, textual descriptions, close-up views, etc.).
 </p>
 
 <h3>Rendering Cores</h3>
@@ -117,7 +134,7 @@ In-world rendering being the most intensive task, the main 2D core will be devot
 Based on the bank <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" target="_blank">abilities</a>, the in-game bank layout we chose is:
 <center>
   <table border="1" summary="VRAM Memory Banks">
-    <caption>VRAM Memory Banks</caption>
+    <caption>VRAM Memory Banks (total: 656 kilobytes)</caption>
 
     <tr>
         <th>Bank name</th>
@@ -201,6 +218,11 @@ Main reasons for that is that we want to dedicate as much as possible memory for
 
 
 
+
+
+<!-- ###################################################################### -->
+
+
 <a name="in-world-rendering"></a> 
 <h2>In-world rendering</h2>
 
@@ -215,23 +237,46 @@ Static backgrounds will be stored in background memory, whereas all other elemen
 
 <h3>Backgrounds</h3>
 <p>
-These static elements 
+These tile-based (not framebuffer-based) static elements are not expected here to be scaled, shared or rotated, unless for some special effects. Thus text backgrounds will be mostly used. We prefer relying on the 8-bit color mode (256 colors), as rendering might be a bit poor with 4-bit color mode (16 colors).
 </p>
+
 
 <h3>Sprites</h3>
 
+
+
+<a name="sprite-colors"></a>
 <h4>Sprite color modes</h4>
 <p>
-Among the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-color" target="_blank">available sprite color schemes</a>, the mode usually chosen is the one with 16 palettes, each of 256 colors. It is a good trade-off indeed. Simple implementations could cope with one general-purpose palette for all sprites, whereas more complex ones could associate a palette to a given sprite (usually, animated character). The problem is that it would imply that no more than 16 types of sprites could be displayed simultaneously in the in-world view.  
+Among the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-color" target="_blank">available sprite color schemes</a>, the mode usually chosen for games is the one with 16 palettes, each of 256 colors. It is a good trade-off indeed. Simple implementations could cope with one general-purpose palette for all sprites (using an appropriate <a href="http://en.wikipedia.org/wiki/List_of_monochrome_and_RGB_palettes#15-bit_RGB" target="_blank">master palette</a>), whereas more complex ones could associate a palette to a given sprite (usually, animated character). The problem is that it would imply that no more than 16 types of sprites could be displayed simultaneously in the in-world view.  
 </p>
 
 <p>
-We keep in mind most of our sprites will come from the aforementioned Reiner's Tilesets. If we take <a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">Swordstan</a> as an example (most probably our main character, as having multiple animations with multiple outside appearances), the source image (in 24 Bit TrueColor), could be:
+We keep in mind most of our sprites will come from the aforementioned Reiner's Tilesets. If we take <a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">Swordstan</a> as an example (most probably our main character, as having multiple animations with multiple outside appearances), the source image (BMP in 24 Bit TrueColor), could be (taken from <code>swordstan shield 96x  bitmaps/attack se0000.bmp</code> :
 <center>
-    <img src="swordstan-original.png" alt="Original image"></img>
+    <img src="swordstan-original.bmp" alt="Original image"></img>
 </center>
-The same image with a 256-color palette 
+</p>
 
+<p>
+The same image (in PNG) with a 256-color dedicated optimal palette (i.e. all its colors have been chosen specifically for this image) :
+<center>
+    <img src="swordstan-optimal-palette.png" alt="With 256-color optimal palette"></img>
+</center>
+</p>
+
+</p>
+
+
+http://en.wikipedia.org/wiki/List_of_software_palettes#6-7-6_levels_RGB
+
+http://en.wikipedia.org/wiki/List_of_software_palettes#RGB_arrangements
+
+1 palette pour stan
+1 pour tout le reste
+
+
+<a name="sprite-size"></a>
 <h4>Sprite sizes</h4>
 <p>
 Here is a screenshot of our <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/testOSDLVideoFramebuffer.arm9.cc?view=markup" target="_blank">testOSDLVideoFramebuffer</a> test program taken with NO$GBA:
@@ -267,7 +312,222 @@ which is better.
 </p>
 
 
+<h4>Sprite animations</h4>
+<p>
+Let's take the character that is most probably the most complex one that will have to render: Stan.
+</p>
+
+
+<h5>Outside looks for a given character</h5>
+<p>
+First of all Stan has 8 different outside looks (sorted roughly according to the order in which they might appear in a story):
+<ol>
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li><b>Unarmed</b> Stan (<a href="http://reinerstileset.4players.de/Tstanunarmed.zip" target="_blank">stanunarmed</a>): 
+<center>
+    <img src="stanunarmed.jpg" alt="Unarmed"></img>
+</center>
+</li>
+
+	<li>Stan with <b>a club</b> (<a href="http://reinerstileset.4players.de/Tclubstan.zip" target="_blank">clubstan</a>): 
+<center>
+    <img src="clubstan.jpg" alt="Club"></img>
+</center>
+</li>
+
+	<li>Stan with <b>a sword (and no shield)</b> (<a href="http://reinerstileset.4players.de/Tswordstan.zip" target="_blank">swordstan</a>)
+<center>
+    <img src="swordstan.jpg" alt="Sword"></img>
+</center>
+</li>
+
+	<li>Stan with <b>a bow</b> (<a href="http:///http://reinerstileset.4players.de/T_bowstan.zip" target="_blank">bowstan</a>): 
+<center>
+    <img src="bowstan.jpg" alt="Bow"></img>
+</center>
+</li>
+
+	<li>Stan with <b>an axe (and no shield)</b> (<a href="http://reinerstileset.4players.de/Taxestan.zip" target="_blank">axestan</a>): 
+<center>
+    <img src="axestan.jpg" alt="Axe"></img>
+</center>
+</li>
+
+	<li>Stan with <b>a sword and a shield</b> (<a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">swordstan shield</a>)
+<center>
+    <img src="swordstanshield.jpg" alt="Sword and Shield"></img>
+</center>
+</li>
+
+
+	<li>Stan with <b>an axe and a shield</b> (<a href="http://reinerstileset.4players.de/T_axestan_shield.zip" target="_blank">axestan shield</a>): 
+<center>
+    <img src="axestanshield.jpg" alt="Axe and Shield"></img>
+</center>
+</li>
+
+
+
+	<li>Stan with <b>a staff</b> (<a href="http://reinerstileset.4players.de/Tstaffstan%20.zip" target="_blank">staffstan</a>): 
+<center>
+    <img src="staffstan.jpg" alt="Staff"></img>
+</center>
+</li>
+
+</ol>
+
+</p>
+
+
+<h5>Attitudes</h5>
+<p>
+To each of these different outside looks correspond a set of attitudes (behaviours in action). Different looks have often different sets of attitudes. 
+</p>
+
+<p>
+For example, the unarmed Stan can:
+<ul>
+
+	<li>be still</li>
+	<li>walk</li>
+	<li>run</li>
+	<li>attack (high kick)</li>
+	<li>tip over (fall on the ground)</li>
+	<li>been hit by a blow</li>
+	<li>talk</li>
+	<li>knit (most probably having rest for too long)</li>
+
+
+<!--
+	<li></li>
+-->
+
+</ul>
+whereas Stan with a sword and a shield cannot knit, Stan with a staff has two attacks (regular and magical one), etc.
+</p>
+
+
+<h5>Directions</h5>
+<p>
+For each attitude, eight directions have always to be taken into account : character facing north, south, west, east, and the four related diagonals.
+</p>
+
+<p>
+As characters are usually asymmetric, one cannot deduce for example eastward animations from westward ones (showing the character rotate clockwise):
+<center>
+    <img src="staffstan-north.bmp" alt="North"></img>
+    <img src="staffstan-north-east.bmp" alt="North-East"></img>
+    <img src="staffstan-east.bmp" alt="East"></img>
+    <img src="staffstan-south-east.bmp" alt="South-East"></img>
+    <img src="staffstan-south.bmp" alt="South"></img>
+    <img src="staffstan-south-west.bmp" alt="South-West"></img>
+    <img src="staffstan-west.bmp" alt="West"></img>
+    <img src="staffstan-north-west.bmp" alt="North-West"></img>
+</center>
+</p>
+
+
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+
+
+<h5>Frames</h5>
+<p>
+Finally, for each direction a given character attitude can be decomposed into a series of frames.
+</p>
+
+<p>
+For example a Stan with sword and shield walking eastward uses following 8 frames in a cycle:
+<center>
+    <img src="swordstanshield-w-e-0.bmp" alt="0"></img>
+    <img src="swordstanshield-w-e-1.bmp" alt="1"></img>
+    <img src="swordstanshield-w-e-2.bmp" alt="2"></img>
+    <img src="swordstanshield-w-e-3.bmp" alt="3"></img>
+    <img src="swordstanshield-w-e-4.bmp" alt="4"></img>
+    <img src="swordstanshield-w-e-5.bmp" alt="5"></img>
+    <img src="swordstanshield-w-e-6.bmp" alt="6"></img>
+    <img src="swordstanshield-w-e-7.bmp" alt="7"></img>
+</center>
+
+</p>
+
+<p>
+The number of frames depends on the attitude, but not on the direction: talking uses 7 frames, whereas walking 8.
+</p>
+
+
+<h5>Synthesis about animations</h5>
+
+<p>
+Animations must be rendered for various game elements: characters (player character(s), NPC, monsters, etc.), special effects (explosions, fountains, etc.), animated objects (drawing bridge, door, etc.).
+</p>
+
+<p>
+A given element (say, a character) can have multiple outside looks (unarmed, or with different weapons, clothing, injuries, etc.).
+</p>
+
+<p>
+For a given outside look, various attitudes might be available (walking, running, fighting, etc.).
+</p>
+
+<p>
+An attitude has usually to be defined according to 8 directions.
+</p>
+
+<p>
+For each direction, a number of frames makes the effective animation.
+</p>
+
+<p>
+Thus one has to plan <code>NanimatedElements x Nlooks x Nattitudes x Ndirections x Nframes</code>. Most games, just counting the characters (friend, foe, monsters, etc.), have to have at least a dozen of them.
+</p>
+
+<p>
+Considering the worst case, the main character Stan (who is the most detailed one), we count roughly <code>8 looks x 7 attitudes on average x 8 directions x 7 frames on average = 3136</code> frames. This is quite huge.
+</p>
+
+<p>
+Considering the average 27-kilobyte original image might be trimmed and reduced for the DS to 1 kilobyte (1024 = 32x32 pixels, as discussed in the <a href="#sprite-size">sprite size section</a> and 8 bits per pixel, as discussed in the <a href="#sprite-colors">sprite color section</a>), and that only one frame out of two may be kept, the footprint might be, only for the characters, roughly equal to <code>12 characters x 1568 frames x 1024 bytes = 18 megabytes</code>.
+</p>
+
+<p>
+Compared to the overall 656 kilobytes of VRAM memory, to the 4 megabytes of RAM available for code, sounds, other graphical elements, and to the up to 128 megabytes of storage provided by a commercial cartridge, this is a challenge that may be met if using appropriate streaming and caching.
+</p>
+
+
+
+
+
+<!-- ###################################################################### -->
+
+<a name="graphic-pipeline"></a> 
+<h2>Graphic pipeline</h2>
+<p>
+After having taken into account all previous constraints (size, formats, colors, etc.), we chose the following steps that should led from the raw assets (coming for Reiner or other sources) to the precomputed content ready and optimized for the DS:
+<ol>
+<!--
+	<li><b></b> : </li>
+-->
+	<li><b></b> : </li>
+	<li><b></b> : </li>
+	<li><b></b> : </li>
+	<li><b></b> : </li>
+	<li><b></b> : </li>
+	<li><b></b> : </li>
+	<li><b></b> : </li>
+	<li><b></b> : </li>
+	<li><b></b> : </li>
+</ol>
+
+</p>
+
+<h3></h3>
+<p>
+
+</p>
+
 
 
 
@@ -285,6 +545,39 @@ which is better.
 
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
+
+<a name="tools"></a> 
+<h2>Tools used here</h2>
+
+<p>
+All of them are free and open source. They have been used on GNU/Linux, but many of them are cross-platform.
+</p>
+
+
+<p>
+<ul>
+
+    <li><a href="http://www.gimp.org/" target="_blank">The Gimp</a> (<em>GNU Image Manipulation Program</em>), for most image exploratory manipulations</li>
+
+    <li><a href="http://www.imagemagick.org" target="_blank">ImageMagick</a>, for powerful command-line bitmap manipulations, allowing to automate them through scripts that can handle the hundred of sprite frames to be transformed</li>
+	
+    <li><a href="http://www.coranac.com/category/proj/grit/" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>), for conversion to the DS hardware formats and for tiling</li>
+ 
+    <li><a href="http://osdl.sourceforge.net" target="_blank">OSDL</a>, our game library, to ease the develompent of our home-made converting tools</li>
+ 
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+</ul>
+</p>
+
+
+<p>
+<a href="http://www.coranac.com/tonc/text/toc.htm" target="_blank">TONC</a> has been a powerful documentary source to better target the Nintendo DS hardware and understand the various subtleties of tiled graphics.
+</p>
+
+
   <br>
   <br>
   <br>
@@ -301,7 +594,7 @@ which is better.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Monday, February 25, 2008</em>
+    <em>Last update: Friday, February 29, 2008</em>
   </center>
 </body>
 </html>
