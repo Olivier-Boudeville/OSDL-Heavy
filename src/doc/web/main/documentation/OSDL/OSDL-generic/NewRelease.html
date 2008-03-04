@@ -4,11 +4,11 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2003, May 16.
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2003, May 16.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -30,148 +30,29 @@
   </div><a name="_top_"></a> 
   
   
-  <h1>How to prepare an update of a member of OSDL's family</h1>
+<h1>How to prepare an update of a member of OSDL's family</h1>
 
-  <h2>Preparing new versions and releases</h2>
+<h2>Preparing new versions and releases</h2>
 
-  <p>
-  At first, one must use the right terms, which are to be understood regarding our project's own conventions and Sourceforge's ones : in <code>OSDL-0.3.17</code>, <code>OSDL</code> is the package name, <code>0.3</code> is the version (made from a major version number, <code>0</code>, and a minor version number, <code>3</code>), which is also known to Sourceforge as a <em>file release</em>, and <code>17</code> designates the (sub)release number.
-  </p>
+<p>
+At first, one must use the right terms, which are to be understood regarding our project's own conventions and Sourceforge's ones: in <code>OSDL-0.3.17</code>, <code>OSDL</code> is the package name, <code>0.3</code> is the version (made from a major version number, <code>0</code>, and a minor version number, <code>3</code>), which is also known to Sourceforge as a <em>file release</em>, and <code>17</code> designates the (sub)release number.
+</p>
   
-  <p>
-  The result of new versions, releases and subreleases can be viewed in Sourceforge <a href="http://sourceforge.net/project/showfiles.php?group_id=71354#files" target="_blank">download area</a> for OSDL.
+<p>
+The result of new versions, releases and subreleases can be viewed in Sourceforge <a href="http://sourceforge.net/project/showfiles.php?group_id=71354#files" target="_blank">download area</a> for OSDL.
+</p>
 
-  </p>
 
-
- <h3>Checklist for a new version</h3>
+<h3>Checklist for a new version</h3>
     
-  <p>Here are some steps in order to prepare relatively painlessly a new version of an OSDL's family member (please note that a few of these steps necessitate to be a <a href="../../../project/howToContribute/ContributionGuide.html#member">registered OSDL member</a>) :</p>
+<p>Here are some steps in order to prepare relatively painlessly a new version of an OSDL's family member (please note that a few of these steps necessitate to be a <a href="../../../project/howToContribute/ContributionGuide.html#member">registered OSDL member</a>).
+</p>
 
-  <p>
-  <ol>
-    <li>start from the latest previous version of the module you wish to release (say, <code>0.2</code>, retrieve only the <code>src</code> sub-directory (since all other directories should be generated from that one), make a tarball of it (<code>make bz2</code> or <code>make tgz</code> will do it for you and store it in archive directory), put the result in a temporary directory where you can extract it, rename the root directory so that it reflects the new version (example : <code>OSDL-0.2</code> becomes <code>OSDL-0.3</code>), and put that renamed directory in the same directory that the one containing the source version (it should be the mere module name, like <code>OSDL</code> : therefore there should be at least <code>OSDL/OSDL-0.2</code> and <code>OSDL/OSDL-0.3</code>)</li>
-
-    <li>in the new version directory, under <code>src</code> (ex : <code>OSDL/OSDL-0.3/src</code>), update the <code>versions.inc</code> file</li>
-
-    <li>update whichever files are needed by your new version by copying any new content at its right place</li>
-
-    <li>build everything from scratch and launch all tests (thanks to <code>playTests.sh</code>), to ensure that there is no regression</li>
-
-    <li>check that documentation is still generated without error by going into <code>src/doc</code>, and entering <code>make doc</code></li>
-
-    <li>add for yourself a new bookmark pointing to the generated docs (local website + API)</li>
-
-    <li>whether you want to always work with CVS, or you prefer waiting till it is a bit more advanced, you <strong>should</strong> make an import of your new module in our CVS repository. To do that, please consult for safety our <a href="CVS.html#cvsReminder">CVS import reminder</a>.
-	  <br>
-      <br>
-<center>
-    <table summary="a box" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-      <p>In order to be as much as possible understandable, if one wants to import in our CVS repository for example a new OSDL version, one has to go to the directory on his computer where the new <code>src</code> is to be found (for example, one would go to <code>[local root directory]/OSDL/OSDL-x.y</code>, which would only include a directory named <code>src</code>). 
-	  </p>
-	  
-	  <p>One has to get rid of all files which should not be versioned (such as the generated ones, so one ought to remove his previous CVS directories [one can use Ceylan's <code>src/code/scripts/rmcvs.sh</code> script] and his generated docs, and issue a <code>make clean</code>). 
-	  </p>
-	  
-	  <p>
-	  After having checked that CVS over SSH is set (<code>export CVS_RSH=ssh</code>), a user named <code>wondersye</code> would enter :<br> <code>cvs -z3 -d:ext:wondersye@cvs.sourceforge.net:/cvsroot/osdl import -m &quot;New OSDL version x.y&quot; OSDL/OSDL-x.y wondersye start</code>.</p>
-
-      <p>Then, to have the right CVS directories for future changes, one would have to store elsewhere the version he imported (something as <code>mv OSDL/OSDL-x.y OSDL/OSDL-x.y-imported</code> would do it). He would then have to retrieve directly from the newly updated CVS what he put into it, thanks to a <code>cvs -z3 -d:ext:wondersye@cvs.sourceforge.net:/cvsroot/osdl co OSDL/OSDL-x.y</code> issued from the same <code>[local root directory]</code>. After that, one could work as usual in his newly created version.</p>
-    </li>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-
-
-    <li>save your the source code of your new version thanks to <code>make tgz</code> or <code>make bz2</code> (from src directory)</li>
-
-    <li>tag each file of the repository so that it is known as an original file of the new version. From <code>src</code>, 
-	<center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-<code><pre>
-cvs tag NEW_VERSION_0_3
-</pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-</li>
-
-    <li>restart the <a href="Quality.html#testing">full testing process</a> so that you know your version is really usable</li>
-
-    <li>make a new source release archive with "1" as the release number : from <code>OSDL/OSDL-0.3/src</code>, use : <code>make sourcerelease</code></li>
-	
-	<li>upload this archive as <code>anonymous</code> to the FTP server <code>upload.sourceforge.net</code>, in the <code>incoming</code> directory</li>
-	 
-    <li>register this release to Sourceforge : go to the <a href="http://sourceforge.net/project/admin/editpackages.php?group_id=71354" target="_blank">package edition page</a>, select <b>[Add Releases]</b> for the right package (ex : just <code>OSDL</code>, check its status is <code>Active</code> [<a href="http://sourceforge.net/project/admin/editreleases.php?package_id=137341&group_id=71354" target="_blank">direct link to OSDL package</a>]). Name this newly created version (Sourceforge realease) accordingly (ex : <a href="http://sourceforge.net/project/admin/editreleases.php?package_id=137341&release_id=350734&group_id=71354" target="_blank">OSDL-0.3</a>). Find your archive in list once it has finished being uploaded, and add it as first file of this release with appropriate comment</li>
-
-
-    <li>announce your new version in <a href="mailto:osdl-announces@lists.sourceforge.net?subject=New%20version">osdl-announces</a>. You have got to <a href="http://lists.sourceforge.net/lists/listinfo/osdl-announces" target="_blank">subscribe</a> first, if not already registered.</li>
-	
-  </ol>
-  </p>
-  
-
-
- <h3>Checklist for a new release</h3>
-
-  <p>
-  <ol>
-  
-    <li>work from latest available release, so that your changes are already integrated with no merging required</li>
-	
-	<li>in the new version directory, under <code>src</code> (ex : <code>OSDL/OSDL-0.3/src</code>), update the <code>versions.inc</code> file</li>
-
-    <li>make a new source release archive : from <code>OSDL/OSDL-0.3/src</code>, use : <code>make sourcerelease</code></li>
-	
-	<li>upload this archive as <code>anonymous</code> to the FTP server <code>upload.sourceforge.net</code>, in the <code>incoming</code> directory</li>
-	 
-    <li>register this release to Sourceforge : go to the <a href="http://sourceforge.net/project/admin/editpackages.php?group_id=71354" target="_blank">package edition page</a>, select <b>[Edit Releases]</b> for the right package (ex : just <code>OSDL</code>, check its status is <code>Active</code> [<a href="http://sourceforge.net/project/admin/editreleases.php?package_id=137341&group_id=71354" target="_blank">direct link to OSDL package</a>]). Choose the right version (ex : <a href="http://sourceforge.net/project/admin/editreleases.php?package_id=137341&release_id=350734&group_id=71354" target="_blank">OSDL-0.3</a>). Find your archive in list once it has finished being uploaded, and add it with change comment</li>
-	
-    <li>announce your new release in <a href="mailto:osdl-announces@lists.sourceforge.net?subject=New%20release">osdl-announces</a>. You have to <a href="http://lists.sourceforge.net/lists/listinfo/osdl-announces" target="_blank">subscribe</a> first, if not already registered.</li>
-	
-	<li>copy your archive to the corresponding subdirectory of <code>${NORMAL_USER}@${MAIN_RAID_SERVER}:/home/${NORMAL_USER}/Archive/LOANI-archive-repository</code> and from this <code>LOANI-archive-repository</code> directory, just type <code>make</code> to rync its content to the web server</li>
-
-  </ol>
-  </p>  
-
-
-
- <h3>Checklist for a new stable subrelease</h3>
-
-  <p>
-	From the <code>src</code> directory, one has just to enter : <center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-<code><pre>
-cvs tag STABLE_yyyymmdd
-</pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-
-to have all source files tagged (ex : <code>cvs tag STABLE_20051111</code>). <code>LOANI-requiredTools.sh</code> can be updated with regard to this stable tag as well (see <code>latest_stable_ceylan</code> and <code>latest_stable_osdl</code> variables).
-  </p>
+<p>
+We now rely on the <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html#newrelease" target="_blank">release method</a> we described in Ceylan's developer guide. One just has to replace a mention to Ceylan by a mention to OSDL.
+</p>
   
     
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
 
   <h3>Please react !</h3>
 
@@ -180,9 +61,10 @@ to have all source files tagged (ex : <code>cvs tag STABLE_20051111</code>). <co
   <hr>
 
   <center>
-    <a href="#_top_">[Top]</a><br>
+    [<a href="#_top_">Top</a>]
+	<br>
     <br>
-    <em>Last update : 2005, December 11</em>
+    <em>Last update: Saturday, March 1, 2008</em>
   </center>
 </body>
 </html>

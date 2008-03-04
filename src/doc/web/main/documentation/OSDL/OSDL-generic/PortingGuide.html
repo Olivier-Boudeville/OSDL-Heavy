@@ -4,16 +4,16 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2005, December 23
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2005, December 23
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
 <head>
-  <title>OSDL - Porting guide</title>
+  <title>OSDL - Porting informations</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="description" content="OSDL">
   <meta name="keywords" content="OSDL, video game, GPL, port">
@@ -28,7 +28,7 @@
   </div><a name="_top_"></a> 
 
 
-  <h1>OSDL Porting Guide</h1>
+<h1>OSDL Porting Informations</h1>
 
 
 <a name="toc">
@@ -49,7 +49,7 @@
       </table>
 </center>
 <!--
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
   -->
 
 
@@ -58,10 +58,11 @@
 			  
 
 <a name="overview"></a>			  
-  <h2>Overview</h2>
+<h2>Overview</h2>
 
-  <p>
-OSDL and Ceylan, its helper library, are designed to be portable, and they aim to be supported by following platforms :
+<p>
+OSDL and <a href="http://ceylan.sourceforge.net/" target="_blank">Ceylan</a>,
+ its helper library, are designed to be portable, and they aim to be supported by following platforms:
 
 <a name="supportedPlatforms"></a>
 <ul>
@@ -71,18 +72,26 @@ OSDL and Ceylan, its helper library, are designed to be portable, and they aim t
 		
 			<li>System  III & V family
 			<ul>
+			
 				<li><a href="http://en.wikipedia.org/wiki/GNU" target="_blank">GNU</a>/<a href="http://en.wikipedia.org/wiki/Linux" target="_blank">Linux</a> [supported], for all kinds of distributions</li>
+				
 				<li><a href="http://en.wikipedia.org/wiki/Solaris_Operating_Environment" target="_blank">Solaris</a> [to-do], for all various Sun Solaris versions</li>
+				
 				<li><a href="http://en.wikipedia.org/wiki/AIX" target="_blank">AIX</a> [to-do], for all various IBM AIX versions</li>
+				
 			</ul>
 			</li>
 			
 			<li><a href="http://en.wikipedia.org/wiki/BSD" target="_blank">BSD</a> family
 			<ul>
-				<li><a href="http://en.wikipedia.org/wiki/FreeBSD" target="_blank">FreeBSD</a> [started]</li>
-				<li><a href="http://en.wikipedia.org/wiki/NetBSD" target="_blank">NetBSD</a> [started]</li>
-				<li><a href="http://en.wikipedia.org/wiki/OpenBSD" target="_blank">OpenBSD</a> to-do</li>
-				<li><a href="http://en.wikipedia.org/wiki/MacOSX" target="_blank">Mac OS X</a> [to-do], all versions, including Panther and Tiger</li>
+			
+				<li><a href="http://en.wikipedia.org/wiki/FreeBSD" target="_blank">FreeBSD</a> [ported a few versions ago, to be updated]</li>
+				
+				<li><a href="http://en.wikipedia.org/wiki/NetBSD" target="_blank">NetBSD</a> [ported a few versions ago, to be updated]</li>
+				
+				<li><a href="http://en.wikipedia.org/wiki/OpenBSD" target="_blank">OpenBSD</a> [to-do]</li>
+				
+				<li><a href="http://en.wikipedia.org/wiki/MacOSX" target="_blank">Mac OS X</a> [to-do], all versions, including Panther, Tiger and al</li>
 					
 			</ul>
 			</li>
@@ -94,18 +103,34 @@ OSDL and Ceylan, its helper library, are designed to be portable, and they aim t
 		<ul>
 		
 			<li><a href="http://en.wikipedia.org/wiki/Windows_2000" target="_blank">Windows 2000</a> [to-do]</li>
-			<li><a href="http://en.wikipedia.org/wiki/Windows_XP" target="_blank">Windows XP</a> [to-do]</li>
+			
+			<li><a href="http://en.wikipedia.org/wiki/Windows_XP" target="_blank">Windows XP</a> [supported]</li>
+			
 			<li><a href="http://en.wikipedia.org/wiki/Windows_Vista" target="_blank">Windows Vista</a> [to-do]</li>
-			<li><a href="http://en.wikipedia.org/wiki/MinGW" target="_blank">MinGW</a> [started]</li>
-			<li><a href="http://en.wikipedia.org/wiki/Cygwin" target="_blank">Cygwin</a> [to-do]</li>
+			
+			<li><a href="http://en.wikipedia.org/wiki/MinGW" target="_blank">MinGW</a> [not needed since Visual Studio Express]</li>
+			
+			<li><a href="http://en.wikipedia.org/wiki/Cygwin" target="_blank">Cygwin</a> [not targeted]</li>
 		
 		</ul>
+		
+	</li>
 	
+	<li>Handheld family
 	
+		<ul>
+		
+			<li><a href="../../misc/nintendo-DS/homebrew-guide/HomebrewForDS.html" target="_blank">Nintendo DS</a> [supported (only a subset of the features available though)]</li>
+					
+		</ul>
+		
 	</li>
 	
 </ul>			
+</p>
 
+<p>
+Note that an important effort with the autotools and Sourceforge compile farm has been performed, thus porting our libraries to new platforms is a quite easier challenge than before.
 </p>
 
 <p>
@@ -113,16 +138,15 @@ One of the main concerns raised by portability is to ensure the application can 
 </p>
 
 <p>
-There is only one means of knowing whether a platform is supported : it is to actually take a source release of the developments and to try to build it from scratch. Therefore one should have access to every platform to support, which is detailed in our quality section, in the <a href="Quality.html#testing">testing</a> subsection.
+There is only one means of knowing whether a platform is supported: it is to actually take a source release of the developments and to try to build it from scratch. Therefore one should have access to every platform to support, which is detailed in our quality section, in the <a href="Quality.html#testing">testing</a> subsection.
 </p>
 
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 	
 	
 
 
 <a name="platform"></a>			  
-
 <h2>Platform management</h2>
 
 <h3>Platform detection</h3>
@@ -130,11 +154,11 @@ There is only one means of knowing whether a platform is supported : it is to ac
 As, for each platform, the most convenient build system is chosen, it is the task of each build system to apply any platform-specific action.
 </p>
 
-<p>On UNIX platforms, GNU make is used, and relies mostly on the <code>uname -s</code> command to identify the underlying operation system.
+<p>On UNIX platforms and on cross-compilation-based ones (Nintendo DS), the autotools (autoconf, automake and al) and GNU make are used.
 </p>
 
 <p>
-On other systems, a dedicated project file should be given, which thus can have the platform type directly taken into account.
+On other systems, a dedicated project file is given, which thus can have the platform type directly taken into account. This is the case notably for the Windows build, making use of the Visual C++ Express (free) editions.
 </p>
 
 
@@ -144,43 +168,63 @@ Once the platform is known, adaptation has to be made. The customization is base
 </p>
 
 <p>
-Following specific platform symbols are defined, in the same categorization order as for the <a href="#supportedPlatforms">supported</a> platforms :
+We placed here the Ceylan platform-specific identifiers (ex: <code>CEYLAN_ARCH_LINUX</code>), OSDL counterparts can be easily deduced (ex: <code>OSDL_ARCH_LINUX</code>).
+</p>
+
+<p>
+Following specific platform symbols are defined, in the same categorization order as for the <a href="#supportedPlatforms">supported</a> platforms:
 
 <ul>
 
-  <li>UNIX : <code>CEYLAN_ARCH_UNIX</code>
+  <li>UNIX: <code>CEYLAN_ARCH_UNIX</code>
 
   <ul>
   
-  	<li>System V : <code>CEYLAN_ARCH_SYSTEM_V</code>
+  	<li>System V: <code>CEYLAN_ARCH_SYSTEM_V</code>
 		<ul>
-			<li>Linux : <code>CEYLAN_ARCH_LINUX</code></li>	
-			<li>Sun Solaris : <code>CEYLAN_ARCH_SOLARIS</code></li>	
-			<li>IBM AIX : <code>CEYLAN_ARCH_AIX</code></li>	
+			<li>Linux: <code>CEYLAN_ARCH_LINUX</code></li>	
+			<li>Sun Solaris: <code>CEYLAN_ARCH_SOLARIS</code></li>	
+			<li>IBM AIX: <code>CEYLAN_ARCH_AIX</code></li>	
 		</ul>
 	</li>
 	
-  	<li>BSD : <code>CEYLAN_ARCH_BSD</code>
+  	<li>BSD: <code>CEYLAN_ARCH_BSD</code>
 		<ul>
-			<li>FreeBSD : <code>CEYLAN_ARCH_FREEBSD</code></li>	
-			<li>NetBSD : <code>CEYLAN_ARCH_NETBSD</code></li>	
-			<li>OpenBSD : <code>CEYLAN_ARCH_OPENBSD</code></li>	
-			<li>Mac OS X : <code>CEYLAN_ARCH_MACOSX</code></li>	
+			<li>FreeBSD: <code>CEYLAN_ARCH_FREEBSD</code></li>	
+			<li>NetBSD: <code>CEYLAN_ARCH_NETBSD</code></li>	
+			<li>OpenBSD: <code>CEYLAN_ARCH_OPENBSD</code></li>	
+			<li>Mac OS X: <code>CEYLAN_ARCH_MACOSX</code></li>	
 		</ul>
 	</li>
 	
   </ul>
   </li>
   
-  <li>Windows : <code>CEYLAN_ARCH_WINDOWS</code>
+  <li>Windows: <code>CEYLAN_ARCH_WINDOWS</code>
   
   <ul>
   
-  	<li>Windows 2000 : <code>CEYLAN_ARCH_WIN2000</code></li>
-  	<li>Windows XP : <code>CEYLAN_ARCH_WINXP</code></li>
-  	<li>Windows Vista : <code>CEYLAN_ARCH_WINVISTA</code></li>
-  	<li>Cygwin : <code>CEYLAN_ARCH_CYGWIN</code></li>
-  	<li>MinGW/MSYS : <code>CEYLAN_ARCH_MINGW</code></li>
+  	<li>Windows 2000: <code>CEYLAN_ARCH_WIN2000</code></li>
+  	<li>Windows XP: <code>CEYLAN_ARCH_WINXP</code></li>
+  	<li>Windows Vista: <code>CEYLAN_ARCH_WINVISTA</code></li>
+  	<li>Cygwin: <code>CEYLAN_ARCH_CYGWIN</code></li>
+  	<li>MinGW/MSYS: <code>CEYLAN_ARCH_MINGW</code></li>
+	
+  </ul>
+
+  </li>
+  
+  <li>Handhelds:
+  
+  <ul>
+  
+  	<li>Nintendo DS: <code>CEYLAN_ARCH_NINTENDO_DS</code> (generic flag)
+	<ul>
+  		<li>DS ARM7: <code>CEYLAN_RUNS_ON_ARM7</code></li>
+ 		<li>DS ARM9: <code>CEYLAN_RUNS_ON_ARM9</code></li>
+	</ul>
+	</li>
+
 	
   </ul>
 
@@ -190,19 +234,19 @@ Following specific platform symbols are defined, in the same categorization orde
 </p>
 
 <p>
-Some more cross-genre symbols are defined :
+Some more cross-genre symbols are defined:
 <ul>
     <li><code>CEYLAN_ARCH_UNIX_ON_WINDOWS</code> = <code>CEYLAN_ARCH_CYGWIN</code> and <code>CEYLAN_ARCH_MINGW</code></li>
     <li><code>CEYLAN_ARCH_POSIX</code> = <code>CEYLAN_ARCH_UNIX</code> and <code>CEYLAN_ARCH_UNIX_ON_WINDOWS</code></li>
 </ul>
-
 </p>
 
 <p>
-When writing platform-dependent code, one has to use these preprocessor defines, such as <code>#ifdef CEYLAN_ARCH_LINUX...#else...#endif</code> or <code>#ifndef CEYLAN_ARCH_MINGW...#endif</code>. Preprocessor commands should not be indented : they should all begin at the first column.</p>
+When writing platform-dependent code, one has to use these preprocessor defines, such as <code>#if CEYLAN_ARCH_LINUX...#else...#endif</code> or <code>#if ! CEYLAN_ARCH_MINGW...#endif</code>. Preprocessor commands should not be indented: they should all begin at the first column, except for severely nested defines.
+</p>
 
 <p>
-These preprocessor tests should apply to a specific platform symbol only if the same test cannot be expressed thanks to a feature symbol : prefer when possible <code>CEYLAN_USES_FILE_DESCRIPTOR</code> to <code>CEYLAN_ARCH_UNIX</code>, for example.
+These preprocessor tests should apply to a specific platform symbol only if the same test cannot be expressed thanks to a feature symbol: prefer when possible <code>CEYLAN_USES_FILE_DESCRIPTORS</code> to <code>CEYLAN_ARCH_UNIX</code>, for example.
 </p>
 
 
@@ -213,31 +257,29 @@ These preprocessor tests should apply to a specific platform symbol only if the 
 </p>
 
 
-	
 <p>
-Finally, platform-dependent code should look like :
+Finally, platform-dependent code should look like:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
 <code><pre>
-#ifdef CEYLAN_USES_FILE_DESCRIPTOR
+#if CEYLAN_USES_FILE_DESCRIPTORS
 ...
-#else // CEYLAN_USES_FILE_DESCRIPTOR
+#else // CEYLAN_USES_FILE_DESCRIPTORS
 ...
-#endif // CEYLAN_USES_FILE_DESCRIPTOR
+#endif // CEYLAN_USES_FILE_DESCRIPTORS
 </pre></code>
             </div>
           </td>
         </tr>
     </table>
 </center>
-
 </p>
 	
 	
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 	
 			  
 
@@ -247,12 +289,16 @@ Finally, platform-dependent code should look like :
 
 <h3>GNU/Linux</h3>
 <p>
-This is the main developer platform for both Ceylan and OSDL. The build system uses common GNU tools (the GNU compiler tool chain with gcc, the GNU make, etc.) on the command line.
+This is the main developer platform for both Ceylan and OSDL. The build system uses common GNU tools: the dreadful autotools, the GNU compiler tool chain with gcc, the GNU make, etc. on the command line.
+</p>
+
+<p>
+GNU/Linux is also the platform from which cross-compilation to the Nintendo DS is performed. It is based on GNU make and on the <a href="http://www.devkitpro.org/category/devkitarm/" target="_blank">devkitARM</a> toolchain and related (ex: <code>libnds</code>).
 </p>
 
 <h3>FreeBSD &amp; NetBSD</h3>
 <p>
-They should be used as a developer platform as well. This is the reason why LOANI was ported from bash to sh, and why some adaptations had to be made. 
+They could be used as a developer platform as well (although we actually preferred to stick to Linux). This is the reason why LOANI was ported from bash to sh, and why some adaptations had to be made. 
 </p>
 
 
@@ -264,23 +310,22 @@ They should be used as a developer platform as well. This is the reason why LOAN
 <p>In general, the <a href="http://en.wikipedia.org/wiki/Cygwin" target="_blank">Cygwin</a> runtime should not be used since it is GPL, whereas our developments are LGPL [<a href="http://www.gnu.org/licenses/gpl-faq.html#IfLibraryIsGPL" target="_blank">more infos</a>]. Note that one can purchase from <a href="http://www.cygwin.com" target="_blank">Cygwin</a> a commercial license of their product that removes the GPL constraints. Hence, in this very particular case, our developments can be set to use Cygwin libraries for that user, who cannot release them tough.
 </p>
 
-<p>Despite the Cygwin runtime generally will not be used with Ceylan/OSDL (as explained above), Cygwin shell, tools and command-line environment can be used to help the build, as long as, at the end of the process, the result to be released does not depend anymore on Cygwin work.
+<p>Despite the Cygwin runtime generally will not be used with Ceylan/OSDL (as explained above), Cygwin shell, tools and command-line environment can be used to help the build, as long as, at the end of the process, the result to be released does not depend anymore on Cygwin work, notably on Cygwin libraries.
 </p>
 
 <p><a href="http://en.wikipedia.org/wiki/MSYS" target="_blank">MSYS</a> can be used for that matter as well. It is more lightweight, more limited, but has no license concern regarding our LGPL use.
 </p>
 
 <p>
-The current Windows porting plan is to make use of <a href="http://en.wikipedia.org/wiki/MinGW" target="_blank">MinGW</a> with the <a href="http://www.codeblocks.org/" target="_blank">Code::Blocks</a> IDE [see <a href="http://www.spacejack.org/games/mingw/" target="_blank">MinGW Starter Guide</a>].
-</a>].
+The initial Windows porting plan was to make use of <a href="http://en.wikipedia.org/wiki/MinGW" target="_blank">MinGW</a> with the <a href="http://www.codeblocks.org/" target="_blank">Code::Blocks</a> IDE [see <a href="http://www.spacejack.org/games/mingw/" target="_blank">MinGW Starter Guide</a>].
 </p>
 
 <p>
-Another solution would be to cross-compile Ceylan and OSDL (for example from GNU/Linux) to Windows [see <a href="http://www.mingw.org/MinGWiki/index.php/BuildMingwCross" target="_blank">MinGW cross compilation guide</a>].
+Another solution could have been to cross-compile Ceylan and OSDL (for example from GNU/Linux) to Windows [see <a href="http://www.mingw.org/MinGWiki/index.php/BuildMingwCross" target="_blank">MinGW cross compilation guide</a>].
 </p>
 
 <p>
-See our section dedicated to the <a href="WindowsEnvironment.html" target="_blank">development toolchain for Windows</a>.
+We finally preferred to use the Visual C++ Express Edition, released freely by Microsoft. See our section dedicated to the <a href="WindowsEnvironment.html">development toolchain for Windows</a> for more informations.
 </p>
 
 <p>
@@ -288,8 +333,8 @@ Not that for FAT file systems, creation and last access dates and times are not 
 </p>
 
 
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
 
@@ -297,51 +342,45 @@ Not that for FAT file systems, creation and last access dates and times are not 
 <h2>Common &amp; optional features</h2>
 
 <p>
-Basically there are very common features that each and every platform provide, such as string manipulations or video display creation. OSDL provides them natively thanks to the C++ language built-in and to portable back-ends, such as <a href="http://en.wikipedia.org/wiki/Simple_DirectMedia_Layer" target="_blank">SDL</a>.
+Basically there are very common features that each and every platform provide, such as string manipulations or video display creation. OSDL provides them natively thanks to the few C++ language built-ins, and to portable back-ends, such as <a href="http://en.wikipedia.org/wiki/Simple_DirectMedia_Layer" target="_blank">SDL</a> for most platforms, or custom-made developments for others (the Nintendo DS).
 </p>
 
 <p>
-There are also less frequently features that are not available on all platforms. One example is the regular expressions, often natively supported by the UNIX platforms only. From Ceylan/OSDL point of view, they are optional features that may or may not be available. The user can test whether they can be used thanks to the <code>Ceylan::Features</code> and <code>OSDL::Features</code> namespaces. An example would be : <code>Ceylan::Features::checkForSupportedFeatures( RegularExpressions | Threads )</code>.
+There are also less frequently features that are not available on all platforms. One example is the regular expressions, often natively supported by the UNIX platforms only. From Ceylan/OSDL point of view, they are optional features that may or may not be available. The user can test whether they can be used thanks to the <code>Ceylan::Features</code> and <code>OSDL::Features</code> namespaces. An example would be: <code>Ceylan::Features::checkForSupportedFeatures( RegularExpressions | Threads )</code>.
 </p>
     
 <p>
-These optional features are activated on a per platform basis. Here are the relationships between a platform type and the enabled features :
+These optional features are activated on a per platform basis. Here are the relationships between a platform type and the enabled features:
 <ul>
 	<li><b>regular expressions</b> are available if and only if the <code>CEYLAN_USES_REGEX</code> symbol is set, which happens if and only if <code>CEYLAN_ARCH_UNIX</code> is defined</li>
-	<li><b>multithread</b> is available if and only if the <code>CEYLAN_USES_MULTITHREAD</code> symbol is set, which happens if and only if <code>CEYLAN_ARCH_UNIX</code> is defined</li>
+	<li><b>multithread</b> is available if and only if the <code>CEYLAN_USES_MULTITHREAD</code> symbol is set, which happens if and only if <code>CEYLAN_ARCH_UNIX</code> is defined (no Windows support for multithreading yet)</li>
 	<li><b>process primitives</b> are available if and only if the <code>CEYLAN_USES_PROCESS_MANAGEMENT</code> symbol is set, which happens if and only if <code>CEYLAN_ARCH_UNIX</code> is defined</li>
-	<li>each <b>advanced file primitive</b> is available if and only if the corresponding symbol is defined : 
+	<li>each <b>advanced file primitive</b> is available if and only if the corresponding symbol is defined: 
 	<ul>
-		<li><code>CEYLAN_USES_FILE_LOCK</code> : if read/write locks on files are available</li>
-		<li><code>CEYLAN_USES_SYMBOLIC_LINK</code> : if symbolic links may be used on filesystems able to support them</li>
-		<li><code>CEYLAN_USES_FILE_DESCRIPTOR</code> : if low-level file descriptors can be used with the underlying system</li>
+		<li><code>CEYLAN_USES_FILE_LOCK</code>: if read/write locks on files are available</li>
+		<li><code>CEYLAN_USES_SYMBOLIC_LINK</code>: if symbolic links may be used on filesystems able to support them</li>
+		<li><code>CEYLAN_USES_FILE_DESCRIPTORS</code>: if low-level file descriptors can be used with the underlying system</li>
 	</ul>
 	 which usually happens if and only if <code>CEYLAN_ARCH_UNIX</code> is defined</li>
 </ul>
-
 </p>
 	
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 	
 
 
+<h3>Please react !</h3>
 
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
+<p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Porting%20effort">drop us a line</a>!</p><br>
+<br>
+<hr>
 
-  <h3>Please react !</h3>
-
-  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Porting%20effort">drop us a line</a>!</p><br>
+<center>
+  [<a href="#_top_">Top</a>]
   <br>
-  <hr>
-
-  <center>
-    <a href="#_top_">[Top]</a><br>
-    <br>
-    <em>Last update : 2006, January 13</em>
-  </center>
+  <br>
+  <em>Last update: Saturday, March 1, 2008</em>
+</center>
+  
 </body>
 </html>

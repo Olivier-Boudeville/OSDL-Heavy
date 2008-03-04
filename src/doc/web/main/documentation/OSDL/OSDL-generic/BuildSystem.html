@@ -4,11 +4,11 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2006, January 13
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2006, January 13
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -28,7 +28,7 @@
   </div><a name="_top_"></a> 
 
 
-  <h1>OSDL Build system</h1>
+<h1>OSDL Build system</h1>
 
 
 <a name="toc">
@@ -48,7 +48,7 @@
       </table>
 </center>
 <!--
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
   -->
 
 
@@ -57,12 +57,12 @@
 <h2>Overview</h2>
 
 <p>
-OSDL and Ceylan, its helper library, are designed to be portable, hence to be run onto several <a href="PortingGuide.html#supportedPlatforms">platforms</a>. We tried to choose the most relevant technologies so that multiple platforms could be managed seamlessly, knowing that for rather uncommon or specific architectures the build system had to be tailored on a per-platform basis : requesting a unique build process to be able to take them all into account would be a tough task with no real added-value.
+OSDL and Ceylan, its helper library, are designed to be portable, hence to be run onto several <a href="PortingGuide.html#supportedPlatforms">platforms</a>. We tried to choose the most relevant technologies so that multiple platforms could be managed seamlessly, knowing that for rather uncommon or specific architectures the build system had to be tailored on a per-platform basis: requesting a unique build process to be able to take them all into account would be a tough task with no real added-value.
 </p>
 
 
 <p>
-What we mainly expect of an overall build system is to be able to :
+What we mainly expect of an overall build system is to be able to:
 <ul>
 	<li><b>help the day-to-day development process</b>, by providing a user-friendly, non error-prone environment, which includes smart build messages, dependency tracking and paranoïd checkings</li>
 	<li><b>generate the library/application</b> from it sources, on every platform supported by this system, henre including per-platform detection and configuration</li>
@@ -72,7 +72,6 @@ What we mainly expect of an overall build system is to be able to :
 	<li><b>produce some informations and statistics</b>  about the current developments, such as the line number count</li>
 	<li><b>create archives</b>, both for back-up and distribution (releases)</li>
 </ul>
-
 </p>
 
 <p>
@@ -83,7 +82,7 @@ Setting a build system is a necessary but dull task. What we aim at, more genera
 There is only one means of knowing whether a platform is supported thanks to the build system: it is to actually take a source release of the developments and to try to build it from scratch. Therefore one should have access to every platform to support, which is detailed in our quality section, in the <a href="Quality.html#testing">testing</a> subsection.
 </p>
 
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 
 	
 
@@ -92,16 +91,21 @@ There is only one means of knowing whether a platform is supported thanks to the
 
 <p>
 <ul>
-	<li><b>home-made Makefiles</b> : this was the solution we started with. Our somewhat advanced GNUmakefiles took in charge all the tasks detailed above. Its drawbacks where that it was a non-standard way of build, hence hindering portability and needing some efforts to be understood by new developers. Moreover, the configuration step was not separated from the build itself, thus slowing down the whole rebuild process while in development phase. It was quite a nice system though</li>
-	<li><b>Cmake</b> [<a href="http://www.cmake.org/" target="_blank">Cross-platform Make</a>] is an interesting system, but not enough mature for our needs yet. It would require the user to have it, and the maintainers to write specific rules to detect pre-requesites, whereas one could hope to have them readily available with systems already more widely spread</li>
-	<li><b>SCONS</b> [<a href="http://www.scons.org/" target="_blank">Software construction tool</a>] suffers from somewhat similar drawbacks, including the need of having Python</li>
-	<li><b>Jam</b> [<a href="http://www.perforce.com/jam/jam.html" target="_blank">homepage</a>] is little known, we did not want to take a risk with it</li>
-	<li>the GNU <b>Autools</b> have finally been chosen for the UNIX-like builds, there are detailed below</li>
-</ul>
 
+	<li><b>home-made Makefiles</b>: this was the solution we started with. Our somewhat advanced GNUmakefiles took in charge all the tasks detailed above. The drawback was that it was a non-standard way of build, hence hindering portability and needing some efforts to be understood by new developers. Moreover, the configuration step was not separated from the build itself, thus slowing down the whole rebuild process while in development phase. It was quite a nice system though</li>
+	
+	<li><b>Cmake</b> [<a href="http://www.cmake.org/" target="_blank">Cross-platform Make</a>] is an interesting system, but maybe not mature enough for our needs yet. It would require the user to have it to build from sources, and the maintainers to write specific rules to detect pre-requesites, whereas one could hope to have them readily available with systems already more widely spread</li>
+	
+	<li><b>SCONS</b> [<a href="http://www.scons.org/" target="_blank">Software construction tool</a>] suffers from somewhat similar drawbacks, including the need of having Python</li>
+	
+	<li><b>Jam</b> [<a href="http://www.perforce.com/jam/jam.html" target="_blank">homepage</a>] is little known, we did not want to take a risk with it</li>
+	
+	<li>the GNU <b>Autools</b> have finally been chosen for the UNIX-like builds, there are detailed below</li>
+	
+</ul>
 </p>
 	
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 	
 
 
@@ -109,7 +113,7 @@ There is only one means of knowing whether a platform is supported thanks to the
 <h2>The Autotools</h2>
 
 <p>
-They are powerful yet dreadfully complex. Their benefits should not be overlooked, they are vey well described in the <em>Autotools Handout</em> listed below.
+They are powerful yet dreadfully complex. Their benefits should not be overlooked, they are vey well described in the <em>Autotools Handout</em> listed below. It tooks us hours of efforts to support them, and some issues (as having to <b>generate</b> our <code>configure.ac</code> (!) or having platform-agnostic installed headers) could not be overcome satisfactoringly.
 </p>
 
 <h3>Autotools links</h3>
@@ -131,16 +135,9 @@ In mid-1999, an official Autoconf macro archive was established on the World Wid
 </p>
 
 	
-<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+<p><center>[<a href="#toc">Back to the table of contents</a>]</center></p>
 	
 	
-
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-
   <h3>Please react !</h3>
 
   <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Build%20system">drop us a line</a>!</p><br>
@@ -148,9 +145,10 @@ In mid-1999, an official Autoconf macro archive was established on the World Wid
   <hr>
 
   <center>
-    <a href="#_top_">[Top]</a><br>
+    [<a href="#_top_">Top</a>]
+	<br>
     <br>
-    <em>Last update : 2006, January 23</em>
+    <em>Last update: Saturday, March 1, 2008</em>
   </center>
 </body>
 </html>

@@ -4,11 +4,11 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2005, December 14
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2005, December 14
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -28,18 +28,18 @@
        onclick="parent.toolbar.location='../../../MainMenu.html'">home page</a> <a href="../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Some%20technical%20hints">mail us</a></p>
   </div><a name="_top_"></a> 
 
-  <h1>Some technical hints</h1>
+<h1>Some technical hints</h1>
 
 
-  <h2>Patching</h2>
+<h2>Patching</h2>
 
 
-  <h3>Creating a patch from two versions of a file</h3>	
-  <p>
-  Let's suppose you have an old version of a file, say <code>file.txt</code>, and a newer, stored in  <code>file.txt.updated</code>. To create a patch named <code>my-file.patch</code>
-that, applied to <code>file.txt</code>, changes its content so that it is the same as the one of <code>file.txt.updated</code>, one can use :
+<h3>Creating a patch from two versions of a file</h3> 
+<p>
+Let's suppose you have an old version of a file, say <code>file.txt</code>, and a newer, stored in  <code>file.txt.updated</code>. To create a patch named <code>my-file.patch</code>
+that, applied to <code>file.txt</code>, changes its content so that it is the same as the one of <code>file.txt.updated</code>, one can use:
   <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -52,13 +52,14 @@ diff -Naur file.txt file.txt.updated > my-file.patch
     </table>
 </center>
 
-  </p>
+</p>
 
 
-<p> It generates in <code>my-file.patch</code> a text like :
+<p>
+It generates in <code>my-file.patch</code> a text like:
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -76,18 +77,17 @@ diff -Naur file.txt file.txt.updated > my-file.patch
         </tr>
     </table>
 </center>
-
 </p>
 
   
-  <h3>Applying a patch to a file</h3>	
-  <p>
-  Let's suppose you have an old version of a file, say in <code>file.txt</code>, and a patch named <code>my-file.patch</code>. that, applied to <code>file.txt</code>, updates its content. One just has to enter in the same directory:
-  <center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
+<h3>Applying a patch to a file</h3>   
+<p>
+Let's suppose you have an old version of a file, say in <code>file.txt</code>, and a patch named <code>my-file.patch</code> that, applied to <code>file.txt</code>, updates its content. One just has to enter in the same directory:
+<center>
+  <table summary="Code" style="border: none">
+	  <tr>
+		<td>
+		  <div class="box">
 <code><pre>
 patch < my-file.patch
 </pre></code>
@@ -97,22 +97,17 @@ patch < my-file.patch
     </table>
 </center>
 
-  </p>
+</p>
 
 <p>
 No need to specify any filename, since all the necessary informations are already stored in the patch file.
 </p>
   
 <p>
-For more informations, use : <code>man patch</code>.
+For more informations, use: <code>man patch</code>.
 </p>
   
     
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
 
   <h3>Please react !</h3>
 
@@ -121,9 +116,10 @@ For more informations, use : <code>man patch</code>.
   <hr>
 
   <center>
-    <a href="#_top_">[Top]</a><br>
+    [<a href="#_top_">Top</a>]
+	<br>
     <br>
-    <em>Last update : 2005, December 14</em>
+    <em>Last update: Saturday, March 1, 2008</em>
   </center>
 </body>
 </html>

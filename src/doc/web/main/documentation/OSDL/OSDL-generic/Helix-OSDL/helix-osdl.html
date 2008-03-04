@@ -69,7 +69,7 @@ and <em>RealNetworks Public Source License - RPSL 1.0</em> licenses. Although th
 
 
 <p>
-A DS application being made of two distinct executables (one for each ARM), some sources consider that a different license may apply to each piece of software, if they are deemed loosely coupled here (ex : one can run without the other). With that interpretation, Helix and, therefore, Helix-OSDL could be used on the ARM7 with, say, a GPL license, while the ARM9 could run any type of application, including OSDL-based one and/or LGPL or GPL or proprietary closed software. See this <a href="http://www.gnu.org/licenses/gpl-faq.html#MereAggregation" target="_blank">FAQ</a> for a point of view. Are the DS FIFO a communication mechanism used for communication between two separate programs, like a UNIX pipe ? Or should we consider the two parts as intimate enough and being combined actually into a larger program ? 
+A DS application being made of two distinct executables (one for each ARM), some sources consider that a different license may apply to each piece of software, if they are deemed loosely coupled here (ex: one can run without the other). With that interpretation, Helix and, therefore, Helix-OSDL could be used on the ARM7 with, say, a GPL license, while the ARM9 could run any type of application, including OSDL-based one and/or LGPL or GPL or proprietary closed software. See this <a href="http://www.gnu.org/licenses/gpl-faq.html#MereAggregation" target="_blank">FAQ</a> for a point of view. Are the DS FIFO a communication mechanism used for communication between two separate programs, like a UNIX pipe ? Or should we consider the two parts as intimate enough and being combined actually into a larger program ? 
 </p>
 
 <p>
@@ -77,7 +77,7 @@ Helix-OSDL is based upon our Ceylan-based <a href="http://ceylan.sourceforge.net
 </p>
 
 <p>
-See also our <a href="../../../misc/nintendo-DS/HomebrewForDS.html" target="_blank">homebrew guide for the DS</a>, including the discussions about <a href="../../../misc/nintendo-DS/HomebrewForDS.html#sound" target="_blank">sound</a> and <a href="../../../misc/nintendo-DS/HomebrewForDS.html#audio-transformations" target="_blank">audio transformations</a>.
+See also our <a href="../../../misc/nintendo-DS/homebrew-guide/HomebrewForDS.html" target="_blank">homebrew guide for the DS</a>, including the discussions about <a href="../../../misc/nintendo-DS/homebrew-guide/HomebrewForDS.html#sound" target="_blank">sound</a> and <a href="../../../misc/nintendo-DS/homebrew-guide/HomebrewForDS.html#audio-transformations" target="_blank">audio transformations</a>.
 </p>
 
 <p>
@@ -115,7 +115,7 @@ In both cases, we tend to favor 22 050 kHz (good balance) 16-bit (necessary) PCM
 This executable (see <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/wavToOSDLSound.cc?view=markup" target="_blank">wavToOSDLSound.cc</a>) converts a WAVE file into an osdl.sound file:
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -157,7 +157,7 @@ For example:
 <p>
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -181,7 +181,7 @@ Generation of 'test.osdl.sound' succeeded !
 This script (see <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/wavToOSDLSound.sh?view=markup" target="_blank">wavToOSDLSound.sh</a>)
 is still more automated, as it guesses the sound settings, thus only the source WAVE file and, possibly, the target format (if wanting IMA-ADPCM instead of PCM) have to be specified:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -217,7 +217,7 @@ For example:
 
 <p> 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -256,10 +256,10 @@ Exactly like sounds, OSDL music files have to be generated before playback, usin
 
 <h4>Step #1: from WAVE to MP3</h4>
 <p>
-When for example creating a game, your audio source is usually a high-quality uncompressed WAVE file. As osdl.music files are MP3-based, the first step is to encode this WAVE file into a MP3 one, using here preferably the encoder named <a href="http://lame.sourceforge.net/" target="_blank">LAME</a>. As described in our <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#audio-transformations" target="_blank">homebrew guide</a>, the MP3 encoding must be heavily tuned for the DS, resource-wise. The proper encoding can be done automatically by the <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/wavToMP3ForDS.sh?view=markup" target="_blank">wavToMP3ForDS.sh</a> script: 
+When for example creating a game, your audio source is usually a high-quality uncompressed WAVE file. As osdl.music files are MP3-based, the first step is to encode this WAVE file into a MP3 one, using here preferably the encoder named <a href="http://lame.sourceforge.net/" target="_blank">LAME</a>. As described in our <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/homebrew-guide/HomebrewForDS.html#audio-transformations" target="_blank">homebrew guide</a>, the MP3 encoding must be heavily tuned for the DS, resource-wise. The proper encoding can be done automatically by the <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/wavToMP3ForDS.sh?view=markup" target="_blank">wavToMP3ForDS.sh</a> script: 
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -294,7 +294,7 @@ Converts specified WAVE file into a mp3 file appropriate for playback on the DS.
 <p>
 For example (LAME audio details skipped):
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -379,7 +379,7 @@ This should be done using the <code>mp3ToOSDLMusic.exe</code> tool (see <a href=
 
 <p>
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -417,7 +417,7 @@ and, once done, displays that upper bound.
 <p>
 For example:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -458,7 +458,7 @@ Note that only one music at a time will be played, on the hardware channel 0.
 <p>
 Regarding <code>*.osdl.*</code> files, the <code>identifyOSDLFile.exe</code> executable (see <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/identifyOSDLFile.cc?view=markup" target="_blank">identifyOSDLFile.cc</a>), can be used to output their metadata, for example:
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -479,7 +479,7 @@ File 'test.osdl.sound', according to its tag, is a sound (PCM or IMA ADPCM).
 and
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -519,7 +519,7 @@ The ARM7 is the only CPU able to access the sound hardware (mixer), so the last 
 	
 	<li>both <b>processors</b> have to be synchronized to exchange commands and data, here we chose to use the most appropriate solution, the hardware FIFO with interrupt-based management (no polling for more efficiency). As some lengthy I/O operations should not be performed from interrupt handlers, FIFO interrupts just notify (by setting appropriate booleans) the ARM9 main loop about the need to perform some action, notably to load chunks of encoded data</li>
 	
-	<li>the actual <b>data streaming</b> thus occurs from the ARM9 (libfat) to the ARM7, either for direct playback (RAW sounds) or for Helix decoding (MP3 musics). Loaded data has to be shared between the ARMs, so it has to be allocated on the ARM9 side and in the non-cacheable address space (see our <a href="../../../misc/nintendo-DS/HomebrewForDS.html#ipc" target="_blank">IPC</a> section for general details, see below for more specific ones)</li>
+	<li>the actual <b>data streaming</b> thus occurs from the ARM9 (libfat) to the ARM7, either for direct playback (RAW sounds) or for Helix decoding (MP3 musics). Loaded data has to be shared between the ARMs, so it has to be allocated on the ARM9 side and in the non-cacheable address space (see our <a href="../../../misc/nintendo-DS/homebrew-guide/HomebrewForDS.html#ipc" target="_blank">IPC</a> section for general details, see below for more specific ones)</li>
 		
 </ul>
 
@@ -694,10 +694,6 @@ Some more information can be found in this PAlib thread: <a href="http://www.pal
 Most of the work has been done by <b>ThomasS</b>, <b>DekuTree64</b>, <b>Noda</b>, <b>DragonMinded</b>, <b>tepples</b>,  <b>simonjhall</b>, <b>Lazy1</b>, many thanks to them for sharing their knowledge.
 </p>
 
-<br>
-<br>
-<br>
-<br>
   
 <h3>Please react !</h3>
 
@@ -712,7 +708,7 @@ Most of the work has been done by <b>ThomasS</b>, <b>DekuTree64</b>, <b>Noda</b>
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update: Friday, February 8, 2008</em>
+  <em>Last update: Saturday, March 1, 2008</em>
 </center>
 
 </body>

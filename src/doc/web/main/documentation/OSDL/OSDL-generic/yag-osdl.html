@@ -5,8 +5,8 @@
 -->
 
 <!--    
-        Creation date : 2004, August.
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Creation date: 2004, August.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
 -->
 
 <html lang="EN">
@@ -37,10 +37,13 @@ YAG-OSDL is a GPL'd cross-platform tool which generates a static website from a 
 <h2>More in-depth informations</h2>
 
 <p>
-More specifically, YAG-OSDL is made of a set of python scripts which scans a directory tree containing images (ex : JPEG files), and constructs out of them a set of HTML pages with thumbnails, offering the possibility to look at the pictures, with a standard browser, according to two different ways :
+More specifically, YAG-OSDL is made of a set of python scripts which scan a directory tree containing images (ex: JPEG files), and construct out of them a set of HTML pages with thumbnails, offering the possibility to look at the pictures, with a standard browser, according to two different ways:
 <ul>
-	<li><b>tree-based fashion</b> : the user can browse the images according to their directory structure</li>
-	<li><b>theme-based fashion</b> : select a theme and see which are its sub-themes and which resources belongs to that theme</li>
+
+	<li><b>tree-based fashion</b>: the user can browse the images according to their directory structure</li>
+	
+	<li><b>theme-based fashion</b>: select a theme and see which are its sub-themes and which resources belongs to that theme (of course it implies you fill the theme information thanks to our tools beforehand)</li>
+	
 </ul>
 </p>
 
@@ -53,11 +56,11 @@ YAG-OSDL is fully customizable, thanks to its configuration file, whose default 
 </p>
 
 <p>
-We developed YAG-OSDL since we needed a tool which would archive our graphical resources so that we could browse quickly through them and select the content suited for our video game : another way of describing YAG-OSDL is indeed : "a media content browser". We plan to add sound archiving support, as soon as we feel enough need for such a feature.
+We developed YAG-OSDL since we needed a tool which would archive our graphical resources so that we could browse quickly through them and select the content suited for our video game: another way of describing YAG-OSDL is indeed: "a media content browser". We plan to add sound archiving support, as soon as we feel enough need for such a feature.
 </p>
 
 <p>
-Current version of YAG-OSDL is 0.5.
+Current version of YAG-OSDL is 0.6.
 </p>
 
 <p>
@@ -71,7 +74,7 @@ YAG-OSDL has been inspired from <a href="http://home.planet.nl/~stas.linux/pytho
 <h3>Objective</h3>
 
 <p>
-You have a directory tree (possibly only a directory, preferably a pre-sorted tree) of image files, such as : 
+You have a directory tree (possibly only a directory, preferably a pre-sorted tree) of image files, such as: 
 <code><pre>
 
 MySnapshots
@@ -98,20 +101,20 @@ MySnapshots
 You want to generate a full web gallery out of it, and you are using GNU/Linux (the Windows platform cannot benefit from helper shell scripts, which will ease the work of the gallery author).
 </p>
   
-<p>You might have interesting overall (general) gallery informations to give, let's suppose you wrote them down in a text file (ex : MyInfos.txt). If your gallery is to be put online, you might have thought to a licence and term of use, that you would have written in another text file (ex : MyLicence.txt).
+<p>You might have interesting overall (general) gallery informations to give, let's suppose you wrote them down in a text file (ex: <code>MyInfos.txt</code>). If your gallery is to be put online, you might have thought to a license and term of use, that you would have written in another text file (ex: <code>MyLicence.txt</code>).
 </p>
   
 <h3>What to do</h3>
 
-<h4>Step one : install the tool</h4>
+<h4>Step one: install the tool</h4>
 <p>
-First, retrieve and install prerequesites : <a href="http://python.org/download/" target="_blank">python</a>, version 2.2.3 or higher (most Linux distributions have it, check your version with : <code>python -V</code>; users of Debian-based distributions can enter <code>apt-get install python</code>), and the <a href="www.pythonware.com/products/pil/">Python Image Library</a> (PIL, installed the Debian way thanks to <code>apt-get install python-imaging</code>). 
+First, retrieve and install prerequesites: <a href="http://python.org/download/" target="_blank">python</a>, version 2.2.3 or higher (most Linux distributions have it, check your version with: <code>python -V</code>; users of Debian-based distributions can enter <code>apt-get install python</code>), and the <a href="www.pythonware.com/products/pil/">Python Image Library</a> (PIL, installed the Debian way thanks to <code>apt-get install python-imaging</code>). 
 </p>
 
-<p>Then, retrieve YAG-OSDL from <a href="yag-osdl-0.5.tar.bz2">here</a>, and extract it (<code>tar xvjf yag-osdl-0.5.tar.bz2</code>). Alternatively, you can get latest YAG-OSDL version from SVN thanks to : 
+<p>Then, retrieve YAG-OSDL from <a href="http://sourceforge.net/project/showfiles.php?group_id=71354&package_id=265599">here</a>, and extract it (<code>tar xvjf yag-osdl-0.6.tar.bz2</code>). Alternatively, you can get latest YAG-OSDL version from SVN thanks to: 
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -127,12 +130,13 @@ svn co http://osdl.svn.sourceforge.net/svnroot/osdl/Tools/yag .
 </p>
 
 
-<h4>Step two : edit the YAG-OSDL configuration file</h4>
+<h4>Step two: edit the YAG-OSDL configuration file</h4>
 
-<p>Go into the <code>yag-osdl-0.5</code> directory, and edit your own configuration file, that you may copy from sample : <code>cp yag-osdl.conf.sample  myProject.conf</code>. We hope the sample is self-describing enough for most users, yours could be edited that way :
+<p>Go into the <code>yag-osdl-0.6</code> (for SVN: go to the <code>yag</code>
+directory), and edit your own configuration file, that you may copy from sample: <code>cp yag-osdl.conf.sample  myProject.conf</code>. We hope the sample is self-describing enough for most users, yours could be edited that way:
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -145,7 +149,7 @@ svn co http://osdl.svn.sourceforge.net/svnroot/osdl/Tools/yag .
 project_name          = MyBeautifulProject
 
 content_directory     = /home/john/MySnapshots
-resource_directory    = /home/john/WhereIExtractedYAG-OSDL/yag-osdl-0.5/Resources
+resource_directory    = /home/john/WhereIExtractedYAG-OSDL/yag-osdl-0.6/Resources
 
 output_in_content     = True
 output_directory      = "Does not matter"
@@ -161,7 +165,7 @@ author                = John Doe
 author_mail           = John.Doe@esperide.com
 
 
-gallery_license_file  = MyLicence.txt
+gallery_license_file  = MyLicense.txt
 gallery_info_file     = MyInfos.txt
 
 
@@ -174,13 +178,13 @@ gallery_info_file     = MyInfos.txt
 </center>
 </p>
 
-<h4>Step three : annotate the images, thanks to our helper script</h4>
+<h4>Step three: annotate the images, thanks to our helper script</h4>
 
 <p>
-If we launch YAG-OSDL now, no comment nor theme information will be available. If one wants to have them, just enter from the directory where you extracted YAG-OSDL :
+If we launch YAG-OSDL now, no comment nor theme information will be available. If one wants to have them, just enter from the directory where you extracted YAG-OSDL:
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -190,11 +194,11 @@ annotate-images.sh &lt;your root content tree&gt;</code>
         </tr>
     </table>
 </center>
-(ex : <code>annotate-images.sh /home/john/MySnapshots</code>)
+(ex: <code>annotate-images.sh /home/john/MySnapshots</code>)
 </p>
 
 <p>
-We hereby suppose that two really common tools are available on your computer, <code>nedit</code> (a text editor), and <code>xv</code> (xview) or <code>eog</code> (eye of gnome), most common image viewers. If you do not have them, or if you prefer using other tools, just update accordingly the two helper scripts <code>handleGalleryDirectory.sh</code> and <code>handleImage.sh</code>.
+We hereby suppose that two really common tools are available on your computer, <code>nedit</code> (a text editor), and <code>xv</code> (xview) or <code>eog</code> (eye of gnome), most common image viewers. If you do not have them and do not want to install them, or if you prefer using other tools, just update accordingly the two helper scripts <code>handleGalleryDirectory.sh</code> and <code>handleImage.sh</code>.
 </p>
 
 <p>
@@ -206,9 +210,8 @@ After this gallery-commenting phase, the next phase will be the per image commen
 </p>
 
 <p>
-How to specify that your image belongs to themes 'Surf' and 'Hawaï', and that the theme 'Surf' is a sub-theme of theme 'My favorite sports' ? Simply, in the spawn theme file, enter in first line :
-<code>My favorite sport : Surf</code> and in the second <code>Hawaii</code>. That's it, YAG-OSDL has all the informations it needs to do its work.</p>
-
+How to specify that your image belongs to themes 'Surf' and 'Hawaï', and that the theme 'Surf' is a sub-theme of theme 'My favorite sports' ? Simply, in the spawn theme file, enter in first line:
+<code>My favorite sport: Surf</code> and in the second <code>Hawaii</code>. That's it, YAG-OSDL has all the informations it needs to do its work.</p>
 
 <p>
 You can therefore close the image window (you have finished with that one) and this theme file, and repeat the process: 
@@ -219,15 +222,15 @@ You can therefore close the image window (you have finished with that one) and t
 </ol>
 until <code>annotate-images.sh</code> stops with <code>Annotations finished !</code>, which will mean that you went successfully through the whole comment and thematical sort process.</p>
 
-<p>Note that you can at any time stop the annotation script, you won't loose any entered informations, and by re-launching the script the same way you launched it, you will be able first to validate or update every already available information you gave, until you reach the point where you stopped. You will then just have to continue the indexing process as before.
+<p>
+Note that you can at any time stop the annotation script, you will not loose any entered informations, and by re-launching the script the same way you launched it, you will be able first to validate or update every already available information you gave, until you reach the point where you stopped. You will then just have to continue the indexing process as before.
 </p>
 
 <h5>Another way of dealing with theme hierarchy</h5>
-<p>There is a complementary method in order to define you theme tree : instead of specifying the link between themes relatively to an image, you can use too a standalone theme file whose name is <code>yag-overall-themes.thm</code>. This file should be placed at the root of your content, and might have the usual structure &lt;father-theme&gt; :  &lt;a-child-theme&gt;, as shown here :
+<p>There is a complementary method in order to define you theme tree: instead of specifying the link between themes relatively to an image, you can use too a standalone theme file whose name is <code>yag-overall-themes.thm</code>. This file should be placed at the root of your content, and might have the usual structure &lt;father-theme&gt;:  &lt;a-child-theme&gt;, as shown here:
 
 <code>
 <pre>
-
 My favorite sports: sailing
 My favorite sports: surf
 My favorite sports: yoga
@@ -235,19 +238,18 @@ My favorite sports: yoga
 surf: Hawaii-2003
 surf: Hawaii-2004
 surf: Snapshots Of The Shark That Ate My Board 
-
 </pre>
 </code>
-This stand-alone theme file proved useful, since all the theme tree can be defined and understood in one place that way. However, any combination of theme specifications will work : one can both use image theme files and the standalone theme file.
+This stand-alone theme file proved useful, since, that way, all the theme tree can be defined and understood in one place. However, any combination of theme specifications will work: one can both use image theme files and the standalone theme file.
 </p>
 
 
-<h4>Step four : launch YAG-OSDL</h4>
+<h4>Step four: launch YAG-OSDL</h4>
 <p>
 Still following the example, one just have to run 
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -259,13 +261,12 @@ run-yag-osdl.sh -rc myProject.conf
 </center>
 </p>
 
-<p>If it fails (ex : PIL not found), update <code>yag-osdl-environment.sh</code> accordingly.
+<p>If it fails (ex: PIL not found), update <code>yag-osdl-environment.sh</code> accordingly.
 </p>
 
-yag-osdl-environment.sh
-<p> Processing informations will be displayed and, if everything went right (the usual case) you should end up with something like :
+<p> Processing informations will be displayed and, if everything went right (the usual case) you should end up with something like:
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -280,17 +281,12 @@ You can browse your new gallery from file:///home/john/MySnapshots/MainMyBeautif
 </p>
  
  
-<h4>Step five : admire the result</h4>
+<h4>Step five: admire the result</h4>
 <p>
 Use your browser to inspect your new gallery, improve comments and themes if necessary and, if you feel like it should be put online, copy the whole content directory to a webserver, add a link to the gallery main page and tell all your friends about it !
 </p>
  
-  
-<br>
-<br>
-<br>
-<br>
-  
+    
 <h3>Please react !</h3>
 
 <p>If you have information more detailed or more recent than those
@@ -307,7 +303,7 @@ us a line</a> !</p>
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update : Saturday, June 2, 2007</em>
+  <em>Last update: Monday, March 3, 2008</em>
 </center>
 
 </body>
