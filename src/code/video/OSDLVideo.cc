@@ -1,6 +1,6 @@
 #include "OSDLVideo.h"
 
-#include "OSDLImage.h"          // for ImageException
+#include "OSDLImage.h"          // for ImageException and BMP headers
 #include "OSDLSurface.h"        // for Surface 
 #include "OSDLVideoRenderer.h"  // for VideoRenderer 
 #include "OSDLUtils.h"          // for getBackendLastError
@@ -155,6 +155,25 @@ VideoModule::VideoModule() throw( VideoException ):
 	_antiAliasing( true )
 {
 
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw OSDL::Exception( "CommonModule constructor failed: "
+		"not supported on the ARM7." ) ;
+		
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	send( "Initializing video subsystem." ) ;
+
+	send( "Video subsystem initialized." ) ;
+	
+	dropIdentifier() ;
+
+#endif // OSDL_RUNS_ON_ARM7
+
+#else // OSDL_ARCH_NINTENDO_DS
+
 #if OSDL_USES_SDL
 
 	send( "Initializing video subsystem." ) ;
@@ -176,6 +195,8 @@ VideoModule::VideoModule() throw( VideoException ):
 
 #endif // OSDL_USES_SDL
 	
+#endif // OSDL_ARCH_NINTENDO_DS
+
 }	
 
 
@@ -592,6 +613,7 @@ void VideoModule::redraw() throw( VideoException )
 }
 
 
+
 void VideoModule::toggleFullscreen() throw( VideoException )
 {
 
@@ -609,6 +631,193 @@ void VideoModule::toggleFullscreen() throw( VideoException )
 			
 }
 
+
+
+#if OSDL_ARCH_NINTENDO_DS
+
+#if defined(OSDL_RUNS_ON_ARM9)
+
+/**
+ * Writes specified 16-bit value to specified address, with specific byte order.
+ *
+ */
+void write16( Ceylan::Uint16* address, Ceylan::Uint16 value) 
+{
+
+	Ceylan::Uint8* first  = reinterpret_cast<Ceylan::Uint8*>( address ) ;
+	Ceylan::Uint8* second = first + 1 ;
+
+	*first  = value & 0xff ;
+	*second = value >>8 ;
+	
+}
+
+
+/// Writes specified 32-bit value to specified addres, with specific byte order.
+void write32( Ceylan::Uint32* address, Ceylan::Uint32 value) 
+{
+
+	Ceylan::Uint8* first  = reinterpret_cast<Ceylan::Uint8*>( address ) ;
+	Ceylan::Uint8* second = first + 1 ;
+	Ceylan::Uint8* third  = first + 2 ;
+	Ceylan::Uint8* fourth = first + 3 ;
+
+	*first  =  value      & 0xff ;
+	*second = (value>>8)  & 0xff ;
+	*third  = (value>>16) & 0xff ;
+	*fourth = (value>>24) & 0xff ;
+	
+}
+
+#endif //  defined(OSDL_RUNS_ON_ARM9)
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+
+
+void VideoModule::makeBMPScreenshot( const string & screenshotFilename ) 
+	throw( VideoException )
+{
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw OSDL::Exception( "VideoModule::makeBMPScreenshot failed: "
+		"not supported on the ARM7." ) ;
+		
+#elif defined(OSDL_RUNS_ON_ARM9)
+
+	/*
+	 * Generating a BMP file for the content of the main core.
+	 *
+	 * Inspired from Graphics/capture/ScreenShot/source/screenshot.cpp,
+	 * from libnds examples.
+	 *
+	 * @note VRAM D must be free, the capture uses it.
+	 *
+	 */
+	
+	/*
+	 * @note: pure black screenshot always returned, at least on framebuffer
+	 * mode.
+	 *
+	 */
+	
+	try
+	{
+	
+		vramSetBankD( VRAM_D_LCD ) ;
+			
+		/*
+		 * Enables capture device and triggers it asynchronously:
+		 * (no 'reinterpret_cast<Ceylan::Uint32>(..' allowed)
+		 *
+		 * DCAP_ENABLE: enables display capturing
+		 * DCAP_BANK(3): which VRAM bank to use (0=A, 1=B, 2=C, 3=D)
+		 * DCAP_SIZE(3): 3 is full size (256 x 192)
+		 * DCAP_SRC(1): capture source [not specified]
+		 *
+		 */
+		REG_DISPCAPCNT = (unsigned int) 
+			( DCAP_ENABLE | DCAP_BANK(3) | DCAP_SIZE(3) ) ;
+	
+
+		const System::Size sizeOfHeaders = sizeof(TwoDimensional::BMPInfoHeader)
+			+ sizeof(TwoDimensional::BMPHeader) ;
+			
+		// 3 is for RGB bytes (24-bit):
+		const System::Size fileSize = 
+			SCREEN_WIDTH * SCREEN_HEIGHT * 3 + sizeOfHeaders ;
+			
+		// The BMP file will be created in memory first:
+		Ceylan::Byte * temp = new Ceylan::Byte[ fileSize ] ;
+
+		TwoDimensional::BMPHeader* header =
+			reinterpret_cast<TwoDimensional::BMPHeader*>( temp ) ;
+		
+		TwoDimensional::BMPInfoHeader* infoHeader =
+			reinterpret_cast<TwoDimensional::BMPInfoHeader*>( 
+				temp + sizeof(TwoDimensional::BMPHeader) ) ;
+		
+		// Fill the headers first:
+		write16( &header->type, /* magic value */ 0x4D42 ) ;
+		write32( &header->size, fileSize ) ;
+		
+		write32( &header->offset, sizeOfHeaders ) ;
+			
+		write16( &header->firstReserved, 0 ) ;
+		write16( &header->secondReserved, 0 ) ;
+
+		write16( &infoHeader->bits, 24 ) ;
+		write32( &infoHeader->size, sizeof(TwoDimensional::BMPInfoHeader) ) ;
+		write32( &infoHeader->compression, 0 ) ;
+		write32( &infoHeader->width, SCREEN_WIDTH ) ;
+		write32( &infoHeader->height, SCREEN_HEIGHT ) ;
+		write16( &infoHeader->planes, 1);
+		write32( &infoHeader->imagesize, SCREEN_WIDTH*SCREEN_HEIGHT*3 ) ;
+		write32( &infoHeader->xresolution, 0 ) ;
+		write32( &infoHeader->yresolution, 0 ) ;
+		write32( &infoHeader->importantcolours, 0 ) ;
+		write32( &infoHeader->ncolours, 0 ) ;
+
+ 		// Wait until ready (deferred waiting, thus reduced):
+		while( REG_DISPCAPCNT & DCAP_ENABLE )
+			;
+
+		/*
+		dmaCopy( VRAM_D, temp + sizeOfHeaders, 
+		 	SCREEN_WIDTH*SCREEN_HEIGHT*sizeof(Ceylan::Uint16) ) ;
+ 		 */
+		 
+		// Then write the image pixels:
+		for( int y=0; y<SCREEN_HEIGHT; y++ )
+			for( int x=0; x<SCREEN_WIDTH; x++ )
+			{
+				
+				// Stores the image upside-down (BMP convention):
+				Ceylan::Uint16 color = VRAM_D[
+					SCREEN_WIDTH*SCREEN_HEIGHT - (y+1)*SCREEN_WIDTH + x ] ;
+					
+				Ceylan::Uint8 b = (color      &31) << 3 ;
+				Ceylan::Uint8 g = ((color>>5) &31) << 3 ;
+				Ceylan::Uint8 r = ((color>>10)&31) << 3 ;
+
+				temp[ ( (y*SCREEN_WIDTH)+x)*3 + sizeOfHeaders + 0 ] = r ;
+				temp[ ( (y*SCREEN_WIDTH)+x)*3 + sizeOfHeaders + 1 ] = g ;
+				temp[ ( (y*SCREEN_WIDTH)+x)*3 + sizeOfHeaders + 2 ] = b ;
+			}
+
+		// Flushes the DTCM before writing the RAM to file:
+		DC_FlushAll() ;
+		
+		Ceylan::System::File & outputFile = 
+			Ceylan::System::File::Create( screenshotFilename ) ;
+		
+		outputFile.write( temp, fileSize ) ;
+		
+		delete [] temp ;
+		
+		delete & outputFile ;
+	
+	} 
+	catch( Ceylan::Exception & e )
+	{
+	
+		throw VideoException( "VideoModule::makeBMPScreenshot failed: "
+			+ e.toString() ) ;
+	}
+	
+
+#endif // OSDL_RUNS_ON_ARM7
+
+#else // OSDL_ARCH_NINTENDO_DS
+
+	getScreenSurface().saveBMP( screenshotFilename ) ;
+	
+#endif // OSDL_ARCH_NINTENDO_DS
+
+}	
 
 
 bool VideoModule::getEndPointDrawState() const throw()
