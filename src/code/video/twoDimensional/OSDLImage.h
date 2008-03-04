@@ -843,6 +843,71 @@ namespace OSDL
 		
 				
 			} ;
+
+
+			/// Describes a BMP header.
+			typedef struct 
+			{
+			
+				/// Magic identifier.
+				Ceylan::Uint16 type ;
+				
+				/// File size, in bytes.
+				Ceylan::Uint32 size ;
+				
+				/// Reserved for later use.
+				Ceylan::Uint16 firstReserved ;
+
+				/// Reserved for later use.
+				Ceylan::Uint16 secondReserved ;
+								
+				/// Offset to image data, in bytes.
+				Ceylan::Uint32 offset ;
+
+			} PACKED BMPHeader ;
+			
+			
+			
+			/// Describes a BMP Info header.
+			typedef struct 
+			{
+			
+				/// Header size, in bytes.
+				Ceylan::Uint32 size ;
+					
+				/// Width of image.
+				Ceylan::Uint32 width ;
+				
+				/// Height of image.
+				Ceylan::Uint32 height ;
+				
+				/// Number of colour planes.
+				Ceylan::Uint16 planes ;
+				
+				/// Bits per pixel.
+				Ceylan::Uint16 bits ;
+						
+				/// Compression type.
+				Ceylan::Uint32 compression ;
+
+				/// Image size, in bytes.
+				Ceylan::Uint32 imagesize ;
+
+				/// Pixels per meter, for abscissa. 
+				Ceylan::Uint32 xresolution ;
+
+				/// Pixels per meter, for ordinate. 
+				Ceylan::Uint32 yresolution ;
+
+				/// Number of colours.
+				Ceylan::Uint32 ncolours ;
+
+				/// Important colours.
+				Ceylan::Uint32 importantcolours ;
+
+			} PACKED BMPInfoHeader ;
+			
+
 		}		
 	}
 }		
