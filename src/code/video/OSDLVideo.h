@@ -311,6 +311,28 @@ namespace OSDL
 				virtual void toggleFullscreen() throw( VideoException ) ;
 
 
+				/**
+				 * Performs a screenshot of onscreen content, and saves it
+				 * in a BMP file whose name is specified.
+				 *
+				 * @param screenshotFilename the target screenshot filename
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note This method exists mainly for platforms lacking Surface
+				 * support (ex: the Nintendo DS, whose screenshots represent 
+				 * only the content of the main core), even if it will work on 
+				 * Surface-enabled platforms (in this case it will operate on
+				 * the screen surface, if any).
+				 *
+				 * @see Surface::savePNG, Surface::saveBMP.
+				 *
+				 */
+				virtual void makeBMPScreenshot( 
+						const std::string & screenshotFilename ) 
+					throw( VideoException ) ;
+
+
 				
 				/**
 				 * Tells whether line endpoint (final pixel) should be drawn.
