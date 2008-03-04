@@ -2702,7 +2702,7 @@ namespace OSDL
 				 *
 				 * @note This method is especially useful for screenshots.
 				 *
-				 * @see loadPNG.
+				 * @see saveBMP, Video::makeScreenshot, loadPNG.
 				 *
 				 * This method cannot be 'const' since this surface may 
 				 * have to be locked in order to access the pixels that 
@@ -2716,7 +2716,7 @@ namespace OSDL
 				
 				
 				/**
-				 *Saves the current content of this surface into a BMP file.
+				 * Saves the current content of this surface into a BMP file.
 				 *
 				 * @param filename the name of the BMP file to create 
 				 * (ex: 'screenshot.bmp')
@@ -2727,7 +2727,7 @@ namespace OSDL
 				 *
 				 * @note The savePNG method should be preferred to this one.
 				 *
-				 * @see savePNG, loadBMP
+				 * @see savePNG, Video::makeScreenshot, loadBMP.
 				 *
 				 * This method cannot be 'const' since this surface may 
 				 * have to be locked in order to access the pixels that 
