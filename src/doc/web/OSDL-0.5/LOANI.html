@@ -4,11 +4,11 @@
         For any comment, please mail to osdl-loani-bugs@lists.sourceforge.net
 -->
 <!--    
-        Creation date : 2003, May 13.
-        Author : Olivier Boudeville (olivier.boudeville@esperide.com)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2003, May 13.
+        Author: Olivier Boudeville (olivier.boudeville@esperide.com)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -24,21 +24,21 @@
 </head>
 
 <body>
+
   <div class="banner">
     <em>General</em> <a href="../common/black.html" onclick= 
     "parent.toolbar.location='../main/MainMenu.html'">home page</a>
-    <a href="../../../Map.html">site map</a> <a href=
-    "mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">mail us</a>
-  </div><br>
-  <a name="_top_"></a>
-
-  <h1>LOANI's corner</h1>
-
+    <a href="../../../Map.html">site map</a> <a href=   "mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">mail us</a>
+  </div>
+  
+<a name="_top_"></a>
+<h1>LOANI's corner</h1>
 
 <a name="quickstart"></a>
 <h2>Three-step two-line quick guide for the impatient and the fearless UNIX OSDL end-user</h2>
+
 <p>
-Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LOANI-0.5.zip</a> or  <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.gz">LOANI-0.5.tar.gz</a>, extract it, execute <code>loani.sh --buildTools</code> as your normal user to have OSDL, Ceylan and all their prerequesites, including the whole build chain, automatically and safely downloaded, extracted, configured, compiled and built together for you, when targeting the PC. If cross-compiling for the <a href="../main/documentation/misc/nintendo-DS/HomebrewForDS.html" target="_blank">Nintendo DS</a>, just add : <code>--nds</code>. That's all !</p>
+Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LOANI-0.5.zip</a> or  <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.gz">LOANI-0.5.tar.gz</a>, extract it, execute <code>loani.sh --buildTools</code> as your normal user to have OSDL, Ceylan and all their prerequesites, including the whole build chain, automatically and safely downloaded, extracted, configured, compiled and built together for you, when targeting the PC. If cross-compiling for the <a href="../main/documentation/misc/nintendo-DS/HomebrewForDS.html" target="_blank">Nintendo DS</a>, just add: <code>--nds</code>. That's all !</p>
   
 <a name="toc"></a>
 <h2>Table of contents</h2>
@@ -61,23 +61,25 @@ Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LO
 </p>
 
 <a name="overview"></a>
-  <h2>Overview</h2>
+<h2>Overview</h2>
 
-	<p>This is the manual page for LOANI version 0.5.</p>
+<p>This is the manual page for LOANI version 0.5.</p>
 
-  <p>LOANI stands for <b>Lazy OSDL's Automatic Net Installer</b>.
-  Its purpose is to simplify as much as possible the installation of OSDL and its pre requesites on supported platforms, notably Windows and most UNIX platforms, including GNU/Linux. Human beings tend to be lazy, and we really understand there are much more enjoyable activities than to painfully install an intricate list of cyclic dependencies in order to have one's library working. That's why it ought to be automated.</p>
+<p>LOANI stands for <b>Lazy OSDL's Automatic Net Installer</b>.
+Its purpose is to simplify as much as possible the installation of OSDL and its pre requesites on supported platforms, notably Windows and most UNIX platforms, including GNU/Linux. Human beings tend to be lazy, and we really understand there are much more enjoyable activities than to painfully install an intricate list of cyclic dependencies in order to have one's library working. That's why it ought to be automated.</p>
 
-  <p>Some operating systems, such as GNU/Linux with for example the Debian or Gentoo distributions, automate software installations with a package system. However it does not discard the need of tools like LOANI, as we must compile with dedicated options specific versions of helper libraries. Most often package managers do not let easily choose the options sets and/or offer too old versions and/or patch them inaccurately. For example, SDL_image did not build with gcc higher than 3.4, and needs to be configured with JPEG, PNG support, but not TIFF one. LOANI takes in charge that task automatically and without complaining.</p>     
-  <p>
-  That's why we imagined LOANI : the simpliest shell script (on the user side) that performs everything on your behalf and cooks you a brand new OSDL-compliant environment from scratch, with almost no effort but the typing of a simple line : <code>loani.sh</code>.
-  </p>
+<p>Some operating systems, such as GNU/Linux with for example the Debian or Gentoo distributions, automate software installations with a package system. However it does not discard the need of tools like LOANI, as we must compile with dedicated options specific versions of helper libraries. Most often package managers do not let easily choose the options sets and/or offer too old versions and/or patch them inaccurately. For example, SDL_image did not build with gcc higher than 3.4, and needs to be configured with JPEG, PNG support, but not TIFF one. LOANI takes in charge that task automatically and without complaining.</p>     
+<p>
+That's why we imagined LOANI: the simplest shell script (on the user side) that performs everything on your behalf and cooks you a brand new OSDL-compliant environment from scratch, with almost no effort but the typing of a simple line: <code>loani.sh</code>.
+</p>
   
-  <p>Its main targeted audience is the developer community. For end users, a set of platform-specific binaries will be available in a vague future.</p>
+<p>
+Its main targeted audience is the developer community. For end users, a set of platform-specific binaries will be available in a vague future.
+</p>
 
-  <p>
-  Even though all the tools used are available on the most common platforms, OSDL and, notably, Ceylan, are still to be ported so that they can be executed reliably elsewhere than on Windows or GNU/Linux. Our next targets will be the various Mac OS X flavours, so that most gamers can be reached.
-  </p>
+<p>
+Even though all the tools used are available on the most common platforms, OSDL and, notably, Ceylan, are still to be ported so that they can be executed reliably elsewhere than on Windows or GNU/Linux. Our next targets will be the various Mac OS X flavours, so that most gamers can be reached.
+</p>
   
 
 <p>
@@ -88,83 +90,99 @@ LOANI is released under the <a href="http://www.gnu.org/licenses/gpl.html" targe
 
 
 <a name="prereq"></a>	
-  <h2>LOANI's own pre requesites</h2>
+<h2>LOANI's own pre requesites</h2>
 
 <h3>Platforms</h3>
-	<p>LOANI has been thoroughfully tested first on GNU/Linux platforms, with various hardware and distributions [<a href="../main/documentation/OSDL/OSDL-generic/Quality.html#testing">More infos</a>]. Even if some bugs may appear (on error, please see <a href="#troubleshooting">troubleshooting</a>), we believe most of LOANI's users should experience a good behaviour of this tool.</p>
+<p>LOANI has been thoroughfully tested first on GNU/Linux platforms, with various hardware and distributions [<a href="../main/documentation/OSDL/OSDL-generic/Quality.html#testing">More infos</a>]. Even if some bugs may appear (on error, please see <a href="#troubleshooting">LOANI troubleshooting</a>), we believe most of LOANI's users should experience a good behaviour of this tool.</p>
 	
-	<p>
-	The other main targeted platforms are the Windows ones (98/Me/XP), using <a href="http://cygwin.com" target="_blank">Cygwin</a> as host environment, and Visual Express 2005 as compilation toolset. Both are totally free. As on Windows this developer environment may be a bit difficult to settle down, we wrote a small step-by-step <a href="BuildForWindows.html">guide</a> to have one's build environment working. Windows users must apply it first before running LOANI.
-	</p>
+<p>
+The other main targeted platforms are the Windows ones (98/Me/XP/Vista), using <a href="http://cygwin.com" target="_blank">Cygwin</a> as host environment, and Visual Express Edition (at least 2005) as compilation toolset. Both are totally free. As on Windows this developer environment may be a bit difficult to settle down, we wrote a small step-by-step <a href="BuildForWindows.html">guide</a> to have one's build environment working. Windows users must apply it first before running LOANI.
+</p>
 	
-	<p>
-	For others platforms, some adaptations may have to be performed. A general rule of thumb is to use as much as possible GNU tools, in order to be on the safe side. We will welcome reports of tests or, even better, patches to have LOANI working on other platforms.
-	</p>
+<p>
+For other platforms, some adaptations may have to be performed. A general rule of thumb is to use as much as possible GNU tools, in order to be on the safe side. We will welcome reports of tests or, even better, patches to have LOANI working on other platforms.
+</p>
+	
 	
 <h3>Other pre requesites</h3>	
-  <p>One of course should have a working internet connection in order to retrieve the target packages, if needed : one could indeed prefetch archives thanks to any available way (ex : a CDR or an USB key) and put them in LOANI's cache repository, to avoid any subsequent download.</p>
 
-  <h3>Tools needed for LOANI (GNU version strongly recommended)</h3>
+<p>One of course should have a working internet connection in order to retrieve the target packages, if needed: one could indeed prefetch archives thanks to any available way (ex: a CDR or an USB key) and put them in LOANI's cache repository, to avoid any subsequent download.
+</p>
 
-  <p>
-  All of them should already be available on most UNIX-like systems :
+<h3>Tools needed for LOANI (GNU version strongly recommended)</h3>
+
+<p>
+All of them should already be available on most UNIX-like systems:
+</p>
+
+<ul>
+
+  <li>basic UNIX tools: bash, cp, mv, ln, rm, mkdir, grep, find, du, uname, id, ps, wc</li>
+
+  <li>more advanced UNIX tools: awk, tar, gunzip, bunzip2, ping, md5sum, wget</li>
+
+  <li>build tools: make</li>
   
-  </p>
+</ul>
 
-  <ul>
-    <li>basic UNIX tools : bash, cp, mv, ln, rm, mkdir, grep, find, du, uname, id, ps, wc</li>
 
-    <li>more advanced UNIX tools : awk, tar, gunzip, bunzip2, ping, md5sum, wget</li>
-	
-	<li>build tools : make</li>
-  </ul>
-
- 
-  <p>Please note that these pre requesites are LOANI's ones, which are a subset of full OSDL's ones. The complementary tools should be retrieved, installed and used automatically by LOANI, if requested.</p>
+<p>
+Please note that these pre requesites are LOANI's ones, which are a subset of full OSDL's ones. The complementary tools should be retrieved, installed and used automatically by LOANI, if requested (ex: the C++ compiler).
+</p>
 
 
 <center>[<a href="#toc">Back to table of contents</a>]</center>
 
 <a name="provide"></a>
-  <h2>What LOANI provides</h2>
+<h2>What LOANI provides</h2>
 
-  <p>LOANI is a user-friendly tool for OSDL, which can let you choose one or more tool selections and will automatically retrieve, configure, compile, install and link together the corresponding tools in their relevant versions.</p>
-  
-  <p>
-	All the managed tools are free software (free of charge and open source). 
-  </p>
+<p>LOANI is a user-friendly tool for OSDL, which can let you choose one or more tool selections and will automatically retrieve, configure, compile, install and link together the corresponding tools in their relevant versions.</p>
 
 <p>
-Only basic settings are described here : should the <a href="../main/documentation/misc/nintendo-DS/HomebrewForDS.html">Nintendo DS</a> environment be selected (thanks to the <code>--nds</code> command-line option), the software set would differ drastically. The toolchain would then be based on devkitARM, dlditool, libnds, PA_lib, libfat, dswifi, etc., although it would lead finally to Ceylan and OSDL as well (after quite different paths). See our <a href="../main/documentation/misc/nintendo-DS/HomebrewForDS.html#tools" target="_blank">tool section</a> in our DS homebrew guide for more details.
+  All the managed tools are free software (free of charge and open source). 
 </p>
 
-	<h3>Required tools selection</h3>
-	<p>
-	This tool selection is mandatory for OSDL's functioning, therefore no specific option has to be passed to LOANI to have it taken into account. Following prequesites are managed, with dependencies shown (LOANI manages all the dependency tree, i.e. the prerequesites of prerequesites, and so on) :
-	
-	<center>
-    <img src="LOANI-dependencies.png" alt="Depencies managed by LOANI"></img>
-	</center>
-	
-	</p>
+<p>
+Only basic settings are described here: should the <a href="../main/documentation/misc/nintendo-DS/homebrew-guide/HomebrewForDS.html">Nintendo DS</a> environment be selected (thanks to the <code>--nds</code> command-line option), the software set would differ drastically. The toolchain would then be based on devkitARM, dlditool, libnds, PA_lib, libfat, dswifi, etc., although it would lead finally to Ceylan and OSDL as well (after quite different paths). See our <a href="../main/documentation/misc/nintendo-DS/homebrew-guide/HomebrewForDS.html#tools">tool section</a> in our DS homebrew guide for more details.
+</p>
+
+<h3>Required tools selection</h3>
+<p>
+This tool selection is mandatory for OSDL's functioning, therefore no specific option has to be passed to LOANI to have it taken into account. Following prequesites are managed, with dependencies shown (LOANI manages all the dependency tree, i.e. the prerequesites of prerequesites, and so on):
+
+<center>
+<img src="LOANI-dependencies.png" alt="Depencies managed by LOANI"></img>
+</center>
+
+</p>
 
 <p>
-Following first-order dependencies are selected :	
+Following first-order dependencies are selected:	
 <ul>
-    <li><a href="http://www.libsdl.org/" target="_blank">SDL</a> : OSDL's low level back-end.</li>
-	<li><a href="http://www.libsdl.org/projects/SDL_image/" target="_blank">SDL_image</a> : a SDL helper library, allowing to support most common picture formats. Its installation involves setting up various needed libraries, such as <a href="http://www.libpng.org/pub/png/libpng.html" target="_blank">libpng</a>, <a href="http://www.ijg.org/" target="_blank">libjpeg</a> and  <a href="http://www.gzip.org/zlib/" target="_blank">zlib</a> libraries. LOANI does that for you.</li>
-	<li><a href="http://www.libsdl.org/projects/SDL_ttf/" target="_blank">SDL_ttf</a> : another SDL helper library, which provides Truetype font rendering thanks to <a href="http://www.freetype.org/" target="_blank">FreeType</a>, which is also managed automatically by LOANI.</li>
-	<li><a href="http://www.ferzkopp.net/Software/SDL_gfx-2.0/" target="_blank">SDL_gfx</a> : yet another SDL helper library, which is convenient to scale and rotate pictures, for basic 2D primitives and low-level pixel access.</li>
-	<li><a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a>, a multi-channel audio mixer which can use OggVorbis music thanks to <a href="http://www.xiph.org/ogg/" target="_blank">libogg</a> and <a href="http://www.xiph.org/vorbis/" target="_blank">libvorbis</a></li>
-	<li><a href="http://sources.redhat.com/pthreads-win32/" target="_blank">pthreads Win32</a> : a way to have Windows being POSIX-compliant for threads (not used currently)</li>	
+
+    <li><a href="http://www.libsdl.org/" target="_blank">SDL</a>: OSDL's low level back-end</li>
+	
+	<li><a href="http://www.libsdl.org/projects/SDL_image/" target="_blank">SDL_image</a>: a SDL helper library, allowing to support most common picture formats. Its installation involves setting up various needed libraries, such as <a href="http://www.libpng.org/pub/png/libpng.html" target="_blank">libpng</a>, <a href="http://www.ijg.org/" target="_blank">libjpeg</a> and  <a href="http://www.gzip.org/zlib/" target="_blank">zlib</a> libraries. LOANI does that for you</li>
+	
+	<li><a href="http://www.libsdl.org/projects/SDL_ttf/" target="_blank">SDL_ttf</a>: another SDL helper library, which provides Truetype font rendering thanks to <a href="http://www.freetype.org/" target="_blank">FreeType</a>, which is also managed automatically by LOANI</li>
+	
+	<li><a href="http://www.ferzkopp.net/Software/SDL_gfx-2.0/" target="_blank">SDL_gfx</a>: yet another SDL helper library, which is convenient to scale and rotate pictures, for basic 2D primitives and low-level pixel access</li>
+	
+	<li><a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a>: a multi-channel audio mixer which can use OggVorbis music thanks to <a href="http://www.xiph.org/ogg/" target="_blank">libogg</a> and <a href="http://www.xiph.org/vorbis/" target="_blank">libvorbis</a></li>
+	
+	<li><a href="http://sources.redhat.com/pthreads-win32/" target="_blank">pthreads Win32</a>: a way to have Windows being POSIX-compliant for threads (not used currently)</li>	
+	
 	<li><a href="http://www.gnu.org/software/libtool/libtool.html" target="_blank">libtool</a>: GNU tool to perform builds in a cross-platform way (UNIX only)</li>	
-    <li><a href="http://ceylan.sourceforge.net/" target="_blank">Ceylan</a> : our generic all-purpose C++ library.</li>
-    <li><a href="http://osdl.sourceforge.net/" target="_blank">OSDL</a> : our generic multimedia library. Of course, you need OSDL to have OSDL working !</li>
+	
+    <li><a href="http://ceylan.sourceforge.net/" target="_blank">Ceylan</a>: our generic all-purpose C++ library</li>
+	
+    <li><a href="http://osdl.sourceforge.net/" target="_blank">OSDL</a>: our generic multimedia library. Of course, you need OSDL to have OSDL working !</li>
+	
 </ul>
 </p>
 
 
-<h4>The case of the Ceylan and OSDL libraries : source archive or SVN</h4>
+<h4>The case of the Ceylan and OSDL libraries: source archive or SVN</h4>
 	
 <p>
 Ceylan and OSDL can be both retrieved thanks to a source release archive or thanks to SVN. In the first case, a compressed archive is downloaded by LOANI (as it does for other tools), whereas with SVN the source tree is retrieved, according to the chosen version, developer or end user.
@@ -172,69 +190,86 @@ Ceylan and OSDL can be both retrieved thanks to a source release archive or than
 
 
 <h5>Retrieving sources thanks to SVN</h5>	 
+
 <p>
 Thanks to the <code>--sourceforge &lt;user name&gt;</code> option, our <b>project developers</b> can retrieve a fresh (coming from the always up-to-date developer SVN server) check-out version of Ceylan and OSDL, in order to have painlessly a developer-ready install, since SVN informations will be managed and retrieved too. Note that this option implies the <code>--currentSVN</code> option, which means that the cutting edge sources are wanted, even though the build tree is often broken during development.
 </p>
 
-<p><b>End-users</b> that prefers SVN should use <code>--useSVN</code> instead of the two previous options. The retrieved sources will then be the result of a SVN export made from the anonymous SVN server, and no SVN metadata will be managed. Unless the <code>--currentSVN</code> option is specifically set, retrieved files for Ceylan and OSDL correspond to their respective last <b>stable</b> versions, as determined by SVN tags (ex : <code>STABLE_20040906</code>). If the <code>--currentSVN</code> option is set, then the latest version of each file is used. This is usually unsafe during development.
+<p>
+<b>End-users</b> that prefer SVN should use <code>--useSVN</code> instead of the two previous options. The retrieved sources will then be the result of a SVN export made from the anonymous SVN server, and no SVN metadata will be managed. Unless the <code>--currentSVN</code> option is specifically set, retrieved files for Ceylan and OSDL correspond to their respective last <b>stable</b> versions, as determined by SVN tags (ex: <code>STABLE_20040906</code>). If the <code>--currentSVN</code> option is set, then the latest version of each file is used. This is usually unsafe during development.
 </p>
 
 
 	<h3>Build tools section</h3>
 	
-	<p>
-	These build tools or counterparts of them (other C++ compilers, same tools with different versions) might already be readily available on user's system. If not, or if tool versions do not match the required ones, please select this tool section, thanks to the <code>--buildTools</code> LOANI option.
-	</p>
+<p>
+These build tools or counterparts of them (other C++ compilers, same tools with different versions) might already be readily available on user's system. If not, or if tool versions do not match the required ones, select this tool section, thanks to the <code>--buildTools</code> LOANI option.
+</p>
 	
-	<p>These build tools are quite often needed, since for example gcc often breaks downward binary compatibility for C++ base libraries : we often need a very precise version of <code>libstdc++</code>. As we already chose for you the latest gcc version able to build all OSDL pre requesites, relying on LOANI to install gcc and other build tools as well is a safe bet.</p>
+<p>
+These build tools are quite often needed, since for example gcc often breaks downward binary compatibility for C++ base libraries: we often need a very precise version of <code>libstdc++</code>. As we already chose for you the latest gcc version able to build all OSDL pre requesites, relying on LOANI to install gcc and other build tools as well is a safe bet.
+</p>
 	
-	<p>Note that using that option assumes that a working C compiler is already locally available on your computer, since the build tools will be themselves built from sources. However all usual GNU/Linux platforms offers that.
-	</p>
+<p>
+Note that using that option assumes that a working C compiler is already locally available on your computer, since the build tools will be themselves built from sources. However all usual GNU/Linux platforms offer that.
+</p>
 		
-	<p>
+		
+<p>
 		
 <ul>
-    <li><a href="http://gcc.gnu.org/" target="_blank">gcc</a> : up-to-date C++ compiler</li>
-    <li><a href="http://www.gnu.org/directory/GNU/binutils.html" target="_blank">binutils</a> : necessary to handle one's binaries, should be built by the compiler in use</li>
-	<li><a href="http://www.gnu.org/software/gdb/gdb.html" target="_blank">gdb</a> : the GNU debugger, useful to correct bugs and crashes</li> 
-    <li><a href="http://www.erlang.org" target="_blank">Erlang</a> : the amazing declarative language for concurrency [not supported yet]</li>
-    <li><a href="http://www.python.org" target="_blank">Python</a> : the famous python interpreter [not supported yet]</li>
+
+    <li><a href="http://gcc.gnu.org/" target="_blank">gcc/g++</a>: up-to-date C++ compiler</li>
+	
+    <li><a href="http://www.gnu.org/directory/GNU/binutils.html" target="_blank">binutils</a>: necessary to handle one's binaries, should be built by the compiler in use</li>
+	
+	<li><a href="http://www.gnu.org/software/gdb/gdb.html" target="_blank">gdb</a>: the GNU debugger, useful to correct bugs and crashes</li> 
+	
+    <li><a href="http://www.erlang.org" target="_blank">Erlang</a>: the amazing declarative language for concurrency [not supported yet]</li>
+	
+    <li><a href="http://www.python.org" target="_blank">Python</a>: the famous python interpreter [not supported yet]</li>
+	
 </ul>
+
 Another tool, not currently managed by LOANI but that we would recommend for fine quality checks, is <a href="http://valgrind.kde.org/" target="_blank">valgrind</a>, an amazing open-source memory debugger for x86-GNU/Linux, similar in some ways to the very expensive <code>purify</code>.
+</p>
 
-	</p>
 
+<h3>Optional tools section</h3>
+<p>
+These tools are not strictly needed, but are helpful for developers and/or documentation maintainers, who ought to make use of them. You can request this tool selection thanks to the <code>--optionalTools</code> LOANI option.	
+</p>
 
-	<h3>Optional tools section</h3>
-	<p>
-	These tools are not strictly needed, but are helpful for developers and/or documentation maintainers, who ought to make use of them. You can request this tool selection thanks to the <code>--optionalTools</code> LOANI option.	
-	</p>
-	<p>
+<p>
 
 <ul>	
-    <li><a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">doxygen</a> : to generate html documentation from sources</li>
-    <li><a href="http://www.research.att.com/sw/tools/graphviz/" target="_blank">dot</a> : needed by doxygen to generate its graphs</li>
-    <li><a href="http://tidy.sourceforge.net/" target="_blank">tidy</a> : useful to ensure strict W3C conformance of web pages</li>
+    <li><a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">doxygen</a>: to generate html documentation from sources</li>
+	
+    <li><a href="http://www.research.att.com/sw/tools/graphviz/" target="_blank">dot</a>: needed by doxygen to generate its graphs</li>
+	
+    <li><a href="http://tidy.sourceforge.net/" target="_blank">tidy</a>: useful to ensure strict W3C conformance of web pages</li>
+	
 </ul>
-	</p>
+</p>
 	
   
-  	<h3>Selecting all tools section</h3>
-	<p>
-	If one wants to select all the above managed tools (<em>required</em>, <em>build</em> and <em>optional</em>), simply use the <code>--allTools</code> LOANI option. The user should end up with a total installation weighing approximately 300 megabytes, if stripped down with archive cache removed. Let's remember that gigabytes are cheap !</p>
-	
-	<p>Speaking of build duration, the whole process (retrieving all the files from the net and building all) lasts less than 90 minutes in an otherwise idle average PC with a 128 kb broadband access.</p>
-	
-	
-	<h3>Setting the user's environment</h3>
-	
-	<p>
-	LOANI has the ability to provide its user with a developer-friendly environment. It consists on well configuring bash, some editors (nedit, vim) and some other defaults. To have one's environment updated and improved, add the <code>--setEnv</code> option.</p>
-	<p>Please note that all pre-existing configuration files are kept in a copy suffixed by <code>.previous</code>. One should therefore not loose any configuration information, since LOANI stops on error whenever there already exists a backup file in the way.
-	</p>
-	
-  <br>
-  <br>
+<h3>Selecting all tools section</h3>
+
+<p>
+If one wants to select all the above managed tools (<em>required</em>, <em>build</em> and <em>optional</em>), simply use the <code>--allTools</code> LOANI option. The user should end up with a total installation weighing approximately 300 megabytes, if stripped down with archive cache removed. Let's remember that gigabytes are cheap !
+</p>
+
+<p>
+Speaking of build duration, the whole process (retrieving all the files from the net and building all) lasts less than 90 minutes in an otherwise idle average PC with a 128 kb broadband access.
+</p>
+
+
+<h3>Setting the user's environment</h3>
+
+<p>
+LOANI has the ability to provide its user a developer-friendly UNIX environment. It consists on well configuring bash, some editors (nedit, vim) and some other defaults. To have one's environment updated and improved, add the <code>--setEnv</code> option.</p>
+<p>Please note that all pre-existing configuration files are kept in a copy suffixed by <code>.previous</code>. One should therefore not loose any configuration information, since LOANI stops on error whenever there already exists a backup file in the way.
+</p>
 
 <center>[<a href="#toc">Back to table of contents</a>]</center>
 
@@ -246,21 +281,20 @@ Another tool, not currently managed by LOANI but that we would recommend for fin
   <p>One should download either the <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LOANI-0.5.zip</a> or  <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.gz">LOANI-0.5.tar.gz</a> archive.
   
  <p>
- Always as a normal user (using root is not recommended for the moment), after having downloaded it, one has to extract the archive, with <code>unzip LOANI-0.5.zip</code> or <code>gunzip < LOANI-0.5.tar.gz | tar xvf -</code> (note that <code>tar -xvzf LOANI-0.5.tar.gz</code> should work will GNU-based tar). Change now to the extracted directory : <code>cd LOANI-0.5</code>.
+ Always as a normal user (using root is not recommended for the moment), after having downloaded it, one has to extract the archive, with <code>unzip LOANI-0.5.zip</code> or <code>gunzip < LOANI-0.5.tar.gz | tar xvf -</code> (note that <code>tar -xvzf LOANI-0.5.tar.gz</code> should work with GNU-based tar). Change now to the extracted directory: <code>cd LOANI-0.5</code>.
 </p>
 
 <p>
-Then, to figure out the main options, one could use :
+Then, to figure out the main options, one could use:
+</p>
 
- </p>
- 
- <p>
+<p>
   <center>
-  <table summary="Type : loani.sh --help" style="border: none">
+  <table summary="Type: loani.sh --help" style="border: none">
     <tr>
       <td>
         <div class="box">
-          <code>./loani.sh --help</code>
+          <code><pre>./loani.sh --help</pre></code>
         </div>
       </td>
     </tr>
@@ -270,16 +304,16 @@ Then, to figure out the main options, one could use :
   <br>
 
 <p>
-To benefit from our embedded tiny text wizard (answer the questions and everything should go fine) :
+To benefit from our embedded tiny text wizard (answer the questions and everything should go fine):
 </p>
 
- <p>
+<p>
  <center>
-  <table summary="Type : loani.sh --wizard"  style="border: none">
+  <table summary="Type: loani.sh --wizard"  style="border: none">
     <tr>
       <td>
         <div class="box">
-          <code>./loani.sh --wizard</code>
+          <code><pre>./loani.sh --wizard</pre></code>
         </div>
       </td>
     </tr>
@@ -289,7 +323,7 @@ To benefit from our embedded tiny text wizard (answer the questions and everythi
 </p>
 
   
-  <p>Otherwise, most end-users may use directly :
+<p>Otherwise, most end-users may use directly:
   
  <p>
  <center>
@@ -297,7 +331,7 @@ To benefit from our embedded tiny text wizard (answer the questions and everythi
     <tr>
       <td>
         <div class="box">
-          <code>./loani.sh --prefix /where/to/install/everything --buildTools</code>
+          <code><pre>./loani.sh --prefix /where/to/install/everything --buildTools</pre></code>
         </div>
       </td>
     </tr>
@@ -306,7 +340,7 @@ To benefit from our embedded tiny text wizard (answer the questions and everythi
   <br>
 </p>
 
-<p>whereas (registered) Ceylan/OSDL developers may use for example : </p>
+<p>whereas (registered) Ceylan/OSDL developers may use for example: </p>
 
  <p>
  <center>
@@ -314,7 +348,7 @@ To benefit from our embedded tiny text wizard (answer the questions and everythi
     <tr>
       <td>
         <div class="box">
-          <code>./loani.sh --prefix /where/to/install/everything --allTools --sourceforge &lt;developerLogin&gt;</code>
+          <code><pre>./loani.sh --prefix /where/to/install/everything --allTools --sourceforge &lt;developerLogin&gt;</pre></code>
         </div>
       </td>
     </tr>
@@ -328,31 +362,36 @@ Many users wish everything to be installed in the current working directory, and
 </p>
 
   
-  <p>If ever errors occured (which might happen), one may take a look at <code>LOANI.log</code>, a log file created in the directory from which LOANI was launched, or directly at the script itself, <code>loani.sh</code> (this simple script is easy to understand and customize) and/or <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">send us a notice</a> to have LOANI improved.</p>
-  
-  <h3>Avoiding build issues</h3>
-  <p>
-	There are often many problems coming from build tools :
-<ul>
-	<li>the gcc project is maybe too quick when releasing new compilers, which may have flaws or incompabilities (ex : <code>libgcc_s.so</code> breaking existing builds)</li>
-	<li>some GNU/Linux distributions sometimes mess up with compiler management (Red Hat releasing an unofficial and totally buggy <code>gcc 2.96</code>)</li>	
-	<li>the tools cannot catch up with frantic pace of compiler versions (ex : SDL not supporting gcc 3.4 for a few months)</li>
-	<li>the user are too often unable to set proper build environment (ex : multiple conflicting gcc versions installed in various locations : /usr, /usr/local, and so on)</li>
-	<li>when compilers are all right, it is often the binutils, linkers (ld) and/or libtool that are not rebuilt accordingly</li>
-</ul>
-  </p>
-
-<p>
-For all these reasons and many more, the user build environment might not be able to behave correctly, preventing OSDL to be built. Therefore we added the <code>--buildTools</code> option which takes totally care of it, on the user's behalf in order not to mess up in any case with system installation. The compiler, gcc, libtool and all other tools will be automatically installed and used as they should, without interfering with existing configuration.
-</p>
-
-<p>
-This option, which should be used in order to be in the safe side, can be specified that way :
+<p>If ever errors occured (which might happen), one may take a look at <code>LOANI.log</code>, a log file created in the directory from which LOANI was launched, or directly at the script itself, <code>loani.sh</code> (this simple script is easy to understand and customize) and/or <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">send us a notice</a> to have LOANI improved.
 </p>
  
+  
+<h3>Avoiding build issues</h3>
 <p>
+There are often many problems coming from build tools:
+<ul>
+
+	<li>the gcc project is maybe too quick when releasing new compilers, which may have flaws or incompabilities (ex: <code>libgcc_s.so</code> breaking existing builds)</li>
+	
+	<li>some GNU/Linux distributions sometimes mess up with compiler management (Red Hat releasing an unofficial and totally buggy <code>gcc 2.96</code>)</li>
+		
+	<li>the tools cannot catch up with frantic pace of compiler versions (ex: SDL not supporting gcc 3.4 for a few months)</li>
+	
+	<li>the user are too often unable to set proper build environment (ex: multiple conflicting gcc versions installed in various locations: /usr, /usr/local, and so on)</li>
+	
+	<li>when compilers are all right, it is often the binutils, linkers (ld) and/or libtool that are not rebuilt accordingly</li>
+	
+</ul>
+</p>
+
+<p>
+For all these reasons and many others, the user build environment might not be able to behave correctly, preventing OSDL to be built. Therefore we added the <code>--buildTools</code> option which takes totally care of it, on the user's behalf in order not to mess up in any case with system installation. The compiler, gcc, libtool and all other tools will be in this case automatically installed and used as they should, without interfering with existing configuration.
+</p>
+
+<p>
+This option, which should be used in order to be in the safe side, can be specified that way:
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -369,13 +408,14 @@ This option, which should be used in order to be in the safe side, can be specif
 Note that the <code>--allTools</code> option implies the <code>--buildTools</code> option.
 </p>
   
-  <h3>What LOANI should display during build</h3>
+
+<h3>What LOANI should display during build</h3>
   
 <p>
-Here is a sample of what should happen :
+Here is a sample of what should happen:
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box" style="margin-left: 0px">
@@ -388,7 +428,7 @@ tester@testingHost LOANI-0.5 $ ./loani.sh --allTools
 This is the Lazy OSDL Automatic Net Installer, dedicated to the lazy and the fearless.
 
 Its purpose is to have OSDL and all its pre requesites installed with the minimum of time and effort. Some time is nevertheless needed, since some downloads may have to be performed, and the related build is CPU-intensive, so often a bit long. Therefore, even with a powerful computer and broadband access, some patience will be needed.
-Warning : No prefix specified and not run as root (which is recommended indeed) : adding prefix /home/tester/LOANI-0.5/LOANI-installations.
+Warning: No prefix specified and not run as root (which is recommended indeed): adding prefix /home/tester/LOANI-0.5/LOANI-installations.
 Retrieving all pre requesites, pipe-lining when possible.
 Target package list is &lt;libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL&gt;.
 Some tools already available (libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer), others will be downloaded (Ceylan OSDL).
@@ -399,20 +439,20 @@ Retrieving OSDL from developer SVN with user name wondersye.
       ----&gt; getting OSDL from SVN with user name wondersye (check-out)
       &lt;---- OSDL retrieved [from SVN]
 All pre requesites available.
-      ----&gt; libtool     : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; SDL         : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; libjpeg     : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; libzlib     : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; libPNG      : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; SDL_image   : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; SDL_gfx     : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; freetype    : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; SDL_ttf     : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; libogg      : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; libvorbis   : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; SDL_mixer   : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; Ceylan      : extracting [OK] configuring [OK] building [OK] installing [OK]
-      ----&gt; OSDL        : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libtool    : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL        : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libjpeg    : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libzlib    : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libPNG     : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL_image  : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL_gfx    : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; freetype   : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL_ttf    : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libogg     : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; libvorbis  : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; SDL_mixer  : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; Ceylan     : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; OSDL       : extracting [OK] configuring [OK] building [OK] installing [OK]
 Post-install cleaning of build trees.
 End of LOANI, started at 19:00:44, successfully ended at 19:20:15.
 You can now test the whole installation by executing /home/tester/LOANI-0.5/LOANI-installations/OSDL-0.5/share/OSDL-test/playTests.sh              </pre>
@@ -428,21 +468,19 @@ You can now test the whole installation by executing /home/tester/LOANI-0.5/LOAN
 </p>
   
 <p>
-On a side note, LOANI usually have to ask some more questions. The first is :
+On a side note, LOANI usually have to ask some more questions. The first is:
 </p>
 
 <p>
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
 <pre>
-
 The authenticity of host 'osdl.svn.sourceforge.net (66.35.250.207)' can't be established.
 DSA key fingerprint is 02:ab:7c:aa:49:ed:0b:a8:50:13:10:c2:3e:92:0f:42.
 Are you sure you want to continue connecting (yes/no)? 
-
 </pre>
             </div>
           </td>
@@ -456,12 +494,12 @@ Answer <code>yes</code> to this one, it is just the SSH-powered SVN client wanti
 </p>
 
 <p>
-The other question is, for the registered OSDL users that chose the SVN developer access (<code>--sourceforge</code> option) but did not set up authentification by SSH public key on Sourceforge'side (very few happen to use them), the following : 
+The other question is, for the registered OSDL users that chose the SVN developer access (<code>--sourceforge</code> option) but did not set up authentification by SSH public key on Sourceforge'side (very few happen to use them), the following: 
 </p>
 
 <p>
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -474,48 +512,46 @@ The other question is, for the registered OSDL users that chose the SVN develope
 
 </p>
 
-<p>This question may be asked more than two times (one for Ceylan, one for OSDL). It is due to SourceForge's SVN servers' hiccups, LOANI will try multiple times before aborting, in the case where there is an outage of SourceForge services. Each time, answer in an appropriate way and everything should work well.
+<p>This question may be asked more than two times (at least one for Ceylan, and one for OSDL). It is due to SourceForge's SVN servers' hiccups, LOANI will try multiple times before aborting, in the case where there is an outage of SourceForge services. Each time, answer in an appropriate way and everything should work well.
 </p>
 
-  
-  <br>
-  
-  
-  <center>[<a href="#toc">Back to table of contents</a>]</center>
+<center>[<a href="#toc">Back to table of contents</a>]</center>
 
 
-  <a name="features"></a>
-  <h2>LOANI's main features</h2>
-  
-  
-  <p>
-  <ul>
-  
-	<li><b>integrated</b> : does everything on your behalf, i.e. for all pre requesites : retrieve, extract, configure, build, install. No worry, nothing to do, let it work for you.</li>
-	
-	<li><b>simple</b> : one can launch LOANI just by <code>loani.sh</code> and let it do its best alone.</li>
-	
-	<li><b>robust</b> : we made the most careful and reliable choices, and we thoroughfully tested LOANI on various platforms. We believe LOANI is rock-solid and that it should work out-of-the-box on most UNIX platforms.</li>
-	
-	<li><b>highly modular</b> : based on tool sets, selectively chosable (ex : required tools and build tools and/or optional tools).
-</li>
+<a name="features"></a>
+<h2>LOANI's main features</h2>
 
-	<li><b>fast and efficient</b> : a cache is maintained to transfer archives only once, it will not download anything if not necessary, and, when necessary, will launch multiple download simultaneously, to maximize bandwidth use and shorten the installation time. Limited proxy support is provided through the <code>PROXY_CONF</code> environment variable (bash example : <code>export PROXY_CONF='--proxy-user=&lt;my user name&gt; --proxy-passwd=&lt;my password&gt;'</code>).</li>
-<li><b>cross platform</b> : more exactly, LOANI should work with no change on most UNIX platforms. A first attempt of port to the Windows platform has been performed, based on Cygwin and MinGW, but remains partial due to libtool issues. Within a few months, we hope the Mac OSX platform will be supported.
-</li>	
-	<li><b>user-friendly</b> : with multiple notification levels, a wizard mode and fancy colors. It can improve as well your environment so that it becomes developer-friendly, and takes into account your profile : end-user or developer.</li>
-	<li><b>secure</b> : issues warnings or errors in case of abnormal situations, can strictly ensure md5sum checking for downloaded archives, never overwrite files if in strict mode. Does not need root privileges : if a non-privileged user launchs LOANI, which is the recommended way, tools will be installed in supplied prefix directory, or, if not supplied, in current working directory under the default prefix, <code>LOANI-installations</code>. If root tries running LOANI, he will be prompted to confirm, since this choice is not recommended</li>
-	<li><b>well documented</b> : besides this web section, <code>loani.sh --help</code> gives you detailed informations.
-</li>
-	<li><b>extensible</b> : one can easily add new tool sections or upgrade existing ones. It is only a bash script, so it is easy to understand and maintain.</li>
+
+<p>
+<ul>
+
+  <li><b>integrated</b>: does everything on your behalf, i.e. for all pre requesites retrieves, extracts, configures, builds, installs. No worry, nothing to do, let it work for you</li>
+
+  <li><b>simple</b>: one can launch LOANI just by <code>loani.sh</code> and let it do its best alone</li>
+
+  <li><b>robust</b>: we made the most careful and reliable choices, and we thoroughfully tested LOANI on various platforms. We believe LOANI is rock-solid and that it should work out-of-the-box on most UNIX platforms</li>
+
+  <li><b>highly modular</b>: based on tool sets, selectively chosable (ex: required tools and build tools and/or optional tools)</li>
+
+  <li><b>fast and efficient</b>: a cache is maintained to transfer archives only once, it will not download anything if not necessary, and, when necessary, will launch multiple download simultaneously, to maximize bandwidth use and shorten the installation time. Limited proxy support is provided through the <code>PROXY_CONF</code> environment variable (bash example: <code>export PROXY_CONF='--proxy-user=&lt;my user name&gt; --proxy-passwd=&lt;my password&gt;'</code>)</li>
+  
+	<li><b>cross platform</b>: more exactly, LOANI should work with no change on most UNIX platforms and on Windows platforms</li>	
+	
+	<li><b>user-friendly</b>: with multiple notification levels, a wizard mode and fancy colors. It can improve as well your environment so that it becomes developer-friendly, and takes into account your profile: end-user or developer</li>
+	
+	<li><b>secure</b>: issues warnings or errors in case of abnormal situations, can strictly ensure md5sum checking for downloaded archives, never overwrite files if in strict mode. Does not need root privileges: if a non-privileged user launchs LOANI, which is the recommended way, tools will be installed in supplied prefix directory, or, if not supplied, in current working directory under the default prefix, <code>LOANI-installations</code>. If root tries running LOANI, he will be prompted to confirm, since this choice is not recommended</li>
+	
+	<li><b>well documented</b>: besides this web section, <code>loani.sh --help</code> gives you detailed informations</li>
+	
+	<li><b>extensible</b>: one can easily add new tool sections or upgrade existing ones. It is only a bash script, so it is quite easy to understand and maintain</li>
 
 </ul>
-
   
-  </p>
+</p>
 
 
 <center>[<a href="#toc">Back to table of contents</a>]</center>
+
 
 
 <a name="syntax"></a>
@@ -527,7 +563,7 @@ This is loani.sh, the famous Lazy OSDL Automatic Net Installer.
 
 <pre>
 
-Usage : loani.sh  [ -d | --debug ] 
+Usage: loani.sh  [ -d | --debug ] 
 		  [ -s | --strict ] 
 		  [ -q | --quiet ] 
 		  [ -w | --wizard ] 
@@ -549,43 +585,43 @@ Usage : loani.sh  [ -d | --debug ]
 </pre>
 
 
-<!-- Beware of the lighter/greater characters in : -->
+<!-- Beware of the lighter/greater characters in: -->
 
 <pre>
-Options :
-        -d or --debug             : display debug informations to screen
-        -s or --strict            : be strict, stop on wrong md5 checksums or on unexpected tool locations
-        -q or --quiet             : avoid being too verbose
-        -w or --wizard            : enter wizard interactive mode, so that questions are asked to configure
-        -u or --useSVN            : retrieve Ceylan and OSDL from SVN, instead of downloading prepackaged source archives
-        -c or --currentSVN        : retrieve current SVN for Ceylan and OSDL, instead of latest SVN tagged stable release (implies --useSVN)
-        --sourceforge &lt;user name&gt; : uses SourceForge developer access to retrieve projects from SVN  (implies --currentSVN)
-        --buildTools              : retrieve and install common build tools too (ex : gcc, binutils, gdb)  
-        --optionalTools           : retrieve and install optional tools too (ex : doxygen, dot, tidy)
-        --allTools                : retrieve all tools (required, build, optional tools)
-        --nds                     : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
-        --setEnv                  : set full developer environment (ex : bash, nedit configuration)
-        --fetchonly               : only retrieve (download in cache) pre requesite, do not install them
-        --all                     : install all and set all
-        --prefix &lt;a path&gt;         : install everything under &lt;a path&gt; 
-        --repository &lt;a path&gt;     : specify an alternate cache repository for downloads       
-        --noLog                   : do not log installation results 
-        --noClean                 : do not remove build trees after a successful installation
-        -h or --help              : display this message
+Options:
+        -d or --debug            : display debug informations to screen
+        -s or --strict           : be strict, stop on wrong md5 checksums or on unexpected tool locations
+        -q or --quiet            : avoid being too verbose
+        -w or --wizard           : enter wizard interactive mode, so that questions are asked to configure
+        -u or --useSVN           : retrieve Ceylan and OSDL from SVN, instead of downloading prepackaged source archives
+        -c or --currentSVN       : retrieve current SVN for Ceylan and OSDL, instead of latest SVN tagged stable release (implies --useSVN)
+        --sourceforge &lt;user name&gt;: uses SourceForge developer access to retrieve projects from SVN  (implies --currentSVN)
+        --buildTools             : retrieve and install common build tools too (ex: gcc, binutils, gdb)  
+        --optionalTools          : retrieve and install optional tools too (ex: doxygen, dot, tidy)
+        --allTools               : retrieve all tools (required, build, optional tools)
+        --nds                    : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
+        --setEnv                 : set full developer environment (ex: bash, nedit configuration)
+        --fetchonly              : only retrieve (download in cache) pre requesite, do not install them
+        --all                    : install all and set all
+        --prefix &lt;a path&gt;        : install everything under &lt;a path&gt; 
+        --repository &lt;a path&gt;    : specify an alternate cache repository for downloads       
+        --noLog                  : do not log installation results 
+        --noClean                : do not remove build trees after a successful installation
+        -h or --help             : display this message
 
- Recommended example (long but safe) : loani.sh --allTools
+ Recommended example (long but safe): loani.sh --allTools
 </pre></code>
 </p>
 
 <br>
 
 <p>
-There exist some hidden options, i.e. undocumented in the command line help, since seldom used :
+There exist some hidden options, i.e. undocumented in the command line help, since seldom used:
 
 <ul>
-	<li><code>--noSVN</code> : do not retrieve Ceylan or OSDL from SVN, merely used for LOANI debugging (they will not be retrieved at all)</li>
-	<li><code>--onlyBuildTools</code> : only build tools will be installed</li>
-	<li><code>--onlyOptionalTools</code> : only optional tools will be installed</li>
+	<li><code>--noSVN</code>: do not retrieve Ceylan or OSDL from SVN, merely used for LOANI debugging (they will not be retrieved at all)</li>
+	<li><code>--onlyBuildTools</code>: only build tools will be installed</li>
+	<li><code>--onlyOptionalTools</code>: only optional tools will be installed</li>
 </ul>
 
 </p>
@@ -603,12 +639,12 @@ The most common mistakes that are made or errors that occur are listed here, alo
 
 <dl>
 
-	<dt>You got : <code>./loani.sh: /bin/bash: bad interpreter: Permission denied</code></dt>
-	<dd>Your <code>/bin/bash</code> is not a valid link, or it does not refer to an executable file, or you are on a partition whose <code>noexec</code> attribute is set (use the <code>mount</code> command to check, for example the <code>user</code> fstab attribute implies it). Finally, check that the <code>loani.sh</code> script was not corrupted by a transfer (for example, beware of Windows and CR/LF transformations, think to <code>dos2unix</code>), and of course that the script is still executable.
+	<dt>You got: <code>./loani.sh: /bin/bash: bad interpreter: Permission denied</code></dt>
+	<dd>Your <code>/bin/bash</code> is not a valid link, or it does not refer to an executable file, or you are on a partition whose <code>noexec</code> attribute is set (use the <code>mount</code> command to check, for example the <code>user</code> fstab attribute implies it). Finally, check that the <code>loani.sh</code> script was not corrupted by a transfer (for example, beware of Windows and CR/LF transformations, think to <code>dos2unix</code> if you have a weird transfer client), and of course that the script is still executable.
 	</dd>
 
 
-	<dt>You got : <code>"Error : XYZ archive not available through main server or known mirrors.</code></dt>
+	<dt>You got: <code>"Error: XYZ archive not available through main server or known mirrors.</code></dt>
 	<dd>This may happen when a download server and all its mirrors known by LOANI are down. In the rather unlikely case where this occurs, a quick workaround is to get the missing archive by any means, to copy it in LOANI's cache, <code>LOANI-repository</code> if not specifically overriden, and to launch LOANI again.
 </dd>
 	  
@@ -620,10 +656,10 @@ The most common mistakes that are made or errors that occur are listed here, alo
 	</p>
 
 	<p>	
-	Another frequent cause of problem is SVN needing the user to acknowledge interactively the use of Sourceforge certificate. Using <code>tail -f LOANI.log</code>, one can see a message like :
+	Another frequent cause of problem is SVN needing the user to acknowledge interactively the use of Sourceforge certificate. Using <code>tail -f LOANI.log</code>, one can see a message like:
 	
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -646,13 +682,12 @@ Certificate information:
 	</p>
 	
 	<p>   
-   Most simple work-around is to accept manually the certificate from a terminal with 
-   <code>svn co https://osdl.svn.sourceforge.net:/svnroot/ceylan</code> for example, to stop it after the certificate has been accepted, to remove any downloaded directory, and then to launch LOANI again.                          
+   Most simple work-around is to accept manually the certificate from a terminal with <code>svn co https://osdl.svn.sourceforge.net:/svnroot/ceylan</code> for example, to stop it once the certificate has been accepted, to remove any downloaded directory, and then to launch LOANI again.                          
 	</p>
 	
 	<p>Otherwise the issue and its solution are mostly the same as for the previous case. Typically, LOANI succeeded in downloading most packages, but, for one or more, does not progress anymore. Using again <code>tail -f LOANI.log</code>, you may see LOANI regularly waiting for the lacking packages, and inspecting the various <code>wget-log.*</code> shows some messages like <code>failed: Connection timed out</code>.</p>
 	
-	<p>This may happen if a download mirror is experiencing some kind of internal errors. Despite the mirrors used by LOANI are selected among the major and most available ones, some outages already occured. Some temporary network failures may happen too. Most of the time LOANI overcomes these problems and defaults to the next available mirror : just wait some more seconds to let it switch to another mirror.</p>
+	<p>This may happen if a download mirror is experiencing some kind of internal errors. Despite the fact that mirrors used by LOANI are selected among the major and most available ones, some outages already occured. Some temporary network failures may happen too. Most of the time LOANI overcomes these problems and defaults to the next available mirror: just wait some more seconds to let it switch to another mirror.</p>
 		
 	<p>Otherwise, if LOANI seems really frozen (we have not experienced this behaviour for a few years now), you can download by your own means the relevant archives (for example <code>freetype-x.y.z.tar.bz2</code>) and move them directly into the cache directory (by default,  <code>LOANI-repository</code>), among the other archives. Next time LOANI will be launched, it will take them into account, provided that they are not corrupted (i.e. their MD5 codes are right) or provided that strict mode is not enabled.
 	</p>
@@ -669,11 +704,11 @@ Certificate information:
 	</dd>
 
 	  
-	<dt>You got : <code>Error : Unable to extract XYZ, aborting.</code></dt>
+	<dt>You got: <code>Error: Unable to extract XYZ, aborting.</code></dt>
 	<dd>It may happen if you did not use the strict option (<code>[ -s | --strict ]</code>), which would have triggered sooner a fatal error when the MD5 checksum of the downloaded package was found not matching the recorded one. You must have had a non-fatal warning for that, nevertheless. This may be the sign that a download failure occured, and that the retrieved archive was corrupted. Your best bet is to delete the corresponding archive in LOANI's cache (by default, <code>LOANI-repository</code>) and re-launch LOANI.</dd>
 	
-	<dt>You got : <code>Unable to pre-configure JPEGLibrary, host detection failed and there is no host work-around for your platform.</code></dt>
-	<dd>This issue is due to the jpeg library, whose configure uses <code>ltconfig</code>, which is not always able to guess the underlying platform. We made a workaround for most common Linux case (<code>i686-pc-linux-gnu</code>), but your platform has still some problems. Please send us a <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=%20LOANI%20RFE%20:%20add%20supported%20platform%20">Request For Enhancement</a>, we will add your platform support as soon as possible. </dd>
+	<dt>You got: <code>Unable to pre-configure JPEGLibrary, host detection failed and there is no host work-around for your platform.</code></dt>
+	<dd>This issue is due to the jpeg library, whose configure uses <code>ltconfig</code>, which is not always able to guess the underlying platform. We made a workaround for the most common Linux case (<code>i686-pc-linux-gnu</code>), but your platform has still some problems. Please send us a <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=%20LOANI%20RFE:%20add%20supported%20platform%20">Request For Enhancement</a>, we will add your platform support as soon as possible. </dd>
 	  
 	  
 	<dt>LOANI seems to have downloaded the right tool versions, but Ceylan or OSDL build fails while asking for older versions</dt>
@@ -691,7 +726,7 @@ Certificate information:
 </dd>
 
 
-      <dt>LOANI does not find C/C++ compilers, or finds not the wanted ones.</dt>
+      <dt>LOANI does not find C/C++ compilers, or finds unwanted ones</dt>
 
       <dd><p>
 	  To get rid of the ambiguity between C and C++ compilers (partly due to the meaning of the CC environment variable and the allegation of gcc "<em>able to distinguish between C and C++ sources</em>"), LOANI will let the two environment variables <code>C_COMPILER</code> (for C compiler) and <code>CPP_COMPILER</code> (for C++ compiler) eclipse all other, including CC. If one of the two is needed and if it does not point towards a valid executable, an attempt will be made to respectively find gcc and g++. On failure, LOANI will fall back to CC, if set, hoping it will match the need.</p>
@@ -700,7 +735,7 @@ Certificate information:
 	  </dd>
 
 	<dt>If your are using the <b>--sourceforge</b> option and LOANI fails</dt>
-	<dd><p>Check that SourceForge really granted your user the right to access the developer SVN server, thanks to :
+	<dd><p>Check that SourceForge really granted your user the right to access the developer SVN server, thanks to:
 	
 	
   <table summary="SVN and SSH guidelines" style="border: none">
@@ -712,9 +747,8 @@ Certificate information:
       </td>
     </tr>
   </table>
-  <br>	
-	</p>
-	<p>(replace <b>YourSourceForgeUserName</b> by the real username you chose at SourceForge, everything should be typed on one line, most of SourceForge users will have to enter their password). </p>
+(replace <b>YourSourceForgeUserName</b> by the real username you chose at SourceForge, everything should be typed on one line, most of SourceForge users will have to enter their password)
+</p>
 	  
 	
 	<dt>If the previous SVN check-out test succeeds, but LOANI keeps on failing with SVN</dt>
@@ -729,12 +763,12 @@ Certificate information:
  
 
 	<dt>LOANI fails while building (compiling) Ceylan and/or OSDL</dt>
-	<dd>Some build failures have been encountered while trying to use old compilers, such as <code>gcc 2.95.4</code>, which seems to have problems handling some iostream operations (ex : with <code>istringstream</code>). As that same compiler seems to fail compiling a more recent version of itself (namely, the bootstrap of <code>3.3.3</code>), the <code>--buildTools</code> LOANI option might not help you. The most simple way of dealing with this issue is to upgrade first your compiler thanks to your distribution (rpm, apt-get, emerge etc.).
+	<dd>Some build failures have been encountered while trying to use old compilers, such as <code>gcc 2.95.4</code>, which seems to have problems handling some iostream operations (ex: with <code>istringstream</code>). As that same compiler seems to fail compiling a more recent version of itself (namely, the bootstrap of <code>3.3.3</code>), the <code>--buildTools</code> LOANI option might not help you. The most simple way of dealing with this issue is to upgrade first your compiler thanks to your distribution (rpm, apt-get, emerge etc.).
 </dd>
 
-	<dt>LOANI fails with : <code>Error : Unable to pass OSDL tests</code></dt>
+	<dt>LOANI fails with: <code>Error: Unable to pass OSDL tests</code></dt>
 	<dd>
-	If most OSDL tests fail (inspect <code>OSDL/trunk/test/testsOutcome.txt</code> for <code>No available video device</code>), check that the user can display windows indeed, with respect to the X server (ex : test with xclock). 
+	If most OSDL tests fail (inspect <code>OSDL/trunk/test/testsOutcome.txt</code> for <code>No available video device</code>), check that the user can display windows indeed, with respect to the X server (ex: test with <code>xclock</code>). 
 	</dd>
 
     <dt>LOANI keeps on failing and I do not know what to do</dt>
@@ -742,7 +776,21 @@ Certificate information:
 </dd>
 
 	<dt>No OpenGL operation succeeds, despite <code>glxinfo</code> showing direct rendering, fails with <code>X11 driver not configured with OpenGL</code></dt>
-	<dd>It is the sign that SDL was not built with OpenGL support, maybe because at the time of its configuration, the OpenGL setup was not correct. One can check it by running SDL configure again, and search for this target line : <code>checking for OpenGL (GLX) support... yes</code>.</dd>
+	<dd>It is the sign that SDL was not built with OpenGL support, maybe because at the time of its configuration, the OpenGL setup was not correct. One can check it by running SDL configure again, and search for this target line:
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+checking for OpenGL (GLX) support... yes
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+	</dd>
 
 </dl>
 
@@ -755,23 +803,25 @@ Certificate information:
 <a name="support"></a>
 <h2>Getting support</h2>
 <p>
-Still out of luck ? Still stuck with that bloody software ? Nothing above helped you ? Two solutions remain for the poor lonesome user :
+Still out of luck ? Still stuck with that bloody software ? Nothing above helped you ? Two solutions remain for the poor lonesome user:
 <ul>
-	<li>if he has some programming skills and still has a little <b>courage</b> : the first place to investigate a little more is certainly <code>LOANI.log</code>, the text file where all LOANI operations are logged. This file is to be found in the directory where you executed LOANI, and is very useful to be looked at, while LOANI is running. To do so, use <code>tail -f LOANI.log</code> in another terminal and lines will be shown as soon as they are output. Most of the errors should be easy fixed that way, notably if one uses too the <code>-d</code> option (<code>loani.sh -d [...]</code>) : in this case, more debug informations will be displayed on screen. This option stands for debug mode, and ensures that LOANI is more verbose while running.</li>
+
+	<li>if he has some programming skills and still has a little <b>courage</b>: the first place to investigate a little more is certainly <code>LOANI.log</code>, the text file where all LOANI operations are logged. This file is to be found in the directory where you executed LOANI, and is very useful to be looked at, including while LOANI is running. To do so, use <code>tail -f LOANI.log</code> in another terminal and lines will be shown as soon as they are output. Most of the errors should be easy fixed that way, notably if one uses too the <code>-d</code> option (<code>loani.sh -d [...]</code>): in this case, more debug informations will be displayed on screen. This option stands for debug mode, and ensures that LOANI is more verbose while running</li>
+	
 	<li>in all other cases, we guess you deserve to issue a bug report. 
 		<ul>
-			<li>if you are running any operating system but pure (non-cygwin) Windows, please send the file created thanks to our generator of bug reports (just run it thanks to <code>cd &lt;where you extracted LOANI archive&gt;; ./generateBugReport.sh</code> and follow the instructions) to our mail account dedicated to troubleshooting, <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=Bug%20report">loani-bugs at esperide.com</a>, we will do our best to investigate and overcome the issue.
-			<li>if you are using Windows without Cygwin/MSYS/MinGW, please describe your issue, and specify what your platform is precisely and what you did. Please supply as attachment the output of LOANI (cut/paste the output lines in a text file) and <code>LOANI.log</code>.</li> 
+		
+			<li>If you are running any operating system but pure (non-cygwin) Windows, please send the file created thanks to our generator of bug reports (just run it thanks to <code>cd &lt;where you extracted LOANI archive&gt;; ./generateBugReport.sh</code> and follow the instructions) to our mail account dedicated to troubleshooting, <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=Bug%20report">osdl-loani-bugs at lists.sourceforge.net</a>, we will do our best to investigate and overcome the issue
+			</li> 
+					
+			<li>If you are using Windows without Cygwin/MSYS/MinGW, please describe your issue, and specify what your platform is precisely and what you did. Please supply as attachment the output of LOANI (cut/paste the output lines in a text file) and <code>LOANI.log</code>.
+			</li> 
+			
 		</ul>
-	
-	
 	</li>
 
 </ul>
-
-
 </p>
-
 
 
 <center>[<a href="#toc">Back to table of contents</a>]</center>
@@ -781,11 +831,10 @@ Still out of luck ? Still stuck with that bloody software ? Nothing above helped
 We will do our best to investigate thoroughfully and solve you issue. It will be an efficient feedback for us, so that we keep the documentation and the code in an always-clean state.
 </p>
 
-<br><br>
 
 <p>
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -795,25 +844,23 @@ We hope you will enjoy using LOANI and OSDL !
         </tr>
     </table>
 </center>
-
 </p>
 
  
-  <br>
-  <br>
-  <br>
 
   <h3>Please react !</h3>
 
   <p>If you have informations more detailed or more recent than those presented in this document, if you noticed errors, neglects or points
-  insufficiently discussed, <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">drop us a line</a>!</p><br>
+  insufficiently discussed, <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">drop us a line</a>!</p>
+  <br>
   <br>
   <hr>
 
   <center>
-    [<a href="#_top_">Top</a>]<br>
+    [<a href="#_top_">Top</a>]
+	<br>
     <br>
-    <em>Last update : Friday, July 6, 2007</em>
+    <em>Last update: Saturday, March 1, 2008</em>
 	
   </center>
 </body>
