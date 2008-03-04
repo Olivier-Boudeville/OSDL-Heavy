@@ -33,9 +33,11 @@ TEST_ARM9_SOURCES = $(wildcard *.arm9.cc)
 TEST_SUFFIX = $(TEST_PREFIX)-patched.$(TEST_EXEC_EXTENSION)
 
 #TEST_TARGETS = $(patsubst %.arm9.cc,%-$(TEST_SUFFIX),$(TEST_ARM9_SOURCES))
-TEST_TARGETS = \
-	getMP3Settings-$(TEST_SUFFIX)  \
-	testOSDLMusic-$(TEST_SUFFIX)   \
+#TEST_TARGETS = \
+#	getMP3Settings-$(TEST_SUFFIX)  \
+#	testOSDLMusic-$(TEST_SUFFIX)   \
+
+TEST_TARGETS = testOSDLVideoFramebuffer-$(TEST_SUFFIX)
 
 	
 
@@ -97,10 +99,10 @@ export: transfer umount
 info-target:
 	@echo "TEST_ARM9_SOURCES = $(TEST_ARM9_SOURCES)"
 	@echo "TEST_TARGETS = $(TEST_TARGETS)"
+	@echo "TEST_FULL_NAME = $(TEST_FULL_NAME)"
 	@echo "TARGET_ROM_NAME_BASE = $(TARGET_ROM_NAME_BASE)"
 	@echo "OSDL_ARM7_INSTALLED_LIB = $(OSDL_ARM7_INSTALLED_LIB)"
 	@echo "OSDL_ARM9_INSTALLED_LIB = $(OSDL_ARM9_INSTALLED_LIB)"
-
 
 
 
@@ -319,6 +321,12 @@ getMP3Settings-$(TEST_PREFIX).arm7.o: getMP3Settings.arm7.c
 	@echo "    Compiling $< into $@"
 	@$(CC) $(TEST_CC_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
 
+# Notably for OSDLDefaultMain.arm7.c:	
+%.arm7.o: %.arm7.c
+	@echo "    Compiling $< into $@"
+	@$(CC) $(TEST_CC_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
+
+
 %-$(TEST_PREFIX).arm7.o: %.arm7.cc
 	@echo "    Compiling $< into $@"
 	@$(CXX) $(TEST_CXX_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
@@ -326,6 +334,8 @@ getMP3Settings-$(TEST_PREFIX).arm7.o: getMP3Settings.arm7.c
 %.arm7.o: %.arm7.cc
 	@echo "    Compiling $< into $@"
 	@$(CXX) $(TEST_CXX_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
+	
+	
 	
 	
 %-$(TEST_PREFIX).arm9.o: %.arm9.cc
