@@ -237,6 +237,9 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 		
 #ifdef OSDL_RUNS_ON_ARM7
 
+	throw OSDL::Exception( "CommonModule constructor failed: "
+		"not supported on the ARM7." ) ;
+		
 #elif defined(OSDL_RUNS_ON_ARM9)
 
 	try
@@ -318,7 +321,7 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 	/*
 	 * @fixme Events must imply video. There seems to exist no way 
 	 * of requesting specifically events. Currently video and event 
-	 * support are synonym features.
+	 * supports are synonym features.
 	 *
 	 * @fixme On some platforms (ex: Windows), audio may not work if 
 	 * no video mode is initialized.
