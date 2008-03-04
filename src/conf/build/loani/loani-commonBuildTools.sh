@@ -766,22 +766,9 @@ generategrit()
 	# Library link apparently not created on install (at least on Ubuntu Gutsy):
 	# 'cd /usr/lib && ln -s libfreeimage.so.3 libfreeimage.so'
 
-	# In grit_src/Makefile:
-	# - change 'LDFLAGS += -s -static' into 
-	# 'LDFLAGS += -s #-static' as we are using a shared library for freeimage
-	# - in 'Build rules', for the $(TARGET) rule, remove '-upx $@'. 
-	# The command is therefore: '$(CXX) $(LDFLAGS) -o $@ $(GRIT_OBJ) $(LIBPATHS) -lgrit -lcldib -lfreeimage'
-	# upx seems to be an executable packer (see 
-	# http://upx.sourceforge.net/#overview)
-	
-	# In case of a build error in libgrit/pathfun.cpp about the sys/params.h
-	# include not being found, in libgrit/pathfun.cpp add, just after 
-	# '#include <sys/params.h>':
-	
-	#ifndef MAXPATHLEN
-	#define MAXPATHLEN 1024
-	#endif
-	
+	# In grit_src/Makefile change 'LDFLAGS += -s -static' into 
+	# 'LDFLAGS += -s' as we are using a shared library for freeimage
+		
 	
 	printOK	
 	
