@@ -1,7 +1,7 @@
 #!/bin/sh
 
 USAGE="
-Usage : "`basename $0`" <Reiner's mirror> <target repository for sorted content> : sorts automatically a mirror of Reiner's Tileset and put the sorted content in specified directory."
+Usage: "`basename $0`" <Reiner's mirror> <target repository for sorted content>: sorts automatically a mirror of Reiner's Tileset and put the sorted content in specified directory."
 
 MV=/bin/mv
 RM=/bin/rm
@@ -10,8 +10,8 @@ RMDIR=/bin/rmdir
 
 ERROR_OUTPUT="2>/dev/null"
 
-# Recommended usage :
-# 1. Perform a very slow wget (to avoid disturbing anybody) on Reiner's site :
+# Recommended usage:
+# 1. Perform a very slow wget (to avoid disturbing anybody) on Reiner's site:
 # wget --limit-rate=10k --wait=5 --random-wait --retry-connrefused --recursive --level=10 --reject 'M_*.zip' --exclude-directories=forum http://reinerstileset.4players.de 
 # 2. Archive it in ~/Archive/Content/<date>-reiners-tileset-mirror.tar.bz2
 # 3. Extract a copy of this archive to be used here as Reiner's mirror 
@@ -37,7 +37,7 @@ fi
 
 TARGET_ROOT="$2"
 
-# Absolute path only :
+# Absolute path only:
 first_char=`echo ${TARGET_ROOT} | cut -b 1`
 if [ ${first_char} != "/" ] ; then
 	TARGET_ROOT=`pwd`/${TARGET_ROOT}
@@ -53,10 +53,10 @@ if [ ! -d "${TARGET_ROOT}" ] ; then
 fi
 	
 
-# Look in Ceylan sources :
+# Look in Ceylan sources:
 CEYLAN_LOANI_OFFSET="../../../../../../../ceylan/Ceylan/trunk/src/code/scripts/shell/"
 
-# Anticipated checkings :
+# Anticipated checkings:
 CORRECTER=`pwd`"/"`dirname $0`"/${CEYLAN_LOANI_OFFSET}/correctPathsInTree.sh"
 
 cd ${MIRROR_ROOT}
@@ -88,13 +88,13 @@ echo "
 echo "  + removing non-wanted content"
 
 
-# M_* are MMF files :
+# M_* are MMF files:
 find . -depth \( -name '*.exe' -o -name '*.htm*' -o -name '*.wmv' -o -name 'M*.zip'  \) -exec ${RM} -f '{}' ';'
 
-# Supress non-wanted directories :
+# Supress non-wanted directories:
 ${RM} -rf forum *uvmappingtut* screenshots buttons handshaped_3d_tree_htm_files ext mmfabsbeg
 
-# Supress non-wanted files :
+# Supress non-wanted files:
 ${RM} AAspritesharpborder1-4.zip bass.zip *'enemie ai'*.zip gesleiste.zip isotiletuteng.zip *Tutorial* *Sbonestut.zip *jumpengine* 2>/dev/null
 
 
@@ -104,14 +104,14 @@ echo "    - correcting paths"
 ${CORRECTER} . | grep -v 'left unchanged'
 
 echo "    - correcting underscores #1"
-# 'T ' became 'T-', we want 'T_' for uniformity :
+# 'T ' became 'T-', we want 'T_' for uniformity:
 for f in `find . -name 'T-*.zip'` ; do
 	corrected=`echo $f | tr '-' '_'`
 	${MV} -f $f $corrected	
 done 
 
 echo "    - correcting underscores #2"
-# No 'Tgrundvari.zip', we want 'T_grundvari.zip' :
+# No 'Tgrundvari.zip', we want 'T_grundvari.zip':
 for f in `find . -depth -name 'T*.zip'` ; do
 	fourth_char=`echo $f | cut -b 4`
 	if [ "${fourth_char}" != "_" ] ; then
@@ -121,7 +121,7 @@ for f in `find . -depth -name 'T*.zip'` ; do
 done 
 
 
-# Rename for convenience some files :
+# Rename for convenience some files:
 ${MV} 8Dshooting-fish.zip T_shooting_fish.zip
 ${MV} T_könig.zip T_konig.zip
 ${MV} ACTanithings-draho-1.zip T_various_objects.zip
@@ -147,9 +147,9 @@ ${MV} T_john_doe.zip T_john_doe_santa.zip
 
 ##########################################################################
 
-# Directory definitions (sorted alphabetically) :
+# Directory definitions (sorted alphabetically):
 
-# In root :
+# In root:
 
 GRAPHICAL_ROOT=${TARGET_ROOT}/Graphics
 ${MKDIR} ${GRAPHICAL_ROOT}
@@ -158,7 +158,7 @@ SOUND_ROOT=${TARGET_ROOT}/Sounds
 ${MKDIR} ${SOUND_ROOT}
 
 
-# In Graphics :
+# In Graphics:
 
 CREATURES=${GRAPHICAL_ROOT}/Creatures
 ${MKDIR} ${CREATURES}
@@ -176,7 +176,7 @@ TILESETS=${GRAPHICAL_ROOT}/Tilesets
 ${MKDIR} ${TILESETS}
 
 
-# In Creatures :
+# In Creatures:
 
 ANIMALS=${CREATURES}/Animals
 ${MKDIR} ${ANIMALS}
@@ -189,7 +189,7 @@ ${MKDIR} ${MONSTERS}
 
 
 
-# In Humans :
+# In Humans:
 
 ARCHERS=${HUMANS}/Archers
 ${MKDIR} ${ARCHERS}
@@ -274,7 +274,7 @@ ${MKDIR} ${THIEVES}
 
 
 
-# In NamedCharacters :
+# In NamedCharacters:
 
 ANNA=${CHARACTERS}/Anna
 ${MKDIR} ${ANNA}
@@ -332,7 +332,7 @@ ${MKDIR} ${WILLY}
 
 
 
-# In Animals :
+# In Animals:
 
 FISH=${ANIMALS}/Fish
 ${MKDIR} ${FISH}
@@ -353,13 +353,13 @@ WOLVES=${ANIMALS}/Wolves
 ${MKDIR} ${WOLVES}
 
 
-# In Insects :
+# In Insects:
 
 WASPS=${INSECTS}/Wasps
 ${MKDIR} ${WASPS}
 
 
-# In Monsters :
+# In Monsters:
 
 CYCLOPS=${MONSTERS}/Cyclops
 ${MKDIR} ${CYCLOPS}
@@ -396,7 +396,7 @@ ${MKDIR} ${ZOMBIES}
 
 
 
-# In Objects :
+# In Objects:
 
 
 FOOD=${OBJECTS}/Food
@@ -422,7 +422,7 @@ ${MKDIR} ${WEAPONS}
 
 
 
-# In Vehicles :
+# In Vehicles:
 
 BOATS=${VEHICLES}/Boats
 ${MKDIR} ${BOATS}
@@ -440,7 +440,7 @@ ARMORED=${VEHICLES}/Armored
 ${MKDIR} ${ARMORED}
 
 
-# In Environments :
+# In Environments:
 
 CASTLES=${ENVIRONMENTS}/Castles
 ${MKDIR} ${CASTLES}
@@ -467,14 +467,14 @@ SETS=${ENVIRONMENTS}/Sets
 ${MKDIR} ${SETS}
 
 
-# In Plants :
+# In Plants:
 
 TREES=${PLANTS}/Trees
 ${MKDIR} ${TREES}
 
 
 
-# In Walls :
+# In Walls:
 
 INSIDE=${WALLS}/Inside
 ${MKDIR} ${INSIDE}
@@ -483,7 +483,7 @@ OUTSIDE=${WALLS}/Outside
 ${MKDIR} ${OUTSIDE}
 
 
-# In Sprites :
+# In Sprites:
 
 GUI=${SPRITES}/GUI
 ${MKDIR} ${GUI}
@@ -492,7 +492,7 @@ ${MKDIR} ${GUI}
 
 ##########################################################################
 
-# Transfer rules :
+# Transfer rules:
 
 ${MV} sounds/*   ${SOUND_ROOT} 
 ${MV} sprites/*  ${SPRITES} 
@@ -502,12 +502,12 @@ ${RMDIR} sounds sprites tilesets
 ${MV} *menu* *button* *gui* *butscr* *levelup* *pointrunes* ${GUI}  
 
 
-# Creatures :
+# Creatures:
 
 ${MV} *groggy* ${CREATURES} 
 
 
-# Humans :
+# Humans:
 
 ${MV} *flying_soul*    ${HUMANS} 
 
@@ -539,7 +539,7 @@ ${MV} *swordsman*       ${SWORDSMEN}
 ${MV} *thief*           ${THIEVES} 
 
 
-# Named characters :
+# Named characters:
 
 ${MV} *anna*  ${ANNA} 
 ${MV} *arno*  ${ARNO} 
@@ -560,7 +560,7 @@ ${MV} *stan*  ${STAN}
 ${MV} *vlad*  ${VLAD} 
 ${MV} *willy* ${WILLY} 
 
-# Animals :
+# Animals:
 
 ${MV} *donkey* *bat.* *chicken* *cow* *crow* *deer* *_mouse.* *rabbit* *roebuck* *rooster* *schwein* ${ANIMALS} 
 
@@ -572,7 +572,7 @@ ${MV} *wolf*   ${WOLVES}
 ${MV} *lion*   ${LIONS} 
 ${MV} *sheep*  ${SHEEP} 
 
-# Monsters :
+# Monsters:
 
 ${MV} *doteater*     ${DOTEATERS} 
 
@@ -591,50 +591,50 @@ ${MV} *skel* *mister_death* ${SKELETONS}
 
 
 
-# Objects :
+# Objects:
 
 
-# Weapons :
+# Weapons:
 ${MV} *cannon* *arrow* *tnt* *ammo* *pickup_weapon* *rotating_spike* *spear_catapult* ${WEAPONS} 
  
-# Mechanisms : 
+# Mechanisms: 
 ${MV} *mecha* *lever* *rotating_switch* ${MECHANISMS} 
 
-# Traps :
+# Traps:
 ${MV} *trap* *mines* *spikefield* *spiketrench* ${TRAPS} 
 
-# Intangible :
+# Intangible:
 ${MV} *flamewall* *aura* *feuer* *bubble* *leafstorm* *magic_ani* ${INTANGIBLE} 
 
-# Pieces of furniture :
+# Pieces of furniture:
 ${MV} *beds* *carpet* *chest* *door* *furniture* *hedge_column* *keycolumn* *kitchen* *library* *pool_* *Sdrahomix* *shelfes* *shops_2* *throne_room* ${FURNITURE} 
 
 ${MV} *doormask* *wallpictures* *objects* *fields* *box* *item* *scare* *things* *gym* *lantern* *pickup_armor* *pickup_strategy* *_barrel* *rolling_stone* *sarkophag* *soulstones* *stoneheap* ${OBJECTS} 
 
 
-# Vehicles :
+# Vehicles:
 
-# Boats :
+# Boats:
 ${MV} *schiff* *boot* *grokanbo* *grpirschi* *klpirschi* ${BOATS} 
 
-# Spaceships :
+# Spaceships:
 ${MV} *spaceship* ${SPACESHIPS} 
 
-# Cars :
+# Cars:
 ${MV} *rallye* ${CARS} 
 
-# Trains :
+# Trains:
 ${MV} *waggon* *lore.* *steam_engine* *woodwag* ${TRAINS} 
 
-# Armored :
+# Armored:
 ${MV} *tank* ${ARMORED} 
 
-# Food :
+# Food:
 ${MV} *meat* ${FOOD} 
 
 
 
-# Environments :
+# Environments:
 
 ${MV} *castle* ${CASTLES} 
 
@@ -643,26 +643,26 @@ ${MV} *hill* ${HILLS}
 ${MV} *set* *anitown* *beautiful_town* *casino* *cavestuff* *pipeline* *Sdraho* *Sdungeon* *thingmachine_all* *actrumb* ${SETS} 
 
 
-# Walls :
+# Walls:
 
 ${MV} *inside_wall* *quarry* *shops_1* *ug_fence* ${INSIDE} 
 ${MV} *wall* *parapet* *msw* *palisade* *woodenfence* ${OUTSIDE} 
 
-# Stairs :
+# Stairs:
 ${MV} *stairs* ${STAIRS} 
 
-# Buildings :
+# Buildings:
 
 ${MV} *house* *mill* *bakery* *barracks* *chapel* *crabuil* *building* *lodge* *hotel* *hut* *market_place* *_mine* *palace* *pottery* *_pub* *railroad* *ruins* *shipyard* *temple* *smithy* *_stable.* *triumph_arc* ${BUILDINGS}  
 
 
-# Plants :
+# Plants:
 
 ${MV} *tree* *bush* *growing_fir* ${TREES} 
 ${MV} *growing* *reef* ${PLANTS} 
 
 
-# Grounds :
+# Grounds:
 ${MV} *earth* *wall* *beach* *cobble* *creek* *sand* *ground* *stonepath* *slope* *grund* *mountain* *pathway* *pfad* *quai* *_road_* *_rocks_* *tiled_floor* *weg_mit_randstein* *ani_water* ${GROUNDS} 
 
 
