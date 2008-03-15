@@ -28,13 +28,16 @@ ANIMATED_OBJECT=`basename $PWD`
 
 
 rename_resource_file()
-# Renames specified file (ex: 'tipping-over-se0008.bmp') into a canonical name
-# (ex: '1-4-7-6-8.png' for
-# 'Stan-ArmedWithAnAxeAndAShield-TipOver-SouthEast-FrameNumber')
+# Returns for specified file ($1) (ex: 'tipping-over-se0008.bmp') a canonical
+# name (ex: '1-4-7-6-8.png', for
+# 'Stan-ArmedWithAnAxeAndAShield-TipOver-SouthEast-FrameNumber').
+# Uses $2 as local tileset directory. 
 {
 
 	SOURCE_FILE=$1
 	echo "SOURCE_FILE = ${SOURCE_FILE}"
+	
+	LOCAL_TILESET_DIR=$2
 	
 	# Remove leadind './' and extension:
 	PREFIX=`echo ${SOURCE_FILE}|sed 's|^\./||1'|sed 's|.bmp$||1'`
@@ -56,6 +59,7 @@ rename_resource_file()
 	# original attitude (ex: tipping-over).
 	DIRECTION=`echo ${REMAINDER}|sed 's|^.*-||1'`
 	
+	# Order is the one of identifiers (in directions.id): 
 	case "${DIRECTION}" in
 	
 		  "e"  ) DIRECTION_ID=${East};;
@@ -79,6 +83,8 @@ rename_resource_file()
 
 	ATTITUDE=`echo ${REMAINDER}|sed "s|-${DIRECTION}\$||1"`
 	
+	
+	# Order is the one of identifiers (in attitudes.id): 
 	case "${ATTITUDE}" in
 	
 		  "attack" ) 
@@ -86,28 +92,40 @@ rename_resource_file()
 		  
 		  "been-hit" | "treffer" ) 
 		  	ATTITUDE_ID=${BeenHit};;
-		  
-		  "running" | "rennt" ) 
-		  	ATTITUDE_ID=${Run};;
-		  
+
+		  "bückt-sich" )
+		  	ATTITUDE_ID=${Bend};;
+		  		  
 		  "stopped" | "steht" ) 
 		  	ATTITUDE_ID=${BeStill};;
+			
+		  "labert" ) 
+		  	ATTITUDE_ID=${Enjoy};;
 
 		  "knit" | "strickt" ) 
 		  	ATTITUDE_ID=${Knit};;
 		  
+		  "looking" ) 
+		  	ATTITUDE_ID=${Look};;
+
 		  "magic-attack" ) 
 		  	ATTITUDE_ID=${MagicAttack};;
+
+		  "running" | "rennt" ) 
+		  	ATTITUDE_ID=${Run};;
 		  
 		  "talking" | "spricht" ) 
 		  	ATTITUDE_ID=${Talk};;
+			
+		  "greeting" ) 
+		  	ATTITUDE_ID=${Thank};;
 		  
 		  "tipping-over" | "kippt-um" ) 
 		  	ATTITUDE_ID=${TipOver};;
 		  
 		  "walking" | "läuft" ) 
 		  	ATTITUDE_ID=${Walk};;
-		  
+		 		  	
 		
 		  * ) 
 		  	echo "Error, unexpected attitude (${ATTITUDE})"
@@ -120,18 +138,23 @@ rename_resource_file()
 
 	# 4. guessing the outside look:
 	# (try to respect the outside-looks.id order)
-	LOOK=${TILESET_DIR}
+	LOOK=${LOCAL_TILESET_DIR}
 	case "${LOOK}" in
 	
-		  "bowstan"          ) LOOK_ID=${ArmedWithABow};;
-		  "clubstan"         ) LOOK_ID=${ArmedWithAClub};;
-		  "axestan"          ) LOOK_ID=${ArmedWithAnAxe};;
-		  "axestan_shield"   ) LOOK_ID=${ArmedWithAnAxeAndAShield};;
-		  "staffstan"        ) LOOK_ID=${ArmedWithAStaff};;
-		  "swordstan"        ) LOOK_ID=${ArmedWithASword};;
-		  "swordstan_shield" ) LOOK_ID=${ArmedWithASwordAndAShield};;
-		  "stanunarmed"      ) LOOK_ID=${Unarmed};;
-		  *                  ) 
+		  "bowstan"           ) LOOK_ID=${ArmedWithABow};;
+		  "clubstan"          ) LOOK_ID=${ArmedWithAClub};;
+		  "axestan"           ) LOOK_ID=${ArmedWithAnAxe};;
+		  "axestan_shield"    ) LOOK_ID=${ArmedWithAnAxeAndAShield};;
+		  "staffstan"         ) LOOK_ID=${ArmedWithAStaff};;
+		  "swordstan"         ) LOOK_ID=${ArmedWithASword};;
+		  "swordstan_shield"  ) LOOK_ID=${ArmedWithASwordAndAShield};;
+		  "stanunarmed"       ) LOOK_ID=${Unarmed};;
+		  "anna"              ) LOOK_ID=${Unarmed};;
+		  "arno"              ) LOOK_ID=${Unarmed};;
+		  "billy"             ) LOOK_ID=${Unarmed};;
+		  "bjornunarmed"      ) LOOK_ID=${Unarmed};;
+		  "swordbjorn_shield" ) LOOK_ID=${ArmedWithASwordAndAShield};;
+		  *                   ) 
 		  	echo "Error, unexpected outside look (${LOOK})"
 			exit 12;;
 			
@@ -145,10 +168,12 @@ canonical_name_result="${ANIMATED_OBJECT_ID}-${LOOK_ID}-${ATTITUDE_ID}-${DIRECTI
 
 test_rename()
 {
+
 	TEST=$1
-	rename_resource_file ${TEST}
+	rename_resource_file ${TEST} a_tileset_dir
 	echo "Renaming of ${TEST} results in ${canonical_name_result}"
 	exit
+
 }
 
 #test_rename "./rennt-e0000.bmp"
@@ -160,6 +185,117 @@ rename_if_exist()
 {
 	
 	[ -f "$1" ] && ${MV} $1 $2
+
+}
+
+
+correct_names()
+# Correct names in specified directory.
+{
+
+	LOCAL_TILESET_DIR=$1
+
+	CURRENT_DIR=`pwd`
+	
+	echo " + correcting entry names in ${LOCAL_TILESET_DIR}"
+
+	cd ${LOCAL_TILESET_DIR}
+	
+	# General corrections:
+	# (for example, 'battlefield 96x bitmaps')
+	find . -type d -exec ${CORRECT_SCRIPT} '{}' ';' 2>/dev/null
+	find . -type f -exec ${CORRECT_SCRIPT} '{}' ';'
+	
+	cd ${CURRENT_DIR}
+
+}
+
+
+transform_to_png_in()
+# Transforms all BMP files to PNG in specified directory.
+{
+	
+	LOCAL_TILESET_DIR=$1
+
+	CURRENT_DIR=`pwd`
+	
+	echo " + transforming BMP to PNG files in ${LOCAL_TILESET_DIR}"
+
+	cd ${LOCAL_TILESET_DIR}
+
+	# First, fix incorrect initial naming (special cases):
+
+	# Sometimes the name of the animated object is prefixed, let's remove it:
+	# First prefix ex: 'axestan-kippt-um-n0004.bmp' -> 'kippt-um-n0004.bmp')
+	for f in `/bin/ls ${LOCAL_TILESET_DIR}-* 2>/dev/null`; do
+		echo "Renaming $f to "`echo $f|sed "s|^${LOCAL_TILESET_DIR}-||1"`
+		${MV} -f $f `echo $f|sed "s|^${LOCAL_TILESET_DIR}-||1"`		
+	done
+
+	# (ex: 'stan-strickt-s0001.bmp' -> 'strickt-s0001.bmp')
+	for f in `/bin/ls stan-* 2>/dev/null`; do
+		echo "Renaming $f to "`echo $f|sed "s|^stan-||1"`
+		${MV} -f $f `echo $f|sed "s|^stan-||1"`		
+	done
+	
+	# Premature translation for special fixes:
+	# Ex: steht0001.bmp -> stopped0001.bmp
+	for f in `/bin/ls steht* 2>/dev/null` ; do
+		TARGET_FILE=`echo $f|sed 's|^steht|stopped|1'`
+		echo "Renaming $f to ${TARGET_FILE}"
+		${MV} -f $f ${TARGET_FILE}
+	done
+	
+	case "${LOCAL_TILESET_DIR}" in
+	
+		"bowstan" )
+			# Arrows are stored in original bowstan archive, whereas for 
+			# us they are a separate object, created here:
+			ARROW_DIR="../../../../../Objects/Weapons/Arrows/SimpleArrow"
+			echo "Moving arrows to ${ARROW_DIR} from "`pwd`
+			${MKDIR} ${ARROW_DIR};;
+		
+		"stanunarmed" )
+			for f in `/bin/ls noarmstan-* 2>/dev/null` ; do
+				TARGET_FILE=`echo $f|sed 's|^noarmstan-||1'`
+				echo "Renaming $f to ${TARGET_FILE}"
+				${MV} -f $f ${TARGET_FILE}
+			done
+	
+			for f in `/bin/ls naormstan-* 2>/dev/null` ; do
+				TARGET_FILE=`echo $f|sed 's|^naormstan-||1'`
+				echo "Renaming $f to ${TARGET_FILE}"
+				${MV} -f $f ${TARGET_FILE}
+			done;;					
+				
+	esac 
+	
+	# Here, 'stopped' attitude lacks direction:
+	rename_if_exist stopped0000.bmp stopped-s0000.bmp
+	rename_if_exist stopped0001.bmp stopped-sw0001.bmp
+	rename_if_exist stopped0002.bmp stopped-w0002.bmp
+	rename_if_exist stopped0003.bmp stopped-nw0003.bmp
+	rename_if_exist stopped0004.bmp stopped-n0004.bmp
+	rename_if_exist stopped0005.bmp stopped-ne0005.bmp
+	rename_if_exist stopped0006.bmp stopped-e0006.bmp
+	rename_if_exist stopped0007.bmp stopped-se0007.bmp
+	
+	
+	 	
+	CONVERT_OPT="-strip -quality 100 -sharpen 1x.5 -filter Lanczos -resize ${DOWNSCALE_RATIO}"
+	#CONVERT_OPT="-antialias"
+	
+	for f in `find . -name '*.bmp'`; do
+		
+		rename_resource_file $f $LOCAL_TILESET_DIR
+		echo
+		echo "+ transforming $f and replacing it by $canonical_name_result"
+		${CONVERT_TOOL} ${CONVERT_OPT} $f $canonical_name_result
+		rm -f $f
+		
+	done
+	
+	cd ${CURRENT_DIR}
 
 }
 
@@ -273,8 +409,23 @@ ARCHIVE_NAME=`basename ${TILESET_ARCHIVE}`
 
 
 if [ $do_preserve_content -eq 1 ]; then
-	if [ -d "${TILESET_DIR}" ]; then
-		${RM} -rf ${TILESET_DIR}
+
+	if [ "${TILESET_DIR}" = "bjorn" ]; then
+	
+		if [ -d "bjornunarmed" ]; then
+			${RM} -rf bjornunarmed 
+		fi
+		
+		if [ -d "swordbjorn_shield" ]; then
+			${RM} -rf swordbjorn_shield
+		fi
+		
+	else	
+	
+		if [ -d "${TILESET_DIR}" ]; then
+			${RM} -rf ${TILESET_DIR}
+		fi
+		
 	fi
 fi
 
@@ -298,12 +449,28 @@ if [ $do_uncompress -eq 0 ]; then
 
 	echo " + unzipping ${TILESET_ARCHIVE}"
 
-	${MKDIR} tmp-decompress ${TILESET_DIR}
+	${MKDIR} tmp-decompress
 	cd tmp-decompress
+	
 	# -o: overwrite existing files without prompting
 	unzip -o ../${TILESET_ARCHIVE}
+
+	if [ "${TILESET_DIR}" = "bjorn" ] ; then
 	
-	find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../${TILESET_DIR} ';'
+		# In bjorn archive there are actually two attitudes:
+		${MKDIR} ../bjornunarmed ../swordbjorn_shield
+		
+		find 'town 96x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../bjornunarmed ';'
+		
+		# The rest is in 'battlefield*':
+		find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../swordbjorn_shield ';'
+	
+	else
+	
+		${MKDIR} ../${TILESET_DIR}
+		find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../${TILESET_DIR} ';'
+	
+	fi
 	
 	cd ..
 	
@@ -312,99 +479,32 @@ if [ $do_uncompress -eq 0 ]; then
 fi
 
 
-if [ $do_correct_name -eq 0 ]; then
+if [ $do_correct_name -eq 0 ] ; then
 
-	echo " + correcting entry names in ${TILESET_DIR}"
-
-	cd ${TILESET_DIR}
-	
-	# General correction:
-	find . -type f -exec ${CORRECT_SCRIPT} '{}' ';'
-	
-	cd ..
+	if [ "${TILESET_DIR}" = "bjorn" ] ; then
+		correct_names bjornunarmed 
+		correct_names swordbjorn_shield
+	else
+		correct_names ${TILESET_DIR}
+	fi
 	
 fi
 
 
 if [ $do_transform_to_png -eq 0 ]; then
 
-	echo " + transforming BMP to PNG files in ${TILESET_DIR}"
-
-	cd ${TILESET_DIR}
-
-	# First, fix incorrect initial naming (special cases):
-
-	# Sometimes the name of the animated object is prefixed, let's remove it:
-	# First prefix ex: 'axestan-kippt-um-n0004.bmp' -> 'kippt-um-n0004.bmp')
-	for f in `/bin/ls ${TILESET_DIR}-* 2>/dev/null`; do
-		echo "Renaming $f to "`echo $f|sed "s|^${TILESET_DIR}-||1"`
-		${MV} -f $f `echo $f|sed "s|^${TILESET_DIR}-||1"`		
-	done
-
-	# (ex: 'stan-strickt-s0001.bmp' -> 'strickt-s0001.bmp')
-	for f in `/bin/ls stan-* 2>/dev/null`; do
-		echo "Renaming $f to "`echo $f|sed "s|^stan-||1"`
-		${MV} -f $f `echo $f|sed "s|^stan-||1"`		
-	done
+	if [ "${TILESET_DIR}" = "bjorn" ] ; then
 	
-	# Premature translation for special fixes:
-	# Ex: steht0001.bmp -> stopped0001.bmp
-	for f in `/bin/ls steht* 2>/dev/null` ; do
-		TARGET_FILE=`echo $f|sed 's|^steht|stopped|1'`
-		echo "Renaming $f to ${TARGET_FILE}"
-		${MV} -f $f ${TARGET_FILE}
-	done
-	
-	case "${TILESET_DIR}" in
-	
-		"bowstan" )
-			# Arrows are stored in original bowstan archive, whereas for 
-			# us they are a separate object, created here:
-			ARROW_DIR="../../../../../Objects/Weapons/Arrows/SimpleArrow"
-			echo "Moving arrows to ${ARROW_DIR} from "`pwd`
-			${MKDIR} ${ARROW_DIR};;
+		TILESET_DIR=bjornunarmed
+		transform_to_png_in bjornunarmed
 		
-		"stanunarmed" )
-			for f in `/bin/ls noarmstan-* 2>/dev/null` ; do
-				TARGET_FILE=`echo $f|sed 's|^noarmstan-||1'`
-				echo "Renaming $f to ${TARGET_FILE}"
-				${MV} -f $f ${TARGET_FILE}
-			done
-	
-			for f in `/bin/ls naormstan-* 2>/dev/null` ; do
-				TARGET_FILE=`echo $f|sed 's|^naormstan-||1'`
-				echo "Renaming $f to ${TARGET_FILE}"
-				${MV} -f $f ${TARGET_FILE}
-			done;;
-	esac 
-	
-	# Here, 'stopped' attitude lacks direction:
-	rename_if_exist stopped0000.bmp stopped-s0000.bmp
-	rename_if_exist stopped0001.bmp stopped-sw0001.bmp
-	rename_if_exist stopped0002.bmp stopped-w0002.bmp
-	rename_if_exist stopped0003.bmp stopped-nw0003.bmp
-	rename_if_exist stopped0004.bmp stopped-n0004.bmp
-	rename_if_exist stopped0005.bmp stopped-ne0005.bmp
-	rename_if_exist stopped0006.bmp stopped-e0006.bmp
-	rename_if_exist stopped0007.bmp stopped-se0007.bmp
-	
-	
-	 	
-	CONVERT_OPT="-strip -quality 100 -sharpen 1x.5 -filter Lanczos -resize ${DOWNSCALE_RATIO}"
-	#CONVERT_OPT="-antialias"
-	
-	for f in `find . -name '*.bmp'`; do
+		transform_to_png_in swordbjorn_shield
 		
-		rename_resource_file $f
-		echo
-		echo "+ transforming $f and replacing it by $canonical_name_result"
-		${CONVERT_TOOL} ${CONVERT_OPT} $f $canonical_name_result
-		rm -f $f
+		TILESET_DIR="bjorn"
+	else
+		transform_to_png_in ${TILESET_DIR}
+	fi
 		
-	done
-	
-	cd ..
-	
 fi
 
 
