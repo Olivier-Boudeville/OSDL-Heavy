@@ -1,0 +1,13 @@
+Attack 
+BeenHit
+Bend
+BeStill
+Enjoy
+Knit
+Look
+MagicAttack
+Run
+Talk
+Thank
+TipOver
+Walk

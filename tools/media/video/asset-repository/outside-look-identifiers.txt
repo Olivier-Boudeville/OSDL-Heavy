@@ -1,0 +1,8 @@
+ArmedWithABow             
+ArmedWithAClub            
+ArmedWithAnAxe            
+ArmedWithAnAxeAndAShield  
+ArmedWithAStaff
+ArmedWithASword           
+ArmedWithASwordAndAShield 
+Unarmed              
