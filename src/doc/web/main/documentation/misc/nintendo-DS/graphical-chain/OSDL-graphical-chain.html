@@ -48,7 +48,8 @@
 		       <a href="#in-world-rendering">In-world rendering</a><br>
 		       <a href="#graphic-pipeline">Graphic pipeline</a><br>
 		       <a href="#user-interface">User interface</a><br>
-		       <a href="#tools">Tools used here</a><br>
+			   <a href="#tools">Tools used here</a><br>
+		       <a href="#reiner">Some more informations about Reiner Tilesets</a>
 
           </td>
         </tr>
@@ -89,7 +90,8 @@ We based most of the technical choices on our <a href="../homebrew-guide/Homebre
 </p>
 
 <p>
-We are discussing here only about the graphical rendering of the underlying game world, which is to be managed by the <a href="../game-engine/OSDL-game-engine.html" target="_blank">game engine</a>.
+We are discussing here only about the graphical rendering of the underlying game world, which is to be managed by the <a href="../game-engine/OSDL-game-engine.html" target="_blank">game engine</a>. Audio content in general is not discussed here, see <a href="../../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a> instead.
+
 
 </p>
 
@@ -265,15 +267,6 @@ The same image (in PNG) with a 256-color dedicated optimal palette (i.e. all its
 </center>
 </p>
 
-</p>
-
-
-http://en.wikipedia.org/wiki/List_of_software_palettes#6-7-6_levels_RGB
-
-http://en.wikipedia.org/wiki/List_of_software_palettes#RGB_arrangements
-
-1 palette pour stan
-1 pour tout le reste
 
 
 <a name="sprite-size"></a>
@@ -311,6 +304,28 @@ then we reduce it to 20x32 (preserving the ratio), we have:
 which is better.
 </p>
 
+<p>
+Resizing is preferably performed thanks to the Lanczos filter: <img src="swordstan-IM-Lanczos.png"></img>, resulting in sharper images than (bi)linear: <img src="swordstan-IM-Bilinear.png"></img> or (bi)cubic: <img src="swordstan-IM-Bicubic.png"></img>
+</p>
+
+<p>
+These resized images have been obtained thanks to <a href="http://www.imagemagick.org" target="_blank">ImageMagick</a> with following commands:
+<ul>
+
+	<li><b>Lanczos</b>: <code>convert swordstan-original.png -filter Lanczos -resize 50x50 swordstan-IM-Lanczos.png</code></li>
+	
+	<li><b>Linear</b>: <code>convert swordstan-original.png -filter triangle  -resize 50x50 swordstan-IM-Bilinear.png</code></li>
+	
+	<li><b>Cubic</b>: <code>convert swordstan-original.png -filter Cubic  -resize 50x50 swordstan-IM-Bicubic.png</code></li>
+
+<!--
+	<li><b></b>: <code></code></li>
+-->
+
+</ul>
+
+</p>
+
 
 <h4>Sprite animations</h4>
 <p>
@@ -320,7 +335,7 @@ Let's take the character that is most probably the most complex one that will ha
 
 <h5>Outside looks for a given character</h5>
 <p>
-First of all Stan has 8 different outside looks (sorted roughly according to the order in which they might appear in a story):
+First of all Stan has 8 different outside looks, sorted roughly according to the order in which they might appear in a story (example images are in low quality):
 <ol>
 <!--
 	<li><b></b> : </li>
@@ -489,14 +504,12 @@ Considering the worst case, the main character Stan (who is the most detailed on
 </p>
 
 <p>
-Considering the average 27-kilobyte original image might be trimmed and reduced for the DS to 1 kilobyte (1024 = 32x32 pixels, as discussed in the <a href="#sprite-size">sprite size section</a> and 8 bits per pixel, as discussed in the <a href="#sprite-colors">sprite color section</a>), the footprint might be, only for the characters, roughly equal to <code>12 characters x 3136 frames x 1024 bytes = 36 megabytes</code>. We chose not to remove frames as fluidity is important and it would be a shame not to take advantage of assets of such quality.
+Considering the average 27-kilobyte original image might be trimmed and reduced for the DS to 1 kilobyte (1024 = 32x32 pixels, as discussed in the <a href="#sprite-size">sprite size section</a> and 8 bits per pixel, as discussed in the <a href="#sprite-colors">sprite color section</a>), the footprint might be, only for the characters, roughly equal to <code>12 characters x 3136 frames x 1024 bytes = 36 megabytes</code>. We chose not to remove frames from animations, as fluidity is important. Moreover it would be a shame not to take advantage of assets of such quality.
 </p>
 
 <p>
 Compared to the overall 656 kilobytes of VRAM memory, to the 4 megabytes of RAM available for code, sounds, other graphical elements, and to the up to 128 megabytes of storage provided by a commercial cartridge, this is a challenge that may be met if using appropriate streaming and caching.
 </p>
-
-schéma du type de fichier
 
 
 
@@ -505,29 +518,174 @@ schéma du type de fichier
 <a name="graphic-pipeline"></a> 
 <h2>Graphic pipeline</h2>
 <p>
-After having taken into account all previous constraints (size, formats, colors, etc.), we chose the following steps that should led from the raw assets (coming for Reiner or other sources) to the precomputed content ready and optimized for the DS:
+After having taken into account all previous constraints (size, formats, colors, etc.), we chose the following process, that should led from the raw assets (coming for Reiner or other sources) to the precomputed content ready and optimized for the DS.
+</p>
+
+<h3>Step A: determining the target palette</h3>
+
+<p>
+
+	<ol>
+	
+		<li><b>choice</b> of the target DS palette, probably a master palette shared by multiple animations, thus made so that all colors possibly used can be approximated with minimal mean error. Optional: creation of a palette dedicated to a given animated object, instead of a global palette
+		</li>
+
+		<li><b>gamma correction</b> of this palette, according to the gamut of DS screens
+		</li>
+
+	</ol>
+
+</p>
+
+
+<h3>Step B: transformation of a given animated object</h3>
+
+<p>
+First step: <b>per-animated object content sorting</b>, to create a frame hierarchy based on: outside looks, then attitudes, then directions, then ordered frames.
+</p>
+
+
+<p>
+Then, for each frame:
+
+	<ol>
+
+		<li><b>resizing</b>, from original size to target DS planned size, based on a per-asset ratio determined so that the resized sprite complies with the in-game chosen scale.  
+		</li>
+	
+		<li><b>color best-effort quantification</b>, from the original colors of the frame (per-pixel or indexed) to the optimal mapping according to the aforementioned target DS palette, with color key set for the sprite borders
+		</li>
+
+		<li><b>cropping</b>, to determine for sprites the smallest rectangle enclosing the actual image and to determine the vector offset (hot-spot) to recenter the resulting sprite into the frame stream. For the generation of background, as tiles cannot be positioned on a per-pixel basis, a specific tile-aligned cropping is to be performed
+		</li>
+
+		<li><b>tiling</b>, to cut the sprite into (8x8 here) tiles, with padding so that the corresponding tile map matches the smallest possible shape of DS sprites
+		</li>
+
+		<li><b>meta-tiling</b> (optional), to support bigger sprites or to use more optimal sprite shapes
+		</li>
+
+		<li><b>RLE encoding</b> (optional), to save some space in the storage media with repeated colorkeyed pixels
+		</li>
+			
+		<li><b>generation of the frame file</b> (see below)
+		</li>
+			
+	</ol>
+
+</p>
+
+<p>
+Finally, creation of:
+<ol>
+
+<!--
+	<li><b></b> : </li>
+-->
+
+	<li>a <b>per-frame file</b>: for a given animated object, outside look, attitude, direction and animation step, it stores a given frame, with a somewhat self-describing filename (see naming conventions below). The file contains an header, specifying the frame metadata (notably the offset vector, the size and type of the frame map, the reference of the palette), and then the ordered set of tiles
+	</li>
+	
+	<li>a <b>per-direction file</b>: for a given animated object, outside look, attitude and direction, stores the corresponding series of frames. The file contains an header, specifying the per-direction animation metadata (notably the number of frames involved, and their offset in this file), and then the ordered series of frames. Such a file is made from a generated header followed by the concatenated per-frame files
+	</li>
+
+	<li>a <b>per-attitude file</b>: for a given animated object, outside look and attitude, stores the corresponding directions (generally, 8). The file contains an header, specifying the attitude metadata (notably the number directions, and their offset in this file, but also any sound that should be output unconditionally during this animation), and then the associate set of per-direction files
+	</li>
+
+	<li>a <b>per-outside look file</b>: for a given animated object and outside look, stores the corresponding attitudes. The file contains an header, specifying the outside look metadata (notably the number attitudes, their identifier and their offset in this file), and then the associated set of per-attitude files
+	</li>
+	
+	<li>a <b>per-animated object file</b>: for a given animated object , stores the corresponding outside looks. The file contains an header, specifying the  metadata of the animated object (notably the number of outside looks, their identifier and their offset in this file), and then the associated set of per-outside look files
+	</li>
+		
+</ol>
+
+
+
+
+<h3>Naming conventions</h3>
+
+<p>
+To avoid to store too many informations in index files, filenames should respect the following conventions, so that they can be deduced rather than stored.
+</p>
+
+<p>
+The filename for a <b>frame</b> is made of a set of alphanumerical fields and a suffix: <code>F1-F2-F3-F4-F5.osdl.frame</code>.
+</p>
+
+<p>
+Fields are:
+
 <ol>
 <!--
 	<li><b></b> : </li>
 -->
-	<li><b></b> : </li>
-	<li><b></b> : </li>
-	<li><b></b> : </li>
-	<li><b></b> : </li>
-	<li><b></b> : </li>
-	<li><b></b> : </li>
-	<li><b></b> : </li>
-	<li><b></b> : </li>
-	<li><b></b> : </li>
+	<li><b>animated object identifier</b> (F1)</li>
+
+	<li><b>outside look identifier</b> (F2)</li>
+
+	<li><b>attitude identifier</b> (F3)</li>
+
+	<li><b>direction identifier</b> (F4)</li>
+
+	<li><b>frame identifier</b> (F5)</li>
+	
 </ol>
-
 </p>
 
-<h3></h3>
 <p>
+A given field is not specific to the previous one. For example, the outside look (F2) <code>ArmedWithASword</code> may apply to multiple characters (F1) : Stan, but also all characters whose outside look can be described as "<code>ArmedWithASword</code>".
+</p>
+
+<p>
+Each field is described by a look-up associative table (identifier repository), a key being a human-friendly unique symbol (ex: <code>ArmedWithASword</code>), each value being the numerical identifier of this key (positive integer starting at 1, ex: <code>27</code>), to be interpreted in the context of the type they are associated with (here it is an outside look, we may have for example an attitude identifier of <code>27</code>, which would be totally unrelated to the previous <code>27</code>).
+</p>
+
+<p>
+The table layout is a set of ASCII lines, each line specifying a key/value pair, the key being made of one word in CamelCase, the value being deduced from of the number of the line in the file. Thus, if the <code>NorthEast</code> key is at line 2, <code>NorthEast  = 2</code>. Keys are sorted in alphabetical order (the one of the <code>sort</code> command).
+</p>
+
+<p>
+The repository of:
+<ul>
+
+	<li>animated object identifiers (F1) is defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/animated-object-identifiers.txt?view=markup" target="_blank">animated-object-identifiers.txt</a></li>
+	
+	<li>outside look identifiers (F2) is defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/outside-looks-identifiers.txt?view=markup" target="_blank">outside-look-identifiers.txt</a></li>
+	
+	<li>attitude identifiers (F3) is defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/attitude-identifiers.txt?view=markup" target="_blank">attitude-identifiers.txt</a></li>
+	
+	<li>direction identifiers (F4) is defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/direction-identifiers.txt?view=markup" target="_blank">direction-identifiers.txt</a>. It is composed of the 8 main directions</li>
+
+<!--
+	<li></li>
+-->
+
+</ul>
 
 </p>
 
+<p>
+Frame identifiers start from 1 onward, and go typically to 6.
+</p>
+
+<p>
+All the assets which we transformed like described are referenced in our <a href="../../../../../../../../tools/media/video/asset-repository/OSDL-asset-map.html">Asset Map</a>.
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code>
+ <b>Note</b>: this is currently an intentional broken link when searched from the Internet (non-local use). It is to comply with the will of the author of <a href="http://reinerstileset.4players.de/englisch.html" target="_blank">Reiner's Tilesets</a>, whose only rule is not to have concurrent web pages to his, so that he can present his work as wanted. That's fair, and thanks again Reiner for your beautiful artwork !
+</code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
 
 
 
@@ -559,7 +717,10 @@ All of them are free and open source. They have been used on GNU/Linux, but many
 
     <li><a href="http://www.gimp.org/" target="_blank">The Gimp</a> (<em>GNU Image Manipulation Program</em>), for most image exploratory manipulations</li>
 
-    <li><a href="http://www.imagemagick.org" target="_blank">ImageMagick</a>, for powerful command-line bitmap manipulations, allowing to automate them through scripts that can handle the hundred of sprite frames to be transformed</li>
+	<li><a href="http://www.imagemagick.org" target="_blank">ImageMagick</a>,
+for powerful command-line bitmap manipulations, allowing to automate them
+through scripts that can handle the hundred of sprite frames to be
+transformed</li>
 	
     <li><a href="http://www.coranac.com/category/proj/grit/" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>), for conversion to the DS hardware formats and for tiling</li>
  
@@ -571,15 +732,27 @@ All of them are free and open source. They have been used on GNU/Linux, but many
 
 </ul>
 </p>
-
+<p>
+All of them are free and open source. They have been used on GNU/Linux, but many of them are cross-platform.
+</p>
 
 <p>
 <a href="http://www.coranac.com/tonc/text/toc.htm" target="_blank">TONC</a> has been a powerful documentary source to better target the Nintendo DS hardware and understand the various subtleties of tiled graphics.
 </p>
 
 
-  <br>
-  <br>
+<a name="reiner"></a> 
+<h2>Some more informations about Reiner Tilesets</h2>
+<p>
+As many of our graphical assets come from the splendid work available in <a href="http://reinerstileset.4players.de/" target="_blank">Reiner's Tilesets</a>, some specific informations are gathered here.
+</p>
+
+<p>
+Orginal images are BMP with a kaki (greenish) colorkey: <code>6a4c30</code> in hexadecimal.
+</p>
+
+
+
   <br>
   <br>
 
@@ -594,7 +767,7 @@ All of them are free and open source. They have been used on GNU/Linux, but many
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Friday, February 29, 2008</em>
+    <em>Last update: Sunday, March 16, 2008</em>
   </center>
 </body>
 </html>
