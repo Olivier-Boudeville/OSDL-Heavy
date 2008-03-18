@@ -25,6 +25,10 @@ MKDIR="/bin/mkdir -p"
 ANIMATED_OBJECT=`basename $PWD`
 #echo "ANIMATED_OBJECT = ${ANIMATED_OBJECT}"
 
+# The zoom out factor, in percent, to reduce original size to in-game targeted
+# one (subsequent per-animated object ration may be applied too):
+DOWNSCALE_RATIO="50"
+
 
 
 rename_resource_file()
@@ -154,6 +158,8 @@ rename_resource_file()
 		  "billy"             ) LOOK_ID=${Unarmed};;
 		  "bjornunarmed"      ) LOOK_ID=${Unarmed};;
 		  "swordbjorn_shield" ) LOOK_ID=${ArmedWithASwordAndAShield};;
+		  "burra"             ) LOOK_ID=${ArmedWithASword};;
+		  "elsa"              ) LOOK_ID=${Unarmed};;
 		  *                   ) 
 		  	echo "Error, unexpected outside look (${LOOK})"
 			exit 12;;
@@ -280,9 +286,21 @@ transform_to_png_in()
 	rename_if_exist stopped0006.bmp stopped-e0006.bmp
 	rename_if_exist stopped0007.bmp stopped-se0007.bmp
 	
+	case "${LOCAL_TILESET_DIR}" in
+
+		"arno"  			) THIS_OBJECT_RATIO=85 ;; 
+
+		"bjornunarmed"  	) THIS_OBJECT_RATIO=80 ;; 
+		"swordbjorn_shield" ) THIS_OBJECT_RATIO=80 ;;
+		
+		* ) THIS_OBJECT_RATIO=100 ;;
+				
+	esac 
 	
+	ACTUAL_RATIO=$(( ${DOWNSCALE_RATIO} * ${THIS_OBJECT_RATIO} / 100 ))
 	 	
-	CONVERT_OPT="-strip -quality 100 -sharpen 1x.5 -filter Lanczos -resize ${DOWNSCALE_RATIO}"
+	CONVERT_OPT="-strip -quality 100 -sharpen 1x.5 -filter Lanczos -resize ${ACTUAL_RATIO}%"
+	
 	#CONVERT_OPT="-antialias"
 	
 	for f in `find . -name '*.bmp'`; do
@@ -300,8 +318,6 @@ transform_to_png_in()
 }
 
 
-# The zoom out factor to reduce original size to in-game targeted one:
-DOWNSCALE_RATIO="50%"
 
 
 # Anticipated checkings:
@@ -495,12 +511,9 @@ if [ $do_transform_to_png -eq 0 ]; then
 
 	if [ "${TILESET_DIR}" = "bjorn" ] ; then
 	
-		TILESET_DIR=bjornunarmed
-		transform_to_png_in bjornunarmed
-		
+		transform_to_png_in bjornunarmed		
 		transform_to_png_in swordbjorn_shield
 		
-		TILESET_DIR="bjorn"
 	else
 		transform_to_png_in ${TILESET_DIR}
 	fi
