@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+
+<!--    This document is part of the OSDL project.
+		For any question, send a mail to homebrew@esperide.com
+-->
+<!--    
+        Creation date: Sunday, February 17, 2008.
+        Author: Olivier Boudeville (homebrew@esperide.com)
+        Version: 0.1
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Asset Map</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, Nintendo, DS, GBA, homebrew, graphics">
+  <link rel="stylesheet" type="text/css" href="../../../../src/doc/web/common/css/OSDL.css">
+  <link href="../../../../src/doc/web/images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+  
+  <div class="banner">
+  
+    <p><em>General</em> <a href="../../../../src/doc/web/common/black.html" onclick="parent.toolbar.location='../../../../MainMenu.html'">home page</a>
+    <a href="../../../../Map.html">site map</a> <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Graphical%20rendering%20for%20the%20DS">mail us</a></p>
+	
+  </div><a name="_top_"></a>
+  
+
+<h1>OSDL Asset Map</h1>
+
+
+<a name="toc"></a>
+<center>
+	<table summary="Table of content" style="border: none">
+        <tr>
+          <td>
+		<!--
+		       <a href="#"></a><br>
+		-->
+
+		   <div class="box">
+		       <a href="#overview">Overview</a><br>
+		       <a href="#video">Video Assets</a><br>
+		       <a href="#audio">Audio Assets</a><br>
+          </td>
+        </tr>
+    </table>
+</center>
+<!--
+<br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
+  -->
+
+
+
+
+<!-- ###################################################################### -->
+
+  
+<a name="overview"></a>
+<h2>Overview</h2>
+<p>
+This page allows to keep track of the various assets and their transformations, so that they can be played back if needed.
+</p>
+
+<a name="video"></a>
+<h2>Video Assets</h2>
+
+<p>
+Regarding animations coming from <a href="http://reinerstileset.4players.de" target="_blank">Reiner's Tilesets</a>, see also these scripts:
+<ol>
+
+    <li><a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/scripts/shell/retrieve-reiner-content.sh?view=markup" target="_blank">retrieve-reiner-content.sh</a>, to download a local copy of the animations
+	</li>
+
+    <li><a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/scripts/shell/sort-reiner-mirror.sh?view=markup" target="_blank">sort-reiner-mirror.sh</a>, to sort animations by theme (see <a href="sorted-repository-overview.html" target="_blank">the result</a>)
+	</li>
+	
+    <li><a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/scripts/shell/process-reiner-content.sh?view=markup" target="_blank">process-reiner-content.sh</a>, to trigger the full processing of all Reiner content
+	</li>
+	
+    <li><a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/scripts/shell/process-reiner-individual-archive.sh?view=markup" target="_blank">process-reiner-individual-archive.sh</a>, to process a particular archive from Reiner content (used by <code>process-reiner-content.sh</code>)
+	</li>
+	
+
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+</ol>
+
+</p>
+
+<h3>Animated objects</h3>
+
+<p>
+Their name is the human-readable identifier defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/animated-object-identifiers.txt?view=markup" target="_blank">animated-object-identifiers.txt</a>. Same approach for outside looks (<a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/outside-looks-identifiers.txt?view=markup" target="_blank">outside-looks-identifiers.txt</a>), for attitudes (<a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/attitude-identifiers.txt?view=markup" target="_blank">attitude-identifiers.txt</a>) and directions (<a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/direction-identifiers.txt?view=markup" target="_blank">direction-identifiers.txt</a>).
+</p>
+
+<p>
+Instances in each category (object, outside look, etc.) are listed in the order defined in their repository (i.e. alphabetical order).
+</p>
+
+<p>
+For each animated object, all available outside looks are listed and, for each outside look, all available attitudes are listed (in identifier order) between brackets. Unless specified otherwise, an attitude is available for all eight direction.
+</p>
+
+
+<h3>Characters</h3>
+
+<h4>Humans and assimilated</h4>
+
+<p>
+Order is the one of <code>animated-objects.id</code> (alphabetical). Each asset has been transformed from the original BMP to PNG with options <code>-strip -quality 100 -sharpen 1x.5 -trim</code> (thus the scale is unchanged, unless specified otherwise with <code>S=ratio%</code>).
+</p>
+
+<p>
+<ul>
+
+
+<!--
+	<li><b></b>: one outside look, <a href="http://reinerstileset.4players.de/T_.zip" target="_blank">Unarmed</a>, with  attitudes: <code>BeStill, Walk</code> 
+	</li>
+-->
+
+
+	<li>
+	<p>
+	<b>Anna</b> <img src="thumbnails-of-animated/Anna.png" alt="Image"></img>: one outside look, <a href="http://reinerstileset.4players.de/T_anna.zip" target="_blank">Unarmed</a>, with 3 attitudes: <code>BeStill, Enjoy, Walk</code>.
+	</p>
+
+	<p>
+	Anna is a middle-aged female character suitable to represent average women in cities, or bartender, waitress, etc.
+	</p>
+
+	</li>
+
+
+	<li>
+	<p>	
+	<b>Arno</b> <img src="thumbnails-of-animated/Arno-resized.png" alt="Image"></img>: one outside look [S=85%], <a href="http://reinerstileset.4players.de/T_arno.zip" target="_blank">Unarmed</a>, with 4 attitudes: <code>BeStill, Run, Talk, Walk</code>.
+	</p>
+
+	<p>
+	Arno is a male character suitable to represent average men in cities.
+	</p>
+
+	</li>
+
+
+	<li><b>Billy</b> <img src="thumbnails-of-animated/Billy.png" alt="Image"></img>: one outside look, <a href="http://reinerstileset.4players.de/T_billy.zip" target="_blank">Unarmed</a>, with 4 attitudes: <code>Bend, BeStill, Talk, Walk</code>. 
+	
+	<p>
+	Billy can bend over, he can be a messenger, a singer, a poet or another kind of artist.
+	</p>
+
+	</li>
+
+	<li><b>Bjorn</b>: two outside looks [S=80%], <code>Unarmed</code> and <code>ArmedWithASwordAndAShield</code>, defined in one <a href="http://reinerstileset.4players.de/T_bjorn.zip" target="_blank">archive</a>:
+		<ul>
+
+			<li><b>Unarmed</b> <img src="thumbnails-of-animated/Bjorn-unarmed-resized.png" alt="Image"></img>, with 5 attitudes: <code>BeStill, Look, Run, Talk, Walk</code>.
+			</li>
+		
+			<li><b>ArmedWithASwordAndAShield</b> <img src="thumbnails-of-animated/Bjorn-armed-resized.png" alt="Image"></img>, with 8 attitudes: <code>Attack, BeenHit, BeStill, Look, Run, Thank, TipOver, Walk</code>.
+			</li>
+
+
+		</ul>	
+	</li>
+
+	<li><b>Burra</b> <img src="thumbnails-of-animated/Burra-resized.png" alt="Image"></img> [95%]: one outside look, <a href="http://reinerstileset.4players.de/T_burra.zip" target="_blank">ArmedWithASword</a>, with 7 attitudes: <code>Attack, BeenHit, BeStill, Run, TipOver, Talk, Walk</code>. 
+	
+	<p>
+	Burra is a prehistoric woman, armed with a sword (a machete), lipstick and red boots.
+	</p>
+
+	</li>
+
+	<li><b>Elsa</b> <img src="thumbnails-of-animated/Elsa-resized.png" alt="Image"></img> [90%]: one outside look, <a href="http://reinerstileset.4players.de/T_elsa.zip" target="_blank">Unarmed</a>, with 3 attitudes: <code>BeStill, Thank, Walk</code>. 
+	
+	<p>
+	Elsa is a young blonde woman.
+	</p>
+
+	</li>
+
+	<li><b>Freya</b>: two outside looks [S=%] are available:
+		<ul>
+
+			<li><a href="http://reinerstileset.4players.de/T_freya_axe.zip" target="_blank">ArmedWithAnAxe</a> <img src="thumbnails-of-animated/Freya-axe.png" alt="Image"></img></li>
+
+			<li><a href="http://reinerstileset.4players.de/T_freya_noarms.zip" target="_blank">Unarmed</a> <img src="thumbnails-of-animated/Freya-unarmed.png" alt="Image"></img></li>
+
+
+
+		</ul>	
+	</li>
+
+
+	<li><b>Stan</b>
+	
+		<p>
+	Note that the animation for the Knit attitude is not specific to a given outside look, hence we put it in each look. All looks support at least following base attitudes: <code>Attack, BeenHit, BeStill, Knit, Run, Talk, TipOver, Walk</code>. 
+		</p>
+
+		<p>
+	There are 8 outside looks available for that character:
+		<ul>
+
+			<li><a href="http://reinerstileset.4players.de/T_bowstan.zip" target="_blank">ArmedWithABow</a> <img src="thumbnails-of-animated/Stan-bow.png" alt="Image"></img></li>
+
+			<li><a href="http://reinerstileset.4players.de/Tclubstan.zip" target="_blank">ArmedWithAClub</a> <img src="thumbnails-of-animated/Stan-club.png" alt="Image"></img></li>
+
+			<li><a href="http://reinerstileset.4players.de/Taxestan.zip" target="_blank">ArmedWithAnAxe</a> <img src="thumbnails-of-animated/Stan-axe.png" alt="Image"></img></li>
+
+			<li><a href="http://reinerstileset.4players.de/T_axestan_shield.zip" target="_blank">ArmedWithAnAxeAndAShield</a> <img src="thumbnails-of-animated/Stan-axe-shield.png" alt="Image"></img></li>
+
+			<li><a href="http://reinerstileset.4players.de/Tstaffstan%20.zip" target="_blank">ArmedWithAStaff</a> <img src="thumbnails-of-animated/Stan-staff.png" alt="Image"></img>: base attitudes plus <code>MagicAttack</code></li>
+		
+			<li><a href="http://reinerstileset.4players.de/Tswordstan.zip" target="_blank">ArmedWithASword</a> <img src="thumbnails-of-animated/Stan-sword.png" alt="Image"></img></li>
+		
+			<li><a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">ArmedWithASwordAndAShield</a> <img src="thumbnails-of-animated/Stan-sword-shield.png" alt="Image"></img></li>
+		
+			<li><a href="http://reinerstileset.4players.de/Tstanunarmed.zip" target="_blank">Unarmed</a> <img src="thumbnails-of-animated/Stan-unarmed.png" alt="Image"></img></li>
+
+		</ul>
+
+		</p>
+	
+	</li>
+
+</ul>
+
+</p>
+	
+	
+	
+
+
+
+<a name="audio"></a>
+<h2>Audio Assets</h2>
+<p>
+
+</p>
+
+
+
+  <br>
+  <br>
+
+ <h3>Please react !</h3>
+
+  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Graphical%20rendering%20for%20the%20DS">drop us a line</a>!</p><br>
+  <br>
+  <hr>
+  <br>
+ 
+  <center>
+    [<a href="#_top_">Top</a>]
+	<br>
+    <br>
+    <em>Last update: Sunday, March 16, 2008</em>
+  </center>
+</body>
+</html>
