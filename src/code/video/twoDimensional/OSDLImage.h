@@ -864,7 +864,7 @@ namespace OSDL
 				/// Offset to image data, in bytes.
 				Ceylan::Uint32 offset ;
 
-			} PACKED BMPHeader ;
+			} __attribute__ ((packed)) BMPHeader ;
 			
 			
 			
@@ -905,7 +905,7 @@ namespace OSDL
 				/// Important colours.
 				Ceylan::Uint32 importantcolours ;
 
-			} PACKED BMPInfoHeader ;
+			} __attribute__ ((packed)) BMPInfoHeader ;
 			
 
 		}		
