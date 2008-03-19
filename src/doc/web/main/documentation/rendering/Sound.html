@@ -5,12 +5,12 @@
                 Pour toute remarque, envoyer un courriel à olivier.boudeville@online.fr
 -->
 <!--    
-        Date de création : 7 Décembre 2003.
-        Auteur : Olivier Boudeville (olivier.boudeville@online.fr)
-        Version : 0.1
+        Date de création: 7 Décembre 2003.
+        Auteur: Olivier Boudeville (olivier.boudeville@online.fr)
+        Version: 0.1
 -->
 
-<html lang="FR">
+<html lang="EN">
 <head>
   <title>OSDL - Some informations about sound</title>
   <meta http-equiv="Content-Type" content=
@@ -27,26 +27,41 @@
     <p><em>Courts-circuits</em> <a href="../../../common/black.html"
     onclick="parent.toolbar.location='../../MainMenu.html'">Page
     principale</a> <a href="../../Map.html">Plan du site</a> <a href=
-    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Rendu%20graphique">
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Sound">
     écrivez-nous</a></p>
   </div><a name="_top_"></a> 
 
+
+<h1>Audio management</h1>
+
 <h2>Quick overview</h2>
 <p>
-The purpose of this section is to give some hints about sound management. See also our <a href="SDL-audio.html">Audio with SDL</a> section.</p>
+The purpose of this section is to give some hints about sound management. See also our section <a href="SDL-audio.html">Audio with SDL</a> and <a href="../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html">Helix-OSDL</a> (audio for the Nintendo DS).
+</p>
 
-  <h1>Sound management</h1>
+<p>
+As a rule of thumb, always keep your sounds stored with the best quality (using raw samples i.e. non encoding and high sampling frequencies), even if they take a lot more space, and transform them while they are still at their best quality. Lossy encoding and downsampling should be performed only at the very end of your sound pipeline.
+</p>
+
 
 <h2>Recording</h2>
 
 <p>
-Under GNU/Linux, one may use <code>krecord</code> (the KDE sound recorder) which we found more useful than its Gnome counterpart. It produces <code>wave</code> files. <code>wavrec</code> does not seem to generate valid wave files.
+Under GNU/Linux, for casual needs one may use <code>krecord</code> (the KDE sound recorder) which we found more useful than its Gnome counterpart. It produces <code>WAVE</code> files. <code>wavrec</code> does not seem to generate valid WAVE files.
+</p>
+
+<p>
+When recording for application playback (e: for a game), we advise to use a not-too-bad microphone (ex: we are using a Shure JSH W8900D) and adequate software, like <a href="http://audacity.sourceforge.net/" target="_blank">Audacity</a>.
 </p>
 
 
 <h2>Listening</h2>
 
-<h3>Wave files</h3>
+<p>
+Of course, using a hi-fi allows to better ensure that your sound quality is sufficient. Headphones help checking the stereo and panning settings.
+</p>
+
+<h3>WAVE files</h3>
 <p>
 Lighter than <code>xmms</code>, <code>wavplay</code> or <code>playwave</code> (test program from SDL_mixer) can be used.
 </p>
@@ -57,16 +72,26 @@ Lighter than <code>xmms</code>, <code>wavplay</code> or <code>playwave</code> (t
 </p>
 
 
-<h2>Converting</h2>
+<h2>Encoding</h2>
 
-<h3>From wave to OggVorbis</h3>
+<h3>From WAVE to OggVorbis</h3>
 <p>
 <code>oggenc welcome-to-OSDL.wav</code> produces <code>welcome-to-OSDL.ogg</code>.
 </p>
 
-  <br>
-  <br>
-  <br>
+<h3>From WAVE to MP3</h3>
+<p>
+<a href="http://lame.sourceforge.net/" target="_blank">LAME</a> is a powerful encoder.
+</p>
+
+
+<h2>Converting</h2>
+
+<p>
+Apart <a href="http://audacity.sourceforge.net/" target="_blank">Audacity</a>, one may use the <a href="http://sox.sourceforge.net/" target="_blank">sox</a> tool, which is very rich and command-line based, thus very useful for scripted transformations (ex: massive conversions automated by makefiles).
+</p>
+
+
   <br>
   <br>
 
@@ -75,7 +100,7 @@ Lighter than <code>xmms</code>, <code>wavplay</code> or <code>playwave</code> (t
   <p>If you have information more detailed or more recent than those
   presented in this document, if you noticed errors, neglects or points
   insufficiently discussed, <a href=
-  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Rendering%20sound">drop
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Audio">drop
   us a line</a>!</p><br>
   <br>
   <hr>
@@ -84,7 +109,7 @@ Lighter than <code>xmms</code>, <code>wavplay</code> or <code>playwave</code> (t
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : 2005, November 25</em>
+    <em>Last update: Sunday, March 9, 2008</em>
   </center>
 </body>
 </html>
