@@ -27,71 +27,95 @@
     <p><em>Courts-circuits</em> <a href="../../../common/black.html"
     onclick="parent.toolbar.location='../../MainMenu.html'">Page
     principale</a> <a href="../../Map.html">Plan du site</a> <a href=
-    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Transparence">
+    "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Trucs%20et%20astuces">
     écrivez-nous</a></p>
   </div><a name="_top_"></a> 
   
 
-  <h1>Quelques techniques de rendu</h1>
+<h1>Quelques techniques de rendu</h1>
   
 <h2>Principe</h2>
 
-  <p>Ce document vise à recenser les techniques de rendu les plus usuelles, afin qu'un nouveau venu dans ce domaine ne passe pas à côté de solutions essentielles à la réussite d'un système graphique.
-  </p>
+<p>
+Ce document vise à recenser les techniques de rendu les plus usuelles.
+</p>
 
- <p>
-	Plusieurs explications particulièrement pédagogiques sont fortement inspirées de la source officielle pour l'apprentissage d'OpenGL, le <a href="../gameExplained/Bibliography.html#openGLProgGuide">Red Book</a>, qui aborde de manière très réussie certaines problématiques du rendu qui ne sont pas uniquement relatives à OpenGL.
- </p>
+<p>
+Plusieurs explications  sont fortement inspirées de la source officielle pour l'apprentissage d'OpenGL, le <a href="../gameExplained/Bibliography.html#openGLProgGuide">Red Book</a>, qui aborde de manière très réussie certaines problématiques du rendu qui ne sont pas uniquement relatives à OpenGL.
+</p>
 
 
 <h3>Double-buffering</h3>
 <p>
-Ce terme, difficile à traduire ("<em>utilisation d'un double tampon vidéo</em>") consiste à décrire une technique majeure utilisée afin que les animations soient fluides.
+Ce terme, difficile à traduire ("<em>utilisation d'un double tampon vidéo</em>") décrit une technique courante utilisée afin que les animations soient fluides.
 </p>
 
-<p>L'idée la plus naturelle qui vienne à l'esprit pour réaliser une animation est de faire se succéder des images à grande vitesse pour, comme dans le cas des films, donner l'illusion d'un mouvement continu grâce à la persistance rétinienne. Ainsi, si chaque seconde 24 images se succèdent, l'animation est agréable à l'oeil et ne paraît pas trop saccadée (comme les films de Charlie Chaplin qui n'en avaient que 16 par seconde).
+<p>L'idée la plus naturelle pour réaliser une animation est de faire se succéder des images à grande vitesse pour, comme dans le cas des films, donner l'illusion d'un mouvement continu grâce à la persistance rétinienne. Ainsi, si chaque seconde 24 images se succèdent, l'animation est agréable à l'oeil et ne paraît pas trop saccadée (au contraire des films de Charlie Chaplin qui n'en avaient que 16 par seconde).
 </p>
 
-<p>On pense naturellement à un algorithme du genre :
-<code>
-<pre>
-
+<p>
+On pense alors à un algorithme du genre :
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
 tant que temps < tempsMax 
 {
 	effacerFenetre()
 	dessinerImage( temps )
 	attendreFinVingtquatriemeDeSeconde()
 }			
-</pre>
-</code>
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
 </p>
 
 <p>
-Le défaut d'une telle technique est que les images affichées ne sont pas d'emblée complètes. Ainsi, pour une scène compliquée, le rendu peut durer presque la totalité du vingt-quatrième de seconde, et les dernières primitives graphiques seront donc restées à l'écran très peu de temps, alors que les premières auront été présentes presque la totalité du temps imparti. Cela donne des animations à la qualité visuelle pauvre. 
+Le défaut d'une telle technique est que les images affichées ne sont pas d'emblée complètes. Ainsi, pour une scène compliquée, le rendu peut durer presque la totalité du vingt-quatrième de seconde, et les effets des dernières primitives graphiques ne seront donc restés à l'écran très peu de temps, alors que ceux des premières primitives auront été présents presque la totalité du temps imparti. Cela donne des animations à la qualité visuelle mauvaise. 
 </p>
 
 <p>
-Une bien meilleure technique est celui du <em>double buffering</em>, qui consiste à utiliser tout-à-tour deux mémoires vidéo. Quand l'une des deux sera visible, on dessinera dans l'autre, et à chaque vingt-quatrième de seconde, on les inversera. Les avantages de cette technique sont certains : chaque image est d'emblée complète, et cela ne nécessite pas plus de ressources (hormis l'espace mémoire correspondant au second tampon vidéo) que la technique précédente : dans les deux cas, pendant chaque intervalle de temps (un vingt-quatrième de seconde par exemple), une image est dessinée.
+Une bien meilleure technique est celle du <em>double buffering</em>, qui consiste à utiliser tour-à-tour deux mémoires vidéo. Quand l'une des deux sera visible, on dessinera dans l'autre, et à chaque vingt-quatrième de seconde, on les inversera.
+</p>
+
+<p>
+Les avantages de cette technique sont certains : chaque image est d'emblée complète, sans que cela nécessite plus de ressources (hormis l'espace mémoire correspondant au second tampon vidéo) que la technique précédente : dans les deux cas, pendant chaque intervalle de temps (un vingt-quatrième de seconde par exemple), une image est dessinée.
 </p>
 
 <p>Cela donne un algorithme du genre :
-<code>
-<pre>
-
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
 tant que temps < tempsMax 
 {
 	effacerFenetre()
 	dessinerImage( temps )
 	echangerTamponsVideo()
 	attendreFinVingtquatriemeDeSeconde()
-}
-			
-</pre>
-</code>
+}			
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
 </p>
 
 <p>
-Une dernière amélioration, qui cette fois-ci nécessite que le matériel le permette, est de se synchroniser sur la fréquence de rafraîchissement de l'écran. Cela évite des scintillements et pleurages (<em>tearing</em>) qui nuisent à la perception de l'animation : avec une telle synchronisation, une image ne sera pas dessinée à cheval sur deux rafraîchissements successifs de l'écran.
+Une dernière amélioration, qui cette fois-ci nécessite que le matériel le permette, est de se synchroniser l'interversion des tampons vidéo sur la fréquence de rafraîchissement de l'écran, c'est-à-dire de ne jamais modifier un tampon visible lorsque l'écran est en train de le balayer en l'affichant.
+</p>
+
+<p>
+Cela évite des scintillements et pleurages (<em>tearing</em>) qui nuisent à la perception de l'animation : avec une telle synchronisation, une image ne sera pas dessinée à cheval sur deux rafraîchissements successifs de l'écran.
 
 </p>
 
@@ -112,23 +136,19 @@ Une telle organisation n'est néanmoins pas applicable avec OpenGL, puisque le rô
 
 <h3>OpenGL</h3>
 <p>
-OpenGL n'est pas en lui-même une technique de rendu, mais un moyen d'accéder au système graphique, qui est souvent matériel, donc accéléré et susceptible de décharger d'autant le processeur principal (CPU). OpenGL est donc une interface normalisée qui permet, grâce à plus de 150 commandes, de contrôler le système graphique de manière uniforme, et de l'utiliser pour représenter des données tridimensionnelles.
-</p>
-
-<p>Son intérêt est donc non seulement de donner accès à la ressource précieuse de l'éventuel processeur graphique (GPU), souvent nécessaire pour qu'une application graphique et interactive ait des performances suffisantes, mais aussi de donner un accès uniforme, c'est-à-dire indépendant de la réalisation matérielle sous-jacente. Ainsi, grâce à OpenGL, on peut demander le rendu d'un polygone texturé sans avoir à prendre en compte quelle carte vidéo est installée.
+OpenGL n'est pas en lui-même une technique de rendu, mais un moyen de faire directement usage des capacités de rendu de la la carte graphique, qui sont souvent prises en charge de manière matérielle, donc accélérées et susceptibles de décharger d'autant le processeur principal (CPU). OpenGL est donc une interface normalisée qui permet, grâce à plus de 150 commandes, de contrôler le système graphique de manière uniforme, et de l'utiliser pour représenter des données tridimensionnelles.
 </p>
 
 <p>
-Pour qu'OpenGL soit réellement indépendant de la plate-forme, il ne prend en compte ni la gestion des fenêtres de l'environnement graphique, ni la collecte des événements en provenance des périphériques d'entrée, issus de l'utilisateur. Il est donc nécessaire de lui adjoindre d'autres ingrédients logiciels, comme <a href="http://www.libsdl.org" target="_blank">SDL</a>.
+Son intérêt est donc non seulement de donner accès à la ressource précieuse de l'éventuel processeur graphique (GPU), souvent nécessaire pour qu'une application graphique et interactive ait des performances suffisantes, mais aussi de donner un accès uniforme, c'est-à-dire indépendant de la réalisation matérielle sous-jacente. Ainsi, grâce à OpenGL, on peut demander le rendu d'un polygone texturé sans avoir à prendre en compte quelle carte vidéo est installée.
+</p>
+
+<p>
+Pour qu'OpenGL soit réellement indépendant de la plate-forme, il ne prend en compte ni la gestion des fenêtres de l'environnement graphique, ni la collecte des événements en provenance des périphériques d'entrée, issus de l'utilisateur. Il est donc nécessaire de lui adjoindre d'autres ingrédients logiciels, comme <a href="http://www.libsdl.org" target="_blank">SDL</a> [Plus d'infos sur <a href="SDL-openGL.html">OpenGL (avec SDL)</a>].
 </p>
 
   
 
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
 
   <h2>N'hésitez pas à nous faire part de votre avis !</h2>
 
@@ -136,7 +156,7 @@ Pour qu'OpenGL soit réellement indépendant de la plate-forme, il ne prend en com
   récentes que celles présentées dans ce document, si vous avez
   remarqué des erreurs, oublis, ou points insuffisamment traités,
   <a href=
-  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Transparence">
+  "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Trucs%20et%20astuces">
   envoyez-nous un courriel</a> !</p><br>
   <br>
   <hr>
@@ -145,7 +165,7 @@ Pour qu'OpenGL soit réellement indépendant de la plate-forme, il ne prend en com
     [<a href="#_top_">Retour en haut de page</a>]
 	<br>
     <br>
-    <em>Dernière mise à jour : 15 Janvier 2004</em>
+    <em>Dernière mise à jour : jeudi 6 mars 2008</em>
   </center>
 </body>
 </html>

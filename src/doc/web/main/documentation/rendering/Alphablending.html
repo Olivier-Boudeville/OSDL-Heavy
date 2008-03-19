@@ -32,110 +32,123 @@
   </div><a name="_top_"></a> 
   
 
-  <h1>La transparence et l'alpha-blending</h1>
+<h1>La transparence et l'alpha-blending</h1>
   
 <h2>Principe</h2>
-  <p>Ce procédé permet de définir et d'afficher des formes
-  graphiques (des surfaces) qui ne sont pas intégralement opaques. Sans
-  la transparence, les sprites ne pourraient pas avoir des formes
-  quelconques et seraient tous des rectangles colorés. En 2D, la
-  transparence ainsi gérée (par opposition avec la radiosité) est plus
-  une commodité pour pouvoir regarder à l'intérieur d'objets
-  qu'une simulation réaliste du processus physique, puisque par
-  exemple la réfraction dans ces corps transparents en général
-  n'est pas gérée, pas plus que la translucidité diffuse.</p>
+
+<p>
+Ce procédé permet de définir et d'afficher des formes graphiques (des surfaces) qui ne sont pas intégralement opaques. Sans la transparence, les sprites ne pourraient pas avoir des formes quelconques et seraient tous des rectangles bariolés : il serait ainsi impossible de rendre le pourtour des sprites invisible, pour que l'on puisse voir le décor sous le sprite.
+</p>
+
+<p>
+En 2D, la transparence ainsi gérée (par opposition avec la radiosité) est plus une commodité pour pouvoir regarder à l'intérieur d'objets qu'une simulation réaliste du processus physique, puisque par exemple la réfraction dans ces corps transparents en général n'est pas gérée, pas plus que la translucidité diffuse.
+</p>
 
 <p>
 La transparence est très utile pour, entre autres, réaliser des effets spéciaux : lumière à travers fenêtres et vitraux, brouillards et fumées, épées magiques, fantômes, etc.
 </p>
 
+
 <h2>Couleur transparente et indice de transparence</h2>
-  <p>On distingue deux façons d'implémenter la transparence :</p>
+<p>On distingue deux façons d'implémenter la transparence :</p>
 
-  <ul>
-    <a name="colorKey"></a>
+<ul>
+  <a name="colorKey"></a>
 
-    <li><strong>la couleur transparente</strong> (<em>color key</em>):
-    conventionnellement, une certaine couleur n'est plus affichée
-    du tout, laissant donc parfaitement voir à travers ce qu'il y a
-    dessous. Deux variantes en existent : en mode paletté (chaque pixel
-    est décrit comme un indice d'une palette commune à tout
-    l'écran), un indice particulier correspond à la couleur qui
-    n'est plus affichée, on l'appelle <em>color key</em>. En
-    mode coordonnées de couleur (la couleur de chaque pixel est décrite
-    individuellement comme un ensemble de coordonnées, ex : le triplet
-    RGB), un certain point de cet espace colorimétrique est choisi
-    comme étant complètement transparent. Ainsi, on peut dire que la
-    couleur [R,G,B] = [ 120, 7, 32 ] ne doit plus être affichée du
-    tout</li>
+  <li>
+ 	<p>
+	<strong>la couleur transparente</strong> (<em>color key</em>): conventionnellement, une certaine couleur n'est plus affichée du tout, laissant donc parfaitement voir à la place ce qu'il y a dessous. 
+ 	</p>
 
-    <a name="alpha"></a>
+ 	<p>
+	Deux variantes existent : en mode paletté (chaque pixel est décrit comme un indice d'une palette commune à tout l'écran), un indice particulier correspond à la couleur qui n'est plus affichée, on l'appelle <em>color key</em>. En mode coordonnées de couleur (la couleur de chaque pixel est décrite individuellement comme un ensemble de coordonnées, ex : le triplet RGB), un certain point de cet espace colorimétrique est choisi comme étant complètement transparent. Ainsi, on peut dire que la couleur [R,G,B] = [ 120, 7, 32 ] ne doit plus être affichée du tout.
+ 	</p>
 
-    <li><strong>l'indice de transparence</strong> (<em>alpha
-    blending</em>) : chaque pixel se voit doté d'un indice
-    décrivant son degré d'opacité, c'est-à-dire sa faculté à
-    occulter celui sur lequel il se place. Ici, pour un système
-    décrivant la couleur de type RGB, on parle d'un quadruplet
-    RGBA, la dernière coordonnées étant l'opacité du pixel. Ainsi,
-    un pixel de coordonnées [R,G,B,A] = [ 120, 7, 32, 50% ] laissera
-    passer la couleur de celui sur lequel il s'affichera à 50%.
-    Cette quatrième coordonnée A est un synonyme de la composante
-    alpha.</li>
-  </ul>
+ 	<p>
+ 	Un inconvénient connu de cette convention est que de nombreux traitements d'image (ex: l'<em>anti-aliasing</em>) ont tendance à légèrement modifier les couleurs de certains pixels. Il suffit qu'une coordonnée de couleur soit légèrement modifiée pour que, faute d'être strictement égale à la colorkey, les pixels la portant soient affichés, entraînant des artefacts graphiques indésirables
+ 	</p>
+	
+  </li>
 
-  <p>Ces deux types de transparence peuvent faire l'objet
-  d'accélération matérielle. SDL peut ainsi tenter de maximiser les
-  chances d'en bénéficier, par exemple quand on fournit les flags
-  SDL_SRCCOLORKEY et SDL_SRCALPHA à <a href=
-  "http://sdldoc.csn.ul.ie/sdlcreatergbsurface.php" target=
-  "_blank">SDL_CreateRGBSurface</a>, en utilisant respectivement une
-  <a href="#colorKey">couleur transparente</a> ou un <a href=
-  "#alpha">indice de transparence</a>. SDL fera de son mieux pour créer
-  la surface en question en mémoire système ou en mémoire vidéo, dans
-  le but d'obtenir l'accélération matérielle (<em>hardware
-  blitting</em>).</p>
+  <a name="alpha"></a>
 
-  <p>Quand une surface ne disposant pas de composante alpha doit prise
-  en compte comme une surface avec transparence, la composante alpha
-  est considérée comme uniforme sur cette surface, et vaut 255 (surface
-  complètement opaque).</p>
+  <li><strong>l'indice de transparence</strong> (<em>alpha
+  blending</em>) : chaque pixel se voit doté d'un indice
+  décrivant son degré d'opacité, c'est-à-dire sa faculté à
+  occulter celui sur lequel il se place. Ici, pour un système
+  décrivant la couleur de type RGB, on parle d'un quadruplet
+  RGBA, la dernière coordonnées étant l'opacité du pixel. Ainsi,
+  un pixel de coordonnées [R,G,B,A] = [ 120, 7, 32, 50% ] laissera
+  passer la couleur de celui sur lequel il s'affichera à 50%.
+  Cette quatrième coordonnée A est un synonyme de la composante
+  alpha</li>
 
-  <p>Enfin, il est possible de transformer une surface ayant une
-  <a href="#colorKey">couleur transparente</a> en une surface ayant un
-  <a href="#alpha">indice de transparence</a>, grâce à <a href=
-  "http://sdldoc.csn.ul.ie/sdldisplayformatalpha.php" target=
-  "_blank">SDL_DisplayFormatAlpha</a> qui convertit les pixels de la
-  couleur transparente (<em>color key</em>) en pixels disposant
-  d'une composante alpha, valant 0 (totalement transparents) pour
-  les pixels qui étaient de la couleur transparente, et 255 (1, en
-  composante alpha normalisée) pour les autres, qui gardent leur
-  couleur. La valeur alpha intermédiaire 128 est souvent un cas
-  particulier de transparence qui, appliqué sur toute une surface, fait
-  l'objet d'optimisations la rendant spécialement rapide.</p>
-
-  <p>Enfin, l'encodage RLE (<em>Run-Length Encoding</em>), qui
-  consiste à regrouper les pixels consécutifs de même couleur, peut
-  significativement accélérer les transferts de mémoire
-  (<em>blittings</em>) quand il s'applique à des sprites disposant
-  de longues bandes horizontales de pixels transparents (i.e. de la
-  même couleur que la <em>color key</em>).</p>
-
-  <h2>Comment l'alpha-blending est-il géré exactement ?</h2>
-
-  <p>Pour reprendre les conventions de SDL depuis la 1.1.5 (complément
-  à un du degré d'opacité, qui auparavant était un degré de
-  transparence), voici le sens de la coordonnées alpha : c'est
-  <strong>le degré d'opacité</strong> d'un pixel, donc une
-  coordonnée alpha de 0 (SDL_ALPHA_TRANSPARENT) signifie transparent et
-  de 255 (SDL_ALPHA_OPAQUE) signifie opaque. Pour expliquer plus
-  facilement la suite, nous allons désormais considérer que la
-  coordonnées alpha est normalisée entre 0 et 1, ce qui revient à
-  diviser la quatrième coordonnée par 255. On peut alors aussi
-  considérer que (1-a) mesure la transparence d'un pixel.</p>
-
-  <p>En pratique, supposons que sur une surface on ait un point P1</p>
+</ul>
 
 <p>
+Ces deux types de transparence peuvent faire l'objet
+d'accélération matérielle. SDL peut ainsi tenter de maximiser les
+chances d'en bénéficier, par exemple quand on fournit les flags
+SDL_SRCCOLORKEY et SDL_SRCALPHA à <a href=
+"http://sdldoc.csn.ul.ie/sdlcreatergbsurface.php" target=
+"_blank">SDL_CreateRGBSurface</a>, en utilisant respectivement une
+<a href="#colorKey">couleur transparente</a> ou un <a href=
+"#alpha">indice de transparence</a>. SDL fera de son mieux pour créer
+la surface en question en mémoire système ou en mémoire vidéo, dans
+le but d'obtenir l'accélération matérielle (<em>hardware
+blitting</em>).
+</p>
+
+<p>
+Quand une surface ne disposant pas de composante alpha doit être prise en compte par SDL comme une surface avec transparence, la composante alpha est considérée comme uniforme sur cette surface, et vaut 255 (surface complètement opaque).
+</p>
+
+<p>
+Il est possible de transformer une surface ayant une
+<a href="#colorKey">couleur transparente</a> en une surface ayant un
+<a href="#alpha">indice de transparence</a>, grâce à <a href=
+"http://sdldoc.csn.ul.ie/sdldisplayformatalpha.php" target=
+"_blank">SDL_DisplayFormatAlpha</a> qui convertit les pixels de la
+couleur transparente (<em>color key</em>) en pixels disposant
+d'une composante alpha, valant 0 (totalement transparents) pour
+les pixels qui étaient de la couleur transparente, et 255 (1, en
+composante alpha normalisée) pour les autres, qui gardent leur
+couleur. La valeur alpha intermédiaire 128 est souvent un cas
+particulier de transparence qui, appliqué sur toute une surface, fait
+l'objet d'optimisations entraînant un rendu spécialement rapide.
+</p>
+
+<p>
+Enfin, l'encodage RLE (<em>Run-Length Encoding</em>), qui
+consiste à regrouper les pixels consécutifs de même couleur, peut
+significativement accélérer les transferts de mémoire
+(<em>blittings</em>) quand il s'applique à des sprites disposant
+de longues bandes horizontales de pixels transparents (i.e. de la
+même couleur que la <em>color key</em>).
+</p>
+
+
+<h2>Comment l'alpha-blending est-il géré exactement ?</h2>
+
+<p>
+Pour reprendre les conventions de SDL depuis la 1.1.5 ("complément
+à un" du degré d'opacité, qui auparavant était un degré de
+transparence), voici le sens de la coordonnées alpha : c'est
+<strong>le degré d'opacité</strong> d'un pixel, donc une
+coordonnée alpha de 0 (SDL_ALPHA_TRANSPARENT) signifie transparent et
+de 255 (SDL_ALPHA_OPAQUE) signifie opaque.
+</p>
+
+<p>
+Pour expliquer plus facilement la suite, nous allons désormais considérer que la
+coordonnées alpha est normalisée entre 0 et 1, ce qui revient à
+diviser la quatrième coordonnée par 255. On peut alors aussi
+considérer que (1-a) mesure la transparence d'un pixel.
+</p>
+
+<p>
+En pratique, supposons que sur une surface on ait un point P1.
+
   <center>
   <table summary="p">
     <tr>
@@ -156,12 +169,9 @@ La transparence est très utile pour, entre autres, réaliser des effets spéciaux 
 
   </table>
  </center>
-</p>
 
+sur lequel on place un point P2 (on considère alors qu'on applique le nouveau pixel P2 sur le pixel origine P1, qui se trouve ainsi modifié)
 
-  <p>sur lequel on place un point P2 (on considère alors qu'on applique le nouveau pixel P2 sur le pixel origine P1, qui se trouve ainsi modifié)</p>
-
-<p>
   <center>
   <table summary="p">
     <tr>
@@ -183,7 +193,8 @@ La transparence est très utile pour, entre autres, réaliser des effets spéciaux 
  </center>
 </p>
 
-  <p>La combinaison des deux donne un point P3 tel que :</p>
+
+<p>La combinaison des deux donne un point P3 tel que :</p>
   
 <p>
 <center>
@@ -203,16 +214,20 @@ La transparence est très utile pour, entre autres, réaliser des effets spéciaux 
 </p>
 
 
-  <p>Notons que ce résultat ne dépend pas de la transparence du point
-  initial P1 (a1), car seule la transparence du point appliqué, P2,
-  joue dans la superposition. Notons aussi que si P2 est complètement
-  opaque (a2 normalisé vaut dans ce cas 1 selon les conventions SDL
-  pour la transparence), P3 = P2 et ainsi P1 a complètement disparu
-  sous P2.</p>
+<p>
+Notons que ce résultat ne dépend pas de la transparence du point
+initial P1 (a1), car seule la transparence du point appliqué, P2,
+joue dans la superposition. Notons aussi que si P2 est complètement
+opaque (a2 normalisé vaut dans ce cas 1 selon les conventions SDL
+pour la transparence), P3 = P2 et ainsi P1 a complètement disparu
+sous P2.
+</p>
 
-  <p>Reste à savoir ce que vaut a3, question qui a un intérêt si
-  l'on veut pouvoir appliquer le pixel résultant P3 sur un
-  quelconque autre pixel.</p>
+<p>
+Reste à savoir ce que vaut a3, question qui a un intérêt si
+l'on veut pouvoir appliquer le pixel résultant P3 sur un
+quelconque autre pixel.
+</p>
 
 <p>
 <center>
@@ -226,30 +241,39 @@ La transparence est très utile pour, entre autres, réaliser des effets spéciaux 
     </tr>
   </table>
 </center>
+(autrement dit, de manière plus simple la transparence de P3 est égale à celle de P1 fois celle de P2).
 </p>
 
-  <p>Cette valeur est celle qu'il serait logique d'obtenir,
+  <p>
+  Cette valeur est celle qu'il serait logique d'obtenir,
   mais par exemple l'utilisation de <a href=
   "http://sdldoc.csn.ul.ie/sdlsetalpha.php" target=
   "_blank">SDL_SetAlpha</a> avec comme source et comme destination une
   surface avec transparence, avec SDL_SRCALPHA de positionné, garde la
   composante alpha de la surface de destination (a2) là où elle devrait
   valoir, dans le cadre d'une vraie superposition, <code>a3 = 1 -
-  (1-a1).(1-a2)</code>.</p><br>
+  (1-a1).(1-a2)</code>.
+  </p>
 
-  <p>Ainsi, si P1 et P2 sont complètement transparents (a1=a2=0), P3
+  <p>
+  Ainsi, si P1 et P2 sont complètement transparents (a1=a2=0), P3
   l'est aussi (a3=0). Si l'un des deux est transparent, seul le
-  coefficient de l'autre importe.</p>
+  coefficient de l'autre importe.
+  </p>
 
-  <p>Cette façon d'implémenter la transparence grâce à une
+  <p>
+  Cette façon d'implémenter la transparence grâce à une
   quatrième coordonnée, le canal alpha, peut se faire au niveau le plus
   fin, le pixel, mais il est possible aussi de définir un unique degré
   de transparence pour une surface complète. Dans ce cas, il est
   possible de définir la valeur alpha commune à toute la surface grâce
   à la fonction <a href="http://sdldoc.csn.ul.ie/sdlsetalpha.php"
   target="_blank">SDL_SetAlpha</a>, ce qui constitue aussi un moyen de
-  désactiver la prise en compte de la transparence. Dans le cas où une
-  surface dispose de la transparence définie pixel par pixel
+  désactiver la prise en compte de la transparence. 
+  </p>
+
+  <p>  
+  Dans le cas où une surface dispose de la transparence définie pixel par pixel
   <strong>et</strong> pour toute la surface, le codage par pixel
   supplante le codage global, qui n'est dès lors pas pris en compte
   (cf le pseudo-algorithme décrit dans <a href=
@@ -258,16 +282,19 @@ La transparence est très utile pour, entre autres, réaliser des effets spéciaux 
   l'absence d'une coordonnée alpha définie au niveau de chaque
   pixel, la <em>color key</em> et la valeur alpha de la surface
   éventuelles sont toutes les deux prises en compte lors d'un
-  <em>blitting</em>).</p>
+  <em>blitting</em>).
+  </p>
 
-  <p>Enfin, la composante alpha définie au niveau de la surface et non
+  <p>
+  Enfin, la composante alpha définie au niveau de la surface et non
   de chaque pixel peut être un moyen de faire des fondus-enchaînés ou
   des fondus au noir (effets de transition respectivement entre deux
   images ou une image vers l'écran noir) sans avoir à passer par la
-  gestion de la correction gamma [<a href="GammaCorrection.html">Plus d'infos sur
-  la correction gamma</a>].</p>
+  gestion de la correction gamma [<a href="GammaCorrection.html">Plus d'infos sur la correction gamma</a>].
+  </p>
 
-  <p>Pour charger des images disposant d'une composate alpha dans
+  <p>
+  Pour charger des images disposant d'une composate alpha dans
   une surface, le plus commode est d'utiliser le format ouvert PNG
   (<em>Portable Network Graphics</em>), qui, outre une compression sans
   perte, gère la composante alpha, ce que ne fait pas le format
@@ -276,16 +303,14 @@ La transparence est très utile pour, entre autres, réaliser des effets spéciaux 
   "_blank">SDL_LoadBMP</a>), si bien qu'il peut être utile de
   recourir à <a href=
   "http://www.libsdl.org/projects/SDL_image/">SDL_image</a> pour
-  bénéficier des nombreux avantages du PNG.</p>
+  bénéficier des nombreux avantages du PNG.
+  </p>
   
-  <p>Enfin, pour bénéficier de l'indice de transparence au niveau du pixel, il est généralement nécessaire de les coder en 32 bits (cf <a href="Colors.html">les formats de couleurs</a>), une raison qui à elle seule fait préférer à certains développeurs ce mode riche de plus d'avantages que les 8, 16 ou 24 bits par pixel.</p>
+  <p>
+  Enfin, pour bénéficier de l'indice de transparence au niveau du pixel, il est généralement nécessaire de les coder en 32 bits (cf <a href="Colors.html">les formats de couleurs</a>), une raison qui à elle seule fait préférer à certains développeurs ce mode riche de plus d'avantages que les 8, 16 ou 24 bits par pixel.
+  </p>
   
   
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
 
   <h2>N'hésitez pas à nous faire part de votre avis !</h2>
 
@@ -302,7 +327,7 @@ La transparence est très utile pour, entre autres, réaliser des effets spéciaux 
     [<a href="#_top_">Retour en haut de page</a>]
 	<br>
     <br>
-    <em>Dernière mise à jour : 9 Septembre 2005</em>
+    <em>Dernière mise à jour : jeudi 6 mars 2008</em>
   </center>
 </body>
 </html>

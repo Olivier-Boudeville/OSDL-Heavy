@@ -20,55 +20,54 @@
   <link rel="stylesheet" type="text/css" href=
   "../../../common/css/OSDL.css">
   <link href="../../../images/OSDL-icon.png" rel="OSDL icon">
-  <style type="text/css">
-  div.c1 {text-align: center}
-  </style>
-  <style type="text/css">
-  table.c1 {border : none}
-  </style>
-  <style type="text/css">
-  div.c3 {text-align: center}
-  table.c2 {border: none}
-  div.c1 {padding: 8px}
-  </style>
-  <style type="text/css">
-  li.c1 {list-style: none}
-  </style>
 </head>
 
 <body>
   <div class="banner">
     <p><em>Courts-circuits</em> <a href="../../../common/black.html"
-    onclick="parent.toolbar.location=&#39;../../MainMenu.html&#39;">Page
+    onclick="parent.toolbar.location='../../MainMenu.html'">Page
     principale</a> <a href="../../Map.html">Plan du site</a> <a href=
     "mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Correction%gamma">
     écrivez-nous</a></p>
-  </div><a name="_top_"></a> <span class="c1"><br>
-  <br></span> 
+  </div><a name="_top_"></a> 
 
-  <h1>La correction gamma</h1>
-<br><br>
+<h1>La correction gamma</h1>
 
 <h2>Principe</h2>
-  <p>, ou gamma-correction.</p>
+<p>
+La correction gamma, ou gamma-correction, consiste à appliquer un filtre pendant le rendu des pixels de telle sorte que leur luminosité soit modifiée [<a href="http://en.wikipedia.org/wiki/Gamma_correction" target="_blank">Plus d'infos</a>, en anglais].
+</p>
 
-<h2></h2>
-  <p></p>
+<p>L'usage premier est de compenser les distorsions de luminosité induites par les dispositifs effectifs de rendu, notamment les écrans : si l'on veut afficher <code>[R;G;B]</code> sur un dispositif qui aurait affiché dans les faits <code>[Gr(R);Gg(G);Gb(B)]</code>, il suffit de vouloir afficher les valeurs des transformations inverses <code>[Gr^-1(R);Gg^-1(G);Gb^-1(B)]</code> pour que in fine les couleurs restituées soient correctes.
+</p>
 
-  <p><a href="http://sdldoc.csn.ul.ie/sdlgetgammaramp.php" target=
-  "_blank">SDL_GetGammaRamp</a> <a href=
+<p>
+La correction gamma peut aussi être employée pour effectuer des fondus au noir ou entre deux images.
+</p>
+
+<p>
+SDL permet de gérer la correction gamma à l'aide de :
+<ul>
+
+	<li><a href=
   "http://sdldoc.csn.ul.ie/sdlsetgammaramp.php" target=
-  "_blank">SDL_SetGammaRamp</a> <a href="http://sdldoc.csn.ul.ie/sdlsetgammaramp.php" target=
-  "_blank">SDL_SetGamma</a>
-  </p><br>
-  <br>
-  <br>
-  <br>
-  <br>
+  "_blank">SDL_SetGammaRamp</a></li>
 
-  <h2>N&#39;hésitez pas à nous faire part de votre avis !</h2>
+	<li><a href="http://sdldoc.csn.ul.ie/sdlsetgammaramp.php" target=
+  "_blank">SDL_SetGamma</a></li>
 
-  <p>Si vous disposez d&#39;informations plus détaillées ou plus
+<!--
+	<li></li>
+-->
+
+</ul>
+ 
+</p>
+
+
+  <h2>N'hésitez pas à nous faire part de votre avis !</h2>
+
+  <p>Si vous disposez d'informations plus détaillées ou plus
   récentes que celles présentées dans ce document, si vous avez
   remarqué des erreurs, oublis, ou points insuffisamment traités,
   <a href=
@@ -77,10 +76,11 @@
   <br>
   <hr>
 
-  <div class="c1">
-    <a href="#_top_">Top</a><br>
+  <center>
+    [<a href="#_top_">Retour en haut de page</a>]
     <br>
-    <em>Dernière mise à jour : 4 Janvier 2004</em>
-  </div>
+    <br>
+    <em>Dernière mise à jour : jeudi 6 mars 2008</em>
+  </center>
 </body>
 </html>

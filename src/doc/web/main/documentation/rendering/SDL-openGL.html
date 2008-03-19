@@ -3,11 +3,11 @@
     For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--  
-    Creation date : 2004, January 25.
-    Author : Olivier Boudeville (olivier.boudeville@online.fr)
-    Update made by : the author
-    Version number : 0.1
-    Adapted from : no previous document
+    Creation date: 2004, January 25.
+    Author: Olivier Boudeville (olivier.boudeville@online.fr)
+    Update made by: the author
+    Version number: 0.1
+    Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -34,12 +34,12 @@
 
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
 <p>
-<b>Foreword</b> : the vast majority of these informations and pieces of advice comes from the various members of the <a href="http://www.libsdl.org/mailman/listinfo/sdl" target="_blank">SDL</a> mailing list. I hope that this thematical gathering will help the SDL users. Many thanks to the several SDL contributors ! 
+<b>Foreword</b>: the vast majority of these informations and pieces of advice comes from the various members of the <a href="http://lists.libsdl.org/listinfo.cgi/sdl-libsdl.org" target="_blank">SDL</a> mailing list. I hope that this thematical gathering will help the SDL users. Many thanks to the several SDL contributors ! 
 </p> 
             </div>
           </td>
@@ -74,7 +74,7 @@ This section focuses on helping developers to use OpenGL with SDL.
 	<a href="#extensions">Managing OpenGL extensions</a><br>
 	<a href="#flags">SDL OpenGL flags</a><br>
 	<a href="#attributes">Managing OpenGL attributes</a><br>		
-	<a href="#blits">Blits between SDL &amp; OpenGL</a> :<br>
+	<a href="#blits">Blits between SDL &amp; OpenGL</a>:<br>
 	<ul>
 	  <li><a href="#SDL2OpenGLscreen">SDL surface to OpenGL framebuffer</a><br></li>
 	  <li><a href="#toTexture">SDL surface to OpenGL texture</a><br></li>
@@ -112,7 +112,7 @@ This section focuses on helping developers to use OpenGL with SDL.
 <h2>General OpenGL informations</h2>
 
 <p>
-GL stands for Graphics Language. <a href="http://en.wikipedia.org/wiki/OpenGL" target="_blank">OpenGL</a> (Open Graphics Library) is the "open source" version of GL.
+GL stands for <em>Graphics Language</em>. <a href="http://en.wikipedia.org/wiki/OpenGL" target="_blank">OpenGL</a> (Open Graphics Library) is the "open source" version of GL.
 </p>
 
 <p>
@@ -126,11 +126,11 @@ OpenGL 1.1 is somehow outdated. The problem is that the default Windows OpenGL l
 </p>
 
 <h3>What OpenGL does not do</h3>
-<p>OpenGL by itself does not provide input event handling (ex : mouse), sound, window management, etc.
+<p>OpenGL by itself does not provide input event handling (ex: mouse), sound, window management, etc.
 </p>
 
 <p>
-<a href="http://en.wikipedia.org/wiki/OpenGL_Utility_Toolkit" target="_blank">GLUT</a> (OpenGL Utility Toolkit), exactly as SDL, provides window management, input handling, because it is designed as a cross-platform utility toolkit for making OpenGL programs without operating system-specific code.
+<a href="http://en.wikipedia.org/wiki/OpenGL_Utility_Toolkit" target="_blank">GLUT</a> (<em>OpenGL Utility Toolkit</em>, not to be mixed up with the previous GLU), exactly as SDL, provides window management, input handling, because it is designed as a cross-platform utility toolkit for developing OpenGL programs without operating system-specific code.
 </p>
 
 <p>For various reasons, including performance and completness, one might prefer SDL, and do not use GLUT at all. Stick to GL and GLU, and you will be fine, especially if your multimedia application is a game.
@@ -162,20 +162,24 @@ Of course, the best option, if you can afford it in terms of development cost an
 will make it run pretty much anywhere, and the OpenGL backend will add insane frame rates and practically unlimited special effect capabilities.
 </p>
 
-<p>Or you go the easy way : code for SDL 2D and use glSDL for extra speed where OpenGL is available, since it is exactly its purpose. And, to close the circle, this is why you should not use glSDL and native OpenGL at the same time : using (as in, "relying on") OpenGL directly basically eliminates the whole point of using glSDL instead of the much more powerful OpenGL API.
+<p>Or you go the easy way: code for SDL 2D and use glSDL (an OpenGL-based backend for SDL) for extra speed where OpenGL is available, since it is exactly its purpose. And, to close the circle, this is why you should not use glSDL and native OpenGL at the same time: using (as in, "relying on") OpenGL directly basically eliminates the whole point of using glSDL instead of the much more powerful OpenGL API.
 </p>
 
 <p>
 Finally, we see that OpenGL should be used only after careful examination of the many available alternatives, depending on the needs of your application, notably in the case where it does not rely on full blown 3D renderings.
 </p>
 
+<p>
+Using DirectX and associated libraries could be an alternative to using OpenGL, but it would remove most of the portability of your application (only targeting PC running Windows or XBOX).
+</p>
+
 
 <h3>State machine</h3>
 <p>
-OpenGL is a state machine, which means you can set states and these will remain until you change them. For example, if you set 2D texturing mode, it will stay until you want to draw solid filled triangles for example and call <code>glDisable(GL_TEXTURE_2D)</code> or until you want to switch to 1D/3D textures and call <code>glEnable(GL_TEXTURE_1D/3D)</code>. 
+OpenGL is a state machine, which means you can set states and these will remain in a shared context until you change them. For example, if you set 2D texturing mode, it will stay until you want to draw solid filled triangles for example and call <code>glDisable(GL_TEXTURE_2D)</code> or until you want to switch to 1D/3D textures and call <code>glEnable(GL_TEXTURE_1D/3D)</code>. 
 </p>
 
-<p>The same is true for all other OpenGL attributes : colors, materials, lights, matrices, etc.
+<p>The same is true for all other OpenGL attributes: colors, materials, lights, matrices, etc.
 </p>
 
 
@@ -191,7 +195,7 @@ OpenGL is a state machine, which means you can set states and these will remain 
 <h2>Availability of OpenGL on a specific device</h2>
 
 <p>
-OpenGL is not available (at least not in accelerated form) on all platforms (ex : PDAs, 16 bit computers, non-ps2gl Playstation2, pre-3D-boom consoles and some laptops), and not even on all systems based on platforms that do support OpenGL.</p>
+OpenGL is not available (at least not in accelerated form) on all platforms (ex: PDAs, 16 bit computers, non-ps2gl Playstation2, pre-3D-boom consoles and some laptops), and not even on all systems based on platforms that do support OpenGL.</p>
 
 <p>The SDL back-ends that support OpenGL are the ones for Windows, X11, Quartz (Mac OS X), maybe whatever MacOS 9 uses; no more.
 </p>
@@ -201,7 +205,7 @@ OpenGL is not available (at least not in accelerated form) on all platforms (ex 
 
 <h3>Learning what is locally available under the X environment</h3>
 <p>
-Run <code>glxinfo</code> (see below) and look at the visuals listed at the bottom of all that data it dumps out. All major informations about the supported GLX extensions and the OpenGL renderer should be displayed. If you run <code>glxinfo | grep direct</code> and it prints : <code>direct rendering: Yes</code> then your OpenGL drivers are setup correctly. On the contrary, if <code>glxinfo | grep 'OpenGL vendor string'</code> returns something like <code>OpenGL vendor string: Mesa project: www.mesa3d.org</code>, then you have only software OpenGL.
+Run <code>glxinfo</code> (see below) and look at the visuals listed at the bottom of all that data it dumps out. All major informations about the supported GLX extensions and the OpenGL renderer should be displayed. If you run <code>glxinfo | grep direct</code> and it prints: <code>direct rendering: Yes</code> then your OpenGL drivers are setup correctly. On the contrary, if <code>glxinfo | grep 'OpenGL vendor string'</code> returns something like <code>OpenGL vendor string: Mesa project: www.mesa3d.org</code>, then you have only software OpenGL.
 </p>
 
 
@@ -210,14 +214,14 @@ Run <code>glxinfo</code> (see below) and look at the visuals listed at the botto
 <p>
 More preciselyn usually the goal is to activate the direct (GPU-based) rendering, i.e. to get rid of 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
 <code><pre>
 &gt; glxinfo
 Xlib:  extension "XFree86-DRI" missing on display ":0.0".
-name of display: :0.0  screen: 0
+name of display::0.0  screen: 0
 [...]
 OpenGL vendor string: Mesa project: www.mesa3d.org
 [...]
@@ -235,7 +239,7 @@ OpenGL version string: 1.2 (1.5 Mesa 6.2.1)
 and of 
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -250,17 +254,17 @@ Xlib:  extension "XFree86-DRI" missing on display ":0.0".
     </table>
 </center>
 
-so that it becomes something like :
+so that it becomes something like:
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
 <code><pre>
 &gt; glxinfo
-name of display: :0.0
-display: :0  screen: 0
+name of display::0.0
+display::0  screen: 0
 direct rendering: Yes
 server glx vendor string: SGI
 server glx version string: 1.2
@@ -282,7 +286,7 @@ OpenGL extensions:                                                              
 </center>
 
 and <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -299,7 +303,7 @@ and <center>
 </p>
 
 <p>
-The first step is to know what is your video card, for example thanks to : <code>lspci | grep VGA</code>, it should output something like <code>0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown device 5653</code> or, if your OS database is up-to-date, <code>0000:01:00.0 VGA compatible controller: ATI Technologies Inc Radeon Mobility X700 (PCIE)</code>
+The first step is to know what is your video card, for example thanks to: <code>lspci | grep VGA</code>, it should output something like <code>0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown device 5653</code> or, if your OS database is up-to-date, <code>0000:01:00.0 VGA compatible controller: ATI Technologies Inc Radeon Mobility X700 (PCIE)</code>
 </p>
 
 <p>
@@ -308,7 +312,7 @@ The procedure is then to refer to your distribution guide to set up the proper d
 
 
 
-<p>Note that using OpenGL under most Unix systems (except OS X) usually implies using GLX contexts under the X windowing system. Other solutions are to :
+<p>Note that using OpenGL under most Unix systems (except OS X) usually implies using GLX contexts under the X windowing system. Other solutions are to:
 
 <ul>
 	<li>use <b>OSMesa</b>; which is software rendering only. It could be easy to add this to the framebuffer SDL driver. Mesa has support for svgalib, maybe it could be integrated into the svgalib SDL driver, and be a default OpenGL driver for all targets</li>
@@ -350,13 +354,13 @@ On Windows, the OpenGL headers (gl.h and glu.h) and libraries (opengl32.lib and 
 
 
 <p>
-In order to compile a program using an OpenGL library, the related headers must be specified. They are to be specified through <code>#include &lt;GL/gl.h&gt;</code> or, if SDL is used, the <code>SDL_opengl.h</code> headers takes care of it.
+In order to compile a program using an OpenGL library, the related headers must be specified. They are to be specified through <code>#include &lt;GL/gl.h&gt;</code> or, if SDL is used, the <code>SDL_opengl.h</code> headers take care of it.
 </p>
 
 
 <h3>Autoconf</h3>
 
-<p>There exist <a href="http://autoconf-archive.cryp.to/mdl_have_opengl.html" target="_blank">autoconf</a> scripts made to detect OpenGL [see also <a href="http://autoconf-archive.cryp.to/" target="_blank">autoconf macro archive</a>, <a href="SDL-openGL-examples.html#autoconfGEM">GEM macro</a>] : for <a href="http://autoconf-archive.cryp.to/ax_check_gl.html" target="_blank">OpenGL</a>, for <a href="http://autoconf-archive.cryp.to/ax_check_glu.html" target="_blank">GLU</a>, and for <a href="http://autoconf-archive.cryp.to/ax_check_glut.html" target="_blank">GLUT</a>.
+<p>There exist <a href="http://autoconf-archive.cryp.to/mdl_have_opengl.html" target="_blank">autoconf</a> scripts made to detect OpenGL [see also <a href="http://autoconf-archive.cryp.to/" target="_blank">autoconf macro archive</a>, <a href="SDL-openGL-examples.html#autoconfGEM">GEM macro</a>]: for <a href="http://autoconf-archive.cryp.to/ax_check_gl.html" target="_blank">OpenGL</a>, for <a href="http://autoconf-archive.cryp.to/ax_check_glu.html" target="_blank">GLU</a>, and for <a href="http://autoconf-archive.cryp.to/ax_check_glut.html" target="_blank">GLUT</a>.
 </p>
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
@@ -370,7 +374,7 @@ In order to compile a program using an OpenGL library, the related headers must 
 <h2>Loading the OpenGL library</h2>
 
 <p>
-There are two ways to work with OpenGL and SDL :
+There are two ways to work with OpenGL and SDL:
 <ul>
 	<li>use <b>dynamic</b> library loading, with <code>SDL_GL_LoadLibrary</code> and then retrieve function pointers for <b>all</b> OpenGL functions like shown in the SDL <code>testdyngl.c</code> sample code</li>
 	<li><b>link</b> (statically or dynamically) with an OpenGL library, and retrieve function pointers only for the extensions the application needs</li>
@@ -383,7 +387,7 @@ One cannot mix the two approaches.
 
 <h3>Dynamic library loading</h3>
 <p>
-The preferred approach is usually to load the OpenGL library "manually", i.e. at run time. That allows your application to load and start even if there is no OpenGL support on the system, so you can use some other API, or give the user a sensible error message : there may not even be an OpenGL library at all !
+The preferred approach is usually to load the OpenGL library "manually", i.e. at run time. That allows your application to load and start even if there is no OpenGL support on the system, so you can use some other API, or give the user a sensible error message: there may not even be an OpenGL library at all !
 </p>
 
 <p>
@@ -395,7 +399,7 @@ If you are loading OpenGL at run time, all you need at build time is the OpenGL 
 </p>
 
 <p>
-SDL has portable support for loading OpenGL function pointers : <code>SDL_GL_LoadLibrary</code> and <code>SDL_GL_GetProcAddress</code>.
+SDL has portable support for loading OpenGL function pointers: <code>SDL_GL_LoadLibrary</code> and <code>SDL_GL_GetProcAddress</code>.
 </p>
 
 <p>
@@ -403,7 +407,7 @@ Note that <code>SDL_SetVideoMode</code> should be called after <code>SDL_GL_Load
 </p>
 
 
-<p>See also : <a href="#extensions">extensions</a> for extension loading.
+<p>See also: <a href="#extensions">extensions</a> for extension loading.
 </p>
 
 
@@ -420,7 +424,7 @@ Static linking is pretty much out, unless you count on all users building from s
 <h4>Dynamic linking</h4>
 
 <p>
-There is a portable way to detect the correct path of the GL library on a system : unless you want to load a specific, nonstandard OpenGL driver, just pass <code>NULL</code> (0) to <code>SDL_GL_LoadLibrary</code> and it will load the standard library on whatever platform you are on.
+There is a portable way to detect the correct path of the GL library on a system: unless you want to load a specific, nonstandard OpenGL driver, just pass <code>NULL</code> (0) to <code>SDL_GL_LoadLibrary</code> and it will load the standard library on whatever platform you are on.
 </p>
 
 <p>
@@ -432,16 +436,16 @@ On Win32, a NULL pointer means loading <code>opengl32.dll</code>. Keep in mind t
 </p>
 
 <p>
-One's release could provide the user with two binaries : one with OpenGL support (which will not even load without the OpenGL library, say <code>opengl32.dll</code> on Windows), and one fall-back binary with no OpenGL being used.</p>
+One's release could provide the user with two binaries: one with OpenGL support (which will not even load without the OpenGL library, say <code>opengl32.dll</code> on Windows), and one fall-back binary with no OpenGL being used.</p>
 
 <p>On UNIX environments, a wrapper script could be used to select the appropriate executable, based on the OpenGL libraries found on the user system.
 </p>
 
 
-<p>With minGW, for the link, library order could be : 
+<p>With minGW, for the link, library order could be: 
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -487,11 +491,11 @@ To know which extensions are locally available, check the string returned by <co
 
 <p>The <a href="http://oss.sgi.com/projects/ogl-sample/registry/" target="_blank">OpenGL registry</a> lists, among other things, the function prototypes and defines you need to load the appropriate extensions, in case you need a bleeding-edge one that is not in <code>SDL_opengl.h</code>. One can get both the <code>glext.h</code> and <code>glxext.h/wglext.h</code> depending on which OS he uses.</p>
 
-<p>You may ease the work by using define-directives :
+<p>You may ease the work by using define-directives:
 
 
 <center>
-    <table summary="INIT_ENTRY_POINT" style="border : none">
+    <table summary="INIT_ENTRY_POINT" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -509,9 +513,9 @@ if ( ! funcname ) cerr << "#funcname() not initialized" << endl ;
 
 </p>
 
-<p>This works like this : 
+<p>This works like this: 
 <center>
-    <table summary="INIT_ENTRY_POINT example" style="border : none">
+    <table summary="INIT_ENTRY_POINT example" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -524,11 +528,11 @@ if ( ! funcname ) cerr << "#funcname() not initialized" << endl ;
 </p>
 
 
-<p>Another solution would be to declare <code>GL_GLEXT_PROTOTYPES</code> :
+<p>Another solution would be to declare <code>GL_GLEXT_PROTOTYPES</code>:
 
 
 <center>
-    <table summary="exttypedef" style="border : none">
+    <table summary="exttypedef" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -546,10 +550,10 @@ if ( ! funcname ) cerr << "#funcname() not initialized" << endl ;
 
 <p>This will declare typedefs for all GL extensions functions. For example, 
 <code>PFNGLACTIVETEXTUREARBPROC</code> is a typedef for <code>glActiveTextureARB()</code> function. 
-So, to bind your functions, you may use : 
+So, to bind your functions, you may use: 
 
 <center>
-    <table summary="SDL_GL_GetProcAddress" style="border : none">
+    <table summary="SDL_GL_GetProcAddress" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -569,7 +573,7 @@ PFNGLACTIVETEXTUREARBPROC glActiveTextureARB ;
 
 <p>
 In all case, calls to <a href="http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fGL_5fGetProcAddress
-" target="_blank">SDL_GL_GetProcAddress</a> must occur after the call to <code>SDL_SetVideoMode</code> so that the extension work : <a href="http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fGL_5fGetProcAddress
+" target="_blank">SDL_GL_GetProcAddress</a> must occur after the call to <code>SDL_SetVideoMode</code> so that the extension works: <a href="http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fGL_5fGetProcAddress
 " target="_blank">SDL_GL_GetProcAddress</a> can be used only when an OpenGL context exists, and it is created by <code>SDL_SetVideoMode( SDL_OPENGL  | ...)</code>.
 </p>
 
@@ -578,19 +582,24 @@ In all case, calls to <a href="http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fGL_5f
 <h3>Extension loaders</h3>
 
 <p>
-They do the work for you : bloat or useful help ?
+They do the work for you: bloat or useful help ?
 </p>
 
 <p>
 <ul>
   <li>
+  
   	<p><a href="http://glew.sourceforge.net/" target="_blank">GLEW</a>, maybe the easiest way to use extensions across all platforms (Windows, GNU/Linux, OS X, FreeBSD, etc.). It has Opengl 2.0 compatible header files with all the defines and function prototypes, and it loads the function pointers during startup for you. When you include <code>glew.h</code>, you do not need to include any GL headers, and you should not include <code>SDL_opengl.h</code>
 </p>
-	<p>If you do choose to load OpenGL at runtime, GLEW will not load it for you (you need to use the <code>SDL_GL_LoadLibrary(NULL)</code> behaviour for that [<a href="#loading">more infos</a>]), but the GLEW header does contain the names of the core OpenGL functions, and <code>glewInit()</code> hooks those up to the loaded library.</p>
+	<p>If you do choose to load OpenGL at runtime, GLEW will not load it for you (you need to use the <code>SDL_GL_LoadLibrary(NULL)</code> behaviour for that [<a href="#loading">more infos</a>]), but the GLEW header does contain the names of the core OpenGL functions, and <code>glewInit()</code> hooks those up to the loaded library</p>
   </li>
+  
   <li><a href="http://elf-stone.com/downloads.php" target="_blank">GLEE</a></li>
+  
   <li><a href="http://www.levp.de/3d/index.html" target="_blank">extgl</a> project is not maintained any more</li>
+  
   <li>SDL_glel is not working yet</li>
+  
 </ul>
 </p>
 
@@ -614,7 +623,7 @@ They do the work for you : bloat or useful help ?
 
 
 <p>
-There has been an internal change to the semantics of the <code>SDL_OPENGL</code> flag : backends now use <code>SDL_INTERNALOPENGL</code> to tell the difference between an OpenGL mode and a normal mode. This incurs no change to the applications which still use and query the <code>SDL_OPENGL</code> flag. This flag previously meant two things : 
+There has been an internal change to the semantics of the <code>SDL_OPENGL</code> flag: backends now use <code>SDL_INTERNALOPENGL</code> to tell the difference between an OpenGL mode and a normal mode. This incurs no change to the applications which still use and query the <code>SDL_OPENGL</code> flag. This flag previously meant two things: 
 <ol>
 	<li>the window is handled by OpenGL</li>
 	<li>the application uses an OpenGL window</li>
@@ -655,7 +664,7 @@ The point is you set some GL attributes <b>before</b> creating the window with <
 <p>
 For example, to get a multisample (FSAA) context, do this:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -676,12 +685,12 @@ SDL_Surface * screen = SDL_SetVideoMode( 640, 480, 0, SDL_OPENGL ) ;
 <h3>Checking whether they have been accepted</h3>
 
 <p>
-After the window is created, you can see if you got what you wanted :
+After the window is created, you can see if you got what you wanted:
 </p>
 
 <p>
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -739,18 +748,18 @@ After the window is created, you can see if you got what you wanted :
 
 <p>You cannot mix the SDL 2D API (notably standard blitting with <code>SDL_BlitSurface</code> and updaterects routines) with OpenGL. When you use OpenGL, you have to use OpenGL for everything that touches a visible buffer. OpenGL thinks it owns the window, and there is just no reasonable way to convince it otherwise.</p>
 
-<p>Modern hardware wants you to put everything to the video card once and then let the card work with it every frame.In OpenGL, all textures are stored in video memory, whereas in SDL they can be either in system or video memory.</p>
+<p>Modern hardware wants you to put everything to the video card once and then let the card work with it every frame. In OpenGL, all textures are stored in video memory, whereas in SDL they can be either in system or video memory.</p>
 
 
 <a name="SDL2OpenGLscreen"></a>
 <h3>SDL surface to OpenGL framebuffer</h3>
 <p>
-Blitting directly to a screen that has <code>SDL_OPENGL</code> set is not possible, for example in order to render an overlay help screen : as mentioned earlier, SDL 2D API and OpenGL should not be used at the same time.</p>
+Blitting directly to a screen that has <code>SDL_OPENGL</code> set is not possible, for example in order to render an overlay help screen: as mentioned earlier, SDL 2D API and OpenGL should not be used at the same time.</p>
 
-<p>Thus if you initialize OpenGL, you are supposed to subsequently draw using OpenGL primitives, <code>gl*</code> calls. You can however use the SDL 2D API to manipulate images in memory before you hand them off to OpenGL as textures : instead of blitting as usual, upload the surface as a texture [<a href="#toTexture">more infos</a>], and draw a quad (<code>GL_QUAD</code>) with this texture.
+<p>Thus if you initialize OpenGL, you are supposed to subsequently draw using OpenGL primitives, <code>gl*</code> calls. You can however use the SDL 2D API to manipulate images in memory before you hand them off to OpenGL as textures: instead of blitting as usual, upload the surface as a texture [<a href="#toTexture">more infos</a>], and draw a quad (<code>GL_QUAD</code>) with this texture.
 </p>
 
-<p>A less efficient and somewhat different method would be to use <code>glRasterPos</code> and <code>glDrawPixels</code> to draw the image directly into the framebuffer. However, even if it is card and data size dependent, <code>glDrawPixels</code> is deemed slower : creating a texture has been measured to be way faster on ATI cards as opposed to using <code>glDrawPixels</code> and a bit slower on NVidia cards. So it looks like a good compromise. [<a href="SDL-openGL-examples.html#drawPix" target="_blank">more infos</a>].
+<p>A less efficient and somewhat different method would be to use <code>glRasterPos</code> and <code>glDrawPixels</code> to draw the image directly into the framebuffer. However, even if it is card and data size dependent, <code>glDrawPixels</code> is deemed slower: creating a texture has been measured to be way faster on ATI cards as opposed to using <code>glDrawPixels</code> and a bit slower on NVidia cards. So it looks like a good compromise [<a href="SDL-openGL-examples.html#drawPix" target="_blank">more infos</a>].
 </p>
 
 <p><br><center>[<a href="#blits">Back to blits between SDL &amp; OpenGL</a>]</center></p>
@@ -760,11 +769,11 @@ Blitting directly to a screen that has <code>SDL_OPENGL</code> set is not possib
 <h3>SDL surface to OpenGL texture</h3>
 
 <p>
-Getting a texture from an SDL surface is more tricky than it sounds. Check out these two excellent posts about it : <a href="http://twomix.devolution.com/pipermail/sdl/2002-September/049064.html" target="_blank">1</a>, <a href="http://twomix.devolution.com/pipermail/sdl/2002-September/049078.html" target="_blank">2</a>. A RGBA8 (height bits for each coordinate) SDL surface is then perfectly suitable as an OpenGL texture source. 
+Getting a texture from a SDL surface is more tricky than it sounds. Check out these two excellent posts about it: [<a href="http://twomix.devolution.com/pipermail/sdl/2002-September/049064.html" target="_blank">1</a>, <a href="http://twomix.devolution.com/pipermail/sdl/2002-September/049078.html" target="_blank">2</a>]. A RGBA8 (eight bits for each coordinate) SDL surface is then perfectly suitable as an OpenGL texture source. 
 </p>
 
 <p>
-When you first create the texture with <code>glGenTextures</code>, it is a blank slate. To link it to its content, you first have to tell OpenGL <b>which</b> texture is to be defined. To do that, you use <code>glBindTexture</code>. It just consists in telling OpenGL :  <em>"All the current texture commands should be applied to this (and only this) texture"</em>. Then you specify all the details (width, height, type, etc.).
+When you first create the texture with <code>glGenTextures</code>, it is a blank slate. To link it to its content, you first have to tell OpenGL <b>which</b> texture is to be defined. To do that, you use <code>glBindTexture</code>. It just consists in telling OpenGL:  <em>"All the current texture commands should be applied to this (and only this) texture"</em>. Then you specify all the details (width, height, type, etc.).
 </p>
 
 
@@ -809,12 +818,12 @@ In numerous 3D packages and with general OpenGL, the bottom-left texture
 coordinate convention is used. It matches up nicely with the default OpenGL coordinate system and cartesian coordinates in general. In an imaging sense it seems counter-intuitive, however in a 3-dimensional scene, it is often neater and more consistent to use this convention.
 </p>
 
-<p>There is an example in <code>test/testgl.c</code> about how to convert your SDL surface to an OpenGL texture. Please note, though, that this example is not perfect, because the texture is constructed upside down. This is because SDL surfaces start at the top-left and OpenGL images start at the bottom-left corner :
+<p>There is an example in <code>test/testgl.c</code> about how to convert your SDL surface to an OpenGL texture. Please note, though, that this example is not perfect, because the texture is constructed upside down. This is because SDL surfaces start at the top-left and OpenGL images start at the bottom-left corner:
 </p>
 
 <p>
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -825,7 +834,6 @@ o(0,HEIGHT)---(WIDTH,HEIGHT)o
 |                           |
 |                           |
 o(0,0)-------------(WIDTH,0)o
-
 </pre></code>
             </div>
           </td>
@@ -845,9 +853,9 @@ o(0,0)-------------(WIDTH,0)o
 </p>
 
 <p>
-A third solution would be to call the following once, before you draw any objects with your flipped texture :
+A third solution would be to call the following once, before you draw any objects with your flipped texture:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -877,7 +885,7 @@ One has to ensure that the pixel format of the SDL surface and the OpenGL match.
 
 
 <p>
-More precisely, when using OpenGL, there are three different meanings to the "<em>bits per pixel</em>" thing :
+More precisely, when using OpenGL, there are three different meanings to the "<em>bits per pixel</em>" thing:
 <ol>
 	<li>the bpp at which OpenGL <b>displays</b> the graphics. This has no implication on your code except on the graphics initialization with SDL_SetVideoMode (this has an effect on graphics rendering quality, though).
 	</li>
@@ -892,7 +900,7 @@ More precisely, when using OpenGL, there are three different meanings to the "<e
 </p>
 
 <p>
-Since OpenGL does the conversion, and since if you aim for wide compatibility you only have RGB/RGBA (24 or 32 bpp) surfaces for the third parameter, here is what one can do :
+Since OpenGL does the conversion, and since if you aim for wide compatibility you only have RGB/RGBA (24 or 32 bpp) surfaces for the third parameter, here is what one can do:
 <ol>
 	<li>call <code>SDL_CreateRGBSurface</code> using a 24/32 bpp R8G8B8(A8) surface (do not forget to switch the bitmasks if you are on a big endian architecture)
 	</li>
@@ -907,7 +915,7 @@ Since OpenGL does the conversion, and since if you aim for wide compatibility yo
 
 <p>
  <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -928,7 +936,7 @@ This has the obvious advantage that this works all the time, on all the OpenGL p
 </p>
 
 <p>
-There is one issue with this method though : if your image has an alpha channel, you may loose it during blit. The example does not have this limitation because it makes use of a colorkeyed source surface.
+There is one issue with this method though: if your image has an alpha channel, you may loose it during blit. The example does not have this limitation because it makes use of a colorkeyed source surface.
 </p>
 
 
@@ -942,12 +950,12 @@ video memory, which is what happens by default, wasting video RAM and video band
 
 
 <p>
-Depending on the hardware you target, there are multiple ways to handle this efficiently :
+Depending on the hardware you target, there are multiple ways to handle this efficiently:
 
 <ul>
 
 <!--
-	<li><b></b> : </li>
+	<li><b></b>: </li>
 -->
 
 	<li>using the <a href="http://oss.sgi.com/projects/ogl-sample/registry/EXT/paletted_texture.txt" target="_blank">paletted texture Opengl extension</a>, which is supported from the first Geforce cards, and up to Geforce FX 5x00 cards</li>
@@ -965,7 +973,7 @@ palette, for example a 1D texture with width of 256. That will work on not too o
 </p>
 
 <p>
-Another solution is to load an image having alpha informations, first load it normally as such (ex : <code>IMG_Load</code>), convert this surface to another using the pixel format of the current display, via <code>SDL_DisplayFormatAlpha</code>. Call <code>SDL_SetAlpha( thisSurface, 0, 0 )</code> on this surface. Create another surface, via <code>SDL_CreateRGBSurface</code>, and blit the first surface to this newly created surface.
+Another solution is to load an image having alpha informations, first load it normally as such (ex: <code>IMG_Load</code>), convert this surface to another using the pixel format of the current display, via <code>SDL_DisplayFormatAlpha</code>. Call <code>SDL_SetAlpha( thisSurface, 0, 0 )</code> on this surface. Create another surface, via <code>SDL_CreateRGBSurface</code>, and blit the first surface to this newly created surface.
 </p>
 
 <p>
@@ -990,9 +998,9 @@ It is commonly used to generate screenshots. If you want to pull pixels out of t
 </p>
 
 <p>
-  To capture the entire screen into a buffer, one might use :
+  To capture the entire screen into a buffer, one might use:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1013,9 +1021,9 @@ where <code>someBuffer</code> has been previously allocated to hold <code>3 * sc
 </p>
 
 <p>
-Note that <code>glPixelStore</code> parameters are part of the OpenGL state, so you may have to save and restore these settings. If you have other OpenGL operations that depend on them being other values, and you have at least OpenGL 1.1, you can wrap the whole thing with <code>gl*ClientAttrib</code> calls :
+Note that <code>glPixelStore</code> parameters are part of the OpenGL state, so you may have to save and restore these settings. If you have other OpenGL operations that depend on them being other values, and you have at least OpenGL 1.1, you can wrap the whole thing with <code>gl*ClientAttrib</code> calls:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1035,9 +1043,9 @@ Note that <code>glPixelStore</code> parameters are part of the OpenGL state, so 
 </p>
 
 <p>
-Otherwise one could use :
+Otherwise one could use:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1070,7 +1078,7 @@ Images that are bound to texture objects stick around until they are replaced or
 </p>
 
 <p>
-OpenGL does not require specific user-defined final clean-up, it is managed directly by <code>SDL_Quit</code> : there is usually platform-specific OpenGL context deconstruction that has to be performed, which is handled automatically by the SDL video driver when <code>SDL_Quit</code> is called.
+OpenGL does not require specific user-defined final clean-up, it is managed directly by <code>SDL_Quit</code>: there is usually platform-specific OpenGL context deconstruction that has to be performed, which is handled automatically by the SDL video driver when <code>SDL_Quit</code> is called.
 </p>
 
 <p>
@@ -1096,7 +1104,7 @@ All the texture memory in an OpenGL context is generally freed when the context 
 <h2>Managing textures</h2>
 
 <p>
-The usual sequence for using an OpenGL texture object is approximately :
+The usual sequence for using an OpenGL texture object is approximately:
 <ol>
 	<li>use <code>glGenTextures</code> to allocate a name for the object</li>
 	<li>use <code>glBindTexture</code> to switch to it</li>
@@ -1117,7 +1125,7 @@ Texture objects were added as an extension that became part of the core rather q
 </p>
 
 <p> 
-For example, you do not even have to use <code>glGenTextures</code> if you do not want to : in theory, you can just make up your own "texture names", though it is not recommended.
+For example, you do not even have to use <code>glGenTextures</code> if you do not want to: in theory, you can just make up your own "texture names", though it is not recommended.
 </p>
 
 <p>
@@ -1135,7 +1143,7 @@ See <a href="#blits">OpenGL blits</a>.
 <h3>Textured fonts</h3>
 
 <p>
-SDL_TTF converts strings into bitmaps (SDL surfaces). You can convert those to OpenGL textures (ex : <code>SDL_ConvertSurface</code>), upload them, and then draw a quad on-screen with the textures to draw the text. See : <a href="#blits">OpenGL blits</a>.
+SDL_TTF converts strings into bitmaps (SDL surfaces). You can convert those to OpenGL textures (ex: <code>SDL_ConvertSurface</code>), upload them, and then draw a quad on-screen with the textures to draw the text. See: <a href="#blits">OpenGL blits</a>.
 </p>
 
 <p>For static text, like "<em>Score:</em>", you could render it once, upload it and use it many times.</p>
@@ -1157,9 +1165,9 @@ More infos can be found in our section dedicated to <a href="SDL-libraries.html#
 <h3>Texture location</h3>
 
 <p>
-There is a way to see whether a texture is "resident" (stored in video memory) in OpenGL :
+There is a way to see whether a texture is "resident" (stored in video memory) in OpenGL:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1175,10 +1183,10 @@ GLboolean glAreTexturesResident( GLsizei n, GLuint * textures, GLboolean * resid
 </p>
 
 <p>
-Note that it only checks if they are stored in video memory <b>currently</b> : it does not ask whether they <b>could be</b> stored in video memory. In order to increase the chance that a texture will be stored in video memory from the beginning, set its priority to 1 :
+Note that it only checks if they are stored in video memory <b>currently</b>: it does not ask whether they <b>could be</b> stored in video memory. In order to increase the chance that a texture will be stored in video memory from the beginning, set its priority to 1:
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1194,7 +1202,7 @@ GLvoid glPrioritizeTextures( GLsizei n, GLuint * textures, GLclampf * priorities
 </p>
 
 <p>
-As you noted, it may become a bit more complex than SDL surface handling. What you would do in your application is :
+As you noted, it may become a bit more complex than SDL surface handling. What you would do in your application is:
 <ol>
 	<li>create and set parameters for all GL texture objects</li>
 	<li>set all priorities to 1</li>
@@ -1218,7 +1226,7 @@ Suppose your application changes its graphics (not many games do - and when they
 </p>
 
 <p>
-For applications that have to use OpenGL and are constantly mutating their graphics (ex : these graphics are applied as textures to 3D objects), one should instead keep a local copy of the image in a software surface, modify that copy, then use OpenGL functions to upload the new texture in place of the old one. It is especially true if these modifications require reading the video memory (ex : user-defined alpha-blending), since this is insanely slow.
+For applications that have to use OpenGL and are constantly mutating their graphics (ex: these graphics are applied as textures to 3D objects), one should instead keep a local copy of the image in a software surface, modify that copy, then use OpenGL functions to upload the new texture in place of the old one. It is especially true if these modifications require reading the video memory (ex: user-defined alpha-blending), since this is insanely slow.
 </p>
 
 <p>
@@ -1229,14 +1237,14 @@ Using the OpenGL texture uploading routines ensures that the actual transmission
 <h3>Texture size</h3>
 
 <p>
-OpenGL requires texture width and height to be a power of 2 (not necessarily the same : textures does not have to be square), border excluded. They must therefore have the form <code>2^m + 2.b</code>, where m is a non-negative integer and b, the border, is 0 or 1. For example : width x height = (512+2)x(64+2), or 256x256, etc. Otherwise one may rely on the  <code>GL_ARB_texture_non_power_of_two</code> extension.
+OpenGL requires texture width and height to be a power of 2 (not necessarily the same: textures does not have to be square), border excluded. They must therefore have the form <code>2^m + 2.b</code>, where m is a non-negative integer and b, the border, is 0 or 1. For example: width x height = (512+2)x(64+2), or 256x256, etc. Otherwise one may rely on the  <code>GL_ARB_texture_non_power_of_two</code> extension.
 </p>
 
 
-<p>Some drivers may support up to 512x512 textures. In that case, a 1024x768 texture could be split into several 512x512, and smaller, textures. The smallest maximum texture size is 64x64 [<a href="http://fly.cc.fer.hr/~unreal/theredbook/chapter09.html" target="_blank">more infos</a>]. This limitation is driver-dependent, to get it do :
+<p>Some drivers may support up to 512x512 textures. In that case, a 1024x768 texture could be split into several 512x512, and smaller, textures. The smallest maximum texture size is 64x64 [<a href="http://fly.cc.fer.hr/~unreal/theredbook/chapter09.html" target="_blank">more infos</a>]. This limitation is driver-dependent, to get it do:
 
  <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1297,7 +1305,7 @@ If you are doing filtered scaling, you will need some overlap around the edges f
 </p>
 
 <p>
-Note that most image filtering techniques (ex : magnifying filter, dithering, anti-aliasing, etc.) cause problems with color keys since they handle it like all other colors. For example, they might result in the use of colors very close to the color key but not equal to it, which would result in strange visual artefacts.
+Note that most image filtering techniques (ex: magnifying filter, dithering, anti-aliasing, etc.) cause problems with color keys since they handle it like all other colors. For example, they might result in the use of colors very close to the color key but not equal to it, which would result in strange visual artefacts.
 </p>
 
 <p>
@@ -1310,10 +1318,10 @@ Note that most image filtering techniques (ex : magnifying filter, dithering, an
 
 
 <p>
-To show only 54*32 pixels of a 64*32 OpenGL texture, use : 
+To show only 54*32 pixels of a 64*32 OpenGL texture, use: 
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1343,7 +1351,7 @@ glEnd();
 <h3>Multitexture</h3>
 
 <p>
-There are two ways to use the multitexture extension :
+There are two ways to use the multitexture extension:
 
 <ul>
 	<li>if you have OpenGL 1.2 or better, it is part of the core OpenGL functions, so you can use <code>glActiveTexture</code>. Trouble is, Windows platform is still on OpenGL 1.1 so you loose portability to this platform</li>
@@ -1381,13 +1389,13 @@ If you want to, you can use SDL to get to OpenGL even only for 2D needs. OpenGL 
 If you are planning to do some kind of HUD, use simply OpenGL quads to display the elements of the HUD. As a bonus, that will be faster that software drawing.
 </p>
 
-<p>See also : <a href="#blits">blits</a>, <a href="#double">double buffering</a>
+<p>See also: <a href="#blits">blits</a>, <a href="#double">double buffering</a>
 </p>
 
 <p>
-For 2D rendering, most people use <code>glOrtho</code>, which lets you set an orthographic matrix. For example, one can use the following to set full orthographic mode :
+For 2D rendering, most people use <code>glOrtho</code>, which lets you set an orthographic matrix. For example, one can use the following to set full orthographic mode:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1397,7 +1405,7 @@ glMatrixMode( GL_PROJECTION ) ;
 glLoadIdentity() ;
 
 /*
- * Upside-down square viewport : it maps the screen as if the (arbitrary-set) resolution were
+ * Upside-down square viewport: it maps the screen as if the (arbitrary-set) resolution were
  * 1000x1000 pixels.
  *
  */
@@ -1407,7 +1415,7 @@ glOrtho( /* left */ 0, /* right */ 1000, /* bottom */ 1000, /* top */ 0,
 	
 	- or, preferably to keep the 4/3 ratio like 800x600, 640x480, 1024x768, etc. -
 
-// Non-reversed 4/3 viewport :	
+// Non-reversed 4/3 viewport:	
 glOrtho( /* left */ -320.0f, /* right */ 320.0f, /* bottom */ -240.0f, /* top */ 240.0f, 
 	/* near */ -1, /* far */ 1 ) ;
 </pre></code>
@@ -1418,9 +1426,9 @@ glOrtho( /* left */ -320.0f, /* right */ 320.0f, /* bottom */ -240.0f, /* top */
 </center>
 </p>
 
-<p>After that, for the first viewport, the following would draw a white 2D rectangle to the screen from (25,150) to (975,450) :
+<p>After that, for the first viewport, the following would draw a white 2D rectangle to the screen from (25,150) to (975,450):
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1442,10 +1450,10 @@ glEnd() ;
 
 </p>
 
-<p>To get out of orthographic mode so you can go back to 3D drawing, one can do this for example :
+<p>To get out of orthographic mode so you can go back to 3D drawing, one can do this for example:
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1476,11 +1484,11 @@ For a lot of 2D GUI work, most of the screen remains static and at high resoluti
 </p>
 
 <p>
-There are two extensions that might be useful : <code>GLX_OML_swap_method</code> for X11, and <code>GL_WIN_swap_hint</code> for Windows. 
+There are two extensions that might be useful: <code>GLX_OML_swap_method</code> for X11, and <code>GL_WIN_swap_hint</code> for Windows. 
 
 <h4>GLX_OML_swap_method</h4>
 <p>
-It allows you to request a specific swap behaviour when you create the GLXFBConfig : copy, swap or do not care.</p>
+It allows you to request a specific swap behaviour when you create the GLXFBConfig: copy, swap or do not care.</p>
 
 <h4>GL_WIN_swap_hint</h4>
 <p>
@@ -1530,7 +1538,7 @@ Use the OpenGL command <code>glFlush</code> or, if you want a blocking flush, us
 
 <p> 
  If you do not see any update after some time, you are probably using 
-double-buffered OpenGL. Try the following to get single buffered OpenGL :
+double-buffered OpenGL. Try the following to get single buffered OpenGL:
 <code>SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 ) ;</code>
 </p>
 
@@ -1556,9 +1564,9 @@ Windows XP uses 60 Hz as a default OpenGL refresh rate. Setting it to another va
 <h2>Double buffering with OpenGL</h2>
 
 <p>
-Double buffering with OpenGL is done via :
+Double buffering with OpenGL is done via:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1574,7 +1582,7 @@ and flipping via <code>SDL_GL_SwapBuffers()</code>: <code>SDL_DOUBLEBUF</code> f
 </p>
 
 <p>
-Use <code>glFinish</code> so that <code>SDL_GL_SwapBuffers</code> waits until the buffer swap has occured, before returning : the program will stall until the actual buffer swap is complete.
+Use <code>glFinish</code> so that <code>SDL_GL_SwapBuffers</code> waits until the buffer swap has occured, before returning: the program will stall until the actual buffer swap is complete.
 </p>
 
 
@@ -1587,9 +1595,9 @@ Vertical retrace syncing for OpenGL was not enabled in SDL 1.2.9. It could be en
 
 
 <p>
-There used to be platform-specific tricks to enable or disable retrace syncing, for example on Windows :
+There used to be platform-specific tricks to enable or disable retrace syncing, for example on Windows:
 <center>
-    <table summary="vertical synchronization" style="border : none">
+    <table summary="vertical synchronization" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1663,7 +1671,7 @@ On several platforms, the OpenGL context is destroyed every time <a href="http:/
 </p>
 
 <p>
-To ensure portability is kept, the reloading of the OpenGL state has to be taken into account. So you should free previous ressources (ex : texture) and upload them again. 
+To ensure portability is kept, the reloading of the OpenGL state has to be taken into account. So you should free previous ressources (ex: texture) and upload them again. 
 </p>
 
 <p>
@@ -1681,9 +1689,9 @@ So you "just" have to reload your textures, restore your viewport and projection
 <h2>Resizing</h2>
 <p>
 If <code>glViewport</code> is not being re-called on resize, the viewport will
-remain the same despite the window size changing. So, on resize, one could call for example :
+remain the same despite the window size changing. So, on resize, one could call for example:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1765,11 +1773,11 @@ Floating point pixels are good for high resolution colors (color values are not 
 <a name="pick"></a>
 <h2>How do I determine which shape the user clicked on ?</h2>
 
-<p>This is called pick correlation, and there are three different methods to do so :
+<p>This is called pick correlation, and there are three different methods to do so:
 <ul>
-	<li><b>inverse your transformation matrix</b> : to draw on the screen, you had to construct a matrix that transforms object space to screen space. The inverse of that matrix should transform screen space into object space. So, transform the point you get from the mouse into object space and then look up which shape, if any, covers that point. Or, since getting the inverse can be troublesome, and you need just one matrix multiply for each point, you can transform your object coordinates into screen space and do the comparison there.
+	<li><b>inverse your transformation matrix</b>: to draw on the screen, you had to construct a matrix that transforms object space to screen space. The inverse of that matrix should transform screen space into object space. So, transform the point you get from the mouse into object space and then look up which shape, if any, covers that point. Or, since getting the inverse can be troublesome, and you need just one matrix multiply for each point, you can transform your object coordinates into screen space and do the comparison there.
 </li>
-	<li>use OpenGL <b>picking</b> (or <b>selection</b>) mechanism : it provides a way to associate a tag with a primitive, and to test to see if the primitive passes through a small rectangle on the screen. OpenGL will give you back the tag of every primitive that passes through the picking rectangle. You can then have a super complicated shape full of holes and still be able to tell when the mouse is over it [<a href="http://www.lighthouse3d.com/opengl/picking/" target="_blank">more infos</a>].</li>
+	<li>use OpenGL <b>picking</b> (or <b>selection</b>) mechanism: it provides a way to associate a tag with a primitive, and to test to see if the primitive passes through a small rectangle on the screen. OpenGL will give you back the tag of every primitive that passes through the picking rectangle. You can then have a super complicated shape full of holes and still be able to tell when the mouse is over it [<a href="http://www.lighthouse3d.com/opengl/picking/" target="_blank">more infos</a>].</li>
 	<li>in simple cases, one may use <code>gluUnProject()</code>.</li>
 </ul>
 
@@ -1830,16 +1838,16 @@ Do not call <code>glFlush()</code> before <b>SDL_GL_SwapBuffers</b> since the la
 
 
     <dt>Is it better to use the SDL OpenGL headers or directly use the GL headers ?</dt>
-    <dd>Using the OpenGL headers directly is platform dependent. <code>SDL_opengl.h</code> is just a thin wrapper that does the right thing on whatever platform you are building on. Using it is the correct way to use OpenGL with current SDL versions, except if you are using extension loaders (ex : GLEW).</dd>
+    <dd>Using the OpenGL headers directly is platform dependent. <code>SDL_opengl.h</code> is just a thin wrapper that does the right thing on whatever platform you are building on. Using it is the correct way to use OpenGL with current SDL versions, except if you are using extension loaders (ex: GLEW).</dd>
 
 	<dt>How to perform complex vector graphics with OpenGL ?</dt>
 	<dd>One can use a dedicated library, as explained <a href="SDL-libraries.html#vector">here</a>
 	</dd>
 	
 	<dt>How to have in OpenGL the same alpha blending conventions as software SDL uses ?</dt>
-	<dd>Use :
+	<dd>Use:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1864,7 +1872,7 @@ glEnable( GL_BLEND ) ;
 <p>To turn off this image blending, so that it keeps it more pixel accurate, either include a gutter around the tiles (a technique that is used when using mip mapping), or do not use the transitioning/blending.
 </p>
 
-<p>If you want a more pixel accurate render technique using OpenGL, try :
+<p>If you want a more pixel accurate render technique using OpenGL, try:
 <ol>
 	<li>change the glTexParameter() from <code>GL_LINEAR</code> to <code>GL_NEAREST</code></li>
 	<li>if you do not zoom in/out, do not use mipmaps</li>
@@ -1879,7 +1887,7 @@ correctness". Then it would be easy to extend to a whole tile/quad.
 </p>
 </dd>
 
-<!-- true only for polygons :
+<!-- true only for polygons:
 	<dt>How to render a surface made of triangles so that the texture mapping will not make appear the fronteer between these triangle edges ?</dt>
 	<dd>Unset the edge flag for the common edge to make the surface continuous</dd>
 -->
@@ -1912,20 +1920,20 @@ The SDL gamma functions should work with OpenGL contexts.
 	<dd>Apparently the cure could be to call <code>glFlush</code> and <code>glFinish</code> before calling <code>SDL_GL_SwapBuffers</code>. Miraculous recovery, whereas SDL supposedly calls those functions internally.</dd>
 	 
 	<dt>Random crashes, parachute deployed</dt>
-	<dd>Try very tiny SDL examples (such as using <code>SDL_Init, SDL_SetVideoMode, then SDL_QUIT</code>). If it keeps on failing, that might be due to the fact that some X Windows drivers need a recent version of XFree86 (ex : NVidia). Upgrading both of them might help.</dd>
+	<dd>Try very tiny SDL examples (such as using <code>SDL_Init, SDL_SetVideoMode, then SDL_QUIT</code>). If it keeps on failing, that might be due to the fact that some X Windows drivers need a recent version of XFree86 (ex: NVidia). Upgrading both of them might help.</dd>
 
 	<dt>Orthographic projection with negative view distance not working but the same code works if the view distance is positive</dt>
 	<dd>Set <code>ZBufferEnable</code> to false.</dd>
 
 	<dt>For run-time OpenGL library loading, I declared the <code>void (*glBegin) ( GLenum )</code> and it crashes</dt>
-	<dd>The pointed functions do not use the same calling convention as your program. Just place <code>APIENTRY</code> in front of the function pointers in the GL function declarations : use instead <code>void ( APIENTRY * glBegin ) ( GLenum )</code>.</dd>
+	<dd>The pointed functions do not use the same calling convention as your program. Just place <code>APIENTRY</code> in front of the function pointers in the GL function declarations: use instead <code>void ( APIENTRY * glBegin ) ( GLenum )</code>.</dd>
 
 
 	<dt>Under certain circumstances, the loaded textures, geometry or other OpenGL data are lost</dt>
 	<dd>
 	
 	<p>
-	On some platforms (ex : Windows), various events (going to fullscreen, switching to another application, etc.) lead to loosing the OpenGL context. For example, you may loose OpenGL textures and/or other OpenGL state data as a result of reopening the OpenGL context. Also, certain backends can loose hardware surfaces at any time, because the operating system steals the VRAM back whenever it wants to. It happens usually when the user switches to another application.
+	On some platforms (ex: Windows), various events (going to fullscreen, switching to another application, etc.) lead to loosing the OpenGL context. For example, you may loose OpenGL textures and/or other OpenGL state data as a result of reopening the OpenGL context. Also, certain backends can loose hardware surfaces at any time, because the operating system steals the VRAM back whenever it wants to. It happens usually when the user switches to another application.
 	</p>
 
 	<p>
@@ -1936,10 +1944,10 @@ The SDL gamma functions should work with OpenGL contexts.
 	<dt>When texturing a quad with a RGBA texture, the pixels with alpha values 
 are appearing as white instead of not appearing at all</dt>
 	<dd>
-	Use GL_REPLACE instead of GL_DECAL :
+	Use GL_REPLACE instead of GL_DECAL:
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1967,7 +1975,7 @@ glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE ) ;
   <li><a href="http://nehe.gamedev.net/" target="_blank">NeHe OpenGL Tutorials</a>, covers: OpenGL topics (SDL source code available <a href="http://www.libsdl.org/opengl/OpenGL-intro-1.1.1.zip">separately</a>)</li>
   <li>Cone3D tutorial about <a href="http://cone3d.gamedev.net/cgi-bin/index.pl?page=tutorials/ogladv/tut1" target="_blank">setting up OpenGL with SDL in Linux</a></li>
   <li><a href="http://www.levp.de/3d/" target="_blank">Examples</a></li>
-  <li><a href="http://www.spacesimulator.net/tutorials.html" target="_blank">Space simulator example</a> : the second and fourth tutorials have SDL versions</li>
+  <li><a href="http://www.spacesimulator.net/tutorials.html" target="_blank">Space simulator example</a>: the second and fourth tutorials have SDL versions</li>
 </ul>
 
 
@@ -2026,9 +2034,6 @@ End of Cubbyhole ################## -->
 
  <br>
  <br>
- <br>
- <br>
- <br>
 
  <h3>Please react !</h3>
 
@@ -2040,7 +2045,7 @@ End of Cubbyhole ################## -->
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update : Wednesday, February 22, 2007
+  <em>Last update: Sunday, March 9, 2008
 </em>
  </center>
 </body>
