@@ -1,8 +1,11 @@
+ArmedWithABell
 ArmedWithABow             
+ArmedWithACanneFIXME
 ArmedWithAClub            
-ArmedWithAnAxe            
-ArmedWithAnAxeAndAShield  
 ArmedWithAStaff
 ArmedWithASword           
 ArmedWithASwordAndAShield 
-Unarmed              
+ArmedWithAnAxe            
+ArmedWithAnAxeAndAShield  
+Unarmed 
+WearingWeapons
