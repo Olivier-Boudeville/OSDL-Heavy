@@ -92,28 +92,43 @@ rename_resource_file()
 	case "${ATTITUDE}" in
 	
 		  "attack" ) 
-		  	ATTITUDE_ID=${Attack};;
+		  	ATTITUDE_ID=${BasicAttack};;
+
+		  "stopped" | "steht" ) 
+		  	ATTITUDE_ID=${BeStill};;
 		  
 		  "been-hit" | "treffer" ) 
 		  	ATTITUDE_ID=${BeenHit};;
 
 		  "bückt-sich" )
 		  	ATTITUDE_ID=${Bend};;
-		  		  
-		  "stopped" | "steht" ) 
-		  	ATTITUDE_ID=${BeStill};;
-			
+
 		  "labert" ) 
 		  	ATTITUDE_ID=${Enjoy};;
 
+		  "hand-attack" )
+		  	ATTITUDE_ID=${HandAttack};;
+
+		  "hikick" )
+		  	ATTITUDE_ID=${HiKick};;
+
 		  "knit" | "strickt" ) 
 		  	ATTITUDE_ID=${Knit};;
-		  
+
 		  "looking" ) 
 		  	ATTITUDE_ID=${Look};;
-
+		  		  
+		  "lowkick" ) 
+		  	ATTITUDE_ID=${LowKick};;
+		  		 
 		  "magic-attack" ) 
 		  	ATTITUDE_ID=${MagicAttack};;
+
+		  "pickup" ) 
+		  	ATTITUDE_ID=${PickFIXME};;
+
+		  "ringing" ) 
+		  	ATTITUDE_ID=${Ring};;
 
 		  "running" | "rennt" ) 
 		  	ATTITUDE_ID=${Run};;
@@ -122,15 +137,17 @@ rename_resource_file()
 		  	ATTITUDE_ID=${Talk};;
 			
 		  "greeting" ) 
-		  	ATTITUDE_ID=${Thank};;
+		  	ATTITUDE_ID=${Salute};;
 		  
 		  "tipping-over" | "kippt-um" ) 
 		  	ATTITUDE_ID=${TipOver};;
 		  
+		  "paused" ) 
+		  	ATTITUDE_ID=${Wait};;
+
 		  "walking" | "läuft" ) 
 		  	ATTITUDE_ID=${Walk};;
 		 		  	
-		
 		  * ) 
 		  	echo "Error, unexpected attitude (${ATTITUDE})"
 			exit 11;;
@@ -145,22 +162,34 @@ rename_resource_file()
 	LOOK=${LOCAL_TILESET_DIR}
 	case "${LOOK}" in
 	
-		  "bowstan"           ) LOOK_ID=${ArmedWithABow};;
-		  "clubstan"          ) LOOK_ID=${ArmedWithAClub};;
-		  "axestan"           ) LOOK_ID=${ArmedWithAnAxe};;
-		  "axestan_shield"    ) LOOK_ID=${ArmedWithAnAxeAndAShield};;
-		  "staffstan"         ) LOOK_ID=${ArmedWithAStaff};;
-		  "swordstan"         ) LOOK_ID=${ArmedWithASword};;
-		  "swordstan_shield"  ) LOOK_ID=${ArmedWithASwordAndAShield};;
-		  "stanunarmed"       ) LOOK_ID=${Unarmed};;
-		  "anna"              ) LOOK_ID=${Unarmed};;
-		  "arno"              ) LOOK_ID=${Unarmed};;
-		  "billy"             ) LOOK_ID=${Unarmed};;
-		  "bjornunarmed"      ) LOOK_ID=${Unarmed};;
-		  "swordbjorn_shield" ) LOOK_ID=${ArmedWithASwordAndAShield};;
-		  "burra"             ) LOOK_ID=${ArmedWithASword};;
-		  "elsa"              ) LOOK_ID=${Unarmed};;
-		  *                   ) 
+		  "anna"                 ) LOOK_ID=${Unarmed};;
+		  "arno"                 ) LOOK_ID=${Unarmed};;
+		  "billy"                ) LOOK_ID=${Unarmed};;
+
+		  "bjorn_wearingweapons" ) LOOK_ID=${WearingWeapons};;
+		  "swordbjorn_shield"    ) LOOK_ID=${ArmedWithASwordAndAShield};;
+
+		  "burra"                ) LOOK_ID=${ArmedWithASword};;
+		  "elsa"                 ) LOOK_ID=${Unarmed};;
+
+		  "freya_axe"            ) LOOK_ID=${ArmedWithAnAxe};;
+		  "freya_wearingweapons" ) LOOK_ID=${WearingWeapons};;
+		  "freya_noarms"         ) LOOK_ID=${Unarmed};;
+
+		  "horst"                ) LOOK_ID=${ArmedWithACanneFIXME};;
+		  "john_doe_santa"       ) LOOK_ID=${ArmedWithABell};;
+		  "katie"                ) LOOK_ID=${Unarmed};;
+		  "lilly"                ) LOOK_ID=${Unarmed};;
+
+		  "bowstan"              ) LOOK_ID=${ArmedWithABow};;
+		  "clubstan"             ) LOOK_ID=${ArmedWithAClub};;
+		  "axestan"              ) LOOK_ID=${ArmedWithAnAxe};;
+		  "axestan_shield"       ) LOOK_ID=${ArmedWithAnAxeAndAShield};;
+		  "staffstan"            ) LOOK_ID=${ArmedWithAStaff};;
+		  "swordstan"            ) LOOK_ID=${ArmedWithASword};;
+		  "swordstan_shield"     ) LOOK_ID=${ArmedWithASwordAndAShield};;
+		  "stanunarmed"          ) LOOK_ID=${Unarmed};;
+		  *                      ) 
 		  	echo "Error, unexpected outside look (${LOOK})"
 			exit 12;;
 			
@@ -252,6 +281,7 @@ transform_to_png_in()
 		${MV} -f $f ${TARGET_FILE}
 	done
 	
+	# Some special cases to handle:
 	case "${LOCAL_TILESET_DIR}" in
 	
 		"bowstan" )
@@ -272,7 +302,7 @@ transform_to_png_in()
 				TARGET_FILE=`echo $f|sed 's|^naormstan-||1'`
 				echo "Renaming $f to ${TARGET_FILE}"
 				${MV} -f $f ${TARGET_FILE}
-			done;;					
+			done ;;					
 				
 	esac 
 	
@@ -286,14 +316,41 @@ transform_to_png_in()
 	rename_if_exist stopped0006.bmp stopped-e0006.bmp
 	rename_if_exist stopped0007.bmp stopped-se0007.bmp
 	
+	# Scaled objects:
 	case "${LOCAL_TILESET_DIR}" in
 
-		"arno"  			) THIS_OBJECT_RATIO=85 ;; 
-
-		"bjornunarmed"  	) THIS_OBJECT_RATIO=80 ;; 
-		"swordbjorn_shield" ) THIS_OBJECT_RATIO=80 ;;
+		"anna"  			    ) THIS_OBJECT_RATIO=100 ;;
+		"arno"  			    ) THIS_OBJECT_RATIO=85  ;;
+		"billy"  			    ) THIS_OBJECT_RATIO=100 ;;
+		 
+		"bjorn_wearingweapons"  ) THIS_OBJECT_RATIO=80  ;; 
+		"swordbjorn_shield"     ) THIS_OBJECT_RATIO=80  ;;
 		
-		* ) THIS_OBJECT_RATIO=100 ;;
+		"burra"                 ) THIS_OBJECT_RATIO=95  ;;
+		"elsa"                  ) THIS_OBJECT_RATIO=90  ;;
+
+		"freya_axe"             ) THIS_OBJECT_RATIO=80  ;;
+		"freya_wearingweapons"  ) THIS_OBJECT_RATIO=80  ;;
+		"freya_noarms"          ) THIS_OBJECT_RATIO=80  ;;
+
+		"horst"                 ) THIS_OBJECT_RATIO=75  ;;
+		"john_doe_santa"        ) THIS_OBJECT_RATIO=70  ;;
+		"katie"                 ) THIS_OBJECT_RATIO=80  ;;
+		"lilly"                 ) THIS_OBJECT_RATIO=70  ;;
+
+		"bowstan"               ) THIS_OBJECT_RATIO=90  ;;
+		"clubstan"              ) THIS_OBJECT_RATIO=90  ;;
+		"axestan"               ) THIS_OBJECT_RATIO=90  ;;
+		"axestan_shield"        ) THIS_OBJECT_RATIO=90  ;;
+		"staffstan"             ) THIS_OBJECT_RATIO=90  ;;
+		"swordstan"             ) THIS_OBJECT_RATIO=90  ;;
+		"swordstan_shield"      ) THIS_OBJECT_RATIO=90  ;;
+		"stanunarmed"           ) THIS_OBJECT_RATIO=90  ;;
+
+		
+		*                       ) 
+		  	echo "Error, no scale factor specified for object ${LOCAL_TILESET_DIR})"
+			exit 13;;
 				
 	esac 
 	
@@ -386,6 +443,8 @@ if [ ! -d "${GUESSED_CEYLAN_ROOT}" ]; then
 	exit 20
 fi
 
+
+# Checking correcter script:
 CORRECT_SCRIPT="${GUESSED_CEYLAN_ROOT}/code/scripts/shell/correctFilename.sh"
 #echo "CORRECT_SCRIPT = ${CORRECT_SCRIPT}"
 
@@ -394,6 +453,20 @@ if [ ! -x "${CORRECT_SCRIPT}" ]; then
 	Error, unable to find prerequesite executable script (${CORRECT_SCRIPT})." 1>&2
 	exit 21
 fi
+
+
+# Checking conversion tool:
+CONVERT_TOOL=`which convert 2>/dev/null`
+#echo "CONVERT_TOOL = ${CONVERT_TOOL}"
+
+if [ ! -x ${CONVERT_TOOL} ]; then
+	echo "
+	Error, unable to find 'convert' tool from ImageMagick package.
+	Install it for example with 'apt-get install imagemagick'.
+	" 1>&2
+	exit 21
+fi
+
 
 OSDL_TRUNK=`dirname $0`/../../../..
 
@@ -426,36 +499,39 @@ ARCHIVE_NAME=`basename ${TILESET_ARCHIVE}`
 
 if [ $do_preserve_content -eq 1 ]; then
 
-	if [ "${TILESET_DIR}" = "bjorn" ]; then
+	case "${TILESET_DIR}" in
 	
-		if [ -d "bjornunarmed" ]; then
-			${RM} -rf bjornunarmed 
-		fi
+		"bjorn" )
+			if [ -d "bjorn_wearingweapons" ]; then
+				${RM} -rf bjorn_wearingweapons 
+			fi
 		
-		if [ -d "swordbjorn_shield" ]; then
-			${RM} -rf swordbjorn_shield
-		fi
-		
-	else	
+			if [ -d "swordbjorn_shield" ]; then
+				${RM} -rf swordbjorn_shield
+			fi ;;
 	
-		if [ -d "${TILESET_DIR}" ]; then
-			${RM} -rf ${TILESET_DIR}
-		fi
+		"freya_axe" )
+			if [ -d "freya_wearingweapons" ]; then
+				${RM} -rf freya_wearingweapons 
+			fi
 		
-	fi
+			if [ -d "freya_axe" ]; then
+				${RM} -rf freya_axe
+			fi
+	
+			if [ -d "freya_noarms" ]; then
+				${RM} -rf freya_noarms
+			fi ;;
+	
+		
+		* )
+			if [ -d "${TILESET_DIR}" ]; then
+				${RM} -rf ${TILESET_DIR}
+			fi ;;
+		
+	esac
+
 fi
-
-CONVERT_TOOL=`which convert 2>/dev/null`
-#echo "CONVERT_TOOL = ${CONVERT_TOOL}"
-
-if [ ! -x ${CONVERT_TOOL} ]; then
-	echo "
-	Error, unable to find 'convert' tool from ImageMagick package.
-	Install it for example with 'apt-get install imagemagick'.
-	" 1>&2
-	exit 21
-fi
-
 
 
 # Perform the work:
@@ -471,22 +547,38 @@ if [ $do_uncompress -eq 0 ]; then
 	# -o: overwrite existing files without prompting
 	unzip -o ../${TILESET_ARCHIVE}
 
-	if [ "${TILESET_DIR}" = "bjorn" ] ; then
+	# Some archives contain multiple outside looks:
+	case "${TILESET_DIR}" in
 	
-		# In bjorn archive there are actually two attitudes:
-		${MKDIR} ../bjornunarmed ../swordbjorn_shield
+	
+		"bjorn" )
+			# In bjorn archive there are actually two outside looks:
+			${MKDIR} ../bjorn_wearingweapons ../swordbjorn_shield
 		
-		find 'town 96x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../bjornunarmed ';'
+			find 'town 96x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../bjorn_wearingweapons ';'
 		
-		# The rest is in 'battlefield*':
-		find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../swordbjorn_shield ';'
+			# The rest is in 'battlefield*':
+			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../swordbjorn_shield ';'
+			;;
+			
+			
+		"freya_axe" )
+			# In this archive there are actually two attitudes:
+			${MKDIR} ../freya_wearingweapons ../freya_axe
+		
+			find 'freya axe bitmaps/town' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../freya_wearingweapons ';'
+		
+			# The rest is in 'battlefield':
+			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../freya_axe ';'
+			;;
+				
+				
+		* )
+			${MKDIR} ../${TILESET_DIR}
+			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../${TILESET_DIR} ';'
 	
-	else
 	
-		${MKDIR} ../${TILESET_DIR}
-		find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../${TILESET_DIR} ';'
-	
-	fi
+	esac	
 	
 	cd ..
 	
@@ -497,26 +589,39 @@ fi
 
 if [ $do_correct_name -eq 0 ] ; then
 
-	if [ "${TILESET_DIR}" = "bjorn" ] ; then
-		correct_names bjornunarmed 
-		correct_names swordbjorn_shield
-	else
-		correct_names ${TILESET_DIR}
-	fi
+	case "${TILESET_DIR}" in
+	
+		"bjorn" )
+			correct_names bjorn_wearingweapons 
+			correct_names swordbjorn_shield ;;
+		
+		"freya_axe" )
+			correct_names freya_axe 
+			correct_names freya_wearingweapons ;;
+		
+		* )	
+			correct_names ${TILESET_DIR} ;;
+			
+	esac
 	
 fi
 
 
 if [ $do_transform_to_png -eq 0 ]; then
 
-	if [ "${TILESET_DIR}" = "bjorn" ] ; then
+	case "${TILESET_DIR}" in
 	
-		transform_to_png_in bjornunarmed		
-		transform_to_png_in swordbjorn_shield
-		
-	else
-		transform_to_png_in ${TILESET_DIR}
-	fi
+		"bjorn" )
+			transform_to_png_in bjorn_wearingweapons		
+			transform_to_png_in swordbjorn_shield ;;
+	
+		"freya_axe" )
+			transform_to_png_in freya_axe		
+			transform_to_png_in freya_wearingweapons ;;
+			
+		* )
+			transform_to_png_in ${TILESET_DIR}
+	esac
 		
 fi
 
@@ -544,6 +649,7 @@ if [ $do_zip_result -eq 0 ]; then
 	mv -f ${TILESET_DIR} ${NEW_TILESET_DIR}
 	zip -9 -r ${TARGET_ARCHIVE_NAME} ${TILESET_DIR} ${NEW_TILESET_DIR}
 	rm -rf ${NEW_TILESET_DIR}
+	
 fi
 
 
