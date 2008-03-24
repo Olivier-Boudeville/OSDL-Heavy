@@ -2,7 +2,7 @@
 
 # (bash needed for arithmetics and al)
 
-USAGE=`basename $0`" <tileset archive> <identifier directory>: processes a bitmap archive (ex: 'T_swordstan_shield.zip') from the splendid animated tilesets coming from Reiner 'Tiles' Prokein (http://reinerstileset.4players.de) to convert them for OSDL use. The identifier directory (ex: "
+USAGE=`basename $0`" <tileset archive>: processes a bitmap archive (ex: 'T_swordstan_shield.zip') from the splendid animated tilesets coming from Reiner 'Tiles' Prokein (http://reinerstileset.4players.de) to convert them for OSDL use"
 
 
 do_preserve_content=1
@@ -26,8 +26,81 @@ ANIMATED_OBJECT=`basename $PWD`
 #echo "ANIMATED_OBJECT = ${ANIMATED_OBJECT}"
 
 # The zoom out factor, in percent, to reduce original size to in-game targeted
-# one (subsequent per-animated object ration may be applied too):
+# one (subsequent per-animated object ratios are applied too):
 DOWNSCALE_RATIO="50"
+
+# Static options used with ImageMagick tool:
+CONVERT_STATIC_OPT="-strip -quality 100 -sharpen 1x.5 -filter Lanczos"
+#CONVERT_STATIC_OPT="-antialias"
+
+
+
+get_scaling_ratio_for()
+# Returns, in THIS_OBJECT_RATIO variable, the scaling ratio corresponding to
+# the animated object specified in $1.
+{
+	
+	TARGET_OBJECT="$1"
+	
+	# Scaled objects:
+	case "${TARGET_OBJECT}" in
+
+		"anna"  			    ) THIS_OBJECT_RATIO=100 ;;
+		"arno"  			    ) THIS_OBJECT_RATIO=87  ;;
+		"billy"  			    ) THIS_OBJECT_RATIO=100 ;;
+		 
+		"bjorn_wearing_weapons" ) THIS_OBJECT_RATIO=75  ;; 
+		"bjorn_sword_shield"    ) THIS_OBJECT_RATIO=75  ;;
+		
+		"burra"                 ) THIS_OBJECT_RATIO=95  ;;
+		"elsa"                  ) THIS_OBJECT_RATIO=92  ;;
+
+		"freya_axe"             ) THIS_OBJECT_RATIO=80  ;;
+		"freya_wearing_weapons" ) THIS_OBJECT_RATIO=80  ;;
+		"freya_noarms"          ) THIS_OBJECT_RATIO=80  ;;
+
+		"horst"                 ) THIS_OBJECT_RATIO=80  ;;
+		"john_doe_santa"        ) THIS_OBJECT_RATIO=78  ;;
+		"katie"                 ) THIS_OBJECT_RATIO=80  ;;
+		"lilly"                 ) THIS_OBJECT_RATIO=70  ;;
+
+		"luigi_unarmed"         ) THIS_OBJECT_RATIO=70  ;;
+		"luigi_bread"           ) THIS_OBJECT_RATIO=70  ;;
+		"luigi_pancake"         ) THIS_OBJECT_RATIO=70  ;;
+
+		"luzia_the_witch"       ) THIS_OBJECT_RATIO=75  ;;
+		"luziasheep"            ) THIS_OBJECT_RATIO=100 ;;
+
+		"mrs_ruin"              ) THIS_OBJECT_RATIO=80  ;;
+
+		"rosalila"              ) THIS_OBJECT_RATIO=85  ;;
+		
+		"bowstan"               ) THIS_OBJECT_RATIO=90  ;;
+		"clubstan"              ) THIS_OBJECT_RATIO=90  ;;
+		"axestan"               ) THIS_OBJECT_RATIO=90  ;;
+		"axestan_shield"        ) THIS_OBJECT_RATIO=90  ;;
+		"staffstan"             ) THIS_OBJECT_RATIO=90  ;;
+		"swordstan"             ) THIS_OBJECT_RATIO=90  ;;
+		"swordstan_shield"      ) THIS_OBJECT_RATIO=90  ;;
+		"stanunarmed"           ) THIS_OBJECT_RATIO=90  ;;
+
+		"vlad_axe" 		        ) THIS_OBJECT_RATIO=90  ;;
+		"vlad_sword" 		    ) THIS_OBJECT_RATIO=90  ;;
+		"vlad" 		            ) THIS_OBJECT_RATIO=90  ;;
+
+		"willy"                 ) THIS_OBJECT_RATIO=85  ;;
+		"hammerwilly"           ) THIS_OBJECT_RATIO=85  ;;
+		"schaufelwilly"         ) THIS_OBJECT_RATIO=85  ;;
+		"transportwilly"        ) THIS_OBJECT_RATIO=85  ;;
+		
+		*                       ) 
+		  	echo "Error, no scale factor specified for object ${TARGET_OBJECT}"
+			exit 13
+			;;
+				
+	esac 
+
+}
 
 
 
@@ -66,16 +139,16 @@ rename_resource_file()
 	# Order is the one of identifiers (in directions.id): 
 	case "${DIRECTION}" in
 	
-		  "e"  ) DIRECTION_ID=${East};;
-		  "n"  ) DIRECTION_ID=${North};;
-		  "ne" ) DIRECTION_ID=${NorthEast};;
-		  "nw" ) DIRECTION_ID=${NorthWest};;
-		  "s"  ) DIRECTION_ID=${South};;
-		  "se" ) DIRECTION_ID=${SouthEast};;
-		  "sw" ) DIRECTION_ID=${SouthWest};;
-		  "w"  ) DIRECTION_ID=${West};;
-		  *    ) 
-		  	echo "Error, unexpected direction (${DIRECTION})"
+		"e"  ) DIRECTION_ID=${East};;
+		"n"  ) DIRECTION_ID=${North};;
+		"ne" ) DIRECTION_ID=${NorthEast};;
+		"nw" ) DIRECTION_ID=${NorthWest};;
+		"s"  ) DIRECTION_ID=${South};;
+		"se" ) DIRECTION_ID=${SouthEast};;
+		"sw" ) DIRECTION_ID=${SouthWest};;
+		"w"  ) DIRECTION_ID=${West};;
+		*    ) 
+			echo "Error, unexpected direction (${DIRECTION})"
 			exit 10;;
 			
 	esac      
@@ -91,64 +164,85 @@ rename_resource_file()
 	# Order is the one of identifiers (in attitudes.id): 
 	case "${ATTITUDE}" in
 	
-		  "attack" ) 
-		  	ATTITUDE_ID=${BasicAttack};;
+		"attack" ) 
+			ATTITUDE_ID=${BasicAttack};;
 
-		  "stopped" | "steht" ) 
-		  	ATTITUDE_ID=${BeStill};;
-		  
-		  "been-hit" | "treffer" ) 
+		"been-hit" | "treffer" ) 
 		  	ATTITUDE_ID=${BeenHit};;
 
-		  "bückt-sich" )
+		"bückt-sich" )
 		  	ATTITUDE_ID=${Bend};;
 
-		  "labert" ) 
+		"stopped" | "steht" ) 
+		  	ATTITUDE_ID=${BeStill};;	  
+
+		"biting" )
+		  	ATTITUDE_ID=${Bite};;
+
+		"digging" )
+		  	ATTITUDE_ID=${Dig};;
+
+		"eating" ) 
+		  	ATTITUDE_ID=${Eat};;	  
+
+		"labert" ) 
 		  	ATTITUDE_ID=${Enjoy};;
 
-		  "hand-attack" )
+		"building" )
+		  	ATTITUDE_ID=${Hammer};;
+
+		"hand-attack" )
 		  	ATTITUDE_ID=${HandAttack};;
 
-		  "hikick" )
+		"hikick" )
 		  	ATTITUDE_ID=${HiKick};;
 
-		  "knit" | "strickt" ) 
+		"knit" | "strickt" ) 
 		  	ATTITUDE_ID=${Knit};;
 
-		  "looking" ) 
+		"looking" ) 
 		  	ATTITUDE_ID=${Look};;
 		  		  
-		  "lowkick" ) 
+		"lowkick" ) 
 		  	ATTITUDE_ID=${LowKick};;
 		  		 
-		  "magic-attack" ) 
+		"magic-attack" ) 
 		  	ATTITUDE_ID=${MagicAttack};;
 
-		  "pickup" ) 
-		  	ATTITUDE_ID=${PickFIXME};;
+		"pickup" | "pick-up" ) 
+		  	ATTITUDE_ID=${PickUp};;
+			
+		"laydown" ) 
+		  	ATTITUDE_ID=${PutOnTheFloor};;
 
-		  "ringing" ) 
+		"ringing" ) 
 		  	ATTITUDE_ID=${Ring};;
 
-		  "running" | "rennt" ) 
+		"rest" ) 
+		  	ATTITUDE_ID=${Rest};;
+
+		"running" | "rennt" ) 
 		  	ATTITUDE_ID=${Run};;
 		  
-		  "talking" | "spricht" ) 
-		  	ATTITUDE_ID=${Talk};;
-			
-		  "greeting" ) 
+		"greeting" ) 
 		  	ATTITUDE_ID=${Salute};;
+
+		"talking" | "spricht" ) 
+		  	ATTITUDE_ID=${Talk};;
 		  
-		  "tipping-over" | "kippt-um" ) 
+		"throwing" ) 
+		  	ATTITUDE_ID=${Throw};;
+		  
+		"tipping-over" | "kippt-um" ) 
 		  	ATTITUDE_ID=${TipOver};;
 		  
-		  "paused" ) 
+		"paused" ) 
 		  	ATTITUDE_ID=${Wait};;
 
-		  "walking" | "läuft" ) 
+		"walking" | "läuft" | "walk" ) 
 		  	ATTITUDE_ID=${Walk};;
-		 		  	
-		  * ) 
+		
+		* ) 
 		  	echo "Error, unexpected attitude (${ATTITUDE})"
 			exit 11;;
 			
@@ -162,36 +256,58 @@ rename_resource_file()
 	LOOK=${LOCAL_TILESET_DIR}
 	case "${LOOK}" in
 	
-		  "anna"                 ) LOOK_ID=${Unarmed};;
-		  "arno"                 ) LOOK_ID=${Unarmed};;
-		  "billy"                ) LOOK_ID=${Unarmed};;
+		"anna"                  ) LOOK_ID=${Unarmed};;
+		"arno"                  ) LOOK_ID=${Unarmed};;
+		"billy"                 ) LOOK_ID=${Unarmed};;
 
-		  "bjorn_wearingweapons" ) LOOK_ID=${WearingWeapons};;
-		  "swordbjorn_shield"    ) LOOK_ID=${ArmedWithASwordAndAShield};;
+		"bjorn_wearing_weapons" ) LOOK_ID=${WearingWeapons};;
+		"bjorn_sword_shield"    ) LOOK_ID=${ArmedWithASwordAndAShield};;
 
-		  "burra"                ) LOOK_ID=${ArmedWithASword};;
-		  "elsa"                 ) LOOK_ID=${Unarmed};;
+		"burra"                 ) LOOK_ID=${ArmedWithASword};;
+		"elsa"                  ) LOOK_ID=${Unarmed};;
 
-		  "freya_axe"            ) LOOK_ID=${ArmedWithAnAxe};;
-		  "freya_wearingweapons" ) LOOK_ID=${WearingWeapons};;
-		  "freya_noarms"         ) LOOK_ID=${Unarmed};;
+		"freya_axe"             ) LOOK_ID=${ArmedWithAnAxe};;
+		"freya_wearing_weapons" ) LOOK_ID=${WearingWeapons};;
+		"freya_noarms"          ) LOOK_ID=${Unarmed};;
 
-		  "horst"                ) LOOK_ID=${ArmedWithACanneFIXME};;
-		  "john_doe_santa"       ) LOOK_ID=${ArmedWithABell};;
-		  "katie"                ) LOOK_ID=${Unarmed};;
-		  "lilly"                ) LOOK_ID=${Unarmed};;
+		"horst"                 ) LOOK_ID=${ArmedWithAStick};;
+		"john_doe_santa"        ) LOOK_ID=${ArmedWithABell};;
+		"katie"                 ) LOOK_ID=${Unarmed};;
+		"lilly"                 ) LOOK_ID=${Unarmed};;
 
-		  "bowstan"              ) LOOK_ID=${ArmedWithABow};;
-		  "clubstan"             ) LOOK_ID=${ArmedWithAClub};;
-		  "axestan"              ) LOOK_ID=${ArmedWithAnAxe};;
-		  "axestan_shield"       ) LOOK_ID=${ArmedWithAnAxeAndAShield};;
-		  "staffstan"            ) LOOK_ID=${ArmedWithAStaff};;
-		  "swordstan"            ) LOOK_ID=${ArmedWithASword};;
-		  "swordstan_shield"     ) LOOK_ID=${ArmedWithASwordAndAShield};;
-		  "stanunarmed"          ) LOOK_ID=${Unarmed};;
-		  *                      ) 
-		  	echo "Error, unexpected outside look (${LOOK})"
-			exit 12;;
+		"luigi_unarmed"         ) LOOK_ID=${Unarmed};;
+		"luigi_bread"           ) LOOK_ID=${HoldingBread};;
+		"luigi_pancake"         ) LOOK_ID=${HoldingAFryingPan};;
+
+		"luzia_the_witch"       ) LOOK_ID=${Unarmed};;
+		"luziasheep"            ) LOOK_ID=${TransformedIntoSheep};;
+
+		"mrs_ruin"              ) LOOK_ID=${Unarmed};;
+
+		"rosalila"              ) LOOK_ID=${Unarmed};;
+		
+		"bowstan"               ) LOOK_ID=${ArmedWithABow};;
+		"clubstan"              ) LOOK_ID=${ArmedWithAClub};;
+		"axestan"               ) LOOK_ID=${ArmedWithAnAxe};;
+		"axestan_shield"        ) LOOK_ID=${ArmedWithAnAxeAndAShield};;
+		"staffstan"             ) LOOK_ID=${ArmedWithAStaff};;
+		"swordstan"             ) LOOK_ID=${ArmedWithASword};;
+		"swordstan_shield"      ) LOOK_ID=${ArmedWithASwordAndAShield};;
+		"stanunarmed"           ) LOOK_ID=${Unarmed};;
+
+		"vlad_axe" 		        ) LOOK_ID=${ArmedWithAnAxe};;
+		"vlad_sword" 		    ) LOOK_ID=${ArmedWithASword};;
+		"vlad" 		            ) LOOK_ID=${Unarmed};;
+
+		"willy"                 ) LOOK_ID=${Unarmed};;
+		"hammerwilly"           ) LOOK_ID=${HoldingAHammer};;
+		"schaufelwilly"         ) LOOK_ID=${HoldingAShovel};;
+		"transportwilly"        ) LOOK_ID=${HoldingABag};;
+		
+		*                       ) 
+			echo "Error, unexpected outside look (${LOOK})"
+			exit 12
+			;;
 			
 	esac      
 
@@ -199,6 +315,7 @@ rename_resource_file()
 canonical_name_result="${ANIMATED_OBJECT_ID}-${LOOK_ID}-${ATTITUDE_ID}-${DIRECTION_ID}-${FRAME_ID}.png"
 
 }
+
 
 
 test_rename()
@@ -224,6 +341,19 @@ rename_if_exist()
 }
 
 
+
+remove_dir_if_exist()
+# Removes $1 if it is exists and is a directory.
+{
+	
+	if [ -d "$1" ]; then
+		${RM} -rf "$1" 
+	fi
+
+}
+	
+
+
 correct_names()
 # Correct names in specified directory.
 {
@@ -244,6 +374,31 @@ correct_names()
 	cd ${CURRENT_DIR}
 
 }
+
+
+
+convert_frame()
+# Converts specified BMP file (in $1) into specified PNG file (in $2) with
+# the specified object ratio (in $3).
+{
+	
+	# TO-DO: fix color key ?
+	
+	SOURCE_FILE=$1
+	TARGET_FILE=$2
+	THIS_OBJECT_RATIO=$3
+	
+	ACTUAL_RATIO=$(( ${DOWNSCALE_RATIO} * ${THIS_OBJECT_RATIO} / 100 ))
+	 	
+	CONVERT_OPT="${CONVERT_STATIC_OPT} -resize ${ACTUAL_RATIO}%"
+	
+	echo "+ transforming ${SOURCE_FILE} and replacing it by ${TARGET_FILE}"
+	echo	
+	${CONVERT_TOOL} ${CONVERT_OPT} ${SOURCE_FILE} ${TARGET_FILE}
+	${RM} -f ${SOURCE_FILE}
+
+}
+
 
 
 transform_to_png_in()
@@ -267,7 +422,7 @@ transform_to_png_in()
 		${MV} -f $f `echo $f|sed "s|^${LOCAL_TILESET_DIR}-||1"`		
 	done
 
-	# (ex: 'stan-strickt-s0001.bmp' -> 'strickt-s0001.bmp')
+	# Other prefix (ex: 'stan-strickt-s0001.bmp' -> 'strickt-s0001.bmp')
 	for f in `/bin/ls stan-* 2>/dev/null`; do
 		echo "Renaming $f to "`echo $f|sed "s|^stan-||1"`
 		${MV} -f $f `echo $f|sed "s|^stan-||1"`		
@@ -284,12 +439,30 @@ transform_to_png_in()
 	# Some special cases to handle:
 	case "${LOCAL_TILESET_DIR}" in
 	
+	
 		"bowstan" )
 			# Arrows are stored in original bowstan archive, whereas for 
 			# us they are a separate object, created here:
 			ARROW_DIR="../../../../../Objects/Weapons/Arrows/SimpleArrow"
-			echo "Moving arrows to ${ARROW_DIR} from "`pwd`
-			${MKDIR} ${ARROW_DIR};;
+			${MKDIR} ${ARROW_DIR}
+
+			# Sets THIS_OBJECT_RATIO:
+			get_scaling_ratio_for bowstan
+			ACTUAL_RATIO=$(( ${DOWNSCALE_RATIO} * ${THIS_OBJECT_RATIO} / 100 ))
+
+			echo "Moving arrows to ${ARROW_DIR} from "`pwd`", with scaling ratio ${ACTUAL_RATIO}%"
+			
+			for f in `/bin/ls arrow*.bmp 2>/dev/null` ; do
+			
+				PREFIX=`echo ${f}|sed 's|^\./||1'|sed 's|.bmp$||1'`
+				FRAME=`echo ${PREFIX}|tail -c 5` 	
+				FRAME_ID=`expr ${FRAME} + 0`
+				TARGET_FILE="${ARROW_DIR}/Arrow-${FRAME_ID}.png"
+				convert_frame $f ${TARGET_FILE} ${THIS_OBJECT_RATIO}
+				
+			done
+			;;
+		
 		
 		"stanunarmed" )
 			for f in `/bin/ls noarmstan-* 2>/dev/null` ; do
@@ -302,71 +475,122 @@ transform_to_png_in()
 				TARGET_FILE=`echo $f|sed 's|^naormstan-||1'`
 				echo "Renaming $f to ${TARGET_FILE}"
 				${MV} -f $f ${TARGET_FILE}
-			done ;;					
+			done 
+			;;					
+				
+				
+		"rosalila" )
+			# The rocking chair is stored in original rosalila archive, 
+			# whereas for us it is a separate object, created here:
+			CHAIR_DIR="../../../../../Objects/Furniture"
+			${MKDIR} ${CHAIR_DIR}
+
+			ROCKIN_CHAIR_INITIAL='nur-stuhl.bmp'
+			TARGET_FILE="${CHAIR_DIR}/Rocking-chair.png"
+
+			# Sets THIS_OBJECT_RATIO:
+			get_scaling_ratio_for rosalila
+
+			convert_frame "${ROCKIN_CHAIR_INITIAL}" "${TARGET_FILE}" ${THIS_OBJECT_RATIO}
+			
+			# Other problem: when Rosalila is in her rocking-chair, only the
+			# south-west direction is actually available:
+			${MV} -f 'im-schaukelstuhl.bmp'   rest-sw0000.bmp		 
+			${MV} -f 'im-schaukelstuhl1.bmp'  rest-sw0001.bmp		
+			${MV} -f 'im-schaukelstuhl2.bmp'  rest-sw0002.bmp 		
+			${MV} -f 'im-schaukelstuhl3.bmp'  rest-sw0003.bmp 		
+			${MV} -f 'im-schaukelstuhl4.bmp'  rest-sw0004.bmp 		
+			${MV} -f 'im-schaukelstuhl5.bmp'  rest-sw0005.bmp 		
+			${MV} -f 'im-schaukelstuhl6.bmp'  rest-sw0006.bmp 		
+			${MV} -f 'im-schaukelstuhl7.bmp'  rest-sw0007.bmp 		
+			${MV} -f 'im-schaukelstuhl8.bmp'  rest-sw0008.bmp		 
+			${MV} -f 'im-schaukelstuhl9.bmp'  rest-sw0009.bmp		 
+			${MV} -f 'im-schaukelstuhl10.bmp' rest-sw0010.bmp		 
+			${MV} -f 'im-schaukelstuhl11.bmp' rest-sw0011.bmp		 
+			${MV} -f 'im-schaukelstuhl12.bmp' rest-sw0012.bmp		 
+			;;					
+				
+				
+		"hammerwilly" )
+			# The hammer is stored in original hammerwilly archive, 
+			# whereas for us it is a separate object, created here:
+			HAMMER_DIR="../../../../../Objects/Tools"
+			${MKDIR} ${HAMMER_DIR}
+
+			HAMMER_INITIAL='hammer-at-ground.bmp'
+			TARGET_FILE="${HAMMER_DIR}/Hammer.png"
+
+			# Sets THIS_OBJECT_RATIO:
+			#get_scaling_ratio_for hammerwilly
+			# Full-sized, otherwise too small:
+			THIS_OBJECT_RATIO=100
+			
+			convert_frame "${HAMMER_INITIAL}" "${TARGET_FILE}" ${THIS_OBJECT_RATIO}
+			;;
+			
+			
+		"schaufelwilly" )
+			# The shovel is stored in original schaufelwilly archive, 
+			# whereas for us it is a separate object, created here:
+			SHOVEL_DIR="../../../../../Objects/Tools"
+			${MKDIR} ${SHOVEL_DIR}
+
+			SHOVEL_INITIAL='schaufel-at-ground.bmp'
+			TARGET_FILE="${SHOVEL_DIR}/Shovel.png"
+
+			# Sets THIS_OBJECT_RATIO:
+			#get_scaling_ratio_for schaufelwilly
+			# Full-sized, otherwise too small:
+			THIS_OBJECT_RATIO=100
+
+			convert_frame "${SHOVEL_INITIAL}" "${TARGET_FILE}" ${THIS_OBJECT_RATIO}
+			
+			# Other problem: bending animation for south lacks direction, 
+			# let's fix the filenames:
+			${MV} -f 'bückt-sich0000.bmp' 'bückt-sich-s0000.bmp'
+			${MV} -f 'bückt-sich0001.bmp' 'bückt-sich-s0001.bmp'
+			${MV} -f 'bückt-sich0002.bmp' 'bückt-sich-s0002.bmp'
+			${MV} -f 'bückt-sich0003.bmp' 'bückt-sich-s0003.bmp'
+			${MV} -f 'bückt-sich0004.bmp' 'bückt-sich-s0004.bmp'
+			${MV} -f 'bückt-sich0005.bmp' 'bückt-sich-s0005.bmp'
+			${MV} -f 'bückt-sich0006.bmp' 'bückt-sich-s0006.bmp'
+			${MV} -f 'bückt-sich0007.bmp' 'bückt-sich-s0007.bmp'
+			${MV} -f 'bückt-sich0008.bmp' 'bückt-sich-s0008.bmp'
+			;;
+			
 				
 	esac 
+	
 	
 	# Here, 'stopped' attitude lacks direction:
 	rename_if_exist stopped0000.bmp stopped-s0000.bmp
-	rename_if_exist stopped0001.bmp stopped-sw0001.bmp
-	rename_if_exist stopped0002.bmp stopped-w0002.bmp
-	rename_if_exist stopped0003.bmp stopped-nw0003.bmp
-	rename_if_exist stopped0004.bmp stopped-n0004.bmp
-	rename_if_exist stopped0005.bmp stopped-ne0005.bmp
-	rename_if_exist stopped0006.bmp stopped-e0006.bmp
-	rename_if_exist stopped0007.bmp stopped-se0007.bmp
-	
-	# Scaled objects:
-	case "${LOCAL_TILESET_DIR}" in
+	rename_if_exist stopped0001.bmp stopped-sw0000.bmp
+	rename_if_exist stopped0002.bmp stopped-w0000.bmp
+	rename_if_exist stopped0003.bmp stopped-nw0000.bmp
+	rename_if_exist stopped0004.bmp stopped-n0000.bmp
+	rename_if_exist stopped0005.bmp stopped-ne0000.bmp
+	rename_if_exist stopped0006.bmp stopped-e0000.bmp
+	rename_if_exist stopped0007.bmp stopped-se0000.bmp
 
-		"anna"  			    ) THIS_OBJECT_RATIO=100 ;;
-		"arno"  			    ) THIS_OBJECT_RATIO=85  ;;
-		"billy"  			    ) THIS_OBJECT_RATIO=100 ;;
-		 
-		"bjorn_wearingweapons"  ) THIS_OBJECT_RATIO=80  ;; 
-		"swordbjorn_shield"     ) THIS_OBJECT_RATIO=80  ;;
+	# Here, 'stopped' attitude lacks frame numbering:
+	rename_if_exist stopped-e.bmp  stopped-e0000.bmp
+	rename_if_exist stopped-n.bmp  stopped-n0000.bmp
+	rename_if_exist stopped-ne.bmp stopped-ne0000.bmp
+	rename_if_exist stopped-nw.bmp stopped-nw0000.bmp
+	rename_if_exist stopped-s.bmp  stopped-s0000.bmp
+	rename_if_exist stopped-se.bmp stopped-se0000.bmp
+	rename_if_exist stopped-sw.bmp stopped-sw0000.bmp
+	rename_if_exist stopped-w.bmp  stopped-w0000.bmp
 		
-		"burra"                 ) THIS_OBJECT_RATIO=95  ;;
-		"elsa"                  ) THIS_OBJECT_RATIO=90  ;;
-
-		"freya_axe"             ) THIS_OBJECT_RATIO=80  ;;
-		"freya_wearingweapons"  ) THIS_OBJECT_RATIO=80  ;;
-		"freya_noarms"          ) THIS_OBJECT_RATIO=80  ;;
-
-		"horst"                 ) THIS_OBJECT_RATIO=75  ;;
-		"john_doe_santa"        ) THIS_OBJECT_RATIO=70  ;;
-		"katie"                 ) THIS_OBJECT_RATIO=80  ;;
-		"lilly"                 ) THIS_OBJECT_RATIO=70  ;;
-
-		"bowstan"               ) THIS_OBJECT_RATIO=90  ;;
-		"clubstan"              ) THIS_OBJECT_RATIO=90  ;;
-		"axestan"               ) THIS_OBJECT_RATIO=90  ;;
-		"axestan_shield"        ) THIS_OBJECT_RATIO=90  ;;
-		"staffstan"             ) THIS_OBJECT_RATIO=90  ;;
-		"swordstan"             ) THIS_OBJECT_RATIO=90  ;;
-		"swordstan_shield"      ) THIS_OBJECT_RATIO=90  ;;
-		"stanunarmed"           ) THIS_OBJECT_RATIO=90  ;;
-
-		
-		*                       ) 
-		  	echo "Error, no scale factor specified for object ${LOCAL_TILESET_DIR})"
-			exit 13;;
+	# Sets THIS_OBJECT_RATIO:
+	get_scaling_ratio_for "${LOCAL_TILESET_DIR}"
 				
-	esac 
-	
-	ACTUAL_RATIO=$(( ${DOWNSCALE_RATIO} * ${THIS_OBJECT_RATIO} / 100 ))
-	 	
-	CONVERT_OPT="-strip -quality 100 -sharpen 1x.5 -filter Lanczos -resize ${ACTUAL_RATIO}%"
-	
-	#CONVERT_OPT="-antialias"
-	
 	for f in `find . -name '*.bmp'`; do
-		
-		rename_resource_file $f $LOCAL_TILESET_DIR
-		echo
-		echo "+ transforming $f and replacing it by $canonical_name_result"
-		${CONVERT_TOOL} ${CONVERT_OPT} $f $canonical_name_result
-		rm -f $f
+	
+		# Sets canonical_name_result:
+		rename_resource_file $f ${LOCAL_TILESET_DIR}
+			
+		convert_frame $f $canonical_name_result ${THIS_OBJECT_RATIO}
 		
 	done
 	
@@ -501,33 +725,30 @@ if [ $do_preserve_content -eq 1 ]; then
 
 	case "${TILESET_DIR}" in
 	
+	
 		"bjorn" )
-			if [ -d "bjorn_wearingweapons" ]; then
-				${RM} -rf bjorn_wearingweapons 
-			fi
-		
-			if [ -d "swordbjorn_shield" ]; then
-				${RM} -rf swordbjorn_shield
-			fi ;;
+			remove_dir_if_exist bjorn_wearing_weapons
+			remove_dir_if_exist bjorn_sword_shield
+			;;
+	
 	
 		"freya_axe" )
-			if [ -d "freya_wearingweapons" ]; then
-				${RM} -rf freya_wearingweapons 
-			fi
-		
-			if [ -d "freya_axe" ]; then
-				${RM} -rf freya_axe
-			fi
+			remove_dir_if_exist freya_wearing_weapons 
+			remove_dir_if_exist freya_axe
+			remove_dir_if_exist freya_noarms
+			;;
 	
-			if [ -d "freya_noarms" ]; then
-				${RM} -rf freya_noarms
-			fi ;;
 	
+		"luigi" )
+			remove_dir_if_exist luigi_bread			
+			remove_dir_if_exist luigi_bread	
+			remove_dir_if_exist luigi_pancake		
+			;;
 		
+
 		* )
-			if [ -d "${TILESET_DIR}" ]; then
-				${RM} -rf ${TILESET_DIR}
-			fi ;;
+			remove_dir_if_exist "${TILESET_DIR}"
+			;;
 		
 	esac
 
@@ -553,30 +774,42 @@ if [ $do_uncompress -eq 0 ]; then
 	
 		"bjorn" )
 			# In bjorn archive there are actually two outside looks:
-			${MKDIR} ../bjorn_wearingweapons ../swordbjorn_shield
+			${MKDIR} ../bjorn_wearing_weapons ../bjorn_sword_shield
 		
-			find 'town 96x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../bjorn_wearingweapons ';'
+			find 'town 96x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../bjorn_wearing_weapons ';'
 		
 			# The rest is in 'battlefield*':
-			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../swordbjorn_shield ';'
+			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../bjorn_sword_shield ';'
 			;;
 			
 			
 		"freya_axe" )
-			# In this archive there are actually two attitudes:
-			${MKDIR} ../freya_wearingweapons ../freya_axe
+			# In freya archive there are actually two attitudes:
+			${MKDIR} ../freya_wearing_weapons ../freya_axe
 		
-			find 'freya axe bitmaps/town' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../freya_wearingweapons ';'
+			find 'freya axe bitmaps/town' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../freya_wearing_weapons ';'
 		
 			# The rest is in 'battlefield':
 			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../freya_axe ';'
+			;;
+			
+				
+		"luigi" )
+			# In luigi archive there are actually three attitudes:
+			${MKDIR} ../luigi_unarmed ../luigi_bread ../luigi_pancake
+		
+			find 'luigi pancake 128x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../luigi_pancake ';'
+			find 'luigi bread 128x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../luigi_bread ';'
+			
+			# Catch everything left:
+			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../luigi_unarmed ';'
 			;;
 				
 				
 		* )
 			${MKDIR} ../${TILESET_DIR}
 			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../${TILESET_DIR} ';'
-	
+			;;
 	
 	esac	
 	
@@ -592,15 +825,24 @@ if [ $do_correct_name -eq 0 ] ; then
 	case "${TILESET_DIR}" in
 	
 		"bjorn" )
-			correct_names bjorn_wearingweapons 
-			correct_names swordbjorn_shield ;;
+			correct_names bjorn_wearing_weapons 
+			correct_names bjorn_sword_shield
+			;;
 		
 		"freya_axe" )
 			correct_names freya_axe 
-			correct_names freya_wearingweapons ;;
+			correct_names freya_wearing_weapons
+			;;
+
+		"luigi" )
+			correct_names luigi_unarmed 
+			correct_names luigi_bread 
+			correct_names luigi_pancake
+			;;
 		
 		* )	
-			correct_names ${TILESET_DIR} ;;
+			correct_names ${TILESET_DIR}
+			;;
 			
 	esac
 	
@@ -612,15 +854,28 @@ if [ $do_transform_to_png -eq 0 ]; then
 	case "${TILESET_DIR}" in
 	
 		"bjorn" )
-			transform_to_png_in bjorn_wearingweapons		
-			transform_to_png_in swordbjorn_shield ;;
+			transform_to_png_in bjorn_wearing_weapons		
+			transform_to_png_in bjorn_sword_shield
+			;;
+	
 	
 		"freya_axe" )
 			transform_to_png_in freya_axe		
-			transform_to_png_in freya_wearingweapons ;;
+			transform_to_png_in freya_wearing_weapons
+			;;
+
+
+		"luigi" )
+			transform_to_png_in luigi_unarmed		
+			transform_to_png_in luigi_bread
+			transform_to_png_in luigi_pancake
+			;;
+			
 			
 		* )
 			transform_to_png_in ${TILESET_DIR}
+			;;
+			
 	esac
 		
 fi
@@ -642,13 +897,13 @@ if [ $do_zip_result -eq 0 ]; then
 	NEW_TILESET_DIR=`echo ${TILESET_DIR} | sed 's|^T_|OAF_|1'`
 	
 	if [ -d "${NEW_TILESET_DIR}" ]; then
-		rm -rf ${NEW_TILESET_DIR}
+		${RM} -rf ${NEW_TILESET_DIR}
 		${MKDIR} ${NEW_TILESET_DIR}
 	fi
 	
 	mv -f ${TILESET_DIR} ${NEW_TILESET_DIR}
 	zip -9 -r ${TARGET_ARCHIVE_NAME} ${TILESET_DIR} ${NEW_TILESET_DIR}
-	rm -rf ${NEW_TILESET_DIR}
+	${RM} -rf ${NEW_TILESET_DIR}
 	
 fi
 
