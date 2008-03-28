@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# (bash needed for arithmetics and al)
 
-USAGE=`basename $0`" <tileset archive>: processes a bitmap archive (ex: 'T_swordstan_shield.zip') from the splendid animated tilesets coming from Reiner 'Tiles' Prokein (http://reinerstileset.4players.de) to convert them for OSDL use"
+USAGE=`basename $0`" <tileset archive>: processes a bitmap archive (ex: 'T_swordstan_shield.zip') from the splendid animated tilesets coming from Reiner 'Tiles' Prokein (http://reinerstileset.4players.de) to convert them for OSDL use.
+See http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/graphical-chain/OSDL-graphical-chain.html"
 
 
 do_preserve_content=1
@@ -29,9 +29,24 @@ ANIMATED_OBJECT=`basename $PWD`
 # one (subsequent per-animated object ratios are applied too):
 DOWNSCALE_RATIO="50"
 
+
+# Palette file being used for color reduction/matching:
+# This is an original master palette, quantized, but not gamma-corrected:
+PALETTE_FILE="master-palette-quantized.png"
+
+if [ ! -f "${PALETTE_FILE}" ] ; then
+	echo "
+	Error, could not find the target palette file (${PALETTE_FILE})." 1>&2
+	exit 1
+fi
+
+
 # Static options used with ImageMagick tool:
-CONVERT_STATIC_OPT="-strip -quality 100 -sharpen 1x.5 -filter Lanczos"
-#CONVERT_STATIC_OPT="-antialias"
+CONVERT_STATIC_SETTINGS=" -quality 100 -filter Lanczos"
+#CONVERT_STATIC_SETTINGS="-antialias"
+
+CONVERT_FIRST_STATIC_OPERATORS="-sharpen 1x.5 -strip"
+CONVERT_SECOND_STATIC_OPERATORS="+dither -map ${PALETTE_FILE}"
 
 
 
@@ -381,21 +396,54 @@ convert_frame()
 # Converts specified BMP file (in $1) into specified PNG file (in $2) with
 # the specified object ratio (in $3).
 {
-	
-	# TO-DO: fix color key ?
-	
+		
 	SOURCE_FILE=$1
 	TARGET_FILE=$2
 	THIS_OBJECT_RATIO=$3
-	
-	ACTUAL_RATIO=$(( ${DOWNSCALE_RATIO} * ${THIS_OBJECT_RATIO} / 100 ))
-	 	
-	CONVERT_OPT="${CONVERT_STATIC_OPT} -resize ${ACTUAL_RATIO}%"
-	
+		
 	echo "+ transforming ${SOURCE_FILE} and replacing it by ${TARGET_FILE}"
 	echo	
-	${CONVERT_TOOL} ${CONVERT_OPT} ${SOURCE_FILE} ${TARGET_FILE}
-	${RM} -f ${SOURCE_FILE}
+
+	# For some unknown reason, 'convert -quality 100 -filter Lanczos test.bmp -resize 60%
+	# -sharpen 1x.5 -strip +dither -map master-palette-quantized.png test.png' results in:
+	#
+	# "test.png: PNG image data, 58 x 58, 16-bit/color RGB, non-interlaced", i.e. an image not
+	# using a palette, 
+	#
+	# whereas:
+	#
+	# 'convert -quality 100 -filter Lanczos test.bmp -resize 60% -sharpen 1x.5 -strip
+	# intermediate.bmp' (note the prooduced *bmp*) then
+	# 'convert -quality 100 -filter Lanczos intermediate.bmp +dither -map
+	# master-palette-quantized.png test.png' results in:
+	#
+	# "test.png: PNG image data, 58 x 58, 8-bit colormap, non-interlaced"
+	
+	# Thus using a two-pass transformation:
+	INTERMEDIATE_FILE="osdl-process-temp.bmp"
+	
+	CONVERT_SETTINGS="${CONVERT_STATIC_SETTINGS}"
+	
+	
+	
+	ACTUAL_RATIO=$(( ${DOWNSCALE_RATIO} * ${THIS_OBJECT_RATIO} / 100 ))
+	 		
+	CONVERT_FIRST_OPERATORS="-resize ${ACTUAL_RATIO}% ${CONVERT_FIRST_STATIC_OPERATORS}"
+	
+	${CONVERT_TOOL} ${CONVERT_SETTINGS} ${SOURCE_FILE} ${CONVERT_FIRST_OPERATORS} ${INTERMEDIATE_FILE}
+	
+	echo "First conversion pass done with: ${CONVERT_TOOL} ${CONVERT_SETTINGS} ${SOURCE_FILE} ${CONVERT_FIRST_OPERATORS} ${INTERMEDIATE_FILE}"
+	
+	
+	
+	${CONVERT_TOOL} ${CONVERT_SETTINGS} ${INTERMEDIATE_FILE} ${CONVERT_SECOND_STATIC_OPERATORS} ${TARGET_FILE}
+	
+	echo "Second conversion pass done with: ${CONVERT_TOOL} ${CONVERT_SETTINGS} ${INTERMEDIATE_FILE} ${CONVERT_SECOND_STATIC_OPERATORS} ${TARGET_FILE}"
+	
+
+
+	
+	${RM} -f ${SOURCE_FILE} ${INTERMEDIATE_FILE}
 
 }
 
