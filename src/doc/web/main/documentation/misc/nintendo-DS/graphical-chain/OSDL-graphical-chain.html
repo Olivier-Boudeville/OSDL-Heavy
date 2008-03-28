@@ -250,23 +250,197 @@ These tile-based (not framebuffer-based) static elements are not expected here t
 <a name="sprite-colors"></a>
 <h4>Sprite color modes</h4>
 <p>
-Among the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-color" target="_blank">available sprite color schemes</a>, the mode usually chosen for games is the one with 16 palettes, each of 256 colors. It is a good trade-off indeed. Simple implementations could cope with one general-purpose palette for all sprites (using an appropriate <a href="http://en.wikipedia.org/wiki/List_of_monochrome_and_RGB_palettes#15-bit_RGB" target="_blank">master palette</a>), whereas more complex ones could associate a palette to a given sprite (usually, animated character). The problem is that it would imply that no more than 16 types of sprites could be displayed simultaneously in the in-world view.  
+Among the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-color" target="_blank">available sprite color schemes</a>, the mode usually chosen for games is the one with 16 palettes, each of 256 colors. It is a good trade-off indeed. Simple implementations could cope with one general-purpose palette for all sprites (using an appropriate <a href="http://en.wikipedia.org/wiki/List_of_monochrome_and_RGB_palettes#15-bit_RGB" target="_blank">master palette</a>), whereas more complex ones could associate a palette to a given sprite (usually, animated character). The problem is that it would imply that no more than 16 types of sprites could be displayed simultaneously in the in-world view, which would be a considerable limitation.  
 </p>
 
 <p>
-We keep in mind most of our sprites will come from the aforementioned Reiner's Tilesets. If we take <a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">Swordstan</a> as an example (most probably our main character, as having multiple animations with multiple outside appearances), the source image (BMP in 24 Bit TrueColor), could be (taken from <code>swordstan shield 96x  bitmaps/attack se0000.bmp</code> :
+We keep in mind most of our sprites will come from the aforementioned Reiner's Tilesets. If we take <a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">Swordstan</a> as an example (most probably our main character, as having multiple animations with multiple outside appearances), the source image (BMP in 24 Bit TrueColor), could be (taken from <code>swordstan shield 96x  bitmaps/attack se0000.bmp</code>) :
 <center>
-    <img src="swordstan-original.bmp" alt="Original image"></img>
+    <img src="swordstan-original.png" alt="Original image"></img>
 </center>
 </p>
 
 <p>
-The same image (in PNG) with a 256-color dedicated optimal palette (i.e. all its colors have been chosen specifically for this image) :
+The same image (in PNG) with a 256-color dedicated optimal palette (i.e. all its colors have been chosen specifically for this image) looks very similar:
 <center>
     <img src="swordstan-optimal-palette.png" alt="With 256-color optimal palette"></img>
 </center>
 </p>
 
+<p>
+A palette shared by all graphics can be enforced. As index #0 is reserved for transparency (colorkey), there are 255 colors to be chosen, in [1,255]. Colors have to respect the <code>x555</code> BGR format (5 bits for each color component, they are thus in [0,31]). 
+</p>
+
+<p>
+We chose to generate our shared (master) palette with a python script we called <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/scripts/python/generate_master_palette.py?view=markup" target="_blank">generate_master_palette.py</a> .
+</p>
+
+<p>
+This palette aims at representing any bitmap image (as opposed to a palette made for a specific set of graphics), as we will have thousands of frames that will have to rely on it.
+</p>
+
+<p>
+The base of this palette is a 240-color <a href="http://en.wikipedia.org/wiki/List_of_software_palettes#6-8-5_levels_RGB" target="_blank">6-8-5</a> palette: for each of 6 levels of red regularly distributed in the range of color component, there are 8 levels of green, and for each of these there are 5 levels of blue. Therefore <code>6*8*5 = 240</code> different colors are listed. Ranges have been chosen in function of the sensibility of the normal human eye to every primary color.
+</p>
+
+<p>
+On the 15 remaining colors (255-240), 8 are used for pure greys (which were lacking from the base palette). The 7 last colors have been specifically selected in frames from various characters (notably Stan), to match them more closely.
+</p>
+
+<p>
+When running the <code>generate_master_palette.py</code> script, following lines are output:
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+
+Generating a master palette of 240 base colors (for index in [1..240]), with 6 levels of red, 8 of green and 5 of blue. Index #0 is reserved for the colorkey, which is (106, 76, 48). The 15 remaining index are used to add 8 true grays and 7 specific recurrent colors in target images.
+
+  + color index #0: (106, 76, 48)
+  + color index #1: (0, 0, 0)
+  + color index #2: (0, 0, 63)
+  + color index #3: (0, 0, 127)
+  + color index #4: (0, 0, 191)
+  + color index #5: (0, 0, 255)
+  + color index #6: (0, 36, 0)
+  + color index #7: (0, 36, 63)
+  [..]
+  + color index #254: (255, 255, 111)
+  + color index #255: (28, 95, 139)
+Palette has 256 color index.
+ * Writing original master palette to 'master-palette-original.rgb'.
+ * Writing gamma-corrected master palette to 'master-palette-gamma-corrected.rgb'.
+ * Writing quantized master palette (non gamma-corrected) to 'master-palette-quantized.rgb'.
+ * Writing final master palette (gamma-corrected, then quantized, then encoded for the DS) to 'master-palette.pal'.
+Master palette successfully generated.
+Use 'master-palette-quantized.rgb' for color-reduction of assets, and 'master-palette.pal' as the actual DS palette.                                   </pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+</p>
+
+<p>
+Three palette files have been generated:
+<ol>
+
+<!--
+	<li></li>
+-->
+
+	<li><a href="master-palette-original.rgb">master-palette-original.rgb</a>, storing the color coordinates previously output, each RGB information being stored in a row, in that order, with three bytes per color. This palette looks like that: <img src="master-palette-original.png"></img>, once transformed thanks to
+	<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+convert -depth 8 -size 16x16 master-palette-original.rgb -scale 800%
+	master-palette-original.png 
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+We can see, from top-left to bottom-right, the color key, then the numetous gradients, then the greys, then the various hand-picked colors.
+	</li>
+	
+	<li><a href="master-palette-quantized.rgb">master-palette-quantized.rgb</a> is the same palette, but each color component is quantized to the only 32 levels already mentioned, instead of the 256 levels of the original palette. This quantized palette seems not too different from the original one: <img src="master-palette-quantized.png"></img>
+	</li>
+	
+	<li>
+	<p>
+	finally, <a href="master-palette.pal">master-palette.pal</a> corresponds to the quantized palette in a format suitable for the DS, i.e. each color being defined in a 16-bit x555 BGR format (most significant bit set to 1, then blue, green and red, each component on 5 bits). 
+	</p>
+	
+	<p>
+	There is a catch though: the DS screens display colors darker than they are requested. To compensate that, we have to transform the palette that will be used by the DS so that its colors will be brighter: once dark-displayed on the DS they should look like expected from the PC. This transformation is called <a href="http://en.wikipedia.org/wiki/Gamma_correction" target="_blank">gamma-correction</a>, each normalized color component is to be set at the power <code>1/gamma</code> before being denormalized.
+	</p>
+	
+	<p>	
+	This operation is automatically done by our script on the actual DS palette (<code>master-palette.pal</code>). We retained a gamma of 2.3 for the average DS screen (intermediate way between DS Fat and DS Lite, see also <a href="http://forum.gbadev.org/viewtopic.php?t=6484" target="_blank">this discussion</a>). The gamma-corrected palette looks brighter than the original, as expected: <img src="master-palette-gamma-corrected.png"></img>
+	</p>
+	
+	<p>	
+	Note that pre-processed images have to be be color-reduced against the same palette, but with no gamma correction (<code>master-palette-quantized.rgb</code>), so that their display is correct.
+	</p>
+	
+	</li>
+	
+	
+</ol>
+
+</p>
+
+<p>
+Now we can compare in a row:
+<ol>
+
+	<li>the original test image with full colors</li>
+	<li>the one transformed to match the original master palette</li>
+	<li>then the one using the quantized master palette</li>
+	<li>the one using the quantized gamma-corrected palette (on a PC the latter should look too bright)</li>
+
+<!--
+	<li><b></b>: </li>
+-->
+</ol>
+<center>
+	<img src="swordstan-original.png" alt="Original image"></img>
+	<img src="swordstan-master-original.png" alt="With original palette"></img>
+	<img src="swordstan-master-quantized.png" alt="With quantized palette"></img>
+	<img src="swordstan-master-gamma-corrected.png" alt="With quantized gamma-corrected palette"></img>
+</center>
+</p>
+
+<p>
+The result seems very good indeed, colors are well preserved in non gamma-corrected images. Note however that the colorkey changed a bit in the third and fourth images, due to the quantization and to the gamma-correction.	
+</p>
+
+<p>
+The three transformed images have been obtained thanks to:
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+convert swordstan-original.png +dither -map master-palette-original.png swordstan-master-original.png
+
+convert swordstan-original.png +dither -map master-palette-quantized.png swordstan-master-quantized.png
+
+convert swordstan-master-quantized.png -gamma 2.3 swordstan-master-gamma-corrected.png
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
+
+
+<p>
+Note that, for this explanation, the gamma-corrected image was obtained directly with ImageMagick, not using:
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+convert swordstan-original.png +dither -map master-palette-gamma-corrected.png swordstan-master-against-gamma-corrected.png
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+as otherwise it would generate an image referencing colors from the right gamma-corrected palette, but with the original colors reduced against that same (too bright) palette, whereas we need to have them matched against the non gamma-corrected one.
+</p>
 
 
 <a name="sprite-size"></a>
@@ -524,7 +698,7 @@ After having taken into account all previous constraints (size, formats, colors,
 
 	<ol>
 	
-		<li><b>choice</b> of the target DS palette, probably a master palette shared by multiple animations, thus made so that all colors possibly used can be approximated with minimal mean error. Optional: creation of a palette dedicated to a given animated object, instead of a global palette
+		<li><b>choice</b> of the target DS palette, a master palette shared by most if not all animations, thus made so that all colors possibly used can be approximated with minimal mean error. Maybe later: creation of a palette dedicated to a given animated object, instead of a global palette
 		</li>
 
 		<li><b>gamma correction</b> of this palette, according to the gamut of DS screens
@@ -547,13 +721,13 @@ Then, for each frame:
 
 	<ol>
 
-		<li><b>resizing</b>, from original size to target DS planned size, based on a per-asset ratio determined so that the resized sprite complies with the in-game chosen scale.  
+		<li><b>resizing</b>, from original size to target DS planned size, based on a global and a per-asset ratio, determined so that the resized sprite complies with the in-game chosen scale
 		</li>
 	
 		<li><b>color best-effort quantification</b>, from the original colors of the frame (per-pixel or indexed) to the optimal mapping according to the aforementioned target DS palette, with color key set for the sprite borders
 		</li>
 
-		<li><b>cropping</b>, to determine for sprites the smallest rectangle enclosing the actual image and to determine the vector offset (hot-spot) to recenter the resulting sprite into the frame stream. For the generation of background, as tiles cannot be positioned on a per-pixel basis, a specific tile-aligned cropping is to be performed
+		<li><b>cropping</b>, to determine for sprites the smallest rectangle enclosing the actual image and to determine the vector offset (hot-spot) to recenter the resulting sprite into the frame stream. For the generation of backgrounds, as tiles cannot be positioned on a per-pixel basis, a specific tile-aligned cropping is to be performed
 		</li>
 
 		<li><b>tiling</b>, to cut the sprite into (8x8 here) tiles, with padding so that the corresponding tile map matches the smallest possible shape of DS sprites
@@ -589,7 +763,7 @@ Finally, creation of:
 	<li>a <b>per-attitude file</b>: for a given animated object, outside look and attitude, stores the corresponding directions (generally, 8). The file contains an header, specifying the attitude metadata (notably the number directions, and their offset in this file, but also any sound that should be output unconditionally during this animation), and then the associate set of per-direction files
 	</li>
 
-	<li>a <b>per-outside look file</b>: for a given animated object and outside look, stores the corresponding attitudes. The file contains an header, specifying the outside look metadata (notably the number attitudes, their identifier and their offset in this file), and then the associated set of per-attitude files
+	<li>a <b>per-outside look file</b>: for a given animated object and outside look, stores the corresponding attitudes. The file contains an header, specifying the outside look metadata (notably the number of attitudes, their identifier and their offset in this file), and then the associated set of per-attitude files
 	</li>
 	
 	<li>a <b>per-animated object file</b>: for a given animated object , stores the corresponding outside looks. The file contains an header, specifying the  metadata of the animated object (notably the number of outside looks, their identifier and their offset in this file), and then the associated set of per-outside look files
@@ -603,7 +777,7 @@ Finally, creation of:
 <h3>Naming conventions</h3>
 
 <p>
-To avoid to store too many informations in index files, filenames should respect the following conventions, so that they can be deduced rather than stored.
+To avoid to store too many informations in index files, filenames should respect the following conventions, so that they can be deduced rather than stored in an associative map.
 </p>
 
 <p>
@@ -667,7 +841,7 @@ Frame identifiers start from 1 onward, and go typically to 6.
 </p>
 
 <p>
-All the assets which we transformed like described are referenced in our <a href="../../../../../../../../tools/media/video/asset-repository/OSDL-asset-map.html">Asset Map</a>.
+All the assets which we transformed like described are referenced in our <a href="../../../../../../../../tools/media/video/asset-repository/OSDL-asset-map.html">Asset Map</a> (see notice below).
 <center>
     <table summary="Code" style="border : none">
         <tr>
@@ -719,7 +893,7 @@ for powerful command-line bitmap manipulations, allowing to automate them
 through scripts that can handle the hundred of sprite frames to be
 transformed</li>
 	
-    <li><a href="http://www.coranac.com/category/proj/grit/" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>), for conversion to the DS hardware formats and for tiling</li>
+    <li><a href="http://www.coranac.com/category/proj/grit/" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>), for test conversion to the DS hardware formats and for testing tiling</li>
  
     <li><a href="http://osdl.sourceforge.net" target="_blank">OSDL</a>, our game library, to ease the develompent of our home-made converting tools</li>
  
@@ -745,7 +919,7 @@ As many of our graphical assets come from the splendid work available in <a href
 </p>
 
 <p>
-Orginal images are BMP with a kaki (greenish) colorkey: <code>6a4c30</code> in hexadecimal.
+Orginal images are BMP, usually with a kaki (greenish) colorkey: <code>6a4c30</code> in hexadecimal.
 </p>
 
 
@@ -764,7 +938,7 @@ Orginal images are BMP with a kaki (greenish) colorkey: <code>6a4c30</code> in h
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Sunday, March 16, 2008</em>
+    <em>Last update: Friday, March 28, 2008</em>
   </center>
 </body>
 </html>
