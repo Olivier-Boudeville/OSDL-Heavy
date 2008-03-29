@@ -682,6 +682,30 @@ void Surface::convertFromColorKeyToAlphaChannel() throw( VideoException )
 
 
 
+Palette & Surface::getPalette() const throw( VideoException )
+{
+
+#if OSDL_USES_SDL
+
+	if ( _surface->format->palette == 0 )
+		throw VideoException( "Surface::getPalette failed: "
+			"no available palette" ) ;
+			
+	LogPlug::debug( "Surface::getPalette: low-level palette found." ) ;
+	
+	return * new Palette( *_surface->format->palette ) ;		
+
+#else // OSDL_USES_SDL	
+
+	throw VideoException( "Surface::getPalette failed: "
+		"no SDL support available" ) ;
+
+#endif // OSDL_USES_SDL
+		
+}
+					
+
+
 bool Surface::setPalette( Palette & newPalette, ColorCount startingColorIndex,
 	ColorCount numberOfColors, Flags targettedPalettes ) throw() 
 {
@@ -2878,12 +2902,10 @@ const string Surface::toString( Ceylan::VerbosityLevels level ) const throw()
 	switch( _displayType )
 	{
 	
-	
 		case BackBuffer:
 			surfaceList.push_back( "This is a back buffer surface." ) ;
 			break ;
 	
-		
 		case ClassicalScreenSurface:
 			surfaceList.push_back( "This is a classical screen surface." ) ;
 			break ;
@@ -2915,6 +2937,13 @@ const string Surface::toString( Ceylan::VerbosityLevels level ) const throw()
 	
 	surfaceList.push_back( "Video flags: " + InterpretFlags( getFlags() ) ) ;
 	
+	if ( _surface->format->palette == 0 )
+		surfaceList.push_back( 
+			"Surface uses direct color definitions (no palette used)" ) ;
+	else
+		surfaceList.push_back( "Surface uses a palette (indexed colors)" ) ;
+	
+	surfaceList.push_back( "Pitch: " + Ceylan::toString( getPitch() ) ) ;
 		
 	surfaceList.push_back( "Clipping area: " 
 		+ UprightRectangle( _surface->clip_rect ).toString( level ) ) ;
