@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
-# See http://en.wikipedia.org/wiki/List_of_software_palettes#6-8-5_levels_RGB
 
+# See http://en.wikipedia.org/wiki/List_of_software_palettes#6-8-5_levels_RGB
+# See also:
+# trunk/tools/media/video/animation-management/generateMasterPalette.cc
+#
 def quantize(component):
 	"""Converts a color component in [0;255] to [0.31] (5-bit)."""
 	return int( round(component/255.0*31) ) 
@@ -32,7 +35,8 @@ g_range = 8
 b_range = 5
 
 
-# 0x6a4c30 is in decimal:
+# 0x6a4c30 i,s in decimal:
+# (thus each asset has to respect that value)
 color_key = ( 106, 76, 48 )
 
 base_count= r_range*g_range*b_range
@@ -64,22 +68,21 @@ for grey in [ int( round(255*(g+1)/(grey_range+1)) ) for g in range(grey_range) 
 
 # Adding 15-8=7 colors:
 
-# Two blue from the main character, Stan:
+# Three 'blue' from the main character, Stan:
 base_palette.append( (  6, 177, 220 ) )
 base_palette.append( (  4, 147, 183 ) )
+base_palette.append( (  28,  95, 139 ) )
 
-# One brown/black, for the hair:
+# One 'brown/black', for the hair:
 base_palette.append( (  70, 59, 42 ) )
 
-# Two orange/pink, for the flesh:
+# Two 'orange/pink', for the flesh:
 base_palette.append( ( 238, 190, 141 ) )
 base_palette.append( ( 250, 205, 155 ) )
 
-# One yellow for blonde hair:
+# One 'yellow' for blonde hair:
 base_palette.append( ( 255, 255, 111 ) )
 
-# One last blue:
-base_palette.append( (  28,  95, 139 ) )
 
 
 # Finally displays the obtained full palette:
@@ -91,12 +94,35 @@ for c in base_palette:
 print "Palette has %s color index." % (len(base_palette))
 
 
+def cmp_colors(x,y):
+	if x[0] > y[0]:
+		return 1
+	elif x[0] == y[0]:
+		if x[1] > y[1]:
+			return 1
+		elif x[1] == y[1]:
+			if x[2] > y[2]:
+				return 1
+			elif x[2] == y[2]:
+				return 0
+			else:
+				return -1 
+		else:
+			return -1 
+	else:
+		return -1
+					
+		
+base_palette.sort( cmp_colors )
+
 
 original_palette_filename = "master-palette-original.rgb"
 
 print " * Writing original master palette to '%s'." % (original_palette_filename)
 palette_file = open( original_palette_filename, 'w' )
 
+
+# Here we keep the colorkey, for the sake of completness:
 for c in base_palette:
 	palette_file.write( "%c" % (c[0]) )
 	palette_file.write( "%c" % (c[1]) )
@@ -104,11 +130,14 @@ for c in base_palette:
 
 palette_file.close()
 
+
+
 gamma_corrected_palette_filename = "master-palette-gamma-corrected.rgb"
 
-print " * Writing gamma-corrected master palette to '%s'." % (gamma_corrected_palette_filename)
+print " * Writing gamma-corrected master palette to '%s' (just for documentary purpose)." % (gamma_corrected_palette_filename)
 palette_file = open( gamma_corrected_palette_filename, 'w' )
 
+# Colorkey included also this time:
 for c in base_palette:
 	palette_file.write( "%c" % ( gamma_correct( c[0]) ) )
 	palette_file.write( "%c" % ( gamma_correct( c[1]) ) )
@@ -124,8 +153,11 @@ quantized_palette_filename = "master-palette-quantized.rgb"
 print " * Writing quantized master palette (non gamma-corrected) to '%s'." % (quantized_palette_filename)
 palette_file = open( quantized_palette_filename, 'w' )
 
+
+# We are skipping the colorkey for this palette, otherwise the color 
+# reduction would believe it can use this color for its matchings:
 count=0
-for c in base_palette:
+for c in base_palette[1:]:
 	#print "  + quantized color index #%s: (%s, %s, %s)" % ( count,
 	#	quantize(c[0]), quantize(c[1]), quantize(c[2]) )
 	palette_file.write( "%c" % ( int( 255.0 /31 * quantize(c[0]) ) ) )
@@ -142,6 +174,8 @@ final_palette_filename = "master-palette.pal"
 print " * Writing final master palette (gamma-corrected, then quantized, then encoded for the DS) to '%s'." % (final_palette_filename)
 palette_file = open( final_palette_filename, 'w' )
 
+# Here we keep the colorkey, knowing that the DS will take palette index #0
+# as a transparent color:
 for c in base_palette:
 	converted_color = convert_to_uint16( 
 		quantize( gamma_correct( c[0]) ),
