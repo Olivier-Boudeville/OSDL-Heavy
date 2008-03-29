@@ -2,7 +2,7 @@
 #define OSDL_PALETTE_H_
 
 		
-#include "OSDLPixel.h"       // for ColorDefinition
+#include "OSDLPixel.h"       // for ColorDefinition, GammaFactor
 
 #include "Ceylan.h"          // for TextDisplayable, Uint32, etc.
 
@@ -31,6 +31,16 @@ namespace OSDL
 
 		/// Number of colors.
 		typedef Ceylan::Uint32 ColorCount ;
+		
+		
+		/**
+		 * Allows to designate a palette.
+		 *
+		 * Identifier 1 is reserved for the main master palette, as defined
+		 * in master-palette.pal on the Nintendo DS.
+		 *
+		 */
+		typedef Ceylan::Uint16 PaletteIdentifier ;
 		
 		
 		
@@ -88,7 +98,8 @@ namespace OSDL
 		 * To be used on a particular surface, color definitions need to be
 		 * converted into PixelColor (actual colors), which are defined
 		 * according to the surface pixel format. 
-		 * Therefore a Palette actually owns two palettes, a logical one 
+		 *
+		 * Therefore a Palette actually uses two palettes, a logical one 
 		 * (for color definitions) and a physical one (for pixel colors).
 		 *
 		 * A palette has getNumberOfColors() colors, ranging from 0 
@@ -112,6 +123,14 @@ namespace OSDL
 				 * Constructs a palette from a specified array of color
 				 * definitions.
 				 *
+				 * @param numberOfColors the number of color for this palette.
+				 *
+				 * @param colors pointer to an array of numberOfColors color
+				 * definitions. This palette takes ownership of the array. If
+				 * a null pointer is specified, then the palette will create
+				 * its own array of numberOfColors and set all colors to 
+				 * full black, i.e. (0,0,0,255) in the RGBA colorspace.
+				 *
 				 * @param format if specified (non-null), pixel colors are
 				 * computed thanks to it, otherwise they are still to be
 				 * converted.
@@ -120,7 +139,7 @@ namespace OSDL
 				 *
 				 */
 				Palette( ColorCount numberOfColors, 
-						Pixels::ColorDefinition * colors,
+						Pixels::ColorDefinition * colors = 0,
 						Pixels::PixelFormat * format = 0 ) 
 					throw( PaletteException ) ;
 
@@ -128,9 +147,8 @@ namespace OSDL
 				/**
 				 * Constructs a palette from an already existing SDL palette.
 				 *
-				 * @note Takes ownership of the LowLevelPalette's color buffer.
-				 * The LowLevelPalette object itself is still to be deallocated
-				 * by the caller, as if it had no color buffer.
+				 * @note Does not take ownership of the LowLevelPalette's color
+				 * buffer.
 				 *
 				 */				
 				explicit Palette( LowLevelPalette & palette ) 
@@ -208,6 +226,45 @@ namespace OSDL
 					
 					
 				/**
+				 * Sets the specified color definition at specified index of 
+				 * the palette (overwrites prior definition).
+				 *
+				 * @param targetIndex the index of the color definition to
+				 * update.
+				 *
+				 * @param newColorDefinition the color definition to be set.
+				 *
+				 * @throw PaletteException if targetIndex is out of bounds 
+				 * (superior or equal to getNumberOfColors).
+				 *
+				 */
+				virtual void setColorDefinitionAt(
+						ColorCount targetIndex, 
+						Pixels::ColorDefinition & newColorDefinition ) 
+					throw( PaletteException ) ;
+					
+					
+				/**
+				 * Sets the specified color definition at specified index of 
+				 * the palette (overwrites prior definition).
+				 *
+				 * @param targetIndex the index of the color definition to
+				 * update.
+				 *
+				 * @throw PaletteException if targetIndex is out of bounds 
+				 * (superior or equal to getNumberOfColors).
+				 *
+				 */
+				virtual void setColorDefinitionAt(
+						ColorCount targetIndex, 
+						Pixels::ColorElement red,
+						Pixels::ColorElement green,
+						Pixels::ColorElement blue,
+						Pixels::ColorElement alpha = Pixels::AlphaOpaque ) 
+					throw( PaletteException ) ;
+					
+					
+				/**
 				 * Returns the palette's color definitions.
 				 *
 				 * @note This method should generally not be used.
@@ -221,12 +278,50 @@ namespace OSDL
 				 * Updates (recomputes) internal pixel colors from internal
 				 * color definitions and specified pixel format.
 				 *
-				 * @note The pixel format cannot be 'const' because of SDL
-				 * back-end.
-				 *
 				 */
 				virtual void updatePixelColorsFrom( 
-					Pixels::PixelFormat & format ) throw() ;
+					const Pixels::PixelFormat & format ) throw() ;
+
+
+				/**
+				 * Quantizes the color definitions of this palette.
+				 *
+				 * @param quantizeMaxCoordinate the quantification will map 
+				 * color components (originally in [0;255]) to
+				 * ([0,quantizeMaxCoordinate]). 
+				 *
+				 * @example for the 8-bit palettes of the Nintendo DS,
+				 * quantization is made on 5 bits, thus color components have
+				 * to be quantized to [0;2^5-1=31], and 
+				 * quantizeMaxCoordinate = 31.				 
+				 *
+				 * @param scaleUp if false (the default), all color components
+				 * will be left in [0,quantizeMaxCoordinate]. If true, then they
+				 * will be mapped again to [0;255]. This allows to display the
+				 * effects of quantification. For example, an original component
+				 * equal to 120 will be quantized with quantizeMaxCoordinate=31
+				 * to 15. With scaleUp set to true, it will be scaled back,
+				 * which leads, due to the roundings, to 123.
+				 *
+				 */
+				virtual void quantize( 
+					Pixels::ColorElement quantizeMaxCoordinate,
+					bool scaleUp = false ) throw() ;
+
+
+				/**
+				 * Applies a gamma correction to the color definitions of this
+				 * palette.
+				 *
+				 * @param gamma the factor that will be used on each normalized
+				 * color component Cn of each color definition: 
+				 * Cn_new = Cn_old^(1/gamma), then the component is 
+				 * denormalized.
+				 *
+				 * @example gamma is roughly equal to 2.3 for the Nintendo DS.
+				 *
+				 */
+				virtual void correctGamma( Pixels::GammaFactor gamma ) throw() ;
 
 
 				/**
@@ -248,6 +343,36 @@ namespace OSDL
 					Pixels::ColorDefinition backgroundColor = Pixels::White )
 						throw() ;
 				
+				
+				/**
+				 * Saves current palette to specified file.
+				 *
+				 * All color definitions will be saved in palette order.
+				 *
+				 * Alpha coordinates will be ignored (not taken into account,
+				 * not saved).
+				 *
+				 * @param filename the name of the palette file to create
+				 * (prefer a '.pal' extension if encoded, a '.rgb' one 
+				 * otherwise).
+				 *
+				 * @param encoded tells whether the raw colors will be written
+				 * (if false), i.e. in RGB order with each color component 
+				 * on 8 bits (thus 24 bits per color), or, if true, if 
+				 * encoded colors will be written, i.e. each color definition 
+				 * being packed in 16 bits (first bit to 1, then 5 bits per
+				 * quantized color component, in BGR order). 
+				 *
+				 * @note The encoded format is suitable for the Nintendo GBA
+				 * and DS consoles. '.pal' preferred to '.osdl.palette', as no
+				 * OSDL header thus no tag.
+				 * 
+				 * @throw PaletteException if the operation failed.
+				 *
+				 */
+				virtual void save( const std::string & filename,
+					bool encoded = false ) const throw( PaletteException ) ;
+				 	
 					
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -294,19 +419,70 @@ namespace OSDL
 			
 			
 				/**
-				 * Palette factory, creating palettes with 
-				 * <b>numberOfColors</b> corresponding to landscape colors.
+				 * Palette factory, creating a 255-color master palette
+				 * suitable for best-fit color-reduction of all kinds of images,
+				 * notably animation frames.
 				 *
-				 * @note Not implemented yet.
+				 * @note Only 255 colors (not 256) are defined here, to leave
+				 * one index for a future colorkey, not specified here to avoid
+				 * that color-reduction algorithms use the corresponding color
+				 * to match colors of target image.
+				 *
+				 * @see http://en.wikipedia.org/wiki/:
+				 * List_of_software_palettes#6-8-5_levels_RGB for the
+				 * base colors of this palette.
 				 *
 				 */
-				static Palette & CreateLandscapePalette( 
-					ColorCount numberOfColors = 256 ) throw() ; 
+				static Palette & CreateMasterPalette() throw() ; 
 			
 			
 			
 			protected:
+				
+				
+				/**
+				 * Invalidates any already computed pixel colors.
+				 *
+				 */
+				virtual void invalidatePixelColors() throw() ;
+				
+				
+				
+				// Static section.
+				
+				
+				/**
+				 * Quantizes an individual color component.
+				 *
+				 * @param component the component to quantize.
+				 *
+				 * @param newMaxCoordinate the new upper-bound of color
+				 * coordinate. Default value is 31, see example.
+				 *
+				 * @example On the Nintendo DS, color components are encoded
+				 * in 5 bits, thus they range in [0;31] and this method would
+				 * be called with newMaxCoordinate = 31 to have the specified
+				 * component scaled according to this range.
+				 *
+				 */
+				static Pixels::ColorElement QuantizeComponent( 
+					Pixels::ColorElement component,	
+					Pixels::ColorElement newMaxCoordinate = 31 ) throw() ;
 					
+					
+				/**
+				 * Corrects gamma-wise an individual color component.
+				 *
+				 * @param component the component to gamma-correct.
+				 *
+				 * @param gamma the gamma correction factor to apply.
+				 *
+				 */
+				static Pixels::ColorElement CorrectGammaComponent( 
+					Pixels::ColorElement component,	
+					Pixels::GammaFactor gamma )	throw() ;
+					
+			
 			
 				/// The number of colors defined in this palette.
 				ColorCount _numberOfColors ;
@@ -334,6 +510,14 @@ namespace OSDL
 				 *
 				 */
 				bool _converted ;
+				
+
+				/**
+				 * Tells whether this palette owns any color definitions it 
+				 * uses.
+				 *
+				 */
+				bool _ownsColorDefinition ;
 				
 				
 							
