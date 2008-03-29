@@ -61,12 +61,28 @@ namespace OSDL
 	 *
 	 * It is a MP3 file prepended by a header.
 	 *
-	 * The corresponding header after this tag is:
+	 * The corresponding header after this tag is defined in:
+	 * trunk/tools/media/audio/mp3ToOSDLMusic.cc
 	 *
 	 * @see code/audio/OSDLMusic.cc, in Music::load for the actual decoding.
 	 *
 	 */
 	extern OSDL_DLL const FileTag MusicTag ;
+	
+
+	/**
+	 * Tag corresponding to an OSDL frame, part of an animation.
+	 *
+	 * It is a list of color index to a palette, prepended by a header.
+	 *
+	 * The corresponding header after this tag is defined in:
+	 * trunk/tools/media/video/animation-management/pngToOSDLFrame.cc
+	 *
+	 * @see trunk/src/code/video/twoDimensional/OSDLAnimation.cc, in 
+	 * Animation::loadFrame for the actual decoding.
+	 *
+	 */
+	extern OSDL_DLL const FileTag FrameTag ;
 	
 	
 	/**
