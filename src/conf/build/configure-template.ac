@@ -1104,6 +1104,7 @@ AC_CONFIG_FILES([
 	src/code/Makefile
 	src/code/scripts/Makefile
 	src/code/scripts/shell/Makefile
+	src/code/scripts/python/Makefile
 	src/code/video/Makefile
 	src/code/video/twoDimensional/Makefile
 	src/code/video/videoRenderer/Makefile
