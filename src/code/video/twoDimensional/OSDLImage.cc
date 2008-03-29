@@ -227,8 +227,7 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 		
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load image stored in " + filename 
-			+ " thanks to IMG_Load: "
-			+ string( IMG_GetError() ) ) ;   
+			+ " thanks to IMG_Load: " + string( IMG_GetError() ) ) ;   
 			
 #if OSDL_DEBUG_IMAGE	
 	LogPlug::debug( "Image loaded." ) ;
