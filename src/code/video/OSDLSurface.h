@@ -341,25 +341,6 @@ namespace OSDL
 				 *
 				 */
 				static const Ceylan::Flags Resizable ;
-	
-
-				/**
-				 * Constructs an OSDL Surface from a SDL surface.
-				 *
-				 * @param surface the SDL surface to manage, whose 
-				 * ownership is taken by this OSDL Surface.
-				 *
-				 * @param displayType tells what is the display type of 
-				 * the provided surface, i.e. whether it is a backbuffer 
-				 * or a screen surface, usual or OpenGL-based.
-				 *
-				 * @throw VideoException if the operation failed or is not
-				 * supported.
-				 *
-				 */
-				explicit Surface( LowLevelSurface & surface, 
-						DisplayType displayType = BackBuffer ) 
-					throw( VideoException ) ;
 				
 				
 				
@@ -438,6 +419,25 @@ namespace OSDL
 						throw( VideoException ) ;
 					
 							 
+				/**
+				 * Constructs an OSDL Surface from a SDL surface.
+				 *
+				 * @param surface the SDL surface to manage, whose 
+				 * ownership is taken by this OSDL Surface.
+				 *
+				 * @param displayType tells what is the display type of 
+				 * the provided surface, i.e. whether it is a backbuffer 
+				 * or a screen surface, usual or OpenGL-based.
+				 *
+				 * @throw VideoException if the operation failed or is not
+				 * supported.
+				 *
+				 */
+				explicit Surface( LowLevelSurface & surface, 
+						DisplayType displayType = BackBuffer ) 
+					throw( VideoException ) ;
+				 
+				 
 				 
 				/**
 				 * Surface virtual destructor, frees internal buffer 
@@ -663,6 +663,19 @@ namespace OSDL
 					throw( VideoException ) ; 
 				
 				
+				
+				/**
+				 * Returns a palette associated with this surface, if any.
+				 *
+				 * Ownership of the palette is transfered to the caller.
+				 *
+				 * @throw VideoException if not palette is available.
+				 *
+				 */
+				virtual Palette & getPalette() const throw( VideoException ) ; 
+				 
+				 
+				 
 				/**
 				 * Sets this surface's palette thanks to specified one.
 				 *
@@ -3070,6 +3083,17 @@ namespace OSDL
 				/**
 				 * Surface factory: creates a new Surface instance from
 				 * specified image file.
+				 *
+				 * @param convertToDisplayFormat tells whether this loaded 
+				 * image should have its format converted to the screen's
+				 * format, in order to offer faster blits if ever that 
+				 * surface was to be blitted multiple times to the screen
+				 * (one-time-for-all conversion).
+				 *
+				 * @param convertWithAlpha if the conversion to screen 
+				 * format is selected (convertToDisplayFormat is true), 
+				 * tells whether the converted surface should also have an 
+				 * alpha channel.  				 
 				 *
 				 * @note The caller takes ownership of the created Surface, 
 				 * and must deallocate it when necessary.
