@@ -132,6 +132,39 @@ int main( int argc, char * argv[] )
 		
 		delete & colorPal ;
 		
+		Palette & masterPal = Palette::CreateMasterPalette() ;
+
+		LogPlug::info( "Displaying master palette: " + masterPal.toString() ) ;
+		
+		const string unencodedMasterPalFilename = "testOSDLPalette.rgb" ;
+		LogPlug::info( "Saving it in unencoded format in '" 
+			+ unencodedMasterPalFilename + "'." ) ;
+		masterPal.save( unencodedMasterPalFilename, /* encoded */ false ) ;
+		
+		const string encodedMasterPalFilename = "testOSDLPalette.pal" ;
+		LogPlug::info( "Saving it in encoded format in '" 
+			+ encodedMasterPalFilename + "'." ) ;
+		masterPal.save( encodedMasterPalFilename, /* encoded */ true ) ;
+		
+		/*
+		 * Checking correctness: color #6 is [ 0 ; 36 ; 63] (in 8-bit).
+		 * It should be in bytes 12 and 13 of the .pal, which are:
+		 * 0x9C80 = 40064 = 1001110010000000 = 1 00111 00100 00000 in BGR order.
+		 * so in [0;31] R = 00000 = 0, G = 00100 = 4, B = 00111 = 7 which
+		 * in [0;255] is R = 0, G = 33, B = 58. The small differences compared
+		 * to the color #6 are quantization errors.
+		 *
+		 */
+		 
+		masterPal.draw( screen ) ;
+		
+		screen.update() ;
+		
+		if ( ! isBatch )				
+			myOSDL.getEventsModule().waitForAnyKey() ;
+		
+		delete & masterPal ;
+		
 		LogPlug::info( "Stopping OSDL." ) ;		
         OSDL::stop() ;
 
