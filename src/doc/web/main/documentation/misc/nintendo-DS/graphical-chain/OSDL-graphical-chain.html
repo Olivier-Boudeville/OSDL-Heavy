@@ -268,11 +268,15 @@ The same image (in PNG) with a 256-color dedicated optimal palette (i.e. all its
 </p>
 
 <p>
-A palette shared by all graphics can be enforced. As index #0 is reserved for transparency (colorkey), there are 255 colors to be chosen, in [1,255]. Colors have to respect the <code>x555</code> BGR format (5 bits for each color component, they are thus in [0,31]). 
+A palette shared by all graphics can be enforced. As index #0 is reserved for transparency (colorkey), there are 255 colors to be chosen, in [1,255]. Colors have to respect the <code>x555</code> BGR format (5 bits for each color component, they are thus in [0,31]).
 </p>
 
 <p>
-We chose to generate our shared (master) palette with a python script we called <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/scripts/python/generate_master_palette.py?view=markup" target="_blank">generate_master_palette.py</a> .
+Thus a palette describing n colors is a simple file (whose extension is preferably <code>pal</code>, ex: <code>myPalette.pal</code>) containing <code>n</code> 16-bit encoded colors (thus the file occupies <code>2.n</code> bytes).
+</p>
+
+<p>
+We had chosen initially to generate our shared (master) palette with a python script we called <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/scripts/python/generate_master_palette.py?view=markup" target="_blank">generate_master_palette.py</a>.
 </p>
 
 <p>
@@ -295,8 +299,10 @@ When running the <code>generate_master_palette.py</code> script, following lines
           <td>
             <div class="box">
 <code><pre>
-
-Generating a master palette of 240 base colors (for index in [1..240]), with 6 levels of red, 8 of green and 5 of blue. Index #0 is reserved for the colorkey, which is (106, 76, 48). The 15 remaining index are used to add 8 true grays and 7 specific recurrent colors in target images.
+Generating a master palette of 240 base colors (for index in [1..240]), 
+with 6 levels of red, 8 of green and 5 of blue. Index #0 is reserved 
+for the colorkey, which is (106, 76, 48). The 15 remaining index are 
+used to add 8 true grays and 7 specific recurrent colors in target images.
 
   + color index #0: (106, 76, 48)
   + color index #1: (0, 0, 0)
@@ -311,11 +317,16 @@ Generating a master palette of 240 base colors (for index in [1..240]), with 6 l
   + color index #255: (28, 95, 139)
 Palette has 256 color index.
  * Writing original master palette to 'master-palette-original.rgb'.
- * Writing gamma-corrected master palette to 'master-palette-gamma-corrected.rgb'.
- * Writing quantized master palette (non gamma-corrected) to 'master-palette-quantized.rgb'.
- * Writing final master palette (gamma-corrected, then quantized, then encoded for the DS) to 'master-palette.pal'.
+ * Writing gamma-corrected master palette to
+  'master-palette-gamma-corrected.rgb'.
+ * Writing quantized master palette (non gamma-corrected) to
+  'master-palette-quantized.rgb'.
+ * Writing final master palette (gamma-corrected, then quantized, then
+  encoded for the DS) to 'master-palette.pal'.
 Master palette successfully generated.
-Use 'master-palette-quantized.rgb' for color-reduction of assets, and 'master-palette.pal' as the actual DS palette.                                   </pre></code>
+Use 'master-palette-quantized.rgb' for color-reduction of assets, 
+and 'master-palette.pal' as the actual DS palette.     
+</pre></code>
             </div>
           </td>
         </tr>
@@ -349,7 +360,16 @@ convert -depth 8 -size 16x16 master-palette-original.rgb -scale 800%
 We can see, from top-left to bottom-right, the color key, then the numetous gradients, then the greys, then the various hand-picked colors.
 	</li>
 	
-	<li><a href="master-palette-quantized.rgb">master-palette-quantized.rgb</a> is the same palette, but each color component is quantized to the only 32 levels already mentioned, instead of the 256 levels of the original palette. This quantized palette seems not too different from the original one: <img src="master-palette-quantized.png"></img>
+	<li>
+	
+	<p>
+	<a href="master-palette-quantized.rgb">master-palette-quantized.rgb</a> is the same palette, but each color component is quantized to the only 32 levels already mentioned, instead of the 256 levels of the original palette. This quantized palette seems not too different from the original one: <img src="master-palette-quantized.png"></img>.
+	</p>
+	
+	<p>
+	Note however that the colorkey had to be skipped for this palette, otherwise the color-reduction algorithm could use that color to approximate other colors, which is not wanted.
+	</p>
+	
 	</li>
 	
 	<li>
@@ -432,7 +452,8 @@ Note that, for this explanation, the gamma-corrected image was obtained directly
           <td>
             <div class="box">
 <code><pre>
-convert swordstan-original.png +dither -map master-palette-gamma-corrected.png swordstan-master-against-gamma-corrected.png
+convert swordstan-original.png +dither -map master-palette-gamma-corrected.png
+	swordstan-master-against-gamma-corrected.png
 </pre></code>
             </div>
           </td>
@@ -446,7 +467,7 @@ as otherwise it would generate an image referencing colors from the right gamma-
 <a name="sprite-size"></a>
 <h4>Sprite sizes</h4>
 <p>
-Here is a screenshot of our <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/testOSDLVideoFramebuffer.arm9.cc?view=markup" target="_blank">testOSDLVideoFramebuffer</a> test program taken with NO$GBA:
+Here is a screenshot of our <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/testOSDLVideoFramebuffer.arm9.cc?view=markup" target="_blank">testOSDLVideoFramebuffer</a> test program taken with the NO$GBA emulator:
 
 <center>
     <img src="sprite-sizes.png" alt="Sprite sizes"></img>
@@ -584,7 +605,7 @@ For example, the unarmed Stan can:
 	<li>tip over (fall on the ground)</li>
 	<li>been hit by a blow</li>
 	<li>talk</li>
-	<li>knit (most probably having rest for too long)</li>
+	<li>knit (most probably after having be idle for too long)</li>
 
 
 <!--
@@ -895,7 +916,7 @@ transformed</li>
 	
     <li><a href="http://www.coranac.com/category/proj/grit/" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>), for test conversion to the DS hardware formats and for testing tiling</li>
  
-    <li><a href="http://osdl.sourceforge.net" target="_blank">OSDL</a>, our game library, to ease the develompent of our home-made converting tools</li>
+    <li><a href="http://osdl.sourceforge.net" target="_blank">OSDL</a>, our game library, to ease the development of our home-made converting tools, notably for palette generation (including quantization and gamma correction) and frame preprocessing (colorkey fixing, tiling, encoding, etc.)</li>
  
 <!--
     <li><a href="" target="_blank"></a></li>
@@ -938,7 +959,7 @@ Orginal images are BMP, usually with a kaki (greenish) colorkey: <code>6a4c30</c
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Friday, March 28, 2008</em>
+    <em>Last update: Saturday, March 29, 2008</em>
   </center>
 </body>
 </html>
