@@ -6,6 +6,7 @@
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Rendering ;
+using namespace OSDL::Video ;
 
 using std::string ;
 
@@ -13,6 +14,10 @@ using std::string ;
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>     // for OSDL_DEBUG_SPRITE and al 
 #endif // OSDL_USES_CONFIG_H
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
+#endif // OSDL_ARCH_NINTENDO_DS
 
 
 #if OSDL_DEBUG_SPRITE
@@ -24,6 +29,38 @@ using std::string ;
 #define OSDL_RENDER_LOG(message)
 
 #endif // OSDL_DEBUG_SPRITE
+
+
+
+const Sprite::Shape Sprite::EightTimesEight         =  1 ;
+const Sprite::Shape Sprite::SixteenTimesEight       =  2 ;
+const Sprite::Shape Sprite::ThirtyTwoTimesEight     =  3 ;
+
+const Sprite::Shape Sprite::EightTimesSixteen 	    =  4 ;
+const Sprite::Shape Sprite::SixteenTimesSixteen	    =  5 ;
+const Sprite::Shape Sprite::ThirtyTwoTimesSixteen   =  6 ;
+
+const Sprite::Shape Sprite::EightTimesThirtyTwo     =  7 ;
+const Sprite::Shape Sprite::SixteenTimesThirtyTwo   =  8 ;
+const Sprite::Shape Sprite::ThirtyTwoTimesThirtyTwo =  9 ;
+const Sprite::Shape Sprite::SixtyFourTimesThirtyTwo = 10 ;
+
+const Sprite::Shape Sprite::ThirtyTwoTimesSixtyFour = 11 ;
+const Sprite::Shape Sprite::SixtyFourTimesSixtyFour = 12 ;
+
+
+
+SpriteException::SpriteException( const string & message ) throw(): 
+	VideoRenderingException( "Sprite exception: " + message ) 
+{
+
+}
+	
+			
+SpriteException::~SpriteException() throw()
+{
+		
+}
 
 
 
@@ -59,5 +96,222 @@ const string Sprite::toString( Ceylan::VerbosityLevels level ) const throw()
 			
 	return res ;
 	
+}
+
+
+
+// Static section.
+
+
+string Sprite::DescribeShape( Shape shape ) throw( SpriteException )
+{
+
+	switch( shape )
+	{
+	
+		case EightTimesEight:
+			return "8x8" ;
+			break ;
+			
+		case SixteenTimesEight:
+			return "16x8" ;
+			break ;
+			
+		case ThirtyTwoTimesEight:
+			return "32x8" ;
+			break ;
+			
+			
+		case EightTimesSixteen:
+			return "8x16" ;
+			break ;
+			
+		case SixteenTimesSixteen:
+			return "16x16" ;
+			break ;
+			
+		case ThirtyTwoTimesSixteen:
+			return "32x16" ;
+			break ;
+			
+			
+		case EightTimesThirtyTwo:
+			return "8x32" ;
+			break ;
+			
+		case SixteenTimesThirtyTwo:
+			return "16x32" ;
+			break ;
+			
+		case ThirtyTwoTimesThirtyTwo:
+			return "32x32" ;
+			break ;
+			
+		case SixtyFourTimesThirtyTwo:
+			return "64x32" ;
+			break ;
+			
+			
+		case ThirtyTwoTimesSixtyFour:
+			return "32x64" ;
+			break ;
+			
+		case SixtyFourTimesSixtyFour:
+			return "64x64" ;
+			break ;
+			
+			
+		default :
+			throw SpriteException( "Sprite::DescribeShape failed: "
+				"unknown shape (" + Ceylan::toNumericalString( shape ) + ")" ) ;
+			break ;
+			
+	
+	}
+	
+}
+				
+	
+				
+Sprite::Shape Sprite::GetSmallestEnclosingShape( Length width, Length height )
+	throw( SpriteException )
+{
+
+	/*
+	 * Used for Nintendo assets, but may be used on a PC as well (ex: PC tools 
+	 * for the DS).
+	 * Thus no OSDL_ARCH_NINTENDO_DS here.
+	 *
+	 * @see also http://www.palib.info/wiki/doku.php?id=day4#sprite_sizes
+	 *
+	 */
+	
+	if ( width > 64 || height > 64 )
+		throw SpriteException( "Sprite::GetSmallestEnclosingShape failed: "
+			"size " + Ceylan::toString(width) + "x" + Ceylan::toString(height)
+			+ " too large for standard shapes" ) ;
+	
+
+	if ( width > 32 )
+		if ( height > 32 )
+			return SixtyFourTimesSixtyFour ;
+		else
+			return SixtyFourTimesThirtyTwo ;
+	
+	// Here width <= 32.
+	
+	if ( height > 32 )
+		return ThirtyTwoTimesSixtyFour ;
+		
+	// Here height <= 32.
+	
+	
+	if ( width > 16 )
+		if ( height > 16 )
+			return ThirtyTwoTimesThirtyTwo ;
+		else if ( height > 8 )
+			return ThirtyTwoTimesSixteen ;
+		else
+			return ThirtyTwoTimesEight ;
+	
+	// Here width <= 16.
+	
+	if ( width > 8 )
+		if ( height > 16 )
+			return SixteenTimesThirtyTwo ;
+		else if ( height > 8 )
+			return SixteenTimesSixteen ;
+		else
+			return SixteenTimesEight ;
+		
+	
+	// Here width <= 8.
+	if ( height > 16 )
+		return EightTimesThirtyTwo ;
+	else if ( height > 8 )
+		return EightTimesSixteen ;
+	else
+		return EightTimesEight ;
+			 
+}
+	
+	
+	
+Length Sprite::GetShapeWidthFor( Shape shape ) throw( SpriteException )
+{
+
+	switch( shape )
+	{
+	
+		case EightTimesEight:
+		case EightTimesSixteen:
+		case EightTimesThirtyTwo:
+			return 8 ;
+			break ;
+	
+		case SixteenTimesEight:
+		case SixteenTimesSixteen:
+		case SixteenTimesThirtyTwo:
+			return 16 ;
+			break ;
+	
+		case ThirtyTwoTimesEight:
+		case ThirtyTwoTimesSixteen:
+		case ThirtyTwoTimesThirtyTwo:
+		case ThirtyTwoTimesSixtyFour:
+			return 32 ;
+			break ;
+	
+		case SixtyFourTimesThirtyTwo:
+		case SixtyFourTimesSixtyFour:
+			return 64 ;
+			break ;
+		
+		default:
+			throw SpriteException( "Sprite::GetShapeWidthFor failed: "
+				"unknown shape (" + Ceylan::toNumericalString( shape ) + ")" ) ;
+			break ;
+	}
+
+}
+
+
+
+Length Sprite::GetShapeHeightFor( Shape shape ) throw( SpriteException )
+{
+
+	switch( shape )
+	{
+	
+		case EightTimesEight:
+		case SixteenTimesEight:
+		case ThirtyTwoTimesEight:
+			return 8 ;
+			break ;
+	
+		case EightTimesSixteen:
+		case SixteenTimesSixteen:
+		case ThirtyTwoTimesSixteen:
+			return 16 ;
+			break ;
+	
+		case EightTimesThirtyTwo:
+		case SixteenTimesThirtyTwo:
+		case ThirtyTwoTimesThirtyTwo:
+		case SixtyFourTimesThirtyTwo:
+			return 32 ;
+			break ;
+	
+		case ThirtyTwoTimesSixtyFour:
+		case SixtyFourTimesSixtyFour:
+			return 64 ;
+			break ;
+		
+		default:
+			throw SpriteException( "Sprite::GetShapeHeightFor failed: "
+				"unknown shape (" + Ceylan::toNumericalString( shape ) + ")" ) ;
+			break ;
+	}
+
 }
 
