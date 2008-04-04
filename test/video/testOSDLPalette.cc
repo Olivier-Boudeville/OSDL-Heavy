@@ -135,6 +135,11 @@ int main( int argc, char * argv[] )
 		Palette & masterPal = Palette::CreateMasterPalette() ;
 
 		LogPlug::info( "Displaying master palette: " + masterPal.toString() ) ;
+
+		if ( masterPal.hasDuplicates() )		 
+			LogPlug::info( "Master palette has duplicated colors." ) ;
+		else
+			LogPlug::info( "Master palette has no duplicated color." ) ;
 		
 		const string unencodedMasterPalFilename = "testOSDLPalette.rgb" ;
 		LogPlug::info( "Saving it in unencoded format in '" 
@@ -146,6 +151,7 @@ int main( int argc, char * argv[] )
 			+ encodedMasterPalFilename + "'." ) ;
 		masterPal.save( encodedMasterPalFilename, /* encoded */ true ) ;
 		
+
 		/*
 		 * Checking correctness: color #6 is [ 0 ; 36 ; 63] (in 8-bit).
 		 * It should be in bytes 12 and 13 of the .pal, which are:
@@ -155,10 +161,21 @@ int main( int argc, char * argv[] )
 		 * to the color #6 are quantization errors.
 		 *
 		 */
-		 
-		masterPal.draw( screen ) ;
 		
+
+		masterPal.draw( screen ) ;
+			
 		screen.update() ;
+
+		masterPal.quantize( /* quantizeMaxCoordinate */ 31, 
+			/* scaleUp */ false ) ;
+			
+		if ( masterPal.hasDuplicates() )		 
+			LogPlug::info( "Quantized master palette has duplicated colors." ) ;
+		else
+			LogPlug::info( 
+				"Quantized master palette has no duplicated color." ) ;
+
 		
 		if ( ! isBatch )				
 			myOSDL.getEventsModule().waitForAnyKey() ;
