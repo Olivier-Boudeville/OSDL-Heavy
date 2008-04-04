@@ -33,9 +33,24 @@ using std::string ;
 
 
 
+VideoRenderingException::VideoRenderingException( const string & message )
+		throw(): 
+	RenderingException( "Video rendering exception: " + message ) 
+{
+
+}
+	
+			
+VideoRenderingException::~VideoRenderingException() throw()
+{
+		
+}
+
+
+
 
 VideoRenderer::VideoRenderer( bool registerToRootRenderer ) 
-		throw( RenderingException ) :
+		throw( VideoRenderingException ):
 	Renderer( /* registerToScheduler */ false )
 	//,_internalCamera( 0 )
 {
@@ -48,24 +63,24 @@ VideoRenderer::VideoRenderer( bool registerToRootRenderer )
 		try
 		{
 		
-			// Retrieve the root renderer :
+			// Retrieve the root renderer:
 			renderer = & Renderer::GetExistingRootRenderer() ;
 			
 		}
 		catch( const RenderingException & e )
 		{
-			throw RenderingException( "VideoRenderer constructor : "
+			throw VideoRenderingException( "VideoRenderer constructor: "
 				"no already existing root renderer ("
 				+ e.toString() 
 				+ ") whereas registering had been requested." ) ;
 		} 
 		
-		// Check it is a multimedia renderer indeed :
+		// Check it is a multimedia renderer indeed:
 		MultimediaRenderer * multimediaRenderer = 
 			dynamic_cast<MultimediaRenderer *>( renderer ) ;
 				
 		if ( multimediaRenderer == 0 )
-			throw RenderingException( "VideoRenderer constructor : "
+			throw VideoRenderingException( "VideoRenderer constructor: "
 				"root renderer is not a multimedia renderer, "
 				"no registering possible." ) ;
 					
@@ -86,6 +101,8 @@ VideoRenderer::~VideoRenderer() throw()
 */
 
 }
+
+
 
 /*
 bool hasCamera() const throw() 
@@ -112,6 +129,7 @@ void VideoRenderer::setCamera( Camera & newCamera ) throw()
 */
 
 
+
 void VideoRenderer::render( RenderingTick currentRenderingTick ) 
 	throw()
 {
@@ -124,7 +142,9 @@ void VideoRenderer::render( RenderingTick currentRenderingTick )
 	 *
 	 */
 	_renderingDone++ ;
+	
 }
+
 
 
 void VideoRenderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
@@ -138,6 +158,7 @@ void VideoRenderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
 }
 
 
+
 const string VideoRenderer::toString( Ceylan::VerbosityLevels level ) 
 	const throw() 
 {
@@ -149,14 +170,14 @@ const string VideoRenderer::toString( Ceylan::VerbosityLevels level )
 		+ Ceylan::toString( _renderingSkipped ) + " skip(s)" ;
 	
 	if ( _renderingDone + _renderingSkipped != 0 )
-		res += " (rendering proportion : " 
+		res += " (rendering proportion: " 
 			+ Ceylan::toString( 
 				100 * _renderingDone / ( _renderingDone + _renderingSkipped ) )
 		 	+ "%)" ;
 			
 	/*		
 	if ( _internalCamera != 0 )
-		res += ". Following camera is being used : " 
+		res += ". Following camera is being used: " 
 			+ _internalCamera->toString( level ) ;
 	else
 		res += ". No camera is currently used" ;		 
