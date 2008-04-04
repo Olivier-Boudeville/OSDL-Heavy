@@ -16,6 +16,7 @@
  */
  
  
+#include "OSDLSprite.h"
 #include "OSDLVideoRenderer.h"
 
  
