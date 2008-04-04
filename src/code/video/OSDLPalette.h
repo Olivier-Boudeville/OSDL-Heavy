@@ -29,8 +29,18 @@ namespace OSDL
 	{
 	
 
-		/// Number of colors.
-		typedef Ceylan::Uint32 ColorCount ;
+		/**
+		 * Number of colors.
+		 *
+		 * @note Change palette constructor from file and the save method is
+		 * the size of this type changes.
+		 *
+		 */
+		typedef Ceylan::Uint16 ColorCount ;
+		
+		
+		/// Distance between colors.
+		typedef Ceylan::SignedLongInteger ColorDistance ;
 		
 		
 		/**
@@ -69,7 +79,7 @@ namespace OSDL
 		
 		
 		
-		/// Exception raised when palette operation failed.
+		/// Exception raised when a palette operation failed.
 		class OSDL_DLL PaletteException: public VideoException
 		{
 		
@@ -105,6 +115,8 @@ namespace OSDL
 		 * A palette has getNumberOfColors() colors, ranging from 0 
 		 * to getNumberOfColors()-1.
 		 *
+		 * A color index can be set as being the colorkey.
+		 *
 		 */
 		class OSDL_DLL Palette: public Ceylan::TextDisplayable
 		{
@@ -123,6 +135,8 @@ namespace OSDL
 				 * Constructs a palette from a specified array of color
 				 * definitions.
 				 *
+				 * No colorkey is set.
+				 *
 				 * @param numberOfColors the number of color for this palette.
 				 *
 				 * @param colors pointer to an array of numberOfColors color
@@ -138,20 +152,46 @@ namespace OSDL
 				 * @note Takes ownership of the array of color definitions.
 				 *
 				 */
-				Palette( ColorCount numberOfColors, 
+				explicit Palette( ColorCount numberOfColors, 
 						Pixels::ColorDefinition * colors = 0,
 						Pixels::PixelFormat * format = 0 ) 
 					throw( PaletteException ) ;
 
 				
 				/**
+				 * Creates a new palette from specified file, whose format is
+				 * expected to be the .osdl.palette, which implies an OSDL
+				 * palette header followed by the palette itself, with 24 bits
+				 * per color (8 bits per color component), in RGB order.
+				 *
+				 * A colorkey index may be specified in the file.
+				 *
+				 * @param paletteFilename the name of the file containing the
+				 * palette in '.osdl.palette' format.
+				 *
+				 * @see the Palette::save for the corresponding '.osdl.palette'
+				 * file format.
+				 *
+				 * @note No alpha information is stored on file, and loaded 
+				 * colors will all be set to fully opaque (AlphaOpaque).
+				 *
+				 * @throw PaletteException if the operation failed.
+				 *
+				 */
+				explicit Palette( const std::string & paletteFilename ) 
+					throw( PaletteException ) ;
+					
+					
+				/**
 				 * Constructs a palette from an already existing SDL palette.
+				 *
+				 * No colorkey is set.
 				 *
 				 * @note Does not take ownership of the LowLevelPalette's color
 				 * buffer.
 				 *
 				 */				
-				explicit Palette( LowLevelPalette & palette ) 
+				explicit Palette( const LowLevelPalette & palette ) 
 					throw( PaletteException ) ;
 				
 				
@@ -159,8 +199,9 @@ namespace OSDL
 				virtual ~Palette() throw() ;
 			
 			
+			
 				/**
-				 * Loads from memory a new palette.
+				 * Loads new color definitions from memory .
 				 *
 				 * @param colors the color array, which should have been
 				 * allocated like: 
@@ -170,7 +211,7 @@ namespace OSDL
 				 * @note If a palette was already registered, it is 
 				 * deallocated first.
 				 *
-				 * @note The palette takes ownership of the specified array 
+				 * @note This palette takes ownership of the specified array 
 				 * of colors, and will deallocate them when necessary.
 				 *
 				 */
@@ -179,7 +220,11 @@ namespace OSDL
 					throw( PaletteException ) ;
 			
 			
-				/// Returns the number of colors defined in the palette.
+				/**
+				 * Returns the number of colors defined in the palette
+				 * (including any colorkey).
+				 *
+				 */				 
 				virtual ColorCount getNumberOfColors() const throw() ;
 				
 				
@@ -192,7 +237,6 @@ namespace OSDL
 				 * @throw PaletteException if index is out of bounds 
 				 * (superior or equal to getNumberOfColors).
 				 *
-				 *
 				 */
 				virtual const Pixels::PixelColor & getPixelColorAt( 
 						ColorCount index ) 
@@ -202,7 +246,8 @@ namespace OSDL
 				/**
 				 * Returns the palette's pointer to pixel colors.
 				 *
-				 * @note This method should generally not be used.
+				 * @note This method should generally not be used, and is
+				 * "pseudo-const".
 				 *
 				 */
 				virtual Pixels::PixelColor * getPixelColors() const throw() ;
@@ -217,7 +262,6 @@ namespace OSDL
 				 *
 				 * @throw PaletteException if index is out of bounds 
 				 * (superior or equal to getNumberOfColors).
-				 *
 				 *
 				 */
 				virtual const Pixels::ColorDefinition & getColorDefinitionAt(
@@ -240,7 +284,7 @@ namespace OSDL
 				 */
 				virtual void setColorDefinitionAt(
 						ColorCount targetIndex, 
-						Pixels::ColorDefinition & newColorDefinition ) 
+						const Pixels::ColorDefinition & newColorDefinition ) 
 					throw( PaletteException ) ;
 					
 					
@@ -267,12 +311,42 @@ namespace OSDL
 				/**
 				 * Returns the palette's color definitions.
 				 *
-				 * @note This method should generally not be used.
+				 * @note This method should generally not be used, and is
+				 * "pseudo-const".
 				 *
 				 */
 				virtual Pixels::ColorDefinition * getColorDefinitions() 
 					const throw() ;
 
+
+				
+				/**
+				 * Returns whether this palette has a colorkey registered.
+				 *
+				 */
+				virtual bool hasColorKey() const throw() ;
+				
+				
+				/**
+				 * Returns the index of the colorkey.
+				 *
+				 * @throw PaletteException if no colorkey is registered.
+				 *
+				 * @see hasColorKey
+				 *
+				 */
+				virtual ColorCount getColorKeyIndex() const 
+					throw( PaletteException ) ;
+				
+				
+				/**
+				 * Sets the specified index as a colorkey.
+				 *
+				 */
+				virtual void setColorKeyIndex( ColorCount colorkeyIndex )
+					throw() ;
+				
+					
 					
 				/**
 				 * Updates (recomputes) internal pixel colors from internal
@@ -320,9 +394,30 @@ namespace OSDL
 				 *
 				 * @example gamma is roughly equal to 2.3 for the Nintendo DS.
 				 *
+				 * @note If a colorkey is defined, it will be not be 
+				 * gamma-corrected on purpose.
+				 *				 
 				 */
 				virtual void correctGamma( Pixels::GammaFactor gamma ) throw() ;
 
+
+				/**
+				 * Returns the index of the color definition in the palette 
+				 * that matches the most closely to specified color.
+				 *
+				 * @throw PaletteException if the palette does not have at 
+				 * least one color.
+				 *
+				 * @note Uses GetDistance as a metric.
+				 *
+				 * @note If a colorkey is defined, it will not be taken into
+				 * account as a possible color match.
+				 *
+				 */
+				virtual ColorCount getClosestColorIndexTo(
+						const Pixels::ColorDefinition & color ) const
+					throw( PaletteException ) ;
+					
 
 				/**
 				 * Draws in specified surface a series of horizontal lines
@@ -338,10 +433,29 @@ namespace OSDL
 				 * @note Cannot be 'const' since pixel color physical color 
 				 * may have to be recomputed.
 				 *
+				 * @note The colorkey will be drawn as other colors.
+				 *
 				 */
 				virtual bool draw( Surface & targetSurface, 
-					Pixels::ColorDefinition backgroundColor = Pixels::White )
-						throw() ;
+					const Pixels::ColorDefinition & backgroundColor 
+						= Pixels::White ) throw() ;
+				
+				
+				/**
+				 * Tells whether the current palette has strictly identical
+				 * color definitions.
+				 *
+				 * @param useAlpha tells whether the alpha coordinate is tested 
+				 * too for equality.
+				 *
+				 * @return true iff there is at least a duplicated color.
+				 *
+				 * @note If a colorkey is defined, it will not be taken into
+				 * account for a possible color collision.
+				 *
+				 */
+				virtual bool hasDuplicates( bool useAlpha = false )
+					const throw() ;
 				
 				
 				/**
@@ -352,21 +466,39 @@ namespace OSDL
 				 * Alpha coordinates will be ignored (not taken into account,
 				 * not saved).
 				 *
+				 * A palette can be saved in the osdl.palette format (a.k.a
+				 * unencoded format), or in .pal format (a.k.a. encoded format.
+				 *
+				 * With the osdl.palette format, a palette is made of a header,
+				 * storing: 
+				 *  - the OSDL tag for palette
+				 *  - in next byte: 1 if a colorkey is defined, 0 otherwise
+				 *  - if there is a color key, in next sizeof(ColorCount) bytes
+				 * the index of the color key is specified (otherwise the
+				 * header contains only the first byte).
+				 * After the header, the content of the palette itself is
+				 * stored, with 8 bits per color component, in RGB order
+				 * (thus 24 bits per color, and no alpha coordinate stored).
+				 * The extension of files respecting this format is preferably
+				 * '.osdl.palette'.
+				 *
+				 * With the encoded format, quantized colors will be written,
+				 * i.e. each color definition will be packed into 16 bits only 
+				 * (first bit set to 1, then 5 bits per quantized color
+				 * component, in BGR order). The fact that a given index
+				 * corresponds to a colorkey will not be stored in this
+				 * encoded format. The encoded format is suitable for the
+				 * Nintendo GBA and DS consoles.
+				 * The extension of files respecting this format is preferably
+				 * '.pal'.
+				 *
 				 * @param filename the name of the palette file to create
-				 * (prefer a '.pal' extension if encoded, a '.rgb' one 
-				 * otherwise).
+				 * (respecting recommended extensions is encouraged).
 				 *
-				 * @param encoded tells whether the raw colors will be written
-				 * (if false), i.e. in RGB order with each color component 
-				 * on 8 bits (thus 24 bits per color), or, if true, if 
-				 * encoded colors will be written, i.e. each color definition 
-				 * being packed in 16 bits (first bit to 1, then 5 bits per
-				 * quantized color component, in BGR order). 
+				 * @param encoded tells whether the palette will be written
+				 * in encoded format (if true), or in .osdl.palette format 
+				 * (if false).
 				 *
-				 * @note The encoded format is suitable for the Nintendo GBA
-				 * and DS consoles. '.pal' preferred to '.osdl.palette', as no
-				 * OSDL header thus no tag.
-				 * 
 				 * @throw PaletteException if the operation failed.
 				 *
 				 */
@@ -388,6 +520,7 @@ namespace OSDL
 		 		virtual const std::string toString( 
 						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
+
 
 
 				
@@ -413,27 +546,31 @@ namespace OSDL
 				 *
 				 */
 				static Palette & CreateGradationPalette( 
-					Pixels::ColorDefinition colorStart,
-					Pixels::ColorDefinition colorEnd, 
+					const Pixels::ColorDefinition & colorStart,
+					const Pixels::ColorDefinition & colorEnd, 
 					ColorCount numberOfColors = 256 ) throw() ; 
 			
 			
 				/**
-				 * Palette factory, creating a 255-color master palette
-				 * suitable for best-fit color-reduction of all kinds of images,
-				 * notably animation frames.
+				 * Palette factory, creating a colorkey-less 255 or
+				 * colorkey-enabled 256 color master palette suitable for
+				 * best-fit color-reduction of all kinds of images, notably
+				 * animation frames.
 				 *
-				 * @note Only 255 colors (not 256) are defined here, to leave
-				 * one index for a future colorkey, not specified here to avoid
-				 * that color-reduction algorithms use the corresponding color
-				 * to match colors of target image.
+				 * @param addColorkey if true, the default colorkey will be 
+				 * inserted at palette index #0, and registered as such. There
+				 * will be then 256 colors in the palette. Otherwise, if false,
+				 * only 255 colors (not 256) will be defined here, to leave
+				 * one index for a future colorkey.
 				 *
 				 * @see http://en.wikipedia.org/wiki/:
 				 * List_of_software_palettes#6-8-5_levels_RGB for the
 				 * base colors of this palette.
 				 *
 				 */
-				static Palette & CreateMasterPalette() throw() ; 
+				static Palette & CreateMasterPalette( bool addColorkey = true )
+					throw() ; 
+			
 			
 			
 			
@@ -447,6 +584,7 @@ namespace OSDL
 				virtual void invalidatePixelColors() throw() ;
 				
 				
+					 
 				
 				// Static section.
 				
@@ -482,7 +620,24 @@ namespace OSDL
 					Pixels::ColorElement component,	
 					Pixels::GammaFactor gamma )	throw() ;
 					
-			
+				
+				/**
+				 * Returns the perceived distance of the human eye between
+				 * the two specified color definitions.
+				 *
+				 * An advanced weighted Euclidean distance is used, see
+				 * the lost-cost approximation in 
+				 * http://www.compuphase.com/cmetric.htm.
+				 *
+				 * @note The alpha coordinate is ignored for the distance
+				 * computation.
+				 *
+				 */
+				static ColorDistance GetDistance( 
+					const Pixels::ColorDefinition & firstColor,
+					const Pixels::ColorDefinition & secondColor ) throw() ;
+								
+										
 			
 				/// The number of colors defined in this palette.
 				ColorCount _numberOfColors ;
@@ -519,11 +674,20 @@ namespace OSDL
 				 */
 				bool _ownsColorDefinition ;
 				
-				
+					
+					
 							
 			private:
 			
-			
+					
+				/// Tells whether this palette has a registered color key.
+				bool _hasColorkey ;
+				
+				/// Index in palette of the used colorkey (if any), usually #0.
+				ColorCount _colorKeyIndex ;
+
+		
+		
 				/**
 				 * Copy constructor made private to ensure that it will 
 				 * never be called.
