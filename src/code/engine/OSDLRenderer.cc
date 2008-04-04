@@ -3,6 +3,7 @@
 #include "OSDLScheduler.h"    // for GetExistingScheduler
 
 
+
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Events ;
@@ -10,6 +11,7 @@ using namespace OSDL::Rendering ;
 using namespace OSDL::Engine ;
 
 using std::string ;
+
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -31,8 +33,9 @@ using std::string ;
 Renderer * Renderer::_internalRootRenderer = 0 ;
 
 
-RenderingException::RenderingException( const std::string & reason ) throw() :
-	OSDL::Exception( "RenderingException : " + reason )
+
+RenderingException::RenderingException( const std::string & reason ) throw():
+	OSDL::Exception( "RenderingException: " + reason )
 {
 
 }
@@ -45,7 +48,7 @@ RenderingException::~RenderingException() throw()
 
 
 
-Renderer::Renderer( bool registerToScheduler ) throw( RenderingException ) :
+Renderer::Renderer( bool registerToScheduler ) throw( RenderingException ):
 	Object(),
 	_renderingDone( 0 ),
 	_renderingSkipped( 0 ),
@@ -61,12 +64,13 @@ Renderer::Renderer( bool registerToScheduler ) throw( RenderingException ) :
 		catch( const RenderingException & e )
 		{
 			throw RenderingException( 
-				"Renderer constructor : no already existing scheduler ("
+				"Renderer constructor: no already existing scheduler ("
 				+ e.toString() + ") whereas registering had been requested." ) ;
 		} 
 	}
 	
 }
+
 
 
 Renderer::~Renderer() throw()
@@ -75,6 +79,7 @@ Renderer::~Renderer() throw()
 	// Views are not owned.
 	
 }
+
 
 
 void Renderer::render( RenderingTick currentRenderingTick ) throw()
@@ -92,6 +97,7 @@ void Renderer::render( RenderingTick currentRenderingTick ) throw()
 }
 
 
+
 void Renderer::onRenderingSkipped( RenderingTick skippedRenderingTick )	throw()
 {
 
@@ -99,6 +105,7 @@ void Renderer::onRenderingSkipped( RenderingTick skippedRenderingTick )	throw()
 	_renderingSkipped++ ;
 	
 }
+
 
 
 const string Renderer::toString( Ceylan::VerbosityLevels level ) const throw() 
@@ -111,13 +118,14 @@ const string Renderer::toString( Ceylan::VerbosityLevels level ) const throw()
 		+ Ceylan::toString( _renderingSkipped ) + " skip(s)" ;
 	
 	if ( _renderingDone + _renderingSkipped != 0 )
-		res += " (rendering proportion : " 
+		res += " (rendering proportion: " 
 			+ Ceylan::toString( 100 * _renderingDone / ( _renderingDone 
 				+ _renderingSkipped ) )	+ "%)" ;
 			
 	return res ;
 	
 }
+
 
 
 bool Renderer::HasExistingRootRenderer() throw()
@@ -128,30 +136,33 @@ bool Renderer::HasExistingRootRenderer() throw()
 }
 
 
+
 Renderer & Renderer::GetExistingRootRenderer() throw( RenderingException )
 {
 
     if ( Renderer::_internalRootRenderer == 0 )
 		throw RenderingException( 
-			"Renderer::GetExistingRenderer : no Renderer available." ) ;
+			"Renderer::GetExistingRenderer: no Renderer available." ) ;
     return * Renderer::_internalRootRenderer ;
 
 }
+
 
 
 void Renderer::DeleteExistingRootRenderer() throw( RenderingException )
 {
 
     if ( Renderer::_internalRootRenderer != 0 )
-		throw RenderingException( "Renderer::DeleteExistingRenderer : "
+		throw RenderingException( "Renderer::DeleteExistingRenderer: "
 			"there was no already existing Renderer." ) ;
 			
-    LogPlug::debug( "Renderer::DeleteExistingRenderer : effective deleting." ) ;
+    LogPlug::debug( "Renderer::DeleteExistingRenderer: effective deleting." ) ;
 
     delete Renderer::_internalRootRenderer ;
 	Renderer::_internalRootRenderer = 0 ;
 
 }
+
 
 
 void Renderer::DeleteRootRenderer() throw()
@@ -160,7 +171,7 @@ void Renderer::DeleteRootRenderer() throw()
     if ( Renderer::_internalRootRenderer != 0 )
     {
 	
-        LogPlug::debug( "Renderer::DeleteRenderer : effective deleting." ) ;
+        LogPlug::debug( "Renderer::DeleteRenderer: effective deleting." ) ;
 
         delete Renderer::_internalRootRenderer ;
 		Renderer::_internalRootRenderer = 0 ;
@@ -169,7 +180,7 @@ void Renderer::DeleteRootRenderer() throw()
     else
     {
 	
-        LogPlug::debug( "Renderer::DeleteRenderer : no deleting needed." ) ;
+        LogPlug::debug( "Renderer::DeleteRenderer: no deleting needed." ) ;
 		
     }
 
