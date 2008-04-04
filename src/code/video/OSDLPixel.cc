@@ -427,6 +427,8 @@ extern const ColorDefinition OSDL::Video::Pixels::Yellow          =
 	{ 255, 255,   0, 255 } ; 
 
 
+extern const ColorDefinition OSDL::Video::Pixels::DefaultColorkey = Magenta ; 
+
 
 
 
