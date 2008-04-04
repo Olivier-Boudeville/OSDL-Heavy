@@ -294,6 +294,10 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 		if ( redMask == 0 && greenMask == 0 && blueMask == 0 )
 			Pixels::getRecommendedColorMasks( redMask, greenMask, 
 				blueMask, alphaMask ) ;
+		
+		// No alpha-aware blitter for 8 bit per pixel blits:
+		if ( depth == 8 )
+			alphaMask = 0 ;
 			
 	}
 		
@@ -620,6 +624,52 @@ void Surface::setAlpha( Flags flags, Pixels::ColorElement newAlpha )
 
 
 
+ColorDefinition Surface::guessColorKeyDefinition() const throw( VideoException )
+{
+
+	return Pixels::convertPixelColorToColorDefinition( getPixelFormat(),
+		guessColorKey() ) ;
+		
+}
+
+
+
+PixelColor Surface::guessColorKey() const throw( VideoException )
+{
+	
+	Length width  = getWidth() ;
+	Length height = getHeight() ;
+	
+	if ( width == 0 || height == 0 )
+		throw VideoException( "Surface::guessColorKey failed: "
+			"surface too small" ) ;
+			
+	PixelColor firstCandidate = getPixelColorAt( 0, 0 ) ;
+		
+	PixelColor secondCandidate = getPixelColorAt( width-1, height-1 ) ;
+		
+	if ( Pixels::areEqual( firstCandidate, secondCandidate ) )
+		return firstCandidate ;
+	
+	// First two different, third corner will discriminate:	
+	
+	PixelColor thirdCandidate = getPixelColorAt( width-1, 0 ) ;
+	
+			
+	if ( Pixels::areEqual( firstCandidate, thirdCandidate ) )
+		return firstCandidate ;
+
+	if ( Pixels::areEqual( secondCandidate, thirdCandidate ) )
+		return secondCandidate ;
+		
+	throw VideoException( "Surface::guessColorKey failed: "
+		"three different colorkey candidates found" ) ;
+		
+	 			 
+}
+
+
+
 void Surface::setColorKey( Flags flags, Pixels::PixelColor keyPixelColor )
 	throw( VideoException )
 {
@@ -706,8 +756,9 @@ Palette & Surface::getPalette() const throw( VideoException )
 					
 
 
-bool Surface::setPalette( Palette & newPalette, ColorCount startingColorIndex,
-	ColorCount numberOfColors, Flags targettedPalettes ) throw() 
+bool Surface::setPalette( const Palette & newPalette, 
+	ColorCount startingColorIndex, ColorCount numberOfColors, 
+	Flags targetedPalettes ) throw( VideoException ) 
 {
 
 #if OSDL_USES_SDL
@@ -722,22 +773,29 @@ bool Surface::setPalette( Palette & newPalette, ColorCount startingColorIndex,
 		}		
 		else
 		{
-			LogPlug::error( 
-				"Surface::setPalette: starting index out of bounds." );
-			return false ;
+		
+			throw VideoException( "Surface::setPalette failed: "
+				"starting index out of bounds." ) ;
+
 		}
 			
 	}
 	else if ( startingColorIndex + numberOfColors >
 		newPalette.getNumberOfColors() )
 	{
-		LogPlug::error( 
-			"Surface::setPalette: too many color indexes, out of bounds." );
-		return false ;
-	}	
 
-	return ( SDL_SetPalette( _surface, targettedPalettes, 
-		newPalette.getColorDefinitions(), startingColorIndex, 
+			throw VideoException( "Surface::setPalette failed: "
+				"too many color index, out of bounds." ) ;
+				
+	}	
+	
+	/*
+	 * In video/SDL_video.c, SDL_SetPalette seems to copy palette, not take
+	 * ownership of it:
+	 *
+	 */
+	return ( SDL_SetPalette( _surface, targetedPalettes, 
+		/* const */ newPalette.getColorDefinitions(), startingColorIndex, 
 		numberOfColors ) == 1 ) ;
 
 #else // OSDL_USES_SDL	
@@ -748,8 +806,70 @@ bool Surface::setPalette( Palette & newPalette, ColorCount startingColorIndex,
 #endif // OSDL_USES_SDL
 		
 }
-					
+			
 
+					
+Surface & Surface::createColorReducedSurfaceFor( const Palette & palette, 
+	bool manageColorkey ) const throw( VideoException )
+{
+
+
+	PixelColor sourceColorkey ;
+	
+	if ( manageColorkey )
+		sourceColorkey = guessColorKey() ;
+
+	// Creates a 8-bit software surface of the same size as this surface:
+	Length targetWidth  = getWidth() ;
+	Length targetHeight = getHeight() ;
+	
+	Surface * res = new Surface( Software, /* width */ targetWidth,
+		/* height */ targetHeight, /* BitsPerPixel */ 8 ) ;
+	
+	res->setPalette( palette ) ;	
+	
+	PixelColor current ;
+	ColorCount index ;
+	
+	// Scans source surface and chooses best index to put in target surface:
+	for ( Length y = 0; y < targetHeight; y++ )
+		for ( Length x = 0; x < targetWidth; x++ )
+		{
+		
+			current = getPixelColorAt( x, y ) ;
+			
+			if ( manageColorkey && Pixels::areEqual( current, sourceColorkey ) )
+			{
+			
+				index = palette.getColorKeyIndex() ;
+			
+			}
+			else
+			{	
+			
+				// First retrieves the color definition from this surface:
+				ColorDefinition colorDef = 
+							Pixels::convertPixelColorToColorDefinition( 
+						getPixelFormat(), current ) ;
+			
+				// Then finds in palette the closest index:
+				index = palette.getClosestColorIndexTo( colorDef ) ;
+		
+			}
+			
+			
+			// Finally puts the chosen index on the current pixel:
+			res->putPixelColorAt( x, y, static_cast<PixelColor>( index ),
+				/* alpha */ AlphaOpaque, /* blending */ false, 
+				/* clipping */ false, /* locking */ false ) ;
+				
+		}
+
+	return *res ;	
+
+}
+	
+					
 
 Pixels::PixelFormat & Surface::getPixelFormat() const throw( VideoException )
 {
@@ -1705,9 +1825,6 @@ bool Surface::drawGrid( Length columnStride, Length rowStride,
 	bool fillBackground, Pixels::ColorDefinition backColor ) throw()
 {
 
-	// Take into account the grid line itself:
-	columnStride++ ;
-	rowStride++ ; 
 	
 	if ( fillBackground )
 	{
@@ -1904,7 +2021,7 @@ bool Surface::blitTo( Surface & targetSurface,
 	
 		case -1:
 			throw VideoException( 
-				"Surface::blitTo with source rectangle: error in blit, " 
+				"Surface::blitTo with source rectangle: error in blit: " 
 				+ Utils::getBackendLastError() ) ;
 			break ;
 	
@@ -2043,6 +2160,56 @@ void Surface::setClippingArea( UprightRectangle & newClippingArea ) throw()
 	
 }
 
+
+
+UprightRectangle & Surface::getContentArea() const throw( VideoException ) 
+{
+
+	
+	Length width = getWidth() ;
+	Length minWidth = width ;
+	Length maxWidth = 0 ;
+	
+	Length height = getHeight() ;
+	Length minHeight = height ;
+	Length maxHeight = 0  ;
+
+	PixelColor colorkey = guessColorKey() ;
+	PixelColor current ;
+	
+	for ( Length y = 0; y < height; y++ )
+		for ( Length x = 0; x < width; x++ )
+		{
+		
+			current = getPixelColorAt( x, y ) ;
+			
+			if ( ! areEqual( current, colorkey ) )
+			{
+			
+				// We have a non-colorkey pixel here:
+				
+				if ( x < minWidth )
+					minWidth = x ;
+					
+				if ( x > maxWidth )
+					maxWidth = x ;
+			
+			
+				if ( y < minHeight )
+					minHeight = y ;
+					
+				if ( y > maxHeight )
+					maxHeight = y ;
+			
+			}
+		
+		}
+	
+	return * new UprightRectangle( minWidth, minHeight, 
+		/* width */ maxWidth - minWidth + 1,
+		/* height */ maxHeight - minHeight + 1 ) ;
+		
+}
 
 
 
