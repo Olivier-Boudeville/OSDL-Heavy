@@ -90,6 +90,10 @@ We based most of the technical choices on our <a href="../homebrew-guide/Homebre
 </p>
 
 <p>
+Heavy preprocessing of images is to be performed before being able to render them efficiently from the DS, notably for sprites. So we had to gather a dedicated transformation toolchain for graphics. The various generic tools we tried would have implied too many limitations. We thus developped our own tools, which rely directly on our <a href="http://osdl.sourceforge.net" target="_blank">OSDL</a> library: beyond being used for realtime game engines, it proved to be very helpful to develop tools as well.
+</p>
+
+<p>
 We are discussing here only about the graphical rendering of the underlying game world, which is to be managed by the <a href="../game-engine/OSDL-game-engine.html" target="_blank">game engine</a>. Audio content in general is not discussed here, see <a href="../../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a> instead.
 
 
@@ -243,167 +247,190 @@ These tile-based (not framebuffer-based) static elements are not expected here t
 </p>
 
 
+
+
+
 <h3>Sprites</h3>
 
 
 
 <a name="sprite-colors"></a>
 <h4>Sprite color modes</h4>
+
 <p>
-Among the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-color" target="_blank">available sprite color schemes</a>, the mode usually chosen for games is the one with 16 palettes, each of 256 colors. It is a good trade-off indeed. Simple implementations could cope with one general-purpose palette for all sprites (using an appropriate <a href="http://en.wikipedia.org/wiki/List_of_monochrome_and_RGB_palettes#15-bit_RGB" target="_blank">master palette</a>), whereas more complex ones could associate a palette to a given sprite (usually, animated character). The problem is that it would imply that no more than 16 types of sprites could be displayed simultaneously in the in-world view, which would be a considerable limitation.  
+There is no direct-color mode for sprites: a palette has to be used.
+</p>
+
+
+<h5>Palette depth &amp; number</h5>
+
+
+<p>
+Among the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-color" target="_blank">available sprite color schemes</a>, the mode usually chosen for games is the one with up to 16 palettes, each of up to 256 colors. It is a good trade-off indeed, better than using 16 palettes of 16 colors for example.
+</p>
+
+
+
+<h5>Master palette</h5>
+
+<p>
+Most implementations may cope with one general-purpose palette for all sprites (using an appropriate <a href="http://en.wikipedia.org/wiki/List_of_monochrome_and_RGB_palettes#15-bit_RGB" target="_blank">master palette</a>), whereas more complex ones could rely on multiple palettes and associate to a given set of sprites (usually, animated characters) a particular palette. The increased color fidelity might not be worth the trouble of generating a set of palettes and choosing for each sprite the most appropriate palette.
 </p>
 
 <p>
-We keep in mind most of our sprites will come from the aforementioned Reiner's Tilesets. If we take <a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">Swordstan</a> as an example (most probably our main character, as having multiple animations with multiple outside appearances), the source image (BMP in 24 Bit TrueColor), could be (taken from <code>swordstan shield 96x  bitmaps/attack se0000.bmp</code>) :
+We keep in mind that a lot of our sprites will come from the aforementioned Reiner's Tilesets. If we take <a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">Swordstan</a> as an example (most probably our main character, as having multiple animations with multiple outside appearances), the source image (BMP in 24 Bit TrueColor), could be (taken from <code>swordstan shield 96x  bitmaps/attack se0000.bmp</code>) :
 <center>
     <img src="swordstan-original.png" alt="Original image"></img>
 </center>
 </p>
 
 <p>
-The same image (in PNG) with a 256-color dedicated optimal palette (i.e. all its colors have been chosen specifically for this image) looks very similar:
+The same image (here in PNG) with a 256-color <em>dedicated</em> optimal palette (i.e. all its colors have been chosen specifically for this image) looks almost exactly the same:
 <center>
     <img src="swordstan-optimal-palette.png" alt="With 256-color optimal palette"></img>
 </center>
 </p>
 
 <p>
-A palette shared by all graphics can be enforced. As index #0 is reserved for transparency (colorkey), there are 255 colors to be chosen, in [1,255]. Colors have to respect the <code>x555</code> BGR format (5 bits for each color component, they are thus in [0,31]).
+However we have to rely on a general-purpose palette here, that will be shared by <em>all</em> our sprites. As index #0 is reserved for transparency (colorkey), there are 255 colors to be chosen, in [1,255]. 
+</p>
+
+
+
+<h5>Generation of a logical master palette</h5>
+
+<p>
+We chose to create programmatically our own shared (master) palette, for a better control. This palette aims at representing any bitmap image (as opposed to a palette made for a specific set of graphics) with as little color error as possible, knowing that we will have thousands of varied frames that will have to be automatically color-reduced against it.
 </p>
 
 <p>
-Thus a palette describing n colors is a simple file (whose extension is preferably <code>pal</code>, ex: <code>myPalette.pal</code>) containing <code>n</code> 16-bit encoded colors (thus the file occupies <code>2.n</code> bytes).
+The base of this palette is a 240-color <a href="http://en.wikipedia.org/wiki/List_of_software_palettes#6-8-5_levels_RGB" target="_blank">6-8-5</a> palette: for each of the 6 levels of red regularly distributed in the range of this color component, there are 8 levels of green, and for each of these green levels there are 5 levels of blue. Therefore <code>6*8*5 = 240</code> different colors are listed. Component ranges have been chosen in function of the sensibility of the normal human eye to every primary color.
 </p>
 
 <p>
-We had chosen initially to generate our shared (master) palette with a python script we called <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/scripts/python/generate_master_palette.py?view=markup" target="_blank">generate_master_palette.py</a>.
+Out of the <code>255-240 = 15</code> remaining colors, 8 are used for pure greys (which were lacking from the base palette). The 7 last colors have been specifically selected in frames from various characters (notably Stan), to match them more closely, regarding flesh, hair, etc.
 </p>
 
+
+
+<h5>Generation of the corresponding actual master palettes</h5>
+
+
 <p>
-This palette aims at representing any bitmap image (as opposed to a palette made for a specific set of graphics), as we will have thousands of frames that will have to rely on it.
+We defined two kinds of file formats for actual palettes: a high-level one, the <code>osdl.palette</code> generic format, and a DS-specific one, the <code>pal</code> format.
 </p>
 
-<p>
-The base of this palette is a 240-color <a href="http://en.wikipedia.org/wiki/List_of_software_palettes#6-8-5_levels_RGB" target="_blank">6-8-5</a> palette: for each of 6 levels of red regularly distributed in the range of color component, there are 8 levels of green, and for each of these there are 5 levels of blue. Therefore <code>6*8*5 = 240</code> different colors are listed. Ranges have been chosen in function of the sensibility of the normal human eye to every primary color.
-</p>
+
+
+<h6>The <code>osdl.palette</code> format</h6>
 
 <p>
-On the 15 remaining colors (255-240), 8 are used for pure greys (which were lacking from the base palette). The 7 last colors have been specifically selected in frames from various characters (notably Stan), to match them more closely.
-</p>
-
-<p>
-When running the <code>generate_master_palette.py</code> script, following lines are output:
-<center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-<code><pre>
-Generating a master palette of 240 base colors (for index in [1..240]), 
-with 6 levels of red, 8 of green and 5 of blue. Index #0 is reserved 
-for the colorkey, which is (106, 76, 48). The 15 remaining index are 
-used to add 8 true grays and 7 specific recurrent colors in target images.
-
-  + color index #0: (106, 76, 48)
-  + color index #1: (0, 0, 0)
-  + color index #2: (0, 0, 63)
-  + color index #3: (0, 0, 127)
-  + color index #4: (0, 0, 191)
-  + color index #5: (0, 0, 255)
-  + color index #6: (0, 36, 0)
-  + color index #7: (0, 36, 63)
-  [..]
-  + color index #254: (255, 255, 111)
-  + color index #255: (28, 95, 139)
-Palette has 256 color index.
- * Writing original master palette to 'master-palette-original.rgb'.
- * Writing gamma-corrected master palette to
-  'master-palette-gamma-corrected.rgb'.
- * Writing quantized master palette (non gamma-corrected) to
-  'master-palette-quantized.rgb'.
- * Writing final master palette (gamma-corrected, then quantized, then
-  encoded for the DS) to 'master-palette.pal'.
-Master palette successfully generated.
-Use 'master-palette-quantized.rgb' for color-reduction of assets, 
-and 'master-palette.pal' as the actual DS palette.     
-</pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-</p>
-
-<p>
-Three palette files have been generated:
+With this format, also known as unencoded format, a palette is made of a header, storing:
 <ol>
 
-<!--
-	<li></li>
--->
+	<li>the OSDL tag identifying palettes (<code>PaletteTag</code>)</li>
+	
+	<li>in next byte, the colorkey indicator: 1 if a colorkey is defined, 0 otherwise</li>
+	
+	<li>if there is a color key, in next 16 bits the index of the color key is specified (otherwise the header contains only the first indicator byte)</li>
 
-	<li><a href="master-palette-original.rgb">master-palette-original.rgb</a>, storing the color coordinates previously output, each RGB information being stored in a row, in that order, with three bytes per color. This palette looks like that: <img src="master-palette-original.png"></img>, once transformed thanks to
-	<center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-<code><pre>
-convert -depth 8 -size 16x16 master-palette-original.rgb -scale 800%
-	master-palette-original.png 
-</pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-We can see, from top-left to bottom-right, the color key, then the numetous gradients, then the greys, then the various hand-picked colors.
-	</li>
-	
-	<li>
-	
-	<p>
-	<a href="master-palette-quantized.rgb">master-palette-quantized.rgb</a> is the same palette, but each color component is quantized to the only 32 levels already mentioned, instead of the 256 levels of the original palette. This quantized palette seems not too different from the original one: <img src="master-palette-quantized.png"></img>.
-	</p>
-	
-	<p>
-	Note however that the colorkey had to be skipped for this palette, otherwise the color-reduction algorithm could use that color to approximate other colors, which is not wanted.
-	</p>
-	
-	</li>
-	
-	<li>
-	<p>
-	finally, <a href="master-palette.pal">master-palette.pal</a> corresponds to the quantized palette in a format suitable for the DS, i.e. each color being defined in a 16-bit x555 BGR format (most significant bit set to 1, then blue, green and red, each component on 5 bits). 
-	</p>
-	
-	<p>
-	There is a catch though: the DS screens display colors darker than they are requested. To compensate that, we have to transform the palette that will be used by the DS so that its colors will be brighter: once dark-displayed on the DS they should look like expected from the PC. This transformation is called <a href="http://en.wikipedia.org/wiki/Gamma_correction" target="_blank">gamma-correction</a>, each normalized color component is to be set at the power <code>1/gamma</code> before being denormalized.
-	</p>
-	
-	<p>	
-	This operation is automatically done by our script on the actual DS palette (<code>master-palette.pal</code>). We retained a gamma of 2.3 for the average DS screen (intermediate way between DS Fat and DS Lite, see also <a href="http://forum.gbadev.org/viewtopic.php?t=6484" target="_blank">this discussion</a>). The gamma-corrected palette looks brighter than the original, as expected: <img src="master-palette-gamma-corrected.png"></img>
-	</p>
-	
-	<p>	
-	Note that pre-processed images have to be be color-reduced against the same palette, but with no gamma correction (<code>master-palette-quantized.rgb</code>), so that their display is correct.
-	</p>
-	
-	</li>
-	
-	
+<!--
+	<li><b></b>: </li>
+-->
 </ol>
 
+After the header, the content of the palette itself is stored, with 8 bits per color component, in RGB order (thus 24 bits per color, and no alpha coordinate stored). The extension of files respecting this format is preferably
+<em>.osdl.palette</em>.
 </p>
+
+
+
+<h6>The <code>pal</code> format</h6>
+
+<p>
+With this encoded format, quantized colors will be written, i.e. each color definition will be packed into 16 bits only (first bit set to 1, then 5 bits per quantized color component, in BGR order). The fact that a given index corresponds to a colorkey will not be stored in this encoded format, as a colorkey is expected to be always present, and set at palette index #0.
+</p>
+
+<p>
+Therefore an actual palette describing <code>n</code> colors can be a simple file (ex: <code>myPalette.pal</code>) containing <code>n</code> 16-bit encoded colors (thus the file occupies <code>2.n</code> bytes). As colors will have to respect the <code>x555</code> BGR format, there will be only 5 bits for each color component, each component is thus quantized in <code>[0,31]</code>.
+</p>
+
+<p>
+This encoded format is directly usable by the Nintendo GBA and DS consoles. The extension of files respecting this format is preferably <code>.pal</code>.
+</p>
+
+
+<h5>Results &amp; by-products of the palette generation</h5>
+
+<p>
+We had chosen initially to generate our shared (master) palette with a python script we called <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/scripts/python/generate_master_palette.py?view=markup" target="_blank">generate_master_palette.py</a>. As multiple palettes and multiple palette formats have to be supported, we had to develop a more complex program, <code>generateMasterPalette.exe</code>, whose source is <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/animation-management/generateMasterPalette.cc?view=markup" target="_blank">generateMasterPalette.cc</a> and which relies heavily on OSDL. The program generates three versions of this logical master palette, each saved according to both palette formats (<code>.osdl.palette/.pal</code>).
+</p>
+
+<p>
+Indeed, once a base master palette has been defined, it has to be transformed for various needs. First one is to generate from the palette a 256-color panel that represents it. It is done thanks a Makefile (see <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/animation-management/Makefile.am?view=markup" target="_blank">Makefile.am</a>): <code>make master-palette-original.png</code> generates the corresponding panel:
+<center>
+    <img src="master-palette-original.png" alt="Original Palette Image"></img>
+</center>
+
+</p>
+
+<p>
+We can clearly see, from top-left to bottom-right, the magenta color key at first index, then the full 240-color gradient, then the set of grey colors, then the various hand-picked colors: three blue colors and some flesh-colored ones.
+</p>
+
+<p>
+We can generate as well the same palette, but quantized like it would be when encoded in <code>.pal</code> format: each color component is scaled to the only 32 levels already mentioned, instead of the 256 levels of the original palette. The result, <code>master-palette-quantized.png</code>, looks however very similar to the original palette:
+<center>
+    <img src="master-palette-quantized.png" alt="Quantized Palette Image"></img>
+</center>
+</p>
+
+<p>
+Last generated palette starts too from the original one, but performs a gamma-correction on it before quantizing it. The reason for this is that the final output device, the DS screen, displays darker colors than requested. We thus have to pre-correct these colors by selecting lighter colors on purpose.
+</p>
+
+<p>
+This transformation is called <a href="http://en.wikipedia.org/wiki/Gamma_correction" target="_blank">gamma-correction</a>, each normalized color component is to be set at the power <code>1/gamma</code> before being denormalized.
+</p>
+
+<p>
+We retained a gamma of 2.3 for the average DS screen (intermediate way between DS Fat and DS Lite, see also <a href="http://forum.gbadev.org/viewtopic.php?t=6484" target="_blank">this discussion</a>).
+</p>
+	
+
+<p>
+We apply the gamma-correction to the original master palette as well, to gain a better accuracy when the color-reduction of the gamma-corrected images will take place. The final quantization of this palette adds to this gamma-correction the effect of the <code>.pal</code> encoding. As expected, this palette looks brighter than the original :
+<center>
+    <img src="master-palette-quantized-gamma-corrected.png" alt="Gamma-corrected Quantized Palette Image"></img>
+</center>
+</p>
+
+
+
+<h5>Color-reduction of images</h5>
+
+<p>
+In the process of frame conversion (which is implemented by <code>pngToOSDLFrame.exe</code>, whose source is <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/animation-management/pngToOSDLFrame.cc?view=markup" target="_blank">pngToOSDLFrame.cc</a>), one operation is to color-reduce an input frame (with full colors) to obtain the same frame, but using this time the master palette we discussed.
+</p>
+
+<p>
+To do so, each pixel of the input image is matched against all the colors of the master palette. A distance in RGB colorspace between this pixel color and each palette color is computed, based on a <a href="http://www.compuphase.com/cmetric.htm" target="_blank">combination of two weighted Euclidean distance functions</a>. The closest palette color is then chosen for the color-reduced image.
+</p>
+
+<p>
+This is implemented by the <code>OSDL::Video::Palette::GetDistance</code> method, declared in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/video/OSDLPalette.h?view=markup" target="_blank">OSDLPalette.h</a> and defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/code/video/OSDLPalette.cc?view=markup" target="_blank">OSDLPalette.cc</a>. Note that the colorkey is skipped when scanning the master palette, otherwise the color-reduction algorithm could incorrectly use that color to approximate colors from the input image.
+</p>
+
 
 <p>
 Now we can compare in a row:
 <ol>
 
 	<li>the original test image with full colors</li>
-	<li>the one transformed to match the original master palette</li>
+	<li>the one transformed to match the original 256-color master palette</li>
 	<li>then the one using the quantized master palette</li>
-	<li>the one using the quantized gamma-corrected palette (on a PC the latter should look too bright)</li>
+	<li>then one using the quantized gamma-corrected palette (on a PC the latter should look too bright)</li>
+	<li>then the original image transformed to match the original master palette with colorkey management (detection and setting) enabled</li>
 
 <!--
 	<li><b></b>: </li>
@@ -414,60 +441,27 @@ Now we can compare in a row:
 	<img src="swordstan-master-original.png" alt="With original palette"></img>
 	<img src="swordstan-master-quantized.png" alt="With quantized palette"></img>
 	<img src="swordstan-master-gamma-corrected.png" alt="With quantized gamma-corrected palette"></img>
+	<img src="swordstan-original-colorkeyed.png" alt="With colorkey managed"></img>
 </center>
 </p>
 
 <p>
-The result seems very good indeed, colors are well preserved in non gamma-corrected images. Note however that the colorkey changed a bit in the third and fourth images, due to the quantization and to the gamma-correction.	
-</p>
-
-<p>
-The three transformed images have been obtained thanks to:
-<center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-<code><pre>
-convert swordstan-original.png +dither -map master-palette-original.png swordstan-master-original.png
-
-convert swordstan-original.png +dither -map master-palette-quantized.png swordstan-master-quantized.png
-
-convert swordstan-master-quantized.png -gamma 2.3 swordstan-master-gamma-corrected.png
-</pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-
+We disabled for the first four tests the colorkey transformation, and for the mapping to the gamma-corrected palette the input image was itself gamma-corrected beforehand, as it ought to be.
 </p>
 
 
 <p>
-Note that, for this explanation, the gamma-corrected image was obtained directly with ImageMagick, not using:
-<center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
-<code><pre>
-convert swordstan-original.png +dither -map master-palette-gamma-corrected.png
-	swordstan-master-against-gamma-corrected.png
-</pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
-</center>
-as otherwise it would generate an image referencing colors from the right gamma-corrected palette, but with the original colors reduced against that same (too bright) palette, whereas we need to have them matched against the non gamma-corrected one.
+Finally the result seems very good indeed, colors are well preserved in non gamma-corrected images. Note that the colorkey changed a bit in each image, notably due to the quantization and to the gamma-correction, but it did not trouble its management in last image.	
 </p>
+
+
+
 
 
 <a name="sprite-size"></a>
 <h4>Sprite sizes</h4>
 <p>
-Here is a screenshot of our <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/testOSDLVideoFramebuffer.arm9.cc?view=markup" target="_blank">testOSDLVideoFramebuffer</a> test program taken with the NO$GBA emulator:
+Here is a screenshot of our <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/testOSDLVideoFramebuffer.arm9.cc?view=markup" target="_blank">testOSDLVideoFramebuffer.exe</a> test program taken with the NO$GBA emulator:
 
 <center>
     <img src="sprite-sizes.png" alt="Sprite sizes"></img>
@@ -476,7 +470,7 @@ Here is a screenshot of our <a href="http://osdl.svn.sourceforge.net/viewvc/osdl
 </p>
 
 <p>
-It allows to better figure out the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-size" target="_blank">available sprite sizes</a>: yellow is for height of 8 pixels, white for 16, blue of 32 and cyan for 64. We deemed the most appropriate size of a character is in general the third blue shape, the 32x32 square: with its 4x4=16 tiles, its memory footprint should be bearable, and, compared to the rest of the screen, there is enough room to display the environment of the character (not too big, not too small).
+It allows to better figure out the <a href="http://osdl.sourceforge.net/main/documentation/misc/nintendo-DS/HomebrewForDS.html#sprite-size" target="_blank">available sprite sizes</a>: yellow is for height of 8 pixels, white for 16, blue of 32 and cyan for 64. 64x64 is the maximum size of a sprite. We deemed the most appropriate size of a character is in general the third blue shape, the 32x32 square: with its 4x4=16 tiles, its memory footprint should be bearable, and, compared to the rest of the screen, there is enough room to display the environment of the character (not too big, not too small).
 </p>
 
 <p>
@@ -486,7 +480,7 @@ Using Swordstan again as an example, knowing that Reiner's Tilesets offer bigger
 </center>
 This is 96x96. If we reduced the original directly to 32x32, it would result in:
 <center>
-    <img src="swordstan-direct-32x32.png" alt="Original image"></img>
+    <img src="swordstan-direct-32x32.png" alt="Reduced image"></img>
 </center>
 which is too small. Instead if we first crop the frame (the actual original content could fit in a 75x85 rectangle):
 <center>
@@ -522,6 +516,77 @@ These resized images have been obtained thanks to <a href="http://www.imagemagic
 </p>
 
 
+<a name="sprite-tiling"></a>
+
+<h4>Sprite tiling</h4>
+
+<p>
+Once we have an image ready for animation (notably scaled-down, color-reduced gamma-corrected, etc.), we have to prepare it specifically so that it can be rendered directly by the Nintendo DS, whose 2D engines are tile-based.  
+</p>
+
+<p>
+First step is to extract the actual content of the frame from the original one: using a similar process as the one described <a href="http://reinerstileset.4players.de/readmeE.html#g" target="_blank">here</a> by Reiner, the creator of these tilesets, we want to get rid of all the useless sprite borders, while still being able to re-center the trimmed frame relatively to the other frames of the animation.
+</p>
+
+<p>
+To do so, first we find the smallest upright rectangle which encloses the frame content, colorkey excluded:
+<center>
+    <img src="swordstan-content-extracted.png" alt="Trimmed frame"></img>
+</center>
+We want to manage the inside of the yellow rectangle as a DS sprite.
+</p>
+
+<p>
+Our home-made rendering engine will have to render a given frame (whose original version is shown here as a magenta rectangle) centered at a given screen location <code>[x;y]</code> (expressed in pixels) corresponding here to the character position, thus the frame will have to store an offset (signed) vector <code>[x_offset;y_offset])</code> (shown as the red arrow) so that, when the trimmed-down sprite (shown here as a gold rectangle) will be rendered from its upper-left corner at <code>[x+x_offset;y+y_offset])</code> it will be correctly be re-centered:
+<center>
+    <img src="frame-offset.png" alt="Frame offset"></img>
+</center>
+</p>
+
+<p>
+The offset vector corresponds simply to the coordinates of the upper-left corner of the trimmed rectangle (<code>trimmedRect</code>, whose coordinates are initially defined relatively to the upper-left corner of the original rectangle) expressed relatively to the center of the original frame (<code>frame</code>):
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+x_offset = trimmedRect.getUpperLeftAbscissa() - ( frame.getWidth() / 2 )
+y_offset = trimmedRect.getUpperLeftOrdinate() - ( frame.getHeight() / 2 )
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+Thus each frame file will store <code>x_offset</code> and <code>y_offset</code> in its metadata.
+</p>
+
+<p>
+Then we have to prepare the tiling of the trimmed content. It has to be copied to an image of its own, whose size will:
+<ol>
+
+	<li>be aligned to next multiple of 8 pixels (abscissa-wise and ordinate-wise), since the tiles will be 8x8</li>
+
+	<li>have to correspond to one of the <a href="../homebrew-guide/HomebrewForDS.html#sprite-size" target="_blank">allowed sprite shapes</a>, as all tile layouts are not permitted</li>
+
+<!--
+	<li><b></b>: </li>
+-->
+</ol>
+
+In our case, the actual content of the frame character (not scaled down here) is <code>39x62</code>, it leads our algorithm to select, as smallest enclosing shape, the <code>64x64</code> one:
+
+<center>
+    <img src="frame-tiled.png" alt="Frame tiled"></img>
+</center>
+
+We can see on the right of the frame full tiles being unused (filled only with the colorkey). These special tiles will not be duplicated in a given frame or even between frames: only one copy of these full-colorkey tiles will be maintained in tile list, to save some memory.
+</p>
+
+
+
+<a name="sprite-animation"></a>
 <h4>Sprite animations</h4>
 <p>
 Let's take the character that is most probably the most complex one that will have to render: Stan.
@@ -748,7 +813,7 @@ Then, for each frame:
 		<li><b>color best-effort quantification</b>, from the original colors of the frame (per-pixel or indexed) to the optimal mapping according to the aforementioned target DS palette, with color key set for the sprite borders
 		</li>
 
-		<li><b>cropping</b>, to determine for sprites the smallest rectangle enclosing the actual image and to determine the vector offset (hot-spot) to recenter the resulting sprite into the frame stream. For the generation of backgrounds, as tiles cannot be positioned on a per-pixel basis, a specific tile-aligned cropping is to be performed
+		<li><b>cropping</b>, to determine the vector offset (hot-spot) to recenter the resulting sprite into the frame stream, and to determine the smallest rectangle enclosing the actual frame content. For the generation of backgrounds, as tiles cannot be positioned on a per-pixel basis, a specific tile-aligned cropping is to be performed
 		</li>
 
 		<li><b>tiling</b>, to cut the sprite into (8x8 here) tiles, with padding so that the corresponding tile map matches the smallest possible shape of DS sprites
@@ -959,7 +1024,7 @@ Orginal images are BMP, usually with a kaki (greenish) colorkey: <code>6a4c30</c
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Saturday, March 29, 2008</em>
+    <em>Last update: Friday, April 4, 2008</em>
   </center>
 </body>
 </html>
