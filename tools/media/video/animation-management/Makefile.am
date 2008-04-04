@@ -16,23 +16,36 @@ generateMasterPalette_exe_SOURCES       = generateMasterPalette.cc
 
 
 PALETTES = \
-	master-palette-original.png              \
-	master-palette-quantized.png             \
-	master-palette-quantized-gamma-corrected.png
+	master-palette-original.osdl.palette              \
+	master-palette-quantized.osdl.palette             \
+	master-palette-quantized-gamma-corrected.osdl.palette
 
 
-%.rgb: 
-	@echo "Generating palettes"
+PALETTE_IMAGES = $(patsubst %.osdl.palette,%.png,$(PALETTES))
+
+
+.PHONY: all osdl-palettes png
+
+
+%.osdl.palette: 
+	@echo "Generating OSDL palettes"
 	@./generateMasterPalette.exe	
 
 
-# 256 = 16x16 colors, but without the colorkey we have here 255 = 17x15
-%.png: %.rgb
+# 256 = 16x16 colors, +5 is used to remove OSDL palette header (a colorkey
+# is expected to be set, thus the header is made of a tag, a colorkey
+% indicator, a color index, thus it is 2+1+2=5 bytes).
+%.png: %.osdl.palette
 	@echo "Converting palette in $< into a color panel in $@"
-	@convert -depth 8 -size 17x15 $< -scale 800% $@ 
+	@convert -depth 8 -size 16x16+5 rgb:$< -scale 800% $@ 
 	
+	
+all: osdl-palettes png
 
-pal: $(PALETTES)	
+osdl-palettes: $(PALETTES)	
+
+png: $(PALETTE_IMAGES)
+
 
 clean-local: 
-	@rm -f *.log *.pal *.rgb
+	@rm -f *.log *.pal *.osdl.palette
