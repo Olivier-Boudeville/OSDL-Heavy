@@ -103,7 +103,7 @@ namespace OSDL
 			 * than the lower right corner, and at its left, in usual
 			 * OSDL 2D referential.
 			 *
-			 * Failure to do so result in an exception to be raised.
+			 * Failure to do so results in an exception to be raised.
 			 *
 			 * @note When width or height for an upright rectangle is to 
 			 * be retrieved, even in its own implementation or in the one 
