@@ -413,11 +413,12 @@ convert_frame()
 	# whereas:
 	#
 	# 'convert -quality 100 -filter Lanczos test.bmp -resize 60% -sharpen 1x.5 -strip
-	# intermediate.bmp' (note the prooduced *bmp*) then
+	# intermediate.bmp' (note the target format: *bmp*) then
 	# 'convert -quality 100 -filter Lanczos intermediate.bmp +dither -map
 	# master-palette-quantized.png test.png' results in:
 	#
 	# "test.png: PNG image data, 58 x 58, 8-bit colormap, non-interlaced"
+	
 	
 	# Thus using a two-pass transformation:
 	INTERMEDIATE_FILE="osdl-process-temp.bmp"
