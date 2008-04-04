@@ -3,7 +3,7 @@
 
 
 
-#include "OSDLRenderer.h"           // for inheritance
+#include "OSDLRenderer.h"           // for inheritance, RenderingException
 
 
 
@@ -23,7 +23,20 @@ namespace OSDL
 		class Camera ;
 				
 				
-				
+		/// Exception raised when a video rendering operation failed.
+		class OSDL_DLL VideoRenderingException: public RenderingException
+		{
+		
+			public:
+				explicit VideoRenderingException( const std::string & message ) 
+					throw() ;
+				virtual ~VideoRenderingException() throw() ;
+							
+		} ;
+
+			
+			
+			
 		/**
 		 * This basic video renderer manages the graphical rendering of 
 		 * all registered views.
@@ -55,7 +68,7 @@ namespace OSDL
 				 * MultimediaRenderer interface so that this video 
 				 * renderer can be plugged.
 				 *
-				 * @throw RenderingException if registerToRootRenderer 
+				 * @throw VideoRenderingException if registerToRootRenderer 
 				 * is true and no root renderer is available, or if 
 				 * the root renderer is not able to register video
 				 * renderers (which means it is not a Multimedia renderer).
@@ -64,7 +77,7 @@ namespace OSDL
 				 *
 				 */
 				explicit VideoRenderer( bool registerToRootRenderer = true ) 
-					throw( RenderingException ) ;
+					throw( VideoRenderingException ) ;
 				
 				
 				/**
@@ -85,8 +98,9 @@ namespace OSDL
 				/**
 				 * Returns the internal camera of this video renderer.
 				 *
-				 * @throw RenderingException iff no camera is available.
-				virtual Camera & getCamera() const throw( RenderingException ) ;
+				 * @throw VideoRenderingException iff no camera is available.
+				virtual Camera & getCamera() const 
+					throw( VideoRenderingException ) ;
 				 */
 			
 					
