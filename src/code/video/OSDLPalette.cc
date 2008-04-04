@@ -1,8 +1,9 @@
 #include "OSDLPalette.h"
 
 #include "OSDLSurface.h"  // for Surface
+#include "OSDLFileTags.h" // for PaletteTag
 
-#include "Ceylan.h"       // for Ceil
+#include "Ceylan.h"       // for Ceil, File, etc.
 
 
 
@@ -13,6 +14,8 @@ using std::string ;
 
 
 using namespace Ceylan::Log ;
+using namespace Ceylan::System ;
+
 
 using namespace OSDL::Video ;
 using namespace OSDL::Video::Pixels ;
@@ -66,8 +69,9 @@ Palette::Palette( ColorCount numberOfColors, ColorDefinition * colors,
 	_colorDefs( 0 ),
 	_pixelColors( 0 ),
 	_converted( false ),
-	_ownsColorDefinition( true )
-	
+	_ownsColorDefinition( true ),
+	_hasColorkey( false ),
+	_colorKeyIndex( 0 )	
 {
 
 #if OSDL_USES_SDL
@@ -90,12 +94,14 @@ Palette::Palette( ColorCount numberOfColors, ColorDefinition * colors,
 
 
 
-Palette::Palette( LowLevelPalette & palette ) throw( PaletteException ):
+Palette::Palette( const LowLevelPalette & palette ) throw( PaletteException ):
 	_numberOfColors( 0 ), 
 	_colorDefs( 0 ),
 	_pixelColors( 0 ),
 	_converted( false ),
-	_ownsColorDefinition( false )
+	_ownsColorDefinition( false ),
+	_hasColorkey( false ),
+	_colorKeyIndex( 0 )	
 {
 
 #if OSDL_USES_SDL
@@ -111,6 +117,99 @@ Palette::Palette( LowLevelPalette & palette ) throw( PaletteException ):
 		
 #endif // OSDL_USES_SDL
 	
+}
+
+
+
+Palette::Palette( const string & paletteFilename ) throw( PaletteException ):
+	_numberOfColors( 0 ), 
+	_colorDefs( 0 ),
+	_pixelColors( 0 ),
+	_converted( false ),
+	_ownsColorDefinition( true ),
+	_hasColorkey( false ),
+	_colorKeyIndex( 0 )	
+{
+
+	try
+	{
+	
+		Size fileSize = File::GetSize( paletteFilename ) ;
+
+		Ceylan::Holder<File> paletteHolder( File::Open( paletteFilename ) ) ;
+
+				
+		// First check the OSDL palette tag:
+		FileTag readTag = paletteHolder->readUint16() ;
+		fileSize -= sizeof( PaletteTag ) ;
+	
+		if ( readTag != PaletteTag )
+			throw PaletteException( 
+				"Palette constructor: expected palette tag not found ("
+				+ Ceylan::toString( PaletteTag ) + "), read instead "
+				+ Ceylan::toString( readTag ) + ", which corresponds to: "
+				+ DescribeFileTag( readTag ) ) ;
+
+		
+		bool hasColorkey = ( paletteHolder->readUint8() != 0 ) ;
+		fileSize-- ;
+		
+		if ( hasColorkey )
+		{
+			setColorKeyIndex( paletteHolder->readUint16() ) ;
+			fileSize -= 2 ;
+		}
+	
+		// Header read, now reading colors:
+		
+		if ( fileSize % 3 != 0 )
+			throw PaletteException( "Palette constructor from file failed: "
+				"size of palette file '" + paletteFilename + "' is "
+				+ Ceylan::toString( fileSize ) 
+				+ " bytes, which is not a multiple of 3 bytes "
+				"(24 bits per color)" ) ;
+			
+			
+		// Exact integer division:		
+		ColorCount colorCount = fileSize / 3 ;
+				
+			
+		/*
+		LogPlug::debug( "Palette loaded from '" + paletteFilename 
+			+ "' will have " + Ceylan::toString( colorCount ) + " colors." ) ;
+		 */
+		 
+		// This instance will take ownership of it:
+		ColorDefinition * colorDefs = new ColorDefinition[ colorCount ] ;
+
+		
+		for ( ColorCount i = 0; i < colorCount; i++ )
+		{
+		
+			colorDefs[i].r = static_cast<ColorElement>(
+				paletteHolder->readUint8() ) ;
+				
+			colorDefs[i].g = static_cast<ColorElement>(
+				paletteHolder->readUint8() ) ;
+				
+			colorDefs[i].b = static_cast<ColorElement>(
+				paletteHolder->readUint8() ) ;
+				
+			colorDefs[i].unused = Pixels::AlphaOpaque ;				
+		
+		}
+			
+		load( colorCount, colorDefs ) ;
+		
+	
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw PaletteException( "Palette constructor from file failed: "
+			+ e.toString() ) ;
+			
+	}
 }
 
 
@@ -233,7 +332,7 @@ const Pixels::ColorDefinition & Palette::getColorDefinitionAt(
 
 
 void Palette::setColorDefinitionAt(	ColorCount targetIndex, 
-	ColorDefinition & newColorDefinition ) throw( PaletteException )
+	const ColorDefinition & newColorDefinition ) throw( PaletteException )
 {
 
 	if ( targetIndex >= _numberOfColors )
@@ -281,6 +380,42 @@ Pixels::ColorDefinition * Palette::getColorDefinitions() const throw()
 
 
 
+bool Palette::hasColorKey() const throw()
+{
+
+	return _hasColorkey ;
+	
+}
+
+
+
+ColorCount Palette::getColorKeyIndex() const throw( PaletteException )
+{
+
+	if ( ! _hasColorkey )
+		throw PaletteException( "Palette::getColorKeyIndex failed: "
+			"no available colorkey" ) ;
+	
+	return _colorKeyIndex ;
+	
+}
+
+
+
+void Palette::setColorKeyIndex( ColorCount colorkeyIndex ) throw()
+{
+
+	// SDL_SetColorKey is relative to a surface.
+	
+	_hasColorkey = true ;
+	
+	_colorKeyIndex = colorkeyIndex ;
+	
+	
+}
+
+		
+					
 void Palette::updatePixelColorsFrom( const PixelFormat & format ) throw()
 {
 	
@@ -365,6 +500,9 @@ void Palette::correctGamma( GammaFactor gamma ) throw()
 	for ( ColorCount index = 0; index < _numberOfColors; index++ )
 	{
 	
+		if ( _hasColorkey && ( index == _colorKeyIndex ) )
+			continue ;
+			
 		_colorDefs[index].r = CorrectGammaComponent( _colorDefs[index].r, 
 			gamma ) ;
 			
@@ -384,9 +522,59 @@ void Palette::correctGamma( GammaFactor gamma ) throw()
 
 
 
+ColorCount Palette::getClosestColorIndexTo(	const ColorDefinition & color )
+	const throw( PaletteException )
+{
+
+	if ( _numberOfColors == 0 )
+		throw PaletteException( "Palette::getClosestColorIndexTo failed: "
+			"no color in palette." ) ;
+	
+	bool initialized = false ;
+			
+	ColorCount bestIndex ;
+	ColorDistance smallestDistance, currentDistance ; 
+	
+	for ( ColorCount i=0; i < _numberOfColors; i++ )
+	{
+	
+		if ( _hasColorkey && ( i == _colorKeyIndex ) )
+			continue ;
+	
+		currentDistance = GetDistance( color, _colorDefs[i] ) ;
+		
+		if ( initialized )
+		{
+			
+			if ( currentDistance < smallestDistance )
+			{
+			
+				smallestDistance = currentDistance ;
+				bestIndex = i ; 
+				
+			}
+			
+		}
+		else
+		{
+		
+			smallestDistance = currentDistance ;
+			bestIndex = i ; 
+			initialized = true ;
+			
+		}
+		
+	
+	}
+	
+	return bestIndex ;
+	
+}
+
+
 
 bool Palette::draw( Surface & targetSurface, 
-	ColorDefinition backgroundColor ) throw()
+	const ColorDefinition & backgroundColor ) throw()
 {
 
 
@@ -418,6 +606,45 @@ bool Palette::draw( Surface & targetSurface,
 
 
 
+bool Palette::hasDuplicates( bool useAlpha ) const throw()
+{
+
+	if ( _numberOfColors == 0 )
+		return false ;
+		
+	for ( ColorCount index = 0; index < _numberOfColors-1; index++ )
+	{
+	
+		if ( _hasColorkey && ( index == _colorKeyIndex ) )
+			continue ;
+			
+		for ( ColorCount checkIndex = index+1; checkIndex < _numberOfColors;
+				checkIndex++ )
+			if ( Pixels::areEqual( _colorDefs[index], _colorDefs[checkIndex],
+				 useAlpha ) )
+			{
+			
+				if ( _hasColorkey && ( checkIndex == _colorKeyIndex ) )
+					continue ;
+				
+				LogPlug::debug( "Palette::hasDuplicates: "
+					"duplicate detected at index #" + Ceylan::toString( index )
+					+ " and index #" + Ceylan::toString( checkIndex ) 
+					+ " for color definition " 
+					+ Pixels::toString( _colorDefs[index] ) + "." ) ;
+			
+				return true ;
+				
+			}	 
+	
+	}
+	
+	return false ;
+	
+}
+
+
+
 void Palette::save( const std::string & filename, bool encoded ) const 
 	throw( PaletteException )
 {
@@ -427,8 +654,32 @@ void Palette::save( const std::string & filename, bool encoded ) const
 	try
 	{
 	
-		Ceylan::Holder<Ceylan::System::File> 
-			paletteHolder( Ceylan::System::File::Create( filename ) ) ;
+		Ceylan::Holder<File> paletteHolder( File::Create( filename ) ) ;
+		
+		if ( ! encoded )
+		{
+		
+			// Write .osdl.palette header:
+			paletteHolder->writeUint16( PaletteTag ) ;
+			
+			if ( hasColorKey() )
+			{
+			
+				paletteHolder->writeUint8( 1 ) ;
+				paletteHolder->writeUint16( getColorKeyIndex() ) ;
+				
+			}
+			else
+			{
+			
+				paletteHolder->writeUint8( 0 ) ;
+			
+			}
+				
+			// End of header.
+			
+		}
+		
 		
 		for ( ColorCount index = 0; index < _numberOfColors; index++ )
 		{
@@ -501,9 +752,16 @@ const string Palette::toString( Ceylan::VerbosityLevels level ) const throw()
 		result += "they are not converted to actual pixel colors" ;
 	else
 		result += "they are already converted to actual pixel colors" ;
+	
+	if ( _hasColorkey )
+		result += ". Palette has a colorkey, corresponding to color index #"
+			+ Ceylan::toString( _colorKeyIndex ) ;
+	else		
+		result += ". Palette has no colorkey" ;			
 		
 	if ( level == Ceylan::low )
 		return result ;
+		
 		
 	result += ". Listing registered color definitions:" ;
 	
@@ -521,6 +779,7 @@ const string Palette::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
+
 // Static section.
 
 
@@ -534,8 +793,8 @@ Palette & Palette::CreateGreyScalePalette( ColorCount numberOfColors ) throw()
 
 
 
-Palette & Palette::CreateGradationPalette( ColorDefinition colorStart,
-	ColorDefinition colorEnd, ColorCount numberOfColors ) throw()
+Palette & Palette::CreateGradationPalette( const ColorDefinition & colorStart,
+	const ColorDefinition & colorEnd, ColorCount numberOfColors ) throw()
 {
 
 
@@ -596,11 +855,32 @@ Palette & Palette::CreateGradationPalette( ColorDefinition colorStart,
 
 
 					
-Palette & Palette::CreateMasterPalette() throw()
+Palette & Palette::CreateMasterPalette( bool addColorkey ) throw()
 {
 
-	Palette & palette = * new Palette( 255 ) ;
+	ColorCount colorCount = 255 ;
 	
+	if ( addColorkey ) 
+		colorCount++ ;
+
+	Palette & palette = * new Palette( colorCount ) ;
+
+	
+	colorCount = 0 ;
+	
+	if ( addColorkey )
+	{
+	
+		// Same convention as for the DS:
+		const ColorCount colorKeyIndex = 0 ;
+		
+		palette.setColorDefinitionAt( colorKeyIndex, Pixels::DefaultColorkey ) ;
+		palette.setColorKeyIndex( colorKeyIndex ) ;
+		colorCount++ ;
+		
+	}
+	
+		
 	/*
 	 * First, specify the 240 base colors, sampling the RGB cube uniformly in
 	 * each dimension (but with a number of samples per dimension which depends
@@ -611,7 +891,6 @@ Palette & Palette::CreateMasterPalette() throw()
 	const Ceylan::Uint8 greenRange = 8 ;
 	const Ceylan::Uint8 blueRange  = 5 ;
 	
-	Ceylan::Uint16 colorCount = 0 ;
 	
 	ColorDefinition currentDef ;
 	
@@ -711,6 +990,7 @@ void Palette::invalidatePixelColors() throw()
 
 
 
+
 // Static section.
 
 
@@ -734,5 +1014,31 @@ Pixels::ColorElement Palette::CorrectGammaComponent(
 		Ceylan::Maths::Pow( component/255.0f, 1/gamma ) * 255.0f ) ) ;
 		
 }
+
+	
+	
+ColorDistance Palette::GetDistance( 
+	const Pixels::ColorDefinition & firstColor,
+	const Pixels::ColorDefinition & secondColor ) throw()
+{
+
+	// Directly inspired from http://www.compuphase.com/cmetric.htm:
+		
+	// Integer division:	
+	ColorDistance rmean = ( firstColor.r + secondColor.r ) / 2 ;
+	
+	ColorDistance rs = ( firstColor.r - secondColor.r ) * 
+		( firstColor.r - secondColor.r ) ;
+		
+	ColorDistance gs = ( firstColor.g - secondColor.g ) * 
+		( firstColor.g - secondColor.g ) ;
+		
+	ColorDistance bs = ( firstColor.b - secondColor.b ) * 
+		( firstColor.b - secondColor.b ) ;
+			
+	return ( ((512+rmean)*rs)>>8 ) + 4*gs + ( ((767-rmean)*bs)>>8 ) ;
+	
+}
+
 
 	
