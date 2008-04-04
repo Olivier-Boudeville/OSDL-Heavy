@@ -26,26 +26,39 @@ const string originalFileSuffix  = "-original" ;
 const string quantizedFileSuffix = "-quantized" ;
 const string gammaFileSuffix     = "-gamma-corrected" ;
 
+const string osdlPaletteExtension = ".osdl.palette" ;
+const string palExtension         = ".pal" ;
+
 
 const string originalPaletteFilename = paletteFilePrefix + originalFileSuffix 
-	+ ".rgb" ;
+	+ osdlPaletteExtension ;
 	
+const string originalPalFilename = paletteFilePrefix + originalFileSuffix 
+	+ palExtension ;
+	
+
 const string quantizedPaletteFilename = paletteFilePrefix + quantizedFileSuffix
-	+ ".rgb" ;
+	+ osdlPaletteExtension ;
+
+const string quantizedPalFilename = paletteFilePrefix + quantizedFileSuffix
+	+ palExtension ;
+
 
 const string gammaPaletteFilename = paletteFilePrefix + quantizedFileSuffix 
-	+ gammaFileSuffix + ".rgb" ;
+	+ gammaFileSuffix + osdlPaletteExtension ;
+
+const string gammaPalFilename = paletteFilePrefix + quantizedFileSuffix 
+	+ gammaFileSuffix + palExtension ;
 
 
 Pixels::GammaFactor gamma = 2.3 ;
 
 
-const std::string Usage = " [ -h ]: generates a 255-color quantized non-gamma corrected main master palette and saves it under a file named '"
+const std::string Usage = " [ -h ]: generates a 256-color quantized non-gamma corrected main master palette and saves it under a file named '"
 	+ quantizedPaletteFilename + "'. For documentary purpose, saves under a file named '" + originalFileSuffix + "' the original (non-quantized) palette and under a file named '" + gammaPaletteFilename + "' a quantized then gamma-corrected version of the original palette as well."
 "\n\t-h: displays this help"
-"\nThe main palette ('" + quantizedPaletteFilename + "') is dedicated to color-reduction of any frame image. It stores all the color definitions of the palette in an unencoded form (8 bits per color component, but quantized as it would be in 5 bits, and not gamma-corrected), in RGB order. No colorkey is specified to avoid that a color-matching algorithm uses it (thus 255 colors instead of 256 are defined in this master palette)." 
-"\nPalette files can be converted into palette images thanks to:"
-"\n'convert -depth 8 -size 17x15 " + originalPaletteFilename + " -scale 800% master-palette-original.png'. Use also: 'make master-palette-original.png'";
+"\nThe main palette ('" + quantizedPaletteFilename + "') is dedicated to color-reduction of any frame image. It stores all the color definitions of the palette in an unencoded form (8 bits per color component, but quantized as it would be in 5 bits, and not gamma-corrected), in RGB order. A default colorkey is defined, Magenta, in index #0." 
+"\nPalette files can be converted into palette images thanks to: 'make master-palette-original.png' (in trunk/tools/media/video/animation-management)";
 
 
 
@@ -131,18 +144,29 @@ int main( int argc, char * argv[] )
 			<< gamma << ") will be stored in '"
 			<< gammaPaletteFilename + "'." << endl << endl ;
 
-
+		// Each time, generates first the .osdl.palette, then the .pal version:
 		Palette & palette = Palette::CreateMasterPalette() ;
-		palette.save( originalPaletteFilename ) ;
+		palette.save( originalPaletteFilename, /* encoded */ false ) ;
+		palette.save( originalPalFilename,     /* encoded */ true ) ;
 		
 		palette.quantize( /* quantizeMaxCoordinate */ 31,
 			/* scaleUp */ true ) ;
-		palette.save( quantizedPaletteFilename ) ;
+		palette.save( quantizedPaletteFilename, /* encoded */ false ) ;
+		palette.save( quantizedPalFilename,     /* encoded */ true ) ;
+
+
+		// Gamma-correct then quantize:
+		Palette & otherPalette = Palette::CreateMasterPalette() ;
 				
-		palette.correctGamma( gamma ) ;
-		palette.save( gammaPaletteFilename ) ;
+		otherPalette.correctGamma( gamma ) ;
+		otherPalette.quantize( /* quantizeMaxCoordinate */ 31,
+			/* scaleUp */ true ) ;
+		
+		otherPalette.save( gammaPaletteFilename, /* encoded */ false ) ;
+		otherPalette.save( gammaPalFilename,     /* encoded */ true ) ;
 		
 		delete & palette ;
+		delete & otherPalette ;
 		
 		cout << "Generation of master palette succeeded !" << endl ;
 
