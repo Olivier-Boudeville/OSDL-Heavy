@@ -37,6 +37,10 @@ namespace OSDL
 	
 	
 	
+	
+	// Audio-related tags.
+	
+	
 	/**
 	 * Tag corresponding to OSDL punctual sounds, not longer musics.
 	 *
@@ -70,6 +74,23 @@ namespace OSDL
 	extern OSDL_DLL const FileTag MusicTag ;
 	
 
+
+	// Video-related tags.
+
+
+	/**
+	 * Tag corresponding to an OSDL palette, useful for color indexed modes.
+	 *
+	 * The corresponding header after this tag is defined in:
+	 * trunk/src/code/video/OSDLPalette.h.
+	 *
+	 * @see trunk/src/code/video/OSDLPalette.cc for the corresponding
+	 * encoding/decoding.
+	 *
+	 */
+	extern OSDL_DLL const FileTag PaletteTag ;
+
+	
 	/**
 	 * Tag corresponding to an OSDL frame, part of an animation.
 	 *
@@ -83,6 +104,7 @@ namespace OSDL
 	 *
 	 */
 	extern OSDL_DLL const FileTag FrameTag ;
+	
 	
 	
 	/**
