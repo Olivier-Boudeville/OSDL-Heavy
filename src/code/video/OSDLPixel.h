@@ -968,8 +968,11 @@ namespace OSDL
 			extern OSDL_DLL const ColorDefinition LavenderBlush ;  
 			extern OSDL_DLL const ColorDefinition MediumOrchid ;   
 			extern OSDL_DLL const ColorDefinition MediumPurple ;   
-			extern OSDL_DLL const ColorDefinition Lavender ;       
+			extern OSDL_DLL const ColorDefinition Lavender ;      
+			
+			/// Pure magenta is the OSDL default color key. 
 			extern OSDL_DLL const ColorDefinition Magenta ;        
+			
 			extern OSDL_DLL const ColorDefinition Maroon ;         
 			extern OSDL_DLL const ColorDefinition Orchid ;         
 			extern OSDL_DLL const ColorDefinition Plum ;           
@@ -1012,6 +1015,9 @@ namespace OSDL
 			extern OSDL_DLL const ColorDefinition Moccasin ;       
 			extern OSDL_DLL const ColorDefinition Yellow ;         
 		
+
+			/// Pure magenta is the OSDL default color key. 
+			extern OSDL_DLL const ColorDefinition DefaultColorkey ;         
 		
 		
 		}
