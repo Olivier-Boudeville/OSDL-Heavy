@@ -587,6 +587,36 @@ namespace OSDL
 				
 				
 				/**
+				 * Returns the color definition of the colorkey of this surface,
+				 * as attempted to be guessed from the actual pixel colors
+				 * (alpha not taken into account).
+				 *
+				 * This is done by checking the corner pixels, supposedly set
+				 * to this colorkey.
+				 *
+				 * @throw VideoException if no colorkey could be guessed.
+				 *
+				 */
+				Pixels::ColorDefinition guessColorKeyDefinition() const 
+					throw( VideoException ) ;
+				
+				
+				/**
+				 * Returns the pixel color of the colorkey of this surface,
+				 * as attempted to be guessed from the actual pixel colors
+				 * (alpha not taken into account).
+				 *
+				 * This is done by checking the corner pixels, supposedly set
+				 * to this colorkey.
+				 *
+				 * @throw VideoException if no colorkey could be guessed.
+				 *
+				 */
+				Pixels::PixelColor guessColorKey() const 
+					throw( VideoException ) ;
+				
+				
+				/**
 				 * Sets the color key (transparent pixel) in a blittable
 				 * surface, and enables or disables RLE blit acceleration.
 				 *
@@ -680,7 +710,7 @@ namespace OSDL
 				 * Sets this surface's palette thanks to specified one.
 				 *
 				 * @param newPalette the palette from which new color
-				 * definitions should be taken.
+				 * definitions should be copied (ownership not taken)
 				 *
 				 * @param startingColorIndex the color-definition index in
 				 * newPalette from which color definitions will be taken.
@@ -690,21 +720,56 @@ namespace OSDL
 				 * If zero, all remaining color definitions from newPalette 
 				 * will be taken.
 				 *
-				 * @param targettedPalettes a flag which tells whether 
+				 * @param targetedPalettes a flag which tells whether 
 				 * logical palette, physical one or both (OR'ed) should 
 				 * be updated.
 				 *
 				 * @return true if all colours were set exactly as requested,
-				 * false otherwise.
+				 * false otherwise (not all the color entries were set 
+				 * exactly as given).
+				 *
+				 * @throw VideoException if the operation failed.
 				 *
 				 */
-				virtual bool setPalette( Palette & newPalette, 
-					ColorCount startingColorIndex = 0,
-					ColorCount numberOfColors = 0, 
-					Ceylan::Flags targettedPalettes = 
-						Palette::Logical | Palette::Physical ) 
-					throw() ;
+				virtual bool setPalette( const Palette & newPalette, 
+						ColorCount startingColorIndex = 0,
+						ColorCount numberOfColors = 0, 
+						Ceylan::Flags targetedPalettes = 
+							Palette::Logical | Palette::Physical ) 
+					throw( VideoException ) ;
 				
+				
+				
+				/**
+				 * Returns a newly created 8-bit (indexed) color surface, whose
+				 * pixels have been chosen in the specified palette to match
+				 * best with the pixel of the surface the method has been 
+				 * called on.
+				 *
+				 * @param palette the target palette for the color reduction.
+				 *
+				 * @param manageColorkey tells whether a colorkey should be 
+				 * taken care of: if true, an attempt to guess the colorkey
+				 * of this surface will be performed.
+				 * If it succeeds then during color-reduction this guessed
+				 * colorkey will be matched with the supposedly declared 
+				 * palette colorkey, no matter how different there colors are.
+				 * This way colorkey information is kept existing and 
+				 * separated from the other colors.
+				 *
+				 * @throw VideoException if the operation failed, included
+				 * if manageColorkey is true but no colorkey could be guessed
+				 * or if it is guessed but there is no colorkey registered in
+				 * target palette.
+				 *
+				 * @note No ownership is taken for the specified palette, the
+				 * created surface will have its own one.
+				 *
+				 */
+				Surface & createColorReducedSurfaceFor( 
+						const Palette & palette, bool manageColorkey = true )
+					const throw( VideoException ) ;
+					
 				
 				
 				/**
@@ -1102,7 +1167,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void putPixelColorAt( Coordinate x, Coordinate y, 
-					PixelColor convertedColor, ColorElement alpha,
+					PixelColor convertedColor, 
+					ColorElement alpha = Pixels::AlphaOpaque,
 					bool blending = true, bool clipping = true, 
 					bool locking = false ) throw( VideoException ) ;
 				
@@ -2268,6 +2334,27 @@ namespace OSDL
 				 */
 				virtual void setClippingArea( 
 					UprightRectangle & newClippingArea ) throw() ;
+					
+					
+					
+				/**
+				 * Returns this surface's content area, expressed thanks 
+				 * to an UprightRectangle. 
+				 *
+				 * The content area is the smallest upright rectangle which
+				 * encloses all the image pixels whose color is different
+				 * from the guessed colorkey.
+				 *
+				 * @return A new UprightRectangle, whose ownership is 
+				 * transferred to the caller, who therefore has to 
+				 * deallocate it when having finished with it.
+				 *
+				 * @throw VideoException if the operation failed or is not 
+				 * supported.
+				 *
+				 */
+				virtual UprightRectangle & getContentArea() const 
+					throw( VideoException ) ;
 					
 					
 					
