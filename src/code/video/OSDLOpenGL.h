@@ -3,7 +3,7 @@
 
 
 #include "OSDLVideoTypes.h"  // for VideoException
-#include "OSDLPixel.h"       // for ColorElement, ColorMask
+#include "OSDLPixel.h"       // for ColorDefinition, ColorMask, etc.
 #include "OSDLPoint2D.h"     // for Point2D::Origin
 
 #include "Ceylan.h"          // for Uint8, Uint32, inheritance
@@ -14,6 +14,7 @@
 #if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 	#include "SDL_opengl.h"      // for GLfloat
+	#include "SDL.h"             // for ColorDefinition (SDL_Color)
 
 #else // OSDL_USES_SDL
 
@@ -62,7 +63,8 @@ namespace OSDL
 		 * here, be they related to 2D or 3D.
 		 *
 		 * The OpenGL viewport is set so that it covers all of the 
-		 * setMode-created surface.
+		 * setMode-created surface, which must have been set with the OpenGL
+		 * flag (directly and/or through the selection of an OpenGL flavour).
 		 *
 		 * @see 'http://osdl.sourceforge.net', then 'Documentation',
 		 * 'Rendering', 'OpenGL + SDL' for further implementation details.
@@ -137,6 +139,26 @@ namespace OSDL
 			 *
 			 */
 			typedef GLfloat GLCoordinate ;	
+			
+			
+			/**
+			 * Bit field for OpenGL selection. 
+			 * GL prefix is kept to avoid namespace misuse.
+			 *
+			 * The real GLbitfield is (usually) unsigned int.
+			 *
+			 */
+			typedef unsigned int GLBitField ;	
+			
+			
+			/**
+			 * Enumeration for OpenGL selection. 
+			 * GL prefix is kept to avoid namespace misuse.
+			 *
+			 * The real GLenum is (usually) unsigned int.
+			 *
+			 */
+			typedef unsigned int GLEnumeration ;	
 			
 			
 
@@ -266,18 +288,21 @@ namespace OSDL
 					  
 					/**
 					 * Creates a new blank OpenGL context, according to 
-					 * the specified flavour.
+					 * the specified flavour and color depth.
 					 *
 					 * The default projection mode is orthographic.
 					 *
-					 * @param flavour the flavour to set, if any.
+					 * @param flavour the OpenGL flavour to use.
+					 * 
+					 * @param plannedBpp the color depth to use, in bits per
+					 * pixel.
 					 * 
 					 * @throw OpenGLException if the OpenGL state machine
 					 * reports an error.
 					 *
 					 */
-					OpenGLContext( OpenGL::Flavour flavour = OpenGL::None ) 
-						throw( OpenGLException) ;
+					OpenGLContext( OpenGL::Flavour flavour, 
+						BitsPerPixel plannedBpp ) throw( OpenGLException) ;
 		
 						
 					/// Virtual destructor.
@@ -292,7 +317,7 @@ namespace OSDL
 					 * @param flavour the selected flavour for OpenGL.
 					 *
 					 * @param plannedBpp the planned color depth, in bits 
-					 * per pixel.
+					 * per pixel (ignored if flavour 'Reload' is selected).
 					 *
 					 * @throw OpenGLException if the OpenGL state machine
 					 * reports an error.
@@ -307,23 +332,38 @@ namespace OSDL
 					 *
 					 * @see OpenGLFlavour
 					 *
+					 * @throw OpenGLException if the OpenGL state machine
+					 * reports an error.
+					 *
 					 */
-					virtual void selectFlavour( OpenGL::Flavour flavour ) 
-						throw( OpenGLException ) ;
+					virtual void selectFlavour( OpenGL::Flavour flavour,
+						BitsPerPixel plannedBpp ) throw( OpenGLException ) ;
 	
 	
 					/**
 					 * Sets the OpenGL 2D flavour.
 					 *
+					 * @param plannedBpp the desired color depth, in bits per
+					 * pixel.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
 					 */
-					virtual void set2DFlavour() throw( OpenGLException ) ;
+					virtual void set2DFlavour( BitsPerPixel plannedBpp ) 
+						throw( OpenGLException ) ;
 				
 				
 					/**
 					 * Sets the OpenGL 3D flavour.
 					 *
+					 * @param plannedBpp the desired color depth, in bits per
+					 * pixel.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
 					 */
-					virtual void set3DFlavour() throw( OpenGLException ) ;
+					virtual void set3DFlavour( BitsPerPixel plannedBpp ) 
+						throw( OpenGLException ) ;
 				
 					
 					/**
@@ -332,6 +372,8 @@ namespace OSDL
 					 *
 					 * @note It is useful to reset the OpenGL state before 
 					 * applying a flavour.
+					 *
+					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
 					virtual void blank() throw( OpenGLException ) ;
@@ -346,6 +388,8 @@ namespace OSDL
 					 * including resizing.
 					 *
 					 * @see OpenGL::Reload
+					 *
+					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
 					virtual void reload() throw( OpenGLException ) ;
@@ -365,6 +409,8 @@ namespace OSDL
 					 *
 					 * @return the actual overall bits per pixel value.
 					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
 					 */
 					 virtual OSDL::Video::BitsPerPixel getColorDepth( 
 					 		OSDL::Video::BitsPerPixel & redSize, 
@@ -379,6 +425,8 @@ namespace OSDL
 					 * @param plannedBpp the planned color depth, in bits
 					 * per pixel.
 					 * 
+					 * @throw OpenGLException if the operation failed.
+					 *
 					 */
 					virtual void setColorDepth( 
 							OSDL::Video::BitsPerPixel plannedBpp ) 
@@ -399,12 +447,35 @@ namespace OSDL
 					 * 
 					 * @note Maybe alpha should be added.
 					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
 					 */
 					virtual void setColorDepth( 
 							OSDL::Video::BitsPerPixel redSize, 
 							OSDL::Video::BitsPerPixel greenSize, 
 							OSDL::Video::BitsPerPixel blueSize  ) 
 						throw( OpenGLException ) ;
+				
+				
+				
+					/**
+					 * Sets the OpenGL blending function.
+					 *
+					 * @param sourceFactor specifies which of the nine 
+					 * methods is used to scale the source color components.
+					 * 
+					 * @param destinationFactor specifies which of the eight 
+					 * methods is used to scale the destination color
+					 * components.
+					 * 
+					 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					virtual void setBlendingFunction( 
+							GLEnumeration sourceFactor,
+							GLEnumeration destinationFactor ) 
+						throw( OpenGLException ) ;
+
 				
 				
 					/**
@@ -417,8 +488,8 @@ namespace OSDL
 					 */
 					virtual bool getDoubleBufferStatus() 
 						throw( OpenGLException ) ;
-					
-					
+									
+				
 					/**
 					 * Sets the OpenGL double buffering status (enabled or
 					 * disabled).
@@ -455,8 +526,11 @@ namespace OSDL
 					 *
 					 * @param newStatus culling is activated iff true.
 					 *
+				 	 * @throw OpenGLException should an error occur.
+					 *
 					 */	
-					virtual void setCullingStatus( bool newStatus ) throw() ;
+					virtual void setCullingStatus( bool newStatus ) 
+						throw( OpenGLException ) ;
 	
 				
 					/**
@@ -470,6 +544,8 @@ namespace OSDL
 					 *
 					 * @param autoEnable will specifically enable the use 
 					 * of culling iff true (it will not be only set).
+					 *
+				 	 * @throw OpenGLException should an error occur.
 					 *
 					 */					 
 					virtual void setCulling( CulledFacet culledFacet = Back, 
@@ -489,6 +565,8 @@ namespace OSDL
 					 * @param samplesPerPixelNumber number of samples 
 					 * per pixel when multisampling (FSAA) is enabled.
 					 * 
+				 	 * @throw OpenGLException should an error occur.
+					 *
 					 */
 					virtual void setFullScreenAntialiasingStatus( 
 							bool newStatus,
@@ -503,9 +581,11 @@ namespace OSDL
 					 * @param newStatus if true, will enable the depth 
 					 * buffer, if false will disable it.
 					 *
+				 	 * @throw OpenGLException should an error occur.
+					 *
 					 */
 					virtual void setDepthBufferStatus( bool newStatus ) 
-						throw() ;
+						throw( OpenGLException ) ;
 					
 					
 					/**
@@ -516,6 +596,8 @@ namespace OSDL
 					 *
 					 * @param autoEnable will specifically enable the use 
 					 * of the depth buffer iff true (it will not be only set).
+					 *
+				 	 * @throw OpenGLException should an error occur.
 					 *
 					 */
 					virtual void setDepthBufferSize( 
@@ -559,6 +641,7 @@ namespace OSDL
 						throw( OpenGLException ) ;
 						
 						
+						
 					/**
 					 * Sets an orthographic projection, so that the viewing
 					 * volume is a box, whose sides are parallel to the 
@@ -588,17 +671,52 @@ namespace OSDL
 					 *
 					 * @param far the z coordinate of the far clipping plane.
 					 *
+				 	 * @throw OpenGLException should an error occur.
+					 *
 					 */	
 					virtual void setOrthographicProjection( GLLength width, 
 							GLCoordinate near = -DefaultNearClippingPlaneFor3D, 
 							GLCoordinate far  = -DefaultFarClippingPlaneFor3D ) 
-						throw ( OpenGLException ) ;
+						throw( OpenGLException ) ;
+						
+						
+						
+					/**
+					 * Sets an orthographic projection for 2D rendering, chosen
+					 * to match the current OpenGL viewport size.
+					 *
+					 * @param width the viewport width.
+					 *
+					 * @param height the viewport height.
+					 *
+					 * @note Near and far clipping planes are set to default
+					 * values for 2D.
+					 *
+				 	 * @throw OpenGLException should an error occur.
+					 *
+					 */	
+					virtual void setOrthographicProjectionFor2D( 
+							GLLength width, GLLength height ) 
+						throw( OpenGLException ) ;
 						
 			
-					// virtual void setClearColor() throw() ;
+			
+					/**
+					 * Sets the current clear color to the specified one.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					virtual void setClearColor( 
+							const Video::Pixels::ColorDefinition & color )
+						throw( OpenGLException ) ;
+					
+					
 					
 					/**
 					 * Clears the viewport with the current clear color.
+					 * 
+					 * @note The depth buffer will not be modified here.
 					 *
 					 * @throw OpenGLException if this method is called 
 					 * between the execution of glBegin and the 
@@ -610,6 +728,8 @@ namespace OSDL
 					
 					/**
 					 * Clears the depth buffer within the viewport.
+					 * 
+					 * @note The color buffer will not be modified here.
 					 *
 					 * @throw OpenGLException if this method is called 
 					 * between the execution of glBegin and the 
@@ -618,7 +738,31 @@ namespace OSDL
 					 */
 					virtual void clearDepthBuffer() throw( OpenGLException ) ;
 					
+					
+					
+					/**
+					 * Pushes specified attribute field onto OpenGL attribute
+					 * stack.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					virtual void pushAttribute( GLBitField attributeField )
+						throw( OpenGLException ) ;
+					
+					
+					/**
+					 * Pops latest pushed attribute field from OpenGL attribute
+					 * stack.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					virtual void popAttribute()	throw( OpenGLException ) ;
+					
 					 	
+					
+						
 					/**
 					 * Uploads specified surface as an OpenGL texture in 
 					 * OpenGL context.
@@ -629,10 +773,13 @@ namespace OSDL
 					 * It is no longer needed once the texture is loaded, 
 					 * hence it can be deallocated by the caller.
 					 *
+					 * @throw OpenGLException if the operation failed.
 					 *
-					Texture & uploadTextureFrom( 
-						const Video::Surface & source ) throw() ;
+					 *
+					Texture & uploadTextureFrom( const Video::Surface & source )
+						throw( OpenGLException) ;
 					*/
+					
 					
 		            /**
 	    	         * Returns an user-friendly description of the state 
@@ -651,6 +798,30 @@ namespace OSDL
 						const throw() ;
 					
 					
+					
+					
+					// Static section.
+										
+					
+					/**
+					 * Enables specified feature in the OpenGL state machine.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					static void EnableFeature( GLEnumeration feature )
+						throw( OpenGLException ) ;
+					
+					
+					/**
+					 * Disables specified feature in the OpenGL state machine.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					static void DisableFeature( GLEnumeration feature )
+						throw( OpenGLException ) ;
+
 					
 		            /**
 	    	         * Returns an user-friendly description of the 
@@ -828,6 +999,15 @@ namespace OSDL
 					
 					/// The current z axis coordinate of the far clipping plane.
 					GLCoordinate _farClippingPlane ;
+					
+					
+					/**
+					 * The current clear color for the viewport.
+					 *
+					 * @note Default is pure black.
+					 *
+					 */
+					Pixels::ColorDefinition _clearColor ; 
 					
 					
 					

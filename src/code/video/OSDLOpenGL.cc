@@ -1,7 +1,9 @@
 #include "OSDLOpenGL.h"
 
-#include "OSDLVideo.h"    // for VideoModule
-#include "OSDLUtils.h"    // for getBackendLastError
+#include "OSDLVideo.h"        // for VideoModule
+#include "OSDLGLTexture.h"    // for SetTextureFlavour
+#include "OSDLUtils.h"        // for getBackendLastError
+
 
 // for CEYLAN_DETECTED_LITTLE_ENDIAN, openGLContextsCanBeLost, etc.:
 #include "Ceylan.h"       
@@ -48,7 +50,13 @@ using namespace OSDL::Video::OpenGL::GLU ;
 using namespace Ceylan::Log ;
 
 
-
+/*
+ * Implementation notes:
+ * 
+ * OSDL_USES_OPENGL being not defined not always triggers an exception in
+ * all non-static methods, as the constructor would have done that already.
+ *
+ */
 
 // OpenGL RGBA masks, since it always assumes RGBA order: 
 	
@@ -103,12 +111,13 @@ const GLLength OpenGLContext::DefaultOrthographicWidth = 1000.0f ;
 
 const GLCoordinate OpenGLContext::DefaultNearClippingPlaneFor2D =     -1.0f ;
 const GLCoordinate OpenGLContext::DefaultFarClippingPlaneFor2D  =      1.0f ;
+
 const GLCoordinate OpenGLContext::DefaultNearClippingPlaneFor3D =      1.0f	;	
 const GLCoordinate OpenGLContext::DefaultFarClippingPlaneFor3D  = 100000.0f ;
 
 
  				
-OpenGLContext::OpenGLContext( OpenGL::Flavour flavour ) 
+OpenGLContext::OpenGLContext( OpenGL::Flavour flavour, BitsPerPixel plannedBpp )
 		throw( OpenGLException ):
 	_flavour( OpenGL::None ),
 	_redSize( 0 ),
@@ -119,19 +128,25 @@ OpenGLContext::OpenGLContext( OpenGL::Flavour flavour )
 	_projectionMode( Orthographic ),
 	_projectionWidth( DefaultOrthographicWidth ),
 	_nearClippingPlane( DefaultNearClippingPlaneFor2D ),
-	_farClippingPlane( DefaultFarClippingPlaneFor2D )
+	_farClippingPlane( DefaultFarClippingPlaneFor2D ),
+	_clearColor()
 {
 
-#if OSDL_USES_SDL
+#if OSDL_USES_OPENGL
 
-	selectFlavour( flavour ) ;
+	LogPlug::trace( "OpenGLContext constructor" ) ;
+
+	selectFlavour( flavour, plannedBpp ) ;
 	
-#else // OSDL_USES_SDL
+	setClearColor( Pixels::Black ) ;
+	clearViewport() ;
+	
+#else // OSDL_USES_OPENGL
 	
 	throw OpenGLException( "OpenGLContext constructor failed: "
-		"no SDL support available" ) ;
+		"OpenGL support not available." ) ;
 		
-#endif // OSDL_USES_SDL
+#endif // OSDL_USES_OPENGL
 
 }
 
@@ -140,17 +155,19 @@ OpenGLContext::OpenGLContext( OpenGL::Flavour flavour )
 OpenGLContext::~OpenGLContext() throw()
 {
 
+	LogPlug::trace( "OpenGLContext destructor" ) ;
+
 }
 
 
 
 
-void OpenGLContext::selectFlavour( Flavour flavour 
-	/*, BitsPerPixel plannedBpp */) throw( OpenGLException )
+void OpenGLContext::selectFlavour( Flavour flavour, BitsPerPixel plannedBpp )
+	throw( OpenGLException )
 {
-	
-	_flavour = flavour ;
-	
+
+	LogPlug::trace( "OpenGLContext::selectFlavour" ) ;
+		
 	if ( VideoModule::IsDisplayInitialized() )
 		LogPlug::warning( 
 			"OpenGLContext::selectFlavour: display is already initialized." ) ;
@@ -159,23 +176,31 @@ void OpenGLContext::selectFlavour( Flavour flavour
 	{
 	
 		case None:
+			_flavour = None ;
 			// Nothing to do.
 			return ;
 			break ;
 		
 		case OpenGLFor2D:
-			set2DFlavour( /*plannedBpp*/ ) ;
+			// Sets _flavour as well:
+			set2DFlavour( plannedBpp ) ;
 			break ;
 			
 		case OpenGLFor3D:
-			set3DFlavour( /*plannedBpp*/ ) ;
+			// Sets _flavour as well:
+			set3DFlavour( plannedBpp ) ;
+			return ;
 			break ;
 		
-		default:
-			LogPlug::error( 
-				"OpenGLContext:selectFlavour: unknown flavour selected, "
-				"defaulting to None." ) ;
+		case Reload:
+			// _flavour left as is:
+			reload() ;
 			return ;
+			break ;
+			
+		default:
+			throw OpenGLException( "OpenGLContext:selectFlavour: "
+				"unknown flavour selected." ) ;
 			break ;		
 	
 	}
@@ -184,35 +209,100 @@ void OpenGLContext::selectFlavour( Flavour flavour
 
 
 
-void OpenGLContext::set2DFlavour() throw( OpenGLException )
+void OpenGLContext::set2DFlavour( BitsPerPixel plannedBpp ) 
+	throw( OpenGLException )
 {
 
-	//glShadeModel(GL_FLAT);
-	setFullScreenAntialiasingStatus( true ) ;
-	//glDisable( GL_DEPTH_TEST ) ;
+#if OSDL_USES_OPENGL
+
+	LogPlug::trace( "OpenGLContext::set2DFlavour" ) ;
 	
-	// Defines camera:
-	setOrthographicProjection( DefaultOrthographicWidth, 
-		DefaultNearClippingPlaneFor2D, DefaultFarClippingPlaneFor2D ) ;
+	_flavour = OpenGLFor2D ;
+
+	// Saves a lot of the OpenGL state machine:
+	pushAttribute( GL_ENABLE_BIT ) ;
 	
+	// No depth sorting used:
+	setDepthBufferStatus( false ) ;
+
+	// To avoid fuzzy graphics:
+	setFullScreenAntialiasingStatus( false ) ;
+
+	/*
+	 * setOrthographicProjectionFor2D not called here, as it is 
+	 * automatically triggered whenever the screen is resized: the 
+	 * screen resize triggers a viewport resize (setViewPort) which
+	 * triggers the projection update (updateProjection). 
+	 *
+	 * VideoModule::setMode will call setViewPort after having managed the
+	 * OpenGL flavour.
+	 *
+	 */
 	setDoubleBufferStatus( true ) ;
 	
+	setColorDepth( plannedBpp ) ;
+
+	// No culling of faces used:
+	DisableFeature( GL_CULL_FACE ) ;
+	
+	//setShadingModel( GL_FLAT ) ;
+
+	
+	/*
+	 * Blends the incoming RGBA color values with the values in the color
+	 * buffers: 
+	 *
+	 */
+	EnableFeature( GL_BLEND ) ;
+	
+	/*
+	 * Ponders the source color components by its alpha coordinate Ac,
+	 * and the destination by (1-Ac):
+	 *
+	 */
+	setBlendingFunction( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) ;
+	
+	GLTexture::SetTextureFlavour( GLTexture::For2D ) ;
+	
+
+	// Model-view section:
+	glMatrixMode( GL_MODELVIEW ) ;
+	
+	// No 'glPushMatrix()', just erase the modelview matrix content:
+	glLoadIdentity() ;
+	
+	/*
+	 * See in http://www.opengl.org/resources/faq/technical/
+	 * transformations.htm#tran0030 for explanation about exact pixelization:
+	 *
+	 */
+	glTranslatef( 0.375, 0.375, 0.0 ) ;
+
+#endif // OSDL_USES_OPENGL
+
 }
 
 
 
-void OpenGLContext::set3DFlavour() throw( OpenGLException )
+void OpenGLContext::set3DFlavour( BitsPerPixel plannedBpp ) 
+	throw( OpenGLException )
 {
 
-	setFullScreenAntialiasingStatus( true ) ;
+	LogPlug::trace( "OpenGLContext::set3DFlavour" ) ;
 
+	_flavour = OpenGLFor3D ;
+
+ 	setFullScreenAntialiasingStatus( true ) ;
+
+	// Depth tests wanted:
 	setDoubleBufferStatus( true ) ;
 	
 	
 	/*
 	setDepthBufferSize( 16 ) ;
-	glEnable( GL_DEPTH_TEST ) ;
+	EnableFeature( GL_DEPTH_TEST ) ;
 	glMatrixMode( GL_PROJECTION ) ;
+	glPushMatrix() ;
 	glLoadIdentity() ;
 
 	gluPerspective( 45.0f, (GLfloat) ScreenWidth/ (GLfloat) ScreenHeight, 
@@ -237,7 +327,12 @@ void OpenGLContext::blank() throw( OpenGLException )
 void OpenGLContext::reload() throw( OpenGLException ) 
 {
 
-	LogPlug::warning( "OpenGLContext::blank not implemented yet." ) ;
+	setClearColor( _clearColor ) ;
+	clearViewport() ;
+	
+	updateProjection() ;
+	
+	LogPlug::warning( "OpenGLContext::reload not fully implemented yet." ) ;
 	
 }
 
@@ -249,6 +344,8 @@ Ceylan::Uint8 OpenGLContext::getColorDepth(
 		OSDL::Video::BitsPerPixel & blueSize )
 	const throw( OpenGLException )
 {
+
+#if OSDL_USES_OPENGL
 
 #if OSDL_USES_SDL
 
@@ -274,6 +371,13 @@ Ceylan::Uint8 OpenGLContext::getColorDepth(
 		
 #endif // OSDL_USES_SDL
 
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::getColorDepth failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
 }
 
 	
@@ -281,6 +385,8 @@ Ceylan::Uint8 OpenGLContext::getColorDepth(
 void OpenGLContext::setColorDepth( BitsPerPixel plannedBpp ) 
 	throw( OpenGLException )
 {
+
+#if OSDL_USES_OPENGL
 
 #if OSDL_USES_SDL
 
@@ -304,10 +410,16 @@ void OpenGLContext::setColorDepth( BitsPerPixel plannedBpp )
 			rgbSize[2] = 5 ;
 			break ;
 
-		default:
+		case 32:
 			rgbSize[0] = 8 ;
 			rgbSize[1] = 8 ;
 			rgbSize[2] = 8 ;
+			break ;
+
+		default:
+			throw OpenGLException( "OpenGLContext::setColorDepth failed: "
+				"unsupported color depth (" + Ceylan::toString(plannedBpp) 
+				+ " bits per pixel)" ) ;
 			break ;
 	}
 	
@@ -322,6 +434,13 @@ void OpenGLContext::setColorDepth( BitsPerPixel plannedBpp )
 		
 #endif // OSDL_USES_SDL
 
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::setColorDepth failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
 }
 
 
@@ -332,6 +451,8 @@ void OpenGLContext::setColorDepth(
 		OSDL::Video::BitsPerPixel blueSize ) 
 	throw( OpenGLException )
 {
+
+#if OSDL_USES_OPENGL
 
 #if OSDL_USES_SDL
 
@@ -346,12 +467,69 @@ void OpenGLContext::setColorDepth(
 		
 #endif // OSDL_USES_SDL
 
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::setColorDepth failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
 }
 	
 
+
+void OpenGLContext::setBlendingFunction( GLEnumeration sourceFactor,
+	GLEnumeration destinationFactor ) throw( OpenGLException )
+{
+
+#if OSDL_USES_OPENGL
+
+	glBlendFunc( sourceFactor, destinationFactor ) ;
 	
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_INVALID_ENUM:
+			throw OpenGLException( "OpenGLContext::setBlendingFunction: "
+				"a factor is not an accepted value." ) ;
+			break ;
+				
+		case GL_INVALID_OPERATION:
+			throw OpenGLException( "OpenGLContext::setBlendingFunction: "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			throw OpenGLException( "OpenGLContext::setBlendingFunction: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::setBlendingFunction failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+		
 bool OpenGLContext::getDoubleBufferStatus() throw( OpenGLException )
 {
+
+#if OSDL_USES_OPENGL
 
 #if OSDL_USES_SDL
 
@@ -371,6 +549,13 @@ bool OpenGLContext::getDoubleBufferStatus() throw( OpenGLException )
 		
 #endif // OSDL_USES_SDL
 
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::getDoubleBufferStatus failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
 }
 
 
@@ -378,6 +563,8 @@ bool OpenGLContext::getDoubleBufferStatus() throw( OpenGLException )
 bool OpenGLContext::setDoubleBufferStatus( bool newStatus ) 
 	throw( OpenGLException )
 {
+
+#if OSDL_USES_OPENGL
 
 #if OSDL_USES_SDL
 
@@ -392,6 +579,13 @@ bool OpenGLContext::setDoubleBufferStatus( bool newStatus )
 		
 #endif // OSDL_USES_SDL
 	
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::setDoubleBufferStatus failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
 }
 
 
@@ -399,6 +593,8 @@ bool OpenGLContext::setDoubleBufferStatus( bool newStatus )
 void OpenGLContext::setShadingModel( ShadingModel newShadingModel ) 
 	throw( OpenGLException )
 {
+
+#if OSDL_USES_OPENGL
 
 #if OSDL_USES_SDL
 
@@ -420,6 +616,9 @@ void OpenGLContext::setShadingModel( ShadingModel newShadingModel )
 			
 	}
 	
+	
+#if OSDL_CHECK_OPENGL_CALLS
+
 	switch ( glGetError() )
 	{
 	
@@ -443,6 +642,9 @@ void OpenGLContext::setShadingModel( ShadingModel newShadingModel )
 			break ;	
 				
 	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+	
 	
 #else // OSDL_USES_SDL
 	
@@ -451,19 +653,28 @@ void OpenGLContext::setShadingModel( ShadingModel newShadingModel )
 		
 #endif // OSDL_USES_SDL
 
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::setShadingModel failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
 }
 
 
 
-void OpenGLContext::setCullingStatus( bool newStatus ) throw()
+void OpenGLContext::setCullingStatus( bool newStatus ) throw( OpenGLException )
 {
+
+#if OSDL_USES_OPENGL
 
 #if OSDL_USES_SDL
 
 	if ( newStatus )
-		glEnable( GL_CULL_FACE ) ;
+		EnableFeature( GL_CULL_FACE ) ;
 	else
-		glDisable( GL_CULL_FACE ) ;
+		DisableFeature( GL_CULL_FACE ) ;
 	
 #else // OSDL_USES_SDL
 	
@@ -471,6 +682,13 @@ void OpenGLContext::setCullingStatus( bool newStatus ) throw()
 		"no SDL support available" ) ;
 		
 #endif // OSDL_USES_SDL
+
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::setCullingStatus failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
 		
 }
 
@@ -481,7 +699,7 @@ void OpenGLContext::setCulling( CulledFacet culledFacet,
 	throw( OpenGLException ) 
 {
 
-#if OSDL_USES_SDL
+#if OSDL_USES_OPENGL
 
 	switch( culledFacet )
 	{
@@ -499,6 +717,8 @@ void OpenGLContext::setCulling( CulledFacet culledFacet,
 			break ;
 	}
 
+
+#if OSDL_CHECK_OPENGL_CALLS
 
 	switch ( glGetError() )
 	{
@@ -524,6 +744,8 @@ void OpenGLContext::setCulling( CulledFacet culledFacet,
 				
 	}
 		
+#endif // OSDL_CHECK_OPENGL_CALLS
+
 			
 	switch( frontOrientation )
 	{
@@ -539,6 +761,8 @@ void OpenGLContext::setCulling( CulledFacet culledFacet,
 	}
 	
 	
+#if OSDL_CHECK_OPENGL_CALLS
+
 	switch ( glGetError() )
 	{
 	
@@ -563,16 +787,18 @@ void OpenGLContext::setCulling( CulledFacet culledFacet,
 				
 	}
 			
+#endif // OSDL_CHECK_OPENGL_CALLS
+
 
 	if ( autoEnable )
 		setCullingStatus( true ) ;
 
-#else // OSDL_USES_SDL
+#else // OSDL_USES_OPENGL
 	
 	throw OpenGLException( "OpenGLContext::setCulling failed: "
-		"no SDL support available" ) ;
+		"no OpenGL support available" ) ;
 		
-#endif // OSDL_USES_SDL
+#endif // OSDL_USES_OPENGL
 
 }
 	
@@ -582,10 +808,13 @@ void OpenGLContext::setFullScreenAntialiasingStatus( bool newStatus,
 	Ceylan::Uint8 samplesPerPixelNumber ) throw( OpenGLException )
 {
 
+#if OSDL_USES_OPENGL
+
 #if OSDL_USES_SDL
 
 	if ( newStatus ) 
 	{
+	
 		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 
 			/* Number of multisample buffers (0 or 1) */ 1 ) ;
 			
@@ -606,23 +835,37 @@ void OpenGLContext::setFullScreenAntialiasingStatus( bool newStatus,
 		
 #endif // OSDL_USES_SDL
 	
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( 
+		"OpenGLContext::setFullScreenAntialiasingStatus failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
 }
 
 
 
-void OpenGLContext::setDepthBufferStatus( bool newStatus ) throw()
+void OpenGLContext::setDepthBufferStatus( bool newStatus ) 
+	throw( OpenGLException )
 {
 
-#if OSDL_USES_SDL
+#if OSDL_USES_OPENGL
 
 	if ( newStatus )
-		glEnable( GL_DEPTH_TEST ) ;
+		EnableFeature( GL_DEPTH_TEST ) ;
 	else
-		glDisable( GL_DEPTH_TEST ) ;
+		DisableFeature( GL_DEPTH_TEST ) ;
 		
-#endif // OSDL_USES_SDL
-	
-		
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( 
+		"OpenGLContext::setDepthBufferStatus failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+			
 }
 
 
@@ -630,6 +873,8 @@ void OpenGLContext::setDepthBufferStatus( bool newStatus ) throw()
 void OpenGLContext::setDepthBufferSize( Ceylan::Uint8 bitsNumber, 
 	bool autoEnable ) throw( OpenGLException )
 {
+
+#if OSDL_USES_OPENGL
 
 #if OSDL_USES_SDL
 
@@ -645,6 +890,13 @@ void OpenGLContext::setDepthBufferSize( Ceylan::Uint8 bitsNumber,
 		
 #endif // OSDL_USES_SDL
 
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::setDepthBufferSize failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
 }
 
 
@@ -653,13 +905,18 @@ void OpenGLContext::setViewPort( Length width, Length height,
 	const TwoDimensional::Point2D & lowerLeftCorner ) throw( OpenGLException )
 {
 
-#if OSDL_USES_SDL
+#if OSDL_USES_OPENGL
 
+	LogPlug::trace( "OpenGLContext::setViewPort" ) ;
+	
 	_viewportWidth  = width  ;
 	_viewportHeight = height ;
 	
 	glViewport( lowerLeftCorner.getX(), lowerLeftCorner.getY(), 
 		width, height ) ;
+
+
+#if OSDL_CHECK_OPENGL_CALLS
 
 	switch ( glGetError() )
 	{
@@ -684,16 +941,20 @@ void OpenGLContext::setViewPort( Length width, Length height,
 			break ;	
 				
 	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
 	
-	// Restore the aspect ratio of the projection:
+	
+	// Restore the aspect ratio of the projection to match the new viewport:
 	updateProjection() ; 	
 
-#else // OSDL_USES_SDL
+
+#else // OSDL_USES_OPENGL
 	
 	throw OpenGLException( "OpenGLContext::setViewPort failed: "
-		"no SDL support available" ) ;
+		"no OpenGL support available" ) ;
 		
-#endif // OSDL_USES_SDL
+#endif // OSDL_USES_OPENGL
 
 }
 
@@ -703,25 +964,30 @@ void OpenGLContext::setOrthographicProjection( GLLength width,
 	GLCoordinate near, GLCoordinate far ) throw ( OpenGLException )
 {
 
-#if OSDL_USES_SDL
+#if OSDL_USES_OPENGL
 
+	LogPlug::trace( "OpenGLContext::setOrthographicProjection" ) ;
 
 	_projectionMode  = Orthographic ;
 	_projectionWidth = width ;
 
 	glMatrixMode( GL_PROJECTION ) ;
+	glPushMatrix() ;
 	glLoadIdentity() ;
 	
 	// Centers projection box in (x,y) planes:
 	
 	GLCoordinate right = width / 2 ;
 	
-	// Enforce the viewport aspect ratio:
+	// Enforces the viewport aspect ratio:
 	GLCoordinate top = ( width * _viewportHeight ) / ( 2 * _viewportWidth ) ;
 	
 	glOrtho( /* left */ -right, /* right */ right, 
 		/* bottom */ -top, /* top */ top,
 		/* near */ near, /* far */ far ) ;
+
+
+#if OSDL_CHECK_OPENGL_CALLS
 
 	switch ( glGetError() )
 	{
@@ -742,13 +1008,125 @@ void OpenGLContext::setOrthographicProjection( GLLength width,
 				
 	}
 
-#else // OSDL_USES_SDL
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+#else // OSDL_USES_OPENGL
 	
 	throw OpenGLException( "OpenGLContext::setOrthographicProjection failed: "
-		"no SDL support available" ) ;
+		"no OpenGL support available" ) ;
 		
-#endif // OSDL_USES_SDL
+#endif // OSDL_USES_OPENGL
 
+}
+
+
+
+void OpenGLContext::setOrthographicProjectionFor2D( 
+	GLLength width, GLLength height ) throw ( OpenGLException )
+{
+
+#if OSDL_USES_OPENGL
+
+	LogPlug::trace( "OpenGLContext::setOrthographicProjectionFor2D" ) ;
+
+	_projectionMode  = Orthographic ;
+	_projectionWidth = width ;
+	 
+	glMatrixMode( GL_PROJECTION ) ;
+	
+	// No 'glPushMatrix()', just erase the projection matrix content:
+	glLoadIdentity() ;
+		
+	/*
+	 * Note the reversed top/bottom settings to avoid an upside-down
+	 * referential:
+	 *
+	 */
+	glOrtho( /* left */ 0, /* right */ width, 
+		/* bottom */ height, /* top */ 0,
+		/* near */ DefaultNearClippingPlaneFor2D, 
+		/* far */ DefaultFarClippingPlaneFor2D ) ;
+
+
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_INVALID_OPERATION:
+			throw OpenGLException(
+				"OpenGLContext::setOrthographicProjectionFor2D: "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			throw OpenGLException(
+				"OpenGLContext::setOrthographicProjectionFor2D: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+	
+#else // OSDL_USES_OPENGL
+	
+	throw OpenGLException( 
+		"OpenGLContext::setOrthographicProjectionFor2D failed: "
+		"no OpenGL support available" ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
+void OpenGLContext::setClearColor( const Pixels::ColorDefinition & color )
+	throw( OpenGLException )
+{
+
+#if OSDL_USES_OPENGL
+
+	_clearColor = color ;
+	
+	glClearColor( color.r/255.0, color.g/255.0, color.b/255.0, 
+		color.unused/255.0 ) ;
+
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_INVALID_OPERATION:
+			throw OpenGLException( "OpenGLContext::setClearColor: "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			LogPlug::warning( "OpenGLContext::setClearColor: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+	
+#else // OSDL_USES_OPENGL
+	
+	throw OpenGLException( "OpenGLContext::setClearColor failed: "
+		"no OpenGL support available" ) ;
+		
+#endif // OSDL_USES_OPENGL
+	
 }
 
 
@@ -756,10 +1134,11 @@ void OpenGLContext::setOrthographicProjection( GLLength width,
 void OpenGLContext::clearViewport() throw( OpenGLException )
 {
 
-#if OSDL_USES_SDL
-
+#if OSDL_USES_OPENGL
 
 	glClear( GL_COLOR_BUFFER_BIT ) ;
+
+#if OSDL_CHECK_OPENGL_CALLS
 
 	switch ( glGetError() )
 	{
@@ -785,12 +1164,15 @@ void OpenGLContext::clearViewport() throw( OpenGLException )
 				
 	}
 
-#else // OSDL_USES_SDL
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+
+#else // OSDL_USES_OPENGL
 	
 	throw OpenGLException( "OpenGLContext::clearViewport failed: "
-		"no SDL support available" ) ;
+		"no OpenGL support available" ) ;
 		
-#endif // OSDL_USES_SDL
+#endif // OSDL_USES_OPENGL
 	
 }	
 
@@ -799,9 +1181,12 @@ void OpenGLContext::clearViewport() throw( OpenGLException )
 void OpenGLContext::clearDepthBuffer() throw( OpenGLException )
 {
 
-#if OSDL_USES_SDL
+#if OSDL_USES_OPENGL
 
 	glClear( GL_DEPTH_BUFFER_BIT ) ;
+
+
+#if OSDL_CHECK_OPENGL_CALLS
 
 	switch ( glGetError() )
 	{
@@ -826,14 +1211,114 @@ void OpenGLContext::clearDepthBuffer() throw( OpenGLException )
 				
 	}
 
-#else // OSDL_USES_SDL
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+
+#else // OSDL_USES_OPENGL
 	
 	throw OpenGLException( "OpenGLContext::clearDepthBuffer failed: "
-		"no SDL support available" ) ;
+		"no OpenGL support available" ) ;
 		
-#endif // OSDL_USES_SDL
+#endif // OSDL_USES_OPENGL
 	
 }
+
+
+
+void OpenGLContext::pushAttribute( GLBitField attributeField ) 
+	throw( OpenGLException )
+{
+
+#if OSDL_USES_OPENGL
+	
+	glPushAttrib( attributeField ) ;
+
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_STACK_OVERFLOW:
+			throw OpenGLException( "OpenGLContext::pushAttribute: "
+				"attribute stack is full." ) ;
+			break ;
+				
+		case GL_INVALID_OPERATION:
+			throw OpenGLException( "OpenGLContext::pushAttribute: "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			throw OpenGLException( "OpenGLContext::pushAttribute: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+
+#else // OSDL_USES_OPENGL
+	
+	throw OpenGLException( "OpenGLContext::pushAttribute failed: "
+		"no OpenGL support available" ) ;
+		
+#endif // OSDL_USES_OPENGL
+	
+}
+
+
+
+void OpenGLContext::popAttribute() throw( OpenGLException )
+{
+
+#if OSDL_USES_OPENGL
+	
+	glPopAttrib() ;
+
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_STACK_UNDERFLOW:
+			throw OpenGLException( "OpenGLContext::popAttribute: "
+				"attribute stack is empty." ) ;
+			break ;
+				
+		case GL_INVALID_OPERATION:
+			throw OpenGLException( "OpenGLContext::popAttribute: "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			throw OpenGLException( "OpenGLContext::popAttribute: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+
+#else // OSDL_USES_OPENGL
+	
+	throw OpenGLException( "OpenGLContext::popAttribute failed: "
+		"no OpenGL support available" ) ;
+		
+#endif // OSDL_USES_OPENGL
+	
+}
+
+
 
 
 
@@ -864,6 +1349,106 @@ const string OpenGLContext::toString( Ceylan::VerbosityLevels level )
 	// Alpha ?
 			
 	return "Current OpenGL state is:" + Ceylan::formatStringList( res ) ;
+	
+}
+
+
+
+
+// Static section.
+
+
+void OpenGLContext::EnableFeature( GLEnumeration feature ) 
+	throw( OpenGLException )
+{
+
+#if OSDL_USES_OPENGL
+	
+	glEnable( feature ) ;
+	
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_INVALID_ENUM:
+			throw OpenGLException( "OpenGLContext::EnableFeature: "
+				"invalid enumeration." ) ;
+			break ;
+				
+		case GL_INVALID_OPERATION:
+			throw OpenGLException( "OpenGLContext::EnableFeature: "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			throw OpenGLException( "OpenGLContext::EnableFeature: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+
+#else // OSDL_USES_OPENGL
+	
+	throw OpenGLException( "OpenGLContext::EnableFeature failed: "
+		"no OpenGL support available" ) ;
+		
+#endif // OSDL_USES_OPENGL
+	
+}
+
+
+
+void OpenGLContext::DisableFeature( GLEnumeration feature ) 
+	throw( OpenGLException )
+{
+
+#if OSDL_USES_OPENGL
+	
+	glDisable( feature ) ;
+	
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_INVALID_ENUM:
+			throw OpenGLException( "OpenGLContext::DisableFeature: "
+				"invalid enumeration." ) ;
+			break ;
+				
+		case GL_INVALID_OPERATION:
+			throw OpenGLException( "OpenGLContext::DisableFeature: "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			throw OpenGLException( "OpenGLContext::DisableFeature: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+
+#else // OSDL_USES_OPENGL
+	
+	throw OpenGLException( "OpenGLContext::DisableFeature failed: "
+		"no OpenGL support available" ) ;
+		
+#endif // OSDL_USES_OPENGL
 	
 }
 
@@ -905,6 +1490,27 @@ string OpenGLContext::ToString( OpenGL::Flavour flavour ) throw()
 void OpenGLContext::updateProjection() throw( OpenGLException )
 {
 
+	LogPlug::trace( "OpenGLContext::updateProjection" ) ;
+	
+	switch( _flavour )
+	{
+	
+		case OpenGLFor2D:
+			// _projectionMode bypassed (ignored) here:
+			setOrthographicProjectionFor2D( _viewportWidth, _viewportHeight ) ;
+			return ;
+			break ;
+			
+		default:
+			LogPlug::warning( "OpenGLContext::updateProjection: "
+				"not managed currently for that flavour." ) ;
+			return ;
+			break ;
+	
+	}
+	
+	
+	/*
 	switch ( _projectionMode )
 	{
 	
@@ -915,12 +1521,13 @@ void OpenGLContext::updateProjection() throw( OpenGLException )
 			break ;
 			
 		default:
-			throw OpenGLException( "OpenGLContext::updateProjection	: "
+			throw OpenGLException( "OpenGLContext::updateProjection: "
 				"not implemented for current projection." ) ;
 			break ;
 				
 	}	
-			
+	*/	
+		
 }
 
 

@@ -401,6 +401,20 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	
 	bool useOpenGLRequested = ( ( flags & OpenGL ) != 0 ) ;
 
+	if ( useOpenGLRequested && ( flags & DoubleBuffered ) )
+	{
+		
+		/*
+		 * Double buffering with OpenGL is not to be selected with the
+		 * DoubleBuffered flag for setMode, we therefore ensure it is
+		 * deactivated now (it will be activated appropriately later on the
+		 * OpenGL context):
+		 *
+		 */
+		flags &= ~ DoubleBuffered ;
+	
+	}
+
 	if ( userFlags != flags )
 		send( "Initializing the display with following modified flags. " 
 			+ InterpretFlags( flags ) ) ;
@@ -416,7 +430,31 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			+ Ceylan::toString( askedBpp ) 
 			+ " with flags " + Ceylan::toString( flags, /* bit field */ true )
 			+ " video mode: " + Utils::getBackendLastError() ) ;
+
+
+	if ( useOpenGLRequested )
+	{
+		_screen = new Video::Surface( * screen, 
+			/* display type */ Surface::OpenGLScreenSurface ) ;
+	}		
+	else
+	{	
+		_screen = new Video::Surface( * screen, 
+			/* display type */ Surface::ClassicalScreenSurface ) ;
+	}
 	
+
+	int bpp = _screen->getBitsPerPixel() ;
+	
+	send( "Actual color depth is " + Ceylan::toString( bpp ) 
+		+ " bits per pixel." ) ;
+	
+	// A zero bit per pixel request means any depth, no warning in this case:
+	if ( askedBpp != bpp && askedBpp != 0 ) 
+		LOG_WARNING_VIDEO( "Color depth is " + Ceylan::toString( bpp ) 
+			+ " bits per pixel (instead of the asked " 
+			+ Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) 
+			+ " bits per pixel)." ) ;
 	
 	/*
 	 * Initializes the flavours and the context since setMode has just 
@@ -430,24 +468,24 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			if ( useOpenGLRequested )
 			{
 				if ( ! hasOpenGLContext() )
-					setOpenGLContext( * new OpenGLContext( flavour ) ) ;
+					setOpenGLContext( * new OpenGLContext( flavour, bpp ) ) ;
 				else
-					_openGLcontext->selectFlavour( flavour ) ;
+					_openGLcontext->selectFlavour( flavour, bpp ) ;
 			}							
 			break ;
 				
 		case OpenGL::OpenGLFor2D:
 			if ( ! hasOpenGLContext() )
-				setOpenGLContext( * new OpenGLContext( flavour ) ) ;
+				setOpenGLContext( * new OpenGLContext( flavour, bpp ) ) ;
 			else
-				_openGLcontext->selectFlavour( flavour ) ;					
+				_openGLcontext->selectFlavour( flavour, bpp ) ;					
 			break ;
 			
 		case OpenGL::OpenGLFor3D:
 			if ( ! hasOpenGLContext() )
-				setOpenGLContext( * new OpenGLContext( flavour ) ) ;
+				setOpenGLContext( * new OpenGLContext( flavour, bpp ) ) ;
 			else
-				_openGLcontext->selectFlavour( flavour ) ;	
+				_openGLcontext->selectFlavour( flavour, bpp ) ;	
 			break ;
 			
 		case OpenGL::Reload:
@@ -456,7 +494,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			else
 				throw VideoException( "VideoModule::setMode: "
 					"reload flavour selected whereas "
-					"no OpenGL context was set, nothing done." ) ;
+					"no OpenGL context was available, nothing done." ) ;
 			break ;
 		
 		default:
@@ -475,37 +513,15 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	
 		
 	/*
-	 * Never disable double buffering is a flavour selected it, but enable 
-	 * it if specified:
+	 * Never disable double buffering if a flavour selected it, but enable 
+	 * it if specified by the user:
 	 *
 	 */
-	if ( useOpenGLRequested && ( flags & DoubleBuffered ) )
-	{
-
+	if ( useOpenGLRequested && ( userFlags & DoubleBuffered ) )
 		_openGLcontext->setDoubleBufferStatus( true ) ;
 		
-		/*
-		 * Double buffering with OpenGL is not to be selected with the
-		 * DoubleBuffered flag for setMode, we therefore ensure it is
-		 * deactivated now:
-		 *
-		 */
-		flags &= ~ DoubleBuffered ;
 	
-	}
-	
-	
-	if ( useOpenGLRequested )
-	{
-		_screen = new Video::Surface( * screen, 
-			/* display type */ Surface::OpenGLScreenSurface ) ;
-	}		
-	else
-	{	
-		_screen = new Video::Surface( * screen, 
-			/* display type */ Surface::ClassicalScreenSurface ) ;
-	}
-	
+
 	/*
 	 * Defines the viewport independently of flavours
 	 * (lower-left corner of the OpenGL viewport is the origin of the 
@@ -519,19 +535,6 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 		_openGLcontext->setViewPort( _screen->getWidth(), 
 			_screen->getHeight() /* Origin */ ) ; 
 		
-
-	// Special case for OpenGL ?		
-	int bpp = _screen->getBitsPerPixel() ;
-	
-	send( "Actual color depth is " + Ceylan::toString( bpp ) 
-		+ " bits per pixel." ) ;
-	
-	// A zero bit per pixel request means any depth, no warning in this case:
-	if ( askedBpp != bpp && askedBpp != 0 ) 
-		LOG_WARNING_VIDEO( "Color depth is " + Ceylan::toString( bpp ) 
-			+ " bits per pixel (instead of the asked " 
-			+ Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) 
-			+ " bits per pixel)." ) ;
 
 	_displayInitialized = true ;
 	
@@ -1883,7 +1886,6 @@ string VideoModule::DescribeEnvironmentVariables() throw()
 		
 	string result = "Examining the " + Ceylan::toString( varCount )
 		+ " video-related environment variables for SDL backend:" ;
-	return result ;
 
 	list<string> variables ;
 		

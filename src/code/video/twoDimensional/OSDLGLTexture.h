@@ -65,13 +65,13 @@ namespace OSDL
 			 * from a surface.
 			 *
 			 * The ownership of the source surface is not taken by GLtexture
-			 * instances, since they have to convert it into their own
+			 * instances, since they have to convert it anyway into their own
 			 * specific format for OpenGL.
 			 * 
 			 * This converted surface can be kept by the GLtexture for future
 			 * use.
 			 *
-			 * It is recommended to do so, insofar as on some platforms some
+			 * It is recommended to do so, insofar as, on some platforms, some
 			 * operations, such as resizing, destroy the OpenGL context,
 			 * including bound textures. 
 			 *
@@ -80,9 +80,6 @@ namespace OSDL
 			 *
 			 * @note OpenGL support must have been selected and be available
 			 * at configure time so that these OpenGL services can be used.
-			 *
-			 * @note SetTextureMode should be called prior to any texture
-			 * operation.
 			 *
 		 	 * @see 'http://osdl.sourceforge.net', then 'Documentation',
 			 * 'Rendering', 'OpenGL + SDL' for further implementation details.
@@ -103,7 +100,7 @@ namespace OSDL
 					 * Default is 'TwoDim', enabled for 2D textures.
 					 *
 					 */
-					enum TextureMode { Disabled, OneDim, TwoDim } ;
+					enum TextureDimensionality { Disabled, OneDim, TwoDim } ;
 					
 					
 					
@@ -113,10 +110,11 @@ namespace OSDL
 					 *
 					 * 'None' does not change state of texture settings, 
 					 * whereas 'Basic' sets classical settings for filters 
-					 * and texture coordinate management.
+					 * and texture coordinate management, and 'For2D' selects
+					 * settings appropriate for 2D rendering.
 					 *
 					 */
-					enum Textureflavour { None, Basic } ;
+					enum TextureFlavour { None, Basic, For2D } ;
 
 				
 				
@@ -126,19 +124,16 @@ namespace OSDL
 					 * @param imageFilename the filename of the image, 
 					 * whose format (PNG, JPEG, etc.) will be auto-detected.
 					 *
-					 * @param flavour chooses the texture flavour to apply
-					 * before loading this texture. 
-					 * Changes the texture settings if not 'None' (side-effect).
+					 * @param flavour the texture flavour that should be used.
 					 *
 					 * The internal surface, corresponding to the image, will
 					 * be, if needed, automatically kept back and managed by
 					 * this texture, so that it can be reloaded in an OpenGL
-					 * context if necessary, in case it is lost. 
+					 * context if necessary, should the context be lost. 
 					 *
 					 */
-					explicit GLTexture( const std::string imageFilename, 
-							Textureflavour flavour = None ) 
-						throw( GLTextureException ) ;
+					explicit GLTexture( const std::string imageFilename,
+						TextureFlavour flavour ) throw( GLTextureException ) ;
 				
 				
 				
@@ -152,19 +147,16 @@ namespace OSDL
 					 * Nevertheless the source surface is, after a successful
 					 * call, actually unchanged. 
 					 *
-					 * @param flavour chooses the texture flavour to apply
-					 * before loading this texture. 
-					 * Changes the texture settings if not None (side-effect).
+					 * @param flavour the texture flavour that should be used.
 					 *
 					 * The internal surface, corresponding to the image, will
 					 * be, if needed, automatically kept back and managed by
 					 * this texture, so that it can be reloaded in an OpenGL
-					 * context if necessary, in case it is lost. 
+					 * context if necessary, should the context be lost. 
 					 *
 					 */
-					explicit GLTexture( Surface & sourceSurface, 
-							Textureflavour flavour = None ) 
-						throw( GLTextureException ) ;
+					explicit GLTexture( Surface & sourceSurface,
+						TextureFlavour flavour ) throw( GLTextureException ) ;
 				
 				
 					/**
@@ -176,13 +168,13 @@ namespace OSDL
 				
 				
 					/**
-					 * Tells whether this texture can be reloaded to the 
+					 * Tells whether this texture can be uploaded to the 
 					 * OpenGL context. 
 					 *
 					 * One necessary condition is that its source surface 
 					 * is available.
 					 *
-					 * @see reload 
+					 * @see upload 
 					 *
 					 */
 					virtual bool canBeUploaded() const throw() ;
@@ -219,37 +211,87 @@ namespace OSDL
 				
 					// Static section.
 					
+					// FIXME Should used the flavour member.
 										
-					/// Returns the current texture mode.
-					static TextureMode GetTextureMode() throw() ;
+					/// Returns the current texture dimensionality.
+					static TextureDimensionality GetTextureDimensionality()
+						throw() ;
 					
 					
-					/// Sets the current texture mode.
-					static void SetTextureMode( 
-						TextureMode newMode = TwoDim ) throw() ;
+					/// Sets the current texture dimensionality.
+					static void SetTextureDimensionality( 
+							TextureDimensionality Dimensionality = TwoDim ) 
+						throw() ;
 				
 				
 					/**
-					 * Stores the current texture mode.
+					 * Stores the current texture dimensionality.
 					 *
 					 * Default is 'TwoDim'.
 					 *
 					 */
-					static TextureMode CurrentTextureMode ;
+					static TextureDimensionality CurrentTextureDimensionality ;
 					
 								
 				
 					/**
 					 * Sets the current texture state according to 
-					 * specified flavour.
+					 * specified texture flavour.
+					 *
+					 * @param textureFlavour the selected texture flavour.
 					 *
 					 * @throw GLTextureException if the operation failed,
 					 * including if no OpenGL support is available.
 					 *
 					 */
-					void SetTextureFlavour( Textureflavour flavour )
+					static void SetTextureFlavour( 
+							TextureFlavour textureFlavour ) 
 						throw( GLTextureException ) ;
 					
+					
+
+					/**
+					 * Sets a parameter of a texture environment.
+					 *
+					 * @param targetEnvironment the texture environment to set.
+					 *
+					 * @param environmentParameter the symbolic name of a
+					 * texture environment parameter.
+					 *
+					 * @param parameterValue a single symbolic constant, 
+					 * a single floating-point number, or an RGBA color.
+					 *
+				 	 * @throw GLTextureException should an error occur.
+					 *
+					 */
+					static void SetTextureEnvironmentParameter( 
+							GLEnumeration targetEnvironment,
+							GLEnumeration environmentParameter,
+							GLfloat parameterValue ) 
+						throw( GLTextureException ) ;
+
+
+					/**
+					 * Sets the parameters of a texture environment.
+					 *
+					 * @param targetEnvironment the texture environment to set.
+					 *
+					 * @param environmentParameter the symbolic name of a
+					 * texture environment parameter.
+					 *
+					 * @param parameterValue pointer to a parameter array 
+					 * that contains either a single symbolic constant, 
+					 * single floating-point number, or an RGBA color.
+					 *
+				 	 * @throw GLTextureException should an error occur.
+					 *
+					 */
+					static void SetTextureEnvironmentParameter( 
+							GLEnumeration targetEnvironment,
+							GLEnumeration environmentParameter,
+							const GLfloat * parameterValues ) 
+						throw( GLTextureException ) ;
+
 					
 					
 					
@@ -267,9 +309,6 @@ namespace OSDL
 					 * In all cases it will be copied and converted, 
 					 * therefore it will remain untouched.
 					 *
-					 * @param flavour the texture flavour to apply. 
-					 * See Textureflavour.
-					 *
 					 * The internal surface, corresponding to the image, will
 					 * be, if needed, automatically kept back and managed by
 					 * this texture, so that it can be reloaded in an OpenGL
@@ -281,8 +320,8 @@ namespace OSDL
 					 * side-effect on this surface.
 					 *
 					 */
-					void upload( Surface & sourceSurface, 
-						Textureflavour flavour ) throw( GLTextureException ) ;
+					void upload( Surface & sourceSurface ) 
+						throw( GLTextureException ) ;
 					
 					
 				
@@ -302,6 +341,16 @@ namespace OSDL
 					 */
 					GLTextureIdentifier _id ;
 			
+				
+					/**
+					 * Stores the current texture flavour.	
+					 *
+					 * @note Needed, as a side-effect of uploading a texture
+					 * is to create a new (blank) target texture, whose
+					 * settings therefore need to be set specifically set.
+					 *
+					 */	
+					TextureFlavour _flavour ;
 			
 			
 			

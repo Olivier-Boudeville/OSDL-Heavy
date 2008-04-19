@@ -1,5 +1,6 @@
 #include "OSDLGLTexture.h"
 
+#include "OSDLOpenGL.h"              // for EnableFeature and al
 #include "OSDLVideo.h"               // for VideoModule::SoftwareSurface
 #include "OSDLSurface.h"             // for Surface
 
@@ -31,13 +32,39 @@ using std::string ;
 
 using namespace Ceylan ;
 using namespace Ceylan::Log ;
-using namespace Ceylan::Maths ;
+using namespace Ceylan::Maths ; // for IsAPowerOfTwo 
 
 using namespace OSDL::Video ;
 using namespace OSDL::Video::OpenGL ;
 
 
-GLTexture::TextureMode GLTexture::CurrentTextureMode = TwoDim ;
+GLTexture::TextureDimensionality GLTexture::CurrentTextureDimensionality = 
+	TwoDim ;
+
+
+/*
+ * Implementation notes:
+ * 
+ * OSDL_USES_OPENGL being not defined not always triggers an exception in
+ * all non-static methods, as the constructor would have done that already.
+ *
+ */
+
+
+// Replicating these defines allows to enable them on a per-class basis:
+#if OSDL_VERBOSE_VIDEO_MODULE
+
+#define LOG_DEBUG_TEXTURE(message)   LogPlug::debug(message)
+#define LOG_TRACE_TEXTURE(message)   LogPlug::trace(message)
+#define LOG_WARNING_TEXTURE(message) LogPlug::warning(message)
+
+#else // OSDL_VERBOSE_VIDEO_MODULE
+
+#define LOG_DEBUG_TEXTURE(message)
+#define LOG_TRACE_TEXTURE(message)
+#define LOG_WARNING_TEXTURE(message)
+
+#endif // OSDL_VERBOSE_VIDEO_MODULE
 
 
 
@@ -56,14 +83,16 @@ GLTextureException::~GLTextureException() throw()
 
 
 
-GLTexture::GLTexture( const std::string imageFilename, 
-	Textureflavour flavour ) 
+GLTexture::GLTexture( const std::string imageFilename, TextureFlavour flavour ) 
 		throw( GLTextureException ):
 	_source( 0 ),
-	_id( 0 )
+	_id( 0 ),
+	_flavour( flavour )
 {
 
 #if OSDL_USES_OPENGL
+	
+	LOG_DEBUG_TEXTURE( "Constructing a GLTexture from file " + imageFilename ) ;
 	
 	Surface * loaded ;
 	
@@ -78,18 +107,19 @@ GLTexture::GLTexture( const std::string imageFilename,
 	{
 	
 		throw GLTextureException( 
-			"GLTexture constructor: unable to load source image from file "
-			+ imageFilename + ": " + e.toString() ) ;
+			"GLTexture constructor: unable to load source image from file '"
+			+ imageFilename + "': " + e.toString() ) ;
 	}
 	
-	upload( *loaded, flavour ) ;
+	upload( *loaded ) ;
 	
 	// Texture not wanted any more, in all cases (it has been copied):
 	delete loaded ;
 
 #else // OSDL_USES_OPENGL
 
-	throw GLTextureException( "OpenGL support not available." ) ;
+	throw GLTextureException( "GLTexture constructor: "
+		"OpenGL support not available." ) ;
 	
 #endif // OSDL_USES_OPENGL
 		
@@ -97,12 +127,16 @@ GLTexture::GLTexture( const std::string imageFilename,
 
 
 
-GLTexture::GLTexture( Surface & sourceSurface, Textureflavour flavour ) 
+GLTexture::GLTexture( Surface & sourceSurface, TextureFlavour flavour )
 		throw( GLTextureException ):
-	_source( 0 )
+	_source( 0 ),
+	_id( 0 ),
+	_flavour( flavour )
 {
 
-	upload( sourceSurface, flavour ) ;
+	LOG_DEBUG_TEXTURE( "Constructing a GLTexture from a surface" ) ;
+
+	upload( sourceSurface ) ;
 	
 }
 
@@ -112,6 +146,8 @@ GLTexture::~GLTexture() throw()
 {
 
 #if OSDL_USES_OPENGL
+
+	LOG_DEBUG_TEXTURE( "Deleting a GLTexture" ) ;
 
 	if ( _id != 0 )
 		glDeleteTextures( 1, & _id ) ;
@@ -133,11 +169,13 @@ bool GLTexture::canBeUploaded() const throw()
 }
 
 
+
 void GLTexture::upload() throw( GLTextureException )
 {
 
-
 #if OSDL_USES_OPENGL
+
+	LOG_DEBUG_TEXTURE( "GLTexture::upload" ) ;
 
 	if ( ! canBeUploaded() )
 		throw GLTextureException( "GLTexture::upload: "
@@ -148,11 +186,13 @@ void GLTexture::upload() throw( GLTextureException )
 
 #else // OSDL_USES_OPENGL
 
-	throw GLTextureException( "OpenGL support not available." ) ;
+	throw GLTextureException( "GLTexture::upload failed: "
+		"OpenGL support not available." ) ;
 	
 #endif // OSDL_USES_OPENGL
 	
 }
+
 
 
 const string GLTexture::toString( Ceylan::VerbosityLevels level ) const throw()
@@ -181,31 +221,36 @@ const string GLTexture::toString( Ceylan::VerbosityLevels level ) const throw()
 // Static section.
 
 
-GLTexture::TextureMode GLTexture::GetTextureMode() throw()
+GLTexture::TextureDimensionality GLTexture::GetTextureDimensionality() throw()
 {
 
-	return CurrentTextureMode ;
-	
-}
-
-
-void GLTexture::SetTextureMode( TextureMode newMode ) throw()
-{
-
-	CurrentTextureMode = newMode ;
+	return CurrentTextureDimensionality ;
 	
 }
 
 
 
-void GLTexture::SetTextureFlavour( Textureflavour flavour ) 
+void GLTexture::SetTextureDimensionality( 
+	TextureDimensionality newDimensionality ) throw()
+{
+
+	CurrentTextureDimensionality = newDimensionality ;
+	
+}
+
+
+
+void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour ) 
 	throw( GLTextureException )
 {
 
 #if OSDL_USES_OPENGL
 
-	switch( flavour )
+	LogPlug::trace( "GLTexture::SetTextureFlavour" ) ;
+	
+	switch( textureFlavour )
 	{
+	
 	
 		case None:
 			return ;
@@ -213,6 +258,8 @@ void GLTexture::SetTextureFlavour( Textureflavour flavour )
 		
 		
 		case Basic:
+
+			LogPlug::trace( "GLTexture::SetTextureFlavour: Basic" ) ;
 		
 		 	/*
 			 * Minifying function: weighted average of the four closest 
@@ -245,17 +292,70 @@ void GLTexture::SetTextureFlavour( Textureflavour flavour )
 			break ;		
 	
 	
+		case For2D:
+		
+			LogPlug::trace( "GLTexture::SetTextureFlavour: For2D" ) ;
+
+			// Two-dimensional texturing will be performed:
+			OpenGLContext::EnableFeature( GL_TEXTURE_2D ) ;
+	
+			GLTexture::SetTextureDimensionality( GLTexture::TwoDim ) ;
+
+			/*
+			 * To perform correct alphablending:
+			 *
+			 */
+			SetTextureEnvironmentParameter( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,
+				GL_MODULATE ) ;
+
+		 	/*
+			 * Filters uses GL_NEAREST instead of GL_LINEAR as:
+			 *  1. sprites will be rendered exactly as defined (pixel-perfect,
+			 * no zoom/filtering should be performed)
+			 *  2. otherwise, when the sprite dimensions will be both powers of
+			 * two (which should be always the case), glTexImage2D will be used
+			 * instead of gluBuild2DMipmaps, and the former defines only the 
+			 * base mipmap, which therefore must be the only one to be used.
+			 *
+			 */
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
+			
+		 	/*
+			 * Magnifying function: weighted average of the four closest
+			 * texture elements.
+			 *
+			 */
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) ;
+	
+			/*
+			 * Wrap parameter for texture coordinate s: clamped to the range
+			 * [0,1].
+			 *
+			 */
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP ) ;
+			
+			/*
+			 * Wrap parameter for texture coordinate t: clamped to the 
+			 * range [0,1].
+			 *
+			 */
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP ) ;
+			
+			break ;		
+			
+	
 		default:
-			LogPlug::warning( 
-				"GLTexture::SetTextureFlavour: unknown flavour: "
-				+ Ceylan::toString( flavour ) + "." ) ;
+			throw GLTextureException( 
+				"GLTexture::SetTextureFlavour: unknown texture flavour: "
+				+ Ceylan::toString( textureFlavour ) + "." ) ;
 			break ;	
 			
 	}
 
 #else // OSDL_USES_OPENGL
 
-	throw GLTextureException( "OpenGL support not available." ) ;
+	throw GLTextureException( "GLTexture::SetTextureFlavour failed: "
+		"OpenGL support not available." ) ;
 	
 #endif // OSDL_USES_OPENGL
 	
@@ -263,289 +363,395 @@ void GLTexture::SetTextureFlavour( Textureflavour flavour )
 
 
 
-void GLTexture::upload( Surface & sourceSurface, 
-	Textureflavour flavour ) throw( GLTextureException ) 
+void GLTexture::SetTextureEnvironmentParameter( 
+		GLEnumeration targetEnvironment,
+		GLEnumeration environmentParameter,
+		GLfloat parameterValue ) 
+	throw( GLTextureException )
 {
 
 #if OSDL_USES_OPENGL
 
-	/*
-inspiration: 	
-GLuint loadTextureCK(char *filepath, int ckr, int ckg, int ckb){
-  GLuint texture;
-  SDL_Surface *imagesurface;
-  SDL_Surface *tmpsurface;
-  Uint32 colorkey;
-  int w, h;
+	glTexEnvf( targetEnvironment, environmentParameter, parameterValue ) ;
+	
 
-  imagesurface = SDL_LoadBMP(filepath);
-  if (!imagesurface)
-    return 0;
+#if OSDL_CHECK_OPENGL_CALLS
 
-  w = imagesurface->w;
-  h = imagesurface->h;
-
-  // create temporary surface with the correct OpenGL format
-  tmpsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32,
-(use Pixels::getRecommendedColorMask)                                    );
-  if (!tmpsurface)
-    return 0;
-
-  // set colour key
-  colorkey = SDL_MapRGBA(tmpsurface->format, ckr, ckg, ckb, 0);
-  SDL_FillRect(tmpsurface, NULL, colorkey);
-
-  colorkey = SDL_MapRGBA(imagesurface->format, ckr, ckg, ckb, 0);
-  SDL_SetColorKey(imagesurface, SDL_SRCCOLORKEY, colorkey);
-
-  SDL_BlitSurface(imagesurface, NULL, tmpsurface, NULL);
-
-  // create OpenGL texture
-  glGenTextures(1, &texture);
-  glBindTexture(GL_TEXTURE_2D, texture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 
-               0, GL_RGBA, GL_UNSIGNED_BYTE, tmpsurface->pixels);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-  SDL_FreeSurface(imagesurface);
-  SDL_FreeSurface(tmpsurface);
-
-  return texture;
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
 		
-	*/
+		case GL_INVALID_ENUM:
+			throw GLTextureException(
+				"GLTexture::SetTextureEnvironmentParameter: "
+				"invalid enumeration." ) ;
+			break ;
+				
+		case GL_INVALID_VALUE:
+			throw GLTextureException(
+				"GLTexture::SetTextureEnvironmentParameter: "
+				"invalid enumeration." ) ;
+			break ;
+				
+		case GL_INVALID_OPERATION:
+			throw GLTextureException(
+				"GLTexture::SetTextureEnvironmentParameter: "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			throw GLTextureException(
+				"GLTexture::SetTextureEnvironmentParameter: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
 
+#endif // OSDL_CHECK_OPENGL_CALLS
+	
 
-/*
-	// Inspired from Gabriel Gambetta's routine.
+#else // OSDL_USES_OPENGL
+	
+	throw GLTextureException( 
+		"GLTexture::SetTextureEnvironmentParameter failed: "
+		"no OpenGL support available" ) ;
+		
+#endif // OSDL_USES_OPENGL
 
-void OGLVideoDriver::initPixelFormats (void)
-{
-	#ifdef __APPLE__
-		m_pPixelFormat.nBPP = 24;
-		m_pPixelFormat.nAMask = 0x00000000;
-		m_pPixelFormat.nRMask = 0x00FF0000;
-		m_pPixelFormat.nGMask = 0x0000FF00;
-		m_pPixelFormat.nBMask = 0x000000FF;
-
-		m_pPixelFormatAlpha.nBPP = 32;
-		m_pPixelFormatAlpha.nAMask = 0x000000FF;
-		m_pPixelFormatAlpha.nRMask = 0xFF000000;
-		m_pPixelFormatAlpha.nGMask = 0x00FF0000;
-		m_pPixelFormatAlpha.nBMask = 0x0000FF00;
-	#else
-		m_pPixelFormat.nBPP = 24;
-		m_pPixelFormat.nAMask = 0x00000000;
-		m_pPixelFormat.nRMask = 0x000000FF;
-		m_pPixelFormat.nGMask = 0x0000FF00;
-		m_pPixelFormat.nBMask = 0x00FF0000;
-
-		m_pPixelFormatAlpha.nBPP = 32;
-		m_pPixelFormatAlpha.nAMask = 0xFF000000;
-		m_pPixelFormatAlpha.nRMask = 0x000000FF;
-		m_pPixelFormatAlpha.nGMask = 0x0000FF00;
-		m_pPixelFormatAlpha.nBMask = 0x00FF0000;
-	#endif
-}
-
-I convert all my surfaces to that format, and later...
-
-
-	byte* pData;
-	int nPitch;
-
-	pSurf->lock(pRect, &pData, &nPitch);
-
-	int nPitchBytes = nPitch;
-	int nPitchMod = nPitch % nChannels;
-	nPitch /= nChannels;
-
-	static const int lModToAlign[4] = { 1, 2, 4, 8 };
-	glPixelStorei(GL_UNPACK_ALIGNMENT, lModToAlign[nPitchMod]);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, nPitch);
-
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, nW, nH, nFormat,
-GL_UNSIGNED_BYTE, pData);
-
-	pSurf->unlock();
-
-*/
-
-
-/*
-
-
-
-
-#include "SDL.h"
-#include "SDL_endian.h"
-#include "SDL_opengl.h"
-
-int main(int, char**)
-{
-    SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_SetVideoMode(400, 400, 0, SDL_OPENGL);
-
-    // some.bmp is a red ship with a black backround
-    SDL_Surface* original = SDL_LoadBMP("some.bmp");
-
-    // We set a black colorkey for the ship
-    SDL_SetColorKey(original, SDL_SRCCOLORKEY, 0);
-
-    // We create a surface with known format to pass to opengl
-    SDL_Surface* withalpha = SDL_CreateRGBSurface(
-        SDL_SWSURFACE,
-        original->w,
-        original->h,
-        32,
-        SDL_SwapBE32(0xff000000),
-        SDL_SwapBE32(0x00ff0000),
-        SDL_SwapBE32(0x0000ff00),
-        SDL_SwapBE32(0x000000ff));
-
-    // We blit one on top of the other, but withalpha keeps
-    // a transparent black in the backround
-    // We should flip the texture so it has the origin in the bottom,
-    // as opengl expects, but we flip coordinates instead
-    SDL_BlitSurface(original, NULL, withalpha, NULL);
-    SDL_FreeSurface(original);
-
-    // The sky is blue
-    glClearColor(0, 0, 1, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_TEXTURE_2D);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-    // We enable skipping transparent texels
-    glAlphaFunc(GL_GREATER, 0);
-    glEnable(GL_ALPHA_TEST);
-
-    GLuint texName = 0;
-    glGenTextures(1, &texName);
-    glBindTexture(GL_TEXTURE_2D, texName);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGBA,
-        withalpha->w,
-        withalpha->h,
-        0,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
-        withalpha->pixels);
-    SDL_FreeSurface(withalpha);
-
-    glBegin(GL_QUADS); {
-        glTexCoord2d(0, 0);
-        glVertex2d(-0.8, +0.8);
-        glTexCoord2d(0, 1);
-        glVertex2d(-0.8, -0.8);
-        glTexCoord2d(1, 1);
-        glVertex2d(+0.8, -0.8);
-        glTexCoord2d(1, 0);
-        glVertex2d(+0.8, +0.8);
-    }glEnd();
-    SDL_GL_SwapBuffers();
-
-    // You should see a red ship over a blue backround
-    SDL_Delay(1000);
-    SDL_Quit();
-    return 0;
 }
 
 
-*/
 
+void GLTexture::SetTextureEnvironmentParameter( 
+		GLEnumeration targetEnvironment,
+		GLEnumeration environmentParameter,
+		const GLfloat * parameterValues ) 
+	throw( GLTextureException )
+{
+
+#if OSDL_USES_OPENGL
+
+	glTexEnvfv( targetEnvironment, environmentParameter, parameterValues ) ;
+	
+
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_INVALID_ENUM:
+			throw GLTextureException(
+				"GLTexture::SetTextureEnvironmentParameter: "
+				"invalid enumeration." ) ;
+			break ;
+				
+		case GL_INVALID_VALUE:
+			throw GLTextureException(
+				"GLTexture::SetTextureEnvironmentParameter: "
+				"invalid enumeration." ) ;
+			break ;
+				
+		case GL_INVALID_OPERATION:
+			throw GLTextureException(
+				"GLTexture::SetTextureEnvironmentParameter: "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			throw GLTextureException(
+				"GLTexture::SetTextureEnvironmentParameter: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+	
+
+#else // OSDL_USES_OPENGL
+	
+	throw GLTextureException( 
+		"GLTexture::SetTextureEnvironmentParameter failed: "
+		"no OpenGL support available" ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
+
+// Protected section.
+
+
+void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException ) 
+{
+
+#if OSDL_USES_OPENGL
+
+
+	LogPlug::trace( "GLTexture::upload" ) ;
 
 	// Inspired from Stephane Marchesin's routine.
 	
-	SDL_Surface * sourceInternal = & sourceSurface.getSDLSurface() ;
-	
-	/*
-	 * No alpha blending, no RLE acceleration should be used, and 
-	 * overall alpha is set to full transparency.
-	 *
-	 * 
-	 */
-
-	// Colorkey not managed.
-	
-	// Saves the alpha blending attributes:
-	Flags savedFlags = sourceInternal->flags & ( 
-		Surface::AlphaBlendingBlit | Surface::RLEColorkeyBlitAvailable ) ;
-		
-	Pixels::ColorElement savedAlpha = sourceInternal->format->alpha ;
-	
-	bool mustModifyOverallAlpha =
-		( ( savedFlags & Surface::AlphaBlendingBlit ) != 0 ) ;
-	
-	if ( mustModifyOverallAlpha ) 
-	  	SDL_SetAlpha( sourceInternal, 0, 0 ) ;
-	
-	Length width  = sourceInternal->w ;
-	Length height = sourceInternal->h ;
-	
-	// To avoid having transparent surfaces, use 0 for AlphaMask ?
-	SDL_Surface * convertedSurface = SDL_CreateRGBSurface(
-		VideoModule::SoftwareSurface, 
-		width, height, 32 /* bits per pixel */,
-		RedMask, GreenMask, BlueMask, AlphaMask ) ;
-	
-	if ( convertedSurface == 0 )
-		throw GLTextureException( 
-			"GLTexture::upload: RGB surface creation failed." ) ;
-		
-		 
-	int res = SDL_BlitSurface( sourceInternal, 0, convertedSurface, 0 ) ;
-
-	// Restores the alpha blending attributes:
-	if ( mustModifyOverallAlpha ) 
-		SDL_SetAlpha( sourceInternal, savedFlags, savedAlpha ) ;
-	
-	if ( res != 0 )
+	try
 	{
-		SDL_FreeSurface( convertedSurface ) ;
-		throw GLTextureException( "GLTexture::upload: blit failed (returned "
-			+ Ceylan::toString( res ) + ")." ) ;
-	}
+	
+		/*
+		 * No alpha blending, no RLE acceleration should be used, and 
+		 * overall alpha is set to full transparency.
+		 *
+		 */
 
+		// Colorkey not managed.
 	
-	// Generates a new name for this texture:
-	glGenTextures( 1, & _id ) ;
+		// Saves the alpha blending attributes:
+		Flags savedFlags = sourceSurface.getFlags() & ( 
+			Surface::AlphaBlendingBlit | Surface::RLEColorkeyBlitAvailable ) ;
 	
-	glBindTexture( GL_TEXTURE_2D, _id ) ;
+		// Saves the overall surface alpha value:
+		Pixels::ColorElement savedAlpha = sourceSurface.getPixelFormat().alpha ;
 	
-	// Apply the wanted settings:
-	SetTextureFlavour( flavour ) ;
+		bool mustModifyOverallAlpha =
+			( ( savedFlags & Surface::AlphaBlendingBlit ) != 0 ) ;
 	
-	if ( IsAPowerOfTwo( width ) && IsAPowerOfTwo( height ) )
-        glTexImage2D( 
-			/* mandatory */ GL_TEXTURE_2D, 
-			/* level: base image */  0, 
-			/* number of color components */ GL_RGBA, 
-			width, 
-			height, 
-			/* border */ 0, 
-			/* pixel format */ GL_RGBA, 
-			/* pixel data type */ GL_UNSIGNED_BYTE, 
-			convertedSurface->pixels ) ;
-	else
-        gluBuild2DMipmaps( 
-			/* mandatory */ GL_TEXTURE_2D, 
-			/* number of color components */ GL_RGBA, 
-			width, 
-			height,
-			/* pixel format */ GL_RGBA, 
-			/* pixel data type */ GL_UNSIGNED_BYTE, 
-			convertedSurface->pixels ) ;
+		if ( mustModifyOverallAlpha ) 
+		  	sourceSurface.setAlpha( /* disable alpha blending */ 0, 
+				/* new per-surface alpha value */ AlphaTransparent ) ;
+	
+		Length width  = sourceSurface.getWidth() ;
+		Length height = sourceSurface.getHeight() ;
+	
+		// To avoid having transparent surfaces, use 0 for AlphaMask ?
+		
+		// Temporary surface for the uploading:
+		Surface & convertedSurface =  * new Surface(
+			VideoModule::SoftwareSurface, width, height, 32 /* bits per pixel */,
+			RedMask, GreenMask, BlueMask, AlphaMask ) ;
 			
-	SDL_FreeSurface( convertedSurface ) ;
+		sourceSurface.blitTo( convertedSurface ) ;
+		 
 
+		// Restores the alpha blending attributes of the source surface:
+		if ( mustModifyOverallAlpha ) 
+		  	sourceSurface.setAlpha( /* alpha flags */ savedFlags, 
+				/* new per-surface alpha value */ savedAlpha ) ;
+	
+	
+		// Generates a new name for this texture in its identifier member:
+		glGenTextures( /* one name requested */ 1, & _id ) ;
+
+#if OSDL_CHECK_OPENGL_CALLS
+
+		switch ( glGetError() )
+		{
+	
+			case GL_NO_ERROR:
+				break ;
+		
+			case GL_INVALID_VALUE:
+				throw OpenGLException( 
+					"GLTexture::upload failed (glGenTextures): "
+					"invalid number of requested names." ) ;
+				break ;
+		
+			case GL_INVALID_OPERATION:
+				throw OpenGLException( 
+					"GLTexture::upload failed (glGenTextures): "
+					"incorrectly executed between the execution of glBegin and "
+					"the corresponding execution of glEnd." ) ;
+				break ;
+		
+			default:
+				LogPlug::warning( "GLTexture::upload failed (glGenTextures): "
+					"unexpected error reported." ) ;
+				break ;	
+				
+		}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
+	
+	
+		/*
+		 * 2-dimensional textures here:
+		 *
+		 * @note "The state of a n-dimensional texture immediately after it 
+		 * is first bound is equivalent to the state of the default 
+		 * GL_TEXTURE_nD at GL initialization": it implies this call will reset
+		 * the texture settings, notably GL_TEXTURE_MIN_FILTER, which would 
+		 * result in glTexImage2D selecting a blank texture (filter being 
+		 * GL_LINEAR instead of GL_NEAREST).
+		 *
+		 */
+		glBindTexture( /* texturing target */ GL_TEXTURE_2D, 
+			/* name to bind */ _id ) ;
+		
+		// We have therefore to re-set the texture settings:
+		SetTextureFlavour( _flavour ) ;
+		
+		
+#if OSDL_CHECK_OPENGL_CALLS
+
+		switch ( glGetError() )
+		{
+	
+			case GL_NO_ERROR:
+				break ;
+		
+			case GL_INVALID_ENUM:
+				throw OpenGLException( 
+					"GLTexture::upload failed (glBindTexture): "
+					"target is not an allowed value." ) ;
+				break ;
+		
+			case GL_INVALID_OPERATION:
+				throw OpenGLException( 
+					"GLTexture::upload failed (glBindTexture): "
+					"wrong dimensionality or incorrectly executed between "
+					"the execution of glBegin and the corresponding execution "
+					"of glEnd." ) ;
+				break ;
+		
+			default:
+				LogPlug::warning( "GLTexture::upload failed (glBindTexture): "
+					"unexpected error reported." ) ;
+				break ;	
+				
+		}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+	
+		if ( IsAPowerOfTwo( width ) && IsAPowerOfTwo( height ) )
+		{
+
+
+			LogPlug::trace( "GLTexture::upload: glTexImage2D" ) ;
+		
+			//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
+
+			
+        	glTexImage2D( 
+				/* target texture */ GL_TEXTURE_2D, 
+				/* level-of-detail number: base image */ 0, 
+				/* number of color components */ GL_RGBA, 
+				/* already a power of two */ width, 
+				/* already a power of two */ height, 
+				/* no border */ 0, 
+				/* pixel format */ GL_RGBA, 
+				/* pixel data type */ GL_UNSIGNED_BYTE, 
+				convertedSurface.getPixels() ) ;
+
+#if OSDL_CHECK_OPENGL_CALLS
+			
+			switch ( glGetError() )
+			{
+	
+				case GL_NO_ERROR:
+					break ;
+		
+				case GL_INVALID_ENUM:
+					throw OpenGLException( 
+						"GLTexture::upload failed (glTexImage2D): "
+						"invalid enum." ) ;
+					break ;
+		
+				case GL_INVALID_VALUE:
+					throw OpenGLException( 
+						"GLTexture::upload failed (glTexImage2D): "
+						"invalid value." ) ;
+					break ;
+		
+				case GL_INVALID_OPERATION:
+					throw OpenGLException( 
+						"GLTexture::upload failed (glTexImage2D): "
+						"incorrectly executed between the execution of "
+						"glBegin and the corresponding execution of glEnd." ) ;
+					break ;
+		
+				default:
+					throw OpenGLException( 
+						"GLTexture::upload failed (glTexImage2D): "
+						"unexpected error reported." ) ;
+					break ;	
+				
+			}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+		}		
+		else
+		{
+        	
+			LogPlug::trace( "GLTexture::upload: gluBuild2DMipmaps" ) ;
+
+			// At least one dimension is not a power of two:
+			GLU::Int res = gluBuild2DMipmaps( 
+				/* target texture */ GL_TEXTURE_2D, 
+				/* number of color components */ GL_RGBA, 
+				/* may be a non-power of two */ width, 
+				/* may be a non-power of two */ height, 
+				/* pixel format */ GL_RGBA, 
+				/* pixel data type */ GL_UNSIGNED_BYTE, 
+				convertedSurface.getPixels() ) ;
+				
+#if OSDL_CHECK_OPENGL_CALLS
+
+			switch ( res )
+			{
+	
+				case 0:
+					// Success.
+					break ;
+					
+				case GLU_INVALID_ENUM:
+					throw OpenGLException( 
+						"GLTexture::upload failed (gluBuild2DMipmaps): "
+						"invalid enum." ) ;
+					break ;
+		
+				case GLU_INVALID_VALUE:
+					throw OpenGLException( 
+						"GLTexture::upload failed (gluBuild2DMipmaps): "
+						"invalid value." ) ;
+					break ;
+				
+				default:
+					throw OpenGLException( 
+						"GLTexture::upload failed (gluBuild2DMipmaps): "
+						"unexpected error reported." ) ;
+					break ;	
+				
+			}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+				
+		}
+		
+		delete & convertedSurface ;
+		
+	}
+	catch( const VideoException & e )
+	{
+	
+		throw GLTextureException( "GLTexture::upload failed: "
+			+ e.toString() ) ;
+			
+	}
+	
+	
 #else // OSDL_USES_OPENGL
 
-	throw GLTextureException( "OpenGL support not available." ) ;
+	throw GLTextureException( "GLTexture::upload failed: "
+		", altough OpenGL support not available." ) ;
 	
 #endif // OSDL_USES_OPENGL
 
