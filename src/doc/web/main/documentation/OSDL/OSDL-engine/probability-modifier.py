@@ -20,7 +20,7 @@ def p_twice_modified(p_base,first_modifier,second_modifier):
 
 
 def probability_to_string(p):
-	return "%.4s %%" % (p*100,)
+	return "%s %%" % (p*100,)
 	
 def modifier_to_string(m):
 	"""Modifiers are not actually percentages."""
@@ -55,6 +55,16 @@ def display_for_two_modifiers(p_base,first_modifier,second_modifier):
 		p_twice_modified(p_base,first_modifier,second_modifier) ) )
 
 
+def logit_inv(x):
+	return 1/(1+exp(-x/100.0))
+
+
+def generate_modifier_abacus():
+	plot_file = open( "modifier-abacus.dat", "w" )
+	m_offset_for_50_percent = logit_inv(50)
+	for pnew in range(0,100):
+		m = logit_inv( pnew ) - m_offset_for_50_percent
+		plot_file.write( "%s %s\n" % ( pnew, 100 * m * modifier_coeff ) )
 
 
 print "Modifier coefficient is %s." % (modifier_coeff,)
@@ -71,7 +81,12 @@ display_for_two_modifiers( 0.6, 0.15, 0.2 )
 print "For a base probability of success of 60.0 %, with a modifier of "
 display_for( 0.6, 0.35 )
 
-plot_file = open( "probability-modifier.p", "w" )
+display_for_two_modifiers( 0.2, 0.5,  -0.15 )
+display_for_two_modifiers( 0.2, -0.15, 0.5 )
+print "For a base probability of success of 20.0 %, with a modifier of "
+display_for( 0.2, 0.35 )
+
+plot_file = open( "probability-modifier.dat", "w" )
 
 for base_p in range(0,100):
 	plot_file.write( "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s\n" % ( base_p, 
@@ -97,4 +112,7 @@ for base_p in range(0,100):
 		100*p_modified( base_p/100.0,  0.9 ), 
 		100*p_modified( base_p/100.0,  1.0 )
 	) )
+
+generate_modifier_abacus()
+
 
