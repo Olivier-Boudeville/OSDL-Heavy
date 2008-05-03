@@ -233,3 +233,16 @@ a.citation-reference {
   text-decoration: none;
   color: #4da04b
 }
+
+
+dl {
+  margin-left: 3%
+}
+
+dt {
+  color: #EFEFEF;
+  background: #5E5E5E;
+  margin-top: 1%;
+  font-weight: bold
+}
+
