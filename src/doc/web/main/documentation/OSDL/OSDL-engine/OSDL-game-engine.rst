@@ -68,7 +68,7 @@ Table-top Game
 	This is the classical `role-playing game <http://en.wikipedia.org/wiki/Role-playing_game>`_, also known as *pen and paper* game, where participants meet in real life with little or no technical help (only documentation, dice, a cardboard screen, etc.).   
 
 RPG Video Game, or Computer role-playing game (`CRPG <http://en.wikipedia.org/wiki/Computer_role-playing_game>`_)
-	This was, originally, mostly a translation attempt of table-top games into a video game, even if it resulted in a rather different game genre.
+	This was, originally, mostly a translation attempt of table-top games into a video game, even if it resulted in a rather different game genre: roleplay disappeared a lot and let its place too often to `levelling <http://en.wikipedia.org/wiki/Level_up#Level-based_progression>`_, with simplistic scenarios involving stereotypical scenarios (door/monster/loot, repeat).
 	
 
 
@@ -110,6 +110,181 @@ Non-Player Character (NPC)
 	A NPC is a Character that is not interpreted by a player, it has thus to be managed by the GM
 
 
+Other Conventions
+.................
+
+
+Terms
+_____
+
+
+iff
+	It means `If And Only If <http://en.wikipedia.org/wiki/If_and_only_if>`_. ``A iff B`` means either both statements are true or both are false. 
+
+N/A
+	It means ``Non Applicable``. 
+
+
+
+Units & Orders of Magnitude
+___________________________
+
+Units are to be expressed mostly in the `international system (SI) of units <http://en.wikipedia.org/wiki/SI_base_unit>`_ and its `derived units <http://en.wikipedia.org/wiki/SI_derived_unit>`_. 
+
+This includes:
+
+================== ====== =================== =============================== 
+Unit name          Symbol Associated Quantity Common multiples
+================== ====== =================== =============================== 
+metre 	           m      length              kilometer (km), centimeter (cm)
+kilogram           kg     mass                gram (1 kg = 1000 g), metric ton (1t = 1000 kg)
+second 	           s      time                minute, hour, day, year, century
+metre per second   m/s    speed               km/h (1 m/s = 3.6 km/h)
+degree Celsius     °C     temperature         (none)
+newton 	           N      force               kilonewtons (1 kN = 1 000 N)
+joule              J      energy, heat        kilojoule (1 kJ = 1 000 J)
+candela	           cd     luminous intensity  (none)
+pascal             Pa     pressure            kilopascal (1 kPa = 1000 Pa)
+================== ====== =================== =============================== 
+
+
+
+Some scale and orders of magnitude [#]_:
+
+ - length:
+ 
+ 	- length of average red ant: 5 mm
+	- common military ammunition size: 7.62 mm
+	- length of a large mosquito: 1.5 mm
+	- approximate size of largest beetle species: 15 cm
+	- wingspan of largest butterfly species: 31 cm
+	- average length of a rapier, a fencing sword: 90 cm
+	- approximate height of the top part of a doorknob on a door: 1m
+	- highest jump by a human being: 2.45 m
+	- tallest known human being: 2.72 m
+	- height of tallest animal, the giraffe: 5.5 m
+	- longest jump by a human being: 8.95 m
+ 	- the mean `height <http://en.wikipedia.org/wiki/Human_height>`_ of a male adult human in medieval times is lower than modern ones, in Orge we chose it to be roughly equal to ``1,70m`` (equal to the current average height of a human being, mean male/female)
+	- length of a blue whale, the largest animal: 30 m
+	- height of the world's tallest tree: 115.55 m
+	- original height of the Great Pyramid of Giza: 147 m
+	- height of the world's highest free-falling waterfall: 979 m
+	- height of the highest mountain on Earth: 8848 m
+	- depth of deepest part of the ocean: 10.911 km
+	- length of the Marathon: 42.195 km
+	- length of the Great Wall of China: 6,400 km
+	- approximate length of the two longest rivers, the Nile and the Amazon: 6,600 km
+	- equatorial diameter of the Earth: 12,756 km
+	- length of the Earth's equator: 40,075 km	
+ - area:
+ 
+   - a typical postage stamp: 5 cm2
+   - the largest side of a cigarette box: 48 cm2
+   - a football (soccer) field: 7,300 m2
+   - base of the Great Pyramid of Giza: 55 000 m2 
+   - Paris: 105 km2
+   - Egypt: 1 Mm2
+   - largest extent of the Roman Empire: 9 Mm2
+   - Atlantic Ocean: 77 Mm2
+   - land area of Earth: 150 Mm2
+   - Earth (total surface area): 510 Mm2
+ - mass:
+ 
+   - typical mass of a mosquito: 1-2 mg
+   - one cubic centimeter of water: 1 g
+   - typical coins: 8 g
+   - adult mouse: 12 - 40 g
+   - one litre of water, approx.: 1 kg
+   - newborn human baby: 3 kg
+   - housecat: 5 - 7 kg
+   - medium-sized dog: 15 - 20 kg
+   - the mean `weight <http://en.wikipedia.org/wiki/Human_weight>`_ of a male adult human in medieval times is maybe a bit lower than modern ones, in Orge we chose it to be roughly equal to ``70kg`` (same for a large dog)
+   - mature lion: 180 kf (female), 250 kg (male)
+   - dairy cow: 700 kg
+   - adult elephant: 3 - 7 t; largest on record: 12 t
+   - largest known dinosaur: 80 - 100 t
+   - largest animal, the blue whale: 180 t
+   - International Space Station: 187 t
+   - trunk of the Giant Sequoia tree: 1250 t
+   - heaviest known (clonal) organism: 6,000 t
+   - largest ship when fully loaded: 650,000 t
+   - Great Pyramid of Giza: 6,000,000 t
+ - durations:
+ 
+ 	- blink of an eye: 50 to 80 ms
+	- average reading or talking speed: 0.5 s/word
+	- heart rate period: 0.5 to 1 s
+	- breathing period: 1-10 s
+	- 1 minute: 60 s
+	- 1 hour: 3,600 s
+	- 1 day: 86,400 s
+	- human gestation: 9 month 
+	- longest known lifespan of a mice: 4 years 
+	- longest known lifespan of a dog: 29 years 
+	- longest known lifespan of a cat: 36 years 
+	- longest known lifespan of a goldfish: 49 years 
+	- longest known lifespan of a horse: 62 years 
+	- the mean `life expectancy <http://en.wikipedia.org/wiki/Life_expectancy>`_ (average lifespan at birth) of a man in those troubled days is chosen to be ``40 years``, which is significantly higher than the one of Medieval Britain [#]_ 
+	- longest known lifespan of an elephant: 86 years 
+	- oldest recognized person on record: 122 years
+	- longest known lifespan of a tortoise: 190 years 
+	- longest known lifespan of a whale: 211 years 
+	- longest known lifespan of an animal (mollusk): 405 years 
+	- longest known lifespan of a tree: 9,550 years
+	- longest known lifespan of clonal organisms: 80,000 - 1,000,0009,550 years
+ - speed: 
+ 
+ 	- one metre per second is roughly the speed of an average person walking (``1 m/s``), and it is exactly equal to 3.6 km/h [#]_ (average walking speed: 3.6 - 5.4 km/h)
+	- world record 100 m (human) sprint: ``41.5 km/h`` (11.5 m/s)
+	- top speed of cats and dogs is 30 to 50 km/h (8 to 14 m/s)
+	- racehorse speeds are generally measured at 32 to 61 km/h (9 to 17 m/s)
+	- `Cheetah <http://en.wikipedia.org/wiki/Cheetah>`_ (atypical member of the cat family, fastest of all terrestrial animals) and `sailfish <http://en.wikipedia.org/wiki/Sailfish>`_ (fastest fish) can reach 108 km/s (30 m/s)
+	- a diving `Peregrine Falcon <http://en.wikipedia.org/wiki/Peregrine_Falcon>`_ (fastest bird) reaches ``320 km/h`` (90 m/s) [#]_    
+ - temperatures:
+ 
+ 	- coldest air recorded on Earth: -89.4 °C
+ 	- under standard conditions, water becomes ice (melting point) at 0 °C
+	- mean surface temperature of the Earth: 14 °C
+ 	- best temperatures for humans are in the 19 °C - 22 °C range
+	- human body temperature: 37 °C
+	- hottest temperature recorded on Earth: 58 °C
+	- water become ssteam (boiling point) at 100 °C
+	- large log fire flames: 900 °C
+	- melting point of iron (lower for steel): 1538 °C
+	- boiling point of lead: 1749 °C	
+ - under standard gravity conditions on Earth (Earth's surface), 1 N (Newton) is the force of gravity on an object with a mass of about 102 g (such as a small apple). A mass of 1 kg exerts a force of approximately ``9.81 N``, a human being with a mass of 70 kg corresponds to approximately 687 N [#]_ 
+ - energy scale [#]_ :
+ 
+   - 1 joule in everyday life is approximately the energy [#]_:
+ 
+     - required to lift a small apple one meter straight up (same energy is released when that same apple falls one meter to the ground)
+     - that a quiet person generates every hundredth of a second, as heat
+     - the energy required to heat one gram of dry, cool air by 1 degree Celsius
+   - object falling 1 m: 9.8 J/kg
+   - object falling 10 m: 98 J/kg
+   - thrown club (expert thrower): 800 J/kg
+   - object falling 100 m: 980 J/kg
+   - flexible dart (expert thrower): 1000 J/kg
+   - 80-lb-draw pistol crossbow bolt: 1.7 kJ/kg
+   - rifle bullet 4.5 mm: 11 kJ/kg
+   - 5.56x45 mm (standard bullet used in many assault rifles): 470 kJ/kg   
+ - a common candle emits roughly ``1 cd``. A 100 W incandescent lightbulb emits about 120 cd [#]_
+
+ - standard atmospheric pressure is roughly ``101 Pa`` [#]_
+
+ 
+.. [#] Source: Wikipedia category about `Orders of magnitude <http://en.wikipedia.org/wiki/Category:Orders_of_magnitude>`_.
+.. [#] Thanks to the effect of magic cures, of course.
+.. [#] Source: Wikipedia article about `Orders of magnitude (speed) <http://en.wikipedia.org/wiki/Orders_of_magnitude_(speed)>`_.
+.. [#] Source: Wikipedia article about `Metre per second <http://en.wikipedia.org/wiki/Metre_per_second>`_.
+.. [#] Source: Wikipedia article about `Newton <http://en.wikipedia.org/wiki/Newton>`_.
+.. [#] Source: Wikipedia article about `Joule <http://en.wikipedia.org/wiki/Joule>`_.
+.. [#] Source: Wikipedia article about `Projectile <http://en.wikipedia.org/wiki/Projectile#Typical_projectile_speeds>`_.
+.. [#] Source: Wikipedia article about `Candela <http://en.wikipedia.org/wiki/Candela>`_.
+.. [#] Source: Wikipedia article about `Pascal <http://en.wikipedia.org/wiki/Pascal_(unit)>`_.
+
+
+
 Wrapping around
 
 Usually there is exactly one Game Master, a few players, each interpreting only one particular Player Character, and a large number of beings, including monsters and NPC.
@@ -140,18 +315,18 @@ The task includes:
  - evaluating the state and behaviour of all game elements besides the ones controlled by the players
 
 
-The GM task can be described as an interactive simulator operating on game elements chosen, defined and arranged by the SW, based on the modelling provided by the SD. 
-
-in a simulation.
-
-server-side 
+The GM task can be described also as an interactive simulator operating on game elements chosen, defined and arranged by the SW, based on the modelling provided by the SD. Thus the vocabulary of simulation is often used in this document.
 
 .. Note:: Although there are presumably only a few CRPG (actually we do not know  any of such games) that offer to a human player the technical possibility of being the GM instead of controlling a character, this possibility could be interesting and thus could be supported in the future by the Orge implementation.  
+
+Emulating the GM corresponds to the server-side computations of a game: we are dealing here only with models, without taking account input management, rendering nor other concerns. This is the place where we evaluate the game world and update its state (based on previous states and all inputs). 
+
+Thus, for a MMORPG, Orge is to be found running on the datacenter hosted by the game operator. For a multiplayer game, Orge would be running on the game server(s). For a single player game, Orge could be run on the computer of the player. It would be still running logically as a server (even though technicall it could be in the same process with no network I/O).
+
 
 
 Video Games versus Table-top Games
 ----------------------------------
-
 
 Orge is a game system primarily dedicated to video games. 
 
@@ -220,7 +395,7 @@ Races
 Classes
 -------
 direct characterization ny archetypal characters
- stereotyping 
+stereotyping 
 
 
 Characteristics & Attributes
@@ -237,9 +412,7 @@ Skill Tree
 Progression System 
 ------------------
 
-A powerful "moteur" for RPG players is to make their character progress. The usual scheme implies that the player is rewarded by a permanent increase in the abilities of his character after successful actions, which will be detailed below.
-
- ( etc.).
+A powerful motivation for RPG players is to make their character progress. The usual scheme implies that the player is rewarded by a permanent increase in the abilities of his character after enough successful actions, which will be detailed in `Causes of Experience Gains`_.
 
 
 Usually a character starts a game unexperienced, young, at least partially untrained. Generally the lower the better, since it increases the character room for progression and, therefore, the game lifespan and the player pleasure (often more or less proportional to his character development).
@@ -248,7 +421,7 @@ Thus many CRPG are based on a training stage/tutorial involving a butchery of ra
 
 For long-lived games, such as MMORPG, the character progression is ideally never-ending, otherwise players grow tired of the game.
 
-Therefore a crucial point is to find the subtle balance between 
+Therefore a crucial point is to find the subtle balance between frustation (if too little reward is granted) and too quick progression (too easy and leading to too powerful characters).
 
 
 
@@ -265,6 +438,18 @@ We chose however to keep a level-based system for creatures. Why? One might call
 
 A bit like the epic nature of stories, with Orge the trade-off between realism and entertainment has been geared towards the former instead of the latter. 
 
+A rule of thumb regarding experience is that:
+ 
+ - the more powerful a character is, the slower and more difficult its progression should be
+ 
+ - rewards should be expressed independently from the level of the rewarded (no tweaking of their value)
+
+With Orge we thus chose to define 
+
+.. Note:: The experience gap between levels grows indeed fast, but it is partially offset by granted rewards, that become - generally - higher.
+
+
+
 
 Causes of Experience Gains
 ..........................
@@ -272,6 +457,7 @@ Causes of Experience Gains
 The convention here is that experience can only increase over time, except some very rare story events.
 
 Following actions results in an experience increase:
+
  #. fulfilling quests
  #. slaughtering monsters
  #. finding rare objects
@@ -281,15 +467,38 @@ The model we chose is that associated with each of these events, a experience bo
 
 
 Consequences of Experience Gains
-................................
+........................
 
 
+Loot & Possessions
+------------------
+ 
+Another kind of reward can be the loot given by a defeated creature, either directly (ex: after being itself searched or after a tribute is given for surrender), or indirectly (ex: treasure in a chest, in the creature dwelling). 
+
+By default in Orge (i.e. unless the scenario specifically changes that behaviour), a searched creature will show exactly its expected belongings [#]_, instead of having the SW or GM specify explicitly what the creature is to drop.
+
+
+.. [#] It sounds obvious, but in many games when one finally succeeds in killing a powerful knight, no weapon can be retrieved, which is totally unrealistic. Conversely, it would be quite awkward to find gold coins on wild animals.
+
+
+Respawn
+-------
+
+Most of the creatures in Orge are expected to be specifically instanciated by the SW. When they die there is no reason they should be replaced.
+
+However in some cases it might be convenient to define `respawn points` or `respawn areas`, i.e. locations where a certain density of certain creatures has to exist. This is especially true for MMORPG, where players might intentionally exhaust an area whereas this is only an artefact of the simulation. For example, in the edge of a huge and deep forest, a respawn area could be defined, instead of having to simulate each and every squirrel in that forest. 
+
+These respawn locations should be used with care, since they are often abused by players to level up and/or to block other players from doing so. It is up to the SW to tell whether, for his story, this should be possible.
+
+
+Perception & Senses
+-------------------
 
 Resolving Actions
 =================
 
-What for ?
-----------
+What for?
+---------
 
 In a game, the success of all kinds of attempts of actions have to be evaluated, like when: 
 
@@ -301,10 +510,10 @@ In a game, the success of all kinds of attempts of actions have to be evaluated,
 The game system has to choose whether each action succeeds or fails.
 
 
-How ?
------
+How?
+----
 
-We based our system on the one Hirinkaël described `here < ../../../club/game/numericBook/ThresholdSimulationSystem.pdf>`_ (in French), most choices and remarks regarding the evaluation of actions are just taken from this document, adapted a bit and translated. 
+We based our system on the one Hirinkaël described `here <../../../club/game/numericBook/ThresholdSimulationSystem.pdf>`_ (in French), most choices and remarks regarding the evaluation of actions are just taken from this document, adapted a bit and translated. 
 
 
 It is done by evaluating the probability p of success (say, between 0 and 100%), and drawing a random value r in, ``[0,100]``. If ``r<p``, then the action succeeds, if ``r>p`` it fails, otherwise ``r=p`` and the outcome is neither a success nor a failure (for the sake of simplicity we will consider from now on that the action is then a success).
@@ -316,7 +525,7 @@ The intended outcome of this part of the rule system is not a predetermined "one
 As the game creator cannot precompute all the possible contexts (as they are too numerous, due to the combinatorial explosion of possible in-world variations), the game system has to rely on rules that can determine on the fly, in the light of a specific context, a global probability of success.
  
 
-We chose to rely on `Hirinkaël's system < ../../../club/game/numericBook/ThresholdSimulationSystem.pdf>`_ because:
+We chose to rely on `Hirinkaël's system <../../../club/game/numericBook/ThresholdSimulationSystem.pdf>`_ because:
 
  - it can easily take into account all kinds of situations
  - it is logical, consistent, symmetrical and fair
@@ -350,14 +559,16 @@ To handle modifiers we retained the function suggested in the aforementionned pa
 
 
 This function, when given a base probability (p, abscissa) and a modifier (m, select the corresponding curve), determines the resulting modified probability (pm, ordinate):
- [probability-modifier.png] 
+
+.. image: probability-modifier.png
+
 
 
 The wider curves, representing modifiers of -50%, 0% and 50%, allow to find easily the curves for intermediate modifiers, as they are paced every 10%.
 
 One can see the symmetry of modifiers: the value of the increase in probability due to a given modifier p is equal to the value of the decrease in probability due to a modifier of -p.
 
-The [probability-modifier.py script http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/doc/web/main/documentation/OSDL/OSDL-engine/probability-modifier.py?view=markup] gives some more indications:
+The `probability-modifier.py script <http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/doc/web/main/documentation/OSDL/OSDL-engine/probability-modifier.py?view=markup>`_ gives some more indications:
 
 ::
 
@@ -416,7 +627,7 @@ The [probability-modifier.py script http://osdl.svn.sourceforge.net/viewvc/osdl/
 
 We can see that if the base probability is 100% or 0%, the action will be always respectively a success or a failure, not depending on the modifier. 
 
-Moreover, multiple modifiers can be applied, applying m1 then m2 results in the same as applying m2 then m1, which is (in practice) the same as applying directly m3 = m1 + m2. 
+Moreover, multiple modifiers can be applied, applying m1 then m2 results in the same as applying m2 then m1, which is (in practice) the same as applying directly ``m3 = m1 + m2``. 
 
 
 How to choose the rule inputs ?
@@ -428,6 +639,7 @@ The numerical rules have been calibrated so that, when base probability is at 50
 
 
 So, to evaluate the value of a modifier modelling a specific element of context, the Game Master just has to imagine the case where:
+
  - we are under normal circumstances 
  - and the action is to be performed by a candidate who has 50% of chance of succeeding, 50% of chance of failing
  
@@ -437,7 +649,8 @@ Then, should the studied element of context occur, what would be the new probabi
 More precisely, the previous numerical recipe (``50+m %``) is an approximation, mostly accurate for small values of m. The real relation is: if the Game Master chooses, for the aforementioned probability of success, pnew, then ``m = 1 / (1+ exp(-pnew))``.
 
 It leads to this abacus, helping to evaluate this modifier:
- [modifier-abacus.png] 
+.. image: modifier-abacus.png
+
 
 We can see that in most situations it is perfectly safe to stick to ``m = pnew - 50%``.
 
@@ -463,8 +676,7 @@ A Focus on Conflicts & Combats
 
 One concern: to avoid that experienced characters based on fighting skills (barbarians, sword masters, ninjas, etc.) become significantly weaker, limited and dull to play than magic users, notably in late game.
 
-Solutions: 
- - battle disciplines/maneuvers
+Solutions: battle disciplines/maneuvers
 
 
 
@@ -474,8 +686,119 @@ Magic
 common: spell, mana
 
 Wizzard/mage
+------------
 
-cleric
+Cleric
+------
+
+Bestiary
+========
+
+The bestiary depends heavily on the scenario setting. Orge comes with the following built-in species [#]_, listed alphabetically:
+
+.. [#] The SW can of course add any other creatures of his own. 
+
+
+Bat
+Giant
+Goblin
+Halfling
+Human
+Lich
+Orc
+Troll
+
+
+Character Roles
+===============
+
+ - Merchant, Vendor
+ - Guard, Sentinel
+
+
+Object Repository
+=================
+
+Each object is determined by:
+ - a name
+ - a textual description
+ - a size (volume), expressed in  , notably to evaluate bulkiness
+ - a base value (if applicable), expressed in credits and in world currency as well. This base value corresponds to the mean found value for that object in the game world, to be modulated by the actual merchant
+ - 
+
+
+
+Exchanging Goods
+================
+
+Transactions.
+
+
+Barter
+------
+
+Purchase
+--------
+
+
+
+Money & Currency
+----------------
+
+In Orge, all the monetary values are internally manipulated as a unique unit, the *credit* (abbreviation: ``C``). Depending on the setting, a credit can be mapped to dollars, gold coins, martian credit, etc.
+
+As Orge focuses primarily on fantasy settings, here is the default mapping:
+
+Name of currency Value in Credits Value compared t
+
+N/A
+   +-------------+-----------------------------------------------+
+   | Copper Coin | Smallest possible monetary value.             |
+   +-------------+-----------------------------------------------+
+   | Silver Coin | Structure-enhanced text, structuredtext.      |
+   +-------------+-----------------------------------------------+
+   | Gold Coin   | Well it is, isn't it?                         |
+   +-------------+-----------------------------------------------+
+
+
+.. Hint:: Usually making the change is a gameplay killer (since it is too cumbersome and fundamentally uninteresting), thus Orge sees it as a technical detail that can be abstracted away, and no monetary exchange will raise change issues.
+
+ 
+
+A More Formal Modelling
+=======================
+
+This section describes more precisely how the main concepts used by Orge are modelled.
+
+ - Element
+   - ActiveElement
+     - Creature: corresponds to all beings, monsters or characters
+	   - has an Inventory
+       - Experience Gain if killed by the player
+       - Links to possible completion of quest element
+	   - onKilled
+	   - onSurrender (if appropriate)
+     - Clock: trigger based on (simulation) time	   
+   - PassiveElement
+     - Object: corresponds to all  
+	   - onPickUp: might trigger actions (ex: raise in statistics, curse, traps, etc.)
+	   - onDrop
+	   - onUse (if appropriate)
+	   - onUseWith (if appropriate)
+	   - contains (if appropriate)
+     - Challenge: corresponds to all kind of (generally rewarded) actions
+	   - Quest: composed of set of Challenges (C1, C2, .., Cn), whose overall completion is defined with regard to the ones of challenges. For example, a quest could be completed iff C1 and C2 are completed, or if C3 is completed
+     - Area: an in-game portion (horizontal plane surface) of the map. It can defined as a (convex or concave) polygon, or as a simple disc
+	   - RespawnArea: an area in which a given set of kinds of creature appears at a given rate. Maximum populations can be capped. Ex: ``[ {Troll, ]`` 	   
+   
+
+.. Note:: Many elements passive by nature (ex: a challenge, an area, etc.) can be nevertheless turned into active elements on a per-instance basis, if associated to a given Clock object.
+
+
+Technically
+-----------
+
+Each and every class modelling a game element should be able to send traces, thus should inherit from the ``TraceEmitter`` class.
 
 
 License
@@ -486,12 +809,14 @@ This document describes a game system. It includes a model and an implementation
 License for the game model (a.k.a. rules)
 -----------------------------------------
 
-The game model is released under a `Creative Commons <http://creativecommons.org>`_ license whose name is *Attribution-Noncommercial-Share Alike 3.0*, also known as *by-nc-sa*: 
+The game model is released under a `Creative Commons <http://creativecommons.org>`_ license whose name is *Attribution Noncommercial Share Alike 3.0*, also known as *by-nc-sa*. 
 
 
-.. image:: ../../../../images/by-nc-sa-3.0.png
+.. image:: ../../../../images/by-nc-sa-3-0.png
    :target: http://creativecommons.org/licenses/by-nc-sa/3.0/
    :align: center
+   :scale: 100
+
 
 This license lets you remix, tweak, and build upon this work non-commercially, as long as you credit us and license your new creations under the identical terms.
 
@@ -510,9 +835,17 @@ License for the game implementation
 The Orge implementation is released under the `GNU General Public License <http://www.gnu.org/licenses/gpl.html>`_ (GPL), version 3 or any later version.
 
 
+Footnotes
+---------
+
+
+
+Citations
+---------
 
 Bibliography
 ============
+
 
 
 Other well-known game systems
@@ -535,4 +868,4 @@ References & Sources
 
  - An exciting series of articles of Matt Barton, `The History of Computer Role-Playing Games <http://www.gamasutra.com/features/20070223a/barton_01.shtml>`_
  
- 
+
