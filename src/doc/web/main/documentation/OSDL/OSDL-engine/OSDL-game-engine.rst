@@ -148,140 +148,7 @@ pascal             Pa     pressure            kilopascal (1 kPa = 1000 Pa)
 ================== ====== =================== =============================== 
 
 
-
-Some scale and orders of magnitude [#]_:
-
- - length:
- 
- 	- length of average red ant: 5 mm
-	- common military ammunition size: 7.62 mm
-	- length of a large mosquito: 1.5 mm
-	- approximate size of largest beetle species: 15 cm
-	- wingspan of largest butterfly species: 31 cm
-	- average length of a rapier, a fencing sword: 90 cm
-	- approximate height of the top part of a doorknob on a door: 1m
-	- highest jump by a human being: 2.45 m
-	- tallest known human being: 2.72 m
-	- height of tallest animal, the giraffe: 5.5 m
-	- longest jump by a human being: 8.95 m
- 	- the mean `height <http://en.wikipedia.org/wiki/Human_height>`_ of a male adult human in medieval times is lower than modern ones, in Orge we chose it to be roughly equal to ``1,70m`` (equal to the current average height of a human being, mean male/female)
-	- length of a blue whale, the largest animal: 30 m
-	- height of the world's tallest tree: 115.55 m
-	- original height of the Great Pyramid of Giza: 147 m
-	- height of the world's highest free-falling waterfall: 979 m
-	- height of the highest mountain on Earth: 8848 m
-	- depth of deepest part of the ocean: 10.911 km
-	- length of the Marathon: 42.195 km
-	- length of the Great Wall of China: 6,400 km
-	- approximate length of the two longest rivers, the Nile and the Amazon: 6,600 km
-	- equatorial diameter of the Earth: 12,756 km
-	- length of the Earth's equator: 40,075 km	
- - area:
- 
-   - a typical postage stamp: 5 cm2
-   - the largest side of a cigarette box: 48 cm2
-   - a football (soccer) field: 7,300 m2
-   - base of the Great Pyramid of Giza: 55 000 m2 
-   - Paris: 105 km2
-   - Egypt: 1 Mm2
-   - largest extent of the Roman Empire: 9 Mm2
-   - Atlantic Ocean: 77 Mm2
-   - land area of Earth: 150 Mm2
-   - Earth (total surface area): 510 Mm2
- - mass:
- 
-   - typical mass of a mosquito: 1-2 mg
-   - one cubic centimeter of water: 1 g
-   - typical coins: 8 g
-   - adult mouse: 12 - 40 g
-   - one litre of water, approx.: 1 kg
-   - newborn human baby: 3 kg
-   - housecat: 5 - 7 kg
-   - medium-sized dog: 15 - 20 kg
-   - the mean `weight <http://en.wikipedia.org/wiki/Human_weight>`_ of a male adult human in medieval times is maybe a bit lower than modern ones, in Orge we chose it to be roughly equal to ``70kg`` (same for a large dog)
-   - mature lion: 180 kf (female), 250 kg (male)
-   - dairy cow: 700 kg
-   - adult elephant: 3 - 7 t; largest on record: 12 t
-   - largest known dinosaur: 80 - 100 t
-   - largest animal, the blue whale: 180 t
-   - International Space Station: 187 t
-   - trunk of the Giant Sequoia tree: 1250 t
-   - heaviest known (clonal) organism: 6,000 t
-   - largest ship when fully loaded: 650,000 t
-   - Great Pyramid of Giza: 6,000,000 t
- - durations:
- 
- 	- blink of an eye: 50 to 80 ms
-	- average reading or talking speed: 0.5 s/word
-	- heart rate period: 0.5 to 1 s
-	- breathing period: 1-10 s
-	- 1 minute: 60 s
-	- 1 hour: 3,600 s
-	- 1 day: 86,400 s
-	- human gestation: 9 month 
-	- longest known lifespan of a mice: 4 years 
-	- longest known lifespan of a dog: 29 years 
-	- longest known lifespan of a cat: 36 years 
-	- longest known lifespan of a goldfish: 49 years 
-	- longest known lifespan of a horse: 62 years 
-	- the mean `life expectancy <http://en.wikipedia.org/wiki/Life_expectancy>`_ (average lifespan at birth) of a man in those troubled days is chosen to be ``40 years``, which is significantly higher than the one of Medieval Britain [#]_ 
-	- longest known lifespan of an elephant: 86 years 
-	- oldest recognized person on record: 122 years
-	- longest known lifespan of a tortoise: 190 years 
-	- longest known lifespan of a whale: 211 years 
-	- longest known lifespan of an animal (mollusk): 405 years 
-	- longest known lifespan of a tree: 9,550 years
-	- longest known lifespan of clonal organisms: 80,000 - 1,000,0009,550 years
- - speed: 
- 
- 	- one metre per second is roughly the speed of an average person walking (``1 m/s``), and it is exactly equal to 3.6 km/h [#]_ (average walking speed: 3.6 - 5.4 km/h)
-	- world record 100 m (human) sprint: ``41.5 km/h`` (11.5 m/s)
-	- top speed of cats and dogs is 30 to 50 km/h (8 to 14 m/s)
-	- racehorse speeds are generally measured at 32 to 61 km/h (9 to 17 m/s)
-	- `Cheetah <http://en.wikipedia.org/wiki/Cheetah>`_ (atypical member of the cat family, fastest of all terrestrial animals) and `sailfish <http://en.wikipedia.org/wiki/Sailfish>`_ (fastest fish) can reach 108 km/s (30 m/s)
-	- a diving `Peregrine Falcon <http://en.wikipedia.org/wiki/Peregrine_Falcon>`_ (fastest bird) reaches ``320 km/h`` (90 m/s) [#]_    
- - temperatures:
- 
- 	- coldest air recorded on Earth: -89.4 °C
- 	- under standard conditions, water becomes ice (melting point) at 0 °C
-	- mean surface temperature of the Earth: 14 °C
- 	- best temperatures for humans are in the 19 °C - 22 °C range
-	- human body temperature: 37 °C
-	- hottest temperature recorded on Earth: 58 °C
-	- water become ssteam (boiling point) at 100 °C
-	- large log fire flames: 900 °C
-	- melting point of iron (lower for steel): 1538 °C
-	- boiling point of lead: 1749 °C	
- - under standard gravity conditions on Earth (Earth's surface), 1 N (Newton) is the force of gravity on an object with a mass of about 102 g (such as a small apple). A mass of 1 kg exerts a force of approximately ``9.81 N``, a human being with a mass of 70 kg corresponds to approximately 687 N [#]_ 
- - energy scale [#]_ :
- 
-   - 1 joule in everyday life is approximately the energy [#]_:
- 
-     - required to lift a small apple one meter straight up (same energy is released when that same apple falls one meter to the ground)
-     - that a quiet person generates every hundredth of a second, as heat
-     - the energy required to heat one gram of dry, cool air by 1 degree Celsius
-   - object falling 1 m: 9.8 J/kg
-   - object falling 10 m: 98 J/kg
-   - thrown club (expert thrower): 800 J/kg
-   - object falling 100 m: 980 J/kg
-   - flexible dart (expert thrower): 1000 J/kg
-   - 80-lb-draw pistol crossbow bolt: 1.7 kJ/kg
-   - rifle bullet 4.5 mm: 11 kJ/kg
-   - 5.56x45 mm (standard bullet used in many assault rifles): 470 kJ/kg   
- - a common candle emits roughly ``1 cd``. A 100 W incandescent lightbulb emits about 120 cd [#]_
-
- - standard atmospheric pressure is roughly ``101 Pa`` [#]_
-
- 
-.. [#] Source: Wikipedia category about `Orders of magnitude <http://en.wikipedia.org/wiki/Category:Orders_of_magnitude>`_.
-.. [#] Thanks to the effect of magic cures, of course.
-.. [#] Source: Wikipedia article about `Orders of magnitude (speed) <http://en.wikipedia.org/wiki/Orders_of_magnitude_(speed)>`_.
-.. [#] Source: Wikipedia article about `Metre per second <http://en.wikipedia.org/wiki/Metre_per_second>`_.
-.. [#] Source: Wikipedia article about `Newton <http://en.wikipedia.org/wiki/Newton>`_.
-.. [#] Source: Wikipedia article about `Joule <http://en.wikipedia.org/wiki/Joule>`_.
-.. [#] Source: Wikipedia article about `Projectile <http://en.wikipedia.org/wiki/Projectile#Typical_projectile_speeds>`_.
-.. [#] Source: Wikipedia article about `Candela <http://en.wikipedia.org/wiki/Candela>`_.
-.. [#] Source: Wikipedia article about `Pascal <http://en.wikipedia.org/wiki/Pascal_(unit)>`_.
+To better evaluate physicalo values, please refer to the examples listed in `Some scales and orders of magnitude`_.
 
 
 
@@ -432,9 +299,9 @@ measure of character development
 Levels considered harmful?
 ..........................
 
-Speaking of realism, levels should be avoided due to the threshold effect they induce: instead of a continuous progress, levelling up results in a sharp rise of the potential of a character that corresponds to nothing in the real life.
+Speaking of realism, levels should be avoided due to the threshold effect they induce: instead of a continuous progress, levelling up results in sharp rises of the potential of a character that corresponds to nothing in the real life.
 
-We chose however to keep a level-based system for creatures. Why? One might call it nostalgia of old-school games, but the actual motivation of that choice is *player  pleasure*. We love when our character gets stronger, and if there is no particular event that underlines it, we feel frustated.
+We chose however to keep a level-based system for creatures. Why? One might call it nostalgia of old-school games, but the actual motivation of that choice is *player  pleasure*. Most players love when their character gets stronger, and if there is no particular event that underlines it, they feel frustated.
 
 A bit like the epic nature of stories, with Orge the trade-off between realism and entertainment has been geared towards the former instead of the latter. 
 
@@ -444,7 +311,53 @@ A rule of thumb regarding experience is that:
  
  - rewards should be expressed independently from the level of the rewarded (no tweaking of their value)
 
-With Orge we thus chose to define 
+With Orge we chose:
+
+  - to start from level 0, which corresponds to average people (John Doe is level 0)
+
+  - to define fixed amounts of experience gain in case of success in specific actions, whereas the experience needed to level up increases quickly with the target level
+
+  - not to limit the maximum level of a character
+
+
+This is done according to following formula:
+
+
+
+It leads to following progression:
+
+:raw-html:`<img src="experience-for-level-negated.png"></img>`
+:raw-latex:`\includegraphics[scale=0.75]{experience-for-level.png}`
+
+
+For first levels, this table defines these experience thresholds:
+
+============ ============================================
+Target Level Experience Points Needed to reach that level
+============ ============================================
+0            0
+1            125
+2            216
+3            343
+4            512
+5            729
+6            1000
+7            1331
+8            1728
+9            2197
+10           2744
+11           3375
+12           4096
+13           4913
+14           5832
+15           6859
+16           8000
+17           9261
+18           10648
+19           12167
+20           13824
+============ ============================================
+
 
 .. Note:: The experience gap between levels grows indeed fast, but it is partially offset by granted rewards, that become - generally - higher.
 
@@ -555,12 +468,14 @@ One output: the actual context-dependent probability
 
 To handle modifiers we retained the function suggested in the aforementionned paper:
 
-.. image: probability-modifier-formula.png
+:raw-html:`<img src="probability-modifier-formula-negated.png"></img>`
+:raw-latex:`\includegraphics[scale=0.75]{probability-modifier-formula.png}`
 
 
 This function, when given a base probability (p, abscissa) and a modifier (m, select the corresponding curve), determines the resulting modified probability (pm, ordinate):
 
-.. image: probability-modifier.png
+:raw-html:`<img src="probability-modifier-negated.png"></img>`
+:raw-latex:`\includegraphics[scale=0.75]{probability-modifier.png}`
 
 
 
@@ -649,7 +564,9 @@ Then, should the studied element of context occur, what would be the new probabi
 More precisely, the previous numerical recipe (``50+m %``) is an approximation, mostly accurate for small values of m. The real relation is: if the Game Master chooses, for the aforementioned probability of success, pnew, then ``m = 1 / (1+ exp(-pnew))``.
 
 It leads to this abacus, helping to evaluate this modifier:
-.. image: modifier-abacus.png
+
+:raw-html:`<img src="modifier-abacus-negated.png"></img>`
+:raw-latex:`\includegraphics[scale=0.75]{modifier-abacus.png}`
 
 
 We can see that in most situations it is perfectly safe to stick to ``m = pnew - 50%``.
@@ -720,11 +637,11 @@ Object Repository
 =================
 
 Each object is determined by:
+
  - a name
  - a textual description
  - a size (volume), expressed in  , notably to evaluate bulkiness
  - a base value (if applicable), expressed in credits and in world currency as well. This base value corresponds to the mean found value for that object in the game world, to be modulated by the actual merchant
- - 
 
 
 
@@ -749,16 +666,13 @@ In Orge, all the monetary values are internally manipulated as a unique unit, th
 
 As Orge focuses primarily on fantasy settings, here is the default mapping:
 
-Name of currency Value in Credits Value compared t
-
-N/A
-   +-------------+-----------------------------------------------+
-   | Copper Coin | Smallest possible monetary value.             |
-   +-------------+-----------------------------------------------+
-   | Silver Coin | Structure-enhanced text, structuredtext.      |
-   +-------------+-----------------------------------------------+
-   | Gold Coin   | Well it is, isn't it?                         |
-   +-------------+-----------------------------------------------+
+   ================ =====================  ================
+   Name of currency Currency Abbreviation  Value in Credits 
+   ================ =====================  ================
+   Copper Coin      cc                     1
+   Silver Coin      sc                     12
+   Gold Coin        gc                     100
+   ================ =====================  ================
 
 
 .. Hint:: Usually making the change is a gameplay killer (since it is too cumbersome and fundamentally uninteresting), thus Orge sees it as a technical detail that can be abstracted away, and no monetary exchange will raise change issues.
@@ -868,4 +782,371 @@ References & Sources
 
  - An exciting series of articles of Matt Barton, `The History of Computer Role-Playing Games <http://www.gamasutra.com/features/20070223a/barton_01.shtml>`_
  
+
+Appendices
+==========
+
+
+Some scales and orders of magnitude
+-----------------------------------
+
+Most examples are taken from the corresponding `Wikipedia articles <http://en.wikipedia.org/wiki/Category:Orders_of_magnitude>`_.
+
+
+
+Length
+......
+
+
++------------------------------------------------------------+--------------------+
+| Real-life example for **Length**                           | Lengths            |
++============================================================+====================+
+| Length of average red ant                                  | 5 mm               |
++------------------------------------------------------------+--------------------+
+| Common military ammunition size                            | 7.62 mm            |
++------------------------------------------------------------+--------------------+
+| Length of a large mosquito                                 | 1.5 mm             |       
++------------------------------------------------------------+--------------------+
+| Approximate size of largest beetle species                 | 15 cm              |
++------------------------------------------------------------+--------------------+
+| Wingspan of largest butterfly species 	                 | 31 cm              |
++------------------------------------------------------------+--------------------+
+| Average length of a rapier, a fencing sword                | 90 cm              |
++------------------------------------------------------------+--------------------+
+| Approximate height of the top part of a                    | 1 m                |
+| doorknob on a door                                         |                    |
++------------------------------------------------------------+--------------------+
+| Mean `height <http://en.wikipedia.org/wiki/Human_height>`_ | 1.70 m             |            
+| of a male adult human in medieval times [#]_               |                    |
++------------------------------------------------------------+--------------------+
+| Highest jump by a human being                              | 2.45 m             |
++------------------------------------------------------------+--------------------+
+| Height of tallest known human being                        | 2.72 m             |
++------------------------------------------------------------+--------------------+
+| Height of tallest animal, the giraffe                      | 5.5 m              |
++------------------------------------------------------------+--------------------+
+| Longest jump by a human being                              | 8.95 m             |
++------------------------------------------------------------+--------------------+
+| Length of a blue whale, the largest animal                 | 30 m               |
++------------------------------------------------------------+--------------------+
+| Height of the world's tallest tree                         | 115.55 m           |
++------------------------------------------------------------+--------------------+
+| Original height of the Great Pyramid of Giza               | 147 m              |
++------------------------------------------------------------+--------------------+
+| Height of the world's highest free-falling                 | 979 m              |
+| waterfall                                                  |                    |
++------------------------------------------------------------+--------------------+
+| Height of the highest mountain on Earth                    | 8,848 m            |
++------------------------------------------------------------+--------------------+
+| Depth of deepest part of the ocean                         | 10.911 km          |
++------------------------------------------------------------+--------------------+
+| Length of the Marathon                                     | 42.195 km          |
++------------------------------------------------------------+--------------------+
+| Length of the Great Wall of China                          | 6,400 km           |
++------------------------------------------------------------+--------------------+
+| Approximate length of the two longest rivers,              | 6,600 km           |
+| the Nile and the Amazon                                    |                    |
++------------------------------------------------------------+--------------------+
+| Equatorial diameter of the Earth                           | 12,756 km          |
++------------------------------------------------------------+--------------------+
+| Length of the Earth's equator                              | 40,075 km          |
++------------------------------------------------------------+--------------------+
+
+
+.. [#] This height is lower than modern ones. It happens to be equal to the current average height of a human being (males and females).
+
+
+
+Area
+....
+
+
++------------------------------------------------------------+--------------------+
+| Real-life example for **Area**                             | Areas              |
++============================================================+====================+
+| A typical postage stamp                                    | 5 cm2              |
++------------------------------------------------------------+--------------------+
+| The largest side of a cigarette box                        | 48 cm2             |
++------------------------------------------------------------+--------------------+
+| A football (soccer) field                                  | 7,300 m2           |
++------------------------------------------------------------+--------------------+
+| Base of the Great Pyramid of Giza                          | 55,000 m2          |
++------------------------------------------------------------+--------------------+
+| Paris                                                      | 105 km2            |
++------------------------------------------------------------+--------------------+
+| Egypt                                                      | 1 Mm2              |
++------------------------------------------------------------+--------------------+
+| Largest extent of the Roman Empire                         | 9 Mm2              |
++------------------------------------------------------------+--------------------+
+| Atlantic Ocean                                             | 77 Mm2             |
++------------------------------------------------------------+--------------------+
+| Land area of Earth                                         | 150 Mm2            |
++------------------------------------------------------------+--------------------+
+| Total surface area of Earth                                | 510 Mm2            |
++------------------------------------------------------------+--------------------+
+
+
+
+Mass
+....
+
+
++------------------------------------------------------------+--------------------+
+| Real-life example for **Mass**                             | Masses             |
++============================================================+====================+
+| Typical mass of a mosquito                                 | 1-2 mg             |
++------------------------------------------------------------+--------------------+
+| One cubic centimeter of water                              | 1 g                |
++------------------------------------------------------------+--------------------+
+| Typical coins                                              | 8 g                |
++------------------------------------------------------------+--------------------+
+| Adult mouse                                                | 12 - 40 g          |
++------------------------------------------------------------+--------------------+
+| One litre of water, approx.                                | 1 kg               |
++------------------------------------------------------------+--------------------+
+| Newborn human baby                                         | 3 kg               |
++------------------------------------------------------------+--------------------+
+| Housecat                                                   | 5 - 7 kg           |
++------------------------------------------------------------+--------------------+
+| Medium-sized dog                                           | 15 - 20 kg         |
++------------------------------------------------------------+--------------------+
+| Mean `weight <http://en.wikipedia.org/wiki/Human_weight>`_ | 70 kg              |            
+| of a male adult human in medieval times [#]_               |                    |
+| (same for a large dog)                                     |                    |
++------------------------------------------------------------+--------------------+
+| Mature lion female/male                                    | 180 kg - 250 kg    |
++------------------------------------------------------------+--------------------+
+| Dairy cow                                                  | 700 kg             |
++------------------------------------------------------------+--------------------+
+| Adult elephant [#]_                                        | 3 - 7 t            |
++------------------------------------------------------------+--------------------+
+| Largest known dinosaur                                     | 80 - 100 t         |
++------------------------------------------------------------+--------------------+
+| Largest animal, the blue whale                             | 180 t              |
++------------------------------------------------------------+--------------------+
+| International Space Station                                | 187 t              |
++------------------------------------------------------------+--------------------+
+| Trunk of the Giant Sequoia tree                            | 1,250 t            |
++------------------------------------------------------------+--------------------+
+| Heaviest known (clonal) organism                           | 6,000 t            |
++------------------------------------------------------------+--------------------+
+| Largest ship when fully loaded                             | 650,000 t          |
++------------------------------------------------------------+--------------------+
+| Great Pyramid of Giza                                      | 6,000,000 t        |
++------------------------------------------------------------+--------------------+
+
+
+.. [#] In Orge we chose the mean weight of a male adult human in medieval times to be a bit lower than modern ones.
+
+.. [#] Largest elephant on record: 12 t.
+
+
+
+Time & Durations
+................
+
+
++-------------------------------------------------------------------+--------------------+
+| Real-life example for **Time**                                    | Durations          |
++===================================================================+====================+
+| Blink of an eye                                                   | 50 - 80 ms         |
++-------------------------------------------------------------------+--------------------+
+| Average reading or talking speed                                  | 0.5 s/word         |
++-------------------------------------------------------------------+--------------------+
+| Heart rate period                                                 | 0.5 - 1 s          |
++-------------------------------------------------------------------+--------------------+
+| Breathing period                                                  | 1 - 10 s           |
++-------------------------------------------------------------------+--------------------+
+| 1 minute                                                          | 60 s               |
++-------------------------------------------------------------------+--------------------+
+| 1 hour                                                            | 3,600 s            |
++-------------------------------------------------------------------+--------------------+
+| 1 day                                                             | 86,400 s           |
++-------------------------------------------------------------------+--------------------+
+| Human gestation                                                   | 9 months           |
++-------------------------------------------------------------------+--------------------+
+| Mice longest known lifespan                                       | 4 years            |
++-------------------------------------------------------------------+--------------------+
+| Dog longest known lifespan                                        | 29 years           |
++-------------------------------------------------------------------+--------------------+
+| Cat longest known lifespan                                        | 36 years           |
++-------------------------------------------------------------------+--------------------+
+| Goldfish longest known lifespan                                   | 49 years           |
++-------------------------------------------------------------------+--------------------+
+| Horse longest known lifespan                                      | 62 years           |
++-------------------------------------------------------------------+--------------------+
+| Mean                                                              | 40 years           |
+| `life expectancy <http://en.wikipedia.org/wiki/Life_expectancy>`_ |                    |
+| (average lifespan at birth) of a man in medieval times [#]_       |                    |
++-------------------------------------------------------------------+--------------------+
+| Elephant longest known lifespan                                   | 86 years           |
++-------------------------------------------------------------------+--------------------+
+| Oldest recognized person on record                                | 122 years          |
++-------------------------------------------------------------------+--------------------+
+| Tortoise longest known lifespan                                   | 190 years          |
++-------------------------------------------------------------------+--------------------+
+| Whale longest known lifespan                                      | 211 years          |
++-------------------------------------------------------------------+--------------------+
+| Longest known lifespan of an animal (mollusk)                     | 405 years          |
++-------------------------------------------------------------------+--------------------+
+| Longest known lifespan of a tree                                  | 9,550 years        |
++-------------------------------------------------------------------+--------------------+
+| Longest known lifespan of clonal organisms                        | 80,000 -           |
+|                                                                   | 1,000,0009,550     |
+|                                                                   | years              |
++-------------------------------------------------------------------+--------------------+
+
+.. [#] In Orge we chose a mean life	expectancy significantly higher than the one of Medieval Britain, thanks to the effect of magic cures, of course.
+
+
+Speed
+.....
+
+
++---------------------------------------------------------------------+--------------------+
+| Real-life example for **Speed**                                     | Speeds             |
++=====================================================================+====================+
+| Speed of an average person walking [#]_                             | 1 - 1.5 m/s        |
+|                                                                     | (3.6 - 5.4 km/h)   |
++---------------------------------------------------------------------+--------------------+
+| World record 100 m (human) sprint                                   | 11.5 m/s           |
+|                                                                     | (41.5 km/h)        |
++---------------------------------------------------------------------+--------------------+
+| Top speed of cats and dogs                                          | 8 - 14 m/s         |
+|                                                                     | (30 - 50 km/h)     |
++---------------------------------------------------------------------+--------------------+
+| Racehorse speeds                                                    | 9 - 17 m/s         |
+|                                                                     | (32 - 61 km/h)     |
++---------------------------------------------------------------------+--------------------+
+| `Cheetah <http://en.wikipedia.org/wiki/Cheetah>`_                   | 30 m/s             |
+| (atypical member of the cat family, fastest of all terrestrial      | (108 km/h)         |
+| animals) and `Sailfish <http://en.wikipedia.org/wiki/Sailfish>`_    |                    |
+| (fastest fish)                                                      |                    |
++---------------------------------------------------------------------+--------------------+
+| Diving                                                              | 90 m/s             |
+| `Peregrine Falcon <http://en.wikipedia.org/wiki/Peregrine_Falcon>`_ | (320 km/h)         | 
+| (fastest bird)                                                      |                    |
++---------------------------------------------------------------------+--------------------+
+
+.. [#] Source: Wikipedia article about `Metre per second <http://en.wikipedia.org/wiki/Metre_per_second>`_.
+
+
+
+Temperatures
+............
+
+
++---------------------------------------------------------------------+--------------------+
+| Real-life example for **Temperature**                               | Temperatures       |
++=====================================================================+====================+
+| Coldest air recorded on Earth                                       | -89.4 °C           |
++---------------------------------------------------------------------+--------------------+
+| Water becomes ice (melting point) under standard conditions         | 0 °C               |
++---------------------------------------------------------------------+--------------------+
+| Mean surface temperature of the Earth                               | 14 °C              |
++---------------------------------------------------------------------+--------------------+
+| Best temperatures for humans                                        | 19 °C - 22 °C      |
++---------------------------------------------------------------------+--------------------+
+| Human body temperature                                              | 37 °C              |
++---------------------------------------------------------------------+--------------------+
+| Hottest temperature recorded on Earth                               | 58 °C              |
++---------------------------------------------------------------------+--------------------+
+| Water becomes steam (boiling point)                                 | 100 °C             |
++---------------------------------------------------------------------+--------------------+
+| Large log fire flames                                               | 900 °C             |
++---------------------------------------------------------------------+--------------------+
+| Melting point of iron (lower for steel)                             | 1538 °C            |
++---------------------------------------------------------------------+--------------------+
+| Boiling point of lead                                               | 1749 °C            |
++---------------------------------------------------------------------+--------------------+
+
+ 
+
+ 
+Forces
+......
+
+
++---------------------------------------------------------------------+--------------------+
+| Real-life example for **Force** [#]_                                | Forces             |
++=====================================================================+====================+
+| Force of gravity on an object with a mass of about 102 g            | 1 N                |
+| (such as a small apple)                                             |                    |
++---------------------------------------------------------------------+--------------------+
+| Force of gravity on a mass of 1 kg                                  | 9.81 N             |
++---------------------------------------------------------------------+--------------------+
+| Force of gravity on a human being with a mass of 70 kg              | 687 N              |
++---------------------------------------------------------------------+--------------------+
+
+
+.. [#] Source: Wikipedia article about `Newton <http://en.wikipedia.org/wiki/Newton>`_. Gravity is evaluated under standard conditions on Earth (Earth's surface). 
+ 
+
+
+
+Energy
+......
+
+
++---------------------------------------------------------------------+--------------------+
+| Real-life example for **Energy** [#]_, [#]_                         | Energies (J, J/kg) |
++=====================================================================+====================+
+| Energy required to lift a small apple one meter straight up         | 1 J                |
+| (same energy is released when that same apple falls one meter to    |                    |
+| the ground), or energy that a quiet person generates every          |                    |
+| hundredth of a second (as heat), or energy required to heat one     |                    |
+| gram of dry, cool air by 1 degree Celsius                           |                    |
++---------------------------------------------------------------------+--------------------+
+| Object falling 1 m                                                  | 9.8 J/kg           |
++---------------------------------------------------------------------+--------------------+
+| Object falling 10 m                                                 | 98 J/kg            |
++---------------------------------------------------------------------+--------------------+
+| Thrown club (expert thrower)                                        | 800 J/kg           |
++---------------------------------------------------------------------+--------------------+
+| Object falling 100 m                                                | 980 J/kg           |
++---------------------------------------------------------------------+--------------------+
+| Flexible dart (expert thrower)                                      | 1000 J/kg          |
++---------------------------------------------------------------------+--------------------+
+| 80-lb-draw pistol crossbow bolt                                     | 1.7 kJ/kg          |
++---------------------------------------------------------------------+--------------------+
+| Rifle bullet 4.5 mm                                                 | 11 kJ/kg           |
++---------------------------------------------------------------------+--------------------+
+| 5.56x45 mm (standard bullet used in many assault rifles)            | 470 kJ/kg          |
++---------------------------------------------------------------------+--------------------+
+
+.. [#] Source: Wikipedia article about `Joule <http://en.wikipedia.org/wiki/Joule>`_.
+.. [#] Source: Wikipedia article about `Projectile <http://en.wikipedia.org/wiki/Projectile#Typical_projectile_speeds>`_.
+
+ 
+
+Light
+.....
+
++---------------------------------------------------------------------+--------------------+
+| Real-life example for **Light** [#]_                                | Luminous           |
+|                                                                     | intensities        |
++=====================================================================+====================+
+| Common candle                                                       | 1 cd               |
++---------------------------------------------------------------------+--------------------+
+| 100 W incandescent lightbulb                                        | 120 cd             |
++---------------------------------------------------------------------+--------------------+
+
+.. [#] Source: Wikipedia article about `Candela <http://en.wikipedia.org/wiki/Candela>`_.
+
+	  
+Pressure
+........
+
+
++---------------------------------------------------------------------+--------------------+
+| Real-life example for **Pressure** [#]_                             | Pressures          |
++=====================================================================+====================+
+| Standard atmospheric pressure                                       | 101 Pa             |
++---------------------------------------------------------------------+--------------------+
+ 
+
+.. [#] Source: Wikipedia article about `Pascal <http://en.wikipedia.org/wiki/Pascal_(unit)>`_.
+
+
+
 
