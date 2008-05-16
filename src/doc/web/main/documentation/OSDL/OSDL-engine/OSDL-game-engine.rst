@@ -6,7 +6,7 @@ Orge
 OSDL RPG Game Engine
 --------------------
 
-:Author: Olivier Boudeville
+:Author: Olivier Boudeville & Hirinkaël
 :Contact: olivier.boudeville@esperide.com
 
 :status: This is a work in progress
@@ -228,9 +228,111 @@ Some employ hybrid themes that either merge or substitute fantasy elements with 
 
 Place of Death
 ---------------
-permadeath
-Death And Afterlife
 
+Most RPG insist on character building and provide some ways of bypassing the total loss of one's character, as it would be deemed to frustrating for a player to have to start from scratch again.
+
+On non-persistent RPG, saving the game regularly (with ou without restriction) is a technical solution. On persistent RPG, time cannot be changed at will and often various solutions are implemented directly in the gameplay, like resurrection in temples, afterlife in the wild, etc.
+
+One considerable drawback of non-terminal death is that it allows players to act without much fear for the consequences: for example there is no point in an assassination attempt on a king if, even in case of success, he will able to be back within minutes, as if nothing had happened.
+
+On the contrary, if permanent death (a.k.a. `permadeath <http://en.wikipedia.org/wiki/Permadeath>`_) was retained, then that king would most probably be a lot more careful when travelling, would have to select carefully his escort (powerful and loyal guards), there could be plots among his vassals, etc. This kind of power struggle would benefit a lot to gameplay, and would require the player a lot more of self-control and constant care for his character, lest it is removed permanently from the game .
+
+Thus in Orge we favour permadeath. Note that it tends to make a character's health binary, being either in perfect condition or dead, as the role of permanent injuries is considerably lessen thanks to magic. A related concern for players is that "perfect condition" is to be understood regarding a given age.
+
+
+
+Aging
+-----
+
+Another significant factor weighing on a character's life is the age of that character.
+
+
+Life Expectancy
+...............
+
+Should no brutal death occur, any creature will die when its life expectancy has been reached. The creature lifespan is determined at its creation, and is generally only known by the game system. 
+
+Life expectancy is computed that way: to the average lifespan corresponding to the race of the creature, following modifiers are added:
+ - the constitution modifier of that creature
+ - a 8% bonus if it is a female creature, otherwise a 8% malus
+ - a random modifier in the -10% to 10% range
+ 
+ 
+
+
+
+Impact of Age on Abilities
+..........................
+
+ During his life expectancy (average one for a humain in Orge is 40 years), various stages will be reached, affecting his abilities. 
+
+Globally, for a human whose lifespan will be 40 years, they will start from zero in the first years of the character, increase steadily until a threshold of maturity is reached (at around 16 years). This will correspond to the peak abilities. They will then decrease a bit until stabilizing in a plateau (about 22 years). They will remain in this good condition until about 30 years, where they will begin to decline back to zero, not unlike in a `Attack Decay Sustain Release <http://en.wikipedia.org/wiki/ADSR_envelope>`_ scheme:
+
+
+This global aging profile in Orge is common to all races, genders, individal, etc.: the same evolution will apply, once scaled according to the effective planned lifespan of each creature. For example, if dwarves on average live for 320 years and if a given dwarf, Hgog, is expected to live for 355 years [#]_, then his abilities will reach zero only when being 355-year-old.
+
+.. [#] Determined by various factors, including sex, constitution and some randomness. 
+ 
+
+The impact of aging is taken into account in the form of a modifier, see `Resolving Actions`_.
+
+
+Textual Translation of Age
+__________________________
+
+
+The following *Age Table* allows to determine the age-related textual description of a creature, based on its *Age Percentage*, which is equal to its current age divided by the life expectancy of its race [#]_ :
+
+
++------------------------+---------------------------+-------------------+---------------------+
+| Age Percentage Range   | Creature Age Classifier   | Corresponding     | Alternate Namings   |
+|                        |                           | Human Age         |                     |
+|                        |                           | For Modern Times  |                     |
++========================+===========================+===================+=====================+
+| 0% - 2%                | Newborn                   | 0 - 1 years       | Toddler             |
++------------------------+---------------------------+-------------------+---------------------+
+| 2% - 5%                | Child                     | 1 - 4 years       |                     |
++------------------------+---------------------------+-------------------+---------------------+
+| 5% - 10%               | Boy/Girl                  | 4 - 8 years       |                     |
++------------------------+---------------------------+-------------------+---------------------+
+| 10% - 17%              | Youngster                 | 8 - 14 years      |                     |
++------------------------+---------------------------+-------------------+---------------------+
+| 17% - 25%              | Adolescent                | 14 - 18 years     |                     |
++------------------------+---------------------------+-------------------+---------------------+
+| 25% - 40%              | Young Adult               | 18 - 30 years     | Young               |
++------------------------+---------------------------+-------------------+---------------------+
+| 40% - 55%              | Adult                     | 30 - 50 years     | (no special naming) |     
++------------------------+---------------------------+-------------------+---------------------+
+| 55% - 80%              | Aged Adult                | 50 - 65 years     |                     |
++------------------------+---------------------------+-------------------+---------------------+
+| 80% - 100%             | Elder                     | 65 - 80 years     |                     |
++------------------------+---------------------------+-------------------+---------------------+
+| 100% - 120%            | Venerable                 | 80 - 96 years     |                     |
++------------------------+---------------------------+-------------------+---------------------+
+| 120% - 150% and upward | Ancient                   | 96 - 120 years    |                     |
+| [#]_                   |                           |                   |                     |
++------------------------+---------------------------+-------------------+---------------------+
+
+  
+.. [#] The creature's own life expectancy is not taking into account here: not all creatures could reach the *Ancient* age classifier.
+
+.. [#] Unless specific conditions are met during the lifespan of a creature (ex: special magic used), its life expectancy should not exceed 150% of the average one defined for its race.
+
+
+For example, knowing that dwarves live on average for 320 years, and that Hgog is a 272-year-old dwarf, he could be named *Hgog, Elder Dwarf*, as his age percentage is ``272/320 = 85%``. 
+
+
+Rookie/Freshman (Novice)/Apprentice (Untrained)/Trained/Seasoned/Veteran/Master/Elite
+
+
+Junior/Senior/Doyen
+
+Cadet/
+
+
+Example: 'Arthur, Young Human, Untrained Soldier' might become 'Arthur, '
+
+Hierarchy: age, rank (Lieutenant, Captain, etc.), level of expertise (Untrained, SwordMaster, etc.)
 
 
 
@@ -259,6 +361,10 @@ Traits
 Races
 -----
 
+Table of race statistics
+
+Life base expectancy, in years
+
 Classes
 -------
 direct characterization ny archetypal characters
@@ -267,6 +373,9 @@ stereotyping
 
 Characteristics & Attributes
 ----------------------------
+
+lifespan
+current age
  
 tree
 
@@ -294,6 +403,10 @@ Therefore a crucial point is to find the subtle balance between frustation (if t
 
 measure of character development
 `experience points <http://en.wikipedia.org/wiki/Experience_points>`_ 
+
+
+.. Note:: Adventures are generally short compared to a character lifespan: a great deal of his experience should come from the time he spends living (and training) between adventures. Players should be able to define what their characters do (ex: farming, training, etc.) between game sessions, when there is no player controlling them.  
+
 
 
 Levels considered harmful?
@@ -381,6 +494,12 @@ The model we chose is that associated with each of these events, a experience bo
 
 Consequences of Experience Gains
 ........................
+
+
+
+Health, Wounds and Death
+------------------------
+
 
 
 Loot & Possessions
@@ -666,14 +785,15 @@ In Orge, all the monetary values are internally manipulated as a unique unit, th
 
 As Orge focuses primarily on fantasy settings, here is the default mapping:
 
-   ================ =====================  ================
-   Name of currency Currency Abbreviation  Value in Credits 
-   ================ =====================  ================
-   Copper Coin      cc                     1
-   Silver Coin      sc                     12
-   Gold Coin        gc                     100
-   ================ =====================  ================
+   ================ ===================== ========================= ================  
+   Name of currency Currency Abbreviation Value In Smaller Currency Value in Credits  
+   ================ ===================== ========================= ================  
+   Copper Coin      cc                    N/A						1				  
+   Silver Coin      sc                    1 sc = 20 cc  			20  			  
+   Gold Coin [#]_   gc                    1 gc = 50 sc 				1000 			  
+   ================ ===================== ========================= ================  
 
+.. [#]:: Gold, compared to copper and even silver, is quite rare in Orge. 
 
 .. Hint:: Usually making the change is a gameplay killer (since it is too cumbersome and fundamentally uninteresting), thus Orge sees it as a technical detail that can be abstracted away, and no monetary exchange will raise change issues.
 
@@ -685,28 +805,65 @@ A More Formal Modelling
 This section describes more precisely how the main concepts used by Orge are modelled.
 
  - Element
+ 
    - ActiveElement
+   
      - Creature: corresponds to all beings, monsters or characters
+	 
+	   - belongs to a Race
+	   - Has an age and a life expectancy at births
+	   - Has a gender
 	   - has an Inventory
        - Experience Gain if killed by the player
        - Links to possible completion of quest element
 	   - onKilled
 	   - onSurrender (if appropriate)
+	   
      - Clock: trigger based on (simulation) time	   
    - PassiveElement
+   
      - Object: corresponds to all  
+	 
 	   - onPickUp: might trigger actions (ex: raise in statistics, curse, traps, etc.)
 	   - onDrop
 	   - onUse (if appropriate)
 	   - onUseWith (if appropriate)
 	   - contains (if appropriate)
+	   
      - Challenge: corresponds to all kind of (generally rewarded) actions
+	 
 	   - Quest: composed of set of Challenges (C1, C2, .., Cn), whose overall completion is defined with regard to the ones of challenges. For example, a quest could be completed iff C1 and C2 are completed, or if C3 is completed
+	   
      - Area: an in-game portion (horizontal plane surface) of the map. It can defined as a (convex or concave) polygon, or as a simple disc
+	 
 	   - RespawnArea: an area in which a given set of kinds of creature appears at a given rate. Maximum populations can be capped. Ex: ``[ {Troll, ]`` 	   
    
 
 .. Note:: Many elements passive by nature (ex: a challenge, an area, etc.) can be nevertheless turned into active elements on a per-instance basis, if associated to a given Clock object.
+
+
+
+Orge Implementation
+===================
+
+
+Overview
+--------
+
+The Orge game system has been implemented by the `OSDL project <http://osdl.sourceforge.net>`_. This codebase is meant to power multi-player games, notably in the context of persistent worlds (MMORPG). 
+
+Orge has been implemented in the `Erlang <http://www.erlang.org>`_ language. In a few worlds, Erlang has been chosen for:
+ 
+ - its scalability and support for massive concurrency
+ - its fault-tolerance abilities
+ - its high-level orientation
+ - the in-place incremental hot code reload it features
+ 
+The codebase is released through the GPL license, as stated in `License for the game implementation`_.
+
+The full Orge codebase can be browsed from `our SVN repository <http://osdl.svn.sourceforge.net/viewvc/osdl/Orge/>`_.
+
+The Orge implementation is based on the services provided by the OSDL sister project, the `Ceylan project <http://ceylan.sourceforge.net>`_. Ceylan focuses on generic features, whereas OSDL concentrates on interactive, multimedia, game-related applications.
 
 
 Technically
@@ -1133,6 +1290,8 @@ Light
 
 .. [#] Source: Wikipedia article about `Candela <http://en.wikipedia.org/wiki/Candela>`_.
 
+
+
 	  
 Pressure
 ........
@@ -1141,7 +1300,29 @@ Pressure
 +---------------------------------------------------------------------+--------------------+
 | Real-life example for **Pressure** [#]_                             | Pressures          |
 +=====================================================================+====================+
-| Standard atmospheric pressure                                       | 101 Pa             |
+| Interstellar space pressure (approximate)                           | 10-15 Pa           |
++---------------------------------------------------------------------+--------------------+
+| Threshold of human hearing, the smallest RMS pressure fluctuation   | 10-6  Pa           |
+| that the human ear can hear in a noiseless environment              |                    |   
++---------------------------------------------------------------------+--------------------+
+| Pressure exerted by a UK five pound note resting on a surface       | 1 Pa               |
++---------------------------------------------------------------------+--------------------+
+| Pressure increase per millimeter of a water column                  | 10 Pa              |
++---------------------------------------------------------------------+--------------------+
+| Threshold of pain. Sounds above this amplitude are unbearable and   | 100 Pa             |
+| can cause ear pain.                                                 |                    |
++---------------------------------------------------------------------+--------------------+
+| Standard atmospheric pressure (1 bar) for earth sea level           | 101.3 Pa           |
++---------------------------------------------------------------------+--------------------+
+| Pressure increase per meter of a water column, or the drop in air   | 10,000 Pa          |
+| pressure when going from earth sea level to 1000 m elevation        |                    |
++---------------------------------------------------------------------+--------------------+
+| Pressure exerted by a 60kg woman wearing stilettos                  | 12 MPa             |
++---------------------------------------------------------------------+--------------------+
+| Pressure at bottom of Mariana Trench, about 10 km below ocean       | 100 MPa            |
+| surface (1000 bar)                                                  |                    |
++---------------------------------------------------------------------+--------------------+
+| Pressure at which diamond forms                                     | 10 GPa             |
 +---------------------------------------------------------------------+--------------------+
  
 

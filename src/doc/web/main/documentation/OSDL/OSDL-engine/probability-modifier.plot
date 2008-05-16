@@ -1,5 +1,5 @@
 set title "Impact of modifiers on base probabilities"
-set terminal png transparent
+set terminal png
 set style line 1 lt 1 lw 3
 set style line 2 lt rgb 'green' lw 3 
 set style line 3 lt 3 lw 3
