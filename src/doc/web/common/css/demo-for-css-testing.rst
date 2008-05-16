@@ -118,6 +118,20 @@ should    be grouped    in pairs).``
 If the ``--pep-references`` option was supplied, there should be a
 live link to PEP 258 here.
 
+
+Titles, from more general to smallest subtitles, are defined with: 
+ 
+ - '=', on top and below the title (document title)
+ - '-', on top and below the title (documenet subtitle)
+ - '=' below the title (H1)
+ - '-' below the title (H2)
+ - '.' below the title (H3)
+ - '_' below the title (H4)
+ - '*' below the title (H5)
+ - ':' below the title (H6)
+ - '+' below the title (H7)
+ 
+
 Bullet Lists
 ------------
 
