@@ -137,6 +137,7 @@ This includes:
 Unit name          Symbol Associated Quantity Common multiples
 ================== ====== =================== =============================== 
 metre 	           m      length              kilometer (km), centimeter (cm)
+cubic decimetre    dm^3   volume              cubic metre (1 m^3 = 1000 dm^3), FIXME litre (1L = 1 dm^3) 
 kilogram           kg     mass                gram (1 kg = 1000 g), metric ton (1t = 1000 kg)
 second 	           s      time                minute, hour, day, year, century
 metre per second   m/s    speed               km/h (1 m/s = 3.6 km/h)
@@ -439,8 +440,8 @@ This is done according to following formula:
 
 It leads to following progression:
 
-:raw-html:`<img src="experience-for-level-negated.png"></img>`
-:raw-latex:`\includegraphics[scale=0.75]{experience-for-level.png}`
+..  ddd:raw-html:`<img src="experience-for-level-negated.png"></img>`
+..   ggg:raw-latex:`\includegraphics[scale=0.75]{experience-for-level.png}`
 
 
 For first levels, this table defines these experience thresholds:
@@ -587,14 +588,14 @@ One output: the actual context-dependent probability
 
 To handle modifiers we retained the function suggested in the aforementionned paper:
 
-:raw-html:`<img src="probability-modifier-formula-negated.png"></img>`
-:raw-latex:`\includegraphics[scale=0.75]{probability-modifier-formula.png}`
+nnn nn:raw-html:`<img src="probability-modifier-formula-negated.png"></img>`
+nn nn:raw-latex:`\includegraphics[scale=0.75]{probability-modifier-formula.png}`
 
 
 This function, when given a base probability (p, abscissa) and a modifier (m, select the corresponding curve), determines the resulting modified probability (pm, ordinate):
 
-:raw-html:`<img src="probability-modifier-negated.png"></img>`
-:raw-latex:`\includegraphics[scale=0.75]{probability-modifier.png}`
+nn:raw-html:`<img src="probability-modifier-negated.png"></img>`
+nn:raw-latex:`\includegraphics[scale=0.75]{probability-modifier.png}`
 
 
 
@@ -684,8 +685,8 @@ More precisely, the previous numerical recipe (``50+m %``) is an approximation, 
 
 It leads to this abacus, helping to evaluate this modifier:
 
-:raw-html:`<img src="modifier-abacus-negated.png"></img>`
-:raw-latex:`\includegraphics[scale=0.75]{modifier-abacus.png}`
+nn:raw-html:`<img src="modifier-abacus-negated.png"></img>`
+nn:raw-latex:`\includegraphics[scale=0.75]{modifier-abacus.png}`
 
 
 We can see that in most situations it is perfectly safe to stick to ``m = pnew - 50%``.
@@ -883,7 +884,7 @@ License for the game model (a.k.a. rules)
 The game model is released under a `Creative Commons <http://creativecommons.org>`_ license whose name is *Attribution Noncommercial Share Alike 3.0*, also known as *by-nc-sa*. 
 
 
-.. image:: ../../../../images/by-nc-sa-3-0.png
+vv.. image:: ../../../../images/by-nc-sa-3-0.png
    :target: http://creativecommons.org/licenses/by-nc-sa/3.0/
    :align: center
    :scale: 100
