@@ -3,44 +3,46 @@
 # LOANI
 # Lazy OSDL Automatic Net Installer.
 
-# Creation date : 2003, April 14
-# Author : Olivier Boudeville (olivier.boudeville@online.fr)
+# Creation date: 2003, April 14
+# Author: Olivier Boudeville (olivier.boudeville@online.fr)
 
 
-USAGE="Usage : "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools] [ --allTools] [ --nds ] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
+USAGE="Usage: "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools ] [ --OrgeTools ] [ --onlyOrgeTools ] [ --allTools ] [ --nds ] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
 
 EXAMPLE="    Recommended examples (long but safe):
 	for a end-user  (export of last stable)       : ./"`basename $0`"
 	for a developer (check-out of current sources): ./"`basename $0`" --allTools --sourceforge <your developer login> --currentSVN 
 	"
 
-# For testing purposes :
+# For testing purposes:
 # ./loani.sh --debug --strict --currentSVN --sourceforge wondersye --allTools
 
 HELP="This is LOANI, the famous Lazy OSDL Automatic Net Installer.
 
 	$USAGE
 	
-Options :
-	-d or --debug		  : display debug informations to screen
-	-s or --strict  	  : be strict, stop on wrong md5 checksums or on unexpected tool locations
-	-q or --quiet		  : avoid being too verbose
-	-w or --wizard 	          : enter wizard interactive mode, so that questions are asked to configure
-	-u or --useSVN            : retrieve Ceylan and OSDL from SVN, instead of downloading prepackaged source archives
-	-c or --currentSVN        : retrieve current SVN for Ceylan and OSDL, instead of latest SVN tagged stable release (implies --useSVN)
-	--sourceforge <user name> : uses SourceForge developer access to retrieve projects from SVN  (implies --currentSVN)
-	--buildTools		  : retrieve and install common build tools too (ex: gcc, binutils, gdb)  
-	--optionalTools 	  : retrieve and install optional tools too (ex: doxygen, dot, tidy)
-	--allTools		  : retrieve all tools (required, build, optional tools)
-	--nds		          : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
-	--setEnv		  : set full developer environment (ex: bash, nedit configuration)
-	--fetchonly		  : only retrieve (download in cache) pre requesite, do not install them
-	--all			  : install all and set all, including developer environment
-	--prefix <a path>	  : install everything under <a path> 
-	--repository <a path>	  : specify an alternate cache repository for downloads       
-	--noLog 		  : do not log installation results 
-	--noClean                 : do not remove build trees after a successful installation
-	-h or --help		  : display this message
+Options:
+	-d or --debug		 : display debug informations to screen
+	-s or --strict  	 : be strict, stop on wrong md5 checksums or on unexpected tool locations
+	-q or --quiet		 : avoid being too verbose
+	-w or --wizard 	         : enter wizard interactive mode, so that questions are asked to configure
+	-u or --useSVN           : retrieve Ceylan and OSDL from SVN, instead of downloading prepackaged source archives
+	-c or --currentSVN       : retrieve current SVN for Ceylan and OSDL, instead of latest SVN tagged stable release (implies --useSVN)
+	--sourceforge <user name>: uses SourceForge developer access to retrieve projects from SVN  (implies --currentSVN)
+	--buildTools		 : retrieve and install common build tools too (ex: gcc, binutils, gdb)  
+	--optionalTools 	 : retrieve and install optional tools too (ex: doxygen, dot, tidy)
+	--OrgeTools              : retrieve and install all tools for Orge (ex: Erlang) 
+	--onlyOrgeTools          : retrieve and install all tools for Orge, and no other tool
+	--allTools		 : retrieve all tools (required, build, optional, Orge tools)
+	--nds		         : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
+	--setEnv		 : set full developer environment (ex: bash, nedit configuration)
+	--fetchonly		 : only retrieve (download in cache) pre requesite, do not install them
+	--all			 : install all and set all, including developer environment
+	--prefix <a path>	 : install everything under <a path> 
+	--repository <a path>	 : specify an alternate cache repository for downloads       
+	--noLog 		 : do not log installation results 
+	--noClean                : do not remove build trees after a successful installation
+	-h or --help		 : display this message
 
 $EXAMPLE	
 	"
@@ -48,11 +50,12 @@ $EXAMPLE
 starting_time=`date '+%H:%M:%S'`
 
 
-# Undocumented (since seldom used) options :
-#   --onlyBuildTools : only build tools will be installed.
-#   --onlyOptionalTools : only optional tools will be installed.
-#   --noSVN : do not retrieve anything from SVN, merely used for LOANI 
-# debugging (variable : no_svn)
+# Undocumented (since seldom used) options:
+#   --onlyBuildTools: only build tools will be installed.
+#   --onlyOptionalTools: only optional tools will be installed.
+#   --onlyOrgeTools: only Orge tools will be installed.
+#   --noSVN: do not retrieve anything from SVN, merely used for LOANI 
+# debugging (variable: no_svn)
 
 if [ "$1" = "-h" -o "$1" = "--help" ] ; then
 	echo "$HELP"
@@ -65,8 +68,8 @@ launchFileRetrieval()
 # If not available, will try to download it. 
 # From the package name, the archive, location and MD5 will be deduced.
 #
-# Usage : launchFileRetrieval <package name>
-# Example : launchFileRetrieval SDL
+# Usage: launchFileRetrieval <package name>
+# Example: launchFileRetrieval SDL
 {
 
 	#TRACE "launchFileRetrieval called"
@@ -84,7 +87,7 @@ launchFileRetrieval()
 	if [ -f "${full_archive_path}" ] ; then
 	
 		computed_md5=`${MD5SUM} "${full_archive_path}" | ${AWK} '{printf $1}'`
-		#DEBUG "launchFileRetrieval : ${full_archive_path} : $computed_md5"
+		#DEBUG "launchFileRetrieval: ${full_archive_path}: $computed_md5"
 
 		if [ "${computed_md5}" = "$md5" ] ; then
 			DEBUG "${archive_file} found in cache, its integrity has been checked, retrieved."
@@ -95,7 +98,7 @@ launchFileRetrieval()
 		fi	
 	else
 	
-		# File not here, having to guess the download location to be used :
+		# File not here, having to guess the download location to be used:
 
 		# Will set 'current_download_location' 
 		# (iterate through mirrors if needed):
@@ -135,21 +138,21 @@ getDownloadLocation()
 # Basically, one main download site should be tried, then one alternate 
 # location and, on failure, our own private last-chance mirror.
 #
-# A location is tried only once : its variable is blanked afterwards,
+# A location is tried only once: its variable is blanked afterwards,
 # so that further attempts can use next mirror, if any.
 #
-# Usage   : 
+# Usage : 
 #   getDownloadLocation <package name>; 
 #   echo ${current_download_location}
-# Example : getDownloadLocation SDL
+# Example: getDownloadLocation SDL
 
-	# ex: $1 = SDL :	
+	# ex: $1 = SDL:	
 	package_name="$1"
 	location_name="${package_name}_DOWNLOAD_LOCATION"
 	eval actual_location_name="\$$location_name"
 	location_value="${actual_location_name}"
 
-	# Trying first the main site :
+	# Trying first the main site:
 	if [ -z "${location_value}" ] ; then
 		
 		# Not available ? Try the mirror (if any):
@@ -158,7 +161,7 @@ getDownloadLocation()
 		location_value="${actual_location_name}"
 		
 		if [ -z "${location_value}" ] ; then
-			# Last hope, our little private mirror : 		
+			# Last hope, our little private mirror: 		
 	
 			private_mirror_used="${package_name}_USED_MIRROR"
 			eval actual_private_mirror_used="\$$private_mirror_used"
@@ -191,7 +194,7 @@ getDownloadLocation()
 }
 
 
-# Used to test 'getDownloadLocation' :
+# Used to test 'getDownloadLocation':
 testGetDownloadLocation()
 {
   target=doxygen
@@ -210,15 +213,15 @@ getFileAvailability()
 #         1 if specified file is in cache but its md5sum is wrong,
 #         2 if specified file is not at all in cache or is empty 
 # (in this case, it is deleted).
-# Usage   : getFileAvailability <file name> <md5 sum of file>
-# Example : getFileAvailability dummy.tgz "886924ab144af672af9596115088ff20"
+# Usage : getFileAvailability <file name> <md5 sum of file>
+# Example: getFileAvailability dummy.tgz "886924ab144af672af9596115088ff20"
 {
 	
 	filename=${1}
 	full_file_path=${repository}/${filename}
 	md5=${2}
 	
-	# Accept files or directories entries : 
+	# Accept files or directories entries: 
 	if [ ! -e "${full_file_path}" ] ; then
 		DEBUG "File <${filename}> not in cache."
 		return 2
@@ -235,7 +238,7 @@ getFileAvailability()
 		else
 
    		  	computed_md5=`${MD5SUM} "${full_file_path}" | ${AWK} '{printf $1}'`      		
-			#DEBUG "getFileAvailability : ${full_file_path} : computed $computed_md5, expected ${md5}"
+			#DEBUG "getFileAvailability: ${full_file_path}: computed $computed_md5, expected ${md5}"
 			
 			if [ "${computed_md5}" = "${md5}" ] ; then
 				DEBUG "<${filename}> found in cache and its md5sum is correct."
@@ -317,7 +320,7 @@ launchwizard()
 			if askDefaultNo "${OFFSET}Use developer access for Sourceforge's SVN ?" ; then 
 				DISPLAY "SVN developer mode activated."
 				developer_access=0
-				askNonVoidString "${OFFSET}Please enter your Sourceforge's user name :"
+				askNonVoidString "${OFFSET}Please enter your Sourceforge's user name:"
 				developer_name="$returnedString"
 				DISPLAY "Developer name will be $developer_name"
 			else
@@ -342,10 +345,11 @@ launchwizard()
 		manage_optional_tools=0					
 		set_env=0
 	else
-		if askDefaultNo "${OFFSET}Install all tools ? (required tools, common build tools, optional tools)" ; then 
+		if askDefaultNo "${OFFSET}Install all tools ? (required tools, common build tools, optional tools, Orge tools)" ; then 
 			DISPLAY "All tools will be installed."
 			manage_build_tools=0	
 			manage_optional_tools=0			
+			manage_orge_tools=0			
 		else
 			if askDefaultNo "${OFFSET}Install build tools ? (ex: gcc, binutils) [this is the recommended setting]" ; then 
 				DISPLAY "Build tools will be installed."
@@ -362,6 +366,14 @@ launchwizard()
 			else
 				DISPLAY "Optional tools will not be installed."
 				manage_optional_tools=1
+			fi
+
+			if askDefaultNo "${OFFSET}Install Orge tools ? (ex: Erlang)" ; then 
+				DISPLAY "Orge tools will be installed."
+				manage_orge_tools=0	
+			else
+				DISPLAY "Orge tools will not be installed."
+				manage_orge_tools=1
 			fi
 		fi
 			
@@ -411,7 +423,7 @@ launchwizard()
 	fi	
 
 	if askDefaultNo "${OFFSET}Use an alternate cache repository ?" ; then 
-		askNonVoidString "${OFFSET}Please enter path to the non-default cache repository :"
+		askNonVoidString "${OFFSET}Please enter path to the non-default cache repository:"
 		repository="$returnedString"
 		DISPLAY "Repository changed to $repository."		
 	else
@@ -435,7 +447,7 @@ launchwizard()
 # dedicated script is automatically used too (platformDetection.sh).
 # Such detection is necessary for example for libpng.
 
-#echo "Trace : Just before defaultLocations.sh"
+#echo "Trace: Just before defaultLocations.sh"
 
 SHELL_TOOLBOX="./defaultLocations.sh"
 
@@ -460,12 +472,12 @@ if [ $platform_family_detected -eq 1 ] ; then
 fi
 
 if [ $precise_platform_detected -eq 1 ] ; then
-	ERROR "the detection of the precise platform did not succeed (platform family : $platform_family_detected)."
+	ERROR "the detection of the precise platform did not succeed (platform family: $platform_family_detected)."
 	exit 3
 fi
 
 
-# Some platform-specific notifications :
+# Some platform-specific notifications:
 
 if [ "$is_macosx" -eq 0 ] ; then
 	WARNING "Mac OS X support not tested at the moment."
@@ -485,82 +497,89 @@ fi
 
 #TRACE "Beginning of LOANI."
  
-# Pre defined set of default behaviour :
+# Pre defined set of default behaviour:
 
 
-# This flag will trigger other strict flags if set [default : false (1)] :
+# This flag will trigger other strict flags if set [default: false (1)]:
 be_strict=1
 
-# Used to enable strict md5 sum checking [default : false (1)] :
+# Used to enable strict md5 sum checking [default: false (1)]:
 do_strict_md5=1
 
 # Used to check that tools are in their expected location 
-# [default : false (1)] :
+# [default: false (1)]:
 be_strict_on_location=1
 
-# Raise a fatal error if a tool is nowhere to be found [default : true (0)] :
+# Raise a fatal error if a tool is nowhere to be found [default: true (0)]:
 must_find_tool=0
 
-# Used to display more informations [default : false (1)] :
+# Used to display more informations [default: false (1)]:
 do_debug=1
 	
-# Used to simulate only (no downloading performed) [default : false (1)] :
+# Used to simulate only (no downloading performed) [default: false (1)]:
 do_simulate=1
 
 # Used to specify if common build tools should be managed too 
-# [default : false (1)] :	
+# [default: false (1)]:	
 manage_build_tools=1
 
 # Used to specify whether optional tools should be managed too 
-# [default : false (1)] :	
+# [default: false (1)]:	
 manage_optional_tools=1
 
+# Used to specify whether Orge tools should be managed too 
+# [default: false (1)]:	
+manage_orge_tools=1
+
 # Used to demand only pre requesite retrieval, not their installation 
-# [default : false (1)] :
+# [default: false (1)]:
 fetch_only=1
 
 # Used to specify whether wizard should be used to configure LOANI 
-# interactively [default : false (1)] :
+# interactively [default: false (1)]:
 wizard=1
 
-# Disable SVN retrieval [default : false (1)] :
+# Disable SVN retrieval [default: false (1)]:
 no_svn=1
 
 # Tells whether SVN should be used (if 0) or if source archives should
-# be downloaded (if 1) [default : false (1)] :
+# be downloaded (if 1) [default: false (1)]:
 use_svn=1
 
 # Used to specify whether current SVN should be used for Ceylan and OSDL 
-# (true) or latest stable version tagged in SVN (false) [default : false (1)] :
+# (true) or latest stable version tagged in SVN (false) [default: false (1)]:
 use_current_svn=1
 
 # Used to specify whether developer access should be used with 
-# Sourceforge's SVN (developer access : SVN checkout, otherwise SVN export)
-# [default : false (1)] :
+# Sourceforge's SVN (developer access: SVN checkout, otherwise SVN export)
+# [default: false (1)]:
 developer_access=1
 
-# Set developer environment [default : false (1)] :			
+# Set developer environment [default: false (1)]:			
 set_env=1
 
 # Tells whether after successfull installation the build trees are to 
-# be removed [default : true (0)] :	
+# be removed [default: true (0)]:	
 clean_on_success=0
 
-# Used to activate quiet mode [default : false (1)] :	
+# Used to activate quiet mode [default: false (1)]:	
 be_quiet=1
 
-# Used to select whether log should be stored [default : true (0)] :
+# Used to select whether log should be stored [default: true (0)]:
 do_log=0
 
 
 
-# Install only build tools : [default : false (1)] 
+# Install only build tools: [default: false (1)] 
 only_build_tools=1
 
-# Install only optional tools : [default : false (1)] 
+# Install only optional tools: [default: false (1)] 
 only_optional_tools=1
 
-# Cross-compilation to Nintendo DS homebrew : [default : false (1)]
+# Install only Orge tools: [default: false (1)] 
+only_orge_tools=1
+
+# Cross-compilation to Nintendo DS homebrew: [default: false (1)]
 target_nds=1
 
 # prefix is the directory where all files will be installed 
@@ -569,33 +588,36 @@ prefix=""
 # The directory to which OSDL data will be set.
 OSDL_DATA_DIR_NAME="OSDL-data"
 
-# Name of OSDL environment file, generated by LOANI from the tools location :
+# Name of OSDL environment file, generated by LOANI from the tools location:
 OSDL_ENV_FILE_NAME="OSDL-environment.sh"
 
 # Name of OSDL environment file for DS, generated by LOANI from the tools
-# location :
+# location:
 OSDL_DS_ENV_FILE_NAME="OSDL-environment-for-DS.sh"
 
-# The cache directory where already available archives should be found :
+# Name of Orge environment file, generated by LOANI from the Orge location:
+ORGE_ENV_FILE_NAME="Orge-environment.sh"
+
+# The cache directory where already available archives should be found:
 repository=`pwd`"/LOANI-repository"	
 
-# Remember the starting working directory :
+# Remember the starting working directory:
 initial_dir=`pwd`
 
 
-# Root URL of our last chance mirror :
+# Root URL of our last chance mirror:
 private_archive_mirror="ftp://ftp.esperide.com/LOANI-archive-repository"
 
 
 # wget should run in background, using any specified proxy directive 
-# and using passive FTP to solve client firewall issues :
+# and using passive FTP to solve client firewall issues:
 WGET_OPT="--background $PROXY_CONF --passive-ftp"
 
 CVS_OPT="-Q -z6"
 CVS_RSH="ssh"
 
 # We may need to be prompted to accept credentials, but normally a dummy svn 
-# 'list' command is issued first to check them :
+# 'list' command is issued first to check them:
 SVN_OPT="--non-interactive"
 
 # Maximum count of attempts to retrieve a module by SVN
@@ -603,14 +625,11 @@ SVN_OPT="--non-interactive"
 # "connection closed").
 MAX_SVN_RETRY=8	
 	
-# Saving the whole command line to have it stored in logs :	
+# Saving the whole command line to have it stored in logs:	
 SAVED_CMD_LINE="$0 $*"
-	
-# Scans each and every argument, from the left to the right :
 
-# Undocumented (since seldom used) options :
-#   --onlyBuildTools : only build tools will be installed.
-#   --onlyOptionalTools : only optional tools will be installed.
+	
+# Scans each and every argument, from the left to the right:
 
 
 #TRACE "Default settings set."
@@ -681,6 +700,12 @@ while [ $# -gt 0 ] ; do
 		manage_optional_tools=0
 		token_eaten=0		
 	fi
+
+	if [ "$1" = "--OrgeTools" ] ; then
+		DEBUG "Orge tools will be retrieved and managed too."
+		manage_orge_tools=0
+		token_eaten=0		
+	fi
 			
 	if [ "$1" = "--fetchonly" ] ; then
 		DEBUG "Fetch only mode activated."
@@ -691,7 +716,8 @@ while [ $# -gt 0 ] ; do
 	if [ "$1" = "--allTools" ] ; then
 		DEBUG "All tools will be retrieved and managed."
 		manage_build_tools=0
-		manage_optional_tools=0		
+		manage_optional_tools=0	
+		manage_orge_tools=0	
 		token_eaten=0		
 	fi		
 	
@@ -705,18 +731,10 @@ while [ $# -gt 0 ] ; do
 		DEBUG "Everything will be set and installed."
 		manage_build_tools=0
 		manage_optional_tools=0		
+		manage_orge_tools=0		
 		set_env=0
 		token_eaten=0		
 	fi
-
-	if [ "$1" = "--all" ] ; then
-		DEBUG "Everything will be set and installed."
-		manage_build_tools=0
-		manage_optional_tools=0		
-		set_env=0
-		token_eaten=0		
-	fi
-	
 		
 	if [ "$1" = "--nds" ] ; then
 		DEBUG "Cross compilation to the Nintendo DS selected."
@@ -777,7 +795,7 @@ while [ $# -gt 0 ] ; do
 	if [ "$1" = "--onlyOptionalTools" ] ; then
 		DEBUG "Only optional tools will be installed."
 		 
-		# Save any previously existing environment file :
+		# Save any previously existing environment file:
 		if [ -f "${OSDL_ENV_FILE}" ] ; then
 			${CP} -f ${OSDL_ENV_FILE} ${OSDL_ENV_FILE_BACKUP}
 		fi
@@ -787,13 +805,26 @@ while [ $# -gt 0 ] ; do
 		token_eaten=0		
 	fi				
 			
+	if [ "$1" = "--onlyOrgeTools" ] ; then
+		DEBUG "Only Orge tools will be installed."
+		 
+		# Save any previously existing environment file:
+		if [ -f "${OSDL_ENV_FILE}" ] ; then
+			${CP} -f ${OSDL_ENV_FILE} ${OSDL_ENV_FILE_BACKUP}
+		fi
+
+		only_orge_tools=0
+		manage_orge_tools=0		
+		token_eaten=0		
+	fi				
+			
 	if [ "$1" = "-h" -o "$1" = "--help" ] ; then
 		DISPLAY "\n$HELP"
 		exit 0
 	fi
 	
 	if [ "$token_eaten" -eq 1 ] ; then
-		echo "Error, unknown argument : $1"
+		echo "Error, unknown argument: $1"
 		echo
 		echo "$USAGE"
 		exit 1
@@ -826,19 +857,19 @@ if [ $wizard -eq 0 ] ; then
 fi
 
 # We hereby consider will always need debug informations, be it on 
-# file and/or on screen :
+# file and/or on screen:
 do_debug=0
 
 if [ $do_log -eq 0 ] ; then
 
-	# Activates termUtils's debug facility :
+	# Activates termUtils's debug facility:
 	
 	LOG_OUTPUT=`pwd`"/LOANI.log"
 	
-	# Override default log file :
+	# Override default log file:
 	debug_file="$LOG_OUTPUT"
 	
-	# Allow debug information to go to file :
+	# Allow debug information to go to file:
 	do_debug_in_file=0
 	
 	if [ -f "$LOG_OUTPUT" ] ; then
@@ -856,7 +887,7 @@ else
 fi
 	
 
-DEBUG "Specified command line was : ${SAVED_CMD_LINE}"
+DEBUG "Specified command line was: ${SAVED_CMD_LINE}"
 
 # Pre requesites continued.
 
@@ -930,7 +961,7 @@ if [ $target_nds -eq 0 ] ; then
 fi
 
 
-# Manage OSDL-data repository :
+# Manage OSDL-data repository:
 OSDL_DATA_FULL_DIR_NAME="${alternate_prefix}/${OSDL_DATA_DIR_NAME}"
 #${MKDIR} -p "${OSDL_DATA_FULL_DIR_NAME}"
 DEBUG "OSDL data repository will be ${OSDL_DATA_FULL_DIR_NAME}."
@@ -944,7 +975,7 @@ fi
 
 
 # In debug mode, unset SILENT make variable to have more build details
-# with Ceylan and OSDL :
+# with Ceylan and OSDL:
 if [ $do_debug -eq 0 ] ; then
 	BUILD_SILENT="SILENT="
 else
@@ -953,11 +984,11 @@ fi
 
 if [ $is_windows -eq 0 ] ; then
 	# On Windows with Visual Express, sources available only from SVN
-	# at the moment :
+	# at the moment:
 	use_svn=0
 fi
 
-# If developer access is selected, use current SVN is implied :
+# If developer access is selected, use current SVN is implied:
 if [ $developer_access -eq 0 ] ; then
 	use_current_svn=0
 fi
@@ -968,58 +999,81 @@ if [ "$manage_optional_tools" -eq 0 ] ; then
 	fi
 fi
 
-# Check for SVN tool if needed :
-if [ $no_svn -eq 1 ] ; then
-	if [ $use_svn -eq 0 ] ; then
-		findTool svn
-		SVN=$returnedString
-	fi	
-fi
 
 USER_ID=`${ID} -u`
 
 #TRACE "Prerequesites checked."
 
 
-# Setting and initializing OSDL environment file :
+# Setting and initializing OSDL environment file:
 OSDL_ENV_FILE=${alternate_prefix}/${OSDL_ENV_FILE_NAME}
 DEBUG "OSDL environment file will be ${OSDL_ENV_FILE}."
 
-# In case of a previously existing OSDL environment, file should be kept :
+# In case of a previously existing OSDL environment, file should be kept:
 OSDL_ENV_FILE_BACKUP="${OSDL_ENV_FILE}.bak"
 
-echo "# This is OSDL environment file." > ${OSDL_ENV_FILE}
+echo "# This is the OSDL environment file." > ${OSDL_ENV_FILE}
 echo "# It has been generated by LOANI on "`LANG= ; date +'%B %Y, %d (%A)'`"." >> ${OSDL_ENV_FILE}
 echo "# Source it to update your environment, so that it takes into " >> ${OSDL_ENV_FILE}
 echo "# account this LOANI installation." >> ${OSDL_ENV_FILE}
 echo "# PATH and LD_LIBRARY_PATH will be automatically updated accordingly." >> ${OSDL_ENV_FILE}
 echo "#" >> ${OSDL_ENV_FILE}
-echo "# Usage example : " >> ${OSDL_ENV_FILE}
+echo "# Usage example: " >> ${OSDL_ENV_FILE}
 echo "#. ${OSDL_ENV_FILE}" >> ${OSDL_ENV_FILE}
 echo "" >> ${OSDL_ENV_FILE}
 echo "" >> ${OSDL_ENV_FILE}
 
 
-# Same thinkg for DS:
-OSDL_DS_ENV_FILE=${ds_prefix}/${OSDL_DS_ENV_FILE_NAME}
-DEBUG "OSDL environment file for DS will be ${OSDL_DS_ENV_FILE}."
+# Same thing for DS:
+if [ $target_nds -eq 0 ] ; then
 
-# In case of a previously existing OSDL environment, file should be kept :
-OSDL_DS_ENV_FILE_BACKUP="${OSDL_DS_ENV_FILE}.bak"
+	OSDL_DS_ENV_FILE=${ds_prefix}/${OSDL_DS_ENV_FILE_NAME}
+	DEBUG "OSDL environment file for DS will be ${OSDL_DS_ENV_FILE}."
 
-echo "# This is OSDL environment file for the Nintendo DS." > ${OSDL_DS_ENV_FILE}
-echo "# It has been generated by LOANI on "`LANG= ; date +'%B %Y, %d (%A)'`"." >> ${OSDL_DS_ENV_FILE}
-echo "# Source it to update your environment, so that it takes into " >> ${OSDL_DS_ENV_FILE}
-echo "# account this LOANI installation." >> ${OSDL_DS_ENV_FILE}
-echo "# PATH and LD_LIBRARY_PATH will be automatically updated accordingly." >> ${OSDL_DS_ENV_FILE}
-echo "#" >> ${OSDL_DS_ENV_FILE}
-echo "# Usage example : " >> ${OSDL_DS_ENV_FILE}
-echo "#. ${OSDL_DS_ENV_FILE}" >> ${OSDL_DS_ENV_FILE}
-echo "" >> ${OSDL_DS_ENV_FILE}
-echo "" >> ${OSDL_DS_ENV_FILE}
+	# In case of a previously existing OSDL environment, file should be kept:
+	OSDL_DS_ENV_FILE_BACKUP="${OSDL_DS_ENV_FILE}.bak"
+
+	echo "# This is the OSDL environment file for the Nintendo DS." > ${OSDL_DS_ENV_FILE}
+	echo "# It has been generated by LOANI on "`LANG= ; date +'%B %Y, %d (%A)'`"." >> ${OSDL_DS_ENV_FILE}
+	echo "# Source it to update your environment, so that it takes into " >> ${OSDL_DS_ENV_FILE}
+	echo "# account this LOANI installation." >> ${OSDL_DS_ENV_FILE}
+	echo "# PATH and LD_LIBRARY_PATH will be automatically updated accordingly." >> ${OSDL_DS_ENV_FILE}
+	echo "#" >> ${OSDL_DS_ENV_FILE}
+	echo "# Usage example: " >> ${OSDL_DS_ENV_FILE}
+	echo "#. ${OSDL_DS_ENV_FILE}" >> ${OSDL_DS_ENV_FILE}
+	echo "" >> ${OSDL_DS_ENV_FILE}
+	echo "" >> ${OSDL_DS_ENV_FILE}
+
+fi
 
 
-# Anticipated checkings :
+# Same thing for Orge:
+if [ $manage_orge_tools -eq 0 ] ; then
+
+	ORGE_ENV_FILE=${alternate_prefix}/${ORGE_ENV_FILE_NAME}
+	DEBUG "Orge environment file will be ${ORGE_ENV_FILE}."
+
+	# In case of a previously existing OSDL environment, file should be kept:
+	ORGE_ENV_FILE_BACKUP="${ORGE_ENV_FILE}.bak"
+
+	echo "# This is the Orge environment file." > ${ORGE_ENV_FILE}
+	echo "# It has been generated by LOANI on "`LANG= ; date +'%B %Y, %d (%A)'`"." >> ${ORGE_ENV_FILE}
+	echo "# Source it to update your environment, so that it takes into " >> ${ORGE_ENV_FILE}
+	echo "# account this LOANI installation." >> ${ORGE_ENV_FILE}
+	echo "# PATH and LD_LIBRARY_PATH will be automatically updated accordingly." >> ${ORGE_ENV_FILE}
+	echo "#" >> ${ORGE_ENV_FILE}
+	echo "# Usage example: " >> ${ORGE_ENV_FILE}
+	echo "#. ${ORGE_ENV_FILE}" >> ${ORGE_ENV_FILE}
+	echo "# This script can be also appended to a shell configuration file." >> ${ORGE_ENV_FILE}
+	echo "# Ex: 'cat ${ORGE_ENV_FILE} >> ~/.bashrc'." >> ${ORGE_ENV_FILE}
+	echo "" >> ${ORGE_ENV_FILE}
+	echo "echo '--- Orge Settings File sourced ---'" >> ${ORGE_ENV_FILE}
+	echo "" >> ${ORGE_ENV_FILE}
+
+fi
+
+
+# Anticipated checkings:
 
 findSupplementaryShellTools
 findBuildTools
@@ -1028,6 +1082,7 @@ if [ ! -d "$repository" ] ; then
 	DEBUG "Creating non already existing repository ($repository)."
 	${MKDIR} -p $repository	
 fi
+
 
 
 DISPLAY "Retrieving all pre requesites, pipe-lining when possible."
@@ -1042,10 +1097,10 @@ DISPLAY "Retrieving all pre requesites, pipe-lining when possible."
 . ./loani-requiredTools.sh
 
 # Put the optional tools before the build tools so that their are taken 
-# into account in following order : 
-# build / optional / required (best both for download and build).
+# into account in following order: 
+# build / optional / required / Orge(best both for download and build).
 if [ $manage_optional_tools -eq 0 ] ; then
-	# Empty list only if optional tools are wanted :
+	# Empty list only if optional tools are wanted:
 	if [ $only_optional_tools -eq 0 ] ; then
 		target_list=""
 	fi
@@ -1054,13 +1109,31 @@ fi
 
 
 if [ $manage_build_tools -eq 0 ] ; then
-	# Empty list only if build tools are wanted :
+	# Empty list only if build tools are wanted:
 	if [ $only_build_tools -eq 0 ] ; then
 		target_list=""
 	fi
 	. ./loani-commonBuildTools.sh	
 fi
 
+if [ $manage_orge_tools -eq 0 ] ; then
+	# Empty list only if build tools are wanted:
+	if [ $only_orge_tools -eq 0 ] ; then
+		target_list=""
+	fi
+	# SVN needed by egeoip:
+	use_svn=0
+	. ./loani-OrgeTools.sh	
+fi
+
+
+# Check for SVN tool if needed:
+if [ $no_svn -eq 1 ] ; then
+	if [ $use_svn -eq 0 ] ; then
+		findTool svn
+		SVN=$returnedString
+	fi	
+fi
 
 #TRACE "Toolsets sourced."
 
@@ -1070,7 +1143,7 @@ DISPLAY "Target package list is <$target_list>."
 # Insert here any bypass for testing
 
 
-# Checks that there is enough available space on disk :
+# Checks that there is enough available space on disk:
 
 # Available size in megabytes (1048576 is 1024^2):
 AVAILABLE_SIZE=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
@@ -1078,7 +1151,7 @@ AVAILABLE_SIZE=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
 
 DEBUG "Detected available size on current disk is ${AVAILABLE_SIZE} megabytes."
 
-# The cross-compilation for Nintendo DS requires less than mainstream :
+# The cross-compilation for Nintendo DS requires less than mainstream:
 if [ $target_nds -eq 1 ] ; then
 	MINIMUM_SIZE=400
 else
@@ -1090,7 +1163,7 @@ if [ $manage_build_tools -eq 0 ] ; then
 	if [ $target_nds -eq 1 ] ; then
 		MINIMUM_SIZE=`expr $MINIMUM_SIZE + 900`
 	else
-		# devkitARM & co are prebuilt and quite small :
+		# devkitARM & co are prebuilt and quite small:
 		MINIMUM_SIZE=`expr $MINIMUM_SIZE + 100`
 	fi		
 fi
@@ -1098,6 +1171,12 @@ fi
 if [ $manage_optional_tools -eq 0 ] ; then
 	MINIMUM_SIZE=`expr $MINIMUM_SIZE + 200`
 fi
+
+
+if [ $manage_orge_tools -eq 0 ] ; then
+	MINIMUM_SIZE=`expr $MINIMUM_SIZE + 400`
+fi
+
 
 if [ $AVAILABLE_SIZE -lt $MINIMUM_SIZE ] ; then
 	WARNING "According to the selected tools which are to install, a rough estimate for peek need of available disk space is $MINIMUM_SIZE megabytes, whereas only $AVAILABLE_SIZE megabytes are available in the current partition. Consider interrupting this script (CTRL-C) if you believe it will not suffice."
@@ -1117,7 +1196,7 @@ for t in $target_list; do
 	DEBUG "Examining <$t>"
 	
 	if [ $use_svn -eq 0 ] ; then
-		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "OSDL" -o "$t" = "OSDL_win" ] ; then
+		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "OSDL" -o "$t" = "OSDL_win" -o "$t" = "egeoip" ] ; then
 			res=2
 		fi
 	fi
@@ -1138,7 +1217,7 @@ for t in $target_list; do
 	fi	
 	
 	if [ $res -eq 0 ] ; then
-		# Avoid leading space in the beginning of the list :
+		# Avoid leading space in the beginning of the list:
 		DEBUG "Adding $t in available list."
 		if [ -z "$available_list" ] ; then
 			available_list="$t"
@@ -1202,7 +1281,7 @@ fi
 # Check wget is available, that an internet connection is available
 # and there exist end-to-end web access. 
 
-# Server which should almost never be down :
+# Server which should almost never be down:
 RELIABLE_SERVER="google.com"
 
 if [ -n "$retrieve_list" ] ; then
@@ -1229,14 +1308,14 @@ if [ -n "$retrieve_list" ] ; then
 	fi
 	
 	if ! ${WGET} ${PROXY_CONF} --spider http://${RELIABLE_SERVER}/index.html 1>>"$LOG_OUTPUT" 2>&1  ; then
-		ERROR "Unable to access the web (reading ${RELIABLE_SERVER}/index.html). If you are behind a proxy, please set PROXY_CONF environment variable with the relevant options to be used by wget. /bin/sh example : PROXY_CONF='--proxy-user=<my user name> --proxy-passwd=<my password>'; export PROXY_CONF"
+		ERROR "Unable to access the web (reading ${RELIABLE_SERVER}/index.html). If you are behind a proxy, please set PROXY_CONF environment variable with the relevant options to be used by wget. /bin/sh example: PROXY_CONF='--proxy-user=<my user name> --proxy-passwd=<my password>'; export PROXY_CONF"
 		exit 7
 	else
 		DEBUG "End-to-end web access successfully checked."
 	fi
 
 	# Pre-check that no wget process is already running, since it would 
-	# confuse LOANI :
+	# confuse LOANI:
 	if ${PS} ax | ${GREP} -v grep | ${GREP} wget ; then
 		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} ax | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running anymore in parallel with LOANI before re-launching our script, since it might confuse LOANI."
 		exit 8
@@ -1248,7 +1327,7 @@ fi
 # Third step, retrieve the lacking ones.
 
 # Needed to force the whole loop to run one more time, to prevent following
-# scenario :
+# scenario:
 #  1. launchFileRetrieval returned 2, because a file is still being downloaded,
 #  2. the file is retrieved and wget stops
 #  3. this loop sees launchFileRetrieval returned 2 but does not find any wget
@@ -1257,12 +1336,12 @@ double_checked=1
 
 while [ -n "$retrieve_list" ] ; do
 	
-	DEBUG "Iterating on following retrieve list : [$retrieve_list]"
+	DEBUG "Iterating on following retrieve list: [$retrieve_list]"
 		
 	for t in $retrieve_list ; do
 		#TRACE "Taking care of ${t}"
 		
-		# Retrieves the file, and retrieve the result of the operation :
+		# Retrieves the file, and retrieve the result of the operation:
 		get${t}
 		res=$?
 		if [ $res -eq 0 ] ; then
@@ -1338,13 +1417,13 @@ while [ -n "$retrieve_list" ] ; do
 
 	sleep 4
 	
-	DEBUG "Available list   : <$available_list>"
-	DEBUG "To retrieve list : <$retrieve_list>" 	
+	DEBUG "Available list : <$available_list>"
+	DEBUG "To retrieve list: <$retrieve_list>" 	
 
 done 
 
-#DEBUG "Final available list   : $available_list"
-#DEBUG "Final to retrieve list : $retrieve_list" 	
+#DEBUG "Final available list : $available_list"
+#DEBUG "Final to retrieve list: $retrieve_list" 	
 
 DISPLAY "All pre requesites available."
 
@@ -1376,7 +1455,7 @@ if [ $set_env -eq 0 ] ; then
 	RETRIEVE_SCRIPT="${repository}/ceylan/Ceylan/trunk/src/conf/environment/retrieveEnvironment.sh"
 	DISPLAY "Modifying environment to have it be developer-friendly."
 	if [ ! -x "$RETRIEVE_SCRIPT" ] ; then
-		ERROR "Unable to modify environment to have it be developer-friendly : script $RETRIEVE_SCRIPT not found or not executable."
+		ERROR "Unable to modify environment to have it be developer-friendly: script $RETRIEVE_SCRIPT not found or not executable."
 		exit 1
 	fi
 	${RETRIEVE_SCRIPT} ${alternate_prefix} --link
@@ -1384,7 +1463,7 @@ fi
 
 
 if [ $only_optional_tools -eq 0 ] ; then
-	# Upgrade any previously existing environment file :
+	# Upgrade any previously existing environment file:
 	if [ -f "${OSDL_ENV_FILE_BACKUP}" ] ; then
 		${CAT} ${OSDL_ENV_FILE} >> ${OSDL_ENV_FILE_BACKUP}
 		${MV} -f ${OSDL_ENV_FILE_BACKUP} ${OSDL_ENV_FILE}
