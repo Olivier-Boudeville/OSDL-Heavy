@@ -49,6 +49,7 @@ LOANI_RELEASE_INDEPENDANT_FILES = \
 	loani-requiredTools.sh                                   \
 	loani-commonBuildTools.sh                                \
 	loani-optionalTools.sh                                   \
+	loani-OrgeTools.sh                                       \
 	$(LOANI_README_TARGET)
 	
 	
