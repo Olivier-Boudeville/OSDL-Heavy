@@ -38,6 +38,13 @@ namespace OSDL
 		 */
 		typedef Ceylan::Uint16 ColorCount ;
 		
+
+		/**
+		 * Number of colors or color index, in 256-color palettes.
+		 *
+		 */
+		typedef Ceylan::Uint8 ColorIndex ;
+		
 		
 		/// Distance between colors.
 		typedef Ceylan::SignedLongInteger ColorDistance ;
