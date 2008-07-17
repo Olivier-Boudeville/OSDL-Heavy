@@ -936,7 +936,7 @@ Some applications manage to rely on very tight 32-bit loops that fit in the ARM9
 <p>
 One can use the <a href="#ITCM">ITCM</a> by either naming the file <code>*.itcm.c</code> or <code>*.itcm.cpp</code> or using the <code>ITCM_CODE</code> macro in the libnds headers. For example: 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -1107,10 +1107,10 @@ The DS supports 23 different hardware interrupts, named here according to the li
 <ul>
 
 <!--
-	<li><b></b> : </li>
+	<li><b></b>: </li>
 -->
 
-	<li><b>screen-related</b> : triggered when an horizontal blank, a vertical one occurred, or when a user-specified number of scanlines (set in <code>DISPSTAT</code>, compared to <code>REG_VCOUNT</code>) were displayed (<code>IRQ_HBLANK / IRQ_VBLANK / IRQ_VCOUNT</code>)</li>
+	<li><b>screen-related</b>: triggered when an horizontal blank, a vertical one occurred, or when a user-specified number of scanlines (set in <code>DISPSTAT</code>, compared to <code>REG_VCOUNT</code>) were displayed (<code>IRQ_HBLANK / IRQ_VBLANK / IRQ_VCOUNT</code>)</li>
 	
 	<li><b>timer-related</b>: triggered when a timer overflows (<code>IRQ_TIMER0 / IRQ_TIMER1 / IRQ_TIMER2 / IRQ_TIMER3</code>)</li>
 	
@@ -1304,7 +1304,7 @@ Communication between ARMs is tricky: beyond the classical issues of synchroniza
 One solution is:
 <ol>
 <!--
-	<li><b></b> : </li>
+	<li><b></b>: </li>
 -->
 	<li>to allocate memory <b>from the ARM9</b>: with the default link script, any allocation done from the ARM7 would return a block in the ARM7 private memory, not addressable from the ARM9</li>
 
@@ -1995,7 +1995,7 @@ Sprites are small (8x8 to 64x64 pixels) graphical objects that can be transforme
 </p>
 
 <p>
-OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time. Each of them has three so-called attributes (hence OAM), including its onscreen position (top-left corner of the sprite) expressed in pixels (hence sprites, even if they are made out of tiles, can be blitted to any screen location, not only on tile intersection).
+OAM means <em>Object Attribute Memory</em>. This is where you control the sprites, which are managed by the DS hardware. At most 128 sprites are supported at a time, per rendering engine. Each of them has three so-called attributes (hence OAM), including its onscreen position (top-left corner of the sprite) expressed in pixels (hence sprites, even if they are made out of tiles, can be blitted to any screen location, not only on tile intersection).
 </p>
 
 <p>
@@ -2011,7 +2011,9 @@ Generally speaking, the OAM is not directly read or written to, as during the VD
 There are three available color modes for sprites: 
 <ul>
         <li><b>16 palettes, each of 16 colors</b>: inherited from the GBA, this mode is of little use on the DS</li>
+		
         <li><b>16 palettes, each of 256 colors</b>: uses twice as much memory, but is indeed the better trade-off. It is used most of the time</li>
+		
         <li><b>16-bit direct color</b>: no palette, each pixel can have its own color. Main problem is the very significant memory consumption</li>
 </ul>
 </p>
@@ -2244,7 +2246,7 @@ To reach the previous ratio, a quite low (here constant) bitrate has to be used 
 <p>
 Of course, for the same bandwidth budget, choosing stereo at 44.1 kHz will cause the encoding to loose a lot of audio details. So with a tiny budget of 80 kbps, to preserve the sound quality, one should probably prefer mono at 22.05 kHz. The following command can be used for such a conversion:
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -2279,7 +2281,7 @@ For example using VBR instead of CBR on the previous long music results in a fil
 
 <p>To do so with the lame encoder, one can use the following command (settings are mono, 22.05 kHz, intermediate quality [V=5], best algorithm [q=0], with a maximum bit rate set to 128 kpbs, no lame tag):
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -5074,7 +5076,7 @@ Source file is <a href="Nintendo-DS.svg" target="_blank">Nintendo-DS.svg</a>.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Saturday, April 5, 2008</em>
+    <em>Last update: Thursday, July 17, 2008</em>
   </center>
 </body>
 </html>
