@@ -1,6 +1,7 @@
 #include "OSDLSprite.h"
 
-#include "OSDLBoundingBox2D.h"   // for BoundingBox2D
+#include "OSDLBoundingBox2D.h"       // for BoundingBox2D
+#include "OSDLGLTexture.h"           // for GLTexture
 
 
 using namespace Ceylan::Log ;
@@ -12,12 +13,18 @@ using std::string ;
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>     // for OSDL_DEBUG_SPRITE and al 
+#include <OSDLConfig.h>              // for OSDL_DEBUG_SPRITE and al 
 #endif // OSDL_USES_CONFIG_H
 
 #if OSDL_ARCH_NINTENDO_DS
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
 #endif // OSDL_ARCH_NINTENDO_DS
+
+
+#if OSDL_USES_SDL 
+#include "SDL.h"					 // for SDL_Cursor, etc.
+#endif // OSDL_USES_SDL
+
 
 
 #if OSDL_DEBUG_SPRITE
@@ -48,6 +55,8 @@ const Sprite::Shape Sprite::SixtyFourTimesThirtyTwo = 10 ;
 const Sprite::Shape Sprite::ThirtyTwoTimesSixtyFour = 11 ;
 const Sprite::Shape Sprite::SixtyFourTimesSixtyFour = 12 ;
 
+const Sprite::Shape Sprite::PowersOfTwo             = 13 ;
+
 
 
 SpriteException::SpriteException( const string & message ) throw(): 
@@ -63,14 +72,28 @@ SpriteException::~SpriteException() throw()
 }
 
 
+Sprite::Sprite( const string & frameFilename ) throw()
+{
 
-Sprite::Sprite( bool ownBoundingBox ) throw() :
+	// TO-DO.
+}
+
+
+/*
+
+Sprite::Sprite( Shape spriteShape, bool ownBoundingBox ) throw():
 	View(),
 	_ownBoundingBox( ownBoundingBox ),
-	_box( 0 )
+	_box( 0 ),
+	_shape( spriteShape )
+#if OSDL_USES_OPENGL
+	, _texture( 0 )
+#endif // OSDL_USES_OPENGL	
 {
 
 }
+
+*/
 
 
 Sprite::~Sprite() throw()
@@ -78,6 +101,13 @@ Sprite::~Sprite() throw()
 
 	if ( _ownBoundingBox && ( _box != 0 ) )
 		delete _box ;
+
+#if OSDL_USES_OPENGL
+
+	if ( _texture != 0 )
+		delete _texture ;
+
+#endif // OSDL_USES_OPENGL	
 		
 }
 
@@ -93,7 +123,19 @@ const string Sprite::toString( Ceylan::VerbosityLevels level ) const throw()
 		res += " does not own" ;
 	
 	res += " its bounding box. " + View::toString( level ) ;		
+	
+	res += ". Its shape is: " + DescribeShape( _shape ) ;
+		
+#if OSDL_USES_OPENGL
+
+	if ( _texture == 0 )
+		res += ". No texture is associated with this sprite" ;
+	else
+		res += ". A texture is associated with this sprite; " 
+			+ _texture->toString() ;
 			
+#endif // OSDL_USES_OPENGL	
+
 	return res ;
 	
 }
@@ -105,6 +147,7 @@ const string Sprite::toString( Ceylan::VerbosityLevels level ) const throw()
 
 string Sprite::DescribeShape( Shape shape ) throw( SpriteException )
 {
+
 
 	switch( shape )
 	{
@@ -160,8 +203,11 @@ string Sprite::DescribeShape( Shape shape ) throw( SpriteException )
 			return "64x64" ;
 			break ;
 			
+		case PowersOfTwo:
+			return "both dimensions are powers of two" ;
+			break ;
 			
-		default :
+		default:
 			throw SpriteException( "Sprite::DescribeShape failed: "
 				"unknown shape (" + Ceylan::toNumericalString( shape ) + ")" ) ;
 			break ;
@@ -176,6 +222,16 @@ string Sprite::DescribeShape( Shape shape ) throw( SpriteException )
 Sprite::Shape Sprite::GetSmallestEnclosingShape( Length width, Length height )
 	throw( SpriteException )
 {
+
+#if OSDL_ARCH_NINTENDO_DS
+		
+#ifdef OSDL_RUNS_ON_ARM7
+
+	throw SpriteException( "Sprite::GetSmallestEnclosingShape failed: "
+		"not supported on the ARM7." ) ;
+		
+#elif defined(OSDL_RUNS_ON_ARM9)
+
 
 	/*
 	 * Used for Nintendo assets, but may be used on a PC as well (ex: PC tools 
@@ -232,6 +288,18 @@ Sprite::Shape Sprite::GetSmallestEnclosingShape( Length width, Length height )
 		return EightTimesSixteen ;
 	else
 		return EightTimesEight ;
+
+#endif //  defined(OSDL_RUNS_ON_ARM9)
+
+#else // OSDL_ARCH_NINTENDO_DS
+
+	LogPlug::error( "Sprite::GetSmallestEnclosingShape failed: "
+		"not to be used if not on the Nintendo DS." ) ;
+
+	// FIXME:
+	return 1 ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
 			 
 }
 	
