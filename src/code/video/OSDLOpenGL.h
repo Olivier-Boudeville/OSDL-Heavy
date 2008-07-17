@@ -38,7 +38,7 @@
 		 */
 		typedef Ceylan::Float32 GLfloat ;
 
-	#endif // on CEYLAN_ARCH_NINTENDO_DS
+	#endif // on OSDL_ARCH_NINTENDO_DS
 
 
 #endif // OSDL_USES_SDL not available
