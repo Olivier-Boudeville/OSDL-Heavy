@@ -46,13 +46,13 @@ using namespace OSDL ;
 #define LOG_TRACE_BASIC(message)   LogPlug::trace(message)
 #define LOG_WARNING_BASIC(message) LogPlug::warning(message)
 
-#else // OSDL_DEBUG_AUDIO_PLAYBACK
+#else // OSDL_VERBOSE_BASIC_MODULE
 
 #define LOG_DEBUG_BASIC(message)
 #define LOG_TRACE_BASIC(message)
 #define LOG_WARNING_BASIC(message)
 
-#endif // OSDL_DEBUG_AUDIO_PLAYBACK
+#endif // OSDL_VERBOSE_BASIC_MODULE
 
 
 
