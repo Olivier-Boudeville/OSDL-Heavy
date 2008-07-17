@@ -38,6 +38,22 @@ namespace OSDL
 		
 	}
 	
+	
+		
+	namespace Video 
+	{
+
+		namespace OpenGL
+		{
+		
+			// Sprites may use a texture with OpenGL:
+			class GLTexture ;
+			
+		}
+			
+	}
+	
+	
 		
 	namespace Rendering 
 	{
@@ -53,9 +69,6 @@ namespace OSDL
 				virtual ~SpriteException() throw() ;
 							
 		} ;
-
-
-
 
 
 
@@ -78,12 +91,11 @@ namespace OSDL
 				/**
 				 * Constructs a new sprite.
 				 *
-				 * @param ownBoundingBox tells whether this sprite owns 
-				 * its bounding box, i.e. generally whether this is a local
-				 * execution scheme, as opposed to a client/server scheme.
+				 * @param frameFilename the filename of the OSDL frame to be
+				 * used.
 				 *
 				 */
-				explicit Sprite( bool ownBoundingBox = true ) throw() ;
+				explicit Sprite( const std::string & frameFilename ) throw() ;
 				
 				
 				/**
@@ -119,9 +131,15 @@ namespace OSDL
 				
 
 				/*
-				 * Convention is to name basic shapes ATimesB for AxB,
+				 * Convention is to name basic shapes 'ATimesB' for AxB,
 				 * A being the sprite width, B being the sprite height, in
 				 * pixels.
+				 * 
+				 * Typing shapes this way is convenient for tile-based platforms
+				 * like the Nintendo DS.
+				 *
+				 * For other platforms, like the PC, differents shapes are
+				 * usually used, like 'PowersOfTwo'.
 				 *
 				 * @note Not enum (int), as one byte is largely enough.
 				 *
@@ -130,53 +148,60 @@ namespace OSDL
 				
 				// Section with an height of 8 pixels.
 				
-				/// Describe a sprite whose shape is 8x8 pixels.
+				/// Describes a sprite whose shape is 8x8 pixels.
 				static const Shape EightTimesEight ;
 				
-				/// Describe a sprite whose shape is 16x8 pixels.
+				/// Describes a sprite whose shape is 16x8 pixels.
 				static const Shape SixteenTimesEight ;
 				
-				/// Describe a sprite whose shape is 32x8 pixels.
+				/// Describes a sprite whose shape is 32x8 pixels.
 				static const Shape ThirtyTwoTimesEight ;
 				
 		
 				
 				// Section with an height of 16 pixels.
 				
-				/// Describe a sprite whose shape is 8x16 pixels.
+				/// Describes a sprite whose shape is 8x16 pixels.
 				static const Shape EightTimesSixteen ;
 				
-				/// Describe a sprite whose shape is 16x16 pixels.
+				/// Describes a sprite whose shape is 16x16 pixels.
 				static const Shape SixteenTimesSixteen ;
 				
-				/// Describe a sprite whose shape is 32x16 pixels.
+				/// Describes a sprite whose shape is 32x16 pixels.
 				static const Shape ThirtyTwoTimesSixteen ;
 				
 				
 				
 				// Section with an height of 32 pixels.
 				
-				/// Describe a sprite whose shape is 8x32 pixels.
+				/// Describes a sprite whose shape is 8x32 pixels.
 				static const Shape EightTimesThirtyTwo ;
 				
-				/// Describe a sprite whose shape is 16x32 pixels.
+				/// Describes a sprite whose shape is 16x32 pixels.
 				static const Shape SixteenTimesThirtyTwo ;
 				
-				/// Describe a sprite whose shape is 32x32 pixels.
+				/// Describes a sprite whose shape is 32x32 pixels.
 				static const Shape ThirtyTwoTimesThirtyTwo ;
 				
-				/// Describe a sprite whose shape is 32x32 pixels.
+				/// Describes a sprite whose shape is 32x32 pixels.
 				static const Shape SixtyFourTimesThirtyTwo ;
 				
 				
 				
 				// Section with an height of 64 pixels.
 								
-				/// Describe a sprite whose shape is 32x64 pixels.
+				/// Describes a sprite whose shape is 32x64 pixels.
 				static const Shape ThirtyTwoTimesSixtyFour ;
 				
-				/// Describe a sprite whose shape is 64x64 pixels.
+				/// Describes a sprite whose shape is 64x64 pixels.
 				static const Shape SixtyFourTimesSixtyFour ;
+
+				/**
+				 * Describes a sprite whose width and height are powers of 
+				 * two (not necessarily the samoe one).
+				 *
+				 */
+				static const Shape PowersOfTwo ;
 
 				
 				/**
@@ -272,6 +297,24 @@ namespace OSDL
 				Engine::BoundingBox2D * _box ;
 		
 		
+				/**
+				 * The shape of this sprite.
+				 *
+				 */
+				Shape _shape ;
+				
+#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
+
+				//TileMap + Frame ?
+				
+#else // OSDL_ARCH_NINTENDO_DS
+
+				/// The texture owned by this sprite, if OpenGL is used.
+				Video::OpenGL::GLTexture * _texture ;
+				
+#endif // OSDL_ARCH_NINTENDO_DS
+				 
+				 
 						
 			private:
 			
