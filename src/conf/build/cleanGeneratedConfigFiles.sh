@@ -20,12 +20,14 @@ cd $BASE_DIR
  
 # Only the Makefile (if any) knows which executables should be removed :
 cd test
+#echo "cleaning test"
 make clean 1>/dev/null 2>&1
 cd ..
 
 
 cd tools
-make clean
+#echo "cleaning tools"
+make clean 1>/dev/null 2>&1
 cd ..
 
 
