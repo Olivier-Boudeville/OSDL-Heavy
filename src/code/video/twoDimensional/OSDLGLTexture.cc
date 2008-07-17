@@ -87,7 +87,9 @@ GLTexture::GLTexture( const std::string imageFilename, TextureFlavour flavour )
 		throw( GLTextureException ):
 	_source( 0 ),
 	_id( 0 ),
-	_flavour( flavour )
+	_flavour( flavour ),
+	_width( 0 ),
+	_height( 0 )
 {
 
 #if OSDL_USES_OPENGL
@@ -131,7 +133,9 @@ GLTexture::GLTexture( Surface & sourceSurface, TextureFlavour flavour )
 		throw( GLTextureException ):
 	_source( 0 ),
 	_id( 0 ),
-	_flavour( flavour )
+	_flavour( flavour ),
+	_width( 0 ),
+	_height( 0 )
 {
 
 	LOG_DEBUG_TEXTURE( "Constructing a GLTexture from a surface" ) ;
@@ -211,6 +215,10 @@ const string GLTexture::toString( Ceylan::VerbosityLevels level ) const throw()
 	else
 		res += ", which owns an internal surface, "
 			"kept for reloading purposes." ;
+
+	res += " Its current size (width x height) is " 
+		+ Ceylan::toString( _width ) + "x" 
+		+ Ceylan::toString( _height ) + " pixels" ;
 	
 	return res ;	 	
 		
@@ -499,6 +507,10 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 
 	LogPlug::trace( "GLTexture::upload" ) ;
 
+	_width  = sourceSurface.getWidth() ;
+	_height = sourceSurface.getHeight() ;
+	
+	
 	// Inspired from Stephane Marchesin's routine.
 	
 	try
@@ -634,10 +646,10 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 		{
 
 
-			LogPlug::trace( "GLTexture::upload: glTexImage2D" ) ;
+			LogPlug::trace( "GLTexture::upload: glTexImage2D with "
+				+ Ceylan::toString( width ) + "x" 
+				+ Ceylan::toString( height ) ) ;
 		
-			//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
-
 			
         	glTexImage2D( 
 				/* target texture */ GL_TEXTURE_2D, 
