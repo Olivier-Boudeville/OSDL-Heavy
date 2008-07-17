@@ -130,7 +130,18 @@ Titles, from more general to smallest subtitles, are defined with:
  - '*' below the title (H5)
  - ':' below the title (H6)
  - '+' below the title (H7)
+
  
+.. role:: raw-html(raw)
+   :format: html
+   
+.. role:: raw-latex(raw)
+   :format: latex
+
+
+:raw-html:`<img src=X.png></img>`
+:raw-latex:`\includegraphics[scale=0.75]{X.png}`
+
 
 Bullet Lists
 ------------
