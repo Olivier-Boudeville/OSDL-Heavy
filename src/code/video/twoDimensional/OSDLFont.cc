@@ -643,7 +643,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
 		if ( _textCache != 0 )
 			throw TextException( "Font::renderLatin1MultiLineText: "
-				"unable to create temporary word cache 
+				"unable to create temporary word cache "
 				"since already existing." ) ;
 
 		LogPlug::debug( "Font::renderLatin1MultiLineText: "
