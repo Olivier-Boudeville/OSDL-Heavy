@@ -1,21 +1,21 @@
 
 SUBDIRS = basic 
 
-# Whole website will be distributed :
+# Whole website will be distributed:
 EXTRA_DIST = \
 	OSDL-@OSDL_VERSION@-release-notes.txt \
 	OSDL-@OSDL_VERSION@-changes.txt       \
 	web
 
-# For doxygen and dot tool versions :
+# For doxygen and dot tool versions:
 include @OSDL_LOANI_INSTALLATIONS@/Ceylan-@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@/share/Ceylan/CeylanToolsSettings.inc
 
 # This section takes care of the web documentation.
 
  
-# What is expected from the html documentation for the OSDL x.y version : 
+# What is expected from the html documentation for the OSDL x.y version: 
 # 	- be accessible from '$BASE_URL' 
-# (ex : BASE_URL=http://osdl.sourceforge.net), under '$BASE_URL/OSDL-x.y'
+# (ex: BASE_URL=http://osdl.sourceforge.net), under '$BASE_URL/OSDL-x.y'
 # 	- if x.y is the latest stable version, then it should be accessible
 # from '$BASE_URL/OSDL-latest' as well
 # 
@@ -23,20 +23,20 @@ include @OSDL_LOANI_INSTALLATIONS@/Ceylan-@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_REC
 # be found directly from '$BASE_URL'.
 #
 # The full website must be set to any given ROOT 
-# (ex : ROOT=/home/groups/o/os/OSDL/htdocs), 
+# (ex: ROOT=/home/groups/o/os/OSDL/htdocs), 
 
 
 # This documentation generation has been a pain and a mess for months. 
-# The issue is : rsync will not create non already-existing target base
+# The issue is: rsync will not create non already-existing target base
 # directories, and doing it so thanks to a remote script is not 
 # convenient.
 
-# The only solution : making a perfectly similar tree and rsync'ing
+# The only solution: making a perfectly similar tree and rsync'ing
 # it blindly.
 
 
 # Therefore, for all web roots ${ROOT}, the result of the rsync should 
-# lead to a tree like : 
+# lead to a tree like: 
 # 
 # ${ROOT}/
 # |-- (directly files and directories common to all versions)
@@ -80,10 +80,10 @@ MIRROR_WEB_DIR       = /var/www/@PROJECT_NAME@
 
 # A lot of complication (the creation of directories then the installation
 # of files) comes from distcheck and its setting the whole source tree
-# (including the directories) in read-only : it is a mess to handle with
+# (including the directories) in read-only: it is a mess to handle with
 # cp --parents and/or /bin/install.
 
-# These variable are made to be evaluated from $(srcdir)/web :
+# These variable are made to be evaluated from $(srcdir)/web:
 
 WEB_CONTENT_FILES    = `find . -path 'common' -prune -a -type f -o ! -path '*.svn*' -a -type f`
 
@@ -97,34 +97,40 @@ COMMON_WEB_DIRS      = `find common ! -path '*.svn*' -type d -follow`
 
 
 HTML_FILES           = `find . -name '*.html' -a -type f`
+RST_FILES            = `find . -name '*.rst' -a -type f`
 
+	
 
 # Tools section
 
-DOXYGEN_ROOT = @OSDL_LOANI_INSTALLATIONS@/doxygen-$(doxygen_VERSION)
-DOXYGEN      = `PATH=$(DOXYGEN_ROOT)/bin:$$PATH which doxygen 2>/dev/null`
+DOXYGEN_ROOT  = @OSDL_LOANI_INSTALLATIONS@/doxygen-$(doxygen_VERSION)
+DOXYGEN       = `PATH=$(DOXYGEN_ROOT)/bin:$$PATH which doxygen 2>/dev/null`
 
 DOXYGEN_GENERATED_CONF = @top_builddir@/src/conf/doc/doxygen.conf
 
 
-DOT_ROOT     = @OSDL_LOANI_INSTALLATIONS@/dot-graphviz-$(dot_VERSION)
-DOT          = `PATH=$(DOT_ROOT)/bin:$$PATH which dot 2>/dev/null`
+DOT_ROOT      = @OSDL_LOANI_INSTALLATIONS@/dot-graphviz-$(dot_VERSION)
+DOT           = `PATH=$(DOT_ROOT)/bin:$$PATH which dot 2>/dev/null`
 
-ASTYLE       = `which astyle 2>/dev/null`
-ASTYLE_CONF  = @top_srcdir@/conf/astyle.conf
+RST2HTML_ROOT = @OSDL_LOANI_INSTALLATIONS@/docutils-$(docutils_VERSION)
+RST2HTML      = `PATH=$(RST2HTML_ROOT)/bin:$$PATH which rst2html 2>/dev/null`
 
-TIDY_ROOT    = @OSDL_LOANI_INSTALLATIONS@/tidy
-TIDY	     = `PATH=$(TIDY_ROOT)/bin:$$PATH which tidy 2>/dev/null`
+ASTYLE        = `which astyle 2>/dev/null`
+ASTYLE_CONF   = @top_srcdir@/conf/astyle.conf
 
-RSYNC	     = `which rsync 2>/dev/null`
-RSYNC_OPT    = "-pg -e ssh -vcrlz --cvs-exclude"
+TIDY_ROOT     = @OSDL_LOANI_INSTALLATIONS@/tidy
+TIDY	      = `PATH=$(TIDY_ROOT)/bin:$$PATH which tidy 2>/dev/null`
 
-SCP          = `which scp 2>/dev/null`
-SCP_OPT      = "-p -r"
+RSYNC	      = `which rsync 2>/dev/null`
+RSYNC_OPT     = "-pg -e ssh -vcrlz --cvs-exclude"
+
+SCP           = `which scp 2>/dev/null`
+SCP_OPT       = "-p -r"
 
 		
-.PHONY: all install doc build inc web links site common loani-archives api \
-	check-dot fix-dox-conf tidy transfer toSF toSF-rsync toSF-scp          \
+.PHONY: all install doc build inc web links site common                    \
+	update-rst check-rst loani-archives api check-dot fix-dox-conf   \
+	tidy transfer toSF toSF-rsync toSF-scp                                 \
 	toMirror toMirror-rsync toMirror-scp check-scp remind-locations        \
 	info info-dirs info-files info-sf info-html info-tools                 \
 	clean clean-web cleanobjs cleandeps clean-install real-clean
@@ -134,7 +140,7 @@ SCP_OPT      = "-p -r"
 # This section is devoted to local documentation generation only.
 
 
-# If api is wanted and can be generated, will be built :
+# If api is wanted and can be generated, will be built:
 	
 install-data-local: site remind-locations
 
@@ -144,9 +150,9 @@ local-web: site api
 
 
 # The 'site' target takes automatically care of both shared tree and
-# of the tree specific to this version :
+# of the tree specific to this version:
 # (loani-archives not activated here anymore)
-site: common 
+site: update-rst common 
 	@echo; echo "@OSDL_INSTALL_STYLE@    Copying web source tree to \
 	local web repository [@OSDL_LOCAL_WEB_DIR@]@OSDL_DEFAULT_STYLE@"
 	@cd $(srcdir)/web; for d in $(WEB_CONTENT_DIRS); do \
@@ -154,10 +160,30 @@ site: common
 	for f in $(WEB_CONTENT_FILES); do \
 	cp -f $$f @OSDL_LOCAL_WEB_SHARED_DIR@/$$f; done
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark local doc site, \
-	which is to be found in :"
+	which is to be found in:"
 	@echo "      file://@OSDL_LOCAL_WEB_DIR@/index.html@OSDL_DEFAULT_STYLE@"
 	@cd @OSDL_LOCAL_WEB_DIR@; \
 	ln -sf @OSDL_CURRENT_VERSION_PREFIX@ OSDL-latest
+
+
+update-rst: check-rst
+	@echo; echo "@OSDL_INSTALL_STYLE@    Generating html documentation pages \
+	thanks to docutils (rst)@OSDL_DEFAULT_STYLE@"
+	@@OSDL_UPDATE_RST@ web/common/css/OSDL-docutils.css
+
+
+generate-pdf: check-rst
+	@echo; echo "@OSDL_INSTALL_STYLE@    Generating PDF documentation \
+	thanks to docutils (rst)@OSDL_DEFAULT_STYLE@"
+	@@OSDL_UPDATE_RST@ --pdf
+
+
+check-rst:
+	@[ -x "$(RST2HTML)" ] \
+	|| ( echo; echo "@OSDL_ERROR_STYLE@    Unable to generate \
+	html files from docutils files (*.rst): \
+	docutils tool (rst2html) not found [docutils homepage: \
+	http://docutils.sourceforge.net].@OSDL_DEFAULT_STYLE@"; echo; false ) 
 
 
 common: 
@@ -176,8 +202,9 @@ common:
 	cp -f $$f @OSDL_LOCAL_WEB_SHARED_DIR@/$$f; done
 
 
+
 # Automatic creation of LOANI releases disabled, only 
-# to be done on user request :
+# to be done on user request:
 # (recommended method is to put LOANI on Sourceforge file release system)
 loani-archives:
 	cd $(top_srcdir)/src/conf/build/loani && $(MAKE) release
@@ -195,13 +222,13 @@ uninstall-hook:
 # One must prevent doxygen from overwriting the master 
 # doxygen-@PROJECT_NAME@.css through the symbolic link !
 # We assume here that 'dot' has been compiled with our default 
-# compiler, gcc :
+# compiler, gcc:
 
 api: check-dot fix-dox-conf
 	@[ -x "$(DOXYGEN)" ] || \
 	( echo; echo "@OSDL_ERROR_STYLE@    \
-	Unable to create source documentation : doxygen tool not found \
-	[doxygen homepage : http://www.doxygen.org].@OSDL_DEFAULT_STYLE@"; \
+	Unable to create source documentation: doxygen tool not found \
+	[doxygen homepage: http://www.doxygen.org].@OSDL_DEFAULT_STYLE@"; \
 	echo; false )
 	@echo; echo "@OSDL_COMMAND_STYLE@    Generating API \
 	(doxygen configuration taken from $(DOXYGEN_GENERATED_CONF)) \
@@ -218,15 +245,15 @@ api: check-dot fix-dox-conf
 	@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html
 	@echo
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
-	@OSDL_CURRENT_VERSION_PREFIX@ API, which is located in : \
+	@OSDL_CURRENT_VERSION_PREFIX@ API, which is located in: \
 file://@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/index.html@OSDL_DEFAULT_STYLE@"
 	
 			
 check-dot:
 	@[ -x "$(DOT)" ] \
 	|| ( echo; echo "@OSDL_ERROR_STYLE@    Unable to generate \
-	any useful documentation from source code : \
-	dot tool not found [dot homepage : \
+	any useful documentation from source code: \
+	dot tool not found [dot homepage: \
 	http://www.graphviz.org/].@OSDL_DEFAULT_STYLE@"; echo; false ) 
 	
 	
@@ -238,7 +265,7 @@ tidy:
 	@[ -x "$(TIDY)" ] \
 	|| ( echo; echo "@OSDL_ERROR_STYLE@    Unable to enforce \
 	W3C compliance and formatting of html documentation files \
-	according to @PROJECT_NAME@'s conventions : \
+	according to @PROJECT_NAME@'s conventions: \
 	tidy tool not found.@OSDL_DEFAULT_STYLE@"; echo; false ) 
 	@echo "@OSDL_COMMAND_STYLE@    Tidying all html \
 	files@OSDL_DEFAULT_STYLE@"
@@ -323,7 +350,7 @@ toMirror-scp: check-scp site
 check-scp:
 	@[ -x "$(SCP)" ] || ( echo; echo "@OSDL_ERROR_STYLE@    \
 	Unable to transfer html documentation files to remote \
-	web server : rsync and its alternative scp not available. \
+	web server: rsync and its alternative scp not available. \
 	Please check src/conf/MakeVars.inc or update \
 	PATH environment variable.@OSDL_DEFAULT_STYLE@"; echo; false ) 
 	@echo; echo "@OSDL_WARNING_STYLE@    Consider installing rsync, \
@@ -333,14 +360,14 @@ check-scp:
 		
 remind-locations:
 	@echo; echo "@OSDL_INSTALL_STYLE@    + the following \
-	documentation repositories are available :"
-	@echo "      * local doc directory : \
+	documentation repositories are available:"
+	@echo "      * local doc directory: \
 	$(DESTDIR)@OSDL_LOCAL_DOC_DIR@"
-	@echo "      * local web site      : \
+	@echo "      * local web site     : \
 	$(DESTDIR)@OSDL_LOCAL_WEB_DIR@/main/index.html"
-	@echo "      * local web API       : \
+	@echo "      * local web API      : \
 	$(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/index.html"
-	@echo "      * official website    : @OSDL_SF_VERSION_URL@"
+	@echo "      * official website   : @OSDL_SF_VERSION_URL@"
 	@echo "@OSDL_DEFAULT_STYLE@"		
 
 		
@@ -361,40 +388,40 @@ info-local: info-dirs info-files info-sf
  
 
 info-dirs:
-	@echo "    + prefix is  :" ${prefix}
-	@echo "    + local documentation directory is : @OSDL_LOCAL_DOC_DIR@"
-	@echo "    + local web directory is  : @OSDL_LOCAL_WEB_DIR@"
-	@echo "    + local api directory is  : \
+	@echo "    + prefix is:" ${prefix}
+	@echo "    + local documentation directory is: @OSDL_LOCAL_DOC_DIR@"
+	@echo "    + local web directory is: @OSDL_LOCAL_WEB_DIR@"
+	@echo "    + local api directory is: \
 	@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@"
 	
 	
 info-files: info-html
-	@echo; echo "    + web documentation files are   : "; \
+	@echo; echo "    + web documentation files are  : "; \
 	echo "$(WEB_CONTENT_FILES)"
-	@echo; echo "    + common web files are          : "; \
+	@echo; echo "    + common web files are         : "; \
 	echo "$(COMMON_WEB_FILES)"
-	@echo; echo "    + doxygen configuration file is : \
+	@echo; echo "    + doxygen configuration file is: \
 	$(DOXYGEN_GENERATED_CONF)"
 
 	
 info-sf:
-	@echo "    + sourceforge UNIX project name : $(SF_PROJECT_NAME)"
-	@echo "    + sourceforge shell server      : $(SF_SHELL_SERVER)"
-	@echo "    + full sourceforge login        : \
+	@echo "    + sourceforge UNIX project name: $(SF_PROJECT_NAME)"
+	@echo "    + sourceforge shell server     : $(SF_SHELL_SERVER)"
+	@echo "    + full sourceforge login       : \
 	sh $(SF_USER)@$(SF_SHELL_SERVER)"
-	@echo "    + sourceforge web directory     : $(SF_WEB_DIR)"
-	@echo "    + sourceforge home directory    : $(SF_SHELL_HOMEDIR)"
-	@echo "    + SSH target                    : \
+	@echo "    + sourceforge web directory    : $(SF_WEB_DIR)"
+	@echo "    + sourceforge home directory   : $(SF_SHELL_HOMEDIR)"
+	@echo "    + SSH target                   : \
 	$(SF_USER)@$(SF_SHELL_SERVER):$(SF_WEB_DIR)"
-	@echo "    + files to be copied will be    : \
+	@echo "    + files to be copied will be   : \
 	scp myFiles $(SF_USER)@$(SF_SHELL_SERVER):$(SF_SHELL_HOMEDIR)"
 
 
 info-html: 	
 	@echo
-	@echo "    + HTML files are    :"; echo "$(HTML_FILES)"
-	@echo "    + rsync options are : $(RSYNC_OPT)"
-	@echo "    + scp options are   : $(SCP_OPT)"
+	@echo "    + HTML files are   :"; echo "$(HTML_FILES)"
+	@echo "    + rsync options are: $(RSYNC_OPT)"
+	@echo "    + scp options are  : $(SCP_OPT)"
 
 		
 info-tools:
