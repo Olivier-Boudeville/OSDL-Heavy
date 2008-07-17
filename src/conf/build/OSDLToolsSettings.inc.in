@@ -11,19 +11,27 @@
 # ----------- For required tools:
 
 
+##############################################################################
+# Client Personal Computer section.
+##############################################################################
+
+
+
 # SDL (libsdl.so): http://www.libsdl.org
 
+# 1.2.13 actually:
 SDL_VERSION="@SDL_RECOMMENDED_VERSION@"
 SDL_ARCHIVE="SDL-$SDL_VERSION.tar.gz"
 SDL_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
 SDL_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_MD5="544b4554986e51eed6d34435cf9c5f3f"
+SDL_MD5="c6660feea2a6834de10bc71b2f8e4d88"
 
+# For Windows, using sources as well, these are not prebuilt binaries:
 SDL_win_VERSION="@SDL_RECOMMENDED_VERSION@"
 SDL_win_ARCHIVE="SDL-$SDL_win_VERSION.zip"
 SDL_win_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
 SDL_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_win_MD5="7348301207195fe9172d363669f28c23"
+SDL_win_MD5="ef5cc6d2d9e9ad720c55335a16b79b35"
 
 
 
@@ -35,6 +43,7 @@ libjpeg_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
 libjpeg_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
 libjpeg_MD5="dbd5f3b47ed13132f04c685d608a7547"
 
+# Same archive for Windows actually:
 libjpeg_win_VERSION="6b"
 libjpeg_win_ARCHIVE="jpegsrc.v${libjpeg_win_VERSION}.tar.gz"
 libjpeg_win_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
@@ -60,23 +69,25 @@ zlib_win_MD5="abbd0f2b456206da5e3ffd179324413a"
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
+# Actually 1.2.29 (with config script):
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_MD5="b0cda5e10e8165e5f151e674e1a67983"
+libpng_MD5="f588cb4ee39e3a333604096f937ea157"
 
 libpng_win_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
-libpng_win_archive_VERSION="1221"
+libpng_win_archive_VERSION="1229"
 libpng_win_ARCHIVE="lpng${libpng_win_archive_VERSION}.zip"
 libpng_win_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_win_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_win_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_win_MD5="f46af88815902bbcb670c2d63d169607"
+libpng_win_MD5="d6d25430b7847340da3b22aeb82f0344"
 
 
 # TIFF library (libtiff.so): http://www.remotesensing.org/libtiff/
+
 # (TIFF support for OSDL not maintained anymore: use PNG or JPEG instead)
 libtiff_VERSION="3.7.3"
 libtiff_ARCHIVE="tiff-v${libtiff_VERSION}.tar.gz"
@@ -101,8 +112,8 @@ SDL_image_win_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_image_win_MD5="5eb3226f719456c26e119d0807d89ec9"
 
 
-# SDL_image pre-built archives
 
+# SDL_image pre-built archives (not used currently, since rebuilt from sources)
 
 # Precompiled binaries of SDL_image, zlib, jpeg, png for Windows:
 # http://www.libsdl.org/projects/SDL_image/release/
@@ -127,41 +138,44 @@ SDL_image_osx_precompiled_MD5="xxx"
 # SDL_gfx (libSDL_gfx.so): http://www.ferzkopp.net/Software/SDL_gfx-2.0/
 # No binaries available !
 
+# Actually 2.0.17:
 SDL_gfx_MAJOR_VERSION="@SDL_GFX_MAJOR_VERSION@"
 SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.@SDL_GFX_MINOR_VERSION@"
 SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
 SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_gfx_MD5="22dc2d9d916197829f9342c490d2d02b"
+SDL_gfx_MD5="a7ab98ad530fdc59a23f7dff502db8d3"
 
+# Same as for UNIX:
 SDL_gfx_win_VERSION="$SDL_gfx_VERSION"
 SDL_gfx_win_ARCHIVE="SDL_gfx-${SDL_gfx_win_VERSION}.tar.gz"
 SDL_gfx_win_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_gfx_win_MD5="22dc2d9d916197829f9342c490d2d02b"
+SDL_gfx_win_MD5="$SDL_gfx_MD5"
 
 
 # Freetype (libfreetype.so): http://freetype.sourceforge.net
 
 # Sources.
 
-freetype_VERSION="2.3.5"
+freetype_VERSION="2.3.7"
 freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
 freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_MD5="65234327c5ac46ee00ebda15995d4c1c"
+freetype_MD5="83306194817ebdea554133b4232a34aa"
 
-freetype_win_VERSION="2.3.5"
+# Same as for UNIX:
+freetype_win_VERSION="$freetype_VERSION"
 freetype_win_ARCHIVE="freetype-${freetype_win_VERSION}.tar.bz2"
 freetype_win_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_win_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_win_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_win_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_win_MD5="1a6c59a7723d637c78672e7784da865d"
+freetype_win_MD5="$freetype_MD5"
 
-# Precompiled binaries of freetype for Windows.
+# Precompiled binaries of freetype for Windows (not used currently).
 # See: http://gnuwin32.sourceforge.net/packages/freetype.htm
 freetype_win_precompiled_VERSION="2.3.5"
 freetype_win_precompiled_ARCHIVE="freetype-${freetype_VERSION}-1-bin.zip"
@@ -171,7 +185,7 @@ freetype_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
 freetype_win_precompiled_MD5="xxx"
 
 
-# Precompiled binaries of freetype for Mac OSX.
+# Precompiled binaries of freetype for Mac OSX (not used currently).
 
 freetype_osx_precompiled_VERSION="2.3.5"
 freetype_osx_precompiled_ARCHIVE=""
@@ -199,7 +213,7 @@ SDL_ttf_win_MD5="d805ed95eec4bbb09a97109fd1246976"
 
 
 
-# Precompiled binaries of SDL_ttf for Windows.
+# Precompiled binaries of SDL_ttf for Windows (not used currently).
 
 SDL_ttf_win_precompiled_VERSION="@SDL_TTF_RECOMMENDED_VERSION@"
 SDL_ttf_win_precompiled_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}-win32.zip"
@@ -207,7 +221,7 @@ SDL_ttf_win_precompiled_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_tt
 SDL_ttf_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_ttf_win_precompiled_MD5="xxx"
 
-# Precompiled binaries of SDL_ttf for Mac OSX.
+# Precompiled binaries of SDL_ttf for Mac OSX (not used currently).
 
 SDL_ttf_osx_precompiled_VERSION="@SDL_TTF_RECOMMENDED_VERSION@"
 SDL_ttf_osx_precompiled_ARCHIVE=""
@@ -258,6 +272,8 @@ SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
 #SDL_mixer_MD5="0b5b91015d0f3bd9597e094ba67c4d65"
 
 # For 1.2.7 (temporary downgrade due to vorbis issues):
+# (see: 
+# http://listas.apesol.org/pipermail/sdl-libsdl.org/2007-October/063096.html)
 SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
 
 SDL_mixer_win_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
@@ -266,8 +282,25 @@ SDL_mixer_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/releas
 SDL_mixer_win_MD5="ccf25f78d9f412bd9005aabf74bd4c5c"
 
 
+# guichan (.so): http://guichan.sourceforge.net
 
+guichan_VERSION="0.8.1"
+guichan_ARCHIVE="guichan-${guichan_VERSION}.tar.gz"
+guichan_DOWNLOAD_LOCATION="http://guichan.googlecode.com/files"
+guichan_ALTERNATE_DOWNLOAD_LOCATION=""
+guichan_MD5="f9ace11cc70d3ba60b62347172334a5f"
+
+guichan_win_VERSION="$guichan_VERSION"
+guichan_win_ARCHIVE="$guichan_ARCHIVE"
+guichan_win_DOWNLOAD_LOCATION="$guichan_DOWNLOAD_LOCATION"
+guichan_win_ALTERNATE_DOWNLOAD_LOCATION="guichan_ALTERNATE_DOWNLOAD_LOCATION$"
+guichan_win_MD5="$guichan_MD5"
+
+
+
+##############################################################################
 # Nintendo DS section.
+##############################################################################
 
 
 # DLDI tool and device patches: http://dldi.drunkencoders.com/
@@ -363,6 +396,44 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 
 
+##############################################################################
+# Orge section.
+##############################################################################
+
+
+# Erlang: http://erlang.org
+
+Erlang_VERSION="R12B-3"
+Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
+Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
+Erlang_MD5="c2e7f0ad54b8fadebde2d94106608d97"
+
+
+# egeoip: http://code.google.com/p/egeoip/
+
+# Not used actually:
+egeoip_ARCHIVE="egeoip.tar.bz2"
+egeoip_DOWNLOAD_LOCATION=""
+egeoip_MD5="(blanked)"
+
+egeoip_SVN_SERVER="egeoip.googlecode.com"
+
+
+# MaxMind GeoLiteCity database: http://www.maxmind.com/app/Geolitecity
+
+Geolite_ARCHIVE="GeoLiteCity.dat.gz"
+Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
+# Version of Friday, July 11, 2008:
+Geolite_MD5="ab2e476dbd8548a19c79b7d766d35938"
+
+# Orge server section.
+# To be added when released as open-source.
+
+
+##############################################################################
+# Ceylan section.
+##############################################################################
+
 
 # Ceylan (libCeylan.so): http://ceylan.sourceforge.net
 
@@ -384,6 +455,11 @@ Ceylan_win_MD5="(blanked)"
 
 Ceylan_SVN_SERVER=ceylan.svn.sourceforge.net
 
+
+
+##############################################################################
+# OSDL section.
+##############################################################################
 
 
 # OSDL (libOSDL.so): http://osdl.sourceforge.net
@@ -409,7 +485,7 @@ OSDL_SVN_SERVER=osdl.svn.sourceforge.net
 
 
 
-# Next to come maybe: SDL_sound, PhysFS
+# Next to come maybe: SDL_sound, PhysFS.
 
 
 
