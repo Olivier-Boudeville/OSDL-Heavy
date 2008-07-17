@@ -353,6 +353,13 @@ namespace OSDL
 					TextureFlavour _flavour ;
 			
 			
+					/// The width of the texture, in pixels.
+					Length _width ;
+					
+					/// The height of the texture, in pixels.
+					Length _height ;
+					
+					
 			
 				private:
 				
