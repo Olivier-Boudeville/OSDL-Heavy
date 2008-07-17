@@ -94,9 +94,7 @@ Heavy preprocessing of images is to be performed before being able to render the
 </p>
 
 <p>
-We are discussing here only about the graphical rendering of the underlying game world, which is to be managed by the <a href="../game-engine/OSDL-game-engine.html" target="_blank">game engine</a>. Audio content in general is not discussed here, see <a href="../../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a> instead.
-
-
+We are discussing here only about the graphical rendering of the underlying game world, which is to be managed by the OSDL generic <a href="../../../OSDL/OSDL-engine/OSDL-game-engine.html" target="_blank">game engine</a>. Audio content in general is not discussed here, see <a href="../../../OSDL/OSDL-generic/Helix-OSDL/helix-osdl.html" target="_blank">Helix-OSDL</a> instead.
 </p>
 
 
@@ -516,8 +514,9 @@ These resized images have been obtained thanks to <a href="http://www.imagemagic
 </p>
 
 
-<a name="sprite-tiling"></a>
 
+
+<a name="sprite-tiling"></a>
 <h4>Sprite tiling</h4>
 
 <p>
@@ -581,7 +580,46 @@ In our case, the actual content of the frame character (not scaled down here) is
     <img src="frame-tiled.png" alt="Frame tiled"></img>
 </center>
 
-We can see on the right of the frame full tiles being unused (filled only with the colorkey). These special tiles will not be duplicated in a given frame or even between frames: only one copy of these full-colorkey tiles will be maintained in tile list, to save some memory.
+
+
+
+<a name="tiles-for-frames"></a>
+<h4>Tile management for frames</h4>
+
+<p>
+On the DS, a sprite is rendered as a map of sprite tiles. 
+</p>
+
+<p>
+We can see, on the right of the previous example frame, full tiles being unused (filled only with the colorkey). These special tiles will not be duplicated in a given frame map or even between frame maps: only one copy of these colorkey-only tiles will be maintained in the full tile list (it will be set at its first position, tile index #0), to save some memory.
+</p>
+
+<p>
+No special effort is made to share other tiles between frames, to use tile flipping or scaling/rotating, etc. as our assets will be precomputed for a given rendering: each tile has a large probability of being unique, knowing for example that our characters are not symmetrical (ex: they may carry a weapon on the right hand), thus flipping is not really an option.
+</p>
+
+<p>
+In a frame file, after the OSDL header containing the metadata (frame tag, vector offset, palette identifier, sprite shape, etc.), first there will be the sprite tilemap, then the definition of the sprite tiles.
+</p>
+
+
+<h5>Sprite tilemap</h5>
+<p>
+In a frame file, it is stored as a 1D array of index referring to the tile definitions stored later in the frame file. An index is a value in 8 bits, in [0;255]. Thus a sprite can refer up to 256 different tile definitions, knowing that the largest DS-supported sprite is <code>8x8 = 64</code> tiles.
+</p>
+
+<p>
+The array scans the tiled sprite from left to right then for top to bottom. The number of index in the tilemap is deduced from the aforementioned sprite shape.
+</p>
+
+
+<h5>Sprite tile definitions</h5>
+<p>
+In a frame file, it is a set of 8x8 arrays of palette index. A given sprite can have any number of tile definitions, but up to 256 can be referred to, depending on the sprite shape up to 64 can be actually used, and usually there are less than tile definitions than possible tiles for the shape, as a given tile definition might be referenced more than once in the sprite map.
+</p>
+
+<p>
+This is notably the case for the colorkey-only tile definition, which is referred to by index #0 but it never defined in a tilemap, as it is always available by convention in our tile definitions.
 </p>
 
 
@@ -1024,7 +1062,7 @@ Orginal images are BMP, usually with a kaki (greenish) colorkey: <code>6a4c30</c
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Friday, April 4, 2008</em>
+    <em>Last update: Saturday, April 12, 2008</em>
   </center>
 </body>
 </html>
