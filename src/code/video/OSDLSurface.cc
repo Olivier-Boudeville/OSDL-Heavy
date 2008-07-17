@@ -927,9 +927,17 @@ bool Surface::fill( Pixels::ColorDefinition colorDef ) throw()
 
 
 
-bool Surface::clear() throw()
+bool Surface::clear() throw( VideoException )
 {
 
+	if ( _displayType == OpenGLScreenSurface )
+	{
+	
+		
+		
+	}
+	
+	
 	return fill( /* clear color */ Pixels::Black ) ;
 	
 }
@@ -2418,7 +2426,7 @@ void Surface::update() throw( VideoException )
 		
 			/*
 			 * If a rectangle area was known to include all changes in the
-			 * screen surface, we could use:
+			 * screen surface, we could use here:
 			 *
 		 		
 			if ( _surface->flags & SDL_DOUBLEBUF ) 
@@ -2441,7 +2449,15 @@ void Surface::update() throw( VideoException )
 				"Surface::update: flipping OpenGL screen buffer" ) ; 
 #endif // OSDL_DEBUG_WIDGET
 			
-			// What to do if OpenGL without double buffering is used ?
+			/*
+			 * Should a different call be done if OpenGL without double
+			 * buffering is used ? Probably no.
+			 *
+			 * SDL_GL_SwapBuffers should imply a glFlush(), but some reported
+			 * adding one glFlush causes a miraculous recovery:
+			 *
+			 */
+			glFlush() ;
 			SDL_GL_SwapBuffers() ;
 			break ;
 		
