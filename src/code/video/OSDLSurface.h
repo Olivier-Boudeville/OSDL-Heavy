@@ -936,16 +936,19 @@ namespace OSDL
 
 				
 				/**
-				 * Clears the screen.
+				 * Clears this surface, which may be the screen surface.
 				 * 
-				 * This method performs a mere 'fill' with pure black.
+				 * This method clears the viewport for OpenGL surfaces, 
+				 * otherwise performs a mere 'fill' with pure black.
 				 *
 				 * @return true iff the operation succeeded.
 				 *
 				 * @note Locks surface if needed.
 				 *
+				 * @throw VideoException if the operation failed.
+				 *
 				 */
-				virtual bool clear() throw() ; 
+				virtual bool clear() throw( VideoException ) ; 
 
 
 				/**
@@ -1027,7 +1030,7 @@ namespace OSDL
 				 */	
 				virtual Pixels::PixelColor getPixelColorAt( 
 						Coordinate x, Coordinate y ) const
-					throw ( VideoException ) ;
+					throw( VideoException ) ;
 
 
 				/**
@@ -1046,7 +1049,7 @@ namespace OSDL
 				 */	
 				virtual Pixels::ColorDefinition getColorDefinitionAt( 
 						Coordinate x, Coordinate y ) 
-					const throw ( VideoException ) ;
+					const throw( VideoException ) ;
 				 
 				 
 				/**
