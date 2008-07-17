@@ -1019,7 +1019,7 @@ echo "# account this LOANI installation." >> ${OSDL_ENV_FILE}
 echo "# PATH and LD_LIBRARY_PATH will be automatically updated accordingly." >> ${OSDL_ENV_FILE}
 echo "#" >> ${OSDL_ENV_FILE}
 echo "# Usage example: " >> ${OSDL_ENV_FILE}
-echo "#. ${OSDL_ENV_FILE}" >> ${OSDL_ENV_FILE}
+echo "# . ${OSDL_ENV_FILE}" >> ${OSDL_ENV_FILE}
 echo "" >> ${OSDL_ENV_FILE}
 echo "" >> ${OSDL_ENV_FILE}
 
@@ -1040,7 +1040,7 @@ if [ $target_nds -eq 0 ] ; then
 	echo "# PATH and LD_LIBRARY_PATH will be automatically updated accordingly." >> ${OSDL_DS_ENV_FILE}
 	echo "#" >> ${OSDL_DS_ENV_FILE}
 	echo "# Usage example: " >> ${OSDL_DS_ENV_FILE}
-	echo "#. ${OSDL_DS_ENV_FILE}" >> ${OSDL_DS_ENV_FILE}
+	echo "# . ${OSDL_DS_ENV_FILE}" >> ${OSDL_DS_ENV_FILE}
 	echo "" >> ${OSDL_DS_ENV_FILE}
 	echo "" >> ${OSDL_DS_ENV_FILE}
 
@@ -1063,7 +1063,7 @@ if [ $manage_orge_tools -eq 0 ] ; then
 	echo "# PATH and LD_LIBRARY_PATH will be automatically updated accordingly." >> ${ORGE_ENV_FILE}
 	echo "#" >> ${ORGE_ENV_FILE}
 	echo "# Usage example: " >> ${ORGE_ENV_FILE}
-	echo "#. ${ORGE_ENV_FILE}" >> ${ORGE_ENV_FILE}
+	echo "# . ${ORGE_ENV_FILE}" >> ${ORGE_ENV_FILE}
 	echo "# This script can be also appended to a shell configuration file." >> ${ORGE_ENV_FILE}
 	echo "# Ex: 'cat ${ORGE_ENV_FILE} >> ~/.bashrc'." >> ${ORGE_ENV_FILE}
 	echo "" >> ${ORGE_ENV_FILE}
