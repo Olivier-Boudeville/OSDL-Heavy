@@ -54,6 +54,8 @@ starting_time=`date '+%H:%M:%S'`
 #   --onlyBuildTools: only build tools will be installed.
 #   --onlyOptionalTools: only optional tools will be installed.
 #   --onlyOrgeTools: only Orge tools will be installed.
+#   --onlyThirdPartyTools: only third party tools will be installed (no Ceylan,
+# OSDL or Orge installed). Used to test LOANI or during Sourceforge outages.
 #   --noSVN: do not retrieve anything from SVN, merely used for LOANI 
 # debugging (variable: no_svn)
 
@@ -61,6 +63,18 @@ if [ "$1" = "-h" -o "$1" = "--help" ] ; then
 	echo "$HELP"
 	exit 0
 fi
+
+
+declareRetrievalBegin()
+# Declares to the user that a package is enqueued in download spool.
+# $1: name of the archive file.
+{
+
+ if [ $be_quiet -eq 1 ] ; then 
+   DISPLAY "      ----> enqueuing $1 in download spool"
+ fi
+
+}
 
 
 launchFileRetrieval()
@@ -108,10 +122,7 @@ launchFileRetrieval()
 		
 		DEBUG "${archive_file} not found in cache, retrieving it from network (${download_url})."
 		
-		if [ $be_quiet -eq 1 ] ; then 
-			DISPLAY "      ----> enqueuing ${archive_file} in download spool"
-		fi
-		
+		declareRetrievalBegin ${archive_file}
 		
 		if [ "$do_simulate" -eq 1 ] ; then
 			DEBUG ${WGET} ${WGET_OPT} --output-document=${full_archive_path} ${download_url} 
@@ -579,6 +590,9 @@ only_optional_tools=1
 # Install only Orge tools: [default: false (1)] 
 only_orge_tools=1
 
+# Install only third-party tools: [default: false (1)] 
+manage_only_third_party_tools=1
+
 # Cross-compilation to Nintendo DS homebrew: [default: false (1)]
 target_nds=1
 
@@ -815,6 +829,12 @@ while [ $# -gt 0 ] ; do
 
 		only_orge_tools=0
 		manage_orge_tools=0		
+		token_eaten=0		
+	fi				
+	
+	if [ "$1" = "--onlyThirdPartyTools" ] ; then
+		DEBUG "Only third-party tools will be installed."
+		manage_only_third_party_tools=0 
 		token_eaten=0		
 	fi				
 			
