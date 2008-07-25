@@ -279,10 +279,10 @@ SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
 SDL_mixer_win_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
 SDL_mixer_win_ARCHIVE="SDL_mixer-${SDL_mixer_win_VERSION}.zip"
 SDL_mixer_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_win_MD5="ccf25f78d9f412bd9005aabf74bd4c5c"
+SDL_mixer_win_MD5="b7a7f360192c017a23a526cd6d681089"
 
 
-# guichan (.so): http://guichan.sourceforge.net
+# guichan (libguichan.so): http://guichan.sourceforge.net
 
 guichan_VERSION="0.8.1"
 guichan_ARCHIVE="guichan-${guichan_VERSION}.tar.gz"
@@ -295,6 +295,21 @@ guichan_win_ARCHIVE="$guichan_ARCHIVE"
 guichan_win_DOWNLOAD_LOCATION="$guichan_DOWNLOAD_LOCATION"
 guichan_win_ALTERNATE_DOWNLOAD_LOCATION="guichan_ALTERNATE_DOWNLOAD_LOCATION$"
 guichan_win_MD5="$guichan_MD5"
+
+
+# Agar (libag_core.so/libag_gui.so): http://libagar.org
+
+Agar_VERSION="1.3.2"
+Agar_ARCHIVE="agar-${Agar_VERSION}.tar.gz"
+Agar_DOWNLOAD_LOCATION="http://stable.hypertriton.com/agar"
+Agar_ALTERNATE_DOWNLOAD_LOCATION=""
+Agar_MD5="46a96fb26e988cded0d800005e95472a"
+
+Agar_win_VERSION="$Agar_VERSION"
+Agar_win_ARCHIVE="agar-${Agar_VERSION}.zip"
+Agar_win_DOWNLOAD_LOCATION="$Agar_DOWNLOAD_LOCATION"
+Agar_win_ALTERNATE_DOWNLOAD_LOCATION="Agar_ALTERNATE_DOWNLOAD_LOCATION$"
+Agar_win_MD5="f65fba7d934664676973c7e1e21d6d4a"
 
 
 
