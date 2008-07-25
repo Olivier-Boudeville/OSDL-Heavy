@@ -1,6 +1,7 @@
 #include "OSDL.h"
 using namespace OSDL ;
 using namespace OSDL::Audio ;
+using namespace OSDL::Video ;
 
 
 using namespace Ceylan ;
@@ -64,6 +65,62 @@ void interpretMusicFile( File & inputFile )
 	cout << "  + Size of actual mp3 content: " 
 		<< inputFile.size() - 4*sizeof(Ceylan::Uint16) 
 			- sizeof(Ceylan::Uint8)<< " bytes." << endl ;
+	
+}
+
+
+
+void interpretPaletteFile( File & inputFile ) 
+{
+
+	bool hasColorkey = ( inputFile.readUint8() != 0 ) ;
+
+	Size colorDefinitionSizeInFile = inputFile.size() - sizeof( PaletteTag )
+		- 1 /* colorkey indicator */ ;
+	
+
+	if ( hasColorkey )
+	{
+	
+		cout << "  + Color key defined, to index #" << inputFile.readUint16() 
+			<< "." << endl ;
+			
+		colorDefinitionSizeInFile -= 2 ;
+	
+	}
+	else
+	{
+
+		cout << "  + No color key defined." << endl ;
+	
+	}
+
+	if ( colorDefinitionSizeInFile % 3 != 0 )
+	{
+		cerr << "Abnormal size for color definitions." << endl ;
+		exit( 8 ) ;
+		
+	}	
+	
+	cout << "  + " + Ceylan::toString( colorDefinitionSizeInFile / 3 ) 
+		+ " color definitions stored." << endl ;
+		
+	
+}
+
+
+
+void interpretFrameFile( File & inputFile ) 
+{
+
+	cout << "  + Frame offset: [" << inputFile.readSint16() << ","
+		 << inputFile.readSint16() <<"]." << endl ;
+	
+	cout << "  + Palette identifer: " << inputFile.readUint16() << "." << endl ;
+
+	cout << "  + Sprite shape: " 
+		 << Rendering::Sprite::DescribeShape( inputFile.readUint8() )
+		 << " pixels." << endl ;
 	
 }
 
@@ -167,7 +224,7 @@ int main( int argc, char * argv[] )
 				
 		}
 		
-		cout << "File '" << inputFilename << "', according to its tag, is a "
+		cout << "File '" << inputFilename << "', according to its tag, is a(n) "
 			<< OSDL::DescribeFileTag( tag ) << "." << endl ;
 		
 		/*
@@ -179,6 +236,10 @@ int main( int argc, char * argv[] )
 			interpretSoundFile( inputFile ) ;
 		else if ( tag == OSDL::MusicTag )
 			interpretMusicFile( inputFile ) ;	
+		else if ( tag == OSDL::PaletteTag )
+			interpretPaletteFile( inputFile ) ;	
+		else if ( tag == OSDL::FrameTag )
+			interpretFrameFile( inputFile ) ;	
 				
 		delete & inputFile ;
 		
