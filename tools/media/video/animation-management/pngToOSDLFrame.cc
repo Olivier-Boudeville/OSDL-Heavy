@@ -314,6 +314,7 @@ int main( int argc, char * argv[] )
 		outputFile.writeUint16( x_offset ) ;
 		outputFile.writeUint16( y_offset ) ;
 		outputFile.writeUint16( paletteId ) ;
+		outputFile.writeUint8( shape ) ;
 				
 				
 		Surface * screen = 0 ;
