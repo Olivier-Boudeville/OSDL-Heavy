@@ -1508,8 +1508,50 @@ One should allow the user to force a particular behaviour if it turns out it is 
 <h3>GUI</h3>
 
 <p>
-Graphical User Interfaces can be built on top of OpenGL. They can be home-made, or existing libraries, such as <a href="http://guichan.sourceforge.net" target="_blank">Guichan</a>, <a href="http://gigi.sourceforge.net" target="_blank">Gigi</a> or <a href="http://openglgui.sourceforge.net/" target="_blank">OpenGLGUI</a>, can be used.</p>
+Graphical User Interfaces can be built on top of OpenGL. They can be home-made, or already existing libraries.
+</p>
 
+<p>
+Our requirements would be an LGPL-style license, an API usable from C++, an easy and standard build on Linux (autotools) and Windows (Microsoft Visual Studio) at least, the possibility to use SDL or SDL+OpenGL, non-native interface look-and-feel, easy customization. We referenced following projects:
+<ul>
+
+    <li><a href="http://guichan.sourceforge.net" target="_blank">Guichan</a>: we tested the 0.8.1 version, it worked correctly on GNU/Linux with SDL and SDL + OpenGL. Quality of Windows support is unclear. There are a few default widgets, and the default interface is not really pleasing for the eye. That said, seems quite good. BSD license</li>
+	
+    <li><a href="http://gigi.sourceforge.net" target="_blank">Gigi</a>: the screenshots looks really impressing, but only a few projects seem to use it. The build requires FreeType, DevIL, Boostand Scons, and sources should be directly taken from SVN. Windows is supported. LGPL license</li>
+	
+    <li><a href="http://openglgui.sourceforge.net/" target="_blank">OpenGLGUI</a>. Not really maintained currently ?</li>
+	
+    <li><a href="http://www.fltk.org/" target="_blank">FLTK</a> (Fast Light Toolkit), which is built on GLUT. Heavy-weight, documentation is huge but not really convenient. Not really adpated for a game ? LGPL license</li>
+	
+    <li><a href="http://libufo.sourceforge.net" target="_blank">LibUFO</a> (Universal Form Objects). Does not seem too game-oriented. No activity spotted since 2005.</li>
+	
+    <li><a href="http://www.fox-toolkit.org/" target="_blank">FOX TOOLKIT</a>: more for applications than for games</li>
+	
+    <li><a href="http://www.cegui.org.uk" target="_blank">CEGUI</a> (Crazy Eddie's GUI System). From the 0.5 version the library is released under the MIT license. Written in C++. Extensive use of XML. Designed notably for video games. See also: <a href="http://www.cegui.org.uk/wiki/index.php/Using_CEGUI_with_SDL_and_OpenGL" target="_blank">Using CEGUI with SDL and OpenGL</a>
+</li>
+	
+    <li><a href="http://libagar.org" target="_blank">Agar</a> seems very rich and well-documented. Written in C. BSD license.</li>
+	
+    <li><a href="http://www.wxwidgets.org/" target="_blank">wxWidgets</a> uses native widgets, it might be a drawback for games</li>
+	
+    <li><a href="http://picogui.org" target="_blank">PicoGUI</a> does not seem maintained anymore</li>
+	
+    <li><a href="http://www.paragui.org/" target="_blank">Paragui</a> website was offline at the time of this writing</li>
+	
+    <li><a href="http://aedgui.sourceforge.net" target="_blank">aedGUI</a> seems no longer maintained</li>
+	
+    <li><a href="http://glow.sourceforge.net/" target="_blank">The GLOW Toolkit </a> seems no longer maintained</li>
+
+
+<!--
+    <li><a href="" target="_blank"></a></li>
+-->
+
+</ul>
+
+<p>
+QT, GTK+, etc. are not really suitable for games in our opinion. Finally we came to the conclusion that the most interesting libraries for specified needs were: Agar, CEGUI, Guichan and Gigi, in that order. 
+</p>
 
 <br><center>[<a href="#toc">Back to the table of contents</a>]</center><br><br>
 
@@ -2045,7 +2087,7 @@ End of Cubbyhole ################## -->
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update: Friday, April 18, 2008</em>
+  <em>Last update: Friday, July 18, 2008</em>
  </center>
 </body>
 </html>
