@@ -16,7 +16,9 @@ ORGE_TOOLS="Erlang egeoip Geolite"
 if [ $is_windows -eq 0 ] ; then
   WARNING "on Windows, no Orge tool managed."
 else
-  target_list="$ORGE_TOOLS $target_list"
+  # Put at end rather than begin so that any newly installed build tool 
+  #(ex: gcc) can be used nevertheless:
+  target_list="$target_list $ORGE_TOOLS"
 fi
 
 DEBUG "Scheduling retrieval of Orge tools ($ORGE_TOOLS)."
@@ -192,6 +194,8 @@ cleanErlang()
 getegeoip()
 {
 	DEBUG "Getting egeoip..."
+
+	declareRetrievalBegin "egeoip (from SVN)"
 
 	# To avoid a misleading message when the retrieval is finished:
 	egeoip_ARCHIVE="from SVN"
