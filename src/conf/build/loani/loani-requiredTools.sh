@@ -9,22 +9,38 @@
 latest_stable_ceylan="release-0.7.0"
 latest_stable_osdl="release-0.5.0"
 
+
 ################################################################################
 
 #TRACE "[loani-requiredTools] Begin"
 
 # Required tools section.
+# guichan/guichan_win not listed, since has been deprecated here by Agar.
 
 if [ $is_windows -eq 0 ] ; then
 
   # Windows special case:
-  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Ceylan_win OSDL_win"
+  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Agar_win"
+
+  if [ $manage_only_third_party_tools -eq 1 ] ; then
+
+	REQUIRED_TOOLS="${REQUIRED_TOOLS} Ceylan_win OSDL_win"
+	
+  fi
 
   # For Ceylan and OSDL:
   use_svn=0
   
   # Where LOANI-specific package solutions are stored:
-  WINDOWS_SOLUTIONS_ROOT="$repository/../visual-express"
+  WINDOWS_SOLUTIONS_ROOT="$repository/visual-express"
+  
+  if [ ! -d "${WINDOWS_SOLUTIONS_ROOT}" ] ; then
+  	
+	echo "Error, unable to find the directory where Windows Visual Express solutions are stored (searched for ${WINDOWS_SOLUTIONS_ROOT})." 1>&2
+	exit 40
+	
+  fi
+  
   
   # Build type for libraries:
   #  - either bebug or release
@@ -43,7 +59,13 @@ else
   
   	# All non-windows non-DS platforms should build everything from sources:
 	
- 	REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL"
+ 	REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar"
+
+    if [ $manage_only_third_party_tools -eq 1 ] ; then
+
+      REQUIRED_TOOLS="${REQUIRED_TOOLS} Ceylan OSDL"
+	
+    fi
 	
   else
   
@@ -79,7 +101,8 @@ LOG_STATUS()
 LOG_STATUS "Scheduling retrieval of required tools ($REQUIRED_TOOLS)."
 
 GenerateWithVisualExpress()
-# Launches Visual Express 2005 with specified solution so that the user regenerates it.
+# Launches Visual Express 2005 with specified solution so that the user
+# regenerates it.
 # Usage: GenerateWithVisualExpress <package name> <solution path>
 # Ex: GenerateWithVisualExpress SDL a/dir/SDL.sln
 {
@@ -753,10 +776,10 @@ generatelibjpeg_win()
 	printItem "configuring"
  	printOK
 
-	sdl_solution=`pwd`"/libjpeg-from-LOANI/libjpeg-from-LOANI.sln"
+	libjpeg_solution=`pwd`"/libjpeg-from-LOANI/libjpeg-from-LOANI.sln"
   
 	printItem "building"
-	GenerateWithVisualExpress libjpeg ${sdl_solution}
+	GenerateWithVisualExpress libjpeg ${libjpeg_solution}
 	printOK
 
 	printItem "installing"
@@ -2836,13 +2859,13 @@ generateSDL_mixer()
 		#  - OggVorbis (for longer ones, including music).
 		#
 		
-		# Saturday, October 20, 2007: there is a problem with SDL_mixer (1.2.8)
+		# Saturday, October 20, 2007: there is a problem with SDL_mixer (1.2.8)
 		# and libvorbis (1.2.0): at first SDL_mixer configure disables vorbis
 		# support due to a lacking symbol. Fixing it (by downgrading libvorbis
 		# to 1.1.2 re-enable vorbis support in SDL_mixer configure but still
-		# at runtime says 'Unrecognized sound file type' with .ogg.
+		# at runtime says 'Unrecognized sound file type' with .ogg.
 		# Only solution seems to downgrade SDL_mixer to 1.2.7 with either of the
-		# vorbis versions.
+		# vorbis versions.
 		
 		
 		setBuildEnv ./configure --prefix=${SDL_mixer_PREFIX} --exec-prefix=${SDL_mixer_PREFIX} -with-sdl-prefix=${SDL_PREFIX}  --disable-static --disable-music-libmikmod --disable-music-mod --disable-music-midi --disable-music-timidity-midi --disable-music-native-midi --disable-music-native-midi-gpl --disable-music-mp3 --disable-smpegtest --enable-music-wave --enable-music-libogg LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib" CFLAGS="-I${libogg_PREFIX}/include -I${libvorbis_PREFIX}/include"
@@ -3069,6 +3092,612 @@ cleanSDL_mixer_win()
 {
 	LOG_STATUS "Cleaning SDL_mixer build tree..."
 	${RM} -rf "SDL-${SDL_mixer_win_VERSION}"
+}
+
+
+
+################################################################################
+################################################################################
+# Guichan (libguichan, libguichan_sdl, libguichan_opengl)
+################################################################################
+################################################################################
+
+
+#TRACE "[loani-requiredTools] guichan"
+
+################################################################################
+# Guichan for non-Windows platforms:
+################################################################################
+
+getguichan()
+{
+	LOG_STATUS "Getting guichan..."
+	launchFileRetrieval guichan
+	return $?
+}
+
+
+prepareguichan()
+{
+
+	LOG_STATUS "Preparing guichan..."
+	if findTool gunzip ; then
+		GUNZIP=$returnedString
+	else
+		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		exit 8
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 9
+	fi		
+	
+	printBeginList "guichan    "
+		
+	printItem "extracting"
+	
+	cd $repository
+	
+	# Prevent archive from disappearing because of gunzip.
+	{
+		${CP} -f ${guichan_ARCHIVE} ${guichan_ARCHIVE}.save && ${GUNZIP} -f ${guichan_ARCHIVE} && tar -xvf "guichan-${guichan_VERSION}.tar" 
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+		
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${guichan_ARCHIVE}."
+		LOG_STATUS "Restoring ${guichan_ARCHIVE}."
+		${MV} -f ${guichan_ARCHIVE}.save ${guichan_ARCHIVE} 
+		exit 10
+	fi
+	
+	${MV} -f ${guichan_ARCHIVE}.save ${guichan_ARCHIVE} 
+	${RM} -f "guichan-${guichan_VERSION}.tar"
+	
+	printOK
+	
+}
+
+
+generateguichan()
+{
+
+	LOG_STATUS "Generating guichan..."
+
+	
+	cd "guichan-${guichan_VERSION}"
+	
+	printItem "configuring"
+		
+	if [ -n "$prefix" ] ; then	
+	{		
+
+		if [ $is_windows -eq 0 ] ; then
+        	guichan_PREFIX=`cygpath -w ${prefix}/guichan-${guichan_VERSION} | ${SED} 's|\\\|/|g'`
+		else
+			guichan_PREFIX="${prefix}/guichan-${guichan_VERSION}"
+		fi
+
+
+		${MKDIR} -p ${guichan_PREFIX}
+		
+		setBuildEnv ./configure --prefix=${guichan_PREFIX} --enable-sdl --enable-sdlimage --enable-opengl CPPFLAGS="-I${SDL_PREFIX}/include/SDL -I${SDL_image_PREFIX}/include/SDL" LDFLAGS="-L${SDL_PREFIX}/lib -L${SDL_image_PREFIX}/lib"
+			
+	} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+	{			
+		setBuildEnv ./configure			
+	} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+	
+		
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure guichan."
+		exit 11
+	fi	
+	
+	printOK	
+	
+	printItem "building"
+	
+	{
+	
+		 setBuildEnv ${MAKE}
+		 
+	} 1>>"$LOG_OUTPUT" 2>&1	 
+	
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build guichan."
+		exit 12
+	fi
+
+	printOK
+
+
+	printItem "installing"
+	
+	if [ -n "$prefix" ] ; then	
+	{				
+	
+		echo "# guichan section." >> ${OSDL_ENV_FILE}
+		
+		echo "guichan_PREFIX=${guichan_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export guichan_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$guichan_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		
+		echo "LD_LIBRARY_PATH=\$guichan_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		
+		PATH=${guichan_PREFIX}/bin:${PATH}
+		export PATH
+		
+		LD_LIBRARY_PATH=${guichan_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+		
+		if [ $is_windows -eq 0 ] ; then
+			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			
+			PATH=${guichan_PREFIX}/lib:${PATH}	
+			export PATH
+				
+			echo "PATH=\$guichan_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
+		
+		echo "" >> ${OSDL_ENV_FILE}
+				
+		LIBPATH="-L${guichan_PREFIX}/lib"
+        
+		# Do not ever imagine that to avoid bad nedit syntax highlighting 
+		# you could change:
+		# include/*.h to "include/*.h" in next line.
+		# It would fail at runtime with "include/*.h" not found...
+		
+		setBuildEnv ${MAKE} install && ${CP} -f include/*.h ${guichan_PREFIX}/include/guichan
+
+	} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+	{		
+		setBuildEnv ${MAKE} install 
+	} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+	
+	
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install guichan."
+		exit 13
+	fi	
+	
+	if [ $is_windows -eq 0 ] ; then
+    		${MV} -f ${guichan_PREFIX}/bin/*.dll ${guichan_PREFIX}/lib
+	fi
+	    
+	printOK
+
+	printEndList
+	
+	LOG_STATUS "guichan successfully installed."
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleanguichan()
+{
+	LOG_STATUS "Cleaning guichan build tree..."
+	${RM} -rf "guichan-${guichan_VERSION}"
+}
+
+
+
+
+################################################################################
+# guichan build thanks to Visual Express.
+################################################################################
+
+
+getguichan_win()
+{
+	LOG_STATUS "Getting guichan for windows..."
+	launchFileRetrieval guichan_win
+	return $?
+}
+
+
+prepareguichan_win()
+{
+
+
+	LOG_STATUS "Preparing guichan for windows.."
+	if findTool gunzip ; then
+		GUNZIP=$returnedString
+	else
+		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		exit 8
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 9
+	fi		
+
+	printBeginList "guichan    "
+
+	printItem "extracting"
+
+	cd $repository
+
+	# Prevent archive from disappearing because of gunzip.
+	{
+		${CP} -f ${guichan_win_ARCHIVE} ${guichan_win_ARCHIVE}.save && ${GUNZIP} -f ${guichan_win_ARCHIVE} && tar -xvf "guichan-${guichan_win_VERSION}.tar"
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${guichan_win_ARCHIVE}."
+		LOG_STATUS "Restoring ${guichan_win_ARCHIVE}."
+		${MV} -f ${guichan_win_ARCHIVE}.save ${guichan_win_ARCHIVE}
+		exit 10
+	fi
+
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/guichan-from-LOANI" "guichan-${guichan_win_VERSION}"
+
+	${MV} -f ${guichan_win_ARCHIVE}.save ${guichan_win_ARCHIVE}
+	${RM} -f "guichan-${guichan_win_VERSION}.tar"
+	
+	printOK
+	
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/guichan-from-LOANI" "guichan-${guichan_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy guichan solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generateguichan_win()
+{
+
+	LOG_STATUS "Generating guichan for windows..."
+
+	cd "guichan-${guichan_win_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+	sdl_solution=`pwd`"/guichan-from-LOANI/guichan-from-LOANI.sln"
+  
+	printItem "building"
+	GenerateWithVisualExpress guichan ${sdl_solution}
+	printOK
+
+	printItem "installing"
+	
+	# Take care of the exported header files (API):
+	sdl_install=${alternate_prefix}/guichan-${guichan_win_VERSION}
+	${MKDIR} -p ${sdl_install}
+	${CP} -rf include ${sdl_install}
+	printOK
+
+	printEndList
+
+	LOG_STATUS "guichan successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanguichan_win()
+{
+	LOG_STATUS "Cleaning guichan build tree..."
+	${RM} -rf "guichan-${guichan_win_VERSION}"
+}
+
+
+
+
+################################################################################
+################################################################################
+# Agar (libag_core/libag_gui)
+################################################################################
+################################################################################
+
+
+#TRACE "[loani-requiredTools] Agar"
+
+################################################################################
+# Guichan for non-Windows platforms:
+################################################################################
+
+getAgar()
+{
+	LOG_STATUS "Getting Agar..."
+	launchFileRetrieval Agar
+	return $?
+}
+
+
+prepareAgar()
+{
+
+	LOG_STATUS "Preparing Agar..."
+
+	if findTool gunzip ; then
+		GUNZIP=$returnedString
+	else
+		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		exit 8
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 9
+	fi		
+	
+	printBeginList "Agar       "
+		
+	printItem "extracting"
+	
+	cd $repository
+	
+	# Prevent archive from disappearing because of gunzip.
+	{
+		${CP} -f ${Agar_ARCHIVE} ${Agar_ARCHIVE}.save && ${GUNZIP} -f ${Agar_ARCHIVE} && tar -xvf "agar-${Agar_VERSION}.tar" 
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+		
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${Agar_ARCHIVE}."
+		LOG_STATUS "Restoring ${Agar_ARCHIVE}."
+		${MV} -f ${Agar_ARCHIVE}.save ${Agar_ARCHIVE} 
+		exit 10
+	fi
+	
+	${MV} -f ${Agar_ARCHIVE}.save ${Agar_ARCHIVE} 
+	${RM} -f "agar-${Agar_VERSION}.tar"
+	
+	printOK
+
+}
+
+
+generateAgar()
+{
+
+	LOG_STATUS "Generating Agar..."
+
+	
+	cd "agar-${Agar_VERSION}"
+	
+	printItem "configuring"
+	
+	AGAR_CONFIGURE_OPT="--disable-network --disable-threads --disable-server --enable-gui --enable-utf8 --with-gl --with-jpeg --with-freetype"
+	
+	if [ -n "$prefix" ] ; then	
+	{		
+
+		if [ $is_windows -eq 0 ] ; then
+        	Agar_PREFIX=`cygpath -w ${prefix}/agar-${Agar_VERSION} | ${SED} 's|\\\|/|g'`
+		else
+			Agar_PREFIX="${prefix}/agar-${Agar_VERSION}"
+		fi
+
+
+		${MKDIR} -p ${Agar_PREFIX}
+		
+		setBuildEnv ./configure --prefix=${Agar_PREFIX} ${AGAR_CONFIGURE_OPT} 
+			
+	} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+	{			
+		setBuildEnv ./configure	${AGAR_CONFIGURE_OPT}		
+	} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+	
+		
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure Agar."
+		exit 11
+	fi	
+	
+	printOK	
+	
+	printItem "building"
+	
+	{
+	
+		 setBuildEnv ${MAKE} depend all
+		 
+	} 1>>"$LOG_OUTPUT" 2>&1	 
+	
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build Agar."
+		exit 12
+	fi
+
+	printOK
+
+
+	printItem "installing"
+	
+	if [ -n "$prefix" ] ; then	
+	{				
+	
+		echo "# Agar section." >> ${OSDL_ENV_FILE}
+		
+		echo "Agar_PREFIX=${Agar_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export Agar_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$Agar_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$Agar_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		
+		PATH=${Agar_PREFIX}/bin:${PATH}
+		export PATH
+		
+		LD_LIBRARY_PATH=${Agar_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+		
+		if [ $is_windows -eq 0 ] ; then
+			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			
+			PATH=${Agar_PREFIX}/lib:${PATH}	
+			export PATH
+				
+			echo "PATH=\$Agar_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
+		
+		echo "" >> ${OSDL_ENV_FILE}
+				
+		LIBPATH="-L${Agar_PREFIX}/lib"
+        
+		
+		setBuildEnv ${MAKE} install
+
+	} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+	{		
+		setBuildEnv ${MAKE} install 
+	} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+	
+	
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install Agar."
+		exit 13
+	fi	
+	
+	if [ $is_windows -eq 0 ] ; then
+    		${MV} -f ${Agar_PREFIX}/bin/*.dll ${Agar_PREFIX}/lib
+	fi
+	    
+	printOK
+
+	printEndList
+	
+	LOG_STATUS "Agar successfully installed."
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleanAgar()
+{
+	LOG_STATUS "Cleaning Agar build tree..."
+	${RM} -rf "Agar-${Agar_VERSION}"
+}
+
+
+
+
+################################################################################
+# Agar build thanks to Visual Express.
+################################################################################
+
+
+getAgar_win()
+{
+	LOG_STATUS "Getting Agar for windows..."
+	launchFileRetrieval Agar_win
+	return $?
+}
+
+
+prepareAgar_win()
+{
+
+
+	LOG_STATUS "Preparing Agar for windows.."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "Agar       "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${Agar_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${Agar_win_ARCHIVE}."
+		LOG_STATUS "Restoring ${Agar_win_ARCHIVE}."
+		${MV} -f ${Agar_win_ARCHIVE}.save ${Agar_win_ARCHIVE}
+		exit 10
+	fi
+
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/Agar-from-LOANI" "Agar-${Agar_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy Agar solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+
+}
+
+
+generateAgar_win()
+{
+
+	LOG_STATUS "Generating Agar for windows..."
+
+	cd "agar-${Agar_win_VERSION}"
+
+	printItem "configuring"
+ 	printOK
+
+	Agar_solution=`pwd`"/Agar-from-LOANI/Agar-from-LOANI.sln"
+  
+	printItem "building"
+	GenerateWithVisualExpress Agar ${Agar_solution}
+	printOK
+
+	printItem "installing"
+	
+	# Take care of the exported header files (API):
+	Agar_install=${alternate_prefix}/agar-${Agar_win_VERSION}
+	${MKDIR} -p ${Agar_install}
+	${CP} -rf include ${Agar_install}
+	printOK
+
+	printEndList
+
+	LOG_STATUS "Agar successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanAgar_win()
+{
+	LOG_STATUS "Cleaning Agar build tree..."
+	${RM} -rf "agar-${Agar_win_VERSION}"
 }
 
 
@@ -4108,15 +4737,8 @@ generatelibtool()
 			
 		fi
 
-
-		# To avoid libltdl problems, we make use of --disable-ltdl-install.    
-		# Parameters and/or environment set for libtool does not seem
-		# to be passed to libltdl.
-		# (a tag is to be specified with ltdl whereas it is ok with libtool)
-		# A work-around could be to recurse make in ltdl directory
-		# before performing the global libtool make.
-           
-		setBuildEnv ./configure --prefix=${libtool_PREFIX} --exec-prefix=${libtool_PREFIX} --disable-ltdl-install
+         
+		setBuildEnv ./configure --prefix=${libtool_PREFIX} --exec-prefix=${libtool_PREFIX} --enable-ltdl-install
 		
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -4622,13 +5244,15 @@ getCeylan()
 		
 		
 	DEBUG "Getting Ceylan..."
-
+	
 	# Ceylan can be obtained by downloading a release archive or by using SVN.
 	
 	if [ ${use_svn} -eq 1 ]; then
 		# Use archive instead of SVN: 
 		launchFileRetrieval Ceylan
 		return $?
+	else
+		declareRetrievalBegin "Ceylan (from SVN)"
 	fi
 	
 	# Here we are to use SVN:
@@ -5190,6 +5814,8 @@ getOSDL()
 		# Use archive instead of SVN: 
 		launchFileRetrieval OSDL
 		return $?
+	else
+		declareRetrievalBegin "OSDL (from SVN)"
 	fi
 	
 	# Here we are to use SVN:
@@ -5614,10 +6240,10 @@ generateOSDL()
 	if [ -n "$prefix" ] ; then	
 		{				
 
-			# We suppose here that if we have a prefix, all tools use 
+			# We suppose here that if we have a prefix, all tools use 
 			# prefixes:
 			
-			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX"
+			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-libagar-prefix=$Agar_PREFIX"
 			
 			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${OSDL_PREFIX} ${tools_prefixes}
 			
