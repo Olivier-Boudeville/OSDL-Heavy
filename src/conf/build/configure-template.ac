@@ -287,9 +287,7 @@ AC_FUNC_UTIME_NULL
 # LOANI section.
 # (defines OSDL_LOANI_INSTALLATIONS, hence must be before prerequesites)
 
-# The version of LOANI is the same as the one of OSDL:
-LOANI_VERSION=$OSDL_VERSION
-AC_SUBST(LOANI_VERSION)
+# LOANI_VERSION no longer defined here.
 
 # LOANI installations default base directory.
 OSDL_INSTALLATION="\${prefix}"
