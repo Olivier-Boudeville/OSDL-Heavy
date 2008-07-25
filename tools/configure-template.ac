@@ -1,6 +1,6 @@
 
 
-AC_PREREQ(2.59)
+AC_PREREQ(2.61)
 
 
 # Declaration section for the Autotools macros.
@@ -32,13 +32,8 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
-
-
 # Tells the libtool machinery that the package supports DLLs on Windows:
-AC_LIBTOOL_WIN32_DLL
-
-AC_LIBTOOL_DLOPEN
-AM_PROG_LIBTOOL
+LT_INIT([dlopen win32-dll])
 
 
 OSDL_TOOL_DIR="\${prefix}/share/OSDL-tools"
@@ -49,7 +44,7 @@ AC_SUBST(OSDL_TOOL_DIR)
 # Compiler-specific optimization flags.
 
 
-# Debug versus optimizations section.
+# Debug versus optimizations section.
 
 # See if the user wants aggressive optimizations of the code:
 AC_ARG_ENABLE(debug,
@@ -123,7 +118,7 @@ if test x$ac_cv_cxx_compiler_gnu = xyes; then
 	#    -Weffc++: the standard library headers trigger zillions of warnings.
 	#    -Waggregate-return: even a simple std::string is an aggregate.
 	#    -Wunused-parameter: inherited methods may not use some of their
-	# parameters, not wanting to freeze API with "__attribute__" keyword.
+	# parameters, not wanting to freeze API with "__attribute__" keyword.
 	#    -Wpadded: add it if wanting to reorder fields of structures to save
 	# some bytes.
 	#    -Wmissing-noreturn: would force declaring __attribute__ ((noreturn))
@@ -134,10 +129,10 @@ if test x$ac_cv_cxx_compiler_gnu = xyes; then
 	# incorrecly complaining: 'warning: will never be executed' in
 	# TestResourceException constructor
 	#    -Wpacked: some structures may be declared packed with no effect, we
-	# usually do not care if it is the case
+	# usually do not care if it is the case
     AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas"
     if test x$enable_strict_ansi = xyes; then
-		# Do not know what "-D_XOPEN_SOURCE" would change.
+		# Do not know what "-D_XOPEN_SOURCE" would change.
         AM_CXXFLAGS="$AM_CXXFLAGS -ansi -pedantic-errors"
     fi
 fi
