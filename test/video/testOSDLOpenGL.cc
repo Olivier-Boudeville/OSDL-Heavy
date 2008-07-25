@@ -7,9 +7,13 @@ using namespace Ceylan::Log ;
 
 
 
-const std::string textureFilename = "OSDL-icon.png" ;
+const std::string firstTextureFilename  = "Soldier-heavy-purple-small.png" ;
+const std::string secondTextureFilename = "Rune-stone-small.jpg" ;
 
+			
 
+const std::string imageWebPath = "web/images" ;
+	
 
 /**
  * Testing the basic services of the OSDL video using OpenGL.
@@ -128,26 +132,66 @@ int main( int argc, char * argv[] )
 
 		LogPlug::info( "Displaying now new current video informations. "
 			+ VideoModule::DescribeVideoCapabilities() ) ;
-
-		//myVideo.setOpenGLFor( 2D ) ;		
 	
 		Surface & screen = myVideo.getScreenSurface() ;
 		
-		GLTexture::SetTextureMode( GLTexture::TwoDim ) ;
-
 		Ceylan::System::FileLocator textureFinder ;
 
+
 		// When run from playTests.sh build directory:
-		textureFinder.addPath( "../src/doc/web/images" ) ;
+		textureFinder.addPath( "../src/doc/" + imageWebPath ) ;
 		
 		// When run from executable build directory:
-		textureFinder.addPath( "../../src/doc/web/images" ) ;
+		textureFinder.addPath( "../../src/doc/" + imageWebPath ) ;
 
 		// When run from executable install directory:
-		textureFinder.addPath( "../OSDL/doc/web/images" ) ;
+		textureFinder.addPath( "../OSDL/doc/" + imageWebPath ) ;
 				
-		GLTexture & texture = * new GLTexture( 
-			textureFinder.find( textureFilename ) ) ;
+				
+		GLTexture & firstTexture = * new GLTexture( 
+			textureFinder.find( firstTextureFilename ), GLTexture::For2D ) ;
+
+		glBegin(GL_QUADS); 
+		{
+		
+			glTexCoord2d( 0, 0 ) ;
+			glVertex2d( 100, 100 ) ;
+			
+			glTexCoord2d (0, 1 ) ;
+			glVertex2d( 100, 196 ) ;
+			
+			glTexCoord2d( 1, 1 ) ;
+			glVertex2d( 196,196 ) ;
+			
+			glTexCoord2d( 1, 0 ) ;
+			glVertex2d( 196, 100 ) ;
+			
+		}
+		glEnd();
+			
+		GLTexture & secondTexture = * new GLTexture( 
+			textureFinder.find( secondTextureFilename ), GLTexture::For2D ) ;
+			
+		glBegin(GL_QUADS); 
+		{
+		
+			glTexCoord2d( 0, 0 ) ;
+			glVertex2d( 120, 120 ) ;
+			
+			glTexCoord2d (0, 1 ) ;
+			glVertex2d( 120, 216 ) ;
+			
+			glTexCoord2d( 1, 1 ) ;
+			glVertex2d( 216,216 ) ;
+			
+			glTexCoord2d( 1, 0 ) ;
+			glVertex2d( 216, 120 ) ;
+			
+		}
+		glEnd();
+			
+		
+	    SDL_GL_SwapBuffers();
 		
 		LogPlug::info( VideoModule::DescribeEnvironmentVariables() ) ;
 		
@@ -160,7 +204,8 @@ int main( int argc, char * argv[] )
 		if ( ! isBatch )
 			myEvents.waitForAnyKey() ;
 		
-		delete & texture ;
+		delete & firstTexture ;
+		delete & secondTexture ;
 		
 		LogPlug::info( "Stopping OSDL." ) ;		
         OSDL::stop() ;
