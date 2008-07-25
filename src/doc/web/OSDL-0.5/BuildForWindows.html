@@ -4,11 +4,11 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2003, December 19.
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2003, December 19.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -45,8 +45,7 @@ The goal here is to explain to developers how to <b>build</b> the 0.5 version of
 <p>
 If a user just needs the OSDL DLL so that she can <b>run</b> an executable depending on the OSDL library (only <code>OSDL-0.5-from-LOANI-release-mt.dll</code> and its prerequesite DLL
  are required), then she can download, if available, a <strong>LOANI prebuilt user package</strong> from 
-<a href="http://sourceforge.net/project/showfiles.php?group_id=71354" target="_blank">OSDL File Releases</a> on Sourceforge (search for <code>LOANI-0.5-prebuilt-for-windows-users.zip</code>). If an up-to-date archive is not available, please
-<a href="mailto:osdl@esperide.com?subject=[LOANI-0.5]%20Windows%20User%20Build%20needed" target="_blank">ask us</a> and we will add it quickly.
+<a href="http://sourceforge.net/project/showfiles.php?group_id=71354" target="_blank">OSDL File Releases</a> on Sourceforge (search for <code>LOANI-0.5-prebuilt-for-windows-users.zip</code>). Should an up-to-date archive be unavailable, <a href="mailto:osdl@esperide.com?subject=[LOANI-0.5]%20Windows%20User%20Build%20needed" target="_blank">ask us</a> and we will add it quickly.
 </p>
 
 <p>
@@ -69,14 +68,18 @@ Here the target platform is Windows XP, be it Home or Professional edition. Note
 
 <h3>Toolchain</h3>
 <p>
-The first reading should be the <a href="http://ceylan.sourceforge.net/Ceylan-latest/BuildForWindows.html#toolchain" target="_blank">tool section</a> of the <a href="http://ceylan.sourceforge.net/Ceylan-latest/BuildForWindows.html" target="_blank">Ceylan counterpart guide</a>, which gives detailed informations about the generic conventions we use to build our developments on the Windows platform. One has to have applied the steps about the tools described in this document before going on with this one : both Ceylan and OSDL use SVN (hence depend on TortoiseSVN), are built with Visual Express, rely on Cygwin to automate the test suites, and so on.
+The first reading should be the <a href="http://ceylan.sourceforge.net/Ceylan-latest/BuildForWindows.html#toolchain" target="_blank">tool section</a> of the <a href="http://ceylan.sourceforge.net/Ceylan-latest/BuildForWindows.html" target="_blank">Ceylan counterpart guide</a>, which gives detailed informations about the generic conventions we use to build our developments on the Windows platform. One has to have applied the steps about the tools described in this document before going on with this one: both Ceylan and OSDL use SVN (hence depend on TortoiseSVN), are built with Visual Express, rely on Cygwin to automate the test suites, and so on.
 </p>
 
 
 <h3>Specific system-level prerequesites</h3>
 
 <p>
-SDL needs to have the <a href="http://msdn.microsoft.com/directx/sdk/" target="_blank">DirectX SDK</a> installed. Prepare to download a lot, for example the <code>february 2007 SDK</code> is 432 mb. Default path settings are fine.
+As OpenGL is used by OSDL, one should install first the latest stable (OpenGL) drivers for one's graphics card. Just look at the name of your card from the Windows hardware device panel, and search the corresponding drivers in the website of the card manufacturer. Download and install.
+</p>
+
+<p>
+SDL needs to have the <a href="http://msdn.microsoft.com/directx/sdk/" target="_blank">DirectX SDK</a> installed. Prepare to download a lot, for example the size of the <code>June 2008 SDK</code> version is about 460 megabytes. Default path settings are fine.
 </p>
 
 
@@ -93,19 +96,19 @@ This script is cross-platform, it can be used both on native UNIX platforms and 
 </p>
 
 <p>
-On these Windows platforms, the script automates everything it can, but it still needs to be interactive, as some steps could not be performed without user specific actions (on UNIX platform the LOANI script is fully automated tough).
+On these Windows platforms, the script automates everything it can, but it still needs to be interactive, as some steps could not be performed without user specific actions (on UNIX platform the LOANI script is fully automated though).
 </p>
 
 <p>
-More precisely, the Windows user may have to perform a manual <b>SVN update</b> of Ceylan and/or OSDL repositories. This is because of a limitation of the Cygwin SVN command-line tool, that cannot handle long pathnames (low MAX_PATH constant). As long as this tool won't be fixed, the automated checkout may fail, and the user will have to complete it thanks to TortoiseSVN. The script will explain what to do, should this situation occur.
+More precisely, the Windows user may have to perform a manual <b>SVN update</b> of Ceylan and/or OSDL repositories. This is because of a limitation of the Cygwin SVN command-line tool, that cannot handle long pathnames (low MAX_PATH constant). As long as this tool will not be fixed, the automated checkout may fail, and the user will have to complete it thanks to TortoiseSVN. The script will explain what to do, should this situation occur.
 </p>
 
 <p>
-The second - and last - kind of operation requiring the user intervention is when a source package has to be built : as we are using the Visual Express IDE, one has to  <b>trigger the builds </b> from the GUI. Luckily enough, for each package, the script will automatically run the IDE with the proper arguments, so that the user will have only to right-click the solution, in the <code>Solution Explorer</code> panel, to select <code>Regenerate the solution</code>, and let the build take place before one's last action, closing the IDE and letting the LOANI script continue.
+The second - and last - kind of operation requiring the user intervention is when a source package has to be built: as we are using the Visual Express IDE, one has to  <b>trigger the builds </b> from the GUI. Luckily enough, for each package, the script will automatically run the IDE with the proper arguments, so that the user will have only to right-click the solution, in the <code>Solution Explorer</code> panel, to select <code>Regenerate the solution</code>, and let the build take place before one's last action, closing the IDE and letting the LOANI script continue.
 </p>
 
 <p>
-To ensure the package was correctly built, as expected, one can check that nothing failed in the Visual Express <code>output</code> window. This should be the case, apart on some rare occasions for a few Ceylan test cases : depending on the length of the path where the user chose to install OSDL and al, Visual Express tool <code>mt</code> may fall into a problem with long pathnames (again !).
+To ensure the package was correctly built, as expected, one can check that nothing failed in the Visual Express <code>output</code> window. This should be the case, apart on some rare occasions for a few Ceylan test cases: depending on the length of the path where the user chose to install OSDL and al, Visual Express tool <code>mt</code> may fall into a problem with long pathnames (again !).
 </p>
 
 <p>
@@ -113,7 +116,7 @@ Due to the use of Visual Express, the user will be prompted to trigger, for each
 </p>
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -131,12 +134,12 @@ Most people will stop and continue by using by themselves the library.
 <h3>Some precisions &amp; hints</h3>
 
 <p>
-For all packages (OSDL and its prerequesites), LOANI has totally revamped the legacy project files (if any), so that they are up-to-date, in latest Visual Express format, and integrated alltogether : each library has its OSDL-specific precooked solution.
+For all packages (OSDL and its prerequesites), LOANI has totally revamped the legacy project files (if any), so that they are up-to-date, in latest Visual Express format, and integrated alltogether: each library has its OSDL-specific precooked solution.
 </p>
 
 
 <p>
-The full build process of all packages thus is parametrized from centralized property sheets (<code>src/conf/build/visual-express/OSDLProperties*.vsprops</code>). This file is made to be included by all project solutions. It allows to change them as a whole, once for all. This is very convenient for example when switching between debug and release modes : all libraries in the full dependency tree ought to use the same system libraries, for example <code>DLL Multithread Debug Library</code>. Do not use the <code>NODEFAULTLIB</code> switch, it only hides the problem.
+The full build process of all packages thus is parametrized from centralized property sheets (<code>src/conf/build/visual-express/OSDLProperties*.vsprops</code>). This file is made to be included by all project solutions. It allows to change them as a whole, once for all. This is very convenient for example when switching between debug and release modes: all libraries in the full dependency tree ought to use the same system libraries, for example <code>DLL Multithread Debug Library</code>. Do not use the <code>NODEFAULTLIB</code> switch, it only hides the problem.
 </p>
 
 
@@ -153,7 +156,7 @@ One should look at <a href="http://www.libsdl.org/release/SDL-1.2.11/VisualC.htm
 
 <h3>Building SDL_gfx</h3>
 <p>
-One pitfall : the code uses lrint, which is not available on Windows. The work-around has been to define a pre-processor macro lrint=floor.
+One pitfall: the code uses lrint, which is not available on Windows. The work-around has been to define a pre-processor macro lrint=floor.
 </p>
 
 
@@ -178,18 +181,18 @@ Adapted from its Ceylan <a href="http://ceylan.sourceforge.net/Ceylan-latest/Bui
 	
 	<li><b>add</b> a new project to it</li>
 	
-	<li>choose project <b>type</b> : <code>Visual C++ -&gt; General -&gt; Empty Project</code>
+	<li>choose project <b>type</b>: <code>Visual C++ -&gt; General -&gt; Empty Project</code>
 </li>
 
-	<li>choose project <b>name</b>, ex : <code>testOSDLBasicResourceManager</code> for source in <code>basic/testOSDLBasicResourceManager.cc</code>. Note that the initial project name is not <code>basic-testOSDLBasicResourceManager</code>, so that the associated files and directory names remain short
+	<li>choose project <b>name</b>, ex: <code>testOSDLBasicResourceManager</code> for source in <code>basic/testOSDLBasicResourceManager.cc</code>. Note that the initial project name is not <code>basic-testOSDLBasicResourceManager</code>, so that the associated files and directory names remain short
 	</li>
 	
-	<li>choose project <b>location</b> in the relevant module, ex : <code>trunk/test/basic</code> for <code>testOSDLBasicResourceManager</code>
+	<li>choose project <b>location</b> in the relevant module, ex: <code>trunk/test/basic</code> for <code>testOSDLBasicResourceManager</code>
 </li>
 
-	<li>remove <b>default</b> directories : Header, Resource, Source Files</li>
+	<li>remove <b>default</b> directories: Header, Resource, Source Files</li>
 	
-	<li>add in project an <b>existing element</b>, ex : <code>testOSDLBasicResourceManager.cc</code>, which should lie in the parent directory of the one of this test</li>
+	<li>add in project an <b>existing element</b>, ex: <code>testOSDLBasicResourceManager.cc</code>, which should lie in the parent directory of the one of this test</li>
 	
 	<li>go to the property manager, right click on your test project, choose <b>add an existing property sheet</b>, and select, seven directories up (in <code>src/conf/build/visual-express</code>), the <code>OSDLProperties.vsprops</code> file. Then (in that order), do the same for <code>OSDLPropertiesForTests.vsprops</code></li>
 	
@@ -199,13 +202,13 @@ Adapted from its Ceylan <a href="http://ceylan.sourceforge.net/Ceylan-latest/Bui
 	  </ul>
 	</li>
 	
-	<li><b>rename</b> in the IDE the project, so that it is prefixed by its module. Ex : <code>testOSDLBasicResourceManager</code> becomes <code>basic-testOSDLBasicResourceManager</code>. It allows to sort the projects in the IDE panel without having the long names in the filesystem</li>
+	<li><b>rename</b> in the IDE the project, so that it is prefixed by its module. Ex: <code>testOSDLBasicResourceManager</code> becomes <code>basic-testOSDLBasicResourceManager</code>. It allows to sort the projects in the IDE panel without having the long names in the filesystem</li>
 	
 	<li><b>build</b> the project</li>
 	
 	<li>from a cygwin terminal, run playTests.sh</li>
 	
-	<li><b>add</b> the project file to SVN repository : for example, right-click on the <code>trunk/test/basic/testOSDLBasicResourceManager</code> directory, and select only <code>testOSDLBasicResourceManager.vcproj</code></li>
+	<li><b>add</b> the project file to SVN repository: for example, right-click on the <code>trunk/test/basic/testOSDLBasicResourceManager</code> directory, and select only <code>testOSDLBasicResourceManager.vcproj</code></li>
 	
 
 </ol>
@@ -230,7 +233,7 @@ Adapted from its Ceylan <a href="http://ceylan.sourceforge.net/Ceylan-latest/Bui
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update : Tuesday, May 1, 2007</em>
+    <em>Last update: Thursday, July 17, 2008</em>
   </center>
 </body>
 </html>
