@@ -2,9 +2,9 @@
 
 
 USAGE="
-Usage: "`basename $0`" [ --with-osdl-environment <path> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist]: (re)generates all the autotools-based build system for OSDL tools.
+Usage: "`basename $0`" [ --with-osdl-env-file <filename> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist]: (re)generates all the autotools-based build system for OSDL tools.
 
-	--with-osdl-environment: specify which OSDL environment file shall be used (OSDL-environment.sh full path)
+	--with-osdl-env-file: specify which OSDL environment file shall be used (OSDL-environment.sh full path)
 	--guess-osdl-environment: try to guess where the OSDL environment file lies. If one is found, then it is used, otherwise stops on failure
 	--no-build: stop just after having generated the configure script
 	--only-prepare-dist: perform only necessary operations so that the tool directory can be distributed afterwards"
@@ -102,7 +102,7 @@ $USAGE" 1>&2
 		token_eaten=0
 	fi
 	
-	if [ "$1" = "--with-osdl-environment" ] ; then
+	if [ "$1" = "--with-osdl-env-file" ] ; then
 		shift
 		osdl_environment_file="$1"
 		if [ ! -f "${osdl_environment_file}" ] ; then
@@ -134,7 +134,7 @@ done
 # Where the libraries should be found:
 if [ -n "$osdl_environment_file" ] ; then
 
-	# If these lines are changed, change accordingly loani-requiredTools.sh,
+	# If these lines are changed, change accordingly loani-requiredTools.sh,
 	# search for "Making tests for OSDL".
 	
 	osdl_install_prefix_opt="--with-osdl-prefix=$OSDL_PREFIX"	
@@ -150,8 +150,9 @@ if [ -n "$osdl_environment_file" ] ; then
 	libogg_install_prefix_opt="--with-ogg=$libogg_PREFIX"
 	libvorbis_install_prefix_opt="--with-vorbis=$libvorbis_PREFIX"
 	sdl_mixer_install_prefix_opt="--with-sdl_mixer-prefix=$SDL_mixer_PREFIX"
+	libagar_install_prefix_opt="--with-libagar-prefix=$Agar_PREFIX"
 	
-	prerequesites_prefix_opt="$osdl_install_prefix_opt $ceylan_install_prefix_opt $sdl_install_prefix_opt $libjpeg_install_prefix_opt $zlib_install_prefix_opt $libpng_install_prefix_opt $sdl_image_install_prefix_opt $sdl_gfx_install_prefix_opt $freetype_install_prefix_opt $sdl_ttf_install_prefix_opt $libogg_install_prefix_opt $libvorbis_install_prefix_opt $sdl_mixer_install_prefix_opt"
+	prerequesites_prefix_opt="$osdl_install_prefix_opt $ceylan_install_prefix_opt $sdl_install_prefix_opt $libjpeg_install_prefix_opt $zlib_install_prefix_opt $libpng_install_prefix_opt $sdl_image_install_prefix_opt $sdl_gfx_install_prefix_opt $freetype_install_prefix_opt $sdl_ttf_install_prefix_opt $libogg_install_prefix_opt $libvorbis_install_prefix_opt $sdl_mixer_install_prefix_opt $libagar_install_prefix_opt"
 	
 fi
 
@@ -246,8 +247,8 @@ copy="--copy"
 #copy=""
 
 # Replace existing files:
-#force="--force"
-force=""
+force="--force"
+#force=""
 
 # Warning selection: 
 warnings="--warnings=all"
@@ -329,14 +330,14 @@ generateCustom()
 	
 	(libtool --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: You must have \`libtool' installed."
+		echo "**Error**: You must have 'libtool' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/" 
 		exit 20
    	}
 	
 	(libtoolize --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: You must have \`libtoolize' installed."
+		echo "**Error**: You must have 'libtoolize' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/" 
 		exit 21
    	}
@@ -347,14 +348,15 @@ generateCustom()
 		libtoolize_verbose="--debug"
 	fi
 	
-	execute libtoolize --automake $copy $force $libtoolize_verbose
+	# No --ltdl here to avoid the copy of useless directories in tests:
+	execute libtoolize --install --automake $copy $force $libtoolize_verbose
 	
 	echo
 	echo " - generating aclocal.m4, by scanning configure.ac"
 	
 	(aclocal --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: Missing \`aclocal'.  The version of \`automake'"
+		echo "**Error**: Missing 'aclocal'.  The version of 'automake'"
 		echo "installed does not appear recent enough."
 		echo "You can get automake from ftp://ftp.gnu.org/pub/gnu/"
 		exit 22
@@ -368,15 +370,20 @@ generateCustom()
 	
 	ACLOCAL_OUTPUT=aclocal.m4
 	
+	# With newer libtool (ex: 2.2.4), we need to include a whole bunch of *.m4
+	# files, otherwise 'warning: LTOPTIONS_VERSION is m4_require'd but not
+	# m4_defun'd' ... ', same thing for LTSUGAR_VERSION, LTVERSION_VERSION, etc.
+	GUESSED_LIBTOOL_BASE=`which libtool|sed 's|/bin/libtool$||1'`
+
 	# Do not use '--acdir=.' since it prevents aclocal from writing its file:
-	execute aclocal -I $CEYLAN_M4_DIR -I $OSDL_M4_DIR --output=$ACLOCAL_OUTPUT $force $verbose
+	execute aclocal -I ${GUESSED_LIBTOOL_BASE}/share/aclocal -I $CEYLAN_M4_DIR -I $OSDL_M4_DIR --output=$ACLOCAL_OUTPUT $force $verbose
 	
 	echo
 	echo " - generating '.in' files from '.am' files with automake"
 
 	(automake --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: You must have \`automake' installed."
+		echo "**Error**: You must have 'automake' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
 		exit 24
 	}
@@ -389,7 +396,7 @@ generateCustom()
 	
 	(autoconf --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: You must have \`autoconf' installed."
+		echo "**Error**: You must have 'autoconf' installed."
 		echo "Download the appropriate package for your distribution,"
 		echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
 		exit 25
