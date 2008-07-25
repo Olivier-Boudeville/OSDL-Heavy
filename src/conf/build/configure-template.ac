@@ -7,7 +7,7 @@
 # leading to have the build system generated. 
 
 
-AC_PREREQ(2.59)
+AC_PREREQ(2.61)
 
 
 # Declaration section for the Autotools macros.
@@ -38,6 +38,7 @@ AM_INIT_AUTOMAKE([tar-ustar])
 # OSDL_USES_CONFIG_H instead.
 AC_CONFIG_HEADERS([ST_CONFIG_HEADER],[],[])
 OSDL_CPPFLAGS="-DOSDL_USES_CONFIG_H $OSDL_CPPFLAGS"
+AC_SUBST(CPPFLAGS)
 
 
 # OSDLConfig.h will be the only config header to be installed.
@@ -126,6 +127,17 @@ AC_DEFINE_UNQUOTED([LIBTOOL_VERSION],
 	["$OSDL_LIBTOOL_VERSION"],
 	[Current Libtool version for the OSDL library])
 
+
+# Backward compatibility.
+
+OSDL_OLDEST_SUPPORTED_MAJOR=ST_OLDEST_SUPPORTED_MAJOR
+AC_SUBST(OSDL_OLDEST_SUPPORTED_MAJOR)
+
+OSDL_OLDEST_SUPPORTED_MINOR=ST_OLDEST_SUPPORTED_MINOR
+AC_SUBST(OSDL_OLDEST_SUPPORTED_MINOR)
+
+
+
 # pkgconfig .pc file.
 OSDL_PKGCONFIG_FILE="osdl-${OSDL_VERSION}.pc"
 AC_SUBST(OSDL_PKGCONFIG_FILE)
@@ -179,7 +191,7 @@ AC_SUBST(OSDL_CURRENT_VERSION_PREFIX)
 OSDL_LOCAL_DOC_DIR="\${prefix}/share/${PROJECT_NAME}/doc"
 AC_SUBST(OSDL_LOCAL_DOC_DIR)
 
-# Local root of the whole OSDL html documentation:
+# Local root of the whole OSDL documentation:
 # (ex: PREFIX/doc/web)
 OSDL_LOCAL_WEB_DIR=$OSDL_LOCAL_DOC_DIR/web
 AC_SUBST(OSDL_LOCAL_WEB_DIR)
@@ -227,7 +239,10 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AM_PROG_LIBTOOL
+
+# Tells the libtool machinery that the package supports DLLs on Windows:
+LT_INIT([dlopen win32-dll])
+
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -235,7 +250,7 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 
 # Only headers independent from all OSDL features are checked here: 
-# (actually nothing to test, everything is provided by Ceylan)
+# (actually nothing to test, everything has been checked by Ceylan)
 #AC_CHECK_HEADERS([])
 
 
@@ -270,7 +285,7 @@ AC_FUNC_UTIME_NULL
 
 
 # LOANI section.
-# (defines OSDL_LOANI_INSTALLATIONS hence must be before prerequesites)
+# (defines OSDL_LOANI_INSTALLATIONS, hence must be before prerequesites)
 
 # The version of LOANI is the same as the one of OSDL:
 LOANI_VERSION=$OSDL_VERSION
@@ -280,7 +295,8 @@ AC_SUBST(LOANI_VERSION)
 OSDL_INSTALLATION="\${prefix}"
 
 # Needed to avoid a '..' in the path which would result in the includes not
-# found at build time, since the installed OSDL directory does not exist yet:
+# being found at build time, since the installed OSDL directory does not exist
+# yet:
 OSDL_LOANI_INSTALLATIONS=`echo ${prefix} | sed 's|LOANI-installations/OSDL-.*$|LOANI-installations|1'`
 AC_SUBST(OSDL_LOANI_INSTALLATIONS)
 
@@ -660,6 +676,7 @@ else
 fi
 
 
+
 AC_DEFINE_UNQUOTED([DEBUG],
 	[$DEBUG],
 	[Define to 1 if generic debug mode is to be enabled])
@@ -838,7 +855,7 @@ if test x$ac_cv_cxx_compiler_gnu = xyes; then
 	# constructor
 	#    -Wpacked: some structures may be declared packed with no effect, we
 	# usually do not care if it is the case
-    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute  -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
+    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
     if test x$enable_strict_ansi = xyes; then
 		# Do not know what "-D_XOPEN_SOURCE" would change.
         AM_CXXFLAGS="$AM_CXXFLAGS -ansi -pedantic-errors"
@@ -946,7 +963,7 @@ AC_SUBST(OSDL_WARNING_STYLE)
 
 # Detects underlying platform and configures build accordingly.
 #
-# Still needing platform detection for some specificities:
+# Still needing platform detection for some specificities:
 #   - need to define OSDL_DLL for the Windows platform, for
 # Visual C++-based builds
 #	- set various system-dependent paths
@@ -994,7 +1011,7 @@ CheckPlatform()
 		
 		*-*-solaris*)	
 			;;
-					
+
 	    *)
 	        # Not identified
 	        ;;
@@ -1076,13 +1093,8 @@ CheckOpenGL
 
 # Section of non feature-based checkings.
 
- 
 
-
-# TODO: use CXXCOMPILE/CXXLINK to customize build output.
-
-
-
+# Maybe later: use CXXCOMPILE/CXXLINK to customize build output.
 
 
 AC_SUBST(SYSTEM_LIBS)
