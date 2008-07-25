@@ -235,18 +235,22 @@ Thanks to the <code>--sourceforge &lt;user name&gt;</code> option, our <b>projec
 </p>
 
 
-	<h3>Build tools section</h3>
+<h3>Build tools section</h3>
 	
 <p>
 These build tools or counterparts of them (other C++ compilers, same tools with different versions) might already be readily available on user's system. If not, or if tool versions do not match the required ones, select this tool section, thanks to the <code>--buildTools</code> LOANI option.
 </p>
 	
 <p>
-These build tools are quite often needed, since for example gcc often breaks downward binary compatibility for C++ base libraries: we often need a very precise version of <code>libstdc++</code>. As we already chose for you the latest gcc version able to build all OSDL pre requesites, relying on LOANI to install gcc and other build tools as well is a safe bet.
+Installing by oneself these build tools is quite often needed, since for example gcc often breaks downward binary compatibility for C++ base libraries: we often need a very precise version of <code>libstdc++</code>. As we already chose for you the latest gcc version able to build all OSDL pre requesites, relying on LOANI to install gcc and other build tools as well is a safe bet.
 </p>
 	
 <p>
 Note that using that option assumes that a working C compiler is already locally available on your computer, since the build tools will be themselves built from sources. However all usual GNU/Linux platforms offer that.
+</p>
+	
+<p>
+Moreover, building gcc now requires GMP and MPFR. One should thus ensure these packages are available beforehand. For example Ubuntu users should execute as root: <code>apt-get install libgmp3-dev libmpfr-dev</code> before launching LOANI.
 </p>
 		
 		
@@ -288,7 +292,7 @@ These tools are not strictly needed, but are helpful for developers and/or docum
 </p>
 
 
-<a name="orge">
+<a name="orge"></a>
 <h3>Orge section</h3>	
 
 <p>
@@ -296,7 +300,7 @@ The technical environment used by server-side Orge is quite different from the C
 </p>
 
 <p>
-Note that the development package for libcurses is needed to build Erlang. On Debian and Ubuntu, the corresponding package is ``libncurses5-dev``, to be installed before running LOANI.
+Note that the development package for libcurses is needed to build Erlang. For example, on Debian and Ubuntu, <code>apt-get install libncurses5-dev</code> should be executed before running LOANI.
 </p>
 
 <p>
