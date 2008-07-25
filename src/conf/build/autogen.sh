@@ -1,12 +1,13 @@
 #!/bin/sh
 
 USAGE="
-Usage: "`basename $0`" [ --nds ] [ --with-osdl-environment <path> || --ceylan-install-prefix <path> ] [ -h | --help ] [ -n | --no-build ] [ -c | --chain-test ] [ -g | --generate-tools] [ -f | --full ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ]: (re)generates all the autotools-based build system.
+
+Usage: "`basename $0`" [ -h | --help ] [ --nds ] [ --with-osdl-env-file <filename> || --ceylan-install-prefix <path> ] [ -n | --no-build ] [ -c | --chain-test ] [ -g | --generate-tools] [ -f | --full ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ]: (re)generates all the autotools-based build system.
 
 	--nds: cross-compile the OSDL library so that it can be run on the Nintendo DS (LOANI installation of all prerequesites and of the DS cross-build chain is assumed)
-	--with-osdl-environment: specify where the OSDL environment file (OSDL-environment.sh) should be read
+	--with-osdl-env-file <filename>: specify where the OSDL environment file (OSDL-environment.sh) should be read
 	--ceylan-install-prefix: specify where the Ceylan installation can be found
-	Note: if neither --with-osdl-environment nor --ceylan-install-prefix are specified, the location of OSDL environment file will be guessed, if possible.	
+	Note: if neither --with-osdl-env-file nor --ceylan-install-prefix are specified, the location of OSDL environment file will be guessed, if possible.	
 	--no-build: stop just after having generated the configure script
 	--chain-test: build and install the library, build the test suite and run it against the installation
 	--full: build and install the library, perform all available tests, including 'make distcheck', the full test suite and all OSDL tools
@@ -24,7 +25,10 @@ Usage: "`basename $0`" [ --nds ] [ --with-osdl-environment <path> || --ceylan-in
 # Main settings section.
 
 osdl_features_disable_opt=""
-configure_user_opt=""
+
+# No configure_user_opt here, as this variable is meant to override,
+# not being added to, configure options.
+configure_opt=""
 
 osdl_features_opt=""
 
@@ -35,7 +39,6 @@ ceylan_location=""
 
 # To check the user can override them:
 #test_overriden_options="CPPFLAGS=\"-DTEST_CPPFLAGS\" LDFLAGS=\"-LTEST_LDFLAGS\""
-
 
 
 # 0 means true, 1 means false:
@@ -72,7 +75,19 @@ while [ $# -gt 0 ] ; do
 		be_quiet=0
 		token_eaten=0
 	fi
-	
+
+	if [ "$1" = "--with-osdl-env-file" ] ; then
+		shift
+		osdl_environment_file="$1"
+		if [ ! -f "${osdl_environment_file}" ] ; then
+			echo "Error, specified OSDL environment file ($osdl_environment_file) not found.
+$USAGE" 1>&2	
+			exit 4
+		fi
+		. "${osdl_environment_file}"
+		token_eaten=0
+	fi
+
 	if [ "$1" = "-d" -o "$1" = "--disable-all-features" ] ; then
 		osdl_features_opt="$osdl_features_disable_opt"
 		token_eaten=0
@@ -110,19 +125,7 @@ while [ $# -gt 0 ] ; do
 		do_only_prepare_dist=0
 		token_eaten=0
 	fi
-	
-	if [ "$1" = "--with-osdl-environment" ] ; then
-		shift
-		osdl_environment_file="$1"
-		if [ ! -f "${osdl_environment_file}" ] ; then
-			echo "Error, specified OSDL environment file does not exist ($osdl_environment_file).
-$USAGE" 1>&2	
-			exit 4
-		fi
-		source ${osdl_environment_file}
-		token_eaten=0
-	fi
-		
+			
 	if [ "$1" = "--ceylan-install-prefix" ] ; then
 		shift
 		ceylan_location="$1"
@@ -156,8 +159,6 @@ $USAGE" 1>&2
 	fi	
 	shift
 done
-
-
 
 
 
@@ -272,13 +273,13 @@ fi
 
 
 
-# Nintendo DS special case:
+# Nintendo DS special case:
 if [ $do_target_nds -eq 0 ] ; then
 
 
 	# First attempt was relying on the autotools, but it was a nightmare.
 	# Hence basic specific Makefiles (Makefile.cross) are used and it works
-	# great.
+	# great.
 		
 	echo "Cross-compiling for the Nintendo DS."
 	
@@ -291,7 +292,7 @@ if [ $do_target_nds -eq 0 ] ; then
 	# Clean everything:
 	make -f Makefile.cross CROSS_TARGET=nintendo-ds clean
 
-	# Build everything:
+	# Build everything:
 	make -f Makefile.cross CROSS_TARGET=nintendo-ds
 	result=$?
 	
@@ -341,7 +342,6 @@ if [ -n "$osdl_environment_file" ] ; then
 		configure_opt="${configure_opt} --with-sdl-prefix=$SDL_PREFIX"
 	fi
 		
-	
 fi
 
 
@@ -360,6 +360,7 @@ fi
 
 
 if [ -n "${configure_user_opt}" ] ; then
+	# Overrides all default configure options:
 	configure_opt="$configure_user_opt"
 else	
 	configure_opt="$configure_opt $osdl_features_opt --enable-strict-ansi --enable-debug $PREFIX_OPT $test_overriden_options"
@@ -393,8 +394,8 @@ copy="--copy"
 #copy=""
 
 # Replace existing files:
-#force="--force"
-force=""
+force="--force"
+#force=""
 
 # Warning selection: 
 warnings="--warnings=all"
@@ -424,7 +425,7 @@ execute()
 		RES=$?
 	fi
 
-	if [ ! $RES -eq 0 ] ; then
+	if [ $RES -ne 0 ] ; then
 		echo 1>&2
 		if [ $log_on_file -eq 0 ] ; then
 			echo "Error while executing '$*', see $log_filename" 1>&2
@@ -437,15 +438,19 @@ To upgrade automake and aclocal from Debian-based distributions, do the followin
 			if [ "$1" = "aclocal" ]; then
 				echo "
 Note: if aclocal is failing since AM_CXXFLAGS (used in configure.ac) 'cannot be found in library', then check that your aclocal version is indeed 1.9 or newer. For example, with Debian-based distributions, /usr/bin/aclocal is a symbolic link to /etc/alternatives/aclocal, which itself is a symbolic link which may or may not point to the expected aclocal version. Your version of $1 is:
-	" `$1 --version` "
-	
-	" `/bin/ls -l --color $(type -p $1)` "${AUTOMAKE_HINT}"
+	" `$1 --version` ", " `/bin/ls -l --color $(which $1)` "${AUTOMAKE_HINT}"
 			elif [ "$1" = "automake" ]; then
 				echo "
 Note: check that your automake version is indeed 1.9 or newer. For example, with Debian-based distributions, /usr/bin/automake is a symbolic link to /etc/alternatives/automake, which itself is a symbolic link which may or may not point to the expected automake version. Your version of $1 is:
+	" `$1 --version` ", " `/bin/ls -l --color $(which $1)`". See also the update-alternatives command. ${AUTOMAKE_HINT}"
+	
+			elif [ "$1" = "libtoolize" ]; then
+				echo "
+Note: check that your libtoolize version is indeed 2.2.4 or newer, otherwise the --install could not be available. Your version of $1 is:
 	" `$1 --version` "
-
-	" `/bin/ls -l --color $(type -p $1)` "${AUTOMAKE_HINT}"
+	The corresponding executable is:
+	" `/bin/ls -l --color $(which $1)`
+	
 			elif [ "$1" = "./configure" ]; then
 				echo "
 Note: check the following log:" `pwd`/config.log
@@ -460,15 +465,15 @@ Note: check the following log:" `pwd`/config.log
 	
 }                 
     
-	
 	                                                 
 generateCustom()
 # Old-fashioned way of regenerating the build system from scratch: 
+# (this approach is still the one used, as more reliable)
 {
 
 	echo "--- generating build system"
 	
-	if [ "$do_remove_generated" -eq 0 ] ; then
+	if [ $do_remove_generated -eq 0 ] ; then
 		echo
 		echo " - removing all generated files"
 		./cleanGeneratedConfigFiles.sh
@@ -478,7 +483,7 @@ generateCustom()
 	if [ $do_clean_prefix -eq 0 ] ; then
 		echo
 		if [ -z "$PREFIX" -o "$PREFIX" = "$HOME" ] ; then
-			echo "(no PREFIX removed)"
+			echo "(no PREFIX=$PREFIX removed)"
 		else	
 			returnedChar="y"
 			if [ "$PREFIX" != "$PREFIX_DEFAULT" ] ; then
@@ -492,7 +497,7 @@ generateCustom()
 			fi
 		fi	
 	fi
-	
+
 
 	# Update timestamps since SVN may mess them up:
 	CONFIG_SOURCE=configure-template.ac
@@ -521,19 +526,19 @@ generateCustom()
 	cd $SOURCE_OFFSET
 		
 	echo
-	echo " - preparing libtool, by executing libtoolize"
+	echo " - preparing libtool and ltdl, by executing libtoolize"
 	
 	
 	(libtool --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: You must have \`libtool' installed."
+		echo "**Error**: You must have 'libtool' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/" 
 		exit 20
    	}
 	
 	(libtoolize --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: You must have \`libtoolize' installed."
+		echo "**Error**: You must have 'libtoolize' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/" 
 		exit 21
    	}
@@ -544,26 +549,31 @@ generateCustom()
 		libtoolize_verbose="--debug"
 	fi
 	
-	execute libtoolize --automake $copy $force $libtoolize_verbose
+	execute libtoolize --install --ltdl --automake $copy $force $libtoolize_verbose
 	
 	echo
 	echo " - generating aclocal.m4, by scanning configure.ac"
 	
 	(aclocal --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: Missing \`aclocal'.  The version of \`automake'"
-		echo "installed doesn't appear recent enough."
+		echo "**Error**: Missing 'aclocal'.  The version of 'automake'"
+		echo "installed does not appear recent enough."
 		echo "You can get automake from ftp://ftp.gnu.org/pub/gnu/"
 		exit 22
 	}
 
-	# Contains all *.m4 prerequesites, including ceylan.m4, sdl.m4, etc.:
+	# Contains some *.m4 prerequesites, including ceylan.m4, sdl.m4, etc.:
 	M4_DIR=${CONFIG_DIR}/m4 
 	
 	ACLOCAL_OUTPUT=src/conf/build/m4/aclocal.m4
+
+	# With newer libtool (ex: 2.2.4), we need to include a whole bunch of *.m4
+	# files, otherwise 'warning: LTOPTIONS_VERSION is m4_require'd but not
+	# m4_defun'd' ... ', same thing for LTSUGAR_VERSION, LTVERSION_VERSION, etc.
+	GUESSED_LIBTOOL_BASE=`which libtool|sed 's|/bin/libtool$||1'`
 	
 	# Do not use '--acdir=.' since it prevents aclocal from writing its file:
-	execute aclocal -I ${M4_DIR} --output=$ACLOCAL_OUTPUT $force $verbose
+	execute aclocal -I ${M4_DIR} -I ${GUESSED_LIBTOOL_BASE}/share/aclocal --output=$ACLOCAL_OUTPUT $force $verbose
 
 	# automake wants absolutely to find aclocal.m4 in the top-level directory:
 	ln -sf src/conf/build/m4/aclocal.m4
@@ -573,7 +583,7 @@ generateCustom()
 	
 	(autoheader --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: You must have \`autoheader' installed."
+		echo "**Error**: You must have 'autoheader' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
 		exit 23
 	}
@@ -586,7 +596,7 @@ generateCustom()
 
 	(automake --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: You must have \`automake' installed."
+		echo "**Error**: You must have 'automake' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
 		exit 24
 	}
@@ -599,7 +609,7 @@ generateCustom()
 	
 	(autoconf --version) < /dev/null > /dev/null 2>&1 || {
 		echo
-		echo "**Error**: You must have \`autoconf' installed."
+		echo "**Error**: You must have 'autoconf' installed."
 		echo "Download the appropriate package for your distribution,"
 		echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
 		exit 25
@@ -652,7 +662,7 @@ generateCustom()
 	fi
 	
 	
-	if [ "$do_install" -eq 0 ] ; then
+	if [ $do_install -eq 0 ] ; then
 		echo
 		echo " - installing"
 	 	execute make install
@@ -664,36 +674,37 @@ generateCustom()
 		echo " - checking install"
 	 	execute make installcheck
 	fi
+
+
+	if [ $do_chain_tests -eq 0 ] ; then
+		echo
+		echo " - building and running OSDL test suite"
+		cd test
+	 	execute ./autogen.sh --with-osdl-env-file $osdl_environment_file
+		cd ..
+	elif [ "$do_only_prepare_dist" -eq 0 ] ; then
+		echo
+		echo " - generating configure for test suite"
+		cd test
+	 	execute ./autogen.sh --only-prepare-dist --with-osdl-env-file $osdl_environment_file
+		cd .. 
+		echo " - making distribution package"
+		execute make dist-bzip2 
+	fi
 	
-	
+
 	if [ $do_distcheck -eq 0 ] ; then
 		echo
 		echo " - making distcheck"
 	 	execute make distcheck
 	fi
 	
-	
-	if [ $do_chain_tests -eq 0 ] ; then
-		echo
-		echo " - building and running OSDL test suite"
-		cd test
-	 	execute ./autogen.sh --with-osdl-environment $osdl_environment_file
-	elif [ "$do_only_prepare_dist" -eq 0 ] ; then
-		echo
-		echo " - generating configure for test suite"
-		cd test
-	 	execute ./autogen.sh --only-prepare-dist --with-osdl-environment $osdl_environment_file
-		cd .. 
-		echo " - making distribution package"
-		execute make dist-bzip2 
-	fi
-		
 		
 	if [ $do_generate_tools -eq 0 ] ; then
 		echo
 		echo " - building and running OSDL tools"
 		cd tools
-	 	execute ./autogen.sh --with-osdl-environment $osdl_environment_file
+	 	execute ./autogen.sh --with-osdl-env-file $osdl_environment_file
 		cd .. 
 	fi
 		
@@ -718,6 +729,4 @@ regenerateWithAutoreconf()
 	
 generateCustom
 #regenerateWithAutoreconf
-
-
 
