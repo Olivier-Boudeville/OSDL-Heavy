@@ -18,8 +18,7 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		OutputFile="$(LoaniDLLInstDir)\$(FIXMEDLLName)"
-		AdditionalLibraryDirectories="&quot;$(LoaniLIBInstDir)&quot;"
+		AdditionalLibraryDirectories="$(LoaniLIBInstDir)"
 		GenerateDebugInformation="true"
 		SubSystem="2"
 		ImportLibrary=""
@@ -129,7 +128,7 @@
 	/>
 	<UserMacro
 		Name="SDLVersion"
-		Value="1.2.11"
+		Value="1.2.13"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -220,7 +219,7 @@
 	/>
 	<UserMacro
 		Name="SDL_imageVersion"
-		Value="1.2.5"
+		Value="1.2.6"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -262,14 +261,14 @@
 	/>
 	<UserMacro
 		Name="SDL_imageDepIncDir"
-		Value="&quot;$(LibjpegIncDir)&quot;;&quot;$(libpngIncDir)&quot;"
+		Value="$(LibjpegIncDir);$(LibpngIncDir)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
 		Name="SDL_ttfVersion"
-		Value="2.0.8"
+		Value="2.0.9"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -311,14 +310,14 @@
 	/>
 	<UserMacro
 		Name="FreetypeVersion"
-		Value="2.3.4"
+		Value="2.3.7"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
 		Name="FreetypeRepoDir"
-		Value="$(LoaniRepoDir)\"
+		Value="$(LoaniRepoDir)\Freetype-$(FreetypeVersion)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -423,7 +422,7 @@
 	/>
 	<UserMacro
 		Name="CeylanVersion"
-		Value="0.6"
+		Value="0.7"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -520,43 +519,43 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="libpngVersion"
-		Value="1.2.16"
+		Name="LibpngVersion"
+		Value="1.2.29"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="libpngRepoDir"
-		Value="$(LoaniRepoDir)\libpng-$(libpngVersion)"
+		Name="LibpngRepoDir"
+		Value="$(LoaniRepoDir)\libpng-$(LibpngVersion)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="libpngInstDir"
-		Value="$(LoaniInstDir)\libpng-$(libpngVersion)"
+		Name="LibpngInstDir"
+		Value="$(LoaniInstDir)\libpng-$(LibpngVersion)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="libpngDLLName"
+		Name="LibpngDLLName"
 		Value="libpng-$(LibpngVersion)-$(LoaniDLLSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="libpngLIBName"
+		Name="LibpngLIBName"
 		Value="libpng-$(LibpngVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="libpngIncDir"
-		Value="$(libpngInstDir)\include"
+		Name="LibpngIncDir"
+		Value="$(LibpngInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -689,7 +688,7 @@
 	/>
 	<UserMacro
 		Name="LibvorbisVersion"
-		Value="1.1.2"
+		Value="1.2.0"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -739,6 +738,146 @@
 	<UserMacro
 		Name="LibvorbisIncDir"
 		Value="$(LibvorbisInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarVersion"
+		Value="1.3.2"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarRepoDir"
+		Value="$(LoaniRepoDir)\agar-$(AgarVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarInstDir"
+		Value="$(LoaniInstDir)\agar-$(AgarVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarIncDir"
+		Value="$(AgarInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarCoreDLLName"
+		Value="ag_core-$(AgarVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarCoreLIBName"
+		Value="ag_core-$(AgarVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarDevDLLName"
+		Value="ag_dev-$(AgarVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarDevLIBName"
+		Value="ag_dev-$(AgarVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarGuiDLLName"
+		Value="ag_gui-$(AgarVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarGuiLIBName"
+		Value="ag_gui-$(AgarVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarMapDLLName"
+		Value="ag_map-$(AgarVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarMapLIBName"
+		Value="ag_map-$(AgarVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarNetDLLName"
+		Value="ag_net-$(AgarVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarNetLIBName"
+		Value="ag_net-$(AgarVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarRgDLLName"
+		Value="ag_rg-$(AgarVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarRgLIBName"
+		Value="ag_rg-$(AgarVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarScDLLName"
+		Value="ag_sc-$(AgarVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarScLIBName"
+		Value="ag_sc-$(AgarVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarVgDLLName"
+		Value="ag_vg-$(AgarVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="AgarVgLIBName"
+		Value="ag_vg-$(AgarVersion)-$(LoaniLIBSuffix)"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
