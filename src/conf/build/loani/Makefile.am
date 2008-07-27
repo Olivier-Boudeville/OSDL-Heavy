@@ -67,7 +67,9 @@ LOANI_FELLOWS_FILES = \
 	$(LOANI_HELPERS)                                         \
 	$(LOANI_TOOLS_SETTINGS)
 
-VISUAL_EXPRESS_DIR = $(srcdir)/../visual-express
+
+VISUAL_EXPRESS_DIR_NAME = visual-express
+VISUAL_EXPRESS_PATH = $(srcdir)/../$(VISUAL_EXPRESS_DIR_NAME)
 
 # The version of LOANI used to match the one of OSDL:
 #LOANI_VERSION = @OSDL_VERSION@
@@ -144,8 +146,8 @@ prepare-release: $(LOANI_README_TARGET) $(LOANI_TOOLS_SETTINGS)
 	@mkdir -p $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)/LOANI-repository
 	@cd $(srcdir) && \
 	cp -f $(LOANI_FELLOWS_FILES) $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR) && \
-	cp -rf $(VISUAL_EXPRESS_DIR) $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)/LOANI-repository && \
-	find $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)/LOANI-repository/$(VISUAL_EXPRESS_DIR) -name '.svn' -exec /bin/rm -rf '{}' ';' && chmod +x $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)/loani.sh
+	cp -rf $(VISUAL_EXPRESS_PATH) $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)/LOANI-repository && \
+	find $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)/LOANI-repository/$(VISUAL_EXPRESS_DIR_NAME) -depth -name '.svn' -exec /bin/rm -rf '{}' ';' && chmod +x $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)/loani.sh
 
 
 release: prepare-release $(LOANI_TGZ) $(LOANI_ZIP) 
