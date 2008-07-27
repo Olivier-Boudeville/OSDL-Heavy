@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9,00"
 	Name="Freetype"
 	ProjectGUID="{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -40,13 +41,21 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;FT2_BUILD_LIBRARY"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
 				DisableLanguageExtensions="true"
 				PrecompiledHeaderFile=".\..\objs\release/freetype.pch"
 				AssemblerListingLocation=".\..\objs\release/"
 				ObjectFile=".\..\objs\release/"
 				ProgramDataBaseFileName=".\..\objs\release/"
+				WarningLevel="4"
+				DebugInformationFormat="0"
+				CompileAs="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -421,6 +430,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="$(LoaniDLLInstDir)\$(FreetypeDLLName)"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="$(LoaniLIBInstDir)\$(FreetypeLIBName)"
 			/>
 			<Tool
@@ -440,9 +451,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
