@@ -8,6 +8,9 @@ EXTRA_DIST = \
 	web
 
 # For doxygen and dot tool versions:
+# (if the builds fails here due to OSDL_LOANI_INSTALLATIONS being equal to
+# NONE, check that your OSDL-environment.sh file still contains a OSDL_PREFIX
+# definition)
 include @OSDL_LOANI_INSTALLATIONS@/Ceylan-@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@/share/Ceylan/CeylanToolsSettings.inc
 
 # This section takes care of the web documentation.
@@ -50,6 +53,16 @@ include @OSDL_LOANI_INSTALLATIONS@/Ceylan-@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_REC
 
 # etc.
 
+
+# PNG Generation for .graph files thanks to dot, for documentation files:
+# (ex: 'make web/OSDL-latest/LOANI-dependencies.png')
+GRAPH_SRC = $(wildcard *.graph)
+
+GRAPH_PNG  = $(GRAPH_SRC:%.graph=%.png) 
+
+%.png: %.graph
+	@echo "     Generating PNG file $@ from $<"
+	@$(DOT) -Tpng $< -o $@
 
 
 # Content directories.
