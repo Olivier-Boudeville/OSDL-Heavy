@@ -45,7 +45,7 @@ if [ $is_windows -eq 0 ] ; then
   
   
   # Build type for libraries:
-  #  - either bebug or release
+  #  - either debug or release
   #  - either classical or multithread (mt)
   library_build_type="debug-mt" 
   
@@ -3554,7 +3554,8 @@ generateAgar()
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched through
+			# the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${Agar_PREFIX}/lib:${PATH}	
 			export PATH
@@ -3584,7 +3585,7 @@ generateAgar()
 	fi	
 	
 	if [ $is_windows -eq 0 ] ; then
-    		${MV} -f ${Agar_PREFIX}/bin/*.dll ${Agar_PREFIX}/lib
+		${MV} -f ${Agar_PREFIX}/bin/*.dll ${Agar_PREFIX}/lib
 	fi
 	    
 	printOK
