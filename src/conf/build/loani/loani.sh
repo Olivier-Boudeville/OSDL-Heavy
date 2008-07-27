@@ -36,7 +36,7 @@ Options:
 	--allTools		 : retrieve all tools (required, build, optional, Orge tools)
 	--nds		         : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
 	--setEnv		 : set full developer environment (ex: bash, nedit configuration)
-	--fetchonly		 : only retrieve (download in cache) pre requesite, do not install them
+	--fetchonly		 : only retrieve (download in cache) prerequisite, do not install them
 	--all			 : install all and set all, including developer environment
 	--prefix <a path>	 : install everything under <a path> 
 	--repository <a path>	 : specify an alternate cache repository for downloads       
@@ -249,7 +249,7 @@ getFileAvailability()
 		else
 
    		  	computed_md5=`${MD5SUM} "${full_file_path}" | ${AWK} '{printf $1}'`      		
-			#DEBUG "getFileAvailability: ${full_file_path}: computed $computed_md5, expected ${md5}"
+			DEBUG "getFileAvailability: ${full_file_path}: computed $computed_md5, expected ${md5}"
 			
 			if [ "${computed_md5}" = "${md5}" ] ; then
 				DEBUG "<${filename}> found in cache and its md5sum is correct."
@@ -449,7 +449,7 @@ launchwizard()
 # Too early, no TRACE available.
 
 
-# Checking own LOANI's pre requesites.
+# Checking own LOANI's prerequisites.
 
 # This script will make available all common UNIX tools that LOANI will use, 
 # as well as some utilities for terminals (termUtils.sh) that it relies on, 
@@ -542,7 +542,7 @@ manage_optional_tools=1
 # [default: false (1)]:	
 manage_orge_tools=1
 
-# Used to demand only pre requesite retrieval, not their installation 
+# Used to demand only prerequisite retrieval, not their installation 
 # [default: false (1)]:
 fetch_only=1
 
@@ -864,7 +864,7 @@ if [ $be_quiet -eq 1 ] ; then
 
 	printColor "\n\n\t< Welcome to Loani >" $cyan_text
 	DISPLAY "\nThis is the Lazy OSDL Automatic Net Installer, dedicated to the lazy and the fearless."
-	DISPLAY "\nIts purpose is to have OSDL and all its pre requesites installed with the minimum of time and effort. Some time is nevertheless needed, since some downloads may have to be performed, and the related build is CPU-intensive, so often a bit long. Therefore, even with a powerful computer and broadband access, some patience will be needed."
+	DISPLAY "\nIts purpose is to have OSDL and all its prerequisites installed with the minimum of time and effort. Some time is nevertheless needed, since some downloads may have to be performed, and the related build is CPU-intensive, so often a bit long. Therefore, even with a powerful computer and broadband access, some patience will be needed."
 
 fi
 
@@ -909,7 +909,7 @@ fi
 
 DEBUG "Specified command line was: ${SAVED_CMD_LINE}"
 
-# Pre requesites continued.
+# Prerequisites continued.
 
 # Check developer name is set if necessary.
 if [ $developer_access -eq 0 ] ; then
@@ -926,7 +926,7 @@ fi
 TOOLS_META_FILE="./LOANIToolsSettings.inc"
 
 if [ ! -f "${TOOLS_META_FILE}" ] ; then
-	ERROR "Unable to find LOANI file containing metadata about pre requesite tools (${TOOLS_META_FILE})."
+	ERROR "Unable to find LOANI file containing metadata about prerequisite tools (${TOOLS_META_FILE})."
 	exit 2
 else
 	. ${TOOLS_META_FILE} 
@@ -1022,7 +1022,7 @@ fi
 
 USER_ID=`${ID} -u`
 
-#TRACE "Prerequesites checked."
+#TRACE "Prerequisites checked."
 
 
 # Setting and initializing OSDL environment file:
@@ -1105,7 +1105,7 @@ fi
 
 
 
-DISPLAY "Retrieving all pre requesites, pipe-lining when possible."
+DISPLAY "Retrieving all prerequisites, pipe-lining when possible."
 
 
 #TRACE "Sourcing toolsets."
@@ -1113,7 +1113,7 @@ DISPLAY "Retrieving all pre requesites, pipe-lining when possible."
 
 # First, select wanted tools.
 
-# Register all LOANI strict pre requesites for download.
+# Register all LOANI strict prerequisites for download.
 . ./loani-requiredTools.sh
 
 # Put the optional tools before the build tools so that their are taken 
@@ -1445,7 +1445,7 @@ done
 #DEBUG "Final available list : $available_list"
 #DEBUG "Final to retrieve list: $retrieve_list" 	
 
-DISPLAY "All pre requesites available."
+DISPLAY "All prerequisites available."
 
 if [ "$fetch_only" -eq 0 ] ; then
 	DISPLAY "Fetch only mode was on, work done."
