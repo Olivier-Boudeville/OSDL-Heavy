@@ -1,7 +1,7 @@
 ## Makefile.am for the 'Video' module of the OSDL library.
 
 
-SUBDIRS = twoDimensional videoRenderer
+SUBDIRS = graphicalUserInterface twoDimensional videoRenderer
 
 
 # Convenience library for the 'Video' module :
@@ -35,5 +35,4 @@ VIDEO_IMPLEMENTATIONS = \
 	OSDLPixel.cc                         \
 	OSDLSurface.cc                       \
 	OSDLVideo.cc
-	
-	
+
