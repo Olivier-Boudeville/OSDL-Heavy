@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OSDL-0.5-library", "OSDL-0.5.vcproj", "{A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testOSDLCDROMDrive", "..\..\..\..\test\basic\testOSDLCDROMDrive\testOSDLCDROMDrive.vcproj", "{AC904712-8E06-499C-8462-7D1A78CD0B24}"
@@ -104,7 +104,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video-2D-testOSDLUprightRec
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video-2D-testOSDLWidget", "..\..\..\..\test\video\twoDimensional\testOSDLWidget\testOSDLWidget.vcproj", "{E87DB4D6-0643-495C-ADE7-DE1D0799B0E6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testOSDLRenderer", "..\..\..\..\test\video\videoRenderer\testOSDLRenderer\testOSDLRenderer.vcproj", "{7A63266C-D8E8-4857-A779-5E345F0A1B04}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video-renderer-testOSDLRenderer", "..\..\..\..\test\video\videoRenderer\testOSDLRenderer\testOSDLRenderer.vcproj", "{7A63266C-D8E8-4857-A779-5E345F0A1B04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
