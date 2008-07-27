@@ -2,6 +2,7 @@ TOP = ../../..
 
 .PHONY:
 
+# No graphicalUserInterface here:
 NDS_SUBDIRS = twoDimensional videoRenderer
 
 
@@ -20,7 +21,7 @@ all: compile
 install: install-headers
 
 
-# Small hack that allows to retrieve from autoconf files the relevant targets:
+# Small hack that allows to retrieve from autoconf files the relevant targets:
 include Makefile.am
 
 
@@ -29,3 +30,4 @@ ARM9_OBJ_FILES = $(patsubst %.cc,%.arm9.o,$(VIDEO_IMPLEMENTATIONS))
 
 
 include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makerules.inc
+
