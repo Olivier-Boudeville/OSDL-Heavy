@@ -13,7 +13,8 @@ digraph finite_state_machine {
 	"SDL_mixer" -> "OSDL"
 	"SDL_ttf"   -> "OSDL"
 	"SDL_gfx"   -> "OSDL"
-
+	"Agar"      -> "OSDL"
+	
 	"SDL"       -> "SDL_mixer"
 	"libvorbis" -> "SDL_mixer"
 	"libogg"    -> "libvorbis"
@@ -22,6 +23,9 @@ digraph finite_state_machine {
 	"Freetype"  -> "SDL_ttf"
 
 	"SDL"       -> "SDL_gfx"
+
+	"SDL"       -> "Agar"
+	"Freetype"  -> "Agar"
 
 	"libpng"    -> "SDL_image"
 	"libjpeg"   -> "SDL_image"
