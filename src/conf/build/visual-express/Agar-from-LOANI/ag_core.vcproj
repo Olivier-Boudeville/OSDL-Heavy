@@ -21,6 +21,7 @@
 			OutputDirectory=".."
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
+			InheritedPropertySheets="..\..\visual-express\OSDLProperties.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -40,7 +41,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;..;&quot;$(SDLIncDir)&quot;;&quot"
+				AdditionalIncludeDirectories=".;..;&quot;$(SDLIncDir)&quot;"
 				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
 			/>
 			<Tool
@@ -87,6 +88,7 @@
 			OutputDirectory=".."
 			IntermediateDirectory="obj/Release"
 			ConfigurationType="2"
+			InheritedPropertySheets="..\..\visual-express\OSDLProperties.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -170,119 +172,119 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\arc4random.c"
+			RelativePath="..\core\arc4random.c"
 			>
 		</File>
 		<File
-			RelativePath=".\config.c"
+			RelativePath="..\core\config.c"
 			>
 		</File>
 		<File
-			RelativePath=".\core.c"
+			RelativePath="..\core\core.c"
 			>
 		</File>
 		<File
-			RelativePath=".\cpuinfo.c"
+			RelativePath="..\core\cpuinfo.c"
 			>
 		</File>
 		<File
-			RelativePath=".\data_source.c"
+			RelativePath="..\core\data_source.c"
 			>
 		</File>
 		<File
-			RelativePath=".\dir.c"
+			RelativePath="..\core\dir.c"
 			>
 		</File>
 		<File
-			RelativePath=".\error.c"
+			RelativePath="..\core\error.c"
 			>
 		</File>
 		<File
-			RelativePath=".\event.c"
+			RelativePath="..\core\event.c"
 			>
 		</File>
 		<File
-			RelativePath=".\file.c"
+			RelativePath="..\core\file.c"
 			>
 		</File>
 		<File
-			RelativePath=".\gethostname.c"
+			RelativePath="..\core\gethostname.c"
 			>
 		</File>
 		<File
-			RelativePath=".\load_color.c"
+			RelativePath="..\core\load_color.c"
 			>
 		</File>
 		<File
-			RelativePath=".\load_den.c"
+			RelativePath="..\core\load_den.c"
 			>
 		</File>
 		<File
-			RelativePath=".\load_string.c"
+			RelativePath="..\core\load_string.c"
 			>
 		</File>
 		<File
-			RelativePath=".\load_surface.c"
+			RelativePath="..\core\load_surface.c"
 			>
 		</File>
 		<File
-			RelativePath=".\load_version.c"
+			RelativePath="..\core\load_version.c"
 			>
 		</File>
 		<File
-			RelativePath=".\load_xcf.c"
+			RelativePath="..\core\load_xcf.c"
 			>
 		</File>
 		<File
-			RelativePath=".\md5.c"
+			RelativePath="..\core\md5.c"
 			>
 		</File>
 		<File
-			RelativePath=".\object.c"
+			RelativePath="..\core\object.c"
 			>
 		</File>
 		<File
-			RelativePath=".\prop.c"
+			RelativePath="..\core\prop.c"
 			>
 		</File>
 		<File
-			RelativePath=".\rcs.c"
+			RelativePath="..\core\rcs.c"
 			>
 		</File>
 		<File
-			RelativePath=".\rmd160.c"
+			RelativePath="..\core\rmd160.c"
 			>
 		</File>
 		<File
-			RelativePath=".\setenv.c"
+			RelativePath="..\core\setenv.c"
 			>
 		</File>
 		<File
-			RelativePath=".\sha1.c"
+			RelativePath="..\core\sha1.c"
 			>
 		</File>
 		<File
-			RelativePath=".\snprintf.c"
+			RelativePath="..\core\snprintf.c"
 			>
 		</File>
 		<File
-			RelativePath=".\string_compat.c"
+			RelativePath="..\core\string_compat.c"
 			>
 		</File>
 		<File
-			RelativePath=".\timeout.c"
+			RelativePath="..\core\timeout.c"
 			>
 		</File>
 		<File
-			RelativePath=".\typesw.c"
+			RelativePath="..\core\typesw.c"
 			>
 		</File>
 		<File
-			RelativePath=".\vasprintf.c"
+			RelativePath="..\core\vasprintf.c"
 			>
 		</File>
 		<File
-			RelativePath=".\vsnprintf.c"
+			RelativePath="..\core\vsnprintf.c"
 			>
 		</File>
 	</Files>
