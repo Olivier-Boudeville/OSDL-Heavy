@@ -285,7 +285,7 @@ AC_FUNC_UTIME_NULL
 
 
 # LOANI section.
-# (defines OSDL_LOANI_INSTALLATIONS, hence must be before prerequesites)
+# (defines OSDL_LOANI_INSTALLATIONS, hence must be before prerequisites)
 
 # LOANI_VERSION no longer defined here.
 
@@ -316,14 +316,14 @@ AC_SUBST(LOANI_MAILING_LIST)
 
 
 
-# Prerequesites section.
+# Prerequisites section.
 
 # The versions must be specified here, as they are needed to call the
 # m4 configure macros (ex: AM_PATH_SDL( 1.2.11 ...)) and they are used
 # to generate OSDLToolsSettings.inc.
 
 # As soon as the autotools are used, the whole SDL family and its own
-# prerequesites will be used: OSDL_USES_SDL and al are thus defined
+# prerequisites will be used: OSDL_USES_SDL and al are thus defined
 # unconditionaly here.
 
 
@@ -334,7 +334,9 @@ AC_SUBST(LOANI_MAILING_LIST)
 SDL_GFX_MAJOR_VERSION="2.0"
 AC_SUBST(SDL_GFX_MAJOR_VERSION)
 
-SDL_GFX_MINOR_VERSION="17"
+#SDL_GFX_MINOR_VERSION="17"
+# Downgraded due to build problems with Visual Express 2008:
+SDL_GFX_MINOR_VERSION="16"
 AC_SUBST(SDL_GFX_MINOR_VERSION)
 
 SDL_GFX_RECOMMENDED_VERSION="$SDL_GFX_MAJOR_VERSION.$SDL_GFX_MINOR_VERSION"
@@ -409,7 +411,23 @@ OSDL_LIBS="$OSDL_LIBS -L$SDL_MIXER_PREFIX/lib -lSDL_mixer"
 AC_DEFINE([USES_SDL_MIXER],[1],[Define to 1 if OSDL is to use SDL_mixer])
 
 
- 
+# Agar.
+# Depends on SDL, hence managed first (for the order in OSDL_LIBS).
+
+AGAR_RECOMMENDED_VERSION="1.3.2"
+AC_SUBST(AGAR_RECOMMENDED_VERSION)
+
+AGAR_OLDEST_SUPPORTED_VERSION="$AGAR_RECOMMENDED_VERSION"
+AC_SUBST(AGAR_OLDEST_SUPPORTED_VERSION)
+
+AGAR_PREFIX="${OSDL_LOANI_INSTALLATIONS}/agar-$AGAR_RECOMMENDED_VERSION"
+
+OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$AGAR_PREFIX/include/agar/agar"
+OSDL_LIBS="$OSDL_LIBS -L$AGAR_PREFIX/lib -lag_gui -lag_core"	
+
+AC_DEFINE([USES_AGAR],[1],[Define to 1 if OSDL is to use AGAR])
+	
+
 # png (libpng). 
 
 LIBPNG_RECOMMENDED_VERSION="1.2.29"
@@ -443,6 +461,8 @@ AM_PATH_SDL($SDL_OLDEST_SUPPORTED_VERSION,[
 	])
 
 AC_DEFINE([USES_SDL],[1],[Define to 1 if OSDL is to use SDL])
+
+
 	
 	
 	
@@ -539,6 +559,9 @@ AC_SUBST(OSDL_VIDEO_RENDERER)
 
 OSDL_VIDEO_TWO_DIMENSIONAL="$OSDL_VIDEO/twoDimensional"
 AC_SUBST(OSDL_VIDEO_TWO_DIMENSIONAL)
+
+OSDL_VIDEO_GRAPHICAL_USER_INTERFACE="$OSDL_VIDEO/graphicalUserInterface"
+AC_SUBST(OSDL_VIDEO_GRAPHICAL_USER_INTERFACE)
 
 
 
@@ -1132,6 +1155,7 @@ AC_CONFIG_FILES([
 	src/code/scripts/shell/Makefile
 	src/code/scripts/python/Makefile
 	src/code/video/Makefile
+	src/code/video/graphicalUserInterface/Makefile
 	src/code/video/twoDimensional/Makefile
 	src/code/video/videoRenderer/Makefile
 	src/conf/build/loani/LOANI-README-template.txt
