@@ -66,7 +66,7 @@ install-lib:
 
 
 # Run ldconfig after installing the library:
-install-hook:
+install-exec-hook:
 	-ldconfig
 
 update-basic-doc-files:
