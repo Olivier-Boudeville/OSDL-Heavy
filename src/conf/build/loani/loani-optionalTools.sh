@@ -286,7 +286,7 @@ generatedoxygen()
 		exit 12
 	fi
 	
-	# Disabled since rely on too many pre requesites.
+	# Disabled since relies on too many prerequisites.
 	#{
 	#	${MAKE} docs 
 	#} 1>>"$LOG_OUTPUT" 2>&1	 
