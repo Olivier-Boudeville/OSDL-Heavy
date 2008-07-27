@@ -1,5 +1,5 @@
 # This script is made to be sourced by LOANI when retrieving required tools.
-# Therefore, all tools managed here should be strict LOANI pre-requesites.
+# Therefore, all tools managed here should be strict LOANI prerequisites.
 
 # Creation date: 2004, February 22.
 # Author: Olivier Boudeville (olivier.boudeville@online.fr)
@@ -20,7 +20,9 @@ latest_stable_osdl="release-0.5.0"
 if [ $is_windows -eq 0 ] ; then
 
   # Windows special case:
-  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Agar_win"
+  #REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Agar_win"
+  # Agar_win removed for the moment:
+  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -119,7 +121,7 @@ GenerateWithVisualExpress()
 
   if [ $be_quiet -eq 1 ] ; then
     DISPLAY ""	
-    DISPLAY "Visual Express will be launched now to generate ${PACKAGE_NAME}, choose 'Regenerate Solution' and exit on success."
+    DISPLAY "Visual Express will be launched now to generate ${PACKAGE_NAME}, choose regenerate the full solution, and exit on build success."
     #waitForKey "< Hit enter and wait for the IDE to be launched >"
   fi
   
@@ -437,14 +439,14 @@ cleanSDL_win()
 
 ################################################################################
 ################################################################################
-# SDL_image prequesites
+# SDL_image prerequisites
 ################################################################################
 ################################################################################
 
 
-# Prerequesites of SDL_image: JPEG library, PNG library, zlib library.
+# Prerequisites of SDL_image: JPEG library, PNG library, zlib library.
 # TIFF support is disabled for the moment.
-# For Visual Express builds, these prerequesites are managed from SDL_image_win.
+# For Visual Express builds, these prerequisites are managed from SDL_image_win.
 
 ################################################################################
 ################################################################################
@@ -1331,7 +1333,7 @@ cleanlibpng()
 
 ################################################################################
 # libpng build thanks to Visual Express.
-# Its libpng and libpng prerequesites are managed seperatly, whereas libjpeg is
+# Its libpng and libpng prerequisites are managed seperatly, whereas libjpeg is
 # managed here (this second order library is not built, it is
 # just downloaded with the libpng package).
 ################################################################################
@@ -1893,7 +1895,7 @@ cleanSDL_image()
 
 ################################################################################
 # SDL_image build thanks to Visual Express.
-# Its libpng and zlib prerequesites are managed seperatly, whereas libjpeg is
+# Its libpng and zlib prerequisites are managed seperatly, whereas libjpeg is
 # managed here (this second order library is not built, it is 
 # just downloaded with the SDL_image package).
 ################################################################################
@@ -2363,7 +2365,7 @@ preparelibogg_win()
 		exit 8
 	fi
 
-	printBeginList "libogg  "
+	printBeginList "libogg     "
 
 	printItem "extracting"
 
@@ -2675,7 +2677,7 @@ preparelibvorbis_win()
 		exit 8
 	fi
 
-	printBeginList "libvorbis"
+	printBeginList "libvorbis  "
 
 	printItem "extracting"
 
@@ -2994,7 +2996,7 @@ cleanSDL_mixer()
 
 ################################################################################
 # SDL_mixer build thanks to Visual Express.
-# Its prerequesites (Ogg/Vorbis libraries, including VorbisFile) are managed
+# Its prerequisites (Ogg/Vorbis libraries, including VorbisFile) are managed
 # here as well (these second order libraries are not built, they are just
 # downloaded with the SDL_mixer package).
 ################################################################################
@@ -3607,6 +3609,8 @@ cleanAgar()
 
 ################################################################################
 # Agar build thanks to Visual Express.
+# Static libraries have been removed.
+# Paths and properties have been updated in agar*vcproj files.
 ################################################################################
 
 
@@ -3648,12 +3652,30 @@ prepareAgar_win()
 		exit 10
 	fi
 
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/Agar-from-LOANI" "Agar-${Agar_win_VERSION}"
+	# Now let's use our own solution:
+	
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/Agar-from-LOANI" "agar-${Agar_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy Agar solution in build tree."
+		exit 12
+	fi
+
+	cd "agar-${Agar_win_VERSION}"
+
+	AGAR_FLAVOUR_ARCHIVE="vs2005-windows-i386-nothreads.zip"
+
+	# Now we use the project prebuilt files as a base:
+	{
+
+		${CP} -f "ProjectFiles/${AGAR_FLAVOUR_ARCHIVE}" . && ${UNZIP} -o "${AGAR_FLAVOUR_ARCHIVE}"
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${AGAR_FLAVOUR_ARCHIVE}."
 		exit 11
 	fi
+		
 
 	printOK
 
@@ -3666,7 +3688,6 @@ generateAgar_win()
 
 	LOG_STATUS "Generating Agar for windows..."
 
-	cd "agar-${Agar_win_VERSION}"
 
 	printItem "configuring"
  	printOK
@@ -5282,6 +5303,8 @@ getCeylan()
 	
 	LOG_STATUS "Getting Ceylan in its source directory ${repository}..."
 	
+	# Note: SVN from Cygwin is really really slow due to the filesystem access.
+	
 	if [ $developer_access -eq 0 ] ; then
 
 		#DISPLAY "Retrieving Ceylan from developer SVN with user name ${developer_name}."
@@ -5312,7 +5335,8 @@ getCeylan()
 			
 				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
 				
-				# Made to force certificate checking before next non-interactive svn command:
+				# Made to force certificate checking before next non-interactive
+				# svn command:
 				${SVN} info https://${Ceylan_SVN_SERVER}:${SVN_URL} --username=${developer_name} 1>/dev/null
 				
 				{
@@ -5330,14 +5354,16 @@ getCeylan()
 					#${SLEEP} 3
 
 					# Warning:
-					# cygwin uses a quite small MAX_PATH, which limits the maximum length
-					# of paths. It may cause, among others, a SVN error 
+					# cygwin uses a quite small MAX_PATH, which limits the
+					# maximum length of paths.
+					#It may cause, among others, a SVN error 
 					# ("svn: Can't open file 'XXX': File name too long).
-					# A work-around is to request the user to update herself her repository
-					# with TortoiseSVN (this tool is not affected by the MAX_PATH issue), 
-					# as soon as an error occured.
+					# A work-around is to request the user to update herself her
+					# repository with TortoiseSVN (this tool is not affected by
+					# the MAX_PATH issue), as soon as an error occured.
 					
-					# Now ask the user to trigger the full update by herself, with TortoiseSVN:
+					# Now ask the user to trigger the full update by herself,
+					# with TortoiseSVN:
 					DISPLAY "Ceylan SVN checkout failed, maybe because of too long pathnames."
 					DISPLAY "Please use TortoiseSVN to update manually the Ceylan repository."
 					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
@@ -5723,7 +5749,8 @@ prepareCeylan_win()
 	ceylan_install_dir="${alternate_prefix}/Ceylan-${Ceylan_win_VERSION}"
 	${MKDIR} -p ${ceylan_install_dir}
  	
-	ceylan_solution_dir="$repository/ceylan/Ceylan/trunk/src/conf/build/visual-express"
+	# LOANI's version preferred to SVN's one for ease of debugging:
+ceylan_solution_dir="$repository/ceylan/Ceylan/trunk/src/conf/build/visual-express"
 	
 	${CP} -f "${WINDOWS_SOLUTIONS_ROOT}"/Ceylan-from-LOANI/* ${ceylan_solution_dir}
 	if [ $? != 0 ] ; then
@@ -5845,6 +5872,8 @@ getOSDL()
 	fi	
 	
 	LOG_STATUS "Getting OSDL in its source directory ${repository}..."
+
+	# Note: SVN from Cygwin is really really slow due to the filesystem access.
 	
 	if [ $developer_access -eq 0 ] ; then
 	
@@ -5894,14 +5923,16 @@ getOSDL()
 					#${SLEEP} 3
 
 					# Warning:
-					# cygwin uses a quite small MAX_PATH, which limits the maximum length
-					# of paths. It may cause, among others, a SVN error
+					# cygwin uses a quite small MAX_PATH, which limits the
+					# maximum length of paths.
+					# It may cause, among others, a SVN error
 					# ("svn: Can't open file 'XXX': File name too long).
-					# A work-around is to request the user to update herself her repository
-					# with TortoiseSVN (this tool is not affected by the MAX_PATH issue),
-					# as soon as an error occured.
+					# A work-around is to request the user to update herself her
+					# repository with TortoiseSVN (this tool is not affected by
+					# the MAX_PATH issue), as soon as an error occured.
 
-					# Now ask the user to trigger the full update by herself, with TortoiseSVN:
+					# Now ask the user to trigger the full update by herself,
+					# with TortoiseSVN:
 					DISPLAY "OSDL SVN checkout failed, maybe because of too long pathnames."
 					DISPLAY "Please use TortoiseSVN to update manually the OSDL repository."
 					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
@@ -6333,6 +6364,16 @@ prepareOSDL_win()
 
 	osdl_install_dir="${alternate_prefix}/OSDL-${OSDL_win_VERSION}"
 	${MKDIR} -p ${osdl_install_dir}
+
+osdl_solution_dir="$repository/osdl/OSDL/trunk/src/conf/build/visual-express"
+	
+	# LOANI's version preferred to SVN's LOANI one for ease of debugging,
+	# copies OSDL* (sln/vcproj/vsprops etc.) from LOANI to their place in SVN:
+	${CP} -f "${WINDOWS_SOLUTIONS_ROOT}"/OSDL* ${osdl_solution_dir}
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy OSDL solution in build tree."
+		exit 21
+	fi
 	
 	printOK
 
@@ -6358,7 +6399,8 @@ generateOSDL_win()
 	printItem "configuring"
  	printOK
  
-	osdl_solution=`pwd`"/src/conf/build/visual-express/OSDL-${OSDL_win_VERSION}.sln"
+	# LOANI's version preferred to SVN's one for ease of debugging:
+	osdl_solution="${osdl_solution_dir}/OSDL-${OSDL_win_VERSION}.sln"
 	
 	printItem "building"
 	GenerateWithVisualExpress OSDL ${osdl_solution}
