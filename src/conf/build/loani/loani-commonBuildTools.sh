@@ -32,9 +32,9 @@ else
 		# (libnds listed here again: the PALib-provided version is ancient)
 		# (libfat not listed here anymore as now is provided by libnds)
 		# (libnds_examples not listed here)
-		# Note: PAlib comes often with deprecated versions of its prerequesites
-		# (notably: libnds), hence installing them directly can be interesting,
-		# if not using PAlib.
+		# Note: PAlib comes often with deprecated versions of its prerequisites
+		# (notably: libnds), hence installing them directly can be interesting,
+		# if not using PAlib.
 		COMMON_BUILD_TOOLS="devkitARM libnds grit PAlib dswifi DeSmuME NoCashGBA"	
 		
 	fi
@@ -766,7 +766,7 @@ generategrit()
 	# Library link apparently not created on install (at least on Ubuntu Gutsy):
 	# 'cd /usr/lib && ln -s libfreeimage.so.3 libfreeimage.so'
 
-	# In grit_src/Makefile change 'LDFLAGS += -s -static' into 
+	# In grit_src/Makefile change 'LDFLAGS += -s -static' into 
 	# 'LDFLAGS += -s' as we are using a shared library for freeimage
 		
 	
@@ -989,7 +989,7 @@ generatePAlib()
 	LD_LIBRARY_PATH=$libnds_PREFIX/lib:${LD_LIBRARY_PATH}
 	export LD_LIBRARY_PATH
 
-	echo "# PAlib & prerequesites section." >> ${OSDL_ENV_FILE}
+	echo "# PAlib & prerequisites section." >> ${OSDL_ENV_FILE}
                 
 	echo "libnds_PREFIX=${libnds_PREFIX}" >> ${OSDL_ENV_FILE}
 	echo "export libnds_PREFIX" >> ${OSDL_ENV_FILE}
