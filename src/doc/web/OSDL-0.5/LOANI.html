@@ -13,7 +13,7 @@
 
 <html lang="EN">
 <head>
-  <title>OSDL - LOANI - 0.5</title>
+  <title>OSDL - LOANI - 0.6</title>
   <meta http-equiv="Content-Type" content=
   "text/html; charset=iso-8859-1">
   <meta name="description" content="OSDL">
@@ -28,17 +28,30 @@
   <div class="banner">
     <em>General</em> <a href="../common/black.html" onclick= 
     "parent.toolbar.location='../main/MainMenu.html'">home page</a>
-    <a href="../../../Map.html">site map</a> <a href=   "mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">mail us</a>
+    <a href="../../../Map.html">site map</a> <a href=   "mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.6">mail us</a>
   </div>
   
 <a name="_top_"></a>
 <h1>LOANI's corner</h1>
 
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Beware!</b> Although we are spending a lot of time on OSDL, we are in the middle of rather time-consuming tasks (increase in the versions of most of the OSDL prerequisites), so currently we would not recommend using OSDL until its 0.6 version is released, which shoudn't happen until the fall of 2008. Sorry for the inconvenience! Do not hesitate to ask us news from time to time, should we forget to update this warning.
+            </div>
+          </td>
+        </tr>
+    </table>
+	
+	
 <a name="quickstart"></a>
+
 <h2>Three-step two-line quick guide for the impatient and the fearless UNIX OSDL end-user</h2>
 
 <p>
-Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LOANI-0.5.zip</a> or  <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.gz">LOANI-0.5.tar.gz</a>, extract it, execute <code>loani.sh --buildTools</code> as your normal user to have OSDL, Ceylan and all their prerequesites, including the whole build chain, automatically and safely downloaded, extracted, configured, compiled and built together for you, when targeting the PC.
+Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.6.zip">LOANI-0.6.zip</a> or  <a href="http://downloads.sourceforge.net/osdl/LOANI-0.6.tar.gz">LOANI-0.6.tar.gz</a>, extract it, execute <code>loani.sh --buildTools</code> as your normal user to have OSDL, Ceylan and all their prerequisites, including the whole build chain, automatically and safely downloaded, extracted, configured, compiled and built together for you, when targeting the PC.
 </p>
 
 <p>
@@ -56,7 +69,7 @@ If wanting to build the OSDL toolchain for Windows, just refer to <a href="Build
   
   <tr><td><div class="box" summary="Table of contents" style="padding: 8px">
   <a href="#overview">LOANI Overview</a><br>
-  <a href="#prereq">LOANI's pre requesites</a><br>
+  <a href="#prereq">LOANI's prerequisites</a><br>
   <a href="#provide">What LOANI provides</a><br>
   <a href="#getanduse">How to get it and use it</a><br>
   <a href="#features">LOANI's main features</a><br>
@@ -71,7 +84,7 @@ If wanting to build the OSDL toolchain for Windows, just refer to <a href="Build
 <a name="overview"></a>
 <h2>Overview</h2>
 
-<p>This is the manual page for LOANI version 0.5.
+<p>This is the manual page for LOANI version 0.6.
 </p>
 
 <p>LOANI stands for <b>Lazy OSDL's Automatic Net Installer</b>.
@@ -120,7 +133,7 @@ LOANI is released under the <a href="http://www.gnu.org/licenses/gpl.html" targe
 
 
 <a name="prereq"></a>	
-<h2>LOANI's own pre requesites</h2>
+<h2>LOANI's own prerequisites</h2>
 
 <h3>Platforms</h3>
 <p>LOANI has been thoroughfully tested first on GNU/Linux platforms, with various hardware and distributions [<a href="../main/documentation/OSDL/OSDL-generic/Quality.html#testing">More infos</a>]. Even if some bugs may appear (on error, please see <a href="#troubleshooting">LOANI troubleshooting</a>), we believe most of LOANI's users should experience a good behaviour of this tool.</p>
@@ -183,7 +196,7 @@ See our <a href="#orge">Orge section</a> for specific details about the Orge sup
 
 <h3>Required tools selection</h3>
 <p>
-This tool selection is mandatory for OSDL's functioning, therefore no specific option has to be passed to LOANI to have it taken into account. Following prequesites are managed, with dependencies shown (LOANI manages all the dependency tree, i.e. the prerequesites of prerequesites, and so on):
+This tool selection is mandatory for OSDL's functioning, therefore no specific option has to be passed to LOANI to have it taken into account. Following prequesites are managed, with dependencies shown (LOANI manages all the dependency tree, i.e. the prerequisites of prerequisites and so on):
 
 <center>
 <img src="LOANI-dependencies.png" alt="Depencies managed by LOANI"></img>
@@ -195,7 +208,7 @@ This tool selection is mandatory for OSDL's functioning, therefore no specific o
 Following first-order dependencies are selected:	
 <ul>
 
-    <li><a href="http://www.libsdl.org/" target="_blank">SDL</a>: OSDL's low level back-end</li>
+    <li><a href="http://www.libsdl.org/" target="_blank">SDL</a>: OSDL's main low level back-end</li>
 	
 	<li><a href="http://www.libsdl.org/projects/SDL_image/" target="_blank">SDL_image</a>: a SDL helper library, allowing to support most common picture formats. Its installation involves setting up various needed libraries, such as <a href="http://www.libpng.org/pub/png/libpng.html" target="_blank">libpng</a>, <a href="http://www.ijg.org/" target="_blank">libjpeg</a> and  <a href="http://www.gzip.org/zlib/" target="_blank">zlib</a> libraries. LOANI does that for you</li>
 	
@@ -204,16 +217,21 @@ Following first-order dependencies are selected:
 	<li><a href="http://www.ferzkopp.net/Software/SDL_gfx-2.0/" target="_blank">SDL_gfx</a>: yet another SDL helper library, which is convenient to scale and rotate pictures, for basic 2D primitives and low-level pixel access</li>
 	
 	<li><a href="http://www.libsdl.org/projects/SDL_mixer/" target="_blank">SDL_mixer</a>: a multi-channel audio mixer which can use OggVorbis music thanks to <a href="http://www.xiph.org/ogg/" target="_blank">libogg</a> and <a href="http://www.xiph.org/vorbis/" target="_blank">libvorbis</a></li>
+
+	<li><a href="http://libagar.org/" target="_blank">Agar</a>: a toolkit for graphical applications (GUI) that can make use of OpenGL. Uses SDL</li>
 	
 	<li><a href="http://sources.redhat.com/pthreads-win32/" target="_blank">pthreads Win32</a>: a way to have Windows being POSIX-compliant for threads (not used currently)</li>	
 	
 	<li><a href="http://www.gnu.org/software/libtool/libtool.html" target="_blank">libtool</a>: GNU tool to perform builds in a cross-platform way (UNIX only)</li>	
 	
     <li><a href="http://ceylan.sourceforge.net/" target="_blank">Ceylan</a>: our generic all-purpose C++ library</li>
-	
-    <li><a href="http://osdl.sourceforge.net/" target="_blank">OSDL</a>: our generic multimedia library. Of course, you need OSDL to have OSDL working !</li>
-	
+		
 </ul>
+
+</p>
+
+<p>
+<a href="http://osdl.sourceforge.net/" target="_blank">OSDL</a> is our generic multimedia library built on top of these prerequisites.
 </p>
 
 
@@ -334,10 +352,10 @@ LOANI has the ability to provide its user a developer-friendly UNIX environment.
   <h2>How to get it and use it</h2>
 
   
-  <p>One should download either the <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.zip">LOANI-0.5.zip</a> or  <a href="http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.gz">LOANI-0.5.tar.gz</a> archive.
+  <p>One should download either the <a href="http://downloads.sourceforge.net/osdl/LOANI-0.6.zip">LOANI-0.6.zip</a> or  <a href="http://downloads.sourceforge.net/osdl/LOANI-0.6.tar.gz">LOANI-0.6.tar.gz</a> archive.
   
  <p>
- Always as a normal user (using root is not recommended for the moment), after having downloaded it, one has to extract the archive, with <code>unzip LOANI-0.5.zip</code> or <code>gunzip < LOANI-0.5.tar.gz | tar xvf -</code> (note that <code>tar -xvzf LOANI-0.5.tar.gz</code> should work with GNU-based tar). Change now to the extracted directory: <code>cd LOANI-0.5</code>.
+ Always as a normal user (using root is not recommended for the moment), after having downloaded it, one has to extract the archive, with <code>unzip LOANI-0.6.zip</code> or <code>gunzip < LOANI-0.6.tar.gz | tar xvf -</code> (note that <code>tar -xvzf LOANI-0.6.tar.gz</code> should work with GNU-based tar). Change now to the extracted directory: <code>cd LOANI-0.6</code>.
 </p>
 
 <p>
@@ -418,7 +436,7 @@ Many users wish everything to be installed in the current working directory, and
 </p>
 
   
-<p>If ever errors occured (which might happen), one may take a look at <code>LOANI.log</code>, a log file created in the directory from which LOANI was launched, or directly at the script itself, <code>loani.sh</code> (this simple script is easy to understand and customize) and/or <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">send us a notice</a> to have LOANI improved.
+<p>If ever errors occured (which might happen), one may take a look at <code>LOANI.log</code>, a log file created in the directory from which LOANI was launched, or directly at the script itself, <code>loani.sh</code> (this simple script is easy to understand and customize) and/or <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.6">send us a notice</a> to have LOANI improved.
 </p>
  
   
@@ -476,7 +494,7 @@ Here is a sample of what should happen:
           <td>
             <div class="box" style="margin-left: 0px">
 <pre>
-tester@testingHost LOANI-0.5 $ ./loani.sh --allTools
+tester@testingHost LOANI-0.6 $ ./loani.sh --allTools
 
 
         &lt; Welcome to Loani &gt;
@@ -484,10 +502,10 @@ tester@testingHost LOANI-0.5 $ ./loani.sh --allTools
 This is the Lazy OSDL Automatic Net Installer, dedicated to the lazy and the fearless.
 
 Its purpose is to have OSDL and all its pre requesites installed with the minimum of time and effort. Some time is nevertheless needed, since some downloads may have to be performed, and the related build is CPU-intensive, so often a bit long. Therefore, even with a powerful computer and broadband access, some patience will be needed.
-Warning: No prefix specified and not run as root (which is recommended indeed): adding prefix /home/tester/LOANI-0.5/LOANI-installations.
+Warning: No prefix specified and not run as root (which is recommended indeed): adding prefix /home/tester/LOANI-0.6/LOANI-installations.
 Retrieving all pre requesites, pipe-lining when possible.
 Target package list is &lt;libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL&gt;.
-Some tools already available (libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer), others will be downloaded (Ceylan OSDL).
+Some tools already available (libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar), others will be downloaded (Ceylan OSDL).
 Retrieving Ceylan from developer SVN with user name wondersye.
       ----&gt; getting Ceylan from SVN with user name wondersye (check-out)
       &lt;---- Ceylan retrieved [from SVN]
@@ -507,11 +525,12 @@ All pre requesites available.
       ----&gt; libogg     : extracting [OK] configuring [OK] building [OK] installing [OK]
       ----&gt; libvorbis  : extracting [OK] configuring [OK] building [OK] installing [OK]
       ----&gt; SDL_mixer  : extracting [OK] configuring [OK] building [OK] installing [OK]
+      ----&gt; Agar       : extracting [OK] configuring [OK] building [OK] installing [OK]
       ----&gt; Ceylan     : extracting [OK] configuring [OK] building [OK] installing [OK]
       ----&gt; OSDL       : extracting [OK] configuring [OK] building [OK] installing [OK]
 Post-install cleaning of build trees.
 End of LOANI, started at 19:00:44, successfully ended at 19:20:15.
-You can now test the whole installation by executing /home/tester/LOANI-0.5/LOANI-installations/OSDL-0.5/share/OSDL-test/playTests.sh              </pre>
+You can now test the whole installation by executing /home/tester/LOANI-0.6/LOANI-installations/OSDL-0.5/share/OSDL-test/playTests.sh              </pre>
 
 
             </div>
@@ -911,7 +930,7 @@ We hope you will enjoy using LOANI and OSDL !
   <h3>Please react !</h3>
 
   <p>If you have informations more detailed or more recent than those presented in this document, if you noticed errors, neglects or points
-  insufficiently discussed, <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.5">drop us a line</a>!</p>
+  insufficiently discussed, <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.6">drop us a line</a>!</p>
   <br>
   <br>
   <hr>
@@ -920,8 +939,7 @@ We hope you will enjoy using LOANI and OSDL !
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Thursday, July 17, 2008</em>
-	
+    <em>Last update: Sunday, July 27, 2008</em>	
   </center>
 </body>
 </html>
