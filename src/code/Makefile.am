@@ -74,7 +74,7 @@ DISTCLEANFILES = OSDLConfig.h
 	
 	
 # Run ldconfig after installing the library:
-install-hook:
+install-exec-hook:
 	-ldconfig
 
 clean-local:
