@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
-	Name="Ceylan-0.6-library"
+	Version="9,00"
+	Name="Ceylan-0.7-library"
 	ProjectGUID="{021F8729-BF5B-4A73-B130-BEA1DDB68A89}"
-	RootNamespace="Ceylan-0.3-library"
+	RootNamespace="Ceylan-0.7-library"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -19,9 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets="..\..\..\..\..\..\..\..\visual-express\OSDLProperties.vsprops;..\..\..\..\..\..\..\..\visual-express\OSDLOverridingProperties.vsprops"
-			>
+			ConfigurationType="2"			InheritedPropertySheets="..\..\..\..\..\..\..\visual-express\OSDLProperties.vsprops;..\..\..\..\..\..\..\visual-express\OSDLOverridingProperties.vsprops"
 			<Tool
 				Name="VCPreBuildEventTool"
 			/>
@@ -55,8 +54,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(LoaniDLLInstDir)\$(CeylanDLLName)"
-				ImportLibrary="$(LoaniLIBInstDir)\$(CeylanLIBName)"
+				OutputFile="$(CeylanDLLName)"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(CeylanLIBName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -77,9 +78,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -88,7 +86,7 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\CeylanProperties.vsprops;..\..\..\..\..\..\..\..\visual-express\OSDLOverridingProperties.vsprops"
+InheritedPropertySheets=".\CeylanProperties.vsprops;..\..\..\..\..\..\..\visual-express\OSDLOverridingProperties.vsprops"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -130,6 +128,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -149,9 +149,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -219,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\code\system\CeylanConsole.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\code\interfaces\CeylanController.h"
 				>
 			</File>
@@ -283,6 +284,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\code\system\CeylanFileSystemCommon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanFileSystemManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\code\generic\CeylanFunctor.h"
 				>
 			</File>
@@ -296,6 +305,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\code\generic\CeylanHeaderVersion.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\generic\CeylanHolder.h"
 				>
 			</File>
 			<File
@@ -332,6 +345,18 @@
 			</File>
 			<File
 				RelativePath="..\..\..\code\network\CeylanIPAddressvFour.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanLibfatDirectory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanLibfatFile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanLibfatFileSystemManager.h"
 				>
 			</File>
 			<File
@@ -623,6 +648,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\code\system\CeylanStandardDirectory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanStandardFile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanStandardFileSystemManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\code\system\CeylanStream.h"
 				>
 			</File>
@@ -656,6 +693,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\code\generic\CeylanTestException.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\generic\CeylanTextBuffer.h"
 				>
 			</File>
 			<File
@@ -735,7 +776,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\code\modules\ceylanxmlelement.h"
+				RelativePath="..\..\..\code\modules\CeylanXMLElement.h"
 				>
 			</File>
 			<File
@@ -743,7 +784,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\code\modules\ceylanxmlvisitor.h"
+				RelativePath="..\..\..\code\modules\CeylanXMLVisitor.h"
 				>
 			</File>
 			<File
@@ -797,6 +838,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\code\system\CeylanConsole.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\code\interfaces\CeylanController.cc"
 				>
 			</File>
@@ -845,6 +890,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\code\system\CeylanFileSystemManager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\code\generic\CeylanFunctor.cc"
 				>
 			</File>
@@ -889,6 +938,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\code\system\CeylanLibfatDirectory.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanLibfatFile.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanLibfatFileSystemManager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\code\generic\CeylanLibtoolVersion.cc"
 				>
 			</File>
@@ -898,6 +959,14 @@
 			</File>
 			<File
 				RelativePath="..\..\..\code\maths\CeylanLinear.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\interfaces\CeylanLoadable.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\interfaces\CeylanLoadable.h"
 				>
 			</File>
 			<File
@@ -1141,6 +1210,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\code\system\CeylanStandardDirectory.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanStandardFile.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\system\CeylanStandardFileSystemManager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\code\system\CeylanStream.cc"
 				>
 			</File>
@@ -1162,6 +1243,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\code\generic\CeylanTestException.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\code\generic\CeylanTextBuffer.cc"
 				>
 			</File>
 			<File
