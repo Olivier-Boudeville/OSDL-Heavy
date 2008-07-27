@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C++ Express 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ceylan-library", "Ceylan-from-LOANI.vcproj", "{021F8729-BF5B-4A73-B130-BEA1DDB68A89}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ceylan-0.7-library-from-LOANI", "Ceylan-from-LOANI.vcproj", "{021F8729-BF5B-4A73-B130-BEA1DDB68A89}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanBasicResourceManager", "..\..\..\..\test\generic\testCeylanBasicResourceManager\testCeylanBasicResourceManager.vcproj", "{9774A4F8-ECE7-40AD-8873-3AF115B5060D}"
 EndProject
@@ -128,6 +128,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanBasicDatatypes", "..\..\..\..\test\generic\testCeylanBasicDatatypes\testCeylanBasicDatatypes.vcproj", "{09C4CF76-BBED-4601-B17F-E3A0451B0A31}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modules-testCeylanXMLParser", "..\..\..\..\test\modules\testCeylanXMLParser\testCeylanXMLParser.vcproj", "{A3EBD624-D768-4196-844C-49CAED2DBA60}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "system-testCeylanConsole", "..\..\..\..\test\system\testCeylanConsole\testCeylanConsole.vcproj", "{21C0813F-6614-420B-9FAB-F05D93585E43}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanHolder", "..\..\..\..\test\generic\testCeylanHolder\testCeylanHolder.vcproj", "{7C1AD4DE-A150-442B-A373-5B7DF3F246B7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanLoadable", "..\..\..\..\test\generic\testCeylanLoadable\testCeylanLoadable.vcproj", "{362BE482-65F6-49FA-A7DF-32FC72167B5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -391,6 +397,18 @@ Global
 		{A3EBD624-D768-4196-844C-49CAED2DBA60}.Debug|Win32.Build.0 = Debug|Win32
 		{A3EBD624-D768-4196-844C-49CAED2DBA60}.Release|Win32.ActiveCfg = Release|Win32
 		{A3EBD624-D768-4196-844C-49CAED2DBA60}.Release|Win32.Build.0 = Release|Win32
+		{21C0813F-6614-420B-9FAB-F05D93585E43}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21C0813F-6614-420B-9FAB-F05D93585E43}.Debug|Win32.Build.0 = Debug|Win32
+		{21C0813F-6614-420B-9FAB-F05D93585E43}.Release|Win32.ActiveCfg = Release|Win32
+		{21C0813F-6614-420B-9FAB-F05D93585E43}.Release|Win32.Build.0 = Release|Win32
+		{7C1AD4DE-A150-442B-A373-5B7DF3F246B7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7C1AD4DE-A150-442B-A373-5B7DF3F246B7}.Debug|Win32.Build.0 = Debug|Win32
+		{7C1AD4DE-A150-442B-A373-5B7DF3F246B7}.Release|Win32.ActiveCfg = Release|Win32
+		{7C1AD4DE-A150-442B-A373-5B7DF3F246B7}.Release|Win32.Build.0 = Release|Win32
+		{362BE482-65F6-49FA-A7DF-32FC72167B5F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{362BE482-65F6-49FA-A7DF-32FC72167B5F}.Debug|Win32.Build.0 = Debug|Win32
+		{362BE482-65F6-49FA-A7DF-32FC72167B5F}.Release|Win32.ActiveCfg = Release|Win32
+		{362BE482-65F6-49FA-A7DF-32FC72167B5F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
