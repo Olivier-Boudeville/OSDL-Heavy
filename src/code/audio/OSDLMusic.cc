@@ -120,7 +120,13 @@ MusicException::~MusicException() throw()
 /// Starts with no current music:
 Music * Music::_CurrentMusic = 0 ;
 
+
+#if OSDL_ARCH_NINTENDO_DS
+
 const OSDL::CommandManagerSettings * Music::_CommandManagerSettings = 0 ;
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
 
 
 
@@ -333,7 +339,7 @@ bool Music::load() throw( Ceylan::LoadableException )
 	try
 	{
 		// Misleading, supports WAVE but other formats as well:
-		_content = ::Mix_LoadMUS( FindAudiblePath( _contentPath ).c_str() ) ;
+		_content =::Mix_LoadMUS( FindAudiblePath( _contentPath ).c_str() ) ;
 	
 	}
 	catch( const AudibleException & e )
@@ -1077,6 +1083,7 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const throw()
 }
 
 
+#if OSDL_ARCH_NINTENDO_DS
 
 void Music::SetCommandManagerSettings( const CommandManagerSettings & settings )
 	throw()
@@ -1086,6 +1093,7 @@ void Music::SetCommandManagerSettings( const CommandManagerSettings & settings )
 	
 }
 
+#endif // OSDL_ARCH_NINTENDO_DS
 
 
 void Music::ManageCurrentMusic() throw( AudioException )
