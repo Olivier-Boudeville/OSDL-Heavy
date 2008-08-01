@@ -1000,11 +1000,15 @@ CheckPlatform()
 	OSDL_DLL_EXPORT_WINDOWS="__declspec( dllexport )"
 
 	OSDL_ARCH_NINTENDO_DS=0
+
+	# Needed with gcc compilers:
+	OSDL_PACKED_ATTRIBUTE="__attribute__ ((packed))"
 	
 	case "$target" in
 	
 		*-*-win32*) 
 			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
+			OSDL_PACKED_ATTRIBUTE=""
 			;;
 
 		*-*-cygwin*)
@@ -1049,8 +1053,9 @@ CheckPlatform()
 	# thanks to command-line preprocessor options (-DOSDL_DLL="...")
 	# so that headers can avoid #including platform-specific configuration
 	# files. Hence no 'AC_DEFINE_UNQUOTED([OSDL_DLL], ...' here.
+	# Same reason applies for OSDL_PACKED_ATTRIBUTE. 
 	
-	AM_CXXFLAGS="${AM_CXXFLAGS} -DOSDL_DLL=\"${OSDL_DLL}\""
+	AM_CXXFLAGS="${AM_CXXFLAGS} -DOSDL_DLL=\"${OSDL_DLL}\" -DOSDL_PACKED_ATTRIBUTE=\"${OSDL_PACKED_ATTRIBUTE}\"
 	
 }
 
