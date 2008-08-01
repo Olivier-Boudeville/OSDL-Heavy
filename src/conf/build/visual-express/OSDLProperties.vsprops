@@ -16,6 +16,7 @@
 		WarnAsError="false"
 		Detect64BitPortabilityProblems="true"
 		DebugInformationFormat="3"
+		PreprocessorDefinitions="CEYLAN_PACKED_ATTRIBUTE=;OSDL_PACKED_ATTRIBUTE="
 	/>
 	<Tool
 		Name="VCLinkerTool"

@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(CeylanCodeRoot)&quot;;&quot;$(CeylanCodeRoot)\generic&quot;;&quot;$(CeylanCodeRoot)\interfaces&quot;;&quot;$(CeylanCodeRoot)\logs&quot;;&quot;$(CeylanCodeRoot)\maths&quot;;&quot;$(CeylanCodeRoot)\middleware&quot;;&quot;$(CeylanCodeRoot)\modules&quot;;&quot;$(CeylanCodeRoot)\network&quot;;&quot;$(CeylanCodeRoot)\system&quot;"
-				PreprocessorDefinitions="CEYLAN_RUNS_ON_WINDOWS=1;CEYLAN_USES_CONFIG_H=1;&quot;CEYLAN_DLL=__declspec( dllexport )&quot;;&quot;CEYLAN_EXTERN_TEMPLATE=&quot;"
+				PreprocessorDefinitions="CEYLAN_RUNS_ON_WINDOWS=1;CEYLAN_USES_CONFIG_H=1;&quot;CEYLAN_DLL=__declspec( dllexport )&quot;;&quot;CEYLAN_EXTERN_TEMPLATE=&quot;;CEYLAN_PACKED_ATTRIBUTE="
 				DisableLanguageExtensions="false"
 				DisableSpecificWarnings="4290;4101;4996"
 			/>
