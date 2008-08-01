@@ -33,6 +33,16 @@ using namespace OSDL::Video::OpenGL ;
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+#if OSDL_USES_AGAR
+	
+#include <agar/config/have_opengl.h>
+ 
+#include <agar/core.h>
+#include <agar/gui.h>
+#include <agar/gui/opengl.h>
+	
+#endif // OSDL_USES_AGAR	
+
 
 // Replicating these defines allows to enable them on a per-class basis:
 #if OSDL_VERBOSE_VIDEO_MODULE
@@ -51,10 +61,6 @@ using namespace OSDL::Video::OpenGL ;
 
 
 
-#if OSDL_USES_SDL
-
-#include "SDL.h"
-
 
 /*
  * These flags can be used for all Surfaces <b>created by setMode</b>.
@@ -67,16 +73,56 @@ using namespace OSDL::Video::OpenGL ;
  *
  */
 
-const Ceylan::Flags VideoModule::SoftwareSurface  = SDL_SWSURFACE  ;
-const Ceylan::Flags VideoModule::HardwareSurface  = SDL_HWSURFACE  ;
-const Ceylan::Flags VideoModule::AsynchronousBlit = SDL_ASYNCBLIT  ;
-const Ceylan::Flags VideoModule::AnyPixelFormat   = SDL_ANYFORMAT  ;
-const Ceylan::Flags VideoModule::ExclusivePalette = SDL_HWPALETTE  ;
-const Ceylan::Flags VideoModule::DoubleBuffered   = SDL_DOUBLEBUF  ;
+
+
+/* 
+ * Checking binary value to avoid collisions of mask:
+ *
+ * (use http://www.easycalculation.com/hex-converter.php if really unsure)
+ *
+
+SDL_SWSURFACE	0x00000000 = 0b00000000000000000000000000000000	
+SDL_HWSURFACE	0x00000001 = 0b00000000000000000000000000000001	
+SDL_OPENGL      0x00000002 = 0b00000000000000000000000000000010 
+SDL_ASYNCBLIT	0x00000004 = 0b00000000000000000000000000000100
+SDL_OPENGLBLIT	0x0000000A = 0b00000000000000000000000000001010
+SDL_RESIZABLE	0x00000010 = 0b00000000000000000000000000010000
+SDL_NOFRAME	    0x00000020 = 0b00000000000000000000000000100000
+SDL_HWACCEL	    0x00000100 = 0b00000000000000000000000100000000
+0SDL_WITHGUI	0x00000800 = 0b00000000000000000000100000000000
+SDL_SRCCOLORKEY	0x00001000 = 0b00000000000000000001000000000000
+SDL_RLEACCELOK	0x00002000 = 0b00000000000000000010000000000000
+SDL_RLEACCEL	0x00004000 = 0b00000000000000000100000000000000	
+SDL_SRCALPHA	0x00010000 = 0b00000000000000010000000000000000
+SDL_PREALLOC	0x01000000 = 0b00000001000000000000000000000000
+SDL_ANYFORMAT	0x10000000 = 0b00010000000000000000000000000000	
+SDL_HWPALETTE	0x20000000 = 0b00100000000000000000000000000000
+SDL_DOUBLEBUF	0x40000000 = 0b01000000000000000000000000000000
+SDL_FULLSCREEN	0x80000000 = 0b10000000000000000000000000000000
+
+*/
+
+// Chosen not to collide with SDL constants:
+#define 0SDL_WITHGUI 0x00000800
+
+
+#if OSDL_USES_SDL
+
+#include "SDL.h"
+
+
+const Ceylan::Flags VideoModule::SoftwareSurface  = SDL_SWSURFACE ;
+const Ceylan::Flags VideoModule::HardwareSurface  = SDL_HWSURFACE ;
+const Ceylan::Flags VideoModule::AsynchronousBlit = SDL_ASYNCBLIT ;
+const Ceylan::Flags VideoModule::AnyPixelFormat   = SDL_ANYFORMAT ;
+const Ceylan::Flags VideoModule::ExclusivePalette = SDL_HWPALETTE ;
+const Ceylan::Flags VideoModule::DoubleBuffered   = SDL_DOUBLEBUF ;
 const Ceylan::Flags VideoModule::FullScreen       = SDL_FULLSCREEN ;
-const Ceylan::Flags VideoModule::OpenGL           = SDL_OPENGL     ;
-const Ceylan::Flags VideoModule::Resizable        = SDL_RESIZABLE  ;
-const Ceylan::Flags VideoModule::NoFrame          = SDL_NOFRAME    ;
+const Ceylan::Flags VideoModule::OpenGL           = SDL_OPENGL ;
+const Ceylan::Flags VideoModule::Resizable        = SDL_RESIZABLE ;
+const Ceylan::Flags VideoModule::WithGUI          = 0SDL_WITHGUI ;
+const Ceylan::Flags VideoModule::NoFrame          = SDL_NOFRAME ;
+
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
 const std::string VideoModule::_SDLEnvironmentVariables[] = 
@@ -112,6 +158,7 @@ const Ceylan::Flags VideoModule::DoubleBuffered   = 0x40000000 ;
 const Ceylan::Flags VideoModule::FullScreen       = 0x80000000 ;
 const Ceylan::Flags VideoModule::OpenGL           = 0x00000002 ;
 const Ceylan::Flags VideoModule::Resizable        = 0x00000010 ;
+const Ceylan::Flags VideoModule::WithGUI          = 0SDL_WITHGUI ;
 const Ceylan::Flags VideoModule::NoFrame          = 0x00000020 ;
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
@@ -159,7 +206,7 @@ VideoModule::VideoModule() throw( VideoException ):
 		
 #ifdef OSDL_RUNS_ON_ARM7
 
-	throw OSDL::Exception( "CommonModule constructor failed: "
+	throw OSDL::Exception( "VideoModule constructor failed: "
 		"not supported on the ARM7." ) ;
 		
 #elif defined(OSDL_RUNS_ON_ARM9)
@@ -431,7 +478,18 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			+ " with flags " + Ceylan::toString( flags, /* bit field */ true )
 			+ " video mode: " + Utils::getBackendLastError() ) ;
 
+	if ( flags & WithGUI )
+	{
 
+#if OSDL_USES_AGAR
+	
+		//int AG_InitGUI( flags ) ;
+	
+#endif // OSDL_USES_AGAR
+	
+	}
+	
+	
 	if ( useOpenGLRequested )
 	{
 		_screen = new Video::Surface( * screen, 
@@ -1322,6 +1380,12 @@ string VideoModule::InterpretFlags( Flags flags ) throw()
 		res.push_back( "Requests a resizable window (Resizable is set)." ) ;
 	else
 		res.push_back( "No resizable window requested (Resizable not set)." ) ;
+
+	if ( flags & WithGUI )
+		res.push_back( "Requests of a GUI (WithGUI is set)." ) ;
+	else
+		res.push_back( "No GUI requested (WithGUI not set)." ) ;
+		
 		
 	if ( flags & NoFrame )
 		res.push_back( 

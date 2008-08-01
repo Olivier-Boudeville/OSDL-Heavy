@@ -818,7 +818,7 @@ namespace OSDL
 				 
 				/*
 				 * These flags can apply to Surfaces <b>created by setMode</b>,
-				 * i.e. all the display Surfaces.
+				 * i.e. all the Display Surfaces, and only them.
 				 * 
 				 * The legal flags for setMode form a subset of the Surface
 				 * flags, with one flag being added, NoFrame. 
@@ -894,6 +894,12 @@ namespace OSDL
 				static const Ceylan::Flags Resizable ;
 
 
+				/**
+				 * Indicates that a GUI backend should be used here (ex: Agar).
+				 *
+				 */		
+				static const Ceylan::Flags WithGUI ;
+				
 				/**
 				 * Indicates that a window which would correspond to a 
 				 * screen surface should have no title bar nor frame 
