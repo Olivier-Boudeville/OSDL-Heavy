@@ -12,6 +12,9 @@
 #include <string>
 
 
+// Command management only needed for the Nintendo DS:
+#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
+
 
 namespace OSDL
 {
@@ -446,6 +449,7 @@ namespace OSDL
 	
 }
 
+#endif // defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
 
 
 #endif // OSDL_COMMAND_MANAGER_H_

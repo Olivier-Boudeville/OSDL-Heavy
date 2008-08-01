@@ -1,7 +1,7 @@
 ## Makefile.am for the 'Basic' module of the OSDL library.
 
 
-# Convenience library for the 'Basic' module :
+# Convenience library for the 'Basic' module:
 noinst_LTLIBRARIES = libOSDLBasic.la
 
 libOSDLBasic_la_SOURCES = $(BASIC_INTERFACES) $(BASIC_IMPLEMENTATIONS)
@@ -11,6 +11,8 @@ libOSDLBasic_la_CPPFLAGS = -I@OSDL_VIDEO@ -I@OSDL_VIDEO_TWO_DIMENSIONAL@ -I@OSDL
 libOSDLBasicIncludedir      = $(includedir)/OSDL
 libOSDLBasicInclude_HEADERS = $(BASIC_INTERFACES)
 
+
+# OSDLCommandManager* not even listed here.
 
 BASIC_INTERFACES = \
 	OSDLARM7Codes.h                      \
@@ -39,3 +41,4 @@ BASIC_IMPLEMENTATIONS = \
 	
 
 # DISABLED = OSDLDocMainPage.h
+

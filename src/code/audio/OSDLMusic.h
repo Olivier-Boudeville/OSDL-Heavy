@@ -32,11 +32,16 @@ struct _Mix_Music ;
 namespace OSDL
 {
 
+
+// Command management only needed for the Nintendo DS:
+#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
 	
 	// Forward-declaration for friend declaration.	
 	class CommandManager ;
 	
 	class CommandManagerSettings ;
+
+#endif // defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
 	
 	 
 	namespace Audio 
@@ -654,16 +659,20 @@ namespace OSDL
 		 		virtual const std::string toString( 
 						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
+	
 			
-			
+#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
+	
 				/**
 				 * Sets the shared command manager settings for musics.
 				 *
 				 */
 				static void SetCommandManagerSettings( 
 					const CommandManagerSettings & settings ) throw() ;
-				
-				
+							
+#endif // defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
+			
+
 				/**
 				 * Manages the current music, including regarding the refilling
 				 * of buffers.
@@ -718,7 +727,10 @@ namespace OSDL
 			
 				/// Tells whether this music is being played.
 				bool _isPlaying ;
+
 				
+#if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
+
 				/**
 				 * Shared settings about the command manager, used by all
 				 * musics, and initialized at the command manager creation.
@@ -728,6 +740,8 @@ namespace OSDL
 				 */				
 				static const CommandManagerSettings * _CommandManagerSettings ;
 				
+#endif // defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
+			
 				
 				/// The music currently being played (if any).
 				static Music * _CurrentMusic ;

@@ -18,17 +18,19 @@ all: compile
 install: install-headers
 
 
-# Small hack that allows to retrieve from autoconf files the relevant targets:
+# Small hack that allows to retrieve from autoconf files the relevant targets:
 include Makefile.am
 
 
 ARM7_OBJ_FILES = \
 	OSDLARM7Base.arm7.o \
 	$(patsubst %.cc,%.arm7.o,$(BASIC_IMPLEMENTATIONS))
-	
+
+# OSDLCommandManager is DS-specific:
 ARM9_OBJ_FILES = \
 	OSDLCommandManager.arm9.o \
 	$(patsubst %.cc,%.arm9.o,$(BASIC_IMPLEMENTATIONS))
 
 
 include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makerules.inc
+
