@@ -20,6 +20,9 @@ BASIC_INTERFACES = \
 	OSDLBasicIncludes.h                  \
 	OSDLCDROMDrive.h                     \
 	OSDLCDROMDriveHandler.h              \
+	OSDLEmbeddedDirectory.h              \
+	OSDLEmbeddedFile.h                   \
+	OSDLEmbeddedFileSystemManager.h      \
 	OSDLException.h                      \
 	OSDLFileTags.h                       \
 	OSDLHeaderVersion.h                  \
@@ -34,6 +37,9 @@ BASIC_IMPLEMENTATIONS = \
 	OSDLBasic.cc                         \
 	OSDLCDROMDrive.cc                    \
 	OSDLCDROMDriveHandler.cc             \
+	OSDLEmbeddedDirectory.cc             \
+	OSDLEmbeddedFile.cc                  \
+	OSDLEmbeddedFileSystemManager.cc     \
 	OSDLException.cc                     \
 	OSDLFileTags.cc                      \
 	OSDLTestException.cc                 \

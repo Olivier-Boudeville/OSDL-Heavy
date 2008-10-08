@@ -10,6 +10,9 @@
 
 #include "OSDLBasic.h"
 #include "OSDLCDROMDrive.h"
+#include "OSDLEmbeddedDirectory.h"
+#include "OSDLEmbeddedFile.h"
+#include "OSDLEmbeddedFilesystem.h"
 #include "OSDLException.h"
 #include "OSDLFileTags.h"
 #include "OSDLHeaderVersion.h"
@@ -17,4 +20,6 @@
 #include "OSDLTypes.h"
 #include "OSDLUtils.h"
 
+
 #endif // OSDL_BASIC_INCLUDES_H_
+
