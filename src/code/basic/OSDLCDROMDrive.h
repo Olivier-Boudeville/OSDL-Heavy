@@ -9,6 +9,7 @@
 
 
 #include <string>
+#include <list>
 #include <map>
 
 
@@ -378,6 +379,19 @@ namespace OSDL
 			// Static section.
 			
 			
+            /**
+             * Returns a list of inserted disc media, such as DVD-ROM, HD-DVD,
+             * CDRW, and Blu-Ray discs. 
+             *
+             * @note Only filesystems are searched for, thus for example an
+             * audio CD will not be returned, unless there is a mounted
+             * filesystem track on it.
+             *
+             */
+            static std::list<std::string> GetListOfInsertedMedia() 
+            	throw( CDROMDriveException ) ;
+            
+            
 			/**
 			 * Returns the number of CD frames corresponding to the 
 			 * specified time.
