@@ -23,11 +23,11 @@
 # downward-compatibility).
 
 
-# OSDL users can execute 'aclocal' (ex : 'aclocal -I . --output=aclocal.m4')
+# OSDL users can execute 'aclocal' (ex: 'aclocal -I . --output=aclocal.m4')
 # to have our macros added to their 'aclocal.m4', provided that 
 # OSDL_PATH is called from the user configure.ac.
 
-# Note that this file (osdl.m4) depends on :
+# Note that this file (osdl.m4) depends on:
 #   - pkg.m4 
 #   - ceylan.m4
 #   - vorbis.m4
@@ -39,20 +39,20 @@
 
 
 # This macro will take advantage of locations specified to the configure
-# script, ex : ./configure --with-osdl-environment=~/OSDL-environment.sh
+# script, ex: ./configure --with-osdl-environment=~/OSDL-environment.sh
 
 #
 # OSDL_PATH( major, revision, age, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]] )
 # 
 # The three arguments designate the minimum OSDL version to be searched for,
-# according to libtool conventions :
-# 	major    : the major number for this version 
-#	revision : the revision number for this version 
-#   age      : the interface age for this version 
-# Note : age should not be needed if the libtool numbering scheme was really
+# according to libtool conventions:
+# 	major   : the major number for this version 
+#	revision: the revision number for this version 
+#   age     : the interface age for this version 
+# Note: age should not be needed if the libtool numbering scheme was really
 # used.
 #
-# A OSDL library will be searched for, and its version will be checked 
+# An OSDL library will be searched for, and its version will be checked 
 # against specified minimum version.
 #
 # Checks that the OSDL library can be used, stops with AC_MSG_ERROR if 
@@ -62,56 +62,59 @@
 # The OSDL_PREFIX variable will contain the actual prefix of OSDL
 # installation.
 #
-# Example : in configure.ac, searching for OSDL 0.4.0 is :
+# Example: in configure.ac, searching for OSDL 0.4.0 is:
 # OSDL_PATH( 0,4,0 )
 # 
-# A specific order is enforced : for example SDL_image depends on SDL,
-# hence the libraries are enumerate from the most specific to the most
+# A specific order is enforced: for example SDL_image depends on SDL,
+# hence the libraries are enumerated from the most specific to the most
 # general. 
 #
-# The order is then (optional dependencies are shown between brackets) :
+# The order is then: (optional dependencies are shown between brackets)
 #   1.  OSDL
 #   2.  Ceylan
-#   3.  SDL_image
-#   4.  libjpeg
-#   5.  libpng
-#   6.  zlib
-#   7.  SDL_gfx
-#   8.  SDL_ttf
-#   9.  freetype
-#   10. SDL_mixer
-#   11. libvorbis
-#   12. libogg
-#   13. SDL
-#   14. [ GLU ]
-#   15. [ GL  ]
+#   3.  Agar
+#   4.  PhysicsFS
+#   5.  SDL_image
+#   6.  libjpeg
+#   7.  libpng
+#   8.  zlib
+#   9.  SDL_gfx
+#   10. SDL_ttf
+#   11. freetype
+#   12. SDL_mixer
+#   13. libvorbis
+#   14. libogg
+#   15. SDL
+#   16. [ GLU ]
+#   17. [ GL  ]
+#   18. [ miscellaneous ]
 #
 AC_DEFUN([OSDL_PATH],
 [
 
-  # 1. take care of OSDL (m4 code directly here) :
-  # Uses all other prerequesites, directly (ex : SDL) or not (ex : zlib).
+  # 1. take care of OSDL (m4 code directly here):
+  # Uses all other prerequesites, directly (ex: SDL) or not (ex: zlib).
   
   # Here is specified for each given OSDL release what are the most ancient
-  # versions that are still compatible with this current version :
+  # versions that are still compatible with this current version:
   OSDL_OLDEST_SUPPORTED_MAJOR=0
   OSDL_OLDEST_SUPPORTED_MINOR=4  
-  # Setting the install path of the OSDL library :
+  # Setting the install path of the OSDL library:
   OSDL_LIBS=" -lOSDL "
   AC_ARG_WITH(osdl-prefix,
     AS_HELP_STRING([--with-osdl-prefix],[Prefix where OSDL is installed (optional)]),
       [
         OSDL_CPPFLAGS="-I${withval}/include/OSDL"
         OSDL_LIBS="-L${withval}/lib -lOSDL"
-		# Get ready for configure tests :
+		# Get ready for configure tests:
 		LD_LIBRARY_PATH="${withval}/lib:$LD_LIBRARY_PATH"
 		export LD_LIBRARY_PATH
       ],[
 		default_install_path=/usr/local
-	  	# No path specified, trying to guess it :
+	  	# No path specified, trying to guess it:
 		# Is pkg-config available ?
 		
-		# Note : see the top of our pkg.m4 to understand why this file is 
+		# Note: see the top of our pkg.m4 to understand why this file is 
 		# needed.
 		
 		AC_PATH_PROG(PKG_CONFIG,pkg-config,[no]) 
@@ -121,20 +124,20 @@ AC_DEFUN([OSDL_PATH],
         	OSDL_LIBS="-L${default_install_path}/lib -lOSDL"
 		else 
 			# Here pkg-config is available.
-			# Use it if possible, otherwise choose default values :
+			# Use it if possible, otherwise choose default values:
 			# PKG_CONFIG_PATH should contain /usr/local/lib/pkgconfig, use
 			# export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-			# Check if OSDL pkg-config configuration file is found :
+			# Check if OSDL pkg-config configuration file is found:
 			AC_MSG_CHECKING([for osdl-$1.$2.pc (OSDL pkg-config configuration file)]) 
 			if $PKG_CONFIG --exists osdl-$1.$2 ; then
 				AC_MSG_RESULT(yes) 
 				PKG_CHECK_MODULES(OSDL,osdl-$1.$2 >= $OSDL_OLDEST_SUPPORTED_MAJOR.$OSDL_OLDEST_SUPPORTED_MINOR,
 				[
 					# pkg-config succeeded and set OSDL_CFLAGS and 
-					# OSDL_LIBS :
+					# OSDL_LIBS:
 					OSDL_CPPFLAGS="${OSDL_CFLAGS} ${OSDL_CPPFLAGS}"
 					# OSDL_LIBS left as set
-					# Get ready for configure tests :
+					# Get ready for configure tests:
 					LD_LIBRARY_PATH=`$PKG_CONFIG osdl-$1.$2 --variable=libdir`:$LD_LIBRARY_PATH
 					export LD_LIBRARY_PATH
 				],
@@ -152,14 +155,45 @@ AC_DEFUN([OSDL_PATH],
      	])
 
 
-  # 2. take care of Ceylan (from ceylan.m4) :
+  # 2. take care of Ceylan (from ceylan.m4):
   CEYLAN_PATH(@CEYLAN_RECOMMENDED_MAJOR@, @CEYLAN_RECOMMENDED_MINOR@, @CEYLAN_RECOMMENDED_RELEASE@)
   
   OSDL_CPPFLAGS="$OSDL_CPPFLAGS $CEYLAN_CPPFLAGS"
   OSDL_LIBS="$OSDL_LIBS $CEYLAN_LIBS"
 
+  # 3. take care of Agar:
+  AC_ARG_WITH(libagar-prefix,
+    AS_HELP_STRING([--with-libagar-prefix=PFX],[Prefix where Agar is installed (optional)]),
+      [
+        AGAR_CPPFLAGS="-I${withval}/include/agar"
+        AGAR_LIBS="-L${withval}/lib -lag_gui -lag_core"
+		AGAR_PREFIX="${withval}"
+      ],[
+        AGAR_LIBS="-L${withval}/lib -lag_gui -lag_core"
+	  ]
+  )
+  
+  OSDL_CPPFLAGS="$OSDL_CPPFLAGS $AGAR_CPPFLAGS"
+  OSDL_LIBS="$OSDL_LIBS $AGAR_LIBS"
+
+
+  # 4. take care of PhysicsFS:
+  AC_ARG_WITH(physicsfs-prefix,
+    AS_HELP_STRING([--with-physicsfs-prefix=PFX],[Prefix where PhysicsFS is installed (optional)]),
+      [
+        PHYSICSFS_CPPFLAGS="-I${withval}/include"
+	    PHYSICSFS_LIBS="-L${withval}/lib -lphysfs"
+		PHYSICSFS_PREFIX="${withval}"
+      ],[
+	    PHYSICSFS_LIBS="-L${withval}/lib -lphysfs"
+	  ]
+  )
+  
+  OSDL_CPPFLAGS="$OSDL_CPPFLAGS $PHYSICSFS_CPPFLAGS"
+  OSDL_LIBS="$OSDL_LIBS $PHYSICSFS_LIBS"
+
  
-  # 3. take care of SDL_image :
+  # 5. take care of SDL_image:
   AC_ARG_WITH(sdl_image-prefix,
     AS_HELP_STRING([--with-sdl_image-prefix=PFX],[Prefix where SDL_image is installed (optional)]),
       [
@@ -167,7 +201,7 @@ AC_DEFUN([OSDL_PATH],
         SDL_IMAGE_LIBS="-L${withval}/lib -lSDL_image"
 		SDL_IMAGE_PREFIX="${withval}"
       ],[
-	    LIBJPEG_LIBS="-L${withval}/lib -lSDL_image"
+        SDL_IMAGE_LIBS="-L${withval}/lib -lSDL_image"
 	  ]
   )
   
@@ -175,7 +209,7 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $SDL_IMAGE_LIBS"
     
   
-  # 4. take care of libjpeg :
+  # 6. take care of libjpeg:
   AC_ARG_WITH(libjpeg-prefix,
     AS_HELP_STRING([--with-libjpeg-prefix=PFX],[Prefix where libjpeg is installed (optional)]),
       [
@@ -191,7 +225,7 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $LIBJPEG_LIBS"
 
 
-  # 5. take care of libpng :
+  # 7. take care of libpng:
   AC_ARG_WITH(libpng-prefix,
     AS_HELP_STRING([--with-libpng-prefix=PFX],[Prefix where libpng is installed (optional)]),
       [
@@ -207,7 +241,7 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $LIBPNG_LIBS"
 
 
-  # 6. take care of zlib :
+  # 8. take care of zlib:
   AC_ARG_WITH(zlib-prefix,
     AS_HELP_STRING([--with-zlib-prefix=PFX],[Prefix where zlib is installed (optional)]),
       [
@@ -223,7 +257,7 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $ZLIB_LIBS"
 
 
-  # 7. take care of SDL_gfx :
+  # 9. take care of SDL_gfx:
   AC_ARG_WITH(sdl_gfx-prefix,
     AS_HELP_STRING([--with-sdl_gfx-prefix=PFX],[Prefix where SDL_gfx is installed (optional)]),
       [
@@ -239,7 +273,7 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $SDL_GFX_LIBS"
 
 
-  # 8. take care of SDL_ttf :
+  # 10. take care of SDL_ttf:
   AC_ARG_WITH(sdl_ttf-prefix,
     AS_HELP_STRING([--with-sdl_ttf-prefix=PFX],[Prefix where SDL_ttf is installed (optional)]),
       [
@@ -255,11 +289,11 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $SDL_TTF_LIBS"
 
 
-  # 9. take care of Freetype :
+  # 11. take care of Freetype:
   AC_ARG_WITH(freetype-prefix,
     AS_HELP_STRING([--with-freetype-prefix=PFX],[Prefix where Freetype is installed (optional)]),
       [
-        # Not necessary : FREETYPE_CPPFLAGS="-I${withval}/include"
+        # Not necessary: FREETYPE_CPPFLAGS="-I${withval}/include"
         FREETYPE_LIBS="-L${withval}/lib -lfreetype"
 		FREETYPE_PREFIX="${withval}"
       ],[
@@ -271,7 +305,7 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $FREETYPE_LIBS"
 
 
-  # 10. take care of SDL_mixer :
+  # 12. take care of SDL_mixer:
   AC_ARG_WITH(sdl_mixer-prefix,
     AS_HELP_STRING([--with-sdl_mixer-prefix=PFX],[Prefix where SDL_mixer is installed (optional)]),
       [
@@ -287,7 +321,7 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $SDL_MIXER_LIBS"
 
 
-  # 11. and 12. take care of libogg (from ogg.m4) and libvorbis 
+  # 13. and 14. take care of libogg (from ogg.m4) and libvorbis 
   # (from vorbis.m4)
   XIPH_PATH_OGG()
   XIPH_PATH_VORBIS()
@@ -296,15 +330,15 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $VORBIS_LIBS $OGG_LIBS"
   
   
-  # 13. take care of SDL (from sdl.m4) :
+  # 15. take care of SDL (from sdl.m4):
   AM_PATH_SDL(@SDL_OLDEST_SUPPORTED_VERSION@) 
 
   OSDL_CPPFLAGS="$OSDL_CPPFLAGS $SDL_CFLAGS"
   OSDL_LIBS="$OSDL_LIBS $SDL_LIBS"
 
 
-  # 14 and 15. take care of OpenGL (GL/GLU) support : wanted ? available ?
-  # Defined in opengl.m4 :
+  # 16 and 17. take care of OpenGL (GL/GLU) support: wanted ? available ?
+  # Defined in opengl.m4:
   
   AC_ARG_ENABLE([opengl],
     AS_HELP_STRING(--enable-opengl,[use OpenGL and GLU in OSDL internals [[default=yes]]]),
@@ -318,7 +352,7 @@ AC_DEFUN([OSDL_PATH],
 	if test x$opengl = xyes; then
         AC_MSG_RESULT([yes])
         have_opengl=yes
-        # Defined in opengl.m4 :
+        # Defined in opengl.m4:
         AX_CHECK_GL
 		if test x$no_gl = xyes; then 
 			AC_MSG_WARN([OpenGL use requested but not available, disabling it])
@@ -337,13 +371,13 @@ AC_DEFUN([OSDL_PATH],
 		AC_MSG_CHECKING([whether OpenGL and GLU are enabled])
 		AC_MSG_RESULT([$have_opengl])
 	else
-		# OpenGL not wanted here :
+		# OpenGL not wanted here:
 		AC_MSG_RESULT([no])	
 	fi
    
-  # 16. miscellaneous :
+  # 18. miscellaneous:
   if test x$ac_cv_cxx_compiler_gnu = xyes; then
-    # Needed to avoid gcc warning triggered by a needed Visual C++ pragma :
+    # Needed to avoid gcc warning triggered by a needed Visual C++ pragma:
     OSDL_CPPFLAGS="$OSDL_CPPFLAGS -Wno-unknown-pragmas"
   fi
    
@@ -355,7 +389,7 @@ AC_DEFUN([OSDL_PATH],
   # so that headers can avoid #including platform-specific configuration
   # files.
 
-  # Needed when building a library on Windows platforms :
+  # Needed when building a library on Windows platforms:
   OSDL_DLL_IMPORT_WINDOWS="__declspec( dllimport )"
 
   OSDL_DLL=
@@ -380,28 +414,28 @@ AC_DEFUN([OSDL_PATH],
   esac
 	  
 
-  # Wanting OSDL_DLL to be replaced by nothing, not "", on UNIX :	  
+  # Wanting OSDL_DLL to be replaced by nothing, not "", on UNIX:	  
   if test "${OSDL_DLL}" = "" ; then
  	 OSDL_CPPFLAGS="$OSDL_CPPFLAGS $pthread_cflags -DOSDL_DLL="
   else	 
  	 OSDL_CPPFLAGS="$OSDL_CPPFLAGS $pthread_cflags -DOSDL_DLL=\"${OSDL_DLL}\""
   fi
    
-  # Uncomment to debug :
+  # Uncomment to debug:
   AC_MSG_NOTICE([OSDL guessed OSDL_CPPFLAGS = $OSDL_CPPFLAGS])
   AC_MSG_NOTICE([OSDL guessed OSDL_LIBS     = $OSDL_LIBS])  
 
   AC_SUBST(OSDL_CPPFLAGS)
   AC_SUBST(OSDL_LIBS)
   
-  # Checking for OSDL header files :
+  # Checking for OSDL header files:
   have_osdl=yes
   AC_MSG_NOTICE([checking for the OSDL library])
-  # AC_CHECK_HEADERS checks better than AC_PREPROC_IFELSE :
+  # AC_CHECK_HEADERS checks better than AC_PREPROC_IFELSE:
   # (compilable more interesting than only preprocessable)
   AC_LANG_PUSH([C++]) 
 
-  # Update the build flags for testing :
+  # Update the build flags for testing:
   ac_save_CPPFLAGS="$CPPFLAGS"
   ac_save_LIBS="$LIBS"
   
@@ -410,11 +444,11 @@ AC_DEFUN([OSDL_PATH],
   
   AC_CHECK_HEADERS([OSDL.h],[],[have_osdl=no])
   if test x$have_osdl = xno; then
-    AC_MSG_ERROR([No usable OSDL header file (OSDL.h) found. If the OSDL library has been installed in a non-standard location (ex : when configuring it, --prefix=$HOME/myOSDLInstall was added), use the --with-osdl-prefix option, ex : --with-osdl-prefix=$HOME/myOSDLInstall.])
+    AC_MSG_ERROR([No usable OSDL header file (OSDL.h) found. If the OSDL library has been installed in a non-standard location (ex: when configuring it, --prefix=$HOME/myOSDLInstall was added), use the --with-osdl-prefix option, ex: --with-osdl-prefix=$HOME/myOSDLInstall.])
   fi
   # Now we must check that we will link indeed to the expected version
-  # of OSDL library, as specified by OSDL_PATH arguments :
-  # Note : 
+  # of OSDL library, as specified by OSDL_PATH arguments:
+  # Note: 
   #   - this test will be disabled if cross-compiling
   #   - we do not use AC_CACHE_CHECK and al on purpose, to avoid the
   # traps of cached entries.
@@ -462,7 +496,7 @@ AC_DEFUN([OSDL_PATH],
     AC_MSG_ERROR([The OSDL library we would link to is not compatible with the one expected by the program being configured])  
   fi
 
-  # Restore original settings, now that OSDL_* counterparts are validated :
+  # Restore original settings, now that OSDL_* counterparts are validated:
   CPPFLAGS="$ac_save_CPPFLAGS"
   LIBS="$ac_save_LIBS"
   
