@@ -87,10 +87,14 @@ namespace OSDL
              * filesystem.
              *
              * @param archiveExtension the file extension used by your program
-             * to specify an archive. For example, Quake 3 uses "pk3", even
-             * though they are just zipfiles. Specify an empty string to not 
-             * dig out archives automatically. Do not specify the '.' char:
-             * if you want to look for ZIP files, specify "ZIP" and not ".ZIP"
+             * to specify an archive. 
+             * For example, Quake 3 uses "pk3", even though they are just
+             * zipfiles. 
+             * OSDL users are encouraged to use "oar", which stands for
+             * the "OSDL Archive" format.
+             * 
+             * Do not specify the '.' char: if you want to look for ZIP files,
+             * specify "ZIP" and not ".ZIP".
              * The archive search is case-insensitive.
              *
              * @param archiveFirst if true, archives will be prepended to the
@@ -110,11 +114,17 @@ namespace OSDL
 			 * @throw EmbeddedFileSystemManagerException if the operation
              * failed.
              *
+             * @note If a non-empty string is specified for archiveExtension,
+             * then all archives with this extension found in default paths 
+             * will be automatically mounted.
+             * Therefore an empty string should be specified to not dig out
+             * archives automatically. 
+             *
 			 */
 			virtual void chooseBasicSettings(
             		const std::string & organizationName,
             		const std::string & applicationName,
-					const std::string & archiveExtension = "OAR",
+					const std::string & archiveExtension = "oar",
                     bool archiveFirst = true,
                     bool includeInsertedMedia = false ) 
             	throw( EmbeddedFileSystemManagerException )  ;
@@ -144,7 +154,11 @@ namespace OSDL
 			 * Sets a new write path, i.e. the directory where the embedded
              * filesystem may write its files.
              *
-			 * @param entryPath the path of the entry to look-up.
+			 * @param newWriteDirectory the new directory to be the root of
+             * the write directory, specified in platform-dependent notation.
+             * Specifying an empty string disables the write directory, so 
+             * that no file can be opened for writing via this embedded file
+             * system.
              *
              * @note This call will fail (and fail to change the write 
              * directory) if at least a file remains open in the current write
@@ -203,7 +217,7 @@ namespace OSDL
 			 */
 			virtual void mount( 
             		const std::string & newActualFilesystemElement,
-           			const std::string & mountPointInVirtualTree,
+           			const std::string & mountPointInVirtualTree = "",
 					bool append = true ) 
 				throw( EmbeddedFileSystemManagerException )  ;
 		
@@ -755,12 +769,12 @@ namespace OSDL
              * specified in platform-independent notation in relation to the
              * write directory.
 			 *
-			 * @param recursive if false, the specified directory is 
-			 * expected to be empty, and it will be removed. If true,
-			 * then the full directory content (including all files and
-			 * possible subdirectories) and this directory itself will be
-			 * removed.
-			 *
+			 * @param recursive must be false, and the specified directory is 
+			 * expected to be empty. It will be removed. No automatic
+             * file deletion is offered, since the files in that directory
+			 * could be eclipsed by identically named files found sooner in
+             * the search path.
+             *
 			 * @throw DirectoryRemoveFailed if the operation failed or 
 			 * is not supported.
 			 *
