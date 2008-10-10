@@ -1,12 +1,25 @@
 #include "OSDLEmbeddedFile.h"
 
+#ifdef OSDL_USES_CONFIG_H
+#include "OSDLConfig.h"              // for configure-time settings (SDL)
+#endif // OSDL_USES_CONFIG_H
+
+
+#if OSDL_ARCH_NINTENDO_DS
+#include "OSDLConfigForNintendoDS.h" // for CEYLAN_ARCH_NINTENDO_DS and al
+#endif // OSDL_ARCH_NINTENDO_DS
+
 
 #if OSDL_USES_PHYSICSFS
-#include "physfs.h"                  // for PHYSFS_getDirSeparator and al
+#include "physfs.h"                  // for PHYSFS_close and al
 #endif // OSDL_USES_PHYSICSFS
 
 
+#include "OSDLEmbeddedFileSystemManager.h" // for the FileSystemManager
+
+
 #include "Ceylan.h"                  // for all Ceylan services
+
 
 
 /*
@@ -22,10 +35,10 @@
 
 using std::string ;
 
-
-using namespace Ceylan ;
 using namespace Ceylan::System ;
 using namespace Ceylan::Log ;
+
+using namespace OSDL ;
 
 
 
@@ -83,7 +96,7 @@ bool EmbeddedFile::close() throw( Stream::CloseException )
     
     	if ( PHYSFS_close( _physfsHandle ) == 0 )
         	throw Stream::CloseException( "EmbeddedFile::close failed: "
-           	 + GetBackendLastError() ) ;
+           	 + EmbeddedFileSystemManager::GetBackendLastError() ) ;
     
     	return true ;
 	}	
@@ -113,7 +126,7 @@ void EmbeddedFile::saveAs( const string & newName ) throw( FileException )
 
 	// Using the helper factory directly to access to the file descriptor:
 	EmbeddedFile & f = EmbeddedFile::Create( newName ) ;
-	serialize( f._physfsHandle ) ;
+	serialize( *f._physfsHandle ) ;
 	delete &f ;
 	
 #else // OSDL_USES_PHYSICSFS
@@ -192,6 +205,28 @@ time_t EmbeddedFile::getLastChangeTime() const
 	throw( FileLastChangeTimeRequestFailed )
 {
 
+#if OSDL_USES_PHYSICSFS
+
+	try
+    {
+    
+    	return getCorrespondingFileSystemManager().getEntryChangeTime( _name ) ;
+        
+    } 
+    catch( const Ceylan::Exception & e )
+    {
+    	throw FileLastChangeTimeRequestFailed( 
+        	"EmbeddedFile::getLastChangeTime failed: "
+            + e.toString() ) ;
+    }    
+
+#else // OSDL_USES_PHYSICSFS
+
+	throw FileLastChangeTimeRequestFailed(
+    	"EmbeddedFile::getLastChangeTime failed: "
+    	"no PhysicsFS support available." ) ;
+        
+#endif // OSDL_USES_PHYSICSFS
 
 }
 
@@ -202,20 +237,32 @@ Size EmbeddedFile::read( Ceylan::Byte * buffer, Size maxLength )
 {
      
 #if OSDL_USES_PHYSICSFS
-
+    
 	PHYSFS_sint64 objectCount = PHYSFS_read( _physfsHandle, 
     	static_cast<void *>( buffer ), /* object size */ 1, maxLength ) ;
     
     if ( objectCount == -1 )
 		throw InputStream::ReadFailedException(
-    		"EmbeddedFile::read failed: " + GetBackendLastError() ) ;
- 	else    
-	    return static_cast<Size>( objectCount ) ;
+    		"EmbeddedFile::read failed: " 
+            + EmbeddedFileSystemManager::GetBackendLastError() ) ;
+    else if ( objectCount < maxLength )
+    {
+    
+    	LogPlug::warning( "EmbeddedFile::read: only read " 
+        	+ Ceylan::toString( static_cast<Size>( objectCount ) ) + " bytes: "
+            + EmbeddedFileSystemManager::GetBackendLastError()
+            + string( ", end of file " )
+            + ( ( PHYSFS_eof(_physfsHandle) == 0 ) ? "not ":"" )
+            + string( "reached." ) ) ;
+    
+    }        
+ 	
+    return static_cast<Size>( objectCount ) ;
             		
 #else // OSDL_USES_PHYSICSFS
 
 	throw InputStream::ReadFailedException(
-    	"EmbeddedFileSystemManager::read failed: "
+    	"EmbeddedFile::read failed: "
     	"no PhysicsFS support available." ) ;
         
 #endif // OSDL_USES_PHYSICSFS
@@ -231,18 +278,20 @@ Size EmbeddedFile::write( const string & message )
 #if OSDL_USES_PHYSICSFS
 
 	PHYSFS_sint64 objectCount = PHYSFS_write( _physfsHandle, 
-    	static_cast<void *>( buffer ), /* object size */ 1, maxLength ) ;
+    	static_cast<const void *>( message.c_str() ), /* object size */ 1, 
+        message.size() ) ;
     
     if ( objectCount == -1 )
 		throw OutputStream::WriteFailedException(
-    		"EmbeddedFile::write failed: " + GetBackendLastError() ) ;
+    		"EmbeddedFile::write failed: " 
+            + EmbeddedFileSystemManager::GetBackendLastError() ) ;
  	else    
 	    return static_cast<Size>( objectCount ) ;
             		
 #else // OSDL_USES_PHYSICSFS
 
 	throw OutputStream::WriteFailedException(
-    	"EmbeddedFileSystemManager::write failed: "
+    	"EmbeddedFile::write failed: "
     	"no PhysicsFS support available." ) ;
         
 #endif // OSDL_USES_PHYSICSFS
@@ -255,93 +304,25 @@ Size EmbeddedFile::write( const Ceylan::Byte * buffer, Size maxLength )
 	throw( OutputStream::WriteFailedException )
 {
 
-#if CEYLAN_ARCH_NINTENDO_DS
+#if OSDL_USES_PHYSICSFS
 
-	throw OutputStream::WriteFailedException( "EmbeddedFile::write:"
-		"not supported on the Nintendo DS platform." ) ;
-		
+	PHYSFS_sint64 objectCount = PHYSFS_write( _physfsHandle, 
+    	static_cast<const void *>( buffer ), /* object size */ 1, maxLength ) ;
+    
+    if ( objectCount == -1 )
+		throw OutputStream::WriteFailedException(
+    		"EmbeddedFile::write failed: " 
+            + EmbeddedFileSystemManager::GetBackendLastError() ) ;
+ 	else    
+	    return static_cast<Size>( objectCount ) ;
+            		
+#else // OSDL_USES_PHYSICSFS
 
-#else // CEYLAN_ARCH_NINTENDO_DS
-
-
-#if CEYLAN_USES_FILE_DESCRIPTORS
-
-	try
-	{	
-	
-		return System::FDWrite( _physfsHandle, buffer, maxLength ) ;
-		
-	}
-	catch( const Ceylan::Exception & e )
-	{
-		throw OutputStream::WriteFailedException( 
-			"EmbeddedFile::write failed for file '" + _name + "': " 
-			+ e.toString() ) ;
-	}
-
-#else // CEYLAN_USES_FILE_DESCRIPTORS	
-
-
-
-#if CEYLAN_PREFERS_RDBUF_TO_DIRECT_FSTREAM
-	 	
-		
-	SignedSize n = ( _fstream.rdbuf() )->sputn( buffer, 
-		static_cast<std::streamsize>( maxLength ) ) ;
-
-	if ( n < 0 )
-		throw OutputStream::WriteFailedException( 
-			"EmbeddedFile::write failed for file '" 
-			+ _name + "': negative size written" ) ;
-
-	Size realSize = static_cast<Size>( n ) ;
-	
-	if ( realSize < maxLength )
-		throw OutputStream::WriteFailedException( 
-			"EmbeddedFile::write failed for file '" + _name 
-			+ "', fewer bytes wrote than expected: " + interpretState() ) ;
-			
-	/*
-	 * Probably useless:
-	 		
-	if ( ! _fstream.good() )
-		throw WriteFailed( "File::write failed for file '" + _name 
-			+ "': " + interpretState() ) ;
-	 *
-	 */
-	 
-	 
-	if ( Synchronous & _openFlag )		
-		_fstream.flush() ;		
-	
-	return realSize ;
-
-
-#else // CEYLAN_PREFERS_RDBUF_TO_DIRECT_FSTREAM
-	
-	
-	_fstream.write( buffer, static_cast<std::streamsize>( maxLength ) ) ; 
-
-	if ( ! _fstream.good() )
-		throw WriteFailed( "EmbeddedFile::write failed for file '" + _name 
-			+ "': " + interpretState() ) ;
-
-	if ( Synchronous & _openFlag )		
-		_fstream.flush() ;		
-
-	/*
-	 * Drawback of the fstream-based method: the written size is not 
-	 * really known.
-	 *
-	 */
-	return maxLength ;
-
-
-#endif // CEYLAN_PREFERS_RDBUF_TO_DIRECT_FSTREAM
-	
-#endif // CEYLAN_USES_FILE_DESCRIPTORS	
-
-#endif // CEYLAN_ARCH_NINTENDO_DS
+	throw OutputStream::WriteFailedException(
+    	"EmbeddedFile::write failed: "
+    	"no PhysicsFS support available." ) ;
+        
+#endif // OSDL_USES_PHYSICSFS
 
 }
 
@@ -349,26 +330,24 @@ Size EmbeddedFile::write( const Ceylan::Byte * buffer, Size maxLength )
 
 // EmbeddedFile-specific methods.
 
-
-Size EmbeddedFile::getSize() const 
-	throw( Ceylan::System::FileSizeRequestFailed )
+Size EmbeddedFile::size() const throw( FileException )
 {
 
 #if OSDL_USES_PHYSICSFS
 
-	PHYSFS_sint64 size = PHYSFS_fileLength( _physfsHandle ) ;
+	PHYSFS_sint64 fileSize = PHYSFS_fileLength( _physfsHandle ) ;
 
-	if ( size == - 1 )
-		throw Ceylan::System::FileSizeRequestFailed(
- 		   	"EmbeddedFile::getSize failed: " + GetBackendLastError() ) ;
+	if ( fileSize == - 1 )
+		throw Ceylan::System::FileException(
+ 		   	"EmbeddedFile::size failed: " 
+            + EmbeddedFileSystemManager::GetBackendLastError() ) ;
  	else    
-	    return static_cast<Size>( size ) ;
+	    return static_cast<Size>( fileSize ) ;
             		
 #else // OSDL_USES_PHYSICSFS
 
-	throw Ceylan::System::FileSizeRequestFailed(
-    	"EmbeddedFile::getSize failed: "
-    	"no PhysicsFS support available." ) ;
+	throw Ceylan::System::FileException(
+    	"EmbeddedFile::size failed: no PhysicsFS support available." ) ;
         
 #endif // OSDL_USES_PHYSICSFS
 
@@ -376,50 +355,35 @@ Size EmbeddedFile::getSize() const
 
     
 
-void EmbeddedFile::serialize( PHYSFS_File * handle ) const 
+void EmbeddedFile::serialize( PHYSFS_File & handle ) 
 	throw( EmbeddedFileException )
 {
 
-#if CEYLAN_ARCH_NINTENDO_DS
-
-	throw EmbeddedFileException( "EmbeddedFile::serialize: "
-		"not supported on the Nintendo DS platform." ) ;
-	
-#else // CEYLAN_ARCH_NINTENDO_DS
-
-#if CEYLAN_USES_FILE_DESCRIPTORS
-
 	// Let EmbeddedFileException propagate:
-	FromPhysfsHandletoPhysfsHandle( _physfsHandle, handle, size() ) ;
+	FromHandletoHandle( *_physfsHandle, handle, size() ) ;
 	
-#else // CEYLAN_USES_FILE_DESCRIPTORS
-
-	throw EmbeddedFileException( "EmbeddedFile::serialize: "
-		"file descriptor feature not available" ) ;
-		
-#endif // CEYLAN_USES_FILE_DESCRIPTORS
-
-#endif // CEYLAN_ARCH_NINTENDO_DS
-
 }
 
 
 
-PHYSFS_File EmbeddedFile::getPhysicsFSHandle() const 
+PHYSFS_File & EmbeddedFile::getPhysicsFSHandle() const 
 	throw( EmbeddedFileException )
 {
 
-#if CEYLAN_USES_FILE_DESCRIPTORS
+#if OSDL_USES_PHYSICSFS
 
-	return _physfsHandle ;
-	
-#else // if CEYLAN_USES_FILE_DESCRIPTORS
+	if ( _physfsHandle != 0 )
+		return *_physfsHandle ;
+	else
+    	throw EmbeddedFileException( "EmbeddedFile::getPhysicsFSHandle failed: "
+        	"null handle found." ) ;
+			
+#else // OSDL_USES_PHYSICSFS
 
-	throw EmbeddedFileException( 
-		"EmbeddedFile::getPhysicsFSHandle: "
-		"file descriptor feature not available" ) ;
-		
-#endif // if CEYLAN_USES_FILE_DESCRIPTORS	
+	throw EmbeddedFileException( "EmbeddedFile::getPhysicsFSHandle: "
+    	"no PhysicsFS support available." ) ;
+        
+#endif // OSDL_USES_PHYSICSFS
 
 }
 
@@ -429,16 +393,16 @@ PHYSFS_File EmbeddedFile::getPhysicsFSHandle() const
 StreamID EmbeddedFile::getStreamID() const throw()
 {
 
-#if CEYLAN_USES_FILE_DESCRIPTORS
+#if OSDL_USES_PHYSICSFS
 
-	return static_cast<StreamID>( getPhysicsFSHandle() ) ;
+	return reinterpret_cast<StreamID>( & getPhysicsFSHandle() ) ;
 	
-#else // if CEYLAN_USES_FILE_DESCRIPTORS
+#else // OSDL_USES_PHYSICSFS
 
 	// No appropriate identifier found:	
 	return -1 ;
 	
-#endif // if CEYLAN_USES_FILE_DESCRIPTORS	
+#endif // OSDL_USES_PHYSICSFS
 
 }
 
@@ -448,76 +412,7 @@ const std::string EmbeddedFile::toString( Ceylan::VerbosityLevels level )
 	const throw()
 {
 
-	string res = "Embedded file object for filename '" + _name + "'" ;
-
-#if CEYLAN_USES_FILE_DESCRIPTORS
-	res += ", with file descriptor " + Ceylan::toString( getPhysicsFSHandle() ) ;
-#endif // CEYLAN_USES_FILE_DESCRIPTORS	
-	
-	res += ", with opening openFlags = " + Ceylan::toString( _openFlag ) 
-		+ ", with mode openFlags = " + Ceylan::toString( _permissions ) ; 
-
-#if CEYLAN_USES_FILE_LOCKS
-
-	if ( _lockedForReading ) 
-		res += ", locked for reading" ;
-	else
-		res += ", not locked for reading" ;
-		
-	if ( _lockedForWriting ) 
-		res += ", locked for writing" ;
-	else
-		res += ", not locked for writing" ;
-		
-#endif // CEYLAN_USES_FILE_LOCKS
-
-	return res ;
-	
-}
-
-
-
-string EmbeddedFile::InterpretState( const ifstream & inputFile ) throw()
-{
-
-	if ( inputFile.good() )
-		return "Embedded file is in clean state (no error)" ;
-		
-	string res = "Embedded file in error" ;
-	
-	if ( inputFile.rdstate() & ifstream::badbit )
-		res += ", critical error in stream buffer" ;
-		
-	if ( inputFile.rdstate() & ifstream::eofbit )
-		res += ", End-Of-File reached while extracting" ;
-		
-	if ( inputFile.rdstate() & ifstream::failbit )
-		res += ", failure extracting from stream" ;
-		
-	return res ;
-
-}
-
-
-
-string EmbeddedFile::InterpretState( const fstream & file ) throw()
-{
-
-	if ( file.good() )
-		return "Embedded file is in clean state (no error)" ;
-		
-	string res = "Embedded file in error" ;
-	
-	if ( file.rdstate() & fstream::badbit )
-		res += ", critical error in stream buffer" ;
-		
-	if ( file.rdstate() & fstream::eofbit )
-		res += ", End-Of-File reached while extracting" ;
-		
-	if ( file.rdstate() & fstream::failbit )
-		res += ", failure extracting from stream" ;
-		
-	return res ;
+	return "Embedded file object for filename '" + _name + "'" ;
 
 }
 
@@ -554,26 +449,27 @@ EmbeddedFile & EmbeddedFile::Open( const std::string & filename,
 
 EmbeddedFile::EmbeddedFile( const string & name, OpeningFlag openFlag, 
 		PermissionFlag permissions ) throw( FileManagementException ):
-	File( name, openFlag, permissions )
+	File( name, openFlag, permissions ),
+    _physfsHandle( 0 )
 {
 
 	// (File constructor may raise FileException)
-	
+
 #if OSDL_USES_PHYSICSFS
 
 	EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager() ;
     
-	if ( openFlag && NonBlocking )
+	if ( openFlag & NonBlocking )
     	throw Ceylan::System::FileException( "EmbeddedFile constructor failed: "
-        	+ "cannot open a file in non-blocking mode." ) ;
+        	"cannot open a file in non-blocking mode." ) ;
             
-	if ( openFlag && Synchronous )
+	if ( openFlag & Synchronous )
     	throw Ceylan::System::FileException( "EmbeddedFile constructor failed: "
-        	+ "cannot open a file in synchronous mode." ) ;
+        	"cannot open a file in synchronous mode." ) ;
             
-	if ( ! ( openFlag && Binary ) )
+	if ( ! ( openFlag & Binary ) )
     	throw Ceylan::System::FileException( "EmbeddedFile constructor failed: "
-        	+ "cannot open a file in non-binary mode." ) ;
+        	"cannot open a file in non-binary mode." ) ;
             
 	if ( openFlag != DoNotOpen )
 		reopen() ;
@@ -624,41 +520,49 @@ void EmbeddedFile::reopen() throw( FileOpeningFailed )
 #if OSDL_USES_PHYSICSFS
 
 	PHYSFS_File * file ;
-    
-	if ( _openFlag && Ceylan::System::File::Write )
+        
+	if ( _openFlag & Ceylan::System::File::Write )
     {
     
     	file = PHYSFS_openWrite( _name.c_str() ) ;
         
         if ( file == 0 )
-        	throw FileOpeningFailed( "EmbeddedFile::reopen for writing failed: "
-            	+ GetBackendLastError() ) ;
+        	throw FileOpeningFailed( 
+            	"EmbeddedFile::reopen for writing failed for file '"
+                + _name + "': "
+            	+ EmbeddedFileSystemManager::GetBackendLastError() ) ;
     
     }
-    else if ( _openFlag && Ceylan::System::File::Append )
+    else if ( _openFlag & Ceylan::System::File::AppendFile )
     {
     
     	file = PHYSFS_openAppend( _name.c_str() ) ;
         
         if ( file == 0 )
         	throw FileOpeningFailed( 
-            	"EmbeddedFile::reopen for appending failed: "
-            	+ GetBackendLastError() ) ;
+           		"EmbeddedFile::reopen for appending failed for file '"
+                + _name + "': "
+             	+ EmbeddedFileSystemManager::GetBackendLastError() ) ;
     
     }
-    else if ( _openFlag && Ceylan::System::File::Read )
+    else if ( _openFlag & Ceylan::System::File::Read )
     {
-    	file = PHYSFS_openWrite( _name.c_str() ) ;
+    
+    	file = PHYSFS_openRead( _name.c_str() ) ;
         
         if ( file == 0 )
-        	throw FileOpeningFailed( "EmbeddedFile::reopen for reading failed: "
-            	+ GetBackendLastError() ) ;
-    
+        {
+        	throw FileOpeningFailed( 
+           		"EmbeddedFile::reopen for reading failed for file '"
+                + _name + "': "
+            	+ EmbeddedFileSystemManager::GetBackendLastError() ) ;
+        }           
     }
     else
     {
     
-    	throw FileOpeningFailed( "EmbeddedFile::reopen failed: "
+    	throw FileOpeningFailed( 
+			"EmbeddedFile::reopen for reading failed for file '" + _name + "': "
         	"only possible opening flags are writing, appending or reading." ) ;
     }
     
@@ -673,7 +577,6 @@ void EmbeddedFile::reopen() throw( FileOpeningFailed )
         
 #endif // OSDL_USES_PHYSICSFS
 		
-
 }
 
 
@@ -691,15 +594,13 @@ std::string EmbeddedFile::interpretState() const throw()
 
 	
 	
-void EmbeddedFile::FromPhysfsHandletoPhysfsHandle( 
-		PHYSFS_File & from, PHYSFS_File & to, Size length ) 
-    throw( EmbeddedFileException )
+void EmbeddedFile::FromHandletoHandle( PHYSFS_File & from, PHYSFS_File & to,
+	Size length ) throw( EmbeddedFileException )
 {
 
 	// Note nevertheless this could be implemented like FromFDtoFD.
     
-	throw EmbeddedFileException( 
-    	"EmbeddedFile::FromPhysfsHandletoPhysfsHandle: "
+	throw EmbeddedFileException( "EmbeddedFile::FromHandletoHandle: "
 		"operation not available on embedded filesystems." ) ;
         	
 }
