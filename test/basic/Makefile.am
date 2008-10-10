@@ -9,7 +9,9 @@ testsbasic_PROGRAMS = \
 	testBasic.exe                               \
 	testOSDLBasic.exe                           \
 	testOSDLCDROMDrive.exe                      \
+	testOSDLEmbeddedFileSystem.exe              \
 	testOSDLException.exe                       \
+	testOSDLUtils.exe                           \
 	testSDL.exe                                 \
 	testSDL_gfx.exe                             \
 	testSDL_image.exe                           \
@@ -20,7 +22,9 @@ testsbasic_PROGRAMS = \
 testBasic_exe_SOURCES                        = testBasic.cc
 testOSDLBasic_exe_SOURCES                    = testOSDLBasic.cc
 testOSDLCDROMDrive_exe_SOURCES               = testOSDLCDROMDrive.cc
+testOSDLEmbeddedFileSystem_exe_SOURCES       = testOSDLEmbeddedFileSystem.cc
 testOSDLException_exe_SOURCES                = testOSDLException.cc
+testOSDLUtils_exe_SOURCES                    = testOSDLUtils.cc
 testSDL_exe_SOURCES                          = testSDL.cc
 testSDL_gfx_exe_SOURCES                      = testSDL_gfx.cc
 testSDL_image_exe_SOURCES                    = testSDL_image.cc
