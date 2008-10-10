@@ -30,6 +30,11 @@
 #endif // OSDL_USES_SDL
 
 
+#if OSDL_USES_AGAR
+#include <agar/core.h>               // for AG_InitCore	
+#endif // OSDL_USES_AGAR	
+
+
 
 using std::string ;
 
@@ -205,6 +210,8 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 	_cdromHandler( 0 ) 
 {
 
+	bool useAgar = false ;
+	
 	LOG_TRACE_BASIC( "CommonModule constructor" ) ;
 		
 	// For the sake of safety:
@@ -262,6 +269,42 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 #endif // OSDL_ARCH_NINTENDO_DS
 	
 
+#if OSDL_USES_SDL
+
+#if OSDL_USES_AGAR
+
+	useAgar = true ;
+	
+	AG_AgarVersion linkTimeAgarVersion ;
+	
+	AG_GetVersion( &linkTimeAgarVersion ) ;
+	 
+	send( "Using Agar backend, linked against the "
+		+ Ceylan::toNumericalString( linkTimeAgarVersion.major ) + "."
+		+ Ceylan::toNumericalString( linkTimeAgarVersion.minor ) + "."
+		+ Ceylan::toNumericalString( linkTimeAgarVersion.patch ) +  ", "
+		+ Ceylan::toString( linkTimeAgarVersion.release ) 
+		+ " version." ) ;
+	
+	// Implies a call to SDL_Init with SDL_INIT_TIMER and SDL_INIT_NOPARACHUTE:
+	if ( AG_InitCore( /* progname */ "OSDL-application", 
+			/* SDL flags */ 0 ) == -1 )
+		throw OSDL::Exception( "CommonModule constructor failed: "
+			"Agar initialization failed: " + string( AG_GetError() ) ) ;
+				
+#else // OSDL_USES_AGAR
+
+	// Starts with a minimal init:
+	if ( SDL_Init( 0 ) != BackendSuccess )
+		throw OSDL::Exception( "CommonModule constructor failed: "
+			"SDL first initialization failed: "
+			+ Utils::getBackendLastError() ) ;
+			
+#endif //OSDL_USES_AGAR
+			 
+#endif // OSDL_USES_SDL
+		
+
 
 	/*
 	 * UseEverything flag is 0x0000FFFF, therefore not to be specifically
@@ -279,10 +322,20 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 		
 #if OSDL_USES_SDL
 
-		if ( SDL_InitSubSystem( UseTimer ) != BackendSuccess ) 
-			throw OSDL::Exception( "CommonModule constructor: "
-				"unable to initialize timer subsystem: " 
-				+ Utils::getBackendLastError() ) ;
+		if ( useAgar )
+		{
+			send( "Agar being used, no additional timer initialization is "
+				" needed." ) ;
+		}		
+		else
+		{
+		
+			if ( SDL_InitSubSystem( UseTimer ) != BackendSuccess ) 
+				throw OSDL::Exception( "CommonModule constructor: "
+					"unable to initialize timer subsystem: " 
+					+ Utils::getBackendLastError() ) ;
+		}
+		
 				
 	// OSDL_ARCH_NINTENDO_DS: No need to initialize timers beforehand.	
 	
@@ -306,12 +359,24 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 	
 	if ( flags & NoParachute ) 
 	{
+
 		send( "Disabling SDL parachute" ) ;
-		if ( SDL_InitSubSystem( NoParachute ) != BackendSuccess )
-			throw OSDL::Exception( "CommonModule constructor: "
-				"unable to disable SDL parachute: " 
-				+ Utils::getBackendLastError() ) ;
-		send( "SDL parachute initialized" ) ;				
+		
+		if ( useAgar )
+		{
+			send( "Agar being used, no SDL parachute request is needed." ) ;
+		}		
+		else
+		{
+		
+			if ( SDL_InitSubSystem( NoParachute ) != BackendSuccess )
+				throw OSDL::Exception( "CommonModule constructor: "
+					"unable to disable SDL parachute: " 
+					+ Utils::getBackendLastError() ) ;
+					
+			send( "SDL parachute initialized" ) ;				
+		}
+			
 	}
 
 #endif // OSDL_USES_SDL
@@ -399,7 +464,19 @@ CommonModule::~CommonModule() throw ()
 	}	
 			
 #if OSDL_USES_SDL
+
+#if OSDL_USES_AGAR
+
+	// Will exit directly in AG_Destroy:
+    send( "OSDL successfully stopped" ) ;		
+	AG_Destroy() ;
+	
+#else // OSDL_USES_AGAR
+
     SDL_Quit() ;
+
+#endif // OSDL_USES_AGAR
+
 #endif // OSDL_USES_SDL
 	
     send( "OSDL successfully stopped" ) ;		
