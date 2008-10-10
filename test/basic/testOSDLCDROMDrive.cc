@@ -3,6 +3,8 @@ using namespace OSDL ;
 
 using namespace Ceylan::Log ;
 
+using namespace std ;
+
 
 
 /**
@@ -58,7 +60,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -73,7 +75,7 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
@@ -81,23 +83,30 @@ int main( int argc, char * argv[] )
         OSDL::CommonModule & myOSDL = OSDL::getCommonModule( 
 			CommonModule::UseCDROM ) ;
 			
-		LogPlug::info( "Informations about common module : " 
+		LogPlug::info( "Informations about common module: " 
 			+ myOSDL.toString() ) ;
 		
 		CDROMDriveHandler & driveHandler = myOSDL.getCDROMDriveHandler() ;
 		
-		LogPlug::info( "CD-ROM drive count : " 
+		LogPlug::info( "CD-ROM drive count: " 
 			+ Ceylan::toString(
 				CDROMDriveHandler::GetAvailableCDROMDrivesCount() ) ) ;
 		
-		LogPlug::info( "Before requesting any drive : " 
+		LogPlug::info( "Before requesting any drive: " 
 			+ driveHandler.toString() ) ;
+
+		list<string> insertedMedia = CDROMDrive::GetListOfInsertedMedia() ;
+        
+        LogPlug::info ( "Detected inserted media: " 
+        	+ Ceylan::formatStringList( insertedMedia ) ) ;
+
 				
 		LogPlug::info( "Controlling all available CD-ROM drives." ) ;
 
 		CDROMDriveNumber driveNumber =
 			CDROMDriveHandler::GetAvailableCDROMDrivesCount() ;
-		
+	
+    	
 		// Nothing more to test ?
 		if ( driveNumber == 0 )
 		{
@@ -107,11 +116,11 @@ int main( int argc, char * argv[] )
 			
 		}	
 			
-		// Open all available drives :
+		// Open all available drives:
 		for ( CDROMDriveNumber i = 0; i < driveNumber; i++ )
 			driveHandler.getCDROMDrive( i ) ;
 
-		LogPlug::info( "After having used all drives : " 
+		LogPlug::info( "After having used all drives: " 
 			+ driveHandler.toString() ) ;
 		
 		CDROMDrive & defaultDrive = driveHandler.getCDROMDrive( 0 ) ;
@@ -129,14 +138,14 @@ int main( int argc, char * argv[] )
 		
 		/*
 		 * A drive, a CD, let's attempt to play audio tracks (if any and if
-		 * not in batch mode) :
+		 * not in batch mode):
 		 *
 		 */
 		
 		if ( ! isBatch )
 		{
 		
-			// Plays 'testDuration' seconds of each track :
+			// Plays 'testDuration' seconds of each track:
 			Ceylan::System::Second testDuration = 10 ;
 		
 			TrackNumber trackCount = defaultDrive.getTracksCount() ;
@@ -145,12 +154,12 @@ int main( int argc, char * argv[] )
 			{
 		
 				CDTrack * currentTrack = & defaultDrive.getTrack( i ) ;
-				LogPlug::info( "Current track is : " 
+				LogPlug::info( "Current track is: " 
 					+ currentTrack->toString() ) ;
 			
 				/*
 				 * Not all configurations are able to play music directly from 
-				 * the CD-ROM drive to the soundcard (if any) : usually there 
+				 * the CD-ROM drive to the soundcard (if any): usually there 
 				 * must be a special cable between them.
 				 *
 				 */
@@ -165,12 +174,12 @@ int main( int argc, char * argv[] )
 							
 			}
 				
-			// Too annoying for the user :
+			// Too annoying for the user:
 			// defaultDrive.eject() ;
 
 		}
 		
-
+        
         OSDL::stop() ;
 
 		LogPlug::info( "End of OSDL CD-ROM test." ) ;
@@ -180,7 +189,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : " 
+        LogPlug::error( "OSDL exception caught: " 
 			+ e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -189,7 +198,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : " 
+        LogPlug::error( "Ceylan exception caught: " 
 			+ e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -198,7 +207,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			+ std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
