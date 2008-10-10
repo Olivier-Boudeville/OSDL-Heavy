@@ -12,7 +12,7 @@
 #include "OSDLCDROMDrive.h"
 #include "OSDLEmbeddedDirectory.h"
 #include "OSDLEmbeddedFile.h"
-#include "OSDLEmbeddedFilesystem.h"
+#include "OSDLEmbeddedFileSystemManager.h"
 #include "OSDLException.h"
 #include "OSDLFileTags.h"
 #include "OSDLHeaderVersion.h"
