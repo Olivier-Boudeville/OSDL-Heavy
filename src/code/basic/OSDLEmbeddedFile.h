@@ -255,17 +255,22 @@ namespace OSDL
 			// EmbeddedFile-specific methods.
 			
 			
-			
-            /**
-             * Returns the size, in bytes, of this embedded file.
-             *
-             * @throw FileSizeRequestFailed if the size could not be 
-             * determined.
-             *
-             */ 
-            virtual Ceylan::System::Size getSize() const throw( 
-            	Ceylan::System::FileSizeRequestFailed ) ;
-                
+		                
+			/**
+			 * Returns the file size, in bytes.
+			 *
+			 * @see GetSize
+			 *
+			 * @throw FileException, including FileLookupFailed if the file
+			 * metadata could not be accessed or if the operation is not
+			 * supported on this platform, and FileDelegatingException if
+			 * the corresponding filesystem manager could not be used as
+			 * expected.
+			 *
+			 */
+			virtual Ceylan::System::Size size() const 
+            	throw( Ceylan::System::FileException ) ;
+    
     
    			/**
 			 * Sends the file content to the <b>fd</b> PhysicsFS handle
@@ -275,8 +280,8 @@ namespace OSDL
 			 * if the PhysicsFS handle feature is not available.
 			 *		 
 			 */
-			virtual void serialize( PHYSFS_File & handle ) const
-				throw( EmbeddedFileException ) ;
+			virtual void serialize( PHYSFS_File & handle ) 
+            	throw( EmbeddedFileException ) ;
 
 
 			/**
@@ -493,6 +498,12 @@ namespace OSDL
 		private:
 
 
+			/**
+			 * Internal PhysicsFS handle.
+			 *
+			 */
+			PHYSFS_File * _physfsHandle ;
+
 
 			/**
 			 * Copy constructor made private to ensure that it will 
@@ -533,16 +544,8 @@ namespace OSDL
 			 *
 			 */
 			static void FromHandletoHandle( PHYSFS_File & from, 
-					PHYSFS_File&  to, Ceylan::System::Size length )
+					PHYSFS_File & to, Ceylan::System::Size length )
 				throw( EmbeddedFileException ) ;
-
-
-			/**
-			 * Internal PhysicsFS handle.
-			 *
-			 */
-			PHYSFS_File * _physfsHandle ;
-
 
 	} ;
 	
