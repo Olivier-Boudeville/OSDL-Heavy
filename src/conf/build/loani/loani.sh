@@ -1150,10 +1150,23 @@ fi
 # Check for SVN tool if needed:
 if [ $no_svn -eq 1 ] ; then
 	if [ $use_svn -eq 0 ] ; then
-		findTool svn
-		SVN=$returnedString
+		if findTool svn ; then
+			SVN=$returnedString
+		else
+			ERROR "No svn tool found, whereas SVN retrieval was requested."
+			exit 15
+        fi    
 	fi	
 fi
+
+
+if findTool cmake ; then
+	CMAKE=$returnedString
+else
+	ERROR "No cmake tool found, whereas needed (ex: for PhysicsFS)."
+	exit 16
+fi		
+
 
 #TRACE "Toolsets sourced."
 
