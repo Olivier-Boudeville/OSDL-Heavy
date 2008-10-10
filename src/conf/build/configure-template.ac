@@ -324,7 +324,7 @@ AC_SUBST(LOANI_MAILING_LIST)
 
 # As soon as the autotools are used, the whole SDL family and its own
 # prerequisites will be used: OSDL_USES_SDL and al are thus defined
-# unconditionaly here.
+# unconditionally here.
 
 
 
@@ -422,10 +422,10 @@ AC_SUBST(AGAR_OLDEST_SUPPORTED_VERSION)
 
 AGAR_PREFIX="${OSDL_LOANI_INSTALLATIONS}/agar-$AGAR_RECOMMENDED_VERSION"
 
-OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$AGAR_PREFIX/include/agar/agar"
+OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$AGAR_PREFIX/include/agar"
 OSDL_LIBS="$OSDL_LIBS -L$AGAR_PREFIX/lib -lag_gui -lag_core"	
 
-AC_DEFINE([USES_AGAR],[1],[Define to 1 if OSDL is to use AGAR])
+AC_DEFINE([USES_AGAR],[1],[Define to 1 if OSDL is to use Agar])
 	
 
 # png (libpng). 
@@ -462,6 +462,23 @@ AM_PATH_SDL($SDL_OLDEST_SUPPORTED_VERSION,[
 
 AC_DEFINE([USES_SDL],[1],[Define to 1 if OSDL is to use SDL])
 
+
+# PhysicsFS.
+
+PHYSICSFS_RECOMMENDED_VERSION="1.1.1"
+AC_SUBST(PHYSICSFS_RECOMMENDED_VERSION)
+
+PHYSICSFS_OLDEST_SUPPORTED_VERSION="$PHYSICSFS_RECOMMENDED_VERSION"
+AC_SUBST(PHYSICSFS_OLDEST_SUPPORTED_VERSION)
+
+PHYSICSFS_PREFIX="${OSDL_LOANI_INSTALLATIONS}/PhysicsFS-$PHYSICSFS_RECOMMENDED_VERSION"
+
+OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$PHYSICSFS_PREFIX/include"
+
+# Only constraint is to have PhysicsFS before any zlib:
+OSDL_LIBS="-L$PHYSICSFS_PREFIX/lib -lphysfs $OSDL_LIBS "	
+
+AC_DEFINE([USES_PHYSICSFS],[1],[Define to 1 if OSDL is to use PhysicsFS])
 
 	
 	
@@ -876,10 +893,13 @@ if test x$ac_cv_cxx_compiler_gnu = xyes; then
 	# constructor
 	#    -Wpacked: some structures may be declared packed with no effect, we
 	# usually do not care if it is the case
-    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
+    #    -pedantic-errors: removed to allow Agar's variadic macros
+    #    -Wredundant-decls: removed to allow Agar's multiple declarations in
+    # same scope
+    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute  -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
     if test x$enable_strict_ansi = xyes; then
 		# Do not know what "-D_XOPEN_SOURCE" would change.
-        AM_CXXFLAGS="$AM_CXXFLAGS -ansi -pedantic-errors"
+        AM_CXXFLAGS="$AM_CXXFLAGS -ansi"
     fi
 fi
 
@@ -1002,7 +1022,7 @@ CheckPlatform()
 	OSDL_ARCH_NINTENDO_DS=0
 
 	# Needed with gcc compilers:
-	OSDL_PACKED_ATTRIBUTE="__attribute__ ((packed))"
+	OSDL_PACKED_ATTRIBUTE="\"__attribute__ ((packed))\""
 	
 	case "$target" in
 	
@@ -1055,7 +1075,7 @@ CheckPlatform()
 	# files. Hence no 'AC_DEFINE_UNQUOTED([OSDL_DLL], ...' here.
 	# Same reason applies for OSDL_PACKED_ATTRIBUTE. 
 	
-	AM_CXXFLAGS="${AM_CXXFLAGS} -DOSDL_DLL=\"${OSDL_DLL}\" -DOSDL_PACKED_ATTRIBUTE=\"${OSDL_PACKED_ATTRIBUTE}\"
+	AM_CXXFLAGS="${AM_CXXFLAGS} -DOSDL_DLL=${OSDL_DLL} -DOSDL_PACKED_ATTRIBUTE=${OSDL_PACKED_ATTRIBUTE}"
 	
 }
 
