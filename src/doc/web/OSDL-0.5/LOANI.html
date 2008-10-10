@@ -160,14 +160,31 @@ All of them should already be available on most UNIX-like systems:
 
 <ul>
 
-  <li>basic UNIX tools: bash, cp, mv, ln, rm, mkdir, grep, find, du, uname, id, ps, wc</li>
+  <li>basic UNIX tools: cp, mv, ln, rm, mkdir, grep, find, du, uname, id, ps, wc</li>
 
   <li>more advanced UNIX tools: awk, tar, gunzip, bunzip2, ping, md5sum, wget</li>
 
-  <li>build tools: make</li>
+  <li>build tools: make, cmake</li>
   
 </ul>
 
+<p>
+For Windows-based systems, selecting most tools in the Cygwin setup should be enough. For Debian-based systems, this command should help (when run withe the <code>root</code> user:
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<code><pre>
+apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+</p>
 
 <p>
 Please note that these pre requesites are LOANI's ones, which are a subset of full OSDL's ones. The complementary tools should be retrieved, installed and used automatically by LOANI, if requested (ex: the C++ compiler).
