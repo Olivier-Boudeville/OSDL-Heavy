@@ -1,7 +1,10 @@
 #include "OSDLCDROMDrive.h"
 
 
-#include "OSDLUtils.h"   // for getBackendLastError
+#include "OSDLUtils.h"                       // for getBackendLastError
+
+// for SecureEmbeddedFileSystemManager:
+#include "OSDLEmbeddedFileSystemManager.h"   
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -12,6 +15,10 @@
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
 #endif // OSDL_ARCH_NINTENDO_DS
 
+
+#if OSDL_USES_PHYSICSFS
+#include "physfs.h"                  // for PHYSFS_getCdRomDirs and al
+#endif // OSDL_USES_PHYSICSFS
 
 
 #include <list>  
@@ -33,12 +40,18 @@ using namespace OSDL ;
 
 
 /** 
+ *
+ * Implementation notes:
+ *
  * Dummy values will be returned by non-static methods in case there is no
  * SDL support available.
  *
  * It is not a problem as these methods cannot be called: constructors always
  * throw exceptions in that case, thus no instance can be available for these
  * method calls.
+ *
+ * PhysicsFS could be used as well for the management of CDROM drives 
+ * Example: see PHYSFS_getCdRomDirs in physfs.h.
  *
  */ 
 
@@ -625,7 +638,38 @@ const string CDROMDrive::toString( Ceylan::VerbosityLevels level ) const throw()
 #endif // OSDL_USES_SDL
 		
 }
-			   				
+	
+    
+    		   				
+std::list<std::string> CDROMDrive::GetListOfInsertedMedia()
+	throw( CDROMDriveException )
+{
+	
+#if OSDL_USES_PHYSICSFS
+
+	// PhysicsFS must be initialized beforehand:
+	EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager() ;
+    
+    char **cds = PHYSFS_getCdRomDirs() ;
+	
+ 	std::list<std::string> res ;
+    
+	for ( char ** i = cds; *i != 0; i++ )
+    	res.push_back( *i ) ;
+        
+	PHYSFS_freeList(cds) ;
+    
+	return res ;
+    
+#else // OSDL_USES_PHYSICSFS
+
+	throw CDROMDriveException( "CDROMDrive::GetListOfInsertedMedia failed: "
+    	"no PhysicsFS support available." ) ;
+    
+#endif // OSDL_USES_PHYSICSFS
+
+}
+
 
 
 FrameCount CDROMDrive::ConvertTimeToFrameCount( 
