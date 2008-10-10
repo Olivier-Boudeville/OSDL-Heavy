@@ -20,9 +20,9 @@ latest_stable_osdl="release-0.5.0"
 if [ $is_windows -eq 0 ] ; then
 
   # Windows special case:
-  #REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Agar_win"
+  #REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Agar_win PhysicsFS_win"
   # Agar_win removed for the moment:
-  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win"
+  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -61,7 +61,7 @@ else
   
   	# All non-windows non-DS platforms should build everything from sources:
 	
- 	REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar"
+ 	REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS"
 
     if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -99,6 +99,7 @@ LOG_STATUS()
 	echo 1>>"$LOG_OUTPUT" 
 	echo "--------------> $*" 1>>"$LOG_OUTPUT" 
 }
+
 
 LOG_STATUS "Scheduling retrieval of required tools ($REQUIRED_TOOLS)."
 
@@ -3299,7 +3300,7 @@ cleanguichan()
 
 
 ################################################################################
-# guichan build thanks to Visual Express.
+# Guichan build thanks to Visual Express.
 ################################################################################
 
 
@@ -3419,7 +3420,7 @@ cleanguichan_win()
 #TRACE "[loani-requiredTools] Agar"
 
 ################################################################################
-# Guichan for non-Windows platforms:
+# Agar for non-Windows platforms:
 ################################################################################
 
 getAgar()
@@ -3722,6 +3723,329 @@ cleanAgar_win()
 	${RM} -rf "agar-${Agar_win_VERSION}"
 }
 
+
+
+
+
+
+################################################################################
+################################################################################
+# PhysicsFS
+################################################################################
+################################################################################
+
+
+#TRACE "[loani-requiredTools] PhysicsFS"
+
+################################################################################
+# PhysicsFS for non-Windows platforms:
+################################################################################
+
+getPhysicsFS()
+{
+	LOG_STATUS "Getting PhysicsFS..."
+	launchFileRetrieval PhysicsFS
+	return $?
+}
+
+
+preparePhysicsFS()
+{
+
+	LOG_STATUS "Preparing PhysicsFS..."
+
+	if findTool gunzip ; then
+		GUNZIP=$returnedString
+	else
+		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		exit 8
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 9
+	fi		
+	
+	printBeginList "PhysicsFS  "
+		
+	printItem "extracting"
+	
+	cd $repository
+	
+	# Prevent archive from disappearing because of gunzip.
+	{
+		${CP} -f ${PhysicsFS_ARCHIVE} ${PhysicsFS_ARCHIVE}.save && ${GUNZIP} -f ${PhysicsFS_ARCHIVE} && tar -xvf "physfs-${PhysicsFS_VERSION}.tar" 
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+		
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${PhysicsFS_ARCHIVE}."
+		LOG_STATUS "Restoring ${PhysicsFS_ARCHIVE}."
+		${MV} -f ${PhysicsFS_ARCHIVE}.save ${PhysicsFS_ARCHIVE} 
+		exit 10
+	fi
+	
+	${MV} -f ${PhysicsFS_ARCHIVE}.save ${PhysicsFS_ARCHIVE} 
+	${RM} -f "physfs-${PhysicsFS_VERSION}.tar"
+	
+	printOK
+
+}
+
+
+generatePhysicsFS()
+{
+
+	LOG_STATUS "Generating PhysicsFS..."
+
+	
+	cd "physfs-${PhysicsFS_VERSION}"
+	
+	printItem "configuring"
+	
+	PHYSICSFS_CMAKE_OPT=""
+	
+	if [ -n "$prefix" ] ; then	
+
+		PhysicsFS_PREFIX="${alternate_prefix}/PhysicsFS-${PhysicsFS_VERSION}"
+        
+PHYSICSFS_CMAKE_OPT="-DCMAKE_INSTALL_PREFIX=${PhysicsFS_PREFIX}"
+
+	fi
+		
+	{			
+    
+		setBuildEnv ${CMAKE} . ${PHYSICSFS_CMAKE_OPT} 
+        
+	} 1>>"$LOG_OUTPUT" 2>&1			
+	
+		
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to pre-configure PhysicsFS."
+		exit 11
+	fi	
+    
+	{			
+    
+		setBuildEnv echo cqe | ${CCMAKE} . 
+        
+	} 1>>"$LOG_OUTPUT" 2>&1			
+	
+		
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure PhysicsFS."
+		exit 12
+	fi	
+	
+	printOK	
+	
+	printItem "building"
+	
+	{
+	
+		 setBuildEnv ${MAKE}
+		 
+	} 1>>"$LOG_OUTPUT" 2>&1	 
+	
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build PhysicsFS."
+		exit 12
+	fi
+
+	printOK
+
+
+	printItem "installing"
+	
+	if [ -n "$prefix" ] ; then	
+	{				
+	
+		echo "# PhysicsFS section." >> ${OSDL_ENV_FILE}
+		
+		echo "PhysicsFS_PREFIX=${PhysicsFS_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export PhysicsFS_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$PhysicsFS_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$PhysicsFS_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		
+		PATH=${PhysicsFS_PREFIX}/bin:${PATH}
+		export PATH
+		
+		LD_LIBRARY_PATH=${PhysicsFS_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+		
+		if [ $is_windows -eq 0 ] ; then
+			# Always remember that, on Windows, DLL are searched through
+			# the PATH, not the LD_LIBRARY_PATH.
+			
+			PATH=${PhysicsFS_PREFIX}/lib:${PATH}	
+			export PATH
+				
+			echo "PATH=\$PhysicsFS_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
+		
+		echo "" >> ${OSDL_ENV_FILE}
+				
+		LIBPATH="-L${PhysicsFS_PREFIX}/lib"
+        
+		
+		setBuildEnv ${MAKE} install
+
+	} 1>>"$LOG_OUTPUT" 2>&1		
+	else
+	{		
+		setBuildEnv ${MAKE} install 
+	} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+	
+	
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install PhysicsFS."
+		exit 13
+	fi	
+	
+	if [ $is_windows -eq 0 ] ; then
+		${MV} -f ${PhysicsFS_PREFIX}/bin/*.dll ${PhysicsFS_PREFIX}/lib
+	fi
+	    
+	printOK
+
+	printEndList
+	
+	LOG_STATUS "PhysicsFS successfully installed."
+	
+	cd "$initial_dir"
+	
+}
+
+
+cleanPhysicsFS()
+{
+	LOG_STATUS "Cleaning PhysicsFS build tree..."
+	${RM} -rf "PhysicsFS-${PhysicsFS_VERSION}"
+}
+
+
+
+
+################################################################################
+# PhysicsFS build thanks to Visual Express.
+# Static libraries have been removed.
+# Paths and properties have been updated in agar*vcproj files.
+################################################################################
+
+
+getPhysicsFS_win()
+{
+	LOG_STATUS "Getting PhysicsFS for windows..."
+	launchFileRetrieval PhysicsFS_win
+	return $?
+}
+
+
+preparePhysicsFS_win()
+{
+
+
+	LOG_STATUS "Preparing PhysicsFS for windows.."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "PhysicsFS       "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${PhysicsFS_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${PhysicsFS_win_ARCHIVE}."
+		LOG_STATUS "Restoring ${PhysicsFS_win_ARCHIVE}."
+		${MV} -f ${PhysicsFS_win_ARCHIVE}.save ${PhysicsFS_win_ARCHIVE}
+		exit 10
+	fi
+
+	# Now let's use our own solution:
+	
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/PhysicsFS-from-LOANI" "agar-${PhysicsFS_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy PhysicsFS solution in build tree."
+		exit 12
+	fi
+
+	cd "agar-${PhysicsFS_win_VERSION}"
+
+	AGAR_FLAVOUR_ARCHIVE="vs2005-windows-i386-nothreads.zip"
+
+	# Now we use the project prebuilt files as a base:
+	{
+
+		${CP} -f "ProjectFiles/${AGAR_FLAVOUR_ARCHIVE}" . && ${UNZIP} -o "${AGAR_FLAVOUR_ARCHIVE}"
+	} 1>>"$LOG_OUTPUT" 2>&1
+	
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${AGAR_FLAVOUR_ARCHIVE}."
+		exit 11
+	fi
+		
+
+	printOK
+
+
+}
+
+
+generatePhysicsFS_win()
+{
+
+	LOG_STATUS "Generating PhysicsFS for windows..."
+
+
+	printItem "configuring"
+ 	printOK
+
+	PhysicsFS_solution=`pwd`"/PhysicsFS-from-LOANI/PhysicsFS-from-LOANI.sln"
+  
+	printItem "building"
+	GenerateWithVisualExpress PhysicsFS ${PhysicsFS_solution}
+	printOK
+
+	printItem "installing"
+	
+	# Take care of the exported header files (API):
+	PhysicsFS_install=${alternate_prefix}/agar-${PhysicsFS_win_VERSION}
+	${MKDIR} -p ${PhysicsFS_install}
+	${CP} -rf include ${PhysicsFS_install}
+	printOK
+
+	printEndList
+
+	LOG_STATUS "PhysicsFS successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanPhysicsFS_win()
+{
+	LOG_STATUS "Cleaning PhysicsFS build tree..."
+	${RM} -rf "agar-${PhysicsFS_win_VERSION}"
+}
 
 
 ################################################################################
@@ -6275,7 +6599,7 @@ generateOSDL()
 			# We suppose here that if we have a prefix, all tools use 
 			# prefixes:
 			
-			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-libagar-prefix=$Agar_PREFIX"
+			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-libagar-prefix=$Agar_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
 			
 			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${OSDL_PREFIX} ${tools_prefixes}
 			
