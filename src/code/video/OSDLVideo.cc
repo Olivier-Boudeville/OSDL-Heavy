@@ -14,7 +14,11 @@ using std::string ;
 using std::pair ;
 
 
-using namespace Ceylan ;
+/*
+ * Disabled to avoid name clashes with Uint32 (SDL vs Ceylan): 
+ * using namespace Ceylan ;
+ *
+ */
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Video ;
@@ -89,7 +93,7 @@ SDL_OPENGLBLIT	0x0000000A = 0b00000000000000000000000000001010
 SDL_RESIZABLE	0x00000010 = 0b00000000000000000000000000010000
 SDL_NOFRAME	    0x00000020 = 0b00000000000000000000000000100000
 SDL_HWACCEL	    0x00000100 = 0b00000000000000000000000100000000
-0SDL_WITHGUI	0x00000800 = 0b00000000000000000000100000000000
+OSDL_WITHGUI	0x00000800 = 0b00000000000000000000100000000000
 SDL_SRCCOLORKEY	0x00001000 = 0b00000000000000000001000000000000
 SDL_RLEACCELOK	0x00002000 = 0b00000000000000000010000000000000
 SDL_RLEACCEL	0x00004000 = 0b00000000000000000100000000000000	
@@ -103,7 +107,7 @@ SDL_FULLSCREEN	0x80000000 = 0b10000000000000000000000000000000
 */
 
 // Chosen not to collide with SDL constants:
-#define 0SDL_WITHGUI 0x00000800
+#define OSDL_WITHGUI 0x00000800
 
 
 #if OSDL_USES_SDL
@@ -120,7 +124,7 @@ const Ceylan::Flags VideoModule::DoubleBuffered   = SDL_DOUBLEBUF ;
 const Ceylan::Flags VideoModule::FullScreen       = SDL_FULLSCREEN ;
 const Ceylan::Flags VideoModule::OpenGL           = SDL_OPENGL ;
 const Ceylan::Flags VideoModule::Resizable        = SDL_RESIZABLE ;
-const Ceylan::Flags VideoModule::WithGUI          = 0SDL_WITHGUI ;
+const Ceylan::Flags VideoModule::WithGUI          = OSDL_WITHGUI ;
 const Ceylan::Flags VideoModule::NoFrame          = SDL_NOFRAME ;
 
 
@@ -158,7 +162,7 @@ const Ceylan::Flags VideoModule::DoubleBuffered   = 0x40000000 ;
 const Ceylan::Flags VideoModule::FullScreen       = 0x80000000 ;
 const Ceylan::Flags VideoModule::OpenGL           = 0x00000002 ;
 const Ceylan::Flags VideoModule::Resizable        = 0x00000010 ;
-const Ceylan::Flags VideoModule::WithGUI          = 0SDL_WITHGUI ;
+const Ceylan::Flags VideoModule::WithGUI          = OSDL_WITHGUI ;
 const Ceylan::Flags VideoModule::NoFrame          = 0x00000020 ;
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
@@ -389,7 +393,8 @@ void VideoModule::setOpenGLContext( OpenGL::OpenGLContext & newOpenGLContext )
 
 
 BitsPerPixel VideoModule::getBestColorDepthForMode( 
-	Length width, Length height, BitsPerPixel askedBpp, Flags flags ) throw()
+	Length width, Length height, BitsPerPixel askedBpp, 
+    Ceylan::Flags flags ) throw()
 {
 
 #if OSDL_USES_SDL
@@ -416,7 +421,7 @@ bool VideoModule::isDisplayInitialized() const throw()
 
 
 Ceylan::Flags VideoModule::setMode( Length width, Length height, 
-		BitsPerPixel askedBpp, Flags flags, OpenGL::Flavour flavour ) 
+		BitsPerPixel askedBpp, Ceylan::Flags flags, OpenGL::Flavour flavour ) 
 	throw ( VideoException ) 
 {
 	
@@ -424,7 +429,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 
 	_displayInitialized = false ;
 	
-	Flags userFlags = flags ;
+	Ceylan::Flags userFlags = flags ;
 	
 	send( "Trying to set " 
 		+ Ceylan::toString( width )    + 'x' 
@@ -1269,7 +1274,7 @@ string VideoModule::GetDriverName() throw( VideoException )
 
 
 
-string VideoModule::InterpretFlags( Flags flags ) throw()
+string VideoModule::InterpretFlags( Ceylan::Flags flags ) throw()
 {
 
 	std::list<string> res ;
@@ -1784,7 +1789,8 @@ string VideoModule::DescribeVideoCapabilities() throw( VideoException )
 
 
 bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions, 
-	Flags flags, Pixels::PixelFormat * pixelFormat ) throw( VideoException )
+		Ceylan::Flags flags, Pixels::PixelFormat * pixelFormat ) 
+	throw( VideoException )
 {
 	
 #if OSDL_USES_SDL
@@ -1868,7 +1874,7 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 
 
 
-string VideoModule::DescribeAvailableDefinitions( Flags flags, 
+string VideoModule::DescribeAvailableDefinitions( Ceylan::Flags flags, 
 	Pixels::PixelFormat * pixelFormat ) throw( VideoException ) 
 {
 		
