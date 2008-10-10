@@ -18,7 +18,7 @@ int main( int argc, char * argv[] )
 	/*
 	 * Verifies that the versions of the OSDL header files used to compile 
 	 * this test and the one of the currently linked OSDL library are 
-	 * compatible :
+	 * compatible:
 	 *
 	 */
 	CHECK_OSDL_VERSIONS() ;	
@@ -45,46 +45,46 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::debug( "One can check that all these constants, "
 			"(except CommonModule::UseEverything), have no bit in common"
-			"have no two same bit set to one :" ) ;
+			"have no two same bit set to one:" ) ;
 		
 		
-		LogPlug::debug( "CommonModule::UseTimer is equal to : " 
+		LogPlug::debug( "CommonModule::UseTimer is equal to: " 
 			+ Ceylan::toString( CommonModule::UseTimer, 
 				/* bitfield */ true ) ) ;
 					
-		LogPlug::debug( "CommonModule::UseAudio is equal to       : " 
+		LogPlug::debug( "CommonModule::UseAudio is equal to      : " 
 			+ Ceylan::toString( CommonModule::UseAudio, 
 				/* bitfield */ true ) ) ;
 					
-		LogPlug::debug( "CommonModule::UseVideo is equal to       : " 
+		LogPlug::debug( "CommonModule::UseVideo is equal to      : " 
 			+ Ceylan::toString( CommonModule::UseVideo, 
 				/* bitfield */ true ) ) ;
 					
-		LogPlug::debug( "CommonModule::UseCDROM is equal to       : " 
+		LogPlug::debug( "CommonModule::UseCDROM is equal to      : " 
 			+ Ceylan::toString( CommonModule::UseCDROM, 
 				/* bitfield */ true ) ) ;
 					
-		LogPlug::debug( "UseJoystick is equal to    : " 
+		LogPlug::debug( "UseJoystick is equal to   : " 
 			+ Ceylan::toString( CommonModule::UseJoystick, 
 				/* bitfield */ true ) ) ;
 					
-		LogPlug::debug( "UseKeyboard is equal to                 : " 
+		LogPlug::debug( "UseKeyboard is equal to                : " 
 			+ Ceylan::toString( CommonModule::UseKeyboard, 
 				/* bitfield */ true ) ) ;
 					
-		LogPlug::debug( "UseMouse is equal to                    : " 
+		LogPlug::debug( "UseMouse is equal to                   : " 
 			+ Ceylan::toString( CommonModule::UseMouse, 
 				/* bitfield */ true ) ) ;
 					
-		LogPlug::debug( "UseEverything is equal to  : " 
+		LogPlug::debug( "UseEverything is equal to : " 
 			+ Ceylan::toString( CommonModule::UseEverything, 
 				/* bitfield */ true ) ) ;
 					
-		LogPlug::debug( "NoParachute is equal to : " 
+		LogPlug::debug( "NoParachute is equal to: " 
 			+ Ceylan::toString( CommonModule::NoParachute, 
 				/* bitfield */ true ) ) ;
 					
-		LogPlug::debug( "UseEventThread is equal to : " 
+		LogPlug::debug( "UseEventThread is equal to: " 
 			+ Ceylan::toString( CommonModule::UseEventThread, 
 				/* bitfield */ true ) ) ;
 		
@@ -99,7 +99,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : " 
+        LogPlug::error( "OSDL exception caught: " 
 			+ e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -108,7 +108,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : " 
+        LogPlug::error( "Ceylan exception caught: " 
 			+ e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -117,7 +117,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			+ std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
