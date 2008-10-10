@@ -122,7 +122,7 @@ live link to PEP 258 here.
 Titles, from more general to smallest subtitles, are defined with: 
  
  - '=', on top and below the title (document title)
- - '-', on top and below the title (documenet subtitle)
+ - '-', on top and below the title (document subtitle)
  - '=' below the title (H1)
  - '-' below the title (H2)
  - '.' below the title (H3)
@@ -418,7 +418,10 @@ this: `Duplicate Target Names`_), an error is generated.
 Directives
 ----------
 
-.. contents:: :local:
+
+.. contents:: List of appendices
+	:local:
+	:depth: 1
 
 These are just a sample of the many reStructuredText Directives.  For
 others, please see
