@@ -60,11 +60,14 @@
 
 
 // Not available on the DS:
+#define OSDL_USES_AGAR 0
 #define OSDL_USES_LIBPNG 0
-#define OSDL_USES_MIXER 0
+// OSDL_USES_OPENGL partly used on the DS.
+#define OSDL_USES_PHYSICSFS 0
 #define OSDL_USES_SDL 0
 #define OSDL_USES_SDL_GFX 0
 #define OSDL_USES_SDL_IMAGE 0
+#define OSDL_USES_MIXER 0
 #define OSDL_USES_SDL_TTF 0
 
 
