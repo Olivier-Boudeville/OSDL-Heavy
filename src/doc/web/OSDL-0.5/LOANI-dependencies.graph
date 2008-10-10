@@ -33,5 +33,6 @@ digraph finite_state_machine {
 	"SDL"       -> "SDL_image"
 
 	"zlib"      -> "libpng"
+	"zlib"      -> "PhysicsFS"
 
 }	
