@@ -26,6 +26,7 @@
 using std::string ;
 using std::list ;
 
+using namespace Ceylan::Log ;
 using namespace Ceylan::System ;
 
 using namespace OSDL ;
@@ -715,9 +716,13 @@ Size EmbeddedFileSystemManager::getSize( const string & filename )
      *
      */
     
-    tmpFile = createFile( filename, Ceylan::System::File::Read ) ;
-     
-    return tmpFile.getSize() ;
+    File & tmpFile = File::Create( filename, Ceylan::System::File::Read ) ;
+    
+    Size fileSize = tmpFile.size() ;
+    
+    delete & tmpFile ;
+    
+    return fileSize ;
     
 
 #else // OSDL_USES_PHYSICSFS
@@ -871,64 +876,15 @@ void EmbeddedFileSystemManager::removeDirectory( const string & directoryPath,
         	"EmbeddedFileSystemManager::removeDirectory: "
             "void directory specified" ) ;
 
-	// Must be modified (leading separator):
-	string thisPath = directoryPath ;
-
-	removeLeadingSeparator( thisPath ) ;
-
-
 	if ( recursive )
-	{
+		throw DirectoryRemoveFailed(
+        	"EmbeddedFileSystemManager::removeDirectory: "
+            "no recursive operation supported" ) ;
 
-		EmbeddedDirectory & d = EmbeddedDirectory::Open( thisPath ) ;
-
-		list<string> nodes ;
-		d.getEntries( nodes ) ;
-
-		for ( list<string>::const_iterator it = nodes.begin(); 
-			it != nodes.end(); it++ )
-		{
-
-			string newPath = joinPath( thisPath, *it ) ;
-
-			if ( ::stat( newPath.c_str(), & buf ) == 0 )
-			{
-			
-				// Unlinks symlinks and files:
-				if ( isfile )
-				{
-
-					if ( PHYSFS_delete( newPath.c_str() ) == 0 )
-						throw DirectoryRemoveFailed( 
-							"EmbeddedFileSystemManager::removeDirectory failed "
-                            " in 'unlink' for " + newPath + ": " 
-                            + GetBackendLastError() ) ;
-
-				}
-				else
-				{
-					// Recursive call:
-					removeDirectory( newPath ) ;
-				}
-				
-			}
-			else
-			{
-				// stat failed:
-				throw DirectoryRemoveFailed(
-					"EmbeddedFileSystemManager::removeDirectory "
-					"failed in stat for " + newPath +  ": " 
-					+ System::explainError() ) ;
-			}
-		}
-
-	}
-
-
-	if ( PHYSFS_delete( thisPath.c_str() ) == 0 )
+	if ( PHYSFS_delete( directoryPath.c_str() ) == 0 )
 		throw DirectoryRemoveFailed( 
 			"EmbeddedFileSystemManager::removeDirectory failed in 'rmdir' for " 
-			+ thisPath + ": " + GetBackendLastError() ) ;
+			+ directoryPath + ": " + GetBackendLastError() ) ;
 
 
 #else // OSDL_USES_PHYSICSFS
@@ -1259,22 +1215,22 @@ EmbeddedFileSystemManager::EmbeddedFileSystemManager()
 		+ Ceylan::toNumericalString( linkTimePhysicsFSVersion.patch ) 
         + " version." ) ;
     
-    if ( PHYSFS_init( Ceylan::LogPLug::GetFullExecutablePath().c_str() ) == 0 )
+    if ( PHYSFS_init( LogPlug::GetFullExecutablePath().c_str() ) == 0 )
     	throw EmbeddedFileSystemManagerException( 
         	"EmbeddedFileSystemManager constructor failed: "
         	+ GetBackendLastError() ) ;    	
 	
-    PHYSFS_ArchiveInfo **i ;
-
 	list<string> archiveTypes ;
 
 	string res = "Supported archive types are: " ;
+
+    const PHYSFS_ArchiveInfo ** i = PHYSFS_supportedArchiveTypes() ;
     
- 	for ( i = PHYSFS_supportedArchiveTypes(); *i != 0; i++ )
+ 	for ( ; *i != 0; i++ )
 	{
     
-    	archiveTypes.push_back( string( i->extension ) + ", which is "
-        	+ string( i->description ) ) ;
+    	archiveTypes.push_back( string( (*i)->extension ) + ", which is "
+        	+ string( (*i)->description ) ) ;
             
 	}
     
