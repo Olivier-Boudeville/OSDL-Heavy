@@ -7,5 +7,5 @@ Name: OSDL
 Description: Object-oriented Simple DirectMedia Layer
 Version: @OSDL_VERSION@
 Requires:
-Libs: -L${libdir} -lOSDL -lm @LIBS@ -Wl,-rpath,${libdir}
+Libs: -L${libdir} @OSDL_RPATH_LD_FLAGS@ -lOSDL -lm @LIBS@
 Cflags: -I${includedir}/OSDL
