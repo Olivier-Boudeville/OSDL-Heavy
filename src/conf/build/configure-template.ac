@@ -589,7 +589,7 @@ AC_SUBST(OSDL_VIDEO_GRAPHICAL_USER_INTERFACE)
 
 # See if the user wants aggressive optimizations of the code:
 AC_ARG_ENABLE(debug,
-	AS_HELP_STRING(--enable-debug,[disable aggressive optimizations [[default=yes]]]),,enable_debug=yes)
+	AS_HELP_STRING([--enable-debug],[disable aggressive optimizations [[default=yes]]]),,enable_debug=yes)
 if test x$enable_debug = xyes; then
 
 	# Debug requested:
@@ -873,7 +873,7 @@ AC_DEFINE_UNQUOTED([CACHE_OVERALL_SETTINGS],
 
 # Add verbose warnings by default, and allow ANSI compliance checking:
 AC_ARG_ENABLE(strict-ansi,
-	AS_HELP_STRING(--enable-strict-ansi,[enable strict ANSI compliance build [[default=yes]]]),,enable_strict_ansi=yes)
+	AS_HELP_STRING([--enable-strict-ansi],[enable strict ANSI compliance build [[default=yes]]]),,enable_strict_ansi=yes)
 if test x$ac_cv_cxx_compiler_gnu = xyes; then
 	# Basically paranoïd in all cases:
 	
@@ -955,7 +955,7 @@ default_att=$none_att
 
 # Uses terminal features such as fancy make colors by default:
 AC_ARG_ENABLE(colored-build,
-	AS_HELP_STRING(--enable-colored-build,[enable colored build [[default=yes]]]),,enable_colored_build=yes)
+	AS_HELP_STRING([--enable-colored-build],[enable colored build [[default=yes]]]),,enable_colored_build=yes)
 if test x$enable_colored_build = xyes; then
 
 	# The quadrigram '@<:@' is needed to allow for an unbalanced '[':
@@ -1009,6 +1009,8 @@ AC_SUBST(OSDL_WARNING_STYLE)
 # Visual C++-based builds
 #	- set various system-dependent paths
 #
+# Note: platform detection by Ceylan should be preferred to tests here.
+#
 CheckPlatform()
 {
 	
@@ -1024,41 +1026,83 @@ CheckPlatform()
 	# Needed with gcc compilers:
 	OSDL_PACKED_ATTRIBUTE="\"__attribute__ ((packed))\""
 	
-	case "$target" in
+    # Base on host rather than on target:
+	case "$host" in
 	
 		*-*-win32*) 
+        	HOST_ARCH=win32
 			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
 			OSDL_PACKED_ATTRIBUTE=""
 			;;
 
 		*-*-cygwin*)
+        	HOST_ARCH=win32
 			CFLAGS="$CFLAGS -I/usr/include/mingw -DWIN32 -Uunix -mno-cygwin"
 			LIBS="$LIBS -mno-cygwin"
 			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
 			;;
 		
 		*-*-mingw32*)
+        	HOST_ARCH=win32
 	        LIBS="-lmingw32 $LIBS -mwindows"
 			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
 			;;
 				
-	    *-*-linux*) 
+	    *-*-linux*|*-*-uclinux*) 
+        	HOST_ARCH=linux
 			;;
+		
+        *-*-bsdi*)
+        	HOST_ARCH=bsdi
+            ;;
 			
-		*-*-freebsd*)
+		*-*-freebsd*|*-*-dragonfly*)
+        	HOST_ARCH=freebsd
 			;;
 			
 		*-*-netbsd*) 
+        	HOST_ARCH=netbsd
 			;;
 
 		*-*-openbsd*) 
+        	HOST_ARCH=openbsd
 			;;
 		
+        *-*-beos*)
+        	HOST_ARCH=beos
+			;;
+        
+        *-*-darwin* )
+        	HOST_ARCH=macosx
+			;;
+		
+        *-*-sysv5*)
+        	HOST_ARCH=sysv5
+            ;;
+		
 		*-*-solaris*)	
+        	HOST_ARCH=solaris
+			;;
+            
+		*-*-hpux*)
+        	HOST_ARCH=hpux
+			;;
+            
+		*-*-irix*)          
+        	HOST_ARCH=irix
+			;;
+            
+		*-*-aix*)
+        	HOST_ARCH=aix
+			;;
+            
+		*-*-osf*)
+        	HOST_ARCH=osf
 			;;
 
 	    *)
 	        # Not identified
+            HOST_ARCH=unknown
 	        ;;
 		
 	esac
@@ -1080,6 +1124,38 @@ CheckPlatform()
 }
 
 
+# Checks if we want to use RPATH when linking to OSDL.
+# Note: CheckPlatform must have been executed first, for HOST_ARCH.
+CheckRpath()
+{
+  
+  AC_ARG_ENABLE([rpath],
+    AS_HELP_STRING([--enable-rpath],[use an rpath when linking to OSDL [[default=yes]]]),
+      [case "${enableval}" in
+        yes) use_rpath=yes ;;
+        no)  use_rpath=no ;;
+	    *) AC_MSG_ERROR(bad value ${enableval} for --enable-rpath) ;;
+      esac],[use_rpath=yes])
+
+  if test "x$enable_rpath" = "xyes"; then
+
+    if test $HOST_ARCH = bsdi -o $HOST_ARCH = freebsd -o $HOST_ARCH = irix -o $HOST_ARCH = linux -o $HOST_ARCH = netbsd; then
+      OSDL_RPATH_LD_FLAGS="-Wl,-rpath,\${libdir}"
+    fi
+
+    if test $HOST_ARCH = solaris; then
+      OSDL_RPATH_LD_FLAGS="-R\${libdir}"
+    fi
+    
+  else
+  
+    OSDL_RPATH_LD_FLAGS=""
+    
+  fi  
+
+}
+
+
 # Detects OpenGL capabilities and setup build accordingly.
 #
 CheckOpenGL()
@@ -1088,7 +1164,7 @@ CheckOpenGL()
   # Is openGL to be used ?
   OSDL_USES_OPENGL=0
   AC_ARG_ENABLE([opengl],
-    AS_HELP_STRING(--enable-opengl,[use OpenGL and GLU in OSDL internals [[default=yes]]]),
+    AS_HELP_STRING([--enable-opengl],[use OpenGL and GLU in OSDL internals [[default=yes]]]),
       [case "${enableval}" in
         yes) opengl=yes ;;
         no)  opengl=no ;;
@@ -1133,9 +1209,11 @@ CheckOpenGL()
 }
 
 
-CheckPlatform
-CheckOpenGL
 
+
+CheckPlatform
+CheckRpath
+CheckOpenGL
 
 # Section of non feature-based checkings.
 
@@ -1159,6 +1237,9 @@ AC_SUBST(CPPFLAGS)
 
 LIBS="$LIBS $OSDL_LIBS"
 AC_SUBST(LIBS)
+
+AC_SUBST(OSDL_RPATH_LD_FLAGS)
+
 
 AC_SUBST(AM_CXXFLAGS)
 AC_SUBST(AM_LDFLAGS)
