@@ -21,7 +21,7 @@ if [ $is_windows -eq 0 ] ; then
 
   # Windows special case:
   #REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Agar_win PhysicsFS_win"
-  # Agar_win removed for the moment:
+  # Agar_win removed for the moment:
   REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
@@ -233,7 +233,9 @@ generateSDL()
 
 		${MKDIR} -p ${SDL_PREFIX}
 		
-		setBuildEnv ./configure --prefix=${SDL_PREFIX} --exec-prefix=${SDL_PREFIX}
+        # DirectFB disabled, as build will fail on openSuse if corresponding
+        # package is not installed (Ubuntu can cope with this situation though)
+		setBuildEnv ./configure --enable-video-directfb=no --disable-rpath --prefix=${SDL_PREFIX} --exec-prefix=${SDL_PREFIX}
 			
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -881,6 +883,10 @@ generatezlib()
 
 	LOG_STATUS "Generating zlib..."
 	
+	if [ -d "zlib" ] ; then
+		${RM} -rf "zlib"
+	fi
+	
 	# Not all platforms have symbolic links:
 	${MV} -f "zlib-${zlib_VERSION}" zlib
 	cd zlib
@@ -1164,6 +1170,10 @@ generatelibpng()
 {
 
 	LOG_STATUS "Generating libpng..."
+
+	if [ -d "libpng" ] ; then
+		${RM} -rf "libpng"
+	fi
 	
 	# Not all platforms support symbolic links:
 	${MV} -f "libpng-${libpng_VERSION}" libpng
@@ -3487,7 +3497,7 @@ generateAgar()
 	
 	printItem "configuring"
 	
-	AGAR_CONFIGURE_OPT="--disable-network --disable-threads --disable-server --enable-gui --enable-utf8 --with-gl --with-jpeg --with-freetype"
+	AGAR_CONFIGURE_OPT="--disable-network --disable-threads --disable-server --enable-gui --enable-utf8 --with-gl --with-jpeg --with-freetype "
 	
 	if [ -n "$prefix" ] ; then	
 	{		
@@ -3500,8 +3510,10 @@ generateAgar()
 
 
 		${MKDIR} -p ${Agar_PREFIX}
-		
-		setBuildEnv ./configure --prefix=${Agar_PREFIX} ${AGAR_CONFIGURE_OPT} 
+
+		# Currently the Agar configure cannot override the default location
+		# for libjpeg (CFLAGS="-I${libjpeg_PREFIX}/include" is rejected):
+		setBuildEnv ./configure --prefix=${Agar_PREFIX} ${AGAR_CONFIGURE_OPT}
 			
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -3612,7 +3624,7 @@ cleanAgar()
 ################################################################################
 # Agar build thanks to Visual Express.
 # Static libraries have been removed.
-# Paths and properties have been updated in agar*vcproj files.
+# Paths and properties have been updated in agar*vcproj files.
 ################################################################################
 
 
@@ -3895,6 +3907,34 @@ PHYSICSFS_CMAKE_OPT="-DCMAKE_INSTALL_PREFIX=${PhysicsFS_PREFIX}"
 		
 		setBuildEnv ${MAKE} install
 
+		cd ${PhysicsFS_PREFIX}/include
+        
+        # Patching PhysicsFS include, to name the struct:
+    
+		${CAT} > physfs.h.patch <<END
+--- physfs.h    2008-10-11 16:38:16.000000000 +0200
++++ physfs.h-correct    2008-10-11 16:17:45.000000000 +0200
+@@ -334,7 +334,7 @@
+  * \sa PHYSFS_setBuffer
+  * \sa PHYSFS_flush
+  */
+-typedef struct
++typedef struct PHYSFS_File
+ {
+     void *opaque;  /**< That's all you get. Don't touch. */
+ } PHYSFS_File;
+
+END
+
+		${PATCH} -p0 < physfs.h.patch
+
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to patch PhysicsFS."
+			exit 14
+		fi	
+
+
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
 	{		
@@ -3908,6 +3948,7 @@ PHYSICSFS_CMAKE_OPT="-DCMAKE_INSTALL_PREFIX=${PhysicsFS_PREFIX}"
 		ERROR "Unable to install PhysicsFS."
 		exit 13
 	fi	
+
 	
 	if [ $is_windows -eq 0 ] ; then
 		${MV} -f ${PhysicsFS_PREFIX}/bin/*.dll ${PhysicsFS_PREFIX}/lib
@@ -3936,7 +3977,7 @@ cleanPhysicsFS()
 ################################################################################
 # PhysicsFS build thanks to Visual Express.
 # Static libraries have been removed.
-# Paths and properties have been updated in agar*vcproj files.
+# Paths and properties have been updated in agar*vcproj files.
 ################################################################################
 
 
@@ -4144,7 +4185,8 @@ generateSDL_gfx()
 		# SDL_gfx uses wrongly SDL includes: asks for SDL/SDL.h
 		# instead of SDL.h.
 		# Ugly hack:
-		# (copy could be used instead, to avoid needing symbolic links for filesystems such as vfat)
+		# (copy could be used instead, to avoid needing symbolic links for
+        # filesystems such as vfat)
 		${LN} -s ${SDL_PREFIX}/include/SDL ${SDL_PREFIX}/include/SDL/SDL
 
 		OLD_CPP_FLAGS=$CPP_FLAGS
@@ -4159,9 +4201,10 @@ generateSDL_gfx()
 		LIBS=$LDFLAGS
 		export LIBS
 
-		# --disable-sdltest added since configure tries to compile a test without letting
-		# the system libraries locations to be redefined. Therefore a wrong libstdc++.so
-		# could be chosen, leading to errors such as:
+		# --disable-sdltest added since configure tries to compile a test
+        # without letting the system libraries locations to be redefined.
+        # Therefore a wrong libstdc++.so could be chosen, leading to errors
+        # such as:
 		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 
 		setBuildEnv ./configure --prefix=${SDL_gfx_PREFIX} --exec-prefix=${SDL_gfx_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --disable-sdltest
@@ -4509,12 +4552,17 @@ generatefreetype()
 
 	printItem "installing"
 	
+	# PATH is managed as well, as Agar will try to run the freetype-config
+	# script afterwards:
+	
 	if [ -n "$prefix" ] ; then	
 	{		
 		echo "# freetype section." >> ${OSDL_ENV_FILE}
 		
 		echo "freetype_PREFIX=${freetype_PREFIX}" >> ${OSDL_ENV_FILE}
 		echo "export freetype_PREFIX" >> ${OSDL_ENV_FILE}
+		
+		echo "PATH=\$freetype_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$freetype_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 	
 		if [ $is_windows -eq 0 ] ; then
@@ -4522,13 +4570,16 @@ generatefreetype()
 			# Always remember that, on Windows, DLL are searched through
 			# the PATH, not the LD_LIBRARY_PATH.
 			
-			PATH=${freetype_PREFIX}/lib:${PATH}	
+			PATH=${freetype_PREFIX}/lib:${freetype_PREFIX}/bin:${PATH}	
 			export PATH
 			
 			echo "PATH=\$freetype_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 		fi
 
 		echo "" >> ${OSDL_ENV_FILE}	
+		
+		PATH=${freetype_PREFIX}/bin:${PATH}
+		export PATH
 		
 		LD_LIBRARY_PATH=${freetype_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
