@@ -34,17 +34,18 @@
 <a name="_top_"></a>
 <h1>LOANI's corner</h1>
 
+<!--
 <center>
     <table summary="a box" style="border : none">
         <tr>
           <td>
             <div class="box">
-<b>Beware!</b> Although we are spending a lot of time on OSDL, we are in the middle of rather time-consuming tasks (increase in the versions of most of the OSDL prerequisites), so currently we would not recommend using OSDL until its 0.6 version is released, which shoudn't happen until the fall of 2008. Sorry for the inconvenience! Do not hesitate to ask us news from time to time, should we forget to update this warning.
+<b>Beware!</b> Although we are spending a lot of time on OSDL, we are in the middle of rather time-consuming tasks (increase in the versions of most of the OSDL prerequisites), so currently we would not recommend using OSDL until its 0.6 version is released, which shoud not happen until the fall of 2008. Sorry for the inconvenience! Do not hesitate to ask us news from time to time, should we forget to update this warning.
             </div>
           </td>
         </tr>
     </table>
-	
+-->	
 	
 <a name="quickstart"></a>
 
@@ -55,7 +56,7 @@ Download either <a href="http://downloads.sourceforge.net/osdl/LOANI-0.6.zip">LO
 </p>
 
 <p>
-If cross-compiling for the <a href="../main/documentation/misc/nintendo-DS/HomebrewForDS.html" target="_blank">Nintendo DS</a>, just add: <code>--nds</code>. If wanting only the Orge server, just use the <code>--onlyOrgeTools</code> option. That's all !</p>
+If cross-compiling for the <a href="../main/documentation/misc/nintendo-DS/HomebrewForDS.html" target="_blank">Nintendo DS</a>, just add: <code>--nds</code>. If wanting only the Orge server, just use the <code>--onlyOrgeTools</code> option. That's all!</p>
 
 <p>
 If wanting to build the OSDL toolchain for Windows, just refer to <a href="BuildForWindows.html">this document</a> instead.
@@ -88,7 +89,7 @@ If wanting to build the OSDL toolchain for Windows, just refer to <a href="Build
 </p>
 
 <p>LOANI stands for <b>Lazy OSDL's Automatic Net Installer</b>.
-Its purpose is to simplify as much as possible the installation of OSDL and its pre requesites on supported platforms, notably Windows and most UNIX platforms, including GNU/Linux.
+Its purpose is to simplify as much as possible the installation of OSDL and its prerequesites on supported platforms, notably Windows and most UNIX platforms, including GNU/Linux.
 </p>
 
 <p>
@@ -108,7 +109,7 @@ Installed developments may include, depending on the choice of the LOANI user:
 </p>
 
 <p>
-We really understand there are much more enjoyable activities than to painfully install an intricate list of cyclic dependencies in order to have one's library working. That's why it ought to be automated.
+We really understand there are much more enjoyable activities than to painfully install an intricate list of in some cases cyclic dependencies in order to have one's library working. That's why it ought to be automated.
 </p>
 
 <p>Some operating systems, such as GNU/Linux with for example the Debian or Gentoo distributions, automate software installations with a package system. However it does not discard the need of tools like LOANI, as we must compile with dedicated options specific versions of helper libraries. Most often package managers do not let easily choose the options sets and/or offer too old versions and/or patch them inaccurately. For example, SDL_image did not build with gcc higher than 3.4, and needs to be configured with JPEG, PNG support, but not TIFF one. LOANI takes in charge that task automatically and without complaining.</p>     
@@ -147,7 +148,7 @@ For other platforms, some adaptations may have to be performed. A general rule o
 </p>
 	
 	
-<h3>Other pre requesites</h3>	
+<h3>Other prerequesites</h3>	
 
 <p>One of course should have a working internet connection in order to retrieve the target packages, if needed: one could indeed prefetch archives thanks to any available way (ex: a CDR or an USB key) and put them in LOANI's cache repository, to avoid any subsequent download.
 </p>
@@ -164,20 +165,22 @@ All of them should already be available on most UNIX-like systems:
 
   <li>more advanced UNIX tools: awk, tar, gunzip, bunzip2, ping, md5sum, wget</li>
 
-  <li>build tools: make, cmake</li>
+  <li>build tools: make, cmake, automake, autoconf</li>
   
 </ul>
 
 <p>
-For Windows-based systems, selecting most tools in the Cygwin setup should be enough. For Debian-based systems, this command should help (when run withe the <code>root</code> user:
+For Windows-based systems, selecting most tools in the Cygwin setup should be enough.
+</p>
+
+<p>
+For Debian-based systems, this command should help:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="a box" style="border : none">
         <tr>
           <td>
             <div class="box">
-<code><pre>
-apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake
-</pre></code>
+sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev
             </div>
           </td>
         </tr>
@@ -186,8 +189,24 @@ apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake
 
 </p>
 
+
 <p>
-Please note that these pre requesites are LOANI's ones, which are a subset of full OSDL's ones. The complementary tools should be retrieved, installed and used automatically by LOANI, if requested (ex: the C++ compiler).
+For RPM-based systems like OpenSuse, this command should help:
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+sudo yast --update && yast -i coreutils gawk tar gzip bzip2 wget make cmake gcc gcc-c++ flex subversion autoconf automake xorg-x11-proto-devel libjpeg-devel Mesa Mesa-devel 
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+
+<p>
+Please note that these prerequesites are LOANI's ones, which are a subset of full OSDL's ones. The complementary tools should be retrieved, installed and used automatically by LOANI, if requested (ex: the C++ compiler).
 </p>
 
 
@@ -279,7 +298,7 @@ These build tools or counterparts of them (other C++ compilers, same tools with 
 </p>
 	
 <p>
-Installing by oneself these build tools is quite often needed, since for example gcc often breaks downward binary compatibility for C++ base libraries: we often need a very precise version of <code>libstdc++</code>. As we already chose for you the latest gcc version able to build all OSDL pre requesites, relying on LOANI to install gcc and other build tools as well is a safe bet.
+Installing by oneself these build tools is quite often needed, since for example gcc often breaks downward binary compatibility for C++ base libraries: we often need a very precise version of <code>libstdc++</code>. As we already chose for you the latest gcc version able to build all OSDL prerequesites, relying on LOANI to install gcc and other build tools as well is a safe bet.
 </p>
 	
 <p>
@@ -520,9 +539,9 @@ tester@testingHost LOANI-0.6 $ ./loani.sh --allTools
 
 This is the Lazy OSDL Automatic Net Installer, dedicated to the lazy and the fearless.
 
-Its purpose is to have OSDL and all its pre requesites installed with the minimum of time and effort. Some time is nevertheless needed, since some downloads may have to be performed, and the related build is CPU-intensive, so often a bit long. Therefore, even with a powerful computer and broadband access, some patience will be needed.
+Its purpose is to have OSDL and all its prerequesites installed with the minimum of time and effort. Some time is nevertheless needed, since some downloads may have to be performed, and the related build is CPU-intensive, so often a bit long. Therefore, even with a powerful computer and broadband access, some patience will be needed.
 Warning: No prefix specified and not run as root (which is recommended indeed): adding prefix /home/tester/LOANI-0.6/LOANI-installations.
-Retrieving all pre requesites, pipe-lining when possible.
+Retrieving all prerequesites, pipe-lining when possible.
 Target package list is &lt;libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Ceylan OSDL&gt;.
 Some tools already available (libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS), others will be downloaded (Ceylan OSDL).
 Retrieving Ceylan from developer SVN with user name wondersye.
@@ -531,7 +550,7 @@ Retrieving Ceylan from developer SVN with user name wondersye.
 Retrieving OSDL from developer SVN with user name wondersye.
       ----&gt; getting OSDL from SVN with user name wondersye (check-out)
       &lt;---- OSDL retrieved [from SVN]
-All pre requesites available.
+All prerequesites available.
       ----&gt; libtool    : extracting [OK] configuring [OK] building [OK] installing [OK]
       ----&gt; SDL        : extracting [OK] configuring [OK] building [OK] installing [OK]
       ----&gt; libjpeg    : extracting [OK] configuring [OK] building [OK] installing [OK]
@@ -620,7 +639,7 @@ The other question is, for the registered OSDL users that chose the SVN develope
 <p>
 <ul>
 
-  <li><b>integrated</b>: does everything on your behalf, i.e. for all pre requesites retrieves, extracts, configures, builds, installs. No worry, nothing to do, let it work for you</li>
+  <li><b>integrated</b>: does everything on your behalf, i.e. for all prerequesites retrieves, extracts, configures, builds, installs. No worry, nothing to do, let it work for you</li>
 
   <li><b>simple</b>: one can launch LOANI just by <code>loani.sh</code> and let it do its best alone</li>
 
@@ -700,7 +719,7 @@ Options:
         --allTools               : retrieve all tools (required, build, optional tools)
         --nds                    : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
         --setEnv                 : set full developer environment (ex: bash, nedit configuration)
-        --fetchonly              : only retrieve (download in cache) pre requesite, do not install them
+        --fetchonly              : only retrieve (download in cache) prerequesite, do not install them
         --all                    : install all and set all
         --prefix &lt;a path&gt;        : install everything under &lt;a path&gt; 
         --repository &lt;a path&gt;    : specify an alternate cache repository for downloads       
@@ -959,7 +978,7 @@ We hope you will enjoy using LOANI and OSDL !
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Sunday, September 21, 2008</em>	
+    <em>Last update: Sunday, October 12, 2008</em>	
   </center>
 </body>
 </html>
