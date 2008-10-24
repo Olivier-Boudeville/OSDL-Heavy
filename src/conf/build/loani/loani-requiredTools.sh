@@ -192,7 +192,7 @@ prepareSDL()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_ARCHIVE} ${SDL_ARCHIVE}.save && ${GUNZIP} -f ${SDL_ARCHIVE} && tar -xvf "SDL-${SDL_VERSION}.tar" 
+		${CP} -f ${SDL_ARCHIVE} ${SDL_ARCHIVE}.save && ${GUNZIP} -f ${SDL_ARCHIVE} && ${TAR} -xvf "SDL-${SDL_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -508,7 +508,7 @@ preparelibjpeg()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libjpeg_ARCHIVE} ${libjpeg_ARCHIVE}.save && ${GUNZIP} -f ${libjpeg_ARCHIVE} && tar -xvf "jpegsrc.v${libjpeg_VERSION}.tar" 
+		${CP} -f ${libjpeg_ARCHIVE} ${libjpeg_ARCHIVE}.save && ${GUNZIP} -f ${libjpeg_ARCHIVE} && ${TAR} -xvf "jpegsrc.v${libjpeg_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -740,7 +740,7 @@ preparelibjpeg_win()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libjpeg_win_ARCHIVE} ${libjpeg_win_ARCHIVE}.save && ${GUNZIP} -f ${libjpeg_win_ARCHIVE} && tar -xvf "jpegsrc.v${libjpeg_VERSION}.tar"
+		${CP} -f ${libjpeg_win_ARCHIVE} ${libjpeg_win_ARCHIVE}.save && ${GUNZIP} -f ${libjpeg_win_ARCHIVE} && ${TAR} -xvf "jpegsrc.v${libjpeg_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
@@ -859,7 +859,7 @@ preparezlib()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${zlib_ARCHIVE} ${zlib_ARCHIVE}.save && ${BUNZIP2} -f ${zlib_ARCHIVE} && tar -xvf "zlib-${zlib_VERSION}.tar" 
+		${CP} -f ${zlib_ARCHIVE} ${zlib_ARCHIVE}.save && ${BUNZIP2} -f ${zlib_ARCHIVE} && ${TAR} -xvf "zlib-${zlib_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -1147,7 +1147,7 @@ preparelibpng()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libpng_ARCHIVE} ${libpng_ARCHIVE}.save && ${BUNZIP2} -f ${libpng_ARCHIVE} && tar -xvf "libpng-${libpng_VERSION}.tar" 
+		${CP} -f ${libpng_ARCHIVE} ${libpng_ARCHIVE}.save && ${BUNZIP2} -f ${libpng_ARCHIVE} && ${TAR} -xvf "libpng-${libpng_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -1494,7 +1494,7 @@ preparelibtiff()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libtiff_ARCHIVE} ${libtiff_ARCHIVE}.save && ${GUNZIP} -f ${libtiff_ARCHIVE} && tar -xvf "tiff-v${libtiff_VERSION}-tar" 
+		${CP} -f ${libtiff_ARCHIVE} ${libtiff_ARCHIVE}.save && ${GUNZIP} -f ${libtiff_ARCHIVE} && ${TAR} -xvf "tiff-v${libtiff_VERSION}-tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -1643,7 +1643,7 @@ prepareSDL_image()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_image_ARCHIVE} ${SDL_image_ARCHIVE}.save && ${GUNZIP} -f ${SDL_image_ARCHIVE} && tar -xvf "SDL_image-${SDL_image_VERSION}.tar" 
+		${CP} -f ${SDL_image_ARCHIVE} ${SDL_image_ARCHIVE}.save && ${GUNZIP} -f ${SDL_image_ARCHIVE} && ${TAR} -xvf "SDL_image-${SDL_image_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -2184,7 +2184,7 @@ preparelibogg()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libogg_ARCHIVE} ${libogg_ARCHIVE}.save && ${GUNZIP} -f ${libogg_ARCHIVE} && tar -xvf "libogg-${libogg_VERSION}.tar" 
+		${CP} -f ${libogg_ARCHIVE} ${libogg_ARCHIVE}.save && ${GUNZIP} -f ${libogg_ARCHIVE} && ${TAR} -xvf "libogg-${libogg_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -2499,7 +2499,7 @@ preparelibvorbis()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libvorbis_ARCHIVE} ${libvorbis_ARCHIVE}.save && ${GUNZIP} -f ${libvorbis_ARCHIVE} && tar -xvf "libvorbis-${libvorbis_VERSION}.tar" 
+		${CP} -f ${libvorbis_ARCHIVE} ${libvorbis_ARCHIVE}.save && ${GUNZIP} -f ${libvorbis_ARCHIVE} && ${TAR} -xvf "libvorbis-${libvorbis_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -2814,7 +2814,7 @@ prepareSDL_mixer()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_mixer_ARCHIVE} ${SDL_mixer_ARCHIVE}.save && ${GUNZIP} -f ${SDL_mixer_ARCHIVE} && tar -xvf "SDL_mixer-${SDL_mixer_VERSION}.tar" 
+		${CP} -f ${SDL_mixer_ARCHIVE} ${SDL_mixer_ARCHIVE}.save && ${GUNZIP} -f ${SDL_mixer_ARCHIVE} && ${TAR} -xvf "SDL_mixer-${SDL_mixer_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -3156,7 +3156,7 @@ prepareguichan()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${guichan_ARCHIVE} ${guichan_ARCHIVE}.save && ${GUNZIP} -f ${guichan_ARCHIVE} && tar -xvf "guichan-${guichan_VERSION}.tar" 
+		${CP} -f ${guichan_ARCHIVE} ${guichan_ARCHIVE}.save && ${GUNZIP} -f ${guichan_ARCHIVE} && ${TAR} -xvf "guichan-${guichan_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -3349,7 +3349,7 @@ prepareguichan_win()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${guichan_win_ARCHIVE} ${guichan_win_ARCHIVE}.save && ${GUNZIP} -f ${guichan_win_ARCHIVE} && tar -xvf "guichan-${guichan_win_VERSION}.tar"
+		${CP} -f ${guichan_win_ARCHIVE} ${guichan_win_ARCHIVE}.save && ${GUNZIP} -f ${guichan_win_ARCHIVE} && ${TAR} -xvf "guichan-${guichan_win_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 	if [ $? != 0 ] ; then
@@ -3468,7 +3468,7 @@ prepareAgar()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${Agar_ARCHIVE} ${Agar_ARCHIVE}.save && ${GUNZIP} -f ${Agar_ARCHIVE} && tar -xvf "agar-${Agar_VERSION}.tar" 
+		${CP} -f ${Agar_ARCHIVE} ${Agar_ARCHIVE}.save && ${GUNZIP} -f ${Agar_ARCHIVE} && ${TAR} -xvf "agar-${Agar_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -3788,7 +3788,7 @@ preparePhysicsFS()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${PhysicsFS_ARCHIVE} ${PhysicsFS_ARCHIVE}.save && ${GUNZIP} -f ${PhysicsFS_ARCHIVE} && tar -xvf "physfs-${PhysicsFS_VERSION}.tar" 
+		${CP} -f ${PhysicsFS_ARCHIVE} ${PhysicsFS_ARCHIVE}.save && ${GUNZIP} -f ${PhysicsFS_ARCHIVE} && ${TAR} -xvf "physfs-${PhysicsFS_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -3995,12 +3995,19 @@ preparePhysicsFS_win()
 
 	LOG_STATUS "Preparing PhysicsFS for windows.."
 
-	if findTool unzip ; then
-		UNZIP=$returnedString
+	if findTool gunzip ; then
+		GUNZIP=$returnedString
 	else
-		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
 		exit 8
-	fi
+	fi	
+	
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 9
+	fi		
 
 	printBeginList "PhysicsFS       "
 
@@ -4008,41 +4015,28 @@ preparePhysicsFS_win()
 
 	cd $repository
 
+	# Prevent archive from disappearing because of gunzip.
 	{
-		${UNZIP} -o ${PhysicsFS_win_ARCHIVE}
+		${CP} -f ${PhysicsFS_win_ARCHIVE} ${PhysicsFS_win_ARCHIVE}.save && ${GUNZIP} -f ${PhysicsFS_win_ARCHIVE} && ${TAR} -xvf "physfs-${PhysicsFS_win_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
+		
 	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${PhysicsFS_win_ARCHIVE}."
 		LOG_STATUS "Restoring ${PhysicsFS_win_ARCHIVE}."
-		${MV} -f ${PhysicsFS_win_ARCHIVE}.save ${PhysicsFS_win_ARCHIVE}
+		${MV} -f ${PhysicsFS_win_ARCHIVE}.save ${PhysicsFS_win_ARCHIVE} 
 		exit 10
 	fi
 
+
 	# Now let's use our own solution:
 	
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/PhysicsFS-from-LOANI" "agar-${PhysicsFS_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/PhysicsFS-from-LOANI" "physfs-${PhysicsFS_win_VERSION}"
 
 	if [ $? != 0 ] ; then
 		ERROR "Unable to copy PhysicsFS solution in build tree."
 		exit 12
 	fi
-
-	cd "agar-${PhysicsFS_win_VERSION}"
-
-	AGAR_FLAVOUR_ARCHIVE="vs2005-windows-i386-nothreads.zip"
-
-	# Now we use the project prebuilt files as a base:
-	{
-
-		${CP} -f "ProjectFiles/${AGAR_FLAVOUR_ARCHIVE}" . && ${UNZIP} -o "${AGAR_FLAVOUR_ARCHIVE}"
-	} 1>>"$LOG_OUTPUT" 2>&1
-	
-	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${AGAR_FLAVOUR_ARCHIVE}."
-		exit 11
-	fi
-		
 
 	printOK
 
@@ -4055,6 +4049,7 @@ generatePhysicsFS_win()
 
 	LOG_STATUS "Generating PhysicsFS for windows..."
 
+	cd "physfs-${PhysicsFS_win_VERSION}"
 
 	printItem "configuring"
  	printOK
@@ -4068,9 +4063,9 @@ generatePhysicsFS_win()
 	printItem "installing"
 	
 	# Take care of the exported header files (API):
-	PhysicsFS_install=${alternate_prefix}/agar-${PhysicsFS_win_VERSION}
-	${MKDIR} -p ${PhysicsFS_install}
-	${CP} -rf include ${PhysicsFS_install}
+	PhysicsFS_install=${alternate_prefix}/PhysicsFS-${PhysicsFS_win_VERSION}
+	${MKDIR} -p ${PhysicsFS_install}/include
+	${CP} -f *.h ${PhysicsFS_install}/include
 	printOK
 
 	printEndList
@@ -4136,7 +4131,7 @@ prepareSDL_gfx()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_gfx_ARCHIVE} ${SDL_gfx_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_ARCHIVE} && tar -xvf "SDL_gfx-${SDL_gfx_VERSION}.tar"
+		${CP} -f ${SDL_gfx_ARCHIVE} ${SDL_gfx_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_ARCHIVE} && ${TAR} -xvf "SDL_gfx-${SDL_gfx_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
@@ -4377,7 +4372,7 @@ prepareSDL_gfx_win()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_gfx_win_ARCHIVE} ${SDL_gfx_win_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_win_ARCHIVE} && tar -xvf "SDL_gfx-${SDL_gfx_win_VERSION}.tar"
+		${CP} -f ${SDL_gfx_win_ARCHIVE} ${SDL_gfx_win_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_win_ARCHIVE} && ${TAR} -xvf "SDL_gfx-${SDL_gfx_win_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 	if [ $? != 0 ] ; then
@@ -4484,7 +4479,7 @@ preparefreetype()
 	
 	# Prevent archive from disappearing because of bunzip2.
 	{
-		${CP} -f ${freetype_ARCHIVE} ${freetype_ARCHIVE}.save && ${BUNZIP2} -f ${freetype_ARCHIVE} && tar -xvf "freetype-${freetype_VERSION}.tar" 
+		${CP} -f ${freetype_ARCHIVE} ${freetype_ARCHIVE}.save && ${BUNZIP2} -f ${freetype_ARCHIVE} && ${TAR} -xvf "freetype-${freetype_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -4660,7 +4655,7 @@ preparefreetype_win()
 	
 	# Prevent archive from disappearing because of bunzip2.
 	{
-		${CP} -f ${freetype_win_ARCHIVE} ${freetype_win_ARCHIVE}.save && ${BUNZIP2} -f ${freetype_win_ARCHIVE} && tar -xvf "freetype-${freetype_win_VERSION}.tar" 
+		${CP} -f ${freetype_win_ARCHIVE} ${freetype_win_ARCHIVE}.save && ${BUNZIP2} -f ${freetype_win_ARCHIVE} && ${TAR} -xvf "freetype-${freetype_win_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -4771,7 +4766,7 @@ prepareSDL_ttf()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_ttf_ARCHIVE} ${SDL_ttf_ARCHIVE}.save && ${GUNZIP} -f ${SDL_ttf_ARCHIVE} && tar -xvf "SDL_ttf-${SDL_ttf_VERSION}.tar" 
+		${CP} -f ${SDL_ttf_ARCHIVE} ${SDL_ttf_ARCHIVE}.save && ${GUNZIP} -f ${SDL_ttf_ARCHIVE} && ${TAR} -xvf "SDL_ttf-${SDL_ttf_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -5077,7 +5072,7 @@ preparelibtool()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libtool_ARCHIVE} ${libtool_ARCHIVE}.save && ${GUNZIP} -f ${libtool_ARCHIVE} && tar -xvf "libtool-${libtool_VERSION}.tar" 
+		${CP} -f ${libtool_ARCHIVE} ${libtool_ARCHIVE}.save && ${GUNZIP} -f ${libtool_ARCHIVE} && ${TAR} -xvf "libtool-${libtool_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -5872,7 +5867,7 @@ prepareCeylan()
 	
 		# Prevent archive from disappearing because of bunzip2.
 		{
-			${CP} -f ${Ceylan_ARCHIVE} ${Ceylan_ARCHIVE}.save && ${BUNZIP2} -f ${Ceylan_ARCHIVE} && tar -xvf "ceylan-${Ceylan_VERSION}.tar" 
+			${CP} -f ${Ceylan_ARCHIVE} ${Ceylan_ARCHIVE}.save && ${BUNZIP2} -f ${Ceylan_ARCHIVE} && ${TAR} -xvf "ceylan-${Ceylan_VERSION}.tar" 
 		} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
@@ -6440,7 +6435,7 @@ prepareOSDL()
 	
 		# Prevent archive from disappearing because of bunzip2.
 		{
-			${CP} -f ${OSDL_ARCHIVE} ${OSDL_ARCHIVE}.save && ${BUNZIP2} -f ${OSDL_ARCHIVE} && tar -xvf "osdl-${OSDL_VERSION}.tar" 
+			${CP} -f ${OSDL_ARCHIVE} ${OSDL_ARCHIVE}.save && ${BUNZIP2} -f ${OSDL_ARCHIVE} && ${TAR} -xvf "osdl-${OSDL_VERSION}.tar" 
 		} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
