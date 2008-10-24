@@ -1095,8 +1095,37 @@ fi
 
 # Anticipated checkings:
 
-findSupplementaryShellTools
-findBuildTools
+lacking_tool_message=""
+
+if [ $is_linux -eq 0 ] ; then
+
+	# Trying to guess the distribution:
+    distro=`cat /etc/lsb-release | grep DISTRIB_ID | sed 's|^DISTRIB_ID=||'`
+	
+    intro="
+To ensure most needed tools are installed, one may run: 
+  "
+        
+    if [ "$distro" = "Ubuntu" ] ; then
+    
+    	lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
+    
+    # Probably not exactly the correct string to match:
+    else if [ "$distro" = "openSUSE" ] ; then
+
+    	lacking_tool_message="${intro} sudo yast --update && yast -i coreutils gawk tar gzip bzip2 wget make cmake gcc gcc-c++ flex subversion autoconf automake xorg-x11-proto-devel libjpeg-devel Mesa Mesa-devel"
+
+    	fi
+        
+    fi
+
+fi
+
+
+findSupplementaryShellTools "${lacking_tool_message}"
+findBuildTools "${lacking_tool_message}"
+findAutoTools "${lacking_tool_message}"
+
 
 if [ ! -d "$repository" ] ; then
 	DEBUG "Creating non already existing repository ($repository)."
@@ -1166,6 +1195,61 @@ else
 	ERROR "No cmake tool found, whereas needed (ex: for PhysicsFS)."
 	exit 16
 fi		
+
+
+# Anticipated checkings section.
+
+
+# On GNU/Linux, early test for OpenGL headers and al:
+if [ $is_linux -eq 0 ] ; then
+
+   
+	if [ ! -f "/usr/include/GL/gl.h" ] ; then
+	
+			ERROR "No OpenGL headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install mesa-common-dev'."
+			exit 16
+	
+	fi
+	
+	if [ ! -f "/usr/include/GL/glu.h" ] ; then
+	
+			ERROR "No GLU headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get libglu1-mesa-dev'."
+			exit 16
+	
+	fi
+	
+	if [ ! -f "/usr/include/X11/extensions/XShm.h" ] ; then
+	
+			ERROR "No headers for X11 extension about shared memory found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install x11proto-xext-dev'."
+			exit 17
+	
+	fi
+	
+	if [ ! -f "/usr/lib/libGL.so" ] ; then
+	
+			ERROR "No OpenGL library found, users of Debian-based distributions may retrieve it thanks to: 'sudo apt-get install libgl1-mesa-dev' (note also that hardware-accelerated drivers should be preferred)."
+			exit 18
+	
+	fi
+
+	libjpeg_header="/usr/include/jpeglib.h"
+	
+	if [ ! -f "${libjpeg_header}" ] ; then
+	
+			ERROR "Libjpeg does not seem installed on the system (no ${libjpeg_header} found). LOANI will install it, but currently Agar cannot be told to search outside the system tree for libjpeg files, and therefore needs them installed there as well. Users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install libjpeg62-dev'."
+			exit 19
+	
+	fi
+
+	gettext_executable="/usr/bin/gettext"
+	if [ ! -x "${gettext_executable}" ] ; then
+	
+			ERROR "No gettext executable found (${gettext_executable}), users of Debian-based distributions may retrieve it thanks to: 'sudo apt-get install gettext'."
+			exit 20
+	
+	fi
+	
+fi
 
 
 #TRACE "Toolsets sourced."
@@ -1326,19 +1410,22 @@ if [ -n "$retrieve_list" ] ; then
 		exit 5
 	fi		
 	
-	if findTool ping ; then
-	
-		PING=$returnedString
-		if ! ${PING} ${PING_OPT} 5 ${RELIABLE_SERVER} 1>>"$LOG_OUTPUT" 2>&1 ; then
-			ERROR "No available internet connection (unable to ping ${RELIABLE_SERVER})."
-			exit 6
-		else
-			DEBUG "Working internet connection detected."
-		fi		
+    # Checking whether an Internet connection is working is not performed
+    # with ping anymore, as Virtualboxed OS are based on user-space NAT,
+    # thus no ICMP ping can be used. 
+	#if findTool ping ; then
+	#
+	#	PING=$returnedString
+	#	if ! ${PING} ${PING_OPT} 5 ${RELIABLE_SERVER} 1>>"$LOG_OUTPUT" 2>&1 ; then
+	#		ERROR "No available internet connection (unable to ping ${RELIABLE_SERVER})."
+	#		exit 6
+	#	else
+	#		DEBUG "Working internet connection detected."
+	#	fi		
 		
-	else
-		WARNING "No ping tool found, disabling some checks."
-	fi
+	#else
+	#	WARNING "No ping tool found, disabling some checks."
+	#fi
 	
 	if ! ${WGET} ${PROXY_CONF} --spider http://${RELIABLE_SERVER}/index.html 1>>"$LOG_OUTPUT" 2>&1  ; then
 		ERROR "Unable to access the web (reading ${RELIABLE_SERVER}/index.html). If you are behind a proxy, please set PROXY_CONF environment variable with the relevant options to be used by wget. /bin/sh example: PROXY_CONF='--proxy-user=<my user name> --proxy-passwd=<my password>'; export PROXY_CONF"
