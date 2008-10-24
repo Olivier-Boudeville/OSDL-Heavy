@@ -7,7 +7,6 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		Optimization="0"
-		PreprocessorDefinitions="CEYLAN_PACKED_ATTRIBUTE="
 		MinimalRebuild="true"
 		BasicRuntimeChecks="3"
 		RuntimeLibrary="3"
@@ -740,6 +739,62 @@
 	<UserMacro
 		Name="LibvorbisIncDir"
 		Value="$(LibvorbisInstDir)\include"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PhysicsFSVersion"
+		Value="1.1.1"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PhysicsFSRepoDir"
+		Value="$(LoaniRepoDir)\PhysicsFS-$(PhysicsFSVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PhysicsFSInstDir"
+		Value="$(LoaniInstDir)\PhysicsFS-$(PhysicsFSVersion)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PhysicsFSDLLName"
+		Value="PhysicsFS-$(PhysicsFSVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PhysicsFSLIBName"
+		Value="PhysicsFS-$(PhysicsFSVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PhysicsFSfileDLLName"
+		Value="PhysicsFSfile-$(PhysicsFSVersion)-$(LoaniDLLSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PhysicsFSfileLIBName"
+		Value="PhysicsFSfile-$(PhysicsFSVersion)-$(LoaniLIBSuffix)"
+		InheritsFromParent="true"
+		Delimiter=";"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PhysicsFSIncDir"
+		Value="$(PhysicsFSInstDir)\include"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"

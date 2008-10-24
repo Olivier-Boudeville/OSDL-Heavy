@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysicsFS", "PhysicsFS-from-LOANI.vcproj", "{E340A6BC-D45E-43C1-85A8-DBB7A0F5DA6B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{973E91CB-A0AC-4075-BCA0-EF75E7857155} = {973E91CB-A0AC-4075-BCA0-EF75E7857155}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+		MinSizeRel|Win32 = MinSizeRel|Win32
+		RelWithDebInfo|Win32 = RelWithDebInfo|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E340A6BC-D45E-43C1-85A8-DBB7A0F5DA6B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E340A6BC-D45E-43C1-85A8-DBB7A0F5DA6B}.Debug|Win32.Build.0 = Debug|Win32
+		{E340A6BC-D45E-43C1-85A8-DBB7A0F5DA6B}.Release|Win32.ActiveCfg = Release|Win32
+		{E340A6BC-D45E-43C1-85A8-DBB7A0F5DA6B}.Release|Win32.Build.0 = Release|Win32
+		{E340A6BC-D45E-43C1-85A8-DBB7A0F5DA6B}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
+		{E340A6BC-D45E-43C1-85A8-DBB7A0F5DA6B}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
+		{E340A6BC-D45E-43C1-85A8-DBB7A0F5DA6B}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
+		{E340A6BC-D45E-43C1-85A8-DBB7A0F5DA6B}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
