@@ -30,6 +30,13 @@
  * use the default filesystem manager, which may or may not be the embedded
  * one.
  * 
+ * Regarding cyphering, only the minimal transformation is done currently: only
+ * a one-byte XOR pattern and a numerical offset is applied when reading and
+ * writing.
+ * Another pass could consist on hashing the filename, seeding a random 
+ * generator with this hash, and XOR'ing each byte of the file according to
+ * the corresponding random series.
+ *
  */
 
 
@@ -242,9 +249,11 @@ Size EmbeddedFile::read( Ceylan::Byte * buffer, Size maxLength )
     	static_cast<void *>( buffer ), /* object size */ 1, maxLength ) ;
     
     if ( objectCount == -1 )
+    {
 		throw InputStream::ReadFailedException(
     		"EmbeddedFile::read failed: " 
             + EmbeddedFileSystemManager::GetBackendLastError() ) ;
+    }        
     else if ( objectCount < maxLength )
     {
     
@@ -257,6 +266,11 @@ Size EmbeddedFile::read( Ceylan::Byte * buffer, Size maxLength )
     
     }        
  	
+    
+    // No exception excepted to be raised: 
+    if ( _cypher )
+  		DecypherBuffer( buffer, objectCount ) ;
+    	
     return static_cast<Size>( objectCount ) ;
             		
 #else // OSDL_USES_PHYSICSFS
@@ -275,26 +289,7 @@ Size EmbeddedFile::write( const string & message )
 	throw( OutputStream::WriteFailedException )
 {
 
-#if OSDL_USES_PHYSICSFS
-
-	PHYSFS_sint64 objectCount = PHYSFS_write( _physfsHandle, 
-    	static_cast<const void *>( message.c_str() ), /* object size */ 1, 
-        message.size() ) ;
-    
-    if ( objectCount == -1 )
-		throw OutputStream::WriteFailedException(
-    		"EmbeddedFile::write failed: " 
-            + EmbeddedFileSystemManager::GetBackendLastError() ) ;
- 	else    
-	    return static_cast<Size>( objectCount ) ;
-            		
-#else // OSDL_USES_PHYSICSFS
-
-	throw OutputStream::WriteFailedException(
-    	"EmbeddedFile::write failed: "
-    	"no PhysicsFS support available." ) ;
-        
-#endif // OSDL_USES_PHYSICSFS
+	return write( message.c_str(), message.size() );
 
 }
 
@@ -306,8 +301,38 @@ Size EmbeddedFile::write( const Ceylan::Byte * buffer, Size maxLength )
 
 #if OSDL_USES_PHYSICSFS
 
+	const Ceylan::Byte * actualBuffer ;
+    
+    if ( _cypher )
+    {
+   
+   		// Input buffer is read-only, let's copy it before modifying it:
+
+   		Ceylan::Byte * newBuffer = new Ceylan::Byte[maxLength] ;
+        
+        ::memcpy( newBuffer, buffer, maxLength ) ;
+        
+        CypherBuffer( newBuffer, maxLength ) ;
+            
+        actualBuffer = newBuffer ;
+          
+    }
+    else
+    {
+    	
+        actualBuffer = buffer ;
+        
+    }
+        
+
 	PHYSFS_sint64 objectCount = PHYSFS_write( _physfsHandle, 
-    	static_cast<const void *>( buffer ), /* object size */ 1, maxLength ) ;
+    	static_cast<const void *>( actualBuffer ), /* object size */ 1,
+        maxLength ) ;
+    
+    
+    if ( _cypher )
+    	delete [] actualBuffer ;
+    
     
     if ( objectCount == -1 )
 		throw OutputStream::WriteFailedException(
@@ -390,6 +415,32 @@ PHYSFS_File & EmbeddedFile::getPhysicsFSHandle() const
 
 
 
+void EmbeddedFile::CypherBuffer( Ceylan::Byte * buffer, 
+	Ceylan::System::Size size ) throw( EmbeddedFileException )
+{
+
+	Ceylan::Byte XORByte = EmbeddedFileSystemManager::GetXORByte() ;
+          	
+	for ( Size i = 0; i < size; i++ )
+		buffer[i] = (buffer[i]^XORByte) + 117 ;
+
+}               
+
+
+void EmbeddedFile::DecypherBuffer( Ceylan::Byte * buffer, 
+	Size size ) throw( EmbeddedFileException )
+{
+
+	Ceylan::Byte XORByte = EmbeddedFileSystemManager::GetXORByte() ;
+          	
+	for ( Size i = 0; i < size; i++ )
+		buffer[i] = (buffer[i]-117)^XORByte ;
+
+}    	
+
+
+
+
 StreamID EmbeddedFile::getStreamID() const throw()
 {
 
@@ -457,7 +508,7 @@ EmbeddedFile::EmbeddedFile( const string & name, OpeningFlag openFlag,
 
 #if OSDL_USES_PHYSICSFS
 
-	EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager() ;
+	_cypher = EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager() ;
     
 	if ( openFlag & NonBlocking )
     	throw Ceylan::System::FileException( "EmbeddedFile constructor failed: "
@@ -591,9 +642,9 @@ std::string EmbeddedFile::interpretState() const throw()
 
 
 // Private section.															
-
 	
-	
+    
+    
 void EmbeddedFile::FromHandletoHandle( PHYSFS_File & from, PHYSFS_File & to,
 	Size length ) throw( EmbeddedFileException )
 {
