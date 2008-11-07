@@ -35,7 +35,7 @@ namespace OSDL
 
 	/**
 	 * Allows to interact with embedded filesystem services, i.e. opaque
-     * files storing a virtual filesystem.
+     * files storing a (most usually read-only) virtual filesystem.
 	 *
      * From the end-user point of view, only a small set of files and
      * archives will be seen.
@@ -47,8 +47,10 @@ namespace OSDL
      * Default extension for archives is "OAR" (ex: "myArchive.oar"), for 
      * 'OSDL Archive'.
      *
-	 * Based on PhysicsFS (http://icculus.org/physfs/).
-	 *
+	 * Based on PhysicsFS (http://icculus.org/physfs/), with added features
+	 * for weak cypher, for example to avoid users messing to easily mess
+     * with saved games.
+     *
      * Use GetEmbeddedFileSystemManager to retrieve that manager.
      *
 	 */
@@ -920,6 +922,14 @@ namespace OSDL
 
 
 			/**
+             * Returns the XOR byte that should be used for XOR'd reads and
+             * writes, should cyphering be enabled.
+             *
+             */
+			static Ceylan::Byte GetXORByte() throw() ;
+            
+            
+			/**
 			 * Returns a user-friendly description of the state of 
 			 * this object.
 			 *
@@ -945,8 +955,10 @@ namespace OSDL
 
 			/**
 			 * Returns a reference to the unique embedded filesystem 
-			 * manager. 
+			 * manager.
 			 *
+             * @param cypher file reads and writes will be cyphered iff true.
+             *
 			 * Does not set this filesystem manager as the default one.
 			 *
 			 * Creates it if needed: this method ensures it remains a
@@ -959,13 +971,14 @@ namespace OSDL
 			 *
 			 */
 			static EmbeddedFileSystemManager & 
-					GetEmbeddedFileSystemManager() 
+					GetEmbeddedFileSystemManager( bool cypher = true ) 
 				throw( EmbeddedFileSystemManagerException ) ;
 
 
 			/**
 			 * Ensures that the embedded filesystem manager is actually
-			 * available, by instanciating it if necessary.
+			 * available, by instanciating it if necessary, and tells 
+             * whether cyphering is enabled.
 			 *
 			 * Does not set this filesystem manager as the default one.
 			 *
@@ -974,12 +987,13 @@ namespace OSDL
 			 *
 			 * Useful to ensure a static operation can rely on a 
 			 * preexisting manager.
-			 *
+             *
+             * @return true iff I/O file cyphering is enabled.
 			 * @throw EmbeddedFileSystemManagerException if the operation
 			 * failed.
 			 *
 			 */
-			static void SecureEmbeddedFileSystemManager() 
+			static bool SecureEmbeddedFileSystemManager() 
 				throw( EmbeddedFileSystemManagerException ) ;
 
 
@@ -1004,6 +1018,11 @@ namespace OSDL
 			 * Cannot be protected, as has to be instanciated by factories
 			 * from the mother class.
 			 *
+             * @param cypher if true, writes to files will be cyphered,
+             * and obviously reads will be decyphered, so that the content of
+             * written files will not be directly readable. If false, raw
+             * I/O will be performed, with no further transformation.
+             *
 			 * @note Not to be called by the user.
 			 *
 			 * @see GetEmbeddedFileSystemManager instead.
@@ -1012,7 +1031,7 @@ namespace OSDL
 			 * failed.
 			 *
 			 */
-			EmbeddedFileSystemManager() 
+			explicit EmbeddedFileSystemManager( bool cypher = true ) 
 				throw( EmbeddedFileSystemManagerException ) ;
 
 
@@ -1031,6 +1050,21 @@ namespace OSDL
 		private:
 			
 			
+            /**
+             * Tells whether writes should be cyphered, and reads decyphered.
+             *
+             */
+            bool _cypher ;
+            
+            
+            /**
+             * The byte that would be used for one cypher-pass against read
+             * and written bytes.
+             *
+             */
+            static const Ceylan::Byte XORByte ;
+             
+            
             
 			// Directory constants.
 			
