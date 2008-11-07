@@ -41,7 +41,8 @@ namespace OSDL
 	 *
 	 * @see http://icculus.org/physfs/
      *
-     * @note All files are managed in binary mode only.
+     * @note All files are managed in binary mode only. Reads and writes will
+     * be cyphered, depending on the filesystem manager setting.
      *
 	 * Actual files should be created and opened with respectively the
 	 * File::Create and File::Open factories, that allow the
@@ -198,9 +199,11 @@ namespace OSDL
 			 * occurred. Note that this is not a child class of 
 			 * FileException, as it comes from an inherited interface.
 			 *
+             * @note If cyphering is enabled, it will be transparently managed.
+             *
 			 */
 	 		virtual Ceylan::System::Size read( Ceylan::Byte * buffer, 
-            	Ceylan::System::Size maxLength ) 
+            		Ceylan::System::Size maxLength ) 
 				throw( InputStream::ReadFailedException ) ;
 
 			
@@ -222,6 +225,8 @@ namespace OSDL
 			 * occurred. Note that this is not a child class of 
 			 * FileException, as it comes from an inherited interface.
 			 *
+             * @note If cyphering is enabled, it will be transparently managed.
+             *
 			 */
 			virtual Ceylan::System::Size write( const std::string & message ) 
 				throw( OutputStream::WriteFailedException ) ;
@@ -242,6 +247,8 @@ namespace OSDL
 			 * occurred. Note that this is not a child class of 
 			 * FileException, as it comes from an inherited interface.
 			 *
+             * @note If cyphering is enabled, it will be transparently managed.
+             *
 			 */
 			virtual Ceylan::System::Size write( const Ceylan::Byte * buffer, 
 					Ceylan::System::Size maxLength ) 
@@ -295,6 +302,39 @@ namespace OSDL
 				throw( EmbeddedFileException ) ;
 
 
+
+			/**
+             * Cyphers specified buffer.
+             *
+             * @param buffer the buffer to update.
+             *
+             * @param size the number of bytes to cypher.
+             *
+             * @throw EmbeddedFileException if the operation failed.
+             *
+             * @note Public, so that very specific tools can call it 
+             * (ex: cypherOSDLFile).
+             *
+             */
+            static void CypherBuffer( Ceylan::Byte * buffer, 
+            	Ceylan::System::Size size ) throw( EmbeddedFileException ) ;
+
+
+			/**
+             * Decyphers specified buffer.
+             *
+             * @param buffer the buffer to update.
+             *
+             * @param size the number of bytes to decypher.
+             *
+             * @throw EmbeddedFileException if the operation failed.
+             *
+             * @note Public, so that very specific tools can call it 
+             * (ex: cypherOSDLFile).
+             *
+             */
+            static void DecypherBuffer( Ceylan::Byte * buffer, 
+            	Ceylan::System::Size size ) throw( EmbeddedFileException ) ;
 
 
 
@@ -503,6 +543,14 @@ namespace OSDL
 			 *
 			 */
 			PHYSFS_File * _physfsHandle ;
+
+
+			/**
+			 * Tells whether reads and writes to this file should be
+             * cyphered.
+			 *
+			 */
+			bool _cypher ;
 
 
 			/**
