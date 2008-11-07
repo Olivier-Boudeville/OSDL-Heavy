@@ -2,7 +2,7 @@
 
 
 USAGE="
-Usage: "`basename $0`" [ --with-osdl-env-file <path> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist]: (re)generates all the autotools-based build system for OSDL tests.
+Usage: "`basename $0`" [ --with-osdl-env-file <filename> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist]: (re)generates all the autotools-based build system for OSDL tests.
 
 	--with-osdl-env-file: specify which OSDL environment file shall be used (OSDL-environment.sh full path)
 	--guess-osdl-environment: try to guess where the OSDL environment file lies. If one is found, then it is used, otherwise stops on failure
@@ -155,8 +155,9 @@ if [ -n "$osdl_environment_file" ] ; then
 	libvorbis_install_prefix_opt="--with-vorbis=$libvorbis_PREFIX"
 	sdl_mixer_install_prefix_opt="--with-sdl_mixer-prefix=$SDL_mixer_PREFIX"
 	libagar_install_prefix_opt="--with-libagar-prefix=$Agar_PREFIX"
+	physicsfs_install_prefix_opt="--with-physicsfs-prefix=$PhysicsFS_PREFIX"
 	
-	prerequesites_prefix_opt="$osdl_install_prefix_opt $ceylan_install_prefix_opt $sdl_install_prefix_opt $libjpeg_install_prefix_opt $zlib_install_prefix_opt $libpng_install_prefix_opt $sdl_image_install_prefix_opt $sdl_gfx_install_prefix_opt $freetype_install_prefix_opt $sdl_ttf_install_prefix_opt $libogg_install_prefix_opt $libvorbis_install_prefix_opt $sdl_mixer_install_prefix_opt $libagar_install_prefix_opt"
+	prerequesites_prefix_opt="$osdl_install_prefix_opt $ceylan_install_prefix_opt $sdl_install_prefix_opt $libjpeg_install_prefix_opt $zlib_install_prefix_opt $libpng_install_prefix_opt $sdl_image_install_prefix_opt $sdl_gfx_install_prefix_opt $freetype_install_prefix_opt $sdl_ttf_install_prefix_opt $libogg_install_prefix_opt $libvorbis_install_prefix_opt $sdl_mixer_install_prefix_opt $libagar_install_prefix_opt $physicsfs_install_prefix_opt"
 	
 fi
 
@@ -290,7 +291,7 @@ execute()
 			echo "Error while executing '$*'" 1>&2
 			if [ "$1" = "./configure" ]; then
 				echo "
-Note: check the following log:" test/config.log	
+Note: check config.log (the one is the 'test' directory)"	
   			fi
 		fi
 			
@@ -497,6 +498,4 @@ regenerateWithAutoreconf()
 	
 generateCustom
 #regenerateWithAutoreconf
-
-
 
