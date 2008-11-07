@@ -1,8 +1,8 @@
-East
 North
 NorthEast
-NorthWest
-South
+East
 SouthEast
+South
 SouthWest
 West
+NorthWest
