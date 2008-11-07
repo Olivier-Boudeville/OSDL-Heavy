@@ -12,21 +12,21 @@
 
 
 ##############################################################################
-# Client Personal Computer section.
+# Client Personal Computer section.
 ##############################################################################
 
 
 
 # SDL (libsdl.so): http://www.libsdl.org
 
-# 1.2.13 actually:
+# 1.2.13 actually:
 SDL_VERSION="@SDL_RECOMMENDED_VERSION@"
 SDL_ARCHIVE="SDL-$SDL_VERSION.tar.gz"
 SDL_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
 SDL_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_MD5="c6660feea2a6834de10bc71b2f8e4d88"
 
-# For Windows, using sources as well, these are not prebuilt binaries:
+# For Windows, using sources as well, these are not prebuilt binaries:
 SDL_win_VERSION="@SDL_RECOMMENDED_VERSION@"
 SDL_win_ARCHIVE="SDL-$SDL_win_VERSION.zip"
 SDL_win_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
@@ -43,7 +43,7 @@ libjpeg_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
 libjpeg_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
 libjpeg_MD5="dbd5f3b47ed13132f04c685d608a7547"
 
-# Same archive for Windows actually:
+# Same archive for Windows actually:
 libjpeg_win_VERSION="6b"
 libjpeg_win_ARCHIVE="jpegsrc.v${libjpeg_win_VERSION}.tar.gz"
 libjpeg_win_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
@@ -69,7 +69,7 @@ zlib_win_MD5="abbd0f2b456206da5e3ffd179324413a"
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
-# Actually 1.2.29 (with config script):
+# Actually 1.2.29 (with config script):
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
@@ -149,7 +149,7 @@ SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
 # 2.0.16:
 SDL_gfx_MD5="22dc2d9d916197829f9342c490d2d02b"
 
-# Same as for UNIX:
+# Same as for UNIX:
 SDL_gfx_win_VERSION="$SDL_gfx_VERSION"
 SDL_gfx_win_ARCHIVE="SDL_gfx-${SDL_gfx_win_VERSION}.tar.gz"
 SDL_gfx_win_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
@@ -169,7 +169,7 @@ freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforg
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
 freetype_MD5="83306194817ebdea554133b4232a34aa"
 
-# Same as for UNIX:
+# Same as for UNIX:
 freetype_win_VERSION="$freetype_VERSION"
 freetype_win_ARCHIVE="freetype-${freetype_win_VERSION}.tar.bz2"
 freetype_win_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
@@ -271,11 +271,11 @@ SDL_mixer_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
 SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
 SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
 
-# For 1.2.8:
+# For 1.2.8:
 #SDL_mixer_MD5="0b5b91015d0f3bd9597e094ba67c4d65"
 
-# For 1.2.7 (temporary downgrade due to vorbis issues):
-# (see: 
+# For 1.2.7 (temporary downgrade due to vorbis issues):
+# (see: 
 # http://listas.apesol.org/pipermail/sdl-libsdl.org/2007-October/063096.html)
 SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
 
@@ -306,13 +306,13 @@ Agar_VERSION="@AGAR_RECOMMENDED_VERSION@"
 Agar_ARCHIVE="agar-${Agar_VERSION}.tar.gz"
 Agar_DOWNLOAD_LOCATION="http://stable.hypertriton.com/agar"
 Agar_ALTERNATE_DOWNLOAD_LOCATION=""
-Agar_MD5="46a96fb26e988cded0d800005e95472a"
+Agar_MD5="73ab990a58b2a748603942617e7e7adc"
 
 Agar_win_VERSION="$Agar_VERSION"
 Agar_win_ARCHIVE="agar-${Agar_VERSION}.zip"
 Agar_win_DOWNLOAD_LOCATION="$Agar_DOWNLOAD_LOCATION"
 Agar_win_ALTERNATE_DOWNLOAD_LOCATION="$Agar_ALTERNATE_DOWNLOAD_LOCATION"
-Agar_win_MD5="f65fba7d934664676973c7e1e21d6d4a"
+Agar_win_MD5="6109e452f6e6be045f3c706facb55ff0"
 
 
 # PhysicsFS : http://icculus.org/physfs/
@@ -336,7 +336,7 @@ PhysicsFS_win_MD5="${PhysicsFS_MD5}"
 ##############################################################################
 
 
-# DLDI tool and device patches: http://dldi.drunkencoders.com/
+# DLDI tool and device patches: http://dldi.drunkencoders.com/
 
 #dlditool_VERSION=""
 dlditool_ARCHIVE="Dlditool-linux-x86.zip"
@@ -345,21 +345,21 @@ dlditool_ALTERNATE_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downl
 dlditool_MD5="2bd98c3c2edd2c20f11d18f18446b89b"
 
 
-# DLDI patch for SuperCard:
+# DLDI patch for SuperCard:
 dldi_patch_sc_ARCHIVE="Sclt.dldi"
 dldi_patch_sc_DOWNLOAD_LOCATION="http://dldi.drunkencoders.com/uploads/c/c6"
 dldi_patch_sc_ALTERNATE_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
 dldi_patch_sc_MD5="54f7b7fb323466202e19815b7bf1a81c"
 
 
-# DLDI patch for R4DS/M3 Simply:
+# DLDI patch for R4DS/M3 Simply:
 dldi_patch_r4_ARCHIVE="R4tf.dldi"
 dldi_patch_r4_DOWNLOAD_LOCATION="http://dldi.drunkencoders.com/uploads/0/03"
 dldi_patch_r4_ALTERNATE_DOWNLOAD_LOCATION="http://chishm.drunkencoders.com/DLDI/downloads"
 dldi_patch_r4_MD5="7070791d23ae5c92f7e4115f76e8a52d"
 
 
-# DLDI patch to be used with NoCashGBA emulator:
+# DLDI patch to be used with NoCashGBA emulator:
 dldi_patch_fcsr_ARCHIVE="fcsrDLDI.zip"
 dldi_patch_fcsr_DOWNLOAD_LOCATION="http://gpf.dcemu.co.uk/files/pc"
 dldi_patch_fcsr_MD5="b92ed16b14d7c4dc813ed26bbe4b5cb8"
@@ -367,7 +367,7 @@ dldi_patch_fcsr_MD5="b92ed16b14d7c4dc813ed26bbe4b5cb8"
 
 
 # devkitARM: http://www.devkitpro.org/category/devkitarm/
-# (includes libnds and libfat now)
+# (includes libnds and libfat now)
 devkitARM_VERSION="21"
 devkitARM_ARCHIVE="devkitARM_r${devkitARM_VERSION}-linux.tar.bz2"
 devkitARM_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/devkitpro"
@@ -436,10 +436,10 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R12B-3"
+Erlang_VERSION="R12B-5"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5="c2e7f0ad54b8fadebde2d94106608d97"
+Erlang_MD5="3751ea3fea669d2b25c67eeb883734bb"
 
 
 # egeoip: http://code.google.com/p/egeoip/
@@ -452,7 +452,7 @@ egeoip_MD5="(blanked)"
 egeoip_SVN_SERVER="egeoip.googlecode.com"
 
 
-# MaxMind GeoLiteCity database: http://www.maxmind.com/app/Geolitecity
+# MaxMind GeoLiteCity database: http://www.maxmind.com/app/Geolitecity
 
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
@@ -519,7 +519,7 @@ OSDL_SVN_SERVER=osdl.svn.sourceforge.net
 
 
 
-# Next to come maybe: SDL_sound, PhysFS.
+# Next to come maybe: SDL_sound.
 
 
 
