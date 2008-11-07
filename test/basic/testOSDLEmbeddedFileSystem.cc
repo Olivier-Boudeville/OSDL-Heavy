@@ -74,11 +74,40 @@ int main( int argc, char * argv[] )
          */
         Ceylan::System::File & myFile = 
         	myFSManager.createFile( firstFilename ) ;
-  
-  		myFile.write( "Hello sandboxed embedded world!" ) ;
+  		
+        string writtenContent = "Hello sandboxed embedded world!" ;
+        Size writtenContentSize = writtenContent.size() ;
+        
+  		myFile.write( writtenContent ) ;
         
         delete & myFile ;
-
+        
+        
+        // Check the writing and reading works in par:
+        
+        Ceylan::Byte * readBuffer = new Ceylan::Byte[writtenContentSize+1] ;
+        
+        Ceylan::System::File & myReadFile = 
+        	myFSManager.openFile( firstFilename ) ;
+        
+		myReadFile.read( readBuffer, writtenContentSize ) ;
+        
+        myReadFile.close() ;
+        readBuffer[writtenContentSize] = 0 ;
+        
+        string readContent( readBuffer ) ;
+        
+        if ( readContent == writtenContent )
+        	LogPlug::info( 
+            	"Read correctly exactly the same content as written." ) ;
+        else
+        	throw TestException( "Could not read the same content as written: "
+            	"written '" + writtenContent + "', read '" + readContent 
+                + "'." ) ;      
+        
+        delete [] readBuffer ;
+        
+        
 		const string directoryName = "test-create-directory" ;
         LogPlug::info( "Creating directory '" + directoryName 
         	+ "' at the root of write directory." ) ;
@@ -146,17 +175,17 @@ int main( int argc, char * argv[] )
         	LogPlug::info( "File '" + targetArchivedFilename 
             	+ "' found in archive." ) ;   
         
-        File & myReadFile = myFSManager.openFile( targetArchivedFilename ) ;
+        File & otherReadFile = myFSManager.openFile( targetArchivedFilename ) ;
                 
         LogPlug::info( "Size of '" + targetArchivedFilename + "' is " 
-        	+ Ceylan::toString( myReadFile.size() ) + " bytes." ) ;
+        	+ Ceylan::toString( otherReadFile.size() ) + " bytes." ) ;
         
         const Size BufSize = 30 ;
         char buffer[BufSize] ;
         for ( unsigned int i=0; i<BufSize; i++ )
         	buffer[i]=0 ;
             
-        Size read = myReadFile.read( buffer, BufSize ) ;
+        Size read = otherReadFile.read( buffer, BufSize ) ;
 
         LogPlug::info( "Read " + Ceylan::toString( read ) + " bytes." ) ;
         
