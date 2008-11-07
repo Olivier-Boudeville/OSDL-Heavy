@@ -15,7 +15,7 @@ using namespace std ;
 #include <iostream>  // for cout
 
 
-const std::string Usage = " AN_OSDL_FILE\nIdentifies the type of the OSDL file, and gives some informations about it." ;
+const std::string Usage = " <an OSDL file>\nIdentifies the type of the OSDL file, and gives some informations about it." ;
 
 
 
