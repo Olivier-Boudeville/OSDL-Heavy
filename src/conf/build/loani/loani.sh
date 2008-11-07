@@ -1213,7 +1213,7 @@ if [ $is_linux -eq 0 ] ; then
 	
 	if [ ! -f "/usr/include/GL/glu.h" ] ; then
 	
-			ERROR "No GLU headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get libglu1-mesa-dev'."
+			ERROR "No GLU headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install libglu1-mesa-dev'."
 			exit 16
 	
 	fi
