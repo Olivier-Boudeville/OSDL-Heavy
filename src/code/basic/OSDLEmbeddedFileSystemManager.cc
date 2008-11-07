@@ -57,6 +57,9 @@ using namespace OSDL ;
  */
 
 
+// 0b01010101 = 0x55
+const Ceylan::Byte EmbeddedFileSystemManager::XORByte = 0x55 ;
+
 
 // These constants apply to the virtual filesystem:
 const string EmbeddedFileSystemManager::RootDirectoryPrefix   = ""   ;
@@ -1134,6 +1137,17 @@ std::string EmbeddedFileSystemManager::GetBackendLastError() throw()
     
 }
 
+
+
+Ceylan::Byte EmbeddedFileSystemManager::GetXORByte() throw()
+{
+
+    return XORByte ;
+    
+}
+
+
+
 const string EmbeddedFileSystemManager::toString( 
 	Ceylan::VerbosityLevels level ) const throw()
 {
@@ -1148,12 +1162,13 @@ const string EmbeddedFileSystemManager::toString(
 
 
 EmbeddedFileSystemManager &
-		EmbeddedFileSystemManager::GetEmbeddedFileSystemManager() 
+		EmbeddedFileSystemManager::GetEmbeddedFileSystemManager( bool cypher ) 
 	throw( EmbeddedFileSystemManagerException )
 {
 
 	if ( _EmbeddedFileSystemManager == 0 )
-		_EmbeddedFileSystemManager = new EmbeddedFileSystemManager() ;
+		_EmbeddedFileSystemManager = new EmbeddedFileSystemManager( 
+        	/* use cypher */ cypher ) ;
 	
 	return *_EmbeddedFileSystemManager ;	
 	
@@ -1161,13 +1176,16 @@ EmbeddedFileSystemManager &
 
 
 
-void EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager() 
+bool EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager() 
 	throw( EmbeddedFileSystemManagerException )
 {
 
-	if ( _EmbeddedFileSystemManager == 0 )
-		_EmbeddedFileSystemManager = new EmbeddedFileSystemManager() ;
-		
+	// Returned value ignored, only side-effect wanted:
+	GetEmbeddedFileSystemManager( /* use cypher */ true ) ;
+	
+    // Cyphering activated by default:
+    return true ;
+    	
 }
 	
 	
@@ -1192,8 +1210,9 @@ void EmbeddedFileSystemManager::RemoveEmbeddedFileSystemManager() throw()
 
 
 
-EmbeddedFileSystemManager::EmbeddedFileSystemManager() 
-	throw( EmbeddedFileSystemManagerException )
+EmbeddedFileSystemManager::EmbeddedFileSystemManager( bool cypherWritings ) 
+		throw( EmbeddedFileSystemManagerException ):
+    _cypher( cypherWritings )
 {
 
 	
@@ -1237,6 +1256,21 @@ EmbeddedFileSystemManager::EmbeddedFileSystemManager()
     res += Ceylan::formatStringList( archiveTypes ) ;
     
     LogPlug::debug( res ) ;
+    
+    if ( _cypher )
+    {
+    
+    	LogPlug::debug( "Cyphered writes and reads will be performed." ) ;
+        
+    }
+    else
+    {
+    	
+        LogPlug::debug( 
+        	"Raw (not cyphered) writes and reads will be performed." ) ;
+    
+    }
+    
     
 #else // OSDL_USES_PHYSICSFS
 
