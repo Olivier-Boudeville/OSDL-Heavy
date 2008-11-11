@@ -72,7 +72,10 @@ GRAPH_PNG  = $(GRAPH_SRC:%.graph=%.png)
 # Sourceforge settings.
 
 SF_PROJECT_NAME      = @UNIX_PROJECT_NAME@
+
 SF_SHELL_SERVER      = shell.@OSDL_SF_WEB_SERVER@
+SF_WEB_SERVER        = web.sourceforge.net
+
 SF_WEB_DIR           = /home/groups/`echo "$(SF_PROJECT_NAME)" | head -c 1`/`echo "$(SF_PROJECT_NAME)" | head -c 2`/"$(SF_PROJECT_NAME)"/htdocs
 
 SF_WEB_URL           = @OSDL_SF_URL@/index.html
@@ -102,17 +105,13 @@ WEB_CONTENT_FILES    = `find . -path 'common' -prune -a -type f -o ! -path '*.sv
 
 WEB_CONTENT_DIRS     = `find . -path 'common' -prune -a -type d -o ! -path '*.svn*' -a -type d`
 
-
-
 COMMON_WEB_FILES     = `find common ! -path '*.svn*' -type f -follow`
-
 COMMON_WEB_DIRS      = `find common ! -path '*.svn*' -type d -follow` 
-
 
 HTML_FILES           = `find . -name '*.html' -a -type f`
 RST_FILES            = `find . -name '*.rst' -a -type f`
 
-	
+
 
 # Tools section
 
@@ -142,7 +141,7 @@ SCP_OPT       = "-p -r"
 
 		
 .PHONY: all install doc build inc web links site common                    \
-	update-rst check-rst loani-archives api check-dot fix-dox-conf   \
+	update-rst check-rst loani-archives api check-dot fix-dox-conf         \
 	tidy transfer toSF toSF-rsync toSF-scp                                 \
 	toMirror toMirror-rsync toMirror-scp check-scp remind-locations        \
 	info info-dirs info-files info-sf info-html info-tools                 \
@@ -167,15 +166,16 @@ local-web: site api
 # (loani-archives not activated here anymore)
 site: update-rst common 
 	@echo; echo "@OSDL_INSTALL_STYLE@    Copying web source tree to \
-	local web repository [@OSDL_LOCAL_WEB_DIR@]@OSDL_DEFAULT_STYLE@"
+	local web repository \
+	[$(DESTDIR)@OSDL_LOCAL_WEB_DIR@]@OSDL_DEFAULT_STYLE@"
 	@cd $(srcdir)/web; for d in $(WEB_CONTENT_DIRS); do \
-	mkdir -p @OSDL_LOCAL_WEB_SHARED_DIR@/$$d ; done ;  \
+	mkdir -p $(DESTDIR)@OSDL_LOCAL_WEB_SHARED_DIR@/$$d ; done ;  \
 	for f in $(WEB_CONTENT_FILES); do \
-	cp -f $$f @OSDL_LOCAL_WEB_SHARED_DIR@/$$f; done
+	cp -f $$f $(DESTDIR)@OSDL_LOCAL_WEB_SHARED_DIR@/$$f; done
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark local doc site, \
 	which is to be found in:"
-	@echo "      file://@OSDL_LOCAL_WEB_DIR@/index.html@OSDL_DEFAULT_STYLE@"
-	@cd @OSDL_LOCAL_WEB_DIR@; \
+	@echo "      file://$(DESTDIR)@OSDL_LOCAL_WEB_DIR@/index.html@OSDL_DEFAULT_STYLE@"
+	@cd $(DESTDIR)@OSDL_LOCAL_WEB_DIR@; \
 	ln -sf @OSDL_CURRENT_VERSION_PREFIX@ OSDL-latest
 
 
@@ -202,17 +202,17 @@ check-rst:
 common: 
 	@echo; echo "@OSDL_INSTALL_STYLE@    Copying common web files to \
 	local doc repository \
-	[@OSDL_LOCAL_WEB_SHARED_DIR@]@OSDL_DEFAULT_STYLE@"
-	@if [ -d "@OSDL_LOCAL_DOC_DIR@" ] ; then \
-	chmod a+w @OSDL_LOCAL_DOC_DIR@; else \
-	chmod a+w `dirname @OSDL_LOCAL_DOC_DIR@`; \
-	mkdir -p @OSDL_LOCAL_DOC_DIR@ ; fi
-	@mkdir -p @OSDL_LOCAL_WEB_DIR@
-	@mkdir -p @OSDL_LOCAL_WEB_SHARED_DIR@
+	[$(DESTDIR)@OSDL_LOCAL_WEB_SHARED_DIR@]@OSDL_DEFAULT_STYLE@"
+	@if [ -d "$(DESTDIR)@OSDL_LOCAL_DOC_DIR@" ] ; then \
+	chmod a+w $(DESTDIR)@OSDL_LOCAL_DOC_DIR@; else \
+	chmod a+w `dirname (DESTDIR)@OSDL_LOCAL_DOC_DIR@`; \
+	mkdir -p $(DESTDIR)@OSDL_LOCAL_DOC_DIR@ ; fi
+	@mkdir -p $(DESTDIR)@OSDL_LOCAL_WEB_DIR@
+	@mkdir -p $(DESTDIR)@OSDL_LOCAL_WEB_SHARED_DIR@
 	@cd $(srcdir)/web; for d in $(COMMON_WEB_DIRS); do \
-	mkdir -p @OSDL_LOCAL_WEB_SHARED_DIR@/$$d ; done ; \
+	mkdir -p $(DESTDIR)@OSDL_LOCAL_WEB_SHARED_DIR@/$$d ; done ; \
 	for f in $(COMMON_WEB_FILES); do \
-	cp -f $$f @OSDL_LOCAL_WEB_SHARED_DIR@/$$f; done
+	cp -f $$f $(DESTDIR)@OSDL_LOCAL_WEB_SHARED_DIR@/$$f; done
 
 
 
@@ -247,26 +247,26 @@ api: check-dot fix-dox-conf
 	(doxygen configuration taken from $(DOXYGEN_GENERATED_CONF)) \
 	@OSDL_DEFAULT_STYLE@"
 	@echo
-	@mkdir -p @OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@
+	@mkdir -p $(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@
 	-@PATH=`pwd`/$(DOT_ROOT)/bin:$$PATH \
 	LD_LIBRARY_PATH=`pwd`/$(GCC_ROOT)/lib:$$LD_LIBRARY_PATH \
 	$(DOXYGEN) $(DOXYGEN_GENERATED_CONF)
-	@rm -f @OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/doxygen.css
+	@rm -f $(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/doxygen.css
 	@cp -f $(srcdir)/web/common/css/doxygen-@PROJECT_NAME@.css \
-	@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/doxygen.css 
+	$(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/doxygen.css 
 	@cp -f $(srcdir)/web/common/doxygen/*.png \
-	@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html
+	$(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html
 	@echo
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
 	@OSDL_CURRENT_VERSION_PREFIX@ API, which is located in: \
-file://@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/index.html@OSDL_DEFAULT_STYLE@"
+file://$(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/index.html@OSDL_DEFAULT_STYLE@"
 	
 			
 check-dot:
 	@[ -x "$(DOT)" ] \
 	|| ( echo; echo "@OSDL_ERROR_STYLE@    Unable to generate \
 	any useful documentation from source code: \
-	dot tool not found [dot homepage: \
+	dot tool not found (checked dot root was $(DOT_ROOT) [dot homepage: \
 	http://www.graphviz.org/].@OSDL_DEFAULT_STYLE@"; echo; false ) 
 	
 	
@@ -310,7 +310,7 @@ toSF-rsync: site
 	[@OSDL_LOCAL_WEB_DIR@] using rsync@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(RSYNC_OPT); $(RSYNC) $$opt @OSDL_LOCAL_WEB_DIR@/* \
-	$(SF_USER)@$(SF_SHELL_SERVER):$(SF_WEB_DIR)
+	$(SF_USER)@$(SF_WEB_SERVER):$(SF_WEB_DIR)
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
 	@PROJECT_NAME@'s website on Sourceforge at \
 	$(SF_WEB_URL)@OSDL_DEFAULT_STYLE@"
@@ -323,7 +323,7 @@ toSF-scp: check-scp site
 	[@OSDL_LOCAL_WEB_DIR@] using scp@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(SCP_OPT); $(SCP) $$opt @OSDL_LOCAL_WEB_DIR@/* \
-	$(SF_USER)@$(SF_SHELL_SERVER):$(SF_WEB_DIR)
+	$(SF_USER)@$(SF_WEB_SERVER):$(SF_WEB_DIR)
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
 	@PROJECT_NAME@'s website on Sourceforge at \
 	$(SF_WEB_URL)@OSDL_DEFAULT_STYLE@"
@@ -420,6 +420,7 @@ info-files: info-html
 info-sf:
 	@echo "    + sourceforge UNIX project name: $(SF_PROJECT_NAME)"
 	@echo "    + sourceforge shell server     : $(SF_SHELL_SERVER)"
+	@echo "    + sourceforge web server       : $(SF_WEB_SERVER)"
 	@echo "    + full sourceforge login       : \
 	sh $(SF_USER)@$(SF_SHELL_SERVER)"
 	@echo "    + sourceforge web directory    : $(SF_WEB_DIR)"
@@ -427,7 +428,7 @@ info-sf:
 	@echo "    + SSH target                   : \
 	$(SF_USER)@$(SF_SHELL_SERVER):$(SF_WEB_DIR)"
 	@echo "    + files to be copied will be   : \
-	scp myFiles $(SF_USER)@$(SF_SHELL_SERVER):$(SF_SHELL_HOMEDIR)"
+	scp myFiles $(SF_USER)@$(SF_WEB_SERVER):$(SF_SHELL_HOMEDIR)"
 
 
 info-html: 	
