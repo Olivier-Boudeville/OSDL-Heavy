@@ -4,6 +4,7 @@ using namespace OSDL::Audio ;
 
 
 using namespace Ceylan::Log ;
+using namespace Ceylan::System ;
 
 using std::string ;
 
@@ -110,6 +111,8 @@ int main( int argc, char * argv[] )
 		}
 
 			
+		// Initialization section.
+
 		LogPlug::info( "Starting OSDL with audio enabled." )	;
 			
         CommonModule & myOSDL = getCommonModule( CommonModule::UseAudio ) ;		
@@ -159,7 +162,11 @@ int main( int argc, char * argv[] )
 			+ Ceylan::toString( count ) 
 			+ " channel(s), which results in a mean theoritical latency of " 
 			+ Ceylan::toString( latency ) + " milliseconds." ) ;
+
+		
 					
+		// Section for sound playback from standard file.
+
 	
 		AudioModule::AudioFileLocator.addPath( soundDirFromExec ) ;
 		AudioModule::AudioFileLocator.addPath( soundDirForBuildPlayTests ) ;
@@ -238,6 +245,8 @@ int main( int argc, char * argv[] )
 		}
 
 
+		// Short enough even for batch mode:
+
 		LogPlug::info( "Playing that sound with a fade-in now, "
 			"and only for 2 seconds." ) ;			
 		
@@ -251,6 +260,100 @@ int main( int argc, char * argv[] )
 
 		LogPlug::info( "Sound finished." ) ;
 		
+		
+		
+
+		// Section for sound playback from archive-embedded file.
+		
+		
+		LogPlug::info( 
+        	"Now, trying to read sound from an archive-embedded file." ) ;
+
+		EmbeddedFileSystemManager::ArchiveFileLocator.addPath( "../basic" ) ;
+		
+		const string archiveFilename = 
+			"test-OSDLEmbeddedFileSystem-archive.oar" ;
+		     
+	 	string archiveFullPath ;
+		
+		try
+		{
+			
+			// This is (implicitly) the standard filesystem manager here:
+			archiveFullPath = EmbeddedFileSystemManager::FindArchivePath( 
+				archiveFilename ) ;
+				
+		}
+		catch( const EmbeddedFileSystemManagerException & e )
+		{
+		        
+        	LogPlug::warning( "Test archive '" + archiveFilename 
+            	+ "' not found (" + e.toString() + "), run the "
+                "create-testOSDLEmbeddedFileSystem-archive.sh script "
+                "beforehand to have it ready for this test. Stopping now." ) ;
+                
+        	return 0 ;
+            
+        }
+
+		LogPlug::info( "Test archive '" + archiveFilename 
+        	+ "' found, mounting it." ) ;
+			
+		// Keep the standard manager, to restore it:
+		FileSystemManager & standardFSManager =
+        	FileSystemManager::GetExistingDefaultFileSystemManager() ;
+        
+
+        EmbeddedFileSystemManager & myEmbedddedManager = 		
+        	EmbeddedFileSystemManager::GetEmbeddedFileSystemManager() ;
+        
+ 		myEmbedddedManager.chooseBasicSettings( /* organization name */ "OSDL",
+            /* application name */ "testOSDLSound" ) ;
+
+		myEmbedddedManager.setWriteDirectory( "." ) ;
+        
+ 		myEmbedddedManager.mount( archiveFullPath ) ;
+
+        // Thus sound will be searched in specified archive:    
+        FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
+        	/* deallocatePreviousIfAny */ false ) ;
+			
+        string targetEmbeddedSound = "OSDL.wav" ;
+		
+		// Preload implied; platform-independent paths:
+		Sound myEmbeddedSound(
+        	"test-OSDLEmbeddedFileSystem-archive/" + targetEmbeddedSound ) ;
+
+		
+		if ( ! isBatch )
+		{
+		
+			LogPlug::info( "Playing embedded sound now." ) ;
+		
+			myEmbeddedSound.play() ;
+		
+			LogPlug::info( "Waiting for this embedded sound to finish." ) ;
+		
+			while ( myAudio.getPlayingChannelCount() > 0 )
+				Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
+
+			LogPlug::info( "Embedded sound finished." ) ;
+		
+		}
+		else
+		{
+		
+			LogPlug::info( "In batch mode, hence embedded sound not played." ) ;
+			
+		}
+
+		// Otherwise archive could not be unmounted:
+		myEmbeddedSound.unload() ;
+		
+ 		myEmbedddedManager.umount( archiveFullPath ) ;
+
+		// Will deallocate embedded FS manager; prepare for log writing:
+		FileSystemManager::SetDefaultFileSystemManager( standardFSManager ) ;
 		
 		LogPlug::info( "Stopping OSDL." ) ;		
         OSDL::stop() ;
