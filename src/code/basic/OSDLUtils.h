@@ -9,6 +9,13 @@
 #include <string>
 
 
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+// No need to include SDL header here:
+struct SDL_RWops ;
+
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
 
 namespace OSDL
 {
@@ -87,7 +94,46 @@ namespace OSDL
 		 */
 		OSDL_DLL std::string getUserDirectory() throw( OSDL::Exception ) ;	
 	
- 	    
+    
+    
+    	/**
+         * A DataStream is a way of writing and/or reading for an opaque
+         * data storage, which can be actually a file, a buffer in memory,
+         * or anything else.
+         *
+         * DataStream abstracts back-end specific SDL_RWops.
+         *
+         */        
+    	typedef ::SDL_RWops DataStream ;
+        
+        
+		/**
+		 * Returns a DataStream corresponding to specific file object, which
+         * can be of any sort (ex: standard file, embedded file, etc.).
+		 *
+         * @param sourceFile the file from which the DataStream will be
+         * created.
+         *
+         * @note Ownership of the specified is taken, thus the user should
+         * not do anything with it afterwards.
+         *
+         * @throw OSDL::Exception if the operation failed.
+         *
+		 */
+		OSDL_DLL DataStream & createDataStreamFrom( 
+        	Ceylan::System::File & sourceFile ) throw( OSDL::Exception ) ;	
+	
+
+		/**
+		 * Deletes specified datastream.
+         *
+         * @throw OSDL::Exception if the operation failed.
+         *
+		 */
+		OSDL_DLL void deleteDataStream( DataStream & datastream ) 
+        	throw( OSDL::Exception ) ;	
+	
+	    
 	}
 	
 
