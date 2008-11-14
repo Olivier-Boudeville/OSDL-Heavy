@@ -170,7 +170,8 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Loading first sound file '" + targetSound 
 			+ "' thanks to audio locator." ) ;
 			
-		Sound myFirstSound( targetSound /* preload implied */ ) ;
+		// Preload implied:	
+		Sound myFirstSound( Audible::FindAudiblePath( targetSound ) ) ;
 		
 		LogPlug::info( "Loaded sound: " + myFirstSound.toString() ) ;
 		
@@ -191,7 +192,8 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Loading second sound file '" + targetSound 
 			+ "' thanks to audio locator." ) ;
 			
-		Sound mySecondSound( targetSound /* preload implied */ ) ;
+		// Preload implied:	
+		Sound mySecondSound( Audible::FindAudiblePath( targetSound ) ) ;
 		
 		LogPlug::info( "Loaded sound: " + mySecondSound.toString() ) ;
 
