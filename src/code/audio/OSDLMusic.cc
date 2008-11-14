@@ -2,6 +2,7 @@
 
 #include "OSDLAudio.h"               // for AudioModule
 #include "OSDLFileTags.h"            // for music file tag
+#include "OSDLUtils.h"               // for createDataStreamFrom and al
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -54,6 +55,21 @@ using namespace OSDL::Audio ;
 
 /**
  * Implementation notes:
+ *
+ * Before, when SDL_mixer was to operate on filenames rather than directly on
+ * SDL_rwops, on all PC-like platforms (including Windows and most UNIX),
+ * the supported formats were WAVE, MOD, MIDI, OGG, and MP3.
+ * OGG and, to a lesser extent, WAVE, were recommended for musics. 
+ * 
+ * Now, we want to be able to read musics from opaque archives (using
+ * EmbeddedFile instances, thus PhysicsFS), and SDL_mixer just allows the
+ * OGG (OggVorbis) file format to be used with the underlying SDL_rwops 
+ * (MikMod could be supported as well).
+ *
+ * So, on the PC, one should only use OggVorbis-based musics now.
+ *
+ * @see Mix_LoadMUS_RW
+ *
  *
  * - with SDL_mixer:
  * Mix_SetMusicCMD, Mix_HookMusic, Mix_GetMusicHookData not used, as no 
@@ -121,6 +137,7 @@ MusicException::~MusicException() throw()
 Music * Music::_CurrentMusic = 0 ;
 
 
+
 #if OSDL_ARCH_NINTENDO_DS
 
 const OSDL::CommandManagerSettings * Music::_CommandManagerSettings = 0 ;
@@ -134,6 +151,7 @@ Music::Music( const std::string & musicFile, bool preload )
 		throw( MusicException ):
 	Audible( /* nothing loaded yet, hence not converted */ false ),	
 	Ceylan::LoadableWithContent<LowLevelMusic>( musicFile ),
+	 _dataStream( 0 ),
 	_isPlaying( false )
 {
 
@@ -239,7 +257,9 @@ bool Music::load() throw( Ceylan::LoadableException )
 	 * module availability, checked by the Music constructor).
 	 *
 	 */
-	 
+	
+	// _dataStream not used here.
+	
 	_content = new LowLevelMusic() ;
 
 	LowLevelMusic & music = *_content ;
@@ -333,16 +353,48 @@ bool Music::load() throw( Ceylan::LoadableException )
 
 #if OSDL_USES_SDL_MIXER
 
+
+	/*
+	 * Supported: OggVorbis only. WAV and MP3 *not* supported for musics
+	 * when using SDL_rwops with SDL_mixer's (undocumented) Mix_LoadMUS_RW.
+	 *
+	 */
+    
 	if ( hasContent() )
 		return false ;
 
 	try
 	{
-		// Misleading, supports WAVE but other formats as well:
-		_content =::Mix_LoadMUS( FindAudiblePath( _contentPath ).c_str() ) ;
+
+        /*
+         * Not used anymore, so that musics can be loaded from embedded files
+         * as well:
+        _content = ::Mix_LoadMUS( FindAudiblePath( _contentPath ).c_str() ) ;
+         *
+
+		string musicFile = FindAudiblePath( _contentPath ) ;
+		_content = ::Mix_LoadMUS_RW( 
+        	SDL_RWFromFile( musicFile.c_str(), "rb" ) ) ;          
+
+         */
+
+        Ceylan::System::File & musicFile = File::Open( _contentPath ) ;
+        
+		/*
+        LogPlug::trace( "loaded " + musicFile.toString() + ", size = "
+        	+ Ceylan::toString( musicFile.size() ) ) ;
+         */
+		 
+		// Creates the appropriate SDL_rwops and feeds it to SDL_mixer:
+
+		_dataStream = & Utils::createDataStreamFrom( musicFile ) ;
+
+		_content = ::Mix_LoadMUS_RW( _dataStream ) ;
+
+		// _content checked afterwards.
 	
 	}
-	catch( const AudibleException & e )
+	catch( const Ceylan::Exception & e )
 	{
 	
 		throw Ceylan::LoadableException( "Music::load failed: '"
@@ -399,7 +451,33 @@ bool Music::unload() throw( Ceylan::LoadableException )
 	
 #if OSDL_USES_SDL_MIXER
 
+	// Deallocation of SDL_RWops inspired from playmus.c:
 	::Mix_FreeMusic( _content ) ;
+	// Already specified at the end of the method: _content = 0 ;
+	
+	/*
+	 * Removed as the resulting SDL_FreeRW triggers a double free,
+	 * for musics SDL_mixer apparently removes by itself the SDL_rwops:
+	 *
+	 * 
+	 
+	try
+	{
+		
+		Utils::deleteDataStream( *_dataStream ) ;
+		
+	
+	}
+	catch( const OSDL::Exception & e )
+	{
+	
+		throw Ceylan::LoadableException( "Music::unload failed: "
+			+ e.toString() ) ;
+	}
+	
+	*/
+	
+	_dataStream = 0 ;
 	
 #else // OSDL_USES_SDL_MIXER
 
@@ -431,7 +509,7 @@ Volume Music::getVolume() const throw( MusicException )
 	{
 	
 		if ( hasContent() )
-			return ::Mix_VolumeMusic( /* just read it */ -1 ) ;
+			return::Mix_VolumeMusic( /* just read it */ -1 ) ;
 		else
 			throw MusicException( 
 				"Music::getVolume failed: no loaded music available." ) ;
@@ -942,7 +1020,7 @@ void Music::fadeIn( Ceylan::System::Millisecond fadeInMaxDuration )
 
 #else // OSDL_ARCH_NINTENDO_DS
 
-	// No ::Mix_FadeInMusic, even with OSDL_USES_SDL_MIXER.
+	// No::Mix_FadeInMusic, even with OSDL_USES_SDL_MIXER.
 
 	throw MusicException( "Music::fadeIn failed: "
 		"not available on this platform." ) ;
@@ -1057,12 +1135,13 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const throw()
 		
 			Volume v = getVolume() ;
 	
-			return "Loaded music whose volume is " + Ceylan::toString( v )
-				+ "(" + Ceylan::toNumericalString( 100 * v 
+			return "Loaded music whose volume is " 
+            	+ Ceylan::toNumericalString( v )
+				+ " (" + Ceylan::toNumericalString( 100 * v 
 					/ ( AudioModule::MaxVolume - AudioModule::MinVolume ) )
 				+ "%) and whose type is " + DescribeMusicType( getType() )
 				+ string( ", currently " ) 
-				+ ( _isPlaying ? "playing" : "not playing" ) ;
+				+ ( _isPlaying ? "playing": "not playing" ) ;
 			
 		}
 		else
@@ -1551,7 +1630,7 @@ void Music::fillSecondBuffer() throw( AudioException )
 	
 #endif // OSDL_RUNS_ON_ARM7
 
-#endif // OSDL_ARCH_NINTENDO_DS
+#endif // OSDL_ARCH_NINTENDO_DS
 	
 }
 
