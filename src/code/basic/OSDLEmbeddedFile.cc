@@ -69,17 +69,22 @@ EmbeddedFileException::~EmbeddedFileException() throw()
 
 EmbeddedFile::~EmbeddedFile() throw()
 {
-
-	try
+	
+	if ( isOpen() )
 	{
-		close() ;
-	}
-	catch( const Stream::CloseException & e )
-	{
-		LogPlug::error( "EmbeddedFile destructor: close failed: " 
-			+ e.toString() ) ;
-	}
+	
+		try
+		{
+			close() ;
+		}
+		catch( const Stream::CloseException & e )
+		{
+			LogPlug::error( "EmbeddedFile destructor: close failed: " 
+				+ e.toString() ) ;
+		}
 		
+	}
+	
 }
 
 
@@ -91,36 +96,60 @@ EmbeddedFile::~EmbeddedFile() throw()
 
 // Implementation of instance methods inherited from File.	
 	
+	
+	
+bool EmbeddedFile::isOpen() const throw()
+{
+
+#if OSDL_USES_PHYSICSFS
+
+	return ( _physfsHandle != 0 ) ;
+
+#else // OSDL_USES_PHYSICSFS
+	
+	return false ;
+		
+#endif // OSDL_USES_PHYSICSFS
+
+}
+
 
 
 bool EmbeddedFile::close() throw( Stream::CloseException )
 {
 
+	if ( ! isOpen() )
+	{
+	
+		LogPlug::warning( "EmbeddedFile::close: file '" +  _name 
+			+ "' does not seem to have been already opened." ) ;
+			
+		return false ;	
+	
+	}
+	else
+	{
+	
+		// Let's close it.
+		
 #if OSDL_USES_PHYSICSFS
 	
-	if ( _physfsHandle != 0 )
-	{
-    
     	if ( PHYSFS_close( _physfsHandle ) == 0 )
         	throw Stream::CloseException( "EmbeddedFile::close failed: "
            	 + EmbeddedFileSystemManager::GetBackendLastError() ) ;
-    
+  	
+		_physfsHandle = 0 ;
+		
     	return true ;
-	}	
-	else
-	{
-
-		throw Stream::CloseException( "EmbeddedFile::close: file '" +  _name 
-			+ "' does not seem to have been already opened." ) ;
-			
-	}
 
 #else // OSDL_USES_PHYSICSFS
 
-	throw Stream::CloseException( "EmbeddedFile::close failed: "
-    	"no PhysicsFS support available." ) ;
+		throw Stream::CloseException( "EmbeddedFile::close failed: "
+    		"no PhysicsFS support available." ) ;
         
 #endif // OSDL_USES_PHYSICSFS
+
+	}	
 	
 }
 
@@ -257,21 +286,38 @@ Size EmbeddedFile::read( Ceylan::Byte * buffer, Size maxLength )
     else if ( objectCount < maxLength )
     {
     
+    	// Not EOF? Must be an error:
+    	if ( ! ::PHYSFS_eof( _physfsHandle ) )        	
+			throw InputStream::ReadFailedException(
+    			"EmbeddedFile::read failed: " 
+            	+ EmbeddedFileSystemManager::GetBackendLastError() ) ;
+        /*
+
     	LogPlug::warning( "EmbeddedFile::read: only read " 
-        	+ Ceylan::toString( static_cast<Size>( objectCount ) ) + " bytes: "
+        	+ Ceylan::toString( static_cast<Size>( objectCount ) ) 
+            + " bytes, instead of requested " 
+            + static_cast<Size>( static_cast<Size>( maxLength ) ) + " bytes: "
             + EmbeddedFileSystemManager::GetBackendLastError()
             + string( ", end of file " )
             + ( ( PHYSFS_eof(_physfsHandle) == 0 ) ? "not ":"" )
             + string( "reached." ) ) ;
-    
+			
+         */
     }        
  	
     
     // No exception excepted to be raised: 
     if ( _cypher )
   		DecypherBuffer( buffer, objectCount ) ;
-    	
-    return static_cast<Size>( objectCount ) ;
+    
+    Size returnedSize = static_cast<Size>( objectCount ) ;
+    
+    if ( returnedSize != objectCount )
+    	throw InputStream::ReadFailedException( 
+        	"EmbeddedFile::read failed for '" + _name
+			+ "': read size too high for return variable." ) ;
+
+    return returnedSize ;
             		
 #else // OSDL_USES_PHYSICSFS
 
@@ -353,7 +399,74 @@ Size EmbeddedFile::write( const Ceylan::Byte * buffer, Size maxLength )
 
 
 
+Position EmbeddedFile::tell() throw( FileException )
+{
+
+#if OSDL_USES_PHYSICSFS
+
+
+	//LogPlug::trace( "EmbeddedFile::tell" ) ;
+        
+	PHYSFS_sint64 returnedPos = ::PHYSFS_tell( _physfsHandle ) ;
+        
+    if ( returnedPos < 0 )
+		throw FileException( "EmbeddedFile::tell failed for '" + _name
+			+ "': " + EmbeddedFileSystemManager::GetBackendLastError() ) ;
+            
+	Position pos = static_cast<Position>( returnedPos ) ;
+    
+    if ( pos != returnedPos )
+    	throw FileException( "EmbeddedFile::tell failed for '" + _name
+			+ "': offset too high for position variable." ) ;
+
+	/*
+	LogPlug::trace( "EmbeddedFile::tell: returning position "
+    	+ Ceylan::toString(pos) ) ;
+     */
+	         
+	return pos ;
+    
+#else // OSDL_USES_PHYSICSFS
+
+	throw FileException( "EmbeddedFile::tell failed: "
+    	"no PhysicsFS support available." ) ;
+        
+#endif // OSDL_USES_PHYSICSFS
+
+}
+
+
+
+void EmbeddedFile::seek( Position targetPosition ) throw( FileException )
+{
+
+#if OSDL_USES_PHYSICSFS
+    
+	/*
+	LogPlug::trace( "EmbeddedFile::seek: seeking position "
+    	+ Ceylan::toString( targetPosition ) ) ;
+     */
+	     
+	int res = ::PHYSFS_seek( _physfsHandle, targetPosition ) ;
+    
+    if ( res == 0 )
+		throw FileException( "EmbeddedFile::seek failed for '" + _name
+			+ "': " + EmbeddedFileSystemManager::GetBackendLastError() ) ;
+
+#else // OSDL_USES_PHYSICSFS
+
+	throw Ceylan::System::FileException( "EmbeddedFile::seek failed: "
+    	"no PhysicsFS support available." ) ;
+        
+#endif // OSDL_USES_PHYSICSFS
+    
+}
+
+
+
+
 // EmbeddedFile-specific methods.
+
 
 Size EmbeddedFile::size() const throw( FileException )
 {
@@ -366,8 +479,14 @@ Size EmbeddedFile::size() const throw( FileException )
 		throw Ceylan::System::FileException(
  		   	"EmbeddedFile::size failed: " 
             + EmbeddedFileSystemManager::GetBackendLastError() ) ;
- 	else    
-	    return static_cast<Size>( fileSize ) ;
+
+    Size res = static_cast<Size>( fileSize ) ;
+    
+    if ( res != fileSize )
+		throw Ceylan::System::FileException(
+ 		   	"EmbeddedFile::size failed: could not fit in returned variable." ) ;
+    
+    return res ;
             		
 #else // OSDL_USES_PHYSICSFS
 
@@ -434,8 +553,14 @@ void EmbeddedFile::DecypherBuffer( Ceylan::Byte * buffer,
 	Ceylan::Byte XORByte = EmbeddedFileSystemManager::GetXORByte() ;
           	
 	for ( Size i = 0; i < size; i++ )
+    {
 		buffer[i] = (buffer[i]-117)^XORByte ;
-
+        
+        /*
+        LogPlug::trace( "DecypherBuffer: " 
+        	+ Ceylan::toHexString( buffer[i] ) ) ;
+         */    
+	}
 }    	
 
 
@@ -619,8 +744,7 @@ void EmbeddedFile::reopen() throw( FileOpeningFailed )
     
      
     _physfsHandle = file ;
-    
-    			
+        			
 #else // OSDL_USES_PHYSICSFS
 
 	throw Ceylan::System::FileOpeningFailed( "EmbeddedFile::reopen failed: "
