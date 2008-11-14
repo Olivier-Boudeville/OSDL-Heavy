@@ -43,7 +43,9 @@ if [ ! -x "${cypher_exec}" ] ; then
 
 fi
 
-archiver_name="7zr"
+# zip might be used instead, for the purpose of testing/fixing LZMA (with 7zr):
+#archiver_name="7zr"
+archiver_name="zip"
 archiver=`which ${archiver_name}`
 
 if [ ! -x "${archiver}" ] ; then
@@ -59,7 +61,7 @@ fi
 tmp_base="tmp-create-OSDL-archive"
 
 
-# Cyphering will change files, so we will operate on a copy made beforehand:
+# Cyphering will change files, so we will operate on a copy made beforehand:
 
 if [ -d "${tmp_base}" ] ; then
 
@@ -93,22 +95,27 @@ cd "${tmp_base}/"
 find ${archive_directory_name} -type f -exec ${cypher_exec} '{}' ';' | grep -v 'Logs can be inspected'
 
 # OAR archives are based on the Lempel-Ziv-Markov chain-Algorithm (LZMA).
-# See: http://en.wikipedia.org/wiki/Lempel-Ziv-Markov_chain_algorithm
+# See: http://en.wikipedia.org/wiki/Lempel-Ziv-Markov_chain_algorithm
 # On Debian-based distributions, use: 'apt-get install p7zip' to have the 
-# archiver.
-# The lzma package is not enough, as it compresses only files, not filesystem
-# full trees.
+# archiver.
+# The lzma package is not enough, as it compresses only files, not filesystem
+# full trees.
 
 
 
-LANG= ${archiver} a ../${archive_target} "${archive_directory_name}" 1>/dev/null
+# For 7zr:
+#LANG= ${archiver} a ../${archive_target} "${archive_directory_name}" 1>/dev/null
 
 #LANG= ${archiver} a -t7z -mx=9 ../${archive_target} "${archive_directory_name}" 1>/dev/null
+
+# For zip:
+LANG= ${archiver} -r ../${archive_target} "${archive_directory_name}"
 
 cd ..
 
 if [ $? -eq 0 ] ; then
 	echo "OSDL Archive ${archive_target} successfully produced from directory ${archive_directory}:"
+	file ${archive_target}
     /bin/ls -l ${archive_target}
 fi
 
