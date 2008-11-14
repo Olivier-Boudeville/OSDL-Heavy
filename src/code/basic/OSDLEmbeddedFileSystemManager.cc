@@ -73,6 +73,13 @@ EmbeddedFileSystemManager *
 
 
 
+string EmbeddedFileSystemManager::ArchivePathEnvironmentVariable = 
+	"ARCHIVE_PATH" ;
+
+Ceylan::System::FileLocator EmbeddedFileSystemManager::ArchiveFileLocator(
+	ArchivePathEnvironmentVariable ) ;
+
+
 
 
 // Implementation of EmbeddedFileSystemManager specific methods.
@@ -1298,6 +1305,62 @@ EmbeddedFileSystemManager::~EmbeddedFileSystemManager() throw()
 }
 
 
+
+string EmbeddedFileSystemManager::FindArchivePath( 
+		const std::string & archiveFilename ) 
+	throw( EmbeddedFileSystemManagerException )
+{
+	
+	string archiveFullPath = archiveFilename ;
+
+	// Searches directly in current working directory:
+	if ( ! File::ExistsAsFileOrSymbolicLink( archiveFullPath ) )
+	{
+		
+		// On failure, uses the archive locator:
+		try
+		{
+		
+			archiveFullPath = ArchiveFileLocator.find( 
+				archiveFullPath ) ;
+				
+		}
+		catch( const FileLocatorException & e )
+		{
+				
+			// Not found!
+				
+			string currentDir ;
+				
+			try
+			{
+				currentDir = Directory::GetCurrentWorkingDirectoryPath() ;
+			}
+			catch( const DirectoryException & exc )
+			{
+				
+				throw EmbeddedFileSystemManagerException( 
+					"Archive::FindArchivePath: unable to find '"
+					+ archiveFilename 
+					+ "', exception generation triggered another failure: "
+					+ exc.toString() + "." ) ;
+			}
+				
+			throw EmbeddedFileSystemManagerException( 
+					"Archive::FindArchivePath: '" + archiveFilename 
+					+ "' is not a regular file nor a symbolic link "
+					"relative to the current directory (" + currentDir
+					+ ") and cannot be found through archive locator ("
+					+ ArchiveFileLocator.toString() 
+					+ ") based on archive path environment variable ("
+					+ ArchivePathEnvironmentVariable + ")." ) ;
+					
+		}		
+	}
+
+	return archiveFullPath ;
+	
+}
 
 // Protected section.
 
