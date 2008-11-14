@@ -432,7 +432,7 @@ void AudioModule::setMode( Hertz outputFrequency,
 			GetChannelCountFor( outputChannel ), outputBufferSize ) != 0 )
 		throw AudioException( "AudioModule::setMode failed: "
 			+ string( ::Mix_GetError() ) 
-			+ ". Maybe the audio driver is used by another application ?"  ) ;
+			+ ". Maybe the audio driver is used by another application?"  ) ;
 
 	_chunkSize = outputBufferSize ;
 	
