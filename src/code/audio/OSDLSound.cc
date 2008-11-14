@@ -53,10 +53,29 @@ using namespace Ceylan::System ;
 using namespace OSDL::Audio ;
 
 
+
 /**
  * Implementation notes:
  *
+ * Before, when SDL_mixer was to operate on filenames rather than directly on
+ * SDL_rwops, on all PC-like platforms (including Windows and most UNIX),
+ * the supported formats were WAVE, AIFF, RIFF, OGG, and VOC.
+ * WAVE and, to a lesser extent, OGG, were recommended for sounds. 
+ * 
+ * Now, we want to be able to read sounds from opaque archives (using
+ * EmbeddedFile instances, thus PhysicsFS), and SDL_mixer just allows the
+ * OGG (OggVorbis), WAV, OGG, MP3, MOD or MIDI file formats to be used with
+ * the underlying SDL_rwops.
+ *
+ * Thus, WAVE and, to a lesser extent, OGG, are still recommended for sounds,
+ * on the PC. 
+ *
+ * @see Mix_LoadWAV_RW
+ *
+ *
  * Neither channel grouping nor effects used, as no need felt.
+ *
+ * On the Nintendo DS, only one format is supported, the .osdl.sound format.
  *
  */
 
@@ -81,7 +100,8 @@ SoundException::~SoundException() throw()
 Sound::Sound( const std::string & soundFile, bool preload ) 
 		throw( SoundException ):
 	Audible( /* nothing loaded yet, hence not converted */ false ),	
-	Ceylan::LoadableWithContent<LowLevelSound>( soundFile )
+	Ceylan::LoadableWithContent<LowLevelSound>( soundFile ),
+	_dataStream( 0 )
 {
 
 	if ( ! AudioModule::IsAudioInitialized() )
@@ -276,13 +296,66 @@ bool Sound::load() throw( Ceylan::LoadableException )
 		
 #if OSDL_USES_SDL_MIXER
 
+	/*
+	 * Supported: WAVE, MOD, MIDI, OGG and MP3, when using SDL_rwops with
+	 * SDL_mixer's Mix_LoadWAV_RW.
+	 *
+	 */
+
+	if ( hasContent() )
+		return false ;
+
 	try
 	{
+	
+        /*
+         * Not used anymore, so that sounds can be loaded from embedded files
+         * as well:
+		 
 		// Misleading, supports WAVE but other formats as well:
 		_content = ::Mix_LoadWAV( FindAudiblePath( _contentPath ).c_str() ) ;
+
+         */
 	
+        Ceylan::System::File & soundFile = File::Open( _contentPath ) ;
+        
+		/*
+        LogPlug::trace( "loaded " + soundFile.toString() + ", size = "
+        	+ Ceylan::toString( soundFile.size() ) ) ;
+         */
+        
+		// Creates the appropriate SDL_rwops and feeds it to SDL_mixer:
+
+		_dataStream = & Utils::createDataStreamFrom( soundFile ) ;
+
+		/*
+		 * Let's call F the boolean 'free the source memory after loading' and
+		 * A the boolean 'deleteDataStream is called in unload method'.
+		 *
+		 * If F is true:
+		 *  - if A is true, we have a segmentation fault (already removed?)
+		 *  - if A is false, no crash (hopefully no memory leak; we checked,
+		 * for example the EmbeddedFile destructor is called indeed)
+		 *
+		 * If F is false:
+		 *  - if A is true, we have 'mount failed: Files still open' which
+		 * implies the file has not been closed and the SDL_rwops was not
+		 * deleted (this is sadly the settings we wanted to select)
+		 *  - if A is false, we must have a memory leak
+		 *
+		 * F = false, A = true being not functional, we had to go for
+		 * F = true, A = false.
+		 */
+
+		_content = ::Mix_LoadWAV_RW( _dataStream,
+			/* free the source memory after loading */ true ) ;
+		
+		 
+		// _content checked afterwards.
+		
+		
 	}
-	catch( const AudibleException & e )
+	catch( const Ceylan::Exception & e )
 	{
 	
 		throw Ceylan::LoadableException( "Sound::load failed: '"
@@ -341,6 +414,30 @@ bool Sound::unload() throw( Ceylan::LoadableException )
 #if OSDL_USES_SDL_MIXER
 
 	::Mix_FreeChunk( _content ) ;
+	// Already specified at the end of the method: _content = 0 ;
+
+	/*
+	 * Option A is false (see comment in Sound::load):
+	 *
+	 
+	try
+	{
+		
+		Utils::deleteDataStream( *_dataStream ) ;
+		
+	
+	}
+	catch( const OSDL::Exception & e )
+	{
+	
+		throw Ceylan::LoadableException( "Sound::unload failed: "
+			+ e.toString() ) ;
+	}
+	
+	 *
+	 */
+	
+	_dataStream = 0 ;
 	
 #else // OSDL_USES_SDL_MIXER
 
