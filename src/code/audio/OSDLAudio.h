@@ -607,6 +607,10 @@ namespace OSDL
 				// Static section.
 				
 					
+					
+				// Audio locator section.
+			
+
 				/**
 				 * The name of the environment variable that may 
 				 * contain directory names that should contain audio
@@ -615,21 +619,23 @@ namespace OSDL
 				 */
 				static std::string AudioPathEnvironmentVariable  ;
 				 
+				 
 				/**
 				 * Allows to keep track of audio directories.
 				 *
 				 * Automatically gathers the list of directories
 				 * specified as the value of the environment 
 				 * variable named as specified in 
-				 * FontPathEnvironmentVariable (AUDIO_PATH).
+				 * AudioPathEnvironmentVariable (AUDIO_PATH).
 				 * 
 				 */
 				static Ceylan::System::FileLocator AudioFileLocator ;
 				
 				
+				
 				/**
 				 * Returns a summary about the possible use of 
-				 * video-related environment variables, for the selected
+				 * audio-related environment variables, for the selected
 				 * back-end, expressed in specified format.
 				 *
 				 * @note The SDL back-end can be partly driven by a set 
