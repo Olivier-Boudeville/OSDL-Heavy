@@ -4,6 +4,7 @@
 
 #include "OSDLAudioCommon.h"    // for MusicType, etc.
 #include "OSDLAudible.h"        // for AudibleException, inheritance
+#include "OSDLUtils.h"          // for Datastream, no easy forward declaration
 
 
 #include "Ceylan.h"             // for LoadableWithContent
@@ -32,7 +33,6 @@ struct _Mix_Music ;
 namespace OSDL
 {
 
-
 // Command management only needed for the Nintendo DS:
 #if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
 	
@@ -42,8 +42,9 @@ namespace OSDL
 	class CommandManagerSettings ;
 
 #endif // defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
+
 	
-	 
+		 
 	namespace Audio 
 	{
 
@@ -276,6 +277,12 @@ namespace OSDL
 		 * Methods for playing musics are non-blocking: they trigger the 
 		 * playing and return immediately, the execution continues while the
 		 * playback goes on, unless specified otherwise.
+		 *
+		 * On the PC platform, musics must be OggVorbis (MikMod could be added
+		 * quite easily).
+		 *
+		 * In the embedded case (Nintendo DS platform), musics can be either
+		 * RAW with OSDL header, or MP3.
 		 *
 		 * @see Sound
 		 *
@@ -721,10 +728,19 @@ namespace OSDL
 					
 			
 			
+				
+				
 			
 			protected:
 			
 			
+				/**
+				 * The datastream corresponding to this music.
+				 *
+				 */
+				OSDL::Utils::DataStream * _dataStream ;
+
+
 				/// Tells whether this music is being played.
 				bool _isPlaying ;
 
@@ -745,6 +761,8 @@ namespace OSDL
 				
 				/// The music currently being played (if any).
 				static Music * _CurrentMusic ;
+				
+				
 				
 				
 				
