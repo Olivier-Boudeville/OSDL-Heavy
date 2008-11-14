@@ -107,11 +107,11 @@ string Audible::FindAudiblePath( const string & audibleFilename )
 	
 	string audibleFullPath = audibleFilename ;
 
-	// Search directly in current working directory:
+	// Searches directly in current working directory:
 	if ( ! File::ExistsAsFileOrSymbolicLink( audibleFullPath ) )
 	{
 		
-		// On failure use the audio locator:
+		// On failure, uses the audio locator:
 		try
 		{
 		
@@ -122,7 +122,7 @@ string Audible::FindAudiblePath( const string & audibleFilename )
 		catch( const FileLocatorException & e )
 		{
 				
-			// Not found !
+			// Not found!
 				
 			string currentDir ;
 				
@@ -142,7 +142,7 @@ string Audible::FindAudiblePath( const string & audibleFilename )
 				
 			throw AudibleException( "Audible::FindAudiblePath: '" 
 					+ audibleFilename 
-					+ "' is not a regular file or a symbolic link "
+					+ "' is not a regular file nor a symbolic link "
 					"relative to the current directory (" + currentDir
 					+ ") and cannot be found through audio locator ("
 					+ AudioModule::AudioFileLocator.toString() 
@@ -151,7 +151,6 @@ string Audible::FindAudiblePath( const string & audibleFilename )
 					
 		}		
 	}
-
 
 	return audibleFullPath ;
 	
