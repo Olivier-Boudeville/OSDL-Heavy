@@ -271,12 +271,9 @@ int main( int argc, char * argv[] )
 
 		EmbeddedFileSystemManager::ArchiveFileLocator.addPath( "../basic" ) ;
 		
-		//const string archiveFilename = 
-		//	"test-OSDLEmbeddedFileSystem-archive.oar" ;
-		
 		const string archiveFilename = 
-			"test-archive.zip" ;
-     
+			"test-OSDLEmbeddedFileSystem-archive.oar" ;
+		
 	 	string archiveFullPath ;
 		
 		try
@@ -321,7 +318,7 @@ int main( int argc, char * argv[] )
         FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
         	/* deallocatePreviousIfAny */ false ) ;
 			
-        string targetEmbeddedMusic = "myogg-cyphered.ogg" ;
+        string targetEmbeddedMusic = "welcome-to-OSDL.ogg" ;
 		
 		// Preload implied; platform-independent paths:
 		Music myEmbeddedMusic(
