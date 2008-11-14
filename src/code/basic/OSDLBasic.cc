@@ -468,7 +468,9 @@ CommonModule::~CommonModule() throw ()
 #if OSDL_USES_AGAR
 
 	// Will exit directly in AG_Destroy:
-    send( "OSDL successfully stopped" ) ;		
+    send( "OSDL successfully stopped (Agar branch)." ) ;
+    
+    // FIXME Suspected of screwing up our LogHolder:		
 	AG_Destroy() ;
 	
 #else // OSDL_USES_AGAR
@@ -479,7 +481,7 @@ CommonModule::~CommonModule() throw ()
 
 #endif // OSDL_USES_SDL
 	
-    send( "OSDL successfully stopped" ) ;		
+    send( "OSDL successfully stopped (default branch)." ) ;		
 	
 }
 
@@ -940,6 +942,8 @@ void OSDL::stop() throw()
 	else
 	{
 		LogPlug::info( "Stopping launched OSDL module" ) ;
+        
+        // Will delete in turn all direct child modules (events, video, etc.):
 		delete CommonModule::_CurrentCommonModule ;
 		CommonModule::_CurrentCommonModule = 0 ;
 	}
