@@ -38,7 +38,8 @@ int main( int argc, char * argv[] )
         
         /*
          * Note this does not imply that EmbeddedFileSystemManager became
-         * the default filesystem manager: it is still the standard one.
+         * the default filesystem manager: it is still the standard one
+         * (luckly for the log files to remain readable).
          *
          */
          
@@ -199,6 +200,23 @@ int main( int argc, char * argv[] )
         if ( readString != toRead )
        		throw TestException( "Read '" +  readString
             	+ "' instead of '" + toRead + "'." ) ;
+        
+        LogPlug::info( "Using tell to know current position: "
+        	+ Ceylan::toString( otherReadFile.tell() ) );
+        
+		LogPlug::info( "Seeking seventh position (the 'e' of test)" ) ; 
+        otherReadFile.seek( 7 ) ;
+        otherReadFile.read( buffer, 1 ) ;
+        
+        if ( buffer[0] != 'e' ) 
+      		throw TestException( "Could not seek and read test position #1." ) ;
+        else
+        	LogPlug::info( "Could seek and read test position." ) ;   
+         	
+        if ( otherReadFile.tell() != 8 )
+      		throw TestException( "Could not tell position #1." ) ;
+        else
+        	LogPlug::info( "Could tell test position." ) ;   
         
 		LogPlug::info( "End of OSDL embedded filesystem test." ) ;
  
