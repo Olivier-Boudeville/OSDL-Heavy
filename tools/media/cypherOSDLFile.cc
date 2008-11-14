@@ -13,7 +13,7 @@ using namespace std ;
 #include <iostream>  // for cout
 
 
-const std::string Usage = " <an OSDL file to cypher>\nReplaces the current content of the specified file by a cyphered content, so that this updated file, once included in an OSDL archive and read from it with cyphering on, will show a content identical to the original one. " ;
+const std::string Usage = " [-d|--decypher] <an OSDL file to cypher>\nReplaces the current content of the specified file by a cyphered content, so that this updated file, once included in an OSDL archive and read from it with cyphering on, will show a content identical to the original one. If the -d option is used, the file will be decyphered instead." ;
 
 
 
@@ -37,7 +37,8 @@ int main( int argc, char * argv[] )
 
 		
 		LogPlug::info( "Cyphering an OSDL file." ) ;
-
+	
+    	bool decypher = false ;
 		
 		std::string executableName ;
 		std::list<std::string> options ;
@@ -63,7 +64,13 @@ int main( int argc, char * argv[] )
 				// Ignores log-related (argument-less) options.
 				tokenEaten = true ;
 			}
-			
+			else if ( token == "-d" || token == "--decypher" )			
+            {
+            
+            	cout << "(will decypher instead of cyphering)" << endl ;
+                decypher = true ;
+				tokenEaten = true ;
+            }
 			
 			if ( ! tokenEaten )
 			{
@@ -125,19 +132,28 @@ int main( int argc, char * argv[] )
 		delete & inputfile ;
 
         // We use cyphering, despite this is not an embedded file:
-        EmbeddedFile::CypherBuffer( buffer, fileSize ) ;
-        
+        if ( ! decypher )
+	        EmbeddedFile::CypherBuffer( buffer, fileSize ) ;
+        else
+	        EmbeddedFile::DecypherBuffer( buffer, fileSize ) ;
+
         // We open/create the (same) standard file:
 		File & outputfile = StandardFile::Create( inputFilename ) ;
         
         outputfile.write( buffer, fileSize ) ;
         
+        outputfile.close() ;
+        
 		delete & outputfile ;
 
         delete [] buffer ;
         
-		cout << "Successfully updated '" << inputFilename << "', "
-        	<< fileSize << " bytes cyphered and written." << endl ;
+        if ( ! decypher )
+			cout << "Successfully updated '" << inputFilename << "', "
+        		<< fileSize << " bytes cyphered and written." << endl ;
+        else        
+			cout << "Successfully updated '" << inputFilename << "', "
+        		<< fileSize << " bytes decyphered and written." << endl ;
 		
 
    }
