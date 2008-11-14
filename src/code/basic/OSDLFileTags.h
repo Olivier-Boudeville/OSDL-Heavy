@@ -38,7 +38,27 @@ namespace OSDL
 	
 	
 	
-	// Audio-related tags.
+	/*
+	 * Audio-related tags.
+	 *
+	 * @note These tags describe audio file formats (ex: WAV, OggVorbis, MP3),
+	 * not how they will be used, i.e. as punctual sounds or as musics (which
+	 * are managed differently).
+	 *
+	 * Indeed an OggVorbis file, for example, can be used either as a sound
+	 * (ex: for a long speech of a character) or as a music.
+	 *
+	 * The mapping, in the non-embedded case (PC platform) is:
+	 *   - sounds can be either WAV or OggVorbis
+	 *   - musics must be OggVorbis (MikMod could be added quite easily)
+	 *
+	 * In the embedded case (Nintendo DS platform), we have:
+	 *   - sounds can be either RAW with OSDL header, or MP3
+	 *   - musics can be either RAW with OSDL header, or MP3
+	 * 
+	 * @see also Audio::MusicType
+	 *
+	 */
 	
 	
 	/**
@@ -56,6 +76,9 @@ namespace OSDL
 	 *
 	 * @see code/audio/OSDLSound.cc, in Sound::load for the actual decoding.
 	 *
+	 * @note Only relevant for embedded platforms, as on PC the format is
+	 * determined automatically.
+	 *
 	 */
 	extern OSDL_DLL const FileTag SoundTag ;
 		
@@ -69,6 +92,9 @@ namespace OSDL
 	 * trunk/tools/media/audio/mp3ToOSDLMusic.cc
 	 *
 	 * @see code/audio/OSDLMusic.cc, in Music::load for the actual decoding.
+	 *
+	 * @note Only relevant for embedded platforms, as on PC the format is
+	 * determined automatically.
 	 *
 	 */
 	extern OSDL_DLL const FileTag MusicTag ;
