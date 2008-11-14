@@ -22,7 +22,7 @@ if [ -x "sox" ] ; then
 
 fi
 
-CONVERTER=wavToOSDLSound.exe
+CONVERTER="wavToOSDLSound.exe"
 
 if [ ! -x "${CONVERTER}" ] ; then
 
@@ -98,8 +98,8 @@ if [ $do_encode -eq 0 ] ; then
 fi
 
 
-# Volume could be increased here:
-# (just requesting the stats here)
+# Volume could be increased here:
+# (just requesting the stats here)
 SOX_MSG=`sox -V ${SOURCE_WAVE_FILE} -n 2>&1`
 
 # Sometimes sox fails but returns ok (0)...
@@ -150,7 +150,7 @@ SAMPLE_ENCODING=`echo "${SOX_MSG_INPUT}"|grep 'Sample Encoding'|awk '{print $3}'
 #echo "SAMPLE_ENCODING = ${SAMPLE_ENCODING}"
 
 if [ "${SAMPLE_ENCODING}" = "IMA-ADPCM" ]; then
-	# By convention:
+	# By convention:
 	OSDL_SAMPLE_SIZE=4
 fi
 
@@ -158,7 +158,7 @@ fi
 CONVERTER_ARGS="${CONVERTER_ARGS} -b ${OSDL_SAMPLE_SIZE}" 
 
 
-# Here we have retrieved the sound settings, now removing the wav header from
+# Here we have retrieved the sound settings, now removing the wav header from
 # the sox-generated IMA_ADPCM file:
 
 
