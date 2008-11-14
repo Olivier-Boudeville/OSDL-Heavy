@@ -192,7 +192,26 @@ namespace OSDL
 		 		virtual const std::string toString( 
 						Ceylan::VerbosityLevels level = Ceylan::high ) 
 					const throw() ;
+
 			
+				/**
+				 * Helper method to find the audible specified by its filename,
+				 * using audio locators.
+				 *
+				 * @note Starts by searching the current directory, before
+				 * using the locator paths.
+				 *
+				 * @param audibleFilename the filename of the file where
+				 * the audible is stored.
+				 *
+				 * @throw AudibleException if the operation failed, including
+				 * if the file could not be found despite audio path locator.
+				 *
+				 */
+				static std::string FindAudiblePath( 
+						const std::string & audibleFilename ) 
+					throw( AudibleException ) ;
+				
 			
 			
 			
@@ -208,21 +227,6 @@ namespace OSDL
 			
 			
 			
-				/**
-				 * Helper method to find the audible specified by its filename,
-				 * using audio locators.
-				 *
-				 * @param audibleFilename the filename of the file where
-				 * the audible is stored.
-				 *
-				 * @throw AudibleException if the operation failed, including
-				 * if the file could not be found.
-				 *
-				 */
-				static std::string FindAudiblePath( 
-						const std::string & audibleFilename ) 
-					throw( AudibleException ) ;
-				
 				
 				/**
 				 * Helper method to factorize conversion of play counts into
