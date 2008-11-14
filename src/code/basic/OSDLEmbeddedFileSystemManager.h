@@ -79,7 +79,9 @@ namespace OSDL
 
 			/**
 			 * Applies specified basic settings to the embedded filesystem:
-             * sets up sane, default paths.
+             * sets up sane, default paths, including a write directory
+             * chosen to be "user-directory"/."organization"/"application",
+             * like, on UNIX: "~/.OSDL/MyTestApplication"
 			 *
              * @param organizationName name of the company/group/etc. 
              * to be used as a directory name. Keep it small, and no-frills.
@@ -1044,6 +1046,50 @@ namespace OSDL
 			 */
 			virtual ~EmbeddedFileSystemManager() throw() ;
 
+
+
+			
+			// Archive locator section.
+			
+				
+			/**
+			 * The name of the environment variable that may 
+			 * contain directory names that should contain embedded archive
+			 * files.
+			 *
+			 */
+			static std::string ArchivePathEnvironmentVariable  ;
+				
+				 
+			/**
+			 * Allows to keep track of embedded archive directories.
+			 *
+			 * Automatically gathers the list of directories
+			 * specified as the value of the environment 
+			 * variable named as specified in 
+			 * ArchivePathEnvironmentVariable (ARCHIVE_PATH).
+			 * 
+			 */
+			static Ceylan::System::FileLocator ArchiveFileLocator ;
+
+
+			/**
+			 * Helper method to find an OSDL archive specified by its filename,
+			 * using archive locators.
+			 *
+			 * @note Starts by searching the current directory, before
+			 * using the locator paths.
+			 *
+			 * @param archiveFilename the filename of the archive file.
+			 *
+			 * @throw EmbeddedFileSystemManagerException if the operation
+			 * failed, including if the archive could not be found despite 
+			 * archive path locator.
+			 *
+			 */
+			static std::string FindArchivePath( 
+					const std::string & archiveFilename ) 
+				throw( EmbeddedFileSystemManagerException ) ;
 
 
 
