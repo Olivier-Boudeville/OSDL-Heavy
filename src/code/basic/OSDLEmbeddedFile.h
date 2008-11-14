@@ -77,6 +77,13 @@ namespace OSDL
 
 
 			/**
+			 * Returns true iff this file is open.
+			 *
+			 */
+			virtual bool isOpen() const throw() ;
+
+
+			/**
 			 * Closes the file for read/write actions.
 			 *
              * @note May fail if the operating system was buffering writes to
@@ -86,8 +93,7 @@ namespace OSDL
              *
 			 * @return true iff an operation had to be performed.
 			 *
-			 * @throw Stream::CloseException if the close operation failed,
-			 * including if the file was not already opened.
+			 * @throw Stream::CloseException if the close operation failed.
 			 *
 			 */
 			virtual bool close() throw( Stream::CloseException ) ;
@@ -253,6 +259,33 @@ namespace OSDL
 			virtual Ceylan::System::Size write( const Ceylan::Byte * buffer, 
 					Ceylan::System::Size maxLength ) 
 				throw( OutputStream::WriteFailedException ) ;
+
+
+
+			/**
+			 * Determines current position within this embedded file.
+			 *
+			 * @return offset in bytes from start of file.
+             *
+			 * @throw FileException if the operation failed.
+			 *
+			 */
+			virtual Ceylan::System::Position tell() 
+            	throw( Ceylan::System::FileException ) ;
+
+
+			/**
+			 * Seeks to specified position within this embedded file.
+			 *
+			 * @param targetPosition this position corresponds to the
+             * number of bytes from start of file to seek to.
+             *
+			 * @throw FileException if the operation failed.
+			 *
+			 */
+			virtual void seek( Ceylan::System::Position targetPosition ) 
+            	throw( Ceylan::System::FileException ) ;
+
 
 
 			// open and remove inherited.
@@ -461,7 +494,7 @@ namespace OSDL
 	
 			
 		protected:
-
+    
 
 			/**
 			 * Constructs an Embedded file reference object.
