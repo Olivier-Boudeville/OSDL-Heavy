@@ -2,8 +2,8 @@
 #define OSDL_SOUND_H_
 
 
-#include "OSDLAudioCommon.h" // for 
 #include "OSDLAudible.h"     // for AudibleException, inheritance
+#include "OSDLUtils.h"          // for Datastream, no easy forward declaration
 
 #include "Ceylan.h"          // for LoadableWithContent
 
@@ -92,11 +92,15 @@ namespace OSDL
 		 *
 		 * @see Music
 		 *
+		 * On the PC platform, sounds can be either WAV or OggVorbis.
+		 *
+		 * In the embedded case (Nintendo DS platform), sounds can be either
+		 * RAW with OSDL header, or MP3.
+		 *
 		 */
 		class OSDL_DLL Sound: public Audible, 
 			public Ceylan::LoadableWithContent<LowLevelSound>
 		{
-		
 		
 		
 			public:
@@ -579,6 +583,11 @@ namespace OSDL
 				 *
 				 */
 				
+				/**
+				 * The datastream corresponding to this sound.
+				 *
+				 */
+				OSDL::Utils::DataStream * _dataStream ;
 			
 			
 			private:
