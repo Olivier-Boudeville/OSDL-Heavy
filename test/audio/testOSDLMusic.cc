@@ -289,9 +289,10 @@ int main( int argc, char * argv[] )
 		        
         	LogPlug::warning( "Test archive '" + archiveFilename 
             	+ "' not found (" + e.toString() + "), run the "
-                "create-testOSDLEmbeddedFileSystem-archive.sh script "
-                "beforehand to have it ready for this test. Stopping now." ) ;
-                
+                "test/basic/create-testOSDLEmbeddedFileSystem-archive.sh 
+				"script beforehand to have it ready for this test. "
+ 				"Stopping now." ) ;
+               
         	return 0 ;
             
         }
