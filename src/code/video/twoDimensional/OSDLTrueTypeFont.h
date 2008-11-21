@@ -162,6 +162,9 @@ namespace OSDL
 						 * found or if the font library did not initialize
 						 * properly.
 						 *
+						 * @note This constructor can operate on all kinds of
+						 * files transparently, including archive-embedded ones.
+						 *
 						 */
 						TrueTypeFont( 
 							const std::string & fontFilename, 
