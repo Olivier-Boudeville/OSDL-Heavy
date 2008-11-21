@@ -69,6 +69,9 @@ EmbeddedFileException::~EmbeddedFileException() throw()
 
 EmbeddedFile::~EmbeddedFile() throw()
 {
+
+	// Very useful to check that a datastream is freed indeed:
+	//LogPlug::trace( "Destructor called for " + _name ) ;
 	
 	if ( isOpen() )
 	{
