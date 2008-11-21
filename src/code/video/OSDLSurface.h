@@ -3174,6 +3174,9 @@ namespace OSDL
 				 * Surface factory: creates a new Surface instance from
 				 * specified image file.
 				 *
+				 * @param filename the file from which the image will be
+				 * loaded
+				 *
 				 * @param convertToDisplayFormat tells whether this loaded 
 				 * image should have its format converted to the screen's
 				 * format, in order to offer faster blits if ever that 
@@ -3191,10 +3194,74 @@ namespace OSDL
 				 * @note Image format, if supported, is auto-detected.
 				 *
 				 */
-				static Surface & LoadImage( const std::string & filename,
+				static Surface & LoadImage( 
+						const std::string & filename,
 						bool convertToDisplayFormat = true,
 						bool convertWithAlpha = true ) 
 					throw( TwoDimensional::ImageException ) ;
+	
+	
+				/**
+				 * Surface factory: creates a new Surface instance from
+				 * specified PNG image file.
+				 *
+				 * @param filename the file from which the image will be
+				 * loaded
+				 *
+				 * @param convertToDisplayFormat tells whether this loaded 
+				 * image should have its format converted to the screen's
+				 * format, in order to offer faster blits if ever that 
+				 * surface was to be blitted multiple times to the screen
+				 * (one-time-for-all conversion).
+				 *
+				 * @param convertWithAlpha if the conversion to screen 
+				 * format is selected (convertToDisplayFormat is true), 
+				 * tells whether the converted surface should also have an 
+				 * alpha channel.  				 
+				 *
+				 * @note The caller takes ownership of the created Surface, 
+				 * and must deallocate it when necessary.
+				 *
+				 * @note This is a way of enforcing the reading of a PNG file.
+				 *
+				 */
+				static Surface & LoadPNG( 
+						const std::string & filename,
+						bool convertToDisplayFormat = true,
+						bool convertWithAlpha = true ) 
+					throw( TwoDimensional::ImageException ) ;
+	
+	
+				/**
+				 * Surface factory: creates a new Surface instance from
+				 * specified JPG image file.
+				 *
+				 * @param filename the file from which the image will be
+				 * loaded
+				 *
+				 * @param convertToDisplayFormat tells whether this loaded 
+				 * image should have its format converted to the screen's
+				 * format, in order to offer faster blits if ever that 
+				 * surface was to be blitted multiple times to the screen
+				 * (one-time-for-all conversion).
+				 *
+				 * @param convertWithAlpha if the conversion to screen 
+				 * format is selected (convertToDisplayFormat is true), 
+				 * tells whether the converted surface should also have an 
+				 * alpha channel.  				 
+				 *
+				 * @note The caller takes ownership of the created Surface, 
+				 * and must deallocate it when necessary.
+				 *
+				 * @note This is a way of enforcing the reading of a JPEG file.
+				 *
+				 */
+				static Surface & LoadJPG( 
+						const std::string & filename,
+						bool convertToDisplayFormat = true,
+						bool convertWithAlpha = true ) 
+					throw( TwoDimensional::ImageException ) ;
+	
 	
 	
 		
