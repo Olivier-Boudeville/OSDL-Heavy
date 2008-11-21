@@ -2,6 +2,7 @@
 
 #include "OSDLSurface.h"             // for Surface
 #include "OSDLPixel.h"               // for ColorDefinition
+#include "OSDLUtils.h"               // for createDataStreamFrom
 
 #include "Ceylan.h"                  // for Uint32, inheritance
 
@@ -99,7 +100,7 @@ TrueTypeFont::TrueTypeFont(
 			catch( const System::FileLocatorException & ex )
 			{
 				
-				// Not found !
+				// Not found!
 				
 				string currentDir ;
 				
@@ -142,8 +143,28 @@ TrueTypeFont::TrueTypeFont(
 				
 	}	
 	
-	_actualFont = ::TTF_OpenFont( fontFullPath.c_str(), pointSize ) ;
+	// _actualFont is currently still set to zero here.
 	
+	try
+	{
+    
+		// Will be deleted by the IMG_Load_RW close callback:
+		Ceylan::System::File & fontFile = File::Open( fontFullPath ) ;
+
+		_actualFont = ::TTF_OpenFontRW( 
+			& OSDL::Utils::createDataStreamFrom( fontFile ),
+			/* automatic free source */ true, pointSize ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw TextException( 
+			"TrueTypeFont constructor failed: unable to load from '" 
+			+ fontFullPath + "': " + e.toString() ) ;
+			
+	}	
+
 	if ( _actualFont == 0 )
 		throw TextException( "TrueTypeFont constructor: unable to open '" 
 			+ fontFullPath 
@@ -261,7 +282,7 @@ Width TrueTypeFont::getWidth( Ceylan::Latin1Char character )
 	
 	if ( ::TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
-			& minX, & maxX, 0, 0, 0 )  != 0 )
+			& minX, & maxX, 0, 0, 0 ) != 0 )
 		throw TextException( "TrueTypeFont::getWidth: " 
 			+ DescribeLastError() ) ;
 
@@ -288,7 +309,7 @@ SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character )
 	
 	if ( ::TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
-			& minX, 0, 0, 0, 0 )  != 0 )
+			& minX, 0, 0, 0, 0 ) != 0 )
 		throw TextException( "TrueTypeFont::getWidthOffset: " 
 			+ DescribeLastError() ) ;
 			
@@ -315,7 +336,7 @@ SignedHeight TrueTypeFont::getHeightAboveBaseline(
 	
 	if ( ::TTF_GlyphMetrics( _actualFont,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
-			0, 0, 0, & maxY, 0 )  != 0 )
+			0, 0, 0, & maxY, 0 ) != 0 )
 		throw TextException( "TrueTypeFont::getHeightAboveBaseline: " 
 			+ DescribeLastError() ) ;
 	
