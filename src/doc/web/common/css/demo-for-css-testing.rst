@@ -142,6 +142,7 @@ Titles, from more general to smallest subtitles, are defined with:
 :raw-html:`<img src=X.png></img>`
 :raw-latex:`\includegraphics[scale=0.75]{X.png}`
 
+:raw-latex:`\pagebreak`
 
 Bullet Lists
 ------------
