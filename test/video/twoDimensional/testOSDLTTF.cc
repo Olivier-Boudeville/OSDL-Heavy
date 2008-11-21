@@ -11,7 +11,7 @@ using namespace Ceylan::System ;
 
 
 #include <string>
-
+using std::string ;
 
 
 /*
@@ -19,7 +19,7 @@ using namespace Ceylan::System ;
  * tree, from executable build directory:
  *
  */
-const std::string trueTypeFontDirFromExec = 
+const string trueTypeFontDirFromExec = 
 	"../../../src/doc/web/common/fonts" ;
 
 
@@ -28,7 +28,7 @@ const std::string trueTypeFontDirFromExec =
  * from playTests.sh location in build tree:
  *
  */
-const std::string trueTypeFontDirForBuildPlayTests 
+const string trueTypeFontDirForBuildPlayTests 
 	= "../src/doc/web/common/fonts" ;
 
 
@@ -37,7 +37,7 @@ const std::string trueTypeFontDirForBuildPlayTests
  * from playTests.sh location in installed tree:
  *
  */
-const std::string trueTypeFontDirForInstalledPlayTests 
+const string trueTypeFontDirForInstalledPlayTests 
 	= "../OSDL/doc/web/common/fonts" ;
 
 
@@ -47,20 +47,20 @@ const std::string trueTypeFontDirForInstalledPlayTests
  * trueTypeFontDirFromExec:
  *
  */
-const std::string firstTrueTypeFontFile  = "cretino.ttf" ;
-const std::string secondTrueTypeFontFile = "iomanoid.ttf" ;
-const std::string thirdTrueTypeFontFile  = "stilltim.ttf" ;
+const string firstTrueTypeFontFile  = "cretino.ttf" ;
+const string secondTrueTypeFontFile = "iomanoid.ttf" ;
+const string thirdTrueTypeFontFile  = "stilltim.ttf" ;
 
 /*
-const std::string fourthTrueTypeFontFile = "earwigfa.ttf" ;
-const std::string fifthTrueTypeFontFile  = "neurochr.ttf" ;
-const std::string sixthTrueTypeFontFile  = "stilltim.ttf" ;
+const string fourthTrueTypeFontFile = "earwigfa.ttf" ;
+const string fifthTrueTypeFontFile  = "neurochr.ttf" ;
+const string sixthTrueTypeFontFile  = "stilltim.ttf" ;
 */
 
 
-void displayFont( Surface & screen, const std::string & fontFilename, 
+void displayFont( Surface & screen, const string & fontFilename, 
 	bool convertToDisplay, Font::RenderCache cache, 
-		const std::string & executableName, bool screenshotWanted )
+		const string & executableName, bool screenshotWanted )
 {
 
 	screen.clear() ;
@@ -167,12 +167,12 @@ int main( int argc, char * argv[] )
 
 		bool isBatch = false ;
 		
-		std::string executableName ;
-		std::list<std::string> options ;
+		string executableName ;
+		std::list<string> options ;
 		
 		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 		
-		std::string token ;
+		string token ;
 		bool tokenEaten ;
 		
 		
@@ -220,6 +220,8 @@ int main( int argc, char * argv[] )
 		
 		}
 		
+
+		// Initialization section.
 		 
 		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo 
 			| CommonModule::UseKeyboard ) ;				
@@ -237,6 +239,8 @@ int main( int argc, char * argv[] )
     	LogPlug::info( "Font path is managed by " 
 			+ Text::Font::FontFileLocator.toString() ) ;
 
+
+		// Section for standard operation, using standard files.
 
 		bool correct = false ;
 		
@@ -274,6 +278,8 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "TrueType fonts will be found through: " 
 			+ TrueTypeFont::TrueTypeFontFileLocator.toString() ) ;		
 		
+		LogPlug::debug( "Logs about rendering requests come from that test "
+			"only, not from the OSDL library." ) ;
 		
 		if ( randomTestWanted )
 		{			
@@ -403,7 +409,7 @@ int main( int argc, char * argv[] )
 			textSurface->blitTo( screen, 100, 100 ) ;
 
 			if ( screenshotWanted )	
-				textSurface->savePNG( std::string( argv[0] ) + "-text.png" ) ;
+				textSurface->savePNG( string( argv[0] ) + "-text.png" ) ;
 			
 		
 			delete textSurface ;
@@ -412,10 +418,10 @@ int main( int argc, char * argv[] )
 			screen.update() ;
 				
 			if ( screenshotWanted )	
-				screen.savePNG( std::string( argv[0] ) + "-random.png" ) ;
+				screen.savePNG( string( argv[0] ) + "-random.png" ) ;
 				
 			if ( ! isBatch ) 
-				myOSDL.getEventsModule().waitForAnyKey() ;
+				myOSDL.getEventsModule().waitForAnyKey() ;					
 			
 		}
 		
@@ -483,7 +489,7 @@ int main( int argc, char * argv[] )
 			screen.update() ;	
 
 			if ( screenshotWanted )	
-				screen.savePNG( std::string( argv[0] ) + "-qualities.png" ) ;
+				screen.savePNG( string( argv[0] ) + "-qualities.png" ) ;
 			
 			if ( ! isBatch ) 
 				myOSDL.getEventsModule().waitForAnyKey() ;	
@@ -507,7 +513,7 @@ int main( int argc, char * argv[] )
 			displayFont( screen, firstTrueTypeFontFile, 
 				/* convertToDisplay */ true, 
 				/* render cache */ Font::GlyphCached, 
-				std::string( argv[0] ), screenshotWanted ) ;
+				string( argv[0] ), screenshotWanted ) ;
 
 			if ( ! isBatch )
 				myOSDL.getEventsModule().waitForAnyKey() ;
@@ -519,7 +525,7 @@ int main( int argc, char * argv[] )
 				displayFont( screen, firstTrueTypeFontFile, 
 					/* convertToDisplay */ true, 
 					/* render cache */ Font::WordCached,
-					std::string( argv[0] ), screenshotWanted ) ;
+					string( argv[0] ), screenshotWanted ) ;
 
 				if ( ! isBatch )
 					myOSDL.getEventsModule().waitForAnyKey() ;
@@ -527,7 +533,7 @@ int main( int argc, char * argv[] )
 				displayFont( screen, firstTrueTypeFontFile, 
 					/* convertToDisplay */ true, 
 					/* render cache */ Font::TextCached,
-					std::string( argv[0] ), screenshotWanted ) ;
+					string( argv[0] ), screenshotWanted ) ;
 
 				if ( ! isBatch )
 					myOSDL.getEventsModule().waitForAnyKey() ;
@@ -538,7 +544,7 @@ int main( int argc, char * argv[] )
 			displayFont( screen, secondTrueTypeFontFile, 
 				/* convertToDisplay */ false, 
 				/* render cache */ Font::GlyphCached,
-				std::string( argv[0] ), screenshotWanted ) ;
+				string( argv[0] ), screenshotWanted ) ;
 
 			if ( ! isBatch )
 				myOSDL.getEventsModule().waitForAnyKey() ;
@@ -550,7 +556,7 @@ int main( int argc, char * argv[] )
 				displayFont( screen, secondTrueTypeFontFile, 
 					/* convertToDisplay */ false, 
 					/* render cache */ Font::WordCached,
-					std::string( argv[0] ), screenshotWanted ) ;
+					string( argv[0] ), screenshotWanted ) ;
 
 				if ( ! isBatch )
 					myOSDL.getEventsModule().waitForAnyKey() ;
@@ -558,7 +564,7 @@ int main( int argc, char * argv[] )
 				displayFont( screen, secondTrueTypeFontFile, 
 					/* convertToDisplay */ false, 
 					/* render cache */ Font::TextCached,
-					std::string( argv[0] ), screenshotWanted ) ;
+					string( argv[0] ), screenshotWanted ) ;
 
 				if ( ! isBatch )
 					myOSDL.getEventsModule().waitForAnyKey() ;
@@ -569,7 +575,7 @@ int main( int argc, char * argv[] )
 			displayFont( screen, thirdTrueTypeFontFile, 
 				/* convertToDisplay */ true, 
 				/* render cache */ Font::GlyphCached,
-				std::string( argv[0] ), screenshotWanted ) ;
+				string( argv[0] ), screenshotWanted ) ;
 
 			if ( ! isBatch )
 				myOSDL.getEventsModule().waitForAnyKey() ;
@@ -581,7 +587,7 @@ int main( int argc, char * argv[] )
 				displayFont( screen, thirdTrueTypeFontFile, 
 					/* convertToDisplay */ true, 
 					/* render cache */ Font::WordCached,
-					std::string( argv[0] ), screenshotWanted ) ;
+					string( argv[0] ), screenshotWanted ) ;
 
 				if ( ! isBatch ) 
 					myOSDL.getEventsModule().waitForAnyKey() ;
@@ -590,7 +596,7 @@ int main( int argc, char * argv[] )
 				displayFont( screen, thirdTrueTypeFontFile, 
 					/* convertToDisplay */ true, 
 					/* render cache */ Font::TextCached,
-					std::string( argv[0] ), screenshotWanted ) ;
+					string( argv[0] ), screenshotWanted ) ;
 
 				if ( ! isBatch ) 
 					myOSDL.getEventsModule().waitForAnyKey() ;
@@ -598,6 +604,108 @@ int main( int argc, char * argv[] )
 			}
 
 		}		
+
+
+
+		// Section for font loading from archive-embedded file.
+
+		LogPlug::info( 
+        	"Now, trying to read a TTF font from an archive-embedded file." ) ;
+
+		EmbeddedFileSystemManager::ArchiveFileLocator.addPath( "../../basic" ) ;
+		
+		const string archiveFilename = 
+			"test-OSDLEmbeddedFileSystem-archive.oar" ;
+		     
+	 	string archiveFullPath ;
+		
+		try
+		{
+			
+			// This is (implicitly) the standard filesystem manager here:
+			archiveFullPath = EmbeddedFileSystemManager::FindArchivePath( 
+				archiveFilename ) ;
+				
+		}
+		catch( const EmbeddedFileSystemManagerException & e )
+		{
+		        
+        	LogPlug::warning( "Test archive '" + archiveFilename 
+            	+ "' not found (" + e.toString() + "), run the "
+                "create-testOSDLEmbeddedFileSystem-archive.sh script "
+                "beforehand to have it ready for this test. Stopping now." ) ;
+                
+        	return 0 ;
+            
+        }
+
+		LogPlug::info( "Test archive '" + archiveFilename 
+        	+ "' found, mounting it." ) ;
+			
+		// Keep the standard manager, to restore it:
+		FileSystemManager & standardFSManager =
+        	FileSystemManager::GetExistingDefaultFileSystemManager() ;
+        
+
+        EmbeddedFileSystemManager & myEmbedddedManager = 		
+        	EmbeddedFileSystemManager::GetEmbeddedFileSystemManager() ;
+        
+ 		myEmbedddedManager.chooseBasicSettings( /* organization name */ "OSDL",
+            /* application name */ "testOSDLTTF" ) ;
+
+		myEmbedddedManager.setWriteDirectory( "." ) ;
+        
+ 		myEmbedddedManager.mount( archiveFullPath ) ;
+
+        // Thus the font will be searched in specified archive:    
+        FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
+        	/* deallocatePreviousIfAny */ false ) ;
+			
+        string targetEmbeddedTTF = "neurochr.ttf" ;
+
+		// Preload implied; platform-independent paths:
+					
+		screen.lock() ;
+		
+		screen.fill( Pixels::Black ) ;
+		
+		screen.unlock() ;
+
+		/*
+		 * In a block to reduce scope and force early deletion, so that
+		 * the corresponding file is closed and the archive can be
+		 * unmounted.
+		 *
+		 */
+		{ 
+		
+			TrueTypeFont embeddedFont( 
+				"test-OSDLEmbeddedFileSystem-archive/" + targetEmbeddedTTF, 
+				/* point size */ 40, /* font index */ 0, 
+				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
+
+			embeddedFont.blitLatin1Text( screen, 80, 50, 
+				"I am a Truetype font", Font::Solid, Pixels::Red ) ;
+
+			embeddedFont.blitLatin1Text( screen, 30, 150, 
+				"read from an", Font::Solid, Pixels::Blue ) ;
+
+			embeddedFont.blitLatin1Text( screen, 130, 250, 
+				"embedded file", Font::Solid, Pixels::Green ) ;
+
+		}
+		
+				
+		screen.update() ;
+		
+		if ( ! isBatch )				
+			myOSDL.getEventsModule().waitForAnyKey() ;
+					
+ 		myEmbedddedManager.umount( archiveFullPath ) ;
+
+		// Will deallocate embedded FS manager; prepare for log writing:
+		FileSystemManager::SetDefaultFileSystemManager( standardFSManager ) ;
+
 
 		
 		LogPlug::info( "Stopping OSDL." ) ;		
@@ -630,7 +738,7 @@ int main( int argc, char * argv[] )
     {
 	
         LogPlug::error( "Standard exception caught: " 
-			 + std::string( e.what() ) ) ;
+			 + string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
     }
