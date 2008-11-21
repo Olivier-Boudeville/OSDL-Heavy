@@ -116,6 +116,7 @@ cd ..
 if [ $? -eq 0 ] ; then
 	echo "OSDL Archive ${archive_target} successfully produced from directory ${archive_directory}:"
 	file ${archive_target}
+	du -sh ${tmp_base}
     /bin/ls -l ${archive_target}
 fi
 
