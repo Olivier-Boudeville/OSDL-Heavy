@@ -37,7 +37,7 @@ sound_file="../../src/doc/web/common/sounds/OSDL.wav"
 
 if [ ! -e "${sound_file}" ] ; then
 
-	echo "Error, no sound file available (${sound_file})." 1>&2
+	echo "Error, sound file not available (${sound_file})." 1>&2
     exit 10
 fi
 
@@ -46,14 +46,41 @@ music_file="../../src/doc/web/common/sounds/welcome-to-OSDL.ogg"
 
 if [ ! -e "${music_file}" ] ; then
 
-	echo "Error, no music file available (${music_file})." 1>&2
+	echo "Error, music file not available (${music_file})." 1>&2
     exit 11
+fi
+
+
+png_image_file="../../src/doc/web/images/Soldier-heavy-purple-small.png"
+
+if [ ! -e "${png_image_file}" ] ; then
+
+	echo "Error, image file not available (${png_image_file})." 1>&2
+    exit 12
+fi
+
+
+jpeg_image_file="../../src/doc/web/images/Rune-stone-small.jpg"
+
+if [ ! -e "${jpeg_image_file}" ] ; then
+
+	echo "Error, image file not available (${jpeg_image_file})." 1>&2
+    exit 13
+fi
+
+
+font_file="../../src/doc/web/common/fonts/neurochr.ttf"
+
+if [ ! -e "${font_file}" ] ; then
+
+	echo "Error, font file not available (${font_file})." 1>&2
+    exit 14
 fi
 
 
 echo "First test file." > ${test_archive_dir}/first-file-to-read.txt
 
-${cp} ${sound_file} ${music_file} ${test_archive_dir}
+${cp} ${sound_file} ${music_file} ${png_image_file} ${jpeg_image_file} ${font_file} ${test_archive_dir}
 
 ${mkdir} ${test_archive_dir}/test-directory
 
