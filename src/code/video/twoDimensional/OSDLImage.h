@@ -223,7 +223,8 @@ namespace OSDL
 					 * @see Surface::loadJPG			 
 					 *
 					 */	
-					static void LoadJPG( Surface & targetSurface, 
+					static void LoadJPG( 
+							Surface & targetSurface, 
 							const std::string & filename,
 							bool blitOnly = false,
 							bool convertToDisplay = true,
