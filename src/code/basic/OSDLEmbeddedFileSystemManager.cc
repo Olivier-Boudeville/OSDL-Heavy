@@ -392,6 +392,7 @@ bool EmbeddedFileSystemManager::existsAsEntry( const string & entryPath )
 
 #if OSDL_USES_PHYSICSFS
 	
+	// Apparently will find files *or* directories, thus only entries:
     return ( PHYSFS_exists( entryPath.c_str() ) != 0 ) ;
          
 #else // OSDL_USES_PHYSICSFS
@@ -539,10 +540,28 @@ bool EmbeddedFileSystemManager::existsAsFileOrSymbolicLink(
 	const string & filename ) const throw( FileLookupFailed )
 {
 
-	throw FileLookupFailed(
-		"EmbeddedFileSystemManager::existsAsFileOrSymbolicLink: "
-		"not to be used with embedded filesystems." ) ;	 	 
-	 
+ 	/*
+     * This is a member method, the embedded filesystem has thus already
+     * been initialized in the EmbeddedFileSystemManager constructor.
+     *
+	 * Here we deem that if an entry exists and is not a directory, then 
+	 * it is a file or a symlink.
+	 *
+     */
+     
+#if OSDL_USES_PHYSICSFS
+
+	return ( ( ::PHYSFS_exists( filename.c_str() ) != 0 )
+		&& ( ::PHYSFS_isDirectory( filename.c_str() ) == 0 ) ) ;
+        		
+#else // OSDL_USES_PHYSICSFS
+
+	throw FileLookupFailed( 
+    	"EmbeddedFileSystemManager::existsAsSymbolicLink failed: "
+    	"no PhysicsFS support available." ) ;
+        
+#endif // OSDL_USES_PHYSICSFS
+
 }
 
 
@@ -1361,6 +1380,7 @@ string EmbeddedFileSystemManager::FindArchivePath(
 	return archiveFullPath ;
 	
 }
+
 
 // Protected section.
 
