@@ -1157,7 +1157,7 @@ void Surface::resize( Length newWidth, Length newHeight, bool scaleContent )
 	Pixels::getCurrentColorMasks( getPixelFormat(), 
 		redMask, greenMask, blueMask, alphaMask ) ;
 		
-	// Create a similar surface whose size is the requested one :
+	// Create a similar surface whose size is the requested one:
 	LowLevelSurface * resized = SDL_CreateRGBSurface( getFlags(), 
 		newWidth, newHeight, getBitsPerPixel(), 
 			redMask, greenMask, blueMask, alphaMask ) ;
@@ -2044,7 +2044,7 @@ bool Surface::blitTo( Surface & targetSurface,
 
 #else // OSDL_USES_SDL
 
-	throw VideoException( "Surface::blitTo failed :"
+	throw VideoException( "Surface::blitTo failed:"
 		"no SDL support available" ) ;
 		
 #endif // OSDL_USES_SDL
@@ -2078,7 +2078,7 @@ Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor,
 
 #else // OSDL_USES_SDL_GFX
 
-	throw VideoException( "Surface::zoom failed :"
+	throw VideoException( "Surface::zoom failed:"
 		"no SDL_gfx support available" ) ;
 		
 #endif // OSDL_USES_SDL_GFX
@@ -2123,7 +2123,7 @@ Surface & Surface::rotoZoom(
 
 #else // OSDL_USES_SDL_GFX
 
-	throw VideoException( "Surface::rotoZoom failed :"
+	throw VideoException( "Surface::rotoZoom failed:"
 		"no SDL_gfx support available" ) ;
 		
 #endif // OSDL_USES_SDL_GFX
@@ -2372,7 +2372,7 @@ void Surface::saveBMP( const std::string & filename, bool overwrite )
 			
 #else // OSDL_USES_SDL
 
-	throw TwoDimensional::ImageException( "Surface::saveBMP failed :"
+	throw TwoDimensional::ImageException( "Surface::saveBMP failed:"
 		"no SDL support available" ) ;
 		
 #endif // OSDL_USES_SDL
@@ -2471,7 +2471,7 @@ void Surface::update() throw( VideoException )
 
 #else // OSDL_USES_SDL
 
-	throw VideoException( "Surface::update failed :"
+	throw VideoException( "Surface::update failed:"
 		"no SDL support available" ) ;
 		
 #endif // OSDL_USES_SDL
@@ -2547,7 +2547,7 @@ void Surface::updateRectangle( Coordinate x, Coordinate y,
 
 #else // OSDL_USES_SDL
 
-	throw VideoException( "Surface::updateRectangle failed :"
+	throw VideoException( "Surface::updateRectangle failed:"
 		"no SDL support available" ) ;
 		
 #endif // OSDL_USES_SDL
@@ -3179,6 +3179,55 @@ Surface & Surface::LoadImage( const std::string & filename,
 	
 }
 
+
+	
+Surface & Surface::LoadPNG( const std::string & filename,
+		bool convertToDisplayFormat, bool convertWithAlpha ) 
+	throw( TwoDimensional::ImageException )
+{
+
+	Surface * toLoad = new Surface() ;
+	
+	try 
+	{
+		toLoad->loadPNG( filename, /* blitOnly */ false, 
+			convertToDisplayFormat, convertWithAlpha ) ;
+	} 
+	catch( const TwoDimensional::ImageException & e )
+	{
+		delete toLoad ;
+		throw ;
+	}
+		
+	return * toLoad ;
+	
+}
+
+
+
+Surface & Surface::LoadJPG( const std::string & filename,
+		bool convertToDisplayFormat, bool convertWithAlpha ) 
+	throw( TwoDimensional::ImageException )
+{
+
+	Surface * toLoad = new Surface() ;
+	
+	try 
+	{
+		toLoad->loadJPG( filename, /* blitOnly */ false, 
+			convertToDisplayFormat, convertWithAlpha ) ;
+	} 
+	catch( const TwoDimensional::ImageException & e )
+	{
+		delete toLoad ;
+		throw ;
+	}
+		
+	return * toLoad ;
+	
+}
+	
+	
 	
 	
 string Surface::InterpretFlags( Flags flags ) throw() 
