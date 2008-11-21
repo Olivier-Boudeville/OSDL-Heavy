@@ -1,7 +1,7 @@
 #include "OSDLImage.h"
 
 #include "OSDLVideo.h"               // for VideoModule
-#include "OSDLUtils.h"               // for getBackendLastError
+#include "OSDLUtils.h"               // for getBackendLastError, DataStream
 #include "OSDLSurface.h"
 #include "OSDLPixel.h"
 
@@ -55,6 +55,15 @@ const string Image::PNMTag  = "PNM" ;
 const string Image::TGATag  = "TGA" ;
 const string Image::XPMTag  = "XPM" ;
 
+
+/**
+ * Implementation notes:
+ *
+ * we are using now SDL_rwops (Utils::DataStream) instead of direct files,
+ * so that images can be read from various sources, included archive-embedded
+ * files.
+ *
+ */
 
 
 ImageException::ImageException( const std::string & reason ) throw():
@@ -219,15 +228,43 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 	LogPlug::debug( "Image::Load: loading image from " + filename ) ;
 #endif // OSDL_DEBUG_IMAGE
 	
+	// We use here the current filesystem manager, whatever it is:
+	
 	if ( ! File::Exists( filename ) )
-		throw ImageException( "Unable to load JPG file " + filename 
-			+ ": file not found." ) ;
-			
+		throw ImageException( "Image::Load: unable to load image file '" 
+			+ filename + "': file not found." ) ;
+	
+	/*
+	 * Was:
+	 		
 	SDL_Surface * image = IMG_Load( filename.c_str() ) ; 	
-		
+	 
+	 */
+	
+	SDL_Surface * image ;
+	 
+	try
+	{
+    
+		// Will be deleted by the IMG_Load_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_Load_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw ImageException( "Image::Load failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
+			
+	}	
+
 	if ( image == 0 ) 
-		throw ImageException( "Unable to load image stored in " + filename 
-			+ " thanks to IMG_Load: " + string( IMG_GetError() ) ) ;   
+		throw ImageException( 
+			"Image::Load: unable to load image stored in '" 
+			+ filename + "': " + string( IMG_GetError() ) ) ;   
 			
 #if OSDL_DEBUG_IMAGE	
 	LogPlug::debug( "Image loaded." ) ;
@@ -398,16 +435,31 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 	if ( ! File::Exists( filename ) )
 		throw ImageException( "Unable to load JPG file " 
 			+ filename + ": file not found." ) ;
-			
-	SDL_Surface * image ;
 	
-	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
-		1, const_cast<char *>( JPGTag.c_str() ) ) ;
+	SDL_Surface * image	;
+		
+	try
+	{
+    
+		// Will be deleted by the IMG_LoadTyped_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_LoadTyped_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true, 
+			const_cast<char *>( JPGTag.c_str() ) ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw ImageException( "Image::LoadJPG failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
+			
+	}	
 					
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load JPG image stored in " + filename 
-			+ " thanks to IMG_Load_RW: "
-			+ string( IMG_GetError() ) ) ;   
+			+ " thanks to IMG_LoadTyped_RW: " + string( IMG_GetError() ) ) ;   
 	
 	
 	/*
@@ -552,13 +604,29 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
-		
-	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
-		1, const_cast<char *>( PNGTag.c_str() ) ) ;
+			
+	try
+	{
+    
+		// Will be deleted by the IMG_LoadTyped_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_LoadTyped_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true, 
+			const_cast<char *>( PNGTag.c_str() ) ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
 	
+		throw ImageException( "Image::LoadPNG failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
+			
+	}	
+
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load PNG image stored in " 
-			+ filename + " thanks to IMG_Load_RW: "
+			+ filename + " thanks to IMG_LoadTyped_RW: "
 			+ string( IMG_GetError() ) ) ;   
 	
 	
@@ -702,16 +770,29 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 			+ filename + ": file not found." ) ;
 			
 	SDL_Surface * image ;
+					
+	try
+	{
+    
+		// Will be deleted by the IMG_LoadTyped_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_LoadTyped_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true, 
+			const_cast<char *>( BMPTag.c_str() ) ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
 	
-	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
-		1, const_cast<char *>( BMPTag.c_str() ) ) ;
+		throw ImageException( "Image::LoadBMP failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
 			
+	}	
+					
 	if ( image == 0 ) 
-		throw ImageException( "Unable to load BMP image stored in " 
-			+ filename 
-			+ " thanks to IMG_Load_RW: "
-			+ string( IMG_GetError() ) ) ;   
-	
+		throw ImageException( "Unable to load BMP image stored in " + filename 
+			+ " thanks to IMG_LoadTyped_RW: " + string( IMG_GetError() ) ) ;   
 	
 	/*
 	 * If conversion to display format is needed, substitute the 
@@ -854,14 +935,28 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 			
 	SDL_Surface * image ;
 	
-	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
-		1, const_cast<char *>( GIFTag.c_str() ) ) ;
+	try
+	{
+    
+		// Will be deleted by the IMG_LoadTyped_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_LoadTyped_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true, 
+			const_cast<char *>( GIFTag.c_str() ) ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
 	
+		throw ImageException( "Image::LoadGIF failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
+			
+	}	
+					
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load GIF image stored in " + filename 
-			+ " thanks to IMG_Load_RW: "
-			+ string( IMG_GetError() ) ) ;   
-	
+			+ " thanks to IMG_LoadTyped_RW: " + string( IMG_GetError() ) ) ;   
 	
 	/*
 	 * If conversion to display format is needed, substitute the 
@@ -1004,14 +1099,29 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 			
 	SDL_Surface * image ;
 		
-	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
-		1, const_cast<char *>( LBMTag.c_str() ) ) ;
+	try
+	{
+    
+		// Will be deleted by the IMG_LoadTyped_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_LoadTyped_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true, 
+			const_cast<char *>( LBMTag.c_str() ) ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw ImageException( "Image::LoadLBM failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
 			
+	}	
+					
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load LBM image stored in " + filename 
-			+ " thanks to IMG_Load_RW: "
-			+ string( IMG_GetError() ) ) ;   
-	
+			+ " thanks to IMG_LoadTyped_RW: " + string( IMG_GetError() ) ) ;   
+		
 	
 	/*
 	 * If conversion to display format is needed, substitute the converted 
@@ -1155,14 +1265,29 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 			
 	SDL_Surface * image ;
 	  
-	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
-		1, const_cast<char *>( PCXTag.c_str() ) ) ;
+	try
+	{
+    
+		// Will be deleted by the IMG_LoadTyped_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_LoadTyped_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true, 
+			const_cast<char *>( PCXTag.c_str() ) ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw ImageException( "Image::LoadPCX failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
 			
+	}	
+					
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load PCX image stored in " + filename 
-			+ " thanks to IMG_Load_RW: "
-			+ string( IMG_GetError() ) ) ;   
-	
+			+ " thanks to IMG_LoadTyped_RW: " + string( IMG_GetError() ) ) ;   
+		
 	
 	/*
 	 * If conversion to display format is needed, substitute the converted 
@@ -1306,13 +1431,28 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 			
 	SDL_Surface * image ;
 		
-	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
-		1, const_cast<char *>( PNMTag.c_str() ) ) ;
+	try
+	{
+    
+		// Will be deleted by the IMG_LoadTyped_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_LoadTyped_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true, 
+			const_cast<char *>( PNMTag.c_str() ) ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
 	
+		throw ImageException( "Image::LoadPNM failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
+			
+	}	
+					
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load PNM image stored in " + filename 
-			+ " thanks to IMG_Load_RW: "
-			+ string( IMG_GetError() ) ) ;   
+			+ " thanks to IMG_LoadTyped_RW: " + string( IMG_GetError() ) ) ;   
 	
 	
 	/*
@@ -1455,13 +1595,28 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 			
 	SDL_Surface * image ;
 		
-	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
-		1, const_cast<char *>( TGATag.c_str() ) ) ;
-		
+	try
+	{
+    
+		// Will be deleted by the IMG_LoadTyped_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_LoadTyped_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true, 
+			const_cast<char *>( TGATag.c_str() ) ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw ImageException( "Image::LoadTGA failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
+			
+	}	
+					
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load TGA image stored in " + filename 
-			+ " thanks to IMG_Load_RW: "
-			+ string( IMG_GetError() ) ) ;   
+			+ " thanks to IMG_LoadTyped_RW: " + string( IMG_GetError() ) ) ;   
 	
 	
 	/*
@@ -1606,13 +1761,28 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 			
 	SDL_Surface * image ;
 		
-	image = IMG_LoadTyped_RW( SDL_RWFromFile( filename.c_str(), "rb" ), 
-		1, const_cast<char *>( XPMTag.c_str() ) ) ;
-		
+	try
+	{
+    
+		// Will be deleted by the IMG_LoadTyped_RW close callback:
+		Ceylan::System::File & imageFile = File::Open( filename ) ;
+
+		image = IMG_LoadTyped_RW( & Utils::createDataStreamFrom( imageFile ),
+			/* automatic free source */ true, 
+			const_cast<char *>( XPMTag.c_str() ) ) ; 	
+	 	
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw ImageException( "Image::LoadXPM failed: unable to load from '" 
+			+ filename + "': " + e.toString() ) ;
+			
+	}	
+					
 	if ( image == 0 ) 
 		throw ImageException( "Unable to load XPM image stored in " + filename 
-			+ " thanks to IMG_Load_RW: "
-			+ string( IMG_GetError() ) ) ;   
+			+ " thanks to IMG_LoadTyped_RW: " + string( IMG_GetError() ) ) ;   
 	
 	
 	/*
@@ -1761,7 +1931,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	png_structp png_ptr ;
 	png_infop info_ptr ;
 
-	png_ptr =::png_create_write_struct( PNG_LIBPNG_VER_STRING, 0, 0, 0 ) ;
+	png_ptr = ::png_create_write_struct( PNG_LIBPNG_VER_STRING, 0, 0, 0 ) ;
 
 	if ( png_ptr == 0 )
 	{  
@@ -1771,7 +1941,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 			+ filename + "' (step 1)" ) ;
 	}
 	
-	info_ptr =::png_create_info_struct( png_ptr ) ;
+	info_ptr = ::png_create_info_struct( png_ptr ) ;
 	
 	if ( info_ptr == 0 )
 	{  
@@ -1782,7 +1952,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	}
 
 
-    if (::setjmp( png_jmpbuf( png_ptr ) ) )
+    if ( ::setjmp( png_jmpbuf( png_ptr ) ) )
 	{  
 		::png_destroy_write_struct( & png_ptr, (png_infopp) 0 ) ;
 		throw TwoDimensional::ImageException( 
@@ -1797,7 +1967,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	 
 	std::ifstream outputFile = open( filename.c_str(), ifstream::out ) ;
 
-	 * could not work since functions like png_init_io wants a FILE *, 
+	 * could not work since functions like png_init_io *wants* a FILE *, 
 	 * except maybe with a clumsy ifstream::rdbuf.
 	 *
 	 * ifstream destructor would automatically close the file on any 
@@ -1805,7 +1975,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	 *
 	 */
 
-	FILE * outputFile =::fopen( filename.c_str(), "wb" ) ;
+	FILE * outputFile = ::fopen( filename.c_str(), "wb" ) ;
 	
 	if ( outputFile == 0 )
 	{  
@@ -1897,8 +2067,8 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	// Now write the pixels, one by one:
 	targetSurface.lock() ;
 	
-	unsigned char ** png_rows = new unsigned char * 
-		[ targetSurface.getHeight() ] ;
+	unsigned char ** png_rows = 
+		new unsigned char * [ targetSurface.getHeight() ] ;
 
     for ( Coordinate y = 0; y < targetSurface.getHeight(); y++ )
 	{
