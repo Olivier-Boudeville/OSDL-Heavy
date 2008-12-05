@@ -21,6 +21,8 @@
 #include "Ceylan.h"                  // for all Ceylan services
 
 
+#include <cstring>                   // for ::memcpy
+
 
 /*
  * Implementation notes.
