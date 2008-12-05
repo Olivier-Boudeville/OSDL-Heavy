@@ -36,10 +36,8 @@ namespace OSDL
 			
 			#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
 			
-			struct ::SDL_Rect ;
-			
 			// The internal actual rectangle object.
-			typedef SDL_Rect LowLevelRect ;
+			typedef ::SDL_Rect LowLevelRect ;
 				
 			#else // OSDL_USES_SDL
 
