@@ -376,7 +376,7 @@ AC_DEFINE([USES_SDL_TTF],[1],[Define to 1 if OSDL is to use SDL_ttf])
 # SDL_image. 
 # Depends on SDL, hence managed first (for the order in OSDL_LIBS).
 
-SDL_IMAGE_RECOMMENDED_VERSION="1.2.6"
+SDL_IMAGE_RECOMMENDED_VERSION="1.2.7"
 AC_SUBST(SDL_IMAGE_RECOMMENDED_VERSION)
 
 SDL_IMAGE_OLDEST_SUPPORTED_VERSION="$SDL_IMAGE_RECOMMENDED_VERSION"
@@ -430,7 +430,7 @@ AC_DEFINE([USES_AGAR],[1],[Define to 1 if OSDL is to use Agar])
 
 # png (libpng). 
 
-LIBPNG_RECOMMENDED_VERSION="1.2.29"
+LIBPNG_RECOMMENDED_VERSION="1.2.33"
 AC_SUBST(LIBPNG_RECOMMENDED_VERSION)
 
 LIBPNG_OLDEST_SUPPORTED_VERSION="$LIBPNG_RECOMMENDED_VERSION"
@@ -896,7 +896,10 @@ if test x$ac_cv_cxx_compiler_gnu = xyes; then
     #    -pedantic-errors: removed to allow Agar's variadic macros
     #    -Wredundant-decls: removed to allow Agar's multiple declarations in
     # same scope
-    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute  -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
+	#    -Wconversion: (temporarily?) removed because of gcc 4.3 complaining
+	# with 'conversion to Ceylan::Uint8 from int may alter its value',
+	# when 'a += b ;' with a and b being both Ceylan::Uint8.
+    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
     if test x$enable_strict_ansi = xyes; then
 		# Do not know what "-D_XOPEN_SOURCE" would change.
         AM_CXXFLAGS="$AM_CXXFLAGS -ansi"
@@ -1297,9 +1300,10 @@ Configuration:
 
   Source code location:   ${srcdir}
   C++ compiler:           ${CXX}
-  C++ compiler flags:     ${CXXFLAGS}
+  C++ compiler flags:     ${AM_CXXFLAGS}
   Host System Type:       ${host}
-  Install path (prefix):  ${prefix}
+  Install path (prefix):  ${OSDL_INSTALL_SHARED_DIR}
 
   See trunk/src/code/OSDLConfig.h for further configuration information.
 ------------------------------------------------------------------------"
+
