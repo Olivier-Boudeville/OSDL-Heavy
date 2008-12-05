@@ -272,7 +272,6 @@ else
 fi
 
 
-
 # Nintendo DS special case:
 if [ $do_target_nds -eq 0 ] ; then
 
@@ -347,10 +346,11 @@ fi
 
 # Prefix section for the OSDL installation.
 
-# If it is needed, then OSDL environment file is being used and OSDL_PREFIX
-# is already set.
-
-
+# At first, OSDL is build thanks to LOANI, which specifie the relevant
+# --prefix option to the configure script.
+# It results in the prefix being stored in OSDL-environment.sh
+# For next builds from scratch (i.e. directly with this autogen.sh), the
+# OSDL-environment.sh will be read, and OSDL_PREFIX will be read and used.
 if [ -n "${OSDL_PREFIX}" ] ; then
 	mkdir -p ${OSDL_PREFIX}
 	PREFIX_OPT="--prefix=$OSDL_PREFIX"
@@ -405,7 +405,7 @@ warnings="--warnings=all"
 
 echo
 echo "Bootstrapping now build system thanks to the autotools"
-echo "      (this may take a while ...)"
+echo "      (this may take a while...)"
 echo
 
 
@@ -482,17 +482,17 @@ generateCustom()
 	
 	if [ $do_clean_prefix -eq 0 ] ; then
 		echo
-		if [ -z "$PREFIX" -o "$PREFIX" = "$HOME" ] ; then
-			echo "(no PREFIX=$PREFIX removed)"
+		if [ -z "$osdl_prefix" -o "$osdl_prefix" = "$HOME" ] ; then
+			echo "(no OSDL prefix removed)"
 		else	
 			returnedChar="y"
-			if [ "$PREFIX" != "$PREFIX_DEFAULT" ] ; then
-				read -p "Do you really want to erase the whole OSDL tree in $PREFIX ? (y/n) [n] " returnedChar 
+			if [ "$osdl_prefix" != "$osdl_prefix_default" ] ; then
+				read -p "Do you really want to erase the whole OSDL tree in $osdl_prefix? (y/n) [n] " returnedChar 
 			fi
 			
 			if [ "$returnedChar" = "y" ] ; then
-				echo " - cleaning PREFIX = $PREFIX"
-				${RM} -rf $PREFIX/include/OSDL $PREFIX/lib/libOSDL* $PREFIX/share/OSDL* 
+				echo " - cleaning OSDL prefix ($osdl_prefix)"
+				${RM} -rf $osdl_prefix/include/OSDL $osdl_prefix/lib/libOSDL* $osdl_prefix/share/OSDL* 
 				echo "(prefix cleaned)"
 			fi
 		fi	
@@ -619,7 +619,7 @@ generateCustom()
 	echo " - generating 'configure' script"
  	execute autoconf $warnings $force $verbose
 
-	# Add GNU gettext (autopoint) ?
+	# Add GNU gettext (autopoint)?
 	
 	if [ "$do_stop_after_configure_generation" -eq 0 ] ; then
 		echo
