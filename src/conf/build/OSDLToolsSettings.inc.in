@@ -69,21 +69,21 @@ zlib_win_MD5="abbd0f2b456206da5e3ffd179324413a"
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
-# Actually 1.2.29 (with config script):
+# Actually 1.2.33 (defined in configure-template.ac):
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_MD5="f588cb4ee39e3a333604096f937ea157"
+libpng_MD5="0532c28ba1b17ee2095ad50731c2c75c"
 
 libpng_win_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
-libpng_win_archive_VERSION="1229"
+libpng_win_archive_VERSION="1233"
 libpng_win_ARCHIVE="lpng${libpng_win_archive_VERSION}.zip"
 libpng_win_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_win_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_win_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_win_MD5="d6d25430b7847340da3b22aeb82f0344"
+libpng_win_MD5="c90ba3c0c966570b3bf125e8a45f0fb1"
 
 
 # TIFF library (libtiff.so): http://www.remotesensing.org/libtiff/
@@ -99,17 +99,18 @@ libtiff_MD5="xxx"
 
 # SDL_image: http://www.libsdl.org/projects/SDL_image/release/
 
+# Actually 1.2.7 (defined in configure-template.ac):
 SDL_image_VERSION="@SDL_IMAGE_RECOMMENDED_VERSION@"
 SDL_image_ARCHIVE="SDL_image-${SDL_image_VERSION}.tar.gz"
 SDL_image_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
 SDL_image_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_image_MD5="b866dc4f647517bdaf57f6ffdefd013e"
+SDL_image_MD5="a729ff61f74f0a45ec7fe36354cf938e"
 
 SDL_image_win_VERSION="@SDL_IMAGE_RECOMMENDED_VERSION@"
 SDL_image_win_ARCHIVE="SDL_image-${SDL_image_VERSION}.zip"
 SDL_image_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
 SDL_image_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_image_win_MD5="5eb3226f719456c26e119d0807d89ec9"
+SDL_image_win_MD5="8bd40aaac6ed10ae2bc4053d418be3be"
 
 
 
@@ -202,6 +203,7 @@ freetype_osx_precompiled_MD5="xxx"
 
 # Sources.
  
+# Actually 2.0.9 (defined in configure-template.ac):
 SDL_ttf_VERSION="@SDL_TTF_RECOMMENDED_VERSION@"
 SDL_ttf_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}.tar.gz"
 SDL_ttf_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
@@ -287,6 +289,7 @@ SDL_mixer_win_MD5="b7a7f360192c017a23a526cd6d681089"
 
 # Guichan (libguichan.so): http://guichan.sourceforge.net
 
+# Not used currently anymore, preferring Agar instead.
 guichan_VERSION="0.8.1"
 guichan_ARCHIVE="guichan-${guichan_VERSION}.tar.gz"
 guichan_DOWNLOAD_LOCATION="http://guichan.googlecode.com/files"
@@ -302,6 +305,7 @@ guichan_win_MD5="$guichan_MD5"
 
 # Agar (libag_core.so/libag_gui.so): http://libagar.org
 
+# Actually 1.3.3 (defined in configure-template.ac):
 Agar_VERSION="@AGAR_RECOMMENDED_VERSION@"
 Agar_ARCHIVE="agar-${Agar_VERSION}.tar.gz"
 Agar_DOWNLOAD_LOCATION="http://stable.hypertriton.com/agar"
@@ -315,7 +319,7 @@ Agar_win_ALTERNATE_DOWNLOAD_LOCATION="$Agar_ALTERNATE_DOWNLOAD_LOCATION"
 Agar_win_MD5="6109e452f6e6be045f3c706facb55ff0"
 
 
-# PhysicsFS : http://icculus.org/physfs/
+# PhysicsFS: http://icculus.org/physfs/
 
 PhysicsFS_VERSION="@PHYSICSFS_RECOMMENDED_VERSION@"
 PhysicsFS_ARCHIVE="physfs-${PhysicsFS_VERSION}.tar.gz"
@@ -488,6 +492,7 @@ Ceylan_win_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourcef
 Ceylan_win_MD5="(blanked)"
 
 Ceylan_SVN_SERVER=ceylan.svn.sourceforge.net
+
 
 
 
