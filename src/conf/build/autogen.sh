@@ -346,7 +346,7 @@ fi
 
 # Prefix section for the OSDL installation.
 
-# At first, OSDL is build thanks to LOANI, which specifie the relevant
+# At first, OSDL is built thanks to LOANI, which specifies the relevant
 # --prefix option to the configure script.
 # It results in the prefix being stored in OSDL-environment.sh
 # For next builds from scratch (i.e. directly with this autogen.sh), the
