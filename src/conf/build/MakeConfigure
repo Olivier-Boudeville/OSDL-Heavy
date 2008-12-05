@@ -1,4 +1,4 @@
-# Designates OSDL/trunk :
+# Designates OSDL/trunk:
 TOP = ../../..
 
 
@@ -6,13 +6,13 @@ TOP = ../../..
 # it is designed to be used by 'autogen.sh'
 
 
-# For all static settings such as version numbers, mail support, etc. :
-SETTINGS_FILE := $(TOP)/src/conf/OSDLSettings.inc
+# For all static settings such as version numbers, mail support, etc.:
+SETTINGS_FILE:= $(TOP)/src/conf/OSDLSettings.inc
 include $(SETTINGS_FILE)
 
 # The substitute script is expected to be found in a relative Ceylan build
 # tree (probably brought back by LOANI), not in an installed location.
-# (note : this can be overriden if needed, as autogen.sh does)
+# (note: this can be overriden if needed, as autogen.sh does)
 CEYLAN_TOP = $(TOP)/../../../ceylan/Ceylan/trunk
 SUBSTITUTE = $(CEYLAN_TOP)/src/code/scripts/shell/substitute.sh
 
@@ -27,13 +27,13 @@ CONFIGURE_GENERATED_FILE = $(TOP)/configure.ac
 
 CONFIGURE_SCRIPTS_BASE_URL = \
 http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/config/config
-# Was/will be : ftp://ftp.gnu.org/gnu/config
+# Was/will be: ftp://ftp.gnu.org/gnu/config
 
 DOWNLOADED_SCRIPTS = config.guess config.sub
 
 
 
-all : config-files
+all: config-files
 
 
 config-files: $(CONFIGURE_GENERATED_FILE)
