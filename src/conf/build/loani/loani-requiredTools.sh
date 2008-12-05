@@ -2073,13 +2073,13 @@ generateSDL_image_win_precompiled()
 	
 	printItem "configuring"
 	
-	# Nothing to do !
+	# Nothing to do!
 	
 	printOK	
 
 	printItem "building"
 	
-	# Nothing to do !
+	# Nothing to do!
 
 	printOK
 
@@ -5028,7 +5028,11 @@ cleanSDL_ttf_win()
 
 
 ################################################################################
-# GNU Libtool 
+# GNU Libtool
+# Note that this will be a version of libtool specifically patched, so
+# that it stops always linking libraries with a rpath set.
+# Otherwise this would prevent distributing prebuilt OSDL libraries.
+# See http://wiki.debian.org/RpathIssue for more informations.
 ################################################################################
 
 
@@ -5105,7 +5109,8 @@ generatelibtool()
 	if [ -n "$prefix" ] ; then	
 	{
 	
-		libtool_PREFIX=${prefix}/libtool-${libtool_VERSION}
+		# Warns that this is a patched version:
+		libtool_PREFIX=${prefix}/libtool-${libtool_VERSION}-no-rpath
 		
 		# configure calls libltdl configure and loose env.
 		old_path=$PATH
@@ -5128,7 +5133,6 @@ generatelibtool()
 	        export CXX
 			
 		fi
-
          
 		setBuildEnv ./configure --prefix=${libtool_PREFIX} --exec-prefix=${libtool_PREFIX} --enable-ltdl-install
 		
@@ -5197,8 +5201,7 @@ generatelibtool()
 
 
 	printItem "installing"
-	
-	
+		
 	if [ -n "$prefix" ] ; then	
 	{		
 		${MKDIR} -p ${libtool_PREFIX}
@@ -5232,10 +5235,6 @@ generatelibtool()
 
 		setBuildEnv ${MAKE} install prefix=${libtool_PREFIX} 
 		
-		#if [ $? -ne 0 ] ; then 
-		#	WARNING "First libtool install failed"
-		#	${MAKE} install
-		#fi		
 		
 	} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -5243,13 +5242,36 @@ generatelibtool()
 		setBuildEnv ${MAKE} install 
 	} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
-		
+
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to install libtool to libtool-${libtool_VERSION}."
-		WARNING "Step on failure disabled"
-		#exit 13
-	fi	
+		ERROR "Unable to install libtool."
+		exit 13
+	fi
+		
+	# Patching only if a prefix is used (not installing a modified
+	# libtool in system tree):
+	
+	if [ -n "$prefix" ] ; then	
+	{		
+	
+		target_script="${libtool_PREFIX}/bin/libtool"
+		
+		if [ ! -f "${target_script}" ] ; then
+			echo
+			ERROR "Unable to patch libtool."
+			exit 14
+		fi
+		
+		# Largely inspired from http://wiki.debian.org/RpathIssue:
+		${CAT} "${target_script}" | sed 's|^hardcode_libdir_flag_spec=.*$|hardcode_libdir_flag_spec="-DLOANI_PATCHED_LIBTOOL_FOR_RPATH"|1' > libtool-patched
+		${MV} -f libtool-patched "${target_script}"
+		${CHMOD} 755 "${target_script}"		
+		
+		
+	} 1>>"$LOG_OUTPUT" 2>&1		
+	fi
+	
 	
 	printOK
 
@@ -5330,7 +5352,7 @@ preparewin_pthread()
         
 	printItem "extracting"
 	
-	# Nothing to do !
+	# Nothing to do!
 	
 	printOK
 	
@@ -5344,13 +5366,13 @@ generatewin_pthread()
 	
 	printItem "configuring"
 
-	# Nothing to do !
+	# Nothing to do!
         
 	printOK	
 	
 	printItem "building"
 	
-	# Nothing to do !
+	# Nothing to do!
        
 
 	printItem "installing"
