@@ -260,7 +260,7 @@ Following first-order dependencies are selected:
 	
 	<li><a href="http://sources.redhat.com/pthreads-win32/" target="_blank">pthreads Win32</a>: a way to have Windows being POSIX-compliant for threads (not used currently)</li>	
 	
-	<li><a href="http://www.gnu.org/software/libtool/libtool.html" target="_blank">libtool</a>: GNU tool to perform builds in a cross-platform way (UNIX only)</li>	
+	<li><a href="http://www.gnu.org/software/libtool/libtool.html" target="_blank">libtool</a>: GNU tool to perform builds in a cross-platform way (UNIX only). Note that this libtool version will be specifically patched, so that it stops linking libraries with the <code>rpath</code> set. Otherwise this would prevent distributing prebuilt OSDL libraries (see <a href="http://wiki.debian.org/RpathIssue" target="_blank">this link</a> for further informations)</li>	
 	
     <li><a href="http://ceylan.sourceforge.net/" target="_blank">Ceylan</a>: our generic all-purpose C++ library</li>
 		
@@ -978,7 +978,7 @@ We hope you will enjoy using LOANI and OSDL !
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Sunday, October 12, 2008</em>	
+    <em>Last update: Tuesday, November 25, 2008</em>	
   </center>
 </body>
 </html>
