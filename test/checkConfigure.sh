@@ -1,14 +1,14 @@
 #!/bin/sh
 
-USAGE="Usage :"`basename $0`"[diff tool] : compares current configure.ac with the ones suggested first by autoscan, then by autoupdate."
+USAGE="Usage:"`basename $0`"[diff tool]: compares current configure.ac with the ones suggested first by autoscan, then by autoupdate."
 
-# Debug mode activated iff equal to true (0) :
+# Debug mode activated iff equal to true (0):
 debug_mode=1
 
 DEBUG()
 {
 	if [ $debug_mode -eq 0 ] ; then
-		echo "Debug : $*"
+		echo "Debug: $*"
 	fi	
 }
 
@@ -20,7 +20,7 @@ DEBUG "COMMAND = $COMMAND"
 
 LAUNCHDIR=`pwd`
 
-# Always start from 'test' directory :
+# Always start from 'test' directory:
 cd `dirname $COMMAND`
 
 
@@ -86,9 +86,9 @@ CURRENT_CONFIGURE_FILE=configure.ac
 DEBUG "Being in "`pwd`" directory"
 
 echo
-echo "  + comparing current configure.ac with the one autoscan would suggest :"
+echo "  + comparing current configure.ac with the one autoscan would suggest:"
 
-DEBUG "Launching : $AUTOSCAN $AUTOSCAN_OPT"
+DEBUG "Launching: $AUTOSCAN $AUTOSCAN_OPT"
 $AUTOSCAN $AUTOSCAN_OPT > $AUTOSCAN_LOG 2> $AUTOSCAN_ERR
 RES=$?
 
@@ -97,14 +97,14 @@ if [ $RES -eq 0 ] ; then
 	#echo "Autoscan succeeded"
 	mv -f configure.scan $RUNNINGDIR/$CONF_SCANNED
 	cd $RUNNINGDIR
-	# Left file is current configure.ac, right one is the suggested one :
+	# Left file is current configure.ac, right one is the suggested one:
 	if diff $CURRENT_CONFIGURE_FILE $CONF_SCANNED 1>/dev/null 2>&1; then
 		echo "      (current configure.ac and the one suggested by autoscan are the same)"
 	else
 		$DIFF_TOOL $CURRENT_CONFIGURE_FILE $CONF_SCANNED
 	fi	
 else
-	echo "Error, Autoscan exited on failure : " 1>&2
+	echo "Error, Autoscan exited on failure: " 1>&2
 	more $AUTOSCAN_ERR
 	echo
 	exit 10
@@ -117,9 +117,9 @@ DEBUG "Being in "`pwd`" directory"
 
 echo
 echo
-echo "  + comparing current configure.ac with the one autoupdate would suggest :"
+echo "  + comparing current configure.ac with the one autoupdate would suggest:"
 
-DEBUG "Launching : $AUTOUPDATE $AUTOUPDATE_OPT"
+DEBUG "Launching: $AUTOUPDATE $AUTOUPDATE_OPT"
 CONF_UPDATED=$RUNNINGDIR/configure-from-autoupdate.ac
 
 CONF_BACKUP=configure-original.ac
@@ -134,15 +134,15 @@ mv $CONF_BACKUP $CURRENT_CONFIGURE_FILE
 cd $RUNNINGDIR
 
 if [ $RES -eq 0 ] ; then
-	# Autoupdate succeeded :
-	# Left file is current configure.ac, right one is the suggested one :
+	# Autoupdate succeeded:
+	# Left file is current configure.ac, right one is the suggested one:
 	if diff $CURRENT_CONFIGURE_FILE $CONF_UPDATED 1>/dev/null 2>&1; then
 		echo "      (current configure.ac and the one suggested by autoupdate are the same)"
 	else
 		$DIFF_TOOL configure.ac $CONF_UPDATED
 	fi
 else
-	echo "Error, Autoupdate exited on failure : " 1>&2
+	echo "Error, Autoupdate exited on failure: " 1>&2
 	more $AUTOUPDATE_ERR
 	echo
 	exit 11
