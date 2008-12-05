@@ -18,6 +18,7 @@ using namespace Ceylan::Log ;         // for LogPlug
 // for time units and calls (ex: Millisecond, atomicSleep):
 using namespace Ceylan::System ;      
 
+
 using namespace OSDL ;
 using namespace OSDL::Events ;
 using namespace OSDL::Rendering ;
@@ -534,13 +535,19 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 	else
 		buf << ". Using user-specified idle callback" ;
 	
+	
 	if ( _idleCallbackData )
+	{
+	
 		if ( _idleCallback )
 			buf << ", callback data has been set as well." ;
 		else
 			buf << ", callback data has been set, "
 				" whereas it is not used by default idle callback (abnormal)." ;
-
+				
+	}
+	
+	
 	buf << ". The estimated upper-bound for idle callback duration is "
 		+ Ceylan::toString( _idleCallbackMaxDuration )
 		+ " microseconds" ;
