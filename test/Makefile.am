@@ -26,3 +26,4 @@ clean-local:
 	-@/bin/rm -rf `find . -name 'testOSDL*-logs'`
 	-@/bin/rm -f granularity.dat
 	@( cd cross-tests && $(MAKE) clean )
+
