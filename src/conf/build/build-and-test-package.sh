@@ -2,6 +2,9 @@
 
 USAGE="`basename $0` : builds and installs the OSDL library from a just-extracted distributed package, and builds, installs and runs the test suite against this install."
 
+# Note: one should use LOANI instead, so that dependencies are managed.
+
+
 SUFFIX=`hostname`-`date '+%Y%m%d-%Hh%M'`
 OSDL_INSTALL_ROOT=$HOME/tmp-osdl-install-$SUFFIX
 OSDL_INSTALL_TEST_ROOT=$HOME/tmp-osdl-test-install-$SUFFIX
