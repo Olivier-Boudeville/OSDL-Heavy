@@ -1,5 +1,5 @@
 
-SUBDIRS=m4 loani
+SUBDIRS = m4 loani
 
 .PHONY: all check-configure download-config-scripts    \
 	release blank-MD5 links mktmpdir updateREADME test \
@@ -31,7 +31,7 @@ DIFF_TOOL    = `which tkdiff 2>/dev/null`
 CONFIGURE_FILE = configure.ac
 
 CONFIGURE_SCRIPTS_BASE_URL = http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/config/config
-# Was/will be : ftp://ftp.gnu.org/gnu/config
+# Was/will be: ftp://ftp.gnu.org/gnu/config
 
 DOWNLOADED_HELPERS = config.guess config.sub
 
@@ -74,6 +74,4 @@ clean-download:
 	
 	
 real-clean: clean-local clean-download
-	
-		
 		
