@@ -6,7 +6,7 @@ TOP = .
 
 # SETTINGS_FILE and SUBSTITUTE must have been set by the caller.
 
-# For all OSDL settings such as version numbers, mail support, etc. :
+# For all OSDL settings such as version numbers, mail support, etc.:
 include $(SETTINGS_FILE)
 
 
@@ -19,19 +19,19 @@ CONFIGURE_GENERATED_FILE = configure.ac
 
 CONFIGURE_SCRIPTS_BASE_URL = \
 http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/config/config
-# Was/will be : ftp://ftp.gnu.org/gnu/config
+# Was/will be: ftp://ftp.gnu.org/gnu/config
 
 DOWNLOADED_SCRIPTS = config.guess config.sub
 
 
 
-all : config-files
+all: config-files
 
 
 config-files: $(CONFIGURE_GENERATED_FILE)
 
 
-# ST_OSDL_TESTED_VERSION will be OSDL_LIBTOOL_VERSION :
+# ST_OSDL_TESTED_VERSION will be OSDL_LIBTOOL_VERSION:
 $(CONFIGURE_GENERATED_FILE): $(CONFIGURE_SOURCE_FILE) $(SETTINGS_FILE)
 	@echo "$(compile_style)    Generating $@$(default_style)"
 	@echo "# Do not modify this file !" > $@
@@ -88,3 +88,4 @@ clean-download:
 	
 	
 real-clean: clean clean-download
+
