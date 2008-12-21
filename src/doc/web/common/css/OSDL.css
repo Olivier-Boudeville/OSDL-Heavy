@@ -2,10 +2,10 @@
 /* Standard Cascading Style Sheet File */
 
 
-/* Created : 24 May 2003 */
+/* Created: 24 May 2003 */
 
-/* Author : Olivier Boudeville (olivier.boudeville@online.fr) */
-/* Updated : Michal Guerquin (michalg@gmail.com) */
+/* Author: Olivier Boudeville (olivier.boudeville@online.fr) */
+/* Updated: Michal Guerquin (michalg@gmail.com) */
 
 
 
@@ -13,7 +13,7 @@ div.box {
   color: #DADADA;
   background: #303030; 
   border: solid;
-  padding : 5px;
+  padding: 5px;
   border-width: thin ;
   text-align: left;
 }
@@ -116,7 +116,7 @@ h3 {
 
 
 h4 {
-  color : #AAAAAA;
+  color: #AAAAAA;
   font-size: 21px;
   margin-left: 10%;
   margin-right: 7%;
@@ -125,7 +125,7 @@ h4 {
 
 
 h5 {
-  color : #808080;
+  color: #808080;
   font-size: 16px;
   margin-left: 15%;
   margin-right: 15%;
@@ -136,7 +136,7 @@ h5 {
 
 
 h6 {
-  color : #AAAAAA;
+  color: #AAAAAA;
   font-size: 15px;
   margin-left: 30%;
   margin-right: 5%;
@@ -147,7 +147,7 @@ h6 {
 
 
 h7 {
-  color : #888888;
+  color: #888888;
   font-size: 15px;
   margin-left: 10%;
   margin-right: 5%;
@@ -263,8 +263,6 @@ pre {
 table {
   color: #DADADA;  
   margin: 5px;
-  margin-top: 2%;
-  margin-bottom: 2%;    
   border: solid; 
   border-width: thin; 
   border-collapse: separate;
@@ -287,7 +285,7 @@ table p, table dl, ol p, ul p, dl p, blockquote p, .note p, .note ul, .note ol, 
 
 
 tr {
-   background : #000000;
+   background: #000000;
    font-size: 15px;
    border:thin;
 }
@@ -295,7 +293,7 @@ tr {
 
 th { 
    color: #EFEFEF;
-   background : #000000;
+   background: #000000;
    font-weight: bold;
    font-size: 19px;
    text-align: center;
@@ -303,7 +301,7 @@ th {
 
 
 td {
-   background : #000000; 
+   background: #000000; 
    font-size: 15px;
 }
 
@@ -391,7 +389,7 @@ code {
   font-size: 17px;
   font-weight: normal;   
   font-family: Courier, serif;
-  /* disabled :
+  /* disabled:
   border-left-style: solid;
   border-left-width: 3px;
   border-right-style: none;
