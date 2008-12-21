@@ -334,9 +334,9 @@ AC_SUBST(LOANI_MAILING_LIST)
 SDL_GFX_MAJOR_VERSION="2.0"
 AC_SUBST(SDL_GFX_MAJOR_VERSION)
 
-#SDL_GFX_MINOR_VERSION="17"
+SDL_GFX_MINOR_VERSION="17"
 # Downgraded due to build problems with Visual Express 2008:
-SDL_GFX_MINOR_VERSION="16"
+#SDL_GFX_MINOR_VERSION="16"
 AC_SUBST(SDL_GFX_MINOR_VERSION)
 
 SDL_GFX_RECOMMENDED_VERSION="$SDL_GFX_MAJOR_VERSION.$SDL_GFX_MINOR_VERSION"
@@ -899,7 +899,9 @@ if test x$ac_cv_cxx_compiler_gnu = xyes; then
 	#    -Wconversion: (temporarily?) removed because of gcc 4.3 complaining
 	# with 'conversion to Ceylan::Uint8 from int may alter its value',
 	# when 'a += b ;' with a and b being both Ceylan::Uint8.
-    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
+	#    -Wfloat-equal: (temporarily?) removed because of Agar 1.3.3 having
+	# float comparisons in headers (ex: in agar/gui/widget.h)
+    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
     if test x$enable_strict_ansi = xyes; then
 		# Do not know what "-D_XOPEN_SOURCE" would change.
         AM_CXXFLAGS="$AM_CXXFLAGS -ansi"
