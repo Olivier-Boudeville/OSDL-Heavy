@@ -2,7 +2,7 @@
 
 USAGE="
 
-Usage: "`basename $0`" [ -h | --help ] [ --nds ] [ --with-osdl-env-file <filename> || --ceylan-install-prefix <path> ] [ -n | --no-build ] [ -c | --chain-test ] [ -g | --generate-tools] [ -f | --full ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ]: (re)generates all the autotools-based build system.
+Usage: "`basename $0`" [ -h | --help ] [ --nds ] [ --with-osdl-env-file <filename> || --ceylan-install-prefix <path> ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ]: (re)generates all the autotools-based build system.
 
 	--nds: cross-compile the OSDL library so that it can be run on the Nintendo DS (LOANI installation of all prerequesites and of the DS cross-build chain is assumed)
 	--with-osdl-env-file <filename>: specify where the OSDL environment file (OSDL-environment.sh) should be read
@@ -103,11 +103,6 @@ $USAGE" 1>&2
 		token_eaten=0
 	fi
 
-	if [ "$1" = "-g" -o "$1" = "--generate-tools" ] ; then
-		do_chain_tests=0		
-		token_eaten=0
-	fi
-	
 	if [ "$1" = "-f" -o "$1" = "--full" ] ; then
 		do_chain_tests=0
 		do_generate_tools=0	
@@ -621,7 +616,7 @@ generateCustom()
 
 	# Add GNU gettext (autopoint)?
 	
-	if [ "$do_stop_after_configure_generation" -eq 0 ] ; then
+	if [ $do_stop_after_configure_generation -eq 0 ] ; then
 		echo
 		echo "Now you are ready to run $RUNNING_DIR/$SOURCE_OFFSET/configure"
 		return
@@ -682,7 +677,7 @@ generateCustom()
 		cd test
 	 	execute ./autogen.sh --with-osdl-env-file $osdl_environment_file
 		cd ..
-	elif [ "$do_only_prepare_dist" -eq 0 ] ; then
+	elif [ $do_only_prepare_dist -eq 0 ] ; then
 		echo
 		echo " - generating configure for test suite"
 		cd test
