@@ -137,8 +137,27 @@ namespace OSDL
 				virtual void setCursorPosition( Video::Coordinate x, 
 					Video::Coordinate y ) const throw() ;
 				 
+				
+				/**
+				 * Returns whether the cursor of this mouse is visible.
+				 *
+				 * @return true iff the cursor is visible.
+				 *
+				 */ 
+				virtual bool getCursorVisibility() throw() ;
+
 				 
+				/**
+				 * Sets the visibility for the cursor of this mouse.
+				 *
+				 * @param on cursor rendering will be enabled iff true.
+				 *
+				 * @note The mouse cursor starts as visible.
+				 *
+				 */ 
+				virtual void setCursorVisibility( bool on ) throw() ;
 				 
+				
 				
 				// Buttons & wheels section.
 				
