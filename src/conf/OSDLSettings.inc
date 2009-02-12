@@ -38,11 +38,12 @@ UNIX_PROJECT_NAME=osdl
 
 # OSDL version numbers for current release.
 
-# Actuel release date.
+# Actual release date.
 
 # Full actual release date (not generated for better control).
+# (quote protection is necessary)
 # (tag: ST_RELEASE_DATE)
-OSDL_RELEASE_DATE="Friday, March 30, 2007"
+OSDL_RELEASE_DATE='"Thursday, February 5, 2009"'
 
 # Usual versioning. 
 
