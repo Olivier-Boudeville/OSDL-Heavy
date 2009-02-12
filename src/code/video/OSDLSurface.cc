@@ -14,6 +14,8 @@
 #include "OSDLPolygon.h"             // for drawPie
 #include "OSDLWidget.h"              // for Widget
 #include "OSDLUtils.h"               // for getBackendLastError
+#include "OSDLGLTexture.h"           // for GLTexture
+
 
 #include "Ceylan.h"                  // for Ceylan::Uint8, etc.
 
@@ -31,11 +33,15 @@
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+#ifdef OSDL_HAVE_OPENGL
+#include "SDL_opengl.h"              // for glBegin, etc.
+#endif // OSDL_HAVE_OPENGL
+
+
 #if OSDL_USES_SDL_GFX
-
 #include "SDL_rotozoom.h"            // for zoom, rotozoom
-
 #endif // OSDL_USES_SDL_GFX
+
 
 
 // To protect LoadImage:
@@ -932,13 +938,32 @@ bool Surface::clear() throw( VideoException )
 
 	if ( _displayType == OpenGLScreenSurface )
 	{
+
+#ifdef OSDL_USES_OPENGL
 	
+		/*
+		 * The clearViewport() method could have been used instead, but it would
+		 * require that an OpenGL screen surface had a pointer to the
+		 * (VideoModule-owned) OpenGL context (not the case currently).
+		 *
+		 */ 
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ) ;
+
+		return true ;
 		
+#else // OSDL_USES_OPENGL
+
+		throw VideoException( "Surface::clear: no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+ 		
+	}
+	else
+	{
+	
+		return fill( /* clear color */ Pixels::Black ) ;
 		
 	}
-	
-	
-	return fill( /* clear color */ Pixels::Black ) ;
 	
 }
 
@@ -2053,6 +2078,49 @@ bool Surface::blitTo( Surface & targetSurface,
 	
 	
 	
+void Surface::mapAtCenter( const OpenGL::GLTexture & texture ) 
+	const throw( VideoException )
+{
+
+#if OSDL_USES_OPENGL
+
+	Length firstAbscissa  = ( getWidth()  - texture.getWidth() ) / 2 ;
+	Length secondAbscissa = firstAbscissa + texture.getWidth() ;
+	
+	Length firstOrdinate  = ( getHeight() - texture.getHeight() ) / 2 ;
+	Length secondOrdinate = firstOrdinate + texture.getHeight() ;
+	
+	
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( firstAbscissa, firstOrdinate ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( firstAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( secondAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( secondAbscissa, firstOrdinate ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::mapAtCenter failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+		
+	
 Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor, 
 		Ceylan::Maths::Real ordinateZoomFactor,	bool antialiasing ) 
 	const throw( VideoException )
@@ -2451,7 +2519,7 @@ void Surface::update() throw( VideoException )
 			
 			/*
 			 * Should a different call be done if OpenGL without double
-			 * buffering is used ? Probably no.
+			 * buffering is used? Probably no.
 			 *
 			 * SDL_GL_SwapBuffers should imply a glFlush(), but some reported
 			 * adding one glFlush causes a miraculous recovery:
