@@ -131,12 +131,14 @@ Video::Coordinate Mouse::getCursorOrdinate() const throw()
 }
 
 
+
 void Mouse::setCursorPosition( const Point2D & newPosition ) const throw()
 {
 
 	setCursorPosition( newPosition.getX(), newPosition.getY() ) ;
 		
 }
+
 
 
 void Mouse::setCursorPosition( Coordinate x, Coordinate y ) const throw()
@@ -146,6 +148,35 @@ void Mouse::setCursorPosition( Coordinate x, Coordinate y ) const throw()
 
 	SDL_WarpMouse( static_cast<Ceylan::Uint16>( x ), 
 		static_cast<Ceylan::Uint16>( y ) ) ;
+
+#endif // OSDL_USES_SDL
+		
+}
+
+
+
+bool Mouse::getCursorVisibility() throw()
+{
+
+#if OSDL_USES_SDL
+
+	return ( SDL_ShowCursor( SDL_QUERY ) == SDL_ENABLE ) ;
+
+#endif // OSDL_USES_SDL
+		
+}
+
+
+
+void Mouse::setCursorVisibility( bool on ) throw()
+{
+
+#if OSDL_USES_SDL
+
+	if ( on )
+		SDL_ShowCursor( SDL_ENABLE ) ;
+	else
+		SDL_ShowCursor( SDL_DISABLE ) ;
 
 #endif // OSDL_USES_SDL
 		
