@@ -53,7 +53,7 @@ $(CONFIGURE_GENERATED_FILE): $(CONFIGURE_SOURCE_FILE) $(SETTINGS_FILE)
 	@$(SUBSTITUTE) ST_UNIX_PROJECT_NAME     $(UNIX_PROJECT_NAME)   $@
 	@$(SUBSTITUTE) ST_MAJOR_VERSION         $(OSDL_MAJOR_VERSION)  $@
 	@$(SUBSTITUTE) ST_MINOR_VERSION         $(OSDL_MINOR_VERSION)  $@
-	@$(SUBSTITUTE) ST_RELEASE	        $(OSDL_RELEASE)        $@
+	@$(SUBSTITUTE) ST_RELEASE	        	$(OSDL_RELEASE)        $@
 	@$(SUBSTITUTE) ST_DATE_OF_RELEASE       $(OSDL_RELEASE_DATE)   $@
 	@$(SUBSTITUTE) ST_VERSION               $(OSDL_VERSION)        $@
 	@$(SUBSTITUTE) ST_FULL_VERSION          $(OSDL_FULL_VERSION)   $@
@@ -71,12 +71,12 @@ check-configure:
 	@$(MAKE) -s $(CONFIGURE_GENERATED_FILE)
 	@echo "$(make_style)    Comparing configure files$(default_style)"
 	@$(srcdir)/checkConfigure.sh $(DIFF_TOOL)
-	@echo "$(command_style)    Comparison finished,\
+	@echo "$(command_style)    Comparison finished, \
 	$(CONFIGURE_SOURCE_FILE) may be updated now."
 
 
 download-config-scripts: clean-download
-	@echo "$(make_style)    Downloading latest configure helper\
+	@echo "$(make_style)    Downloading latest configure helper \
 	scripts$(default_style)"
 	@for f in $(DOWNLOADED_SCRIPTS); do \
 	wget --quiet $(CONFIGURE_SCRIPTS_BASE_URL)/$$f ; done
@@ -84,19 +84,19 @@ download-config-scripts: clean-download
 
 	
 clean:
-	@echo "$(clean_style)    Cleaning generated config-related\
+	@echo "$(clean_style)    Cleaning generated config-related \
 	files$(default_style)"
-	-@rm -f autoscan*.log autoscan.err configure-from-autoscan.ac\
-	configure-from-autoupdate.ac $(CONFIGURE_GENERATED_FILE)\
-	$(TOP)/$(CONFIGURE_GENERATED_FILE) ltmain.sh missing install-sh\
-	m4/aclocal.m4 $(TOP)/aclocal.m4 $(TOP)/configure $(TOP)/config.log\
-	$(TOP)/configure.scan $(TOP)/config.status $(TOP)/Makefile\
+	-@rm -f autoscan*.log autoscan.err configure-from-autoscan.ac \
+	configure-from-autoupdate.ac $(CONFIGURE_GENERATED_FILE) \
+	$(TOP)/$(CONFIGURE_GENERATED_FILE) ltmain.sh missing install-sh \
+	m4/aclocal.m4 $(TOP)/aclocal.m4 $(TOP)/configure $(TOP)/config.log \
+	$(TOP)/configure.scan $(TOP)/config.status $(TOP)/Makefile \
 	$(TOP)/Makefile.in $(TOP)/libtool $(TOP)/auto*.log 
 	-@rm -rf autom4te.cache $(TOP)/autom4te.cache
 	
 	
 clean-download:
-	@echo "$(clean_style)    Cleaning downloaded config\
+	@echo "$(clean_style)    Cleaning downloaded config \
 	files$(default_style)"
 	-@rm -f $(DOWNLOADED_SCRIPTS)
 	
