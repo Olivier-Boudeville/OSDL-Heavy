@@ -277,7 +277,11 @@ int main( int argc, char * argv[] )
 					
  		myEmbedddedManager.umount( archiveFullPath ) ;
 
-		// Will deallocate embedded FS manager; prepare for log writing:
+		/* 
+		 * Will deallocate and replace embedded FS manager, so that the logs
+		 * can be written as usual:
+		 *
+		 */
 		FileSystemManager::SetDefaultFileSystemManager( standardFSManager ) ;
 
 		LogPlug::info( "Stopping OSDL." ) ;		
