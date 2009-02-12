@@ -15,6 +15,8 @@ const std::string secondTextureFilename = "Rune-stone-small.jpg" ;
 const std::string imageWebPath = "web/images" ;
 	
 
+
+
 /**
  * Testing the basic services of the OSDL video using OpenGL.
  *
