@@ -282,9 +282,9 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 	send( "Using Agar backend, linked against the "
 		+ Ceylan::toNumericalString( linkTimeAgarVersion.major ) + "."
 		+ Ceylan::toNumericalString( linkTimeAgarVersion.minor ) + "."
-		+ Ceylan::toNumericalString( linkTimeAgarVersion.patch ) +  ", "
-		+ Ceylan::toString( linkTimeAgarVersion.release ) 
-		+ " version." ) ;
+		+ Ceylan::toNumericalString( linkTimeAgarVersion.patch ) 
+		+ ", version "
+		+ Ceylan::toString( *linkTimeAgarVersion.release ) + "." ) ;
 	
 	// Implies a call to SDL_Init with SDL_INIT_TIMER and SDL_INIT_NOPARACHUTE:
 	if ( AG_InitCore( /* progname */ "OSDL-application", 
@@ -437,7 +437,7 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 CommonModule::~CommonModule() throw ()
 {	
 
-    send( "Stopping OSDL" ) ;
+    send( "Stopping OSDL." ) ;
 
 	if ( _cdromHandler != 0 )
 	{
@@ -461,18 +461,20 @@ CommonModule::~CommonModule() throw ()
 	{
 		delete _video ;
 		_video = 0 ;
-	}	
-			
+	}
+	
+				
 #if OSDL_USES_SDL
 
 #if OSDL_USES_AGAR
 
-	// Will exit directly in AG_Destroy:
     send( "OSDL successfully stopped (Agar branch)." ) ;
     
-    // FIXME Suspected of screwing up our LogHolder:		
 	AG_Destroy() ;
-	
+
+	// When Agar did not initialize SDL, we have to shut SDL down by ourself:
+    SDL_Quit() ;
+
 #else // OSDL_USES_AGAR
 
     SDL_Quit() ;
@@ -481,7 +483,7 @@ CommonModule::~CommonModule() throw ()
 
 #endif // OSDL_USES_SDL
 	
-    send( "OSDL successfully stopped (default branch)." ) ;		
+    send( "OSDL successfully stopped." ) ;		
 	
 }
 
@@ -937,11 +939,11 @@ void OSDL::stop() throw()
 	if ( CommonModule::_CurrentCommonModule == 0 )
 	{
 		LogPlug::error( 
-			"OSDL::stop has been called whereas OSDL was not running" ) ;
+			"OSDL::stop has been called whereas OSDL was not running." ) ;
 	}	
 	else
 	{
-		LogPlug::info( "Stopping launched OSDL module" ) ;
+		LogPlug::info( "Stopping launched OSDL module." ) ;
         
         // Will delete in turn all direct child modules (events, video, etc.):
 		delete CommonModule::_CurrentCommonModule ;
