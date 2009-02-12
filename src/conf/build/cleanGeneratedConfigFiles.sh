@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 
 USAGE="Usage: "`basename $0`": cleans the install by removing all files generated for the build system. Useful while debugging the autotools."
