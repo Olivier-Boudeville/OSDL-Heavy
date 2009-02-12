@@ -45,6 +45,14 @@ namespace OSDL
 		}
 		
 		
+		namespace OpenGL
+		{
+		
+			// A texture can be mapped to a surface.
+			class GLTexture ;
+			
+		}
+				
 
 		#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 	
@@ -794,7 +802,7 @@ namespace OSDL
 				virtual void setPitch( Pitch newPitch ) throw() ;
 
 
-				/// Returns this Surface's width.
+				/// Returns the width of this Surface.
 				virtual Length getWidth() const throw() ;
 				
 				
@@ -810,7 +818,7 @@ namespace OSDL
 	
 	
 	
-				/// Returns this Surface's height.
+				/// Returns the height of this Surface.
 				virtual Length getHeight() const throw() ;
 				
 				
@@ -938,7 +946,8 @@ namespace OSDL
 				/**
 				 * Clears this surface, which may be the screen surface.
 				 * 
-				 * This method clears the viewport for OpenGL surfaces, 
+				 * This method clears the viewport for OpenGL surfaces
+				 * (both the color buffer and the depth buffer), 
 				 * otherwise performs a mere 'fill' with pure black.
 				 *
 				 * @return true iff the operation succeeded.
@@ -2143,6 +2152,24 @@ namespace OSDL
 					 	const TwoDimensional::UprightRectangle 
 							& sourceRectangle, 
 				 		const TwoDimensional::Point2D & destinationLocation ) 
+					const throw( VideoException ) ;
+
+				 
+				
+				/**
+				 * Maps the current texture at the center of that surface,
+				 * supposed to be the screen surface.
+				 *
+				 * @param texture the texture to map, supposed to be the 
+				 * current texture.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note If the texture is bigger than the surface, then
+				 * only a part of the texture will be displayed.
+				 *
+				 */	
+				virtual void mapAtCenter( const OpenGL::GLTexture & texture ) 
 					const throw( VideoException ) ;
 				 
 				
