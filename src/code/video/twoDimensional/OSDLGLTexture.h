@@ -114,7 +114,7 @@ namespace OSDL
 					 * settings appropriate for 2D rendering.
 					 *
 					 */
-					enum TextureFlavour { None, Basic, For2D } ;
+					enum TextureFlavour { None, Basic, For2D, For3D } ;
 
 				
 				
@@ -138,14 +138,15 @@ namespace OSDL
 				
 				
 					/**
-					 * Constructs a texture out of an existing surface.
+					 * Constructs a texture out of an existing surface, whose
+					 * ownership is not taken.
 					 *
 					 * @param sourceSurface the surface from which the 
 					 * texture will be defined. 
 					 * It cannot be 'const' since a temporary change to 
 					 * the surface has to be performed. 
 					 * Nevertheless the source surface is, after a successful
-					 * call, actually unchanged. 
+					 * call, actually unchanged, as its state is restored. 
 					 *
 					 * @param flavour the texture flavour that should be used.
 					 *
@@ -166,6 +167,16 @@ namespace OSDL
 					 */
 					virtual ~GLTexture() throw() ;
 				
+
+
+					/// Returns the width of this texture.
+					virtual Length getWidth() const throw() ;
+
+
+					/// Returns the height of this texture.
+					virtual Length getHeight() const throw() ;
+
+
 				
 					/**
 					 * Tells whether this texture can be uploaded to the 
@@ -211,7 +222,7 @@ namespace OSDL
 				
 					// Static section.
 					
-					// FIXME Should used the flavour member.
+					// FIXME Should use the flavour member.
 										
 					/// Returns the current texture dimensionality.
 					static TextureDimensionality GetTextureDimensionality()
@@ -355,6 +366,7 @@ namespace OSDL
 			
 					/// The width of the texture, in pixels.
 					Length _width ;
+					
 					
 					/// The height of the texture, in pixels.
 					Length _height ;
