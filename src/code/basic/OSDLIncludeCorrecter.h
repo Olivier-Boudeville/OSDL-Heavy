@@ -1,12 +1,14 @@
+
+
 /*
- * No include guards wanted : to be included each time defines 
+ * No include guards wanted: to be included each time that these defines 
  * can be screwed up.
  *
  */
 
 #ifdef OSDL_RUNS_ON_WINDOWS
 
-// Microsoft stupidly managed to redefine symbols in a header (winuser.h) :
+// Microsoft stupidly managed to redefine symbols in a header (winuser.h):
 
 #ifdef LoadIcon
 #undef LoadIcon
@@ -21,3 +23,4 @@
 #endif // LoadImageA
 
 #endif // OSDL_RUNS_ON_WINDOWS
+
