@@ -225,6 +225,39 @@ namespace OSDL
 
 
 				/**
+				 * Waits for any user input: a key being hit, a mouse button
+				 * being pushed, etc.
+			 	 * 
+			 	 * Will not work with the SDL back-end unless a window is 
+				 * opened thanks to VideoModule::setMode: otherwise, no 
+				 * event would be generated.
+				 *
+			 	 * @note This waiting method does not <b>poll</b>
+				 * indefinitively for events, which would use 100% of the CPU
+				 * all the time. 
+				 * It just <b>waits</b> for an event, consuming almost no
+				 * ressource on most platforms.
+			 	 *
+				 * @throw EventsException if the operation failed or is not
+				 * supported.
+				 *
+				 */ 						
+				virtual void waitForAnyUserInput() const 
+					throw( EventsException ) ; 
+
+				
+				/**
+				 * Returns true iff there is at least one pending user input,
+				 * like a key hit, a mouse or joystick button pushed.
+				 *
+				 * @note Useful to poll events without blocking.
+				 *
+				 */
+				virtual bool hasPendingUserInput() const throw() ;
+				
+				
+
+				/**
 				 * Sleeps for the specified duration.
 				 *
 				 * @param seconds the number of seconds to wait.
