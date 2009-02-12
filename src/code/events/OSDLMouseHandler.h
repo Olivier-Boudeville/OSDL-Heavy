@@ -91,6 +91,25 @@ namespace OSDL
 
 
 				/**
+				 * Returns whether a default mouse is available.
+				 *
+				 * @return true iff a default mouse is available.
+				 *
+				 */
+				bool hasDefaultMouse() const throw() ;
+				 
+
+				/**
+				 * Returns the default mouse, if any.
+				 *
+				 * @throw MouseException if no default mouse is available.
+				 *
+				 */
+				Mouse & getDefaultMouse() throw( MouseException ) ;
+
+
+
+				/**
 				 * Links the default mouse to specified controller, so that 
 				 * any further mouse-related event will be sent to this
 				 * controller. 
