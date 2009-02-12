@@ -117,14 +117,15 @@ const GLCoordinate OpenGLContext::DefaultFarClippingPlaneFor3D  = 100000.0f ;
 
 
  				
-OpenGLContext::OpenGLContext( OpenGL::Flavour flavour, BitsPerPixel plannedBpp )
+OpenGLContext::OpenGLContext( OpenGL::Flavour flavour, BitsPerPixel plannedBpp,
+	Length viewportWidth, Length viewportHeight )
 		throw( OpenGLException ):
 	_flavour( OpenGL::None ),
 	_redSize( 0 ),
 	_greenSize( 0 ),
 	_blueSize( 0 ),
-	_viewportWidth( 0 ),
-	_viewportHeight( 0 ),
+	_viewportWidth( viewportWidth ),
+	_viewportHeight( viewportHeight ),
 	_projectionMode( Orthographic ),
 	_projectionWidth( DefaultOrthographicWidth ),
 	_nearClippingPlane( DefaultNearClippingPlaneFor2D ),
@@ -243,9 +244,9 @@ void OpenGLContext::set2DFlavour( BitsPerPixel plannedBpp )
 	setColorDepth( plannedBpp ) ;
 
 	// No culling of faces used:
-	DisableFeature( GL_CULL_FACE ) ;
+	OpenGLContext::DisableFeature( GL_CULL_FACE ) ;
 	
-	//setShadingModel( GL_FLAT ) ;
+	setShadingModel( Flat ) ;
 
 	
 	/*
@@ -253,7 +254,7 @@ void OpenGLContext::set2DFlavour( BitsPerPixel plannedBpp )
 	 * buffers: 
 	 *
 	 */
-	EnableFeature( GL_BLEND ) ;
+	OpenGLContext::EnableFeature( GL_BLEND ) ;
 	
 	/*
 	 * Ponders the source color components by its alpha coordinate Ac,
@@ -292,25 +293,48 @@ void OpenGLContext::set3DFlavour( BitsPerPixel plannedBpp )
 
 	_flavour = OpenGLFor3D ;
 
- 	setFullScreenAntialiasingStatus( true ) ;
+	// Saves a lot of the OpenGL state machine:
+	pushAttribute( GL_ENABLE_BIT ) ;
 
 	// Depth tests wanted:
-	setDoubleBufferStatus( true ) ;
-	
-	
-	/*
 	setDepthBufferSize( 16 ) ;
 	EnableFeature( GL_DEPTH_TEST ) ;
+
+	setFullScreenAntialiasingStatus( true ) ;
+	
+	setDoubleBufferStatus( true ) ;
+
+	setColorDepth( plannedBpp ) ;
+
+	setShadingModel( Smooth ) ;
+
+	
+	/*
+	 * Blends the incoming RGBA color values with the values in the color
+	 * buffers: 
+	 *
+	 */
+	EnableFeature( GL_BLEND ) ;
+	
+	/*
+	 * Ponders the source color components by its alpha coordinate Ac,
+	 * and the destination by (1-Ac):
+	 *
+	 */
+	setBlendingFunction( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) ;
+	
+
 	glMatrixMode( GL_PROJECTION ) ;
 	glPushMatrix() ;
 	glLoadIdentity() ;
 
-	gluPerspective( 45.0f, (GLfloat) ScreenWidth/ (GLfloat) ScreenHeight, 
-		3.0f, ZDepth ) ;
-	*/
-	
-	LogPlug::warning( "OpenGLContext::set3DFlavour: not implemented yet." ) ;
-	
+	gluPerspective( /* angle of view */ 45.0f, 
+		/* aspect */ (GLfloat) _viewportWidth / (GLfloat) _viewportHeight, 
+		/* near z plane */ 1.0f, 
+		/* far z plane */ 100 ) ;
+
+	GLTexture::SetTextureFlavour( GLTexture::For3D ) ;
+		
 }
 
 
@@ -851,12 +875,19 @@ void OpenGLContext::setDepthBufferStatus( bool newStatus )
 	throw( OpenGLException )
 {
 
+	// Later: add glDepthFunc support.
+
 #if OSDL_USES_OPENGL
 
 	if ( newStatus )
+	{
 		EnableFeature( GL_DEPTH_TEST ) ;
+		clearDepthBuffer() ;
+	}	
 	else
+	{
 		DisableFeature( GL_DEPTH_TEST ) ;
+	}
 		
 #else // OSDL_USES_OPENGL
 
@@ -1136,7 +1167,7 @@ void OpenGLContext::clearViewport() throw( OpenGLException )
 
 #if OSDL_USES_OPENGL
 
-	glClear( GL_COLOR_BUFFER_BIT ) ;
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ) ;
 
 #if OSDL_CHECK_OPENGL_CALLS
 
@@ -1500,7 +1531,13 @@ void OpenGLContext::updateProjection() throw( OpenGLException )
 			setOrthographicProjectionFor2D( _viewportWidth, _viewportHeight ) ;
 			return ;
 			break ;
-			
+
+		case OpenGLFor3D:
+			// _projectionMode bypassed (ignored) here:
+			// FIXME 3D counterpart not written yet.
+			return ;
+			break ;
+						
 		default:
 			LogPlug::warning( "OpenGLContext::updateProjection: "
 				"not managed currently for that flavour." ) ;
@@ -1509,25 +1546,6 @@ void OpenGLContext::updateProjection() throw( OpenGLException )
 	
 	}
 	
-	
-	/*
-	switch ( _projectionMode )
-	{
-	
-		case Orthographic:
-			// Forces recomputation of projection height:
-			setOrthographicProjection( _projectionWidth,
-				 _nearClippingPlane, _farClippingPlane ) ; 
-			break ;
-			
-		default:
-			throw OpenGLException( "OpenGLContext::updateProjection: "
-				"not implemented for current projection." ) ;
-			break ;
-				
-	}	
-	*/	
 		
 }
-
 
