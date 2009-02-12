@@ -112,7 +112,7 @@ AC_DEFUN([OSDL_PATH],
       ],[
 		default_install_path=/usr/local
 	  	# No path specified, trying to guess it:
-		# Is pkg-config available ?
+		# Is pkg-config available?
 		
 		# Note: see the top of our pkg.m4 to understand why this file is 
 		# needed.
@@ -337,7 +337,7 @@ AC_DEFUN([OSDL_PATH],
   OSDL_LIBS="$OSDL_LIBS $SDL_LIBS"
 
 
-  # 16 and 17. take care of OpenGL (GL/GLU) support: wanted ? available ?
+  # 16 and 17. take care of OpenGL (GL/GLU) support: wanted? available?
   # Defined in opengl.m4:
   
   AC_ARG_ENABLE([opengl],
@@ -347,7 +347,7 @@ AC_DEFUN([OSDL_PATH],
         no)  opengl=no ;;
 	    *) AC_MSG_ERROR(bad value ${enableval} for --enable-opengl) ;;
       esac],[opengl=yes])
-    # If wanted, is OpenGL available ?	
+    # If wanted, is OpenGL available?	
 	AC_MSG_CHECKING([whether OpenGL and GLU are wanted])
 	if test x$opengl = xyes; then
         AC_MSG_RESULT([yes])
@@ -358,7 +358,7 @@ AC_DEFUN([OSDL_PATH],
 			AC_MSG_WARN([OpenGL use requested but not available, disabling it])
 			have_opengl=no
 		else
-			# OpenGL is ok, GLU too ?	
+			# OpenGL is ok, GLU too?	
         	AX_CHECK_GLU
 			if test x$no_glu = xyes; then 
 				AC_MSG_WARN([GLU use requested but not available, OpenGL use disabled])
@@ -466,7 +466,7 @@ AC_DEFUN([OSDL_PATH],
     AC_MSG_ERROR([The OSDL library could not be successfully linked to.])  
   fi
   # We can link to the OSDL library, but do the headers we see can work
-  # with the library we link to ?
+  # with the library we link to?
   have_osdl_headers_matching_library_version=yes
   AC_RUN_IFELSE([
   	AC_LANG_PROGRAM(
@@ -482,7 +482,7 @@ AC_DEFUN([OSDL_PATH],
   fi
   # We can link to the library, and it is compatible with the OSDL headers
   # being used, but is this pack compatible with the OSDL version the user
-  # specified ? 
+  # specified? 
   have_compatible_osdl_version=yes
   AC_RUN_IFELSE([
   	AC_LANG_PROGRAM(
