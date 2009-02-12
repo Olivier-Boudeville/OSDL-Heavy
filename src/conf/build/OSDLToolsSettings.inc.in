@@ -51,9 +51,11 @@ libjpeg_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
 libjpeg_win_MD5="dbd5f3b47ed13132f04c685d608a7547"
 
 
+
 # zlib library (libzlib.a): http://www.zlib.net/
 
-zlib_VERSION="1.2.3"
+# Actually 1.2.3 (defined in configure-template.ac):
+zlib_VERSION="@ZLIB_RECOMMENDED_VERSION@"
 zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.bz2"
 zlib_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
@@ -65,6 +67,7 @@ zlib_win_ARCHIVE="zlib${zlib_win_archive_VERSION}.zip"
 zlib_win_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
 zlib_win_MD5="abbd0f2b456206da5e3ffd179324413a"
+
 
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
@@ -84,6 +87,7 @@ libpng_win_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_win_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_win_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
 libpng_win_MD5="c90ba3c0c966570b3bf125e8a45f0fb1"
+
 
 
 # TIFF library (libtiff.so): http://www.remotesensing.org/libtiff/
@@ -139,16 +143,14 @@ SDL_image_osx_precompiled_MD5="xxx"
 # SDL_gfx (libSDL_gfx.so): http://www.ferzkopp.net/Software/SDL_gfx-2.0/
 # No binaries available !
 
-# Actually 2.0.16 as long as 2.0.17 cannot be built on Visual Studio 2008:
+# Actually 2.0.18 (defined in configure-template.ac):
 SDL_gfx_MAJOR_VERSION="@SDL_GFX_MAJOR_VERSION@"
 SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.@SDL_GFX_MINOR_VERSION@"
 SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
 SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
-#SDL_gfx_MD5="a7ab98ad530fdc59a23f7dff502db8d3"
+SDL_gfx_MD5="b107fd478d3d1269d7a6ff42906f0482"
 
-# 2.0.16:
-SDL_gfx_MD5="22dc2d9d916197829f9342c490d2d02b"
 
 # Same as for UNIX:
 SDL_gfx_win_VERSION="$SDL_gfx_VERSION"
