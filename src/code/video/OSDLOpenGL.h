@@ -296,13 +296,21 @@ namespace OSDL
 					 * 
 					 * @param plannedBpp the color depth to use, in bits per
 					 * pixel.
+					 *
+					 * @param viewportWidth the width of the viewport, in
+					 * pixels.
+					 * 
+					 * @param viewportHeight the height of the viewport, in
+					 * pixels.
 					 * 
 					 * @throw OpenGLException if the OpenGL state machine
 					 * reports an error.
 					 *
 					 */
 					OpenGLContext( OpenGL::Flavour flavour, 
-						BitsPerPixel plannedBpp ) throw( OpenGLException) ;
+						BitsPerPixel plannedBpp,
+						Length viewportWidth,
+						Length viewportHeight ) throw( OpenGLException) ;
 		
 						
 					/// Virtual destructor.
