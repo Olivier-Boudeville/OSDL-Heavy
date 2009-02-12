@@ -23,6 +23,7 @@
 #include "Ceylan.h"                  // for all Ceylan services
 
 
+
 using std::string ;
 using std::list ;
 
@@ -54,6 +55,7 @@ using namespace OSDL ;
  *  - PHYSFS_setAllocator: not needed
  *  - various callbacks: not needed
  *  - string conversion: not needed
+ *
  */
 
 
@@ -359,9 +361,20 @@ std::list<std::string> EmbeddedFileSystemManager::getSearchPath()
 	
  	list<string> res ;
     
+	
     for ( ; *paths != 0; paths++ )
     	res.push_back( string( *paths ) ) ;
-        
+    
+	/*
+	 * Cannot use it, otherwise a core dump (invalide glib pointer)
+	 * is triggered:
+	 
+	PHYSFS_freeList( paths ) ;
+	
+	 * (sorry for the small memory leak!)
+	 *
+	 */	     
+	 
     return res ;
     
 #else // OSDL_USES_PHYSICSFS
