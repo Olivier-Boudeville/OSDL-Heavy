@@ -102,7 +102,7 @@
 #endif // defined(CEYLAN_ARCH_NINTENDO_DS) && CEYLAN_ARCH_NINTENDO_DS == 1
 
 
-// Include below all header files to be exported for Ceylan users.
+// Include below all header files to be exported for OSDL users.
 
 #include "OSDLAudioIncludes.h"
 #include "OSDLBasicIncludes.h"
