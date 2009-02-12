@@ -2,12 +2,16 @@
 
 
 USAGE="
-Usage: "`basename $0`" [ --with-osdl-env-file <filename> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist]: (re)generates all the autotools-based build system for OSDL tools.
+Usage: "`basename $0`" [ --with-osdl-env-file <filename> ] [ -g | --guess-osdl-environment ] [ -n | --no-build ] [ -o | --only-prepare-dist ]: (re)generates all the autotools-based build system for OSDL tools.
 
 	--with-osdl-env-file: specify which OSDL environment file shall be used (OSDL-environment.sh full path)
 	--guess-osdl-environment: try to guess where the OSDL environment file lies. If one is found, then it is used, otherwise stops on failure
 	--no-build: stop just after having generated the configure script
 	--only-prepare-dist: perform only necessary operations so that the tool directory can be distributed afterwards"
+
+
+# Note: an OSDL environment file (specified or guessed) may be used, or not,
+# if all prerequisites were installed in standard locations.
 
 
 # Main settings section.
@@ -121,7 +125,8 @@ $USAGE" 1>&2
 	fi
 
 	if [ $token_eaten -eq 1 ] ; then
-		echo "Error, unknown argument ($1).$USAGE" 1>&2
+		echo "Error, unknown argument ($1).
+$USAGE" 1>&2
 		exit 4
 	fi	
 	shift
@@ -212,7 +217,7 @@ CEYLAN_SUBSTITUTE_SCRIPT="$ceylan_location/share/Ceylan/scripts/shell/substitute
 if [ ! -x "${CEYLAN_SUBSTITUTE_SCRIPT}" ] ; then
 	echo "Error, no executable Ceylan substitute script found (searched for ${CEYLAN_SUBSTITUTE_SCRIPT})." 1>&2
 	if [ "$ceylan_location" = "/usr/local" ] ; then
-		echo "Forgot to specify an OSDL-environment file, or to request to guess it ?"  1>&2
+		echo "Forgot to specify an OSDL-environment file, or to request to guess it?"  1>&2
 	fi
 	exit 1
 fi
@@ -306,7 +311,7 @@ generateCustom()
 
 	echo "--- generating build system"
 	
-	if [ "$do_remove_generated" -eq 0 ] ; then
+	if [ $do_remove_generated -eq 0 ] ; then
 		echo
 		echo " - removing all generated files"
 		./cleanGeneratedConfigFiles.sh
@@ -323,7 +328,7 @@ generateCustom()
 	echo " - generating $CONFIG_TARGET, by filling $CONFIG_SOURCE with ${OSDL_SETTINGS_FILE}"
 
 	# Generates 'configure.ac' with an already cooked dedicated Makefile:
-	make -f MakeConfigure clean config-files SETTINGS_FILE=${OSDL_SETTINGS_FILE} SUBSTITUTE=${CEYLAN_SUBSTITUTE_SCRIPT}
+	execute make -f MakeConfigure clean config-files SETTINGS_FILE=${OSDL_SETTINGS_FILE} SUBSTITUTE=${CEYLAN_SUBSTITUTE_SCRIPT}
 
 	echo
 	echo " - preparing libtool, by executing libtoolize"
@@ -349,7 +354,7 @@ generateCustom()
 		libtoolize_verbose="--debug"
 	fi
 	
-	# No --ltdl here to avoid the copy of useless directories in tests:
+	# No --ltdl here to avoid the copy of useless directories in tools:
 	execute libtoolize --install --automake $copy $force $libtoolize_verbose
 	
 	echo
@@ -409,7 +414,7 @@ generateCustom()
 
 	# Add GNU gettext (autopoint) ?
 	
-	if [ "$do_stop_after_configure" -eq 0 ] ; then
+	if [ $do_stop_after_configure -eq 0 ] ; then
 		echo
 		echo "Now you are ready to run configure"
 		return
