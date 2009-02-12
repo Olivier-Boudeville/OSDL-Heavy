@@ -165,6 +165,24 @@ GLTexture::~GLTexture() throw()
 
 
 
+Length GLTexture::getWidth() const throw()
+{
+
+	return _width ;
+	
+}
+
+
+Length GLTexture::getHeight() const throw()
+{
+
+	return _height ;
+	
+}
+
+
+
+
 bool GLTexture::canBeUploaded() const throw()
 {
 
@@ -177,6 +195,8 @@ bool GLTexture::canBeUploaded() const throw()
 void GLTexture::upload() throw( GLTextureException )
 {
 
+	// This is the upload version without a source surface.
+	
 #if OSDL_USES_OPENGL
 
 	LOG_DEBUG_TEXTURE( "GLTexture::upload" ) ;
@@ -326,14 +346,16 @@ void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour )
 			 * base mipmap, which therefore must be the only one to be used.
 			 *
 			 */
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
+				GL_NEAREST ) ;
 			
 		 	/*
 			 * Magnifying function: weighted average of the four closest
 			 * texture elements.
 			 *
 			 */
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) ;
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
+				GL_NEAREST ) ;
 	
 			/*
 			 * Wrap parameter for texture coordinate s: clamped to the range
@@ -350,7 +372,55 @@ void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour )
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP ) ;
 			
 			break ;		
+
 			
+		case For3D:
+		
+			LogPlug::trace( "GLTexture::SetTextureFlavour: For3D" ) ;
+
+			// Two-dimensional texturing will be performed:
+			OpenGLContext::EnableFeature( GL_TEXTURE_2D ) ;
+	
+			GLTexture::SetTextureDimensionality( GLTexture::TwoDim ) ;
+
+			/*
+			 * To perform correct alphablending:
+			 *
+			 */
+			SetTextureEnvironmentParameter( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,
+				GL_MODULATE ) ;
+
+		 	/*
+			 * GL_LINEAR preferred to GL_NEAREST for 3D, as it is smoother.
+			 *
+			 */
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
+				GL_LINEAR ) ;
+			
+		 	/*
+			 * Magnifying function: weighted average of the four closest
+			 * texture elements.
+			 *
+			 */
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
+				GL_LINEAR ) ;
+	
+			/*
+			 * Wrap parameter for texture coordinate s: clamped to the range
+			 * [0,1].
+			 *
+			 */
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP ) ;
+			
+			/*
+			 * Wrap parameter for texture coordinate t: clamped to the 
+			 * range [0,1].
+			 *
+			 */
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP ) ;
+			
+			break ;		
+	
 	
 		default:
 			throw GLTextureException( 
@@ -505,13 +575,13 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 #if OSDL_USES_OPENGL
 
 
-	LogPlug::trace( "GLTexture::upload" ) ;
+	LogPlug::trace( "GLTexture::upload (with source surface)" ) ;
 
 	_width  = sourceSurface.getWidth() ;
 	_height = sourceSurface.getHeight() ;
 	
 	
-	// Inspired from Stephane Marchesin's routine.
+	// Inspired from Stephane Marchesin's routine. Thanks Stephane!
 	
 	try
 	{
@@ -537,15 +607,13 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 		if ( mustModifyOverallAlpha ) 
 		  	sourceSurface.setAlpha( /* disable alpha blending */ 0, 
 				/* new per-surface alpha value */ AlphaTransparent ) ;
-	
-		Length width  = sourceSurface.getWidth() ;
-		Length height = sourceSurface.getHeight() ;
-	
-		// To avoid having transparent surfaces, use 0 for AlphaMask ?
+		
+		// To avoid having transparent surfaces, use 0 for AlphaMask?
 		
 		// Temporary surface for the uploading:
 		Surface & convertedSurface =  * new Surface(
-			VideoModule::SoftwareSurface, width, height, 32 /* bits per pixel */,
+			VideoModule::SoftwareSurface, _width, _height, 
+			32 /* bits per pixel */,
 			RedMask, GreenMask, BlueMask, AlphaMask ) ;
 			
 		sourceSurface.blitTo( convertedSurface ) ;
@@ -556,9 +624,9 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 		  	sourceSurface.setAlpha( /* alpha flags */ savedFlags, 
 				/* new per-surface alpha value */ savedAlpha ) ;
 	
-	
 		// Generates a new name for this texture in its identifier member:
 		glGenTextures( /* one name requested */ 1, & _id ) ;
+
 
 #if OSDL_CHECK_OPENGL_CALLS
 
@@ -590,7 +658,7 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 
 #endif // OSDL_CHECK_OPENGL_CALLS
 
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
 	
 	
 		/*
@@ -642,21 +710,21 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 
 #endif // OSDL_CHECK_OPENGL_CALLS
 	
-		if ( IsAPowerOfTwo( width ) && IsAPowerOfTwo( height ) )
+		if ( IsAPowerOfTwo( _width ) && IsAPowerOfTwo( _height ) )
 		{
 
 
 			LogPlug::trace( "GLTexture::upload: glTexImage2D with "
-				+ Ceylan::toString( width ) + "x" 
-				+ Ceylan::toString( height ) ) ;
+				+ Ceylan::toString( _width ) + "x" 
+				+ Ceylan::toString( _height ) ) ;
 		
 			
         	glTexImage2D( 
 				/* target texture */ GL_TEXTURE_2D, 
 				/* level-of-detail number: base image */ 0, 
 				/* number of color components */ GL_RGBA, 
-				/* already a power of two */ width, 
-				/* already a power of two */ height, 
+				/* already a power of two */ _width, 
+				/* already a power of two */ _height, 
 				/* no border */ 0, 
 				/* pixel format */ GL_RGBA, 
 				/* pixel data type */ GL_UNSIGNED_BYTE, 
@@ -709,8 +777,8 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 			GLU::Int res = gluBuild2DMipmaps( 
 				/* target texture */ GL_TEXTURE_2D, 
 				/* number of color components */ GL_RGBA, 
-				/* may be a non-power of two */ width, 
-				/* may be a non-power of two */ height, 
+				/* may be a non-power of two */ _width, 
+				/* may be a non-power of two */ _height, 
 				/* pixel format */ GL_RGBA, 
 				/* pixel data type */ GL_UNSIGNED_BYTE, 
 				convertedSurface.getPixels() ) ;
@@ -763,7 +831,7 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 #else // OSDL_USES_OPENGL
 
 	throw GLTextureException( "GLTexture::upload failed: "
-		", altough OpenGL support not available." ) ;
+		"OpenGL support not available." ) ;
 	
 #endif // OSDL_USES_OPENGL
 
