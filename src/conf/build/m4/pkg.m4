@@ -1,13 +1,13 @@
-# Note to Ceylan developers :
+# Note to OSDL developers:
 # This file (pkg.m4) is taken from pkg-config package.
-# It is put here so that the ceylan.m4 script can be correctly expanded
+# It is put here so that the OSDL.m4 script can be correctly expanded
 # even if pkg-config is not available on the platform on which autogen.sh
 # is run. 
 
 # If no pkg.m4 was found, then the generated configure script would include
-# unexpanded macros such as 'PKG_CHECK_MODULES(CEYLAN,ceylan-...' which would
+# unexpanded macros such as 'PKG_CHECK_MODULES(OSDL,OSDL-...' which would
 # cause its execution to fail with :
-# "syntax error near unexpected token `CEYLAN,ceylan-0.3'" 
+# "syntax error near unexpected token `OSDL,OSDL-X.Y'" 
 # even though these lines would not be executed, as the absence of pkg-config
 # would have been detected.
 
@@ -16,8 +16,8 @@
 # therefore this work-around seems to work.
 
 # The recommended settings to run autogen.sh are to have pkg-config installed,
-# even though it might create mistakes in case multiple Ceylan libraries are
-# installed (reading a ceylan*.pc not corresponding to the target library file).
+# even though it might create mistakes in case multiple OSDL libraries are
+# installed (reading a OSDL*.pc not corresponding to the target library file).
 
 
 
