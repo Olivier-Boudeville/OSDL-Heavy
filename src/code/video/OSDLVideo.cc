@@ -380,7 +380,7 @@ void VideoModule::setOpenGLContext( OpenGL::OpenGLContext & newOpenGLContext )
 	throw()
 {
 
-	if (  _openGLcontext != 0 )
+	if ( _openGLcontext != 0 )
 		delete _openGLcontext ;
 	
 	_openGLcontext = & newOpenGLContext ;
@@ -531,7 +531,8 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			if ( useOpenGLRequested )
 			{
 				if ( ! hasOpenGLContext() )
-					setOpenGLContext( * new OpenGLContext( flavour, bpp ) ) ;
+					setOpenGLContext( * new OpenGLContext( flavour, bpp,
+						_screen->getWidth(), _screen->getHeight() ) ) ;
 				else
 					_openGLcontext->selectFlavour( flavour, bpp ) ;
 			}							
@@ -539,14 +540,16 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 				
 		case OpenGL::OpenGLFor2D:
 			if ( ! hasOpenGLContext() )
-				setOpenGLContext( * new OpenGLContext( flavour, bpp ) ) ;
+				setOpenGLContext( * new OpenGLContext( flavour, bpp,
+					_screen->getWidth(), _screen->getHeight() ) ) ;
 			else
 				_openGLcontext->selectFlavour( flavour, bpp ) ;					
 			break ;
 			
 		case OpenGL::OpenGLFor3D:
 			if ( ! hasOpenGLContext() )
-				setOpenGLContext( * new OpenGLContext( flavour, bpp ) ) ;
+				setOpenGLContext( * new OpenGLContext( flavour, bpp,
+					_screen->getWidth(), _screen->getHeight() ) ) ;
 			else
 				_openGLcontext->selectFlavour( flavour, bpp ) ;	
 			break ;
