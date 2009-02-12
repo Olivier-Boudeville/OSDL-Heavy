@@ -91,6 +91,28 @@ MouseHandler::~MouseHandler() throw()
 
 
 
+bool MouseHandler::hasDefaultMouse() const throw()
+{
+
+	return ( _miceCount != 0 ) ;
+	
+}
+
+
+
+Mouse & MouseHandler::getDefaultMouse() throw( MouseException )
+{
+
+	if ( _miceCount == 0 )
+		throw MouseException( "MouseHandler::getDefaultMouse failed: "
+			"no mouse detected." ) ;
+
+	return *_mice[DefaultMouse] ;
+				
+}
+
+
+
 void MouseHandler::linkToController( OSDL::MVC::Controller & controller )
 	throw( MouseException )
 {
