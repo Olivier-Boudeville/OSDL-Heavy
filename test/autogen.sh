@@ -310,7 +310,7 @@ generateCustom()
 
 	echo "--- generating build system"
 	
-	if [ "$do_remove_generated" -eq 0 ] ; then
+	if [ $do_remove_generated -eq 0 ] ; then
 		echo
 		echo " - removing all generated files"
 		./cleanGeneratedConfigFiles.sh
@@ -413,7 +413,7 @@ generateCustom()
 
 	# Add GNU gettext (autopoint) ?
 	
-	if [ "$do_stop_after_configure" -eq 0 ] ; then
+	if [ $do_stop_after_configure -eq 0 ] ; then
 		echo
 		echo "Now you are ready to run configure"
 		return
@@ -427,13 +427,7 @@ generateCustom()
 		echo "**Error**: the 'configure' cannot be properly used"
 		exit 26
 	}
-	
-
-	if [ -n "$ceylan_install_prefix_opt" ] ; then
-		echo "(updating, for this script only, library search path with ${ceylan_install_prefix}/lib)"
-		LD_LIBRARY_PATH=$ceylan_install_prefix/lib:$LD_LIBRARY_PATH
-	fi
-	
+		
  	execute ./configure $configure_opt
 	
 
