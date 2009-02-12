@@ -57,8 +57,6 @@ int main( int argc, char * argv[] )
         LogPlug::info( "Search path is: " 
         	+ Ceylan::formatStringList( searchPath ) ) ;
           
-        const string writeDir = "my-test-write-directory" ;
-            
 		LogPlug::info( "Write directory is: " 
         	+ myFSManager.getWriteDirectory() ) ;
             
@@ -114,7 +112,7 @@ int main( int argc, char * argv[] )
         	+ "' at the root of write directory." ) ;
 
 		/*
-         * Note that its is the embedded filesystem manager (myFSManager)
+         * Note that it is the embedded filesystem manager (myFSManager)
          * not the standard (native) that must be used, as platform-independent
          * paths are expected here:
          *
@@ -217,7 +215,11 @@ int main( int argc, char * argv[] )
       		throw TestException( "Could not tell position #1." ) ;
         else
         	LogPlug::info( "Could tell test position." ) ;   
-        
+
+ 		myFSManager.umount( archiveFilename ) ;
+
+ 		delete & myFSManager ;
+		        
 		LogPlug::info( "End of OSDL embedded filesystem test." ) ;
  
  
