@@ -335,7 +335,7 @@ void EventsModule::waitForAnyKey( bool displayWaitingMessage ) const
 	 *
 	 */
 	
-	SDL_Event currentEvent ;
+	BasicEvent currentEvent ;
 
 	if ( displayWaitingMessage )
 	{
@@ -344,7 +344,7 @@ void EventsModule::waitForAnyKey( bool displayWaitingMessage ) const
 	
 	
 	/*
-	 * Simpler than integrating into the keyboard handler 
+	 * Simpler than integrating that into the keyboard handler 
 	 * (and works without it):
 	 *
 	 */
@@ -379,6 +379,117 @@ void EventsModule::waitForAnyKey( bool displayWaitingMessage ) const
 
 	}
 	
+	
+#endif // OSDL_USES_SDL
+
+}
+
+
+
+void EventsModule::waitForAnyUserInput() const throw( EventsException )
+{
+
+#if OSDL_USES_SDL
+
+	/*
+	 * No need to check that events and video are initialized, since we 
+	 * have an EventModule here.
+	 *
+	 */
+	
+	BasicEvent currentEvent ;
+	
+	
+	/*
+	 * Simpler than integrating that into the various input handlers 
+	 * (and works without them):
+	 *
+	 */
+	do 
+	{
+	
+		// Waiting, not polling, avoids taking 100% of the CPU for nothing:	
+		::SDL_WaitEvent( & currentEvent ) ;
+		
+	} 
+	while ( currentEvent.type != KeyPressed 
+		 && currentEvent.type != MouseButtonPressed
+		 && currentEvent.type != JoystickButtonPressed
+		 && currentEvent.type != UserRequestedQuit ) ;
+	
+#else // OSDL_USES_SDL
+
+
+	// Reusing Ceylan counterpart:
+	
+	try
+	{
+	
+		Ceylan::waitForKey( "" ) ;
+	
+	}
+	catch( const UtilsException & e )
+	{
+	
+		throw EventsException( "EventsModule::waitForAnyUserInput failed: "
+			+ e.toString() ) ;	
+
+	}
+	
+	
+#endif // OSDL_USES_SDL
+
+}
+
+
+
+bool EventsModule::hasPendingUserInput() const throw()
+{
+
+
+#if OSDL_USES_SDL
+
+	/*
+	 * No need to check that events and video are initialized, since we 
+	 * have an EventModule here.
+	 *
+	 */
+	
+	BasicEvent currentEvent ;
+	
+	bool userInputFound = false ;
+	
+	/*
+	 * Simpler than integrating that into the various input handlers 
+	 * (and works without them):
+	 *
+	 */
+	while ( ! userInputFound && ::SDL_PollEvent( & currentEvent ) == 1 )
+	{
+	
+		switch( currentEvent.type )
+		{
+		
+			// Voluntary cascading cases (no breaks):
+			case KeyPressed:
+			case MouseButtonPressed:
+			case JoystickButtonPressed:
+			case UserRequestedQuit:
+				userInputFound = true ;
+				break ;
+				
+			default:
+				break ;
+					
+		}
+	}
+	
+	return userInputFound ;
+	
+	
+#else // OSDL_USES_SDL
+
+	return false ;	
 	
 #endif // OSDL_USES_SDL
 
