@@ -6647,7 +6647,7 @@ generateOSDL()
 		# Here we are in the SVN tree, needing to generate the
 		# build system for tests:
 		{
-			setBuildEnv ./autogen.sh --no-build --with-osdl-environment ${OSDL_ENV_FILE}
+			setBuildEnv ./autogen.sh --no-build --with-osdl-env-file ${OSDL_ENV_FILE}
 		} 1>>"$LOG_OUTPUT" 2>&1		
 		
 		if [ $? != 0 ] ; then
@@ -6834,3 +6834,4 @@ cleanOSDL_win()
 ################################################################################
 # End of loani-requiredTools.sh
 ################################################################################
+
