@@ -6714,6 +6714,76 @@ generateOSDL()
 		exit 17
 	fi	
 	
+	cd ..
+
+
+	LOG_STATUS "Making tools for OSDL."
+	
+	
+	cd tools
+		
+	if [ ${use_svn} -eq 0 ]; then
+	
+		# Here we are in the SVN tree, needing to generate the
+		# build system for tools:
+		{
+			setBuildEnv ./autogen.sh --no-build --with-osdl-env-file ${OSDL_ENV_FILE}
+		} 1>>"$LOG_OUTPUT" 2>&1		
+		
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to generate build system for OSDL tools (with autogen.sh)."
+			exit 10
+		fi	
+		
+	fi
+		
+	# Rest of the build is common to autogen-based and release-based trees:
+
+
+	if [ -n "$prefix" ] ; then	
+		{				
+
+			# We suppose here that if we have a prefix, all tools use 
+			# prefixes:
+			
+			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-libagar-prefix=$Agar_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
+			
+			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${OSDL_PREFIX} ${tools_prefixes}
+			
+		} 1>>"$LOG_OUTPUT" 2>&1			
+	else
+		{		
+			setBuildEnv --exportEnv --appendEnv ./configure
+		} 1>>"$LOG_OUTPUT" 2>&1			
+	fi
+		
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure OSDL tools."
+		exit 14
+	fi	
+		
+	{				
+		setBuildEnv ${MAKE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+					
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build OSDL tools."
+		exit 15
+	fi	
+
+	{				
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install OSDL tools."
+		exit 16
+	fi	
+
 	
 	printOK
 
