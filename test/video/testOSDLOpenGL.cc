@@ -137,6 +137,8 @@ int main( int argc, char * argv[] )
 	
 		Surface & screen = myVideo.getScreenSurface() ;
 		
+		screen.clear() ;
+
 		Ceylan::System::FileLocator textureFinder ;
 
 
@@ -153,6 +155,10 @@ int main( int argc, char * argv[] )
 		GLTexture & firstTexture = * new GLTexture( 
 			textureFinder.find( firstTextureFilename ), GLTexture::For2D ) ;
 
+		LogPlug::info( "Is the first texture already resident? " 
+			+ Ceylan::toString( firstTexture.isResident() ) ) ;
+		
+		
 		glBegin(GL_QUADS); 
 		{
 		
@@ -171,8 +177,14 @@ int main( int argc, char * argv[] )
 		}
 		glEnd();
 			
+		LogPlug::info( "Is the first texture resident now? " 
+			+ Ceylan::toString( firstTexture.isResident() ) ) ;
+
 		GLTexture & secondTexture = * new GLTexture( 
 			textureFinder.find( secondTextureFilename ), GLTexture::For2D ) ;
+
+		LogPlug::info( "Is the second texture already resident? " 
+			+ Ceylan::toString( secondTexture.isResident() ) ) ;
 			
 		glBegin(GL_QUADS); 
 		{
@@ -192,9 +204,9 @@ int main( int argc, char * argv[] )
 		}
 		glEnd();
 			
-		
-	    SDL_GL_SwapBuffers();
-		
+		LogPlug::info( "Is the second texture resident now? " 
+			+ Ceylan::toString( secondTexture.isResident() ) ) ;
+				
 		LogPlug::info( VideoModule::DescribeEnvironmentVariables() ) ;
 		
 		OSDL::Events::EventsModule & myEvents = myOSDL.getEventsModule() ;
