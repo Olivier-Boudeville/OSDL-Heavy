@@ -324,3 +324,10 @@ uninstall-hook:
 	files from $(DESTDIR)@OSDL_INSTALL_SHARED_DIR@ @OSDL_DEFAULT_STYLE@"
 	-@rm -rf $(DESTDIR)@OSDL_INSTALL_SHARED_DIR@
 
+
+RELEASE_FILES="osdl-@OSDL_VERSION@.tar.gz osdl-@OSDL_VERSION@.tar.bz2"
+
+upload-release: dist dist-bzip2
+	   @echo; echo "@OSDL_COMMAND_STYLE@    Uploading release files $(RELEASE_FILES) to Sourceforge @OSDL_DEFAULT_STYLE@"
+	   @rsync -avP -e ssh $(RELEASE_FILES) @OSDL_DEFAULT_SF_USER@@frs.sourceforge.net:uploads/
+
