@@ -43,7 +43,7 @@ UNIX_PROJECT_NAME=osdl
 # Full actual release date (not generated for better control).
 # (quote protection is necessary)
 # (tag: ST_RELEASE_DATE)
-OSDL_RELEASE_DATE='"Thursday, February 5, 2009"'
+OSDL_RELEASE_DATE='"Saturday, February 14, 2009"'
 
 # Usual versioning. 
 
