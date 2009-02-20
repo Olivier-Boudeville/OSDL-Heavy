@@ -80,8 +80,7 @@ SF_WEB_DIR           = /home/groups/`echo "$(SF_PROJECT_NAME)" | head -c 1`/`ech
 
 SF_WEB_URL           = @OSDL_SF_URL@/index.html
 
-SF_USER              = wondersye
-SF_SHELL_HOMEDIR     = /home/users/`echo "$(SF_USER)" | head -c 1`/`echo "$(SF_USER)" | head -c 2`/"$(SF_USER)"
+SF_SHELL_HOMEDIR     = /home/users/`echo "@OSDL_DEFAULT_SF_USER@" | head -c 1`/`echo "@OSDL_DEFAULT_SF_USER@" | head -c 2`/"@OSDL_DEFAULT_SF_USER@"
 
 
 # Mirror settings.
@@ -310,7 +309,7 @@ toSF-rsync: site
 	[@OSDL_LOCAL_WEB_DIR@] using rsync@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(RSYNC_OPT); $(RSYNC) $$opt @OSDL_LOCAL_WEB_DIR@/* \
-	$(SF_USER)@$(SF_WEB_SERVER):$(SF_WEB_DIR)
+	@OSDL_DEFAULT_SF_USER@@$(SF_WEB_SERVER):$(SF_WEB_DIR)
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
 	@PROJECT_NAME@'s website on Sourceforge at \
 	$(SF_WEB_URL)@OSDL_DEFAULT_STYLE@"
@@ -323,7 +322,7 @@ toSF-scp: check-scp site
 	[@OSDL_LOCAL_WEB_DIR@] using scp@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(SCP_OPT); $(SCP) $$opt @OSDL_LOCAL_WEB_DIR@/* \
-	$(SF_USER)@$(SF_WEB_SERVER):$(SF_WEB_DIR)
+	@OSDL_DEFAULT_SF_USER@@$(SF_WEB_SERVER):$(SF_WEB_DIR)
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
 	@PROJECT_NAME@'s website on Sourceforge at \
 	$(SF_WEB_URL)@OSDL_DEFAULT_STYLE@"
@@ -422,13 +421,13 @@ info-sf:
 	@echo "    + sourceforge shell server     : $(SF_SHELL_SERVER)"
 	@echo "    + sourceforge web server       : $(SF_WEB_SERVER)"
 	@echo "    + full sourceforge login       : \
-	sh $(SF_USER)@$(SF_SHELL_SERVER)"
+	ssh @OSDL_DEFAULT_SF_USER@@$(SF_SHELL_SERVER)"
 	@echo "    + sourceforge web directory    : $(SF_WEB_DIR)"
 	@echo "    + sourceforge home directory   : $(SF_SHELL_HOMEDIR)"
 	@echo "    + SSH target                   : \
-	$(SF_USER)@$(SF_SHELL_SERVER):$(SF_WEB_DIR)"
+	@OSDL_DEFAULT_SF_USER@@$(SF_SHELL_SERVER):$(SF_WEB_DIR)"
 	@echo "    + files to be copied will be   : \
-	scp myFiles $(SF_USER)@$(SF_WEB_SERVER):$(SF_SHELL_HOMEDIR)"
+	scp myFiles @OSDL_DEFAULT_SF_USER@@$(SF_WEB_SERVER):$(SF_SHELL_HOMEDIR)"
 
 
 info-html: 	
