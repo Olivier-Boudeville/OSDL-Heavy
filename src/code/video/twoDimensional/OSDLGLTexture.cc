@@ -219,6 +219,119 @@ void GLTexture::upload() throw( GLTextureException )
 
 
 
+void GLTexture::setAsCurrent() throw( GLTextureException )
+{
+	
+#if OSDL_USES_OPENGL
+
+	//LOG_DEBUG_TEXTURE( "GLTexture::setAsCurrent" ) ;
+
+	::glBindTexture( /* target */ GL_TEXTURE_2D, /* texture */ _id ) ;
+	
+		
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_INVALID_VALUE:
+			throw OpenGLException( "GLTexture::setAsCurrent failed: "
+				"incorrect target specified." ) ;
+			break ;
+		
+		case GL_INVALID_OPERATION:
+			throw OpenGLException( "GLTexture::setAsCurrent failed: "
+				"invalid operation, texture has a dimensionality that "
+				"does not match that of target, "
+				"or incorrectly executed between the execution of glBegin "
+				"and the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			LogPlug::warning( "GLTexture::setAsCurrent failed: "
+				"unexpected error reported." ) ;
+			break ;	
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+			
+#else // OSDL_USES_OPENGL
+
+	throw GLTextureException( "GLTexture::setAsCurrent failed: "
+		"OpenGL support not available." ) ;
+	
+#endif // OSDL_USES_OPENGL
+	
+}
+
+
+
+bool GLTexture::isResident() throw( GLTextureException )
+{
+
+	
+#if OSDL_USES_OPENGL
+
+	LOG_DEBUG_TEXTURE( "GLTexture::isResident" ) ;
+	
+	// Dummy:
+	GLboolean residences ;
+	
+	/*
+	 * glGetTexParameteriv( GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, etc.)
+	 * would only query the texture currently bound.
+	 *
+	 */
+	bool res = ( glAreTexturesResident( 
+		/* number of textures to be queried */ 1,
+		/* array containing the names of the textures to be queried */ & _id,
+		/* dummy returned array */ &residences ) == GL_TRUE ) ;
+		
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+		
+		case GL_INVALID_VALUE:
+			throw OpenGLException( "GLTexture::isResident failed: "
+				"invalid (negative?) texture number." ) ;
+			break ;
+		
+		case GL_INVALID_OPERATION:
+			throw OpenGLException( "GLTexture::isResident failed: "
+				"invalid operation, incorrectly executed between "
+				"the execution of glBegin and the corresponding execution "
+				"of glEnd." ) ;
+			break ;
+		
+		default:
+			LogPlug::warning( "GLTexture::isResident failed: "
+				"unexpected error reported." ) ;
+			break ;	
+				
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+	return res ;
+			
+#else // OSDL_USES_OPENGL
+
+	throw GLTextureException( "GLTexture::isResident failed: "
+		"OpenGL support not available." ) ;
+	
+#endif // OSDL_USES_OPENGL
+	
+}
+
+
+
 const string GLTexture::toString( Ceylan::VerbosityLevels level ) const throw()
 {
 
