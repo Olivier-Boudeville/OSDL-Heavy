@@ -202,6 +202,27 @@ namespace OSDL
 					virtual void upload() throw( GLTextureException ) ;
 					
 					
+					/**
+					 * Sets this texture as the current texture: further
+					 * textured renderings will make use of it.
+					 *
+					 * @throw GLTextureException if the operation failed.
+					 *
+					 */
+					virtual void setAsCurrent() throw( GLTextureException ) ;
+					
+					
+					/**
+					 * Returns true iff this texture is loaded in texture 
+					 * memory.
+					 *
+					 * @throw GLTextureException if the operation failed.
+					 *
+					 */
+					virtual bool isResident() throw( GLTextureException ) ;
+					
+					
+					
 	 	            /**
 		             * Returns an user-friendly description of the state 
 					 * of this object.
