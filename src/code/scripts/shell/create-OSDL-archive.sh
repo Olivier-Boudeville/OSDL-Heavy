@@ -28,6 +28,16 @@ if [ ! -d "${archive_directory}" ] ; then
 fi
 
 RM="/bin/rm -f"
+FIND=`which find`
+RSYNC=`which rsync`
+
+if [ ! -x "${RSYNC}" ] ; then
+
+	echo "Error, no rsync tool found." 1>&2
+	exit 20
+	
+fi
+
 
 # Usually in osdl/OSDL/trunk/tools/media:
 cypher_tool="cypherOSDLFile.exe"
@@ -73,8 +83,15 @@ fi
 
 /bin/mkdir ${tmp_base}
 
+# Would copy also the .svn directories:
+#/bin/cp -rf "${archive_directory}" ${tmp_base}
 
-/bin/cp -rf "${archive_directory}" ${tmp_base}
+# Would not be relevant as the target tree would be flatten:
+#${FIND} "${archive_directory}" \( -name .svn -prune \) -o  -exec cp... ';' 
+
+# --cvs-exclude removes also .svn directories:
+${RSYNC} -r --cvs-exclude "${archive_directory}" ${tmp_base}
+
 if [ ! $? -eq 0	] ; then
 
 	echo "Error, copy to temporary directory '${tmp_base}' failed, removing it." 1>&2
@@ -92,7 +109,7 @@ archive_directory_name=`basename ${archive_directory}`
 
 # Now let's cypher files in the temporary directory:
 cd "${tmp_base}/"
-find ${archive_directory_name} -type f -exec ${cypher_exec} '{}' ';' | grep -v 'Logs can be inspected'
+${FIND} ${archive_directory_name} -type f -exec ${cypher_exec} '{}' ';' | grep -v 'Logs can be inspected'
 
 # OAR archives are based on the Lempel-Ziv-Markov chain-Algorithm (LZMA).
 # See: http://en.wikipedia.org/wiki/Lempel-Ziv-Markov_chain_algorithm
