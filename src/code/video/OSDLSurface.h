@@ -74,7 +74,10 @@ namespace OSDL
 
 		#endif // OSDL_USES_SDL
 
-
+		
+		// Allows to keep track of the number of updates for a surface.
+		typedef Ceylan::Uint32 UpdateCount ;
+		
 		
 		// Surfaces can be palettized.
 		class Palette ;
@@ -2906,6 +2909,16 @@ namespace OSDL
 				virtual void update() throw( VideoException ) ;
 			
 			
+				/**
+				 * Returns the current number of updates for that surface.
+				 *
+				 * @note This corresponds only to full updates as performed
+				 * by the update() method.
+				 *
+				 */
+				virtual UpdateCount getUpdateCount() const throw() ;
+				
+				
 			
 				/**
 				 * Updates the part of this surface corresponding to the
@@ -3430,6 +3443,15 @@ namespace OSDL
 				bool _mustBeLocked ;
 				
 			
+				/**
+				 * Counts the number of updates for this surface.
+				 *
+				 * @note Useful for the screen surface to compute the
+				 * number of frames per second.
+				 *
+				 */
+				UpdateCount _updateCount ;
+				 
 		
 			private:
 				
