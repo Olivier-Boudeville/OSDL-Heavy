@@ -223,6 +223,7 @@ Surface::Surface( LowLevelSurface & surface, DisplayType displayType )
 	_surface( & surface ), 
 	_displayType( displayType ),
 	_mustBeLocked( false ),
+	_updateCount( 0 ),
 	_needsRedraw( true )  
 {
 
@@ -2460,7 +2461,8 @@ void Surface::update() throw( VideoException )
 	LogPlug::trace( "Surface::update" ) ; 
 #endif // OSDL_DEBUG_WIDGET
 
-
+	_updateCount++ ;
+	
 #if OSDL_DEBUG
 	if ( isLocked() )
 		throw VideoException( 
@@ -2545,6 +2547,15 @@ void Surface::update() throw( VideoException )
 #endif // OSDL_USES_SDL
 	
 		
+}
+
+
+
+UpdateCount Surface::getUpdateCount() const throw()
+{
+
+	return _updateCount ;
+	
 }
 
 
