@@ -86,7 +86,7 @@ SF_SHELL_HOMEDIR     = /home/users/`echo "@OSDL_DEFAULT_SF_USER@" | head -c 1`/`
 # Mirror settings.
 MIRROR_HOSTNAME      = aranor
 MIRROR_WEB_URL       = http://@UNIX_PROJECT_NAME@.esperide.com
-MIRROR_WEB_USER      = www-data
+MIRROR_WEB_USER      = web-srv
 MIRROR_WEB_DIR       = /var/www/@PROJECT_NAME@
 
 
