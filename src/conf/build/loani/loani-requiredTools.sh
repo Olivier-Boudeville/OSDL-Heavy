@@ -17,6 +17,10 @@ latest_stable_osdl="release-0.5.0"
 # Required tools section.
 # guichan/guichan_win not listed, since has been deprecated here by Agar.
 
+# Note: if this list is to be updated, update as well:
+# osdl/OSDL/trunk/src/conf/build/loani/update-LOANI-mirror.sh
+
+
 if [ $is_windows -eq 0 ] ; then
 
   # Windows special case:
