@@ -77,6 +77,7 @@ declareRetrievalBegin()
 }
 
 
+
 launchFileRetrieval()
 # Retrieves specified package by looking at the cache (repository first).
 # If not available, will try to download it. 
@@ -96,7 +97,7 @@ launchFileRetrieval()
 	md5_name="${package_name}_MD5"
 	eval md5=\$$md5_name
 	
-	# Is file already present in cache ?
+	# Is file already present in cache?
 	
 	if [ -f "${full_archive_path}" ] ; then
 	
@@ -124,7 +125,7 @@ launchFileRetrieval()
 		
 		declareRetrievalBegin ${archive_file}
 		
-		if [ "$do_simulate" -eq 1 ] ; then
+		if [ $do_simulate -eq 1 ] ; then
 			DEBUG ${WGET} ${WGET_OPT} --output-document=${full_archive_path} ${download_url} 
 			${WGET} ${WGET_OPT} --output-document=${full_archive_path} ${download_url} 1>>"$LOG_OUTPUT" 2>&1  	
 			return 2
@@ -136,6 +137,7 @@ launchFileRetrieval()
 	fi		
 
 }
+
 
 
 getDownloadLocation()
@@ -166,7 +168,7 @@ getDownloadLocation()
 	# Trying first the main site:
 	if [ -z "${location_value}" ] ; then
 		
-		# Not available ? Try the mirror (if any):
+		# Not available? Try the mirror (if any):
 		location_name="${package_name}_ALTERNATE_DOWNLOAD_LOCATION"
 		eval actual_location_name="\$$location_name"
 		location_value="${actual_location_name}"
@@ -177,11 +179,14 @@ getDownloadLocation()
 			private_mirror_used="${package_name}_USED_MIRROR"
 			eval actual_private_mirror_used="\$$private_mirror_used"
 			if [ "${actual_private_mirror_used}" = "0" ] ; then
+				# Set to zero means already tried:
 				ERROR "${package_name} archive not available through main server or known mirrors."
 				exit 12
 			else
 				current_download_location=${private_archive_mirror}/${package_name}
 				DEBUG "Selected download location (last-chance mirror): ${current_download_location}"
+				
+				# Remember the attempt:
 				eval ${private_mirror_used}="0"
 				return
 			fi
@@ -205,6 +210,7 @@ getDownloadLocation()
 }
 
 
+
 # Used to test 'getDownloadLocation':
 testGetDownloadLocation()
 {
@@ -216,6 +222,7 @@ testGetDownloadLocation()
 
   exit 0
 }
+
 
 
 getFileAvailability()
@@ -270,7 +277,7 @@ launchwizard()
 {
 
 	echo
-	printColor "      This is LOANI's wizard !" $cyan_text
+	printColor "      This is LOANI's wizard!" $cyan_text
 	
 	echo
 	echo
@@ -280,7 +287,7 @@ launchwizard()
 	
 	OFFSET="    + "
 	
-	if askDefaultYes "${OFFSET}Activate log mode ?" ; then 
+	if askDefaultYes "${OFFSET}Activate log mode?" ; then 
 		DISPLAY "Log mode activated."
 		do_log=0	
 	else
@@ -289,7 +296,7 @@ launchwizard()
 	fi
 	
 	
-	if askDefaultNo "${OFFSET}Activate strict mode ?" ; then 
+	if askDefaultNo "${OFFSET}Activate strict mode?" ; then 
 		DISPLAY "Strict mode activated."
 		be_strict=0			
 		do_strict_md5=0
@@ -301,7 +308,7 @@ launchwizard()
 	fi
 	
 	
-	if askDefaultNo "${OFFSET}Activate quiet mode ?" ; then 
+	if askDefaultNo "${OFFSET}Activate quiet mode?" ; then 
 		DISPLAY "Quiet mode activated."
 		be_quiet=0	
 	else
@@ -310,7 +317,7 @@ launchwizard()
 	fi
 
 
-	if askDefaultNo "${OFFSET}Activate verbose debug on screen ?" ; then 
+	if askDefaultNo "${OFFSET}Activate verbose debug on screen?" ; then 
 		DISPLAY "Verbose debug on screen mode activated."
 		do_debug=0	
 	else
@@ -319,16 +326,16 @@ launchwizard()
 	fi	
 	
 	
-	if askDefaultNo "${OFFSET}Use SVN to retrieve sources instead of downloading source archives ?" ; then 
+	if askDefaultNo "${OFFSET}Use SVN to retrieve sources instead of downloading source archives?" ; then 
 		DISPLAY "SVN mode activated."
 		use_svn=0
 		
-		if askDefaultNo "${OFFSET}Use current SVN, not last stable version, for Ceylan and OSDL ? [not recommended]" ; then
+		if askDefaultNo "${OFFSET}Use current SVN, not last stable version, for Ceylan and OSDL? [not recommended]" ; then
 	
 			DISPLAY "Current SVN will be used (let's hope the build is not currently broken)."
 			use_current_svn=0
 			
-			if askDefaultNo "${OFFSET}Use developer access for Sourceforge's SVN ?" ; then 
+			if askDefaultNo "${OFFSET}Use developer access for Sourceforge's SVN?" ; then 
 				DISPLAY "SVN developer mode activated."
 				developer_access=0
 				askNonVoidString "${OFFSET}Please enter your Sourceforge's user name:"
@@ -350,19 +357,19 @@ launchwizard()
 	fi	
 		
 	
-	if askDefaultNo "${OFFSET}Install all and set all, including environment ?" ; then 
+	if askDefaultNo "${OFFSET}Install all and set all, including environment?" ; then 
 		DISPLAY "Everything will be installed and set."
 		manage_build_tools=0	
 		manage_optional_tools=0					
 		set_env=0
 	else
-		if askDefaultNo "${OFFSET}Install all tools ? (required tools, common build tools, optional tools, Orge tools)" ; then 
+		if askDefaultNo "${OFFSET}Install all tools? (required tools, common build tools, optional tools, Orge tools)" ; then 
 			DISPLAY "All tools will be installed."
 			manage_build_tools=0	
 			manage_optional_tools=0			
 			manage_orge_tools=0			
 		else
-			if askDefaultNo "${OFFSET}Install build tools ? (ex: gcc, binutils) [this is the recommended setting]" ; then 
+			if askDefaultNo "${OFFSET}Install build tools? (ex: gcc, binutils) [this is the recommended setting]" ; then 
 				DISPLAY "Build tools will be installed."
 				manage_build_tools=0	
 			else
@@ -371,7 +378,7 @@ launchwizard()
 			fi
 	
 	
-			if askDefaultNo "${OFFSET}Install optional tools ? (ex: doxygen, dot, tidy)" ; then 
+			if askDefaultNo "${OFFSET}Install optional tools? (ex: doxygen, dot, tidy)" ; then 
 				DISPLAY "Optional tools will be installed."
 				manage_optional_tools=0	
 			else
@@ -379,7 +386,7 @@ launchwizard()
 				manage_optional_tools=1
 			fi
 
-			if askDefaultNo "${OFFSET}Install Orge tools ? (ex: Erlang)" ; then 
+			if askDefaultNo "${OFFSET}Install Orge tools? (ex: Erlang)" ; then 
 				DISPLAY "Orge tools will be installed."
 				manage_orge_tools=0	
 			else
@@ -388,7 +395,7 @@ launchwizard()
 			fi
 		fi
 			
-		if askDefaultNo "${OFFSET}Fetch only ? (tools will only be downloaded)" ; then 
+		if askDefaultNo "${OFFSET}Fetch only? (tools will only be downloaded)" ; then 
 			DISPLAY "Fetch only mode activated."
 			fetch_only=0
 		else
@@ -396,7 +403,7 @@ launchwizard()
 			fetch_only=1
 		fi		
 			
-		if askDefaultNo "${OFFSET}Set full developer environment ? (ex: bash, nedit configuration)" ; then 
+		if askDefaultNo "${OFFSET}Set full developer environment? (ex: bash, nedit configuration)" ; then 
 			DISPLAY "Full developer environment will be set."
 			set_env=0
 		else
@@ -404,7 +411,7 @@ launchwizard()
 			set_env=1
 		fi	
 		
-		if askDefaultYes "${OFFSET}Clean build trees after a successful installation ?" ; then 
+		if askDefaultYes "${OFFSET}Clean build trees after a successful installation?" ; then 
 			DISPLAY "Build trees will be cleaned if possible."
 			clean_on_success=0
 		else
@@ -414,14 +421,14 @@ launchwizard()
 		
 	fi	
 	
-	if askDefaultNo "${OFFSET}Perform a cross-compilation build to the Nintendo DS ?" ; then 
+	if askDefaultNo "${OFFSET}Perform a cross-compilation build to the Nintendo DS?" ; then 
 		DISPLAY "Using DevKitPro-based cross-compilation toolchain for the Nintendo DS."
 		target_nds=0
 	else
 		target_nds=1	
 	fi
 
-	if askDefaultYes "${OFFSET}Use an installation prefix ? [recommended]" ; then 
+	if askDefaultYes "${OFFSET}Use an installation prefix? [recommended]" ; then 
 		askString "${OFFSET}Please enter prefix directory where installations should be done (leave blank to let LOANI find automatically an appropriate prefix):"
 		prefix="$returnedString"
 		if [ -z "${prefix}" ] ; then
@@ -433,7 +440,7 @@ launchwizard()
 		WARNING "No prefix demanded (rather unusual choice)."
 	fi	
 
-	if askDefaultNo "${OFFSET}Use an alternate cache repository ?" ; then 
+	if askDefaultNo "${OFFSET}Use an alternate cache repository?" ; then 
 		askNonVoidString "${OFFSET}Please enter path to the non-default cache repository:"
 		repository="$returnedString"
 		DISPLAY "Repository changed to $repository."		
@@ -441,9 +448,10 @@ launchwizard()
 		DISPLAY "Repository not changed."
 	fi	
 	
-	DISPLAY "Congratulations, you made your way through LOANI's wizard."
+	DISPLAY "Congratulations, you made your way through LOANI's wizard!"
 
 }
+
 
 
 # Too early, no TRACE available.
@@ -620,6 +628,7 @@ initial_dir=`pwd`
 
 
 # Root URL of our last chance mirror:
+# (see also: update-LOANI-mirror.sh)
 private_archive_mirror="ftp://ftp.esperide.com/LOANI-archive-repository"
 
 
@@ -943,7 +952,7 @@ if [ -z "$prefix" ] ; then
 	DEBUG "No prefix assigned."
 	if [ `${ID} -u` -eq 0 ] ; then
 		WARNING "The user running LOANI is root."
-		if askDefaultNo "For safety reason, we do not recommend running this script as root, continue nevertheless (few users choose that, errors might more easily occur) ?" ; then 
+		if askDefaultNo "For safety reason, we do not recommend running this script as root, continue nevertheless (few users choose that, errors might more easily occur)?" ; then 
 			DEBUG "Run as root, all tools being installed in their default locations except projet ones which will be in ${alternate_prefix}."
 		else
 			echo "We advise you to re-run LOANI as a non-privileged user."
@@ -1386,7 +1395,7 @@ done
 if [ -z "$available_list" ] ; then
 	DISPLAY "No tool already available in repository, will download them all ($retrieve_list)."
 else
-	 # Some are available. All of them ?
+	 # Some are available. All of them?
 	if [ -z "$retrieve_list" ] ; then
 		DISPLAY "All tools already available in repository ($available_list), no download needed."
 	else
@@ -1482,9 +1491,9 @@ while [ -n "$retrieve_list" ] ; do
 			retrieve_list=$new_retrieve_list
 		else
 		
-			DEBUG "md5sum is not the expected one, still being downloaded ?"									
+			DEBUG "md5sum is not the expected one, still being downloaded?"									
 			if ! ${PS} ax | ${GREP} wget | ${GREP} -v -i grep 1>/dev/null 2>&1 ; then
-				# No !
+				# No!
 
 				DEBUG "No wget running, having downloaded the file, but its md5sum seems to be wrong."
 				
@@ -1526,7 +1535,7 @@ while [ -n "$retrieve_list" ] ; do
 							new_retrieve_list="$new_retrieve_list $i"
 						fi
 					done
-					retrieve_list=$new_retrieve_list										
+					retrieve_list=$new_retrieve_list							
 				fi
 			else
 				DEBUG "(wget still running)"				
