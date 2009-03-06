@@ -1,8 +1,8 @@
 # This script is made to be sourced by LOANI when retrieving Orge tools.
 # These tools are required only for server-side Orge.
 
-# Creation date : Monday, July 7, 2008.
-# Author : Olivier Boudeville (olivier.boudeville@online.fr)
+# Creation date: Monday, July 7, 2008.
+# Author: Olivier Boudeville (olivier.boudeville@online.fr)
 
 
 # Orge tools section.
@@ -11,7 +11,7 @@
 ORGE_TOOLS="Erlang egeoip Geolite"
 
 
-# Updating retrieve list :
+# Updating retrieve list:
 # (new tools are put ahead of those already selected, so that CVS retrievals do not delay them)
 if [ $is_windows -eq 0 ] ; then
   WARNING "on Windows, no Orge tool managed."
@@ -387,3 +387,4 @@ cleanGeolite()
 ################################################################################
 # End of loani-OrgeTools.sh
 ################################################################################
+
