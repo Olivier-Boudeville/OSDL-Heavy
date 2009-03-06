@@ -308,11 +308,18 @@ distclean-local: real-clean
 dist-hook:
 	@if ! test -f $(srcdir)/test/configure; then \
 	echo "Test configure script not available, generating it." ; \
-	cd $(srcdir)/test ; ./autogen.sh --only-prepare-dist; fi
+	cd $(srcdir)/test ; ./autogen.sh --only-prepare-dist -g; fi
 	@if test -f $(srcdir)/test/Makefile; then \
 	(cd $(srcdir)/test; make distclean); fi	
 	-@rm -rf $(srcdir)/test/autom4te* $(srcdir)/test/testsOutcome.txt
 	@cp -rp $(srcdir)/test $(distdir)
+	@if ! test -f $(srcdir)/tools/configure; then \
+	echo "Tool configure script not available, generating it." ; \
+	cd $(srcdir)/tools ; ./autogen.sh --only-prepare-dist -g; fi
+	@if test -f $(srcdir)/tools/Makefile; then \
+	(cd $(srcdir)/tools; make distclean); fi	
+	-@rm -rf $(srcdir)/tools/autom4te*
+	@cp -rp $(srcdir)/tools $(distdir)
 	-@rm -rf `find $(distdir) -type d -name '.svn' -print`
 	-@cd $(distdir); rm -f config.log config.status libtool \
 	code/OSDLConfig.h
