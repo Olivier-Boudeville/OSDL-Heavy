@@ -15,6 +15,9 @@
 
 # Updating retrieve list:
 
+# Note: if this list is to be updated, update as well:
+# osdl/OSDL/trunk/src/conf/build/loani/update-LOANI-mirror.sh
+
 if [ $is_windows -eq 0 ] ; then
 
   WARNING "on Windows, no common build tool managed."
@@ -22,7 +25,7 @@ if [ $is_windows -eq 0 ] ; then
   
 else
 
-	# Not on Windows. Aiming at the DS ?
+	# Not on Windows. Aiming at the DS?
 	
 	if [ $target_nds -eq 1 ] ; then
 		COMMON_BUILD_TOOLS="gcc binutils gdb"
@@ -92,7 +95,7 @@ preparegcc()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${gcc_ARCHIVE}."
 		DEBUG "Restoring ${gcc_ARCHIVE}."
 		${MV} -f ${gcc_ARCHIVE}.save ${gcc_ARCHIVE} 
@@ -134,7 +137,7 @@ generategcc()
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	fi
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		echo
 		ERROR "Unable to configure gcc."
 		exit 11
@@ -149,7 +152,7 @@ generategcc()
 		${MAKE} bootstrap-lean ${MAKE_C}
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		echo
 		ERROR "Unable to bootstrap gcc."
 		exit 12
@@ -177,7 +180,7 @@ generategcc()
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		echo
 		ERROR "Unable to install gcc."
 		exit 13
@@ -295,7 +298,7 @@ preparebinutils()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${binutils_ARCHIVE}."
 		DEBUG "Restoring ${binutils_ARCHIVE}."
 		${MV} -f ${binutils_ARCHIVE}.save ${binutils_ARCHIVE} 
@@ -331,7 +334,7 @@ generatebinutils()
 	fi
 		
 
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		echo
 		ERROR "Unable to configure binutils."
 		exit 11
@@ -351,7 +354,7 @@ generatebinutils()
 		setBuildEnv ${MAKE} CFLAGS=-O2 ${MAKE_C} 
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		echo
 		ERROR "Unable to build binutils."
 		exit 12
@@ -387,7 +390,7 @@ generatebinutils()
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 				
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		echo
 		ERROR "Unable to install binutils."
 		exit 13
@@ -457,7 +460,7 @@ preparegdb()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${gdb_ARCHIVE}."
 		DEBUG "Restoring ${gdb_ARCHIVE}."
 		${MV} -f ${gdb_ARCHIVE}.save ${gdb_ARCHIVE} 
@@ -493,7 +496,7 @@ generategdb()
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	fi
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		echo
 		ERROR "Unable to configure gdb."
 		exit 11
@@ -507,12 +510,12 @@ generategdb()
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1	 
 	
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		echo
 		# Make may fail because libncurses if lacking:
 		# Debian users can try: 'apt-get build-dep gdb'
 		# before re-running LOANI.
-		ERROR "Unable to build gdb (hint: is libncurses5-dev available ?)."
+		ERROR "Unable to build gdb (hint: is libncurses5-dev available?)."
 		exit 12
 	fi
 
@@ -539,7 +542,7 @@ generategdb()
 		} 1>>"$LOG_OUTPUT" 2>&1			
 	fi
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		echo
 		ERROR "Unable to install gdb."
 		exit 13
@@ -621,7 +624,7 @@ preparedevkitARM()
 		
 	} 1>>"$LOG_OUTPUT" 2>&1
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${devkitARM_ARCHIVE}."
 		DEBUG "Restoring ${devkitARM_ARCHIVE}."
 		cd "$repository"
@@ -741,7 +744,7 @@ preparegrit()
 		cd ${grit_PREFIX} && ${UNZIP} -o "$repository/${grit_ARCHIVE}"
 	} 1>>"$LOG_OUTPUT" 2>&1
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${grit_ARCHIVE}."
 		exit 10
 	fi
@@ -866,7 +869,7 @@ preparelibnds()
 		
 	} 1>>"$LOG_OUTPUT" 2>&1
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${libnds_ARCHIVE}."
 		DEBUG "Restoring ${libnds_ARCHIVE}."
 		cd $repository
@@ -953,7 +956,7 @@ preparePAlib()
 		cd ${devkitPRO_PREFIX} && ${UNZIP} -o "$repository/${PAlib_ARCHIVE}"
 	} 1>>"$LOG_OUTPUT" 2>&1
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${PAlib_ARCHIVE}."
 		exit 10
 	fi
@@ -1082,7 +1085,7 @@ preparedswifi()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${dswifi_ARCHIVE}."
 		DEBUG "Restoring ${dswifi_ARCHIVE}."
 		cd $repository
@@ -1174,7 +1177,7 @@ prepareDeSmuME()
 		cd ${DeSmuME_PREFIX} && ${UNZIP} -o "$repository/${DeSmuME_ARCHIVE}"
 	} 1>>"$LOG_OUTPUT" 2>&1
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${DeSmuME_ARCHIVE}."
 		exit 10
 	fi
@@ -1268,7 +1271,7 @@ prepareNoCashGBA()
 	} 1>>"$LOG_OUTPUT" 2>&1
 		
 		
-	if [ $? != "0" ] ; then
+	if [ ! $? -eq 0 ] ; then
 		ERROR "Unable to extract ${NoCashGBA_ARCHIVE}."
 		exit 10
 	fi
@@ -1331,3 +1334,4 @@ cleanNoCashGBA()
 ################################################################################
 # End of loani-commonBuildTools.sh
 ################################################################################
+
