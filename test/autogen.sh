@@ -216,7 +216,7 @@ CEYLAN_SUBSTITUTE_SCRIPT="$ceylan_location/share/Ceylan/scripts/shell/substitute
 if [ ! -x "${CEYLAN_SUBSTITUTE_SCRIPT}" ] ; then
 	echo "Error, no executable Ceylan substitute script found (searched for ${CEYLAN_SUBSTITUTE_SCRIPT})." 1>&2
 	if [ "$ceylan_location" = "/usr/local" ] ; then
-		echo "Forgot to specify an OSDL-environment file, or to request to guess it ?"  1>&2
+		echo "Forgot to specify an OSDL-environment file, or to request to guess it?"  1>&2
 	fi
 	exit 1
 fi
@@ -411,7 +411,7 @@ generateCustom()
 	echo " - generating 'configure' script"
  	execute autoconf $warnings $force $verbose
 
-	# Add GNU gettext (autopoint) ?
+	# Add GNU gettext (autopoint)?
 	
 	if [ $do_stop_after_configure -eq 0 ] ; then
 		echo
