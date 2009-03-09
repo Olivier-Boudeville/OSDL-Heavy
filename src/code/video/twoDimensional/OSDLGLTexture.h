@@ -209,7 +209,8 @@ namespace OSDL
 					 * @throw GLTextureException if the operation failed.
 					 *
 					 */
-					virtual void setAsCurrent() throw( GLTextureException ) ;
+					virtual void setAsCurrent() const 
+						throw( GLTextureException ) ;
 					
 					
 					/**
