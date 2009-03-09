@@ -219,6 +219,7 @@ namespace OSDL
 					throw( AudioException ) ;
 
 
+
 				/**
 				 * Returns in specified parameters the actual settings of the
 				 * mixer.
@@ -230,7 +231,8 @@ namespace OSDL
 				 * format that will be output.
 				 *
 				 * @param actualOutputChannelNumber will be set to the number of
-				 * channels obtained (note that is not the channel format)
+				 * output channels obtained, usually one, for mono, or two,
+				 * for stereo (note that is not the channel format).
 				 *
 				 * @return the mean latency, in milliseconds, that corresponds
 				 * to the actual settings and to the chunk size.
@@ -243,6 +245,7 @@ namespace OSDL
 						SampleFormat & actualOutputSampleFormat,
 						ChannelNumber & actualOutputChannelNumber ) 
 					throw( AudioException ) ;
+				 
 				 
 				 
 				/**
@@ -515,6 +518,7 @@ namespace OSDL
 				virtual ChannelNumber fadeOutAllChannelsDuring( 
 						Ceylan::System::Millisecond fadeOutDuration )
 					throw( AudioException ) ;
+		
 					
 					
 				
