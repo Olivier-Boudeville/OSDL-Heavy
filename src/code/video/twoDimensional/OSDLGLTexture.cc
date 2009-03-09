@@ -219,13 +219,14 @@ void GLTexture::upload() throw( GLTextureException )
 
 
 
-void GLTexture::setAsCurrent() throw( GLTextureException )
+void GLTexture::setAsCurrent() const throw( GLTextureException )
 {
 	
 #if OSDL_USES_OPENGL
 
 	//LOG_DEBUG_TEXTURE( "GLTexture::setAsCurrent" ) ;
 
+	// We consider here that this is a const operation:
 	::glBindTexture( /* target */ GL_TEXTURE_2D, /* texture */ _id ) ;
 	
 		
@@ -450,7 +451,7 @@ void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour )
 				GL_MODULATE ) ;
 
 		 	/*
-			 * Filters uses GL_NEAREST instead of GL_LINEAR as:
+			 * Filters are supposed to use GL_NEAREST instead of GL_LINEAR, as:
 			 *  1. sprites will be rendered exactly as defined (pixel-perfect,
 			 * no zoom/filtering should be performed)
 			 *  2. otherwise, when the sprite dimensions will be both powers of
@@ -458,9 +459,13 @@ void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour )
 			 * instead of gluBuild2DMipmaps, and the former defines only the 
 			 * base mipmap, which therefore must be the only one to be used.
 			 *
+			 * However after some testing, even for textures for 2D rendering,
+			 * the final result is very poor with GL_NEAREST, whereas it seems
+			 * perfect with GL_LINEAR, so we preferred GL_LINEAR:
+			 *
 			 */
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
-				GL_NEAREST ) ;
+				/* GL_NEAREST */ GL_LINEAR ) ;
 			
 		 	/*
 			 * Magnifying function: weighted average of the four closest
@@ -468,7 +473,7 @@ void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour )
 			 *
 			 */
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
-				GL_NEAREST ) ;
+				/* GL_NEAREST */ GL_LINEAR ) ;
 	
 			/*
 			 * Wrap parameter for texture coordinate s: clamped to the range
