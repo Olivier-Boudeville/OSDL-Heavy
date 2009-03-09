@@ -200,7 +200,7 @@ namespace OSDL
 			 * they can be reloaded when required, see OpenGL::Reload flavour.
 			 *
 			 * @note For the moment, direct access is used to the only one
-			 * OpenGL context provided by the SDL back-end.
+			 * OpenGL context provided by the SDL 1.2.x back-end.
 			 *
 			 */
 			class OSDL_DLL OpenGLContext: public Ceylan::TextDisplayable
@@ -350,11 +350,18 @@ namespace OSDL
 	
 					/**
 					 * Sets the OpenGL 2D flavour.
+					 * Once called, all primitives can be rendered at integer
+					 * positions.
 					 *
 					 * @param plannedBpp the desired color depth, in bits per
 					 * pixel.
 					 *
 					 * @throw OpenGLException if the operation failed.
+					 *
+					 * @note Calling selectFlavour should be preferred, as it
+					 * performs additionally a viewport update.
+					 *
+					 * @note Leaves in ModelView mode.
 					 *
 					 */
 					virtual void set2DFlavour( BitsPerPixel plannedBpp ) 
@@ -368,6 +375,11 @@ namespace OSDL
 					 * pixel.
 					 *
 					 * @throw OpenGLException if the operation failed.
+					 *
+					 * @note Calling selectFlavour should be preferred, as it
+					 * performs additionally a viewport update.
+					 *
+					 * @note Leaves in ModelView mode.
 					 *
 					 */
 					virtual void set3DFlavour( BitsPerPixel plannedBpp ) 
