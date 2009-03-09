@@ -497,6 +497,45 @@ bool EventsModule::hasPendingUserInput() const throw()
 
 
 
+bool EventsModule::getGrabInputMode() const throw( EventsException )
+{
+
+#if OSDL_USES_SDL
+	
+	return ( ::SDL_WM_GrabInput( SDL_GRAB_QUERY ) == SDL_GRAB_ON ) ;
+	
+	
+#else // OSDL_USES_SDL
+
+	throw EventsException( "EventsModule::getGrabInputMode failed: "
+		"no SDL support available." ) ; 
+	
+#endif // OSDL_USES_SDL
+
+}
+
+
+
+void EventsModule::setGrabInputMode( bool newMode ) throw( EventsException )
+{
+
+#if OSDL_USES_SDL
+	
+	SDL_GrabMode newGrabMode = ( newMode ? SDL_GRAB_ON : SDL_GRAB_OFF ) ;
+	
+	::SDL_WM_GrabInput( newGrabMode ) ;
+	
+#else // OSDL_USES_SDL
+
+	throw EventsException( "EventsModule::setGrabInputMode failed: "
+		"no SDL support available." ) ; 
+	
+#endif // OSDL_USES_SDL
+
+}
+
+
+
 bool EventsModule::sleepFor( Second seconds, Microsecond micros ) 
 	const throw( EventsException )
 {
