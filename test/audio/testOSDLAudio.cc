@@ -106,18 +106,20 @@ int main( int argc, char * argv[] )
 		
 		ChunkSize chunkSize = 4096 ;
 		
+		ChannelNumber mixingChannelNumber = 16 ;
+		
 		LogPlug::info( "Requesting a mixing mode at " 
 			+ Ceylan::toString( outputFrequency ) + " Hz, with sample format " 
 			+ sampleFormatToString( outputSampleFormat ) 
 			+ ", channel format " 
 			+ channelFormatToString( outputChannel ) 
-			+ " and a chunk size of " + Ceylan::toString( chunkSize )
-			+ " bytes." ) ;
+			+ ", a chunk size of " + Ceylan::toString( chunkSize )
+			+ " bytes and " + Ceylan::toString( mixingChannelNumber )
+			+ " input (logical) mixing channels." ) ;
 			
 			
-		myAudio.setMode( outputFrequency, 
-			/* sample format */ AudioModule::NativeSint16SampleFormat,
-			outputChannel, chunkSize ) ;
+		myAudio.setMode( outputFrequency, outputSampleFormat, outputChannel,
+			chunkSize, mixingChannelNumber ) ;
 		
 		myAudio.logState() ;
 
@@ -125,12 +127,17 @@ int main( int argc, char * argv[] )
 		
 		Ceylan::System::Millisecond latency = myAudio.getObtainedMode(
 			outputFrequency, outputSampleFormat, count ) ;
-			
+		
+		/*
+		 * An exception would have been thrown otherwise, and specified
+		 * variables will have their values updated by the call:
+		 *
+		 */
 		LogPlug::info( "Obtained a mixing mode at " 
 			+ Ceylan::toString( outputFrequency ) + " Hz, with sample format " 
 			+ sampleFormatToString( outputSampleFormat ) + " and " 
-			+ Ceylan::toString( count ) 
-			+ " channel(s), which results in a mean theoritical latency of " 
+			+ Ceylan::toString( count ) + " output channel(s), "
+			"which results in a mean theoritical latency of " 
 			+ Ceylan::toString( latency ) + " milliseconds." ) ;
 					
 		
