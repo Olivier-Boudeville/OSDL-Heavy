@@ -101,7 +101,19 @@ namespace OSDL
 			 */
 			const ColorElement AlphaOpaque = 255 ; 
 			
+			
 
+			/**
+			 * Describes a floating-point coordinate used in color space,
+			 * including alpha.
+			 *
+			 * @note These coordinates, quite useful with OpenGL, are expected
+			 * to range from zero to full intensity, in [0,1]. 
+			 *
+			 */
+			typedef Ceylan::Float32 FloatColorElement ;
+					
+	
 	
 			/**
 			 * Format-independent color description.
@@ -249,7 +261,7 @@ namespace OSDL
 			 * hardware support it.
 			 *
 			 * @fixme Ownership of specified buffers is not clear. 
-			 * Who should deallocate them ?
+			 * Who should deallocate them?
 			 *
 			 */
 			OSDL_DLL bool setGammaRamp( GammaRampElement * redRamp, 
@@ -265,7 +277,7 @@ namespace OSDL
 			 * hardware support it.
 			 *
 			 * @fixme Ownership of specified buffers is not clear. 
-			 * Who should allocate them ? We suppose the caller must allocate
+			 * Who should allocate them? We suppose the caller must allocate
 			 * them.
 			 *
 			 */	
