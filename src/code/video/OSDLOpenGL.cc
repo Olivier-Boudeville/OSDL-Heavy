@@ -19,7 +19,7 @@
 
 
 #if OSDL_USES_SDL 
-#include "SDL.h"					 // for SDL_Cursor, etc.
+#include "SDL.h"		  // for SDL_Cursor, etc.
 #endif // OSDL_USES_SDL
 
 
@@ -206,6 +206,13 @@ void OpenGLContext::selectFlavour( Flavour flavour, BitsPerPixel plannedBpp )
 	
 	}
 	
+	/*
+	 * Needed, as will update the projection which depends on the flavour:
+	 * (viewport size not changing here)
+	 *
+	 */
+	setViewPort( _viewportWidth, _viewportHeight ) ;
+	
 }
 
 
@@ -236,7 +243,7 @@ void OpenGLContext::set2DFlavour( BitsPerPixel plannedBpp )
 	 * triggers the projection update (updateProjection). 
 	 *
 	 * VideoModule::setMode will call setViewPort after having managed the
-	 * OpenGL flavour.
+	 * OpenGL flavour, OpenGLContext::selectFlavour as well.
 	 *
 	 */
 	setDoubleBufferStatus( true ) ;
@@ -278,6 +285,8 @@ void OpenGLContext::set2DFlavour( BitsPerPixel plannedBpp )
 	 *
 	 */
 	glTranslatef( 0.375, 0.375, 0.0 ) ;
+
+	// From here all primitives can be rendered at integer positions.
 
 #endif // OSDL_USES_OPENGL
 
@@ -323,18 +332,24 @@ void OpenGLContext::set3DFlavour( BitsPerPixel plannedBpp )
 	 */
 	setBlendingFunction( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) ;
 	
+	GLTexture::SetTextureFlavour( GLTexture::For3D ) ;
 
 	glMatrixMode( GL_PROJECTION ) ;
 	glPushMatrix() ;
 	glLoadIdentity() ;
 
 	gluPerspective( /* angle of view */ 45.0f, 
-		/* aspect */ (GLfloat) _viewportWidth / (GLfloat) _viewportHeight, 
+		/* aspect */ static_cast<GLfloat>( _viewportWidth ) / 
+			static_cast<GLfloat>( _viewportHeight ), 
 		/* near z plane */ 1.0f, 
 		/* far z plane */ 100 ) ;
+	
+	// Model-view section:
+	glMatrixMode( GL_MODELVIEW ) ;
+	
+	// No 'glPushMatrix()', just erase the modelview matrix content:
+	glLoadIdentity() ;
 
-	GLTexture::SetTextureFlavour( GLTexture::For3D ) ;
-		
 }
 
 
@@ -442,7 +457,8 @@ void OpenGLContext::setColorDepth( BitsPerPixel plannedBpp )
 
 		default:
 			throw OpenGLException( "OpenGLContext::setColorDepth failed: "
-				"unsupported color depth (" + Ceylan::toString(plannedBpp) 
+				"unsupported color depth (" 
+				+ Ceylan::toNumericalString(plannedBpp) 
 				+ " bits per pixel)" ) ;
 			break ;
 	}
@@ -938,7 +954,9 @@ void OpenGLContext::setViewPort( Length width, Length height,
 
 #if OSDL_USES_OPENGL
 
-	LogPlug::trace( "OpenGLContext::setViewPort" ) ;
+	LogPlug::trace( "OpenGLContext::setViewPort called for "
+		+ Ceylan::toString( width ) + "x" + Ceylan::toString( height )
+		+ " from lower left corner" + lowerLeftCorner.toString() ) ;
 	
 	_viewportWidth  = width  ;
 	_viewportHeight = height ;
@@ -1072,11 +1090,13 @@ void OpenGLContext::setOrthographicProjectionFor2D(
 	 * Note the reversed top/bottom settings to avoid an upside-down
 	 * referential:
 	 *
+	 * @note: 'gluOrtho2D(0, width, 0, height);' could have been used instead.
+	 *
 	 */
 	glOrtho( /* left */ 0, /* right */ width, 
-		/* bottom */ height, /* top */ 0,
-		/* near */ DefaultNearClippingPlaneFor2D, 
-		/* far */ DefaultFarClippingPlaneFor2D ) ;
+	  /* bottom */ height, /* top */ 0,
+	  /* near */ DefaultNearClippingPlaneFor2D, 
+	  /* far */ DefaultFarClippingPlaneFor2D ) ;
 
 
 #if OSDL_CHECK_OPENGL_CALLS
