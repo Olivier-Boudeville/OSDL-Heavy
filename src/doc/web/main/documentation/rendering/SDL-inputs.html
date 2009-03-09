@@ -3,11 +3,11 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2004, January 25.
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2004, January 25.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -34,11 +34,11 @@
 
 <p>  
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
-<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+<b>Important note</b>: this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks!
             </div>
           </td>
         </tr>
@@ -50,12 +50,12 @@
 <p>
 
 <center>
-    <table summary="Disclaimer" style="border : none">
+    <table summary="Disclaimer" style="border: none">
         <tr>
           <td>
             <div class="box">
 All the pieces of information described here come from the <a href="http://www.libsdl.org/mailman/listinfo/sdl" target="_blank">SDL mailing list</a>. Numerous SDL experts gave useful pieces of advice that we tried to collect thematically through the years. We deem these hints useful, and we hope not too many errors survived.<br>
-<center>Many thanks to all the members of the SDL list for this shared knowledge !</center>
+<center>Many thanks to all the members of the SDL list for this shared knowledge!</center>
             </div>
           </td>
         </tr>
@@ -66,7 +66,7 @@ All the pieces of information described here come from the <a href="http://www.l
 
 <a name="toc"></a>
 <center>
-    <table summary="Inputs" style="border : none">
+    <table summary="Inputs" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -80,21 +80,57 @@ All the pieces of information described here come from the <a href="http://www.l
     </table>
 </center>
 
-  
-  
+
+<h3>Touchscreen</h3>
+
+<h4>Elo Touch Screen</h4>
+
+<p>
+The Elo Touch Screen is supported by SDL from version 1.1.8. All you need to do is to indicate to the SDL engine that you want to use the Elo touch system with frame buffer console (not X). To do that we have the SDL_putenv method:
+
+<center>
+    <table summary="Code" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
 <code><pre>
-Elo Touch Screen is supported by SDL from version 1.1.8.
-All you need to do is to indicate to the SDL engine that you want to use the elo touch system with frame buffer console (not X).
-To do that we have the SDL_putenv method.
-In my program I have added three lines:
     SDL_putenv("SDL_VIDEODRIVER=fbcon"); //We use Frame Buffer Console which support elotouch and don't use X
     SDL_putenv("SDL_MOUSEDRV=ELO");//We use elo touch screen as mouse
     SDL_putenv("SDL_MOUSEDEV=/dev/ttyS0");//elo touch screen is plugged on COM1
 
+</pre></code>
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
 
-Touchscreen moving randomly in fullscreen mode : the issue was the screen resolution set in the xorg.conf did not match what was set to the full screen parameters.  I ajdusted this and restarted X and it worked fine after that.
+</p>
 
-MS Windows on tablet PCs had this problem. Switching from DirectX to WinDIB drivers fixed it.
+
+
+<h4>Troubleshooting</h4>
+
+<p>
+<dl>
+
+<!--
+    <dt></dt>
+    <dd></dd>
+-->
+
+	<dt>Touchscreen moving randomly in fullscreen mode</dt>
+	<dd>The issue might be that the screen resolution set in the <code>xorg.conf</code> file does not match what was set to the fullscreen parameters. Adjust it and restart X to try it.</dd>
+
+	<dt>Touchscreen cursor going crazy</dt>
+    <dd>MS Windows on tablet PCs had this problem. It can happen when using the DirectX driver. Fall back to WinDIB driver to get it working properly. Decreasing the acceleration of the video driver to <em>disable DirectDraw acceleration</em> also fixes the problem.</dd>
+
+</dl>
+</p>
+
+  
+<code><pre>
+
 
 The touch screen on most winCE devices maps as a mouse.  beware that the mouse postition is valid only while the 'button is pushed'.  The direction pad maps as arrow keys.  
 
@@ -136,11 +172,11 @@ This article may be helpful in clearing up your confusion about utf-6
 and utf-16:
 http://www.joelonsoftware.com/articles/Unicode.html
 
-But two questions about UTF-8 :
+But two questions about UTF-8:
 
 >>
 >> 1. How do i know if the next character uses 1 Byte, 2 Bytes
->> or more ?
+>> or more?
 
 
 
@@ -185,13 +221,13 @@ for (j = 0; j < utf8_str_len; j++)
 
 This is probably good reading:  http://en.wikipedia.org/wiki/Utf-8
 
-What marks the end of my textline ?
+What marks the end of my textline?
 
 Utf-8 is compatible with null-terminated strings.  (The byte 0x00 refers
   to codepoint 0, which is equivalent to the ASCII character '\0'.)
 When there are 2 Bytes do i still have to swap
 
->> for different endianess ?
+>> for different endianess?
 
 
 No.
@@ -207,7 +243,7 @@ If i call SDL_SetVideoMode a display surface will always be shown.
 You can use the Dummy Video Driver.
 
 
-how do I get joystick input without creating a window ? Try the dummy video
+how do I get joystick input without creating a window? Try the dummy video
 driver
 
 
@@ -427,7 +463,6 @@ What is the supposed meaning of the SDL_Event.key.keysym.sym field and the corre
 The best solution is to map to the unshifted code for the current keyboard. Unfortunately, this leaves SDL's keysym set lacking, and this can't be addressed until a major API change (1.3).
 
 
-Touchscreen 'mouse' goes crazy. It only happens when using directx driver. I must fall back to windib driver to get it working properly. Decreasing the acceleration of the video driver to 'disable directdraw acceleration' also fixes the problem.
 
 
 I'm trying to run a SDL application in an embedded enviroment,
@@ -470,7 +505,7 @@ SDL_WM_GrabInput(SDL_GRAB_OFF);
 Using the cursor as normal in fullscreen mode would sort of conflicts with the full-screen concept  because it's cursor is controlled and drawn by the window-manager..
 
  
-force feedback : for linux there is libff
+force feedback: for linux there is libff
 
   
 The SDLK_* symbols are to be considered portable "scancodes", and have nothing much to do with ASCII. Each symbol is supposed to represent a physical key on the keyboard, pretty much disregarding whatever might be printed on the keycap. Use these when you want a "mega gamepad" sort of input device.
@@ -489,9 +524,9 @@ http://www.sjbaker.org/steve/omniv/keyboards_are_evil.html
 
 To make things even worse, keyboards deal with ghost keys differently. Some very cheap and simple ones just ignore the problem and throw any "detected" keys, including ghosts, at the PC. Others try to hide the problem by filtering out some or all potential ghosts in combinations that are known to produce ghosts.
 
-Solution: Use a joystick! This is what they are for. And SDL support both analog and digital joysticks. Only force feedback (and maybe rumble ?) is missing.
+Solution: Use a joystick! This is what they are for. And SDL support both analog and digital joysticks. Only force feedback (and maybe rumble?) is missing.
 
-I have two USB mouses connected to my linux box. Is there a way to check inside a SDL application which mouse was pressed ? For me it looks like even in the X11 core routines there is no way to figure out which mouse was pressed ?
+I have two USB mouses connected to my linux box. Is there a way to check inside a SDL application which mouse was pressed? For me it looks like even in the X11 core routines there is no way to figure out which mouse was pressed?
 
 
 Chances are, you're using /dev/input/mice, which blends all USB mouse 
@@ -564,7 +599,7 @@ The way SDL handles its key state is when you pump the event loop, as it queues 
 
   <dl>
   
-	<dt>How do I create a code that lets users of different keyboard mappings enter those characters their way ?</dt>
+	<dt>How do I create a code that lets users of different keyboard mappings enter those characters their way?</dt>
 	<dd>Enable UNICODE input and use the unicode field instead. Use SDLK_* only when you want to use the keyboard as an oversized gamepad.</dd>
 
   </dl>
@@ -584,11 +619,11 @@ You can find a normal PS2 keyboard that passes well multiple keypress events. Fo
 
 
 <h3>Converting a keypress into the actual character displayed on it</h3>
-<h4>Or : why neither of the two classical ways of handling keypresses are satisfactory for games</h4>
+<h4>Or: why neither of the two classical ways of handling keypresses are satisfactory for games</h4>
 
 <p>
 SDL provides Unicode translation for key-down events. Look at the 'unicode' field of the keysym structure. In order for it to be valid, though, you must first enable Unicode translation with an
-<code>SDL_EnableUNICODE(1)</code> call.  The release events do not get translated (more infos : <a href="http://www.libsdl.org/cgi/docwiki.cgi/FAQ_20Unicode" target="_blank">SDL Unicode FAQ</a>).
+<code>SDL_EnableUNICODE(1)</code> call.  The release events do not get translated (more infos: <a href="http://www.libsdl.org/cgi/docwiki.cgi/FAQ_20Unicode" target="_blank">SDL Unicode FAQ</a>).
 </p>
 
 <p>
@@ -600,7 +635,7 @@ Or I can use the sym field, which provide platform independent keys, but this ma
 </p>
 
 <p>
-The situation gets even worse when I want to assign meta-keys or dead keys (ex : on some keyboard layouts, the spacebar is a modifier key). Here I can only fallback to the scancode solution.
+The situation gets even worse when I want to assign meta-keys or dead keys (ex: on some keyboard layouts, the spacebar is a modifier key). Here I can only fallback to the scancode solution.
 </p>
 
 <p>
@@ -608,7 +643,7 @@ It is not that the keyssyms are really bad, they are perfectly suitable for text
 </p>
 
 
-<h4>The solution : customization by the user</h4>
+<h4>The solution: customization by the user</h4>
 <p>
 You could allow for keys to be customized, or use different keymaps depending on the locale. But this problem has little or nothing to do with the language / country / locale of the user, on a laptop plenty of keys that exist on a full keyboard are missing, or require holding the dreaded Function key. This is generally not suitable for games, but most tend to let me customize my controls, so it is not a problem any longer, you should probably do what they are doing.
 </p>
@@ -635,7 +670,7 @@ Your average CPU executes some 50 million instructions between each event from a
 <h3>Handling double click</h3>
 
 <p>
-When you get a single click, just :
+When you get a single click, just:
 
 <code><pre>
 
@@ -666,7 +701,7 @@ You should ideally make the interval user-configurable, and possibly include som
 <p>
   <dl>
 
-    <dt>In win32, if I run fullscreen, the windows cursor disappears, while windowed applications keep the cursor. Does this act the same in other OS's ? Or should I be using SDL_ShowCursor() anyway ?</dt>
+    <dt>In win32, if I run fullscreen, the windows cursor disappears, while windowed applications keep the cursor. Does this act the same in other OS's? Or should I be using SDL_ShowCursor() anyway?</dt>
     <dd>
 	<p>
 	This happens if you are writing directly to video memory (see <a href="http://www.libsdl.org/faq.php?action=listentries&category=2#83">SDL FAQ</a>). You can disable system cursor, create a sprite and blit it where the cursor is. It allows both color and total control
@@ -703,7 +738,7 @@ Windows does things differently. But, generally the joysticks are either tied cl
 </p> 
 
 <p>
-So, what do you do if you want to have a portable consistent way of handling joystick input ? You make it all look like events, even though it may be polled. It is easy to make a polling loop push events on an event queue. 
+So, what do you do if you want to have a portable consistent way of handling joystick input? You make it all look like events, even though it may be polled. It is easy to make a polling loop push events on an event queue. 
 </p>
 
 <p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -713,11 +748,8 @@ So, what do you do if you want to have a portable consistent way of handling joy
 
   <br>
   <br>
-  <br>
-  <br>
-  <br>
 
-  <h3>Please react !</h3>
+  <h3>Please react!</h3>
 
   <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20inputs">drop us a line</a>!</p><br>
   <br>
@@ -727,7 +759,7 @@ So, what do you do if you want to have a portable consistent way of handling joy
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : 2006</em>
+    <em>Last update: Monday, March 9, 2009</em>
   </center>
 </body>
 </html>
