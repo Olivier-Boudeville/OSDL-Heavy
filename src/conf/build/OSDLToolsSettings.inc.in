@@ -374,11 +374,11 @@ dldi_patch_fcsr_MD5="b92ed16b14d7c4dc813ed26bbe4b5cb8"
 
 # devkitARM: http://www.devkitpro.org/category/devkitarm/
 # (includes libnds and libfat now)
-devkitARM_VERSION="21"
-devkitARM_ARCHIVE="devkitARM_r${devkitARM_VERSION}-linux.tar.bz2"
-devkitARM_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/devkitpro"
+devkitARM_VERSION="25"
+devkitARM_ARCHIVE="devkitARM_r${devkitARM_VERSION}-i686-linux.tar.bz2"
+devkitARM_DOWNLOAD_LOCATION="osdn.dl.sourceforge.net/sourceforge/devkitpro"
 devkitARM_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/devkitpro"
-devkitARM_MD5="836313873c10d56bf910607a23cb3757"
+devkitARM_MD5="00c36d047b6465d9bb3eeb30e2a799bb"
 
 
 # libnds:
@@ -401,11 +401,11 @@ grit_MD5="ef0449353eb3829da28694d391584f5a"
 
 # PAlib: http://palib.info/
 
-PAlib_VERSION="070717"
-PAlib_ARCHIVE="PAlib_${PAlib_VERSION}.zip"
-PAlib_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/pands"
-PAlib_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/pands"
-PAlib_MD5="2e16101b96f2120640e738420db007af"
+PAlib_VERSION="080823"
+PAlib_ARCHIVE="PAlib_${PAlib_VERSION}_Archive.zip"
+PAlib_DOWNLOAD_LOCATION="http://palib.info/downloads/Stable/"
+PAlib_ALTERNATE_DOWNLOAD_LOCATION=""
+PAlib_MD5="b18197325465c3b02a19f825b9d12e82"
 
 
 # dswifi:
@@ -450,7 +450,7 @@ Erlang_MD5="3751ea3fea669d2b25c67eeb883734bb"
 
 # egeoip: http://code.google.com/p/egeoip/
 
-# Not used actually:
+# Not used actually, as only available through SVN:
 egeoip_ARCHIVE="egeoip.tar.bz2"
 egeoip_DOWNLOAD_LOCATION=""
 egeoip_MD5="(blanked)"
@@ -462,8 +462,8 @@ egeoip_SVN_SERVER="egeoip.googlecode.com"
 
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
-# Version of Friday, July 11, 2008:
-Geolite_MD5="ab2e476dbd8548a19c79b7d766d35938"
+# Version of Friday, March 6, 2009:
+Geolite_MD5="1838a3a68f2c7a9eb310cee8f82b6a64."
 
 # Orge server section.
 # To be added when released as open-source.
@@ -484,14 +484,14 @@ Ceylan_ARCHIVE="ceylan-${Ceylan_VERSION}.tar.bz2"
 # OSDN is the first download location to be mirrored:
 Ceylan_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/ceylan"
 Ceylan_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/ceylan"
-Ceylan_MD5="(blanked)"
+Ceylan_MD5="2f0599deb07d6cad9663c3aab8573afc"
 
 Ceylan_win_VERSION="@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@"
 Ceylan_win_ARCHIVE="ceylan-${Ceylan_win_VERSION}.tar.bz2"
 # OSDN is the first download location to be mirrored:
 Ceylan_win_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/ceylan"
 Ceylan_win_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/ceylan"
-Ceylan_win_MD5="(blanked)"
+Ceylan_win_MD5="${Ceylan_MD5}"
 
 Ceylan_SVN_SERVER=ceylan.svn.sourceforge.net
 
@@ -512,14 +512,15 @@ OSDL_ARCHIVE="osdl-${OSDL_VERSION}.tar.bz2"
 # OSDN is the first download location to be mirrored:
 OSDL_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
 OSDL_ALTERNATE_DOWNLOAD_LOCATION="http://easynews.dl.sourceforge.net/sourceforge/osdl"
-OSDL_MD5="(blanked)"
+OSDL_MD5="be95fa27409173bb459e27e91aaddf97"
 
 OSDL_win_VERSION="@OSDL_VERSION@"
 OSDL_win_ARCHIVE="osdl-${OSDL_win_VERSION}.tar.bz2"
 # OSDN is the first download location to be mirrored:
 OSDL_win_DOWNLOAD_LOCATION="http://osdn.dl.sourceforge.net/sourceforge/osdl"
 OSDL_win_ALTERNATE_DOWNLOAD_LOCATION="http://switch.dl.sourceforge.net/sourceforge/osdl"
-OSDL_win_MD5="(blanked)"
+OSDL_win_MD5=""
+OSDL_win_MD5="${OSDL_MD5}"
 
 OSDL_SVN_SERVER=osdl.svn.sourceforge.net
 
