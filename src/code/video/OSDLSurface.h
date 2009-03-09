@@ -2157,24 +2157,136 @@ namespace OSDL
 				 		const TwoDimensional::Point2D & destinationLocation ) 
 					const throw( VideoException ) ;
 
+
 				 
 				
 				/**
-				 * Maps the current texture at the center of that surface,
-				 * supposed to be the screen surface.
+				 * Displays the specified texture at the specified location
+				 * on that surface, supposed to be the screen surface, at
+				 * natural size (i.e. one pixel of the texture corresponds
+				 * exactly to one pixel on the screen).
 				 *
-				 * @param texture the texture to map, supposed to be the 
-				 * current texture.
+				 * @param texture the texture to map.
+				 *
+				 * @param x the abscissa screen coordinate.
+				 *
+				 * @param y the ordiante screen coordinate.
 				 *
 				 * @throw VideoException if the operation failed.
 				 *
 				 * @note If the texture is bigger than the surface, then
 				 * only a part of the texture will be displayed.
 				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
 				 */	
-				virtual void mapAtCenter( const OpenGL::GLTexture & texture ) 
+				virtual void displayAt( const OpenGL::GLTexture & texture,
+					Coordinate x, Coordinate y ) 
 					const throw( VideoException ) ;
 				 
+				 
+				 
+				/**
+				 * Displays the specified texture at the center of that surface,
+				 * supposed to be the screen surface, at natural size
+				 * (i.e. one pixel of the texture corresponds exactly to one
+				 * pixel on the screen).
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note If the texture is bigger than the surface, then
+				 * only a part of the texture will be displayed.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayAtCenter( 
+					const OpenGL::GLTexture & texture ) 
+					const throw( VideoException ) ;
+				 
+				
+				/**
+				 * Displays the specified texture at the center of that surface,
+				 * supposed to be the screen surface, at natural size
+				 * (i.e. one pixel of the texture corresponds exactly to one
+				 * pixel on the screen), blended on the background based on 
+				 * specified alpha component.
+				 *
+				 * Useful to perform fade-in/fade-out.
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @param alpha a floating-point value in [0,1], from
+				 * invisible to solid.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note If the texture is bigger than the surface, then
+				 * only a part of the texture will be displayed.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayAtCenterWithAlpha( 
+						const OpenGL::GLTexture & texture,
+						Pixels::FloatColorElement alpha ) 
+					const throw( VideoException ) ;
+				 
+				
+				
+				/**
+				 * Displays the specified texture at the center of that surface,
+				 * supposed to be the screen surface, at natural size
+				 * (i.e. one pixel of the texture corresponds exactly to one
+				 * pixel on the screen), with a fade-in of specified duration.
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @param fadeInDuration the number of milliseconds the 
+				 * fade-in should last.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note If the texture is bigger than the surface, then
+				 * only a part of the texture will be displayed.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayAtCenterWithFadeIn( 
+						const OpenGL::GLTexture & texture,
+						Ceylan::System::Millisecond fadeInDuration = 2000 ) 
+					throw( VideoException ) ;
+				 
+				 
+				 
+				/**
+				 * Displays the specified texture at the center of that surface,
+				 * supposed to be the screen surface, at natural size
+				 * (i.e. one pixel of the texture corresponds exactly to one
+				 * pixel on the screen), with a fade-out of specified duration.
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @param fadeOutDuration the number of milliseconds the 
+				 * fade-out should last.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note If the texture is bigger than the surface, then
+				 * only a part of the texture will be displayed.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayAtCenterWithFadeOut( 
+						const OpenGL::GLTexture & texture,
+						Ceylan::System::Millisecond fadeOutDuration = 1000 ) 
+					throw( VideoException ) ;
+				 
+				
 				
 				
 				/*
