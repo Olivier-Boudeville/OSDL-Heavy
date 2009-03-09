@@ -62,6 +62,9 @@ namespace OSDL
 				 * @throw AudioChannelException if the operation failed or 
 				 * is not supported.
 				 *
+				 * @note Usually the user does not create his own channels,
+				 * he retrieves them thanks to AudioModule::getMixingChannelAt.
+				 *
 				 */
 				explicit AudioChannel( ChannelNumber channelNumber )
 					throw( AudioChannelException ) ;
@@ -268,6 +271,22 @@ namespace OSDL
 				 */
 				virtual void resume() throw( AudioChannelException ) ;
 		
+		
+		
+				/**
+				 * Waits (synchronously, i.e. blocks) as long as this
+				 * channel is playing.
+				 *
+				 * @note CPU-friendly busy waiting is performed.
+				 *
+				 * @throw AudioException if the operation failed,
+				 * including if not supported.
+				 *
+				 */
+				virtual void waitEndOfPlayback() const
+					throw( AudioChannelException ) ;
+					
+
 				
 				/**
 				 * Halts the playing on this channel.
