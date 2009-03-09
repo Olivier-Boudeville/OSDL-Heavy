@@ -64,6 +64,7 @@ using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
@@ -2079,12 +2080,52 @@ bool Surface::blitTo( Surface & targetSurface,
 	
 	
 	
-void Surface::mapAtCenter( const OpenGL::GLTexture & texture ) 
+void Surface::displayAt( const OpenGL::GLTexture & texture,
+	Coordinate x, Coordinate y ) const throw( VideoException )	
+{
+
+#if OSDL_USES_OPENGL
+
+	texture.setAsCurrent() ;
+		
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( x, y ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( x, y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( x + texture.getWidth(), y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( x + texture.getWidth(), y ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayAt failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+	
+void Surface::displayAtCenter( const OpenGL::GLTexture & texture ) 
 	const throw( VideoException )
 {
 
 #if OSDL_USES_OPENGL
 
+	texture.setAsCurrent() ;
+	
 	Length firstAbscissa  = ( getWidth()  - texture.getWidth() ) / 2 ;
 	Length secondAbscissa = firstAbscissa + texture.getWidth() ;
 	
@@ -2113,14 +2154,274 @@ void Surface::mapAtCenter( const OpenGL::GLTexture & texture )
 
 #else // if OSDL_USES_OPENGL
 
-	throw VideoException( "Surface::mapAtCenter failed: "
+	throw VideoException( "Surface::displayAtCenter failed: "
 		"no OpenGL support available." ) ;
 		
 #endif // OSDL_USES_OPENGL
 
 }
 
+
+
+void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
+	Pixels::FloatColorElement alpha ) const throw( VideoException )
+{
+
+#if OSDL_USES_OPENGL
+
+
+	texture.setAsCurrent() ;
+	
+	Length firstAbscissa  = ( getWidth()  - texture.getWidth() ) / 2 ;
+	Length secondAbscissa = firstAbscissa + texture.getWidth() ;
+	
+	Length firstOrdinate  = ( getHeight() - texture.getHeight() ) / 2 ;
+	Length secondOrdinate = firstOrdinate + texture.getHeight() ;
+
+	
+	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
+	glBegin(GL_QUADS);
+	{
+	
+		glVertex2d( firstAbscissa, firstOrdinate ) ;
 		
+		glVertex2d( firstAbscissa, secondOrdinate ) ;
+		
+		glVertex2d( secondAbscissa, secondOrdinate ) ;
+		
+		glVertex2d( secondAbscissa, firstOrdinate ) ;
+	
+	}
+	glEnd() ;
+
+	
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( firstAbscissa, firstOrdinate ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( firstAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( secondAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( secondAbscissa, firstOrdinate ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayAtCenterWithAlpha failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+		
+	
+	
+void Surface::displayAtCenterWithFadeIn( const OpenGL::GLTexture & texture,
+	Ceylan::System::Millisecond fadeInDuration ) throw( VideoException )	
+{
+
+#if OSDL_USES_OPENGL
+
+	/*
+	 * Uses the natural pace induced by the OS atomic sleeps.
+	 * We use a linearly interpolated fade effect, instead of the natural 
+	 * pace induced by the OS atomic sleeps, which is not reliable.
+	 *
+	 */
+	 
+	texture.setAsCurrent() ;
+	
+	Length firstAbscissa  = ( getWidth()  - texture.getWidth() ) / 2 ;
+	Length secondAbscissa = firstAbscissa + texture.getWidth() ;
+	
+	Length firstOrdinate  = ( getHeight() - texture.getHeight() ) / 2 ;
+	Length secondOrdinate = firstOrdinate + texture.getHeight() ;
+
+	// Fade-in:
+	
+	FloatColorElement alpha = 0 ;
+
+	Ceylan::System::Second startingSecond, currentSecond ;
+	
+	Ceylan::System::Microsecond startingMicrosecond, currentMicrosecond,
+		elapsedMicrosecond ;
+	
+	Ceylan::System::getPreciseTime( startingSecond, startingMicrosecond ) ;	
+	
+	do
+	{
+		
+		clear() ;
+
+	
+		glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
+		glBegin(GL_QUADS);
+		{
+	
+			glVertex2d( firstAbscissa, firstOrdinate ) ;
+		
+			glVertex2d( firstAbscissa, secondOrdinate ) ;
+	
+			glVertex2d( secondAbscissa, secondOrdinate ) ;
+	
+			glVertex2d( secondAbscissa, firstOrdinate ) ;
+	
+		}
+		glEnd() ;
+
+	
+		glBegin(GL_QUADS) ;
+		{
+	
+			glTexCoord2d( 0, 0 ) ;
+			glVertex2d( firstAbscissa, firstOrdinate ) ;
+	
+			glTexCoord2d( 0, 1 ) ;
+			glVertex2d( firstAbscissa, secondOrdinate ) ;
+	
+			glTexCoord2d( 1, 1 ) ;
+			glVertex2d( secondAbscissa, secondOrdinate ) ;
+	
+			glTexCoord2d( 1, 0 ) ;
+			glVertex2d( secondAbscissa, firstOrdinate ) ;
+	
+		}
+		glEnd() ;
+
+		update() ;
+
+		Ceylan::System::atomicSleep() ;
+		
+		Ceylan::System::getPreciseTime( currentSecond, currentMicrosecond ) ;	
+		
+		elapsedMicrosecond = Ceylan::System::getDurationBetween(
+			startingSecond, startingMicrosecond, 
+			currentSecond, currentMicrosecond ) ;
+					
+		alpha = elapsedMicrosecond / ( 1000.0f * fadeInDuration )  ;
+		
+	}
+	while ( alpha < 1.0 ) ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayAtCenterWithFadeIn failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
+void Surface::displayAtCenterWithFadeOut( const OpenGL::GLTexture & texture,
+	Ceylan::System::Millisecond fadeOutDuration ) throw( VideoException )	
+{
+
+#if OSDL_USES_OPENGL
+
+	/*
+	 * Uses the natural pace induced by the OS atomic sleeps.
+	 * We use a linearly interpolated fade effect, instead of the natural 
+	 * pace induced by the OS atomic sleeps, which is not reliable.
+	 *
+	 */
+	 
+	texture.setAsCurrent() ;
+	
+	Length firstAbscissa  = ( getWidth()  - texture.getWidth() ) / 2 ;
+	Length secondAbscissa = firstAbscissa + texture.getWidth() ;
+	
+	Length firstOrdinate  = ( getHeight() - texture.getHeight() ) / 2 ;
+	Length secondOrdinate = firstOrdinate + texture.getHeight() ;
+
+	// Fade-out:
+	
+	FloatColorElement alpha = 0 ;
+	
+	Ceylan::System::Second startingSecond, currentSecond ;
+	
+	Ceylan::System::Microsecond startingMicrosecond, currentMicrosecond,
+		elapsedMicrosecond ;
+	
+	Ceylan::System::getPreciseTime( startingSecond, startingMicrosecond ) ;	
+
+	do
+	{
+		
+		clear() ;
+
+	
+		glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
+		glBegin(GL_QUADS);
+		{
+	
+			glVertex2d( firstAbscissa, firstOrdinate ) ;
+		
+			glVertex2d( firstAbscissa, secondOrdinate ) ;
+	
+			glVertex2d( secondAbscissa, secondOrdinate ) ;
+	
+			glVertex2d( secondAbscissa, firstOrdinate ) ;
+	
+		}
+		glEnd() ;
+
+	
+		glBegin(GL_QUADS) ;
+		{
+	
+			glTexCoord2d( 0, 0 ) ;
+			glVertex2d( firstAbscissa, firstOrdinate ) ;
+	
+			glTexCoord2d( 0, 1 ) ;
+			glVertex2d( firstAbscissa, secondOrdinate ) ;
+	
+			glTexCoord2d( 1, 1 ) ;
+			glVertex2d( secondAbscissa, secondOrdinate ) ;
+	
+			glTexCoord2d( 1, 0 ) ;
+			glVertex2d( secondAbscissa, firstOrdinate ) ;
+	
+		}
+		glEnd() ;
+
+		update() ;
+
+		Ceylan::System::atomicSleep() ;
+		
+		Ceylan::System::getPreciseTime( currentSecond, currentMicrosecond ) ;	
+		
+		elapsedMicrosecond = Ceylan::System::getDurationBetween(
+			startingSecond, startingMicrosecond, 
+			currentSecond, currentMicrosecond ) ;
+			
+		alpha = 1.0 - elapsedMicrosecond / ( 1000.0 * fadeOutDuration )  ;
+		
+	}
+	while ( alpha > 0.0 ) ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayAtCenterWithFadeOut failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+	
 	
 Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor, 
 		Ceylan::Maths::Real ordinateZoomFactor,	bool antialiasing ) 
