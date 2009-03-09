@@ -127,7 +127,7 @@ Even though all the tools used are available on the most common platforms, OSDL 
   
 
 <p>
-LOANI is released under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GNU GPL</a> license.
+LOANI is released under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GNU GPL</a> licence.
 </p>
 
 <center>[<a href="#toc">Back to table of contents</a>]</center>
@@ -150,7 +150,7 @@ For other platforms, some adaptations may have to be performed. A general rule o
 	
 <h3>Other prerequesites</h3>	
 
-<p>One of course should have a working internet connection in order to retrieve the target packages, if needed: one could indeed prefetch archives thanks to any available way (ex: a CDR or an USB key) and put them in LOANI's cache repository, to avoid any subsequent download.
+<p>One of course should have a working internet connection in order to retrieve the target packages, if needed: one could indeed prefetch archives thanks to any available way (ex: a CD or an USB key) and put them in LOANI's cache repository, to avoid any subsequent download. Note also that we try to maintain a last-resort up-to-date <a href="ftp://ftp.esperide.com/LOANI-archive-repository/" target="_blank">FTP cache</a>, to overcome outages of the respective official download locations (LOANI will then make automatically use of it).
 </p>
 
 <h3>Tools needed for LOANI (GNU version strongly recommended)</h3>
@@ -368,7 +368,7 @@ Installation and packages are more precisely described in the Orge technical man
 <h3>Selecting all tools section</h3>
 
 <p>
-If one wants to select all the above managed tools (<em>required</em>, <em>build</em> and <em>optional</em>), simply use the <code>--allTools</code> LOANI option. The user should end up with a total installation weighing approximately 300 megabytes, if stripped down with archive cache removed. Let's remember that gigabytes are cheap !
+If one wants to select all the above managed tools (<em>required</em>, <em>build</em> and <em>optional</em>), simply use the <code>--allTools</code> LOANI option. The user should end up with a total installation weighing approximately 300 megabytes, if stripped down with archive cache removed. Let's remember that gigabytes are cheap!
 </p>
 
 <p>
@@ -810,7 +810,7 @@ Certificate information:
 	<p>Otherwise, if LOANI seems really frozen (we have not experienced this behaviour for a few years now), you can download by your own means the relevant archives (for example <code>freetype-x.y.z.tar.bz2</code>) and move them directly into the cache directory (by default,  <code>LOANI-repository</code>), among the other archives. Next time LOANI will be launched, it will take them into account, provided that they are not corrupted (i.e. their MD5 codes are right) or provided that strict mode is not enabled.
 	</p>
 	
-    <p>Still frozen (this should really almost never occur after that step) ? After having waited enough (beware, some archives such as the one of gcc are very big), if the log files do not progress anymore, the downloads (SVN and/or wget ones ) may encounter a network problem which happens on the user side.
+    <p>Still frozen (this should really almost never occur after that step)? After having waited enough (beware, some archives such as the one of gcc are very big), if the log files do not progress anymore, the downloads (SVN and/or wget ones ) may encounter a network problem which happens on the user side.
 	</p>
 	
 	<p>Then one may stop LOANI, possibly get rid of all <code>wget</code> processes still running (if any), and remove partially downloaded archives in <code>LOANI-repository</code> (if strict mode is not chosen, since otherwise these archives would be taken as they are, next time LOANI is run).
@@ -849,7 +849,7 @@ Certificate information:
       <dd><p>
 	  To get rid of the ambiguity between C and C++ compilers (partly due to the meaning of the CC environment variable and the allegation of gcc "<em>able to distinguish between C and C++ sources</em>"), LOANI will let the two environment variables <code>C_COMPILER</code> (for C compiler) and <code>CPP_COMPILER</code> (for C++ compiler) eclipse all other, including CC. If one of the two is needed and if it does not point towards a valid executable, an attempt will be made to respectively find gcc and g++. On failure, LOANI will fall back to CC, if set, hoping it will match the need.</p>
 	  
-	  <p>If, as it would be normal, you are bothered by these build issues, just use the <code>--buildTools</code> option and let LOANI take care of it !</p>
+	  <p>If, as it would be normal, you are bothered by these build issues, just use the <code>--buildTools</code> option and let LOANI take care of it!</p>
 	  </dd>
 
 	<dt>If your are using the <b>--sourceforge</b> option and LOANI fails</dt>
@@ -876,7 +876,7 @@ Certificate information:
 	<dd>Check you have <b>enough space </b> on your hard-drive (use for instance <code>df -k .</code>): LOANI performs some rough size estimates, but may be wrong. If it fails and little room remains, you have your first suspect. If the space left is not guilty, and if you are using Windows, some random errors actually seem to happen when using Cygwin. We noticed that sometimes some executables are not found whereas they are here, or some md5sum checkings fail whereas the sums should match. Try to re-launch LOANI, the outcome might be more satisfying, even though we are not fond of non-deterministic software.</dd>
 	
 	<dt>LOANI fails while configuring Ceylan and/or OSDL</dt>
-	<dd><p>If you have fancy compilers (for instance, <code>gcc 2.96</code>) or even better no C++ compiler, and if you did not select the <code>--buildTools</code> option (that would compile and install for you a recent gcc; by the way, please remember that a compiler is needed to compile a compiler !), expect having some trouble configuring Ceylan and OSDL.
+	<dd><p>If you have fancy compilers (for instance, <code>gcc 2.96</code>) or even better no C++ compiler, and if you did not select the <code>--buildTools</code> option (that would compile and install for you a recent gcc; by the way, please remember that a compiler is needed to compile a compiler!), expect having some trouble configuring Ceylan and OSDL.
  </p>
  
 
@@ -921,7 +921,7 @@ checking for OpenGL (GLX) support... yes
 <a name="support"></a>
 <h2>Getting support</h2>
 <p>
-Still out of luck ? Still stuck with that bloody software ? Nothing above helped you ? Two solutions remain for the poor lonesome user:
+Still out of luck? Still stuck with that bloody software? Nothing above helped you? Two solutions remain for the poor lonesome user:
 <ul>
 
 	<li>if he has some programming skills and still has a little <b>courage</b>: the first place to investigate a little more is certainly <code>LOANI.log</code>, the text file where all LOANI operations are logged. This file is to be found in the directory where you executed LOANI, and is very useful to be looked at, including while LOANI is running. To do so, use <code>tail -f LOANI.log</code> in another terminal and lines will be shown as soon as they are output. Most of the errors should be easy fixed that way, notably if one uses too the <code>-d</code> option (<code>loani.sh -d [...]</code>): in this case, more debug informations will be displayed on screen. This option stands for debug mode, and ensures that LOANI is more verbose while running</li>
@@ -956,7 +956,7 @@ We will do our best to investigate thoroughfully and solve you issue. It will be
         <tr>
           <td>
             <div class="box">
-We hope you will enjoy using LOANI and OSDL !
+We hope you will enjoy using LOANI and OSDL!
             </div>
           </td>
         </tr>
@@ -966,7 +966,7 @@ We hope you will enjoy using LOANI and OSDL !
 
  
 
-  <h3>Please react !</h3>
+  <h3>Please react!</h3>
 
   <p>If you have informations more detailed or more recent than those presented in this document, if you noticed errors, neglects or points
   insufficiently discussed, <a href="mailto:osdl-loani-bugs@lists.sourceforge.net?subject=[OSDL]%20LOANI%200.6">drop us a line</a>!</p>
@@ -978,7 +978,7 @@ We hope you will enjoy using LOANI and OSDL !
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Tuesday, November 25, 2008</em>	
+    <em>Last update: Sunday, March 8, 2009</em>	
   </center>
 </body>
 </html>
