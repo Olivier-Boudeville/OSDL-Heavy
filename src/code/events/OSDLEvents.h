@@ -256,6 +256,31 @@ namespace OSDL
 				virtual bool hasPendingUserInput() const throw() ;
 				
 				
+				
+				/**
+				 * Returns whether mouse and keyboard inputs are grabbed.
+				 *
+				 * @throw EventsException if the operation failed or is not
+				 * supported.
+				 *
+				 */
+				virtual bool getGrabInputMode() const 
+					throw( EventsException ) ;
+
+
+				/**
+				 * Tells whether mouse and keyboard inputs should be grabbed.
+				 *
+				 * @param newMode inputs will be grabbed iff true.
+				 *
+				 * @throw EventsException if the operation failed or is not
+				 * supported.
+				 *
+				 */
+				virtual void setGrabInputMode( bool newMode ) 
+					throw( EventsException ) ;
+
+
 
 				/**
 				 * Sleeps for the specified duration.
@@ -781,8 +806,8 @@ namespace OSDL
 				
 											
 				///	The default frequency targeted by the basic event loop.
-				static const Ceylan::Maths::Hertz DefaultEventLoopTargetedFrequency 
-					= 100 ;
+				static const Ceylan::Maths::Hertz
+					DefaultEventLoopTargetedFrequency = 100 ;
 				
 				
 				
