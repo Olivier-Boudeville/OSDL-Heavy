@@ -43,7 +43,7 @@ class MyController : public OSDL::MVC::Controller
 				const Ceylan::CallerEventListener & listener ) 
 			throw( Ceylan::EventException )
 		{
-			throw Ceylan::EventException( "MyController::getEventFor : "
+			throw Ceylan::EventException( "MyController::getEventFor: "
 				"not expected to be called." ) ;
 		}
 		
@@ -111,7 +111,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -125,7 +125,7 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
@@ -140,10 +140,10 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Getting events module." ) ;
 		EventsModule & myEvents = myOSDL.getEventsModule() ; 
 		
-		LogPlug::info( "Events module : " + myEvents.toString() ) ;
+		LogPlug::info( "Events module: " + myEvents.toString() ) ;
 		
 		JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
-		LogPlug::info( "Current joystick handler is : " 
+		LogPlug::info( "Current joystick handler is: " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 
 		JoystickNumber joyCount = 
@@ -158,7 +158,7 @@ int main( int argc, char * argv[] )
 			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
 				myJoystickHandler.openJoystick( i ) ;
 		
-			LogPlug::info( "New joystick handler state is : " 
+			LogPlug::info( "New joystick handler state is: " 
 				+ myJoystickHandler.toString( Ceylan::high ) ) ;
 		
 		}
@@ -171,7 +171,7 @@ int main( int argc, char * argv[] )
 		
 		}
 		
-		LogPlug::info( "New joystick handler state is : " 
+		LogPlug::info( "New joystick handler state is: " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 		
 			
@@ -181,7 +181,7 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Getting video." ) ;
 		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
 
-		// A window is needed to have the event system working :
+		// A window is needed to have the event system working:
 
 		Length screenWidth  = 640 ;
 		Length screenHeight = 480 ; 
@@ -224,11 +224,11 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Stopping OSDL." ) ;		
         OSDL::stop() ;
 
-   }
+	}
 	
     catch ( const OSDL::Exception & e )
     {
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -237,7 +237,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -246,7 +246,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
