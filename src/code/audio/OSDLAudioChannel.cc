@@ -397,6 +397,16 @@ void AudioChannel::resume() throw( AudioChannelException )
 
 
 
+void AudioChannel::waitEndOfPlayback() const throw( AudioChannelException )
+{
+
+	while ( isPlaying() )
+		Ceylan::System::atomicSleep() ;
+		
+}
+
+
+
 void AudioChannel::halt() throw( AudioChannelException )
 {
 
