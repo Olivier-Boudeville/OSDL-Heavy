@@ -192,6 +192,7 @@ MouseButtonNumber Mouse::getNumberOfButtons() const throw()
 }
 
 
+
 MouseWheelNumber Mouse::getNumberOfWheels() const throw()
 {
 
@@ -220,6 +221,7 @@ bool Mouse::isLeftButtonPressed() const throw()
 }
 
 
+
 bool Mouse::isMiddleButtonPressed() const throw()
 {
 
@@ -238,6 +240,7 @@ bool Mouse::isMiddleButtonPressed() const throw()
 }
 
 
+
 bool Mouse::isRightButtonPressed() const throw()
 {
 
@@ -254,6 +257,7 @@ bool Mouse::isRightButtonPressed() const throw()
 #endif // OSDL_USES_SDL
 	
 }
+
 
 
 bool Mouse::isButtonPressed( MouseButtonNumber buttonNumber ) 
@@ -275,6 +279,7 @@ bool Mouse::isButtonPressed( MouseButtonNumber buttonNumber )
 }
 
 
+
 MouseButtonMask Mouse::getButtonStates() const throw()
 {
 
@@ -290,6 +295,7 @@ MouseButtonMask Mouse::getButtonStates() const throw()
 #endif // OSDL_USES_SDL
 	
 }
+
 
 
 void Mouse::update() throw()
@@ -310,6 +316,7 @@ void Mouse::update() throw()
 }
 
 
+
 const string Mouse::toString( Ceylan::VerbosityLevels level ) const throw()
 {
 
@@ -328,6 +335,7 @@ const string Mouse::toString( Ceylan::VerbosityLevels level ) const throw()
 	return res ;
 				
 }
+
 
 
 bool Mouse::IsPressed( MouseButtonMask mask, MouseButtonNumber buttonToInspect )
