@@ -79,7 +79,7 @@ This section focuses on the different ways of managing sounds thanks to SDL and 
      <a href="#buffer">Buffering sounds</a><br>
 	 <ul>
 	   <li><a href="#runtime">Understanding the runtime behaviour of the SDL sound subsystem</a></li>
-	   <li><a href="#size">How to size the audio buffer ? Latency versus skips</a></li>
+	   <li><a href="#size">How to size the audio buffer? Latency versus skips</a></li>
 	   <li><a href="#callbacks">Callbacks</a></li>
 	   <li><a href="#resampling">Resampling</a></li>
 	 </ul>
@@ -177,7 +177,7 @@ This scheme assumes that the application is able to fill the buffers in time, wh
 
  
 <a name="size"></a>  
-<h3>How to size the audio buffer ? Latency versus skips</h3>
+<h3>How to size the audio buffer? Latency versus skips</h3>
 
 
 <p>These days, most sound cards seem to work best with 48 kHz, since that is what the converters are designed for and/or because the cards run at that rate all the time internally, no matter what sample rates applications use.
@@ -258,6 +258,11 @@ Therefore the value for samples in the audiospec needs to be appropriate for the
 
   </table>
 </center>
+
+<p>
+Finally, latency comes also from leading silences, that should be removed (and ending silences as well) from all audio assets. See the <a href="http://ceylan.svn.sourceforge.net/viewvc/ceylan/Ceylan/trunk/src/code/scripts/shell/trimSilence.sh?view=markup" target="_blank">trimSilence.sh</a> script  (uses SoX).
+</p>
+
 
 <br><center>[<a href="#toc">Back to table of contents</a>]</center><br><br>
 
@@ -387,11 +392,11 @@ Other SDL_mixer examples: <a href="http://gpwiki.org/index.php/C:Playing_a_WAV_S
 <p>
 <dl>
 
-    <dt>During play-back, how to find out what the current position is ?</dt>
+    <dt>During play-back, how to find out what the current position is?</dt>
     <dd>There is a <code>Mix_SetMusicPosition</code> but no <code>Mix_GetMusicPosition</code>. One solution would be to call <code>SDL_GetTicks</code> when you start the song, and then have your application keep note of how long it has been playing. This will probably prove accurate within a few milliseconds.   
 	</dd>
 
-    <dt>How to load an ogg file with SDL_mixer ?</dt>
+    <dt>How to load an ogg file with SDL_mixer?</dt>
     <dd>See that <a href="http://gpwiki.org/index.php/C:Using_SDL_mixer_to_play_an_Ogg_music_file" target="_blank">gpwiki hint</a>.</dd>
 
 
@@ -411,7 +416,7 @@ Other SDL_mixer examples: <a href="http://gpwiki.org/index.php/C:Playing_a_WAV_S
 <a name="drivers"></a>
 <h2>Audio drivers</h2>
 
-<h3>What advantages do higher level audio drivers have ?</h3>
+<h3>What advantages do higher level audio drivers have?</h3>
 
 <p>
 <ul>
@@ -420,7 +425,7 @@ Other SDL_mixer examples: <a href="http://gpwiki.org/index.php/C:Playing_a_WAV_S
 </ul>
 </p>
 
-<h3>What disadvantages do higher-level audio drivers have ?</h3>
+<h3>What disadvantages do higher-level audio drivers have?</h3>
 <p>
 <ul>
 	<li>Lag: they are an extra level of buffering</li>
@@ -430,7 +435,7 @@ Other SDL_mixer examples: <a href="http://gpwiki.org/index.php/C:Playing_a_WAV_S
 	<li>Insecurity: artsd runs best with root permissions, but this is no longer recommended due to security flaws</li>
 	<li>Unwanted features: not everybody wants to have his default soundcard potentially be 
 on the other side of the Internet</li>
-	<li>More error conditions that cannot be bypassed: one can try an alternative OSS device, but good luck finding an alternative artsd !</li>
+	<li>More error conditions that cannot be bypassed: one can try an alternative OSS device, but good luck finding an alternative artsd!</li>
 </ul>
 </p>
 
@@ -626,7 +631,7 @@ An application that needs only PCM sound, and not MIDI, should not fail because 
 
 
 
-	<dt>When I load a music from an Ogg Vorbis file using <code>Mix_LoadMUS</code>, will it completely load the file in memory and decode it when playing, or will it stream the file from the disk ?</dt>
+	<dt>When I load a music from an Ogg Vorbis file using <code>Mix_LoadMUS</code>, will it completely load the file in memory and decode it when playing, or will it stream the file from the disk?</dt>
 	<dd>It is streamed from disk as needed during playback, as all "music" files are (as opposed to "special effects" files) [see <a href="#mixerloading">full explanation</a>]</dd>
 
 
@@ -709,17 +714,17 @@ to be missing, everything sounds like played inside a tin can</dt>
 	
 	
 	<dt>This message always shows up: <code>mcop warning: user defined signal handler found for SIG_PIPE, overriding.</code></dt>
-	<dd>SDL may use arts on your machine. A solution is to switch to another audio driver, see <a href="#switchdaemons">this section</a></dd>
+	<dd>SDL may use arts on your machine. A solution is to switch to another audio driver, see <a href="#switchdaemons">this section</a>.</dd>
 
 
 	<dt>The code appears to work properly when the <code>esd</code> driver is in use, but switching to <code>alsa</code> or <code>pcm</code> drivers leaves the application running slowly and the pitch of the sound far too low</dt>
-	<dd>Is it an <code>AC97</code> chip ? There are problems with this chip family (distorded 
+	<dd>Is it an <code>AC97</code> chip? There are problems with this chip family (distorded 
 sound in many SDL games). SDL can detect this in some circumstances and print a message, but it 
-does not work for me. There is a workaround for the <code>dsp</code> backend: <code>export SDL_DSP_NOSELECT=1</code></dd>
+does not work for me. There is a workaround for the <code>dsp</code> backend: <code>export SDL_DSP_NOSELECT=1</code>.</dd>
 
 
 	<dt>SDL_mixer does not seem to play a sound at the right speed</dt>
-	<dd>For example, it may play samples 20% faster than expected.The rate-conversion capabilities of SDL are limited.  Take a look at the sample rate of the file and the sample rate you are playing audio at. Probably it is not a whole multiple of the file rate.
+	<dd>For example, it may play samples 20% faster than expected. The rate-conversion capabilities of SDL are limited. Take a look at the sample rate of the file and the sample rate you are playing audio at. Probably it is not a whole multiple of the file rate. See also the <a href="http://ceylan.svn.sourceforge.net/viewvc/ceylan/Ceylan/trunk/src/code/scripts/shell/resample.sh?view=markup" target="_blank">resample.sh</a> script, to perform most suitable high-quality resampling to arbitrary frequencies with gain control (uses SoX).
 	</dd>
 
 
@@ -830,11 +835,8 @@ End of Cubbyhole --->
 
   <br>
   <br>
-  <br>
-  <br>
-  <br>
 
-  <h3>Please react !</h3>
+  <h3>Please react!</h3>
 
   <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points
   insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL:%20audio">drop
@@ -846,7 +848,7 @@ End of Cubbyhole --->
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Friday, August 1, 2008</em>
+    <em>Last update: Sunday, March 8, 2009</em>
   </center>
 </body>
 </html>
