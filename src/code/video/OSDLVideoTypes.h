@@ -7,6 +7,7 @@
 #include "Ceylan.h"          // for the various basic types
 
 
+
 /**
  * Definition of the main OSDL video types.
  *
@@ -41,7 +42,7 @@ namespace OSDL
 		 * Coordinate, unit of measure, integer, signed.
 		 *
 		 * @note Not having 'Coordinate' set to 'Ceylan::Sint16' would break
-		 * functions using SDL_gfx (example : vertex array elements are 
+		 * functions using SDL_gfx (example: vertex array elements are 
 		 * expected to store 'Ceylan::Sint16').
 		 *
 		 */
@@ -51,7 +52,13 @@ namespace OSDL
 		/// Offset, difference between coordinates.
 		typedef Coordinate Offset ;
 
-		/// Coordinate unit of measure, floating-point.
+
+		/**
+		 * Coordinate unit of measure, floating-point.
+		 *
+		 * @note Useful with OpenGL.
+		 *
+		 */
 		typedef Ceylan::Float32 FloatingPointCoordinate ;
 
 
@@ -89,6 +96,7 @@ namespace OSDL
 	}
 	
 }
+
 
 #endif // OSDL_VIDEO_TYPES_H_
 
