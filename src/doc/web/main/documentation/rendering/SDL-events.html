@@ -3,11 +3,11 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2004, January 25.
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2004, January 25.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -33,11 +33,11 @@
 
 <p>  
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
-<b>Important note</b> : this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks !
+<b>Important note</b>: this file that gathers some topic-specific knowledge from the SDL mailing list has not been integrated in our SDL documentation corner yet, as <a href="SDL-openGL.html">OpenGL</a> or <a href="SDL-audio.html">audio</a> topics already are. If you want to help us doing so, feel free to <a href="mailto:documentation@esperide.com?subject=[OSDL]%20SDL%20documentation%20integration" target="_blank">tell us</a>. Thanks!
             </div>
           </td>
         </tr>
@@ -45,9 +45,15 @@
 </center>
 </p>
 
+
+<h2>Waiting</h2>
+
+<p>
+You should not trust <code>SDL_Delay</code> to wait for a specified duration, as it depends notably on the OS scheduling, for example you may want to wait 15 ms but it may only wait 10 ms. You should always use <code>SDL_GetTicks</code> to check that it is really waiting so long and not shorter or longer.
+</p>
+
+
 <code><pre>
-Think also that you should not trust SDL_Delay to wait a specified time, for example you may want to wait 15 msecs
-and it may only waits 10 msecs. You should always use SDL_GetTicks to check that it is really waiting so long and not shorter or longer.
 
 The SDL event queue has a fixed number of entries, ~128 last time I
 looked. After that number of events have occurred it starts throwing
@@ -56,7 +62,7 @@ when you program wakes up, it responds to the events that are queued,
 mostly lots of mouse movement. Then it appears to ignore everything else
 because it has already tossed those events away.
 
-Performance of SDL event handling functions : You should look at this:
+Performance of SDL event handling functions: You should look at this:
 http://www.gameprogrammer.com/fastevents/fastevents1.html
 the code is more thread-oriented, which definately speeds things up
 phenominally.
@@ -119,19 +125,19 @@ interpolates between the two closest frames.
 	
 	
    
-Time measuring and waiting :
+Time measuring and waiting:
   
-For Windows :
+For Windows:
 One can use QueryPerformanceCounter(), QueryPerformanceCounterFrequency().
 Around 1 microsecond accuracy. MSDN states that this may be unsupported by 
 some hardware. (anyway I never saw a PC without support to those functions)
 
-For Linux :
+For Linux:
 gettimeofday() is returning you a struct with 2 members, one in secondes, 
 the other with microsecondes.
 
 
-For profiling purpose and only valid for x86 computers :
+For profiling purpose and only valid for x86 computers:
 One can use the RDTSC assembly instruction. This instruction is telling you the number of CPU cycles elapsed since the CPU was started, in a 64 bits integer, stored in EDX:EAX register pair (EDX = 32 most significant bits, EAX = 32 least significant bits).
 
 
@@ -154,7 +160,7 @@ timing. Linux 2.6 fixed the scheduler resolution, too.
 
 
 
-Moving windows :
+Moving windows:
   
 Currently the issue is that the in game stuff is all monitored according to system time and when the game gets improperly paused by a move window command and doesn't store the time it is being paused from, it ends up messing up all the time based functions and causing undesirable effects.
 
@@ -163,7 +169,7 @@ Would maximizing the time between two frames to, say, 0.2 s, fix your problems? 
 
 
 
-Input events :
+Input events:
   
 Usually what programs do is poll for any queued events at the beginning of the logic for the frame, update any internal state and then proceed with the logic. The framerate is usually high enough that all the input for the frame can be considered to be simultaneous.  This breaks down when your framerate slows and it's important to know the duration a key was held down that was pressed and released before you got there, but many operating systems don't provide time information on input events, and those that do usually provide it in a different time base than the values that SDL_GetTicks() returns. However, as I mentioned framerates are usually high enough that this doesn't matter.
 
@@ -172,7 +178,7 @@ Usually what programs do is poll for any queued events at the beginning of the l
 Take a look at http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fUserEvent, which explains how to push user defined events onto the event queue.
 
   
-Updates :
+Updates:
   
 SDL_GetMouseState and SDL_GetKeyState are only updated when you call SDL_PumpEvents. In between times all sorts of things can be happening to the mouse and keys and nothing gets changed until the next time that SDL_PumpEvents gets called. That means that mouse buttons and keys can be clicked and pressed and your program will never notice that the events occurred. Why? Because they happened when you weren't looking. If a key is pressed and released between two calls to SDL_PumpEvents and
 you are counting on SDL_GetKeyState to tell you about it, you will miss the key press. 
@@ -197,12 +203,12 @@ if you only take the last event, then it's possible you may skip an important on
   
   
   
-you can tell to SDL to ignore the mouse event :
+you can tell to SDL to ignore the mouse event:
 SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE );
   Ignoring the pollevent and taking only the last one each loop granted me 
 smooth and fast motion.
   
-there are two different things you can do not to use 100% CPU time :
+there are two different things you can do not to use 100% CPU time:
 
 1) Decrease the framebuffer's refresh rate
 2) Insert a timed delay into your program
@@ -246,7 +252,7 @@ can't in Linux and OSX, or it sleeps too much.
 Is there a simple way of getting the character pressed, besides
 having a switch with a case for every key? SDL_EnableUNICODE()
 
-	<dt>Does SDL support the force feedback on a joystick ?</dt>
+	<dt>Does SDL support the force feedback on a joystick?</dt>
 	<dd>According to <a href="http://sdldoc.csn.ul.ie/joystick.php" target="_blank">this</a>, not yet.</dd>
 
   
@@ -263,8 +269,8 @@ to do it;
 then incorporate that into some other macro to perform translations (or
 something). ie.
 
-#define SDL_GET_ALPHA(alpha,keys) ( SDL_IS_CAPS ( keys ) ? \
-~                                    toupper ( alpha ) : \
+#define SDL_GET_ALPHA(alpha,keys) ( SDL_IS_CAPS ( keys )? \
+~                                    toupper ( alpha ): \
 ~                                    alpha )
 
 SDL_GET_ALPHA ( 'a', keys ) or something like that (not ideal, just an
@@ -370,7 +376,7 @@ that semaphore
 That keeps CPU utilization at zero for that thread when there's nothing
 else going on.
 
-At the top of the event loop, one can use :
+At the top of the event loop, one can use:
 <code>while(SDL_PollEvent(&event)</code>, you know that the outer loop essentially runs once per 
 frame, and nothing else.
 
@@ -412,7 +418,7 @@ both for any serious gaming.
 >> example) that moves the sprite according to what it needs to (the
 >> event are saved before, like need to be moved UP, DOWN, LEFT,
 >> RIGHT, etc), so we are sure it does move at the same speed
->> everywhere ?
+>> everywhere?
 
 
 Basically, yes - but you can't actually implement it that way, unless 
@@ -455,7 +461,7 @@ describing what most of that cryptic code is all about.
 
 
 
-Disabling mouse events :
+Disabling mouse events:
 
 If it lags only when you move the mouse then you could set up an event
 filter in your SDL init function to prevent mouse motion events from
@@ -571,7 +577,7 @@ all I'm waiting for is a keypress or mouse click, and don't have anything
 else interesting going on.
 
 
-joystick calibrating :
+joystick calibrating:
 
 Do you have the evdev module loaded?
 
@@ -696,7 +702,7 @@ add more events and will never get your screen updated. This is a common
 mistake when you get out the "while SDL_PollEvent=1" method.
 
 
-Your repaint is on a timer ? Dejavu... I've tryed it before. It's a nice 
+Your repaint is on a timer? Dejavu... I've tryed it before. It's a nice 
 theory, but it simply doesn't work. I will tell you why.
 
 First, you got pretty machines, with a few microseconds per CPU cycle 
@@ -706,8 +712,8 @@ screen" and you got a Deep Blue or better.  BTW, 10ms is usually the
 MINUMUM. You can get a 13, 16 or even 20+ms in the real life.
 
 Second, does your callback returns the same interval it received as 
-parameter ? Think about it... Your timer waits 10+ms to start, then 
-takes... 10ms ? 20ms ? to run. Then, you tell SDL to wait another 10ms 
+parameter? Think about it... Your timer waits 10+ms to start, then 
+takes... 10ms? 20ms? to run. Then, you tell SDL to wait another 10ms 
 to call your function again (see the SDL manual). That's 20/30+ms per 
 frame. A "black screen of death" game is limited to 50FPS or less.
 
@@ -724,7 +730,7 @@ to hw fb). Yikes... I guess this is the reason they created a HW
 backbuffer screen. You do all the mess on screen's backbuffer, then do a 
 SDL_Flip.
 
-Oh, yes ! And you are using alpha blit without HW acceleration. Poor 
+Oh, yes! And you are using alpha blit without HW acceleration. Poor 
 CPU... 
 
 
@@ -867,7 +873,7 @@ Problem #2: However, on a french keyboard, there are normally no number
 keys at the top - if you want a '1' you have to press 
 Shift-<key-where-1-would-be-on-an-US-keyboard>. This can be a serious 
 problem for apps which want to map '1' etc. to a function. Should SDL 
-map that key to SDLK_1 ? On the one hand that is what might be most 
+map that key to SDLK_1? On the one hand that is what might be most 
 natural; but it would actually be a lie, since that is *not* they key 
 symbol. And, if you want to map '1' and Shift-'1' to different things, 
 it might get confusing for those poor french users - for them, pressing 
@@ -912,7 +918,7 @@ distinguish between normal and keypad keys within the KCHR resources.
 If you think that is this a hack (even an evil one), I'll agrre. But it 
 was the best solution I could come up with (and believe me, I tried a 
 lot); if anybody knows of a better one (and one which will also work on 
-10.1 and 10.2 !) please step forward and enlighten me, and my gratitude 
+10.1 and 10.2!) please step forward and enlighten me, and my gratitude 
 will be yours forever 
 
 Why does the sym member of SDL_keysym not have SDLK_1 when say an
@@ -921,7 +927,7 @@ correctly?
 
 
 I don't know how italian keyboards look like, but maybe they share the 
-layout of french ones (where to get a '1' you have to use Shift) ? It's 
+layout of french ones (where to get a '1' you have to use Shift)? It's 
 pretty hard to tell the cause for sure w/o actually owning such a 
 keyboard. If anybody wants to donate non-german, non-british USB 
 keyboards to me (Italian, French, whatever else you have), I'll happily 
@@ -1073,7 +1079,7 @@ Your peek call isn't removing the message, so the next message is always next.
   <br>
   <br>
 
-  <h3>Please react !</h3>
+  <h3>Please react!</h3>
 
   <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20events">drop us a line</a>!</p><br>
   <br>
@@ -1083,7 +1089,7 @@ Your peek call isn't removing the message, so the next message is always next.
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update : 2006</em>
+    <em>Last update: Monday, March 9, 2009</em>
   </center>
 </body>
 </html>
