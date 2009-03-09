@@ -8,9 +8,12 @@ testsevents_CXXFLAGS = @AM_CXXFLAGS@
 testsevents_PROGRAMS = \
 	testOSDLController.exe               \
 	testOSDLEvents.exe                   \
-	testOSDLJoysticks.exe
+	testOSDLJoysticks.exe                \
+	testOSDLMouse.exe
 
 
 testOSDLController_exe_SOURCES = testOSDLController.cc
-testOSDLEvents_exe_SOURCES        = testOSDLEvents.cc
-testOSDLJoysticks_exe_SOURCES = testOSDLJoysticks.cc
+testOSDLEvents_exe_SOURCES     = testOSDLEvents.cc
+testOSDLJoysticks_exe_SOURCES  = testOSDLJoysticks.cc
+testOSDLMouse_exe_SOURCES      = testOSDLMouse.cc
+
