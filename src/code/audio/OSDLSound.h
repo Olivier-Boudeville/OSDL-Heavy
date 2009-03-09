@@ -112,8 +112,7 @@ namespace OSDL
 				 * @param soundFile the file containing the targeted sound.
 				 * On all PC-like platforms (including Windows and most UNIX),
 				 * the supported formats are WAVE, AIFF, RIFF, OGG, and VOC.
-				 * WAVE and, to a lesser extent, OGG, are recommended for 
-				 * sounds. 
+				 * WAVE and OGG are recommended for sounds. 
 				 * On the Nintendo DS, only one format is supported, the 
 				 * .osdl.sound format.
 				 *
@@ -121,7 +120,7 @@ namespace OSDL
 				 *
 				 * @param preload the sound will be loaded directly by this
 				 * constructor iff true, otherwise only its path will be
-				 * stored to allow for later loading.
+				 * stored to allow for a later loading.
 				 *
 				 * @throw SoundException if the operation failed or is not
 				 * supported.
