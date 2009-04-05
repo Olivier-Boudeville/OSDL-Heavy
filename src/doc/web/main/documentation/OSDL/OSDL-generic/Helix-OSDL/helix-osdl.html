@@ -69,7 +69,7 @@ and <em>RealNetworks Public Source License - RPSL 1.0</em> licenses. Although th
 
 
 <p>
-A DS application being made of two distinct executables (one for each ARM), some sources consider that a different license may apply to each piece of software, if they are deemed loosely coupled here (ex: one can run without the other). With that interpretation, Helix and, therefore, Helix-OSDL could be used on the ARM7 with, say, a GPL license, while the ARM9 could run any type of application, including OSDL-based one and/or LGPL or GPL or proprietary closed software. See this <a href="http://www.gnu.org/licenses/gpl-faq.html#MereAggregation" target="_blank">FAQ</a> for a point of view. Are the DS FIFO a communication mechanism used for communication between two separate programs, like a UNIX pipe ? Or should we consider the two parts as intimate enough and being combined actually into a larger program ? 
+A DS application being made of two distinct executables (one for each ARM), some sources consider that a different license may apply to each piece of software, if they are deemed loosely coupled here (ex: one can run without the other). With that interpretation, Helix and, therefore, Helix-OSDL could be used on the ARM7 with, say, a GPL license, while the ARM9 could run any type of application, including OSDL-based one and/or LGPL or GPL or proprietary closed software. See this <a href="http://www.gnu.org/licenses/gpl-faq.html#MereAggregation" target="_blank">FAQ</a> for a point of view. Are the DS FIFO a communication mechanism used for communication between two separate programs, like a UNIX pipe? Or should we consider the two parts as intimate enough and being combined actually into a larger program? 
 </p>
 
 <p>
@@ -81,7 +81,7 @@ See also our <a href="../../../misc/nintendo-DS/homebrew-guide/HomebrewForDS.htm
 </p>
 
 <p>
-Helix-OSDL can be tested directly: just download <a href="testHelix-OSDL.zip" target="_blank">testHelix-OSDL.zip</a>, which contains our music test player (<code>testOSDLMusic-0.5-release-patched.r4.nds</code>) and a sample music file (<code>test.osdl.music</code>), to be copied at the root of your DS card. This recording, a French Christmas song interpreted by a family, lasts for about 3 minutes, and is copyright free for non-commercial use. Its homepage is <a href="http://pironsyl.perso.cegetel.net/noelindex.htm" target="_blank">here</a>. Beware, the full test is quite long, as it performs multiple playbacks of the music.
+Helix-OSDL can be tested directly: just download <a href="http://sourceforge.net/project/downloading.php?group_id=71354&filename=testHelix-OSDL.zip" target="_blank">testHelix-OSDL.zip</a>, which contains our music test player (<code>testOSDLMusic-0.5-release-patched.r4.nds</code>) and a sample music file (<code>test.osdl.music</code>), to be copied at the root of your DS card. This recording, a French Christmas song interpreted by a family, lasts for about 3 minutes, and is copyright free for non-commercial use. Its homepage is <a href="http://pironsyl.perso.cegetel.net/noelindex.htm" target="_blank">here</a>. Beware, the full test is quite long, as it performs multiple playbacks of the music.
 </p>
 
 
@@ -166,7 +166,7 @@ For example:
 Converting 'test.wav' into 'test.osdl.sound', using frequency 22050 Hz, 
 mode mono (1), bit depth 16 (format 32784).
 
-Generation of 'test.osdl.sound' succeeded !
+Generation of 'test.osdl.sound' succeeded!
 </pre></code>
             </div>
           </td>
@@ -223,7 +223,7 @@ For example:
             <div class="box">
 <code><pre>
 ./wavToOSDLSound.sh test.wav
-    test.osdl.sound produced, ready to be used !
+    test.osdl.sound produced, ready to be used!
 -rw------- 1 sye sye 860926 2008-02-08 18:21 test.osdl.sound
 -rw-rw-r-- 1 sye sye 860962 2008-02-08 18:19 test.wav
 </pre></code>
@@ -344,7 +344,7 @@ psychoacoustic:
 -------------------------------------------------------------------------------------------------------
    kbps       mono %     long switch short %
    43.7      100.0        61.0  19.4  19.6
-    test.mp3 produced, ready to be used !
+    test.mp3 produced, ready to be used!
 -rw-rw-r-- 1 sye sye 106859 2008-02-08 19:04 test.mp3
 -rw-rw-r-- 1 sye sye 860962 2008-02-08 18:19 test.wav
 </pre></code>
@@ -363,7 +363,7 @@ For musics, we deem the most balanced settings are 22 050 kHz (higher frequencie
 
 <h4>Step #2: determining the MP3 frame size upper bound</h4>
 <p>
-Once having the MP3 file, to further optimize the DS playback, a value has to be specified to the osdl.music generator: the upper bound of the size of a MP3 frame of this music. Knowing it, the OSDL-Helix playback module will be able to minimize transfers of chunks of encoded data at runtime. But how one can determine this upper bound ? By using an intermediate tool (last one, promise !), <code>getMP3Settings</code> (see <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/getMP3Settings.arm9.cc?view=markup" target="_blank">getMP3Settings.arm9.cc</a> and <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/getMP3Settings.arm7.c?view=markup" target="_blank">getMP3Settings.arm7.c</a>), which will run on the DS, perform the full playback of the MP3 (rename your mp3 to <code>test.mp3</code> and put it at the root of your DS card), and finally output its framesize upper bound (a value of 1940 bytes could be used as a default value, but the actual value is often far below, like 314, so using <code>getMP3Settings</code> should really be encouraged).
+Once having the MP3 file, to further optimize the DS playback, a value has to be specified to the osdl.music generator: the upper bound of the size of a MP3 frame of this music. Knowing it, the OSDL-Helix playback module will be able to minimize transfers of chunks of encoded data at runtime. But how one can determine this upper bound? By using an intermediate tool (last one, promise!), <code>getMP3Settings</code> (see <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/getMP3Settings.arm9.cc?view=markup" target="_blank">getMP3Settings.arm9.cc</a> and <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/getMP3Settings.arm7.c?view=markup" target="_blank">getMP3Settings.arm7.c</a>), which will run on the DS, perform the full playback of the MP3 (rename your mp3 to <code>test.mp3</code> and put it at the root of your DS card), and finally output its framesize upper bound (a value of 1940 bytes could be used as a default value, but the actual value is often far below, like 314, so using <code>getMP3Settings</code> should really be encouraged).
 </p>
 
 
@@ -695,7 +695,7 @@ Most of the work has been done by <b>ThomasS</b>, <b>DekuTree64</b>, <b>Noda</b>
 </p>
 
   
-<h3>Please react !</h3>
+<h3>Please react!</h3>
 
 <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, or if you would like to contribute and help us, even a little bit, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Helix-OSDL">drop us a line</a> !</p>
 
@@ -708,7 +708,7 @@ Most of the work has been done by <b>ThomasS</b>, <b>DekuTree64</b>, <b>Noda</b>
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update: Saturday, March 1, 2008</em>
+  <em>Last update: Sunday, April 5, 2009</em>
 </center>
 
 </body>
