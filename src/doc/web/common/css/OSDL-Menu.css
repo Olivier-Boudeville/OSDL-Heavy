@@ -28,7 +28,7 @@ div.BottomCenter {
 
 div.Visited {
   font-size: 20px;
-  color: #EFEFEF;
+  color: #ec8b23;
 }
 
 
@@ -79,30 +79,22 @@ a img {
 } 
 
 a:link {
-  color:#FFFFFF; 
+  color:#8aa0d2; 
   background: transparent;
   text-decoration: none;
   border: none
 }
 
 a:visited {
-  color: #9D9D9D;
+  color: #7a8ebc;
   background: transparent;
   text-decoration: none;
   border: none  
 }
 
-a:active {
-  color: #FFFFFF;
-  background: transparent;
-  text-decoration: none;
-  border: none  
-}
 
 a:hover { 
   text-decoration:underline;
-  color:#FFFFFF;
-  border: none
 }
 
 div.NoBorder a:link { 

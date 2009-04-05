@@ -4,11 +4,11 @@
         For any comment, please mail to olivier.boudeville@online.fr
 -->
 <!--    
-        Creation date : 2003, December 19.
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by :  the author
-        Version number : 0.1
-        Adapted from : no previous document
+        Creation date: 2003, December 19.
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
+        Update made by:  the author
+        Version number: 0.1
+        Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -44,16 +44,16 @@
 <p>One may refer to the <a href="OSDL-developerguide.html" target="_blank">OSDL Developer guide</a> for further informations.
 </p>
   
-<p>See also : <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-userguide.html" target="_blank">Ceylan user's guide</a> for common informations.
+<p>See also: <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-userguide.html" target="_blank">Ceylan user's guide</a> for common informations.
 </p>
 
 
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
-Note : this documentation is quite deprecated, it would need some serious update and rewriting.
+Note: this documentation is quite deprecated, it would need some serious update and rewriting.
             </div>
           </td>
         </tr>
@@ -91,7 +91,7 @@ Note : this documentation is quite deprecated, it would need some serious update
   <p>You can notably install OSDL with three methods, the first being dull and risky, the second being recommended, the third being still to be written.</p>
 
 
-  <h3>First method : the hard way</h3>
+  <h3>First method: the hard way</h3>
 
   <p>One have to compile from sources all OSDL-0.5's
   pre-requesites. <a name="prereq"></a></p>
@@ -105,20 +105,20 @@ Note : this documentation is quite deprecated, it would need some serious update
 
     <li><a href="http://ceylan.sourceforge.net/Ceylan-latest" target="_blank">Ceylan</a>, our own generic-purpose library</li>
 	
-	<li>many others : libtool, SDL, libjpeg, libzlib, libPNG, SDL_image, SDL_gfx, FreeType, SDL_ttf, etc.</li>    
+	<li>many others: libtool, SDL, libjpeg, libzlib, libPNG, SDL_image, SDL_gfx, FreeType, SDL_ttf, etc.</li>    
   </ul>
   
   <p>
-	As you can see, the list if far too long to be pleasant, we therefore set up an automatic tool that manages the whole build process on your behalf : LOANI.
+	As you can see, the list if far too long to be pleasant, we therefore set up an automatic tool that manages the whole build process on your behalf: LOANI.
   </p>
 
-  <h3>Second method : the LOANI's way</h3>
+  <h3>Second method: the LOANI's way</h3>
 
   <p>Go boldy where no one has gone before, fasten your seat-belt, and
-  use <a href="LOANI.html">LOANI</a> (do not be too anxious, since LOANI has been stable for a while !) <a href="LOANI.html#quickstart">[jump to LOANI's quickstart]</a></p>
+  use <a href="LOANI.html">LOANI</a> (do not be too anxious, since LOANI has been stable for a while!) <a href="LOANI.html#quickstart">[jump to LOANI's quickstart]</a></p>
 
 
-  <h3>Third method : use precompiled binaries</h3>
+  <h3>Third method: use precompiled binaries</h3>
 <p>
 As soon as OSDL will be widespread enough so that its main audience will not be OSDL developers but OSDL users, a set of binaries will be released for each and every supported platform, including various GNU/Linux distributions (Debian [.deb], Gentoo [emerge], Fedora Core [rpm]). 
 </p>
@@ -150,7 +150,7 @@ On Windows, each library or executable using OSDL must define the OSDL_RUNS_ON_W
 <h4>Two dimensional conventions</h4>
   
 <p>
-  The screen coordinates are measured the following way :
+  The screen coordinates are measured the following way:
   <ul>
 	<li>the <b>abscissa</b> (the x-axis) corresponds to the horizontal coordinate, parallel to the screen horizontal sides, ranging from 0 to Screen::MaximumAbscissa, from the left to the right</li>
 	<li>the <b>ordinate</b> (the y-axis) corresponds to the vertical coordinate, perpendicular to the screen horizontal sides, ranging from 0 to Screen::MaximumOrdinate, from top to bottom</li>
@@ -164,7 +164,7 @@ Therefore the origin (point whose coordinates on the screen are <code>[0,0]</cod
 
 
 <p>
-Many low-level OSDL's graphic-drawing primitive does not lock the target surface for you. The reason for that is the cost of locking a surface, which can be heavily reduced depending on user specific need. The usual scheme should be : lock the surface, do all the drawing you can, and then unlock the surface. The more fine the locking granularity will get, the more locks during each frame your program will have to gain, the slower it will end up. As OSDL cannot guess for you what are your locking needs, it lets you manage it, and always suppose you did right : OSDL uses the surfaces with such primitives has if it was locked, be it true or not.
+Many low-level OSDL's graphic-drawing primitive does not lock the target surface for you. The reason for that is the cost of locking a surface, which can be heavily reduced depending on user specific need. The usual scheme should be: lock the surface, do all the drawing you can, and then unlock the surface. The more fine the locking granularity will get, the more locks during each frame your program will have to gain, the slower it will end up. As OSDL cannot guess for you what are your locking needs, it lets you manage it, and always suppose you did right: OSDL uses the surfaces with such primitives has if it was locked, be it true or not.
 </p>
 
  <br><br>
@@ -192,14 +192,14 @@ The key point is that the internal video buffer of a graphical element, when up-
 
 
 <p>
-From this view the following tree, focusing on containing relationships, can be deduced :
+From this view the following tree, focusing on containing relationships, can be deduced:
 <center>
     <img src="TreeView.png" alt="Logical view of the tree"></img>
 </center>
 </p>
 
 <p>
-We can see that when a graphical element is contained by another, it is a child of its container. Except A, which is a simple <code>Surface</code>, all the nodes are <code>Widgets</code> (thus, also, Surfaces through inheritance : Widgets are merely Surfaces having a container).
+We can see that when a graphical element is contained by another, it is a child of its container. Except A, which is a simple <code>Surface</code>, all the nodes are <code>Widgets</code> (thus, also, Surfaces through inheritance: Widgets are merely Surfaces having a container).
 </p>
 
 <p>
@@ -215,13 +215,13 @@ The relationship between nodes being container-based, the surface owned by each 
 </p>
 
 <p>
-To manage the rendering, the whole point is to walk carefully the graphical tree so that widgets are redrawn in the correct order, which is from bottom to top, since they are likely to overlap. The correct algorithm is a depth-first walk of the tree : at each node, one has at first to deal with the background of the widget, then with the whole subtree of its first child (the child that is closest to the back), then with the whole subtree of its second child, and so on.
+To manage the rendering, the whole point is to walk carefully the graphical tree so that widgets are redrawn in the correct order, which is from bottom to top, since they are likely to overlap. The correct algorithm is a depth-first walk of the tree: at each node, one has at first to deal with the background of the widget, then with the whole subtree of its first child (the child that is closest to the back), then with the whole subtree of its second child, and so on.
 </p>
 
-<p>To do so, we defined the <b>needsRedraw</b> boolean attribute for each graphical element (a node of the tree, hence a Surface, be it specifically a Widget or not). This attribute tells whether this node and its subtree are up-to-date. This information is to be propagated from any node that changed, up to the root of the tree, so that unchanged subtrees can be entirely skipped during the redraw phase : a node whose <code>needsRedraw</code> attribute is false should have its whole subtree unchanged, therefore its internal video buffer must be up-to-date. 
+<p>To do so, we defined the <b>needsRedraw</b> boolean attribute for each graphical element (a node of the tree, hence a Surface, be it specifically a Widget or not). This attribute tells whether this node and its subtree are up-to-date. This information is to be propagated from any node that changed, up to the root of the tree, so that unchanged subtrees can be entirely skipped during the redraw phase: a node whose <code>needsRedraw</code> attribute is false should have its whole subtree unchanged, therefore its internal video buffer must be up-to-date. 
 </p>
 
-<p>Let's see the algorithm described in pseudo-code :
+<p>Let's see the algorithm described in pseudo-code:
 <code><pre>
 
 class Surface
@@ -242,7 +242,7 @@ class Surface
 }
 
 
-class Widget : Surface
+class Widget: Surface
 {
 
 	method redraw()
@@ -285,7 +285,7 @@ Let's suppose now that widget <code>A22</code> is to change (for example, it is 
 </p>
 
 <p>
-First of all, each time a frame is being drawn, the overall surface <code>A</code> will be asked to redraw itself, thanks to <code>A.redraw()</code>. Therefore <code>A</code> must have been informed in some way that one of its sub-elements, namely <code>A22</code> has changed, in order to take that into account : only container knows how to redraw their elements, with respect to their stacking order. To do so, the simplier is to have <code>A22</code> set its <code>needsRedraw</code> attribute to true, and trigger too its propagation from container to container until it reaches the root of the tree, <code>A</code>. Consequently, <code>A22</code>, <code>A2</code> and <code>A</code> have their <code>needsRedraw</code> boolean set to true. This do not trigger the whole redrawing of the tree, since many widgets may change between two overall redraws, which would lead to useless redraws between two frames : better have it rendered just before it is needed, when all states should be final.
+First of all, each time a frame is being drawn, the overall surface <code>A</code> will be asked to redraw itself, thanks to <code>A.redraw()</code>. Therefore <code>A</code> must have been informed in some way that one of its sub-elements, namely <code>A22</code> has changed, in order to take that into account: only container knows how to redraw their elements, with respect to their stacking order. To do so, the simplier is to have <code>A22</code> set its <code>needsRedraw</code> attribute to true, and trigger too its propagation from container to container until it reaches the root of the tree, <code>A</code>. Consequently, <code>A22</code>, <code>A2</code> and <code>A</code> have their <code>needsRedraw</code> boolean set to true. This do not trigger the whole redrawing of the tree, since many widgets may change between two overall redraws, which would lead to useless redraws between two frames: better have it rendered just before it is needed, when all states should be final.
 </p>
 
 <p>
@@ -303,12 +303,12 @@ If a node has its <code>needsRedraw</code> attribute set to false, then it can b
 <p>As in our example node A needs redraw, and A1 do not, the precomputed A1 video buffer must be up-to-date, and it can be safely blitted onto the newly redrawn background of A.</p>
 
 <p>
-The A1 subtree being completed, this is the turn of A2, which has its <code>needsRedraw</code> attribute set to true, as mentioned earlier. A21 must react for A2 as A1 reacted for A : it can be directly blitted. As for A22, its <code>needsRedraw</code> attribute is true too, it means that it must be repainted and that each of its children must be redrawn in turn and copied back to its buffer.
+The A1 subtree being completed, this is the turn of A2, which has its <code>needsRedraw</code> attribute set to true, as mentioned earlier. A21 must react for A2 as A1 reacted for A: it can be directly blitted. As for A22, its <code>needsRedraw</code> attribute is true too, it means that it must be repainted and that each of its children must be redrawn in turn and copied back to its buffer.
 </p>
 
 
 <p>
-Thanks to this approach, the number of redraws should be far lower than the brute-force repainting of all widgets each time one of them changes : our worst case is all the widgets being repainted at each frame.
+Thanks to this approach, the number of redraws should be far lower than the brute-force repainting of all widgets each time one of them changes: our worst case is all the widgets being repainted at each frame.
 </p>
 
 <p>However, overlapping considerations could be taken into account to further reduce the widget repaintings. It would be nevertheless a complex algorithm with potentially multiple scans of the graphical tree to determine whether a given widget is overlapped by front widgets. For the moment, no such need appeared in our projects, since few widgets are commonly used for multimedia applications and games.
@@ -329,7 +329,7 @@ Thanks to this approach, the number of redraws should be far lower than the brut
 </p>
 
 <p>
-At the core of the system is the OSDL scheduler. When it is used, it is working at relatively high frequencies, by default 1 KHz (1000 Hz). When the best-effort basis scheme is selected (as opposed to the non-interactibe deadline-free mode, called also the screenshot mode), the scheduler does it best to enforce three frequencies :
+At the core of the system is the OSDL scheduler. When it is used, it is working at relatively high frequencies, by default 1 KHz (1000 Hz). When the best-effort basis scheme is selected (as opposed to the non-interactibe deadline-free mode, called also the screenshot mode), the scheduler does it best to enforce three frequencies:
 <ul>
 	<li>the <b>input polling</b> frequency, usually 20 Hz</li>
 	<li>the <b>simulation</b> frequency (called also the logic frequency), usually 100 Hz</li>
@@ -353,7 +353,7 @@ At the core of the system is the OSDL scheduler. When it is used, it is working 
 When the corresponding deadline is met, the scheduler increments the current input tick and reads all queued events from the back-end input queue (typically, SDL). Each event is decoded and sent to the relevant input device (keyboard, mouse or joystick). Depending on a MVC controller being linked to the input device, the controller state is updated.
 </p>
 
-<p>For some kinds of events (ex : key presses), if no controller is registered for this event, an event handler is searched, and triggered with that event if matching. The difference with a controller is that handlers behave like functions uncoupled from all frameworks, including MVC.
+<p>For some kinds of events (ex: key presses), if no controller is registered for this event, an event handler is searched, and triggered with that event if matching. The difference with a controller is that handlers behave like functions uncoupled from all frameworks, including MVC.
 </p>
 
 <p>For example, a key responsible for the fullscreen toggle should not be managed by a controller, since the MVC framework is meant to apply to actual game objects, not to contextual settings. This key should be managed instead by a dedicated handler.
@@ -367,10 +367,10 @@ At the end of the input polling step, all pending low-level events should be tak
 <h3>Simulation</h3>
 <p>
 Logic is managed during simulation ticks, which are and must be the only unit of time used in the virtual world. Objects that can be scheduled are called <em>Active Objects</em>, and they
-can be scheduled for simulation according to two non-exclusive schemes :
+can be scheduled for simulation according to two non-exclusive schemes:
 <ul>
-	<li><b>programmed</b> activations : a list of simulation ticks can be provided to the scheduler alongside an active object, so that it will be activated during these specific ticks</li>
-	<li><b>periodic</b> activations : expressed in simulation ticks, this allows objects to be regularly activated by the scheduler</li>
+	<li><b>programmed</b> activations: a list of simulation ticks can be provided to the scheduler alongside an active object, so that it will be activated during these specific ticks</li>
+	<li><b>periodic</b> activations: expressed in simulation ticks, this allows objects to be regularly activated by the scheduler</li>
 </ul>
  
 </p>
@@ -378,7 +378,7 @@ can be scheduled for simulation according to two non-exclusive schemes :
 <p>
 All kinds of objects can be scheduled, as soon as they need to live on their own, i.e. without being triggered by anything specific. Among all these active objects, a specialized form exists, called Model, the <b>M</b> of the MVC framework. Model encapsulates the state of an active world object which may be linked to controller(s) and/or to views.</p>
 
-<p>Only the model is activated during the simulation tick, but to compute its new state it may need inputs from its controller(s). Whereas the input step updated all controllers, the simulation step (all steps being uncoupled on purpose) updates the models, which may have to read some of their inputs from controllers. Note therefore that here the controller-model pair is driven by the model : another scheme could be event-driven, i.e. low level events coming from the input layer could trigger the update of controllers, which in turn trigger the update of models, views, etc. 
+<p>Only the model is activated during the simulation tick, but to compute its new state it may need inputs from its controller(s). Whereas the input step updated all controllers, the simulation step (all steps being uncoupled on purpose) updates the models, which may have to read some of their inputs from controllers. Note therefore that here the controller-model pair is driven by the model: another scheme could be event-driven, i.e. low level events coming from the input layer could trigger the update of controllers, which in turn trigger the update of models, views, etc. 
 </p>
 
 <p>
@@ -399,11 +399,11 @@ To render the world, Views, the <b>V</b> of the MVC framework, are taken into ac
 
 <h4>Logs</h4>
 <p>
-When dealing with scheduling issues, one has to take a special care of logs : if ever some logs are output during a schedule phase (the most critical one being the simulation tick), then, depending on the chosen log plug (console, classical or HTML), the scheduler may fail constantly.
+When dealing with scheduling issues, one has to take a special care of logs: if ever some logs are output during a schedule phase (the most critical one being the simulation tick), then, depending on the chosen log plug (console, classical or HTML), the scheduler may fail constantly.
 </p>
 
 <p>
-More precisely, the combination of log-emitting scheduled objects (in simulation steps) and classical plug (which writes log to file, by default on the fly) leads most often to fatal scheduling failures : the OS cannot cope with such long and frequent disk I/O, and the scheduler is always late until it decides to give up (it is a good way of proof-testing the scheduler though).
+More precisely, the combination of log-emitting scheduled objects (in simulation steps) and classical plug (which writes log to file, by default on the fly) leads most often to fatal scheduling failures: the OS cannot cope with such long and frequent disk I/O, and the scheduler is always late until it decides to give up (it is a good way of proof-testing the scheduler though).
 </p>
 
 <p>
@@ -417,11 +417,11 @@ The HTML log plug is of course the fastest of all, since it only stores messages
 
 <h4>AI</h4>
 <p>
-Where does the AI thinking should take place ? The two candidates are obviously the simulation step (since simulating, say, a wolf, could include guessing what it decides) and the input step (in this case, the model of the wodel describes only its body, and this particular wolf, that could be controlled by, say, a joystick, happens to be controlled by a program).
+Where does the AI thinking should take place? The two candidates are obviously the simulation step (since simulating, say, a wolf, could include guessing what it decides) and the input step (in this case, the model of the wodel describes only its body, and this particular wolf, that could be controlled by, say, a joystick, happens to be controlled by a program).
 </p>
 
 <p>
-Whereas it may seem more logical to prefer the second way (all wolves are treated similarly, be they human-controlled or programatically controlled), it may cause some issues since usually input ticks occur at lower frequencies than simulation tick. From a scheduling point of view, AI and models may behave very similarly. It finally ends up in a familiar discuss : is the thinking a pure product of the body (AI in model), or is the soul fundamentally different from its physical support (AI in controller) ?
+Whereas it may seem more logical to prefer the second way (all wolves are treated similarly, be they human-controlled or programatically controlled), it may cause some issues since usually input ticks occur at lower frequencies than simulation tick. From a scheduling point of view, AI and models may behave very similarly. It finally ends up in a familiar discuss: is the thinking a pure product of the body (AI in model), or is the soul fundamentally different from its physical support (AI in controller)?
 </p>
 
 
@@ -441,7 +441,7 @@ Simply put, objects can be living or not, independantly from having any kind of 
  	
 	
 <p>
-Completely unrelated to being active or not, objects can have some interactions with the world. These are world objects (<code>OSDL::Engine::WorldObject</code>), which means they are <code>Ceylan::Model</code> instances in the MVC framework. So they are taken into account in two ways : when they impact the world, thanks to their <code>Ceylan::View</code> instances (if any), and when the world impacts them, thanks to their <code>Ceylan::Controller</code> instances (if any).
+Completely unrelated to being active or not, objects can have some interactions with the world. These are world objects (<code>OSDL::Engine::WorldObject</code>), which means they are <code>Ceylan::Model</code> instances in the MVC framework. So they are taken into account in two ways: when they impact the world, thanks to their <code>Ceylan::View</code> instances (if any), and when the world impacts them, thanks to their <code>Ceylan::Controller</code> instances (if any).
 </p>
 	
 <p>
@@ -461,7 +461,7 @@ As world objects can be complex, they all have at least one bounding box, which 
 </p>
 				 
 <p>
-Bounding boxes are particuler insofar as they are used both by the model (ex : to detect collisions) and by most views (ex : to know whether the object is visible), whereas model and views are as much as possible uncoupled (ex : they might live on different computers, models on a server and views on clients). For local executions, the bounding boxes will be shared between model and views, whereas on a distributed context they will be as many replications as processes involved.
+Bounding boxes are particuler insofar as they are used both by the model (ex: to detect collisions) and by most views (ex: to know whether the object is visible), whereas model and views are as much as possible uncoupled (ex: they might live on different computers, models on a server and views on clients). For local executions, the bounding boxes will be shared between model and views, whereas on a distributed context they will be as many replications as processes involved.
 </p>
 
 <br>
@@ -501,10 +501,10 @@ If one wants to render a non-interactive session of the simulated world into a M
 
 
 <p>
-Here is a simple makefile which allows to generate automatically a MPEG movie out of the generated PNG files :
+Here is a simple makefile which allows to generate automatically a MPEG movie out of the generated PNG files:
 
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -539,21 +539,21 @@ clean:
 <dl>
 
     <dt>My joystick is not detected under Linux</dt>
-    <dd>Your kernel must have already been compiled with the joystick support enabled. If it is not the case, update your kernel. If your joystick is still not detected, maybe it is because the appropriate kernel module is not inserted. Try the following, as root : <code>modprobe joydev</code> (you should trigger the use of an object file <code>joydev.o</code>, see for example <code>/lib/modules/2.x.y-z/kernel/drivers/input/joydev.o</code>). Use our joystick test (under <code>$OSDL_ROOT/bin/events/testOSDLJoystick</code>) to check whether the joystick(s) is/are correctly detected, including relevant axes, hats, balls and buttons. 
+    <dd>Your kernel must have already been compiled with the joystick support enabled. If it is not the case, update your kernel. If your joystick is still not detected, maybe it is because the appropriate kernel module is not inserted. Try the following, as root: <code>modprobe joydev</code> (you should trigger the use of an object file <code>joydev.o</code>, see for example <code>/lib/modules/2.x.y-z/kernel/drivers/input/joydev.o</code>). Use our joystick test (under <code>$OSDL_ROOT/bin/events/testOSDLJoystick</code>) to check whether the joystick(s) is/are correctly detected, including relevant axes, hats, balls and buttons. 
 	</dd>
 
-	<dt>When launching my program using OSDL, I get : <code>error while loading shared libraries: libXXX: cannot open shared object file: No such file or directory</code>
+	<dt>When launching my program using OSDL, I get: <code>error while loading shared libraries: libXXX: cannot open shared object file: No such file or directory</code>
 </dt>
 	<dd>
-	Often, XXX happens to be <code>SDL_image</code>. Failing to load libraries occurs often when <code>LD_LIBRARY_PATH</code> is not set correctly. Didn't you forget to issue your <code>source ${LOANI_ROOT}/LOANI-installations/OSDL-environment.sh</code> ?
+	Often, XXX happens to be <code>SDL_image</code>. Failing to load libraries occurs often when <code>LD_LIBRARY_PATH</code> is not set correctly. Didn't you forget to issue your <code>source ${LOANI_ROOT}/LOANI-installations/OSDL-environment.sh</code>?
 	</dd>
 	
-	<dt>When launching my program using OSDL, I get : <code>Aborted</code> and that's all</dt>
-	<dd>Two reasons might explain this. The first is that either the user application or the OSDL library itself does not make a careful use of exception declaration in signatures : when a function can propagate or throw itself an exception, if there is a <code>throw</code> statement in this signature, then the exception must be listed by it. Failing to do so leads to only an <code>Aborted</code> (or one of its translated versions, such as <code>Abandon</code> in French) to be written. Using the debugger (gdb) with : <code>gdb myProgram</code>, then <code>run</code>, then <code>where</code> allows to see in the backtrace which succession of calls stumbled in an unexpected exception. The code just has to be corrected afterwards. <code>gdb</code> mail fail at startup nevertheless, see next pieces of advice in this case.
+	<dt>When launching my program using OSDL, I get: <code>Aborted</code> and that's all</dt>
+	<dd>Two reasons might explain this. The first is that either the user application or the OSDL library itself does not make a careful use of exception declaration in signatures: when a function can propagate or throw itself an exception, if there is a <code>throw</code> statement in this signature, then the exception must be listed by it. Failing to do so leads to only an <code>Aborted</code> (or one of its translated versions, such as <code>Abandon</code> in French) to be written. Using the debugger (gdb) with: <code>gdb myProgram</code>, then <code>run</code>, then <code>where</code> allows to see in the backtrace which succession of calls stumbled in an unexpected exception. The code just has to be corrected afterwards. <code>gdb</code> mail fail at startup nevertheless, see next pieces of advice in this case.
 </dd>
 
-	<dt>When running my program with <code>gdb</code>, I got : <code>BFD: BFD 2.15.93 20041018 internal error, aborting at cache.c line 495 in bfd_cache_lookup_worker</code></dt>
-	<dd>It occurs when debugging in place a program that changed (ex : a <code>make all</code> was issued while still in gdb) or when the current directory used when launching gdb was deleted (ex : a <code>make clean</code> was issued while still in gdb). The solution is to quit gdb, check that the current directory still exists, and reset it, possibly thanks to a <code>cd `pwd`</code>.
+	<dt>When running my program with <code>gdb</code>, I got: <code>BFD: BFD 2.15.93 20041018 internal error, aborting at cache.c line 495 in bfd_cache_lookup_worker</code></dt>
+	<dd>It occurs when debugging in place a program that changed (ex: a <code>make all</code> was issued while still in gdb) or when the current directory used when launching gdb was deleted (ex: a <code>make clean</code> was issued while still in gdb). The solution is to quit gdb, check that the current directory still exists, and reset it, possibly thanks to a <code>cd `pwd`</code>.
 </dd>
 
 
@@ -569,31 +569,10 @@ clean:
 </p>
 
 
- <br><br>
  <center>[<a href="#toc">Back to table of contents</a>]</center>
- <br><br><br>
-
-
-
-
-<a name="contributing"></a> 
-<h2>Contributing to the project</h2>
-
-<h3>A nasty CVS pitfall</h3>
-<p>
-If you are contributing from a LOANI-installed version of Ceylan or OSDL, and if you did not select the <code>--currentCVS</code> LOANI option, then the versions you downloaded correspond to the latest <b>stable</b> release, not the one that was up-to-date at that time. This is done that way so that developers are able to modify files at any time and possibily have a broken latest CVS, whereas end-users can still use LOANI to retrieve a fully fonctional version.</p>
-
-<p>To achieve this feature, the stable versions came thanks to a <b>tagged</b> CVS checkout. One ought to know that CVS tags are sticky (see <a href="http://www.gnu.org/software/cvs/manual/html_mono/cvs.html#SEC54" target="_blank">here</a> for more details), with means that, unless a special CVS command is used, all versions remain with this tag. Therefore they won't be updated as usual in neither way : if you modify them locally, they won't be put in the repository, and if the repository changes they won't be updated locally. The only way of letting them change is to remove that sticky tag, thanks to the <code>cvs update -A</code> command, wich operates recursively.
-</p>
-
 
  
-  <br>
-  <br>
-  <br>
-  <br>
-
-  <h3>Please react !</h3>
+  <h3>Please react!</h3>
 
   <p>If you have informations more detailed or more recent than those
   presented in this document, if you noticed errors, neglects or points
@@ -605,7 +584,7 @@ If you are contributing from a LOANI-installed version of Ceylan or OSDL, and if
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update: Thursday, July 17, 2008</em>
+    <em>Last update: Sunday, April 5, 2009</em>
   </center>
 </body>
 </html>

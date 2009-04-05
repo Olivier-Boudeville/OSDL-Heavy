@@ -34,7 +34,7 @@
   <a name="_top_"></a> 
 
 
-<h1>How to build OSDL and its prerequesites on Windows</h1>
+<h1>How to build OSDL and its prerequisites on Windows</h1>
 
 <h2>Objective</h2>
 
@@ -43,13 +43,28 @@ The goal here is to explain to developers how to <b>build</b> the 0.5 version of
 </p>
 
 <p>
-If a user just needs the OSDL DLL so that she can <b>run</b> an executable depending on the OSDL library (only <code>OSDL-0.5-from-LOANI-release-mt.dll</code> and its prerequesite DLL
+<center>
+    <table summary="a box" style="border : none">
+        <tr>
+          <td>
+            <div class="box">
+<b>Note</b>: the Windows port of the OSDL toolchain is generally lagging behind the GNU/Linux development version. We regularly fix the various small issues that affect the Windows build, but quite often the ongoing newer developments on GNU/Linux result in a broken source tree for Windows. In that case just notify us that something went in the way of the Windows version, and we will do our best to fix it quickly.
+            </div>
+          </td>
+        </tr>
+    </table>
+</center>
+
+
+
+<p>
+If a user just needs the OSDL DLL so that she can <b>run</b> an executable depending on the OSDL library (only <code>OSDL-0.5-from-LOANI-release-mt.dll</code> and its prerequisite DLL
  are required), then she can download, if available, a <strong>LOANI prebuilt user package</strong> from 
 <a href="http://sourceforge.net/project/showfiles.php?group_id=71354" target="_blank">OSDL File Releases</a> on Sourceforge (search for <code>LOANI-0.5-prebuilt-for-windows-users.zip</code>). Should an up-to-date archive be unavailable, <a href="mailto:osdl@esperide.com?subject=[LOANI-0.5]%20Windows%20User%20Build%20needed" target="_blank">ask us</a> and we will add it quickly.
 </p>
 
 <p>
-If a user just wants to <b>develop</b> a program or a library depending on the OSDL library (hence needing OSDL installed headers, and preferably <code>OSDL-0.5-from-LOANI-debug-mt.dll</code> and <code>OSDL-0.5-from-LOANI-debug-mt.lib</code>, same for the OSDL prerequesites) and does not wish to build OSDL by herself, then she can download, if available, a <strong>OSDL prebuilt developer package</strong> from 
+If a user just wants to <b>develop</b> a program or a library depending on the OSDL library (hence needing OSDL installed headers, and preferably <code>OSDL-0.5-from-LOANI-debug-mt.dll</code> and <code>OSDL-0.5-from-LOANI-debug-mt.lib</code>, same for the OSDL prerequisites) and does not wish to build OSDL by herself, then she can download, if available, a <strong>OSDL prebuilt developer package</strong> from 
 <a href="http://sourceforge.net/project/showfiles.php?group_id=158516" target="_blank">OSDL File Releases</a> on Sourceforge (search for <code>LOANI-0.5-prebuilt-for-windows-developers.zip</code>). If an up-to-date archive is not available, please
 <a href="mailto:ceylan@esperide.com?subject=[LOANI-0.5]%20Windows%20Developer%20Build%20needed" target="_blank">ask us</a> and we will add it quickly.
 </ul>
@@ -68,11 +83,11 @@ Here the target platform is Windows XP, be it Home or Professional edition. Note
 
 <h3>Toolchain</h3>
 <p>
-The first reading should be the <a href="http://ceylan.sourceforge.net/Ceylan-latest/BuildForWindows.html#toolchain" target="_blank">tool section</a> of the <a href="http://ceylan.sourceforge.net/Ceylan-latest/BuildForWindows.html" target="_blank">Ceylan counterpart guide</a>, which gives detailed informations about the generic conventions we use to build our developments on the Windows platform. One has to have applied the steps about the tools described in this document before going on with this one: both Ceylan and OSDL use SVN (hence depend on TortoiseSVN), are built with Visual Express, rely on Cygwin to automate the test suites, and so on.
+The first reading should be the <a href="http://ceylan.sourceforge.net/Ceylan-latest/BuildForWindows.html#toolchain" target="_blank">tool section</a> of the <a href="http://ceylan.sourceforge.net/Ceylan-latest/BuildForWindows.html" target="_blank">Ceylan counterpart guide</a>, which gives detailed information about the generic conventions we use to build our developments on the Windows platform. One has to have applied the steps about the tools described in this document before going on with this one: both Ceylan and OSDL use SVN (hence depend on TortoiseSVN), are built with Visual Express, rely on Cygwin to automate the test suites, and so on.
 </p>
 
 
-<h3>Specific system-level prerequesites</h3>
+<h3>Specific system-level prerequisites</h3>
 
 <p>
 As OpenGL is used by OSDL, one should install first the latest stable (OpenGL) drivers for one's graphics card. Just look at the name of your card from the Windows hardware device panel, and search the corresponding drivers in the website of the card manufacturer. Download and install.
@@ -85,10 +100,10 @@ SDL needs to have the <a href="http://msdn.microsoft.com/directx/sdk/" target="_
 
 
 
-<h3>OSDL and its library prerequesites</h3>
+<h3>OSDL and its library prerequisites</h3>
 
 <p>
-Most of the task will be to retrieve and build the various OSDL prerequesites. Luckily, we designed a light-weight command-line tool, <a href="LOANI.html" target="_blank">LOANI</a>, to automate the process.
+Most of the task will be to retrieve and build the various OSDL prerequisites. Luckily, we designed a light-weight command-line tool, <a href="LOANI.html" target="_blank">LOANI</a>, to automate the process.
 </p>
 
 <p>
@@ -108,7 +123,7 @@ The second - and last - kind of operation requiring the user intervention is whe
 </p>
 
 <p>
-To ensure the package was correctly built, as expected, one can check that nothing failed in the Visual Express <code>output</code> window. This should be the case, apart on some rare occasions for a few Ceylan test cases: depending on the length of the path where the user chose to install OSDL and al, Visual Express tool <code>mt</code> may fall into a problem with long pathnames (again !).
+To ensure the package was correctly built, as expected, one can check that nothing failed in the Visual Express <code>output</code> window. This should be the case, apart on some rare occasions for a few Ceylan test cases: depending on the length of the path where the user chose to install OSDL and al, Visual Express tool <code>mt</code> may fall into a problem with long pathnames (again!).
 </p>
 
 <p>
@@ -120,8 +135,8 @@ Due to the use of Visual Express, the user will be prompted to trigger, for each
         <tr>
           <td>
             <div class="box">
-That's it ! You should have, once LOANI has finished, everything needed to make good use of the OSDL library. In case of problem, re-read everything carefully (this document, the <a href="OSDL-userguide.html" target="_blank">OSDL user guide</a>, the <a href="LOANI.html" target="_blank">LOANI guide</a>) and should the problem persist, <a href="mailto:osdl@esperide.com?subject=[OSDL-0.6]%20Windows%20Build%20Problem" target="_blank">send us a mail</a>. 
-For in-depth technical details about Windows-specific inner workings of OSDL and its prerequesites, one may continue the reading. 
+That's it! You should have, once LOANI has finished, everything needed to make good use of the OSDL library. In case of problem, re-read everything carefully (this document, the <a href="OSDL-userguide.html" target="_blank">OSDL user guide</a>, the <a href="LOANI.html" target="_blank">LOANI guide</a>) and should the problem persist, <a href="mailto:osdl@esperide.com?subject=[OSDL-0.6]%20Windows%20Build%20Problem" target="_blank">send us a mail</a>. 
+For in-depth technical details about Windows-specific inner workings of OSDL and its prerequisites, one may continue the reading. 
 Most people will stop and continue by using by themselves the library.
             </div>
           </td>
@@ -134,7 +149,7 @@ Most people will stop and continue by using by themselves the library.
 <h3>Some precisions &amp; hints</h3>
 
 <p>
-For all packages (OSDL and its prerequesites), LOANI has totally revamped the legacy project files (if any), so that they are up-to-date, in latest Visual Express format, and integrated alltogether: each library has its OSDL-specific precooked solution.
+For all packages (OSDL and its prerequisites), LOANI has totally revamped the legacy project files (if any), so that they are up-to-date, in latest Visual Express format, and integrated alltogether: each library has its OSDL-specific precooked solution.
 </p>
 
 
@@ -221,19 +236,19 @@ Adapted from its Ceylan <a href="http://ceylan.sourceforge.net/Ceylan-latest/Bui
   <br>
   <br>
 
-  <h3>Please react !</h3>
+  <h3>Please react!</h3>
 
-  <p>If you have informations more detailed or more recent than those
+  <p>If you have information more detailed or more recent than those
   presented in this document, if you noticed errors, neglects or points
   insufficiently discussed, <a href=
-  "mailto:olivier.boudeville@online.fr?subject=[LOANI-0.5]%20User's%20guide">  drop us a line</a>!</p><br>
+  "mailto:olivier.boudeville@online.fr?subject=[LOANI-0.5]%20User's%20guide"> drop us a line</a>!</p><br>
   <br>
   <hr>
 
   <center>
     [<a href="#_top_">Top</a>]<br>
     <br>
-    <em>Last update: Thursday, July 17, 2008</em>
+    <em>Last update: Sunday, April 5, 2009</em>
   </center>
 </body>
 </html>

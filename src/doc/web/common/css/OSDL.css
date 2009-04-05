@@ -82,7 +82,7 @@ h1.Big {
 
 /* needs to leave room at the top for shortcut panel */
 h1 {
-  color: #FFFFFF;
+  color: #ec8b23;
   font-size: 35px;
   background: transparent;
   font-weight: bold;
@@ -95,7 +95,7 @@ h1 {
 
 
 h2 {
-  color: #FFFFFF ;
+  color: #4da04b ;
   font-size: 27px;
   background: transparent;
   text-align: left;
@@ -105,7 +105,7 @@ h2 {
 
 
 h3 {
-  color: #DADADA;
+  color: #af38c9;
   font-size: 22px;
   background: transparent;
   margin-top: 5%;
@@ -116,7 +116,7 @@ h3 {
 
 
 h4 {
-  color: #AAAAAA;
+  color: #8aa0d2;
   font-size: 21px;
   margin-left: 10%;
   margin-right: 7%;
@@ -125,7 +125,7 @@ h4 {
 
 
 h5 {
-  color: #808080;
+  color: #ec8b23;
   font-size: 16px;
   margin-left: 15%;
   margin-right: 15%;
@@ -136,7 +136,7 @@ h5 {
 
 
 h6 {
-  color: #AAAAAA;
+  color: #3da03b;
   font-size: 15px;
   margin-left: 30%;
   margin-right: 5%;
@@ -176,8 +176,8 @@ dl {
 
 
 dt {
-  color: #EFEFEF;
-  background: #5E5E5E;
+  color: #4dCC4b;
+  background: #363636;
   font-weight: bold; 
   margin-left: 0%;
   margin-right: 0%;
@@ -261,7 +261,7 @@ pre {
 
 
 table {
-  color: #DADADA;  
+  color: #8aa0d2;
   margin: 5px;
   border: solid; 
   border-width: thin; 
@@ -280,19 +280,20 @@ table caption {
 
 table p, table dl, ol p, ul p, dl p, blockquote p, .note p, .note ul, .note ol, .note dl, li pre, dd pre {
   margin-left: 0;
+  background: #000000; 
   margin-right: 0;
 }
 
 
 tr {
-   background: #000000;
+   color: #DADADA;  
    font-size: 15px;
    border:thin;
 }
 
 
 th { 
-   color: #EFEFEF;
+   color: #ec8b23;
    background: #000000;
    font-weight: bold;
    font-size: 19px;
@@ -301,7 +302,7 @@ th {
 
 
 td {
-   background: #000000; 
+   background: #363636; 
    font-size: 15px;
 }
 
@@ -353,34 +354,24 @@ td a {
 
 
 a:link {
-  color:#FFFFFF; 
+  color:#8aa0d2; 
   background: transparent;
-  text-decoration:underline;
   font-weight: bold;
+  text-decoration:none;
   /*font-size: 110%;  */
 }
   
 
 a:visited {
-  color: #FFFFFF;
+  color: #7a8ebc;
   background: transparent;
   font-weight: bold;  
-  text-decoration:underline;
-}
-
-
-a:active {
-  color: #FFFFFF;
-  background: transparent;
-  font-weight: bold;  
-  text-decoration:underline;
+  text-decoration:none;
 }
 
 
 a:hover { 
-  color:#FFFFFF;
   text-decoration:underline;
-  font-weight: bold; 
 }
 
 
@@ -400,9 +391,7 @@ code {
 
 
 b {
-  color: #DDDDDD;
-  font-size: 16px;
-  font-weight: bold;
+  color: #ec8b23;
 }
 
 
@@ -445,3 +434,4 @@ div.banner em { color: #FFFFFF; font-weight: bold; } /* head of column */
 div.banner a:link { color: #EEEEEE; text-decoration: none;  }
 div.banner a:visited { color: #CCCCCC; text-decoration: none;  }
 div.banner a:hover { color: #FFFFFF; background: #000000; }
+
