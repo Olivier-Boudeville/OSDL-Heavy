@@ -386,8 +386,12 @@ This paragraph is pointed to by the explicit "example" target. A
 reference can be found under `Inline Markup`_, above. `Inline
 hyperlink targets`_ are also possible.
 
+.. _`a target with multiple words`:
+
 Section headers are implicit targets, referred to by name. See
 Targets_, which is a subsection of `Body Elements`_.
+
+Reference: `a target with multiple words`_
 
 Explicit external targets are interpolated into references such as
 "Python_".
