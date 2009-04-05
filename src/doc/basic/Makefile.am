@@ -6,6 +6,15 @@
 	clean-local real-clean
 
 
+
+# Change it to 'true' to have ChangeLog generated from SVN:
+# Note: the better organization is to run: 
+# 'make update-changelog CREATE_CHANGELOG=true' once and then generate
+# all the various needed archives.
+CREATE_CHANGELOG = false
+
+
+
 all: update-basic-doc-files
 
 
@@ -15,8 +24,6 @@ DATE_FORMAT = '+%Y, %B %-e'
 
 CURRENT_DATE= `LANG=; date $(DATE_FORMAT)`
 
-# Change it to 'true' to have ChangeLog generated from SVN :
-CREATE_CHANGELOG=false
 
 
 EXTRA_DIST = $(RAW_DOC_FILES) ${top_builddir}/ChangeLog
@@ -28,6 +35,7 @@ RAW_DOC_FILES = ${top_builddir}/AUTHORS ${top_builddir}/COPYING.LIB        \
 	${top_builddir}/TODO
 
 $(RAW_DOC_FILES): update-basic-doc-files
+
 
 update-basic-doc-files: update-changelog update-authors update-copying  \
 	update-faq update-install update-maint update-news update-readme    \
@@ -48,7 +56,7 @@ CHANGELOG_GENERATOR = `which svn2cl 2>/dev/null`
 
 # The '-d' option could be used as well to have distributed Change Logs
 # in each directory :
-CHANGELOG_COMMAND   = "$(CHANGELOG_GENERATOR)"
+CHANGELOG_COMMAND = "$(CHANGELOG_GENERATOR)"
 
 
 update-changelog: 
@@ -70,9 +78,11 @@ effective-changelog-creation:
 	available, nothing done@OSDL_DEFAULT_STYLE@"; else \
 	if [ -d "${top_srcdir}/.svn" ] ; then \
 	$(CHANGELOG_COMMAND) ${top_srcdir} --linelen=10000 \
-	-o ${top_builddir}/ChangeLog ; else \
+	-o ${top_builddir}/ChangeLog && \
+	echo "@OSDL_COMMAND_STYLE@    Changes have been written in \
+	${srcdir}/ChangeLog@OSDL_DEFAULT_STYLE@" \ ; else \
 	echo "@OSDL_WARNING_STYLE@ No ChangeLog created as not in a SVN \
-	tree@OSDL_DEFAULT_STYLE@"; touch ${top_builddir}/ChangeLog ; fi ; fi
+	tree@OSDL_DEFAULT_STYLE@"; touch ${srcdir}/ChangeLog ; fi ; fi
 	-@/bin/rm -f ${top_builddir}/ChangeLog.bak
 
 
@@ -168,5 +178,5 @@ real-clean:
 	OSDL-TODO-template.txt Makefile.in
 	
 	
-${top_builddir}/ChangeLog: effective-changelog-creation
+${top_builddir}/ChangeLog ${srcdir}/ChangeLog: update-changelog
 
