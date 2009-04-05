@@ -1,3 +1,4 @@
+
 # Root Makefile.am for the whole OSDL package, including tests.
 
 # Requires following version of automake or newer:
@@ -56,8 +57,7 @@ rpm: tgz
 	@rpm -ta $(PACKAGE)-$(VERSION).tar.gz
 
 
-# Here there will be rules to rebuild the export lists for BeOS, MacOS 
-# and Win32.
+# Here rules to rebuild the export lists for BeOS, MacOS and Win32 could exist.
 
 
 # Installs the libraries only, prevents from rebuilding applications:
@@ -73,10 +73,11 @@ update-basic-doc-files:
 	cd ${top_builddir}/src/doc/basic; $(MAKE) update-basic-doc-files 
 
 
+# Note: usually deprecated in favor of generate-releases.
 source-release: update-basic-doc-files
 	@echo; echo "@OSDL_COMMAND_STYLE@    Making source release \
 	$(SRC_RELEASE_ARCHIVE_NAME):@OSDL_DEFAULT_STYLE@"; echo
-	-@cd test; if [ -f Makefile ] ; then make clean; fi
+	-@cd test; if [ -f Makefile ] ; then $(MAKE) clean; fi
 	@mkdir -p $(SRC_RELEASE_ARCHIVE_DIR); \
 	files=$(OSDL_PROJECT_FILES); cd $(top_srcdir)/.. ; \
 	tar cvf - $$files | \
@@ -96,7 +97,7 @@ snapshot:
 	@OSDL_DEFAULT_STYLE@"; echo
 	@svn co https://svn.sourceforge.net/svnroot/OSDL OSDL
 	@(cd OSDL/OSDL/trunk/src/conf/build && ./autogen.sh --no-build \
-	&& cd ../../.. && rm -rf autom4te.cache )
+	&& cd ../../.. && /bin/rm -rf autom4te.cache )
 	@cd OSDL && tar cvhf - OSDL | \
 	bzip2 > $(HOME)/OSDL-@OSDL_VERSION@-svn-snapshot.tar.bz2 \
 	&& echo \
@@ -104,7 +105,7 @@ snapshot:
 	available at:" \
 	&& echo "      $(HOME)/OSDL-@OSDL_VERSION@-svn-snapshot.tar.bz2 \
 	@OSDL_DEFAULT_STYLE@" && echo
-	-@rm -rf OSDL
+	-@/bin/rm -rf OSDL
 	
 	
 # Brute-force archiving with bzip2, see also the 'source-release' target.
@@ -112,6 +113,7 @@ snapshot:
 # To avoid uselessly fat archives, some cleaning has
 # to be done, but using cleanGeneratedConfigFiles.sh removes the 
 # Makefile being used itself.	
+# Note: usually deprecated in favor of generate-releases.
 bz2:
 	@echo; echo "@OSDL_COMMAND_STYLE@    Saving all \
 	@PROJECT_NAME@-@OSDL_VERSION@ project \
@@ -128,6 +130,7 @@ bz2:
 	
 # Brute-force archiving with gzip, see also the 'source-release' target.
 # clean required not to archive test* executables:			
+# Note: usually deprecated in favor of generate-releases.
 tgz:
 	@echo; echo "@OSDL_COMMAND_STYLE@    Saving all \
 	@PROJECT_NAME@-@OSDL_VERSION@ project \
@@ -187,7 +190,7 @@ stat:
 	echo "    "`echo $$s | awk '{print $$2}'` words; \
 	echo "    "`echo $$s | awk '{print $$3}'` characters\
 	"@OSDL_DEFAULT_STYLE@"; 
-	-@rm -f .wholeSrcContent.txt .srcFileList.txt
+	-@/bin/rm -f .wholeSrcContent.txt .srcFileList.txt
 
 
 help:
@@ -279,20 +282,20 @@ rm-svn:
 	-@echo "    Do you really want to remove all SVN-related files, \
 	hence possibly loosing modifications not already checked-in ? (y/n) [n]";\
 	read value; if [ "$$value" == "y" ]; then \
-	rm -rf `find ${top_srcdir} -name .svn -print 2>/dev/null`
+	/bin/rm -rf `find ${top_srcdir} -name .svn -print 2>/dev/null`
 
 
 clean-local:
 	@echo "@OSDL_CLEAN_STYLE@    Cleaning all from top build \
 	directory@OSDL_DEFAULT_STYLE@" 
-	-@cd ${top_builddir}; rm -f AUTHORS COPYING.LIB ChangeLog FAQ \
-	INSTALL MAINTENERS NEWS	README THANKS TODO OSDL-?.?.tar.gz
+	-@cd ${top_builddir}; /bin/rm -f AUTHORS COPYING.LIB ChangeLog FAQ \
+	INSTALL MAINTENERS NEWS	README THANKS TODO osdl-?.?.tar.gz
 
 
 real-clean: clean-local
-	-@rm -f Makefile.in aclocal.m4 config.log configure configure.ac \
+	-@/bin/rm -f Makefile.in aclocal.m4 config.log configure configure.ac \
 	libtool config.status config.cache 
-	-@rm -rf autom4te.cache
+	-@/bin/rm -rf autom4te.cache
 
 
 # Only useful if the source and build directories are the same.
@@ -306,22 +309,24 @@ distclean-local: real-clean
 # Grab the test programs for the distribution:
 # (the touch for both m4 is due to a libltdl bug with dist automake target)
 dist-hook:
+	@echo "@OSDL_COMMAND_STYLE@    Running distribution hook@OSDL_DEFAULT_STYLE@"
 	@if ! test -f $(srcdir)/test/configure; then \
 	echo "Test configure script not available, generating it." ; \
 	cd $(srcdir)/test ; ./autogen.sh --only-prepare-dist -g; fi
 	@if test -f $(srcdir)/test/Makefile; then \
-	(cd $(srcdir)/test; make distclean); fi	
-	-@rm -rf $(srcdir)/test/autom4te* $(srcdir)/test/testsOutcome.txt
+	(cd $(srcdir)/test; $(MAKE) distclean); fi
+	-@/bin/rm -rf $(srcdir)/test/autom4te* $(srcdir)/test/testsOutcome.txt
 	@cp -rp $(srcdir)/test $(distdir)
 	@if ! test -f $(srcdir)/tools/configure; then \
 	echo "Tool configure script not available, generating it." ; \
 	cd $(srcdir)/tools ; ./autogen.sh --only-prepare-dist -g; fi
 	@if test -f $(srcdir)/tools/Makefile; then \
-	(cd $(srcdir)/tools; make distclean); fi	
-	-@rm -rf $(srcdir)/tools/autom4te*
+	(cd $(srcdir)/tools; $(MAKE) distclean); fi	
+	-@/bin/rm -rf $(srcdir)/tools/autom4te*
 	@cp -rp $(srcdir)/tools $(distdir)
-	-@rm -rf `find $(distdir) -type d -name '.svn' -print`
-	-@cd $(distdir); rm -f config.log config.status libtool \
+	-@/bin/rm -rf `find $(distdir) -type d -name '.svn' -print`
+	@cd $(distdir) && ../$(srcdir)/test/cleanTestGeneratedFiles.sh
+	-@cd $(distdir); /bin/rm -f config.log config.status libtool \
 	code/OSDLConfig.h
 	-@touch $(srcdir)/libtool.m4 $(srcdir)/ltdl.m4
 
@@ -329,12 +334,25 @@ dist-hook:
 uninstall-hook:
 	@echo; echo "@OSDL_INSTALL_STYLE@    Uninstalling all OSDL shared \
 	files from $(DESTDIR)@OSDL_INSTALL_SHARED_DIR@ @OSDL_DEFAULT_STYLE@"
-	-@rm -rf $(DESTDIR)@OSDL_INSTALL_SHARED_DIR@
+	-@/bin/rm -rf $(DESTDIR)@OSDL_INSTALL_SHARED_DIR@
 
 
-RELEASE_FILES="osdl-@OSDL_VERSION@.tar.gz osdl-@OSDL_VERSION@.tar.bz2"
+RELEASE_FILES = osdl-@OSDL_VERSION@.tar.gz osdl-@OSDL_VERSION@.tar.bz2 osdl-@OSDL_VERSION@.zip
 
-upload-release: dist dist-bzip2
+
+upload-releases: $(RELEASE_FILES)
 	   @echo; echo "@OSDL_COMMAND_STYLE@    Uploading release files $(RELEASE_FILES) to Sourceforge @OSDL_DEFAULT_STYLE@"
 	   @rsync -avP -e ssh $(RELEASE_FILES) @OSDL_DEFAULT_SF_USER@@frs.sourceforge.net:uploads/
 
+
+# Apparently does not work if listed only as:
+# 'generate-releases: dist-bzip2 dist-zip dist'
+# (the release directory is removed and then next archive is empty)
+generate-releases: 
+	@$(MAKE) dist-bzip2 && $(MAKE) dist-zip && $(MAKE) dist
+
+
+info-releases:
+	@echo "RELEASE_FILES = $(RELEASE_FILES)"
+	
+	
