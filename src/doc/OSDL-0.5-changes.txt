@@ -1,5 +1,5 @@
 Created on Thursday, April 26, 2007.
-Updated on Friday, March 6, 2009.
+Updated on Sunday, April 5, 2009.
 
 
 
@@ -7,14 +7,22 @@ Updated on Friday, March 6, 2009.
 	
 	
 
-Main changes are :
+Main changes are:
 
+	* PhysicsFS integrated
+	
+	* first support of SDL_mixer and, to a lesser extent, Agar, added
+	
+	* use of OpenGL generalized
+	
+	* enhanced scheduler (still lots of improvements coming)
+
+    * support for some operations on the Nintendo DS added (ex: MP3 play-back on the ARM7)
+	
 	* Windows port of OSDL and LOANI
-	
-	* OpenGL use generalized
-	
-	* enhanced scheduler
 
+    * first works onto Orge (Erlang-based OSDL RPG Engine) added
+	
 	* license extended, went from pure LGPL to disjunctive bi-license LGPL/GPL. It allows developers using GPL software to use OSDL as well
 
 	* integration to the Ceylan 0.7 version
