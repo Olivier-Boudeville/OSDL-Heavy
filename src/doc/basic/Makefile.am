@@ -9,7 +9,7 @@
 
 # Change it to 'true' to have ChangeLog generated from SVN:
 # Note: the better organization is to run: 
-# 'make update-changelog CREATE_CHANGELOG=true' once and then generate
+# 'make effective-changelog-creation' once and then generate
 # all the various needed archives.
 CREATE_CHANGELOG = false
 
@@ -19,7 +19,7 @@ all: update-basic-doc-files
 
 
 # To hide date format from automake which does not 
-# like non-POSIX variable name :
+# like non-POSIX variable name:
 DATE_FORMAT = '+%Y, %B %-e'
 
 CURRENT_DATE= `LANG=; date $(DATE_FORMAT)`
@@ -51,11 +51,11 @@ install-data-local: $(RAW_DOC_FILES) # update-changelog
 	NEWS README THANKS TODO $(DESTDIR)@OSDL_LOCAL_DOC_DIR@
  
  
-# Creates automatically a standard ChangeLog file from SVN logs :
+# Creates automatically a standard ChangeLog file from SVN logs:
 CHANGELOG_GENERATOR = `which svn2cl 2>/dev/null`
 
 # The '-d' option could be used as well to have distributed Change Logs
-# in each directory :
+# in each directory:
 CHANGELOG_COMMAND = "$(CHANGELOG_GENERATOR)"
 
 
