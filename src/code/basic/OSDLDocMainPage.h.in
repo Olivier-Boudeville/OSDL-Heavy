@@ -3,40 +3,52 @@
  *
  * @mainpage OSDL
  *
- * @section intro Introduction
+ * @section intro Overview
  * 
- * <div class="box">
- * OSDL stands for Object-oriented SDL (Simple DirectMedia Layer) 
- * [<a href="http://osdl.sourceforge.net" target="_blank">official site</a>, 
- * <a href="http://osdl.esperide.com" target="_blank">mirror</a>].
+ * This is the documentation of the API corresponding to the OSDL @OSDL_VERSION@
+ * version, released on @OSDL_RELEASE_DATE@.
  *
- * Basically, OSDL is a high-level library, working on top of lower-level
- * back-ends, currently <a href="http://libsdl.org">SDL</a> only.
+ * OSDL stands for <em>Object-oriented Simple DirectMedia Layer</em>.
+ * It is a free portable high-level open-source library for multimedia 
+ * and game programming. 
  *
- * OSDL is a state machine.
+ * Basically, OSDL is a high-level C++ library, working on top of lower-level
+ * back-ends, currently <a href="http://libsdl.org">SDL</a> and related helper
+ * libraries (SDL_*), and on <a href="http://ceylan.sourceforge.net" target="_blank">Ceylan</a>.
+.
  *
- * This is OSDL version @OSDL_VERSION@.
+ * @section use Usage
  *
- * When multiple ways of processing exist (for example, if there is an SDL
- * fonction for drawing a line and if OSDL can do it too, its own way), 
- * you can choose to use OSDL's proper algorithms by defining OSDL_INSIDE
- * (example : <code>./configure CXXFLAGS="-DOSDL_INSIDE"</code>)
- * </div>
+ * Use OSDL.h and link your program or library with one of the following
+ * OSDL libraries:
+ *<ul>
+ *	<li>use OSDL.h: <code>CPPFLAGS += 
+ * -I&lt;OSDL_INSTALL_DIR&gt;/include/OSDL</code></li>
+ *	<li>use libOSDL.a, libOSDL.la or libOSDL.so variations: 
+ *  <code>LIBS += -L&lt;OSDL_INSTALL_DIR&gt;/lib -lOSDL</code></li>
+ *</ul>
+ *
+ * If the user code is autotools-based, the <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/src/conf/build/m4/osdl.m4.in?view=markup" target="_blank">osdl.m4</a> macro, 
+ * available in the <code>test</code> subdirectory, helps writing a 
+ * <code>configure.ac</code> file which takes into account the linking
+ * with OSDL library. See the OSDL_PATH macro and its numerous built-in
+ * sanity checks.
+ * One can use OSDL's numerous test cases as guidelines to implement, build
+ * and run code using the OSDL library.
  *
  * @section doc Documentation
  *
- * <div class="box">
- * Please refer to the 
+ * Installation is to be performed thanks to <a href="http://osdl.sourceforge.net/OSDL-@OSDL_VERSION@/LOANI.html" target="_blank">LOANI</a>.
+ *
+ * Refer to the 
  * <a href="http://osdl.sourceforge.net/OSDL-@OSDL_VERSION@/">OSDL version
- * page</a>. 
+ * page</a> for further information about this @OSDL_VERSION@ version. 
  *
- * All SDL-related informations are to be found in 
- * <a href="http://www.libsdl.org/index.php">SDL Official Site</a>.
+ * Information about the latest OSDL release can be found <a href="http://osdl.sourceforge.net/OSDL-latest/" target="_blank">here</a>
+ * (<a href="http://osdl.esperide.com/OSDL-latest/" target="_blank">mirror</a>).
  *
- * For any remark or suggestion, 
- * <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Remark">
- * feel free to drop me a line</a>.
- * </div> 
+ * Support can be obtained from @OSDL_MAILING_LIST_SUPPORT@ (one 
+ * must register first).
  *
  */
  
