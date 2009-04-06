@@ -140,8 +140,8 @@ SCP_OPT       = "-p -r"
 
 		
 .PHONY: all install doc build inc web links site common                    \
-	update-rst check-rst loani-archives api check-dot fix-dox-conf         \
-	tidy transfer toSF toSF-rsync toSF-scp                                 \
+	update-rst check-rst loani-archives api update-dox-css check-dot       \
+	fix-dox-conf tidy transfer toSF toSF-rsync toSF-scp                    \
 	toMirror toMirror-rsync toMirror-scp check-scp remind-locations        \
 	info info-dirs info-files info-sf info-html info-tools                 \
 	clean clean-web cleanobjs cleandeps clean-install real-clean
@@ -228,7 +228,7 @@ loani-archives:
 uninstall-hook:
 	@echo; echo "@OSDL_INSTALL_STYLE@    Uninstalling documentation from \
 	$(DESTDIR)@OSDL_LOCAL_DOC_SHARED_DIR@ @OSDL_DEFAULT_STYLE@"
-	-@rm -rf $(DESTDIR)@OSDL_LOCAL_DOC_DIR@
+	-@/bin/rm -rf $(DESTDIR)@OSDL_LOCAL_DOC_DIR@
 	
 	
 # One must prevent doxygen from overwriting the master 
@@ -250,16 +250,21 @@ api: check-dot fix-dox-conf
 	-@PATH=`pwd`/$(DOT_ROOT)/bin:$$PATH \
 	LD_LIBRARY_PATH=`pwd`/$(GCC_ROOT)/lib:$$LD_LIBRARY_PATH \
 	$(DOXYGEN) $(DOXYGEN_GENERATED_CONF)
-	@rm -f $(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/doxygen.css
+	@/bin/rm -f $(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/doxygen.css
 	@cp -f $(srcdir)/web/common/css/doxygen-@PROJECT_NAME@.css \
 	$(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/doxygen.css 
-	@cp -f $(srcdir)/web/common/doxygen/*.png \
-	$(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html
 	@echo
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
 	@OSDL_CURRENT_VERSION_PREFIX@ API, which is located in: \
 file://$(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/index.html@OSDL_DEFAULT_STYLE@"
-	
+
+
+# Not used, as result renders less good than default one:
+update-dox-css:
+	@cp -f $(srcdir)/web/common/css/doxygen-@PROJECT_NAME@-tabs.css \
+	$(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html/tabs.css 
+	@cp -f $(srcdir)/web/common/doxygen/*.png $(DESTDIR)@OSDL_LOCAL_WEB_CURRENT_VERSION_API_DIR@/html
+
 			
 check-dot:
 	@[ -x "$(DOT)" ] \
@@ -309,7 +314,7 @@ toSF-rsync: site
 	[@OSDL_LOCAL_WEB_DIR@] using rsync@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(RSYNC_OPT); $(RSYNC) $$opt @OSDL_LOCAL_WEB_DIR@/* \
-	@OSDL_DEFAULT_SF_USER@@$(SF_WEB_SERVER):$(SF_WEB_DIR)
+	@OSDL_DEFAULT_SF_USER@,@UNIX_PROJECT_NAME@@$(SF_WEB_SERVER):$(SF_WEB_DIR)
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
 	@PROJECT_NAME@'s website on Sourceforge at \
 	$(SF_WEB_URL)@OSDL_DEFAULT_STYLE@"
@@ -451,13 +456,13 @@ clean-local: clean-web
 clean-web:
 	@echo "@OSDL_CLEAN_STYLE@    Cleaning local doc repository \
 	[@OSDL_LOCAL_WEB_DIR@]@OSDL_DEFAULT_STYLE@"
-	-@rm -rf @OSDL_LOCAL_WEB_DIR@
+	-@/bin/rm -rf @OSDL_LOCAL_WEB_DIR@
 
 
 clean-install: clean-web
 	@echo "@OSDL_CLEAN_STYLE@    Cleaning installed doc repository \
 	[@OSDL_LOCAL_DOC_DIR@]@OSDL_DEFAULT_STYLE@"
-	-@rm -rf @OSDL_LOCAL_DOC_DIR@
+	-@/bin/rm -rf @OSDL_LOCAL_DOC_DIR@
 
 
 real-clean: clean-web
