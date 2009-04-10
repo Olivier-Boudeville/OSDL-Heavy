@@ -48,6 +48,7 @@ RenderingException::~RenderingException() throw()
 
 
 
+
 Renderer::Renderer( bool registerToScheduler ) throw( RenderingException ):
 	Object(),
 	_renderingDone( 0 ),
@@ -85,7 +86,7 @@ Renderer::~Renderer() throw()
 void Renderer::render( RenderingTick currentRenderingTick ) throw()
 {
 
-	OSDL_RENDER_LOG( "Rendering ! " ) ;
+	OSDL_RENDER_LOG( "Rendering! " ) ;
 	
 	/*
 	 * Beware, currentRenderingTick might be always zero if no scheduler 
