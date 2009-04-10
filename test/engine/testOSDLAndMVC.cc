@@ -20,8 +20,9 @@ using std::list ;
 typedef Ceylan::Uint8 Direction ;
 
 
+
 /**
- * Tests the whole event-driven MVC framework with the basic event loop :
+ * Tests the whole event-driven MVC framework with the basic event loop:
  *   - a specific controller is registered, so that it manages both the 
  * keyboard arrows and the first joystick (if any)
  *  - whenever an event occurs with the keyboard arrows or the first joystick,
@@ -32,19 +33,19 @@ typedef Ceylan::Uint8 Direction ;
  * of the '>', '^', '<' and 'v' symbols).
  *
  * @note This test is said to be event-driven since it does not involve a
- * scheduler : it is only when an input event occurs that the whole MVC 
+ * scheduler: it is only when an input event occurs that the whole MVC 
  * chain gets activated (controllers, then models, then views).
  *
  * @see testScheduledOSDLAndMVC.cc the version with scheduler
  *
  */
-class MyMVCEvent : public Ceylan::MVCEvent
+class MyMVCEvent: public Ceylan::MVCEvent
 {
 
 	public:
 
 
-		MyMVCEvent( Ceylan::EventSource & source ) throw() : 
+		MyMVCEvent( Ceylan::EventSource & source ) throw(): 
 			 MVCEvent( source ),
 			 _direction( 1  )
 		{
@@ -77,7 +78,7 @@ class MyMVCEvent : public Ceylan::MVCEvent
 
 
 
-class MyController : public OSDL::MVC::Controller
+class MyController: public OSDL::MVC::Controller
 {
 
 	public:
@@ -135,10 +136,11 @@ class MyController : public OSDL::MVC::Controller
 			}	
 			
 			
-			// We are event-driven here :
+			// We are event-driven here:
 			propagateState() ;	
 						
 		}
+		
 		
 		
 		/**
@@ -222,20 +224,20 @@ class MyController : public OSDL::MVC::Controller
 				case 1:
 					return "^" ;
 					
-				case 2 : 
+				case 2: 
 					return "v" ;
 					
-				case 3 :
+				case 3:
 					return "<" ;
 					
-				case 4 :
+				case 4:
 					return ">" ;
 					
-				case 5 :
-					return "quit ! (seen by controller)" ;
+				case 5:
+					return "quit! (seen by controller)" ;
 			}
 			
-			return "(unexpected direction selected) : " 
+			return "(unexpected direction selected): " 
 				+ Ceylan::toString( _direction ) ;
 						
 		}
@@ -245,7 +247,7 @@ class MyController : public OSDL::MVC::Controller
 	private:
 	
 	
-		/// 1 : up, 2 : down, 3 : left, 4 : right, 5 : quit.
+		/// 1: up, 2: down, 3: left, 4: right, 5: quit.
 		Direction _direction ;
 		
 		MyMVCEvent * _eventForModel ;
@@ -254,16 +256,16 @@ class MyController : public OSDL::MVC::Controller
 
 
 
-
-class MyModel : public OSDL::MVC::Model
+// This is a periodical model.
+class MyModel: public OSDL::MVC::PeriodicalModel
 {
 
 
 	public:
 	
 	
-		MyModel() :
-			Model( /* autoRegister */ false ),
+		MyModel( Events::Period period ):
+			PeriodicalModel( period, /* autoRegister */ false ),
 			_actualDirection( 1 )
 		{
 		
@@ -272,10 +274,12 @@ class MyModel : public OSDL::MVC::Model
 			
 		}
 
+
 		virtual ~MyModel() throw()
 		{
 			delete _eventForView ;
 		}
+
 
 		virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 		{
@@ -286,7 +290,7 @@ class MyModel : public OSDL::MVC::Model
 			if ( event != 0 )
 				_actualDirection = event->getDirection() ;
 			
-			// We are event-driven here :
+			// We are event-driven here:
 			_eventForView->setDirection( _actualDirection ) ;			
 			notifyAllViews( *_eventForView ) ;
 			
@@ -322,14 +326,14 @@ class MyModel : public OSDL::MVC::Model
 
 
 
-class MyView : public Ceylan::View
+class MyView: public Ceylan::View
 {
 
 
 	public:
 	
 	
-		MyView( Ceylan::Model & model, EventsModule & events ) throw() :
+		MyView( Ceylan::Model & model, EventsModule & events ) throw():
 			View( model ),
 			_events( & events )
 		{
@@ -347,25 +351,31 @@ class MyView : public Ceylan::View
 		virtual void triggerRendering() throw()
 		{
 		
-			// First retrieves from the model the necessary informations :
+			// First retrieves from the model the necessary information:
 			Ceylan::Model * myModel ;
 			
-			// Actually only one source : 
+			// Actually only one source: 
 			for ( std::list<Ceylan::EventSource *>::iterator it 
 				= _sources.begin() ; it != _sources.end(); it++ )
 			{
 			
+				/*
+				 * That's why using the template-based version should be
+				 * preferred (casts everywhere):
+				 *
+				 */
 				myModel = dynamic_cast<Ceylan::Model *>( *it ) ;
+				
 				const MyMVCEvent * myModelEvent 
 					= dynamic_cast<const MyMVCEvent *>( 
 						& myModel->getEventFor( * this ) ) ;
 				
-				// Directions could be blended :	
+				// Directions could be blended:	
 				_actualDirection = myModelEvent->getDirection() ;
 				
 			}
 			
-			// Then render !
+			// Then render!
 			renderModel() ;
 			
 		}
@@ -381,26 +391,26 @@ class MyView : public Ceylan::View
 					cout << "^" << endl ;
 					break ;
 					
-				case 2 : 
+				case 2: 
 					cout << "v" << endl ;
 					break ;
 					
-				case 3 :
+				case 3:
 					cout << "<" << endl ;
 					break ;
 					
-				case 4 :
+				case 4:
 					cout << ">" << endl ;
 					break ;
 					
-				case 5 :
-					cout << "quit ! "
+				case 5:
+					cout << "quit! "
 						"(seen by the view, actual end of event loop)" << endl ;
 					_events->requestQuit() ;	
 					break ;
 
 				default:
-					cout << "(unexpected direction selected) : " 
+					cout << "(unexpected direction selected): " 
 						<< _actualDirection << endl ;	
 					break ;
 			}
@@ -419,7 +429,7 @@ class MyView : public Ceylan::View
 				_actualDirection = event->getDirection() ;
 			}
 			
-			// Then render !
+			// Then render!
 			renderModel() ;
 			
 		}
@@ -439,7 +449,7 @@ class MyView : public Ceylan::View
  * (no scheduler is used).
  *
  * This test creates MVC instances as automatic variables, to test the 
- * framework robustness : it is a typical example of a misuse that should 
+ * framework robustness: it is a typical example of a misuse that should 
  * have led to a crash, since the deallocation order of aController, aModel 
  * and aModel is not mastered.
  *
@@ -447,7 +457,7 @@ class MyView : public Ceylan::View
  * system, so that the user is notified that the life cycle of his objects 
  * is wrong.
  *
- * The right solution would have been to use block to control the variable
+ * The right solution would have been to use blocks to control the variable
  * scopes, or to create instances thanks to new/delete pairs.
  *
  * The 'quit' request will be processed only by a view, after having 
@@ -500,7 +510,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -514,7 +524,7 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
@@ -529,7 +539,7 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Getting events module." ) ;
 		EventsModule & myEvents = myOSDL.getEventsModule() ; 
 		
-		LogPlug::info( "Events module : " + myEvents.toString() ) ;
+		LogPlug::info( "Events module: " + myEvents.toString() ) ;
 		
 		KeyboardHandler & myKeyboardHandler = myEvents.getKeyboardHandler() ;
 			
@@ -549,7 +559,7 @@ int main( int argc, char * argv[] )
 			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
 				myJoystickHandler.openJoystick( i ) ;
 		
-			LogPlug::info( "New joystick handler state is : " 
+			LogPlug::info( "New joystick handler state is: " 
 				+ myJoystickHandler.toString( Ceylan::high ) ) ;
 		
 		}
@@ -560,7 +570,7 @@ int main( int argc, char * argv[] )
 		
 		}
 		
-		LogPlug::info( "New joystick handler state is : " 
+		LogPlug::info( "New joystick handler state is: " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 		
 		
@@ -570,7 +580,7 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Getting video." ) ;
 		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
-		// A SDL window is needed to have the SDL event system working :
+		// A SDL window is needed to have the SDL event system working:
 		myVideo.setMode( 640, 480, VideoModule::UseCurrentColorDepth, 
 			VideoModule::SoftwareSurface ) ;
 		
@@ -585,7 +595,7 @@ int main( int argc, char * argv[] )
 		 *
 		 */
 		 
-		MyModel aModel ;
+		MyModel aModel( /* period */ 3 ) ;
 		
 		MyView aView( aModel, myEvents ) ;
 		
@@ -631,7 +641,7 @@ int main( int argc, char * argv[] )
 
 			std::cout << "< Hit Enter or push the first button "
 				"of the first joystick (if any) "
-				"to end event-driven MVC test >" << std::endl ;
+				"to end this event-driven MVC test >" << std::endl ;
 		
 			myEvents.enterMainLoop() ;
 			LogPlug::info( "Exiting main loop." ) ;	
@@ -653,7 +663,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -662,7 +672,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -671,7 +681,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
