@@ -9,7 +9,6 @@
 #include "Ceylan.h"                   // for inheritance
 
 #include <string>
-#include <list>
 
 
 
@@ -24,7 +23,7 @@ namespace OSDL
 	
 				
 		/**
-		 * Exception to be thrown when rendering encounters an abnormal
+		 * Exception to be thrown when the rendering task encounters an abnormal
 		 * situation.
 		 *
 		 */
@@ -37,6 +36,7 @@ namespace OSDL
 				virtual ~RenderingException() throw() ;
 
 		} ;
+
 
 		
 		/**
@@ -53,13 +53,15 @@ namespace OSDL
 		 * output, since they have to take in charge all multimedia fields,
 		 * including sounds and, possibly, other media. 
 		 *
-		 * The privilegied way of organizing the rendering is to have 
-		 * renderers taking care of all its aspects (video, but also audio,
-		 * etc.). 
+		 * The privileged way of organizing the rendering is to have 
+		 * renderers taking care of all multimedia aspects (video, but also
+		 * audio, etc.). 
 		 *
 		 * Renderers are not necessarily singletons, but having only one
 		 * centralized instance for all views might be simpler.
+		 *
 		 * In this case it is called a root renderer.
+		 *
 		 * A root renderer may delegate part of its task to specialized
 		 * sub-renderers.
 		 *
@@ -70,10 +72,10 @@ namespace OSDL
 		 * of multicore processors.
 		 *
 		 * A renderer knows all the views (as defined by the MVC framework) 
-		 * it is in charge of, but only them (not their model for instance).
+		 * it is in charge of, but only them (not their model, for instance).
 		 *
 		 * However no data structure is provided with this generic renderer,
-		 $ since it may vary a lot depending on the need, from simple list 
+		 * since it may vary a lot depending on the need, from simple list 
 		 * to BSP trees, etc.
 		 *
 		 * @see OSDL::Engine::Scheduler
@@ -83,6 +85,7 @@ namespace OSDL
 		 */	
 		class OSDL_DLL Renderer : public Ceylan::Object
 		{
+		
 		
 		
 			public:
@@ -110,14 +113,19 @@ namespace OSDL
 				 */
 				virtual ~Renderer() throw() ;
 			
+			
 
 				/**
 				 * Triggers the actual rendering of all views, for specified
 				 * rendering tick, if any.
 				 *
+				 * This default implementation does nothing except some logging
+				 * and accounting of rendereding ticks.
+				 *
 				 * @param currentRenderingTick the rendering tick 
 				 * corresponding to this render step. 
-				 * If the renderer is called from a basic event loop (no
+				 *
+				 * @note If the renderer is called from a basic event loop (no
 				 * scheduler is used), then the rendering tick is 
 				 * meaningless and is always zero.
 				 *
@@ -126,9 +134,10 @@ namespace OSDL
 					Events::RenderingTick currentRenderingTick = 0 ) throw() ;
 
 				
+				
 				/**
 				 * Allows the renderer to be aware that a rendering step 
-				 * has to be skipped.
+				 * had to be skipped.
 				 *
 				 * It may be a chance for it to trigger counter-measures, 
 				 * such as decreasing the level of detail in order not to 
@@ -140,6 +149,7 @@ namespace OSDL
 				 */
 				virtual void onRenderingSkipped( 
 					Events::RenderingTick skippedRenderingTick ) throw() ;
+				
 				
 					
 	            /**
@@ -160,6 +170,7 @@ namespace OSDL
 
 
 
+
 				// Static section.
 
 
@@ -172,12 +183,13 @@ namespace OSDL
 				static bool HasExistingRootRenderer() throw() ;
 				 
 				 
+				 
 	       	   /**
 	         	* Returns the one and only one root renderer instance that 
 				* may be already available.
 	         	*
 	         	* @note The returned value is a reference and not a pointer, 
-				* to avoid any abnormal deallocation by its users, that 
+				* to help avoiding any abnormal deallocation by its users, that 
 				* should never deallocate the root renderer.
 	         	*
 				* @throw RenderingException if there is no root renderer 
@@ -192,6 +204,7 @@ namespace OSDL
 					throw( RenderingException ) ;
 
 
+
 				/**
 				 * Deletes the existing root renderer.
 				 *
@@ -200,6 +213,7 @@ namespace OSDL
 				 */
 	       		static void DeleteExistingRootRenderer() 
 					throw( RenderingException ) ;
+		
 		
 		
 				/**
@@ -237,13 +251,8 @@ namespace OSDL
 				Events::RenderingTick _lastRender ;
 		
 
-				/**
-				 * Records all the currently registered views that shall 
-				 * be managed specifically by this renderer.
-				 *
-				 */
-				 //std::list<View *> _registeredViews ;
-				 
+				// No data structure enforced for views here.
+
 				 
 			
 			private:
@@ -287,3 +296,4 @@ namespace OSDL
 
 
 #endif // OSDL_RENDERER_H_
+
