@@ -1,9 +1,11 @@
 #include "OSDLScheduler.h"
 
-#include "OSDLBasic.h"                // for getExistingCommonModule
-#include "OSDLVideo.h"                // for redraw
-#include "OSDLRenderer.h"             // for Renderer
-#include "OSDLActiveObject.h"         // for ActiveObject
+#include "OSDLBasic.h"                  // for getExistingCommonModule
+#include "OSDLVideo.h"                  // for redraw
+#include "OSDLRenderer.h"               // for Renderer
+#include "OSDLActiveObject.h"           // for ActiveObject
+#include "OSDLPeriodicalActiveObject.h" // for PeriodicalActiveObject
+#include "OSDLProgrammedActiveObject.h" // for ProgrammedActiveObject
 
 
 #include <iostream>                   // for ostringstream
@@ -33,7 +35,7 @@ using Ceylan::Maths::Hertz ;
 
 Scheduler * Scheduler::_internalScheduler = 0 ;
 
-const Scheduler::Delay Scheduler::ShutdownBucketLevel = 100000 ;
+const Delay Scheduler::ShutdownBucketLevel = 100000 ;
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -41,16 +43,77 @@ const Scheduler::Delay Scheduler::ShutdownBucketLevel = 100000 ;
 #endif // OSDL_USES_CONFIG_H
 
 
+
 #if OSDL_DEBUG_SCHEDULER
 
+/*
+ * Beware!
+ *
+ * Sending logs (notably with the classical plug, relying on disk writes) is
+ * *slow* and triggers context switches.
+ * So the scheduler may fail constantly with this mode, whereas it could 
+ * work flawlessly without...
+ *
+ */
+ 
+#define OSDL_SCHEDULE_LOG(message) //send( message )
+
+/*
+
 #include <iostream>
-#define OSDL_SCHEDULE_LOG(message) std::cerr << message << std::endl ;
+//#define OSDL_SCHEDULE_LOG(message) std::cerr << message << std::endl
+
+*/
 
 #else // OSDL_DEBUG_SCHEDULER
 
 #define OSDL_SCHEDULE_LOG(message)
 
 #endif // OSDL_DEBUG_SCHEDULER
+
+
+
+/*
+ * Implementation notes:
+ *
+ * The scheduler schedules three types of actions:
+ *   - the simulation of active objects (they may be models)
+ *   - the rendering (views might be involved)
+ *   - the input reading (controllers might be involved)
+ *  
+ * Each of these three actions can specify at which frequency it should be
+ * run, knowing that the scheduler runs itself at a fundamental maximal
+ * frequency of 1000Hz.
+ *
+ * When running in best effort mode, the scheduler will do its best to
+ * respect the assigned frequencies and, if possible, trigger idle calls, to
+ * decrease the system load.
+ *
+ * Actions will have also different priorities, as for example skipping 
+ * simulation ticks should be avoided at all costs, whereas rendering ticks
+ * are less crucial.
+ *
+ * Missed deadlines can be re-planned if being not too late, and according 
+ * to the aforementioned priorities.
+ *
+ * The active objects can be periodical ones and/or programmed ones, i.e.
+ * they will be activated every N simulation ticks and/or at specific ticks,
+ * specified by the object.
+ * 
+ * To manage periodical objects, an ordered list of slots is used: each of 
+ * these slot will manage all objects which have the same period.
+ * 
+ * A slot for period N will have N sub-slots. Objects of period N will be 
+ * dispatched among these subslots to smooth the load, to avoid having 
+ * too numerous objects activated during one simulation tick.
+ * This scattering does not prevent the scheduler to jump over several ticks,
+ * as anyway it will most probably have to schedule objects every simulation 
+ * tick.
+ *
+ * TO-DO: define a "production mode" where the scheduler will aim at maximal
+ * performances by dropping most logging and accounting.
+ *
+ */
 
 
 
@@ -325,8 +388,8 @@ void Scheduler::setIdleCallback(
 	throw()
 {
 
-	_idleCallback            = idleCallback ;
-	_idleCallbackData        = callbackData ;
+	_idleCallback     = idleCallback ;
+	_idleCallbackData = callbackData ;
 	
 	if ( callbackExpectedMaxDuration != 0 )
 		_idleCallbackMaxDuration = callbackExpectedMaxDuration ;
@@ -383,51 +446,240 @@ RenderingTick Scheduler::getCurrentInputTick() const throw()
 
 
 
-void Scheduler::registerObject( ActiveObject & objectToRegister ) throw()
+void Scheduler::registerPeriodicalObject( 
+	PeriodicalActiveObject & objectToRegister ) throw()
 {
-
-#if OSDL_DEBUG
-	if ( objectToRegister.getPeriod() == 0 
-			&& ! objectToRegister.hasProgrammedActivations() )
-		LogPlug::error( "Scheduler::registerObject: "
-			"following object will never be activated: "
-			+ objectToRegister.toString() ) ;
-#endif // OSDL_DEBUG
 	
-	
-	if ( objectToRegister.getPeriod() != 0 )
-	{
-		// This active object is to be periodically activated:
-		PeriodicSlot & slot = getPeriodicSlotFor( 
-			objectToRegister.getPeriod() ) ;
+	// This active object is to be periodically activated:
+	PeriodicSlot & slot = returnPeriodicSlotFor( 
+		objectToRegister.getPeriod() ) ;
 			
-		slot.add( objectToRegister ) ;	
-
-	}
+	// Remember the sub-slot for later unsubscription:		
+	Events::Period subslot = slot.add( objectToRegister ) ;	
 	
+	objectToRegister.onRegistering( subslot ) ;
 	
-	if ( objectToRegister.hasProgrammedActivations() )
+	// Note that the setBirthTick method is overridden here:
+	if ( _isRunning )
 	{
 	
-		// Declare the programmed ticks for this object:
+		// Birth time is then registration time:
+		objectToRegister.setBirthTick( _currentSimulationTick ) ;
 		
-		const list<SimulationTick> & programmed =
-			objectToRegister.getProgrammedActivations() ;
-		
-		for ( list<SimulationTick>::const_iterator it = programmed.begin(); 
-			it != programmed.end(); it++ )
-		{
-			programTriggerFor( objectToRegister, (*it) ) ;			
-		}
-			
-	}
+	}	
+	else
+	{
 	
-	objectToRegister.setBirthTime( _currentSimulationTick ) ;
+		// Otherwise birth time will be set at startup:
+		_initialRegisteredObjects.push_back( & objectToRegister ) ;
+		
+	}	
 	
 }
 
 
 
+void Scheduler::unregisterPeriodicalObject( 
+	PeriodicalActiveObject & toUnregister )	throw( SchedulingException )
+{
+
+	/*
+	 * This periodical object must be in one of the subslots of the slot 
+	 * in charge of its periodicity.
+	 * As an active object is most generally removed by another one, we
+	 * know that the scheduler is in the process of iterating over active 
+	 * objects.
+	 * Therefore we cannot remove that object from a subslot we could be
+	 * already iterating over: this would invalidate the used iterator and
+	 * result in a runtime error.
+	 * Instead we just set the corresponding pointer in subslot to null
+	 * (i.e. its list element carries now a null pointer), knowing that,
+	 * when iterating in a subslot, if we find a null pointer then we
+	 * remove the corresponding list element.
+	 * That way the two-phase removal does not lead to incorrect iterator 
+	 * management.
+	 *
+	 * Only trade-off: a mandatory check at each element that its pointer is 
+	 * not null, whereas the only problematic case is when a scheduled object
+	 * leads to the removal of another one *in the same subslot*.
+	 *
+	 */
+	
+	PeriodicSlot & slot = getPeriodicSlotFor( toUnregister.getPeriod() ) ;
+	
+	slot.removeFromSubslot( toUnregister )  ;
+		 
+}
+
+
+
+void Scheduler::registerProgrammedObject( 
+	ProgrammedActiveObject & objectToRegister ) throw()
+{
+
+	// Declares the programmed ticks for this object:
+	
+	const list<SimulationTick> & programmed =
+			objectToRegister.getProgrammedActivations() ;
+	
+	SimulationTick offset = 0 ;
+	
+	if ( ! objectToRegister.areProgrammedActivationsAbsolute() )
+	{
+	
+		// We have relative ticks here.
+		
+		if ( _isRunning )
+			offset = _currentSimulationTick ;
+		
+		/*
+		 * else: we assume that when the scheduler will start, it will 
+		 * start at simulation tick #0.	
+		 * Otherwise the programmed objects could be planned only at 
+		 * start-up, to take into account any non-null initial simulation
+		 * tick.
+		 *
+		 */
+	
+	}
+	
+	
+	for ( list<SimulationTick>::const_iterator it = programmed.begin(); 
+		it != programmed.end(); it++ )
+	{
+		programTriggerFor( objectToRegister, (*it) + offset ) ;			
+	}
+		
+	objectToRegister.onRegistering() ;
+		
+	// Note that the setBirthTick method is overridden here:
+	if ( _isRunning )
+	{
+	
+		// Birth time is then registration time:
+		objectToRegister.setBirthTick( _currentSimulationTick ) ;
+		
+	}	
+	else
+	{
+	
+		// Otherwise birth time will be set at startup:
+		_initialRegisteredObjects.push_back( & objectToRegister ) ;
+		
+	}	
+			
+	
+}
+
+
+
+void Scheduler::unregisterProgrammedObject( 
+	ProgrammedActiveObject & objectToUnregister ) throw( SchedulingException )
+{
+
+	/*
+	 * This programmed object may be registered in the list of objects 
+	 * to be scheduled during the current tick of the scheduler.
+	 * As we cannot change the structure of a list while iterating on it,
+	 * we just replace in the corresponding node of the list a pointer to
+	 * this object to unregister by a null pointer.
+	 * Although we could do this only for the hashtable entry corresponding
+	 * to the current tick, we do it for all remaining ticks.
+	 *
+	 * Only trade-off: a mandatory check at each element that its pointer is 
+	 * not null, whereas the only problematic case is when a scheduled object
+	 * leads to the removal of another one *in the list for the current tick*.
+	 *
+	 */
+	
+	/*
+	 * First, skips all past ticks (nothing to unregister for them):
+	 * (the list is in chronological order)
+	 *
+	 */
+	SimulationTick offset = 0 ;
+	
+	// Compensates from relatively-defined ticks:
+	if ( ! objectToUnregister.areProgrammedActivationsAbsolute() )
+		offset = objectToUnregister.getBirthTick() ;
+		
+	const list<SimulationTick> & programmed =
+			objectToUnregister.getProgrammedActivations() ;
+
+	list<SimulationTick>::const_iterator it = programmed.begin() ;
+
+	while ( ( it != programmed.end() ) 
+			&& ( (*it) + offset < _currentSimulationTick ) )
+		it++ ;
+		
+	// Now just invalidates the corresponding object pointer in tick lists:	
+	
+	while ( it != programmed.end() ) 
+	{
+	
+		// it points to a programmed tick for that object.
+		
+		// Find the scheduler list for that tick:
+		map<SimulationTick, ListOfProgrammedActiveObjects>::iterator mapIt =
+			_programmedActivated.find( *it ) ;
+		
+		if ( mapIt != _programmedActivated.end() )
+		{
+		
+			/*
+			 * Here we found the list for that tick, removes this object
+			 * from that list:
+			 *
+			 */
+			ListOfProgrammedActiveObjects::iterator listIt = 
+				(*mapIt).second.begin() ; 
+				
+			while ( listIt != (*mapIt).second.end() )
+			{
+			
+				if ( *listIt == & objectToUnregister )
+				{
+				
+					*listIt = 0 ;
+					
+					// Only registered once:
+					break ;
+					
+				}
+					
+				listIt++ ;
+			}
+			
+#if OSDL_DEBUG_SCHEDULER
+
+			if ( listIt == (*mapIt).second.end() )
+				throw SchedulingException( 
+					"Scheduler::unregisterProgrammedObject failed when "
+					"unregistering " + objectToUnregister.toString() 
+					+ ": expected to find a programmed activation for tick #"
+					+ Ceylan::toString( *it ) ) ; 
+#endif //  OSDL_DEBUG_SCHEDULER
+			
+			
+		}
+		else
+		{
+		
+			throw SchedulingException( 
+				"Scheduler::unregisterProgrammedObject failed when "
+				"unregistering " + objectToUnregister.toString() 
+				+ ": a programmed activation list for tick #"
+				+ Ceylan::toString( *it ) + " should have existed." ) ; 
+		}
+		
+	}
+	
+	// Here the object should not be listed anymore in the programmed ticks.
+
+}
+
+	
+					
 void Scheduler::schedule() throw( SchedulingException )
 {
 	
@@ -465,7 +717,7 @@ void Scheduler::schedule() throw( SchedulingException )
 		
 	}
 	
-		
+	
 	if ( _screenshotMode )
 		scheduleNoDeadline() ;
 	else
@@ -507,19 +759,28 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		+ ( _screenshotMode ? "on.": "off." ) ;
 	
 					
-	if ( _scheduleStartingSecond == 0 && _scheduleStartingMicrosecond == 0 )
-		buf << " Scheduler is stopped." ;
-	else
+	if ( _isRunning )
 	{
 	
 		Ceylan::System::Second sec ;
 		Ceylan::System::Microsecond microsec ;
 		Ceylan::System::getPreciseTime( sec, microsec ) ;
 		
+		/*
+		 * Very small values (ex: 180 microsec) correspond to the duration
+		 * between the initial date and this call.
+		 *
+		 */
 		buf << " Scheduler has been running for " 
 			<< Ceylan::System::durationToString( _scheduleStartingSecond,
 				_scheduleStartingMicrosecond, sec, microsec )
 			<< "." ;
+		
+	}	
+	else
+	{
+	
+		buf << " Scheduler is not running." ;
 
 	}
 
@@ -531,7 +792,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		buf << " No renderer registered, using directly video module" ;
 
 	if ( _idleCallback == 0 )
-		buf << ". Using atomic sleep idle callback" ;
+		buf << ". Using default atomic sleep idle callback" ;
 	else
 		buf << ". Using user-specified idle callback" ;
 	
@@ -539,7 +800,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 	if ( _idleCallbackData )
 	{
 	
-		if ( _idleCallback )
+		if ( _idleCallback != 0 )
 			buf << ", callback data has been set as well." ;
 		else
 			buf << ", callback data has been set, "
@@ -550,6 +811,12 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 	
 	buf << ". The estimated upper-bound for idle callback duration is "
 		+ Ceylan::toString( _idleCallbackMaxDuration )
+		+ " microseconds" ;
+				
+	buf << ". Minimal measured callback duration was "
+		+ Ceylan::toString( _idleCallbackMinMeasuredDuration )
+		+ " microseconds, maximal was " 
+		+ Ceylan::toString( _idleCallbackMaxMeasuredDuration )
 		+ " microseconds" ;
 				
 				
@@ -608,7 +875,7 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		
 		std::list<string> programmed ;
 		
-		for( map<SimulationTick, ListOfActiveObjects>::const_iterator it 
+		for( map<SimulationTick, ListOfProgrammedActiveObjects>::const_iterator it 
 				= _programmedActivated.begin(); it 
 					!= _programmedActivated.end(); it++ )
 			programmed.push_back( "For simulation tick #" 
@@ -732,7 +999,7 @@ Scheduler & Scheduler::GetScheduler() throw( SchedulingException )
     {
 	
         LogPlug::debug( "Scheduler::GetScheduler: "
-			"no scheduler available, creating new one" ) ;
+			"no scheduler available, creating a new one." ) ;
 			
         Scheduler::_internalScheduler = new Scheduler() ;
 		
@@ -802,12 +1069,12 @@ void Scheduler::DeleteScheduler() throw()
 
 // Protected members below:
 
-
 Scheduler::Scheduler() throw( SchedulingException ):
 	_screenshotMode( false ),
 	_desiredScreenshotFrequency( DefaultMovieFrameFrequency ),
 	_screenshotPeriod( 0 ),
 	_periodicSlots(),
+	_initialRegisteredObjects(),
 	_programmedActivated(),
 	_engineTickDuration( 0 ),
 	_secondToEngineTick( 0 ),
@@ -824,7 +1091,10 @@ Scheduler::Scheduler() throw( SchedulingException ):
 	_idleCallback( 0 ),
 	_idleCallbackData( 0 ),
 	_idleCallbackMaxDuration( 0 ),
+	_idleCallbackMinMeasuredDuration( 0 ),
+	_idleCallbackMaxMeasuredDuration( 0 ),
 	_idleCallsCount( 0 ),
+	_isRunning( false ),
 	_stopRequested( false ),
 	_scheduleStartingSecond( 0 ),
 	_scheduleStartingMicrosecond( 0 ),
@@ -864,6 +1134,8 @@ Scheduler::Scheduler() throw( SchedulingException ):
 Scheduler::~Scheduler() throw()
 {
 
+	send( "Deleting scheduler." ) ;
+	
 	for ( list<PeriodicSlot *>::iterator it = _periodicSlots.begin(); 
 			it != _periodicSlots.end(); it++ )
 		delete (*it ) ;
@@ -880,15 +1152,46 @@ Scheduler::~Scheduler() throw()
 void Scheduler::scheduleBestEffort() throw( SchedulingException )
 {
 
+	_isRunning = true ;
+	
 	/*
 	 * Set up idle callback (with default strategy) if not done already:
 	 * (will use atomic sleeps, with a 10% margin in anticipated delay)
 	 *
 	 */
 	if ( _idleCallback == 0 && _idleCallbackMaxDuration == 0 )
-		_idleCallbackMaxDuration = 
-			static_cast<Microsecond>( 1.1 * getSchedulingGranularity() ) ;
+	{
 
+		Ceylan::System::Second testStartingSecond, testStoppingSecond ;
+	
+		Ceylan::System::Microsecond testStartingMicrosecond, 
+			testStoppingMicrosecond ;
+		
+		getPreciseTime( testStartingSecond, testStartingMicrosecond ) ;
+		
+		onIdle() ;
+
+		getPreciseTime( testStoppingSecond, testStoppingMicrosecond ) ;
+		
+		Microsecond testDuration = getDurationBetween( 
+			testStartingSecond, testStartingMicrosecond,
+			testStoppingSecond, testStoppingMicrosecond ) ;
+
+		/*
+		 * Not artificially increased, as will be updated in the course
+		 * of the execution, and we do not want to overestimate that maximum.
+		 * Therefore it is actually generally under-evaluated.
+		 *
+		 */
+		_idleCallbackMaxDuration = testDuration ;
+
+		OSDL_SCHEDULE_LOG( 
+			"Evaluating the maximum duration of the default idle callback to " 
+			+ Ceylan::toString(	_idleCallbackMaxDuration )+ " microseconds." ) ;
+
+	}
+	
+		
 	/*
 	 * This is the default value for the duration of an idle callback,
 	 * it will be modulated according to runtime measures to be more accurate.
@@ -916,25 +1219,63 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 *
 	 */
 	
+	Microsecond baseIdleCallbackDuration = _idleCallbackMaxDuration ;
+				
 	// Corresponds to Dstart:
-	EngineTick baseIdleCallbackDuration = static_cast<EngineTick>( 
+	EngineTick baseIdleCallbackTickCount = static_cast<EngineTick>( 
 		Ceylan::Maths::Ceil( 
-			static_cast<Ceylan::Float32>( _idleCallbackMaxDuration ) /
-			_engineTickDuration ) ) ;
-	
-	// Corresponds to D (new Dlast):
-	EngineTick forecastIdleCallbackDuration = baseIdleCallbackDuration ;
+			static_cast<Ceylan::Float32>( baseIdleCallbackDuration ) /
+				_engineTickDuration ) ) ;
+
+	if ( baseIdleCallbackTickCount == 0 )
+		baseIdleCallbackTickCount = 1 ;
 		
-	Ceylan::System::Second idleStartingSecond, idleStoppingSecond ;
-	
-	Ceylan::System::Microsecond idleStartingMicrosecond, 
-		idleStoppingMicrosecond ;
-	
-	
-	_idleCallsCount = 0 ;
+					
+		
+
+	OSDL_SCHEDULE_LOG( "Initial estimated duration for the idle callback is "
+		+ Ceylan::toString( _idleCallbackMaxDuration ) + " microseconds, i.e. "
+		+ Ceylan::toString(	baseIdleCallbackTickCount ) 
+		+ " engine ticks." ) ;
+		
+
+	/*
+	 * Initial time is first measured and converted to engine, simulation,
+	 * rendering and input times:
+	 * _currentEngineTick, for an engine tick duration of 1000 (microseconds),
+	 * should wrap around if the program runs for more than 48 days. 
+	 *
+	 * If engine tick duration is divided by two, then the period until
+	 * wrap-around will be divided by two as well.
+	 *
+	 * @note Sets the initial time now, as the next send() call will call the
+	 * Scheduler::toString method which makes use of that starting time.
+	 *
+	 */	
+	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
 	
 	send( "Scheduler starting in soft real-time best effort mode. " 
 		"Scheduler informations: " + toString( Ceylan::low ) ) ;
+	
+	/*
+	 * To be sure we start by overestimating the minimum:
+	 * (put after the log so that the min does not appear as bigger than the 
+	 * max).
+	 *
+	 */
+	_idleCallbackMinMeasuredDuration = 10 * _idleCallbackMaxDuration ;
+	
+	
+	/* 
+	 * We must not underestimate this value, otherwise the forecasted idle
+	 * duration will be set to a too low value, and this will lead to 
+	 * hazardous initial idle calls.
+	 *
+	 */
+	_idleCallbackMaxMeasuredDuration = _idleCallbackMaxDuration ;
+	
+	Events::EngineTick idleCallbackMaxTickCount = 
+		_idleCallbackMaxMeasuredDuration / _engineTickDuration + 1 ;
 	
 	
 	// Let's prepare to the run:
@@ -975,34 +1316,50 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 #endif // OSDL_DEBUG_SCHEDULER
 	
 	
-	/*
-	 * Initial time is first measured and converted to engine, simulation,
-	 * rendering and input times:
-	 * _currentEngineTick, for an engine tick duration of 1000 (microseconds),
-	 * should wrap around if the program runs for more than 48 days. 
-	 *
-	 * If engine tick duration is divided by two, then the period until
-	 * wrap-around will be divided by two as well.
-	 *
-	 */	
-	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
 	 
 	/*
 	 * Starts with all zero	ticks:	
 	 * (not using 0 constants allows to tweak the engine to make it start at
-	 * arbitrary engine tick,for debugging).
+	 * arbitrary engine tick, for debugging).
 	 *
 	 */
-	_currentEngineTick     = computeEngineTickFromCurrentTime() ;	
+	_currentEngineTick = computeEngineTickFromCurrentTime() ;	
+
+	OSDL_SCHEDULE_LOG( "Simulation period: " 
+		+ Ceylan::toString(	_simulationPeriod ) + " engine ticks" ) ;
+		
+	OSDL_SCHEDULE_LOG( "Rendering period: " 
+		+ Ceylan::toString(	_renderingPeriod ) + " engine ticks" ) ;
+
+	OSDL_SCHEDULE_LOG( "Input period: " 
+		+ Ceylan::toString(	_inputPeriod ) + " engine ticks" ) ;
 	
 	_currentSimulationTick = _currentEngineTick / _simulationPeriod  ;	
 	_currentRenderingTick  = _currentEngineTick / _renderingPeriod;
 	_currentInputTick      = _currentEngineTick / _inputPeriod;
 	
-	OSDL_SCHEDULE_LOG( "Simulation period: " << _simulationPeriod ) ;
-	OSDL_SCHEDULE_LOG( "Rendering period: "  << _renderingPeriod  ) ;
-	OSDL_SCHEDULE_LOG( "Input period: "      << _inputPeriod      ) ;
+
+	/*
+	 * Sets the birth times of objects that already exist at start-up:
+	 * (the dynamically created ones will have their birth time set at
+	 * registration time)
+	 *
+	 */
+	setInitialBirthTicks( _currentSimulationTick ) ;	
+
+	OSDL_SCHEDULE_LOG( "Initial engine tick: " 
+		+ Ceylan::toString(	_currentEngineTick ) ) ;
 		
+	OSDL_SCHEDULE_LOG( "Initial simulation tick: "
+		+ Ceylan::toString(	_currentSimulationTick ) ) ;
+		
+	OSDL_SCHEDULE_LOG( "Initial rendering tick: "
+		+ Ceylan::toString(	_currentRenderingTick ) ) ;
+		
+	OSDL_SCHEDULE_LOG( "Initial input tick: "
+		+ Ceylan::toString(	_currentInputTick ) ) ;
+		
+
 	EngineTick nextSimulationDeadline = _currentEngineTick + _simulationPeriod ;
 	EngineTick nextRenderingDeadline  = _currentEngineTick + _renderingPeriod ;
 	EngineTick nextInputDeadline      = _currentEngineTick + _inputPeriod ;
@@ -1010,6 +1367,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	EngineTick nextDeadline = Ceylan::Maths::Min( nextSimulationDeadline,
 		nextRenderingDeadline, nextInputDeadline ) ;
 	
+	OSDL_SCHEDULE_LOG( "Initial deadline: " 
+		+ Ceylan::toString(	nextDeadline ) ) ;
 	
 	/*
 	 * By construction the actual frequencies can only be less than the
@@ -1018,7 +1377,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 * tolerance was used for deadlines. 
 	 *
 	 * The algorithm checks the delay D (time exceeding a missed deadline) for
-	 * a given tick, if the delay is small enough
+	 * a given tick, and if the delay is small enough
 	 * (ex for rendering ticks: D < rendering tolerance = period / 4 = 6 ms ),
 	 * then the scheduler does as if the delay had not existed: it does not
 	 * cancel or skip anything, instead it activates the rendering as usual,
@@ -1031,12 +1390,12 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 * Overloaded situations are detected thanks to a kind of leaking 
 	 * bucket: each delay of d ms fills the bucket by an amount that increase
 	 * with d (depending on the tolerance being exceeded or not), each elapsed
-	 * engine tick  makes the bucket leak a bit. 
+	 * engine tick makes the bucket leak a bit. 
 	 *
 	 * If the bucket gets filled up to a given threshold, then the system is
 	 * deemed overloaded (its ressources cannot keep up with what the 
 	 * application demands) and counter-measures are triggered (ex: more skips 
-	 * are triggered).
+	 * are decided).
 	 *
 	 */
 	
@@ -1053,7 +1412,11 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 */
 	Delay delayCumulativeBucket = 0 ;
 	
-	// When the bucket reaches that level, the machine is actually overloaded:
+	/*
+	 * When the bucket reaches that level, the machine is deemed actually
+	 * overloaded:
+	 *
+	 */
 	const Delay bucketFillThreshold = 750 ;
 
 	/*
@@ -1067,19 +1430,20 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 	
 	/*
-	 * If a simulation tick is late of up to 50 ms, it is considered on time
-	 * neverthess, and activation takes place as normal.
+	 * If a simulation tick is late of up to 800 ms (0.8 second), it is
+	 * considered on time neverthess, and activation takes place as normal.
 	 *
-	 * Higher delays will lead to simulation skips.
+	 * Higher delays, which would be strongly abnormal, would lead to 
+	 * simulation skips.
 	 *
 	 * The threshold is quite high, as we really want to avoid skipping 
-	 * simulation steps. 
+	 * simulation ticks. 
 	 *
 	 * For simulation, the threshold is based on an actual (soft-realtime)
 	 * delay, not a fraction of the simulation period.
 	 *
 	 */
-	const Microsecond simulationToleranceTime = 50000 ;
+	const Microsecond simulationToleranceTime = 800000 ;
 	
 	const EngineTick simulationToleranceTick = static_cast<EngineTick>( 
 		simulationToleranceTime / _engineTickDuration ) ; 
@@ -1095,7 +1459,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 *
 	 * Higher delays will lead to rendering skips.
 	 *
-	 * The threshold is quite low, as skipping rendering steps is not that
+	 * The threshold is quite low, as skipping rendering ticks is not that
 	 * serious: next rendering will replace it, we do not <b>have</b> to
 	 * force this particular rendering to happen.
 	 *
@@ -1124,8 +1488,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 *
 	 * Higher delays will lead to input skips.
 	 *
-	 * The threshold is quite low, as skipping input steps is not that
-	 * serious: next input step will replace it, we do not <b>have</b> to
+	 * The threshold is quite low, as skipping input ticks is not that
+	 * serious: next input tick will replace it, we do not <b>have</b> to
 	 * force this particular input polling to happen.
 	 *
 	 * For input polling, the threshold is based on a fraction of the input
@@ -1134,7 +1498,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	 */
 
 	/*
-	 * A rendering is accepted if it would be no more late than half 
+	 * An input polling is accepted if it would be no more late than half 
 	 * of its period:
 	 *
 	 */
@@ -1150,18 +1514,40 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	// Store scheduling starting time: 
 	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
 	
+	Ceylan::System::Second idleStartingSecond, idleStoppingSecond ;
 	
-	// Enter the schedule loop:
+	Ceylan::System::Microsecond idleStartingMicrosecond, 
+		idleStoppingMicrosecond ;
+	
+	
+	_idleCallsCount = 0 ;
+
+
+	// Pessimistic initialization: 
+	Events::EngineTick lastIdleTickCount = idleCallbackMaxTickCount ;
+	
+		
+	/* 
+	 * Corresponds to D (new Dlast).
+	 * Not wanting to prohibit any idle call to be made:
+	 *
+	 */
+	Events::EngineTick forecastIdleCallbackTickCount = 
+		 idleCallbackMaxTickCount / 2 ;	
+	
+
+	
+	// Enters now the schedule loop:
 	
 	while ( ! _stopRequested )
 	{
 		
-		
-		OSDL_SCHEDULE_LOG( "[ E: " << _currentEngineTick 
-			<< " ; S: " << _currentSimulationTick
-			<< " ; R: " << _currentRenderingTick		
-			<< " ; I: " << _currentInputTick 
-			<< " ; B: " << delayBucket << " ]" ) ;
+		// Every scheduled engine tick:
+		OSDL_SCHEDULE_LOG( "[ E: " + Ceylan::toString( _currentEngineTick  )
+			+ " ; S: " + Ceylan::toString( _currentSimulationTick )
+			+ " ; R: " + Ceylan::toString( _currentRenderingTick )
+			+ " ; I: " + Ceylan::toString( _currentInputTick )
+			+ " ; B: " + Ceylan::toString(  delayBucket ) + " ]" ) ;
 
 
 #if OSDL_DEBUG_SCHEDULER
@@ -1198,10 +1584,10 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		// We hereby suppose we are just at the beginning of a new engine tick.
 		
 		
-		// What is to be done on this new engine tick ?
+		// What is to be done on this new engine tick?
 		
 		
-		// Perform all scheduling actions for this tick:
+		// Performs all scheduling actions for this tick:
 		if ( _currentEngineTick == nextSimulationDeadline )
 		{
 			
@@ -1253,13 +1639,13 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			nextInputDeadline += _inputPeriod ;
 			
 		}
-		// Everything done, hoping not too much time elapsed....
+		// Everything done, hoping not too much time has elapsed...
 
 		
 		/*
 		 * Check we did not miss any deadline: if these scheduling actions
 		 * (notably, the rendering) last more than the current engine 
-		 * tick, it is not a problem.
+		 * tick, it is not necessarily a problem.
 		 *
 		 * What must not occur is that these actions lasted so long that 
 		 * the first next deadline (either simulation, rendering or input), 
@@ -1267,17 +1653,17 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 *
 		 * The next '+1' is here because the soonest possible deadlines 
 		 * will be on next engine tick.
-		 * Engine time is regularly updated since any call may last for 
-		 * non negligible durations.
+		 * Engine time is regularly updated, as any intermediate call may 
+		 * last for non negligible durations.
 		 * 
-		 * As multiple steps can be missed, a while structure is required.
+		 * As multiple ticks can be missed, a while structure is required.
 		 *
 		 */
 		_currentEngineTick = computeEngineTickFromCurrentTime() ;
 		
 		
 		/*
-		 * Should a computer be unable to stand the requested load, it
+		 * Should a computer be unable to withstand the requested load, it
 		 * may be unable to catch up with the clock, using the delay bucket to
 		 * escape from this loop on desesperate cases:
 		 *
@@ -1287,26 +1673,28 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		{			
 		
 		
-			// Manage all missed simulation steps and warn:
+			// Manage all missed simulation ticks and warn:
 			EngineTick missedTicks = 
 				_currentEngineTick + 1 - nextSimulationDeadline ;
 			
 			if ( missedTicks > simulationToleranceTick )
 			{
 			
+				/*
 				OSDL_SCHEDULE_LOG( "##### Simulation deadline #"
 					+ Ceylan::toString( _currentSimulationTick ) 
 					+ " missed of "	+ Ceylan::toString( missedTicks )
 					+ " engine ticks (" 
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds), cancelling activations." ) ;
-			
+			     */
+				 
 				/*
 				 * Missing a simulation deadline is serious, so the bucket
 				 * needs to fill quickly if tolerance is exceeded. 
 				 *
-				 * However there happens sometimes rare glitches (Dirac peaks)
-				 * that lead to very significant delays.
+				 * However sometimes rare glitches (Dirac peaks) happen, and
+				 * they lead to very significant delays.
 				 *
 				 * They are one-shot, and with an affine delay function they
 				 * would saturate for too long the bucket, whereas the 
@@ -1344,7 +1732,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 				
 				/*
 				 * If ever this call is longer than the simulation period, the 	
-				 * scheduler will go in an infinite loop:
+				 * scheduler will go into an infinite loop:
 				 *
 				 */
 				onSimulationSkipped( _currentSimulationTick ) ;
@@ -1384,7 +1772,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			nextSimulationDeadline += _simulationPeriod ;
 			
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
-						
+			
+			// We should have reduced the simulation delay at least a bit...			
 		}
 		
 		
@@ -1398,25 +1787,38 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 * This is a way of setting a higher priority to simulation ticks,
 		 * compared to rendering ticks.
 		 *
-		 */		 
+		 * @note Now we consider that we should of course compensate for any
+		 * delay, but only once, i.e. one rendering will then be performed,
+		 * but one only, even if we were late of more than one: this is no
+		 * point in performing multiple renderings in a row if nothing has 
+		 * changed in-between. 
+		 * (compensation made not to depend from the rendering tolerance,
+		 * that could be arbitrarily high)
+		 *
+		 */
+		bool renderingCompensated = false ;
+		 		 
 		while ( nextRenderingDeadline < _currentEngineTick + 1
 			&& delayBucket < ShutdownBucketLevel )	
 		{			
 		
-			// Manage all missed rendering steps and warn:
+			// Manage all missed rendering ticks and warn:
 			EngineTick missedTicks = 
 				_currentEngineTick + 1 - nextRenderingDeadline ;
 
-			if ( missedTicks > renderingToleranceTick )
+			if ( missedTicks > renderingToleranceTick 
+				|| renderingCompensated )
 			{
 
+				/*
 				OSDL_SCHEDULE_LOG( "##### Rendering deadline #"
 					+ Ceylan::toString( _currentRenderingTick ) 
 					+ " missed of "	+ Ceylan::toString( missedTicks )
 					+ " engine ticks (" 
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds), cancelling rendering." ) ;
-
+				 */
+				 
 				// Missing a rendering deadline is annoying:
 				delayBucket += 5 * static_cast<Delay>( 
 					Ceylan::Maths::Sqrt( 2.0f * missedTicks ) ) ;
@@ -1453,7 +1855,9 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 #endif // OSDL_DEBUG_SCHEDULER
 
 				scheduleRendering( _currentRenderingTick ) ;
-			
+
+				renderingCompensated = true ;
+
 			}
 			
 			_currentRenderingTick++ ;
@@ -1461,36 +1865,48 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			nextRenderingDeadline += _renderingPeriod ;
 			
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
-						
+									
 		}
 		
 		
 		/*
 		 * Lastly, take care of the input polling:
 		 *
+		 * @note Now we consider that we should of course compensate for any
+		 * delay, but only once, i.e. one input polling will then be performed,
+		 * but one only, even if we were late of more than one: this is no
+		 * point in performing multiple input polling in a row if nothing has 
+		 * changed in-between. 
+		 * (compensation made not to depend from the input tolerance,
+		 * that could be arbitrarily high)
+		 *
 		 */
+		bool inputPollingCompensated = false ;
+		
 		while ( nextInputDeadline < _currentEngineTick + 1	
 			&& delayBucket < ShutdownBucketLevel )	
 		{			
 		
 			/*
-			 * Manage all missed input steps and warn (this is not too 
+			 * Manage all missed input ticks and warn (this is not too 
 			 * serious skip):
 			 *
 			 */
 			EngineTick missedTicks = 
 				_currentEngineTick + 1 - nextInputDeadline ;
 
-			if ( missedTicks > inputToleranceTick )
+			if ( missedTicks > inputToleranceTick || inputPollingCompensated )
 			{
 			
+				/*
 				OSDL_SCHEDULE_LOG( "##### Input deadline #"
 					+ Ceylan::toString( _currentInputTick ) 
 					+ " missed of "	+ Ceylan::toString( missedTicks )
 					+ " engine ticks (" 
 					+ Ceylan::toString( missedTicks * _engineTickDuration )  
 					+ " microseconds), cancelling input polling." ) ;
-
+				 */
+				 
 				// Missing an input deadline should be avoided:
 				delayBucket += static_cast<Delay>( 
 					Ceylan::Maths::Sqrt( 2.0f * missedTicks ) ) ;
@@ -1527,6 +1943,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 				scheduleInput( _currentInputTick ) ;
 			
+				inputPollingCompensated = true ;
 			
 			}	
 
@@ -1553,6 +1970,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		nextDeadline = Ceylan::Maths::Min( nextSimulationDeadline,
 			nextRenderingDeadline, nextInputDeadline ) ;
 
+		_currentEngineTick = computeEngineTickFromCurrentTime() ;
+
 		if ( nextDeadline < _currentEngineTick )
 		{
 		
@@ -1572,7 +1991,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			
 			/*
 			 * nextDeadline is this current engine tick, or the next one.
-			 * In both cases it is to be handled immediately, no special
+			 * In both cases it is to be handled immediatly, no special
 			 * jump to perform:
 			 *
 			 */
@@ -1593,10 +2012,10 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 			OSDL_SCHEDULE_LOG( "Next deadline is " 
 				+ Ceylan::toString( jumpLength + 1 ) 
-				+ " engine tick(s) away." ) ;
+				+ " engine tick(s) away, preparing jump." ) ;
 
 
-			// Leaks as if there had been no jump in engine ticks:
+			// Bucket leaks as if there had been no jump in engine ticks:
 			while ( jumpLength > 0 )
 			{
 		
@@ -1609,27 +2028,52 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 		}
 		
+		_currentEngineTick = computeEngineTickFromCurrentTime() ;
+
+		OSDL_SCHEDULE_LOG( "We are now at engine tick " 
+			+ Ceylan::toString( _currentEngineTick ) 
+			+ ", just before attempting idle call." ) ;
+		
 		/*
 		 * Do nothing: wait, first with idle callback (which results in
 		 * atomic sleeps by default), then for fine-grain with soft busy
 		 * waitings.
 		 *
 		 */
-		 
-		 // Will force to decrease even though no sleep is performed this time:
-		forecastIdleCallbackDuration = static_cast<EngineTick>(
-				( baseIdleCallbackDuration + 5 * forecastIdleCallbackDuration )
-					/ 6.0f ) ;
-	 	
-		OSDL_SCHEDULE_LOG( "Newly forecast idle callback duration is "
-			+ Ceylan::toString( static_cast<Ceylan::Uint32>( 
-					forecastIdleCallbackDuration ) ) 
-			+ " engine ticks." ) ;
 				
+		Microsecond lastIdleDuration ;
+
 		// Atomic sleeps: 		 
-		while ( _currentEngineTick + forecastIdleCallbackDuration 
+		while ( _currentEngineTick + forecastIdleCallbackTickCount
 			< nextDeadline )
 		{
+
+			OSDL_SCHEDULE_LOG( "baseIdleCallbackTickCount = "
+				+ Ceylan::toString( baseIdleCallbackTickCount )
+				+ " engine ticks" ) ;
+				
+			OSDL_SCHEDULE_LOG( "forecastIdleCallbackTickCount = "
+				+ Ceylan::toString( forecastIdleCallbackTickCount )
+				+ " engine ticks" ) ;
+				
+			OSDL_SCHEDULE_LOG( "lastIdleTickCount = "
+				+ Ceylan::toString( lastIdleTickCount )
+				+ " engine ticks" ) ;
+				
+			OSDL_SCHEDULE_LOG( "idleCallbackMaxTickCount = "
+				+ Ceylan::toString( idleCallbackMaxTickCount )
+				+ " engine ticks" ) ;
+				
+			// Barycentre/filter:
+			forecastIdleCallbackTickCount = static_cast<Microsecond>(
+				( baseIdleCallbackTickCount + 3 * forecastIdleCallbackTickCount
+					+ lastIdleTickCount	+ idleCallbackMaxTickCount ) / 6.0f ) ;
+						 	
+			OSDL_SCHEDULE_LOG( "Current forecasted idle callback duration is "
+				+ Ceylan::toString( forecastIdleCallbackTickCount )
+				+ " microseconds, i.e. " 
+				+ Ceylan::toString( forecastIdleCallbackTickCount ) 
+				+ " engine ticks." ) ;
 		
 			getPreciseTime( idleStartingSecond, idleStartingMicrosecond ) ;
 					
@@ -1642,31 +2086,49 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 			getPreciseTime( idleStoppingSecond, idleStoppingMicrosecond ) ;
 			
-			Microsecond idleDuration = getDurationBetween( 
+			lastIdleDuration = getDurationBetween( 
 				idleStartingSecond, idleStartingMicrosecond,
 				idleStoppingSecond, idleStoppingMicrosecond ) ;
+						
+			lastIdleTickCount = lastIdleDuration / _engineTickDuration ;
 				
-			OSDL_SCHEDULE_LOG( "Measured idle duration is "
-				+ Ceylan::toString( static_cast<Ceylan::Uint32>( 
-					idleDuration ) ) + " microseconds." ) ;
-					
-			/*
-			 * In this loop, previous idle duration is considered the best
-			 * estimate for next one:
-			 *
-			 */	
-			forecastIdleCallbackDuration = static_cast<EngineTick>(
-				Ceylan::Maths::Ceil( static_cast<Ceylan::Float32>(
-					idleDuration / _engineTickDuration ) ) ) ;
+			OSDL_SCHEDULE_LOG( Ceylan::toString( lastIdleDuration ) 
+				+ " microseconds were spent in the idle call, "
+				"corresponding to " + Ceylan::toString( lastIdleTickCount ) 
+				+ " engine ticks." ) ;
 			
+			
+			// Update:
+			
+			_idleCallbackMinMeasuredDuration = Ceylan::Maths::Min(
+				_idleCallbackMinMeasuredDuration, lastIdleDuration ) ;
+					
+			_idleCallbackMaxMeasuredDuration = Ceylan::Maths::Max(
+				_idleCallbackMaxMeasuredDuration, lastIdleDuration ) ;
+					
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
+
+			OSDL_SCHEDULE_LOG( "We are now at engine tick " 
+				+ Ceylan::toString( _currentEngineTick ) ) ;
 			
 		}	
+		
+		OSDL_SCHEDULE_LOG( "We are now at engine tick " 
+			+ Ceylan::toString( _currentEngineTick ) 
+			+ ", just after having attempted idle calls." ) ;
 		
 		
 		// Then busy waiting (still quite soft due to getPreciseTime calls):
 		while ( _currentEngineTick < nextDeadline )
+		{
+		
+			OSDL_SCHEDULE_LOG( "Busy waiting at engine tick "
+				+ Ceylan::toString( _currentEngineTick ) ) ;
+			
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
+		
+		}
+		
 		
 		/*
 		 * OSDL_SCHEDULE_LOG( 
@@ -1869,7 +2331,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 
 	summary.push_back( "Each idle call was expected to last for "
 		+ Ceylan::toString( _idleCallbackMaxDuration ) + " microseconds, i.e. "
-		+ Ceylan::toString( baseIdleCallbackDuration ) + " engine ticks." ) ;
+		+ Ceylan::toString( baseIdleCallbackTickCount ) + " engine ticks." ) ;
 
 	summary.push_back( "Average bucket level has been " 
 		+ Ceylan::toString( 
@@ -2332,6 +2794,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 #endif // OSDL_DEBUG_SCHEDULER
 	
+	_isRunning = false ;
+	
 }
 
 	
@@ -2344,8 +2808,9 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	throw( SchedulingException )
 {
 	
-	// Let's prepare to the run, for which no time is to be considered:
+	// Let's prepare to the run, for which no time is to be considered.
 	
+	_isRunning= true ;
 	_stopRequested = false ;	
 	
 #if OSDL_DEBUG_SCHEDULER
@@ -2374,10 +2839,44 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	_currentRenderingTick  = 0 ;
 	_currentInputTick      = 0 ;
 	
-	OSDL_SCHEDULE_LOG( "Simulation period: " << _simulationPeriod ) ;
-	OSDL_SCHEDULE_LOG( "Rendering period: "  << _renderingPeriod ) ;
-	OSDL_SCHEDULE_LOG( "Input period: "      << _inputPeriod ) ;
+
+	/*
+	 * Sets the birth times of objects that already exist at start-up:
+	 * (the dynamically created ones will have their birth time set at
+	 * registration time)
+	 *
+	 */
+	setInitialBirthTicks( _currentSimulationTick ) ;	
+
+	OSDL_SCHEDULE_LOG( "Simulation period: " 
+		+ Ceylan::toString(	_simulationPeriod ) + " engine ticks" ) ;
 		
+	OSDL_SCHEDULE_LOG( "Rendering period: " 
+		+ Ceylan::toString(	_renderingPeriod ) + " engine ticks" ) ;
+
+	OSDL_SCHEDULE_LOG( "Input period: " 
+		+ Ceylan::toString(	_inputPeriod ) + " engine ticks" ) ;
+	
+	_currentSimulationTick = _currentEngineTick / _simulationPeriod  ;	
+	_currentRenderingTick  = _currentEngineTick / _renderingPeriod;
+	_currentInputTick      = _currentEngineTick / _inputPeriod;
+	
+
+	OSDL_SCHEDULE_LOG( "Initial engine tick: " 
+		+ Ceylan::toString(	_currentEngineTick ) ) ;
+		
+	OSDL_SCHEDULE_LOG( "Initial simulation tick: "
+		+ Ceylan::toString(	_currentSimulationTick ) ) ;
+		
+	OSDL_SCHEDULE_LOG( "Initial rendering tick: "
+		+ Ceylan::toString(	_currentRenderingTick ) ) ;
+		
+	OSDL_SCHEDULE_LOG( "Initial input tick: "
+		+ Ceylan::toString(	_currentInputTick ) ) ;
+
+
+
+
 	// No real deadline in this mode, just checkpoints that cannot be missed:	
 	EngineTick nextSimulationDeadline = _currentEngineTick + _simulationPeriod ;
 	EngineTick nextRenderingDeadline  = _currentEngineTick + _renderingPeriod ;
@@ -2390,10 +2889,10 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	while ( ! _stopRequested )
 	{
 			
-		OSDL_SCHEDULE_LOG( "[ E: " << _currentEngineTick 
-			<< " ; S: " << _currentSimulationTick
-			<< " ; R: " << _currentRenderingTick		
-			<< " ; I: " << _currentInputTick << " ]" ) ;
+		OSDL_SCHEDULE_LOG( "[ E: " + Ceylan::toString( _currentEngineTick  )
+			+ " ; S: " + Ceylan::toString( _currentSimulationTick )
+			+ " ; R: " + Ceylan::toString( _currentRenderingTick )
+			+ " ; I: " + Ceylan::toString( _currentInputTick ) + " ]" ) ;
 
 		countBeforeSleep++ ;
 		
@@ -2409,7 +2908,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 					
 		// We hereby suppose we are just at the beginning of a new engine tick.
 		
-		// What is to be done on this new engine tick ?
+		// What is to be done on this new engine tick?
 		
 		// Perform all scheduling actions for this tick:
 		if ( _currentEngineTick == nextSimulationDeadline )
@@ -2661,6 +3160,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 						
 #endif // OSDL_DEBUG_SCHEDULER
 
+	_isRunning = false ;
 	
 }
 
@@ -2671,11 +3171,12 @@ EngineTick Scheduler::computeEngineTickFromCurrentTime() throw()
 
 	Second currentSecond ;
 	Microsecond currentMicrosecond ;
+	
 	getPreciseTime( currentSecond, currentMicrosecond ) ;
 	
 	/*
 	 * _secondToEngineTick necessary to avoid overflow when duration in 
-	 * seconds exceeds 4200 !
+	 * seconds exceeds 4200!
 	 *
 	
 	LogPlug::debug( "Current: " + Ceylan::toString( currentSecond ) 
@@ -2726,7 +3227,7 @@ void Scheduler::scheduleSimulation( SimulationTick current ) throw()
 
 	//OSDL_SCHEDULE_LOG( "--> current simulation tick: " << current ) ;
 	
-	OSDL_SCHEDULE_LOG( "--- simulating ! " ) ;
+	OSDL_SCHEDULE_LOG( "--- simulating! " ) ;
 		
 	// Activate all objects programmed for this specific time:
 	scheduleProgrammedObjects( current ) ;
@@ -2742,18 +3243,20 @@ void Scheduler::scheduleProgrammedObjects(
 	SimulationTick currentSimulationTick ) throw()
 {
 
-	map<SimulationTick, ListOfActiveObjects>::iterator it 
+	map<SimulationTick, ListOfProgrammedActiveObjects>::iterator it 
 		= _programmedActivated.find( currentSimulationTick ) ;
 		
 	if ( it != _programmedActivated.end() )
 	{
-		scheduleActiveObjectList( currentSimulationTick, (*it).second ) ;
+	
+		scheduleProgrammedObjectList( currentSimulationTick, (*it).second ) ;
 		
-		// Empty this simulation tick when done with it:
+		// Empties this simulation tick when done with it:
 		_programmedActivated.erase( it ) ;
+		
 	}
 	
-	// else: no key for this simulation tick ? Nothing to do !	 
+	// else: no key for this simulation tick? Nothing to do!	 
 	
 }
 
@@ -2762,12 +3265,34 @@ void Scheduler::scheduleProgrammedObjects(
 void Scheduler::schedulePeriodicObjects( SimulationTick current ) throw()
 {
 
+	/*
+	 * We will iterate on the copy of the list as during activation an
+	 * object may decide to delete itself, which may make its sub-slot and 
+	 * slot disappear and invalidate the slot list:
+	 *
+	 */
+	
+	list<PeriodicSlot*> slots = _periodicSlots ;
+	
 	// Request each periodic slot to activate relevant objects:
 	
-	for ( list<PeriodicSlot*>::iterator it = _periodicSlots.begin(); 
-		it != _periodicSlots.end();	it++ )
+	list<PeriodicSlot*>::iterator it = slots.begin() ;
+	
+	while ( it != slots.end() )
 	{
-		(*it)->onNextTick( current ) ;
+		
+		if ( ! (*it)->onNextTick( current ) )
+		{
+		
+			// The slot notified it could be removed:
+			delete *it ;
+			it = slots.erase( it ) ;
+		}	
+		else
+		{
+			it++ ;
+			
+		}	
 	}
 		
 }
@@ -2777,7 +3302,7 @@ void Scheduler::schedulePeriodicObjects( SimulationTick current ) throw()
 void Scheduler::scheduleRendering( RenderingTick current ) throw()
 {
 
-	OSDL_SCHEDULE_LOG( "--- rendering !" ) ;
+	OSDL_SCHEDULE_LOG( "--- rendering!" ) ;
 
 	if ( _renderer != 0 )
 		_renderer->render( current ) ;
@@ -2799,7 +3324,7 @@ void Scheduler::scheduleRendering( RenderingTick current ) throw()
 void Scheduler::scheduleInput( InputTick current ) throw()
 {
 
-	OSDL_SCHEDULE_LOG( "--- input polling !" ) ;
+	OSDL_SCHEDULE_LOG( "--- input polling!" ) ;
 
 #if OSDL_DEBUG
 	if ( _eventsModule == 0 )
@@ -2813,15 +3338,18 @@ void Scheduler::scheduleInput( InputTick current ) throw()
 
 
 
-void Scheduler::scheduleActiveObjectList( 
+void Scheduler::scheduleProgrammedObjectList( 
 	Events::RenderingTick currentSimulationTick, 
-	ListOfActiveObjects & objectList ) throw()
+	ListOfProgrammedActiveObjects & objectList ) throw()
 {
 
-	for ( ListOfActiveObjects::iterator it = objectList.begin(); 
+	for ( ListOfProgrammedActiveObjects::iterator it = objectList.begin(); 
 		it != objectList.end(); it++ )
 	{
-		(*it)->onActivation( currentSimulationTick ) ;
+	
+		// Skip over unregistered programmed objects:	
+		if ( *it != 0 )
+			(*it)->onActivation( currentSimulationTick ) ;
 	}
 		
 }
@@ -2855,12 +3383,13 @@ void Scheduler::onSimulationSkipped( SimulationTick skipped )
 	
 	// Second, send notification to programmed objects:
 
-	map<SimulationTick, ListOfActiveObjects>::iterator it 
+	map<SimulationTick, ListOfProgrammedActiveObjects>::iterator it 
 		= _programmedActivated.find( skipped ) ;
 		
 	if ( it != _programmedActivated.end() )
 	{
-		for ( ListOfActiveObjects::iterator itObjects = (*it).second.begin() ;
+		for ( ListOfProgrammedActiveObjects::iterator itObjects =
+					(*it).second.begin() ; 
 				itObjects != (*it).second.end(); itObjects++ )
 			(*itObjects)->onSkip( skipped ) ;
 	}
@@ -2907,7 +3436,7 @@ void Scheduler::onInputSkipped( InputTick skipped )
 void Scheduler::onIdle() throw()
 {
 
-	OSDL_SCHEDULE_LOG( "--- idle callback called !" ) ;
+	OSDL_SCHEDULE_LOG( "--- idle callback called!" ) ;
 
 	_idleCallsCount++ ;
 
@@ -2926,9 +3455,21 @@ void Scheduler::onIdle() throw()
 		 * sleeping time can be performed, scheduler-wise:
 		 *
 		 */
-		 if ( _subSecondSleepsAvailable )
-		 	Ceylan::System::atomicSleep() ;
-		 
+		if ( _subSecondSleepsAvailable )
+		{
+		
+			Ceylan::System::atomicSleep() ;
+		
+		}	
+		else
+		{
+		
+			// Would saturate logs:
+			if ( _idleCallsCount % 100 == 1 ) 
+				LogPlug::warning( 
+					"No idle call performed, no atomic call available." ) ; 	
+				
+		} 
 	}	
 	
 }
@@ -2962,13 +3503,11 @@ void Scheduler::onScheduleFailure( Delay currentBucket )
 	else
 	{
 
-
-		OSDL_SCHEDULE_LOG( "Scheduling failure at [ E: " 
-			<< _currentEngineTick 
-			<< " ; S: " << _currentSimulationTick
-			<< " ; R: " << _currentRenderingTick		
-			<< " ; I: " << _currentInputTick 
-			<< " ; B: " << currentBucket << " ]" ) ;
+		OSDL_SCHEDULE_LOG( "[ E: " + Ceylan::toString( _currentEngineTick  )
+			+ " ; S: " + Ceylan::toString( _currentSimulationTick )
+			+ " ; R: " + Ceylan::toString( _currentRenderingTick )
+			+ " ; I: " + Ceylan::toString( _currentInputTick ) 
+			+ " ; B: " + Ceylan::toString( currentBucket ) + " ]" ) ;
 
 		string message = "Fatal schedule failure for engine tick #"
 			+ Ceylan::toString( _currentEngineTick )
@@ -2992,37 +3531,62 @@ void Scheduler::onScheduleFailure( Delay currentBucket )
 
 
 
-void Scheduler::programTriggerFor( ActiveObject & objectToProgram, 
+void Scheduler::programTriggerFor( ProgrammedActiveObject & objectToProgram, 
 	SimulationTick targetTick ) throw()
 {
-
-	// Add the offset of current simulation tick if triggers are not absolute:
-	if ( ! objectToProgram.areProgrammedActivationsAbsolute() )
-		targetTick += _currentSimulationTick ;
 		
-	map<SimulationTick, ListOfActiveObjects>::iterator it 
+	map<SimulationTick, ListOfProgrammedActiveObjects>::iterator it 
 		= _programmedActivated.find( targetTick ) ;
 		
 	if ( it != _programmedActivated.end() )
 	{
+	
 		// There is already an object list available for this tick:
 		(*it).second.push_back( & objectToProgram ) ;
+		
 	}
 	else
 	{
-		// First object for this simulation tick:
+	
+		// This is the first object for this simulation tick:
 		
-		ListOfActiveObjects newList ;
+		ListOfProgrammedActiveObjects newList ;
+		
 		newList.push_back( & objectToProgram ) ; 
 		_programmedActivated[ targetTick ] = newList ;
 				
 	}
 	
 }
+		
 					
 
+PeriodicSlot & Scheduler::getPeriodicSlotFor( Events::Period period ) 
+	throw( SchedulingException )
+{
+
+	for ( list<PeriodicSlot*>::iterator it = _periodicSlots.begin(); 
+		it != _periodicSlots.end();	it++ )
+	{
+	
+		if ( (*it)->getPeriod() == period )
+			return * (*it) ;
+		
+		if ( (*it)->getPeriod() > period )
+			throw SchedulingException( "Scheduler::getPeriodicSlotFor: "
+				"not slot found for period " + Ceylan::toString( period ) ) ;
+				
+	}	
+	
+
+	throw SchedulingException( "Scheduler::getPeriodicSlotFor: "
+		"not slot found for period " + Ceylan::toString( period ) ) ;
+	
+}
+
+
 					
-PeriodicSlot & Scheduler::getPeriodicSlotFor( Events::Period period ) throw()
+PeriodicSlot & Scheduler::returnPeriodicSlotFor( Events::Period period ) throw()
 {
 
 	for ( list<PeriodicSlot*>::iterator it = _periodicSlots.begin(); 
@@ -3042,7 +3606,8 @@ PeriodicSlot & Scheduler::getPeriodicSlotFor( Events::Period period ) throw()
 			 */
 			PeriodicSlot * newSlot = new PeriodicSlot( period ) ;
 			_periodicSlots.insert( it, newSlot ) ;
-			return * newSlot ; 
+			return * newSlot ;
+			 
 		}	
 
 	}	
@@ -3057,5 +3622,20 @@ PeriodicSlot & Scheduler::getPeriodicSlotFor( Events::Period period ) throw()
 	
 	return * newSlot ; 
 	
+}
+
+
+	
+void Scheduler::setInitialBirthTicks( 
+	Events::SimulationTick birthSimulationTick ) throw()
+{
+
+	// Programmed and periodical objects alike are notified:
+	for ( list<ActiveObject *>::iterator it = _initialRegisteredObjects.begin();
+			it != _initialRegisteredObjects.end(); it++ )
+		(*it)->setBirthTick( birthSimulationTick ) ;
+		
+	_initialRegisteredObjects.clear() ;
+			
 }
 
