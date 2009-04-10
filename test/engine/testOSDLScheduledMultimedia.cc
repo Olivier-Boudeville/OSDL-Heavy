@@ -32,7 +32,7 @@ using std::list ;
 
 
 /**
- * Tests the whole scheduling and rendering framework : the scheduler 
+ * Tests the whole scheduling and rendering framework: the scheduler 
  * manages a root renderer which is a multimedia renderer. 
  *
  * This one uses an internal video renderer, and an internal audio 
@@ -41,7 +41,7 @@ using std::list ;
  */
 
 
-/// Directions are : 1 : up, 2 : down, 3 : left, 4 : right.
+/// Directions are: 1: up, 2: down, 3: left, 4: right.
 typedef Ceylan::Uint8 Direction ;
 
 
@@ -76,7 +76,7 @@ class MyBasicMultimediaRenderer : public OSDL::Rendering::MultimediaRenderer
 		void registerView( Ceylan::View & newView ) throw()
 		{
 		
-			OSDL_DISPLAY_DEBUG( "View registered to multimedia renderer !" ) ;
+			OSDL_DISPLAY_DEBUG( "View registered to multimedia renderer!" ) ;
 			_views.push_back( & newView	) ;	
 			
 		}
@@ -92,7 +92,7 @@ class MyBasicMultimediaRenderer : public OSDL::Rendering::MultimediaRenderer
 		{
 		
 			OSDL_DISPLAY_DEBUG( "Multimedia renderer is rendering video, with " 
-				<< _views.size() << " view(s) being registered !" ) ;
+				<< _views.size() << " view(s) being registered!" ) ;
 
 			OSDL::Rendering::Renderer::render( currentRenderingTick ) ;
 			for ( std::list<Ceylan::View *>::iterator it = _views.begin() ;
@@ -108,7 +108,7 @@ class MyBasicMultimediaRenderer : public OSDL::Rendering::MultimediaRenderer
 		{
 		
 			OSDL_DISPLAY_DEBUG( "Multimedia renderer is rendering audio, with " 
-				<< _views.size() << " view(s) being registered !" ) ;
+				<< _views.size() << " view(s) being registered!" ) ;
 				
 		}
 		
@@ -185,36 +185,36 @@ class MyController : public OSDL::MVC::Controller
 			{
 			
 				case KeyboardHandler::UpArrowKey:
-					OSDL_DISPLAY_DEBUG( "Controller updated with key up !" ) ;
+					OSDL_DISPLAY_DEBUG( "Controller updated with key up!" ) ;
 					_eventForModel->setDirection( 1 ) ;	
 					break ;
 					
 				case KeyboardHandler::DownArrowKey:
-					OSDL_DISPLAY_DEBUG( "Controller updated with key down !" ) ;
+					OSDL_DISPLAY_DEBUG( "Controller updated with key down!" ) ;
 					_eventForModel->setDirection( 2 ) ;	
 					break ;
 					
 				case KeyboardHandler::LeftArrowKey:
-					OSDL_DISPLAY_DEBUG( "Controller updated with key left !" ) ;
+					OSDL_DISPLAY_DEBUG( "Controller updated with key left!" ) ;
 					_eventForModel->setDirection( 3 ) ;	
 					break ;
 					
 				case KeyboardHandler::RightArrowKey:
 					OSDL_DISPLAY_DEBUG( 
-						"Controller updated with key right !" ) ;
+						"Controller updated with key right!" ) ;
 					_eventForModel->setDirection( 4 ) ;	
 					break ;
 				
 				case KeyboardHandler::EnterKey:
 					OSDL_DISPLAY_DEBUG( 
-						"Controller updated with enter key !" ) ;
+						"Controller updated with enter key!" ) ;
 					_eventForModel->setDirection( 5 ) ;	
 					break ;
 				
 				default:
 					// Do nothing.
 					OSDL_DISPLAY_DEBUG( 
-						"Controller updated with key not registered !" ) ;
+						"Controller updated with key not registered!" ) ;
 					break ;	
 			}	
 			
@@ -227,7 +227,7 @@ class MyController : public OSDL::MVC::Controller
 		void joystickFirstButtonPressed() throw()	
 		{
 		
-			OSDL_DISPLAY_DEBUG( "Controller updated !" ) ;
+			OSDL_DISPLAY_DEBUG( "Controller updated!" ) ;
 			_eventForModel->setDirection( 5 ) ;	
 			
 		}
@@ -236,7 +236,7 @@ class MyController : public OSDL::MVC::Controller
 		void joystickUp( AxisPosition leftExtent ) throw()
 		{
 		
-			OSDL_DISPLAY_DEBUG( "Controller updated !" ) ;
+			OSDL_DISPLAY_DEBUG( "Controller updated!" ) ;
 			_eventForModel->setDirection( 1 ) ;
 			
 		}
@@ -245,7 +245,7 @@ class MyController : public OSDL::MVC::Controller
 		void joystickDown( AxisPosition leftExtent ) throw()
 		{
 		
-			OSDL_DISPLAY_DEBUG( "Controller updated !" ) ;
+			OSDL_DISPLAY_DEBUG( "Controller updated!" ) ;
 			_eventForModel->setDirection( 2 ) ;
 			
 		}
@@ -254,7 +254,7 @@ class MyController : public OSDL::MVC::Controller
 		void joystickLeft( AxisPosition leftExtent ) throw()
 		{
 		
-			OSDL_DISPLAY_DEBUG( "Controller updated !" ) ;
+			OSDL_DISPLAY_DEBUG( "Controller updated!" ) ;
 			_eventForModel->setDirection( 3 ) ;
 			
 		}
@@ -263,7 +263,7 @@ class MyController : public OSDL::MVC::Controller
 		void joystickRight( AxisPosition leftExtent ) throw()
 		{
 		
-			OSDL_DISPLAY_DEBUG( "Controller updated !" ) ;
+			OSDL_DISPLAY_DEBUG( "Controller updated!" ) ;
 			_eventForModel->setDirection( 4 ) ;
 			
 		}
@@ -276,7 +276,7 @@ class MyController : public OSDL::MVC::Controller
 		
 			OSDL_DISPLAY_DEBUG( "Controller interrogated, returning state " 
 				<< Ceylan::toNumericalString( _eventForModel->getDirection() )
-				<< " !" ) ;
+				<< "!" ) ;
 			return *_eventForModel ;
 			
 		}
@@ -292,21 +292,21 @@ class MyController : public OSDL::MVC::Controller
 				case 1:
 					return "^" ;
 					
-				case 2 : 
+				case 2: 
 					return "v" ;
 					
-				case 3 :
+				case 3:
 					return "<" ;
 					
-				case 4 :
+				case 4:
 					return ">" ;
 					
-				case 5 :
-					return "quit ! (seen by controller)" ;
+				case 5:
+					return "quit! (seen by controller)" ;
 					
 			}
 			
-			return "(unexpected direction selected) : " 
+			return "(unexpected direction selected): " 
 				+ Ceylan::toString( _eventForModel->getDirection() ) ;
 						
 		}
@@ -324,25 +324,30 @@ class MyController : public OSDL::MVC::Controller
 
 
 
-class MyModel : public OSDL::MVC::Model
+class MyModel : public OSDL::MVC::PeriodicalModel
 {
 
 	public:
 	
 	
-		MyModel() :
-			Model( /* autoRegister */ true, /* period */ 1, 
-				/* policy */ Engine::relaxed )		
+		MyModel( Events::Period period ) :
+			PeriodicalModel( period, /* autoRegister */ true )		
 		{
+		
 			_eventForView = new MyMVCEvent( * this ) ;	
+			
 		}
+		
 		
 		virtual ~MyModel() throw()
 		{
+		
 			delete _eventForView ;	
+			
 		}
 		
-		// Not used there : not event-driven.
+		
+		// Not used there: not event-driven.
 		virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 		{
 		
@@ -354,7 +359,7 @@ class MyModel : public OSDL::MVC::Model
 				_eventForView->setDirection( event->getDirection() ) ;
 			}
 			
-			// We are event-driven here :
+			// We are event-driven here:
 			notifyAllViews( *_eventForView ) ;
 			
 		}
@@ -367,7 +372,7 @@ class MyModel : public OSDL::MVC::Model
 		
 			OSDL_DISPLAY_DEBUG( "Model interrogated, returning state " 
 				<< Ceylan::toNumericalString( _eventForView->getDirection() )
-				<< " !" ) ;
+				<< "!" ) ;
 				
 			return *_eventForView ;
 		}
@@ -376,11 +381,11 @@ class MyModel : public OSDL::MVC::Model
 	 	virtual void onActivation( Events::SimulationTick newTick ) throw()
 		{
 		
-			OSDL_DISPLAY_DEBUG( "Model activated !" ) ;
+			OSDL_DISPLAY_DEBUG( "Model activated!" ) ;
 			
-			OSDL_DISPLAY_DEBUG( "Model state : " + toString() ) ;
+			OSDL_DISPLAY_DEBUG( "Model state: " + toString() ) ;
 			
-			// Only one event source, must be the controller :	
+			// Only one event source, must be the controller:	
 			MyController * myController = dynamic_cast<MyController *>(
 				_sources.back() ) ;
 			
@@ -420,28 +425,29 @@ class MyView : public Ceylan::View
 		virtual void renderModel() throw()
 		{
 				
-			OSDL_DISPLAY_DEBUG( "View displaying !" ) ;
+			OSDL_DISPLAY_DEBUG( "View displaying!" ) ;
 
 
-			// First retrieves from the model the necessary informations :
+			// First retrieves from the model the necessary informations:
 			Ceylan::Model * myModel ;
 			
-			// Actually only one source : 
+			// Actually only one source: 
 			for ( std::list<Ceylan::EventSource *>::iterator 
 				it = _sources.begin() ;	it != _sources.end(); it++ )
 			{
 			
+				// Use of the templated version is a lot more satisfactory:
 				myModel = dynamic_cast<Ceylan::Model *>( *it ) ;
 				const MyMVCEvent * myModelEvent = 
 					dynamic_cast<const MyMVCEvent *>( 
 						& myModel->getEventFor( * this ) ) ;
 				
-				// Directions could be blended :	
+				// Directions could be blended:	
 				_actualDirection = myModelEvent->getDirection() ;
 				
 			}
 
-			OSDL_DISPLAY_DEBUG( "View state : " + toString() ) ;
+			OSDL_DISPLAY_DEBUG( "View state: " + toString() ) ;
 								
 			switch( _actualDirection )
 			{
@@ -449,26 +455,26 @@ class MyView : public Ceylan::View
 					cout << "^" << endl ;
 					break ;
 					
-				case 2 : 
+				case 2: 
 					cout << "v" << endl ;
 					break ;
 					
-				case 3 :
+				case 3:
 					cout << "<" << endl ;
 					break ;
 					
-				case 4 :
+				case 4:
 					cout << ">" << endl ;
 					break ;
 					
-				case 5 :
-					cout << "quit ! "
+				case 5:
+					cout << "quit! "
 						"(seen by the view, actual end of event loop)" << endl ;
 					_events->requestQuit() ;	
 					break ;
 					
 				default:
-					cout << "Unexpected direction selected : " 
+					cout << "Unexpected direction selected: " 
 						 << _actualDirection << endl ;	
 					break ;
 			}
@@ -488,7 +494,7 @@ class MyView : public Ceylan::View
 				_actualDirection = event->getDirection() ;
 			}
 			
-			// Then render !
+			// Then render!
 			renderModel() ;
 			
 		}
@@ -500,6 +506,7 @@ class MyView : public Ceylan::View
 		EventsModule * _events ;
 		
 } ;
+
 		
 
 
@@ -508,7 +515,7 @@ class MyView : public Ceylan::View
  * renderer.
  *
  * This test creates MVC instances as automatic variables, to test the
- * framework robustness : it is a typical example of a misuse that should 
+ * framework robustness: it is a typical example of a misuse that should 
  * have led to a crash, since the deallocation order of aController, aModel 
  * and aModel is not mastered.
  *
@@ -569,7 +576,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -584,7 +591,7 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
@@ -613,12 +620,12 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Scheduler support requested." ) ;
 		myEvents.useScheduler() ;
 		
-		LogPlug::info( "Events module : " + myEvents.toString() ) ;
+		LogPlug::info( "Events module: " + myEvents.toString() ) ;
 		
 		myEvents.getKeyboardHandler().setSmarterDefaultKeyHandlers() ;
 		
 		JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
-		LogPlug::info( "Current joystick handler is : " 
+		LogPlug::info( "Current joystick handler is: " 
 			+ myJoystickHandler.toString( Ceylan::high ) ) ;
 
 		JoystickNumber joyCount = 
@@ -633,7 +640,7 @@ int main( int argc, char * argv[] )
 			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
 				myJoystickHandler.openJoystick( i ) ;
 		
-			LogPlug::info( "New joystick handler state is : " 
+			LogPlug::info( "New joystick handler state is: " 
 				+ myJoystickHandler.toString( Ceylan::high ) ) ;
 		
 		}
@@ -650,7 +657,7 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Getting video." ) ;
 		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
-		// A SDL window is needed to have the SDL event system working :
+		// A SDL window is needed to have the SDL event system working:
 		myVideo.setMode( 640, 480, VideoModule::UseCurrentColorDepth, 
 			VideoModule::SoftwareSurface ) ;
 		
@@ -665,7 +672,7 @@ int main( int argc, char * argv[] )
 		 *
 		 */
 		 
-		MyModel aModel ;
+		MyModel aModel( /* period */ 4 ) ;
 		
 		MyView aView( aModel, myEvents ) ;
 		
@@ -698,7 +705,7 @@ int main( int argc, char * argv[] )
 		/*
 		 * Auto-registers itself to the scheduler.
 		 *
-		 * Warning : this renderer must be specially allocated thanks to a
+		 * Warning: this renderer must be specially allocated thanks to a
 		 * new(), and not simply as an automatic variable, since the 
 		 * renderer will automatically register itself to the scheduler,
 		 * which will take ownership of it, and will deallocate it upon its 
@@ -713,7 +720,7 @@ int main( int argc, char * argv[] )
 		
 		aRenderer->registerView( aView ) ;
 
-		LogPlug::debug( "Showing scheduler state before activation : " 
+		LogPlug::debug( "Showing scheduler state before activation: " 
 			+ OSDL::Engine::Scheduler::GetExistingScheduler().toString() ) ;
 
 
@@ -737,7 +744,7 @@ int main( int argc, char * argv[] )
 		}
 
 
-		LogPlug::debug( "Showing scheduler state after activation : " 
+		LogPlug::debug( "Showing scheduler state after activation: " 
 			+ OSDL::Engine::Scheduler::GetExistingScheduler().toString() ) ;
 
 
@@ -755,7 +762,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -764,7 +771,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -773,7 +780,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 
