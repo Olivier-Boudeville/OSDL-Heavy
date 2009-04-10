@@ -261,7 +261,6 @@ pre {
 
 
 table {
-  color: #8aa0d2;
   margin: 5px;
   border: solid; 
   border-width: thin; 
@@ -280,21 +279,18 @@ table caption {
 
 table p, table dl, ol p, ul p, dl p, blockquote p, .note p, .note ul, .note ol, .note dl, li pre, dd pre {
   margin-left: 0;
-  background: #000000; 
   margin-right: 0;
 }
 
 
 tr {
-   color: #DADADA;  
    font-size: 15px;
    border:thin;
 }
 
 
 th { 
-   color: #ec8b23;
-   background: #000000;
+   color: #8aa0d2;
    font-weight: bold;
    font-size: 19px;
    text-align: center;
@@ -302,7 +298,6 @@ th {
 
 
 td {
-   background: #363636; 
    font-size: 15px;
 }
 
