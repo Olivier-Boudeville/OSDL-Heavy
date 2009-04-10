@@ -13,27 +13,28 @@ using std::list ;
 
 PeriodicSlot::PeriodicSlot( Period periodicity ) throw() :
 	_period( periodicity ),
-	_currentSlot( 0 )
+	_currentSubSlot( 0 )
 {
 
 	/*
-	 * This array will contain _period pointers to ListOfActiveObjects 
-	 * instances :
+	 * This array will contain _period pointers to 
+	 * ListOfPeriodicalActiveObjects instances:
 	 *
 	 */
-	_slots = new ListOfActiveObjects *[ _period ] ;
+	_subslots = new ListOfPeriodicalActiveObjects * [ _period ] ;
 	
-	_slotWeights = new Weight[ _period ] ;
+	_subslotWeights = new Weight[ _period ] ;
 	
-	// Initializes with null pointer for lists, and zero for weights :
+	// Initializes with null pointer for lists, and zero for weights:
 	
 	for ( Period i = 0; i < _period; i++ )
 	{
-		_slots[i] = 0 ;
-		_slotWeights[ i ] = 0 ;
+		_subslots[i] = 0 ;
+		_subslotWeights[ i ] = 0 ;
 	}	
 	
 }
+
 
 
 PeriodicSlot::~PeriodicSlot() throw() 
@@ -43,102 +44,161 @@ PeriodicSlot::~PeriodicSlot() throw()
 	
 	for ( Period i = 0; i < _period; i++ )
 	{
-		if ( _slots[i] != 0 )
-			delete _slots[i] ;
+	
+		if ( _subslots[i] != 0 )
+		{
+		
+			Ceylan::Uint32 size = _subslots[i]->size() ;
+			
+			if ( size != 0 )
+				LogPlug::warning( "PeriodicSlot destructor: "
+					"for slot in charge of period " 
+					+ Ceylan::toString( _period ) + ", subslot #"
+					+ Ceylan::toString( i ) + " was still containing "
+					+ Ceylan::toString( size ) + " periodical object(s)." ) ;
+				
+			delete _subslots[i] ;
+			
+		}
+			
 	}
 			
-	delete [] _slots ;
+	delete [] _subslots ;
 
-	delete [] _slotWeights ;
-	
+	delete [] _subslotWeights ;
 	
 }
 
 
-void PeriodicSlot::add( ActiveObject & newObject ) throw( SchedulingException )
+
+Period PeriodicSlot::add( PeriodicalActiveObject & newObject ) 
+	throw( SchedulingException )
 {
 	
-	Period chosenSlot ;
+	Period chosenSubSlot ;
 	
 	/*
 	 * If strict policy is requested, schedules the object exactly at 
 	 * next simulation step.
 	 *
-	 * If relaxed policy is allowed, schedule on least crowded slot.
+	 * If relaxed policy is allowed, schedules on least crowded slot.
 	 *
 	 */
 	switch( newObject.getPolicy() )
 	{
 	
 		case strict:
-			chosenSlot = ( _currentSlot + 1 ) % _period ;
+			chosenSubSlot = ( _currentSubSlot + 1 ) % _period ;
 			break ;
 			
 		case relaxed:	
-			chosenSlot = getLeastBusySlot() ;
+			chosenSubSlot = getLeastBusySubSlot() ;
 			break ;
 	
 		default:
-			throw SchedulingException( "PeriodicSlot::add : "
+			throw SchedulingException( "PeriodicSlot::add: "
 				"unexpected scheduling policy." ) ;
 				
 	}
 			
-	// Apply slot choice for all policies :
-	addInSlot( newObject, chosenSlot ) ;
-			
+	// Apply sub-slot choice for all policies:
+	addInSubSlot( newObject, chosenSubSlot ) ;
+	
+	return chosenSubSlot ;
+	
 }
 
 
-void PeriodicSlot::remove( ActiveObject & object ) throw( SchedulingException )
+
+void PeriodicSlot::removeFromSubslot( PeriodicalActiveObject & object ) 
+	throw( SchedulingException )
 {
 
-	bool removed = false ;
+	Period subslot = object.getSubslotNumber() ;
 	
-	for ( Period i = 0; i < _period; i++ )
+	/*
+	 * The pointer to that object is replaced by a null pointer.
+	 * The list element cannot be deleted yet, as this method might be
+	 * called while iterating on that sub-slot.
+	 *
+	 */
+	
+	if ( _subslots[ subslot ] == 0 )
+		throw SchedulingException( "PeriodicSlot::removeFromSubslot failed: "
+			"sub-slot #" + Ceylan::toString( subslot ) + " does not exist." ) ;
+
+	for ( list<PeriodicalActiveObject *>::iterator it = 
+		_subslots[ subslot ]->begin() ; it != _subslots[ subslot ]->end();
+		it++ )
 	{
-		if ( removeFromSlot( object, i ) )
-			removed = true ;
-	}
 	
-	if ( ! removed )
-		throw SchedulingException( 
-			"PeriodicSlot::remove : all slots inspected for object ("
-			+ object.toString( Ceylan::low ) + "), but was never found." ) ;
+		if ( (*it) == & object )
+		{
+	 
+	 		// Removes the first (and supposed only) occurence of this object:
+			_subslotWeights[ subslot ] -= object.getWeight() ;
+			*it = 0 ;
+			
+			// No deletion here!
+						
+			return ;
+			
+		}
+	}	
+
+	throw SchedulingException( "PeriodicSlot::removeFromSubslot failed: "
+		"periodical object " + object.toString() + " not found." ) ;
+		
 }
 
+	
 
-void PeriodicSlot::onNextTick( SimulationTick newTick ) throw()
+bool PeriodicSlot::onNextTick( SimulationTick newTick ) throw()
 {
 	
 	/*
-	 * Protect from multiple calls. 
-	 * Unitary periods are special cases, since the current slot never changes.
+	 * Protects from multiple calls, if ever the scheduler duplicated ticks.
+	 * 
+	 * Unitary periods are special cases, since in their case the current slot
+	 * never changes.
 	 *
 	 */
 	Period deducedSubSlot = getSubSlotForSimulationTick( newTick ) ;
 	
-	if ( _currentSlot != deducedSubSlot || _period == 1 )
+	if ( _currentSubSlot != deducedSubSlot || _period == 1 )
 	{
 	
-		// OK, it is not the last slot again. But is it really the next slot ?
-		_currentSlot = ( _currentSlot + 1 ) % _period ;	
+		// OK, new slot is a different one. But is it really the next slot?
+		_currentSubSlot = ( _currentSubSlot + 1 ) % _period ;	
 
-		if ( _currentSlot != deducedSubSlot )
+		if ( _currentSubSlot != deducedSubSlot )
 			LogPlug::warning( 
-				"PeriodicSlot::onNextTick : expected next sub-slot to be " 
-				+ Ceylan::toString( _currentSlot ) + ", got " 
+				"PeriodicSlot::onNextTick: expected next sub-slot to be " 
+				+ Ceylan::toString( _currentSubSlot ) + ", got " 
 				+ Ceylan::toString( deducedSubSlot )
 				+ " for simulation tick "
 				+ Ceylan::toString( newTick ) + "." ) ;
 		
 		/*
 		 * Nevermind, reset the current slot on all situations, and 
-		 * activate accordingly :		
+		 * activate accordingly:		
 		 *
 		 */
-		_currentSlot = deducedSubSlot ;
-		activateAllObjectsInSubSlot( _currentSlot, newTick ) ;
+		_currentSubSlot = deducedSubSlot ;
+		
+		if ( ! activateAllObjectsInSubSlot( _currentSubSlot, newTick ) )
+		{
+		
+			// This sub-slot should be removed:
+			delete _subslots[ _currentSubSlot ] ;
+			_subslots[ _currentSubSlot ] = 0 ;
+
+			if ( isEmpty() )
+				return false ;
+		
+		}
+		
+		return true ;
 		
 	}
 	else
@@ -149,21 +209,23 @@ void PeriodicSlot::onNextTick( SimulationTick newTick ) throw()
 		 * initial sub-slot is zero too.
 		 *
 		 */
-		
 		if ( newTick != 0 )
 		{
 		
-			// The sub-slot has already been activated !
-			LogPlug::warning( "PeriodicSlot::onNextTick : "
+			// The sub-slot has already been activated!
+			LogPlug::warning( "PeriodicSlot::onNextTick: "
 				"apparently called multiple times for simulation time " 
 				+ Ceylan::toString( newTick ) 
 				+ " (last activated sub-slot was "
-				+ Ceylan::toString( _currentSlot ) 
+				+ Ceylan::toString( _currentSubSlot ) 
 				+ "), no more activation performed." ) ;
-		}		
+		}
+		
+		return true ;	
 		
 	}		
 }
+
 
 
 void PeriodicSlot::onSimulationSkipped( SimulationTick skipped ) 
@@ -172,27 +234,48 @@ void PeriodicSlot::onSimulationSkipped( SimulationTick skipped )
 
 	Period subSlot = getSubSlotForSimulationTick( skipped ) ;
 	
-	// Propagate the notification to all objects of the sub-slot :
+	// Propagated the notification to all objects of the sub-slot:
 	
-	if ( _slots[subSlot] != 0 )
+	if ( _subslots[subSlot] != 0 )
 	{
-		for ( ListOfActiveObjects::iterator it = _slots[subSlot]->begin() ;
-				it != _slots[subSlot]->end(); it++ )
+		for ( ListOfPeriodicalActiveObjects::iterator it =
+				_subslots[subSlot]->begin() ;
+				it != _subslots[subSlot]->end(); it++ )
 			(*it)->onSkip( skipped ) ;
 	}
 	
-	// Avoid to confuse onNextTick :
-	_currentSlot = subSlot ;
+	// Avoidd to confuse onNextTick:
+	_currentSubSlot = subSlot ;
 	
 }
 
+
 					
-Period PeriodicSlot::getPeriod() throw()
+Period PeriodicSlot::getPeriod() const throw()
 {
 
 	return _period ;
 	
 }
+
+
+
+bool PeriodicSlot::isEmpty() const throw()
+{
+
+	for ( Period i = 0; i < _period; i++ )
+	{	
+	
+		if ( _subslots[i] != 0 )
+			if ( ! _subslots[i]->empty() )
+				return false ;
+
+	}
+	
+	return true ;
+	
+}
+
 
 
 const string PeriodicSlot::toString( Ceylan::VerbosityLevels level ) 
@@ -202,7 +285,7 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level )
 	string res = "Periodic slot whose period is " 
 		+ Ceylan::toString( _period ) 
 		+ ". Current sub-slot is " 
-		+ Ceylan::toString( _currentSlot ) ; 
+		+ Ceylan::toString( _currentSubSlot ) ; 
 		
 	if ( level == Ceylan::low )
 		return res ;
@@ -216,11 +299,11 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level )
 	
 		for ( Period i = 0; i < _period; i++ )
 		{	
-			if ( _slots[i] != 0 )
+			if ( _subslots[i] != 0 )
 				objectCount += 
-					static_cast<Ceylan::Uint32>( _slots[i]->size() ) ;
+					static_cast<Ceylan::Uint32>( _subslots[i]->size() ) ;
 
-			weightCount += _slotWeights[i] ;
+			weightCount += _subslotWeights[i] ;
 		}		
 	
 		return res + ". " + Ceylan::toString( objectCount ) 
@@ -233,12 +316,12 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level )
 	
 	for ( Period i = 0; i < _period; i++ )
 	{	
-		if ( _slots[i] != 0 && _slots[i]->size() != 0 )
+		if ( _subslots[i] != 0 && _subslots[i]->size() != 0 )
 			l.push_back( "slot #" + Ceylan::toString( i ) + " contains " 
 				+ Ceylan::toString( 
-					static_cast<Ceylan::Uint32>( _slots[i]->size() ) ) 
+					static_cast<Ceylan::Uint32>( _subslots[i]->size() ) ) 
 				+ " active object(s), for a total weight of "
-				+ Ceylan::toString( _slotWeights[i] ) + "." ) ;
+				+ Ceylan::toString( _subslotWeights[i] ) + "." ) ;
 		else
 			l.push_back( "slot #" + Ceylan::toString( i ) + " is empty." ) ;	
 	}		
@@ -246,6 +329,7 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level )
 	return res + Ceylan::formatStringList( l ) ;
 		
 }
+
 						
 
 Period PeriodicSlot::getSubSlotForSimulationTick( SimulationTick tick ) 
@@ -257,70 +341,34 @@ Period PeriodicSlot::getSubSlotForSimulationTick( SimulationTick tick )
 }
 
 
-void PeriodicSlot::addInSlot( ActiveObject & newObject, Period targetSlot )
-	throw()
+
+void PeriodicSlot::addInSubSlot( PeriodicalActiveObject & newObject, 
+	Period targetSubslot ) throw()
 {
 
-	if ( _slots[ targetSlot ] == 0 )
-		_slots[ targetSlot ] = new ListOfActiveObjects() ;
+	if ( _subslots[ targetSubslot ] == 0 )
+		_subslots[ targetSubslot ] = new ListOfPeriodicalActiveObjects() ;
 		
-	_slots[ targetSlot ]->push_back( & newObject ) ;
-	_slotWeights[ targetSlot ] += newObject.getWeight() ;
+	_subslots[ targetSubslot ]->push_back( & newObject ) ;
+	_subslotWeights[ targetSubslot ] += newObject.getWeight() ;
 	
 }
 
 
-bool PeriodicSlot::removeFromSlot( ActiveObject & object, Period targetSlot )
-	throw( SchedulingException )
-{
-	
-	if ( _slots[ targetSlot ] == 0 )
-		return false ;
-		
-	Ceylan::Uint32 count = 0 ;
-	
-	/* 
-	 * Removes all occurences of this object, must use two passes since
-	 * otherwise an erase would invalidate the iterator.
-	 *
-	 */
-	for ( ListOfActiveObjects::iterator it = _slots[ targetSlot ]->begin() ; 
-		it != _slots[ targetSlot ]->end(); it++ )
-	{
-		if ( (*it) == & object )
-			count++ ;
-	}
-	_slots[ targetSlot ]->remove( & object ) ;
-	
-	
-	// An empty slot should be deleted :	
-	if ( _slots[ targetSlot ]->empty() )
-	{
-		delete _slots[ targetSlot ] ;
-		_slots[ targetSlot ] = 0 ;
-		// _slotWeights will be zero on method return.
-	}		
-	
-	// Update the precomputed weight :		
-	_slotWeights[ targetSlot ] -= object.getWeight() * count ;
-	
-	return ( count != 0 ) ;
 
-}
-
-
-Period PeriodicSlot::getLeastBusySlot() const throw()
+Period PeriodicSlot::getLeastBusySubSlot() const throw()
 {
 
-	Weight minWeight = _slotWeights[ 0 ] ;
+	Weight minWeight = _subslotWeights[ 0 ] ;
 	Period minIndex = 0 ;
 	
+	// Subslot #0 already taken into account:
 	for ( Period i = 1; i < _period; i++ )
 	{
-		if ( _slotWeights[ i ] < minWeight )
+		if ( _subslotWeights[ i ] < minWeight )
 		{
 			minIndex = i ;
-			minWeight = _slotWeights[ i ] ;
+			minWeight = _subslotWeights[ i ] ;
 		}
 	}
 	
@@ -329,14 +377,17 @@ Period PeriodicSlot::getLeastBusySlot() const throw()
 }
 
 
-void PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
+
+bool PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
 	SimulationTick currentTime ) throw()
 {
 
-	if ( _slots[ subSlot ] == 0 )
+	if ( _subslots[ subSlot ] == 0 )
 	{
-		// Nothing in this sub-slot, nothing to do !
-		return ;
+	
+		// Nothing in this sub-slot, nothing to do, no more reason of deletion:
+		return true ;
+		
 	}
 	
 	/*
@@ -345,11 +396,53 @@ void PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
 	 *
 	 */
 	
-	for ( ListOfActiveObjects::iterator it = _slots[ subSlot ]->begin();
-		it != _slots[ subSlot ]->end(); it++ )
+	/*
+	 * A while is used and the iterator is kept, as the activated object
+	 * might decide to delete itself and be removed from that slot, while
+	 * still iterating on this subslot.
+	 *
+	 */
+	ListOfPeriodicalActiveObjects * subslotList = _subslots[ subSlot ] ;
+	
+	// while preferred as it++ must not happen at each iteration:
+	ListOfPeriodicalActiveObjects::iterator it = subslotList->begin() ;
+	
+	while( it != subslotList->end() )
 	{	
-		(*it)->onActivation( currentTime ) ;	
+		
+		/*
+		 * An object will return false if unsubscribing (ex: on deletion):
+		 *
+		 */
+		if ( *it == 0 )
+		{
+		
+			/*
+			 * The corresponding periodical object has been previously
+			 * removed, let's suppress its container as well, now that we
+			 * are iterating over that list (previously this could not be
+			 * done as it may have invalidated a possibly in-use iterator):
+			 *
+			 */
+			it = subslotList->erase( it ) ;
+			
+		}
+		else
+		{
+		 
+		 	(*it)->onActivation( currentTime ) ;
+			it++ ;
+			
+		}
+			
 	}
 
+	// Empty sub-slotq should be removed:
+	if ( subslotList->empty() )
+		return false ;
+			
+	// Has still at least one object:
+	return true ;
+	
 }
 
