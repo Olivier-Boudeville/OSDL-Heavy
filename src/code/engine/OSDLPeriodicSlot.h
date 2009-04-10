@@ -2,10 +2,9 @@
 #define OSDL_PERIODIC_SLOT_H_
 
  
-#include "OSDLEvents.h"               // for SimulationTick, Period
-#include "OSDLActiveObject.h"   	  // for ObjectSchedulingPolicy, etc.
+#include "OSDLPeriodicalActiveObject.h" // for ObjectSchedulingPolicy, etc.
 
-// for ListOfActiveObjects, SchedulingException, etc. :
+// for ListOfPeriodicalActiveObjects, SchedulingException, etc.:
 #include "OSDLEngineCommon.h"         
 
 
@@ -23,33 +22,33 @@ namespace OSDL
 	{
 	
 	
-		// Periodic slots register active objects.
-		class ActiveObject ;
-
+		// Periodic slots register periodical active objects.
+		class PeriodicalActiveObject ;
 
 		
 		/**
 		 * Records informations about a periodic slot.
 		 * 
 		 * Each of these periodic slots is internally divided into as 
-		 * many sub-slots as the period length. 
-		 * Each registered active object will be listed in at least a sub-slot. 
+		 * many sub-slots as the length of that slot period. 
 		 *
-		 * For example, for a periodicity of 7 simulation steps, a dedicated
-		 * PeriodicSlot will be created. 
-		 * It will be in charge of all objects registered for this 
-		 * periodicity, and will have internally a list of 7 sub-slots. 
+		 * Each registered periodical active object will then be listed in
+		 * exactly one sub-slot. 
+		 *
+		 * For example, when a PeriodicSlot will be created to manage all
+		 * objects relying on a periodicity of 7 simulation ticks, that slot
+		 * will have internally an array of 7 sub-slots. 
 		 * At each new simulation tick, all objects registered in the
-		 * corresponding sub-slot (whose number will be :
+		 * corresponding sub-slot (whose number will be: 
 		 * new simulation tick % 7), will be activated.
 		 *
-		 * So, at a given simulation step, all objects put in corresponding
+		 * So, at a given simulation tick, all objects put in corresponding
 		 * sub-slot will be activated. 
-		 * On the next step, the list corresponding to the next sub-slot 
+		 * On the next tick, the list corresponding to the next sub-slot 
 		 * will be activated, and so on. 
 		 * Each object registered in a sub-slot will therefore be activated
 		 * at the right frequency, as defined in the slot, whereas not all of
-		 * these objects are activated in the same simulation time, to 
+		 * these objects are activated at the same simulation time, to 
 		 * avoid unbalanced load.
 		 *
 		 * A PeriodicSlot does not have to manage simulation time internally, 
@@ -57,7 +56,7 @@ namespace OSDL
 		 * simulation ticks.
 		 *
 		 * @note This object has no virtual member so that there is no 
-		 * 'virtual' overhead (vtable) : the scheduler will make an 
+		 * 'virtual' overhead (vtable): the scheduler will make an 
 		 * intensive use of it.
 		 *
 		 */
@@ -81,50 +80,59 @@ namespace OSDL
 				/// Non-virtual destructor.
 				~PeriodicSlot() throw() ;
 				
+	
+					
 				
 				/**
-				 * Adds a new active object. 
-				 * It will be registered in a slot, depending on its
+				 * Adds a new periodical active object to that slot. 
+				 *
+				 * It will be registered in a sub-slot, depending on its
 				 * scheduling policy.
 				 *
-				 * @note An object can be registered multiple times, even 
-				 * in the same periodic slot.
+				 * The slot weight will be updated.
+				 *
+				 * @return the sub-slot this object was registered in.
 				 *
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				 void add( ActiveObject & newObject ) 
+				 Events::Period add( PeriodicalActiveObject & newObject ) 
 				 	throw( SchedulingException ) ;
-				
+							 
+							 							 
+				 
+				 /**
+				  * Removes specified periodical object from specified
+				  * sub-slot, and updates the slot weight.
+				  *
+				  * @throw SchedulingException if the operation failed.
+				  *
+				  */
+				 void removeFromSubslot( PeriodicalActiveObject & object )
+				 	throw( SchedulingException ) ;
+				 
+				 
 				 
 				/**
-				 * Removes entirely an active object, possibly registered
-				 * multiple time, from its slot.
-				 *
-				 * @throw SchedulingException if the object was not found in 
-				 * any sub-slot of the slot.
-				 *
-				 */
-				 void remove( ActiveObject & object ) 
-				 	throw( SchedulingException ) ;
-				 
-				 
-				/**
-				 * Activates all objects registered in the slot 
-				 * corresponding on this new tick.
+				 * Activates all objects registered in the sub-slot 
+				 * corresponding to this new tick.
 				 *
 				 * @note The simulation tick is specified so that it can be
 				 * propagated to active objects. 
-				 * No blocking checking is performed at the level of the
-				 * periodic slot : it is assumed that no tick is skipped.
+				 *
+				 * No blocking checking that no simulation tick was skipped
+				 * is performed at the level of the periodic slot.
+				 *
+				 * @return true iff this periodic slot should be kept.
 				 *
 				 */ 
-				void onNextTick( Events::SimulationTick newTick ) throw() ;
+				bool onNextTick( Events::SimulationTick newTick ) throw() ;
+				
 				
 				
 				/**
-				 * Notices all relevant objects that specified simulation 
-				 * tick has to be skipped.
+				 * Notifies all relevant objects that specified simulation 
+				 * tick had to be skipped.
 				 * 
 				 * Called by the scheduler whenever a simulation tick has 
 				 * to be skipped.
@@ -135,9 +143,9 @@ namespace OSDL
 				 * computers).
 				 *
 				 * @note Objects can have this method called multiple times 
-				 * for only one skipped simulation step, if they were to be
+				 * for only one skipped simulation tick, if they were to be
 				 * scheduled multiple times during the skipped simulation 
-				 * tick (ex : an object both registered as programmed and 
+				 * tick (ex: an object both registered as programmed and 
 				 * periodic).
 				 *
 				 */
@@ -145,12 +153,23 @@ namespace OSDL
 					throw( SchedulingException ) ;
 				
 				
+				
 				/**
 				 * Returns the period this slot is in charge of.
 				 *
 				 */
-				Events::Period getPeriod() throw() ;
+				Events::Period getPeriod() const throw() ;
 					
+					
+					
+				/**
+				 * Returns true iff the slot is fully empty,, i.e. none of 
+				 * its sub-slots contains any object.
+				 *
+				 */
+				bool isEmpty() const throw() ;
+					
+				
 						
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -176,7 +195,9 @@ namespace OSDL
 			
 			
 			
+			
 			protected:			
+			
 			
 			
 				/**
@@ -189,43 +210,34 @@ namespace OSDL
 				 */
 				Events::Period getSubSlotForSimulationTick(
 					Events::SimulationTick tick ) const throw() ;
-				
-				
-				/**
-				 * Adds explicitly in specified slot the active object.
-				 *
-				 */				 
-				void addInSlot( ActiveObject & newObject, 
-					Events::Period targetSlot ) throw() ;
 
-					
+
+			
 				/**
-				 * Removes from specified slot all subscriptions of the 
-				 * active object, and updates the slot weight.
-				 *
-				 * @return false if and only if object was not in slot.
-				 *
-				 */				 
-				bool removeFromSlot( ActiveObject & object, 
-					Events::Period targetSlot ) throw( SchedulingException) ;
-				
-				
-				/**
-				 * Returns the first slot whose total object weights is 
+				 * Returns the first sub-slot whose total object weight is 
 				 * minimal for this periodic slot.
 				 *
-				 * @note the returned period can index a slot whose list 
+				 * @note the returned period number can index a slot whose list 
 				 * pointer is null, since in all cases where all weights 
 				 * are null, the first slot, potentially with no list created,
 				 * is returned.
 				 * 
 				 */
-				Events::Period getLeastBusySlot() const throw() ;
+				Events::Period getLeastBusySubSlot() const throw() ;
+				
+				
+				
+				/**
+				 * Adds explicitly in specified sub-slot the active object.
+				 *
+				 */				 
+				void addInSubSlot( PeriodicalActiveObject & newObject, 
+					Events::Period targetSubSlot ) throw() ;
 					
 				
 				/**
 				 * Activates in turn all active objects registered in the
-				 * specified slot, from the first object ever registered to 
+				 * specified sub-slot, from the first object ever registered to 
 				 * the last, if they had not been activated before.
 				 * Each of them is given the specified simulation time.
 				 *
@@ -237,32 +249,40 @@ namespace OSDL
 				 * @param currentTime the simulation time which should be 
 				 * given to activated objects.
 				 * 
+				 * @return true iff this periodic sub-slot should be kept.
+				 *
 				 */
-				void activateAllObjectsInSubSlot( Events::Period subSlot, 
+				bool activateAllObjectsInSubSlot( Events::Period subSlot, 
 					Events::SimulationTick currentTime ) throw() ;
 				
 				
+				
 				/**
-				 * Stores the periodicity, expressed in simulation steps,
+				 * Stores the periodicity, expressed in simulation ticks,
 				 * of this slot.
 				 *
 				 */
 				Events::Period _period ;
 
 				
-				/// Records the slot corresponding to current simulation step. 
-				Events::Period _currentSlot ;
+				
+				/// Records the slot corresponding to current simulation tick. 
+				Events::Period _currentSubSlot ;
 
 				
+				
 				/**
-				 * This is an array of pointers to lists : 
-				 * ListOfActiveObjects * _slots[].
+				 * This is an array of pointers to lists: 
+				 * ListOfPeriodicalActiveObjects * _subslots[].
 				 *
-				 * The pointed array has as many elements (slots) as
+				 * The pointed array has as many elements (sub-slots) as
 				 * constructor-specified <b>periodicity</b>.
-				 * 
+				 *
+				 * Ex: for a period of 3, we have list #0, #1 and #2.
+				 *
 				 */
-				ListOfActiveObjects ** _slots ;	
+				ListOfPeriodicalActiveObjects ** _subslots ;	
+				
 				
 				
 				/**
@@ -270,7 +290,8 @@ namespace OSDL
 				 * a slot.
 				 *
 				 */
-				Weight * _slotWeights ;
+				Weight * _subslotWeights ;
+
 
 
 
@@ -308,3 +329,4 @@ namespace OSDL
 
 
 #endif // OSDL_PERIODIC_SLOT_H_
+
