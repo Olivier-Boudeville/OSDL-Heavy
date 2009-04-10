@@ -2,8 +2,9 @@
 
 USAGE="
 
-Usage: "`basename $0`" [ -h | --help ] [ --nds ] [ --with-osdl-env-file <filename> || --ceylan-install-prefix <path> ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ]: (re)generates all the autotools-based build system.
+Usage: "`basename $0`" [ -h | --help ] [ -g | --guess ] [ --nds ] [ --with-osdl-env-file <filename> || --ceylan-install-prefix <path> ] [ -n | --no-build ] [ -c | --chain-test ] [ -f | --full ] [ -o | --only-prepare-dist ] [ --configure-options [option 1] [option 2] [...] ]: (re)generates all the autotools-based build system.
 
+	--guess: attempts to guess where the OSDL environment file can be found
 	--nds: cross-compile the OSDL library so that it can be run on the Nintendo DS (LOANI installation of all prerequesites and of the DS cross-build chain is assumed)
 	--with-osdl-env-file <filename>: specify where the OSDL environment file (OSDL-environment.sh) should be read
 	--ceylan-install-prefix: specify where the Ceylan installation can be found
@@ -44,6 +45,7 @@ ceylan_location=""
 # 0 means true, 1 means false:
 do_remove_generated=0
 do_clean_prefix=0
+do_guess_osdl_env_location=1
 do_stop_after_configure_generation=1
 do_clean=0
 do_build=0
@@ -66,6 +68,11 @@ while [ $# -gt 0 ] ; do
 		token_eaten=0
 	fi
 
+	if [ "$1" = "-g" -o "$1" = "--guess" ] ; then
+		do_guess_osdl_env_location=0
+		token_eaten=0
+	fi
+	
 	if [ "$1" = "-v" -o "$1" = "--verbose" ] ; then
 		be_verbose=0
 		token_eaten=0
@@ -218,6 +225,14 @@ if [ -z "$osdl_environment_file" ] ; then
 	
 	if [ -z "$ceylan_location" ] ; then
 
+		if [ $do_guess_osdl_env_location -eq 1 ] ; then
+		
+			echo "Error: no Ceylan location nor path to the OSDL environment file specified, and no guessing was required, thus stopping. $USAGE" 1>&2
+			exit 5
+		
+		fi
+		
+		
 		# Nothing specified, trying to guess where a OSDL-environment.sh file
 		# is to be found:
 
