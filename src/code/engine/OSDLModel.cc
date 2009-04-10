@@ -19,52 +19,96 @@ using namespace OSDL::MVC ;
 
 
 
-Model::Model( bool autoRegister, Period period, 
-	ObjectSchedulingPolicy policy, Weight weight ) 
+// PeriodicalModel section.
+
+
+PeriodicalModel::PeriodicalModel( 
+	Period period,
+	bool autoRegister,  
+	ObjectSchedulingPolicy policy,
+	Weight weight ) 
 		throw( SchedulingException ) : 
-	ActiveObject( period, policy, weight )	
+	Model(),	
+	PeriodicalActiveObject( period, autoRegister, policy, weight )	
 {
 
-	if ( autoRegister )
-		Scheduler::GetExistingScheduler().registerObject( * this ) ; 
 		
 }
 
 
-Model::Model( bool autoRegister, const list<SimulationTick> & triggeringTicks,
-	bool absolutlyDefined, ObjectSchedulingPolicy policy, Weight weight )
-		throw(SchedulingException ) :
-	ActiveObject( triggeringTicks, absolutlyDefined, policy, weight )
-{
 
-	if ( autoRegister )
-		Scheduler::GetExistingScheduler().registerObject( * this ) ; 
-		
-}	
-
-
-Model::Model( bool autoRegister, SimulationTick triggerTick, 
-		bool absolutlyDefined, ObjectSchedulingPolicy policy, 
-		Weight weight ) 
-	throw( SchedulingException ) :
-		ActiveObject( triggerTick, absolutlyDefined, policy, weight )
-{
-
-	if ( autoRegister )
-		Scheduler::GetExistingScheduler().registerObject( * this ) ; 
-		
-}	
-
-
-Model::~Model() throw()
+PeriodicalModel::~PeriodicalModel() throw()
 {
 
 }
 
 
-const string Model::toString( Ceylan::VerbosityLevels level ) const throw()
+
+const string PeriodicalModel::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
 {	
-	return "OSDL MVC Model, which is a specialized scheduled Ceylan Model : " 
-		+ Ceylan::Model::toString( level ) ;
+
+	return "OSDL MVC periodical model, which is a " 
+		+ Ceylan::Model::toString( level ) 
+		+ ", and a " + PeriodicalActiveObject::toString( level ) ;
+		
+}
+
+
+
+
+
+// ProgrammedModel section.
+
+
+ProgrammedModel::ProgrammedModel( 
+	const list<SimulationTick> & triggeringTicks,
+	bool absolutelyDefined,
+	bool autoRegister, 
+	ObjectSchedulingPolicy policy,
+	Weight weight )
+		throw(SchedulingException ) :
+	Model(),	
+	ProgrammedActiveObject( triggeringTicks, absolutelyDefined, autoRegister,
+		policy, weight )
+{
+
+		
+}	
+
+
+
+ProgrammedModel::ProgrammedModel( 
+	SimulationTick triggerTick, 
+	bool absolutelyDefined, 
+	bool autoRegister, 
+	ObjectSchedulingPolicy policy, 
+	Weight weight ) 
+		throw( SchedulingException ) :
+	Model(),	
+	ProgrammedActiveObject( triggerTick, absolutelyDefined, autoRegister,
+		policy, weight )
+{
+
+		
+}	
+
+
+
+ProgrammedModel::~ProgrammedModel() throw()
+{
+
+}
+
+
+
+const string ProgrammedModel::toString( Ceylan::VerbosityLevels level ) 
+	const throw()
+{	
+
+	return "OSDL MVC programmed model, which is a " 
+		+ Ceylan::Model::toString( level ) 
+		+ ", and a " + ProgrammedModel::toString( level ) ;
+		
 }
 
