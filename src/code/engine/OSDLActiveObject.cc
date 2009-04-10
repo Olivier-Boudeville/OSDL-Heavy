@@ -8,8 +8,6 @@
 using std::string ;
 using std::list ;
 
-using Ceylan::Maths::Hertz ;
-
 
 #include "Ceylan.h"               // for Log
 using namespace Ceylan::Log ;
@@ -20,50 +18,16 @@ using namespace OSDL::Events ;
 
 
 
-ActiveObject::ActiveObject( Period period, ObjectSchedulingPolicy policy, 
-		Weight weight ) throw(): 
-	_policy( policy ),
-	_weight( weight ),
-	_period( period ),
-	_programmedTriggerTicks( 0 ),
-	_absoluteTriggers( true ),
-	_birthTime( 0 )
-{
-	
-}
 
-
-
-ActiveObject::ActiveObject( const SimulationTickList & triggeringTicks, 
-	bool absolutlyDefined, ObjectSchedulingPolicy policy, Weight weight )
+ActiveObject::ActiveObject( ObjectSchedulingPolicy policy, Weight weight )
 		throw():
 	_policy( policy ),
 	_weight( weight ),
-	_period( 0 ),
-	_programmedTriggerTicks( 0 ),
-	_absoluteTriggers( absolutlyDefined ),
-	_birthTime( 0 )
-{
-
-	_programmedTriggerTicks = new SimulationTickList( triggeringTicks ) ;
-	
-}	
-
-
-
-ActiveObject::ActiveObject( SimulationTick triggerTick, bool absolutlyDefined, 
-		ObjectSchedulingPolicy policy, Weight weight ) throw():
-	_policy( policy ),
-	_weight( weight ),
-	_period( 0 ),
-	_programmedTriggerTicks( 0 ),
-	_absoluteTriggers( absolutlyDefined ),
-	_birthTime( 0 )
+	_registered( false ),
+	_BirthTick( 0 )
 
 {
 
-	_programmedTriggerTicks = new SimulationTickList ;
-	_programmedTriggerTicks->push_back( triggerTick ) ;
 	
 }	
 
@@ -72,11 +36,18 @@ ActiveObject::ActiveObject( SimulationTick triggerTick, bool absolutlyDefined,
 ActiveObject::~ActiveObject() throw()
 {
 
-	if ( _programmedTriggerTicks != 0 )
-		delete _programmedTriggerTicks ;
+	// Each child class should have taken care of the unregistering:
+	if ( _registered )
+		LogPlug::error( "ActiveObject destructor: object " + toString()
+			+ " was still registered." ) ;
 		
 }
 
+
+
+
+
+// Settings section.
 
 
 ObjectSchedulingPolicy ActiveObject::getPolicy() const throw()
@@ -96,166 +67,21 @@ Weight ActiveObject::getWeight() const throw()
 }
 
 
-
-Period ActiveObject::getPeriod() const throw()
+	
+void ActiveObject::setBirthTick( 
+	Events::SimulationTick birthSimulationTick ) throw( SchedulingException )
 {
 
-	return _period ;
+	_BirthTick = birthSimulationTick ;
 	
 }
 
 
-
-void ActiveObject::setPeriod( Period newPeriod ) throw()
-{
-
-	_period = newPeriod ;
-	
-}
-
-
-
-Hertz ActiveObject::setFrequency( Hertz newFrequency ) 
-	throw( SchedulingException )
-{
-
-
-	// Throw exception if scheduler not already existing:
-	Scheduler & scheduler = Scheduler::GetExistingScheduler() ;
-	
-	/*
-	 * Target period is 1/newFrequency, one needs to divide it by 
-	 * simulation period duration to know how many simulation periods 
-	 * it will need:
-	 * _period = (1/newFrequency) / simulatickDuration 
-	 * = simulatickDuration / newFrequency
-	 *
-	 * Microsecond simulatickDuration = 
-	 * 	scheduler.getSimulationTickCount() * scheduler.getTimeSliceDuration() ;
-	 *
-	 */
-	
 		
-	_period = static_cast<Period>( Ceylan::Maths::Round( 1000000.0f / 
-	 	( newFrequency * scheduler.getSimulationTickCount() 
-			* scheduler.getTimeSliceDuration() ) ) ) ;
-	 
-	 // Clamp for too high frequencies:
-	 if ( _period < 1 )
-	 	_period = 1 ;
-	 
-	 
-	 /*
-	  * newFrequency = simulatickDuration / _period
-	  *
-	  */
-	 return static_cast<Hertz>( Ceylan::Maths::Round( 1000000.0f / 
-	 	( _period * scheduler.getSimulationTickCount() 
-			* scheduler.getTimeSliceDuration() ) ) ) ;
-		
-}
-
-
-
-bool ActiveObject::hasProgrammedActivations() const throw()
+SimulationTick ActiveObject::getBirthTick() const throw()
 {
 
-	return ! ( _programmedTriggerTicks == 0 
-		|| _programmedTriggerTicks->size() == 0 ) ;
-		
-}
-
-
-
-bool ActiveObject::areProgrammedActivationsAbsolute() const throw()
-{
-
-	return _absoluteTriggers ;
-	
-}
-
-
-
-void ActiveObject::absoluteProgrammedActivationsWanted( bool on ) throw()
-{
-
-	_absoluteTriggers = on ;
-	
-}
-
-
-
-const ActiveObject::SimulationTickList &
-	ActiveObject::getProgrammedActivations() const throw( SchedulingException ) 
-{
-
-	if ( _programmedTriggerTicks == 0 )
-		throw SchedulingException( "ActiveObject::getProgrammedActivations: "
-			"no activation available." ) ;
-			
-	// Can be an empty list:		
-	return * _programmedTriggerTicks ;
-	
-}
-
-
-
-void ActiveObject::setProgrammedActivations( 
-	const SimulationTickList & newActivationsList ) throw()	
-{
-
-	if ( _programmedTriggerTicks != 0 )
-		delete _programmedTriggerTicks ;
-	
-	_programmedTriggerTicks = new SimulationTickList( newActivationsList ) ;
-	
-}
-
-
-
-void ActiveObject::addProgrammedActivations( 
-	const SimulationTickList & additionalActivationsList ) throw()	
-{
-
-	if ( _programmedTriggerTicks != 0 )
-	{
-		// Do not trust 'merge' to be efficient:
-		for ( SimulationTickList::const_iterator it 
-					= _programmedTriggerTicks->begin();
-				it != _programmedTriggerTicks->end(); it++ )
-			_programmedTriggerTicks->push_back( *it ) ;
-	}	
-	else
-		_programmedTriggerTicks = new SimulationTickList(
-			additionalActivationsList ) ;
-			
-}
-
-
-
-void ActiveObject::setUniqueProgrammedTicks() throw()
-{
-
-	if ( _programmedTriggerTicks != 0 )
-		_programmedTriggerTicks->unique() ;
-		
-}
-
-	
-	
-SimulationTick ActiveObject::getBirthTime() const throw()
-{
-
-	return _birthTime ;
-	
-}
-
-
-
-void ActiveObject::setBirthTime( SimulationTick birthSimulationTick ) throw()
-{
-
-	_birthTime = birthSimulationTick ;
+	return _BirthTick ;
 	
 }
 
@@ -266,8 +92,7 @@ void ActiveObject::onSkip( SimulationTick skippedStep )
 {
 
 	LogPlug::warning( "An active object (" 
-		+ toString( Ceylan::low )
-		+ ") had his simulation tick " 
+		+ toString( Ceylan::low )+ ") had his simulation tick " 
 		+ Ceylan::toString( skippedStep ) + " skipped." ) ; 
 		
 }
@@ -279,7 +104,7 @@ void ActiveObject::onImpossibleActivation( SimulationTick missedStep )
 {
 
 	throw SchedulingException( "Active object (" + toString( Ceylan::low )
-		+ ") had his activation failed for simulation tick " 
+		+ ") could not be activated for simulation tick " 
 		+ Ceylan::toString( missedStep ) + "." ) ; 
 		
 }
@@ -290,8 +115,38 @@ const string ActiveObject::toString( Ceylan::VerbosityLevels level )
 	const throw()
 {	
 
-	return "Active object, whose date of birth is " 
-		+ Ceylan::toString( _birthTime ) ;
+	string policy ;
+	
+	switch( _policy )
+	{
+	
+		case relaxed:
+			policy = "relaxed" ;
+			break ;
 		
+		case strict:
+			policy = "strict" ;
+			break ;
+			
+		default:
+			policy = "unknown (abnormal)" ;	
+			break ;
+			
+	}
+	
+	
+	string birth ;
+	
+	if ( _BirthTick == 0 )
+		birth = "was never scheduled" ;
+	else
+		birth = "has been scheduled for the first time at simulation tick #"
+			+ Ceylan::toString( _BirthTick ) ;
+
+	return "Active object, with the " + policy + " policy, a weight of "
+		+ Ceylan::toString( _weight ) + ", which is "
+		+ ( _registered ? "registered" : "not registered yet" )
+		+ " and which " + birth ;
+	
 }
 
