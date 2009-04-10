@@ -39,7 +39,7 @@
           <td>
             <div class="box">
 <p>
-<b>Foreword</b>: the vast majority of these informations and pieces of advice comes from the various members of the <a href="http://lists.libsdl.org/listinfo.cgi/sdl-libsdl.org" target="_blank">SDL</a> mailing list. I hope that this thematical gathering will help the SDL users. Many thanks to the several SDL contributors ! 
+<b>Foreword</b>: the vast majority of these informations and pieces of advice comes from the various members of the <a href="http://lists.libsdl.org/listinfo.cgi/sdl-libsdl.org" target="_blank">SDL</a> mailing list. I hope that this thematical gathering will help the SDL users. Many thanks to the several SDL contributors! 
 </p> 
             </div>
           </td>
@@ -88,8 +88,8 @@ This section focuses on helping developers to use OpenGL with SDL.
 	<a href="#resolution">Switching to fullscreen, changing resolution or color depth</a><br>
 	<a href="#resizing">Resizing</a><br>	
 	<a href="#glSDL">The glSDL backend</a><br>
-	<a href="#floating">Why floating point pixel values ?</a><br>
-	<a href="#pick">How do I determine which shape the user clicked on ?</a><br>
+	<a href="#floating">Why floating point pixel values?</a><br>
+	<a href="#pick">How do I determine which shape the user clicked on?</a><br>
 	<a href="#performances">Performances &amp; tuning</a><br>
 	<a href="#hints">Some OpenGL random hints</a><br>
 	<a href="#troubleshooting">Troubleshooting</a><br>
@@ -139,7 +139,7 @@ OpenGL 1.1 is somehow outdated. The problem is that the default Windows OpenGL l
 
 <a name="why"></a>
 
-<h2>Why use OpenGL ?</h2>
+<h2>Why use OpenGL?</h2>
 
 <p>
 One should estimate whether, for a given application, OpenGL is really needed, since one of its side effect is that such applications either will not work at all, or will "run" at slide show frame rates on machines without accelerated OpenGL. A first point is that if your application relies on real 3D renderings indeed, then OpenGL should be a good choice from the start. Other cases are less easy to solve.
@@ -376,8 +376,11 @@ In order to compile a program using an OpenGL library, the related headers must 
 <p>
 There are two ways to work with OpenGL and SDL:
 <ul>
+
 	<li>use <b>dynamic</b> library loading, with <code>SDL_GL_LoadLibrary</code> and then retrieve function pointers for <b>all</b> OpenGL functions like shown in the SDL <code>testdyngl.c</code> sample code</li>
+
 	<li><b>link</b> (statically or dynamically) with an OpenGL library, and retrieve function pointers only for the extensions the application needs</li>
+	
 </ul>
 </p>
 
@@ -387,7 +390,7 @@ One cannot mix the two approaches.
 
 <h3>Dynamic library loading</h3>
 <p>
-The preferred approach is usually to load the OpenGL library "manually", i.e. at run time. That allows your application to load and start even if there is no OpenGL support on the system, so you can use some other API, or give the user a sensible error message: there may not even be an OpenGL library at all !
+The preferred approach is usually to load the OpenGL library "manually", i.e. at run time. That allows your application to load and start even if there is no OpenGL support on the system, so you can use some other API, or give the user a sensible error message: there may not even be an OpenGL library at all!
 </p>
 
 <p>
@@ -417,7 +420,7 @@ Note that <code>SDL_SetVideoMode</code> should be called after <code>SDL_GL_Load
 <h4>Static linking</h4>
 
 <p>
-Static linking is pretty much out, unless you count on all users building from source, as some (most ?) platforms have driver-specific GL libraries. OpenGL should never be linked at compile-time, because you have to check if the appropriate OpenGL version or extensions are available before using any function that depends on them. This is impossible to do prior to execution. SDL provides the system-independent <code>SDL_GL_GetProcAddress()</code> function to load OpenGL calls.
+Static linking is pretty much out, unless you count on all users building from source, as some (most?) platforms have driver-specific GL libraries. OpenGL should never be linked at compile-time, because you have to check if the appropriate OpenGL version or extensions are available before using any function that depends on them. This is impossible to do prior to execution. SDL provides the system-independent <code>SDL_GL_GetProcAddress()</code> function to load OpenGL functions.
 </p>
 
 
@@ -582,7 +585,7 @@ In all case, calls to <a href="http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fGL_5f
 <h3>Extension loaders</h3>
 
 <p>
-They do the work for you: bloat or useful help ?
+They do the work for you: bloat or useful help?
 </p>
 
 <p>
@@ -695,21 +698,32 @@ After the window is created, you can see if you got what you wanted:
           <td>
             <div class="box">
 <code><pre>
-   glGetIntegerv( GL_SAMPLE_BUFFERS_ARB, & Buffers ) ;
-   glGetIntegerv( GL_SAMPLES_ARB, & Samples ) ;
-   if ( ! Buffers || ! Samples ) 
+   int buffers, samples ;
+   
+   SDL_GL_GetAttribute( GL_SAMPLE_BUFFERS_ARB, & buffers ) ;
+
+   SDL_GL_GetAttribute( GL_SAMPLES_ARB, & samples ) ;
+   
+   if ( buffers == 0 || samples == 0 ) 
    {
+   
 	 /*
-	  * You did not get a FSAA context, probably older hardware, or you asked for more than one
-	  * buffer, or you asked for some insane number of samples (2, 4, or 8 is about it).
+	  * You did not get a FSAA context, probably older hardware, or you 
+	  * asked for more than one buffer, or you asked for some insane 
+	  * number of samples (2, 4, or 8 is about it).
 	  *
 	  */
+	  
+	 [..] 
+	 
    } 
    else 
    {
-     // FSAA was enabled, success !
+   
+     // FSAA was enabled, success!
+	 [..] 
+	 
    }
-
 </pre></code>
             </div>
           </td>
@@ -1285,7 +1299,7 @@ It all depends on how much graphics one intends to use at, for example, a level 
 might well get into trouble.</p>
 
 <p>
-What one might do is decide once and for all how much video memory one is "aiming at", like a minimum requirement (8, 32 Mb or whatever), and do a little math to check how much graphics one can allow his artists to draw for one level. Keep in mind that the video buffer(s) take up quite a lot of the video memory space to begin with (eg. 1024 * 768 * 4 bytes * 2 buffers = 6 291 456 bytes, 6 Mb !).
+What one might do is decide once and for all how much video memory one is "aiming at", like a minimum requirement (8, 32 Mb or whatever), and do a little math to check how much graphics one can allow his artists to draw for one level. Keep in mind that the video buffer(s) take up quite a lot of the video memory space to begin with (eg. 1024 * 768 * 4 bytes * 2 buffers = 6 291 456 bytes, 6 Mb!).
 </p>
 
 
@@ -1356,7 +1370,8 @@ There are two ways to use the multitexture extension:
 <ul>
 	<li>if you have OpenGL 1.2 or better, it is part of the core OpenGL functions, so you can use <code>glActiveTexture</code>. Trouble is, Windows platform is still on OpenGL 1.1 so you loose portability to this platform</li>
 	
-	<li>choose OpenGL 1.1 as a common base, and query the function pointers as shown in <a href="#extensions">here</a></li>
+	<li>choose OpenGL 1.1 as a common base, and query the function pointers as shown in <a href="#extensions">here</a>
+	</li>
 	
 </ul>	
 
@@ -1519,9 +1534,9 @@ Our requirements would be an LGPL-style license, an API usable from C++, an easy
 	
     <li><a href="http://gigi.sourceforge.net" target="_blank">Gigi</a>: the screenshots looks really impressing, but only a few projects seem to use it. The build requires FreeType, DevIL, Boostand Scons, and sources should be directly taken from SVN. Windows is supported. LGPL license</li>
 	
-    <li><a href="http://openglgui.sourceforge.net/" target="_blank">OpenGLGUI</a>. Not really maintained currently ?</li>
+    <li><a href="http://openglgui.sourceforge.net/" target="_blank">OpenGLGUI</a>. Not really maintained currently?</li>
 	
-    <li><a href="http://www.fltk.org/" target="_blank">FLTK</a> (Fast Light Toolkit), which is built on GLUT. Heavy-weight, documentation is huge but not really convenient. Not really adpated for a game ? LGPL license</li>
+    <li><a href="http://www.fltk.org/" target="_blank">FLTK</a> (Fast Light Toolkit), which is built on GLUT. Heavy-weight, documentation is huge but not really convenient. Not really adpated for a game? LGPL license</li>
 	
     <li><a href="http://libufo.sourceforge.net" target="_blank">LibUFO</a> (Universal Form Objects). Does not seem too game-oriented. No activity spotted since 2005.</li>
 	
@@ -1585,7 +1600,7 @@ double-buffered OpenGL. Try the following to get single buffered OpenGL:
 </p>
 
 <p>
-Please not that the <code>SDL_GL_DOUBLEBUFFER,</code> flag is not, in any way, to be used in <code>SDL_SetVideoMode</code> (it happens to be equal to 5, which would mean <code>SDL_HWSURFACE | SDL_ASYNCBLIT</code> !). Use this flag only with <code>SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)</code>, before the <code>SDL_SetVideoMode</code> call.
+Please not that the <code>SDL_GL_DOUBLEBUFFER,</code> flag is not, in any way, to be used in <code>SDL_SetVideoMode</code> (it happens to be equal to 5, which would mean <code>SDL_HWSURFACE | SDL_ASYNCBLIT</code>!). Use this flag only with <code>SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)</code>, before the <code>SDL_SetVideoMode</code> call.
 </p>
 
 
@@ -1786,7 +1801,7 @@ Running stock applications with the glSDL back-end might be extremely slow. Appl
 
  
 <a name="floating"></a>
-<h2>Why floating point pixel values ?</h2>
+<h2>Why floating point pixel values?</h2>
 
 <p>
 It is the way OpenGL addresses points on a screen. Rather than using pixel values (which change with screen resolution), use it as a percentage value. OpenGL then automatically translates into whatever resolution it is currently running in.
@@ -1813,7 +1828,7 @@ Floating point pixels are good for high resolution colors (color values are not 
 
 
 <a name="pick"></a>
-<h2>How do I determine which shape the user clicked on ?</h2>
+<h2>How do I determine which shape the user clicked on?</h2>
 
 <p>This is called pick correlation, and there are three different methods to do so:
 <ul>
@@ -1879,14 +1894,17 @@ Do not call <code>glFlush()</code> before <b>SDL_GL_SwapBuffers</b> since the la
 <dl>
 
 
-    <dt>Is it better to use the SDL OpenGL headers or directly use the GL headers ?</dt>
+    <dt>Is it better to use the SDL OpenGL headers or directly use the GL headers?</dt>
     <dd>Using the OpenGL headers directly is platform dependent. <code>SDL_opengl.h</code> is just a thin wrapper that does the right thing on whatever platform you are building on. Using it is the correct way to use OpenGL with current SDL versions, except if you are using extension loaders (ex: GLEW).</dd>
 
-	<dt>How to perform complex vector graphics with OpenGL ?</dt>
-	<dd>One can use a dedicated library, as explained <a href="SDL-libraries.html#vector">here</a>
+	<dt>How to perform complex vector graphics with OpenGL?</dt>
+	
+	<dd>One can use a dedicated library, as explained <a href="SDL-libraries.html#vector">here</a>.
 	</dd>
 	
-	<dt>How to have in OpenGL the same alpha blending conventions as software SDL uses ?</dt>
+	
+	<dt>How to have in OpenGL the same alpha blending conventions as software SDL uses?</dt>
+	
 	<dd>Use:
 <center>
     <table summary="Code" style="border: none">
@@ -1905,39 +1923,49 @@ glEnable( GL_BLEND ) ;
 	
 	</dd>
 
-	<dt>When can one make gl* calls ?</dt>
+	<dt>When can one make gl* calls?</dt>
+	
 	<dd>One must no make any gl* call before <code>SDL_SetVideoMode</code>.</dd>
 
 
 	<dt>When using one texture to store multiple sprites, OpenGL smooth out my frames which tends to blend sprites together with a faint line at the edges</dt>
+	
 	<dd>
 <p>To turn off this image blending, so that it keeps it more pixel accurate, either include a gutter around the tiles (a technique that is used when using mip mapping), or do not use the transitioning/blending.
 </p>
 
-<p>If you want a more pixel accurate render technique using OpenGL, try:
+
+<p>
+If you want a more pixel accurate render technique using OpenGL, try:
+
 <ol>
+
 	<li>change the glTexParameter() from <code>GL_LINEAR</code> to <code>GL_NEAREST</code></li>
+
 	<li>if you do not zoom in/out, do not use mipmaps</li>
+
 	<li>try to draw all quads with <em>exactly</em> the same dimensions as the corresponding tile</li>
+
 	<li>remember that integer coordinates are located in the <em>center</em> of pixels under orthonormal projection in OpenGL</li>
+	
 </ol>
 
 </p>
 
-<p>One may begin by making sure one could draw a 2x2 single colored quad a certain pixel location (try at (0,0) and (638,478) if you are in 640x480 mode), then you would know if you got your "pixel
-correctness". Then it would be easy to extend to a whole tile/quad.
+<p>One may begin by making sure one could draw a 2x2 single colored quad a certain pixel location (try at (0,0) and (638,478) if you are in 640x480 mode), then you would know if you got your "pixel correctness". Then it would be easy to extend to a whole tile/quad.
 </p>
+
 </dd>
 
+
 <!-- true only for polygons:
-	<dt>How to render a surface made of triangles so that the texture mapping will not make appear the fronteer between these triangle edges ?</dt>
+	<dt>How to render a surface made of triangles so that the texture mapping will not make appear the fronteer between these triangle edges?</dt>
 	<dd>Unset the edge flag for the common edge to make the surface continuous</dd>
 -->
 
-	<dt>How can I change the gamma level of OpenGL rendering ?</dt>
+	<dt>How can I change the gamma level of OpenGL rendering?</dt>
 	<dd>The SDL gamma functions should work with OpenGL contexts.</dd>
 
-The SDL gamma functions should work with OpenGL contexts.
 </dl>
 </p>
 
@@ -2027,15 +2055,24 @@ glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE ) ;
 
 <a name="doc"></a>
 <h2>OpenGL documentation</h2>
+
 <p>
 This documentation addresses generic OpenGL concerns, it is not specifically related to SDL.
+
 <ul>
+
 	<li>Getting <a href="http://opengl.org/resources/faq/getting_started.html" target="_blank">started</a> with OpenGL</li>
+	
 	<li>The <a href="http://www.opengl.org/documentation/red_book_1.0/" target="_blank">OpenGL red book</a></li>
+	
 	<li>The <a href="http://www.opengl.org/documentation/blue_book_1.0/" target="_blank">OpenGL blue book</a></li>
+	
 	<li>The <a href="http://oss.sgi.com/projects/ogl-sample/registry/" target="_blank">OpenGL registry</a></li>
+	
 	<li><a href="http://aegis.ateneo.net/evidal/ps2glx/" target="_blank">ps2gl</a>, OpenGL-like on Playstation 2</li>
+	
 	<li><a href="http://www.gamedev.net/community/forums/" target="_blank">Gamedev</a> forums</li>	
+	
 	<li><a href="http://rush3d.com/reference/opengl-redbook-1.1/appendixh.html" target="_blank">OpenGL tips</a></li>
 
 </ul>
@@ -2047,9 +2084,13 @@ This documentation addresses generic OpenGL concerns, it is not specifically rel
 
 <h2>Documentation on 3D rendering in general</h2>
 <p>
+
 <ul>
+
     <li><a href="http://kwon3d.com/theories.html" target="_blank">Kwon3d theory</a></li>
+	
     <li><a href="http://www.css.taylor.edu/~btoll/s99/424/res/mtu/Notes/geometry/geo-tran.htm" target="_blank">Geometric Transformations</a></li>
+	
 	<li>How to realize a <a href="http://www.jeffkershner.com/tut_skybox.html" target="_blank">skybox</a> with OpenGL</li>
 
 </ul>
@@ -2066,18 +2107,19 @@ This documentation addresses generic OpenGL concerns, it is not specifically rel
 
 
 
-<!-- ########################## Cubbyhole (to integrate) 
+<!-- ########################## Cubbyhole (to integrate) #################" -->
 
 
 
 
 
-End of Cubbyhole ################## -->  
+<!-- ############################## End of Cubbyhole ################## -->  
+
 
  <br>
  <br>
 
- <h3>Please react !</h3>
+ <h3>Please react!</h3>
 
  <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20SDL%20and%20OpenGL">drop us a line</a>!</p><br>
  <br>
@@ -2087,7 +2129,7 @@ End of Cubbyhole ################## -->
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update: Friday, July 18, 2008</em>
+  <em>Last update: Sunday, March 15, 2009</em>
  </center>
 </body>
 </html>
