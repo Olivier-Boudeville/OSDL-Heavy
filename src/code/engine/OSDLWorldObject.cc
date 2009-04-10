@@ -8,16 +8,19 @@ using namespace OSDL::Engine ;
 
 
 
-WorldObject::WorldObject() throw() : Ceylan::Model()
+WorldObject::WorldObject() throw() : 
+	Ceylan::Model()
 {
 
 }
+
 
 
 WorldObject::~WorldObject() throw()
 {
 
 }
+
 
 
 const string WorldObject::toString( Ceylan::VerbosityLevels level ) 
