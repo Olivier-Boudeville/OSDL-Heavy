@@ -11,6 +11,7 @@
 namespace OSDL
 {
 
+
 	namespace Engine 
 	{
 	
@@ -27,7 +28,7 @@ namespace OSDL
 		 * which does not imply they cannot achieve complex trigger-based
 		 * behaviours.
 		 * For example if a stone on the ground may not require periodic
-		 * processings as it remains static, it can be though taken into 
+		 * processings, as it remains static, it can be though taken into 
 		 * account as soon as it is grabbed and thrown.
 		 * 
 		 * World objects are models, in the sense of the Model-Controller-View
@@ -77,3 +78,4 @@ namespace OSDL
 
 
 #endif // OSDL_WORLD_OBJECT_H_
+
