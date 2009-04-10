@@ -2,10 +2,11 @@
 #define OSDL_MODEL_H_
 
 
-#include "OSDLActiveObject.h"   // for inheritance
-#include "OSDLEngineCommon.h"   // for ObjectSchedulingPolicy
+#include "OSDLPeriodicalActiveObject.h"   // for inheritance
+#include "OSDLProgrammedActiveObject.h"   // for inheritance
+#include "OSDLEngineCommon.h"             // for ObjectSchedulingPolicy
 
-#include "Ceylan.h"             // for VerbosityLevels, inheritance
+#include "Ceylan.h"                       // for VerbosityLevels, inheritance
 
 
 #include <string>
@@ -21,19 +22,27 @@ namespace OSDL
 	namespace MVC 
 	{
 	
+		
+		/*
+		 * Here two kinds of event-based OSDL models are defined:
+		 *   - PeriodicalModel
+		 *   - ProgrammedModel
+		 *
+		 * @note In both cases, the Ceylan base event-driven MVC framework
+		 * is used, not the templated Generic MVC system.
+		 *
+		 */
+			
+			
 			
 		/**
-		 * These specialized MVC models comply with the scheduler framework,
-		 * since they are active objects.
-		 *
-		 * It allows the models to be scheduled, periodically and/or
-		 * programmatically, during simulation ticks.
+		 * Event-based model, to be periodically activated by the scheduler.
 		 *
 		 * @see OSDL::Engine::Scheduler
 		 *
 		 */
-		class OSDL_DLL Model : public Ceylan::Model, 
-			public Engine::ActiveObject
+		class OSDL_DLL PeriodicalModel : public Ceylan::Model, 
+			public Engine::PeriodicalActiveObject
 		{
 		
 		
@@ -44,13 +53,13 @@ namespace OSDL
 				 * Constructor of an OSDL MVC model which is to be 
 				 * periodically scheduled.
 				 *
+				 * @param period tells how many simulation ticks are to be
+				 * waited by the scheduler until this model is activated again.
+				 * The period must not be null.
+				 *
 				 * @param autoRegister tells whether this new Model is to
 				 * automatically register itself to the scheduler. 
 				 * It requires the scheduler to exist already.
-				 *
-				 * @param period tells how many simulation steps are to be
-				 * waited by the scheduler until the model is activated again.
-				 * The period must not be null.
 				 *
 				 * @param policy allows to choose a scheduling policy, 
 				 * according to the quality of service this model requires.
@@ -59,100 +68,26 @@ namespace OSDL
 				 * activation of this model is to cost on average. 
 				 * This helps the scheduler doing its job balance.
 				 *
-				 * @note Do not mix up this constructor with the one for
-				 * programmed models, since their arguments are almost the 
-				 * same.
+				 * @throw Engine::SchedulingException if the construction
+				 * failed.
 				 *
 				 */
-				explicit Model( 
-						bool autoRegister = true, 
+				explicit PeriodicalModel( 
 						Events::Period period = 1,
+						bool autoRegister = true, 
 						Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
 						Engine::Weight weight = 1 )
 					throw( Engine::SchedulingException ) ;
 				
-				
+							
 				/**
-				 * Constructor of an OSDL MVC model activated only on
-				 * specifically programmed simulation steps. 
+				 * Virtual destructor.
 				 *
-				 * @param autoRegister tells whether this new Model is to
-				 * automatically register itself to the scheduler. 
-				 * It requires the scheduler to exist already.
-				 *
-				 * @param triggeringStates is the list of simulation ticks 
-				 * when the activation should occur. 
-				 * The model does not take ownership of this list, it will 
-				 * make its own copy of it.
-				 *
-				 * @param absolutelyDefined tells if the specified steps are
-				 * defined absolutely, or relatively to the current simulation
-				 * step.
-				 *
-				 * @param policy allows to choose a scheduling policy, 
-				 * according to the quality of service this model requires.
-				 *
-				 * @param weight evaluates how much processing power an
-				 * activation of this model is to cost on average. 
-				 * This helps the scheduler doing its job balance.
-				 *
-				 * @note Do not mix up this constructor with the one for
-				 * periodic models, since their arguments are almost the same.
+				 * @note This model will automatically unsubscribe
+				 * from the scheduler if needed.
 				 *
 				 */
-				explicit Model(	bool autoRegister, 
-					const SimulationTickList & triggeringStates, 
-					bool absolutelyDefined = true, 
-					Engine::ObjectSchedulingPolicy policy = Engine::relaxed, 
-					Engine::Weight weight = 1 )
-						throw( Engine::SchedulingException ) ;
-				
-				
-				/**
-				 * Constructor of an OSDL MVC Model activated only on a 
-				 * specific simulation step. 
-				 *
-				 * @param autoRegister tells whether this new Model is to
-				 * automatically register itself to the scheduler. 
-				 * It requires the scheduler to exist already.
-				 *
-				 * @param triggerTick is the simulation step when this 
-				 * model will be activated.
-				 *
-				 * @param absolutelyDefined tells if the specified step
-				 * is defined absolutely, or relatively to the current
-				 * simulation step. 
-				 * No default value can be given for that parameter, since 
-				 * there would be an ambiguity with first constructor
-				 * on any call with only one argument.
-				 *
-				 * @param policy allows to choose a scheduling policy, 
-				 * according to the quality of service this model requires.
-				 *
-				 * @param weight evaluates how much processing power an
-				 * activation of this model is to cost on average. 
-				 * This helps the scheduler doing its job balance.
-				 *
-				 * @note Do not mix up this constructor with the one for
-				 * programmed models, since their arguments are almost the same.
-				 *						 
-				 */
-				explicit Model( 
-					bool autoRegister, 
-					Events::SimulationTick triggerTick, 
-					bool absolutelyDefined = true, 
-					Engine::ObjectSchedulingPolicy policy = Engine::relaxed, 
-					Engine::Weight weight = 1 ) 
-						throw( Engine::SchedulingException ) ;
-				
-				
-				
-				/**
-				 * Virtual destructor, which performs automatic 
-				 * unsubscribing of this model from the scheduler.
-				 *
-				 */
-				virtual ~Model() throw() ;
+				virtual ~PeriodicalModel() throw() ;
 
 
 	            /**
@@ -171,6 +106,116 @@ namespace OSDL
 					const throw() ;
 			
 				
+				
+		} ;
+
+
+
+		/**
+		 * Event-based model, to be activated on specified ticks by the
+		 * scheduler.
+		 *
+		 * @see OSDL::Engine::Scheduler
+		 *
+		 */
+		class OSDL_DLL ProgrammedModel : public Ceylan::Model, 
+			public Engine::ProgrammedActiveObject
+		{
+		
+		
+			public:
+			
+			
+				/**
+				 * Constructor of an OSDL MVC model which is to be 
+				 * scheduled on programmed ticks.
+				 *
+				 * @param activationTicks is the list of simulation ticks 
+				 * when this model should be activated.
+				 * This model does not take ownership of this list, it 
+				 * will make a copy of it.
+				 *
+				 * @param autoRegister tells whether this new Model is to
+				 * automatically register itself to the scheduler. 
+				 * It requires the scheduler to exist already.
+				 *
+				 * @param policy allows to choose a scheduling policy, 
+				 * according to the quality of service this model requires.
+				 *
+				 * @param weight evaluates how much processing power an
+				 * activation of this model is to cost on average. 
+				 * This helps the scheduler doing its job balance.
+				 *
+				 * @throw Engine::SchedulingException if the construction
+				 * failed.
+				 *
+				 */
+				explicit ProgrammedModel( 
+						const Engine::SimulationTickList & activationTicks,
+						bool absolutelyDefined = true, 
+						bool autoRegister = true, 
+						Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
+						Engine::Weight weight = 1 )
+					throw( Engine::SchedulingException ) ;
+				
+				
+				
+				/**
+				 * Constructor of an OSDL MVC model which is to be 
+				 * scheduled on a specific programmed tick.
+				 *
+				 * @param activationTick is the simulation tick when this 
+				 * model should be activated.
+				 *
+				 * @param autoRegister tells whether this new Model is to
+				 * automatically register itself to the scheduler. 
+				 * It requires the scheduler to exist already.
+				 *
+				 * @param policy allows to choose a scheduling policy, 
+				 * according to the quality of service this model requires.
+				 *
+				 * @param weight evaluates how much processing power an
+				 * activation of this model is to cost on average. 
+				 * This helps the scheduler doing its job balance.
+				 *
+				 * @throw Engine::SchedulingException if the construction
+				 * failed.
+				 *
+				 */
+				explicit ProgrammedModel( 
+						Events::SimulationTick activationTick, 
+						bool absolutelyDefined = true, 
+						bool autoRegister = true, 
+						Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
+						Engine::Weight weight = 1 )
+					throw( Engine::SchedulingException ) ;
+				
+							
+				/**
+				 * Virtual destructor.
+				 *
+				 * @note This model will automatically unsubscribe
+				 * from the scheduler if needed.
+				 *
+				 */
+				virtual ~ProgrammedModel() throw() ;
+
+
+	            /**
+	             * Returns an user-friendly description of the state 
+				 * of this object.
+	             *
+				 * @param level the requested verbosity level.
+				 *
+				 * @note Text output format is determined from overall settings.
+				 *
+				 * @see Ceylan::TextDisplayable
+	             *
+	             */
+		 		virtual const std::string toString( 
+						Ceylan::VerbosityLevels level = Ceylan::high ) 
+					const throw() ;
+			
 				
 		} ;
 
