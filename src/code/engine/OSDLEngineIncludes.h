@@ -11,9 +11,12 @@
 #include "OSDLEngineCommon.h"
 #include "OSDLModel.h"
 #include "OSDLMultimediaRenderer.h"
+#include "OSDLPeriodicalActiveObject.h"
 #include "OSDLPeriodicSlot.h"
+#include "OSDLProgrammedActiveObject.h"
 #include "OSDLRenderer.h"
 #include "OSDLScheduler.h"
+#include "OSDLStandardRenderer.h"
 #include "OSDLWorldObject.h"
 
 
