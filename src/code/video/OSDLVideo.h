@@ -867,6 +867,9 @@ namespace OSDL
 				 *				
 				 * Works also if OpenGL is used.
 				 *
+				 * @note The vast majority of applications should request
+				 * that feature.
+				 *
 				 */
 				static const Ceylan::Flags DoubleBuffered ;
 				
