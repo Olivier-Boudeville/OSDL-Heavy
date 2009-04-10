@@ -36,6 +36,7 @@ using std::list ;
  */
  
  
+ 
 /**
  * The role of this object is to have the scheduler stop at given simulation
  * time. 
@@ -43,7 +44,7 @@ using std::list ;
  * @note A scheduler already exists before any of these objects is created.
  *
  */
-class SchedulerStopper: public OSDL::Engine::ActiveObject
+class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 {
 
 	public:
@@ -52,27 +53,19 @@ class SchedulerStopper: public OSDL::Engine::ActiveObject
 		SchedulerStopper( SimulationTick stopSimulationTick, 
 			bool verbose = false ) 
 				throw( SchedulingException ):
-			ActiveObject( stopSimulationTick, /* absolutlyDefined */ true ), 
+			ProgrammedActiveObject( 
+				stopSimulationTick, 
+				/* absolutelyDefined */ true,
+				/* autoregister */ true ), 
 			_stopTick( stopSimulationTick ),
 			_verbose( verbose ) 
 		{
 
-			// Be also a periodic object:
-			
-			const Hertz desiredFrequency = 10 ;
-			
-			Hertz obtainedFrequency = setFrequency( desiredFrequency ) ;
-			
 			if ( _verbose )
 				LogPlug::info( "SchedulerStopper constructor: "
-					"for a desired activation frequency of "
-					+ Ceylan::toString( desiredFrequency ) + " Hz, obtained "
-					+ Ceylan::toString( obtainedFrequency ) 
-					+ " Hz. Will stop at simulation tick #"
-					+ Ceylan::toString( stopSimulationTick ) + "."  ) ;
-			
-			// This active object registers itself to the scheduler.
-			Scheduler::GetExistingScheduler().registerObject( * this ) ;
+					"will stop at simulation tick #"
+					+ Ceylan::toString( _stopTick ) + "."  ) ;
+					
 		}
 		
 		
