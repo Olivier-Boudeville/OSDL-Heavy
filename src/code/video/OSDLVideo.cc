@@ -467,6 +467,16 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	
 	}
 
+	if ( useOpenGLRequested )
+	{
+		
+		OpenGLContext::SetUpForFlavour( flavour ) ;
+		
+		if ( askedBpp != 0 )
+			 OpenGLContext::SetColorDepth( askedBpp ) ;
+			 
+	}	
+
 	if ( userFlags != flags )
 		send( "Initializing the display with following modified flags. " 
 			+ InterpretFlags( flags ) ) ;
@@ -497,13 +507,19 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	
 	if ( useOpenGLRequested )
 	{
+	
 		_screen = new Video::Surface( * screen, 
 			/* display type */ Surface::OpenGLScreenSurface ) ;
+			
+		send( OpenGLContext::InterpretFeatureAvailability() ) ;
+		
 	}		
 	else
 	{	
+	
 		_screen = new Video::Surface( * screen, 
 			/* display type */ Surface::ClassicalScreenSurface ) ;
+			
 	}
 	
 
@@ -519,57 +535,63 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			+ Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) 
 			+ " bits per pixel)." ) ;
 	
-	/*
-	 * Initializes the flavours and the context since setMode has just 
-	 * been called:
-	 *
-	 */
-	switch ( flavour )
-	{
-	
-		case OpenGL::None:
-			if ( useOpenGLRequested )
-			{
-				if ( ! hasOpenGLContext() )
-					setOpenGLContext( * new OpenGLContext( flavour, bpp,
-						_screen->getWidth(), _screen->getHeight() ) ) ;
-				else
-					_openGLcontext->selectFlavour( flavour, bpp ) ;
-			}							
-			break ;
-				
-		case OpenGL::OpenGLFor2D:
-			if ( ! hasOpenGLContext() )
-				setOpenGLContext( * new OpenGLContext( flavour, bpp,
-					_screen->getWidth(), _screen->getHeight() ) ) ;
-			else
-				_openGLcontext->selectFlavour( flavour, bpp ) ;					
-			break ;
-			
-		case OpenGL::OpenGLFor3D:
-			if ( ! hasOpenGLContext() )
-				setOpenGLContext( * new OpenGLContext( flavour, bpp,
-					_screen->getWidth(), _screen->getHeight() ) ) ;
-			else
-				_openGLcontext->selectFlavour( flavour, bpp ) ;	
-			break ;
-			
-		case OpenGL::Reload:
-			if ( hasOpenGLContext() )
-				_openGLcontext->reload() ;
-			else
-				throw VideoException( "VideoModule::setMode: "
-					"reload flavour selected whereas "
-					"no OpenGL context was available, nothing done." ) ;
-			break ;
-		
-		default:
-			throw VideoException( "VideoModule::setMode: " 
-				+ OpenGLContext::ToString( flavour ) + " flavour selected." ) ;
-			break ;	
-	
-	}
 
+	if ( useOpenGLRequested )
+	{
+
+		/*
+		 * Initializes the flavours and the context since setMode has just 
+	     * been called:
+	     *
+	     */
+		switch ( flavour )
+	    {
+	
+	    	case OpenGL::None:
+	    		if ( useOpenGLRequested )
+	    		{
+	    			if ( ! hasOpenGLContext() )
+	    				setOpenGLContext( * new OpenGLContext( flavour, bpp,
+	    					_screen->getWidth(), _screen->getHeight() ) ) ;
+	    			else
+	    				_openGLcontext->selectFlavour( flavour ) ;
+	    		}
+	    		break ;
+	
+	    	case OpenGL::OpenGLFor2D:
+	    		if ( ! hasOpenGLContext() )
+	    			setOpenGLContext( * new OpenGLContext( flavour, bpp,
+	    				_screen->getWidth(), _screen->getHeight() ) ) ;
+	    		else
+	    			_openGLcontext->selectFlavour( flavour ) ;
+	    		break ;
+	
+	    	case OpenGL::OpenGLFor3D:
+	    		if ( ! hasOpenGLContext() )
+	    			setOpenGLContext( * new OpenGLContext( flavour, bpp,
+	    				_screen->getWidth(), _screen->getHeight() ) ) ;
+	    		else
+	    			_openGLcontext->selectFlavour( flavour ) ;
+	    		break ;
+	
+	    	case OpenGL::Reload:
+	    		if ( hasOpenGLContext() )
+	    			_openGLcontext->reload() ;
+	    		else
+	    			throw VideoException( "VideoModule::setMode: "
+	    				"reload flavour selected whereas "
+	    				"no OpenGL context was available, nothing done." ) ;
+	    		break ;
+	
+	    	default:
+	    		throw VideoException( "VideoModule::setMode: unknown "
+	    			+ OpenGLContext::ToString( flavour ) 
+					+ " flavour selected." ) ;
+	    		break ;
+	
+		}
+
+	}
 	
 	/*
 	 * In all cases, if OpenGL is to be used, an OpenGL context is 
@@ -577,17 +599,6 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	 *
 	 */
 	
-		
-	/*
-	 * Never disable double buffering if a flavour selected it, but enable 
-	 * it if specified by the user:
-	 *
-	 */
-	if ( useOpenGLRequested && ( userFlags & DoubleBuffered ) )
-		_openGLcontext->setDoubleBufferStatus( true ) ;
-		
-	
-
 	/*
 	 * Defines the viewport independently of flavours
 	 * (lower-left corner of the OpenGL viewport is the origin of the 
