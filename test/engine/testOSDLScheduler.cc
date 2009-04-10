@@ -34,43 +34,34 @@ using std::list ;
  */
  
  
+ 
 /**
- * The role of this object is to have the scheduler stop at given 
+ * The role of this object is to have the scheduler stop at a given 
  * simulation time. 
  *
- * @note A scheduler already exists before any of these objects is created.
+ * @note A scheduler must already exist before any of these objects is created.
  *
  */
-class SchedulerStopper: public OSDL::Engine::ActiveObject
+class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 {
 
 	public:
 	
 	
 		SchedulerStopper( SimulationTick stopSimulationTick, 
-			bool verbose = false ) 
-				throw( SchedulingException ):
-			ActiveObject( stopSimulationTick, /* absolutlyDefined */ true ),
+				bool verbose = false ) throw( SchedulingException ):
+			ProgrammedActiveObject( 
+				stopSimulationTick, 
+				/* absolutelyDefined */ true,
+				/* autoregister */ true ),
 			_stopTick( stopSimulationTick ),
 			_verbose( verbose ) 
 		{
-
-			// Be also a periodic object:
-			
-			const Hertz desiredFrequency = 10 ;
-			
-			Hertz obtainedFrequency = setFrequency( desiredFrequency ) ;
 			
 			if ( _verbose )
 				LogPlug::info( "SchedulerStopper constructor: "
-					"for a desired activation frequency of "
-					+ Ceylan::toString( desiredFrequency ) + " Hz, obtained "
-					+ Ceylan::toString( obtainedFrequency ) 
-					+ " Hz. Will stop at simulation tick #"
+					"will stop at simulation tick #"
 					+ Ceylan::toString( _stopTick ) + "."  ) ;
-			
-			// This active object registers itself to the scheduler.
-			Scheduler::GetExistingScheduler().registerObject( * this ) ;
 			
 		}
 		
@@ -97,23 +88,12 @@ class SchedulerStopper: public OSDL::Engine::ActiveObject
 		{
 		
 			LogPlug::warning( "SchedulerStopper::onSkip: the simulation tick "
-				+ Ceylan::toString( newTick ) + " had been skipped !" ) ;
+				+ Ceylan::toString( newTick ) + " had been skipped!" ) ;
 				
 			onActivation( newTick ) ;
 			
 		}
 		
-		
-		/**
-		 * This pure method of EventListener is inherited since 
-		 * ActiveObjects are models.
-		 *
-		 */
-		virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
-		{
-			LogPlug::trace( "SchedulerStopper is notified of " 
-				+ newEvent.toString() + "." ) ;
-		}
 		
 		
 	private:
@@ -176,8 +156,8 @@ int main( int argc, char * argv[] )
 				isBatch = true ;
 				
 				/*
-				 * Will stop the scheduler after 1 second 
-				 * (100 simulation ticks, since logic frequency is 100 Hz here).
+				 * Will stop the scheduler after 1 second: 
+				 * (100 simulation ticks, since logic frequency is 100 Hz here)
 				 *
 				 */
 				stopTick = 100 ;
@@ -249,18 +229,6 @@ int main( int argc, char * argv[] )
 		myVideo.setMode( 640, 480, VideoModule::UseCurrentColorDepth, 
 			VideoModule::SoftwareSurface ) ;
 
-			
-		if ( ! isBatch )
-		{
-		
-			std::cout << std::endl
-				<< "Warning: this test should last for exactly 10 seconds"
-				<< "(and it is not interactive)" << std::endl ;
-				
-			myOSDL.getEventsModule().waitForAnyKey() ;
-		
-		}
-
 		
 		LogPlug::info( "Asking for a scheduler to be used." ) ;
 		myEvents.useScheduler() ;
@@ -268,36 +236,63 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Create an active object whose role is "
 			"to stop the scheduler at simulation tick " 
 			+ Ceylan::toString( stopTick ) + "." ) ;
+
+
+		
+		// A set of stopper active objects can be used:
+				
+		bool useStoppers = false ;
 		
 		const Ceylan::Uint32 stoppersCount = 300 ;
 		
 		list<SchedulerStopper *> stoppers ;
-		WhiteNoiseGenerator stopTickRand( 0, stoppersCount ) ;
-		
-		/*
-		 * Actually this first one will be the one that will stop the 
-		 * scheduler:
-		 *
-		 */
-		stoppers.push_back( new SchedulerStopper( 
-				stopTick, /* verbose */ true ) ) ;
-		
-		stopTick++ ;
-				
-		for ( Ceylan::Uint32 i = 1; i < stoppersCount; i++ )
+
+		if ( useStoppers )
 		{
 		
-			// All stoppers will stop at simulation tick stopTick or later:
-			stoppers.push_back( new SchedulerStopper( 
-				stopTick + stopTickRand.getNewValue() ) ) ;	
-					
-		}
+			WhiteNoiseGenerator stopTickRand( 0, stoppersCount ) ;
 		
+			/*
+			 * Actually this first one will be the one that will stop the 
+			 * scheduler:
+			 *
+			 */
+			stoppers.push_back( new SchedulerStopper( 
+				stopTick, /* verbose */ true ) ) ;
+		
+			stopTick++ ;
+				
+			for ( Ceylan::Uint32 i = 1; i < stoppersCount; i++ )
+			{
+		
+				// All stoppers will stop at simulation tick stopTick or later:
+				stoppers.push_back( new SchedulerStopper( 
+					stopTick + stopTickRand.getNewValue() ) ) ;	
+					
+			}
+		
+		}
+
+		if ( ! isBatch )
+		{
+		
+			std::cout << std::endl
+				<< "Warning: this test should last for exactly "
+				<< stopTick / 100 << " seconds (and it is not interactive)" 
+				<< std::endl ;
+						
+		}
 							
 		LogPlug::info( "Entering the schedule loop." ) ;
 		myEvents.enterMainLoop() ;
-		
 		LogPlug::info( "Exit from schedule loop." ) ;		
+
+		if ( ! isBatch )
+		{
+		
+			std::cout << std::endl << "Scheduling finished" << std::endl ;
+						
+		}
 		
 		for ( list<SchedulerStopper *>::iterator it = stoppers.begin(); 
 				it != stoppers.end() ; it++ ) 
