@@ -16,8 +16,59 @@
 	#include "SDL_opengl.h"      // for GLfloat
 	#include "SDL.h"             // for ColorDefinition (SDL_Color)
 
+namespace OSDL
+{
+
+	
+	namespace Video
+	{
+		
+			
+		namespace OpenGL
+		{
+		
+		
+			/**
+			 * OpenGL attribute.
+			 * GL prefix is kept to avoid namespace misuse.
+			 *
+			 */
+			typedef SDL_GLattr GLAttribute ;	
+
+		}
+		
+	}
+	
+}
+
+	
 #else // OSDL_USES_SDL
 
+
+namespace OSDL
+{
+
+	
+	namespace Video
+	{
+		
+			
+		namespace OpenGL
+		{
+		
+		
+			/**
+			 * OpenGL attribute.
+			 * GL prefix is kept to avoid namespace misuse.
+			 *
+			 */
+			typedef int GLAttribute ;	
+
+		}
+		
+	}
+	
+}
 	/*
 	 * libnds used to define it already for the ARM9 in videoGL.h: 
 	 * '#define GLfloat float'. Not true anymore.
@@ -66,8 +117,8 @@ namespace OSDL
 		 * setMode-created surface, which must have been set with the OpenGL
 		 * flag (directly and/or through the selection of an OpenGL flavour).
 		 *
-		 * @see 'http://osdl.sourceforge.net', then 'Documentation',
-		 * 'Rendering', 'OpenGL + SDL' for further implementation details.
+		 * @see http://osdl.sf.net/main/documentation/rendering/SDL-openGL.html
+		 * for further implementation details.
 		 *
 		 */
 		namespace OpenGL
@@ -159,7 +210,6 @@ namespace OSDL
 			 *
 			 */
 			typedef unsigned int GLEnumeration ;	
-			
 			
 
 			/**
@@ -324,17 +374,7 @@ namespace OSDL
 					 *
 					 * @param flavour the selected flavour for OpenGL.
 					 *
-					 * @param plannedBpp the planned color depth, in bits 
-					 * per pixel (ignored if flavour 'Reload' is selected).
-					 *
-					 * @throw OpenGLException if the OpenGL state machine
-					 * reports an error.
-					 *
-					 * This method must be called before setting the actual
-					 * video mode, since the flavour will be taken into 
-					 * account only at this moment.
-					 *
-					 * @note OpenGL support cannot be encapsulated into 
+					 * @note OpenGL support cannot fully be encapsulated into 
 					 * Video renderers, since they may not be used, and 
 					 * OpenGL must be specified during the setMode phase.
 					 *
@@ -344,46 +384,44 @@ namespace OSDL
 					 * reports an error.
 					 *
 					 */
-					virtual void selectFlavour( OpenGL::Flavour flavour,
-						BitsPerPixel plannedBpp ) throw( OpenGLException ) ;
+					virtual void selectFlavour( OpenGL::Flavour flavour ) 
+						throw( OpenGLException ) ;
+	
 	
 	
 					/**
-					 * Sets the OpenGL 2D flavour.
+					 * Sets the OpenGL 2D flavour, i.e. the settings deemed
+					 * the most appropriate for 2D rendering.
+					 *
 					 * Once called, all primitives can be rendered at integer
 					 * positions.
 					 *
-					 * @param plannedBpp the desired color depth, in bits per
-					 * pixel.
-					 *
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 * @note Calling selectFlavour should be preferred, as it
 					 * performs additionally a viewport update.
 					 *
-					 * @note Leaves in ModelView mode.
+					 * @note Leaves the context in ModelView mode.
 					 *
 					 */
-					virtual void set2DFlavour( BitsPerPixel plannedBpp ) 
-						throw( OpenGLException ) ;
+					virtual void set2DFlavour() throw( OpenGLException ) ;
+				
 				
 				
 					/**
-					 * Sets the OpenGL 3D flavour.
-					 *
-					 * @param plannedBpp the desired color depth, in bits per
-					 * pixel.
+					 * Sets the OpenGL 3D flavour, i.e. the settings deemed
+					 * the most appropriate for 3D rendering.
 					 *
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 * @note Calling selectFlavour should be preferred, as it
 					 * performs additionally a viewport update.
 					 *
-					 * @note Leaves in ModelView mode.
+					 * @note Leaves the context in ModelView mode.
 					 *
 					 */
-					virtual void set3DFlavour( BitsPerPixel plannedBpp ) 
-						throw( OpenGLException ) ;
+					virtual void set3DFlavour() throw( OpenGLException ) ;
+				
 				
 					
 					/**
@@ -398,6 +436,7 @@ namespace OSDL
 					 */
 					virtual void blank() throw( OpenGLException ) ;
 					 
+				
 				
 					/**
 					 * Requests the OpenGL context to reload the current
@@ -415,68 +454,7 @@ namespace OSDL
 					virtual void reload() throw( OpenGLException ) ;
 					
 					
-					/**
-					 * Gets the OpenGL color depth for each color component.
-					 *
-					 * @param redSize the variable where the size in bits 
-					 * of the red component will be written.
-					 * 
-					 * @param greenSize the variable where the size in bits
-					 * of the green component will be written.
-					 *
-					 * @param blueSize the variable where the size in bits
-					 * of the blue component will be written.
-					 *
-					 * @return the actual overall bits per pixel value.
-					 *
-					 * @throw OpenGLException if the operation failed.
-					 *
-					 */
-					 virtual OSDL::Video::BitsPerPixel getColorDepth( 
-					 		OSDL::Video::BitsPerPixel & redSize, 
-					 		OSDL::Video::BitsPerPixel & greenSize, 
-							OSDL::Video::BitsPerPixel & blueSize ) 
-						const throw( OpenGLException ) ;
-				 
-				 
-					/**
-					 * Sets the OpenGL color depth.
-					 *
-					 * @param plannedBpp the planned color depth, in bits
-					 * per pixel.
-					 * 
-					 * @throw OpenGLException if the operation failed.
-					 *
-					 */
-					virtual void setColorDepth( 
-							OSDL::Video::BitsPerPixel plannedBpp ) 
-						throw( OpenGLException ) ;
-				
-				 
-					/**
-					 * Sets the OpenGL color depth.
-					 *
-					 * @param redSize the size of the red component, in 
-					 * bits per pixel.
-					 * 
-					 * @param greenSize the size of the green component, 
-					 * in bits per pixel.
-					 * 
-					 * @param blueSize the size of the blue component, 
-					 * in bits per pixel.
-					 * 
-					 * @note Maybe alpha should be added.
-					 *
-					 * @throw OpenGLException if the operation failed.
-					 *
-					 */
-					virtual void setColorDepth( 
-							OSDL::Video::BitsPerPixel redSize, 
-							OSDL::Video::BitsPerPixel greenSize, 
-							OSDL::Video::BitsPerPixel blueSize  ) 
-						throw( OpenGLException ) ;
-				
-				
+					
 				
 					/**
 					 * Sets the OpenGL blending function.
@@ -496,34 +474,6 @@ namespace OSDL
 							GLEnumeration destinationFactor ) 
 						throw( OpenGLException ) ;
 
-				
-				
-					/**
-					 * Returns the current OpenGL double buffering status.
-					 *
-					 * @return true iff double buffering is used.
-					 *
-					 * @throw OpenGLException should an error occur.
-					 *
-					 */
-					virtual bool getDoubleBufferStatus() 
-						throw( OpenGLException ) ;
-									
-				
-					/**
-					 * Sets the OpenGL double buffering status (enabled or
-					 * disabled).
-					 *
-					 * @param newStatus, double buffering will be enabled
-					 * iff true.
-					 * 
-					 * @return true iff double buffering was indeed obtained.
-					 *
-					 * @throw OpenGLException should an error occur.
-					 *
-					 */
-					virtual bool setDoubleBufferStatus( bool newStatus ) 
-						throw( OpenGLException ) ;
 				
 				
 					/**
@@ -574,25 +524,6 @@ namespace OSDL
 						
 					
 					
-					/**
-					 * Sets the OpenGL fullscreen antialiasing (FSAA) 
-					 * status (enabled or disabled).
-					 *
-					 * @note Requires the GL_ARB_MULTISAMPLE extension.
-					 *
-					 * @param newStatus, FSAA will be enabled iff true.
-					 *
-					 * @param samplesPerPixelNumber number of samples 
-					 * per pixel when multisampling (FSAA) is enabled.
-					 * 
-				 	 * @throw OpenGLException should an error occur.
-					 *
-					 */
-					virtual void setFullScreenAntialiasingStatus( 
-							bool newStatus,
-							Ceylan::Uint8 samplesPerPixelNumber = 1 ) 
-						throw( OpenGLException ) ;
-				
 				
 				
 					/**
@@ -607,23 +538,6 @@ namespace OSDL
 					virtual void setDepthBufferStatus( bool newStatus ) 
 						throw( OpenGLException ) ;
 					
-					
-					/**
-					 * Sets the size, in bits, of the OpenGL depth buffer, 
-					 * and enables it, if requested.
-					 *
-					 * @param bitsNumber the new depth buffer size.
-					 *
-					 * @param autoEnable will specifically enable the use 
-					 * of the depth buffer iff true (it will not be only set).
-					 *
-				 	 * @throw OpenGLException should an error occur.
-					 *
-					 */
-					virtual void setDepthBufferSize( 
-							Ceylan::Uint8 bitsNumber = 16,
-							bool autoEnable = true ) 
-						throw( OpenGLException ) ;
 
 
 
@@ -822,7 +736,23 @@ namespace OSDL
 					
 					// Static section.
 										
+				
 					
+					/**
+					 * Prepares the OpenGL attributes appropriate for the
+					 * flavour that will be used in a VideoModule::setMode call.
+					 *
+					 * @note The corresponding attributes will not be taken 
+					 * into account until the next call to 
+					 * VideoModule::setMode.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					static void SetUpForFlavour( OpenGL::Flavour flavour )
+						throw( OpenGLException ) ;
+						
+						
 					/**
 					 * Enables specified feature in the OpenGL state machine.
 					 *
@@ -842,17 +772,293 @@ namespace OSDL
 					static void DisableFeature( GLEnumeration feature )
 						throw( OpenGLException ) ;
 
+
+
+
+					/*
+					 * Following methods are static, as they are to be issued
+					 * before a VideoModule::setMode call (otherwise they 
+					 * will not be taken into account until the next setMode
+					 * call), and no OpenGL context may already exist.
+					 *
+					 */
+					 
+					 
+				
+					/**
+					 * Returns the current OpenGL double buffering status.
+					 *
+					 * @return true iff double buffering is used.
+					 *
+					 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static bool GetDoubleBufferStatus() 
+						throw( OpenGLException ) ;
+							
+									
+				
+					/**
+					 * Sets the OpenGL double buffering status (enabled or
+					 * disabled).
+					 *
+					 * @note Will not take effect until the next call
+					 * to VideoModule::setMode.
+					 *
+					 * @param newStatus, double buffering will be enabled
+					 * iff true (and available).
+					 * 
+					 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static void SetDoubleBufferStatus( bool newStatus ) 
+						throw( OpenGLException ) ;
+				
+					 
+					 
+					/**
+					 * Returns the size, in bits, of the OpenGL depth buffer.
+					 *
+					 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static Ceylan::Uint8 GetDepthBufferSize() 
+						throw( OpenGLException ) ;
+									
+				
 					
+					/**
+					 * Sets the size, in bits, of the OpenGL depth buffer.
+					 *
+					 * @note Will not take effect until the next call
+					 * to VideoModule::setMode.
+					 *
+					 * @note Does not enable the depth buffer, 
+					 * see setDepthBufferStatus.
+					 *
+					 * @param bitsNumber the new depth buffer size.
+					 *
+				 	 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static void SetDepthBufferSize( 
+							Ceylan::Uint8 bitsNumber = 16 ) 
+						throw( OpenGLException ) ;
+					 
+					 
+					 
+					/**
+					 * Returns whether the OpenGL fullscreen antialiasing
+					 * (FSAA) is available.
+					 *
+					 * @note Requires the GL_ARB_MULTISAMPLE extension.
+					 *
+					 * @return 0 if the feature is not available, otherwise
+					 * the non-null number of samples used 
+					 * (ex: 4 means 4x antialiasing).
+					 *
+				 	 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static Ceylan::Uint8 GetFullScreenAntialiasingStatus() 
+						throw( OpenGLException ) ;
+						
+						
+						
+					/**
+					 * Sets the OpenGL fullscreen antialiasing (FSAA) 
+					 * status (enabled or disabled).
+					 *
+					 * @note Will not take effect until the next call
+					 * to VideoModule::setMode.
+					 *
+					 * @note Requires the GL_ARB_MULTISAMPLE extension.
+					 *
+					 * @param newStatus, FSAA will be enabled iff true.
+					 *
+					 * @param samplesPerPixelNumber number of samples 
+					 * per pixel when multisampling (FSAA) is enabled.
+					 * Is usually 2, 4, 16, etc.
+					 * 
+				 	 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static void SetFullScreenAntialiasingStatus( 
+							bool newStatus,
+							Ceylan::Uint8 samplesPerPixelNumber = 4 ) 
+						throw( OpenGLException ) ;
+					
+					 
+					 
+					/**
+					 * Returns whether the OpenGL hardware-acceleration is
+					 * available.
+					 *
+					 * @return true iff the hardware acceleration is 
+					 * available.
+					 *
+				 	 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static bool GetHardwareAccelerationStatus() 
+						throw( OpenGLException ) ;
+						
+						
+						
+					/**
+					 * Sets the OpenGL hardware-acceleration status 
+					 * (enabled or disabled).
+					 *
+					 * @note Will not take effect until the next call
+					 * to VideoModule::setMode.
+					 *
+					 * @note Requires the GL_ARB_MULTISAMPLE extension.
+					 *
+					 * @param newStatus, FSAA will be enabled iff true.
+					 *
+					 * @param samplesPerPixelNumber number of samples 
+					 * per pixel when multisampling (FSAA) is enabled.
+					 * 
+				 	 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static void SetHardwareAccelerationStatus( bool newStatus ) 
+						throw( OpenGLException ) ;
+					
+					
+					
+					/**
+					 * Returns whether the OpenGL synchronization with
+					 * vertical blank retrace (VSYNC) is activated.
+					 *
+					 * @return true iff OpenGL synchronizes with VSYNC.
+					 *
+				 	 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static bool GetVerticalBlankSynchronizationStatus() 
+						throw( OpenGLException ) ;
+						
+						
+						
+					/**
+					 * Sets the OpenGL synchronization with vertical blank
+					 * retrace (VSYNC).
+					 *
+					 * @note Will not take effect until the next call
+					 * to VideoModule::setMode.
+					 *
+					 * @param newStatus vsync synchronization will be 
+					 * enabled iff true (and available).
+					 *
+				 	 * @throw OpenGLException should an error occur.
+					 *
+					 */
+					static void SetVerticalBlankSynchronizationStatus( 
+						bool newStatus ) throw( OpenGLException ) ;
+					
+					
+					
+					/**
+					 * Gets the OpenGL color depth for each color component.
+					 *
+					 * @param redSize the variable where the size in bits 
+					 * of the red component will be written.
+					 * 
+					 * @param greenSize the variable where the size in bits
+					 * of the green component will be written.
+					 *
+					 * @param blueSize the variable where the size in bits
+					 * of the blue component will be written.
+					 *
+					 * @param alphaSize the variable where the size in bits
+					 * of the alpha component will be written.
+					 *
+					 * @return the actual overall bits per pixel value.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					 static OSDL::Video::BitsPerPixel GetColorDepth( 
+					 		OSDL::Video::BitsPerPixel & redSize, 
+					 		OSDL::Video::BitsPerPixel & greenSize, 
+							OSDL::Video::BitsPerPixel & blueSize, 
+							OSDL::Video::BitsPerPixel & alphaSize ) 
+						throw( OpenGLException ) ;
+				 
+				 
+				 
+					/**
+					 * Sets the OpenGL color depth.
+					 *
+					 * @note Will not take effect until the next call
+					 * to VideoModule::setMode.
+					 *
+					 * @param plannedBpp the planned color depth, in bits
+					 * per pixel.
+					 * 
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					static void SetColorDepth( 
+							OSDL::Video::BitsPerPixel plannedBpp ) 
+						throw( OpenGLException ) ;
+				
+				
+				 
+					/**
+					 * Sets the OpenGL color depth.
+					 *
+					 * @note Will not take effect until the next call
+					 * to VideoModule::setMode.
+					 *
+					 * @param redSize the size of the red component, in 
+					 * bits per pixel.
+					 * 
+					 * @param greenSize the size of the green component, 
+					 * in bits per pixel.
+					 * 
+					 * @param blueSize the size of the blue component, 
+					 * in bits per pixel.
+					 * 
+					 * @note Maybe alpha should be added.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					static void SetColorDepth( 
+							OSDL::Video::BitsPerPixel redSize, 
+							OSDL::Video::BitsPerPixel greenSize, 
+							OSDL::Video::BitsPerPixel blueSize  ) 
+						throw( OpenGLException ) ;
+				
+				
+				
+					/**
+					 * Returns a textual description of the availability of 
+					 * the OpenGL features.
+					 *
+					 * @note The description is only useful after a 
+					 * VideoModule::setMode call.
+					 *  
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */
+					static std::string InterpretFeatureAvailability()
+						throw( OpenGLException ) ;
+				
+				
+				
 		            /**
 	    	         * Returns an user-friendly description of the 
 					 * specified OpenGL flavour.
 	        	     *
 					 * @param flavour the flavour to describe.
 					 *
-					 *
 					 */
 					static std::string ToString( OpenGL::Flavour flavour )
 						throw() ;	
+
 
 
 
@@ -950,7 +1156,8 @@ namespace OSDL
 					
 			protected:
 			
-					
+			
+			
 					/**
 					 * Updates the current projection so that its aspect 
 					 * ratio matches the one of the viewport.
@@ -962,8 +1169,47 @@ namespace OSDL
 					virtual void updateProjection() throw( OpenGLException ) ;
 					
 					
+			
+					/**
+					 * Gets the value of specified OpenGL attribute.
+					 *
+					 * @note the set attributes do not take effect until
+					 * VideoModule::setMode is called.
+					 *
+					 * @param attribute the attribute whose value is wanted.
+					 *
+					 * @return the attribute value.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */				 	
+					static int GetGLAttribute( GLAttribute attribute ) 
+						throw( OpenGLException ) ;
+					
+					
+					
+					/**
+					 * Sets the specified OpenGL attribute.
+					 *
+					 * @note the set attributes do not take effect until
+					 * VideoModule::setMode is called.
+					 *
+					 * @param attribute the attribute to set.
+					 *
+					 * @param value the value to assign.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */				 	
+					static void SetGLAttribute( GLAttribute attribute,
+						int value ) throw( OpenGLException ) ;
+									
+					
+					
+					
 					
 					// Internal OpenGL context state.
+					
 					
 					
 					///	Stores the current OpenGL flavour.		
@@ -978,6 +1224,9 @@ namespace OSDL
 					
 					/// Size in bits of the blue component.
 					OSDL::Video::BitsPerPixel _blueSize ;
+
+					/// Size in bits of the alpha component.
+					OSDL::Video::BitsPerPixel _alphaSize ;
 
 					
 					/**
