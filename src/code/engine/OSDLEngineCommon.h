@@ -3,7 +3,8 @@
 
 
 
-#include "OSDLException.h"            // for Exception
+#include "OSDLException.h"      // for Exception
+#include "OSDLEvents.h"         // for SimulationTick
 
 #include <string>
 #include <list>
@@ -27,8 +28,11 @@ namespace OSDL
 	
 	
 		
-		// Forward declaration.
+		// Forward declarations:
 		class ActiveObject ;
+
+		class PeriodicalActiveObject ;
+		class ProgrammedActiveObject ;
 		
 		
 		/// Exception to be thrown when engine abnormal behaviour occurs.
@@ -58,13 +62,29 @@ namespace OSDL
 		/**
 		 * Defines a list of pointers to active objects.
 		 *
-		 * Was not defined in OSDLScheduler to avoir circular dependency :
+		 * Was not defined in OSDLScheduler to avoir circular dependency:
 		 * OSDLPeriodicSlot should not depend on OSDLScheduler, since the
 		 * opposite has to be true.
 		 *
 		 */
-		typedef std::list<ActiveObject *> ListOfActiveObjects ;
+		typedef std::list<PeriodicalActiveObject *> ListOfActiveObjects ;
+
 		
+		/**
+		 * Defines a list of pointers to periodical active objects.
+		 *
+		 */
+		typedef std::list<PeriodicalActiveObject *>
+			ListOfPeriodicalActiveObjects ;
+
+
+		/**
+		 * Defines a list of pointers to programmed active objects.
+		 *
+		 */
+		typedef std::list<ProgrammedActiveObject *>
+			ListOfProgrammedActiveObjects ;
+
 
 
 		/**
@@ -79,15 +99,15 @@ namespace OSDL
 		
 		
 		/**
-		 * Describes a scheduling policy, among : 
+		 * Describes a scheduling policy, among: 
 		 *
-		 * 	- relaxed : the scheduler is allowed to defer activation of a 
+		 * 	- relaxed: the scheduler is allowed to defer activation of a 
 		 * few periods if needed. 
 		 * Beside the jittering, some latency may occur, if the scheduler
 		 * prefers putting this object in a less overcrowed periodic slot 
 		 * than its current one.
 		 *
-		 *	- strict : enforce strict respect of specified parameters, 
+		 *	- strict: enforce strict respect of specified parameters, 
 		 * namely for the period and the simulation step to begin with. 
 		 * Strict scheduling might be useful for animations or sound, for
 		 * example.
@@ -96,7 +116,14 @@ namespace OSDL
 		enum ObjectSchedulingPolicy { relaxed, strict } ;
 		
 	
-	
+		/// Type for lists of simulation ticks.
+		typedef std::list<Events::SimulationTick> SimulationTickList ;
+		
+		
+		/// Used to measure time past deadlines.
+		typedef Ceylan::Uint32 Delay ;
+			
+		
 	}
 	
 }	
