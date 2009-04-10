@@ -22,9 +22,12 @@ ENGINE_INTERFACES = \
 	OSDLEngineIncludes.h                  \
 	OSDLModel.h                           \
 	OSDLMultimediaRenderer.h              \
+	OSDLPeriodicalActiveObject.h          \
 	OSDLPeriodicSlot.h                    \
+	OSDLProgrammedActiveObject.h          \
 	OSDLRenderer.h                        \
 	OSDLScheduler.h                       \
+	OSDLStandardRenderer.h                \
 	OSDLWorldObject.h
 
 
@@ -36,9 +39,11 @@ ENGINE_IMPLEMENTATIONS = \
 	OSDLEngineCommon.cc                   \
 	OSDLModel.cc                          \
 	OSDLMultimediaRenderer.cc             \
+	OSDLPeriodicalActiveObject.cc         \
 	OSDLPeriodicSlot.cc                   \
+	OSDLProgrammedActiveObject.cc         \
 	OSDLRenderer.cc                       \
 	OSDLScheduler.cc                      \
+	OSDLStandardRenderer.cc               \
 	OSDLWorldObject.cc
-
 	
