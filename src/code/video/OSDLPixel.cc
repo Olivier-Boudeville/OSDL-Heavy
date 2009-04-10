@@ -15,6 +15,7 @@
 #include "OSDLConfig.h"          // for OSDL_DEBUG_PIXEL and al 
 #endif // OSDL_USES_CONFIG_H
 
+
 #if OSDL_ARCH_NINTENDO_DS
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
 #endif // OSDL_ARCH_NINTENDO_DS
@@ -1333,7 +1334,7 @@ string Pixels::toString( ColorDefinition color ) throw()
 			+ Ceylan::toNumericalString( color.r ) + " ; "
 			+ Ceylan::toNumericalString( color.g ) + " ; "
 			+ Ceylan::toNumericalString( color.b ) + " ; "
-			+ Ceylan::toNumericalString( color.unused ) + " ] " ;
+			+ Ceylan::toNumericalString( color.unused ) + " ]" ;
 			
 	if ( Ceylan::TextDisplayable::GetOutputFormat() 
 		== Ceylan::TextDisplayable::html )
@@ -1353,7 +1354,7 @@ string Pixels::toString( ColorDefinition color ) throw()
 		 */
 		result += "<table><tr><td style=\"background: #" 
 			+ hexcolor + "; color: #" 
-			+ hexcolor + "\">OSDL rocks !</td></tr></table>" ;
+			+ hexcolor + "\">OSDL rocks!</td></tr></table>" ;
 
 	}
 	
