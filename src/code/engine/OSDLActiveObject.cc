@@ -24,7 +24,7 @@ ActiveObject::ActiveObject( ObjectSchedulingPolicy policy, Weight weight )
 	_policy( policy ),
 	_weight( weight ),
 	_registered( false ),
-	_BirthTick( 0 )
+	_birthTick( 0 )
 
 {
 
@@ -72,7 +72,7 @@ void ActiveObject::setBirthTick(
 	Events::SimulationTick birthSimulationTick ) throw( SchedulingException )
 {
 
-	_BirthTick = birthSimulationTick ;
+	_birthTick = birthSimulationTick ;
 	
 }
 
@@ -81,7 +81,7 @@ void ActiveObject::setBirthTick(
 SimulationTick ActiveObject::getBirthTick() const throw()
 {
 
-	return _BirthTick ;
+	return _birthTick ;
 	
 }
 
@@ -137,11 +137,11 @@ const string ActiveObject::toString( Ceylan::VerbosityLevels level )
 	
 	string birth ;
 	
-	if ( _BirthTick == 0 )
+	if ( _birthTick == 0 )
 		birth = "was never scheduled" ;
 	else
 		birth = "has been scheduled for the first time at simulation tick #"
-			+ Ceylan::toString( _BirthTick ) ;
+			+ Ceylan::toString( _birthTick ) ;
 
 	return "Active object, with the " + policy + " policy, a weight of "
 		+ Ceylan::toString( _weight ) + ", which is "
