@@ -2827,6 +2827,12 @@ void Surface::update() throw( VideoException )
 			 * SDL_GL_SwapBuffers should imply a glFlush(), but some reported
 			 * adding one glFlush causes a miraculous recovery:
 			 *
+			 * glFlush can return at any time.
+			 *
+			 * Unlike glFinish, it does not wait until the execution of all
+			 * previously issued GL commands is complete.
+			 * 
+			 *
 			 */
 			glFlush() ;
 			SDL_GL_SwapBuffers() ;
