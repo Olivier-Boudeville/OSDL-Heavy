@@ -308,6 +308,8 @@ bool Sound::load() throw( Ceylan::LoadableException )
 	try
 	{
 	
+		//LogPlug::debug( "Sound::load: loading " + _contentPath ) ;
+		
         /*
          * Not used anymore, so that sounds can be loaded from embedded files
          * as well:
