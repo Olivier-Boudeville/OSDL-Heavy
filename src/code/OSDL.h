@@ -1,3 +1,29 @@
+/* 
+ * Copyright (C) 2003-2009 Olivier Boudeville
+ *
+ * This file is part of the OSDL library.
+ *
+ * The OSDL library is free software: you can redistribute it and/or modify
+ * it under the terms of either the GNU Lesser General Public License or
+ * the GNU General Public License, as they are published by the Free Software
+ * Foundation, either version 3 of these Licenses, or (at your option) 
+ * any later version.
+ *
+ * The OSDL library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License and the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License and of the GNU General Public License along with the OSDL library.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Olivier Boudeville (olivier.boudeville@esperide.com)
+ *
+ */
+
+
 #ifndef OSDL_H_
 #define OSDL_H_
 
@@ -6,27 +32,10 @@
  * This is the OSDL library, a free portable high-level open-source C++ 
  * library for multimedia and game programming.
  *
- * Copyright (C) 2007 Olivier Boudeville.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
- * You can contact the author at olivier.boudeville@esperide.com
- *
  * More informations available at http://osdl.sourceforge.net/OSDL-latest/
  *
  */
+
 
 /**
  * Main header file for OSDL Project (Object-oriented Simple DirectMedia Layer, 
