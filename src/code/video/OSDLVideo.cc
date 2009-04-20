@@ -471,10 +471,13 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	
 	if ( ( ( flags & OpenGL ) == 0 ) && ( flavour != OpenGL::None ) )
 	{
+	
 		LOG_WARNING_VIDEO( "VideoModule::setMode: OpenGL flavour selected ("
 			+ OpenGLContext::ToString( flavour ) 
 			+ ") whereas OpenGL flag not set, adding it." ) ;  
+			
 		flags |= OpenGL ;
+		
 	}
 	
 	bool useOpenGLRequested = ( ( flags & OpenGL ) != 0 ) ;
