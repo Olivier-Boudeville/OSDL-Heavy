@@ -1209,7 +1209,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		 * Therefore it is actually generally under-evaluated.
 		 *
 		 */
-		_idleCallbackMaxDuration = testDuration ;
+		_idleCallbackMaxDuration = Ceylan::Maths::Max( testDuration, 
+			getSchedulingGranularity() ) ;
 
 		OSDL_SCHEDULE_LOG( 
 			"Evaluating the maximum duration of the default idle callback to " 
@@ -1338,7 +1339,10 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	list<InputTick>      metInputPollings ;	
 	list<InputTick>      recoveredInputPollings ;	
 	list<InputTick>      missedInputPollings ;	
-	
+
+	list<Microsecond>    forecastIdleCallbackDurationList ;
+	list<Microsecond>    actualIdleCallbackDurationList	;
+		
 #endif // OSDL_DEBUG_SCHEDULER
 	
 	
@@ -1555,7 +1559,7 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		
 	/* 
 	 * Corresponds to D (new Dlast).
-	 * Not wanting to prohibit any idle call to be made:
+	 * Not wanting to prohibit any idle call to be made from the start:
 	 *
 	 */
 	Events::EngineTick forecastIdleCallbackTickCount = 
@@ -1799,7 +1803,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
 			
-			// We should have reduced the simulation delay at least a bit...			
+			// We should have reduced the simulation delay at least a bit..
+					
 		}
 		
 		
@@ -2096,11 +2101,16 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 					+ lastIdleTickCount	+ idleCallbackMaxTickCount ) / 6.0f ) ;
 						 	
 			OSDL_SCHEDULE_LOG( "Current forecasted idle callback duration is "
-				+ Ceylan::toString( forecastIdleCallbackTickCount )
-				+ " microseconds, i.e. " 
+				+ Ceylan::toString( forecastIdleCallbackTickCount 
+					* _engineTickDuration )	+ " microseconds, i.e. " 
 				+ Ceylan::toString( forecastIdleCallbackTickCount ) 
 				+ " engine ticks." ) ;
 		
+#if OSDL_DEBUG_SCHEDULER
+			forecastIdleCallbackDurationList.push_back(
+				forecastIdleCallbackTickCount * _engineTickDuration ) ;
+#endif // OSDL_DEBUG_SCHEDULER
+					
 			getPreciseTime( idleStartingSecond, idleStartingMicrosecond ) ;
 					
 			/*
@@ -2115,6 +2125,10 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 			lastIdleDuration = getDurationBetween( 
 				idleStartingSecond, idleStartingMicrosecond,
 				idleStoppingSecond, idleStoppingMicrosecond ) ;
+
+#if OSDL_DEBUG_SCHEDULER
+			actualIdleCallbackDurationList.push_back( lastIdleDuration ) ;
+#endif // OSDL_DEBUG_SCHEDULER
 						
 			lastIdleTickCount = lastIdleDuration / _engineTickDuration ;
 				
@@ -2371,6 +2385,54 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 		+ Ceylan::toString( _scheduleFailureCount )
 		+ " times, shutdown bucket level is "
 		+ Ceylan::toString( ShutdownBucketLevel) + "." ) ;
+
+
+	send( "Displaying list of successive forecast idle callback durations: "
+		+ Ceylan::toString( forecastIdleCallbackDurationList ) ) ;
+
+	send( "Displaying list of successive actual idle callback durations: "
+		+ Ceylan::toString( actualIdleCallbackDurationList ) ) ;
+
+
+#if OSDL_DEBUG_SCHEDULER
+
+	const string logFilename = "idle-calls.dat" ;
+
+	Ceylan::System::File * idleComparisonFile = & File::Create( logFilename ) ;
+	
+	idleComparisonFile->write( 
+			"# This file records the forecasted and measured durations\n"
+			"# of idle calls.\n"
+			"# One may use gnuplot to analyze the result,\n"
+			"# see test/engine/testOSDLScheduler.cc.\n\n"   ) ;
+			
+	LogPlug::trace( "Recording forecasted and actual durations in the '"
+			+ logFilename + "' file." ) ;
+
+	Ceylan::Uint32 count = 0 ;
+	Ceylan::Uint32 finalCount = forecastIdleCallbackDurationList.size() ;
+	
+	while ( count != finalCount )
+	{
+	
+		idleComparisonFile->write( Ceylan::toString( count ) + " \t " 
+			+ Ceylan::toString( forecastIdleCallbackDurationList.front() ) 
+			+ " \t " 
+			+ Ceylan::toString( actualIdleCallbackDurationList.front() )
+			+ " \n" ) ;
+
+		forecastIdleCallbackDurationList.pop_front() ;
+		actualIdleCallbackDurationList.pop_front() ;
+		
+		count++ ;
+			
+	}
+
+	idleComparisonFile->close() ;
+	delete idleComparisonFile ;
+			
+#endif // OSDL_DEBUG_SCHEDULER
+
 	
 	send( "Scheduler stopping, run summary is: " 
 		+ Ceylan::formatStringList( summary ) ) ;
