@@ -160,7 +160,7 @@ namespace OSDL
 				
 				
 					/// Constructs a new OpenGLException.
-					OpenGLException( const std::string & reason ) throw() ;
+					OpenGLException( const std::string & reason ) ;
 					
 					
 					/// Virtual destructor.
@@ -386,11 +386,11 @@ namespace OSDL
 					OpenGLContext( OpenGL::Flavour flavour, 
 						BitsPerPixel plannedBpp,
 						Length viewportWidth,
-						Length viewportHeight ) throw( OpenGLException) ;
+						Length viewportHeight ) ;
 		
 						
 					/// Virtual destructor.
-					virtual ~OpenGLContext() throw() ;
+					virtual ~OpenGLContext() ;
 				
 				
 				
@@ -410,8 +410,7 @@ namespace OSDL
 					 * reports an error.
 					 *
 					 */
-					virtual void selectFlavour( OpenGL::Flavour flavour ) 
-						throw( OpenGLException ) ;
+					virtual void selectFlavour( OpenGL::Flavour flavour ) ;
 	
 	
 	
@@ -430,7 +429,7 @@ namespace OSDL
 					 * @note Leaves the context in ModelView mode.
 					 *
 					 */
-					virtual void set2DFlavour() throw( OpenGLException ) ;
+					virtual void set2DFlavour() ;
 				
 				
 				
@@ -446,7 +445,7 @@ namespace OSDL
 					 * @note Leaves the context in ModelView mode.
 					 *
 					 */
-					virtual void set3DFlavour() throw( OpenGLException ) ;
+					virtual void set3DFlavour() ;
 				
 				
 					
@@ -460,7 +459,7 @@ namespace OSDL
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					virtual void blank() throw( OpenGLException ) ;
+					virtual void blank() ;
 					 
 				
 				
@@ -477,7 +476,7 @@ namespace OSDL
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					virtual void reload() throw( OpenGLException ) ;
+					virtual void reload() ;
 					
 					
 					
@@ -497,8 +496,7 @@ namespace OSDL
 					 */
 					virtual void setBlendingFunction( 
 							GLEnumeration sourceFactor,
-							GLEnumeration destinationFactor ) 
-						throw( OpenGLException ) ;
+							GLEnumeration destinationFactor ) ;
 
 				
 				
@@ -512,8 +510,7 @@ namespace OSDL
 					 *
 					 */
 					 virtual void setShadingModel( 
-					 		ShadingModel newShadingModel = Smooth ) 
-					 	throw( OpenGLException ) ;
+					 		ShadingModel newShadingModel = Smooth ) ;
 	
 					 
 					/**
@@ -525,8 +522,7 @@ namespace OSDL
 				 	 * @throw OpenGLException should an error occur.
 					 *
 					 */	
-					virtual void setCullingStatus( bool newStatus ) 
-						throw( OpenGLException ) ;
+					virtual void setCullingStatus( bool newStatus ) ;
 	
 				
 					/**
@@ -546,7 +542,7 @@ namespace OSDL
 					 */					 
 					virtual void setCulling( CulledFacet culledFacet = Back, 
 						FrontOrientation frontOrientation = CounterClockwise, 
-						bool autoEnable = true ) throw( OpenGLException ) ;
+						bool autoEnable = true ) ;
 						
 					
 					
@@ -561,8 +557,7 @@ namespace OSDL
 				 	 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					virtual void setDepthBufferStatus( bool newStatus ) 
-						throw( OpenGLException ) ;
+					virtual void setDepthBufferStatus( bool newStatus ) ;
 					
 
 
@@ -596,9 +591,8 @@ namespace OSDL
 					 *
 					 */					 
 					virtual void setViewPort( Length width, Length height, 
-							const TwoDimensional::Point2D & lowerLeftCorner = 
-								TwoDimensional::Point2D::Origin ) 
-						throw( OpenGLException ) ;
+						const TwoDimensional::Point2D & lowerLeftCorner = 
+							TwoDimensional::Point2D::Origin ) ;
 						
 						
 						
@@ -635,9 +629,8 @@ namespace OSDL
 					 *
 					 */	
 					virtual void setOrthographicProjection( GLLength width, 
-							GLCoordinate near = -DefaultNearClippingPlaneFor3D, 
-							GLCoordinate far  = -DefaultFarClippingPlaneFor3D ) 
-						throw( OpenGLException ) ;
+						GLCoordinate near = -DefaultNearClippingPlaneFor3D, 
+						GLCoordinate far  = -DefaultFarClippingPlaneFor3D ) ;
 						
 						
 						
@@ -656,8 +649,7 @@ namespace OSDL
 					 *
 					 */	
 					virtual void setOrthographicProjectionFor2D( 
-							GLLength width, GLLength height ) 
-						throw( OpenGLException ) ;
+							GLLength width, GLLength height ) ;
 						
 			
 			
@@ -668,8 +660,7 @@ namespace OSDL
 					 *
 					 */
 					virtual void setClearColor( 
-							const Video::Pixels::ColorDefinition & color )
-						throw( OpenGLException ) ;
+						const Video::Pixels::ColorDefinition & color ) ;
 					
 					
 					
@@ -683,7 +674,7 @@ namespace OSDL
 					 * corresponding execution of glEnd.
 					 *
 					 */	
-					virtual void clearViewport() throw( OpenGLException ) ;
+					virtual void clearViewport() ;
 					
 					
 					/**
@@ -696,7 +687,7 @@ namespace OSDL
 					 * corresponding execution of glEnd.
 					 *
 					 */
-					virtual void clearDepthBuffer() throw( OpenGLException ) ;
+					virtual void clearDepthBuffer() ;
 					
 					
 					
@@ -707,8 +698,8 @@ namespace OSDL
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					virtual void pushAttribute( GLBitField attributeField )
-						throw( OpenGLException ) ;
+					virtual void pushAttribute( GLBitField attributeField ) ;
+					
 					
 					
 					/**
@@ -718,7 +709,7 @@ namespace OSDL
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					virtual void popAttribute()	throw( OpenGLException ) ;
+					virtual void popAttribute() ;
 					
 					 	
 					
@@ -737,7 +728,6 @@ namespace OSDL
 					 *
 					 *
 					Texture & uploadTextureFrom( const Video::Surface & source )
-						throw( OpenGLException) ;
 					*/
 					
 					
@@ -754,8 +744,7 @@ namespace OSDL
 	            	 *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 					
 					
 					
@@ -775,8 +764,7 @@ namespace OSDL
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					static void SetUpForFlavour( OpenGL::Flavour flavour )
-						throw( OpenGLException ) ;
+					static void SetUpForFlavour( OpenGL::Flavour flavour ) ;
 						
 						
 					/**
@@ -785,8 +773,7 @@ namespace OSDL
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					static void EnableFeature( GLEnumeration feature )
-						throw( OpenGLException ) ;
+					static void EnableFeature( GLEnumeration feature ) ;
 					
 					
 					/**
@@ -795,8 +782,7 @@ namespace OSDL
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					static void DisableFeature( GLEnumeration feature )
-						throw( OpenGLException ) ;
+					static void DisableFeature( GLEnumeration feature ) ;
 
 
 
@@ -819,8 +805,7 @@ namespace OSDL
 					 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					static bool GetDoubleBufferStatus() 
-						throw( OpenGLException ) ;
+					static bool GetDoubleBufferStatus() ;
 							
 									
 				
@@ -837,8 +822,7 @@ namespace OSDL
 					 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					static void SetDoubleBufferStatus( bool newStatus ) 
-						throw( OpenGLException ) ;
+					static void SetDoubleBufferStatus( bool newStatus ) ;
 				
 					 
 					 
@@ -848,8 +832,7 @@ namespace OSDL
 					 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					static Ceylan::Uint8 GetDepthBufferSize() 
-						throw( OpenGLException ) ;
+					static Ceylan::Uint8 GetDepthBufferSize() ;
 									
 				
 					
@@ -868,8 +851,7 @@ namespace OSDL
 					 *
 					 */
 					static void SetDepthBufferSize( 
-							Ceylan::Uint8 bitsNumber = 16 ) 
-						throw( OpenGLException ) ;
+						Ceylan::Uint8 bitsNumber = 16 ) ;
 					 
 					 
 					 
@@ -886,8 +868,7 @@ namespace OSDL
 				 	 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					static Ceylan::Uint8 GetFullScreenAntialiasingStatus() 
-						throw( OpenGLException ) ;
+					static Ceylan::Uint8 GetFullScreenAntialiasingStatus() ;
 						
 						
 						
@@ -911,8 +892,7 @@ namespace OSDL
 					 */
 					static void SetFullScreenAntialiasingStatus( 
 							bool newStatus,
-							Ceylan::Uint8 samplesPerPixelNumber = 4 ) 
-						throw( OpenGLException ) ;
+							Ceylan::Uint8 samplesPerPixelNumber = 4 ) ;
 					
 					 
 					 
@@ -926,8 +906,7 @@ namespace OSDL
 				 	 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					static bool GetHardwareAccelerationStatus() 
-						throw( OpenGLException ) ;
+					static bool GetHardwareAccelerationStatus() ;
 						
 						
 						
@@ -948,8 +927,8 @@ namespace OSDL
 				 	 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					static void SetHardwareAccelerationStatus( bool newStatus ) 
-						throw( OpenGLException ) ;
+					static void SetHardwareAccelerationStatus( 
+						bool newStatus ) ;
 					
 					
 					
@@ -962,8 +941,7 @@ namespace OSDL
 				 	 * @throw OpenGLException should an error occur.
 					 *
 					 */
-					static bool GetVerticalBlankSynchronizationStatus() 
-						throw( OpenGLException ) ;
+					static bool GetVerticalBlankSynchronizationStatus() ;
 						
 						
 						
@@ -981,10 +959,31 @@ namespace OSDL
 					 *
 					 */
 					static void SetVerticalBlankSynchronizationStatus( 
-						bool newStatus ) throw( OpenGLException ) ;
+						bool newStatus ) ;
 					
 					
 					
+					/**
+					 * Tries to set the OpenGL synchronization with vertical
+					 * blank retrace (VSYNC).
+					 *
+					 * @note Any set attribute does not take effect until
+					 * VideoModule::setMode is called.
+					 *
+					 * @param attribute the attribute to set.
+					 *
+					 * @param value the value to assign.
+					 *
+					 * @return true iff this feature could be set on this
+					 * platform; if it failed, no exception is thrown, only  
+					 * false is returned.
+					 *
+					 */				 	
+					static bool TrySettingVerticalBlankSynchronizationStatus(
+						bool newStatus ) ;
+						
+						
+											
 					/**
 					 * Gets the OpenGL color depth for each color component.
 					 *
@@ -1009,8 +1008,7 @@ namespace OSDL
 					 		OSDL::Video::BitsPerPixel & redSize, 
 					 		OSDL::Video::BitsPerPixel & greenSize, 
 							OSDL::Video::BitsPerPixel & blueSize, 
-							OSDL::Video::BitsPerPixel & alphaSize ) 
-						throw( OpenGLException ) ;
+							OSDL::Video::BitsPerPixel & alphaSize ) ;
 				 
 				 
 				 
@@ -1027,8 +1025,7 @@ namespace OSDL
 					 *
 					 */
 					static void SetColorDepth( 
-							OSDL::Video::BitsPerPixel plannedBpp ) 
-						throw( OpenGLException ) ;
+						OSDL::Video::BitsPerPixel plannedBpp ) ;
 				
 				
 				 
@@ -1053,10 +1050,9 @@ namespace OSDL
 					 *
 					 */
 					static void SetColorDepth( 
-							OSDL::Video::BitsPerPixel redSize, 
-							OSDL::Video::BitsPerPixel greenSize, 
-							OSDL::Video::BitsPerPixel blueSize  ) 
-						throw( OpenGLException ) ;
+						OSDL::Video::BitsPerPixel redSize, 
+						OSDL::Video::BitsPerPixel greenSize, 
+						OSDL::Video::BitsPerPixel blueSize ) ;
 				
 				
 				
@@ -1070,8 +1066,7 @@ namespace OSDL
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					static std::string InterpretFeatureAvailability()
-						throw( OpenGLException ) ;
+					static std::string InterpretFeatureAvailability() ;
 				
 				
 				
@@ -1082,8 +1077,7 @@ namespace OSDL
 					 * @param flavour the flavour to describe.
 					 *
 					 */
-					static std::string ToString( OpenGL::Flavour flavour )
-						throw() ;	
+					static std::string ToString( OpenGL::Flavour flavour ) ;	
 
 
 
@@ -1192,25 +1186,40 @@ namespace OSDL
 					 * mode cannot be handled.
 					 *
 					 */
-					virtual void updateProjection() throw( OpenGLException ) ;
+					virtual void updateProjection() ;
+					
+					
+
+					/**
+					 * Returns whether the specified OpenGL attribute is 
+					 * supported.
+					 *
+					 * If not (i.e. if false is returned), then calling
+					 * the GetGLAttribute function would throw an exception.
+					 *
+					 * @param attribute the attribute whose support is to be
+					 * acknowledged.
+					 *
+					 * @return true iff the specified attribute is supported.
+					 *
+					 */				 	
+					static bool HasGLAttribute( GLAttribute attribute ) ;
 					
 					
 			
 					/**
 					 * Gets the value of specified OpenGL attribute.
 					 *
-					 * @note the set attributes do not take effect until
-					 * VideoModule::setMode is called.
-					 *
 					 * @param attribute the attribute whose value is wanted.
 					 *
 					 * @return the attribute value.
 					 *
-					 * @throw OpenGLException if the operation failed.
-					 *
+					 * @throw OpenGLException if the operation failed, including
+					 * if on this platform the specified attribute is not
+					 * supported.
+					 * 
 					 */				 	
-					static int GetGLAttribute( GLAttribute attribute ) 
-						throw( OpenGLException ) ;
+					static int GetGLAttribute( GLAttribute attribute ) ;
 					
 					
 					
@@ -1228,7 +1237,41 @@ namespace OSDL
 					 *
 					 */				 	
 					static void SetGLAttribute( GLAttribute attribute,
-						int value ) throw( OpenGLException ) ;
+						int value ) ;
+									
+					
+					
+					/**
+					 * Tries to set the specified OpenGL attribute.
+					 *
+					 * @note Any set attribute does not take effect until
+					 * VideoModule::setMode is called.
+					 *
+					 * @param attribute the attribute to set.
+					 *
+					 * @param value the value to assign.
+					 *
+					 * @return true iff this attribute could be set on this
+					 * platform; if it failed, no exception is thrown, only  
+					 * false is returned.
+					 *
+					 */				 	
+					static bool TrySettingGLAttribute( GLAttribute attribute,
+						int value ) ;
+									
+					
+					
+					/**
+					 * Returns a string describing the specified OpenGL
+					 * attribute.
+					 *
+					 * @param attribute the attribute to describe.
+					 *
+					 * @throw OpenGLException if the operation failed.
+					 *
+					 */				 	
+					static std::string GLAttributeToString( 
+						GLAttribute attribute ) ;
 									
 					
 					
@@ -1240,16 +1283,20 @@ namespace OSDL
 					
 					///	Stores the current OpenGL flavour.		
 					OpenGL::Flavour _flavour ;
+							
 										 	
 													
 					/// Size in bits of the red component.
 					OSDL::Video::BitsPerPixel _redSize ; 
 					
+					
 					/// Size in bits of the green component.
 					OSDL::Video::BitsPerPixel _greenSize ;
 					
+					
 					/// Size in bits of the blue component.
 					OSDL::Video::BitsPerPixel _blueSize ;
+
 
 					/// Size in bits of the alpha component.
 					OSDL::Video::BitsPerPixel _alphaSize ;
@@ -1317,7 +1364,7 @@ namespace OSDL
 					 * undefined constructor is called, implicitly or not.
 					 * 
 					 */			 
-					OpenGLContext( const OpenGLContext & source ) throw() ;
+					OpenGLContext( const OpenGLContext & source ) ;
 			
 			
 					/**
@@ -1328,8 +1375,7 @@ namespace OSDL
 					 * undefined operator is called, implicitly or not.
 					 *
 					 */			 
-					OpenGLContext & operator = ( const OpenGLContext & source )
-						throw() ;
+					OpenGLContext & operator = ( const OpenGLContext & source );
 			
 			
 			} ;
