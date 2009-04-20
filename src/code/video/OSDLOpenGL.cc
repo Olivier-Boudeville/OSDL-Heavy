@@ -138,7 +138,7 @@ OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::AlphaMask = 0x000000ff ;
 
 
 
-OpenGLException::OpenGLException( const std::string & reason ) throw(): 
+OpenGLException::OpenGLException( const std::string & reason ): 
 	VideoException( reason )
 {	
 
@@ -176,8 +176,7 @@ const GLCoordinate OpenGLContext::DefaultFarClippingPlaneFor3D  = 100000.0f ;
 
  				
 OpenGLContext::OpenGLContext( OpenGL::Flavour flavour, BitsPerPixel plannedBpp,
-	Length viewportWidth, Length viewportHeight )
-		throw( OpenGLException ):
+		Length viewportWidth, Length viewportHeight ):
 	_flavour( OpenGL::None ),
 	_redSize( 0 ),
 	_greenSize( 0 ),
@@ -214,7 +213,7 @@ OpenGLContext::OpenGLContext( OpenGL::Flavour flavour, BitsPerPixel plannedBpp,
 
 
 
-OpenGLContext::~OpenGLContext() throw()
+OpenGLContext::~OpenGLContext()
 {
 
 	LogPlug::trace( "OpenGLContext destructor" ) ;
@@ -224,7 +223,7 @@ OpenGLContext::~OpenGLContext() throw()
 
 
 
-void OpenGLContext::selectFlavour( Flavour flavour ) throw( OpenGLException )
+void OpenGLContext::selectFlavour( Flavour flavour )
 {
 
 	LogPlug::trace( "OpenGLContext::selectFlavour" ) ;
@@ -277,7 +276,7 @@ void OpenGLContext::selectFlavour( Flavour flavour ) throw( OpenGLException )
 
 
 
-void OpenGLContext::set2DFlavour() throw( OpenGLException )
+void OpenGLContext::set2DFlavour()
 {
 
 #if OSDL_USES_OPENGL
@@ -350,7 +349,7 @@ void OpenGLContext::set2DFlavour() throw( OpenGLException )
 
 
 
-void OpenGLContext::set3DFlavour() throw( OpenGLException )
+void OpenGLContext::set3DFlavour()
 {
 
 #if OSDL_USES_OPENGL
@@ -405,7 +404,7 @@ void OpenGLContext::set3DFlavour() throw( OpenGLException )
 
 
 
-void OpenGLContext::blank() throw( OpenGLException )
+void OpenGLContext::blank()
 {
 
 	LogPlug::warning( "OpenGLContext::blank not implemented yet." ) ;
@@ -414,7 +413,7 @@ void OpenGLContext::blank() throw( OpenGLException )
 
 
 
-void OpenGLContext::reload() throw( OpenGLException ) 
+void OpenGLContext::reload() 
 {
 
 	setClearColor( _clearColor ) ;
@@ -429,7 +428,7 @@ void OpenGLContext::reload() throw( OpenGLException )
 
 
 void OpenGLContext::setBlendingFunction( GLEnumeration sourceFactor,
-	GLEnumeration destinationFactor ) throw( OpenGLException )
+	GLEnumeration destinationFactor )
 {
 
 #if OSDL_USES_OPENGL
@@ -477,7 +476,6 @@ void OpenGLContext::setBlendingFunction( GLEnumeration sourceFactor,
 
 
 void OpenGLContext::setShadingModel( ShadingModel newShadingModel ) 
-	throw( OpenGLException )
 {
 
 #if OSDL_USES_OPENGL
@@ -550,7 +548,7 @@ void OpenGLContext::setShadingModel( ShadingModel newShadingModel )
 
 
 
-void OpenGLContext::setCullingStatus( bool newStatus ) throw( OpenGLException )
+void OpenGLContext::setCullingStatus( bool newStatus )
 {
 
 #if OSDL_USES_OPENGL
@@ -581,8 +579,7 @@ void OpenGLContext::setCullingStatus( bool newStatus ) throw( OpenGLException )
 
 
 void OpenGLContext::setCulling( CulledFacet culledFacet, 
-		FrontOrientation frontOrientation, bool autoEnable ) 
-	throw( OpenGLException ) 
+		FrontOrientation frontOrientation, bool autoEnable )
 {
 
 #if OSDL_USES_OPENGL
@@ -690,8 +687,7 @@ void OpenGLContext::setCulling( CulledFacet culledFacet,
 
 
 
-void OpenGLContext::setDepthBufferStatus( bool newStatus ) 
-	throw( OpenGLException )
+void OpenGLContext::setDepthBufferStatus( bool newStatus )
 {
 
 	// Later: add glDepthFunc support.
@@ -721,7 +717,7 @@ void OpenGLContext::setDepthBufferStatus( bool newStatus )
 
 
 void OpenGLContext::setViewPort( Length width, Length height, 
-	const TwoDimensional::Point2D & lowerLeftCorner ) throw( OpenGLException )
+	const TwoDimensional::Point2D & lowerLeftCorner )
 {
 
 #if OSDL_USES_OPENGL
@@ -782,7 +778,7 @@ void OpenGLContext::setViewPort( Length width, Length height,
 
 
 void OpenGLContext::setOrthographicProjection( GLLength width, 
-	GLCoordinate near, GLCoordinate far ) throw ( OpenGLException )
+	GLCoordinate near, GLCoordinate far )
 {
 
 #if OSDL_USES_OPENGL
@@ -843,7 +839,7 @@ void OpenGLContext::setOrthographicProjection( GLLength width,
 
 
 void OpenGLContext::setOrthographicProjectionFor2D( 
-	GLLength width, GLLength height ) throw ( OpenGLException )
+	GLLength width, GLLength height )
 {
 
 #if OSDL_USES_OPENGL
@@ -910,7 +906,6 @@ void OpenGLContext::setOrthographicProjectionFor2D(
 
 
 void OpenGLContext::setClearColor( const Pixels::ColorDefinition & color )
-	throw( OpenGLException )
 {
 
 #if OSDL_USES_OPENGL
@@ -954,7 +949,7 @@ void OpenGLContext::setClearColor( const Pixels::ColorDefinition & color )
 
 
 
-void OpenGLContext::clearViewport() throw( OpenGLException )
+void OpenGLContext::clearViewport()
 {
 
 #if OSDL_USES_OPENGL
@@ -1001,7 +996,7 @@ void OpenGLContext::clearViewport() throw( OpenGLException )
 
 
 
-void OpenGLContext::clearDepthBuffer() throw( OpenGLException )
+void OpenGLContext::clearDepthBuffer()
 {
 
 #if OSDL_USES_OPENGL
@@ -1048,8 +1043,7 @@ void OpenGLContext::clearDepthBuffer() throw( OpenGLException )
 
 
 
-void OpenGLContext::pushAttribute( GLBitField attributeField ) 
-	throw( OpenGLException )
+void OpenGLContext::pushAttribute( GLBitField attributeField )
 {
 
 #if OSDL_USES_OPENGL
@@ -1096,7 +1090,7 @@ void OpenGLContext::pushAttribute( GLBitField attributeField )
 
 
 
-void OpenGLContext::popAttribute() throw( OpenGLException )
+void OpenGLContext::popAttribute()
 {
 
 #if OSDL_USES_OPENGL
@@ -1145,8 +1139,7 @@ void OpenGLContext::popAttribute() throw( OpenGLException )
 
 
 
-const string OpenGLContext::toString( Ceylan::VerbosityLevels level ) 
-	const throw() 
+const string OpenGLContext::toString( Ceylan::VerbosityLevels level ) const
 {
 	
 	std::list<string> res ;
@@ -1187,7 +1180,6 @@ const string OpenGLContext::toString( Ceylan::VerbosityLevels level )
 
 
 void OpenGLContext::SetUpForFlavour( OpenGL::Flavour flavour )
-	throw( OpenGLException )
 {
 
 #if OSDL_USES_OPENGL
@@ -1206,7 +1198,7 @@ void OpenGLContext::SetUpForFlavour( OpenGL::Flavour flavour )
 			// No SetDepthBufferSize, as depth sorting will not be used.
 			// No SetFullScreenAntialiasingStatus, as 2D would look fuzzy.
 			SetHardwareAccelerationStatus( true ) ;
-			SetVerticalBlankSynchronizationStatus( true ) ;
+			TrySettingVerticalBlankSynchronizationStatus( true ) ;
 			// No SetColorDepth, left as is.
 			break ;
 			
@@ -1216,7 +1208,7 @@ void OpenGLContext::SetUpForFlavour( OpenGL::Flavour flavour )
 			SetFullScreenAntialiasingStatus( true,
 				/* samplesPerPixelNumber */ 4 ) ;
 			SetHardwareAccelerationStatus( true ) ;
-			SetVerticalBlankSynchronizationStatus( true ) ;
+			TrySettingVerticalBlankSynchronizationStatus( true ) ;
 			// No SetColorDepth, left as is.
 			break ;
 			
@@ -1244,8 +1236,7 @@ void OpenGLContext::SetUpForFlavour( OpenGL::Flavour flavour )
 
 
 	
-void OpenGLContext::EnableFeature( GLEnumeration feature ) 
-	throw( OpenGLException )
+void OpenGLContext::EnableFeature( GLEnumeration feature )
 {
 
 #if OSDL_USES_OPENGL
@@ -1292,8 +1283,7 @@ void OpenGLContext::EnableFeature( GLEnumeration feature )
 
 
 
-void OpenGLContext::DisableFeature( GLEnumeration feature ) 
-	throw( OpenGLException )
+void OpenGLContext::DisableFeature( GLEnumeration feature )
 {
 
 #if OSDL_USES_OPENGL
@@ -1340,7 +1330,7 @@ void OpenGLContext::DisableFeature( GLEnumeration feature )
 
 
 
-bool OpenGLContext::GetDoubleBufferStatus() throw( OpenGLException )
+bool OpenGLContext::GetDoubleBufferStatus()
 {
 
 	return static_cast<bool>( GetGLAttribute( SDL_GL_DOUBLEBUFFER ) ) ;
@@ -1349,8 +1339,7 @@ bool OpenGLContext::GetDoubleBufferStatus() throw( OpenGLException )
 
 
 
-void OpenGLContext::SetDoubleBufferStatus( bool newStatus ) 
-	throw( OpenGLException )
+void OpenGLContext::SetDoubleBufferStatus( bool newStatus )
 {
 
 #if OSDL_USES_OPENGL
@@ -1382,7 +1371,7 @@ void OpenGLContext::SetDoubleBufferStatus( bool newStatus )
 
 
 
-Ceylan::Uint8 OpenGLContext::GetDepthBufferSize() throw( OpenGLException )
+Ceylan::Uint8 OpenGLContext::GetDepthBufferSize()
 {
 
 	return static_cast<Ceylan::Uint8>( GetGLAttribute( SDL_GL_DEPTH_SIZE ) ) ;
@@ -1391,8 +1380,7 @@ Ceylan::Uint8 OpenGLContext::GetDepthBufferSize() throw( OpenGLException )
 
 
 
-void OpenGLContext::SetDepthBufferSize( Ceylan::Uint8 bitsNumber ) 
-	throw( OpenGLException )
+void OpenGLContext::SetDepthBufferSize( Ceylan::Uint8 bitsNumber )
 {
 
 #if OSDL_USES_OPENGL
@@ -1424,8 +1412,7 @@ void OpenGLContext::SetDepthBufferSize( Ceylan::Uint8 bitsNumber )
 
 
 
-Ceylan::Uint8 OpenGLContext::GetFullScreenAntialiasingStatus() 
-	throw( OpenGLException )
+Ceylan::Uint8 OpenGLContext::GetFullScreenAntialiasingStatus()
 {
 
 	/*
@@ -1445,7 +1432,7 @@ Ceylan::Uint8 OpenGLContext::GetFullScreenAntialiasingStatus()
 
 
 void OpenGLContext::SetFullScreenAntialiasingStatus( bool newStatus, 
-	Ceylan::Uint8 samplesPerPixelNumber ) throw( OpenGLException )
+	Ceylan::Uint8 samplesPerPixelNumber )
 {
 
 #if OSDL_USES_OPENGL
@@ -1495,7 +1482,7 @@ void OpenGLContext::SetFullScreenAntialiasingStatus( bool newStatus,
 
 
 
-bool OpenGLContext::GetHardwareAccelerationStatus() throw( OpenGLException )	
+bool OpenGLContext::GetHardwareAccelerationStatus()	
 {
 
 	/*
@@ -1510,8 +1497,7 @@ bool OpenGLContext::GetHardwareAccelerationStatus() throw( OpenGLException )
 
 
 
-void OpenGLContext::SetHardwareAccelerationStatus( bool newStatus ) 
-	throw( OpenGLException )
+void OpenGLContext::SetHardwareAccelerationStatus( bool newStatus )
 {
 
 #if OSDL_USES_OPENGL
@@ -1545,8 +1531,7 @@ void OpenGLContext::SetHardwareAccelerationStatus( bool newStatus )
 
 
 
-bool OpenGLContext::GetVerticalBlankSynchronizationStatus() 
-	throw( OpenGLException )	
+bool OpenGLContext::GetVerticalBlankSynchronizationStatus()	
 {
 
 	/*
@@ -1561,8 +1546,7 @@ bool OpenGLContext::GetVerticalBlankSynchronizationStatus()
 
 
 
-void OpenGLContext::SetVerticalBlankSynchronizationStatus( bool newStatus ) 
-	throw( OpenGLException )
+void OpenGLContext::SetVerticalBlankSynchronizationStatus( bool newStatus )
 {
 
 #if OSDL_USES_OPENGL
@@ -1596,11 +1580,46 @@ void OpenGLContext::SetVerticalBlankSynchronizationStatus( bool newStatus )
 
 
 
+bool OpenGLContext::TrySettingVerticalBlankSynchronizationStatus( 
+	bool newStatus )
+{
+
+#if OSDL_USES_OPENGL
+
+#if OSDL_USES_SDL
+
+	/*
+	 * Note: the set attributes do not take effect until VideoModule::setMode
+	 * is called.
+	 *
+	 */
+	return TrySettingGLAttribute( SDL_GL_SWAP_CONTROL, newStatus ? 1 : 0 ) ;
+	
+#else // OSDL_USES_SDL
+	
+	throw OpenGLException( 
+		"OpenGLContext::TrySettingVerticalBlankSynchronizationStatus failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( 
+		"OpenGLContext::TrySettingVerticalBlankSynchronizationStatus failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
 Ceylan::Uint8 OpenGLContext::GetColorDepth( 
 		OSDL::Video::BitsPerPixel & redSize, 
 		OSDL::Video::BitsPerPixel & greenSize, 
 		OSDL::Video::BitsPerPixel & blueSize,
-		OSDL::Video::BitsPerPixel & alphaSize ) throw( OpenGLException )
+		OSDL::Video::BitsPerPixel & alphaSize )
 {
 
 #if OSDL_USES_OPENGL
@@ -1642,8 +1661,7 @@ Ceylan::Uint8 OpenGLContext::GetColorDepth(
 
 	
 	
-void OpenGLContext::SetColorDepth( BitsPerPixel plannedBpp ) 
-	throw( OpenGLException )
+void OpenGLContext::SetColorDepth( BitsPerPixel plannedBpp )
 {
 
 #if OSDL_USES_OPENGL
@@ -1718,8 +1736,7 @@ void OpenGLContext::SetColorDepth( BitsPerPixel plannedBpp )
 void OpenGLContext::SetColorDepth( 
 		OSDL::Video::BitsPerPixel redSize, 
 		OSDL::Video::BitsPerPixel greenSize,
-		OSDL::Video::BitsPerPixel blueSize ) 
-	throw( OpenGLException )
+		OSDL::Video::BitsPerPixel blueSize )
 {
 
 #if OSDL_USES_OPENGL
@@ -1756,7 +1773,6 @@ void OpenGLContext::SetColorDepth(
 
 	
 std::string OpenGLContext::InterpretFeatureAvailability() 
-	throw( OpenGLException )
 {
 
 #if OSDL_USES_OPENGL
@@ -1768,51 +1784,117 @@ std::string OpenGLContext::InterpretFeatureAvailability()
 	 * available if it was not requested before the last VideoModule::setMode
 	 * call.
 	 *
+	 * Testing HasGLAttribute beforehand, as we do not want this method to
+	 * throw any exception.
+	 *
 	 */
 	 
 	std::list<string> res ;
 	
-	if ( GetDoubleBufferStatus() )
-		res.push_back( "Double-buffering available." ) ;
-	else
-		res.push_back( "Double-buffering not available." ) ;
-
-
-	res.push_back( "Depth buffer size: " 
-		+ Ceylan::toString( GetDepthBufferSize() ) + " bits." ) ;
-
-
-	Ceylan::Uint8 samples = GetFullScreenAntialiasingStatus() ;
-	if ( samples == 0 )
-		res.push_back( "Fullscreen antialiasing not available." ) ;
-	else
-		res.push_back( Ceylan::toString( samples) 
-			+ "x fullscreen antialiasing available." ) ;
-
-
-	if ( GetHardwareAccelerationStatus() )
-		res.push_back( "OpenGL hardware acceleration available." ) ;
-	else
-		res.push_back( "OpenGL hardware acceleration not available." ) ;
-
-
-	if ( GetVerticalBlankSynchronizationStatus() )
-		res.push_back( "Vertical blank synchronization (VSYNC) available." ) ;
-	else
-		res.push_back( 
-			"Vertical blank synchronization (VSYNC) not available." ) ;
-
-	OSDL::Video::BitsPerPixel redSize, greenSize, blueSize, alphaSize, total ;
-	total = GetColorDepth( redSize, greenSize, blueSize, alphaSize ) ;
+	if ( HasGLAttribute( SDL_GL_DOUBLEBUFFER ) )
+	{
 	
-	res.push_back( "Color depths: " 
-		+ Ceylan::toNumericalString( total ) + " color bits per pixel, with "
-		+ Ceylan::toNumericalString( redSize )   + " bits for red, "   
-		+ Ceylan::toNumericalString( greenSize ) + " bits for green, " 
-		+ Ceylan::toNumericalString( blueSize )  + " bits for blue, and "  
-		+ Ceylan::toNumericalString( alphaSize ) + " bits for alpha" ) ;
+		if ( GetDoubleBufferStatus() )
+			res.push_back( "OpenGL double-buffering available." ) ;
+		else
+			res.push_back( "OpenGL double-buffering not available." ) ;
+
+	}
+	else
+		res.push_back( "No OpenGL double-buffering attribute defined." ) ;
+		 
+		
+	if ( HasGLAttribute( SDL_GL_DEPTH_SIZE ) )
+		res.push_back( "OpenGL depth buffer size: " 
+			+ Ceylan::toNumericalString( GetDepthBufferSize() ) + " bits." ) ;
+	else
+		res.push_back( "No OpenGL depth buffer size attribute defined." ) ;
+		
+
+	if ( HasGLAttribute( SDL_GL_MULTISAMPLEBUFFERS ) )
+	{
+	
+		Ceylan::Uint8 samples = GetFullScreenAntialiasingStatus() ;
+		
+		if ( samples == 0 )
+			res.push_back( "OpenGL Fullscreen antialiasing not available." ) ;
+		else
+			res.push_back( Ceylan::toString( samples) 
+				+ "x fullscreen antialiasing available." ) ;
+	}
+	else
+	{
+
+		res.push_back( "No OpenGL multisample buffer attribute defined." ) ;
+	
+	}
+	
+
+	if ( HasGLAttribute( SDL_GL_ACCELERATED_VISUAL ) )
+	{
+	
+		if ( GetHardwareAccelerationStatus() )
+			res.push_back( "OpenGL hardware acceleration available." ) ;
+		else
+			res.push_back( "OpenGL hardware acceleration not available." ) ;
+			
+	}
+	else
+	{
+	
+		res.push_back( "No OpenGL hardware acceleration attribute defined." ) ;
+		
+	}
+	
+
+	if ( HasGLAttribute( SDL_GL_SWAP_CONTROL ) )
+	{
+	
+		if ( GetVerticalBlankSynchronizationStatus() )
+			res.push_back( 
+				"OpenGL vertical blank synchronization (VSYNC) available." ) ;
+		else
+			res.push_back( 
+				"OpenGL vertical blank synchronization (VSYNC) not available."
+				 ) ;
+	}
+	else
+	{
+	
+		res.push_back( "No OpenGL vertical blank synchronization (VSYNC) "
+			"attribute defined." ) ;
+		
+	}
 
 
+	if ( HasGLAttribute( SDL_GL_RED_SIZE ) 
+			&& HasGLAttribute( SDL_GL_GREEN_SIZE ) 
+			&& HasGLAttribute( SDL_GL_BLUE_SIZE )
+			&& HasGLAttribute( SDL_GL_ALPHA_SIZE ) )
+	{
+	
+		OSDL::Video::BitsPerPixel redSize, greenSize, blueSize, alphaSize, 
+			total ;
+			
+		total = GetColorDepth( redSize, greenSize, blueSize, alphaSize ) ;
+	
+		res.push_back( "OpenGL Color depths: " 
+			+ Ceylan::toNumericalString( total ) 
+			+ " color bits per pixel, with "
+			+ Ceylan::toNumericalString( redSize )   + " bits for red, "   
+			+ Ceylan::toNumericalString( greenSize ) + " bits for green, " 
+			+ Ceylan::toNumericalString( blueSize )  + " bits for blue, and "  
+			+ Ceylan::toNumericalString( alphaSize ) + " bits for alpha" ) ;
+
+	}
+	else
+	{
+	
+		res.push_back( "OpenGL color depth component attributes "
+			"are not all defined." ) ;
+		
+	}
+	
 	return "Summary of the currently available OpenGL features: "
 		+ Ceylan::formatStringList( res ) ;
 
@@ -1837,7 +1919,7 @@ std::string OpenGLContext::InterpretFeatureAvailability()
 
 
 
-string OpenGLContext::ToString( OpenGL::Flavour flavour ) throw() 
+string OpenGLContext::ToString( OpenGL::Flavour flavour )
 {
 
 	switch( flavour )
@@ -1874,7 +1956,7 @@ string OpenGLContext::ToString( OpenGL::Flavour flavour ) throw()
 // Protected section.
 
 
-void OpenGLContext::updateProjection() throw( OpenGLException )
+void OpenGLContext::updateProjection()
 {
 
 	LogPlug::trace( "OpenGLContext::updateProjection" ) ;
@@ -1907,8 +1989,42 @@ void OpenGLContext::updateProjection() throw( OpenGLException )
 
 
 
-int OpenGLContext::GetGLAttribute( GLAttribute attribute ) 
-	throw( OpenGLException )
+bool OpenGLContext::HasGLAttribute( GLAttribute attribute )
+{
+	
+#if OSDL_USES_OPENGL
+
+#if OSDL_USES_SDL
+
+	/*
+	 * Note: any set attribute do not take effect until VideoModule::setMode
+	 * is called.
+	 *
+	 */
+	
+	int value ;
+	 
+	return ( SDL_GL_GetAttribute( attribute, & value ) != -1 ) ;
+	
+#else // OSDL_USES_SDL
+	
+	throw OpenGLException( "OpenGLContext::HasGLAttribute failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::HasGLAttribute failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
+int OpenGLContext::GetGLAttribute( GLAttribute attribute )
 {
 	
 #if OSDL_USES_OPENGL
@@ -1924,8 +2040,9 @@ int OpenGLContext::GetGLAttribute( GLAttribute attribute )
 	int value ;
 	 
 	if ( SDL_GL_GetAttribute( attribute, & value ) == -1 )
-		throw OpenGLException( "OpenGLContext::GetGLAttribute of attribute "
-			+ Ceylan::toString( attribute ) + " failed: "
+		throw OpenGLException( 
+			"OpenGLContext::GetGLAttribute of attribute corresponding to "
+			+ GLAttributeToString( attribute ) + " failed: "
 			+ Utils::getBackendLastError() ) ;
 
 	return value ;
@@ -1948,10 +2065,8 @@ int OpenGLContext::GetGLAttribute( GLAttribute attribute )
 
 	
 	
-void OpenGLContext::SetGLAttribute( GLAttribute attribute, int value ) 
-	throw( OpenGLException )
+void OpenGLContext::SetGLAttribute( GLAttribute attribute, int value )
 {
-
 
 #if OSDL_USES_OPENGL
 
@@ -1964,8 +2079,9 @@ void OpenGLContext::SetGLAttribute( GLAttribute attribute, int value )
 	 */
 	 
 	if ( SDL_GL_SetAttribute( attribute, value ) == -1 )
-		throw OpenGLException( "OpenGLContext::SetGLAttribute of attribute "
-			+ Ceylan::toString( attribute ) + " to value "
+		throw OpenGLException(
+			"OpenGLContext::SetGLAttribute of attribute corresponding to "
+			+ GLAttributeToString( attribute ) + " to value "
 			+ Ceylan::toString( value ) + " failed: "
 			+ Utils::getBackendLastError() ) ;
 
@@ -1985,3 +2101,174 @@ void OpenGLContext::SetGLAttribute( GLAttribute attribute, int value )
 
 }
 
+
+
+bool OpenGLContext::TrySettingGLAttribute( GLAttribute attribute, int value )
+{
+
+#if OSDL_USES_OPENGL
+
+#if OSDL_USES_SDL
+
+	/*
+	 * Note: the set attributes do not take effect until VideoModule::setMode
+	 * is called.
+	 *
+	 */
+	 
+	if ( SDL_GL_SetAttribute( attribute, value ) == -1 )
+	{
+
+#ifdef OSDL_DEBUG_OPENGL
+	
+		LogPlug::warning( "OpenGLContext::TrySettingGLAttribute "
+			"of attribute corresponding to "
+			+ GLAttributeToString( attribute ) + " to value "
+			+ Ceylan::toString( value ) + " failed: "
+			+ Utils::getBackendLastError() ) ;
+			
+#endif // OSDL_DEBUG_OPENGL			
+			
+		return false ;
+	
+	}
+	else
+	{
+	
+		return true ;
+		
+	}		
+			
+			
+#else // OSDL_USES_SDL
+	
+	throw OpenGLException( "OpenGLContext::TrySettingGLAttribute failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::TrySettingGLAttribute failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
+std::string OpenGLContext::GLAttributeToString( GLAttribute attribute )
+{
+
+#if OSDL_USES_OPENGL
+
+#if OSDL_USES_SDL
+
+	string res ;
+	
+	
+	/*
+	 * These attributes are defined in SDL_video.h:
+	 *
+	 */
+	switch( attribute ) 
+	{
+	
+		case SDL_GL_RED_SIZE:
+			res = "minimum depth, in bits, of OpenGL red component" ;
+			break ;
+			
+		case SDL_GL_GREEN_SIZE:
+			res = "minimum depth, in bits, of OpenGL green component" ;
+			break ;
+			
+		case SDL_GL_BLUE_SIZE:
+			res = "minimum depth, in bits, of OpenGL blue component" ;
+			break ;
+			
+		case SDL_GL_ALPHA_SIZE:
+			res = "minimum depth, in bits, of alpha component" ;
+			break ;
+			
+		case SDL_GL_BUFFER_SIZE:
+			res = "minimum depth, in bits, of the OpenGL framebuffer" ;
+			break ;
+			
+		case SDL_GL_DOUBLEBUFFER:
+			res = "OpenGL double-buffering" ;
+			break ;
+			
+		case SDL_GL_DEPTH_SIZE:
+			res = "minimum depth, in bits, of the OpenGL depth buffer" ;
+			break ;
+			
+		case SDL_GL_STENCIL_SIZE:
+			res = "minimum depth, in bits, of the OpenGL stencil buffer" ;
+			break ;
+			
+		case SDL_GL_ACCUM_RED_SIZE:
+			res = "minimum depth, in bits, of the red component "
+				"in OpenGL accumulation buffer" ;
+			break ;
+			
+		case SDL_GL_ACCUM_GREEN_SIZE:
+			res = "minimum depth, in bits, of the green component "
+				"in OpenGL accumulation buffer" ;
+			break ;
+			
+		case SDL_GL_ACCUM_BLUE_SIZE:
+			res = "size of OpenGL accumulation blue component" ;
+			break ;
+			
+		case SDL_GL_ACCUM_ALPHA_SIZE:
+			res = "minimum depth, in bits, of the alpha component "
+				"in OpenGL accumulation buffer" ;
+			break ;
+			
+		case SDL_GL_STEREO:
+			res = "OpenGL stereo (left and right) rendering" ;
+			break ;
+			
+		case SDL_GL_MULTISAMPLEBUFFERS:
+			res = "OpenGL full screen anti-aliasing (FSAA)" ;
+			break ;
+			
+		case SDL_GL_MULTISAMPLESAMPLES:
+			res = "number of samples per pixel "
+				"in the OpenGL multisample buffer" ;
+			break ;
+			
+		case SDL_GL_ACCELERATED_VISUAL:
+			res = "OpenGL support for accelerated visuals" ;
+			break ;
+			
+		case SDL_GL_SWAP_CONTROL:
+			res = "OpenGL vertical synchronization (v-sync)" ;
+			break ;
+			
+		default:
+			res = "unknown OpenGL attribute (abnormal)" ;
+			break ;
+				
+	}
+	
+	return res ;
+	
+#else // OSDL_USES_SDL
+	
+	throw OpenGLException( "OpenGLContext::GLAttributeToString failed: "
+		"no SDL support available" ) ;
+		
+#endif // OSDL_USES_SDL
+
+#else // OSDL_USES_OPENGL
+
+	throw OpenGLException( "OpenGLContext::GLAttributeToString failed: "
+		"no OpenGL support available" ) ;
+
+#endif // OSDL_USES_OPENGL
+
+}
+
+	
