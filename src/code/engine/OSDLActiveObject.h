@@ -237,7 +237,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void onActivation( 
-					Events::SimulationTick newTick ) throw() = 0 ;
+					Events::SimulationTick newTick ) = 0 ;
 
 
 				
