@@ -271,14 +271,14 @@ void PeriodicalActiveObject::setBirthTick(
 	{
 	
 		// We are before, will be activated on:
-		_BirthTick = lastPeriodBegin + _subslot ;
+		_birthTick = lastPeriodBegin + _subslot ;
 	
 	}
 	else
 	{
 	
 		// We are already past the sub-slot, will be activated on next one:
-		_BirthTick = lastPeriodBegin + _period + _subslot ;
+		_birthTick = lastPeriodBegin + _period + _subslot ;
 	
 	}
 			
