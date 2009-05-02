@@ -27,6 +27,7 @@
 #include "OSDL.h"
 using namespace OSDL ;
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::TwoDimensional ;
 
 using namespace Ceylan::Log ;
