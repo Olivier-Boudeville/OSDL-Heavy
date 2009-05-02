@@ -38,12 +38,15 @@
 
 
 
+
 namespace OSDL
 {
 
 
+
 	namespace Engine 
 	{
+	
 	
 	
 			
@@ -68,8 +71,9 @@ namespace OSDL
 				 */
 				CircleBoundingBox( Ceylan::Locatable2D & father, 
 					const Ceylan::Maths::Linear::Bipoint & center, 
-					Ceylan::Maths::Real radius ) throw() ;
+					Ceylan::Maths::Real radius ) ;
 				
+					
 								
 				/**
 				 * Virtual destructor.
@@ -78,11 +82,13 @@ namespace OSDL
 				virtual ~CircleBoundingBox() throw() ;
 
 
+
 				/**
 				 * Returns the radius of this circular bounding box.
 				 *
 				 */
-				virtual Ceylan::Maths::Real getRadius() const throw() ;
+				virtual Ceylan::Maths::Real getRadius() const ;
+				
 				
 				
 				/**
@@ -91,9 +97,9 @@ namespace OSDL
 				 * @param newRadius the new radius.
 				 *
 				 */
-				virtual void setRadius( Ceylan::Maths::Real newRadius ) 
-					throw() ;
+				virtual void setRadius( Ceylan::Maths::Real newRadius ) ;
 		
+				 
 				 
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -107,8 +113,8 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+				
 				
 
 				/**
@@ -127,7 +133,7 @@ namespace OSDL
 				 * @return the intersection result
 				 *
 				 * @throw BoundingBoxException if the type of the two 
-				 * bounding boxes is not compatible (ex : 2D boxes cannot 
+				 * bounding boxes is not compatible (ex: 2D boxes cannot 
 				 * be checked against 3D boxes), or not implemented.
 				 *
 				 * @see IntersectionResult
@@ -137,12 +143,14 @@ namespace OSDL
 				 *
 				 */
 				virtual IntersectionResult doesIntersectWith( 
-					BoundingBox & other ) throw( BoundingBoxException ) ;
+					BoundingBox & other ) ;
+				
 				
 				
 				
 			protected:
 			
+
 
 				/**
 				 * Helper method comparing two circular bounding boxes.
@@ -155,8 +163,9 @@ namespace OSDL
 				 *
 				 */
 				virtual IntersectionResult compareWith( 
-					CircleBoundingBox & other ) throw() ;
+					CircleBoundingBox & other ) ;
 
+				
 				
 				/**
 				 * Checks that specified bounding box is a circle
@@ -173,12 +182,12 @@ namespace OSDL
 				 * method to be useful for its caller.
 				 *
 				 */
-				static CircleBoundingBox & CheckIsCircle( BoundingBox & box )
-					throw (BoundingBoxException) ;			
+				static CircleBoundingBox & CheckIsCircle( BoundingBox & box ) ;			
 					
 								
 				/// Radius of the bounding box.
 				Ceylan::Maths::Real _radius ;
+				
 				
 				
 				
@@ -194,8 +203,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-	        	explicit CircleBoundingBox( const CircleBoundingBox & source )
-					throw() ;
+	        	explicit CircleBoundingBox( const CircleBoundingBox & source ) ;
+
 
 
 				/**
@@ -207,14 +216,17 @@ namespace OSDL
 				 * 
 				 */			 
 	        	CircleBoundingBox & operator= ( 
-					const CircleBoundingBox & source ) throw() ;
+					const CircleBoundingBox & source ) ;
 				
 				
 		} ;
+		
 
 	}
 
 }
 
 
+
 #endif // OSDL_CIRCLE_BOUNDING_BOX_H_
+

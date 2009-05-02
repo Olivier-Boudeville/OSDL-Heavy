@@ -28,7 +28,7 @@
 #define OSDL_EVENTS_INCLUDES_H_
 
 
-/// This include repository keeps track of headers for the 'events' module :
+/// This include repository keeps track of headers for the 'events' module:
 
 
 #include "OSDLClassicalJoystick.h"
@@ -47,3 +47,4 @@
 
 
 #endif // OSDL_EVENTS_INCLUDES_H_
+

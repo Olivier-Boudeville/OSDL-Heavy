@@ -27,6 +27,7 @@
 #include "OSDLJoystickCommon.h"
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"         // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
@@ -36,9 +37,11 @@
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+
 using std::string ;
 
 using namespace OSDL::Events ;
+
 
 
 #if OSDL_USES_SDL
@@ -86,11 +89,12 @@ extern const OSDL::Events::HatPosition OSDL::Events::LeftDown  =
 
 
 
-JoystickException::JoystickException( const std::string & reason ) throw():
+JoystickException::JoystickException( const std::string & reason ) :
 	EventsException( "Joystick exception: " + reason ) 
 {
 	
 }
+
 
 
 JoystickException::~JoystickException() throw()

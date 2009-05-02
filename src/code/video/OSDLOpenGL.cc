@@ -31,6 +31,7 @@
 #include "OSDLUtils.h"        // for getBackendLastError
 
 
+
 // for CEYLAN_DETECTED_LITTLE_ENDIAN, openGLContextsCanBeLost, etc.:
 #include "Ceylan.h"       
 
@@ -49,6 +50,7 @@
 #endif // OSDL_USES_SDL
 
 
+
 #ifdef OSDL_RUNS_ON_WINDOWS
 
 // Microsoft stupidly managed to redefine symbols in an header (windef.h):
@@ -64,6 +66,7 @@
 #endif // OSDL_RUNS_ON_WINDOWS
 
 
+
 using std::string ;
 
 #include <list>
@@ -76,9 +79,10 @@ using namespace OSDL::Video::OpenGL::GLU ;
 using namespace Ceylan::Log ;
 
 
+
 /*
  * All known SDL+OpenGL attributes are:
- *
+
     SDL_GL_RED_SIZE,
     SDL_GL_GREEN_SIZE,
     SDL_GL_BLUE_SIZE,
@@ -102,6 +106,7 @@ using namespace Ceylan::Log ;
 
 
 
+
 /*
  * Implementation notes:
  * 
@@ -115,6 +120,7 @@ using namespace Ceylan::Log ;
  * Agar relies on static loading too.
  *
  */
+
 
 // OpenGL RGBA masks, since it always assumes RGBA order: 
 	
@@ -138,6 +144,7 @@ OSDL::Video::Pixels::ColorMask OSDL::Video::OpenGL::AlphaMask = 0x000000ff ;
 
 
 
+
 OpenGLException::OpenGLException( const std::string & reason ): 
 	VideoException( reason )
 {	
@@ -151,14 +158,18 @@ OpenGLException::~OpenGLException() throw()
 }
 
 
+
 const bool OpenGLContext::ContextCanBeLost =
 	Ceylan::System::openGLContextsCanBeLost() ;
+	
 	
 const bool OpenGLContext::ContextIsLostOnResize = 
 	Ceylan::System::openGLContextsLostOnResize() ;
 	
+	
 const bool OpenGLContext::ContextIsLostOnApplicationSwitch =
 	Ceylan::System::openGLContextsLostOnApplicationSwitch() ;
+	
 	
 const bool OpenGLContext::ContextIsLostOnColorDepthChange =
 	Ceylan::System::openGLContextsLostOnColorDepthChange() ;
@@ -174,9 +185,10 @@ const GLCoordinate OpenGLContext::DefaultNearClippingPlaneFor3D =      1.0f	;
 const GLCoordinate OpenGLContext::DefaultFarClippingPlaneFor3D  = 100000.0f ;
 
 
+
  				
 OpenGLContext::OpenGLContext( OpenGL::Flavour flavour, BitsPerPixel plannedBpp,
-		Length viewportWidth, Length viewportHeight ):
+		Length viewportWidth, Length viewportHeight ) :
 	_flavour( OpenGL::None ),
 	_redSize( 0 ),
 	_greenSize( 0 ),
@@ -213,7 +225,7 @@ OpenGLContext::OpenGLContext( OpenGL::Flavour flavour, BitsPerPixel plannedBpp,
 
 
 
-OpenGLContext::~OpenGLContext()
+OpenGLContext::~OpenGLContext() throw()
 {
 
 	LogPlug::trace( "OpenGLContext destructor" ) ;
@@ -500,7 +512,6 @@ void OpenGLContext::setShadingModel( ShadingModel newShadingModel )
 			
 	}
 	
-	
 #if OSDL_CHECK_OPENGL_CALLS
 
 	switch ( glGetError() )
@@ -579,7 +590,7 @@ void OpenGLContext::setCullingStatus( bool newStatus )
 
 
 void OpenGLContext::setCulling( CulledFacet culledFacet, 
-		FrontOrientation frontOrientation, bool autoEnable )
+	FrontOrientation frontOrientation, bool autoEnable )
 {
 
 #if OSDL_USES_OPENGL
@@ -1616,10 +1627,10 @@ bool OpenGLContext::TrySettingVerticalBlankSynchronizationStatus(
 
 
 Ceylan::Uint8 OpenGLContext::GetColorDepth( 
-		OSDL::Video::BitsPerPixel & redSize, 
-		OSDL::Video::BitsPerPixel & greenSize, 
-		OSDL::Video::BitsPerPixel & blueSize,
-		OSDL::Video::BitsPerPixel & alphaSize )
+	OSDL::Video::BitsPerPixel & redSize, 
+	OSDL::Video::BitsPerPixel & greenSize, 
+	OSDL::Video::BitsPerPixel & blueSize,
+	OSDL::Video::BitsPerPixel & alphaSize )
 {
 
 #if OSDL_USES_OPENGL
@@ -1734,9 +1745,9 @@ void OpenGLContext::SetColorDepth( BitsPerPixel plannedBpp )
 
 
 void OpenGLContext::SetColorDepth( 
-		OSDL::Video::BitsPerPixel redSize, 
-		OSDL::Video::BitsPerPixel greenSize,
-		OSDL::Video::BitsPerPixel blueSize )
+	OSDL::Video::BitsPerPixel redSize, 
+	OSDL::Video::BitsPerPixel greenSize,
+	OSDL::Video::BitsPerPixel blueSize )
 {
 
 #if OSDL_USES_OPENGL
@@ -1949,6 +1960,7 @@ string OpenGLContext::ToString( OpenGL::Flavour flavour )
 	}
 	
 }
+
 
 
 
@@ -2271,4 +2283,3 @@ std::string OpenGLContext::GLAttributeToString( GLAttribute attribute )
 
 }
 
-	

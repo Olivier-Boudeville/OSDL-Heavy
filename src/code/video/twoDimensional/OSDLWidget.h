@@ -41,11 +41,16 @@
 
 
 
+
 namespace OSDL
 {
 
+
+
 	namespace Video
 	{
+		
+		
 		
 		namespace TwoDimensional
 		{
@@ -61,25 +66,28 @@ namespace OSDL
 			{
 				public:
 				
-					RedrawRequestEvent( Ceylan::EventSource & source ) throw() ;
-					virtual  ~RedrawRequestEvent() throw() ;
+					RedrawRequestEvent( Ceylan::EventSource & source ) ;
+					
+					virtual ~RedrawRequestEvent() throw() ;
 			} ;
 
 
 
-			/* To be added later, maybe :
+
+			/* To be added later, maybe:
 			class OSDL_DLL WidgetSettings : public Ceylan::TextDisplayable
 			{
 			
 				public:
 				
-					WidgetSettings() throw() ;
-					virtual ~WidgetSettings() throw() ;
+					WidgetSettings() ;
+					virtual ~WidgetSettings() ;
 				private:
 				
 			} ;
 
 			*/
+
 
 
 			/**
@@ -104,7 +112,7 @@ namespace OSDL
 			 * result back, during the next redraw phase, to a selective 
 			 * redraw.
 			 *
-			 * This drawing of the graphical tree is depth-first : child
+			 * This drawing of the graphical tree is depth-first: child
 			 * elements are sorted from bottom to top, they are completely 
 			 * drawn in turn.
 			 *
@@ -148,9 +156,10 @@ namespace OSDL
 			class OSDL_DLL Widget : public Surface, 
 				public Ceylan::EventListener
 			{
-			
+				
 					
 				public:
+					
 						
 			
 					/**
@@ -264,9 +273,9 @@ namespace OSDL
 						Pixels::ColorDefinition baseColor,
 						const std::string & title = "",
 						bool minMaximizable = true, bool draggable = true, 
-						bool wrappable = true, bool closable = true ) 
-							throw( VideoException ) ;
+						bool wrappable = true, bool closable = true )  ;
 								
+							
 							
 					 /// Basic virtual destructor.	
 					 virtual ~Widget() throw() ;
@@ -276,17 +285,19 @@ namespace OSDL
 					 // Resize section.
 					 
 					 		
+							
 					 /**
 					  * Sets the current width of this widget.
 					  *
 					  * If the new width is different from the current one,
 					  * triggers a resize that will invalidate this widget
-					  * rendering : 'needs redraw' will be true afterwards.
+					  * rendering: 'needs redraw' will be true afterwards.
 					  * 
 					  * The client area will be automatically adjusted.
 					  *
 					  */
-					 virtual void setWidth( Length newWidth ) throw() ;
+					 virtual void setWidth( Length newWidth ) ;
+				
 				
 				
 					 /**
@@ -294,13 +305,14 @@ namespace OSDL
 					  *
 					  * If the new height is different from the current one,
 					  * triggers a resize that will invalidate this widget
-					  * rendering : 'needs redraw' will be true afterwards. 
+					  * rendering: 'needs redraw' will be true afterwards. 
 					  *
 					  * The client area will be automatically adjusted.
 					  *
 					  */
-					 virtual void setHeight( Length newHeight ) throw() ;
+					 virtual void setHeight( Length newHeight ) ;
 					 
+
 
 					/**
 					 * Resizes this widget so that its new dimensions are 
@@ -311,7 +323,7 @@ namespace OSDL
 					 * stays as is. 
 					 *
 					 * Otherwise, it will be resized and will invalidate 
-					 * this widget rendering : 'needs redraw' will be true 
+					 * this widget rendering: 'needs redraw' will be true 
 					 * afterwards. 
 					 *
 					 * The client area will be automatically adjusted.
@@ -324,18 +336,21 @@ namespace OSDL
 					 *
 					 */
 					virtual void resize( Length newWidth, Length newHeight, 
-						bool ignored = false ) throw() ;
+						bool ignored = false ) ;
 					  
 					
 					
+					
 					// Base color (color key and background color) section.
+					
 					
 					  
 					/**
 					 * Returns the current base color mode.
 					 *
 					 */
-					virtual BaseColorMode getBaseColorMode() const throw() ;   
+					virtual BaseColorMode getBaseColorMode() const ;   
+					
 					
 					
 					/**
@@ -359,9 +374,8 @@ namespace OSDL
 					 *
 					 */
 					virtual void setBaseColorMode( 
-							BaseColorMode newBaseColorMode,
-							Pixels::ColorDefinition newBaseColor ) 
-						throw( VideoException ) ;
+						BaseColorMode newBaseColorMode,
+						Pixels::ColorDefinition newBaseColor ) ;
 					
 					 
 					 
@@ -369,8 +383,8 @@ namespace OSDL
 					 * Returns the current base color.
 					 *
 					 */ 
-					virtual Pixels::ColorDefinition getBaseColor() 
-						const throw() ;
+					virtual Pixels::ColorDefinition getBaseColor() const ;
+								
 											
 					
 					/*
@@ -390,7 +404,7 @@ namespace OSDL
 					 *
 					 */
 					virtual void setDecorationStatus( 
-						bool newDecorationStatus ) throw() ; 
+						bool newDecorationStatus ) ; 
 					 
 					 
 					 
@@ -402,13 +416,13 @@ namespace OSDL
 					 * for this widget specific renderings.
 					 *
 					 * @note The client area might not be the whole widget 
-					 * area, for example if the widget is decorated : at 
+					 * area, for example if the widget is decorated: at 
 					 * least the title bar will not be taken in client area.
 					 *
 					 */ 
-					virtual const UprightRectangle & getClientArea() 
-						const throw() ; 
+					virtual const UprightRectangle & getClientArea() const ; 
 					
+						
 										
 					/**
 					 * Cleans the widget by blanking it with a background 
@@ -419,8 +433,9 @@ namespace OSDL
 					 * @note The '_needsRedraw' flag is not changed.
 					 *
 					 */
-					virtual bool clean() throw() ; 
-					       
+					virtual bool clean() ; 
+					     
+						   
 					       
 					/**
 					 * Notifies this widget of a new event whose source 
@@ -430,9 +445,10 @@ namespace OSDL
 					 * which will take care of its life cycle.
 					 *
 					 */
-					virtual void beNotifiedOf( const Ceylan::Event & newEvent )
-						throw() ;
+					virtual void beNotifiedOf( 
+						const Ceylan::Event & newEvent ) ;
 						
+
 
 					/**
 					 * Sets redraw state.
@@ -441,8 +457,8 @@ namespace OSDL
 					 * from false to true, parent container is notified.
 					 *
 					 */
-					virtual void setRedrawState( bool needsToBeRedrawn ) 
-						throw() ;
+					virtual void setRedrawState( bool needsToBeRedrawn ) ;
+					
 									 
 					 					 
 					/**
@@ -455,7 +471,8 @@ namespace OSDL
 					 * surface, thanks to redrawInternal.
 					 *
 					 */
-					virtual void redraw() throw() ;
+					virtual void redraw() ;
+				
 				
 										 	
 					/**
@@ -476,8 +493,9 @@ namespace OSDL
 					 * uselessly.
 					 *
 					 */
-					virtual void redrawInternal() throw() ;
+					virtual void redrawInternal() ;
 			
+					
 					
 	 	            /**
 		             * Returns an user-friendly description of the state 
@@ -492,12 +510,13 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+				
 				
 				
 				
 					// Static section.
+				
 				
 				
 					/**
@@ -505,7 +524,8 @@ namespace OSDL
 					 * new widgets.
 					 *
 					 */
-					static Pixels::ColorDefinition GetEdgeColor() throw() ;
+					static Pixels::ColorDefinition GetEdgeColor() ;
+					
 					
 					
 					/**
@@ -516,7 +536,7 @@ namespace OSDL
 					 *
 					 */
 					static void SetEdgeColor( 
-						Pixels::ColorDefinition edgeColorDef ) throw() ;
+						Pixels::ColorDefinition edgeColorDef ) ;
 					
 						
 							
@@ -530,7 +550,8 @@ namespace OSDL
 					 * various services requested.
 					 *
 					 */
-					virtual void updateDecorationFlag() throw() ;
+					virtual void updateDecorationFlag() ;
+					
 												
 					
 					/**
@@ -538,8 +559,9 @@ namespace OSDL
 					 * decoration status.
 					 *
 					 */
-					virtual void updateClientArea() throw() ;
+					virtual void updateClientArea() ;
 					 	
+						
 						
 					/**
 					 * Returns this widget's container surface.
@@ -548,8 +570,9 @@ namespace OSDL
 					 * its only event source.
 					 *
 					 */
-					virtual Surface & getContainer() throw() ;
+					virtual Surface & getContainer() ;
 								
+							
 																
 					/**					
 					 * Returns this widget's container surface as a 
@@ -559,15 +582,16 @@ namespace OSDL
 					 * its only event source.
 					 *
 					 * @note This 'const' method is useful so that 
-					 * calling method (ex : toString) can remain 'const' 
+					 * calling method (ex: toString) can remain 'const' 
 					 * as well.
 					 *
 					 */
-					virtual const Surface & getConstContainer() const throw() ;
+					virtual const Surface & getConstContainer() const ;
 																
 					
+					
 					/**
-					 * Draws the fundamental parts of a widget : widget 
+					 * Draws the fundamental parts of a widget: widget 
 					 * area cleaned accordingly to the current base color 
 					 * mode, and edges are drawn.
 					 *
@@ -577,19 +601,20 @@ namespace OSDL
 					 * and needs widget attributes.
 					 *
 					 */
-					virtual void drawFundamentals( Surface & targetSurface )
-						throw() ;
+					virtual void drawFundamentals( Surface & targetSurface ) ;
+					
 					
 					
 					/**
 					 * Tells whether this widget is decorated. 
 					 *
 					 * @note A widget is decorated if and only if at least 
-					 * one of its possible features (ex : draggable, movable,
+					 * one of its possible features (ex: draggable, movable,
 					 * etc.) is activated.
 					 *
 					 */
-					virtual bool isDecorated() const throw() ;		
+					virtual bool isDecorated() const ;		
+					
 					
 					
 					/**
@@ -598,20 +623,20 @@ namespace OSDL
 					 *
 					 * @param targetSurface must be specified since 
 					 * decorations are not always to be rendered directly 
-					 * on widget surface : for instance for back-buffered
+					 * on widget surface: for instance for back-buffered
 					 * widgets, another surface is targeted.
 					 *
 					 * @note Remains not static to allow easy override, 
 					 * and needs widget attributes.
 					 *
 					 */
-					virtual void drawDecorations( Surface & targetSurface )
-						throw() ;
+					virtual void drawDecorations( Surface & targetSurface ) ;
 							
 							
 							
 							
 					// Attributes section.		
+					
 					
 					
 					/**
@@ -622,16 +647,18 @@ namespace OSDL
 					Point2D _upperLeftCorner ;		
 
 
+
 					/**
 					 * The rectangular client area, defined in the 
 					 * referential of this widget.
 					 *
 					 * This area is the one left for this widget specific
-					 *  renderings (ex : any decorations excluded).
+					 *  renderings (ex: any decorations excluded).
 					 *
 					 */
 					UprightRectangle _clientArea ;
 					
+						
 										
 
 					/**
@@ -642,8 +669,10 @@ namespace OSDL
 					bool _decorated ;
 					
 					
+					
 					/// This Widget's title.
 					std::string _title ;
+
 
 
 					/**
@@ -651,22 +680,24 @@ namespace OSDL
 					 * maximized by the user.
 					 *
 					 * @note If set, this triggers the display of the
-					 * corresponding minimize/maximize icon : it implies 
+					 * corresponding minimize/maximize icon: it implies 
 					 * that the widget will be decorated.
 					 *
 					 */
 					bool _minMaximizable ;		
 
+						
 							
 					/**
 					 * Tells whether this widget can be dragged by the user.
 					 *
 					 * @note If set, this triggers the display of the
-					 * corresponding draggable icon : it implies that 
+					 * corresponding draggable icon: it implies that 
 					 * the widget will be decorated.
 					 *
 					 */
 					bool _draggable ;		
+						
 						
 																	
 					/**
@@ -674,22 +705,24 @@ namespace OSDL
 					 * hiding the whole widget but its decoration.
 					 *
 					 * @note If set, this triggers the display of the
-					 * corresponding wrappable icon : it implies that the 
+					 * corresponding wrappable icon: it implies that the 
 					 * widget will be decorated.
 					 *
 					 */
 					bool _wrappable ;		
+						
 																	
 							
 					/**
 					 * Tells whether this widget can be closed by the user.
 					 *
 					 * @note If set, this triggers the display of the
-					 * corresponding closable icon : it implies that 
+					 * corresponding closable icon: it implies that 
 					 * the widget will be decorated.
 					 *
 					 */
 					bool _closable ;		
+	
 	
 	
 					/**
@@ -701,6 +734,7 @@ namespace OSDL
 					 */
 					bool _hasFocus ;							
 					
+						
 							
 					
 					/**
@@ -711,6 +745,7 @@ namespace OSDL
 					 *
 					 */
 					BaseColorMode _baseColorMode ;
+					
 					
 					
 					/**
@@ -724,12 +759,14 @@ namespace OSDL
 					Pixels::ColorDefinition _baseColor ;
 					
 					
+					
 					/**
 					 * The base color, converted to this widget current 
 					 * pixel format, inherited from container.
 					 *
 					 */
 					Pixels::PixelColor _actualBaseColor ;
+					
 					
 					
 					/*
@@ -740,24 +777,28 @@ namespace OSDL
 					 */
 					
 					
+					
 					/// Color of widget edges.
 					static Pixels::ColorDefinition _EdgeColor ;
+
 
 					/// Color of widget title.
 					static Pixels::ColorDefinition _TitleColor ;
 
 
+
 					/**
 					 * Defines how a widget title should be horizontally 
-					 * aligned (default : Center).
+					 * aligned (default: Center).
 					 *
 					 */
 					static Text::HorizontalAlignment _TitleHorizontalAlignment ;
 
 
+
 					/**
 					 * Defines how a widget title should be vertically aligned.
-					 * (default : Center).
+					 * (default: Center).
 					 *
 					 */
 					static Text::VerticalAlignment _TitleVerticalAlignment ;
@@ -801,12 +842,14 @@ namespace OSDL
 					static Coordinate _TitleOffsetOrdinate ;
 					
 					
+					
 					/**
 					 * Default ordinate offset relative to widget upper 
 					 * left corner used to draw widget title bar.
 					 *
 					 */
 					static Coordinate _TitleBarOffsetOrdinate ;
+					
 					
 					
 					/**
@@ -818,7 +861,9 @@ namespace OSDL
 					
 					
 					
+					
 				private:	
+
 
 
 					/**
@@ -829,7 +874,8 @@ namespace OSDL
 					 * constructor is called, implicitly or not.
 					 * 
 					 */			 
-					explicit Widget( const Widget & source ) throw() ;
+					explicit Widget( const Widget & source ) ;
+			
 			
 			
 					/**
@@ -840,16 +886,18 @@ namespace OSDL
 					 * operator is called, implicitly or not.
 					 * 
 					 */			 
-					Widget & operator = ( const Widget & source ) throw() ;
+					Widget & operator = ( const Widget & source ) ;
 					
 					
-			} ;			
+			} ;	
+					
 											
 		}
 	
 	}
 
 }				
+
 
 
 #endif // OSDL_WIDGET_H_

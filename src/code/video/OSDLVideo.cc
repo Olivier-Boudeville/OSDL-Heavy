@@ -40,6 +40,7 @@ using std::string ;
 using std::pair ;
 
 
+
 /*
  * Disabled to avoid name clashes with Uint32 (SDL vs Ceylan): 
  * using namespace Ceylan ;
@@ -53,6 +54,7 @@ using namespace OSDL::Video::OpenGL ;
 
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>              // for OSDL_CACHE_OVERALL_SETTINGS and al 
 #endif // OSDL_USES_CONFIG_H
@@ -61,6 +63,7 @@ using namespace OSDL::Video::OpenGL ;
 #if OSDL_ARCH_NINTENDO_DS
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
 #endif // OSDL_ARCH_NINTENDO_DS
+
 
 
 #if OSDL_USES_AGAR
@@ -72,6 +75,7 @@ using namespace OSDL::Video::OpenGL ;
 #include <agar/gui/opengl.h>
 	
 #endif // OSDL_USES_AGAR	
+
 
 
 // Replicating these defines allows to enable them on a per-class basis:
@@ -132,6 +136,7 @@ SDL_FULLSCREEN	0x80000000 = 0b10000000000000000000000000000000
 
 */
 
+
 // Chosen not to collide with SDL constants:
 #define OSDL_WITHGUI 0x00000800
 
@@ -152,6 +157,7 @@ const Ceylan::Flags VideoModule::OpenGL           = SDL_OPENGL ;
 const Ceylan::Flags VideoModule::Resizable        = SDL_RESIZABLE ;
 const Ceylan::Flags VideoModule::WithGUI          = OSDL_WITHGUI ;
 const Ceylan::Flags VideoModule::NoFrame          = SDL_NOFRAME ;
+
 
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
@@ -175,7 +181,9 @@ const std::string VideoModule::_SDLEnvironmentVariables[] =
 } ;
 
 
+
 #else // OSDL_USES_SDL
+
 
 // Same as SDL:
 
@@ -198,6 +206,7 @@ const std::string VideoModule::_SDLEnvironmentVariables[] = {} ;
 
 
 
+
 bool VideoModule::_IsUsingOpenGL = false ;
 bool VideoModule::_DrawEndPoint  = false ;
 bool VideoModule::_AntiAliasing  = true  ;
@@ -214,7 +223,8 @@ const BitsPerPixel VideoModule::UseCurrentColorDepth = 0 ;
 #include "OSDLIncludeCorrecter.h"
 
 
-VideoModule::VideoModule() throw( VideoException ):
+
+VideoModule::VideoModule() :
 	Ceylan::Module( 
 		"OSDL video module",
 		"This is the root video module of OSDL",
@@ -305,7 +315,7 @@ VideoModule::~VideoModule() throw()
 
 
 
-bool VideoModule::hasScreenSurface() const throw()
+bool VideoModule::hasScreenSurface() const
 {
 
 	return ( _screen != 0 ) ;
@@ -314,7 +324,7 @@ bool VideoModule::hasScreenSurface() const throw()
 
 
 
-Surface & VideoModule::getScreenSurface() const throw ( VideoException )  
+Surface & VideoModule::getScreenSurface() const  
 {			
 
 	if ( _screen == 0 )
@@ -328,7 +338,6 @@ Surface & VideoModule::getScreenSurface() const throw ( VideoException )
 
 
 void VideoModule::setScreenSurface( Surface & newScreenSurface ) 
-	throw( VideoException )
 {
 
 	send( "Setting screen surface to " + newScreenSurface.toString(), 8 ) ;
@@ -344,7 +353,7 @@ void VideoModule::setScreenSurface( Surface & newScreenSurface )
 
 
 
-bool VideoModule::hasRenderer() const throw() 
+bool VideoModule::hasRenderer() const 
 {
 
 	return ( _renderer != 0 ) ;
@@ -354,7 +363,6 @@ bool VideoModule::hasRenderer() const throw()
 
 
 OSDL::Rendering::VideoRenderer & VideoModule::getRenderer() const 
-	throw( VideoException )
 {
 
 	if ( _renderer == 0 )
@@ -367,7 +375,7 @@ OSDL::Rendering::VideoRenderer & VideoModule::getRenderer() const
 
 
 
-void VideoModule::setRenderer( VideoRenderer & newRenderer ) throw()
+void VideoModule::setRenderer( VideoRenderer & newRenderer )
 {
 
 	if (  _renderer != 0 )
@@ -379,7 +387,7 @@ void VideoModule::setRenderer( VideoRenderer & newRenderer ) throw()
 
 
 
-bool VideoModule::hasOpenGLContext() const throw() 
+bool VideoModule::hasOpenGLContext() const 
 {
 
 	return ( _openGLcontext != 0 ) ;
@@ -389,7 +397,6 @@ bool VideoModule::hasOpenGLContext() const throw()
 
 
 OpenGL::OpenGLContext & VideoModule::getOpenGLContext() const 
-	throw( VideoException )
 {
 
 	if ( _openGLcontext == 0 )
@@ -403,7 +410,6 @@ OpenGL::OpenGLContext & VideoModule::getOpenGLContext() const
 
 
 void VideoModule::setOpenGLContext( OpenGL::OpenGLContext & newOpenGLContext )
-	throw()
 {
 
 	if ( _openGLcontext != 0 )
@@ -419,8 +425,7 @@ void VideoModule::setOpenGLContext( OpenGL::OpenGLContext & newOpenGLContext )
 
 
 BitsPerPixel VideoModule::getBestColorDepthForMode( 
-	Length width, Length height, BitsPerPixel askedBpp, 
-    Ceylan::Flags flags ) throw()
+	Length width, Length height, BitsPerPixel askedBpp, Ceylan::Flags flags )
 {
 
 #if OSDL_USES_SDL
@@ -437,7 +442,7 @@ BitsPerPixel VideoModule::getBestColorDepthForMode(
 
 
 
-bool VideoModule::isDisplayInitialized() const throw()
+bool VideoModule::isDisplayInitialized() const
 {
 
 	return _displayInitialized ;
@@ -447,8 +452,7 @@ bool VideoModule::isDisplayInitialized() const throw()
 
 
 Ceylan::Flags VideoModule::setMode( Length width, Length height, 
-		BitsPerPixel askedBpp, Ceylan::Flags flags, OpenGL::Flavour flavour ) 
-	throw ( VideoException ) 
+	BitsPerPixel askedBpp, Ceylan::Flags flags, OpenGL::Flavour flavour ) 
 {
 	
 #if OSDL_USES_SDL
@@ -665,8 +669,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 
 
 
-void VideoModule::resize( Length newWidth, Length newHeight ) 
-	throw( VideoException )
+void VideoModule::resize( Length newWidth, Length newHeight ) 	
 {
 
 	send( "Resizing window to (" + Ceylan::toString( newWidth ) + ", "
@@ -703,7 +706,7 @@ void VideoModule::resize( Length newWidth, Length newHeight )
 
 
 
-void VideoModule::redraw() throw( VideoException )
+void VideoModule::redraw()
 {
 
 	if ( _screen == 0 )
@@ -713,7 +716,7 @@ void VideoModule::redraw() throw( VideoException )
 	/* @fixme Change 
 	if ( _renderer )
 	{
-		_renderer->redraw() ; or wait until next frame ?
+		_renderer->redraw() ; or wait until next frame?
 	}
 	else	
 	*/
@@ -723,7 +726,7 @@ void VideoModule::redraw() throw( VideoException )
 
 
 
-void VideoModule::toggleFullscreen() throw( VideoException )
+void VideoModule::toggleFullscreen()
 {
 
 #if OSDL_USES_SDL
@@ -742,9 +745,11 @@ void VideoModule::toggleFullscreen() throw( VideoException )
 
 
 
+
 #if OSDL_ARCH_NINTENDO_DS
 
 #if defined(OSDL_RUNS_ON_ARM9)
+
 
 /**
  * Writes specified 16-bit value to specified address, with specific byte order.
@@ -760,6 +765,7 @@ void write16( Ceylan::Uint16* address, Ceylan::Uint16 value)
 	*second = value >>8 ;
 	
 }
+
 
 
 /// Writes specified 32-bit value to specified addres, with specific byte order.
@@ -778,14 +784,14 @@ void write32( Ceylan::Uint32* address, Ceylan::Uint32 value)
 	
 }
 
+
 #endif //  defined(OSDL_RUNS_ON_ARM9)
 
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
 
-void VideoModule::makeBMPScreenshot( const string & screenshotFilename ) 
-	throw( VideoException )
+void VideoModule::makeBMPScreenshot( const string & screenshotFilename ) 	
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -929,7 +935,8 @@ void VideoModule::makeBMPScreenshot( const string & screenshotFilename )
 }	
 
 
-bool VideoModule::getEndPointDrawState() const throw()
+
+bool VideoModule::getEndPointDrawState() const
 {
 
 	return _drawEndPoint ;
@@ -938,7 +945,7 @@ bool VideoModule::getEndPointDrawState() const throw()
 
 
 
-void VideoModule::setEndPointDrawState( bool newState ) throw()
+void VideoModule::setEndPointDrawState( bool newState )
 {
 
 	_drawEndPoint = newState ;
@@ -950,7 +957,7 @@ void VideoModule::setEndPointDrawState( bool newState ) throw()
 
 
 
-bool VideoModule::getAntiAliasingState() const throw()
+bool VideoModule::getAntiAliasingState() const
 {
 
 	return _antiAliasing ;
@@ -959,7 +966,7 @@ bool VideoModule::getAntiAliasingState() const throw()
 
 
 
-void VideoModule::setAntiAliasingState( bool newState ) throw()
+void VideoModule::setAntiAliasingState( bool newState )
 {
 
 	_antiAliasing = newState ;
@@ -971,7 +978,7 @@ void VideoModule::setAntiAliasingState( bool newState ) throw()
 
 
 
-std::string VideoModule::getDriverName() const throw( VideoException )
+std::string VideoModule::getDriverName() const
 {
 
 	return VideoModule::GetDriverName() ;
@@ -981,7 +988,7 @@ std::string VideoModule::getDriverName() const throw( VideoException )
 
 
 void VideoModule::setWindowCaption( const string & newTitle,
-	 const string & newIconName ) throw()
+	 const string & newIconName )
 {
 
 #if OSDL_USES_SDL
@@ -994,7 +1001,7 @@ void VideoModule::setWindowCaption( const string & newTitle,
 
 
 
-void VideoModule::getWindowCaption( string & title, string & iconName ) throw()
+void VideoModule::getWindowCaption( string & title, string & iconName )
 {
 
 #if OSDL_USES_SDL
@@ -1015,8 +1022,7 @@ void VideoModule::getWindowCaption( string & title, string & iconName ) throw()
 
 
 
-void VideoModule::setWindowIcon( const std::string & filename ) 
-	throw( VideoException ) 
+void VideoModule::setWindowIcon( const std::string & filename )  
 {
 
 #if OSDL_USES_SDL
@@ -1076,7 +1082,7 @@ void VideoModule::setWindowIcon( const std::string & filename )
 
 
 
-bool VideoModule::iconifyWindow() throw()
+bool VideoModule::iconifyWindow()
 {
 
 #if OSDL_USES_SDL
@@ -1094,7 +1100,7 @@ bool VideoModule::iconifyWindow() throw()
 
 
 
-bool VideoModule::getFrameAccountingState() throw()
+bool VideoModule::getFrameAccountingState()
 {
 
 	return _frameAccountingState ;
@@ -1103,7 +1109,7 @@ bool VideoModule::getFrameAccountingState() throw()
 
 
 
-void VideoModule::setFrameAccountingState( bool newState ) throw()
+void VideoModule::setFrameAccountingState( bool newState )
 {
 
 	_frameAccountingState = newState ;
@@ -1112,7 +1118,7 @@ void VideoModule::setFrameAccountingState( bool newState ) throw()
 
 
 
-bool VideoModule::isUsingOpenGL() const throw()
+bool VideoModule::isUsingOpenGL() const
 {
 
 	return hasOpenGLContext() ;
@@ -1121,8 +1127,7 @@ bool VideoModule::isUsingOpenGL() const throw()
 
 
 
-const string VideoModule::toString( Ceylan::VerbosityLevels level ) 
-	const throw() 
+const string VideoModule::toString( Ceylan::VerbosityLevels level ) const 
 {
 	
 	string res = "Video module, " ;
@@ -1166,11 +1171,12 @@ const string VideoModule::toString( Ceylan::VerbosityLevels level )
 
 
 
+
 // Static section.
 
 
 
-bool VideoModule::IsDisplayInitialized() throw()
+bool VideoModule::IsDisplayInitialized()
 {
 
 	/*
@@ -1196,7 +1202,7 @@ bool VideoModule::IsDisplayInitialized() throw()
 
 
 
-bool VideoModule::GetEndPointDrawState() throw() 
+bool VideoModule::GetEndPointDrawState() 
 {
 
 #if OSDL_CACHE_OVERALL_SETTINGS
@@ -1246,7 +1252,7 @@ bool VideoModule::GetEndPointDrawState() throw()
 
 
 
-bool VideoModule::GetAntiAliasingState() throw()
+bool VideoModule::GetAntiAliasingState()
 {
 
 #if OSDL_CACHE_OVERALL_SETTINGS
@@ -1294,7 +1300,7 @@ bool VideoModule::GetAntiAliasingState() throw()
 
 
 
-string VideoModule::GetDriverName() throw( VideoException )
+string VideoModule::GetDriverName()
 {
 
 #if OSDL_USES_SDL
@@ -1317,7 +1323,7 @@ string VideoModule::GetDriverName() throw( VideoException )
 
 
 
-string VideoModule::InterpretFlags( Ceylan::Flags flags ) throw()
+string VideoModule::InterpretFlags( Ceylan::Flags flags )
 {
 
 	std::list<string> res ;
@@ -1452,7 +1458,7 @@ string VideoModule::InterpretFlags( Ceylan::Flags flags ) throw()
 
 
 
-bool VideoModule::HardwareSurfacesCanBeCreated() throw( VideoException )
+bool VideoModule::HardwareSurfacesCanBeCreated()
 {
 
 #if OSDL_USES_SDL
@@ -1476,7 +1482,7 @@ bool VideoModule::HardwareSurfacesCanBeCreated() throw( VideoException )
 
 				 
 				 
-bool VideoModule::WindowManagerAvailable() throw( VideoException )
+bool VideoModule::WindowManagerAvailable()
 {
 
 #if OSDL_USES_SDL
@@ -1500,7 +1506,7 @@ bool VideoModule::WindowManagerAvailable() throw( VideoException )
 				 
 
 
-bool VideoModule::HardwareToHardwareBlitsAccelerated() throw( VideoException )
+bool VideoModule::HardwareToHardwareBlitsAccelerated()
 {
 
 #if OSDL_USES_SDL
@@ -1526,8 +1532,7 @@ bool VideoModule::HardwareToHardwareBlitsAccelerated() throw( VideoException )
 
 
 				 
-bool VideoModule::HardwareToHardwareColorkeyBlitsAccelerated() 
-	throw( VideoException ) 			 
+bool VideoModule::HardwareToHardwareColorkeyBlitsAccelerated()  			 
 {
 
 #if OSDL_USES_SDL
@@ -1553,8 +1558,7 @@ bool VideoModule::HardwareToHardwareColorkeyBlitsAccelerated()
 
 
 				 
-bool VideoModule::HardwareToHardwareAlphaBlitsAccelerated() 
-	throw( VideoException )
+bool VideoModule::HardwareToHardwareAlphaBlitsAccelerated()
 {
 
 #if OSDL_USES_SDL
@@ -1579,7 +1583,7 @@ bool VideoModule::HardwareToHardwareAlphaBlitsAccelerated()
 
 
 				 
-bool VideoModule::SoftwareToHardwareBlitsAccelerated() throw( VideoException )
+bool VideoModule::SoftwareToHardwareBlitsAccelerated()
 {
 
 #if OSDL_USES_SDL
@@ -1604,8 +1608,7 @@ bool VideoModule::SoftwareToHardwareBlitsAccelerated() throw( VideoException )
 
 
 				 
-bool VideoModule::SoftwareToHardwareColorkeyBlitsAccelerated() 
-	throw( VideoException )			 
+bool VideoModule::SoftwareToHardwareColorkeyBlitsAccelerated() 				 
 {
 
 #if OSDL_USES_SDL
@@ -1631,7 +1634,6 @@ bool VideoModule::SoftwareToHardwareColorkeyBlitsAccelerated()
 				 
 				 
 bool VideoModule::SoftwareToHardwareAlphaBlitsAccelerated() 
-	throw( VideoException )
 {
 
 #if OSDL_USES_SDL
@@ -1657,7 +1659,7 @@ bool VideoModule::SoftwareToHardwareAlphaBlitsAccelerated()
 
 
 
-bool VideoModule::ColorFillsAccelerated() throw( VideoException )
+bool VideoModule::ColorFillsAccelerated()
 {
 
 #if OSDL_USES_SDL
@@ -1683,7 +1685,7 @@ bool VideoModule::ColorFillsAccelerated() throw( VideoException )
 
 
 				 
-Ceylan::Uint32 VideoModule::GetVideoMemorySize() throw( VideoException ) 
+Ceylan::Uint32 VideoModule::GetVideoMemorySize() 
 {
 
 #if OSDL_USES_SDL
@@ -1707,10 +1709,8 @@ Ceylan::Uint32 VideoModule::GetVideoMemorySize() throw( VideoException )
 
 
 				 
-Pixels::PixelFormat VideoModule::GetVideoDevicePixelFormat() 
-	throw( VideoException )
+Pixels::PixelFormat VideoModule::GetVideoDevicePixelFormat() 	
 {
-
 
 #if OSDL_USES_SDL
 
@@ -1733,7 +1733,7 @@ Pixels::PixelFormat VideoModule::GetVideoDevicePixelFormat()
 
 
 
-string VideoModule::DescribeVideoCapabilities() throw( VideoException )
+string VideoModule::DescribeVideoCapabilities()
 {
 
 	string result ;
@@ -1832,8 +1832,7 @@ string VideoModule::DescribeVideoCapabilities() throw( VideoException )
 
 
 bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions, 
-		Ceylan::Flags flags, Pixels::PixelFormat * pixelFormat ) 
-	throw( VideoException )
+	Ceylan::Flags flags, Pixels::PixelFormat * pixelFormat ) 
 {
 	
 #if OSDL_USES_SDL
@@ -1918,7 +1917,7 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 
 
 string VideoModule::DescribeAvailableDefinitions( Ceylan::Flags flags, 
-	Pixels::PixelFormat * pixelFormat ) throw( VideoException ) 
+	Pixels::PixelFormat * pixelFormat ) 
 {
 		
 #if OSDL_USES_SDL
@@ -1991,7 +1990,7 @@ string VideoModule::DescribeAvailableDefinitions( Ceylan::Flags flags,
 
 
 
-string VideoModule::DescribeEnvironmentVariables() throw()
+string VideoModule::DescribeEnvironmentVariables()
 {
 
 	Ceylan::Uint16 varCount =

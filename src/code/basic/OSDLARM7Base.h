@@ -60,8 +60,10 @@ void handleReceivedIntegratingLibrarySpecificCommand( FIFOCommandID commandID,
  */
 
 
+
 /* Initializes OSDL and its prerequesites. */
 void initOSDL() ;
+
 
 
 /**
@@ -69,6 +71,7 @@ void initOSDL() ;
  *
  */
 void manageMP3Playback() ;
+
 
 
 #endif // OSDL_ARM7_BASE_H_

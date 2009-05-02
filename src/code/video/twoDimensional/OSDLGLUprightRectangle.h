@@ -43,25 +43,32 @@
 namespace Ceylan 
 {
 
+
 	namespace Maths 
 	{
+	
 	
 		namespace Linear 
 		{
 
+
 			// UprightRectangleGL can be defined thanks to Bipoint instances.
 			class Bipoint ;
+		
 		
 		}
 	
 	}
 	
+	
 }		
 		
 
 
+
 namespace OSDL 
 {
+
 
 	namespace Video 
 	{
@@ -72,8 +79,10 @@ namespace OSDL
 		class Surface ;
 		
 		
+		
 		namespace TwoDimensional
 		{
+		
 		
 		
 			
@@ -113,7 +122,8 @@ namespace OSDL
 					UprightRectangleGL( 
 						const Ceylan::Maths::Linear::Bipoint & upperLeftCorner,
 						const Ceylan::Maths::Linear::Bipoint & lowerRightCorner
-					) throw( VideoException ) ;
+					) ;
+					
 					
 					
 					/**
@@ -123,8 +133,8 @@ namespace OSDL
 					 */
 					UprightRectangleGL( 
 						const Ceylan::Maths::Linear::Bipoint & upperLeftCorner, 
-						OpenGL::GLLength width, OpenGL::GLLength height )
-							throw() ;
+						OpenGL::GLLength width, OpenGL::GLLength height ) ;
+					
 					
 					
 					/**
@@ -134,17 +144,19 @@ namespace OSDL
 					 */
 					UprightRectangleGL( 
 						OpenGL::GLCoordinate x, OpenGL::GLCoordinate y,
-						OpenGL::GLLength width, OpenGL::GLLength height )
-							throw() ;
+						OpenGL::GLLength width, OpenGL::GLLength height ) ;
 					 
+					
 					 
 					/// Basic destructor, so that it remains virtual.
 					virtual ~UprightRectangleGL() throw() ;
 	
 	
+	
 					/// Returns this UprightRectangleGL's upper left corner.
 					virtual Ceylan::Maths::Linear::Bipoint 
-						getUpperLeftCorner() const throw() ; 
+						getUpperLeftCorner() const ; 
+					
 					
 					
 					/**
@@ -153,45 +165,45 @@ namespace OSDL
 					 *
 					 */
 					virtual void setUpperLeftCorner( 
-						Ceylan::Maths::Linear::Bipoint & newUpperLeftCorner )
-							throw() ; 
+						Ceylan::Maths::Linear::Bipoint & newUpperLeftCorner ) ; 
 					
 					
 					
 					/// Returns directly the abscissa of upper left corner.
-					virtual OpenGL::GLCoordinate getUpperLeftAbscissa() 
-						const throw() ;
+					virtual OpenGL::GLCoordinate getUpperLeftAbscissa()	const ;
 
 
 					/// Returns directly the ordiante of upper left corner.
-					virtual OpenGL::GLCoordinate getUpperLeftOrdinate() 
-						const throw() ;
+					virtual OpenGL::GLCoordinate getUpperLeftOrdinate() const ;
+					
 					
 					
 					
 					/// Returns this UprightRectangleGL's width.
-					virtual OpenGL::GLLength getWidth() const throw() ;
+					virtual OpenGL::GLLength getWidth() const ;
 				
 				
 					/// Sets this UprightRectangleGL's width.
-					virtual void setWidth( OpenGL::GLLength newWidth ) throw() ;
+					virtual void setWidth( OpenGL::GLLength newWidth ) ;
+	
 	
 	
 	
 					/// Returns this UprightRectangleGL's height.
-					virtual OpenGL::GLLength getHeight() const throw() ;
+					virtual OpenGL::GLLength getHeight() const ;
 				
 				
 					/// Sets this UprightRectangleGL's height.
-					virtual void setHeight( OpenGL::GLLength newHeight ) 
-						throw() ;
+					virtual void setHeight( OpenGL::GLLength newHeight ) ;
 						
+	
 	
 					/**
 					 * Draws directly this UprightRectangleGL thanks to OpenGL.
 					 *
 					 */
-					virtual bool draw() const throw() ;
+					virtual bool draw() const ;
+					
 					
 					
 	 	            /**
@@ -207,24 +219,29 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+				
 				
 	
 	
 				protected:
 				
 				
+				
 					/// Upper left corner's abscissa (horizontal coordinate).
 					OpenGL::GLCoordinate _x ;
+				
 				
 				
 					/// Upper left corner's ordinate (vertical coordinate).
 					OpenGL::GLCoordinate _y ;
 				
 				
+				
+				
 					/// Width is counted from current abscissa, going right.
 					OpenGL::GLLength _width ;
+				
 				
 				
 					/// Height is count from current ordinate, going down.
@@ -232,7 +249,9 @@ namespace OSDL
 			
 			
 			
+			
 				private:
+				
 				
 				
 					/**
@@ -244,7 +263,7 @@ namespace OSDL
 					 * 
 					 */			 
 					explicit UprightRectangleGL( 
-						const UprightRectangleGL & source ) throw() ;
+						const UprightRectangleGL & source ) ;
 			
 			
 					/**
@@ -256,10 +275,11 @@ namespace OSDL
 					 * 
 					 */			 
 					UprightRectangleGL & operator = ( 
-						const UprightRectangleGL & source ) throw() ;
+						const UprightRectangleGL & source ) ;
 	
 	
 			} ;	
+
 
 		}
 		
@@ -271,7 +291,7 @@ namespace OSDL
 
 /// To output its state in an output stream.
 OSDL_DLL std::ostream & operator << ( std::ostream & os, 
-	OSDL::Video::TwoDimensional::UprightRectangleGL & rect ) throw() ;
+	OSDL::Video::TwoDimensional::UprightRectangleGL & rect ) ;
 
 
 

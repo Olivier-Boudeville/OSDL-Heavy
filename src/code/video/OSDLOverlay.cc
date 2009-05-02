@@ -57,6 +57,8 @@ typedef struct LowLevelOverlay {} ;
 
 
 
+
+
 // Note: overlay support is currently almost completely not tested.
 
 
@@ -66,12 +68,13 @@ using std::string ;
 
 
 
-OverlayException::OverlayException( const std::string & message ) throw():
+OverlayException::OverlayException( const std::string & message ) :
 	VideoException( message )
 {
 
 }
 
+	
 	
 OverlayException::~OverlayException() throw()
 {
@@ -80,11 +83,11 @@ OverlayException::~OverlayException() throw()
 
 	
 	
+	
 // Overlay section.
 
 	
-Overlay::Overlay( Length width, Length height, EncodingFormat format ) 
-		throw( OverlayException ):
+Overlay::Overlay( Length width, Length height, EncodingFormat format ) :
 	_overlay( 0 ),
 	_width  ( 0 ),
 	_height ( 0 )
@@ -119,6 +122,7 @@ Overlay::Overlay( Length width, Length height, EncodingFormat format )
 }
 
 
+
 Overlay::~Overlay() throw()
 {
 
@@ -132,7 +136,8 @@ Overlay::~Overlay() throw()
 }
 
 
-void Overlay::blit( Coordinate x, Coordinate y ) const throw( OverlayException )
+
+void Overlay::blit( Coordinate x, Coordinate y ) const
 {
 
 #if OSDL_USES_SDL
@@ -154,7 +159,8 @@ void Overlay::blit( Coordinate x, Coordinate y ) const throw( OverlayException )
 }
 
 
-void Overlay::blit() const throw( OverlayException )
+
+void Overlay::blit() const
 {
 
 	blit( 0, 0 ) ;
@@ -162,7 +168,8 @@ void Overlay::blit() const throw( OverlayException )
 }
 
 
-bool Overlay::mustBeLocked() const throw()
+
+bool Overlay::mustBeLocked() const
 {
 	
 	// @fixme
@@ -171,7 +178,8 @@ bool Overlay::mustBeLocked() const throw()
 }
 
 
-void Overlay::preUnlock() throw()
+
+void Overlay::preUnlock()
 {
 
 #if OSDL_USES_SDL
@@ -188,7 +196,8 @@ void Overlay::preUnlock() throw()
 }
 
 
-void Overlay::postLock() throw()
+
+void Overlay::postLock()
 {
 
 #if OSDL_USES_SDL
@@ -205,7 +214,8 @@ void Overlay::postLock() throw()
 }
 
 
-const string Overlay::toString( Ceylan::VerbosityLevels level ) const throw()
+
+const string Overlay::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	return "Overlay whose original size is width = " 

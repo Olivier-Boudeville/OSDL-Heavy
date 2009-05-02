@@ -51,8 +51,10 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace MVC
@@ -68,9 +70,11 @@ namespace OSDL
 	}
 	
 		
+		
 	namespace Events
 	{
 			
+		
 		
 		/**
 		 * Pointer to functions managing specific keyboard events, i.e. 
@@ -86,21 +90,23 @@ namespace OSDL
 		 *
 		 */ 
 		typedef void (* KeyboardEventHandler)( 
-			const KeyboardEvent & keyboardEvent ) /* throw() */ ;
+			const KeyboardEvent & keyboardEvent ) ;
 		
 		
 		
 		/// Mother class for all keyboard exceptions. 		
 		class OSDL_DLL KeyboardException: public EventsException 
 		{
+		
 			public: 
-				explicit KeyboardException( const std::string & reason ) 
-					throw() ; 
+				explicit KeyboardException( const std::string & reason ) ; 
+				
 				virtual ~KeyboardException() throw() ; 
 				
 		} ;
 
 
+				
 				
 		/**
 		 * Describes what is the current mode used to handle key presses 
@@ -125,6 +131,8 @@ namespace OSDL
 		enum KeyboardMode { rawInput, textInput } ;
 
 		
+		
+		
 		/**
 		 * Handler for keyboard.
 		 *
@@ -142,6 +150,7 @@ namespace OSDL
 			 *
 			 */
 			friend class OSDL::Events::EventsModule ;
+
 
 			
 			public:
@@ -515,6 +524,7 @@ namespace OSDL
 
 
 
+
 				/**
 				 * List of all currently available key modifiers 
 				 * (control, alt, meta, etc.).
@@ -576,6 +586,7 @@ namespace OSDL
 				
 
 
+
 				/**
 				 * Constructs a new keyboard handler. 
 				 *
@@ -595,8 +606,8 @@ namespace OSDL
 				 *
 				 */
 				explicit KeyboardHandler( KeyboardMode initialMode = rawInput, 
-						bool useSmarterDefaultKeyHandler = false ) 
-					throw( InputDeviceHandlerException ) ;
+						bool useSmarterDefaultKeyHandler = false ) ;
+				
 				
 				
 				/**
@@ -605,6 +616,7 @@ namespace OSDL
 				 */
 				virtual ~KeyboardHandler() throw() ;
 				
+								
 								
 				/**
 				 * Links the specified raw key to specified controller, so 
@@ -623,7 +635,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void linkToController( KeyIdentifier rawKey, 
-					OSDL::MVC::Controller & controller ) throw() ;
+					OSDL::MVC::Controller & controller ) ;
+				
 				
 				
 				/**
@@ -643,7 +656,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void linkToController( Ceylan::Unicode unicode, 
-					OSDL::MVC::Controller & controller ) throw() ;
+					OSDL::MVC::Controller & controller ) ;
+				
 				
 				
 				/**
@@ -659,7 +673,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void linkToFocusController(
-					OSDL::MVC::Controller & controller ) throw() ;
+					OSDL::MVC::Controller & controller ) ;
+				
 				
 				
 				/**
@@ -675,7 +690,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void linkToHandler( KeyIdentifier rawKey,
-					KeyboardEventHandler handler ) throw() ;
+					KeyboardEventHandler handler ) ;
+			
 			
 				
 				/**
@@ -691,7 +707,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void linkToHandler( Ceylan::Unicode unicode,
-					KeyboardEventHandler handler ) throw() ;
+					KeyboardEventHandler handler ) ;
 				
 				
 				
@@ -706,7 +722,8 @@ namespace OSDL
 				 * text input keyboard modes.
 				 *
 				 */
-				virtual void setSmarterDefaultKeyHandlers() throw() ;
+				virtual void setSmarterDefaultKeyHandlers() ;
+				
 				
 
 				/**
@@ -716,7 +733,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setDefaultRawKeyHandler( 
-					KeyboardEventHandler newHandler ) throw() ;
+					KeyboardEventHandler newHandler ) ;
+				
 				
 				
 				/**
@@ -726,7 +744,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setDefaultUnicodeHandler( 
-					KeyboardEventHandler newHandler ) throw() ;
+					KeyboardEventHandler newHandler ) ;
+	
 	
 								
 				/**
@@ -741,12 +760,13 @@ namespace OSDL
 				 *
 				 */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 
 				// Static section:
+
 
 
 				/**
@@ -760,7 +780,8 @@ namespace OSDL
 				 * therefore to be static.
 				 *
 				 */
-				static KeyboardMode GetMode() throw() ;
+				static KeyboardMode GetMode() ;
+				
 				
 
 				/**
@@ -772,7 +793,8 @@ namespace OSDL
 				 * therefore to be static.
 				 *
 				 */
-				static void SetMode( KeyboardMode newMode ) throw() ;
+				static void SetMode( KeyboardMode newMode ) ;
+
 
 
 				/**
@@ -781,7 +803,8 @@ namespace OSDL
 				 * @param key the key to describe.
 				 *
 				 */
-				static std::string DescribeKey( KeyIdentifier key ) throw() ;
+				static std::string DescribeKey( KeyIdentifier key ) ;
+				
 				
 				
 				/**
@@ -791,8 +814,8 @@ namespace OSDL
 				 * (alt, control, meta, etc.).
 				 *
 				 */
-				static std::string DescribeModifier( KeyModifier modifier )
-					throw() ;
+				static std::string DescribeModifier( KeyModifier modifier ) ;
+				
 				
 				
 				/**
@@ -801,8 +824,8 @@ namespace OSDL
 				 * @param value the Unicode value to describe.
 				 *
 				 */
-				static std::string DescribeUnicode( Ceylan::Unicode value )
-					throw() ;
+				static std::string DescribeUnicode( Ceylan::Unicode value ) ;
+				
 				
 				
 				/**
@@ -812,6 +835,7 @@ namespace OSDL
 				 */
 				static const Ceylan::System::Millisecond
 					DefaultDelayBeforeKeyRepeat ;
+	
 	
 	
 				/**
@@ -826,6 +850,7 @@ namespace OSDL
 	
 				 		
 
+						
 							
 		protected:
 		
@@ -839,7 +864,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void focusGained(
-					const FocusEvent & keyboardFocusEvent ) throw() ;
+					const FocusEvent & keyboardFocusEvent ) ;
+				
 				
 				
 				/**
@@ -850,7 +876,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void focusLost( 
-					const FocusEvent & keyboardFocusEvent ) throw() ;
+					const FocusEvent & keyboardFocusEvent ) ;
 				
 				
 				
@@ -869,9 +895,9 @@ namespace OSDL
 				 * @note Expected to be triggered by the EventsModule.
 				 *
 				 */
-				virtual void keyPressed( const KeyboardEvent & keyboardEvent )
-					throw() ;
+				virtual void keyPressed( const KeyboardEvent & keyboardEvent ) ;
 				
+		
 				
 				/**
 				 * Called whenever a key was released, so that its controller,
@@ -888,8 +914,7 @@ namespace OSDL
 				 * @note Expected to be triggered by the EventsModule.
 				 *
 				 */
-				virtual void keyReleased( const KeyboardEvent & keyboardEvent )
-					throw() ;
+				virtual void keyReleased( const KeyboardEvent & keyboardEvent );
 
 
 				
@@ -922,6 +947,7 @@ namespace OSDL
 					_rawKeyControllerMap ;
 				
 				
+				
 				/** 
 				 * Fall-back map used whenever a raw key was pressed or 
 				 * released without being registered in the map making 
@@ -944,6 +970,7 @@ namespace OSDL
 					_rawKeyHandlerMap ;
 				
 				
+				
 				/** 
 				 * Allows to link a controller to a specific Unicode, 
 				 * when in text input mode.
@@ -959,6 +986,7 @@ namespace OSDL
 				 */
 				std::map<Ceylan::Unicode, OSDL::MVC::Controller *>
 					_unicodeControllerMap ;
+				
 				
 				
 				/** 
@@ -985,8 +1013,10 @@ namespace OSDL
 				std::map<Ceylan::Unicode, KeyboardEventHandler>
 					_unicodeHandlerMap ;
 				
+				
 
 #pragma warning( pop ) 
+
 
 
 
@@ -1000,6 +1030,7 @@ namespace OSDL
 				KeyboardEventHandler _defaultRawKeyHandler ;
 				
 				
+				
 				/**
 				 * Default Unicode event handler, does nothing, 
 				 * but can log keyboard events.
@@ -1008,6 +1039,7 @@ namespace OSDL
 				 *
 				 */
 				KeyboardEventHandler _defaultUnicodeHandler ;
+				
 				
 				
 				/**
@@ -1019,6 +1051,7 @@ namespace OSDL
 				OSDL::MVC::Controller * _focusController ;
 				
 				
+				
 				/**
 				 * Records the status of Unicode input before this handler 
 				 * was created, so that it can be restored.
@@ -1028,7 +1061,9 @@ namespace OSDL
 
 
 
+
 		private:
+		
 		
 		
 				/**
@@ -1039,8 +1074,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit KeyboardHandler( const KeyboardHandler & source )
-					throw() ;
+				explicit KeyboardHandler( const KeyboardHandler & source ) ;
+			
 			
 			
 				/**
@@ -1051,11 +1086,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				KeyboardHandler & operator = ( const KeyboardHandler & source )
-					throw() ;
+				KeyboardHandler & operator = ( const KeyboardHandler & source );
 										
 				
 		} ;
+		
 	
 	}	
 	
@@ -1064,3 +1099,4 @@ namespace OSDL
 
 
 #endif // OSDL_KEYBOARD_HANDLER_H_
+

@@ -45,15 +45,15 @@ using namespace OSDL::MVC ;
 
 
 
+
 // PeriodicalModel section.
 
 
 PeriodicalModel::PeriodicalModel( 
-	Period period,
-	bool autoRegister,  
-	ObjectSchedulingPolicy policy,
-	Weight weight ) 
-		throw( SchedulingException ) : 
+		Period period,
+		bool autoRegister,  
+		ObjectSchedulingPolicy policy,
+		Weight weight ) : 
 	Model(),	
 	PeriodicalActiveObject( period, autoRegister, policy, weight )	
 {
@@ -70,8 +70,7 @@ PeriodicalModel::~PeriodicalModel() throw()
 
 
 
-const string PeriodicalModel::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string PeriodicalModel::toString( Ceylan::VerbosityLevels level ) const
 {	
 
 	return "OSDL MVC periodical model, which is a " 
@@ -87,13 +86,13 @@ const string PeriodicalModel::toString( Ceylan::VerbosityLevels level )
 // ProgrammedModel section.
 
 
+
 ProgrammedModel::ProgrammedModel( 
-	const list<SimulationTick> & triggeringTicks,
-	bool absolutelyDefined,
-	bool autoRegister, 
-	ObjectSchedulingPolicy policy,
-	Weight weight )
-		throw(SchedulingException ) :
+		const list<SimulationTick> & triggeringTicks,
+		bool absolutelyDefined,
+		bool autoRegister, 
+		ObjectSchedulingPolicy policy,
+		Weight weight ) :
 	Model(),	
 	ProgrammedActiveObject( triggeringTicks, absolutelyDefined, autoRegister,
 		policy, weight )
@@ -105,12 +104,11 @@ ProgrammedModel::ProgrammedModel(
 
 
 ProgrammedModel::ProgrammedModel( 
-	SimulationTick triggerTick, 
-	bool absolutelyDefined, 
-	bool autoRegister, 
-	ObjectSchedulingPolicy policy, 
-	Weight weight ) 
-		throw( SchedulingException ) :
+		SimulationTick triggerTick, 
+		bool absolutelyDefined, 
+		bool autoRegister, 
+		ObjectSchedulingPolicy policy, 
+		Weight weight ) :
 	Model(),	
 	ProgrammedActiveObject( triggerTick, absolutelyDefined, autoRegister,
 		policy, weight )
@@ -128,8 +126,7 @@ ProgrammedModel::~ProgrammedModel() throw()
 
 
 
-const string ProgrammedModel::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string ProgrammedModel::toString( Ceylan::VerbosityLevels level ) const
 {	
 
 	return "OSDL MVC programmed model, which is a " 

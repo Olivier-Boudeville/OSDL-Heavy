@@ -30,6 +30,7 @@
 #include <string>
 
 
+
 namespace OSDL
 {
 
@@ -49,11 +50,13 @@ namespace OSDL
 
 	/*
 	 * NEVER check-in this file if there is no more OSDL_LIBTOOL_VERSION 
-	 * above !
+	 * above!
 	 *
 	 */
 		
+		
 }
+
 
 
 #endif // OSDL_HEADER_VERSION_H_

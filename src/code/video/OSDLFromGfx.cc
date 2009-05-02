@@ -54,6 +54,7 @@ using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 
+
 /* 
  * Taken litterally (verbatim) from SDL_gfx sources (SDL_gfxPrimitives.c) 
  * after this comment, from clipping macros to pixelColorNolock (included),
@@ -66,28 +67,36 @@ using namespace Ceylan::Log ;
  */
 
 
+
 // Forward declarations.
 
 int filledCircleColorNotBlended( SDL_Surface * dst, 
 	Ceylan::Sint16 x, Ceylan::Sint16 y,
 	Ceylan::Sint16 r, OSDL::Video::Pixels::ColorDefinition ) ;
 
+
 static int clipLine(SDL_Surface * dst, Ceylan::Sint16 * x1, Ceylan::Sint16 * y1, Ceylan::Sint16 * x2, Ceylan::Sint16 * y2) ;
+
 
 
 int VLineAlpha(SDL_Surface * dst, Ceylan::Sint16 x, Ceylan::Sint16 y1, Ceylan::Sint16 y2, Ceylan::Uint32 color) ;
 
+
 int filledRectAlpha(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 y1, Ceylan::Sint16 x2, Ceylan::Sint16 y2, Ceylan::Uint32 color) ;
+
 
 int lineColor(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 y1, Ceylan::Sint16 x2, Ceylan::Sint16 y2, Ceylan::Uint32 color) ;
 
 int hlineColor(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 x2, Ceylan::Sint16 y, Ceylan::Uint32 color) ;
 
+
 int vlineColor(SDL_Surface * dst, Ceylan::Sint16 x, Ceylan::Sint16 y1, Ceylan::Sint16 y2, Ceylan::Uint32 color) ;
+
 
 int pixelColorWeightNolock(SDL_Surface * dst, Ceylan::Sint16 x, Ceylan::Sint16 y, Ceylan::Uint32 color, Ceylan::Uint32 weight) ;
 
 int _putPixelAlpha(SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y, Ceylan::Uint32 color, Ceylan::Uint8 alpha) ;
+
 
 
 /*
@@ -2031,6 +2040,7 @@ int _putPixelAlpha(SDL_Surface * surface, Ceylan::Sint16 x, Ceylan::Sint16 y, Ce
 
     return (0);
 }
+
 
 
 #endif // OSDL_USES_SDL

@@ -28,7 +28,9 @@
 #define OSDL_AUDIO_COMMON_H_
 
 
+
 #include "OSDLException.h"   // for OSDL::Exception 
+
 
 
 
@@ -48,7 +50,7 @@ namespace OSDL
 			public: 
 			
 			
-				AudioException( const std::string & reason ) throw():
+				AudioException( const std::string & reason ) :
 					OSDL::Exception( reason )
 				{
 				
@@ -62,9 +64,11 @@ namespace OSDL
 				
 		} ;
 
+
 			
 		/// For buffer sizes, in bytes (prefer full 32-bit words, faster).
 		typedef Ceylan::Uint32 BufferSize ;
+
 
 
 		/**
@@ -76,6 +80,7 @@ namespace OSDL
 		 *
 		 */
 		typedef Ceylan::Uint16 SampleFormat ;
+	
 	
 		
 		/**
@@ -91,6 +96,7 @@ namespace OSDL
 		 */
 		typedef Ceylan::Uint16 ChannelFormat ;
 
+
 		
 		/**
 		 * Describe a number of channel, either for input (mixing channels) or
@@ -103,11 +109,13 @@ namespace OSDL
 		typedef Ceylan::Uint16 ChannelNumber ;
 	
 	
+	
 		/**
 		 * Describes the size, in bytes, of a sample chunk.
 		 *
 		 */
 		typedef Ceylan::Uint32 ChunkSize ;
+		
 		
 		
 		/**
@@ -117,6 +125,7 @@ namespace OSDL
 		 *
 		 */
 		typedef Ceylan::Uint8 ListenerDistance ;
+		
 		
 		
 		/**
@@ -133,6 +142,7 @@ namespace OSDL
 		typedef Ceylan::Sint16 ListenerAngle ;
 		
 
+
 		/**
 		 * Describes the volume for the playback of an audible.
 		 *
@@ -140,6 +150,7 @@ namespace OSDL
 		 *
 		 */
 		typedef Ceylan::Uint8 Volume ;
+
 
 
 		/// Describes a fading status.	
@@ -156,6 +167,7 @@ namespace OSDL
 	}	
 	
 }	
+
 
 
 #endif // OSDL_AUDIO_COMMON_H_

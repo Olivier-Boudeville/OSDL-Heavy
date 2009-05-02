@@ -52,6 +52,7 @@
 
 
 
+
 #if OSDL_USES_SDL_GFX
 
 // for graphic primitives exported by SDL_gfx:
@@ -60,21 +61,25 @@
 #endif // OSDL_USES_SDL_GFX
 
 
+
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::TwoDimensional ;
 
 using namespace Ceylan ;
 
 
+
+
 bool Line::drawHorizontal( Surface & targetSurface, 
 	Coordinate xStart, Coordinate xStop, Coordinate y, 
 	ColorElement red, ColorElement green, ColorElement blue, 
-	ColorElement alpha ) throw()
+	ColorElement alpha )
 {
 
 #if OSDL_USES_SDL_GFX
 
-	// Anti-aliasing of horizontal lines does not make sense !
+	// Anti-aliasing of horizontal lines does not make sense!
 	
 	return ( ::hlineColor( & targetSurface.getSDLSurface(), xStart, xStop, y, 
 		( static_cast<Ceylan::Uint32>( red   ) << 24 ) | 
@@ -94,12 +99,12 @@ bool Line::drawHorizontal( Surface & targetSurface,
 
 bool Line::drawHorizontal( Surface & targetSurface, 
 	Coordinate xStart, Coordinate xStop, Coordinate y, 
-	Pixels::PixelColor actualColor ) throw()
+	Pixels::PixelColor actualColor )
 {
 
 #if OSDL_USES_SDL_GFX
 
-	// Anti-aliasing of horizontal lines does not make sense !
+	// Anti-aliasing of horizontal lines does not make sense!
 
 	return ( ::hlineColorStore( & targetSurface.getSDLSurface(), 
 		xStart, xStop, y, actualColor) == 0 ) ;
@@ -116,12 +121,12 @@ bool Line::drawHorizontal( Surface & targetSurface,
 
 bool Line::drawHorizontal( Surface & targetSurface, 
 	Coordinate xStart, Coordinate xStop, Coordinate y, 
-	ColorDefinition colorDef ) throw()
+	ColorDefinition colorDef )
 {
 
 #if OSDL_USES_SDL_GFX
 
-	// Anti-aliasing of horizontal lines does not make sense !
+	// Anti-aliasing of horizontal lines does not make sense!
 	
 	return ( ::hlineColor( & targetSurface.getSDLSurface(), xStart, xStop, y, 
 		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
@@ -139,12 +144,12 @@ bool Line::drawHorizontal( Surface & targetSurface,
 bool Line::drawVertical( Surface & targetSurface, Coordinate x, 
 	Coordinate yStart, Coordinate yStop, 
 	ColorElement red, ColorElement blue, ColorElement green, 
-	ColorElement alpha ) throw()
+	ColorElement alpha )
 {
 
 #if OSDL_USES_SDL_GFX
 
-	// Anti-aliasing of vertical lines does not make sense !
+	// Anti-aliasing of vertical lines does not make sense!
 	
 	return ( ::vlineColor( & targetSurface.getSDLSurface(), x, yStart, yStop,
 		( static_cast<Ceylan::Uint32>( red   ) << 24 ) | 
@@ -163,12 +168,12 @@ bool Line::drawVertical( Surface & targetSurface, Coordinate x,
 
 
 bool Line::drawVertical( Surface & targetSurface, Coordinate x, 
-	Coordinate yStart, Coordinate yStop, ColorDefinition colorDef ) throw()
+	Coordinate yStart, Coordinate yStop, ColorDefinition colorDef )
 {
 
 #if OSDL_USES_SDL_GFX
 
-	// Anti-aliasing of vertical lines does not make sense !
+	// Anti-aliasing of vertical lines does not make sense!
 	
 	return ( ::vlineColor( & targetSurface.getSDLSurface(), x, yStart, yStop, 
 		Pixels::convertColorDefinitionToRawPixelColor( colorDef ) ) == 0 ) ;
@@ -186,7 +191,7 @@ bool Line::drawVertical( Surface & targetSurface, Coordinate x,
 bool Line::draw( Surface & targetSurface, Coordinate xStart, Coordinate yStart,
 	Coordinate xStop, Coordinate yStop, 
 	ColorElement red, ColorElement green, ColorElement blue, 
-	ColorElement alpha ) throw()
+	ColorElement alpha )
 {
 		
 #if OSDL_USES_SDL_GFX
@@ -232,7 +237,7 @@ bool Line::draw( Surface & targetSurface, Coordinate xStart, Coordinate yStart,
 
 
 bool Line::draw( Surface & targetSurface, Coordinate xStart, Coordinate yStart,
-	Coordinate xStop, Coordinate yStop, ColorDefinition colorDef ) throw()
+	Coordinate xStop, Coordinate yStop, ColorDefinition colorDef )
 {
 	
 #if OSDL_USES_SDL_GFX
@@ -275,7 +280,6 @@ bool Line::draw( Surface & targetSurface,
 	Point2D & firstPoint, Point2D & secondPoint,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
 	Pixels::ColorElement blue, Pixels::ColorElement alpha )
-		throw()
 {
 
 	return draw( targetSurface, firstPoint.getX(), firstPoint.getY(), 
@@ -287,7 +291,7 @@ bool Line::draw( Surface & targetSurface,
 
 bool Line::draw( Surface & targetSurface, 
 	Point2D & firstPoint, Point2D & secondPoint,
-	Pixels::ColorDefinition colorDef ) throw() 
+	Pixels::ColorDefinition colorDef ) 
 {
 
 	return draw( targetSurface, firstPoint.getX(), firstPoint.getY(), 
@@ -298,7 +302,7 @@ bool Line::draw( Surface & targetSurface,
 
 
 bool Line::drawCross( Surface & targetSurface, const Point2D & center,
-	Pixels::ColorDefinition colorDef, Length squareEdge ) throw() 
+	Pixels::ColorDefinition colorDef, Length squareEdge ) 
 {
 
 	return drawCross( targetSurface, center.getX(), center.getY(), 
@@ -310,7 +314,7 @@ bool Line::drawCross( Surface & targetSurface, const Point2D & center,
 
 bool Line::drawCross( Surface & targetSurface, 
 	Coordinate xCenter, Coordinate yCenter,
-	Pixels::ColorDefinition colorDef, Length squareEdge ) throw() 
+	Pixels::ColorDefinition colorDef, Length squareEdge ) 
 {
 
 	// Draws '\':

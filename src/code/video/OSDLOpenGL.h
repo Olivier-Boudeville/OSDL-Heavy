@@ -42,6 +42,8 @@
 	#include "SDL_opengl.h"      // for GLfloat
 	#include "SDL.h"             // for ColorDefinition (SDL_Color)
 
+
+
 namespace OSDL
 {
 
@@ -65,10 +67,12 @@ namespace OSDL
 		
 	}
 	
+	
 }
 
 	
 #else // OSDL_USES_SDL
+
 
 
 namespace OSDL
@@ -95,6 +99,8 @@ namespace OSDL
 	}
 	
 }
+
+
 	/*
 	 * libnds used to define it already for the ARM9 in videoGL.h: 
 	 * '#define GLfloat float'. Not true anymore.
@@ -126,12 +132,16 @@ namespace OSDL
 
 
 
+
+
 namespace OSDL
 {
 
 	
+	
 	namespace Video
 	{
+	
 	
 	
 		
@@ -149,6 +159,7 @@ namespace OSDL
 		 */
 		namespace OpenGL
 		{
+
 
 		
 		
@@ -169,6 +180,7 @@ namespace OSDL
 			} ;
 			
 			
+			
 		
 			/**
 			 * Mask used for OpenGL RGBA color specification for red, 
@@ -176,6 +188,7 @@ namespace OSDL
 			 *
 			 */
 			extern OSDL_DLL Pixels::ColorMask RedMask ;
+			
 			
 			
 			/**
@@ -186,12 +199,14 @@ namespace OSDL
 			extern OSDL_DLL Pixels::ColorMask GreenMask ;
 			
 			
+			
 			/**
 			 * Mask used for OpenGL RGBA color specification for blue, 
 			 * depending on the endianness of the local machine.
 			 *
 			 */
 			extern OSDL_DLL Pixels::ColorMask BlueMask ;
+			
 			
 			
 			/**
@@ -202,6 +217,7 @@ namespace OSDL
 			extern OSDL_DLL Pixels::ColorMask AlphaMask ;
 		
 		
+		
 			/**
 			 * Length, OpenGL unit of measure.
 			 * GL prefix is kept to avoid namespace misuse.
@@ -210,12 +226,14 @@ namespace OSDL
 			typedef GLfloat GLLength ;
 	
 	
+	
 			/**
 			 * Coordinate, OpenGL unit of measure. 
 			 * GL prefix is kept to avoid namespace misuse.
 			 *
 			 */
 			typedef GLfloat GLCoordinate ;	
+			
 			
 			
 			/**
@@ -228,6 +246,7 @@ namespace OSDL
 			typedef unsigned int GLBitField ;	
 			
 			
+			
 			/**
 			 * Enumeration for OpenGL selection. 
 			 * GL prefix is kept to avoid namespace misuse.
@@ -237,6 +256,7 @@ namespace OSDL
 			 */
 			typedef unsigned int GLEnumeration ;	
 			
+
 
 			/**
 			 * Various flavours (presets) are available for OpenGL.
@@ -265,6 +285,7 @@ namespace OSDL
 
 
 
+
 			/**
 			 * An OpenGL context corresponds to the state of a running 
 			 * OpenGL screen. 
@@ -283,8 +304,10 @@ namespace OSDL
 			{
 
 			
+			
 				public:
 				
+					
 					
 					/**
 					 * Describes a projection mode:
@@ -295,6 +318,7 @@ namespace OSDL
 					 *
 					 */
 					enum ProjectionMode { Orthographic, Perspective } ;
+					
 					
 					
 					/**
@@ -319,6 +343,7 @@ namespace OSDL
 					enum ShadingModel { Flat, Smooth } ;
 					
 					
+					
 					/**
 					 * Describes which facets should be culled, i.e. 
 					 * specifies whether front-facing or back-facing facets
@@ -341,6 +366,7 @@ namespace OSDL
 					enum CulledFacet { Front, Back, FrontAndBack } ;
 					 
 					
+					
 					/**
 					 * Determines how front-facing polygons are defined,
 					 * depending on their winding.
@@ -360,6 +386,7 @@ namespace OSDL
 					 *
 					 */
 					enum FrontOrientation { Clockwise, CounterClockwise } ;
+					
 					
 					  
 					/**
@@ -388,9 +415,10 @@ namespace OSDL
 						Length viewportWidth,
 						Length viewportHeight ) ;
 		
+		
 						
 					/// Virtual destructor.
-					virtual ~OpenGLContext() ;
+					virtual ~OpenGLContext() throw() ;
 				
 				
 				
@@ -479,7 +507,6 @@ namespace OSDL
 					virtual void reload() ;
 					
 					
-					
 				
 					/**
 					 * Sets the OpenGL blending function.
@@ -495,8 +522,8 @@ namespace OSDL
 					 *
 					 */
 					virtual void setBlendingFunction( 
-							GLEnumeration sourceFactor,
-							GLEnumeration destinationFactor ) ;
+						GLEnumeration sourceFactor,
+						GLEnumeration destinationFactor ) ;
 
 				
 				
@@ -510,7 +537,8 @@ namespace OSDL
 					 *
 					 */
 					 virtual void setShadingModel( 
-					 		ShadingModel newShadingModel = Smooth ) ;
+					 	ShadingModel newShadingModel = Smooth ) ;
+	
 	
 					 
 					/**
@@ -523,6 +551,7 @@ namespace OSDL
 					 *
 					 */	
 					virtual void setCullingStatus( bool newStatus ) ;
+	
 	
 				
 					/**
@@ -544,8 +573,6 @@ namespace OSDL
 						FrontOrientation frontOrientation = CounterClockwise, 
 						bool autoEnable = true ) ;
 						
-					
-					
 				
 				
 					/**
@@ -564,6 +591,7 @@ namespace OSDL
 
 
 					// Viewport section.
+					
 					
 					
 					/**
@@ -649,7 +677,7 @@ namespace OSDL
 					 *
 					 */	
 					virtual void setOrthographicProjectionFor2D( 
-							GLLength width, GLLength height ) ;
+						GLLength width, GLLength height ) ;
 						
 			
 			
@@ -675,6 +703,7 @@ namespace OSDL
 					 *
 					 */	
 					virtual void clearViewport() ;
+					
 					
 					
 					/**
@@ -712,7 +741,6 @@ namespace OSDL
 					virtual void popAttribute() ;
 					
 					 	
-					
 						
 					/**
 					 * Uploads specified surface as an OpenGL texture in 
@@ -731,6 +759,7 @@ namespace OSDL
 					*/
 					
 					
+					
 		            /**
 	    	         * Returns an user-friendly description of the state 
 					 * of this object.
@@ -745,6 +774,7 @@ namespace OSDL
 		             */
 			 		virtual const std::string toString( 
 						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+					
 					
 					
 					
@@ -767,6 +797,7 @@ namespace OSDL
 					static void SetUpForFlavour( OpenGL::Flavour flavour ) ;
 						
 						
+						
 					/**
 					 * Enables specified feature in the OpenGL state machine.
 					 *
@@ -774,6 +805,7 @@ namespace OSDL
 					 *
 					 */
 					static void EnableFeature( GLEnumeration feature ) ;
+					
 					
 					
 					/**
@@ -891,8 +923,8 @@ namespace OSDL
 					 *
 					 */
 					static void SetFullScreenAntialiasingStatus( 
-							bool newStatus,
-							Ceylan::Uint8 samplesPerPixelNumber = 4 ) ;
+						bool newStatus,
+						Ceylan::Uint8 samplesPerPixelNumber = 4 ) ;
 					
 					 
 					 
@@ -1005,10 +1037,10 @@ namespace OSDL
 					 *
 					 */
 					 static OSDL::Video::BitsPerPixel GetColorDepth( 
-					 		OSDL::Video::BitsPerPixel & redSize, 
-					 		OSDL::Video::BitsPerPixel & greenSize, 
-							OSDL::Video::BitsPerPixel & blueSize, 
-							OSDL::Video::BitsPerPixel & alphaSize ) ;
+					 	OSDL::Video::BitsPerPixel & redSize, 
+					 	OSDL::Video::BitsPerPixel & greenSize, 
+						OSDL::Video::BitsPerPixel & blueSize, 
+						OSDL::Video::BitsPerPixel & alphaSize ) ;
 				 
 				 
 				 
@@ -1082,7 +1114,9 @@ namespace OSDL
 
 
 
+
 					// OpenGL context behaviour.
+
 
 
 					/**
@@ -1095,6 +1129,7 @@ namespace OSDL
 					 *
 					 */
 					static const bool ContextCanBeLost ;
+			
 			
 			
 					/**
@@ -1118,6 +1153,7 @@ namespace OSDL
 					static const bool ContextIsLostOnApplicationSwitch ;
 			
 			
+			
 					/**
 					 * Tells whether the OpenGL context is lost (and 
 					 * therefore must be reloaded) when changing the color
@@ -1139,12 +1175,14 @@ namespace OSDL
 					static const GLLength DefaultOrthographicWidth ;
 					
 					
+					
 					/**
 					 * Coordinate, along the -z axis, of the default near
 					 * clipping plane in 2D is -1 (-1.0f).
 					 *
 					 */
 					static const GLCoordinate DefaultNearClippingPlaneFor2D ;
+					
 					
 					
 					/**
@@ -1155,12 +1193,14 @@ namespace OSDL
 					static const GLCoordinate DefaultFarClippingPlaneFor2D ;
 					
 					
+					
 					/**
 					 * Coordinate, along the -z axis, of the default near
 					 * clipping plane in 3D is 1 (1.0f).
 					 *
 					 */
 					static const GLCoordinate DefaultNearClippingPlaneFor3D ;
+					
 					
 					
 					/**
@@ -1290,16 +1330,20 @@ namespace OSDL
 					OSDL::Video::BitsPerPixel _redSize ; 
 					
 					
+					
 					/// Size in bits of the green component.
 					OSDL::Video::BitsPerPixel _greenSize ;
+					
 					
 					
 					/// Size in bits of the blue component.
 					OSDL::Video::BitsPerPixel _blueSize ;
 
 
+
 					/// Size in bits of the alpha component.
 					OSDL::Video::BitsPerPixel _alphaSize ;
+
 
 					
 					/**
@@ -1310,6 +1354,7 @@ namespace OSDL
 					Length _viewportWidth ;
 					
 					
+					
 					/**
 					 * Height of the viewport, useful to ensure aspect ratio 
 					 * is well managed.
@@ -1318,8 +1363,10 @@ namespace OSDL
 					Length _viewportHeight ;
 					
 					
+					
 					/// Stores the current projection mode.
 					ProjectionMode _projectionMode ;
+					
 					
 					
 					/**
@@ -1331,6 +1378,7 @@ namespace OSDL
 					GLLength _projectionWidth ;
 					
 					
+					
 					/**
 					 * The current z axis coordinate of the near clipping 
 					 * plane.
@@ -1339,8 +1387,10 @@ namespace OSDL
 					GLCoordinate _nearClippingPlane ;
 					
 					
+					
 					/// The current z axis coordinate of the far clipping plane.
 					GLCoordinate _farClippingPlane ;
+					
 					
 					
 					/**
@@ -1353,8 +1403,10 @@ namespace OSDL
 					
 					
 					
+					
 			private:
 				
+						
 									
 					/**
 					 * Copy constructor made private to ensure that it 
@@ -1365,6 +1417,7 @@ namespace OSDL
 					 * 
 					 */			 
 					OpenGLContext( const OpenGLContext & source ) ;
+			
 			
 			
 					/**
@@ -1379,6 +1432,7 @@ namespace OSDL
 			
 			
 			} ;
+		
 		
 		
 		
@@ -1406,6 +1460,7 @@ namespace OSDL
 				typedef Ceylan::Uint32 Int ;
 			
 			}
+			
 			
 						
 		}

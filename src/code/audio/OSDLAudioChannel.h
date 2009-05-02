@@ -41,12 +41,10 @@ namespace OSDL
 {
 
 	
-		
 	
 	namespace Audio 
 	{
 			
-
 
 			
 		/// Exceptions raised by AudioChannel instances. 		
@@ -54,7 +52,7 @@ namespace OSDL
 		{ 
 			public: 
 			
-				AudioChannelException( const std::string & reason ) throw() ; 
+				AudioChannelException( const std::string & reason ) ; 
 				virtual ~AudioChannelException() throw() ; 
 		} ;
 			
@@ -78,6 +76,7 @@ namespace OSDL
 			public:
 				
 
+
 				/**
 				 * Creates a new audio channel instance.
 				 *
@@ -92,19 +91,20 @@ namespace OSDL
 				 * he retrieves them thanks to AudioModule::getMixingChannelAt.
 				 *
 				 */
-				explicit AudioChannel( ChannelNumber channelNumber )
-					throw( AudioChannelException ) ;
+				explicit AudioChannel( ChannelNumber channelNumber ) ;
+				
 				
 				
 				/// Virtual destructor.
 				virtual ~AudioChannel() throw() ;
 		
 		
+		
 				/**
 				 * Returns the number of this mixing channel.
 				 *
 				 */				
-				virtual ChannelNumber getNumber() const throw() ;
+				virtual ChannelNumber getNumber() const ;
 		
 		
 		
@@ -114,8 +114,8 @@ namespace OSDL
 				 * @throw AudioChannelException if the operation failed.
 				 *
 				 */
-				virtual Volume getVolume() const 
-					throw( AudioChannelException ) ;
+				virtual Volume getVolume() const ;
+
 
 		
 				/**
@@ -127,8 +127,7 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void setVolume( Volume newVolume ) 
-					throw( AudioChannelException ) ;
+				virtual void setVolume( Volume newVolume ) ;
 		
 		
 		
@@ -148,8 +147,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setPanning( 
-						Ceylan::Maths::Percentage leftPercentage )
-					throw( AudioChannelException ) ;
+					Ceylan::Maths::Percentage leftPercentage ) ;
+					
 					
 					
 				/**
@@ -159,7 +158,8 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void unsetPanning() throw( AudioChannelException ) ;
+				virtual void unsetPanning() ;
+		
 		
 
 				/**
@@ -177,8 +177,8 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void setReverseStereo( bool reverse = true )
-					throw( AudioChannelException ) ;
+				virtual void setReverseStereo( bool reverse = true ) ;
+		
 		
 		
 				/**
@@ -197,8 +197,9 @@ namespace OSDL
 				 * @see ListenerDistance
 				 *
 				 */
-				virtual void setDistanceAttenuation( ListenerDistance distance )
-					throw( AudioChannelException ) ;
+				virtual void setDistanceAttenuation( 
+					ListenerDistance distance ) ;
+					
 					
 					
 				/**
@@ -209,8 +210,7 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void unsetDistanceAttenuation()	
-					throw( AudioChannelException ) ;
+				virtual void unsetDistanceAttenuation() ;
 		
 
 
@@ -234,7 +234,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setPositionAttenuation( ListenerDistance distance,
-					ListenerAngle angle ) throw( AudioChannelException ) ;
+					ListenerAngle angle )  ;
+					
 					
 					
 				/**
@@ -245,8 +246,7 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void unsetPositionAttenuation()	
-					throw( AudioChannelException ) ;
+				virtual void unsetPositionAttenuation() ;
 
 
 		
@@ -255,7 +255,8 @@ namespace OSDL
 				 * halted), including if it is playing but paused.
 				 *
 				 */
-				virtual bool isPlaying() const throw() ;
+				virtual bool isPlaying() const ;
+				
 				
 				
 				/**
@@ -263,7 +264,8 @@ namespace OSDL
 				 * including if it has been halted afterwards.
 				 *
 				 */
-				virtual bool isPaused() const throw() ;
+				virtual bool isPaused() const ;
+				
 				
 				
 				/**
@@ -273,7 +275,8 @@ namespace OSDL
 				 * paused, etc., it must be tested separately.
 				 * 
 				 */
-				virtual FadingStatus getFadingStatus() const throw() ;
+				virtual FadingStatus getFadingStatus() const ;
+				
 				
 				
 				/**
@@ -285,7 +288,8 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void pause() throw( AudioChannelException ) ;
+				virtual void pause() ;
+		
 		
 		
 				/**
@@ -295,7 +299,7 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void resume() throw( AudioChannelException ) ;
+				virtual void resume() ;
 		
 		
 		
@@ -309,8 +313,7 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void waitEndOfPlayback() const
-					throw( AudioChannelException ) ;
+				virtual void waitEndOfPlayback() const ;
 					
 
 				
@@ -323,7 +326,8 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void halt() throw( AudioChannelException ) ;
+				virtual void halt() ;
+		
 		
 		
 				/**
@@ -338,8 +342,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void expireIn( 
-						Ceylan::System::Millisecond expireDuration )
-					throw( AudioChannelException ) ;
+					Ceylan::System::Millisecond expireDuration ) ;
+		
 		
 		
 				/**
@@ -354,8 +358,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void fadeOutDuring( 
-						Ceylan::System::Millisecond fadeOutDuration )
-					throw( AudioChannelException ) ;
+					Ceylan::System::Millisecond fadeOutDuration ) ;
 		
 					
 		
@@ -372,14 +375,14 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 			
 			
 			
 			
 			protected:
 			
+				
 				
 				/**
 				 * This method will be automatically called as soon as this
@@ -396,16 +399,18 @@ namespace OSDL
 				 * @throw AudioChannelException if the operation failed.
 				 *
 				 */
-				virtual void onPlaybackFinished()
-					throw( AudioChannelException ) ;
+				virtual void onPlaybackFinished() ;
 
+			
 			
 				/// The number of this channel in channel list.
 				ChannelNumber _channelNumber ;
 				
 				
 				
+				
 			private:
+
 
 
 				/**
@@ -427,7 +432,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit AudioChannel( const AudioChannel & source ) throw() ;
+				explicit AudioChannel( const AudioChannel & source ) ;
+			
 			
 			
 				/**
@@ -438,11 +444,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 *
 				 */			 
-				AudioChannel & operator = ( const AudioChannel & source )
-					throw() ;
+				AudioChannel & operator = ( const AudioChannel & source ) ;
 				
 			
 		} ;
+		
 		
 	}	
 	

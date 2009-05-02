@@ -36,14 +36,15 @@
 
 
 
+
 namespace OSDL
 {
 
-	
 		
 	
 	namespace Audio 
 	{
+			
 			
 			
 		/// Mother class for all exceptions raised by Audible instances. 		
@@ -51,7 +52,8 @@ namespace OSDL
 		{ 
 			public: 
 			
-				AudibleException( const std::string & reason ) throw() ; 
+				AudibleException( const std::string & reason ) ; 
+				
 				virtual ~AudibleException() throw() ; 
 		} ;
 			
@@ -66,12 +68,14 @@ namespace OSDL
 		typedef Ceylan::Sint32 PlaybackCount ;		
 		
 		
+		
 		/**
 		 * This playback count corresponds to an infinite loop, unlimited
 		 * repetitions.
 		 *
 		 */ 
 		extern OSDL_DLL const PlaybackCount Loop ;  
+			
 				
 				
 		/**
@@ -80,12 +84,14 @@ namespace OSDL
 		 */ 
 		extern OSDL_DLL const Volume MinVolume ;  
 				
+			
 				
 		/**
 		 * The maximum volume level (depends on the platform, 127 or 128).
 		 *
 		 */ 
 		extern OSDL_DLL const Volume MaxVolume ;  
+			
 				
 									
 												
@@ -95,7 +101,6 @@ namespace OSDL
 		 */
 		class OSDL_DLL Audible: public Ceylan::TextDisplayable
 		{
-		
 		
 		
 			public:
@@ -112,8 +117,7 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				explicit Audible( bool convertedToOutputFormat = true ) 
-					throw( AudibleException ) ;
+				explicit Audible( bool convertedToOutputFormat = true ) ;
 				
 				
 				/// Virtual destructor.
@@ -128,7 +132,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual Volume getVolume() const throw( AudibleException ) = 0 ;
+				virtual Volume getVolume() const = 0 ;
+		
 		
 		
 				/**
@@ -140,13 +145,14 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual void setVolume( Volume newVolume ) 
-					throw( AudibleException ) = 0 ;
+				virtual void setVolume( Volume newVolume ) = 0 ;
+		
 		
 		
 		
 		
 				// Play section.
+				
 				
 				
 				/**
@@ -163,8 +169,7 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual void play( PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) = 0 ; 
+				virtual void play( PlaybackCount playCount = 1 ) = 0 ; 
 	
 								
 				
@@ -186,9 +191,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeIn( 
-						Ceylan::System::Millisecond fadeInMaxDuration, 
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) = 0 ; 
+					Ceylan::System::Millisecond fadeInMaxDuration, 
+					PlaybackCount playCount = 1 ) = 0 ; 
 									
 				
 				
@@ -200,7 +204,8 @@ namespace OSDL
 				 * @return true iff the samples are already converted.
 				 *
 				 */
-				virtual bool isConvertedToOutputFormat() const throw() ;
+				virtual bool isConvertedToOutputFormat() const ;
+				
 				
 				
 	            /**
@@ -216,9 +221,9 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
+			
 			
 				/**
 				 * Helper method to find the audible specified by its filename,
@@ -235,9 +240,9 @@ namespace OSDL
 				 *
 				 */
 				static std::string FindAudiblePath( 
-						const std::string & audibleFilename ) 
-					throw( AudibleException ) ;
+					const std::string & audibleFilename ) ;
 				
+			
 			
 			
 			
@@ -252,7 +257,6 @@ namespace OSDL
 				bool _convertedToOutputFormat ;
 			
 			
-			
 				
 				/**
 				 * Helper method to factorize conversion of play counts into
@@ -263,11 +267,13 @@ namespace OSDL
 				 * superior to zero).
 				 *
 				 */
-				static int GetLoopsForPlayCount( PlaybackCount playCount )
-					throw( AudibleException ) ;
+				static int GetLoopsForPlayCount( PlaybackCount playCount ) ;
+			
+			
 			
 			
 			private:
+	
 	
 	
 				/**
@@ -278,7 +284,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit Audible( const Audible & source ) throw() ;
+				explicit Audible( const Audible & source ) ;
+			
 			
 			
 				/**
@@ -289,10 +296,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 *
 				 */			 
-				Audible & operator = ( const Audible & source ) throw() ;
+				Audible & operator = ( const Audible & source ) ;
 				
 			
 		} ;
+		
 		
 	}	
 	

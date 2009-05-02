@@ -31,6 +31,7 @@
 
 
 
+
 using std::string ;
 using std::list ;
 
@@ -45,8 +46,8 @@ using namespace OSDL::Events ;
 
 
 
-ActiveObject::ActiveObject( ObjectSchedulingPolicy policy, Weight weight )
-		throw():
+
+ActiveObject::ActiveObject( ObjectSchedulingPolicy policy, Weight weight ) :
 	_policy( policy ),
 	_weight( weight ),
 	_registered( false ),
@@ -76,7 +77,8 @@ ActiveObject::~ActiveObject() throw()
 // Settings section.
 
 
-ObjectSchedulingPolicy ActiveObject::getPolicy() const throw()
+
+ObjectSchedulingPolicy ActiveObject::getPolicy() const
 {
 
 	return _policy ;
@@ -85,7 +87,7 @@ ObjectSchedulingPolicy ActiveObject::getPolicy() const throw()
 
 
 
-Weight ActiveObject::getWeight() const throw()
+Weight ActiveObject::getWeight() const
 {
 
 	return _weight ;
@@ -95,7 +97,7 @@ Weight ActiveObject::getWeight() const throw()
 
 	
 void ActiveObject::setBirthTick( 
-	Events::SimulationTick birthSimulationTick ) throw( SchedulingException )
+	Events::SimulationTick birthSimulationTick )
 {
 
 	_birthTick = birthSimulationTick ;
@@ -104,7 +106,7 @@ void ActiveObject::setBirthTick(
 
 
 		
-SimulationTick ActiveObject::getBirthTick() const throw()
+SimulationTick ActiveObject::getBirthTick() const
 {
 
 	return _birthTick ;
@@ -114,7 +116,6 @@ SimulationTick ActiveObject::getBirthTick() const throw()
 
 
 void ActiveObject::onSkip( SimulationTick skippedStep ) 
-	throw( SchedulingException )
 {
 
 	LogPlug::warning( "An active object (" 
@@ -126,7 +127,6 @@ void ActiveObject::onSkip( SimulationTick skippedStep )
 
 
 void ActiveObject::onImpossibleActivation( SimulationTick missedStep ) 
-	throw( SchedulingException )
 {
 
 	throw SchedulingException( "Active object (" + toString( Ceylan::low )
@@ -137,8 +137,7 @@ void ActiveObject::onImpossibleActivation( SimulationTick missedStep )
 
 
 
-const string ActiveObject::toString( Ceylan::VerbosityLevels level )
-	const throw()
+const string ActiveObject::toString( Ceylan::VerbosityLevels level ) const
 {	
 
 	string policy ;

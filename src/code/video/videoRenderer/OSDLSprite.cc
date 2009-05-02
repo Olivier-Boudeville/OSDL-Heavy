@@ -38,6 +38,7 @@ using namespace OSDL::Video ;
 using std::string ;
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>              // for OSDL_DEBUG_SPRITE and al 
 #endif // OSDL_USES_CONFIG_H
@@ -65,6 +66,7 @@ using std::string ;
 
 
 
+
 const Sprite::Shape Sprite::EightTimesEight         =  1 ;
 const Sprite::Shape Sprite::SixteenTimesEight       =  2 ;
 const Sprite::Shape Sprite::ThirtyTwoTimesEight     =  3 ;
@@ -85,11 +87,13 @@ const Sprite::Shape Sprite::PowersOfTwo             = 13 ;
 
 
 
-SpriteException::SpriteException( const string & message ) throw(): 
+
+SpriteException::SpriteException( const string & message ) : 
 	VideoRenderingException( "Sprite exception: " + message ) 
 {
 
 }
+	
 	
 			
 SpriteException::~SpriteException() throw()
@@ -98,16 +102,19 @@ SpriteException::~SpriteException() throw()
 }
 
 
-Sprite::Sprite( const string & frameFilename ) throw()
+
+
+Sprite::Sprite( const string & frameFilename )
 {
 
 	// TO-DO.
 }
 
 
+
 /*
 
-Sprite::Sprite( Shape spriteShape, bool ownBoundingBox ) throw():
+Sprite::Sprite( Shape spriteShape, bool ownBoundingBox ):
 	View(),
 	_ownBoundingBox( ownBoundingBox ),
 	_box( 0 ),
@@ -120,6 +127,7 @@ Sprite::Sprite( Shape spriteShape, bool ownBoundingBox ) throw():
 }
 
 */
+
 
 
 Sprite::~Sprite() throw()
@@ -138,7 +146,8 @@ Sprite::~Sprite() throw()
 }
 
 
-const string Sprite::toString( Ceylan::VerbosityLevels level ) const throw() 
+
+const string Sprite::toString( Ceylan::VerbosityLevels level ) const 
 {
 
 	string res = "Sprite which " ;
@@ -168,10 +177,13 @@ const string Sprite::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
+
+
 // Static section.
 
 
-string Sprite::DescribeShape( Shape shape ) throw( SpriteException )
+
+string Sprite::DescribeShape( Shape shape )
 {
 
 
@@ -246,7 +258,6 @@ string Sprite::DescribeShape( Shape shape ) throw( SpriteException )
 	
 				
 Sprite::Shape Sprite::GetSmallestEnclosingShape( Length width, Length height )
-	throw( SpriteException )
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -331,7 +342,7 @@ Sprite::Shape Sprite::GetSmallestEnclosingShape( Length width, Length height )
 	
 	
 	
-Length Sprite::GetShapeWidthFor( Shape shape ) throw( SpriteException )
+Length Sprite::GetShapeWidthFor( Shape shape )
 {
 
 	switch( shape )
@@ -371,7 +382,7 @@ Length Sprite::GetShapeWidthFor( Shape shape ) throw( SpriteException )
 
 
 
-Length Sprite::GetShapeHeightFor( Shape shape ) throw( SpriteException )
+Length Sprite::GetShapeHeightFor( Shape shape )
 {
 
 	switch( shape )

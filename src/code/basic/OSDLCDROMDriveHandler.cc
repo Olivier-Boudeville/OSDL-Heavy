@@ -32,6 +32,7 @@
 #include "OSDLUtils.h"       // for getBackendLastError
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
@@ -48,6 +49,8 @@
 
 #include <list>  
 
+
+
 using std::list ;
 using std::string ;
 using std::map ;
@@ -57,12 +60,12 @@ using namespace OSDL ;
 
 
 
-CDROMDriveException::CDROMDriveException( const std::string & message ) 
-		throw():
+CDROMDriveException::CDROMDriveException( const std::string & message ) :
 	OSDL::Exception( message )
 {
 
 }
+
 
 
 CDROMDriveException::~CDROMDriveException() throw()
@@ -73,7 +76,7 @@ CDROMDriveException::~CDROMDriveException() throw()
 
 
 
-CDROMDriveHandler::CDROMDriveHandler() throw( CDROMDriveException ):
+CDROMDriveHandler::CDROMDriveHandler() :
 	 Object(),
 	 _drives()
 {
@@ -98,6 +101,7 @@ CDROMDriveHandler::CDROMDriveHandler() throw( CDROMDriveException ):
 #endif // OSDL_USES_SDL
 
 }
+
 
 
 CDROMDriveHandler::~CDROMDriveHandler() throw()
@@ -125,7 +129,7 @@ CDROMDriveHandler::~CDROMDriveHandler() throw()
 			
 
 
-CDROMDriveNumber CDROMDriveHandler::GetAvailableCDROMDrivesCount() throw()
+CDROMDriveNumber CDROMDriveHandler::GetAvailableCDROMDrivesCount()
 {
 
 #if OSDL_USES_SDL
@@ -141,8 +145,8 @@ CDROMDriveNumber CDROMDriveHandler::GetAvailableCDROMDrivesCount() throw()
 }
 
 
+
 CDROMDrive & CDROMDriveHandler::getCDROMDrive( CDROMDriveNumber number ) 
-	throw( CDROMDriveException )
 {
 	
 #if OSDL_USES_SDL
@@ -179,9 +183,10 @@ CDROMDrive & CDROMDriveHandler::getCDROMDrive( CDROMDriveNumber number )
 	
 }
 
+	
 				
 const std::string CDROMDriveHandler::toString( Ceylan::VerbosityLevels level )
-	const throw()
+	const
 {
 
 #if OSDL_USES_SDL

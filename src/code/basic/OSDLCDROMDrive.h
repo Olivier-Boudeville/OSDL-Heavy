@@ -28,8 +28,10 @@
 #define OSDL_CD_ROM_DRIVE_H_
 
 
+
 // for OSDL::CDROMDriveException, CDROMDriveNumber:
 #include "OSDLCDROMDriveHandler.h"   
+
 
 #include "Ceylan.h"                  // for inheritance
 
@@ -47,6 +49,7 @@ struct SDL_CD ;
 struct SDL_CDtrack ;
 
 #endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
 
 
 
@@ -88,6 +91,7 @@ namespace OSDL
 	
 	
 	
+	
 	/**
 	 * Describes a CD track, it is just an object-oriented view of an 
 	 * actual track.
@@ -100,6 +104,7 @@ namespace OSDL
 		public:
 		
 		
+		
 			/**
 			 * Creates a new CD track.
 			 *
@@ -109,15 +114,18 @@ namespace OSDL
 			 * supported.
 			 *
 			 */
-			CDTrack( const LowLevelCDROMTrack & track ) 
-				throw( CDROMDriveException ) ;
+			CDTrack( const LowLevelCDROMTrack & track ) ;
+			
+			
 			
 			/// Virtual destructor, does not deallocate the track data.
 			virtual ~CDTrack() throw() ;
 			
 			
+			
 			/// Return this track number (0-99).
-			virtual TrackNumber getTrackNumber() const throw() ;
+			virtual TrackNumber getTrackNumber() const ;
+			
 			
 			
 			/**
@@ -126,15 +134,18 @@ namespace OSDL
 			 * @throw CDROMDriveException if the operation failed.
 			 *
 			 */
-			virtual TrackType getTrackType() const 
-				throw( CDROMDriveException ) ;
+			virtual TrackType getTrackType() const ;
+			
 			
 			
 			/// Returns the length, in frames, of this track.
-			virtual FrameCount getLength() const throw() ;
+			virtual FrameCount getLength() const ;
+			
+			
 			
 			/// Returns the frame offset to the beginning of this track.
-			virtual FrameCount getFrameOffset() const throw() ;
+			virtual FrameCount getFrameOffset() const ;
+		
 		
 
 	        /**
@@ -148,18 +159,21 @@ namespace OSDL
 	         *
 	         */
 		    virtual const std::string toString( 
-				Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
+				Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
 
+		
 		
 		protected:
 		
 		
 			const LowLevelCDROMTrack * _trackData ;
 					
+		
 						
 			
 		private:	
+		
 		
 
 			/**
@@ -170,7 +184,8 @@ namespace OSDL
 			 * constructor is called, implicitly or not.
 			 * 
 			 */			 
-			explicit CDTrack( const CDTrack & source ) throw() ;
+			explicit CDTrack( const CDTrack & source ) ;
+			
 			
 			
 			/**
@@ -181,9 +196,11 @@ namespace OSDL
 			 * operator is called, implicitly or not.
 			 * 
 			 */			 
-			CDTrack & operator = ( const CDTrack & source ) throw() ;
+			CDTrack & operator = ( const CDTrack & source ) ;
+			
 			
 	} ;
+	
 	
 	
 	
@@ -201,15 +218,19 @@ namespace OSDL
 		friend class CDROMDriveHandler ;
 		
 		
+		
 		public:
 		
+
 
 			/// Tells how many CD frames make one second.
 			static const FrameCount FramesPerSecond ;
 			
 			
+			
 			/// Describes the status possibilites of a CD drive.
 			enum Status { TrayEmpty, Stopped, Playing, Paused, InError } ; 
+			
 			
 			
 			/**
@@ -223,8 +244,9 @@ namespace OSDL
 			 * for example if it is busy, or with no disc, or already opened.
 			 *
 			 */
-			virtual void open() throw( CDROMDriveException ) ;
+			virtual void open() ;
 		 	
+			
 			
 			/**
 			 * Closes this CD-ROM drive, a bit like 'unmounting' this device.
@@ -235,8 +257,9 @@ namespace OSDL
 			 * for example if it is busy and not opened.
 			 *
 			 */
-			virtual void close() throw( CDROMDriveException ) ;
+			virtual void close() ;
 		 	
+			
 			
 			/**
 			 * Ejects the CD-ROM which is in the drive.
@@ -246,7 +269,8 @@ namespace OSDL
 			 * for example if drive was not open.
 			 * 
 			 */
-			virtual void eject() const throw( CDROMDriveException ) ;
+			virtual void eject() const ;
+			 
 			 
 			 
 			/**
@@ -258,7 +282,8 @@ namespace OSDL
 			 * has to be updated.
 			 *
 			 */
-			virtual Status getStatus() throw( CDROMDriveException ) ;
+			virtual Status getStatus() ;
+
 
 
 			/**
@@ -269,7 +294,8 @@ namespace OSDL
 			 * @note Cannot update the status flag.
 			 *
 			 */
-			virtual Status getConstStatus() const throw( CDROMDriveException ) ;
+			virtual Status getConstStatus() const ;
+			
 			
 			
 			/**
@@ -282,7 +308,8 @@ namespace OSDL
 			 * Cannot be 'const' since 'getStatus' neither.
 			 *
 			 */
-			virtual bool isCDInDrive() throw( CDROMDriveException ) ;
+			virtual bool isCDInDrive() ;
+			
 			
 			
 			/**
@@ -292,8 +319,8 @@ namespace OSDL
 			 * example if the drive is not already opened.
 			 *
 			 */
-			virtual TrackNumber getTracksCount() const 
-				throw( CDROMDriveException ) ;
+			virtual TrackNumber getTracksCount() const ;
+			
 			
 			
 			/**
@@ -306,7 +333,8 @@ namespace OSDL
 			 *
 			 */
 			virtual FrameCount getTrackDuration( TrackNumber targetTrack ) 
-				const throw( CDROMDriveException ) ;
+				const ;
+			 
 			 
 			
 			/**
@@ -317,9 +345,11 @@ namespace OSDL
 			 * @note The caller must deallocate the returned track when
 			 * finished with it.
 			 *
+			 * @throw CDROMDriveException if the operation failed.
+			 *
 			 */
-			virtual CDTrack & getTrack( TrackNumber targetTrack ) 
-				const throw( CDROMDriveException ) ;
+			virtual CDTrack & getTrack( TrackNumber targetTrack ) const ;
+				
 				
 				
 			/**
@@ -334,7 +364,8 @@ namespace OSDL
 			 *
 			 */
 			virtual void playFrames( FrameCount startingFrame, 
-				FrameCount durationInFrames ) throw( CDROMDriveException ) ;
+				FrameCount durationInFrames ) ;
+				
 				
 				
 			/**
@@ -361,11 +392,11 @@ namespace OSDL
 			 *
 			 */
 			virtual void playTracks( 
-					TrackNumber startingTrack, 
-					TrackNumber numberOfTracks,	
-					FrameCount startingFrameOffset = 0,
-					FrameCount stoppingFrameOffset = 0 ) 
-				throw( CDROMDriveException ) ;
+				TrackNumber startingTrack, 
+				TrackNumber numberOfTracks,	
+				FrameCount startingFrameOffset = 0,
+				FrameCount stoppingFrameOffset = 0 ) ;
+			
 			
 			
 			/**
@@ -374,7 +405,8 @@ namespace OSDL
 			 * @throw CDROMDriveException if an error occured.
 			 *
 			 */
-			virtual void pause() const throw( CDROMDriveException ) ;
+			virtual void pause() const ;
+			
 			
 			
 			/**
@@ -383,7 +415,8 @@ namespace OSDL
 			 * @throw CDROMDriveException if an error occured.
 			 *
 			 */
-			virtual void resume() const throw( CDROMDriveException ) ;
+			virtual void resume() const ;
+			
 			
 
 	        /**
@@ -397,7 +430,8 @@ namespace OSDL
 	         *
 	         */
 		    virtual const std::string toString( 
-				Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
+				Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 
@@ -405,18 +439,21 @@ namespace OSDL
 			// Static section.
 			
 			
+			
             /**
              * Returns a list of inserted disc media, such as DVD-ROM, HD-DVD,
              * CDRW, and Blu-Ray discs. 
              *
+			 * @throw CDROMDriveException if the operation failed.
+			 *
              * @note Only filesystems are searched for, thus for example an
              * audio CD will not be returned, unless there is a mounted
              * filesystem track on it.
              *
              */
-            static std::list<std::string> GetListOfInsertedMedia() 
-            	throw( CDROMDriveException ) ;
+            static std::list<std::string> GetListOfInsertedMedia() ;
             
+			
             
 			/**
 			 * Returns the number of CD frames corresponding to the 
@@ -427,7 +464,8 @@ namespace OSDL
 			 *
 			 */
 			static FrameCount ConvertTimeToFrameCount( 
-				Ceylan::System::Second duration ) throw() ;
+				Ceylan::System::Second duration ) ;
+
 
 
 			/**
@@ -441,7 +479,8 @@ namespace OSDL
 			 *
 			 */
 			static Ceylan::System::Second ConvertFrameCountToTime( 
-				FrameCount duration ) throw() ;
+				FrameCount duration ) ;
+
 
 
 
@@ -453,12 +492,15 @@ namespace OSDL
 	
 	
 		
+		
 		private:
+	
 	
 	
 			/// Telles whether track information about the CD is available.
 			bool _statusUpdated ;
 			
+				
 				
 			/**
 			 * Gathers some informations about this drive and its status.
@@ -468,6 +510,7 @@ namespace OSDL
 			 *
 			 */
 			LowLevelCDROM * _driveStatus ;
+			
 			
 			
 			/**
@@ -483,8 +526,8 @@ namespace OSDL
 			 * not in licit range.
 			 *
 			 */
-			explicit CDROMDrive( CDROMDriveNumber driveNumber ) 
-				throw( CDROMDriveException ) ;
+			explicit CDROMDrive( CDROMDriveNumber driveNumber ) ;
+			
 			
 			
 			/// Virtual destructor.
@@ -499,7 +542,8 @@ namespace OSDL
 			 * constructor is called, implicitly or not.
 			 * 
 			 */			 
-			explicit CDROMDrive( const CDROMDrive & source ) throw() ;
+			explicit CDROMDrive( const CDROMDrive & source ) ;
+			
 			
 			
 			/**
@@ -509,8 +553,9 @@ namespace OSDL
 			 * operator is called, implicitly or not.
 			 * 
 			 */			 
-			CDROMDrive & operator = ( const CDROMDrive & source ) throw() ;
+			CDROMDrive & operator = ( const CDROMDrive & source ) ;
 			
+	
 	
 	} ;
 
@@ -520,3 +565,4 @@ namespace OSDL
 
 
 #endif // OSDL_CD_ROM_DRIVE_H_
+

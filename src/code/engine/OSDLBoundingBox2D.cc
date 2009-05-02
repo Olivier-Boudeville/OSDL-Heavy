@@ -27,6 +27,7 @@
 #include "OSDLBoundingBox2D.h"
 
 
+
 using namespace Ceylan::Maths::Linear ;
 
 using namespace OSDL::Engine ;
@@ -35,12 +36,15 @@ using std::string ;
 
 
 
-BoundingBox2D::BoundingBox2D( Locatable2D & father, const Bipoint & center )
-		throw() :
+
+BoundingBox2D::BoundingBox2D( Locatable2D & father, const Bipoint & center ) :
 	Locatable2D( father )
 {
+
 	setCenter( center ) ;
+	
 }
+
 
 
 BoundingBox2D::~BoundingBox2D() throw()
@@ -49,8 +53,8 @@ BoundingBox2D::~BoundingBox2D() throw()
 }
 
 
-const string BoundingBox2D::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+
+const string BoundingBox2D::toString( Ceylan::VerbosityLevels level ) const
 {	
 
 	return "2D bounding box, whose center is " + getCenter().toString( level )
@@ -60,8 +64,8 @@ const string BoundingBox2D::toString( Ceylan::VerbosityLevels level )
 }
 
 
+
 BoundingBox2D & BoundingBox2D::CheckIs2D( BoundingBox & box ) 
-	throw( BoundingBoxException )
 {
 
 	BoundingBox2D * box2D = dynamic_cast<BoundingBox2D *>( & box ) ;

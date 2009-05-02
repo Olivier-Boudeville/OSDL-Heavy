@@ -42,13 +42,16 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	// Video module is created by common module.
 	class CommonModule ;
 	
+		
 		
 	namespace Rendering 
 	{
@@ -59,8 +62,10 @@ namespace OSDL
 	}
 	
 	
+	
 	namespace Video 
 	{
+	
 	
 	
 		// Video module manages the screen surface.			
@@ -76,12 +81,15 @@ namespace OSDL
 		}	
 			
 		
+		
 		/// Icon masks are use for window manager's icons.
 		typedef Ceylan::Uint8 IconMask ;
 
+		
 				
 		/// A screen definition is defined as a ( width, height ) pair.
 		typedef std::pair<Length, Length> Definition ;
+
 
 
 								
@@ -102,18 +110,22 @@ namespace OSDL
 		{
 		
 
+
 			// The common module has to create the video module.
 			friend class OSDL::CommonModule ;
+		
 		
 		
 			public:
 										
 
+
 				/**
 				 * Returns whether a screen surface is available.
 				 *
 				 */
-				bool hasScreenSurface() const throw() ;
+				bool hasScreenSurface() const ;
+				
 				
 										
 				/**
@@ -125,8 +137,8 @@ namespace OSDL
 				 * @throw VideoException if no screen surface is available.
 				 *
 				 */
-				virtual Surface & getScreenSurface() const 
-					throw( VideoException ) ;		
+				virtual Surface & getScreenSurface() const ;		
+				
 						
 						
 				/**
@@ -142,15 +154,16 @@ namespace OSDL
 				 * specified surface does not correspond to a screen surface.
 				 *
 				 */
-				virtual void setScreenSurface( Surface & newScreenSurface ) 
-					throw( VideoException ) ;
+				virtual void setScreenSurface( Surface & newScreenSurface ) ;
+				
 										
 									
 				/**
 				 * Tells whether this video module uses a (video) renderer.
 				 *
 				 */
-				virtual bool hasRenderer() const throw() ;
+				virtual bool hasRenderer() const ;
+				
 				
 				
 				/**
@@ -161,9 +174,9 @@ namespace OSDL
 				 * @throw VideoException if no renderer was being used.
 				 *
 				 */
-				virtual Rendering::VideoRenderer & getRenderer() 
-					const throw( VideoException ) ;	
+				virtual Rendering::VideoRenderer & getRenderer() const ;	
 
+				
 				
 				/**
 				 * Sets a new video renderer.
@@ -178,7 +191,7 @@ namespace OSDL
 				 *
 				 */		
 				virtual void setRenderer( 
-					Rendering::VideoRenderer & newRenderer ) throw() ;
+					Rendering::VideoRenderer & newRenderer ) ;
 								
 												
 				 				  
@@ -186,7 +199,8 @@ namespace OSDL
 				 * Tells whether this video module has an OpenGL context.
 				 *
 				 */
-				virtual bool hasOpenGLContext() const throw() ;
+				virtual bool hasOpenGLContext() const ;
+				
 				
 				
 				/**
@@ -200,7 +214,8 @@ namespace OSDL
 				 *
 				 */		
 				virtual void setOpenGLContext( 
-					OpenGL::OpenGLContext & newOpenGLContext ) throw() ;
+					OpenGL::OpenGLContext & newOpenGLContext ) ;
+				
 				
 				
 				/**
@@ -211,8 +226,7 @@ namespace OSDL
 				 * @throw VideoException if no OpenGL context was being used.
 				 *
 				 */
-				virtual OpenGL::OpenGLContext & getOpenGLContext() 
-					const throw( VideoException ) ;	
+				virtual OpenGL::OpenGLContext & getOpenGLContext() const ;	
 				
 				 				  
 				 
@@ -232,7 +246,8 @@ namespace OSDL
 				 */
 				 virtual BitsPerPixel getBestColorDepthForMode( 
 				 	Length width, Length height, 
-					BitsPerPixel askedBpp, Ceylan::Flags flags ) throw() ;
+					BitsPerPixel askedBpp, Ceylan::Flags flags ) ;
+				
 				
 				
 				/**
@@ -241,7 +256,8 @@ namespace OSDL
 				 * down at the moment.
 				 *
 				 */		
-				virtual bool isDisplayInitialized() const throw() ;
+				virtual bool isDisplayInitialized() const ;
+					
 					
 						
 				/**
@@ -284,9 +300,9 @@ namespace OSDL
 				 *
 				 */			
 				virtual Ceylan::Flags setMode( Length width, Length height, 
-						BitsPerPixel askedBpp, Ceylan::Flags flags, 
-						OpenGL::Flavour flavour = OpenGL::None ) 
-					throw( VideoException ) ;
+					BitsPerPixel askedBpp, Ceylan::Flags flags, 
+					OpenGL::Flavour flavour = OpenGL::None ) ;
+
 
 
 				/**
@@ -300,6 +316,7 @@ namespace OSDL
 				static const BitsPerPixel UseCurrentColorDepth ;
 				
 				
+				
 				/**
 				 * Does everything needed when the application is resized,
 				 * including calling setMode and updating OpenGL state if
@@ -310,9 +327,9 @@ namespace OSDL
 				 * @param newHeight the new height of the application window.
 				 *
 				 */
-				 virtual void resize( Length newWidth, Length newHeight ) 
-				 	throw( VideoException ) ;
+				virtual void resize( Length newWidth, Length newHeight ) ;
 
+				
 				
 				/**
 				 * This method should be called whenever the screen needs 
@@ -323,7 +340,8 @@ namespace OSDL
 				 * will be managed.
 				 *
 				 */
-				virtual void redraw() throw( VideoException ) ;
+				virtual void redraw() ;
+				
 				
 				
 				/**
@@ -334,7 +352,8 @@ namespace OSDL
 				 * BeOS support is experimental.
 				 *
 				 */
-				virtual void toggleFullscreen() throw( VideoException ) ;
+				virtual void toggleFullscreen() ;
+
 
 
 				/**
@@ -355,8 +374,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void makeBMPScreenshot( 
-						const std::string & screenshotFilename ) 
-					throw( VideoException ) ;
+					const std::string & screenshotFilename ) ;
 
 
 				
@@ -368,7 +386,8 @@ namespace OSDL
 				 * @return true if draw-endpoint mode is set, false otherwise.
 				 *
 				 */
-				virtual bool getEndPointDrawState() const throw() ;
+				virtual bool getEndPointDrawState() const ;
+				
 				
 				
 				/**
@@ -380,9 +399,10 @@ namespace OSDL
 				 * and only if true. 
 				 *
 				 */
-				virtual void setEndPointDrawState( bool newState ) throw() ;
+				virtual void setEndPointDrawState( bool newState ) ;
 				
 				
+
 
 				/**
 				 * Tells whether graphics should be anti-aliased, if possible.
@@ -392,7 +412,8 @@ namespace OSDL
 				 * @return true if anti-aliasing mode is set, false otherwise.
 				 *
 				 */
-				virtual bool getAntiAliasingState() const throw() ;
+				virtual bool getAntiAliasingState() const ;
+				
 				
 				
 				/**
@@ -404,7 +425,8 @@ namespace OSDL
 				 * if and only if true. 
 				 *
 				 */
-				virtual void setAntiAliasingState( bool newState ) throw() ;
+				virtual void setAntiAliasingState( bool newState ) ;
+
 
 
 
@@ -417,10 +439,10 @@ namespace OSDL
 				 * @throw VideoException if the operation failed.
 				 *
 				 */
-				virtual std::string getDriverName() const 
-					throw( VideoException ) ; 
+				virtual std::string getDriverName() const ; 
 		
 		
+					
 					
 				/**
 				 * Sets the window title and icon name.
@@ -431,7 +453,8 @@ namespace OSDL
 				 *
 				 */	
 				virtual void setWindowCaption( const std::string & newTitle,
-					const std::string & iconName ) throw() ;
+					const std::string & iconName ) ;
+	
 	
 					
 				/**
@@ -445,7 +468,8 @@ namespace OSDL
 				 *
 				 */					
 				virtual void getWindowCaption( std::string & title, 
-					std::string & iconName ) throw() ;	
+					std::string & iconName ) ;	
+				
 				
 				
 				
@@ -466,8 +490,8 @@ namespace OSDL
 				 * @see LoadImage
 				 *
 				 */
-				virtual void setWindowIcon( const std::string & filename )
-					throw( VideoException ) ;
+				virtual void setWindowIcon( const std::string & filename ) ;
+				
 				
 				
 				/**
@@ -482,7 +506,7 @@ namespace OSDL
 				 * supported or was refused by the window manager.
 				 *
 				 */
-				virtual bool iconifyWindow() throw() ;
+				virtual bool iconifyWindow() ;
 	
 	
 							
@@ -496,7 +520,8 @@ namespace OSDL
 				 * otherwise.
 				 *
 				 */
-				virtual bool getFrameAccountingState() throw() ;
+				virtual bool getFrameAccountingState() ;
+				
 				
 				
 				/**
@@ -510,15 +535,17 @@ namespace OSDL
 				 * if and only if true. 
 				 *
 				 */
-				virtual void setFrameAccountingState( bool newState ) throw() ;	
+				virtual void setFrameAccountingState( bool newState ) ;	
 			
+				
 				
 				/** 
 				 * Tells whether OpenGL is being used currently by this video
 				 * module.
 				 *
 				 */
-				virtual bool isUsingOpenGL() const throw() ;
+				virtual bool isUsingOpenGL() const ;
+				
 								
 								
 	            /**
@@ -533,14 +560,15 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
+				
 				
 				
 				
 				// Static section.
 								
+					
 							
 				/**
 				 * Tells whether display has already been initialized
@@ -554,7 +582,8 @@ namespace OSDL
 				 * call is rather inefficient though.
 				 *
 				 */
-				static bool IsDisplayInitialized() throw() ;
+				static bool IsDisplayInitialized() ;
+				
 				
 				
 				/**
@@ -569,7 +598,8 @@ namespace OSDL
 				 * call is rather inefficient though.
 				 *
 				 */
-				static bool GetEndPointDrawState() throw() ;
+				static bool GetEndPointDrawState() ;
+				
 				
 				
 				/**
@@ -583,7 +613,7 @@ namespace OSDL
 				 * call is rather inefficient though.
 				 *
 				 */
-				static bool GetAntiAliasingState() throw() ;
+				static bool GetAntiAliasingState() ;
 				
 
 
@@ -596,7 +626,8 @@ namespace OSDL
 				 * @throw VideoException if the operation failed.
 				 *
 				 */
-				static std::string GetDriverName() throw( VideoException ) ;
+				static std::string GetDriverName() ;
+				
 				
 				
 				/**
@@ -611,8 +642,7 @@ namespace OSDL
 				 * @see setMode.
 				 *
 				 */	
-				static std::string InterpretFlags( Ceylan::Flags flags ) 
-					throw() ;
+				static std::string InterpretFlags( Ceylan::Flags flags ) ;
 						
 				
 						
@@ -623,9 +653,9 @@ namespace OSDL
 				 * obtained.
 				 *
 				 */
-				static bool HardwareSurfacesCanBeCreated() 
-					throw( VideoException ) ;				
+				static bool HardwareSurfacesCanBeCreated() ;				
 				
+
 
 				/**
 				 * Returns whether there is a window manager available.
@@ -634,11 +664,13 @@ namespace OSDL
 				 * be obtained.
 				 *
 				 */
-				static bool WindowManagerAvailable() throw( VideoException ) ;
+				static bool WindowManagerAvailable() ;
 				
+		
 		
 				
 				// Hardware to hardware section.
+				
 				
 				
 				/**
@@ -648,8 +680,8 @@ namespace OSDL
 				 * obtained.
 				 *
 				 */
-				static bool HardwareToHardwareBlitsAccelerated() 
-					throw( VideoException ) ;
+				static bool HardwareToHardwareBlitsAccelerated() ;
+				
 				
 
 				/**
@@ -660,8 +692,8 @@ namespace OSDL
 				 * obtained.
 				 *
 				 */
-				static bool HardwareToHardwareColorkeyBlitsAccelerated() 
-					throw( VideoException ) ;	
+				static bool HardwareToHardwareColorkeyBlitsAccelerated() ;	
+				
 				
 
 				/**
@@ -672,12 +704,13 @@ namespace OSDL
 				 * obtained.
 				 *
 				 */
-				static bool HardwareToHardwareAlphaBlitsAccelerated() 
-					throw( VideoException ) ;
+				static bool HardwareToHardwareAlphaBlitsAccelerated() ;
+				
 				
 				
 				
 				// Software to hardware section.
+				
 				
 				
 				/**
@@ -687,8 +720,8 @@ namespace OSDL
 				 * obtained.
 				 *
 				 */
-				static bool SoftwareToHardwareBlitsAccelerated() 
-					throw( VideoException ) ;
+				static bool SoftwareToHardwareBlitsAccelerated() ;
+				
 				
 
 				/**
@@ -699,9 +732,9 @@ namespace OSDL
 				 * obtained.
 				 *
 				 */
-				static bool SoftwareToHardwareColorkeyBlitsAccelerated() 
-					throw( VideoException ) ;	
+				static bool SoftwareToHardwareColorkeyBlitsAccelerated() ;	
 				
+
 
 				/**
 				 * Returns whether software to hardware alpha blits are
@@ -711,8 +744,7 @@ namespace OSDL
 				 * obtained.
 				 *
 				 */
-				static bool SoftwareToHardwareAlphaBlitsAccelerated() 
-					throw( VideoException ) ;
+				static bool SoftwareToHardwareAlphaBlitsAccelerated() ;
 					
 					
 					
@@ -723,8 +755,9 @@ namespace OSDL
 				 * be obtained.
 				 *
 				 */
-				static bool ColorFillsAccelerated() throw( VideoException ) ;
+				static bool ColorFillsAccelerated() ;
 					
+
 
 				/**
 				 * Returns the total amount of video memory, in kilobytes.
@@ -733,9 +766,9 @@ namespace OSDL
 				 * obtained.
 				 *
 				 */
-				static Ceylan::Uint32 GetVideoMemorySize() 
-					throw( VideoException ) ;	
+				static Ceylan::Uint32 GetVideoMemorySize() ;	
 					
+				
 					
 				/**
 				 * Returns the native format of the video device.
@@ -749,8 +782,8 @@ namespace OSDL
 				 * obtained.
 				 *
 				 */
-				static Pixels::PixelFormat GetVideoDevicePixelFormat() 
-					throw( VideoException ) ;
+				static Pixels::PixelFormat GetVideoDevicePixelFormat() ;
+				
 				
 				
 				/**
@@ -760,8 +793,8 @@ namespace OSDL
 				 * be retrieved.
 				 *
 				 */
-				static std::string DescribeVideoCapabilities() 
-					throw( VideoException ) ;
+				static std::string DescribeVideoCapabilities() ;
+
 
 
 				/**
@@ -791,10 +824,10 @@ namespace OSDL
 				 *
 				 */
 				static bool AreDefinitionsRestricted( 
-						std::list<Definition> & definitions,
-						Ceylan::Flags flags, 
-						Pixels::PixelFormat * pixelFormat = 0 ) 
-					throw( VideoException ) ;		
+					std::list<Definition> & definitions,
+					Ceylan::Flags flags, 
+					Pixels::PixelFormat * pixelFormat = 0 ) ;		
+			
 			
 					
 				/**
@@ -812,9 +845,9 @@ namespace OSDL
 				 *
 				 */
 				static std::string DescribeAvailableDefinitions( 
-						Ceylan::Flags flags, 
-						Pixels::PixelFormat * pixelFormat = 0 ) 
-					throw( VideoException ) ;
+					Ceylan::Flags flags, 
+					Pixels::PixelFormat * pixelFormat = 0 ) ;
+					
 					
 					
 				/**
@@ -826,7 +859,8 @@ namespace OSDL
 				 * environment variables.
 				 *
 				 */	
-				static std::string DescribeEnvironmentVariables() throw() ;	
+				static std::string DescribeEnvironmentVariables() ;	
+				
 				
 					
 				/**
@@ -837,7 +871,7 @@ namespace OSDL
 				 * be obtained.
 				 *
 				 */
-				static bool IsUsingOpenGL() throw( VideoException ) ;
+				static bool IsUsingOpenGL() ;
 				 
 				 
 				 
@@ -857,12 +891,14 @@ namespace OSDL
 				 */
 
 
+
 				/**
 				 * Indicates that the screen surface is to be stored in 
 				 * system memory.
 				 *
 				 */
 				static const Ceylan::Flags SoftwareSurface ;			   
+
 
 
 				/**
@@ -872,6 +908,8 @@ namespace OSDL
 				 */
 				static const Ceylan::Flags HardwareSurface ;			   
 				
+				
+				
 				/**
 				 * Enables the use of asynchronous updates of the display
 				 * surface.
@@ -879,13 +917,16 @@ namespace OSDL
 				 */
 				static const Ceylan::Flags AsynchronousBlit ;
 								
+					
 									
 				/// Indicates that the screen surface may use any pixel format.
 				static const Ceylan::Flags AnyPixelFormat ;
 
 
+
 				/// Indicates that a surface should have an exclusive palette.
 				static const Ceylan::Flags ExclusivePalette ;	
+				
 				
 				
 				/**
@@ -900,12 +941,14 @@ namespace OSDL
 				static const Ceylan::Flags DoubleBuffered ;
 				
 				
+				
 				/**
 				 * Indicates that the screen surface is to be full screen, 
 				 * not windowed.
 				 *
 				 */		
 				static const Ceylan::Flags FullScreen ;
+				
 				
 				
 				/**
@@ -916,6 +959,7 @@ namespace OSDL
 				static const Ceylan::Flags OpenGL ;
 				
 				
+				
 				/**
 				 * Indicates that the screen surface is to be resizable.
 				 *
@@ -923,11 +967,14 @@ namespace OSDL
 				static const Ceylan::Flags Resizable ;
 
 
+
 				/**
 				 * Indicates that a GUI backend should be used here (ex: Agar).
 				 *
 				 */		
 				static const Ceylan::Flags WithGUI ;
+				
+				
 				
 				/**
 				 * Indicates that a window which would correspond to a 
@@ -944,12 +991,15 @@ namespace OSDL
 			protected:
 	
 			
+			
 				
 				// Variables section.
 				
 				
+				
 				/// Internal surface corresponding to the screen.
 				Surface * _screen ;				
+		
 		
 		
 				/**
@@ -957,6 +1007,7 @@ namespace OSDL
 				 *
 				 */
 				bool _displayInitialized ;
+
 
 
 				/// The video renderer being used, if any.
@@ -976,6 +1027,7 @@ namespace OSDL
 				static bool _IsUsingOpenGL ;
 				
 
+
 				/**
 				 * Caches the current state relative to final pixel 
 				 * drawing for lines.
@@ -986,6 +1038,7 @@ namespace OSDL
 				 *
 				 */
 				static bool _DrawEndPoint ;
+				
 				
 				
 				/**
@@ -1010,11 +1063,15 @@ namespace OSDL
 				bool _frameAccountingState ;
 				
 				
+				
 				/// The maximum length for the name of the display driver.
 				static const Ceylan::Uint16 DriverNameMaximumLength ;
 
+
 				
 				// @fixme Frame rate display should be put elsewhere.
+
+
 
 				/**
 				 * Delay in milliseconds between two displays of the 
@@ -1024,8 +1081,10 @@ namespace OSDL
 				//static const Ceylan::Uint32 DelayBetweenFrameRateDisplay ;
 				
 
+
 				/// Top-left corner of the frame rate counter.
 				// @fixme: be widget static Point2D * FrameRateCounterOrigin ;
+		
 		
 				
 				/**
@@ -1033,6 +1092,7 @@ namespace OSDL
 				 *
 				 */
 				//static PixelDefinition FrameRateCounterSpecifiedColor ;
+				
 				
 				
 				/**
@@ -1048,7 +1108,9 @@ namespace OSDL
 				
 				
 				
+				
 			private:
+
 
 
 				/**
@@ -1060,6 +1122,7 @@ namespace OSDL
 				OpenGL::OpenGLContext * _openGLcontext ;
 
 				
+				
 				/**
 				 * Records the current state relative to final pixel 
 				 * drawing for lines.
@@ -1070,6 +1133,7 @@ namespace OSDL
 				 *
 				 */
 				bool _drawEndPoint ;
+	
 	
 	
 				/**
@@ -1092,7 +1156,8 @@ namespace OSDL
 				 * initialization failed.
 				 *
 				 */
-				VideoModule() throw( VideoException ) ;
+				VideoModule() ;
+				
 				
 				
 				/// Basic virtual private destructor.
@@ -1109,7 +1174,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit VideoModule( const VideoModule & source ) throw() ;
+				explicit VideoModule( const VideoModule & source ) ;
+			
 			
 			
 				/**
@@ -1120,8 +1186,7 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				VideoModule & operator = ( const VideoModule & source ) 
-					throw() ;
+				VideoModule & operator = ( const VideoModule & source ) ;
 
 		
 		
@@ -1133,7 +1198,9 @@ namespace OSDL
 				static const std::string _SDLEnvironmentVariables[] ;
 									
 			
+			
 		} ;
+		
 		
 	}	
 	

@@ -27,17 +27,19 @@
 #include "OSDLBoundingBox.h"
 
 
+
 using namespace OSDL::Engine ;
 
 using std::string ;
 
 
 
-BoundingBoxException::BoundingBoxException( const string & reason ) throw() :
-	EngineException( "BoundingBoxException : " + reason )
+BoundingBoxException::BoundingBoxException( const string & reason ) :
+	EngineException( "BoundingBoxException: " + reason )
 {
 
 }
+
 
 
 BoundingBoxException::~BoundingBoxException() throw()
@@ -48,10 +50,12 @@ BoundingBoxException::~BoundingBoxException() throw()
 
 
 
-BoundingBox::BoundingBox() throw()
+
+BoundingBox::BoundingBox()
 {
 
 }
+
 
 
 BoundingBox::~BoundingBox() throw()
@@ -60,38 +64,37 @@ BoundingBox::~BoundingBox() throw()
 }
 
 
+
 string BoundingBox::InterpretIntersectionResult( IntersectionResult result ) 
-	throw( BoundingBoxException )
 {
 
 	switch( result )
 	{
 	
-		case isSeparate :
+		case isSeparate:
 			return "The two bounding boxes have no intersection." ;
 			break ;
 				
-		case contains :
+		case contains:
 			return "The first bounding box contains strictly the second." ;
 			break ;
 				
-		case isContained :
+		case isContained:
 			return "The first bounding box is "
 				"strictly contained by the second." ;
 			break ;
 				
-		case intersects :
+		case intersects:
 			return "The two bounding boxes intersect." ;
 			break ;
 				
-		case isEqual :
+		case isEqual:
 			return "The two bounding boxes are equal." ;
 			break ;
 				
-		
 		default:
 			throw BoundingBoxException(
-				"BoundingBox::InterpretIntersectionResult : "
+				"BoundingBox::InterpretIntersectionResult: "
 				"unknown intersection outcome." ) ;
 			break ;
 				

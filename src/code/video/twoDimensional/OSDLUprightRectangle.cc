@@ -47,18 +47,21 @@
 #endif // OSDL_USES_SDL_GFX
 
 
+
+
 using std::string ;
 
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
 
 
 UprightRectangle::UprightRectangle( const Point2D & upperLeftCorner,
-		const Point2D & lowerRightCorner ) throw( VideoException ):
+		const Point2D & lowerRightCorner ) :
 	_x( upperLeftCorner.getX() ),
 	_y( upperLeftCorner.getY() ),
 	_width( static_cast<Length>( 
@@ -86,7 +89,7 @@ UprightRectangle::UprightRectangle( const Point2D & upperLeftCorner,
 
 
 UprightRectangle::UprightRectangle( const Point2D & upperLeftCorner,
-		Length width, Length height ) throw():
+		Length width, Length height ) :
 	_x( upperLeftCorner.getX() ),
 	_y( upperLeftCorner.getY() ),
 	_width( width ),
@@ -98,7 +101,7 @@ UprightRectangle::UprightRectangle( const Point2D & upperLeftCorner,
 	
 			
 UprightRectangle::UprightRectangle( Coordinate x, Coordinate y,
-		 Length width, Length height ) throw():
+		 Length width, Length height ) :
 	_x( x ),
 	_y( y ),
 	_width( width ),
@@ -112,8 +115,7 @@ UprightRectangle::UprightRectangle( Coordinate x, Coordinate y,
 #if OSDL_USES_SDL
 
 
-UprightRectangle::UprightRectangle( const LowLevelRect & source ) 
-	throw( VideoException ):
+UprightRectangle::UprightRectangle( const LowLevelRect & source ) :
 	_x( source.x ),
 	_y( source.y ),
 	_width( source.w ),
@@ -127,7 +129,6 @@ UprightRectangle::UprightRectangle( const LowLevelRect & source )
 
 
 UprightRectangle::UprightRectangle( const LowLevelRect & source ) 
-	throw( VideoException )
 {
 	
 	throw VideoException( 
@@ -153,7 +154,7 @@ UprightRectangle::~UprightRectangle() throw()
 
 
 
-Point2D UprightRectangle::getUpperLeftCorner() const throw()
+Point2D UprightRectangle::getUpperLeftCorner() const
 {
 
 	return Point2D( _x, _y ) ;
@@ -163,7 +164,6 @@ Point2D UprightRectangle::getUpperLeftCorner() const throw()
 
 
 void UprightRectangle::setUpperLeftCorner( Point2D & newUpperLeftCorner )
-	throw()
 {
 
 	_x = newUpperLeftCorner.getX() ;
@@ -173,7 +173,7 @@ void UprightRectangle::setUpperLeftCorner( Point2D & newUpperLeftCorner )
 
 
 
-Coordinate UprightRectangle::getUpperLeftAbscissa() const throw()
+Coordinate UprightRectangle::getUpperLeftAbscissa() const
 {
 
 	return _x ;
@@ -182,7 +182,7 @@ Coordinate UprightRectangle::getUpperLeftAbscissa() const throw()
 
 
  
-void UprightRectangle::setUpperLeftAbscissa( Coordinate newAbscissa ) throw()
+void UprightRectangle::setUpperLeftAbscissa( Coordinate newAbscissa )
 {
 
 	_x = newAbscissa ;
@@ -191,7 +191,7 @@ void UprightRectangle::setUpperLeftAbscissa( Coordinate newAbscissa ) throw()
 
 
 
-Coordinate UprightRectangle::getUpperLeftOrdinate() const throw()
+Coordinate UprightRectangle::getUpperLeftOrdinate() const
 {
 
 	return _y ;
@@ -200,7 +200,7 @@ Coordinate UprightRectangle::getUpperLeftOrdinate() const throw()
 
  
  
-void UprightRectangle::setUpperLeftOrdinate( Coordinate newOrdinate ) throw()
+void UprightRectangle::setUpperLeftOrdinate( Coordinate newOrdinate )
 {
 
 	_y = newOrdinate ;
@@ -213,7 +213,8 @@ void UprightRectangle::setUpperLeftOrdinate( Coordinate newOrdinate ) throw()
 // Section for lower-right corner.
 
 
-Point2D UprightRectangle::getLowerRightCorner() const throw()
+
+Point2D UprightRectangle::getLowerRightCorner() const
 {
 
 	return Point2D( static_cast<Coordinate>( _x + getWidth() ), 
@@ -224,7 +225,6 @@ Point2D UprightRectangle::getLowerRightCorner() const throw()
 
 
 void UprightRectangle::setLowerRightCorner( Point2D & newLowerRightCorner )
-	throw( VideoException )
 {
 
 	if ( newLowerRightCorner.getX() < _x || newLowerRightCorner.getY() < _y )
@@ -240,7 +240,7 @@ void UprightRectangle::setLowerRightCorner( Point2D & newLowerRightCorner )
 
 
 
-Coordinate UprightRectangle::getLowerRightAbscissa() const throw()
+Coordinate UprightRectangle::getLowerRightAbscissa() const
 {
 
 	return _x + getWidth() ;
@@ -250,7 +250,6 @@ Coordinate UprightRectangle::getLowerRightAbscissa() const throw()
 
  
 void UprightRectangle::setLowerRightAbscissa( Coordinate newAbscissa ) 
-	throw( VideoException )
 {
 
 	if ( newAbscissa < _x )
@@ -265,7 +264,7 @@ void UprightRectangle::setLowerRightAbscissa( Coordinate newAbscissa )
 
 
 
-Coordinate UprightRectangle::getLowerRightOrdinate() const throw()
+Coordinate UprightRectangle::getLowerRightOrdinate() const
 {
 
 	return _y + getHeight() ;
@@ -275,7 +274,6 @@ Coordinate UprightRectangle::getLowerRightOrdinate() const throw()
  
  
 void UprightRectangle::setLowerRightOrdinate( Coordinate newOrdinate ) 
-	throw( VideoException )
 {
 
 	if ( newOrdinate < _y )
@@ -291,7 +289,7 @@ void UprightRectangle::setLowerRightOrdinate( Coordinate newOrdinate )
 
 
  
-Length UprightRectangle::getWidth() const throw()
+Length UprightRectangle::getWidth() const
 {
 
 	return _width ;
@@ -300,7 +298,7 @@ Length UprightRectangle::getWidth() const throw()
 
 
 
-void UprightRectangle::setWidth( Length newWidth ) throw()
+void UprightRectangle::setWidth( Length newWidth )
 {
 
 	_width = newWidth ;
@@ -309,7 +307,7 @@ void UprightRectangle::setWidth( Length newWidth ) throw()
 
 
 
-Length UprightRectangle::getHeight() const throw()
+Length UprightRectangle::getHeight() const
 {
 
 	return _height ;
@@ -318,7 +316,7 @@ Length UprightRectangle::getHeight() const throw()
 
 
 
-void UprightRectangle::setHeight( Length newHeight ) throw()
+void UprightRectangle::setHeight( Length newHeight )
 {
 
 	_height = newHeight ;
@@ -329,7 +327,7 @@ void UprightRectangle::setHeight( Length newHeight ) throw()
 		
 bool UprightRectangle::draw( Surface & target, 
 	ColorElement red, ColorElement blue, ColorElement green, 
-	ColorElement alpha,	bool filled ) const throw()
+	ColorElement alpha,	bool filled ) const
 {
 	
 	return draw( target, 
@@ -341,7 +339,7 @@ bool UprightRectangle::draw( Surface & target,
 
 
 bool UprightRectangle::draw( Surface & target, 
-	Pixels::ColorDefinition colorDef, bool filled ) const throw() 
+	Pixels::ColorDefinition colorDef, bool filled ) const 
 {
 
 #if OSDL_USES_SDL_GFX
@@ -396,7 +394,7 @@ bool UprightRectangle::draw( Surface & target,
 
 bool UprightRectangle::drawWithRoundedCorners( Surface & target, 
 	Length edgeWidth, Pixels::ColorDefinition edgeColorDef,
-	Pixels::ColorDefinition backgroundColorDef ) const throw()
+	Pixels::ColorDefinition backgroundColorDef ) const
 {
 
 	/*
@@ -555,7 +553,7 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target,
 		 *
 		 * As the previous method does not work properly in this case 
 		 * (rounding errors which in this case make corners appear with a
-		 * slightly different color from the inner color, again !),
+		 * slightly different color from the inner color, again!),
 		 * we use here a colorkey:
 		 *
 		 */
@@ -770,7 +768,7 @@ bool UprightRectangle::drawWithRoundedCorners( Surface & target,
 	
 	
 Length UprightRectangle::computeRadiusForRoundRectangle( Length edgeWidth )
-	const throw( VideoException )
+	const 
 {
 
 	/*
@@ -800,7 +798,7 @@ Length UprightRectangle::computeRadiusForRoundRectangle( Length edgeWidth )
 
 
 						
-LowLevelRect * UprightRectangle::toLowLevelRect() const throw( VideoException )
+LowLevelRect * UprightRectangle::toLowLevelRect() const 
 {
 
 #if OSDL_USES_SDL
@@ -833,8 +831,7 @@ LowLevelRect * UprightRectangle::toLowLevelRect() const throw( VideoException )
 
 
 
-const string UprightRectangle::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string UprightRectangle::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	return "Rectangle whose upper-left corner is " 
@@ -847,7 +844,7 @@ const string UprightRectangle::toString( Ceylan::VerbosityLevels level )
 	
 
 bool operator == ( const UprightRectangle & first, 
-	const UprightRectangle & second ) throw() 
+	const UprightRectangle & second ) 
 {
 
 	if ( first._x != second._x )
@@ -869,7 +866,7 @@ bool operator == ( const UprightRectangle & first,
 
 
 bool operator != ( const UprightRectangle & first, 
-	const UprightRectangle & second ) throw() 
+	const UprightRectangle & second ) 
 {
 
 	return ! ( first == second ) ;	
@@ -879,7 +876,6 @@ bool operator != ( const UprightRectangle & first,
 
 
 std::ostream & operator << ( std::ostream & os, UprightRectangle & rect )
-	throw()
 {
 
     return os << rect.toString() ;

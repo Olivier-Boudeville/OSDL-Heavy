@@ -37,6 +37,7 @@
 #include <list>
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"          // for OSDL_DEBUG_PIXEL and al 
 #endif // OSDL_USES_CONFIG_H
@@ -47,6 +48,7 @@
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+
 #if OSDL_USES_SDL_GFX
 
 #include "SDL_gfxPrimitives.h"   // for all graphics primitives
@@ -54,12 +56,14 @@
 #endif // OSDL_USES_SDL_GFX
 
 
-using std::string ;
 
+
+using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 
 using namespace Ceylan::Log ;
-using namespace OSDL::Video ;
 
+using std::string ;
 
 
 
@@ -71,6 +75,7 @@ using namespace OSDL::Video ;
 
 extern const ColorDefinition OSDL::Video::Pixels::Transparent     = 
 	{   0,   0,   0,  0  } ; 
+
 
 
 
@@ -459,8 +464,8 @@ extern const ColorDefinition OSDL::Video::Pixels::DefaultColorkey = Magenta ;
 
 
 
-bool Pixels::setGamma( GammaFactor red, GammaFactor green, GammaFactor blue )
-	throw()
+
+bool Pixels::setGamma( GammaFactor red, GammaFactor green, GammaFactor blue )	
 {
 
 #if OSDL_USES_SDL
@@ -485,7 +490,7 @@ bool Pixels::setGamma( GammaFactor red, GammaFactor green, GammaFactor blue )
 
 
 bool Pixels::setGammaRamp( GammaRampElement * redRamp, 
-	GammaRampElement * greenRamp, GammaRampElement * blueRamp ) throw()
+	GammaRampElement * greenRamp, GammaRampElement * blueRamp ) 
 {
 
 #if OSDL_USES_SDL
@@ -510,7 +515,7 @@ bool Pixels::setGammaRamp( GammaRampElement * redRamp,
 
 
 bool Pixels::getGammaRamp( GammaRampElement * redRamp, 
-	GammaRampElement * greenRamp, GammaRampElement * blueRamp ) throw()
+	GammaRampElement * greenRamp, GammaRampElement * blueRamp ) 
 {
 
 #if OSDL_USES_SDL
@@ -534,12 +539,13 @@ bool Pixels::getGammaRamp( GammaRampElement * redRamp,
 
 
 
+
 // Color masks.
 
 
+
 void Pixels::getRecommendedColorMasks( ColorMask & redMask, 
-	ColorMask & greenMask, ColorMask & blueMask, 
-	ColorMask & alphaMask ) throw()
+	ColorMask & greenMask, ColorMask & blueMask, ColorMask & alphaMask ) 
 {
 
 #if OSDL_DEBUG_PIXEL
@@ -576,7 +582,7 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 	
 				
 void Pixels::getRecommendedColorMasks( ColorMask & redMask, 
-	ColorMask & greenMask, ColorMask & blueMask ) throw()
+	ColorMask & greenMask, ColorMask & blueMask ) 
 {
 
 
@@ -609,7 +615,7 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 
 void Pixels::getCurrentColorMasks( const Pixels::PixelFormat & format, 
 	Pixels::ColorMask & redMask,  Pixels::ColorMask & greenMask, 
-	Pixels::ColorMask & blueMask, Pixels::ColorMask & alphaMask ) throw()
+	Pixels::ColorMask & blueMask, Pixels::ColorMask & alphaMask ) 
 {
 
 	redMask   = format.Rmask ;
@@ -621,12 +627,13 @@ void Pixels::getCurrentColorMasks( const Pixels::PixelFormat & format,
 
 
 
+
 // Color conversion section.
 
 
 ColorDefinition Pixels::convertRGBAToColorDefinition( 
 	ColorElement red,  ColorElement green, 
-	ColorElement blue, ColorElement alpha ) throw()
+	ColorElement blue, ColorElement alpha ) 
 {
 
 	ColorDefinition result ;
@@ -644,7 +651,7 @@ ColorDefinition Pixels::convertRGBAToColorDefinition(
 				
 void Pixels::convertColorDefinitionToRGBA( ColorDefinition color,
 	ColorElement & red, ColorElement & green, ColorElement & blue, 
-	ColorElement & alpha ) throw() 
+	ColorElement & alpha )  
 {
 
 	red   = color.r ;
@@ -658,7 +665,7 @@ void Pixels::convertColorDefinitionToRGBA( ColorDefinition color,
 				
 PixelColor Pixels::convertRGBAToPixelColor( const Pixels::PixelFormat & format,
 	ColorElement red, ColorElement green, ColorElement blue, 
-	ColorElement alpha ) throw() 
+	ColorElement alpha )  
 {	
 
 #if OSDL_USES_SDL
@@ -682,14 +689,13 @@ PixelColor Pixels::convertRGBAToPixelColor( const Pixels::PixelFormat & format,
 		"no SDL support available" ) ;
 		
 #endif // OSDL_USES_SDL
-
 	
 }
 
 
 
 ColorDefinition Pixels::convertPixelColorToColorDefinition(
-	 const PixelFormat & format, PixelColor pixel )	throw( VideoException )
+	 const PixelFormat & format, PixelColor pixel )	
 {
 
 #if OSDL_USES_SDL
@@ -713,7 +719,7 @@ ColorDefinition Pixels::convertPixelColorToColorDefinition(
 
 
 PixelColor Pixels::convertColorDefinitionToPixelColor( 
-	const PixelFormat & format, ColorDefinition colorDef ) throw()
+	const PixelFormat & format, ColorDefinition colorDef ) 
 {
 
 #if OSDL_USES_SDL
@@ -733,7 +739,7 @@ PixelColor Pixels::convertColorDefinitionToPixelColor(
 
 
 PixelColor Pixels::convertColorDefinitionToRawPixelColor( 
-	ColorDefinition colorDef ) throw()
+	ColorDefinition colorDef ) 
 {
 
 	/*
@@ -752,7 +758,7 @@ PixelColor Pixels::convertColorDefinitionToRawPixelColor(
 
 PixelColor Pixels::convertRGBAToRawPixelColor( 
 	ColorElement red, ColorElement green, ColorElement blue, 
-	ColorElement alpha ) throw()
+	ColorElement alpha ) 
 {
 	return ((Ceylan::Uint32) red << 24) | ((Ceylan::Uint32) green << 16) 
 		| ((Ceylan::Uint32) blue << 8) | ((Ceylan::Uint32) alpha ) ;
@@ -766,7 +772,7 @@ PixelColor Pixels::convertRGBAToRawPixelColor(
 
 
 bool Pixels::areEqual( ColorDefinition first, ColorDefinition second, 
-	bool useAlpha ) throw()
+	bool useAlpha ) 
 {
 	
 
@@ -795,7 +801,7 @@ bool Pixels::areEqual( ColorDefinition first, ColorDefinition second,
 
 
 
-bool Pixels::isLess( ColorDefinition value, ColorDefinition comparison ) throw()
+bool Pixels::isLess( ColorDefinition value, ColorDefinition comparison ) 
 {
 
 	if ( value.r < comparison.r )
@@ -831,7 +837,7 @@ bool Pixels::isLess( ColorDefinition value, ColorDefinition comparison ) throw()
 
 
 
-bool Pixels::areEqual( PixelColor first, PixelColor second ) throw()
+bool Pixels::areEqual( PixelColor first, PixelColor second ) 
 {
 
 	return first == second ;
@@ -841,7 +847,7 @@ bool Pixels::areEqual( PixelColor first, PixelColor second ) throw()
 
 		
 ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first, 
-	ColorDefinition second ) throw() 	
+	ColorDefinition second )  	
 {
 
 	// Three different choices are always enough:
@@ -864,7 +870,7 @@ ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first,
 		
 		
 ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first, 
-	ColorDefinition second, ColorDefinition third ) throw() 	
+	ColorDefinition second, ColorDefinition third )  	
 {
 
 	// Four different choices are always enough:
@@ -893,13 +899,15 @@ ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first,
 	
 }
 		
+	
 		
 
 // get/put pixel operations.
 
 
+
 Pixels::PixelColor Pixels::getPixelColor( const Surface & fromSurface,
-	Coordinate x, Coordinate y ) throw ( VideoException )
+	Coordinate x, Coordinate y )
 {
 
 #if OSDL_USES_SDL
@@ -950,8 +958,7 @@ Pixels::PixelColor Pixels::getPixelColor( const Surface & fromSurface,
 
 
 Pixels::ColorDefinition Pixels::getColorDefinition( 
-		const Surface & fromSurface, Coordinate x, Coordinate y ) 
-	throw ( VideoException )
+	const Surface & fromSurface, Coordinate x, Coordinate y ) 
 {
 
 	return convertPixelColorToColorDefinition( fromSurface.getPixelFormat(),
@@ -963,10 +970,9 @@ Pixels::ColorDefinition Pixels::getColorDefinition(
 
 		
 void Pixels::putRGBAPixel( Surface & targetSurface, 
-		Coordinate x, Coordinate y, 
-		ColorElement red, ColorElement green, ColorElement blue, 
-		ColorElement alpha, bool blending, bool clipping, bool locking ) 
-	throw( VideoException )
+	Coordinate x, Coordinate y, 
+	ColorElement red, ColorElement green, ColorElement blue, 
+	ColorElement alpha, bool blending, bool clipping, bool locking ) 
 {
 
 	putPixelColor( targetSurface, x, y, 
@@ -978,9 +984,8 @@ void Pixels::putRGBAPixel( Surface & targetSurface,
 
 
 void Pixels::putColorDefinition( Surface & targetSurface, 
-		Coordinate x, Coordinate y, ColorDefinition colorDef, 
-		bool blending, bool clipping, bool locking )
-	throw( VideoException )
+	Coordinate x, Coordinate y, ColorDefinition colorDef, 
+	bool blending, bool clipping, bool locking )
 {
 
 	putPixelColor( targetSurface, x, y, 
@@ -993,9 +998,8 @@ void Pixels::putColorDefinition( Surface & targetSurface,
 
 
 void Pixels::putPixelColor( Surface & targetSurface, 
-		Coordinate x, Coordinate y, PixelColor convertedColor, 
-		ColorElement alpha, bool blending, bool clipping, bool locking ) 
-	throw( VideoException )
+	Coordinate x, Coordinate y, PixelColor convertedColor, 
+	ColorElement alpha, bool blending, bool clipping, bool locking ) 	
 {
 	
 #if OSDL_USES_SDL_GFX
@@ -1187,14 +1191,12 @@ void Pixels::putPixelColor( Surface & targetSurface,
 		
 #endif // OSDL_USES_SDL_GFX
 
-
 }
 
 
 
 void Pixels::alternativePutPixelColor( Surface & targetSurface, 
 	Coordinate x, Coordinate y, PixelColor color, bool mapToSurfaceFormat )
-		throw()
 {
 	
 #if OSDL_USES_SDL
@@ -1278,7 +1280,7 @@ void Pixels::alternativePutPixelColor( Surface & targetSurface,
 
 
 	
-string Pixels::toString( const Pixels::PixelFormat & format ) throw()
+string Pixels::toString( const Pixels::PixelFormat & format ) 
 {
 
 	string result = "Pixel format description "
@@ -1343,7 +1345,7 @@ string Pixels::toString( const Pixels::PixelFormat & format ) throw()
 
 
 
-string Pixels::toString( PixelColor pixel, const PixelFormat & format ) throw()
+string Pixels::toString( PixelColor pixel, const PixelFormat & format ) 
 {
 
 	return "Pixel whose color definition is " 
@@ -1353,7 +1355,7 @@ string Pixels::toString( PixelColor pixel, const PixelFormat & format ) throw()
 			
 		
 				
-string Pixels::toString( ColorDefinition color ) throw() 
+string Pixels::toString( ColorDefinition color )  
 {
 	
 	string result = "[R;G;B;A] = [ " 

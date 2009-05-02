@@ -33,13 +33,16 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Rendering 
 	{
 	
+		
 		
 		/*
 		 * Audio renderers use a point of perception to select relevant 
@@ -48,6 +51,7 @@ namespace OSDL
 		 */
 		class Camera ;
 				
+			
 				
 		/**
 		 * This basic audio renderer manages the sound rendering of all
@@ -70,6 +74,7 @@ namespace OSDL
 			public:
 			
 			
+			
 				/**
 				 * Constructs a new audio renderer.
 				 *
@@ -86,8 +91,8 @@ namespace OSDL
 				 * @see MultimediaRenderer
 				 *
 				 */
-				explicit AudioRenderer( bool registerToRootRenderer = true ) 
-					throw( RenderingException ) ;
+				explicit AudioRenderer( bool registerToRootRenderer = true ) ;
+				
 				
 				
 				/**
@@ -97,21 +102,23 @@ namespace OSDL
 				virtual ~AudioRenderer() throw() ;
 			
 
+
 				/**
 				 * Returns whether this audio renderer has an internal 
 				 * camera available.
 				 *
 				 */
-				//virtual bool hasCamera() const throw() ;
+				//virtual bool hasCamera() const ;
 				
-				 				
+				 		
+								
 				/**
 				 * Returns the internal camera of this audio renderer.
 				 *
 				 * @throw RenderingException iff no camera is available.
 				 */
-				//virtual Camera & getCamera() const 
-				//	throw( RenderingException ) ; 	
+				//virtual Camera & getCamera() const ; 	
+					
 					
 					
 				/**
@@ -124,7 +131,8 @@ namespace OSDL
 				 * replaced by another camera.
 				 *
 				 */
-				//virtual void setCamera( Camera & newCamera ) throw() ; 	
+				//virtual void setCamera( Camera & newCamera ) ; 	
+					
 					
 					
 				/**
@@ -138,8 +146,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void render( 
-					Events::RenderingTick currentRenderingTick = 0 ) throw() ;
+					Events::RenderingTick currentRenderingTick = 0 ) ;
 	
+				
 				
 				/**
 				 * Allows the audio renderer to be aware that a rendering 
@@ -154,7 +163,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onRenderingSkipped( 
-					Events::RenderingTick skippedRenderingTick ) throw() ;
+					Events::RenderingTick skippedRenderingTick ) ;
+						
 						
 						
 	            /**
@@ -170,8 +180,8 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high )
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 					
@@ -182,7 +192,10 @@ namespace OSDL
 				//Camera * _internalCamera ;
 			
 			
+			
+			
 			private:
+			
 			
 			
 				/**
@@ -193,7 +206,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				AudioRenderer( const AudioRenderer & source ) throw() ;
+				AudioRenderer( const AudioRenderer & source ) ;
+			
 			
 			
 				/**
@@ -204,15 +218,17 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				AudioRenderer & operator = ( const AudioRenderer & source )
-					throw() ;
+				AudioRenderer & operator = ( const AudioRenderer & source ) ;
 					
 				
 		} ;
+		
 
 	}
 
 }
 
 
+
 #endif // OSDL_AUDIO_RENDERER_H_
+

@@ -45,16 +45,20 @@
 	
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Video
 	{
 
 
+
 		// Fonts are rendered to surfaces.
 		class Surface ;
+
 
 
 		namespace TwoDimensional
@@ -68,20 +72,23 @@ namespace OSDL
 			
 				public: 
 				
-					explicit TextException( const std::string & reason ) 
-						throw() ; 
+					explicit TextException( const std::string & reason )  ;
+					 
 					virtual ~TextException() throw() ; 
 					
 			} ;
 				
 			
 			
+			
 			namespace Text
 			{	
+			
 			
 
 				/// Point size, in dots per inch.
 				typedef Length PointSize ;
+				
 				
 				
 				/**
@@ -96,19 +103,24 @@ namespace OSDL
 				/// Describes a font pixel unsigned height.
 				typedef Ceylan::Uint16 Height ;
 				
+				
 				/// Describes a font pixel signed height.
 				typedef Ceylan::Sint16 SignedHeight ;
+				
 				
 				
 				/// Describes a font pixel unsigned width.
 				typedef Ceylan::Uint16 Width ;
 				
+				
 				/// Describes a font pixel signed width.
 				typedef Ceylan::Sint16 SignedWidth ;
 				
 				
+				
 				/// Describes the rendering style of a font.
 				typedef Ceylan::Uint32 RenderingStyle ;
+				
 				
 								
 				/**
@@ -117,6 +129,7 @@ namespace OSDL
 				 *
 				 */
 				typedef Ceylan::Uint16 TextIndex ;
+					
 					
 									
 				/**
@@ -127,10 +140,13 @@ namespace OSDL
 				 */
 				typedef Ceylan::Uint16 LineNumber ;
 									
+					
 									
 				
 				/// Defines the various possible horizontal alignments.
 				enum HorizontalAlignment { Left, WidthCentered, Right } ;
+				
+				
 				
 				/// Defines the various possible vertical alignments.
 				enum VerticalAlignment { Top, HeightCentered, Bottom } ;
@@ -204,8 +220,9 @@ namespace OSDL
 				 * level of this Font mother class.
 				 *
 				 */
-				class OSDL_DLL Font: public Ceylan::TextDisplayable
+				class OSDL_DLL Font : public Ceylan::TextDisplayable
 				{
+				
 				
 				
 					public:
@@ -345,6 +362,7 @@ namespace OSDL
 						 */
 
 						
+						
 						/**
 						 * Cache key to manage colored characters with 
 						 * various qualities.
@@ -363,7 +381,7 @@ namespace OSDL
 								CharColorQualityKey( 
 										Ceylan::Latin1Char character, 
 										Pixels::ColorDefinition color,
-										RenderQuality quality ) throw():
+										RenderQuality quality ) :
 									_character( character ),
 									_color( color ),
 									_quality( quality )
@@ -372,10 +390,10 @@ namespace OSDL
 								}
 								
 								
+								
 								/// Offers an arbitrary order for font keys.
 								inline bool operator < ( 
-										const CharColorQualityKey & other ) 
-									const throw() 
+									const CharColorQualityKey & other ) const
 								{
 
 									if ( _character < other._character )
@@ -397,6 +415,7 @@ namespace OSDL
 								}	
 								
 								
+								
 							private:								
 							
 								Ceylan::Latin1Char _character ;
@@ -407,6 +426,7 @@ namespace OSDL
 						
 						
 						} ;
+						
 						
 								
 
@@ -423,10 +443,9 @@ namespace OSDL
 								
 								
 								StringColorQualityKey( 
-									const std::string & text, 
-									Pixels::ColorDefinition color, 
-									RenderQuality quality )
-										throw():
+										const std::string & text, 
+										Pixels::ColorDefinition color, 
+										RenderQuality quality ) :
 									_text( text ),
 									_color( color ),
 									_quality( quality )
@@ -434,10 +453,10 @@ namespace OSDL
 								
 								}
 
+
 								
 								inline bool operator < ( 
-										const StringColorQualityKey & other ) 
-									const throw() 
+									const StringColorQualityKey & other ) const 
 								{	
 									
 									/*
@@ -501,6 +520,7 @@ namespace OSDL
 							None, GlyphCached, WordCached, TextCached } ;
 						
 					
+					
 						/**
 						 * Describes which of the cache policies made 
 						 * available by the Smart Resource manager are 
@@ -526,6 +546,7 @@ namespace OSDL
 						 */
 						enum AllowedCachePolicy { 
 							NeverDrop, DropLessRequestedFirst } ;
+						
 						
 						
 						/**
@@ -571,20 +592,22 @@ namespace OSDL
 							RenderCache cacheSettings = GlyphCached, 
 							AllowedCachePolicy cachePolicy 
 								= DropLessRequestedFirst,
-							Ceylan::System::Size quota = 0 ) throw() ;
+							Ceylan::System::Size quota = 0 ) ;
+						
 						
 						
 						/// Virtual destructor.
 						virtual ~Font() throw() ;
 
 						
+						
 						/**
 						 * Returns the current rendering style.
 						 *
 						 */
-						virtual RenderingStyle getRenderingStyle() const
-							throw() ;
+						virtual RenderingStyle getRenderingStyle() const ;
 						
+					
 						
 						/**
 						 * Sets the current rendering style for this font.
@@ -602,8 +625,9 @@ namespace OSDL
 						 *
 						 */
 						virtual void setRenderingStyle( 
-							RenderingStyle newStyle ) throw( TextException ) ;
+							RenderingStyle newStyle ) ;
 						
+
 
 						/**
 						 * Sets the current background color for this font.
@@ -617,8 +641,8 @@ namespace OSDL
 						 *
 						 */
 						virtual void setBackgroundColor( 
-								Pixels::ColorDefinition newBackgroundColor ) 
-							throw() ;	
+							Pixels::ColorDefinition newBackgroundColor ) ;	
+							
 							
 					
 						/**
@@ -630,9 +654,9 @@ namespace OSDL
 						 * transparent.
 						 *
 						 */		
-						Pixels::ColorDefinition getBackgroundColor() 
-							const throw() ;
+						Pixels::ColorDefinition getBackgroundColor() const ;
 												
+						
 						
 						/**
 						 * Returns the width of the specified glyph, 
@@ -650,7 +674,8 @@ namespace OSDL
 						 *
 						 */
 						virtual Width getWidth( Ceylan::Latin1Char character ) 
-							const throw( TextException) = 0 ;
+							const = 0 ;
+						 
 						 
 						 
 						/**
@@ -669,8 +694,8 @@ namespace OSDL
 						 *
 						 */
 						virtual SignedWidth getWidthOffset( 
-								Ceylan::Latin1Char character ) 
-							const throw( TextException ) = 0 ;
+							Ceylan::Latin1Char character ) const = 0 ;
+
 
 
 						/**
@@ -685,9 +710,9 @@ namespace OSDL
 						 *
 						 */
 						virtual SignedHeight getHeightAboveBaseline(
-								Ceylan::Latin1Char character )
-							const throw( TextException ) = 0 ;
+							Ceylan::Latin1Char character ) const = 0 ;
 
+						 
 						 
 						/**
 						 * Returns the advance of the specified glyph, 
@@ -707,8 +732,8 @@ namespace OSDL
 						 *
 						 */
 						virtual SignedLength getAdvance( 
-								Ceylan::Latin1Char character ) 
-							const throw( TextException ) = 0 ;
+							Ceylan::Latin1Char character ) const = 0 ;
+						 
 						 
 						 
 						/**
@@ -725,7 +750,8 @@ namespace OSDL
 						 * character-based advances that can be requested.
 						 *
 						 */
-						virtual Width getInterGlyphWidth() const throw() ;
+						virtual Width getInterGlyphWidth() const ;
+						 
 						 
 												
 						/**
@@ -743,7 +769,7 @@ namespace OSDL
 						 * @see getLineSkip
 						 *
 						 */
-						virtual Height getHeight() const throw() = 0 ;
+						virtual Height getHeight() const = 0 ;
 						
 						
 						 
@@ -762,7 +788,8 @@ namespace OSDL
 						 * @see getLineSkip
 						 *
 						 */
-						virtual SignedHeight getAscent() const throw() = 0 ;
+						virtual SignedHeight getAscent() const = 0 ;
+						 
 						 
 						 
 						/**
@@ -784,7 +811,8 @@ namespace OSDL
 						 * @see getLineSkip
 						 *
 						 */
-						virtual SignedHeight getDescent() const throw() = 0 ;
+						virtual SignedHeight getDescent() const = 0 ;
+						 
 						 
 						 
 						/**
@@ -795,7 +823,7 @@ namespace OSDL
 						 * getHeight.
 						 *
 						 */
-						virtual Height getLineSkip() const throw() = 0 ;
+						virtual Height getLineSkip() const = 0 ;
 						
 						
 						
@@ -804,7 +832,8 @@ namespace OSDL
 						 * pixels.
 						 *
 						 */
-						virtual Width getAlineaWidth() const throw() ;
+						virtual Width getAlineaWidth() const ;
+						
 						
 						
 						/**
@@ -817,8 +846,7 @@ namespace OSDL
 						 * for the alinea.
 						 *
 						 */
-						virtual void setAlineaWidth( Width newAlineaWidth )
-							throw() ;	
+						virtual void setAlineaWidth( Width newAlineaWidth ) ;	
 						 
 						 
 						 
@@ -833,13 +861,14 @@ namespace OSDL
 						 *
 						 */
 						virtual std::string describeGlyphFor( 
-								Ceylan::Latin1Char character )
-							const throw() ;
+							Ceylan::Latin1Char character ) const ;
+						
 						
 						
 						
 						// Render section.
 							 							 
+
 
 						/**
 						 * Renders specified glyph (Latin-1 character) in
@@ -873,11 +902,11 @@ namespace OSDL
 						 *
 						 */
 						virtual Surface & renderLatin1Glyph( 
-								Ceylan::Latin1Char character, 
-								RenderQuality quality = Solid, 
-								Pixels::ColorDefinition glyphColor 
-									= Pixels::White ) 
-							throw( TextException ) = 0 ;
+							Ceylan::Latin1Char character, 
+							RenderQuality quality = Solid, 
+							Pixels::ColorDefinition glyphColor = Pixels::White 
+						) = 0 ;
+
 
 
 						/**
@@ -905,14 +934,13 @@ namespace OSDL
 						 *
 						 */
 						virtual void blitLatin1Glyph( 
-								Surface & targetSurface,
-								Coordinate x, 
-								Coordinate y, 
-								Ceylan::Latin1Char character, 
-								RenderQuality quality = Solid, 
-								Pixels::ColorDefinition glyphColor 
-									= Pixels::White )  
-							throw( TextException )= 0 ;
+							Surface & targetSurface,
+							Coordinate x, 
+							Coordinate y, 
+							Ceylan::Latin1Char character, 
+							RenderQuality quality = Solid, 
+							Pixels::ColorDefinition glyphColor = Pixels::White )
+								= 0 ;
 							
 								
 								
@@ -938,11 +966,10 @@ namespace OSDL
 						 *
 						 */
 						virtual Surface & renderLatin1Text( 
-								const std::string & text, 
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition textColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+							const std::string & text, 
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition textColor = Pixels::White 
+						) ;
 							
 							
 							
@@ -973,14 +1000,13 @@ namespace OSDL
 						 *
 						 */
 						virtual void blitLatin1Text( 
-								Surface & targetSurface,
-								Coordinate x, 
-								Coordinate y, 
-								const std::string & text, 
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition textColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+							Surface & targetSurface,
+							Coordinate x, 
+							Coordinate y, 
+							const std::string & text, 
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition textColor = Pixels::White 
+						) ;
 							
 
 								
@@ -1067,16 +1093,15 @@ namespace OSDL
 						 *
 						 */
 						virtual Surface & renderLatin1MultiLineText( 
-								Length width, 
-								Length height,
-								const std::string & text,
-								TextIndex & renderIndex,
-								Coordinate & lastOrdinateUsed,
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition textColor 
-									= Pixels::White,
-								bool justified = true ) 
-							throw( TextException ) ;
+							Length width, 
+							Length height,
+							const std::string & text,
+							TextIndex & renderIndex,
+							Coordinate & lastOrdinateUsed,
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition textColor = Pixels::White,
+							bool justified = true ) ;
+
 
 
 						/**
@@ -1137,15 +1162,14 @@ namespace OSDL
 						 *
 						 */
 						virtual void blitLatin1MultiLineText( 
-								Surface & targetSurface,
-								const UprightRectangle & clientArea, 
-								const std::string & text,
-								TextIndex & renderIndex,
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition textColor 
-									= Pixels::White,
-								bool justified = true ) 
-							throw( TextException ) ;
+							Surface & targetSurface,
+							const UprightRectangle & clientArea, 
+							const std::string & text,
+							TextIndex & renderIndex,
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition textColor = Pixels::White,
+							bool justified = true ) ;
+
 
 
 						/**
@@ -1213,18 +1237,16 @@ namespace OSDL
 						 *
 						 */
 						virtual void blitLatin1MultiLineText( 
-								Surface & targetSurface,
-								Coordinate x, 
-								Coordinate y,
-								Length width, 
-								Length height,
-								const std::string & text,
-								TextIndex & renderIndex,
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition textColor 
-									= Pixels::White,
-								bool justified = true ) 
-							throw( TextException ) ;
+							Surface & targetSurface,
+							Coordinate x, 
+							Coordinate y,
+							Length width, 
+							Length height,
+							const std::string & text,
+							TextIndex & renderIndex,
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition textColor = Pixels::White,
+							bool justified = true ) ;
 
 
 
@@ -1242,12 +1264,14 @@ namespace OSDL
 			             */
 				 		virtual const std::string toString( 
 								Ceylan::VerbosityLevels level = Ceylan::high ) 
-							const throw() ;
+							const ;
 
 						
 						
 						
+						
 						// Static section.
+						
 						
 												
 						/**
@@ -1257,6 +1281,7 @@ namespace OSDL
 						 *
 						 */
 						static std::string FontPathEnvironmentVariable  ;
+						
 						
 						
 						/**
@@ -1271,6 +1296,7 @@ namespace OSDL
 						static Ceylan::System::FileLocator FontFileLocator ;
 						
 						
+						
 						/**
 						 * Returns a description of the specified 
 						 * rendering style.
@@ -1279,7 +1305,8 @@ namespace OSDL
 						 *
 						 */
 						static std::string InterpretRenderingStyle(
-							RenderingStyle style ) throw() ;
+							RenderingStyle style ) ;
+						
 						
 						
 						/*
@@ -1289,20 +1316,25 @@ namespace OSDL
 						 * 
 						 */
 						
+						
 						/// Normal font rendering style.
 						static const RenderingStyle Normal ;
 				
+								
 								
 						/// Normal font rendering style.
 						static const RenderingStyle Bold ;
 				
 						
+						
 						/// Italic font rendering style.
 						static const RenderingStyle Italic ;
+				
 				
 						
 						/// Underline font rendering style.
 						static const RenderingStyle Underline ;
+
 
 
 						/**
@@ -1317,6 +1349,7 @@ namespace OSDL
 							DefaultGlyphCachedQuota ;
 						
 						
+						
 						/**
 						 * Defines the default quota value (maximum size 
 						 * of cached surfaces in memory, in bytes) if the 
@@ -1327,6 +1360,7 @@ namespace OSDL
 						 */
 						static const Ceylan::System::Size 
 							DefaultWordCachedQuota ;
+						
 						
 						
 						/**
@@ -1340,6 +1374,7 @@ namespace OSDL
 						static const Ceylan::System::Size 
 							DefaultTextCachedQuota ;
 						
+						
 												
 						/**
 						 * Defines the default width for an alinea as 
@@ -1348,6 +1383,7 @@ namespace OSDL
 						 */
 						static const Ceylan::Uint8 
 							DefaultSpaceBasedAlineaWidth ;
+						
 						
 						
 						
@@ -1378,10 +1414,9 @@ namespace OSDL
 						 *
 						 */
 						Surface & renderLatin1TextWithWordCached( 
-								const std::string & text,
-								RenderQuality quality, 
-								Pixels::ColorDefinition textColor ) 
-							throw( TextException ) ;
+							const std::string & text,
+							RenderQuality quality, 
+							Pixels::ColorDefinition textColor ) ;
 							
 							
 							
@@ -1407,10 +1442,9 @@ namespace OSDL
 						 *
 						 */
 						Surface & renderLatin1TextWithTextCached( 
-								const std::string & text,
-								RenderQuality quality, 
-								Pixels::ColorDefinition textColor ) 
-							throw( TextException ) ;
+							const std::string & text,
+							RenderQuality quality, 
+							Pixels::ColorDefinition textColor ) ;
 							
 
 						
@@ -1447,14 +1481,13 @@ namespace OSDL
 						 *
 						 */
 						virtual void blitLatin1Word( 
-								Surface & targetSurface,
-								Coordinate x, 
-								Coordinate y, 
-								const std::string & word, 
-								RenderQuality quality = Solid, 
-								Pixels::ColorDefinition wordColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+							Surface & targetSurface,
+							Coordinate x, 
+							Coordinate y, 
+							const std::string & word, 
+							RenderQuality quality = Solid, 
+							Pixels::ColorDefinition wordColor = Pixels::White 
+						) ;
 						
 
 
@@ -1495,10 +1528,10 @@ namespace OSDL
 						 *
 						 */
 						virtual const Surface & getConstLatin1WordFromCache( 
-								const std::string & word, 
-								RenderQuality quality,
-								Pixels::ColorDefinition wordColor )
-							throw( TextException ) ;
+							const std::string & word, 
+							RenderQuality quality,
+							Pixels::ColorDefinition wordColor ) ;
+
 
 							
 						/**
@@ -1523,10 +1556,11 @@ namespace OSDL
 						 *
 						 */
 						Surface & basicRenderLatin1Text( 
-								const std::string & text,
-								RenderQuality quality, 
-								Pixels::ColorDefinition textColor ) 
-							throw( TextException ) ;
+							const std::string & text,
+							RenderQuality quality, 
+							Pixels::ColorDefinition textColor ) ;
+							
+							
 							
 							
 						/**
@@ -1537,6 +1571,7 @@ namespace OSDL
 						RenderingStyle _renderingStyle ;
 					
 					
+					
 						/**
 						 * Tells whether returned and cached renderings 
 						 * should be converted to display beforehand.
@@ -1544,9 +1579,11 @@ namespace OSDL
 						 */
 						bool _convertToDisplay ;
 						
+							
 																		
 						/// Describes the settings of the render cache.
 						RenderCache _cacheSettings ;
+
 
 						 
 						/**
@@ -1562,6 +1599,7 @@ namespace OSDL
 							_glyphCache ;
 						
 						
+						
 						/**
 						 * The smart resource manager that would cache 
 						 * rendered words and/or text, should the 
@@ -1575,12 +1613,14 @@ namespace OSDL
 							_textCache ;
 
 						
+						
 						/**
 						 * Defines what is the background color, for 
 						 * 'Shaded' quality.
 						 *
 						 */
 						Pixels::ColorDefinition _backgroundColor ;
+						
 						
 						
 						/**
@@ -1598,6 +1638,7 @@ namespace OSDL
 						Width _spaceWidth ;
 							
 							
+							
 						/**
 						 * Records the width of an alinea space, in pixels, 
 						 * to be put at the beginning of a paragraph.
@@ -1608,6 +1649,7 @@ namespace OSDL
 						 */
 						Width _alineaWidth ;
 							
+				
 				
 				
 					private:
@@ -1622,7 +1664,8 @@ namespace OSDL
 						 * undefined constructor is called, implicitly or not.
 						 *
 						 */			 
-						Font( const Font & source ) throw() ;
+						Font( const Font & source ) ;
+			
 			
 			
 						/**
@@ -1633,10 +1676,11 @@ namespace OSDL
 						 * undefined operator is called, implicitly or not.
 						 *
 						 */			 
-						Font & operator = ( const Font & source ) throw() ;
+						Font & operator = ( const Font & source ) ;
 						
 						
 				} ;							
+				
 				
 			} 
 			

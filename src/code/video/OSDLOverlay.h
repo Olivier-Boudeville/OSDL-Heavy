@@ -36,12 +36,14 @@
 
 
 
+
 #if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 // No need to include SDL header here:
 struct SDL_Overlay ;
 
 #endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
 
 
 namespace OSDL
@@ -65,6 +67,7 @@ namespace OSDL
 #endif // OSDL_USES_SDL
 
 
+
 	
 		/// Thrown when an error regarding overlays occured.
 		class OSDL_DLL OverlayException: public VideoException
@@ -72,7 +75,7 @@ namespace OSDL
 		
 			public:
 			
-				OverlayException( const std::string & message ) throw() ;		
+				OverlayException( const std::string & message ) ;		
 				virtual ~OverlayException() throw() ;
 			
 		} ;
@@ -110,6 +113,7 @@ namespace OSDL
 			public:
 			
 			
+			
 				/**
 				 * Describes the encoding format used by an overlay.
 				 *
@@ -124,6 +128,7 @@ namespace OSDL
 				 *
 				 */
 				enum EncodingFormat { YV12, IYUV, YUY2,UYVY, YVYU } ;
+			
 			
 			
 				/**
@@ -143,12 +148,13 @@ namespace OSDL
 				 * @see EncodingFormat
 				 *
 				 */
-				Overlay( Length width, Length height, EncodingFormat format ) 
-					throw( OverlayException ) ;
+				Overlay( Length width, Length height, EncodingFormat format ) ;
+				
 				
 			
 				/// Virtual destructor.
 				virtual ~Overlay() throw() ;
+			
 			
 
 				/**
@@ -164,8 +170,8 @@ namespace OSDL
 				 * @throw OverlayException if the operation failed.
 				 *
 				 */
-				virtual void blit( Coordinate x, Coordinate y ) const 
-					throw( OverlayException ) ;			
+				virtual void blit( Coordinate x, Coordinate y ) const ;			
+			
 			
 			
 				/**
@@ -174,8 +180,9 @@ namespace OSDL
 				 * @throw OverlayException if the operation failed.
 				 *
 				 */
-				virtual void blit() const throw( OverlayException ) ;
+				virtual void blit() const ;
 
+					
 					
 				/**
 				 * Tells whether this overlay has to be locked before 
@@ -190,7 +197,7 @@ namespace OSDL
 				 * This method cannot be inlined since it is inherited.
 				 *
 				 */				
-				 virtual bool mustBeLocked() const throw() ;
+				 virtual bool mustBeLocked() const ;
 		
 	
 			
@@ -206,12 +213,13 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 			
 			protected:
+			
 			
 			
 				/**
@@ -223,7 +231,8 @@ namespace OSDL
 				 * @see Ceylan::Lockable
 				 *
 				 */
-				virtual void preUnlock() throw() ;
+				virtual void preUnlock() ;
+				
 				
 				
 				/**
@@ -235,7 +244,8 @@ namespace OSDL
 				 * @see Ceylan::Lockable
 				 *
 				 */
-				virtual void postLock() throw() ;
+				virtual void postLock() ;
+			
 			
 			
 				/// The inner back-end overlay, if any.
@@ -255,6 +265,7 @@ namespace OSDL
 			private:
 		
 		
+		
 				/**
 				 * Copy constructor made private to ensure that it will 
 				 * never be called.
@@ -263,7 +274,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				Overlay( const Overlay & source ) throw() ;
+				Overlay( const Overlay & source ) ;
+			
 			
 			
 				/**
@@ -274,12 +286,12 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				Overlay & operator = ( const Overlay & source ) throw() ;
+				Overlay & operator = ( const Overlay & source ) ;
 				
 		
 		
-		
 		} ;	
+	
 	
 	
 	}

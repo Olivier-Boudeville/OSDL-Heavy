@@ -37,8 +37,11 @@
 #include <list>
 
 
+
+
 namespace OSDL
 {
+
 
 
 	namespace MVC
@@ -54,8 +57,10 @@ namespace OSDL
 	}
 
 		
+		
 	namespace Events
 	{
+	
 	
 	
 		// Manages mice.
@@ -91,6 +96,7 @@ namespace OSDL
 
 
 
+
 				/**
 				 * Constructs a new mouse handler.
 				 *
@@ -105,8 +111,8 @@ namespace OSDL
 				 * of the mouse subsystem failed.
 				 *
 				 */
-				explicit MouseHandler( bool useClassicalMice = true )
-					throw( InputDeviceHandlerException ) ;
+				explicit MouseHandler( bool useClassicalMice = true ) ;
+				
 				
 				
 				/**
@@ -116,14 +122,16 @@ namespace OSDL
 				virtual ~MouseHandler() throw() ;
 
 
+
 				/**
 				 * Returns whether a default mouse is available.
 				 *
 				 * @return true iff a default mouse is available.
 				 *
 				 */
-				bool hasDefaultMouse() const throw() ;
+				bool hasDefaultMouse() const ;
 				 
+
 
 				/**
 				 * Returns the default mouse, if any.
@@ -131,7 +139,7 @@ namespace OSDL
 				 * @throw MouseException if no default mouse is available.
 				 *
 				 */
-				Mouse & getDefaultMouse() throw( MouseException ) ;
+				Mouse & getDefaultMouse() ;
 
 
 
@@ -150,8 +158,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void linkToController( 
-						OSDL::MVC::Controller & controller ) 
-					throw( MouseException ) ;
+					OSDL::MVC::Controller & controller ) ;
+				 
 				 
 	
 				/**
@@ -172,9 +180,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void linkToController( MouseNumber index,
-						OSDL::MVC::Controller & controller ) 
-					throw( MouseException ) ;
+					OSDL::MVC::Controller & controller ) ;
 				 
+			
 			
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -188,13 +196,14 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+				
 				
 				
 				
 				// Static section.
 				
+				 
 				 
 				/**
 				 * Returns the number of available mice, i.e. the 
@@ -203,7 +212,7 @@ namespace OSDL
 				 * @return always one, for the moment.
 				 * 
 				 */
-				static MouseNumber GetAvailableMiceCount() throw() ;
+				static MouseNumber GetAvailableMiceCount() ;
 				
 				
 				
@@ -211,11 +220,13 @@ namespace OSDL
 		protected:
 						
 					
+					
 				/*
 				 * Event-driven callbacks for input propagation, from
 				 * the Events module to this handler.
 				 *
 				 */
+			
 			
 					
 				/**
@@ -228,7 +239,8 @@ namespace OSDL
 				 *
 				 */ 
 				virtual void focusGained( 
-					const FocusEvent & mouseFocusEvent ) const throw() ;
+					const FocusEvent & mouseFocusEvent ) const ;
+				
 				
 				
 				/**
@@ -241,7 +253,7 @@ namespace OSDL
 				 *
 				 */ 
 				virtual void focusLost( 
-					const FocusEvent & mouseFocusEvent ) const throw() ;
+					const FocusEvent & mouseFocusEvent ) const ;
 				 
 						
 						 	
@@ -253,7 +265,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseMoved( 
-					const MouseMotionEvent & mouseMovedEvent ) const throw() ;
+					const MouseMotionEvent & mouseMovedEvent ) const ;
+				
 				
 							
 				/**
@@ -264,9 +277,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void buttonPressed( 
-						const MouseButtonEvent & mouseButtonPressedEvent )	
-					const throw() ;
+					const MouseButtonEvent & mouseButtonPressedEvent ) const ;
 						
+							
 							
 				/**
 				 * Called whenever a mouse button was released, so 
@@ -276,8 +289,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void buttonReleased( 
-						const MouseButtonEvent & mouseButtonReleasedEvent ) 
-					const throw() ;
+					const MouseButtonEvent & mouseButtonReleasedEvent ) const ;
 
 
 
@@ -286,7 +298,8 @@ namespace OSDL
 				 * previously known mice.
 				 *
 				 */
-				virtual void blank() throw() ;
+				virtual void blank() ;
+
 
 				
 				/**
@@ -298,7 +311,9 @@ namespace OSDL
 				 * @note Stop in emergency the application if the check failed.
 				 *
 				 */						
-				virtual void checkMouseAt( MouseNumber index ) const throw() ;
+				virtual void checkMouseAt( MouseNumber index ) const ;
+				
+				
 				
 
 				/**
@@ -306,6 +321,7 @@ namespace OSDL
 				 *
 				 */
 				MouseNumber _miceCount ;
+				
 				
 				 
 				/**
@@ -320,6 +336,7 @@ namespace OSDL
 				Mouse ** _mice ;
 
 
+
 				/**
 				 * Tells whether complex mice (if false) or classical
 				 * mice (if true) should be created.
@@ -328,7 +345,10 @@ namespace OSDL
 				bool _useClassicalMice ;
 
 
+
+
 			private:
+		
 		
 		
 				/**
@@ -339,8 +359,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit MouseHandler( const MouseHandler & source )
-					throw() ;
+				explicit MouseHandler( const MouseHandler & source ) ;
+			
 			
 			
 				/**
@@ -351,11 +371,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				MouseHandler & operator = ( 
-					const MouseHandler & source ) throw() ;
+				MouseHandler & operator = ( const MouseHandler & source ) ;
 										
 				
 		} ;
+	
 	
 	}	
 	

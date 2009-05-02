@@ -74,8 +74,10 @@
 /* ARM7 detected an unexpected OSDL-specific command */
 const ARM7ErrorCode UnexpectedOSDLCommand = 1024 ;
 
+
 /* The sound playback handler encountered an unknown sample format */
 const ARM7ErrorCode UnexpectedSampleFormat = 1025 ;
+
 
 
 /**
@@ -103,7 +105,7 @@ const ARM7ErrorCode HelixFoundTruncatedFrame = 1058 ;
 
 /* 
  * The Helix decoder does not have enough data in bit reservoir from previous
- * frames. Perhaps starting in the middle of a mp3 file ?
+ * frames. Perhaps starting in the middle of a mp3 file?
  *
  */
 const ARM7ErrorCode HelixLacksDataInBitReservoir = 1059 ;
@@ -128,6 +130,7 @@ const ARM7ErrorCode HelixDecodingError = 1061 ;
  *
  */
 const ARM7ErrorCode HelixUnexpectedDecodedLength = 1062 ;
+
 
 
 

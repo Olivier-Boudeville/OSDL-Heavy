@@ -39,6 +39,7 @@ namespace OSDL
 {
 
 
+
 	/** 
 	 * Allows to ensure that the actual OSDL library being linked with is
 	 * compatible with the one expected by the code that will use it (be it a
@@ -82,6 +83,7 @@ namespace OSDL
 	}
 	
 	
+	
 	namespace Events
 	{
 	
@@ -89,6 +91,7 @@ namespace OSDL
 		class EventsModule ;
 		
 	}
+
 
 		
 	namespace Audio
@@ -98,18 +101,23 @@ namespace OSDL
 		class AudioModule ;
 		
 	}
+		
 			
 			
 	// Managed by the common module.
 	class CDROMDriveHandler ;
 	
 	
+	
 	/// Returns the version of the OSDL library currently linked.
-	OSDL_DLL const Ceylan::LibtoolVersion & GetVersion() throw() ;
+	OSDL_DLL const Ceylan::LibtoolVersion & GetVersion() ;
+
 
 	
 	/// Shutdowns all OSDL services.
-	OSDL_DLL void stop() throw() ;
+	OSDL_DLL void stop() ;
+		
+		
 				
 		
 	/**
@@ -142,15 +150,16 @@ namespace OSDL
 		 * initializer ordering.
 		 *
 		 */			
-		OSDL_DLL friend CommonModule & getCommonModule( Ceylan::Flags flags )
-			throw() ;
+		OSDL_DLL friend CommonModule & getCommonModule( Ceylan::Flags flags ) ;
+		
 		
 		
 		/**
 		 * Tells whether there already exists a common module.
 		 *
 		 */
-		OSDL_DLL friend bool hasExistingCommonModule() throw() ;
+		OSDL_DLL friend bool hasExistingCommonModule() ;
+		
 		
 		
 		/**
@@ -169,25 +178,28 @@ namespace OSDL
 		 * initializer ordering.
 		 *
 		 */			
-		OSDL_DLL friend CommonModule & getExistingCommonModule() throw() ;
+		OSDL_DLL friend CommonModule & getExistingCommonModule() ;
 		
 		
 		
 		
 		/// This friend function allows to shutdown all OSDL services.
-		OSDL_DLL friend void stop() throw() ;
+		OSDL_DLL friend void stop() ;
 
 
 
 		public:
 		
 		
+		
 			/// Data type of back-end return code:
 			typedef Ceylan::Sint32 BackendReturnCode ;
 
 
+
 			/// Exported logical value for back-end success.
 			static const BackendReturnCode BackendSuccess ;
+			
 			
 			
 			/**
@@ -200,8 +212,10 @@ namespace OSDL
 			static const BackendReturnCode BackendError ;
 		
 		
+		
 			/// Tells whether a video module is available.
-			virtual bool hasVideoModule() const throw() ; 
+			virtual bool hasVideoModule() const ; 
+
 
 					
 			/**
@@ -210,14 +224,14 @@ namespace OSDL
 			 * @throw OSDL::Exception is not video module is available.
 			 *
 			 */
-			virtual Video::VideoModule & getVideoModule() 
-				const throw( OSDL::Exception ) ;
+			virtual Video::VideoModule & getVideoModule() const ;
 			
 			
 			
 			/// Tells whether a video module is available.
-			virtual bool hasEventsModule() const throw() ; 
+			virtual bool hasEventsModule() const ; 
 
+			
 			
 			/**
 			 * Returns current events module.
@@ -225,13 +239,12 @@ namespace OSDL
 			 * @throw OSDL::Exception is not events module is available.
 			 *
 			 */
-			virtual Events::EventsModule & getEventsModule() 
-				const throw( OSDL::Exception ) ;
+			virtual Events::EventsModule & getEventsModule() const ;
 			
 
 
 			/// Tells whether a video module is available.
-			virtual bool hasAudioModule() const throw() ; 
+			virtual bool hasAudioModule() const ; 
 
 			
 			/**
@@ -240,19 +253,19 @@ namespace OSDL
 			 * @throw OSDL::Exception is not audio module is available.
 			 *
 			 */
-			virtual Audio::AudioModule & getAudioModule() 
-				const throw( OSDL::Exception ) ;
+			virtual Audio::AudioModule & getAudioModule() const ;
 			
 			
 			
 			/// Returns flags used for this common module.
-			virtual Ceylan::Flags getFlags() const throw() ;
+			virtual Ceylan::Flags getFlags() const ;
 
 
 
 
 			/// Tells whether a CD-ROM drive handler is available.
-			virtual bool hasCDROMDriveHandler() const throw() ; 
+			virtual bool hasCDROMDriveHandler() const ; 
+
 
 			
 			/**
@@ -261,8 +274,7 @@ namespace OSDL
 			 * @throw OSDL::Exception is not CD-ROM handler is available.
 			 *
 			 */
-			virtual CDROMDriveHandler & getCDROMDriveHandler() 
-				const throw( OSDL::Exception ) ;
+			virtual CDROMDriveHandler & getCDROMDriveHandler() const ;
 			
 			
 
@@ -277,11 +289,13 @@ namespace OSDL
              *
              */
 	 		virtual const std::string toString( 
-				Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
+				Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 
 			// Static section.
+			
 			
 			
 			/**
@@ -296,7 +310,8 @@ namespace OSDL
 			 * instead, since their meaning is different.
 			 *
 			 */ 
-			static std::string InterpretFlags( Ceylan::Flags flags ) throw() ;
+			static std::string InterpretFlags( Ceylan::Flags flags ) ;
+	
 	
 	
 			/**
@@ -308,11 +323,13 @@ namespace OSDL
 			 * of environment variables.
 			 *
 			 */	
-			static std::string DescribeEnvironmentVariables() throw() ;	
+			static std::string DescribeEnvironmentVariables() ;	
 
 
-			static bool IsBackendInitialized() throw() ;
+			/// Tells whether the back-end is initialized.
+			static bool IsBackendInitialized() ;
 			
+
 
 			/*
 			 * These flags can apply to Surfaces <b>created by setMode</b>,
@@ -329,17 +346,22 @@ namespace OSDL
 			 */
 
 
+
 			/// Initializes the timer subsystem.
 			static const Ceylan::Flags UseTimer ;			   
 
+
 			/// Initializes the audio subsystem.
 			static const Ceylan::Flags UseAudio ;
+				
 						   
 			/// Initializes the video subsystem.
 			static const Ceylan::Flags UseVideo ;
+				
 						   
 			/// Initializes the CD-ROM subsystem.
 			static const Ceylan::Flags UseCDROM ;			   
+
 
 
 			/**
@@ -410,8 +432,10 @@ namespace OSDL
 
 
 
+
 		protected:
 		
+			
 			
 			/**
 			 * Corrects the input flags, formatted as parameters used 
@@ -425,24 +449,28 @@ namespace OSDL
 			 * that they are consistent.
 			 *
 			 */
-			static Ceylan::Flags AutoCorrectFlags( Ceylan::Flags inputFlags )
-				throw() ;
+			static Ceylan::Flags AutoCorrectFlags( Ceylan::Flags inputFlags ) ;
+				
 					
 					
 			/// Pointer to the current video module used, if any.
 			Video::VideoModule * _video ;
 			
 			
+			
 			/// Pointer to the current events module used, if any.			
 			Events::EventsModule * _events ;			
+			
 			
 			
 			/// Pointer to the current video module used, if any.
 			Audio::AudioModule * _audio ;
 			
 			
+			
 			/// Flags used for this common module.
 			Ceylan::Flags _flags ;	
+			
 			
 			
 			/// Pointer to the current CD-ROM drive handler used, if any.
@@ -450,14 +478,18 @@ namespace OSDL
 			
 			
 			
+			
 			// Static attributes:	
+
 
 
 			/// Tells whether the back-end used by OSDL is initialized.
 			static bool _BackendInitialized ;
 				
+				
 			/// The common module being currently used, if any.	
 			static CommonModule * _CurrentCommonModule ;
+
 
 
 			/**
@@ -469,7 +501,9 @@ namespace OSDL
 
 
 
+
 		private:		
+		
 		
 		
 			/**
@@ -479,9 +513,11 @@ namespace OSDL
 			 * 
 			 * @note To have the common module created, use getCommonModule.
 			 *
+			 * @throw OSDL::Exception if the creation failed.
+			 *
  			 */
- 			explicit CommonModule( Ceylan::Flags flags ) 
-				throw ( OSDL::Exception ) ;
+ 			explicit CommonModule( Ceylan::Flags flags ) ;
+	
 	
 	
  			/**
@@ -498,19 +534,22 @@ namespace OSDL
 
 
 
+
 	/**
 	 * Returns a common module, already existing or, otherwise, created as
 	 * a side-effect of this call.
 	 *
 	 */
-	OSDL_DLL CommonModule & getCommonModule( Ceylan::Flags flags ) throw() ;
+	OSDL_DLL CommonModule & getCommonModule( Ceylan::Flags flags ) ;
 		
+	
 		
 	/**
 	 * Tells whether there already exists a common module.
 	 *
 	 */
-	OSDL_DLL bool hasExistingCommonModule() throw() ;
+	OSDL_DLL bool hasExistingCommonModule() ;
+	
 	
 	
 	/**
@@ -529,8 +568,9 @@ namespace OSDL
 	 * initializer ordering.
 	 *
 	 */			
-	OSDL_DLL CommonModule & getExistingCommonModule() throw() ;
+	OSDL_DLL CommonModule & getExistingCommonModule() ;
 		
+	
 	
 }
 

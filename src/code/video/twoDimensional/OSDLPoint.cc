@@ -38,10 +38,11 @@ using namespace OSDL::Video::TwoDimensional ;
 
 
 
-Point::Point() throw()
+Point::Point()
 {
 
 }
+
 
 	
 Point::~Point() throw()
@@ -50,12 +51,14 @@ Point::~Point() throw()
 }
 
 
-const string Point::toString( Ceylan::VerbosityLevels level ) const throw()
+
+const string Point::toString( Ceylan::VerbosityLevels level ) const
 {
 
     return "Abstract point" ;
 	
 }
+
 
 
 std::ostream & operator << ( std::ostream & os, const Point & p )

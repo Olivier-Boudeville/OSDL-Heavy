@@ -33,11 +33,12 @@ using namespace OSDL ;
 
 
 
-TestException::TestException( const string & reason ) throw() : 
+TestException::TestException( const string & reason ) : 
 	Exception( reason )
 {
 
 }
+
 
 
 TestException::~TestException() throw ()
@@ -49,6 +50,8 @@ TestException::~TestException() throw ()
 
 std::ostream & operator << ( std::ostream & os, const OSDL::TestException & e )
 {
+
     return os << e.toString() ;
+	
 }
 

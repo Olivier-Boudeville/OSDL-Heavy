@@ -46,7 +46,9 @@ using namespace Ceylan::Log ;
 using namespace OSDL::Events ;
 
 
+
 const string DebugPrefix = " " ;
+
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -82,8 +84,8 @@ const string DebugPrefix = " " ;
 
 
 
-JoystickHandler::JoystickHandler( bool useClassicalJoysticks ) 
-		throw( InputDeviceHandlerException ):
+
+JoystickHandler::JoystickHandler( bool useClassicalJoysticks ) :
 	InputDeviceHandler(),
 	_joystickCount( 0 ),
 	_joysticks( 0 ),
@@ -111,7 +113,7 @@ JoystickHandler::JoystickHandler( bool useClassicalJoysticks )
 	
 #else // OSDL_USES_SDL
 
-	throw InputDeviceHandlerException( "JoystickHandler constructor failed :"
+	throw InputDeviceHandlerException( "JoystickHandler constructor failed:"
 		"no SDL support available" ) ;
 	
 #endif // OSDL_USES_SDL
@@ -140,9 +142,8 @@ JoystickHandler::~JoystickHandler() throw()
 
 
 
-void JoystickHandler::update() throw() 
+void JoystickHandler::update() 
 {
-
 
 	/*
 	 * Joystick instances have to be deleted so that the 
@@ -176,7 +177,6 @@ void JoystickHandler::update() throw()
 
 
 void JoystickHandler::openJoystick( JoystickNumber index ) 
-	throw( JoystickException )
 {
 
 	/*
@@ -210,7 +210,7 @@ void JoystickHandler::openJoystick( JoystickNumber index )
 
 
 void JoystickHandler::linkToController( JoystickNumber index, 
-	OSDL::MVC::Controller & controller ) throw( JoystickException )
+	OSDL::MVC::Controller & controller )
 {
 
 	/*
@@ -242,8 +242,7 @@ void JoystickHandler::linkToController( JoystickNumber index,
 	
 
 
-const string JoystickHandler::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string JoystickHandler::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res ;
@@ -274,7 +273,7 @@ const string JoystickHandler::toString( Ceylan::VerbosityLevels level )
 
 
 
-JoystickNumber JoystickHandler::GetAvailableJoystickCount() throw() 
+JoystickNumber JoystickHandler::GetAvailableJoystickCount()
 {
 
 #if OSDL_USES_SDL
@@ -291,11 +290,13 @@ JoystickNumber JoystickHandler::GetAvailableJoystickCount() throw()
 
 
 
+
 // Protected section.
 
 
+
 void JoystickHandler::axisChanged( const JoystickAxisEvent & joystickEvent )
-	const throw()
+	const
 {
 
 #if OSDL_USES_SDL
@@ -313,7 +314,7 @@ void JoystickHandler::axisChanged( const JoystickAxisEvent & joystickEvent )
 
 
 void JoystickHandler::trackballChanged( 
-	const JoystickTrackballEvent & joystickEvent ) const throw()
+	const JoystickTrackballEvent & joystickEvent ) const
 {
 
 #if OSDL_USES_SDL
@@ -330,8 +331,7 @@ void JoystickHandler::trackballChanged(
 
 
 
-void JoystickHandler::hatChanged( const JoystickHatEvent & joystickEvent ) 
-	const throw()
+void JoystickHandler::hatChanged( const JoystickHatEvent & joystickEvent ) const
 {
 
 #if OSDL_USES_SDL
@@ -349,7 +349,7 @@ void JoystickHandler::hatChanged( const JoystickHatEvent & joystickEvent )
 
 
 void JoystickHandler::buttonPressed( const JoystickButtonEvent & joystickEvent )
-	const throw()
+	const
 {
 
 #if OSDL_USES_SDL
@@ -367,7 +367,7 @@ void JoystickHandler::buttonPressed( const JoystickButtonEvent & joystickEvent )
 
 
 void JoystickHandler::buttonReleased( 
-	const JoystickButtonEvent & joystickEvent ) const throw()
+	const JoystickButtonEvent & joystickEvent ) const
 {
 
 #if OSDL_USES_SDL
@@ -384,7 +384,7 @@ void JoystickHandler::buttonReleased(
 
 
 
-void JoystickHandler::blank() throw()
+void JoystickHandler::blank()
 {
 
 	if ( _joysticks != 0 )
@@ -405,7 +405,7 @@ void JoystickHandler::blank() throw()
 
 
 
-void JoystickHandler::checkJoystickAt( JoystickNumber index ) const throw()
+void JoystickHandler::checkJoystickAt( JoystickNumber index ) const
 {
 
 	if ( index >= _joystickCount )

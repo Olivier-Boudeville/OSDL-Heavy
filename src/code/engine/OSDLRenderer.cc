@@ -56,15 +56,18 @@ using std::string ;
 #endif // OSDL_DEBUG_RENDERER
 
 
+
 Renderer * Renderer::_internalRootRenderer = 0 ;
 
 
 
-RenderingException::RenderingException( const std::string & reason ) throw():
+
+RenderingException::RenderingException( const std::string & reason ) :
 	OSDL::Exception( "RenderingException: " + reason )
 {
 
 }
+
 
 
 RenderingException::~RenderingException() throw()
@@ -75,7 +78,7 @@ RenderingException::~RenderingException() throw()
 
 
 
-Renderer::Renderer( bool registerToScheduler ) throw( RenderingException ):
+Renderer::Renderer( bool registerToScheduler ) :
 	Object(),
 	_renderingDone( 0 ),
 	_renderingSkipped( 0 ),
@@ -109,7 +112,7 @@ Renderer::~Renderer() throw()
 
 
 
-void Renderer::render( RenderingTick currentRenderingTick ) throw()
+void Renderer::render( RenderingTick currentRenderingTick )
 {
 
 	OSDL_RENDER_LOG( "Rendering! " ) ;
@@ -125,7 +128,7 @@ void Renderer::render( RenderingTick currentRenderingTick ) throw()
 
 
 
-void Renderer::onRenderingSkipped( RenderingTick skippedRenderingTick )	throw()
+void Renderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
 {
 
 	OSDL_RENDER_LOG( "Rendering skipped." ) ;
@@ -135,7 +138,7 @@ void Renderer::onRenderingSkipped( RenderingTick skippedRenderingTick )	throw()
 
 
 
-const string Renderer::toString( Ceylan::VerbosityLevels level ) const throw() 
+const string Renderer::toString( Ceylan::VerbosityLevels level ) const 
 {
 
 	string res = "Basic renderer, last rendering tick was " 
@@ -155,7 +158,7 @@ const string Renderer::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
-bool Renderer::HasExistingRootRenderer() throw()
+bool Renderer::HasExistingRootRenderer()
 {
 
 	return ( _internalRootRenderer != 0 ) ;
@@ -164,7 +167,7 @@ bool Renderer::HasExistingRootRenderer() throw()
 
 
 
-Renderer & Renderer::GetExistingRootRenderer() throw( RenderingException )
+Renderer & Renderer::GetExistingRootRenderer()
 {
 
     if ( Renderer::_internalRootRenderer == 0 )
@@ -176,7 +179,7 @@ Renderer & Renderer::GetExistingRootRenderer() throw( RenderingException )
 
 
 
-void Renderer::DeleteExistingRootRenderer() throw( RenderingException )
+void Renderer::DeleteExistingRootRenderer()
 {
 
     if ( Renderer::_internalRootRenderer != 0 )
@@ -192,7 +195,7 @@ void Renderer::DeleteExistingRootRenderer() throw( RenderingException )
 
 
 
-void Renderer::DeleteRootRenderer() throw()
+void Renderer::DeleteRootRenderer()
 {
 
     if ( Renderer::_internalRootRenderer != 0 )

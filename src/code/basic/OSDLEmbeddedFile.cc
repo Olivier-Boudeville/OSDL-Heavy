@@ -24,6 +24,7 @@
  */
 
 
+
 #include "OSDLEmbeddedFile.h"
 
 #ifdef OSDL_USES_CONFIG_H
@@ -41,6 +42,7 @@
 #endif // OSDL_USES_PHYSICSFS
 
 
+
 #include "OSDLEmbeddedFileSystemManager.h" // for the FileSystemManager
 
 
@@ -48,6 +50,7 @@
 
 
 #include <cstring>                   // for ::memcpy
+
 
 
 /*
@@ -68,6 +71,7 @@
  */
 
 
+
 using std::string ;
 
 using namespace Ceylan::System ;
@@ -77,11 +81,13 @@ using namespace OSDL ;
 
 
 
-EmbeddedFileException::EmbeddedFileException( const string & reason ) throw():
+
+EmbeddedFileException::EmbeddedFileException( const string & reason ) :
 	FileException( reason )
 {
 
 }
+
 
 
 EmbeddedFileException::~EmbeddedFileException() throw()
@@ -91,8 +97,10 @@ EmbeddedFileException::~EmbeddedFileException() throw()
 	
 	
 	
+	
 		
 // EmbeddedFile implementation.
+
 
 
 EmbeddedFile::~EmbeddedFile() throw()
@@ -121,6 +129,7 @@ EmbeddedFile::~EmbeddedFile() throw()
 
 
 
+
 // Constructors are in protected section.	
 
 	
@@ -129,7 +138,7 @@ EmbeddedFile::~EmbeddedFile() throw()
 	
 	
 	
-bool EmbeddedFile::isOpen() const throw()
+bool EmbeddedFile::isOpen() const
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -146,7 +155,7 @@ bool EmbeddedFile::isOpen() const throw()
 
 
 
-bool EmbeddedFile::close() throw( Stream::CloseException )
+bool EmbeddedFile::close()
 {
 
 	if ( ! isOpen() )
@@ -186,7 +195,7 @@ bool EmbeddedFile::close() throw( Stream::CloseException )
 
 
 
-void EmbeddedFile::saveAs( const string & newName ) throw( FileException )
+void EmbeddedFile::saveAs( const string & newName )
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -219,7 +228,7 @@ void EmbeddedFile::saveAs( const string & newName ) throw( FileException )
 
 
 
-void EmbeddedFile::lockForReading() const throw( FileReadLockingFailed )
+void EmbeddedFile::lockForReading() const
 {
 
 	throw FileReadLockingFailed( "EmbeddedFile::lockForReading: "
@@ -229,7 +238,7 @@ void EmbeddedFile::lockForReading() const throw( FileReadLockingFailed )
 
 
 
-void EmbeddedFile::unlockForReading() const throw( FileReadUnlockingFailed )
+void EmbeddedFile::unlockForReading() const
 {
 
 	throw FileReadUnlockingFailed(
@@ -239,7 +248,7 @@ void EmbeddedFile::unlockForReading() const throw( FileReadUnlockingFailed )
 
 
 
-void EmbeddedFile::lockForWriting() const throw( FileWriteLockingFailed )
+void EmbeddedFile::lockForWriting() const
 {
 
 	throw FileWriteLockingFailed( "EmbeddedFile::lockForWriting: "
@@ -249,7 +258,7 @@ void EmbeddedFile::lockForWriting() const throw( FileWriteLockingFailed )
 
 
 
-void EmbeddedFile::unlockForWriting() const throw( FileWriteUnlockingFailed )
+void EmbeddedFile::unlockForWriting() const
 {
 
 	throw FileWriteUnlockingFailed( "EmbeddedFile::unlockForWriting: "
@@ -259,7 +268,7 @@ void EmbeddedFile::unlockForWriting() const throw( FileWriteUnlockingFailed )
 
 
 
-bool EmbeddedFile::isLocked() const throw()
+bool EmbeddedFile::isLocked() const
 {
 
 	return false ;
@@ -269,7 +278,6 @@ bool EmbeddedFile::isLocked() const throw()
 
 
 time_t EmbeddedFile::getLastChangeTime() const 
-	throw( FileLastChangeTimeRequestFailed )
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -300,7 +308,6 @@ time_t EmbeddedFile::getLastChangeTime() const
 
 
 Size EmbeddedFile::read( Ceylan::Byte * buffer, Size maxLength ) 
-	throw( InputStream::ReadFailedException )
 {
      
 #if OSDL_USES_PHYSICSFS
@@ -363,7 +370,6 @@ Size EmbeddedFile::read( Ceylan::Byte * buffer, Size maxLength )
 
 
 Size EmbeddedFile::write( const string & message ) 
-	throw( OutputStream::WriteFailedException )
 {
 
 	return write( message.c_str(), message.size() );
@@ -373,7 +379,6 @@ Size EmbeddedFile::write( const string & message )
 
 
 Size EmbeddedFile::write( const Ceylan::Byte * buffer, Size maxLength ) 
-	throw( OutputStream::WriteFailedException )
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -430,7 +435,7 @@ Size EmbeddedFile::write( const Ceylan::Byte * buffer, Size maxLength )
 
 
 
-Position EmbeddedFile::tell() throw( FileException )
+Position EmbeddedFile::tell()
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -468,7 +473,7 @@ Position EmbeddedFile::tell() throw( FileException )
 
 
 
-void EmbeddedFile::seek( Position targetPosition ) throw( FileException )
+void EmbeddedFile::seek( Position targetPosition )
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -496,10 +501,12 @@ void EmbeddedFile::seek( Position targetPosition ) throw( FileException )
 
 
 
+
 // EmbeddedFile-specific methods.
 
 
-Size EmbeddedFile::size() const throw( FileException )
+
+Size EmbeddedFile::size() const
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -531,7 +538,6 @@ Size EmbeddedFile::size() const throw( FileException )
     
 
 void EmbeddedFile::serialize( PHYSFS_File & handle ) 
-	throw( EmbeddedFileException )
 {
 
 	// Let EmbeddedFileException propagate:
@@ -542,7 +548,6 @@ void EmbeddedFile::serialize( PHYSFS_File & handle )
 
 
 PHYSFS_File & EmbeddedFile::getPhysicsFSHandle() const 
-	throw( EmbeddedFileException )
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -566,7 +571,7 @@ PHYSFS_File & EmbeddedFile::getPhysicsFSHandle() const
 
 
 void EmbeddedFile::CypherBuffer( Ceylan::Byte * buffer, 
-	Ceylan::System::Size size ) throw( EmbeddedFileException )
+	Ceylan::System::Size size )
 {
 
 	Ceylan::Byte XORByte = EmbeddedFileSystemManager::GetXORByte() ;
@@ -577,8 +582,8 @@ void EmbeddedFile::CypherBuffer( Ceylan::Byte * buffer,
 }               
 
 
-void EmbeddedFile::DecypherBuffer( Ceylan::Byte * buffer, 
-	Size size ) throw( EmbeddedFileException )
+
+void EmbeddedFile::DecypherBuffer( Ceylan::Byte * buffer, Size size )
 {
 
 	Ceylan::Byte XORByte = EmbeddedFileSystemManager::GetXORByte() ;
@@ -592,12 +597,13 @@ void EmbeddedFile::DecypherBuffer( Ceylan::Byte * buffer,
         	+ Ceylan::toHexString( buffer[i] ) ) ;
          */    
 	}
+	
 }    	
 
 
 
 
-StreamID EmbeddedFile::getStreamID() const throw()
+StreamID EmbeddedFile::getStreamID() const
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -615,8 +621,7 @@ StreamID EmbeddedFile::getStreamID() const throw()
 
 
 
-const std::string EmbeddedFile::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const std::string EmbeddedFile::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	return "Embedded file object for filename '" + _name + "'" ;
@@ -626,8 +631,7 @@ const std::string EmbeddedFile::toString( Ceylan::VerbosityLevels level )
 
 
 EmbeddedFile & EmbeddedFile::Create( const std::string & filename, 
-		OpeningFlag createFlag,	PermissionFlag permissionFlag ) 
-	throw( FileException )
+	OpeningFlag createFlag,	PermissionFlag permissionFlag )
 {
 
 	// Ensures creation is requested:
@@ -639,7 +643,7 @@ EmbeddedFile & EmbeddedFile::Create( const std::string & filename,
 
 					
 EmbeddedFile & EmbeddedFile::Open( const std::string & filename, 
-	OpeningFlag openFlag ) throw( FileException )
+	OpeningFlag openFlag )
 {
 
 	// Ensures creation is not requested:
@@ -649,13 +653,15 @@ EmbeddedFile & EmbeddedFile::Open( const std::string & filename,
 }
 
 	
+		
 					
 										
 // Protected section.
 
 
+
 EmbeddedFile::EmbeddedFile( const string & name, OpeningFlag openFlag, 
-		PermissionFlag permissions ) throw( FileManagementException ):
+		PermissionFlag permissions ) :
 	File( name, openFlag, permissions ),
     _physfsHandle( 0 )
 {
@@ -698,8 +704,8 @@ EmbeddedFile::EmbeddedFile( const string & name, OpeningFlag openFlag,
 // Implementations of inherited methods.
 
 
-FileSystemManager & EmbeddedFile::getCorrespondingFileSystemManager()
-	const throw( FileDelegatingException )
+
+FileSystemManager & EmbeddedFile::getCorrespondingFileSystemManager() const
 {
 
 	try
@@ -721,7 +727,7 @@ FileSystemManager & EmbeddedFile::getCorrespondingFileSystemManager()
 	
 	
 	
-void EmbeddedFile::reopen() throw( FileOpeningFailed )
+void EmbeddedFile::reopen()
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -787,7 +793,7 @@ void EmbeddedFile::reopen() throw( FileOpeningFailed )
 
 
 
-std::string EmbeddedFile::interpretState() const throw()
+std::string EmbeddedFile::interpretState() const
 {
 
 	return "PhysicsFS-based embedded file" ;
@@ -796,12 +802,13 @@ std::string EmbeddedFile::interpretState() const throw()
 
 
 
+
 // Private section.															
 	
     
     
 void EmbeddedFile::FromHandletoHandle( PHYSFS_File & from, PHYSFS_File & to,
-	Size length ) throw( EmbeddedFileException )
+	Size length )
 {
 
 	// Note nevertheless this could be implemented like FromFDtoFD.

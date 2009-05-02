@@ -33,12 +33,15 @@
 
 
 
+
 namespace OSDL
 {
 
 
+
 	namespace Rendering 
 	{
+	
 	
 		
 		/*
@@ -48,14 +51,16 @@ namespace OSDL
 		 */
 		class Camera ;
 				
+			
 				
 		/// Exception raised when a video rendering operation failed.
 		class OSDL_DLL VideoRenderingException: public RenderingException
 		{
 		
 			public:
-				explicit VideoRenderingException( const std::string & message ) 
-					throw() ;
+			
+				explicit VideoRenderingException( const std::string & message );
+				
 				virtual ~VideoRenderingException() throw() ;
 							
 		} ;
@@ -102,8 +107,8 @@ namespace OSDL
 				 * @see MultimediaRenderer
 				 *
 				 */
-				explicit VideoRenderer( bool registerToRootRenderer = true ) 
-					throw( VideoRenderingException ) ;
+				explicit VideoRenderer( bool registerToRootRenderer = true ) ;
+				
 				
 				
 				/**
@@ -113,20 +118,21 @@ namespace OSDL
 				virtual ~VideoRenderer() throw() ;
 			
 
+
 				/**
 				 * Returns whether this video renderer has an internal 
 				 * camera available.
 				 *
-				virtual bool hasCamera() const throw() ;
+				virtual bool hasCamera() const ;
 				 */
+				
 				
 				 				
 				/**
 				 * Returns the internal camera of this video renderer.
 				 *
 				 * @throw VideoRenderingException iff no camera is available.
-				virtual Camera & getCamera() const 
-					throw( VideoRenderingException ) ;
+				virtual Camera & getCamera() const ;
 				 */
 			
 					
@@ -140,8 +146,9 @@ namespace OSDL
 				 * provided camera, and will delete it when itself deleted, 
 				 * or when replaced by another camera.
 				 *
-				virtual void setCamera( Camera & newCamera ) throw() ; 	
+				virtual void setCamera( Camera & newCamera ) ; 	
 				 */
+					
 					
 					
 				/**
@@ -157,8 +164,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void render( 
-					Events::RenderingTick currentRenderingTick = 0 ) throw() ;
+					Events::RenderingTick currentRenderingTick = 0 ) ;
 	
+				
 				
 				/**
 				 * Allows the video renderer to be aware that a rendering 
@@ -173,7 +181,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onRenderingSkipped( 
-					Events::RenderingTick skippedRenderingTick ) throw() ;
+					Events::RenderingTick skippedRenderingTick ) ;
+						
 						
 						
 	            /**
@@ -188,8 +197,8 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 					
@@ -201,7 +210,9 @@ namespace OSDL
 			
 			
 			
+			
 			private:
+			
 			
 			
 				/**
@@ -212,7 +223,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				VideoRenderer( const VideoRenderer & source ) throw() ;
+				VideoRenderer( const VideoRenderer & source ) ;
+			
 			
 			
 				/**
@@ -223,15 +235,16 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				VideoRenderer & operator = ( 
-					const VideoRenderer & source ) throw() ;
+				VideoRenderer & operator = ( const VideoRenderer & source ) ;
 					
 				
 		} ;
 
+
 	}
 
 }
+
 
 
 #endif // OSDL_VIDEO_RENDERER_H_

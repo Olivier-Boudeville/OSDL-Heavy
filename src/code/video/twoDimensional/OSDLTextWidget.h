@@ -35,16 +35,21 @@
 
 
 
+
 namespace OSDL
 {
+
+
 
 	namespace Video
 	{
 		
 		
+		
 		namespace TwoDimensional
 		{
 
+	
 	
 			namespace Text
 			{
@@ -53,6 +58,7 @@ namespace OSDL
 				class Font ;
 				
 			}
+			
 			
 			
 
@@ -71,6 +77,7 @@ namespace OSDL
 				public:
 					
 					
+					
 					/**
 					 * Describes the shape of a text container:
 					 *	- SquareCorners: the text is in a rectangular box
@@ -81,9 +88,12 @@ namespace OSDL
 					enum Shape { SquareCorners, RoundCorners } ;	
 			
 			
+			
 					/// The default edge width for the 'RoundCorners' shape:
 					static const Length DefaultEdgeWidth ;
 			
+					
+					
 					
 					/**
 					 * Creates a back-buffered widget whose role is to 
@@ -207,11 +217,13 @@ namespace OSDL
 						bool minMaximizable = false, 
 						bool draggable = false, 
 						bool wrappable = false, 
-						bool closable = false ) throw( VideoException ) ;
+						bool closable = false ) ;
 								
+							
 							
 					/// Basic virtual destructor.	
 					virtual ~TextWidget() throw() ;
+					
 							
 							
 					/**
@@ -221,8 +233,8 @@ namespace OSDL
 					 * at least partially.
 					 *
 					 */
-					virtual void setText( const std::string & newText ) 
-						throw() ;
+					virtual void setText( const std::string & newText ) ;
+					
 					
 					
 					/**
@@ -230,7 +242,8 @@ namespace OSDL
 					 * by this widget.
 					 *
 					 */
-					virtual const std::string & getText() const throw() ;
+					virtual const std::string & getText() const ;
+					
 					
 					
 					/**
@@ -246,7 +259,8 @@ namespace OSDL
 					 * display.
 					 *
 					 */
-					virtual Text::TextIndex getRenderIndex() const throw() ;
+					virtual Text::TextIndex getRenderIndex() const ;
+					
 					
 					
 					/**
@@ -257,8 +271,9 @@ namespace OSDL
 					 * its background, its widgets excluded.
 					 *
 					 */
-					virtual void redrawBackBuffer() throw() ;
+					virtual void redrawBackBuffer() ;
 			
+					
 					
 	 	            /**
 		             * Returns an user-friendly description of the state 
@@ -273,27 +288,31 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 				
+					
 					
 											
 				protected:
 						
+
 
 					/**
 					 * Updates client area with regard to current shape 
 					 * and decoration status.
 					 *
 					 */
-					virtual void updateClientArea() throw() ;
+					virtual void updateClientArea() ;
+
 
 
 					/// Horizontal offset on both sides.
 					static const Length _TextWidthOffset ;
 					
+					
 					/// Vertical offset on both sides.
 					static const Length _TextHeightOffset ;
+					
 					
 					
 					/**
@@ -304,18 +323,23 @@ namespace OSDL
 					Length _minimumHeight ;
 					
 					
+					
 					/// The upper bound of the height of this widget.
 					Length _maximumHeight ;
 					
 					
+					
 					/// Records the shape of this text widget.
 					Shape _shape ;
+							
 																				
 					/// The color of rendered text in this widget.
 					Pixels::ColorDefinition _textColor ;
 					
+					
 					/// The color of the edges of this text widget.
 					Pixels::ColorDefinition _edgeColor ;
+					
 					
 					
 					/**
@@ -324,6 +348,7 @@ namespace OSDL
 					 *
 					 */
 					Pixels::ColorDefinition _backColorForRoundCorners ;
+					
 					
 					
 					/**
@@ -337,23 +362,29 @@ namespace OSDL
 					Length _roundOffset ;
 					
 					 
+					 
 					/// The text which is to be displayed by this widget.
 					std::string _text ;
+					
 					
 					/// The font which is to be used for text rendering.
 					Text::Font * _font ;
 
+
 					
 					/// Tells whether the text should be vertically aligned.
 					bool _verticallyAligned ;
+					
 					
 					/// Tells whether the text should be justified.
 					bool _justified ;
 					
 					
 					
+					
 					/// Quality of text rendering.
 					Text::Font::RenderQuality _quality ;
+					
 					
 					
 					/**
@@ -370,6 +401,7 @@ namespace OSDL
 				private:	
 
 
+
 					/**
 					 * Copy constructor made private to ensure that it will 
 					 * never be called.
@@ -378,7 +410,8 @@ namespace OSDL
 					 * constructor is called, implicitly or not.
 					 * 
 					 */			 
-					explicit TextWidget( const TextWidget & source ) throw() ;
+					explicit TextWidget( const TextWidget & source ) ;
+			
 			
 			
 					/**
@@ -389,17 +422,18 @@ namespace OSDL
 					 * operator is called, implicitly or not.
 					 * 
 					 */			 
-					TextWidget & operator = ( const TextWidget & source )
-						throw() ;
+					TextWidget & operator = ( const TextWidget & source ) ;
 					
 					
-			} ;			
+			} ;		
+				
 											
 		}
 	
 	}
 
 }				
+
 
 
 #endif // OSDL_TEXT_WIDGET_H_

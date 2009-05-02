@@ -37,6 +37,7 @@
 #include <list>
 
 
+
 namespace Ceylan
 {		
 
@@ -46,8 +47,10 @@ namespace Ceylan
 }
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Video 
@@ -76,8 +79,8 @@ namespace OSDL
 		{
 		
 		
-		
 			public:
+			
 			
 			
 				/**
@@ -96,8 +99,7 @@ namespace OSDL
 				 *
 				 */
 				explicit StandardRenderer( Video::Surface & screen,
-						bool registerToScheduler = true ) 
-					throw( RenderingException ) ;
+					bool registerToScheduler = true ) ;
 				
 				
 				
@@ -122,7 +124,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void render( 
-					Events::RenderingTick currentRenderingTick = 0 ) throw() ;
+					Events::RenderingTick currentRenderingTick = 0 ) ;
 
 								
 					
@@ -139,16 +141,18 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
+					
 					
 					
 			protected:
 			
+			
 
 				/// The screen surface that will have to be updated.
 				Video::Surface * _screen ;
+				
 				
 				
 				/**
@@ -156,12 +160,14 @@ namespace OSDL
 				 * be managed specifically by this renderer.
 				 *
 				 */
-				 std::list<Ceylan::View *> _registeredViews ;
+				std::list<Ceylan::View *> _registeredViews ;
+				 
 				 
 				 
 				 
 			
 			private:
+			
 			
 			
 				/**
@@ -172,8 +178,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit StandardRenderer( const StandardRenderer & source )
-					throw() ;
+				explicit StandardRenderer( const StandardRenderer & source ) ;
+			
 			
 			
 				/**
@@ -185,7 +191,8 @@ namespace OSDL
 				 * 
 				 */			 
 				StandardRenderer & operator = ( 
-					const StandardRenderer & source ) throw() ;
+					const StandardRenderer & source ) ;
+				
 				
 				
 				/**
@@ -196,11 +203,14 @@ namespace OSDL
 				static Renderer * _internalRootRenderer ;
 				
 				
+				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_STANDARD_RENDERER_H_

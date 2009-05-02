@@ -45,17 +45,20 @@ using namespace OSDL::Video::TwoDimensional ;
 
 
 
-RedrawRequestEvent::RedrawRequestEvent( Ceylan::EventSource & source ) throw(): 
+
+RedrawRequestEvent::RedrawRequestEvent( Ceylan::EventSource & source ) : 
 	SurfaceEvent( source )
 {
 
 }
 
 
+
 RedrawRequestEvent::~RedrawRequestEvent() throw()
 {
 
 }
+
 
 
 
@@ -70,17 +73,21 @@ Text::VerticalAlignment Widget::_TitleVerticalAlignment
 	= Text::HeightCentered ;
 
 
+
 /*
  * By default, the client area takes almost the full room 
  * (edges are one pixel thick):
  *
  */
 
+
 // One more pixel on width increases readability:
 Length Widget::_ClientOffsetWidth = 2 ;
 
+
 // Not too much margin since too few lines could be displayed otherwise:
 Length Widget::_ClientOffsetHeight = 1 ;
+
 
 
 Coordinate Widget::_TitleOffsetAbscissa     = 5 ;
@@ -96,8 +103,7 @@ Widget::Widget( Surface & container, const Point2D & relativePosition,
 		Length width, Length height, BaseColorMode baseColorMode,
 		Pixels::ColorDefinition baseColor,
 		const string & title, bool minMaximizable, bool draggable, 
-		bool wrappable, bool closable ) 
-			throw( VideoException ):
+		bool wrappable, bool closable ) :
 	Surface( 
 		container.getFlags(), 
 		width, 
@@ -149,6 +155,7 @@ Widget::Widget( Surface & container, const Point2D & relativePosition,
 }
 
 
+
 Widget::~Widget() throw()
 {
 
@@ -166,7 +173,7 @@ Widget::~Widget() throw()
 
 
 
-void Widget::setWidth( Length newWidth ) throw()
+void Widget::setWidth( Length newWidth )
 {
 
 	resize( newWidth, getHeight() ) ;
@@ -174,7 +181,8 @@ void Widget::setWidth( Length newWidth ) throw()
 }
 
 
-void Widget::setHeight( Length newHeight ) throw()
+
+void Widget::setHeight( Length newHeight )
 {
 
 	resize( getWidth(), newHeight ) ;	
@@ -182,7 +190,8 @@ void Widget::setHeight( Length newHeight ) throw()
 }
 
 
-void Widget::resize( Length newWidth, Length newHeight, bool ignored ) throw()
+
+void Widget::resize( Length newWidth, Length newHeight, bool ignored )
 {
 
 	/*
@@ -202,7 +211,7 @@ void Widget::resize( Length newWidth, Length newHeight, bool ignored ) throw()
 
 
 
-Widget::BaseColorMode Widget::getBaseColorMode() const throw()
+Widget::BaseColorMode Widget::getBaseColorMode() const
 {
 
 	return _baseColorMode ;
@@ -212,7 +221,7 @@ Widget::BaseColorMode Widget::getBaseColorMode() const throw()
 
 
 void Widget::setBaseColorMode( BaseColorMode newBaseColorMode, 
-	Pixels::ColorDefinition newBaseColor ) throw( VideoException )
+	Pixels::ColorDefinition newBaseColor )
 {
 	
 	bool mustUpdateColor = ( newBaseColorMode != NotInitialized ) || 
@@ -280,7 +289,7 @@ void Widget::setBaseColorMode( BaseColorMode newBaseColorMode,
 
 
 
-Pixels::ColorDefinition Widget::getBaseColor() const throw()
+Pixels::ColorDefinition Widget::getBaseColor() const
 {
 
 	return _baseColor ;
@@ -289,7 +298,7 @@ Pixels::ColorDefinition Widget::getBaseColor() const throw()
 
 
 
-void Widget::setDecorationStatus( bool newDecorationStatus ) throw()
+void Widget::setDecorationStatus( bool newDecorationStatus )
 {
 
 	_decorated = newDecorationStatus ;
@@ -298,7 +307,7 @@ void Widget::setDecorationStatus( bool newDecorationStatus ) throw()
 
 
 
-const UprightRectangle & Widget::getClientArea() const throw()
+const UprightRectangle & Widget::getClientArea() const
 {
 
 	return _clientArea ;
@@ -307,7 +316,7 @@ const UprightRectangle & Widget::getClientArea() const throw()
 
 
 
-bool Widget::clean() throw()
+bool Widget::clean()
 {
 
 #if OSDL_DEBUG_WIDGET
@@ -343,7 +352,8 @@ bool Widget::clean() throw()
 }
 
 
-void Widget::beNotifiedOf( const Ceylan::Event & newEvent ) throw()
+
+void Widget::beNotifiedOf( const Ceylan::Event & newEvent )
 {
 
 	const RedrawRequestEvent * redrawRequestEvent 
@@ -368,7 +378,8 @@ void Widget::beNotifiedOf( const Ceylan::Event & newEvent ) throw()
 }
 
 
-void Widget::setRedrawState( bool needsToBeRedrawn ) throw()
+
+void Widget::setRedrawState( bool needsToBeRedrawn )
 {
 
 	/*
@@ -384,7 +395,8 @@ void Widget::setRedrawState( bool needsToBeRedrawn ) throw()
 }
 
 
-void Widget::redraw() throw() 
+
+void Widget::redraw() 
 {
 
 #if OSDL_DEBUG_WIDGET
@@ -421,7 +433,8 @@ void Widget::redraw() throw()
 }
 
 
-void Widget::redrawInternal() throw()
+
+void Widget::redrawInternal()
 {
 
 #if OSDL_DEBUG_WIDGET
@@ -445,7 +458,8 @@ void Widget::redrawInternal() throw()
 }
 
 
-const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
+
+const string Widget::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	std::list<string> widgetList ;
@@ -543,10 +557,12 @@ const string Widget::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
+
 // Static (public) section.
 
 
-Pixels::ColorDefinition Widget::GetEdgeColor() throw() 
+
+Pixels::ColorDefinition Widget::GetEdgeColor() 
 {
 
 	return _EdgeColor ;
@@ -554,7 +570,8 @@ Pixels::ColorDefinition Widget::GetEdgeColor() throw()
 }
 
 
-void Widget::SetEdgeColor( Pixels::ColorDefinition edgeColorDef ) throw() 
+
+void Widget::SetEdgeColor( Pixels::ColorDefinition edgeColorDef ) 
 {
 
 	_EdgeColor = edgeColorDef ;
@@ -564,10 +581,12 @@ void Widget::SetEdgeColor( Pixels::ColorDefinition edgeColorDef ) throw()
 
 
 
+
 // Protected section.
 	
 	
-void Widget::updateDecorationFlag() throw() 
+	
+void Widget::updateDecorationFlag() 
 {
 	
 	// True iff already true or at least a decorated attribute selected:
@@ -579,7 +598,8 @@ void Widget::updateDecorationFlag() throw()
 }	
 
 
-void Widget::updateClientArea() throw()
+
+void Widget::updateClientArea()
 {
 
 	/*
@@ -613,7 +633,8 @@ void Widget::updateClientArea() throw()
 }
 
 
-Surface & Widget::getContainer() throw() 
+
+Surface & Widget::getContainer() 
 {
 
 	// There should be exactly one source in this listener list, its container.
@@ -641,7 +662,8 @@ Surface & Widget::getContainer() throw()
 }
 
 
-const Surface & Widget::getConstContainer() const throw()
+
+const Surface & Widget::getConstContainer() const
 {
 
 	// There should be exactly one source in this listener list, its container.
@@ -669,7 +691,8 @@ const Surface & Widget::getConstContainer() const throw()
 }
 
 
-void Widget::drawFundamentals( Surface & targetSurface ) throw()
+
+void Widget::drawFundamentals( Surface & targetSurface )
 {
 
 	clean() ;
@@ -683,7 +706,8 @@ void Widget::drawFundamentals( Surface & targetSurface ) throw()
 }
 
 
-bool Widget::isDecorated() const throw()
+
+bool Widget::isDecorated() const
 {
 
 	return _decorated ;
@@ -691,7 +715,8 @@ bool Widget::isDecorated() const throw()
 }
 
 
-void Widget::drawDecorations( Surface & targetSurface ) throw()
+
+void Widget::drawDecorations( Surface & targetSurface )
 {
 
 	// Here we know that decorations have to be rendered.

@@ -26,15 +26,19 @@
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
 
+
 /* To have Ceylan defines so that Ceylan C headers can be directly included: */
 #include "OSDLConfigForNintendoDS.h"
+
 
 /* Must be on second position (needs Ceylan defines). */
 #include "OSDLARM7Base.h"
 
 
+
 /* Defines the actual OSDL ARM7 status words and error codes. */
 #include "OSDLARM7Codes.h"
+
 
 /* Defines OSDL IPC command identifiers. */
 #include "OSDLIPCCommands.h"
@@ -51,6 +55,7 @@
 #include "string.h" /* for memmove */
 
 
+
 /* For Helix decoder: */
 #include "helix/pub/mp3dec.h"
 
@@ -63,8 +68,10 @@
 /** Tells whether a MP3 play command is being processed. */
 volatile bool startMP3PlaybackRequested = false ;
 
+
 /** Tells whether a MP3 pause command is being processed. */
 volatile bool pauseMP3PlaybackRequested = false ;
+
 
 
 /**
@@ -74,15 +81,20 @@ volatile bool pauseMP3PlaybackRequested = false ;
 volatile HMP3Decoder currentDecoder ;
 
 
+
 /** Gathers informations about a decoded MP3 frame, needed for playback: */
 volatile MP3FrameInfo frameInfo ;
 
+
 typedef uint16 SampleRate ;
+
 
 /** The frequency, in Hz, of (decoded) output samples, a.k.a. sample rate: */
 volatile SampleRate outputSampleRate ;
 
+
 const SampleRate DefaultSampleRate = 22050 /* Hz */ ;
+
 
 
 /* Read encoded MP3 data subsection. */
@@ -105,11 +117,13 @@ volatile BufferSize frameSizeUpperBound ;
 volatile Byte * doubleBuffer ;
 
 
+
 /**
  * The actual address of the second sound buffer.
  *
  */
 volatile Byte * secondBuffer ;
+
 
 
 /** The pointer to current bytes being read in the encoded buffer: */
@@ -123,6 +137,7 @@ volatile Byte * readPointer ;
 volatile bool readingFirstBuffer ;
 
 
+
 /** 
  * The pointer to the byte in the encoded buffer from which no more MP3
  * frame should be read, as the remaining space could be too small to contain
@@ -131,11 +146,14 @@ volatile bool readingFirstBuffer ;
 volatile Byte * endOfSafeRead ;
 
 
+
 /** Precomputes an offset for the moving of encoded data: */
 volatile Byte * destinationOffset ;
 
+
 /** Precomputes an offset for the moving of encoded data: */
 volatile Byte * sizeOffset ;
+
 
 
 /** Tells whether the end of the MP3 stream has been detected by the ARM9. */
@@ -146,11 +164,14 @@ volatile bool endOfStreamDetected ;
 volatile bool readingLastBuffer ;
 
 
+
 /** The number of volume level increments during a music fade-in. */
 volatile uint8 musicFadeInIncrement ;
 
+
 /** The number of volume level decrements during a music fade-pout. */
 volatile uint8 musicFadeOutDecrement ;
+
 
 
 /** 
@@ -162,8 +183,11 @@ volatile uint8 musicFadeOutDecrement ;
 volatile bool endOfProcessingReached ;
 
 
+
 /** Tells whether the decoding encountered a fatal error. */
 volatile bool decodingInError ;
+
+
 
 
 
@@ -181,6 +205,7 @@ volatile bool decodingInError ;
 volatile Byte * decodedBuffer ;
 
 
+
 /** The size of PCM final output buffer.
  * 
  * Must be able to contain two full decoded frames: 
@@ -194,6 +219,7 @@ volatile Byte * decodedBuffer ;
 const uint32 DecodedBufferSize = 2 * MAX_NGRAN * MAX_NSAMP ;
 
 
+
 /** 
  * The pointer to the place in decodedBuffer where decoding should be output: 
  */
@@ -204,12 +230,14 @@ volatile Byte * decodePointer ;
 /* Defines a channel volume. */
 typedef uint8 ChannelVolume ;
 
+
 /*
  * Music volume, 0..127=silent..loud.
  * Default: 127, loudest possible.
  *
  */
 volatile ChannelVolume currentMusicVolume = 0x7f ;
+
 
 
 /*
@@ -226,6 +254,7 @@ const volatile ChannelVolume defaultSoundVolume = 0x7f ;
 typedef uint8 ChannelPanning ;
 
 
+
 /* 
  * Left/right music dispatching, 0..127=left..right, 64 is half volume on both
  * speakers.
@@ -233,6 +262,7 @@ typedef uint8 ChannelPanning ;
  *
  */
 volatile ChannelPanning currentMusicPanning = 0 ;
+
 
 
 /* 
@@ -255,6 +285,7 @@ volatile ChannelPanning defaultSoundPanning = 0 ;
 const uint16 DecodedFrameLength = 576 * sizeof(uint16) ;
 
 
+
 /** 
  * First music channel (0) is the one reserved to music (mono PCM). 
  *
@@ -264,6 +295,7 @@ const uint16 DecodedFrameLength = 576 * sizeof(uint16) ;
  * 
  */
 const uint8 MusicChannel = 0 ;
+
 
 
 /**
@@ -289,6 +321,7 @@ s32 getFreeSoundChannel()
 	return -1 ;
 	
 }
+
 
 
 
@@ -327,6 +360,7 @@ void triggerSecondBufferRefill()
 	notifyCommandToARM9() ;
 
 }
+
 
 
 
@@ -574,6 +608,7 @@ bool decodeNextMP3Frame()
 /* Section dedicated to library integration of OSDL IPC. */
 
 
+
 /** Manages an IPC request to play an OSDL sound. */	
 void handlePlaySoundRequest( FIFOElement firstElement )
 {
@@ -808,6 +843,7 @@ void handleFadeOutMusicRequest( FIFOElement firstElement )
 		musicFadeOutDecrement = 1 ;
 		
 }
+
 
 
 /**
@@ -1186,7 +1222,7 @@ void manageMP3Playback()
 		}		
 		
 		
-	} while ( ! endOfProcessingReached  && ! decodingInError ) ;
+	} while ( ! endOfProcessingReached && ! decodingInError ) ;
 	
 	
 	if ( ! decodingInError )

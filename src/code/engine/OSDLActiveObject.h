@@ -37,12 +37,15 @@
 
 
 
+
 namespace OSDL
 {
 
 
+
 	namespace Engine 
 	{
+	
 	
 	
 			
@@ -113,7 +116,9 @@ namespace OSDL
 		{
 		
 		
+		
 			public:
+			
 			
 			
 				/**
@@ -129,8 +134,9 @@ namespace OSDL
 				 *
 				 */
 				explicit ActiveObject( ObjectSchedulingPolicy policy = relaxed, 
-					Weight weight = 1 ) throw() ;
+					Weight weight = 1 ) ;
 								
+				
 				
 				/**
 				 * Virtual destructor.
@@ -148,6 +154,7 @@ namespace OSDL
 				// Registering section.
 				
 				
+				
 				/**
 				 * Registers this active object to the supposedly already
 				 * existing scheduler.
@@ -155,8 +162,8 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				virtual void registerToScheduler() 
-					throw( SchedulingException ) = 0 ;
+				virtual void registerToScheduler() = 0 ;
+				
 				
 				
 				/**
@@ -166,20 +173,21 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				virtual void unregisterFromScheduler() 
-					throw( SchedulingException ) = 0 ;
+				virtual void unregisterFromScheduler() = 0 ;
+				
 				
 				
 				
 				
 				// Settings section.
 
+
 				
 				/**
 				 * Returns the scheduling policy for this active object.
 				 *
 				 */
-				virtual ObjectSchedulingPolicy getPolicy() const throw() ;
+				virtual ObjectSchedulingPolicy getPolicy() const ;
 				
 				
 				
@@ -191,8 +199,7 @@ namespace OSDL
 				 * should be. 
 				 *
 				 */
-				virtual Weight getWeight() const throw() ;
-				
+				virtual Weight getWeight() const ;
 				
 				
 				
@@ -201,7 +208,7 @@ namespace OSDL
 				 * of this active object.
 				 *
 				 */				
-				virtual Events::SimulationTick getBirthTick() const throw() ;
+				virtual Events::SimulationTick getBirthTick() const ;
 				
 				
 				
@@ -216,8 +223,7 @@ namespace OSDL
 				 *
 				 */				
 				virtual void setBirthTick( 
-						Events::SimulationTick currentSimulationTick ) 
-					throw( SchedulingException ) ;
+					Events::SimulationTick currentSimulationTick ) ;
 
 				
 				
@@ -259,8 +265,8 @@ namespace OSDL
 				 * the right time.
 				 *
 				 */
-				virtual void onSkip( Events::SimulationTick skippedTick ) 
-					throw( SchedulingException ) ;
+				virtual void onSkip( Events::SimulationTick skippedTick ) ;
+
 
 
 				/**
@@ -281,8 +287,8 @@ namespace OSDL
 				 *
 				 */				
 				virtual void onImpossibleActivation( 
-						Events::SimulationTick missedTick ) 
-					throw( SchedulingException ) ;
+					Events::SimulationTick missedTick ) ;
+				
 				
 				
 				/*
@@ -292,6 +298,7 @@ namespace OSDL
 				 *
 				 */
 				 
+		
 		
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -306,20 +313,21 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 					
+				
 				
 					
 			protected:		
 		
+				
 				
 				/**
 				 * Returns this object local time, as if the origin of 
 				 * time was this object creation.
 				 *
 				 */
-				Events::SimulationTick getLocalTime() const throw() ;
+				Events::SimulationTick getLocalTime() const ;
 
 
 				
@@ -328,6 +336,7 @@ namespace OSDL
 				 *
 				 */
 				ObjectSchedulingPolicy _policy ;
+				
 				
 				
 				/**
@@ -339,6 +348,7 @@ namespace OSDL
 				 */
 				 Weight _weight ;
 				 
+				 
 								
 				/**
 				 * Tells whether this active object has already been 
@@ -347,6 +357,7 @@ namespace OSDL
 				 */
 				bool _registered ;
 				
+				 
 				 
 				/**
 				 * The date of birth of this object, expressed in simulation
@@ -362,11 +373,14 @@ namespace OSDL
 				Events::SimulationTick _birthTick ;
 				
 				
+				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_ACTIVE_OBJECT_H_

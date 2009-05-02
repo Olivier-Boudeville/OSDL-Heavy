@@ -28,7 +28,9 @@
 #define OSDL_EMBEDDED_FILE_H_
 
 
+
 #include "Ceylan.h"  // for inheritance and FileSystemManagerException
+
 
 
 #if ! defined(OSDL_USES_PHYSICSFS) || OSDL_USES_PHYSICSFS 
@@ -52,13 +54,13 @@ namespace OSDL
 	
 		public: 
 	   
-			explicit EmbeddedFileException( 
-				const std::string & reason ) throw() ;
+			explicit EmbeddedFileException( const std::string & reason ) ;
 		   
 			virtual ~EmbeddedFileException() throw() ; 
 			   
 	} ;
 
+	
 	
 	
 	/**
@@ -83,6 +85,7 @@ namespace OSDL
 		public:
 
 
+
 			/**
 			 * Destroys the embedded file reference object, does not remove
 			 * the file itself.
@@ -102,11 +105,13 @@ namespace OSDL
 			// Implementation of instance methods inherited from File.
 
 
+
 			/**
 			 * Returns true iff this file is open.
 			 *
 			 */
-			virtual bool isOpen() const throw() ;
+			virtual bool isOpen() const ;
+
 
 
 			/**
@@ -122,7 +127,8 @@ namespace OSDL
 			 * @throw Stream::CloseException if the close operation failed.
 			 *
 			 */
-			virtual bool close() throw( Stream::CloseException ) ;
+			virtual bool close() ;
+
 
 
 			/**
@@ -135,14 +141,14 @@ namespace OSDL
 			 * @throw FileException in all cases.
 			 *
 			 */
-			virtual void saveAs( const std::string & newName )
-				throw( Ceylan::System::FileException ) ;
+			virtual void saveAs( const std::string & newName ) ;
 
 
 
 
 			// Locking section.
 
+			 
 			 
 			/**
 			 * Locks the file for reading.
@@ -151,8 +157,8 @@ namespace OSDL
 			 * if the file lock feature is not available.
 			 *		 
 			 */
-			virtual void lockForReading() const 
-				throw( Ceylan::System::FileReadLockingFailed ) ;
+			virtual void lockForReading() const ;
+
 
 
 			/**
@@ -162,8 +168,8 @@ namespace OSDL
 			 * if the file lock feature is not available.
 			 *		 
 			 */
-			virtual void unlockForReading() const 
-				throw( Ceylan::System::FileReadUnlockingFailed ) ;
+			virtual void unlockForReading() const ;
+
 
 
 			/**
@@ -173,8 +179,8 @@ namespace OSDL
 			 * if the file lock feature is not available.
 			 *		 
 			 */
-			virtual void lockForWriting() const 
-				throw( Ceylan::System::FileWriteLockingFailed ) ;
+			virtual void lockForWriting() const ;
+
 
 
 			/**
@@ -184,8 +190,8 @@ namespace OSDL
 			 * or if the file lock feature is not available.
 			 *		 
 			 */
-			virtual void unlockForWriting() const 
-				throw( Ceylan::System::FileWriteUnlockingFailed ) ;
+			virtual void unlockForWriting() const ;
+
 
 
 			/**
@@ -196,10 +202,12 @@ namespace OSDL
 			 * is locked or if the lock feature is not available.
 			 *		 
 			 */
-			virtual bool isLocked() const throw() ;
+			virtual bool isLocked() const ;
+
 
 
 			// size method inherited from File.
+
 
 
 			/**
@@ -209,8 +217,8 @@ namespace OSDL
 			 * operation failed, or is not supported.
 			 *
 			 */
-			virtual time_t getLastChangeTime() const 
-				throw( Ceylan::System::FileLastChangeTimeRequestFailed ) ;
+			virtual time_t getLastChangeTime() const ;
+
 
 
 			/**
@@ -235,13 +243,15 @@ namespace OSDL
              *
 			 */
 	 		virtual Ceylan::System::Size read( Ceylan::Byte * buffer, 
-            		Ceylan::System::Size maxLength ) 
-				throw( InputStream::ReadFailedException ) ;
+            	Ceylan::System::Size maxLength ) ;
+
 
 			
 			// readExactLength inherited.
+						
 							
 			// hasAvailableData inherited.
+			
 			
 			
 			/**
@@ -260,8 +270,8 @@ namespace OSDL
              * @note If cyphering is enabled, it will be transparently managed.
              *
 			 */
-			virtual Ceylan::System::Size write( const std::string & message ) 
-				throw( OutputStream::WriteFailedException ) ;
+			virtual Ceylan::System::Size write( const std::string & message ) ;
+
 
 
 			/**
@@ -283,8 +293,7 @@ namespace OSDL
              *
 			 */
 			virtual Ceylan::System::Size write( const Ceylan::Byte * buffer, 
-					Ceylan::System::Size maxLength ) 
-				throw( OutputStream::WriteFailedException ) ;
+				Ceylan::System::Size maxLength ) ;
 
 
 
@@ -296,8 +305,8 @@ namespace OSDL
 			 * @throw FileException if the operation failed.
 			 *
 			 */
-			virtual Ceylan::System::Position tell() 
-            	throw( Ceylan::System::FileException ) ;
+			virtual Ceylan::System::Position tell() ;
+
 
 
 			/**
@@ -309,8 +318,7 @@ namespace OSDL
 			 * @throw FileException if the operation failed.
 			 *
 			 */
-			virtual void seek( Ceylan::System::Position targetPosition ) 
-            	throw( Ceylan::System::FileException ) ;
+			virtual void seek( Ceylan::System::Position targetPosition ) ;
 
 
 
@@ -334,9 +342,9 @@ namespace OSDL
 			 * expected.
 			 *
 			 */
-			virtual Ceylan::System::Size size() const 
-            	throw( Ceylan::System::FileException ) ;
+			virtual Ceylan::System::Size size() const ;
     
+	
     
    			/**
 			 * Sends the file content to the <b>fd</b> PhysicsFS handle
@@ -346,8 +354,8 @@ namespace OSDL
 			 * if the PhysicsFS handle feature is not available.
 			 *		 
 			 */
-			virtual void serialize( PHYSFS_File & handle ) 
-            	throw( EmbeddedFileException ) ;
+			virtual void serialize( PHYSFS_File & handle ) ;
+
 
 
 			/**
@@ -357,8 +365,7 @@ namespace OSDL
 			 * if the PhysicsFS handle feature is not available.
 			 *
 			 */
-			PHYSFS_File & getPhysicsFSHandle() const 
-				throw( EmbeddedFileException ) ;
+			PHYSFS_File & getPhysicsFSHandle() const ;
 
 
 
@@ -376,7 +383,8 @@ namespace OSDL
              *
              */
             static void CypherBuffer( Ceylan::Byte * buffer, 
-            	Ceylan::System::Size size ) throw( EmbeddedFileException ) ;
+            	Ceylan::System::Size size ) ;
+
 
 
 			/**
@@ -393,11 +401,13 @@ namespace OSDL
              *
              */
             static void DecypherBuffer( Ceylan::Byte * buffer, 
-            	Ceylan::System::Size size ) throw( EmbeddedFileException ) ;
+            	Ceylan::System::Size size ) ;
+
 
 
 
 			// Interface implementation.
+
 
 
 			/**
@@ -407,13 +417,15 @@ namespace OSDL
 			 * be returned with the available features.
 			 *
 			 */
-			virtual Ceylan::System::StreamID getStreamID() const throw() ;
+			virtual Ceylan::System::StreamID getStreamID() const ;
 
 
 
 			// getInputStreamID inherited.
 			
+			
 			// getOutputStreamID inherited.
+			
 			
 			
         	/**
@@ -429,10 +441,10 @@ namespace OSDL
 			 *
 			 */
         	virtual const std::string toString( 
-				Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+				Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
 							
+
 
 
 			/*
@@ -444,6 +456,7 @@ namespace OSDL
 			 *
 			 */
 			
+	
 	
 			/**
 			 * Returns an EmbeddedFile reference on a newly created file.
@@ -470,11 +483,10 @@ namespace OSDL
 			 *
 			 */
 			static EmbeddedFile & Create( const std::string & filename, 
-					Ceylan::System::OpeningFlag createFlag 
-                    	= Ceylan::System::File::CreateToWriteBinary,
-					Ceylan::System::PermissionFlag permissionFlag 
-                    	= Ceylan::System::File::OwnerReadWrite ) 
-				throw( Ceylan::System::FileException ) ;
+				Ceylan::System::OpeningFlag createFlag 
+                    = Ceylan::System::File::CreateToWriteBinary,
+				Ceylan::System::PermissionFlag permissionFlag 
+                    = Ceylan::System::File::OwnerReadWrite ) ;
 
 			
 			
@@ -513,14 +525,15 @@ namespace OSDL
 			 *
 			 */
 			static EmbeddedFile & Open( const std::string & filename, 
-					Ceylan::System::OpeningFlag openFlag 
-                    	= Ceylan::System::File::OpenToReadBinary ) 
-				throw( Ceylan::System::FileException ) ;
+				Ceylan::System::OpeningFlag openFlag 
+                    = Ceylan::System::File::OpenToReadBinary ) ;
 			
 	
 			
+			
 		protected:
     
+	
 
 			/**
 			 * Constructs an Embedded file reference object.
@@ -555,15 +568,17 @@ namespace OSDL
 			 *
 			 */
 			explicit EmbeddedFile( const std::string & name, 
-					Ceylan::System::OpeningFlag openFlag 
-                    	= Ceylan::System::File::CreateToWriteBinary,
-					Ceylan::System::PermissionFlag permissionFlag 
-                    	= Ceylan::System::File::OwnerReadWrite ) 
-				throw( Ceylan::System::FileManagementException ) ;
+				Ceylan::System::OpeningFlag openFlag 
+                    = Ceylan::System::File::CreateToWriteBinary,
+				Ceylan::System::PermissionFlag permissionFlag 
+                    = Ceylan::System::File::OwnerReadWrite ) ;
+
+
 
 
 
 			// Implementations of inherited methods.
+			
 			
 			
 			/**
@@ -573,8 +588,8 @@ namespace OSDL
 			 *
 			 */
 			virtual Ceylan::System::FileSystemManager &
-            		getCorrespondingFileSystemManager()
-				const throw( Ceylan::System::FileDelegatingException ) ;
+            	getCorrespondingFileSystemManager() const ;
+
 
 
 			/**
@@ -583,18 +598,21 @@ namespace OSDL
 			 * @throw FileOpeningFailed if the operation failed.
 			 *
 			 */
-			virtual void reopen() throw( Ceylan::System::FileOpeningFailed ) ;
+			virtual void reopen() ;
 
+			
 			
             /**
              * Interprets the current state of this file.
              *
              */
-			virtual std::string interpretState() const throw() ;
+			virtual std::string interpretState() const ;
+
 
 
 
 		private:
+
 
 
 			/**
@@ -602,6 +620,7 @@ namespace OSDL
 			 *
 			 */
 			PHYSFS_File * _physfsHandle ;
+
 
 
 			/**
@@ -612,6 +631,7 @@ namespace OSDL
 			bool _cypher ;
 
 
+
 			/**
 			 * Copy constructor made private to ensure that it will 
 			 * be never called.
@@ -620,7 +640,8 @@ namespace OSDL
 			 * constructor is called, implicitly or not.
 			 *
 			 */
-			EmbeddedFile( const EmbeddedFile & source ) throw() ;
+			EmbeddedFile( const EmbeddedFile & source ) ;
+
 
 
 			/**
@@ -631,8 +652,7 @@ namespace OSDL
 			 * operator is called, implicitly or not.
 			 *
 			 */
-			EmbeddedFile & operator = ( const EmbeddedFile & source )
-				throw() ;
+			EmbeddedFile & operator = ( const EmbeddedFile & source ) ;
 
 
 
@@ -651,13 +671,14 @@ namespace OSDL
 			 *
 			 */
 			static void FromHandletoHandle( PHYSFS_File & from, 
-					PHYSFS_File & to, Ceylan::System::Size length )
-				throw( EmbeddedFileException ) ;
+				PHYSFS_File & to, Ceylan::System::Size length ) ;
+
 
 	} ;
 	
 	
 }
+
 
 
 #endif // OSDL_EMBEDDED_FILE_H_

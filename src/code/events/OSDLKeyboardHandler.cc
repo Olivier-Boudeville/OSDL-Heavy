@@ -40,6 +40,7 @@ using namespace Ceylan::Log ;    // for LogPlug
 using namespace OSDL::Events ;
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>          // for OSDL_VERBOSE_KEYBOARD_HANDLER and al
 #endif // OSDL_USES_CONFIG_H
@@ -56,6 +57,7 @@ using namespace OSDL::Events ;
 #define OSDL_KEYBOARD_HANDLER_LOG( message )
 
 #endif // OSDL_VERBOSE_KEYBOARD_HANDLER
+
 
 
 #if OSDL_USES_SDL
@@ -79,22 +81,26 @@ const Ceylan::System::Millisecond KeyboardHandler::DefaulKeyRepeatInterval
 
 
 
+
 // Starts with raw input mode.
 KeyboardMode KeyboardHandler::_CurrentMode = rawInput ;
 
 
 
-KeyboardException::KeyboardException( const string & message ) throw():
+
+KeyboardException::KeyboardException( const string & message ):
 	EventsException( message )
 {
 
 }
 
 
+
 KeyboardException::~KeyboardException() throw()
 {
 
 }
+
 
 
 
@@ -112,6 +118,7 @@ void doNothingKeyHandler( const KeyboardEvent & keyboardEvent )
 	OSDL_KEYBOARD_HANDLER_LOG( EventsModule::DescribeEvent( keyboardEvent ) ) ;
 		
 }
+
 
 
 
@@ -192,8 +199,7 @@ void smarterKeyHandler( const KeyboardEvent & keyboardEvent )
 
 
 KeyboardHandler::KeyboardHandler( KeyboardMode initialMode, 
-	bool useSmarterDefaultKeyHandler )
-		throw( InputDeviceHandlerException ):
+		bool useSmarterDefaultKeyHandler ) :
 	InputDeviceHandler(),
 	_rawKeyControllerMap(),
 	_rawKeyHandlerMap(),
@@ -262,7 +268,7 @@ KeyboardHandler::~KeyboardHandler() throw()
 
 
 void KeyboardHandler::linkToController( KeyIdentifier rawKey, 
-	OSDL::MVC::Controller & controller ) throw()
+	OSDL::MVC::Controller & controller )
 {
 
 	_rawKeyControllerMap[ rawKey ] = & controller ;
@@ -272,7 +278,7 @@ void KeyboardHandler::linkToController( KeyIdentifier rawKey,
 	
 					
 void KeyboardHandler::linkToController( Ceylan::Unicode unicode, 
-	OSDL::MVC::Controller & controller ) throw()
+	OSDL::MVC::Controller & controller )
 {
 
 	_unicodeControllerMap[ unicode ] = & controller ;
@@ -282,7 +288,7 @@ void KeyboardHandler::linkToController( Ceylan::Unicode unicode,
 
 	
 void KeyboardHandler::linkToFocusController(
-	OSDL::MVC::Controller & controller ) throw()
+	OSDL::MVC::Controller & controller )
 {
 
 	_focusController = & controller ;
@@ -292,7 +298,7 @@ void KeyboardHandler::linkToFocusController(
 	
 	
 void KeyboardHandler::linkToHandler( KeyIdentifier rawKey, 
-	KeyboardEventHandler handler ) throw()
+	KeyboardEventHandler handler )
 {
 
 	_rawKeyHandlerMap[ rawKey ] = handler ;
@@ -302,7 +308,7 @@ void KeyboardHandler::linkToHandler( KeyIdentifier rawKey,
 	
 					
 void KeyboardHandler::linkToHandler( Ceylan::Unicode unicode,
-	KeyboardEventHandler handler ) throw()
+	KeyboardEventHandler handler )
 {
 
 	_unicodeHandlerMap[ unicode ] = handler ;
@@ -311,7 +317,7 @@ void KeyboardHandler::linkToHandler( Ceylan::Unicode unicode,
 
 	
 
-void KeyboardHandler::setSmarterDefaultKeyHandlers() throw()
+void KeyboardHandler::setSmarterDefaultKeyHandlers()
 {
 
 	_defaultRawKeyHandler  = smarterKeyHandler ;
@@ -322,7 +328,7 @@ void KeyboardHandler::setSmarterDefaultKeyHandlers() throw()
 
 
 void KeyboardHandler::setDefaultRawKeyHandler( 
-	KeyboardEventHandler newHandler ) throw()
+	KeyboardEventHandler newHandler )
 {
 
 	_defaultRawKeyHandler = newHandler ;
@@ -332,7 +338,7 @@ void KeyboardHandler::setDefaultRawKeyHandler(
 
 
 void KeyboardHandler::setDefaultUnicodeHandler( 
-	KeyboardEventHandler newHandler ) throw()
+	KeyboardEventHandler newHandler )
 {
 
 	_defaultUnicodeHandler = newHandler ;
@@ -341,8 +347,7 @@ void KeyboardHandler::setDefaultUnicodeHandler(
 
 
 
-const string KeyboardHandler::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string KeyboardHandler::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Keyboard handler in " ;
@@ -372,7 +377,7 @@ const string KeyboardHandler::toString( Ceylan::VerbosityLevels level )
 
 
 
-KeyboardMode KeyboardHandler::GetMode() throw()
+KeyboardMode KeyboardHandler::GetMode()
 {
 
 	return _CurrentMode ;
@@ -381,7 +386,7 @@ KeyboardMode KeyboardHandler::GetMode() throw()
 
 
 
-void KeyboardHandler::SetMode( KeyboardMode newMode ) throw()
+void KeyboardHandler::SetMode( KeyboardMode newMode )
 {
 
 #if OSDL_USES_SDL
@@ -419,7 +424,7 @@ void KeyboardHandler::SetMode( KeyboardMode newMode ) throw()
 
 
 
-string KeyboardHandler::DescribeKey( KeyIdentifier key ) throw()
+string KeyboardHandler::DescribeKey( KeyIdentifier key )
 {
 
 #if OSDL_USES_SDL
@@ -483,7 +488,7 @@ string KeyboardHandler::DescribeKey( KeyIdentifier key ) throw()
 
 
 
-string KeyboardHandler::DescribeModifier( KeyModifier modifier ) throw()
+string KeyboardHandler::DescribeModifier( KeyModifier modifier )
 {
 
 #if OSDL_USES_SDL
@@ -541,7 +546,7 @@ string KeyboardHandler::DescribeModifier( KeyModifier modifier ) throw()
 
 
 
-string KeyboardHandler::DescribeUnicode( Ceylan::Unicode value ) throw()
+string KeyboardHandler::DescribeUnicode( Ceylan::Unicode value )
 {
 				
 	if ( ( value & 0xff80 ) == 0 ) 
@@ -560,8 +565,7 @@ string KeyboardHandler::DescribeUnicode( Ceylan::Unicode value ) throw()
 
 
 
-void KeyboardHandler::focusGained( const FocusEvent & keyboardFocusEvent )
-	throw()
+void KeyboardHandler::focusGained( const FocusEvent & keyboardFocusEvent )	
 {
 
 	if ( _focusController != 0 )
@@ -572,7 +576,6 @@ void KeyboardHandler::focusGained( const FocusEvent & keyboardFocusEvent )
 
 
 void KeyboardHandler::focusLost( const FocusEvent & keyboardFocusEvent ) 
-	throw()
 {
 
 	if ( _focusController != 0 )
@@ -582,7 +585,7 @@ void KeyboardHandler::focusLost( const FocusEvent & keyboardFocusEvent )
 
 
 
-void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent ) throw()
+void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent )
 {
 
 #if OSDL_USES_SDL
@@ -707,7 +710,7 @@ void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent ) throw()
 
 
 
-void KeyboardHandler::keyReleased( const KeyboardEvent & keyboardEvent ) throw()
+void KeyboardHandler::keyReleased( const KeyboardEvent & keyboardEvent )
 {
 
 #if OSDL_USES_SDL

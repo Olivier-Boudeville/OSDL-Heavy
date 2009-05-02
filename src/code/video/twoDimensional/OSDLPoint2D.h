@@ -43,14 +43,17 @@
 namespace OSDL
 {
 
+
 	
 	namespace Video
 	{
 	
 	
+	
 		namespace TwoDimensional
 		{
 		
+
 
 		
 			/**
@@ -74,19 +77,20 @@ namespace OSDL
 					 * coordinates.
 					 *
 					 */
-	            	explicit Point2D( Coordinate x = 0, Coordinate y = 0 )
-						throw() ;
+	            	explicit Point2D( Coordinate x = 0, Coordinate y = 0 ) ;
+
 
 
 					/**
 					 * Copy constructor.
 					 *
 					 * @note Cannot use the 'explicit' qualifier since it 
-					 * would prohibit expressions such as : 
+					 * would prohibit expressions such as: 
 					 * 'return Point2D( _x, _y ) ;'
 					 *
 					 */
-					Point2D( const Point2D & source ) throw() ;
+					Point2D( const Point2D & source ) ;
+					
 					
 					
 					/**
@@ -98,8 +102,8 @@ namespace OSDL
 					 *
 					 */
 					explicit Point2D( 
-							const Ceylan::Maths::Linear::Bipoint & source )
-						throw() ;
+						const Ceylan::Maths::Linear::Bipoint & source ) ;
+					
 					
 					
 					/**
@@ -111,8 +115,7 @@ namespace OSDL
 					 *
 					 */
 					explicit Point2D( 
-							const Ceylan::Maths::Linear::Vector2 & source )
-						throw() ;
+						const Ceylan::Maths::Linear::Vector2 & source ) ;
 					
 					 
 					 
@@ -137,11 +140,13 @@ namespace OSDL
 					 *
 					 */
 	            	static Point2D & CreateFrom( FloatingPointCoordinate x = 0, 
-						FloatingPointCoordinate y = 0 )	throw() ;
+						FloatingPointCoordinate y = 0 )	;
+
 
 
 					/// Virtual destructor of a two dimensional point.
 	            	virtual ~Point2D() throw() ;
+	
 	
 	
 					/**
@@ -149,7 +154,8 @@ namespace OSDL
 					 * coordinates.
 					 *
 					 */
-					virtual void setTo( Coordinate x, Coordinate y ) throw() ;
+					virtual void setTo( Coordinate x, Coordinate y ) ;
+					
 					
 					
 					/**
@@ -161,7 +167,8 @@ namespace OSDL
 					 *
 					 */
 					virtual void setTo( FloatingPointCoordinate x, 
-						FloatingPointCoordinate y ) throw() ;
+						FloatingPointCoordinate y ) ;
+
 
 
 					/**
@@ -169,8 +176,9 @@ namespace OSDL
 					 * whose coordinates are copied.
 					 *
 					 */
-					virtual void setFrom( const Point2D & source ) throw() ;
+					virtual void setFrom( const Point2D & source ) ;
 					
+
 
 					/**
 					 * Sets this point coordinates from specified 2D vector,
@@ -181,41 +189,50 @@ namespace OSDL
 					 *
 					 */
 					virtual void setFrom( 
-							const Ceylan::Maths::Linear::Vector2 & source )
-						throw() ;
+						const Ceylan::Maths::Linear::Vector2 & source ) ;
+
 
 					
 					/// Returns the first coordinate (abscissa) of the point.
-					inline Coordinate getX() const throw() ;
+					inline Coordinate getX() const ;
+					
 					
 					/// Sets the first coordinate (abscissa) of the point.
-					inline void setX( Coordinate newX ) throw() ;
+					inline void setX( Coordinate newX ) ;
+	
 	
 	
 					/// Returns the second coordinate (ordinate) of the point.	
-					inline Coordinate getY() const throw();
+					inline Coordinate getY() const ;
+					
 					
 					/// Sets the second coordinate (ordinate) of the point.
-					inline void setY( Coordinate newY ) throw() ;
+					inline void setY( Coordinate newY ) ;
+
 
 
 					/**
-					 * Translates this point of vector [x,y] : adds x to 
+					 * Translates this point of vector [x,y]: adds x to 
 					 * this point's abscissa, and adds y to its ordinate.
 					 *
 					 */
-					void translate( Offset x, Offset y ) throw() ;
+					void translate( Offset x, Offset y ) ;
+					
 					
 					
 					/// Flips the coordinates of the point.
-					virtual void flip() throw() ;
+					virtual void flip() ;
+					
 					
 					
 					/// Flips the abscissa of this point.
-					virtual void flipX() throw() ;
+					virtual void flipX() ;
 					
+					
+		
 					/// Flips the oridinate of this point.
-					virtual void flipY() throw() ;
+					virtual void flipY() ;
+					
 					
 					
 	 	            /**
@@ -231,12 +248,13 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 						
 
 
+
 					// Static section.
+					
 					
 					
 					/// The origin of a 2D referential.
@@ -244,14 +262,15 @@ namespace OSDL
 					
 					
 					
+					
 					/**
-					 * Translates all the points in the list of vector [x,y] :
+					 * Translates all the points in the list of vector [x,y]:
 					 * adds x to each point's abscissa, and adds y to 
 					 * each point'sordinate.
 					 *
 					 */
 					static void Translate( std::list<Point2D *> & pointList,
-						Offset x, Offset y ) throw() ;
+						Offset x, Offset y ) ;
 					
 
 					/**
@@ -261,6 +280,7 @@ namespace OSDL
 					 */
 					static const Ceylan::Maths::Linear::MatrixIndex Dimensions 
 						= 2 ;
+					
 					
 					
 					
@@ -274,16 +294,19 @@ namespace OSDL
 					 */
 	            	Coordinate _coord[ Dimensions ] ;
 					
+					
 
 	    	} ;
 	
 	
 	
 	
+	
 			// Inline section.
 			
+			
 	
-			Coordinate Point2D::getX() const throw()
+			Coordinate Point2D::getX() const
 			{
 			
 				return _coord[0] ;
@@ -291,7 +314,8 @@ namespace OSDL
 			}
 	
 	
-			void Point2D::setX( Coordinate newX ) throw()
+	
+			void Point2D::setX( Coordinate newX )
 			{
 			
 				_coord[0] = newX ;
@@ -299,7 +323,8 @@ namespace OSDL
 			}
 	
 	
-			Coordinate Point2D::getY() const throw()
+	
+			Coordinate Point2D::getY() const
 			{
 			
 				return _coord[1] ;
@@ -307,12 +332,15 @@ namespace OSDL
 			}
 	
 	
-			void Point2D::setY( Coordinate newY ) throw()
+	
+			void Point2D::setY( Coordinate newY )
 			{
 			
 				_coord[1] = newY ;
 				
 			}
+			
+			
 			
 		}
 
@@ -321,9 +349,11 @@ namespace OSDL
 }
 
 
+
 /// Stream operator for serialization.
 OSDL_DLL std::ostream & operator << ( std::ostream & os, 
 	const OSDL::Video::TwoDimensional::Point2D & p ) ;
+
 
 
 #endif // OSDL_POINT_2D_H_

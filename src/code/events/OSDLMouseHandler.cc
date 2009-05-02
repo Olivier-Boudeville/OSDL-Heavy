@@ -65,8 +65,7 @@ using namespace OSDL::Events ;
 
 
 
-MouseHandler::MouseHandler( bool useClassicalMice )
-		throw( InputDeviceHandlerException ):
+MouseHandler::MouseHandler( bool useClassicalMice ) :
 	InputDeviceHandler(),
 	_miceCount( 0 ),
 	_mice( 0 ),
@@ -117,7 +116,7 @@ MouseHandler::~MouseHandler() throw()
 
 
 
-bool MouseHandler::hasDefaultMouse() const throw()
+bool MouseHandler::hasDefaultMouse() const
 {
 
 	return ( _miceCount != 0 ) ;
@@ -126,7 +125,7 @@ bool MouseHandler::hasDefaultMouse() const throw()
 
 
 
-Mouse & MouseHandler::getDefaultMouse() throw( MouseException )
+Mouse & MouseHandler::getDefaultMouse()
 {
 
 	if ( _miceCount == 0 )
@@ -140,7 +139,6 @@ Mouse & MouseHandler::getDefaultMouse() throw( MouseException )
 
 
 void MouseHandler::linkToController( OSDL::MVC::Controller & controller )
-	throw( MouseException )
 {
 	
 	linkToController( DefaultMouse, controller ) ;
@@ -150,7 +148,7 @@ void MouseHandler::linkToController( OSDL::MVC::Controller & controller )
 
 					
 void MouseHandler::linkToController( MouseNumber mouseIndex,
-	OSDL::MVC::Controller & controller ) throw( MouseException )
+	OSDL::MVC::Controller & controller )
 {
 	
 	/*
@@ -183,8 +181,7 @@ void MouseHandler::linkToController( MouseNumber mouseIndex,
 	
 
 	
-const string MouseHandler::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string MouseHandler::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Mouse handler " ;
@@ -226,7 +223,7 @@ const string MouseHandler::toString( Ceylan::VerbosityLevels level )
 
 
 
-MouseNumber MouseHandler::GetAvailableMiceCount() throw() 
+MouseNumber MouseHandler::GetAvailableMiceCount() 
 {
 
 	/*
@@ -240,12 +237,12 @@ MouseNumber MouseHandler::GetAvailableMiceCount() throw()
 
 
 
+
 // Protected section.
 
 
 
-void MouseHandler::focusGained( const FocusEvent & mouseFocusEvent ) 
-	const throw()
+void MouseHandler::focusGained( const FocusEvent & mouseFocusEvent ) const
 {
 
 #if OSDL_USES_SDL
@@ -262,7 +259,7 @@ void MouseHandler::focusGained( const FocusEvent & mouseFocusEvent )
 
 
 
-void MouseHandler::focusLost( const FocusEvent & mouseFocusEvent ) const throw()
+void MouseHandler::focusLost( const FocusEvent & mouseFocusEvent ) const
 {
 
 #if OSDL_USES_SDL
@@ -279,8 +276,7 @@ void MouseHandler::focusLost( const FocusEvent & mouseFocusEvent ) const throw()
 
 
 
-void MouseHandler::mouseMoved( const MouseMotionEvent & mouseMovedEvent ) 
-	const throw()
+void MouseHandler::mouseMoved( const MouseMotionEvent & mouseMovedEvent ) const
 {
 
 #if OSDL_USES_SDL
@@ -298,8 +294,7 @@ void MouseHandler::mouseMoved( const MouseMotionEvent & mouseMovedEvent )
 
 
 void MouseHandler::buttonPressed( 
-		const MouseButtonEvent & mouseButtonPressedEvent ) 
-	const throw()
+	const MouseButtonEvent & mouseButtonPressedEvent ) const
 {
 
 #if OSDL_USES_SDL
@@ -317,8 +312,7 @@ void MouseHandler::buttonPressed(
 
 
 void MouseHandler::buttonReleased( 
-		const MouseButtonEvent & mouseButtonReleasedEvent ) 
-	const throw()
+	const MouseButtonEvent & mouseButtonReleasedEvent ) const
 {
 
 #if OSDL_USES_SDL
@@ -336,7 +330,7 @@ void MouseHandler::buttonReleased(
 
 
 
-void MouseHandler::blank() throw()
+void MouseHandler::blank()
 {
 
 	if ( _mice != 0 )
@@ -356,7 +350,8 @@ void MouseHandler::blank() throw()
 }
 
 
-void MouseHandler::checkMouseAt( MouseNumber index ) const throw()
+
+void MouseHandler::checkMouseAt( MouseNumber index ) const
 {
 
 	if ( index >= _miceCount )

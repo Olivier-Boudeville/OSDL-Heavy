@@ -37,6 +37,7 @@
 #include <string>
 
 
+
 #if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 // No need to include SDL header here:
@@ -45,19 +46,26 @@ struct SDL_Rect ;
 #endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 
+
+
 namespace OSDL 
 {
 
+
+
 	namespace Video 
 	{
+		
 		
 		
 		namespace TwoDimensional
 		{
 		
 		
+		
 			// Forward declaration to be able to define the operator ==.
 			class UprightRectangle ;
+			
 			
 			
 			#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
@@ -71,6 +79,7 @@ namespace OSDL
 				
 			#endif // OSDL_USES_SDL
 			
+			
 		}
 				
 	}
@@ -78,12 +87,15 @@ namespace OSDL
 }
 
 
+
 // Operators should not be defined in a namespace.
+
 
 /// Equality operator defined.
 OSDL_DLL bool operator == ( 
 	const OSDL::Video::TwoDimensional::UprightRectangle & first, 
-	const OSDL::Video::TwoDimensional::UprightRectangle & second ) throw() ;
+	const OSDL::Video::TwoDimensional::UprightRectangle & second ) ;
+
 
 
 /**
@@ -93,7 +105,7 @@ OSDL_DLL bool operator == (
  */
 OSDL_DLL bool operator != ( 
 	const OSDL::Video::TwoDimensional::UprightRectangle & first, 
-	const OSDL::Video::TwoDimensional::UprightRectangle & second ) throw() ;
+	const OSDL::Video::TwoDimensional::UprightRectangle & second ) ;
 
 
 
@@ -101,21 +113,26 @@ OSDL_DLL bool operator != (
 namespace OSDL 
 {
 
+
 	namespace Video 
 	{
+		
 		
 		
 		// UprightRectangle instances can be drawn into surfaces.
 		class Surface ;
 		
 		
+		
 		namespace TwoDimensional
 		{
+		
 		
 		
 			// UprightRectangle instances are defined thanks to 2D points.
 			class Point2D ;
 		
+	 
 	 
 			
 			/**
@@ -142,7 +159,8 @@ namespace OSDL
 					
 									
 				friend bool::operator == ( const UprightRectangle & first, 
-					const UprightRectangle & second ) throw() ;
+					const UprightRectangle & second ) ;
+					
 						
 						
 				public:
@@ -151,8 +169,8 @@ namespace OSDL
 
 					/// Two corners define an UprightRectangle.
 					UprightRectangle( const Point2D & upperLeftCorner,
-							const Point2D & lowerRightCorner ) 
-						throw( VideoException ) ;
+						const Point2D & lowerRightCorner ) ;
+					
 					
 					
 					/**
@@ -161,7 +179,8 @@ namespace OSDL
 					 *
 					 */
 					UprightRectangle( const Point2D & upperLeftCorner, 
-						Length width, Length height ) throw() ;
+						Length width, Length height ) ;
+					
 					
 					
 					/**
@@ -170,7 +189,8 @@ namespace OSDL
 					 *
 					 */
 					UprightRectangle( Coordinate x, Coordinate y, Length width,
-						 Length height ) throw() ;
+						 Length height ) ;
+					 
 					 
 					 
 					/**
@@ -179,8 +199,7 @@ namespace OSDL
 					 * @throw VideoException if the operation is not supported.
 					 *
 					 */
-					explicit UprightRectangle( const LowLevelRect & source ) 
-						throw( VideoException ) ;
+					explicit UprightRectangle( const LowLevelRect & source ) ;
 		
 		
 		
@@ -189,12 +208,15 @@ namespace OSDL
 	
 	
 	
+	
 					
 					// Section for upper-left corner.
 					
 	
+	
 					/// Returns this UprightRectangle's upper left corner.
-					virtual Point2D getUpperLeftCorner() const throw() ; 
+					virtual Point2D getUpperLeftCorner() const ; 
+					
 					
 					
 					/**
@@ -203,12 +225,14 @@ namespace OSDL
 					 *
 					 */
 					virtual void setUpperLeftCorner( 
-						Point2D & newUpperLeftCorner ) throw() ; 
+						Point2D & newUpperLeftCorner ) ; 
+					
 					
 					
 					
 					/// Returns directly the abscissa of upper left corner.
-					virtual Coordinate getUpperLeftAbscissa() const throw() ;
+					virtual Coordinate getUpperLeftAbscissa() const ;
+
 
 
 					/**
@@ -217,12 +241,13 @@ namespace OSDL
 					 *
 					 */
 					virtual void setUpperLeftAbscissa( 
-						Coordinate newAbscissa ) throw() ;
+						Coordinate newAbscissa ) ;
 
 
 					
 					/// Returns directly the ordinate of upper left corner.
-					virtual Coordinate getUpperLeftOrdinate() const throw() ;
+					virtual Coordinate getUpperLeftOrdinate() const ;
+					
 					
 					
 					/**
@@ -231,7 +256,8 @@ namespace OSDL
 					 *
 					 */
 					virtual void setUpperLeftOrdinate( 
-						Coordinate newOrdinate ) throw() ;
+						Coordinate newOrdinate ) ;
+					
 					
 					
 
@@ -239,8 +265,10 @@ namespace OSDL
 					// Section for lower-right corner.
 					
 	
+	
 					/// Returns this UprightRectangle's lower right corner.
-					virtual Point2D getLowerRightCorner() const throw() ; 
+					virtual Point2D getLowerRightCorner() const ; 
+					
 					
 					
 					/**
@@ -251,13 +279,12 @@ namespace OSDL
 					 *
 					 */
 					virtual void setLowerRightCorner( 
-							Point2D & newLowerRightCorner ) 
-						throw( VideoException) ; 
+						Point2D & newLowerRightCorner ) ; 
 					
 					
 					
 					/// Returns directly the abscissa of lower right corner.
-					virtual Coordinate getLowerRightAbscissa() const throw() ;
+					virtual Coordinate getLowerRightAbscissa() const ;
 
 
 					/**
@@ -269,12 +296,13 @@ namespace OSDL
 					 *
 					 */
 					virtual void setLowerRightAbscissa( 
-						Coordinate newAbscissa ) throw( VideoException ) ;
+						Coordinate newAbscissa ) ;
+
 
 
 					
 					/// Returns directly the ordinate of lower right corner.
-					virtual Coordinate getLowerRightOrdinate() const throw() ;
+					virtual Coordinate getLowerRightOrdinate() const ;
 					
 					
 					/**
@@ -286,26 +314,30 @@ namespace OSDL
 					 *
 					 */
 					virtual void setLowerRightOrdinate( 
-						Coordinate newOrdinate ) throw( VideoException ) ;
+						Coordinate newOrdinate ) ;
 					
 
 					
 					
 					/// Returns this UprightRectangle's width.
-					virtual Length getWidth() const throw() ;
+					virtual Length getWidth() const ;
+				
 				
 				
 					/// Sets this UprightRectangle's width.
-					virtual void setWidth( Length newWidth ) throw() ;
+					virtual void setWidth( Length newWidth ) ;
+	
 	
 	
 	
 					/// Returns this UprightRectangle's height.
-					virtual Length getHeight() const throw() ;
+					virtual Length getHeight() const ;
+				
 				
 				
 					/// Sets this UprightRectangle's height.
-					virtual void setHeight( Length newHeight ) throw() ;
+					virtual void setHeight( Length newHeight ) ;
+						
 						
 	
 					/**
@@ -328,7 +360,7 @@ namespace OSDL
 						Pixels::ColorElement blue, 
 						Pixels::ColorElement green, 
 						Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-						bool filled = true ) const throw() ;
+						bool filled = true ) const ;
 					
 	
 	
@@ -347,9 +379,8 @@ namespace OSDL
 					 *
 					 */
 					virtual bool draw( Surface & target, 
-							Pixels::ColorDefinition colorDef= Pixels::White,
-							bool filled = true ) 
-						const throw() ;
+						Pixels::ColorDefinition colorDef= Pixels::White,
+						bool filled = true ) const ;
 					
 					
 					
@@ -378,12 +409,10 @@ namespace OSDL
 					 *
 					 */
 					virtual bool drawWithRoundedCorners( 
-							Surface & target, Length edgeWidth = 3, 
-							Pixels::ColorDefinition edgeColorDef 
-								= Pixels::White, 
-							Pixels::ColorDefinition backgroundColorDef 
-								= Pixels::Transparent ) 
-						const throw() ;
+						Surface & target, Length edgeWidth = 3, 
+						Pixels::ColorDefinition edgeColorDef = Pixels::White, 
+						Pixels::ColorDefinition backgroundColorDef 
+							= Pixels::Transparent ) const ;
 					
 					
 					
@@ -403,8 +432,7 @@ namespace OSDL
 					 *
 					 */
 					virtual Length computeRadiusForRoundRectangle( 
-							Length edgeWidth ) const
-						throw( VideoException ) ;
+						Length edgeWidth ) const ;
 					
 					
 					
@@ -421,8 +449,7 @@ namespace OSDL
 					 $ delete myRect ;
 					 *
 					 */
-					virtual LowLevelRect * toLowLevelRect() const 
-						throw( VideoException ) ;
+					virtual LowLevelRect * toLowLevelRect() const ;
 
 				
 				
@@ -439,13 +466,14 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 				
 	
 	
 	
+	
 				protected:
+				
 				
 				
 					/// Upper left corner's abscissa (horizontal coordinate).
@@ -457,7 +485,9 @@ namespace OSDL
 				
 			
 			
+			
 				private:
+				
 				
 				
 					/// Width is counted from current abscissa, going right.
@@ -466,6 +496,7 @@ namespace OSDL
 				
 					/// Height is count from current ordinate, going down.
 					Length _height ;			
+				
 				
 				
 					/**
@@ -477,7 +508,8 @@ namespace OSDL
 					 * 
 					 */			 
 					explicit UprightRectangle( 
-						const UprightRectangle & source ) throw() ;
+						const UprightRectangle & source ) ;
+			
 			
 			
 					/**
@@ -489,11 +521,11 @@ namespace OSDL
 					 * 
 					 */			 
 					UprightRectangle & operator = ( 
-						const UprightRectangle & source ) throw() ;
-	
+						const UprightRectangle & source ) ;
 	
 	
 			} ;	
+
 
 		}
 		
@@ -506,7 +538,7 @@ namespace OSDL
 
 /// To output its state in an output stream.
 std::ostream & operator << ( std::ostream & os, 
-	OSDL::Video::TwoDimensional::UprightRectangle & rect ) throw() ;
+	OSDL::Video::TwoDimensional::UprightRectangle & rect ) ;
 
 
 

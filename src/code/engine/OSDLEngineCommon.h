@@ -37,6 +37,7 @@
 
 
 
+
 /*
  * This file has for purpose to solve all intricated dependency links 
  * existing between the scheduler, the active objects and the periodic slots.
@@ -44,9 +45,11 @@
  */
  
  
+ 
 
 namespace OSDL
 {
+
 
 
 	namespace Engine 
@@ -61,12 +64,14 @@ namespace OSDL
 		class ProgrammedActiveObject ;
 		
 		
+		
 		/// Exception to be thrown when engine abnormal behaviour occurs.
 		class OSDL_DLL EngineException : public OSDL::Exception
 		{
 			public:
 		
-				explicit EngineException( const std::string & reason ) throw() ;
+				explicit EngineException( const std::string & reason ) ;
+				
 				virtual ~EngineException() throw() ;
 			
 		} ;
@@ -78,11 +83,12 @@ namespace OSDL
 		{
 			public:
 		
-				explicit SchedulingException( const std::string & reason )
-					throw() ;
+				explicit SchedulingException( const std::string & reason ) ;
+				
 				virtual ~SchedulingException() throw() ;
 			
 		} ;
+
 
 
 		/**
@@ -96,12 +102,14 @@ namespace OSDL
 		typedef std::list<PeriodicalActiveObject *> ListOfActiveObjects ;
 
 		
+		
 		/**
 		 * Defines a list of pointers to periodical active objects.
 		 *
 		 */
 		typedef std::list<PeriodicalActiveObject *>
 			ListOfPeriodicalActiveObjects ;
+
 
 
 		/**
@@ -124,6 +132,7 @@ namespace OSDL
 		typedef Ceylan::Uint16 Weight ;
 		
 		
+		
 		/**
 		 * Describes a scheduling policy, among: 
 		 *
@@ -141,18 +150,22 @@ namespace OSDL
 		 */
 		enum ObjectSchedulingPolicy { relaxed, strict } ;
 		
+		
 	
 		/// Type for lists of simulation ticks.
 		typedef std::list<Events::SimulationTick> SimulationTickList ;
+		
 		
 		
 		/// Used to measure time past deadlines.
 		typedef Ceylan::Uint32 Delay ;
 			
 		
+		
 	}
 	
 }	
+
 
 
 #endif // OSDL_ENGINE_COMMON_H_

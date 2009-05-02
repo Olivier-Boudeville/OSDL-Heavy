@@ -48,6 +48,7 @@
 #endif // OSDL_USES_SDL_MIXER
 
 
+
 /*
  * Implementation notes: Mix_GetChunk not used as potentially unstable.
  * Groupings of mixer channels not integrated as not needed currently.
@@ -64,7 +65,7 @@ using namespace OSDL::Audio ;
 
 
 
-AudioChannelException::AudioChannelException( const string & reason ) throw():
+AudioChannelException::AudioChannelException( const string & reason ) :
 	AudioException( reason )
 {
 
@@ -80,8 +81,7 @@ AudioChannelException::~AudioChannelException() throw()
 
 
 
-AudioChannel::AudioChannel( ChannelNumber channelNumber ) 
-		throw( AudioChannelException ):
+AudioChannel::AudioChannel( ChannelNumber channelNumber ) :
 	Ceylan::TextDisplayable(),
 	_channelNumber( channelNumber )
 {
@@ -112,7 +112,7 @@ AudioChannel::~AudioChannel() throw()
 
 
 
-ChannelNumber AudioChannel::getNumber() const throw()
+ChannelNumber AudioChannel::getNumber() const
 {
 
 	return _channelNumber ;
@@ -121,7 +121,7 @@ ChannelNumber AudioChannel::getNumber() const throw()
 
 
 
-Volume AudioChannel::getVolume() const throw( AudioChannelException )
+Volume AudioChannel::getVolume() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -140,7 +140,6 @@ Volume AudioChannel::getVolume() const throw( AudioChannelException )
 
 
 void AudioChannel::setVolume( Volume newVolume ) 
-	throw( AudioChannelException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -159,7 +158,6 @@ void AudioChannel::setVolume( Volume newVolume )
 
 
 void AudioChannel::setPanning( Ceylan::Maths::Percentage leftPercentage )
-	throw( AudioChannelException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -183,7 +181,7 @@ void AudioChannel::setPanning( Ceylan::Maths::Percentage leftPercentage )
 	
 					
 					
-void AudioChannel::unsetPanning() throw( AudioChannelException )
+void AudioChannel::unsetPanning()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -204,7 +202,6 @@ void AudioChannel::unsetPanning() throw( AudioChannelException )
 
 
 void AudioChannel::setReverseStereo( bool reverse )
-	throw( AudioChannelException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -226,7 +223,6 @@ void AudioChannel::setReverseStereo( bool reverse )
 
 
 void AudioChannel::setDistanceAttenuation( ListenerDistance distance ) 
-	throw( AudioChannelException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -247,7 +243,7 @@ void AudioChannel::setDistanceAttenuation( ListenerDistance distance )
 
 
 
-void AudioChannel::unsetDistanceAttenuation() throw( AudioChannelException )
+void AudioChannel::unsetDistanceAttenuation()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -268,8 +264,9 @@ void AudioChannel::unsetDistanceAttenuation() throw( AudioChannelException )
 }
 
 
+
 void AudioChannel::setPositionAttenuation( ListenerDistance distance,
-	ListenerAngle angle ) throw( AudioChannelException )
+	ListenerAngle angle )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -290,7 +287,7 @@ void AudioChannel::setPositionAttenuation( ListenerDistance distance,
 
 
 
-void AudioChannel::unsetPositionAttenuation() throw( AudioChannelException )
+void AudioChannel::unsetPositionAttenuation()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -312,7 +309,7 @@ void AudioChannel::unsetPositionAttenuation() throw( AudioChannelException )
 
 
 
-bool AudioChannel::isPlaying() const throw()
+bool AudioChannel::isPlaying() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -330,7 +327,7 @@ bool AudioChannel::isPlaying() const throw()
 
 
 
-bool AudioChannel::isPaused() const throw()
+bool AudioChannel::isPaused() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -348,7 +345,7 @@ bool AudioChannel::isPaused() const throw()
 
 
 
-FadingStatus AudioChannel::getFadingStatus() const throw()
+FadingStatus AudioChannel::getFadingStatus() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -387,7 +384,7 @@ FadingStatus AudioChannel::getFadingStatus() const throw()
 
 
 
-void AudioChannel::pause() throw( AudioChannelException )
+void AudioChannel::pause()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -405,7 +402,7 @@ void AudioChannel::pause() throw( AudioChannelException )
 
 
 
-void AudioChannel::resume() throw( AudioChannelException )
+void AudioChannel::resume()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -423,7 +420,7 @@ void AudioChannel::resume() throw( AudioChannelException )
 
 
 
-void AudioChannel::waitEndOfPlayback() const throw( AudioChannelException )
+void AudioChannel::waitEndOfPlayback() const
 {
 
 	while ( isPlaying() )
@@ -433,7 +430,7 @@ void AudioChannel::waitEndOfPlayback() const throw( AudioChannelException )
 
 
 
-void AudioChannel::halt() throw( AudioChannelException )
+void AudioChannel::halt()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -452,7 +449,6 @@ void AudioChannel::halt() throw( AudioChannelException )
 
 
 void AudioChannel::expireIn( Ceylan::System::Millisecond expireDuration )
-	throw( AudioChannelException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -473,7 +469,6 @@ void AudioChannel::expireIn( Ceylan::System::Millisecond expireDuration )
 	
 					
 void AudioChannel::fadeOutDuring( Ceylan::System::Millisecond fadeOutDuration )
-	throw( AudioChannelException )										
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -494,7 +489,7 @@ void AudioChannel::fadeOutDuring( Ceylan::System::Millisecond fadeOutDuration )
 
 
 
-void AudioChannel::onPlaybackFinished()	throw( AudioChannelException )			
+void AudioChannel::onPlaybackFinished()			
 {
 
 	/*
@@ -509,8 +504,7 @@ void AudioChannel::onPlaybackFinished()	throw( AudioChannelException )
 
 
 		
-const string AudioChannel::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string AudioChannel::toString( Ceylan::VerbosityLevels level ) const
 {
 		
 	return "Mixing channel #" + Ceylan::toString( _channelNumber ) ;

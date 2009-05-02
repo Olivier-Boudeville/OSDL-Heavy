@@ -38,14 +38,17 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Engine 
 	{
 	
 	
+		
 			
 		/**
 		 * Programmed active objects are objects that are to be scheduled in
@@ -106,7 +109,7 @@ namespace OSDL
 					bool absolutelyDefined = true, 
 					bool autoRegister = true,
 					ObjectSchedulingPolicy policy = relaxed, 
-					Weight weight = 1 ) throw( SchedulingException ) ;
+					Weight weight = 1 ) ;
 				
 				
 				
@@ -140,7 +143,8 @@ namespace OSDL
 					bool absolutelyDefined = true, 
 					bool autoRegister = false,
 					ObjectSchedulingPolicy policy = relaxed, 
-					Weight weight = 1 ) throw( SchedulingException ) ;
+					Weight weight = 1 ) ;
+				
 				
 				
 				/**
@@ -155,7 +159,9 @@ namespace OSDL
 
 
 
+
 				// Registering section.
+				
 				
 				
 				/**
@@ -165,8 +171,8 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				virtual void registerToScheduler() 
-					throw( SchedulingException ) ;
+				virtual void registerToScheduler() ;
+				
 				
 				
 				/**
@@ -176,13 +182,14 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				virtual void unregisterFromScheduler() 
-					throw( SchedulingException ) ;
+				virtual void unregisterFromScheduler() ;
+				
 				
 				
 				
 				
 				// Settings section.
+				
 				
 
 				/**
@@ -192,7 +199,7 @@ namespace OSDL
 				 * tick of the object registering to the scheduler.
 				 *
 				 */
-				bool areProgrammedActivationsAbsolute() const throw() ;
+				bool areProgrammedActivationsAbsolute() const ;
 				
 				
 				
@@ -206,8 +213,7 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				void absoluteProgrammedActivationsWanted( bool on ) 
-					throw( SchedulingException ) ;
+				void absoluteProgrammedActivationsWanted( bool on ) ;
 				 
 				
 				
@@ -221,7 +227,7 @@ namespace OSDL
 				 *
 				 */
 				virtual const SimulationTickList & getProgrammedActivations() 
-					const throw() ;
+					const ;
 				
 				
 								  
@@ -244,8 +250,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void setProgrammedActivations( 
-						const SimulationTickList & newActivationsList ) 
-					throw( SchedulingException ) ;
+					const SimulationTickList & newActivationsList ) ;
 				
 				
 				
@@ -267,9 +272,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void addProgrammedActivations( 
-						const SimulationTickList & additionalActivationsList )
-					throw( SchedulingException ) ;
+					const SimulationTickList & additionalActivationsList ) ;
 				
+					
 					
 				/**
 				 * Automatically called by the scheduler at registration
@@ -282,11 +287,10 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */				
-				virtual void onRegistering() throw( SchedulingException ) ;
+				virtual void onRegistering() ;
 				
 				
 			
-		
 	            /**
 	             * Returns an user-friendly description of the state of 
 				 * this object.
@@ -300,13 +304,14 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 					
+				
 				
 					
 			protected:		
 		
+				
 								
 				/**
 				 * Records the list of programmed simulation ticks that 
@@ -316,6 +321,7 @@ namespace OSDL
 				 *
 				 */
 				SimulationTickList _programmedTicks ;
+				 
 				 
 				 
 				/**
@@ -332,10 +338,12 @@ namespace OSDL
 								
 				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_PROGRAMMED_ACTIVE_OBJECT_H_

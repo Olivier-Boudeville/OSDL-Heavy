@@ -38,12 +38,15 @@
 
 
 
+
 namespace OSDL
 {
 
 
+
 	namespace Engine 
 	{
+	
 	
 	
 			
@@ -90,6 +93,7 @@ namespace OSDL
 		
 			public:
 			
+				
 						
 				/**
 				 * Constructor of a periodically activated object. 
@@ -116,7 +120,7 @@ namespace OSDL
 					Events::Period period = 1, 
 					bool autoRegister = true,
 					ObjectSchedulingPolicy policy = relaxed, 
-					Weight weight = 1 ) throw( SchedulingException ) ;
+					Weight weight = 1 ) ;
 							
 				
 				
@@ -135,6 +139,7 @@ namespace OSDL
 				// Registering section.
 				
 				
+				
 				/**
 				 * Registers this active object to the supposedly already
 				 * existing scheduler.
@@ -142,8 +147,8 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				virtual void registerToScheduler() 
-					throw( SchedulingException ) ;
+				virtual void registerToScheduler() ;
+				
 				
 				
 				/**
@@ -153,8 +158,7 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				virtual void unregisterFromScheduler() 
-					throw( SchedulingException ) ;
+				virtual void unregisterFromScheduler() ;
 				
 				
 				
@@ -167,7 +171,7 @@ namespace OSDL
 				 * Returns the period for this active object.
 				 *
 				 */
-				virtual Events::Period getPeriod() const throw() ;
+				virtual Events::Period getPeriod() const ;
 				
 				
 				
@@ -182,8 +186,7 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				virtual void setPeriod( Events::Period newPeriod ) 
-					throw( SchedulingException ) ;
+				virtual void setPeriod( Events::Period newPeriod ) ;
 				 								 
 				 
 				 
@@ -213,8 +216,7 @@ namespace OSDL
 				 *
 				 */ 
 				virtual Ceylan::Maths::Hertz setFrequency( 
-						Ceylan::Maths::Hertz newFrequency ) 
-					throw( SchedulingException ) ; 
+					Ceylan::Maths::Hertz newFrequency ) ; 
 				
 					
 					
@@ -230,8 +232,7 @@ namespace OSDL
 				 * already.
 				 *
 				 */
-				virtual Events::Period getSubslotNumber() const 
-					throw( SchedulingException ) ;
+				virtual Events::Period getSubslotNumber() const ;
 				
 					
 					
@@ -248,8 +249,7 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */	
-				virtual void onRegistering( Events::Period subslot ) 
-					throw( SchedulingException ) ;
+				virtual void onRegistering( Events::Period subslot ) ;
 
 
 					
@@ -265,8 +265,7 @@ namespace OSDL
 				 *
 				 */				
 				virtual void setBirthTick( 
-						Events::SimulationTick currentSimulationTick ) 
-					throw( SchedulingException ) ;
+					Events::SimulationTick currentSimulationTick ) ;
 
 		
 		
@@ -283,9 +282,9 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 					
+				
 				
 					
 			protected:		
@@ -298,6 +297,7 @@ namespace OSDL
 				 */
 				Events::Period _period ;
 							
+				
 								
 				/**
 				 * Records in which sub-slot this object is stored.
@@ -309,10 +309,12 @@ namespace OSDL
 								
 				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_PERIODICAL_ACTIVE_OBJECT_H_

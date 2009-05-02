@@ -38,26 +38,33 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Events
 	{
 	
+	
 
 		/// Number (index) of a mouse, or mice count.
 		typedef Ceylan::Uint8 MouseNumber ;
+
 
 		/// Identifies the default mouse (the first one).
 		extern OSDL_DLL const MouseNumber DefaultMouse ;
 
 
+
 		/// Number (index) of a mouse button, or buttons count.
 		typedef Ceylan::Uint8 MouseButtonNumber ;
 
+
 		/// Number (index) of a mouse wheel, or wheels count.
 		typedef Ceylan::Uint8 MouseWheelNumber ;
+
 
 
 		/**
@@ -68,14 +75,19 @@ namespace OSDL
 		typedef Ceylan::Uint8 MouseButtonMask ;
 
 
+
 		/// Identifies the left button of a mouse.
 		extern OSDL_DLL const MouseButtonNumber LeftButton ;
+				
 				
 		/// Identifies the middle button of a mouse.
 		extern OSDL_DLL const MouseButtonNumber MiddleButton ;
 				
+				
 		/// Identifies the right button of a mouse.
 		extern OSDL_DLL const MouseButtonNumber RightButton ;
+				
+				
 				
 				
 		/**
@@ -85,6 +97,7 @@ namespace OSDL
 		 */
 		extern OSDL_DLL const MouseButtonNumber WheelUp ;
 		
+			
 				
 		/**
 		 * Identifies the virtual button of a mouse corresponding to its
@@ -94,14 +107,16 @@ namespace OSDL
 		extern OSDL_DLL const MouseButtonNumber WheelDown ;
 				
 				
+			
 				
 		
 		/// Mother class for all mouse exceptions. 		
 		class OSDL_DLL MouseException: public EventsException 
 		{
 			public: 
-				explicit MouseException( const std::string & reason ) 
-					throw() ; 
+			
+				explicit MouseException( const std::string & reason )  ;
+				 
 				virtual ~MouseException() throw() ; 
 				
 		} ;

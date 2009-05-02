@@ -41,7 +41,6 @@ namespace OSDL
 
 
 
-
 	class OSDL_DLL EmbeddedFileSystemManagerException: 
 		public Ceylan::System::FileSystemManagerException
 	{ 
@@ -49,13 +48,14 @@ namespace OSDL
 		public: 
 		
 			explicit EmbeddedFileSystemManagerException( 
-					const std::string & reason ) throw():
+					const std::string & reason ) :
 				Ceylan::System::FileSystemManagerException( reason )
 			{
 			
 			}								
 				
 	} ;
+
 
 
 
@@ -85,7 +85,9 @@ namespace OSDL
 	{
 
 
+
 		public:
+
 
 
 			/*
@@ -100,7 +102,9 @@ namespace OSDL
 			
 			
 			
+			
 			// EmbeddedFileSystemManager-specific section.
+			
 					
 
 			/**
@@ -156,8 +160,8 @@ namespace OSDL
             		const std::string & applicationName,
 					const std::string & archiveExtension = "oar",
                     bool archiveFirst = true,
-                    bool includeInsertedMedia = false ) 
-            	throw( EmbeddedFileSystemManagerException )  ;
+                    bool includeInsertedMedia = false ) ;
+
 
 
 			/**
@@ -165,9 +169,10 @@ namespace OSDL
 			 * allow file writing is defined.
 			 *
 			 */
-			virtual bool hasWriteDirectory() const throw()  ;
+			virtual bool hasWriteDirectory() const ;
 			
             
+			
 			/**
 			 * Returns the directory where the embedded filesystem will 
 			 * allow file writing.
@@ -176,8 +181,8 @@ namespace OSDL
              * failed, including if no write directory was set.
 			 *
 			 */
-			virtual std::string getWriteDirectory() 
-				const throw( EmbeddedFileSystemManagerException )  ;
+			virtual std::string getWriteDirectory() const ;
+			
 			
         	
 			/**
@@ -199,8 +204,7 @@ namespace OSDL
 			 *
 			 */
 			virtual void setWriteDirectory( 
-            		const std::string & newWriteDirectory ) 
-				throw( EmbeddedFileSystemManagerException )  ;
+            	const std::string & newWriteDirectory ) ;
 		
         
              
@@ -246,10 +250,10 @@ namespace OSDL
 			 *
 			 */
 			virtual void mount( 
-            		const std::string & newActualFilesystemElement,
-           			const std::string & mountPointInVirtualTree = "",
-					bool append = true ) 
-				throw( EmbeddedFileSystemManagerException )  ;
+            	const std::string & newActualFilesystemElement,
+           		const std::string & mountPointInVirtualTree = "",
+				bool append = true ) ;
+		
 		
         
 			/**
@@ -271,9 +275,9 @@ namespace OSDL
              * failed (bogus archive, directory missing, etc.).
 			 *
 			 */
-			virtual void umount( const std::string & actualFilesystemElement ) 
-				throw( EmbeddedFileSystemManagerException )  ;
+			virtual void umount( const std::string & actualFilesystemElement ) ;
 		
+
 
 			/**
 			 * Returns the location in virtual tree (i.e. the mount point) of
@@ -284,8 +288,8 @@ namespace OSDL
              *
 			 */
 			virtual std::string getMountPointFor( 
-            		const std::string & actualFilesystemElement ) 
-				const throw( EmbeddedFileSystemManagerException )  ;
+            	const std::string & actualFilesystemElement ) const ;
+
 
 
 			/**
@@ -298,13 +302,14 @@ namespace OSDL
              * failed (bogus archive, directory missing, etc.).
              *
 			 */
-			virtual std::list<std::string> getSearchPath() 
-				const throw( EmbeddedFileSystemManagerException )  ;
+			virtual std::list<std::string> getSearchPath() const ;
+
 
 
 
 
 			// FileSystemManager-specific section.
+
 
 
 			/**
@@ -326,8 +331,8 @@ namespace OSDL
 			 * platform.
 			 *
 			 */
-			virtual bool existsAsEntry( const std::string & entryPath ) 
-				const throw( Ceylan::System::EntryLookupFailed )  ;
+			virtual bool existsAsEntry( const std::string & entryPath ) const ;
+
 
 
 			/**
@@ -337,8 +342,8 @@ namespace OSDL
 			 *
 			 */
 			virtual void createSymbolicLink( const std::string & linkTarget,
-					const std::string & linkName )
-                throw( Ceylan::System::SymlinkFailed ) ;
+				const std::string & linkName ) ;
+
 
 
 			/**
@@ -351,9 +356,7 @@ namespace OSDL
 			 * is not supported.
 			 *
 			 */
-			virtual time_t getEntryChangeTime( 
-					const std::string & entryPath )
-				throw( Ceylan::System::GetChangeTimeFailed ) ;
+			virtual time_t getEntryChangeTime( const std::string & entryPath ) ;
 
 
 
@@ -361,14 +364,15 @@ namespace OSDL
 			// Accessors to FilesystemManager constants.
 
 			
+			
 			/**
 			 * Returns the root directory prefix, in the embedded filesystem.
 			 *
 			 * @example "" here.
 			 *
 			 */
-			virtual const std::string & getRootDirectoryPrefix()
-				const throw() ;
+			virtual const std::string & getRootDirectoryPrefix() const ;
+	
 	
 	
 			/**
@@ -378,7 +382,8 @@ namespace OSDL
 			 * @example Slash here, i.e. '/'.
 			 *
 			 */
-			virtual Ceylan::Latin1Char getSeparator() const throw() ;
+			virtual Ceylan::Latin1Char getSeparator() const ;
+	
 	
 	
 			/*
@@ -394,6 +399,7 @@ namespace OSDL
 
 
 			// File-related section.
+			
 			
 			
 			/**
@@ -423,12 +429,11 @@ namespace OSDL
 			 *
 			 */
 			virtual Ceylan::System::File & createFile( 
-            		const std::string & filename, 
-					Ceylan::System::OpeningFlag createFlag =
-                    	Ceylan::System::File::CreateToWriteBinary,
-					Ceylan::System::PermissionFlag permissionFlag =
-                    	Ceylan::System::File::OwnerReadWrite ) 
-				throw( Ceylan::System::FileException ) ;
+            	const std::string & filename, 
+				Ceylan::System::OpeningFlag createFlag =
+                    Ceylan::System::File::CreateToWriteBinary,
+				Ceylan::System::PermissionFlag permissionFlag =
+                    Ceylan::System::File::OwnerReadWrite ) ;
 
 			
 			
@@ -452,10 +457,9 @@ namespace OSDL
 			 *
 			 */
 			virtual Ceylan::System::File & openFile( 
-            		const std::string & filename, 
-					Ceylan::System::OpeningFlag openFlag 
-                    	= Ceylan::System::File::OpenToReadBinary ) 
-				throw( Ceylan::System::FileException ) ;
+            	const std::string & filename, 
+				Ceylan::System::OpeningFlag openFlag 
+                    = Ceylan::System::File::OpenToReadBinary ) ;
 			
 
 
@@ -498,10 +502,9 @@ namespace OSDL
 			 *
 			 */
 			virtual std::string getActualLocationFor( 
-					const std::string & filename ) const 
-				throw( Ceylan::System::FileLookupFailed,
-                	EmbeddedFileSystemManagerException ) ;
+				const std::string & filename ) const ;
 
+				
 				
 			/**
 			 * Determines if the first occurence of <b>filename</b> in 
@@ -515,6 +518,7 @@ namespace OSDL
 			 * on this platform.
 			 *
 			 */
+
 
 
 
@@ -540,8 +544,8 @@ namespace OSDL
 			 *
 			 */
 			virtual bool existsAsFileOrSymbolicLink( 
-					const std::string & filename ) const 
-				throw( Ceylan::System::FileLookupFailed ) ;
+				const std::string & filename ) const ;
+
 
 
 			/**
@@ -558,8 +562,8 @@ namespace OSDL
 			 *
 			 */
 			virtual bool existsAsSymbolicLink( 
-					const std::string & linkName ) const 
-				throw( Ceylan::System::FileLookupFailed ) ;
+				const std::string & linkName ) const ;
+
 
 
 			/**
@@ -588,8 +592,8 @@ namespace OSDL
              * Do not consider this a security method.
              *
 			 */
-			virtual void removeFile( const std::string & filename ) 
-				throw( Ceylan::System::FileRemoveFailed ) ;
+			virtual void removeFile( const std::string & filename ) ;
+
 
 
 			/**
@@ -607,8 +611,8 @@ namespace OSDL
 			 *
 			 */
 			virtual void moveFile( const std::string & sourceFilename,
-					const std::string & targetFilename ) 
-				throw( Ceylan::System::FileMoveFailed ) ;
+				const std::string & targetFilename ) ;
+
 
 
 			/**
@@ -623,8 +627,7 @@ namespace OSDL
 			 *
 			 */
 			virtual void copyFile( const std::string & sourceFilename,
-					const std::string & targetFilename ) 
-				throw( Ceylan::System::FileCopyFailed ) ;
+				const std::string & targetFilename ) ;
 
 
 
@@ -646,8 +649,8 @@ namespace OSDL
 			 *
 			 */
 			virtual Ceylan::System::Size 
-            		getSize( const std::string & filename ) 
-				throw( Ceylan::System::FileSizeRequestFailed ) ;
+            	getSize( const std::string & filename ) ;
+
 
 
 			/**
@@ -668,11 +671,12 @@ namespace OSDL
 			 *
 			 */
 			virtual time_t getLastChangeTimeFile( 
-					const std::string & filename ) 
-				throw( Ceylan::System::FileLastChangeTimeRequestFailed ) ;
+				const std::string & filename ) ;
+
 
 
 			// transformIntoValidFilename inherited from File.
+
 
 
 			/**
@@ -695,11 +699,12 @@ namespace OSDL
 			 * @throw FileTouchFailed in all cases.
 			 *
 			 */
-			virtual void touch( const std::string & filename ) 
-				throw( Ceylan::System::FileTouchFailed ) ;
+			virtual void touch( const std::string & filename ) ;
+
 
 
 			// diff directly inherited from File.
+
 
 
 			/**
@@ -735,17 +740,22 @@ namespace OSDL
              * @param newStatus if true permits symlinks, if false denies
              * linking.
              *
+			 * @throw EmbeddedFileSystemManagerException if the operation
+			 * failed.
+			 *
              */
-			virtual void allowSymbolicFiles( bool newStatus ) 
-            	throw( EmbeddedFileSystemManagerException ) ;
+			virtual void allowSymbolicFiles( bool newStatus ) ;
              
+
 
 		
 			// Directory-related section.
 		
+		
 
 			// Factory-related subsection.
 
+			
 			
 			/**
 			 * Returns a Directory reference on a directory newly created
@@ -763,8 +773,8 @@ namespace OSDL
 			 *
 			 */
 			virtual Ceylan::System::Directory & createDirectory( 
-					const std::string & newDirectoryName ) 
-				throw( Ceylan::System::DirectoryException ) ;
+				const std::string & newDirectoryName ) ;
+
 
 			
 			/**
@@ -785,8 +795,7 @@ namespace OSDL
 			 *
 			 */
 			virtual Ceylan::System::Directory & openDirectory( 
-					const std::string & directoryName = "" ) 
-				throw( Ceylan::System::DirectoryException ) ;
+				const std::string & directoryName = "" ) ;
 				
 
 
@@ -803,8 +812,8 @@ namespace OSDL
 			 *
 			 */
 			virtual bool existsAsDirectory( 
-					const std::string & directoryPath ) const
-				throw( Ceylan::System::DirectoryLookupFailed ) ;
+				const std::string & directoryPath ) const ;
+
 
 
 			/**
@@ -824,10 +833,9 @@ namespace OSDL
 			 * is not supported.
 			 *
 			 */
-			virtual void removeDirectory( 
-					const std::string & directoryPath, 
-					bool recursive = false ) 
-				throw( Ceylan::System::DirectoryRemoveFailed ) ;
+			virtual void removeDirectory( const std::string & directoryPath, 
+				bool recursive = false ) ;
+
 
 
 			/**
@@ -845,9 +853,9 @@ namespace OSDL
 			 *
 			 */
 			virtual void moveDirectory( 
-					const std::string & sourceDirectoryPath,
-					const std::string & targetDirectoryPath ) 
-				throw( Ceylan::System::DirectoryMoveFailed ) ;
+				const std::string & sourceDirectoryPath,
+				const std::string & targetDirectoryPath ) ;
+
 
 
 			/**
@@ -863,9 +871,9 @@ namespace OSDL
 			 *
 			 */
 			virtual void copyDirectory( 
-					const std::string & sourceDirectoryPath,
-					const std::string & targetDirectoryPath ) 
-				throw( Ceylan::System::DirectoryCopyFailed ) ;
+				const std::string & sourceDirectoryPath,
+				const std::string & targetDirectoryPath ) ;
+
 
 
 			/**
@@ -879,9 +887,8 @@ namespace OSDL
 			 *
 			 */
 			virtual time_t getLastChangeTimeDirectory( 
-					const std::string & directoryPath ) 
-				throw( 
-                	Ceylan::System::DirectoryLastChangeTimeRequestFailed ) ;
+				const std::string & directoryPath ) ;
+				
 				
 				
 			/**
@@ -896,7 +903,7 @@ namespace OSDL
 			 *
 			 */
 			virtual bool isAValidDirectoryPath( 
-				const std::string & directoryString ) throw() ;
+				const std::string & directoryString ) ;
 		
 		
 		
@@ -910,8 +917,8 @@ namespace OSDL
 			 * @param path the path that may be absolute.
 			 *
 			 */
-			virtual bool isAbsolutePath( const std::string & path ) 
-				throw() ;
+			virtual bool isAbsolutePath( const std::string & path ) ;
+		
 		
 		
 			/**
@@ -924,8 +931,8 @@ namespace OSDL
 			 * or is not supported on the target platform.
 			 *
 			 */
-			virtual std::string getCurrentWorkingDirectoryPath()	
-				throw( Ceylan::System::DirectoryGetCurrentFailed ) ;
+			virtual std::string getCurrentWorkingDirectoryPath() ;
+
 
 
 			/**
@@ -939,8 +946,8 @@ namespace OSDL
 			 *
 			 */
 			virtual void changeWorkingDirectory( 
-					const std::string & newWorkingDirectory )
-				throw( Ceylan::System::DirectoryChangeFailed ) ;
+				const std::string & newWorkingDirectory ) ;
+
 
 
 			/*
@@ -956,12 +963,14 @@ namespace OSDL
 			// EmbeddedFileSystemManager own section.
 			
 
+
             /**
              * Returns the textual description of the latest error that
              * occurred.
              *
              */
-            static std::string GetBackendLastError() throw() ;
+            static std::string GetBackendLastError() ;
+
 
 
 			/**
@@ -969,8 +978,9 @@ namespace OSDL
              * writes, should cyphering be enabled.
              *
              */
-			static Ceylan::Byte GetXORByte() throw() ;
+			static Ceylan::Byte GetXORByte() ;
             
+			
             
 			/**
 			 * Returns a user-friendly description of the state of 
@@ -984,8 +994,7 @@ namespace OSDL
 			 *
 			 */
 	        virtual const std::string toString( 
-					Ceylan::VerbosityLevels level = Ceylan::high )
-				const throw() ;
+				Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 	
 
 
@@ -1014,8 +1023,8 @@ namespace OSDL
 			 *
 			 */
 			static EmbeddedFileSystemManager & 
-					GetEmbeddedFileSystemManager( bool cypher = true ) 
-				throw( EmbeddedFileSystemManagerException ) ;
+				GetEmbeddedFileSystemManager( bool cypher = true ) ;
+
 
 
 			/**
@@ -1036,8 +1045,8 @@ namespace OSDL
 			 * failed.
 			 *
 			 */
-			static bool SecureEmbeddedFileSystemManager() 
-				throw( EmbeddedFileSystemManagerException ) ;
+			static bool SecureEmbeddedFileSystemManager() ;
+
 
 
 			/**
@@ -1049,7 +1058,7 @@ namespace OSDL
 			 * one, will remove it as well.
 			 *
 			 */
-			static void RemoveEmbeddedFileSystemManager() throw() ;
+			static void RemoveEmbeddedFileSystemManager() ;
 		
 		
 		
@@ -1074,8 +1083,8 @@ namespace OSDL
 			 * failed.
 			 *
 			 */
-			explicit EmbeddedFileSystemManager( bool cypher = true ) 
-				throw( EmbeddedFileSystemManagerException ) ;
+			explicit EmbeddedFileSystemManager( bool cypher = true ) ;
+
 
 
 			/**
@@ -1093,6 +1102,7 @@ namespace OSDL
 			// Archive locator section.
 			
 				
+				
 			/**
 			 * The name of the environment variable that may 
 			 * contain directory names that should contain embedded archive
@@ -1100,6 +1110,7 @@ namespace OSDL
 			 *
 			 */
 			static std::string ArchivePathEnvironmentVariable  ;
+				
 				
 				 
 			/**
@@ -1112,6 +1123,7 @@ namespace OSDL
 			 * 
 			 */
 			static Ceylan::System::FileLocator ArchiveFileLocator ;
+
 
 
 			/**
@@ -1129,12 +1141,13 @@ namespace OSDL
 			 *
 			 */
 			static std::string FindArchivePath( 
-					const std::string & archiveFilename ) 
-				throw( EmbeddedFileSystemManagerException ) ;
+				const std::string & archiveFilename ) ;
+
 
 
 
 		private:
+			
 			
 			
             /**
@@ -1144,6 +1157,7 @@ namespace OSDL
             bool _cypher ;
             
             
+			
             /**
              * The byte that would be used for one cypher-pass against read
              * and written bytes.
@@ -1152,8 +1166,10 @@ namespace OSDL
             static const Ceylan::Byte XORByte ;
              
             
+			
             
 			// Directory constants.
+			
 			
 			
 			/**
@@ -1183,7 +1199,7 @@ namespace OSDL
 			 * 
 			 */			 
 			EmbeddedFileSystemManager( 
-				const EmbeddedFileSystemManager & source ) throw() ;
+				const EmbeddedFileSystemManager & source ) ;
 		
 		
 			/**
@@ -1195,7 +1211,7 @@ namespace OSDL
 			 * 
 			 */			 
 			EmbeddedFileSystemManager & operator = ( 
-				const EmbeddedFileSystemManager & source ) throw() ;
+				const EmbeddedFileSystemManager & source ) ;
 			
 			
 				
@@ -1204,10 +1220,12 @@ namespace OSDL
 			static EmbeddedFileSystemManager * _EmbeddedFileSystemManager ;
 			
 
+
 	} ;
 
 
 }
+
 
 
 #endif // OSDL_EMBEDDED_FILE_SYSTEM_MANAGER_H_

@@ -35,10 +35,12 @@
 #include "OSDLUtils.h"               // for getBackendLastError
 
 
+
 #include "Ceylan.h"                  // for FIFOException
 
 
 #include <list>
+
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -62,12 +64,14 @@
 
 
 
+
 using std::string ;
 
 using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 using namespace OSDL ;
+
 
 
 // Replicating these defines allows to enable them on a per-class basis:
@@ -93,6 +97,7 @@ const CommonModule::BackendReturnCode CommonModule::BackendSuccess =  0 ;
 const CommonModule::BackendReturnCode CommonModule::BackendError   = -1 ;
 
 
+
 // Tells whether the SDL backend is initialized (SDL_Init called).
 bool CommonModule::_BackendInitialized = false ;
 
@@ -102,7 +107,8 @@ bool CommonModule::_BackendInitialized = false ;
 #define OSDL_DEBUG_VERSION 0
 
 
-const Ceylan::LibtoolVersion & OSDL::GetVersion() throw()
+
+const Ceylan::LibtoolVersion & OSDL::GetVersion()
 {
 
 
@@ -114,11 +120,13 @@ const Ceylan::LibtoolVersion & OSDL::GetVersion() throw()
 	
 	try
 	{
+	
 		osdlVersion = new Ceylan::LibtoolVersion( OSDL_LIBTOOL_VERSION ) ;
+		
 	}
 	catch( const Ceylan::Exception & e )
 	{
-		Ceylan::emergencyShutdown( "OSDL::GetVersion failed: "
+		Ceylan::emergencyShutdown( "OSDL::GetVersion failed: " 
 			+ e.toString() ) ;
 	}	
 		
@@ -175,6 +183,7 @@ const Ceylan::Flags CommonModule::UseEventThread = 0x01000000 ;
 #endif // OSDL_USES_SDL
 
 
+
 // To centralize this definition once for all:
 const Ceylan::Flags CommonModule::UseEvents =
 	UseJoystick | UseKeyboard | UseMouse ;
@@ -202,6 +211,7 @@ const Ceylan::Flags CommonModule::UseEvents =
 
 CommonModule * CommonModule::_CurrentCommonModule = 0 ;
 
+
 #if OSDL_USES_SDL
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
@@ -220,7 +230,7 @@ const string CommonModule::_SDLEnvironmentVariables[] = {} ;
 
 
 
-CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ): 
+CommonModule::CommonModule( Flags flags ) : 
 	Ceylan::Module( 
 		"OSDL common module",
 		"This is the root module of OSDL",
@@ -263,7 +273,6 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 		+ Ceylan::toNumericalString( linkTimeSDLVersion.patch) + " version." ) ;
 	
 #endif // OSDL_USES_SDL
-
 
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -330,7 +339,6 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 			 
 #endif // OSDL_USES_SDL
 		
-
 
 	/*
 	 * UseEverything flag is 0x0000FFFF, therefore not to be specifically
@@ -460,7 +468,7 @@ CommonModule::CommonModule( Flags flags ) throw ( OSDL::Exception ):
 
 
 
-CommonModule::~CommonModule() throw ()
+CommonModule::~CommonModule() throw()
 {	
 
     send( "Stopping OSDL." ) ;
@@ -515,7 +523,7 @@ CommonModule::~CommonModule() throw ()
 
 
 
-string CommonModule::InterpretFlags( Flags flags ) throw() 
+string CommonModule::InterpretFlags( Flags flags )
 {
 
 	std::list<string> res ;
@@ -589,7 +597,7 @@ string CommonModule::InterpretFlags( Flags flags ) throw()
 
 
 
-bool CommonModule::hasVideoModule() const throw()
+bool CommonModule::hasVideoModule() const
 {
 
 	return ( _video != 0 ) ;
@@ -599,7 +607,6 @@ bool CommonModule::hasVideoModule() const throw()
 
 
 Video::VideoModule & CommonModule::getVideoModule() const 
-	throw( OSDL::Exception )
 {
 
 	if ( _video == 0 )
@@ -612,7 +619,7 @@ Video::VideoModule & CommonModule::getVideoModule() const
 
 
 
-bool CommonModule::hasEventsModule() const throw()
+bool CommonModule::hasEventsModule() const
 {
 
 	return ( _events != 0 ) ;
@@ -622,7 +629,6 @@ bool CommonModule::hasEventsModule() const throw()
 
 
 Events::EventsModule & CommonModule::getEventsModule() const 
-	throw( OSDL::Exception )
 {
 
 	if ( _events == 0 )
@@ -635,7 +641,7 @@ Events::EventsModule & CommonModule::getEventsModule() const
 
 
 
-bool CommonModule::hasAudioModule() const throw()
+bool CommonModule::hasAudioModule() const
 {
 
 	return ( _audio != 0 ) ;
@@ -645,7 +651,6 @@ bool CommonModule::hasAudioModule() const throw()
  
  
 Audio::AudioModule & CommonModule::getAudioModule() const 
-	throw( OSDL::Exception )
 {
 
 	if ( _audio == 0 )
@@ -658,7 +663,7 @@ Audio::AudioModule & CommonModule::getAudioModule() const
 
 
 
-Flags CommonModule::getFlags() const throw()
+Flags CommonModule::getFlags() const
 {
 
 	return _flags ;
@@ -667,7 +672,7 @@ Flags CommonModule::getFlags() const throw()
 
 
 
-bool CommonModule::hasCDROMDriveHandler() const throw()
+bool CommonModule::hasCDROMDriveHandler() const
 {
 
 	return ( _cdromHandler != 0 ) ;
@@ -675,8 +680,7 @@ bool CommonModule::hasCDROMDriveHandler() const throw()
 }
 
 		
-CDROMDriveHandler & CommonModule::getCDROMDriveHandler() 
-	const throw( OSDL::Exception )
+CDROMDriveHandler & CommonModule::getCDROMDriveHandler() const
 {
 
 	if ( _cdromHandler == 0 )
@@ -689,8 +693,7 @@ CDROMDriveHandler & CommonModule::getCDROMDriveHandler()
 
 
 
-const string CommonModule::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string CommonModule::toString( Ceylan::VerbosityLevels level ) const
 {
 	
 	string res = "Common root module, with currently video module " ;
@@ -752,7 +755,7 @@ const string CommonModule::toString( Ceylan::VerbosityLevels level )
 
 
 
-string CommonModule::DescribeEnvironmentVariables() throw()
+string CommonModule::DescribeEnvironmentVariables()
 {
 
 #if OSDL_USES_SDL
@@ -813,7 +816,7 @@ string CommonModule::DescribeEnvironmentVariables() throw()
 
 
 
-bool CommonModule::IsBackendInitialized() throw()
+bool CommonModule::IsBackendInitialized()
 {
 
 	return _BackendInitialized ;
@@ -822,7 +825,7 @@ bool CommonModule::IsBackendInitialized() throw()
 
 
 
-Flags CommonModule::AutoCorrectFlags( Flags inputFlags ) throw()
+Flags CommonModule::AutoCorrectFlags( Flags inputFlags )
 {
 
 #if OSDL_USES_SDL
@@ -836,7 +839,7 @@ Flags CommonModule::AutoCorrectFlags( Flags inputFlags ) throw()
 	if ( ! ( inputFlags & UseVideo ) )
 	{
 	
-		// Video not selected, are events used ?
+		// Video not selected, are events used?
 		
 		if ( inputFlags & UseEvents ) 
 		{
@@ -868,10 +871,11 @@ Flags CommonModule::AutoCorrectFlags( Flags inputFlags ) throw()
 
 
 
+
 // Friend section:
 
 
-CommonModule & OSDL::getCommonModule( Flags flags ) throw()
+CommonModule & OSDL::getCommonModule( Flags flags )
 {
 
 	// First, auto-correct flags with implied sub-systems, if necessary:
@@ -937,7 +941,7 @@ CommonModule & OSDL::getCommonModule( Flags flags ) throw()
 
 
 
-bool OSDL::hasExistingCommonModule() throw()
+bool OSDL::hasExistingCommonModule()
 {
 
 	return ( CommonModule::_CurrentCommonModule != 0 ) ;
@@ -946,7 +950,7 @@ bool OSDL::hasExistingCommonModule() throw()
 
 
 
-CommonModule & OSDL::getExistingCommonModule() throw()
+CommonModule & OSDL::getExistingCommonModule()
 {
 
 	if ( CommonModule::_CurrentCommonModule == 0 ) 
@@ -959,7 +963,7 @@ CommonModule & OSDL::getExistingCommonModule() throw()
 
 
 
-void OSDL::stop() throw()
+void OSDL::stop()
 {
 
 	if ( CommonModule::_CurrentCommonModule == 0 )

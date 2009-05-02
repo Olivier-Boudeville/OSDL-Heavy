@@ -34,6 +34,7 @@
 #endif // OSDL_USES_CONFIG_H
 
 
+
 using std::string ;
 
 using namespace Ceylan::Log ;
@@ -48,6 +49,7 @@ const Length TextWidget::DefaultEdgeWidth = 3 ;
 
 const Length TextWidget::_TextWidthOffset  = 4 ;
 const Length TextWidget::_TextHeightOffset = 4 ;
+
 
 
 
@@ -70,7 +72,7 @@ TextWidget::TextWidget(
 		bool minMaximizable, 
 		bool draggable, 
 		bool wrappable, 
-		bool closable ) throw( VideoException ):
+		bool closable ) :
 	BackBufferedWidget( 
 			 container,
 			 relativePosition, 
@@ -98,7 +100,6 @@ TextWidget::TextWidget(
 		_quality( quality ),
 		_currentIndex( 0 )
 {
-
 
 #if OSDL_DEBUG_WIDGET
 	LogPlug::trace( "Text widget constructor" ) ; 
@@ -158,7 +159,8 @@ TextWidget::~TextWidget() throw()
 }
 
 
-void TextWidget::setText( const std::string & newText ) throw()
+
+void TextWidget::setText( const std::string & newText )
 {
 
 	_text = newText ;
@@ -172,7 +174,7 @@ void TextWidget::setText( const std::string & newText ) throw()
 
 
 
-const std::string & TextWidget::getText() const throw()
+const std::string & TextWidget::getText() const
 {
 
 	return _text ;
@@ -181,7 +183,7 @@ const std::string & TextWidget::getText() const throw()
 
 
 
-Text::TextIndex TextWidget::getRenderIndex() const throw()
+Text::TextIndex TextWidget::getRenderIndex() const
 {
 
 	return _currentIndex ;
@@ -190,7 +192,7 @@ Text::TextIndex TextWidget::getRenderIndex() const throw()
 
 
 
-void TextWidget::redrawBackBuffer() throw()
+void TextWidget::redrawBackBuffer()
 {
 
 #if OSDL_DEBUG_WIDGET
@@ -302,7 +304,7 @@ void TextWidget::redrawBackBuffer() throw()
 		 * it should at most lead to a decrease in the radius that
 		 * should result in a client area large enough so that the 
 		 * rendered text should fit.
-		 * Moreover, the decrease of radius leads to a wider client area !
+		 * Moreover, the decrease of radius leads to a wider client area!
 		 *
 		 * It results in having a client area a bit wider and taller 
 		 * than before the text was rendered, hence the need to align
@@ -436,7 +438,7 @@ void TextWidget::redrawBackBuffer() throw()
 
 
 
-const string TextWidget::toString( Ceylan::VerbosityLevels level ) const throw()
+const string TextWidget::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	std::list<string> textWidgetList ;
@@ -540,7 +542,7 @@ const string TextWidget::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
-void TextWidget::updateClientArea() throw()
+void TextWidget::updateClientArea()
 {
 
 #if OSDL_DEBUG_WIDGET	

@@ -29,14 +29,11 @@
 
 
 
-
-
 #include "OSDLVideoRenderer.h"        // for VideoRenderingException
 #include "OSDLVideoTypes.h"           // for Length
 
 
 /*
-
 
 #include "OSDLEvents.h"               // for RenderingTick
 
@@ -46,6 +43,7 @@
 
 */
 
+
 #include "Ceylan.h"                   // for inheritance
 
 
@@ -53,8 +51,10 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Engine 
@@ -65,9 +65,11 @@ namespace OSDL
 	}
 	
 	
+	
 		
 	namespace Video 
 	{
+
 
 		namespace OpenGL
 		{
@@ -76,10 +78,12 @@ namespace OSDL
 			class GLTexture ;
 			
 		}
+		
 			
 	}
 	
 	
+		
 		
 	namespace Rendering 
 	{
@@ -90,11 +94,12 @@ namespace OSDL
 		{
 		
 			public:
-				explicit SpriteException( const std::string & message ) 
-					throw() ;
+				explicit SpriteException( const std::string & message ) ;
+				
 				virtual ~SpriteException() throw() ;
 							
 		} ;
+
 
 
 
@@ -110,8 +115,10 @@ namespace OSDL
 			public:
 			
 			
+			
 				/// Describes a possible shape for a tiled sprite. 
 				typedef Ceylan::Uint8 Shape ;
+			
 			
 			
 				/**
@@ -121,7 +128,8 @@ namespace OSDL
 				 * used.
 				 *
 				 */
-				explicit Sprite( const std::string & frameFilename ) throw() ;
+				explicit Sprite( const std::string & frameFilename ) ;
+				
 				
 				
 				/**
@@ -144,8 +152,7 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
 				
 				
@@ -153,8 +160,10 @@ namespace OSDL
 				// Static section.
 
 				
+				
 				// Sprite shape section.
 				
+
 
 				/*
 				 * Convention is to name basic shapes 'ATimesB' for AxB,
@@ -174,61 +183,78 @@ namespace OSDL
 				
 				// Section with an height of 8 pixels.
 				
+				
 				/// Describes a sprite whose shape is 8x8 pixels.
 				static const Shape EightTimesEight ;
+				
 				
 				/// Describes a sprite whose shape is 16x8 pixels.
 				static const Shape SixteenTimesEight ;
 				
+				
 				/// Describes a sprite whose shape is 32x8 pixels.
 				static const Shape ThirtyTwoTimesEight ;
+				
 				
 		
 				
 				// Section with an height of 16 pixels.
 				
+				
 				/// Describes a sprite whose shape is 8x16 pixels.
 				static const Shape EightTimesSixteen ;
 				
+				
 				/// Describes a sprite whose shape is 16x16 pixels.
 				static const Shape SixteenTimesSixteen ;
+				
 				
 				/// Describes a sprite whose shape is 32x16 pixels.
 				static const Shape ThirtyTwoTimesSixteen ;
 				
 				
 				
+				
 				// Section with an height of 32 pixels.
+				
 				
 				/// Describes a sprite whose shape is 8x32 pixels.
 				static const Shape EightTimesThirtyTwo ;
 				
+				
 				/// Describes a sprite whose shape is 16x32 pixels.
 				static const Shape SixteenTimesThirtyTwo ;
 				
+				
 				/// Describes a sprite whose shape is 32x32 pixels.
 				static const Shape ThirtyTwoTimesThirtyTwo ;
+				
 				
 				/// Describes a sprite whose shape is 32x32 pixels.
 				static const Shape SixtyFourTimesThirtyTwo ;
 				
 				
 				
+				
 				// Section with an height of 64 pixels.
+				
 								
 				/// Describes a sprite whose shape is 32x64 pixels.
 				static const Shape ThirtyTwoTimesSixtyFour ;
 				
+				
 				/// Describes a sprite whose shape is 64x64 pixels.
 				static const Shape SixtyFourTimesSixtyFour ;
 
+
 				/**
 				 * Describes a sprite whose width and height are powers of 
-				 * two (not necessarily the samoe one).
+				 * two (not necessarily the same one).
 				 *
 				 */
 				static const Shape PowersOfTwo ;
 
+				
 				
 				/**
 				 * Returns a textual description of specified sprite shape.
@@ -236,8 +262,8 @@ namespace OSDL
 				 * @throw SpriteException if the specified shape is not known.
 				 *
 				 */
-				static std::string DescribeShape( Shape shape ) 
-					throw( SpriteException ) ;
+				static std::string DescribeShape( Shape shape ) ;
+				
 				
 				
 				/**
@@ -254,7 +280,7 @@ namespace OSDL
 				 */
 				static Shape GetSmallestEnclosingShape( 
 					OSDL::Video::Length width,
-					OSDL::Video::Length height ) throw( SpriteException ) ;
+					OSDL::Video::Length height ) ;
 					
 					
 				
@@ -270,8 +296,8 @@ namespace OSDL
 				 * if the shape is not known.
 				 *
 				 */	
-				static OSDL::Video::Length GetShapeWidthFor( Shape shape )
-					throw( SpriteException ) ;
+				static OSDL::Video::Length GetShapeWidthFor( Shape shape ) ;
+				
 				
 				
 				/**
@@ -286,13 +312,13 @@ namespace OSDL
 				 * if the shape is not known.
 				 *
 				 */	
-				static OSDL::Video::Length GetShapeHeightFor( Shape shape )
-					throw( SpriteException ) ;
+				static OSDL::Video::Length GetShapeHeightFor( Shape shape ) ;
 				
 				
 				
 				
 			protected:
+			
 			
 
 				/**
@@ -312,6 +338,7 @@ namespace OSDL
 				bool _ownBoundingBox ;
 				
 				
+				
 				/**
 				 * Each sprite is linked with a bounding box, which 
 				 * graphically contains it.
@@ -323,15 +350,17 @@ namespace OSDL
 				Engine::BoundingBox2D * _box ;
 		
 		
+		
 				/**
 				 * The shape of this sprite.
 				 *
 				 */
 				Shape _shape ;
 				
+				
 #if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
 
-				//TileMap + Frame ?
+				// TileMap + Frame?
 				
 #else // OSDL_ARCH_NINTENDO_DS
 
@@ -345,6 +374,7 @@ namespace OSDL
 			private:
 			
 			
+			
 				/**
 				 * Copy constructor made private to ensure that it will 
 				 * never be called.
@@ -353,7 +383,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				Sprite( const Sprite & source ) throw() ;
+				Sprite( const Sprite & source ) ;
+			
 			
 			
 				/**
@@ -364,13 +395,16 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				Sprite & operator = ( const Sprite & source ) throw() ;
+				Sprite & operator = ( const Sprite & source ) ;
+				
 				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_SPRITE_H_

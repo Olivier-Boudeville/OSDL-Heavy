@@ -30,6 +30,7 @@
 #include "OSDLPoint2D.h"  // for Point2D
 #include "OSDLVideo.h"    // for VideoModule
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
@@ -56,7 +57,9 @@ using namespace OSDL::Video ;
 using Ceylan::Maths::Real ;
 
 
+
 // A return code of 0 for SDL_gfx functions means no error, contrary to -1.
+
 
 
 
@@ -65,7 +68,7 @@ bool TwoDimensional::drawPie( Surface & targetSurface,
 	Ceylan::Maths::AngleInDegrees angleStart, 
 	Ceylan::Maths::AngleInDegrees angleStop,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha ) throw()
+	Pixels::ColorElement blue, Pixels::ColorElement alpha )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -88,7 +91,7 @@ bool TwoDimensional::drawPie( Surface & targetSurface,
 	Coordinate xCenter, Coordinate yCenter, Length radius, 
 	Ceylan::Maths::AngleInDegrees angleStart, 
 	Ceylan::Maths::AngleInDegrees angleStop, 
-	Pixels::ColorDefinition colorDef ) throw()
+	Pixels::ColorDefinition colorDef )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -114,7 +117,7 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	Coordinate x2, Coordinate y2, 
 	Coordinate x3, Coordinate y3, 
 	Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) throw()
+	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -158,7 +161,7 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	Coordinate x1, Coordinate y1, 
 	Coordinate x2, Coordinate y2, 
 	Coordinate x3, Coordinate y3, 
-	Pixels::ColorDefinition colorDef, bool filled ) throw()
+	Pixels::ColorDefinition colorDef, bool filled )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -209,7 +212,7 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	const Point2D & p1, const Point2D & p2, const Point2D & p3,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
 	Pixels::ColorElement blue, Pixels::ColorElement alpha, 
-	bool filled ) throw()
+	bool filled )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -254,7 +257,7 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 	
 bool TwoDimensional::drawTriangle( Surface & targetSurface, 
 	const Point2D & p1, const Point2D & p2, const Point2D & p3, 
-	Pixels::ColorDefinition colorDef, bool filled ) throw()
+	Pixels::ColorDefinition colorDef, bool filled )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -305,7 +308,7 @@ bool TwoDimensional::drawTriangle( Surface & targetSurface,
 bool TwoDimensional::drawPolygon( Surface & targetSurface, 
 	const listPoint2D & summits, Coordinate x, Coordinate y,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) throw()
+	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled )
 {
 	
 	
@@ -394,7 +397,7 @@ bool TwoDimensional::drawPolygon( Surface & targetSurface,
 	
 bool TwoDimensional::drawPolygon( Surface & targetSurface, 
 	const listPoint2D & summits, Coordinate x, Coordinate y,
-	Pixels::ColorDefinition colorDef, bool filled ) throw()
+	Pixels::ColorDefinition colorDef, bool filled )
 {
 
 
@@ -487,7 +490,7 @@ using namespace OSDL::Video::TwoDimensional ;
 
 
 
-Polygon::Polygon( listPoint2D & summits, bool listOwner ) throw():
+Polygon::Polygon( listPoint2D & summits, bool listOwner ) :
 	Locatable2D(),
 	_summits( & summits ),
 	_listOwner( listOwner )
@@ -499,7 +502,6 @@ Polygon::Polygon( listPoint2D & summits, bool listOwner ) throw():
 
 Polygon::~Polygon() throw()
 {
-		
 		
 	if ( _summits != 0 )
 	{
@@ -530,7 +532,7 @@ Polygon::~Polygon() throw()
 
 
 bool Polygon::draw( Surface & targetSurface, 
-	Pixels::ColorDefinition colorDef, bool filled ) const throw()
+	Pixels::ColorDefinition colorDef, bool filled ) const
 {
 
      /*
@@ -559,7 +561,7 @@ bool Polygon::draw( Surface & targetSurface,
 
 
 
-listPoint2D & Polygon::getPoints() const throw()
+listPoint2D & Polygon::getPoints() const
 {
 
 	return * _summits ;
@@ -568,7 +570,7 @@ listPoint2D & Polygon::getPoints() const throw()
 
 
 
-void Polygon::setPoints( listPoint2D & newList ) throw()
+void Polygon::setPoints( listPoint2D & newList )
 {
 
 	if ( _listOwner )
@@ -585,7 +587,7 @@ void Polygon::setPoints( listPoint2D & newList ) throw()
 
 
 
-bool Polygon::isListOwner() const throw()
+bool Polygon::isListOwner() const
 {
 
 	return _listOwner ;
@@ -594,7 +596,7 @@ bool Polygon::isListOwner() const throw()
 
 
  	
-const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
+const string Polygon::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res ;
@@ -640,13 +642,14 @@ const string Polygon::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
+
 // Static section.
 
 
+
 TwoDimensional::Polygon & Polygon::CreateFlakeBranch( 
-		Length length, Length thickness,
-		AngleInDegrees childAngle, Ratio branchingHeightRatio, Ratio scale ) 
-	throw()
+	Length length, Length thickness,
+	AngleInDegrees childAngle, Ratio branchingHeightRatio, Ratio scale ) 
 {
 
 	
@@ -768,7 +771,7 @@ TwoDimensional::Polygon & Polygon::CreateFlakeBranch(
 
 
 
-listPoint2D & Polygon::Duplicate( const listPoint2D & source ) throw()
+listPoint2D & Polygon::Duplicate( const listPoint2D & source )
 {
 
 	listPoint2D * newList = new listPoint2D ;
@@ -787,7 +790,7 @@ listPoint2D & Polygon::Duplicate( const listPoint2D & source ) throw()
 
 
 
-void Polygon::Delete( listPoint2D & listToBeDeleted ) throw()
+void Polygon::Delete( listPoint2D & listToBeDeleted )
 {
 
 	for ( listPoint2D::iterator it = listToBeDeleted.begin();
@@ -805,7 +808,7 @@ void Polygon::Delete( listPoint2D & listToBeDeleted ) throw()
 
 
 listPoint2D & Polygon::Append( listPoint2D & toBeAugmented,
-	 const listPoint2D & toAppend ) throw()
+	 const listPoint2D & toAppend )
 {
 
 	for ( listPoint2D::const_iterator it = toAppend.begin(); 
@@ -826,7 +829,7 @@ listPoint2D & Polygon::Append( listPoint2D & toBeAugmented,
 
 listPoint2D & Polygon::Apply( 
 	const Linear::HomogeneousMatrix3 & transformation, 
-	listPoint2D & sourceList ) throw()
+	listPoint2D & sourceList )
 {
 
 	for ( listPoint2D::iterator it = sourceList.begin(); 
@@ -853,10 +856,12 @@ listPoint2D & Polygon::Apply(
 
 
 
+
 // Polygon set.
+	
 						
 
-PolygonSet::PolygonSet( bool listOwner ) throw():
+PolygonSet::PolygonSet( bool listOwner ):
 	Locatable2D(),
 	_polygonList( 0 ),
 	_listOwner( listOwner )
@@ -867,7 +872,7 @@ PolygonSet::PolygonSet( bool listOwner ) throw():
 
 
 PolygonSet::PolygonSet( std::list<listPoint2D *> & polygonList,
-		bool listOwner ) throw():
+		bool listOwner ):
 	Locatable2D(),
 	_polygonList( & polygonList ),
 	_listOwner( listOwner )
@@ -905,7 +910,7 @@ PolygonSet::~PolygonSet() throw()
 
 
 
-void PolygonSet::addPointsOf( TwoDimensional::Polygon & newPolygon ) throw()
+void PolygonSet::addPointsOf( TwoDimensional::Polygon & newPolygon )
 {
 
 	if ( newPolygon.isListOwner() )
@@ -918,7 +923,7 @@ void PolygonSet::addPointsOf( TwoDimensional::Polygon & newPolygon ) throw()
 
 
 
-void PolygonSet::addPointList( listPoint2D & listToAdd ) throw()
+void PolygonSet::addPointList( listPoint2D & listToAdd )
 {
 
 	if ( _polygonList == 0 )
@@ -931,7 +936,7 @@ void PolygonSet::addPointList( listPoint2D & listToAdd ) throw()
 
 
 bool PolygonSet::draw( Surface & targetSurface, Coordinate x, Coordinate y,
-	Pixels::ColorDefinition colorDef, bool filled )	const throw()
+	Pixels::ColorDefinition colorDef, bool filled )	const
 {
 
 	bool result = true ;
@@ -960,8 +965,7 @@ bool PolygonSet::draw( Surface & targetSurface, Coordinate x, Coordinate y,
 
 
 	
-const string PolygonSet::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string PolygonSet::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res ;
@@ -1025,7 +1029,7 @@ const string PolygonSet::toString( Ceylan::VerbosityLevels level )
 PolygonSet & PolygonSet::CreateFlake( 
 	Ceylan::Uint8 branchCount, Length length, Length thickness, 
 	Ceylan::Maths::AngleInDegrees childAngle, Ratio branchingHeightRatio, 
-	Ratio scale ) throw()
+	Ratio scale )
 {
 
 	if ( branchCount == 0 )

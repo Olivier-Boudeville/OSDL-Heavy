@@ -28,7 +28,9 @@
 #define OSDL_TRUETYPE_FONT_H_
 
 
+
 #include "OSDLFont.h"         // for inheritance
+
 
 
 #include <string>
@@ -52,16 +54,20 @@ struct _TTF_Font ;
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Video
 	{
 
 
+
 		// Fonts are rendered to surfaces.
 		class Surface ;
+
 
 
 
@@ -86,6 +92,7 @@ namespace OSDL
 				
 				#endif // OSDL_USES_SDL_TTF
 				
+
 
 				/**
 				 * Truetype font.
@@ -151,6 +158,7 @@ namespace OSDL
 					public:
 					
 					
+					
 						
 						/**
 						 * Creates a new Truetype font.
@@ -197,8 +205,8 @@ namespace OSDL
 							PointSize pointSize,
 							FontIndex index = 0, 
 							bool convertToDisplay = true,
-							RenderCache cacheSettings = GlyphCached ) 
-								throw( TextException ) ;
+							RenderCache cacheSettings = GlyphCached ) ;
+						
 						
 						
 						/**
@@ -208,20 +216,22 @@ namespace OSDL
 						virtual ~TrueTypeFont() throw() ;
 						
 						
+						
 						/**
 						 * Returns the point size of this font, expressed 
 						 * in dots per inch.
 						 *
 						 */
-						virtual PointSize getPointSize() const throw() ;
+						virtual PointSize getPointSize() const ;
 						
+
 
 						/**
 						 * Returns the current rendering style.
 						 *
 						 */
-						virtual RenderingStyle getRenderingStyle() const 
-							throw() ;
+						virtual RenderingStyle getRenderingStyle() const ;
+						
 						
 						
 						/**
@@ -245,11 +255,13 @@ namespace OSDL
 						 *
 						 */
 						virtual void setRenderingStyle( 
-							RenderingStyle newStyle ) throw( TextException ) ;
+							RenderingStyle newStyle ) ;
+
 
 
 
 						// Glyph-dependent methods.		
+						
 						
 						
 						/**
@@ -268,8 +280,9 @@ namespace OSDL
 						 *
 						 */
 						virtual Width getWidth( Ceylan::Latin1Char character ) 
-							const throw( TextException ) ;
+							const ;
 								
+							
 								
 						/**
 						 * Returns the width of the abscissa offset for 
@@ -287,8 +300,8 @@ namespace OSDL
 						 *
 						 */
 						virtual SignedWidth getWidthOffset( 
-								Ceylan::Latin1Char character ) 
-							const throw( TextException ) ;
+							Ceylan::Latin1Char character ) const ;
+							
 								
 								
 						/**
@@ -303,9 +316,9 @@ namespace OSDL
 						 *
 						 */
 						virtual SignedHeight getHeightAboveBaseline(
-								Ceylan::Latin1Char character ) 
-							const throw( TextException ) ;
+							Ceylan::Latin1Char character ) const ;
 								
+						 
 						 
 						/**
 						 * Returns the advance of the specified glyph, 
@@ -325,12 +338,13 @@ namespace OSDL
 						 *
 						 */
 						virtual SignedLength getAdvance( 
-								Ceylan::Latin1Char character ) 
-							const throw( TextException ) ;
+							Ceylan::Latin1Char character ) const ;
+						
 						
 						
 						
 						// Glyph-independent methods.		
+							
 												
 												
 						/**
@@ -349,8 +363,9 @@ namespace OSDL
 						 * @see getLineSkip
 						 *
 						 */
-						virtual Height getHeight() const throw() ;
-						 						
+						virtual Height getHeight() const ;
+						 	
+												
 						
 						/**
 						 * Returns the maximum pixel ascent (height above
@@ -366,7 +381,8 @@ namespace OSDL
 						 * see getLineSkip as well.
 						 *
 						 */
-						virtual SignedHeight getAscent() const throw() ;
+						virtual SignedHeight getAscent() const ;
+						 
 						 
 						 
 						/**
@@ -387,7 +403,8 @@ namespace OSDL
 						 * see getLineSkip as well.
 						 *
 						 */
-						virtual SignedHeight getDescent() const throw() ;
+						virtual SignedHeight getDescent() const ;
+						 
 						 
 						 
 						/**
@@ -398,7 +415,8 @@ namespace OSDL
 						 * by getHeight.
 						 *
 						 */
-						virtual Height getLineSkip() const throw() ;
+						virtual Height getLineSkip() const ;
+						
 						
 						
 						/**
@@ -412,7 +430,8 @@ namespace OSDL
 						 * information can be done through the library.
 						 *
 						 */
-						virtual Ceylan::Uint16 getFacesCount() const throw() ; 
+						virtual Ceylan::Uint16 getFacesCount() const ; 
+						
 						
 						
 						/**
@@ -427,21 +446,24 @@ namespace OSDL
 						 * <code>stringWidth = glyphWidth * stringLength</code>.
 						 *
 						 */
-						virtual bool isFixedWidth() const throw() ;
+						virtual bool isFixedWidth() const ;
+						
 						
 						  
 						/**
 						 * Returns the family name of the current face.
 						 *
 						 */
-						virtual std::string getFaceFamilyName() const throw() ;
+						virtual std::string getFaceFamilyName() const ;
+						
 						
 				 		
 						/**
 						 * Returns the style name of the current face.
 						 *
 						 */
-						virtual std::string getFaceStyleName() const throw() ;
+						virtual std::string getFaceStyleName() const ;
+						
 						
 						
 						
@@ -484,7 +506,7 @@ namespace OSDL
 						 */
 						virtual UprightRectangle & getBoundingBoxFor(
 								Ceylan::Unicode glyph, SignedLength & advance )
-							const throw( TextException ) ;
+							const ;
 							
 							
 						 
@@ -515,8 +537,7 @@ namespace OSDL
 						 *
 						 */ 
 						virtual UprightRectangle & getBoundingBoxFor( 
-								const std::string & text )
-							const throw( TextException ) ;
+							const std::string & text ) const ;
 							 
 							 
 							 
@@ -548,8 +569,7 @@ namespace OSDL
 						 *
 						 */ 
 						virtual UprightRectangle & getBoundingBoxForUTF8( 
-								const std::string & text )
-							const throw( TextException ) ;
+							const std::string & text ) const ;
 							 
 							 
 							 
@@ -581,8 +601,7 @@ namespace OSDL
 						 *
 						 */ 
 						virtual UprightRectangle & getBoundingBoxForUnicode( 
-								const Ceylan::Unicode * text ) 
-							const throw( TextException ) ;
+							const Ceylan::Unicode * text ) const ;
 							 
 							 
 							 
@@ -626,8 +645,7 @@ namespace OSDL
 								Ceylan::Latin1Char character, 
 								RenderQuality quality = Solid, 
 								Pixels::ColorDefinition glyphColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+									= Pixels::White ) ;
 							 
 							 
 
@@ -663,8 +681,7 @@ namespace OSDL
 								Ceylan::Latin1Char character, 
 								RenderQuality quality = Solid, 
 								Pixels::ColorDefinition glyphColor 
-									= Pixels::White )  
-							throw( TextException ) ;
+									= Pixels::White ) ;
 							 
 							 
 							 
@@ -702,8 +719,7 @@ namespace OSDL
 								Ceylan::Unicode character, 
 								RenderQuality quality = Solid,
 								Pixels::ColorDefinition textColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+									= Pixels::White ) ;
 						
 						
 						
@@ -738,8 +754,7 @@ namespace OSDL
 								const std::string & text, 
 								RenderQuality quality = Solid,
 								Pixels::ColorDefinition textColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+									= Pixels::White ) ;
 							
 							
 						
@@ -775,8 +790,7 @@ namespace OSDL
 								const std::string & text, 
 								RenderQuality quality = Solid,
 								Pixels::ColorDefinition textColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+									= Pixels::White ) ;
 							
 							
 						
@@ -813,8 +827,7 @@ namespace OSDL
 								const Ceylan::Unicode * text, 
 								RenderQuality quality = Solid,
 								Pixels::ColorDefinition textColor 
-									= Pixels::Black ) 
-							throw( TextException ) ;
+									= Pixels::Black ) ;
 							
 							
 														
@@ -833,12 +846,14 @@ namespace OSDL
 			             */
 				 		virtual const std::string toString( 
 								Ceylan::VerbosityLevels level = Ceylan::high ) 
-							const throw() ;
+							const ;
+
 
 
 
 	
 						// Static section.
+						
 						
 						
 						/**
@@ -847,10 +862,10 @@ namespace OSDL
 						 *
 						 */
 						static RenderQuality GetObtainedQualityFor(
-								RenderQuality targetedQuality )
-							throw() ;
+							RenderQuality targetedQuality ) ;
 
-						
+					
+					
 						/**
 						 * Determines whether Unicode data is to be swapped
 						 * relative to the CPU endianness.
@@ -872,7 +887,7 @@ namespace OSDL
 						 * of the CPU.
 						 *
 						 */
-						void SetUnicodeSwapStatus( bool newStatus ) throw() ;
+						void SetUnicodeSwapStatus( bool newStatus ) ;
 				
 				
 				
@@ -881,8 +896,9 @@ namespace OSDL
 						 * that occured relatively to Truetype fonts.
 						 *
 						 */	
-						static std::string DescribeLastError() throw() ;
+						static std::string DescribeLastError() ;
 						
+	
 	
 						/**
 						 * Allows to keep track of Truetype font directories.
@@ -892,8 +908,10 @@ namespace OSDL
 							TrueTypeFontFileLocator ;
 
 
+
 						/// Recommended extension of TrueType font files.
 						static std::string TrueTypeFontFileExtension ;
+						
 						
 						
 						/**
@@ -904,6 +922,7 @@ namespace OSDL
 						static const Ceylan::Float32 SpaceWidthFactor ;
 							
 												
+							
 												
 						
 					protected:
@@ -931,10 +950,10 @@ namespace OSDL
 						 *
 						 */
 						virtual Surface & basicRenderUnicodeGlyph(
-								Ceylan::Unicode character,
-								RenderQuality quality, 
-								Pixels::ColorDefinition glyphColor )
-							throw( TextException ) ;
+							Ceylan::Unicode character,
+							RenderQuality quality, 
+							Pixels::ColorDefinition glyphColor ) ;
+	
 	
 	
 						
@@ -972,7 +991,8 @@ namespace OSDL
 						 * undefined constructor is called, implicitly or not.
 						 *
 						 */			 
-						TrueTypeFont( const TrueTypeFont & source ) throw() ;
+						TrueTypeFont( const TrueTypeFont & source ) ;
+			
 			
 			
 						/**
@@ -984,11 +1004,11 @@ namespace OSDL
 						 *
 						 */			 
 						TrueTypeFont & operator = ( 
-							const TrueTypeFont & source ) throw() ;
-				
-									
+							const TrueTypeFont & source ) ;
+							
 				
 				} ;
+				
 				
 			} 
 			
@@ -997,6 +1017,7 @@ namespace OSDL
 	}
 	
 }		
+
 
 
 #endif // OSDL_TRUETYPE_FONT_H_

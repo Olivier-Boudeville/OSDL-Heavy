@@ -32,14 +32,17 @@
 using std::string ;
 using std::list ;
 
+
 using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
+
 
 
 const Point2D Point2D::Origin( static_cast<Coordinate>( 0 ), 0 ) ;
 
 
-Point2D::Point2D( Coordinate x, Coordinate y ) throw()
+
+Point2D::Point2D( Coordinate x, Coordinate y )
 {
 
 	_coord[0] = x ;
@@ -48,7 +51,8 @@ Point2D::Point2D( Coordinate x, Coordinate y ) throw()
 }
 
 
-Point2D::Point2D( const Point2D & source ) throw()  :
+
+Point2D::Point2D( const Point2D & source ) :
 	Point()
 {
 
@@ -58,7 +62,8 @@ Point2D::Point2D( const Point2D & source ) throw()  :
 }
 
 
-Point2D::Point2D( const Ceylan::Maths::Linear::Bipoint & source ) throw()
+
+Point2D::Point2D( const Ceylan::Maths::Linear::Bipoint & source )
 {
 
 	_coord[0] = static_cast<Coordinate>( source.getX() ) ;
@@ -67,7 +72,8 @@ Point2D::Point2D( const Ceylan::Maths::Linear::Bipoint & source ) throw()
 }
 
 
-Point2D::Point2D( const Ceylan::Maths::Linear::Vector2 & source ) throw()
+
+Point2D::Point2D( const Ceylan::Maths::Linear::Vector2 & source )
 {
 
 	_coord[0] = static_cast<Coordinate>( source.getX() ) ;
@@ -78,12 +84,13 @@ Point2D::Point2D( const Ceylan::Maths::Linear::Vector2 & source ) throw()
 
 
 Point2D & Point2D::CreateFrom( FloatingPointCoordinate x,
-	FloatingPointCoordinate y ) throw()
+	FloatingPointCoordinate y )
 {
 
 	return * new Point2D( static_cast<Coordinate>( x ), 
 		static_cast<Coordinate>( y ) ) ;
 }
+
 
 	
 Point2D::~Point2D() throw()
@@ -92,7 +99,8 @@ Point2D::~Point2D() throw()
 }
 
 
-void Point2D::setTo( Coordinate x, Coordinate y ) throw() 
+
+void Point2D::setTo( Coordinate x, Coordinate y ) 
 {
 
 	_coord[0] = x ;
@@ -101,8 +109,8 @@ void Point2D::setTo( Coordinate x, Coordinate y ) throw()
 }
 
 
+
 void Point2D::setTo( FloatingPointCoordinate x, FloatingPointCoordinate y )
-	throw() 
 {
 
 	_coord[0] = static_cast<Coordinate>( x ) ;
@@ -112,7 +120,7 @@ void Point2D::setTo( FloatingPointCoordinate x, FloatingPointCoordinate y )
 
 
 
-void Point2D::setFrom( const Point2D & source ) throw()
+void Point2D::setFrom( const Point2D & source )
 {
 
 	_coord[0] = source._coord[0] ;
@@ -121,7 +129,8 @@ void Point2D::setFrom( const Point2D & source ) throw()
 }
 
 
-void Point2D::setFrom( const Ceylan::Maths::Linear::Vector2 & source ) throw()
+
+void Point2D::setFrom( const Ceylan::Maths::Linear::Vector2 & source )
 {
 
 	_coord[0] = static_cast<Coordinate>( source.getElementAt( 0 ) ) ;
@@ -130,7 +139,8 @@ void Point2D::setFrom( const Ceylan::Maths::Linear::Vector2 & source ) throw()
 }
 
 
-const string Point2D::toString( Ceylan::VerbosityLevels level ) const throw()
+
+const string Point2D::toString( Ceylan::VerbosityLevels level ) const
 {
 
     return ( string( " ( " ) 
@@ -142,7 +152,8 @@ const string Point2D::toString( Ceylan::VerbosityLevels level ) const throw()
 }
 
 
-void Point2D::translate( Offset x, Offset y ) throw() 
+
+void Point2D::translate( Offset x, Offset y ) 
 {
 
 	_coord[0] += x ;
@@ -151,7 +162,8 @@ void Point2D::translate( Offset x, Offset y ) throw()
 }
 
 
-void Point2D::flip() throw()
+
+void Point2D::flip()
 {
 
 	_coord[0] = - _coord[0] ;
@@ -160,7 +172,8 @@ void Point2D::flip() throw()
 }
 
 
-void Point2D::flipX() throw() 
+
+void Point2D::flipX() 
 {
 
 	_coord[0] = - _coord[0] ;
@@ -168,7 +181,8 @@ void Point2D::flipX() throw()
 }
 
 
-void Point2D::flipY() throw()
+
+void Point2D::flipY()
 {
 
 	_coord[1] = - _coord[1] ;
@@ -178,7 +192,6 @@ void Point2D::flipY() throw()
 
 
 void Point2D::Translate( list<Point2D *> & pointList, Offset x, Offset y )
-	throw()
 {
 
 	for ( list<Point2D *>::iterator it = pointList.begin(); 
@@ -188,11 +201,11 @@ void Point2D::Translate( list<Point2D *> & pointList, Offset x, Offset y )
 }
 
 
+
 std::ostream & operator << ( std::ostream & os, const Point2D & p )
 {
 
     return os << p.toString() ;
 	
 }
-
 

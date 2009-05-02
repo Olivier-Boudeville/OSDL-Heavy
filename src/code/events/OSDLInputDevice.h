@@ -39,8 +39,10 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace MVC
@@ -52,11 +54,11 @@ namespace OSDL
 	}
 	
 	
+	
 	namespace Events
 	{
 	
 			
-		
 		
 		/**
 		 * Models an actual OSDL input device, instead of an abstract Ceylan
@@ -74,8 +76,8 @@ namespace OSDL
 		 * In order to have access to the specialized controllers we need, 
 		 * an OSDL input device linked with an OSDL controller is an 
 		 * interesting solution, insofar as it ensures that all actual input
-		 * devices (ex : joysticks) can call, say, the axisChanged method 
-		 * of their controller : each actual input device will have to 
+		 * devices (ex: joysticks) can call, say, the axisChanged method 
+		 * of their controller: each actual input device will have to 
 		 * implement the getActualController method.
 		 *
 		 */
@@ -92,7 +94,8 @@ namespace OSDL
 				 * OSDL controller.
 				 *
 				 */
-				InputDevice() throw() ;
+				InputDevice() ;
+	
 	
 	
 				/**
@@ -101,12 +104,14 @@ namespace OSDL
 				 *
 				 */
 				explicit InputDevice( 
-					OSDL::MVC::Controller & actualController ) throw() ;
+					OSDL::MVC::Controller & actualController ) ;
+	
 	
 	
 				/// Basic virtual destructor.
 				virtual ~InputDevice() throw() ;
 		
+	
 	
 				/**
 				 * Returns the actual (OSDL) controller this input device 
@@ -119,8 +124,8 @@ namespace OSDL
 				 * @see isLinkedToController
 				 *
 				 */
-				virtual OSDL::MVC::Controller & getActualController() 
-					const throw( EventsException ) ;
+				virtual OSDL::MVC::Controller & getActualController() const  ;
+	
 	
 	
 	            /**
@@ -135,12 +140,13 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 	
 	
 
+
 			private:
+	
 	
 	
 				/**
@@ -151,7 +157,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit InputDevice( const InputDevice & source ) throw() ;
+				explicit InputDevice( const InputDevice & source ) ;
+	
 	
 	
 				/**
@@ -162,11 +169,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				InputDevice & operator = ( const InputDevice & source ) 
-					throw() ;
+				InputDevice & operator = ( const InputDevice & source ) ;
 				
 				
 		} ;
+		
 	
 	}	
 	

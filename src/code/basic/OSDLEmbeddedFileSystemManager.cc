@@ -60,6 +60,7 @@ using namespace OSDL ;
 
 
 
+
 /*
  * Implementation notes:
  *
@@ -85,8 +86,10 @@ using namespace OSDL ;
  */
 
 
+
 // 0b01010101 = 0x55
 const Ceylan::Byte EmbeddedFileSystemManager::XORByte = 0x55 ;
+
 
 
 // These constants apply to the virtual filesystem:
@@ -110,17 +113,17 @@ Ceylan::System::FileLocator EmbeddedFileSystemManager::ArchiveFileLocator(
 
 
 
+
 // Implementation of EmbeddedFileSystemManager specific methods.
 
 
 
 void EmbeddedFileSystemManager::chooseBasicSettings(
-		const string & organizationName,
-		const string & applicationName,
-		const string & archiveExtension,
-		bool archiveFirst,
-		bool includeInsertedMedia ) 
-	throw( EmbeddedFileSystemManagerException )
+	const string & organizationName,
+	const string & applicationName,
+	const string & archiveExtension,
+	bool archiveFirst,
+	bool includeInsertedMedia )
 {
 
 	/*
@@ -155,7 +158,7 @@ void EmbeddedFileSystemManager::chooseBasicSettings(
 
 
 
-bool EmbeddedFileSystemManager::hasWriteDirectory() const throw()
+bool EmbeddedFileSystemManager::hasWriteDirectory() const
 {
 
 	/*
@@ -183,7 +186,6 @@ bool EmbeddedFileSystemManager::hasWriteDirectory() const throw()
  
             
 std::string EmbeddedFileSystemManager::getWriteDirectory() const 
-	throw( EmbeddedFileSystemManagerException )
 {
 
 	/*
@@ -216,8 +218,7 @@ std::string EmbeddedFileSystemManager::getWriteDirectory() const
 			
 
 void EmbeddedFileSystemManager::setWriteDirectory( 
-		const std::string & newWriteDirectory ) 
-	throw( EmbeddedFileSystemManagerException )
+	const std::string & newWriteDirectory ) 
 {
 
 	/*
@@ -246,10 +247,9 @@ void EmbeddedFileSystemManager::setWriteDirectory(
          
                 
 void EmbeddedFileSystemManager::mount( 
-		const string & newActualFilesystemElement,
-		const string & mountPointInVirtualTree, 
-        bool append ) 
-	throw( EmbeddedFileSystemManagerException )              
+	const string & newActualFilesystemElement,
+	const string & mountPointInVirtualTree, 
+	bool append ) 
 {
 
 	/*
@@ -303,8 +303,7 @@ void EmbeddedFileSystemManager::mount(
                 
 
 void EmbeddedFileSystemManager::umount( 
-		const std::string & actualFilesystemElement ) 
-	throw( EmbeddedFileSystemManagerException )  
+	const std::string & actualFilesystemElement ) 
 {
 
 	/*
@@ -333,8 +332,7 @@ void EmbeddedFileSystemManager::umount(
      
                 
 std::string EmbeddedFileSystemManager::getMountPointFor( 
-		const string & actualFilesystemElement ) 
-	const throw( EmbeddedFileSystemManagerException )
+	const string & actualFilesystemElement ) const
 {
 
 	/*
@@ -366,8 +364,7 @@ std::string EmbeddedFileSystemManager::getMountPointFor(
 
 
                 
-std::list<std::string> EmbeddedFileSystemManager::getSearchPath() 
-	const throw( EmbeddedFileSystemManagerException )
+std::list<std::string> EmbeddedFileSystemManager::getSearchPath() const
 {
 
 	/*
@@ -411,16 +408,15 @@ std::list<std::string> EmbeddedFileSystemManager::getSearchPath()
         
 #endif // OSDL_USES_PHYSICSFS
 
-
 }    
                                 
+
 
                 
 // Implementation of the FileSystemManager mother class.
 
 
-bool EmbeddedFileSystemManager::existsAsEntry( const string & entryPath ) 
-	const throw( EntryLookupFailed )
+bool EmbeddedFileSystemManager::existsAsEntry( const string & entryPath ) const
 {
 
 	/*
@@ -447,8 +443,7 @@ bool EmbeddedFileSystemManager::existsAsEntry( const string & entryPath )
 
 
 void EmbeddedFileSystemManager::createSymbolicLink( 
-		const string & linkTarget, const string & linkName )
-	throw( SymlinkFailed )
+	const string & linkTarget, const string & linkName )
 {
 
 	throw SymlinkFailed( "EmbeddedFileSystemManager::createSymbolicLink: "
@@ -459,7 +454,7 @@ void EmbeddedFileSystemManager::createSymbolicLink(
 
 
 time_t EmbeddedFileSystemManager::getEntryChangeTime( 
-	const string & entryPath ) throw( GetChangeTimeFailed )
+	const string & entryPath )
 {
 
  	/*
@@ -495,15 +490,17 @@ time_t EmbeddedFileSystemManager::getEntryChangeTime(
 // Accessors to FilesystemManager constants.
 
 
-const string & EmbeddedFileSystemManager::getRootDirectoryPrefix() const throw()
+
+const string & EmbeddedFileSystemManager::getRootDirectoryPrefix() const
 {
 
 	return RootDirectoryPrefix ;
 	
 }
 
-	    	   					
-Ceylan::Latin1Char EmbeddedFileSystemManager::getSeparator() const throw()
+	    	
+			   					
+Ceylan::Latin1Char EmbeddedFileSystemManager::getSeparator() const
 {
 
 	return Separator ;
@@ -519,8 +516,7 @@ Ceylan::Latin1Char EmbeddedFileSystemManager::getSeparator() const throw()
 
 
 File & EmbeddedFileSystemManager::createFile( const string & filename, 
-		OpeningFlag createFlag,	PermissionFlag permissionFlag ) 
-	throw( FileException )
+	OpeningFlag createFlag,	PermissionFlag permissionFlag ) 
 {
 
 	return EmbeddedFile::Create( filename, createFlag, permissionFlag ) ;
@@ -530,7 +526,7 @@ File & EmbeddedFileSystemManager::createFile( const string & filename,
 
 
 File & EmbeddedFileSystemManager::openFile( const string & filename, 
-	OpeningFlag openFlag ) throw( FileException )
+	OpeningFlag openFlag )
 {
 
 	return EmbeddedFile::Open( filename, openFlag ) ;
@@ -540,9 +536,7 @@ File & EmbeddedFileSystemManager::openFile( const string & filename,
 
 
 string EmbeddedFileSystemManager::getActualLocationFor( 
-		const string & filename ) const 
-	throw( Ceylan::System::FileLookupFailed, 
-    	EmbeddedFileSystemManagerException )
+	const string & filename ) const 
 {
     
 #if OSDL_USES_PHYSICSFS
@@ -576,7 +570,7 @@ string EmbeddedFileSystemManager::getActualLocationFor(
 
 
 bool EmbeddedFileSystemManager::existsAsFileOrSymbolicLink( 
-	const string & filename ) const throw( FileLookupFailed )
+	const string & filename ) const
 {
 
  	/*
@@ -606,8 +600,7 @@ bool EmbeddedFileSystemManager::existsAsFileOrSymbolicLink(
 
 
 bool EmbeddedFileSystemManager::existsAsSymbolicLink( 
-		const std::string & linkName ) const 
-	throw( Ceylan::System::FileLookupFailed )
+	const std::string & linkName ) const 
 {
 
  	/*
@@ -627,14 +620,12 @@ bool EmbeddedFileSystemManager::existsAsSymbolicLink(
     	"no PhysicsFS support available." ) ;
         
 #endif // OSDL_USES_PHYSICSFS
-
-		
+	
 }
                 
                 
 
 void EmbeddedFileSystemManager::removeFile( const string & filename ) 
-	throw( FileRemoveFailed )
 {
 
  	/*
@@ -662,7 +653,7 @@ void EmbeddedFileSystemManager::removeFile( const string & filename )
 
 
 void EmbeddedFileSystemManager::moveFile( const string & sourceFilename,
-	const string & targetFilename ) throw( FileMoveFailed )
+	const string & targetFilename )
 {
 
 	throw FileMoveFailed( "EmbeddedFileSystemManager::moveFile failed: "
@@ -673,7 +664,7 @@ void EmbeddedFileSystemManager::moveFile( const string & sourceFilename,
 
 
 void EmbeddedFileSystemManager::copyFile( const string & sourceFilename, 
-	const string & targetFilename ) throw( FileCopyFailed )
+	const string & targetFilename )
 {
 	
 	try 
@@ -764,7 +755,6 @@ void EmbeddedFileSystemManager::copyFile( const string & sourceFilename,
 
 
 Size EmbeddedFileSystemManager::getSize( const string & filename ) 
-	throw( FileSizeRequestFailed )
 {
 
  	/*
@@ -792,7 +782,6 @@ Size EmbeddedFileSystemManager::getSize( const string & filename )
     
     return fileSize ;
     
-
 #else // OSDL_USES_PHYSICSFS
 
 	throw FileSizeRequestFailed(
@@ -806,7 +795,7 @@ Size EmbeddedFileSystemManager::getSize( const string & filename )
 	
 	
 time_t EmbeddedFileSystemManager::getLastChangeTimeFile( 
-	const string & filename ) throw( FileLastChangeTimeRequestFailed )
+	const string & filename )
 {
 
  	/*
@@ -839,7 +828,6 @@ time_t EmbeddedFileSystemManager::getLastChangeTimeFile(
 
 
 void EmbeddedFileSystemManager::touch( const string & filename ) 
-	throw( FileTouchFailed )
 {
 
 	throw FileTouchFailed( "EmbeddedFileSystemManager::touch "
@@ -850,7 +838,6 @@ void EmbeddedFileSystemManager::touch( const string & filename )
 
 
 void EmbeddedFileSystemManager::allowSymbolicFiles( bool newStatus ) 
-	throw( EmbeddedFileSystemManagerException )
 {                
 
  	/*
@@ -875,14 +862,17 @@ void EmbeddedFileSystemManager::allowSymbolicFiles( bool newStatus )
 
 									
 	
+	
 // Directory-related section.
 			
 
+
 // Factory-related subsection.
+
 
 										
 Directory & EmbeddedFileSystemManager::createDirectory( 
-	const string & newDirectoryName ) throw( DirectoryException )
+	const string & newDirectoryName )
 {
 
 	return EmbeddedDirectory::Create( newDirectoryName ) ;
@@ -892,7 +882,7 @@ Directory & EmbeddedFileSystemManager::createDirectory(
 	
 					
 Directory & EmbeddedFileSystemManager::openDirectory( 
-	const string & directoryName ) throw( DirectoryException )
+	const string & directoryName )
 {
 
 	return EmbeddedDirectory::Open( directoryName ) ;
@@ -902,7 +892,7 @@ Directory & EmbeddedFileSystemManager::openDirectory(
 	
 						
 bool EmbeddedFileSystemManager::existsAsDirectory( 
-	const string & directoryPath ) const throw( DirectoryLookupFailed )
+	const string & directoryPath ) const
 {
 
  	/*
@@ -928,7 +918,7 @@ bool EmbeddedFileSystemManager::existsAsDirectory(
 
 
 void EmbeddedFileSystemManager::removeDirectory( const string & directoryPath, 
-	bool recursive ) throw( DirectoryRemoveFailed )
+	bool recursive )
 {	
 
  	/*
@@ -954,7 +944,6 @@ void EmbeddedFileSystemManager::removeDirectory( const string & directoryPath,
 			"EmbeddedFileSystemManager::removeDirectory failed in 'rmdir' for " 
 			+ directoryPath + ": " + GetBackendLastError() ) ;
 
-
 #else // OSDL_USES_PHYSICSFS
 
 	throw EmbeddedFileSystemManagerException( 
@@ -968,8 +957,7 @@ void EmbeddedFileSystemManager::removeDirectory( const string & directoryPath,
 
 
 void EmbeddedFileSystemManager::moveDirectory( 
-		const string & sourceDirectoryPath, const string & targetDirectoryPath )
-	throw( DirectoryMoveFailed )
+	const string & sourceDirectoryPath, const string & targetDirectoryPath )
 {
 
 	throw DirectoryMoveFailed( "EmbeddedFileSystemManager::moveDirectory: "
@@ -980,8 +968,7 @@ void EmbeddedFileSystemManager::moveDirectory(
 
 
 void EmbeddedFileSystemManager::copyDirectory( 
-		const string & sourceDirectoryPath, const string & targetDirectoryPath )
-	throw( DirectoryCopyFailed )
+	const string & sourceDirectoryPath, const string & targetDirectoryPath )
 {
 
 	throw DirectoryCopyFailed( "EmbeddedFileSystemManager::copyDirectory: "
@@ -992,7 +979,7 @@ void EmbeddedFileSystemManager::copyDirectory(
 
 
 time_t EmbeddedFileSystemManager::getLastChangeTimeDirectory( 
-	const string & directoryPath ) throw( DirectoryLastChangeTimeRequestFailed )
+	const string & directoryPath )
 {
 
  	/*
@@ -1025,7 +1012,7 @@ time_t EmbeddedFileSystemManager::getLastChangeTimeDirectory(
 	
 
 bool EmbeddedFileSystemManager::isAValidDirectoryPath( 
-	const string & directoryString ) throw()
+	const string & directoryString )
 {
 
 	// A priori correct:
@@ -1035,7 +1022,7 @@ bool EmbeddedFileSystemManager::isAValidDirectoryPath(
 			
 				
 			
-bool EmbeddedFileSystemManager::isAbsolutePath( const string & path ) throw()
+bool EmbeddedFileSystemManager::isAbsolutePath( const string & path )
 {
 
 	// Semantics depend on being in read or write context...
@@ -1056,7 +1043,6 @@ bool EmbeddedFileSystemManager::isAbsolutePath( const string & path ) throw()
 			
 			
 std::string EmbeddedFileSystemManager::getCurrentWorkingDirectoryPath()	
-	throw( DirectoryGetCurrentFailed )
 {
 
 	// Branch directly to the standard filesystem manager?
@@ -1153,7 +1139,7 @@ std::string EmbeddedFileSystemManager::getCurrentWorkingDirectoryPath()
 
 
 void EmbeddedFileSystemManager::changeWorkingDirectory( 
-	const string & newWorkingDirectory ) throw( DirectoryChangeFailed )
+	const string & newWorkingDirectory )
 {
 
 	// Branch directly to the standard filesystem manager?
@@ -1193,7 +1179,8 @@ void EmbeddedFileSystemManager::changeWorkingDirectory(
 // EmbeddedFileSystemManager own section.
 
 
-std::string EmbeddedFileSystemManager::GetBackendLastError() throw()
+
+std::string EmbeddedFileSystemManager::GetBackendLastError()
 {
 
 	// No special check of filesystem manager availability.
@@ -1204,7 +1191,7 @@ std::string EmbeddedFileSystemManager::GetBackendLastError() throw()
 
 
 
-Ceylan::Byte EmbeddedFileSystemManager::GetXORByte() throw()
+Ceylan::Byte EmbeddedFileSystemManager::GetXORByte()
 {
 
     return XORByte ;
@@ -1214,7 +1201,7 @@ Ceylan::Byte EmbeddedFileSystemManager::GetXORByte() throw()
 
 
 const string EmbeddedFileSystemManager::toString( 
-	Ceylan::VerbosityLevels level ) const throw()
+	Ceylan::VerbosityLevels level ) const
 {
 
 	return "Embedded filesystem manager, based on the PhysicsFS backend" ;
@@ -1223,12 +1210,13 @@ const string EmbeddedFileSystemManager::toString(
 	
 
 
+
 // Static section.
 
 
+
 EmbeddedFileSystemManager &
-		EmbeddedFileSystemManager::GetEmbeddedFileSystemManager( bool cypher ) 
-	throw( EmbeddedFileSystemManagerException )
+	EmbeddedFileSystemManager::GetEmbeddedFileSystemManager( bool cypher ) 
 {
 
 	if ( _EmbeddedFileSystemManager == 0 )
@@ -1242,7 +1230,6 @@ EmbeddedFileSystemManager &
 
 
 bool EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager() 
-	throw( EmbeddedFileSystemManagerException )
 {
 
 	// Returned value ignored, only side-effect wanted:
@@ -1255,7 +1242,7 @@ bool EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager()
 	
 	
 	
-void EmbeddedFileSystemManager::RemoveEmbeddedFileSystemManager() throw()
+void EmbeddedFileSystemManager::RemoveEmbeddedFileSystemManager()
 {
 
 	if ( _EmbeddedFileSystemManager != 0 )
@@ -1275,11 +1262,9 @@ void EmbeddedFileSystemManager::RemoveEmbeddedFileSystemManager() throw()
 
 
 
-EmbeddedFileSystemManager::EmbeddedFileSystemManager( bool cypherWritings ) 
-		throw( EmbeddedFileSystemManagerException ):
+EmbeddedFileSystemManager::EmbeddedFileSystemManager( bool cypherWritings ) :
     _cypher( cypherWritings )
 {
-
 	
 #if OSDL_USES_PHYSICSFS
 	
@@ -1365,8 +1350,7 @@ EmbeddedFileSystemManager::~EmbeddedFileSystemManager() throw()
 
 
 string EmbeddedFileSystemManager::FindArchivePath( 
-		const std::string & archiveFilename ) 
-	throw( EmbeddedFileSystemManagerException )
+	const std::string & archiveFilename ) 
 {
 	
 	string archiveFullPath = archiveFilename ;
@@ -1419,7 +1403,4 @@ string EmbeddedFileSystemManager::FindArchivePath(
 	return archiveFullPath ;
 	
 }
-
-
-// Protected section.
 

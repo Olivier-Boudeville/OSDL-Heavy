@@ -45,12 +45,14 @@ using namespace OSDL::Video::OpenGL ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
+
 using Ceylan::Maths::Linear::Bipoint ;
 
 
 
+
 UprightRectangleGL::UprightRectangleGL( const Bipoint & upperLeftCorner,
-		const Bipoint & lowerRightCorner ) throw( VideoException ) :
+		const Bipoint & lowerRightCorner ) :
 	_x( upperLeftCorner.getX() ),
 	_y( upperLeftCorner.getY() ),
 	_width( static_cast<GLLength>( lowerRightCorner.getX() -
@@ -63,13 +65,14 @@ UprightRectangleGL::UprightRectangleGL( const Bipoint & upperLeftCorner,
 
 	if ( lowerRightCorner.getX() < upperLeftCorner.getX() )
 		throw VideoException( 
-			"UprightRectangleGL constructor : width is negative ( " 
+			"UprightRectangleGL constructor: width is negative ( " 
 			+ Ceylan::toString( 
 				lowerRightCorner.getX() - upperLeftCorner.getX() ) 
 			+ " ) " ) ;
 		
+	if ( lowerRightCorner.getY() < upperLeftCorner.getY() )
 		throw VideoException( 
-			"UprightRectangleGL constructor : height is negative ( " 
+			"UprightRectangleGL constructor: height is negative ( " 
 			+ Ceylan::toString( 
 				lowerRightCorner.getY() - upperLeftCorner.getY() ) 
 			+ " ) " ) ;
@@ -79,8 +82,9 @@ UprightRectangleGL::UprightRectangleGL( const Bipoint & upperLeftCorner,
 }
 
 
+
 UprightRectangleGL::UprightRectangleGL( const Bipoint & upperLeftCorner,
-		GLLength width, GLLength height ) throw() :
+		GLLength width, GLLength height ) :
 	_x( upperLeftCorner.getX() ),
 	_y( upperLeftCorner.getY() ),
 	_width( width ),
@@ -89,9 +93,10 @@ UprightRectangleGL::UprightRectangleGL( const Bipoint & upperLeftCorner,
 
 }	
 	
+	
 			
 UprightRectangleGL::UprightRectangleGL( GLCoordinate x, GLCoordinate y,
-		 GLLength width, GLLength height ) throw() :
+		 GLLength width, GLLength height ) :
 	_x( x ),
 	_y( y ),
 	_width( width ),
@@ -101,13 +106,15 @@ UprightRectangleGL::UprightRectangleGL( GLCoordinate x, GLCoordinate y,
 }
 
 
+
 UprightRectangleGL::~UprightRectangleGL() throw()
 {
 
 }
 
 
-Bipoint UprightRectangleGL::getUpperLeftCorner() const throw()
+
+Bipoint UprightRectangleGL::getUpperLeftCorner() const
 {
 
 	return Bipoint( _x, _y ) ;
@@ -115,8 +122,9 @@ Bipoint UprightRectangleGL::getUpperLeftCorner() const throw()
 }
 
 
+
 void UprightRectangleGL::setUpperLeftCorner( 
-	Bipoint & newUpperLeftCorner ) throw()
+	Bipoint & newUpperLeftCorner )
 {
 
 	_x = newUpperLeftCorner.getX() ;
@@ -125,7 +133,8 @@ void UprightRectangleGL::setUpperLeftCorner(
 }
 
 
-GLCoordinate UprightRectangleGL::getUpperLeftAbscissa() const throw()
+
+GLCoordinate UprightRectangleGL::getUpperLeftAbscissa() const
 {
 
 	return _x ;
@@ -133,7 +142,8 @@ GLCoordinate UprightRectangleGL::getUpperLeftAbscissa() const throw()
 }
  
  
-GLCoordinate UprightRectangleGL::getUpperLeftOrdinate() const throw()
+ 
+GLCoordinate UprightRectangleGL::getUpperLeftOrdinate() const
 {
 
 	return _y ;
@@ -141,13 +151,15 @@ GLCoordinate UprightRectangleGL::getUpperLeftOrdinate() const throw()
 }
  
  
-GLLength UprightRectangleGL::getWidth() const throw()
+ 
+GLLength UprightRectangleGL::getWidth() const
 {
 	return _width ;
 }
 
 
-void UprightRectangleGL::setWidth( GLLength newWidth ) throw()
+
+void UprightRectangleGL::setWidth( GLLength newWidth )
 {
 
 	_width = newWidth ;
@@ -155,7 +167,8 @@ void UprightRectangleGL::setWidth( GLLength newWidth ) throw()
 }
 
 
-GLLength UprightRectangleGL::getHeight() const throw()
+
+GLLength UprightRectangleGL::getHeight() const
 {
 
 	return _height ;
@@ -163,15 +176,17 @@ GLLength UprightRectangleGL::getHeight() const throw()
 }
 
 
-void UprightRectangleGL::setHeight( GLLength newHeight ) throw()
+
+void UprightRectangleGL::setHeight( GLLength newHeight )
 {
 
 	_height = newHeight ;
 	
 }
 		
+	
 		
-bool UprightRectangleGL::draw() const throw()
+bool UprightRectangleGL::draw() const
 {
 	
 #ifdef OSDL_HAVE_OPENGL
@@ -190,8 +205,8 @@ bool UprightRectangleGL::draw() const throw()
 }
 
 
-const string UprightRectangleGL::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+
+const string UprightRectangleGL::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	return "OpenGL rectangle whose upper-left corner is " 
@@ -204,7 +219,6 @@ const string UprightRectangleGL::toString( Ceylan::VerbosityLevels level )
 
 
 std::ostream & operator << ( std::ostream & os, UprightRectangleGL & rect )
-	throw()
 {
 
     return os << rect.toString() ;

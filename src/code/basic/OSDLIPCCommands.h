@@ -28,6 +28,7 @@
 #define OSDL_IPC_COMMANDS_H_
 
 
+
 /**
  * This include file centralizes the OSDL-specific command
  * identifiers for the FIFO-based IPC, notably for the Nintendo DS.
@@ -40,6 +41,7 @@
  * enum not used as are int, thus 32-bit, whereas we want 8 bit.
  *
  */ 
+
 
 
 /**
@@ -57,12 +59,15 @@
  */
 
 
+
 #include "CeylanIPCCommands.h"  // for ARM9CommandID, ARM7CommandID
+ 
  
  
 
 // Section dedicated to commands from the ARM9 to the ARM7.
 
+ 
  
 /**
  * Request the ARM7 to play specified sound.
@@ -72,6 +77,7 @@
  *
  */
 const ARM9CommandID PlaySoundRequest = 33 ;
+
 
 
 /**
@@ -93,6 +99,7 @@ const ARM9CommandID PlaySoundRequest = 33 ;
 const ARM9CommandID PlayMusicRequest = 34 ;
 
 
+
 /**
  * Request the ARM7 to fade-in current music, from volume zero to full volume.
  *
@@ -105,6 +112,7 @@ const ARM9CommandID PlayMusicRequest = 34 ;
  *
  */
 const ARM9CommandID FadeInMusicRequest = 35 ;
+
 
 
 /**
@@ -122,6 +130,7 @@ const ARM9CommandID FadeInMusicRequest = 35 ;
 const ARM9CommandID FadeOutMusicRequest = 36 ;
 
 
+
 /**
  * Request the ARM7 to stop the playback of current music.
  *
@@ -132,6 +141,7 @@ const ARM9CommandID FadeOutMusicRequest = 36 ;
  *
  */
 const ARM9CommandID StopMusicRequest = 37 ;
+
 
 
 /**
@@ -146,6 +156,7 @@ const ARM9CommandID StopMusicRequest = 37 ;
 const ARM9CommandID PauseMusicRequest = 38 ;
 
 
+
 /**
  * Request the ARM7 to unpause the playback of current music.
  *
@@ -156,6 +167,7 @@ const ARM9CommandID PauseMusicRequest = 38 ;
  *
  */
 const ARM9CommandID UnpauseMusicRequest = 39 ;
+
 
 
 /**
@@ -169,6 +181,7 @@ const ARM9CommandID UnpauseMusicRequest = 39 ;
 const ARM9CommandID EndOfEncodedStreamReached = 40 ;
 
 
+
 /**
  * Request the ARM7 to set the volume of current music to specified value.
  *
@@ -179,7 +192,10 @@ const ARM9CommandID SetMusicVolumeRequest = 41 ;
 
 
 
+
 ////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 // Section dedicated to commands from the ARM7 to the ARM9.
@@ -196,6 +212,7 @@ const ARM9CommandID SetMusicVolumeRequest = 41 ;
 const ARM7CommandID NoAvailableChannelNotification = 33 ;
 
 
+
 /**
  * Notification of the ARM9 that the first music encoded buffer is not used
  * currently and that it should be filled as soon as possible.
@@ -206,6 +223,7 @@ const ARM7CommandID NoAvailableChannelNotification = 33 ;
  *
  */
 const ARM7CommandID FirstBufferFillRequest = 34 ;
+
 
 
 /**
@@ -220,6 +238,7 @@ const ARM7CommandID FirstBufferFillRequest = 34 ;
 const ARM7CommandID SecondBufferFillRequest = 35 ;
 
 
+
 /**
  * Notification of the ARM9 that the current music playback is over.
  *
@@ -227,6 +246,7 @@ const ARM7CommandID SecondBufferFillRequest = 35 ;
  *
  */
 const ARM7CommandID MusicEndedNotification = 36 ;
+
 
 
 /**

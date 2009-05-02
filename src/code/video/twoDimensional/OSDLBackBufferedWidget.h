@@ -36,22 +36,27 @@
 
 
 
+
 namespace OSDL
 {
+
 
 	namespace Video
 	{
 
 
-		// A BackBufferedWidget is and owns a Surface :
+
+		// A BackBufferedWidget is and owns a Surface:
 		class Surface ;
+		
 		
 		
 		namespace TwoDimensional
 		{
 
 	
-			// To locate a widget in its container :
+	
+			// To locate a widget in its container:
 			class Point2D ;
 			
 			
@@ -77,7 +82,7 @@ namespace OSDL
 			 * The role of the inherited and the owned surfaces should not 
 			 * be reversed, since the current organization allows to use 
 			 * all the inherited drawing primitives without any
-			 * modification : they apply directly to the inherited 
+			 * modification: they apply directly to the inherited 
 			 * back-buffer surface, which is the source surface from which 
 			 * the overall one is created.
 			 *
@@ -97,6 +102,7 @@ namespace OSDL
 			
 					
 				public:
+						
 						
 			
 					/**
@@ -166,12 +172,13 @@ namespace OSDL
 						bool minMaximizable = true, 
 						bool draggable = true, 
 						bool wrappable = true, 
-						bool closable = true ) 
-							throw( VideoException ) ;
+						bool closable = true ) ;
 								
+							
 							
 					 /// Basic virtual destructor.	
 					 virtual ~BackBufferedWidget() throw() ;
+						
 						
 							
 					/**
@@ -195,8 +202,9 @@ namespace OSDL
 					 *
 					 */
 					virtual void resize( Length newWidth, Length newHeight, 
-						bool ignored = false ) throw() ;
+						bool ignored = false ) ;
 										 
+
 
 					/**
 					 * Sets the current base color mode and base color, 
@@ -218,9 +226,8 @@ namespace OSDL
 					 *
 					 */
 					virtual void setBaseColorMode( 
-							BaseColorMode newBaseColorMode,
-							Pixels::ColorDefinition newBaseColor ) 
-						throw( VideoException ) ;
+						BaseColorMode newBaseColorMode,
+						Pixels::ColorDefinition newBaseColor ) ;
 												
 
 
@@ -233,7 +240,8 @@ namespace OSDL
 					 * of this widget.
 					 *
 					 */
-					virtual void redraw() throw() ;
+					virtual void redraw() ;
+
 
 										 	
 					/**
@@ -244,7 +252,8 @@ namespace OSDL
 					 * the overriden 'redrawBackBuffer' will be called.
 					 *
 					 */
-					virtual void redrawInternal() throw() ;
+					virtual void redrawInternal() ;
+			
 			
 			
 					/**
@@ -265,7 +274,8 @@ namespace OSDL
 					 * format.
 					 *
 					 */
-					virtual void redrawBackBuffer() throw() ;
+					virtual void redrawBackBuffer() ;
+					
 					
 
 					/**
@@ -276,13 +286,14 @@ namespace OSDL
 					 * For back-buffered widgets, the render target is not 
 					 * the instance itself (it would modify the 
 					 * private back-buffer of this widget) but the overall 
-					 * owned surface : subwidgets should only be blitted 
+					 * owned surface: subwidgets should only be blitted 
 					 * into this overall surface, and should not affect 
 					 * the back-buffer.
 					 *
 				 	 */
-					Surface & getWidgetRenderTarget() throw() ; 
+					Surface & getWidgetRenderTarget() ; 
 
+					
 					
 	 	            /**
 		             * Returns an user-friendly description of the state 
@@ -297,29 +308,32 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high )
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 				
+					
 					
 						
 											
 				protected:
 											
 					
+					
 					/**
 					 * Sets the need for redraw state for the back-buffer.
 					 *
 					 */
 					virtual void setBackBufferRedrawState( 
-						bool needsToBeRedrawn ) throw() ;
+						bool needsToBeRedrawn ) ;
 
+				
 				
 					/**
 					 * Returns the current need for redraw state for the
 					 * back-buffer.
 					 *
 					 */
-					virtual bool getBackBufferRedrawState() const throw() ;
+					virtual bool getBackBufferRedrawState() const ;
+
 
 
 					/**
@@ -329,6 +343,7 @@ namespace OSDL
 					 *
 					 */
 					Surface * _overallSurface ;
+					
 					
 					
 					
@@ -359,7 +374,8 @@ namespace OSDL
 					 * 
 					 */			 
 					explicit BackBufferedWidget( 
-						const BackBufferedWidget & source ) throw() ;
+						const BackBufferedWidget & source ) ;
+			
 			
 			
 					/**
@@ -371,10 +387,11 @@ namespace OSDL
 					 * 
 					 */			 
 					BackBufferedWidget & operator = ( 
-						const BackBufferedWidget & source )	throw() ;
+						const BackBufferedWidget & source )	;
 					
 					
 			} ;			
+			
 											
 		}
 	
@@ -383,4 +400,6 @@ namespace OSDL
 }				
 
 
+
 #endif // OSDL_BACK_BUFFERED_WIDGET_H_
+

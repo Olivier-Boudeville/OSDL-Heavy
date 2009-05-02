@@ -37,7 +37,9 @@ using namespace Ceylan::Log ;
 using namespace OSDL::Events ;
 
 
+
 const AxisPosition ClassicalJoystick::DefaultDeadZoneExtent = 100 ;
+
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -72,6 +74,7 @@ const AxisPosition ClassicalJoystick::DefaultDeadZoneExtent = 100 ;
 
 
 
+
 /*
  * Not used currently since event loop is prefered to polling:
  *   - SDL_JoystickUpdate
@@ -80,9 +83,9 @@ const AxisPosition ClassicalJoystick::DefaultDeadZoneExtent = 100 ;
  */
  
 
+
 ClassicalJoystick::ClassicalJoystick( 
-	JoystickNumber index, AxisPosition deadZoneExtent ) 
-		throw( JoystickException ):
+		JoystickNumber index, AxisPosition deadZoneExtent ) :
 	Joystick( index ),
 	_deadZoneExtentFirstAxis( deadZoneExtent ),
 	_deadZoneExtentSecondAxis( deadZoneExtent )
@@ -98,14 +101,16 @@ ClassicalJoystick::ClassicalJoystick(
 }
 
 
+
 ClassicalJoystick::~ClassicalJoystick() throw()
 {
 		 	
 }
 
 
+
 void ClassicalJoystick::getDeadZoneValues( AxisPosition & firstAxisExtent, 
-	AxisPosition & secondAxisExtent ) const throw()
+	AxisPosition & secondAxisExtent ) const
 {
 
 	firstAxisExtent  = _deadZoneExtentFirstAxis ;
@@ -113,19 +118,20 @@ void ClassicalJoystick::getDeadZoneValues( AxisPosition & firstAxisExtent,
 	
 }
 	
+	
 					
 void ClassicalJoystick::setDeadZoneValues( AxisPosition firstAxisExtent, 
-	AxisPosition secondAxisExtent )	throw()
+	AxisPosition secondAxisExtent )
 {
 
 	_deadZoneExtentFirstAxis  = firstAxisExtent ;
 	_deadZoneExtentSecondAxis = secondAxisExtent ;
 	
 }
+
 	
 
-const string ClassicalJoystick::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string ClassicalJoystick::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	return "Classical joystick: " + Joystick::toString( level )
@@ -139,11 +145,12 @@ const string ClassicalJoystick::toString( Ceylan::VerbosityLevels level )
 
 
 
+
 // Protected section.
 
 
+
 void ClassicalJoystick::axisChanged( const JoystickAxisEvent & joystickEvent )
-	throw()
 {
 	
 #if OSDL_USES_SDL
@@ -200,7 +207,7 @@ void ClassicalJoystick::axisChanged( const JoystickAxisEvent & joystickEvent )
 
 
 void ClassicalJoystick::buttonPressed( 
-	const JoystickButtonEvent & joystickEvent ) throw()
+	const JoystickButtonEvent & joystickEvent )
 {
 	
 #if OSDL_USES_SDL
@@ -245,7 +252,7 @@ void ClassicalJoystick::buttonPressed(
 
 
 void ClassicalJoystick::buttonReleased( 
-	const JoystickButtonEvent & joystickEvent ) throw()
+	const JoystickButtonEvent & joystickEvent )
 {
 	
 #if OSDL_USES_SDL

@@ -46,8 +46,10 @@
 
 
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 
 using namespace Ceylan::Log ;
+
 
 
 
@@ -60,16 +62,16 @@ using namespace Ceylan::Log ;
 
 
 
+
 // A return code of 0 for SDL_gfx functions means no error, contrary to -1.
 
 
 
 bool TwoDimensional::drawCircle( Surface & targetSurface, 
-		Coordinate xCenter, Coordinate yCenter, Length radius, 
-		Pixels::ColorElement red, Pixels::ColorElement green, 
-		Pixels::ColorElement blue, Pixels::ColorElement alpha, 
-		bool filled, bool blended )
-	throw( VideoException )
+	Coordinate xCenter, Coordinate yCenter, Length radius, 
+	Pixels::ColorElement red, Pixels::ColorElement green, 
+	Pixels::ColorElement blue, Pixels::ColorElement alpha, 
+	bool filled, bool blended )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -195,7 +197,6 @@ bool TwoDimensional::drawCircle( Surface & targetSurface,
 bool TwoDimensional::drawCircle( Surface & targetSurface, 
 	Coordinate xCenter, Coordinate yCenter,
 	Length radius, Pixels::ColorDefinition colorDef, bool filled, bool blended )
-		throw( VideoException )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -349,7 +350,7 @@ bool TwoDimensional::drawDiscWithEdge( Surface & targetSurface,
 	Coordinate xCenter, Coordinate yCenter, 	
 	Length outerRadius, Length innerRadius, 
 	Pixels::ColorDefinition ringColorDef, 
-	Pixels::ColorDefinition discColorDef, bool blended ) throw( VideoException )
+	Pixels::ColorDefinition discColorDef, bool blended )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -520,7 +521,7 @@ bool TwoDimensional::drawDiscWithEdge( Surface & targetSurface,
 
 	/*
 	 * Here the inner color is totally opaque and/or no blending is 
-	 * requested (the easy case !):
+	 * requested (the easy case!):
 	 *
 	 */
 	
@@ -548,7 +549,6 @@ bool TwoDimensional::drawDiscWithEdge( Surface & targetSurface,
 		
 #endif // OSDL_USES_SDL_GFX
 
-	
 }	
 
 
@@ -558,7 +558,6 @@ bool TwoDimensional::drawEllipse( Surface & targetSurface,
 	Length horizontalRadius, Length verticalRadius,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
 	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) 
-		throw( VideoException )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -607,7 +606,7 @@ bool TwoDimensional::drawEllipse( Surface & targetSurface,
 bool TwoDimensional::drawEllipse( Surface & targetSurface, 
 	Coordinate xCenter, Coordinate yCenter, 	
 	Length horizontalRadius, Length verticalRadius,
-	Pixels::ColorDefinition colorDef, bool filled ) throw( VideoException )
+	Pixels::ColorDefinition colorDef, bool filled )
 {
 
 #if OSDL_USES_SDL_GFX

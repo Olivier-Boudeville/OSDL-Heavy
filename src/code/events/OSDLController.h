@@ -38,13 +38,16 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace MVC
 	{
 			
+		
 		
 		/**
 		 * Specialization of generic Ceylan controller, linked with actual 
@@ -58,12 +61,12 @@ namespace OSDL
 		 * This way, the controllers being instanciated in the application,
 		 * which are child classes of these OSDL::Events::Controller, just 
 		 * have to override the handlers corresponding to the specific 
-		 * events they want to listen to : not defining an handler does not
+		 * events they want to listen to: not defining an handler does not
 		 * prevent from instanciating the controller.
 		 *
 		 * These controllers must have a total control of the input devices 
 		 * they are linked to.
-		 * This hinders abstracting events to simplify their management : 
+		 * This hinders abstracting events to simplify their management: 
 		 * for example, one cannot say that an increasing joystick axis 
 		 * value means in all cases the same as, say, the mouse being pushed
 		 * forward or the right arrow key being pressed.
@@ -73,7 +76,7 @@ namespace OSDL
 		 * low level input events into higher level object-specific events.
 		 *
 		 * One of the consequences is that for event propagation an abstract
-		 * Ceylan::Controller is not suitable : one cannot call such specific
+		 * Ceylan::Controller is not suitable: one cannot call such specific
 		 * methods like axisChanged. 
 		 * That is the explanation too for the
 		 * OSDL::Events::Controller::getActualController method.
@@ -113,14 +116,17 @@ namespace OSDL
 		{
 		
 			
+			
 			public:
+
 
 
 				/**
 				 * Constructs a new controller.
 				 *
 				 */
-				Controller() throw() ;
+				Controller() ;
+				
 				
 				
 				/**
@@ -128,7 +134,8 @@ namespace OSDL
 				 * specified model.
 				 *
 				 */
-				explicit Controller( Ceylan::Model & model ) throw() ;
+				explicit Controller( Ceylan::Model & model ) ;
+				
 				
 				
 				/**
@@ -143,6 +150,7 @@ namespace OSDL
 				// Keyboard section.
 				
 				
+				
 				/**
 				 * Called whenever a keyboard linked to this controller has 
 				 * gained focus.
@@ -152,7 +160,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void keyboardFocusGained( 
-					const FocusEvent & keyboardFocusEvent ) throw() ;
+					const FocusEvent & keyboardFocusEvent ) ;
+
 
 
 				/**
@@ -164,7 +173,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void keyboardFocusLost( 
-					const FocusEvent & keyboardFocusEvent ) throw() ;
+					const FocusEvent & keyboardFocusEvent ) ;
 
 
 			
@@ -177,7 +186,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void rawKeyPressed( 
-					const KeyboardEvent & keyboardPressedEvent ) throw() ;
+					const KeyboardEvent & keyboardPressedEvent ) ;
+
 
 
 				/**
@@ -189,7 +199,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void rawKeyReleased( 
-					const KeyboardEvent & keyboardReleasedEvent ) throw() ;
+					const KeyboardEvent & keyboardReleasedEvent ) ;
+
 
 
 				/**
@@ -201,7 +212,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void unicodeSelected( 
-					const KeyboardEvent & keyboardPressedEvent ) throw() ;
+					const KeyboardEvent & keyboardPressedEvent ) ;
+
 
 
 
@@ -219,7 +231,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseFocusGained( 
-					const FocusEvent & mouseFocusEvent ) throw() ;
+					const FocusEvent & mouseFocusEvent ) ;
+
 
 
 				/**
@@ -231,7 +244,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseFocusLost(
-					const FocusEvent & mouseFocusEvent ) throw() ;
+					const FocusEvent & mouseFocusEvent ) ;
+
 
 				
 				/**
@@ -242,8 +256,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseMoved( 
-						const MouseMotionEvent & mouseMotionEvent ) 
-					throw() ;
+					const MouseMotionEvent & mouseMotionEvent ) ;
+
 
 
 				/**
@@ -255,8 +269,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseButtonPressed( 
-						const MouseButtonEvent & mouseButtonPressedEvent ) 
-					throw() ;
+					const MouseButtonEvent & mouseButtonPressedEvent ) ;
+
 
 
 				/**
@@ -268,13 +282,13 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseButtonReleased( 
-						const MouseButtonEvent & mouseButtonReleasedEvent ) 
-					throw() ;
+					const MouseButtonEvent & mouseButtonReleasedEvent ) ;
 
 
 
 
 				// Joystick section.
+
 
 
 				/**
@@ -286,8 +300,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickAxisChanged( 
-						const JoystickAxisEvent & joystickAxisEvent ) 
-					throw() ;
+					const JoystickAxisEvent & joystickAxisEvent ) ;
+
 
 
 				/**
@@ -299,8 +313,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickTrackballChanged( 
-						const JoystickTrackballEvent & joystickTrackballEvent )
-					throw() ;
+					const JoystickTrackballEvent & joystickTrackballEvent ) ;
+
 
 
 				/**
@@ -312,8 +326,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickHatChanged( 
-						const JoystickHatEvent & joystickHatChangedEvent ) 
-					throw() ;
+					const JoystickHatEvent & joystickHatChangedEvent ) ;
+
 
 
 				/**
@@ -325,8 +339,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickButtonPressed( 
-						const JoystickButtonEvent & joystickButtonPressedEvent )
-					throw() ;
+					const JoystickButtonEvent & joystickButtonPressedEvent ) ;
+
 
 
 				/**
@@ -338,13 +352,14 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickButtonReleased( 
-					const JoystickButtonEvent & joystickButtonReleasedEvent )
-						throw() ;
+					const JoystickButtonEvent & joystickButtonReleasedEvent ) ;
 
 
+				
 				
 				
 				// Classical joystick section.
+				
 				
 				
 				/**
@@ -361,8 +376,8 @@ namespace OSDL
 				 * controller can react to this event.
 				 *
 				 */
-				virtual void joystickLeft( Events::AxisPosition leftExtent )
-					throw() ;
+				virtual void joystickLeft( Events::AxisPosition leftExtent ) ;
+				
 				
 				
 				/**
@@ -379,8 +394,8 @@ namespace OSDL
 				 * controller can react to this event.
 				 *
 				 */
-				virtual void joystickRight( Events::AxisPosition rightExtent )
-					throw() ;
+				virtual void joystickRight( Events::AxisPosition rightExtent ) ;
+				
 				
 				
 				/**
@@ -397,8 +412,8 @@ namespace OSDL
 				 * this controller can react to this event.
 				 *
 				 */
-				virtual void joystickUp( Events::AxisPosition upExtent ) 
-					throw() ;
+				virtual void joystickUp( Events::AxisPosition upExtent )  ;
+				
 				
 				
 				/**
@@ -415,8 +430,7 @@ namespace OSDL
 				 * this controller can react to this event.
 				 *
 				 */
-				virtual void joystickDown( Events::AxisPosition downExtent )
-					throw() ;
+				virtual void joystickDown( Events::AxisPosition downExtent ) ;
 				
 				
 		
@@ -428,7 +442,8 @@ namespace OSDL
 				 * controller can react to this event.
 				 *
 				 */
-				virtual void joystickFirstButtonPressed() throw() ;
+				virtual void joystickFirstButtonPressed() ;
+				  
 				  
 				  
 				/**
@@ -439,7 +454,8 @@ namespace OSDL
 				 * controller can react to this event.
 				 *
 				 */
-				virtual void joystickFirstButtonReleased() throw() ;
+				virtual void joystickFirstButtonReleased() ;
+				  
 				  
 				  
 				/**
@@ -450,7 +466,8 @@ namespace OSDL
 				 * controller can react to this event.
 				 *
 				 */
-				virtual void joystickSecondButtonPressed() throw() ;
+				virtual void joystickSecondButtonPressed() ;
+				  
 				  
 				  
 				/**
@@ -461,7 +478,7 @@ namespace OSDL
 				 * controller can react to this event.
 				 *
 				 */
-				virtual void joystickSecondButtonReleased() throw() ;
+				virtual void joystickSecondButtonReleased() ;
 				  
 				  
 
@@ -478,13 +495,13 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 			
 				
 							
 
-		private:
+			private:
+		
 		
 		
 				/**
@@ -495,7 +512,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit Controller( const Controller & source ) throw() ;
+				explicit Controller( const Controller & source ) ;
+			
 			
 			
 				/**
@@ -506,10 +524,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				Controller & operator = ( const Controller & source ) throw() ;
+				Controller & operator = ( const Controller & source ) ;
 										
 				
 		} ;
+		
 	
 	}	
 	
@@ -518,3 +537,4 @@ namespace OSDL
 
 
 #endif // OSDL_CONTROLLER_H_
+

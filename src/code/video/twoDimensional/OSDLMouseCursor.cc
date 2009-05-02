@@ -57,8 +57,8 @@ using namespace OSDL::Video::TwoDimensional ;
 
 
 
-MouseCursorException::MouseCursorException( const std::string & reason ) 
-		throw():
+
+MouseCursorException::MouseCursorException( const std::string & reason ) :
 	VideoException( reason )
 {
 
@@ -73,10 +73,10 @@ MouseCursorException::~MouseCursorException() throw()
 
 
 
+
 MouseCursor::MouseCursor( Length width,	Length height,
-	const Ceylan::Uint8 & data,	const Ceylan::Uint8 & mask,
-	Coordinate hotSpotAbscissa,	Coordinate hotSpotOrdinate ) 
-		throw( MouseCursorException ):
+		const Ceylan::Uint8 & data,	const Ceylan::Uint8 & mask,
+		Coordinate hotSpotAbscissa,	Coordinate hotSpotOrdinate ) :
 	_type( SystemCursor ),
 	_systemCursor(),	
 	_width( width ),
@@ -114,8 +114,7 @@ MouseCursor::MouseCursor( Length width,	Length height,
 
 
 MouseCursor::MouseCursor( const Surface & cursorSurface,
-	Coordinate hotSpotAbscissa,	Coordinate hotSpotOrdinate )
-		throw( MouseCursorException ):
+		Coordinate hotSpotAbscissa,	Coordinate hotSpotOrdinate ) :
 	_type( BlittedCursor ),
 	_systemCursor( 0 ),	
 	_width(),
@@ -131,7 +130,6 @@ MouseCursor::MouseCursor( const Surface & cursorSurface,
 	// @fixme develop it for 2D and OpenGL case:
 #if 0
 
-	
 	if ( Video::IsUsingOpenGL() )
 	{
 	
@@ -181,7 +179,7 @@ MouseCursor::~MouseCursor() throw()
 
 
 
-MouseCursor::CursorType MouseCursor::getType() const throw()
+MouseCursor::CursorType MouseCursor::getType() const
 {
 
 	return _type ;
@@ -189,8 +187,8 @@ MouseCursor::CursorType MouseCursor::getType() const throw()
 }
 
 
-const string MouseCursor::toString( Ceylan::VerbosityLevels level) 
-	const throw()
+
+const string MouseCursor::toString( Ceylan::VerbosityLevels level) const
 {
 
 	string res = "MouseCursor corresponding to a " ;

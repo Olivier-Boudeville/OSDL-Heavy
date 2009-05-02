@@ -30,12 +30,14 @@
 using namespace OSDL::Events ;
 
 
+
 InputDeviceHandlerException::InputDeviceHandlerException( 
-		const std::string & reason ) throw() :
+		const std::string & reason ) :
 	EventsException( reason )
 {
 
 }
+
 
 
 InputDeviceHandlerException::~InputDeviceHandlerException() throw()
@@ -46,10 +48,12 @@ InputDeviceHandlerException::~InputDeviceHandlerException() throw()
 
 
 
-InputDeviceHandler::InputDeviceHandler() throw( InputDeviceHandlerException )
+
+InputDeviceHandler::InputDeviceHandler()
 {
 
 }
+
 
 
 InputDeviceHandler::~InputDeviceHandler() throw()

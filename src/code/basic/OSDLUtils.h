@@ -28,11 +28,13 @@
 #define OSDL_UTILS_H_
 
 
+
 #include "OSDLException.h"  // for OSDL::Exception
 
 #include "Ceylan.h"         // for Ceylan::Latin1Char
 
 #include <string>
+
 
 
 #if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
@@ -43,8 +45,11 @@ struct SDL_RWops ;
 #endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 
+
+
 namespace OSDL
 {
+
 
 
 	/**
@@ -53,6 +58,8 @@ namespace OSDL
 	 */
 	namespace Utils
 	{
+	
+
 
 		/**
 		 * Returns a description of the main back-end related internal error.
@@ -60,7 +67,8 @@ namespace OSDL
          * @note Main back-end is SDL.
          *
 		 */
-		OSDL_DLL const std::string getBackendLastError() throw() ;	
+		OSDL_DLL const std::string getBackendLastError() ;	
+	
 	
     
 		/**
@@ -75,10 +83,10 @@ namespace OSDL
          * embedded-in-a-file filesystem.
          *
 		 */
-		OSDL_DLL Ceylan::Latin1Char getNativeDirectorySeparator() 
-        	throw( OSDL::Exception ) ;	
+		OSDL_DLL Ceylan::Latin1Char getNativeDirectorySeparator() ;	
 	
     
+	
 		/**
 		 * Returns the path where the program resides.
 		 *
@@ -94,9 +102,10 @@ namespace OSDL
          * @throw OSDL::Exception if the operation failed.
          *
 		 */
-		OSDL_DLL std::string getProgramPath() throw( OSDL::Exception ) ;	
+		OSDL_DLL std::string getProgramPath() ;	
 	
     
+	
 		/**
 		 * Returns the path where the user's home directory resides.
 		 *
@@ -118,7 +127,7 @@ namespace OSDL
          * @throw OSDL::Exception if the operation failed.
          *
 		 */
-		OSDL_DLL std::string getUserDirectory() throw( OSDL::Exception ) ;	
+		OSDL_DLL std::string getUserDirectory() ;	
 	
     
     
@@ -133,6 +142,7 @@ namespace OSDL
     	typedef ::SDL_RWops DataStream ;
         
         
+		
 		/**
 		 * Returns a DataStream corresponding to specific file object, which
          * can be of any sort (ex: standard file, embedded file, etc.).
@@ -147,7 +157,8 @@ namespace OSDL
          *
 		 */
 		OSDL_DLL DataStream & createDataStreamFrom( 
-        	Ceylan::System::File & sourceFile ) throw( OSDL::Exception ) ;	
+        	Ceylan::System::File & sourceFile ) ;	
+	
 	
 
 		/**
@@ -156,14 +167,15 @@ namespace OSDL
          * @throw OSDL::Exception if the operation failed.
          *
 		 */
-		OSDL_DLL void deleteDataStream( DataStream & datastream ) 
-        	throw( OSDL::Exception ) ;	
+		OSDL_DLL void deleteDataStream( DataStream & datastream ) ;	
+	
 	
 	    
 	}
 	
 
 }
+
 
 
 #endif // OSDL_UTILS_H_ 

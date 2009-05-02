@@ -39,14 +39,15 @@
 
 
 
-
 namespace OSDL
 {
+
 
 
 	namespace Rendering 
 	{
 	
+		
 				
 		/**
 		 * Exception to be thrown when the rendering task encounters an abnormal
@@ -57,11 +58,12 @@ namespace OSDL
 		{
 			public:
 
-				explicit RenderingException( const std::string & reason )
-					throw() ;
+				explicit RenderingException( const std::string & reason ) ;
+				
 				virtual ~RenderingException() throw() ;
 
 		} ;
+
 
 
 		
@@ -71,6 +73,7 @@ namespace OSDL
 		 */
 		typedef Ceylan::Uint32 RenderCount ;		
 				
+		
 				
 				
 		/**
@@ -117,6 +120,7 @@ namespace OSDL
 			public:
 			
 			
+			
 				/**
 				 * Constructs a new renderer.
 				 *
@@ -129,8 +133,8 @@ namespace OSDL
 				 * and no scheduler is available.
 				 *
 				 */
-				explicit Renderer( bool registerToScheduler = true ) 
-					throw( RenderingException ) ;
+				explicit Renderer( bool registerToScheduler = true ) ;
+				
 				
 				
 				/**
@@ -157,7 +161,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void render( 
-					Events::RenderingTick currentRenderingTick = 0 ) throw() ;
+					Events::RenderingTick currentRenderingTick = 0 ) ;
 
 				
 				
@@ -174,7 +178,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void onRenderingSkipped( 
-					Events::RenderingTick skippedRenderingTick ) throw() ;
+					Events::RenderingTick skippedRenderingTick ) ;
 				
 				
 					
@@ -191,13 +195,14 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 
 
 				// Static section.
+
 
 
 				/**
@@ -206,7 +211,7 @@ namespace OSDL
 				 * @return true iff a root renderer is already available.
 				 *
 				 */
-				static bool HasExistingRootRenderer() throw() ;
+				static bool HasExistingRootRenderer() ;
 				 
 				 
 				 
@@ -226,8 +231,7 @@ namespace OSDL
 				* various renderers could be chosen as the root one.
 				*
 	         	*/
-	        	static Renderer & GetExistingRootRenderer() 
-					throw( RenderingException ) ;
+	        	static Renderer & GetExistingRootRenderer() ;
 
 
 
@@ -237,8 +241,7 @@ namespace OSDL
 				 * @throw RenderingException if not renderer was available.
 				 *
 				 */
-	       		static void DeleteExistingRootRenderer() 
-					throw( RenderingException ) ;
+	       		static void DeleteExistingRootRenderer() ;
 		
 		
 		
@@ -246,12 +249,14 @@ namespace OSDL
 				 * Deletes the root renderer, if any.
 				 *
 				 */
-	       		static void DeleteRootRenderer() throw() ;
+	       		static void DeleteRootRenderer() ;
 					
+		
 		
 					
 					
 			protected:
+			
 			
 
 				/**
@@ -261,11 +266,13 @@ namespace OSDL
 				RenderCount _renderingDone ;
 		
 		
+		
 				/**
 				 * Counts the number of renderings skipped.
 				 *
 				 */
 				RenderCount _renderingSkipped ;
+		
 		
 		
 				/**
@@ -276,9 +283,11 @@ namespace OSDL
 				 */
 				Events::RenderingTick _lastRender ;
 		
+		
 
 				// No data structure enforced for views here.
 
+				 
 				 
 			
 			private:
@@ -292,7 +301,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit Renderer( const Renderer & source ) throw() ;
+				explicit Renderer( const Renderer & source ) ;
+			
 			
 			
 				/**
@@ -303,7 +313,8 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				Renderer & operator = ( const Renderer & source ) throw() ;
+				Renderer & operator = ( const Renderer & source ) ;
+				
 				
 				
 				/**
@@ -315,10 +326,12 @@ namespace OSDL
 				
 				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_RENDERER_H_

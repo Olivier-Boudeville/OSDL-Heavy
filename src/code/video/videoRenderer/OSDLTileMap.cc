@@ -51,11 +51,13 @@ using std::string ;
 
 
 
-TileMapException::TileMapException( const string & message ) throw(): 
+
+TileMapException::TileMapException( const string & message ) : 
 	VideoRenderingException( "TileMap exception: " + message ) 
 {
 
 }
+	
 	
 			
 TileMapException::~TileMapException() throw()
@@ -65,8 +67,9 @@ TileMapException::~TileMapException() throw()
 
 
 
+
 TileMap::TileMap( TileCount width, TileCount height,
-		Ceylan::System::File & mapFile ) throw( TileMapException ):
+		Ceylan::System::File & mapFile ) :
 	_width( width ),
 	_height( height ),
 	_size(_width*_height)
@@ -97,6 +100,7 @@ TileMap::TileMap( TileCount width, TileCount height,
 }
 
 
+
 TileMap::~TileMap() throw()
 {
 
@@ -106,7 +110,8 @@ TileMap::~TileMap() throw()
 }
 
 
-const string TileMap::toString( Ceylan::VerbosityLevels level ) const throw() 
+
+const string TileMap::toString( Ceylan::VerbosityLevels level ) const 
 {
 
 	string res = "TileMap whose dimensions are " + Ceylan::toString( _width )
@@ -124,7 +129,7 @@ const string TileMap::toString( Ceylan::VerbosityLevels level ) const throw()
 		for ( TileCount i = 0; i < _width; i++ )
 		{
 	
-			
+			// TO-DO!	
 		
 		}
 		
@@ -134,8 +139,4 @@ const string TileMap::toString( Ceylan::VerbosityLevels level ) const throw()
 	return res + Ceylan::formatStringList( l ) ;
 	
 }
-
-
-
-// Static section.
 

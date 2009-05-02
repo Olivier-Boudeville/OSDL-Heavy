@@ -33,6 +33,7 @@
 #include "OSDLEmbeddedFileSystemManager.h"   
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
@@ -87,8 +88,7 @@ using namespace OSDL ;
 // CD track section.
 
 
-CDTrack::CDTrack( const LowLevelCDROMTrack & track ) 
-		throw( CDROMDriveException ):
+CDTrack::CDTrack( const LowLevelCDROMTrack & track ) :
 	_trackData( & track )
 {
 
@@ -112,7 +112,7 @@ CDTrack::~CDTrack() throw()
 
 
 
-TrackNumber CDTrack::getTrackNumber() const throw()
+TrackNumber CDTrack::getTrackNumber() const
 {
 
 #if OSDL_USES_SDL
@@ -129,7 +129,7 @@ TrackNumber CDTrack::getTrackNumber() const throw()
 
 
 
-TrackType CDTrack::getTrackType() const throw( CDROMDriveException )
+TrackType CDTrack::getTrackType() const
 {
 
 #if OSDL_USES_SDL
@@ -163,7 +163,7 @@ TrackType CDTrack::getTrackType() const throw( CDROMDriveException )
 
 
 
-FrameCount CDTrack::getLength() const throw()
+FrameCount CDTrack::getLength() const
 {
 
 #if OSDL_USES_SDL
@@ -180,7 +180,7 @@ FrameCount CDTrack::getLength() const throw()
 
 
 
-FrameCount CDTrack::getFrameOffset() const throw()
+FrameCount CDTrack::getFrameOffset() const
 {
 
 #if OSDL_USES_SDL
@@ -197,9 +197,8 @@ FrameCount CDTrack::getFrameOffset() const throw()
 
 
 
-const string CDTrack::toString( Ceylan::VerbosityLevels level ) const throw()
+const string CDTrack::toString( Ceylan::VerbosityLevels level ) const
 {
-	
 	
 #if OSDL_USES_SDL
 
@@ -261,9 +260,9 @@ const FrameCount CDROMDrive::FramesPerSecond = 75 ;
 #endif // OSDL_USES_SDL
 	
 	
+	
 				
-CDROMDrive::CDROMDrive( CDROMDriveNumber driveNumber ) 
-		throw( CDROMDriveException ):
+CDROMDrive::CDROMDrive( CDROMDriveNumber driveNumber ) :
 	Object(),
 	_driveNumber( driveNumber ),
 	_statusUpdated( false ),
@@ -291,7 +290,7 @@ CDROMDrive::~CDROMDrive() throw()
 
 
 
-void CDROMDrive::open() throw( CDROMDriveException )
+void CDROMDrive::open()
 {
 
 #if OSDL_USES_SDL
@@ -312,7 +311,7 @@ void CDROMDrive::open() throw( CDROMDriveException )
 
 
 
-void CDROMDrive::close() throw( CDROMDriveException )
+void CDROMDrive::close()
 {
 
 #if OSDL_USES_SDL
@@ -323,7 +322,7 @@ void CDROMDrive::close() throw( CDROMDriveException )
 		
 	SDL_CDClose( _driveStatus ) ;
 	
-	// Owned ?::free( _driveStatus ) ?
+	// Owned? ::free( _driveStatus )?
 	_driveStatus = 0 ;
 	
 #endif // OSDL_USES_SDL
@@ -332,7 +331,7 @@ void CDROMDrive::close() throw( CDROMDriveException )
 
 
 
-void CDROMDrive::eject() const throw( CDROMDriveException )
+void CDROMDrive::eject() const
 {
 
 #if OSDL_USES_SDL
@@ -350,7 +349,7 @@ void CDROMDrive::eject() const throw( CDROMDriveException )
 
 
 
-CDROMDrive::Status CDROMDrive::getStatus() throw( CDROMDriveException )
+CDROMDrive::Status CDROMDrive::getStatus()
 {
 			
 	Status status = getConstStatus() ;
@@ -364,7 +363,6 @@ CDROMDrive::Status CDROMDrive::getStatus() throw( CDROMDriveException )
 		
 
 CDROMDrive::Status CDROMDrive::getConstStatus() const 
-	throw( CDROMDriveException )
 {
 
 #if OSDL_USES_SDL
@@ -414,7 +412,7 @@ CDROMDrive::Status CDROMDrive::getConstStatus() const
 
 
 
-bool CDROMDrive::isCDInDrive() throw( CDROMDriveException )
+bool CDROMDrive::isCDInDrive()
 {
 	
 	CDROMDrive::Status status =	getStatus() ;
@@ -425,7 +423,7 @@ bool CDROMDrive::isCDInDrive() throw( CDROMDriveException )
 
 
 
-TrackNumber CDROMDrive::getTracksCount() const throw( CDROMDriveException )
+TrackNumber CDROMDrive::getTracksCount() const
 {
 
 #if OSDL_USES_SDL
@@ -446,8 +444,7 @@ TrackNumber CDROMDrive::getTracksCount() const throw( CDROMDriveException )
 
 
 
-FrameCount CDROMDrive::getTrackDuration( TrackNumber targetTrack ) 
-	const throw( CDROMDriveException )
+FrameCount CDROMDrive::getTrackDuration( TrackNumber targetTrack ) const
 {
 	
 #if OSDL_USES_SDL
@@ -471,7 +468,6 @@ FrameCount CDROMDrive::getTrackDuration( TrackNumber targetTrack )
 
 	
 CDTrack & CDROMDrive::getTrack( TrackNumber targetTrack ) const 
-	throw( CDROMDriveException )
 {
 
 #if OSDL_USES_SDL
@@ -496,7 +492,7 @@ CDTrack & CDROMDrive::getTrack( TrackNumber targetTrack ) const
 	
 					
 void CDROMDrive::playFrames( FrameCount startingFrame, 
-	FrameCount durationInFrames ) throw( CDROMDriveException )		
+	FrameCount durationInFrames )	
 {
 
 #if OSDL_USES_SDL
@@ -517,7 +513,7 @@ void CDROMDrive::playFrames( FrameCount startingFrame,
 
 void CDROMDrive::playTracks( TrackNumber startingTrack, 
 	TrackNumber numberOfTracks, FrameCount startingFrameOffset, 
-	FrameCount stoppingFrameOffset ) throw( CDROMDriveException )	
+	FrameCount stoppingFrameOffset )
 {
 
 #if OSDL_USES_SDL
@@ -539,7 +535,7 @@ void CDROMDrive::playTracks( TrackNumber startingTrack,
 
 
 
-void CDROMDrive::pause() const throw( CDROMDriveException )
+void CDROMDrive::pause() const
 {
 	
 #if OSDL_USES_SDL
@@ -558,7 +554,7 @@ void CDROMDrive::pause() const throw( CDROMDriveException )
 
 
 
-void CDROMDrive::resume() const throw( CDROMDriveException )
+void CDROMDrive::resume() const
 {
 	
 #if OSDL_USES_SDL
@@ -577,7 +573,7 @@ void CDROMDrive::resume() const throw( CDROMDriveException )
 
 
 		
-const string CDROMDrive::toString( Ceylan::VerbosityLevels level ) const throw()
+const string CDROMDrive::toString( Ceylan::VerbosityLevels level ) const
 {
 	
 #if OSDL_USES_SDL
@@ -668,7 +664,6 @@ const string CDROMDrive::toString( Ceylan::VerbosityLevels level ) const throw()
     
     		   				
 std::list<std::string> CDROMDrive::GetListOfInsertedMedia()
-	throw( CDROMDriveException )
 {
 	
 #if OSDL_USES_PHYSICSFS
@@ -699,7 +694,7 @@ std::list<std::string> CDROMDrive::GetListOfInsertedMedia()
 
 
 FrameCount CDROMDrive::ConvertTimeToFrameCount( 
-	Ceylan::System::Second duration ) throw()
+	Ceylan::System::Second duration )
 {
 
 	return duration * FramesPerSecond ;
@@ -707,8 +702,9 @@ FrameCount CDROMDrive::ConvertTimeToFrameCount(
 }
 
 
+
 Ceylan::System::Second CDROMDrive::ConvertFrameCountToTime( 
-	FrameCount duration ) throw()
+	FrameCount duration )
 {
 
 	return duration / FramesPerSecond ;

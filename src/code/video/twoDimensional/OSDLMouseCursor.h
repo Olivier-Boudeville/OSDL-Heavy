@@ -37,6 +37,7 @@
 
 
 
+
 #if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 // No need to include SDL header here:
@@ -46,11 +47,15 @@ struct SDL_Cursor ;
 
 
 
+
 namespace OSDL
 {
 
+
+
 	namespace Video
 	{
+
 
 		
 		#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
@@ -74,8 +79,10 @@ namespace OSDL
 		#endif // OSDL_USES_SDL
 
 		
+		
 		// Cursor shape may be a surface.
 		class Surface ;
+		
 		
 		
 		namespace OpenGL
@@ -85,6 +92,8 @@ namespace OSDL
 			class GLTexture ;
 		
 		}
+		
+		
 		
 		
 		namespace TwoDimensional
@@ -100,8 +109,7 @@ namespace OSDL
 			{
 				public:
 				
-					MouseCursorException( const std::string & exception ) 
-						throw() ;
+					MouseCursorException( const std::string & exception )  ;
 						
 					virtual ~MouseCursorException() throw() ;
 					
@@ -148,8 +156,10 @@ namespace OSDL
 			{
 			
 					
+					
 				public:
 						
+					
 					
 					/**
 					 * Describes the different cursor types:
@@ -171,6 +181,7 @@ namespace OSDL
 						TexturedCursor
 					
 					} ;
+						
 						
 							
 					/**
@@ -202,13 +213,12 @@ namespace OSDL
 					 *
 					 */
 					MouseCursor( 
-							Length width,
-							Length height,
-							const Ceylan::Uint8 & data,
-							const Ceylan::Uint8 & mask,
-							Coordinate hotSpotAbscissa,
-							Coordinate hotSpotOrdinate )
-						throw( MouseCursorException ) ;
+						Length width,
+						Length height,
+						const Ceylan::Uint8 & data,
+						const Ceylan::Uint8 & mask,
+						Coordinate hotSpotAbscissa,
+						Coordinate hotSpotOrdinate ) ;
 					
 					
 						
@@ -231,14 +241,16 @@ namespace OSDL
 					 * @throw MouseCursorException if the operation failed.
 					 *
 					 */
-					MouseCursor( const Surface & cursorSurface,
-							Coordinate hotSpotAbscissa,
-							Coordinate hotSpotOrdinate )
-						throw( MouseCursorException ) ;
+					MouseCursor( 
+						const Surface & cursorSurface,
+						Coordinate hotSpotAbscissa,
+						Coordinate hotSpotOrdinate ) ;
+						
 						
 					
 					/// Virtual destructor.
 					virtual ~MouseCursor() throw() ;
+					
 					
 					
 					
@@ -248,7 +260,8 @@ namespace OSDL
 					 * @see CursorType
 					 *
 					 */	
-					CursorType getType() const throw() ;
+					CursorType getType() const ;
+					
 					
 					
 	 	            /**
@@ -264,8 +277,7 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 				
 						
 							
@@ -273,8 +285,10 @@ namespace OSDL
 				protected:
 						
 						
-					
+						
+					/// Type of this cursor.
 					CursorType _type ;
+					
 					
 					
 					/**
@@ -283,10 +297,12 @@ namespace OSDL
 					 */
 					LowLevelCursor * _systemCursor ;
 					
+						
 										
 					
 					/// The width of the cursor, for SystemCursor only.
 					Length _width ;
+					
 					
 					/// The height of the cursor, for SystemCursor only.
 					Length _height ;
@@ -300,6 +316,7 @@ namespace OSDL
 					Surface * _surface ;
 					
 					
+					
 					/**
 					 * The cursor shape, for TexturedCursor type.
 					 *
@@ -308,15 +325,19 @@ namespace OSDL
 					
 					
 					
+					
 					/// The abscissa of the cursor hot spot.
 					Coordinate _hotSpotAbscissa ;
+					
 					
 					/// The ordinate of the cursor hot spot.
 					Coordinate _hotSpotOrdinate ;
 					
 					
 					
+					
 				private:	
+
 
 
 					/**
@@ -327,7 +348,8 @@ namespace OSDL
 					 * constructor is called, implicitly or not.
 					 * 
 					 */			 
-					explicit MouseCursor( const MouseCursor & source ) throw() ;
+					explicit MouseCursor( const MouseCursor & source ) ;
+			
 			
 			
 					/**
@@ -338,17 +360,18 @@ namespace OSDL
 					 * operator is called, implicitly or not.
 					 * 
 					 */			 
-					MouseCursor & operator = ( const MouseCursor & source )
-						throw() ;
+					MouseCursor & operator = ( const MouseCursor & source ) ;
 					
 					
-			} ;			
+			} ;
+						
 											
 		}
 	
 	}
 
 }				
+
 
 
 #endif // OSDL_MOUSE_CURSOR_H_

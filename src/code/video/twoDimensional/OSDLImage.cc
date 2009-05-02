@@ -62,13 +62,16 @@ using namespace Ceylan::Log ;
 using namespace Ceylan::System ;
 
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::TwoDimensional ;
+
 
 
 /// JPG and PNG are the two recommended formats:
 
 const string Image::JPGTag  = "JPG" ;
 const string Image::PNGTag  = "PNG" ;
+
 
 
 /// Other supported formats are:
@@ -82,6 +85,7 @@ const string Image::TGATag  = "TGA" ;
 const string Image::XPMTag  = "XPM" ;
 
 
+
 /**
  * Implementation notes:
  *
@@ -92,7 +96,8 @@ const string Image::XPMTag  = "XPM" ;
  */
 
 
-ImageException::ImageException( const std::string & reason ) throw():
+
+ImageException::ImageException( const std::string & reason ) :
 	VideoException( reason )
 {
 
@@ -105,20 +110,21 @@ ImageException::~ImageException() throw()
 
 }
 	
+	
 
 
 /**
  * @see http://jcatki.no-ip.org/SDL_image/SDL_image.html
  *
  */
-Image::Image( const string & filename ) throw( ImageException ) 
+Image::Image( const string & filename ) 
 {
 
 }
 
 
 
-Image::~Image() throw() 
+Image::~Image() throw()
 {
 
 }	
@@ -126,7 +132,7 @@ Image::~Image() throw()
 
 
 Surface & Image::LoadIcon( const string & filename, 
-	Pixels::ColorElement ** mask ) throw( ImageException )
+	Pixels::ColorElement ** mask )
 {
 
 	// Adapted from SDL example (testwm.c).
@@ -135,7 +141,7 @@ Surface & Image::LoadIcon( const string & filename,
 	LogPlug::debug( "Loading icon." ) ;
 #endif // OSDL_DEBUG_IMAGE
 
-	// Do not convert to display, setMode should not have been called already !
+	// Do not convert to display, setMode should not have been called already!
 	
 	// Image format should be auto-detected:
 	Surface & iconSurface = Surface::LoadImage( filename, 
@@ -244,8 +250,7 @@ Surface & Image::LoadIcon( const string & filename,
 
 
 void Image::Load( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -452,8 +457,7 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 
 
 void Image::LoadJPG( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -619,8 +623,7 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 	
 	
 void Image::LoadPNG( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -785,8 +788,7 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 	
 	
 void Image::LoadBMP( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -949,8 +951,7 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 	
 	
 void Image::LoadGIF( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -1113,8 +1114,7 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 	
 	
 void Image::LoadLBM( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -1279,8 +1279,7 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 	
 	
 void Image::LoadPCX( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -1445,8 +1444,7 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 	
 	
 void Image::LoadPNM( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -1609,8 +1607,7 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 	
 	
 void Image::LoadTGA( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -1775,8 +1772,7 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 
 
 void Image::LoadXPM( Surface & targetSurface, const std::string & filename, 
-		bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
-	throw( ImageException )
+	bool blitOnly, bool convertToDisplay, bool convertWithAlpha ) 
 {
 
 #if OSDL_USES_SDL_IMAGE
@@ -1942,7 +1938,7 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 
 
 void Image::SavePNG( Surface & targetSurface, const std::string & filename, 
-	bool overwrite ) throw( ImageException )
+	bool overwrite )
 {
 
 #if OSDL_USES_LIBPNG
@@ -2145,7 +2141,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 
 
 void Image::SaveBMP( Surface & targetSurface, const std::string & filename, 
-	bool overwrite ) throw( ImageException )
+	bool overwrite )
 {
 
 #if OSDL_USES_SDL
@@ -2171,7 +2167,7 @@ void Image::SaveBMP( Surface & targetSurface, const std::string & filename,
 
 
 
-const string Image::toString( Ceylan::VerbosityLevels level ) const throw()
+const string Image::toString( Ceylan::VerbosityLevels level ) const
 {
 	
 	if ( _filename.empty() )

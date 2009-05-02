@@ -36,35 +36,40 @@ using namespace OSDL::Events ;
 
 
 
-InputDevice::InputDevice() throw() :
+
+InputDevice::InputDevice() :
 	Ceylan::InputDevice()
 {
 
 }
 	
 	
-InputDevice::InputDevice( OSDL::MVC::Controller & actualController ) throw() :
+	
+InputDevice::InputDevice( OSDL::MVC::Controller & actualController ) :
 	Ceylan::InputDevice( actualController )
 {
 
 }
 
 
+
 InputDevice::~InputDevice() throw()
 {
 
 }
+
 	
 		
-OSDL::MVC::Controller & InputDevice::getActualController() 
-	const throw( EventsException )
+OSDL::MVC::Controller & InputDevice::getActualController() const
 {
+
 	return * dynamic_cast<OSDL::MVC::Controller *>( & getController() ) ;
+	
 }
 
 
-const string InputDevice::toString( Ceylan::VerbosityLevels level ) 
-	const throw() 
+
+const string InputDevice::toString( Ceylan::VerbosityLevels level ) const 
 {
 	
 	if ( _controller == 0 )
@@ -72,7 +77,7 @@ const string InputDevice::toString( Ceylan::VerbosityLevels level )
 			"not linked to any controller" ;
 	else
 		return "OSDL actual input device currently "
-			"linked with following controller : " 
+			"linked with following controller: " 
 			+ _controller->toString( level ) ;
 				
 }

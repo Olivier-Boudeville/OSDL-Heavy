@@ -30,9 +30,11 @@
 #include "OSDLSurface.h"      // for Surface
 
 
+
 using namespace OSDL::Events ;
 using namespace OSDL::Rendering ;
 using namespace OSDL::Engine ;
+
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -46,6 +48,7 @@ using namespace Ceylan::Log ;
 
 using std::string ;
 using std::list ;
+
 
 
 
@@ -64,7 +67,7 @@ using std::list ;
 
 
 StandardRenderer::StandardRenderer( Video::Surface & screen, 
-		bool registerToScheduler ) throw( RenderingException ):
+		bool registerToScheduler ) :
 	Renderer( registerToScheduler ),
 	_screen( & screen )
 {
@@ -83,7 +86,7 @@ StandardRenderer::~StandardRenderer() throw()
 
 
 
-void StandardRenderer::render( RenderingTick currentRenderingTick ) throw()
+void StandardRenderer::render( RenderingTick currentRenderingTick )
 {
 
 	OSDL_RENDER_LOG( "Standard rendering! " ) ;
@@ -108,8 +111,7 @@ void StandardRenderer::render( RenderingTick currentRenderingTick ) throw()
 
 
 
-const string StandardRenderer::toString( Ceylan::VerbosityLevels level ) 
-	const throw() 
+const string StandardRenderer::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Standard renderer, last rendering tick was " 
@@ -126,6 +128,4 @@ const string StandardRenderer::toString( Ceylan::VerbosityLevels level )
 	return res ;
 	
 }
-
-
 

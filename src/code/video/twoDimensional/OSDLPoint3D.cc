@@ -40,7 +40,7 @@ const Point3D Point3D::Origin( static_cast<Coordinate>( 0 ), 0, 0 ) ;
 
 
 
-Point3D::Point3D( Coordinate x, Coordinate y, Coordinate z ) throw()
+Point3D::Point3D( Coordinate x, Coordinate y, Coordinate z )
 {
 
 	_coord[0] = x ;
@@ -50,7 +50,8 @@ Point3D::Point3D( Coordinate x, Coordinate y, Coordinate z ) throw()
 }
 
 
-Point3D::Point3D( const Point3D & source ) throw() :
+
+Point3D::Point3D( const Point3D & source ) :
 	Point()
 {
 
@@ -61,7 +62,8 @@ Point3D::Point3D( const Point3D & source ) throw() :
 }
 
 
-Point3D::Point3D( const Ceylan::Maths::Linear::Vector3 & source ) throw()
+
+Point3D::Point3D( const Ceylan::Maths::Linear::Vector3 & source )
 {
 
 	_coord[0] = static_cast<Coordinate>( source.getElementAt( 0 ) ) ;
@@ -71,8 +73,9 @@ Point3D::Point3D( const Ceylan::Maths::Linear::Vector3 & source ) throw()
 }
 
 
+
 Point3D::Point3D( FloatingPointCoordinate x, FloatingPointCoordinate y,
-	FloatingPointCoordinate z ) throw()
+	FloatingPointCoordinate z )
 {
 
 	_coord[0] = static_cast<Coordinate>( x ) ;
@@ -82,13 +85,15 @@ Point3D::Point3D( FloatingPointCoordinate x, FloatingPointCoordinate y,
 }
 
 	
+	
 Point3D::~Point3D() throw()
 {
 
 }
 
 
-void Point3D::setFrom( const Point3D & source ) throw()
+
+void Point3D::setFrom( const Point3D & source )
 {
 
 	_coord[0] = source._coord[0] ;
@@ -98,7 +103,8 @@ void Point3D::setFrom( const Point3D & source ) throw()
 }
 
 
-void Point3D::setFrom( const Ceylan::Maths::Linear::Vector3 & source ) throw()
+
+void Point3D::setFrom( const Ceylan::Maths::Linear::Vector3 & source )
 {
 
 	_coord[0] = static_cast<Coordinate>( source.getElementAt( 0 ) ) ;
@@ -108,7 +114,8 @@ void Point3D::setFrom( const Ceylan::Maths::Linear::Vector3 & source ) throw()
 }
 
 
-const string Point3D::toString( Ceylan::VerbosityLevels level ) const throw()
+
+const string Point3D::toString( Ceylan::VerbosityLevels level ) const
 {
 
     return ( string( " ( " ) 
@@ -122,7 +129,8 @@ const string Point3D::toString( Ceylan::VerbosityLevels level ) const throw()
 }
 
 
-void Point3D::translate( Offset x, Offset y, Offset z ) throw() 
+
+void Point3D::translate( Offset x, Offset y, Offset z ) 
 {
 
 	_coord[0] += x ;
@@ -132,7 +140,8 @@ void Point3D::translate( Offset x, Offset y, Offset z ) throw()
 }
 
 
-void Point3D::flip() throw()
+
+void Point3D::flip()
 {
 
 	_coord[0] = - _coord[0] ;
@@ -142,7 +151,8 @@ void Point3D::flip() throw()
 }
 
 
-void Point3D::flipX() throw() 
+
+void Point3D::flipX() 
 {
 
 	_coord[0] = - _coord[0] ;
@@ -150,7 +160,8 @@ void Point3D::flipX() throw()
 }
 
 
-void Point3D::flipY() throw()
+
+void Point3D::flipY()
 {
 
 	_coord[1] = - _coord[1] ;
@@ -158,7 +169,8 @@ void Point3D::flipY() throw()
 }
 
 
-void Point3D::flipZ() throw()
+
+void Point3D::flipZ()
 {
 
 	_coord[2] = - _coord[2] ;
@@ -168,7 +180,7 @@ void Point3D::flipZ() throw()
 
 
 void Point3D::Translate( list<Point3D *> & pointList, 
-	Offset x, Offset y, Offset z ) throw()
+	Offset x, Offset y, Offset z )
 {
 
 	for ( list<Point3D *>::iterator it = pointList.begin(); 
@@ -179,7 +191,7 @@ void Point3D::Translate( list<Point3D *> & pointList,
 
 
 
-std::ostream & operator << ( std::ostream & os, const Point3D & p ) throw()
+std::ostream & operator << ( std::ostream & os, const Point3D & p )
 {
 
     return os << p.toString() ;

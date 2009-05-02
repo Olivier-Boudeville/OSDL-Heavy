@@ -52,11 +52,15 @@ struct SDL_Surface ;
 
 
 
+
 namespace OSDL
 {
 
+
+
 	namespace Video 
 	{
+	
 	
 
 		namespace TwoDimensional
@@ -71,6 +75,7 @@ namespace OSDL
 		}
 		
 		
+		
 		namespace OpenGL
 		{
 		
@@ -78,6 +83,7 @@ namespace OSDL
 			class GLTexture ;
 			
 		}
+		
 				
 
 		#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
@@ -100,16 +106,17 @@ namespace OSDL
 
 		#endif // OSDL_USES_SDL
 
+
 		
 		// Allows to keep track of the number of updates for a surface.
 		typedef Ceylan::Uint32 UpdateCount ;
 		
 		
+		
 		// Surfaces can be palettized.
 		class Palette ;
 		
-		using namespace Pixels ;
-		
+				
 		
 		/**
 		 * Mother class of all events sent by a Surface (event source) 
@@ -121,8 +128,9 @@ namespace OSDL
 		
 			public:
 		
-				explicit SurfaceEvent( Ceylan::EventSource & source ) throw() ;
-				SurfaceEvent() throw() ;
+				explicit SurfaceEvent( Ceylan::EventSource & source ) ;
+				
+				SurfaceEvent() ;
 			
 				virtual ~SurfaceEvent() throw() ;
 				
@@ -130,25 +138,29 @@ namespace OSDL
 		
 	
 		
+		
 		/// Thrown when video memory has been lost.
 		class OSDL_DLL VideoMemoryLostException: public VideoException
 		{
 		
 			public:
 			
-				VideoMemoryLostException( const std::string & message ) 
-					throw() ;
+				VideoMemoryLostException( const std::string & message )	;
+				
 				
 				/**
 				 * Constructor with no message, used when no particular 
 				 * reason is known.
 				 *
 				 */
-				VideoMemoryLostException() throw() ;
+				VideoMemoryLostException() ;
 				
 				virtual ~VideoMemoryLostException() throw() ;
 			
 		} ;
+		
+		
+		
 		
 		
 				
@@ -242,7 +254,7 @@ namespace OSDL
 		 * Screen surfaces have also methods to control the mouse position.
 		 *
 		 */
-		class OSDL_DLL Surface: 
+		class OSDL_DLL Surface : 
 			public TwoDimensional::UprightRectangle, 
 			public Ceylan::EventSource,
 			public Ceylan::Lockable, 
@@ -251,6 +263,7 @@ namespace OSDL
 	
 	
 			public:
+			
 			
 			
 				/**
@@ -276,12 +289,15 @@ namespace OSDL
 				 */
 
 
+
 				/// Indicates that a surface is to be stored in system memory.
 				static const Ceylan::Flags Software ;			   
 
 
+
 				/// Indicates that a surface is to be stored in video memory.
 				static const Ceylan::Flags Hardware ;			   
+				
 				
 				
 				/**
@@ -290,6 +306,7 @@ namespace OSDL
 				 *
 				 */
 				static const Ceylan::Flags AsynchronousBlit ;
+					
 					
 									
 				/// Indicates that a surface should have an exclusive palette.
@@ -304,8 +321,10 @@ namespace OSDL
 				static const Ceylan::Flags HardwareAcceleratedBlit ;
 				
 				
+				
 				/// Indicates that a surface is to use colorkey blits.
 				static const Ceylan::Flags ColorkeyBlit ;		   
+				
 				
 				
 				/**
@@ -316,8 +335,11 @@ namespace OSDL
 				static const Ceylan::Flags RLEColorkeyBlit  ;	   
 				
 				
+				
 				/// Indicates that a surface is to use alpha blending blits.	
 				static const Ceylan::Flags AlphaBlendingBlit ;	   
+
+
 
 				/// Indicates that a surface is to use preallocated memory.
 				static const Ceylan::Flags Preallocated ;	   
@@ -335,10 +357,12 @@ namespace OSDL
 
 
 
+
 				/*
 	 			 * These flags can only apply to <b>display</b> Surfaces.
 				 *
 				 */
+
 
 
 				/**
@@ -357,12 +381,14 @@ namespace OSDL
 				static const Ceylan::Flags DoubleBuffered ;
 				
 				
+				
 				/**
 				 * Indicates that a <b>display</b> surface is to be full 
 				 * screen, not windowed.
 				 *
 				 */
 				static const Ceylan::Flags FullScreen ;
+				
 				
 				
 				/**
@@ -372,12 +398,15 @@ namespace OSDL
 				 */
 				static const Ceylan::Flags OpenGL ;
 				
+				
+				
 				/**
 				 * Indicates that a <b>display</b> surface is to be 
 				 * resizable.
 				 *
 				 */
 				static const Ceylan::Flags Resizable ;
+				
 				
 				
 				
@@ -452,8 +481,8 @@ namespace OSDL
 					Pixels::ColorMask redMask   = 0, 
 					Pixels::ColorMask greenMask = 0,
 					Pixels::ColorMask blueMask  = 0, 
-					Pixels::ColorMask alphaMask = 0 ) 
-						throw( VideoException ) ;
+					Pixels::ColorMask alphaMask = 0 ) ;
+					
 					
 							 
 				/**
@@ -471,8 +500,7 @@ namespace OSDL
 				 *
 				 */
 				explicit Surface( LowLevelSurface & surface, 
-						DisplayType displayType = BackBuffer ) 
-					throw( VideoException ) ;
+					DisplayType displayType = BackBuffer ) ;
 				 
 				 
 				 
@@ -482,6 +510,7 @@ namespace OSDL
 				 *
 				 */
 				virtual ~Surface() throw() ;
+	
 	
 				
 				/**
@@ -498,8 +527,8 @@ namespace OSDL
 				 * implemented yet with gcc (3.3.5).
 				 *
 				 */
-				virtual Clonable & clone() const 
-					throw( Ceylan::ClonableException ) ;
+				virtual Clonable & clone() const ;
+				
 				
 
 				/**
@@ -513,7 +542,8 @@ namespace OSDL
 				 * @return the SDL surface corresponding to that surface.
 				 *
 				 */
-				virtual LowLevelSurface & getSDLSurface() const throw() ;
+				virtual LowLevelSurface & getSDLSurface() const ;
+				
 				
 				
 				/**
@@ -529,7 +559,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setSDLSurface( LowLevelSurface & newSurface, 
-					DisplayType displayType = BackBuffer ) throw() ;
+					DisplayType displayType = BackBuffer ) ;
+	
 	
 	
 	
@@ -538,7 +569,8 @@ namespace OSDL
 				 * of this Surface.
 				 *
 				 */
-				virtual DisplayType getDisplayType() const throw() ;
+				virtual DisplayType getDisplayType() const ;
+	
 	
 	
 				/**
@@ -546,8 +578,8 @@ namespace OSDL
 				 * of this surface.
 				 *
 				 */
-				virtual void setDisplayType( DisplayType newDisplayType )
-					throw() ;
+				virtual void setDisplayType( DisplayType newDisplayType ) ;
+				
 				
 							
 				/**
@@ -556,8 +588,9 @@ namespace OSDL
 				 * @see the static Flags defined in this class.
 				 *
 				 */
-				virtual Ceylan::Flags getFlags() const throw() ;
+				virtual Ceylan::Flags getFlags() const ;
 
+				
 				
 				/**
 				 * Sets the flags caracterizing this surface.
@@ -567,7 +600,8 @@ namespace OSDL
 				 * @see the static Flags defined in this class.
 				 *
 				 */				
-				virtual void setFlags( Ceylan::Flags newFlags ) throw() ;
+				virtual void setFlags( Ceylan::Flags newFlags ) ;
+	
 	
 	
 				/**
@@ -592,8 +626,8 @@ namespace OSDL
 				 * enough memory.
 				 *
 				 */
-				virtual void convertToDisplay( bool alphaChannelWanted = true ) 
-					throw( VideoException ) ;
+				virtual void convertToDisplay( bool alphaChannelWanted = true );
+	
 	
 	
 				/**
@@ -620,7 +654,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setAlpha( Ceylan::Flags flags, 
-					Pixels::ColorElement newAlpha ) throw( VideoException ) ;
+					Pixels::ColorElement newAlpha ) ;
+				
 				
 				
 				/**
@@ -634,8 +669,8 @@ namespace OSDL
 				 * @throw VideoException if no colorkey could be guessed.
 				 *
 				 */
-				Pixels::ColorDefinition guessColorKeyDefinition() const 
-					throw( VideoException ) ;
+				Pixels::ColorDefinition guessColorKeyDefinition() const ;
+				
 				
 				
 				/**
@@ -649,8 +684,8 @@ namespace OSDL
 				 * @throw VideoException if no colorkey could be guessed.
 				 *
 				 */
-				Pixels::PixelColor guessColorKey() const 
-					throw( VideoException ) ;
+				Pixels::PixelColor guessColorKey() const ;
+				
 				
 				
 				/**
@@ -680,7 +715,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setColorKey( Ceylan::Flags flags, 
-					Pixels::PixelColor keyPixelColor ) throw( VideoException ) ;
+					Pixels::PixelColor keyPixelColor ) ;
+				
 				
 				
 				/**
@@ -711,8 +747,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setColorKey( Ceylan::Flags flags, 
-						Pixels::ColorDefinition keyColorDef ) 
-					throw( VideoException ) ;
+					Pixels::ColorDefinition keyColorDef ) ;
+				
 				
 				
 				/**
@@ -726,8 +762,7 @@ namespace OSDL
 				 * or if there is not enough memory.
 				 *
 				 */
-				virtual void convertFromColorKeyToAlphaChannel() 
-					throw( VideoException ) ; 
+				virtual void convertFromColorKeyToAlphaChannel() ; 
 				
 				
 				
@@ -739,7 +774,7 @@ namespace OSDL
 				 * @throw VideoException if not palette is available.
 				 *
 				 */
-				virtual Palette & getPalette() const throw( VideoException ) ; 
+				virtual Palette & getPalette() const ; 
 				 
 				 
 				 
@@ -769,11 +804,10 @@ namespace OSDL
 				 *
 				 */
 				virtual bool setPalette( const Palette & newPalette, 
-						ColorCount startingColorIndex = 0,
-						ColorCount numberOfColors = 0, 
-						Ceylan::Flags targetedPalettes = 
-							Palette::Logical | Palette::Physical ) 
-					throw( VideoException ) ;
+					ColorCount startingColorIndex = 0,
+					ColorCount numberOfColors = 0, 
+					Ceylan::Flags targetedPalettes = 
+						Palette::Logical | Palette::Physical ) ;
 				
 				
 				
@@ -804,8 +838,8 @@ namespace OSDL
 				 *
 				 */
 				Surface & createColorReducedSurfaceFor( 
-						const Palette & palette, bool manageColorkey = true )
-					const throw( VideoException ) ;
+						const Palette & palette, bool manageColorkey = true ) 
+					const ;
 					
 				
 				
@@ -816,23 +850,29 @@ namespace OSDL
 				 * if there is no pixel format to retrieve.
 				 *
 				 */
-				virtual PixelFormat & getPixelFormat() const 
-					throw( VideoException ) ;
+				virtual Pixels::PixelFormat & getPixelFormat() const ;
+				
+				
 				
 				/// Sets this surface's pixel format.
-				virtual void setPixelFormat( PixelFormat & newFormat ) throw() ;
+				virtual void setPixelFormat( 
+					Pixels::PixelFormat & newFormat ) ;
+
 
 
 	
 				/// Returns this surface's pitch.
-				virtual Pitch getPitch() const throw() ;
+				virtual Pitch getPitch() const ;
+				
 				
 				/// Sets this surface's pitch.
-				virtual void setPitch( Pitch newPitch ) throw() ;
+				virtual void setPitch( Pitch newPitch ) ;
+
 
 
 				/// Returns the width of this Surface.
-				virtual Length getWidth() const throw() ;
+				virtual Length getWidth() const ;
+				
 				
 				
 				/**
@@ -843,12 +883,13 @@ namespace OSDL
 				 * surface and set its 'needs redraw' state to true.
 				 *
 				 */
-				virtual void setWidth( Length newWidth ) throw() ;
+				virtual void setWidth( Length newWidth ) ;
 	
 	
 	
 				/// Returns the height of this Surface.
-				virtual Length getHeight() const throw() ;
+				virtual Length getHeight() const ;
+				
 				
 				
 				/**
@@ -859,7 +900,8 @@ namespace OSDL
 				 * surface and set its 'needs redraw' state to true.
 				 *
 				 */
-				virtual void setHeight( Length newHeight ) throw() ;
+				virtual void setHeight( Length newHeight ) ;
+				
 				
 				
 				/**
@@ -888,7 +930,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void resize( Length newWidth, Length newHeight, 
-					bool scaleContent = false ) throw( VideoException ) ;
+					bool scaleContent = false ) ;
+
 
 
 				/**
@@ -899,7 +942,8 @@ namespace OSDL
 				 * @see getBytesPerPixel
 				 *
 				 */
-				virtual BitsPerPixel getBitsPerPixel() const throw() ;
+				virtual BitsPerPixel getBitsPerPixel() const ;
+				
 				
 				
 				/**
@@ -909,8 +953,8 @@ namespace OSDL
 				 * settings.
 				 *
 				 */
-				virtual void setBitsPerPixel( BitsPerPixel newBitsPerPixel )
-					throw() ;
+				virtual void setBitsPerPixel( BitsPerPixel newBitsPerPixel ) ;
+				
 				
 				
 				/**
@@ -922,7 +966,8 @@ namespace OSDL
 				 * @see getBitsPerPixel
 				 *
 				 */
-				virtual BytesPerPixel getBytesPerPixel() const throw() ;
+				virtual BytesPerPixel getBytesPerPixel() const ;
+				
 				
 				
 				/**
@@ -932,8 +977,8 @@ namespace OSDL
 				 * settings.
 				 *
 				 */
-				virtual void setBytesPerPixel( BytesPerPixel newBytesPerPixel )
-					throw() ;
+				virtual void setBytesPerPixel( 
+					BytesPerPixel newBytesPerPixel ) ;
 				
 				
 												
@@ -942,7 +987,8 @@ namespace OSDL
 				 * of pixels.			
 				 *
 				 */
-				virtual void * getPixels() const throw() ;				
+				virtual void * getPixels() const ;				
+				
 				
 				
 				/**
@@ -950,7 +996,7 @@ namespace OSDL
 				 * pixels.	
 				 *
 				 */			
-				virtual void setPixels( void * newPixels ) throw()	;
+				virtual void setPixels( void * newPixels ) ;
 						
 														
 									 
@@ -968,8 +1014,8 @@ namespace OSDL
 				 *
 				 */
 				virtual bool fill( 
-						Pixels::ColorDefinition colorDef = Pixels::Black ) 
-					throw() ; 
+					Pixels::ColorDefinition colorDef = Pixels::Black ) ; 
+
 
 				
 				/**
@@ -986,7 +1032,8 @@ namespace OSDL
 				 * @throw VideoException if the operation failed.
 				 *
 				 */
-				virtual bool clear() throw( VideoException ) ; 
+				virtual bool clear() ; 
+
 
 
 				/**
@@ -1008,8 +1055,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual Surface & flipVertical() const 
-					throw( VideoException ) ;
+				virtual Surface & flipVertical() const ;
+
 
 
 				/**
@@ -1031,8 +1078,7 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual Surface & flipHorizontal() const 
-					throw( VideoException ) ; 
+				virtual Surface & flipHorizontal() const ; 
 
 
 
@@ -1049,7 +1095,7 @@ namespace OSDL
 				 *
 				 */
 				virtual std::string describePixelAt( 
-					Coordinate x, Coordinate y ) throw() ;
+					Coordinate x, Coordinate y ) ;
 				
 				
 
@@ -1067,8 +1113,8 @@ namespace OSDL
 				 *
 				 */	
 				virtual Pixels::PixelColor getPixelColorAt( 
-						Coordinate x, Coordinate y ) const
-					throw( VideoException ) ;
+					Coordinate x, Coordinate y ) const ;
+
 
 
 				/**
@@ -1086,8 +1132,8 @@ namespace OSDL
 				 *
 				 */	
 				virtual Pixels::ColorDefinition getColorDefinitionAt( 
-						Coordinate x, Coordinate y ) 
-					const throw( VideoException ) ;
+					Coordinate x, Coordinate y ) const ;
+				 
 				 
 				 
 				/**
@@ -1134,10 +1180,12 @@ namespace OSDL
 				 */
 				virtual void putRGBAPixelAt( 
 					Coordinate x, Coordinate y, 
-					ColorElement red, ColorElement green, ColorElement blue, 
-					ColorElement alpha = AlphaOpaque, 
+					Pixels::ColorElement red, Pixels::ColorElement green,
+					Pixels::ColorElement blue, 
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque, 
 					bool blending = true, bool clipping = true, 
-					bool locking = false ) throw( VideoException ) ;
+					bool locking = false ) ;
+
 
 
 				/**
@@ -1178,9 +1226,10 @@ namespace OSDL
 				 *
 				 */
 				virtual void putColorDefinitionAt( Coordinate x, Coordinate y, 
-					ColorDefinition colorDef, 
+					Pixels::ColorDefinition colorDef, 
 					bool blending = true, bool clipping = true, 
-					bool locking = false ) throw( VideoException ) ;
+					bool locking = false ) ;
+
 
 
 				/**
@@ -1208,10 +1257,11 @@ namespace OSDL
 				 *
 				 */
 				virtual void putPixelColorAt( Coordinate x, Coordinate y, 
-					PixelColor convertedColor, 
-					ColorElement alpha = Pixels::AlphaOpaque,
+					Pixels::PixelColor convertedColor, 
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque,
 					bool blending = true, bool clipping = true, 
-					bool locking = false ) throw( VideoException ) ;
+					bool locking = false ) ;
+				
 				
 				
 				/**
@@ -1239,7 +1289,8 @@ namespace OSDL
 				 *
 				 */
 				virtual bool setAlphaForColor( Pixels::ColorDefinition colorDef,
-					Pixels::ColorElement newAlpha ) throw() ;
+					Pixels::ColorElement newAlpha ) ;
+					
 					
 					
 				/**
@@ -1268,9 +1319,9 @@ namespace OSDL
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw() ;
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
 			
+					
 					
 				/**
 				 * Draws an horizontal line ranging from point (xStart;y),
@@ -1296,7 +1347,8 @@ namespace OSDL
 				 */
 				virtual bool drawHorizontalLine( 
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
-					Pixels::PixelColor actualColor ) throw() ;
+					Pixels::PixelColor actualColor ) ;
+			
 			
 					
 				/**
@@ -1323,8 +1375,8 @@ namespace OSDL
 				 */
 				virtual bool drawHorizontalLine( 
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
-					Pixels::ColorDefinition colorDef = Pixels::White )
-						throw() ;
+					Pixels::ColorDefinition colorDef = Pixels::White ) ;
+					
 					
 					
 				/**
@@ -1353,8 +1405,8 @@ namespace OSDL
 					Coordinate x, Coordinate yStart, Coordinate yStop, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw() ;								
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;		
+					
 					
 					
 				/**
@@ -1380,9 +1432,9 @@ namespace OSDL
 				 *
 				 */
 				virtual bool drawVerticalLine(
-						Coordinate x, Coordinate yStart, Coordinate yStop, 
-						Pixels::ColorDefinition colorDef = Pixels::White )
-					throw() ;								
+					Coordinate x, Coordinate yStart, Coordinate yStop, 
+					Pixels::ColorDefinition colorDef = Pixels::White ) ;
+							
 
 
 				/**
@@ -1411,9 +1463,9 @@ namespace OSDL
 					Coordinate xStop, Coordinate yStop, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw() ;
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
 		
+					
 					
 				/**
 				 * Draws a line in this surface, ranging from point
@@ -1440,8 +1492,8 @@ namespace OSDL
 				virtual bool drawLine(
 					Coordinate xStart, Coordinate yStart, 
 					Coordinate xStop, Coordinate yStop, 
-					Pixels::ColorDefinition = Pixels::White )
-						throw() ;
+					Pixels::ColorDefinition = Pixels::White ) ;
+				
 				
 					
 				/**
@@ -1459,9 +1511,9 @@ namespace OSDL
 				 *
 				 */
 				virtual bool drawCross( const TwoDimensional::Point2D & center, 
-						Pixels::ColorDefinition colorDef = Pixels::White, 
-						Length squareEdge = 5 )
-					throw() ;
+					Pixels::ColorDefinition colorDef = Pixels::White, 
+					Length squareEdge = 5 ) ;
+				
 					
 					
 				/**
@@ -1479,9 +1531,9 @@ namespace OSDL
 				 *
 				 */
 				virtual bool drawCross( Coordinate xCenter, Coordinate yCenter, 
-						Pixels::ColorDefinition colorDef = Pixels::White, 
-						Length squareEdge = 5 )
-					throw() ;
+					Pixels::ColorDefinition colorDef = Pixels::White, 
+					Length squareEdge = 5 ) ;
+					
 					
 					
 				/**
@@ -1499,7 +1551,8 @@ namespace OSDL
 				 */
 				virtual bool drawEdges( 
 					Pixels::ColorDefinition edgeColor = Pixels::White, 
-					Length edgeWidth = 1 ) throw() ;
+					Length edgeWidth = 1 ) ;
+					
 					
 						
 				/**
@@ -1516,7 +1569,8 @@ namespace OSDL
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
 					Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-					bool filled = true ) throw() ;
+					bool filled = true ) ;
+				
 				
 				
 				/**
@@ -1534,9 +1588,9 @@ namespace OSDL
 				 *
 				 */
 				virtual bool drawBox( const UprightRectangle & rectangle, 
-						Pixels::ColorDefinition colorDef = Pixels::White, 
-						bool filled = true ) 
-					throw() ;
+					Pixels::ColorDefinition colorDef = Pixels::White, 
+					bool filled = true ) ;
+				
 				
 
 				/**
@@ -1573,7 +1627,7 @@ namespace OSDL
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
 					Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-					bool filled = true, bool blended = true ) throw() ;
+					bool filled = true, bool blended = true ) ;
 				
 				
 				
@@ -1610,7 +1664,8 @@ namespace OSDL
 					Coordinate xCenter, Coordinate yCenter, 
 					Length radius, 
 					Pixels::ColorDefinition colorDef = Pixels::White, 
-					bool filled = true, bool blended = true ) throw() ;
+					bool filled = true, bool blended = true ) ;
+				
 				
 				
 				/**
@@ -1659,8 +1714,7 @@ namespace OSDL
 					Length outerRadius, Length innerRadius, 
 					Pixels::ColorDefinition ringColorDef = Pixels::Blue, 
 					Pixels::ColorDefinition discColorDef = Pixels::White, 
-					bool blended = true )
-						throw() ;
+					bool blended = true ) ;
 				
 
 
@@ -1690,7 +1744,7 @@ namespace OSDL
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
 					Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-					bool filled = true ) throw() ;
+					bool filled = true ) ;
 
 
 
@@ -1717,8 +1771,7 @@ namespace OSDL
 				virtual bool drawEllipse( 
 					Coordinate xCenter, Coordinate yCenter, 
 					Length horizontalRadius, Length verticalRadius,
-					Pixels::ColorDefinition colorDef, bool filled = true )
-						throw() ;
+					Pixels::ColorDefinition colorDef, bool filled = true ) ;
 
 							
 														
@@ -1764,8 +1817,7 @@ namespace OSDL
 					Ceylan::Maths::AngleInDegrees angleStop,
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) 
-						throw() ;
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
 			
 			
 					
@@ -1802,7 +1854,7 @@ namespace OSDL
 					Length radius,
 					Ceylan::Maths::AngleInDegrees angleStart, 
 					Ceylan::Maths::AngleInDegrees angleStop, 
-					Pixels::ColorDefinition colorDef ) throw() ;
+					Pixels::ColorDefinition colorDef ) ;
 
 
 
@@ -1832,7 +1884,7 @@ namespace OSDL
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
 					Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-					bool filled = true ) throw() ;
+					bool filled = true ) ;
 
 
 
@@ -1860,7 +1912,7 @@ namespace OSDL
 					Coordinate x2, Coordinate y2, 
 					Coordinate x3, Coordinate y3, 
 					Pixels::ColorDefinition colorDef, 
-					bool filled = true ) throw() ;
+					bool filled = true ) ;
 					
 
 
@@ -1890,7 +1942,7 @@ namespace OSDL
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
 					Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-					bool filled = true ) throw() ;
+					bool filled = true ) ;
 
 
 
@@ -1917,8 +1969,7 @@ namespace OSDL
 					const TwoDimensional::Point2D & p1, 
 					const TwoDimensional::Point2D & p2, 
 					const TwoDimensional::Point2D & p3, 
-					Pixels::ColorDefinition colorDef, bool filled = true )
-						throw() ;
+					Pixels::ColorDefinition colorDef, bool filled = true ) ;
 					
 					
 					
@@ -1957,7 +2008,7 @@ namespace OSDL
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
 					Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-					bool filled = true ) throw() ;				
+					bool filled = true ) ;				
 
 
 
@@ -1993,8 +2044,8 @@ namespace OSDL
 				virtual bool drawPolygon( 
 					const std::list<TwoDimensional::Point2D *> summits,	
 					Coordinate x, Coordinate y,
-					Pixels::ColorDefinition colorDef, bool filled = true )
-						throw() ;	
+					Pixels::ColorDefinition colorDef, bool filled = true ) ;	
+					
 					
 						
 				/**
@@ -2024,8 +2075,7 @@ namespace OSDL
 				 	Length rowStride = 20, 
 					Pixels::ColorDefinition lineColor = Pixels::White,
 					bool fillBackground = false,  
-					Pixels::ColorDefinition backgroundColor = Pixels::Black )
-						throw() ; 
+					Pixels::ColorDefinition backgroundColor = Pixels::Black ) ; 
 				 		
 						
 						
@@ -2042,8 +2092,8 @@ namespace OSDL
 					Coordinate x, Coordinate y, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw() ; 
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ; 
+					
 					
 					
 				/**
@@ -2056,14 +2106,14 @@ namespace OSDL
 				 *
 				 */				
 				virtual bool printText( const std::string & text,
-						Coordinate x, Coordinate y, 
-						ColorDefinition colorDef = Pixels::White ) 
-					throw() ;
+					Coordinate x, Coordinate y, 
+					Pixels::ColorDefinition colorDef = Pixels::White ) ;
 					
 				
 				
 					
 				// Blit section.
+				
 				
 					
 				/**
@@ -2093,8 +2143,8 @@ namespace OSDL
 				 * @note Should not be called on a locked surface.
 				 *
 				 */	
-				 virtual bool blitTo( Surface & targetSurface ) 
-				 	const throw( VideoException ) ;
+				virtual bool blitTo( Surface & targetSurface ) const ;
+					
 					
 					
 				/**
@@ -2128,8 +2178,9 @@ namespace OSDL
 				 * @note Should not be called on a locked surface.
 				 *
 				 */	
-				 virtual bool blitTo( Surface & targetSurface, 
-					Coordinate x, Coordinate y ) const throw( VideoException ) ;
+				virtual bool blitTo( Surface & targetSurface, 
+					Coordinate x, Coordinate y ) const ;
+					
 					
 					
 				/**
@@ -2151,9 +2202,9 @@ namespace OSDL
 				 * @note Should not be called on a locked surface.
 				 *
 				 */	
-				 virtual bool blitTo( Surface & targetSurface, 
-					const TwoDimensional::Point2D & location ) const 
-						throw( VideoException ) ;
+				virtual bool blitTo( Surface & targetSurface, 
+					const TwoDimensional::Point2D & location ) const ;
+		
 		
 				 
 				/**
@@ -2177,12 +2228,10 @@ namespace OSDL
 				 *
 				 */	
 				 virtual bool blitTo( 
-				 		Surface & targetSurface, 
-					 	const TwoDimensional::UprightRectangle 
-							& sourceRectangle, 
-				 		const TwoDimensional::Point2D & destinationLocation ) 
-					const throw( VideoException ) ;
-
+				 	Surface & targetSurface, 
+					const TwoDimensional::UprightRectangle & sourceRectangle, 
+				 	const TwoDimensional::Point2D & destinationLocation ) 
+						const ;
 
 				 
 				
@@ -2207,8 +2256,7 @@ namespace OSDL
 				 *
 				 */	
 				virtual void displayAt( const OpenGL::GLTexture & texture,
-					Coordinate x, Coordinate y ) 
-					const throw( VideoException ) ;
+					Coordinate x, Coordinate y ) const ;
 				 
 				 
 				 
@@ -2229,9 +2277,9 @@ namespace OSDL
 				 *
 				 */	
 				virtual void displayAtCenter( 
-					const OpenGL::GLTexture & texture ) 
-					const throw( VideoException ) ;
+					const OpenGL::GLTexture & texture ) const ;
 				 
+				
 				
 				/**
 				 * Displays the specified texture at the center of that surface,
@@ -2256,9 +2304,8 @@ namespace OSDL
 				 *
 				 */	
 				virtual void displayAtCenterWithAlpha( 
-						const OpenGL::GLTexture & texture,
-						Pixels::FloatColorElement alpha ) 
-					const throw( VideoException ) ;
+					const OpenGL::GLTexture & texture,
+					Pixels::FloatColorElement alpha ) const ;
 				 
 				
 				
@@ -2282,9 +2329,8 @@ namespace OSDL
 				 *
 				 */	
 				virtual void displayAtCenterWithFadeIn( 
-						const OpenGL::GLTexture & texture,
-						Ceylan::System::Millisecond fadeInDuration = 2000 ) 
-					throw( VideoException ) ;
+					const OpenGL::GLTexture & texture,
+					Ceylan::System::Millisecond fadeInDuration = 2000 ) ;
 				 
 				 
 				 
@@ -2308,9 +2354,8 @@ namespace OSDL
 				 *
 				 */	
 				virtual void displayAtCenterWithFadeOut( 
-						const OpenGL::GLTexture & texture,
-						Ceylan::System::Millisecond fadeOutDuration = 1000 ) 
-					throw( VideoException ) ;
+					const OpenGL::GLTexture & texture,
+					Ceylan::System::Millisecond fadeOutDuration = 1000 ) ;
 				 
 				
 				
@@ -2370,10 +2415,9 @@ namespace OSDL
 				 *
 				 */
 				virtual Surface & zoom( 
-						Ceylan::Maths::Real abscissaZoomFactor, 
-						Ceylan::Maths::Real ordinateZoomFactor,	
-						bool antialiasing = true ) 
-					const throw( VideoException ) ;	
+					Ceylan::Maths::Real abscissaZoomFactor, 
+					Ceylan::Maths::Real ordinateZoomFactor,	
+					bool antialiasing = true ) const ;	
 				
 				
 				
@@ -2415,10 +2459,9 @@ namespace OSDL
 				 *
 				 */
 				virtual Surface & rotoZoom( 
-						Ceylan::Maths::AngleInDegrees angle, 
-						Ceylan::Maths::Real zoomFactor, 
-						bool antialiasing = true ) 
-					const throw( VideoException ) ;	
+					Ceylan::Maths::AngleInDegrees angle, 
+					Ceylan::Maths::Real zoomFactor, 
+					bool antialiasing = true ) const ;	
 				
 				
 				
@@ -2464,16 +2507,16 @@ namespace OSDL
 				 *
 				 */
 				virtual Surface & rotoZoom( 
-						Ceylan::Maths::AngleInDegrees angle, 
-						Ceylan::Maths::Real abscissaZoomFactor, 
-						Ceylan::Maths::Real ordinateZoomFactor,
-						bool antialiasing = true ) 
-					const throw( VideoException ) ;	
+					Ceylan::Maths::AngleInDegrees angle, 
+					Ceylan::Maths::Real abscissaZoomFactor, 
+					Ceylan::Maths::Real ordinateZoomFactor,
+					bool antialiasing = true ) const ;	
 				
 				
 				
 					
 				// Image section.
+					
 					
 					
 				/**
@@ -2491,9 +2534,9 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual UprightRectangle & getClippingArea() const 
-					throw( VideoException ) ;
+				virtual UprightRectangle & getClippingArea() const ;
 				
+	
 	
 				/**
 				 * Sets this surface's clipping area, expressed thanks to an
@@ -2504,7 +2547,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void setClippingArea( 
-					UprightRectangle & newClippingArea ) throw() ;
+					UprightRectangle & newClippingArea ) ;
 					
 					
 					
@@ -2524,8 +2567,7 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual UprightRectangle & getContentArea() const 
-					throw( VideoException ) ;
+				virtual UprightRectangle & getContentArea() const ;
 					
 					
 					
@@ -2566,11 +2608,11 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadImage( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadImage( 
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 				
 				 
 				 
@@ -2609,11 +2651,11 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadJPG( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadJPG( 
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 				
 					
 								
@@ -2652,11 +2694,11 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadPNG( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadPNG(
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 				
 				
 								
@@ -2695,11 +2737,11 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadBMP( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadBMP( 
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 				
 				
 								
@@ -2738,11 +2780,11 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadGIF( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadGIF( 
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 				
 				
 								
@@ -2781,11 +2823,11 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadLBM( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadLBM( 
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 				
 				
 								
@@ -2824,11 +2866,11 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadPCX( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadPCX( 
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 				
 						
 								
@@ -2867,11 +2909,11 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadPNM( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadPNM( 
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 				
 				
 								
@@ -2910,11 +2952,11 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadTGA( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadTGA( 
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 				
 								
 								
@@ -2953,12 +2995,13 @@ namespace OSDL
 				 * @fixme Should be inlined.			 
 				 *
 				 */					 
-				virtual void loadXPM( const std::string & filename,
-						bool blitOnly = false,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+				virtual void loadXPM( 
+					const std::string & filename,
+					bool blitOnly = false,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 			
+
 
 
 				/**
@@ -2981,8 +3024,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void savePNG( const std::string & filename, 
-						bool overwrite = true ) 
-					throw( TwoDimensional::ImageException ) ;
+					bool overwrite = true ) ;
 								
 				
 				
@@ -3006,8 +3048,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void saveBMP( const std::string & filename, 
-						bool overwrite = true ) 
-					throw( TwoDimensional::ImageException ) ;
+					bool overwrite = true ) ;
 				
 				
 				
@@ -3044,7 +3085,8 @@ namespace OSDL
 				 * if this surface is not a screen surface.
 				 *
 				 */
-				virtual void update() throw( VideoException ) ;
+				virtual void update() ;
+			
 			
 			
 				/**
@@ -3054,7 +3096,7 @@ namespace OSDL
 				 * by the update() method.
 				 *
 				 */
-				virtual UpdateCount getUpdateCount() const throw() ;
+				virtual UpdateCount getUpdateCount() const ;
 				
 				
 			
@@ -3087,9 +3129,9 @@ namespace OSDL
 				 * if this surface is not a screen surface.
 				 *
 				 */
-				 virtual void updateRectangles( 
-				 		const std::list<UprightRectangle *> & listRects )
-				 	throw( VideoException ) ;
+				virtual void updateRectangles( 
+				 	const std::list<UprightRectangle *> & listRects ) ;
+					
 					
 					
 				/**
@@ -3106,8 +3148,8 @@ namespace OSDL
 				 * if this surface is not a screen surface.
 				 * 
 				 */
-				 virtual void updateRectangle( const UprightRectangle & rect )	
-				 	throw( VideoException ) ;
+				virtual void updateRectangle( const UprightRectangle & rect ) ;
+				
 				
 					
 				/**
@@ -3127,9 +3169,8 @@ namespace OSDL
 				 * if this surface is not a screen surface.
 				 *
 				 */
-				 virtual void updateRectangle( 
-				 	Coordinate x, Coordinate y, Length width, Length height )
-						throw( VideoException ) ;
+				virtual void updateRectangle( 
+				 	Coordinate x, Coordinate y, Length width, Length height ) ;
 					
 
 
@@ -3141,11 +3182,12 @@ namespace OSDL
 				 * its container.
 				 *
 				 */
-				virtual void setRedrawState( bool needsToBeRedrawn ) throw() ;
+				virtual void setRedrawState( bool needsToBeRedrawn ) ;
+
 
 				
 				/// Returns the current need for redraw state.
-				virtual bool getRedrawState() const throw() ;
+				virtual bool getRedrawState() const ;
 				
 						
 								
@@ -3158,7 +3200,8 @@ namespace OSDL
 				 * performed without any problem.
 				 *
 				 */
-				virtual void redraw() throw() ;
+				virtual void redraw() ;
+				
 				
 				
 				/**
@@ -3169,8 +3212,9 @@ namespace OSDL
 				 * its widgets excluded.
 				 *
 				 */
-				virtual void redrawInternal() throw() ;
+				virtual void redrawInternal() ;
 				 
+			
 			
 				/**
 				 * Tells whether the internal SDL surface is void or not.
@@ -3180,7 +3224,8 @@ namespace OSDL
 				 * @note May be inline.
 				 *
 				 */
-				virtual bool isInternalSurfaceAvailable() const throw() ;
+				virtual bool isInternalSurfaceAvailable() const ;
+				 
 				 
 				 
 				/**
@@ -3192,8 +3237,8 @@ namespace OSDL
 				 * in the widget.
 				 *
 				 */
-				virtual void addWidget( TwoDimensional::Widget & widget ) 
-					throw( VideoException ) ;
+				virtual void addWidget( TwoDimensional::Widget & widget ) ;
+		
 		
 		
 				/**
@@ -3204,8 +3249,9 @@ namespace OSDL
 				 * instance itself.
 				 *
 				 */
-				Surface & getWidgetRenderTarget() throw() ; 
+				Surface & getWidgetRenderTarget() ; 
 		
+				
 						 
 				/**
 				 * Changes stacking inside this container surface so 
@@ -3218,8 +3264,9 @@ namespace OSDL
 				 * one.
 				 *
 				 */
-				virtual void putWidgetToFront( TwoDimensional::Widget & widget )
-					throw( VideoException ) ;
+				virtual void putWidgetToFront( 
+					TwoDimensional::Widget & widget ) ;
+	
 	
 
 				/**
@@ -3232,8 +3279,9 @@ namespace OSDL
 				 * @throw VideoException if the widget is not a registered one.
 				 *
 				 */
-				virtual void putWidgetToBack( TwoDimensional::Widget & widget ) 
-				   throw( VideoException ) ;
+				virtual void putWidgetToBack( 
+					TwoDimensional::Widget & widget ) ;
+	
 	
 	
 				/**
@@ -3244,7 +3292,8 @@ namespace OSDL
 				 * enabled of course.
 				 *
 				 */
-				virtual void centerMousePosition() throw() ;
+				virtual void centerMousePosition() ;
+				
 				
 				
 				/**
@@ -3259,12 +3308,13 @@ namespace OSDL
 				 *
 				 */
 				virtual void setMousePosition( 
-						Coordinate newX = 0, Coordinate newY = 0 ) 
-					throw( VideoException ) ;
+					Coordinate newX = 0, Coordinate newY = 0 ) ;
+
 
 
 	
 				// Lockable section.
+	
 	
 	
 				/**
@@ -3280,11 +3330,13 @@ namespace OSDL
 				 * This method cannot be inlined since it is inherited.
 				 *
 				 */				
-				 virtual bool mustBeLocked() const throw() ;
+				 virtual bool mustBeLocked() const ;
 		
 		
 	
+	
 				// Measurable section.
+
 
 
 				/**
@@ -3294,7 +3346,7 @@ namespace OSDL
 				 * @see Ceylan::Measurable interface.
 				 *
 			 	 */	
-				virtual Ceylan::System::Size getSizeInMemory() const throw() ;
+				virtual Ceylan::System::Size getSizeInMemory() const ;
 			
 			
 				
@@ -3324,9 +3376,9 @@ namespace OSDL
 					Pixels::ColorDefinition captionColor,
 					Pixels::ColorDefinition backgroundColor,
 					const std::string & caption = "", 
-					const UprightRectangle * inBox = 0 ) 
-						throw() ;
+					const UprightRectangle * inBox = 0 ) ;
 					
+				
 				
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -3340,13 +3392,14 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 
 				// Static section.
 
+				
 				
 				/**
 				 * Surface factory: creates a new Surface instance from
@@ -3373,10 +3426,10 @@ namespace OSDL
 				 *
 				 */
 				static Surface & LoadImage( 
-						const std::string & filename,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+					const std::string & filename,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
+	
 	
 	
 				/**
@@ -3404,10 +3457,10 @@ namespace OSDL
 				 *
 				 */
 				static Surface & LoadPNG( 
-						const std::string & filename,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
+					const std::string & filename,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
+	
 	
 	
 				/**
@@ -3435,11 +3488,9 @@ namespace OSDL
 				 *
 				 */
 				static Surface & LoadJPG( 
-						const std::string & filename,
-						bool convertToDisplayFormat = true,
-						bool convertWithAlpha = true ) 
-					throw( TwoDimensional::ImageException ) ;
-	
+					const std::string & filename,
+					bool convertToDisplayFormat = true,
+					bool convertWithAlpha = true ) ;
 	
 	
 		
@@ -3455,22 +3506,26 @@ namespace OSDL
 				 * meaning is different.
 				 *
 				 */
-				static std::string InterpretFlags( Ceylan::Flags flags ) 
-					throw() ;
+				static std::string InterpretFlags( Ceylan::Flags flags ) ;
+	
 	
 	
 				/// Offset used when drawing curve in a container.
 				static const Length graphAbscissaOffset ;
 				
+				
 				/// Offset used when drawing curve in a container.
 				static const Length graphOrdinateOffset ;
+
 
 				
 				/// Offset used when printing caption in a container.
 				static const Length captionAbscissaOffset ;
 				
+				
 				/// Offset used when printing caption in a container.
 				static const Length captionOrdinateOffset ;
+				
 				
 				
 				
@@ -3488,7 +3543,8 @@ namespace OSDL
 				 * @see Ceylan::Lockable
 				 *
 				 */
-				virtual void preUnlock() throw() ;
+				virtual void preUnlock() ;
+				
 				
 				
 				/**
@@ -3499,13 +3555,15 @@ namespace OSDL
 				 * @see Ceylan::Lockable
 				 *
 				 */
-				virtual void postLock() throw() ;
+				virtual void postLock() ;
 								 
+	
 	
 	
 				/// Offset of a Surface.
 				typedef Ceylan::Sint16 Offset ;
 
+					
 					
 				/**
 				 * Creates a completely void surface, whose display type is
@@ -3523,19 +3581,22 @@ namespace OSDL
 				 * supported.
 				 *
 				 */	
-				explicit Surface() throw( VideoException ) ;
+				explicit Surface() ;
 		
 		
 				 
 				/// Returns this surface's offset.
-				inline Offset getOffset() const throw() ;
+				inline Offset getOffset() const ;
+				
 				
 				/// Sets this surface's offset.
-				inline void setOffset( Offset offset ) throw() ;
+				inline void setOffset( Offset offset ) ;
 				
+					
 								
 				/// Releases internal SDL surface.
-				virtual void flush() throw() ;
+				virtual void flush() ;
+					
 							
 				
 				/**
@@ -3548,7 +3609,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void inconsistencyDetected( 
-					const std::string & message ) const throw() ;
+					const std::string & message ) const ;
+				
 				
 				
 				/**
@@ -3557,6 +3619,7 @@ namespace OSDL
 				 *
 				 */
 				LowLevelSurface * _surface ;
+	
 	
 	
 				/**
@@ -3571,6 +3634,7 @@ namespace OSDL
 				 *
 				 */
 				DisplayType _displayType ;
+					
 								
 	
 				/**
@@ -3579,6 +3643,7 @@ namespace OSDL
 				 *
 				 */
 				bool _mustBeLocked ;
+				
 				
 			
 				/**
@@ -3590,8 +3655,10 @@ namespace OSDL
 				 */
 				UpdateCount _updateCount ;
 				 
+				 
 		
 			private:
+				
 				
 				
 				/**
@@ -3614,7 +3681,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				Surface( const Surface & source ) throw() ;
+				Surface( const Surface & source ) ;
+			
 			
 			
 				/**
@@ -3625,10 +3693,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				Surface & operator = ( const Surface & source ) throw() ;
+				Surface & operator = ( const Surface & source ) ;
 				
 				
 		} ;
+		
 					
 	}
 	
@@ -3638,7 +3707,8 @@ namespace OSDL
 
 /// Used to serialize this surface into a stream.
 OSDL_DLL std::ostream & operator << ( std::ostream & os, 
-	OSDL::Video::Surface & s ) throw() ;
+	OSDL::Video::Surface & s ) ;
+
 
 
 #endif // OSDL_SURFACE_H_

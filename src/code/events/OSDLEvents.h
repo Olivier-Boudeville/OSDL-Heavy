@@ -39,12 +39,15 @@
 
 
 
+
 namespace OSDL
 {
 
 
+
 	// The event module is managed by the common module;
 	class CommonModule ;
+	
 	
 	
 	namespace Engine
@@ -57,17 +60,21 @@ namespace OSDL
 	
 	
 	
+	
 	/// Deals with all events of interest for a multimedia engine.
 	namespace Events
 	{
+	
 	
 	
 		// The event module can manage the keyboard.
 		class KeyboardHandler ;
 		
 			
+			
 		// The event module can manage the joysticks.
 		class JoystickHandler ;
+		
 		
 		
 		// The event module can manage a mouse.
@@ -85,6 +92,7 @@ namespace OSDL
 		typedef Ceylan::Uint32 Tick ;
 		
 		
+		
 		/**
 		 * Engine tick is the most fine unit of time managed by the scheduler.
 		 *
@@ -92,6 +100,7 @@ namespace OSDL
 		 *
 		 */
 		typedef Tick EngineTick ;
+		
 		
 		
 		/**
@@ -105,6 +114,7 @@ namespace OSDL
 		typedef Tick SimulationTick ;
 		
 		
+		
 		/**
 		 * Rendering tick is the most fine unit of time between two 
 		 * rendering steps.
@@ -116,6 +126,7 @@ namespace OSDL
 		typedef Tick RenderingTick ;
 	
 	
+	
 		/**
 		 * Rendering ticks is the most fine unit of time between two 
 		 * input pollings.
@@ -125,6 +136,7 @@ namespace OSDL
 		 *
 		 */
 		typedef Tick InputTick ;
+		
 		
 
 		/**
@@ -138,6 +150,7 @@ namespace OSDL
 		typedef EngineTick Period ;
 
 		
+		
 		/**
 		 * Basic event type, describing what technically happened.
 		 *
@@ -145,6 +158,7 @@ namespace OSDL
 		 *
 		 */
 		typedef Ceylan::Uint8 BasicEventType  ;
+		
 		
 		
 		/**
@@ -155,6 +169,7 @@ namespace OSDL
 		 */
 		typedef Ceylan::Uint8 UserEventType ;
 						
+
 
 			
 		/**
@@ -218,6 +233,7 @@ namespace OSDL
 		{
 		
 		
+		
 			// The common module has to create the event module.
 			friend class OSDL::CommonModule ;
 					
@@ -247,7 +263,8 @@ namespace OSDL
 				 *
 				 */ 						
 				virtual void waitForAnyKey( bool displayWaitingMessage = true )
-					const throw( EventsException ) ; 
+					const ; 
+
 
 
 				/**
@@ -268,8 +285,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */ 						
-				virtual void waitForAnyUserInput() const 
-					throw( EventsException ) ; 
+				virtual void waitForAnyUserInput() const ; 
+
 
 				
 				/**
@@ -279,7 +296,7 @@ namespace OSDL
 				 * @note Useful to poll events without blocking.
 				 *
 				 */
-				virtual bool hasPendingUserInput() const throw() ;
+				virtual bool hasPendingUserInput() const ;
 				
 				
 				
@@ -290,8 +307,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual bool getGrabInputMode() const 
-					throw( EventsException ) ;
+				virtual bool getGrabInputMode() const ;
+
 
 
 				/**
@@ -303,8 +320,7 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual void setGrabInputMode( bool newMode ) 
-					throw( EventsException ) ;
+				virtual void setGrabInputMode( bool newMode ) ;
 
 
 
@@ -333,8 +349,8 @@ namespace OSDL
 				 *
 				 */ 						
 				virtual bool sleepFor( Ceylan::System::Second seconds, 
-						Ceylan::System::Microsecond micros ) 
-					const throw( EventsException ) ; 
+					Ceylan::System::Microsecond micros ) const ; 
+
 
 				
 				/**
@@ -352,7 +368,7 @@ namespace OSDL
 				 * customize the scheduler.
 				 *
 				 */
-				 virtual void useScheduler( bool on = true ) throw() ;
+				virtual void useScheduler( bool on = true ) ;
 				 				  
 
 				
@@ -394,7 +410,8 @@ namespace OSDL
 					Ceylan::System::Callback idleCallback, 
 					void * callbackData = 0, 
 					Ceylan::System::Microsecond 
-						callbackExpectedMaxDuration = 0 ) throw() ;
+						callbackExpectedMaxDuration = 0 ) ;
+							
 							
 				
 				/**
@@ -406,7 +423,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setEventLoopTargetFrequency( 
-					Ceylan::Maths::Hertz targetFrequency ) throw() ;
+					Ceylan::Maths::Hertz targetFrequency ) ;
+				
 				
 				 										
 				/**
@@ -423,7 +441,8 @@ namespace OSDL
 				 * event-related problem occured.
 				 *
 				 */
-				virtual void enterMainLoop() throw( EventsException ) ;
+				virtual void enterMainLoop() ;
+
 
 
 				/**
@@ -436,7 +455,8 @@ namespace OSDL
 				 * any.
 				 *
 				 */
-				virtual	void requestQuit() throw() ;
+				virtual	void requestQuit() ;
+				
 				
 
 
@@ -444,12 +464,14 @@ namespace OSDL
 				// Handler subsection.
 				
 				
+				
 				/**
 				 * Tells whether a keyboard handler is available.
 				 *
 				 */
-				virtual bool hasKeyboardHandler() const throw() ;
+				virtual bool hasKeyboardHandler() const ;
 				 
+				
 				
 				/**
 				 * Returns the keyboard handler currently used.
@@ -457,9 +479,9 @@ namespace OSDL
 				 * @throw EventsException if no keyboard handler is available.
 				 *
 				 */
-				virtual KeyboardHandler & getKeyboardHandler() const 
-					throw( EventsException ) ;
-				   				   							
+				virtual KeyboardHandler & getKeyboardHandler() const ;
+				   				   			
+															
 
 				/**
 				 * Sets a new keyboard handler.
@@ -471,7 +493,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void setKeyboardHandler( 
-					KeyboardHandler & newHandler ) throw() ;
+					KeyboardHandler & newHandler ) ;
 					
 									
 				 
@@ -480,8 +502,9 @@ namespace OSDL
 				 * Tells whether a joystick handler is available.
 				 *
 				 */
-				virtual bool hasJoystickHandler() const throw() ;
+				virtual bool hasJoystickHandler() const ;
 				 
+				
 				
 				/**
 				 * Returns the joystick handler currently used.
@@ -489,9 +512,9 @@ namespace OSDL
 				 * @throw EventsException if no joystick handler is available.
 				 *
 				 */
-				virtual JoystickHandler & getJoystickHandler() 
-					const throw( EventsException ) ;
-				   				   							
+				virtual JoystickHandler & getJoystickHandler() const ;
+				   	
+								   							
 
 				/**
 				 * Sets a new joystick handler.
@@ -503,16 +526,18 @@ namespace OSDL
 				 *
 				 */
 				virtual void setJoystickHandler( 
-					JoystickHandler & newHandler ) throw() ;
+					JoystickHandler & newHandler ) ;
 					
+
 
 
 				/**
 				 * Tells whether a mouse handler is available.
 				 *
 				 */
-				virtual bool hasMouseHandler() const throw() ;
+				virtual bool hasMouseHandler() const ;
 				 
+				
 				
 				/**
 				 * Returns the mouse handler currently used.
@@ -520,9 +545,9 @@ namespace OSDL
 				 * @throw EventsException if no mouse handler is available.
 				 *
 				 */
-				virtual MouseHandler & getMouseHandler() const 
-					throw( EventsException ) ;
-				   				   							
+				virtual MouseHandler & getMouseHandler() const ;
+				   				   			
+															
 
 				/**
 				 * Sets a new mouse handler.
@@ -533,8 +558,7 @@ namespace OSDL
 				 * it is unregistered and deallocated first.
 				 *
 				 */
-				virtual void setMouseHandler( 
-					MouseHandler & newHandler ) throw() ;
+				virtual void setMouseHandler( MouseHandler & newHandler ) ;
 					
 					
 					
@@ -550,7 +574,8 @@ namespace OSDL
 				 * scheduler to call it.
 				 *
 				 */
-				virtual void updateInputState() throw() ;
+				virtual void updateInputState() ;
+				
 				
 					
 	            /**
@@ -566,12 +591,13 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
 
 				
+				
 				// Static section.
+				
 				
 					
 				/**
@@ -582,7 +608,7 @@ namespace OSDL
 				 * environment variables.
 				 *
 				 */	
-				static std::string DescribeEnvironmentVariables() throw() ;	
+				static std::string DescribeEnvironmentVariables() ;	
 
 
 
@@ -597,7 +623,8 @@ namespace OSDL
 				 * each call is rather inefficient though.
 				 *
 				 */
-				static bool IsEventsInitialized() throw() ;
+				static bool IsEventsInitialized() ;
+		
 		
 	
 				/**
@@ -612,7 +639,8 @@ namespace OSDL
 				 *
 				 */ 						
 				static Ceylan::System::Millisecond
-					GetMillisecondsSinceStartup() throw( EventsException ) ; 
+					GetMillisecondsSinceStartup() ; 
+
 
 
 				/// Describes a focus event.
@@ -620,14 +648,17 @@ namespace OSDL
 					const FocusEvent & focusEvent ) ;
 				
 				
+				
 				/// Describes a keyboard event.
 				static std::string DescribeEvent( 
 					const KeyboardEvent & keyboardEvent ) ;
 								
 				
+				
 				/// Describes a mouse motion event.
 				static std::string DescribeEvent( 
 					const MouseMotionEvent & mouseMotionEvent ) ;
+				
 				
 				
 				/// Describes a mouse button event.
@@ -635,9 +666,11 @@ namespace OSDL
 					const MouseButtonEvent & mouseButtonEvent ) ;
 				
 				
+				
 				/// Describes a joystick axis event.
 				static std::string DescribeEvent( 
 					const JoystickAxisEvent & axisEvent ) ;
+				
 				
 				
 				/// Describes a joystick trackball event.
@@ -650,14 +683,17 @@ namespace OSDL
 					const JoystickHatEvent & hatEvent ) ;
 				
 				
+				
 				/// Describes a joystick button event.
 				static std::string DescribeEvent( 
 					const JoystickButtonEvent & buttonEvent ) ;
 				
 				
+				
 				/// Describes a quit event.
 				static std::string DescribeEvent( 
 					const UserRequestedQuitEvent & quitEvent ) ;
+				
 				
 				
 				/// Describes a window manager event (system specific).
@@ -666,17 +702,23 @@ namespace OSDL
 						windowManagerEvent ) ;
 				
 				
+				
 				/// Describes a window resized event.
 				static std::string DescribeEvent( 
 					const WindowResizedEvent & resizeEvent ) ;
+				
+				
 				
 				/// Describes a screen exposed event (needs redraw).
 				static std::string DescribeEvent( 
 					const ScreenExposedEvent & redrawEvent ) ;
 				
+				
+				
 				/// Describes an user event.
 				static std::string DescribeEvent( 
 					const UserEvent & userEvent ) ;
+				
 				
 				
 				/**
@@ -698,7 +740,7 @@ namespace OSDL
 				 */
 				static Ceylan::System::Microsecond EvaluateCallbackduration(
 					Ceylan::System::Callback callback,
-					void * callbackData ) throw() ;
+					void * callbackData ) ;
 	
 	
 	
@@ -710,9 +752,9 @@ namespace OSDL
 				 								
 				
 				/// Returns a string describing the specified basic event.
-				static std::string DescribeEvent( BasicEvent anEvent ) 
-					throw() ;
+				static std::string DescribeEvent( BasicEvent anEvent ) ;
 				  
+	
 	
 				/**
 				 * Identifies the event corresponding to application 
@@ -720,18 +762,27 @@ namespace OSDL
 				 *
 				 */
 				static const BasicEventType ApplicationFocusChanged ;
+					
+					
 								
 				/// Identifies the event corresponding to a key press.
 				static const BasicEventType KeyPressed ;
 				
+				
+				
 				/// Identifies the event corresponding to a key release.
 				static const BasicEventType KeyReleased ;
+				
+				
 				
 				/// Identifies the event corresponding to a mouse motion.
 				static const BasicEventType MouseMoved ;
 				
+				
+				
 				/// Identifies the event corresponding to a mouse button press.
 				static const BasicEventType MouseButtonPressed ;
+				
 				
 				
 				/**
@@ -742,8 +793,10 @@ namespace OSDL
 				static const BasicEventType MouseButtonReleased ;
 				
 				
+				
 				/// Identifies the event corresponding to a joystick axis move.
 				static const BasicEventType JoystickAxisChanged ;
+				
 				
 				
 				/**
@@ -754,12 +807,14 @@ namespace OSDL
 				static const BasicEventType JoystickTrackballChanged ;
 				
 				
+				
 				/**
 				 * Identifies the event corresponding to a change of 
 				 * joystick hat position.
 				 *
 				 */
 				static const BasicEventType JoystickHatPositionChanged ;
+				
 				
 				
 				/**
@@ -770,12 +825,14 @@ namespace OSDL
 				static const BasicEventType JoystickButtonPressed ;
 				
 				
+				
 				/**
 				 * Identifies the event corresponding to a joystick button
 				 * being released.
 				 *
 				 */
 				static const BasicEventType JoystickButtonReleased ;
+				
 				
 				
 				/**
@@ -786,12 +843,14 @@ namespace OSDL
 				static const BasicEventType UserRequestedQuit ;
 				
 				
+				
 				/**
 				 * Identifies the event corresponding to system specific 
 				 * event.
 				 *
 				 */
 				static const BasicEventType SystemSpecificTriggered ;
+				
 				
 				
 				/**
@@ -802,6 +861,7 @@ namespace OSDL
 				static const BasicEventType UserResizedVideoMode ;
 				
 				
+				
 				/**
 				 * Identifies the event corresponding to a need to redraw
 				 * screen.
@@ -810,14 +870,20 @@ namespace OSDL
 				static const BasicEventType ScreenNeedsRedraw ;
 				
 				
+				
 				/// Identifies the first event that can be user-defined.
 				static const BasicEventType FirstUserEventTriggered ;
+				
+				
 				
 				/// Identifies the last event that can be user-defined.
 				static const BasicEventType LastUserEventTriggered ;
 				
+					
+					
 								
 				// User event types:
+				
 				
 				/**
 				 * Void event, useful to return when no event should be
@@ -827,13 +893,16 @@ namespace OSDL
 				static const UserEventType NoEvent ;
 				
 				
+				
 				/// Identifies the user event corresponding to a quit request.
 				static const UserEventType QuitRequested ;
+				
 				
 											
 				///	The default frequency targeted by the basic event loop.
 				static const Ceylan::Maths::Hertz
 					DefaultEventLoopTargetedFrequency = 100 ;
+				
 				
 				
 				
@@ -855,13 +924,14 @@ namespace OSDL
 				 * more serious than deadline misses, occurs.
 				 *
 				 */
-				virtual void enterBasicMainLoop() throw( EventsException ) ;
+				virtual void enterBasicMainLoop() ;
 				 		
 		
 				
 				
 				// Keyboard section.
 				
+			
 			
 				/**
 				 * Called whenever the application gained keyboard focus.
@@ -873,8 +943,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void onKeyboardFocusGained( 
-					const FocusEvent & keyboardFocusEvent ) throw() ; 	
+					const FocusEvent & keyboardFocusEvent ) ; 	
 
+				
 				
 				/**
 				 * Called whenever the application lost keyboard focus.
@@ -887,7 +958,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void onKeyboardFocusLost(
-					const FocusEvent & keyboardFocusEvent ) throw() ; 	
+					const FocusEvent & keyboardFocusEvent ) ; 	
 				
 				
 				/**
@@ -897,7 +968,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onKeyPressed( 
-					const KeyboardEvent & keyboardEvent ) throw() ;
+					const KeyboardEvent & keyboardEvent ) ;
+		
 		
 		
 				/**
@@ -907,13 +979,15 @@ namespace OSDL
 				 *
 				 */
 				virtual void onKeyReleased( 
-					const KeyboardEvent & keyboardEvent ) throw() ;
+					const KeyboardEvent & keyboardEvent ) ;
 		
+	
 	
 	
 	
 				// Mouse section.
 				
+							
 							
 				/**
 				 * Called whenever the application gained mouse focus.
@@ -925,8 +999,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void onMouseFocusGained( 
-					const FocusEvent & mouseFocus ) throw() ; 	
+					const FocusEvent & mouseFocus ) ; 	
 
+				
 				
 				/**
 				 * Called whenever the application lost mouse focus.
@@ -938,7 +1013,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void onMouseFocusLost( 
-					const FocusEvent & mouseFocus ) throw() ; 	
+					const FocusEvent & mouseFocus ) ; 	
 				
 		
 		
@@ -949,7 +1024,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onMouseMotion( 
-					const MouseMotionEvent & mouseEvent ) throw() ; 
+					const MouseMotionEvent & mouseEvent ) ; 
+				
 				
 		
 				/**
@@ -959,7 +1035,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onMouseButtonPressed( 
-					const MouseButtonEvent & mouseEvent ) throw() ; 
+					const MouseButtonEvent & mouseEvent ) ; 
+				
 				
 				
 				/**
@@ -969,12 +1046,14 @@ namespace OSDL
 				 *
 				 */
 				virtual void onMouseButtonReleased( 
-					const MouseButtonEvent & mouseEvent ) throw() ; 
+					const MouseButtonEvent & mouseEvent ) ; 
+				
 				
 				
 				
 
 				// Joystick section.
+				
 				
 				
 				/**
@@ -986,7 +1065,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onJoystickAxisChanged( 
-					const JoystickAxisEvent & joystickEvent ) throw() ; 
+					const JoystickAxisEvent & joystickEvent ) ; 
+				
 				
 				
 				/**
@@ -998,7 +1078,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onJoystickTrackballChanged( 
-					const JoystickTrackballEvent & joystickEvent ) throw() ; 
+					const JoystickTrackballEvent & joystickEvent ) ; 
+				
 				
 				
 				/**
@@ -1010,7 +1091,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onJoystickHatChanged( 
-					const JoystickHatEvent & joystickEvent ) throw() ; 
+					const JoystickHatEvent & joystickEvent ) ; 
+				
 				
 				
 				/**
@@ -1022,7 +1104,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onJoystickButtonPressed( 
-					const JoystickButtonEvent & joystickEvent )	throw() ; 
+					const JoystickButtonEvent & joystickEvent )	; 
+				
 				
 				
 				/**
@@ -1034,14 +1117,15 @@ namespace OSDL
 				 *
 				 */
 				virtual void onJoystickButtonReleased( 
-						const JoystickButtonEvent & joystickEvent ) 
-					throw() ; 
+					const JoystickButtonEvent & joystickEvent ) ; 
 				
 				
+			
 			
 				
 				// Application-generic section.
 				
+				 
 				 
 				/**
 				 * Called whenever the application is deemed idle.
@@ -1052,8 +1136,9 @@ namespace OSDL
 				 * @see setIdleCallback
 				 *
 				 */
-				virtual void onIdle() throw() ;
+				virtual void onIdle() ;
 				 
+		
 		
 				/**
 				 * Called whenever at least one of the three focuses 
@@ -1064,7 +1149,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onApplicationFocusChanged( 
-					const FocusEvent & focusEvent ) throw() ;
+					const FocusEvent & focusEvent ) ;
+				
 				
 				
 				/**
@@ -1075,7 +1161,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onApplicationIconified(
-					 const FocusEvent & focusEvent ) throw() ; 	
+					 const FocusEvent & focusEvent ) ; 	
+
 
 				
 				/**
@@ -1086,15 +1173,17 @@ namespace OSDL
 				 *
 				 */
 				virtual void onApplicationRestored( 
-					const FocusEvent & focusEvent ) throw() ; 	
+					const FocusEvent & focusEvent ) ; 	
+
 
 
 				/**
 				 * Called whenever the application is requested to quit.
 				 *
 				 */
-				virtual void onQuitRequested() throw() ;
+				virtual void onQuitRequested() ;
 				
+							
 								
 				/**
 				 * Called whenever a system-specific window manager event 
@@ -1105,8 +1194,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onSystemSpecificWindowManagerEvent( 
-						const SystemSpecificWindowManagerEvent & wmEvent ) 
-					throw() ;
+					const SystemSpecificWindowManagerEvent & wmEvent ) ;
+					
 					
 				
 				/**
@@ -1120,7 +1209,8 @@ namespace OSDL
 				 *
 				 */	
 				virtual void onResizedWindow( 
-					const WindowResizedEvent & resizeEvent ) throw() ;
+					const WindowResizedEvent & resizeEvent ) ;
+				
 				
 				
 				/**
@@ -1129,7 +1219,8 @@ namespace OSDL
 				 * and needs to be redrawn.
 				 *
 				 */
-				virtual void onScreenNeedsRedraw() throw() ;
+				virtual void onScreenNeedsRedraw() ;
+				
 				
 				
 				/**
@@ -1138,8 +1229,8 @@ namespace OSDL
 				 * @note Data is transmitted alongside this event.
 				 *
 				 */
-				virtual void onUserEvent( const UserEvent & userEvent ) 
-					throw() ;
+				virtual void onUserEvent( const UserEvent & userEvent ) ;
+	
 	
 
 				/**
@@ -1148,12 +1239,14 @@ namespace OSDL
 				 *
 				 */
 				virtual void onUnknownEventType( 
-					const BasicEvent & unknownEvent ) throw() ;
+					const BasicEvent & unknownEvent ) ;
 				
 				 					
 					
+					
 				 
 				// Section for protected attributes.
+								
 								
 										
 				/**
@@ -1166,11 +1259,13 @@ namespace OSDL
 				bool _useScheduler ;				
 
 
+
 				/**
 				 * The internal keyboard handler.
 				 *
 				 */
 				KeyboardHandler * _keyboardHandler ;
+
 
 				 
 				/**
@@ -1178,6 +1273,7 @@ namespace OSDL
 				 *
 				 */
 				JoystickHandler * _joystickHandler ;	
+					
 								
 								
 				/**
@@ -1196,8 +1292,10 @@ namespace OSDL
 				static const std::string _SDLEnvironmentVariables[] ;
 
 
+
 				/// Tells whether the user asked to quit.				
 				bool _quitRequested ;
+				
 				
 				
 				/**
@@ -1219,6 +1317,7 @@ namespace OSDL
 				Ceylan::Maths::Hertz _loopTargetedFrequency ;				
 				
 				
+				
 				/**
 				 * Count the number of idle calls made during the current
 				 * event loop.
@@ -1227,12 +1326,14 @@ namespace OSDL
 				Ceylan::Uint32 _idleCallsCount ;
 
 
+
 				/**
 				 * The idle callback, if any, to be called by the basic 
 				 * event loop.
 				 *
 				 */
 				Ceylan::System::Callback _loopIdleCallback ;
+					
 						
 								
 				/**
@@ -1241,6 +1342,7 @@ namespace OSDL
 				 *
 				 */
 				void * _loopIdleCallbackData ;				
+				
 				
 				
 				/**
@@ -1254,26 +1356,35 @@ namespace OSDL
 				
 				
 				
+				
 				// Static section.
+				
 				
 				
 				/// Tells whether event system has already been initialized.
 				static bool _EventsInitialized ;
+			
 			
 
 				/// Number of available slots used to keep track of frame rate.
 				static const Ceylan::Uint32 _FrameTimingSlotsCount ;
 				
 				
+				
 				/// Designates the mouse focus.
 				static const Ceylan::Sint16 _MouseFocus ;
+				
+				
 				
 				/// Designates the keyboard focus.
 				static const Ceylan::Sint16 _KeyboardFocus ;
 				
+				
+				
 				/// Designates the application focus (iconified or restored).
 				static const Ceylan::Sint16 _ApplicationFocus ;
 			
+				
 				
 				/**
 				 * Header of messages sent by default implementations 
@@ -1281,6 +1392,7 @@ namespace OSDL
 				 *
 				 */
 				static const std::string _MessageHeader ;
+				
 				
 				
 				/**
@@ -1292,7 +1404,9 @@ namespace OSDL
 				
 				
 				
+				
 		private:
+		
 		
 		
 				/**
@@ -1310,13 +1424,14 @@ namespace OSDL
 				 * keyboard or mouse focus lost, etc.).
 				 *
 				 */
-				explicit EventsModule( Ceylan::Flags eventsFlag ) 
-					throw( EventsException ) ;
+				explicit EventsModule( Ceylan::Flags eventsFlag ) ;
+			
 			
 			
 				/// Deletes the events module.
 				virtual ~EventsModule() throw() ;
 					
+
 
 				/**
 				 * Copy constructor made private to ensure that it will 
@@ -1326,7 +1441,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit EventsModule( const EventsModule & source ) throw() ;
+				explicit EventsModule( const EventsModule & source ) ;
+			
 			
 			
 				/**
@@ -1337,11 +1453,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				EventsModule & operator = ( const EventsModule & source )
-					throw() ;
+				EventsModule & operator = ( const EventsModule & source ) ;
 				
 				
 		} ;
+		
 	
 	}	
 	

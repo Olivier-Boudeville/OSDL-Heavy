@@ -40,9 +40,11 @@ namespace OSDL
 {
 
 
+
 	namespace Events
 	{
 	
+		
 			
 		
 		/**
@@ -75,7 +77,9 @@ namespace OSDL
 			friend class OSDL::Events::JoystickHandler ;
 			
 			
+			
 			public:
+
 
 
 				/**
@@ -90,8 +94,8 @@ namespace OSDL
 				 *
 				 */
 				explicit ClassicalJoystick( JoystickNumber index, 
-						AxisPosition deadZoneExtent = DefaultDeadZoneExtent )
-					throw( JoystickException ) ;
+					AxisPosition deadZoneExtent = DefaultDeadZoneExtent ) ;
+				
 				
 				
 				/**
@@ -113,8 +117,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void getDeadZoneValues( AxisPosition & firstAxisExtent, 
-					AxisPosition & secondAxisExtent ) const throw() ;
+					AxisPosition & secondAxisExtent ) const ;
 					
+				
 				
 				/**
 				 * Sets the deadzone values for the two first axes.
@@ -127,9 +132,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setDeadZoneValues( 
-						AxisPosition firstAxisExtent  = DefaultDeadZoneExtent,
-						AxisPosition secondAxisExtent = DefaultDeadZoneExtent )
-					throw() ;
+					AxisPosition firstAxisExtent  = DefaultDeadZoneExtent,
+					AxisPosition secondAxisExtent = DefaultDeadZoneExtent ) ;
 				 	
 					
 								
@@ -145,12 +149,13 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+				
 				
 				
 				static const AxisPosition DefaultDeadZoneExtent ;
 				
+			
 			
 			
 			
@@ -165,6 +170,7 @@ namespace OSDL
 				 */
 
 				
+				
 				/**
 				 * Called whenever an axis of this joystick changed, and 
 				 * notify the linked controller, if any.
@@ -175,7 +181,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void axisChanged( 
-					const JoystickAxisEvent & joystickEvent ) throw() ;
+					const JoystickAxisEvent & joystickEvent ) ;
+		
 		
 		
 				/**
@@ -188,7 +195,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void buttonPressed( 
-					const JoystickButtonEvent & joystickEvent ) throw() ;
+					const JoystickButtonEvent & joystickEvent ) ;
+	
 	
 	
 				/**
@@ -201,7 +209,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void buttonReleased( 
-					const JoystickButtonEvent & joystickEvent ) throw() ;
+					const JoystickButtonEvent & joystickEvent ) ;
 				
 
 
@@ -219,6 +227,7 @@ namespace OSDL
 				AxisPosition _deadZoneExtentFirstAxis ;
 
 
+
 				/**
 				 * Stores the dead zone extent for first axis. 
 				 * If d is the dead zone value, then a reported joystick 
@@ -234,6 +243,7 @@ namespace OSDL
 
 
 
+
 		private:
 		
 		
@@ -246,7 +256,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit ClassicalJoystick( const Joystick & source ) throw() ;
+				explicit ClassicalJoystick( const Joystick & source ) ;
+			
 			
 			
 				/**
@@ -257,11 +268,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				ClassicalJoystick & operator = ( const Joystick & source )
-					throw() ;
+				ClassicalJoystick & operator = ( const Joystick & source ) ;
 										
 				
 		} ;
+		
 	
 	}	
 	
@@ -270,3 +281,4 @@ namespace OSDL
 
 
 #endif // OSDL_CLASSICAL_JOYSTICK_H_
+

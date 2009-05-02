@@ -38,13 +38,17 @@
 #include <string>
 
 
+
 // Command management only needed for the Nintendo DS:
 #if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
+
+
 
 
 namespace OSDL
 {
 
+	
 	
 	namespace Audio
 	{
@@ -55,20 +59,23 @@ namespace OSDL
 	}
 					
 	
+	
 	/// Mother class for all command-related exceptions.
 	class CommandException: public OSDL::Exception
 	{ 
 		public: 
 	 	 
-	 		explicit CommandException( const std::string & reason )
-	 			throw() ;
+	 		explicit CommandException( const std::string & reason ) ;
 	 		 
-			virtual ~CommandException() throw() ; 
+			virtual ~CommandException() throw() ;
+			 
 	} ;
+	
 	
 	
 	// Defined afterwards.
 	class CommandManager ;
+	
 	
 		
 	/**
@@ -81,6 +88,7 @@ namespace OSDL
      */
     struct CommandManagerSettings
     {
+	
 
     	/**
     	 * Actual sample buffers are managed directly by the command manager
@@ -90,12 +98,15 @@ namespace OSDL
     	 *
     	 */
 
+
     	/// Pointer to the shared command manager (cache).
     	CommandManager * _commandManager ;
 
 
+
     	/// The size of a (simple) CommandManager buffer, in bytes:
     	Audio::BufferSize _bufferSize ;
+
 
 
     	/**
@@ -109,11 +120,14 @@ namespace OSDL
     	Ceylan::Byte * _doubleBuffer ;
 
 
+
     	/// The address of the second buffer:
     	Ceylan::Byte * _secondBuffer ;
 
+
     } ;
 
+	
 	
 			
 	/**
@@ -128,6 +142,7 @@ namespace OSDL
 		public:
 		
 		
+		
 			/**
 			 * Creates a new command manager, which is expected to be a
 			 * singleton.
@@ -135,7 +150,8 @@ namespace OSDL
 			 * @throw CommandException if the operation failed.
 			 *
 			 */
-			CommandManager() throw( CommandException ) ;
+			CommandManager() ;
+			
 			
 
 			/// Virtual destructor.
@@ -143,7 +159,9 @@ namespace OSDL
 			
 			
 			
+			
 			// Audio section.
+			
 			
 			
 			/**
@@ -155,9 +173,10 @@ namespace OSDL
 			 * @param sound the sound to play. Its content (samples) must have
 			 * been loaded already.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
-			virtual void playSound( Audio::Sound & sound ) 
-				throw( CommandException ) ;
+			virtual void playSound( Audio::Sound & sound ) ;
 			
 			
 			
@@ -165,8 +184,11 @@ namespace OSDL
 			 * Allocates the adequate memory for music playback, and creates
 			 * a shared structure to expose settings needed by musics.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
-			virtual void enableMusicSupport() throw( CommandException ) ;
+			virtual void enableMusicSupport() ;
+			
 			
 			
 			/**
@@ -174,8 +196,10 @@ namespace OSDL
 			 * deallocates the shared structure to expose settings needed by
 			 * musics.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
-			virtual void disableMusicSupport() throw( CommandException ) ;
+			virtual void disableMusicSupport() ;
 			
 			
 			
@@ -184,7 +208,8 @@ namespace OSDL
 			 * bytes.
 			 *
 			 */
-			virtual Audio::BufferSize getMusicBufferSize() const throw() ;
+			virtual Audio::BufferSize getMusicBufferSize() const ;
+
 
 
 			/**
@@ -193,8 +218,8 @@ namespace OSDL
 			 * @throw CommandException if no buffer is available.
 			 *
 			 */
-			virtual Ceylan::Byte * getMusicBuffer() const
-				throw( CommandException ) ;
+			virtual Ceylan::Byte * getMusicBuffer() const ;
+
 
 
 			/**
@@ -208,9 +233,11 @@ namespace OSDL
 			 * Returns just after having sent the request, i.e. without waiting
 			 * for the music to finish or even to start.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
-			virtual void playMusic( Audio::Music & music ) 
-				throw( CommandException ) ;
+			virtual void playMusic( Audio::Music & music ) ;
+			
 			
 			
 			/**
@@ -229,10 +256,11 @@ namespace OSDL
 			 * Returns just after having sent the request, i.e. without waiting
 			 * for the music to finish or even to start.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
 			virtual void playMusicWithFadeIn( Audio::Music & music, 
-					Ceylan::System::Millisecond fadeInMaxDuration ) 
-				throw( CommandException ) ;
+				Ceylan::System::Millisecond fadeInMaxDuration ) ;
 			
 			
 			
@@ -243,8 +271,11 @@ namespace OSDL
 			 * Returns just after having sent the request, i.e. without waiting
 			 * for the music to finish.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
-			virtual void stopMusic() throw( CommandException ) ;
+			virtual void stopMusic() ;
+			
 			
 			
 			/**
@@ -254,10 +285,12 @@ namespace OSDL
 			 * Returns just after having sent the request, i.e. without waiting
 			 * for the fade-in to complete.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
 			virtual void fadeInMusic( 
-					Ceylan::System::Millisecond fadeInMaxDuration ) 
-				throw( CommandException ) ;
+				Ceylan::System::Millisecond fadeInMaxDuration ) ;
+			
 			
 			
 			/**
@@ -267,10 +300,12 @@ namespace OSDL
 			 * Returns just after having sent the request, i.e. without waiting
 			 * for the fade-out to complete.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
 			virtual void fadeOutMusic( 
-					Ceylan::System::Millisecond fadeOutMaxDuration ) 
-				throw( CommandException ) ;
+				Ceylan::System::Millisecond fadeOutMaxDuration ) ;
+			
 			
 			
 			/**
@@ -279,9 +314,10 @@ namespace OSDL
 			 *
 			 * @note Will affect all musics played afterwards this one as well.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
-			virtual void setMusicVolume( Audio::Volume newVolume ) 
-				throw( CommandException ) ;
+			virtual void setMusicVolume( Audio::Volume newVolume ) ;
 
 
 
@@ -291,16 +327,21 @@ namespace OSDL
 			 *
 			 * @note Will last until unPauseMusic or stopMusic is called.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
-			virtual void pauseMusic() throw( CommandException ) ;
+			virtual void pauseMusic() ;
+
 
 			
 			/**
 			 * Requests the ARM7 to unpause the playback of current music 
 			 * (if any) at once, so that the playback resumes.
 			 *
+			 * @throw CommandException if the operation failed.
+			 *
 			 */
-			virtual void unpauseMusic() throw( CommandException ) ;
+			virtual void unpauseMusic() ;
 			
 
 			
@@ -311,8 +352,7 @@ namespace OSDL
 			 * @throw CommandException if the operation failed.
 			 *
 			 */
-			virtual void notifyEndOfEncodedStreamReached() 
-				throw( CommandException ) ;
+			virtual void notifyEndOfEncodedStreamReached() ;
 				
 			
 			
@@ -321,7 +361,7 @@ namespace OSDL
 			 * current anymore from this manager point of view.
 			 *
 			 */
-			virtual void unsetCurrentMusic( Audio::Music & music ) throw() ;
+			virtual void unsetCurrentMusic( Audio::Music & music ) ;
 			
 			
 			
@@ -332,8 +372,9 @@ namespace OSDL
 			 * Reads the relevant shared variable.
 			 *
 			 */
-			virtual std::string interpretLastARM7ErrorCode() throw() ;
+			virtual std::string interpretLastARM7ErrorCode() ;
 
+			  
 			  
             /**
              * Returns an user-friendly description of the state of this object.
@@ -346,19 +387,23 @@ namespace OSDL
              *
              */
 	 		virtual const std::string toString( 
-				Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
+				Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
+
 
 
 
 			// Static section.
 
 
+
 			/**
 			 * Returns true iff the command manager is already available.
 			 *
 			 */
-			static bool HasExistingCommandManager() throw() ;
+			static bool HasExistingCommandManager() ;
 			
+
 
 			/**
 			 * Returns the supposedly already existing command manager.
@@ -367,9 +412,9 @@ namespace OSDL
 			 * no manager was already existing.
 			 *
 			 */
-			static CommandManager & GetExistingCommandManager() 
-				throw( CommandException ) ;
+			static CommandManager & GetExistingCommandManager() ;
 
+			
 			
 			/**
 			 * Returns the command manager, creates it if needed.
@@ -377,14 +422,15 @@ namespace OSDL
 			 * @throw CommandException if the operation failed.
 			 *
 			 */
-			static CommandManager & GetCommandManager() 
-				throw( CommandException ) ;
+			static CommandManager & GetCommandManager() ;
 			
+
 
 
 
 		protected:
 
+		
 		
 			/**
 			 * The current music being played, if any.
@@ -396,6 +442,7 @@ namespace OSDL
 			Audio::Music * _currentMusic ;
 		
 		
+		
 			/**
 			 * The actual double sound buffer for musics, two simple buffers, 
 			 * one after the other (so the first half buffer has the same
@@ -405,12 +452,15 @@ namespace OSDL
 			Ceylan::Byte * _doubleBuffer ;
 		
 		
+		
 			/// The size of a (simple) buffer, in bytes:
 			Audio::BufferSize _bufferSize ;
 		
 		
+		
 			/// The settings to share with all musics.
 			CommandManagerSettings * _settings ;
+			
 			
 			
 			/**
@@ -432,14 +482,15 @@ namespace OSDL
 			 *
 			 */
 			virtual void handleReceivedIntegratingLibrarySpecificCommand(
-					FIFOCommandID commandID, 
-					Ceylan::System::FIFOElement firstElement )
-				throw() ;
+				FIFOCommandID commandID, 
+				Ceylan::System::FIFOElement firstElement ) ;
+			
 			
 			
 			/// The singleton manager.
 			static CommandManager * _IPCManager ;
 
+			
 			
 			
 		private:		
@@ -453,8 +504,8 @@ namespace OSDL
 			 * constructor is called, implicitly or not.
 			 * 
 			 */			 
-			explicit CommandManager( const CommandManager & source )
-				throw() ;
+			explicit CommandManager( const CommandManager & source ) ;
+
 			
 			
 			/**
@@ -465,15 +516,16 @@ namespace OSDL
 			 * operator is called, implicitly or not.
 			 * 
 			 */			 
-			CommandManager & operator = ( const CommandManager & source )
-				throw() ;
+			CommandManager & operator = ( const CommandManager & source ) ;
 			
 					
 		
 	} ;		
+	
 		
 	
 }
+
 
 #endif // defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
 

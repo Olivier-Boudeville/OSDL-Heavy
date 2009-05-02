@@ -47,13 +47,16 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::Pixels ;
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>   // for OSDL_DEBUG_PALETTE and al 
 #endif // OSDL_USES_CONFIG_H
 
+
 #if OSDL_ARCH_NINTENDO_DS
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
 #endif // OSDL_ARCH_NINTENDO_DS
+
 
 
 
@@ -74,12 +77,14 @@ const Ceylan::Flags Palette::Physical = 0x02 ;
 
 
 
-PaletteException::PaletteException( const string & message ) throw(): 
+
+PaletteException::PaletteException( const string & message ) : 
 	VideoException( "Palette exception: " + message ) 
 {
 
 }
 	
+		
 			
 PaletteException::~PaletteException() throw()
 {
@@ -90,7 +95,7 @@ PaletteException::~PaletteException() throw()
 			
 			
 Palette::Palette( ColorCount numberOfColors, ColorDefinition * colors, 
-		PixelFormat * format ) throw( PaletteException ):
+		PixelFormat * format ) :
 	_numberOfColors( 0 ), 
 	_colorDefs( 0 ),
 	_pixelColors( 0 ),
@@ -120,7 +125,7 @@ Palette::Palette( ColorCount numberOfColors, ColorDefinition * colors,
 
 
 
-Palette::Palette( const LowLevelPalette & palette ) throw( PaletteException ):
+Palette::Palette( const LowLevelPalette & palette ) :
 	_numberOfColors( 0 ), 
 	_colorDefs( 0 ),
 	_pixelColors( 0 ),
@@ -147,7 +152,7 @@ Palette::Palette( const LowLevelPalette & palette ) throw( PaletteException ):
 
 
 
-Palette::Palette( const string & paletteFilename ) throw( PaletteException ):
+Palette::Palette( const string & paletteFilename ) :
 	_numberOfColors( 0 ), 
 	_colorDefs( 0 ),
 	_pixelColors( 0 ),
@@ -236,6 +241,7 @@ Palette::Palette( const string & paletteFilename ) throw( PaletteException ):
 			+ e.toString() ) ;
 			
 	}
+	
 }
 
 
@@ -255,7 +261,6 @@ Palette::~Palette() throw()
 
 
 void Palette::load( ColorCount numberOfColors, ColorDefinition * colors ) 
-	throw( PaletteException )
 {
 
 	//LogPlug::debug( "Loading palette." ) ;
@@ -306,7 +311,7 @@ void Palette::load( ColorCount numberOfColors, ColorDefinition * colors )
 
 
 
-ColorCount Palette::getNumberOfColors() const throw()
+ColorCount Palette::getNumberOfColors() const
 {
 
 	return _numberOfColors ;
@@ -315,8 +320,7 @@ ColorCount Palette::getNumberOfColors() const throw()
 
 
 
-const Pixels::PixelColor & Palette::getPixelColorAt( ColorCount index ) 
-	const throw( PaletteException )
+const Pixels::PixelColor & Palette::getPixelColorAt( ColorCount index ) const
 {
 
 	if ( index >= _numberOfColors )
@@ -331,7 +335,7 @@ const Pixels::PixelColor & Palette::getPixelColorAt( ColorCount index )
 
 
 
-Pixels::PixelColor * Palette::getPixelColors() const throw()
+Pixels::PixelColor * Palette::getPixelColors() const
 {
 
 	return _pixelColors ;
@@ -341,7 +345,7 @@ Pixels::PixelColor * Palette::getPixelColors() const throw()
  
  
 const Pixels::ColorDefinition & Palette::getColorDefinitionAt(
-	ColorCount index ) const throw( PaletteException )
+	ColorCount index ) const
 {
 
 	if ( index >= _numberOfColors )
@@ -358,7 +362,7 @@ const Pixels::ColorDefinition & Palette::getColorDefinitionAt(
 
 
 void Palette::setColorDefinitionAt(	ColorCount targetIndex, 
-	const ColorDefinition & newColorDefinition ) throw( PaletteException )
+	const ColorDefinition & newColorDefinition )
 {
 
 	if ( targetIndex >= _numberOfColors )
@@ -377,7 +381,7 @@ void Palette::setColorDefinitionAt(	ColorCount targetIndex,
 
 void Palette::setColorDefinitionAt(	ColorCount targetIndex, 
 	ColorElement red, ColorElement green, ColorElement blue, 
-	ColorElement alpha ) throw( PaletteException )
+	ColorElement alpha )
 {
 
 	if ( targetIndex >= _numberOfColors )
@@ -397,7 +401,7 @@ void Palette::setColorDefinitionAt(	ColorCount targetIndex,
 
 					
 					
-Pixels::ColorDefinition * Palette::getColorDefinitions() const throw()
+Pixels::ColorDefinition * Palette::getColorDefinitions() const
 {
 
 	return _colorDefs ;
@@ -406,7 +410,7 @@ Pixels::ColorDefinition * Palette::getColorDefinitions() const throw()
 
 
 
-bool Palette::hasColorKey() const throw()
+bool Palette::hasColorKey() const
 {
 
 	return _hasColorkey ;
@@ -415,7 +419,7 @@ bool Palette::hasColorKey() const throw()
 
 
 
-ColorCount Palette::getColorKeyIndex() const throw( PaletteException )
+ColorCount Palette::getColorKeyIndex() const
 {
 
 	if ( ! _hasColorkey )
@@ -428,7 +432,7 @@ ColorCount Palette::getColorKeyIndex() const throw( PaletteException )
 
 
 
-void Palette::setColorKeyIndex( ColorCount colorkeyIndex ) throw()
+void Palette::setColorKeyIndex( ColorCount colorkeyIndex )
 {
 
 	// SDL_SetColorKey is relative to a surface.
@@ -437,12 +441,11 @@ void Palette::setColorKeyIndex( ColorCount colorkeyIndex ) throw()
 	
 	_colorKeyIndex = colorkeyIndex ;
 	
-	
 }
 
 		
 					
-void Palette::updatePixelColorsFrom( const PixelFormat & format ) throw()
+void Palette::updatePixelColorsFrom( const PixelFormat & format )
 {
 	
 	if ( _numberOfColors == 0 )
@@ -475,7 +478,7 @@ void Palette::updatePixelColorsFrom( const PixelFormat & format ) throw()
 
 
 void Palette::quantize( Pixels::ColorElement quantizeMaxCoordinate,
-	bool scaleUp ) throw()
+	bool scaleUp )
 {
 
 	for ( ColorCount index = 0; index < _numberOfColors; index++ )
@@ -520,7 +523,7 @@ void Palette::quantize( Pixels::ColorElement quantizeMaxCoordinate,
 
 
 	
-void Palette::correctGamma( GammaFactor gamma ) throw()
+void Palette::correctGamma( GammaFactor gamma )
 {
 
 	for ( ColorCount index = 0; index < _numberOfColors; index++ )
@@ -549,7 +552,7 @@ void Palette::correctGamma( GammaFactor gamma ) throw()
 
 
 ColorCount Palette::getClosestColorIndexTo(	const ColorDefinition & color )
-	const throw( PaletteException )
+	const
 {
 
 	if ( _numberOfColors == 0 )
@@ -600,7 +603,7 @@ ColorCount Palette::getClosestColorIndexTo(	const ColorDefinition & color )
 
 
 bool Palette::draw( Surface & targetSurface, 
-	const ColorDefinition & backgroundColor ) throw()
+	const ColorDefinition & backgroundColor )
 {
 
 
@@ -632,7 +635,7 @@ bool Palette::draw( Surface & targetSurface,
 
 
 
-bool Palette::hasDuplicates( bool useAlpha ) const throw()
+bool Palette::hasDuplicates( bool useAlpha ) const
 {
 
 	if ( _numberOfColors == 0 )
@@ -672,7 +675,6 @@ bool Palette::hasDuplicates( bool useAlpha ) const throw()
 
 
 void Palette::save( const std::string & filename, bool encoded ) const 
-	throw( PaletteException )
 {
 
 	// Alpha coordinates are ignored.
@@ -754,7 +756,7 @@ void Palette::save( const std::string & filename, bool encoded ) const
 
 
 
-const string Palette::toString( Ceylan::VerbosityLevels level ) const throw()	
+const string Palette::toString( Ceylan::VerbosityLevels level ) const	
 {
 
 	if ( _numberOfColors == 0 )
@@ -806,10 +808,12 @@ const string Palette::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
+
 // Static section.
 
 
-Palette & Palette::CreateGreyScalePalette( ColorCount numberOfColors ) throw()
+
+Palette & Palette::CreateGreyScalePalette( ColorCount numberOfColors )
 {
 
 	return CreateGradationPalette( Pixels::Black, Pixels::White, 
@@ -820,9 +824,8 @@ Palette & Palette::CreateGreyScalePalette( ColorCount numberOfColors ) throw()
 
 
 Palette & Palette::CreateGradationPalette( const ColorDefinition & colorStart,
-	const ColorDefinition & colorEnd, ColorCount numberOfColors ) throw()
+	const ColorDefinition & colorEnd, ColorCount numberOfColors )
 {
-
 
 	ColorDefinition * colorBuffer = new ColorDefinition[ numberOfColors ] ;
 	
@@ -881,7 +884,7 @@ Palette & Palette::CreateGradationPalette( const ColorDefinition & colorStart,
 
 
 					
-Palette & Palette::CreateMasterPalette( bool addColorkey ) throw()
+Palette & Palette::CreateMasterPalette( bool addColorkey )
 {
 
 	ColorCount colorCount = 255 ;
@@ -987,7 +990,7 @@ Palette & Palette::CreateMasterPalette( bool addColorkey ) throw()
 	// One yellow for blonde hair:
 	palette.setColorDefinitionAt( colorCount++, 255, 255, 111 ) ;
 	
-	// That's it !
+	// That's it!
 	
 	return palette ;
 
@@ -996,10 +999,12 @@ Palette & Palette::CreateMasterPalette( bool addColorkey ) throw()
 
 
 
+
 // Protected section.
 
 
-void Palette::invalidatePixelColors() throw()
+
+void Palette::invalidatePixelColors()
 {
 
 	if ( _pixelColors != 0 )
@@ -1017,11 +1022,13 @@ void Palette::invalidatePixelColors() throw()
 
 
 
+
 // Static section.
 
 
+
 Pixels::ColorElement Palette::QuantizeComponent( ColorElement component,	
-	Pixels::ColorElement newMaxCoordinate ) throw()
+	Pixels::ColorElement newMaxCoordinate )
 {
 	
 	return static_cast<ColorElement>( Ceylan::Maths::Round( 
@@ -1032,7 +1039,7 @@ Pixels::ColorElement Palette::QuantizeComponent( ColorElement component,
 
 					
 Pixels::ColorElement Palette::CorrectGammaComponent( 
-	ColorElement component, GammaFactor gamma ) throw()
+	ColorElement component, GammaFactor gamma )
 {
 
 	// Normalize, apply gamma, denormalize:
@@ -1045,7 +1052,7 @@ Pixels::ColorElement Palette::CorrectGammaComponent(
 	
 ColorDistance Palette::GetDistance( 
 	const Pixels::ColorDefinition & firstColor,
-	const Pixels::ColorDefinition & secondColor ) throw()
+	const Pixels::ColorDefinition & secondColor )
 {
 
 	// Directly inspired from http://www.compuphase.com/cmetric.htm:
@@ -1066,5 +1073,3 @@ ColorDistance Palette::GetDistance(
 	
 }
 
-
-	

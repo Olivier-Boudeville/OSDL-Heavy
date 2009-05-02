@@ -45,6 +45,7 @@ using namespace OSDL::Video ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>       // for OSDL_DEBUG and al (private header)
 #endif // OSDL_USES_CONFIG_H
@@ -75,6 +76,7 @@ using namespace OSDL::Video::TwoDimensional ;
 #endif // OSDL_VERBOSE_MOUSE
 
 
+
 // Default: 3 buttons, 1 wheel.
 const MouseButtonNumber Mouse::DefaultButtonTotalNumber = 5 ;
 
@@ -87,8 +89,7 @@ const MouseWheelNumber Mouse::DefaultWheelNumber = 1 ;
 
 
 
-Mouse::Mouse( MouseNumber index, bool classicalMouseMode ) 
-		throw( MouseException ):
+Mouse::Mouse( MouseNumber index, bool classicalMouseMode ) :
 	OSDL::Events::InputDevice(),
 	_index( index ),
 	_inClassicalMode( classicalMouseMode ),
@@ -99,12 +100,13 @@ Mouse::Mouse( MouseNumber index, bool classicalMouseMode )
 
 #if ! OSDL_USES_SDL
 
-	throw MouseException( "Mouse constructor failed :"
+	throw MouseException( "Mouse constructor failed:"
 		"no SDL support available" ) ;
 		
 #endif // OSDL_USES_SDL
 
 }
+
 
 
 Mouse::~Mouse() throw()
@@ -114,10 +116,12 @@ Mouse::~Mouse() throw()
 
 
 
+
 // Cursor position.
 
 
-Video::Coordinate Mouse::getCursorAbscissa() const throw()
+
+Video::Coordinate Mouse::getCursorAbscissa() const
 {
 
 #if OSDL_USES_SDL
@@ -137,7 +141,8 @@ Video::Coordinate Mouse::getCursorAbscissa() const throw()
 }
 
 
-Video::Coordinate Mouse::getCursorOrdinate() const throw()
+
+Video::Coordinate Mouse::getCursorOrdinate() const
 {
 
 #if OSDL_USES_SDL
@@ -158,7 +163,8 @@ Video::Coordinate Mouse::getCursorOrdinate() const throw()
 
 
 
-void Mouse::setCursorPosition( const Point2D & newPosition ) const throw()
+
+void Mouse::setCursorPosition( const Point2D & newPosition ) const
 {
 
 	setCursorPosition( newPosition.getX(), newPosition.getY() ) ;
@@ -167,7 +173,7 @@ void Mouse::setCursorPosition( const Point2D & newPosition ) const throw()
 
 
 
-void Mouse::setCursorPosition( Coordinate x, Coordinate y ) const throw()
+void Mouse::setCursorPosition( Coordinate x, Coordinate y ) const
 {
 
 #if OSDL_USES_SDL
@@ -181,7 +187,7 @@ void Mouse::setCursorPosition( Coordinate x, Coordinate y ) const throw()
 
 
 
-bool Mouse::getCursorVisibility() throw()
+bool Mouse::getCursorVisibility() const
 {
 
 #if OSDL_USES_SDL
@@ -194,7 +200,7 @@ bool Mouse::getCursorVisibility() throw()
 
 
 
-void Mouse::setCursorVisibility( bool on ) throw()
+void Mouse::setCursorVisibility( bool on )
 {
 
 #if OSDL_USES_SDL
@@ -210,7 +216,7 @@ void Mouse::setCursorVisibility( bool on ) throw()
 
 
 
-MouseButtonNumber Mouse::getNumberOfButtons() const throw()
+MouseButtonNumber Mouse::getNumberOfButtons() const
 {
 
 	return DefaultButtonActualNumber ;
@@ -219,7 +225,7 @@ MouseButtonNumber Mouse::getNumberOfButtons() const throw()
 
 
 
-MouseWheelNumber Mouse::getNumberOfWheels() const throw()
+MouseWheelNumber Mouse::getNumberOfWheels() const
 {
 
 	return DefaultWheelNumber ;
@@ -229,7 +235,7 @@ MouseWheelNumber Mouse::getNumberOfWheels() const throw()
 
 
 
-bool Mouse::isLeftButtonPressed() const throw()
+bool Mouse::isLeftButtonPressed() const
 {
 
 #if OSDL_USES_SDL
@@ -248,7 +254,7 @@ bool Mouse::isLeftButtonPressed() const throw()
 
 
 
-bool Mouse::isMiddleButtonPressed() const throw()
+bool Mouse::isMiddleButtonPressed() const
 {
 
 #if OSDL_USES_SDL
@@ -267,7 +273,7 @@ bool Mouse::isMiddleButtonPressed() const throw()
 
 
 
-bool Mouse::isRightButtonPressed() const throw()
+bool Mouse::isRightButtonPressed() const
 {
 
 #if OSDL_USES_SDL
@@ -286,8 +292,7 @@ bool Mouse::isRightButtonPressed() const throw()
 
 
 
-bool Mouse::isButtonPressed( MouseButtonNumber buttonNumber ) 
-					const throw( MouseException )
+bool Mouse::isButtonPressed( MouseButtonNumber buttonNumber ) const 
 {
 
 #if OSDL_USES_SDL
@@ -306,7 +311,7 @@ bool Mouse::isButtonPressed( MouseButtonNumber buttonNumber )
 
 
 
-MouseButtonMask Mouse::getButtonStates() const throw()
+MouseButtonMask Mouse::getButtonStates() const
 {
 
 #if OSDL_USES_SDL
@@ -324,7 +329,7 @@ MouseButtonMask Mouse::getButtonStates() const throw()
 
 
 
-void Mouse::update() throw()
+void Mouse::update()
 {
 
 #if OSDL_USES_SDL
@@ -343,7 +348,7 @@ void Mouse::update() throw()
 
 
 
-const string Mouse::toString( Ceylan::VerbosityLevels level ) const throw()
+const string Mouse::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Mouse " ;
@@ -365,7 +370,6 @@ const string Mouse::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 bool Mouse::IsPressed( MouseButtonMask mask, MouseButtonNumber buttonToInspect )
-	throw()
 {
 
 #if OSDL_USES_SDL
@@ -386,7 +390,8 @@ bool Mouse::IsPressed( MouseButtonMask mask, MouseButtonNumber buttonToInspect )
 // Protected section.
 
 
-void Mouse::focusGained( const FocusEvent & mouseFocusEvent ) throw()
+
+void Mouse::focusGained( const FocusEvent & mouseFocusEvent )
 {
 
 	if ( isLinkedToController() )
@@ -401,7 +406,8 @@ void Mouse::focusGained( const FocusEvent & mouseFocusEvent ) throw()
 }
 
 
-void Mouse::focusLost( const FocusEvent & mouseFocusEvent ) throw()
+
+void Mouse::focusLost( const FocusEvent & mouseFocusEvent )
 {
 
 	if ( isLinkedToController() )
@@ -416,7 +422,8 @@ void Mouse::focusLost( const FocusEvent & mouseFocusEvent ) throw()
 }
 
 
-void Mouse::mouseMoved( const MouseMotionEvent & mouseEvent ) throw()
+
+void Mouse::mouseMoved( const MouseMotionEvent & mouseEvent )
 {
 
 	if ( isLinkedToController() )
@@ -431,7 +438,8 @@ void Mouse::mouseMoved( const MouseMotionEvent & mouseEvent ) throw()
 }
 
 				
-void Mouse::buttonPressed( const MouseButtonEvent & mouseEvent ) throw()
+				
+void Mouse::buttonPressed( const MouseButtonEvent & mouseEvent )
 {
 
 	if ( isLinkedToController() )
@@ -445,8 +453,9 @@ void Mouse::buttonPressed( const MouseButtonEvent & mouseEvent ) throw()
 
 }
 
+			
 					
-void Mouse::buttonReleased( const MouseButtonEvent & mouseEvent ) throw()
+void Mouse::buttonReleased( const MouseButtonEvent & mouseEvent )
 {
 
 	if ( isLinkedToController() )
@@ -460,8 +469,9 @@ void Mouse::buttonReleased( const MouseButtonEvent & mouseEvent ) throw()
 
 }
 																			
+		
 					
-MouseNumber Mouse::getIndex() const throw()
+MouseNumber Mouse::getIndex() const
 {
 
 	return _index ;

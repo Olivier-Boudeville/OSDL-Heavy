@@ -33,21 +33,27 @@
 
 
 
+
 namespace OSDL
 {
 
 	
+	
 	namespace Video
 	{
+
 
 
 		// Bezier curves are drawn in Surfaces.
 		class Surface ;
 				
 		
+		
+		
 		namespace TwoDimensional
 		{
 					
+			
 			
 			/**
 			 * Draws a Bezier curve through specified control points, with
@@ -93,8 +99,7 @@ namespace OSDL
 				Pixels::ColorElement red, 
 				Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
-				Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-					throw( VideoException ) ;
+				Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
 	
 	
 	
@@ -133,7 +138,7 @@ namespace OSDL
 				Surface & targetSurface, 
 				const listPoint2D & controlPoints,
 				Ceylan::Uint16 numberOfSteps, 
-				Pixels::ColorDefinition colorDef ) throw( VideoException ) ;
+				Pixels::ColorDefinition colorDef ) ;
 
 				
 		}

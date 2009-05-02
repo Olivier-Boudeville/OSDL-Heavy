@@ -28,6 +28,7 @@
 #define OSDL_MODEL_H_
 
 
+
 #include "OSDLPeriodicalActiveObject.h"   // for inheritance
 #include "OSDLProgrammedActiveObject.h"   // for inheritance
 #include "OSDLEngineCommon.h"             // for ObjectSchedulingPolicy
@@ -45,9 +46,11 @@ namespace OSDL
 {
 
 
+
 	namespace MVC 
 	{
 	
+		
 		
 		/*
 		 * Here two kinds of event-based OSDL models are defined:
@@ -58,6 +61,7 @@ namespace OSDL
 		 * is used, not the templated Generic MVC system.
 		 *
 		 */
+			
 			
 			
 			
@@ -73,6 +77,7 @@ namespace OSDL
 		
 		
 			public:
+			
 			
 			
 				/**
@@ -99,11 +104,11 @@ namespace OSDL
 				 *
 				 */
 				explicit PeriodicalModel( 
-						Events::Period period = 1,
-						bool autoRegister = true, 
-						Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
-						Engine::Weight weight = 1 )
-					throw( Engine::SchedulingException ) ;
+					Events::Period period = 1,
+					bool autoRegister = true, 
+					Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
+					Engine::Weight weight = 1 ) ;
+				
 				
 							
 				/**
@@ -114,6 +119,7 @@ namespace OSDL
 				 *
 				 */
 				virtual ~PeriodicalModel() throw() ;
+
 
 
 	            /**
@@ -128,12 +134,11 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 			
 				
-				
 		} ;
+
 
 
 
@@ -150,6 +155,7 @@ namespace OSDL
 		
 		
 			public:
+			
 			
 			
 				/**
@@ -177,12 +183,11 @@ namespace OSDL
 				 *
 				 */
 				explicit ProgrammedModel( 
-						const Engine::SimulationTickList & activationTicks,
-						bool absolutelyDefined = true, 
-						bool autoRegister = true, 
-						Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
-						Engine::Weight weight = 1 )
-					throw( Engine::SchedulingException ) ;
+					const Engine::SimulationTickList & activationTicks,
+					bool absolutelyDefined = true, 
+					bool autoRegister = true, 
+					Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
+					Engine::Weight weight = 1 ) ;
 				
 				
 				
@@ -209,13 +214,13 @@ namespace OSDL
 				 *
 				 */
 				explicit ProgrammedModel( 
-						Events::SimulationTick activationTick, 
-						bool absolutelyDefined = true, 
-						bool autoRegister = true, 
-						Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
-						Engine::Weight weight = 1 )
-					throw( Engine::SchedulingException ) ;
+					Events::SimulationTick activationTick, 
+					bool absolutelyDefined = true, 
+					bool autoRegister = true, 
+					Engine::ObjectSchedulingPolicy policy = Engine::relaxed,
+					Engine::Weight weight = 1 ) ;
 				
+					
 							
 				/**
 				 * Virtual destructor.
@@ -225,6 +230,7 @@ namespace OSDL
 				 *
 				 */
 				virtual ~ProgrammedModel() throw() ;
+
 
 
 	            /**
@@ -239,15 +245,18 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+			
 			
 				
 		} ;
+		
 
 	}
 
 }
 
 
+
 #endif // OSDL_MODEL_H_
+

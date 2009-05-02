@@ -51,6 +51,7 @@
 
 
 
+
 // Replicating these defines allows to enable them on a per-class basis:
 #if OSDL_DEBUG_AUDIO_PLAYBACK
 
@@ -80,6 +81,8 @@ using namespace OSDL::Audio ;
 
 
 
+
+
 /**
  * Implementation notes:
  *
@@ -106,7 +109,8 @@ using namespace OSDL::Audio ;
  */
 
 
-SoundException::SoundException( const string & reason ) throw():
+
+SoundException::SoundException( const string & reason ) :
 	AudibleException( reason )
 {
 
@@ -123,8 +127,7 @@ SoundException::~SoundException() throw()
 
 
 
-Sound::Sound( const std::string & soundFile, bool preload ) 
-		throw( SoundException ):
+Sound::Sound( const std::string & soundFile, bool preload ) :
 	Audible( /* nothing loaded yet, hence not converted */ false ),	
 	Ceylan::LoadableWithContent<LowLevelSound>( soundFile ),
 	_dataStream( 0 )
@@ -179,10 +182,11 @@ Sound::~Sound() throw()
 
 
 
+
 // LoadableWithContent template instanciation.
 
 
-bool Sound::load() throw( Ceylan::LoadableException )
+bool Sound::load()
 {
 
 	if ( hasContent() )
@@ -412,7 +416,7 @@ bool Sound::load() throw( Ceylan::LoadableException )
 
 
 
-bool Sound::unload() throw( Ceylan::LoadableException )
+bool Sound::unload()
 {
 
 	if ( ! hasContent() )
@@ -485,10 +489,12 @@ bool Sound::unload() throw( Ceylan::LoadableException )
 
 
 
+
 // Audible implementation.
 
 
-Volume Sound::getVolume() const throw( SoundException )
+
+Volume Sound::getVolume() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -522,7 +528,7 @@ Volume Sound::getVolume() const throw( SoundException )
 
 
 
-void Sound::setVolume( Volume newVolume ) throw( SoundException )
+void Sound::setVolume( Volume newVolume )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -566,7 +572,7 @@ void Sound::setVolume( Volume newVolume ) throw( SoundException )
 // Simple play subsection.
 
 
-void Sound::play( PlaybackCount playCount ) throw( AudibleException )
+void Sound::play( PlaybackCount playCount )
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -606,7 +612,6 @@ void Sound::play( PlaybackCount playCount ) throw( AudibleException )
 
 
 ChannelNumber Sound::playReturnChannel( PlaybackCount playCount ) 
-	throw( AudibleException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -637,7 +642,6 @@ ChannelNumber Sound::playReturnChannel( PlaybackCount playCount )
 
 
 void Sound::play( ChannelNumber mixingChannelNumber, PlaybackCount playCount )
-	throw( AudibleException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -668,7 +672,7 @@ void Sound::play( ChannelNumber mixingChannelNumber, PlaybackCount playCount )
 
 
 void Sound::playForAtMost( Ceylan::System::Millisecond maxDuration, 
-	PlaybackCount playCount ) throw( AudibleException )
+	PlaybackCount playCount )
 {
 
 	// Returned value ignored:
@@ -679,8 +683,7 @@ void Sound::playForAtMost( Ceylan::System::Millisecond maxDuration,
 
 
 ChannelNumber Sound::playForAtMostReturnChannel( 
-		Ceylan::System::Millisecond maxDuration, PlaybackCount playCount ) 
-	throw( AudibleException )
+	Ceylan::System::Millisecond maxDuration, PlaybackCount playCount ) 
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -711,8 +714,7 @@ ChannelNumber Sound::playForAtMostReturnChannel(
 
 
 void Sound::playForAtMost( Ceylan::System::Millisecond maxDuration, 
-		ChannelNumber mixingChannelNumber, PlaybackCount playCount ) 
-	throw( AudibleException )
+	ChannelNumber mixingChannelNumber, PlaybackCount playCount ) 
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -743,7 +745,7 @@ void Sound::playForAtMost( Ceylan::System::Millisecond maxDuration,
 
 
 void Sound::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
-	PlaybackCount playCount ) throw( AudibleException )
+	PlaybackCount playCount )
 {
 
 	// Returned value ignored:
@@ -755,7 +757,7 @@ void Sound::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
 
 
 ChannelNumber Sound::playWithFadeInReturnChannel( 
-		Ceylan::System::Millisecond fadeInMaxDuration, PlaybackCount playCount ) 	throw( AudibleException )
+	Ceylan::System::Millisecond fadeInMaxDuration, PlaybackCount playCount )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -786,8 +788,7 @@ ChannelNumber Sound::playWithFadeInReturnChannel(
 
 
 void Sound::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
-		ChannelNumber mixingChannelNumber, PlaybackCount playCount ) 
-	throw( AudibleException )
+	ChannelNumber mixingChannelNumber, PlaybackCount playCount ) 
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -818,10 +819,9 @@ void Sound::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
 
 
 void Sound::playWithFadeInForAtMost( 
-		Ceylan::System::Millisecond playbackMaxDuration,
-		Ceylan::System::Millisecond fadeInMaxDuration,
-		PlaybackCount playCount ) 
-	throw( AudibleException )
+	Ceylan::System::Millisecond playbackMaxDuration,
+	Ceylan::System::Millisecond fadeInMaxDuration,
+	PlaybackCount playCount ) 
 {
 
 	// Returned value ignored:
@@ -833,10 +833,9 @@ void Sound::playWithFadeInForAtMost(
 	
 					
 ChannelNumber Sound::playWithFadeInForAtMostReturnChannel( 
-		Ceylan::System::Millisecond playbackMaxDuration,
-		Ceylan::System::Millisecond fadeInMaxDuration,
-		PlaybackCount playCount ) 
-	throw( AudibleException )
+	Ceylan::System::Millisecond playbackMaxDuration,
+	Ceylan::System::Millisecond fadeInMaxDuration,
+	PlaybackCount playCount ) 
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -870,11 +869,10 @@ ChannelNumber Sound::playWithFadeInForAtMostReturnChannel(
 
 					
 void Sound::playWithFadeInForAtMost( 
-		Ceylan::System::Millisecond playbackMaxDuration,
-		Ceylan::System::Millisecond fadeInMaxDuration,
-		ChannelNumber mixingChannelNumber,
-		PlaybackCount playCount ) 
-	throw( AudibleException )
+	Ceylan::System::Millisecond playbackMaxDuration,
+	Ceylan::System::Millisecond fadeInMaxDuration,
+	ChannelNumber mixingChannelNumber,
+	PlaybackCount playCount ) 
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -898,11 +896,9 @@ void Sound::playWithFadeInForAtMost(
 
 }
 
-
-
-																				
+																
 					
-const string Sound::toString( Ceylan::VerbosityLevels level ) const throw()
+const string Sound::toString( Ceylan::VerbosityLevels level ) const
 {
 	
 	try

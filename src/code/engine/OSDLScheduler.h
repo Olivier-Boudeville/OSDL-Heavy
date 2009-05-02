@@ -29,14 +29,17 @@
 
 
 
+
 // for ListOfActiveObjects, SchedulingException, etc.:
 #include "OSDLEngineCommon.h"         
 #include "OSDLEvents.h"               // for SimulationTick
 #include "OSDLPeriodicSlot.h"         // for PeriodicSlot
 
 
+
 // for inheritance, SingletonException, Hertz and time units:
 #include "Ceylan.h"                   
+
 
 
 #include <string>
@@ -45,8 +48,10 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Events
@@ -59,6 +64,7 @@ namespace OSDL
 	}
 
 
+
 	namespace Rendering
 	{
 	
@@ -68,6 +74,7 @@ namespace OSDL
 		
 	}
 
+	
 	
 	namespace Video
 	{
@@ -87,12 +94,15 @@ namespace OSDL
 	{
 	
 		
+		
 		// The scheduler schedules active objects.
 		class ActiveObject ;
 
 
+
 		// The scheduler uses periodic slots for periodically activated objects.
 		class PeriodicSlot ;
+		
 		
 		
 				
@@ -256,8 +266,8 @@ namespace OSDL
 		{
 		
 		
-			
 			public:
+			
 			
 			
 				/*
@@ -274,7 +284,8 @@ namespace OSDL
 				 * used instead.
 				 *
 				 */
-				virtual bool hasRenderer() const throw() ;
+				virtual bool hasRenderer() const ;
+
 
 
 				/**
@@ -283,8 +294,8 @@ namespace OSDL
 				 * @throw SchedulingException if no renderer is available.
 				 *
 				 */
-				virtual Rendering::Renderer & getRenderer() const 
-					throw( SchedulingException ) ;
+				virtual Rendering::Renderer & getRenderer() const ;
+
 
 
 				/**
@@ -298,9 +309,7 @@ namespace OSDL
 				 * will take ownership of the specified renderer.
 				 *
 				 */
-				virtual void setRenderer( Rendering::Renderer & newRenderer )
-					throw() ;
-				
+				virtual void setRenderer( Rendering::Renderer & newRenderer ) ;
 				
 				
 				
@@ -341,7 +350,8 @@ namespace OSDL
 				 */
 				virtual void setScreenshotMode( bool on, 
 					const std::string & frameFilenamePrefix, 
-					Ceylan::Maths::Hertz frameFrequency = 25 ) throw() ;
+					Ceylan::Maths::Hertz frameFrequency = 25 ) ;
+				
 				
 				
 				/**
@@ -363,7 +373,8 @@ namespace OSDL
 				 *
 				 */				
 				virtual void setTimeSliceDuration( 
-					Ceylan::System::Microsecond engineTickDuration ) throw() ;
+					Ceylan::System::Microsecond engineTickDuration ) ;
+
 
 	
 				/**
@@ -375,7 +386,8 @@ namespace OSDL
 				 *
 				 */
 				virtual Ceylan::System::Microsecond getTimeSliceDuration() 
-					const throw() ;
+					const ;
+				
 				
 				
 				/**
@@ -392,8 +404,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setSimulationFrequency( 
-						Ceylan::Maths::Hertz frequency ) 
-					throw( SchedulingException ) ;
+					Ceylan::Maths::Hertz frequency ) ;
+
 
 				
 				/**
@@ -404,7 +416,8 @@ namespace OSDL
 				 * had to be performed by the setSimulationFrequency method.
 				 *
 				 */
-				virtual Events::Period getSimulationTickCount() const throw() ;
+				virtual Events::Period getSimulationTickCount() const ;
+				
 				
 				
 				/**
@@ -420,8 +433,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setRenderingFrequency( 
-						Ceylan::Maths::Hertz frequency ) 
-					throw( SchedulingException ) ;
+						Ceylan::Maths::Hertz frequency ) ;
+
 
 				
 				/**
@@ -432,7 +445,8 @@ namespace OSDL
 				 * had to be performed by the setRenderingFrequency method.
 				 *
 				 */
-				virtual Events::Period getRenderingTickCount() const throw() ;
+				virtual Events::Period getRenderingTickCount() const ;
+			
 			
 				
 				/**
@@ -449,9 +463,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void setScreenshotFrequency( 
-						Ceylan::Maths::Hertz frequency ) 
-					throw( SchedulingException ) ;
+					Ceylan::Maths::Hertz frequency ) ;
 
+				
 				
 				/**
 				 * Returns the number of engine ticks which correspond to 
@@ -461,7 +475,8 @@ namespace OSDL
 				 * had to be performed by the setScreenshotFrequency method.
 				 *
 				 */
-				virtual Events::Period getScreenshotTickCount() const throw() ;
+				virtual Events::Period getScreenshotTickCount() const ;
+				
 				
 				
 				/**
@@ -477,8 +492,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setInputPollingFrequency( 
-						Ceylan::Maths::Hertz frequency )
-					throw( SchedulingException ) ;
+					Ceylan::Maths::Hertz frequency ) ;
+
 
 
 				/**
@@ -489,9 +504,9 @@ namespace OSDL
 				 * had to be performed by the setInputPollingFrequency method.
 				 *
 				 */
-				virtual Events::Period getInputPollingTickCount() 
-					const throw() ;
+				virtual Events::Period getInputPollingTickCount() const ;
 
+				
 				
 				/**
 				 * Sets the idle function, which is called whenever the
@@ -529,9 +544,8 @@ namespace OSDL
 				virtual void setIdleCallback( 
 					Ceylan::System::Callback idleCallback = 0 , 
 					void * callbackData = 0,
-					Ceylan::System::Microsecond 
-						callbackExpectedMaxDuration = 0 ) throw() ;
-				
+					Ceylan::System::Microsecond	callbackExpectedMaxDuration = 0
+				) ;
 				
 				
 				
@@ -539,8 +553,8 @@ namespace OSDL
 				 * Returns the current actual engine tick.
 				 *
 				 */
-				virtual Events::EngineTick getCurrentEngineTick() 
-					const throw() ;
+				virtual Events::EngineTick getCurrentEngineTick() const ;
+				
 				
 				
 				/**
@@ -548,24 +562,23 @@ namespace OSDL
 				 *
 				 */
 				virtual Events::SimulationTick getCurrentSimulationTick() 
-					const throw() ;
+					const ;
+				
 				
 				
 				/**
 				 * Returns the current actual rendering tick.
 				 *
 				 */
-				virtual Events::RenderingTick getCurrentRenderingTick() 
-					const throw() ;
+				virtual Events::RenderingTick getCurrentRenderingTick() const ;
+				
 				
 				
 				/**
 				 * Returns the current actual input tick.
 				 *
 				 */
-				virtual Events::RenderingTick getCurrentInputTick() 
-					const throw() ;
-				
+				virtual Events::RenderingTick getCurrentInputTick() const ;
 				
 				
 				
@@ -578,7 +591,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void registerPeriodicalObject( 
-					PeriodicalActiveObject & toRegister ) throw() ;
+					PeriodicalActiveObject & toRegister ) ;
+					
 								
 				
 				/**
@@ -595,9 +609,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void unregisterPeriodicalObject( 
-						PeriodicalActiveObject & toUnregister )
-					throw( SchedulingException ) ;
-
+					PeriodicalActiveObject & toUnregister )	;
 
 
 				
@@ -610,7 +622,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void registerProgrammedObject( 
-					ProgrammedActiveObject & toRegister ) throw() ;
+					ProgrammedActiveObject & toRegister ) ;
 						
 				
 						
@@ -618,8 +630,7 @@ namespace OSDL
 				 * Unregisters specified active object. 
 				 *
 				 * This method is intended to be called by objects that are
-				 * periodic and that determined that they should unregister
-				 * from a 
+				 * peogrammed.
 				 *
 				 * @param toUnregister the active object to unregister from the
 				 * scheduler.
@@ -628,8 +639,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void unregisterProgrammedObject( 
-						ProgrammedActiveObject & toUnregister )
-					throw( SchedulingException ) ;
+					ProgrammedActiveObject & toUnregister ) ;
 						
 						
 						
@@ -641,7 +651,8 @@ namespace OSDL
 				 * objects having problems.
 				 * 
 				 */
-				virtual void schedule() throw( SchedulingException ) ;
+				virtual void schedule() ;
+				
 							
 								
 				/**
@@ -649,8 +660,9 @@ namespace OSDL
 				 * of current engine tick.
 				 *
 				 */
-				virtual void stop() throw() ;
+				virtual void stop() ;
 				
+				 
 				 						
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -664,13 +676,14 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 
 
 				// Static section.
+
 
 
 	       	   /**
@@ -685,8 +698,8 @@ namespace OSDL
 				* available.
 				*
 	         	*/
-	        	static Scheduler & GetExistingScheduler() 
-					throw( SchedulingException ) ;
+	        	static Scheduler & GetExistingScheduler() ;
+
 
 			
 	       	   /**
@@ -702,7 +715,8 @@ namespace OSDL
 				* returned.
 				*
 	         	*/
-	        	static Scheduler & GetScheduler() throw( SchedulingException ) ;
+	        	static Scheduler & GetScheduler() ;
+
 
 
 				/**
@@ -711,15 +725,15 @@ namespace OSDL
 				 * @throw SchedulingException if not scheduler was available.
 				 *
 				 */
-	       		static void DeleteExistingScheduler() 
-					throw( SchedulingException ) ;
+	       		static void DeleteExistingScheduler() ;
+		
 		
 		
 				/**
 				 * Deletes the shared scheduler, if any.
 				 *
 				 */
-	       		static void DeleteScheduler() throw() ;
+	       		static void DeleteScheduler() ;
 		
 	
 					
@@ -736,6 +750,7 @@ namespace OSDL
 					DefaultEngineTickDuration = 1000 ;
 					
 					
+					
 				/**
 				 * Determines the default frequency for logic (simulation).
 				 *
@@ -744,6 +759,7 @@ namespace OSDL
 				 */	
 				static const Ceylan::Maths::Hertz DefaultSimulationFrequency 
 					= 100 ;
+					
 					
 					
 				/**
@@ -757,6 +773,7 @@ namespace OSDL
 					= 40 ;
 					
 					
+					
 				/**
 				 * By default, generated screenshots will be saved on the
 				 * purpose of being gathered by a movie with 25 images 
@@ -766,6 +783,7 @@ namespace OSDL
 				 *
 				 */
 				static const Ceylan::Uint32 DefaultMovieFrameFrequency = 25 ;
+				
 				
 				
 				/**
@@ -785,6 +803,7 @@ namespace OSDL
 			protected:
 			
 
+
 				/**
 				 * Constructs a new scheduler.
 				 *
@@ -796,7 +815,8 @@ namespace OSDL
 				 * on this platform.
 				 *
 				 */
-				explicit Scheduler() throw( SchedulingException ) ;
+				explicit Scheduler() ;
+				
 				
 				
 				/**
@@ -809,6 +829,7 @@ namespace OSDL
 				virtual ~Scheduler() throw() ;
 
 
+
 				/**
 				 * Actual scheduling method used for real-time and/or
 				 * interactive applications.
@@ -817,8 +838,9 @@ namespace OSDL
 				 * some simulation or rendering ticks might be skipped.
 				 *
 				 */
-				virtual void scheduleBestEffort() throw( SchedulingException ) ;
+				virtual void scheduleBestEffort() ;
 				
+
 
 				/**
 				 * Actual scheduling method used for batch applications, 
@@ -834,8 +856,8 @@ namespace OSDL
 				 * Useful to generate screenshots.
 				 *
 				 */
-				virtual void scheduleNoDeadline( bool pollInputs = true ) 
-					throw( SchedulingException ) ;
+				virtual void scheduleNoDeadline( bool pollInputs = true ) ;
+				
 				
 				
 				/**
@@ -852,8 +874,8 @@ namespace OSDL
 				 * _scheduleStartingMicrosecond
 				 *
 				 */
-				virtual Events::EngineTick computeEngineTickFromCurrentTime()
-					throw() ;
+				virtual Events::EngineTick computeEngineTickFromCurrentTime() ;
+
 
 
 				/**
@@ -866,7 +888,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void scheduleSimulation( 
-					Events::SimulationTick current ) throw() ;
+					Events::SimulationTick current ) ;
+
 
 
 				/**
@@ -879,7 +902,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void scheduleProgrammedObjects( 
-					Events::SimulationTick current ) throw() ;
+					Events::SimulationTick current ) ;
+
 
 
 				/**
@@ -892,7 +916,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void schedulePeriodicObjects( 
-					Events::SimulationTick currentSimulationTick ) throw() ;
+					Events::SimulationTick currentSimulationTick ) ;
+
 
 
 				/**
@@ -902,7 +927,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void scheduleRendering( 
-					Events::RenderingTick currentRenderingTick ) throw() ;
+					Events::RenderingTick currentRenderingTick ) ;
+					 
 					 
 					 
 				/**
@@ -911,8 +937,9 @@ namespace OSDL
 				 * @param currentInputTick the current input tick.
 				 *
 				 */
-				virtual void scheduleInput( Events::InputTick currentInputTick )
-					 throw() ;
+				virtual void scheduleInput( 
+					Events::InputTick currentInputTick ) ;
+
 
 
 				/**
@@ -928,7 +955,8 @@ namespace OSDL
 				 */
 				virtual void scheduleProgrammedObjectList( 
 					Events::RenderingTick currentSimulationTick, 
-					ListOfProgrammedActiveObjects & objectList ) throw() ;
+					ListOfProgrammedActiveObjects & objectList ) ;
+					
 					
 					
 				/**
@@ -953,8 +981,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void onSimulationSkipped( 
-						Events::SimulationTick skipped ) 
-					throw( SchedulingException ) ;
+					Events::SimulationTick skipped ) ;
+				
 				
 
 				/**
@@ -973,9 +1001,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void onRenderingSkipped( 
-						Events::RenderingTick skipped ) 
-					throw( SchedulingException ) ;
+					Events::RenderingTick skipped ) ;
 								
+
 
 				/**
 				 * Overridable method called when this scheduler detects
@@ -993,8 +1021,8 @@ namespace OSDL
 				 * the real time.
 				 *	 
 				 */
-				virtual void onInputSkipped( Events::InputTick skipped ) 
-					throw( SchedulingException ) ;
+				virtual void onInputSkipped( Events::InputTick skipped ) ;
+					
 								
 				
 				/**
@@ -1006,7 +1034,8 @@ namespace OSDL
 				 * @see setIdleCallback.
 				 *
 				 */
-				virtual void onIdle() throw() ;
+				virtual void onIdle() ;
+
 
 
 				/**
@@ -1015,6 +1044,7 @@ namespace OSDL
 				 *
 				 */
 				static const Delay ShutdownBucketLevel ;
+				
 				
 				
 				/**
@@ -1038,8 +1068,7 @@ namespace OSDL
 				 * @throw SchedulingException if the failure was deemed fatal.
 				 *
 				 */
-				virtual void onScheduleFailure( Delay currentBucket )
-					throw( SchedulingException ) ;
+				virtual void onScheduleFailure( Delay currentBucket ) ;
 
 
 				
@@ -1056,8 +1085,9 @@ namespace OSDL
 				 */
 				virtual void programTriggerFor( 
 					ProgrammedActiveObject & objectToProgram,
-					Events::SimulationTick targetTick ) throw() ;
+					Events::SimulationTick targetTick ) ;
 				
+
 
 				/**
 				 * Returns the supposedly already existing internal periodic
@@ -1068,7 +1098,8 @@ namespace OSDL
 				 *
 				 */
 				virtual PeriodicSlot & getPeriodicSlotFor( 
-					Events::Period period ) throw( SchedulingException ) ;
+					Events::Period period ) ;
+
 
 
 				/**
@@ -1080,7 +1111,7 @@ namespace OSDL
 				 *
 				 */
 				virtual PeriodicSlot & returnPeriodicSlotFor( 
-					Events::Period period ) throw() ;
+					Events::Period period ) ;
 				
 				
 
@@ -1093,12 +1124,22 @@ namespace OSDL
 				 *
 				 */
 				virtual void setInitialBirthTicks(
-					Events::SimulationTick birthSimulationTick ) throw() ;
+					Events::SimulationTick birthSimulationTick ) ;
 				
+
+
+				/**
+				 * Returns a textual description of the ticks that are 
+				 * currently programmed.
+				 *
+				 */
+				std::string describeProgrammedTicks() const ; 
+
 
 
 
 				// Variable section.
+				
 				
 				
 				/**
@@ -1113,6 +1154,7 @@ namespace OSDL
 				bool _screenshotMode ;		
 				
 				
+				
 				/**
 				 * Records which prefix should be used to name numbered
 				 * screenshot files. 
@@ -1124,6 +1166,7 @@ namespace OSDL
 				std::string _frameFilenamePrefix ;		
 
 				
+				
 				/**
 				 * Records the user-defined screenshot frequency, which 
 				 * is the targeted number of frames per second.
@@ -1133,6 +1176,7 @@ namespace OSDL
 				 *
 				 */
 				Ceylan::Maths::Hertz _desiredScreenshotFrequency ;
+				
 				
 				
 				/**
@@ -1170,6 +1214,7 @@ namespace OSDL
 				std::list<PeriodicSlot *> _periodicSlots ; 
 				
 			
+			
 				/**
 				 * A list containing all the active objects (either
 				 * periodical or programmed) that were registered before the
@@ -1179,6 +1224,7 @@ namespace OSDL
 				 *
 				 */	
 				std::list<ActiveObject *> _initialRegisteredObjects ; 
+				
 				
 				
 				/**
@@ -1208,6 +1254,7 @@ namespace OSDL
 				std::map<Events::SimulationTick, ListOfProgrammedActiveObjects>
 					_programmedActivated ;		
 				
+				
 #pragma warning( pop ) 
 
 				
@@ -1219,6 +1266,7 @@ namespace OSDL
 				Ceylan::System::Microsecond _engineTickDuration ;
 				
 				
+				
 				/**
 				 * Multiplicative factor that allows to convert seconds into  
 				 * engine ticks.
@@ -1227,6 +1275,7 @@ namespace OSDL
 				 *
 				 */
 				Ceylan::Uint32 _secondToEngineTick ;
+				
 				
 				
 				/**
@@ -1253,6 +1302,7 @@ namespace OSDL
 				 */
 				Events::EngineTick _currentEngineTick ;
 				
+			
 				
 				/**
 				 * Records the current simulation tick.
@@ -1276,6 +1326,7 @@ namespace OSDL
 				 *
 				 */
 				Events::SimulationTick _currentSimulationTick ;
+				
 				
 				
 				/**
@@ -1302,6 +1353,7 @@ namespace OSDL
 				Events::RenderingTick _currentRenderingTick ;
 				
 				
+				
 				/**
 				 * Records the current input tick.
 				 *
@@ -1326,12 +1378,14 @@ namespace OSDL
 				Events::RenderingTick _currentInputTick ;
 				
 				
+				
 				/**
 				 * Duration between two successive simulation ticks, 
 				 * expressed in engine ticks.
 				 *
 				 */
 				Events::Period _simulationPeriod ;
+				
 				
 				
 				/**
@@ -1342,12 +1396,14 @@ namespace OSDL
 				Events::Period _renderingPeriod ;
 				
 				
+				
 				/**
 				 * Duration between two successive input ticks, 
 				 * expressed in engine ticks.
 				 *
 				 */
 				Events::Period _inputPeriod ;
+				
 				
 				
 				/**
@@ -1360,6 +1416,7 @@ namespace OSDL
 				Ceylan::Maths::Hertz _desiredSimulationFrequency ;
 				
 				
+				
 				/**
 				 * Records the user-defined rendering frequency.
 				 *
@@ -1368,6 +1425,7 @@ namespace OSDL
 				 *
 				 */
 				Ceylan::Maths::Hertz _desiredRenderingFrequency ;
+		
 		
 		
 				/**
@@ -1392,12 +1450,14 @@ namespace OSDL
 				 */
 				Ceylan::System::Callback _idleCallback ;
 						
+					
 								
 				/**
 				 * The data, if any, to provide to the idle callback.
 				 *
 				 */
 				void * _idleCallbackData ;				
+		
 		
 		
 				/**
@@ -1411,12 +1471,14 @@ namespace OSDL
 				Ceylan::System::Microsecond _idleCallbackMaxDuration ;
 		
 		
+		
 				/**
 				 * The smallest measured actual duration for past idle
 				 * callbacks.
 				 *
 				 */
 				Ceylan::System::Microsecond _idleCallbackMinMeasuredDuration ;
+		
 		
 		
 				/**
@@ -1439,9 +1501,11 @@ namespace OSDL
 				/// Tells whether the scheduler is running.
 				bool _isRunning ;
 				
+				
 		
 				/// Tells whether the scheduler has been requested to stop.
 				bool _stopRequested ;
+		
 		
 		
 				/**
@@ -1467,6 +1531,7 @@ namespace OSDL
 				Ceylan::Uint32 _recoveredSimulationTicks ;
 		
 		
+		
 				/**
 				 * Records how many simulation ticks were missed since 
 				 * the scheduler was started.
@@ -1482,6 +1547,7 @@ namespace OSDL
 				 *
 				 */
 				Ceylan::Uint32 _recoveredRenderingTicks ;
+		
 		
 		
 				/**
@@ -1501,6 +1567,7 @@ namespace OSDL
 				Ceylan::Uint32 _recoveredInputPollingTicks ;
 		
 		
+		
 				/**
 				 * Records how many input ticks were missed since 
 				 * the scheduler was started.
@@ -1517,6 +1584,7 @@ namespace OSDL
 				 */
 				Ceylan::Uint32 _scheduleFailureCount ;
 		
+		
 
 				/**
 				 * References the events module, if necessary.
@@ -1527,12 +1595,14 @@ namespace OSDL
 				 */
 				Events::EventsModule * _eventsModule ;
 				
+				
 		
 				/**
 				 * References the renderer to be used, if any.
 				 *
 				 */		
 				Rendering::Renderer * _renderer ;
+		
 		
 		
 				/**
@@ -1549,6 +1619,7 @@ namespace OSDL
 				Video::VideoModule * _videoModule ;
 				
 				
+				
 				/**
 				 * Tells whether sub-second sleeps can be used, to avoid 
 				 * monopolizing the CPU.
@@ -1557,8 +1628,10 @@ namespace OSDL
 				bool _subSecondSleepsAvailable ;
 				 
 				
+				
 				 
 			private:
+			
 			
 			
 				/**
@@ -1569,7 +1642,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit Scheduler( const Scheduler & source ) throw() ;
+				explicit Scheduler( const Scheduler & source ) ;
+			
 			
 			
 				/**
@@ -1580,7 +1654,8 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				Scheduler & operator = ( const Scheduler & source ) throw() ;
+				Scheduler & operator = ( const Scheduler & source ) ;
+					
 							
 				
 				/// The internal single instance of scheduler, if any.
@@ -1588,10 +1663,12 @@ namespace OSDL
 			
 				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_SCHEDULER_H_

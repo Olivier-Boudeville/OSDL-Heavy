@@ -38,24 +38,30 @@
 
 
 
+
 namespace OSDL
 {
+
 
 	
 	namespace Video
 	{
 
 
+
 		// Polygons are drawn to surfaces.
 		class Surface ;
 				
+		
 		
 		namespace TwoDimensional
 		{
 		
 		
+		
 			// Polygons are made from 2D points .
 			class Point2D ;
+				
 				
 				
 			/**
@@ -66,6 +72,7 @@ namespace OSDL
 			 */
 			typedef std::list<Point2D *> listPoint2D ;
 				
+			
 			
 			/**
 		 	 * Some polygone-based shapes:
@@ -78,11 +85,13 @@ namespace OSDL
 			 */
 
 
+
 			/*
 			 * Methods could be inlined in a dedicated file for faster
 			 * processing.
 			 *
 			 */
+	
 	
 	
 			/**
@@ -127,7 +136,8 @@ namespace OSDL
 				Ceylan::Maths::AngleInDegrees angleStop,
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
-				Pixels::ColorElement alpha = Pixels::AlphaOpaque ) throw() ;
+				Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
+	
 	
 	
 			/**
@@ -164,7 +174,7 @@ namespace OSDL
 				Coordinate xCenter, Coordinate yCenter, Length radius, 
 				Ceylan::Maths::AngleInDegrees angleStart,
 				Ceylan::Maths::AngleInDegrees angleStop, 
-				Pixels::ColorDefinition colorDef ) throw() ;
+				Pixels::ColorDefinition colorDef ) ;
 	
 	
 
@@ -193,7 +203,8 @@ namespace OSDL
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
 				Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-				bool filled = true ) throw() ;
+				bool filled = true ) ;
+
 
 
 			/**
@@ -218,8 +229,8 @@ namespace OSDL
 				Coordinate x1, Coordinate y1, 
 				Coordinate x2, Coordinate y2, 
 				Coordinate x3, Coordinate y3, 
-				Pixels::ColorDefinition colorDef, bool filled = true ) 
-					throw() ;
+				Pixels::ColorDefinition colorDef, bool filled = true ) ;
+	
 	
 
 			/**
@@ -245,7 +256,8 @@ namespace OSDL
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
 				Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-				bool filled = true ) throw() ;
+				bool filled = true ) ;
+
 
 
 			/**
@@ -268,7 +280,7 @@ namespace OSDL
 			 */
 			OSDL_DLL bool drawTriangle( Surface & targetSurface, 
 				const Point2D & p1, const Point2D & p2, const Point2D & p3,
-				Pixels::ColorDefinition colorDef, bool filled = true ) throw() ;
+				Pixels::ColorDefinition colorDef, bool filled = true ) ;
 	
 
 
@@ -306,7 +318,7 @@ namespace OSDL
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
 				Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-				bool filled = true ) throw() ;				
+				bool filled = true ) ;				
 
 
 
@@ -342,8 +354,9 @@ namespace OSDL
 			OSDL_DLL bool drawPolygon( Surface & targetSurface, 
 				const listPoint2D & summits,
 				Coordinate x, Coordinate y,
-				Pixels::ColorDefinition colorDef, bool filled = true ) throw() ;
+				Pixels::ColorDefinition colorDef, bool filled = true ) ;
 				
+				 
 				 
 			
 			/**
@@ -368,7 +381,9 @@ namespace OSDL
 			class OSDL_DLL Polygon: public Ceylan::Locatable2D
 			{
 			
+			
 				public:
+				
 				
 				
 					/**
@@ -390,8 +405,9 @@ namespace OSDL
 					 *
 					 */
 					explicit Polygon( listPoint2D & summits, 
-						bool listOwner = false ) throw() ;
+						bool listOwner = false ) ;
 					
+			
 			
 					/// Basic virtual destructor.
 					virtual ~Polygon() throw() ;
@@ -420,10 +436,10 @@ namespace OSDL
 					 *
 					 */
 					virtual bool draw( Surface & targetSurface,
-							Pixels::ColorDefinition colorDef = Pixels::White, 
-							bool filled = true )
-						const throw() ;
+						Pixels::ColorDefinition colorDef = Pixels::White, 
+						bool filled = true ) const ;
 						
+					
 					
 					/**
 					 * Returns the points that this polygon gathered. 
@@ -432,7 +448,8 @@ namespace OSDL
 					 * on whether the polygon owns its points or not.
 					 *
 					 */
-					virtual listPoint2D & getPoints() const throw() ;
+					virtual listPoint2D & getPoints() const ;
+						
 						
 						
 					/**
@@ -444,12 +461,14 @@ namespace OSDL
 					 * first.
 					 *
 					 */
-					virtual void setPoints( listPoint2D & newList ) throw() ;
+					virtual void setPoints( listPoint2D & newList ) ;
+					
 					
 					
 						
 					/// Tells whether the polygon owns its points.
-					virtual bool isListOwner() const throw() ;
+					virtual bool isListOwner() const ;
+				
 										
 					 	
 	 	            /**
@@ -465,8 +484,8 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+					
 					
 					
 					
@@ -511,7 +530,8 @@ namespace OSDL
 						Length thickness = 20, 
 						Ceylan::Maths::AngleInDegrees childAngle = 50, 
 						Ceylan::Maths::Ratio branchingHeightRatio = 0.7, 
-						Ceylan::Maths::Ratio scale = 0.3 ) throw() ;
+						Ceylan::Maths::Ratio scale = 0.3 ) ;
+					
 					
 					
 					/**
@@ -522,8 +542,9 @@ namespace OSDL
 					 * @return The duplicated list of points.
 					 *
 					 */
-					static listPoint2D & Duplicate( const listPoint2D & source )
-						throw() ;
+					static listPoint2D & Duplicate( 
+						const listPoint2D & source ) ;
+	
 	
 	
 					/**
@@ -531,8 +552,7 @@ namespace OSDL
 					 * points themselves.
 					 *
 					 */
-					static void Delete( listPoint2D & listToBeDeleted ) 
-						throw() ;
+					static void Delete( listPoint2D & listToBeDeleted ) ;
 					
 					
 					
@@ -553,7 +573,8 @@ namespace OSDL
 					 *
 					 */
 					static listPoint2D & Append( listPoint2D & toBeAugmented, 
-						const listPoint2D & toAppend ) throw() ;
+						const listPoint2D & toAppend ) ;
+						
 						
 						
 					/**
@@ -577,7 +598,7 @@ namespace OSDL
 					static listPoint2D & Apply( 
 						const Ceylan::Maths::Linear::HomogeneousMatrix3 
 							& transformation,
-						listPoint2D & sourceList ) throw() ;
+						listPoint2D & sourceList ) ;
 						
 					
 					
@@ -601,6 +622,7 @@ namespace OSDL
 #pragma warning( pop ) 
 			
 					
+					
 					/**
 					 * Tells whether the polygon owns the lists and the 
 					 * points that are stored in it.
@@ -618,7 +640,7 @@ namespace OSDL
 					 * undefined constructor is called, implicitly or not.
 					 *
 					 */			 
-					explicit Polygon( const Polygon & source ) throw() ;
+					explicit Polygon( const Polygon & source ) ;
 					
 					
 			
@@ -630,8 +652,9 @@ namespace OSDL
 					 * undefined operator is called, implicitly or not.
 					 *
 					 */			 
-					Polygon & operator = ( const Polygon & source ) throw() ;
+					Polygon & operator = ( const Polygon & source ) ;
 
+					
 					
 			} ;
 			
@@ -667,7 +690,8 @@ namespace OSDL
 					 * neither the list nor the points will be deallocated).
 					 *
 					 */
-					 explicit PolygonSet( bool listOwner = false ) throw() ;
+					 explicit PolygonSet( bool listOwner = false ) ;
+					 
 					 
 					 
 					/**
@@ -694,8 +718,9 @@ namespace OSDL
 					 */
 					explicit PolygonSet( 
 						std::list<listPoint2D *> & polygonList, 
-						bool listOwner = false ) throw() ;
+						bool listOwner = false ) ;
 					
+			
 			
 					/// Basic virtual destructor.
 					virtual ~PolygonSet() throw() ;
@@ -718,7 +743,7 @@ namespace OSDL
 					 * is ignored.
 					 *
 					 */
-					virtual void addPointsOf( Polygon & newPolygon ) throw() ;
+					virtual void addPointsOf( Polygon & newPolygon ) ;
 					
 					
 					
@@ -733,8 +758,8 @@ namespace OSDL
 					 * (would then deallocate the points) or not.
 					 *
 					 */					 
-					virtual void addPointList( listPoint2D & listToAdd ) 
-						throw() ;
+					virtual void addPointList( listPoint2D & listToAdd ) ;
+					
 					
 					
 					/**
@@ -746,8 +771,8 @@ namespace OSDL
 					virtual bool draw( Surface & targetSurface,
 						Coordinate x, Coordinate y,
 						Pixels::ColorDefinition colorDef = Pixels::White, 
-						bool filled = true )
-							const throw() ;
+						bool filled = true ) const ;
+	
 	
 						
 	 	            /**
@@ -763,12 +788,13 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+					
 					
 					
 					
 					// Static section.
+					
 					
 					
 					/**
@@ -803,8 +829,7 @@ namespace OSDL
 						Length length = 200, Length thickness = 20, 
 						Ceylan::Maths::AngleInDegrees childAngle = 50, 
 						Ceylan::Maths::Ratio branchingHeightRatio = 0.7, 
-						Ceylan::Maths::Ratio scale = 0.3 )
-							throw() ;
+						Ceylan::Maths::Ratio scale = 0.3 ) ;
 					
 				
 						
@@ -827,6 +852,7 @@ namespace OSDL
 #pragma warning( pop ) 
 
 			
+			
 					/**
 					 * Tells whether the polygon owns the embedded list,
 					 * including its whole content.
@@ -836,7 +862,9 @@ namespace OSDL
 					
 					
 					
+					
 				private:
+				
 				
 				
 					/**
@@ -847,7 +875,8 @@ namespace OSDL
 					 * constructor is called, implicitly or not.
 					 * 
 					 */			 
-					explicit PolygonSet( const PolygonSet & source ) throw() ;
+					explicit PolygonSet( const PolygonSet & source ) ;
+					
 					
 					
 					/**
@@ -858,17 +887,18 @@ namespace OSDL
 					 * operator is called, implicitly or not.
 					 * 
 					 */			 
-					PolygonSet & operator = ( const PolygonSet & source )
-						throw() ;
+					PolygonSet & operator = ( const PolygonSet & source ) ;
 						
 					
-			} ;			
+			} ;	
+					
 				 
 		}
 		
 	}
 	
 }
+
 
 
 #endif // OSDL_POLYGON_H_

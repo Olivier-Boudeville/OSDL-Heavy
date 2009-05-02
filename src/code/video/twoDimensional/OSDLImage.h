@@ -37,24 +37,30 @@
 #include <string>
 
 
+
 // To protect LoadIcon:
 #include "OSDLIncludeCorrecter.h"
+
 
 
 
 namespace OSDL
 {
 
+
 	namespace Video
 	{
+
 
 
 		// Images are loaded into surfaces.
 		class Surface ;
 
 
+
 		namespace TwoDimensional
 		{
+			
 			
 			
 			/// Mother class for all image exceptions. 		
@@ -62,9 +68,12 @@ namespace OSDL
 			{ 
 				public: 
 				
-					ImageException( const std::string & reason ) throw() ; 
+					ImageException( const std::string & reason ) ; 
+					
 					virtual ~ImageException() throw() ; 
+					
 			} ;
+				
 				
 				
 				
@@ -77,15 +86,15 @@ namespace OSDL
 			 * @see Surface::LoadImage
 			 *
 			 * Supported images formats are:
-			 *		- JPG (recommended)
-			 *		- PNG (recommended)
-			 * 		- BMP
-			 *		- GIF
-			 *		- LBM
-			 *		- PCX
-			 *		- PNM
-			 *		- TGA
-			 *		- XPM
+			 *	- JPG (recommended)
+			 *	- PNG (recommended)
+			 * 	- BMP
+			 *	- GIF
+			 *	- LBM
+			 *	- PCX
+			 *	- PNM
+			 *	- TGA
+			 *	- XPM
 			 *
 			 * Our belief is however that the fewer formats you use, the 
 			 * simpler it will be for everyone. 
@@ -99,11 +108,13 @@ namespace OSDL
 			 * images, with or without alpha channel
 			 *
 			 */
-			class OSDL_DLL Image: public Ceylan::TextDisplayable
+			class OSDL_DLL Image : public Ceylan::TextDisplayable
 			{
 				
 				
+				
 				public:
+					
 					
 					
 					/**
@@ -113,8 +124,8 @@ namespace OSDL
 					 * Actual picture format is guessed.
 					 *
 					 */
-					explicit Image( const std::string & filename ) 
-						throw( ImageException ) ;
+					explicit Image( const std::string & filename ) ;
+					
 					
 										
 					/**
@@ -126,7 +137,9 @@ namespace OSDL
 					
 					
 					
+					
 					// Static section.
+					
 					
 					
 					/**
@@ -147,9 +160,10 @@ namespace OSDL
 					 *
 					 */
 					static Surface & LoadIcon( const std::string & filename, 
-						Pixels::ColorElement ** mask ) throw( ImageException ) ;
+						Pixels::ColorElement ** mask ) ;
 				
 								
+							
 							
 										
 					// Load image section.			
@@ -198,11 +212,10 @@ namespace OSDL
 					 * 
 					 */						
 					static void Load( Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-							bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  	
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  	
 					
 						
 						
@@ -250,12 +263,11 @@ namespace OSDL
 					 *
 					 */	
 					static void LoadJPG( 
-							Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-							bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  	
+						Surface & targetSurface, 
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  	
 
 
 
@@ -303,11 +315,10 @@ namespace OSDL
 					 *
 					 */	
 					static void LoadPNG( Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-							bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  	
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  	
 
 
 
@@ -355,11 +366,10 @@ namespace OSDL
 					 *
 					 */	
 					static void LoadBMP( Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-							bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  	
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  	
 
 
 
@@ -407,11 +417,10 @@ namespace OSDL
 					 *
 					 */	
 					static void LoadGIF( Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-							bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  	
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  	
 
 
 
@@ -459,11 +468,10 @@ namespace OSDL
 					 *
 					 */	
 					static void LoadLBM( Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-							bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  	
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  	
 
 
 
@@ -511,11 +519,10 @@ namespace OSDL
 					 *
 					 */	
 					static void LoadPCX( Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-						bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  	
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  	
 
 
 
@@ -563,11 +570,10 @@ namespace OSDL
 					 *
 					 */	
 					static void LoadPNM( Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-							bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  	
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  	
 
 
 
@@ -615,11 +621,10 @@ namespace OSDL
 					 *
 					 */	
 					static void LoadTGA( Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-							bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  	
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  	
 
 
 
@@ -667,11 +672,10 @@ namespace OSDL
 					 *
 					 */	
 					static void LoadXPM( Surface & targetSurface, 
-							const std::string & filename,
-							bool blitOnly = false,
-							bool convertToDisplay = true,
-							bool convertWithAlpha = true  ) 
-						throw( ImageException ) ;  
+						const std::string & filename,
+						bool blitOnly = false,
+						bool convertToDisplay = true,
+						bool convertWithAlpha = true ) ;  
 					
 					
 					
@@ -709,9 +713,8 @@ namespace OSDL
 					 *		 
 					 */	
 					static void SavePNG( Surface & targetSurface, 
-							const std::string & filename, 
-							bool overwrite = true ) 
-						throw( ImageException ) ;  	
+						const std::string & filename, 
+						bool overwrite = true ) ;  	
 						
 										
 											
@@ -741,9 +744,8 @@ namespace OSDL
 					 *		 
 					 */	
 					static void SaveBMP( Surface & targetSurface, 
-							const std::string & filename,
-							bool overwrite = true ) 
-						throw( ImageException ) ;  	
+						const std::string & filename,
+						bool overwrite = true ) ;  	
 
 
 						
@@ -760,8 +762,8 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+					
 					
 					
 						
@@ -771,9 +773,11 @@ namespace OSDL
 					/// The filename corresponding to the internal image.		
 					std::string _filename ;
 						
+					
 						
 						
 				private:
+			
 			
 			
 					/**
@@ -784,7 +788,8 @@ namespace OSDL
 					 * constructor is called, implicitly or not.
 					 * 
 					 */			 
-					explicit Image( const Image & source ) throw() ;
+					explicit Image( const Image & source ) ;
+			
 			
 			
 					/**
@@ -795,7 +800,9 @@ namespace OSDL
 					 * operator is called, implicitly or not.
 					 * 
 					 */			 
-					Image & operator = ( const Image & source ) throw() ;
+					Image & operator = ( const Image & source ) ;
+				
+				
 				
 				
 					/**
@@ -803,6 +810,7 @@ namespace OSDL
 					 *
 					 */
 					static const std::string JPGTag ;
+					
 					
 					
 					/**
@@ -821,6 +829,7 @@ namespace OSDL
 					static const std::string BMPTag ;
 					
 					
+					
 					/**
 					 * Tag for GIF images, a supported but not recommended
 					 * format.
@@ -829,12 +838,14 @@ namespace OSDL
 					static const std::string GIFTag ;
 		
 		
+		
 					/**
 					 * Tag for LBM images, a supported but not recommended
 					 * format.
 					 *
 					 */
 					static const std::string LBMTag ;
+		
 		
 		
 					/**
@@ -853,12 +864,14 @@ namespace OSDL
 					static const std::string PNMTag ;
 		
 		
+		
 					/**
 					 * Tag for TGA images, a supported but not recommended
 					 * format.
 					 *
 					 */
 					static const std::string TGATag ;
+		
 		
 		
 					/**
@@ -868,30 +881,55 @@ namespace OSDL
 					 */
 					static const std::string XPMTag ;
 		
+		
 				
 			} ;
+
+
 
 
 			/// Describes a BMP header.
 			typedef struct 
 			{
 			
+			
 				/// Magic identifier.
 				Ceylan::Uint16 type ;
+				
 				
 				/// File size, in bytes.
 				Ceylan::Uint32 size ;
 				
+				
 				/// Reserved for later use.
 				Ceylan::Uint16 firstReserved ;
 
+
 				/// Reserved for later use.
 				Ceylan::Uint16 secondReserved ;
+					
 								
 				/// Offset to image data, in bytes.
 				Ceylan::Uint32 offset ;
 
-			} __attribute__ ((packed)) BMPHeader ;
+
+			} 
+			
+#ifndef CEYLAN_RUNS_ON_WINDOWS
+				/*
+				 * g++ (gcc) needs this __attribute__, but Visual C++ does 
+				 * not understand it.
+				 *
+				 * As we are here in a public header file, only the
+				 * CEYLAN_RUNS_ON_WINDOWS configuration-specific preprocessor
+				 * symbol is available here.
+				 *
+				 */
+		__attribute__ ((packed)) BMPHeader  
+
+#endif // CEYLAN_RUNS_ON_WINDOWS
+			
+			;
 			
 			
 			
@@ -899,45 +937,76 @@ namespace OSDL
 			typedef struct 
 			{
 			
+			
 				/// Header size, in bytes.
 				Ceylan::Uint32 size ;
+					
 					
 				/// Width of image.
 				Ceylan::Uint32 width ;
 				
+				
 				/// Height of image.
 				Ceylan::Uint32 height ;
+				
 				
 				/// Number of colour planes.
 				Ceylan::Uint16 planes ;
 				
+				
 				/// Bits per pixel.
 				Ceylan::Uint16 bits ;
+					
 						
 				/// Compression type.
 				Ceylan::Uint32 compression ;
 
+
 				/// Image size, in bytes.
 				Ceylan::Uint32 imagesize ;
+
 
 				/// Pixels per meter, for abscissa. 
 				Ceylan::Uint32 xresolution ;
 
+
 				/// Pixels per meter, for ordinate. 
 				Ceylan::Uint32 yresolution ;
+
 
 				/// Number of colours.
 				Ceylan::Uint32 ncolours ;
 
+
 				/// Important colours.
 				Ceylan::Uint32 importantcolours ;
 
-			} __attribute__ ((packed)) BMPInfoHeader ;
+
+			}
+			
+#ifndef CEYLAN_RUNS_ON_WINDOWS
+				/*
+				 * g++ (gcc) needs this __attribute__, but Visual C++ does 
+				 * not understand it.
+				 *
+				 * As we are here in a public header file, only the
+				 * CEYLAN_RUNS_ON_WINDOWS configuration-specific preprocessor
+				 * symbol is available here.
+				 *
+				 */
+		__attribute__ ((packed)) BMPInfoHeader  
+
+#endif // CEYLAN_RUNS_ON_WINDOWS
+			
+			;
 			
 
-		}		
+		}
+				
 	}
+	
 }		
+
 
 
 #endif // OSDL_IMAGE_H_

@@ -49,6 +49,7 @@ using namespace OSDL::MVC ;     // for joystickAxisChanged, etc.
 
 
 
+
 #if OSDL_VERBOSE_JOYSTICK
 
 #include <iostream>
@@ -59,6 +60,7 @@ using namespace OSDL::MVC ;     // for joystickAxisChanged, etc.
 #define OSDL_JOYSTICK_LOG( message )
 
 #endif // OSDL_VERBOSE_JOYSTICK
+
 
 
 /** 
@@ -79,7 +81,8 @@ using namespace OSDL::MVC ;     // for joystickAxisChanged, etc.
  *
  */
 
-Joystick::Joystick( JoystickNumber index ) throw( JoystickException ):
+
+Joystick::Joystick( JoystickNumber index ) :
 	OSDL::Events::InputDevice(),
 #if OSDL_USES_SDL
 	_name( SDL_JoystickName( index ) ),
@@ -109,6 +112,7 @@ Joystick::Joystick( JoystickNumber index ) throw( JoystickException ):
 }
 
 
+
 Joystick::~Joystick() throw()
 {
 
@@ -126,7 +130,8 @@ Joystick::~Joystick() throw()
 }
 
 
-const string & Joystick::getName() const throw()
+
+const string & Joystick::getName() const
 {
 
 	return _name ;
@@ -134,7 +139,8 @@ const string & Joystick::getName() const throw()
 }
 
 
-bool Joystick::isOpen() const throw()
+
+bool Joystick::isOpen() const
 {
 
 #if OSDL_USES_SDL
@@ -161,7 +167,8 @@ bool Joystick::isOpen() const throw()
 }
 
 
-void Joystick::open() throw( JoystickException ) 
+
+void Joystick::open()
 {
 
 #if OSDL_USES_SDL
@@ -179,7 +186,8 @@ void Joystick::open() throw( JoystickException )
 }
 
  
-void Joystick::close() throw( JoystickException )
+ 
+void Joystick::close()
 {
 
 #if OSDL_USES_SDL
@@ -198,7 +206,8 @@ void Joystick::close() throw( JoystickException )
 }
 
 
-void Joystick::axisChanged( const JoystickAxisEvent & joystickEvent ) throw()
+
+void Joystick::axisChanged( const JoystickAxisEvent & joystickEvent )
 {
 	
 	if ( isLinkedToController() )
@@ -209,13 +218,12 @@ void Joystick::axisChanged( const JoystickAxisEvent & joystickEvent ) throw()
 			+ Ceylan::toNumericalString( joystickEvent.which ) + ": "
 			+ EventsModule::DescribeEvent( joystickEvent ) ) ;
 	}
-
 			
 }
 
 
+
 void Joystick::trackballChanged( const JoystickTrackballEvent & joystickEvent )
-	throw()
 {
 	
 	if ( isLinkedToController() )
@@ -230,7 +238,8 @@ void Joystick::trackballChanged( const JoystickTrackballEvent & joystickEvent )
 }
 
 
-void Joystick::hatChanged( const JoystickHatEvent & joystickEvent ) throw()
+
+void Joystick::hatChanged( const JoystickHatEvent & joystickEvent )
 {
 	
 	if ( isLinkedToController() )
@@ -245,8 +254,8 @@ void Joystick::hatChanged( const JoystickHatEvent & joystickEvent ) throw()
 }
 
 
+
 void Joystick::buttonPressed( const JoystickButtonEvent & joystickEvent )
-	throw()
 {
 	
 	if ( isLinkedToController() )
@@ -261,8 +270,8 @@ void Joystick::buttonPressed( const JoystickButtonEvent & joystickEvent )
 }
 
 
+
 void Joystick::buttonReleased( const JoystickButtonEvent & joystickEvent )
-	throw()
 {
 	
 	if ( isLinkedToController() )
@@ -277,7 +286,8 @@ void Joystick::buttonReleased( const JoystickButtonEvent & joystickEvent )
 }
 
 
-JoystickAxesCount Joystick::getNumberOfAxes() const throw()
+
+JoystickAxesCount Joystick::getNumberOfAxes() const
 {
 
 #if OSDL_DEBUG
@@ -291,7 +301,8 @@ JoystickAxesCount Joystick::getNumberOfAxes() const throw()
 }
 
 
-JoystickTrackballsCount Joystick::getNumberOfTrackballs() const throw()
+
+JoystickTrackballsCount Joystick::getNumberOfTrackballs() const
 {
 
 #if OSDL_DEBUG
@@ -305,7 +316,8 @@ JoystickTrackballsCount Joystick::getNumberOfTrackballs() const throw()
 }
 
 
-JoystickHatsCount Joystick::getNumberOfHats() const throw()
+
+JoystickHatsCount Joystick::getNumberOfHats() const
 {
 
 #if OSDL_DEBUG
@@ -319,7 +331,8 @@ JoystickHatsCount Joystick::getNumberOfHats() const throw()
 }
 
 
-JoystickButtonsCount Joystick::getNumberOfButtons() const throw()
+
+JoystickButtonsCount Joystick::getNumberOfButtons() const
 {
 
 #if OSDL_DEBUG
@@ -333,7 +346,8 @@ JoystickButtonsCount Joystick::getNumberOfButtons() const throw()
 }
 
 
-AxisPosition Joystick::getAbscissaPosition() const throw() 
+
+AxisPosition Joystick::getAbscissaPosition() const
 {
 
 #if OSDL_USES_SDL
@@ -360,7 +374,8 @@ AxisPosition Joystick::getAbscissaPosition() const throw()
 }
 
 
-AxisPosition Joystick::getOrdinatePosition() const throw() 
+
+AxisPosition Joystick::getOrdinatePosition() const 
 {
 
 #if OSDL_USES_SDL
@@ -387,8 +402,8 @@ AxisPosition Joystick::getOrdinatePosition() const throw()
 }
 
 
-AxisPosition Joystick::getPositionOfAxis( JoystickAxesCount index ) 
-	const throw( JoystickException )
+
+AxisPosition Joystick::getPositionOfAxis( JoystickAxesCount index ) const
 {
 
 #if OSDL_USES_SDL
@@ -412,8 +427,8 @@ AxisPosition Joystick::getPositionOfAxis( JoystickAxesCount index )
 }
 
 
-HatPosition Joystick::getPositionOfHat( JoystickHatsCount index ) 
-	const throw( JoystickException )
+
+HatPosition Joystick::getPositionOfHat( JoystickHatsCount index ) const
 {
 
 #if OSDL_USES_SDL
@@ -437,8 +452,8 @@ HatPosition Joystick::getPositionOfHat( JoystickHatsCount index )
 }
 
 
-bool Joystick::isButtonPressed( JoystickButtonsCount buttonNumber ) 
-	const throw( JoystickException )
+
+bool Joystick::isButtonPressed( JoystickButtonsCount buttonNumber ) const
 {
 
 #if OSDL_USES_SDL
@@ -462,8 +477,9 @@ bool Joystick::isButtonPressed( JoystickButtonsCount buttonNumber )
 }
 
 
+
 bool Joystick::getPositionOfTrackball( JoystickTrackballsCount ball, 
-	BallMotion & deltaX, BallMotion & deltaY ) const throw( JoystickException )				
+	BallMotion & deltaX, BallMotion & deltaY ) const				
 {
 
 #if OSDL_USES_SDL
@@ -488,8 +504,9 @@ bool Joystick::getPositionOfTrackball( JoystickTrackballsCount ball,
 
 }
 
+
 	
-JoystickNumber Joystick::getIndex() const throw()
+JoystickNumber Joystick::getIndex() const
 {
 
 #if OSDL_USES_SDL
@@ -522,7 +539,8 @@ JoystickNumber Joystick::getIndex() const throw()
 }
 
 
-void Joystick::update() throw()
+
+void Joystick::update()
 {
 
 #if OSDL_USES_SDL
@@ -537,7 +555,8 @@ void Joystick::update() throw()
 }
 
 
-const string Joystick::toString( Ceylan::VerbosityLevels level ) const throw()
+
+const string Joystick::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	if ( ! isOpen() )

@@ -37,6 +37,7 @@ using std::list ;
 using Ceylan::Maths::Hertz ;
 
 
+
 #include "Ceylan.h"               // for Log
 using namespace Ceylan::Log ;
 
@@ -46,9 +47,9 @@ using namespace OSDL::Events ;
 
 
 
+
 PeriodicalActiveObject::PeriodicalActiveObject( Period period,
-	bool autoRegister, ObjectSchedulingPolicy policy, Weight weight ) 
-		throw( SchedulingException ): 
+		bool autoRegister, ObjectSchedulingPolicy policy, Weight weight ) : 
 	ActiveObject( policy, weight ),
 	_period( period ),
 	_subslot( /* invalid by design: */ period + 1 )
@@ -95,7 +96,8 @@ PeriodicalActiveObject::~PeriodicalActiveObject() throw()
 // Registering section.
 
 
-void PeriodicalActiveObject::registerToScheduler() throw( SchedulingException )
+
+void PeriodicalActiveObject::registerToScheduler()
 {
 	
 	if ( _registered )
@@ -113,7 +115,6 @@ void PeriodicalActiveObject::registerToScheduler() throw( SchedulingException )
 				
 
 void PeriodicalActiveObject::unregisterFromScheduler() 
-	throw( SchedulingException )
 {
 
 	Ceylan::checkpoint( "PeriodicalActiveObject::unregisterFromScheduler" ) ;
@@ -137,7 +138,8 @@ void PeriodicalActiveObject::unregisterFromScheduler()
 // Settings section.
 
 
-Period PeriodicalActiveObject::getPeriod() const throw()
+
+Period PeriodicalActiveObject::getPeriod() const
 {
 
 	return _period ;
@@ -147,7 +149,6 @@ Period PeriodicalActiveObject::getPeriod() const throw()
 
 
 void PeriodicalActiveObject::setPeriod( Period newPeriod ) 
-	throw( SchedulingException )
 {
 
 	if ( _registered ) 
@@ -161,7 +162,6 @@ void PeriodicalActiveObject::setPeriod( Period newPeriod )
 
 
 Hertz PeriodicalActiveObject::setFrequency( Hertz newFrequency ) 
-	throw( SchedulingException )
 {
 
 	if ( _registered ) 
@@ -217,7 +217,6 @@ Hertz PeriodicalActiveObject::setFrequency( Hertz newFrequency )
 
 
 Period PeriodicalActiveObject::getSubslotNumber() const 
-	throw( SchedulingException )
 {
 
 	if ( _subslot >= _period )
@@ -231,7 +230,6 @@ Period PeriodicalActiveObject::getSubslotNumber() const
 
 
 void PeriodicalActiveObject::onRegistering( Events::Period subslot ) 
-	throw( SchedulingException )
 {
 
 	if ( _registered ) 
@@ -249,7 +247,7 @@ void PeriodicalActiveObject::onRegistering( Events::Period subslot )
 
 
 void PeriodicalActiveObject::setBirthTick( 
-	Events::SimulationTick currentSimulationTick ) throw( SchedulingException )
+	Events::SimulationTick currentSimulationTick )
 {
 
 	/*
@@ -287,7 +285,7 @@ void PeriodicalActiveObject::setBirthTick(
 
 	
 const string PeriodicalActiveObject::toString( Ceylan::VerbosityLevels level )
-	const throw()
+	const
 {	
 
 	string slot ;

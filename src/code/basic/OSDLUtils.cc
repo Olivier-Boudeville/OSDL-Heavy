@@ -31,6 +31,7 @@
 #include "Ceylan.h"                        // for explainError
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"                    // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
@@ -50,6 +51,7 @@
 #endif // OSDL_USES_PHYSICSFS
 
 
+
 #include <cstdio>   // for SEEK_SET, SEEK_CUR, SEEK_END, etc.
 
 
@@ -63,7 +65,8 @@ using std::string ;
 
 
 
-const string OSDL::Utils::getBackendLastError() throw()
+
+const string OSDL::Utils::getBackendLastError()
 {
 
 #if OSDL_USES_SDL
@@ -80,8 +83,8 @@ const string OSDL::Utils::getBackendLastError() throw()
 }
 
 
+
 Ceylan::Latin1Char OSDL::Utils::getNativeDirectorySeparator() 
-	throw( OSDL::Exception )
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -102,8 +105,7 @@ Ceylan::Latin1Char OSDL::Utils::getNativeDirectorySeparator()
     	
     	default:
         	throw OSDL::Exception( "OSDL::Utils::getNativeDirectorySeparator "
-            	"failed: multi-character separator found ("
-                + res + ")." ) ;
+            	"failed: multi-character separator found (" + res + ")." ) ;
             break ;
 
 	}
@@ -122,7 +124,7 @@ Ceylan::Latin1Char OSDL::Utils::getNativeDirectorySeparator()
            
             
             
-std::string OSDL::Utils::getProgramPath() throw( OSDL::Exception )
+std::string OSDL::Utils::getProgramPath()
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -139,11 +141,11 @@ std::string OSDL::Utils::getProgramPath() throw( OSDL::Exception )
 
 #endif // OSDL_USES_PHYSICSFS
 
-
 }
 
 
-std::string OSDL::Utils::getUserDirectory() throw( OSDL::Exception )
+
+std::string OSDL::Utils::getUserDirectory()
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -160,9 +162,7 @@ std::string OSDL::Utils::getUserDirectory() throw( OSDL::Exception )
 
 #endif // OSDL_USES_PHYSICSFS
 
-
 }
-
 
 
 
@@ -178,6 +178,7 @@ std::string OSDL::Utils::getUserDirectory() throw( OSDL::Exception )
  *
  */
   
+ 
  
  
 /**
@@ -265,6 +266,7 @@ static int seekCallback( DataStream * datastream, int offset, int whence )
     
 }    
     
+
 
 
 /**
@@ -414,7 +416,7 @@ static int closeCallback( DataStream * datastream )
 
 
 OSDL::Utils::DataStream & OSDL::Utils::createDataStreamFrom( 
-	Ceylan::System::File & sourceFile ) throw( OSDL::Exception )
+	Ceylan::System::File & sourceFile )
 {
 
 #if OSDL_USES_SDL
@@ -453,8 +455,8 @@ OSDL::Utils::DataStream & OSDL::Utils::createDataStreamFrom(
 }
 
 
+
 void OSDL::Utils::deleteDataStream( DataStream & datastream ) 
-        	throw( OSDL::Exception )
 {
 
 #if OSDL_USES_SDL

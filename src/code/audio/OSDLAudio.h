@@ -38,23 +38,26 @@
 
 
 
+
 namespace OSDL
 {
 
+	
 	
 	// Manager of the audio module.
 	class CommonModule ;
 		
 	
+	
 	namespace Audio 
 	{
 			
 			
-	
 		
 		// The audio module uses channels to mix input sources.
 		class AudioChannel ;
 					
+	
 	
 		/**
 		 * Returns a textual description of the specified sample format.
@@ -62,11 +65,9 @@ namespace OSDL
 		 * @throw AudioException if the format is not known.
 		 *
 		 */
-		std::string sampleFormatToString( SampleFormat format )
-			throw( AudioException ) ;
+		std::string sampleFormatToString( SampleFormat format ) ;
 			
 			
-		
 	
 		/**
 		 * Returns a textual description of the specified channel format.
@@ -74,11 +75,10 @@ namespace OSDL
 		 * @throw AudioException if the format is not known.
 		 *
 		 */
-		std::string channelFormatToString( ChannelFormat format )
-			throw( AudioException ) ;
+		std::string channelFormatToString( ChannelFormat format ) ;
 
 	
-			
+	
 								
 		/**
 		 * Root module for all audio services.
@@ -90,6 +90,7 @@ namespace OSDL
 		 */
 		class OSDL_DLL AudioModule: public Ceylan::Module
 		{
+		
 		
 		
 			// The common module has to create the audio module.
@@ -112,7 +113,7 @@ namespace OSDL
 			 * initializer ordering.
 			 *
 			 */			
-			OSDL_DLL friend AudioModule & getExistingAudioModule() throw() ;
+			OSDL_DLL friend AudioModule & getExistingAudioModule() ;
 		
 		
 		
@@ -131,6 +132,7 @@ namespace OSDL
 				/// Unsigned 8-bit sample.
 				static const SampleFormat Uint8SampleFormat ;
 				
+				
 				/// Signed 8-bit sample.
 				static const SampleFormat Sint8SampleFormat ;
 				
@@ -139,22 +141,28 @@ namespace OSDL
 				/// Unsigned 16-bit sample, little-endian byte order.
 				static const SampleFormat LittleUint16SampleFormat ;
 
+
 				/// Signed 16-bit sample, little-endian byte order.
 				static const SampleFormat LittleSint16SampleFormat ;
+
 
 
 				/// Unsigned 16-bit sample, big-endian byte order.
 				static const SampleFormat BigUint16SampleFormat ;
 			
+			
 				/// Signed 16-bit sample, big-endian byte order.
 				static const SampleFormat BigSint16SampleFormat ;
+			
 			
 			
 				/// Unsigned 16-bit sample, native byte order (big or little).
 				static const SampleFormat NativeUint16SampleFormat ;
 			
+			
 				/// Signed 16-bit sample, native byte order (big or little).
 				static const SampleFormat NativeSint16SampleFormat ;
+			
 			
 			
 				/// IMA ADPCM (not Microsoft) sample.
@@ -163,25 +171,32 @@ namespace OSDL
 
 
 
+
 				// Channel format section.
 				
+			
 			
 				/// Monophonic (one channel).
 				static const ChannelFormat Mono ;
 
+
 				/// Stereophonic (two channels).
 				static const ChannelFormat Stereo ;
+				
 				
 
 				/// The smallest volume possible (mute).
 				static const Volume MinVolume ;
 				
+				
 				/// The highest volume possible (full throttle).
 				static const Volume MaxVolume ;
 
 
+
 				/// Allows to store the number (identifier) of a mixing channel.
 				typedef Ceylan::Uint16 ChannelNumber ;
+				
 				
 				
 				
@@ -237,12 +252,11 @@ namespace OSDL
 				 *
 				 */			
 				virtual void setMode( 
-						Ceylan::Maths::Hertz outputFrequency,
-						SampleFormat         outputSampleFormat,
-						ChannelFormat        outputChannel,
-						ChunkSize            outputBufferSize,
-						ChannelNumber        mixingChannelNumber = 16 ) 
-					throw( AudioException ) ;
+					Ceylan::Maths::Hertz outputFrequency,
+					SampleFormat         outputSampleFormat,
+					ChannelFormat        outputChannel,
+					ChunkSize            outputBufferSize,
+					ChannelNumber        mixingChannelNumber = 16 ) ;
 
 
 
@@ -267,10 +281,9 @@ namespace OSDL
 				 *
 				 */
 				virtual Ceylan::System::Millisecond getObtainedMode( 
-						Ceylan::Maths::Hertz & actualOutputFrequency,
-						SampleFormat & actualOutputSampleFormat,
-						ChannelNumber & actualOutputChannelNumber ) 
-					throw( AudioException ) ;
+					Ceylan::Maths::Hertz & actualOutputFrequency,
+					SampleFormat & actualOutputSampleFormat,
+					ChannelNumber & actualOutputChannelNumber ) ;
 				 
 				 
 				 
@@ -282,7 +295,7 @@ namespace OSDL
 				 * @throw AudioException of the operation failed.
 				 *
 				 */
-				virtual void unsetMode() throw( AudioException ) ; 
+				virtual void unsetMode() ; 
 
 
 					
@@ -304,8 +317,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setPanning( 
-						Ceylan::Maths::Percentage leftPercentage )
-					throw( AudioException ) ;
+					Ceylan::Maths::Percentage leftPercentage ) ;
+					
 					
 					
 				/**
@@ -315,7 +328,8 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void unsetPanning()	throw( AudioException ) ;
+				virtual void unsetPanning()	;
+
 
 
 				/**
@@ -332,8 +346,7 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void setReverseStereo( bool reverse = true )
-					throw( AudioException ) ;
+				virtual void setReverseStereo( bool reverse = true ) ;
 					
 
 					
@@ -355,9 +368,10 @@ namespace OSDL
 				 * @see ListenerDistance
 				 *
 				 */
-				virtual void setDistanceAttenuation( ListenerDistance distance )
-					throw( AudioException ) ;
+				virtual void setDistanceAttenuation( 
+					ListenerDistance distance ) ;
 					
+				
 					
 				/**
 				 * Deactivates distance attenuation effect for the overall
@@ -367,8 +381,7 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void unsetDistanceAttenuation()	
-					throw( AudioException ) ;
+				virtual void unsetDistanceAttenuation() ;
 
 
 
@@ -394,7 +407,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setPositionAttenuation( ListenerDistance distance,
-					ListenerAngle angle ) throw( AudioException ) ;
+					ListenerAngle angle ) ;
+					
 					
 					
 				/**
@@ -405,13 +419,14 @@ namespace OSDL
 				 * including if not supported.
 				 *
 				 */
-				virtual void unsetPositionAttenuation()	
-					throw( AudioException ) ;
+				virtual void unsetPositionAttenuation() ;
+
 
 
 
 
 				// Channel section.
+
 
 
 				/**
@@ -420,8 +435,8 @@ namespace OSDL
 				 * @throw AudioException if the operation failed.
 				 *
 				 */
-				virtual ChannelNumber getMixingChannelCount() const 
-					throw( AudioException ) ; 
+				virtual ChannelNumber getMixingChannelCount() const ; 
+
 
 
 				/**
@@ -434,7 +449,8 @@ namespace OSDL
 				 *
 				 */
 				virtual AudioChannel & getMixingChannelAt( ChannelNumber index )
-					const throw( AudioException ) ; 
+					const ; 
+
 
 
 				/**
@@ -445,9 +461,9 @@ namespace OSDL
 				 * @throw AudioException if the operation failed.
 				 *
 				 */
-				virtual void setVolumeForAllMixingChannels( Volume newVolume )
-					throw( AudioException ) ;
+				virtual void setVolumeForAllMixingChannels( Volume newVolume ) ;
 					
+				
 				
 				/**
 				 * Returns the number of channels being currently playing
@@ -457,8 +473,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual ChannelNumber getPlayingChannelCount() const 
-					throw( AudioException ) ;
+				virtual ChannelNumber getPlayingChannelCount() const ;
+					
 					
 					
 				/**
@@ -469,8 +485,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual ChannelNumber getPausedChannelCount() const 
-					throw( AudioException ) ;
+				virtual ChannelNumber getPausedChannelCount() const  ;
+					
 					
 					
 				/**
@@ -482,7 +498,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual void pauseAllChannels() throw( AudioException ) ;
+				virtual void pauseAllChannels() ;
+					
 					
 					
 				/**
@@ -492,7 +509,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual void resumeAllChannels() throw( AudioException ) ;
+				virtual void resumeAllChannels() ;
+					
 					
 					
 				/**
@@ -505,7 +523,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual void haltAllChannels() throw( AudioException ) ;
+				virtual void haltAllChannels() ;
+					
 					
 					
 				/**
@@ -518,13 +537,13 @@ namespace OSDL
 				 * @return the number of channels set to expire, whether or 
 				 * not they are active.
 				 *
-				 * @throw AudioChannelException if the operation failed,
+				 * @throw AudioException if the operation failed,
 				 * including if not supported.
 				 *
 				 */
 				virtual ChannelNumber expireAllChannelsIn( 
-						Ceylan::System::Millisecond expireDuration )
-					throw( AudioException ) ;
+					Ceylan::System::Millisecond expireDuration ) ;
+		
 		
 		
 				/**
@@ -542,13 +561,14 @@ namespace OSDL
 				 *
 				 */
 				virtual ChannelNumber fadeOutAllChannelsDuring( 
-						Ceylan::System::Millisecond fadeOutDuration )
-					throw( AudioException ) ;
+					Ceylan::System::Millisecond fadeOutDuration ) ;
 		
+					
 					
 					
 				
 				// Music section.
+				
 				
 				
 				/**
@@ -559,8 +579,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual MusicType getTypeOfCurrentMusic() const
-					throw( AudioException ) ;
+				virtual MusicType getTypeOfCurrentMusic() const ;
+					
 					
 				
 				/**
@@ -572,7 +592,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual bool isMusicPlaying() const throw( AudioException ) ;
+				virtual bool isMusicPlaying() const ;
+
 
 
 				/**
@@ -585,7 +606,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual bool isMusicPaused() const throw( AudioException ) ;
+				virtual bool isMusicPaused() const ;
+
 
 
 				/**
@@ -598,8 +620,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual FadingStatus getMusicFadingStatus() const
-					 throw( AudioException ) ;
+				virtual FadingStatus getMusicFadingStatus() const ;
+				
 				
 				
 				/**
@@ -611,8 +633,8 @@ namespace OSDL
 				 * @throw AudioException if the operation failed.
 				 *
 				 */
-				virtual std::string getDriverName() const 
-					throw( AudioException ) ; 
+				virtual std::string getDriverName() const ; 
+		
 		
 			
 	            /**
@@ -628,8 +650,8 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+			
 			
 			
 			
@@ -638,7 +660,9 @@ namespace OSDL
 				
 					
 					
+					
 				// Audio locator section.
+			
 			
 
 				/**
@@ -648,6 +672,7 @@ namespace OSDL
 				 *
 				 */
 				static std::string AudioPathEnvironmentVariable  ;
+				 
 				 
 				 
 				/**
@@ -672,8 +697,9 @@ namespace OSDL
 				 * of environment variables.
 				 *
 				 */	
-				static std::string DescribeEnvironmentVariables() throw() ;	
+				static std::string DescribeEnvironmentVariables() ;	
 					
+				
 				
 				/**
 				 * Tells whether audio has already been initialized.
@@ -686,8 +712,9 @@ namespace OSDL
 				 * each call is rather inefficient though.
 				 *
 				 */
-				static bool IsAudioInitialized() throw() ;
+				static bool IsAudioInitialized() ;
 					
+
 
 				/**
 				 * Returns the name of the audio driver being currently 
@@ -698,7 +725,8 @@ namespace OSDL
 				 * @throw AudioException if the operation failed.
 				 *
 				 */
-				static std::string GetDriverName() throw( AudioException ) ;
+				static std::string GetDriverName() ;
+				
 				
 				
 				/// The maximum length for the name of the audio driver.
@@ -706,15 +734,19 @@ namespace OSDL
 				
 				
 					
+					
 			protected:
 	
+				
 				
 				/// Tells whether the internal mixer is set.
 				bool _mixerInitialized ;
 				
 				
+				
 				/// The number of bytes of a mixing chunk.
 				ChunkSize _chunkSize ;
+				
 				
 				
 /* 
@@ -750,7 +782,7 @@ namespace OSDL
 				 * @throw AudioException if the operation failed.
 				 *
 				 */
-				virtual void onMusicPlaybackFinished() throw( AudioException ) ;
+				virtual void onMusicPlaybackFinished() ;
 			
 					
 				
@@ -766,8 +798,8 @@ namespace OSDL
 				 * @throw AudioException if the operation failed.
 				 *
 				 */
-				static ChannelNumber GetChannelCountFor( ChannelFormat format )
-					throw( AudioException ) ;
+				static ChannelNumber GetChannelCountFor( ChannelFormat format );
+	
 	
 	
 				/**
@@ -782,8 +814,7 @@ namespace OSDL
 				 * @throw AudioException if the operation failed.
 				 *
 				 */
-				static ChunkSize GetSampleSizeFor( SampleFormat format )
-					throw( AudioException ) ;
+				static ChunkSize GetSampleSizeFor( SampleFormat format ) ;
 	
 
 
@@ -799,6 +830,7 @@ namespace OSDL
 
 
 
+
 			private:
 
 
@@ -811,6 +843,7 @@ namespace OSDL
 				 */
 				static void HandleMusicPlaybackFinishedCallback() ;
 
+
 	
 				/**
 				 * Private constructor to be sure it will not be implicitly
@@ -820,11 +853,13 @@ namespace OSDL
 				 * initialization failed.
 				 *
 				 */
-				AudioModule() throw( AudioException ) ;
+				AudioModule() ;
+
 
 
 				/// Virtual destructor ensuring correct audio clean-up.
 				virtual ~AudioModule() throw() ;
+	
 	
 	
 				/**
@@ -835,7 +870,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit AudioModule( const AudioModule & source ) throw() ;
+				explicit AudioModule( const AudioModule & source ) ;
+			
 			
 			
 				/**
@@ -846,8 +882,7 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 *
 				 */			 
-				AudioModule & operator = ( const AudioModule & source ) 
-					throw() ;
+				AudioModule & operator = ( const AudioModule & source ) ;
 	
 
 
@@ -864,8 +899,10 @@ namespace OSDL
 				friend class CommonModule ;
 			
 			
+			
 		} ;
 
+	
 	
 	
 		/**
@@ -884,10 +921,12 @@ namespace OSDL
 		 * initializer ordering.
 		 *
 		 */			
-		OSDL_DLL AudioModule & getExistingAudioModule() throw() ;
+		OSDL_DLL AudioModule & getExistingAudioModule() ;
+		
 		
 		
 	}	
+	
 	
 }	
 

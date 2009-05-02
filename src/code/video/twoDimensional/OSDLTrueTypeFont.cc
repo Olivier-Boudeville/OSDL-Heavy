@@ -62,14 +62,18 @@
 
 
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::TwoDimensional::Text ;
+
 
 using namespace Ceylan ;
 using namespace Ceylan::Log ;
 using namespace Ceylan::System ;
 
+
 using std::string ;
+
 
 
 
@@ -87,13 +91,13 @@ Ceylan::Uint32 TrueTypeFont::FontCounter = 0 ;
 
 
 
+
 TrueTypeFont::TrueTypeFont( 
-	const std::string & fontFilename, 
-	PointSize pointSize, 
-	FontIndex index, 
-	bool convertToDisplay, 
-	RenderCache cacheSettings ) 
-			throw( TextException ):
+		const std::string & fontFilename, 
+		PointSize pointSize, 
+		FontIndex index, 
+		bool convertToDisplay, 
+		RenderCache cacheSettings ) :
 	Font( convertToDisplay, cacheSettings ),	
 	_pointSize( pointSize ),
 	_actualFont( 0 )
@@ -236,7 +240,7 @@ TrueTypeFont::~TrueTypeFont() throw()
 
 
 
-PointSize TrueTypeFont::getPointSize() const throw()
+PointSize TrueTypeFont::getPointSize() const
 {
 
 	return _pointSize ;
@@ -244,7 +248,8 @@ PointSize TrueTypeFont::getPointSize() const throw()
 }
 
 
-RenderingStyle TrueTypeFont::getRenderingStyle() const throw()
+
+RenderingStyle TrueTypeFont::getRenderingStyle() const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -262,7 +267,6 @@ RenderingStyle TrueTypeFont::getRenderingStyle() const throw()
 
 
 void TrueTypeFont::setRenderingStyle( RenderingStyle newStyle ) 
-	throw( TextException )
 {
 
 #if OSDL_USES_SDL_TTF
@@ -289,8 +293,7 @@ void TrueTypeFont::setRenderingStyle( RenderingStyle newStyle )
 
 
 	 
-Width TrueTypeFont::getWidth( Ceylan::Latin1Char character ) 
-	const throw( TextException )
+Width TrueTypeFont::getWidth( Ceylan::Latin1Char character ) const 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -325,8 +328,7 @@ Width TrueTypeFont::getWidth( Ceylan::Latin1Char character )
 
 
 
-SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character ) 
-	const throw( TextException )
+SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character ) const 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -353,7 +355,7 @@ SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character )
 
 							
 SignedHeight TrueTypeFont::getHeightAboveBaseline( 
-	Ceylan::Latin1Char character ) const throw( TextException )
+	Ceylan::Latin1Char character ) const 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -380,7 +382,7 @@ SignedHeight TrueTypeFont::getHeightAboveBaseline(
 
 
 OSDL::Video::SignedLength TrueTypeFont::getAdvance( 
-	Ceylan::Latin1Char character ) const throw( TextException )
+	Ceylan::Latin1Char character ) const 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -406,7 +408,7 @@ OSDL::Video::SignedLength TrueTypeFont::getAdvance(
 
 
 
-Text::Height TrueTypeFont::getHeight() const throw()
+Text::Height TrueTypeFont::getHeight() const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -423,7 +425,7 @@ Text::Height TrueTypeFont::getHeight() const throw()
 
 
 
-Text::SignedHeight TrueTypeFont::getAscent() const throw()
+Text::SignedHeight TrueTypeFont::getAscent() const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -440,7 +442,7 @@ Text::SignedHeight TrueTypeFont::getAscent() const throw()
 
 
 
-Text::SignedHeight TrueTypeFont::getDescent() const throw()
+Text::SignedHeight TrueTypeFont::getDescent() const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -457,7 +459,7 @@ Text::SignedHeight TrueTypeFont::getDescent() const throw()
 
 
 
-Text::Height TrueTypeFont::getLineSkip() const throw()
+Text::Height TrueTypeFont::getLineSkip() const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -473,7 +475,7 @@ Text::Height TrueTypeFont::getLineSkip() const throw()
 }
 
 
-Ceylan::Uint16 TrueTypeFont::getFacesCount() const throw()
+Ceylan::Uint16 TrueTypeFont::getFacesCount() const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -490,7 +492,7 @@ Ceylan::Uint16 TrueTypeFont::getFacesCount() const throw()
 
 
 
-bool TrueTypeFont::isFixedWidth() const throw()
+bool TrueTypeFont::isFixedWidth() const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -507,7 +509,7 @@ bool TrueTypeFont::isFixedWidth() const throw()
 
 
 
-string TrueTypeFont::getFaceFamilyName() const throw()
+string TrueTypeFont::getFaceFamilyName() const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -524,7 +526,7 @@ string TrueTypeFont::getFaceFamilyName() const throw()
 
 
 
-string TrueTypeFont::getFaceStyleName() const throw()
+string TrueTypeFont::getFaceStyleName() const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -545,9 +547,9 @@ string TrueTypeFont::getFaceStyleName() const throw()
 // Bounding boxes section.
 
 
+
 UprightRectangle & TrueTypeFont::getBoundingBoxFor( 
-		Ceylan::Unicode glyph, SignedLength & advance ) 
-	const throw( TextException )
+	Ceylan::Unicode glyph, SignedLength & advance ) const 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -579,7 +581,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor(
 
 
 UprightRectangle & TrueTypeFont::getBoundingBoxFor( const std::string & text )
-	const throw( TextException )
+	const 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -606,7 +608,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor( const std::string & text )
 
 
 UprightRectangle & TrueTypeFont::getBoundingBoxForUTF8( 
-	const std::string & text ) const throw( TextException )
+	const std::string & text ) const 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -633,7 +635,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUTF8(
 
 
 UprightRectangle & TrueTypeFont::getBoundingBoxForUnicode( 
-	const Ceylan::Unicode * text ) const throw( TextException )
+	const Ceylan::Unicode * text ) const 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -667,11 +669,11 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUnicode(
 // Render section.
 
 
+
 OSDL::Video::Surface & TrueTypeFont::renderLatin1Glyph( 
-		Ceylan::Latin1Char character, 
-		RenderQuality quality, 
-		Pixels::ColorDefinition glyphColor ) 
-	throw( TextException )
+	Ceylan::Latin1Char character, 
+	RenderQuality quality, 
+	Pixels::ColorDefinition glyphColor ) 
 {
 	
 	return renderUnicodeGlyph( 
@@ -685,7 +687,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Glyph(
 void TrueTypeFont::blitLatin1Glyph( 
 	Surface & targetSurface, Coordinate x, Coordinate y, 
 	Ceylan::Latin1Char character, RenderQuality quality, 
-	Pixels::ColorDefinition glyphColor ) throw( TextException )
+	Pixels::ColorDefinition glyphColor ) 
 {
 
 	// Could be easily optimized (even though Freetype has a cache feature):
@@ -705,7 +707,7 @@ void TrueTypeFont::blitLatin1Glyph(
 OSDL::Video::Surface & TrueTypeFont::renderUnicodeGlyph( 
 	Ceylan::Unicode character, 
 	RenderQuality quality, 
-	Pixels::ColorDefinition glyphColor ) throw( TextException )
+	Pixels::ColorDefinition glyphColor ) 
 {
 
 	// Two different cases, depending on a glyph cache being used or not:
@@ -779,9 +781,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeGlyph(
 
 
 OSDL::Video::Surface & TrueTypeFont::renderLatin1Text( 
-		const std::string & text, 
-		RenderQuality quality, Pixels::ColorDefinition textColor )
-	throw( TextException )
+	const std::string & text, 
+	RenderQuality quality, Pixels::ColorDefinition textColor )
 {
 
 #if OSDL_USES_SDL_TTF
@@ -990,10 +991,9 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 
 
 OSDL::Video::Surface & TrueTypeFont::renderUTF8Text( 
-		const std::string & text, 
-		RenderQuality quality, 
-		Pixels::ColorDefinition textColor )
-	throw( TextException )
+	const std::string & text, 
+	RenderQuality quality, 
+	Pixels::ColorDefinition textColor )
 {
 
 #if OSDL_USES_SDL_TTF
@@ -1188,10 +1188,9 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 
 
 OSDL::Video::Surface & TrueTypeFont::renderUnicodeText( 
-		const Ceylan::Unicode * text, 
-		RenderQuality quality, 
-		Pixels::ColorDefinition textColor ) 
-	throw( TextException )
+	const Ceylan::Unicode * text, 
+	RenderQuality quality, 
+	Pixels::ColorDefinition textColor ) 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -1392,8 +1391,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 
 
 
-const string TrueTypeFont::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string TrueTypeFont::toString( Ceylan::VerbosityLevels level ) const
 {
 
 #if OSDL_USES_SDL_TTF
@@ -1466,11 +1464,13 @@ const string TrueTypeFont::toString( Ceylan::VerbosityLevels level )
 
 
 
+
 // Static section.
 
 
+
 Font::RenderQuality TrueTypeFont::GetObtainedQualityFor( 
-	Font::RenderQuality targetedQuality ) throw()
+	Font::RenderQuality targetedQuality )
 {
 
 	return targetedQuality ;
@@ -1479,7 +1479,7 @@ Font::RenderQuality TrueTypeFont::GetObtainedQualityFor(
 
 
 
-void TrueTypeFont::SetUnicodeSwapStatus( bool newStatus ) throw()
+void TrueTypeFont::SetUnicodeSwapStatus( bool newStatus )
 {
 
 #if OSDL_USES_SDL_TTF
@@ -1495,7 +1495,7 @@ void TrueTypeFont::SetUnicodeSwapStatus( bool newStatus ) throw()
 
 
 
-string TrueTypeFont::DescribeLastError() throw() 
+string TrueTypeFont::DescribeLastError() 
 {
 
 #if OSDL_USES_SDL_TTF
@@ -1514,7 +1514,7 @@ string TrueTypeFont::DescribeLastError() throw()
 
 OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph( 
 	Ceylan::Unicode character, RenderQuality quality, 
-	Pixels::ColorDefinition glyphColor ) throw( TextException )
+	Pixels::ColorDefinition glyphColor ) 
 {
 
 #if OSDL_USES_SDL_TTF

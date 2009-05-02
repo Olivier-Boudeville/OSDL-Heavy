@@ -28,9 +28,11 @@
 #define OSDL_PIXEL_H_
 
 
+
 #include "OSDLVideoTypes.h"  // for Coordinate, BitsPerPixel, VideoException
 
 #include "Ceylan.h"          // for Ceylan::Uint8, etc.
+
 
 
 
@@ -44,6 +46,7 @@ struct SDL_PixelFormat ;
 
 
 
+
 #include <string>
 
 
@@ -52,16 +55,20 @@ namespace OSDL
 {
 	
 	
+	
 	namespace Video
 	{
 
+	
 	
 		// Pixels belong to surfaces.
 		class Surface ;
 	
 	
+	
 		// Pixel formats may refer to a palette.
 		class Palette ;
+		
 		
 		
 		
@@ -156,12 +163,14 @@ namespace OSDL
 			 */		
 #if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
+
 			/**
 			 * Describes a color definition, not converted to a specific
 			 * format.
 			 *
 			 */
 			typedef ::SDL_Color ColorDefinition ;
+
 
 
 			/**
@@ -171,6 +180,7 @@ namespace OSDL
 			typedef ::SDL_PixelFormat PixelFormat ;
 			
 #else // OSDL_USES_SDL
+
 
 
 			/**
@@ -189,6 +199,7 @@ namespace OSDL
 				ColorElement unused ;
 				
 			} ;
+
 
 
 			/**
@@ -239,6 +250,7 @@ namespace OSDL
 			typedef Ceylan::Float32 GammaFactor ;
 			
 			
+			
 			/**
 			 * Sets the "gamma function" for the display of each color
 			 * component. 
@@ -256,12 +268,14 @@ namespace OSDL
 			 *
 			 */
 			bool setGamma( GammaFactor red, GammaFactor green, 
-				GammaFactor blue ) throw() ;
+				GammaFactor blue ) ;
+			
 			
 			
 			/// A color element of a gamma ramp.
 			typedef Ceylan::Uint16 GammaRampElement ;
 						
+			
 			
 			/**
 			 * Sets the gamma lookup tables for the display for each color
@@ -291,8 +305,8 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL bool setGammaRamp( GammaRampElement * redRamp, 
-					GammaRampElement * greenRamp, GammaRampElement * blueRamp )
-				throw() ;
+				GammaRampElement * greenRamp, GammaRampElement * blueRamp ) ;
+				
 				
 				
 			/**
@@ -308,14 +322,14 @@ namespace OSDL
 			 *
 			 */	
 			OSDL_DLL bool getGammaRamp( GammaRampElement * redRamp, 
-					GammaRampElement * greenRamp, GammaRampElement * blueRamp )
-				throw() ;
+				GammaRampElement * greenRamp, GammaRampElement * blueRamp ) ;
 
 
 
 
 			// Color mask section.
 			
+
 
 			/**
 			 * Returns the RBGA masks which are recommended on this platform:
@@ -345,7 +359,8 @@ namespace OSDL
 			 */
 			OSDL_DLL void getRecommendedColorMasks( ColorMask & redMask, 
 				ColorMask & greenMask, ColorMask & blueMask, 
-				ColorMask & alphaMask ) throw() ;
+				ColorMask & alphaMask ) ;
+
 
 
 			/**
@@ -372,7 +387,8 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL void getRecommendedColorMasks( ColorMask & redMask, 
-				ColorMask & greenMask, ColorMask & blueMask ) throw() ;
+				ColorMask & greenMask, ColorMask & blueMask ) ;
+
 
 
 			/**
@@ -398,11 +414,13 @@ namespace OSDL
 			 */
 			OSDL_DLL void getCurrentColorMasks( const PixelFormat & format, 
 				ColorMask & redMask, ColorMask & greenMask, 
-				ColorMask & blueMask, ColorMask & alphaMask ) throw() ;
+				ColorMask & blueMask, ColorMask & alphaMask ) ;
+
 
 
 
 			// Color conversion section.
+
 
 
 			/**
@@ -421,7 +439,8 @@ namespace OSDL
 			 */
 			OSDL_DLL ColorDefinition convertRGBAToColorDefinition( 
 				ColorElement red, ColorElement green, ColorElement blue, 
-				ColorElement alpha = AlphaOpaque ) throw() ;
+				ColorElement alpha = AlphaOpaque ) ;
+				
 				
 			
 			/**
@@ -437,7 +456,8 @@ namespace OSDL
 			 */
 			OSDL_DLL void convertColorDefinitionToRGBA( ColorDefinition color,
 				ColorElement & red, ColorElement & green, ColorElement & blue, 
-				ColorElement & alpha ) throw() ;
+				ColorElement & alpha ) ;
+				
 							
 			
 			/**
@@ -451,8 +471,9 @@ namespace OSDL
 			OSDL_DLL PixelColor convertRGBAToPixelColor( 
 				const PixelFormat & format,
 				ColorElement red, ColorElement green, ColorElement blue, 
-				ColorElement alpha = AlphaOpaque ) throw() ;
+				ColorElement alpha = AlphaOpaque ) ;
 				
+			
 			
 			/**
 			 * Returns RGBA quadruplet corresponding to specified pixel, 
@@ -476,9 +497,9 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL ColorDefinition convertPixelColorToColorDefinition( 
-					const PixelFormat & format,	PixelColor pixel ) 
-				throw( VideoException ) ;
+				const PixelFormat & format,	PixelColor pixel ) ;
 	
+				
 					
 			/**
 			 * Converts a set of four coordinates in RGBA color space, 
@@ -491,8 +512,9 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL PixelColor convertColorDefinitionToPixelColor( 
-				const PixelFormat & format,	ColorDefinition colorDef ) throw() ;
+				const PixelFormat & format,	ColorDefinition colorDef ) ;
 	
+
 
 			/**
 			 * Converts a color definition to a raw PixelColor, regardless 
@@ -504,7 +526,8 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL PixelColor convertColorDefinitionToRawPixelColor( 
-				ColorDefinition colorDef ) throw() ;
+				ColorDefinition colorDef ) ;
+		
 		
 		
 			/**
@@ -518,12 +541,14 @@ namespace OSDL
 			 */
 			OSDL_DLL PixelColor convertRGBAToRawPixelColor( 
 				ColorElement red, ColorElement green, ColorElement blue, 
-				ColorElement alpha = AlphaOpaque ) throw() ;
+				ColorElement alpha = AlphaOpaque ) ;
+		
 		
 		
 		
 		
 			// Color comparison section.
+			
 			
 			
 			/**
@@ -539,7 +564,8 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL bool areEqual( ColorDefinition first, 
-				ColorDefinition second, bool useAlpha = true ) throw() ;
+				ColorDefinition second, bool useAlpha = true ) ;
+		
 		
 		
 			/**
@@ -556,7 +582,8 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL bool isLess( ColorDefinition value, 
-				ColorDefinition comparison ) throw() ;
+				ColorDefinition comparison ) ;
+		
 		
 		
 			/**
@@ -573,8 +600,8 @@ namespace OSDL
 			 * directly replaced by the '==' operator.
 			 *
 			 */
-			OSDL_DLL bool areEqual( PixelColor first, PixelColor second )
-				throw() ;
+			OSDL_DLL bool areEqual( PixelColor first, PixelColor second ) ;
+
 
 
 			/**
@@ -594,7 +621,8 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL ColorDefinition selectColorDifferentFrom( 
-				ColorDefinition first, ColorDefinition second ) throw() ;
+				ColorDefinition first, ColorDefinition second ) ;
+		
 		
 		
 			/**
@@ -617,12 +645,14 @@ namespace OSDL
 			 */
 			OSDL_DLL ColorDefinition selectColorDifferentFrom( 
 				ColorDefinition first, ColorDefinition second, 
-					ColorDefinition third ) throw() ;
+				ColorDefinition third ) ;
+				
 				
 				
 				
 			// get/put pixel operations.
 			
+
 
 			/**
 	 		 * Returns the pixel color at [x;y].
@@ -638,7 +668,8 @@ namespace OSDL
 			 *
 	 		 */
 			OSDL_DLL PixelColor getPixelColor( const Surface & fromSurface, 
-				Coordinate x, Coordinate y ) throw ( VideoException ) ;
+				Coordinate x, Coordinate y ) ;
+			
 			
 			
 			/**
@@ -660,9 +691,9 @@ namespace OSDL
 			 *
 	 		 */
 			OSDL_DLL ColorDefinition getColorDefinition( 
-				const Surface & fromSurface, 
-				Coordinate x, Coordinate y ) throw ( VideoException ) ;
+				const Surface & fromSurface, Coordinate x, Coordinate y ) ;
 
+			
 			
 			/**
 		 	 * Puts specified pixel at [x;y] with the given color, 
@@ -710,12 +741,11 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL void putRGBAPixel( Surface & targetSurface, 
-					Coordinate x, Coordinate y, 
-					ColorElement red, ColorElement green, ColorElement blue, 
-					ColorElement alpha = AlphaOpaque, 
-					bool blending = true, bool clipping = true, 
-					bool locking = false )
-				throw( VideoException ) ;
+				Coordinate x, Coordinate y, 
+				ColorElement red, ColorElement green, ColorElement blue, 
+				ColorElement alpha = AlphaOpaque, 
+				bool blending = true, bool clipping = true, 
+				bool locking = false ) ;
 	
 
 
@@ -759,11 +789,10 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL void putColorDefinition( Surface & targetSurface, 
-					Coordinate x, Coordinate y, 
-					ColorDefinition colorDef,
-					bool blending = true, bool clipping = true, 
-					bool locking = false )
-			 	throw( VideoException ) ;
+				Coordinate x, Coordinate y, 
+				ColorDefinition colorDef,
+				bool blending = true, bool clipping = true, 
+				bool locking = false ) ;
 	
 	
 	
@@ -809,11 +838,10 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL void putPixelColor( Surface & targetSurface, 
-					Coordinate x, Coordinate y, 
-					PixelColor convertedColor, ColorElement alpha,
-					bool blending = true, bool clipping = true, 
-					bool locking = false )
-			 	throw( VideoException ) ;
+				Coordinate x, Coordinate y, 
+				PixelColor convertedColor, ColorElement alpha,
+				bool blending = true, bool clipping = true, 
+				bool locking = false ) ;
 	
 		
 		
@@ -836,7 +864,7 @@ namespace OSDL
 			 */
 			OSDL_DLL void alternativePutPixelColor( Surface & targetSurface, 
 				Coordinate x, Coordinate y, 
-				PixelColor color, bool mapToSurfaceFormat = false ) throw()	;
+				PixelColor color, bool mapToSurfaceFormat = false ) ;
 				
 								
 				
@@ -846,8 +874,8 @@ namespace OSDL
 			 * @param format the pixel format to describe.
 			 *
 			 */
-			OSDL_DLL std::string toString( const PixelFormat & format ) 
-				throw() ;
+			OSDL_DLL std::string toString( const PixelFormat & format ) ;
+
 
 
 			/**
@@ -861,8 +889,9 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL std::string toString( PixelColor pixel, 
-				const PixelFormat & format ) throw() ;
+				const PixelFormat & format ) ;
 
+			
 			
 			/**
 			 * Returns a textual representation of the specified color
@@ -872,7 +901,8 @@ namespace OSDL
 			 * depending of the context.
 			 *
 			 */
-			OSDL_DLL std::string toString( ColorDefinition color ) throw() ;
+			OSDL_DLL std::string toString( ColorDefinition color ) ;
+			
 			
 			
 			/**
@@ -884,6 +914,7 @@ namespace OSDL
 			 */			
 			
 
+
 			/**
 			 * Transparent color (alpha set to not opaque at all). 
 			 * With an opaque alpha, would be pure black.
@@ -894,6 +925,7 @@ namespace OSDL
 			 */
 			extern OSDL_DLL const ColorDefinition Transparent ;          
 			
+			 
 			 
 			/// Shades of Grey:
 
@@ -1063,6 +1095,7 @@ namespace OSDL
 	}
 
 }
+
 
 
 #endif // OSDL_PIXEL_H_

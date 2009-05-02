@@ -98,7 +98,7 @@ using TwoDimensional::UprightRectangle ;
 
 
 
-SurfaceEvent::SurfaceEvent( Ceylan::EventSource & source ) throw(): 
+SurfaceEvent::SurfaceEvent( Ceylan::EventSource & source ) : 
 	Ceylan::Event( source )
 {
 
@@ -115,7 +115,7 @@ SurfaceEvent::~SurfaceEvent() throw()
 
 
 VideoMemoryLostException::VideoMemoryLostException( 
-		const std::string & message ) throw():
+		const std::string & message ) :
 	VideoException( message ) 
 {
 
@@ -123,7 +123,7 @@ VideoMemoryLostException::VideoMemoryLostException(
 
 
 
-VideoMemoryLostException::VideoMemoryLostException() throw():
+VideoMemoryLostException::VideoMemoryLostException() :
 	VideoException( "Video memory lost, content needs to be reblitted" ) 
 {
 
@@ -239,11 +239,11 @@ const Length Surface::captionOrdinateOffset	= 10 ;
 
 #endif // OSDL_COUNT_INSTANCES
  
+ 
 
  
  
-Surface::Surface( LowLevelSurface & surface, DisplayType displayType )
-		throw( VideoException ): 
+Surface::Surface( LowLevelSurface & surface, DisplayType displayType ) : 
 	UprightRectangle( 0, 0, 0, 0 ),
 	EventSource(),
 	Lockable(),
@@ -277,8 +277,7 @@ Surface::Surface( LowLevelSurface & surface, DisplayType displayType )
 
 Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 	Pixels::ColorMask redMask, Pixels::ColorMask greenMask,
-	Pixels::ColorMask blueMask, Pixels::ColorMask alphaMask ) 
-			throw( VideoException ):
+	Pixels::ColorMask blueMask, Pixels::ColorMask alphaMask ) :
 		UprightRectangle( 0, 0, 
 			/* width and height not stored, computed from surface: */ 0, 0 ),
 		EventSource(),
@@ -288,7 +287,6 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 		_mustBeLocked( false ),
  		_needsRedraw( true )  
 {
-
 
 #if OSDL_USES_SDL
 
@@ -321,7 +319,7 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 		// Here alpha mask is zero.
 		
 		/*
-		 * All other masks are zero too ? 
+		 * All other masks are zero too? 
 		 * Choose them according to endianess, then:
 		 *
 		 */
@@ -372,7 +370,7 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
  * special cases.	
  *
  */			
-Surface::Surface() throw( VideoException ):
+Surface::Surface() :
 	UprightRectangle( 0, 0, 0, 0 ),
 	EventSource(),
 	_surface( 0 ),
@@ -414,7 +412,7 @@ Surface::~Surface() throw()
 	
 	Ceylan::EventListener * widget ;
 	
-	// Do not use iterators for this delete task !
+	// Do not use iterators for this delete task!
 	
 	/*
 	 * Listeners will be removed one by one thanks to unsubscribeFrom calls:
@@ -432,7 +430,7 @@ Surface::~Surface() throw()
 		/*
 		 * Do not use: '_listeners.pop_back() ;' since this widget has 
 		 * already been removed thanks to the call to unsubscribeFrom: it 
-		 * would pop next listener !
+		 * would pop next listener!
 		 *
 		 */
 		delete widget ;
@@ -450,7 +448,7 @@ Surface::~Surface() throw()
 
 
 
-Clonable & Surface::clone() const throw( ClonableException )
+Clonable & Surface::clone() const
 {
 	
 #if OSDL_USES_SDL
@@ -476,7 +474,7 @@ Clonable & Surface::clone() const throw( ClonableException )
 		 * Blit the source content onto it:
 		 *
 		 * "The blit function should not be called on a locked surface": 
-		 * which one ?
+		 * which one?
 		 * Supposing it is the target surface, 'copied', which is not locked.
 		 *
 		 */
@@ -530,7 +528,7 @@ Clonable & Surface::clone() const throw( ClonableException )
 
 
 
-LowLevelSurface & Surface::getSDLSurface() const throw()
+LowLevelSurface & Surface::getSDLSurface() const
 {
 
 	// addRef 	
@@ -541,7 +539,7 @@ LowLevelSurface & Surface::getSDLSurface() const throw()
 
 
 void Surface::setSDLSurface( LowLevelSurface & newSurface, 
-	DisplayType displayType ) throw()
+	DisplayType displayType )
 {
 			
 	// Free any previously held surface, and replace it with the provided one.
@@ -554,7 +552,7 @@ void Surface::setSDLSurface( LowLevelSurface & newSurface,
 
 
 
-Surface::DisplayType Surface::getDisplayType() const throw()
+Surface::DisplayType Surface::getDisplayType() const
 {
 
 	return _displayType ;
@@ -563,7 +561,7 @@ Surface::DisplayType Surface::getDisplayType() const throw()
 
 
 
-void Surface::setDisplayType( DisplayType newDisplayType ) throw()
+void Surface::setDisplayType( DisplayType newDisplayType )
 {
 
 	_displayType = newDisplayType ;
@@ -572,7 +570,7 @@ void Surface::setDisplayType( DisplayType newDisplayType ) throw()
 
 
 
-Ceylan::Flags Surface::getFlags() const throw()
+Ceylan::Flags Surface::getFlags() const
 {
 
 #if OSDL_USES_SDL
@@ -589,7 +587,7 @@ Ceylan::Flags Surface::getFlags() const throw()
 
 
 
-void Surface::setFlags( Flags newFlags ) throw()
+void Surface::setFlags( Flags newFlags )
 {
 
 #if OSDL_USES_SDL
@@ -604,7 +602,6 @@ void Surface::setFlags( Flags newFlags ) throw()
 
 
 void Surface::convertToDisplay( bool alphaChannelWanted ) 
-	throw( VideoException )
 {
 
 #if OSDL_USES_SDL
@@ -638,7 +635,6 @@ void Surface::convertToDisplay( bool alphaChannelWanted )
 
 
 void Surface::setAlpha( Flags flags, Pixels::ColorElement newAlpha ) 
-	throw( VideoException )
 {
 
 #if OSDL_USES_SDL
@@ -658,7 +654,7 @@ void Surface::setAlpha( Flags flags, Pixels::ColorElement newAlpha )
 
 
 
-ColorDefinition Surface::guessColorKeyDefinition() const throw( VideoException )
+ColorDefinition Surface::guessColorKeyDefinition() const
 {
 
 	return Pixels::convertPixelColorToColorDefinition( getPixelFormat(),
@@ -668,7 +664,7 @@ ColorDefinition Surface::guessColorKeyDefinition() const throw( VideoException )
 
 
 
-PixelColor Surface::guessColorKey() const throw( VideoException )
+PixelColor Surface::guessColorKey() const
 {
 	
 	Length width  = getWidth() ;
@@ -705,7 +701,6 @@ PixelColor Surface::guessColorKey() const throw( VideoException )
 
 
 void Surface::setColorKey( Flags flags, Pixels::PixelColor keyPixelColor )
-	throw( VideoException )
 {
 
 #if OSDL_USES_SDL
@@ -727,7 +722,6 @@ void Surface::setColorKey( Flags flags, Pixels::PixelColor keyPixelColor )
 
 
 void Surface::setColorKey( Flags flags, Pixels::ColorDefinition keyColorDef ) 
-	throw( VideoException )
 {
 
 #if OSDL_USES_SDL
@@ -752,7 +746,7 @@ void Surface::setColorKey( Flags flags, Pixels::ColorDefinition keyColorDef )
 
 
 
-void Surface::convertFromColorKeyToAlphaChannel() throw( VideoException )
+void Surface::convertFromColorKeyToAlphaChannel()
 {
 	
 	if ( ( getFlags() & ColorkeyBlit ) == 0 )
@@ -766,7 +760,7 @@ void Surface::convertFromColorKeyToAlphaChannel() throw( VideoException )
 
 
 
-Palette & Surface::getPalette() const throw( VideoException )
+Palette & Surface::getPalette() const
 {
 
 #if OSDL_USES_SDL
@@ -792,7 +786,7 @@ Palette & Surface::getPalette() const throw( VideoException )
 
 bool Surface::setPalette( const Palette & newPalette, 
 	ColorCount startingColorIndex, ColorCount numberOfColors, 
-	Flags targetedPalettes ) throw( VideoException ) 
+	Flags targetedPalettes ) 
 {
 
 #if OSDL_USES_SDL
@@ -844,7 +838,7 @@ bool Surface::setPalette( const Palette & newPalette,
 
 					
 Surface & Surface::createColorReducedSurfaceFor( const Palette & palette, 
-	bool manageColorkey ) const throw( VideoException )
+	bool manageColorkey ) const
 {
 
 
@@ -905,7 +899,7 @@ Surface & Surface::createColorReducedSurfaceFor( const Palette & palette,
 	
 					
 
-Pixels::PixelFormat & Surface::getPixelFormat() const throw( VideoException )
+Pixels::PixelFormat & Surface::getPixelFormat() const
 {
 
 #if OSDL_USES_SDL
@@ -927,7 +921,7 @@ Pixels::PixelFormat & Surface::getPixelFormat() const throw( VideoException )
 
 
 
-void Surface::setPixelFormat( Pixels::PixelFormat & newFormat ) throw() 
+void Surface::setPixelFormat( Pixels::PixelFormat & newFormat ) 
 {
 
 #if OSDL_USES_SDL
@@ -940,7 +934,7 @@ void Surface::setPixelFormat( Pixels::PixelFormat & newFormat ) throw()
 
 
 
-bool Surface::fill( Pixels::ColorDefinition colorDef ) throw()
+bool Surface::fill( Pixels::ColorDefinition colorDef )
 {
 
 #if OSDL_DEBUG_SURFACE
@@ -961,7 +955,7 @@ bool Surface::fill( Pixels::ColorDefinition colorDef ) throw()
 
 
 
-bool Surface::clear() throw( VideoException )
+bool Surface::clear()
 {
 
 	if ( _displayType == OpenGLScreenSurface )
@@ -997,7 +991,7 @@ bool Surface::clear() throw( VideoException )
 
 
 
-Surface & Surface::flipVertical() const throw( VideoException )
+Surface & Surface::flipVertical() const
 {    
 
 #if OSDL_USES_SDL
@@ -1049,7 +1043,7 @@ Surface & Surface::flipVertical() const throw( VideoException )
 
 
 
-Surface & Surface::flipHorizontal() const throw( VideoException )
+Surface & Surface::flipHorizontal() const
 {
 
 #if OSDL_USES_SDL
@@ -1094,7 +1088,7 @@ Surface & Surface::flipHorizontal() const throw( VideoException )
 
 
 
-string Surface::describePixelAt( Coordinate x, Coordinate y ) throw()
+string Surface::describePixelAt( Coordinate x, Coordinate y )
 {
 
 	string res = "Pixel at [" + Ceylan::toString( x ) + ";" 
@@ -1112,7 +1106,7 @@ string Surface::describePixelAt( Coordinate x, Coordinate y ) throw()
 
 
 
-Pitch Surface::getPitch() const throw()
+Pitch Surface::getPitch() const
 {
 
 #if OSDL_USES_SDL
@@ -1129,7 +1123,7 @@ Pitch Surface::getPitch() const throw()
 
 
 
-void Surface::setPitch( Pitch newPitch ) throw() 
+void Surface::setPitch( Pitch newPitch ) 
 {
 
 #if OSDL_USES_SDL
@@ -1142,7 +1136,7 @@ void Surface::setPitch( Pitch newPitch ) throw()
 
 
 
-Length Surface::getWidth() const throw() 
+Length Surface::getWidth() const 
 {
 
 #if OSDL_USES_SDL
@@ -1159,7 +1153,7 @@ Length Surface::getWidth() const throw()
 
 
 
-void Surface::setWidth( Length newWidth ) throw()
+void Surface::setWidth( Length newWidth )
 {
 
 	resize( newWidth, getHeight() ) ;
@@ -1168,7 +1162,7 @@ void Surface::setWidth( Length newWidth ) throw()
 
 
 
-Length Surface::getHeight() const throw()
+Length Surface::getHeight() const
 {
 
 #if OSDL_USES_SDL
@@ -1185,7 +1179,7 @@ Length Surface::getHeight() const throw()
 
 
 
-void Surface::setHeight( Length newHeight ) throw()
+void Surface::setHeight( Length newHeight )
 {
 
 	resize( getWidth(), newHeight ) ;
@@ -1195,9 +1189,7 @@ void Surface::setHeight( Length newHeight ) throw()
 
 
 void Surface::resize( Length newWidth, Length newHeight, bool scaleContent )
-	throw( VideoException )	
 {	
-
 
 #if OSDL_USES_SDL
 	
@@ -1229,7 +1221,7 @@ void Surface::resize( Length newWidth, Length newHeight, bool scaleContent )
 	// Fixing per-alpha settings:
 	resized->format->alpha = _surface->format->alpha ;
 	
-	// @todo: fix other alpha settings (if any) and maybe lock as well ?
+	// @todo: fix other alpha settings (if any) and maybe lock as well?
 	
 	Surface * zoomed ;
 	
@@ -1294,7 +1286,7 @@ void Surface::resize( Length newWidth, Length newHeight, bool scaleContent )
 
 
 
-BitsPerPixel Surface::getBitsPerPixel() const throw()
+BitsPerPixel Surface::getBitsPerPixel() const
 {
 
 #if OSDL_USES_SDL
@@ -1311,7 +1303,7 @@ BitsPerPixel Surface::getBitsPerPixel() const throw()
 
 
 
-void Surface::setBitsPerPixel( BitsPerPixel newBitsPerPixel ) throw() 
+void Surface::setBitsPerPixel( BitsPerPixel newBitsPerPixel ) 
 {
 
 #if OSDL_USES_SDL
@@ -1326,7 +1318,7 @@ void Surface::setBitsPerPixel( BitsPerPixel newBitsPerPixel ) throw()
 
 
 
-BytesPerPixel Surface::getBytesPerPixel() const throw()
+BytesPerPixel Surface::getBytesPerPixel() const
 {
 
 #if OSDL_USES_SDL
@@ -1343,7 +1335,7 @@ BytesPerPixel Surface::getBytesPerPixel() const throw()
 
 
 
-void Surface::setBytesPerPixel( BytesPerPixel newBytesPerPixel ) throw() 
+void Surface::setBytesPerPixel( BytesPerPixel newBytesPerPixel ) 
 {
 
 #if OSDL_USES_SDL
@@ -1358,7 +1350,7 @@ void Surface::setBytesPerPixel( BytesPerPixel newBytesPerPixel ) throw()
 
 
 
-void * Surface::getPixels() const throw() 
+void * Surface::getPixels() const 
 {
 
 #if OSDL_USES_SDL
@@ -1375,7 +1367,7 @@ void * Surface::getPixels() const throw()
 
 
 
-void Surface::setPixels( void * newPixels ) throw()
+void Surface::setPixels( void * newPixels )
 {
 
 #if OSDL_USES_SDL
@@ -1393,8 +1385,9 @@ void Surface::setPixels( void * newPixels ) throw()
 // Proxy methods section.
 
 
+
 Pixels::PixelColor Surface::getPixelColorAt( Coordinate x, Coordinate y ) const 
-	throw( VideoException )
+	
 {
 
 	return Pixels::getPixelColor( *this, x, y ) ;
@@ -1404,7 +1397,7 @@ Pixels::PixelColor Surface::getPixelColorAt( Coordinate x, Coordinate y ) const
 
 
 Pixels::ColorDefinition Surface::getColorDefinitionAt( 
-	Coordinate x, Coordinate y ) const throw( VideoException )
+	Coordinate x, Coordinate y ) const
 {
 
 	return Pixels::convertPixelColorToColorDefinition( getPixelFormat(),
@@ -1415,9 +1408,9 @@ Pixels::ColorDefinition Surface::getColorDefinitionAt(
 
 
 void Surface::putRGBAPixelAt( Coordinate x, Coordinate y,
-		ColorElement red, ColorElement green, ColorElement blue, 
-		ColorElement alpha, 
-		bool blending, bool clipping, bool locking ) throw( VideoException ) 
+	ColorElement red, ColorElement green, ColorElement blue, 
+	ColorElement alpha, 
+	bool blending, bool clipping, bool locking ) 
 {
 
 	Pixels::putRGBAPixel( *this, x, y, red, green, blue, alpha, 
@@ -1428,8 +1421,8 @@ void Surface::putRGBAPixelAt( Coordinate x, Coordinate y,
 
 
 void Surface::putColorDefinitionAt( Coordinate x, Coordinate y,
-		ColorDefinition colorDef, 
-		bool blending, bool clipping, bool locking ) throw( VideoException ) 
+	ColorDefinition colorDef, 
+	bool blending, bool clipping, bool locking ) 
 {
 
 	Pixels::putRGBAPixel( *this, x, y, colorDef.r, colorDef.g, colorDef.b,
@@ -1440,8 +1433,8 @@ void Surface::putColorDefinitionAt( Coordinate x, Coordinate y,
 
 
 void Surface::putPixelColorAt( Coordinate x, Coordinate y,
-		PixelColor convertedColor, ColorElement alpha,
-		bool blending, bool clipping, bool locking ) throw( VideoException ) 
+	PixelColor convertedColor, ColorElement alpha,
+	bool blending, bool clipping, bool locking ) 
 {
 
 	Pixels::putPixelColor( *this, x, y, convertedColor, alpha, 
@@ -1452,7 +1445,7 @@ void Surface::putPixelColorAt( Coordinate x, Coordinate y,
 
 
 bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
-	Pixels::ColorElement newAlpha ) throw()
+	Pixels::ColorElement newAlpha )
 {
 	
 #if OSDL_DEBUG_COLOR
@@ -1552,7 +1545,7 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 
 bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 	Coordinate y, Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha ) throw()
+	Pixels::ColorElement blue, Pixels::ColorElement alpha )
 {
 
 	return Line::drawHorizontal( *this,  xStart, xStop, y, 
@@ -1563,7 +1556,7 @@ bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 
 
 bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
-	Coordinate y, Pixels::PixelColor actualColor ) throw()
+	Coordinate y, Pixels::PixelColor actualColor )
 {
 
 	return Line::drawHorizontal( *this,  xStart, xStop, y, actualColor ) ;
@@ -1573,7 +1566,7 @@ bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 
 
 bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
-	Coordinate y, Pixels::ColorDefinition colorDef ) throw()
+	Coordinate y, Pixels::ColorDefinition colorDef )
 {
 
 	return Line::drawHorizontal( *this,  xStart, xStop, y, colorDef ) ;
@@ -1585,7 +1578,7 @@ bool Surface::drawHorizontalLine( Coordinate xStart, Coordinate xStop,
 
 bool Surface::drawVerticalLine( Coordinate x, Coordinate yStart, 
 	Coordinate yStop, Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha) throw()
+	Pixels::ColorElement blue, Pixels::ColorElement alpha)
 {
 
 	return Line::drawVertical( *this,  x, yStart, yStop, 
@@ -1596,7 +1589,7 @@ bool Surface::drawVerticalLine( Coordinate x, Coordinate yStart,
 
 	
 bool Surface::drawVerticalLine( Coordinate x, Coordinate yStart,
-	 Coordinate yStop, Pixels::ColorDefinition colorDef ) throw()
+	 Coordinate yStop, Pixels::ColorDefinition colorDef )
 {
 
 	return Line::drawVertical( *this,  x, yStart, yStop, colorDef ) ;
@@ -1609,7 +1602,7 @@ bool Surface::drawVerticalLine( Coordinate x, Coordinate yStart,
 bool Surface::drawLine( Coordinate xStart, Coordinate yStart,
 	Coordinate xStop, Coordinate yStop, 
 	Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha ) throw()
+	Pixels::ColorElement blue, Pixels::ColorElement alpha )
 {
 
 	return Line::draw( *this, xStart, yStart, xStop, yStop, 
@@ -1620,8 +1613,7 @@ bool Surface::drawLine( Coordinate xStart, Coordinate yStart,
 
 
 bool Surface::drawLine( Coordinate xStart, Coordinate yStart,
-		Coordinate xStop, Coordinate yStop, Pixels::ColorDefinition colorDef )
-	throw()
+	Coordinate xStop, Coordinate yStop, Pixels::ColorDefinition colorDef )
 {
 
 	return Line::draw( *this, xStart, yStart, xStop, yStop, colorDef ) ;
@@ -1632,7 +1624,7 @@ bool Surface::drawLine( Coordinate xStart, Coordinate yStart,
 
 
 bool Surface::drawCross( const Point2D & center, 
-	Pixels::ColorDefinition colorDef, Length squareEdge ) throw() 
+	Pixels::ColorDefinition colorDef, Length squareEdge ) 
 {
 
 	return Line::drawCross( *this, center, colorDef, squareEdge ) ;
@@ -1642,7 +1634,7 @@ bool Surface::drawCross( const Point2D & center,
 
 
 bool Surface::drawCross( Coordinate xCenter, Coordinate yCenter,
-	Pixels::ColorDefinition colorDef, Length squareEdge ) throw() 
+	Pixels::ColorDefinition colorDef, Length squareEdge ) 
 {
 
 	return Line::drawCross( *this, xCenter, yCenter, colorDef, squareEdge ) ;
@@ -1652,7 +1644,6 @@ bool Surface::drawCross( Coordinate xCenter, Coordinate yCenter,
 
 
 bool Surface::drawEdges( Pixels::ColorDefinition edgeColor, Length edgeWidth )
-	throw()	
 {
 	
 	Coordinate xmin = 0 ;
@@ -1692,9 +1683,8 @@ bool Surface::drawEdges( Pixels::ColorDefinition edgeColor, Length edgeWidth )
 
 
 bool Surface::drawBox( const UprightRectangle & rectangle, 
-		Pixels::ColorElement red, Pixels::ColorElement green, 
-		Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) 
-	throw()
+	Pixels::ColorElement red, Pixels::ColorElement green, 
+	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) 
 {
 
 	return rectangle.draw( *this, red, green, blue, alpha, filled ) ;
@@ -1704,7 +1694,7 @@ bool Surface::drawBox( const UprightRectangle & rectangle,
 	
 	
 bool Surface::drawBox( const UprightRectangle & rectangle, 
-	Pixels::ColorDefinition colorDef, bool filled ) throw()
+	Pixels::ColorDefinition colorDef, bool filled )
 {
 
 	return rectangle.draw( *this, colorDef, filled ) ;
@@ -1717,7 +1707,7 @@ bool Surface::drawBox( const UprightRectangle & rectangle,
 bool Surface::drawCircle( Coordinate xCenter, Coordinate yCenter, 
 	Length radius, Pixels::ColorElement red, Pixels::ColorElement green, 
 	Pixels::ColorElement blue, Pixels::ColorElement alpha,
-	bool filled, bool blended ) throw()
+	bool filled, bool blended )
 {
 
 	return TwoDimensional::drawCircle( *this, xCenter, yCenter, radius, 
@@ -1729,7 +1719,7 @@ bool Surface::drawCircle( Coordinate xCenter, Coordinate yCenter,
 
 bool Surface::drawCircle( Coordinate xCenter, Coordinate yCenter, 
 	Length radius, Pixels::ColorDefinition colorDef, 
-	bool filled, bool blended ) throw()
+	bool filled, bool blended )
 {
 
 	return TwoDimensional::drawCircle( *this, xCenter, yCenter, radius, 
@@ -1742,7 +1732,7 @@ bool Surface::drawCircle( Coordinate xCenter, Coordinate yCenter,
 bool Surface::drawDiscWithEdge( Coordinate xCenter, Coordinate yCenter, 
 	Length outerRadius, Length innerRadius, 
 	Pixels::ColorDefinition ringColorDef, 
-	Pixels::ColorDefinition discColorDef, bool blended ) throw()
+	Pixels::ColorDefinition discColorDef, bool blended )
 {
 
 	return TwoDimensional::drawDiscWithEdge( *this, xCenter, yCenter,
@@ -1755,7 +1745,7 @@ bool Surface::drawDiscWithEdge( Coordinate xCenter, Coordinate yCenter,
 bool Surface::drawEllipse( Coordinate xCenter, Coordinate yCenter, 
 	Length horizontalRadius, Length verticalRadius,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) throw()
+	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled )
 {
 
 	return TwoDimensional::drawEllipse( *this, xCenter, yCenter,
@@ -1767,7 +1757,7 @@ bool Surface::drawEllipse( Coordinate xCenter, Coordinate yCenter,
 
 bool Surface::drawEllipse( Coordinate xCenter, Coordinate yCenter, 
 	Length horizontalRadius, Length verticalRadius,
-	Pixels::ColorDefinition colorDef, bool filled ) throw()
+	Pixels::ColorDefinition colorDef, bool filled )
 {
 
 	return TwoDimensional::drawEllipse( *this, xCenter, yCenter,
@@ -1781,7 +1771,7 @@ bool Surface::drawPie( Coordinate xCenter, Coordinate yCenter, Length radius,
 	Ceylan::Maths::AngleInDegrees angleStart, 
 	Ceylan::Maths::AngleInDegrees angleStop,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha ) throw() 
+	Pixels::ColorElement blue, Pixels::ColorElement alpha ) 
 {
 
 	return TwoDimensional::drawPie( *this, xCenter, yCenter, radius, 
@@ -1794,7 +1784,7 @@ bool Surface::drawPie( Coordinate xCenter, Coordinate yCenter, Length radius,
 bool Surface::drawPie( Coordinate xCenter, Coordinate yCenter, Length radius, 
 	Ceylan::Maths::AngleInDegrees angleStart, 
 	Ceylan::Maths::AngleInDegrees angleStop, 
-	Pixels::ColorDefinition colorDef ) throw()		
+	Pixels::ColorDefinition colorDef )		
 {
 
 	return TwoDimensional::drawPie( *this, xCenter, yCenter, 
@@ -1806,10 +1796,9 @@ bool Surface::drawPie( Coordinate xCenter, Coordinate yCenter, Length radius,
 
 
 bool Surface::drawTriangle( Coordinate x1, Coordinate y1, 
-		Coordinate x2, Coordinate y2, Coordinate x3, Coordinate y3,
-		Pixels::ColorElement red, Pixels::ColorElement green, 
-		Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) 
-	throw()
+	Coordinate x2, Coordinate y2, Coordinate x3, Coordinate y3,
+	Pixels::ColorElement red, Pixels::ColorElement green, 
+	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) 
 {
 
 	return TwoDimensional::drawTriangle( *this, x1, y1, x2, y2, x3, y3, 
@@ -1821,7 +1810,7 @@ bool Surface::drawTriangle( Coordinate x1, Coordinate y1,
 
 bool Surface::drawTriangle( Coordinate x1, Coordinate y1, 
 	Coordinate x2, Coordinate y2, Coordinate x3, Coordinate y3,
-	Pixels::ColorDefinition colorDef, bool filled ) throw()
+	Pixels::ColorDefinition colorDef, bool filled )
 {
 
 	return TwoDimensional::drawTriangle( *this, x1, y1, x2, y2, x3, y3,
@@ -1832,10 +1821,9 @@ bool Surface::drawTriangle( Coordinate x1, Coordinate y1,
 
 	
 bool Surface::drawTriangle( const Point2D & p1, const Point2D & p2, 
-		const Point2D & p3, 
-		Pixels::ColorElement red, Pixels::ColorElement green, 
-		Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) 
-	throw()
+	const Point2D & p3, 
+	Pixels::ColorElement red, Pixels::ColorElement green, 
+	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) 
 {
 
 	return TwoDimensional::drawTriangle( *this, p1, p2, p3, 
@@ -1846,7 +1834,7 @@ bool Surface::drawTriangle( const Point2D & p1, const Point2D & p2,
 	
 
 bool Surface::drawTriangle( const Point2D & p1, const Point2D & p2, 
-	const Point2D & p3, Pixels::ColorDefinition colorDef, bool filled ) throw()
+	const Point2D & p3, Pixels::ColorDefinition colorDef, bool filled )
 {
 
 	return TwoDimensional::drawTriangle( *this, p1, p2, p3, 
@@ -1858,7 +1846,7 @@ bool Surface::drawTriangle( const Point2D & p1, const Point2D & p2,
 	
 bool Surface::drawPolygon( const list<Point2D *> summits, 
 	Coordinate x, Coordinate y,
-	Pixels::ColorDefinition colorDef, bool filled ) throw()
+	Pixels::ColorDefinition colorDef, bool filled )
 {
 
 	return TwoDimensional::drawPolygon( *this, summits, x, y, 
@@ -1871,7 +1859,7 @@ bool Surface::drawPolygon( const list<Point2D *> summits,
 bool Surface::drawPolygon( const list<Point2D *> summits, 
 	Coordinate x, Coordinate y,
 	Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled ) throw()
+	Pixels::ColorElement blue, Pixels::ColorElement alpha, bool filled )
 {
 
 	return TwoDimensional::drawPolygon( *this, summits, x, y, 
@@ -1883,10 +1871,9 @@ bool Surface::drawPolygon( const list<Point2D *> summits,
 
 bool Surface::drawGrid( Length columnStride, Length rowStride,
 	Pixels::ColorDefinition lineColor, 
-	bool fillBackground, Pixels::ColorDefinition backColor ) throw()
+	bool fillBackground, Pixels::ColorDefinition backColor )
 {
 
-	
 	if ( fillBackground )
 	{
 		if ( fill( backColor ) == false )
@@ -1925,7 +1912,7 @@ bool Surface::drawGrid( Length columnStride, Length rowStride,
 									
 bool Surface::printText( const std::string & text, Coordinate x, Coordinate y, 
 	Pixels::ColorElement red, Pixels::ColorElement green, 
-	Pixels::ColorElement blue, Pixels::ColorElement alpha ) throw()	
+	Pixels::ColorElement blue, Pixels::ColorElement alpha )	
 {
 
 	return Text::printBasic( text, *this, x, y, red, green, blue, alpha ) ;
@@ -1935,7 +1922,7 @@ bool Surface::printText( const std::string & text, Coordinate x, Coordinate y,
 
 
 bool Surface::printText( const std::string & text, Coordinate x, Coordinate y, 
-	ColorDefinition colorDef ) throw()	
+	ColorDefinition colorDef )	
 {
 
 	return Text::printBasic( text, *this, x, y, colorDef ) ;
@@ -1944,7 +1931,7 @@ bool Surface::printText( const std::string & text, Coordinate x, Coordinate y,
 
 
 
-bool Surface::blitTo( Surface & targetSurface ) const throw( VideoException )
+bool Surface::blitTo( Surface & targetSurface ) const
 {
 
 	return blitTo( targetSurface, 0, 0 ) ;
@@ -1954,7 +1941,7 @@ bool Surface::blitTo( Surface & targetSurface ) const throw( VideoException )
 
 
 bool Surface::blitTo( Surface & targetSurface, Coordinate x, Coordinate y ) 
-	const throw( VideoException )
+	const
 {
 
 #if OSDL_USES_SDL
@@ -2025,7 +2012,7 @@ bool Surface::blitTo( Surface & targetSurface, Coordinate x, Coordinate y )
 
 
 bool Surface::blitTo( Surface & targetSurface, 
-	const TwoDimensional::Point2D & location ) const throw( VideoException )
+	const TwoDimensional::Point2D & location ) const
 {
 
 	return blitTo( targetSurface, location.getX(), location.getY() ) ;
@@ -2035,9 +2022,8 @@ bool Surface::blitTo( Surface & targetSurface,
 
 
 bool Surface::blitTo( Surface & targetSurface, 
-		const TwoDimensional::UprightRectangle & sourceRectangle,
-		const TwoDimensional::Point2D & destinationLocation ) 
-	const throw( VideoException )
+	const TwoDimensional::UprightRectangle & sourceRectangle,
+	const TwoDimensional::Point2D & destinationLocation ) const
 {
 
 #if OSDL_USES_SDL
@@ -2107,7 +2093,7 @@ bool Surface::blitTo( Surface & targetSurface,
 	
 	
 void Surface::displayAt( const OpenGL::GLTexture & texture,
-	Coordinate x, Coordinate y ) const throw( VideoException )	
+	Coordinate x, Coordinate y ) const	
 {
 
 #if OSDL_USES_OPENGL
@@ -2144,8 +2130,7 @@ void Surface::displayAt( const OpenGL::GLTexture & texture,
 
 
 	
-void Surface::displayAtCenter( const OpenGL::GLTexture & texture ) 
-	const throw( VideoException )
+void Surface::displayAtCenter( const OpenGL::GLTexture & texture ) const
 {
 
 #if OSDL_USES_OPENGL
@@ -2190,7 +2175,7 @@ void Surface::displayAtCenter( const OpenGL::GLTexture & texture )
 
 
 void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
-	Pixels::FloatColorElement alpha ) const throw( VideoException )
+	Pixels::FloatColorElement alpha ) const
 {
 
 #if OSDL_USES_OPENGL
@@ -2252,7 +2237,7 @@ void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
 	
 	
 void Surface::displayAtCenterWithFadeIn( const OpenGL::GLTexture & texture,
-	Ceylan::System::Millisecond fadeInDuration ) throw( VideoException )	
+	Ceylan::System::Millisecond fadeInDuration )	
 {
 
 #if OSDL_USES_OPENGL
@@ -2351,7 +2336,7 @@ void Surface::displayAtCenterWithFadeIn( const OpenGL::GLTexture & texture,
 
 
 void Surface::displayAtCenterWithFadeOut( const OpenGL::GLTexture & texture,
-	Ceylan::System::Millisecond fadeOutDuration ) throw( VideoException )	
+	Ceylan::System::Millisecond fadeOutDuration )	
 {
 
 #if OSDL_USES_OPENGL
@@ -2450,8 +2435,7 @@ void Surface::displayAtCenterWithFadeOut( const OpenGL::GLTexture & texture,
 	
 	
 Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor, 
-		Ceylan::Maths::Real ordinateZoomFactor,	bool antialiasing ) 
-	const throw( VideoException )
+	Ceylan::Maths::Real ordinateZoomFactor,	bool antialiasing ) const
 {
 
 #if OSDL_USES_SDL_GFX
@@ -2484,8 +2468,7 @@ Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor,
 	
 					
 Surface & Surface::rotoZoom( Ceylan::Maths::AngleInDegrees angle, 
-		Ceylan::Maths::Real zoomFactor, bool antialiasing ) 
-	const throw( VideoException )
+	Ceylan::Maths::Real zoomFactor, bool antialiasing ) const
 {
 
 	return rotoZoom( angle, zoomFactor, zoomFactor, antialiasing ) ;
@@ -2494,11 +2477,10 @@ Surface & Surface::rotoZoom( Ceylan::Maths::AngleInDegrees angle,
 						
 										
 Surface & Surface::rotoZoom( 
-		Ceylan::Maths::AngleInDegrees angle, 
-		Ceylan::Maths::Real abscissaZoomFactor,
-		Ceylan::Maths::Real ordinateZoomFactor,
-		bool antialiasing ) 
-	const throw( VideoException )
+	Ceylan::Maths::AngleInDegrees angle, 
+	Ceylan::Maths::Real abscissaZoomFactor,
+	Ceylan::Maths::Real ordinateZoomFactor,
+	bool antialiasing ) const
 {
 
 #if OSDL_USES_SDL_GFX
@@ -2529,7 +2511,7 @@ Surface & Surface::rotoZoom(
 	
 	
 						
-UprightRectangle & Surface::getClippingArea() const throw( VideoException ) 
+UprightRectangle & Surface::getClippingArea() const 
 {
 
 #if OSDL_USES_SDL
@@ -2547,7 +2529,7 @@ UprightRectangle & Surface::getClippingArea() const throw( VideoException )
 						
 		
 					
-void Surface::setClippingArea( UprightRectangle & newClippingArea ) throw() 
+void Surface::setClippingArea( UprightRectangle & newClippingArea ) 
 {	
 
 #if OSDL_USES_SDL
@@ -2566,7 +2548,7 @@ void Surface::setClippingArea( UprightRectangle & newClippingArea ) throw()
 
 
 
-UprightRectangle & Surface::getContentArea() const throw( VideoException ) 
+UprightRectangle & Surface::getContentArea() const 
 {
 
 	
@@ -2617,12 +2599,12 @@ UprightRectangle & Surface::getContentArea() const throw( VideoException )
 
 
 
+
 // Another proxy-method section.
 
 
 void Surface::loadImage( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::Load( *this, filename, blitOnly, 
@@ -2633,8 +2615,7 @@ void Surface::loadImage( const string & filename, bool blitOnly,
 
 
 void Surface::loadJPG( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::LoadJPG( *this, filename, blitOnly, 
@@ -2645,8 +2626,7 @@ void Surface::loadJPG( const string & filename, bool blitOnly,
 
 
 void Surface::loadPNG( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::LoadPNG( *this, filename, blitOnly, 
@@ -2657,8 +2637,7 @@ void Surface::loadPNG( const string & filename, bool blitOnly,
 
 
 void Surface::loadBMP( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::LoadBMP( *this, filename, blitOnly, 
@@ -2669,8 +2648,7 @@ void Surface::loadBMP( const string & filename, bool blitOnly,
 
 
 void Surface::loadGIF( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::LoadGIF( *this, filename, blitOnly, 
@@ -2681,8 +2659,7 @@ void Surface::loadGIF( const string & filename, bool blitOnly,
 
 
 void Surface::loadLBM( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::LoadLBM( *this, filename, blitOnly, 
@@ -2693,8 +2670,7 @@ void Surface::loadLBM( const string & filename, bool blitOnly,
 
 
 void Surface::loadPCX( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::LoadPCX( *this, filename, blitOnly, 
@@ -2705,8 +2681,7 @@ void Surface::loadPCX( const string & filename, bool blitOnly,
 
 
 void Surface::loadPNM( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::LoadPNM( *this, filename, blitOnly, 
@@ -2717,8 +2692,7 @@ void Surface::loadPNM( const string & filename, bool blitOnly,
 
 
 void Surface::loadTGA( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::LoadTGA( *this, filename, blitOnly, 
@@ -2729,8 +2703,7 @@ void Surface::loadTGA( const string & filename, bool blitOnly,
 
 
 void Surface::loadXPM( const string & filename, bool blitOnly,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	TwoDimensional::Image::LoadXPM( *this, filename, blitOnly, 
@@ -2741,7 +2714,6 @@ void Surface::loadXPM( const string & filename, bool blitOnly,
 
 
 void Surface::savePNG( const std::string & filename, bool overwrite ) 
-	throw( TwoDimensional::ImageException )
 {
 
 	TwoDimensional::Image::SavePNG( *this, filename, overwrite ) ;
@@ -2751,7 +2723,6 @@ void Surface::savePNG( const std::string & filename, bool overwrite )
 
 
 void Surface::saveBMP( const std::string & filename, bool overwrite ) 
-	throw( TwoDimensional::ImageException )
 {
 
 #if OSDL_USES_SDL
@@ -2777,9 +2748,8 @@ void Surface::saveBMP( const std::string & filename, bool overwrite )
 
 
 					
-void Surface::update() throw( VideoException )
+void Surface::update()
 {
-
 
 #if OSDL_USES_SDL
 
@@ -2805,7 +2775,7 @@ void Surface::update() throw( VideoException )
 	
 		case BackBuffer:
 			LogPlug::warning( "Surface::update requested on a "
-				"non-screen surface ! (nothing done)" ) ;			
+				"non-screen surface! (nothing done)" ) ;			
 			break ;
 	
 	
@@ -2879,12 +2849,11 @@ void Surface::update() throw( VideoException )
 		
 #endif // OSDL_USES_SDL
 	
-		
 }
 
 
 
-UpdateCount Surface::getUpdateCount() const throw()
+UpdateCount Surface::getUpdateCount() const
 {
 
 	return _updateCount ;
@@ -2894,7 +2863,6 @@ UpdateCount Surface::getUpdateCount() const throw()
 
 
 void Surface::updateRectangles( const list<UprightRectangle *> & listRects )
-	throw( VideoException )
 {
 
 	/*
@@ -2924,8 +2892,7 @@ void Surface::updateRectangles( const list<UprightRectangle *> & listRects )
 	
 			
 					
-void Surface::updateRectangle( const UprightRectangle & rect ) 
-	throw( VideoException ) 
+void Surface::updateRectangle( const UprightRectangle & rect )  
 {	
 
 	updateRectangle( rect.getUpperLeftAbscissa(), 
@@ -2936,7 +2903,7 @@ void Surface::updateRectangle( const UprightRectangle & rect )
 
 
 void Surface::updateRectangle( Coordinate x, Coordinate y, 
-	Length width, Length height ) throw( VideoException ) 
+	Length width, Length height ) 
 {	
 
 #if OSDL_USES_SDL
@@ -2968,7 +2935,7 @@ void Surface::updateRectangle( Coordinate x, Coordinate y,
 	
 	
 	
-void Surface::setRedrawState( bool needsToBeRedrawn ) throw()
+void Surface::setRedrawState( bool needsToBeRedrawn )
 {
 
 	_needsRedraw = needsToBeRedrawn ;
@@ -2977,7 +2944,7 @@ void Surface::setRedrawState( bool needsToBeRedrawn ) throw()
 
 
 	
-bool Surface::getRedrawState() const throw()
+bool Surface::getRedrawState() const
 {
 
 	return _needsRedraw ;
@@ -2986,7 +2953,7 @@ bool Surface::getRedrawState() const throw()
 
 	
 	
-void Surface::redraw() throw()
+void Surface::redraw()
 {
 
 
@@ -3028,7 +2995,7 @@ void Surface::redraw() throw()
 
 
 
-void Surface::redrawInternal() throw()
+void Surface::redrawInternal()
 {
 
 #if OSDL_DEBUG_WIDGET
@@ -3045,7 +3012,7 @@ void Surface::redrawInternal() throw()
 	
 
 					
-bool Surface::isInternalSurfaceAvailable() const throw()
+bool Surface::isInternalSurfaceAvailable() const
 {
 
 	return ( _surface != 0 ) ;
@@ -3055,7 +3022,6 @@ bool Surface::isInternalSurfaceAvailable() const throw()
 
 
 void Surface::addWidget( TwoDimensional::Widget & widget ) 
-	throw( VideoException )
 {
 
 #if OSDL_DEBUG_WIDGET
@@ -3083,7 +3049,7 @@ void Surface::addWidget( TwoDimensional::Widget & widget )
 
 
 
-Surface & Surface::getWidgetRenderTarget() throw()	
+Surface & Surface::getWidgetRenderTarget()	
 {
 
 	/*
@@ -3097,8 +3063,7 @@ Surface & Surface::getWidgetRenderTarget() throw()
 
 
 	
-void Surface::putWidgetToFront( TwoDimensional::Widget & widget ) 
-	throw( VideoException )
+void Surface::putWidgetToFront( TwoDimensional::Widget & widget ) 	
 {
 
 	/*
@@ -3116,7 +3081,6 @@ void Surface::putWidgetToFront( TwoDimensional::Widget & widget )
 
 					
 void Surface::putWidgetToBack( TwoDimensional::Widget & widget ) 
-	throw( VideoException )
 {
 
 	/*
@@ -3134,7 +3098,7 @@ void Surface::putWidgetToBack( TwoDimensional::Widget & widget )
 
 
 
-void Surface::centerMousePosition() throw()
+void Surface::centerMousePosition()
 {
 
 	setMousePosition( getWidth() / 2, getHeight() / 2 ) ;
@@ -3143,8 +3107,7 @@ void Surface::centerMousePosition() throw()
 
 
 
-void Surface::setMousePosition( Coordinate newX, Coordinate newY ) 
-	throw( VideoException ) 
+void Surface::setMousePosition( Coordinate newX, Coordinate newY )  
 {
 
 #if OSDL_USES_SDL
@@ -3170,12 +3133,12 @@ void Surface::setMousePosition( Coordinate newX, Coordinate newY )
 
 	
 										
-bool Surface::mustBeLocked() const throw() 
+bool Surface::mustBeLocked() const 
 {
 
 #if OSDL_USES_SDL
 
-	// Not stored once for all, since may change during the surface life ?
+	// Not stored once for all, since may change during the surface life?
 	return SDL_MUSTLOCK( _surface ) ;
 	
 #else // OSDL_USES_SDL
@@ -3188,7 +3151,7 @@ bool Surface::mustBeLocked() const throw()
 
 
 
-void Surface::preUnlock() throw()
+void Surface::preUnlock()
 {
 
 #if OSDL_USES_SDL
@@ -3206,7 +3169,7 @@ void Surface::preUnlock() throw()
 
 
 
-void Surface::postLock() throw()
+void Surface::postLock()
 {
 	
 #if OSDL_USES_SDL
@@ -3224,7 +3187,7 @@ void Surface::postLock() throw()
 
 
 
-Ceylan::System::Size Surface::getSizeInMemory() const throw()
+Ceylan::System::Size Surface::getSizeInMemory() const
 {
 
 #if OSDL_USES_SDL
@@ -3257,7 +3220,7 @@ Ceylan::System::Size Surface::getSizeInMemory() const throw()
 		// else: count might be wrong.
 	}
 
-	// Do not count same pointed block more than once !
+	// Do not count same pointed block more than once!
 		 
 	return currentSize ;
 
@@ -3275,7 +3238,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	Ceylan::Uint32 dataCount,
 	Pixels::ColorDefinition pencilColor, Pixels::ColorDefinition captionColor,
 	Pixels::ColorDefinition backgroundColor,
-	const string & caption, const UprightRectangle * inBox ) throw()
+	const string & caption, const UprightRectangle * inBox )
 {
 	
 	// No debug requested by default:
@@ -3487,7 +3450,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	
 	
 		 
-const string Surface::toString( Ceylan::VerbosityLevels level ) const throw()
+const string Surface::toString( Ceylan::VerbosityLevels level ) const
 {
 
 #if OSDL_USES_SDL
@@ -3570,8 +3533,7 @@ const string Surface::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 Surface & Surface::LoadImage( const std::string & filename,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	Surface * toLoad = new Surface() ;
@@ -3594,8 +3556,7 @@ Surface & Surface::LoadImage( const std::string & filename,
 
 	
 Surface & Surface::LoadPNG( const std::string & filename,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	Surface * toLoad = new Surface() ;
@@ -3618,8 +3579,7 @@ Surface & Surface::LoadPNG( const std::string & filename,
 
 
 Surface & Surface::LoadJPG( const std::string & filename,
-		bool convertToDisplayFormat, bool convertWithAlpha ) 
-	throw( TwoDimensional::ImageException )
+	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
 	Surface * toLoad = new Surface() ;
@@ -3642,9 +3602,8 @@ Surface & Surface::LoadJPG( const std::string & filename,
 	
 	
 	
-string Surface::InterpretFlags( Flags flags ) throw() 
+string Surface::InterpretFlags( Flags flags ) 
 {
-
 
 	/*
 	 * Indicates surely that these flags corresponds to a screen surface:
@@ -3779,8 +3738,7 @@ string Surface::InterpretFlags( Flags flags ) throw()
 
 
 
-
-Offset Surface::getOffset() const throw()
+Offset Surface::getOffset() const
 {
 
 #if OSDL_USES_SDL
@@ -3797,7 +3755,7 @@ Offset Surface::getOffset() const throw()
 
 
 
-void Surface::setOffset( Offset offset ) throw()
+void Surface::setOffset( Offset offset )
 {
 
 #if OSDL_USES_SDL
@@ -3810,7 +3768,7 @@ void Surface::setOffset( Offset offset ) throw()
 	
 
 
-void Surface::flush() throw() 
+void Surface::flush() 
 {
 	
 #if OSDL_USES_SDL
@@ -3837,7 +3795,7 @@ void Surface::flush() throw()
 
 
 
-void Surface::inconsistencyDetected( const string & message ) const throw()	
+void Surface::inconsistencyDetected( const string & message ) const	
 {
 
 	Ceylan::emergencyShutdown( "Inconsistency detected in OSDL Surface: "
@@ -3847,7 +3805,7 @@ void Surface::inconsistencyDetected( const string & message ) const throw()
 
 
 
-Surface::Surface( const Surface & source ) throw():
+Surface::Surface( const Surface & source ):
 	TwoDimensional::UprightRectangle( 0, 0, 0, 0 ),
 	Ceylan::EventSource(),
 	Ceylan::Lockable(),
@@ -3858,7 +3816,7 @@ Surface::Surface( const Surface & source ) throw():
 	_needsRedraw( true ) 
 {
 
-	// Not implemented on purpose, use clone() instead !
+	// Not implemented on purpose, use clone() instead!
 	Ceylan::emergencyShutdown( 
 		"Surface copy constructor called, whereas should never be used." ) ;
 		
@@ -3866,7 +3824,7 @@ Surface::Surface( const Surface & source ) throw():
 
 
 
-std::ostream & operator << ( std::ostream & os, Surface & s ) throw()
+std::ostream & operator << ( std::ostream & os, Surface & s )
 {
     return os << s.toString() ;
 }

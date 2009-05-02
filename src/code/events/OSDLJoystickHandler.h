@@ -37,8 +37,11 @@
 #include <list>
 
 
+
+
 namespace OSDL
 {
+
 
 
 	namespace MVC
@@ -54,14 +57,17 @@ namespace OSDL
 	}
 
 		
+		
 	namespace Events
 	{
+	
 	
 	
 		// Manages joysticks.
 		class Joystick ;
 		
 
+		
 		
 		/**
 		 * Handler for all detected joysticks.
@@ -84,6 +90,7 @@ namespace OSDL
 			 */
 			friend class OSDL::Events::EventsModule ;
 
+
 			
 			public:
 
@@ -103,8 +110,8 @@ namespace OSDL
 				 * of the joystick subsystem failed.
 				 *
 				 */
-				explicit JoystickHandler( bool useClassicalJoysticks = true )
-					throw( InputDeviceHandlerException ) ;
+				explicit JoystickHandler( bool useClassicalJoysticks = true ) ;
+				
 				
 				
 				/**
@@ -114,13 +121,15 @@ namespace OSDL
 				virtual ~JoystickHandler() throw() ;
 
 
+
 				/**
 				 * Auto-detects and registers any attached joystick.
 				 *
 				 * @note Recreates from scratch all joystick informations.
 				 *
 				 */
-				 virtual void update() throw() ;
+				virtual void update() ;
+
 
 
 				/**
@@ -134,8 +143,8 @@ namespace OSDL
 				 * @see GetAvailableJoystickCount
 				 *
 				 */
-				virtual void openJoystick( JoystickNumber index ) 
-					throw( JoystickException ) ;
+				virtual void openJoystick( JoystickNumber index ) ;
+	
 	
 	
 				/**
@@ -156,9 +165,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void linkToController( JoystickNumber index, 
-						OSDL::MVC::Controller & controller ) 
-					throw( JoystickException ) ;
+					OSDL::MVC::Controller & controller ) ;
 				 
+			
 			
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -172,20 +181,21 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+				
 				
 				
 				
 				// Static section.
 				
 				 
+				 
 				/**
 				 * Returns the number of available joysticks, i.e. the 
 				 * joysticks currently attached to the system.
 				 *
 				 */
-				static JoystickNumber GetAvailableJoystickCount() throw() ;
+				static JoystickNumber GetAvailableJoystickCount() ;
 				
 				
 				
@@ -193,11 +203,13 @@ namespace OSDL
 		protected:
 						 	
 				
+				
 				/*
 				 * Event-driven callbacks for input propagation, from
 				 * the Events module to this handler.
 				 *
 				 */
+				 
 				 
 				 
 				/**
@@ -208,7 +220,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void axisChanged( 
-					const JoystickAxisEvent & joystickEvent ) const throw() ;
+					const JoystickAxisEvent & joystickEvent ) const ;
+							
 							
 							
 				/**
@@ -219,9 +232,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void trackballChanged( 
-						const JoystickTrackballEvent & joystickEvent ) 
-					const throw() ;
+					const JoystickTrackballEvent & joystickEvent ) const ;
 					
+							
 							
 				/**
 				 * Called whenever a joystick hat changed, so that its
@@ -231,7 +244,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void hatChanged( 
-					const JoystickHatEvent & joystickEvent ) const throw() ;
+					const JoystickHatEvent & joystickEvent ) const ;
 				
 				
 							
@@ -243,7 +256,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void buttonPressed( 
-					const JoystickButtonEvent & joystickEvent )	const throw() ;
+					const JoystickButtonEvent & joystickEvent )	const ;
+						
 						
 							
 				/**
@@ -254,7 +268,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void buttonReleased( 
-					const JoystickButtonEvent & joystickEvent )	const throw() ;
+					const JoystickButtonEvent & joystickEvent )	const ;
 						
 
 
@@ -263,8 +277,9 @@ namespace OSDL
 				 * previously known joysticks.
 				 *
 				 */
-				virtual void blank() throw() ;
+				virtual void blank() ;
 				 			
+							
 				
 				/**
 				 * Checks that the joystick at the specified index exists 
@@ -275,8 +290,9 @@ namespace OSDL
 				 * @note Stop in emergency the application if the check failed.
 				 *
 				 */						
-				virtual void checkJoystickAt( JoystickNumber index ) 
-					const throw() ;
+				virtual void checkJoystickAt( JoystickNumber index ) const ;
+				
+				
 				
 								
 				/**
@@ -285,6 +301,7 @@ namespace OSDL
 				 */
 				JoystickNumber _joystickCount ;
 				
+				 
 				 
 				/**
 				 * Records all known joysticks.
@@ -298,6 +315,7 @@ namespace OSDL
 				Joystick ** _joysticks ;
 				
 				
+				
 				/**
 				 * Tells whether complex joysticks (if false) or classical
 				 * joysticks (if true) should be created.
@@ -307,7 +325,9 @@ namespace OSDL
 
 
 
+
 			private:
+		
 		
 		
 				/**
@@ -318,8 +338,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit JoystickHandler( const JoystickHandler & source )
-					throw() ;
+				explicit JoystickHandler( const JoystickHandler & source ) ;
+			
 			
 			
 				/**
@@ -331,10 +351,12 @@ namespace OSDL
 				 * 
 				 */			 
 				JoystickHandler & operator = ( 
-					const JoystickHandler & source ) throw() ;
+					const JoystickHandler & source ) ;
 										
 				
+				
 		} ;
+		
 	
 	}	
 	
@@ -343,3 +365,4 @@ namespace OSDL
 
 
 #endif // OSDL_JOYSTICK_HANDLER_H_
+

@@ -40,12 +40,15 @@
 
 
 
+
 namespace OSDL
 {
 
 
+
 	namespace Rendering 
 	{
+	
 	
 
 		/// Exception raised when a sprite operation failed.
@@ -53,11 +56,12 @@ namespace OSDL
 		{
 		
 			public:
-				explicit TileMapException( const std::string & message ) 
-					throw() ;
+				explicit TileMapException( const std::string & message )  ;
+				
 				virtual ~TileMapException() throw() ;
 							
 		} ;
+
 
 
 
@@ -70,6 +74,7 @@ namespace OSDL
 		typedef Ceylan::Uint8 TileCount ;
 
 
+
 		/**
 		 * Describes a number of tiles in a tile block, like a tile cache.
 		 *
@@ -77,6 +82,7 @@ namespace OSDL
 		 *
 		 */
 		typedef Ceylan::Uint16 TileNumber ;
+
 
 
 
@@ -88,15 +94,19 @@ namespace OSDL
 
 		// Tile section.
 		
+		
 		/// Describes a length (width or height) of a tile, in pixels.
 		typedef Ceylan::Uint8 TileLength ;
 
 
+
 		/// The width of a tile.
 		const TileLength TileWidth = 8 ;      
+			
 				
 		/// The height of a tile.
 		const TileLength TileHeight = 8 ;      
+
 
 
 		/**
@@ -140,7 +150,8 @@ namespace OSDL
 				 *
 				 */
 				TileMap( TileCount width, TileCount height,
-					Ceylan::System::File & mapFile ) throw( TileMapException ) ;
+					Ceylan::System::File & mapFile ) ;
+				
 				
 				
 				/**
@@ -163,25 +174,24 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
 				
 				
 				
-				// Static section.
-
-	
 				
 				
 			protected:
 			
 			
+			
 				/// The width, in tiles, of this rectangular tile map.
 				TileCount _width ;
 				
+				
 				/// The height, in tiles, of this rectangular tile map.
 				TileCount _height ;
+				
 				
 				/**
 				 * Number of tile index for this map.
@@ -196,8 +206,10 @@ namespace OSDL
 				TileIndex * _map ;
 						
 			
+				
 						
 			private:
+			
 			
 			
 				/**
@@ -208,7 +220,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				TileMap( const TileMap & source ) throw() ;
+				TileMap( const TileMap & source ) ;
+			
 			
 			
 				/**
@@ -219,14 +232,16 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				TileMap & operator = ( const TileMap & source ) throw() ;
+				TileMap & operator = ( const TileMap & source ) ;
 				
 				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_TILE_MAP_H_

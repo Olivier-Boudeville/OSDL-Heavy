@@ -45,12 +45,13 @@ using namespace OSDL::Events ;
 
 
 
+
 ProgrammedActiveObject::ProgrammedActiveObject( 
 		const SimulationTickList & activationTicks,
 		bool absolutelyDefined, 
 		bool autoRegister,
 		ObjectSchedulingPolicy policy, 
-		Weight weight ) throw( SchedulingException ): 
+		Weight weight ) : 
 	ActiveObject( policy, weight ),
 	_absoluteTicks( true )
 {
@@ -71,7 +72,7 @@ ProgrammedActiveObject::ProgrammedActiveObject(
 		bool absolutelyDefined, 
 		bool autoRegister,
 		ObjectSchedulingPolicy policy, 
-		Weight weight ) throw( SchedulingException ): 
+		Weight weight ) : 
 	ActiveObject( policy, weight ),
 	_absoluteTicks( true )
 {
@@ -116,7 +117,8 @@ ProgrammedActiveObject::~ProgrammedActiveObject() throw()
 // Registering section.
 
 
-void ProgrammedActiveObject::registerToScheduler() throw( SchedulingException )
+
+void ProgrammedActiveObject::registerToScheduler()
 {
 	
 	if ( _registered )
@@ -142,7 +144,6 @@ void ProgrammedActiveObject::registerToScheduler() throw( SchedulingException )
 				
 
 void ProgrammedActiveObject::unregisterFromScheduler() 
-	throw( SchedulingException )
 {
 
 	Ceylan::checkpoint( "ProgrammedActiveObject::unregisterFromScheduler" ) ;
@@ -163,12 +164,12 @@ void ProgrammedActiveObject::unregisterFromScheduler()
 
 
 
+
 // Settings section.
 
 
 
-
-bool ProgrammedActiveObject::areProgrammedActivationsAbsolute() const throw()
+bool ProgrammedActiveObject::areProgrammedActivationsAbsolute() const
 {
 
 	return _absoluteTicks ;
@@ -178,7 +179,6 @@ bool ProgrammedActiveObject::areProgrammedActivationsAbsolute() const throw()
 
 
 void ProgrammedActiveObject::absoluteProgrammedActivationsWanted( bool on )
-	throw( SchedulingException )
 {
 
 	if ( _registered )
@@ -193,7 +193,7 @@ void ProgrammedActiveObject::absoluteProgrammedActivationsWanted( bool on )
 
 
 const SimulationTickList & ProgrammedActiveObject::getProgrammedActivations()
-	const throw() 
+	const
 {
 			
 	return _programmedTicks ;
@@ -203,8 +203,7 @@ const SimulationTickList & ProgrammedActiveObject::getProgrammedActivations()
 
 
 void ProgrammedActiveObject::setProgrammedActivations( 
-		const SimulationTickList & newActivationsList ) 
-	throw( SchedulingException )	
+	const SimulationTickList & newActivationsList ) 
 {
 
 	if ( _registered ) 
@@ -219,8 +218,7 @@ void ProgrammedActiveObject::setProgrammedActivations(
 
 
 void ProgrammedActiveObject::addProgrammedActivations( 
-		const SimulationTickList & additionalActivationsList ) 
-	throw( SchedulingException )	
+	const SimulationTickList & additionalActivationsList ) 
 {
 
 	if ( _registered ) 
@@ -244,7 +242,7 @@ void ProgrammedActiveObject::addProgrammedActivations(
 
 
 
-void ProgrammedActiveObject::onRegistering() throw( SchedulingException )
+void ProgrammedActiveObject::onRegistering()
 {
 
 	_registered = true ;
@@ -254,11 +252,11 @@ void ProgrammedActiveObject::onRegistering() throw( SchedulingException )
 
 
 const string ProgrammedActiveObject::toString( Ceylan::VerbosityLevels level )
-	const throw()
+	const
 {	
 
 	return "Programmed " + ActiveObject::toString( level) 
-		+ ", whose programmed ticks, whic are "
+		+ ", whose programmed ticks, which are "
 		+ string( _absoluteTicks ? "absolutely" : "relatively" ) 
 		+ " defined, are: " + Ceylan::toString( _programmedTicks ) ;
 		

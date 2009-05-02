@@ -73,6 +73,7 @@ namespace OSDL
 		public:
 
 
+
 			/**
 			 * Destroys the directory reference, not the directory itself.
 			 *
@@ -106,8 +107,8 @@ namespace OSDL
 			 *
 			 */
 			virtual bool hasDirectory( 
-					const std::string & subdirectoryName ) const
-				throw( Ceylan::System::DirectoryLookupFailed ) ;
+				const std::string & subdirectoryName ) const ;
+
 
 
 			/**
@@ -121,8 +122,8 @@ namespace OSDL
 			 * not supported.
 			 *
 			 */
-			virtual bool hasFile( const std::string & fileName ) const
-				throw( Ceylan::System::DirectoryLookupFailed ) ;
+			virtual bool hasFile( const std::string & fileName ) const ;
+
 
 
 			/**
@@ -136,8 +137,7 @@ namespace OSDL
 			 * not supported.
 			 *
 			 */
-			virtual bool hasEntry( const std::string & entryName ) const
-				throw( Ceylan::System::DirectoryLookupFailed ) ;
+			virtual bool hasEntry( const std::string & entryName ) const ;
 
 
 
@@ -156,8 +156,8 @@ namespace OSDL
 			 *
 			 */
 			virtual void getSubdirectories( 
-					std::list<std::string> & subDirectories )
-				const throw( Ceylan::System::DirectoryLookupFailed ) ;
+				std::list<std::string> & subDirectories ) const ;
+
 
 
 			/**
@@ -171,8 +171,8 @@ namespace OSDL
 			 * is not supported.
 			 *
 			 */
-			virtual void getFiles( std::list<std::string> & files )
-				const throw( Ceylan::System::DirectoryLookupFailed ) ;
+			virtual void getFiles( std::list<std::string> & files ) const ;
+
 
 
 			/**
@@ -196,8 +196,8 @@ namespace OSDL
 			 * is not supported.
 			 *
 			 */
-			virtual void getEntries( std::list<std::string> & entries )
-				const throw( Ceylan::System::DirectoryLookupFailed ) ;
+			virtual void getEntries( std::list<std::string> & entries ) const ;
+
 
 
 			/**
@@ -223,10 +223,9 @@ namespace OSDL
 			 *
 			 */
 			virtual void getSortedEntries( 
-					std::list<std::string> & subDirectories,
-					std::list<std::string> & files,
-					std::list<std::string> & otherEntries )
-				const throw( Ceylan::System::DirectoryLookupFailed ) ;
+				std::list<std::string> & subDirectories,
+				std::list<std::string> & files,
+				std::list<std::string> & otherEntries ) const ;
 
 
 
@@ -234,7 +233,9 @@ namespace OSDL
 			// Other instance methods.
 			
 
+
 			// goDown, isValid, getPath, removeLeadingSeparator inherited.
+
 
 
 			/**
@@ -249,13 +250,14 @@ namespace OSDL
 			 *
 			 */
 	        virtual const std::string toString( 
-					Ceylan::VerbosityLevels level = Ceylan::high )
-				const throw() ;
+				Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 
 
 			// Factory section.
+
 
 
 			/**
@@ -275,9 +277,9 @@ namespace OSDL
 			 *
 			 */
 			static EmbeddedDirectory & Create( 
-					const std::string & newDirectoryName ) 
-				throw( Ceylan::System::DirectoryException ) ;
+				const std::string & newDirectoryName ) ;
 
+			
 			
 			/**
 			 * Returns an EmbeddedDirectory reference on specified
@@ -299,8 +301,7 @@ namespace OSDL
 			 *
 			 */
 			static EmbeddedDirectory & Open( 
-					const std::string & directoryName = "" ) 
-				throw( Ceylan::System::DirectoryException ) ;
+				const std::string & directoryName = "" ) ;
 				
 				
 
@@ -334,9 +335,9 @@ namespace OSDL
 			 *
 			 */
 			explicit EmbeddedDirectory( const std::string & directoryName,
-					bool create = true ) 
-				throw( Ceylan::System::DirectoryException ) ;
+				bool create = true ) ;
 
+			
 			
 				
 		protected:
@@ -352,8 +353,7 @@ namespace OSDL
 			 *
 			 */
 			virtual Ceylan::System::FileSystemManager &
-            		getCorrespondingFileSystemManager()
-				const throw( Ceylan::System::DirectoryDelegatingException ) ;
+            	getCorrespondingFileSystemManager() const ;
 
 
 
@@ -365,6 +365,7 @@ namespace OSDL
 			static const std::string RootDirectoryPrefix ;
 
 
+
 			/**
 			 * Current directory name alias.
 			 *
@@ -372,6 +373,7 @@ namespace OSDL
 			 *
 			 */
 			static const std::string CurrentDirectoryAlias ;
+
 
 
 			/**
@@ -383,6 +385,7 @@ namespace OSDL
 			static const std::string UpperDirectoryAlias ;
 
 
+
 			/**
 			 * Directory separator.
 			 * @example Slash or backslash.
@@ -391,7 +394,9 @@ namespace OSDL
 
 
 
+
 		private:
+
 
 
 			/**
@@ -401,7 +406,8 @@ namespace OSDL
 			 * constructor is called, implicitly or not.
 			 *
 			 */
-			EmbeddedDirectory( const EmbeddedDirectory & source ) throw() ;
+			EmbeddedDirectory( const EmbeddedDirectory & source ) ;
+
 
 
 			/**
@@ -412,13 +418,15 @@ namespace OSDL
 			 *
 			 */
 			EmbeddedDirectory & operator = ( 
-				const EmbeddedDirectory & source ) throw() ;
+				const EmbeddedDirectory & source ) ;
+
 
 
 	} ;
 
 
 }
+
 
 
 #endif // OSDL_EMBEDDED_DIRECTORY_H_

@@ -43,12 +43,15 @@ namespace OSDL
 {
 
 
+
 	namespace Video
 	{
 
 
+
 		// Fonts are rendered to surfaces.
 		class Surface ;
+
 
 
 
@@ -60,14 +63,17 @@ namespace OSDL
 			namespace Text
 			{	
 			
+			
 
 				/// The character width of fixed basic font.
 				extern OSDL_DLL const Length BasicFontCharacterWidth ;
+				
 				
 				/// The character height of fixed basic font.
 				extern OSDL_DLL const Length BasicFontCharacterHeight ;
 				
 				
+				
 				/**
 				 * Prints specified string on target surface, with specified
 				 * color, taking as upper left corner specified coordinates.
@@ -85,12 +91,13 @@ namespace OSDL
 				 * @throw VideoException if the operation is not supported.
 				 *
 				 */
-				OSDL_DLL bool printBasic( const std::string & text, 
+				OSDL_DLL bool printBasic( 
+					const std::string & text, 
 					Surface & targetSurface, Coordinate x, Coordinate y,
 					Pixels::ColorElement red, Pixels::ColorElement blue,
 					Pixels::ColorElement green, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw( VideoException ) ; 
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ; 
+				
 				
 				
 				/**
@@ -110,10 +117,12 @@ namespace OSDL
 				 * @throw VideoException if the operation is not supported.
 				 *
 				 */
-				OSDL_DLL bool printBasic( const std::string & text, 
+				OSDL_DLL bool printBasic( 
+					const std::string & text, 
 					Surface & targetSurface,
 					Coordinate x, Coordinate y, 
-					Pixels::ColorDefinition colorDef ) throw( VideoException ) ;
+					Pixels::ColorDefinition colorDef ) ;
+					
 					
 
 
@@ -177,7 +186,10 @@ namespace OSDL
 				{
 				
 				
+				
 					public:
+						
+							
 											
 						
 						/**
@@ -278,8 +290,7 @@ namespace OSDL
 							RenderCache cacheSettings = GlyphCached,
 							AllowedCachePolicy cachePolicy
 								= DropLessRequestedFirst,
-							Ceylan::System::Size quota = 0 ) 
-								throw( TextException ) ;
+							Ceylan::System::Size quota = 0 ) ;
 						 
 						 
 						 
@@ -344,8 +355,8 @@ namespace OSDL
 							RenderCache cacheSettings = GlyphCached,
 							AllowedCachePolicy cachePolicy 
 								= DropLessRequestedFirst,
-							Ceylan::System::Size quota = 0 ) 
-								throw( TextException ) ;
+							Ceylan::System::Size quota = 0 ) ;
+						
 						
 						
 						/**
@@ -369,7 +380,8 @@ namespace OSDL
 						 * case.
 						 *
 						 */
-						virtual Width getWidth() const throw() ;
+						virtual Width getWidth() const ;
+
 
 
 						/**
@@ -389,7 +401,8 @@ namespace OSDL
 						 *
 						 */
 						virtual Width getWidth( Ceylan::Latin1Char character )
-							const throw() ;
+							const ;
+
 
 
 						/**
@@ -415,8 +428,8 @@ namespace OSDL
 						 *
 						 */
 						virtual SignedWidth getWidthOffset( 
-								Ceylan::Latin1Char character ) 
-							const throw( TextException ) ;
+							Ceylan::Latin1Char character ) const ;
+
 
 
 						/**
@@ -435,8 +448,8 @@ namespace OSDL
 						 *
 						 */
 						virtual SignedHeight getHeightAboveBaseline(
-								Ceylan::Latin1Char character ) 
-							const throw( TextException ) ;
+							Ceylan::Latin1Char character ) const ;
+
 
 
 						/**
@@ -451,8 +464,8 @@ namespace OSDL
 						 * not be retrieved.
 						 *
 						 */
-						virtual SignedLength getAdvance() const 
-							throw( TextException ) ;
+						virtual SignedLength getAdvance() const ;
+						
 						
 						
 						/**
@@ -469,12 +482,12 @@ namespace OSDL
 						 * @note This method exists only because the 
 						 * interface demands it.
 						 *
-						 * @seegetAdvance()
+						 * @see getAdvance()
 						 *
 						 */
 						virtual SignedLength getAdvance( 
-								Ceylan::Latin1Char character ) 
-							const throw( TextException ) ;
+							Ceylan::Latin1Char character ) const ;
+
 
 
 						/**
@@ -489,7 +502,7 @@ namespace OSDL
 						 * The default value is one pixel.
 						 *
 						 */
-						virtual Width getInterGlyphWidth() const throw() ;
+						virtual Width getInterGlyphWidth() const ;
 				
 						 
 						 
@@ -507,8 +520,9 @@ namespace OSDL
 						 * see getLineSkip as well.
 						 *
 						 */
-						virtual Text::Height getHeight() const throw() ;
+						virtual Text::Height getHeight() const ;
 						 						 
+												 
 						 
 						/**
 						 * Returns the maximum pixel ascent (height above
@@ -530,7 +544,8 @@ namespace OSDL
 						 * to the height returned by getHeight.
 						 *
 						 */
-						virtual SignedHeight getAscent() const throw() ;
+						virtual SignedHeight getAscent() const ;
+						 
 						 
 						 
 						/**
@@ -557,7 +572,8 @@ namespace OSDL
 						 * to zero.
 						 *
 						 */
-						virtual SignedHeight getDescent() const throw() ;
+						virtual SignedHeight getDescent() const ;
+						 
 						 
 						 
 						/**
@@ -568,12 +584,13 @@ namespace OSDL
 						 * by getHeight.
 						 *
 						 */
-						virtual Text::Height getLineSkip() const throw() ;
+						virtual Text::Height getLineSkip() const ;
 						
 						
 						
 						
 						// Bounding boxes section.
+						
 						
 						
 						/**
@@ -594,9 +611,9 @@ namespace OSDL
 						 * @throw TextException if an error occured.
 						 *
 						 */ 
-						virtual UprightRectangle & getBoundingBox() 
-							const throw( TextException ) ;
+						virtual UprightRectangle & getBoundingBox() const ;
 							
+						 
 						 
 						/**
 						 * Returns a rectangular bounding box corresponding 
@@ -628,13 +645,13 @@ namespace OSDL
 						 *
 						 */ 
 						virtual UprightRectangle & getBoundingBoxFor( 
-								const std::string & word )
-							const throw( TextException ) ;
+							const std::string & word ) const ;
 							 
 							 
 							 
 						
 						// Render section.
+							 
 							 
 							 
 						/**
@@ -668,11 +685,11 @@ namespace OSDL
 						 *
 						 */
 						virtual Surface & renderLatin1Glyph( 
-								Ceylan::Latin1Char character, 
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition glyphColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+							Ceylan::Latin1Char character, 
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition glyphColor = Pixels::White
+						) ;
+					
 					
 						
 						/**
@@ -705,13 +722,13 @@ namespace OSDL
 						 *
 						 */
 						virtual void blitLatin1Glyph( 
-								Surface & targetSurface,
-								Coordinate x, Coordinate y, 
-								Ceylan::Latin1Char character, 
-								RenderQuality quality = Solid, 
-								Pixels::ColorDefinition glyphColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+							Surface & targetSurface,
+							Coordinate x, Coordinate y, 
+							Ceylan::Latin1Char character, 
+							RenderQuality quality = Solid, 
+							Pixels::ColorDefinition glyphColor = Pixels::White 
+						) ;
+						
 						
 						
 						/**
@@ -728,11 +745,10 @@ namespace OSDL
 						 *
 						 */
 						virtual Surface & renderLatin1GlyphAlpha(
-								Ceylan::Latin1Char character, 
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition glyphColor 
-									= Pixels::White ) 
-							throw( TextException ) ;
+							Ceylan::Latin1Char character, 
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition glyphColor = Pixels::White 
+						) ;
 						
 						
 							
@@ -742,6 +758,7 @@ namespace OSDL
 						 *
 						 */
 						
+							
 							
 			            /**
 	    		         * Returns an user-friendly description of the 
@@ -757,11 +774,13 @@ namespace OSDL
 			             */
 				 		virtual const std::string toString( 
 								Ceylan::VerbosityLevels level = Ceylan::high ) 
-							const throw() ;
+							const ;
+
 
 
 						
 						// Static section.
+	
 	
 	
 						/**
@@ -770,9 +789,9 @@ namespace OSDL
 						 *
 						 */
 						static RenderQuality GetObtainedQualityFor(
-								RenderQuality targetedQuality )
-							throw() ;
+							RenderQuality targetedQuality ) ;
 						 
+	
 	
 						/**
 						 * Sets, if necessary, the parameters of the font 
@@ -811,8 +830,9 @@ namespace OSDL
 						static void SetFontSettings( 
 							const Ceylan::Byte * fontData, 
 							Length characterWidth, 
-							Length characterHeight ) throw( TextException ) ;
+							Length characterHeight ) ;
 
+						 
 						 
 						/**
 						 * Allows to keep track of fixed font directories.
@@ -822,8 +842,10 @@ namespace OSDL
 							FixedFontFileLocator ;
 
 
+
 						/// Extension of fixed font files ('.fnt').
 						static std::string FontFileExtension ;
+						
 						
 						
 						/**
@@ -835,7 +857,9 @@ namespace OSDL
 						
 						
 						
+						
 					protected:
+							
 												
 						
 						/**
@@ -845,6 +869,7 @@ namespace OSDL
 						 */
 						static const RenderQuality DefaultQuality = Solid ;
 						
+							
 							
 						/**
 						 * Loads the fixed font from specified file.
@@ -856,8 +881,8 @@ namespace OSDL
 						 *
 						 */						
 						virtual void loadFontFrom( 
-								const std::string & fontFilename ) 
-							throw( TextException ) ;
+							const std::string & fontFilename ) ;
+						
 							
 						
 						/**
@@ -901,9 +926,9 @@ namespace OSDL
 						 *
 						 */
 						virtual const Surface & submitLatin1GlyphToCache( 
-								Ceylan::Latin1Char character,
-								Pixels::ColorDefinition glyphColor )
-							throw( TextException ) ;
+							Ceylan::Latin1Char character,
+							Pixels::ColorDefinition glyphColor ) ;
+							
 							
 						
 						/**
@@ -921,9 +946,9 @@ namespace OSDL
 						 *
 						 */
 						virtual Surface & basicRenderLatin1Glyph(
-								Ceylan::Latin1Char character,
-								Pixels::ColorDefinition glyphColor ) 
-							throw( TextException ) ;
+							Ceylan::Latin1Char character,
+							Pixels::ColorDefinition glyphColor ) ;
+							
 							
 							
 						/**
@@ -961,23 +986,27 @@ namespace OSDL
 						 *
 						 */
 						virtual void basicBlitLatin1Glyph( 
-								Surface & targetSurface, 
-								Coordinate x, Coordinate y,	
-								Ceylan::Latin1Char character,
-								Pixels::ColorDefinition glyphColor ) 
-							throw( TextException ) ;
+							Surface & targetSurface, 
+							Coordinate x, Coordinate y,	
+							Ceylan::Latin1Char character,
+							Pixels::ColorDefinition glyphColor ) ;
+						
 						
 						
 														
 						/// The character width for this font.
 						Length _width ;
 						
+						
+						
 						/// The character height for this font.
 						Length _height ;
+							
 												
 							
 						/// The data describing the characters of the font. 
 						char * _fontData ;
+						
 						
 																		
 						/**
@@ -997,14 +1026,15 @@ namespace OSDL
 						 *
 						 */
 						static std::string BuildFontFilenameFor( 
-								Length characterWidth, 
-								Length characterHeight, 
-								RenderingStyle renderingStyle ) 
-							throw( TextException ) ;
+							Length characterWidth, 
+							Length characterHeight, 
+							RenderingStyle renderingStyle ) ;
+							
 							
 							
 						
 						// Static section.
+						
 						
 						
 						/**
@@ -1028,11 +1058,11 @@ namespace OSDL
 						 *
 						 */
 						static void GetFontAttributesFrom( 
-								const std::string & filename, 
-								Length & characterWidth, 
-								Length & characterHeight, 
-								RenderingStyle & renderingStyle ) 
-							throw( TextException ) ;
+							const std::string & filename, 
+							Length & characterWidth, 
+							Length & characterHeight, 
+							RenderingStyle & renderingStyle ) ;
+					
 					
 					
 						/**
@@ -1047,6 +1077,7 @@ namespace OSDL
 					
 					private:
 								
+						
 									
 						/**
 						 * Copy constructor made private to ensure that 
@@ -1056,7 +1087,8 @@ namespace OSDL
 						 * undefined constructor is called, implicitly or not.
 						 *
 						 */			 
-						FixedFont( const FixedFont & source ) throw() ;
+						FixedFont( const FixedFont & source ) ;
+			
 			
 			
 						/**
@@ -1067,12 +1099,12 @@ namespace OSDL
 						 * undefined operator is called, implicitly or not.
 						 *
 						 */			 
-						FixedFont & operator = ( const FixedFont & source )
-							throw() ;
+						FixedFont & operator = ( const FixedFont & source ) ;
 				
 									
 				
 				} ;
+				
 				
 			} 
 			
@@ -1081,6 +1113,7 @@ namespace OSDL
 	}
 	
 }		
+
 
 
 #endif // OSDL_FIXED_FONT_H_

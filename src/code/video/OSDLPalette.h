@@ -34,6 +34,7 @@
 
 
 
+
 #if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 // No need to include SDL header here:
@@ -43,17 +44,21 @@ struct SDL_Palette ;
 
 
 
+
 #include <string>
+
 
 
 
 namespace OSDL
 {
 
+
 	
 	namespace Video
 	{
 	
+
 
 		/**
 		 * Number of colors.
@@ -65,6 +70,7 @@ namespace OSDL
 		typedef Ceylan::Uint16 ColorCount ;
 		
 
+
 		/**
 		 * Number of colors or color index, in 256-color palettes.
 		 *
@@ -72,8 +78,10 @@ namespace OSDL
 		typedef Ceylan::Uint8 ColorIndex ;
 		
 		
+		
 		/// Distance between colors.
 		typedef Ceylan::SignedLongInteger ColorDistance ;
+		
 		
 		
 		/**
@@ -87,13 +95,13 @@ namespace OSDL
 		
 		
 		
+		
 #if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 		/// SDL low-level palette being used.
 		typedef ::SDL_Palette LowLevelPalette ;
 		
 #else // OSDL_USES_SDL	
-
 
 		/// Low-level palette being used.
 		struct LowLevelPalette
@@ -112,17 +120,19 @@ namespace OSDL
 		
 		
 		
+		
 		/// Exception raised when a palette operation failed.
 		class OSDL_DLL PaletteException: public VideoException
 		{
 		
 			public:
-				explicit PaletteException( const std::string & message ) 
-					throw() ;
+				explicit PaletteException( const std::string & message ) ;
+				
 				virtual ~PaletteException() throw() ;
 							
 		} ;
 		
+	
 	
 	
 		/**
@@ -157,11 +167,14 @@ namespace OSDL
 			public:
 			
 			
+			
 				/// The flag used to designate logical palette.
 				static const Ceylan::Flags Logical ;
+				
 								
 				/// The flag used to designate physical palette.
 				static const Ceylan::Flags Physical ;
+			
 			
 			
 				/**
@@ -186,10 +199,10 @@ namespace OSDL
 				 *
 				 */
 				explicit Palette( ColorCount numberOfColors, 
-						Pixels::ColorDefinition * colors = 0,
-						Pixels::PixelFormat * format = 0 ) 
-					throw( PaletteException ) ;
+					Pixels::ColorDefinition * colors = 0,
+					Pixels::PixelFormat * format = 0 ) ;
 
+				
 				
 				/**
 				 * Creates a new palette from specified file, whose format is
@@ -211,8 +224,8 @@ namespace OSDL
 				 * @throw PaletteException if the operation failed.
 				 *
 				 */
-				explicit Palette( const std::string & paletteFilename ) 
-					throw( PaletteException ) ;
+				explicit Palette( const std::string & paletteFilename ) ;
+					
 					
 					
 				/**
@@ -224,8 +237,8 @@ namespace OSDL
 				 * buffer.
 				 *
 				 */				
-				explicit Palette( const LowLevelPalette & palette ) 
-					throw( PaletteException ) ;
+				explicit Palette( const LowLevelPalette & palette ) ;
+				
 				
 				
 				/// Basic virtual destructor.
@@ -249,8 +262,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void load( ColorCount numberOfColors, 
-						Pixels::ColorDefinition * colors ) 
-					throw( PaletteException ) ;
+					Pixels::ColorDefinition * colors ) ;
+			
 			
 			
 				/**
@@ -258,7 +271,8 @@ namespace OSDL
 				 * (including any colorkey).
 				 *
 				 */				 
-				virtual ColorCount getNumberOfColors() const throw() ;
+				virtual ColorCount getNumberOfColors() const ;
+				
 				
 				
 				/**
@@ -272,8 +286,8 @@ namespace OSDL
 				 *
 				 */
 				virtual const Pixels::PixelColor & getPixelColorAt( 
-						ColorCount index ) 
-					const throw( PaletteException ) ;
+					ColorCount index ) const ;
+					
 					
 					
 				/**
@@ -283,7 +297,8 @@ namespace OSDL
 				 * "pseudo-const".
 				 *
 				 */
-				virtual Pixels::PixelColor * getPixelColors() const throw() ;
+				virtual Pixels::PixelColor * getPixelColors() const ;
+				
 				
 				
 				/**
@@ -298,8 +313,8 @@ namespace OSDL
 				 *
 				 */
 				virtual const Pixels::ColorDefinition & getColorDefinitionAt(
-						ColorCount index ) 
-					const throw( PaletteException ) ;
+					ColorCount index ) const ;
+				
 					
 					
 				/**
@@ -316,9 +331,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void setColorDefinitionAt(
-						ColorCount targetIndex, 
-						const Pixels::ColorDefinition & newColorDefinition ) 
-					throw( PaletteException ) ;
+					ColorCount targetIndex, 
+					const Pixels::ColorDefinition & newColorDefinition ) ;
+					
 					
 					
 				/**
@@ -333,12 +348,12 @@ namespace OSDL
 				 *
 				 */
 				virtual void setColorDefinitionAt(
-						ColorCount targetIndex, 
-						Pixels::ColorElement red,
-						Pixels::ColorElement green,
-						Pixels::ColorElement blue,
-						Pixels::ColorElement alpha = Pixels::AlphaOpaque ) 
-					throw( PaletteException ) ;
+					ColorCount targetIndex, 
+					Pixels::ColorElement red,
+					Pixels::ColorElement green,
+					Pixels::ColorElement blue,
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
+					
 					
 					
 				/**
@@ -348,8 +363,7 @@ namespace OSDL
 				 * "pseudo-const".
 				 *
 				 */
-				virtual Pixels::ColorDefinition * getColorDefinitions() 
-					const throw() ;
+				virtual Pixels::ColorDefinition * getColorDefinitions() const ;
 
 
 				
@@ -357,7 +371,8 @@ namespace OSDL
 				 * Returns whether this palette has a colorkey registered.
 				 *
 				 */
-				virtual bool hasColorKey() const throw() ;
+				virtual bool hasColorKey() const ;
+				
 				
 				
 				/**
@@ -368,16 +383,15 @@ namespace OSDL
 				 * @see hasColorKey
 				 *
 				 */
-				virtual ColorCount getColorKeyIndex() const 
-					throw( PaletteException ) ;
+				virtual ColorCount getColorKeyIndex() const ;
+				
 				
 				
 				/**
 				 * Sets the specified index as a colorkey.
 				 *
 				 */
-				virtual void setColorKeyIndex( ColorCount colorkeyIndex )
-					throw() ;
+				virtual void setColorKeyIndex( ColorCount colorkeyIndex ) ;
 				
 					
 					
@@ -387,7 +401,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void updatePixelColorsFrom( 
-					const Pixels::PixelFormat & format ) throw() ;
+					const Pixels::PixelFormat & format ) ;
+
 
 
 				/**
@@ -413,7 +428,8 @@ namespace OSDL
 				 */
 				virtual void quantize( 
 					Pixels::ColorElement quantizeMaxCoordinate,
-					bool scaleUp = false ) throw() ;
+					bool scaleUp = false ) ;
+
 
 
 				/**
@@ -431,7 +447,8 @@ namespace OSDL
 				 * gamma-corrected on purpose.
 				 *				 
 				 */
-				virtual void correctGamma( Pixels::GammaFactor gamma ) throw() ;
+				virtual void correctGamma( Pixels::GammaFactor gamma ) ;
+
 
 
 				/**
@@ -448,8 +465,8 @@ namespace OSDL
 				 *
 				 */
 				virtual ColorCount getClosestColorIndexTo(
-						const Pixels::ColorDefinition & color ) const
-					throw( PaletteException ) ;
+					const Pixels::ColorDefinition & color ) const ;
+					
 					
 
 				/**
@@ -471,7 +488,8 @@ namespace OSDL
 				 */
 				virtual bool draw( Surface & targetSurface, 
 					const Pixels::ColorDefinition & backgroundColor 
-						= Pixels::White ) throw() ;
+						= Pixels::White ) ;
+				
 				
 				
 				/**
@@ -487,8 +505,8 @@ namespace OSDL
 				 * account for a possible color collision.
 				 *
 				 */
-				virtual bool hasDuplicates( bool useAlpha = false )
-					const throw() ;
+				virtual bool hasDuplicates( bool useAlpha = false ) const ;
+				
 				
 				
 				/**
@@ -536,8 +554,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void save( const std::string & filename,
-					bool encoded = false ) const throw( PaletteException ) ;
+					bool encoded = false ) const ;
 				 	
+					
 					
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -551,13 +570,14 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+
 
 
 
 				
 				// Static section.
+					
 						
 						
 				/**
@@ -567,7 +587,8 @@ namespace OSDL
 				 *
 				 */
 				static Palette & CreateGreyScalePalette( 
-					ColorCount numberOfColors = 256 ) throw() ; 
+					ColorCount numberOfColors = 256 ) ; 
+			
 			
 			
 				/**
@@ -581,7 +602,8 @@ namespace OSDL
 				static Palette & CreateGradationPalette( 
 					const Pixels::ColorDefinition & colorStart,
 					const Pixels::ColorDefinition & colorEnd, 
-					ColorCount numberOfColors = 256 ) throw() ; 
+					ColorCount numberOfColors = 256 ) ; 
+			
 			
 			
 				/**
@@ -601,8 +623,8 @@ namespace OSDL
 				 * base colors of this palette.
 				 *
 				 */
-				static Palette & CreateMasterPalette( bool addColorkey = true )
-					throw() ; 
+				static Palette & CreateMasterPalette( 
+					bool addColorkey = true ) ; 
 			
 			
 			
@@ -610,16 +632,18 @@ namespace OSDL
 			protected:
 				
 				
+				
 				/**
 				 * Invalidates any already computed pixel colors.
 				 *
 				 */
-				virtual void invalidatePixelColors() throw() ;
+				virtual void invalidatePixelColors() ;
 				
 				
 					 
 				
 				// Static section.
+				
 				
 				
 				/**
@@ -638,7 +662,8 @@ namespace OSDL
 				 */
 				static Pixels::ColorElement QuantizeComponent( 
 					Pixels::ColorElement component,	
-					Pixels::ColorElement newMaxCoordinate = 31 ) throw() ;
+					Pixels::ColorElement newMaxCoordinate = 31 ) ;
+					
 					
 					
 				/**
@@ -651,8 +676,9 @@ namespace OSDL
 				 */
 				static Pixels::ColorElement CorrectGammaComponent( 
 					Pixels::ColorElement component,	
-					Pixels::GammaFactor gamma )	throw() ;
+					Pixels::GammaFactor gamma )	;
 					
+				
 				
 				/**
 				 * Returns the perceived distance of the human eye between
@@ -668,12 +694,13 @@ namespace OSDL
 				 */
 				static ColorDistance GetDistance( 
 					const Pixels::ColorDefinition & firstColor,
-					const Pixels::ColorDefinition & secondColor ) throw() ;
+					const Pixels::ColorDefinition & secondColor ) ;
 								
 										
 			
 				/// The number of colors defined in this palette.
 				ColorCount _numberOfColors ;
+				
 				
 				
 				/**
@@ -684,6 +711,7 @@ namespace OSDL
 				Pixels::ColorDefinition * _colorDefs ;
 			
 			
+			
 				/**
 				 * The physical palette, pointing to an array of 
 				 * _numberOfColors pixel colors.
@@ -692,12 +720,14 @@ namespace OSDL
 				Pixels::PixelColor * _pixelColors ;
 
 
+
 				/**
 				 * Tells whether the physical colors (pixel colors) have 
 				 * already been computed from the stored pixel definitions.
 				 *
 				 */
 				bool _converted ;
+				
 				
 
 				/**
@@ -712,9 +742,12 @@ namespace OSDL
 							
 			private:
 			
+			
 					
 				/// Tells whether this palette has a registered color key.
 				bool _hasColorkey ;
+				
+				
 				
 				/// Index in palette of the used colorkey (if any), usually #0.
 				ColorCount _colorKeyIndex ;
@@ -729,7 +762,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit Palette( const Palette & source ) throw() ;
+				explicit Palette( const Palette & source ) ;
+			
 			
 			
 				/**
@@ -740,14 +774,16 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				Palette & operator = ( const Palette & source ) throw() ;
+				Palette & operator = ( const Palette & source ) ;
 		
 		
 		} ;
+		
 	
 	}
 
 }
+
 
 
 #endif // OSDL_PALETTE_H_

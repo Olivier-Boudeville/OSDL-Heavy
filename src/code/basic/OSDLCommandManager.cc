@@ -35,6 +35,7 @@
 #include "OSDLARM7Codes.h"           // for Helix error codes
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include "OSDLConfig.h"              // for configure-time settings (SDL)
 #endif // OSDL_USES_CONFIG_H
@@ -58,11 +59,12 @@ using namespace Ceylan::System ;
 using std::string ;
 
 
+
 CommandManager * CommandManager::_IPCManager = 0 ;
 
 
 
-CommandException::CommandException( const string & reason ) throw() : 
+CommandException::CommandException( const string & reason ) : 
 	OSDL::Exception( reason )
 {
 
@@ -77,7 +79,7 @@ CommandException::~CommandException() throw()
 
 
 
-CommandManager::CommandManager() throw( CommandException ):
+CommandManager::CommandManager() :
 	FIFO(),
 	_currentMusic(0),
 	_doubleBuffer(0),
@@ -132,10 +134,11 @@ CommandManager::~CommandManager() throw()
 
 
 
+
 // Audio section.
 
 
-void CommandManager::playSound( Audio::Sound & sound ) throw( CommandException )
+void CommandManager::playSound( Audio::Sound & sound )
 {
 
 	if ( ! sound.hasContent() )
@@ -214,7 +217,7 @@ void CommandManager::playSound( Audio::Sound & sound ) throw( CommandException )
 
 
 
-void CommandManager::enableMusicSupport() throw( CommandException )
+void CommandManager::enableMusicSupport()
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -252,7 +255,7 @@ void CommandManager::enableMusicSupport() throw( CommandException )
 
 
 
-void CommandManager::disableMusicSupport() throw( CommandException )
+void CommandManager::disableMusicSupport()
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -294,7 +297,7 @@ void CommandManager::disableMusicSupport() throw( CommandException )
 
 
 
-BufferSize CommandManager::getMusicBufferSize() const throw()
+BufferSize CommandManager::getMusicBufferSize() const
 {
 
 	return _bufferSize ;
@@ -304,7 +307,6 @@ BufferSize CommandManager::getMusicBufferSize() const throw()
 
 
 Ceylan::Byte * CommandManager::getMusicBuffer() const 
-	throw( CommandException )
 {
 
 	if ( _doubleBuffer == 0 )
@@ -317,7 +319,7 @@ Ceylan::Byte * CommandManager::getMusicBuffer() const
 
 
 
-void CommandManager::playMusic( Audio::Music & music ) throw( CommandException )
+void CommandManager::playMusic( Audio::Music & music )
 {
 			
 #if OSDL_ARCH_NINTENDO_DS
@@ -385,8 +387,7 @@ void CommandManager::playMusic( Audio::Music & music ) throw( CommandException )
 
 
 void CommandManager::playMusicWithFadeIn( Audio::Music & music,
-		Ceylan::System::Millisecond fadeInMaxDuration ) 
-	throw( CommandException )
+	Ceylan::System::Millisecond fadeInMaxDuration ) 
 {
 			
 #if OSDL_ARCH_NINTENDO_DS
@@ -467,14 +468,14 @@ void CommandManager::playMusicWithFadeIn( Audio::Music & music,
 
 
 
-void CommandManager::stopMusic() throw( CommandException )
+void CommandManager::stopMusic()
 {
 			
 #if OSDL_ARCH_NINTENDO_DS
 
 #ifdef OSDL_RUNS_ON_ARM9
 	
-	// Anything to stop ?
+	// Anything to stop?
 	if ( _currentMusic == 0 )
 	{
 
@@ -519,15 +520,14 @@ void CommandManager::stopMusic() throw( CommandException )
 
 
 void CommandManager::fadeInMusic(
-		Ceylan::System::Millisecond fadeInMaxDuration )
-	throw( CommandException )
+	Ceylan::System::Millisecond fadeInMaxDuration )
 {
 			
 #if OSDL_ARCH_NINTENDO_DS
 
 #ifdef OSDL_RUNS_ON_ARM9
 	
-	// Anything to stop ?
+	// Anything to stop?
 	if ( _currentMusic == 0 )
 	{
 
@@ -573,15 +573,14 @@ void CommandManager::fadeInMusic(
 
 
 void CommandManager::fadeOutMusic(
-		Ceylan::System::Millisecond fadeOutMaxDuration)
-	throw( CommandException )
+	Ceylan::System::Millisecond fadeOutMaxDuration )
 {
 			
 #if OSDL_ARCH_NINTENDO_DS
 
 #ifdef OSDL_RUNS_ON_ARM9
 	
-	// Anything to stop ?
+	// Anything to stop?
 	if ( _currentMusic == 0 )
 	{
 
@@ -627,7 +626,6 @@ void CommandManager::fadeOutMusic(
 
 
 void CommandManager::setMusicVolume( Volume newVolume ) 
-	throw( CommandException )
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -663,14 +661,14 @@ void CommandManager::setMusicVolume( Volume newVolume )
 
 
 	
-void CommandManager::pauseMusic() throw( CommandException )
+void CommandManager::pauseMusic()
 {
 
 #if OSDL_ARCH_NINTENDO_DS
 
 #ifdef OSDL_RUNS_ON_ARM9
 	
-	// Anything to pause ?
+	// Anything to pause?
 	if ( _currentMusic == 0 )
 		return ;	
 
@@ -701,14 +699,14 @@ void CommandManager::pauseMusic() throw( CommandException )
 
 
 				
-void CommandManager::unpauseMusic() throw( CommandException )
+void CommandManager::unpauseMusic()
 {
 
 #if OSDL_ARCH_NINTENDO_DS
 
 #ifdef OSDL_RUNS_ON_ARM9
 	
-	// Anything to resume ?
+	// Anything to resume?
 	if ( _currentMusic == 0 )
 		return ;	
 
@@ -739,7 +737,7 @@ void CommandManager::unpauseMusic() throw( CommandException )
 								
 
 
-void CommandManager::notifyEndOfEncodedStreamReached() throw( CommandException )
+void CommandManager::notifyEndOfEncodedStreamReached()
 {
 			
 #if OSDL_ARCH_NINTENDO_DS
@@ -773,7 +771,7 @@ void CommandManager::notifyEndOfEncodedStreamReached() throw( CommandException )
 
 
 
-void CommandManager::unsetCurrentMusic( Music & music ) throw()
+void CommandManager::unsetCurrentMusic( Music & music )
 {
 
 	if ( _currentMusic == &music )
@@ -783,7 +781,7 @@ void CommandManager::unsetCurrentMusic( Music & music ) throw()
 
 
 
-string CommandManager::interpretLastARM7ErrorCode() throw()
+string CommandManager::interpretLastARM7ErrorCode()
 {
 
 	ARM7ErrorCode error = getLastARM7ErrorCode() ;
@@ -840,8 +838,7 @@ string CommandManager::interpretLastARM7ErrorCode() throw()
 
 
 
-const string CommandManager::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string CommandManager::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Command manager based on " + FIFO::toString( level ) 
@@ -860,10 +857,11 @@ const string CommandManager::toString( Ceylan::VerbosityLevels level )
 
 
 
+
 // Static section.
 
 
-bool CommandManager::HasExistingCommandManager() throw()
+bool CommandManager::HasExistingCommandManager()
 {
 
 	return _IPCManager != 0 ;
@@ -873,7 +871,6 @@ bool CommandManager::HasExistingCommandManager() throw()
 
 
 CommandManager & CommandManager::GetExistingCommandManager() 
-	throw( CommandException )
 {
 
 	if ( _IPCManager == 0 )
@@ -886,7 +883,7 @@ CommandManager & CommandManager::GetExistingCommandManager()
 
 
 	
-CommandManager & CommandManager::GetCommandManager() throw( CommandException )
+CommandManager & CommandManager::GetCommandManager()
 {
 
 	if ( _IPCManager == 0 )
@@ -899,7 +896,7 @@ CommandManager & CommandManager::GetCommandManager() throw( CommandException )
 
 
 void CommandManager::handleReceivedIntegratingLibrarySpecificCommand(
-	FIFOCommandID commandID, Ceylan::System::FIFOElement firstElement )	throw()
+	FIFOCommandID commandID, Ceylan::System::FIFOElement firstElement )
 {
 
 
@@ -1002,5 +999,4 @@ void CommandManager::handleReceivedIntegratingLibrarySpecificCommand(
 #endif // OSDL_ARCH_NINTENDO_DS
 
 }
-
 	

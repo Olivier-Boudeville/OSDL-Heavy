@@ -48,6 +48,7 @@
 #include "Ceylan.h"                        // for all Ceylan services
 
 
+
 /*
  * Implementation notes.
  *
@@ -61,12 +62,14 @@
  * 
  */
  
+ 
 using std::string ;
 using std::list ;
 
 using namespace Ceylan::System ;
 
 using namespace OSDL ;
+
 
 
 
@@ -96,7 +99,6 @@ EmbeddedDirectory::~EmbeddedDirectory() throw()
 
 
 bool EmbeddedDirectory::hasDirectory( const string & subdirectoryName ) const
-	throw( DirectoryLookupFailed )
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -133,7 +135,6 @@ bool EmbeddedDirectory::hasDirectory( const string & subdirectoryName ) const
 
 
 bool EmbeddedDirectory::hasFile( const string & fileName ) const
-	throw( DirectoryLookupFailed )
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -176,7 +177,6 @@ bool EmbeddedDirectory::hasFile( const string & fileName ) const
 
 
 bool EmbeddedDirectory::hasEntry( const string & entryName ) const
-	throw( DirectoryLookupFailed )
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -213,8 +213,7 @@ bool EmbeddedDirectory::hasEntry( const string & entryName ) const
 
 			
 					
-void EmbeddedDirectory::getSubdirectories( list<string> & subDirectories )
-	const throw( DirectoryLookupFailed )
+void EmbeddedDirectory::getSubdirectories( list<string> & subDirectories ) const
 {
 
 	/*
@@ -225,13 +224,11 @@ void EmbeddedDirectory::getSubdirectories( list<string> & subDirectories )
     throw DirectoryLookupFailed( " EmbeddedDirectory::getSubdirectories: "
     	"no PhysicsFS support available." ) ;  
     	
-
 }
 
 					
 										
-void EmbeddedDirectory::getFiles( list<string> & files )
-	const throw( DirectoryLookupFailed )
+void EmbeddedDirectory::getFiles( list<string> & files ) const
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -257,8 +254,7 @@ void EmbeddedDirectory::getFiles( list<string> & files )
 
 	
 					
-void EmbeddedDirectory::getEntries( list<string> & entries )
-	const throw( Ceylan::System::DirectoryLookupFailed )
+void EmbeddedDirectory::getEntries( list<string> & entries ) const
 {
 
 #if OSDL_USES_PHYSICSFS
@@ -285,8 +281,7 @@ void EmbeddedDirectory::getEntries( list<string> & entries )
 
 
 void EmbeddedDirectory::getSortedEntries( list<string> & subDirectories,
-		list<string> & files, list<string> & otherEntries )
-	const throw( DirectoryLookupFailed )
+	list<string> & files, list<string> & otherEntries ) const
 {
 
 	/*
@@ -307,7 +302,7 @@ void EmbeddedDirectory::getSortedEntries( list<string> & subDirectories,
 										
 					
 const std::string EmbeddedDirectory::toString( Ceylan::VerbosityLevels level )
-	const throw()
+	const
 {
 
 	return "Embedded directory referring to path '" + _path + "'" ;
@@ -315,13 +310,13 @@ const std::string EmbeddedDirectory::toString( Ceylan::VerbosityLevels level )
 }
 					
 		
+		
 					
 					
 // Factory section.										
 
 
 EmbeddedDirectory & EmbeddedDirectory::Create( const string & newDirectoryName )
-	throw( DirectoryException )
 {
 
 	return * new EmbeddedDirectory( newDirectoryName, /* create */ true ) ;
@@ -331,7 +326,6 @@ EmbeddedDirectory & EmbeddedDirectory::Create( const string & newDirectoryName )
 
 					
 EmbeddedDirectory & EmbeddedDirectory::Open( const string & directoryName ) 
-	throw( DirectoryException )
 {
 
 	return * new EmbeddedDirectory( directoryName, /* create */ false ) ;
@@ -340,8 +334,8 @@ EmbeddedDirectory & EmbeddedDirectory::Open( const string & directoryName )
 			
 
 			
-EmbeddedDirectory::EmbeddedDirectory( const string & directoryName,
-		bool create ) throw( DirectoryException ):
+EmbeddedDirectory::EmbeddedDirectory( const string & directoryName, 
+		bool create ) :
 	Directory( directoryName )
 {
 
@@ -369,13 +363,14 @@ EmbeddedDirectory::EmbeddedDirectory( const string & directoryName,
 }
 
 		
+		
         	
 					
 // Protected section.
 
 
-FileSystemManager & EmbeddedDirectory::getCorrespondingFileSystemManager()
-	const throw( DirectoryDelegatingException )
+
+FileSystemManager & EmbeddedDirectory::getCorrespondingFileSystemManager() const
 {
 
 	try

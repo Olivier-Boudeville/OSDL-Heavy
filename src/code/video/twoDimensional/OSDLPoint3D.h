@@ -42,13 +42,16 @@
 namespace OSDL
 {
 
+
 	
 	namespace Video
 	{
 	
 	
+	
 		namespace TwoDimensional
 		{
+		
 		
 		
 		
@@ -78,19 +81,20 @@ namespace OSDL
 					 * coordinates.
 					 *
 					 */
-	            	Point3D( Coordinate x, Coordinate y, Coordinate z ) 
-						throw() ;
+	            	Point3D( Coordinate x, Coordinate y, Coordinate z ) ;
+
 
 
 					/**
 					 * Copy constructor.
 					 *
 					 * @note Cannot use the 'explicit' qualifier since it 
-					 * would prohibit expressions such as :
+					 * would prohibit expressions such as:
 					 * 'return Point3D( _coord[0], _coord[1], _coord[2] ) ;'
 					 *
 					 */
-					Point3D( const Point3D & source ) throw() ;
+					Point3D( const Point3D & source ) ;
+					
 					
 					
 					/**
@@ -102,8 +106,8 @@ namespace OSDL
 					 *
 					 */
 					explicit Point3D( 
-							const Ceylan::Maths::Linear::Vector3 & source ) 
-						throw() ;
+						const Ceylan::Maths::Linear::Vector3 & source ) ;
+					
 					
 					 
 					/**
@@ -117,11 +121,13 @@ namespace OSDL
 	            	Point3D( 
 						FloatingPointCoordinate x, 
 						FloatingPointCoordinate y,
-						FloatingPointCoordinate z ) throw() ;
+						FloatingPointCoordinate z ) ;
+
 
 
 					/// Virtual destructor of a three dimensional point.
 	            	virtual ~Point3D() throw() ;
+	
 	
 	
 					/**
@@ -129,7 +135,8 @@ namespace OSDL
 					 * whose coordinates are copied.
 					 *
 					 */
-					virtual void setFrom( const Point3D & source ) throw() ;
+					virtual void setFrom( const Point3D & source ) ;
+					
 					
 		
 					/**
@@ -141,52 +148,63 @@ namespace OSDL
 					 *
 					 */
 					virtual void setFrom( 
-							const Ceylan::Maths::Linear::Vector3 & source ) 
-						throw() ;
+						const Ceylan::Maths::Linear::Vector3 & source ) ;
+					
 					
 					
 					/// Returns the first coordinate (abscissa) of the point.
-					inline Coordinate getX() const throw() ;
+					inline Coordinate getX() const ;
+					
 					
 					/// Sets the first coordinate (abscissa) of the point.
-					inline void setX( Coordinate newX ) throw() ;
+					inline void setX( Coordinate newX ) ;
+	
 	
 	
 					/// Returns the second coordinate (ordinate) of the point.	
-					inline Coordinate getY() const throw();
+					inline Coordinate getY() const;
+					
 					
 					/// Sets the second coordinate (ordinate) of the point.
-					inline void setY( Coordinate newY ) throw() ;
+					inline void setY( Coordinate newY ) ;
+
 
 
 					/// Returns the third coordinate (depth) of the point.	
-					inline Coordinate getZ() const throw();
+					inline Coordinate getZ() const;
+					
 					
 					/// Sets the third coordinate (depth) of the point.
-					inline void setZ( Coordinate newY ) throw() ;
+					inline void setZ( Coordinate newY ) ;
+
 
 
 					/**
-					 * Translates this point of vector [x,y,z] : adds x to 
+					 * Translates this point of vector [x,y,z]: adds x to 
 					 * this point's abscissa, adds y to its ordinate, 
 					 * and z to the depth coordinate.
 					 *
 					 */
-					void translate( Offset x, Offset y, Offset z ) throw() ;
+					void translate( Offset x, Offset y, Offset z ) ;
+					
 					
 					
 					/// Flips the coordinates of the point.
-					virtual void flip() throw() ;
+					virtual void flip() ;
+					
 					
 					
 					/// Flips the abscissa of this point.
-					void flipX() throw() ;
+					void flipX() ;
+					
 					
 					/// Flips the ordinate of this point.
-					void flipY() throw() ;
+					void flipY() ;
+					
 					
 					/// Flips the depth coordinate of this point.
-					void flipZ() throw() ;
+					void flipZ() ;
+					
 					
 					
 		            /**
@@ -202,9 +220,9 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high )
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 						
+
 
 
 
@@ -216,14 +234,16 @@ namespace OSDL
 					static const Point3D Origin ;
 
 
+
 					/**
 					 * Translates all the points in the list of vector 
-					 * [x,y,z] : adds x to each point's abscissa, adds y to
+					 * [x,y,z]: adds x to each point's abscissa, adds y to
 					 * their ordinates, and z to their depth coordinates.
 					 *
 					 */
 					static void Translate( std::list<Point3D *> & pointList, 
-						Offset x, Offset y, Offset z ) throw() ;
+						Offset x, Offset y, Offset z ) ;
+					
 					
 					
 					/**
@@ -236,7 +256,9 @@ namespace OSDL
 
 
 
+
 	       		protected:
+	
 	
 	
 					/**
@@ -246,15 +268,18 @@ namespace OSDL
 					 */
 	            	Coordinate _coord[ Dimensions ] ;
 					
+					
 
 	    	} ;
+	
 	
 	
 	
 			// Inline section.
 			
 			
-			Coordinate Point3D::getX() const throw()
+			
+			Coordinate Point3D::getX() const
 			{
 			
 				return _coord[0] ;
@@ -262,7 +287,8 @@ namespace OSDL
 			}
 	
 	
-			void Point3D::setX( Coordinate newX ) throw()
+	
+			void Point3D::setX( Coordinate newX )
 			{
 			
 				_coord[0] = newX ;
@@ -271,7 +297,8 @@ namespace OSDL
 	
 	
 	
-			Coordinate Point3D::getY() const throw()
+	
+			Coordinate Point3D::getY() const
 			{
 			
 				return _coord[1] ;
@@ -279,27 +306,31 @@ namespace OSDL
 			}
 	
 	
-			void Point3D::setY( Coordinate newY ) throw()
+	
+			void Point3D::setY( Coordinate newY )
 			{
 				_coord[1] = newY ;
 			}
 			
 			
 			
-			Coordinate Point3D::getZ() const throw()
+			
+			Coordinate Point3D::getZ() const
 			{
 			
 				return _coord[2] ;
 				
 			}
 			
+			
 	
-			void Point3D::setZ( Coordinate newZ ) throw()
+			void Point3D::setZ( Coordinate newZ )
 			{
 			
 				_coord[2] = newZ ;
 				
 			}
+			
 			
 			
 		}
@@ -309,9 +340,11 @@ namespace OSDL
 }
 
 
+
 /// Stream operator for serialization.
 OSDL_DLL std::ostream & operator << ( std::ostream & os, 
-	const OSDL::Video::TwoDimensional::Point3D & p ) throw() ;
+	const OSDL::Video::TwoDimensional::Point3D & p ) ;
+
 
 
 #endif // OSDL_POINT_3D_H_

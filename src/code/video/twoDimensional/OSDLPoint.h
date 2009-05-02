@@ -34,16 +34,20 @@
 
 
 
+
 namespace OSDL
 {
 
+	
 	
 	namespace Video
 	{
 	
 	
+	
 		namespace TwoDimensional
 		{
+		
 		
 		
 		
@@ -62,18 +66,20 @@ namespace OSDL
 	
 		
 					/// Basic abstract constructor of a point .
-	            	Point() throw() ;
+	            	Point() ;
 										
 
 					/// Virtual destructor of a point.
 	            	virtual ~Point() throw() ;
 	
 
+
 					/**
 					 * Flips the coordinates of this point (negates them all).
 					 *
 					 */
-					virtual void flip() throw() = 0 ;
+					virtual void flip() = 0 ;
+
 
 
 	 	            /**
@@ -89,8 +95,8 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+						
 						
 
 					/**
@@ -98,17 +104,19 @@ namespace OSDL
 					 * point is defined in.
 					 *
 					 */
-					static const Ceylan::Maths::Linear::MatrixIndex 
-						Dimensions = 0 ;
+					static const Ceylan::Maths::Linear::MatrixIndex
+							Dimensions = 0 ;
 						
 					
 	    	} ;
+			
 				
 		}
 
 	}
 	
 }
+
 
 
 /// Stream operator for serialization.

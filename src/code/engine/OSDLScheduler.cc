@@ -34,6 +34,7 @@
 #include "OSDLProgrammedActiveObject.h" // for ProgrammedActiveObject
 
 
+
 #include <iostream>                   // for ostringstream
 using std::ostringstream ;
 
@@ -59,9 +60,11 @@ using std::map ;
 using Ceylan::Maths::Hertz ;
 
 
+
 Scheduler * Scheduler::_internalScheduler = 0 ;
 
 const Delay Scheduler::ShutdownBucketLevel = 100000 ;
+
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -84,6 +87,7 @@ const Delay Scheduler::ShutdownBucketLevel = 100000 ;
  
 #define OSDL_SCHEDULE_LOG(message) //send( message )
 
+
 /*
 
 #include <iostream>
@@ -96,6 +100,7 @@ const Delay Scheduler::ShutdownBucketLevel = 100000 ;
 #define OSDL_SCHEDULE_LOG(message)
 
 #endif // OSDL_DEBUG_SCHEDULER
+
 
 
 
@@ -143,7 +148,7 @@ const Delay Scheduler::ShutdownBucketLevel = 100000 ;
 
 
 
-bool Scheduler::hasRenderer() const throw()
+bool Scheduler::hasRenderer() const 
 {
 
 	return ( _renderer != 0 ) ;
@@ -152,7 +157,7 @@ bool Scheduler::hasRenderer() const throw()
 
 
 
-Renderer & Scheduler::getRenderer() const throw( SchedulingException )
+Renderer & Scheduler::getRenderer() const
 {
 
 	if ( _renderer != 0 )
@@ -165,7 +170,7 @@ Renderer & Scheduler::getRenderer() const throw( SchedulingException )
 
 
 
-void Scheduler::setRenderer( Rendering::Renderer & newRenderer ) throw()
+void Scheduler::setRenderer( Rendering::Renderer & newRenderer ) 
 {
 
 	if ( _renderer != 0 )
@@ -178,7 +183,7 @@ void Scheduler::setRenderer( Rendering::Renderer & newRenderer ) throw()
 
 
 void Scheduler::setScreenshotMode( bool on, const string & frameFilenamePrefix, 
-	Hertz frameFrequency ) throw()
+	Hertz frameFrequency ) 
 {
 
 	_screenshotMode = on ;
@@ -188,7 +193,7 @@ void Scheduler::setScreenshotMode( bool on, const string & frameFilenamePrefix,
 
 
 					
-void Scheduler::setTimeSliceDuration( Microsecond engineTickDuration ) throw()
+void Scheduler::setTimeSliceDuration( Microsecond engineTickDuration ) 
 {
 
 	_engineTickDuration = engineTickDuration ;
@@ -209,7 +214,7 @@ void Scheduler::setTimeSliceDuration( Microsecond engineTickDuration ) throw()
 
 
 
-Microsecond Scheduler::getTimeSliceDuration() const throw()
+Microsecond Scheduler::getTimeSliceDuration() const 
 {
 
 	return _engineTickDuration ;
@@ -219,7 +224,6 @@ Microsecond Scheduler::getTimeSliceDuration() const throw()
 
 
 void Scheduler::setSimulationFrequency( Hertz frequency ) 
-	throw( SchedulingException )
 {
 
 	/*
@@ -257,7 +261,7 @@ void Scheduler::setSimulationFrequency( Hertz frequency )
 
 
 
-Period Scheduler::getSimulationTickCount() const throw()
+Period Scheduler::getSimulationTickCount() const 
 {
 
 	return _simulationPeriod ;
@@ -266,8 +270,7 @@ Period Scheduler::getSimulationTickCount() const throw()
 
 
 
-void Scheduler::setRenderingFrequency( Hertz frequency ) 
-	throw( SchedulingException )
+void Scheduler::setRenderingFrequency( Hertz frequency ) 	
 {
 
 	/*
@@ -306,7 +309,7 @@ void Scheduler::setRenderingFrequency( Hertz frequency )
 
 
 
-Period Scheduler::getRenderingTickCount() const throw()
+Period Scheduler::getRenderingTickCount() const 
 {
 
 	return _renderingPeriod ;
@@ -316,7 +319,6 @@ Period Scheduler::getRenderingTickCount() const throw()
 
 
 void Scheduler::setScreenshotFrequency( Hertz frequency ) 
-	throw( SchedulingException )
 {
 
 	/*
@@ -345,7 +347,6 @@ void Scheduler::setScreenshotFrequency( Hertz frequency )
 	_screenshotPeriod = static_cast<Period>( 
 		1E6 / ( frequency * _engineTickDuration ) ) ;
 
-
 #if OSDL_DEBUG
 
 	LogPlug::debug( "Scheduler::setScreenshotFrequency: for a requested "
@@ -359,7 +360,7 @@ void Scheduler::setScreenshotFrequency( Hertz frequency )
 
 
 
-Period Scheduler::getScreenshotTickCount() const throw()
+Period Scheduler::getScreenshotTickCount() const 
 {
 
 	return _screenshotPeriod ;
@@ -368,8 +369,7 @@ Period Scheduler::getScreenshotTickCount() const throw()
 
 
 
-void Scheduler::setInputPollingFrequency( Hertz frequency ) 
-	throw( SchedulingException )
+void Scheduler::setInputPollingFrequency( Hertz frequency ) 	
 {
 
 	/*
@@ -408,10 +408,9 @@ void Scheduler::setInputPollingFrequency( Hertz frequency )
 
 
 void Scheduler::setIdleCallback( 
-		Ceylan::System::Callback idleCallback, 
-		void * callbackData, 
-		Ceylan::System::Microsecond callbackExpectedMaxDuration )
-	throw()
+	Ceylan::System::Callback idleCallback, 
+	void * callbackData, 
+	Ceylan::System::Microsecond callbackExpectedMaxDuration )	
 {
 
 	_idleCallback     = idleCallback ;
@@ -427,7 +426,7 @@ void Scheduler::setIdleCallback(
 	
 					
 					
-Period Scheduler::getInputPollingTickCount() const throw()
+Period Scheduler::getInputPollingTickCount() const 
 {
 
 	return _inputPeriod ;
@@ -436,7 +435,7 @@ Period Scheduler::getInputPollingTickCount() const throw()
 
 
 
-EngineTick Scheduler::getCurrentEngineTick() const throw() 
+EngineTick Scheduler::getCurrentEngineTick() const  
 {
 
 	return _currentEngineTick ;
@@ -445,7 +444,7 @@ EngineTick Scheduler::getCurrentEngineTick() const throw()
 
 
 
-SimulationTick Scheduler::getCurrentSimulationTick() const throw()
+SimulationTick Scheduler::getCurrentSimulationTick() const 
 {
 
 	return _currentSimulationTick ;
@@ -454,7 +453,7 @@ SimulationTick Scheduler::getCurrentSimulationTick() const throw()
 
 
 
-RenderingTick Scheduler::getCurrentRenderingTick() const throw()
+RenderingTick Scheduler::getCurrentRenderingTick() const 
 {
 
 	return _currentRenderingTick ;
@@ -463,7 +462,7 @@ RenderingTick Scheduler::getCurrentRenderingTick() const throw()
 
 
 
-RenderingTick Scheduler::getCurrentInputTick() const throw()
+RenderingTick Scheduler::getCurrentInputTick() const 
 {
 
 	return _currentInputTick ;
@@ -473,7 +472,7 @@ RenderingTick Scheduler::getCurrentInputTick() const throw()
 
 
 void Scheduler::registerPeriodicalObject( 
-	PeriodicalActiveObject & objectToRegister ) throw()
+	PeriodicalActiveObject & objectToRegister ) 
 {
 	
 	// This active object is to be periodically activated:
@@ -506,7 +505,7 @@ void Scheduler::registerPeriodicalObject(
 
 
 void Scheduler::unregisterPeriodicalObject( 
-	PeriodicalActiveObject & toUnregister )	throw( SchedulingException )
+	PeriodicalActiveObject & toUnregister )	
 {
 
 	/*
@@ -540,7 +539,7 @@ void Scheduler::unregisterPeriodicalObject(
 
 
 void Scheduler::registerProgrammedObject( 
-	ProgrammedActiveObject & objectToRegister ) throw()
+	ProgrammedActiveObject & objectToRegister ) 
 {
 
 	// Declares the programmed ticks for this object:
@@ -600,7 +599,7 @@ void Scheduler::registerProgrammedObject(
 
 
 void Scheduler::unregisterProgrammedObject( 
-	ProgrammedActiveObject & objectToUnregister ) throw( SchedulingException )
+	ProgrammedActiveObject & objectToUnregister )
 {
 
 	/*
@@ -706,7 +705,7 @@ void Scheduler::unregisterProgrammedObject(
 
 	
 					
-void Scheduler::schedule() throw( SchedulingException )
+void Scheduler::schedule()
 {
 	
 	try
@@ -753,7 +752,7 @@ void Scheduler::schedule() throw( SchedulingException )
 
 
 
-void Scheduler::stop() throw()
+void Scheduler::stop() 
 {
 
 	_stopRequested = true ;
@@ -762,7 +761,7 @@ void Scheduler::stop() throw()
 
 
 
-const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
+const string Scheduler::toString( Ceylan::VerbosityLevels level ) const 
 {	
 
 	ostringstream buf ;
@@ -901,9 +900,10 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 		
 		std::list<string> programmed ;
 		
-		for( map<SimulationTick, ListOfProgrammedActiveObjects>::const_iterator it 
-				= _programmedActivated.begin(); it 
-					!= _programmedActivated.end(); it++ )
+		for( map<SimulationTick, 
+				ListOfProgrammedActiveObjects>::const_iterator it 
+					= _programmedActivated.begin(); 
+				it != _programmedActivated.end(); it++ )
 			programmed.push_back( "For simulation tick #" 
 				+ Ceylan::toString( (*it).first ) + ", there are " 
 				+ Ceylan::toString( 
@@ -1002,10 +1002,12 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
+
 // Static section.
 
 
-Scheduler & Scheduler::GetExistingScheduler() throw( SchedulingException )
+
+Scheduler & Scheduler::GetExistingScheduler()
 {
 
     if ( Scheduler::_internalScheduler == 0 )
@@ -1018,7 +1020,7 @@ Scheduler & Scheduler::GetExistingScheduler() throw( SchedulingException )
 
 
 
-Scheduler & Scheduler::GetScheduler() throw( SchedulingException )
+Scheduler & Scheduler::GetScheduler()
 {
 
     if ( Scheduler::_internalScheduler == 0 )
@@ -1046,7 +1048,7 @@ Scheduler & Scheduler::GetScheduler() throw( SchedulingException )
 
 
 
-void Scheduler::DeleteExistingScheduler() throw( SchedulingException )
+void Scheduler::DeleteExistingScheduler()
 {
 
     if ( Scheduler::_internalScheduler != 0 )
@@ -1065,7 +1067,7 @@ void Scheduler::DeleteExistingScheduler() throw( SchedulingException )
 
 
 
-void Scheduler::DeleteScheduler() throw()
+void Scheduler::DeleteScheduler() 
 {
 
     if ( Scheduler::_internalScheduler != 0 )
@@ -1095,7 +1097,8 @@ void Scheduler::DeleteScheduler() throw()
 
 // Protected members below:
 
-Scheduler::Scheduler() throw( SchedulingException ):
+
+Scheduler::Scheduler():
 	_screenshotMode( false ),
 	_desiredScreenshotFrequency( DefaultMovieFrameFrequency ),
 	_screenshotPeriod( 0 ),
@@ -1175,7 +1178,7 @@ Scheduler::~Scheduler() throw()
 
 
 
-void Scheduler::scheduleBestEffort() throw( SchedulingException )
+void Scheduler::scheduleBestEffort()
 {
 
 	_isRunning = true ;
@@ -2890,10 +2893,8 @@ void Scheduler::scheduleBestEffort() throw( SchedulingException )
 	
 	
 	
-	
 
 void Scheduler::scheduleNoDeadline( bool pollInputs ) 
-	throw( SchedulingException )
 {
 	
 	// Let's prepare to the run, for which no time is to be considered.
@@ -3254,7 +3255,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 
 
 
-EngineTick Scheduler::computeEngineTickFromCurrentTime() throw()
+EngineTick Scheduler::computeEngineTickFromCurrentTime() 
 {
 
 	Second currentSecond ;
@@ -3310,7 +3311,7 @@ EngineTick Scheduler::computeEngineTickFromCurrentTime() throw()
 
 
 
-void Scheduler::scheduleSimulation( SimulationTick current ) throw()
+void Scheduler::scheduleSimulation( SimulationTick current ) 
 {
 
 	//OSDL_SCHEDULE_LOG( "--> current simulation tick: " << current ) ;
@@ -3328,7 +3329,7 @@ void Scheduler::scheduleSimulation( SimulationTick current ) throw()
 
 
 void Scheduler::scheduleProgrammedObjects( 
-	SimulationTick currentSimulationTick ) throw()
+	SimulationTick currentSimulationTick ) 
 {
 
 	map<SimulationTick, ListOfProgrammedActiveObjects>::iterator it 
@@ -3350,7 +3351,7 @@ void Scheduler::scheduleProgrammedObjects(
 
 
 
-void Scheduler::schedulePeriodicObjects( SimulationTick current ) throw()
+void Scheduler::schedulePeriodicObjects( SimulationTick current ) 
 {
 
 	/*
@@ -3387,7 +3388,7 @@ void Scheduler::schedulePeriodicObjects( SimulationTick current ) throw()
 
 
 
-void Scheduler::scheduleRendering( RenderingTick current ) throw()
+void Scheduler::scheduleRendering( RenderingTick current ) 
 {
 
 	OSDL_SCHEDULE_LOG( "--- rendering!" ) ;
@@ -3409,7 +3410,7 @@ void Scheduler::scheduleRendering( RenderingTick current ) throw()
 
 
 
-void Scheduler::scheduleInput( InputTick current ) throw()
+void Scheduler::scheduleInput( InputTick current ) 
 {
 
 	OSDL_SCHEDULE_LOG( "--- input polling!" ) ;
@@ -3428,7 +3429,7 @@ void Scheduler::scheduleInput( InputTick current ) throw()
 
 void Scheduler::scheduleProgrammedObjectList( 
 	Events::RenderingTick currentSimulationTick, 
-	ListOfProgrammedActiveObjects & objectList ) throw()
+	ListOfProgrammedActiveObjects & objectList ) 
 {
 
 	for ( ListOfProgrammedActiveObjects::iterator it = objectList.begin(); 
@@ -3445,7 +3446,6 @@ void Scheduler::scheduleProgrammedObjectList(
 
 	 
 void Scheduler::onSimulationSkipped( SimulationTick skipped ) 
-	throw( SchedulingException )
 {
 
 	_missedSimulationTicks++ ;
@@ -3492,7 +3492,6 @@ void Scheduler::onSimulationSkipped( SimulationTick skipped )
 
 
 void Scheduler::onRenderingSkipped( RenderingTick skipped ) 
-	throw( SchedulingException ) 
 {
 
 	_missedRenderingTicks++ ;
@@ -3510,7 +3509,6 @@ void Scheduler::onRenderingSkipped( RenderingTick skipped )
 
 
 void Scheduler::onInputSkipped( InputTick skipped ) 
-	throw( SchedulingException ) 
 {
 
 	_missedInputPollingTicks++ ;
@@ -3521,7 +3519,7 @@ void Scheduler::onInputSkipped( InputTick skipped )
 
 
 
-void Scheduler::onIdle() throw()
+void Scheduler::onIdle() 
 {
 
 	OSDL_SCHEDULE_LOG( "--- idle callback called!" ) ;
@@ -3565,7 +3563,6 @@ void Scheduler::onIdle() throw()
 
 
 void Scheduler::onScheduleFailure( Delay currentBucket ) 
-	throw( SchedulingException )
 {
 
 	_scheduleFailureCount++ ;
@@ -3620,7 +3617,7 @@ void Scheduler::onScheduleFailure( Delay currentBucket )
 
 
 void Scheduler::programTriggerFor( ProgrammedActiveObject & objectToProgram, 
-	SimulationTick targetTick ) throw()
+	SimulationTick targetTick ) 
 {
 		
 	map<SimulationTick, ListOfProgrammedActiveObjects>::iterator it 
@@ -3650,7 +3647,6 @@ void Scheduler::programTriggerFor( ProgrammedActiveObject & objectToProgram,
 					
 
 PeriodicSlot & Scheduler::getPeriodicSlotFor( Events::Period period ) 
-	throw( SchedulingException )
 {
 
 	for ( list<PeriodicSlot*>::iterator it = _periodicSlots.begin(); 
@@ -3674,7 +3670,7 @@ PeriodicSlot & Scheduler::getPeriodicSlotFor( Events::Period period )
 
 
 					
-PeriodicSlot & Scheduler::returnPeriodicSlotFor( Events::Period period ) throw()
+PeriodicSlot & Scheduler::returnPeriodicSlotFor( Events::Period period ) 
 {
 
 	for ( list<PeriodicSlot*>::iterator it = _periodicSlots.begin(); 
@@ -3715,7 +3711,7 @@ PeriodicSlot & Scheduler::returnPeriodicSlotFor( Events::Period period ) throw()
 
 	
 void Scheduler::setInitialBirthTicks( 
-	Events::SimulationTick birthSimulationTick ) throw()
+	Events::SimulationTick birthSimulationTick ) 
 {
 
 	// Programmed and periodical objects alike are notified:
@@ -3725,5 +3721,14 @@ void Scheduler::setInitialBirthTicks(
 		
 	_initialRegisteredObjects.clear() ;
 			
+}
+
+
+
+std::string Scheduler::describeProgrammedTicks() const
+{
+
+	return "" ;
+	
 }
 

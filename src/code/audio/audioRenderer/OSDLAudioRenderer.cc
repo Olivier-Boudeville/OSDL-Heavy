@@ -41,6 +41,7 @@ using namespace OSDL::Engine ;
 using std::string ;
 
 
+
 #ifdef OSDL_DEBUG_AUDIO_RENDERER
 
 #define OSDL_AUDIO_RENDER_LOG(message) send( message ) ;
@@ -54,8 +55,7 @@ using std::string ;
 
 
 
-AudioRenderer::AudioRenderer( bool registerToRootRenderer ) 
-		throw( RenderingException ) :
+AudioRenderer::AudioRenderer( bool registerToRootRenderer ) :
 	Renderer( /* registerToScheduler */ false )
 	//,_internalCamera( 0 )
 {
@@ -68,24 +68,24 @@ AudioRenderer::AudioRenderer( bool registerToRootRenderer )
 		try
 		{
 		
-			// Retrieve the root renderer :
+			// Retrieve the root renderer:
 			renderer = & Renderer::GetExistingRootRenderer() ;
 			
 		}
 		catch( const RenderingException & e )
 		{
-			throw RenderingException( "AudioRenderer constructor : "
+			throw RenderingException( "AudioRenderer constructor: "
 				"no already existing root renderer ("
 				+ e.toString() 
 				+ ") whereas registering had been requested." ) ;
 		} 
 		
-		// Check it is a multimedia renderer indeed :
+		// Check it is a multimedia renderer indeed:
 		MultimediaRenderer * multimediaRenderer = 
 			dynamic_cast<MultimediaRenderer *>( renderer ) ;
 				
 		if ( multimediaRenderer == 0 )
-			throw RenderingException( "AudioRenderer constructor : "
+			throw RenderingException( "AudioRenderer constructor: "
 				"root renderer is not a multimedia renderer, "
 				"no registering possible." ) ;
 					
@@ -105,6 +105,8 @@ AudioRenderer::~AudioRenderer() throw()
 */
 }
 
+
+
 /*
 bool hasCamera() const throw() 
 {
@@ -112,11 +114,13 @@ bool hasCamera() const throw()
 }
 
 
+
 Camera & AudioRenderer::getCamera() const throw( RenderingException )
 {
 	if ( _internalCamera == 0 )
 		return * _internalCamera ;
 }
+
 
 
 void AudioRenderer::setCamera( Camera & newCamera ) throw()
@@ -127,9 +131,11 @@ void AudioRenderer::setCamera( Camera & newCamera ) throw()
 	_internalCamera = & newCamera ;
 	
 }
+
 */
 
-void AudioRenderer::render( RenderingTick currentRenderingTick ) throw()
+
+void AudioRenderer::render( RenderingTick currentRenderingTick )
 {
 
 	OSDL_AUDIO_RENDER_LOG( "Audio rendering ! " ) ;
@@ -144,8 +150,8 @@ void AudioRenderer::render( RenderingTick currentRenderingTick ) throw()
 }
 
 
+
 void AudioRenderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
-	throw()
 {
 
 	OSDL_AUDIO_RENDER_LOG( "Audio rendering skipped." ) ;
@@ -154,8 +160,8 @@ void AudioRenderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
 }
 
 
-const string AudioRenderer::toString( Ceylan::VerbosityLevels level ) 
-	const throw() 
+
+const string AudioRenderer::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Audio renderer, last rendering tick was " 
@@ -165,14 +171,14 @@ const string AudioRenderer::toString( Ceylan::VerbosityLevels level )
 		+ Ceylan::toString( _renderingSkipped ) + " skip(s)" ;
 	
 	if ( _renderingDone + _renderingSkipped != 0 )
-		res += " (rendering proportion : " 
+		res += " (rendering proportion: " 
 			+ Ceylan::toString( 100 * _renderingDone 
 				/ ( _renderingDone + _renderingSkipped ) )
 		 	+ "%)" ;
 			
 	/*		
 	if ( _internalCamera != 0 )
-		res += ". Following camera is being used : " 
+		res += ". Following camera is being used: " 
 			+ _internalCamera->toString( level ) ;
 	else
 		res += ". No camera is currently used" ;		 

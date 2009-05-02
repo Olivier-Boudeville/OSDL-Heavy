@@ -37,6 +37,7 @@
 #include <map>
 
 
+
 namespace OSDL
 {
 
@@ -48,10 +49,11 @@ namespace OSDL
 	
 		public:
 			
-			CDROMDriveException( const std::string & message ) throw() ;
+			CDROMDriveException( const std::string & message ) ;
 			virtual ~CDROMDriveException() throw() ;
 	
 	} ;
+	
 	
 	
 	
@@ -63,8 +65,10 @@ namespace OSDL
 	typedef Ceylan::Count CDROMDriveNumber ;
 	
 	
+	
 	// CD-ROM handler manages CD-ROM drives.
 	class CDROMDrive ;
+	
 	
 	
 	/**
@@ -80,6 +84,7 @@ namespace OSDL
 		public:
 		
 		
+		
 			/**
 			 * Handler constructor. No CD-ROM drive specifically opened 
 			 * by this operation.
@@ -88,11 +93,13 @@ namespace OSDL
 			 * not be initialized.
 			 *
 			 */
-			CDROMDriveHandler() throw( CDROMDriveException ) ;
+			CDROMDriveHandler() ;
+			
 			
 			
 			// Virtual destructor.
 			virtual ~CDROMDriveHandler() throw() ;
+			
 			
 			
 			/**
@@ -102,7 +109,8 @@ namespace OSDL
 			 * [0,GetCDROMDrivesCount()-1].
 			 *
 			 */
-			static CDROMDriveNumber GetAvailableCDROMDrivesCount() throw() ;
+			static CDROMDriveNumber GetAvailableCDROMDrivesCount() ;
+		
 		
 			
 			/**
@@ -122,8 +130,8 @@ namespace OSDL
 			 * in licit range.
 			 *
 			 */		
-			CDROMDrive & getCDROMDrive( CDROMDriveNumber number = 0 ) 
-				throw( CDROMDriveException ) ;
+			CDROMDrive & getCDROMDrive( CDROMDriveNumber number = 0 ) ;
+		
 		
 		
 	        /**
@@ -138,8 +146,9 @@ namespace OSDL
 	         *
 	         */
 		    virtual const std::string toString( 
-				Ceylan::VerbosityLevels level = Ceylan::high ) const throw() ;
+				Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
+		
 		
 			
 		private:
@@ -164,6 +173,7 @@ namespace OSDL
 			
 #pragma warning( pop ) 
 			
+			
 
 			/**
 			 * Copy constructor made private to ensure that it will be 
@@ -173,8 +183,8 @@ namespace OSDL
 			 * constructor is called, implicitly or not.
 			 * 
 			 */			 
-			explicit CDROMDriveHandler( const CDROMDriveHandler & source )
-				throw() ;
+			explicit CDROMDriveHandler( const CDROMDriveHandler & source ) ;
+			
 			
 			
 			/**
@@ -185,11 +195,12 @@ namespace OSDL
 			 * operator is called, implicitly or not.
 			 * 
 			 */			 
-			CDROMDriveHandler & operator = ( const CDROMDriveHandler & source )
-				throw() ;
+			CDROMDriveHandler & operator = ( const CDROMDriveHandler & source );
+			
 			
 	
 	} ;
+
 
 
 }

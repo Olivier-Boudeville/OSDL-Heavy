@@ -28,6 +28,7 @@
 #define OSDL_FILE_TAGS_H_
 
 
+
 #include "OSDLException.h"  // for OSDL::Exception
 
 
@@ -37,8 +38,10 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	/*
@@ -56,6 +59,7 @@ namespace OSDL
 	 *
 	 *
 	 */
+
 
 
 	/// Describes a tag used to identify the type of an OSDL-specific file.
@@ -87,6 +91,7 @@ namespace OSDL
 	 */
 	
 	
+	
 	/**
 	 * Tag corresponding to OSDL punctual sounds, not longer musics.
 	 *
@@ -107,6 +112,7 @@ namespace OSDL
 	 *
 	 */
 	extern OSDL_DLL const FileTag SoundTag ;
+	
 		
 	
 	/**
@@ -127,7 +133,9 @@ namespace OSDL
 	
 
 
+
 	// Video-related tags.
+
 
 
 	/**
@@ -142,6 +150,7 @@ namespace OSDL
 	 */
 	extern OSDL_DLL const FileTag PaletteTag ;
 
+	
 	
 	/**
 	 * Tag corresponding to an OSDL frame, part of an animation.
@@ -159,11 +168,13 @@ namespace OSDL
 	
 	
 	
+	
 	/**
 	 * Tells whether specified tag is a valid OSDL one.
 	 *
 	 */
-	OSDL_DLL bool IsAValidOSDLFileTag( FileTag tag ) throw( OSDL::Exception ) ;
+	OSDL_DLL bool IsAValidOSDLFileTag( FileTag tag ) ;
+	
 	
 		
 	/**
@@ -172,11 +183,12 @@ namespace OSDL
 	 * @throw OSDL::Exception if the tag is not known.
 	 *
 	 */
-	OSDL_DLL const std::string & DescribeFileTag( FileTag tag ) 
-		throw( OSDL::Exception ) ;
+	OSDL_DLL const std::string & DescribeFileTag( FileTag tag ) ;
+		
 		
 		
 }
+
 
 
 #endif // OSDL_FILE_TAGS_H_

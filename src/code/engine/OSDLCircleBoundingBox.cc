@@ -27,6 +27,7 @@
 #include "OSDLCircleBoundingBox.h"
 
 
+
 using namespace Ceylan::Maths::Linear ;
 
 using namespace OSDL::Engine ;
@@ -34,9 +35,11 @@ using namespace OSDL::Engine ;
 using std::string ;
 
 
+
 #ifdef OSDL_USES_CONFIG_H
 #include <OSDLConfig.h>               // for OSDL_DEBUG_BOUNDING_BOX and al
 #endif // OSDL_USES_CONFIG_H
+
 
 #if OSDL_DEBUG_BOUNDING_BOX
 
@@ -50,17 +53,19 @@ using namespace Ceylan::Log ;
 #endif // OSDL_DEBUG_BOUNDING_BOX
 
 
+
 using Ceylan::Maths::Real ;
 
 
+
 CircleBoundingBox::CircleBoundingBox( Locatable2D & father, 
-	const Bipoint & center, Real radius )
-		throw() :
+		const Bipoint & center, Real radius ) :
 	BoundingBox2D( father, center ),
 	_radius( radius )
 {
 
 }
+
 
 
 CircleBoundingBox::~CircleBoundingBox() throw()
@@ -69,20 +74,26 @@ CircleBoundingBox::~CircleBoundingBox() throw()
 }
 
 
-Real CircleBoundingBox::getRadius() const throw()
+
+Real CircleBoundingBox::getRadius() const
 {
+
 	return _radius ;
+	
 }
 
 
-void CircleBoundingBox::setRadius( Real newRadius ) throw()
+
+void CircleBoundingBox::setRadius( Real newRadius )
 {
+
 	_radius = newRadius ;
+	
 }
 
 
-const string CircleBoundingBox::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+
+const string CircleBoundingBox::toString( Ceylan::VerbosityLevels level ) const
 {	
 
 	string res = "Circular 2D bounding box, whose center is " 
@@ -98,8 +109,8 @@ const string CircleBoundingBox::toString( Ceylan::VerbosityLevels level )
 }
 
 
+
 IntersectionResult CircleBoundingBox::doesIntersectWith( BoundingBox & other ) 
-	throw( BoundingBoxException )
 {
 	
 	BoundingBox2D & other2D = BoundingBox2D::CheckIs2D( other ) ;
@@ -107,7 +118,7 @@ IntersectionResult CircleBoundingBox::doesIntersectWith( BoundingBox & other )
 	// Here we know we have a 2D box.
 	
 	/*
-	 * For the moment, in the 2D boxes family, only the circle is supported :
+	 * For the moment, in the 2D boxes family, only the circle is supported:
 	 * (for example, a 2D square box would be rejected).
 	 *
 	 */
@@ -115,7 +126,7 @@ IntersectionResult CircleBoundingBox::doesIntersectWith( BoundingBox & other )
 		& other2D ) ;
 	
 	if ( circleBox == 0 )
-		throw BoundingBoxException( "CircleBoundingBox::doesIntersectWith : "
+		throw BoundingBoxException( "CircleBoundingBox::doesIntersectWith: "
 			"intersection with specified 2D box ("
 			+other.toString() + ") is not implemented for the moment." ) ;
 	
@@ -124,8 +135,8 @@ IntersectionResult CircleBoundingBox::doesIntersectWith( BoundingBox & other )
 }
 
 
+
 IntersectionResult CircleBoundingBox::compareWith( CircleBoundingBox & other )
-	throw() 
 {
 	
 	/*
@@ -139,7 +150,7 @@ IntersectionResult CircleBoundingBox::compareWith( CircleBoundingBox & other )
 	 */
 			
 	/*
-	 * Two circles, one case out of five to discriminate :
+	 * Two circles, one case out of five to discriminate:
 	 * @see IntersectionResult
 	 * Let's first retrieve centers and radii.
 	 *
@@ -153,7 +164,7 @@ IntersectionResult CircleBoundingBox::compareWith( CircleBoundingBox & other )
 	Bipoint firstCenter( firstMatrix.getElementAt( 2, 0 ),
 		firstMatrix.getElementAt( 2, 1 ) ) ;	
 		
-	OSDL_BOX_LOG( "First matrix : " + firstMatrix.toString() ) ;
+	OSDL_BOX_LOG( "First matrix: " + firstMatrix.toString() ) ;
 	
 	Matrix3 & secondMatrix = * dynamic_cast<Matrix3*>( 
 		& other.getGlobalReferential() ) ;
@@ -161,7 +172,7 @@ IntersectionResult CircleBoundingBox::compareWith( CircleBoundingBox & other )
 	Bipoint secondCenter( secondMatrix.getElementAt( 2, 0 ),
 		secondMatrix.getElementAt( 2, 1 ) ) ;
 		
-	OSDL_BOX_LOG( "Second matrix : " + secondMatrix.toString() ) ;
+	OSDL_BOX_LOG( "Second matrix: " + secondMatrix.toString() ) ;
 	
 	/*
 	 * Do not try to avoid square roots by comparing square distances, 
@@ -171,7 +182,7 @@ IntersectionResult CircleBoundingBox::compareWith( CircleBoundingBox & other )
 	
 	Real centerDistance = Bipoint::Distance( firstCenter, secondCenter ) ;
 	
-	OSDL_BOX_LOG( "Distance between centers : " 
+	OSDL_BOX_LOG( "Distance between centers: " 
 		+ Ceylan::toString( centerDistance ) ) ;
 		   
 	if ( centerDistance >= _radius + other.getRadius() )
@@ -189,19 +200,19 @@ IntersectionResult CircleBoundingBox::compareWith( CircleBoundingBox & other )
 	if ( other.getRadius() > centerDistance + _radius )
 		return isContained ;
 	
-	// Floating point values are almost never equal :
+	// Floating point values are almost never equal:
 	if ( Ceylan::Maths::AreRelativelyEqual( centerDistance, 0.0f )
 		&& Ceylan::Maths::AreRelativelyEqual( _radius, other.getRadius() ) )	
 		return isEqual ;
 	
-	// Last possible case :
+	// Last possible case:
 	return intersects ;
 	
 }
 
+
 	
 CircleBoundingBox & CircleBoundingBox::CheckIsCircle( BoundingBox & box ) 
-	throw( BoundingBoxException )
 {
 
 	// Avoid calling CheckIs2D, it would be inefficient.
@@ -210,7 +221,7 @@ CircleBoundingBox & CircleBoundingBox::CheckIsCircle( BoundingBox & box )
 	
 	if ( circleBox == 0 )
 		throw BoundingBoxException( 
-			"CircleBoundingBox::CheckIsCircle : specified box ("
+			"CircleBoundingBox::CheckIsCircle: specified box ("
 			+ box.toString() + ") was not a circular (two dimensional) box." ) ;
 	
 	return * circleBox ;

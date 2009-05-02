@@ -64,6 +64,7 @@ using namespace Ceylan::Log ;
 
 
 
+
 bool TwoDimensional::drawBezierCurve( 
 	Surface & targetSurface, 
 	const listPoint2D & controlPoints,
@@ -71,7 +72,7 @@ bool TwoDimensional::drawBezierCurve(
 	Pixels::ColorElement red, 
 	Pixels::ColorElement green, 
 	Pixels::ColorElement blue, 
-	Pixels::ColorElement alpha ) throw( VideoException )
+	Pixels::ColorElement alpha )
 {
 		
 	return drawBezierCurve( targetSurface, controlPoints, numberOfSteps, 
@@ -85,7 +86,7 @@ bool TwoDimensional::drawBezierCurve(
 	Surface & targetSurface, 
 	const listPoint2D & controlPoints,
 	Ceylan::Uint16 numberOfSteps, 
-	Pixels::ColorDefinition colorDef ) throw( VideoException )
+	Pixels::ColorDefinition colorDef )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -134,5 +135,4 @@ bool TwoDimensional::drawBezierCurve(
 #endif // OSDL_USES_SDL_GFX
 
 }	
-
 

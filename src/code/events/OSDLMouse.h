@@ -39,8 +39,10 @@
 
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Video
@@ -58,10 +60,12 @@ namespace OSDL
 		
 	}
 			
+	
 		
 	namespace Events
 	{
 	
+			
 					
 		
 		/**
@@ -93,6 +97,7 @@ namespace OSDL
 			public:
 
 
+
 				/**
 				 * Constructs a new mouse instance.
 				 *
@@ -107,7 +112,8 @@ namespace OSDL
 				 *
 				 */
 				explicit Mouse( MouseNumber index, 
-					bool classicalMouseMode = true ) throw( MouseException ) ;
+					bool classicalMouseMode = true ) ;
+				
 				
 				
 				/**
@@ -119,21 +125,25 @@ namespace OSDL
 				
 
 
+
 				// Cursor position.
+				
 				
 				
 				/**
 				 * Returns the absolute abscissa of this mouse cursor.
 				 *
 				 */ 
-				virtual Video::Coordinate getCursorAbscissa() const throw() ;
+				virtual Video::Coordinate getCursorAbscissa() const ;
 				 				
+				
 				
 				/**
 				 * Returns the absolute ordinate of this mouse cursor.
 				 *
 				 */ 
-				virtual Video::Coordinate getCursorOrdinate() const throw() ;
+				virtual Video::Coordinate getCursorOrdinate() const ;
+				 
 				 
 				 
 				/**
@@ -145,8 +155,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void setCursorPosition( 
-						const Video::TwoDimensional::Point2D & newPosition ) 
-					const throw() ;
+					const Video::TwoDimensional::Point2D & newPosition ) const ;
+				 
 				 
 				 
 				/**
@@ -156,13 +166,13 @@ namespace OSDL
 				 *
 				 * @param y the new cursor ordinate.
 				 *
-				 *
 				 * @note Generation a mouse moved event.
 				 *
 				 */
 				virtual void setCursorPosition( Video::Coordinate x, 
-					Video::Coordinate y ) const throw() ;
+					Video::Coordinate y ) const ;
 				 
+				
 				
 				/**
 				 * Returns whether the cursor of this mouse is visible.
@@ -170,8 +180,9 @@ namespace OSDL
 				 * @return true iff the cursor is visible.
 				 *
 				 */ 
-				virtual bool getCursorVisibility() throw() ;
+				virtual bool getCursorVisibility() const ;
 
+				 
 				 
 				/**
 				 * Sets the visibility for the cursor of this mouse.
@@ -181,11 +192,13 @@ namespace OSDL
 				 * @note The mouse cursor starts as visible.
 				 *
 				 */ 
-				virtual void setCursorVisibility( bool on ) throw() ;
+				virtual void setCursorVisibility( bool on ) ;
 				 
 				
 				
+				
 				// Buttons & wheels section.
+				
 				
 				
 				/**
@@ -193,8 +206,8 @@ namespace OSDL
 				 * included.
 				 *
 				 */
-				virtual MouseButtonNumber getNumberOfButtons() 
-					const throw() ;
+				virtual MouseButtonNumber getNumberOfButtons() const ;
+				 
 				 
 				 
 				/**
@@ -203,7 +216,7 @@ namespace OSDL
 				 * @note Information not available yet, returns always one.
 				 *
 				 */
-				virtual MouseWheelNumber getNumberOfWheels() const throw() ;
+				virtual MouseWheelNumber getNumberOfWheels() const ;
 				
 				
 				
@@ -214,7 +227,8 @@ namespace OSDL
 				 * @return true iff this button is pressed.
 				 *
 				 */ 
-				virtual bool isLeftButtonPressed() const throw() ;
+				virtual bool isLeftButtonPressed() const ;
+				 
 				 
 
 				/**
@@ -224,8 +238,9 @@ namespace OSDL
 				 * @return true iff this button is pressed.
 				 *
 				 */ 
-				virtual bool isMiddleButtonPressed() const throw() ;
+				virtual bool isMiddleButtonPressed() const ;
 				 
+
 
 				/**
 				 * Tells whether the right button of this mouse is currently
@@ -234,7 +249,8 @@ namespace OSDL
 				 * @return true iff this button is pressed.
 				 *
 				 */ 
-				virtual bool isRightButtonPressed() const throw() ;
+				virtual bool isRightButtonPressed() const ;
+				
 				
 				 
 				/**
@@ -250,7 +266,8 @@ namespace OSDL
 				 *
 				 */ 
 				virtual bool isButtonPressed( MouseButtonNumber buttonNumber ) 
-					const throw( MouseException ) ;				 
+					const ;				 
+				 
 				 
 				 
 				/**
@@ -263,7 +280,7 @@ namespace OSDL
 				 * @see IsPressed to interpret the button mask.
 				 *
 				 */ 
-				virtual MouseButtonMask getButtonStates() const throw() ;   
+				virtual MouseButtonMask getButtonStates() const ;   
 				 				 			
 							
 								 					
@@ -272,8 +289,9 @@ namespace OSDL
 				 * movements of the cursor.
 				 *
 				 */
-				virtual void update() throw() ;
+				virtual void update() ;
 				
+							
 								
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -287,8 +305,8 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+				
 				
 				
 				/**
@@ -305,7 +323,8 @@ namespace OSDL
 				 *
 				 */
 				static bool IsPressed( MouseButtonMask mask, 
-					MouseButtonNumber buttonToInspect ) throw() ;
+					MouseButtonNumber buttonToInspect ) ;
+					
 					
 					
 				/**
@@ -316,12 +335,14 @@ namespace OSDL
 				static const MouseButtonNumber DefaultButtonTotalNumber ;
 				
 				
+				
 				/**
 				 * By default, a mouse is supposed to have 3 actual buttons:
 				 * left, middle, right. 
 				 *	
 				 */	
 				static const MouseButtonNumber DefaultButtonActualNumber ;
+				
 				
 				
 				/**
@@ -332,7 +353,9 @@ namespace OSDL
 				
 				
 				
+				
 		protected:
+		
 		
 		
 				/**
@@ -341,7 +364,7 @@ namespace OSDL
 				 * @note Should be useless.
 				 *
 				 */
-				virtual MouseNumber getIndex() const throw() ;
+				virtual MouseNumber getIndex() const ;
 		
 		
 		
@@ -351,8 +374,11 @@ namespace OSDL
 				 *
 				 */
 
+
+				
 				
 				// Focus section.
+
 
 
 				/**
@@ -364,7 +390,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void focusGained( 
-					const FocusEvent & mouseFocusEvent ) throw() ;
+					const FocusEvent & mouseFocusEvent ) ;
+	
 	
 	
 				/**
@@ -375,13 +402,13 @@ namespace OSDL
 				 * mouse focus.
 				 *
 				 */
-				virtual void focusLost(
-					const FocusEvent & mouseFocusEvent ) throw() ;
+				virtual void focusLost(	const FocusEvent & mouseFocusEvent ) ;
 	
 	
 	
 	
 				// Cursor position section.
+	
 	
 	
 				/**
@@ -392,7 +419,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseMoved( 
-					const MouseMotionEvent & mouseEvent ) throw() ;
+					const MouseMotionEvent & mouseEvent ) ;
+		
 		
 
 				/**
@@ -403,7 +431,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void buttonPressed( 
-					const MouseButtonEvent & mouseEvent ) throw() ;
+					const MouseButtonEvent & mouseEvent ) ;
+	
 	
 	
 				/**
@@ -414,7 +443,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void buttonReleased( 
-					const MouseButtonEvent & mouseEvent ) throw() ;
+					const MouseButtonEvent & mouseEvent ) ;
+				
 				
 				
 				
@@ -422,8 +452,10 @@ namespace OSDL
 				MouseNumber _index ;
 				
 				
+				
 				/// Tells whether this mouse should be in classical mode.
 				bool _inClassicalMode ; 
+
 
 
 				/// The number of total buttons for this mouse.
@@ -433,12 +465,15 @@ namespace OSDL
 				/// Records the last relative abscissa.
 				Video::Coordinate _lastRelativeAbscissa ;
 				
+				
 				/// Records the last relative ordinate.
 				Video::Coordinate _lastRelativeOrdinate ;
 				
 
 
+
 		private:
+		
 		
 		
 				/**
@@ -449,7 +484,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit Mouse( const Mouse & source ) throw() ;
+				explicit Mouse( const Mouse & source ) ;
+			
 			
 			
 				/**
@@ -460,10 +496,12 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				Mouse & operator = ( const Mouse & source ) throw() ;
+				Mouse & operator = ( const Mouse & source ) ;
 										
 				
+				
 		} ;
+		
 	
 	}	
 	

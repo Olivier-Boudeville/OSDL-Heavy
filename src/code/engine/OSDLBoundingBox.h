@@ -42,6 +42,7 @@ namespace OSDL
 {
 
 
+
 	namespace Engine 
 	{
 	
@@ -52,8 +53,8 @@ namespace OSDL
 		{
 			public:
 		
-				explicit BoundingBoxException( const std::string & reason )
-					throw() ;
+				explicit BoundingBoxException( const std::string & reason ) ;
+				
 				virtual ~BoundingBoxException() throw() ;
 			
 		} ;
@@ -65,7 +66,7 @@ namespace OSDL
 		 * and another object.
 		 *
 		 * For example, when comparing two bounding boxes B1 and B2, five 
-		 * cases can occur :
+		 * cases can occur:
 		 *   - B1 and B2 have no intersection.
 		 *   - B1 contains strictly B2 (i.e. all parts of B2 are in B1, 
 		 * but some part of B1 is not in B2)
@@ -81,18 +82,20 @@ namespace OSDL
 		 *
 		 */
 		enum IntersectionResult { 
+		
 			isSeparate, 
 			contains, 
 			isContained, 
 			intersects, 
 			isEqual 
+			
 		} ;
 		
 		
 			
 		/**
 		 * Bounding boxes are geometrical shapes that verify the following 
-		 * properties :
+		 * properties:
 		 *   - they contain all the object(s) they correspond to (all points 
 		 * in the object or set of objects are in the bounding box)
 		 *	 - geometrical computations (intersection, distance, inclusion 
@@ -103,8 +106,8 @@ namespace OSDL
 		 * complex objects.
 		 *
 		 * Various bounding boxes can be used, depending on the dimension of
-		 * the space they are to be used (ex : 2D, 3D) and the precision 
-		 * they are to provide (ex : cubes demand more processing power than
+		 * the space they are to be used (ex: 2D, 3D) and the precision 
+		 * they are to provide (ex: cubes demand more processing power than
 		 * spheres, but for some computations they give more accurate
 		 * results).
 		 *
@@ -129,14 +132,16 @@ namespace OSDL
 		{
 		
 		
+		
 			public:
+			
 			
 			
 				/**
 				 * Constructor of a bounding box object.
 				 *
 				 * @note Not even common parameters are managed here 
-				 * (ex : all bounding-boxes should have a center), since it
+				 * (ex: all bounding-boxes should have a center), since it
 				 * would have to be for example a Point whereas actually a
 				 * Bipoint or a Tripoint would be used. 
 				 * This would not be convenient since it would require 
@@ -144,7 +149,8 @@ namespace OSDL
 				 * into a specialized forms.
 				 *
 				 */
-				explicit BoundingBox() throw() ;
+				explicit BoundingBox() ;
+				
 				
 								
 				/**
@@ -152,6 +158,7 @@ namespace OSDL
 				 *
 				 */
 				virtual ~BoundingBox() throw() ;
+
 
 
 				/**
@@ -163,7 +170,7 @@ namespace OSDL
 				 * @return the intersection result
 				 *
 				 * @throw BoundingBoxException if the type of the two 
-				 * bounding boxes is not compatible (ex : 2D boxes cannot 
+				 * bounding boxes is not compatible (ex: 2D boxes cannot 
 				 * be checked against 3D boxes), or not implemented.
 				 *
 				 * @see IntersectionResult
@@ -178,11 +185,13 @@ namespace OSDL
 				 *
 				 */
 				virtual IntersectionResult doesIntersectWith( 
-					BoundingBox & other ) throw( BoundingBoxException ) = 0 ;
+					BoundingBox & other ) = 0 ;
+				
 				
 				
 				
 				// Static section.
+				
 				
 				
 				/**
@@ -194,7 +203,8 @@ namespace OSDL
 				 *
 				 */
 				static std::string InterpretIntersectionResult(
-					IntersectionResult result ) throw( BoundingBoxException ) ;
+					IntersectionResult result ) ;
+					
 					
 					
 					
@@ -202,7 +212,6 @@ namespace OSDL
 		
 				
 			
-	
 				/**
 				 * Copy constructor made private to ensure that it will 
 				 * never be called.
@@ -211,7 +220,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-	        	explicit BoundingBox( const BoundingBox & source ) throw() ;
+	        	explicit BoundingBox( const BoundingBox & source ) ;
+
 
 
 				/**
@@ -222,15 +232,17 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-	        	BoundingBox & operator= ( const BoundingBox & source ) throw() ;
+	        	BoundingBox & operator= ( const BoundingBox & source ) ;
 				
 				
 				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_BOUNDING_BOX_H_

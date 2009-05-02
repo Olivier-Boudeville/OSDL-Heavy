@@ -37,9 +37,11 @@
 
 
 
+
 namespace OSDL
 {
 
+		
 		
 	namespace Events
 	{
@@ -51,11 +53,14 @@ namespace OSDL
 		class OSDL_DLL InputDeviceHandlerException : public EventsException 
 		{
 			public: 
+			
 				explicit InputDeviceHandlerException( 
-					const std::string & reason ) throw() ; 
+					const std::string & reason ) ; 
+					
 				virtual ~InputDeviceHandlerException() throw() ; 
 				
 		} ;
+
 
 
 		
@@ -64,14 +69,16 @@ namespace OSDL
 		 *
 		 * @note Usually the input device must be specified in the call to 
 		 * CommonModule::getCommonModule so that its support is enabled 
-		 * (ex : UseJoystick, UseKeyboard, etc.).
+		 * (ex: UseJoystick, UseKeyboard, etc.).
 		 *
 		 */
 		class OSDL_DLL InputDeviceHandler : public Ceylan::Object
 		{
 		
+		
 			
 			public:
+
 
 
 				/**
@@ -81,8 +88,8 @@ namespace OSDL
 				 * of the input device subsystem failed.
 				 *
 				 */
-				explicit InputDeviceHandler() 
-					throw( InputDeviceHandlerException ) ;
+				explicit InputDeviceHandler() ;
+				
 				
 				
 				/// Virtual destructor.
@@ -90,7 +97,10 @@ namespace OSDL
 
 
 
+
+
 			private:
+		
 		
 		
 				/**
@@ -102,7 +112,8 @@ namespace OSDL
 				 * 
 				 */			 
 				explicit InputDeviceHandler( 
-					const InputDeviceHandler & source ) throw() ;
+					const InputDeviceHandler & source ) ;
+			
 			
 			
 				/**
@@ -114,10 +125,11 @@ namespace OSDL
 				 * 
 				 */			 
 				InputDeviceHandler & operator = ( 
-					const InputDeviceHandler & source ) throw() ;
+					const InputDeviceHandler & source ) ;
 				
 
 		} ;
+		
 	
 	}	
 	

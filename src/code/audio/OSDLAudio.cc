@@ -69,6 +69,7 @@ using namespace Ceylan::Log ;
 using namespace OSDL::Audio ;
 
 
+
 // Replicating these defines allows to enable them on a per-class basis:
 #if OSDL_VERBOSE_AUDIO_MODULE
 
@@ -85,11 +86,14 @@ using namespace OSDL::Audio ;
 #endif // OSDL_DEBUG_AUDIO_PLAYBACK
 
 
+
 string OSDL::Audio::AudioModule::AudioPathEnvironmentVariable = "AUDIO_PATH" ;
+
 
 
 Ceylan::System::FileLocator OSDL::Audio::AudioModule::AudioFileLocator(
 	AudioPathEnvironmentVariable ) ;
+
 
 
 
@@ -140,7 +144,9 @@ const SampleFormat AudioModule::NativeSint16SampleFormat = 0x9010 ;
 #endif // OSDL_USES_SDL
 
 
+
 const SampleFormat AudioModule::IMAADPCMSampleFormat     = 0x0012 ;
+
 
 
 /*
@@ -162,8 +168,8 @@ const Volume AudioModule::MaxVolume = 128 ;
 
 
 
+
 std::string OSDL::Audio::sampleFormatToString( SampleFormat format )
-	throw( AudioException )
 {
 
 	switch( format )
@@ -224,9 +230,7 @@ std::string OSDL::Audio::sampleFormatToString( SampleFormat format )
 
 
 
-
 std::string OSDL::Audio::channelFormatToString( SampleFormat format )
-	throw( AudioException )
 {
 
 	switch( format )
@@ -283,6 +287,7 @@ Uint32 getChunkTimeMilliseconds(Mix_Chunk *chunk)
 
 
 
+
 #if OSDL_USES_SDL
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
@@ -306,12 +311,14 @@ const string AudioModule::SDLEnvironmentVariables[] = {} ;
 
 
 
+
 const Ceylan::Uint16 AudioModule::DriverNameMaximumLength = 50 ;
 
 
 
 
-AudioModule::AudioModule() throw( AudioException ):
+
+AudioModule::AudioModule() :
 	Ceylan::Module( 
 		"OSDL audio module",
 		"This is the audio module of OSDL",
@@ -443,9 +450,8 @@ AudioModule::~AudioModule() throw()
 
 
 void AudioModule::setMode( Hertz outputFrequency, 
-		SampleFormat outputSampleFormat, ChannelFormat outputChannel,
-		ChunkSize outputBufferSize, ChannelNumber mixingChannelCount ) 
-	throw( AudioException )
+	SampleFormat outputSampleFormat, ChannelFormat outputChannel,
+	ChunkSize outputBufferSize, ChannelNumber mixingChannelCount ) 
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -502,7 +508,7 @@ void AudioModule::setMode( Hertz outputFrequency,
 
 Ceylan::System::Millisecond AudioModule::getObtainedMode( 
 	Hertz & actualOutputFrequency, SampleFormat & actualOutputSampleFormat,
-	ChannelNumber & actualOutputChannelCount ) throw( AudioException )
+	ChannelNumber & actualOutputChannelCount )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -535,7 +541,7 @@ Ceylan::System::Millisecond AudioModule::getObtainedMode(
 
 
 
-void AudioModule::unsetMode() throw( AudioException )
+void AudioModule::unsetMode()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -574,7 +580,6 @@ void AudioModule::unsetMode() throw( AudioException )
 
 
 void AudioModule::setPanning( Ceylan::Maths::Percentage leftPercentage )
-	throw( AudioException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -598,7 +603,7 @@ void AudioModule::setPanning( Ceylan::Maths::Percentage leftPercentage )
 
 
 
-void AudioModule::unsetPanning() throw( AudioException )
+void AudioModule::unsetPanning()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -619,7 +624,7 @@ void AudioModule::unsetPanning() throw( AudioException )
 
 
 	
-void AudioModule::setReverseStereo( bool reverse ) throw( AudioException )	
+void AudioModule::setReverseStereo( bool reverse )	
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -641,7 +646,6 @@ void AudioModule::setReverseStereo( bool reverse ) throw( AudioException )
 
 	
 void AudioModule::setDistanceAttenuation( ListenerDistance distance ) 
-	throw( AudioException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -662,7 +666,7 @@ void AudioModule::setDistanceAttenuation( ListenerDistance distance )
 
 
 
-void AudioModule::unsetDistanceAttenuation() throw( AudioException )
+void AudioModule::unsetDistanceAttenuation()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -683,7 +687,7 @@ void AudioModule::unsetDistanceAttenuation() throw( AudioException )
 	
 	
 void AudioModule::setPositionAttenuation( ListenerDistance distance,
-	ListenerAngle angle ) throw( AudioException )
+	ListenerAngle angle )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -704,7 +708,7 @@ void AudioModule::setPositionAttenuation( ListenerDistance distance,
 
 
 
-void AudioModule::unsetPositionAttenuation() throw( AudioException )
+void AudioModule::unsetPositionAttenuation()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -724,7 +728,7 @@ void AudioModule::unsetPositionAttenuation() throw( AudioException )
 	
 	
 	
-MusicType AudioModule::getTypeOfCurrentMusic() const throw( AudioException )	
+MusicType AudioModule::getTypeOfCurrentMusic() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -750,7 +754,7 @@ MusicType AudioModule::getTypeOfCurrentMusic() const throw( AudioException )
 
 
 
-ChannelNumber AudioModule::getMixingChannelCount() const throw( AudioException )
+ChannelNumber AudioModule::getMixingChannelCount() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -778,8 +782,7 @@ ChannelNumber AudioModule::getMixingChannelCount() const throw( AudioException )
 
 
 
-AudioChannel & AudioModule::getMixingChannelAt( ChannelNumber index )
-	const throw( AudioException )
+AudioChannel & AudioModule::getMixingChannelAt( ChannelNumber index ) const
 {
 
 	try
@@ -800,7 +803,6 @@ AudioChannel & AudioModule::getMixingChannelAt( ChannelNumber index )
 
 
 void AudioModule::setVolumeForAllMixingChannels( Volume newVolume )
-	throw( AudioException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -819,7 +821,6 @@ void AudioModule::setVolumeForAllMixingChannels( Volume newVolume )
 
 
 ChannelNumber AudioModule::getPlayingChannelCount() const 
-	throw( AudioException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -838,7 +839,6 @@ ChannelNumber AudioModule::getPlayingChannelCount() const
 
 
 ChannelNumber AudioModule::getPausedChannelCount() const 
-	throw( AudioException )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -856,7 +856,7 @@ ChannelNumber AudioModule::getPausedChannelCount() const
 	
 					
 
-void AudioModule::pauseAllChannels() throw( AudioException )
+void AudioModule::pauseAllChannels()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -874,7 +874,7 @@ void AudioModule::pauseAllChannels() throw( AudioException )
 
 
 
-void AudioModule::resumeAllChannels() throw( AudioException )
+void AudioModule::resumeAllChannels()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -892,7 +892,7 @@ void AudioModule::resumeAllChannels() throw( AudioException )
 
 
 
-void AudioModule::haltAllChannels() throw( AudioException )
+void AudioModule::haltAllChannels()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -911,7 +911,7 @@ void AudioModule::haltAllChannels() throw( AudioException )
 	
 	
 ChannelNumber AudioModule::expireAllChannelsIn( 
-	Ceylan::System::Millisecond expireDuration ) throw( AudioException )
+	Ceylan::System::Millisecond expireDuration )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -930,7 +930,7 @@ ChannelNumber AudioModule::expireAllChannelsIn(
 	
 					
 ChannelNumber AudioModule::fadeOutAllChannelsDuring( 
-	Ceylan::System::Millisecond fadeOutDuration ) throw( AudioException )
+	Ceylan::System::Millisecond fadeOutDuration )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -948,7 +948,7 @@ ChannelNumber AudioModule::fadeOutAllChannelsDuring(
 
 
 
-bool AudioModule::isMusicPlaying() const throw( AudioException )
+bool AudioModule::isMusicPlaying() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -966,7 +966,7 @@ bool AudioModule::isMusicPlaying() const throw( AudioException )
 
 
 
-bool AudioModule::isMusicPaused() const throw( AudioException )
+bool AudioModule::isMusicPaused() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -984,7 +984,7 @@ bool AudioModule::isMusicPaused() const throw( AudioException )
 
 
 
-FadingStatus AudioModule::getMusicFadingStatus() const throw( AudioException )
+FadingStatus AudioModule::getMusicFadingStatus() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -1023,7 +1023,7 @@ FadingStatus AudioModule::getMusicFadingStatus() const throw( AudioException )
 
 	
 											
-std::string AudioModule::getDriverName() const throw( AudioException )
+std::string AudioModule::getDriverName() const
 {
 
 	return AudioModule::GetDriverName() ;
@@ -1032,8 +1032,7 @@ std::string AudioModule::getDriverName() const throw( AudioException )
 
 
 
-const string AudioModule::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string AudioModule::toString( Ceylan::VerbosityLevels level ) const
 {
 	
 	
@@ -1066,7 +1065,7 @@ const string AudioModule::toString( Ceylan::VerbosityLevels level )
 
 
 
-string AudioModule::DescribeEnvironmentVariables() throw()
+string AudioModule::DescribeEnvironmentVariables()
 {
 
 #if OSDL_USES_SDL
@@ -1126,7 +1125,7 @@ string AudioModule::DescribeEnvironmentVariables() throw()
 
 
 
-bool AudioModule::IsAudioInitialized() throw()
+bool AudioModule::IsAudioInitialized()
 {
 
 	return _AudioInitialized ;
@@ -1135,7 +1134,7 @@ bool AudioModule::IsAudioInitialized() throw()
 
 
 
-string AudioModule::GetDriverName() throw( AudioException )
+string AudioModule::GetDriverName()
 {
 
 #if OSDL_USES_SDL
@@ -1159,7 +1158,7 @@ string AudioModule::GetDriverName() throw( AudioException )
 
 
 
-void AudioModule::onMusicPlaybackFinished() throw( AudioException )
+void AudioModule::onMusicPlaybackFinished()
 {
 
 	/*
@@ -1175,10 +1174,11 @@ void AudioModule::onMusicPlaybackFinished() throw( AudioException )
 
 
 
+
 // Static section.
 
+
 ChannelNumber AudioModule::GetChannelCountFor( ChannelFormat format )
-	throw( AudioException )
 {
 
 	switch( format )
@@ -1205,7 +1205,6 @@ ChannelNumber AudioModule::GetChannelCountFor( ChannelFormat format )
 
 	
 ChunkSize AudioModule::GetSampleSizeFor( SampleFormat format ) 
-	throw( AudioException )
 {
 
 	switch( format )
@@ -1263,9 +1262,11 @@ void AudioModule::HandleMusicPlaybackFinishedCallback()
 
 
 
+
 // Friend function.
 
-AudioModule & OSDL::Audio::getExistingAudioModule() throw()
+
+AudioModule & OSDL::Audio::getExistingAudioModule()
 {
 
 	try
@@ -1283,7 +1284,4 @@ AudioModule & OSDL::Audio::getExistingAudioModule() throw()
 	}
 	
 }
-
-
-
 

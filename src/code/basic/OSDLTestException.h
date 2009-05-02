@@ -28,6 +28,7 @@
 #define OSDL_TEST_EXCEPTION_H_
 
 
+
 #include "OSDLException.h"
 
 #include <string>
@@ -44,10 +45,13 @@ namespace OSDL
 	{
 
 		public:
-			explicit TestException( const std::string & reason ) throw() ;
+		
+			explicit TestException( const std::string & reason ) ;
+			
 			virtual ~TestException() throw() ;
 
     } ;
+
 
 }
 
@@ -55,6 +59,7 @@ namespace OSDL
 
 OSDL_DLL std::ostream & operator << ( std::ostream & os, 
 	const OSDL::TestException & e ) ;
+
 
 
 #endif // OSDL_TEST_EXCEPTION_H_

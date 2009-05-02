@@ -34,8 +34,11 @@
 #include <iostream>
 
 
+
+
 namespace OSDL
 {
+
 
 
 	/**
@@ -57,7 +60,7 @@ namespace OSDL
 			 * raised exception.
 			 *
 			 */
-			explicit Exception( const std::string & reason ) throw() ;
+			explicit Exception( const std::string & reason ) ;
 			
 			
 			/// Basic destructor.
@@ -65,8 +68,10 @@ namespace OSDL
 
 
     } ;
+	
 
 }
+
 
 
 
@@ -81,7 +86,7 @@ namespace OSDL
  * 
  */
 OSDL_DLL std::ostream & operator << ( std::ostream & os, 
-	const OSDL::Exception & e )	throw() ;
+	const OSDL::Exception & e )	;
 
 
 

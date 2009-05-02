@@ -52,8 +52,8 @@ using std::string ;
 
 
 
-MultimediaRenderer::MultimediaRenderer( bool registerToScheduler ) 
-		throw( RenderingException ) :
+
+MultimediaRenderer::MultimediaRenderer( bool registerToScheduler ) :
 	Renderer( registerToScheduler ),
 	_videoRenderer( 0 ),
 	_audioRenderer( 0 )
@@ -61,6 +61,7 @@ MultimediaRenderer::MultimediaRenderer( bool registerToScheduler )
 
 	
 }
+
 
 
 MultimediaRenderer::~MultimediaRenderer() throw()
@@ -72,7 +73,8 @@ MultimediaRenderer::~MultimediaRenderer() throw()
 
 
 
-bool MultimediaRenderer::hasVideoRenderer() const throw()
+
+bool MultimediaRenderer::hasVideoRenderer() const
 {
 
 	return ( _videoRenderer != 0 ) ;
@@ -82,11 +84,10 @@ bool MultimediaRenderer::hasVideoRenderer() const throw()
 
 
 VideoRenderer & MultimediaRenderer::getVideoRenderer() const 
-	throw( RenderingException )
 {
 
 	if ( _videoRenderer == 0 )
-		throw RenderingException( "MultimediaRenderer::getVideoRenderer : "
+		throw RenderingException( "MultimediaRenderer::getVideoRenderer: "
 			"no video renderer registered." ) ;
 			
 	return * _videoRenderer	;
@@ -96,7 +97,6 @@ VideoRenderer & MultimediaRenderer::getVideoRenderer() const
 
 
 void MultimediaRenderer::setVideoRenderer( VideoRenderer & newVideoRenderer )
-	throw()
 {
 
 	if ( _videoRenderer != 0 )
@@ -108,7 +108,7 @@ void MultimediaRenderer::setVideoRenderer( VideoRenderer & newVideoRenderer )
 
 
 
-bool MultimediaRenderer::hasAudioRenderer() const throw()
+bool MultimediaRenderer::hasAudioRenderer() const
 {
 
 	return ( _audioRenderer != 0 ) ;
@@ -118,11 +118,10 @@ bool MultimediaRenderer::hasAudioRenderer() const throw()
 
 
 AudioRenderer & MultimediaRenderer::getAudioRenderer() const 
-	throw( RenderingException )
 {
 
 	if ( _audioRenderer == 0 )
-		throw RenderingException( "MultimediaRenderer::getAudioRenderer : "
+		throw RenderingException( "MultimediaRenderer::getAudioRenderer: "
 			"no audio renderer registered." ) ;
 			
 	return * _audioRenderer	;
@@ -132,7 +131,6 @@ AudioRenderer & MultimediaRenderer::getAudioRenderer() const
 
 
 void MultimediaRenderer::setAudioRenderer( AudioRenderer & newAudioRenderer )
-	throw()
 {
 
 	if ( _audioRenderer != 0 )
@@ -145,7 +143,6 @@ void MultimediaRenderer::setAudioRenderer( AudioRenderer & newAudioRenderer )
 
 
 void MultimediaRenderer::render( RenderingTick currentRenderingTick )
-	throw()
 {
 
 	OSDL_MULTIMEDIA_RENDER_LOG( "Rendering ! " ) ;
@@ -172,7 +169,7 @@ void MultimediaRenderer::render( RenderingTick currentRenderingTick )
 
 
 void MultimediaRenderer::onRenderingSkipped( 
-	RenderingTick skippedRenderingTick ) throw()
+	RenderingTick skippedRenderingTick )
 {
 
 	OSDL_MULTIMEDIA_RENDER_LOG( "Rendering skipped." ) ;
@@ -182,8 +179,7 @@ void MultimediaRenderer::onRenderingSkipped(
 
 
 
-const string MultimediaRenderer::toString( Ceylan::VerbosityLevels level ) 
-	const throw() 
+const string MultimediaRenderer::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Multimedia renderer, " ;
@@ -209,7 +205,7 @@ const string MultimediaRenderer::toString( Ceylan::VerbosityLevels level )
 		+ Ceylan::toString( _renderingSkipped ) + " skip(s)" ;
 	
 	if ( _renderingDone + _renderingSkipped != 0 )
-		res += " (rendering proportion : " 
+		res += " (rendering proportion: " 
 			+ Ceylan::toString( 
 				100 * _renderingDone / ( _renderingDone + _renderingSkipped ) )
 		 	+ "%)" ;

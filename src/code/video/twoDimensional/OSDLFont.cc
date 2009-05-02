@@ -37,6 +37,7 @@
 #include <OSDLConfig.h>              // for OSDL_DEBUG_FONT and al 
 #endif // OSDL_USES_CONFIG_H
 
+
 #if OSDL_ARCH_NINTENDO_DS
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
 #endif // OSDL_ARCH_NINTENDO_DS
@@ -62,6 +63,7 @@ using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::TwoDimensional ;
 
 
@@ -74,11 +76,13 @@ Ceylan::System::FileLocator Text::Font::FontFileLocator(
 
 
 
-TextException::TextException( const string & reason ) throw():
+
+TextException::TextException( const string & reason ) :
 	VideoException( "TextException: " + reason ) 
 {
 
 }
+	
 	
 	
 TextException::~TextException() throw()
@@ -90,6 +94,7 @@ TextException::~TextException() throw()
 
 
 using namespace OSDL::Video::TwoDimensional::Text ;
+
 
 
 
@@ -118,6 +123,7 @@ const RenderingStyle Font::Underline = 0x04 ;
 
 
 
+
 const Ceylan::System::Size Font::DefaultGlyphCachedQuota = 4 * 1024 * 1024 ;
 const Ceylan::System::Size Font::DefaultWordCachedQuota  = 6 * 1024 * 1024 ;
 const Ceylan::System::Size Font::DefaultTextCachedQuota  = 8 * 1024 * 1024 ;
@@ -126,12 +132,12 @@ const Ceylan::Uint8 Font::DefaultSpaceBasedAlineaWidth = 6 ;
 
 
 
+
 Font::Font( 
 		bool convertToDisplay, 
 		RenderCache cacheSettings, 
 		AllowedCachePolicy cachePolicy, 
-		Ceylan::System::Size quota 
-			) throw():			
+		Ceylan::System::Size quota ) :			
 	_renderingStyle( Normal ),
 	_convertToDisplay( convertToDisplay ),
 	_cacheSettings( cacheSettings ),
@@ -141,7 +147,6 @@ Font::Font(
 	_spaceWidth( 0 ),
 	_alineaWidth( 0 )
 {
-	
 	
 	/*
 	 * _spaceWidth and _alineaWidth cannot be initialized in this Font
@@ -318,7 +323,7 @@ Font::Font(
 
 
 
-Font::~Font() throw()
+Font::~Font()  throw()
 {
 
 	if ( _glyphCache != 0 )
@@ -331,7 +336,7 @@ Font::~Font() throw()
 
 
 
-RenderingStyle Font::getRenderingStyle() const throw()
+RenderingStyle Font::getRenderingStyle() const 
 {
 
 	return _renderingStyle ;
@@ -340,7 +345,7 @@ RenderingStyle Font::getRenderingStyle() const throw()
 
 
 
-void Font::setRenderingStyle( RenderingStyle newStyle ) throw( TextException )
+void Font::setRenderingStyle( RenderingStyle newStyle )
 {
 
 	_renderingStyle = newStyle ;
@@ -350,8 +355,7 @@ void Font::setRenderingStyle( RenderingStyle newStyle ) throw( TextException )
 
 
 
-void Font::setBackgroundColor( Pixels::ColorDefinition newBackgroundColor )
-	throw()
+void Font::setBackgroundColor( Pixels::ColorDefinition newBackgroundColor )	
 {
 
 	_backgroundColor = newBackgroundColor ;
@@ -360,7 +364,7 @@ void Font::setBackgroundColor( Pixels::ColorDefinition newBackgroundColor )
 
 
 
-OSDL::Video::Pixels::ColorDefinition Font::getBackgroundColor() const throw()
+OSDL::Video::Pixels::ColorDefinition Font::getBackgroundColor() const 
 {
 
 	return _backgroundColor ;
@@ -369,15 +373,14 @@ OSDL::Video::Pixels::ColorDefinition Font::getBackgroundColor() const throw()
 
 
 
-Width Font::getAlineaWidth() const throw()
-
+Width Font::getAlineaWidth() const 
 {
 	return _alineaWidth ;
 	
 }
 
 
-void Font::setAlineaWidth( Width newAlineaWidth ) throw()
+void Font::setAlineaWidth( Width newAlineaWidth ) 
 {
 
 	_alineaWidth = newAlineaWidth ;
@@ -386,7 +389,7 @@ void Font::setAlineaWidth( Width newAlineaWidth ) throw()
 
 
 
-std::string Font::describeGlyphFor( Ceylan::Latin1Char character ) const throw()
+std::string Font::describeGlyphFor( Ceylan::Latin1Char character ) const 
 {
 
 	list<string> res ;
@@ -410,7 +413,7 @@ std::string Font::describeGlyphFor( Ceylan::Latin1Char character ) const throw()
 
 
 	
-Width Font::getInterGlyphWidth() const throw()
+Width Font::getInterGlyphWidth() const 
 {
 
 	// Scales with the letter width, minimum is one:
@@ -425,10 +428,8 @@ Width Font::getInterGlyphWidth() const throw()
 
 OSDL::Video::Surface & Font::renderLatin1Text( const std::string & text,
 		RenderQuality quality, Pixels::ColorDefinition textColor ) 
-	throw( TextException )
 {
 
-	
 	// Different cases, depending on cache settings:
 
 	switch( _cacheSettings )
@@ -473,8 +474,8 @@ OSDL::Video::Surface & Font::renderLatin1Text( const std::string & text,
 
 
 void Font::blitLatin1Text( Surface & targetSurface, Coordinate x, Coordinate y, 
-		const std::string & text, RenderQuality quality, 
-		Pixels::ColorDefinition textColor ) throw( TextException ) 			
+	const std::string & text, RenderQuality quality, 
+	Pixels::ColorDefinition textColor ) 			
 {
 	 	
 	/*
@@ -549,8 +550,7 @@ void Font::blitLatin1Text( Surface & targetSurface, Coordinate x, Coordinate y,
 OSDL::Video::Surface & Font::renderLatin1MultiLineText( 
 	Length width, Length height, const std::string & text, 
 	TextIndex & renderIndex, Coordinate & lastOrdinateUsed,
-	RenderQuality quality, Pixels::ColorDefinition textColor, bool justified ) 
-		throw( TextException )
+	RenderQuality quality, Pixels::ColorDefinition textColor, bool justified ) 	
 {
 
 	/*
@@ -793,7 +793,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 		 * anywhere before the line's end.
 		 * Hence we check that 'words' is not empty.
 		 *
-		 * Zero word or only one word ? Do nothing special to justify text.
+		 * Zero word or only one word? Do nothing special to justify text.
 		 * 
 		 */
 		if ( justified && ! words.empty() && wordCount > 1 )
@@ -976,10 +976,9 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
 
 void Font::blitLatin1MultiLineText( Surface & targetSurface, 
-		const UprightRectangle & clientArea, const std::string & text,
-		TextIndex & renderIndex, RenderQuality quality, 
-		Pixels::ColorDefinition textColor, bool justified ) 
-	throw( TextException )
+	const UprightRectangle & clientArea, const std::string & text,
+	TextIndex & renderIndex, RenderQuality quality, 
+	Pixels::ColorDefinition textColor, bool justified ) 
 {
 
 #if OSDL_DEBUG_FONT
@@ -1000,11 +999,10 @@ void Font::blitLatin1MultiLineText( Surface & targetSurface,
 
 
 void Font::blitLatin1MultiLineText( Surface & targetSurface, 
-		Coordinate x, Coordinate y, Length width, Length height, 
-		const std::string & text, TextIndex & renderIndex,
-		RenderQuality quality, Pixels::ColorDefinition textColor, 
-		bool justified ) 
-	throw( TextException )
+	Coordinate x, Coordinate y, Length width, Length height, 
+	const std::string & text, TextIndex & renderIndex,
+	RenderQuality quality, Pixels::ColorDefinition textColor, 
+	bool justified ) 
 {
 	
 	// Not used here:
@@ -1026,7 +1024,7 @@ void Font::blitLatin1MultiLineText( Surface & targetSurface,
 							
 		
 																		
-const string Font::toString( Ceylan::VerbosityLevels level ) const throw()
+const string Font::toString( Ceylan::VerbosityLevels level ) const 
 { 
 
 	string res = "Rendering style: " ;
@@ -1118,7 +1116,7 @@ const string Font::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
-string Font::InterpretRenderingStyle( RenderingStyle style ) throw()
+string Font::InterpretRenderingStyle( RenderingStyle style ) 
 {
 
 	if ( style == Normal )
@@ -1143,7 +1141,7 @@ string Font::InterpretRenderingStyle( RenderingStyle style ) throw()
 
 OSDL::Video::Surface & Font::renderLatin1TextWithWordCached( 
 	const string & text, RenderQuality quality, 
-	Pixels::ColorDefinition textColor ) throw( TextException )
+	Pixels::ColorDefinition textColor )
 {
 
 	/*
@@ -1309,7 +1307,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 	
 OSDL::Video::Surface & Font::renderLatin1TextWithTextCached( 
 	const string & text, RenderQuality quality, 
-	Pixels::ColorDefinition textColor ) throw( TextException )
+	Pixels::ColorDefinition textColor )
 {
 
 #if OSDL_DEBUG_FONT
@@ -1367,8 +1365,8 @@ OSDL::Video::Surface & Font::renderLatin1TextWithTextCached(
 
 
 void Font::blitLatin1Word( Surface & targetSurface, Coordinate x, Coordinate y, 
-		const std::string & word, RenderQuality quality, 
-		Pixels::ColorDefinition wordColor ) throw( TextException )
+	const std::string & word, RenderQuality quality, 
+	Pixels::ColorDefinition wordColor )
 {
 
 
@@ -1416,7 +1414,7 @@ void Font::blitLatin1Word( Surface & targetSurface, Coordinate x, Coordinate y,
 const OSDL::Video::Surface & Font::getConstRenderingForLatin1Word( 
 	const std::string & word,
 	RenderQuality quality, Pixels::ColorDefinition wordColor ) 
-		throw( TextException )
+		
 {
 	
 	// 
@@ -1436,7 +1434,7 @@ const OSDL::Video::Surface & Font::getConstRenderingForLatin1Word(
 							
 const OSDL::Video::Surface & Font::getConstLatin1WordFromCache( 
 	const std::string & word, RenderQuality quality, 
-	Pixels::ColorDefinition wordColor ) throw( TextException )
+	Pixels::ColorDefinition wordColor )
 {
 	
 	// If not in cache, render it and put it in.
@@ -1503,8 +1501,7 @@ const OSDL::Video::Surface & Font::getConstLatin1WordFromCache(
 							
 
 OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
-		RenderQuality quality, Pixels::ColorDefinition textColor ) 
-	throw( TextException )
+	RenderQuality quality, Pixels::ColorDefinition textColor ) 
 {
 
 	Length lineSkip = getLineSkip() ;

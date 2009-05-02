@@ -34,6 +34,7 @@
 
 
 
+
 /**
  * Definition of the main OSDL video types.
  *
@@ -48,6 +49,7 @@ namespace OSDL
 {
 
 
+
 	namespace Video
 	{
 	
@@ -56,12 +58,14 @@ namespace OSDL
 		/// Length, unit of measure, unsigned.
 		typedef Ceylan::Uint16 Length ;
 	
+	
 		/// Length, unit of measure, signed.
 		typedef Ceylan::Sint16 SignedLength ;
 	
 	
 		/// Pixel pitch, unit of measure.
 		typedef Ceylan::Uint16 Pitch ;
+
 
 
 		/**
@@ -75,8 +79,10 @@ namespace OSDL
 		typedef Ceylan::Sint16 Coordinate ;
 		
 		
+		
 		/// Offset, difference between coordinates.
 		typedef Coordinate Offset ;
+
 
 
 		/**
@@ -88,11 +94,14 @@ namespace OSDL
 		typedef Ceylan::Float32 FloatingPointCoordinate ;
 
 
+
 		/// Color depth, bits per pixel.
 		typedef Ceylan::Uint8 BitsPerPixel ;
 	
+	
 		/// Color depth, bytes per pixel.
 		typedef Ceylan::Uint8 BytesPerPixel ;
+		
 		
 		
 		// Angle units and ratio already available thanks to Ceylan.
@@ -102,9 +111,10 @@ namespace OSDL
 		/// Mother class for all video exceptions. 		
 		class OSDL_DLL VideoException: public OSDL::Exception 
 		{ 
+		
 			public:
 				
-				explicit VideoException( const std::string & reason ) throw() : 
+				explicit VideoException( const std::string & reason ) : 
 					OSDL::Exception( reason )
 				{
 
@@ -117,11 +127,13 @@ namespace OSDL
 				}
 				
 		} ;	
+		
 			
 	
 	}
 	
 }
+
 
 
 #endif // OSDL_VIDEO_TYPES_H_

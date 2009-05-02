@@ -40,6 +40,7 @@
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+
 using std::string ;
 
 
@@ -68,7 +69,7 @@ extern const Volume OSDL::Audio::MaxVolume = 128 ;
 
 
 
-AudibleException::AudibleException( const std::string & reason ) throw():
+AudibleException::AudibleException( const std::string & reason ) :
 	AudioException( reason )
 {
 
@@ -85,7 +86,8 @@ AudibleException::~AudibleException() throw()
 
 
 
-Audible::Audible( bool convertedToOutputFormat ) throw( AudibleException ):
+
+Audible::Audible( bool convertedToOutputFormat ) :
 	_convertedToOutputFormat( convertedToOutputFormat )
 {
 
@@ -100,8 +102,7 @@ Audible::~Audible() throw()
 
 
 
-
-bool Audible::isConvertedToOutputFormat() const throw()
+bool Audible::isConvertedToOutputFormat() const
 {
 
 	return _convertedToOutputFormat ;
@@ -110,8 +111,7 @@ bool Audible::isConvertedToOutputFormat() const throw()
 
 
 
-const string Audible::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string Audible::toString( Ceylan::VerbosityLevels level ) const
 {
 	
 	string res = "Audible " ;
@@ -128,7 +128,6 @@ const string Audible::toString( Ceylan::VerbosityLevels level )
 
 
 string Audible::FindAudiblePath( const string & audibleFilename ) 
-	throw( AudibleException )
 {
 	
 	string audibleFullPath = audibleFilename ;
@@ -185,7 +184,6 @@ string Audible::FindAudiblePath( const string & audibleFilename )
 					
 
 int Audible::GetLoopsForPlayCount( PlaybackCount playCount )
-	throw( AudibleException )
 {
 
 	if ( playCount == 0 || playCount < Loop )

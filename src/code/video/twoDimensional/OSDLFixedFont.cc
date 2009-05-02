@@ -32,9 +32,11 @@
 #include "OSDLUtils.h"           // for getBackendLastError.
 
 
+
 #include <list>
  
 #include <ctype.h>                   // for isdigit
+
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -62,6 +64,7 @@
 
 
 
+
 using std::string ;
 
 using namespace Ceylan ;
@@ -69,11 +72,15 @@ using namespace Ceylan::Log ;
 using namespace Ceylan::System ;
 
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::TwoDimensional::Text ;
 
 
+
+
 Ceylan::System::FileLocator Text::FixedFont::FixedFontFileLocator ;
+
 
 
 const OSDL::Video::Length
@@ -81,6 +88,7 @@ const OSDL::Video::Length
 	
 const OSDL::Video::Length
 	OSDL::Video::TwoDimensional::Text::BasicFontCharacterHeight = 8 ;
+
 
 
 
@@ -95,13 +103,13 @@ const Ceylan::Uint16 Text::FixedFont::FontCharacterCount = 256 ;
 
 
 
+
 // First, the two basic fixed font primitives.
 
 
 
 bool Text::printBasic( const std::string & text, Surface & targetSurface,
-		Coordinate x, Coordinate y, Pixels::ColorDefinition colorDef ) 
-	throw( VideoException )
+	Coordinate x, Coordinate y, Pixels::ColorDefinition colorDef ) 
 {	
 
 #if OSDL_USES_SDL_GFX
@@ -127,10 +135,9 @@ bool Text::printBasic( const std::string & text, Surface & targetSurface,
 
 
 bool Text::printBasic( const std::string & text, Surface & targetSurface,
-		Coordinate x, Coordinate y, 
-		Pixels::ColorElement red, Pixels::ColorElement blue,
-		Pixels::ColorElement green, Pixels::ColorElement alpha )
-	throw( VideoException )
+	Coordinate x, Coordinate y, 
+	Pixels::ColorElement red, Pixels::ColorElement blue,
+	Pixels::ColorElement green, Pixels::ColorElement alpha )
 {	
 
 #if OSDL_USES_SDL_GFX
@@ -182,8 +189,7 @@ FixedFont::FixedFont(
 		bool convertToDisplay, 
 		RenderCache cacheSettings,
 		AllowedCachePolicy cachePolicy, 
-		Ceylan::System::Size quota 
-			) throw( TextException ):
+		Ceylan::System::Size quota ) :
 	Font( convertToDisplay, cacheSettings, cachePolicy, quota ),
 	_width( characterWidth ),
 	_height( characterHeight ),
@@ -203,8 +209,7 @@ FixedFont::FixedFont(
 		bool convertToDisplay,
 		RenderCache cacheSettings, 
 		AllowedCachePolicy cachePolicy, 
-		Ceylan::System::Size quota 
-			) throw( TextException ):
+		Ceylan::System::Size quota ) :
 	Font( convertToDisplay, cacheSettings, cachePolicy, quota ),
 	_width( 0 ),
 	_height( 0 ),
@@ -230,7 +235,7 @@ FixedFont::~FixedFont() throw()
 
 
 
-Width FixedFont::getWidth() const throw()
+Width FixedFont::getWidth() const
 {
 
 	return _width ;
@@ -239,7 +244,7 @@ Width FixedFont::getWidth() const throw()
 
 
 
-Width FixedFont::getWidth( Ceylan::Latin1Char character ) const throw()
+Width FixedFont::getWidth( Ceylan::Latin1Char character ) const
 {
 
 	return _width ;
@@ -248,8 +253,7 @@ Width FixedFont::getWidth( Ceylan::Latin1Char character ) const throw()
 
 
 
-SignedWidth FixedFont::getWidthOffset( Ceylan::Latin1Char character ) 
-	const throw( TextException )
+SignedWidth FixedFont::getWidthOffset( Ceylan::Latin1Char character ) const
 {
 
 	return 0 ;
@@ -259,7 +263,7 @@ SignedWidth FixedFont::getWidthOffset( Ceylan::Latin1Char character )
 
 
 SignedHeight FixedFont::getHeightAboveBaseline( Ceylan::Latin1Char character ) 
-	const throw( TextException )
+	const
 {
 
 	return _height ;
@@ -268,7 +272,7 @@ SignedHeight FixedFont::getHeightAboveBaseline( Ceylan::Latin1Char character )
 
 
 
-SignedLength FixedFont::getAdvance() const throw( TextException )
+SignedLength FixedFont::getAdvance() const
 {
 
 	return _width ;
@@ -277,8 +281,7 @@ SignedLength FixedFont::getAdvance() const throw( TextException )
 
 
 
-SignedLength FixedFont::getAdvance( Ceylan::Latin1Char character ) 
-	const throw( TextException )
+SignedLength FixedFont::getAdvance( Ceylan::Latin1Char character ) const
 {
 
 	// As getInterGlyphWidth returns 0:
@@ -288,7 +291,7 @@ SignedLength FixedFont::getAdvance( Ceylan::Latin1Char character )
 
 
 
-Width FixedFont::getInterGlyphWidth() const throw()
+Width FixedFont::getInterGlyphWidth() const
 {
 
 	return 0 ;
@@ -297,7 +300,7 @@ Width FixedFont::getInterGlyphWidth() const throw()
 
 
 
-Text::Height FixedFont::getHeight() const throw()
+Text::Height FixedFont::getHeight() const
 {
 
 	return _height ;
@@ -306,14 +309,14 @@ Text::Height FixedFont::getHeight() const throw()
 
 
 
-SignedHeight FixedFont::getAscent() const throw()
+SignedHeight FixedFont::getAscent() const
 {
 	return _height ;
 }
 
 
 
-SignedHeight FixedFont::getDescent() const throw()
+SignedHeight FixedFont::getDescent() const
 {
 
 	return 0 ;
@@ -322,7 +325,7 @@ SignedHeight FixedFont::getDescent() const throw()
 
 
 
-Text::Height FixedFont::getLineSkip() const throw()
+Text::Height FixedFont::getLineSkip() const
 {
 
 	return _height + static_cast<Text::Height>( 
@@ -337,7 +340,7 @@ Text::Height FixedFont::getLineSkip() const throw()
 // Bounding boxes section.
 
 
-UprightRectangle & FixedFont::getBoundingBox() const throw( TextException )
+UprightRectangle & FixedFont::getBoundingBox() const
 {
 
 	return * new UprightRectangle( 0, 0, getAdvance(), getLineSkip() ) ;
@@ -347,7 +350,7 @@ UprightRectangle & FixedFont::getBoundingBox() const throw( TextException )
 
 
 UprightRectangle & FixedFont::getBoundingBoxFor( const std::string & word )
-	const throw( TextException )
+	const
 {
 
 	if ( word.empty() )
@@ -363,13 +366,14 @@ UprightRectangle & FixedFont::getBoundingBoxFor( const std::string & word )
 
 
 
+
 // Render section.
 
 
 
 OSDL::Video::Surface & FixedFont::renderLatin1Glyph( 
 	Ceylan::Latin1Char character, RenderQuality quality, 
-	Pixels::ColorDefinition glyphColor ) throw( TextException )
+	Pixels::ColorDefinition glyphColor )
 {
 
 	// Two different cases, depending on a glyph cache being used or not:
@@ -441,7 +445,7 @@ OSDL::Video::Surface & FixedFont::renderLatin1Glyph(
 void FixedFont::blitLatin1Glyph( Surface & targetSurface, 
 	Coordinate x, Coordinate y, 
 	Ceylan::Latin1Char character, RenderQuality quality, 
-	Pixels::ColorDefinition glyphColor ) throw( TextException )
+	Pixels::ColorDefinition glyphColor )
 {
 
 	// Here the 'quality' attribute is ignored.
@@ -466,7 +470,7 @@ void FixedFont::blitLatin1Glyph( Surface & targetSurface,
 		if ( cacheEntry != 0 )
 		{
 		
-			// Already available ? Get it and blit it !
+			// Already available? Get it and blit it!
 			const Surface * cachedSurface = 
 				dynamic_cast<const Surface *>( cacheEntry ) ;
 			
@@ -533,7 +537,7 @@ void FixedFont::blitLatin1Glyph( Surface & targetSurface,
 				
 OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha( 
 	Ceylan::Latin1Char character, RenderQuality quality,
-	Pixels::ColorDefinition glyphColor ) throw( TextException )
+	Pixels::ColorDefinition glyphColor )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -653,7 +657,7 @@ OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha(
 
 
 
-const string FixedFont::toString( Ceylan::VerbosityLevels level ) const throw()
+const string FixedFont::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Fixed font, whose dimensions are " 
@@ -672,6 +676,7 @@ const string FixedFont::toString( Ceylan::VerbosityLevels level ) const throw()
 
 
 
+
 // Static public section.
 
 
@@ -680,7 +685,7 @@ const string FixedFont::toString( Ceylan::VerbosityLevels level ) const throw()
 
 	
 Font::RenderQuality FixedFont::GetObtainedQualityFor( 
-	Font::RenderQuality targetedQuality ) throw()	
+	Font::RenderQuality targetedQuality )	
 {
 
 	return Solid ;
@@ -690,7 +695,7 @@ Font::RenderQuality FixedFont::GetObtainedQualityFor(
 
 
 void FixedFont::SetFontSettings( const Ceylan::Byte * fontData, 
-	Length characterWidth, Length characterHeight ) throw( TextException )	
+	Length characterWidth, Length characterHeight )	
 {
 
 #if OSDL_USES_SDL_GFX
@@ -745,14 +750,13 @@ void FixedFont::SetFontSettings( const Ceylan::Byte * fontData,
 
 
 
+
 							
 // Protected section.
 
 							
 void FixedFont::loadFontFrom( const std::string & fontFilename ) 
-	throw( TextException )
 {
-
 
 #if OSDL_DEBUG_FONT
 
@@ -869,8 +873,7 @@ void FixedFont::loadFontFrom( const std::string & fontFilename )
 
 
 const Surface & FixedFont::submitLatin1GlyphToCache( 
-		Ceylan::Latin1Char character, Pixels::ColorDefinition glyphColor ) 
-	throw( TextException )
+	Ceylan::Latin1Char character, Pixels::ColorDefinition glyphColor ) 
 {
 	
 	/*
@@ -917,7 +920,7 @@ const Surface & FixedFont::submitLatin1GlyphToCache(
 
 
 Surface & FixedFont::basicRenderLatin1Glyph( Ceylan::Latin1Char character, 
-	Pixels::ColorDefinition glyphColor ) throw( TextException )
+	Pixels::ColorDefinition glyphColor )
 {
 
 	ColorMask redMask, greenMask, blueMask ;
@@ -974,8 +977,8 @@ Surface & FixedFont::basicRenderLatin1Glyph( Ceylan::Latin1Char character,
 								
 							
 void FixedFont::basicBlitLatin1Glyph( Surface & targetSurface,
-	 Coordinate x, Coordinate y, Ceylan::Latin1Char character,
-	 Pixels::ColorDefinition glyphColor ) throw( TextException )
+	Coordinate x, Coordinate y, Ceylan::Latin1Char character,
+	Pixels::ColorDefinition glyphColor )
 {
 
 #if OSDL_USES_SDL_GFX
@@ -1012,7 +1015,7 @@ void FixedFont::basicBlitLatin1Glyph( Surface & targetSurface,
 							
 string FixedFont::BuildFontFilenameFor( 
 	Length characterWidth, Length characterHeight,
-	RenderingStyle renderingStyle ) throw( TextException )
+	RenderingStyle renderingStyle )
 {
 
 	string attribute ;
@@ -1063,7 +1066,7 @@ string FixedFont::BuildFontFilenameFor(
 
 void FixedFont::GetFontAttributesFrom( const string & filename, 
 	Length & characterWidth, Length & characterHeight, 
-	RenderingStyle & renderingStyle ) throw( TextException )
+	RenderingStyle & renderingStyle )
 {
 
 	// Some examples: '10x20.fnt', '8x13B.fnt'

@@ -74,12 +74,12 @@ const MouseNumber OSDL::Events::DefaultMouse = 0 ;
 
 
 
-
-MouseException::MouseException( const std::string & reason ) throw():
+MouseException::MouseException( const std::string & reason ) :
 	EventsException( "Mouse exception: " + reason ) 
 {
 	
 }
+
 
 
 MouseException::~MouseException() throw()

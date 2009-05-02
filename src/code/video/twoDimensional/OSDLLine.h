@@ -24,6 +24,7 @@
  */
 
 
+
 #ifndef OSDL_LINE_H_
 #define OSDL_LINE_H_
 
@@ -33,24 +34,30 @@
 
 
 
+
 namespace OSDL
 {
 
 	
+	
 	namespace Video
 	{
+
 
 
 		// Lines are drawn into Surfaces.
 		class Surface ;
 				
 		
+		
 		namespace TwoDimensional
 		{
 		
 		
+		
 			class Point2D ;
 			
+		
 		
 			/**
 		 	 * This namespace gathers all line-oriented graphics output.
@@ -101,8 +108,8 @@ namespace OSDL
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw() ;
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
+	
 	
 	
 				/**
@@ -128,7 +135,8 @@ namespace OSDL
 				 */
 				OSDL_DLL bool drawHorizontal( Surface & targetSurface, 
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
-					Pixels::PixelColor actualColor ) throw() ;
+					Pixels::PixelColor actualColor ) ;
+	
 	
 	
 				/**
@@ -153,7 +161,8 @@ namespace OSDL
 				 */
 				OSDL_DLL bool drawHorizontal( Surface & targetSurface, 
 					Coordinate xStart, Coordinate xStop, Coordinate y, 
-					Pixels::ColorDefinition = Pixels::White ) throw() ;
+					Pixels::ColorDefinition = Pixels::White ) ;
+	
 	
 	
 				/**
@@ -180,8 +189,8 @@ namespace OSDL
 					Coordinate x, Coordinate yStart, Coordinate yStop, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw() ;
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
+	
 	
 	
 				/**
@@ -206,8 +215,8 @@ namespace OSDL
 				 */
 				OSDL_DLL bool drawVertical( Surface & targetSurface, 
 					Coordinate x, Coordinate yStart, Coordinate yStop, 
-					Pixels::ColorDefinition = Pixels::White )
-					throw() ;
+					Pixels::ColorDefinition = Pixels::White ) ;
+
 
 
 				/*
@@ -217,6 +226,7 @@ namespace OSDL
 				 */
 				
 				
+				
 				/**
 				 * Draws a line ranging from point (xStart;yStart), included,
 				 * to point (xStop;yStop), which is included if and only 
@@ -242,8 +252,8 @@ namespace OSDL
 					Coordinate xStop, Coordinate yStop, 
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw() ;
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
+	
 	
 	
 				/**
@@ -269,8 +279,8 @@ namespace OSDL
 				OSDL_DLL bool draw( Surface & targetSurface, 
 					Coordinate xStart, Coordinate yStart, 
 					Coordinate xStop, Coordinate yStop, 
-					Pixels::ColorDefinition colorDef = Pixels::White )
-						throw() ;
+					Pixels::ColorDefinition colorDef = Pixels::White ) ;
+					
 					
 					
 				/**
@@ -297,8 +307,8 @@ namespace OSDL
 					Point2D & firstPoint, Point2D & secondPoint,
 					Pixels::ColorElement red, Pixels::ColorElement green, 
 					Pixels::ColorElement blue, 
-					Pixels::ColorElement alpha = Pixels::AlphaOpaque )
-						throw() ;
+					Pixels::ColorElement alpha = Pixels::AlphaOpaque ) ;
+					
 					
 					
 				/**
@@ -323,7 +333,8 @@ namespace OSDL
 				 */					
 				OSDL_DLL bool draw( Surface & targetSurface, 
 					Point2D & firstPoint, Point2D & secondPoint,
-					Pixels::ColorDefinition colorDef = Pixels::White ) throw() ;
+					Pixels::ColorDefinition colorDef = Pixels::White ) ;
+				
 				
 				
 				/**
@@ -346,7 +357,8 @@ namespace OSDL
 				OSDL_DLL bool drawCross( Surface & targetSurface, 
 					const Point2D & center,
 					Pixels::ColorDefinition colorDef = Pixels::White, 
-					Length squareEdge = 5 ) throw() ;
+					Length squareEdge = 5 ) ;
+					
 					
 					
 				/**
@@ -369,7 +381,7 @@ namespace OSDL
 				OSDL_DLL bool drawCross( Surface & targetSurface, 
 					Coordinate xCenter, Coordinate yCenter,
 					Pixels::ColorDefinition colorDef = Pixels::White, 
-					Length squareEdge = 5 ) throw() ;
+					Length squareEdge = 5 ) ;
 					
 				
 				
@@ -380,6 +392,7 @@ namespace OSDL
 	}
 	
 }
+
 
 
 #endif // OSDL_LINE_H_

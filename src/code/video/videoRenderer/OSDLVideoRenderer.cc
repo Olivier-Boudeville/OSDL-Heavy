@@ -59,12 +59,13 @@ using std::string ;
 
 
 
-VideoRenderingException::VideoRenderingException( const string & message )
-		throw(): 
+
+VideoRenderingException::VideoRenderingException( const string & message ) : 
 	RenderingException( "Video rendering exception: " + message ) 
 {
 
 }
+	
 	
 			
 VideoRenderingException::~VideoRenderingException() throw()
@@ -75,8 +76,8 @@ VideoRenderingException::~VideoRenderingException() throw()
 
 
 
-VideoRenderer::VideoRenderer( bool registerToRootRenderer ) 
-		throw( VideoRenderingException ):
+
+VideoRenderer::VideoRenderer( bool registerToRootRenderer ) :
 	Renderer( /* registerToScheduler */ false )
 	//,_internalCamera( 0 )
 {
@@ -131,13 +132,14 @@ VideoRenderer::~VideoRenderer() throw()
 
 
 /*
-bool hasCamera() const throw() 
+bool hasCamera() const
 {
 	return ( _internalCamera != 0 ) ;
 }
 
 
-Camera & VideoRenderer::getCamera() const throw( RenderingException )
+
+Camera & VideoRenderer::getCamera() const
 {
 	if ( _internalCamera == 0 )
 		return * _internalCamera ;
@@ -157,10 +159,9 @@ void VideoRenderer::setCamera( Camera & newCamera ) throw()
 
 
 void VideoRenderer::render( RenderingTick currentRenderingTick ) 
-	throw()
 {
 
-	OSDL_VIDEO_RENDER_LOG( "Video rendering ! " ) ;
+	OSDL_VIDEO_RENDER_LOG( "Video rendering! " ) ;
 	
 	/*
 	 * Beware, currentRenderingTick might be always zero if no 
@@ -174,7 +175,6 @@ void VideoRenderer::render( RenderingTick currentRenderingTick )
 
 
 void VideoRenderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
-	throw()
 {
 
 	OSDL_VIDEO_RENDER_LOG( "Video rendering skipped." ) ;
@@ -185,8 +185,7 @@ void VideoRenderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
 
 
 
-const string VideoRenderer::toString( Ceylan::VerbosityLevels level ) 
-	const throw() 
+const string VideoRenderer::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Video renderer, last rendering tick was " 

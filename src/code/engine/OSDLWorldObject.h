@@ -38,6 +38,7 @@ namespace OSDL
 {
 
 
+
 	namespace Engine 
 	{
 	
@@ -66,6 +67,7 @@ namespace OSDL
 		class OSDL_DLL WorldObject : public Ceylan::Model
 		{
 		
+		
 			public:
 			
 				
@@ -73,11 +75,13 @@ namespace OSDL
 				 * Constructs a new blank world object.
 				 *
 				 */
-				WorldObject() throw() ;
+				WorldObject() ;
+				
 				
 				
 				/// Virtual destructor.
 				virtual ~WorldObject() throw() ;
+
 
 
 	            /**
@@ -92,15 +96,16 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 					
 		
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_WORLD_OBJECT_H_

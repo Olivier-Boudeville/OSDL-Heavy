@@ -51,6 +51,7 @@
 #endif // OSDL_USES_SDL_MIXER
 
 
+
 // Replicating these defines allows to enable them on a per-class basis:
 #if OSDL_DEBUG_AUDIO_PLAYBACK
 
@@ -77,6 +78,8 @@ using namespace Ceylan::Log ;
 using namespace Ceylan::System ;
 
 using namespace OSDL::Audio ;
+
+
 
 
 /**
@@ -140,11 +143,13 @@ using namespace OSDL::Audio ;
  */
 
 
+
 extern const BitrateType OSDL::Audio::CBR = 1 ;
 extern const BitrateType OSDL::Audio::VBR = 2 ;
 
 
-MusicException::MusicException( const string & reason ) throw():
+
+MusicException::MusicException( const string & reason ) :
 	AudibleException( reason )
 {
 
@@ -159,8 +164,10 @@ MusicException::~MusicException() throw()
 
 
 
+
 /// Starts with no current music:
 Music * Music::_CurrentMusic = 0 ;
+
 
 
 
@@ -173,8 +180,7 @@ const OSDL::CommandManagerSettings * Music::_CommandManagerSettings = 0 ;
 
 
 
-Music::Music( const std::string & musicFile, bool preload ) 
-		throw( MusicException ):
+Music::Music( const std::string & musicFile, bool preload ) :
 	Audible( /* nothing loaded yet, hence not converted */ false ),	
 	Ceylan::LoadableWithContent<LowLevelMusic>( musicFile ),
 	 _dataStream( 0 ),
@@ -255,10 +261,12 @@ Music::~Music() throw()
 
 
 
+
 // LoadableWithContent template instanciation.
 
 
-bool Music::load() throw( Ceylan::LoadableException )
+
+bool Music::load()
 {
 
 		
@@ -449,7 +457,7 @@ bool Music::load() throw( Ceylan::LoadableException )
 
 
 
-bool Music::unload() throw( Ceylan::LoadableException )
+bool Music::unload()
 {
 
 	if ( ! hasContent() )
@@ -523,10 +531,12 @@ bool Music::unload() throw( Ceylan::LoadableException )
 
 
 
+
 // Audible implementation.
 
 
-Volume Music::getVolume() const throw( MusicException )
+
+Volume Music::getVolume() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -559,7 +569,7 @@ Volume Music::getVolume() const throw( MusicException )
 
 
 
-void Music::setVolume( Volume newVolume ) throw( MusicException )
+void Music::setVolume( Volume newVolume )
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -614,7 +624,7 @@ void Music::setVolume( Volume newVolume ) throw( MusicException )
 
 
 
-MusicType Music::getType() const throw( AudioException )
+MusicType Music::getType() const
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -633,6 +643,7 @@ MusicType Music::getType() const throw( AudioException )
 
 
 
+
 // Play section.
 
 
@@ -640,7 +651,7 @@ MusicType Music::getType() const throw( AudioException )
 // Simple play subsection.
 
 
-void Music::play( PlaybackCount playCount ) throw( AudibleException )
+void Music::play( PlaybackCount playCount )
 {
 	
 	if ( playCount == 0 )
@@ -708,11 +719,12 @@ void Music::play( PlaybackCount playCount ) throw( AudibleException )
 
 
 
+
 // Play with fade-in subsection.
 
 
 void Music::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
-	PlaybackCount playCount ) throw( AudibleException )
+	PlaybackCount playCount )
 {
 
 	_isPlaying = true ;
@@ -783,9 +795,8 @@ void Music::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
 
 
 void Music::playWithFadeInFromPosition( 
-		Ceylan::System::Millisecond fadeInMaxDuration,
-		MusicPosition position, PlaybackCount playCount ) 
-	throw( AudibleException )
+	Ceylan::System::Millisecond fadeInMaxDuration,
+	MusicPosition position, PlaybackCount playCount ) 
 {
 
 	_isPlaying = true ;
@@ -812,7 +823,7 @@ void Music::playWithFadeInFromPosition(
 
 
 
-bool Music::isPlaying() throw()
+bool Music::isPlaying()
 {
 
 	return _isPlaying ;
@@ -821,7 +832,7 @@ bool Music::isPlaying() throw()
 
 
 
-void Music::pause() throw( MusicException )
+void Music::pause()
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -833,7 +844,6 @@ void Music::pause() throw( MusicException )
 		"not supported on the ARM7" ) ;
 
 #elif defined(OSDL_RUNS_ON_ARM9)
-
 
 	try
 	{
@@ -873,7 +883,7 @@ void Music::pause() throw( MusicException )
 
 
 
-void Music::unpause() throw( MusicException )
+void Music::unpause()
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -926,7 +936,7 @@ void Music::unpause() throw( MusicException )
 
 
 
-void Music::rewind() throw( MusicException )
+void Music::rewind()
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -945,7 +955,7 @@ void Music::rewind() throw( MusicException )
 
 	
 																				
-void Music::setPosition( MusicPosition newPosition ) throw( MusicException )
+void Music::setPosition( MusicPosition newPosition )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -966,9 +976,8 @@ void Music::setPosition( MusicPosition newPosition ) throw( MusicException )
 
 
 
-void Music::stop() throw( MusicException )		
+void Music::stop()	
 {
-
 
 #if OSDL_ARCH_NINTENDO_DS
 		
@@ -1026,7 +1035,6 @@ void Music::stop() throw( MusicException )
 
 
 void Music::fadeIn( Ceylan::System::Millisecond fadeInMaxDuration ) 
-	throw( MusicException )
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -1058,7 +1066,6 @@ void Music::fadeIn( Ceylan::System::Millisecond fadeInMaxDuration )
 
 
 void Music::fadeOut( Ceylan::System::Millisecond fadeOutMaxDuration ) 
-	throw( MusicException )
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -1099,7 +1106,7 @@ void Music::fadeOut( Ceylan::System::Millisecond fadeOutMaxDuration )
 
 
 
-void Music::setAsCurrent() throw( AudioException )
+void Music::setAsCurrent()
 {
 
 	// A music can be repeated:
@@ -1120,7 +1127,7 @@ void Music::setAsCurrent() throw( AudioException )
 
 
 
-void Music::requestFillOfFirstBuffer() throw() 
+void Music::requestFillOfFirstBuffer()
 {
 
 #if ! OSDL_USES_SDL_MIXER
@@ -1133,7 +1140,7 @@ void Music::requestFillOfFirstBuffer() throw()
 
 
 
-void Music::requestFillOfSecondBuffer() throw()
+void Music::requestFillOfSecondBuffer()
 {
 
 #if ! OSDL_USES_SDL_MIXER
@@ -1146,7 +1153,7 @@ void Music::requestFillOfSecondBuffer() throw()
 
 
 
-const string Music::toString( Ceylan::VerbosityLevels level ) const throw()
+const string Music::toString( Ceylan::VerbosityLevels level ) const
 {
 	
 	if ( level == Ceylan::low )
@@ -1188,10 +1195,11 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const throw()
 }
 
 
+
+
 #if OSDL_ARCH_NINTENDO_DS
 
 void Music::SetCommandManagerSettings( const CommandManagerSettings & settings )
-	throw()
 {
 
 	_CommandManagerSettings = & settings ;
@@ -1201,7 +1209,8 @@ void Music::SetCommandManagerSettings( const CommandManagerSettings & settings )
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
-void Music::ManageCurrentMusic() throw( AudioException )
+
+void Music::ManageCurrentMusic()
 {
 
 	if ( _CurrentMusic != 0 )
@@ -1211,10 +1220,12 @@ void Music::ManageCurrentMusic() throw( AudioException )
 
 
 
+
+
 // Protected section.
 
 
-MusicType Music::GetTypeOf( const Music * music ) throw( AudioException )
+MusicType Music::GetTypeOf( const Music * music )
 {
 
 #if OSDL_USES_SDL_MIXER
@@ -1287,7 +1298,7 @@ MusicType Music::GetTypeOf( const Music * music ) throw( AudioException )
 
 
 
-string Music::DescribeMusicType( MusicType type ) throw( AudioException )
+string Music::DescribeMusicType( MusicType type )
 {
 	
 	switch( type )
@@ -1333,7 +1344,7 @@ string Music::DescribeMusicType( MusicType type ) throw( AudioException )
 
 
 
-string Music::DescribeBitrateType( BitrateType type ) throw( AudioException )
+string Music::DescribeBitrateType( BitrateType type )
 {
 	
 	switch( type )
@@ -1358,7 +1369,7 @@ string Music::DescribeBitrateType( BitrateType type ) throw( AudioException )
 
 
 
-void Music::onPlaybackEnded() throw( AudioException )
+void Music::onPlaybackEnded()
 {
 
 	// Made to be overriden.
@@ -1368,7 +1379,7 @@ void Music::onPlaybackEnded() throw( AudioException )
 
 
 
-void Music::managePlaybackEnded() throw( AudioException )
+void Music::managePlaybackEnded()
 {
 	
 	_isPlaying = false ;
@@ -1400,12 +1411,11 @@ void Music::managePlaybackEnded() throw( AudioException )
 
 #endif // OSDL_ARCH_NINTENDO_DS
 
-		
 }
 
 
 
-void Music::onNoMoreCurrent() throw( AudioException )
+void Music::onNoMoreCurrent()
 {
 
 	LOG_WARNING_AUDIO( "Music::onNoMoreCurrent: " + toString( Ceylan::low ) 
@@ -1415,7 +1425,7 @@ void Music::onNoMoreCurrent() throw( AudioException )
 
 
 
-void Music::manageNoMoreCurrent() throw( AudioException )
+void Music::manageNoMoreCurrent()
 {
 	
 	LOG_TRACE_AUDIO( "Music::manageNoMoreCurrent" ) ;
@@ -1456,7 +1466,7 @@ void Music::manageNoMoreCurrent() throw( AudioException )
 
 
 
-void Music::manageBufferRefill() throw( AudioException )
+void Music::manageBufferRefill()
 {
  
 #if OSDL_ARCH_NINTENDO_DS
@@ -1473,7 +1483,7 @@ void Music::manageBufferRefill() throw( AudioException )
  
 
 		
-void Music::fillFirstBuffer() throw( AudioException )
+void Music::fillFirstBuffer()
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -1569,7 +1579,7 @@ void Music::fillFirstBuffer() throw( AudioException )
 
 
 
-void Music::fillSecondBuffer() throw( AudioException )
+void Music::fillSecondBuffer()
 {
 
 #if OSDL_ARCH_NINTENDO_DS

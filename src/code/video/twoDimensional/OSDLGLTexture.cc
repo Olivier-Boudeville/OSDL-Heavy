@@ -51,8 +51,10 @@
 
 
 
+
 // To protect LoadImage:
 #include "OSDLIncludeCorrecter.h"
+
 
 using std::string ;
 
@@ -61,11 +63,14 @@ using namespace Ceylan::Log ;
 using namespace Ceylan::Maths ; // for IsAPowerOfTwo 
 
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::OpenGL ;
+
 
 
 GLTexture::TextureDimensionality GLTexture::CurrentTextureDimensionality = 
 	TwoDim ;
+
 
 
 /*
@@ -94,12 +99,13 @@ GLTexture::TextureDimensionality GLTexture::CurrentTextureDimensionality =
 
 
 
-GLTextureException::GLTextureException( const std::string & reason ) throw():
+GLTextureException::GLTextureException( const std::string & reason ) :
 	OpenGLException( reason )
 {
 
 }
 
+			
 					
 GLTextureException::~GLTextureException() throw()
 {
@@ -109,8 +115,8 @@ GLTextureException::~GLTextureException() throw()
 
 
 
-GLTexture::GLTexture( const std::string imageFilename, TextureFlavour flavour ) 
-		throw( GLTextureException ):
+
+GLTexture::GLTexture( const std::string imageFilename, TextureFlavour flavour ):
 	_source( 0 ),
 	_id( 0 ),
 	_flavour( flavour ),
@@ -155,8 +161,7 @@ GLTexture::GLTexture( const std::string imageFilename, TextureFlavour flavour )
 
 
 
-GLTexture::GLTexture( Surface & sourceSurface, TextureFlavour flavour )
-		throw( GLTextureException ):
+GLTexture::GLTexture( Surface & sourceSurface, TextureFlavour flavour ) :
 	_source( 0 ),
 	_id( 0 ),
 	_flavour( flavour ),
@@ -191,7 +196,7 @@ GLTexture::~GLTexture() throw()
 
 
 
-Length GLTexture::getWidth() const throw()
+Length GLTexture::getWidth() const
 {
 
 	return _width ;
@@ -199,7 +204,8 @@ Length GLTexture::getWidth() const throw()
 }
 
 
-Length GLTexture::getHeight() const throw()
+
+Length GLTexture::getHeight() const
 {
 
 	return _height ;
@@ -209,7 +215,7 @@ Length GLTexture::getHeight() const throw()
 
 
 
-bool GLTexture::canBeUploaded() const throw()
+bool GLTexture::canBeUploaded() const
 {
 
 	return ( _source != 0 ) ;
@@ -218,7 +224,7 @@ bool GLTexture::canBeUploaded() const throw()
 
 
 
-void GLTexture::upload() throw( GLTextureException )
+void GLTexture::upload()
 {
 
 	// This is the upload version without a source surface.
@@ -245,7 +251,7 @@ void GLTexture::upload() throw( GLTextureException )
 
 
 
-void GLTexture::setAsCurrent() const throw( GLTextureException )
+void GLTexture::setAsCurrent() const
 {
 	
 #if OSDL_USES_OPENGL
@@ -296,7 +302,7 @@ void GLTexture::setAsCurrent() const throw( GLTextureException )
 
 
 
-bool GLTexture::isResident() throw( GLTextureException )
+bool GLTexture::isResident()
 {
 
 	
@@ -359,7 +365,7 @@ bool GLTexture::isResident() throw( GLTextureException )
 
 
 
-const string GLTexture::toString( Ceylan::VerbosityLevels level ) const throw()
+const string GLTexture::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "OpenGL texture, " ;
@@ -386,10 +392,12 @@ const string GLTexture::toString( Ceylan::VerbosityLevels level ) const throw()
 	
 
 
+
 // Static section.
 
 
-GLTexture::TextureDimensionality GLTexture::GetTextureDimensionality() throw()
+
+GLTexture::TextureDimensionality GLTexture::GetTextureDimensionality()
 {
 
 	return CurrentTextureDimensionality ;
@@ -399,7 +407,7 @@ GLTexture::TextureDimensionality GLTexture::GetTextureDimensionality() throw()
 
 
 void GLTexture::SetTextureDimensionality( 
-	TextureDimensionality newDimensionality ) throw()
+	TextureDimensionality newDimensionality )
 {
 
 	CurrentTextureDimensionality = newDimensionality ;
@@ -409,7 +417,6 @@ void GLTexture::SetTextureDimensionality(
 
 
 void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour ) 
-	throw( GLTextureException )
 {
 
 #if OSDL_USES_OPENGL
@@ -586,10 +593,9 @@ void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour )
 
 
 void GLTexture::SetTextureEnvironmentParameter( 
-		GLEnumeration targetEnvironment,
-		GLEnumeration environmentParameter,
-		GLfloat parameterValue ) 
-	throw( GLTextureException )
+	GLEnumeration targetEnvironment,
+	GLEnumeration environmentParameter,
+	GLfloat parameterValue ) 
 {
 
 #if OSDL_USES_OPENGL
@@ -648,10 +654,9 @@ void GLTexture::SetTextureEnvironmentParameter(
 
 
 void GLTexture::SetTextureEnvironmentParameter( 
-		GLEnumeration targetEnvironment,
-		GLEnumeration environmentParameter,
-		const GLfloat * parameterValues ) 
-	throw( GLTextureException )
+	GLEnumeration targetEnvironment,
+	GLEnumeration environmentParameter,
+	const GLfloat * parameterValues ) 
 {
 
 #if OSDL_USES_OPENGL
@@ -713,7 +718,8 @@ void GLTexture::SetTextureEnvironmentParameter(
 // Protected section.
 
 
-void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException ) 
+
+void GLTexture::upload( Surface & sourceSurface ) 
 {
 
 #if OSDL_USES_OPENGL
@@ -970,7 +976,6 @@ void GLTexture::upload( Surface & sourceSurface ) throw( GLTextureException )
 			+ e.toString() ) ;
 			
 	}
-	
 	
 #else // OSDL_USES_OPENGL
 

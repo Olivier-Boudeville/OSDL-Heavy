@@ -31,7 +31,9 @@
 #include "OSDLAudible.h"     // for AudibleException, inheritance
 #include "OSDLUtils.h"          // for Datastream, no easy forward declaration
 
+
 #include "Ceylan.h"          // for LoadableWithContent
+
 
 #include <string>
 
@@ -46,6 +48,7 @@ struct Mix_Chunk ;
 
 
 
+
 namespace OSDL
 {
 
@@ -54,6 +57,7 @@ namespace OSDL
 	namespace Audio 
 	{
 			
+
 
 		/// Low-level sound being used internally.
 #if ! defined(OSDL_USES_SDL_MIXER) || OSDL_USES_SDL_MIXER 
@@ -86,8 +90,10 @@ namespace OSDL
 			Ceylan::Uint32 _size ;
 					 
 		} ;
+		
 
 #endif // OSDL_USES_SDL_MIXER
+
 
 
 			
@@ -96,7 +102,7 @@ namespace OSDL
 		{ 
 			public: 
 			
-				SoundException( const std::string & reason ) throw() ; 
+				SoundException( const std::string & reason ) ; 
 				virtual ~SoundException() throw() ; 
 		} ;
 			
@@ -129,8 +135,10 @@ namespace OSDL
 		{
 		
 		
+		
 			public:
 				
+
 
 				/**
 				 * Creates a new sound instance from specified file.
@@ -153,12 +161,13 @@ namespace OSDL
 				 *
 				 */
 				explicit Sound( const std::string & soundFile, 
-						bool preload = true )
-					throw( SoundException ) ;
+					bool preload = true ) ;
+				
 				
 				
 				/// Virtual destructor.
 				virtual ~Sound() throw() ;
+		
 		
 		
 		
@@ -174,7 +183,8 @@ namespace OSDL
 				 * @throw Ceylan::LoadableException whenever the loading fails.
 				 *
 				 */
-				virtual bool load() throw( Ceylan::LoadableException ) ;
+				virtual bool load() ;
+		
 		
 		
  	           /**
@@ -189,12 +199,13 @@ namespace OSDL
 				* @throw Ceylan::LoadableException whenever the unloading fails.
 				*
 				*/
-				virtual bool unload() throw( Ceylan::LoadableException ) ;
+				virtual bool unload() ;
 		
 
 
 
 				// Audible implementation.
+				
 				
 				
 				/**
@@ -205,7 +216,8 @@ namespace OSDL
 				 * available.
 				 *
 				 */
-				virtual Volume getVolume() const throw( SoundException ) ;
+				virtual Volume getVolume() const ;
+		
 		
 		
 				/**
@@ -220,8 +232,7 @@ namespace OSDL
 				 * available.
 				 *
 				 */
-				virtual void setVolume( Volume newVolume ) 
-					throw( SoundException ) ;
+				virtual void setVolume( Volume newVolume ) ;
 		
 		
 		
@@ -229,7 +240,7 @@ namespace OSDL
 				/*
 				 * Play section.
 				 *
-				 * Each subsection includes three methods :
+				 * Each subsection includes three methods:
 				 *
 				 * 1. one inherited from Audible with automatic channel choice,
 				 * this choice not being returned
@@ -243,7 +254,9 @@ namespace OSDL
 				
 				
 				
+				
 				// Simple play subsection.
+				
 				
 				
 				/**
@@ -262,8 +275,8 @@ namespace OSDL
 				 * known.
 				 *
 				 */
-				virtual void play( PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+				virtual void play( PlaybackCount playCount = 1 ) ; 
+
 
 
 				/**
@@ -285,7 +298,8 @@ namespace OSDL
 				 *
 				 */
 				virtual ChannelNumber playReturnChannel( 
-					PlaybackCount playCount = 1 ) throw( AudibleException ) ; 
+					PlaybackCount playCount = 1 ) ; 
+
 
 
 				/**
@@ -306,11 +320,13 @@ namespace OSDL
 				 */
 				virtual void play( 
 					ChannelNumber mixingChannelNumber, 
-					PlaybackCount playCount = 1 ) throw( AudibleException ) ; 
+					PlaybackCount playCount = 1 ) ; 
+
 
 
 
 				// Play with time-out subsection.
+
 
 		
 				/**
@@ -332,9 +348,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void playForAtMost( 
-						Ceylan::System::Millisecond maxDuration, 
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond maxDuration, 
+					PlaybackCount playCount = 1 ) ; 
+	
 	
 		
 				/**
@@ -358,9 +374,9 @@ namespace OSDL
 				 *
 				 */
 				virtual ChannelNumber playForAtMostReturnChannel( 
-						Ceylan::System::Millisecond maxDuration, 
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond maxDuration, 
+					PlaybackCount playCount = 1 ) ; 
+	
 	
 	
 				/**
@@ -385,14 +401,15 @@ namespace OSDL
 				 *
 				 */
 				virtual void playForAtMost(
-						Ceylan::System::Millisecond maxDuration, 
-						ChannelNumber mixingChannelNumber,
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond maxDuration, 
+					ChannelNumber mixingChannelNumber,
+					PlaybackCount playCount = 1 ) ; 
+		
 		
 	
 		
 				// Play with fade-in subsection.
+		
 		
 		
 				/**
@@ -416,9 +433,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeIn( 
-						Ceylan::System::Millisecond fadeInMaxDuration,
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond fadeInMaxDuration,
+					PlaybackCount playCount = 1 ) ; 
+		
 		
 		
 				/**
@@ -444,9 +461,9 @@ namespace OSDL
 				 *
 				 */
 				virtual ChannelNumber playWithFadeInReturnChannel( 
-						Ceylan::System::Millisecond fadeInMaxDuration,
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond fadeInMaxDuration,
+					PlaybackCount playCount = 1 ) ; 
+		
 		
 				
 				/**
@@ -473,14 +490,15 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeIn( 
-						Ceylan::System::Millisecond fadeInMaxDuration,
-						ChannelNumber mixingChannelNumber,
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond fadeInMaxDuration,
+					ChannelNumber mixingChannelNumber,
+					PlaybackCount playCount = 1 ) ; 
+
 
 
 
 				// Play with time-out and fade-in subsection.
+
 
 
 				/**
@@ -507,10 +525,10 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeInForAtMost( 
-						Ceylan::System::Millisecond playbackMaxDuration,
-						Ceylan::System::Millisecond fadeInMaxDuration,
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond playbackMaxDuration,
+					Ceylan::System::Millisecond fadeInMaxDuration,
+					PlaybackCount playCount = 1 ) ; 
+
 
 
 				/**
@@ -539,10 +557,10 @@ namespace OSDL
 				 *
 				 */
 				virtual ChannelNumber playWithFadeInForAtMostReturnChannel( 
-						Ceylan::System::Millisecond playbackMaxDuration,
-						Ceylan::System::Millisecond fadeInMaxDuration,
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond playbackMaxDuration,
+					Ceylan::System::Millisecond fadeInMaxDuration,
+					PlaybackCount playCount = 1 ) ; 
+
 
 
 				/**
@@ -572,11 +590,10 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeInForAtMost( 
-						Ceylan::System::Millisecond playbackMaxDuration,
-						Ceylan::System::Millisecond fadeInMaxDuration,
-						ChannelNumber mixingChannelNumber,
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond playbackMaxDuration,
+					Ceylan::System::Millisecond fadeInMaxDuration,
+					ChannelNumber mixingChannelNumber,
+					PlaybackCount playCount = 1 ) ; 
 		
 		
 		
@@ -594,8 +611,8 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+			
 			
 			
 			
@@ -615,6 +632,7 @@ namespace OSDL
 				OSDL::Utils::DataStream * _dataStream ;
 			
 			
+			
 			private:
 
 	
@@ -626,7 +644,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit Sound( const Sound & source ) throw() ;
+				explicit Sound( const Sound & source ) ;
+			
 			
 			
 				/**
@@ -637,10 +656,11 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 *
 				 */			 
-				Sound & operator = ( const Sound & source ) throw() ;
+				Sound & operator = ( const Sound & source ) ;
 				
 			
 		} ;
+		
 		
 	}	
 	

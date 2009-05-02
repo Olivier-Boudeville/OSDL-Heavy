@@ -26,6 +26,7 @@
 
 #include "OSDLPeriodicSlot.h"
 
+
 using namespace OSDL::Events ;
 using namespace OSDL::Engine ;
 
@@ -37,7 +38,7 @@ using std::list ;
 
 
 
-PeriodicSlot::PeriodicSlot( Period periodicity ) throw() :
+PeriodicSlot::PeriodicSlot( Period periodicity ) :
 	_period( periodicity ),
 	_currentSubSlot( 0 )
 {
@@ -97,8 +98,7 @@ PeriodicSlot::~PeriodicSlot() throw()
 
 
 
-Period PeriodicSlot::add( PeriodicalActiveObject & newObject ) 
-	throw( SchedulingException )
+Period PeriodicSlot::add( PeriodicalActiveObject & newObject )
 {
 	
 	Period chosenSubSlot ;
@@ -137,7 +137,6 @@ Period PeriodicSlot::add( PeriodicalActiveObject & newObject )
 
 
 void PeriodicSlot::removeFromSubslot( PeriodicalActiveObject & object ) 
-	throw( SchedulingException )
 {
 
 	Period subslot = object.getSubslotNumber() ;
@@ -179,7 +178,7 @@ void PeriodicSlot::removeFromSubslot( PeriodicalActiveObject & object )
 
 	
 
-bool PeriodicSlot::onNextTick( SimulationTick newTick ) throw()
+bool PeriodicSlot::onNextTick( SimulationTick newTick )
 {
 	
 	/*
@@ -255,7 +254,6 @@ bool PeriodicSlot::onNextTick( SimulationTick newTick ) throw()
 
 
 void PeriodicSlot::onSimulationSkipped( SimulationTick skipped ) 
-	throw( SchedulingException )
 {
 
 	Period subSlot = getSubSlotForSimulationTick( skipped ) ;
@@ -277,7 +275,7 @@ void PeriodicSlot::onSimulationSkipped( SimulationTick skipped )
 
 
 					
-Period PeriodicSlot::getPeriod() const throw()
+Period PeriodicSlot::getPeriod() const
 {
 
 	return _period ;
@@ -286,7 +284,7 @@ Period PeriodicSlot::getPeriod() const throw()
 
 
 
-bool PeriodicSlot::isEmpty() const throw()
+bool PeriodicSlot::isEmpty() const
 {
 
 	for ( Period i = 0; i < _period; i++ )
@@ -304,8 +302,7 @@ bool PeriodicSlot::isEmpty() const throw()
 
 
 
-const string PeriodicSlot::toString( Ceylan::VerbosityLevels level ) 
-	const throw()
+const string PeriodicSlot::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Periodic slot whose period is " 
@@ -358,8 +355,7 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level )
 
 						
 
-Period PeriodicSlot::getSubSlotForSimulationTick( SimulationTick tick ) 
-	const throw()
+Period PeriodicSlot::getSubSlotForSimulationTick( SimulationTick tick ) const
 {
 
 	return ( tick % _period ) ;
@@ -369,7 +365,7 @@ Period PeriodicSlot::getSubSlotForSimulationTick( SimulationTick tick )
 
 
 void PeriodicSlot::addInSubSlot( PeriodicalActiveObject & newObject, 
-	Period targetSubslot ) throw()
+	Period targetSubslot )
 {
 
 	if ( _subslots[ targetSubslot ] == 0 )
@@ -382,7 +378,7 @@ void PeriodicSlot::addInSubSlot( PeriodicalActiveObject & newObject,
 
 
 
-Period PeriodicSlot::getLeastBusySubSlot() const throw()
+Period PeriodicSlot::getLeastBusySubSlot() const
 {
 
 	Weight minWeight = _subslotWeights[ 0 ] ;
@@ -405,7 +401,7 @@ Period PeriodicSlot::getLeastBusySubSlot() const throw()
 
 
 bool PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
-	SimulationTick currentTime ) throw()
+	SimulationTick currentTime )
 {
 
 	if ( _subslots[ subSlot ] == 0 )

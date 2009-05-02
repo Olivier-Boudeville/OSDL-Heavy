@@ -43,9 +43,11 @@ namespace OSDL
 {
 
 
+
 	namespace Engine 
 	{
 	
+			
 			
 		/**
 		 * 2D bounding boxes are specialized bounding boxes for objects in
@@ -69,6 +71,7 @@ namespace OSDL
 			public:
 			
 			
+			
 				/**
 				 * Constructor of a 2D bounding box object.
 				 *
@@ -83,14 +86,16 @@ namespace OSDL
 				 *
 				 */
 				explicit BoundingBox2D( Ceylan::Locatable2D & father, 
-					const Ceylan::Maths::Linear::Bipoint & center ) throw() ;
+					const Ceylan::Maths::Linear::Bipoint & center ) ;
 				
+						
 								
 				/**
 				 * Virtual destructor.
 				 *
 				 */
 				virtual ~BoundingBox2D() throw() ;
+
 
 
 	            /**
@@ -106,12 +111,13 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+				
 				
 				
 				
 			protected:
+			
 			
 				
 				/**
@@ -127,8 +133,8 @@ namespace OSDL
 				 * method to be useful for its caller.
 				 *
 				 */
-				static BoundingBox2D & CheckIs2D( BoundingBox & box )
-					throw (BoundingBoxException) ;			
+				static BoundingBox2D & CheckIs2D( BoundingBox & box ) ;			
+					
 					
 					
 					
@@ -144,7 +150,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-	        	explicit BoundingBox2D( const BoundingBox2D & source ) throw() ;
+	        	explicit BoundingBox2D( const BoundingBox2D & source ) ;
+
 
 
 				/**
@@ -155,15 +162,18 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-	        	BoundingBox2D & operator= ( const BoundingBox2D & source )
-					throw() ;
+	        	BoundingBox2D & operator= ( const BoundingBox2D & source ) ;
+				
 				
 				
 		} ;
+		
 
 	}
 
 }
 
 
+
 #endif // OSDL_BOUNDING_BOX_2D_H_
+

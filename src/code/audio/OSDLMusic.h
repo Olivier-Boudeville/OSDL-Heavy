@@ -59,6 +59,7 @@ struct _Mix_Music ;
 namespace OSDL
 {
 
+
 // Command management only needed for the Nintendo DS:
 #if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
 	
@@ -83,6 +84,7 @@ namespace OSDL
 				
 #else // OSDL_USES_SDL_MIXER	
 
+		
 		
 		/**
 		 * Double-buffered music.
@@ -148,7 +150,6 @@ namespace OSDL
 			 */
 			PlaybackCount _playbackCount ;
 			
-			
 		} ;
 		
 		
@@ -162,10 +163,11 @@ namespace OSDL
 		{ 
 			public: 
 			
-				MusicException( const std::string & reason ) throw() ; 
+				MusicException( const std::string & reason ) ; 
 				virtual ~MusicException() throw() ; 
 		} ;
 			
+						
 							
 		/**
 		 * Describes a position in a music.
@@ -274,6 +276,7 @@ namespace OSDL
 		} ;
 	
 		
+		
 		/**
 		 * Bitrate types, for formats that use them (ex: MP3).
 		 *
@@ -281,11 +284,14 @@ namespace OSDL
 		typedef Ceylan::Uint8 BitrateType ;
 		 
 		 
+		 
 		// For constant bitrate: 
 		extern OSDL_DLL const BitrateType CBR ;  
 		
+		
 		// For variable bitrate: 
 		extern OSDL_DLL const BitrateType VBR ;  
+
 
 												
 		/**
@@ -325,6 +331,7 @@ namespace OSDL
 #endif // defined(CEYLAN_ARCH_NINTENDO_DS) && CEYLAN_ARCH_NINTENDO_DS == 1
 	
 			
+			
 			public:
 				
 
@@ -351,15 +358,18 @@ namespace OSDL
 				 *
 				 */
 				explicit Music( const std::string & musicFile, 
-						bool preload = true ) throw( MusicException ) ;
+					bool preload = true ) ;
+				
 				
 				
 				/// Virtual destructor.
 				virtual ~Music() throw() ;
 		
 		
+		
 				// LoadableWithContent template instanciation.
 		
+				
 				
 				/**
 				 * Loads the music from file.
@@ -370,7 +380,8 @@ namespace OSDL
 				 * @throw Ceylan::LoadableException whenever the loading fails.
 				 *
 				 */
-				virtual bool load() throw( Ceylan::LoadableException ) ;
+				virtual bool load() ;
+		
 		
 		
  	           /**
@@ -386,12 +397,13 @@ namespace OSDL
 				* @throw Ceylan::LoadableException whenever the unloading fails.
 				*
 				*/
-				virtual bool unload() throw( Ceylan::LoadableException ) ;
+				virtual bool unload() ;
 		
 
 
 
 				// Audible implementation.
+				
 				
 				
 				/**
@@ -403,7 +415,8 @@ namespace OSDL
 				 * available.
 				 *
 				 */
-				virtual Volume getVolume() const throw( MusicException ) ;
+				virtual Volume getVolume() const ;
+		
 		
 		
 				/**
@@ -418,8 +431,8 @@ namespace OSDL
 				 * available.
 				 *
 				 */
-				virtual void setVolume( Volume newVolume ) 
-					throw( MusicException ) ;
+				virtual void setVolume( Volume newVolume ) ;
+		
 		
 		
 				/**
@@ -429,7 +442,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				virtual MusicType getType() const throw( AudioException ) ;
+				virtual MusicType getType() const ;
+		
 		
 		
 		
@@ -444,6 +458,7 @@ namespace OSDL
 				
 				
 				// Simple play subsection.
+				
 				
 				
 				/**
@@ -469,8 +484,8 @@ namespace OSDL
 				 * if not supported .
 				 *
 				 */
-				virtual void play( PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+				virtual void play( PlaybackCount playCount = 1 ) ; 
+
 
 
 	
@@ -505,9 +520,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeIn( 
-						Ceylan::System::Millisecond fadeInMaxDuration,
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond fadeInMaxDuration,
+					PlaybackCount playCount = 1 ) ; 
+		
 		
 		
 				/**
@@ -544,11 +559,11 @@ namespace OSDL
 				 *
 				 */
 				virtual void playWithFadeInFromPosition( 
-						Ceylan::System::Millisecond fadeInMaxDuration,
-						MusicPosition position,
-						PlaybackCount playCount = 1 ) 
-					throw( AudibleException ) ; 
+					Ceylan::System::Millisecond fadeInMaxDuration,
+					MusicPosition position,
+					PlaybackCount playCount = 1 ) ; 
 		
+
 
 				/**
 				 * Tells whether this music is being played.
@@ -556,7 +571,8 @@ namespace OSDL
 				 * @note A paused music is deemed playing.
 				 *
 				 */
-				virtual bool isPlaying() throw() ;
+				virtual bool isPlaying() ;
+				
 				
 				
 				/** 
@@ -568,7 +584,8 @@ namespace OSDL
 				 * if not supported.
 				 *
 				 */
-				virtual void pause() throw( MusicException ) ; 
+				virtual void pause() ; 
+		
 		
 		
 				/** 
@@ -580,7 +597,7 @@ namespace OSDL
 				 * if not supported.
 				 *
 				 */
-				virtual void unpause() throw( MusicException ) ; 
+				virtual void unpause() ; 
 		
 		
 		
@@ -599,7 +616,8 @@ namespace OSDL
 				 * if not supported.
 				 *
 				 */
-				virtual void rewind() throw( MusicException ) ; 
+				virtual void rewind() ; 
+		
 		
 		
 				/** 
@@ -615,8 +633,8 @@ namespace OSDL
 				 * type of the music stream.
 				 *
 				 */
-				virtual void setPosition( MusicPosition newPosition ) 
-					throw( MusicException ) ; 
+				virtual void setPosition( MusicPosition newPosition ) ; 
+		
 		
 		
 				/** 
@@ -631,7 +649,7 @@ namespace OSDL
 				 * if not supported.
 				 *
 				 */
-				virtual void stop() throw( MusicException ) ; 
+				virtual void stop() ; 
 
 				
 				
@@ -649,8 +667,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void fadeIn( 
-						Ceylan::System::Millisecond fadeInMaxDuration ) 
-					throw( MusicException ) ; 
+					Ceylan::System::Millisecond fadeInMaxDuration ) ; 
 
 
 				
@@ -672,8 +689,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void fadeOut( 
-						Ceylan::System::Millisecond fadeOutMaxDuration ) 
-					throw( MusicException ) ; 
+					Ceylan::System::Millisecond fadeOutMaxDuration ) ; 
 
 	
 				 
@@ -690,9 +706,9 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 	
+			
 			
 #if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
 	
@@ -701,7 +717,7 @@ namespace OSDL
 				 *
 				 */
 				static void SetCommandManagerSettings( 
-					const CommandManagerSettings & settings ) throw() ;
+					const CommandManagerSettings & settings ) ;
 							
 #endif // defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
 			
@@ -712,8 +728,11 @@ namespace OSDL
 				 *
 				 * To be called from the main loop.
 				 *
+				 * @throw AudioException if the operation failed.
+				 *
 				 */
-				static void ManageCurrentMusic() throw( AudioException ) ;
+				static void ManageCurrentMusic() ;
+				
 				
 				 
 				/**
@@ -727,8 +746,8 @@ namespace OSDL
 				 * prefer using directly the getType method.
 				 *
 				 */
-				static MusicType GetTypeOf( const Music * music )
-					throw( AudioException ) ;
+				static MusicType GetTypeOf( const Music * music ) ;
+					
 					
 					
 				/**
@@ -738,8 +757,8 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				static std::string DescribeMusicType( MusicType type )
-					throw( AudioException ) ;
+				static std::string DescribeMusicType( MusicType type ) ;
+					
 					
 					
 				/**
@@ -749,15 +768,14 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				static std::string DescribeBitrateType( BitrateType type )
-					throw( AudioException ) ;
-					
-			
+				static std::string DescribeBitrateType( BitrateType type ) ;
+								
 			
 				
 				
 			
 			protected:
+			
 			
 			
 				/**
@@ -767,8 +785,10 @@ namespace OSDL
 				OSDL::Utils::DataStream * _dataStream ;
 
 
+
 				/// Tells whether this music is being played.
 				bool _isPlaying ;
+
 
 				
 #if defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS
@@ -783,6 +803,7 @@ namespace OSDL
 				static const CommandManagerSettings * _CommandManagerSettings ;
 				
 #endif // defined(OSDL_ARCH_NINTENDO_DS) && OSDL_ARCH_NINTENDO_DS 
+			
 			
 				
 				/// The music currently being played (if any).
@@ -808,7 +829,8 @@ namespace OSDL
 				 * @seemanagePlaybackEnded
 				 *
 				 */
-				virtual void onPlaybackEnded() throw( AudioException ) ;
+				virtual void onPlaybackEnded() ;
+				
 				
 				
 				/**
@@ -819,7 +841,7 @@ namespace OSDL
 				 * Calls the possibly user-overriden onPlaybackEnded.
 				 *
 				 */
-				virtual void managePlaybackEnded() throw( AudioException ) ;
+				virtual void managePlaybackEnded() ;
 
 				
 				
@@ -839,8 +861,9 @@ namespace OSDL
 				 * @see setAsCurrent
 				 *
 				 */
-				virtual void onNoMoreCurrent() throw( AudioException ) ;
+				virtual void onNoMoreCurrent() ;
 
+				
 				
 				/**
 				 * Manages the notification that a music is not current 
@@ -849,8 +872,10 @@ namespace OSDL
 				 * Called by the Command Manager.
 				 * Calls the possibly user-overriden onNoMoreCurrent.
 				 *
+				 * @throw AudioException if the operation failed.
+				 *
 				 */
-				virtual void manageNoMoreCurrent() throw( AudioException ) ;
+				virtual void manageNoMoreCurrent() ;
 
 					
 				
@@ -862,8 +887,9 @@ namespace OSDL
 				 * @throw AudioException if a refill failed.
 				 *
 				 */
-				virtual void manageBufferRefill() throw( AudioException ) ;
+				virtual void manageBufferRefill() ;
 
+				
 				
 				/**
 				 * Fills the first half of the double buffer with
@@ -871,8 +897,11 @@ namespace OSDL
 				 *
 				 * Updates the corresponding size available for reading.
 				 *
+				 * @throw AudioException if the filling failed.
+				 *
 				 */
-				void fillFirstBuffer() throw( AudioException ) ; 
+				void fillFirstBuffer() ; 
+				
 				
 				
 				/**
@@ -881,9 +910,12 @@ namespace OSDL
 				 *
 				 * Updates the corresponding size available for reading.
 				 *
+				 * @throw AudioException if the filling failed.
+				 *
 				 */
-				void fillSecondBuffer() throw( AudioException ) ; 
+				void fillSecondBuffer() ; 
 				
+
 
 				/**
 				 * Sets this music as the current one. 
@@ -896,9 +928,12 @@ namespace OSDL
 				 * @note Used by the Command Manager thanks to the friend
 				 * declaration.
 				 *
+				 * @throw AudioException if the setting failed.
+				 *
 				 */
-				virtual void setAsCurrent() throw( AudioException ) ;
+				virtual void setAsCurrent() ;
 
+			
 			
 				/**
 				 * Sets a corresponding flag in this music instance to notify
@@ -910,7 +945,8 @@ namespace OSDL
 				 * declaration.
 				 *
 				 */
-				virtual void requestFillOfFirstBuffer() throw() ;
+				virtual void requestFillOfFirstBuffer() ;
+				
 				
 				
 				/**
@@ -923,9 +959,9 @@ namespace OSDL
 				 * declaration.
 				 *
 				 */
-				virtual void requestFillOfSecondBuffer() throw() ;
+				virtual void requestFillOfSecondBuffer() ;
+					
 				
-						
 				
 				/**
 				 * The internal low level music is defined through the
@@ -933,8 +969,11 @@ namespace OSDL
 				 *
 				 */
 				
+				
+				
 			
 			private:
+	
 	
 	
 				/**
@@ -945,7 +984,8 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit Music( const Music & source ) throw() ;
+				explicit Music( const Music & source ) ;
+			
 			
 			
 				/**
@@ -956,10 +996,12 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 *
 				 */			 
-				Music & operator = ( const Music & source ) throw() ;
+				Music & operator = ( const Music & source ) ;
+				
 				
 			
 		} ;
+		
 		
 	}	
 	

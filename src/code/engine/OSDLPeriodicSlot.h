@@ -28,6 +28,7 @@
 #define OSDL_PERIODIC_SLOT_H_
 
  
+ 
 #include "OSDLPeriodicalActiveObject.h" // for ObjectSchedulingPolicy, etc.
 
 // for ListOfPeriodicalActiveObjects, SchedulingException, etc.:
@@ -40,17 +41,21 @@
  
 
 
+
 namespace OSDL
 {
+
 
 
 	namespace Engine 
 	{
 	
 	
+	
 		// Periodic slots register periodical active objects.
 		class PeriodicalActiveObject ;
 
+		
 		
 		/**
 		 * Records informations about a periodic slot.
@@ -93,6 +98,7 @@ namespace OSDL
 			public:
 			
 			
+			
 				/**
 				 * Creates a scheduler slot for given non-null periodicity,
 				 * expressed in simulation ticks.
@@ -100,14 +106,14 @@ namespace OSDL
 				 * @param periodicity the chosen periodicity.
 				 *
 				 */
-				explicit PeriodicSlot( Events::Period periodicity ) throw() ;
+				explicit PeriodicSlot( Events::Period periodicity ) ;
+				
 				
 				
 				/// Non-virtual destructor.
 				~PeriodicSlot() throw() ;
 				
 	
-					
 				
 				/**
 				 * Adds a new periodical active object to that slot. 
@@ -122,20 +128,18 @@ namespace OSDL
 				 * @throw SchedulingException if the operation failed.
 				 *
 				 */
-				 Events::Period add( PeriodicalActiveObject & newObject ) 
-				 	throw( SchedulingException ) ;
+				 Events::Period add( PeriodicalActiveObject & newObject ) ;
 							 
 							 							 
 				 
-				 /**
-				  * Removes specified periodical object from specified
-				  * sub-slot, and updates the slot weight.
-				  *
-				  * @throw SchedulingException if the operation failed.
-				  *
-				  */
-				 void removeFromSubslot( PeriodicalActiveObject & object )
-				 	throw( SchedulingException ) ;
+				/**
+				 * Removes specified periodical object from specified
+				 * sub-slot, and updates the slot weight.
+				 *
+				 * @throw SchedulingException if the operation failed.
+				 *
+				 */
+				void removeFromSubslot( PeriodicalActiveObject & object ) ;
 				 
 				 
 				 
@@ -152,7 +156,7 @@ namespace OSDL
 				 * @return true iff this periodic slot should be kept.
 				 *
 				 */ 
-				bool onNextTick( Events::SimulationTick newTick ) throw() ;
+				bool onNextTick( Events::SimulationTick newTick ) ;
 				
 				
 				
@@ -175,8 +179,7 @@ namespace OSDL
 				 * periodic).
 				 *
 				 */
-				void onSimulationSkipped( Events::SimulationTick skipped ) 
-					throw( SchedulingException ) ;
+				void onSimulationSkipped( Events::SimulationTick skipped ) ;
 				
 				
 				
@@ -184,7 +187,7 @@ namespace OSDL
 				 * Returns the period this slot is in charge of.
 				 *
 				 */
-				Events::Period getPeriod() const throw() ;
+				Events::Period getPeriod() const ;
 					
 					
 					
@@ -193,7 +196,7 @@ namespace OSDL
 				 * its sub-slots contains any object.
 				 *
 				 */
-				bool isEmpty() const throw() ;
+				bool isEmpty() const ;
 					
 				
 						
@@ -216,8 +219,7 @@ namespace OSDL
 	             *
 	             */
 		 		const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 			
 			
 			
@@ -235,7 +237,7 @@ namespace OSDL
 				 *
 				 */
 				Events::Period getSubSlotForSimulationTick(
-					Events::SimulationTick tick ) const throw() ;
+					Events::SimulationTick tick ) const ;
 
 
 			
@@ -249,7 +251,7 @@ namespace OSDL
 				 * is returned.
 				 * 
 				 */
-				Events::Period getLeastBusySubSlot() const throw() ;
+				Events::Period getLeastBusySubSlot() const ;
 				
 				
 				
@@ -258,8 +260,9 @@ namespace OSDL
 				 *
 				 */				 
 				void addInSubSlot( PeriodicalActiveObject & newObject, 
-					Events::Period targetSubSlot ) throw() ;
+					Events::Period targetSubSlot ) ;
 					
+				
 				
 				/**
 				 * Activates in turn all active objects registered in the
@@ -279,7 +282,7 @@ namespace OSDL
 				 *
 				 */
 				bool activateAllObjectsInSubSlot( Events::Period subSlot, 
-					Events::SimulationTick currentTime ) throw() ;
+					Events::SimulationTick currentTime ) ;
 				
 				
 				
@@ -324,6 +327,7 @@ namespace OSDL
 			private:
 			
 			
+			
 				/**
 				 * Copy constructor made private to ensure that it will 
 				 * never be called.
@@ -332,7 +336,7 @@ namespace OSDL
 				 * constructor is called, implicitly or not.
 				 * 
 				 */			 
-				explicit PeriodicSlot( const PeriodicSlot & source ) throw() ;
+				explicit PeriodicSlot( const PeriodicSlot & source ) ;
 			
 			
 				/**
@@ -343,15 +347,16 @@ namespace OSDL
 				 * operator is called, implicitly or not.
 				 * 
 				 */			 
-				PeriodicSlot & operator = ( const PeriodicSlot & source )
-					throw() ;
+				PeriodicSlot & operator = ( const PeriodicSlot & source ) ;
 				
 				
 		} ;
+		
 
 	}
 	
 }
+
 
 
 #endif // OSDL_PERIODIC_SLOT_H_

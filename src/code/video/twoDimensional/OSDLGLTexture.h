@@ -36,17 +36,21 @@
 
 
 
+
 namespace OSDL
 {
+
 
 	
 	namespace Video
 	{
 	
 	
+	
 		// Texture are made from surfaces.
 		class Surface ;
 		
+	
 	
 		namespace OpenGL
 		{
@@ -69,6 +73,7 @@ namespace OSDL
 		
 		
 		
+		
 			/// Exception to be raised when OpenGL texture operations fail.
 			class OSDL_DLL GLTextureException: public OpenGLException
 			{
@@ -77,13 +82,15 @@ namespace OSDL
 				
 				
 					/// Constructs a new TextureException.
-					GLTextureException( const std::string & reason ) throw() ;
+					GLTextureException( const std::string & reason ) ;
+					
 					
 					/// Virtual destructor.
 					virtual ~GLTextureException() throw() ;
 								
 			} ;
 
+		
 		
 
 			/**
@@ -159,7 +166,7 @@ namespace OSDL
 					 *
 					 */
 					explicit GLTexture( const std::string imageFilename,
-						TextureFlavour flavour ) throw( GLTextureException ) ;
+						TextureFlavour flavour ) ;
 				
 				
 				
@@ -183,7 +190,8 @@ namespace OSDL
 					 *
 					 */
 					explicit GLTexture( Surface & sourceSurface,
-						TextureFlavour flavour ) throw( GLTextureException ) ;
+						TextureFlavour flavour ) ;
+				
 				
 				
 					/**
@@ -196,11 +204,12 @@ namespace OSDL
 
 
 					/// Returns the width of this texture.
-					virtual Length getWidth() const throw() ;
+					virtual Length getWidth() const ;
+
 
 
 					/// Returns the height of this texture.
-					virtual Length getHeight() const throw() ;
+					virtual Length getHeight() const ;
 
 
 				
@@ -214,8 +223,9 @@ namespace OSDL
 					 * @see upload 
 					 *
 					 */
-					virtual bool canBeUploaded() const throw() ;
+					virtual bool canBeUploaded() const ;
 										
+					
 					
 					/**
 					 * Uploads the internal texture to the OpenGL context.
@@ -225,7 +235,8 @@ namespace OSDL
 					 * not available anymore.
 					 *					
 					 */
-					virtual void upload() throw( GLTextureException ) ;
+					virtual void upload() ;
+					
 					
 					
 					/**
@@ -235,8 +246,8 @@ namespace OSDL
 					 * @throw GLTextureException if the operation failed.
 					 *
 					 */
-					virtual void setAsCurrent() const 
-						throw( GLTextureException ) ;
+					virtual void setAsCurrent() const ;
+				
 					
 					
 					/**
@@ -246,7 +257,7 @@ namespace OSDL
 					 * @throw GLTextureException if the operation failed.
 					 *
 					 */
-					virtual bool isResident() throw( GLTextureException ) ;
+					virtual bool isResident() ;
 					
 					
 					
@@ -263,24 +274,25 @@ namespace OSDL
 		             *
 		             */
 			 		virtual const std::string toString( 
-							Ceylan::VerbosityLevels level = Ceylan::high ) 
-						const throw() ;
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 				
 				
 				
 					// Static section.
 					
+					
 					// FIXME Should use the flavour member.
+						
 										
 					/// Returns the current texture dimensionality.
-					static TextureDimensionality GetTextureDimensionality()
-						throw() ;
+					static TextureDimensionality GetTextureDimensionality() ;
+				
 					
 					
 					/// Sets the current texture dimensionality.
 					static void SetTextureDimensionality( 
-							TextureDimensionality Dimensionality = TwoDim ) 
-						throw() ;
+						TextureDimensionality Dimensionality = TwoDim ) ;
+				
 				
 				
 					/**
@@ -304,8 +316,7 @@ namespace OSDL
 					 *
 					 */
 					static void SetTextureFlavour( 
-							TextureFlavour textureFlavour ) 
-						throw( GLTextureException ) ;
+						TextureFlavour textureFlavour ) ;
 					
 					
 
@@ -324,10 +335,10 @@ namespace OSDL
 					 *
 					 */
 					static void SetTextureEnvironmentParameter( 
-							GLEnumeration targetEnvironment,
-							GLEnumeration environmentParameter,
-							GLfloat parameterValue ) 
-						throw( GLTextureException ) ;
+						GLEnumeration targetEnvironment,
+						GLEnumeration environmentParameter,
+						GLfloat parameterValue ) ;
+
 
 
 					/**
@@ -346,10 +357,9 @@ namespace OSDL
 					 *
 					 */
 					static void SetTextureEnvironmentParameter( 
-							GLEnumeration targetEnvironment,
-							GLEnumeration environmentParameter,
-							const GLfloat * parameterValues ) 
-						throw( GLTextureException ) ;
+						GLEnumeration targetEnvironment,
+						GLEnumeration environmentParameter,
+						const GLfloat * parameterValues ) ;
 
 					
 					
@@ -379,8 +389,7 @@ namespace OSDL
 					 * side-effect on this surface.
 					 *
 					 */
-					void upload( Surface & sourceSurface ) 
-						throw( GLTextureException ) ;
+					void upload( Surface & sourceSurface ) ;
 					
 					
 				
@@ -394,12 +403,14 @@ namespace OSDL
 					Surface * _source ;
 			
 			
+			
 					/**
 					 * Identifier given by OpenGL to reference this texture.
 					 *
 					 */
 					GLTextureIdentifier _id ;
 			
+				
 				
 					/**
 					 * Stores the current texture flavour.	
@@ -412,12 +423,15 @@ namespace OSDL
 					TextureFlavour _flavour ;
 			
 			
+			
 					/// The width of the texture, in pixels.
 					Length _width ;
 					
 					
+					
 					/// The height of the texture, in pixels.
 					Length _height ;
+					
 					
 					
 			
@@ -433,7 +447,8 @@ namespace OSDL
 					 * constructor is called, implicitly or not.
 					 * 
 					 */			 
-					explicit GLTexture( const GLTexture & source ) throw() ;
+					explicit GLTexture( const GLTexture & source ) ;
+			
 			
 			
 					/**
@@ -444,11 +459,11 @@ namespace OSDL
 					 * operator is called, implicitly or not.
 					 * 
 					 */			 
-					GLTexture & operator = ( const GLTexture & source ) 
-						throw() ;
+					GLTexture & operator = ( const GLTexture & source ) ;
 			
 			
 			} ;
+			
 		
 		}
 		

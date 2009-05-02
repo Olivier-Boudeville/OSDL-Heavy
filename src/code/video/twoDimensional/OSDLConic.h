@@ -32,17 +32,21 @@
 
 
 
+
 namespace OSDL
 {
 
+	
 	
 	namespace Video
 	{
 
 
+
 		// Conics are drawn in Surfaces.
 		class Surface ;
 				
+		
 		
 		namespace TwoDimensional
 		{
@@ -97,8 +101,8 @@ namespace OSDL
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
 				Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-				bool filled = true, bool blended = true ) 
-					throw( VideoException ) ;
+				bool filled = true, bool blended = true ) ;
+	
 	
 	
 			/**
@@ -133,10 +137,10 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL bool drawCircle( Surface & targetSurface, 
-					Coordinate xCenter, Coordinate yCenter, Length radius, 
-					Pixels::ColorDefinition colorDef, bool filled = true, 
-					bool blended = true ) 
-				throw( VideoException ) ;
+				Coordinate xCenter, Coordinate yCenter, Length radius, 
+				Pixels::ColorDefinition colorDef, bool filled = true, 
+				bool blended = true ) ;
+	
 	
 		
 			/**
@@ -184,12 +188,12 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL bool drawDiscWithEdge( Surface & targetSurface,
-					Coordinate xCenter, Coordinate yCenter, 
-					Length outerRadius, Length innerRadius, 
-					Pixels::ColorDefinition ringColorDef = Pixels::Blue, 
-					Pixels::ColorDefinition discColorDef = Pixels::White, 
-					bool blended = true )
-				throw( VideoException ) ;
+				Coordinate xCenter, Coordinate yCenter, 
+				Length outerRadius, Length innerRadius, 
+				Pixels::ColorDefinition ringColorDef = Pixels::Blue, 
+				Pixels::ColorDefinition discColorDef = Pixels::White, 
+				bool blended = true ) ;
+		
 		
 		
 			/**
@@ -223,7 +227,8 @@ namespace OSDL
 				Pixels::ColorElement red, Pixels::ColorElement green, 
 				Pixels::ColorElement blue, 
 				Pixels::ColorElement alpha = Pixels::AlphaOpaque,
-				bool filled = true ) throw( VideoException ) ;
+				bool filled = true ) ;
+
 
 
 			/**
@@ -252,10 +257,9 @@ namespace OSDL
 			 *
 			 */
 			OSDL_DLL bool drawEllipse( Surface & targetSurface, 
-					Coordinate xCenter, Coordinate yCenter, 
-					Length horizontalRadius, Length verticalRadius,
-					Pixels::ColorDefinition colorDef, bool filled = true ) 
-				throw( VideoException ) ;
+				Coordinate xCenter, Coordinate yCenter, 
+				Length horizontalRadius, Length verticalRadius,
+				Pixels::ColorDefinition colorDef, bool filled = true ) ;
 
 				
 		}

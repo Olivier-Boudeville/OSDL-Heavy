@@ -34,12 +34,15 @@
 
 
 
+
 namespace OSDL
 {
 
 
+
 	namespace Rendering 
 	{
+	
 	
 		
 		// A video renderer may be used by multimedia renderers.
@@ -47,6 +50,7 @@ namespace OSDL
 		
 		// An audio renderer may be used by multimedia renderers.
 		class AudioRenderer ;
+		
 		
 				
 		/**
@@ -75,6 +79,7 @@ namespace OSDL
 			public:
 			
 			
+			
 				/**
 				 * Constructs a new multimedia renderer.
 				 *
@@ -87,8 +92,8 @@ namespace OSDL
 				 * and no scheduler is available.
 				 *
 				 */
-				explicit MultimediaRenderer( bool registerToScheduler = true ) 
-					throw( RenderingException ) ;
+				explicit MultimediaRenderer( bool registerToScheduler = true ) ;
+				
 				
 				
 				/**
@@ -103,7 +108,8 @@ namespace OSDL
 				 * Returns whether a video renderer is available.
 				 *
 				 */
-				virtual bool hasVideoRenderer() const throw() ;
+				virtual bool hasVideoRenderer() const ;
+				
 				
 				
 				/**
@@ -113,8 +119,8 @@ namespace OSDL
 				 * @throw RenderingException iff no video renderer is available.
 				 *
 				 */
-				virtual VideoRenderer & getVideoRenderer() const 
-					throw( RenderingException ) ;
+				virtual VideoRenderer & getVideoRenderer() const ;
+				
 				
 				
 				/** 
@@ -124,12 +130,12 @@ namespace OSDL
 				 * @param newVideoRenderer the new video renderer.
 				 *
 				 * If a renderer was already registered, it is deallocated 
-				 * first : this renderer takes ownership of its sub-renderers
+				 * first: this renderer takes ownership of its sub-renderers
 				 * and manages their life cycle.
 				 *
 				 */
 				virtual void setVideoRenderer( 
-					VideoRenderer & newVideoRenderer ) throw() ;
+					VideoRenderer & newVideoRenderer ) ;
 				
 				
 				
@@ -137,7 +143,8 @@ namespace OSDL
 				 * Returns whether a audio renderer is available.
 				 *
 				 */
-				virtual bool hasAudioRenderer() const throw() ;
+				virtual bool hasAudioRenderer() const ;
+				
 				
 				
 				/**
@@ -147,8 +154,8 @@ namespace OSDL
 				 * @throw RenderingException iff no audio renderer is available.
 				 *
 				 */
-				virtual AudioRenderer & getAudioRenderer() const 
-					throw( RenderingException ) ;
+				virtual AudioRenderer & getAudioRenderer() const ;
+				
 				
 				
 				/** 
@@ -158,12 +165,12 @@ namespace OSDL
 				 * @param newAudioRenderer the new audio renderer.
 				 *
 				 * If a renderer was already registered, it is deallocated 
-				 * first : this renderer takes ownership of its sub-renderers
+				 * first: this renderer takes ownership of its sub-renderers
 				 * and manages their life cycle.
 				 *
 				 */
 				virtual void setAudioRenderer( 
-					AudioRenderer & newAudioRenderer ) throw() ;
+					AudioRenderer & newAudioRenderer ) ;
 				
 				
 				
@@ -185,7 +192,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void render( 
-					Events::RenderingTick currentRenderingTick = 0 ) throw() ;
+					Events::RenderingTick currentRenderingTick = 0 ) ;
+
 
 
 				/**
@@ -211,8 +219,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void renderVideo( 
-						Events::RenderingTick currentRenderingTick = 0 ) 
-					throw() = 0 ;
+					Events::RenderingTick currentRenderingTick = 0 ) = 0 ;
+				
 				
 				
 				/**
@@ -238,8 +246,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void renderAudio( 
-						Events::RenderingTick currentRenderingTick = 0 ) 
-					throw() = 0 ;
+					Events::RenderingTick currentRenderingTick = 0 ) = 0 ;
+				
 				
 				
 				/**
@@ -255,8 +263,9 @@ namespace OSDL
 				 *
 				 */
 				virtual void onRenderingSkipped( 
-					Events::RenderingTick skippedRenderingTick ) throw() ;
+					Events::RenderingTick skippedRenderingTick ) ;
 				
+					
 					
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -270,8 +279,7 @@ namespace OSDL
 	             *
 	             */
 		 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) 
-					const throw() ;
+					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
 
 
@@ -287,15 +295,18 @@ namespace OSDL
 				VideoRenderer * _videoRenderer ;
 				
 				
+				
 				/**
 				 * The internally used audio renderer being used, if any.
 				 *
 				 */
 				AudioRenderer * _audioRenderer ;
 				
+				
 
 			
 			private:
+			
 			
 			
 				/**
@@ -307,7 +318,8 @@ namespace OSDL
 				 * 
 				 */			 
 				explicit MultimediaRenderer( 
-					const MultimediaRenderer & source ) throw() ;
+					const MultimediaRenderer & source ) ;
+			
 			
 			
 				/**
@@ -319,15 +331,17 @@ namespace OSDL
 				 * 
 				 */			 
 				MultimediaRenderer & operator = ( 
-					const MultimediaRenderer & source ) throw() ;
+					const MultimediaRenderer & source ) ;
 				
 				
 				
 		} ;
+		
 
 	}
 
 }
+
 
 
 #endif // OSDL_MULTIMEDIA_RENDERER_H_
