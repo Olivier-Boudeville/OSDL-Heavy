@@ -291,7 +291,7 @@ execute()
 			echo "Error while executing '$*'" 1>&2
 			if [ "$1" = "./configure" ]; then
 				echo "
-Note: check config.log (the one is the 'test' directory)"	
+Note: check test/config.log"	
   			fi
 		fi
 			
