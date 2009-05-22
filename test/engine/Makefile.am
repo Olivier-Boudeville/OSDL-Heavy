@@ -22,3 +22,8 @@ testOSDLScheduler_exe_SOURCES                    = testOSDLScheduler.cc
 testOSDLSchedulerNoDeadline_exe_SOURCES          = \
 	testOSDLSchedulerNoDeadline.cc
 testOSDLScheduledMVC_exe_SOURCES                 = testOSDLScheduledMVC.cc
+
+view-durations:
+	@gnuplot plotIdleCallDurations.p
+	@eog testOSDLScheduler-idleCallDurations.png
+	
