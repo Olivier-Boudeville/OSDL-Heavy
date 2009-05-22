@@ -117,7 +117,7 @@ void PeriodicalActiveObject::registerToScheduler()
 void PeriodicalActiveObject::unregisterFromScheduler() 
 {
 
-	Ceylan::checkpoint( "PeriodicalActiveObject::unregisterFromScheduler" ) ;
+	//LogPlug::trace( "PeriodicalActiveObject::unregisterFromScheduler" ) ;
 	
 	if ( ! _registered )
 		throw SchedulingException( 
