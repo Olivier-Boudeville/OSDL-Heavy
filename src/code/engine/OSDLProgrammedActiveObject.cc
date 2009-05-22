@@ -146,7 +146,7 @@ void ProgrammedActiveObject::registerToScheduler()
 void ProgrammedActiveObject::unregisterFromScheduler() 
 {
 
-	Ceylan::checkpoint( "ProgrammedActiveObject::unregisterFromScheduler" ) ;
+	// LogPlug::trace( "ProgrammedActiveObject::unregisterFromScheduler" ) ;
 	
 	if ( ! _registered )
 		throw SchedulingException( 
