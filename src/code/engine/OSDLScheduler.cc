@@ -624,6 +624,8 @@ void Scheduler::unregisterProgrammedObject(
 	 * Only trade-off: a mandatory check at each element that its pointer is 
 	 * not null, whereas the only problematic case is when a scheduled object
 	 * leads to the removal of another one *in the list for the current tick*.
+	 * Anyway this check cannot be avoided for that case, thus null pointers
+	 * can be set in other ticks than current ones as well.
 	 *
 	 */
 	
@@ -731,6 +733,7 @@ void Scheduler::unregisterProgrammedObject(
 				}
 					
 				listIt++ ;
+				
 			}
 	
 	
@@ -758,10 +761,7 @@ void Scheduler::unregisterProgrammedObject(
 				LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
 					"unregistered." ) ;
 			 */
-			 				 			
-			if ( (*mapIt).second.empty() )
-				_programmedActivated.erase( mapIt ) ;
-			
+			 				 						
 		}
 		else
 		{
@@ -989,7 +989,8 @@ const string Scheduler::toString( Ceylan::VerbosityLevels level ) const
 				+ Ceylan::toString( (*it).first ) + ", there are " 
 				+ Ceylan::toString( 
 					static_cast<Ceylan::Uint32>( (*it).second.size() ) )
-				+ " object(s) programmed" ) ;
+				+ " object(s) programmed (note: some of them may be null "
+				 "pointers corresponding to unregistered objects)" ) ;
 				
 		buf << Ceylan::formatStringList( programmed ) ;
 		
@@ -3581,7 +3582,12 @@ void Scheduler::onSimulationSkipped( SimulationTick skipped )
 				itObjects != (*it).second.end(); itObjects++ )
 		{	
 
-			(*itObjects)->onSkip( skipped ) ;
+			/*
+			 * Yes, programmed objects too can have null pointers in a tick 
+			 * list:
+			 */
+			if ( *itObjects != 0 )
+				(*itObjects)->onSkip( skipped ) ;
 
 		}
 				
