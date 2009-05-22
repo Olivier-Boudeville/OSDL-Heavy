@@ -141,6 +141,10 @@ void PeriodicSlot::removeFromSubslot( PeriodicalActiveObject & object )
 
 	Period subslot = object.getSubslotNumber() ;
 	
+	LogPlug::trace( "PeriodicSlot::removeFromSubslot: for object '"
+		+ object.toString() + "', using subslot #" 
+		+ Ceylan::toString(subslot) ) ;
+		 
 	/*
 	 * The pointer to that object is replaced by a null pointer.
 	 * The list element cannot be deleted yet, as this method might be
@@ -153,8 +157,7 @@ void PeriodicSlot::removeFromSubslot( PeriodicalActiveObject & object )
 			"sub-slot #" + Ceylan::toString( subslot ) + " does not exist." ) ;
 
 	for ( list<PeriodicalActiveObject *>::iterator it = 
-		_subslots[ subslot ]->begin() ; it != _subslots[ subslot ]->end();
-		it++ )
+		_subslots[ subslot ]->begin(); it != _subslots[ subslot ]->end(); it++ )
 	{
 	
 		if ( (*it) == & object )
@@ -164,6 +167,10 @@ void PeriodicSlot::removeFromSubslot( PeriodicalActiveObject & object )
 			_subslotWeights[ subslot ] -= object.getWeight() ;
 			*it = 0 ;
 			
+			LogPlug::trace( "PeriodicSlot::removeFromSubslot: "
+				"removed from sub-slot #" + Ceylan::toString( subslot ) 
+				+ ", new slot state is: " + toString() ) ;
+				
 			// No deletion here!
 						
 			return ;
@@ -181,6 +188,7 @@ void PeriodicSlot::removeFromSubslot( PeriodicalActiveObject & object )
 bool PeriodicSlot::onNextTick( SimulationTick newTick )
 {
 	
+		
 	/*
 	 * Protects from multiple calls, if ever the scheduler duplicated ticks.
 	 * 
@@ -189,7 +197,14 @@ bool PeriodicSlot::onNextTick( SimulationTick newTick )
 	 *
 	 */
 	Period deducedSubSlot = getSubSlotForSimulationTick( newTick ) ;
-	
+
+	/*
+	LogPlug::trace( "PeriodicSlot::onNextTick for slot of period " 
+		+ Ceylan::toString( _period ) + " for tick #"
+		+ Ceylan::toString( newTick ) + ", using sub-slot "
+		+ Ceylan::toString( deducedSubSlot ) ) ;
+	 */
+	 
 	if ( _currentSubSlot != deducedSubSlot || _period == 1 )
 	{
 	
@@ -213,6 +228,9 @@ bool PeriodicSlot::onNextTick( SimulationTick newTick )
 		
 		if ( ! activateAllObjectsInSubSlot( _currentSubSlot, newTick ) )
 		{
+		
+			LogPlug::trace( "PeriodicSlot::onNextTick: removing sub-slot "
+				+ Ceylan::toString( _currentSubSlot ) ) ; 
 		
 			// This sub-slot should be removed:
 			delete _subslots[ _currentSubSlot ] ;
@@ -265,7 +283,13 @@ void PeriodicSlot::onSimulationSkipped( SimulationTick skipped )
 		for ( ListOfPeriodicalActiveObjects::iterator it =
 				_subslots[subSlot]->begin() ;
 				it != _subslots[subSlot]->end(); it++ )
-			(*it)->onSkip( skipped ) ;
+			{	
+			
+				// Jump over any object just removed:	
+				if ( *it != 0 )	
+					(*it)->onSkip( skipped ) ;
+				
+			}		
 	}
 	
 	// Avoidd to confuse onNextTick:
@@ -309,7 +333,9 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level ) const
 		+ Ceylan::toString( _period ) 
 		+ ". Current sub-slot is " 
 		+ Ceylan::toString( _currentSubSlot ) ; 
-		
+	
+	LogPlug::trace( res ) ;
+	
 	if ( level == Ceylan::low )
 		return res ;
 	
@@ -339,14 +365,14 @@ const string PeriodicSlot::toString( Ceylan::VerbosityLevels level ) const
 	
 	for ( Period i = 0; i < _period; i++ )
 	{	
-		if ( _subslots[i] != 0 && _subslots[i]->size() != 0 )
-			l.push_back( "slot #" + Ceylan::toString( i ) + " contains " 
+		if ( ( _subslots[i] != 0 ) && ( ! _subslots[i]->empty() ) )
+			l.push_back( "sub-slot #" + Ceylan::toString( i ) + " contains " 
 				+ Ceylan::toString( 
 					static_cast<Ceylan::Uint32>( _subslots[i]->size() ) ) 
 				+ " active object(s), for a total weight of "
 				+ Ceylan::toString( _subslotWeights[i] ) + "." ) ;
 		else
-			l.push_back( "slot #" + Ceylan::toString( i ) + " is empty." ) ;	
+			l.push_back( "subslot #" + Ceylan::toString( i ) + " is empty." ) ;	
 	}		
 	
 	return res + Ceylan::formatStringList( l ) ;
@@ -429,6 +455,12 @@ bool PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
 	// while preferred as it++ must not happen at each iteration:
 	ListOfPeriodicalActiveObjects::iterator it = subslotList->begin() ;
 	
+	/*
+	LogPlug::trace( "PeriodicSlot::activateAllObjectsInSubSlot: there are "
+		+ Ceylan::toString( subslotList->size() ) + " entries in sub-slot "
+		+ Ceylan::toString( subSlot ) ) ;
+	 */
+	 	
 	while( it != subslotList->end() )
 	{	
 		
@@ -439,11 +471,15 @@ bool PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
 		if ( *it == 0 )
 		{
 		
+			LogPlug::trace( "PeriodicSlot::activateAllObjectsInSubSlot: "
+				"removing a previously emptied entry." ) ;
+			
 			/*
 			 * The corresponding periodical object has been previously
 			 * removed, let's suppress its container as well, now that we
 			 * are iterating over that list (previously this could not be
-			 * done as it may have invalidated a possibly in-use iterator):
+			 * done as otherwise it could have invalidated a possibly in-use
+			 * iterator):
 			 *
 			 */
 			it = subslotList->erase( it ) ;
@@ -459,11 +495,11 @@ bool PeriodicSlot::activateAllObjectsInSubSlot( Period subSlot,
 			
 	}
 
-	// Empty sub-slotq should be removed:
+	// Empty sub-slots should be removed:
 	if ( subslotList->empty() )
 		return false ;
 			
-	// Has still at least one object:
+	// Holds still at least one object:
 	return true ;
 	
 }
