@@ -186,6 +186,9 @@ void Scheduler::setScreenshotMode( bool on, const string & frameFilenamePrefix,
 	Hertz frameFrequency ) 
 {
 
+	LogPlug::trace( "Scheduler::setScreenshotMode: mode set to " 
+		+ Ceylan::toString( on ) + "." ) ;
+		
 	_screenshotMode = on ;
 	_frameFilenamePrefix = frameFilenamePrefix ;
 	
@@ -508,6 +511,7 @@ void Scheduler::unregisterPeriodicalObject(
 	PeriodicalActiveObject & toUnregister )	
 {
 
+
 	/*
 	 * This periodical object must be in one of the subslots of the slot 
 	 * in charge of its periodicity.
@@ -602,8 +606,11 @@ void Scheduler::unregisterProgrammedObject(
 	ProgrammedActiveObject & objectToUnregister )
 {
 	
+	/*
 	LogPlug::debug( "Scheduler::unregisterProgrammedObject for object " 
 		+ Ceylan::toString( & objectToUnregister ) ) ;
+	 */
+	 
 
 	/*
 	 * This programmed object may be registered in the list of objects 
@@ -641,8 +648,11 @@ void Scheduler::unregisterProgrammedObject(
 		&& ( (*it) + offset < _currentSimulationTick ) )
 	{
 		
+		/*
 		LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
 			"skipping tick #" + Ceylan::toString( *it ) ) ;
+		 */
+		 
 		it++ ;
 	
 	}	
@@ -655,9 +665,11 @@ void Scheduler::unregisterProgrammedObject(
 	
 		// It points to a programmed tick for that object.
 
+		/*
 		LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
 			"unregistering from tick #" + Ceylan::toString( *it ) ) ;
-		
+		 */
+		 
 		// Find the scheduler list for that tick:
 		map<SimulationTick, ListOfProgrammedActiveObjects>::iterator mapIt =
 			_programmedActivated.find( *it ) ;
@@ -672,33 +684,68 @@ void Scheduler::unregisterProgrammedObject(
 			 */
 			ListOfProgrammedActiveObjects::iterator listIt = 
 				(*mapIt).second.begin() ; 
-				
+			
+			/*	
 			LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
-				"programmed objects for this tick are " 
-				+ Ceylan::toString( *listIt ) ) ;
+				"there are " + Ceylan::toString( (*mapIt).second.size() )
+				+ " programmed objects for this tick." ) ;
+			 */
+
+#if OSDL_DEBUG_SCHEDULER
+			bool found = false ;			
+#endif // OSDL_DEBUG_SCHEDULER					
+
 
 			while ( listIt != (*mapIt).second.end() )
 			{
 			
+
 				if ( *listIt == & objectToUnregister )
 				{
 				
+					/* 
 					LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
 						"object removed" ) ;
+
+					 */
 						
 					*listIt = 0 ;
+					 
+#if OSDL_DEBUG_SCHEDULER
+
+					// Check that was indeed registered once:
+					if ( found )
+						throw SchedulingException( 
+							"Scheduler::unregisterProgrammedObject: "
+							"object was registered more than once for tick "
+							+ Ceylan::toString(*it) + "." ) ;
+					else
+						found = true ;							
 					
-					// Only registered once:
+#else // OSDL_DEBUG_SCHEDULER
+					 
+					// Supposedly only registered once:
 					break ;
 					
+#endif // OSDL_DEBUG_SCHEDULER					
 				}
 					
 				listIt++ ;
 			}
+	
+	
 			
 #if OSDL_DEBUG_SCHEDULER
 
+			if ( ! found )
+
+#else // OSDL_DEBUG_SCHEDULER
+			
+			// Maybe even this test could/should be removed in non-debug mode:
 			if ( listIt == (*mapIt).second.end() )
+			
+#endif // OSDL_DEBUG_SCHEDULER					
+			
 				throw SchedulingException( 
 					"Scheduler::unregisterProgrammedObject failed when "
 					"unregistering " + objectToUnregister.toString() 
@@ -706,12 +753,14 @@ void Scheduler::unregisterProgrammedObject(
 					+ Ceylan::toString( *it ) 
 					+ ", while current scheduler state is: "
 					+ toString() ) ;
+			/*		
 			else
 				LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
 					"unregistered." ) ;
-							 
-#endif //  OSDL_DEBUG_SCHEDULER
-			
+			 */
+			 				 			
+			if ( (*mapIt).second.empty() )
+				_programmedActivated.erase( mapIt ) ;
 			
 		}
 		else
@@ -760,7 +809,9 @@ void Scheduler::schedule()
 		// Retrieve video module, used instead of the renderer:
 		try
 		{
+		
 			_videoModule = & OSDL::getExistingCommonModule().getVideoModule() ;
+			
 		}
 		catch( OSDL::Exception & e )
 		{
@@ -2024,6 +2075,7 @@ void Scheduler::scheduleBestEffort()
 		if ( maxDelayBucket < delayBucket )
 			maxDelayBucket = delayBucket ;
 
+
 		// Maybe counter-measures will be taken here:
 		if ( delayBucket > bucketFillThreshold )
 			onScheduleFailure( delayBucket ) ;
@@ -3005,6 +3057,8 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	
 	EngineTick countBeforeSleep = 0 ;
 	
+	
+	
 	// Enter the schedule loop:
 	
 	while ( ! _stopRequested )
@@ -3117,7 +3171,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	else
 	{
 	
-		// It is just a (rather good , error below 1/4100) approximation:
+		// It is just a (rather good, error below 1/4100) approximation:
 		totalRuntimeFactor =  1.0f / 
 			( scheduleStoppingSecond - _scheduleStartingSecond ) ;
 		
@@ -3387,27 +3441,34 @@ void Scheduler::schedulePeriodicObjects( SimulationTick current )
 {
 
 	/*
-	 * We will iterate on the copy of the list as during activation an
-	 * object may decide to delete itself, which may make its sub-slot and 
-	 * slot disappear and invalidate the slot list:
-	 *
-	 */
-	
-	list<PeriodicSlot*> slots = _periodicSlots ;
+	LogPlug::trace( "Scheduler::schedulePeriodicObjects for tick "
+		+ Ceylan::toString( current ) ) ;
+	 */	
 	
 	// Request each periodic slot to activate relevant objects:
 	
-	list<PeriodicSlot*>::iterator it = slots.begin() ;
+	list<PeriodicSlot*>::iterator it = _periodicSlots.begin() ;
 	
-	while ( it != slots.end() )
+	while ( it != _periodicSlots.end() )
 	{
 		
+		/*
+		LogPlug::trace( "Scheduler::schedulePeriodicObjects for slot "
+			+ (*it)->toString() ) ;
+		 */
+		 
 		if ( ! (*it)->onNextTick( current ) )
 		{
 		
-			// The slot notified it could be removed:
+			// The slot notified us that it could be removed:
+
+			LogPlug::debug( " Scheduler::schedulePeriodicObjects for tick "
+				+ Ceylan::toString( current) + ": removing slot "
+			 	+ (*it)->toString() ) ;
+			 
 			delete *it ;
-			it = slots.erase( it ) ;
+			it = _periodicSlots.erase( it ) ;
+			
 		}	
 		else
 		{
@@ -3415,7 +3476,13 @@ void Scheduler::schedulePeriodicObjects( SimulationTick current )
 			
 		}	
 	}
-		
+	
+	
+	/*
+	LogPlug::trace( "There is now " + Ceylan::toString( _periodicSlots.size() )
+		 + " periodic slot(s)." ) ;
+	 */
+	 	
 }
 
 
@@ -3508,10 +3575,16 @@ void Scheduler::onSimulationSkipped( SimulationTick skipped )
 		
 	if ( it != _programmedActivated.end() )
 	{
+		
 		for ( ListOfProgrammedActiveObjects::iterator itObjects =
 					(*it).second.begin() ; 
 				itObjects != (*it).second.end(); itObjects++ )
+		{	
+
 			(*itObjects)->onSkip( skipped ) ;
+
+		}
+				
 	}
 	
 #if OSDL_DEBUG_SCHEDULER	
@@ -3637,7 +3710,7 @@ void Scheduler::onScheduleFailure( Delay currentBucket )
 		OSDL_SCHEDULE_LOG( "XXXXX " + message ) ;
 		
 		LogPlug::fatal( message) ;	
-		
+				 
 		stop() ;
 		
 		throw SchedulingException( message ) ;
@@ -3690,13 +3763,13 @@ PeriodicSlot & Scheduler::getPeriodicSlotFor( Events::Period period )
 		
 		if ( (*it)->getPeriod() > period )
 			throw SchedulingException( "Scheduler::getPeriodicSlotFor: "
-				"not slot found for period " + Ceylan::toString( period ) ) ;
+				"no slot found for period " + Ceylan::toString( period ) ) ;
 				
 	}	
 	
 
 	throw SchedulingException( "Scheduler::getPeriodicSlotFor: "
-		"not slot found for period " + Ceylan::toString( period ) ) ;
+		"no slot found for period " + Ceylan::toString( period ) ) ;
 	
 }
 
