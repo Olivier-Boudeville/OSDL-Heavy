@@ -65,6 +65,7 @@ using std::list ;
  
  
  
+ 
 /**
  * The role of this object is to have the scheduler stop at a given 
  * simulation time. 
@@ -79,7 +80,7 @@ class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 	
 	
 		SchedulerStopper( SimulationTick stopSimulationTick, 
-				bool verbose = false ) throw( SchedulingException ):
+				bool verbose = false ) :
 			ProgrammedActiveObject( 
 				stopSimulationTick, 
 				/* absolutelyDefined */ true,
@@ -89,8 +90,9 @@ class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 		{
 			
 			if ( _verbose )
-				LogPlug::info( "SchedulerStopper constructor: "
-					"will stop at simulation tick #"
+				LogPlug::info( "SchedulerStopper constructor for "
+					+ Ceylan::toString( this ) 
+					+ ": will stop at simulation tick #"
 					+ Ceylan::toString( _stopTick ) + "."  ) ;
 			
 		}
@@ -106,7 +108,7 @@ class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 		
 				
 		
-		virtual void onActivation( Events::SimulationTick newTick ) throw()
+		virtual void onActivation( Events::SimulationTick newTick )
 		{
 		
 			if ( _verbose )
@@ -116,20 +118,30 @@ class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 			
 			if ( newTick == _stopTick )
 			{	
+			
+				LogPlug::info( "SchedulerStopper::onActivation: "
+					"unregistering from scheduler." ) ;
+				unregisterFromScheduler() ;
+				
 				LogPlug::info( "SchedulerStopper::onActivation: "
 					"stopping scheduler." ) ;
 				Scheduler::GetExistingScheduler().stop() ;
+				
+				// Once its mission has been done, self-removes:
+				delete this ;
+				
 			}	
 			
 		}
 		
 		
-		virtual void onSkip( Events::SimulationTick newTick ) throw()
+		virtual void onSkip( Events::SimulationTick newTick )
 		{
 		
 			LogPlug::warning( "SchedulerStopper::onSkip: the simulation tick "
 				+ Ceylan::toString( newTick ) + " had been skipped!" ) ;
 				
+			// Thus will always be called, regardless of skips:	
 			onActivation( newTick ) ;
 			
 		}
@@ -139,6 +151,100 @@ class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 	private:
 	
 		SimulationTick _stopTick ;
+		bool _verbose ;
+		
+} ;
+
+
+
+
+/**
+ * The role of this object is to kill (remove from scheduling and delete)
+ * an active object. 
+ *
+ * @note A scheduler must already exist before any of these objects is created.
+ *
+ */
+class ProgrammedObjectKiller: public OSDL::Engine::ProgrammedActiveObject
+{
+
+	public:
+	
+	
+		ProgrammedObjectKiller( SimulationTick killSimulationTick, 
+			ActiveObject & toKill, bool verbose = false ) :
+			ProgrammedActiveObject( 
+				killSimulationTick, 
+				/* absolutelyDefined */ true,
+				/* autoregister */ true ),
+			_killTick( killSimulationTick ),
+			_target( & toKill ),
+			_verbose( verbose ) 
+		{
+			
+			if ( _verbose )
+				LogPlug::info( "ProgrammedObjectKiller constructor for "
+					+ Ceylan::toString( this ) + ": will kill '"
+					+ _target->toString() + "' at simulation tick #" 
+					+ Ceylan::toString( _killTick ) + "."  ) ;
+			
+		}
+
+
+		~ProgrammedObjectKiller() throw()
+		{
+		
+			if ( _verbose )
+				LogPlug::info( "ProgrammedObjectKiller deleted." ) ;
+			
+		}
+		
+				
+		
+		virtual void onActivation( Events::SimulationTick newTick )
+		{
+		
+			if ( _verbose )
+				LogPlug::info( "ProgrammedObjectKiller::onActivation: "
+					"activated for simulation tick "
+					+ Ceylan::toString( newTick ) + "." ) ;
+			
+			if ( newTick == _killTick )
+			{	
+			
+				LogPlug::info( "ProgrammedObjectKiller::onActivation: "
+					"killing target." ) ;
+				_target->unregisterFromScheduler() ;
+				delete _target ;
+				
+				// Once its mission has been done, self-removes:
+				delete this ;	
+				
+			}
+						
+		}
+		
+		
+		virtual void onSkip( Events::SimulationTick newTick )
+		{
+		
+			LogPlug::warning( 
+				"ProgrammedObjectKiller::onSkip: the simulation tick "
+				+ Ceylan::toString( newTick ) + " had been skipped!" ) ;
+				
+			// Thus will always be called, regardless of skips:	
+			onActivation( newTick ) ;
+			
+		}
+		
+		
+		
+	private:
+	
+		SimulationTick _killTick ;
+		
+		ActiveObject * _target ;
+		
 		bool _verbose ;
 		
 } ;
@@ -167,7 +273,7 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Testing OSDL scheduler services in real-time mode." ) ;
 
 		// Tells when the test will stop, by default after 10s (100 Hz):
-		Events::SimulationTick stopTick = 10 * 100 ;
+		Events::SimulationTick stopTick = /*10 */ 2 * 100 ;
 	
 	
 		bool isBatch = false ;
@@ -277,30 +383,31 @@ int main( int argc, char * argv[] )
 			"to stop the scheduler at simulation tick " 
 			+ Ceylan::toString( stopTick ) + "." ) ;
 
-		new SchedulerStopper( stopTick, /* verbose */ true ) ;
+		// Will be killed just before being able to stop the scheduler:
+		SchedulerStopper * toKillStopper = new SchedulerStopper( 
+			stopTick/2, /* verbose */ true ) ;
 		
+		// Just-in-time (anonymous) killer:
+		new ProgrammedObjectKiller(
+			stopTick/2 - 1, *toKillStopper, /* verbose */ false ) ;
+			
+		// So the actual stopper will be this one:	
+		new SchedulerStopper( stopTick, /* verbose */ false ) ;
+			
 		// A set of stopper active objects can be used:
 				
-		bool useStoppers = false ;
+		bool useStoppers = true ;
 		
 		const Ceylan::Uint32 stoppersCount = 300 ;
 		
 		list<SchedulerStopper *> stoppers ;
 
+	
 		if ( useStoppers )
 		{
-		
-			WhiteNoiseGenerator stopTickRand( 0, stoppersCount ) ;
-		
-			/*
-			 * Actually this first one will be the one that will stop the 
-			 * scheduler:
-			 *
-			 */
-			stoppers.push_back( new SchedulerStopper( 
-				stopTick, /* verbose */ true ) ) ;
-		
-			stopTick++ ;
+			
+			// All these stoppers will arrive after the battle:
+			WhiteNoiseGenerator stopTickRand( 1, stoppersCount ) ;
 				
 			for ( Ceylan::Uint32 i = 1; i < stoppersCount; i++ )
 			{
@@ -334,11 +441,22 @@ int main( int argc, char * argv[] )
 						
 		}
 		
+		
+		/*
+		 * Deallocation summary:
+		 *   - toKillStopper deleted by the anonymous killer
+		 *   - this killer committed suicide once having murdered toKillStopper
+		 *   - the (anonymous) actual stopper committed suicide once having
+		 * stopped the scheduler
+		 *   - any remaining (useless) stopper has to be removed
+		 *
+		 */
 		for ( list<SchedulerStopper *>::iterator it = stoppers.begin(); 
-				it != stoppers.end() ; it++ ) 
+				it != stoppers.end(); it++ ) 
 			delete (*it) ;
-				
+					
 		LogPlug::info( "Stopping OSDL." ) ;		
+		
         OSDL::stop() ;
 		
 		LogPlug::info( "End of OSDL scheduler test." ) ;
