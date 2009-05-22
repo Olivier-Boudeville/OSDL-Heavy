@@ -39,6 +39,9 @@ using namespace Ceylan::Maths::Random ;
 #include <list>
 using std::list ;
 
+#include <string>
+using std::string ;
+
 
 
 
@@ -98,6 +101,33 @@ class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 		}
 
 
+		SchedulerStopper( 
+				SimulationTickList & tickList, 
+				SimulationTick stopSimulationTick, 
+				bool verbose = false ) :
+			ProgrammedActiveObject( 
+				tickList, 
+				/* absolutelyDefined */ true,
+				/* autoregister */ true ),
+			_stopTick( stopSimulationTick ),
+			_verbose( verbose ) 
+		{
+			
+			if ( _verbose )
+			{
+			
+				string stringifiedList = Ceylan::toString( tickList ) ;
+				
+				LogPlug::info( "SchedulerStopper constructor for "
+					+ Ceylan::toString( this ) 
+					+ ", with following activation tick list: ["
+					+ stringifiedList + "]; will stop at simulation tick #"
+					+ Ceylan::toString( _stopTick ) + "."  ) ;
+			
+			}
+		}
+
+
 		~SchedulerStopper() throw()
 		{
 		
@@ -116,11 +146,18 @@ class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 					"activated for simulation tick "
 					+ Ceylan::toString( newTick ) + "." ) ;
 			
+			/*
+			LogPlug::debug( "Scheduler state: " 
+				+ Scheduler::GetScheduler().toString() ) ;
+			 */
+			 
 			if ( newTick == _stopTick )
 			{	
 			
 				LogPlug::info( "SchedulerStopper::onActivation: "
 					"unregistering from scheduler." ) ;
+					
+				// Useless as implied by the deletion:	
 				unregisterFromScheduler() ;
 				
 				LogPlug::info( "SchedulerStopper::onActivation: "
@@ -158,21 +195,128 @@ class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
 
 
 
+
 /**
- * The role of this object is to kill (remove from scheduling and delete)
- * an active object. 
+ * The role of this object is to display regularly log messages, until a 
+ * limit in activations (hence output of log messages) is reached.
+ * Then it will unregister itself from the scheduler and delete itself.
  *
  * @note A scheduler must already exist before any of these objects is created.
  *
  */
-class ProgrammedObjectKiller: public OSDL::Engine::ProgrammedActiveObject
+class SchedulerPacer: public OSDL::Engine::PeriodicalActiveObject
 {
 
 	public:
 	
 	
-		ProgrammedObjectKiller( SimulationTick killSimulationTick, 
-			ActiveObject & toKill, bool verbose = false ) :
+		SchedulerPacer( Events::Period period, Ceylan::Uint32 activationCount,
+				bool verbose = false ) :
+			PeriodicalActiveObject( period, /* absolutelyDefined */ true ),
+			_activationCount( activationCount ),
+			_verbose( verbose ) 
+		{
+			
+			if ( _verbose )
+				LogPlug::info( "SchedulerPacer constructor for "
+					+ Ceylan::toString( this ) 
+					+ ": will output a log once every "
+					+ Ceylan::toString( period ) 
+					+ " ticks, until having been activated "
+					+ Ceylan::toString( activationCount ) + " times."  ) ;
+			
+		}
+
+
+		~SchedulerPacer() throw()
+		{
+		
+			if ( _verbose )
+				LogPlug::info( "SchedulerPacer (" + toString() 
+				+ ") deleted." ) ;
+			
+		}
+		
+				
+		
+		virtual void onActivation( Events::SimulationTick newTick )
+		{
+		
+			/*
+			if ( _verbose )
+				LogPlug::trace( "SchedulerPacer::onActivation: "
+					"activated for simulation tick "
+					+ Ceylan::toString( newTick ) + "." ) ;
+			 */
+			 
+			//LogPlug::info( "Message from: " + toString() ) ;
+			
+			_activationCount-- ;
+			
+			if ( _activationCount == 0 )
+			{
+			
+				LogPlug::info( "SchedulerPacer (" + toString() 
+					+ ") reached its final activation count, "
+					"removing itself from scheduling and deleting." ) ;
+			
+				// Implies unregistering:
+				delete this ;
+				
+			}
+			
+		}
+		
+		
+		virtual void onSkip( Events::SimulationTick newTick )
+		{
+		
+			LogPlug::warning( "SchedulerPacer::onSkip: the simulation tick "
+				+ Ceylan::toString( newTick ) + " had been skipped!" ) ;
+				
+			// Thus will always be called, regardless of skips:	
+			onActivation( newTick ) ;
+			
+		}
+		
+		
+		const string toString( Ceylan::VerbosityLevels level = Ceylan::low )
+			const
+		{
+		
+			return "SchedulerPacer whose period is " 
+				+ Ceylan::toString( _period) + ", with " 
+				+ Ceylan::toString( _activationCount )
+				+ " remaining activations" ;
+				
+		}
+		
+					
+	private:
+	
+		Events::Period _activationCount ;
+		bool _verbose ;
+		
+} ;
+
+
+
+
+/**
+ * The role of this (programmed) object is to kill (remove from scheduling 
+ * and delete) any active object (programmed or periodical). 
+ *
+ * @note A scheduler must already exist before any of these objects is created.
+ *
+ */
+class ActiveObjectKiller: public OSDL::Engine::ProgrammedActiveObject
+{
+
+	public:
+	
+	
+		ActiveObjectKiller( SimulationTick killSimulationTick, 
+				ActiveObject & toKill, bool verbose = false ) :
 			ProgrammedActiveObject( 
 				killSimulationTick, 
 				/* absolutelyDefined */ true,
@@ -183,7 +327,7 @@ class ProgrammedObjectKiller: public OSDL::Engine::ProgrammedActiveObject
 		{
 			
 			if ( _verbose )
-				LogPlug::info( "ProgrammedObjectKiller constructor for "
+				LogPlug::info( "ActiveObjectKiller constructor for "
 					+ Ceylan::toString( this ) + ": will kill '"
 					+ _target->toString() + "' at simulation tick #" 
 					+ Ceylan::toString( _killTick ) + "."  ) ;
@@ -191,11 +335,11 @@ class ProgrammedObjectKiller: public OSDL::Engine::ProgrammedActiveObject
 		}
 
 
-		~ProgrammedObjectKiller() throw()
+		~ActiveObjectKiller() throw()
 		{
 		
 			if ( _verbose )
-				LogPlug::info( "ProgrammedObjectKiller deleted." ) ;
+				LogPlug::info( "ActiveObjectKiller deleted." ) ;
 			
 		}
 		
@@ -204,20 +348,26 @@ class ProgrammedObjectKiller: public OSDL::Engine::ProgrammedActiveObject
 		virtual void onActivation( Events::SimulationTick newTick )
 		{
 		
+			/*
 			if ( _verbose )
-				LogPlug::info( "ProgrammedObjectKiller::onActivation: "
+				LogPlug::info( "ActiveObjectKiller::onActivation: "
 					"activated for simulation tick "
 					+ Ceylan::toString( newTick ) + "." ) ;
-			
+			 */
+			 
 			if ( newTick == _killTick )
 			{	
 			
-				LogPlug::info( "ProgrammedObjectKiller::onActivation: "
+				LogPlug::info( "ActiveObjectKiller::onActivation: "
 					"killing target." ) ;
 				_target->unregisterFromScheduler() ;
 				delete _target ;
 				
-				// Once its mission has been done, self-removes:
+				/*
+				 * Once its mission has been done, self-removes
+				 * (and therefore self-unregister):
+				 *
+				 */
 				delete this ;	
 				
 			}
@@ -229,7 +379,7 @@ class ProgrammedObjectKiller: public OSDL::Engine::ProgrammedActiveObject
 		{
 		
 			LogPlug::warning( 
-				"ProgrammedObjectKiller::onSkip: the simulation tick "
+				"ActiveObjectKiller::onSkip: the simulation tick "
 				+ Ceylan::toString( newTick ) + " had been skipped!" ) ;
 				
 			// Thus will always be called, regardless of skips:	
@@ -378,21 +528,52 @@ int main( int argc, char * argv[] )
 		
 		LogPlug::info( "Asking for a scheduler to be used." ) ;
 		myEvents.useScheduler() ;
-				
+		
+		// Uncomment to test with classical logs:
+		//Scheduler::GetScheduler().setScreenshotMode( /* on */ true, 
+		//	/* frameFilenamePrefix */ "testOSDLScheduler" ) ;
+			
 		LogPlug::info( "Creating an active object whose role is "
 			"to stop the scheduler at simulation tick " 
 			+ Ceylan::toString( stopTick ) + "." ) ;
 
+
+		// A bit of testing for a programmed object with a tick list:
+		SimulationTickList firstList ;
+		firstList.push_back( stopTick / 4 );
+		firstList.push_back( stopTick / 2 ) ; 
+		firstList.push_back( stopTick ) ;
+		firstList.push_back( 2 * stopTick ) ;
+		
 		// Will be killed just before being able to stop the scheduler:
-		SchedulerStopper * toKillStopper = new SchedulerStopper( 
+		SchedulerStopper * toKillStopper = new SchedulerStopper( firstList,
 			stopTick/2, /* verbose */ true ) ;
 		
 		// Just-in-time (anonymous) killer:
-		new ProgrammedObjectKiller(
-			stopTick/2 - 1, *toKillStopper, /* verbose */ false ) ;
+		new ActiveObjectKiller(
+			stopTick/2 - 1, *toKillStopper, /* verbose */ true ) ;
 			
+		SimulationTickList secondList ;
+		secondList.push_back( stopTick / 3 );
+		secondList.push_back( stopTick ) ; 
+		secondList.push_back( 3 * stopTick ) ;
+
 		// So the actual stopper will be this one:	
-		new SchedulerStopper( stopTick, /* verbose */ false ) ;
+		new SchedulerStopper( secondList, stopTick, /* verbose */ true ) ;
+		
+		
+		// A pacer:	
+		new SchedulerPacer( /* period */ 3, /* activation count */ 20,
+			/* verbose */ true ) ;
+			
+			
+		// Another one (will never be removed):	
+		LogPlug::warning( "The warning about an object of period 7 not being "
+			"unregistered (see below) is perfectly normal for this test." ) ;
+		
+		new SchedulerPacer( /* period */ 7, /* activation count */ 3000,
+			/* verbose */ true ) ;
+			
 			
 		// A set of stopper active objects can be used:
 				
