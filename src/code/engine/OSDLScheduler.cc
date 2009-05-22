@@ -601,6 +601,9 @@ void Scheduler::registerProgrammedObject(
 void Scheduler::unregisterProgrammedObject( 
 	ProgrammedActiveObject & objectToUnregister )
 {
+	
+	LogPlug::debug( "Scheduler::unregisterProgrammedObject for object " 
+		+ Ceylan::toString( & objectToUnregister ) ) ;
 
 	/*
 	 * This programmed object may be registered in the list of objects 
@@ -629,20 +632,31 @@ void Scheduler::unregisterProgrammedObject(
 		offset = objectToUnregister.getBirthTick() ;
 		
 	const list<SimulationTick> & programmed =
-			objectToUnregister.getProgrammedActivations() ;
+		objectToUnregister.getProgrammedActivations() ;
 
 	list<SimulationTick>::const_iterator it = programmed.begin() ;
 
+	// Programmed ticks are ordered, from sooner to later:
 	while ( ( it != programmed.end() ) 
-			&& ( (*it) + offset < _currentSimulationTick ) )
-		it++ ;
+		&& ( (*it) + offset < _currentSimulationTick ) )
+	{
 		
+		LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+			"skipping tick #" + Ceylan::toString( *it ) ) ;
+		it++ ;
+	
+	}	
+	
+	
 	// Now just invalidates the corresponding object pointer in tick lists:	
 	
 	while ( it != programmed.end() ) 
 	{
 	
-		// it points to a programmed tick for that object.
+		// It points to a programmed tick for that object.
+
+		LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+			"unregistering from tick #" + Ceylan::toString( *it ) ) ;
 		
 		// Find the scheduler list for that tick:
 		map<SimulationTick, ListOfProgrammedActiveObjects>::iterator mapIt =
@@ -659,12 +673,19 @@ void Scheduler::unregisterProgrammedObject(
 			ListOfProgrammedActiveObjects::iterator listIt = 
 				(*mapIt).second.begin() ; 
 				
+			LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+				"programmed objects for this tick are " 
+				+ Ceylan::toString( *listIt ) ) ;
+
 			while ( listIt != (*mapIt).second.end() )
 			{
 			
 				if ( *listIt == & objectToUnregister )
 				{
 				
+					LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+						"object removed" ) ;
+						
 					*listIt = 0 ;
 					
 					// Only registered once:
@@ -682,7 +703,13 @@ void Scheduler::unregisterProgrammedObject(
 					"Scheduler::unregisterProgrammedObject failed when "
 					"unregistering " + objectToUnregister.toString() 
 					+ ": expected to find a programmed activation for tick #"
-					+ Ceylan::toString( *it ) ) ; 
+					+ Ceylan::toString( *it ) 
+					+ ", while current scheduler state is: "
+					+ toString() ) ;
+			else
+				LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+					"unregistered." ) ;
+							 
 #endif //  OSDL_DEBUG_SCHEDULER
 			
 			
@@ -696,11 +723,14 @@ void Scheduler::unregisterProgrammedObject(
 				+ ": a programmed activation list for tick #"
 				+ Ceylan::toString( *it ) + " should have existed." ) ; 
 		}
+
+		it++ ;
 		
 	}
 	
 	// Here the object should not be listed anymore in the programmed ticks.
 
+	
 }
 
 	
@@ -1155,6 +1185,8 @@ Scheduler::Scheduler():
 	setTimeSliceDuration( DefaultEngineTickDuration ) ;
 		
 	send( "Scheduler created." ) ;
+
+	dropIdentifier() ;
 	
 }
 
