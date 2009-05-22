@@ -31,11 +31,13 @@ using std::string ;
 using namespace OSDL::Engine ;
 
 
+
 EngineException::EngineException( const string & reason ) :
 	OSDL::Exception( reason )
 {
 
 }
+
 
 
 EngineException::~EngineException() throw()
@@ -46,11 +48,13 @@ EngineException::~EngineException() throw()
 
 
 
+
 SchedulingException::SchedulingException( const string & reason ) :
-	EngineException( "SchedulingException : " + reason )
+	EngineException( "SchedulingException: " + reason )
 {
 
 }
+
 
 
 SchedulingException::~SchedulingException() throw()
