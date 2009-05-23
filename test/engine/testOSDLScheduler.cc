@@ -201,6 +201,9 @@ class SchedulerStopper: public OSDL::Engine::ProgrammedActiveObject
  * limit in activations (hence output of log messages) is reached.
  * Then it will unregister itself from the scheduler and delete itself.
  *
+ * Policy is strict (and not relaxed) to ensure that these objects can be
+ * created in the same sub-slot (test of removal while iterating).
+ *
  * @note A scheduler must already exist before any of these objects is created.
  *
  */
@@ -212,7 +215,8 @@ class SchedulerPacer: public OSDL::Engine::PeriodicalActiveObject
 	
 		SchedulerPacer( Events::Period period, Ceylan::Uint32 activationCount,
 				bool verbose = false ) :
-			PeriodicalActiveObject( period, /* absolutelyDefined */ true ),
+			PeriodicalActiveObject( period, /* autoRegister */ true,
+				/* policy */ strict, /* weight */ 3 ),
 			_activationCount( activationCount ),
 			_verbose( verbose ) 
 		{
@@ -304,7 +308,8 @@ class SchedulerPacer: public OSDL::Engine::PeriodicalActiveObject
 
 /**
  * The role of this (programmed) object is to kill (remove from scheduling 
- * and delete) any active object (programmed or periodical). 
+ * and delete) any active object (programmed or periodical) at a specified
+ * tick.
  *
  * @note A scheduler must already exist before any of these objects is created.
  *
@@ -360,7 +365,15 @@ class ActiveObjectKiller: public OSDL::Engine::ProgrammedActiveObject
 			
 				LogPlug::info( "ActiveObjectKiller::onActivation: "
 					"killing target." ) ;
+					
+				/*
+				 * Useless, implied by deletion:
+				 
 				_target->unregisterFromScheduler() ;
+					 	
+				 *
+				 */
+				 
 				delete _target ;
 				
 				/*
@@ -370,6 +383,13 @@ class ActiveObjectKiller: public OSDL::Engine::ProgrammedActiveObject
 				 */
 				delete this ;	
 				
+			}
+			else
+			{
+			
+				LogPlug::error( "ActiveObjectKiller::onActivation: "
+					"scheduled at an unexpected tick." ) ;
+			
 			}
 						
 		}
@@ -395,6 +415,282 @@ class ActiveObjectKiller: public OSDL::Engine::ProgrammedActiveObject
 		
 		ActiveObject * _target ;
 		
+		bool _verbose ;
+		
+} ;
+
+
+
+
+/**
+ * The role of this programmed object is to kill (remove from scheduling 
+ * and delete) a list of an active objects (programmed or periodical) at a 
+ * specified tick.
+ *
+ * @note A scheduler must already exist before any of these objects is created.
+ *
+ */
+class ActiveObjectProgrammedSerialKiller: 
+	public OSDL::Engine::ProgrammedActiveObject
+{
+
+	public:
+	
+	
+		ActiveObjectProgrammedSerialKiller( SimulationTick killSimulationTick,
+				bool verbose = false ) :
+			ProgrammedActiveObject( 
+				killSimulationTick, 
+				/* absolutelyDefined */ true,
+				/* autoregister */ true ),
+			_killTick( killSimulationTick ),
+			_verbose( verbose ) 
+		{
+			
+			if ( _verbose )
+				LogPlug::info( 
+					"ActiveObjectProgrammedSerialKiller constructor for "
+					+ Ceylan::toString( this ) + ": will kill "
+					+ _targets.size() + " target(s) at simulation tick #" 
+					+ Ceylan::toString( _killTick ) + "."  ) ;
+			
+		}
+
+
+		~ActiveObjectProgrammedSerialKiller() throw()
+		{
+		
+			if ( _verbose )
+				LogPlug::info( "ActiveObjectProgrammedSerialKiller deleted." ) ;
+			
+		}
+		
+				
+		virtual void addTarget( ActiveObject & toKill )
+		{
+		
+			_targets.push_back( & toKill ) ;
+			
+		}
+		
+		
+		virtual void onActivation( Events::SimulationTick newTick )
+		{
+		
+			/*
+			if ( _verbose )
+				LogPlug::info(
+					"ActiveObjectProgrammedSerialKiller::onActivation: "
+					"activated for simulation tick "
+					+ Ceylan::toString( newTick ) + "." ) ;
+			 */
+			 
+			if ( newTick == _killTick )
+			{	
+			
+				LogPlug::info(
+					"ActiveObjectProgrammedSerialKiller::onActivation: "
+					"killing targets." ) ;
+					
+				for ( list<ActiveObject *>::iterator it = _targets.begin();
+					it != _targets.end(); it ++ )
+				{	
+				
+					LogPlug::info(
+						"ActiveObjectProgrammedSerialKiller::onActivation: "
+						"killing '" + (*it)->toString() + "'." ) ;
+					/*
+					 * Useless, implied by deletion:
+					 
+					(*it)->unregisterFromScheduler() ;
+					
+					 *
+					 */
+					 
+					delete *it ;
+				
+				}	
+				
+				/*
+				 * Once its mission has been done, self-removes
+				 * (and therefore self-unregister):
+				 *
+				 */
+				delete this ;	
+				
+			}
+			else
+			{
+			
+				LogPlug::error(
+					"ActiveObjectProgrammedSerialKiller::onActivation: "
+					"scheduled at an unexpected tick." ) ;
+			
+			}
+						
+		}
+		
+		
+		virtual void onSkip( Events::SimulationTick newTick )
+		{
+		
+			LogPlug::warning( 
+				"ActiveObjectProgrammedSerialKiller::onSkip: "
+				"the simulation tick " + Ceylan::toString( newTick ) 
+				+ " had been skipped!" ) ;
+				
+			// Thus will always be called, regardless of skips:	
+			onActivation( newTick ) ;
+			
+		}
+		
+		
+		
+	private:
+	
+		SimulationTick _killTick ;
+		
+		list<ActiveObject *> _targets ;
+		
+		bool _verbose ;
+		
+} ;
+
+
+
+/**
+ * The role of this periodical object is to kill (remove from scheduling 
+ * and delete) a list of an active objects (programmed or periodical) at a 
+ * specified tick.
+ *
+ * Strict policy chosen to be in the same sub-slot as the targets.
+ *
+ * @note A scheduler must already exist before any of these objects is created.
+ *
+ */
+class ActiveObjectPeriodicalSerialKiller: 
+	public OSDL::Engine::PeriodicalActiveObject
+{
+
+	public:
+	
+	
+		ActiveObjectPeriodicalSerialKiller( Events::Period period,
+				Ceylan::Uint32 periodCount,	bool verbose = false ) :
+			PeriodicalActiveObject( 
+				period, 
+				/* autoregister */ true,
+				/* policy */ strict ),
+			_periodCount( periodCount ),
+			_verbose( verbose ) 
+		{
+			
+			if ( _verbose )
+				LogPlug::info( 
+					"ActiveObjectPeriodicalSerialKiller constructor for "
+					+ Ceylan::toString( this ) + ": will kill "
+					+ _targets.size() + " target(s) after " 
+					+ Ceylan::toString( periodCount ) + " periods."  ) ;
+			
+		}
+
+
+		~ActiveObjectPeriodicalSerialKiller() throw()
+		{
+		
+			if ( _verbose )
+				LogPlug::info( "ActiveObjectPeriodicalSerialKiller deleted." ) ;
+			
+		}
+		
+				
+		virtual void addTarget( ActiveObject & toKill )
+		{
+		
+			_targets.push_back( & toKill ) ;
+			
+		}
+		
+		
+		virtual void onActivation( Events::SimulationTick newTick )
+		{
+		
+			/*
+			if ( _verbose )
+				LogPlug::info(
+					"ActiveObjectPeriodicalSerialKiller::onActivation: "
+					"activated for simulation tick "
+					+ Ceylan::toString( newTick ) + "." ) ;
+			 */
+			 
+			if ( _periodCount == 0 )
+			{	
+			
+				LogPlug::info(
+					"ActiveObjectPeriodicalSerialKiller::onActivation: "
+					"killing targets." ) ;
+					
+				for ( list<ActiveObject *>::iterator it = _targets.begin();
+					it != _targets.end(); it ++ )
+				{	
+				
+					LogPlug::info(
+						"ActiveObjectPeriodicalSerialKiller::onActivation: "
+						"killing '" + (*it)->toString() + "'." ) ;
+					/*
+					 * Useless, implied by deletion:
+					 
+					(*it)->unregisterFromScheduler() ;
+					
+					 *
+					 */
+					 
+					delete *it ;
+				
+				}	
+				
+				/*
+				 * Once its mission has been done, self-removes
+				 * (and therefore self-unregister):
+				 *
+				 */
+				delete this ;	
+				
+			}
+			else
+			{
+			
+				LogPlug::info(
+					"ActiveObjectPeriodicalSerialKiller::onActivation: "
+					"still " + Ceylan::toString( _periodCount ) 
+					+ " periods to wait." ) ;
+			
+			}
+
+			 _periodCount-- ;
+						
+		}
+		
+		
+		virtual void onSkip( Events::SimulationTick newTick )
+		{
+		
+			LogPlug::warning( 
+				"ActiveObjectPeriodicalSerialKiller::onSkip: "
+				"the simulation tick " + Ceylan::toString( newTick ) 
+				+ " had been skipped!" ) ;
+				
+			// Thus will always be called, regardless of skips:	
+			onActivation( newTick ) ;
+			
+		}
+		
+		
+		
+	private:
+	
+		Ceylan::Uint32 _periodCount ;
+		list<ActiveObject *> _targets ;
 		bool _verbose ;
 		
 } ;
@@ -538,7 +834,11 @@ int main( int argc, char * argv[] )
 			+ Ceylan::toString( stopTick ) + "." ) ;
 
 
-		// A bit of testing for a programmed object with a tick list:
+		/*
+		 * A bit of testing for a programmed object with a tick list:
+		 * (ownership not taken)
+		 *
+		 */
 		SimulationTickList firstList ;
 		firstList.push_back( stopTick / 4 );
 		firstList.push_back( stopTick / 2 ) ; 
@@ -552,6 +852,33 @@ int main( int argc, char * argv[] )
 		// Just-in-time (anonymous) killer:
 		new ActiveObjectKiller(
 			stopTick/2 - 1, *toKillStopper, /* verbose */ true ) ;
+			
+			
+		/*
+		 * Here we define A, B and C, (three programmed actors, with the
+		 * stopTick/2 tick in common) knowing than B is expected to remove A
+		 * and C, which are by design programmed at the same tick, just before
+		 * and just after.
+		 * This is the worst case scenario, one of the two would have been
+		 * scheduled just after B, hence the removal is tested when iterating
+		 * in the same list.
+		 *
+		 */
+		SchedulerStopper * stopperA = new SchedulerStopper( firstList,
+			/* stop tick */ 1000, /* verbose */ true ) ;
+		 	
+		// Will hit at the second tick of the list:	
+		ActiveObjectProgrammedSerialKiller * killerB = 
+				new ActiveObjectProgrammedSerialKiller(
+			stopTick/2, /* verbose */ true ) ;
+		 	
+		SchedulerStopper * stopperC = new SchedulerStopper( firstList,
+			/* stop tick */ 1000, /* verbose */ true ) ;
+		 	
+		killerB->addTarget( *stopperA ) ;
+		killerB->addTarget( *stopperC ) ;
+		
+		
 			
 		SimulationTickList secondList ;
 		secondList.push_back( stopTick / 3 );
@@ -574,6 +901,32 @@ int main( int argc, char * argv[] )
 		new SchedulerPacer( /* period */ 7, /* activation count */ 3000,
 			/* verbose */ true ) ;
 			
+
+		/*
+		 * Here we define D, E and F, (three periodical actors, with the
+		 * same period, 5) knowing than E is expected to remove D
+		 * and F, which are by design programmed at the same tick, just before
+		 * and just after.
+		 * This is the worst case scenario, one of the two would have been
+		 * scheduled just after E, hence the removal is tested when iterating
+		 * in the same list.
+		 *
+		 */
+		SchedulerPacer * pacerD = new SchedulerPacer( /* period */ 5,
+			/* stop tick */ 1000, /* verbose */ true ) ;
+		 	
+		// Will hit at tick 5*6 = 30:	
+		ActiveObjectPeriodicalSerialKiller * killerE = 
+				new ActiveObjectPeriodicalSerialKiller(
+			/* period */ 5, /* period count */ 6, /* verbose */ true ) ;
+		 	
+		SchedulerPacer * pacerF = new SchedulerPacer( /* period */ 5,
+			/* stop tick */ 1000, /* verbose */ true ) ;
+		 	
+		killerE->addTarget( *pacerD ) ;
+		killerE->addTarget( *pacerF ) ;
+		
+
 			
 		// A set of stopper active objects can be used:
 				
@@ -610,6 +963,12 @@ int main( int argc, char * argv[] )
 				<< std::endl ;
 						
 		}
+		
+		
+		LogPlug::info( 
+			"Just before starting the scheduling, scheduler state is: "
+			+ Scheduler::GetScheduler().toString() ) ; 
+			
 							
 		LogPlug::info( "Entering the schedule loop." ) ;
 		myEvents.enterMainLoop() ;
