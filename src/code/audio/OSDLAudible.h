@@ -61,7 +61,7 @@ namespace OSDL
 		
 		/**
 		 * Stores the number of times an Audible should be played.
-		 * A value of -1 means forever (infinite loop).
+		 * A value of Loop (-1) means forever (infinite loop).
 		 * Values below -1 have no meaning and are ignored.
 		 *
 		 */
@@ -71,7 +71,7 @@ namespace OSDL
 		
 		/**
 		 * This playback count corresponds to an infinite loop, unlimited
-		 * repetitions.
+		 * repetitions (its value is -1).
 		 *
 		 */ 
 		extern OSDL_DLL const PlaybackCount Loop ;  
