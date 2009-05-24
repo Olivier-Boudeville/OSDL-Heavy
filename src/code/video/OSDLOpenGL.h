@@ -787,6 +787,12 @@ namespace OSDL
 					 * Prepares the OpenGL attributes appropriate for the
 					 * flavour that will be used in a VideoModule::setMode call.
 					 *
+					 * @param flavour the OpenGL flavour to aim at.
+					 *
+					 * @param safest tells whether we should use best settings
+					 * (if true) or safest ones (if false), which are useful
+					 * if the best just failed to be set properly. 
+					 *
 					 * @note The corresponding attributes will not be taken 
 					 * into account until the next call to 
 					 * VideoModule::setMode.
@@ -794,7 +800,8 @@ namespace OSDL
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					static void SetUpForFlavour( OpenGL::Flavour flavour ) ;
+					static void SetUpForFlavour( OpenGL::Flavour flavour,
+						bool safest = false ) ;
 						
 						
 						
@@ -917,7 +924,8 @@ namespace OSDL
 					 *
 					 * @param samplesPerPixelNumber number of samples 
 					 * per pixel when multisampling (FSAA) is enabled.
-					 * Is usually 2, 4, 16, etc.
+					 * Is usually 2, 4, 16, etc. This parameter is
+					 * ignored if newStatus is false.
 					 * 
 				 	 * @throw OpenGLException should an error occur.
 					 *
