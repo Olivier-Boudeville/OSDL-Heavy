@@ -327,7 +327,7 @@ PhysicsFS_VERSION="@PHYSICSFS_RECOMMENDED_VERSION@"
 PhysicsFS_ARCHIVE="physfs-${PhysicsFS_VERSION}.tar.gz"
 PhysicsFS_DOWNLOAD_LOCATION="http://icculus.org/physfs/downloads"
 PhysicsFS_ALTERNATE_DOWNLOAD_LOCATION=""
-PhysicsFS_MD5="0359b67793c1c14f00de1d1bbeb8ed6a"
+PhysicsFS_MD5="cfc53e0c193914c9c5ab522e58737373"
 
 PhysicsFS_win_VERSION="$PhysicsFS_VERSION"
 PhysicsFS_win_ARCHIVE="${PhysicsFS_ARCHIVE}"
