@@ -825,7 +825,11 @@ void GLTexture::upload( Surface & sourceSurface )
 		glBindTexture( /* texturing target */ GL_TEXTURE_2D, 
 			/* name to bind */ _id ) ;
 		
-		// We have therefore to re-set the texture settings:
+		/*
+		 * We have therefore to re-set the texture settings:
+		 * (beware to this side-effect!)
+		 *
+		 */
 		SetTextureFlavour( _flavour ) ;
 		
 		
