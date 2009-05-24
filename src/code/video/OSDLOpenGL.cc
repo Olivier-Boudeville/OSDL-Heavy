@@ -1190,7 +1190,7 @@ const string OpenGLContext::toString( Ceylan::VerbosityLevels level ) const
 
 
 
-void OpenGLContext::SetUpForFlavour( OpenGL::Flavour flavour )
+void OpenGLContext::SetUpForFlavour( OpenGL::Flavour flavour, bool safest )
 {
 
 #if OSDL_USES_OPENGL
@@ -1216,8 +1216,20 @@ void OpenGLContext::SetUpForFlavour( OpenGL::Flavour flavour )
 		case OpenGLFor3D:
 			SetDoubleBufferStatus( true ) ;
 			SetDepthBufferSize( 16 ) ;
-			SetFullScreenAntialiasingStatus( true,
-				/* samplesPerPixelNumber */ 4 ) ;
+			// May trigger "Couldn't find matching GLX visual":
+			if ( ! safest )
+			{
+			
+				SetFullScreenAntialiasingStatus( true,
+					/* samplesPerPixelNumber */ 4 ) ;
+			
+			}
+			else
+			{
+				
+				SetFullScreenAntialiasingStatus( false ) ;
+			
+			}		
 			SetHardwareAccelerationStatus( true ) ;
 			TrySettingVerticalBlankSynchronizationStatus( true ) ;
 			// No SetColorDepth, left as is.
@@ -1470,6 +1482,8 @@ void OpenGLContext::SetFullScreenAntialiasingStatus( bool newStatus,
 		
 		SetGLAttribute( SDL_GL_MULTISAMPLEBUFFERS,
 			/* Number of multisample buffers (0 or 1) */ 0 ) ;
+		
+		SetGLAttribute( SDL_GL_MULTISAMPLESAMPLES, 0 ) ;
 		
 	}
 
