@@ -75,14 +75,25 @@ PeriodicSlot::~PeriodicSlot() throw()
 		if ( _subslots[i] != 0 )
 		{
 		
-			Ceylan::Uint32 size = _subslots[i]->size() ;
+			Ceylan::Uint32 remainingCount = 0 ;
 			
-			if ( size != 0 )
+			// Not using size(), as null pointers must not be counted:
+			for ( ListOfPeriodicalActiveObjects::const_iterator it =
+				_subslots[i]->begin() ; it != _subslots[i]->end(); it++ )
+			{
+			
+				if ( (*it) != 0 )
+					remainingCount++ ;
+			
+			}
+					
+			if ( remainingCount != 0 )
 				LogPlug::warning( "PeriodicSlot destructor: "
 					"for slot in charge of period " 
 					+ Ceylan::toString( _period ) + ", subslot #"
 					+ Ceylan::toString( i ) + " was still containing "
-					+ Ceylan::toString( size ) + " periodical object(s)." ) ;
+					+ Ceylan::toString( remainingCount ) 
+					+ " periodical object(s)." ) ;
 				
 			delete _subslots[i] ;
 			
