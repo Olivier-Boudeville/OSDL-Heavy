@@ -4,7 +4,7 @@
 SUBDIRS = audioRenderer
 
 
-# Convenience library for the 'Audio' module :
+# Convenience library for the 'Audio' module:
 noinst_LTLIBRARIES = libOSDLAudio.la
 
 libOSDLAudio_la_SOURCES = $(AUDIO_INTERFACES) $(AUDIO_IMPLEMENTATIONS)
@@ -17,10 +17,11 @@ libOSDLAudioInclude_HEADERS = $(AUDIO_INTERFACES)
 
 AUDIO_INTERFACES = \
 	OSDLAudible.h                        \
+	OSDLAudio.h                          \
 	OSDLAudioChannel.h                   \
 	OSDLAudioCommon.h                    \
-	OSDLAudio.h                          \
 	OSDLMusic.h                          \
+	OSDLMusicManager.h                   \
 	OSDLSound.h                          \
 	OSDLAudioIncludes.h
 
@@ -30,5 +31,6 @@ AUDIO_IMPLEMENTATIONS = \
 	OSDLAudio.cc                         \
 	OSDLAudioChannel.cc                  \
 	OSDLMusic.cc                         \
+	OSDLMusicManager.cc                  \
 	OSDLSound.cc
 	
