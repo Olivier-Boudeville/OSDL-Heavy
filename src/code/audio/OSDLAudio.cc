@@ -32,6 +32,7 @@
 
 #include "OSDLAudioChannel.h"        // for AudioChannel
 #include "OSDLMusic.h"               // for GetTypeOf
+#include "OSDLMusicManager.h"        // for MusicManager
 
 
 
@@ -328,7 +329,8 @@ AudioModule::AudioModule() :
 		OSDL::GetVersion(),
 		"disjunctive LGPL/GPL" ),
 	_mixerInitialized( false ),
-	_chunkSize( 0 )			
+	_chunkSize( 0 ),
+	_controlMusicManager( true )			
 {
 
 	send( "Initializing audio subsystem." ) ;
@@ -362,6 +364,18 @@ AudioModule::AudioModule() :
 		+ Ceylan::toNumericalString( linkTimeSDLMixerVersion.minor) + "."
 		+ Ceylan::toNumericalString( linkTimeSDLMixerVersion.patch) 
 		+ " version." ) ;
+
+	// Always true by default:
+	if ( _controlMusicManager )
+	{
+		
+		if ( MusicManager::_CurrentMusicManager != 0 )
+			throw AudioException( "AudioModule constructor failed: "
+				"there is already a music manager registered." ) ;
+
+		MusicManager::_CurrentMusicManager = new MusicManager() ;		
+	
+	}
 	
 #endif // OSDL_USES_SDL_MIXER
 
@@ -380,6 +394,7 @@ AudioModule::AudioModule() :
 	CommandManager::GetCommandManager().enableMusicSupport() ;
 
 #endif // OSDL_RUNS_ON_ARM7
+	
 
 
 #endif // OSDL_ARCH_NINTENDO_DS
@@ -401,6 +416,26 @@ AudioModule::~AudioModule() throw()
 {
 
 	send( "Stopping audio subsystem." ) ;
+	
+	if ( _controlMusicManager )
+	{
+
+		if ( MusicManager::_CurrentMusicManager != 0 )
+		{
+	
+			delete MusicManager::_CurrentMusicManager ;
+			MusicManager::_CurrentMusicManager = 0 ;
+		
+		}
+		else
+		{
+		
+			LogPlug::error( "AudioModule destructor: "
+				"no music manager found." ) ;
+				
+		}		
+		
+	}
 	
 	
 	if ( _mixerInitialized )
@@ -1164,6 +1199,9 @@ void AudioModule::onMusicPlaybackFinished()
 	/*
 	 * Does nothing on purpose, meant to be overriden.
 	 *
+	 * Most of the time, this callback is never called, since being 
+	 * overridden by the one of the music manager.
+	 *
 	 * @note Never call SDL_Mixer functions, nor SDL_LockAudio, from a callback
 	 * function.
 	 *
@@ -1243,6 +1281,8 @@ ChunkSize AudioModule::GetSampleSizeFor( SampleFormat format )
 void AudioModule::HandleMusicPlaybackFinishedCallback()
 {
 
+	// Note: if a music manager is used, it will override this callback.
+	
 	try
 	{
 	
@@ -1278,7 +1318,7 @@ AudioModule & OSDL::Audio::getExistingAudioModule()
 	catch( const OSDL::Exception & e )
 	{
 		
-		Ceylan::emergencyShutdown( "OSDL::Audio::getExistingAudioModule: "
+		throw AudioException( "OSDL::Audio::getExistingAudioModule: "
 			"no audio module available: " + e.toString() ) ;
 	
 	}
