@@ -3907,36 +3907,8 @@ PHYSICSFS_CMAKE_OPT="-DCMAKE_INSTALL_PREFIX=${PhysicsFS_PREFIX}"
 		echo "" >> ${OSDL_ENV_FILE}
 				
 		LIBPATH="-L${PhysicsFS_PREFIX}/lib"
-        
-		
+        	
 		setBuildEnv ${MAKE} install
-
-		cd ${PhysicsFS_PREFIX}/include
-        
-        # Patching PhysicsFS include, to name the struct:
-    
-		${CAT} > physfs.h.patch <<END
---- physfs.h    2008-10-11 16:38:16.000000000 +0200
-+++ physfs.h-correct    2008-10-11 16:17:45.000000000 +0200
-@@ -334,7 +334,7 @@
-  * \sa PHYSFS_setBuffer
-  * \sa PHYSFS_flush
-  */
--typedef struct
-+typedef struct PHYSFS_File
- {
-     void *opaque;  /**< That's all you get. Don't touch. */
- } PHYSFS_File;
-
-END
-
-		${PATCH} -p0 < physfs.h.patch
-
-		if [ $? != 0 ] ; then
-			echo
-			ERROR "Unable to patch PhysicsFS."
-			exit 14
-		fi	
 
 
 	} 1>>"$LOG_OUTPUT" 2>&1		
