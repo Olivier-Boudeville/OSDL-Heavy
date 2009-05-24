@@ -30,9 +30,6 @@
 #include "OSDLScheduler.h"             // for GetExistingScheduler
 #include "OSDLMultimediaRenderer.h"    // for MultimediaRenderer
 
-//#include "OSDLCamera.h"       // for Camera
-
-
 
 using namespace OSDL::Events ;
 using namespace OSDL::Rendering ;
@@ -57,9 +54,8 @@ using std::string ;
 
 AudioRenderer::AudioRenderer( bool registerToRootRenderer ) :
 	Renderer( /* registerToScheduler */ false )
-	//,_internalCamera( 0 )
 {
-
+		
 	if ( registerToRootRenderer )
 	{
 	
@@ -99,47 +95,17 @@ AudioRenderer::AudioRenderer( bool registerToRootRenderer ) :
 
 AudioRenderer::~AudioRenderer() throw()
 {
-/*
-	if ( _internalCamera != 0 )
-		delete _internalCamera ;
-*/
+			
 }
 
-
-
-/*
-bool hasCamera() const throw() 
-{
-	return ( _internalCamera != 0 ) ;
-}
-
-
-
-Camera & AudioRenderer::getCamera() const throw( RenderingException )
-{
-	if ( _internalCamera == 0 )
-		return * _internalCamera ;
-}
-
-
-
-void AudioRenderer::setCamera( Camera & newCamera ) throw()
-{
-	if ( _internalCamera != 0 )
-		delete _internalCamera ;
-	
-	_internalCamera = & newCamera ;
-	
-}
-
-*/
 
 
 void AudioRenderer::render( RenderingTick currentRenderingTick )
 {
 
-	OSDL_AUDIO_RENDER_LOG( "Audio rendering ! " ) ;
+	OSDL_AUDIO_RENDER_LOG( "Audio rendering! " ) ;
 	
+		
 	/*
 	 * Beware, currentRenderingTick might be always zero if no scheduler 
 	 * is used.
@@ -164,26 +130,18 @@ void AudioRenderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
 const string AudioRenderer::toString( Ceylan::VerbosityLevels level ) const
 {
 
-	string res = "Audio renderer, last rendering tick was " 
+	string res = "Audio renderer, whose last rendering tick was " 
 		+ Ceylan::toString( _lastRender )
 		+ ", having performed " + Ceylan::toString( _renderingDone ) 
 		+ " rendering(s) for "
 		+ Ceylan::toString( _renderingSkipped ) + " skip(s)" ;
 	
-	if ( _renderingDone + _renderingSkipped != 0 )
+	if ( ( _renderingDone + _renderingSkipped ) != 0 )
 		res += " (rendering proportion: " 
 			+ Ceylan::toString( 100 * _renderingDone 
 				/ ( _renderingDone + _renderingSkipped ) )
 		 	+ "%)" ;
 			
-	/*		
-	if ( _internalCamera != 0 )
-		res += ". Following camera is being used: " 
-			+ _internalCamera->toString( level ) ;
-	else
-		res += ". No camera is currently used" ;		 
-	*/	
-	
 	return res ;
 	
 }
