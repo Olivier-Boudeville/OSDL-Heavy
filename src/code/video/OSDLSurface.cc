@@ -3070,6 +3070,8 @@ void Surface::putWidgetToFront( TwoDimensional::Widget & widget )
 	 * Reorders _listeners list, inherited from EventSource, so that 
 	 * the widget is at top level, i.e. in last position of the list (back).
 	 *
+	 * Could iterate to stop at first occurrence found.
+	 *
 	 */
 	_listeners.remove( & widget ) ;
 	
@@ -3087,6 +3089,8 @@ void Surface::putWidgetToBack( TwoDimensional::Widget & widget )
 	 * Reorders _listeners list, inherited from EventSource, so that 
 	 * the widget is at bottom level, i.e. in first position of the list 
 	 * (front).
+	 *
+	 * Could iterate to stop at first occurrence found.
 	 *
 	 */
 	_listeners.remove( & widget ) ;
