@@ -93,17 +93,22 @@ namespace OSDL
 		struct LowLevelMusic
 		{
 		
+		
 			// Music-specific section.
 		
+			
 			
 			/// The file from which music samples will be streamed:
 			Ceylan::System::File * _musicFile ;
 			
+			
 			/// The music sampling frequency, in Hertz:
 			Ceylan::Uint16 _frequency ;
 
+
 			/// The music bit depth, in bits (8bit/16bit):
 			Ceylan::Uint8 _bitDepth ;
+
 
 			/**
 			 * The mode, i.e. the number of channels (mono:1/stereo:2):
@@ -113,8 +118,10 @@ namespace OSDL
 			Ceylan::Uint8 _mode ;
 
 
+
 			/// The total size of music, in bytes:
 			BufferSize _size ;
+			
 			
 			
 			// Buffer-specific section.
@@ -127,6 +134,7 @@ namespace OSDL
 		
 			/// Tells whether the filling of first buffer has been requested.
 			bool _requestFillOfFirstBuffer ;
+					
 						
 			/*
 			 * Precomputes the start of the first buffer, after the delta 
@@ -135,12 +143,14 @@ namespace OSDL
 			 */
 			Ceylan::Byte * _startAfterDelta ;
 			
+			
 			/// Precomputes delta-wise the refill size of first buffer.
 			BufferSize _firstActualRefillSize ;
 			
 			
 			/// Tells whether the filling of second buffer has been requested.
 			bool _requestFillOfSecondBuffer ;
+				
 				
 					
 			/**
@@ -185,6 +195,7 @@ namespace OSDL
 		 *
 		 */
 		typedef Ceylan::Uint32 MusicPosition ;
+
 
 		
 				
@@ -277,6 +288,7 @@ namespace OSDL
 	
 		
 		
+		
 		/**
 		 * Bitrate types, for formats that use them (ex: MP3).
 		 *
@@ -285,12 +297,15 @@ namespace OSDL
 		 
 		 
 		 
+		 
 		// For constant bitrate: 
 		extern OSDL_DLL const BitrateType CBR ;  
 		
 		
+		
 		// For variable bitrate: 
 		extern OSDL_DLL const BitrateType VBR ;  
+
 
 
 												
@@ -333,6 +348,7 @@ namespace OSDL
 			
 			
 			public:
+				
 				
 
 				/**
