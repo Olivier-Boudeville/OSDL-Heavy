@@ -42,7 +42,7 @@ using namespace OSDL::Engine ;
 #endif // OSDL_USES_CONFIG_H
 
 
-#include "Ceylan.h"           // for View
+#include "Ceylan.h"           // for BaseView
 
 using namespace Ceylan::Log ;
 
@@ -81,7 +81,49 @@ StandardRenderer::~StandardRenderer() throw()
 {
 
 	// Views are not owned.
+	Ceylan::Uint32 viewCount = _registeredViews.size() ;
 	
+	if ( viewCount != 0 )
+		LogPlug::warning( "StandardRenderer destructor: "
+			+ Ceylan::toString( viewCount ) + "view(s) still registered." ) ;
+			
+}
+
+
+
+
+void StandardRenderer::registerView( Ceylan::MVC::BaseView & view ) 
+{
+
+	_registeredViews.push_back( & view ) ;
+	
+}
+
+
+
+void StandardRenderer::unregisterView( Ceylan::MVC::BaseView & view ) 
+{
+
+	list<Ceylan::MVC::BaseView *>::iterator it ;
+	
+	for ( it = _registeredViews.begin(); it != _registeredViews.end(); it++ )
+	{
+	
+		if ( (*it) == & view )
+		{
+		
+			_registeredViews.erase( it ) ;
+			
+			return ;
+		
+		}
+	
+	}
+	
+	if ( it == _registeredViews.end() )
+		throw RenderingException( "StandardRenderer::unregisterView: view '"
+			+ view.toString() + "' was not registered." ) ;
+						
 }
 
 
@@ -93,9 +135,9 @@ void StandardRenderer::render( RenderingTick currentRenderingTick )
 	
 	_screen->clear() ;
 
-	for ( list<Ceylan::View *>::iterator it = _registeredViews.begin() ;
+	for ( list<Ceylan::MVC::BaseView *>::iterator it = _registeredViews.begin();
 			it != _registeredViews.end(); it++ )
-		(*it)->renderModel() ;
+		(*it)->render() ;
 		
 	_screen->update() ;
 	
