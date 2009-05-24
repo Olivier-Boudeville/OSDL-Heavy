@@ -34,22 +34,14 @@
 
 
 
+
 namespace OSDL
 {
-
-
-
-	namespace Rendering 
-	{
+	
 	
 		
-		
-		/*
-		 * Audio renderers use a point of perception to select relevant 
-		 * objects which should be rendered.
-		 *
-		 */
-		class Camera ;
+	namespace Rendering 
+	{
 				
 			
 				
@@ -102,38 +94,6 @@ namespace OSDL
 				virtual ~AudioRenderer() throw() ;
 			
 
-
-				/**
-				 * Returns whether this audio renderer has an internal 
-				 * camera available.
-				 *
-				 */
-				//virtual bool hasCamera() const ;
-				
-				 		
-								
-				/**
-				 * Returns the internal camera of this audio renderer.
-				 *
-				 * @throw RenderingException iff no camera is available.
-				 */
-				//virtual Camera & getCamera() const ; 	
-					
-					
-					
-				/**
-				 * Sets the internal camera of this audio renderer.
-				 *
-				 * @param newCamera the new camera to use from now on.
-				 *
-				 * @note The audio renderer takes ownership of the provided
-				 * camera, and will delete it when itself deleted, or when
-				 * replaced by another camera.
-				 *
-				 */
-				//virtual void setCamera( Camera & newCamera ) ; 	
-					
-					
 					
 				/**
 				 * Triggers the actual audio rendering of all views, for
@@ -148,6 +108,7 @@ namespace OSDL
 				virtual void render( 
 					Events::RenderingTick currentRenderingTick = 0 ) ;
 	
+						
 				
 				
 				/**
@@ -182,16 +143,6 @@ namespace OSDL
 		 		virtual const std::string toString( 
 					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
-
-
-					
-			protected:
-			
-			
-				/// The internal camera which is used to render, if any.
-				//Camera * _internalCamera ;
-			
-			
 			
 			
 			private:
