@@ -503,7 +503,8 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	if ( useOpenGLRequested )
 	{
 		
-		OpenGLContext::SetUpForFlavour( flavour ) ;
+		// First tries the optimal ("best") settings for that flavour:
+		OpenGLContext::SetUpForFlavour( flavour, /* safest */ false ) ;
 		
 		if ( askedBpp != 0 )
 			 OpenGLContext::SetColorDepth( askedBpp ) ;
@@ -518,11 +519,39 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			
     SDL_Surface * screen = SDL_SetVideoMode( width, height, askedBpp, flags ) ;
 
+    if ( screen == 0 )
+	{
+	
+		if ( useOpenGLRequested )
+		{
+		
+			LogPlug::warning( "VideoModule::setMode: "
+				"failed to initialize OpenGL video mode (\"" 
+				+ Utils::getBackendLastError()
+				+ "\"), using safer settings as a fall-back." ) ;
+			
+			/*
+			 * We might have triggered an error such as: 
+			 * "Couldn't find matching GLX visual", trying safer yet less
+			 * accelerated/fancy settings:
+			 *
+			 */
+		 	OpenGLContext::SetUpForFlavour( flavour, /* safest */ true ) ;
+
+			screen = SDL_SetVideoMode( width, height, askedBpp, flags ) ;
+		
+		}
+
+		// No fall-back available yet for non-OpenGL modes.	
+		
+	} 
+
+ 
     if ( screen == 0 ) 
         throw VideoException( "Could not set "
 			+ Ceylan::toString( width )    + 'x' 
 			+ Ceylan::toString( height )   + 'x' 
-			+ Ceylan::toString( askedBpp ) 
+			+ Ceylan::toNumericalString( askedBpp ) 
 			+ " with flags " + Ceylan::toString( flags, /* bit field */ true )
 			+ " video mode: " + Utils::getBackendLastError() ) ;
 
