@@ -41,8 +41,14 @@
 namespace Ceylan
 {		
 
-	// A standard renderer handles views.
-	class View ;		
+	namespace MVC
+	{
+	
+	
+		// A standard renderer handles views.
+		class BaseView ;		
+	
+	}	
 
 }
 
@@ -71,6 +77,8 @@ namespace OSDL
 		/**
 		 * The standard renderer manages a list of views and offers a specific
 		 * support for OpenGL.
+		 *
+		 * Any view is supposed to be registered only once, or not at all.
 		 *
 		 * @see Renderer
 		 *
@@ -108,6 +116,30 @@ namespace OSDL
 				 *
 				 */
 				virtual ~StandardRenderer() throw() ;
+			
+			
+				
+				/**
+				 * Registers specified view to this renderer.
+				 * Ownership not taken.
+				 *
+				 * @param view the view to register.
+				 *
+				 */
+				virtual void registerView( Ceylan::MVC::BaseView & view ) ;
+			
+			
+			
+				/**
+				 * Unregisters specified view to this renderer.
+				 *
+				 * @param view the view to unregister.
+				 *
+				 * @throw RenderingException if this view was not already 
+				 * registered.
+				 *
+				 */
+				virtual void unregisterView( Ceylan::MVC::BaseView & view ) ;
 			
 			
 
@@ -160,7 +192,7 @@ namespace OSDL
 				 * be managed specifically by this renderer.
 				 *
 				 */
-				std::list<Ceylan::View *> _registeredViews ;
+				std::list<Ceylan::MVC::BaseView *> _registeredViews ;
 				 
 				 
 				 
