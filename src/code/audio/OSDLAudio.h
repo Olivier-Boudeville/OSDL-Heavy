@@ -83,6 +83,8 @@ namespace OSDL
 		/**
 		 * Root module for all audio services.
 		 * 
+		 * The audio module will manage as well the music manager.
+		 *
 		 * @see OSDL site for more information on sound: add 
 		 * main/documentation/rendering/SDL-audio.html to the base URL
 		 * (http://osdl.sourceforge.net).
@@ -198,8 +200,7 @@ namespace OSDL
 				typedef Ceylan::Uint16 ChannelNumber ;
 				
 				
-				
-				
+								
 				/**
 				 * Tries to sets up an audio mode with the specified output
 				 * sampling frequency, output sample format, number of sound
@@ -743,10 +744,16 @@ namespace OSDL
 				bool _mixerInitialized ;
 				
 				
-				
 				/// The number of bytes of a mixing chunk.
 				ChunkSize _chunkSize ;
 				
+				
+				/**
+				 * Tells whether the audio module controls the overall music
+				 * manager.
+				 *
+				 */
+				bool _controlMusicManager ;
 				
 				
 /* 
@@ -908,8 +915,7 @@ namespace OSDL
 		/**
 		 * This function is intended to be the usual means of
 		 * getting a reference to the audio module, which must already exist.
-		 * If not, a fatal error will be triggered (not an exception to 
-		 * avoid handling it in all user methods).
+		 * If not, an exception will be thrown.
 		 * 
 		 * @note This function is mainly useful for the OSDL internals, 
 		 * if sub-modules, such as the event module, needed access to 
