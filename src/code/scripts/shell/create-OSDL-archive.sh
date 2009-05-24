@@ -54,8 +54,8 @@ if [ ! -x "${cypher_exec}" ] ; then
 fi
 
 # zip might be used instead, for the purpose of testing/fixing LZMA (with 7zr):
-#archiver_name="7zr"
-archiver_name="zip"
+archiver_name="7zr"
+#archiver_name="zip"
 archiver=`which ${archiver_name}`
 
 if [ ! -x "${archiver}" ] ; then
@@ -123,10 +123,12 @@ ${FIND} ${archive_directory_name} -type f -exec ${cypher_exec} '{}' ';' | grep -
 # For 7zr:
 #LANG= ${archiver} a ../${archive_target} "${archive_directory_name}" 1>/dev/null
 
-#LANG= ${archiver} a -t7z -mx=9 ../${archive_target} "${archive_directory_name}" 1>/dev/null
+# or (best compression):
+
+LANG= ${archiver} a -t7z -mx=9 ../${archive_target} "${archive_directory_name}" 1>/dev/null
 
 # For zip:
-LANG= ${archiver} -r ../${archive_target} "${archive_directory_name}"
+#LANG= ${archiver} -r ../${archive_target} "${archive_directory_name}"
 
 cd ..
 
