@@ -536,7 +536,9 @@ void Scheduler::unregisterPeriodicalObject(
 	
 	PeriodicSlot & slot = getPeriodicSlotFor( toUnregister.getPeriod() ) ;
 	
-	slot.removeFromSubslot( toUnregister )  ;
+	slot.removeFromSubslot( toUnregister ) ;
+	
+	LogPlug::debug( "New scheduler state: " + toString() ) ;
 		 
 }
 
@@ -3503,7 +3505,8 @@ void Scheduler::scheduleRendering( RenderingTick current )
 			Ceylan::emergencyShutdown( "Scheduler::scheduleRendering: "
 				"no video module available." ) ;		
 #endif // OSDL_DEBUG
-		_videoModule->redraw() ;	
+		_videoModule->redraw() ;
+			
 	}	
 		
 }
