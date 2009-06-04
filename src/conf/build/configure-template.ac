@@ -599,6 +599,9 @@ AC_SUBST(OSDL_AUDIO)
 OSDL_BASIC="\$(top_srcdir)/src/code/basic"
 AC_SUBST(OSDL_BASIC)
 
+OSDL_DATA="\$(top_srcdir)/src/code/data"
+AC_SUBST(OSDL_DATA)
+
 OSDL_ENGINE="\$(top_srcdir)/src/code/engine"
 AC_SUBST(OSDL_ENGINE)
 
@@ -638,13 +641,13 @@ if test x$enable_debug = xyes; then
 	# Debug requested:
 	DEBUG=1
 	DEBUG_AUDIO_PLAYBACK=0
-	DEBUG_AUDIO_RENDERER=1
+	DEBUG_AUDIO_RENDERER=0
 	DEBUG_BLIT=0
 	DEBUG_BOUNDING_BOX=0
 	DEBUG_CACHED_STATES=1
 	DEBUG_COLOR=0	
 	DEBUG_CONICS=0
-	DEBUG_EVENTS=1
+	DEBUG_EVENTS=0
 	DEBUG_FONT=0
 	DEBUG_IMAGE=0
 	DEBUG_NINTENDO_DS=0
@@ -652,7 +655,8 @@ if test x$enable_debug = xyes; then
 	DEBUG_PALETTE=0
 	DEBUG_PIXEL=0
 	DEBUG_RECTANGLES=0
-	DEBUG_RENDERER=1
+	DEBUG_RENDERER=0
+	DEBUG_RESOURCE_MANAGER=1
 	DEBUG_SCHEDULER=1
 	DEBUG_SPRITE=0
 	DEBUG_SURFACE=0
@@ -662,6 +666,7 @@ if test x$enable_debug = xyes; then
 	
 	VERBOSE_AUDIO_MODULE=0
 	VERBOSE_BASIC_MODULE=0
+	VERBOSE_DATA_MODULE=0
 	VERBOSE_ENGINE_MODULE=1
 	VERBOSE_EVENTS_MODULE=1
 	VERBOSE_VIDEO_MODULE=1
@@ -706,6 +711,7 @@ else
 	DEBUG_PIXEL=0
 	DEBUG_RECTANGLES=0
 	DEBUG_RENDERER=0
+	DEBUG_RESOURCE_MANAGER=0
 	DEBUG_SCHEDULER=0
 	DEBUG_SPRITE=0
 	DEBUG_SURFACE=0
@@ -715,6 +721,7 @@ else
 
 	VERBOSE_AUDIO_MODULE=0
 	VERBOSE_BASIC_MODULE=0
+	VERBOSE_DATA_MODULE=0
 	VERBOSE_ENGINE_MODULE=0
 	VERBOSE_EVENTS_MODULE=0
 	VERBOSE_VIDEO_MODULE=0
@@ -764,85 +771,111 @@ AC_DEFINE_UNQUOTED([DEBUG],
 	[$DEBUG],
 	[Define to 1 if generic debug mode is to be enabled])
 
+
 AC_DEFINE_UNQUOTED([DEBUG_AUDIO_PLAYBACK],
 	[$DEBUG_AUDIO_PLAYBACK],
 	[Define to 1 if debug mode for sound/music playback is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([DEBUG_AUDIO_RENDERER],
 	[$DEBUG_AUDIO_RENDERER],
 	[Define to 1 if debug mode for audio renderer is to be enabled])
 
+
 AC_DEFINE_UNQUOTED([DEBUG_BLIT],
 	[$DEBUG_BLIT],
 	[Define to 1 if debug mode for blit operations is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([DEBUG_BOUNDING_BOX],
 	[$DEBUG_BOUNDING_BOX],
 	[Define to 1 if debug mode for bounding boxes is to be enabled])
 
+
 AC_DEFINE_UNQUOTED([DEBUG_CACHED_STATES],
 	[$DEBUG_CACHED_STATES],
 	[Define to 1 if debug mode for cached states is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([DEBUG_COLOR],
 	[$DEBUG_COLOR],
 	[Define to 1 if debug mode for colors is to be enabled])
 
+
 AC_DEFINE_UNQUOTED([DEBUG_CONICS],
 	[$DEBUG_CONICS],
 	[Define to 1 if debug mode for conics is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([DEBUG_EVENTS],
 	[$DEBUG_EVENTS],
 	[Define to 1 if debug mode for events is to be enabled])
 
+
 AC_DEFINE_UNQUOTED([DEBUG_FONT],
 	[$DEBUG_FONT],
 	[Define to 1 if debug mode for font management is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([DEBUG_IMAGE],
 	[$DEBUG_IMAGE],
 	[Define to 1 if debug mode for image management is to be enabled])
 
+
 AC_DEFINE_UNQUOTED([DEBUG_NINTENDO_DS],
 	[$DEBUG_NINTENDO_DS],
 	[Define to 1 if debug mode for Nintendo DS is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([DEBUG_PALETTE],
 	[$DEBUG_PALETTE],
 	[Define to 1 if debug mode for palette operations is to be enabled])
 
+
 AC_DEFINE_UNQUOTED([DEBUG_PIXEL],
 	[$DEBUG_PIXEL],
 	[Define to 1 if debug mode for pixel-level operations is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([DEBUG_RECTANGLES],
 	[$DEBUG_RECTANGLES],
 	[Define to 1 if debug mode for rectangle management is to be enabled])
 
+
 AC_DEFINE_UNQUOTED([DEBUG_RENDERER],
 	[$DEBUG_RENDERER],
 	[Define to 1 if debug mode for general renderer is to be enabled])
+
+
+AC_DEFINE_UNQUOTED([DEBUG_RESOURCE_MANAGER],
+	[$DEBUG_RESOURCE_MANAGER],
+	[Define to 1 if debug mode for resource manager is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([DEBUG_SCHEDULER],
 	[$DEBUG_SCHEDULER],
 	[Define to 1 if debug mode for scheduler is to be enabled])
 
+
 AC_DEFINE_UNQUOTED([DEBUG_SPRITE],
 	[$DEBUG_SPRITE],
 	[Define to 1 if debug mode for sprites is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([DEBUG_SURFACE],
 	[$DEBUG_SURFACE],
 	[Define to 1 if debug mode for surfaces is to be enabled])
 	
+	
 AC_DEFINE_UNQUOTED([DEBUG_VIDEO],
 	[$DEBUG_VIDEO],
 	[Define to 1 if debug mode for general video is to be enabled])
 	
+	
 AC_DEFINE_UNQUOTED([DEBUG_VIDEO_RENDERER],
 	[$DEBUG_VIDEO_RENDERER],
 	[Define to 1 if debug mode for video renderer is to be enabled])
+	
 	
 AC_DEFINE_UNQUOTED([DEBUG_WIDGET],
 	[$DEBUG_WIDGET],
@@ -853,9 +886,16 @@ AC_DEFINE_UNQUOTED([VERBOSE_AUDIO_MODULE],
 	[$VERBOSE_AUDIO_MODULE],
 	[Define to 1 if verbose mode for audio module is to be enabled])
 	
+	
 AC_DEFINE_UNQUOTED([VERBOSE_BASIC_MODULE],
 	[$VERBOSE_BASIC_MODULE],
 	[Define to 1 if verbose mode for basic module is to be enabled])
+	
+	
+AC_DEFINE_UNQUOTED([VERBOSE_DATA_MODULE],
+	[$VERBOSE_DATA_MODULE],
+	[Define to 1 if verbose mode for data module is to be enabled])
+	
 	
 AC_DEFINE_UNQUOTED([VERBOSE_ENGINE_MODULE],
 	[$VERBOSE_ENGINE_MODULE],
@@ -874,21 +914,26 @@ AC_DEFINE_UNQUOTED([VERBOSE_CONTROLLER],
 	[$VERBOSE_CONTROLLER],
 	[Define to 1 if verbose mode for controller is to be enabled])
 	
+	
 AC_DEFINE_UNQUOTED([VERBOSE_JOYSTICK],
 	[$VERBOSE_JOYSTICK],
 	[Define to 1 if verbose mode for joystick is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([VERBOSE_JOYSTICK_HANDLER],
 	[$VERBOSE_JOYSTICK_HANDLER],
 	[Define to 1 if verbose mode for joystick handler is to be enabled])
 	
+	
 AC_DEFINE_UNQUOTED([VERBOSE_KEYBOARD_HANDLER],
 	[$VERBOSE_KEYBOARD_HANDLER],
 	[Define to 1 if verbose mode for keyboard handler is to be enabled])
 	
+	
 AC_DEFINE_UNQUOTED([VERBOSE_MOUSE],
 	[$VERBOSE_MOUSE],
 	[Define to 1 if verbose mode for mouse is to be enabled])
+
 
 AC_DEFINE_UNQUOTED([VERBOSE_MOUSE_HANDLER],
 	[$VERBOSE_MOUSE_HANDLER],
@@ -1305,6 +1350,7 @@ AC_CONFIG_FILES([
 	src/code/basic/Makefile
 	src/code/basic/OSDLDocMainPage.h
 	src/code/basic/OSDLHeaderVersion.h
+	src/code/data/Makefile
 	src/code/engine/Makefile
 	src/code/events/Makefile
 	src/code/Makefile
