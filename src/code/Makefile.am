@@ -8,6 +8,7 @@ SUFFIXES = .cc .h
 BUILT_SUBDIRS = \
 	audio       \
 	basic       \
+	data        \
 	engine      \
 	events      \
 	video
@@ -45,6 +46,7 @@ SUBLIBS = \
 	audio/libOSDLAudio.la                            \
 	audio/audioRenderer/libOSDLAudioRenderer.la      \
 	basic/libOSDLBasic.la                            \
+	data/libOSDLData.la                              \
 	engine/libOSDLEngine.la                          \
 	events/libOSDLEvents.la                          \
 	video/libOSDLVideo.la                            \
@@ -78,4 +80,5 @@ install-exec-hook:
 	-ldconfig
 
 clean-local:
-	-@rm -f stamp-h1 OSDLTemporaryConfig.h*
+	-@/bin/rm -f stamp-h1 OSDLTemporaryConfig.h*
+	
