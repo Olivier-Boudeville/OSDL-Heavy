@@ -64,7 +64,7 @@ namespace OSDL
 			
 			
 			/// Mother class for all image exceptions. 		
-			class OSDL_DLL ImageException: public OSDL::Video::VideoException 
+			class OSDL_DLL ImageException : public OSDL::Video::VideoException 
 			{ 
 				public: 
 				
@@ -76,11 +76,21 @@ namespace OSDL
 				
 				
 				
+			// Forward-declaration for next counted pointer:
+			class Image ;
+		
+		
+			/// Image counted pointer.
+			typedef Ceylan::CountedPointer<Image> ImageCountedPtr ;
+			
+			
+			
 				
 			/**
-			 * Provides an encapsulation for any picture instance.
+			 * Provides an encapsulation for any picture instance that can 
+			 * be loaded as resource.
 			 *
-			 * The Image interface is mostly a set of related functions 
+			 * The Image interface provides also a set of related functions 
 			 * (static methods), including factories. 
 			 * 
 			 * @see Surface::LoadImage
@@ -102,13 +112,14 @@ namespace OSDL
 			 * We therefore recommend using two of them, which moreover 
 			 * are patent-less standards and should cover most if not all 
 			 * needs:
-			 *		- JPG: to compress, with little loss, full-blown images
+			 * - JPG: to compress, with little loss, full-blown images
 			 * such as photographies, with high color depth
-			 *		- PNG: to compress without loss computer-generated 
+			 * - PNG: to compress without loss computer-generated 
 			 * images, with or without alpha channel
 			 *
 			 */
-			class OSDL_DLL Image : public Ceylan::TextDisplayable
+			class OSDL_DLL Image : public Ceylan::TextDisplayable,
+				public Ceylan::LoadableWithContent<Surface>
 			{
 				
 				
@@ -119,12 +130,43 @@ namespace OSDL
 					
 					/**
 					 * This Image constructor uses given filename to load 
-					 * the picture from the corresponding file .
+					 * the picture from the corresponding file.
 					 *
-					 * Actual picture format is guessed.
+					 * Actual picture format is guessed, based on the file
+					 * content (and not on the filename).
+					 *
+					 * @param imageFilename the name of the file containing
+					 * the targeted image.
+					 * On all PC-like platforms (including Windows and most
+					 * UNIX), the supported formats are BMP, PNM (PPM/PGM/PBM),
+					 * XPM, LBM, PCX, GIF, JPEG, PNG, and TIFF formats.
+					 * JPEG and PNG are the two strongly recommended formats. 
+					 *
+					 * @param preload the image will be loaded directly by this
+					 * constructor iff true, otherwise only its path will be
+					 * stored to allow for later loading.
+					 *
+					 * @param convertToDisplayFormat tells whether this image,
+					 * when loaded (now or later) should have its format
+					 * converted to the screen's format, in order to offer
+					 * faster blits if ever its surface was to be blitted
+					 * multiple times to the screen (one-time-for-all
+					 * conversion).
+					 *
+					 * @param convertWithAlpha if the conversion to screen 
+					 * format is selected (convertToDisplayFormat is true), 
+					 * tells whether the converted surface should also have an 
+					 * alpha channel.  				 
+					 * 
+					 * @throw ImageException if the operation failed or is not
+					 * supported.
 					 *
 					 */
-					explicit Image( const std::string & filename ) ;
+					explicit Image( 
+						const std::string & imageFilename,
+						bool preload = true, 
+						bool convertToDisplayFormat = true,
+						bool convertWithAlpha = true ) ;
 					
 					
 										
@@ -135,6 +177,57 @@ namespace OSDL
 					 */
 					virtual ~Image() throw() ;
 					
+					
+					
+					
+					// LoadableWithContent template instanciation.
+		
+				
+				
+					/**
+					 * Loads the image from file.
+					 *
+					 * @return true iff the image had to be actually loaded
+					 * (otherwise it was already loaded and nothing was done).
+					 *
+					 * @throw Ceylan::LoadableException whenever the loading
+					 * fails.
+					 *
+					 */
+					virtual bool load() ;
+		
+		
+		
+					/**
+					 * Unloads the image that may be contained by this instance.
+					 *
+					 * @return true iff the image had to be actually unloaded
+					 * (otherwise it was not already available and nothing was
+					 * done).
+					 *
+					 * @throw Ceylan::LoadableException whenever the unloading
+					 * fails.
+					 *
+					 */
+					virtual bool unload() ;
+					
+					
+					
+					/**
+					 * Returns an user-friendly description of the state of 
+					 * this object.
+					 *
+					 * @param level the requested verbosity level.
+					 *
+					 * @note Text output format is determined from overall 
+					 * settings.
+					 *
+					 * @see Ceylan::TextDisplayable
+					 *
+					 */
+					virtual const std::string toString( 
+						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
+	
 					
 					
 					
@@ -748,33 +841,32 @@ namespace OSDL
 						bool overwrite = true ) ;  	
 
 
-						
-	 	            /**
-		             * Returns an user-friendly description of the state 
-					 * of this object.
-		             *
-					 * @param level the requested verbosity level.
-					 *
-					 * @note Text output format is determined from 
-					 * overall settings.
-					 *
-					 * @see Ceylan::TextDisplayable
-		             *
-		             */
-			 		virtual const std::string toString( 
-						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
-					
-					
-					
+
 						
 				protected:
 				
-				
-					/// The filename corresponding to the internal image.		
-					std::string _filename ;
 						
+						
+					/**
+					 * Tells whether when loaded this image should be 
+					 * converted to screen format.
+					 *
+					 */	
+					bool _convertToDisplayFormat ;
+					
+					
+					
+					/**
+					 * Tells whether when loaded this image should have an 
+					 * alpha channel when converted to screen format.
+					 *
+					 * @note Ignored if _convertToDisplayFormat is false.
+					 *
+					 */	
+					bool _convertWithAlpha ;
 					
 						
+					
 						
 				private:
 			
@@ -801,6 +893,7 @@ namespace OSDL
 					 * 
 					 */			 
 					Image & operator = ( const Image & source ) ;
+				
 				
 				
 				
