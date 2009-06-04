@@ -74,20 +74,26 @@ namespace OSDL
 		struct LowLevelSound 
 		{
 		
+		
 			/// The sound sampling frequency, in Hertz:
 			Ceylan::Uint16 _frequency ;
+
 
 			/// The sound bit depth, in bit (8bit/16bit):
 			Ceylan::Uint8 _bitDepth ;
 
+
 			/// The mode, i.e. the number of channels (mono:1/stereo:2):
 			Ceylan::Uint8 _mode ;
+			
 			
 			/// The actual sound data:
 			Ceylan::Byte * _samples ;
 		
+		
 			/// The size, in bytes, of sound data:
 			Ceylan::Uint32 _size ;
+			
 					 
 		} ;
 		
@@ -105,6 +111,15 @@ namespace OSDL
 				SoundException( const std::string & reason ) ; 
 				virtual ~SoundException() throw() ; 
 		} ;
+			
+			
+				
+		// Forward-declaration for next counted pointer:
+		class Sound ;
+		
+		
+		/// Sound counted pointer.
+		typedef Ceylan::CountedPointer<Sound> SoundCountedPtr ;
 			
 			
 				
@@ -173,6 +188,7 @@ namespace OSDL
 		
 				// LoadableWithContent template instanciation.
 		
+				
 				
 				/**
 				 * Loads the sound from file.
@@ -616,6 +632,7 @@ namespace OSDL
 			
 			
 			
+			
 			protected:
 			
 			
@@ -625,11 +642,13 @@ namespace OSDL
 				 *
 				 */
 				
+				
 				/**
 				 * The datastream corresponding to this sound.
 				 *
 				 */
 				OSDL::Utils::DataStream * _dataStream ;
+			
 			
 			
 			
