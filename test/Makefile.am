@@ -1,4 +1,4 @@
-SUBDIRS = audio basic engine events video
+SUBDIRS = audio basic data engine events video
 
 # All programs using the OSDL library should use in their 
 # configure.ac the OSDL_PATH macro defined in osdl.m4:
