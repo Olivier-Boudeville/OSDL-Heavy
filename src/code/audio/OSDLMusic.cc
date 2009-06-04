@@ -180,9 +180,9 @@ const OSDL::CommandManagerSettings * Music::_CommandManagerSettings = 0 ;
 
 
 
-Music::Music( const std::string & musicFile, bool preload ) :
+Music::Music( const std::string & musicFilename, bool preload ) :
 	Audible( /* nothing loaded yet, hence not converted */ false ),	
-	Ceylan::LoadableWithContent<LowLevelMusic>( musicFile ),
+	Ceylan::LoadableWithContent<LowLevelMusic>( musicFilename ),
 	 _dataStream( 0 ),
 	_isPlaying( false )
 {
@@ -209,6 +209,7 @@ Music::Music( const std::string & musicFile, bool preload ) :
 		
 			throw MusicException( "Music constructor failed while preloading: "
 				+ e.toString() ) ;
+				
 		}
 			
 	}
@@ -256,6 +257,8 @@ Music::~Music() throw()
 		
 	}
 	
+	//LogPlug::trace( "Music deallocated." ) ;
+	
 }
 
 
@@ -268,8 +271,7 @@ Music::~Music() throw()
 
 bool Music::load()
 {
-
-		
+	
 #if OSDL_ARCH_NINTENDO_DS
 		
 #ifdef OSDL_RUNS_ON_ARM7
@@ -431,8 +433,8 @@ bool Music::load()
 	catch( const Ceylan::Exception & e )
 	{
 	
-		throw Ceylan::LoadableException( "Music::load failed: '"
-			"unable to locate '" + _contentPath + "': " + e.toString() ) ;
+		throw Ceylan::LoadableException( "Music::load failed: "
+			"unable to load from '" + _contentPath + "': " + e.toString() ) ;
 			
 	}	
 
@@ -487,6 +489,7 @@ bool Music::unload()
 
 	// Deallocation of SDL_RWops inspired from playmus.c:
 	::Mix_FreeMusic( _content ) ;
+	
 	// Already specified at the end of the method: _content = 0 ;
 	
 	/*
@@ -1157,7 +1160,8 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const
 {
 	
 	if ( level == Ceylan::low )
-		return "Music read from '" + _contentPath + "'" ;
+		return ( hasContent() ? string( "Loaded" ) : string( "Not loaded" ) )
+			+ " music, whose content path is '" + _contentPath + "'" ;
 
 	 
 	try
@@ -1168,8 +1172,8 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const
 		
 			Volume v = getVolume() ;
 	
-			return "Loaded music whose volume is " 
-            	+ Ceylan::toNumericalString( v )
+			return "Loaded music from content path '" + _contentPath 
+				+ "', whose volume is " + Ceylan::toNumericalString( v )
 				+ " (" + Ceylan::toNumericalString( 100 * v 
 					/ ( AudioModule::MaxVolume - AudioModule::MinVolume ) )
 				+ "%) and whose type is " + DescribeMusicType( getType() )
@@ -1180,7 +1184,8 @@ const string Music::toString( Ceylan::VerbosityLevels level ) const
 		else
 		{
 		
-			return "Music currently not loaded" ;
+			return "Music currently not loaded, whose content path is '" 
+				+ _contentPath + "'" ;
 			
 		}		
 	
