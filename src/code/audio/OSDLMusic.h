@@ -206,6 +206,7 @@ namespace OSDL
 		enum MusicType
 		{
 		
+		
 			/**
 			 * Waveform audio format (WAVE/RIFF).
 			 *
@@ -270,9 +271,9 @@ namespace OSDL
 			
 			
 			/**
-			 * To be used to mean no music is available hence no type can be
+			 * To be used to mean no music is available, hence no type can be
 			 * used (ex: when wanting to know the type of the current music
-			 * being played).
+			 * being played while none is playing).
 			 *
 			 */
 			NoMusic,
@@ -283,6 +284,7 @@ namespace OSDL
 			 *
 			 */
 			Unknown
+		
 		
 		} ;
 	
@@ -308,6 +310,15 @@ namespace OSDL
 
 
 
+		// Forward-declaration for next counted pointer:
+		class Music ;
+		
+		
+		/// Music counted pointer.
+		typedef Ceylan::CountedPointer<Music> MusicCountedPtr ;
+		
+
+		
 												
 		/**
 		 * Music is continuous audible content, as opposed to sound.  
@@ -354,7 +365,8 @@ namespace OSDL
 				/**
 				 * Creates a new music instance from specified file.
 				 *
-				 * @param musicFile the file containing the targeted music.
+				 * @param musicFilename the name of the file containing
+				 * the targeted music.
 				 * On all PC-like platforms (including Windows and most UNIX),
 				 * the supported formats are WAVE, MOD, MIDI, OGG, and MP3.
 				 * OGG and, to a lesser extent, WAVE, are recommended for 
@@ -373,7 +385,7 @@ namespace OSDL
 				 * supported.
 				 *
 				 */
-				explicit Music( const std::string & musicFile, 
+				explicit Music( const std::string & musicFilename, 
 					bool preload = true ) ;
 				
 				
@@ -793,7 +805,13 @@ namespace OSDL
 			protected:
 			
 			
-			
+				/**
+				 * The internal low level music is defined through the
+				 * template.
+				 *
+				 */
+				 
+				 
 				/**
 				 * The datastream corresponding to this music.
 				 *
@@ -1017,6 +1035,8 @@ namespace OSDL
 				
 			
 		} ;
+		
+
 		
 		
 	}	
