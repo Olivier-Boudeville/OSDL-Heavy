@@ -80,7 +80,13 @@ fi
 
 echo "First test file." > ${test_archive_dir}/first-file-to-read.txt
 
-${cp} ${sound_file} ${music_file} ${png_image_file} ${jpeg_image_file} ${font_file} ${test_archive_dir}
+# From encoding-based extension to usage-based one:
+${cp} ${sound_file} ${test_archive_dir}/OSDL.sound
+${cp} ${music_file} ${test_archive_dir}/welcome-to-OSDL.music
+${cp} ${png_image_file} ${test_archive_dir}/Soldier-heavy-purple-small.image
+${cp} ${jpeg_image_file} ${test_archive_dir}/Rune-stone-small.image
+${cp} ${font_file} ${test_archive_dir}/neurochr.ttf_font
+
 
 ${mkdir} ${test_archive_dir}/test-directory
 
@@ -91,7 +97,11 @@ ${archiver} ${test_archive_name} ${test_archive_dir}
 
 if [ $? -eq 0 ] ; then
 	echo "Test OSDL Archive ${test_archive_name} successfully produced."
+else
+	echo "Error, execution of ${archiver} failed." 1>&2
+	exit 15	
 fi
+
 
 # Produced archive can be decompresssed with: 
 # 7zr x test-OSDLEmbeddedFileSystem-archive.oar
