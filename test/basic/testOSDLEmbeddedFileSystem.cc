@@ -71,7 +71,12 @@ int main( int argc, char * argv[] )
          
 		myFSManager.chooseBasicSettings( /* organization name */ "OSDL",
             /* application name */ "testOSDLEmbeddedFileSystem" ) ;
+
+
+        LogPlug::info( "Not loading any archive yet, "
+			"as only testing write services." ) ;
         
+		
         /*
          * If create-testOSDLEmbeddedFileSystem-archive.sh has been run,
          * test-OSDLEmbeddedFileSystem-archive.oar should be listed in the
@@ -153,6 +158,9 @@ int main( int argc, char * argv[] )
         
         delete & myOtherFile ;
         
+		
+		LogPlug::info( "Now testing reading from archives services." ) ;
+		
 		const string archiveFilename = 
         	"test-OSDLEmbeddedFileSystem-archive.oar" ;
      
