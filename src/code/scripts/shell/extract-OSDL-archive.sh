@@ -34,6 +34,7 @@ fi
 cypher_tool="cypherOSDLFile.exe"
 cypher_dir=`dirname $0`"/../../../../tools/media"
 
+# Also look in the OSDL installation:
 osdl_inst_dir="$OSDL_PREFIX/share/OSDL-tools/media"
 
 # Needs to find an absolute path:
@@ -41,7 +42,7 @@ cypher_exec=`PATH=$PWD/$cypher_dir:$osdl_inst_dir:$PATH which $cypher_tool 2>/de
 
 if [ ! -x "${cypher_exec}" ] ; then
 
-	echo "Error, no executable cypher tool ${cypher_tool} found (were the OSDL tools compiled?)." 1>&2
+	echo "Error, no executable cypher tool ${cypher_tool} found (were the OSDL tools compiled and the OSDL-environment.sh script sourced?)." 1>&2
     exit 12
 
 fi
