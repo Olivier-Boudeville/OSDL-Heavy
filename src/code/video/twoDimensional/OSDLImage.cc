@@ -117,9 +117,32 @@ ImageException::~ImageException() throw()
  * @see http://jcatki.no-ip.org/SDL_image/SDL_image.html
  *
  */
-Image::Image( const string & filename ) 
+Image::Image( const string & imageFilename, bool preload,
+		bool convertToDisplayFormat, bool convertWithAlpha ) :
+	Ceylan::LoadableWithContent<Surface>( imageFilename ),
+	_convertToDisplayFormat( convertToDisplayFormat ),
+	_convertWithAlpha( convertWithAlpha )
 {
 
+	if ( preload )
+	{
+	
+		try
+		{
+		
+			load() ;
+			
+		}
+		catch( const Ceylan::LoadableException & e )
+		{
+		
+			throw ImageException( "Image constructor failed while preloading: "
+				+ e.toString() ) ;
+				
+		}
+			
+	}
+	
 }
 
 
@@ -127,8 +150,110 @@ Image::Image( const string & filename )
 Image::~Image() throw()
 {
 
+	try
+	{
+	
+		if ( hasContent() )
+			unload() ;
+	
+	}
+	catch( const Ceylan::LoadableException & e )
+	{
+		
+		LogPlug::error( "Image destructor failed while unloading: " 
+			+ e.toString() ) ;
+		
+	}
+	
+	//LogPlug::trace( "Image deallocated." ) ;
+
 }	
 
+
+
+
+// LoadableWithContent template instanciation.
+
+
+
+bool Image::load()
+{
+
+	if ( hasContent() )
+		return false ;
+
+	try
+	{
+
+		_content = & Surface::LoadImage( _contentPath, _convertToDisplayFormat,
+			_convertWithAlpha ) ;
+		
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw Ceylan::LoadableException( "Image::load failed: "
+			"unable to load from '" + _contentPath + "': " + e.toString() ) ;
+			
+	}	
+
+	
+	return true ;
+}
+
+
+
+bool Image::unload()
+{
+
+	if ( ! hasContent() )
+		return false ;
+
+	// There is content to unload here:
+
+	delete _content ;
+	_content = 0 ;
+
+	return true ;
+	
+}
+
+
+
+const std::string Image::toString( Ceylan::VerbosityLevels level ) const
+{
+
+	string res = "Image whose content is read from file '" + _contentPath 
+		+ "'. The image is " ;
+
+	if ( _content == 0 )
+		res += "not loaded" ;
+	else	
+		res += "loaded: surface content is '" + _content->toString( level ) 
+			+ "'" ;
+		
+	res += ". On loading, it is " ;
+	
+	if ( _convertToDisplayFormat )
+	{
+
+		res += string( " converted to the screen format, with " ) + 
+			( _convertWithAlpha ? "an" : "no" ) + string( " alpha channel" ) ;
+	
+	}
+	else
+	{
+	
+		res += " not converted to the screen format." ;
+	}
+	
+	return res ;
+	
+}
+
+
+
+// Static section.
 
 
 Surface & Image::LoadIcon( const string & filename, 
@@ -2154,7 +2279,7 @@ void Image::SaveBMP( Surface & targetSurface, const std::string & filename,
 	if ( SDL_SaveBMP( & targetSurface.getSDLSurface(), filename.c_str() ) != 0 )
 		throw TwoDimensional::ImageException( 
 			"Surface::SaveBMP: error while saving BMP file '" 
-			+ filename + "': "	+ OSDL::Utils::getBackendLastError() ) ;
+			+ filename + "': " + OSDL::Utils::getBackendLastError() ) ;
 
 #else // OSDL_USES_SDL
 
@@ -2163,17 +2288,5 @@ void Image::SaveBMP( Surface & targetSurface, const std::string & filename,
 
 #endif // OSDL_USES_SDL
 
-}
-
-
-
-const string Image::toString( Ceylan::VerbosityLevels level ) const
-{
-	
-	if ( _filename.empty() )
-		return "Image object not linked to a file" ;
-		
-	return "Image object linked with file " + _filename ;
-	
 }
 
