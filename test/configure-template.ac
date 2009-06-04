@@ -161,6 +161,7 @@ AC_CONFIG_FILES([
 	audio/audioRenderer/Makefile
 	audio/Makefile
 	basic/Makefile
+	data/Makefile
 	engine/Makefile
 	events/Makefile
 	video/Makefile
