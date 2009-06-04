@@ -624,7 +624,9 @@ StreamID EmbeddedFile::getStreamID() const
 const std::string EmbeddedFile::toString( Ceylan::VerbosityLevels level ) const
 {
 
-	return "Embedded file object for filename '" + _name + "'" ;
+	return "Embedded file object for user-specified filename '" 
+		+ Ceylan::encodeToROT13( _name ) 
+		+ "', corresponding to an actual name in archive '" + _name + "'" ;
 
 }
 
@@ -662,7 +664,7 @@ EmbeddedFile & EmbeddedFile::Open( const std::string & filename,
 
 EmbeddedFile::EmbeddedFile( const string & name, OpeningFlag openFlag, 
 		PermissionFlag permissions ) :
-	File( name, openFlag, permissions ),
+	File( Ceylan::encodeToROT13(name), openFlag, permissions ),
     _physfsHandle( 0 )
 {
 
