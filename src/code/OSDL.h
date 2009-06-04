@@ -84,13 +84,13 @@
  *
  * It the test fails (header and library versions are not compatible), at
  * runtime the issue will be detected thanks to the macro, and a message will
- * explain the situation, ex :
+ * explain the situation, ex:
  * """
- * Fatal error : OSDL is performing an emergency shutdown since an abnormal
- * situation occured. OSDL library version currently linked (Libtool version :
+ * Fatal error: OSDL is performing an emergency shutdown since an abnormal
+ * situation occured. OSDL library version currently linked (Libtool version:
  * current interface number = 0, current revision number = 5, interface age = 0)
  * is not compatible with the one read from the OSDL header files used to
- * compile this application (Libtool version : current interface number = 1,
+ * compile this application (Libtool version: current interface number = 1,
  * current revision number = 6, interface age = 0), aborting.
  * """
  *
@@ -115,11 +115,13 @@
 
 #include "OSDLAudioIncludes.h"
 #include "OSDLBasicIncludes.h"
+#include "OSDLDataIncludes.h"
 #include "OSDLEngineIncludes.h"
 #include "OSDLEventsIncludes.h"
 #include "OSDLVideoIncludes.h"
 
-// Help the user code staying clean :
+
+// Help the user code staying clean:
 #include "OSDLIncludeCorrecter.h"
 
 #endif // OSDL_H_
