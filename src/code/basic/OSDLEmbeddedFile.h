@@ -619,9 +619,8 @@ namespace OSDL
 			 * Internal PhysicsFS handle.
 			 *
 			 */
-			PHYSFS_File * _physfsHandle ;
-
-
+			PHYSFS_File * _physfsHandle ;			
+			 
 
 			/**
 			 * Tells whether reads and writes to this file should be
