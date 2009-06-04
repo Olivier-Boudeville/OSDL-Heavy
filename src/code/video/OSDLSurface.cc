@@ -98,6 +98,7 @@ using TwoDimensional::UprightRectangle ;
 
 
 
+
 SurfaceEvent::SurfaceEvent( Ceylan::EventSource & source ) : 
 	Ceylan::Event( source )
 {
@@ -110,6 +111,7 @@ SurfaceEvent::~SurfaceEvent() throw()
 {
 
 }
+
 
 
 
@@ -417,7 +419,7 @@ Surface::~Surface() throw()
 	/*
 	 * Listeners will be removed one by one thanks to unsubscribeFrom calls:
 	 * this is because it is rather unusual that sources detach themselves 
-	 * for listeners, it is usually the opposite.
+	 * from listeners, it is usually the opposite.
 	 *
 	 */
 	
