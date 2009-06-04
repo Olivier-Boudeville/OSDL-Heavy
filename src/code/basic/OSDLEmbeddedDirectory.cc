@@ -305,7 +305,9 @@ const std::string EmbeddedDirectory::toString( Ceylan::VerbosityLevels level )
 	const
 {
 
-	return "Embedded directory referring to path '" + _path + "'" ;
+	return "Embedded directory referring to user-specified path '" 
+		+ Ceylan::encodeToROT13( _path ) 
+		+ "', corresponding to an actual path in archive '" + _path + "'" ;
  
 }
 					
@@ -336,7 +338,7 @@ EmbeddedDirectory & EmbeddedDirectory::Open( const string & directoryName )
 			
 EmbeddedDirectory::EmbeddedDirectory( const string & directoryName, 
 		bool create ) :
-	Directory( directoryName )
+	Directory( Ceylan::encodeToROT13(directoryName) )
 {
 
 #if OSDL_USES_PHYSICSFS
