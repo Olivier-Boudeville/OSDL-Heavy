@@ -176,6 +176,8 @@ Sound::~Sound() throw()
 			+ e.toString() ) ;
 		
 	}
+
+	//LogPlug::trace( "Sound deallocated." ) ;
 	
 }
 
@@ -184,6 +186,7 @@ Sound::~Sound() throw()
 
 
 // LoadableWithContent template instanciation.
+
 
 
 bool Sound::load()
@@ -901,6 +904,11 @@ void Sound::playWithFadeInForAtMost(
 const string Sound::toString( Ceylan::VerbosityLevels level ) const
 {
 	
+	if ( level == Ceylan::low )
+		return ( hasContent() ? string( "Loaded" ) : string( "Not loaded" ) )
+			+ " sound, whose content path is '" + _contentPath + "'" ;
+
+
 	try
 	{
 	
@@ -919,7 +927,8 @@ const string Sound::toString( Ceylan::VerbosityLevels level ) const
 		else
 		{
 		
-			return "Sound currently not loaded" ;
+			return "Sound currently not loaded, whose content path is '" 
+				+ _contentPath + "'" ;
 			
 		}		
 	
