@@ -428,7 +428,7 @@ bool EmbeddedFileSystemManager::existsAsEntry( const string & entryPath ) const
 #if OSDL_USES_PHYSICSFS
 	
 	// Apparently will find files *or* directories, thus only entries:
-    return ( PHYSFS_exists( entryPath.c_str() ) != 0 ) ;
+    return ( PHYSFS_exists( Ceylan::encodeToROT13(entryPath).c_str() ) != 0 ) ;
          
 #else // OSDL_USES_PHYSICSFS
 
@@ -453,8 +453,7 @@ void EmbeddedFileSystemManager::createSymbolicLink(
 
 
 
-time_t EmbeddedFileSystemManager::getEntryChangeTime( 
-	const string & entryPath )
+time_t EmbeddedFileSystemManager::getEntryChangeTime( const string & entryPath )
 {
 
  	/*
@@ -465,7 +464,8 @@ time_t EmbeddedFileSystemManager::getEntryChangeTime(
      
 #if OSDL_USES_PHYSICSFS
 
-	PHYSFS_sint64 time = PHYSFS_getLastModTime( entryPath.c_str() ) ;
+	PHYSFS_sint64 time = PHYSFS_getLastModTime(
+		Ceylan::encodeToROT13( entryPath ).c_str() ) ;
     
     if ( time == -1 )
 		throw GetChangeTimeFailed( 
@@ -541,7 +541,8 @@ string EmbeddedFileSystemManager::getActualLocationFor(
     
 #if OSDL_USES_PHYSICSFS
 
-    const char * res = PHYSFS_getRealDir( filename.c_str() ) ;
+    const char * res = PHYSFS_getRealDir( 
+		Ceylan::encodeToROT13( filename ).c_str() ) ;
 
     if ( res == 0 )
     	throw Ceylan::System::FileLookupFailed( 
@@ -584,8 +585,10 @@ bool EmbeddedFileSystemManager::existsAsFileOrSymbolicLink(
      
 #if OSDL_USES_PHYSICSFS
 
-	return ( ( ::PHYSFS_exists( filename.c_str() ) != 0 )
-		&& ( ::PHYSFS_isDirectory( filename.c_str() ) == 0 ) ) ;
+	string actualPath = Ceylan::encodeToROT13( filename ) ;
+	
+	return ( ( ::PHYSFS_exists( actualPath.c_str() ) != 0 )
+		&& ( ::PHYSFS_isDirectory( actualPath.c_str() ) == 0 ) ) ;
         		
 #else // OSDL_USES_PHYSICSFS
 
@@ -611,7 +614,8 @@ bool EmbeddedFileSystemManager::existsAsSymbolicLink(
      
 #if OSDL_USES_PHYSICSFS
 
-    return ( PHYSFS_isSymbolicLink( linkName.c_str() ) != 0 ) ;
+    return ( PHYSFS_isSymbolicLink( 
+		Ceylan::encodeToROT13( linkName ).c_str() ) != 0 ) ;
         		
 #else // OSDL_USES_PHYSICSFS
 
@@ -636,7 +640,7 @@ void EmbeddedFileSystemManager::removeFile( const string & filename )
      
 #if OSDL_USES_PHYSICSFS
 
-    if ( PHYSFS_delete( filename.c_str() ) == 0 )
+    if ( PHYSFS_delete( Ceylan::encodeToROT13( filename ).c_str() ) == 0 )
     	throw FileRemoveFailed( 
         	"EmbeddedFileSystemManager::removeFile failed: "
             + GetBackendLastError() ) ;
@@ -806,7 +810,8 @@ time_t EmbeddedFileSystemManager::getLastChangeTimeFile(
      
 #if OSDL_USES_PHYSICSFS
 
-	PHYSFS_sint64 time = PHYSFS_getLastModTime( filename.c_str() ) ;
+	PHYSFS_sint64 time = PHYSFS_getLastModTime( 
+		Ceylan::encodeToROT13( filename ).c_str() ) ;
     
     if ( time == -1 )
 		throw FileLastChangeTimeRequestFailed( 
@@ -848,7 +853,7 @@ void EmbeddedFileSystemManager::allowSymbolicFiles( bool newStatus )
      
 #if OSDL_USES_PHYSICSFS
 
-    PHYSFS_permitSymbolicLinks( (newStatus ? 1:0) ) ;
+    PHYSFS_permitSymbolicLinks( ( newStatus ? 1 : 0 ) ) ;
     		
 #else // OSDL_USES_PHYSICSFS
 
@@ -903,7 +908,8 @@ bool EmbeddedFileSystemManager::existsAsDirectory(
 
 #if OSDL_USES_PHYSICSFS
 
-	return ( PHYSFS_isDirectory( directoryPath.c_str() ) != 0 ) ;
+	return ( PHYSFS_isDirectory( 
+		Ceylan::encodeToROT13( directoryPath ).c_str() ) != 0 ) ;
 
 #else // OSDL_USES_PHYSICSFS
 
@@ -939,7 +945,7 @@ void EmbeddedFileSystemManager::removeDirectory( const string & directoryPath,
         	"EmbeddedFileSystemManager::removeDirectory: "
             "no recursive operation supported" ) ;
 
-	if ( PHYSFS_delete( directoryPath.c_str() ) == 0 )
+	if ( PHYSFS_delete( Ceylan::encodeToROT13( directoryPath ).c_str() ) == 0 )
 		throw DirectoryRemoveFailed( 
 			"EmbeddedFileSystemManager::removeDirectory failed in 'rmdir' for " 
 			+ directoryPath + ": " + GetBackendLastError() ) ;
@@ -990,7 +996,8 @@ time_t EmbeddedFileSystemManager::getLastChangeTimeDirectory(
      
 #if OSDL_USES_PHYSICSFS
 
-	PHYSFS_sint64 time = PHYSFS_getLastModTime( directoryPath.c_str() ) ;
+	PHYSFS_sint64 time = PHYSFS_getLastModTime( 
+		Ceylan::encodeToROT13( directoryPath ).c_str() ) ;
     
     if ( time == -1 )
 		throw DirectoryLastChangeTimeRequestFailed( 
@@ -1344,7 +1351,10 @@ EmbeddedFileSystemManager::~EmbeddedFileSystemManager() throw()
         	+ GetBackendLastError() ) ;
 
 #endif // OSDL_USES_PHYSICSFS
-            
+   
+	if ( _EmbeddedFileSystemManager == this )
+		_EmbeddedFileSystemManager = 0 ;
+		
 }
 
 
