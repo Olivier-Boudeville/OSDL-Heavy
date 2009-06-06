@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(SDLIncDir)"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SDLGFX_EXPORTS;lrint=floor;BUILD_DLL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SDLGFX_EXPORTS;BUILD_DLL"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
