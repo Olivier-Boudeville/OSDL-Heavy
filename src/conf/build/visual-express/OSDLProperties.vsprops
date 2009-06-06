@@ -178,7 +178,7 @@
 	/>
 	<UserMacro
 		Name="SDL_gfxVersion"
-		Value="2.0.16"
+		Value="2.0.18"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -220,7 +220,7 @@
 	/>
 	<UserMacro
 		Name="SDL_imageVersion"
-		Value="1.2.6"
+		Value="1.2.7"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -521,7 +521,7 @@
 	/>
 	<UserMacro
 		Name="LibpngVersion"
-		Value="1.2.29"
+		Value="1.2.33"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -745,7 +745,7 @@
 	/>
 	<UserMacro
 		Name="PhysicsFSVersion"
-		Value="1.1.1"
+		Value="2.0.0"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
@@ -801,7 +801,7 @@
 	/>
 	<UserMacro
 		Name="AgarVersion"
-		Value="1.3.2"
+		Value="1.3.3"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
