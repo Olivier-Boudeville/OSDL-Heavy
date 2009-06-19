@@ -1179,7 +1179,7 @@ const string VideoModule::toString( Ceylan::VerbosityLevels level ) const
 	if ( level == Ceylan::low )
 		return res ;
 	
-	res += Ceylan::Module::toString() ;
+	res += ". " + Ceylan::Module::toString() ;
 		
 	if ( _screen != 0 )	
 		res += " Screen surface information: " 
