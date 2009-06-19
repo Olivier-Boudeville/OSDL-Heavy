@@ -5686,10 +5686,14 @@ getCeylan()
 			success=1
 						
 			if [ $use_current_svn -eq 0 ] ; then 
-				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				CHECKOUT_LOCATION=ceylan
+			
+				DEBUG "No stable tag wanted, retrieving directly latest main-line version (trunk only) from SVN."
+				
+				# Only selecting trunk, as otherwise could be way too long:
+				CHECKOUT_LOCATION=ceylan/Ceylan/trunk
 				${MKDIR} -p ${CHECKOUT_LOCATION}
 				SVN_URL="/svnroot/${CHECKOUT_LOCATION}"
+				
 			else
 			
 				# Should be quite uncommon for Ceylan developers:
@@ -5734,7 +5738,7 @@ getCeylan()
 					# Now ask the user to trigger the full update by herself,
 					# with TortoiseSVN:
 					DISPLAY "Ceylan SVN checkout failed, maybe because of too long pathnames."
-					DISPLAY "Please use TortoiseSVN to update manually the Ceylan repository."
+					DISPLAY "Please use a tool like TortoiseSVN to update manually the Ceylan repository."
 					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
 					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
 					# Suppose success:
@@ -6256,8 +6260,10 @@ getOSDL()
 			success=1
 			
 			if [ $use_current_svn -eq 0 ] ; then
-				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				CHECKOUT_LOCATION=osdl
+				DEBUG "No stable tag wanted, retrieving directly latest main-line version (trunk only) from SVN."
+				
+				# Only selecting trunk, as otherwise could be way too long:
+				CHECKOUT_LOCATION=osdl/OSDL/trunk
 				${MKDIR} -p ${CHECKOUT_LOCATION}
 				SVN_URL="/svnroot/${CHECKOUT_LOCATION}"
 			else
