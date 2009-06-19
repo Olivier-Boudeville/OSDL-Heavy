@@ -13,7 +13,7 @@
 		DisableLanguageExtensions="false"
 		WarningLevel="3"
 		WarnAsError="false"
-		Detect64BitPortabilityProblems="true"
+		Detect64BitPortabilityProblems="false"
 		DebugInformationFormat="3"
 		PreprocessorDefinitions="CEYLAN_PACKED_ATTRIBUTE=;OSDL_PACKED_ATTRIBUTE="
 	/>
