@@ -5,8 +5,8 @@
 -->
 
 <!--    
-        Creation date : 2004, August  .
-        Author : Olivier Boudeville (olivier.boudeville@online.fr)
+        Creation date: 2004, August  .
+        Author: Olivier Boudeville (olivier.boudeville@online.fr)
 -->
 
 <html lang="EN">
@@ -28,24 +28,26 @@
 
 <h1>Download area</h1>
 
-  <p>Both developers and end-users can obtain OSDL from at least five ways, listed in decreasing interest order :
+  <p>Both developers and end-users can obtain OSDL from at least five ways, listed in decreasing interest order:
 <br>
   <ul>
     <li>our famous <b>Lazy OSDL Automatic Net Installer</b>, LOANI. It is the recommended and easy way for installing everything relevant (Ceylan, OSDL and all their own pre requesites)
 		<ul>
-    		<li>see <a href="../documentation/OSDL/OSDL-0.3/LOANI.html" target="_blank">LOANI's documentation</a></li>
-    		<li>get LOANI : <a href="LOANI-0.3.zip">LOANI-0.3.zip</a> or <a href="LOANI-0.3.tar.gz">LOANI-0.3.tar.gz</a></li>
+		
+    		<li>see <a href="../../OSDL-latest/LOANI.html" target="_blank">LOANI's documentation</a></li>
+			
+    		<li>get LOANI: <a href="LOANI-0.3.zip">LOANI-0.3.zip</a> or <a href="LOANI-0.3.tar.gz">LOANI-0.3.tar.gz</a></li>
 	</ul>
 	</li>
 	
     <li><a href="http://sourceforge.net/project/showfiles.php?group_id=71354"
-    target="_blank">Files released by the project</a> at <b>Sourceforge</b> :  full archives of the source of our libraries are regularly placed there, often when a new version or a new release becomes available</li>
+    target="_blank">Files released by the project</a> at <b>Sourceforge</b>:  full archives of the source of our libraries are regularly placed there, often when a new version or a new release becomes available</li>
 
-	<li>using our project <b>FTP server</b> : our server is available through anonymous access at <a href="ftp://ftp.esperide.com/LOANI-archive-repository" target="_blank">ftp://ftp.esperide.com/LOANI-archive-repository</a>, and acts usually as a mirror of Sourceforge's file services</li>
+	<li>using our project <b>FTP server</b>: our server is available through anonymous access at <a href="ftp://ftp.esperide.com/LOANI-archive-repository" target="_blank">ftp://ftp.esperide.com/LOANI-archive-repository</a>, and acts usually as a mirror of Sourceforge's file services</li>
 
-    <li>using <b>CVS</b> directly : <a href="#cvs">read our nano-guide</a> [<a href="http://cvs.sourceforge.net/viewcvs.py/osdl/" target="_blank">browse our CVS on SourceForge</a>]. Prefer retrieving a stable tag (such as <code>STABLE_yyyymmdd</code>) since cutting-edge CVS tree is often broken during the development process</li>
+    <li>using <b>CVS</b> directly: <a href="#cvs">read our nano-guide</a> [<a href="http://cvs.sourceforge.net/viewcvs.py/osdl/" target="_blank">browse our CVS on SourceForge</a>]. Prefer retrieving a stable tag (such as <code>STABLE_yyyymmdd</code>) since cutting-edge CVS tree is often broken during the development process</li>
 
-    <li><b>Nightly CVS Tarballs</b> : each night, a fresh bzip2-compressed .tar archive of the complete contents of OSDL's CVS repository is generated. Each tarball contains the exact contents that are found on the CVS server, including all RCS files for all modules within that repository and all CVS control files within the CVSROOT for that repository. [<a href="http://cvs.sourceforge.net/cvstarballs/osdl-cvsroot.tar.bz2">Download latest nightly CVS Tarballs</a>] (<code>osdl-cvsroot.tar.bz2</code>)</li>
+    <li><b>Nightly CVS Tarballs</b>: each night, a fresh bzip2-compressed .tar archive of the complete contents of OSDL's CVS repository is generated. Each tarball contains the exact contents that are found on the CVS server, including all RCS files for all modules within that repository and all CVS control files within the CVSROOT for that repository. [<a href="http://cvs.sourceforge.net/cvstarballs/osdl-cvsroot.tar.bz2">Download latest nightly CVS Tarballs</a>] (<code>osdl-cvsroot.tar.bz2</code>)</li>
 	
   </ul>
   
@@ -72,7 +74,7 @@ In case of trouble, please consult our <a href="../documentation/OSDL/OSDL-0.3/L
   
   <h4>Getting OSDL as a pure end-user</h4>
   <p>
-  In this case, one just wants all the necessary sources and does not intend to make any change which would have to be backported to our CVS. No CVS information is needed, therefore the <code>export</code> command should be used. One has only to issue :</p>
+  In this case, one just wants all the necessary sources and does not intend to make any change which would have to be backported to our CVS. No CVS information is needed, therefore the <code>export</code> command should be used. One has only to issue:</p>
   
 </p>
 
@@ -91,19 +93,19 @@ In case of trouble, please consult our <a href="../documentation/OSDL/OSDL-0.3/L
   password for anonymous, simply press the Enter key. </p>
   
   <p>
-  With this method, one would have the "latest" CVS snapshot of our projects. Not so "latest" however, since Sourceforge's CVS are mirrored. Anonymously-accessed repositories have a constant offset of a few hours : data is currently synchronized between the developer CVS servers (SSH) and the anonymous CVS servers (pserver) every 5 hours. There may be a delay of up to five hours between the time a developer commits a file and when it becomes available via pserver.
+  With this method, one would have the "latest" CVS snapshot of our projects. Not so "latest" however, since Sourceforge's CVS are mirrored. Anonymously-accessed repositories have a constant offset of a few hours: data is currently synchronized between the developer CVS servers (SSH) and the anonymous CVS servers (pserver) every 5 hours. There may be a delay of up to five hours between the time a developer commits a file and when it becomes available via pserver.
   </p>
 
 <p>
-Besides, end users are merely interested in stable releases, whereas our latest CVS snapshot is often in broken compile state : while we are working on a project, we iterate from a stable release to another one, but the main part of the time, between them, the work in progress does not behave well by construction. Therefore, as much as possible, we tag stable releases with their date, according to the following conventions : <code>STABLE_yyyymmdd</code>, like <code>STABLE_20040227</code>, for 2004, February 27. Thus, if one wants to retrieve from CVS the latest stable release of our project, he could :
+Besides, end users are merely interested in stable releases, whereas our latest CVS snapshot is often in broken compile state: while we are working on a project, we iterate from a stable release to another one, but the main part of the time, between them, the work in progress does not behave well by construction. Therefore, as much as possible, we tag stable releases with their date, according to the following conventions: <code>STABLE_yyyymmdd</code>, like <code>STABLE_20040227</code>, for 2004, February 27. Thus, if one wants to retrieve from CVS the latest stable release of our project, he could:
 <ol>
 	<li><b>peer</b> into our <a href=
     "http://cvs.sourceforge.net/viewcvs.py/osdl/" target=
     "_blank">anonymous CVS on SourceForge</a> </li>
-	<li><b>find</b> the lastest stable release tag (ex : STABLE_20040227)</li>
-	<li><b>get</b> the version corresponding to that tag, thanks to :
+	<li><b>find</b> the lastest stable release tag (ex: STABLE_20040227)</li>
+	<li><b>get</b> the version corresponding to that tag, thanks to:
 
-    <table summary="CVS tag" style="border : none">
+    <table summary="CVS tag" style="border: none">
     <tr>
       <td>
         <div class="box">
@@ -114,9 +116,9 @@ Besides, end users are merely interested in stable releases, whereas our latest 
   </table>	
 	
 	
-	<center>for instance : </center>
+	<center>for instance: </center>
 	
-    <table summary="CVS tag example" style="border : none">
+    <table summary="CVS tag example" style="border: none">
     <tr>
       <td>
         <div class="box">
@@ -158,16 +160,16 @@ Besides, end users are merely interested in stable releases, whereas our latest 
   
   <p>To retrieve modulename from our CVS server, please enter (do not
   forget to substitute modulename with the name of the module you want
-  to check out) :</p>
+  to check out):</p>
   
   <table summary="CVS co" style="border: none">
     <tr>
       <td>
         <div class="box">
-          <code>Just once, to start your CVS session :<br>
+          <code>Just once, to start your CVS session:<br>
           cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/osdl
           login<br>
-          Then, for every module to retrieve :<br>
+          Then, for every module to retrieve:<br>
           cvs -z3
           -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/osdl co
           modulename</code>
@@ -196,17 +198,11 @@ Besides, end users are merely interested in stable releases, whereas our latest 
   <p>You can use our home project CVS, which is accessible through <a href="http://osdl.esperide.com/cgi-bin/viewcvs.cgi/" target="_blank">a web-based interface</a> a little fancier than SourceForge's one, but which is not guaranteed to be always up-to-date.</p> 
   -->
   
-<br>
-<br>
-<br>
-<br>
-  
-<h3>Please react !</h3>
+<h3>Please react!</h3>
 
 <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, or if you would like to contribute and help us, even a little bit, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Download">drop
-us a line</a> !</p>
+us a line</a>!</p>
 
-<br>
 <br>
 
 <hr>
@@ -215,7 +211,7 @@ us a line</a> !</p>
   [<a href="#_top_">Top</a>]
   <br>
   <br>
-  <em>Last update : 2005, November 15</em>
+  <em>Last update: Saturday, April 11, 2009</em>
 </center>
 
 </body>
