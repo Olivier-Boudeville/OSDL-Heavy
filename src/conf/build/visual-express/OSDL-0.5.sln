@@ -3,20 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OSDL-0.5-library", "OSDL-0.5.vcproj", "{A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-testOSDLAudio", "..\..\..\..\test\basic\testOSDLAudio\testOSDLAudio.vcproj", "{5809A6B4-87C1-49FE-8247-347799870418}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-testOSDLMusic", "..\..\..\..\test\basic\testOSDLMusic\testOSDLMusic.vcproj", "{5056106A-A85C-4D2B-9500-365649AC9AEF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-testOSDLSound", "..\..\..\..\test\basic\testOSDLSound\testOSDLSound.vcproj", "{409B910D-B3AB-48BC-847F-EC78A180B72C}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testOSDLCDROMDrive", "..\..\..\..\test\basic\testOSDLCDROMDrive\testOSDLCDROMDrive.vcproj", "{AC904712-8E06-499C-8462-7D1A78CD0B24}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33} = {A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testOSDLBasic", "..\..\..\..\test\basic\testOSDLBasic\testOSDLBasic.vcproj", "{2E752908-BCE6-4E37-8617-0F4689B3611A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33} = {A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testBasic", "..\..\..\..\test\basic\testBasic\testBasic.vcproj", "{CF466CEC-1765-4C9D-B9B2-74D2A0734D3C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33} = {A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testOSDLException", "..\..\..\..\test\basic\testOSDLException\testOSDLException.vcproj", "{0603D97E-26B6-44B1-B682-4093F6F04112}"
 EndProject
@@ -29,6 +26,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testSDL_mixer", "..\..\..\..\test\basic\testSDL_mixer\testSDL_mixer.vcproj", "{C30F9AB3-3071-4E4E-A4E5-106AFA77870F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testSDLWithOpenGL", "..\..\..\..\test\basic\testSDLWithOpenGL\testSDLWithOpenGL.vcproj", "{0D30A336-CDE4-490E-A2AB-74A631F58671}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testOSDLEmbeddedFileSystem", "..\..\..\..\test\basic\testOSDLEmbeddedFileSystem\testOSDLEmbeddedFileSystem.vcproj", "{B6DF3D9B-A935-46AB-B89C-A68E85131CFB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testOSDLUtils", "..\..\..\..\test\basic\testOSDLUtils\testOSDLUtils.vcproj", "{C1EA9C53-914F-4FBE-978D-6C48A99FDBDD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "data-testOSDLResourceManager", "..\..\..\..\test\data\testOSDLResourceManager\testOSDLResourceManager.vcproj", "{4D015240-A75F-4FEF-84F0-7C37A928BC1F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine-testOSDLAndMVC", "..\..\..\..\test\engine\testOSDLAndMVC\testOSDLAndMVC.vcproj", "{2D080563-D304-4F35-A316-5A15226556D1}"
 EndProject
@@ -47,6 +50,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "events-testOSDLEvents", "..\..\..\..\test\events\testOSDLEvents\testOSDLEvents.vcproj", "{DA108DD9-C9A7-4299-9E96-2EE5BF619497}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "events-testOSDLJoysticks", "..\..\..\..\test\events\testOSDLJoysticks\testOSDLJoysticks.vcproj", "{334501D5-C48D-49DB-BBEB-EE9C8D0EE080}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "events-testOSDLMouse", "..\..\..\..\test\events\testOSDLMouse\testOSDLMouse.vcproj", "{556F66F6-4F74-4EBF-9561-AAA535824E0D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video-testOSDLBlit", "..\..\..\..\test\video\testOSDLBlit\testOSDLBlit.vcproj", "{CFC866FA-E513-4893-A4E0-6AA6EB321C23}"
 EndProject
@@ -106,6 +111,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video-2D-testOSDLWidget", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video-renderer-testOSDLRenderer", "..\..\..\..\test\video\videoRenderer\testOSDLRenderer\testOSDLRenderer.vcproj", "{7A63266C-D8E8-4857-A779-5E345F0A1B04}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video-renderer-testOSDLSprite", "..\..\..\..\test\video\videoRenderer\testOSDLSprite\testOSDLSprite.vcproj", "{F0DC5175-0A10-4DC1-ABDF-468BD163BF56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -116,6 +123,18 @@ Global
 		{A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33}.Debug|Win32.Build.0 = Debug|Win32
 		{A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33}.Release|Win32.ActiveCfg = Release|Win32
 		{A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33}.Release|Win32.Build.0 = Release|Win32
+		{5809A6B4-87C1-49FE-8247-347799870418}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5809A6B4-87C1-49FE-8247-347799870418}.Debug|Win32.Build.0 = Debug|Win32
+		{5809A6B4-87C1-49FE-8247-347799870418}.Release|Win32.ActiveCfg = Release|Win32
+		{5809A6B4-87C1-49FE-8247-347799870418}.Release|Win32.Build.0 = Release|Win32
+		{5056106A-A85C-4D2B-9500-365649AC9AEF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5056106A-A85C-4D2B-9500-365649AC9AEF}.Debug|Win32.Build.0 = Debug|Win32
+		{5056106A-A85C-4D2B-9500-365649AC9AEF}.Release|Win32.ActiveCfg = Release|Win32
+		{5056106A-A85C-4D2B-9500-365649AC9AEF}.Release|Win32.Build.0 = Release|Win32
+		{409B910D-B3AB-48BC-847F-EC78A180B72C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{409B910D-B3AB-48BC-847F-EC78A180B72C}.Debug|Win32.Build.0 = Debug|Win32
+		{409B910D-B3AB-48BC-847F-EC78A180B72C}.Release|Win32.ActiveCfg = Release|Win32
+		{409B910D-B3AB-48BC-847F-EC78A180B72C}.Release|Win32.Build.0 = Release|Win32
 		{AC904712-8E06-499C-8462-7D1A78CD0B24}.Debug|Win32.ActiveCfg = Debug|Win32
 		{AC904712-8E06-499C-8462-7D1A78CD0B24}.Debug|Win32.Build.0 = Debug|Win32
 		{AC904712-8E06-499C-8462-7D1A78CD0B24}.Release|Win32.ActiveCfg = Release|Win32
@@ -152,6 +171,18 @@ Global
 		{0D30A336-CDE4-490E-A2AB-74A631F58671}.Debug|Win32.Build.0 = Debug|Win32
 		{0D30A336-CDE4-490E-A2AB-74A631F58671}.Release|Win32.ActiveCfg = Release|Win32
 		{0D30A336-CDE4-490E-A2AB-74A631F58671}.Release|Win32.Build.0 = Release|Win32
+		{B6DF3D9B-A935-46AB-B89C-A68E85131CFB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B6DF3D9B-A935-46AB-B89C-A68E85131CFB}.Debug|Win32.Build.0 = Debug|Win32
+		{B6DF3D9B-A935-46AB-B89C-A68E85131CFB}.Release|Win32.ActiveCfg = Release|Win32
+		{B6DF3D9B-A935-46AB-B89C-A68E85131CFB}.Release|Win32.Build.0 = Release|Win32
+		{C1EA9C53-914F-4FBE-978D-6C48A99FDBDD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C1EA9C53-914F-4FBE-978D-6C48A99FDBDD}.Debug|Win32.Build.0 = Debug|Win32
+		{C1EA9C53-914F-4FBE-978D-6C48A99FDBDD}.Release|Win32.ActiveCfg = Release|Win32
+		{C1EA9C53-914F-4FBE-978D-6C48A99FDBDD}.Release|Win32.Build.0 = Release|Win32
+		{4D015240-A75F-4FEF-84F0-7C37A928BC1F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4D015240-A75F-4FEF-84F0-7C37A928BC1F}.Debug|Win32.Build.0 = Debug|Win32
+		{4D015240-A75F-4FEF-84F0-7C37A928BC1F}.Release|Win32.ActiveCfg = Release|Win32
+		{4D015240-A75F-4FEF-84F0-7C37A928BC1F}.Release|Win32.Build.0 = Release|Win32
 		{2D080563-D304-4F35-A316-5A15226556D1}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2D080563-D304-4F35-A316-5A15226556D1}.Debug|Win32.Build.0 = Debug|Win32
 		{2D080563-D304-4F35-A316-5A15226556D1}.Release|Win32.ActiveCfg = Release|Win32
@@ -188,6 +219,10 @@ Global
 		{334501D5-C48D-49DB-BBEB-EE9C8D0EE080}.Debug|Win32.Build.0 = Debug|Win32
 		{334501D5-C48D-49DB-BBEB-EE9C8D0EE080}.Release|Win32.ActiveCfg = Release|Win32
 		{334501D5-C48D-49DB-BBEB-EE9C8D0EE080}.Release|Win32.Build.0 = Release|Win32
+		{556F66F6-4F74-4EBF-9561-AAA535824E0D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{556F66F6-4F74-4EBF-9561-AAA535824E0D}.Debug|Win32.Build.0 = Debug|Win32
+		{556F66F6-4F74-4EBF-9561-AAA535824E0D}.Release|Win32.ActiveCfg = Release|Win32
+		{556F66F6-4F74-4EBF-9561-AAA535824E0D}.Release|Win32.Build.0 = Release|Win32
 		{CFC866FA-E513-4893-A4E0-6AA6EB321C23}.Debug|Win32.ActiveCfg = Debug|Win32
 		{CFC866FA-E513-4893-A4E0-6AA6EB321C23}.Debug|Win32.Build.0 = Debug|Win32
 		{CFC866FA-E513-4893-A4E0-6AA6EB321C23}.Release|Win32.ActiveCfg = Release|Win32
@@ -304,6 +339,10 @@ Global
 		{7A63266C-D8E8-4857-A779-5E345F0A1B04}.Debug|Win32.Build.0 = Debug|Win32
 		{7A63266C-D8E8-4857-A779-5E345F0A1B04}.Release|Win32.ActiveCfg = Release|Win32
 		{7A63266C-D8E8-4857-A779-5E345F0A1B04}.Release|Win32.Build.0 = Release|Win32
+		{F0DC5175-0A10-4DC1-ABDF-468BD163BF56}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F0DC5175-0A10-4DC1-ABDF-468BD163BF56}.Debug|Win32.Build.0 = Debug|Win32
+		{F0DC5175-0A10-4DC1-ABDF-468BD163BF56}.Release|Win32.ActiveCfg = Release|Win32
+		{F0DC5175-0A10-4DC1-ABDF-468BD163BF56}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
