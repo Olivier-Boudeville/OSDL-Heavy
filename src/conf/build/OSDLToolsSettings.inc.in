@@ -141,21 +141,21 @@ SDL_image_osx_precompiled_MD5="xxx"
 
 
 # SDL_gfx (libSDL_gfx.so): http://www.ferzkopp.net/Software/SDL_gfx-2.0/
-# No binaries available !
+# No binaries available!
 
-# Actually 2.0.18 (defined in configure-template.ac):
+# Actually 2.0.19 (defined in configure-template.ac):
 SDL_gfx_MAJOR_VERSION="@SDL_GFX_MAJOR_VERSION@"
 SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.@SDL_GFX_MINOR_VERSION@"
 SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
-SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
+SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_gfx_MD5="b107fd478d3d1269d7a6ff42906f0482"
+SDL_gfx_MD5="cf01ad6539ceea65887fc9ebdfe04b83"
 
 
 # Same as for UNIX:
 SDL_gfx_win_VERSION="$SDL_gfx_VERSION"
 SDL_gfx_win_ARCHIVE="SDL_gfx-${SDL_gfx_win_VERSION}.tar.gz"
-SDL_gfx_win_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
+SDL_gfx_win_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_win_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_gfx_win_MD5="$SDL_gfx_MD5"
 
@@ -171,6 +171,7 @@ freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourcefor
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
 freetype_MD5="83306194817ebdea554133b4232a34aa"
+
 
 # Same as for UNIX:
 freetype_win_VERSION="$freetype_VERSION"
