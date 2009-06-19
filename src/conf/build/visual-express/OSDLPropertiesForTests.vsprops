@@ -12,7 +12,7 @@
 		PreprocessorDefinitions="&quot;OSDL_DLL=__declspec( dllimport )&quot;;&quot;OSDL_RUNS_ON_WINDOWS&quot;;&quot;CEYLAN_DLL=__declspec( dllimport )&quot;;&quot;CEYLAN_RUNS_ON_WINDOWS&quot;"
 		WarningLevel="2"
 		WarnAsError="true"
-		Detect64BitPortabilityProblems="true"
+		Detect64BitPortabilityProblems="false"
 		DebugInformationFormat="3"
 	/>
 	<Tool
