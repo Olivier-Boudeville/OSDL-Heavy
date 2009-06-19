@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9,00"
 	Name="basic-testSDL_gfx"
 	ProjectGUID="{B3B0E10A-4FB2-41C5-9F09-8081DC0FF807}"
 	RootNamespace="basic-testSDL_gfx"
@@ -16,8 +16,6 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
 			InheritedPropertySheets="..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool
@@ -78,8 +76,6 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
 			InheritedPropertySheets="..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool

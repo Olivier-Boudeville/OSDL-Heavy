@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9,00"
 	Name="engine-testOSDLScheduledMultimedia"
 	ProjectGUID="{AA53B564-407A-4B55-B406-4D6654CB336D}"
 	>
@@ -15,8 +15,6 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
 			InheritedPropertySheets="..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool
@@ -76,8 +74,6 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
 			InheritedPropertySheets="..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool

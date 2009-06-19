@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9,00"
 	Name="basic-testSDL_mixer"
 	ProjectGUID="{C30F9AB3-3071-4E4E-A4E5-106AFA77870F}"
 	RootNamespace="basic-testSDL_mixer"
@@ -16,8 +16,6 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
 			InheritedPropertySheets="..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool
@@ -78,8 +76,6 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
 			InheritedPropertySheets="..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool

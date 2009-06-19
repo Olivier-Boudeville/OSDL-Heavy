@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9,00"
 	Name="video-renderer-testOSDLRenderer"
 	ProjectGUID="{7A63266C-D8E8-4857-A779-5E345F0A1B04}"
 	>
@@ -15,8 +15,6 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
 			InheritedPropertySheets="..\..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool
@@ -76,8 +74,6 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
 			InheritedPropertySheets="..\..\..\..\src\conf\build\visual-express\OSDLProperties.vsprops;..\..\..\..\src\conf\build\visual-express\OSDLPropertiesForTests.vsprops"
 			>
 			<Tool
