@@ -36,7 +36,7 @@
 
 <!--
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -176,7 +176,7 @@ For Windows-based systems, selecting most tools in the Cygwin set-up should be e
 <p>
 For Debian-based systems, this command should help:
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -193,7 +193,7 @@ sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make c
 <p>
 For RPM-based systems like OpenSuse, this command should help:
 <center>
-    <table summary="a box" style="border : none">
+    <table summary="a box" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -211,6 +211,10 @@ Please note that these prerequisites are LOANI's ones, which are a subset of ful
 
 
 <center>[<a href="#toc">Back to table of contents</a>]</center>
+
+
+
+
 
 <a name="provide"></a>
 <h2>What LOANI provides</h2>
@@ -288,6 +292,14 @@ Thanks to the <code>--sourceforge &lt;user name&gt;</code> option, our <b>projec
 
 <p>
 <b>End-users</b> that prefer SVN should use <code>--useSVN</code> instead of the two previous options. The retrieved sources will then be the result of a SVN export made from the anonymous SVN server, and no SVN meta-data will be managed. Unless the <code>--currentSVN</code> option is specifically set, retrieved files for Ceylan and OSDL correspond to their respective last <b>stable</b> versions, as determined by SVN tags (ex: <code>STABLE_20040906</code>). If the <code>--currentSVN</code> option is set, then the latest version of each file is used. This is usually unsafe during development.
+</p>
+
+<p>
+Note that, as LOANI uses the SVN client provided by Cygwin, a checkout may report a success whereas it actually failed, if it resulted into too long paths. One should use TortoiseSVN after this checkout and perform an update, just to be sure all files are here.
+</p>
+
+<p>
+More generally, one should avoid trying to perform any LOANI installation from a directory already too much nested in the filesystem tree (ex: in a deep directory below <code>My Documents</code>), as some Windows tools may fail in that case.
 </p>
 
 
@@ -748,6 +760,9 @@ There exist some hidden options, i.e. undocumented in the command line help, sin
 <center>[<a href="#toc">Back to table of contents</a>]</center>
 
 
+
+
+
 <a name="troubleshooting"></a>  
  <h2>Troubleshooting</h2>
 <p>
@@ -884,10 +899,21 @@ Certificate information:
 	<dd>Some build failures have been encountered while trying to use old compilers, such as <code>gcc 2.95.4</code>, which seems to have problems handling some iostream operations (ex: with <code>istringstream</code>). As that same compiler seems to fail compiling a more recent version of itself (namely, the bootstrap of <code>3.3.3</code>), the <code>--buildTools</code> LOANI option might not help you. The most simple way of dealing with this issue is to upgrade first your compiler thanks to your distribution (rpm, apt-get, emerge etc.).
 </dd>
 
+
+	<dt>On Windows with Visual Studio, a build fails with an error <code>C2471</code> or <code>LNK1140</code></dt>
+	<dd>
+	Visual Studio seems to manage to mess with its own generated files in some cases like incremental build. Just choosing <em>Regenerate/Rebuild all</em> could help.
+	</dd>
+
+
 	<dt>LOANI fails with: <code>Error: Unable to pass OSDL tests</code></dt>
 	<dd>
 	If most OSDL tests fail (inspect <code>OSDL/trunk/test/testsOutcome.txt</code> for <code>No available video device</code>), check that the user can display windows indeed, with respect to the X server (ex: test with <code>xclock</code>). 
 	</dd>
+
+	<dt>Random or unexplained LOANI failures during build</dt>
+	<dd>One should first check that there is still enough room on device. On Windows, one could ensure too that the installation was performed close enough to the root of the filesystem (ex: <code>C:\LOANI-install</code>), as various tools may fail when paths become too long.
+</dd>
 
     <dt>LOANI keeps on failing and I do not know what to do</dt>
     <dd>I guess it is time for you to read our <a href="#support">support section</a>. Note that when using the <code>--sourceforge</code> option (useful for developers), you retrieve the current code, whereas regularly the SVN is broken, as one could expect for in-development versions.
@@ -896,7 +922,7 @@ Certificate information:
 	<dt>No OpenGL operation succeeds, despite <code>glxinfo</code> showing direct rendering, fails with <code>X11 driver not configured with OpenGL</code></dt>
 	<dd>It is the sign that SDL was not built with OpenGL support, maybe because at the time of its configuration, the OpenGL set-up was not correct. One can check it by running SDL configure again, and search for this target line:
 <center>
-    <table summary="Code" style="border : none">
+    <table summary="Code" style="border: none">
         <tr>
           <td>
             <div class="box">
@@ -978,7 +1004,7 @@ We hope you will enjoy using LOANI and OSDL!
     [<a href="#_top_">Top</a>]
 	<br>
     <br>
-    <em>Last update: Sunday, April 5, 2009</em>	
+    <em>Last update: Sunday, June 7, 2009</em>	
   </center>
 </body>
 </html>
