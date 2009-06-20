@@ -728,7 +728,7 @@ void AudioModule::setPositionAttenuation( ListenerDistance distance,
 #if OSDL_USES_SDL_MIXER
 	
 	if ( ::Mix_SetPosition( /* postmix stream */ MIX_CHANNEL_POST, 
-			distance, angle ) == 0 )
+			angle, distance ) == 0 )
 		throw AudioException( "AudioModule::setPositionAttenuation failed: " 
 			+ string( ::Mix_GetError() ) ) ;
 		
