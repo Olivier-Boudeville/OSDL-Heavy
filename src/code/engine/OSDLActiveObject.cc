@@ -26,7 +26,7 @@
 
 #include "OSDLActiveObject.h"
 
-
+#include "OSDLEvents.h"           // for SimulationTick
 #include "OSDLScheduler.h"        // for GetExistingScheduler
 
 
@@ -96,8 +96,7 @@ Weight ActiveObject::getWeight() const
 
 
 	
-void ActiveObject::setBirthTick( 
-	Events::SimulationTick birthSimulationTick )
+void ActiveObject::setBirthTick( SimulationTick birthSimulationTick )
 {
 
 	_birthTick = birthSimulationTick ;
