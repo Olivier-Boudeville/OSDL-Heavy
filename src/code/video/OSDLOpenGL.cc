@@ -923,8 +923,10 @@ void OpenGLContext::setClearColor( const Pixels::ColorDefinition & color )
 
 	_clearColor = color ;
 	
-	glClearColor( color.r/255.0, color.g/255.0, color.b/255.0, 
-		color.unused/255.0 ) ;
+	glClearColor( static_cast<GLclampf>( color.r/255.0 ), 
+			static_cast<GLclampf>( color.g/255.0 ),
+			static_cast<GLclampf>( color.b/255.0 ),
+			static_cast<GLclampf>( color.unused/255.0 ) ) ;
 
 #if OSDL_CHECK_OPENGL_CALLS
 
@@ -1356,7 +1358,7 @@ void OpenGLContext::DisableFeature( GLEnumeration feature )
 bool OpenGLContext::GetDoubleBufferStatus()
 {
 
-	return static_cast<bool>( GetGLAttribute( SDL_GL_DOUBLEBUFFER ) ) ;
+	return ( GetGLAttribute( SDL_GL_DOUBLEBUFFER ) == 1 ) ;
 
 }
 
@@ -1516,7 +1518,7 @@ bool OpenGLContext::GetHardwareAccelerationStatus()
 	 *
 	 */
 
-	return static_cast<bool>( GetGLAttribute( SDL_GL_ACCELERATED_VISUAL ) ) ;
+	return ( GetGLAttribute( SDL_GL_ACCELERATED_VISUAL ) == 1 ) ;
 	
 }
 
@@ -1565,7 +1567,7 @@ bool OpenGLContext::GetVerticalBlankSynchronizationStatus()
 	 *
 	 */
 
-	return static_cast<bool>( GetGLAttribute( SDL_GL_SWAP_CONTROL ) ) ;
+	return ( GetGLAttribute( SDL_GL_SWAP_CONTROL ) == 1 ) ;
 	
 }
 
@@ -2052,13 +2054,13 @@ bool OpenGLContext::HasGLAttribute( GLAttribute attribute )
 
 int OpenGLContext::GetGLAttribute( GLAttribute attribute )
 {
-	
+
 #if OSDL_USES_OPENGL
 
 #if OSDL_USES_SDL
 
 	/*
-	 * Note: any set attribute do not take effect until VideoModule::setMode
+	 * Note: a set attribute will not take effect until VideoModule::setMode
 	 * is called.
 	 *
 	 */
