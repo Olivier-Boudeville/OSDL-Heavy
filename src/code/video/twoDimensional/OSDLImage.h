@@ -1018,11 +1018,11 @@ namespace OSDL
 				 * symbol is available here.
 				 *
 				 */
-		__attribute__ ((packed)) BMPHeader  
+		__attribute__ ((packed))   
 
 #endif // CEYLAN_RUNS_ON_WINDOWS
 			
-			;
+			BMPHeader ;
 			
 			
 			
@@ -1087,11 +1087,11 @@ namespace OSDL
 				 * symbol is available here.
 				 *
 				 */
-		__attribute__ ((packed)) BMPInfoHeader  
+		__attribute__ ((packed))  
 
 #endif // CEYLAN_RUNS_ON_WINDOWS
 			
-			;
+			BMPInfoHeader ;
 			
 
 		}
