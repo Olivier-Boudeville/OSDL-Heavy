@@ -31,6 +31,12 @@
 #include "OSDLPixel.h"   // for Pixels::put, Pixels::Pixel
 
 
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+#include "SDL.h"             // for ColorDefinition
+
+#endif // OSDL_USES_SDL
+
 
 
 namespace OSDL

@@ -33,6 +33,16 @@
 
 #include "Ceylan.h"            // for Point2D
 
+
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+
+#include "SDL.h"             // for ColorDefinition
+
+#endif // OSDL_USES_SDL
+
+
+
 #include <iostream>            // for ostream
 #include <string>
 
@@ -42,6 +52,7 @@
 
 // No need to include SDL header here:
 struct SDL_Rect ;
+struct SDL_Color ;
 
 #endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
@@ -379,7 +390,7 @@ namespace OSDL
 					 *
 					 */
 					virtual bool draw( Surface & target, 
-						Pixels::ColorDefinition colorDef= Pixels::White,
+						Pixels::ColorDefinition colorDef = Pixels::White,
 						bool filled = true ) const ;
 					
 					
