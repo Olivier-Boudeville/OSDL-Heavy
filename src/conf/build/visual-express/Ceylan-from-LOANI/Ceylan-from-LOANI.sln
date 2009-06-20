@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanCommandLi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanCountedPointer", "..\..\..\..\test\generic\testCeylanCountedPointer\testCeylanCountedPointer.vcproj", "{BF55C1F9-929F-476D-8841-2BA5C4F6B4AA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanLocale", "..\..\..\..\test\generic\testCeylanLocale\testCeylanLocale.vcproj", "{7A549641-046A-4655-8788-90F572CA7366}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanMostBasic", "..\..\..\..\test\generic\testCeylanMostBasic\testCeylanMostBasic.vcproj", "{33E77209-2363-486B-BA82-EBBAADE6FA60}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "generic-testCeylanOperators", "..\..\..\..\test\generic\testCeylanOperators\testCeylanOperators.vcproj", "{7F2232CD-F712-4EEC-A4EE-AA4941FC6898}"
@@ -34,6 +36,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "interfaces-testCeylanCountable", "..\..\..\..\test\interfaces\testCeylanCountable\testCeylanCountable.vcproj", "{61BBBDAA-E02A-480E-AF4B-CEDEE10BC235}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "interfaces-testCeylanEvents", "..\..\..\..\test\interfaces\testCeylanEvents\testCeylanEvents.vcproj", "{114B1844-E4CA-4B47-820F-A9C27052B673}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "interfaces-testCeylanGenericMVC", "..\..\..\..\test\interfaces\testCeylanGenericMVC\testCeylanGenericMVC.vcproj", "{0ADBF4A0-169A-44F5-8F35-C6DD6EC7A83A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "interfaces-testCeylanLocatable", "..\..\..\..\test\interfaces\testCeylanLocatable\testCeylanLocatable.vcproj", "{837B6493-6D1F-406B-94CC-5A49D63DB79F}"
 EndProject
@@ -157,6 +161,10 @@ Global
 		{BF55C1F9-929F-476D-8841-2BA5C4F6B4AA}.Debug|Win32.Build.0 = Debug|Win32
 		{BF55C1F9-929F-476D-8841-2BA5C4F6B4AA}.Release|Win32.ActiveCfg = Release|Win32
 		{BF55C1F9-929F-476D-8841-2BA5C4F6B4AA}.Release|Win32.Build.0 = Release|Win32
+		{7A549641-046A-4655-8788-90F572CA7366}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7A549641-046A-4655-8788-90F572CA7366}.Debug|Win32.Build.0 = Debug|Win32
+		{7A549641-046A-4655-8788-90F572CA7366}.Release|Win32.ActiveCfg = Release|Win32
+		{7A549641-046A-4655-8788-90F572CA7366}.Release|Win32.Build.0 = Release|Win32
 		{33E77209-2363-486B-BA82-EBBAADE6FA60}.Debug|Win32.ActiveCfg = Debug|Win32
 		{33E77209-2363-486B-BA82-EBBAADE6FA60}.Debug|Win32.Build.0 = Debug|Win32
 		{33E77209-2363-486B-BA82-EBBAADE6FA60}.Release|Win32.ActiveCfg = Release|Win32
@@ -209,6 +217,10 @@ Global
 		{114B1844-E4CA-4B47-820F-A9C27052B673}.Debug|Win32.Build.0 = Debug|Win32
 		{114B1844-E4CA-4B47-820F-A9C27052B673}.Release|Win32.ActiveCfg = Release|Win32
 		{114B1844-E4CA-4B47-820F-A9C27052B673}.Release|Win32.Build.0 = Release|Win32
+		{0ADBF4A0-169A-44F5-8F35-C6DD6EC7A83A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0ADBF4A0-169A-44F5-8F35-C6DD6EC7A83A}.Debug|Win32.Build.0 = Debug|Win32
+		{0ADBF4A0-169A-44F5-8F35-C6DD6EC7A83A}.Release|Win32.ActiveCfg = Release|Win32
+		{0ADBF4A0-169A-44F5-8F35-C6DD6EC7A83A}.Release|Win32.Build.0 = Release|Win32
 		{837B6493-6D1F-406B-94CC-5A49D63DB79F}.Debug|Win32.ActiveCfg = Debug|Win32
 		{837B6493-6D1F-406B-94CC-5A49D63DB79F}.Debug|Win32.Build.0 = Debug|Win32
 		{837B6493-6D1F-406B-94CC-5A49D63DB79F}.Release|Win32.ActiveCfg = Release|Win32
