@@ -39,7 +39,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(OSDLCodeRoot)&quot;;&quot;$(OSDLCodeRoot)\audio&quot;;&quot;$(OSDLCodeRoot)\audio\audioRenderer&quot;;&quot;$(OSDLCodeRoot)\basic&quot;;&quot;$(OSDLCodeRoot)\engine&quot;;&quot;$(OSDLCodeRoot)\events&quot;;&quot;$(OSDLCodeRoot)\video&quot;;&quot;$(OSDLCodeRoot)\video\twoDimensional&quot;;&quot;$(OSDLCodeRoot)\video\videoRenderer&quot;;&quot;$(CeylanIncDir)&quot;;&quot;$(SDLIncDir)&quot;;&quot;$(SDL_imageIncDir)&quot;;&quot;$(LibpngIncDir)&quot;;&quot;$(ZlibIncDir)&quot;;&quot;$(SDL_gfxIncDir)&quot;;&quot;$(SDL_ttfIncDir)&quot;;&quot;$(SDL_mixerIncDir)&quot;;&quot;$(AgarIncDir)&quot;"
+				AdditionalIncludeDirectories="&quot;$(OSDLCodeRoot)&quot;;&quot;$(OSDLCodeRoot)\audio&quot;;&quot;$(OSDLCodeRoot)\audio\audioRenderer&quot;;&quot;$(OSDLCodeRoot)\basic&quot;;&quot;$(OSDLCodeRoot)\engine&quot;;&quot;$(OSDLCodeRoot)\events&quot;;&quot;$(OSDLCodeRoot)\video&quot;;&quot;$(OSDLCodeRoot)\video\twoDimensional&quot;;&quot;$(OSDLCodeRoot)\video\videoRenderer&quot;;&quot;$(CeylanIncDir)&quot;;&quot;$(SDLIncDir)&quot;;&quot;$(SDL_imageIncDir)&quot;;&quot;$(LibpngIncDir)&quot;;&quot;$(ZlibIncDir)&quot;;&quot;$(SDL_gfxIncDir)&quot;;&quot;$(SDL_ttfIncDir)&quot;;&quot;$(SDL_mixerIncDir)&quot;;&quot;$(PhysicsFSIncDir)&quot;;&quot;$(AgarIncDir)&quot;"
 				PreprocessorDefinitions="OSDL_USES_CONFIG_H=1;OSDL_RUNS_ON_WINDOWS;&quot;OSDL_DLL=__declspec( dllexport )&quot;;OSDL_PACKED_ATTRIBUTE=;CEYLAN_RUNS_ON_WINDOWS;&quot;CEYLAN_DLL=__declspec( dllimport )&quot;;CEYLAN_PACKED_ATTRIBUTE="
 				DisableLanguageExtensions="false"
 				DisableSpecificWarnings="4290;4101;4996"
@@ -199,10 +199,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\code\events\OSDLClassicalJoystick.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\code\basic\OSDLCommandManager.cc"
 				>
 			</File>
 			<File
@@ -477,10 +473,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\code\events\OSDLClassicalJoystick.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\code\basic\OSDLCommandManager.h"
 				>
 			</File>
 			<File
