@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OSDL-0.5-library", "OSDL-0.5.vcproj", "{A5E57BEE-58EC-4E9A-BD26-DE23DFA02C33}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-testOSDLAudio", "..\..\..\..\test\basic\testOSDLAudio\testOSDLAudio.vcproj", "{5809A6B4-87C1-49FE-8247-347799870418}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-testOSDLAudio", "..\..\..\..\test\audio\testOSDLAudio\testOSDLAudio.vcproj", "{5809A6B4-87C1-49FE-8247-347799870418}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-testOSDLMusic", "..\..\..\..\test\basic\testOSDLMusic\testOSDLMusic.vcproj", "{5056106A-A85C-4D2B-9500-365649AC9AEF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-testOSDLMusic", "..\..\..\..\test\audio\testOSDLMusic\testOSDLMusic.vcproj", "{5056106A-A85C-4D2B-9500-365649AC9AEF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-testOSDLSound", "..\..\..\..\test\basic\testOSDLSound\testOSDLSound.vcproj", "{409B910D-B3AB-48BC-847F-EC78A180B72C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-testOSDLSound", "..\..\..\..\test\audio\testOSDLSound\testOSDLSound.vcproj", "{409B910D-B3AB-48BC-847F-EC78A180B72C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testOSDLCDROMDrive", "..\..\..\..\test\basic\testOSDLCDROMDrive\testOSDLCDROMDrive.vcproj", "{AC904712-8E06-499C-8462-7D1A78CD0B24}"
 EndProject
