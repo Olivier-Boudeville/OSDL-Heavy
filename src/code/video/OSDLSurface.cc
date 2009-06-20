@@ -2419,7 +2419,8 @@ void Surface::displayAtCenterWithFadeOut( const OpenGL::GLTexture & texture,
 			startingSecond, startingMicrosecond, 
 			currentSecond, currentMicrosecond ) ;
 			
-		alpha = 1.0 - elapsedMicrosecond / ( 1000.0 * fadeOutDuration )  ;
+		alpha = static_cast<Pixels::FloatColorElement>( 
+				1.0 - elapsedMicrosecond / ( 1000.0 * fadeOutDuration ) )  ;
 		
 	}
 	while ( alpha > 0.0 ) ;
