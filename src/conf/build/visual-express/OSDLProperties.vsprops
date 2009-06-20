@@ -7,6 +7,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		Optimization="0"
+		PreprocessorDefinitions="CEYLAN_PACKED_ATTRIBUTE=;OSDL_PACKED_ATTRIBUTE="
 		MinimalRebuild="true"
 		BasicRuntimeChecks="3"
 		RuntimeLibrary="3"
@@ -15,7 +16,6 @@
 		WarnAsError="false"
 		Detect64BitPortabilityProblems="false"
 		DebugInformationFormat="3"
-		PreprocessorDefinitions="CEYLAN_PACKED_ATTRIBUTE=;OSDL_PACKED_ATTRIBUTE="
 	/>
 	<Tool
 		Name="VCLinkerTool"
@@ -178,7 +178,7 @@
 	/>
 	<UserMacro
 		Name="SDL_gfxVersion"
-		Value="2.0.18"
+		Value="2.0.19"
 		InheritsFromParent="true"
 		Delimiter=";"
 		PerformEnvironmentSet="true"
