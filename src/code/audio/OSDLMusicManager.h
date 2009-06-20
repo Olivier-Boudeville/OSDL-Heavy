@@ -64,8 +64,25 @@ namespace OSDL
 		} ;
 			
 
+		// Forward declaration for the next declaration:
+		class MusicManager ;
 
-		
+		/**
+		 * This function is intended to be the usual means of
+		 * getting a reference to the music manager, which must already exist.
+		 * If not, a fatal error will be triggered (not an exception to 
+		 * avoid handling it in all user methods).
+		 * 
+		 * @note This function is mainly useful for the OSDL internals
+		 *
+		 * @note This method is not static to avoid pitfalls of static
+		 * initializer ordering.
+		 *
+		 */			
+		OSDL_DLL MusicManager & getExistingMusicManager() ;
+
+
+
 		/**
 		 * Describes all information needed for the playback of a music.
 		 *
@@ -328,14 +345,24 @@ namespace OSDL
 				 * @throw AudioException if the operation failed.
 				 *
 				 */
-				virtual void onMusicPlaybackFinished() ;
-			
+				virtual void onMusicPlaybackFinished() ;	
 									
+/* 
+ * Takes care of the awful issue of Windows DLL with templates.
+ *
+ * @see Ceylan's developer guide and README-build-for-windows.txt 
+ * to understand it, and to be aware of the associated risks. 
+ * 
+ */
+#pragma warning( push )
+#pragma warning( disable: 4251 )
 
 				/// The list of planned music playbacks.
 				std::list<MusicPlaybackSetting *> _playList ;
 		
-		
+#pragma warning( pop ) 
+
+
 				/// The current music playback (if any).
 				MusicPlaybackSetting * _currentMusicPlayback ;
 				
@@ -387,23 +414,7 @@ namespace OSDL
 				
 			
 		} ;
-		
-		
-
-		/**
-		 * This function is intended to be the usual means of
-		 * getting a reference to the music manager, which must already exist.
-		 * If not, a fatal error will be triggered (not an exception to 
-		 * avoid handling it in all user methods).
-		 * 
-		 * @note This function is mainly useful for the OSDL internals
-		 *
-		 * @note This method is not static to avoid pitfalls of static
-		 * initializer ordering.
-		 *
-		 */			
-		OSDL_DLL MusicManager & getExistingMusicManager() ;
-		
+				
 		
 	}	
 	
