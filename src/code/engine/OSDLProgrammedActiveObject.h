@@ -312,7 +312,16 @@ namespace OSDL
 			protected:		
 		
 				
-								
+/* 
+ * Takes care of the awful issue of Windows DLL with templates.
+ *
+ * @see Ceylan's developer guide and README-build-for-windows.txt 
+ * to understand it, and to be aware of the associated risks. 
+ * 
+ */
+#pragma warning( push )
+#pragma warning( disable: 4251 )
+						
 				/**
 				 * Records the list of programmed simulation ticks that 
 				 * will be used by the scheduler to activate this object.
@@ -322,7 +331,9 @@ namespace OSDL
 				 */
 				SimulationTickList _programmedTicks ;
 				 
-				 
+#pragma warning( pop ) 
+
+
 				 
 				/**
 				 * Tells whether the programmed trigger ticks should be
