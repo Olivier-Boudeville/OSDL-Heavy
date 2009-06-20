@@ -131,7 +131,7 @@ const string ProgrammedModel::toString( Ceylan::VerbosityLevels level ) const
 
 	return "OSDL MVC programmed model, which is a " 
 		+ Ceylan::Model::toString( level ) 
-		+ ", and a " + ProgrammedModel::toString( level ) ;
+		+ ", and a " + ProgrammedActiveObject::toString( level ) ;
 		
 }
 
