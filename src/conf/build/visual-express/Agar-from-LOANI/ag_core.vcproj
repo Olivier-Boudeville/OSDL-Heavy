@@ -36,7 +36,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;..;&quot;$(SDLIncDir)&quot;"
+				AdditionalIncludeDirectories=".;..;..\include\agar\config;&quot;$(SDLIncDir)&quot;"
 				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_AGAR_CORE_INTERNAL"
 			/>
 			<Tool
