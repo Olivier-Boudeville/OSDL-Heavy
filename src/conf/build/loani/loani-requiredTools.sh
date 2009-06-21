@@ -25,8 +25,7 @@ if [ $is_windows -eq 0 ] ; then
 
   # Windows special case:
   #REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Agar_win PhysicsFS_win"
-  # Agar_win removed for the moment:
-  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win"
+  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win Agar_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -5613,6 +5612,7 @@ cleandlditool()
 
 
 
+
 ################################################################################
 ################################################################################
 # Ceylan
@@ -5627,6 +5627,7 @@ cleandlditool()
 
 
 #TRACE "[loani-requiredTools] Ceylan"
+
 
 
 getCeylan()
@@ -5832,6 +5833,7 @@ getCeylan()
 }
 
 
+
 prepareCeylan()
 {
 
@@ -5885,6 +5887,7 @@ prepareCeylan()
 	printOK	
 
 }
+
 
 
 generateCeylan()
@@ -6090,11 +6093,13 @@ generateCeylan()
 }
 
 
+
 cleanCeylan()
 {
 	LOG_STATUS "Cleaning Ceylan build tree..."
 	# Nothing to do: we want to be able to go on with the Ceylan build.
 }
+
 
 
 
@@ -6112,6 +6117,7 @@ getCeylan_win()
 	getCeylan
 	return $?
 }
+
 
 
 prepareCeylan_win()
@@ -6134,6 +6140,7 @@ ceylan_solution_dir="$repository/ceylan/Ceylan/trunk/src/conf/build/visual-expre
 	printOK
 
 }
+
 
 
 generateCeylan_win()
