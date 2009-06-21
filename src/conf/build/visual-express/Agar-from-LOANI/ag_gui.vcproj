@@ -6,6 +6,7 @@
 	ProjectGUID="{A99B3D6D-AF42-4AD9-8602-583CF500C591}"
 	RootNamespace="ag_gui"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -17,6 +18,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
 			InheritedPropertySheets="..\..\visual-express\OSDLProperties.vsprops"
 			>
 			<Tool
@@ -36,7 +40,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;..;..\include\agar\core;&quot;$(SDLIncDir)&quot;;&quot;$(FreetypeIncDir)&quot;"
+				AdditionalIncludeDirectories=".;..;..\include;..\include\agar;&quot;$(SDLIncDir)&quot;;&quot;$(FreetypeIncDir)&quot;"
 				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_AGAR_GUI_INTERNAL"
 			/>
 			<Tool
@@ -72,9 +76,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -158,9 +159,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -169,199 +167,264 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\gui\gui.c">
+			RelativePath="..\gui\box.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\view.c">
+			RelativePath="..\gui\button.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\widget.c">
+			RelativePath="..\gui\checkbox.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\window.c">
+			RelativePath="..\gui\colors.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\style.c">
+			RelativePath="..\gui\combo.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\style_default.c">
+			RelativePath="..\gui\console.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\iconmgr.c">
+			RelativePath="..\gui\cursors.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\colors.c">
+			RelativePath="..\gui\editable.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\cursors.c">
+			RelativePath="..\gui\file_dlg.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\ttf.c">
+			RelativePath="..\gui\file_selector.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\text.c">
+			RelativePath="..\gui\fixed.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\keymap_ascii.c">
+			RelativePath="..\gui\fixed_plotter.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\keymap_utf8.c">
+			RelativePath="..\gui\fspinbutton.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\keymap_latin1.c">
+			RelativePath="..\gui\glview.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\keymap_compose.c">
+			RelativePath="..\gui\graph.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\keysyms.c">
+			RelativePath="..\gui\gui.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\editable.c">
+			RelativePath="..\gui\hsvpal.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\box.c">
+			RelativePath="..\gui\icon.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\label.c">
+			RelativePath="..\gui\iconmgr.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\button.c">
+			RelativePath="..\gui\keymap_ascii.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\checkbox.c">
+			RelativePath="..\gui\keymap_compose.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\textbox.c">
+			RelativePath="..\gui\keymap_latin1.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\primitive.c">
+			RelativePath="..\gui\keymap_utf8.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\radio.c">
+			RelativePath="..\gui\keysyms.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\fixed_plotter.c">
+			RelativePath="..\gui\label.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\tlist.c">
+			RelativePath="..\gui\load_color.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\scrollbar.c">
+			RelativePath="..\gui\load_surface.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\spinbutton.c">
+			RelativePath="..\gui\load_xcf.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\titlebar.c">
+			RelativePath="..\gui\menu.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\toolbar.c">
+			RelativePath="..\gui\menu_view.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\fspinbutton.c">
+			RelativePath="..\gui\mfspinbutton.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\combo.c">
+			RelativePath="..\gui\mpane.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\ucombo.c">
+			RelativePath="..\gui\mspinbutton.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\units.c">
+			RelativePath="..\gui\nlunits.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\nlunits.c">
+			RelativePath="..\gui\notebook.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\hsvpal.c">
+			RelativePath="..\gui\numerical.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\mspinbutton.c">
+			RelativePath="..\gui\objsel.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\mfspinbutton.c">
+			RelativePath="..\gui\pane.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\statusbar.c">
+			RelativePath="..\gui\pixmap.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\menu.c">
+			RelativePath="..\gui\primitive.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\menu_view.c">
+			RelativePath="..\gui\progress_bar.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\tableview.c">
+			RelativePath="..\gui\radio.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\separator.c">
+			RelativePath="..\gui\scrollbar.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\notebook.c">
+			RelativePath="..\gui\scrollview.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\pixmap.c">
+			RelativePath="..\gui\separator.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\file_dlg.c">
+			RelativePath="..\gui\slider.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\objsel.c">
+			RelativePath="..\gui\socket.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\fixed.c">
+			RelativePath="..\gui\spinbutton.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\numerical.c">
+			RelativePath="..\gui\statusbar.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\table.c">
+			RelativePath="..\gui\style.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\glview.c">
+			RelativePath="..\gui\style_default.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\mpane.c">
+			RelativePath="..\gui\table.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\pane.c">
+			RelativePath="..\gui\tableview.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\console.c">
+			RelativePath="..\gui\text.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\graph.c">
+			RelativePath="..\gui\text_cache.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\socket.c">
+			RelativePath="..\gui\textbox.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\icon.c">
+			RelativePath="..\gui\titlebar.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\progress_bar.c">
+			RelativePath="..\gui\tlist.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\slider.c">
+			RelativePath="..\gui\toolbar.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\text_cache.c">
+			RelativePath="..\gui\ttf.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\load_surface.c">
+			RelativePath="..\gui\ucombo.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\load_color.c">
+			RelativePath="..\gui\units.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\load_xcf.c">
+			RelativePath="..\gui\view.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\file_selector.c">
+			RelativePath="..\gui\widget.c"
+			>
 		</File>
 		<File
-			RelativePath="..\gui\scrollview.c">
+			RelativePath="..\gui\window.c"
+			>
 		</File>
 	</Files>
 	<Globals>
