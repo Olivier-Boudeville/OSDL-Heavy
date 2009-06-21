@@ -1,12 +1,12 @@
 #!/bin/sh
 
-TESTLOGFILE=`pwd`"/testsOutcome.txt"
-PLAYTEST_LOCAL_FILE="playTests-local.sh"
+test_log_file=`pwd`"/testsOutcome.txt"
+playtest_local_file="playTests-local.sh"
 
 
-USAGE="`basename $0` [--interactive]: executes all tests for OSDL in a row.
+usage="`basename $0` [--interactive]: executes all tests for OSDL in a row.
 	
-	If the --interactive option is used, tests will not be run in batch mode, and will prompt the user for various inputs. Otherwise only their final result will be output. In all cases their messages will be stored in file ${TESTLOGFILE}. The return code of this script will be the number of failed tests (beware to overflow of the return code)"
+	If the --interactive option is used, tests will not be run in batch mode, and will prompt the user for various inputs. Otherwise only their final result will be output. In all cases their messages will be stored in file ${test_log_file}. The return code of this script will be the number of failed tests (beware to overflow of the return code)"
 
 
 # Please remember, when debugging on UNIX playTests.sh, to execute it from
@@ -19,17 +19,18 @@ is_batch=0
 
 
 
-if [ "$#" -ge "2" ] ; then
+if [ $# -ge 2 ] ; then
 	echo "
-	Usage: $USAGE" 1>&2
+	Usage: $usage" 1>&2
 	exit 1
 fi	
 
-if [ "$#" -eq 1 ] ; then
+
+if [ $# -eq 1 ] ; then
 	if [ "$1" != "--interactive" ] ; then
 		echo "$1: unknown option." 1>&2
 		echo "
-		Usage: $USAGE" 1>&2
+		Usage: $usage" 1>&2
 		exit 2
 	else
 		is_batch=1	
@@ -42,11 +43,13 @@ fi
 debug_mode=1
 
 
+
 DEBUG_INTERNAL()
 # Prints debug informations if debug mode is on.
 {
-	[ "$debug_mode" = 1 ] || echo "Debug: $*"
+	[ $debug_mode -eq 1 ] || echo "Debug: $*"
 }
+
 
 
 WARNING_INTERNAL()
@@ -54,6 +57,7 @@ WARNING_INTERNAL()
 {
 	echo "Warning: $*" 1>&2
 }
+
 
 
 ERROR_INTERNAL()
@@ -93,7 +97,7 @@ display_test_result()
 	t="$2"
 	return_code="$3"
 	
-	if [ "$return_code" -eq 0 ] ; then
+	if [ $return_code -eq 0 ] ; then
 		# Test succeeded:
 		if [ $is_batch -eq 1 ] ; then
 			echo
@@ -119,16 +123,16 @@ display_test_result()
 					depend_tool="Depends.exe"
 					if which $depend_tool 1>/dev/null 2>&1; then
 						depends_exe=`which $depend_tool`
-						"$depends_exe" $t >> ${TESTLOGFILE}
+						"$depends_exe" $t >> ${test_log_file}
 					else
-						echo "No $depend_tool available, no dependency displayed."  >> ${TESTLOGFILE}
+						echo "No $depend_tool available, no dependency displayed."  >> ${test_log_file}
 					fi
 				else
 					if [ $has_ldd -eq 0 ] ; then
-						echo "$t failed, whose shared library dependencies are: " >> ${TESTLOGFILE}
-						${ldd_tool} $t >>${TESTLOGFILE}
+						echo "$t failed, whose shared library dependencies are: " >> ${test_log_file}
+						${ldd_tool} $t >>${test_log_file}
 					else
-						echo "$t failed." >> ${TESTLOGFILE}
+						echo "$t failed." >> ${test_log_file}
 					fi
 				fi
 			fi
@@ -153,35 +157,35 @@ run_test()
 
 	echo "
 		
-	########### Running now $t" >>${TESTLOGFILE}
+	########### Running now $t" >>${test_log_file}
 		
 	if [ $has_ldd -eq 0 ] ; then
-		echo "Library dependencies: " >>${TESTLOGFILE}
-		${ldd_tool} $t >>${TESTLOGFILE}
+		echo "Library dependencies: " >>${test_log_file}
+		${ldd_tool} $t >>${test_log_file}
 	fi
 
 	if [ $is_batch -eq 0 ] ; then
 		
-		echo "Command line: $t --batch ${network_option} ${log_plug_option}" >>${TESTLOGFILE}
+		echo "Command line: $t --batch ${network_option} ${log_plug_option}" >>${test_log_file}
 		
-		$t --batch ${network_option} ${log_plug_option} 1>>${TESTLOGFILE} 2>&1
+		$t --batch ${network_option} ${log_plug_option} 1>>${test_log_file} 2>&1
 		
 	else
 	
-		echo "Command line: $t --interactive ${network_option} ${log_plug_option}" >>${TESTLOGFILE}
+		echo "Command line: $t --interactive ${network_option} ${log_plug_option}" >>${test_log_file}
 		$t --interactive ${network_option} ${log_plug_option}
 		
 	fi			
 		
-	return_code="$?"
-	
+	return_code=$?
+
 	display_test_result "$test_name" "$t" "$return_code"
 	
 	
 	if [ $return_code -eq 0 ] ; then
-		echo "Test $t succeeded." 1>>${TESTLOGFILE}		
+		echo "Test $t succeeded." 1>>${test_log_file}		
 	else
-		echo "Test $t failed with return code $return_code." 1>>${TESTLOGFILE} 
+		echo "Test $t failed with return code $return_code." 1>>${test_log_file}
 	fi
 		
 		
@@ -202,11 +206,15 @@ display_final_stats()
 
 	echo 
 
-	if [ "$error_count" -eq 0 ] ; then
+	if [ $error_count -eq 0 ] ; then
+	
 		echo "   Test result: [${green_text}m all $test_count tests succeeded[${white_text}m"
+		
 	else
+	
 		echo "   Test result: [${red_text}m $error_count out of $test_count tests failed[${white_text}m"
-		echo "   (see ${TESTLOGFILE} for more details)"
+		echo "   (see ${test_log_file} for more details)"
+		
 	fi
 	
 }
@@ -218,7 +226,7 @@ get_logical_test_name()
 # 'system-testOSDLX.exe' should become 'testOSDLX'
 {
 	
-	if [ "$on_cygwin" -eq 0 ] ; then
+	if [ $on_cygwin -eq 0 ] ; then
 		returned_string=`basename $t |sed 's|^.*-test|test|1' |sed 's|.exe$||1'`
 	else
 		returned_string=`basename $t |sed 's|.exe$||1'`
@@ -233,10 +241,13 @@ get_logical_test_name()
 # If absolute path given:
 first_char=`echo $0 | head -c 1`
 if [ "$first_char" = "/" ] ; then
+
 	starting_dir=`dirname $0`
 	
 else
+
 	starting_dir=$PWD`dirname $0`/
+	
 fi
 
 #echo "starting_dir = $starting_dir"
@@ -275,7 +286,7 @@ fi
 	
 # Try to find term utilities:
 
-TEST_ROOT=`dirname $0`
+test_root=`dirname $0`
 
 # Not using Cygwin by default to chain the tests:
 on_cygwin=1
@@ -285,19 +296,22 @@ if [ `uname -s | cut -b1-6` = "CYGWIN" ] ; then
 	on_cygwin=0
 	DEBUG_INTERNAL "Running tests in the Windows (Cygwin) context."
 
-	SHELLS_LOCATION="$loani_repository/ceylan/Ceylan/trunk/src/code/scripts/shell"
+	shell_location="$loani_repository/ceylan/Ceylan/trunk/src/code/scripts/shell"
+	
 else
-	SHELLS_LOCATION="$Ceylan_PREFIX/share/Ceylan/scripts/shell"
+
+	shell_location="$Ceylan_PREFIX/share/Ceylan/scripts/shell"
+	
 fi
 
 
 # Triggers also termUtils.sh and platformDetection.sh:
-DEFAULT_LOCATIONS_PATH="$SHELLS_LOCATION/defaultLocations.sh"
+default_locations_path="$shell_location/defaultLocations.sh"
 
-if [ -f "$DEFAULT_LOCATIONS_PATH" ] ; then
-	. $DEFAULT_LOCATIONS_PATH
+if [ -f "$default_locations_path" ] ; then
+	. $default_locations_path
 else
-	ERROR_INTERNAL "default location script not found (tried $DEFAULT_LOCATIONS_PATH)"
+	ERROR_INTERNAL "default location script not found (tried $default_locations_path)"
 	exit 3
 fi	
 
@@ -306,7 +320,7 @@ findSupplementaryShellTools
 
 
 # Creates a test directory to avoid polluting other directories:
-TEST_DIR="tests-results-"`date '+%Y%m%d'`
+test_dir="tests-results-"`date '+%Y%m%d'`
 
 
 # Specifies the log plug the tests should be run with. 
@@ -324,18 +338,35 @@ else
 	Interactive tests will need an input device (joystick, mouse, keyboard) to be used. Be warned though that some tests might take a long time, and that some of them have no special output except a test result."
 fi
 
-# Test whether we are online (needed for DNS queries):
-if ${PING} ${PING_OPT} 2 google.com 1>/dev/null 2>&1; then
-	is_online=0
-	network_option="--online"
-	echo "
-	Running in online mode, in-depth network testing enabled."
-else	
-	is_online=1
-	network_option=""
-	echo "
+
+
+# Apparently the ping utility provided by Cygwin is not able to send a 
+# given number of packets (neither '-n' nor '-c' is working):
+if [ $use_cygwin -eq 1 ] ; then
+
+	# Not on Cygwin, testing whether we are online (needed for DNS queries):
+	if ${PING} ${PING_OPT} 2 google.com 1>/dev/null 2>&1; then
+		is_online=0
+		network_option="--online"
+		echo "
+		Running in online mode, in-depth network testing enabled."
+	else	
+		is_online=1
+		network_option=""
+		echo "
 	No Internet connection detected, some network tests will be disabled."
+	fi
+
+else
+
+	# Let's suppose that this Cygwin is connected to the Internet:
+	is_online=0
+
+	echo "
+		Running in online mode, in-depth network testing enabled, supposing a direct connection to the Internet is available."
+
 fi
+
 
 
 test_count=0
@@ -346,12 +377,13 @@ error_count=0
 check_dependency=1
 
 # Special case for tests generated on Windows:
-if [ "$on_cygwin" -eq 0 ] ; then
+if [ $on_cygwin -eq 0 ] ; then
 	
 	on_cygwin=0
 	DEBUG_INTERNAL "Running tests in the Windows (Cygwin) context."
 	
-	# Tests with LOANI are by default run against the debug multithread libraries:
+	# Tests with LOANI are by default run against the debug multithread
+	# libraries:
 	libraries_from_loani_tested_flavour="debug-mt"
 	
 	# Updated PATH needed to find the LOANI-built DLL:
@@ -359,10 +391,11 @@ if [ "$on_cygwin" -eq 0 ] ; then
 	
 fi	
 
-# This script will automatically run each test of each selected OSDL module.
-TESTED_ROOT_MODULES=`cd ${TEST_ROOT}; find . -type d | grep -v cross-tests | grep -v tmp | grep -v Debug | grep -v autom4te.cache | grep -v .svn | grep -v '.deps' | grep -v '.libs' | grep -v '^test'  | grep -v '/test' | grep -v '.exe-logs' | grep -v '^\.$' | grep -v libltdl`
 
-DEBUG_INTERNAL "Tested modules are: ${TESTED_ROOT_MODULES}"
+# This script will automatically run each test of each selected OSDL module.
+tested_root_modules=`cd ${test_root}; find . -type d | grep -v cross-tests | grep -v tmp | grep -v Debug | grep -v autom4te.cache | grep -v .svn | grep -v '.deps' | grep -v '.libs' | grep -v '^test'  | grep -v '/test' | grep -v '.exe-logs' | grep -v '^\.$' | grep -v libltdl`
+
+DEBUG_INTERNAL "Tested modules are: ${tested_root_modules}"
 
 
 # "[OK] " is 5 character wide and must be aligned along the right edge:
@@ -374,7 +407,7 @@ if [ -z "${COLUMNS}" ] ; then
 		COLUMNS=`stty size |awk '{print $2}'`
 	fi	
 fi
-DEBUG_INTERNAL "Columns = ${COLUMNS}"	
+DEBUG_INTERNAL "COLUMNS = ${COLUMNS}"	
 
 space_for_test_name=`expr ${COLUMNS} - 5`
 DEBUG_INTERNAL "Space for test names = ${space_for_test_name}"	
@@ -382,17 +415,17 @@ DEBUG_INTERNAL "Space for test names = ${space_for_test_name}"
 
 if [ $is_batch -eq 0 ] ; then
 	echo "
-		Test results established at "`date '+%A, %B %-e, %Y'`"\n\n" > ${TESTLOGFILE}
+		Test results established at "`date '+%A, %B %-e, %Y'`"\n\n" > ${test_log_file}
 fi
 
-if [ "$on_cygwin" -eq 0 ] ; then
+if [ $on_cygwin -eq 0 ] ; then
 	echo "
 	
-	Library search path is: PATH='$PATH'" >> ${TESTLOGFILE}
+	Library search path is: PATH='$PATH'" >> ${test_log_file}
 else
 	echo "
 	
-	Library search path is: LD_LIBRARY_PATH='$LD_LIBRARY_PATH'" >> ${TESTLOGFILE}
+	Library search path is: LD_LIBRARY_PATH='$LD_LIBRARY_PATH'" >> ${test_log_file}
 fi
 
 has_ldd=1
@@ -406,31 +439,31 @@ fi
 saved_LTDL_LIBRARY_PATH="$LTDL_LIBRARY_PATH"
 
 
-for m in ${TESTED_ROOT_MODULES} ; do
+for m in ${tested_root_modules} ; do
 
 	DEBUG_INTERNAL "Testing module ${m}"
 	
-	LTDL_LIBRARY_PATH="$saved_LTDL_LIBRARY_PATH:${TEST_ROOT}/$m"
+	LTDL_LIBRARY_PATH="$saved_LTDL_LIBRARY_PATH:${test_root}/$m"
 	export LTDL_LIBRARY_PATH
 	
 	# Some local scripts are needed in some cases, for example when a test
 	# client requires a test server to be launched before.
 	
-	PLAYTEST_LOCAL="${TEST_ROOT}/$m/${PLAYTEST_LOCAL_FILE}"
+	playtest_local="${test_root}/$m/${playtest_local_file}"
 	
 	printColor "
 	${term_offset}${term_primary_marker}Playing all tests of module '"`echo $m | sed 's|^./||1'`"': " $magenta_text $black_back
 	
-	if [ -f "${PLAYTEST_LOCAL}" ] ; then
-		EXCLUDED_TESTS=""
-		DEBUG_INTERNAL "Sourcing ${PLAYTEST_LOCAL}"
-		. ${PLAYTEST_LOCAL}
+	if [ -f "${playtest_local}" ] ; then
+		excluded_tests=""
+		DEBUG_INTERNAL "Sourcing ${playtest_local}"
+		. ${playtest_local}
 	fi
 		
-	if [ "$on_cygwin" -eq 0 ] ; then
-		TESTS=`ls ${TEST_ROOT}/$m/*-testOSDL*.exe 2>/dev/null`
+	if [ $on_cygwin -eq 0 ] ; then
+		TESTS=`ls ${test_root}/$m/*-testOSDL*.exe 2>/dev/null`
 	else	
-		TESTS=`ls ${TEST_ROOT}/$m/testOSDL*.exe 2>/dev/null`	
+		TESTS=`ls ${test_root}/$m/testOSDL*.exe 2>/dev/null`	
 	fi
 	
 	DEBUG_INTERNAL "Tests in module ${m} are: '${TESTS}'"
@@ -458,14 +491,14 @@ for m in ${TESTED_ROOT_MODULES} ; do
 			logical_test_name=$returned_string
 			
 			to_be_excluded=1
-			for excluded in ${EXCLUDED_TESTS} ; do
+			for excluded in ${excluded_tests} ; do
 				if [ "$logical_test_name" = "$excluded" ] ; then
 					to_be_excluded=0
 				fi	
 			done	
 		
-			if [ "$to_be_excluded" -eq 0 ] ; then
-				# Skip this test, as PLAYTEST_LOCAL_FILE took care of it:
+			if [ $to_be_excluded -eq 0 ] ; then
+				# Skip this test, as playtest_local_file took care of it:
 				DEBUG_INTERNAL "Skipping test $t"
 				continue
 			fi
@@ -491,6 +524,9 @@ display_final_stats
 echo "
 End of tests"
 
+
 LTDL_LIBRARY_PATH="$saved_LTDL_LIBRARY_PATH"
 
+
 exit $error_count
+
