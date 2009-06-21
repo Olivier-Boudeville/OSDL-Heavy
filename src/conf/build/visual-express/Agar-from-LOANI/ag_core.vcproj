@@ -6,7 +6,6 @@
 	ProjectGUID="{74FCA604-6436-4129-91FA-BB6CE1383223}"
 	RootNamespace="ag_core"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -18,11 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".."
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
 			InheritedPropertySheets="..\..\visual-express\OSDLProperties.vsprops"
-			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -42,14 +37,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".;..;&quot;$(SDLIncDir)&quot;"
-				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_AGAR_CORE_INTERNAL"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_AGAR_CORE_INTERNAL"
 				AdditionalIncludeDirectories=".;.."
 			/>
 			<Tool
@@ -85,11 +80,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".."
-			IntermediateDirectory="obj/Release"
-			ConfigurationType="2"
 			InheritedPropertySheets="..\..\visual-express\OSDLProperties.vsprops"
-			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -110,7 +101,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				AdditionalIncludeDirectories=".;.."
-				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_AGAR_CORE_INTERNAL"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -124,7 +115,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_AGAR_CORE_INTERNAL"
 				AdditionalIncludeDirectories=".;.."
 			/>
 			<Tool
@@ -172,120 +163,88 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\core\arc4random.c"
-			>
+			RelativePath="..\core\config.c">
 		</File>
 		<File
-			RelativePath="..\core\config.c"
-			>
+			RelativePath="..\core\core.c">
 		</File>
 		<File
-			RelativePath="..\core\core.c"
-			>
+			RelativePath="..\core\error.c">
 		</File>
 		<File
-			RelativePath="..\core\cpuinfo.c"
-			>
+			RelativePath="..\core\event.c">
 		</File>
 		<File
-			RelativePath="..\core\data_source.c"
-			>
+			RelativePath="..\core\object.c">
 		</File>
 		<File
-			RelativePath="..\core\dir.c"
-			>
+			RelativePath="..\core\prop.c">
 		</File>
 		<File
-			RelativePath="..\core\error.c"
-			>
+			RelativePath="..\core\rcs.c">
 		</File>
 		<File
-			RelativePath="..\core\event.c"
-			>
+			RelativePath="..\core\timeout.c">
 		</File>
 		<File
-			RelativePath="..\core\file.c"
-			>
+			RelativePath="..\core\class.c">
 		</File>
 		<File
-			RelativePath="..\core\gethostname.c"
-			>
+			RelativePath="..\core\cpuinfo.c">
 		</File>
 		<File
-			RelativePath="..\core\load_color.c"
-			>
+			RelativePath="..\core\load_den.c">
 		</File>
 		<File
-			RelativePath="..\core\load_den.c"
-			>
+			RelativePath="..\core\data_source.c">
 		</File>
 		<File
-			RelativePath="..\core\load_string.c"
-			>
+			RelativePath="..\core\load_string.c">
 		</File>
 		<File
-			RelativePath="..\core\load_surface.c"
-			>
+			RelativePath="..\core\load_version.c">
 		</File>
 		<File
-			RelativePath="..\core\load_version.c"
-			>
+			RelativePath="..\core\snprintf.c">
 		</File>
 		<File
-			RelativePath="..\core\load_xcf.c"
-			>
+			RelativePath="..\core\vsnprintf.c">
 		</File>
 		<File
-			RelativePath="..\core\md5.c"
-			>
+			RelativePath="..\core\vasprintf.c">
 		</File>
 		<File
-			RelativePath="..\core\object.c"
-			>
+			RelativePath="..\core\net_client.c">
 		</File>
 		<File
-			RelativePath="..\core\prop.c"
-			>
+			RelativePath="..\core\net_command.c">
 		</File>
 		<File
-			RelativePath="..\core\rcs.c"
-			>
+			RelativePath="..\core\net_fgetln.c">
 		</File>
 		<File
-			RelativePath="..\core\rmd160.c"
-			>
+			RelativePath="..\core\net_server.c">
 		</File>
 		<File
-			RelativePath="..\core\setenv.c"
-			>
+			RelativePath="..\core\dir.c">
 		</File>
 		<File
-			RelativePath="..\core\sha1.c"
-			>
+			RelativePath="..\core\md5.c">
 		</File>
 		<File
-			RelativePath="..\core\snprintf.c"
-			>
+			RelativePath="..\core\sha1.c">
 		</File>
 		<File
-			RelativePath="..\core\string_compat.c"
-			>
+			RelativePath="..\core\rmd160.c">
 		</File>
 		<File
-			RelativePath="..\core\timeout.c"
-			>
+			RelativePath="..\core\file.c">
 		</File>
 		<File
-			RelativePath="..\core\typesw.c"
-			>
+			RelativePath="..\core\string_compat.c">
 		</File>
 		<File
-			RelativePath="..\core\vasprintf.c"
-			>
-		</File>
-		<File
-			RelativePath="..\core\vsnprintf.c"
-			>
+			RelativePath="..\core\dso.c">
 		</File>
 	</Files>
 	<Globals>

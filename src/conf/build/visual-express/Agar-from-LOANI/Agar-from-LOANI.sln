@@ -2,35 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_core", "ag_core.vcproj", "{74FCA604-6436-4129-91FA-BB6CE1383223}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agar-core-config", "agar-core-config.vcproj", "{78A4D875-2E6C-4A81-98A1-2F8241C72654}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_gui", "ag_gui.vcproj", "{A99B3D6D-AF42-4AD9-8602-583CF500C591}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agar-config", "agar-config.vcproj", "{28531467-9818-41A9-82B5-C4939CDEEAAE}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_vg", "ag_vg.vcproj", "{37AB5672-B15A-4618-807F-8DCA689FB18E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agar-vg-config", "agar-vg-config.vcproj", "{DB924371-72E7-4251-BFDA-44D38ABBDA67}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_rg", "ag_rg.vcproj", "{E3674ADA-3D91-4811-89AF-18EF5BACAF73}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agar-rg-config", "agar-rg-config.vcproj", "{8302DC59-4192-426D-BFC2-65609BC358C7}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_map", "ag_map.vcproj", "{45A528C7-A6EC-451F-85AE-B3527ED23CB4}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agar-map-config", "agar-map-config.vcproj", "{0A155C34-8BB8-4F3A-A529-2DC91494D731}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_sc", "ag_sc.vcproj", "{519EDB9D-53F9-4994-BECB-89BBCD4622BB}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agar-sc-config", "agar-sc-config.vcproj", "{D10B8CD6-42E2-42B5-90B4-C2EE6ADF9D62}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_dev", "ag_dev.vcproj", "{BDC7C044-3C34-48AB-A3DD-6E68B70B8C2E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agar-dev-config", "agar-dev-config.vcproj", "{65C3F109-7BBF-4C01-B0A4-57EE5FCCE8AC}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_net", "ag_net.vcproj", "{A44B7C21-6DCF-45B2-9676-FF786A74BE04}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agar-net-config", "agar-net-config.vcproj", "{D5DD9022-5D93-4AB6-BDA6-AC03AB256FA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,36 +12,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{74FCA604-6436-4129-91FA-BB6CE1383223}.Debug|Win32.ActiveCfg = Debug|Win32
 		{74FCA604-6436-4129-91FA-BB6CE1383223}.Release|Win32.ActiveCfg = Release|Win32
-		{78A4D875-2E6C-4A81-98A1-2F8241C72654}.Debug|Win32.ActiveCfg = Debug|Win32
-		{78A4D875-2E6C-4A81-98A1-2F8241C72654}.Release|Win32.ActiveCfg = Release|Win32
 		{A99B3D6D-AF42-4AD9-8602-583CF500C591}.Debug|Win32.ActiveCfg = Debug|Win32
 		{A99B3D6D-AF42-4AD9-8602-583CF500C591}.Release|Win32.ActiveCfg = Release|Win32
-		{28531467-9818-41A9-82B5-C4939CDEEAAE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{28531467-9818-41A9-82B5-C4939CDEEAAE}.Release|Win32.ActiveCfg = Release|Win32
-		{37AB5672-B15A-4618-807F-8DCA689FB18E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{37AB5672-B15A-4618-807F-8DCA689FB18E}.Release|Win32.ActiveCfg = Release|Win32
-		{DB924371-72E7-4251-BFDA-44D38ABBDA67}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DB924371-72E7-4251-BFDA-44D38ABBDA67}.Release|Win32.ActiveCfg = Release|Win32
-		{E3674ADA-3D91-4811-89AF-18EF5BACAF73}.Debug|Win32.ActiveCfg = Debug|Win32
-		{E3674ADA-3D91-4811-89AF-18EF5BACAF73}.Release|Win32.ActiveCfg = Release|Win32
-		{8302DC59-4192-426D-BFC2-65609BC358C7}.Debug|Win32.ActiveCfg = Debug|Win32
-		{8302DC59-4192-426D-BFC2-65609BC358C7}.Release|Win32.ActiveCfg = Release|Win32
-		{45A528C7-A6EC-451F-85AE-B3527ED23CB4}.Debug|Win32.ActiveCfg = Debug|Win32
-		{45A528C7-A6EC-451F-85AE-B3527ED23CB4}.Release|Win32.ActiveCfg = Release|Win32
-		{0A155C34-8BB8-4F3A-A529-2DC91494D731}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0A155C34-8BB8-4F3A-A529-2DC91494D731}.Release|Win32.ActiveCfg = Release|Win32
-		{519EDB9D-53F9-4994-BECB-89BBCD4622BB}.Debug|Win32.ActiveCfg = Debug|Win32
-		{519EDB9D-53F9-4994-BECB-89BBCD4622BB}.Release|Win32.ActiveCfg = Release|Win32
-		{D10B8CD6-42E2-42B5-90B4-C2EE6ADF9D62}.Debug|Win32.ActiveCfg = Debug|Win32
-		{D10B8CD6-42E2-42B5-90B4-C2EE6ADF9D62}.Release|Win32.ActiveCfg = Release|Win32
-		{BDC7C044-3C34-48AB-A3DD-6E68B70B8C2E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{BDC7C044-3C34-48AB-A3DD-6E68B70B8C2E}.Release|Win32.ActiveCfg = Release|Win32
-		{65C3F109-7BBF-4C01-B0A4-57EE5FCCE8AC}.Debug|Win32.ActiveCfg = Debug|Win32
-		{65C3F109-7BBF-4C01-B0A4-57EE5FCCE8AC}.Release|Win32.ActiveCfg = Release|Win32
-		{A44B7C21-6DCF-45B2-9676-FF786A74BE04}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A44B7C21-6DCF-45B2-9676-FF786A74BE04}.Release|Win32.ActiveCfg = Release|Win32
-		{D5DD9022-5D93-4AB6-BDA6-AC03AB256FA8}.Debug|Win32.ActiveCfg = Debug|Win32
-		{D5DD9022-5D93-4AB6-BDA6-AC03AB256FA8}.Release|Win32.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
