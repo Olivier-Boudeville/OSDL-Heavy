@@ -36,7 +36,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;..;..\include\agar\config;&quot;$(SDLIncDir)&quot;"
+				AdditionalIncludeDirectories=".;..;..\include;..\include\agar;&quot;$(SDLIncDir)&quot;"
 				PreprocessorDefinitions="_AGAR_INTERNAL;_BSD_SOURCE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_AGAR_CORE_INTERNAL"
 			/>
 			<Tool
@@ -52,7 +52,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(SDLLIBName) $(SDLmainLIBName)"
+				AdditionalDependencies="$(SDLLIBName) "
 				OutputFile="$(LoaniDLLInstDir)\$(AgarCoreDLLName)"
 				ImportLibrary="$(LoaniLIBInstDir)\$(AgarCoreLIBName)"
 			/>
@@ -80,6 +80,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
+			ConfigurationType="1"
 			InheritedPropertySheets="..\..\visual-express\OSDLProperties.vsprops"
 			>
 			<Tool
@@ -163,88 +164,116 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\core\config.c">
+			RelativePath="..\core\class.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\core.c">
+			RelativePath="..\core\config.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\error.c">
+			RelativePath="..\core\core.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\event.c">
+			RelativePath="..\core\cpuinfo.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\object.c">
+			RelativePath="..\core\data_source.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\prop.c">
+			RelativePath="..\core\dir.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\rcs.c">
+			RelativePath="..\core\dso.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\timeout.c">
+			RelativePath="..\core\error.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\class.c">
+			RelativePath="..\core\event.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\cpuinfo.c">
+			RelativePath="..\core\file.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\load_den.c">
+			RelativePath="..\core\load_den.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\data_source.c">
+			RelativePath="..\core\load_string.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\load_string.c">
+			RelativePath="..\core\load_version.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\load_version.c">
+			RelativePath="..\core\md5.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\snprintf.c">
+			RelativePath="..\core\net_client.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\vsnprintf.c">
+			RelativePath="..\core\net_command.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\vasprintf.c">
+			RelativePath="..\core\net_fgetln.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\net_client.c">
+			RelativePath="..\core\net_server.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\net_command.c">
+			RelativePath="..\core\object.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\net_fgetln.c">
+			RelativePath="..\core\prop.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\net_server.c">
+			RelativePath="..\core\rcs.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\dir.c">
+			RelativePath="..\core\rmd160.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\md5.c">
+			RelativePath="..\core\sha1.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\sha1.c">
+			RelativePath="..\core\snprintf.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\rmd160.c">
+			RelativePath="..\core\string_compat.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\file.c">
+			RelativePath="..\core\timeout.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\string_compat.c">
+			RelativePath="..\core\vasprintf.c"
+			>
 		</File>
 		<File
-			RelativePath="..\core\dso.c">
+			RelativePath="..\core\vsnprintf.c"
+			>
 		</File>
 	</Files>
 	<Globals>
