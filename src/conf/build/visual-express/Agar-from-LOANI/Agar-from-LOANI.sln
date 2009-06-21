@@ -3,6 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_core", "ag_core.vcproj", "{74FCA604-6436-4129-91FA-BB6CE1383223}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ag_gui", "ag_gui.vcproj", "{A99B3D6D-AF42-4AD9-8602-583CF500C591}"
+	ProjectSection(ProjectDependencies) = postProject
+		{74FCA604-6436-4129-91FA-BB6CE1383223} = {74FCA604-6436-4129-91FA-BB6CE1383223}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,8 +14,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{74FCA604-6436-4129-91FA-BB6CE1383223}.Debug|Win32.ActiveCfg = Debug|Win32
+		{74FCA604-6436-4129-91FA-BB6CE1383223}.Debug|Win32.Build.0 = Debug|Win32
 		{74FCA604-6436-4129-91FA-BB6CE1383223}.Release|Win32.ActiveCfg = Release|Win32
 		{A99B3D6D-AF42-4AD9-8602-583CF500C591}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A99B3D6D-AF42-4AD9-8602-583CF500C591}.Debug|Win32.Build.0 = Debug|Win32
 		{A99B3D6D-AF42-4AD9-8602-583CF500C591}.Release|Win32.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
