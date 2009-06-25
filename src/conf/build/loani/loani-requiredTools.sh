@@ -24,7 +24,6 @@ latest_stable_osdl="release-0.5.0"
 if [ $is_windows -eq 0 ] ; then
 
   # Windows special case:
-  #REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win Agar_win PhysicsFS_win"
   REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win Agar_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
@@ -3631,12 +3630,14 @@ cleanAgar()
 ################################################################################
 
 
+
 getAgar_win()
 {
 	LOG_STATUS "Getting Agar for windows..."
 	launchFileRetrieval Agar_win
 	return $?
 }
+
 
 
 prepareAgar_win()
@@ -3680,7 +3681,7 @@ prepareAgar_win()
 
 	cd "agar-${Agar_win_VERSION}"
 
-	AGAR_FLAVOUR_ARCHIVE="vs2005-windows-i386-nothreads.zip"
+	AGAR_FLAVOUR_ARCHIVE="vs2005-windows-nothreads.zip"
 
 	# Now we use the project prebuilt files as a base:
 	{
@@ -3698,6 +3699,7 @@ prepareAgar_win()
 
 
 }
+
 
 
 generateAgar_win()
@@ -3730,6 +3732,7 @@ generateAgar_win()
 	cd "$initial_dir"
 
 }
+
 
 
 cleanAgar_win()
