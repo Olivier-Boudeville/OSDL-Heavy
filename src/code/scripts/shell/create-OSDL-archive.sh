@@ -1,7 +1,13 @@
 #!/bin/sh
 
-USAGE="Usage: "`basename $0`" <archive name> <directory to archive>: this script will create an OSDL archive (*.oar) from specified directory, i.e. with all its content but without this directory being included. All files found from that directory will be stored in a cyphered version in the archive, but nothing under the specified directory will be modified: a copy of the source tree is made, on which the script operates.
-Ex: `basename $0` myArchive.oar content-directory"
+USAGE="Usage: "`basename $0`" <archive name> <directory to archive> [<resource map prefix>]: this script will create an OSDL archive (*.oar) from specified directory, i.e. with all its content but without this directory being included.
+
+All files found from that directory will be stored in a cyphered version in the archive, but nothing under the specified directory will be modified: a copy of the source tree is made, on which the script operates.
+
+The optional third parameter dictates what is the prefix that should be used to generate XML and header file for the resource map.
+
+Ex: `basename $0` myArchive.oar content-directory [my-resource-map]"
+
 
 # See also:
 #  - osdl/OSDL/trunk/src/code/scripts/shell/extract-OSDL-archive.sh
@@ -25,10 +31,12 @@ cypher_name()
 
 
 
-if [ ! $# -eq 2 ] ; then
-	echo "Error, exactly two parameters required.
+if [ $# -le 1 ] ; then
+
+	echo "Error, at least two parameters required.
     " $USAGE 1>&2
     exit 10
+	
 fi
 
 archive_target="$1"
@@ -36,11 +44,22 @@ archive_target="$1"
 archive_directory="$2"
 
 
+# Default:
+index_basename="OSDLResourceMap"
+
+if [ -n "$3" ] ; then
+	index_basename="$3"
+fi
+
+
 if [ ! -d "${archive_directory}" ] ; then
+
 	echo "Error, ${archive_directory} is not a directory.
     " $USAGE 1>&2
     exit 11
+	
 fi
+
 
 RM="/bin/rm -f"
 FIND=`which find`
@@ -60,8 +79,10 @@ fi
 cypher_tool="cypherOSDLFile.exe"
 cypher_dir=`dirname $0`"/../../../../tools/media"
 
+
 # Needs to find an absolute path:
 cypher_exec=`PATH=$PWD/$cypher_dir:$PATH which $cypher_tool 2>/dev/null`
+
 
 if [ ! -x "${cypher_exec}" ] ; then
 
@@ -69,6 +90,7 @@ if [ ! -x "${cypher_exec}" ] ; then
     exit 12
 
 fi
+
 
 # zip might be used instead, for the purpose of testing/fixing LZMA (with 7zr):
 archiver_name="7zr"
@@ -150,8 +172,9 @@ fi
 
 cd ${tmp_base}
 
+
 # First, generate an index:
-${indexer} -scan_dir `pwd` -output_dir `pwd`/..
+${indexer} -index_basename ${index_basename} -scan_dir `pwd` -output_dir `pwd`/..
 
 if [ ! $? -eq 0	] ; then
 
@@ -160,7 +183,7 @@ if [ ! $? -eq 0	] ; then
 
 fi
 
-${CP} ../resource-map.xml .
+${CP} ../${index_basename}.xml .
 
 
 
@@ -168,8 +191,6 @@ ${CP} ../resource-map.xml .
 files=`${FIND} . -type f`
 
 for f in $files; do
-	
-	echo
 
 	# Now let's cypher the content of files in the temporary directory:
 	${cypher_exec} --nullPlug $f
@@ -194,7 +215,6 @@ for d in $directories; do
 
 	if [ ! $d = "." ] ; then
 	
-		echo
 		base_dir=`dirname $d`
 		dir_name=`basename $d`
 		cypher_name $dir_name
