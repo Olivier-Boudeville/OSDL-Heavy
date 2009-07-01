@@ -112,6 +112,8 @@ namespace OSDL
 			 *
 			 * @note OpenGL support must have been selected and be available
 			 * at configure time so that these OpenGL services can be used.
+			 * Moreover as soon as a texture is uploaded, a proper OpenGL
+			 * context must be available.
 			 *
 		 	 * @see 'http://osdl.sourceforge.net', then 'Documentation',
 			 * 'Rendering', 'OpenGL + SDL' for further implementation details.
@@ -257,6 +259,9 @@ namespace OSDL
 					 * @note The corresponding texture surface will be loaded 
 					 * is necessary. Thus in all cases after an upload, an 
 					 * unload can be performed.
+					 *
+					 * @note A proper OpenGL context must be availabe before
+					 * calling this method.
 					 *
 					 * @throw GLTextureException if the texture could not 
 					 * be uploaded.
