@@ -136,7 +136,8 @@ namespace OSDL
 					 * content (and not on the filename).
 					 *
 					 * @param imageFilename the name of the file containing
-					 * the targeted image.
+					 * the targeted image, whose format (PNG, JPEG, etc.) will
+					 * be auto-detected from content.
 					 * On all PC-like platforms (including Windows and most
 					 * UNIX), the supported formats are BMP, PNM (PPM/PGM/PBM),
 					 * XPM, LBM, PCX, GIF, JPEG, PNG, and TIFF formats.
@@ -845,6 +846,13 @@ namespace OSDL
 						
 				protected:
 				
+					
+					
+					/*
+					 * The internal image surface itself is in the _content
+					 * member, inherited from the loadable template.
+					 *
+					 */
 						
 						
 					/**
