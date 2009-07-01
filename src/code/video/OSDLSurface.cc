@@ -1951,7 +1951,7 @@ bool Surface::blitTo( Surface & targetSurface, Coordinate x, Coordinate y )
 #if OSDL_DEBUG_WIDGET
 
 	LogPlug::trace( "Surface::blitTo: blitting to [" + Ceylan::toString( x )
-		+ ";" + Ceylan::toString( y ) + "]."  ) ; 
+		+ ";" + Ceylan::toString( y ) + "]." ) ; 
 		
 #endif // OSDL_DEBUG_WIDGET
 
@@ -2611,7 +2611,7 @@ void Surface::loadImage( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::Load( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ; 
+		convertToDisplayFormat, convertWithAlpha ) ; 
 		
 }
 
@@ -2622,7 +2622,7 @@ void Surface::loadJPG( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::LoadJPG( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ; 
+		convertToDisplayFormat, convertWithAlpha ) ; 
 		
 }
 
@@ -2633,7 +2633,7 @@ void Surface::loadPNG( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::LoadPNG( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ; 
+		convertToDisplayFormat, convertWithAlpha ) ; 
 		
 }
 
@@ -2644,7 +2644,7 @@ void Surface::loadBMP( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::LoadBMP( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ; 
+		convertToDisplayFormat, convertWithAlpha ) ; 
 		
 }
 
@@ -2655,7 +2655,7 @@ void Surface::loadGIF( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::LoadGIF( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ; 
+		convertToDisplayFormat, convertWithAlpha ) ; 
 		
 }
 
@@ -2666,7 +2666,7 @@ void Surface::loadLBM( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::LoadLBM( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ; 
+		convertToDisplayFormat, convertWithAlpha ) ; 
 		
 }
 
@@ -2677,7 +2677,7 @@ void Surface::loadPCX( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::LoadPCX( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ; 
+		convertToDisplayFormat, convertWithAlpha ) ; 
 		
 }
 
@@ -2688,7 +2688,7 @@ void Surface::loadPNM( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::LoadPNM( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ; 
+		convertToDisplayFormat, convertWithAlpha ) ; 
 		
 }
 
@@ -2699,7 +2699,7 @@ void Surface::loadTGA( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::LoadTGA( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ; 
+		convertToDisplayFormat, convertWithAlpha ) ; 
 		
 }
 
@@ -2710,7 +2710,7 @@ void Surface::loadXPM( const string & filename, bool blitOnly,
 {
 
 	TwoDimensional::Image::LoadXPM( *this, filename, blitOnly, 
-		convertToDisplayFormat, convertWithAlpha  ) ;
+		convertToDisplayFormat, convertWithAlpha ) ;
 		 
 }
 
@@ -3543,17 +3543,29 @@ Surface & Surface::LoadImage( const std::string & filename,
 	bool convertToDisplayFormat, bool convertWithAlpha ) 
 {
 
+	/*
+	LogPlug::trace( "Surface::LoadImage for file '" + filename 
+		+ "' with convertToDisplayFormat = " 
+		+ Ceylan::toString( convertToDisplayFormat ) 
+		+ " and convertWithAlpha = " 
+		+ Ceylan::toString( convertWithAlpha ) ) ;
+	 */	 
+		
 	Surface * toLoad = new Surface() ;
 	
 	try 
 	{
+	
 		toLoad->loadImage( filename, /* blitOnly */ false, 
 			convertToDisplayFormat, convertWithAlpha ) ;
+			
 	} 
 	catch( const TwoDimensional::ImageException & e )
 	{
+	
 		delete toLoad ;
 		throw ;
+		
 	}
 		
 	return * toLoad ;
