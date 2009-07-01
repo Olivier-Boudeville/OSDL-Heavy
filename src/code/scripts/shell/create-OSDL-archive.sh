@@ -19,6 +19,10 @@ Ex: `basename $0` myArchive.oar content-directory [my-resource-map]"
 # The OSDL-environment.sh script is expected to have already been sourced.
 
 
+# By default use LZMA, otherwise use ZIP: 
+#use_lzma=0
+use_lzma=1
+
 
 # Returns a cyphered version (currently rot13) of specified name.
 # Source: http://www.miranda.org/~jkominek/rot13/sh/rot13-tr.sh
@@ -93,8 +97,17 @@ fi
 
 
 # zip might be used instead, for the purpose of testing/fixing LZMA (with 7zr):
-archiver_name="7zr"
-#archiver_name="zip"
+
+if [ $use_lzma -eq 0 ] ; then
+
+	archiver_name="7zr"
+	
+else
+
+	archiver_name="zip"
+	
+fi	
+
 
 archiver=`which ${archiver_name}`
 
@@ -237,16 +250,24 @@ echo
 # full trees.
 
 
-
-# For 7zr:
-#LANG= ${archiver} a ../${archive_target} * 1>/dev/null
-
-# or (best compression):
 # From ${archive_directory_name}:
-LANG= ${archiver} a -t7z -mx=9 ../${archive_target} * 1>/dev/null
 
-# For zip:
-#LANG= ${archiver} -r ../${archive_target} *
+if [ $use_lzma -eq 0 ] ; then
+
+	# For 7zr:
+	#LANG= ${archiver} a ../${archive_target} * 1>/dev/null
+
+	# or (best compression):
+	LANG= ${archiver} a -t7z -mx=9 ../${archive_target} * 1>/dev/null
+	
+else
+
+	# For zip:
+	LANG= ${archiver} -r ../${archive_target} *
+	
+fi	
+
+
 
 
 if [ $? -eq 0 ] ; then
