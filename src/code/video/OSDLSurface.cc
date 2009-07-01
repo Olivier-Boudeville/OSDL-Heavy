@@ -3751,7 +3751,9 @@ string Surface::InterpretFlags( Flags flags )
 		
 	return "The specified surface flags, whose value is " 
 		+ Ceylan::toString( flags, /* bit field */ true ) 
-		+ ", means: " + Ceylan::formatStringList( res ) ;
+		+ ", mean: " 
+		+ Ceylan::formatStringList( res, /* surround by ticks */ false,
+			/* indentation level */ 2 ) ;
 		
 }
 
