@@ -89,7 +89,10 @@ Renderer::Renderer( bool registerToScheduler ) :
 	{
 		try
 		{
+		
+			// The scheduler tales ownership of the renderer:
 			Scheduler::GetExistingScheduler().setRenderer( * this ) ;
+			
 		}
 		catch( const RenderingException & e )
 		{
