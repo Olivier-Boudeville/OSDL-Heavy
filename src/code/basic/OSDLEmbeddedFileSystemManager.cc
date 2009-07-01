@@ -131,7 +131,15 @@ void EmbeddedFileSystemManager::chooseBasicSettings(
      * been initialized in the EmbeddedFileSystemManager constructor.
      *
      */
-     
+
+	send( "Selecting basic settings: organization name is '" +  organizationName
+		+ "', application name is '" +  applicationName 
+		+ "', extension for archives is '" + archiveExtension 
+		+ string( "', archives will be searched " ) 
+		+ ( archiveFirst ? "first" : "last" ) 
+		+ string( ", and any inserted media will be " )
+		+ ( includeInsertedMedia ? "" : "not " ) + string( "searched." ) ) ;
+		
 #if OSDL_USES_PHYSICSFS
 
     int res = PHYSFS_setSaneConfig(
@@ -234,6 +242,8 @@ void EmbeddedFileSystemManager::setWriteDirectory(
         	"EmbeddedFileSystemManager::setWriteDirectory failed: "
             + GetBackendLastError() ) ;
     
+	send( "Write directory set to " + newWriteDirectory ) ;
+	
 #else // OSDL_USES_PHYSICSFS
 
 	throw EmbeddedFileSystemManagerException( 
@@ -290,6 +300,8 @@ void EmbeddedFileSystemManager::mount(
         	"EmbeddedFileSystemManager::mount failed: "
             + GetBackendLastError() ) ;
     
+	send( "Element '" + newActualFilesystemElement + "' mounted." ) ;
+	
 #else // OSDL_USES_PHYSICSFS
 
 	throw EmbeddedFileSystemManagerException( 
@@ -318,6 +330,8 @@ void EmbeddedFileSystemManager::umount(
     	throw EmbeddedFileSystemManagerException( 
     		"EmbeddedFileSystemManager::umount failed: "
             + GetBackendLastError() ) ;
+
+	send( "Element '" + actualFilesystemElement + "' unmounted." ) ;
             
 #else // OSDL_USES_PHYSICSFS
 
@@ -529,6 +543,7 @@ File & EmbeddedFileSystemManager::openFile( const string & filename,
 	OpeningFlag openFlag )
 {
 
+	send( "EmbeddedFileSystemManager::openFile: opening '" + filename + "'." ) ;
 	return EmbeddedFile::Open( filename, openFlag ) ;
 
 }
@@ -1178,6 +1193,8 @@ void EmbeddedFileSystemManager::changeWorkingDirectory(
 			"unable to change current working directory to "
 			+ newWorkingDirectory + ": " + explainError() ) ;
 
+	send( "Changed working directory to '" + newWorkingDirectory + "'." ) ;
+	
 }	
 
 
@@ -1281,7 +1298,7 @@ EmbeddedFileSystemManager::EmbeddedFileSystemManager( bool cypherWritings ) :
 	PHYSFS_Version linkTimePhysicsFSVersion ;
     PHYSFS_getLinkedVersion( &linkTimePhysicsFSVersion ) ;
     
-    LogPlug::debug( "Using PhysicsFS backend, compiled against the " 
+    send( "Using PhysicsFS backend, compiled against the " 
 		+ Ceylan::toNumericalString( compileTimePhysicsFSVersion.major ) + "."
 		+ Ceylan::toNumericalString( compileTimePhysicsFSVersion.minor ) + "."
 		+ Ceylan::toNumericalString( compileTimePhysicsFSVersion.patch ) 
@@ -1312,19 +1329,18 @@ EmbeddedFileSystemManager::EmbeddedFileSystemManager( bool cypherWritings ) :
     
     res += Ceylan::formatStringList( archiveTypes ) ;
     
-    LogPlug::debug( res ) ;
+    send( res ) ;
     
     if ( _cypher )
     {
     
-    	LogPlug::debug( "Cyphered writes and reads will be performed." ) ;
+    	send( "Cyphered writes and reads will be performed." ) ;
         
     }
     else
     {
     	
-        LogPlug::debug( 
-        	"Raw (not cyphered) writes and reads will be performed." ) ;
+        send( "Raw (not cyphered) writes and reads will be performed." ) ;
     
     }
     
@@ -1346,6 +1362,8 @@ EmbeddedFileSystemManager::~EmbeddedFileSystemManager() throw()
 
 #if OSDL_USES_PHYSICSFS
 
+	send( "Deleting embedded filesystem manager." ) ;
+	
 	if ( PHYSFS_deinit() == 0 )
     	LogPlug::error( "EmbeddedFileSystemManager destructor failed: "
         	+ GetBackendLastError() ) ;
