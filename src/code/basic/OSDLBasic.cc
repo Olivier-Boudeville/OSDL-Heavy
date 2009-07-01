@@ -478,24 +478,32 @@ CommonModule::~CommonModule() throw()
 		delete _cdromHandler ;
 		_cdromHandler = 0 ;	
 	}
+
+    send( "CD-ROM managed, now audio." ) ;
 		
 	if ( _audio != 0 )
 	{
 		delete _audio ;
 		_audio = 0 ;
 	}	
+
+    send( "Audio managed, now events." ) ;
 	
 	if ( _events != 0 )
 	{
 		delete _events ;
 		_events = 0 ;
 	}	
+
+    send( "Events managed, now video." ) ;
 	
 	if ( _video != 0 )
 	{
 		delete _video ;
 		_video = 0 ;
 	}
+	
+    send( "Video managed." ) ;
 	
 				
 #if OSDL_USES_SDL
@@ -968,16 +976,20 @@ void OSDL::stop()
 
 	if ( CommonModule::_CurrentCommonModule == 0 )
 	{
+	
 		LogPlug::error( 
 			"OSDL::stop has been called whereas OSDL was not running." ) ;
+			
 	}	
 	else
 	{
+	
 		LogPlug::info( "Stopping launched OSDL module." ) ;
         
         // Will delete in turn all direct child modules (events, video, etc.):
 		delete CommonModule::_CurrentCommonModule ;
 		CommonModule::_CurrentCommonModule = 0 ;
+		
 	}
 	
 }
