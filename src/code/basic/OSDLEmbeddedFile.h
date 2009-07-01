@@ -502,14 +502,14 @@ namespace OSDL
              * if it does not exist. Otherwise it is truncated to zero bytes,
              * and the writing offset is set to the start.
              *
-             * When a file is opened for appending, the specifiedfile is created
-             * if it does not exist. Otherwise the writing offset is set to 
-             * the end of the file, so the first write will be the byte after
-             * the end.
+             * When a file is opened for appending, the specified file is
+			 * created if it does not exist.
+			 * Otherwise the writing offset is set to the end of the file, so
+			 * the first write will be the byte after the end.
              *
              * If the file is open for reading, then the search path will be
              * checked one at a time until a matching file is found.
-             *  The reading offset is set to the first byte of the file.
+             * The reading offset is set to the first byte of the file.
              *
 			 * @param filename the name of the file to open.
 			 *
@@ -522,6 +522,10 @@ namespace OSDL
 			 *
 			 * @throw FileException, including FileOpeningFailed if the
 			 * operation failed or is not supported on this platform.
+			 *
+			 * Note that, depending on the archive type, opening the same 
+			 * file more than once may or may not work (read content apparently
+			 * could be scrambled when opened twice).
 			 *
 			 */
 			static EmbeddedFile & Open( const std::string & filename, 
