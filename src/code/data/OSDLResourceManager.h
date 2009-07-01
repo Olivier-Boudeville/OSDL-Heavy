@@ -34,6 +34,7 @@
 #include "OSDLMusic.h"          // for MusicCountedPtr
 #include "OSDLSound.h"          // for SoundCountedPtr
 #include "OSDLImage.h"          // for ImageCountedPtr
+#include "OSDLGLTexture.h"      // for TextureCountedPtr
 
 
 #include "Ceylan.h"             // for ResourceID
@@ -92,18 +93,53 @@ namespace OSDL
 		enum ContentType
 		{
 		
+		
+			// For pure texts:
 			text,
 			
+			
+			// For raw data, not corresponding to any other content type:
 			data,
 			
-			sound,
 			
+			/*
+			 * For musics (longer sounds, at most one of them playing at any
+			 * time):
+			 *
+			 */
 			music,
 			
+			
+			// For sounds (usually special-effects):
+			sound,		
+			
+			
+			// For images; are automatically converted to the display format:
 			image,
 			
+			
+			
+			/*
+			 * For OpenGL textures, which are not converted to the display
+			 * format.
+			 *
+			 * Only the supported flavours are listed below.
+			 *
+			 */
+						
+			// For textures to be used in 2D:			 
+			texture_2D,
+			
+			
+			// For textures to be used in 3D:			 
+			texture_3D,
+			
+			
+			// For True-type fonts:
 			ttf_font,
 			
+			
+			// For data whose content type is not known:
 			unknown
 			
 		} ;
@@ -128,15 +164,20 @@ namespace OSDL
 		 * which records the path of the resource file and, if loaded, the
 		 * resource itself.
 		 *
+		 * @note When the resource archive is modified (ex: a resource is 
+		 * added), the code loading from the archive must be recompiled,
+		 * as resource identifiers are likely to change.
+		 *
 		 * @see create-OSDL-archive.sh to understand how resources are indexed
 		 * in an archive.
 		 *
 		 */	
-		class OSDL_DLL ResourceManager: public Ceylan::Object
+		class OSDL_DLL ResourceManager : public Ceylan::Object
 		{
 		
 		
 			public:
+			
 			
 			
 				/** 
@@ -145,17 +186,18 @@ namespace OSDL
 				 *
 				 * @param resourceMapFilename the filename of the XML resource
 				 * map to use; typically "resource-map.xml" if using the
-				 * create-OSDL-archive.sh script.
+				 * create-OSDL-archive.sh script with default settings.
 				 *
 				 */
 				explicit ResourceManager( 
 					const std::string & resourceMapFilename = 
-						"resource-map.xml" ) ;
+						"OSDLResourceMap.xml" ) ;
 				
 				
 				
 				/// Virtual destructor.
 				virtual ~ResourceManager() throw() ;				 
+			 
 			 
 			 
 			 
@@ -173,6 +215,24 @@ namespace OSDL
 					
 			 
 			 	/**
+				 * Returns a counter pointer referencing the specified music.
+				 *
+				 * @param musicPath the music path that will be looked-up in the
+				 * reverse resource map, resolved to a resource identifier
+				 * which will be then used to return a corresponding counted 
+				 * music pointer.
+				 *
+				 * @throw ResourceManagerException if the music could not be
+				 * found.
+				 *
+				 */
+			 	Audio::MusicCountedPtr getMusic( 
+					const std::string & musicPath ) ; 
+				 	
+					
+					
+			 
+			 	/**
 				 * Returns a counter pointer referencing the specified sound.
 				 *
 				 * @param id the resource identifier for that sound.
@@ -182,7 +242,24 @@ namespace OSDL
 				 *
 				 */
 			 	Audio::SoundCountedPtr getSound( Ceylan::ResourceID id ) ; 
+				 
 				 	
+					
+			 	/**
+				 * Returns a counter pointer referencing the specified sound.
+				 *
+				 * @param soundPath the sound path that will be looked-up in the
+				 * reverse resource map, resolved to a resource identifier
+				 * which will be then used to return a corresponding counted 
+				 * sound pointer.
+				 *
+				 * @throw ResourceManagerException if the sound could not be
+				 * found.
+				 *
+				 */
+			 	Audio::SoundCountedPtr getSound( 
+					const std::string & soundPath ) ; 
+					
 					
 					
 			 	/**
@@ -197,6 +274,66 @@ namespace OSDL
 			 	Video::TwoDimensional::ImageCountedPtr 
 					getImage( Ceylan::ResourceID id ) ; 
 				 	
+					
+					
+			 	/**
+				 * Returns a counter pointer referencing the specified image.
+				 *
+				 * @param imagePath the image path that will be looked-up in the
+				 * reverse resource map, resolved to a resource identifier
+				 * which will be then used to return a corresponding counted 
+				 * image pointer.
+				 *
+				 * @throw ResourceManagerException if the image could not be
+				 * found.
+				 *
+				 */
+			 	Video::TwoDimensional::ImageCountedPtr getImage( 
+					const std::string & imagePath ) ; 
+				
+				
+					
+			 	/**
+				 * Returns a counter pointer referencing the specified texture.
+				 *
+				 * @param id the resource identifier for that texture.
+				 *
+				 * @param uploadWanted if true, the method will ensure that
+				 * this texture is available in the video card before returning.
+				 *
+				 * @throw ResourceManagerException if the texture could not be
+				 * found.
+				 *
+				 * @note The returned texture has not been uploaded yet.
+				 *
+				 */
+			 	Video::OpenGL::TextureCountedPtr getTexture( 
+					Ceylan::ResourceID id, bool uploadWanted = true ) ; 
+				 	
+					
+					
+			 	/**
+				 * Returns a counter pointer referencing the specified texture.
+				 *
+				 * @param texturePath the texture path that will be looked-up 
+				 * in the reverse resource map, resolved to a resource
+				 * identifier which will be then used to return a corresponding
+				 * counted texture pointer.
+				 *
+				 * @param uploadWanted if true, the method will ensure that
+				 * this texture is available in the video card before returning.
+				 *
+				 * @throw ResourceManagerException if the texture could not be
+				 * found.
+				 *
+				 * @note The returned texture has not been uploaded yet.
+				 *
+				 */
+			 	Video::OpenGL::TextureCountedPtr getTexture( 
+					const std::string & texturePath, 
+					bool uploadWanted = true ) ; 
+					
+					
 					
 										
 	            /**
@@ -237,6 +374,7 @@ namespace OSDL
 
 					
 					
+					
 			protected:
 			
 
@@ -249,6 +387,23 @@ namespace OSDL
 				void registerResource( 
 					const Ceylan::XML::XMLParser::XMLTree & resourceXMLEntry ) ;
 				
+
+
+				/**
+				 * Returns the resource identifier corresponding to specified
+				 * path, based on the reverse resource map.
+				 *
+				 * @param resourcePath the path of the specified resource in
+				 * archive.
+				 *
+				 * @throw ResourceManagerException if the path could not be
+				 * resolved.
+				 *
+				 */
+				Ceylan::ResourceID getIDForPath( 
+					const std::string & resourcePath ) const ;
+
+
 
 
 				// Variable section.
@@ -314,9 +469,52 @@ namespace OSDL
 					Video::TwoDimensional::ImageCountedPtr> _imageMap ;
 				
 				
+				/**
+				 * Dictionary for texture resources (all kinds: 2D, 3D, etc.) . 
+				 *
+				 * Each key of the map is a resource identifier, which is
+				 * expected to correspond to a texture resource.
+				 *
+				 * Each associated value is a counted pointer on a
+				 * Ceylan::LoadableWithContent instance (here, a texture), 
+				 * which records the path of the resource file and, if loaded,
+				 * the resource itself.
+				 *
+				 */
+				std::map<Ceylan::ResourceID,
+					Video::OpenGL::TextureCountedPtr> _textureMap ;
+				
+				
+				
+				/**
+				 * Reverse dictionary: allows to convert a specified resource
+				 * path into a resource identifier.
+				 *
+				 * This is useful when the resource path is to be established
+				 * at runtime rather than at compile time (ex: if wanting to
+				 * load a locale-dependent image, the simplest way is to forge
+				 * the path at runtime based on the selected locale, rather
+				 * than trying to determine and guess the corresponding
+				 * identifier statically, for example with a 
+				 *'switch (currentLocale) {...}'), and 
+				 * also to ensure that regardless of the resource package being
+				 * used (ex: editor or game package), a shared resource
+				 * (ex: a splash screen) will be referenced uniquely, by path
+				 * name (whereas that image could be associated to different
+				 * resource identifiers depending on the archive being read).
+				 *
+				 * Each key of the map is a resource path, each value is a
+				 * resource identifier which then can be given back to a
+				 * get* method.
+				 *
+				 */
+				std::map<std::string,Ceylan::ResourceID> _reverseMap ;
+				
+				
 #pragma warning( pop ) 
 
 				
+				 
 				 
 			private:
 			
