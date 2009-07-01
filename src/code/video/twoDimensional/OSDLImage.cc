@@ -199,6 +199,7 @@ bool Image::load()
 
 	
 	return true ;
+	
 }
 
 
@@ -237,14 +238,14 @@ const std::string Image::toString( Ceylan::VerbosityLevels level ) const
 	if ( _convertToDisplayFormat )
 	{
 
-		res += string( " converted to the screen format, with " ) + 
+		res += string( "converted to the screen format, with " ) + 
 			( _convertWithAlpha ? "an" : "no" ) + string( " alpha channel" ) ;
 	
 	}
 	else
 	{
 	
-		res += " not converted to the screen format." ;
+		res += "not converted to the screen format." ;
 	}
 	
 	return res ;
