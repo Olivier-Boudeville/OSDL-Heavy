@@ -291,6 +291,8 @@ MusicManager::MusicManager():
 MusicManager::~MusicManager() throw()
 {
 
+	send( "Deleting music manager, whose state was: " + toString() ) ;
+	
 	if ( _currentMusicPlayback != 0 )
 		stopCurrentMusicPlayback() ;
 
@@ -382,8 +384,11 @@ const string MusicManager::toString( Ceylan::VerbosityLevels level ) const
 	
 	}					
  	
-	return res + ". Current playlist is: " 
-		+ Ceylan::formatStringList( playbacks ) ;
+	if ( playbacks.empty() )
+		return res + ". Current playlist is empty" ;
+	else
+		return res + ". Current playlist is: " 
+			+ Ceylan::formatStringList( playbacks ) ;
 		
 }
 
