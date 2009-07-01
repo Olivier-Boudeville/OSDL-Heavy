@@ -126,8 +126,9 @@ const Ceylan::LibtoolVersion & OSDL::GetVersion()
 	}
 	catch( const Ceylan::Exception & e )
 	{
-		Ceylan::emergencyShutdown( "OSDL::GetVersion failed: " 
-			+ e.toString() ) ;
+	
+		throw OSDL::Exception( "OSDL::GetVersion failed: " + e.toString() ) ;
+		
 	}	
 		
 	return *osdlVersion ;
@@ -136,6 +137,7 @@ const Ceylan::LibtoolVersion & OSDL::GetVersion()
 #else // OSDL_DEBUG_VERSION
 
 	static Ceylan::LibtoolVersion osdlVersion( OSDL_LIBTOOL_VERSION ) ;
+	
 	return osdlVersion ;
 
 #endif // OSDL_DEBUG_VERSION	
@@ -962,8 +964,8 @@ CommonModule & OSDL::getExistingCommonModule()
 {
 
 	if ( CommonModule::_CurrentCommonModule == 0 ) 
-		Ceylan::emergencyShutdown( 
-			"OSDL::getExistingCommonModule: no common module available." ) ;
+		throw OSDL::Exception( "OSDL::getExistingCommonModule failed: "
+			"no common module available." ) ;
 	
 	return * CommonModule::_CurrentCommonModule ;
 	
