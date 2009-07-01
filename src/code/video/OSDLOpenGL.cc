@@ -1846,7 +1846,7 @@ std::string OpenGLContext::InterpretFeatureAvailability()
 		if ( samples == 0 )
 			res.push_back( "OpenGL Fullscreen antialiasing not available." ) ;
 		else
-			res.push_back( Ceylan::toString( samples) 
+			res.push_back( Ceylan::toNumericalString( samples ) 
 				+ "x fullscreen antialiasing available." ) ;
 	}
 	else
@@ -1883,7 +1883,7 @@ std::string OpenGLContext::InterpretFeatureAvailability()
 		else
 			res.push_back( 
 				"OpenGL vertical blank synchronization (VSYNC) not available."
-				 ) ;
+			) ;
 	}
 	else
 	{
@@ -2147,15 +2147,11 @@ bool OpenGLContext::TrySettingGLAttribute( GLAttribute attribute, int value )
 	if ( SDL_GL_SetAttribute( attribute, value ) == -1 )
 	{
 
-#ifdef OSDL_DEBUG_OPENGL
-	
 		LogPlug::warning( "OpenGLContext::TrySettingGLAttribute "
 			"of attribute corresponding to "
 			+ GLAttributeToString( attribute ) + " to value "
 			+ Ceylan::toString( value ) + " failed: "
 			+ Utils::getBackendLastError() ) ;
-			
-#endif // OSDL_DEBUG_OPENGL			
 			
 		return false ;
 	
@@ -2163,6 +2159,43 @@ bool OpenGLContext::TrySettingGLAttribute( GLAttribute attribute, int value )
 	else
 	{
 	
+		int newValue ;
+		
+		try
+		{
+		
+			newValue = GetGLAttribute( attribute ) ;
+		
+			if ( newValue != value )
+			{
+			
+				LogPlug::warning( "OpenGLContext::TrySettingGLAttribute "
+					"of attribute corresponding to "
+					+ GLAttributeToString( attribute ) + " to value "
+					+ Ceylan::toString( value ) + " did not fail, "
+					"but re-reading the set attribute results in the value " 
+					+ Ceylan::toString( newValue ) + " instead." ) ;
+				
+				return false ;
+				
+			}
+					
+		}	
+		catch( const OpenGLException & e )
+		{
+		
+			LogPlug::warning( "OpenGLContext::TrySettingGLAttribute "
+				"of attribute corresponding to "
+				+ GLAttributeToString( attribute ) + " to value "
+				+ Ceylan::toString( value ) 
+				+ " failed: when trying to read back that value, got: " 
+				+ e.toString() ) ;
+				
+			return false ;
+			
+		}
+		
+			
 		return true ;
 		
 	}		
