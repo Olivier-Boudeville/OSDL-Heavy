@@ -512,7 +512,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	}	
 
 	if ( userFlags != flags )
-		send( "Initializing the display with following modified flags. " 
+		send( "Initializing the display with following modified flags: " 
 			+ InterpretFlags( flags ) ) ;
 	else
 		send( "Initializing the display with unchanged user flags") ;
@@ -591,7 +591,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 		+ " bits per pixel." ) ;
 	
 	// A zero bit per pixel request means any depth, no warning in this case:
-	if ( askedBpp != bpp && askedBpp != 0 ) 
+	if ( ( askedBpp != bpp ) && ( askedBpp != 0 ) ) 
 		LOG_WARNING_VIDEO( "Color depth is " + Ceylan::toString( bpp ) 
 			+ " bits per pixel (instead of the asked " 
 			+ Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) 
@@ -672,7 +672,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	 */
 	if ( useOpenGLRequested ) 
 		_openGLcontext->setViewPort( _screen->getWidth(), 
-			_screen->getHeight() /* Origin */ ) ; 
+			_screen->getHeight() ) ; 
 		
 
 	_displayInitialized = true ;
