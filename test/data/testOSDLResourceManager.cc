@@ -162,10 +162,11 @@ int main( int argc, char * argv[] )
 
  		myFSManager.mount( resourceFilename ) ;
 		
-		FileSystemManager::SetDefaultFileSystemManager( myFSManager ) ;
+		FileSystemManager::SetDefaultFileSystemManager( myFSManager, 
+			/* deallocatePreviousIfAny */ false ) ;
 			
 		ResourceManager * myResourceManager = new ResourceManager(
-			"resource-map.xml" ) ;
+			"OSDLResourceMap.xml" ) ;
 		
 		LogPlug::info( "Resource manager initial state: " 
 			+ myResourceManager->toString() ) ;
@@ -175,7 +176,7 @@ int main( int argc, char * argv[] )
 		 * For the sake of this test, we know that 'welcome-to-OSDL.music'
 		 * has the resource identifier #3.
 		 *
-		 * Normal use of the resource manager wold just to include the 
+		 * Normal use of the resource manager would just be to include the 
 		 * automatically generated '../basic/resource-map.h' header file and to
 		 * issue a getMusic( ResourceIndex::File_welcome_to_OSDL_music )
 		 * (File_welcome_to_OSDL_music is defined as equal to 3, of course).
@@ -192,9 +193,18 @@ int main( int argc, char * argv[] )
 			/*
 			 * Defined in a block to force the counter pointer out of scope:
 			 * (note: counter pointer should always be passed by value)
+			 * 
+			 * Note: here we do not want to make the compilation of this test
+			 * fail if the ../basic/OSDLResourceMap.h file is not available.
+			 * Therefore we do not use the symbol defined in this file directly
+			 * (File_Rune_stone_small_image which is currently equal to 5),
+			 * we forge the name instead at runtime and use the reverse resource
+			 * map, which we tell us the corresponding ID (2) that will be
+			 * then loaded automatically.
 			 *
 			 */
-			Audio::MusicCountedPtr myMusic = myResourceManager->getMusic( 3  ) ;
+			Audio::MusicCountedPtr myMusic = myResourceManager->getMusic( 
+				"welcome-to-OSDL.music" ) ;
 		
 			// Currently the music reference count is 2.
 			
@@ -217,7 +227,22 @@ int main( int argc, char * argv[] )
 			+ myResourceManager->toString() ) ;
 			
 		LogPlug::info( "Music counted pointer just gone out of scope, "
-			"now deallocating resource manager." ) ;
+			"getting an image and then deallocating resource manager." ) ;
+				
+		// Testing also with an image object:
+		Video::TwoDimensional::ImageCountedPtr myImage =
+			myResourceManager->getImage( "Soldier-heavy-purple-small.image" ) ;
+
+		LogPlug::info( "Loaded image: " + myImage->toString() + "." ) ;
+					
+		/*
+		 * After the purge, only the music will have been unloaded, as for the
+		 * image there is still a reference held by this test:
+		 *
+		 */			
+		LogPlug::info( "Before purging: " + myResourceManager->toString() ) ;
+		myResourceManager->purge() ;
+		LogPlug::info( "After purging: " + myResourceManager->toString() ) ;
 					
 		delete myResourceManager ;
 			
