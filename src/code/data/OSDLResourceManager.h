@@ -210,7 +210,8 @@ namespace OSDL
 				 * found.
 				 *
 				 */
-			 	Audio::MusicCountedPtr getMusic( Ceylan::ResourceID id ) ; 
+			 	virtual Audio::MusicCountedPtr getMusic( 
+					Ceylan::ResourceID id ) ; 
 				 	
 					
 			 
@@ -226,7 +227,7 @@ namespace OSDL
 				 * found.
 				 *
 				 */
-			 	Audio::MusicCountedPtr getMusic( 
+			 	virtual Audio::MusicCountedPtr getMusic( 
 					const std::string & musicPath ) ; 
 				 	
 					
@@ -241,7 +242,8 @@ namespace OSDL
 				 * found.
 				 *
 				 */
-			 	Audio::SoundCountedPtr getSound( Ceylan::ResourceID id ) ; 
+			 	virtual Audio::SoundCountedPtr getSound( 
+					Ceylan::ResourceID id ) ; 
 				 
 				 	
 					
@@ -257,7 +259,7 @@ namespace OSDL
 				 * found.
 				 *
 				 */
-			 	Audio::SoundCountedPtr getSound( 
+			 	virtual Audio::SoundCountedPtr getSound( 
 					const std::string & soundPath ) ; 
 					
 					
@@ -271,7 +273,7 @@ namespace OSDL
 				 * found.
 				 *
 				 */
-			 	Video::TwoDimensional::ImageCountedPtr 
+			 	virtual Video::TwoDimensional::ImageCountedPtr 
 					getImage( Ceylan::ResourceID id ) ; 
 				 	
 					
@@ -288,7 +290,7 @@ namespace OSDL
 				 * found.
 				 *
 				 */
-			 	Video::TwoDimensional::ImageCountedPtr getImage( 
+			 	virtual Video::TwoDimensional::ImageCountedPtr getImage( 
 					const std::string & imagePath ) ; 
 				
 				
@@ -307,7 +309,7 @@ namespace OSDL
 				 * @note The returned texture has not been uploaded yet.
 				 *
 				 */
-			 	Video::OpenGL::TextureCountedPtr getTexture( 
+			 	virtual Video::OpenGL::TextureCountedPtr getTexture( 
 					Ceylan::ResourceID id, bool uploadWanted = true ) ; 
 				 	
 					
@@ -329,12 +331,20 @@ namespace OSDL
 				 * @note The returned texture has not been uploaded yet.
 				 *
 				 */
-			 	Video::OpenGL::TextureCountedPtr getTexture( 
+			 	virtual Video::OpenGL::TextureCountedPtr getTexture( 
 					const std::string & texturePath, 
 					bool uploadWanted = true ) ; 
 					
 					
 					
+				/**
+				 * Requests all resources only referenced by this manager to
+				 * unload their content.
+				 *
+				 */
+				 virtual void purge() ;	
+				
+				
 										
 	            /**
 	             * Returns an user-friendly description of the state of 
@@ -402,7 +412,6 @@ namespace OSDL
 				 */
 				Ceylan::ResourceID getIDForPath( 
 					const std::string & resourcePath ) const ;
-
 
 
 
