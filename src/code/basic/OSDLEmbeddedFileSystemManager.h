@@ -81,7 +81,7 @@ namespace OSDL
      *
 	 */
 	class OSDL_DLL EmbeddedFileSystemManager: 
-    	public Ceylan::System::FileSystemManager
+    	public Ceylan::System::FileSystemManager, public Ceylan::Object
 	{
 
 
