@@ -27,6 +27,7 @@
 #include "OSDLGLTexture.h"
 
 #include "OSDLOpenGL.h"              // for EnableFeature and al
+#include "OSDLBasic.h"               // for getExistingCommonModule and al
 #include "OSDLVideo.h"               // for VideoModule::SoftwareSurface
 #include "OSDLSurface.h"             // for Surface
 
@@ -279,6 +280,23 @@ void GLTexture::upload()
 
 	LogPlug::trace( "GLTexture::upload" ) ;
 
+
+	/*
+	 * This checking is probably a bit too expensive/useless for releases
+	 * to be done each time, however it will save some absent-minded developers:
+	 *
+	 */
+#if OSDL_DEBUG
+
+	// Here we have to have a proper OpenGL context already available:
+
+	if ( ! OSDL::getExistingCommonModule().getVideoModule().hasOpenGLContext() )
+		throw GLTextureException( "GLTexture::upload called "
+			"whereas OpenGL has not been initialized (no OpenGL context)." ) ;
+
+#endif // OSDL_DEBUG	
+	
+
 	if ( wasUploaded() )
 		throw GLTextureException( "GLTexture::upload called "
 			"whereas a texture identifier is already available." ) ;
@@ -338,13 +356,6 @@ void GLTexture::upload()
 	glBindTexture( /* texturing target */ GL_TEXTURE_2D, 
 		/* name to bind */ _id ) ;
 	
-	/*
-	 * We have therefore to re-set the texture settings:
-	 * (beware to this side-effect!)
-	 *
-	 */
-	SetTextureFlavour( _flavour ) ;
-	
 		
 #if OSDL_CHECK_OPENGL_CALLS
 
@@ -377,6 +388,14 @@ void GLTexture::upload()
 
 #endif // OSDL_CHECK_OPENGL_CALLS
 	
+	/*
+	 * We have therefore to re-set the texture settings:
+	 * (beware to this side-effect!)
+	 *
+	 */
+	SetTextureFlavour( _flavour ) ;
+	
+
 	Length width  = getWidth() ;
 	Length height = getHeight() ;
 	
@@ -386,7 +405,7 @@ void GLTexture::upload()
 
 		LogPlug::trace( "GLTexture::upload: glTexImage2D with "
 			+ Ceylan::toString( width ) + "x" 
-			+ Ceylan::toString( height ) ) ;
+			+ Ceylan::toString( height ) + ", for: " + _content->toString() ) ;
 	
 		
     	glTexImage2D( 
@@ -441,8 +460,11 @@ void GLTexture::upload()
 	else
 	{
         	
-		LogPlug::trace( "GLTexture::upload: gluBuild2DMipmaps" ) ;
+		LogPlug::trace( "GLTexture::upload: gluBuild2DMipmaps with "
+			+ Ceylan::toString( width ) + "x" 
+			+ Ceylan::toString( height ) + ", for: " + _content->toString() ) ;
 
+			
 		// At least one dimension is not a power of two:
 		GLU::Int res = gluBuild2DMipmaps( 
 			/* target texture */ GL_TEXTURE_2D, 
@@ -486,7 +508,7 @@ void GLTexture::upload()
 				
 	}
 	
-	// Still loaded.
+	// Still loaded in all cases.
 				
 	
 #else // OSDL_USES_OPENGL
@@ -724,7 +746,7 @@ bool GLTexture::load()
 
 	return true ;
 	
-	// _content kept.
+	// _content loaded.
 	
 }
 
