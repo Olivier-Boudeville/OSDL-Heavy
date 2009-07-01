@@ -119,15 +119,15 @@ ResourceManager::ResourceManager( const string & resourceMapFilename )
 	Ceylan::XML::XMLParser * resourceParser = 
 		new Ceylan::XML::XMLParser( resourceMapFilename ) ;
 	
-	send( resourceParser->toString() ) ;
+	//send( resourceParser->toString() ) ;
 	
 	resourceParser->loadFromFile() ;
 	
-	send( resourceParser->toString() ) ;
+	//send( resourceParser->toString() ) ;
 	
 	Ceylan::XML::XMLParser::XMLTree & root = resourceParser->getXMLTree() ;
 
-	send( "Inserting resource defined in: " + root.toString() ) ;
+	//send( "Inserting resource defined in: " + root.toString() ) ;
 	
 	// Sons are directly the resource entries:
 	const XMLSubtreeList & sons = root.getSons() ;
@@ -136,7 +136,7 @@ ResourceManager::ResourceManager( const string & resourceMapFilename )
 			it != sons.end(); it++ )
 		registerResource( *(*it) ) ;
 	
-	send( "All resources inserted." ) ;
+	send( "All resources inserted, initial state is: " + toString() ) ;
 		
 	delete resourceParser ;
 	
@@ -150,9 +150,9 @@ ResourceManager::~ResourceManager() throw()
 {
 
 	/*
-	 * When the manager is deallocated, its map are deallocated, leading to
-	 * refcount for resources dropping to zero (if not referenced by any
-	 * third party). Resources are then deallocated.
+	 * When the manager is deallocated, its maps are deallocated, leading to
+	 * refcount for resources dropping to zero (if not still referenced by any
+	 * third party). Resources are then automatically deallocated.
 	 *
 	 */
 }
@@ -166,7 +166,7 @@ Audio::MusicCountedPtr ResourceManager::getMusic( Ceylan::ResourceID id )
 		_musicMap.find( id ) ;
 		
 	if ( it == _musicMap.end() )
-		throw ResourceManagerException( "ResourceManager::getMusic: id #"
+		throw ResourceManagerException( "ResourceManager::getMusic: ID #"
 			+ Ceylan::toString( id ) + " could not be found." ) ;
 			
 	Audio::MusicCountedPtr res = (*it).second ;
@@ -180,6 +180,29 @@ Audio::MusicCountedPtr ResourceManager::getMusic( Ceylan::ResourceID id )
 
 
 
+Audio::MusicCountedPtr ResourceManager::getMusic( const string & musicPath )
+{
+
+	std::map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
+		_musicMap.find( getIDForPath(musicPath) ) ;
+		
+	if ( it == _musicMap.end() )
+		throw ResourceManagerException( 
+			"ResourceManager::getMusic: music path '" + musicPath 
+			+ "' could not be found." ) ;
+			
+	Audio::MusicCountedPtr res = (*it).second ;
+	
+	// Ensures a returned resource is always loaded:
+	res->load() ;
+	
+	return res ;
+			
+}
+
+
+
+
 Audio::SoundCountedPtr ResourceManager::getSound( Ceylan::ResourceID id )
 {
 
@@ -187,7 +210,7 @@ Audio::SoundCountedPtr ResourceManager::getSound( Ceylan::ResourceID id )
 		_soundMap.find( id ) ;
 		
 	if ( it == _soundMap.end() )
-		throw ResourceManagerException( "ResourceManager::getSound: id #"
+		throw ResourceManagerException( "ResourceManager::getSound: ID #"
 			+ Ceylan::toString( id ) + " could not be found." ) ;
 			
 	Audio::SoundCountedPtr res = (*it).second ;
@@ -201,6 +224,29 @@ Audio::SoundCountedPtr ResourceManager::getSound( Ceylan::ResourceID id )
 
 
 
+Audio::SoundCountedPtr ResourceManager::getSound( const string & soundPath )
+{
+
+	std::map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
+		_soundMap.find( getIDForPath(soundPath) ) ;
+		
+	if ( it == _soundMap.end() )
+		throw ResourceManagerException( 
+			"ResourceManager::getSound: sound path '" + soundPath 
+			+ "' could not be found." ) ;
+			
+	Audio::SoundCountedPtr res = (*it).second ;
+	
+	// Ensures a returned resource is always loaded:
+	res->load() ;
+	
+	return res ;
+			
+}
+
+
+
+
 Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage(
 	Ceylan::ResourceID id )
 {
@@ -210,7 +256,7 @@ Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage(
 		_imageMap.find( id ) ;
 		
 	if ( it == _imageMap.end() )
-		throw ResourceManagerException( "ResourceManager::getImage: id #"
+		throw ResourceManagerException( "ResourceManager::getImage: ID #"
 			+ Ceylan::toString( id ) + " could not be found." ) ;
 			
 	Video::TwoDimensional::ImageCountedPtr res = (*it).second ;
@@ -218,6 +264,81 @@ Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage(
 	// Ensures a returned resource is always loaded:
 	res->load() ;
 	
+	return res ;
+			
+}
+
+
+
+Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage( 
+	const string & imagePath )
+{
+
+	std::map<Ceylan::ResourceID,
+			Video::TwoDimensional::ImageCountedPtr>::iterator it =
+		_imageMap.find( getIDForPath(imagePath) ) ;
+		
+	if ( it == _imageMap.end() )
+		throw ResourceManagerException( "ResourceManager::getImage: image '"
+			+ imagePath + "' could not be found." ) ;
+			
+	Video::TwoDimensional::ImageCountedPtr res = (*it).second ;
+	
+	// Ensures a returned resource is always loaded:
+	res->load() ;
+	
+	return res ;
+			
+}
+
+
+
+Video::OpenGL::TextureCountedPtr ResourceManager::getTexture(
+	Ceylan::ResourceID id, bool uploadWanted )
+{
+
+	std::map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
+		_textureMap.find( id ) ;
+		
+	if ( it == _textureMap.end() )
+		throw ResourceManagerException( "ResourceManager::getTexture: ID #"
+			+ Ceylan::toString( id ) + " could not be found." ) ;
+			
+	Video::OpenGL::TextureCountedPtr res = (*it).second ;
+	
+	// Ensures a returned resource is always loaded:
+	res->load() ;
+	
+	// Maybe wanting to have it uploaded directly to the video card?
+	if ( uploadWanted && ( ! res->wasUploaded() ) )
+		res->upload() ;
+		
+	return res ;
+			
+}
+
+
+
+Video::OpenGL::TextureCountedPtr ResourceManager::getTexture( 
+	const string & texturePath, bool uploadWanted )
+{
+
+	std::map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
+		_textureMap.find( getIDForPath(texturePath) ) ;
+		
+	if ( it == _textureMap.end() )
+		throw ResourceManagerException( "ResourceManager::getTexture: texture '"
+			+ texturePath + "' could not be found." ) ;
+			
+	Video::OpenGL::TextureCountedPtr res = (*it).second ;
+	
+	// Ensures a returned resource is always loaded:
+	res->load() ;
+	
+	// Maybe wanting to have it uploaded directly to the video card?
+	if ( uploadWanted && ( ! res->wasUploaded() ) )
+		res->upload() ;
+		
 	return res ;
 			
 }
@@ -249,12 +370,14 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 			{
 			
 				musics.push_back( (*it).second->toString(level)
-					+ "', and whose reference count is " 
+					+ " (ID #" + Ceylan::toString( (*it).first )
+					+ ") and whose reference count is " 
 					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 			}	
 			
-			temp += Ceylan::formatStringList( musics ) ;
+			temp += Ceylan::formatStringList( musics,
+				/* surroundByTicks */ false, /* indentationLevel */ 2 ) ;
 			
 		}
 		
@@ -288,12 +411,14 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 			{
 			
 				sounds.push_back( (*it).second->toString(level)
-					+ "', and whose reference count is " 
+					+ " (ID #" + Ceylan::toString( (*it).first )
+					+ ") and whose reference count is " 
 					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 			}	
 			
-			temp += Ceylan::formatStringList( sounds ) ;
+			temp += Ceylan::formatStringList( sounds,
+				/* surroundByTicks */ false, /* indentationLevel */ 2 ) ;
 			
 		}
 		
@@ -323,16 +448,18 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 			
 			for ( std::map<Ceylan::ResourceID,
 				Video::TwoDimensional::ImageCountedPtr>::const_iterator it =
-					 _imageMap.begin();	it != _imageMap.end(); it++ )
+					 _imageMap.begin(); it != _imageMap.end(); it++ )
 			{
 			
 				images.push_back( (*it).second->toString(level)
-					+ "', and whose reference count is " 
+					+ " (ID #" + Ceylan::toString( (*it).first )
+					+ ") and whose reference count is " 
 					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 			}	
 			
-			temp += Ceylan::formatStringList( images ) ;
+			temp += Ceylan::formatStringList( images,
+				/* surroundByTicks */ false, /* indentationLevel */ 2 ) ;
 			
 		}
 		
@@ -347,6 +474,84 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 	
 	}
 	
+	
+	size = _textureMap.size() ;
+	
+	if ( size != 0 )
+	{
+	
+		temp = "Number of textures managed: " + Ceylan::toString( size ) ;
+		
+		if ( level != Ceylan::low )
+		{
+		
+			list<string> textures ;
+			
+			for ( std::map<Ceylan::ResourceID,
+				Video::OpenGL::TextureCountedPtr>::const_iterator it =
+					 _textureMap.begin(); it != _textureMap.end(); it++ )
+			{
+			
+				textures.push_back( (*it).second->toString(level)
+					+ " (ID #" + Ceylan::toString( (*it).first )
+					+ ") and whose reference count is " 
+					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+			
+			}	
+			
+			temp += Ceylan::formatStringList( textures,
+				/* surroundByTicks */ false, /* indentationLevel */ 2 ) ;
+			
+		}
+		
+		
+		maps.push_back( temp ) ;
+		
+	}
+	else
+	{
+
+		maps.push_back( "No texture is managed" ) ;
+	
+	}
+	
+	size = _reverseMap.size() ;
+	
+	if ( size != 0 )
+	{
+	
+		temp = "Number of entries in reverse map: " + Ceylan::toString( size ) ;
+		
+		if ( level != Ceylan::low )
+		{
+		
+			list<string> entries ;
+			
+			for ( std::map<std::string,Ceylan::ResourceID>::const_iterator it =
+				_reverseMap.begin(); it != _reverseMap.end(); it++ )
+			{
+			
+				entries.push_back( "Resource path '" + (*it).first 
+					+ "' corresponds to ID #" 
+					+ Ceylan::toString( (*it).second ) ) ;
+			
+			}	
+			
+			temp += Ceylan::formatStringList( entries,
+				/* surroundByTicks */ false, /* indentationLevel */ 2 ) ;
+			
+		}
+		
+		
+		maps.push_back( temp ) ;
+		
+	}
+	else
+	{
+
+		maps.push_back( "No entry in reverse resource map" ) ;
+	
+	}
 	
 	return "ResourceManager state: " + Ceylan::formatStringList( maps ) ;
 					
@@ -363,6 +568,7 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 
 
 // Protected members below:
+
 
 
 void ResourceManager::registerResource( 
@@ -388,6 +594,7 @@ void ResourceManager::registerResource(
 	string resourcePath, resourceStringifiedType ;
 	
 	const Ceylan::XML::XMLMarkup * currentMarkup ;
+	
 	
 	for ( XMLSubtreeList::const_iterator it = resourceSettingEntries.begin(); 
 		it != resourceSettingEntries.end(); it++ )
@@ -452,7 +659,14 @@ void ResourceManager::registerResource(
 			"ResourceManager::registerResource: "
 			"no resource content type could be found." ) ;
 	
+	
+	// First register that resource in reverse map:
+	_reverseMap.insert( std::pair<std::string,Ceylan::ResourceID>(
+		resourcePath, id ) ) ;
+	
+	
 	ContentType resourceType = GetContentType( resourceStringifiedType ) ;
+	
 	
 	if ( resourceType == Data::music )
 	{
@@ -503,17 +717,46 @@ void ResourceManager::registerResource(
 	else if ( resourceType == Data::image )
 	{
 	
+		// Defaults:
+		bool convertToDisplayFormat = false ;
+		bool convertWithAlpha = true ;
+
 		// Conversion to display to screen format could be managed here:
 		
 		Video::TwoDimensional::ImageCountedPtr newImagePtr = 
 			new Video::TwoDimensional::Image( resourcePath, 
-				/* preload */ false, /* convertToDisplayFormat */ true, 
-				/* convertWithAlpha */ true ) ;
+				/* preload */ false, 
+				/* convertToDisplayFormat */ convertToDisplayFormat, 
+				/* convertWithAlpha */ convertWithAlpha ) ;
 			 
 		_imageMap.insert( std::pair<Ceylan::ResourceID,
 			Video::TwoDimensional::ImageCountedPtr>( id, newImagePtr ) ) ;
 
 		 
+	}
+	else if ( resourceType == Data::texture_2D )
+	{
+
+		Video::OpenGL::TextureCountedPtr newTexturePtr = 
+			new Video::OpenGL::GLTexture( resourcePath, 
+				/* flavour */ Video::OpenGL::GLTexture::For2D, 
+				/* preload */ false ) ;
+			 
+		_textureMap.insert( std::pair<Ceylan::ResourceID,
+			Video::OpenGL::TextureCountedPtr>( id, newTexturePtr ) ) ;
+ 
+	}
+	else if ( resourceType == Data::texture_3D )
+	{
+
+		Video::OpenGL::TextureCountedPtr newTexturePtr = 
+			new Video::OpenGL::GLTexture( resourcePath, 
+				/* flavour */ Video::OpenGL::GLTexture::For3D, 
+				/* preload */ false ) ;
+			 
+		_textureMap.insert( std::pair<Ceylan::ResourceID,
+			Video::OpenGL::TextureCountedPtr>( id, newTexturePtr ) ) ;
+ 
 	}
 	else
 	{
@@ -534,6 +777,24 @@ void ResourceManager::registerResource(
 
 
 
+Ceylan::ResourceID ResourceManager::getIDForPath( const string & resourcePath )
+	const
+{
+
+	std::map<string,Ceylan::ResourceID>::const_iterator it = 
+		_reverseMap.find( resourcePath ) ;
+		
+	if ( it == _reverseMap.end() )
+		throw ResourceManagerException( "ResourceManager::getIDForPath: "
+			"resource path '" + resourcePath 
+			+ "' could not be found in archive." ) ;
+	
+	return (*it).second ;	
+
+}
+
+
+
 ContentType ResourceManager::GetContentType( 
 	const std::string & stringifiedType, bool throwIfNotMatched )
 {
@@ -548,6 +809,10 @@ ContentType ResourceManager::GetContentType(
 		return Data::music ;
 	else if	( stringifiedType == "image" )
 		return Data::image ;
+	else if	( stringifiedType == "texture_2D" )
+		return Data::texture_2D ;
+	else if	( stringifiedType == "texture_3D" )
+		return Data::texture_3D ;
 	else if	( stringifiedType == "ttf_font" )
 		return Data::ttf_font ;
 	else
@@ -557,7 +822,7 @@ ContentType ResourceManager::GetContentType(
 		if ( throwIfNotMatched )
 			throw ResourceManagerException( "ResourceManager::GetContentType: "
 				"the string '" + stringifiedType 
-				+ "' could not be interpreted." ) ;
+				+ "' could not be interpreted as a content type." ) ;
 		else
 			return Data::unknown ;
 					
