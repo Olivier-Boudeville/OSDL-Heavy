@@ -176,6 +176,7 @@ void Scheduler::setRenderer( Rendering::Renderer & newRenderer )
 	if ( _renderer != 0 )
 		delete _renderer ;
 	
+	// Ownership taken:
 	_renderer = & newRenderer ;
 		
 }
@@ -1118,9 +1119,11 @@ Scheduler & Scheduler::GetScheduler()
     }
     else
     {
+	
         LogPlug::debug( "Scheduler::GetScheduler: "
 			"returning already constructed instance of scheduler, "
 			"no creation." ) ;
+			
     }
 
     LogPlug::debug( "Scheduler::GetScheduler: returning Scheduler instance "
@@ -1163,6 +1166,7 @@ void Scheduler::DeleteScheduler()
 		
         delete Scheduler::_internalScheduler ;
 		Scheduler::_internalScheduler = 0 ;
+		
     }
     else
     {
@@ -1254,7 +1258,10 @@ Scheduler::~Scheduler() throw()
 	for ( list<PeriodicSlot *>::iterator it = _periodicSlots.begin(); 
 			it != _periodicSlots.end(); it++ )
 		delete (*it ) ;
+
+	send( "Periodic slots deleted." ) ;
 	
+	// Ownership was taken:
 	if ( _renderer != 0 )
 		delete _renderer ;
 		
@@ -2614,13 +2621,17 @@ void Scheduler::scheduleBestEffort()
 		LogPlug::debug( "Recovered simulation ticks: " + res ) ;
 		res.clear() ;
 		
-		for ( list<SimulationTick>::const_iterator it 
-				= missedSimulations.begin(); it != missedSimulations.end(); 
-				it++ )
-			res += 	Ceylan::toString( *it ) + " - " ;
+		for ( list<SimulationTick>::const_iterator it =
+				missedSimulations.begin(); it != missedSimulations.end(); it++ )
+			res += Ceylan::toString( *it ) + " - " ;
 
-		LogPlug::debug( "Missed simulation ticks: " + res ) ;
+		if ( res.empty() )
+			LogPlug::debug( "No simulation tick was missed." ) ;
+		else	
+			LogPlug::debug( "Missed simulation ticks: " + res ) ;
+			
 		res.clear() ;
+		
 	}
 	
 		
@@ -2760,7 +2771,11 @@ void Scheduler::scheduleBestEffort()
 				= missedRenderings.begin(); it != missedRenderings.end(); it++ )
 			res += 	Ceylan::toString( *it ) + " - " ;
 
-		LogPlug::debug( "Missed rendering ticks: " + res ) ;
+		if ( res.empty() )
+			LogPlug::debug( "No rendering tick was missed." ) ;
+		else	
+			LogPlug::debug( "Missed rendering ticks: " + res ) ;
+			
 		res.clear() ;
 
 	}
@@ -2900,7 +2915,11 @@ void Scheduler::scheduleBestEffort()
 				it != missedInputPollings.end(); it++ )
 			res += 	Ceylan::toString( *it ) + " - " ;
 
-		LogPlug::debug( "Missed input ticks: " + res ) ;
+		if ( res.empty() )
+			LogPlug::debug( "No input tick was missed." ) ;
+		else	
+			LogPlug::debug( "Missed input ticks: " + res ) ;
+
 		res.clear() ;
 
 	}
@@ -3842,7 +3861,14 @@ void Scheduler::setInitialBirthTicks(
 std::string Scheduler::describeProgrammedTicks() const
 {
 
-	return "" ;
+	Ceylan::Uint32 tickCount = static_cast<Ceylan::Uint32>(
+		_programmedActivated.size() ) ;
 	
+	if ( tickCount == 0 )	
+		return "There is no programmed tick" ;
+	else
+		return "There is " + Ceylan::toString(tickCount) 
+			+ " programmed tick(s)" ;
+			
 }
 
