@@ -631,7 +631,9 @@ namespace OSDL
 				 *
 				 * @see GetDriverName
 				 *
-				 * @throw AudioException if the operation failed.
+				 * @throw AudioException if the operation failed, including
+				 * if the audio driver is not initialized or used by another
+				 * application.
 				 *
 				 */
 				virtual std::string getDriverName() const ; 
@@ -723,7 +725,9 @@ namespace OSDL
 				 *
 				 * @see getDriverName.
 				 *
-				 * @throw AudioException if the operation failed.
+				 * @throw AudioException if the operation failed, including
+				 * if the audio driver is not initialized or used by another
+				 * application.
 				 *
 				 */
 				static std::string GetDriverName() ;
