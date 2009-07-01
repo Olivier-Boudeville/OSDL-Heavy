@@ -264,12 +264,17 @@ int main( int argc, char * argv[] )
         // Thus images will be searched in specified archive:    
         FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
         	/* deallocatePreviousIfAny */ false ) ;
-			
-        string targetEmbeddedPNG = "Soldier-heavy-purple-small.png" ;
-
-		// Preload implied; platform-independent paths:
- 		Surface & embeddedImage = Surface::LoadImage( 
-			"test-OSDLEmbeddedFileSystem-archive/" + targetEmbeddedPNG  ) ;
+		
+		/*
+		 * An interesting test is also to open the same file twice:
+		 *
+		 */	
+        string targetEmbeddedFirstImage = "Soldier-heavy-purple-small.image" ;
+		//string targetEmbeddedFirstImage = "Rune-stone-small.image" ;
+		
+		// Preload implied; actually a PNG file; platform-independent paths:
+ 		Surface & embeddedImage = 
+			Surface::LoadImage( targetEmbeddedFirstImage ) ;
 				
 		screen.lock() ;
 		
@@ -285,12 +290,12 @@ int main( int argc, char * argv[] )
 
 		delete & flippedImage ;
 
-        string targetEmbeddedJPG = "Rune-stone-small.jpg" ;
+        string targetEmbeddedSecondImage = "Rune-stone-small.image" ;
 		
-		// Preload implied; platform-independent paths:
- 		Surface & otherEmbeddedImage = Surface::LoadJPG( 
-			"test-OSDLEmbeddedFileSystem-archive/" 	+ targetEmbeddedJPG,  
-			/* blitOnly */ false ) ;
+		// Preload implied; actually a JPEG file; platform-independent paths:
+ 		Surface & otherEmbeddedImage = 
+			Surface::LoadImage( targetEmbeddedSecondImage, 
+			/* convertToDisplayFormat */ false, /* convertWithAlpha */ true ) ;
 
 		otherEmbeddedImage.blitTo( screen, 300, 50 ) ;
 		
