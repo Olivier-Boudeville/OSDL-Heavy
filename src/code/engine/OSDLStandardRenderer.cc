@@ -72,6 +72,14 @@ StandardRenderer::StandardRenderer( Video::Surface & screen,
 	_screen( & screen )
 {
 
+	string message = "StandardRenderer created, " ;
+	
+	if ( ! registerToScheduler )
+		message += "not " ;
+	
+	message += "registred to scheduler." ;
+	
+	send( message ) ;
 	
 }
 
@@ -80,12 +88,17 @@ StandardRenderer::StandardRenderer( Video::Surface & screen,
 StandardRenderer::~StandardRenderer() throw()
 {
 
+	send( "Deleting StandardRenderer." ) ;
+	
 	// Views are not owned.
+	
 	Ceylan::Uint32 viewCount = _registeredViews.size() ;
 	
 	if ( viewCount != 0 )
 		LogPlug::warning( "StandardRenderer destructor: "
-			+ Ceylan::toString( viewCount ) + "view(s) still registered." ) ;
+			+ Ceylan::toString( viewCount ) + " view(s) still registered." ) ;
+
+	send( "StandardRenderer deleted." ) ;
 			
 }
 
@@ -131,7 +144,7 @@ void StandardRenderer::unregisterView( Ceylan::MVC::BaseView & view )
 void StandardRenderer::render( RenderingTick currentRenderingTick )
 {
 
-	OSDL_RENDER_LOG( "Standard rendering! " ) ;
+	OSDL_RENDER_LOG( "Standard rendering!" ) ;
 	
 	_screen->clear() ;
 
