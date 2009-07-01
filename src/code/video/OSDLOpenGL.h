@@ -1015,8 +1015,9 @@ namespace OSDL
 					 * @param value the value to assign.
 					 *
 					 * @return true iff this feature could be set on this
-					 * platform; if it failed, no exception is thrown, only  
-					 * false is returned.
+					 * platform, i.e. the setting reported a success and 
+					 * reading back the value confirmed it; if it failed, no
+					 * exception is thrown, only false is returned.
 					 *
 					 */				 	
 					static bool TrySettingVerticalBlankSynchronizationStatus(
@@ -1101,7 +1102,8 @@ namespace OSDL
 					 * the OpenGL features.
 					 *
 					 * @note The description is only useful after a 
-					 * VideoModule::setMode call.
+					 * VideoModule::setMode call; before it may even crash
+					 * the program.
 					 *  
 					 * @throw OpenGLException if the operation failed.
 					 *
