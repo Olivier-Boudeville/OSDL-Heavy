@@ -90,12 +90,11 @@ namespace OSDL
 								
 			} ;
 
-		
-		
+
 
 			/**
 			 * Encapsulates an OpenGL texture, constructed directly or not 
-			 * from a surface.
+			 * from a surface, that can be loaded as resource.
 			 *
 			 * The ownership of the source surface is not taken by GLtexture
 			 * instances, since they have to convert it anyway into their own
@@ -108,7 +107,7 @@ namespace OSDL
 			 * operations, such as resizing, destroy the OpenGL context,
 			 * including bound textures. 
 			 *
-			 * In this case, they have to be reloaded, which is possible 
+			 * In this case, they have to be reloaded, which might be easier 
 			 * if they have kept their converted surface.
 			 *
 			 * @note OpenGL support must have been selected and be available
@@ -118,7 +117,8 @@ namespace OSDL
 			 * 'Rendering', 'OpenGL + SDL' for further implementation details.
 			 *
 			 */
-			class OSDL_DLL GLTexture: public Ceylan::TextDisplayable
+			class OSDL_DLL GLTexture : public Ceylan::TextDisplayable,
+				public Ceylan::LoadableWithContent<Surface>
 			{
 
 			
@@ -154,8 +154,13 @@ namespace OSDL
 					/**
 					 * Constructs a texture out of an image stored in a file.
 					 *
-					 * @param imageFilename the filename of the image, 
-					 * whose format (PNG, JPEG, etc.) will be auto-detected.
+					 * @param textureFilename the filename of the texture image,
+					 * whose format (PNG, JPEG, etc.) will be auto-detected 
+					 * from content.
+					 *
+					 * @param preload the image will be loaded directly by this
+					 * constructor iff true, otherwise only its path will be
+					 * stored to allow for later loading.
 					 *
 					 * @param flavour the texture flavour that should be used.
 					 *
@@ -164,9 +169,14 @@ namespace OSDL
 					 * this texture, so that it can be reloaded in an OpenGL
 					 * context if necessary, should the context be lost. 
 					 *
+					 * @note A constructed texture is not uploaded to the
+					 * video card yet.
+					 *
+					 * @throw GLTextureException if the operation failed.
+					 *
 					 */
-					explicit GLTexture( const std::string imageFilename,
-						TextureFlavour flavour ) ;
+					explicit GLTexture( const std::string textureFilename,
+						TextureFlavour flavour, bool preload = true ) ;
 				
 				
 				
@@ -189,8 +199,8 @@ namespace OSDL
 					 * context if necessary, should the context be lost. 
 					 *
 					 */
-					explicit GLTexture( Surface & sourceSurface,
-						TextureFlavour flavour ) ;
+					//explicit GLTexture( Surface & sourceSurface,
+					//	TextureFlavour flavour ) ;
 				
 				
 				
@@ -203,39 +213,70 @@ namespace OSDL
 				
 
 
-					/// Returns the width of this texture.
+					/**
+					 * Returns the width of this texture.
+					 *
+					 * @throw GLTextureException if the texture is not already
+					 * loaded.
+					 *
+					 */
 					virtual Length getWidth() const ;
 
 
-
-					/// Returns the height of this texture.
+					/**
+					 * Returns the height of this texture.
+					 *
+					 * @throw GLTextureException if the texture is not already
+					 * loaded.
+					 *
+					 */
 					virtual Length getHeight() const ;
 
 
-				
-					/**
-					 * Tells whether this texture can be uploaded to the 
-					 * OpenGL context. 
-					 *
-					 * One necessary condition is that its source surface 
-					 * is available.
-					 *
-					 * @see upload 
+
+					
+					/*
+					 * Section dealing with the transfer and removal of this
+					 * texture from the system memory to the video card.
 					 *
 					 */
-					virtual bool canBeUploaded() const ;
-										
 					
-					
+			
 					/**
-					 * Uploads the internal texture to the OpenGL context.
+					 * Returns true iff the texture has already been uploaded
+					 * to the video card.
+					 *
+					 */
+					virtual bool wasUploaded() const ;
+					
+					 
+					/**
+					 * Uploads the internal texture to the OpenGL context,
+					 * i.e. copies the internal surface to the video card.
+					 *
+					 * @note The corresponding texture surface will be loaded 
+					 * is necessary. Thus in all cases after an upload, an 
+					 * unload can be performed.
 					 *
 					 * @throw GLTextureException if the texture could not 
-					 * be reloaded, for example if its source surface is 
-					 * not available anymore.
+					 * be uploaded.
 					 *					
 					 */
 					virtual void upload() ;
+					
+					
+					
+					/**
+					 * Removes this texture, supposedly already uploaded,
+					 * from the video card.
+					 *
+					 * @throw GLTextureException if the texture could not 
+					 * be removed.
+					 *					
+					 */
+					virtual void remove() ;
+					
+					
 					
 					
 					
@@ -261,6 +302,51 @@ namespace OSDL
 					
 					
 					
+					
+
+					// LoadableWithContent template instanciation.
+		
+				
+				
+					/**
+					 * Loads the texture image from file.
+					 *
+					 * @return true iff the image had to be actually loaded
+					 * (otherwise it was already loaded and nothing was done).
+					 *
+					 * @throw Ceylan::LoadableException whenever the loading
+					 * fails.
+					 *
+					 * @note Loading (the internal texture image) does not imply
+					 * uploading it to the video card.
+					 *
+					 */
+					virtual bool load() ;
+		
+		
+		
+					/**
+					 * Unloads the texture image that may be contained by this
+					 * instance.
+					 *
+					 * @return true iff the image had to be actually unloaded
+					 * (otherwise it was not already available and nothing was
+					 * done).
+					 *
+					 * @throw Ceylan::LoadableException whenever the unloading
+					 * fails.
+					 *
+					 * @note Unloading (the internal texture image) does 
+					 * not imply removing it from the texture memory in the 
+					 * video card.
+					 *
+					 */
+					virtual bool unload() ;
+					
+
+
+
+					
 	 	            /**
 		             * Returns an user-friendly description of the state 
 					 * of this object.
@@ -276,6 +362,9 @@ namespace OSDL
 			 		virtual const std::string toString( 
 						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 				
+				
+				
+
 				
 				
 					// Static section.
@@ -363,6 +452,21 @@ namespace OSDL
 
 					
 					
+					/**
+					 * Returns the filename extension which corresponds to
+					 * the specified texture flavour.
+					 *
+					 * For example, for the For2D flavour, ".tex2D" shall be
+					 * returned.
+					 *
+					 * @throw GLTextureException if the flavour is not known.
+					 *
+					 */
+					static std::string GetExtensionForFlavour( 
+						TextureFlavour flavour ) ;
+					
+					
+					
 					
 				protected:
 				
@@ -392,17 +496,14 @@ namespace OSDL
 					void upload( Surface & sourceSurface ) ;
 					
 					
-				
-					/**
-					 * The source surface from which this texture is made.
-					 *
-					 * @note A non-null source pointer implies that the 
-					 * texture owns this surface.
+					
+					/*
+					 * The internal texture surface itself is in the _content
+					 * member, inherited from the loadable template.
 					 *
 					 */
-					Surface * _source ;
-			
-			
+					 
+					 
 			
 					/**
 					 * Identifier given by OpenGL to reference this texture.
@@ -423,17 +524,7 @@ namespace OSDL
 					TextureFlavour _flavour ;
 			
 			
-			
-					/// The width of the texture, in pixels.
-					Length _width ;
-					
-					
-					
-					/// The height of the texture, in pixels.
-					Length _height ;
-					
-					
-					
+
 			
 				private:
 				
@@ -464,6 +555,10 @@ namespace OSDL
 			
 			} ;
 			
+			
+			
+			/// Texture counted pointer.
+			typedef Ceylan::CountedPointer<GLTexture> TextureCountedPtr ;
 		
 		}
 		
