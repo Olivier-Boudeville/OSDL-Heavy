@@ -493,8 +493,13 @@ void AudioModule::setMode( Hertz outputFrequency,
 
 	if ( _mixerInitialized )
 		throw AudioException( "AudioModule::setMode failed: "
-			"mixing mode already set, and not unset yet" ) ;
+			"mixing mode already set, and not unset yet." ) ;
 			
+	/*
+	 * In some cases Mix_GetError may return an unrelated previous SDL error:
+	 * (and using OSDL::Utils::getBackendLastError() will not help)
+	 *
+	 */
 	if ( ::Mix_OpenAudio( outputFrequency, outputSampleFormat,
 			GetChannelCountFor( outputChannel ), outputBufferSize ) != 0 )
 		throw AudioException( "AudioModule::setMode failed: "
