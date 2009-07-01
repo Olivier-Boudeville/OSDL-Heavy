@@ -30,6 +30,11 @@ if [ -e "${test_archive_name}" ] ; then
 	${rm} "${test_archive_name}"
 fi
 
+
+if [ -f "${test_archive_dir}" ] ; then
+	${rm} -r "${test_archive_dir}"
+fi
+
 ${mkdir} ${test_archive_dir}
 
 
@@ -85,7 +90,8 @@ ${cp} ${sound_file} ${test_archive_dir}/OSDL.sound
 ${cp} ${music_file} ${test_archive_dir}/welcome-to-OSDL.music
 ${cp} ${png_image_file} ${test_archive_dir}/Soldier-heavy-purple-small.image
 ${cp} ${jpeg_image_file} ${test_archive_dir}/Rune-stone-small.image
-${cp} ${font_file} ${test_archive_dir}/neurochr.ttf_font
+${cp} ${jpeg_image_file} ${test_archive_dir}/Rune-stone-small.tex3D
+${cp} ${font_file} ${test_archive_dir}
 
 
 ${mkdir} ${test_archive_dir}/test-directory
