@@ -113,7 +113,7 @@ typedef std::list<Ceylan::XML::XMLParser::XMLTree * > XMLSubtreeList ;
 ResourceManager::ResourceManager( const string & resourceMapFilename )
 {
 
-	send( "Creating a ResourceManager based on resource map in '"
+	send( "Creating a ResourceManager based on the resource map in file '"
 		+ resourceMapFilename + "'." ) ;
 	
 	Ceylan::XML::XMLParser * resourceParser = 
@@ -155,6 +155,10 @@ ResourceManager::~ResourceManager() throw()
 	 * third party). Resources are then automatically deallocated.
 	 *
 	 */
+	
+	send( "Deleting ResourceManager, whose final state was: "
+		+ toString() ) ;
+		 
 }
 
 
@@ -162,7 +166,7 @@ ResourceManager::~ResourceManager() throw()
 Audio::MusicCountedPtr ResourceManager::getMusic( Ceylan::ResourceID id )
 {
 
-	std::map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
+	map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
 		_musicMap.find( id ) ;
 		
 	if ( it == _musicMap.end() )
@@ -183,7 +187,7 @@ Audio::MusicCountedPtr ResourceManager::getMusic( Ceylan::ResourceID id )
 Audio::MusicCountedPtr ResourceManager::getMusic( const string & musicPath )
 {
 
-	std::map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
+	map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
 		_musicMap.find( getIDForPath(musicPath) ) ;
 		
 	if ( it == _musicMap.end() )
@@ -206,7 +210,7 @@ Audio::MusicCountedPtr ResourceManager::getMusic( const string & musicPath )
 Audio::SoundCountedPtr ResourceManager::getSound( Ceylan::ResourceID id )
 {
 
-	std::map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
+	map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
 		_soundMap.find( id ) ;
 		
 	if ( it == _soundMap.end() )
@@ -227,7 +231,7 @@ Audio::SoundCountedPtr ResourceManager::getSound( Ceylan::ResourceID id )
 Audio::SoundCountedPtr ResourceManager::getSound( const string & soundPath )
 {
 
-	std::map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
+	map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
 		_soundMap.find( getIDForPath(soundPath) ) ;
 		
 	if ( it == _soundMap.end() )
@@ -251,7 +255,7 @@ Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage(
 	Ceylan::ResourceID id )
 {
 
-	std::map<Ceylan::ResourceID,
+	map<Ceylan::ResourceID,
 			Video::TwoDimensional::ImageCountedPtr>::iterator it =
 		_imageMap.find( id ) ;
 		
@@ -274,7 +278,7 @@ Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage(
 	const string & imagePath )
 {
 
-	std::map<Ceylan::ResourceID,
+	map<Ceylan::ResourceID,
 			Video::TwoDimensional::ImageCountedPtr>::iterator it =
 		_imageMap.find( getIDForPath(imagePath) ) ;
 		
@@ -297,7 +301,7 @@ Video::OpenGL::TextureCountedPtr ResourceManager::getTexture(
 	Ceylan::ResourceID id, bool uploadWanted )
 {
 
-	std::map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
+	map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
 		_textureMap.find( id ) ;
 		
 	if ( it == _textureMap.end() )
@@ -323,7 +327,7 @@ Video::OpenGL::TextureCountedPtr ResourceManager::getTexture(
 	const string & texturePath, bool uploadWanted )
 {
 
-	std::map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
+	map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
 		_textureMap.find( getIDForPath(texturePath) ) ;
 		
 	if ( it == _textureMap.end() )
@@ -341,6 +345,54 @@ Video::OpenGL::TextureCountedPtr ResourceManager::getTexture(
 		
 	return res ;
 			
+}
+
+
+
+void ResourceManager::purge()
+{
+
+	for ( map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
+		_musicMap.begin(); it != _musicMap.end(); it++ )
+	{
+	
+		if ( ((*it).second).getReferenceCount() == 1 )
+			((*it).second)->unload() ;
+			
+	}
+	
+		
+	for ( map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
+		_soundMap.begin(); it != _soundMap.end(); it++ )
+	{
+	
+		if ( ((*it).second).getReferenceCount() == 1 )
+			((*it).second)->unload() ;
+			
+	}
+		
+		
+	for ( map<Ceylan::ResourceID,
+			Video::TwoDimensional::ImageCountedPtr>::iterator it =
+		_imageMap.begin(); it != _imageMap.end(); it++ )
+	{
+	
+		if ( ((*it).second).getReferenceCount() == 1 )
+			((*it).second)->unload() ;
+			
+	}
+		
+		
+	for ( map<Ceylan::ResourceID,
+			Video::OpenGL::TextureCountedPtr>::iterator it =
+		_textureMap.begin(); it != _textureMap.end(); it++ )
+	{
+	
+		if ( ((*it).second).getReferenceCount() == 1 )
+			((*it).second)->unload() ;
+			
+	}
+		
 }
 
 
@@ -364,7 +416,7 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 		
 			list<string> musics ;
 			
-			for ( std::map<Ceylan::ResourceID,
+			for ( map<Ceylan::ResourceID,
 				Audio::MusicCountedPtr>::const_iterator it = _musicMap.begin();
 					it != _musicMap.end(); it++ )
 			{
@@ -405,7 +457,7 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 		
 			list<string> sounds ;
 			
-			for ( std::map<Ceylan::ResourceID,
+			for ( map<Ceylan::ResourceID,
 				Audio::SoundCountedPtr>::const_iterator it = _soundMap.begin();
 					it != _soundMap.end(); it++ )
 			{
@@ -446,7 +498,7 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 		
 			list<string> images ;
 			
-			for ( std::map<Ceylan::ResourceID,
+			for ( map<Ceylan::ResourceID,
 				Video::TwoDimensional::ImageCountedPtr>::const_iterator it =
 					 _imageMap.begin(); it != _imageMap.end(); it++ )
 			{
@@ -487,7 +539,7 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 		
 			list<string> textures ;
 			
-			for ( std::map<Ceylan::ResourceID,
+			for ( map<Ceylan::ResourceID,
 				Video::OpenGL::TextureCountedPtr>::const_iterator it =
 					 _textureMap.begin(); it != _textureMap.end(); it++ )
 			{
@@ -527,7 +579,7 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 		
 			list<string> entries ;
 			
-			for ( std::map<std::string,Ceylan::ResourceID>::const_iterator it =
+			for ( map<std::string,Ceylan::ResourceID>::const_iterator it =
 				_reverseMap.begin(); it != _reverseMap.end(); it++ )
 			{
 			
@@ -781,7 +833,7 @@ Ceylan::ResourceID ResourceManager::getIDForPath( const string & resourcePath )
 	const
 {
 
-	std::map<string,Ceylan::ResourceID>::const_iterator it = 
+	map<string,Ceylan::ResourceID>::const_iterator it = 
 		_reverseMap.find( resourcePath ) ;
 		
 	if ( it == _reverseMap.end() )
