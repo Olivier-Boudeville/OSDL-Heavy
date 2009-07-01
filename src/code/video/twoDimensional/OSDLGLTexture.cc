@@ -116,51 +116,51 @@ GLTextureException::~GLTextureException() throw()
 
 
 
-GLTexture::GLTexture( const std::string imageFilename, TextureFlavour flavour ):
-	_source( 0 ),
+GLTexture::GLTexture( const std::string textureFilename,
+		TextureFlavour flavour, bool preload ):
+	Ceylan::LoadableWithContent<Surface>( textureFilename ),
 	_id( 0 ),
-	_flavour( flavour ),
-	_width( 0 ),
-	_height( 0 )
+	_flavour( flavour )
 {
 
 #if OSDL_USES_OPENGL
-	
-	LOG_DEBUG_TEXTURE( "Constructing a GLTexture from file " + imageFilename ) ;
-	
-	Surface * loaded ;
-	
-	try
+
+	if ( preload )
 	{
 	
-		loaded = & Surface::LoadImage( imageFilename, 
-			/* convertToDisplay */ false ) ;
+		try
+		{
+		
+			load() ;
+			
+		}
+		catch( const Ceylan::LoadableException & e )
+		{
+		
+			throw GLTextureException( 
+				"GLTexture constructor failed while preloading: " 
+				+ e.toString() ) ;
+				
+		}
 			
 	}
-	catch( const TwoDimensional::ImageException & e )
-	{
-	
-		throw GLTextureException( 
-			"GLTexture constructor: unable to load source image from file '"
-			+ imageFilename + "': " + e.toString() ) ;
-	}
-	
-	upload( *loaded ) ;
-	
-	// Texture not wanted any more, in all cases (it has been copied):
-	delete loaded ;
 
 #else // OSDL_USES_OPENGL
 
-	throw GLTextureException( "GLTexture constructor: "
-		"OpenGL support not available." ) ;
-	
+	/*
+	 * Prevents from creating a texture instance if no OpenGL support is
+	 * available (then methods have not to be protected specifically)
+	 *
+	 */
+	throw GLTextureException( "GLTexture constructor failed: "
+		"no OpenGL support available." ) ;
+	 
 #endif // OSDL_USES_OPENGL
 		
 }
 
 
-
+/*
 GLTexture::GLTexture( Surface & sourceSurface, TextureFlavour flavour ) :
 	_source( 0 ),
 	_id( 0 ),
@@ -173,25 +173,57 @@ GLTexture::GLTexture( Surface & sourceSurface, TextureFlavour flavour ) :
 
 	upload( sourceSurface ) ;
 	
+	// We could take ownership of sourceSurface instead and store it in _source.
+	
 }
+*/
 
 
 
 GLTexture::~GLTexture() throw()
 {
-
-#if OSDL_USES_OPENGL
-
+	
 	LOG_DEBUG_TEXTURE( "Deleting a GLTexture" ) ;
 
-	if ( _id != 0 )
-		glDeleteTextures( 1, & _id ) ;
+	try
+	{
+	
+		/* 
+		 * Tries to remove unconditionally the texture from video card, as
+		 * we are not able to know whether it is still there:
+		 * (OpenGL call ignores names (i.e. id) that do not correspond to
+		 * existing textures; isResident may not give this information).
+		 *
+		 */
+		remove() ;
+	
+	}
+	catch( const GLTextureException & e )
+	{
 		
-	if ( _source != 0 )
-		delete _source ;
+		LogPlug::error( "GLTexture destructor failed "
+			"while removing it from video card: " + e.toString() ) ;
+		
+	}
 
-#endif // OSDL_USES_OPENGL
+	
+	try
+	{
+	
+		if ( hasContent() )
+			unload() ;
+	
+	}
+	catch( const Ceylan::LoadableException & e )
+	{
 		
+		LogPlug::error( "GLTexture destructor failed while unloading texture: " 
+			+ e.toString() ) ;
+		
+	}
+	
+	//LogPlug::trace( "GLTexture deallocated." ) ;
+
 }
 
 
@@ -199,8 +231,12 @@ GLTexture::~GLTexture() throw()
 Length GLTexture::getWidth() const
 {
 
-	return _width ;
-	
+	if ( _content != 0 )
+		return _content->getWidth() ;
+	else
+		throw GLTextureException( "GLTexture::getWidth called "
+			"whereas texture not loaded." ) ;
+
 }
 
 
@@ -208,46 +244,310 @@ Length GLTexture::getWidth() const
 Length GLTexture::getHeight() const
 {
 
-	return _height ;
+	if ( _content != 0 )
+		return _content->getHeight() ;
+	else
+		throw GLTextureException( "GLTexture::getHeight called "
+			"whereas texture not loaded." ) ;
 	
 }
 
 
 
 
-bool GLTexture::canBeUploaded() const
+
+bool GLTexture::wasUploaded() const
 {
 
-	return ( _source != 0 ) ;
+	return ( _id != 0 ) ;
 	
 }
 
+
+
+/*
+ * Note: an upload method from any existing surface could be added back
+ * (available in previous versions, see source control).
+ *
+ */
 
 
 void GLTexture::upload()
 {
 
-	// This is the upload version without a source surface.
-	
 #if OSDL_USES_OPENGL
 
-	LOG_DEBUG_TEXTURE( "GLTexture::upload" ) ;
+	LogPlug::trace( "GLTexture::upload" ) ;
 
-	if ( ! canBeUploaded() )
-		throw GLTextureException( "GLTexture::upload: "
-			"texture cannot be uploaded into OpenGL context." ) ;
+	if ( wasUploaded() )
+		throw GLTextureException( "GLTexture::upload called "
+			"whereas a texture identifier is already available." ) ;
+		
+	if ( ! hasContent() )
+		load() ;
+
+	
+	// Generates a new name for this texture in its identifier member:
+	glGenTextures( /* one name requested */ 1, & _id ) ;
+
+
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( ::glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+				break ;
+		
+		case GL_INVALID_VALUE:
+			throw GLTextureException( 
+				"GLTexture::upload failed (glGenTextures): "
+				"invalid number of requested names." ) ;
+			break ;
+		
+		case GL_INVALID_OPERATION:
+			throw GLTextureException( 
+				"GLTexture::upload failed (glGenTextures): "
+				"incorrectly executed between the execution of glBegin and "
+				"the corresponding execution of glEnd." ) ;
+			break ;
+		
+		default:
+			LogPlug::warning( "GLTexture::upload failed (glGenTextures): "
+				"unexpected error reported." ) ;
+			break ;	
 			
-	// @todo	
-	// if ( OpenGLContext::ContextCanBeLost	) ... else..
+	}
 
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
+	
+	
+	/*
+	 * 2-dimensional textures here:
+	 *
+	 * @note "The state of a n-dimensional texture immediately after it 
+	 * is first bound is equivalent to the state of the default 
+	 * GL_TEXTURE_nD at GL initialization": it implies this call will reset
+	 * the texture settings, notably GL_TEXTURE_MIN_FILTER, which would 
+	 * result in glTexImage2D selecting a blank texture (filter being 
+	 * GL_LINEAR instead of GL_NEAREST).
+	 *
+	 */
+	glBindTexture( /* texturing target */ GL_TEXTURE_2D, 
+		/* name to bind */ _id ) ;
+	
+	/*
+	 * We have therefore to re-set the texture settings:
+	 * (beware to this side-effect!)
+	 *
+	 */
+	SetTextureFlavour( _flavour ) ;
+	
+		
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( ::glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+	
+		case GL_INVALID_ENUM:
+			throw GLTextureException( 
+				"GLTexture::upload failed (glBindTexture): "
+				"target is not an allowed value." ) ;
+			break ;
+	
+		case GL_INVALID_OPERATION:
+			throw GLTextureException( 
+				"GLTexture::upload failed (glBindTexture): "
+				"wrong dimensionality or incorrectly executed between "
+				"the execution of glBegin and the corresponding execution "
+				"of glEnd." ) ;
+			break ;
+	
+		default:
+			LogPlug::warning( "GLTexture::upload failed (glBindTexture): "
+				"unexpected error reported." ) ;
+			break ;	
+			
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+	
+	Length width  = getWidth() ;
+	Length height = getHeight() ;
+	
+	
+	if ( IsAPowerOfTwo( width ) && IsAPowerOfTwo( height ) )
+	{
+
+		LogPlug::trace( "GLTexture::upload: glTexImage2D with "
+			+ Ceylan::toString( width ) + "x" 
+			+ Ceylan::toString( height ) ) ;
+	
+		
+    	glTexImage2D( 
+			/* target texture */ GL_TEXTURE_2D, 
+			/* level-of-detail number: base image */ 0, 
+			/* number of color components */ GL_RGBA, 
+			/* already a power of two */ width, 
+			/* already a power of two */ height, 
+			/* no border */ 0, 
+			/* pixel format */ GL_RGBA, 
+			/* pixel data type */ GL_UNSIGNED_BYTE, 
+			_content->getPixels() ) ;
+
+#if OSDL_CHECK_OPENGL_CALLS
+			
+		switch ( ::glGetError() )
+		{
+	
+			case GL_NO_ERROR:
+				break ;
+		
+			case GL_INVALID_ENUM:
+				throw GLTextureException( 
+					"GLTexture::upload failed (glTexImage2D): "
+					"invalid enum." ) ;
+				break ;
+		
+			case GL_INVALID_VALUE:
+				throw GLTextureException( 
+					"GLTexture::upload failed (glTexImage2D): "
+					"invalid value." ) ;
+				break ;
+		
+			case GL_INVALID_OPERATION:
+				throw GLTextureException( 
+					"GLTexture::upload failed (glTexImage2D): "
+					"incorrectly executed between the execution of "
+					"glBegin and the corresponding execution of glEnd." ) ;
+				break ;
+		
+			default:
+				throw GLTextureException( 
+					"GLTexture::upload failed (glTexImage2D): "
+					"unexpected error reported." ) ;
+				break ;	
+			
+		}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+	}		
+	else
+	{
+        	
+		LogPlug::trace( "GLTexture::upload: gluBuild2DMipmaps" ) ;
+
+		// At least one dimension is not a power of two:
+		GLU::Int res = gluBuild2DMipmaps( 
+			/* target texture */ GL_TEXTURE_2D, 
+			/* number of color components */ GL_RGBA, 
+			/* may be a non-power of two */ width, 
+			/* may be a non-power of two */ height, 
+			/* pixel format */ GL_RGBA, 
+			/* pixel data type */ GL_UNSIGNED_BYTE, 
+			_content->getPixels() ) ;
+				
+#if OSDL_CHECK_OPENGL_CALLS
+
+		switch ( res )
+		{
+	
+			case 0:
+				// Success.
+				break ;
+				
+			case GLU_INVALID_ENUM:
+				throw GLTextureException( 
+					"GLTexture::upload failed (gluBuild2DMipmaps): "
+					"invalid enum." ) ;
+				break ;
+		
+			case GLU_INVALID_VALUE:
+				throw GLTextureException( 
+					"GLTexture::upload failed (gluBuild2DMipmaps): "
+					"invalid value." ) ;
+				break ;
+			
+			default:
+				throw GLTextureException( 
+					"GLTexture::upload failed (gluBuild2DMipmaps): "
+					"unexpected error reported." ) ;
+				break ;	
+			
+		}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+				
+	}
+	
+	// Still loaded.
+				
+	
 #else // OSDL_USES_OPENGL
 
 	throw GLTextureException( "GLTexture::upload failed: "
 		"OpenGL support not available." ) ;
 	
 #endif // OSDL_USES_OPENGL
+
+}	
+
 	
+
+
+void GLTexture::remove()
+{
+
+#if OSDL_USES_OPENGL
+
+	if ( _id != 0 )
+	{
+		
+		::glDeleteTextures( 1, & _id ) ;
+
+		_id = 0 ;
+
+#if OSDL_CHECK_OPENGL_CALLS
+
+		switch ( ::glGetError() )
+		{
+	
+			case GL_NO_ERROR:
+				break ;
+		
+			case GL_INVALID_VALUE:
+				throw GLTextureException( "GLTexture::remove failed: "
+					"incorrect negative ID specified." ) ;
+				break ;
+		
+			case GL_INVALID_OPERATION:
+				throw GLTextureException( "GLTexture::remove failed: "
+					"incorrectly executed between the execution of glBegin "
+					"and the corresponding execution of glEnd." ) ;
+				break ;
+		
+			default:
+				LogPlug::warning( "GLTexture::remove failed: "
+					"unexpected error reported." ) ;
+				break ;	
+			
+		}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+	}
+
+	
+#endif // OSDL_USES_OPENGL
+		
 }
+
 
 
 
@@ -258,25 +558,29 @@ void GLTexture::setAsCurrent() const
 
 	//LOG_DEBUG_TEXTURE( "GLTexture::setAsCurrent" ) ;
 
+	if ( _id == 0 )
+		throw GLTextureException( "GLTexture::setAsCurrent: texture not loaded "
+			"(no available texture identifier)" ) ;
+			
 	// We consider here that this is a const operation:
 	::glBindTexture( /* target */ GL_TEXTURE_2D, /* texture */ _id ) ;
 	
 		
 #if OSDL_CHECK_OPENGL_CALLS
 
-	switch ( glGetError() )
+	switch ( ::glGetError() )
 	{
 	
 		case GL_NO_ERROR:
 			break ;
 		
 		case GL_INVALID_VALUE:
-			throw OpenGLException( "GLTexture::setAsCurrent failed: "
+			throw GLTextureException( "GLTexture::setAsCurrent failed: "
 				"incorrect target specified." ) ;
 			break ;
 		
 		case GL_INVALID_OPERATION:
-			throw OpenGLException( "GLTexture::setAsCurrent failed: "
+			throw GLTextureException( "GLTexture::setAsCurrent failed: "
 				"invalid operation, texture has a dimensionality that "
 				"does not match that of target, "
 				"or incorrectly executed between the execution of glBegin "
@@ -304,7 +608,6 @@ void GLTexture::setAsCurrent() const
 
 bool GLTexture::isResident()
 {
-
 	
 #if OSDL_USES_OPENGL
 
@@ -318,26 +621,26 @@ bool GLTexture::isResident()
 	 * would only query the texture currently bound.
 	 *
 	 */
-	bool res = ( glAreTexturesResident( 
+	bool res = ( ::glAreTexturesResident( 
 		/* number of textures to be queried */ 1,
 		/* array containing the names of the textures to be queried */ & _id,
 		/* dummy returned array */ &residences ) == GL_TRUE ) ;
 		
 #if OSDL_CHECK_OPENGL_CALLS
 
-	switch ( glGetError() )
+	switch ( ::glGetError() )
 	{
 	
 		case GL_NO_ERROR:
 			break ;
 		
 		case GL_INVALID_VALUE:
-			throw OpenGLException( "GLTexture::isResident failed: "
+			throw GLTextureException( "GLTexture::isResident failed: "
 				"invalid (negative?) texture number." ) ;
 			break ;
 		
 		case GL_INVALID_OPERATION:
-			throw OpenGLException( "GLTexture::isResident failed: "
+			throw GLTextureException( "GLTexture::isResident failed: "
 				"invalid operation, incorrectly executed between "
 				"the execution of glBegin and the corresponding execution "
 				"of glEnd." ) ;
@@ -365,6 +668,85 @@ bool GLTexture::isResident()
 
 
 
+
+// LoadableWithContent template instanciation.
+
+
+
+bool GLTexture::load()
+{
+
+	if ( hasContent() )
+		return false ;
+
+	LOG_DEBUG_TEXTURE( "Constructing a GLTexture from file " + _contentPath ) ;
+
+	try
+	{
+
+		// Inspired from Stephane Marchesin's routine. Thanks Stephane!
+
+		/*
+		 * No alpha blending, no RLE acceleration should be used, and 
+		 * overall alpha is set to full transparency.
+		 *
+		 * Colorkey not managed.
+		 *
+		 */
+
+		// Temporary surface:
+		Surface * originalSurface = & Surface::LoadImage( _contentPath, 
+			/* convertToDisplayFormat */ false, /* convertWithAlpha */ false ) ;
+		
+		if ( ( originalSurface->getFlags() & Surface::AlphaBlendingBlit ) != 0 )
+			originalSurface->setAlpha( /* disable alpha blending */ 0, 
+				/* new per-surface alpha value */ AlphaTransparent ) ;
+
+		// To avoid having transparent surfaces, use 0 for AlphaMask?
+		
+		_content = new Surface( VideoModule::SoftwareSurface,
+			originalSurface->getWidth(), originalSurface->getHeight(), 
+			32 /* bits per pixel */,
+			RedMask, GreenMask, BlueMask, AlphaMask ) ;
+
+		originalSurface->blitTo( *_content ) ;
+
+		delete originalSurface ;
+		
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw Ceylan::LoadableException( "GLTexture::load failed: "
+			"unable to load from '" + _contentPath + "': " + e.toString() ) ;
+			
+	}	
+
+	return true ;
+	
+	// _content kept.
+	
+}
+
+
+
+bool GLTexture::unload()
+{
+
+	if ( ! hasContent() )
+		return false ;
+
+	// There is content to unload here:
+
+	delete _content ;
+	_content = 0 ;
+
+	return true ;
+	
+}
+
+
+
 const string GLTexture::toString( Ceylan::VerbosityLevels level ) const
 {
 
@@ -375,16 +757,15 @@ const string GLTexture::toString( Ceylan::VerbosityLevels level ) const
 	else
 		res += "whose OpenGL identifier is " + Ceylan::toString( _id ) ;
 	
-	if ( _source == 0 )
-		res += ", and which has no available internal surface "
-			"kept for reload." ;
+	res += ", whose content path is '" + _contentPath ;
+	
+	if ( _content == 0 )
+		res += "', and which content is not loaded" ;
 	else
-		res += ", which owns an internal surface, "
-			"kept for reloading purposes." ;
-
-	res += " Its current size (width x height) is " 
-		+ Ceylan::toString( _width ) + "x" 
-		+ Ceylan::toString( _height ) + " pixels" ;
+		res += "', which content is loaded. "
+			"Its current size (width x height) is " 
+			+ Ceylan::toString( getWidth() ) + "x" 
+			+ Ceylan::toString( getHeight() ) + " pixels" ;
 	
 	return res ;	 	
 		
@@ -605,7 +986,7 @@ void GLTexture::SetTextureEnvironmentParameter(
 
 #if OSDL_CHECK_OPENGL_CALLS
 
-	switch ( glGetError() )
+	switch ( ::glGetError() )
 	{
 	
 		case GL_NO_ERROR:
@@ -653,6 +1034,34 @@ void GLTexture::SetTextureEnvironmentParameter(
 
 
 
+std::string GLTexture::GetExtensionForFlavour( TextureFlavour flavour )
+{
+
+	switch( flavour )
+	{
+	
+		case None:
+			return ".tex" ;
+
+		case Basic:
+			return ".tex" ;
+			
+		case For2D:
+			return ".tex2D" ;
+			
+		case For3D:
+			return ".tex3D" ;
+		
+		default:
+			throw GLTextureException( "GLTexture::GetExtensionForFlavour: "
+				"unknown flavour (" + Ceylan::toString(flavour) + ")" ) ;
+			
+	}
+	
+}
+
+
+
 void GLTexture::SetTextureEnvironmentParameter( 
 	GLEnumeration targetEnvironment,
 	GLEnumeration environmentParameter,
@@ -666,7 +1075,7 @@ void GLTexture::SetTextureEnvironmentParameter(
 
 #if OSDL_CHECK_OPENGL_CALLS
 
-	switch ( glGetError() )
+	switch ( ::glGetError() )
 	{
 	
 		case GL_NO_ERROR:
@@ -716,277 +1125,4 @@ void GLTexture::SetTextureEnvironmentParameter(
 
 
 // Protected section.
-
-
-
-void GLTexture::upload( Surface & sourceSurface ) 
-{
-
-#if OSDL_USES_OPENGL
-
-
-	LogPlug::trace( "GLTexture::upload (with source surface)" ) ;
-
-	_width  = sourceSurface.getWidth() ;
-	_height = sourceSurface.getHeight() ;
-	
-	
-	// Inspired from Stephane Marchesin's routine. Thanks Stephane!
-	
-	try
-	{
-	
-		/*
-		 * No alpha blending, no RLE acceleration should be used, and 
-		 * overall alpha is set to full transparency.
-		 *
-		 */
-
-		// Colorkey not managed.
-	
-		// Saves the alpha blending attributes:
-		Flags savedFlags = sourceSurface.getFlags() & ( 
-			Surface::AlphaBlendingBlit | Surface::RLEColorkeyBlitAvailable ) ;
-	
-		// Saves the overall surface alpha value:
-		Pixels::ColorElement savedAlpha = sourceSurface.getPixelFormat().alpha ;
-	
-		bool mustModifyOverallAlpha =
-			( ( savedFlags & Surface::AlphaBlendingBlit ) != 0 ) ;
-	
-		if ( mustModifyOverallAlpha ) 
-		  	sourceSurface.setAlpha( /* disable alpha blending */ 0, 
-				/* new per-surface alpha value */ AlphaTransparent ) ;
-		
-		// To avoid having transparent surfaces, use 0 for AlphaMask?
-		
-		// Temporary surface for the uploading:
-		Surface & convertedSurface =  * new Surface(
-			VideoModule::SoftwareSurface, _width, _height, 
-			32 /* bits per pixel */,
-			RedMask, GreenMask, BlueMask, AlphaMask ) ;
-			
-		sourceSurface.blitTo( convertedSurface ) ;
-		 
-
-		// Restores the alpha blending attributes of the source surface:
-		if ( mustModifyOverallAlpha ) 
-		  	sourceSurface.setAlpha( /* alpha flags */ savedFlags, 
-				/* new per-surface alpha value */ savedAlpha ) ;
-	
-		// Generates a new name for this texture in its identifier member:
-		glGenTextures( /* one name requested */ 1, & _id ) ;
-
-
-#if OSDL_CHECK_OPENGL_CALLS
-
-		switch ( glGetError() )
-		{
-	
-			case GL_NO_ERROR:
-				break ;
-		
-			case GL_INVALID_VALUE:
-				throw OpenGLException( 
-					"GLTexture::upload failed (glGenTextures): "
-					"invalid number of requested names." ) ;
-				break ;
-		
-			case GL_INVALID_OPERATION:
-				throw OpenGLException( 
-					"GLTexture::upload failed (glGenTextures): "
-					"incorrectly executed between the execution of glBegin and "
-					"the corresponding execution of glEnd." ) ;
-				break ;
-		
-			default:
-				LogPlug::warning( "GLTexture::upload failed (glGenTextures): "
-					"unexpected error reported." ) ;
-				break ;	
-				
-		}
-
-#endif // OSDL_CHECK_OPENGL_CALLS
-
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
-	
-	
-		/*
-		 * 2-dimensional textures here:
-		 *
-		 * @note "The state of a n-dimensional texture immediately after it 
-		 * is first bound is equivalent to the state of the default 
-		 * GL_TEXTURE_nD at GL initialization": it implies this call will reset
-		 * the texture settings, notably GL_TEXTURE_MIN_FILTER, which would 
-		 * result in glTexImage2D selecting a blank texture (filter being 
-		 * GL_LINEAR instead of GL_NEAREST).
-		 *
-		 */
-		glBindTexture( /* texturing target */ GL_TEXTURE_2D, 
-			/* name to bind */ _id ) ;
-		
-		/*
-		 * We have therefore to re-set the texture settings:
-		 * (beware to this side-effect!)
-		 *
-		 */
-		SetTextureFlavour( _flavour ) ;
-		
-		
-#if OSDL_CHECK_OPENGL_CALLS
-
-		switch ( glGetError() )
-		{
-	
-			case GL_NO_ERROR:
-				break ;
-		
-			case GL_INVALID_ENUM:
-				throw OpenGLException( 
-					"GLTexture::upload failed (glBindTexture): "
-					"target is not an allowed value." ) ;
-				break ;
-		
-			case GL_INVALID_OPERATION:
-				throw OpenGLException( 
-					"GLTexture::upload failed (glBindTexture): "
-					"wrong dimensionality or incorrectly executed between "
-					"the execution of glBegin and the corresponding execution "
-					"of glEnd." ) ;
-				break ;
-		
-			default:
-				LogPlug::warning( "GLTexture::upload failed (glBindTexture): "
-					"unexpected error reported." ) ;
-				break ;	
-				
-		}
-
-#endif // OSDL_CHECK_OPENGL_CALLS
-	
-		if ( IsAPowerOfTwo( _width ) && IsAPowerOfTwo( _height ) )
-		{
-
-
-			LogPlug::trace( "GLTexture::upload: glTexImage2D with "
-				+ Ceylan::toString( _width ) + "x" 
-				+ Ceylan::toString( _height ) ) ;
-		
-			
-        	glTexImage2D( 
-				/* target texture */ GL_TEXTURE_2D, 
-				/* level-of-detail number: base image */ 0, 
-				/* number of color components */ GL_RGBA, 
-				/* already a power of two */ _width, 
-				/* already a power of two */ _height, 
-				/* no border */ 0, 
-				/* pixel format */ GL_RGBA, 
-				/* pixel data type */ GL_UNSIGNED_BYTE, 
-				convertedSurface.getPixels() ) ;
-
-#if OSDL_CHECK_OPENGL_CALLS
-			
-			switch ( glGetError() )
-			{
-	
-				case GL_NO_ERROR:
-					break ;
-		
-				case GL_INVALID_ENUM:
-					throw OpenGLException( 
-						"GLTexture::upload failed (glTexImage2D): "
-						"invalid enum." ) ;
-					break ;
-		
-				case GL_INVALID_VALUE:
-					throw OpenGLException( 
-						"GLTexture::upload failed (glTexImage2D): "
-						"invalid value." ) ;
-					break ;
-		
-				case GL_INVALID_OPERATION:
-					throw OpenGLException( 
-						"GLTexture::upload failed (glTexImage2D): "
-						"incorrectly executed between the execution of "
-						"glBegin and the corresponding execution of glEnd." ) ;
-					break ;
-		
-				default:
-					throw OpenGLException( 
-						"GLTexture::upload failed (glTexImage2D): "
-						"unexpected error reported." ) ;
-					break ;	
-				
-			}
-
-#endif // OSDL_CHECK_OPENGL_CALLS
-
-		}		
-		else
-		{
-        	
-			LogPlug::trace( "GLTexture::upload: gluBuild2DMipmaps" ) ;
-
-			// At least one dimension is not a power of two:
-			GLU::Int res = gluBuild2DMipmaps( 
-				/* target texture */ GL_TEXTURE_2D, 
-				/* number of color components */ GL_RGBA, 
-				/* may be a non-power of two */ _width, 
-				/* may be a non-power of two */ _height, 
-				/* pixel format */ GL_RGBA, 
-				/* pixel data type */ GL_UNSIGNED_BYTE, 
-				convertedSurface.getPixels() ) ;
-				
-#if OSDL_CHECK_OPENGL_CALLS
-
-			switch ( res )
-			{
-	
-				case 0:
-					// Success.
-					break ;
-					
-				case GLU_INVALID_ENUM:
-					throw OpenGLException( 
-						"GLTexture::upload failed (gluBuild2DMipmaps): "
-						"invalid enum." ) ;
-					break ;
-		
-				case GLU_INVALID_VALUE:
-					throw OpenGLException( 
-						"GLTexture::upload failed (gluBuild2DMipmaps): "
-						"invalid value." ) ;
-					break ;
-				
-				default:
-					throw OpenGLException( 
-						"GLTexture::upload failed (gluBuild2DMipmaps): "
-						"unexpected error reported." ) ;
-					break ;	
-				
-			}
-
-#endif // OSDL_CHECK_OPENGL_CALLS
-				
-		}
-		
-		delete & convertedSurface ;
-		
-	}
-	catch( const VideoException & e )
-	{
-	
-		throw GLTextureException( "GLTexture::upload failed: "
-			+ e.toString() ) ;
-			
-	}
-	
-#else // OSDL_USES_OPENGL
-
-	throw GLTextureException( "GLTexture::upload failed: "
-		"OpenGL support not available." ) ;
-	
-#endif // OSDL_USES_OPENGL
-
-}	
 
