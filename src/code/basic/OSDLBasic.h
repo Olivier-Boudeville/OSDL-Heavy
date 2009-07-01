@@ -109,7 +109,12 @@ namespace OSDL
 	
 	
 	
-	/// Returns the version of the OSDL library currently linked.
+	/**
+	 * Returns the version of the OSDL library currently linked.
+	 *
+	 * @throw OSDL::Exception if the operation failed.
+	 *
+	 */
 	OSDL_DLL const Ceylan::LibtoolVersion & GetVersion() ;
 
 
@@ -131,35 +136,21 @@ namespace OSDL
 
 
 
+		// Friend declarations:
+		
+		
 		/**
 		 * This friend function is intended to be the initial means of getting
 		 * a reference to the common module: this is the entry point to 
 		 * the whole OSDL system.
 		 *
-		 * @param flags The requested flags for this common root module, 
-		 * any OR'd combination of CommonModule static flags, so that 
-		 * associated subsystems are instanciated.
+		 * See its declaration at the end of file for further details.
 		 *
-		 * @see UseTimer, UseAudio, UseVideo, UseCDROM, UseJoystick,
-		 * UseEverything, NoParachute, UseEventThread, etc.
-		 * 
-		 * @note UseVideo is required to start the event loop, so it is 
-		 * implied by the UseJoystick flag.
-		 * 
-		 * @note This method is not static to avoid pitfalls of static
-		 * initializer ordering.
-		 *
-		 */			
+		 */
 		OSDL_DLL friend CommonModule & getCommonModule( Ceylan::Flags flags ) ;
 		
 		
-		
-		/**
-		 * Tells whether there already exists a common module.
-		 *
-		 */
 		OSDL_DLL friend bool hasExistingCommonModule() ;
-		
 		
 		
 		/**
@@ -168,23 +159,15 @@ namespace OSDL
 		 * If not, a fatal error will be triggered (not an exception to 
 		 * avoid handling it in all user methods).
 		 * 
-		 * @note This function is mainly useful for the OSDL internals, 
-		 * if sub-modules, such as the event module, needed access to 
-		 * the common module.
+		 * See its declaration at the end of file for further details.
 		 *
-		 * @see hasCommonModule()
-		 * 
-		 * @note This method is not static to avoid pitfalls of static
-		 * initializer ordering.
-		 *
-		 */			
+		 */
 		OSDL_DLL friend CommonModule & getExistingCommonModule() ;
-		
-		
 		
 		
 		/// This friend function allows to shutdown all OSDL services.
 		OSDL_DLL friend void stop() ;
+
 
 
 
@@ -535,11 +518,32 @@ namespace OSDL
 
 
 
+	// Friend section.
+	
+	
+
 	/**
 	 * Returns a common module, already existing or, otherwise, created as
 	 * a side-effect of this call.
 	 *
-	 */
+	 * This friend function is intended to be the initial means of getting
+	 * a reference to the common module: this is the entry point to 
+	 * the whole OSDL system.
+	 *
+	 * @param flags The requested flags for this common root module, 
+	 * any OR'd combination of CommonModule static flags, so that 
+	 * associated subsystems are instanciated.
+	 *
+	 * @see UseTimer, UseAudio, UseVideo, UseCDROM, UseJoystick,
+	 * UseEverything, NoParachute, UseEventThread, etc.
+	 * 
+	 * @note UseVideo is required to start the event loop, so it is 
+	 * implied by the UseJoystick flag.
+	 * 
+	 * @note This method is not static to avoid pitfalls of static
+	 * initializer ordering.
+	 *
+	 */ 		
 	OSDL_DLL CommonModule & getCommonModule( Ceylan::Flags flags ) ;
 		
 	
@@ -555,8 +559,8 @@ namespace OSDL
 	/**
 	 * This function is intended to be the usual means of
 	 * getting a reference to the common module, which must already exist.
-	 * If not, a fatal error will be triggered (not an exception to 
-	 * avoid handling it in all user methods).
+	 *
+	 * @throw OSDL::Exception if the common module does not exist already.
 	 * 
 	 * @note This function is mainly useful for the OSDL internals, 
 	 * if sub-modules, such as the event module, needed access to 
@@ -570,7 +574,6 @@ namespace OSDL
 	 */			
 	OSDL_DLL CommonModule & getExistingCommonModule() ;
 		
-	
 	
 }
 
