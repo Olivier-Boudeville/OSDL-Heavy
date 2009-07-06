@@ -309,8 +309,8 @@ EventsModule::EventsModule( Flags eventsFlag ) :
 	
 	/*
 	 * No 'if ( eventsFlag & CommonModule::UseKeyboard )...' test, as even if 
-	 * the UseMouse flag is not set, we may receive mouse-related events
-	 * (motion, focus, etc.), hence we need a handler for that:
+	 * the UseKeyboard flag is not set, we could receive keyboard-related 
+	 * events, hence we need a handler for that:
 	 *
 	 */
 	
