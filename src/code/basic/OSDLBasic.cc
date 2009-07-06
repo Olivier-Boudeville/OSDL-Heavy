@@ -245,13 +245,18 @@ CommonModule::CommonModule( Flags flags ) :
 	_events( 0 ), 
 	_audio(  0 ), 
 	_flags( flags ),
-	_cdromHandler( 0 ) 
+	_cdromHandler( 0 ),
+	_startingSecond( 0 ),
+	_startingMicrosecond( 0 )	
 {
 
 	bool useAgar = false ;
 	
 	LOG_TRACE_BASIC( "CommonModule constructor" ) ;
-		
+	
+	// Records the OSDL start time:
+	System::getPreciseTime( _startingSecond, _startingMicrosecond ) ;
+	
 	// For the sake of safety:
 	flags = AutoCorrectFlags( flags ) ;
 	 
@@ -473,7 +478,16 @@ CommonModule::CommonModule( Flags flags ) :
 CommonModule::~CommonModule() throw()
 {	
 
-    send( "Stopping OSDL." ) ;
+	System::Second currentSecond ;
+	System::Microsecond currentMicrosecond ;
+	
+	System::getPreciseTime( currentSecond, currentMicrosecond ) ;
+
+    send( "Stopping OSDL, which has been running for " 
+		+ Ceylan::System::durationToString( 
+			_startingSecond, _startingMicrosecond, 
+			currentSecond, currentMicrosecond ) + "." ) ; 
+
 
 	if ( _cdromHandler != 0 )
 	{
@@ -481,7 +495,7 @@ CommonModule::~CommonModule() throw()
 		_cdromHandler = 0 ;	
 	}
 
-    send( "CD-ROM managed, now audio." ) ;
+    send( "CD-ROM stopped, now audio." ) ;
 		
 	if ( _audio != 0 )
 	{
@@ -489,7 +503,7 @@ CommonModule::~CommonModule() throw()
 		_audio = 0 ;
 	}	
 
-    send( "Audio managed, now events." ) ;
+    send( "Audio stopped, now events." ) ;
 	
 	if ( _events != 0 )
 	{
@@ -497,7 +511,7 @@ CommonModule::~CommonModule() throw()
 		_events = 0 ;
 	}	
 
-    send( "Events managed, now video." ) ;
+    send( "Events stopped, now video." ) ;
 	
 	if ( _video != 0 )
 	{
@@ -505,7 +519,7 @@ CommonModule::~CommonModule() throw()
 		_video = 0 ;
 	}
 	
-    send( "Video managed." ) ;
+    send( "Video stopped." ) ;
 	
 				
 #if OSDL_USES_SDL
@@ -602,6 +616,21 @@ string CommonModule::InterpretFlags( Flags flags )
 	return "The specified flags for Common module, whose value is " 
 		+ Ceylan::toString( flags, /* bit field */ true ) 
 		+ ", mean: " + Ceylan::formatStringList( res ) ;
+
+}
+
+
+
+Ceylan::System::Microsecond CommonModule::getRuntimeDuration() const
+{
+
+	System::Second currentSecond ;	
+	System::Microsecond currentMicrosecond ;
+	
+	System::getPreciseTime( currentSecond, currentMicrosecond ) ;
+	
+	return System::getDurationBetween( _startingSecond, _startingMicrosecond,
+		currentSecond, currentMicrosecond ) ;
 
 }
 
