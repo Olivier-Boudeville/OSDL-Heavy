@@ -196,6 +196,14 @@ namespace OSDL
 		
 		
 		
+			/**
+			 * Returns the number of microseconds OSDL has been running.
+			 *
+			 */
+			Ceylan::System::Microsecond getRuntimeDuration() const ;
+		
+				
+		
 			/// Tells whether a video module is available.
 			virtual bool hasVideoModule() const ; 
 
@@ -458,6 +466,15 @@ namespace OSDL
 			
 			/// Pointer to the current CD-ROM drive handler used, if any.
 			CDROMDriveHandler * _cdromHandler ;
+			
+			
+			
+			/// Stores the second at which OSDL was started.
+			Ceylan::System::Second _startingSecond ;
+			
+			
+			/// Stores the microsecond at which OSDL was started.
+			Ceylan::System::Microsecond _startingMicrosecond ;
 			
 			
 			
