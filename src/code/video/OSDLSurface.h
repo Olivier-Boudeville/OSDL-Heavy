@@ -3092,6 +3092,12 @@ namespace OSDL
 				/**
 				 * Returns the current number of updates for that surface.
 				 *
+				 * Counts the number of times this surface has been updated
+				 * once initialized.
+				 *
+				 * @note Even with a refresh rate of 100Hz, will not wrap 
+				 * around until more than one year.
+				 *
 				 * @note This corresponds only to full updates as performed
 				 * by the update() method.
 				 *
