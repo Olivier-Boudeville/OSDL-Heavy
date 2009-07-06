@@ -160,7 +160,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void keyboardFocusGained( 
-					const FocusEvent & keyboardFocusEvent ) ;
+					const OSDL::Events::FocusEvent & keyboardFocusEvent ) ;
 
 
 
@@ -173,7 +173,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void keyboardFocusLost( 
-					const FocusEvent & keyboardFocusEvent ) ;
+					const OSDL::Events::FocusEvent & keyboardFocusEvent ) ;
 
 
 			
@@ -186,7 +186,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void rawKeyPressed( 
-					const KeyboardEvent & keyboardPressedEvent ) ;
+					const OSDL::Events::KeyboardEvent & keyboardPressedEvent ) ;
 
 
 
@@ -199,7 +199,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void rawKeyReleased( 
-					const KeyboardEvent & keyboardReleasedEvent ) ;
+					const OSDL::Events::KeyboardEvent & 
+						keyboardReleasedEvent )	;
 
 
 
@@ -212,7 +213,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void unicodeSelected( 
-					const KeyboardEvent & keyboardPressedEvent ) ;
+					const OSDL::Events::KeyboardEvent & keyboardPressedEvent ) ;
 
 
 
@@ -231,7 +232,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseFocusGained( 
-					const FocusEvent & mouseFocusEvent ) ;
+					const OSDL::Events::FocusEvent & mouseFocusEvent ) ;
 
 
 
@@ -244,7 +245,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseFocusLost(
-					const FocusEvent & mouseFocusEvent ) ;
+					const OSDL::Events::FocusEvent & mouseFocusEvent ) ;
 
 
 				
@@ -256,7 +257,7 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseMoved( 
-					const MouseMotionEvent & mouseMotionEvent ) ;
+					const OSDL::Events::MouseMotionEvent & mouseMotionEvent ) ;
 
 
 
@@ -269,7 +270,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseButtonPressed( 
-					const MouseButtonEvent & mouseButtonPressedEvent ) ;
+					const OSDL::Events::MouseButtonEvent &
+						mouseButtonPressedEvent ) ;
 
 
 
@@ -282,7 +284,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void mouseButtonReleased( 
-					const MouseButtonEvent & mouseButtonReleasedEvent ) ;
+					const OSDL::Events::MouseButtonEvent &
+						mouseButtonReleasedEvent ) ;
 
 
 
@@ -300,7 +303,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickAxisChanged( 
-					const JoystickAxisEvent & joystickAxisEvent ) ;
+					const OSDL::Events::JoystickAxisEvent & 
+						joystickAxisEvent ) ;
 
 
 
@@ -313,7 +317,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickTrackballChanged( 
-					const JoystickTrackballEvent & joystickTrackballEvent ) ;
+					const OSDL::Events::JoystickTrackballEvent &
+						joystickTrackballEvent ) ;
 
 
 
@@ -326,7 +331,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickHatChanged( 
-					const JoystickHatEvent & joystickHatChangedEvent ) ;
+					const OSDL::Events::JoystickHatEvent &
+						joystickHatChangedEvent ) ;
 
 
 
@@ -339,7 +345,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickButtonPressed( 
-					const JoystickButtonEvent & joystickButtonPressedEvent ) ;
+					const OSDL::Events::JoystickButtonEvent &
+						joystickButtonPressedEvent ) ;
 
 
 
@@ -352,7 +359,8 @@ namespace OSDL
 				 *
 				 */
 				virtual void joystickButtonReleased( 
-					const JoystickButtonEvent & joystickButtonReleasedEvent ) ;
+					const OSDL::Events::JoystickButtonEvent &
+						joystickButtonReleasedEvent ) ;
 
 
 				
@@ -482,6 +490,17 @@ namespace OSDL
 				  
 				  
 
+				/**
+				 * As this controller drives its listeners, they are not
+				 * expected to request events from it, therefore this 
+				 * inherited method will throw an exception in all cases.
+				 *
+				 */
+				virtual const Ceylan::Event & getEventFor( 
+					const Ceylan::CallerEventListener & listener ) ;
+					
+
+
 	            /**
 	             * Returns an user-friendly description of the state 
 				 * of this object.
@@ -498,7 +517,7 @@ namespace OSDL
 					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 			
 				
-							
+								
 
 			private:
 		
