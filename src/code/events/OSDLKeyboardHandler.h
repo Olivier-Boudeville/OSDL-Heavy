@@ -136,11 +136,11 @@ namespace OSDL
 		/**
 		 * Handler for keyboard.
 		 *
-		 * Keyboard input are managed according to the current keyboard mode
-		 * (example: raw input, text input with unicode support, etc.)
+		 * Keyboard inputs are managed according to the current keyboard mode
+		 * (example: raw input, text input with unicode support, etc.).
 		 *
 		 */
-		class OSDL_DLL KeyboardHandler: public InputDeviceHandler
+		class OSDL_DLL KeyboardHandler : public InputDeviceHandler
 		{
 		
 		
@@ -635,6 +635,21 @@ namespace OSDL
 				 *
 				 */
 				virtual void linkToController( KeyIdentifier rawKey, 
+					OSDL::MVC::Controller & controller ) ;
+				
+				
+				
+				/**
+				 * Unlinks the specified controller from the specified raw key
+				 *
+				 * @param rawKey the identifier of the raw key that shall 
+				 * be unlinked from the controller.
+				 *
+				 * @param controller the OSDL controller to unlink from that
+				 * key.
+				 *
+				 */
+				virtual void unlinkFromController( KeyIdentifier rawKey, 
 					OSDL::MVC::Controller & controller ) ;
 				
 				
