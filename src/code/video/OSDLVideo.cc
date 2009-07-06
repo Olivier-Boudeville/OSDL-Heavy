@@ -41,18 +41,6 @@ using std::pair ;
 
 
 
-/*
- * Disabled to avoid name clashes with Uint32 (SDL vs Ceylan): 
- * using namespace Ceylan ;
- *
- */
-using namespace Ceylan::Log ;
-
-using namespace OSDL::Video ;
-using namespace OSDL::Rendering ;
-using namespace OSDL::Video::OpenGL ;
-
-
 
 
 #ifdef OSDL_USES_CONFIG_H
@@ -75,6 +63,15 @@ using namespace OSDL::Video::OpenGL ;
 #include <agar/gui/opengl.h>
 	
 #endif // OSDL_USES_AGAR	
+
+
+using namespace Ceylan ;
+using namespace Ceylan::Log ;
+
+using namespace OSDL::Video ;
+using namespace OSDL::Rendering ;
+using namespace OSDL::Video::OpenGL ;
+
 
 
 
@@ -236,10 +233,11 @@ VideoModule::VideoModule() :
 	_screen( 0 ),
 	_displayInitialized( false ),
 	_renderer( 0 ),
-	_frameAccountingState( false ),		
 	_openGLcontext( 0 ),
 	_drawEndPoint( false ),
-	_antiAliasing( true )
+	_antiAliasing( true ),
+	_screenStartingSecond( 0 ),
+	_screenStartingMicrosecond( 0 )
 {
 
 #if OSDL_ARCH_NINTENDO_DS
@@ -303,8 +301,17 @@ VideoModule::~VideoModule() throw()
 		
 	// Back-end screen surface will not be deallocated here:
 	if ( _screen != 0 )
+	{
+	
+		send( "Average frame-rate has been " 
+			+ Ceylan::toString( getAverageRefreshRate(), /* precision */ 2 ) 
+			+ " frames per second." ) ;
+			
 		delete _screen ;
 
+	}
+	
+	
 	SDL_QuitSubSystem( CommonModule::UseVideo ) ;
 	
 	send( "Video subsystem stopped." ) ;
@@ -458,6 +465,9 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 #if OSDL_USES_SDL
 
 	_displayInitialized = false ;
+	
+	_screenStartingSecond = 0 ;
+	_screenStartingMicrosecond = 0 ;
 	
 	Ceylan::Flags userFlags = flags ;
 	
@@ -675,7 +685,6 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			_screen->getHeight() ) ; 
 		
 
-	_displayInitialized = true ;
 	
 	send( "After display creation, interpreting actually obtained surface: "
 		+ _screen->toString()
@@ -684,7 +693,14 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	
 	if ( _openGLcontext != 0 )
 		send( "Current OpenGL context: " + _openGLcontext->toString() ) ;
-		
+	
+	
+	// Start counting time:
+	Ceylan::System::getPreciseTime( _screenStartingSecond,
+		_screenStartingMicrosecond ) ;
+	
+	_displayInitialized = true ;
+	
 	return _screen->getFlags() ;
 			
 #else // OSDL_USES_SDL
@@ -1129,20 +1145,25 @@ bool VideoModule::iconifyWindow()
 
 
 
-bool VideoModule::getFrameAccountingState()
+Ceylan::Float32 VideoModule::getAverageRefreshRate()
 {
 
-	return _frameAccountingState ;
+	if ( _screen == 0 )
+		throw VideoException( "VideoModule::getAverageRefreshRate failed: "
+			"display is not initialized." ) ;
+			
+	System::Second currentSecond ;
+	System::Microsecond currentMicrosecond ;
 	
-}
+	System::getPreciseTime( currentSecond, currentMicrosecond ) ;
 
+	System::Microsecond duration = System::getDurationBetween(
+		_screenStartingSecond, _screenStartingMicrosecond,
+		currentSecond, currentMicrosecond ) ;
+		
+	return static_cast<Ceylan::Float32>( 
+		( 1000000.0f / duration ) * _screen->getUpdateCount() ) ;
 
-
-void VideoModule::setFrameAccountingState( bool newState )
-{
-
-	_frameAccountingState = newState ;
-	
 }
 
 
