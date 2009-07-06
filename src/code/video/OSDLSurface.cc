@@ -3002,11 +3002,11 @@ void Surface::redrawInternal()
 {
 
 #if OSDL_DEBUG_WIDGET
-	LogPlug::trace( "Surface::redrawInternal (non overriden version)" ) ; 
+	LogPlug::trace( "Surface::redrawInternal (non overridden version)." ) ; 
 #endif // OSDL_DEBUG_WIDGET
 
 	/*
-	 * Meant to be overriden if needed (filled with background color, 
+	 * Meant to be overridden if needed (filled with background color, 
 	 * background image blitted, etc.)
 	 *
 	 */
