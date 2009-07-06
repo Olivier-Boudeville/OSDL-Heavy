@@ -82,7 +82,7 @@ const Ceylan::System::Millisecond KeyboardHandler::DefaulKeyRepeatInterval
 
 
 
-// Starts with raw input mode.
+// Starts with raw input mode:
 KeyboardMode KeyboardHandler::_CurrentMode = rawInput ;
 
 
@@ -219,12 +219,16 @@ KeyboardHandler::KeyboardHandler( KeyboardMode initialMode,
 	
 	if ( useSmarterDefaultKeyHandler )
 	{
+	
 		setSmarterDefaultKeyHandlers() ;
+		
 	}
 	else
 	{
+	
 		_defaultRawKeyHandler  = doNothingKeyHandler ;
 		_defaultUnicodeHandler = doNothingKeyHandler ;
+		
 	}
 	
 	SetMode( initialMode ) ;	
@@ -272,6 +276,40 @@ void KeyboardHandler::linkToController( KeyIdentifier rawKey,
 {
 
 	_rawKeyControllerMap[ rawKey ] = & controller ;
+	
+}
+
+	
+	
+void KeyboardHandler::unlinkFromController( KeyIdentifier rawKey, 
+	OSDL::MVC::Controller & controller )
+{
+
+	map<KeyIdentifier, OSDL::MVC::Controller*>::iterator itController
+		= _rawKeyControllerMap.find( rawKey ) ;
+			
+	if ( itController != _rawKeyControllerMap.end() )
+	{
+
+		if ( (*itController).second != & controller )
+			throw InputDeviceHandlerException( 
+				"KeyboardHandler::unlinkFromController failed: "
+				"current controller was not the specified one." ) ;
+		
+		_rawKeyControllerMap.erase( itController ) ;
+		
+		OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::unlinkFromController: "
+				"controller unlinked." ) ;
+	
+	}
+	else
+	{
+			
+		throw InputDeviceHandlerException( 
+			"KeyboardHandler::unlinkFromController failed: "
+			"key binding not found." ) ;
+			
+	}
 	
 }
 
@@ -599,7 +637,7 @@ void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent )
 	if ( _CurrentMode == rawInput )
 	{
 	
-		map<KeyIdentifier, OSDL::MVC::Controller *>::iterator itController
+		map<KeyIdentifier, OSDL::MVC::Controller*>::iterator itController
 			= _rawKeyControllerMap.find( 
 				static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
 			
@@ -615,7 +653,7 @@ void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent )
 		else
 		{
 
-			// No controller registered, default to handler map:
+			// No controller registered, defaults to handler map:
 			
 			map<KeyIdentifier, KeyboardEventHandler>::iterator itHandler 
 				=  _rawKeyHandlerMap.find( 
@@ -655,7 +693,7 @@ void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent )
 	if ( _CurrentMode == textInput )
 	{
 	
-		map<Ceylan::Unicode, OSDL::MVC::Controller *>::iterator itController
+		map<Ceylan::Unicode, OSDL::MVC::Controller*>::iterator itController
 			=  _unicodeControllerMap.find( 
 				static_cast<KeyIdentifier>( keyboardEvent.keysym.unicode ) ) ;
 			
@@ -725,8 +763,8 @@ void KeyboardHandler::keyReleased( const KeyboardEvent & keyboardEvent )
 	if ( _CurrentMode == rawInput )
 	{
 	
-		map<KeyIdentifier, OSDL::MVC::Controller *>::iterator itController
-			=  _rawKeyControllerMap.find( 
+		map<KeyIdentifier, OSDL::MVC::Controller*>::iterator itController
+			= _rawKeyControllerMap.find( 
 				static_cast<KeyIdentifier>( keyboardEvent.keysym.sym ) ) ;
 			
 		if ( itController != _rawKeyControllerMap.end() )
