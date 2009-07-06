@@ -511,32 +511,15 @@ namespace OSDL
 	
 							
 				/**
-				 * Tells whether frames shoud be monitored to know the
-				 * frame-per-second (FPS) indicator.
+				 * Returns the current average refresh rate (in frames per
+				 * second) of the screen surface, since its creation.
 				 *
-				 * @note Belongs to the state machine settings.
-				 *
-				 * @return true if frame accounting mode is set, false
-				 * otherwise.
+				 * @throw VideoException if the operation failed, including
+				 * if no screen surface is actually available.
 				 *
 				 */
-				virtual bool getFrameAccountingState() ;
+				virtual Ceylan::Float32 getAverageRefreshRate() ;
 				
-				
-				
-				/**
-				 * Sets the frame-accounting mode.
-				 *
-				 * If activated, the frame rate will be computed.
-				 *
-				 * @note Belongs to the state machine settings.
-				 *
-				 * @param newState the new frame-counting mode, activated 
-				 * if and only if true. 
-				 *
-				 */
-				virtual void setFrameAccountingState( bool newState ) ;	
-			
 				
 				
 				/** 
@@ -1051,63 +1034,12 @@ namespace OSDL
 				 */
 				static bool _AntiAliasing ;
 
-
-
-				/**
-				 * Records the current frame-accounting state, which 
-				 * tells if frame rate is to be monitored.
-				 *
-				 * @note Default value: true.
-				 *
-				 */
-				bool _frameAccountingState ;
-				
 				
 				
 				/// The maximum length for the name of the display driver.
 				static const Ceylan::Uint16 DriverNameMaximumLength ;
 
 
-				
-				// @fixme Frame rate display should be put elsewhere.
-
-
-
-				/**
-				 * Delay in milliseconds between two displays of the 
-				 * frame rate.
-				 *
-				 */
-				//static const Ceylan::Uint32 DelayBetweenFrameRateDisplay ;
-				
-
-
-				/// Top-left corner of the frame rate counter.
-				// @fixme: be widget static Point2D * FrameRateCounterOrigin ;
-		
-		
-				
-				/**
-				 * User-defined color of the frame rate counter display.
-				 *
-				 */
-				//static PixelDefinition FrameRateCounterSpecifiedColor ;
-				
-				
-				
-				/**
-				 * Precomputed color of the frame rate counter display.
-				 *
-				 * @note This is a color already mapped to relevant display
-				 * format.  
-				 *
-				 * It should be recomputed if the screen format changes.
-				 *
-				 */
-				//static PixelColor FrameRateCounterActualColor ;
-				
-				
-				
 				
 			private:
 
@@ -1147,6 +1079,34 @@ namespace OSDL
 				bool _antiAliasing ;
 
 
+
+				/*
+				 * Not specified directly in the screen surface, as otherwise
+				 * the creation of any surface would take useless time, to
+				 * retrieve the current time:
+				 *
+				 */
+				 
+				 
+				/**
+				 * Stores the second at which the screen surface (if any) was
+				 * created, to compute its average refresh rate (frames per
+				 * second).
+				 *
+				 */
+				Ceylan::System::Second _screenStartingSecond ;
+			
+			
+				/**
+				 * Stores the microsecond at which the screen surface (if any)
+				 * was created, to compute its average refresh rate (frames per
+				 * second).
+				 *
+				 */
+				Ceylan::System::Microsecond _screenStartingMicrosecond ;
+	
+	
+	
 	
 				/**
 				 * Private constructor to be sure it will not be implicitly
