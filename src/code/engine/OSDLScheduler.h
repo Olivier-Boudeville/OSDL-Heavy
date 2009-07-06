@@ -381,6 +381,8 @@ namespace OSDL
 				 * Returns the current time slice duration, as used by this 
 				 * scheduler.
 				 *
+				 * This is the duration of an engine tick.
+				 *
 				 * @note Average settings would be 1000 microseconds = 
 				 * 1 millisecond for each engine tick.
 				 *
