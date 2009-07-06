@@ -54,166 +54,179 @@
 #if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
 
 
-/// Encapsulated basic event, encapsulates all basic events.
-typedef union SDL_Event BasicEvent ;
+namespace OSDL
+{
+
+	namespace Events
+	{
+	
+
+
+		/// Encapsulated basic event, encapsulates all basic events.
+		typedef union SDL_Event BasicEvent ;
 			
-				
-/// Application losed or gained visibility.
-typedef struct SDL_ActiveEvent FocusEvent ;
+	
+		/// Application losed or gained visibility.
+		typedef struct SDL_ActiveEvent FocusEvent ;
 
 
-/// Key pressed or released.
-typedef struct SDL_KeyboardEvent KeyboardEvent ;
+		/// Key pressed or released.
+		typedef struct SDL_KeyboardEvent KeyboardEvent ;
 
 
-/// Mouse moved.
-typedef struct SDL_MouseMotionEvent MouseMotionEvent ;
+		/// Mouse moved.
+		typedef struct SDL_MouseMotionEvent MouseMotionEvent ;
 
 
-/// Mouse button pressed or released.
-typedef struct SDL_MouseButtonEvent MouseButtonEvent ;
+		/// Mouse button pressed or released.
+		typedef struct SDL_MouseButtonEvent MouseButtonEvent ;
 
 
-/// Joystick axis moved.
-typedef struct SDL_JoyAxisEvent JoystickAxisEvent ;
- 
- 
-/// Joystick trackball moved.
-typedef struct SDL_JoyBallEvent JoystickTrackballEvent ;
+		/// Joystick axis moved.
+		typedef struct SDL_JoyAxisEvent JoystickAxisEvent ;
+	
+	
+		/// Joystick trackball moved.
+		typedef struct SDL_JoyBallEvent JoystickTrackballEvent ;
 
 
-/// Joystick hat position changed.
-typedef struct SDL_JoyHatEvent JoystickHatEvent ;
+		/// Joystick hat position changed.
+		typedef struct SDL_JoyHatEvent JoystickHatEvent ;
 
 
-/// Joystick button pressed or released.
-typedef struct SDL_JoyButtonEvent JoystickButtonEvent ;
+		/// Joystick button pressed or released.
+		typedef struct SDL_JoyButtonEvent JoystickButtonEvent ;
 
 
-/// Quit is requested.
-typedef struct SDL_QuitEvent UserRequestedQuitEvent ;
+		/// Quit is requested.
+		typedef struct SDL_QuitEvent UserRequestedQuitEvent ;
 
 
-/// A system specific window manager event has been received.
-typedef struct SDL_SysWMEvent SystemSpecificWindowManagerEvent ;
-
-
-
-/**
- * Window resized, application is responsible for setting a new video
- * mode with the new width and height.
- *
- */
-typedef struct SDL_ResizeEvent WindowResizedEvent ;
+		/// A system specific window manager event has been received.
+		typedef struct SDL_SysWMEvent SystemSpecificWindowManagerEvent ;
 
 
 
-/// Screen has to be redrawn.
-typedef struct SDL_ExposeEvent ScreenExposedEvent ;
+		/**
+		 * Window resized, application is responsible for setting a new video
+		 * mode with the new width and height.
+		 *
+		 */
+		typedef struct SDL_ResizeEvent WindowResizedEvent ;
+
+
+
+		/// Screen has to be redrawn.
+		typedef struct SDL_ExposeEvent ScreenExposedEvent ;
 	
 	
 
-/// User-defined event.
-typedef struct SDL_UserEvent UserEvent ;
+		/// User-defined event.
+		typedef struct SDL_UserEvent UserEvent ;
 
 
 
-#else // OSDL_USES_SDL 
+		#else // OSDL_USES_SDL
 
 
-/// Encapsulated basic event, encapsulates all basic events.
-typedef union BasicEvent {} ;
-			
-				
-/// Application losed or gained visibility.
-typedef struct FocusEvent {} ;
+		/// Encapsulated basic event, encapsulates all basic events.
+		typedef union BasicEvent {} ;
+	
+	
+		/// Application losed or gained visibility.
+		typedef struct FocusEvent {} ;
 
 
-/// Key pressed or released.
-typedef struct KeyboardEvent {} ;
+		/// Key pressed or released.
+		typedef struct KeyboardEvent {} ;
 
 
-/// Mouse moved.
-typedef struct MouseMotionEvent {} ;
+		/// Mouse moved.
+		typedef struct MouseMotionEvent {} ;
 
 
-/// Mouse button pressed or released.
-typedef struct MouseButtonEvent {} ;
+		/// Mouse button pressed or released.
+		typedef struct MouseButtonEvent {} ;
 
 
-/// Joystick axis moved.
-typedef struct JoystickAxisEvent {} ;
- 
- 
-/// Joystick trackball moved.
-typedef struct JoystickTrackballEvent {} ;
+		/// Joystick axis moved.
+		typedef struct JoystickAxisEvent {} ;
+	
+	
+		/// Joystick trackball moved.
+		typedef struct JoystickTrackballEvent {} ;
 
 
-/// Joystick hat position changed.
-typedef struct JoystickHatEvent {} ;
+		/// Joystick hat position changed.
+		typedef struct JoystickHatEvent {} ;
 
 
-/// Joystick button pressed or released.
-typedef struct JoystickButtonEvent {} ;
+		/// Joystick button pressed or released.
+		typedef struct JoystickButtonEvent {} ;
 
 
-/// Quit is requested.
-typedef struct UserRequestedQuitEvent {} ;
+		/// Quit is requested.
+		typedef struct UserRequestedQuitEvent {} ;
 
 
-/// A system specific window manager event has been received.
-typedef struct SystemSpecificWindowManagerEvent {} ;
-
-
-
-/**
- * Window resized, application is responsible for setting a new video
- * mode with the new width and height.
- *
- */
-typedef struct WindowResizedEvent {} ;
+		/// A system specific window manager event has been received.
+		typedef struct SystemSpecificWindowManagerEvent {} ;
 
 
 
-/// Screen has to be redrawn.
-typedef struct ScreenExposedEvent {} ;
+		/**
+		 * Window resized, application is responsible for setting a new video
+		 * mode with the new width and height.
+		 *
+		 */
+		typedef struct WindowResizedEvent {} ;
+
+
+
+		/// Screen has to be redrawn.
+		typedef struct ScreenExposedEvent {} ;
 	
 	
 
-/// User-defined event.
-typedef struct UserEvent {} ;
+		/// User-defined event.
+		typedef struct UserEvent {} ;
 
 
-#endif // OSDL_USES_SDL 
-
-
-
-
-// Unicode values defined in Ceylan.
+		#endif // OSDL_USES_SDL
 
 
 
-/// Mother class for all event-related exceptions. 		
-class OSDL_DLL EventsException: public OSDL::Exception 
-{ 
 
-	public: 
-	
-		explicit EventsException( const std::string & reason ) :
-			OSDL::Exception( "Event exception: " + reason )
+		// Unicode values defined in Ceylan.
+
+
+
+		/// Mother class for all event-related exceptions.
+		class OSDL_DLL EventsException: public OSDL::Exception
 		{
-		
-		} 
-		
-		
-		virtual ~EventsException() throw()
-		{
-		
-		}
-		
-		
-} ;
 
+			public:
+	
+				explicit EventsException( const std::string & reason ) :
+					OSDL::Exception( "Event exception: " + reason )
+				{
+	
+				}
+	
+	
+				virtual ~EventsException() throw()
+				{
+	
+				}
+	
+	
+		} ;
+
+
+	}
+	
+	
+}
 
 
 #endif // OSDL_EVENTS_COMMON_H_
