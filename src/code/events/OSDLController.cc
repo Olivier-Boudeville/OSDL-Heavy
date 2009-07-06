@@ -445,7 +445,16 @@ void Controller::joystickSecondButtonReleased()
 }
 
 
+const Ceylan::Event & Controller::getEventFor( 
+	const Ceylan::CallerEventListener & listener )
+{
 
+	throw EventsException( "Controller::getEventFor is not expected "
+		"to be called." ) ;
+	
+}
+
+	
 const string Controller::toString( Ceylan::VerbosityLevels level ) const
 {
 
