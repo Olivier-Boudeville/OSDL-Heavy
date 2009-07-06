@@ -254,7 +254,7 @@ void Scheduler::setSimulationFrequency( Hertz frequency )
 
 #if OSDL_DEBUG
 
-	LogPlug::debug( "Scheduler::setSimulationFrequency: for a requested "
+	send( "Scheduler::setSimulationFrequency: for a requested "
 		"simulation frequency of " + Ceylan::toString( frequency ) 
 		+ " Hz, the simulation period corresponds to " 
 		+ Ceylan::toString( _simulationPeriod ) + " engine ticks." ) ;
@@ -302,7 +302,7 @@ void Scheduler::setRenderingFrequency( Hertz frequency )
 
 #if OSDL_DEBUG
 
-	LogPlug::debug( "Scheduler::setRenderingFrequency: for a requested "
+	send( "Scheduler::setRenderingFrequency: for a requested "
 		"rendering frequency of " + Ceylan::toString( frequency ) 
 		+ " Hz, the rendering period corresponds to " 
 		+ Ceylan::toString( _renderingPeriod ) + " engine ticks." ) ;
@@ -353,7 +353,7 @@ void Scheduler::setScreenshotFrequency( Hertz frequency )
 
 #if OSDL_DEBUG
 
-	LogPlug::debug( "Scheduler::setScreenshotFrequency: for a requested "
+	send( "Scheduler::setScreenshotFrequency: for a requested "
 		"screenshot frequency of " + Ceylan::toString( frequency ) 
 		+ " Hz, the screenshot period corresponds to " 
 		+ Ceylan::toString( _screenshotPeriod ) + " engine ticks." ) ;
@@ -400,7 +400,7 @@ void Scheduler::setInputPollingFrequency( Hertz frequency )
 
 #if OSDL_DEBUG
 
-	LogPlug::debug( "Scheduler::setInputPollingFrequency: for a requested "
+	send( "Scheduler::setInputPollingFrequency: for a requested "
 		"input frequency of " + Ceylan::toString( frequency ) 
 		+ " Hz, the input period corresponds to " 
 		+ Ceylan::toString( _inputPeriod ) + " engine ticks." ) ;
@@ -539,7 +539,7 @@ void Scheduler::unregisterPeriodicalObject(
 	
 	slot.removeFromSubslot( toUnregister ) ;
 	
-	LogPlug::debug( "New scheduler state: " + toString() ) ;
+	send( "New scheduler state: " + toString() ) ;
 		 
 }
 
@@ -610,7 +610,7 @@ void Scheduler::unregisterProgrammedObject(
 {
 	
 	/*
-	LogPlug::debug( "Scheduler::unregisterProgrammedObject for object " 
+	send( "Scheduler::unregisterProgrammedObject for object " 
 		+ Ceylan::toString( & objectToUnregister ) ) ;
 	 */
 	 
@@ -654,7 +654,7 @@ void Scheduler::unregisterProgrammedObject(
 	{
 		
 		/*
-		LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+		send( "Scheduler::unregisterProgrammedObject: "
 			"skipping tick #" + Ceylan::toString( *it ) ) ;
 		 */
 		 
@@ -671,7 +671,7 @@ void Scheduler::unregisterProgrammedObject(
 		// It points to a programmed tick for that object.
 
 		/*
-		LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+		send( "Scheduler::unregisterProgrammedObject: "
 			"unregistering from tick #" + Ceylan::toString( *it ) ) ;
 		 */
 		 
@@ -691,7 +691,7 @@ void Scheduler::unregisterProgrammedObject(
 				(*mapIt).second.begin() ; 
 			
 			/*	
-			LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+			send( "Scheduler::unregisterProgrammedObject: "
 				"there are " + Ceylan::toString( (*mapIt).second.size() )
 				+ " programmed objects for this tick." ) ;
 			 */
@@ -709,7 +709,7 @@ void Scheduler::unregisterProgrammedObject(
 				{
 				
 					/* 
-					LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+					send( "Scheduler::unregisterProgrammedObject: "
 						"object removed" ) ;
 
 					 */
@@ -761,7 +761,7 @@ void Scheduler::unregisterProgrammedObject(
 					+ toString() ) ;
 			/*		
 			else
-				LogPlug::debug( "Scheduler::unregisterProgrammedObject: "
+				send( "Scheduler::unregisterProgrammedObject: "
 					"unregistered." ) ;
 			 */
 			 				 						
@@ -1538,12 +1538,14 @@ void Scheduler::scheduleBestEffort()
 	 */
 	Delay delayCumulativeBucket = 0 ;
 	
+	
 	/*
 	 * When the bucket reaches that level, the machine is deemed actually
 	 * overloaded:
 	 *
 	 */
-	const Delay bucketFillThreshold = 750 ;
+	const Delay bucketFillThreshold = 5000 ;
+
 
 	/*
 	 * Leaking factor: at each engine tick, 
@@ -1680,7 +1682,7 @@ void Scheduler::scheduleBestEffort()
 
 		// Will default settings, one log per 1s:
 		if ( _currentEngineTick % 1000 == 0 )
-			LogPlug::debug( "[ E: " + Ceylan::toString( _currentEngineTick )
+			send( "[ E: " + Ceylan::toString( _currentEngineTick )
 				+ " ; S: " + Ceylan::toString( _currentSimulationTick )
 				+ " ; R: " + Ceylan::toString( _currentRenderingTick )
 				+ " ; I: " + Ceylan::toString( _currentInputTick )
@@ -2559,18 +2561,18 @@ void Scheduler::scheduleBestEffort()
 		metSimulations.size() + recoveredSimulations.size() 
 		+ missedSimulations.size() ) ;
 		
-	LogPlug::debug( "Total simulation ticks: " 
+	send( "Total simulation ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( totalSimulationTicks ) ) 
 		+ "." ) ;
 
-	LogPlug::debug( "Directly met simulation ticks: " 
+	send( "Directly met simulation ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( metSimulations.size() ) )
 		+ " (" + Ceylan::toString( 100.0f * metSimulations.size() 
 			/ totalSimulationTicks, /* precision */ 2 ) + "%)." ) ;
 						
-	LogPlug::debug( "Recovered (indirectly met) simulation ticks: " 
+	send( "Recovered (indirectly met) simulation ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( recoveredSimulations.size() ) )
 		+ " (" + Ceylan::toString( 100.0f * recoveredSimulations.size() 
@@ -2580,7 +2582,7 @@ void Scheduler::scheduleBestEffort()
 		LogPlug::error( "Inconsistency in recovered simulation count." ) ;
 
 				
-	LogPlug::debug( "Missed simulation ticks: " 
+	send( "Missed simulation ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( missedSimulations.size() ) )
 		+ " (" + Ceylan::toString( 100.0f * missedSimulations.size() 
@@ -2607,7 +2609,7 @@ void Scheduler::scheduleBestEffort()
 					= metSimulations.begin(); it != metSimulations.end(); it++ )
 				res += 	Ceylan::toString( *it ) + " - " ;
 		 
-			LogPlug::debug( "Met simulation ticks: " + res ) ;
+			send( "Met simulation ticks: " + res ) ;
 			res.clear() ;
 	
 		}
@@ -2618,7 +2620,7 @@ void Scheduler::scheduleBestEffort()
 					it != recoveredSimulations.end(); it++ )
 			res += 	Ceylan::toString( *it ) + " - " ;
 
-		LogPlug::debug( "Recovered simulation ticks: " + res ) ;
+		send( "Recovered simulation ticks: " + res ) ;
 		res.clear() ;
 		
 		for ( list<SimulationTick>::const_iterator it =
@@ -2626,9 +2628,9 @@ void Scheduler::scheduleBestEffort()
 			res += Ceylan::toString( *it ) + " - " ;
 
 		if ( res.empty() )
-			LogPlug::debug( "No simulation tick was missed." ) ;
+			send( "No simulation tick was missed." ) ;
 		else	
-			LogPlug::debug( "Missed simulation ticks: " + res ) ;
+			send( "Missed simulation ticks: " + res ) ;
 			
 		res.clear() ;
 		
@@ -2710,16 +2712,16 @@ void Scheduler::scheduleBestEffort()
 		metRenderings.size() + recoveredRenderings.size() 
 		+ missedRenderings.size() ) ;
 
-	LogPlug::debug( "Total rendering ticks: " 
+	send( "Total rendering ticks: " 
 		+ Ceylan::toString( totalRenderingTicks ) + "." ) ;
 		
-	LogPlug::debug( "Directly met rendering ticks: " 
+	send( "Directly met rendering ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( metRenderings.size() ) )
 		+ " (" + Ceylan::toString( 100.0f * metRenderings.size() 
 			/ totalRenderingTicks, /* precision */ 2 ) + "%)." ) ;
 				
-	LogPlug::debug( "Recovered (indirectly met) rendering ticks: " 
+	send( "Recovered (indirectly met) rendering ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( recoveredRenderings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * recoveredRenderings.size() 
@@ -2729,7 +2731,7 @@ void Scheduler::scheduleBestEffort()
 		LogPlug::error( "Inconsistency in recovered rendering count." ) ;
 
 				
-	LogPlug::debug( "Missed rendering ticks: " 
+	send( "Missed rendering ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( missedRenderings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * missedRenderings.size() 
@@ -2754,7 +2756,7 @@ void Scheduler::scheduleBestEffort()
 					= metRenderings.begin(); it != metRenderings.end(); it++ )
 				res += 	Ceylan::toString( *it ) + " - " ;
 		 
-			LogPlug::debug( "Met rendering ticks: " + res ) ;
+			send( "Met rendering ticks: " + res ) ;
 			res.clear() ;
 	
 		}
@@ -2764,7 +2766,7 @@ void Scheduler::scheduleBestEffort()
 				it != recoveredRenderings.end(); it++ )
 			res += 	Ceylan::toString( *it ) + " - " ;
 
-		LogPlug::debug( "Recovered rendering ticks: " + res ) ;
+		send( "Recovered rendering ticks: " + res ) ;
 		res.clear() ;
 
 		for ( list<RenderingTick>::const_iterator it 
@@ -2772,9 +2774,9 @@ void Scheduler::scheduleBestEffort()
 			res += 	Ceylan::toString( *it ) + " - " ;
 
 		if ( res.empty() )
-			LogPlug::debug( "No rendering tick was missed." ) ;
+			send( "No rendering tick was missed." ) ;
 		else	
-			LogPlug::debug( "Missed rendering ticks: " + res ) ;
+			send( "Missed rendering ticks: " + res ) ;
 			
 		res.clear() ;
 
@@ -2853,16 +2855,16 @@ void Scheduler::scheduleBestEffort()
 		metInputPollings.size() + recoveredInputPollings.size() 
 		+ missedInputPollings.size() ) ;
 
-	LogPlug::debug( "Total input ticks: " 
+	send( "Total input ticks: " 
 		+ Ceylan::toString( totalInputTicks ) + "." ) ;
 		
-	LogPlug::debug( "Directly met input ticks: " 
+	send( "Directly met input ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( metInputPollings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * metInputPollings.size() 
 			/ totalInputTicks, /* precision */ 2 ) + "%)." ) ;
 				
-	LogPlug::debug( "Recovered (indirectly met) input ticks: " 
+	send( "Recovered (indirectly met) input ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( recoveredInputPollings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * recoveredInputPollings.size() 
@@ -2872,7 +2874,7 @@ void Scheduler::scheduleBestEffort()
 		LogPlug::error( "Inconsistency in recovered input polling count." ) ;
 			
 				
-	LogPlug::debug( "Missed input ticks: " 
+	send( "Missed input ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( missedInputPollings.size() ) ) 
 		+ " (" + Ceylan::toString( 100.0f * missedInputPollings.size() 
@@ -2897,7 +2899,7 @@ void Scheduler::scheduleBestEffort()
 					it != metInputPollings.end(); it++ )
 				res += 	Ceylan::toString( *it ) + " - " ;
 		 
-			LogPlug::debug( "Met input ticks: " + res ) ;
+			send( "Met input ticks: " + res ) ;
 			res.clear() ;
 	
 		}
@@ -2907,7 +2909,7 @@ void Scheduler::scheduleBestEffort()
 				it != recoveredInputPollings.end(); it++ )
 			res += 	Ceylan::toString( *it ) + " - " ;
 
-		LogPlug::debug( "Recovered input ticks: " + res ) ;
+		send( "Recovered input ticks: " + res ) ;
 		res.clear() ;
 
 		for ( list<InputTick>::const_iterator it 
@@ -2916,9 +2918,9 @@ void Scheduler::scheduleBestEffort()
 			res += 	Ceylan::toString( *it ) + " - " ;
 
 		if ( res.empty() )
-			LogPlug::debug( "No input tick was missed." ) ;
+			send( "No input tick was missed." ) ;
 		else	
-			LogPlug::debug( "Missed input ticks: " + res ) ;
+			send( "Missed input ticks: " + res ) ;
 
 		res.clear() ;
 
@@ -3233,7 +3235,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	 *
 	 */
 	
-	LogPlug::debug( "Total simulation ticks: " 
+	send( "Total simulation ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( metSimulations.size() ) ) 
 		+ "." ) ;
@@ -3274,7 +3276,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 				
 				
 				
-	LogPlug::debug( "Total rendering ticks: " 
+	send( "Total rendering ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( metRenderings.size() ) ) + "." ) ;
 				
@@ -3313,7 +3315,7 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 	
 	
 
-	LogPlug::debug( "Total input polling ticks: " 
+	send( "Total input polling ticks: " 
 		+ Ceylan::toString( 
 			static_cast<Ceylan::Uint32>( metInputPollings.size() ) ) 
 		+ "." ) ;
@@ -3376,7 +3378,7 @@ EngineTick Scheduler::computeEngineTickFromCurrentTime()
 	 * seconds exceeds 4200!
 	 *
 	
-	LogPlug::debug( "Current: " + Ceylan::toString( currentSecond ) 
+	send( "Current: " + Ceylan::toString( currentSecond ) 
 		+ "s and " + Ceylan::toString( currentMicrosecond ) 
 		+ " microsec, started: " + Ceylan::toString( _scheduleStartingSecond ) 
 		+ "s and " + Ceylan::toString( _scheduleStartingMicrosecond ) 
@@ -3484,7 +3486,7 @@ void Scheduler::schedulePeriodicObjects( SimulationTick current )
 		
 			// The slot notified us that it could be removed:
 
-			LogPlug::debug( " Scheduler::schedulePeriodicObjects for tick "
+			send( " Scheduler::schedulePeriodicObjects for tick "
 				+ Ceylan::toString( current) + ": removing slot "
 			 	+ (*it)->toString() ) ;
 			 
