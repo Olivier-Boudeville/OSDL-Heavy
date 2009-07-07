@@ -48,6 +48,58 @@ using namespace OSDL::Events ;
 
 
 
+
+
+PeriodicalActiveObject::PeriodicalActiveObject( 
+		Ceylan::System::Millisecond periodDuration, 
+		bool autoRegister,
+		Ceylan::Maths::Percentage maxErrorPercentage ) : 
+	ActiveObject( /* policy */ relaxed, /* weight */ 1 ),
+	_period( 0 ),
+	_subslot( /* invalid by design: */ static_cast<Events::Period>( -1 ) )
+{
+
+	Scheduler & scheduler = Scheduler::GetExistingScheduler() ;
+
+	// Computing to how many engine ticks the specified duration corresponds:
+	Ceylan::System::Microsecond engineTickDuration =
+		scheduler.getTimeSliceDuration() ;	
+		
+	Events::Period engineTickCount = scheduler.getSimulationTickCount()	;
+	
+	Ceylan::System::Microsecond simulationTickDuration = 
+		engineTickDuration * engineTickCount ;
+		
+	_period = Ceylan::Maths::Round( static_cast<Ceylan::Float32>(
+			(1000 * periodDuration) / simulationTickDuration ) );
+		
+	if ( _period == 0 )
+		_period = 1 ;
+	
+	// Checking, hopefully not too expensive:	
+	Ceylan::System::Millisecond	computedBackPeriodDuration = 
+		_period * simulationTickDuration / 1000  ;
+		
+	if ( ! Ceylan::Maths::AreRelativelyEqual<Ceylan::Float32>(
+			 periodDuration, computedBackPeriodDuration, 
+			/* tolerance */ maxErrorPercentage / 100.0f  ) )
+		throw SchedulingException(
+			"PeriodicalActiveObject constructor failed: "
+			"unable to be within an error percentage of " 
+			+ Ceylan::toNumericalString( maxErrorPercentage ) 
+			+ "%: requested period duration is " 
+			+ Ceylan::toString( periodDuration ) 
+			+ " milliseconds, whereas best determined period duration is " 
+			+ Ceylan::toString( computedBackPeriodDuration ) 
+			+ " milliseconds." ) ;
+			
+	if ( autoRegister )
+		registerToScheduler() ;	
+			 
+}
+
+
+
 PeriodicalActiveObject::PeriodicalActiveObject( Period period,
 		bool autoRegister, ObjectSchedulingPolicy policy, Weight weight ) : 
 	ActiveObject( policy, weight ),
@@ -57,7 +109,7 @@ PeriodicalActiveObject::PeriodicalActiveObject( Period period,
 	
 	if ( period == 0 )
 		throw SchedulingException( "PeriodicalActiveObject constructor failed: "
-			"period cannot be null." ) ;
+			"period must not be null." ) ;
 			
 	if ( autoRegister )
 		registerToScheduler() ;	
@@ -65,7 +117,7 @@ PeriodicalActiveObject::PeriodicalActiveObject( Period period,
 }
 
 
-
+	
 PeriodicalActiveObject::~PeriodicalActiveObject() throw()
 {
 

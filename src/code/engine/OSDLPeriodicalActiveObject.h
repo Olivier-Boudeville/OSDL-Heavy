@@ -94,6 +94,39 @@ namespace OSDL
 			public:
 			
 				
+				
+				/**
+				 * Constructor of a periodically activated object, which
+				 * will be activated with the specified period, expressed 
+				 * directly as a duration in user time, not as a number of
+				 * scheduling ticks.
+				 *
+				 * @param periodDuration tells how many actual milliseconds 
+				 * should elapse until two activations of the created object.
+				 * The period must not be null.
+				 *
+				 * @param autoRegister the created object will automatically
+				 * register to the scheduler iff true.
+				 *
+				 * @param maxErrorPercentage its the maximal percentage of 
+				 * tolerated error between the requested period duration and
+				 * the actual one (they may differ to the granularity of 
+				 * scheduling ticks).
+				 *
+				 * @return the corresponding created periodical object.
+				 *
+ 				 * @throw SchedulingException if the construction failed.
+				 *
+				 * @note Not a constructor to avoid two similar constructor 
+				 * signatures.
+				 *
+				 */
+				explicit PeriodicalActiveObject( 
+					Ceylan::System::Millisecond periodDuration, 
+					bool autoRegister = true,
+					Ceylan::Maths::Percentage maxErrorPercentage = 5 ) ;
+							
+							
 						
 				/**
 				 * Constructor of a periodically activated object. 
@@ -115,12 +148,15 @@ namespace OSDL
 				 *
 				 * @throw SchedulingException if the construction failed.
 				 *
+				 * @note No parameter has a default value so that no ambiguity
+				 * exists with the other constructor.
+				 *
 				 */
-				explicit PeriodicalActiveObject( 
-					Events::Period period = 1, 
-					bool autoRegister = true,
-					ObjectSchedulingPolicy policy = relaxed, 
-					Weight weight = 1 ) ;
+				PeriodicalActiveObject( 
+					Events::Period period, 
+					bool autoRegister,
+					ObjectSchedulingPolicy policy, 
+					Weight weight ) ;
 							
 				
 				
