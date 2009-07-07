@@ -123,15 +123,12 @@ int main( int argc, char * argv[] )
 			
         CommonModule & myOSDL = getCommonModule( 
 			CommonModule::UseVideo | CommonModule::UseEvents ) ;		
-			
-		myOSDL.logState() ;
-					
+								
 		LogPlug::info( "Testing real video (displayable)." ) ;
 		
 		LogPlug::info( "Getting video module." ) ;
 		VideoModule & myVideo = myOSDL.getVideoModule() ; 
 		
-		myVideo.logState() ;
 				
 		LogPlug::info( "Displaying available video definitions: " 
 			+ VideoModule::DescribeAvailableDefinitions( 
@@ -184,6 +181,8 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Is the first texture already resident? " 
 			+ Ceylan::toString( firstTexture.isResident() ) ) ;
 		
+		// Texture was (pre)-loaded at construction, now uploading it:
+		firstTexture.upload() ;
 		
 		glBegin(GL_QUADS); 
 		{
@@ -206,11 +205,15 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Is the first texture resident now? " 
 			+ Ceylan::toString( firstTexture.isResident() ) ) ;
 
+
 		GLTexture & secondTexture = * new GLTexture( 
 			textureFinder.find( secondTextureFilename ), GLTexture::For2D ) ;
-
+		
 		LogPlug::info( "Is the second texture already resident? " 
 			+ Ceylan::toString( secondTexture.isResident() ) ) ;
+
+		// Texture was (pre)-loaded at construction, now uploading it:
+		secondTexture.upload() ;
 			
 		glBegin(GL_QUADS); 
 		{
@@ -237,7 +240,6 @@ int main( int argc, char * argv[] )
 		
 		OSDL::Events::EventsModule & myEvents = myOSDL.getEventsModule() ;
 		
-		myEvents.logState() ;
 		
 		screen.update() ;
 		
