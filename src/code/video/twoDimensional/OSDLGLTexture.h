@@ -200,9 +200,9 @@ namespace OSDL
 					 * this texture, so that it can be reloaded in an OpenGL
 					 * context if necessary, should the context be lost. 
 					 *
+					explicit GLTexture( Surface & sourceSurface,
+						TextureFlavour flavour ) ;
 					 */
-					//explicit GLTexture( Surface & sourceSurface,
-					//	TextureFlavour flavour ) ;
 				
 				
 				
