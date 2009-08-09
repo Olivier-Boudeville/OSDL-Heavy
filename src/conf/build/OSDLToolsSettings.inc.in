@@ -443,10 +443,11 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R12B-5"
+Erlang_VERSION="R13B01"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5="3751ea3fea669d2b25c67eeb883734bb"
+Erlang_MD5="b3db581de6c13e1ec93d74e54a7b4231"
+
 
 
 # egeoip: http://code.google.com/p/egeoip/
@@ -459,15 +460,26 @@ egeoip_MD5="(blanked)"
 egeoip_SVN_SERVER="egeoip.googlecode.com"
 
 
+
 # MaxMind GeoLiteCity database: http://www.maxmind.com/app/Geolitecity
 
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
-# Version of Friday, March 6, 2009:
-Geolite_MD5="1838a3a68f2c7a9eb310cee8f82b6a64."
+# Version of 04-Jul-2009:
+Geolite_MD5="51d5fc70ea4c1d05e2ee976cb0bcf5e2"
+
+
+
+# Ceylan Erlang section (common, traces, wooper, etc.)
+
+# Using the settings of the general Ceylan section.
+
+
 
 # Orge server section.
-# To be added when released as open-source.
+
+# Using the settings of the general OSDL section.
+
 
 
 
