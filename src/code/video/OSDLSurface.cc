@@ -349,13 +349,20 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 	_surface = SDL_CreateRGBSurface( flags, width, height, depth, 
 		redMask, greenMask, blueMask, alphaMask ) ;
 	
+	
 	if ( _surface == 0 )
 		throw VideoException( "Blank surface constructor failed (width = " 
 			+ Ceylan::toString( width ) 
 			+ ", height = " + Ceylan::toString( height ) + "): " 
 			+ Utils::getBackendLastError() ) ; 
 		
-			
+	/*
+	 * _surface->setAlpha( SDL_SRCALPHA, SDL_ALPHA_OPAQUE ) ;
+	 * could be used here to produce a surface starting with all pixels
+	 * at RGBA = [0,0,0,255] rather than RGBA = [0,0,0,0].
+	 *
+	 */
+	 		
 #else // OSDL_USES_SDL
 
 	throw VideoException( "Surface constructor failed: "
