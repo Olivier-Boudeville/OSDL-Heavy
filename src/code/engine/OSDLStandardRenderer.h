@@ -159,6 +159,21 @@ namespace OSDL
 					Events::RenderingTick currentRenderingTick = 0 ) ;
 
 								
+				
+				/**
+				 * Allows the renderer to be aware that a rendering step 
+				 * had to be skipped.
+				 *
+				 * All registered views will be notified of the skip.
+				 *
+				 * @param skippedRenderingTick the rendering tick that had 
+				 * to be skipped.
+				 *
+				 */
+				virtual void onRenderingSkipped( 
+					Events::RenderingTick skippedRenderingTick ) ;
+				
+				
 					
 	            /**
 	             * Returns an user-friendly description of the state of 
