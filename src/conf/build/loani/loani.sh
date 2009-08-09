@@ -1310,7 +1310,7 @@ else
 	DEBUG "Enough space on disk ($AVAILABLE_SIZE megabytes available for an estimation of $MINIMUM_SIZE needed)."
 fi 
 
-# Second, sort out which tools are available and which are not.
+# Second, sort out which tools are available and which are not:
 
 available_list=""
 retrieve_list=""
@@ -1322,9 +1322,12 @@ for t in $target_list; do
 	DEBUG "Examining <$t>"
 	
 	if [ $use_svn -eq 0 ] ; then
-		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "OSDL" -o "$t" = "OSDL_win" -o "$t" = "egeoip" ] ; then
+		
+		# Now, as soon as SVN is used, we return res=2:
+		#if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "OSDL" -o "$t" = "OSDL_win" -o "$t" = "egeoip" ] ; then
 			res=2
-		fi
+		#fi
+		
 	fi
 	
 	if [ ! $res -eq 2 ] ; then
