@@ -580,7 +580,8 @@ class ActiveObjectPeriodicalSerialKiller:
 			PeriodicalActiveObject( 
 				period, 
 				/* autoregister */ true,
-				/* policy */ strict ),
+				/* policy */ strict,
+				/* weight */ 1 ),
 			_periodCount( periodCount ),
 			_verbose( verbose ) 
 		{
