@@ -466,13 +466,52 @@ RenderingTick Scheduler::getCurrentRenderingTick() const
 
 
 
-RenderingTick Scheduler::getCurrentInputTick() const 
+InputTick Scheduler::getCurrentInputTick() const 
 {
 
 	return _currentInputTick ;
 	
 }
 
+
+
+
+Events::SimulationTick Scheduler::getNumberOfSimulationTicksFor(
+	Ceylan::System::Millisecond	duration ) const
+{
+
+	return static_cast<Events::SimulationTick>( 
+		Ceylan::Maths::Round( duration * 1000.f /* for microsec */ / 
+			( _simulationPeriod * _engineTickDuration ) ) ) ;
+		
+}
+
+	
+
+Events::RenderingTick Scheduler::getNumberOfRenderingTicksFor(
+	Ceylan::System::Millisecond	duration ) const
+{
+
+	return static_cast<Events::RenderingTick>( 
+		Ceylan::Maths::Round( duration * 1000.f /* for microsec */ / 
+			( _renderingPeriod * _engineTickDuration ) ) ) ;
+		
+}
+
+	
+
+Events::InputTick Scheduler::getNumberOfInputTicksFor(
+	Ceylan::System::Millisecond	duration ) const
+{
+
+	return static_cast<Events::InputTick>( 
+		Ceylan::Maths::Round( duration * 1000.f /* for microsec */ / 
+			( _inputPeriod * _engineTickDuration ) ) ) ;
+		
+
+}
+
+	
 
 
 void Scheduler::registerPeriodicalObject( 
@@ -3869,7 +3908,7 @@ std::string Scheduler::describeProgrammedTicks() const
 	if ( tickCount == 0 )	
 		return "There is no programmed tick" ;
 	else
-		return "There is " + Ceylan::toString(tickCount) 
+		return "There are " + Ceylan::toString(tickCount) 
 			+ " programmed tick(s)" ;
 			
 }
