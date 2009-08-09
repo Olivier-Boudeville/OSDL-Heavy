@@ -171,7 +171,8 @@ namespace OSDL
 				 *
 				 * It may be a chance for it to trigger counter-measures, 
 				 * such as decreasing the level of detail in order not to 
-				 * slow down the whole process.
+				 * slow down the whole process, or simply notifying the views
+				 * of the skip.
 				 *
 				 * @param skippedRenderingTick the rendering tick that had 
 				 * to be skipped.
