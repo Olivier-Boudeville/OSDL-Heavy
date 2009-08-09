@@ -580,7 +580,58 @@ namespace OSDL
 				 * Returns the current actual input tick.
 				 *
 				 */
-				virtual Events::RenderingTick getCurrentInputTick() const ;
+				virtual Events::InputTick getCurrentInputTick() const ;
+				
+				
+				
+				
+				/// Conversions of durations.
+				
+				
+				
+				/**
+				 * Returns the number of simulation ticks corresponding to
+				 * specified duration.
+				 *
+				 * @example If scheduling the simulation at 100Hz, a 2000 ms
+				 * duration will correspond to 200 simulation ticks.
+				 *
+				 * @note Useful when implementing time-driven models.
+				 *
+				 */
+				virtual Events::SimulationTick getNumberOfSimulationTicksFor(
+					Ceylan::System::Millisecond	duration ) const ;
+					
+					
+					
+				/**
+				 * Returns the number of rendering ticks corresponding to
+				 * specified duration.
+				 *
+				 * @example If scheduling the rendering at 40Hz, a 2000 ms
+				 * duration will correspond to 80 rendering ticks.
+				 *
+				 * @note Useful when implementing time-driven views.
+				 *
+				 */
+				virtual Events::RenderingTick getNumberOfRenderingTicksFor(
+					Ceylan::System::Millisecond	duration ) const ;
+					
+					
+					
+				/**
+				 * Returns the number of input ticks corresponding to
+				 * specified duration.
+				 *
+				 * @example If scheduling the inputs at 25Hz, a 2000 ms
+				 * duration will correspond to 50 input ticks.
+				 *
+				 * @note Useful when implementing time-driven controllers.
+				 *
+				 */
+				virtual Events::InputTick getNumberOfInputTicksFor(
+					Ceylan::System::Millisecond	duration ) const ;
+					
 				
 				
 				
