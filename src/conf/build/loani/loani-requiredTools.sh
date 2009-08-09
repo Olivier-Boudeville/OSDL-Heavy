@@ -160,12 +160,14 @@ GenerateWithVisualExpress()
 # SDL for non-Windows platforms:
 ################################################################################
 
+
 getSDL()
 {
 	LOG_STATUS "Getting SDL..."
 	launchFileRetrieval SDL
 	return $?
 }
+
 
 
 prepareSDL()
@@ -211,6 +213,7 @@ prepareSDL()
 	printOK
 	
 }
+
 
 
 generateSDL()
@@ -292,7 +295,8 @@ generateSDL()
 		export LD_LIBRARY_PATH
 		
 		if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+			# Always remember that, on Windows, DLL are searched through 
+			# the PATH, not the LD_LIBRARY_PATH.
 			
 			PATH=${SDL_PREFIX}/lib:${PATH}	
 			export PATH
@@ -338,6 +342,7 @@ generateSDL()
 	cd "$initial_dir"
 	
 }
+
 
 
 cleanSDL()
@@ -5833,6 +5838,7 @@ getCeylan()
 	fi	
 	
 	return 0	
+	
 }
 
 
