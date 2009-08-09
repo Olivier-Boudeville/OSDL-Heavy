@@ -51,9 +51,11 @@ DEBUG "Scheduling retrieval of common build tools ($COMMON_BUILD_TOOLS)."
 
 
 
+
 ################################################################################
 # GNU gcc (compiler suite)
 ################################################################################
+
 
 
 getgcc()
@@ -62,6 +64,7 @@ getgcc()
 	launchFileRetrieval gcc
 	return $?
 }
+
 
 
 preparegcc()
@@ -113,6 +116,7 @@ preparegcc()
 }
 
 
+
 generategcc()
 {
 
@@ -125,7 +129,8 @@ generategcc()
 	
 	printItem "configuring"
 	
-	# Restricted to C++ since java would too often not bootstrap, or be slow to bootstrap.
+	# Restricted to C++ since java would too often not bootstrap, or be
+	# slow to bootstrap.
 	
 	if [ -n "$prefix" ] ; then	
 		{
@@ -208,17 +213,22 @@ generategcc()
 	export CPP_COMPILER	
 	
 	if [ ! -x "$C_COMPILER" ] ; then
+	
 		WARNING "Unable to find gcc after having installed it (not found in $C_COMPILER), trying counterparts."
 		findTool gcc
 		C_COMPILER=$returnedString	
 		DEBUG "C_COMPILER set to $C_COMPILER."
+		
 	fi
 
+
 	if [ ! -x "$CPP_COMPILER" ] ; then
+	
 		WARNING "Unable to find g++ after having installed it (not found in $CPP_COMPILER), trying counterparts."
 		findTool g++
 		CPP_COMPILER=$returnedString	
 		DEBUG "CPP_COMPILER set to $CPP_COMPILER."
+		
 	fi
 		
 	MAKE_C="COMPILER_FAMILY=${COMPILER_FAMILY} GCC_ROOT=${GCC_ROOT} CC=${C_COMPILER}"
@@ -240,6 +250,7 @@ generategcc()
 }
 
 
+
 cleangcc()
 {
 	LOG_STATUS "Cleaning gcc build tree..."
@@ -250,13 +261,16 @@ cleangcc()
 
 
 
+
 ################################################################################
 # GNU binutils (binary utilities linked with gcc)
 ################################################################################
 
 
+
 # If binutils is not compiled with the compiler-in-use, expect link errors. 
 # (ex: DWARF unhandled form error).
+
 
 
 getbinutils()
