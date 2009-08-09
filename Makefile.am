@@ -289,7 +289,7 @@ clean-local:
 	@echo "@OSDL_CLEAN_STYLE@    Cleaning all from top build \
 	directory@OSDL_DEFAULT_STYLE@" 
 	-@cd ${top_builddir}; /bin/rm -f AUTHORS COPYING.LIB ChangeLog FAQ \
-	INSTALL MAINTENERS NEWS	README THANKS TODO osdl-?.?.tar.gz
+	INSTALL MAINTENERS NEWS	README THANKS TODO $(RELEASE_FILES)
 
 
 real-clean: clean-local
