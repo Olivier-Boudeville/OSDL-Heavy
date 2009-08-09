@@ -674,7 +674,7 @@ namespace OSDL
 				 * files.
 				 *
 				 */
-				static std::string AudioPathEnvironmentVariable  ;
+				static std::string AudioPathEnvironmentVariable ;
 				 
 				 
 				 
