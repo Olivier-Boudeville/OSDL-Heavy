@@ -1,8 +1,8 @@
 # This script is made to be sourced by LOANI when retrieving optional tools.
 # These tools are not required, but are deemed useful.
 
-# Creation date : 2004, February 22.
-# Author : Olivier Boudeville (olivier.boudeville@online.fr)
+# Creation date: 2004, February 22.
+# Author: Olivier Boudeville (olivier.boudeville@online.fr)
 
 
 # Optional tools section.
@@ -16,7 +16,7 @@
 OPTIONAL_TOOLS="dot doxygen"
 
 
-# Updating retrieve list :
+# Updating retrieve list:
 # (new tools are put ahead of those already selected, so that CVS retrievals do not delay them)
 if [ $is_windows -eq 0 ] ; then
   WARNING "on Windows, no optional tool managed."
@@ -128,8 +128,8 @@ generatedot()
 		exit 12
 	fi
 	
-	# Disabled since graphviz-2.4 version : check fails while in tclpkg/gv
-	# for target test_perl : no 'perl' directory.
+	# Disabled since graphviz-2.4 version: check fails while in tclpkg/gv
+	# for target test_perl: no 'perl' directory.
 	#
 	#{
 	#	${MAKE} check 
@@ -137,7 +137,7 @@ generatedot()
 	#	
 	#if [ $? != 0 ] ; then
 	#	echo
-	#	ERROR "Unable to build dot : auto-check failed."
+	#	ERROR "Unable to build dot: auto-check failed."
 	#	exit 12
 	#fi
 	
@@ -275,10 +275,12 @@ generatedoxygen()
 	
 	printItem "building"
 	
-	# The doxygen build seems to search in some cases some include files with no luck :
+	# The doxygen build seems to search in some cases some include files
+	# with no luck:
 	# "/usr/include/string.h:33:20: stddef.h: No such file or directory"
-	# It should have been searched through the include files for the LOANI-installed gcc.
-	#	
+	# It should have been searched through the include files for the
+	# LOANI-installed gcc.
+
 	{
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1	 
