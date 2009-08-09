@@ -112,7 +112,7 @@ namespace OSDL
 		 * are not expected to remove active objects).
 		 *
 		 */
-		class OSDL_DLL ActiveObject: public Ceylan::TextDisplayable
+		class OSDL_DLL ActiveObject : public Ceylan::TextDisplayable
 		{
 		
 		
