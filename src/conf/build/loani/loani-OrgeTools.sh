@@ -7,12 +7,13 @@
 
 # Orge tools section.
 
-#ORGE_TOOLS="Erlang egeoip Geolite Orge"
-ORGE_TOOLS="Erlang egeoip Geolite"
+#ORGE_TOOLS="Erlang egeoip Geolite Ceylan_Erlang Orge"
+ORGE_TOOLS="egeoip Geolite Ceylan_Erlang Orge"
 
 
 # Updating retrieve list:
-# (new tools are put ahead of those already selected, so that CVS retrievals do not delay them)
+# (new tools are put ahead of those already selected, so that CVS retrievals 
+#do not delay them)
 if [ $is_windows -eq 0 ] ; then
   WARNING "on Windows, no Orge tool managed."
 else
@@ -21,7 +22,18 @@ else
   target_list="$target_list $ORGE_TOOLS"
 fi
 
+
+# Removes that misleading directory coming from the LOANI archive:
+if [ ! -d "${WINDOWS_SOLUTIONS_ROOT}" ] ; then
+
+	${RM} -rf "${WINDOWS_SOLUTIONS_ROOT}"	
+	  
+fi
+
+  
 DEBUG "Scheduling retrieval of Orge tools ($ORGE_TOOLS)."
+
+
 
 
 
@@ -35,6 +47,7 @@ getErlang()
 	DEBUG "Getting Erlang..."
 	launchFileRetrieval Erlang
 }
+
 
 
 prepareErlang()
@@ -55,7 +68,7 @@ prepareErlang()
 		exit 15
 	fi		
 	
-	printBeginList "Erlang     "
+	printBeginList "Erlang        "
 	
 	printItem "extracting"
 	
@@ -80,6 +93,7 @@ prepareErlang()
 	printOK
 	
 }
+
 
 
 generateErlang()
@@ -153,6 +167,10 @@ generateErlang()
 			
 			
 			${MAKE} install prefix=${ERLANG_PREFIX} 
+			
+			# Use that version of Erlang to compile next LOANI-based packages:
+			export PATH="${ERLANG_PREFIX}/bin:$PATH"
+			
 
 		} 1>>"$LOG_OUTPUT" 2>&1		
 	else
@@ -178,6 +196,7 @@ generateErlang()
 }
 
 
+
 cleanErlang()
 {
 	LOG_STATUS "Cleaning Erlang build tree..."
@@ -186,9 +205,12 @@ cleanErlang()
 
 
 
+
+
 ################################################################################
 # egeoip: Erlang tool for the geolocation of IP addresses.
 ################################################################################
+
 
 
 getegeoip()
@@ -201,6 +223,8 @@ getegeoip()
 	egeoip_ARCHIVE="from SVN"
 
 	cd $repository
+
+	LOG_STATUS "Getting egeoip in its source directory ${repository}..."
 	
 	{
 		${SVN} co http://${egeoip_SVN_SERVER}/svn/trunk/ egeoip-read-only ${SVN_OPT}
@@ -214,18 +238,22 @@ getegeoip()
 }
 
 
+
 prepareegeoip()
 {
 
 	DEBUG "Preparing egeoip..."
 		
-	printBeginList "egeoip     "
+	printBeginList "egeoip        "
 	
 	printItem "extracting"
-				
+	
+	# Nothing to do, as retrived from SVN.
+					
 	printOK
 	
 }
+
 
 
 generateegeoip()
@@ -278,8 +306,10 @@ generateegeoip()
 		echo "" >> ${OSDL_ENV_FILE}
 
 		${MKDIR} ${EGEOIP_PREFIX}
-		${CP} -rf ${egeoip_root}/* ${EGEOIP_PREFIX}
 		
+		for d in ebin include priv; do
+			${CP} -rf ${egeoip_root}/* ${EGEOIP_PREFIX}
+		done
 
 	} 1>>"$LOG_OUTPUT" 2>&1		
 			
@@ -300,12 +330,12 @@ generateegeoip()
 }
 
 
+
 cleanegeoip()
 {
 	LOG_STATUS "Cleaning egeoip..."
 	${RM} -rf "$repository/egeoip-read-only"
 }
-
 
 
 
@@ -317,6 +347,7 @@ cleanegeoip()
 ################################################################################
 
 
+
 getGeolite()
 {
 	DEBUG "Getting Geolite database..."
@@ -324,19 +355,22 @@ getGeolite()
 }
 
 
+
 prepareGeolite()
 {
 	DEBUG "Preparing Geolite..."
 	
 	
-	printBeginList "Geolite    "
+	printBeginList "Geolite       "
 	
 	printItem "extracting"
 	
+	# Nothing to do, as egeoip will directly read the .tar.gz file.
 			
 	printOK
 	
 }
+
 
 
 generateGeolite()
@@ -353,6 +387,7 @@ generateGeolite()
 
 	printItem "installing"
 
+	# The database is installed in the egeoip installation, not repository:
 	cd $repository
 	
 	{
@@ -376,11 +411,255 @@ generateGeolite()
 }
 
 
+
 cleanGeolite()
 {
 	LOG_STATUS "Cleaning Geolite database..."
 	${RM} -rf "$egeoip_root/priv/${Geolite_ARCHIVE}"
 }
+
+
+
+
+
+################################################################################
+# Ceylan_Erlang: The Erlang base developments gathered by Ceylan.
+################################################################################
+
+
+# Manage back-up directory if necessary.
+# (helper)
+manage_package_backup()
+{
+
+	package=$1
+	
+	if [ -d "${repository}/$package" ] ; then
+		if [ -d "${repository}/$package.save" ] ; then
+			if [ $be_strict -eq 0 ] ; then
+				ERROR "There already exist a back-up directory for $package, it is on the way, please remove it first (${repository}/$package.save)"
+				exit 5
+			else	
+				WARNING "Deleting already existing back-up directory for $package (removing ${repository}/$package.save)"
+			 	${RM} -rf "${repository}/$package.save" 2>/dev/null
+				# Sometimes rm fails apparently (long names or other reasons):
+				${MV} -f ${repository}/$package.save ${repository}/$package.save-`date '+%Hh-%Mm-%Ss'` 2>/dev/null
+			fi
+		fi		
+		${MV} -f ${repository}/$package ${repository}/$package.save 2>/dev/null
+		WARNING "There already existed a directory for $package (${repository}/$package), it has been moved to ${repository}/$package.save." 
+	fi	
+
+}
+
+
+
+getCeylan_Erlang()
+{
+	DEBUG "Getting Ceylan-Erlang..."
+	
+	# We prefer using SVN here:
+	# (simplified version of getCeylan in loani-requiredTools.sh)
+	
+	declareRetrievalBegin "Ceylan-Erlang (from SVN)"
+	
+	# To avoid a misleading message when the retrieval is finished:
+	Ceylan_Erlang_ARCHIVE="from SVN"
+
+	cd ${repository}
+
+	#SVN_URL="svnroot/ceylan/Ceylan/trunk/src/code/scripts/erlang"
+	SVN_URL="ceylan/Ceylan/trunk/src/code/scripts/erlang"
+	
+	base_svn_url="https://${Ceylan_SVN_SERVER}:${SVN_URL}"
+
+	if [ $developer_access -eq 0 ] ; then
+		
+		user_opt="--username=${developer_name}"
+
+		DISPLAY "      ----> getting Ceylan-Erlang packages from SVN with user name ${developer_name} (check-out)"
+	
+		svn_command="co"
+		
+	else
+		
+		# Not really supported, http should be used, not https...
+		
+		user_opt=""
+		
+		DISPLAY "      ----> getting Ceylan-Erlang packages from anonymous SVN (export)"
+		
+		svn_command="export"
+		
+	fi
+
+	LOG_STATUS "Getting Ceylan-Erlang packages in the source directory ${repository}..."
+	
+	ceylan_erlang_packages="common wooper traces"
+	
+	# Manage back-up directories if necessary:
+	for p in $ceylan_erlang_packages; do
+	
+		manage_package_backup $p
+		
+		${SVN} ${svn_command} ${base_svn_url}/$p ${user_opt}
+		
+		if [ $? -eq 0 ] ; then
+			
+			ERROR "Unable to retrieve Ceylan-Erlang package $p from SVN."
+			exit 20
+
+		fi
+		
+	done
+	
+	return 0	
+	
+}
+
+
+
+prepareCeylan_Erlang()
+{
+	DEBUG "Preparing Ceylan-Erlang..."
+	
+	printBeginList "Ceylan-Erlang "
+	
+	printItem "extracting"
+	
+	# Nothing to do, as sources retrieved from SVN.
+			
+	printOK
+	
+}
+
+
+
+generateCeylan_Erlang()
+{
+	DEBUG "Generating Ceylan-Erlang..."
+
+	printItem "configuring"	
+	
+	printOK	
+	
+	printItem "building"
+	
+	for p in $ceylan_erlang_packages; do
+	
+		cd $p && ${MAKE} && cd ..
+		
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to build Ceylan-Erlang package $p."
+			exit 30
+		fi	
+
+	done
+			
+	printOK
+
+	printItem "installing"
+
+	for p in $ceylan_erlang_packages; do
+	
+		cd $p && ${MAKE} install INSTALLATION_PREFIX="${prefix}" && cd ..
+		
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to install Ceylan-Erlang package $p."
+			exit 31
+		fi	
+
+	done
+	
+	printOK
+
+	printEndList
+	
+	DEBUG "Ceylan-Erlang successfully installed."
+	
+	cd "$initial_dir"
+	
+}
+
+
+
+cleanCeylan_Erlang()
+{
+	LOG_STATUS "Cleaning Ceylan-Erlang install..."
+}
+
+
+
+
+
+################################################################################
+# Orge: OSDL RPG Game Engine
+################################################################################
+
+
+
+getOrge()
+{
+	DEBUG "Getting Orge..."
+
+	declareRetrievalBegin "Orge (from SVN)"
+
+	# To avoid a misleading message when the retrieval is finished:
+	Orge_ARCHIVE="from SVN"
+	
+}
+
+
+
+prepareOrge()
+{
+	DEBUG "Preparing Orge..."
+	
+	printBeginList "Orge          "
+	
+	printItem "extracting"
+	
+			
+	printOK
+	
+}
+
+
+
+generateOrge()
+{
+	DEBUG "Generating Orge..."
+
+	printItem "configuring"	
+	
+	printOK	
+	
+	printItem "building"
+			
+	printOK
+
+	printItem "installing"
+
+	printOK
+
+	printEndList
+	
+	DEBUG "Orge successfully installed."
+	
+	cd "$initial_dir"
+	
+}
+
+
+
+cleanOrge()
+{
+	LOG_STATUS "Cleaning Orge install..."
+}
+
+
 
 
 
