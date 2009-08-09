@@ -635,8 +635,13 @@ bool GLTexture::isResident()
 
 	LOG_DEBUG_TEXTURE( "GLTexture::isResident" ) ;
 	
+	if ( _id == 0 )
+		return false ;
+		
+		
 	// Dummy:
 	GLboolean residences ;
+	
 	
 	/*
 	 * glGetTexParameteriv( GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, etc.)
