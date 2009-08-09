@@ -52,7 +52,6 @@ ActiveObject::ActiveObject( ObjectSchedulingPolicy policy, Weight weight ) :
 	_weight( weight ),
 	_registered( false ),
 	_birthTick( 0 )
-
 {
 
 	
