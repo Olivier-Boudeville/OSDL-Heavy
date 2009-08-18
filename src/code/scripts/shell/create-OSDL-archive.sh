@@ -132,8 +132,10 @@ if [ -z "$Ceylan_PREFIX" ] ; then
 fi
 
 
-indexer_dir="$Ceylan_PREFIX/share/Ceylan/scripts/erlang/tools/resource-indexer"
+indexer_dir="$Ceylan_PREFIX/share/Ceylan/scripts/erlang/tools/bin"
 indexer=`PATH=$indexer_dir:$PATH which ${indexer_name}`
+
+#echo "indexer_dir = ${indexer_dir}"
 
 if [ ! -x "${indexer}" ] ; then
 
