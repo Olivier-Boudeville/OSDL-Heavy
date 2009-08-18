@@ -56,6 +56,7 @@ namespace OSDL
 				virtual ~AudioChannelException() throw() ; 
 		} ;
 			
+			
 							
 												
 		/**
@@ -69,7 +70,7 @@ namespace OSDL
 		 * channel instances as well.
 		 *
 		 */
-		class OSDL_DLL AudioChannel: public Ceylan::TextDisplayable
+		class OSDL_DLL AudioChannel : public Ceylan::TextDisplayable
 		{
 		
 		
