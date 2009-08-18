@@ -165,6 +165,24 @@ void StandardRenderer::render( RenderingTick currentRenderingTick )
 
 
 
+void StandardRenderer::onRenderingSkipped( 
+	Events::RenderingTick skippedRenderingTick )
+{
+
+	OSDL_RENDER_LOG( "Rendering tick " 
+		+ Ceylan::toString( skippedRenderingTick ) + " had to be skipped." ) ;
+
+	/*
+	 TO-DO: add an OSDL base view, inheriting from Ceylan's one
+	 *and* from OSDL::Engine::ScheduledView which supports an onSkip/1 method
+	 
+	for ( list<Ceylan::MVC::BaseView *>::iterator it = _registeredViews.begin();
+			it != _registeredViews.end(); it++ )
+		(*it)->onSkip( skippedRenderingTick ) ;
+	 */
+}
+	
+
 
 const string StandardRenderer::toString( Ceylan::VerbosityLevels level ) const
 {
