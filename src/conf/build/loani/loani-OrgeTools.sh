@@ -8,7 +8,8 @@
 # Orge tools section.
 
 #ORGE_TOOLS="Erlang egeoip Geolite Ceylan_Erlang Orge"
-ORGE_TOOLS="egeoip Geolite Ceylan_Erlang Orge"
+#ORGE_TOOLS="egeoip Geolite Ceylan_Erlang Orge"
+ORGE_TOOLS="Ceylan_Erlang"
 
 
 # Updating retrieve list:
@@ -456,6 +457,7 @@ manage_package_backup()
 
 getCeylan_Erlang()
 {
+
 	DEBUG "Getting Ceylan-Erlang..."
 	
 	# We prefer using SVN here:
@@ -468,10 +470,13 @@ getCeylan_Erlang()
 
 	cd ${repository}
 
-	#SVN_URL="svnroot/ceylan/Ceylan/trunk/src/code/scripts/erlang"
-	SVN_URL="ceylan/Ceylan/trunk/src/code/scripts/erlang"
+	${MKDIR} -p Ceylan-Erlang
 	
-	base_svn_url="https://${Ceylan_SVN_SERVER}:${SVN_URL}"
+	cd Ceylan-Erlang
+	
+	SVN_URL="svnroot/ceylan/Ceylan/trunk/src/code/scripts/erlang"
+	
+	base_svn_url="http://${Ceylan_SVN_SERVER}/${SVN_URL}"
 
 	if [ $developer_access -eq 0 ] ; then
 		
@@ -502,9 +507,13 @@ getCeylan_Erlang()
 	
 		manage_package_backup $p
 		
-		${SVN} ${svn_command} ${base_svn_url}/$p ${user_opt}
+		{
 		
-		if [ $? -eq 0 ] ; then
+			${SVN} ${svn_command} ${base_svn_url}/$p ${user_opt}
+		
+		} 1>>"$LOG_OUTPUT" 2>&1
+		
+		if [ ! $? -eq 0 ] ; then
 			
 			ERROR "Unable to retrieve Ceylan-Erlang package $p from SVN."
 			exit 20
@@ -512,6 +521,31 @@ getCeylan_Erlang()
 		fi
 		
 	done
+	
+	# Dead symbolic links, as the rest of the Ceylan tree has not been
+	# retrieved:
+	rules_dead_link="common/doc/GNUmakerules-docutils.inc"
+	
+	if [ -h "${rules_dead_link}" ] ; then
+	
+		${RM} "${rules_dead_link}"
+		
+	fi
+	
+	# Replaced by an empty file here:
+	touch "${rules_dead_link}"
+	
+	
+	script_dead_link="common/src/generate-docutils.sh"
+	
+	if [ -h "${script_dead_link}" ] ; then
+	
+		${RM} "${script_dead_link}"
+		
+	fi
+	
+	# Replaced by an empty file here:
+	touch "${script_dead_link}"
 	
 	return 0	
 	
@@ -527,7 +561,7 @@ prepareCeylan_Erlang()
 	
 	printItem "extracting"
 	
-	# Nothing to do, as sources retrieved from SVN.
+	# Nothing to do, as sources were already retrieved from SVN.
 			
 	printOK
 	
@@ -544,12 +578,18 @@ generateCeylan_Erlang()
 	printOK	
 	
 	printItem "building"
-	
-	for p in $ceylan_erlang_packages; do
-	
-		cd $p && ${MAKE} && cd ..
+
+	cd ${repository}/Ceylan-Erlang
 		
-		if [ $? != 0 ] ; then
+	for p in $ceylan_erlang_packages ; do
+	
+		{
+
+			cd $p && ${MAKE} && cd ..
+
+		} 1>>"$LOG_OUTPUT" 2>&1
+		
+		if [ ! $? -eq 0 ] ; then
 			echo
 			ERROR "Unable to build Ceylan-Erlang package $p."
 			exit 30
@@ -563,9 +603,13 @@ generateCeylan_Erlang()
 
 	for p in $ceylan_erlang_packages; do
 	
-		cd $p && ${MAKE} install INSTALLATION_PREFIX="${prefix}" && cd ..
+		{
 		
-		if [ $? != 0 ] ; then
+			cd $p && ${MAKE} install INSTALLATION_PREFIX="${prefix}/Ceylan-Erlang" && cd ..
+
+		} 1>>"$LOG_OUTPUT" 2>&1
+		
+		if [ ! $? -eq 0 ] ; then
 			echo
 			ERROR "Unable to install Ceylan-Erlang package $p."
 			exit 31
