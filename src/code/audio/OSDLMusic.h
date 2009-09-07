@@ -342,6 +342,9 @@ namespace OSDL
 		 * In the embedded case (Nintendo DS platform), musics can be either
 		 * RAW with OSDL header, or MP3.
 		 *
+		 * Musics, as opposed to sounds, are streamed chunk after chunk from
+		 * the media, not read once for all, as a whole, in memory. 
+		 *
 		 * @see Sound
 		 *
 		 */

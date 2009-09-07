@@ -144,6 +144,9 @@ namespace OSDL
 		 * In the embedded case (Nintendo DS platform), sounds can be either
 		 * RAW with OSDL header, or MP3.
 		 *
+		 * Sounds, as opposed to musics, are read once for all, as a whole,
+		 * in memory, not streamed chunk after chunk from the media. 
+		 *
 		 */
 		class OSDL_DLL Sound: public Audible, 
 			public Ceylan::LoadableWithContent<LowLevelSound>
