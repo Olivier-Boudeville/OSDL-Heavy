@@ -7,9 +7,9 @@
 
 # Orge tools section.
 
-#ORGE_TOOLS="Erlang egeoip Geolite Ceylan_Erlang Orge"
+ORGE_TOOLS="Erlang egeoip Geolite Ceylan_Erlang Orge"
 #ORGE_TOOLS="egeoip Geolite Ceylan_Erlang Orge"
-ORGE_TOOLS="Ceylan_Erlang"
+#ORGE_TOOLS="Orge"
 
 
 # Updating retrieve list:
@@ -302,7 +302,7 @@ generateegeoip()
 		echo "# egeoip section." >> ${OSDL_ENV_FILE}
 			
 		echo "egeoip_PREFIX=${EGEOIP_PREFIX}" >> ${OSDL_ENV_FILE}
-		echo "# See ${egeoip_PREFIX}/ebin and ${egeoip_PREFIX}/include" >> ${OSDL_ENV_FILE}
+		echo "# See \${egeoip_PREFIX}/ebin and \${egeoip_PREFIX}/include" >> ${OSDL_ENV_FILE}
 			
 		echo "" >> ${OSDL_ENV_FILE}
 
@@ -631,7 +631,9 @@ generateCeylan_Erlang()
 
 cleanCeylan_Erlang()
 {
+
 	LOG_STATUS "Cleaning Ceylan-Erlang install..."
+
 }
 
 
@@ -646,12 +648,62 @@ cleanCeylan_Erlang()
 
 getOrge()
 {
+
 	DEBUG "Getting Orge..."
 
 	declareRetrievalBegin "Orge (from SVN)"
 
 	# To avoid a misleading message when the retrieval is finished:
 	Orge_ARCHIVE="from SVN"
+
+	cd ${repository}
+
+	${MKDIR} -p OSDL-Erlang/Orge
+	
+	cd OSDL-Erlang/Orge
+	
+	SVN_URL="svnroot/osdl/Orge/trunk"
+	
+	base_svn_url="http://${OSDL_SVN_SERVER}/${SVN_URL}"
+
+	if [ $developer_access -eq 0 ] ; then
+		
+		user_opt="--username=${developer_name}"
+
+		DISPLAY "      ----> getting Orge from SVN with user name ${developer_name} (check-out)"
+	
+		svn_command="co"
+		
+	else
+		
+		# Not really supported, http should be used, not https...
+		
+		user_opt=""
+		
+		DISPLAY "      ----> getting Orge from anonymous SVN (export)"
+		
+		svn_command="export"
+		
+	fi
+
+	LOG_STATUS "Getting Orge in the source directory ${repository}..."
+	
+	manage_package_backup osdl
+		
+	{
+		
+		${SVN} ${svn_command} ${base_svn_url} ${user_opt}
+		
+	} 1>>"$LOG_OUTPUT" 2>&1
+		
+	if [ ! $? -eq 0 ] ; then
+			
+		ERROR "Unable to retrieve Orge from SVN."
+		exit 20
+
+	fi
+		
+	return 0	
 	
 }
 
@@ -659,12 +711,14 @@ getOrge()
 
 prepareOrge()
 {
+
 	DEBUG "Preparing Orge..."
 	
 	printBeginList "Orge          "
 	
 	printItem "extracting"
 	
+	# Nothing to do, as sources were already retrieved from SVN.
 			
 	printOK
 	
@@ -674,6 +728,7 @@ prepareOrge()
 
 generateOrge()
 {
+
 	DEBUG "Generating Orge..."
 
 	printItem "configuring"	
@@ -682,9 +737,35 @@ generateOrge()
 	
 	printItem "building"
 			
+	cd ${repository}/OSDL-Erlang/Orge/trunk/src/code
+		
+	{
+
+		${MAKE}
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+		
+	if [ ! $? -eq 0 ] ; then
+		echo
+		ERROR "Unable to build Orge."
+		exit 40
+	fi	
+			
 	printOK
 
 	printItem "installing"
+
+	{
+		
+		cd ${repository}/OSDL-Erlang/Orge/trunk && ${MAKE} install INSTALLATION_PREFIX="${prefix}/Orge" && cd ..
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+		
+	if [ ! $? -eq 0 ] ; then
+		echo
+		ERROR "Unable to install Orge package."
+		exit 31
+	fi	
 
 	printOK
 
@@ -693,14 +774,16 @@ generateOrge()
 	DEBUG "Orge successfully installed."
 	
 	cd "$initial_dir"
-	
+
 }
 
 
 
 cleanOrge()
 {
-	LOG_STATUS "Cleaning Orge install..."
+	
+	LOG_STATUS "Cleaning Orge install in ${prefix}/Orge..."
+		
 }
 
 
