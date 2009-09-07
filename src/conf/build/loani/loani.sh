@@ -1109,31 +1109,83 @@ lacking_tool_message=""
 if [ $is_linux -eq 0 ] ; then
 
 	# Trying to guess the distribution:
-    distro=`cat /etc/lsb-release | grep DISTRIB_ID | sed 's|^DISTRIB_ID=||'`
+    distro=`cat /etc/lsb-release 2>/dev/null | grep DISTRIB_ID | sed 's|^DISTRIB_ID=||' `
+	
+	# Some distros do not define /etc/lsb-release.
 	
     intro="
 To ensure most needed tools are installed, one may run: 
   "
-        
-    if [ "$distro" = "Ubuntu" ] ; then
-    
-    	lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
-    
-    # Probably not exactly the correct string to match:
-    else if [ "$distro" = "openSUSE" ] ; then
 
-    	lacking_tool_message="${intro} sudo yast --update && yast -i coreutils gawk tar gzip bzip2 wget make cmake gcc gcc-c++ flex subversion autoconf automake xorg-x11-proto-devel libjpeg-devel Mesa Mesa-devel"
+	# Only to be done if dealing with Orge:
+	if [ $only_orge_tools -eq 0 ] ; then
 
-    	fi
+		# more and ping must be built-in:
+		lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make gcc subversion"	
+		
+	else
+	
+		# Probably not exactly the correct string to match:
+		if [ "$distro" = "openSUSE" ] ; then
+
+    		lacking_tool_message="${intro} sudo yast --update && yast -i coreutils gawk tar gzip bzip2 wget make cmake gcc gcc-c++ flex subversion autoconf automake xorg-x11-proto-devel libjpeg-devel Mesa Mesa-devel"
         
-    fi
+		#else if [ "$distro" = "Ubuntu" ] ; then
+		else 
+    
+			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
+            
+		fi
+		
+	fi	
 
 fi
 
 
-findSupplementaryShellTools "${lacking_tool_message}"
-findBuildTools "${lacking_tool_message}"
-findAutoTools "${lacking_tool_message}"
+
+# findBasicShellTools already automatically run when sourced.
+
+if [ $only_orge_tools -eq 0 ] ; then
+
+	
+	findTool awk $1 "${lacking_tool_message}"
+	AWK=$returnedString
+
+	findTool tar $1 "${lacking_tool_message}"
+	TAR=$returnedString
+	
+	findTool gunzip $1 "${lacking_tool_message}"
+	GUNZIP=$returnedString
+	
+	findTool bunzip2 $1 "${lacking_tool_message}"
+	BUNZIP2=$returnedString
+	
+	findTool ping $1 "${lacking_tool_message}"
+	PING=$returnedString
+			
+	findTool sleep $1 "${lacking_tool_message}"
+	SLEEP=$returnedString
+
+	findTool make $1 "${lacking_tool_message}"
+	MAKE=$returnedString
+	
+	findTool gcc $1 "${lacking_tool_message}"
+	GCC=$returnedString
+
+	findTool more $1 "${lacking_tool_message}"
+	MORE=$returnedString
+
+	findTool svn $1 "${lacking_tool_message}"
+	SVN=$returnedString
+
+
+else
+
+	findBuildTools "${lacking_tool_message}"
+	findAutoTools "${lacking_tool_message}"
+
+fi
+
 
 
 if [ ! -d "$repository" ] ; then
@@ -1198,63 +1250,73 @@ if [ $no_svn -eq 1 ] ; then
 fi
 
 
-if findTool cmake ; then
-	CMAKE=$returnedString
-else
-	ERROR "No cmake tool found, whereas needed (ex: for PhysicsFS)."
-	exit 16
-fi		
 
 
 # Anticipated checkings section.
 
 
-# On GNU/Linux, early test for OpenGL headers and al:
-if [ $is_linux -eq 0 ] ; then
+# Only to be done if dealing with something else than Orge:
+if [ $only_orge_tools -eq 1 ] ; then
 
+	# Removed, as could be misleading:
+	${RM} -r "$repository/visual-express"
+	
+	# On GNU/Linux, early test for OpenGL headers and al:
+	if [ $is_linux -eq 0 ] ; then
+
+
+		if findTool cmake ; then
+			CMAKE=$returnedString
+		else
+			ERROR "No cmake tool found, whereas needed (ex: for PhysicsFS)."
+			exit 16
+		fi		
    
-	if [ ! -f "/usr/include/GL/gl.h" ] ; then
+   
+		if [ ! -f "/usr/include/GL/gl.h" ] ; then
 	
-			ERROR "No OpenGL headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install mesa-common-dev'."
-			exit 16
+				ERROR "No OpenGL headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install mesa-common-dev'."
+				exit 16
 	
-	fi
+		fi
 	
-	if [ ! -f "/usr/include/GL/glu.h" ] ; then
+		if [ ! -f "/usr/include/GL/glu.h" ] ; then
 	
-			ERROR "No GLU headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install libglu1-mesa-dev'."
-			exit 16
+				ERROR "No GLU headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install libglu1-mesa-dev'."
+				exit 16
 	
-	fi
+		fi
 	
-	if [ ! -f "/usr/include/X11/extensions/XShm.h" ] ; then
+		if [ ! -f "/usr/include/X11/extensions/XShm.h" ] ; then
 	
 			ERROR "No headers for X11 extension about shared memory found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install x11proto-xext-dev'."
 			exit 17
 	
-	fi
+		fi
 	
-	if [ ! -f "/usr/lib/libGL.so" ] ; then
+		if [ ! -f "/usr/lib/libGL.so" ] ; then
 	
 			ERROR "No OpenGL library found, users of Debian-based distributions may retrieve it thanks to: 'sudo apt-get install libgl1-mesa-dev' (note also that hardware-accelerated drivers should be preferred)."
 			exit 18
 	
-	fi
+		fi
 
-	libjpeg_header="/usr/include/jpeglib.h"
+		libjpeg_header="/usr/include/jpeglib.h"
 	
-	if [ ! -f "${libjpeg_header}" ] ; then
+		if [ ! -f "${libjpeg_header}" ] ; then
 	
 			ERROR "Libjpeg does not seem installed on the system (no ${libjpeg_header} found). LOANI will install it, but currently Agar cannot be told to search outside the system tree for libjpeg files, and therefore needs them installed there as well. Users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install libjpeg62-dev'."
 			exit 19
 	
-	fi
+		fi
 
-	gettext_executable="/usr/bin/gettext"
-	if [ ! -x "${gettext_executable}" ] ; then
+		gettext_executable="/usr/bin/gettext"
+		if [ ! -x "${gettext_executable}" ] ; then
 	
 			ERROR "No gettext executable found (${gettext_executable}), users of Debian-based distributions may retrieve it thanks to: 'sudo apt-get install gettext'."
 			exit 20
+	
+		fi
 	
 	fi
 	
