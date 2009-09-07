@@ -10,14 +10,120 @@ See: http://docutils.sourceforge.net/docs/howto/html-stylesheets.html
 @import url(html4css1.css);
 
 
+
+/* Copied verbatim from OSDL.css, with the correct tags. */
+
+
+
+/* Main titles */
+
+
+
 h1.title {
-  color: #ec8b23
+  color: #ec8b23;
+  background: transparent;
+  font-size: 50px;
+  font-weight: bold;
+  font-family: Verdana, serif;
+  margin-top: 0%;
+  margin-bottom: 0;
+  margin-left: 2%;
+  margin-right: 2%;
+  text-align: center;
 }
+
 
 
 h2.subtitle {
-  color: #4da04b
+  color: #8aa0d2 ;
+  font-size: 40px;
+  text-align: center;
 }
+
+
+
+
+
+
+/* In-text titles */
+
+
+div.section h1 {
+  color: #ec8b23;
+  font-size: 30px;
+  background: transparent;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 7%;
+  margin-bottom: 5%;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+
+div.section h2 {
+  color: #4da04b ;
+  font-size: 27px;
+  background: transparent;
+  text-align: left;
+  margin-top: 5%;
+  margin-bottom: 2%;
+}
+
+
+div.section h3 {
+  color: #af38c9;
+  font-size: 22px;
+  background: transparent;
+  margin-top: 5%;
+  margin-bottom: 3%;
+  margin-left: 7%;
+  margin-right: 4%;
+}
+
+
+div.section h4 {
+  color: #8aa0d2;
+  font-size: 21px;
+  margin-left: 10%;
+  margin-right: 7%;
+  font-weight: normal;
+}
+
+
+div.section h5 {
+  color: #ec8b23;
+  font-size: 16px;
+  margin-left: 15%;
+  margin-right: 15%;
+  font-weight: bold;
+  margin-top: 3%;
+  margin-bottom: 2%;
+}
+
+
+div.section h6 {
+  color: #3da03b;
+  font-size: 15px;
+  margin-left: 30%;
+  margin-right: 5%;
+  font-weight: bold;
+  margin-top: 3%;
+  margin-bottom: 2%;
+}
+
+
+div.section h7 {
+  color: #888888;
+  font-size: 15px;
+  margin-left: 10%;
+  margin-right: 5%;
+  font-weight: bold;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+
 
 
 /* Violet */
