@@ -25,7 +25,7 @@ h1.title {
   font-size: 50px;
   font-weight: bold;
   font-family: Verdana, serif;
-  margin-top: 0%;
+  margin-top: 5%;
   margin-bottom: 0;
   margin-left: 2%;
   margin-right: 2%;
@@ -37,6 +37,8 @@ h1.title {
 h2.subtitle {
   color: #8aa0d2 ;
   font-size: 40px;
+  margin-top: 2%;
+  margin-bottom: 6%;
   text-align: center;
 }
 
@@ -132,15 +134,17 @@ div.dedication p.topic-title {
 }
 
 
-/* Green */
+/* Violet */
 div.abstract p.topic-title {
-  color: #4da04b
+  font-weight: bold;
+  color: #bf48d9
 }
 
 
 /* Lightgrey on Black */
 body {
   color: #DFDFDF;
+  margin-left: 2%;
   background: #000000;
 }
 
@@ -237,7 +241,9 @@ a:hover {
 }
 
 
-
+div.contents {
+	margin-left: 30%
+}
 
 
 div.contents a.reference {
@@ -316,9 +322,10 @@ div.tip p.admonition-title {
   color: #4da04b }
 
 
-
 div.contents p.topic-title {
   text-decoration: none;
+  color: #bf48d9;
+  font-weight: bold
 }
 
 
@@ -353,3 +360,13 @@ dt {
   font-weight: bold
 }
 
+
+strong {
+ color: #8aa0d2 ;
+ font-weight: bold
+}
+
+em {
+ color: #4da04b ;
+ font-weight: bold
+}
