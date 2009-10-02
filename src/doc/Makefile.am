@@ -100,15 +100,16 @@ MIRROR_WEB_DIR       = /var/www/@PROJECT_NAME@
 
 # These variable are made to be evaluated from $(srcdir)/web:
 
-WEB_CONTENT_FILES    = `find . -path 'common' -prune -a -type f -o ! -path '*.svn*' -a -type f`
+WEB_CONTENT_FILES    = `find . -path 'common' -prune -a \( -type l -o -type f \) -o ! -path '*.svn*' -a \( -type l -o -type f \)`
 
+	
 WEB_CONTENT_DIRS     = `find . -path 'common' -prune -a -type d -o ! -path '*.svn*' -a -type d`
 
 COMMON_WEB_FILES     = `find common ! -path '*.svn*' -type f -follow`
 COMMON_WEB_DIRS      = `find common ! -path '*.svn*' -type d -follow` 
 
-HTML_FILES           = `find . -name '*.html' -a -type f`
-RST_FILES            = `find . -name '*.rst' -a -type f`
+HTML_FILES           = `find . -name '*.html' -a \( -type l -o -type f \)`
+RST_FILES            = `find . -name '*.rst' -a \( -type l -o -type f \)`
 
 
 
@@ -413,9 +414,9 @@ info-dirs:
 	
 	
 info-files: info-html
-	@echo; echo "    + web documentation files are  : "; \
+	@echo; echo "    + web documentation files are: "; \
 	echo "$(WEB_CONTENT_FILES)"
-	@echo; echo "    + common web files are         : "; \
+	@echo; cd $(srcdir)/web; echo "    + common web files are: "; \
 	echo "$(COMMON_WEB_FILES)"
 	@echo; echo "    + doxygen configuration file is: \
 	$(DOXYGEN_GENERATED_CONF)"
