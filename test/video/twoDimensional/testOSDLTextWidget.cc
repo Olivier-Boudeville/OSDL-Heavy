@@ -227,24 +227,37 @@ int main( int argc, char * argv[] )
 			trueTypeFontDirForInstalledPlayTests ) ;		
 	
 	
-		Text::TrueTypeFont myFirstTrueTypeFont( firstTrueTypeFontName,
-			/* point size */ 26, 
+		std::string firstTrueTypeFontPath = Text::TrueTypeFont::FindPathFor(
+			firstTrueTypeFontName ) ;
+
+		Text::TrueTypeFont myFirstTrueTypeFont( firstTrueTypeFontPath,
 			/* index */ 0, 
 			/* convertToDisplay */ true, 
 			/* render cache */ Text::Font::WordCached ) ;
 		
-		Text::TrueTypeFont mySecondTrueTypeFont( secondTrueTypeFontName,
-			/* point size */ 30, 
+		myFirstTrueTypeFont.load( /* point size */ 26 ) ;
+		
+		
+		std::string secondTrueTypeFontPath = Text::TrueTypeFont::FindPathFor(
+			secondTrueTypeFontName ) ;
+
+		Text::TrueTypeFont mySecondTrueTypeFont( secondTrueTypeFontPath,
 			/* index */ 0, 
 			/* convertToDisplay */ true, 
 			/* render cache */ Text::Font::WordCached ) ;
 		
-		Text::TrueTypeFont myThirdTrueTypeFont( thirdTrueTypeFontName,
-			/* point size */ 30, 
+		mySecondTrueTypeFont.load( /* point size */ 30 ) ;
+		
+		
+		std::string thirdTrueTypeFontPath = Text::TrueTypeFont::FindPathFor(
+			thirdTrueTypeFontName ) ;
+
+		Text::TrueTypeFont myThirdTrueTypeFont( thirdTrueTypeFontPath,
 			/* index */ 0, 
 			/* convertToDisplay */ true, 
 			/* render cache */ Text::Font::WordCached ) ;
 		
+		myThirdTrueTypeFont.load( /* point size */ 30 ) ;
 		
     	LogPlug::info( "Preparing Fixed font." ) ;	
 					

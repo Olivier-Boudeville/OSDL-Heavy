@@ -235,11 +235,15 @@ int main( int argc, char * argv[] )
 		 *
 		 */
 		Font::RenderCache testedCache = Font::GlyphCached ;
-				
-		TrueTypeFont myFont( firstTrueTypeFontFile, /* point size */ 20, 
-			/* font index */ 0, /* convertToDisplay */ true, 
-			/* render cache */ testedCache ) ;
-					
+		
+		std::string firstTrueTypeFontPath = TrueTypeFont::FindPathFor(
+			firstTrueTypeFontFile ) ;
+			
+		TrueTypeFont myFont( firstTrueTypeFontPath,	/* font index */ 0, 
+			/* convertToDisplay */ true, /* render cache */ testedCache ) ;
+		
+		myFont.load( /* point size */ 20 ) ;
+		
 		LogPlug::info( "Successfully loaded following font: " 
 			+ myFont.toString() ) ;
 		

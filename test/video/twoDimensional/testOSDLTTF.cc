@@ -27,9 +27,9 @@
 #include "OSDL.h"
 using namespace OSDL ;
 using namespace OSDL::Video ;
+using namespace OSDL::Video::Pixels ;
 using namespace OSDL::Video::TwoDimensional ;
 using namespace OSDL::Video::TwoDimensional::Text ;
-using namespace OSDL::Video::Pixels ;
 
 
 using namespace Ceylan::Log ;
@@ -38,6 +38,7 @@ using namespace Ceylan::System ;
 
 #include <string>
 using std::string ;
+
 
 
 /*
@@ -99,11 +100,13 @@ void displayFont( Surface & screen, const string & fontFilename,
 	for ( Ceylan::Uint32 i = 0; i < 8; i++ )
 	{
 	
-		TrueTypeFont testedFont( fontFilename, 
-			/* point size */ 15 + 5 * i, 
+		string fontPath = TrueTypeFont::FindPathFor( fontFilename ) ;
+		
+		TrueTypeFont testedFont( fontPath, 
 			/* font index */ 0, /* convertToDisplay */ convertToDisplay, 
 			/* render cache */ cache ) ;
 		
+		testedFont.load( /* point size */ 15 + 5 * i ) ;
 		
 		LogPlug::debug( testedFont.describeGlyphFor( 'd' ) ) ;
 		LogPlug::debug( testedFont.describeGlyphFor( 'i' ) ) ;
@@ -272,10 +275,12 @@ int main( int argc, char * argv[] )
 		
 		try
 		{
-			TrueTypeFont nonExistingFont( "NotExisting.ttf", 
-				/* point size */ 20 ) ;
+		
+			TrueTypeFont nonExistingFont( "NotExisting.ttf" ) ;
+			nonExistingFont.load() ;
+			
 		}
-		catch( const TextException & e )
+		catch( const FontException & e )
 		{
 			LogPlug::info( 
 				"Asking for a non-existing font failed as expected: " 
@@ -310,8 +315,8 @@ int main( int argc, char * argv[] )
 		if ( randomTestWanted )
 		{			
 			
-	    	LogPlug::info( 
-				"Writing at random places text with random color." ) ;	
+	    	LogPlug::info( "Random test: "
+				"writing at random places text with random color." ) ;	
 		
 	    	LogPlug::info( "Prerequesite: having four random generators" ) ;	
 		
@@ -326,10 +331,15 @@ int main( int argc, char * argv[] )
 	
 			Coordinate x, y ;
 					
-			TrueTypeFont existingFont( firstTrueTypeFontFile, 
-				/* point size */ 50, /* font index */ 0, 
-				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
-						
+			string firstTrueTypeFontPath = TrueTypeFont::FindPathFor(
+				firstTrueTypeFontFile ) ;
+				
+			TrueTypeFont existingFont( firstTrueTypeFontPath, 
+				/* font index */ 0, /* convertToDisplay */ true, 
+				/* render cache */ Font::None, /* preload */ false ) ;
+
+			existingFont.load( /* point size */ 50 ) ;
+			
 			LogPlug::info( "Successfully loaded following font: " 
 				+ existingFont.toString() ) ;
 		
@@ -455,6 +465,9 @@ int main( int argc, char * argv[] )
 		if ( qualityTestWanted )
 		{
 							
+	    	LogPlug::info( "Quality test: "
+				"rendering texts with different qualities." ) ;
+					
 			screen.clear() ;
 
 			if ( gridWanted )
@@ -477,11 +490,16 @@ int main( int argc, char * argv[] )
 				
 			LogPlug::info( "TrueType fonts will be found through: " 
 				+ TrueTypeFont::TrueTypeFontFileLocator.toString() ) ;
-					
-			TrueTypeFont existingFont( firstTrueTypeFontFile, 50, 
+			
+			string firstTrueTypeFontPath = TrueTypeFont::FindPathFor(
+				firstTrueTypeFontFile ) ;
+				
+			TrueTypeFont existingFont( firstTrueTypeFontPath,
 				/* font index */ 0, /* convertToDisplay */ true, 
 				/* render cache */ Font::None ) ;
-						
+			
+			existingFont.load( /* point size */ 50 ) ;
+				
 			LogPlug::info( "Successfully loaded following font: " 
 				+ existingFont.toString() ) ;
 
@@ -525,6 +543,9 @@ int main( int argc, char * argv[] )
 		
 		if ( edgeTestWanted )
 		{
+
+	    	LogPlug::info( "Edge test: "
+				"rendering texts at various positions." ) ;
 
 			screen.clear() ;
 
@@ -658,10 +679,11 @@ int main( int argc, char * argv[] )
 		        
         	LogPlug::warning( "Test archive '" + archiveFilename 
             	+ "' not found (" + e.toString() + "), run the "
-                "create-testOSDLEmbeddedFileSystem-archive.sh script "
-                "beforehand to have it ready for this test. Stopping now." ) ;
+                "test/basic/create-testOSDLEmbeddedFileSystem-archive.sh "
+				"script beforehand to have it ready for this test. "
+				"Stopping now." ) ;
                 
-        	return 0 ;
+        	return Ceylan::ExitSuccess ;
             
         }
 
@@ -705,11 +727,12 @@ int main( int argc, char * argv[] )
 		 */
 		{ 
 		
-			TrueTypeFont embeddedFont( 
-				"test-OSDLEmbeddedFileSystem-archive/" + targetEmbeddedTTF, 
-				/* point size */ 40, /* font index */ 0, 
-				/* convertToDisplay */ true, /* render cache */ Font::None ) ;
-
+			TrueTypeFont embeddedFont( targetEmbeddedTTF,
+				 /* font index */ 0, /* convertToDisplay */ true, 
+				 /* render cache */ Font::None ) ;
+			
+			embeddedFont.load( /* point size */ 40 ),
+			
 			embeddedFont.blitLatin1Text( screen, 80, 50, 
 				"I am a Truetype font", Font::Solid, Pixels::Red ) ;
 

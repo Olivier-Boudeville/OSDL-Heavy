@@ -273,12 +273,16 @@ int main( int argc, char * argv[] )
 			trueTypeFontDirForInstalledPlayTests ) ;
 		
 		
-		Text::TrueTypeFont myFirstTrueTypeFont( trueTypeFirstFontName,
-				/* point size */ 30, 
+		std::string trueTypeFirstFontPath = Text::TrueTypeFont::FindPathFor(
+			trueTypeFirstFontName ) ;
+		
+		Text::TrueTypeFont myFirstTrueTypeFont( trueTypeFirstFontPath,
 				/* renderingStyle */ Text::Font::Normal, 
 				/* convertToDisplay */ true, 
 				/* render cache */ cache ) ;
-
+		
+		myFirstTrueTypeFont.load( /* point size */ 30 ),
+		
 		LogPlug::info( "Successfully loaded following font: " 
 			+ myFirstTrueTypeFont.toString() ) ;
 
@@ -290,12 +294,16 @@ int main( int argc, char * argv[] )
 			
 			
 
-		Text::TrueTypeFont mySecondTrueTypeFont( trueTypeSecondFontName,
-				/* point size */ 30, 
+		std::string trueTypeSecondFontPath = Text::TrueTypeFont::FindPathFor(
+			trueTypeSecondFontName ) ;
+			
+		Text::TrueTypeFont mySecondTrueTypeFont( trueTypeSecondFontPath,
 				/* renderingStyle */ Text::Font::Normal, 
 				/* convertToDisplay */ true, 
 				/* render cache */ cache ) ;
-
+		
+		mySecondTrueTypeFont.load( /* point size */ 30 ),
+		
 		LogPlug::info( "Successfully loaded following font: " 
 			+ mySecondTrueTypeFont.toString() ) ;
 
@@ -306,13 +314,16 @@ int main( int argc, char * argv[] )
 			secondTestSentence, quality, Pixels::HotPink ) ;
 
 
+		std::string trueTypeThirdFontPath = Text::TrueTypeFont::FindPathFor(
+			trueTypeThirdFontName ) ;
 
-		Text::TrueTypeFont myThirdTrueTypeFont( trueTypeThirdFontName,
-				/* point size */ 30, 
+		Text::TrueTypeFont myThirdTrueTypeFont( trueTypeThirdFontPath,
 				/* renderingStyle */ Text::Font::Normal, 
 				/* convertToDisplay */ true, 
 				/* render cache */ cache ) ;
 
+		myThirdTrueTypeFont.load( /* point size */ 30 ),
+		
 		LogPlug::info( "Successfully loaded following font: " 
 			+ myThirdTrueTypeFont.toString() ) ;
 
@@ -323,12 +334,16 @@ int main( int argc, char * argv[] )
 			quality, Pixels::PeachPuff ) ;
 
 
-		Text::TrueTypeFont myFourthTrueTypeFont( trueTypeFourthFontName,
-				/* point size */ 30, 
+		std::string trueTypeFourthFontPath = Text::TrueTypeFont::FindPathFor(
+			trueTypeFourthFontName ) ;
+			
+		Text::TrueTypeFont myFourthTrueTypeFont( trueTypeFourthFontPath,
 				/* renderingStyle */ Text::Font::Normal, 
 				/* convertToDisplay */ true, 
 				/* render cache */ cache ) ;
 
+		myFourthTrueTypeFont.load( /* point size */ 30 ) ;
+		
 		LogPlug::info( "Successfully loaded following font: " 
 			+ myFourthTrueTypeFont.toString() ) ;
 

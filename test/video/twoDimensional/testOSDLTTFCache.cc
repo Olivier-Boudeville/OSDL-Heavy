@@ -41,7 +41,7 @@ using namespace Ceylan::System ;
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation 
- * tree, from executable build directory :
+ * tree, from executable build directory:
  *
  */
 const std::string trueTypeFontDirFromExec = 
@@ -50,7 +50,7 @@ const std::string trueTypeFontDirFromExec =
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in build tree :
+ * from playTests.sh location in build tree:
  *
  */
 const std::string trueTypeFontDirForBuildPlayTests 
@@ -59,7 +59,7 @@ const std::string trueTypeFontDirForBuildPlayTests
 
 /*
  * TrueType font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in installed tree :
+ * from playTests.sh location in installed tree:
  *
  */
 const std::string trueTypeFontDirForInstalledPlayTests 
@@ -69,7 +69,7 @@ const std::string trueTypeFontDirForInstalledPlayTests
 
 /*
  * Those are Larabie splendid fonts, see read_me.html under
- * trueTypeFontDirFromExec :
+ * trueTypeFontDirFromExec:
  *
  */
 const std::string firstTrueTypeFontFile  = "cretino.ttf" ;
@@ -102,7 +102,7 @@ int main( int argc, char * argv[] )
 	{
 			
 
-		LogPlug::info( "Testing OSDL TrueType font cache : "
+		LogPlug::info( "Testing OSDL TrueType font cache: "
 			"inspect 'Debug' channel to check cache hits and misses" ) ;	
 			
 			
@@ -156,7 +156,7 @@ int main( int argc, char * argv[] )
 			
 			if ( token == "--online" )
 			{
-				// Ignored :
+				// Ignored:
 				tokenEaten = true ;
 			}
 			
@@ -170,13 +170,13 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException( 
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 		
 		}
 		
 		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Pre requesite: initializing the display" ) ;	
 	         
 		 
 		CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo 
@@ -226,16 +226,20 @@ int main( int argc, char * argv[] )
 		{
 		
 		
-			LogPlug::info( "First : testing cache for glyph rendering." ) ;
+			LogPlug::info( "First: testing cache for glyph rendering." ) ;
 					
 					
-			TrueTypeFont myGlyphCachedTrueTypeFont( firstTrueTypeFontFile, 
-				/* point size */ 15, /* font index */ 0, 
-				/* convertToDisplay */ true, 
+			std::string firstTrueTypeFontPath = Text::TrueTypeFont::FindPathFor(
+				firstTrueTypeFontFile ) ;
+
+			TrueTypeFont myGlyphCachedTrueTypeFont( firstTrueTypeFontPath, 
+				/* font index */ 0, /* convertToDisplay */ true, 
 				/* render cache */ Font::GlyphCached ) ;
+			
+			myGlyphCachedTrueTypeFont.load( /* point size */ 15 ),
 						
 			LogPlug::info( 
-				"Successfully loaded following font in initial state : " 
+				"Successfully loaded following font in initial state: " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph( 
@@ -246,7 +250,7 @@ int main( int argc, char * argv[] )
 			mySurface->blitTo( screen, 20, ordinate ) ;
 			delete mySurface ;
 		
-			LogPlug::info( "Font after first render of 'a' : " 
+			LogPlug::info( "Font after first render of 'a': " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph( 
@@ -255,7 +259,7 @@ int main( int argc, char * argv[] )
 			mySurface->blitTo( screen, 40, ordinate ) ;
 			delete mySurface ;
 		
-			LogPlug::info( "Font after second render of 'a' : " 
+			LogPlug::info( "Font after second render of 'a': " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph( 
@@ -264,26 +268,26 @@ int main( int argc, char * argv[] )
 			mySurface->blitTo( screen, 60, ordinate ) ;
 			delete mySurface ;
 		
-			LogPlug::info( "Font after third render of 'a' : " 
+			LogPlug::info( "Font after third render of 'a': " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 		
 			myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 30, ordinate, 
 				'b', Font::Solid, textColor ) ; 
 				
-			LogPlug::info( "Font after first blit  of 'b' : " 
+			LogPlug::info( "Font after first blit of 'b': " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 50, ordinate, 
 				'b', Font::Solid, textColor ) ;
 				 
-			LogPlug::info( "Font after second blit  of 'b' : " 
+			LogPlug::info( "Font after second blit of 'b': " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 70, ordinate, 
 				'b', Font::Solid, textColor ) ; 
 				
-			LogPlug::info( "Font after third blit  of 'b' : " 
+			LogPlug::info( "Font after third blit of 'b': " 
 				+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 		}
@@ -295,20 +299,24 @@ int main( int argc, char * argv[] )
 		if ( testWordCache )
 		{
 		
-			LogPlug::info( "Second : testing cache for word rendering, "
-				"with first test sentence : '" + firstTestSentence 
+			LogPlug::info( "Second: testing cache for word rendering, "
+				"with first test sentence: '" + firstTestSentence 
 				+ "', with second test sentence '" 
 				+ secondTestSentence + "'." ) ;
 				
 			textColor = Pixels::Green ;
 					
-			TrueTypeFont myWordCachedTrueTypeFont( secondTrueTypeFontFile, 
-				/* point size */ 15, /* font index */ 0, 
-				/* convertToDisplay */ true, 
+			std::string secondTrueTypeFontPath =
+				Text::TrueTypeFont::FindPathFor( secondTrueTypeFontFile ) ;
+
+			TrueTypeFont myWordCachedTrueTypeFont( secondTrueTypeFontPath, 
+				/* font index */ 0, /* convertToDisplay */ true, 
 				/* render cache */ Font::WordCached ) ;
+			
+			myWordCachedTrueTypeFont.load( /* point size */ 15 ) ;
 						
 			LogPlug::info( 
-				"Successfully loaded following font in initial state : " 
+				"Successfully loaded following font in initial state: " 
 				+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 			
 
@@ -320,7 +328,7 @@ int main( int argc, char * argv[] )
 			mySurface->blitTo( screen, 20, ordinate ) ;
 			delete mySurface ;
 		
-			LogPlug::info( "Font after first render of first test sentence : " 
+			LogPlug::info( "Font after first render of first test sentence: " 
 				+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
@@ -329,7 +337,7 @@ int main( int argc, char * argv[] )
 			mySurface->blitTo( screen, 220, ordinate ) ;
 			delete mySurface ;
 		
-			LogPlug::info( "Font after second render of first test sentence : " 
+			LogPlug::info( "Font after second render of first test sentence: " 
 				+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
@@ -338,26 +346,26 @@ int main( int argc, char * argv[] )
 			mySurface->blitTo( screen, 420, ordinate ) ;
 			delete mySurface ;
 		
-			LogPlug::info( "Font after third render of first test sentence : " 
+			LogPlug::info( "Font after third render of first test sentence: " 
 				+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
 
 			myWordCachedTrueTypeFont.blitLatin1Text( screen, 20, 150, 
 				secondTestSentence, Font::Solid, textColor ) ;		
 				
-			LogPlug::info( "Font after first blit of second test sentence : " 
+			LogPlug::info( "Font after first blit of second test sentence: " 
 				+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			myWordCachedTrueTypeFont.blitLatin1Text( screen, 220, 150, 
 				secondTestSentence, Font::Solid, textColor ) ;		
 				
-			LogPlug::info( "Font after first blit of second test sentence : " 
+			LogPlug::info( "Font after first blit of second test sentence: " 
 				+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 			
 			myWordCachedTrueTypeFont.blitLatin1Text( screen, 420, 150, 
 				secondTestSentence, Font::Solid, textColor ) ;		
 				
-			LogPlug::info( "Font after first blit of second test sentence : " 
+			LogPlug::info( "Font after first blit of second test sentence: " 
 				+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
 		}
@@ -371,21 +379,25 @@ int main( int argc, char * argv[] )
 		{
 		
 							
-			LogPlug::info( "Third : testing cache for text rendering, "
-				"with first test sentence : '" + firstTestSentence 
+			LogPlug::info( "Third: testing cache for text rendering, "
+				"with first test sentence: '" + firstTestSentence 
 				+ "', with second test sentence '" 
 				+ secondTestSentence + "'." ) ;
 
 			textColor = Pixels::Blue ;
 
-			TrueTypeFont myTextCachedTrueTypeFont( thirdTrueTypeFontFile, 
-				/* point size */ 28, /* font index */ 0, 
-				/* convertToDisplay */ true, 
+
+			std::string thirdTrueTypeFontPath =
+				Text::TrueTypeFont::FindPathFor( thirdTrueTypeFontFile ) ;
+
+			TrueTypeFont myTextCachedTrueTypeFont( thirdTrueTypeFontPath, 
+				/* font index */ 0, /* convertToDisplay */ true, 
 				/* render cache */ Font::TextCached ) ;
 
+			myTextCachedTrueTypeFont.load( /* point size */ 28 ),
 						
 			LogPlug::info( 
-				"Successfully loaded following font in initial state : " 
+				"Successfully loaded following font in initial state: " 
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
 			Coordinate ordinate = 200 ;	
@@ -396,7 +408,7 @@ int main( int argc, char * argv[] )
 			mySurface->blitTo( screen, 20, ordinate ) ;
 			delete mySurface ;
 		
-			LogPlug::info( "Font after first render of first test sentence : " 
+			LogPlug::info( "Font after first render of first test sentence: " 
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
@@ -405,7 +417,7 @@ int main( int argc, char * argv[] )
 			mySurface->blitTo( screen, 220, ordinate ) ;
 			delete mySurface ;
 		
-			LogPlug::info( "Font after second render of first test sentence : " 
+			LogPlug::info( "Font after second render of first test sentence: " 
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
@@ -424,19 +436,19 @@ int main( int argc, char * argv[] )
 			myTextCachedTrueTypeFont.blitLatin1Text( screen, 20, ordinate,
 				secondTestSentence, Font::Solid, textColor ) ;		
 				
-			LogPlug::info( "Font after first blit of second test sentence : " 
+			LogPlug::info( "Font after first blit of second test sentence: " 
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 		
 			myTextCachedTrueTypeFont.blitLatin1Text( screen, 220, ordinate,
 				secondTestSentence, Font::Solid, textColor ) ;		
 				 
-			LogPlug::info( "Font after first blit of second test sentence : " 
+			LogPlug::info( "Font after first blit of second test sentence: " 
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 			
 			myTextCachedTrueTypeFont.blitLatin1Text( screen, 420, ordinate,
 				secondTestSentence, Font::Solid, textColor ) ;		
 				
-			LogPlug::info( "Font after first blit of second test sentence : " 
+			LogPlug::info( "Font after first blit of second test sentence: " 
 				+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
 
@@ -460,7 +472,7 @@ int main( int argc, char * argv[] )
     catch ( const OSDL::Exception & e )
     {
 	
-        LogPlug::error( "OSDL exception caught : "
+        LogPlug::error( "OSDL exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -469,7 +481,7 @@ int main( int argc, char * argv[] )
     catch ( const Ceylan::Exception & e )
     {
 	
-        LogPlug::error( "Ceylan exception caught : "
+        LogPlug::error( "Ceylan exception caught: "
         	 + e.toString( Ceylan::high ) ) ;
        	return Ceylan::ExitFailure ;
 
@@ -478,7 +490,7 @@ int main( int argc, char * argv[] )
     catch ( const std::exception & e )
     {
 	
-        LogPlug::error( "Standard exception caught : " 
+        LogPlug::error( "Standard exception caught: " 
 			 + std::string( e.what() ) ) ;
        	return Ceylan::ExitFailure ;
 

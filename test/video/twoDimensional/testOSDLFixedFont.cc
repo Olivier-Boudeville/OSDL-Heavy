@@ -191,7 +191,7 @@ int main( int argc, char * argv[] )
 					/* convertToDisplay */ true, 
 					/* render cache */ Font::None ) ;
 			}
-			catch( const TextException & e )
+			catch( const FontException & e )
 			{
 			
 				LogPlug::info( 
