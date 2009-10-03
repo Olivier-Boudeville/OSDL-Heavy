@@ -40,8 +40,8 @@ using namespace std ;
  * @note Corresponds to the test of EmbeddedDirectory, EmbeddedFile and
  * EmbeddedFileSystemManager.
  *
- * @see the create-testOSDLEmbeddedFileSystem-archive.sh script, to generate
- * a test archive for this test.
+ * @see the test/basic/create-testOSDLEmbeddedFileSystem-archive.sh script, 
+ * to generate a test archive for this test.
  *
  */
 int main( int argc, char * argv[] ) 
@@ -78,9 +78,9 @@ int main( int argc, char * argv[] )
         
 		
         /*
-         * If create-testOSDLEmbeddedFileSystem-archive.sh has been run,
-         * test-OSDLEmbeddedFileSystem-archive.oar should be listed in the
-         * search path:
+         * If test/basic/create-testOSDLEmbeddedFileSystem-archive.sh has 
+		 * been run, test-OSDLEmbeddedFileSystem-archive.oar should be 
+		 * listed in the search path:
          *
          */
         list<string> searchPath = myFSManager.getSearchPath() ;
@@ -170,10 +170,11 @@ int main( int argc, char * argv[] )
         
         	LogPlug::warning( "Test archive '" + archiveFilename 
             	+ "' not found, run the "
-                "create-testOSDLEmbeddedFileSystem-archive.sh script "
-                "beforehand to have it ready for this test. Stopping now." ) ;
+                "test/basic/create-testOSDLEmbeddedFileSystem-archive.sh "
+				"script beforehand to have it ready for this test. "
+				"Stopping now." ) ;
                 
-        	return 0 ;
+        	return Ceylan::ExitSuccess ;
             
         }
 
@@ -195,8 +196,7 @@ int main( int argc, char * argv[] )
         	+ Ceylan::formatStringList( searchPath ) ) ;
         
         // Platform-independent notation:   
-		const string targetArchivedFilename =
-        	"test-OSDLEmbeddedFileSystem-archive/first-file-to-read.txt" ;
+		const string targetArchivedFilename = "first-file-to-read.txt" ;
        
         LogPlug::info( "Trying to load archive '" + targetArchivedFilename 
         	+ "', expected to be found in OSDL test archive." ) ;
