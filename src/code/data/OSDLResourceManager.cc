@@ -28,13 +28,16 @@
 
 #include "OSDLMusic.h"                // for Music constructor
 #include "OSDLSound.h"                // for Sound constructor
+#include "OSDLGLTexture.h"            // for GLTexture constructor
 
 
+using namespace Ceylan ;              // for ResourceID
 using namespace Ceylan::Log ;         // for LogPlug
 
 
 using namespace OSDL ;
 using namespace OSDL::Data ;
+using namespace OSDL::Video::TwoDimensional ;
 
 using std::string ;
 using std::list ;
@@ -84,14 +87,15 @@ using std::map ;
  */
 
 
-ResourceManagerException::ResourceManagerException( const string & reason ) :
+Data::ResourceManagerException::ResourceManagerException( 
+		const string & reason ) :
 	DataException( reason )
 {
 
 }
 
 
-ResourceManagerException::~ResourceManagerException() throw()
+Data::ResourceManagerException::~ResourceManagerException() throw()
 {
 
 }
@@ -110,7 +114,8 @@ typedef std::list<Ceylan::XML::XMLParser::XMLTree * > XMLSubtreeList ;
 
 
 
-ResourceManager::ResourceManager( const string & resourceMapFilename )
+Data::ResourceManager::ResourceManager( const string & resourceMapFilename ):
+	_maxID( 0 )
 {
 
 	send( "Creating a ResourceManager based on the resource map in file '"
@@ -146,7 +151,7 @@ ResourceManager::ResourceManager( const string & resourceMapFilename )
 
 
 
-ResourceManager::~ResourceManager() throw()
+Data::ResourceManager::~ResourceManager() throw()
 {
 
 	/*
@@ -163,7 +168,7 @@ ResourceManager::~ResourceManager() throw()
 
 
 
-Audio::MusicCountedPtr ResourceManager::getMusic( Ceylan::ResourceID id )
+Audio::MusicCountedPtr Data::ResourceManager::getMusic( Ceylan::ResourceID id )
 {
 
 	map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
@@ -184,7 +189,8 @@ Audio::MusicCountedPtr ResourceManager::getMusic( Ceylan::ResourceID id )
 
 
 
-Audio::MusicCountedPtr ResourceManager::getMusic( const string & musicPath )
+Audio::MusicCountedPtr Data::ResourceManager::getMusic( 
+	const string & musicPath )
 {
 
 	map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
@@ -207,7 +213,7 @@ Audio::MusicCountedPtr ResourceManager::getMusic( const string & musicPath )
 
 
 
-Audio::SoundCountedPtr ResourceManager::getSound( Ceylan::ResourceID id )
+Audio::SoundCountedPtr Data::ResourceManager::getSound( Ceylan::ResourceID id )
 {
 
 	map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
@@ -228,7 +234,8 @@ Audio::SoundCountedPtr ResourceManager::getSound( Ceylan::ResourceID id )
 
 
 
-Audio::SoundCountedPtr ResourceManager::getSound( const string & soundPath )
+Audio::SoundCountedPtr Data::ResourceManager::getSound( 
+	const string & soundPath )
 {
 
 	map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
@@ -251,7 +258,7 @@ Audio::SoundCountedPtr ResourceManager::getSound( const string & soundPath )
 
 
 
-Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage(
+Video::TwoDimensional::ImageCountedPtr Data::ResourceManager::getImage(
 	Ceylan::ResourceID id )
 {
 
@@ -274,7 +281,7 @@ Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage(
 
 
 
-Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage( 
+Video::TwoDimensional::ImageCountedPtr Data::ResourceManager::getImage( 
 	const string & imagePath )
 {
 
@@ -297,7 +304,7 @@ Video::TwoDimensional::ImageCountedPtr ResourceManager::getImage(
 
 
 
-Video::OpenGL::TextureCountedPtr ResourceManager::getTexture(
+Video::OpenGL::TextureCountedPtr Data::ResourceManager::getTexture(
 	Ceylan::ResourceID id, bool uploadWanted )
 {
 
@@ -323,7 +330,7 @@ Video::OpenGL::TextureCountedPtr ResourceManager::getTexture(
 
 
 
-Video::OpenGL::TextureCountedPtr ResourceManager::getTexture( 
+Video::OpenGL::TextureCountedPtr Data::ResourceManager::getTexture( 
 	const string & texturePath, bool uploadWanted )
 {
 
@@ -349,7 +356,97 @@ Video::OpenGL::TextureCountedPtr ResourceManager::getTexture(
 
 
 
-void ResourceManager::purge()
+std::pair<Video::OpenGL::TextureCountedPtr,Ceylan::ResourceID>
+	Data::ResourceManager::getTextureFrom( 
+		Video::Surface & sourceSurface, 
+		Video::OpenGL::GLTexture::TextureFlavour flavour, 
+		bool uploadWanted )
+{
+
+	Video::OpenGL::TextureCountedPtr resPtr = new Video::OpenGL::GLTexture(
+		sourceSurface, flavour ) ;
+
+	// Maybe wanting to have it uploaded directly to the video card?
+	if ( uploadWanted && ( ! resPtr->wasUploaded() ) )
+		resPtr->upload() ;
+
+	_maxID++ ;
+
+	Ceylan::ResourceID resID = _maxID ;
+			 
+	_textureMap.insert( std::pair<Ceylan::ResourceID,
+			Video::OpenGL::TextureCountedPtr>( resID, resPtr ) ) ;
+	
+	return std::pair<Video::OpenGL::TextureCountedPtr,Ceylan::ResourceID>( 
+		resPtr, resID ) ;
+	
+}
+		
+					
+
+Video::TwoDimensional::Text::TrueTypeFontCountedPtr
+	Data::ResourceManager::getTrueTypeFont( Ceylan::ResourceID id )
+{
+
+	map<ResourceID,Text::TrueTypeFontCountedPtr>::iterator it = 
+		_truetypeFontMap.find( id ) ;
+		
+	if ( it == _truetypeFontMap.end() )
+		throw ResourceManagerException( "ResourceManager::getTrueTypeFont: ID #"
+			+ Ceylan::toString( id ) + " could not be found." ) ;
+			
+	Video::TwoDimensional::Text::TrueTypeFontCountedPtr res = (*it).second ;
+	
+	// Ensures a returned resource is always loaded:
+	res->load() ;
+	
+	return res ;
+			
+}
+
+
+
+Video::TwoDimensional::Text::TrueTypeFontCountedPtr
+	Data::ResourceManager::getTrueTypeFont( const string & fontPath )
+{
+
+	map<ResourceID,Text::TrueTypeFontCountedPtr>::iterator it =
+		_truetypeFontMap.find( getIDForPath(fontPath) ) ;
+		
+	if ( it == _truetypeFontMap.end() )
+		throw ResourceManagerException( "ResourceManager::getTrueTypeFont: "
+			"font '" + fontPath + "' could not be found." ) ;
+			
+	Text::TrueTypeFontCountedPtr res = (*it).second ;
+	
+	// Ensures a returned resource is always loaded:
+	res->load() ;
+			
+	return res ;
+			
+}
+
+
+
+void Data::ResourceManager::discardTexture( Ceylan::ResourceID textureId )
+{
+
+	map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
+		_textureMap.find( textureId ) ;
+		
+	if ( it == _textureMap.end() )
+		throw ResourceManagerException( "ResourceManager::discardTexture: "
+			"no texture with ID #" + Ceylan::toString( textureId ) 
+			+ "found." ) ;
+	
+	// Ensures the texture is removed from video card and deleted:
+	_textureMap.erase( it ) ;
+	
+}
+
+
+
+void Data::ResourceManager::purge()
 {
 
 	for ( map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
@@ -397,7 +494,8 @@ void ResourceManager::purge()
 
 
 
-const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const 
+const string Data::ResourceManager::toString( 
+	Ceylan::VerbosityLevels level ) const 
 {	
 
 	list<string> maps ;
@@ -567,6 +665,49 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 	
 	}
 	
+
+	size = _truetypeFontMap.size() ;
+	
+	if ( size != 0 )
+	{
+	
+		temp = "Number of TrueType font managed: " + Ceylan::toString( size ) ;
+		
+		if ( level != Ceylan::low )
+		{
+		
+			list<string> trueTypeFonts ;
+			
+			for ( map<Ceylan::ResourceID,
+				Text::TrueTypeFontCountedPtr>::const_iterator it =
+					 _truetypeFontMap.begin(); it != _truetypeFontMap.end();
+					 it++ )
+			{
+			
+				trueTypeFonts.push_back( (*it).second->toString(level)
+					+ " (ID #" + Ceylan::toString( (*it).first )
+					+ ") and whose reference count is " 
+					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+			
+			}	
+			
+			temp += Ceylan::formatStringList( trueTypeFonts,
+				/* surroundByTicks */ false, /* indentationLevel */ 2 ) ;
+			
+		}
+		
+		
+		maps.push_back( temp ) ;
+		
+	}
+	else
+	{
+
+		maps.push_back( "No texture is managed" ) ;
+	
+	}
+	
+
 	size = _reverseMap.size() ;
 	
 	if ( size != 0 )
@@ -605,6 +746,9 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 	
 	}
 	
+	maps.push_back( "Maximum resource ID currently allocated: " 
+		+ Ceylan::toString( _maxID ) ) ;
+		
 	return "ResourceManager state: " + Ceylan::formatStringList( maps ) ;
 					
 }
@@ -623,7 +767,7 @@ const string ResourceManager::toString( Ceylan::VerbosityLevels level ) const
 
 
 
-void ResourceManager::registerResource( 
+void Data::ResourceManager::registerResource( 
 	const Ceylan::XML::XMLParser::XMLTree & resourceXMLEntry )
 {
 	
@@ -641,6 +785,9 @@ void ResourceManager::registerResource(
 	
 	//send( "id = " + Ceylan::toString( id ) ) ;
 	
+	if ( id > _maxID )
+		_maxID = id ;
+		
 	const XMLSubtreeList & resourceSettingEntries = resourceXMLEntry.getSons() ;
 
 	string resourcePath, resourceStringifiedType ;
@@ -810,6 +957,27 @@ void ResourceManager::registerResource(
 			Video::OpenGL::TextureCountedPtr>( id, newTexturePtr ) ) ;
  
 	}
+	else if ( resourceType == Data::ttf_font )
+	{
+
+		/*
+		 * The user code will be able to change the point size later,
+		 * preferably at loading time:
+		 *
+		 */
+		Text::TrueTypeFontCountedPtr newTrueTypeFontPtr = 
+			new Video::TwoDimensional::Text::TrueTypeFont( 
+				/* font filename */ resourcePath, 
+				/* index */ 0,
+				/* convertToDisplay */ false,
+				/* cacheSettings */ Text::Font::GlyphCached,
+				/* preload */ false ) ;
+			 
+		_truetypeFontMap.insert( std::pair<Ceylan::ResourceID,
+			Video::TwoDimensional::Text::TrueTypeFontCountedPtr>( id,
+				newTrueTypeFontPtr ) ) ;
+ 
+	}
 	else
 	{
 	
@@ -829,8 +997,8 @@ void ResourceManager::registerResource(
 
 
 
-Ceylan::ResourceID ResourceManager::getIDForPath( const string & resourcePath )
-	const
+Ceylan::ResourceID Data::ResourceManager::getIDForPath( 
+	const string & resourcePath ) const
 {
 
 	map<string,Ceylan::ResourceID>::const_iterator it = 
@@ -847,7 +1015,7 @@ Ceylan::ResourceID ResourceManager::getIDForPath( const string & resourcePath )
 
 
 
-ContentType ResourceManager::GetContentType( 
+ContentType Data::ResourceManager::GetContentType( 
 	const std::string & stringifiedType, bool throwIfNotMatched )
 {
 

@@ -35,6 +35,7 @@
 #include "OSDLSound.h"          // for SoundCountedPtr
 #include "OSDLImage.h"          // for ImageCountedPtr
 #include "OSDLGLTexture.h"      // for TextureCountedPtr
+#include "OSDLTrueTypeFont.h"   // for TrueTypeFontCountedPtr
 
 
 #include "Ceylan.h"             // for ResourceID
@@ -43,7 +44,7 @@
 #include <string>
 #include <list>
 #include <map>
-
+#include <utility>              // for std::pair
 
 
 
@@ -337,6 +338,87 @@ namespace OSDL
 					
 					
 					
+			 	/**
+				 * Returns a pair made of a counted pointer to a texture 
+				 * created from specified surface, and of the ID of the 
+				 * entry corresponding to that texture in this manager.
+				 *
+				 * The texture can be used directly, whereas the ID is to be
+				 * used later to discard it, once become useless.
+				 *
+				 * @see discardTexture
+				 *
+				 * @param sourceSurface the surface, whose ownership is taken,
+				 * from which the texture will be made and referenced.
+				 *
+				 * @param flavour the texture flavour that should be used.
+				 *
+				 * @param uploadWanted if true, the method will ensure that
+				 * this texture is available in the video card before returning.
+				 *
+				 * @throw ResourceManagerException if the operation failed.
+				 *
+				 */
+			 	virtual std::pair<Video::OpenGL::TextureCountedPtr,
+						Ceylan::ResourceID> getTextureFrom( 
+					Video::Surface & sourceSurface, 
+					Video::OpenGL::GLTexture::TextureFlavour flavour,
+					bool uploadWanted = true ) ; 
+					
+									
+					
+					
+			 	/**
+				 * Returns a counter pointer referencing the specified 
+				 * TrueType font.
+				 *
+				 * @param id the resource identifier for that font.
+				 *
+				 * @throw ResourceManagerException if the font could not be
+				 * found.
+				 *
+				 */
+			 	virtual Video::TwoDimensional::Text::TrueTypeFontCountedPtr
+					getTrueTypeFont( Ceylan::ResourceID id ) ; 
+					
+					
+					
+			 	/**
+				 * Returns a counter pointer referencing the specified 
+				 * TrueType font.
+				 *
+				 * @param fontPath the font path that will be looked-up 
+				 * in the reverse resource map, resolved to a resource
+				 * identifier which will be then used to return a corresponding
+				 * counted font pointer.
+				 *
+				 * @throw ResourceManagerException if the font could not be
+				 * found.
+				 *
+				 */
+			 	virtual Video::TwoDimensional::Text::TrueTypeFontCountedPtr
+					getTrueTypeFont( const std::string & fontPath ) ; 
+					
+					
+				
+					
+				/**
+				 * Discards permanently specified texture entry from this
+				 * manager.
+				 * 
+				 * @note Useful for resources like generated textures that
+				 * cannot be unloaded (as they could not be then reloaded
+				 * from file) and that we want nevertheless to be able to
+				 * get rid of, when finished with them, so that their 
+				 * memory can be released.
+				 *
+				 * @throw ResourceManagerException if not such resource exists.
+				 *
+				 */
+				 virtual void discardTexture( Ceylan::ResourceID textureId ) ;	
+				
+					
+					
 				/**
 				 * Requests all resources only referenced by this manager to
 				 * unload their content.
@@ -479,7 +561,7 @@ namespace OSDL
 				
 				
 				/**
-				 * Dictionary for texture resources (all kinds: 2D, 3D, etc.) . 
+				 * Dictionary for texture resources (all kinds: 2D, 3D, etc.). 
 				 *
 				 * Each key of the map is a resource identifier, which is
 				 * expected to correspond to a texture resource.
@@ -492,6 +574,24 @@ namespace OSDL
 				 */
 				std::map<Ceylan::ResourceID,
 					Video::OpenGL::TextureCountedPtr> _textureMap ;
+				
+				
+				
+				/**
+				 * Dictionary for TrueType fonts.
+				 *
+				 * Each key of the map is a resource identifier, which is
+				 * expected to correspond to a TrueType font.
+				 *
+				 * Each associated value is a counted pointer on a
+				 * Ceylan::LoadableWithContent instance (here, a TrueType font),
+				 * which records the path of the resource file and, if loaded,
+				 * the resource itself.
+				 *
+				 */
+				std::map<Ceylan::ResourceID,
+					Video::TwoDimensional::Text::TrueTypeFontCountedPtr>
+						_truetypeFontMap ;
 				
 				
 				
@@ -523,6 +623,16 @@ namespace OSDL
 #pragma warning( pop ) 
 
 				
+				/**
+				 * Records the current highest resource identifier already 
+				 * allocated.
+				 *
+				 * Useful, once having read the resource file, to know from
+				 * which ID dynamically added resources can have their own ID.
+				 *
+				 */
+				Ceylan::ResourceID _maxID ;
+				 
 				 
 				 
 			private:
