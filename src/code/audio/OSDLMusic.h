@@ -345,10 +345,10 @@ namespace OSDL
 		 * Musics, as opposed to sounds, are streamed chunk after chunk from
 		 * the media, not read once for all, as a whole, in memory. 
 		 *
-		 * @see Sound
+		 * @see Sound.
 		 *
 		 */
-		class OSDL_DLL Music: public Audible, 
+		class OSDL_DLL Music : public Audible, 
 			public Ceylan::LoadableWithContent<LowLevelMusic>
 		{
 	
@@ -377,7 +377,8 @@ namespace OSDL
 				 *
 				 * @param preload the music will be loaded directly by this
 				 * constructor iff true, otherwise only its path will be
-				 * stored to allow for later loading.
+				 * stored to allow for later loading. Anyway only up to the
+				 * first chunk can be read initially, as it is streamed.
 				 *
 				 * @note On some platforms, like the Nintendo DS, too few
 				 * RAM is available to load a full music in it. Thus the music
@@ -416,7 +417,7 @@ namespace OSDL
 		
 		
  	           /**
-				* Unloads the music that may be contained by this instance.
+				* Unloads the music that may be held by this instance.
 				* If the music is available (loaded) and if it is playing, it
 				* will be halted.
 				* If the music is fading out, then this method will wait
