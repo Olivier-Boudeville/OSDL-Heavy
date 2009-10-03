@@ -30,7 +30,7 @@
 
 #include "OSDLOpenGL.h"    // for OpenGLException
 
-#include "Ceylan.h"        // for inheritance, Uint32, etc.
+#include "Ceylan.h"        // for inheritance, Uint32, CountedPointer, etc.
 
 #include <string>
 
@@ -184,14 +184,10 @@ namespace OSDL
 				
 					/**
 					 * Constructs a texture out of an existing surface, whose
-					 * ownership is not taken.
+					 * ownership is taken.
 					 *
 					 * @param sourceSurface the surface from which the 
 					 * texture will be defined. 
-					 * It cannot be 'const' since a temporary change to 
-					 * the surface has to be performed. 
-					 * Nevertheless the source surface is, after a successful
-					 * call, actually unchanged, as its state is restored. 
 					 *
 					 * @param flavour the texture flavour that should be used.
 					 *
@@ -200,9 +196,9 @@ namespace OSDL
 					 * this texture, so that it can be reloaded in an OpenGL
 					 * context if necessary, should the context be lost. 
 					 *
-					explicit GLTexture( Surface & sourceSurface,
-						TextureFlavour flavour ) ;
 					 */
+					GLTexture( Surface & sourceSurface,
+						TextureFlavour flavour ) ;
 				
 				
 				
@@ -497,8 +493,17 @@ namespace OSDL
 					 * temporarily, even if this method has eventually no 
 					 * side-effect on this surface.
 					 *
-					 */
 					void upload( Surface & sourceSurface ) ;
+					 */
+
+					
+					
+					/**
+					 * Sets up the internal surface of this texture from
+					 * specified surface, which will then be deleted.
+					 *
+					 */
+					void setUpInternalSurfaceFrom( Surface & sourceSurface ) ;
 					
 					
 					
@@ -529,6 +534,17 @@ namespace OSDL
 					TextureFlavour _flavour ;
 			
 			
+			
+					/**
+					 * Some textures should not be unloaded, as their content
+					 * cannot be loaded from file, this is notably the case
+					 * when their source surface is generated (ex: rendered
+					 * text from a font) rather than simply loaded from an
+					 * image file.
+					 *
+					 */
+					bool _unloadable ;
+
 
 			
 				private:

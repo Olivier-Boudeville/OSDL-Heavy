@@ -121,10 +121,13 @@ GLTexture::GLTexture( const std::string textureFilename,
 		TextureFlavour flavour, bool preload ):
 	Ceylan::LoadableWithContent<Surface>( textureFilename ),
 	_id( 0 ),
-	_flavour( flavour )
+	_flavour( flavour ),
+	_unloadable( false )
 {
 
 #if OSDL_USES_OPENGL
+
+	LOG_DEBUG_TEXTURE( "Constructing a GLTexture from a file" ) ;
 
 	if ( preload )
 	{
@@ -161,23 +164,20 @@ GLTexture::GLTexture( const std::string textureFilename,
 }
 
 
-/*
+
 GLTexture::GLTexture( Surface & sourceSurface, TextureFlavour flavour ) :
-	_source( 0 ),
+	Ceylan::LoadableWithContent<Surface>( "(non applicable)" ),
 	_id( 0 ),
 	_flavour( flavour ),
-	_width( 0 ),
-	_height( 0 )
+	_unloadable( true )
 {
 
 	LOG_DEBUG_TEXTURE( "Constructing a GLTexture from a surface" ) ;
 
-	upload( sourceSurface ) ;
-	
-	// We could take ownership of sourceSurface instead and store it in _source.
-	
+	setUpInternalSurfaceFrom( sourceSurface ) ;
+			
 }
-*/
+
 
 
 
@@ -212,7 +212,23 @@ GLTexture::~GLTexture() throw()
 	{
 	
 		if ( hasContent() )
-			unload() ;
+		{
+		
+			if ( _unloadable )
+			{
+			
+				delete _content ;
+				_content = 0 ;
+				
+			}
+			else
+			{
+			
+				unload() ;
+				
+			}	
+			
+		}		
 	
 	}
 	catch( const Ceylan::LoadableException & e )
@@ -223,6 +239,7 @@ GLTexture::~GLTexture() throw()
 		
 	}
 	
+		
 	//LogPlug::trace( "GLTexture deallocated." ) ;
 
 }
@@ -263,6 +280,7 @@ bool GLTexture::wasUploaded() const
 	return ( _id != 0 ) ;
 	
 }
+
 
 
 
@@ -725,20 +743,7 @@ bool GLTexture::load()
 		Surface * originalSurface = & Surface::LoadImage( _contentPath, 
 			/* convertToDisplayFormat */ false, /* convertWithAlpha */ false ) ;
 		
-		if ( ( originalSurface->getFlags() & Surface::AlphaBlendingBlit ) != 0 )
-			originalSurface->setAlpha( /* disable alpha blending */ 0, 
-				/* new per-surface alpha value */ AlphaTransparent ) ;
-
-		// To avoid having transparent surfaces, use 0 for AlphaMask?
-		
-		_content = new Surface( VideoModule::SoftwareSurface,
-			originalSurface->getWidth(), originalSurface->getHeight(), 
-			32 /* bits per pixel */,
-			RedMask, GreenMask, BlueMask, AlphaMask ) ;
-
-		originalSurface->blitTo( *_content ) ;
-
-		delete originalSurface ;
+		setUpInternalSurfaceFrom( * originalSurface ) ;
 		
 	}
 	catch( const Ceylan::Exception & e )
@@ -765,9 +770,13 @@ bool GLTexture::unload()
 
 	// There is content to unload here:
 
+	if ( _unloadable )
+		return false ;
+		
 	delete _content ;
 	_content = 0 ;
 
+	
 	return true ;
 	
 }
@@ -1152,4 +1161,25 @@ void GLTexture::SetTextureEnvironmentParameter(
 
 
 // Protected section.
+
+
+// Helper used by multiple code paths.
+void GLTexture::setUpInternalSurfaceFrom( Surface & sourceSurface )
+{
+
+	if ( ( sourceSurface.getFlags() & Surface::AlphaBlendingBlit ) != 0 )
+		sourceSurface.setAlpha( /* disable alpha blending */ 0, 
+			/* new per-surface alpha value */ AlphaTransparent ) ;
+
+	// To avoid having transparent surfaces, use 0 for AlphaMask?
+		
+	_content = new Surface( VideoModule::SoftwareSurface,
+		sourceSurface.getWidth(), sourceSurface.getHeight(), 
+		/* bits per pixel */ 32, RedMask, GreenMask, BlueMask, AlphaMask ) ;
+
+	sourceSurface.blitTo( *_content ) ;
+
+	delete & sourceSurface ;
+	
+}
 
