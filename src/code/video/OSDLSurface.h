@@ -2261,6 +2261,30 @@ namespace OSDL
 				 
 				 
 				/**
+				 * Displays the specified texture 
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @param xOffset the first abscissa at which the texture
+				 * should be hoeizatally displayed at.
+				 *
+				 * @param y the ordinate the texture will be displayet at.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note If the texture is bigger than the defined area,
+				 * it will be scaled appropriately.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayCenteredHorizontallyAt( 
+					const OpenGL::GLTexture & texture, 
+					Coordinate xOffset, Coordinate y ) const ;
+					
+					
+					
+				/**
 				 * Displays the specified texture at the center of that surface,
 				 * supposed to be the screen surface, at natural size
 				 * (i.e. one pixel of the texture corresponds exactly to one

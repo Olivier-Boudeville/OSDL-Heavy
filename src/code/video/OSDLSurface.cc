@@ -2138,6 +2138,52 @@ void Surface::displayAt( const OpenGL::GLTexture & texture,
 }
 
 
+
+void Surface::displayCenteredHorizontallyAt( const OpenGL::GLTexture & texture,
+	Coordinate xOffset, Coordinate y ) const	
+{
+
+#if OSDL_USES_OPENGL
+
+	texture.setAsCurrent() ;
+	
+	Coordinate xBegin = xOffset ;
+	Coordinate xEnd = getWidth() - xBegin ;
+	
+	/*
+	LogPlug::debug( "Surface::displayCenteredHorizontallyAt: xBegin = "
+		+ Ceylan::toString(xBegin) + ", xEnd = " + Ceylan::toString(xEnd) ) ;
+	*/
+	
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( xBegin, y ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( xBegin, y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( xEnd, y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( xEnd, y ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayCenteredHorizontallyAt failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
 	
 void Surface::displayAtCenter( const OpenGL::GLTexture & texture ) const
 {
@@ -2189,16 +2235,15 @@ void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
 
 #if OSDL_USES_OPENGL
 
+	OpenGL::OpenGLContext::EnableFeature( GL_BLEND ) ;
 
-	texture.setAsCurrent() ;
-	
 	Length firstAbscissa  = ( getWidth()  - texture.getWidth() ) / 2 ;
 	Length secondAbscissa = firstAbscissa + texture.getWidth() ;
 	
 	Length firstOrdinate  = ( getHeight() - texture.getHeight() ) / 2 ;
 	Length secondOrdinate = firstOrdinate + texture.getHeight() ;
 
-	
+	// First render an alpha-blending background:
 	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
 	glBegin(GL_QUADS);
 	{
@@ -2214,7 +2259,10 @@ void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
 	}
 	glEnd() ;
 
+
+	texture.setAsCurrent() ;
 	
+	// Then render the texture itself:
 	glBegin(GL_QUADS) ; 
 	{
 	
@@ -2233,6 +2281,9 @@ void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
 	}
 	glEnd() ;
 
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f ) ;
+
+	//OpenGL::OpenGLContext::DisableFeature( GL_BLEND ) ;
 
 #else // if OSDL_USES_OPENGL
 
