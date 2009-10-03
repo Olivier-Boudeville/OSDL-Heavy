@@ -34,7 +34,8 @@
 #include "OSDLPixel.h"        // for ColorElement, ColorDefinition
 #include "OSDLSurface.h"      // for Surface
 
-#include "Ceylan.h"           // for Uint32, inheritance
+#include "Ceylan.h"           // for inheritance, Uint32, CountedPointer, etc.
+
 
 #include <string>
 
@@ -65,16 +66,16 @@ namespace OSDL
 		{
 			
 			
-			
-			/// Mother class for all text exceptions. 		
-			class OSDL_DLL TextException: public VideoException 
+				
+			/// Mother class for all font exceptions. 		
+			class OSDL_DLL FontException: public VideoException 
 			{ 
 			
 				public: 
 				
-					explicit TextException( const std::string & reason )  ;
+					explicit FontException( const std::string & reason )  ;
 					 
-					virtual ~TextException() throw() ; 
+					virtual ~FontException() throw() ; 
 					
 			} ;
 				
@@ -207,7 +208,7 @@ namespace OSDL
 				 * @see http://jcatki.no-ip.org/SDL_ttf/metrics.png for
 				 * informations about glyph metrics.
 				 *
-				 * @note Most lenghts are given alongside a directed axis, 
+				 * @note Most lengths are given alongside a directed axis, 
 				 * and therefore they can be negative.
 				 *
 				 * The signatures detail rendering parameters in the names 
@@ -612,7 +613,7 @@ namespace OSDL
 						/**
 						 * Sets the current rendering style for this font.
 						 *
-						 * @throw TextException if the specified style is 
+						 * @throw FontException if the specified style is 
 						 * not supported.
 						 *
 						 * @note Some fonts (ex: some fixed fonts) support 
@@ -669,7 +670,7 @@ namespace OSDL
 						 * for most fonts it depends too heavily on the 
 						 * selected glyph.
 						 *
-						 * @throw TextException if the glyph metrics 
+						 * @throw FontException if the glyph metrics 
 						 * could not be retrieved.
 						 *
 						 */
@@ -689,7 +690,7 @@ namespace OSDL
 						 * @param character the character whose abscissa 
 						 * offset will be returned.
 						 *
-						 * @throw TextException if the glyph metrics could 
+						 * @throw FontException if the glyph metrics could 
 						 * not be retrieved.
 						 *
 						 */
@@ -705,7 +706,7 @@ namespace OSDL
 						 * @param character the character whose height 
 						 * above baseline will be returned.
 						 *
-						 * @throw TextException if the glyph metrics 
+						 * @throw FontException if the glyph metrics 
 						 * could not be retrieved.
 						 *
 						 */
@@ -727,7 +728,7 @@ namespace OSDL
 						 * @param character the character whose advance will 
 						 * be returned.
 						 *
-						 * @throw TextException if the glyph metrics could 
+						 * @throw FontException if the glyph metrics could 
 						 * not be retrieved.
 						 *
 						 */
@@ -898,7 +899,7 @@ namespace OSDL
 						 * This surface is encoded with RLE colorkey for 
 						 * maximum efficiency.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual Surface & renderLatin1Glyph( 
@@ -930,7 +931,7 @@ namespace OSDL
 						 * @param glyphColor the color definition for the 
 						 * glyph. 
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual void blitLatin1Glyph( 
@@ -961,7 +962,7 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose ownership 
 						 * is transferred to the caller.
 						 *
-						 * @throw TextException on error, for example if a
+						 * @throw FontException on error, for example if a
 						 * specified glyph was not found.
 						 *
 						 */
@@ -995,7 +996,7 @@ namespace OSDL
 						 *
 						 * @param textColor the color definition for the text. 
 						 *
-						 * @throw TextException on error, for example if a
+						 * @throw FontException on error, for example if a
 						 * specified glyph was not found.
 						 *
 						 */
@@ -1089,7 +1090,7 @@ namespace OSDL
 						 * alone) on one line, the rendering will not fail but
 						 * will stop before that word.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual Surface & renderLatin1MultiLineText( 
@@ -1158,7 +1159,7 @@ namespace OSDL
 						 * justified, i.e. should be vertically aligned on 
 						 * both edges.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual void blitLatin1MultiLineText( 
@@ -1233,7 +1234,7 @@ namespace OSDL
 						 * justified, i.e. should be vertically aligned on 
 						 * both edges.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual void blitLatin1MultiLineText( 
@@ -1410,7 +1411,7 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose 
 						 * ownership is transferred to the caller.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						Surface & renderLatin1TextWithWordCached( 
@@ -1438,7 +1439,7 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose 
 						 * ownership is transferred to the caller.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						Surface & renderLatin1TextWithTextCached( 
@@ -1477,7 +1478,7 @@ namespace OSDL
 						 *
 						 * @return the width of the blit surface.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual void blitLatin1Word( 
@@ -1524,7 +1525,7 @@ namespace OSDL
 						 * The surface is still owned by the cache, and should 
 						 * therefore not be deallocated by the caller.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual const Surface & getConstLatin1WordFromCache( 
@@ -1552,7 +1553,7 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose ownership 
 						 * is transferred to the caller.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						Surface & basicRenderLatin1Text( 
@@ -1681,6 +1682,7 @@ namespace OSDL
 						
 				} ;							
 				
+
 				
 			} 
 			

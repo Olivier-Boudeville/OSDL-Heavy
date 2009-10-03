@@ -214,7 +214,7 @@ void TextWidget::redrawBackBuffer()
 			_quality, _textColor, _justified ) ;
 			
 	}
-	catch( const TextException & e )
+	catch( const FontException & e )
 	{
 	
 		LogPlug::error( "TextWidget::redrawBackBuffer failed: " 

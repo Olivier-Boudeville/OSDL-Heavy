@@ -354,7 +354,7 @@ UprightRectangle & FixedFont::getBoundingBoxFor( const std::string & word )
 {
 
 	if ( word.empty() )
-		throw TextException( 
+		throw FontException( 
 			"FixedFont::getBoundingBoxFor (word): empty word specified." ) ;
 			
 	return * new UprightRectangle( 0, 0, 
@@ -493,7 +493,7 @@ void FixedFont::blitLatin1Glyph( Surface & targetSurface,
 			}
 			catch( const VideoException & e )
 			{
-				throw TextException( "FixedFont::blitLatin1Glyph: "
+				throw FontException( "FixedFont::blitLatin1Glyph: "
 					"blit of cloned glyph failed: " + e.toString() ) ;
 			}
 			
@@ -630,7 +630,7 @@ OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha(
 	// Blits the SDL_gfx-generated character to our surface:
 	if ( ::characterColor( & res.getSDLSurface(), 0, 0, 
 			static_cast<char>( character ), color ) != 0 )
-		throw TextException( "FixedFont::renderLatin1Glyph: blit failed, " 
+		throw FontException( "FixedFont::renderLatin1Glyph: blit failed, " 
 			+ Utils::getBackendLastError() ) ;
 
 	// Restores source alpha attributes for our surface:
@@ -648,7 +648,7 @@ OSDL::Video::Surface & FixedFont::renderLatin1GlyphAlpha(
 
 #else // OSDL_USES_SDL_GFX
 
-	throw TextException( "FixedFont::renderLatin1GlyphAlpha failed: "
+	throw FontException( "FixedFont::renderLatin1GlyphAlpha failed: "
 		"no SDL_gfx support available" ) ;
 		
 #endif // OSDL_USES_SDL_GFX
@@ -741,7 +741,7 @@ void FixedFont::SetFontSettings( const Ceylan::Byte * fontData,
 
 #else // OSDL_USES_SDL_GFX
 
-	throw TextException( "FixedFont::SetFontSettings failed: "
+	throw FontException( "FixedFont::SetFontSettings failed: "
 		"no SDL_gfx support available" ) ;
 		
 #endif // OSDL_USES_SDL_GFX
@@ -798,7 +798,7 @@ void FixedFont::loadFontFrom( const std::string & fontFilename )
 				catch( const DirectoryException & exc )
 				{
 				
-					throw TextException( 
+					throw FontException( 
 						"FixedFont::loadFontFrom: unable to load '" 
 						+ fontFilename 
 						+ "', exception generation triggered another failure: "
@@ -806,7 +806,7 @@ void FixedFont::loadFontFrom( const std::string & fontFilename )
 						
 				}
 				
-				throw TextException( "FixedFont::loadFontFrom: '" 
+				throw FontException( "FixedFont::loadFontFrom: '" 
 					+ fontFilename 
 					+ "' is not a regular file or a symbolic link "
 					"relative to the current directory (" + currentDir
@@ -845,7 +845,7 @@ void FixedFont::loadFontFrom( const std::string & fontFilename )
 		_fontData = new char[ dataSize ] ;
 		
 		if ( _fontData == 0 )
-			throw TextException( 
+			throw FontException( 
 				"FixedFont::loadFontFrom: not enough memory." ) ;
 
 		fontFile->readExactLength( _fontData, dataSize ) ; 
@@ -856,7 +856,7 @@ void FixedFont::loadFontFrom( const std::string & fontFilename )
 	catch( const System::SystemException & e )
 	{
 	
-		throw TextException( "FixedFont::loadFontFrom: "
+		throw FontException( "FixedFont::loadFontFrom: "
 			"error while loading font data file: "	+ e.toString() ) ;
 	}
 	
@@ -901,14 +901,14 @@ const Surface & FixedFont::submitLatin1GlyphToCache(
 		 * therefore not be already associated.
 		 *
 		 */
-		 throw TextException( 
+		 throw FontException( 
 		 	"FixedFont::submitLatin1GlyphToCache: cache submitting failed: "
 		 	+ e.toString() ) ;
 
 	}
 	
 	if ( ! takenByCache )
-		throw TextException( "FixedFont::submitLatin1GlyphToCache: "
+		throw FontException( "FixedFont::submitLatin1GlyphToCache: "
 			"cache did not accept rendering for '" 
 			+ Ceylan::toString( character ) + "'." ) ;
 	
@@ -998,13 +998,13 @@ void FixedFont::basicBlitLatin1Glyph( Surface & targetSurface,
 	
 	if ( ::characterColor( & targetSurface.getSDLSurface(), x, y, 
 			static_cast<char>( character ), color ) != 0 )
-		throw TextException( 
+		throw FontException( 
 			"FixedFont::basicBlitLatin1Glyph: blit of glyph failed, " 
 			+ Utils::getBackendLastError() ) ;	
 
 #else // OSDL_USES_SDL_GFX
 
-	throw TextException( "FixedFont::basicBlitLatin1Glyph failed: "
+	throw FontException( "FixedFont::basicBlitLatin1Glyph failed: "
 		"no SDL_gfx support available" ) ;
 		
 #endif // OSDL_USES_SDL_GFX
@@ -1024,7 +1024,7 @@ string FixedFont::BuildFontFilenameFor(
 	{
 	
 		if ( renderingStyle & ~Bold )
-			throw TextException( "FixedFont::BuildFontFilenameFor: "
+			throw FontException( "FixedFont::BuildFontFilenameFor: "
 				"too many rendering styles selected: " 
 				+ Ceylan::toString( renderingStyle ) + "." ) ;
 				
@@ -1036,7 +1036,7 @@ string FixedFont::BuildFontFilenameFor(
 	{
 	
 		if ( renderingStyle & ~Italic )
-			throw TextException( "FixedFont::BuildFontFilenameFor: "
+			throw FontException( "FixedFont::BuildFontFilenameFor: "
 				"too many rendering styles selected: " 
 				+ Ceylan::toString( renderingStyle ) + "." ) ;
 				
@@ -1048,7 +1048,7 @@ string FixedFont::BuildFontFilenameFor(
 	{
 	
 		if ( renderingStyle & ~Underline )
-			throw TextException( "FixedFont::BuildFontFilenameFor: "
+			throw FontException( "FixedFont::BuildFontFilenameFor: "
 				"too many rendering styles selected: " 
 				+ Ceylan::toString( renderingStyle ) + "." ) ;
 				
@@ -1073,7 +1073,7 @@ void FixedFont::GetFontAttributesFrom( const string & filename,
 	System::Size size = filename.size() ;
 
 	if ( filename.substr( size - 4 ) != FontFileExtension )
-		throw TextException( 
+		throw FontException( 
 			"FixedFont::GetFontAttributesFrom: expected extension ("
 			+ FontFileExtension + "), not found in '" + filename + "'." ) ;
 	
@@ -1093,7 +1093,7 @@ void FixedFont::GetFontAttributesFrom( const string & filename,
 	catch( const Ceylan::Exception & e )
 	{
 	
-		throw TextException( 
+		throw FontException( 
 			"FixedFont::GetFontAttributesFrom: unable to guess width from '"
 			+ filename + "': " + e.toString() ) ;
 	}
@@ -1114,7 +1114,7 @@ void FixedFont::GetFontAttributesFrom( const string & filename,
 	}
 	catch( const Ceylan::Exception & e )
 	{
-		throw TextException( 
+		throw FontException( 
 			"FixedFont::GetFontAttributesFrom: unable to guess height from '"
 			+ filename + "': " + e.toString() ) ;
 	}
@@ -1141,7 +1141,7 @@ void FixedFont::GetFontAttributesFrom( const string & filename,
 			break ;
 					
 		default:
-			throw TextException( "FixedFont::getFontAttributesFrom: "
+			throw FontException( "FixedFont::getFontAttributesFrom: "
 				"unable to guess rendering style from '" + filename + "'." ) ;
 			break ;
 			

@@ -273,7 +273,7 @@ namespace OSDL
 						 * Rendering style mixing (ex: 'BO') is not allowed, 
 						 * a font has at most one rendering style.
 						 *
-						 * @throw TextException if no corresponding font 
+						 * @throw FontException if no corresponding font 
 						 * file could be found, or if cache setting is not
 						 * known, etc.
 						 *
@@ -341,7 +341,7 @@ namespace OSDL
 						 * is specified, then the actual quota being used 
 						 * will be 'DefaultWordCachedQuota'.
 						 *
-						 * @throw TextException if no corresponding font file
+						 * @throw FontException if no corresponding font file
 						 * could be found, or if cache setting is not known,
 						 * etc.
 						 *
@@ -419,7 +419,7 @@ namespace OSDL
 						 * Remember that multiline printing is not enabled
 						 * here, so the user is responsible for line breaking.
 						 *
-						 * @throw TextException if the glyph metrics could 
+						 * @throw FontException if the glyph metrics could 
 						 * not be retrieved.
 						 *
 						 * @note For fixed font, offset width does not depend 
@@ -439,7 +439,7 @@ namespace OSDL
 						 * @param character the character whose height 
 						 * above baseline will be returned.
 						 *
-						 * @throw TextException if the glyph metrics could 
+						 * @throw FontException if the glyph metrics could 
 						 * not be retrieved.
 						 *
 						 * @note For fixed font, height above baseline does 
@@ -460,7 +460,7 @@ namespace OSDL
 						 *
 						 * This method is not inherited from Font.
 						 *
-						 * @throw TextException if the glyph metrics could 
+						 * @throw FontException if the glyph metrics could 
 						 * not be retrieved.
 						 *
 						 */
@@ -476,7 +476,7 @@ namespace OSDL
 						 *
 						 * @param character any character has the same advance.
 						 *
-						 * @throw TextException if the glyph metrics could 
+						 * @throw FontException if the glyph metrics could 
 						 * not be retrieved.
 						 *
 						 * @note This method exists only because the 
@@ -608,7 +608,7 @@ namespace OSDL
 						 * character (bounding box), whose lower left 
 						 * corner is located at the origin.
 						 *
-						 * @throw TextException if an error occured.
+						 * @throw FontException if an error occured.
 						 *
 						 */ 
 						virtual UprightRectangle & getBoundingBox() const ;
@@ -640,7 +640,7 @@ namespace OSDL
 						 * is expected to be added, therefore no advance 
 						 * is taken into account for this last character.
 						 *
-						 * @throw TextException if an error occured, for 
+						 * @throw FontException if an error occured, for 
 						 * example if the specified word is empty.
 						 *
 						 */ 
@@ -681,7 +681,7 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose ownership 
 						 * is transferred to the caller.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual Surface & renderLatin1Glyph( 
@@ -718,7 +718,7 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose 
 						 * ownership is transferred to the caller.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual void blitLatin1Glyph( 
@@ -823,7 +823,7 @@ namespace OSDL
 						 * to know whether it had been reset between the
 						 * rendering of the two glyphs.
 						 *
-						 * @throw TextException if the operation failed or is
+						 * @throw FontException if the operation failed or is
 						 * not supported.
 						 *
 						 */
@@ -877,7 +877,7 @@ namespace OSDL
 						 * @param fontFilename the font filename, whose
 						 * extension is generally '.fnt';
 						 *
-						 * @throw TextException if the font coud not be loaded.
+						 * @throw FontException if the font coud not be loaded.
 						 *
 						 */						
 						virtual void loadFontFrom( 
@@ -920,7 +920,7 @@ namespace OSDL
 						 *
 						 * @return a 'const' referencec to a glyph in cache.
 						 *
-						 * @throw TextException on error, including 
+						 * @throw FontException on error, including 
 						 * 'NeverDrop' policy being used and an entry already
 						 * existing.
 						 *
@@ -982,7 +982,7 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose 
 						 * ownership is transferred to the caller.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual void basicBlitLatin1Glyph( 
@@ -1021,7 +1021,7 @@ namespace OSDL
 						 * For fixed fonts, attributes (bold, italic, etc.)
 						 * cannot be mixed.
 						 *
-						 * @throw TextException if the settings could not 
+						 * @throw FontException if the settings could not 
 						 * be satisfied.
 						 *
 						 */
@@ -1053,7 +1053,7 @@ namespace OSDL
 						 * @param renderingStyle where the guessed style 
 						 * is stored.
 						 *
-						 * @throw TextException if the font settings could 
+						 * @throw FontException if the font settings could 
 						 * not be guessed from the filename.
 						 *
 						 */

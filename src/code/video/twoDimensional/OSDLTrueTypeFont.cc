@@ -83,7 +83,10 @@ Ceylan::System::FileLocator Text::TrueTypeFont::TrueTypeFontFileLocator ;
 string Text::TrueTypeFont::TrueTypeFontFileExtension = ".ttf" ;
 
 
+PointSize Text::TrueTypeFont::DefaultPointSize = 20 ;
+
 const Ceylan::Float32 Text::TrueTypeFont::SpaceWidthFactor = 1 ;
+
 
 
 // Used to know when the SDL_TTF module can be stopped.
@@ -94,112 +97,122 @@ Ceylan::Uint32 TrueTypeFont::FontCounter = 0 ;
 
 TrueTypeFont::TrueTypeFont( 
 		const std::string & fontFilename, 
-		PointSize pointSize, 
 		FontIndex index, 
 		bool convertToDisplay, 
-		RenderCache cacheSettings ) :
-	Font( convertToDisplay, cacheSettings ),	
-	_pointSize( pointSize ),
-	_actualFont( 0 )
+		RenderCache cacheSettings,
+		bool preload ) :
+	Font( convertToDisplay, cacheSettings ),
+	Ceylan::LoadableWithContent<LowLevelTTFFont>( fontFilename ),
+	_pointSize( DefaultPointSize )
 {
 	
-#if OSDL_USES_SDL_TTF
-
-	string fontFullPath = fontFilename ;
-	
-	// Search directly in current working directory:
-	if ( ! System::File::ExistsAsFileOrSymbolicLink( fontFilename ) )
+	if ( preload )
 	{
-		
-		// On failure use the dedicated TrueType font locator:
+	
 		try
 		{
 		
-			fontFullPath = TrueTypeFont::TrueTypeFontFileLocator.find(
-				fontFilename ) ;
+			load() ;
+			
+		}
+		catch( const Ceylan::LoadableException & e )
+		{
+		
+			throw FontException( 
+				"TrueTypeFont constructor failed while preloading: "
+				+ e.toString() ) ;
 				
 		}
-		catch( const System::FileLocatorException & e )
-		{
-				
-			// Last hope is general font locator:
-			try
-			{
-				fontFullPath = Font::FontFileLocator.find( fontFilename ) ;
-			}
-			catch( const System::FileLocatorException & ex )
-			{
-				
-				// Not found!
-				
-				string currentDir ;
-				
-				try
-				{
-					currentDir = Directory::GetCurrentWorkingDirectoryPath() ;
-				}
-				catch( const DirectoryException & exc )
-				{
-					throw TextException( 
-						"TrueTypeFont constructor: unable to load '" 
-						+ fontFilename 
-						+ "', exception generation triggered another failure: "
-						+ exc.toString() + "." ) ;
-				}
-				
-				throw TextException( "TrueTypeFont constructor: '" 
-					+ fontFilename 
-					+ "' is not a regular file or a symbolic link "
-					"relative to the current directory (" + currentDir
-					+ ") and cannot be found through TrueType font locator ("
-					+ TrueTypeFont::TrueTypeFontFileLocator.toString() 
-					+ ") nor through general font locator based on "
-					"font path environment variable ("
-					+ Font::FontPathEnvironmentVariable + "): " 
-					+ Font::FontFileLocator.toString() + "." ) ;
-					
-			}		
-		}		
+			
 	}
 	
+}
+
+
+
+TrueTypeFont::~TrueTypeFont() throw()
+{
+
+	try
+	{
+	
+		if ( hasContent() )
+			unload() ;
+	
+	}
+	catch( const Ceylan::LoadableException & e )
+	{
+		
+		LogPlug::error( "TrueTypeFont destructor failed while unloading: " 
+			+ e.toString() ) ;
+		
+	}
+	
+	LogPlug::trace( "TrueTypeFont deallocated." ) ;
+
+		
+}
+
+
+
+
+// LoadableWithContent template instanciation.
+
+
+
+bool TrueTypeFont::load()
+{
+	
+#if OSDL_ARCH_NINTENDO_DS
+		
+	throw Ceylan::LoadableException( "TrueTypeFont::load failed: "
+		"not supported on the Nintendo DS" ) ;
+
+#else // OSDL_ARCH_NINTENDO_DS
+
+#if OSDL_USES_SDL_TTF
+
+	if ( hasContent() )
+		return false ;
+
 	
 	if ( ::TTF_WasInit() == 0 )
 	{
 	
 		if ( ::TTF_Init()== -1 )
-			throw TextException( 
+			throw FontException( 
 				"TrueTypeFont constructor: unable to init font library: "
 				+ DescribeLastError() ) ;
 				
 	}	
 	
-	// _actualFont is currently still set to zero here.
+	// _content is currently still set to zero here.
 	
 	try
 	{
     
 		// Will be deleted by the IMG_Load_RW close callback:
-		Ceylan::System::File & fontFile = File::Open( fontFullPath ) ;
+		Ceylan::System::File & fontFile = File::Open( _contentPath ) ;
 
-		_actualFont = ::TTF_OpenFontRW( 
+		_content = ::TTF_OpenFontRW( 
 			& OSDL::Utils::createDataStreamFrom( fontFile ),
-			/* automatic free source */ true, pointSize ) ; 	
+			/* automatic free source */ true, _pointSize ) ; 	
 	 	
 	}
 	catch( const Ceylan::Exception & e )
 	{
 	
-		throw TextException( 
+		throw FontException( 
 			"TrueTypeFont constructor failed: unable to load from '" 
-			+ fontFullPath + "': " + e.toString() ) ;
+			+ _contentPath + "': " + e.toString() ) ;
 			
 	}	
 
-	if ( _actualFont == 0 )
-		throw TextException( "TrueTypeFont constructor: unable to open '" 
-			+ fontFullPath 
+	if ( _content == 0 )
+		throw FontException( "TrueTypeFont constructor: unable to open '" 
+			+ _contentPath 
 			+ "' with a point size of " 
-			+ Ceylan::toString( pointSize ) + " dots per inch: "
+			+ Ceylan::toString( _pointSize ) + " dots per inch: "
 			+ DescribeLastError() ) ;
 	
 	_spaceWidth = static_cast<Width>( SpaceWidthFactor * getWidth( ' ' ) ) ;
@@ -209,32 +222,71 @@ TrueTypeFont::TrueTypeFont(
 	
 	FontCounter++ ;
 
+	return true ;
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont constructor failed: "
+	throw FontException( "TrueTypeFont constructor failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
-	
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
 }
 
 
 
-TrueTypeFont::~TrueTypeFont() throw()
+bool TrueTypeFont::unload()
 {
+
+
+	if ( ! hasContent() )
+		return false ;
+
+	// There is content to unload here:
+#if OSDL_ARCH_NINTENDO_DS
+		
+	throw Ceylan::LoadableException( "TrueTypeFont::unload failed: "
+		"not supported on the Nintendo DS." ) ;
+
+#else // OSDL_ARCH_NINTENDO_DS
+
 
 #if OSDL_USES_SDL_TTF
 
-	if ( _actualFont != 0 )
-		::TTF_CloseFont( _actualFont ) ;
+	if ( _content != 0 )
+		::TTF_CloseFont( _content ) ;
 		
 	FontCounter-- ;
 	
 	if ( FontCounter == 0 && ::TTF_WasInit() != 0 )
 		::TTF_Quit() ;	
 
+#else // OSDL_USES_SDL_MIXER
+
+	throw Ceylan::LoadableException( 
+		"TrueTypeFont::unload failed: no SDL_ttf support available." ) ;
+	
 #endif // OSDL_USES_SDL_TTF
+
+
+#endif // OSDL_ARCH_NINTENDO_DS
+
+	_content = 0 ;
+	
+	return true ;
+
+}
+
+
+
+bool TrueTypeFont::load( PointSize PointSize )
+{
+
+	setPointSize( PointSize ) ;
+	
+	return load() ;
 		
 }
 
@@ -249,12 +301,39 @@ PointSize TrueTypeFont::getPointSize() const
 
 
 
+void TrueTypeFont::setPointSize( PointSize newPointSize )
+{
+
+	// Unchanged size? Then nothing to do:
+	if ( newPointSize == _pointSize )
+		return ;
+	
+	_pointSize = newPointSize ;
+	
+	// Font must be unloaded then reloaded iff already loaded:	
+	if ( ! hasContent() )
+		return ;
+		
+	// Here, already loaded, we must preserve that fact:
+		
+	unload() ;
+	
+	load() ;		
+
+}
+
+
+
 RenderingStyle TrueTypeFont::getRenderingStyle() const
 {
 
 #if OSDL_USES_SDL_TTF
 
-	return ::TTF_GetFontStyle( _actualFont ) ;
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getRenderingStyle failed: "
+			"font not loaded" ) ;
+			
+	return ::TTF_GetFontStyle( _content ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -271,6 +350,10 @@ void TrueTypeFont::setRenderingStyle( RenderingStyle newStyle )
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::setRenderingStyle failed: "
+			"font not loaded" ) ;
+
 	// Cannot guess whether the specified style is supported.
 
 	/* 
@@ -280,11 +363,11 @@ void TrueTypeFont::setRenderingStyle( RenderingStyle newStyle )
 	 */
 	 
 	if ( newStyle != getRenderingStyle() )
-		::TTF_SetFontStyle( _actualFont, newStyle ) ;
+		::TTF_SetFontStyle( _content, newStyle ) ;
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::setRenderingStyle failed: "
+	throw FontException( "TrueTypeFont::setRenderingStyle failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -298,6 +381,10 @@ Width TrueTypeFont::getWidth( Ceylan::Latin1Char character ) const
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getWidth failed: "
+			"font not loaded" ) ;
+			
 	/*
 	 * Not using the advance parameter except for space, whose width 
 	 * would be zero otherwise.
@@ -309,17 +396,17 @@ Width TrueTypeFont::getWidth( Ceylan::Latin1Char character ) const
 		
  	int minX, maxX ;
 	
-	if ( ::TTF_GlyphMetrics( _actualFont,
+	if ( ::TTF_GlyphMetrics( _content,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			& minX, & maxX, 0, 0, 0 ) != 0 )
-		throw TextException( "TrueTypeFont::getWidth: " 
+		throw FontException( "TrueTypeFont::getWidth: " 
 			+ DescribeLastError() ) ;
 
 	return static_cast<Width>( maxX - minX ) ;	
 	
 #else // OSDL_USES_SDL_TTF
 	
-	throw TextException( "TrueTypeFont::getWidth failed: "
+	throw FontException( "TrueTypeFont::getWidth failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -333,19 +420,23 @@ SignedWidth TrueTypeFont::getWidthOffset( Ceylan::Latin1Char character ) const
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getWidthOffset failed: "
+			"font not loaded" ) ;
+
  	int minX ;
 	
-	if ( ::TTF_GlyphMetrics( _actualFont,
+	if ( ::TTF_GlyphMetrics( _content,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			& minX, 0, 0, 0, 0 ) != 0 )
-		throw TextException( "TrueTypeFont::getWidthOffset: " 
+		throw FontException( "TrueTypeFont::getWidthOffset: " 
 			+ DescribeLastError() ) ;
 			
 	return static_cast<SignedWidth>( minX ) ;	
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::getWidthOffset failed: "
+	throw FontException( "TrueTypeFont::getWidthOffset failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -360,19 +451,23 @@ SignedHeight TrueTypeFont::getHeightAboveBaseline(
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getHeightAboveBaseline failed: "
+			"font not loaded" ) ;
+
 	int maxY ;
 	
-	if ( ::TTF_GlyphMetrics( _actualFont,
+	if ( ::TTF_GlyphMetrics( _content,
 			Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			0, 0, 0, & maxY, 0 ) != 0 )
-		throw TextException( "TrueTypeFont::getHeightAboveBaseline: " 
+		throw FontException( "TrueTypeFont::getHeightAboveBaseline: " 
 			+ DescribeLastError() ) ;
 	
 	return static_cast<SignedHeight>( maxY ) ;
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::getHeightAboveBaseline failed: "
+	throw FontException( "TrueTypeFont::getHeightAboveBaseline failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -387,19 +482,23 @@ OSDL::Video::SignedLength TrueTypeFont::getAdvance(
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getAdvance failed: "
+			"font not loaded" ) ;
+
 	int advance ;
 	
-	if ( ::TTF_GlyphMetrics( _actualFont,
+	if ( ::TTF_GlyphMetrics( _content,
 		Ceylan::UnicodeString::ConvertFromLatin1( character), 
 			0, 0, 0, 0, & advance ) != 0 )
-		throw TextException( "TrueTypeFont::getAdvance: "
+		throw FontException( "TrueTypeFont::getAdvance: "
 			+ DescribeLastError() ) ;
 	
 	return static_cast<SignedLength>( advance ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::getAdvance failed: "
+	throw FontException( "TrueTypeFont::getAdvance failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -413,7 +512,11 @@ Text::Height TrueTypeFont::getHeight() const
 
 #if OSDL_USES_SDL_TTF
 
-	return ::TTF_FontHeight( _actualFont ) ;
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getHeight failed: "
+			"font not loaded" ) ;
+
+	return ::TTF_FontHeight( _content ) ;
 
 #else // OSDL_USES_SDL_TTF
 
@@ -430,7 +533,11 @@ Text::SignedHeight TrueTypeFont::getAscent() const
 
 #if OSDL_USES_SDL_TTF
 
-	return ::TTF_FontAscent( _actualFont ) ;
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getAscent failed: "
+			"font not loaded" ) ;
+
+	return ::TTF_FontAscent( _content ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -447,7 +554,11 @@ Text::SignedHeight TrueTypeFont::getDescent() const
 
 #if OSDL_USES_SDL_TTF
 
-	return ::TTF_FontDescent( _actualFont ) ;
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getDescent failed: "
+			"font not loaded" ) ;
+
+	return ::TTF_FontDescent( _content ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -464,7 +575,11 @@ Text::Height TrueTypeFont::getLineSkip() const
 
 #if OSDL_USES_SDL_TTF
 
-	return ::TTF_FontLineSkip( _actualFont ) ;
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getLineSkip failed: "
+			"font not loaded" ) ;
+
+	return ::TTF_FontLineSkip( _content ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -480,7 +595,11 @@ Ceylan::Uint16 TrueTypeFont::getFacesCount() const
 
 #if OSDL_USES_SDL_TTF
 
-	return static_cast<Ceylan::Uint16>( ::TTF_FontFaces( _actualFont ) ) ;
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getFacesCount failed: "
+			"font not loaded" ) ;
+
+	return static_cast<Ceylan::Uint16>( ::TTF_FontFaces( _content ) ) ;
 			
 #else // OSDL_USES_SDL_TTF
 
@@ -497,7 +616,11 @@ bool TrueTypeFont::isFixedWidth() const
 
 #if OSDL_USES_SDL_TTF
 
-	return ( ::TTF_FontFaceIsFixedWidth( _actualFont ) > 0 ) ;
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::isFixedWidth failed: "
+			"font not loaded" ) ;
+			
+	return ( ::TTF_FontFaceIsFixedWidth( _content ) > 0 ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -514,7 +637,11 @@ string TrueTypeFont::getFaceFamilyName() const
 
 #if OSDL_USES_SDL_TTF
 
-	return ::TTF_FontFaceFamilyName( _actualFont ) ;
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getFaceFamilyName failed: "
+			"font not loaded" ) ;
+
+	return ::TTF_FontFaceFamilyName( _content ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -531,7 +658,11 @@ string TrueTypeFont::getFaceStyleName() const
 
 #if OSDL_USES_SDL_TTF
 
-	return ::TTF_FontFaceStyleName( _actualFont ) ;
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getFaceStyleName failed: "
+			"font not loaded" ) ;
+
+	return ::TTF_FontFaceStyleName( _content ) ;
 	
 #else // OSDL_USES_SDL_TTF
 
@@ -554,11 +685,15 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor(
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getBoundingBoxFor failed: "
+			"font not loaded" ) ;
+
 	int minX, maxX, minY, maxY, intAdvance ;
 
-	if ( ::TTF_GlyphMetrics( _actualFont, glyph, & minX, & maxX, 
+	if ( ::TTF_GlyphMetrics( _content, glyph, & minX, & maxX, 
 			& minY, & maxY, & intAdvance ) != 0 )
-		throw TextException( "TrueTypeFont::getClippingBoxFor (glyph): " 
+		throw FontException( "TrueTypeFont::getClippingBoxFor (glyph): " 
 			+ DescribeLastError() ) ;
 	
 	advance = static_cast<SignedLength>( intAdvance ) ;
@@ -571,7 +706,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor(
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::getBoundingBoxFor failed: "
+	throw FontException( "TrueTypeFont::getBoundingBoxFor failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -586,10 +721,14 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor( const std::string & text )
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getBoundingBoxFor failed: "
+			"font not loaded" ) ;
+
 	int width, height ;
 	
-	if ( ::TTF_SizeText( _actualFont, text.c_str(), & width, & height ) != 0 )
-		throw TextException( 
+	if ( ::TTF_SizeText( _content, text.c_str(), & width, & height ) != 0 )
+		throw FontException( 
 			"TrueTypeFont::getBoundingBoxFor (Latin-1 string): " 
 			+ DescribeLastError() ) ;
 	
@@ -598,7 +737,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxFor( const std::string & text )
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::getBoundingBoxFor failed: "
+	throw FontException( "TrueTypeFont::getBoundingBoxFor failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -613,10 +752,14 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUTF8(
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getBoundingBoxForUTF8 failed: "
+			"font not loaded" ) ;
+
 	int width, height ;
 	
-	if ( ::TTF_SizeUTF8( _actualFont, text.c_str(), & width, & height ) != 0 )
-		throw TextException( 
+	if ( ::TTF_SizeUTF8( _content, text.c_str(), & width, & height ) != 0 )
+		throw FontException( 
 			"TrueTypeFont::getBoundingBoxFor (UTF-8 string): " 
 			+ DescribeLastError() ) ;
 	
@@ -625,7 +768,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUTF8(
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::getBoundingBoxForUTF8 failed: "
+	throw FontException( "TrueTypeFont::getBoundingBoxForUTF8 failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -640,14 +783,18 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUnicode(
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::getBoundingBoxForUnicode failed: "
+			"font not loaded" ) ;
+
 	if ( text == 0 )
-		throw TextException( "TrueTypeFont::getBoundingBoxForUnicode: "
+		throw FontException( "TrueTypeFont::getBoundingBoxForUnicode: "
 			"null pointer for Unicode string." ) ;
 
 	int width, height ;
 	
-	if ( ::TTF_SizeUNICODE( _actualFont, text, & width, & height ) != 0 )
-		throw TextException( 
+	if ( ::TTF_SizeUNICODE( _content, text, & width, & height ) != 0 )
+		throw FontException( 
 			"TrueTypeFont::getBoundingBoxFor (Unicode string): " 
 			+ DescribeLastError() ) ;
 	
@@ -656,7 +803,7 @@ UprightRectangle & TrueTypeFont::getBoundingBoxForUnicode(
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::getBoundingBoxForUnicode failed: "
+	throw FontException( "TrueTypeFont::getBoundingBoxForUnicode failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -787,6 +934,10 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::renderLatin1Text failed: "
+			"font not loaded" ) ;
+
 	/*
 	 * Test to compare both implementations 
 	 * (OSDL glyph-based versus SDL_ttf whole string): 
@@ -820,10 +971,10 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	{	
 	
 		case Solid:
-			textSurface = ::TTF_RenderText_Solid( _actualFont, 
+			textSurface = ::TTF_RenderText_Solid( _content, 
 				text.c_str(), textColor ) ;
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderLatin1Text (solid): " 
 					"unable to render text '" + text
 					+ "': " + DescribeLastError() ) ; 
@@ -834,10 +985,10 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	
 	
 		case Shaded:
-			textSurface = ::TTF_RenderText_Shaded( _actualFont, 
+			textSurface = ::TTF_RenderText_Shaded( _content, 
 				text.c_str(), textColor, _backgroundColor ) ;
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderLatin1Text (shaded): " 
 					"unable to render text '" + text
 					+ "': " + DescribeLastError() ) ; 
@@ -883,7 +1034,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 			}
 			catch( const Video::VideoException & e )
 			{
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderLatin1Text (shaded): "
 					"color keying failed: " + e.toString() ) ; 
 			}
@@ -892,10 +1043,10 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 
 
 		case Blended:
-			textSurface = ::TTF_RenderText_Blended( _actualFont, 
+			textSurface = ::TTF_RenderText_Blended( _content, 
 				text.c_str(), textColor ) ;
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderLatin1Text (blended): " 
 					"unable to render text '" + text
 					+ "': " + DescribeLastError() ) ; 
@@ -941,7 +1092,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 			}
 			catch( const Video::VideoException & e )
 			{
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderLatin1Text (blended): "
 					"color keying failed: " + e.toString() ) ; 
 			}
@@ -952,7 +1103,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	
 	
 		default:
-			throw TextException( "TrueTypeFont::renderLatin1Text: "
+			throw FontException( "TrueTypeFont::renderLatin1Text: "
 				"unknown quality requested: " 
 				+ Ceylan::toString( quality ) + "." ) ; 
 			break ;	
@@ -981,7 +1132,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::renderLatin1Text failed: "
+	throw FontException( "TrueTypeFont::renderLatin1Text failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -998,6 +1149,10 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::renderUTF8Text failed: "
+			"font not loaded" ) ;
+
 	SDL_Surface * textSurface ;
 	Surface * res ;
 	
@@ -1006,11 +1161,11 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 	
 	
 		case Solid:
-			textSurface = ::TTF_RenderUTF8_Solid( _actualFont, text.c_str(),
+			textSurface = ::TTF_RenderUTF8_Solid( _content, text.c_str(),
 				textColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( "TrueTypeFont::renderUTF8Text (solid): " 
+				throw FontException( "TrueTypeFont::renderUTF8Text (solid): " 
 					"unable to render text '" + text
 					+ "': " + DescribeLastError() ) ; 
 					
@@ -1020,11 +1175,11 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 	
 	
 		case Shaded:
-			textSurface = ::TTF_RenderUTF8_Shaded( _actualFont, text.c_str(),
+			textSurface = ::TTF_RenderUTF8_Shaded( _content, text.c_str(),
 				textColor, _backgroundColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( "TrueTypeFont::renderUTF8Text (shaded): " 
+				throw FontException( "TrueTypeFont::renderUTF8Text (shaded): " 
 					"unable to render text '" + text
 					+ "': " + DescribeLastError() ) ; 
 					
@@ -1075,7 +1230,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 			}
 			catch( const Video::VideoException & e )
 			{
-				throw TextException( "TrueTypeFont::renderUTF8Text (shaded): "
+				throw FontException( "TrueTypeFont::renderUTF8Text (shaded): "
 					"color keying failed: " + e.toString() ) ; 
 			}
 			
@@ -1084,11 +1239,11 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 
 
 		case Blended:
-			textSurface = ::TTF_RenderUTF8_Blended( _actualFont, text.c_str(),
+			textSurface = ::TTF_RenderUTF8_Blended( _content, text.c_str(),
 				textColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderUTF8Text (blended): " 
 					"unable to render text '" + text
 					+ "': " + DescribeLastError() ) ; 
@@ -1138,7 +1293,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 			catch( const Video::VideoException & e )
 			{
 			
-				throw TextException( "TrueTypeFont::renderUTF8Text (blended): "
+				throw FontException( "TrueTypeFont::renderUTF8Text (blended): "
 					"color keying failed: " + e.toString() ) ;
 					 
 			}
@@ -1149,7 +1304,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 	
 	
 		default:
-			throw TextException( "TrueTypeFont::renderUTF8Text: "
+			throw FontException( "TrueTypeFont::renderUTF8Text: "
 				"unknown quality requested: " 
 				+ Ceylan::toString( quality ) + "." ) ; 
 			break ;	
@@ -1178,7 +1333,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::renderUTF8Text failed: "
+	throw FontException( "TrueTypeFont::renderUTF8Text failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -1195,8 +1350,12 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::renderUnicodeText failed: "
+			"font not loaded" ) ;
+
 	if ( text == 0 )
-		throw TextException( 
+		throw FontException( 
 			"TrueTypeFont::renderUnicode: null pointer for Unicode string." ) ;
 		
 	SDL_Surface * textSurface ;
@@ -1206,11 +1365,11 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 	{
 	
 		case Solid:
-			textSurface = ::TTF_RenderUNICODE_Solid( _actualFont, text, 
+			textSurface = ::TTF_RenderUNICODE_Solid( _content, text, 
 				textColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderUnicodeText (solid): " 
 					"unable to render text: " + DescribeLastError() ) ; 
 			res = new Surface( * textSurface, 
@@ -1219,11 +1378,11 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 	
 	
 		case Shaded:
-			textSurface = ::TTF_RenderUNICODE_Shaded( _actualFont, text,
+			textSurface = ::TTF_RenderUNICODE_Shaded( _content, text,
 				textColor, _backgroundColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderUnicodeText (shaded): " 
 					"unable to render text: " + DescribeLastError() ) ; 
 					
@@ -1272,7 +1431,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 			}
 			catch( const Video::VideoException & e )
 			{
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderUnicodeText (shaded): "
 					"color keying failed: " + e.toString() ) ; 
 			}
@@ -1281,11 +1440,11 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 
 
 		case Blended:
-			textSurface = ::TTF_RenderUNICODE_Blended( _actualFont, text,
+			textSurface = ::TTF_RenderUNICODE_Blended( _content, text,
 				textColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderUnicodeText (blended): " 
 					"unable to render text: " + DescribeLastError() ) ; 
 					 
@@ -1342,7 +1501,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 			}
 			catch( const Video::VideoException & e )
 			{
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::renderUnicodeText (blended): "
 					"color keying failed: " + e.toString() ) ; 
 			}
@@ -1353,7 +1512,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 	
 	
 		default:
-			throw TextException( "TrueTypeFont::renderUnicodeText: "
+			throw FontException( "TrueTypeFont::renderUnicodeText: "
 				"unknown quality requested: " 
 				+ Ceylan::toString( quality ) + "." ) ; 
 			break ;	
@@ -1382,7 +1541,7 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::renderUnicodeText failed: "
+	throw FontException( "TrueTypeFont::renderUnicodeText failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF
@@ -1397,7 +1556,10 @@ const string TrueTypeFont::toString( Ceylan::VerbosityLevels level ) const
 #if OSDL_USES_SDL_TTF
 
 	string res = "Truetype font, whose point size is " 
-		+ Ceylan::toString( _pointSize ) + " dots per inch" ;
+		+ Ceylan::toString( _pointSize ) + " pixel height" ;
+
+	if ( ! hasContent() )
+		return res + ", and which is not loaded" ;
 		
 	if ( level == Ceylan::low )
 		return res ;
@@ -1449,7 +1611,7 @@ const string TrueTypeFont::toString( Ceylan::VerbosityLevels level ) const
 		+ Ceylan::toNumericalString( linkedVersion->minor ) + "."
 		+ Ceylan::toNumericalString( linkedVersion->patch ) ;
 		+ ". Rendering style is " 
-		+ InterpretRenderingStyle( ::TTF_GetFontStyle( _actualFont ) ) ;
+		+ InterpretRenderingStyle( ::TTF_GetFontStyle( _content ) ) ;
 		
 		
 	return res ;
@@ -1495,6 +1657,75 @@ void TrueTypeFont::SetUnicodeSwapStatus( bool newStatus )
 
 
 
+std::string TrueTypeFont::FindPathFor( const std::string & fontFilename )
+{
+
+	// Searches directly in the current working directory:
+	if ( System::File::ExistsAsFileOrSymbolicLink( fontFilename ) )
+	{
+	
+		return fontFilename ;
+	
+	}	
+	else
+	{	
+		
+		// On failure use the dedicated TrueType font locator:
+		try
+		{
+		
+			return TrueTypeFont::TrueTypeFontFileLocator.find( fontFilename ) ;
+				
+		}
+		catch( const System::FileLocatorException & e )
+		{
+				
+			// Last hope is the general font locator:
+			try
+			{
+			
+				return Font::FontFileLocator.find( fontFilename ) ;
+				
+			}
+			catch( const System::FileLocatorException & ex )
+			{
+				
+				// Not found!
+				
+				string currentDir ;
+				
+				try
+				{
+					currentDir = Directory::GetCurrentWorkingDirectoryPath() ;
+				}
+				catch( const DirectoryException & exc )
+				{
+					throw FontException( 
+						"TrueTypeFont constructor: unable to load '" 
+						+ fontFilename 
+						+ "', exception generation triggered another failure: "
+						+ exc.toString() + "." ) ;
+				}
+				
+				throw FontException( "TrueTypeFont constructor: '" 
+					+ fontFilename 
+					+ "' is not a regular file or a symbolic link "
+					"relative to the current directory (" + currentDir
+					+ ") and cannot be found through TrueType font locator ("
+					+ TrueTypeFont::TrueTypeFontFileLocator.toString() 
+					+ ") nor through general font locator based on "
+					"font path environment variable ("
+					+ Font::FontPathEnvironmentVariable + "): " 
+					+ Font::FontFileLocator.toString() + "." ) ;
+					
+			}		
+		}		
+	}
+	
+}
+
+
+
 string TrueTypeFont::DescribeLastError() 
 {
 
@@ -1519,6 +1750,10 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 
 #if OSDL_USES_SDL_TTF
 
+	if ( ! hasContent() )
+		throw FontException( "TrueTypeFont::basicRenderUnicodeGlyph failed: "
+			"font not loaded" ) ;
+
 	// Render unconditionnally here:
 	
 	SDL_Surface * textSurface ;
@@ -1529,11 +1764,11 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	
 	
 		case Solid:
-			textSurface = ::TTF_RenderGlyph_Solid( _actualFont, character,
+			textSurface = ::TTF_RenderGlyph_Solid( _content, character,
 				glyphColor ) ;
 			 	
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::basicRenderUnicodeGlyph (solid): "
 					"unable to render character '" 
 					+ Ceylan::toString( character )
@@ -1547,11 +1782,11 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	
 	
 		case Shaded:
-			textSurface = ::TTF_RenderGlyph_Shaded( _actualFont, character,
+			textSurface = ::TTF_RenderGlyph_Shaded( _content, character,
 				glyphColor, _backgroundColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::basicRenderUnicodeGlyph (shaded): " 
 					"unable to render character '" 
 					+ Ceylan::toString( character )
@@ -1605,7 +1840,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 			catch( const Video::VideoException & e )
 			{
 			
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::basicRenderUnicodeGlyph (shaded): "
 					"color keying failed: " + e.toString() ) ; 
 					
@@ -1615,11 +1850,11 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 
 
 		case Blended:
-			textSurface = ::TTF_RenderGlyph_Blended( _actualFont, character,
+			textSurface = ::TTF_RenderGlyph_Blended( _content, character,
 				glyphColor ) ;
 				
 			if ( textSurface == 0 )
-				throw TextException( 
+				throw FontException( 
 					"TrueTypeFont::basicRenderUnicodeGlyph (blended): " 
 					"unable to render character '" 
 					+ Ceylan::toString( character )
@@ -1634,7 +1869,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	
 	
 		default:
-			throw TextException( "TrueTypeFont::basicRenderUnicodeGlyph: "
+			throw FontException( "TrueTypeFont::basicRenderUnicodeGlyph: "
 				"unknown quality requested: " 
 				+ Ceylan::toString( quality ) + "." ) ; 
 			break ;	
@@ -1666,7 +1901,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	
 #else // OSDL_USES_SDL_TTF
 
-	throw TextException( "TrueTypeFont::basicRenderUnicodeGlyph failed: "
+	throw FontException( "TrueTypeFont::basicRenderUnicodeGlyph failed: "
 		"no SDL_ttf support available" ) ;
 		
 #endif // OSDL_USES_SDL_TTF

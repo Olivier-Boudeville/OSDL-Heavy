@@ -77,15 +77,15 @@ Ceylan::System::FileLocator Text::Font::FontFileLocator(
 
 
 
-TextException::TextException( const string & reason ) :
-	VideoException( "TextException: " + reason ) 
+FontException::FontException( const string & reason ) :
+	VideoException( "FontException: " + reason ) 
 {
 
 }
 	
 	
 	
-TextException::~TextException() throw()
+FontException::~FontException() throw()
 {
 
 }
@@ -467,7 +467,7 @@ OSDL::Video::Surface & Font::renderLatin1Text( const std::string & text,
 	}
 	
 	// Avoid a warning:
-	throw TextException( "Font::renderLatin1Text: unexpected end of method" ) ;
+	throw FontException( "Font::renderLatin1Text: unexpected end of method" ) ;
 		
 }
 
@@ -537,7 +537,7 @@ void Font::blitLatin1Text( Surface & targetSurface, Coordinate x, Coordinate y,
 	catch( const VideoException & e )
 	{
 		// Would not be safe: delete & res ;
-		throw TextException( "Font::blitLatin1Text: blit failed: " 
+		throw FontException( "Font::blitLatin1Text: blit failed: " 
 			+ e.toString() ) ;
 	}	
 	
@@ -604,7 +604,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	LineNumber maxLines = height / lineSkip ;
 	
 	if ( maxLines == 0 )
-		throw TextException( "Font::renderLatin1MultiLineText: box height ("
+		throw FontException( "Font::renderLatin1MultiLineText: box height ("
 			+ Ceylan::toString( height ) 
 			+ ") is not enough even for one line of text, whose height is "
 			+ Ceylan::toString( lineSkip )  + "." ) ;
@@ -668,7 +668,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 #if OSDL_DEBUG_FONT
 
 		if ( _textCache != 0 )
-			throw TextException( "Font::renderLatin1MultiLineText: "
+			throw FontException( "Font::renderLatin1MultiLineText: "
 				"unable to create temporary word cache "
 				"since already existing." ) ;
 
@@ -1488,7 +1488,7 @@ const OSDL::Video::Surface & Font::getConstLatin1WordFromCache(
 		 * is not in cache.
 		 *
 		 */
-		throw TextException( "Font::getConstLatin1WordFromCache: "
+		throw FontException( "Font::getConstLatin1WordFromCache: "
 			"cache submitting failed (abnormal): " + e.toString() ) ;
 
 	}
@@ -1652,7 +1652,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	catch( const VideoException & e )
 	{
 		delete [] horizSteps ;
-		throw TextException( 
+		throw FontException( 
 			"Font::basicRenderLatin1Text: surface creation failed: "
 			+ e.toString() ) ;
 	}

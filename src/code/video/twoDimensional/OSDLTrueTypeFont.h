@@ -29,8 +29,10 @@
 
 
 
-#include "OSDLFont.h"         // for inheritance
+#include "OSDLFont.h"           // for inheritance
 
+
+#include "Ceylan.h"             // for LoadableWithContent
 
 
 #include <string>
@@ -94,8 +96,18 @@ namespace OSDL
 				
 
 
+				// Forward-declaration for next counted pointer:
+				class TrueTypeFont ;
+				
+				
+				/// TrueType font counted pointer.
+				typedef Ceylan::CountedPointer<TrueTypeFont>
+					TrueTypeFontCountedPtr ;
+
+
+
 				/**
-				 * Truetype font.
+				 * Class allowing to manage a TrueType font.
 				 *
 				 * A font can contain faces, which are specific sub-fonts, 
 				 * with particular size and style.
@@ -151,7 +163,8 @@ namespace OSDL
 				 * FixedFont class too. 
 				 *
 				 */	
-				class OSDL_DLL TrueTypeFont: public Font
+				class OSDL_DLL TrueTypeFont : public Font,
+					public Ceylan::LoadableWithContent<LowLevelTTFFont>
 				{
 				
 				
@@ -192,20 +205,36 @@ namespace OSDL
 						 * The recommended - and default - setting is
 						 * 'GlyphCached'.
 						 *
-						 * @throw TextException if the file could not be 
+						 * @param preload this font will be loaded directly 
+						 * by this constructor iff true, otherwise only 
+						 * its path will be stored to allow for later loading.
+						 *
+						 * @throw FontException if the file could not be 
 						 * found or if the font library did not initialize
 						 * properly.
 						 *
 						 * @note This constructor can operate on all kinds of
 						 * files transparently, including archive-embedded ones.
 						 *
+						 * @note When a TrueType font instance is created, it
+						 * comes with a default point size equal to
+						 * TrueTypeFont::DefaultPointSize. One may call its
+						 * setPointSize method, whether or not the font is 
+						 * loaded, to change its point size. If already loaded
+						 * with a different size, it will be unloaded and
+						 * reloaded accordingly, so the setting of point size
+						 * is preferably done before the font is requested to 
+						 * be loaded.
+						 *
+						 * @see load( PointSize size )
+						 *
 						 */
 						TrueTypeFont( 
 							const std::string & fontFilename, 
-							PointSize pointSize,
 							FontIndex index = 0, 
 							bool convertToDisplay = true,
-							RenderCache cacheSettings = GlyphCached ) ;
+							RenderCache cacheSettings = GlyphCached,
+							bool preload = false ) ;
 						
 						
 						
@@ -217,13 +246,84 @@ namespace OSDL
 						
 						
 						
+						
+						// LoadableWithContent template instanciation.
+		
+				
+				
 						/**
-						 * Returns the point size of this font, expressed 
-						 * in dots per inch.
+						 * Loads the font from file.
+						 *
+						 * @return true iff the font had to be actually loaded
+						 * (otherwise it was already loaded and nothing was
+						 * done).
+						 *
+						 * @throw Ceylan::LoadableException whenever the 
+						 * loading fails.
+						 *
+						 */
+						virtual bool load() ;
+		
+		
+		
+						/**
+						 * Unloads the font that may be held by thisinstance.
+						 *
+						 * @return true iff the font had to be actually 
+						 * unloaded (otherwise it was not already available
+						 * and nothing was done).
+						 *
+						 * @throw Ceylan::LoadableException whenever the
+						 * unloading fails.
+						 *
+						 */
+						virtual bool unload() ;
+						
+						
+				
+						/**
+						 * Loads the font from file with specified point size.
+						 *
+						 * @return true iff the font had to be actually loaded
+						 * whereas not being loaded at all initially.
+						 *
+						 * @throw Ceylan::LoadableException whenever the 
+						 * loading fails.
+						 *
+						 */
+						virtual bool load( PointSize PointSize ) ;
+		
+		
+						
+						
+						/**
+						 * Returns the point size of this font, based on
+						 * 72 DPI (dots per inch). This basically translates
+						 * to pixel height. 
 						 *
 						 */
 						virtual PointSize getPointSize() const ;
 						
+						
+						
+						/**
+						 * Sets the current point size for this font.
+						 *
+						 * @note If the font is already loaded with a 
+						 * different point size, it will be unloaded and 
+						 * reloaded accordingly.
+						 *
+						 * @param newPointSize the new point size of the font,
+						 * based on 72 DPI (dots per inch). This basically
+						 * translates to pixel height. 
+						 *
+						 * @throw Ceylan::LoadableException or FontException 
+						 * if the operation failed.
+						 *
+						 */
+						virtual void setPointSize( PointSize newPointSize ) ;
+
+
 
 
 						/**
@@ -250,7 +350,7 @@ namespace OSDL
 						 * @example myFont.setRenderingStyle( Font::Italic 
 						 * | Font:Bold ) ;
 						 *
-						 * @throw TextException if the specified style 
+						 * @throw FontException if the specified style 
 						 * is not supported.
 						 *
 						 */
@@ -275,7 +375,7 @@ namespace OSDL
 						 * for most fonts it depends too heavily on the 
 						 * selected glyph.
 						 *
-						 * @throw TextException if the glyph metrics could
+						 * @throw FontException if the glyph metrics could
 						 * not be retrieved.
 						 *
 						 */
@@ -295,7 +395,7 @@ namespace OSDL
 						 * @param character the character whose abscissa 
 						 * offset will be returned.
 						 *
-						 * @throw TextException if the glyph metrics could 
+						 * @throw FontException if the glyph metrics could 
 						 * not be retrieved.
 						 *
 						 */
@@ -311,7 +411,7 @@ namespace OSDL
 						 * @param character the character whose height 
 						 * above baseline will be returned.
 						 *
-						 * @throw TextException if the glyph metrics 
+						 * @throw FontException if the glyph metrics 
 						 * could not be retrieved.
 						 *
 						 */
@@ -333,7 +433,7 @@ namespace OSDL
 						 * @param character the character whose advance 
 						 * will be returned.
 						 *
-						 * @throw TextException if the glyph metrics could 
+						 * @throw FontException if the glyph metrics could 
 						 * not be retrieved.
 						 *
 						 */
@@ -495,7 +595,7 @@ namespace OSDL
 						 * rectangle, it has therefore to delete it when 
 						 * the rectange is not to be used any more.
 						 *
-						 * @throw TextException on error, for example if 
+						 * @throw FontException on error, for example if 
 						 * the specified character does not exist in this font.
 						 *
 						 * Width is xMax - xMin.
@@ -532,7 +632,7 @@ namespace OSDL
 						 * text (bounding box), whose lower left corner is
 						 * located at the origin.
 						 *
-						 * @throw TextException if an error occured, for 
+						 * @throw FontException if an error occured, for 
 						 * example if a requested glyph does not exist.
 						 *
 						 */ 
@@ -564,7 +664,7 @@ namespace OSDL
 						 * (bounding box), whose lower left corner is 
 						 * located at the origin.
 						 *
-						 * @throw TextException if an error occured, 
+						 * @throw FontException if an error occured, 
 						 * for example if a requested glyph does not exist.
 						 *
 						 */ 
@@ -596,7 +696,7 @@ namespace OSDL
 						 * (bounding box), whose lower left corner is located 
 						 * at the origin.
 						 *
-						 * @throw TextException if an error occured, for 
+						 * @throw FontException if an error occured, for 
 						 * example if a requested glyph does not exist.
 						 *
 						 */ 
@@ -638,14 +738,14 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose 
 						 * ownership is transferred to the caller.
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual Surface & renderLatin1Glyph( 
-								Ceylan::Latin1Char character, 
-								RenderQuality quality = Solid, 
-								Pixels::ColorDefinition glyphColor 
-									= Pixels::White ) ;
+							Ceylan::Latin1Char character, 
+							RenderQuality quality = Solid, 
+							Pixels::ColorDefinition glyphColor 
+								= Pixels::White ) ;
 							 
 							 
 
@@ -672,16 +772,16 @@ namespace OSDL
 						 * @param glyphColor the color definition for the 
 						 * glyph. 
 						 *
-						 * @throw TextException on error.
+						 * @throw FontException on error.
 						 *
 						 */
 						virtual void blitLatin1Glyph( 
-								Surface & targetSurface,
-								Coordinate x, Coordinate y, 
-								Ceylan::Latin1Char character, 
-								RenderQuality quality = Solid, 
-								Pixels::ColorDefinition glyphColor 
-									= Pixels::White ) ;
+							Surface & targetSurface,
+							Coordinate x, Coordinate y, 
+							Ceylan::Latin1Char character, 
+							RenderQuality quality = Solid, 
+							Pixels::ColorDefinition glyphColor 
+								= Pixels::White ) ;
 							 
 							 
 							 
@@ -711,15 +811,15 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose ownership 
 						 * is transferred to the caller.
 						 *
-						 * @throw TextException on error, for example if 
+						 * @throw FontException on error, for example if 
 						 * the specified glyph was not found.
 						 *
 						 */
 						virtual Surface & renderUnicodeGlyph( 
-								Ceylan::Unicode character, 
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition textColor 
-									= Pixels::White ) ;
+							Ceylan::Unicode character, 
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition textColor 
+								= Pixels::White ) ;
 						
 						
 						
@@ -746,15 +846,15 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose 
 						 * ownership is transferred to the caller.
 						 *
-						 * @throw TextException on error, for example if 
+						 * @throw FontException on error, for example if 
 						 * a specified glyph was not found.
 						 *
 						 */
 						virtual Surface & renderLatin1Text( 
-								const std::string & text, 
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition textColor 
-									= Pixels::White ) ;
+							const std::string & text, 
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition textColor 
+								= Pixels::White ) ;
 							
 							
 						
@@ -782,15 +882,15 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose 
 						 * ownership is transferred to the caller.
 						 *
-						 * @throw TextException on error, for example if a
+						 * @throw FontException on error, for example if a
 						 * specified glyph was not found.
 						 *
 						 */
 						virtual Surface & renderUTF8Text( 
-								const std::string & text, 
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition textColor 
-									= Pixels::White ) ;
+							const std::string & text, 
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition textColor 
+								= Pixels::White ) ;
 							
 							
 						
@@ -819,15 +919,15 @@ namespace OSDL
 						 * @return a newly allocated Surface, whose 
 						 * ownership is transferred to the caller.
 						 *
-						 * @throw TextException on error, for example if a
+						 * @throw FontException on error, for example if a
 						 * specified glyph was not found.
 						 *
 						 */
 						virtual Surface & renderUnicodeText( 
-								const Ceylan::Unicode * text, 
-								RenderQuality quality = Solid,
-								Pixels::ColorDefinition textColor 
-									= Pixels::Black ) ;
+							const Ceylan::Unicode * text, 
+							RenderQuality quality = Solid,
+							Pixels::ColorDefinition textColor 
+								= Pixels::Black ) ;
 							
 							
 														
@@ -901,6 +1001,42 @@ namespace OSDL
 	
 	
 						/**
+						 * Returns the complete path where the specified 
+						 * Truetype font filename could be found.
+						 *
+						 * @param fontFilename the filename of the file where
+						 * the font is stored, usually a .ttf, .TTF or a .FON
+						 * file. 
+						 * The filename will be interpreted first 'as is', 
+						 * i.e. as an absolute path or a relative path to the 
+						 * current directory. 
+						 * If it does not succeed, the font file will be 
+						 * searched through directories listed in the
+						 * Truetype file locator.
+						 * If it fails again, the list of directories 
+						 * specified in the FONT_PATH environment variable will
+						 * be scanned for that filename, if any.
+						 *
+						 * @throw FontException if the file could not be 
+						 * found.
+						 *
+						 */	
+						static std::string FindPathFor( 
+							const std::string & fontFilename ) ;
+						
+						
+						/**
+						 * The default point size all TrueType font will be
+						 * created with.
+						 *
+						 * @note Use setPointSize preferably before loading
+						 * them, to avoid useless processings.
+						 *
+						 */
+						static PointSize DefaultPointSize ;
+						
+	
+						/**
 						 * Allows to keep track of Truetype font directories.
 						 *
 						 */
@@ -964,8 +1100,12 @@ namespace OSDL
 						PointSize _pointSize ;
 						
 						
-						/// Stores the actual TTF font.
-						LowLevelTTFFont * _actualFont ;
+						/**
+						 * The actual TTF font (LowLevelTTFFont) is kept
+						 * in the _content atribute inherited from the
+						 * template.
+						 * 
+						 */
 						
 						
 						/**
