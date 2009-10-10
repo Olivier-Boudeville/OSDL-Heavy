@@ -146,7 +146,7 @@ void smarterKeyHandler( const KeyboardEvent & keyboardEvent )
 	if ( keyboardEvent.type != EventsModule::KeyPressed )
 	{
 		
-		// Only key presses interest us .
+		// Only key presses interest us.
 	 	return ;
 	}
 	
@@ -205,6 +205,7 @@ KeyboardHandler::KeyboardHandler( KeyboardMode initialMode,
 	_rawKeyHandlerMap(),
 	_unicodeControllerMap(),
 	_unicodeHandlerMap(),
+	_defaultRawKeyController( 0 ),
 	_focusController( 0 )
 {
 
@@ -255,6 +256,9 @@ KeyboardHandler::~KeyboardHandler() throw()
 
 	send( "Stopping keyboard subsystem." ) ;
 
+	if ( _defaultRawKeyController != 0 )
+		delete _defaultRawKeyController ;
+		
 	// Avoid side-effects:
 	if ( _unicodeInputWasActivated ) 
 		SDL_EnableUNICODE( 1 ) ;
@@ -362,6 +366,35 @@ void KeyboardHandler::setSmarterDefaultKeyHandlers()
 	_defaultUnicodeHandler = smarterKeyHandler ;
 	
 }
+
+
+
+
+void KeyboardHandler::linkDefaultRawKeyController( 
+	OSDL::MVC::Controller & newDefaultController )
+{
+
+	_defaultRawKeyController = & newDefaultController ;
+	
+}
+
+
+
+bool KeyboardHandler::unlinkDefaultRawKeyController()
+{
+
+	if ( _defaultRawKeyController != 0 )
+	{
+		
+		_defaultRawKeyController = 0 ;
+		return true ;
+		
+	}
+	
+	return false ;	
+		
+}
+
 
 
 
@@ -671,10 +704,25 @@ void KeyboardHandler::keyPressed( const KeyboardEvent & keyboardEvent )
 			else
 			{
 			
-				OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
-					"sent to default raw key handler." ) ;
+			
+				if ( _defaultRawKeyController != 0 )
+				{
 				
-				_defaultRawKeyHandler( keyboardEvent ) ;
+					OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
+						"sent to default raw key controller." ) ;
+				
+					_defaultRawKeyController->rawKeyPressed( keyboardEvent ) ;
+					
+				}
+				else
+				{
+
+					OSDL_KEYBOARD_HANDLER_LOG( "KeyboardHandler::keyPressed "
+						"sent to default raw key handler." ) ;
+				
+					_defaultRawKeyHandler( keyboardEvent ) ;
+				
+				}	
 
 			}
 

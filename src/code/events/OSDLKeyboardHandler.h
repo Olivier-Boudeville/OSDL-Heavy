@@ -95,7 +95,7 @@ namespace OSDL
 		
 		
 		/// Mother class for all keyboard exceptions. 		
-		class OSDL_DLL KeyboardException: public EventsException 
+		class OSDL_DLL KeyboardException : public EventsException 
 		{
 		
 			public: 
@@ -113,7 +113,7 @@ namespace OSDL
 		 * and key releases. 
 		 *
 		 * - 'rawInput' uses basically scancodes to track only keys being hit 
-		 * or realeased, as if the keyboard was a big game pad with numerous
+		 * or released, as if the keyboard was a big game pad with numerous
 		 * buttons
 		 * - 'textInput' is used for text input with unicode support, scan 
 		 * codes are converted according to keyboard layout so that actual
@@ -138,6 +138,10 @@ namespace OSDL
 		 *
 		 * Keyboard inputs are managed according to the current keyboard mode
 		 * (example: raw input, text input with unicode support, etc.).
+		 *
+		 * In raw mode, a key can be specifically managed by a controller,
+		 * otherwise by an specific handler, otherwise by a default controller,
+		 * otherwise by a default handler.
 		 *
 		 */
 		class OSDL_DLL KeyboardHandler : public InputDeviceHandler
@@ -587,6 +591,7 @@ namespace OSDL
 
 
 
+
 				/**
 				 * Constructs a new keyboard handler. 
 				 *
@@ -633,6 +638,8 @@ namespace OSDL
 				 * @param controller the OSDL controller which will be 
 				 * notified of this raw key presses and releases.
 				 *
+				 * @note Ownership of the controller is not taken.
+				 *
 				 */
 				virtual void linkToController( KeyIdentifier rawKey, 
 					OSDL::MVC::Controller & controller ) ;
@@ -669,6 +676,8 @@ namespace OSDL
 				 * @param controller the OSDL controller which will be 
 				 * notified of this Unicode being selected.
 				 *
+				 * @note Ownership of the controller is not taken.
+				 *
 				 */
 				virtual void linkToController( Ceylan::Unicode unicode, 
 					OSDL::MVC::Controller & controller ) ;
@@ -685,6 +694,8 @@ namespace OSDL
 				 *
 				 * @param controller the OSDL controller which will be 
 				 * notified of the focus change.
+				 *
+				 * @note Ownership of the controller is not taken.
 				 *
 				 */
 				virtual void linkToFocusController(
@@ -741,6 +752,31 @@ namespace OSDL
 				
 				
 
+				/**
+				 * Links a new default controller for raw key events.
+				 *
+				 * @param newDefaultController the new default controller, 
+				 * whose ownership is not taken.
+				 *
+				 * Any preexisting default controller will be forgotten 
+				 * (but not deleted) first.
+				 *
+				 */
+				virtual void linkDefaultRawKeyController( 
+					OSDL::MVC::Controller & newDefaultController ) ;
+				
+				
+				
+				/**
+				 * Unlinks current default controller for raw key events.
+				 *
+				 * @return true iff there was a controller to unlink.
+				 *
+				 */
+				virtual bool unlinkDefaultRawKeyController() ;
+				
+				
+				
 				/**
 				 * Sets a new default handler for raw key events.
 				 *
@@ -1034,6 +1070,14 @@ namespace OSDL
 
 
 
+
+				/**
+				 * The default raw key controller, if any.
+				 *
+				 */
+				OSDL::MVC::Controller * _defaultRawKeyController ;
+				 
+				 
 
 				/**
 				 * Default raw key event handler, does nothing, but can 
