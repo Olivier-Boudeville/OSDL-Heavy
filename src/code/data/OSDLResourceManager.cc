@@ -216,6 +216,7 @@ Audio::MusicCountedPtr Data::ResourceManager::getMusic(
 Audio::SoundCountedPtr Data::ResourceManager::getSound( Ceylan::ResourceID id )
 {
 
+	
 	map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
 		_soundMap.find( id ) ;
 		
@@ -237,15 +238,15 @@ Audio::SoundCountedPtr Data::ResourceManager::getSound( Ceylan::ResourceID id )
 Audio::SoundCountedPtr Data::ResourceManager::getSound( 
 	const string & soundPath )
 {
-
+	
 	map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
 		_soundMap.find( getIDForPath(soundPath) ) ;
 		
 	if ( it == _soundMap.end() )
 		throw ResourceManagerException( 
 			"ResourceManager::getSound: sound path '" + soundPath 
-			+ "' could not be found." ) ;
-			
+			+ "' could not be found." ) ;	
+				
 	Audio::SoundCountedPtr res = (*it).second ;
 	
 	// Ensures a returned resource is always loaded:
@@ -312,8 +313,15 @@ Video::OpenGL::TextureCountedPtr Data::ResourceManager::getTexture(
 		_textureMap.find( id ) ;
 		
 	if ( it == _textureMap.end() )
+	{
+	
+		LogPlug::fatal( "Data::ResourceManager::getTexture for ID failed." ) ;
+		
 		throw ResourceManagerException( "ResourceManager::getTexture: ID #"
 			+ Ceylan::toString( id ) + " could not be found." ) ;
+	
+	}
+	
 			
 	Video::OpenGL::TextureCountedPtr res = (*it).second ;
 	
@@ -338,8 +346,16 @@ Video::OpenGL::TextureCountedPtr Data::ResourceManager::getTexture(
 		_textureMap.find( getIDForPath(texturePath) ) ;
 		
 	if ( it == _textureMap.end() )
+	{
+	
+		LogPlug::fatal( "Data::ResourceManager::getTexture for file '"
+			+ texturePath + "' failed." ) ;
+
 		throw ResourceManagerException( "ResourceManager::getTexture: texture '"
 			+ texturePath + "' could not be found." ) ;
+	
+	}
+	
 			
 	Video::OpenGL::TextureCountedPtr res = (*it).second ;
 	
@@ -998,16 +1014,40 @@ void Data::ResourceManager::registerResource(
 
 
 Ceylan::ResourceID Data::ResourceManager::getIDForPath( 
-	const string & resourcePath ) const
+	const string & resourcePath, bool emergencyStopInNotFound ) const
 {
 
 	map<string,Ceylan::ResourceID>::const_iterator it = 
 		_reverseMap.find( resourcePath ) ;
-		
+
 	if ( it == _reverseMap.end() )
-		throw ResourceManagerException( "ResourceManager::getIDForPath: "
-			"resource path '" + resourcePath 
-			+ "' could not be found in archive." ) ;
+	{
+		
+		/*
+		 * If just raising an exception, then this can lead to a segmentation
+		 * fault: the exception propation may make a view constructor be
+		 * aborted, which in turn may make its model constructor be aborted,
+		 * which will try to deallocate this view, which is not a proper 
+		 * view, causing the program to crash.
+		 * Ex: in ~SingleControllerSingleViewGenericModel, with
+		 * 'delete this->_view ;' and a view requesting an unknown ID at
+		 * construction-time.
+		 *
+		 */
+		
+		string message = "getIDForPath: failed to look-up resource file '"
+			+ resourcePath + "'." ;
+			
+		LogPlug::error( message ) ;
+		
+		if ( emergencyStopInNotFound )
+			Ceylan::emergencyShutdown( message ) ;
+		else	
+			throw ResourceManagerException( "ResourceManager::getIDForPath: "
+				"resource path '" + resourcePath 
+				+ "' could not be found in archive." ) ;
+	
+	}
 	
 	return (*it).second ;	
 
