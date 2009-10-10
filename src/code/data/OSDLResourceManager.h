@@ -488,12 +488,18 @@ namespace OSDL
 				 * @param resourcePath the path of the specified resource in
 				 * archive.
 				 *
+				 * @param emergencyStopInNotFound performs an emergency stop
+				 * in the look-up of the specified ID failed, as usually the
+				 * raising of an exception here will make a view constructor
+				 * fail, leading to a segmentation fault.
+				 *
 				 * @throw ResourceManagerException if the path could not be
 				 * resolved.
 				 *
 				 */
 				Ceylan::ResourceID getIDForPath( 
-					const std::string & resourcePath ) const ;
+					const std::string & resourcePath, 
+					bool emergencyStopInNotFound = true ) const ;
 
 
 
