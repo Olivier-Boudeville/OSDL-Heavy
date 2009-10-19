@@ -262,7 +262,7 @@ namespace OSDL
 		 * engine ticks will overflow and it will lead to a scheduler shutdown.
 		 *
 		 */	
-		class OSDL_DLL Scheduler: public Ceylan::Object
+		class OSDL_DLL Scheduler : public Ceylan::Object
 		{
 		
 		
