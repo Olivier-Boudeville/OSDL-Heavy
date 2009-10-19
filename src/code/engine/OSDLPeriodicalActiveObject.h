@@ -87,7 +87,7 @@ namespace OSDL
 		 * @see also the ProgrammedActiveObject class.
 		 *
 		 */
-		class OSDL_DLL PeriodicalActiveObject: public ActiveObject
+		class OSDL_DLL PeriodicalActiveObject : public ActiveObject
 		{
 		
 		
@@ -303,6 +303,27 @@ namespace OSDL
 				virtual void setBirthTick( 
 					Events::SimulationTick currentSimulationTick ) ;
 
+
+					
+				/**
+				 * Returns the number of activations of this periodical
+				 * object which corresponds to the specified duration.
+				 *
+				 * For example a duration of 400 ms, for a periodical object
+				 * whose period is 50 ms, corresponds to 8 of its simulation
+				 * ticks.
+				 *
+				 * @param duration
+				 *
+				 * @throw SchedulingException if the operation failed,
+				 * notably if this object is not stored in a sub-slot 
+				 * already.
+				 *
+				 */
+				virtual Events::SimulationTick
+					convertDurationToActivationCount(
+						Ceylan::System::Millisecond duration ) const ;
+		
 		
 		
 	            /**
