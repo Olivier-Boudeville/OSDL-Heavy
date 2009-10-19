@@ -187,6 +187,8 @@ namespace OSDL
 			 * Describes a color definition, not converted to a specific
 			 * format.
 			 *
+			 * Each color element is an integer ranging in [0,255].
+			 *
 			 */
 			struct ColorDefinition
 			{
