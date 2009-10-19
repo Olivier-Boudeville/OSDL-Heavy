@@ -240,10 +240,16 @@ void OpenGLContext::selectFlavour( Flavour flavour )
 
 	LogPlug::trace( "OpenGLContext::selectFlavour" ) ;
 		
+	/*
+	 * During execution an application may perfectly go for example from 2D
+	 * to 3D while the display is already initialized:
+	 	
 	if ( VideoModule::IsDisplayInitialized() )
 		LogPlug::warning( 
 			"OpenGLContext::selectFlavour: display is already initialized." ) ;
-	
+	 *
+	 */
+	 
 	switch( flavour )
 	{
 	
@@ -297,8 +303,13 @@ void OpenGLContext::set2DFlavour()
 	
 	_flavour = OpenGLFor2D ;
 
-	// Saves a lot of the OpenGL state machine:
-	pushAttribute( GL_ENABLE_BIT ) ;
+	/*
+	 * Saves a lot of the OpenGL state machine:
+	 * Actually setting explicitly the OpenGL state is preferred here
+	 * to pushing/popping it (more reliable).
+	 *
+	 */
+	//pushAttribute( GL_ENABLE_BIT ) ;
 	
 	// No depth sorting used:
 	setDepthBufferStatus( false ) ;
