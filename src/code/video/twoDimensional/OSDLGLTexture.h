@@ -75,7 +75,7 @@ namespace OSDL
 		
 		
 			/// Exception to be raised when OpenGL texture operations fail.
-			class OSDL_DLL GLTextureException: public OpenGLException
+			class OSDL_DLL GLTextureException : public OpenGLException
 			{
 			
 				public:
@@ -371,7 +371,7 @@ namespace OSDL
 					// Static section.
 					
 					
-					// FIXME Should use the flavour member.
+					// Should use the flavour member.
 						
 										
 					/// Returns the current texture dimensionality.
@@ -451,6 +451,16 @@ namespace OSDL
 						GLEnumeration environmentParameter,
 						const GLfloat * parameterValues ) ;
 
+
+
+					/**
+					 * Ensures no (2D) texture is currently bound.
+					 *
+					 * Useful when drawing solid shapes.
+					 *
+					 */
+					static void UnbindCurrentTexture() ;
+					
 					
 					
 					/**
@@ -465,6 +475,8 @@ namespace OSDL
 					 */
 					static std::string GetExtensionForFlavour( 
 						TextureFlavour flavour ) ;
+					
+					
 					
 					
 					
