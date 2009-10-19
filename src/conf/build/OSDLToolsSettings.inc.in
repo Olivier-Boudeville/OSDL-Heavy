@@ -72,13 +72,13 @@ zlib_win_MD5="abbd0f2b456206da5e3ffd179324413a"
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
-# Actually 1.2.33 (defined in configure-template.ac):
+# Actually 1.2.40 (defined in configure-template.ac):
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_MD5="0532c28ba1b17ee2095ad50731c2c75c"
+libpng_MD5="29bbd1c3cbe54b04bfc2bda43067ccb5"
 
 libpng_win_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_win_archive_VERSION="1233"
@@ -86,7 +86,7 @@ libpng_win_ARCHIVE="lpng${libpng_win_archive_VERSION}.zip"
 libpng_win_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_win_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_win_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_win_MD5="c90ba3c0c966570b3bf125e8a45f0fb1"
+libpng_win_MD5=""
 
 
 
@@ -143,13 +143,13 @@ SDL_image_osx_precompiled_MD5="xxx"
 # SDL_gfx (libSDL_gfx.so): http://www.ferzkopp.net/Software/SDL_gfx-2.0/
 # No binaries available!
 
-# Actually 2.0.19 (defined in configure-template.ac):
+# Actually 2.0.18 (defined in configure-template.ac):
 SDL_gfx_MAJOR_VERSION="@SDL_GFX_MAJOR_VERSION@"
 SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.@SDL_GFX_MINOR_VERSION@"
 SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
-SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
+SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_gfx_MD5="cf01ad6539ceea65887fc9ebdfe04b83"
+SDL_gfx_MD5="8a787e538a8e4d80d4927535be5af083"
 
 
 # Same as for UNIX:
@@ -164,13 +164,13 @@ SDL_gfx_win_MD5="$SDL_gfx_MD5"
 
 # Sources.
 
-freetype_VERSION="2.3.7"
+freetype_VERSION="2.3.10"
 freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
 freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_MD5="83306194817ebdea554133b4232a34aa"
+freetype_MD5="b7a8a26cc137716a32b788664697d727"
 
 
 # Same as for UNIX:
@@ -241,50 +241,44 @@ SDL_ttf_osx_precompiled_MD5="xxx"
 # libvorbis (libvorbis.so): http://www.xiph.org/vorbis/
 # (this ogg/vorbis order must be respected as ogg section uses vorbis variable)
 
-libvorbis_VERSION="1.2.0"
+libvorbis_VERSION="1.2.3"
 libvorbis_ARCHIVE="libvorbis-${libvorbis_VERSION}.tar.gz"
 libvorbis_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/vorbis"
 libvorbis_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libvorbis_MD5="478646358c49f34aedcce58948793619"
+libvorbis_MD5="5aa77f55c0e0aab8eb8ed982335daac8"
 
-libvorbis_win_VERSION="1.2.0"
+libvorbis_win_VERSION="${libvorbis_VERSION}"
 libvorbis_win_ARCHIVE="libvorbis-${libvorbis_win_VERSION}.zip"
 libvorbis_win_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/vorbis"
 libvorbis_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_win_VERSION}/unix"
-libvorbis_win_MD5="ceae7e999ed18469418a1e971d7029d9"
+libvorbis_win_MD5=""
 
 
 # libogg (libogg.so): http://www.xiph.org/ogg/
 
-libogg_VERSION="1.1.3"
+libogg_VERSION="1.1.4"
 libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.gz"
 libogg_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
 libogg_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libogg_MD5="eaf7dc6ebbff30975de7527a80831585"
+libogg_MD5="10200ec22543841d9d1c23e0aed4e5e9"
 
-libogg_win_VERSION="1.1.3"
+libogg_win_VERSION="${libogg_VERSION}"
 libogg_win_ARCHIVE="libogg-${libogg_win_VERSION}.zip"
 libogg_win_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
 libogg_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_win_VERSION}/unix"
-libogg_win_MD5="d4a0364e7ea34803ccde8f37e4b21bc2"
+libogg_win_MD5=""
 
 
 
 # SDL_mixer (libSDL_mixer.so): http://www.libsdl.org/projects/SDL_mixer/
 
+# Actually 1.2.8 (defined in configure-template.ac):
 SDL_mixer_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
 SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
 SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
+SDL_mixer_MD5="0b5b91015d0f3bd9597e094ba67c4d65"
 
-# For 1.2.8:
-#SDL_mixer_MD5="0b5b91015d0f3bd9597e094ba67c4d65"
-
-# For 1.2.7 (temporary downgrade due to vorbis issues):
-# (see: 
-# http://listas.apesol.org/pipermail/sdl-libsdl.org/2007-October/063096.html)
-SDL_mixer_MD5="7959b89c8f8f1564ca90968f6c88fa1e"
-
-SDL_mixer_win_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
+SDL_mixer_win_VERSION="${SDL_mixer_VERSION}"
 SDL_mixer_win_ARCHIVE="SDL_mixer-${SDL_mixer_win_VERSION}.zip"
 SDL_mixer_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
 SDL_mixer_win_MD5="b7a7f360192c017a23a526cd6d681089"
@@ -308,18 +302,18 @@ guichan_win_MD5="$guichan_MD5"
 
 # Agar (libag_core.so/libag_gui.so): http://libagar.org
 
-# Actually 1.3.3 (defined in configure-template.ac):
+# Actually 1.3.4 (defined in configure-template.ac):
 Agar_VERSION="@AGAR_RECOMMENDED_VERSION@"
 Agar_ARCHIVE="agar-${Agar_VERSION}.tar.gz"
 Agar_DOWNLOAD_LOCATION="http://stable.hypertriton.com/agar"
 Agar_ALTERNATE_DOWNLOAD_LOCATION=""
-Agar_MD5="73ab990a58b2a748603942617e7e7adc"
+Agar_MD5="9065ffa9fe28d9e11413c4cac6c7a172"
 
 Agar_win_VERSION="$Agar_VERSION"
 Agar_win_ARCHIVE="agar-${Agar_VERSION}.zip"
 Agar_win_DOWNLOAD_LOCATION="$Agar_DOWNLOAD_LOCATION"
 Agar_win_ALTERNATE_DOWNLOAD_LOCATION="$Agar_ALTERNATE_DOWNLOAD_LOCATION"
-Agar_win_MD5="6109e452f6e6be045f3c706facb55ff0"
+Agar_win_MD5=""
 
 
 # PhysicsFS: http://icculus.org/physfs/
@@ -443,10 +437,10 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R13B01"
+Erlang_VERSION="R13B02-1"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5="b3db581de6c13e1ec93d74e54a7b4231"
+Erlang_MD5="2593b9312eb1b15bf23a968743138c52"
 
 
 
@@ -465,8 +459,8 @@ egeoip_SVN_SERVER="egeoip.googlecode.com"
 
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
-# Version of 04-Jul-2009:
-Geolite_MD5="51d5fc70ea4c1d05e2ee976cb0bcf5e2"
+# Version of 10-Oct-2009:
+Geolite_MD5="f844bf1bd7dc8502997dbed6ffc6229e"
 
 
 
