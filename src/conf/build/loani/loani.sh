@@ -1183,6 +1183,7 @@ else
 
 	findBuildTools "${lacking_tool_message}"
 	findAutoTools "${lacking_tool_message}"
+	findSupplementaryShellTools "${lacking_tool_message}"
 
 fi
 
@@ -1258,8 +1259,13 @@ fi
 # Only to be done if dealing with something else than Orge:
 if [ $only_orge_tools -eq 1 ] ; then
 
-	# Removed, as could be misleading:
-	${RM} -r "$repository/visual-express"
+	# Directory removed, as could be misleading:
+	visual_dir="$repository/visual-express"
+	
+	# Could have already been removed by a prior execution:
+	if [ -d "${visual_dir}" ] ; then
+		${RM} -rf "${visual_dir}"
+	fi	 
 	
 	# On GNU/Linux, early test for OpenGL headers and al:
 	if [ $is_linux -eq 0 ] ; then
@@ -1334,42 +1340,42 @@ DISPLAY "Target package list is <$target_list>."
 # Checks that there is enough available space on disk:
 
 # Available size in megabytes (1048576 is 1024^2):
-AVAILABLE_SIZE=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
+available_size=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
 
 
-DEBUG "Detected available size on current disk is ${AVAILABLE_SIZE} megabytes."
+DEBUG "Detected available size on current disk is ${available_size} megabytes."
 
 # The cross-compilation for Nintendo DS requires less than mainstream:
 if [ $target_nds -eq 1 ] ; then
-	MINIMUM_SIZE=400
+	minimum_size=400
 else
-	MINIMUM_SIZE=100
+	minimum_size=100
 fi
 
 if [ $manage_build_tools -eq 0 ] ; then
 	 
 	if [ $target_nds -eq 1 ] ; then
-		MINIMUM_SIZE=`expr $MINIMUM_SIZE + 900`
+		minimum_size=`expr $minimum_size + 900`
 	else
 		# devkitARM & co are prebuilt and quite small:
-		MINIMUM_SIZE=`expr $MINIMUM_SIZE + 100`
+		minimum_size=`expr $minimum_size + 100`
 	fi		
 fi
 
 if [ $manage_optional_tools -eq 0 ] ; then
-	MINIMUM_SIZE=`expr $MINIMUM_SIZE + 200`
+	minimum_size=`expr $minimum_size + 200`
 fi
 
 
 if [ $manage_orge_tools -eq 0 ] ; then
-	MINIMUM_SIZE=`expr $MINIMUM_SIZE + 400`
+	minimum_size=`expr $minimum_size + 400`
 fi
 
 
-if [ $AVAILABLE_SIZE -lt $MINIMUM_SIZE ] ; then
-	WARNING "According to the selected tools which are to install, a rough estimate for peek need of available disk space is $MINIMUM_SIZE megabytes, whereas only $AVAILABLE_SIZE megabytes are available in the current partition. Consider interrupting this script (CTRL-C) if you believe it will not suffice."
+if [ $available_size -lt $minimum_size ] ; then
+	WARNING "According to the selected tools which are to install, a rough estimate for peek need of available disk space is $minimum_size megabytes, whereas only $available_size megabytes are available in the current partition. Consider interrupting this script (CTRL-C) if you believe it will not suffice."
 else
-	DEBUG "Enough space on disk ($AVAILABLE_SIZE megabytes available for an estimation of $MINIMUM_SIZE needed)."
+	DEBUG "Enough space on disk ($available_size megabytes available for an estimation of $minimum_size needed)."
 fi 
 
 # Second, sort out which tools are available and which are not:
