@@ -506,6 +506,112 @@ void Data::ResourceManager::purge()
 			
 	}
 		
+		
+	for ( map<Ceylan::ResourceID,
+			Video::TwoDimensional::Text::TrueTypeFontCountedPtr>::iterator it =
+		_truetypeFontMap.begin(); it != _truetypeFontMap.end(); it++ )
+	{
+	
+		if ( ((*it).second).getReferenceCount() == 1 )
+			((*it).second)->unload() ;
+			
+	}
+		
+}
+
+
+
+void Data::ResourceManager::displayLoadedResources()
+{
+
+	Ceylan::VerbosityLevels level = Ceylan::high ;
+	
+	list<string> loadedList ;
+	
+	for ( map<Ceylan::ResourceID,
+			Audio::MusicCountedPtr>::const_iterator it = _musicMap.begin();
+		it != _musicMap.end(); it++ )
+	{
+		
+		if ( ((*it).second)->hasContent() )
+			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
+				+ ": " + (*it).second->toString(level)
+				+ ") and whose reference count is " 
+				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+			
+	}	
+			
+			
+	for ( map<Ceylan::ResourceID,
+			Audio::SoundCountedPtr>::const_iterator it = _soundMap.begin();
+		it != _soundMap.end(); it++ )
+	{
+		
+		if ( ((*it).second)->hasContent() )
+			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
+				+ ": " + (*it).second->toString(level)
+				+ ") and whose reference count is " 
+				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+			
+	}	
+			
+			
+	for ( map<Ceylan::ResourceID,
+		Video::TwoDimensional::ImageCountedPtr>::const_iterator it =
+			_imageMap.begin(); it != _imageMap.end(); it++ )
+	{
+		
+		if ( ((*it).second)->hasContent() )
+			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
+				+ ": " + (*it).second->toString(level)
+				+ ") and whose reference count is " 
+				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+			
+	}	
+		
+			
+	for ( map<Ceylan::ResourceID,
+		Video::OpenGL::TextureCountedPtr>::const_iterator it =
+			_textureMap.begin(); it != _textureMap.end(); it++ )
+	{
+		
+		if ( ((*it).second)->hasContent() )
+			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
+				+ ": " + (*it).second->toString(level)
+				+ ") and whose reference count is " 
+				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+			
+	}	
+		
+			
+	for ( map<Ceylan::ResourceID,
+		Text::TrueTypeFontCountedPtr>::const_iterator it =
+			_truetypeFontMap.begin(); it != _truetypeFontMap.end(); it++ )
+	{
+		
+		if ( ((*it).second)->hasContent() )
+			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
+				+ ": " + (*it).second->toString(level)
+				+ ") and whose reference count is " 
+				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+			
+	}	
+			
+	if ( loadedList.empty() )
+	{
+	
+		Ceylan::checkpoint( "Resource manager: no resource loaded." ) ;
+	
+	}	
+	else
+	{
+	
+		Ceylan::checkpoint( "Resource manager: "
+			+ Ceylan::formatStringList( loadedList, 
+				TextDisplayable::rawText ) ) ;
+	
+	}		
+		
 }
 
 
