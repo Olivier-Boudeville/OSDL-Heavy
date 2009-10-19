@@ -2140,6 +2140,115 @@ void Surface::displayAt( const OpenGL::GLTexture & texture,
 
 
 void Surface::displayCenteredHorizontallyAt( const OpenGL::GLTexture & texture,
+	Coordinate y ) const	
+{
+
+#if OSDL_USES_OPENGL
+
+	texture.setAsCurrent() ;
+	
+	Coordinate xBegin = ( getWidth() - texture.getWidth() ) / 2 ;
+	Coordinate xEnd = xBegin + texture.getWidth() ;
+	
+	/*
+	LogPlug::debug( "Surface::displayCenteredHorizontallyAt: xBegin = "
+		+ Ceylan::toString(xBegin) + ", xEnd = " + Ceylan::toString(xEnd) ) ;
+	 */
+	 
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( xBegin, y ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( xBegin, y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( xEnd, y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( xEnd, y ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayCenteredHorizontallyAt failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
+void Surface::displayCenteredHorizontallyWithAlphaAt(
+	const OpenGL::GLTexture & texture, Coordinate y, 
+	Pixels::FloatColorElement alpha ) const	
+{
+
+#if OSDL_USES_OPENGL
+
+	Coordinate xBegin = ( getWidth() - texture.getWidth() ) / 2 ;
+	Coordinate xEnd = xBegin + texture.getWidth() ;
+	
+	// First renders an alpha-blending background:
+	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
+	glBegin(GL_QUADS);
+	{
+	
+		glVertex2d( xBegin, y ) ;
+		glVertex2d( xBegin, y + texture.getHeight() ) ;
+		glVertex2d( xEnd,   y + texture.getHeight() ) ;
+		glVertex2d( xEnd,   y ) ;
+	
+	}
+	glEnd() ;
+
+
+	// Then renders the texture itself:
+	texture.setAsCurrent() ;
+	
+	/*
+	LogPlug::debug( "Surface::displayCenteredHorizontallyWithAlphaAt: xBegin = "
+		+ Ceylan::toString(xBegin) + ", xEnd = " + Ceylan::toString(xEnd) ) ;
+	 */
+	 
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( xBegin, y ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( xBegin, y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( xEnd, y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( xEnd, y ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( 
+		"Surface::displayCenteredHorizontallyWithAlphaAt failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
+void Surface::displayCenteredHorizontallyAt( const OpenGL::GLTexture & texture,
 	Coordinate xOffset, Coordinate y ) const	
 {
 
@@ -2182,6 +2291,7 @@ void Surface::displayCenteredHorizontallyAt( const OpenGL::GLTexture & texture,
 #endif // OSDL_USES_OPENGL
 
 }
+
 
 
 	
@@ -2243,7 +2353,7 @@ void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
 	Length firstOrdinate  = ( getHeight() - texture.getHeight() ) / 2 ;
 	Length secondOrdinate = firstOrdinate + texture.getHeight() ;
 
-	// First render an alpha-blending background:
+	// First renders an alpha-blending background:
 	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
 	glBegin(GL_QUADS);
 	{
@@ -2262,7 +2372,7 @@ void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
 
 	texture.setAsCurrent() ;
 	
-	// Then render the texture itself:
+	// Then renders the texture itself:
 	glBegin(GL_QUADS) ; 
 	{
 	
@@ -2493,6 +2603,184 @@ void Surface::displayAtCenterWithFadeOut( const OpenGL::GLTexture & texture,
 
 }
 
+
+
+void Surface::displayInFullscreen( const OpenGL::GLTexture & texture ) const
+{
+
+#if OSDL_USES_OPENGL
+
+	texture.setAsCurrent() ;
+	
+	Length firstAbscissa  = 0 ;
+	Length secondAbscissa = getWidth() ; 
+	
+	Length firstOrdinate  = 0 ;
+	Length secondOrdinate = getHeight() ;
+	
+	
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( firstAbscissa, firstOrdinate ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( firstAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( secondAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( secondAbscissa, firstOrdinate ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayInFullscreen failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+	
+void Surface::displayInFullscreenWithAlpha( const OpenGL::GLTexture & texture,
+	Pixels::FloatColorElement alpha ) const
+{
+
+#if OSDL_USES_OPENGL
+
+	OpenGL::OpenGLContext::EnableFeature( GL_BLEND ) ;
+
+	Length firstAbscissa  = 0 ;
+	Length secondAbscissa = getWidth() ; 
+	
+	Length firstOrdinate  = 0 ;
+	Length secondOrdinate = getHeight() ;
+	
+
+	// First render an alpha-blending background:
+	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
+	glBegin(GL_QUADS);
+	{
+	
+		glVertex2d( firstAbscissa, firstOrdinate ) ;
+		
+		glVertex2d( firstAbscissa, secondOrdinate ) ;
+		
+		glVertex2d( secondAbscissa, secondOrdinate ) ;
+		
+		glVertex2d( secondAbscissa, firstOrdinate ) ;
+	
+	}
+	glEnd() ;
+	
+	
+	// Then renders the texture itself:
+	texture.setAsCurrent() ;
+	
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( firstAbscissa, firstOrdinate ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( firstAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( secondAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( secondAbscissa, firstOrdinate ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayInFullscreenWithAlpha failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+	
+	
+	
+void Surface::displayInFullscreenSizeWithAlphaAt( 
+	const OpenGL::GLTexture & texture,
+	Pixels::FloatColorElement alpha, Coordinate x, Coordinate y ) const
+{
+
+#if OSDL_USES_OPENGL
+
+	OpenGL::OpenGLContext::EnableFeature( GL_BLEND ) ;
+
+	Length firstAbscissa  = x ;
+	Length secondAbscissa = x+ getWidth() ; 
+	
+	Length firstOrdinate  = y ;
+	Length secondOrdinate = y + getHeight() ;
+	
+
+	// First render an alpha-blending background:
+	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
+	glBegin(GL_QUADS);
+	{
+	
+		glVertex2d( firstAbscissa, firstOrdinate ) ;
+		
+		glVertex2d( firstAbscissa, secondOrdinate ) ;
+		
+		glVertex2d( secondAbscissa, secondOrdinate ) ;
+		
+		glVertex2d( secondAbscissa, firstOrdinate ) ;
+	
+	}
+	glEnd() ;
+	
+	
+	// Then renders the texture itself:
+	texture.setAsCurrent() ;
+	
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( firstAbscissa, firstOrdinate ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( firstAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( secondAbscissa, secondOrdinate ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( secondAbscissa, firstOrdinate ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayInFullscreenSizeWithAlphaAt failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
+// Rotozoom section.
 	
 	
 Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor, 
@@ -2509,7 +2797,7 @@ Surface & Surface::zoom( Ceylan::Maths::Real abscissaZoomFactor,
 		const_cast<LowLevelSurface *>( _surface ), 
 		abscissaZoomFactor,
 		 ordinateZoomFactor,
-		antialiasing ? SMOOTHING_ON: SMOOTHING_OFF ) ;
+		antialiasing ? SMOOTHING_ON : SMOOTHING_OFF ) ;
 	
 	if ( res == 0 )
 		throw VideoException( "Surface::zoom: unable to zoom surface." ) ;
