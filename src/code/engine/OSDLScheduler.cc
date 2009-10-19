@@ -63,7 +63,8 @@ using Ceylan::Maths::Hertz ;
 
 Scheduler * Scheduler::_internalScheduler = 0 ;
 
-const Delay Scheduler::ShutdownBucketLevel = 100000 ;
+// High values can be surprisingly quickly reached:
+const Delay Scheduler::ShutdownBucketLevel = 1000000 ;
 
 
 
@@ -1888,9 +1889,16 @@ void Scheduler::scheduleBestEffort()
 				 * 
 				 * Previous setting: plot 20 * log( 2 * x )
 				 *
+				 * Finally may fail too quicky:
+				 *
 				 */
 				delayBucket += 35 * static_cast<Delay>( 
 					Ceylan::Maths::Sqrt( 2.0f * missedTicks ) ) ;
+				
+				/* 
+				delayBucket += 30 * static_cast<Delay>( 
+					Ceylan::Maths::Sqrt( 1.8f * missedTicks ) ) ;
+				 */
 
 #if OSDL_DEBUG_SCHEDULER
 				missedSimulations.push_back( _currentSimulationTick ) ;
