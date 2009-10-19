@@ -2261,14 +2261,57 @@ namespace OSDL
 				 
 				 
 				/**
-				 * Displays the specified texture 
+				 * Displays the specified texture at specified ordinate, at
+				 * original size, horizontally centered.
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @param y the ordinate the texture will be displayed at.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayCenteredHorizontallyAt( 
+					const OpenGL::GLTexture & texture, Coordinate y ) const ;
+					
+					
+				 
+				/**
+				 * Displays the specified texture at specified ordinate, at
+				 * original size, horizontally centered, blended on the
+				 * background based on specified alpha component.with .
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @param y the ordinate the texture will be displayed at.
+				 *
+				 * @param alpha a floating-point value in [0,1], from
+				 * invisible to solid.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayCenteredHorizontallyWithAlphaAt( 
+					const OpenGL::GLTexture & texture, Coordinate y,
+					Pixels::FloatColorElement alpha ) const ;
+					
+					
+					
+				/**
+				 * Displays the specified texture at specified ordinate and,
+				 * horizontally, with a left and right border of width
+				 * xOffset, scaling accordingly the texture.
 				 *
 				 * @param texture the texture to map.
 				 *
 				 * @param xOffset the first abscissa at which the texture
-				 * should be hoeizatally displayed at.
+				 * should be horizontally displayed at.
 				 *
-				 * @param y the ordinate the texture will be displayet at.
+				 * @param y the ordinate the texture will be displayed at.
 				 *
 				 * @throw VideoException if the operation failed.
 				 *
@@ -2282,7 +2325,7 @@ namespace OSDL
 					const OpenGL::GLTexture & texture, 
 					Coordinate xOffset, Coordinate y ) const ;
 					
-					
+
 					
 				/**
 				 * Displays the specified texture at the center of that surface,
@@ -2382,7 +2425,83 @@ namespace OSDL
 					Ceylan::System::Millisecond fadeOutDuration = 1000 ) ;
 				 
 				
+					
+				/**
+				 * Displays the specified texture in the full screen surface, 
+				 * possibly zooming (if the texture has a different size from 
+				 * the viewport) and distorting (if they have different 
+				 * width/height ratio.
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayInFullscreen( 
+					const OpenGL::GLTexture & texture ) const ;
+				 
 				
+					
+				/**
+				 * Displays the specified texture in the full screen surface, 
+				 * possibly zooming (if the texture has a different size from 
+				 * the viewport) and distorting (if they have different 
+				 * width/height ratio), blended on the background based on 
+				 * specified alpha component.
+				 *
+				 * Useful to perform fade-in/fade-out. with the specified
+				 * alphablending.
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @param alpha a floating-point value in [0,1], from
+				 * invisible to solid.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayInFullscreenWithAlpha( 
+					const OpenGL::GLTexture & texture,
+					Pixels::FloatColorElement alpha ) const ;
+				 
+
+
+				/**
+				 * Displays the specified texture with a size corresponding to
+				 * the full screen surface, possibly zooming (if the texture
+				 * has a different size from the viewport) and distorting (if
+				 * they have different width/height ratio), blended on the
+				 * background based on specified alpha component, at specified
+				 * onscreen location.
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @param x the abscissa screen coordinate.
+				 *
+				 * @param y the ordiante screen coordinate.
+				 *
+				 * @param alpha a floating-point value in [0,1], from
+				 * invisible to solid.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note If the texture is bigger than the defined area,
+				 * it will be scaled appropriately.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayInFullscreenSizeWithAlphaAt( 
+					const OpenGL::GLTexture & texture, 
+					Pixels::FloatColorElement alpha,
+					Coordinate x, Coordinate y ) const ;
+					
+
+
 				
 				/*
 				 * Rotozoom section.
