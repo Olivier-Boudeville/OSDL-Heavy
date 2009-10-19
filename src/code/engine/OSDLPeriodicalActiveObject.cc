@@ -335,7 +335,24 @@ void PeriodicalActiveObject::setBirthTick(
 }
 
 
-	
+
+OSDL::Events::SimulationTick
+		PeriodicalActiveObject::convertDurationToActivationCount(
+	Ceylan::System::Millisecond duration ) const	
+{
+
+	Scheduler & scheduler = Scheduler::GetExistingScheduler() ;
+
+	// 1000 factor as we use microseconds:
+	return static_cast<Events::SimulationTick>( Ceylan::Maths::Round(
+		static_cast<Ceylan::Float32>( (1000.0f * duration) / 
+			( _period * scheduler.getSimulationTickCount() 
+				* scheduler.getTimeSliceDuration() ) ) ) ) ;
+			
+}
+
+
+			
 const string PeriodicalActiveObject::toString( Ceylan::VerbosityLevels level )
 	const
 {	
