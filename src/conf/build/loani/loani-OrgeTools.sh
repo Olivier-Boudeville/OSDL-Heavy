@@ -8,6 +8,7 @@
 # Orge tools section.
 
 ORGE_TOOLS="Erlang egeoip Geolite Ceylan_Erlang Orge"
+#ORGE_TOOLS="egeoip Geolite"
 #ORGE_TOOLS="egeoip Geolite Ceylan_Erlang Orge"
 #ORGE_TOOLS="Orge"
 
@@ -688,7 +689,7 @@ getOrge()
 
 	LOG_STATUS "Getting Orge in the source directory ${repository}..."
 	
-	manage_package_backup osdl
+	# Not in osdl any more, in OSDL-Erlang: manage_package_backup osdl
 		
 	{
 		
