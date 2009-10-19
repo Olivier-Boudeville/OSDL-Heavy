@@ -145,6 +145,7 @@ namespace OSDL
 			
 		} ;
 		
+		
 
 				
 		/**
@@ -425,6 +426,16 @@ namespace OSDL
 				 *
 				 */
 				 virtual void purge() ;	
+				
+				
+				
+				/**
+				 * Outputs the list of all currently loaded resources.
+				 *
+				 * @note Only for debugging purpose.
+				 *
+				 */
+				 virtual void displayLoadedResources() ;	
 				
 				
 										
