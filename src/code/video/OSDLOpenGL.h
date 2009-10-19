@@ -300,7 +300,7 @@ namespace OSDL
 			 * OpenGL context provided by the SDL 1.2.x back-end.
 			 *
 			 */
-			class OSDL_DLL OpenGLContext: public Ceylan::TextDisplayable
+			class OSDL_DLL OpenGLContext : public Ceylan::TextDisplayable
 			{
 
 			
@@ -686,6 +686,8 @@ namespace OSDL
 					 *
 					 * @throw OpenGLException if the operation failed.
 					 *
+					 * @see clearViewport
+					 *
 					 */
 					virtual void setClearColor( 
 						const Video::Pixels::ColorDefinition & color ) ;
@@ -700,6 +702,8 @@ namespace OSDL
 					 * @throw OpenGLException if this method is called 
 					 * between the execution of glBegin and the 
 					 * corresponding execution of glEnd.
+					 *
+					 * @see setClearColor
 					 *
 					 */	
 					virtual void clearViewport() ;
