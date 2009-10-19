@@ -296,8 +296,7 @@ void GLTexture::upload()
 
 #if OSDL_USES_OPENGL
 
-	LogPlug::trace( "GLTexture::upload" ) ;
-
+	//LogPlug::trace( "GLTexture::upload" ) ;
 
 	/*
 	 * This checking is probably a bit too expensive/useless for releases
@@ -1062,6 +1061,58 @@ void GLTexture::SetTextureEnvironmentParameter(
 	
 	throw GLTextureException( 
 		"GLTexture::SetTextureEnvironmentParameter failed: "
+		"no OpenGL support available" ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
+
+void GLTexture::UnbindCurrentTexture()
+{
+
+#if OSDL_USES_OPENGL
+
+	glBindTexture( /* texturing target */ GL_TEXTURE_2D, 
+		/* name to bind */ 0 ) ;
+	
+		
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch ( ::glGetError() )
+	{
+	
+		case GL_NO_ERROR:
+			break ;
+	
+		case GL_INVALID_ENUM:
+			throw GLTextureException( 
+				"GLTexture::UnbindCurrentTexture failed: "
+				"target is not an allowed value." ) ;
+			break ;
+	
+		case GL_INVALID_OPERATION:
+			throw GLTextureException( 
+				"GLTexture::UnbindCurrentTexture failed: "
+				"wrong dimensionality or incorrectly executed between "
+				"the execution of glBegin and the corresponding execution "
+				"of glEnd." ) ;
+			break ;
+	
+		default:
+			LogPlug::warning( "GLTexture::UnbindCurrentTexture failed: "
+				"unexpected error reported." ) ;
+			break ;	
+			
+	}
+
+#endif // OSDL_CHECK_OPENGL_CALLS
+
+#else // OSDL_USES_OPENGL
+	
+	throw GLTextureException( 
+		"GLTexture::UnbindCurrentTexture failed: "
 		"no OpenGL support available" ) ;
 		
 #endif // OSDL_USES_OPENGL
