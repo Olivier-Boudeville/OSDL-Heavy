@@ -1397,10 +1397,10 @@ for t in $target_list; do
 	
 	if [ $use_svn -eq 0 ] ; then
 		
-		# Now, as soon as SVN is used, we return res=2:
-		#if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "OSDL" -o "$t" = "OSDL_win" -o "$t" = "egeoip" ] ; then
+		# Now, as soon as SVN is used for a package, we return res=2:
+		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "OSDL" -o "$t" = "OSDL_win" -o "$t" = "egeoip" ] ; then
 			res=2
-		#fi
+		fi
 		
 	fi
 	
@@ -1522,8 +1522,12 @@ if [ -n "$retrieve_list" ] ; then
 
 	# Pre-check that no wget process is already running, since it would 
 	# confuse LOANI:
-	if ${PS} ax | ${GREP} -v grep | ${GREP} wget ; then
-		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} ax | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running anymore in parallel with LOANI before re-launching our script, since it might confuse LOANI."
+	if ${PS} ax | ${GREP} -v grep | ${GREP} wget 1>/dev/null 2>&1 ; then
+		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} ax | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running any more in parallel with LOANI before re-launching our script, since it might confuse LOANI."
+		
+		echo "  Wget match was:"
+		${PS} ax | ${GREP} -v grep | ${GREP} wget
+		
 		exit 8
 	fi
 		
