@@ -5059,7 +5059,7 @@ preparelibtool()
 	
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libtool_ARCHIVE} ${libtool_ARCHIVE}.save && ${GUNZIP} -f ${libtool_ARCHIVE} && ${TAR} -xvf "libtool-${libtool_VERSION}.tar" 
+		${CP} -f ${libtool_ARCHIVE} ${libtool_ARCHIVE}.save && ${GUNZIP} -f ${libtool_ARCHIVE} && ${TAR} -xvf "libtool-${libtool_FULL_VERSION}.tar" 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	
 		
