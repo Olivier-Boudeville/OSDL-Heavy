@@ -420,7 +420,7 @@ AC_DEFINE([USES_SDL_IMAGE],[1],[Define to 1 if OSDL is to use SDL_image])
 # SDL_mixer. 
 # Depends on SDL, hence managed first (for the order in OSDL_LIBS).
 
-SDL_MIXER_RECOMMENDED_VERSION="1.2.8"
+SDL_MIXER_RECOMMENDED_VERSION="1.2.9"
 
 AC_SUBST(SDL_MIXER_RECOMMENDED_VERSION)
 
