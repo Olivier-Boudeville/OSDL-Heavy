@@ -292,10 +292,14 @@ MusicManager::~MusicManager() throw()
 {
 
 	send( "Deleting music manager, whose state was: " + toString() ) ;
-	
-	if ( _currentMusicPlayback != 0 )
-		stopCurrentMusicPlayback() ;
 
+
+	/*
+	 * Removing first the next musics, as otherwise stopping the current one
+	 * would make us continue with them:
+	 *
+	 */
+		
 	Ceylan::Uint32 playbackCount = _playList.size() ;
 	
 	if ( playbackCount != 0 )
@@ -314,6 +318,10 @@ MusicManager::~MusicManager() throw()
 		}
 			
 	}		
+
+
+	if ( _currentMusicPlayback != 0 )
+		stopCurrentMusicPlayback() ;
 	
 }
 
@@ -440,7 +448,6 @@ void MusicManager::stopCurrentMusicPlayback()
 	 */
 	::Mix_HaltMusic() ;
 			
-			
 #else // OSDL_USES_SDL_MIXER
 
 	throw MusicManagerException( 
@@ -457,8 +464,12 @@ void MusicManager::stopCurrentMusicPlayback()
 	
 	}	
 	else
+	{
+	
 		LogPlug::warning( "MusicManager::stopCurrentMusicPlayback: "
 			"no music was being played." ) ;
+			
+	}
 	
 }
 
@@ -470,8 +481,10 @@ void MusicManager::onMusicPlaybackFinished()
 	if ( _currentMusicPlayback == 0 )
 	{
 	
-		LogPlug::error( "MusicManager::onMusicPlaybackFinished failed: "
-			"no music was being played." ) ;
+		LogPlug::debug( "MusicManager::onMusicPlaybackFinished failed: "
+			"no music was being played. Supposing the music playback was "
+			"triggered directly on the music, rather than thanks to "
+			"this music manager." ) ;
 	
 		return ;
 	
@@ -496,8 +509,9 @@ void MusicManager::onMusicPlaybackFinished()
 
 // Private section.
 
+
 /*
- * Non-static method or classical function needed for call-back:
+ * Non-static method or classical function needed for call-back.
  *
  * Overrides the default callback set by the audio module.
  *
