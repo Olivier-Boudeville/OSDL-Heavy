@@ -90,7 +90,7 @@ namespace OSDL
 		 * (http://osdl.sourceforge.net).
 		 *
 		 */
-		class OSDL_DLL AudioModule: public Ceylan::Module
+		class OSDL_DLL AudioModule : public Ceylan::Module
 		{
 		
 		
