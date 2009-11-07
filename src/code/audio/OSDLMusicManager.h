@@ -67,6 +67,8 @@ namespace OSDL
 		// Forward declaration for the next declaration:
 		class MusicManager ;
 
+
+
 		/**
 		 * This function is intended to be the usual means of
 		 * getting a reference to the music manager, which must already exist.
@@ -239,7 +241,7 @@ namespace OSDL
 		 * @see Music
 		 *
 		 */
-		class OSDL_DLL MusicManager: public Ceylan::Object
+		class OSDL_DLL MusicManager : public Ceylan::Object
 		{
 
 			
