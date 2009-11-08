@@ -279,12 +279,12 @@ libogg_win_MD5="15520916d1b6ba5ddeff11c4b6d14869"
 SDL_mixer_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
 SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
 SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_MD5="a9eb8750e920829ff41dbe7555850156"
+SDL_mixer_MD5="4767416df51d247904db397bd6bf25df"
 
 SDL_mixer_win_VERSION="${SDL_mixer_VERSION}"
 SDL_mixer_win_ARCHIVE="SDL_mixer-${SDL_mixer_win_VERSION}.zip"
 SDL_mixer_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_win_MD5="3338b04e5914a9f5a77539571f1f5a72"
+SDL_mixer_win_MD5="5f951dc90697429749465ad115ee5ce7"
 
 
 
