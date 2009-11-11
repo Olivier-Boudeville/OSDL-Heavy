@@ -120,7 +120,6 @@ SDL_OPENGLBLIT	0x0000000A = 0b00000000000000000000000000001010
 SDL_RESIZABLE	0x00000010 = 0b00000000000000000000000000010000
 SDL_NOFRAME	    0x00000020 = 0b00000000000000000000000000100000
 SDL_HWACCEL	    0x00000100 = 0b00000000000000000000000100000000
-OSDL_WITHGUI	0x00000800 = 0b00000000000000000000100000000000
 SDL_SRCCOLORKEY	0x00001000 = 0b00000000000000000001000000000000
 SDL_RLEACCELOK	0x00002000 = 0b00000000000000000010000000000000
 SDL_RLEACCEL	0x00004000 = 0b00000000000000000100000000000000	
@@ -133,9 +132,6 @@ SDL_FULLSCREEN	0x80000000 = 0b10000000000000000000000000000000
 
 */
 
-
-// Chosen not to collide with SDL constants:
-#define OSDL_WITHGUI 0x00000800
 
 
 #if OSDL_USES_SDL
@@ -152,7 +148,6 @@ const Ceylan::Flags VideoModule::DoubleBuffered   = SDL_DOUBLEBUF ;
 const Ceylan::Flags VideoModule::FullScreen       = SDL_FULLSCREEN ;
 const Ceylan::Flags VideoModule::OpenGL           = SDL_OPENGL ;
 const Ceylan::Flags VideoModule::Resizable        = SDL_RESIZABLE ;
-const Ceylan::Flags VideoModule::WithGUI          = OSDL_WITHGUI ;
 const Ceylan::Flags VideoModule::NoFrame          = SDL_NOFRAME ;
 
 
@@ -193,7 +188,6 @@ const Ceylan::Flags VideoModule::DoubleBuffered   = 0x40000000 ;
 const Ceylan::Flags VideoModule::FullScreen       = 0x80000000 ;
 const Ceylan::Flags VideoModule::OpenGL           = 0x00000002 ;
 const Ceylan::Flags VideoModule::Resizable        = 0x00000010 ;
-const Ceylan::Flags VideoModule::WithGUI          = OSDL_WITHGUI ;
 const Ceylan::Flags VideoModule::NoFrame          = 0x00000020 ;
 
 /// See http://sdldoc.csn.ul.ie/sdlenvvars.php
@@ -232,6 +226,7 @@ VideoModule::VideoModule() :
 		"disjunctive LGPL/GPL" ),
 	_screen( 0 ),
 	_displayInitialized( false ),
+	_isGuiEnabled( false ),
 	_renderer( 0 ),
 	_openGLcontext( 0 ),
 	_drawEndPoint( false ),
@@ -457,6 +452,25 @@ bool VideoModule::isDisplayInitialized() const
 }
 
 
+bool VideoModule::isGUIEnabled() const
+{
+
+	return _isGuiEnabled ;
+	
+}
+
+
+
+void VideoModule::setGUIEnableStatus( bool newStatus )
+{
+
+	// Preferably to be called before setMode, to be taken into account.
+	
+	_isGuiEnabled = newStatus ;
+	
+}
+
+
 
 Ceylan::Flags VideoModule::setMode( Length width, Length height, 
 	BitsPerPixel askedBpp, Ceylan::Flags flags, OpenGL::Flavour flavour ) 
@@ -481,8 +495,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 		+ ", with user-defined flags. "	+ InterpretFlags( flags ) 
 		+ "The " + OpenGLContext::ToString( flavour ) 
 		+ " flavour is selected" ) ;
-
-	
+		
 	if ( ( ( flags & OpenGL ) == 0 ) && ( flavour != OpenGL::None ) )
 	{
 	
@@ -521,6 +534,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			 
 	}	
 
+	
 	if ( userFlags != flags )
 		send( "Initializing the display with following modified flags: " 
 			+ InterpretFlags( flags ) ) ;
@@ -552,7 +566,11 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 		
 		}
 
-		// No fall-back available yet for non-OpenGL modes.	
+		/*
+		 * No fall-back available yet for non-OpenGL modes, next exception
+		 * will be thrown.
+		 *
+		 */
 		
 	} 
 
@@ -565,17 +583,6 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			+ " with flags " + Ceylan::toString( flags, /* bit field */ true )
 			+ " video mode: " + Utils::getBackendLastError() ) ;
 
-	if ( flags & WithGUI )
-	{
-
-#if OSDL_USES_AGAR
-	
-		//int AG_InitGUI( flags ) ;
-	
-#endif // OSDL_USES_AGAR
-	
-	}
-	
 	
 	if ( useOpenGLRequested )
 	{
@@ -685,7 +692,6 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 			_screen->getHeight() ) ; 
 		
 
-	
 	send( "After display creation, interpreting actually obtained surface: "
 		+ _screen->toString()
 		+ "The corresponding pixel format for this screen surface is: "
@@ -693,6 +699,19 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	
 	if ( _openGLcontext != 0 )
 		send( "Current OpenGL context: " + _openGLcontext->toString() ) ;
+		
+
+	// Done only once OpenGL has been set:
+	if ( _isGuiEnabled )
+	{
+
+#if OSDL_USES_AGAR
+
+		AG_InitVideoSDL( screen, AG_VIDEO_OVERLAY ) ;
+	
+#endif // OSDL_USES_AGAR
+	
+	}
 	
 	
 	// Start counting time:
@@ -813,7 +832,11 @@ void write16( Ceylan::Uint16* address, Ceylan::Uint16 value)
 
 
 
-/// Writes specified 32-bit value to specified addres, with specific byte order.
+/**
+ * Writes specified 32-bit value to specified address, with specific byte
+ * order.
+ *
+ */
 void write32( Ceylan::Uint32* address, Ceylan::Uint32 value) 
 {
 
@@ -854,7 +877,7 @@ void VideoModule::makeBMPScreenshot( const string & screenshotFilename )
 	 * Inspired from Graphics/capture/ScreenShot/source/screenshot.cpp,
 	 * from libnds examples.
 	 *
-	 * @note VRAM D must be free, the capture uses it.
+	 * @note VRAM D must be free, as the capture uses it.
 	 *
 	 */
 	
@@ -1193,10 +1216,15 @@ const string VideoModule::toString( Ceylan::VerbosityLevels level ) const
 		res += "a video renderer is set, " ;
 
 	if ( _openGLcontext == 0 )
-		res += "no available OpenGL context" ;
+		res += "no available OpenGL context, " ;
 	else
-		res += "an OpenGL context is available" ;
+		res += "an OpenGL context is available, " ;
 	
+	if ( _isGuiEnabled )
+		res += "with GUI support enabled" ;
+	else
+		res += "with no GUI support enabled" ;
+		
 	if ( level == Ceylan::low )
 		return res ;
 	
@@ -1484,12 +1512,7 @@ string VideoModule::InterpretFlags( Ceylan::Flags flags )
 		res.push_back( "Requests a resizable window (Resizable is set)." ) ;
 	else
 		res.push_back( "No resizable window requested (Resizable not set)." ) ;
-
-	if ( flags & WithGUI )
-		res.push_back( "Requests of a GUI (WithGUI is set)." ) ;
-	else
-		res.push_back( "No GUI requested (WithGUI not set)." ) ;
-		
+				
 		
 	if ( flags & NoFrame )
 		res.push_back( 

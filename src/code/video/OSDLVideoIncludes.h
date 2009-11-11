@@ -39,6 +39,7 @@
 #include "OSDLVideo.h"
 #include "OSDLVideoTypes.h"
 
+#include "OSDLGraphicalUserInterfaceIncludes.h"
 #include "OSDLTwoDimensionalIncludes.h"
 #include "OSDLVideoRendererIncludes.h"
 

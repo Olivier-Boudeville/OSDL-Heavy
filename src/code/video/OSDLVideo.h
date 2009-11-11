@@ -259,7 +259,26 @@ namespace OSDL
 				virtual bool isDisplayInitialized() const ;
 					
 					
-						
+				/**
+				 * Tells whether a GUI (Graphical User Interface) is being
+				 * managed by this video module.	
+				 *			 
+				 */		
+				virtual bool isGUIEnabled() const ;
+				
+					
+				
+				/**
+				 * Determines whether a GUI (Graphical User Interface) 
+				 * should be used.
+				 *
+				 * @param newStatus the new enable status of the GUI.
+				 *
+				 */	
+				virtual void setGUIEnableStatus( bool newStatus ) ;
+				
+				
+				
 				/**
 				 * Tries to sets up a video mode with the specified width,
 				 * height and bits-per-pixel.
@@ -281,6 +300,9 @@ namespace OSDL
 				 * SoftwareSurface, Resizable, etc. 
 				 * One particularly useful feature is DoubleBuffered, since 
 				 * it allows to suppress most of the tearing on most platforms.
+				 * Flags must be OR'd together (ex: VideoModule::SoftwareSurface
+				 * || VideoModule::Resizable), specify 0 if not wanting to 
+				 * activate any of these features.
 				 *
 				 * @param flavour the selected OpenGL flavour, if any, and if
 				 * OpenGL is being used (see VideoModule::OpenGL setMode flag).
@@ -949,14 +971,6 @@ namespace OSDL
 				 */		
 				static const Ceylan::Flags Resizable ;
 
-
-
-				/**
-				 * Indicates that a GUI backend should be used here (ex: Agar).
-				 *
-				 */		
-				static const Ceylan::Flags WithGUI ;
-				
 				
 				
 				/**
@@ -992,6 +1006,14 @@ namespace OSDL
 				bool _displayInitialized ;
 
 
+
+				/**
+				 * Tells whether a graphical user interface is to be managed.
+				 *
+				 */
+				bool _isGuiEnabled ;
+				 
+				 
 
 				/// The video renderer being used, if any.
 				Rendering::VideoRenderer * _renderer ;
