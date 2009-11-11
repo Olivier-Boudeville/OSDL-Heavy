@@ -431,7 +431,7 @@ class MyModel : public OSDL::MVC::PeriodicalModel
 
 
 
-
+/// Note: this is not a Ceylan::MVC::BaseView.
 class MyView : public Ceylan::View
 {
 
