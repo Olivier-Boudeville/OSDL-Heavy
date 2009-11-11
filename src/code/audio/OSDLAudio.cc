@@ -330,7 +330,8 @@ AudioModule::AudioModule() :
 		"disjunctive LGPL/GPL" ),
 	_mixerInitialized( false ),
 	_chunkSize( 0 ),
-	_controlMusicManager( true )			
+	_controlMusicManager( true ),
+	_isGuiEnabled( false )
 {
 
 	send( "Initializing audio subsystem." ) ;
@@ -350,11 +351,6 @@ AudioModule::AudioModule() :
 
 	SDL_version linkTimeSDLMixerVersion = *Mix_Linked_Version() ;
 
-
-	// Registers callback-like method:
-	::Mix_HookMusicFinished( HandleMusicPlaybackFinishedCallback ) ;
-
-	
 	send( "Using SDL_mixer backend, compiled against the " 
 		+ Ceylan::toNumericalString( compileTimeSDLMixerVersion.major) + "."
 		+ Ceylan::toNumericalString( compileTimeSDLMixerVersion.minor) + "."
@@ -365,6 +361,15 @@ AudioModule::AudioModule() :
 		+ Ceylan::toNumericalString( linkTimeSDLMixerVersion.patch) 
 		+ " version." ) ;
 
+
+	// Initializing mixer, for Ogg playback:
+	::Mix_Init( MIX_INIT_OGG ) ;
+
+
+	// Registers callback-like method:
+	::Mix_HookMusicFinished( HandleMusicPlaybackFinishedCallback ) ;
+
+	
 	// Always true by default:
 	if ( _controlMusicManager )
 	{
@@ -607,7 +612,9 @@ void AudioModule::unsetMode()
 			"whereas not already initialized, nothing done." ) ;
 		
 	}
-		
+	
+	::Mix_Quit() ;
+	
 #else // OSDL_USES_SDL_MIXER
 
 	throw AudioException( "AudioModule::unsetMode failed: "
@@ -767,6 +774,24 @@ void AudioModule::unsetPositionAttenuation()
 }
 	
 	
+	
+bool AudioModule::isGUIEnabled() const
+{
+
+	return _isGuiEnabled ;
+
+}
+
+
+
+void AudioModule::setGUIEnableStatus( bool newStatus )
+{
+
+	_isGuiEnabled = newStatus ;
+
+}
+
+
 	
 MusicType AudioModule::getTypeOfCurrentMusic() const
 {

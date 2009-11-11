@@ -424,6 +424,26 @@ namespace OSDL
 
 
 
+					
+				/**
+				 * Tells whether a GUI (Graphical User Interface) is to be
+				 * supported by this audio module.	
+				 *			 
+				 */		
+				virtual bool isGUIEnabled() const ;
+				
+					
+				
+				/**
+				 * Determines whether a GUI (Graphical User Interface) 
+				 * should be supported by this audio module.
+				 *
+				 * @param newStatus the new enable status of the GUI.
+				 *
+				 */	
+				virtual void setGUIEnableStatus( bool newStatus ) ;
+				
+
 
 
 				// Channel section.
@@ -777,6 +797,12 @@ namespace OSDL
 #pragma warning( pop ) 
 				
 				
+				/**
+				 * Tells whether a graphical user interface is to be managed.
+				 *
+				 */
+				bool _isGuiEnabled ;
+
 				
 				/**
 				 * This method will be automatically called as soon as the
