@@ -24,19 +24,24 @@
  */
 
 
-#ifndef OSDL_GRAPHICAL_USER_INTERFACE_INCLUDES_H_
-#define OSDL_GRAPHICAL_USER_INTERFACE_INCLUDES_H_
-
-
-/*
- * This include repository keeps track of headers of the module dedicated
- * to graphical user interface rendering.
- *
- */
-
-#include "OSDLBaseGUIView.h"
 #include "OSDLGUICommon.h"
 
- 
-#endif // OSDL_GRAPHICAL_USER_INTERFACE_INCLUDES_H_
+
+
+using namespace OSDL::Rendering ;
+
+
+GUIException::GUIException( const std::string & reason ) :
+	OSDL::Exception( reason ) 
+{
+
+
+}
+	
+
+			
+GUIException::~GUIException() throw()
+{
+
+}
 

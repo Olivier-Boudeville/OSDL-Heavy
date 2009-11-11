@@ -24,19 +24,47 @@
  */
 
 
-#ifndef OSDL_GRAPHICAL_USER_INTERFACE_INCLUDES_H_
-#define OSDL_GRAPHICAL_USER_INTERFACE_INCLUDES_H_
+#ifndef OSDL_GUI_COMMON_H_
+#define OSDL_GUI_COMMON_H_
 
 
-/*
- * This include repository keeps track of headers of the module dedicated
- * to graphical user interface rendering.
- *
- */
+#include "OSDLException.h"  // for inheritance.
 
-#include "OSDLBaseGUIView.h"
-#include "OSDLGUICommon.h"
 
- 
-#endif // OSDL_GRAPHICAL_USER_INTERFACE_INCLUDES_H_
+#include <string>
+
+
+
+namespace OSDL
+{
+
+
+	namespace Rendering 
+	{
+	
+				
+		/**
+		 * The base GUI view allows to set-up and perform the rendering
+		 * of a graphical user interface. 
+		 *
+		 * @see Renderer
+		 *
+		 */	
+		class OSDL_DLL GUIException : public OSDL::Exception 
+		{
+				
+			GUIException( const std::string & reason ) ;
+			
+			virtual ~GUIException() throw() ;
+			
+		} ;
+		
+		
+	}
+	
+	
+}
+
+			
+#endif // OSDL_GUI_COMMON_H_
 
