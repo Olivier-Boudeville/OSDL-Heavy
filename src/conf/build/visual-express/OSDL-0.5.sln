@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testBasic", "..\..\..
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testOSDLException", "..\..\..\..\test\basic\testOSDLException\testOSDLException.vcproj", "{0603D97E-26B6-44B1-B682-4093F6F04112}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testOSDLGUI", "..\..\..\..\test\basic\testOSDLGUI\testOSDLGUI.vcproj", "{C50C7F87-1DBE-4704-BD08-6D4613C7C646}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testSDL", "..\..\..\..\test\basic\testSDL\testSDL.vcproj", "{AAA37050-99A2-46EC-88D3-0BD43EE60D66}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "basic-testSDL_gfx", "..\..\..\..\test\basic\testSDL_gfx\testSDL_gfx.vcproj", "{B3B0E10A-4FB2-41C5-9F09-8081DC0FF807}"
@@ -151,6 +153,10 @@ Global
 		{0603D97E-26B6-44B1-B682-4093F6F04112}.Debug|Win32.Build.0 = Debug|Win32
 		{0603D97E-26B6-44B1-B682-4093F6F04112}.Release|Win32.ActiveCfg = Release|Win32
 		{0603D97E-26B6-44B1-B682-4093F6F04112}.Release|Win32.Build.0 = Release|Win32
+		{C50C7F87-1DBE-4704-BD08-6D4613C7C646}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C50C7F87-1DBE-4704-BD08-6D4613C7C646}.Debug|Win32.Build.0 = Debug|Win32
+		{C50C7F87-1DBE-4704-BD08-6D4613C7C646}.Release|Win32.ActiveCfg = Release|Win32
+		{C50C7F87-1DBE-4704-BD08-6D4613C7C646}.Release|Win32.Build.0 = Release|Win32
 		{AAA37050-99A2-46EC-88D3-0BD43EE60D66}.Debug|Win32.ActiveCfg = Debug|Win32
 		{AAA37050-99A2-46EC-88D3-0BD43EE60D66}.Debug|Win32.Build.0 = Debug|Win32
 		{AAA37050-99A2-46EC-88D3-0BD43EE60D66}.Release|Win32.ActiveCfg = Release|Win32
