@@ -30,5 +30,7 @@ testOSDLSurfaceTransforms_exe_SOURCES      = testOSDLSurfaceTransforms.cc
 testOSDLVideo_exe_SOURCES                  = testOSDLVideo.cc
 testOSDLWindowManager_exe_SOURCES          = testOSDLWindowManager.cc
 
+
 clean-local:
-	@rm -f testOSDLPalette.pal testOSDLPalette.rgb
+	@/bin/rm -f testOSDLPalette.pal testOSDLPalette.rgb
+
