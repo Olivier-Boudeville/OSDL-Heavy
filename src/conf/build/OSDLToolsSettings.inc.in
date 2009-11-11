@@ -275,16 +275,16 @@ libogg_win_MD5="15520916d1b6ba5ddeff11c4b6d14869"
 
 # SDL_mixer (libSDL_mixer.so): http://www.libsdl.org/projects/SDL_mixer/
 
-# Actually 1.2.9 (defined in configure-template.ac):
+# Actually 1.2.10 (defined in configure-template.ac):
 SDL_mixer_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
 SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
 SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_MD5="4767416df51d247904db397bd6bf25df"
+SDL_mixer_MD5="a357558552436b0b5ea0333b3e2327df"
 
 SDL_mixer_win_VERSION="${SDL_mixer_VERSION}"
 SDL_mixer_win_ARCHIVE="SDL_mixer-${SDL_mixer_win_VERSION}.zip"
 SDL_mixer_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_win_MD5="5f951dc90697429749465ad115ee5ce7"
+SDL_mixer_win_MD5="7b6f8f7ff7592e46a0dd1fe1d7545972"
 
 
 
