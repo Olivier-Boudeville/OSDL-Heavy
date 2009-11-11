@@ -103,6 +103,13 @@ bool CommonModule::_BackendInitialized = false ;
 
 
 
+// Defines the most ancient version of libagar that is supported by OSDL:
+
+const Ceylan::Version::VersionNumber oldestAgarSupportedMajor = 1 ;
+const Ceylan::Version::VersionNumber oldestAgarSupportedMinor = 3 ;
+const Ceylan::Version::VersionNumber oldestAgarSupportedPatch = 4 ;
+
+
 // Allows to debug OSDL version management:
 #define OSDL_DEBUG_VERSION 0
 
@@ -164,7 +171,9 @@ const Ceylan::Flags CommonModule::UseCDROM       = SDL_INIT_CDROM       ;
 const Ceylan::Flags CommonModule::UseJoystick    = SDL_INIT_JOYSTICK    ;
 const Ceylan::Flags CommonModule::UseKeyboard    = 0x4000               ;
 const Ceylan::Flags CommonModule::UseMouse       = 0x8000               ;
-const Ceylan::Flags CommonModule::UseEverything  = SDL_INIT_EVERYTHING  ;
+const Ceylan::Flags CommonModule::UseGUI         = 0x10000              ;
+// It is actually SDL_INIT_EVERYTHING & UseGUI:
+const Ceylan::Flags CommonModule::UseEverything  = 0x0001FFFF  ;
 const Ceylan::Flags CommonModule::NoParachute    = SDL_INIT_NOPARACHUTE ;
 const Ceylan::Flags CommonModule::UseEventThread = SDL_INIT_EVENTTHREAD ;
 
@@ -178,7 +187,8 @@ const Ceylan::Flags CommonModule::UseCDROM       = 0x00000100 ;
 const Ceylan::Flags CommonModule::UseJoystick    = 0x00000200 ;
 const Ceylan::Flags CommonModule::UseKeyboard    = 0x4000     ;
 const Ceylan::Flags CommonModule::UseMouse       = 0x8000     ;
-const Ceylan::Flags CommonModule::UseEverything  = 0x0000FFFF ;
+const Ceylan::Flags CommonModule::UseGUI         = 0x10000    ;
+const Ceylan::Flags CommonModule::UseEverything  = 0x0001FFFF  ;
 const Ceylan::Flags CommonModule::NoParachute    = 0x00100000 ;
 const Ceylan::Flags CommonModule::UseEventThread = 0x01000000 ;
 
@@ -243,23 +253,23 @@ CommonModule::CommonModule( Flags flags ) :
 		"disjunctive LGPL/GPL" ),		
 	_video(  0 ), 
 	_events( 0 ), 
-	_audio(  0 ), 
+	_audio(  0 ),
+	_useGUI( false ), 
 	_flags( flags ),
 	_cdromHandler( 0 ),
 	_startingSecond( 0 ),
 	_startingMicrosecond( 0 )	
 {
 
-	bool useAgar = false ;
 	
 	LOG_TRACE_BASIC( "CommonModule constructor" ) ;
 	
 	// Records the OSDL start time:
 	System::getPreciseTime( _startingSecond, _startingMicrosecond ) ;
 	
-	// For the sake of safety:
+	// Needed for consistency:
 	flags = AutoCorrectFlags( flags ) ;
-	 
+
 	send( "Starting OSDL version " + OSDL::GetVersion().toString() + ". " 
 		+ InterpretFlags( flags ) ) ; 
 
@@ -313,42 +323,17 @@ CommonModule::CommonModule( Flags flags ) :
 
 #if OSDL_USES_SDL
 
-#if OSDL_USES_AGAR
-
-	useAgar = true ;
-	
-	AG_AgarVersion linkTimeAgarVersion ;
-	
-	AG_GetVersion( &linkTimeAgarVersion ) ;
-	 
-	send( "Using Agar backend, linked against the "
-		+ Ceylan::toNumericalString( linkTimeAgarVersion.major ) + "."
-		+ Ceylan::toNumericalString( linkTimeAgarVersion.minor ) + "."
-		+ Ceylan::toNumericalString( linkTimeAgarVersion.patch ) 
-		+ ", version "
-		+ Ceylan::toString( *linkTimeAgarVersion.release ) + "." ) ;
-	
-	// Implies a call to SDL_Init with SDL_INIT_TIMER and SDL_INIT_NOPARACHUTE:
-	if ( AG_InitCore( /* progname */ "OSDL-application", 
-			/* SDL flags */ 0 ) == -1 )
-		throw OSDL::Exception( "CommonModule constructor failed: "
-			"Agar initialization failed: " + string( AG_GetError() ) ) ;
-				
-#else // OSDL_USES_AGAR
-
 	// Starts with a minimal init:
 	if ( SDL_Init( 0 ) != BackendSuccess )
 		throw OSDL::Exception( "CommonModule constructor failed: "
 			"SDL first initialization failed: "
 			+ Utils::getBackendLastError() ) ;
-			
-#endif //OSDL_USES_AGAR
-			 
+					 
 #endif // OSDL_USES_SDL
 		
 
 	/*
-	 * UseEverything flag is 0x0000FFFF, therefore not to be specifically
+	 * UseEverything flag is 0x0001FFFF, therefore not to be specifically
 	 * managed.
 	 *
 	 * Moreover, the flags should have been already fixed thanks to the
@@ -363,7 +348,7 @@ CommonModule::CommonModule( Flags flags ) :
 		
 #if OSDL_USES_SDL
 
-		if ( useAgar )
+		if ( _useGUI )
 		{
 			send( "Agar being used, no additional timer initialization is "
 				" needed." ) ;
@@ -403,7 +388,7 @@ CommonModule::CommonModule( Flags flags ) :
 
 		send( "Disabling SDL parachute" ) ;
 		
-		if ( useAgar )
+		if ( _useGUI )
 		{
 			send( "Agar being used, no SDL parachute request is needed." ) ;
 		}		
@@ -415,7 +400,8 @@ CommonModule::CommonModule( Flags flags ) :
 					"unable to disable SDL parachute: " 
 					+ Utils::getBackendLastError() ) ;
 					
-			send( "SDL parachute initialized" ) ;				
+			send( "SDL parachute initialized" ) ;
+							
 		}
 			
 	}
@@ -440,6 +426,8 @@ CommonModule::CommonModule( Flags flags ) :
 	
 		_video = new Video::VideoModule() ;	
 		
+		if ( _useGUI )
+			_video->setGUIEnableStatus( true ) ;
 		 		
 	}
 	
@@ -449,6 +437,9 @@ CommonModule::CommonModule( Flags flags ) :
 	
 		_events = new Events::EventsModule( flags ) ; 
 		
+		if ( _useGUI )
+			_events->setGUIEnableStatus( true ) ;
+			
 	}
 	
 	
@@ -461,9 +452,16 @@ CommonModule::CommonModule( Flags flags ) :
 	{
 	
 		_audio = new Audio::AudioModule() ;
-		
+
+		if ( _useGUI )
+			_audio->setGUIEnableStatus( true ) ;
+					
 	}	
 	
+	
+	// Finally, once all prerequisites can have been created:
+	if ( flags & UseGUI )
+		enableGUI() ;
 	
 	_BackendInitialized = true ;
 	
@@ -521,27 +519,40 @@ CommonModule::~CommonModule() throw()
 	
     send( "Video stopped." ) ;
 	
-				
+	
+	if ( _useGUI )
+	{
+		
+		disableGUI() ;
+					
 #if OSDL_USES_SDL
 
-#if OSDL_USES_AGAR
+		/*
+		 * When Agar did not initialize SDL, we have to shut SDL down
+		 * by ourself:
+		 *
+		 */
+    	SDL_Quit() ;
 
-    send( "OSDL successfully stopped (Agar branch)." ) ;
-    
-	AG_Destroy() ;
-
-	// When Agar did not initialize SDL, we have to shut SDL down by ourself:
-    SDL_Quit() ;
-
-#else // OSDL_USES_AGAR
-
-    SDL_Quit() ;
-
-#endif // OSDL_USES_AGAR
-
+    	send( "GUI and main back-end successfully stopped." ) ;
+    	
 #endif // OSDL_USES_SDL
+
+	}
+	else
+	{
+
+#if OSDL_USES_SDL
+    
+    	SDL_Quit() ;
+
+		send( "Main back-end successfully stopped." ) ;		
+		
+#endif // OSDL_USES_SDL
+
+	}
 	
-    send( "OSDL successfully stopped." ) ;		
+	send( "OSDL successfully stopped." ) ;
 	
 }
 
@@ -566,6 +577,11 @@ string CommonModule::InterpretFlags( Flags flags )
 		res.push_back( "Video requested (UseVideo is set)." ) ;
 	else
 		res.push_back( "No video requested (UseVideo is not set)." ) ;
+		
+	if ( flags & UseGUI )
+		res.push_back( "GUI requested (UseGUI is set)." ) ;
+	else
+		res.push_back( "No GUI requested (UseGUI is not set)." ) ;
 		
 	if ( flags & UseCDROM )
 		res.push_back( "CD-ROM support requested (UseCDROM is set)." ) ;
@@ -711,6 +727,132 @@ Flags CommonModule::getFlags() const
 
 
 
+bool CommonModule::isGUIEnabled() const
+{
+
+	return _useGUI ;
+	
+}
+
+
+
+void CommonModule::enableGUI()
+{
+	
+	if ( _useGUI ) 
+		throw OSDL::Exception( "CommonModule::enableGUI failed: "
+			"GUI was already enabled." ) ;
+
+	/*
+	 * A GUI needs video, audio and events:
+	 *
+	 */
+	if ( _video == 0 )
+		throw OSDL::Exception( "CommonModule::enableGUI failed: "
+			"the video module must have already be created." ) ;
+			
+	_video->setGUIEnableStatus( true ) ;
+	
+	
+	if ( _audio == 0 )
+		throw OSDL::Exception( "CommonModule::enableGUI failed: "
+			"the audio module must have already be created." ) ;
+			
+	_audio->setGUIEnableStatus( true ) ;
+	
+	
+	if ( _events == 0 )
+		throw OSDL::Exception( "CommonModule::enableGUI failed: "
+			"the events module must have already be created." ) ;
+			
+	_events->setGUIEnableStatus( true ) ;
+	
+
+#if OSDL_USES_SDL
+
+#if OSDL_USES_AGAR
+
+	AG_AgarVersion linkTimeAgarVersion ;
+	
+	AG_GetVersion( &linkTimeAgarVersion ) ;
+	 
+	send( "Using Agar backend for the GUI, linked against the "
+		+ Ceylan::toNumericalString( linkTimeAgarVersion.major ) + "."
+		+ Ceylan::toNumericalString( linkTimeAgarVersion.minor ) + "."
+		+ Ceylan::toNumericalString( linkTimeAgarVersion.patch ) 
+		+ ", release codenamed '"
+		+ Ceylan::toString( *linkTimeAgarVersion.release ) + "'." ) ;
+
+	const string applicationName = "OSDL-application" ;
+			
+	/*
+	 * Implies a call to SDL_Init with SDL_INIT_TIMER and
+	 * SDL_INIT_NOPARACHUTE:
+	 *
+	 */
+#if OSDL_DEBUG_GUI
+		
+	int res = AG_InitCore( applicationName.c_str(), 
+		AG_VERBOSE || AG_NO_CFG_AUTOLOAD ) ;
+	
+#else // OSDL_DEBUG_GUI
+
+	int res = AG_InitCore( applicationName.c_str(), AG_NO_CFG_AUTOLOAD ) ;
+
+#endif // OSDL_DEBUG_GUI	
+
+	if ( res == -1 )	
+		throw OSDL::Exception( "CommonModule::enableGUI failed: "
+			"initialization of the Agar core library failed: " 
+			+ std::string( AG_GetError() ) ) ;
+		
+	if ( ! AG_VERSION_ATLEAST( oldestAgarSupportedMajor,
+			oldestAgarSupportedMinor, oldestAgarSupportedPatch ) )
+		throw OSDL::Exception( "The version of this Agar library in use "
+			"is too old to be supported, needing at least "
+			+ Ceylan::toNumericalString( oldestAgarSupportedMajor ) + "."
+			+ Ceylan::toNumericalString( oldestAgarSupportedMinor ) + "."
+			+ Ceylan::toNumericalString( oldestAgarSupportedPatch ) + "." );
+				
+#else // OSDL_USES_AGAR
+	
+	throw OSDL::Exception( "CommonModule::enableGUI failed: "
+		"using a GUI was requested, "
+		"but no Agar library support is available." ) ;
+	
+#endif //OSDL_USES_AGAR
+
+#endif // OSDL_USES_SDL
+	
+	_useGUI = true ;
+
+}
+
+
+
+void CommonModule::CommonModule::disableGUI()
+{
+
+	if ( ! _useGUI ) 
+		throw OSDL::Exception( "CommonModule::disableGUI failed: "
+			"GUI was not enabled." ) ;
+			
+#if OSDL_USES_AGAR
+
+	/*
+	 * Not AG_Quit, which is AG_Destroy + exit(0):
+	 *
+	 */
+	AG_Destroy() ;
+
+#endif //OSDL_USES_AGAR
+
+	_useGUI = false ;
+
+}
+
+
+
 bool CommonModule::hasCDROMDriveHandler() const
 {
 
@@ -765,9 +907,14 @@ const string CommonModule::toString( Ceylan::VerbosityLevels level ) const
 		
 	res += " CD-ROM handler" ;	
 	
+	if ( _useGUI )
+		res += ", with GUI support enabled" ;
+	else	
+		res += ", with GUI support disabled" ;
+
 	if ( level == Ceylan::low )
 		return res ;
-			
+
 			
 	res += ". " + InterpretFlags( _flags ) ;
 		
@@ -870,6 +1017,58 @@ Flags CommonModule::AutoCorrectFlags( Flags inputFlags )
 #if OSDL_USES_SDL
 
 	/*
+	 * Having a GUI requires:
+	 *  - events to be managed
+	 *  - video to be used (implied by events) 
+	 *  - audio to be used
+	 *
+	 */
+	 
+	 
+	if ( inputFlags & UseGUI )
+	{
+	
+		if ( ! ( inputFlags & UseEvents ) )	
+		{
+		
+			/*
+			 * No, it is abnormal since GUI implies events. 
+			 * Let's correct that:
+			 *
+			 */
+			
+			LOG_WARNING_BASIC( "CommonModule::AutoCorrectFlags: "
+				"the use of a GUI (graphical user interface) was requested, "
+				"whereas managing events was not specifically set. " 
+				"The events subsystem has been automatically enabled." ) ; 
+				
+			inputFlags |= UseEvents ;
+		
+		}	
+		
+		
+		if ( ! ( inputFlags & UseAudio ) )	
+		{
+		
+			/*
+			 * No, it is abnormal since GUI implies audio as well. 
+			 * Let's correct that:
+			 *
+			 */
+			
+			LOG_WARNING_BASIC( "CommonModule::AutoCorrectFlags: "
+				"the use of a GUI (graphical user interface) was requested, "
+				"whereas managing audio was not specifically set. " 
+				"The audio subsystem has been automatically enabled." ) ; 
+				
+			inputFlags |= UseAudio ;
+		
+		}	
+		
+	}
+
+
+	/*
 	 * Event source implies event propagation which implies, with SDL, 
 	 * video being activated:
 	 *
@@ -902,6 +1101,8 @@ Flags CommonModule::AutoCorrectFlags( Flags inputFlags )
 	
 	}
 	
+	
+	 
 #endif // OSDL_USES_SDL
 
 	return inputFlags ;
@@ -929,14 +1130,16 @@ CommonModule & OSDL::getCommonModule( Flags flags )
 		LogPlug::info( 
 			"OSDL was not running yet, launching basic OSDL with flags "
 			+ Ceylan::toString( flags, /* bitfield */ true ) ) ;
+			
 		CommonModule::_CurrentCommonModule = new CommonModule( flags ) ;
+		
 		return * CommonModule::_CurrentCommonModule ;
 		
 	} 	
 	else 
 	{
 	
-		// OSDL was already running.
+		// OSDL was already running, checking whether flags match:
 		LogPlug::info( "OSDL is already running, comparing demanded flags "
 			"with flags of the running version." ) ;
 		

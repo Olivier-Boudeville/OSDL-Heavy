@@ -131,7 +131,7 @@ namespace OSDL
 	 * From this common module, all other modules can be triggered.
 	 *
 	 */
-	class OSDL_DLL CommonModule: public Ceylan::Module
+	class OSDL_DLL CommonModule : public Ceylan::Module
 	{
 
 
@@ -144,7 +144,7 @@ namespace OSDL
 		 * a reference to the common module: this is the entry point to 
 		 * the whole OSDL system.
 		 *
-		 * See its declaration at the end of file for further details.
+		 * See its declaration at the end of this file for further details.
 		 *
 		 */
 		OSDL_DLL friend CommonModule & getCommonModule( Ceylan::Flags flags ) ;
@@ -254,9 +254,32 @@ namespace OSDL
 
 
 
+			/// Tells whether the GUI support is enabled.
+			virtual bool isGUIEnabled() const ;
+
+
+			/**
+			 * Enables the GUI support.
+			 *
+			 * @note The video, audio and events modules must have been
+			 * already created, as they are needed and have to be initialized
+			 * as wanted.
+			 *
+			 * @throw OSDL::Exception if the video, audio or events module
+			 * is lacking.
+			 *
+			 */
+			virtual void enableGUI() ;
+
+
+			/// Disables the GUI support.
+			virtual void disableGUI() ;
+
+
+
+
 			/// Tells whether a CD-ROM drive handler is available.
 			virtual bool hasCDROMDriveHandler() const ; 
-
 
 			
 			/**
@@ -380,7 +403,7 @@ namespace OSDL
 
 
 			/**
-			 * Initializes the events subsystem, implies initializing 
+			 * Initializes the events subsystem; implies initializing 
 			 * the video (UseVideo).
 			 *
 			 * This is just a convenience flag gathering all event-related flags
@@ -388,6 +411,15 @@ namespace OSDL
 			 *
 			 */
 			static const Ceylan::Flags UseEvents ;			   
+
+
+			/**
+			 * Initializes the GUI (Graphical User Interface) subsystem, 
+			 * implies initializing the video (UseVideo) and the events 
+			 * (UseEvents) subsystems.
+			 *
+			 */
+			static const Ceylan::Flags UseGUI ;			   
 
 
 			/// Initializes all above subsystems.
@@ -456,6 +488,13 @@ namespace OSDL
 			
 			/// Pointer to the current video module used, if any.
 			Audio::AudioModule * _audio ;
+			
+			
+			/**
+			 * Tells whether a GUI (Graphical User Interface) is to be used.
+			 *
+			 */		
+			bool _useGUI ;
 			
 			
 			
@@ -552,7 +591,7 @@ namespace OSDL
 	 * associated subsystems are instanciated.
 	 *
 	 * @see UseTimer, UseAudio, UseVideo, UseCDROM, UseJoystick,
-	 * UseEverything, NoParachute, UseEventThread, etc.
+	 * UseEverything, NoParachute, UseEventThread, UseGUI, etc.
 	 * 
 	 * @note UseVideo is required to start the event loop, so it is 
 	 * implied by the UseJoystick flag.
