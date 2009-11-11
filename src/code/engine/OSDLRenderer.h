@@ -107,6 +107,8 @@ namespace OSDL
 		 * since it may vary a lot depending on the need, from simple list 
 		 * to BSP trees, etc.
 		 *
+		 * Views are not owned by the renderer.
+		 *
 		 * @see OSDL::Engine::Scheduler
 		 *
 		 * @see Ceylan::View
@@ -284,7 +286,7 @@ namespace OSDL
 				 */
 				Events::RenderingTick _lastRender ;
 		
-		
+
 
 				// No data structure enforced for views here.
 

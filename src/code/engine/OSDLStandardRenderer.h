@@ -206,6 +206,8 @@ namespace OSDL
 				 * Records all the currently registered views that shall 
 				 * be managed specifically by this renderer.
 				 *
+				 * @note Views are not owned by the renderer.
+				 *
 				 */
 				std::list<Ceylan::MVC::BaseView *> _registeredViews ;
 				 

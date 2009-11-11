@@ -42,6 +42,7 @@ using namespace OSDL::Engine ;
 #endif // OSDL_USES_CONFIG_H
 
 
+
 #include "Ceylan.h"           // for BaseView
 
 using namespace Ceylan::Log ;
@@ -147,7 +148,8 @@ void StandardRenderer::render( RenderingTick currentRenderingTick )
 	OSDL_RENDER_LOG( "Standard rendering!" ) ;
 	
 	_screen->clear() ;
-
+	
+			
 	for ( list<Ceylan::MVC::BaseView *>::iterator it = _registeredViews.begin();
 			it != _registeredViews.end(); it++ )
 		(*it)->render() ;
