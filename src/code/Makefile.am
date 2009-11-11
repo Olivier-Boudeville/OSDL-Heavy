@@ -43,14 +43,15 @@ libOSDL_la_LDFLAGS = \
 				
 # Submodule convenience libraries:	
 SUBLIBS = \
-	audio/libOSDLAudio.la                            \
-	audio/audioRenderer/libOSDLAudioRenderer.la      \
-	basic/libOSDLBasic.la                            \
-	data/libOSDLData.la                              \
-	engine/libOSDLEngine.la                          \
-	events/libOSDLEvents.la                          \
-	video/libOSDLVideo.la                            \
-	video/twoDimensional/libOSDLTwoDimensional.la    \
+	audio/libOSDLAudio.la                                         \
+	audio/audioRenderer/libOSDLAudioRenderer.la                   \
+	basic/libOSDLBasic.la                                         \
+	data/libOSDLData.la                                           \
+	engine/libOSDLEngine.la                                       \
+	events/libOSDLEvents.la                                       \
+	video/libOSDLVideo.la                                         \
+	video/graphicalUserInterface/libOSDLGraphicalUserInterface.la \
+	video/twoDimensional/libOSDLTwoDimensional.la                 \
 	video/videoRenderer/libOSDLVideoRenderer.la
 
 	         	
