@@ -41,7 +41,7 @@
 
 /* Define to 1 if debug mode for audio renderer is to be enabled */
 #ifndef OSDL_DEBUG_AUDIO_RENDERER 
-#define OSDL_DEBUG_AUDIO_RENDERER  1 
+#define OSDL_DEBUG_AUDIO_RENDERER  0 
 #endif
 
 /* Define to 1 if debug mode for blit operations is to be enabled */
@@ -71,12 +71,18 @@
 
 /* Define to 1 if debug mode for events is to be enabled */
 #ifndef OSDL_DEBUG_EVENTS 
-#define OSDL_DEBUG_EVENTS  1 
+#define OSDL_DEBUG_EVENTS  0 
 #endif
 
 /* Define to 1 if debug mode for font management is to be enabled */
 #ifndef OSDL_DEBUG_FONT 
 #define OSDL_DEBUG_FONT  0 
+#endif
+
+/* Define to 1 if debug mode for the graphical user interface is to be enabled
+   */
+#ifndef OSDL_DEBUG_GUI 
+#define OSDL_DEBUG_GUI  1 
 #endif
 
 /* Define to 1 if debug mode for image management is to be enabled */
@@ -106,12 +112,17 @@
 
 /* Define to 1 if debug mode for general renderer is to be enabled */
 #ifndef OSDL_DEBUG_RENDERER 
-#define OSDL_DEBUG_RENDERER  1 
+#define OSDL_DEBUG_RENDERER  0 
+#endif
+
+/* Define to 1 if debug mode for resource manager is to be enabled */
+#ifndef OSDL_DEBUG_RESOURCE_MANAGER 
+#define OSDL_DEBUG_RESOURCE_MANAGER  1 
 #endif
 
 /* Define to 1 if debug mode for scheduler is to be enabled */
 #ifndef OSDL_DEBUG_SCHEDULER 
-#define OSDL_DEBUG_SCHEDULER  1 
+#define OSDL_DEBUG_SCHEDULER  0 
 #endif
 
 /* Define to 1 if debug mode for sprites is to be enabled */
@@ -431,6 +442,11 @@
 /* Define to 1 if verbose mode for controller is to be enabled */
 #ifndef OSDL_VERBOSE_CONTROLLER 
 #define OSDL_VERBOSE_CONTROLLER  0 
+#endif
+
+/* Define to 1 if verbose mode for data module is to be enabled */
+#ifndef OSDL_VERBOSE_DATA_MODULE 
+#define OSDL_VERBOSE_DATA_MODULE  0 
 #endif
 
 /* Define to 1 if verbose mode for engine module is to be enabled */
