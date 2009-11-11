@@ -1221,6 +1221,30 @@ void Scheduler::DeleteScheduler()
 
 
 
+void Scheduler::StopExistingScheduler() 
+{
+
+    if ( Scheduler::_internalScheduler != 0 )
+    {
+	
+#if OSDL_DEBUG_SCHEDULER
+        LogPlug::debug( "Scheduler::StopExistingScheduler: stopping now." ) ;
+#endif // OSDL_DEBUG_SCHEDULER
+		
+        Scheduler::_internalScheduler->stop() ;
+
+    }
+    else
+    {
+	
+		throw SchedulingException( "Scheduler::StopExistingScheduler failed: "
+			"no scheduler available." ) ;
+		
+    }
+
+}
+
+
 
 
 // Protected members below:
@@ -1584,7 +1608,7 @@ void Scheduler::scheduleBestEffort()
 	 * overloaded:
 	 *
 	 */
-	const Delay bucketFillThreshold = 5000 ;
+	const Delay bucketFillThreshold = 100000 ;
 
 
 	/*
@@ -2532,15 +2556,13 @@ void Scheduler::scheduleBestEffort()
 		+ " times, shutdown bucket level is "
 		+ Ceylan::toString( ShutdownBucketLevel) + "." ) ;
 
+#if OSDL_DEBUG_SCHEDULER
 
 	send( "Displaying list of successive forecast idle callback durations: "
 		+ Ceylan::toString( forecastIdleCallbackDurationList ) ) ;
 
 	send( "Displaying list of successive actual idle callback durations: "
 		+ Ceylan::toString( actualIdleCallbackDurationList ) ) ;
-
-
-#if OSDL_DEBUG_SCHEDULER
 
 	const string logFilename = "idle-calls.dat" ;
 

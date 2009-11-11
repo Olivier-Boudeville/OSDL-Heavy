@@ -788,6 +788,22 @@ namespace OSDL
 				 */
 	       		static void DeleteScheduler() ;
 		
+		
+		
+				/**
+				 * Deletes the shared scheduler, if any.
+				 *
+				 * Allows notably to break out of the main loop.
+				 *
+				 * @note As this function is static, it can be used as a
+				 * callback triggered by the GUI, so that the program flow
+				 * can go past the entering in the main loop.
+				 *
+				 * @throw SchedulingException if no scheduler is in use.
+				 * 
+				 */
+	       		static void StopExistingScheduler() ;
+		
 	
 					
 				/**
