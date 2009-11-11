@@ -45,7 +45,7 @@ namespace OSDL
 
 
 
-	// The event module is managed by the common module;
+	// The event module is managed by the common module:
 	class CommonModule ;
 	
 	
@@ -229,7 +229,7 @@ namespace OSDL
 		 *
 		 *
 		 */
-		class OSDL_DLL EventsModule: public Ceylan::Module
+		class OSDL_DLL EventsModule : public Ceylan::Module
 		{
 		
 		
@@ -369,8 +369,30 @@ namespace OSDL
 				 *
 				 */
 				virtual void useScheduler( bool on = true ) ;
-				 				  
+				 	
+								  
 
+					
+				/**
+				 * Tells whether a GUI (Graphical User Interface) is to be
+				 * supported by this events module.	
+				 *			 
+				 */		
+				virtual bool isGUIEnabled() const ;
+				
+					
+				
+				/**
+				 * Determines whether a GUI (Graphical User Interface) 
+				 * should be supported by this events module.
+				 *
+				 * @param newStatus the new enable status of the GUI.
+				 *
+				 */	
+				virtual void setGUIEnableStatus( bool newStatus ) ;
+				
+				
+				
 				
 				/**
 				 * Sets the idle function, which is called whenever the 
@@ -1258,6 +1280,12 @@ namespace OSDL
 				 */				 
 				bool _useScheduler ;				
 
+
+				/**
+				 * Tells whether a graphical user interface is to be managed.
+				 *
+				 */
+				bool _isGuiEnabled ;
 
 
 				/**

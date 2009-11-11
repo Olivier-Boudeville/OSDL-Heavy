@@ -53,11 +53,24 @@
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+
 #if OSDL_USES_SDL
 
 #include "SDL.h"                     // for SDL_ACTIVEEVENT, etc.
 
 #endif // OSDL_USES_SDL
+
+
+
+#if OSDL_USES_AGAR
+	
+#include <agar/config/have_opengl.h>
+
+#include <agar/core.h>
+#include <agar/gui.h>
+#include <agar/gui/opengl.h>
+	
+#endif // OSDL_USES_AGAR	
 
 
 
@@ -284,7 +297,8 @@ EventsModule::EventsModule( Flags eventsFlag ) :
 		"olivier.boudeville@online.fr",
 		OSDL::GetVersion(),
 		"disjunctive LGPL/GPL" ),
-	_useScheduler( false ),	
+	_useScheduler( false ),
+	_isGuiEnabled( false ),
 	_keyboardHandler( 0 ),
 	_joystickHandler( 0 ),
 	_mouseHandler( 0 ),
@@ -639,6 +653,26 @@ void EventsModule::useScheduler( bool on )
 
 
 
+
+bool EventsModule::isGUIEnabled() const
+{
+
+	return _isGuiEnabled ;
+
+}
+
+				
+				
+void EventsModule::setGUIEnableStatus( bool newStatus )
+{
+
+	_isGuiEnabled = newStatus ;
+
+}
+
+
+
+
 void EventsModule::setIdleCallback( 
 	Ceylan::System::Callback idleCallback, 
 	void * callbackData, 
@@ -877,102 +911,125 @@ void EventsModule::updateInputState()
 
 #if OSDL_USES_SDL
 		
-	BasicEvent currentEvent ;
 	
+	BasicEvent currentEvent ;
 	
 	// Checks for all pending events:
 
 	while ( SDL_PollEvent( & currentEvent ) )
 	{
 	
-		switch ( currentEvent.type )
+		if ( _isGuiEnabled )
 		{
+		
+#if OSDL_USES_AGAR
+
+			// All events are sent to the Agar GUI: (a filtering could be done)
+			AG_ProcessEvent( & currentEvent ) ;
+			
+#else // OSDL_USES_AGAR
+
+			throw EventsException( "EventsModule::updateInputState: "
+				"GUI enabled but cannot be managed." ) ;
+
+#endif // OSDL_USES_AGAR
+			
+		}
+		else
+		{
+				
+			// Not using a GUI here, dealing with it directly:
+		
+			switch ( currentEvent.type )
+			{
 
 
-			// Focus section.
-			case ApplicationFocusChanged:
-				onApplicationFocusChanged( currentEvent.active ) ;
-				break ;
-					
-			// Keyboard section.			
-			case KeyPressed:
-				onKeyPressed( currentEvent.key ) ;
-				break ;
-				
-			case KeyReleased:
-				onKeyReleased( currentEvent.key ) ;
-				break ;
-			
-			// Mouse section.
-			case MouseMoved:
-				onMouseMotion( currentEvent.motion ) ;
-				break ;
-				
-			case MouseButtonPressed:
-				onMouseButtonPressed( currentEvent.button ) ; 
-				break ;
-				
-			case MouseButtonReleased:			
-				onMouseButtonReleased( currentEvent.button ) ;
-				break ;
-					
-						
-			/* 
-			 * Joystick section.
-			 *
-			 * Joystick low level events should occur if and only if a 
-			 * joystick handler is used, therefore there should be no need 
-			 * for a handler check. 
-			 *
-			 */
-			case JoystickAxisChanged:
-				onJoystickAxisChanged( currentEvent.jaxis ) ;
-				break ;
-				
-			case JoystickTrackballChanged:
-				onJoystickTrackballChanged( currentEvent.jball ) ;
-				break ;
-				
-			case JoystickHatPositionChanged:
-				onJoystickHatChanged( currentEvent.jhat ) ;
-				break ;
-				
-			case JoystickButtonPressed:
-				onJoystickButtonPressed( currentEvent.jbutton ) ;
-				break ;
-				
-			case JoystickButtonReleased:
-				onJoystickButtonReleased( currentEvent.jbutton ) ;
-				break ;			
-			
-			
-			// Miscellaneous section.
-			
-			case UserRequestedQuit:
-				onQuitRequested() ;
-				break ;
-			
-			case SystemSpecificTriggered: 
-				onSystemSpecificWindowManagerEvent( currentEvent.syswm ) ;
-				break ;
-			
-			case UserResizedVideoMode:
-				onResizedWindow( currentEvent.resize ) ;
-				break ;
-				
-			case ScreenNeedsRedraw:
-				onScreenNeedsRedraw() ;	
-				break ;
-				
-			// User event and unknown section.
-			default:
-				if ( currentEvent.type >= FirstUserEventTriggered 
-						|| currentEvent.type <= LastUserEventTriggered )
-					onUserEvent( currentEvent.user ) ;
-				else
-					onUnknownEventType( currentEvent ) ;
-				break ;
-				
+				// Focus section.
+				case ApplicationFocusChanged:
+					onApplicationFocusChanged( currentEvent.active ) ;
+					break ;
+	
+				// Keyboard section.
+				case KeyPressed:
+					onKeyPressed( currentEvent.key ) ;
+					break ;
+	
+				case KeyReleased:
+					onKeyReleased( currentEvent.key ) ;
+					break ;
+	
+				// Mouse section.
+				case MouseMoved:
+					onMouseMotion( currentEvent.motion ) ;
+					break ;
+	
+				case MouseButtonPressed:
+					onMouseButtonPressed( currentEvent.button ) ;
+					break ;
+	
+				case MouseButtonReleased:
+					onMouseButtonReleased( currentEvent.button ) ;
+					break ;
+	
+	
+				/*
+				 * Joystick section.
+				 *
+				 * Joystick low level events should occur if and only if a
+				 * joystick handler is used, therefore there should be no need
+				 * for a handler check.
+				 *
+				 */
+				case JoystickAxisChanged:
+					onJoystickAxisChanged( currentEvent.jaxis ) ;
+					break ;
+	
+				case JoystickTrackballChanged:
+					onJoystickTrackballChanged( currentEvent.jball ) ;
+					break ;
+	
+				case JoystickHatPositionChanged:
+					onJoystickHatChanged( currentEvent.jhat ) ;
+					break ;
+	
+				case JoystickButtonPressed:
+					onJoystickButtonPressed( currentEvent.jbutton ) ;
+					break ;
+	
+				case JoystickButtonReleased:
+					onJoystickButtonReleased( currentEvent.jbutton ) ;
+					break ;
+	
+	
+				// Miscellaneous section.
+	
+				case UserRequestedQuit:
+					onQuitRequested() ;
+					break ;
+	
+				case SystemSpecificTriggered:
+					onSystemSpecificWindowManagerEvent( currentEvent.syswm ) ;
+					break ;
+	
+				case UserResizedVideoMode:
+					onResizedWindow( currentEvent.resize ) ;
+					break ;
+	
+				case ScreenNeedsRedraw:
+					onScreenNeedsRedraw() ;
+					break ;
+	
+				// User event and unknown section.
+				default:
+					if ( currentEvent.type >= FirstUserEventTriggered
+							|| currentEvent.type <= LastUserEventTriggered )
+						onUserEvent( currentEvent.user ) ;
+					else
+						onUnknownEventType( currentEvent ) ;
+					break ;
+	
+			}
+		
 		}	
 	}
 
@@ -1006,6 +1063,11 @@ const string EventsModule::toString( Ceylan::VerbosityLevels level ) const
 		res += "using a mouse handler, " ;
 	else
 		res += "not using any mouse handler, " ;
+
+	if ( _isGuiEnabled )
+		res += "with GUI support enabled, " ;
+	else
+		res += "with no GUI support enabled, " ;
 	
 	
 	if ( _loopIdleCallback == 0 )
@@ -1358,12 +1420,14 @@ void EventsModule::enterBasicMainLoop()
 					nowSec,	nowMicrosec ) + _loopIdleCallbackMaxDuration 
 				< loopExpectedDuration )
 			{
+			
 				onIdle() ;
-				getPreciseTime( nowSec, nowMicrosec ) ;			
+				getPreciseTime( nowSec, nowMicrosec ) ;	
+						
 			}
 			
 			/*
-			 * Burn any last few microseconds with a 'soft' (thanks to 
+			 * Burns any last few microseconds with a 'soft' (thanks to 
 			 * getPreciseTime) busy wait:
 			 *
 			 */
@@ -1405,9 +1469,11 @@ void EventsModule::enterBasicMainLoop()
 				static_cast<Ceylan::Float64>( _idleCallsCount ) / frameCount, 
 				/* precision */ 3 )
 			+ " idle calls per frame have been performed." ) ;
+			
 	}
 	else
 	{
+	
 		LOG_DEBUG_EVENTS( "Exited from main loop after " 
 			+ Ceylan::toString( frameCount ) + " frames and about " 
 			+ Ceylan::toString( lastSec - startedSec ) 
@@ -1422,6 +1488,7 @@ void EventsModule::enterBasicMainLoop()
 				static_cast<Ceylan::Float64>( _idleCallsCount ) / frameCount, 
 				/* precision */ 3 )
 			+ " idle calls per frame have been performed." ) ;
+			
 	}		
 
 }
