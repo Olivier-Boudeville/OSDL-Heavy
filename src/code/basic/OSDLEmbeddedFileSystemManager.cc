@@ -1298,16 +1298,41 @@ EmbeddedFileSystemManager::EmbeddedFileSystemManager( bool cypherWritings ) :
 	PHYSFS_Version linkTimePhysicsFSVersion ;
     PHYSFS_getLinkedVersion( &linkTimePhysicsFSVersion ) ;
     
+	Ceylan::Version compiledAgainstVersion( compileTimePhysicsFSVersion.major,
+		compileTimePhysicsFSVersion.minor, compileTimePhysicsFSVersion.patch ) ;
+		
+	Ceylan::Version currentLinkedVersion( linkTimePhysicsFSVersion.major,
+		linkTimePhysicsFSVersion.minor, linkTimePhysicsFSVersion.patch ) ;
+	
     send( "Using PhysicsFS backend, compiled against the " 
-		+ Ceylan::toNumericalString( compileTimePhysicsFSVersion.major ) + "."
-		+ Ceylan::toNumericalString( compileTimePhysicsFSVersion.minor ) + "."
-		+ Ceylan::toNumericalString( compileTimePhysicsFSVersion.patch ) 
+		+ compiledAgainstVersion.toString( Ceylan::low )
 		+ " version, linked against the "
-		+ Ceylan::toNumericalString( linkTimePhysicsFSVersion.major ) + "."
-		+ Ceylan::toNumericalString( linkTimePhysicsFSVersion.minor ) + "."
-		+ Ceylan::toNumericalString( linkTimePhysicsFSVersion.patch ) 
-        + " version." ) ;
-    
+		+ currentLinkedVersion.toString( Ceylan::low ) + " version." ) ;
+    	
+	Ceylan::Version minLinkedVersion( "2.0.0" ) ;
+	
+	if ( currentLinkedVersion < minLinkedVersion )
+	{
+	
+		throw EmbeddedFileSystemManagerException( 
+        	"EmbeddedFileSystemManager constructor failed: currently "
+			"linked against the PhysicsFS version " 
+			+ currentLinkedVersion.toString( Ceylan::low ) 
+			+ ", whereas needing at least the " 
+			+ minLinkedVersion.toString( Ceylan::low ) + " version." ) ;
+	
+	}
+	else
+	{
+
+		send( "The version of PhysicsFS currently linked (" 
+			+ currentLinkedVersion.toString( Ceylan::low ) 
+			+ ") is recent enough (needing at least the " 
+			+ minLinkedVersion.toString( Ceylan::low ) + " version)." ) ;
+			
+	}
+		
+	
     if ( PHYSFS_init( LogPlug::GetFullExecutablePath().c_str() ) == 0 )
     	throw EmbeddedFileSystemManagerException( 
         	"EmbeddedFileSystemManager constructor failed: "
