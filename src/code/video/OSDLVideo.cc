@@ -709,6 +709,11 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 
 		AG_InitVideoSDL( screen, AG_VIDEO_OVERLAY ) ;
 	
+		send( std::string( 
+			"The libagar GUI rendering will be done using the " )
+			+ ( agView->opengl ? "OpenGL" : "SDL" ) 
+			+ std::string( " backend." ) ) ;
+			
 #endif // OSDL_USES_AGAR
 	
 	}
