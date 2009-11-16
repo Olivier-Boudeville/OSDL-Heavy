@@ -209,6 +209,12 @@ for f in $files; do
 
 	# Now let's cypher the content of files in the temporary directory:
 	${cypher_exec} --nullPlug $f
+	if [ ! $? -eq 0 ] ; then
+	
+		echo "Error, cyphering of file '$f' with tool '${cypher_exec}' failed." 1>&2
+		exit 20
+	
+	fi
 	
 	base_dir=`dirname $f`
 	filename=`basename $f`
