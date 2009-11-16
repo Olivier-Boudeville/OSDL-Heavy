@@ -103,18 +103,18 @@ libtiff_MD5="xxx"
 
 # SDL_image: http://www.libsdl.org/projects/SDL_image/release/
 
-# Actually 1.2.8 (defined in configure-template.ac):
+# Actually 1.2.10 (defined in configure-template.ac):
 SDL_image_VERSION="@SDL_IMAGE_RECOMMENDED_VERSION@"
 SDL_image_ARCHIVE="SDL_image-${SDL_image_VERSION}.tar.gz"
 SDL_image_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
 SDL_image_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_image_MD5="2e7c3efa0ec2acc039c46960e27c0792"
+SDL_image_MD5="6c06584b31559e2b59f2b982d0d1f628"
 
 SDL_image_win_VERSION="$SDL_image_VERSION"
 SDL_image_win_ARCHIVE="SDL_image-${SDL_image_VERSION}.zip"
 SDL_image_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
 SDL_image_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_image_win_MD5="541142eea7d9b2757c93b077fa282b93"
+SDL_image_win_MD5="4aff52d5ed108700b25beb65e64df93b"
 
 
 
@@ -275,16 +275,16 @@ libogg_win_MD5="15520916d1b6ba5ddeff11c4b6d14869"
 
 # SDL_mixer (libSDL_mixer.so): http://www.libsdl.org/projects/SDL_mixer/
 
-# Actually 1.2.10 (defined in configure-template.ac):
+# Actually 1.2.11 (defined in configure-template.ac):
 SDL_mixer_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
 SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
 SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_MD5="a357558552436b0b5ea0333b3e2327df"
+SDL_mixer_MD5="65ada3d997fe85109191a5fb083f248c"
 
 SDL_mixer_win_VERSION="${SDL_mixer_VERSION}"
 SDL_mixer_win_ARCHIVE="SDL_mixer-${SDL_mixer_win_VERSION}.zip"
 SDL_mixer_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_win_MD5="7b6f8f7ff7592e46a0dd1fe1d7545972"
+SDL_mixer_win_MD5="986166207f952f8128497580a4c1c2cb"
 
 
 
