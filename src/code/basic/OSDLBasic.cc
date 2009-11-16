@@ -718,6 +718,21 @@ Audio::AudioModule & CommonModule::getAudioModule() const
 
 
 
+void CommonModule::removeAudioModule()
+{
+
+	if ( _audio == 0 )
+		throw OSDL::Exception( 
+			"CommonModule::removeAudioModule: no audio module available." ) ;
+	
+	delete _audio ;
+	
+	_audio = 0 ;
+	
+}
+
+
+
 Flags CommonModule::getFlags() const
 {
 

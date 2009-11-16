@@ -212,7 +212,7 @@ namespace OSDL
 			/**
 			 * Returns current video module.
 			 *
-			 * @throw OSDL::Exception is not video module is available.
+			 * @throw OSDL::Exception is no video module is available.
 			 *
 			 */
 			virtual Video::VideoModule & getVideoModule() const ;
@@ -227,7 +227,7 @@ namespace OSDL
 			/**
 			 * Returns current events module.
 			 *
-			 * @throw OSDL::Exception is not events module is available.
+			 * @throw OSDL::Exception is no events module is available.
 			 *
 			 */
 			virtual Events::EventsModule & getEventsModule() const ;
@@ -241,10 +241,19 @@ namespace OSDL
 			/**
 			 * Returns current audio module.
 			 *
-			 * @throw OSDL::Exception is not audio module is available.
+			 * @throw OSDL::Exception is no audio module is available.
 			 *
 			 */
 			virtual Audio::AudioModule & getAudioModule() const ;
+			
+			
+			/**
+			 * Removes the current audio module.
+			 *
+			 * @throw OSDL::Exception is no audio module was available.
+			 *
+			 */
+			virtual void removeAudioModule() ;
 			
 			
 			
