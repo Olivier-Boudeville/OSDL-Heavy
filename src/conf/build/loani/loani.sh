@@ -1398,7 +1398,7 @@ for t in $target_list; do
 	if [ $use_svn -eq 0 ] ; then
 		
 		# Now, as soon as SVN is used for a package, we return res=2:
-		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "OSDL" -o "$t" = "OSDL_win" -o "$t" = "egeoip" ] ; then
+		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "Ceylan_Erlang" -o "$t" = "OSDL" -o "$t" = "OSDL_win" -o "$t" = "Orge" -o "$t" = "egeoip" ] ; then
 			res=2
 		fi
 		
