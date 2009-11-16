@@ -133,7 +133,7 @@ int main( int argc, char * argv[] )
 			CDROMDriveHandler::GetAvailableCDROMDrivesCount() ;
 	
     	
-		// Nothing more to test ?
+		// Nothing more to test?
 		if ( driveNumber == 0 )
 		{
 		
