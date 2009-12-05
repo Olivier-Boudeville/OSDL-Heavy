@@ -92,6 +92,20 @@ namespace OSDL
 
 
 
+		/// Useful to specify standard screen sizes for OSDL windows;
+		enum StandardScreenSize
+		{
+		
+			Size_FullScreen = 0,
+			Size_640x480    = 1,
+			Size_800x600    = 2,
+			Size_1024x780   = 3,
+			Size_1280x1024  = 4,
+			Size_1680x1050  = 5
+		
+		} ;
+
+
 								
 		/**
 		 * Root module for all video needs.
@@ -106,7 +120,7 @@ namespace OSDL
 		 * available video mode. 
 		 *
 		 */
-		class OSDL_DLL VideoModule: public Ceylan::Module
+		class OSDL_DLL VideoModule : public Ceylan::Module
 		{
 		
 
@@ -326,7 +340,7 @@ namespace OSDL
 					OpenGL::Flavour flavour = OpenGL::None ) ;
 
 
-
+				
 				/**
 				 * Tells setMode that the color depth of the current 
 				 * display should be used.
@@ -853,6 +867,47 @@ namespace OSDL
 					Ceylan::Flags flags, 
 					Pixels::PixelFormat * pixelFormat = 0 ) ;
 					
+				
+				
+					
+				/**
+				 * Returns the standard screen size corresponding to the
+				 * specified text.
+				 *
+				 * @param standardScreenSizeInText the textual description
+				 * of the standard screen size
+				 *
+				 * @throw VideoException if the operation failed, i.e. if
+				 * the specified text could not be converted into a known
+				 * screen size.
+				 *
+				 */
+				static StandardScreenSize ToStandardScreenSize( 
+					const std::string & standardScreenSizeInText ) ;
+						
+									
+				/**
+				 * Returns (in specified variables) the screen dimensions
+				 * corresponding to the specified physical standard screen size.
+				 *
+				 * @param screenSize the screen size whose dimensions are
+				 * to be determined (ex: Size_640x480).
+				 *
+				 * @param screenWidth the variable that will be set to
+				 * the width corresponding to the specified size
+				 *
+				 * @param screenHeight the variable that will be set to
+				 * the height corresponding to the specified size
+				 *
+				 * @throw VideoException if the operation failed, i.e. if
+				 * the specified screen size is not known, or if it
+				 * corresponds to a logical size (ex: Size_FullScreen) rather
+				 * instead of a physical one (ex: Size_640x480).
+				 *
+				 */
+				static void ToScreenDimensions( StandardScreenSize screenSize,
+					Length & screenWidth, Length & screenHeight ) ;
+									
 					
 					
 				/**

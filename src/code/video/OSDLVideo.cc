@@ -2068,6 +2068,100 @@ string VideoModule::DescribeAvailableDefinitions( Ceylan::Flags flags,
 
 
 
+StandardScreenSize VideoModule::ToStandardScreenSize( 
+	const std::string & standardScreenSizeInText )
+{
+
+	StandardScreenSize screenSize ;
+	
+	try
+	{
+	
+		screenSize = static_cast<StandardScreenSize>(
+			Ceylan::stringToUnsignedLong( standardScreenSizeInText ) ) ;
+	
+	}
+	catch( const Ceylan::Exception & e )
+	{
+	
+		throw VideoException( "VideoModule::ToStandardScreenSize: "
+			"could not convert '" + standardScreenSizeInText 
+			+ "' into a number designating a screen size." ) ;
+	}			
+	
+	switch( screenSize )
+	{
+	
+		case Size_640x480:
+		case Size_800x600:
+		case Size_1024x780:
+		case Size_1280x1024:
+		case Size_1680x1050:
+		case Size_FullScreen:
+			return screenSize ;
+			break ;
+			
+		default:
+			throw VideoException( "VideoModule::ToStandardScreenSize: "
+				"'" + Ceylan::toString(screenSize) 
+				+ "' is not a known standard screen size." ) ;	
+	
+	}
+	
+}
+
+	
+					
+void VideoModule::ToScreenDimensions( StandardScreenSize screenSize,
+	Length & screenWidth, Length & screenHeight )
+{
+
+	switch( screenSize )
+	{
+	
+		case Size_640x480:
+			screenWidth  = 640 ;
+			screenHeight = 480 ; 
+			break ;
+			
+		case Size_800x600:
+			screenWidth  = 800 ;
+			screenHeight = 600 ; 
+			break ;
+			
+		case Size_1024x780:
+			screenWidth  = 1024 ;
+			screenHeight = 780 ; 
+			break ;
+
+		case Size_1280x1024:
+			screenWidth  = 1280 ;
+			screenHeight = 1024; 
+			break ;
+			
+		case Size_1680x1050:
+			screenWidth  = 1680 ;
+			screenHeight = 1050 ; 
+			break ;
+
+		case Size_FullScreen:
+			throw VideoException( "VideoModule::ToScreenDimensions: "
+				"'" + Ceylan::toString(screenSize) 
+				+ "' is a logical size which cannot be converted statically "
+				" into a physical one." ) ;			
+			break ;
+			
+		default:
+			throw VideoException( "VideoModule::ToScreenDimensions: "
+				"'" + Ceylan::toString(screenSize) 
+				+ "' is not a known standard screen size." ) ;	
+	
+	}
+	
+}
+
+	
+
 string VideoModule::DescribeEnvironmentVariables()
 {
 
