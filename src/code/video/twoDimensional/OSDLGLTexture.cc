@@ -888,7 +888,7 @@ void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour )
 			LogPlug::trace( "GLTexture::SetTextureFlavour: For2D" ) ;
 
 			// Two-dimensional texturing will be performed:
-			OpenGLContext::EnableFeature( GL_TEXTURE_2D ) ;
+			OpenGLContext::EnableFeature( OpenGL::TwoDimensionalTexturing ) ;
 	
 			GLTexture::SetTextureDimensionality( GLTexture::TwoDim ) ;
 
@@ -946,7 +946,7 @@ void GLTexture::SetTextureFlavour( TextureFlavour textureFlavour )
 			LogPlug::trace( "GLTexture::SetTextureFlavour: For3D" ) ;
 
 			// Two-dimensional texturing will be performed:
-			OpenGLContext::EnableFeature( GL_TEXTURE_2D ) ;
+			OpenGLContext::EnableFeature( OpenGL::TwoDimensionalTexturing ) ;
 	
 			GLTexture::SetTextureDimensionality( GLTexture::TwoDim ) ;
 

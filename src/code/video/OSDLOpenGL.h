@@ -164,7 +164,7 @@ namespace OSDL
 		
 		
 			/// Exception to be raised when OpenGL operations fail.
-			class OSDL_DLL OpenGLException: public VideoException
+			class OSDL_DLL OpenGLException : public VideoException
 			{
 			
 				public:
@@ -286,6 +286,131 @@ namespace OSDL
 
 
 
+			/**
+			 * Lists the overall OpenGL features that can be enabled or not.
+			 *
+			 */
+			enum Feature { 
+			
+				/*
+				 * If enabled, computed fragment color values will be
+				 * blended with the values in the color buffers.
+				 * 
+				 */
+				Alphablending = GL_BLEND,
+				
+				
+				/*
+				 * If enabled, and no fragment shader is active, 
+				 * two-dimensional texturing is performed
+				 * (unless three-dimensional or cube-mapped texturing 
+				 * is also enabled).
+				 *
+				 */
+				TwoDimensionalTexturing = GL_TEXTURE_2D,
+				
+				
+				/*
+				 * If enabled, culls polygons based on their winding in 
+				 * window coordinates.
+				 *
+				 */
+				CullPolygons = GL_CULL_FACE,
+				
+				
+				/*
+				 * If enabled, depth comparisons will be done and the depth
+				 * buffer will be updated.
+				 *
+				 */
+				DepthTests = GL_DEPTH_TEST,
+				
+				
+				
+				
+				// Lighting section.
+				
+				
+				/*
+				 * If enabled, and no vertex shader is active, the current
+				 * lighting parameters will be used to compute the vertex 
+				 * color or index.
+				 * Otherwise, simply associates the current color or index
+				 * with each vertex.
+				 *
+				 */
+				Lighting = GL_LIGHTING,
+				
+				
+				/*
+				 * If enabled, includes light 1 in the evaluation of the
+				 * lighting equation.
+				 *
+				 */
+				Light_1 = GL_LIGHT0,
+
+
+				/*
+				 * If enabled, includes light 2 in the evaluation of the
+				 * lighting equation.
+				 *
+				 */
+				Light_2 = GL_LIGHT1,
+
+
+				/*
+				 * If enabled, includes light 3 in the evaluation of the
+				 * lighting equation.
+				 *
+				 */
+				Light_3 = GL_LIGHT2,
+			
+			
+				/*
+				 * If enabled, includes light 4 in the evaluation of the
+				 * lighting equation.
+				 *
+				 */
+				Light_4 = GL_LIGHT3,
+
+
+				/*
+				 * If enabled, includes light 5 in the evaluation of the
+				 * lighting equation.
+				 *
+				 */
+				Light_5 = GL_LIGHT4,
+
+
+				/*
+				 * If enabled, includes light 6 in the evaluation of the
+				 * lighting equation.
+				 *
+				 */
+				Light_6 = GL_LIGHT5,
+
+
+				/*
+				 * If enabled, includes light 7 in the evaluation of the
+				 * lighting equation.
+				 *
+				 */
+				Light_7 = GL_LIGHT6,
+
+
+				/*
+				 * If enabled, includes light 8 in the evaluation of the
+				 * lighting equation.
+				 *
+				 */
+				Light_8 = GL_LIGHT7
+
+
+			} ;
+				
+					
+							 
+			 
 			/**
 			 * An OpenGL context corresponds to the state of a running 
 			 * OpenGL screen. 
@@ -783,7 +908,15 @@ namespace OSDL
 					
 					
 					
-					// Static section.
+					/*
+					 * Static section.
+					 *
+					 * All static state-changing methods should probably set
+					 * as member methods of a context instance, even if it
+					 * would force the caller of always retrieving the 
+					 * context.
+					 *
+					 */
 										
 				
 					
@@ -812,20 +945,24 @@ namespace OSDL
 					/**
 					 * Enables specified feature in the OpenGL state machine.
 					 *
+					 * @param feature the feature to enable.
+					 *
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					static void EnableFeature( GLEnumeration feature ) ;
+					static void EnableFeature( OpenGL::Feature feature ) ;
 					
 					
 					
 					/**
 					 * Disables specified feature in the OpenGL state machine.
 					 *
+					 * @param feature the feature to disable.
+					 *
 					 * @throw OpenGLException if the operation failed.
 					 *
 					 */
-					static void DisableFeature( GLEnumeration feature ) ;
+					static void DisableFeature( OpenGL::Feature feature ) ;
 
 
 

@@ -328,7 +328,7 @@ void OpenGLContext::set2DFlavour()
 
 	
 	// No culling of faces used:
-	OpenGLContext::DisableFeature( GL_CULL_FACE ) ;
+	OpenGLContext::DisableFeature( CullPolygons ) ;
 	
 	setShadingModel( Flat ) ;
 
@@ -338,7 +338,7 @@ void OpenGLContext::set2DFlavour()
 	 * buffers: 
 	 *
 	 */
-	OpenGLContext::EnableFeature( GL_BLEND ) ;
+	OpenGLContext::EnableFeature( Alphablending ) ;
 	
 	/*
 	 * Ponders the source color components by its alpha coordinate Ac,
@@ -385,7 +385,7 @@ void OpenGLContext::set3DFlavour()
 	pushAttribute( GL_ENABLE_BIT ) ;
 
 	// Depth tests wanted:
-	EnableFeature( GL_DEPTH_TEST ) ;
+	EnableFeature( DepthTests ) ;
 
 	setShadingModel( Smooth ) ;
 	
@@ -394,7 +394,7 @@ void OpenGLContext::set3DFlavour()
 	 * buffers: 
 	 *
 	 */
-	EnableFeature( GL_BLEND ) ;
+	EnableFeature( Alphablending ) ;
 	
 	/*
 	 * Ponders the source color components by its alpha coordinate Ac,
@@ -578,9 +578,9 @@ void OpenGLContext::setCullingStatus( bool newStatus )
 #if OSDL_USES_SDL
 
 	if ( newStatus )
-		EnableFeature( GL_CULL_FACE ) ;
+		EnableFeature( CullPolygons ) ;
 	else
-		DisableFeature( GL_CULL_FACE ) ;
+		DisableFeature( CullPolygons ) ;
 	
 #else // OSDL_USES_SDL
 	
@@ -718,12 +718,12 @@ void OpenGLContext::setDepthBufferStatus( bool newStatus )
 
 	if ( newStatus )
 	{
-		EnableFeature( GL_DEPTH_TEST ) ;
+		EnableFeature( DepthTests ) ;
 		clearDepthBuffer() ;
 	}	
 	else
 	{
-		DisableFeature( GL_DEPTH_TEST ) ;
+		DisableFeature( DepthTests ) ;
 	}
 		
 #else // OSDL_USES_OPENGL
@@ -1272,11 +1272,40 @@ void OpenGLContext::SetUpForFlavour( OpenGL::Flavour flavour, bool safest )
 
 
 	
-void OpenGLContext::EnableFeature( GLEnumeration feature )
+void OpenGLContext::EnableFeature( OpenGL::Feature feature )
 {
 
 #if OSDL_USES_OPENGL
 	
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch( feature ) 
+	{
+	
+		case Alphablending:
+		case TwoDimensionalTexturing:
+		case CullPolygons:
+		case DepthTests:
+		case Lighting:
+		case Light_1:
+		case Light_2:
+		case Light_3:
+		case Light_4:
+		case Light_5:
+		case Light_6:
+		case Light_7:
+		case Light_8:
+			break ;
+		
+		default:
+			throw OpenGLException( "OpenGLContext::EnableFeature: "
+				"unexpected feature requested (" 
+				+ Ceylan::toString( feature ) + ")." ) ;
+				
+	}
+	
+#endif // OSDL_CHECK_OPENGL_CALLS
+
 	glEnable( feature ) ;
 	
 #if OSDL_CHECK_OPENGL_CALLS
@@ -1319,8 +1348,37 @@ void OpenGLContext::EnableFeature( GLEnumeration feature )
 
 
 
-void OpenGLContext::DisableFeature( GLEnumeration feature )
+void OpenGLContext::DisableFeature( Feature feature )
 {
+
+#if OSDL_CHECK_OPENGL_CALLS
+
+	switch( feature ) 
+	{
+	
+		case Alphablending:
+		case TwoDimensionalTexturing:
+		case CullPolygons:
+		case DepthTests:
+		case Lighting:
+		case Light_1:
+		case Light_2:
+		case Light_3:
+		case Light_4:
+		case Light_5:
+		case Light_6:
+		case Light_7:
+		case Light_8:
+			break ;
+			
+		default:
+			throw OpenGLException( "OpenGLContext::DisableFeature: "
+				"unexpected feature specified (" 
+				+ Ceylan::toString( feature ) + ")." ) ;
+				
+	}
+	
+#endif // OSDL_CHECK_OPENGL_CALLS
 
 #if OSDL_USES_OPENGL
 	
