@@ -516,7 +516,13 @@ void Data::ResourceManager::purge()
 			((*it).second)->unload() ;
 			
 	}
-		
+	
+	
+	/*
+	Ceylan::checkpoint( "ResourceManager is now purged, new state: " ) ;
+	displayLoadedResources() ;
+	 */
+	 	
 }
 
 
@@ -986,7 +992,8 @@ void Data::ResourceManager::registerResource(
 		resourcePath, id ) ) ;
 	
 	
-	ContentType resourceType = GetContentType( resourceStringifiedType ) ;
+	ContentType resourceType = GetContentType( resourceStringifiedType,
+		/* throwIfNotMatched */ false ) ;
 	
 	
 	if ( resourceType == Data::music )
@@ -1103,9 +1110,13 @@ void Data::ResourceManager::registerResource(
 	else
 	{
 	
-		send( "Resource in '" + resourcePath + "' has for type '" 
-			+ resourceStringifiedType + "', which is not managed." ) ;
+		string message = "Resource in '" + resourcePath + "' has for type '" 
+			+ resourceStringifiedType + "', which is not managed." ;
+			
+		send( message ) ;
 	
+		LogPlug::warning( message ) ;
+		
 		return ;
 		
 	}
