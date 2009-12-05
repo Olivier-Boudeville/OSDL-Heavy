@@ -2107,6 +2107,12 @@ void Surface::displayAt( const OpenGL::GLTexture & texture,
 
 #if OSDL_USES_OPENGL
 
+	/*
+	 * We suppose here that, if blending is enabled, the glColor4f-based 
+	 * overall alpha coordinate is equal to 1.0.
+	 *
+	 */
+
 	texture.setAsCurrent() ;
 		
 	glBegin(GL_QUADS) ; 
@@ -2144,6 +2150,12 @@ void Surface::displayCenteredHorizontallyAt( const OpenGL::GLTexture & texture,
 {
 
 #if OSDL_USES_OPENGL
+
+	/*
+	 * We suppose here that, if blending is enabled, the glColor4f-based 
+	 * overall alpha coordinate is equal to 1.0.
+	 *
+	 */
 
 	texture.setAsCurrent() ;
 	
@@ -2195,18 +2207,14 @@ void Surface::displayCenteredHorizontallyWithAlphaAt(
 	Coordinate xBegin = ( getWidth() - texture.getWidth() ) / 2 ;
 	Coordinate xEnd = xBegin + texture.getWidth() ;
 	
-	// First renders an alpha-blending background:
+	/*
+	 * This is actually the way we set the alpha-blending for next renderings,
+	 * including texture ones:
+	 *
+	 * Note: blending is supposed to be enabled.
+	 *
+	 */
 	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
-	glBegin(GL_QUADS);
-	{
-	
-		glVertex2d( xBegin, y ) ;
-		glVertex2d( xBegin, y + texture.getHeight() ) ;
-		glVertex2d( xEnd,   y + texture.getHeight() ) ;
-		glVertex2d( xEnd,   y ) ;
-	
-	}
-	glEnd() ;
 
 
 	// Then renders the texture itself:
@@ -2254,6 +2262,12 @@ void Surface::displayCenteredHorizontallyAt( const OpenGL::GLTexture & texture,
 
 #if OSDL_USES_OPENGL
 
+	/*
+	 * We suppose here that, if blending is enabled, the glColor4f-based 
+	 * overall alpha coordinate is equal to 1.0.
+	 *
+	 */
+
 	texture.setAsCurrent() ;
 	
 	Coordinate xBegin = xOffset ;
@@ -2300,6 +2314,12 @@ void Surface::displayAtCenter( const OpenGL::GLTexture & texture ) const
 
 #if OSDL_USES_OPENGL
 
+	/*
+	 * We suppose here that, if blending is enabled, the glColor4f-based 
+	 * overall alpha coordinate is equal to 1.0.
+	 *
+	 */
+
 	texture.setAsCurrent() ;
 	
 	Length firstAbscissa  = ( getWidth()  - texture.getWidth() ) / 2 ;
@@ -2345,7 +2365,6 @@ void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
 
 #if OSDL_USES_OPENGL
 
-	OpenGL::OpenGLContext::EnableFeature( GL_BLEND ) ;
 
 	Length firstAbscissa  = ( getWidth()  - texture.getWidth() ) / 2 ;
 	Length secondAbscissa = firstAbscissa + texture.getWidth() ;
@@ -2353,23 +2372,16 @@ void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
 	Length firstOrdinate  = ( getHeight() - texture.getHeight() ) / 2 ;
 	Length secondOrdinate = firstOrdinate + texture.getHeight() ;
 
-	// First renders an alpha-blending background:
+
+	/*
+	 * This is actually the way we set the alpha-blending for next renderings,
+	 * including texture ones:
+	 *
+	 * Note: blending is supposed to be enabled.
+	 *
+	 */
 	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
-	glBegin(GL_QUADS);
-	{
 	
-		glVertex2d( firstAbscissa, firstOrdinate ) ;
-		
-		glVertex2d( firstAbscissa, secondOrdinate ) ;
-		
-		glVertex2d( secondAbscissa, secondOrdinate ) ;
-		
-		glVertex2d( secondAbscissa, firstOrdinate ) ;
-	
-	}
-	glEnd() ;
-
-
 	texture.setAsCurrent() ;
 	
 	// Then renders the texture itself:
@@ -2391,10 +2403,7 @@ void Surface::displayAtCenterWithAlpha( const OpenGL::GLTexture & texture,
 	}
 	glEnd() ;
 
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f ) ;
-
-	//OpenGL::OpenGLContext::DisableFeature( GL_BLEND ) ;
-
+	
 #else // if OSDL_USES_OPENGL
 
 	throw VideoException( "Surface::displayAtCenterWithAlpha failed: "
@@ -2444,20 +2453,14 @@ void Surface::displayAtCenterWithFadeIn( const OpenGL::GLTexture & texture,
 		clear() ;
 
 	
+		/*
+		 * This is actually the way we set the alpha-blending for next
+		 * renderings, including texture ones:
+		 *
+		 * Note: blending is supposed to be enabled.
+		 *
+		 */
 		glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
-		glBegin(GL_QUADS);
-		{
-	
-			glVertex2d( firstAbscissa, firstOrdinate ) ;
-		
-			glVertex2d( firstAbscissa, secondOrdinate ) ;
-	
-			glVertex2d( secondAbscissa, secondOrdinate ) ;
-	
-			glVertex2d( secondAbscissa, firstOrdinate ) ;
-	
-		}
-		glEnd() ;
 
 	
 		glBegin(GL_QUADS) ;
@@ -2543,20 +2546,14 @@ void Surface::displayAtCenterWithFadeOut( const OpenGL::GLTexture & texture,
 		clear() ;
 
 	
+		/*
+		 * This is actually the way we set the alpha-blending for next
+		 * renderings, including texture ones:
+		 *
+		 * Note: blending is supposed to be enabled.
+		 *
+		 */
 		glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
-		glBegin(GL_QUADS);
-		{
-	
-			glVertex2d( firstAbscissa, firstOrdinate ) ;
-		
-			glVertex2d( firstAbscissa, secondOrdinate ) ;
-	
-			glVertex2d( secondAbscissa, secondOrdinate ) ;
-	
-			glVertex2d( secondAbscissa, firstOrdinate ) ;
-	
-		}
-		glEnd() ;
 
 	
 		glBegin(GL_QUADS) ;
@@ -2610,6 +2607,12 @@ void Surface::displayInFullscreen( const OpenGL::GLTexture & texture ) const
 
 #if OSDL_USES_OPENGL
 
+	/*
+	 * We suppose here that, if blending is enabled, the glColor4f-based 
+	 * overall alpha coordinate is equal to 1.0.
+	 *
+	 */
+	
 	texture.setAsCurrent() ;
 	
 	Length firstAbscissa  = 0 ;
@@ -2655,7 +2658,6 @@ void Surface::displayInFullscreenWithAlpha( const OpenGL::GLTexture & texture,
 
 #if OSDL_USES_OPENGL
 
-	OpenGL::OpenGLContext::EnableFeature( GL_BLEND ) ;
 
 	Length firstAbscissa  = 0 ;
 	Length secondAbscissa = getWidth() ; 
@@ -2664,23 +2666,16 @@ void Surface::displayInFullscreenWithAlpha( const OpenGL::GLTexture & texture,
 	Length secondOrdinate = getHeight() ;
 	
 
-	// First render an alpha-blending background:
+	/*
+	 * This is actually the way we set the alpha-blending for next renderings,
+	 * including texture ones:
+	 *
+	 * Note: blending is supposed to be enabled.
+	 *
+	 */
 	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
-	glBegin(GL_QUADS);
-	{
 	
-		glVertex2d( firstAbscissa, firstOrdinate ) ;
-		
-		glVertex2d( firstAbscissa, secondOrdinate ) ;
-		
-		glVertex2d( secondAbscissa, secondOrdinate ) ;
-		
-		glVertex2d( secondAbscissa, firstOrdinate ) ;
-	
-	}
-	glEnd() ;
-	
-	
+
 	// Then renders the texture itself:
 	texture.setAsCurrent() ;
 	
@@ -2721,7 +2716,6 @@ void Surface::displayInFullscreenSizeWithAlphaAt(
 
 #if OSDL_USES_OPENGL
 
-	OpenGL::OpenGLContext::EnableFeature( GL_BLEND ) ;
 
 	Length firstAbscissa  = x ;
 	Length secondAbscissa = x+ getWidth() ; 
@@ -2730,21 +2724,14 @@ void Surface::displayInFullscreenSizeWithAlphaAt(
 	Length secondOrdinate = y + getHeight() ;
 	
 
-	// First render an alpha-blending background:
+	/*
+	 * This is actually the way we set the alpha-blending for next renderings,
+	 * including texture ones:
+	 *
+	 * Note: blending is supposed to be enabled.
+	 *
+	 */
 	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
-	glBegin(GL_QUADS);
-	{
-	
-		glVertex2d( firstAbscissa, firstOrdinate ) ;
-		
-		glVertex2d( firstAbscissa, secondOrdinate ) ;
-		
-		glVertex2d( secondAbscissa, secondOrdinate ) ;
-		
-		glVertex2d( secondAbscissa, firstOrdinate ) ;
-	
-	}
-	glEnd() ;
 	
 	
 	// Then renders the texture itself:
@@ -2777,6 +2764,9 @@ void Surface::displayInFullscreenSizeWithAlphaAt(
 #endif // OSDL_USES_OPENGL
 
 }
+
+
+
 
 
 
@@ -3121,13 +3111,12 @@ void Surface::update()
 	switch( _displayType )
 	{
 	
-	
 		case BackBuffer:
 			LogPlug::warning( "Surface::update requested on a "
 				"non-screen surface! (nothing done)" ) ;			
 			break ;
 	
-	
+
 		case ClassicalScreenSurface:
 #if OSDL_DEBUG_WIDGET
 			LogPlug::trace( 

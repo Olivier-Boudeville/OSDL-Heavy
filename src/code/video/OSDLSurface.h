@@ -2266,7 +2266,8 @@ namespace OSDL
 				 *
 				 * @param texture the texture to map.
 				 *
-				 * @param y the ordinate the texture will be displayed at.
+				 * @param y the ordinate the texture will be displayed from
+				 * (i.e. the top ordinate).
 				 *
 				 * @throw VideoException if the operation failed.
 				 *
