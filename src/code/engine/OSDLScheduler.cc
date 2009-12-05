@@ -2514,8 +2514,8 @@ void Scheduler::scheduleBestEffort()
 	table += "</table>" ;	
 	
 	if ( Ceylan::TextDisplayable::GetOutputFormat() ==
-		Ceylan::TextDisplayable::html )
-	send( table ) ;
+			Ceylan::TextDisplayable::html )
+		send( table ) ;
 	
 	list<string> summary ;
 	
