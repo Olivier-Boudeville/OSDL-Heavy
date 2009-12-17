@@ -885,6 +885,17 @@ void Scheduler::stop()
 
 
 
+void Scheduler::setStopCallback( Ceylan::System::Callback stopCallback, 
+	void * callbackData )
+{
+
+	_stopCallback = stopCallback ;
+	_stopCallbackData = callbackData ;
+	
+}
+
+
+
 const string Scheduler::toString( Ceylan::VerbosityLevels level ) const 
 {	
 
@@ -1277,6 +1288,8 @@ Scheduler::Scheduler():
 	_idleCallsCount( 0 ),
 	_isRunning( false ),
 	_stopRequested( false ),
+	_stopCallback( 0 ),
+	_stopCallbackData( 0 ),
 	_scheduleStartingSecond( 0 ),
 	_scheduleStartingMicrosecond( 0 ),
 	_recoveredSimulationTicks( 0 ),
@@ -3063,7 +3076,15 @@ void Scheduler::scheduleBestEffort()
 #endif // OSDL_DEBUG_SCHEDULER
 	
 	_isRunning = false ;
+
+	if ( _stopCallback != 0 )
+	{
 	
+		// Calls the user-supplied stop callback:
+		(*_stopCallback)( _stopCallbackData ) ;
+		
+	}
+			
 }
 
 	
@@ -3430,6 +3451,14 @@ void Scheduler::scheduleNoDeadline( bool pollInputs )
 
 	_isRunning = false ;
 	
+	if ( _stopCallback != 0 )
+	{
+	
+		// Calls the user-supplied stop callback:
+		(*_stopCallback)( _stopCallbackData ) ;
+		
+	}
+	
 }
 
 
@@ -3733,7 +3762,7 @@ void Scheduler::onIdle()
 	if ( _idleCallback != 0 )
 	{
 	
-		// Call the user-supplied idle callback:
+		// Calls the user-supplied idle callback:
 		(*_idleCallback)( _idleCallbackData ) ;
 		
 	}
