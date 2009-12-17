@@ -190,6 +190,7 @@ Font::Font(
 
 			if ( quota == 0 )
 				quota = DefaultGlyphCachedQuota ;
+				
 			SmartResourceManager<CharColorQualityKey>::CachePolicy
 				actualGlyphPolicy ;
 				
@@ -200,6 +201,7 @@ Font::Font(
 			 */
 			switch( cachePolicy )
 			{	
+			
 				case NeverDrop:
 					actualGlyphPolicy =
 						SmartResourceManager<CharColorQualityKey>::NeverDrop ;
@@ -216,6 +218,7 @@ Font::Font(
 						"with glych cache: forbidden cache settings" ) ;		
 						
 					break ;	
+					
 			}		
 			
 			_glyphCache = new SmartResourceManager<CharColorQualityKey>( quota, 
@@ -427,7 +430,7 @@ Width Font::getInterGlyphWidth() const
 
 
 OSDL::Video::Surface & Font::renderLatin1Text( const std::string & text,
-		RenderQuality quality, Pixels::ColorDefinition textColor ) 
+	RenderQuality quality, Pixels::ColorDefinition textColor ) 
 {
 
 	// Different cases, depending on cache settings:
@@ -1617,12 +1620,14 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	
 	/*
 	 * Retrieves the rightmost abscissa that could be drawn:  
-	 * (character width should be used instead of advance so that its 
-	 * rightmost part is not truncated).
+	 * (character width should be taken into account in addition to
+	 * advance, so that its rightmost part is not truncated, as none is
+	 * always smaller than the other):
 	 *
 	 */
  	maxWidth = horizSteps[ textSize - 1 ] + currentOffset 
-		+ getWidth( currentChar ) ;
+		+ Ceylan::Maths::Max<Ceylan::Sint32>( getWidth( currentChar ), 
+			getAdvance( currentChar ) ) ;
 			
 #if OSDL_DEBUG_FONT
 
