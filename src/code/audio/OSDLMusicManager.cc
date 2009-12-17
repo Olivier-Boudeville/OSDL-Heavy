@@ -214,6 +214,15 @@ void MusicPlaybackSetting::startPlayback()
 
 
 
+void MusicPlaybackSetting::stopPlayback()
+{
+
+	_music->stop() ;
+
+}
+
+
+
 bool MusicPlaybackSetting::onPlaybackEnded()
 {
 
@@ -291,6 +300,8 @@ MusicManager::MusicManager():
 MusicManager::~MusicManager() throw()
 {
 
+	Ceylan::checkpoint( "MusicManager destructor." ) ;
+	
 	send( "Deleting music manager, whose state was: " + toString() ) ;
 
 
@@ -319,9 +330,7 @@ MusicManager::~MusicManager() throw()
 			
 	}		
 
-
-	if ( _currentMusicPlayback != 0 )
-		stopCurrentMusicPlayback() ;
+	stopCurrentMusicPlayback() ;
 	
 }
 
@@ -439,6 +448,15 @@ void MusicManager::startNextMusicPlayback()
 void MusicManager::stopCurrentMusicPlayback()
 {
 
+	Ceylan::checkpoint( "MusicManager::stopCurrentMusicPlayback." ) ;
+	
+	if ( _currentMusicPlayback != 0 )
+	{
+	
+		_currentMusicPlayback->stopPlayback() ;
+	
+	}
+	
 #if OSDL_USES_SDL_MIXER
 	
 	/*
@@ -478,6 +496,8 @@ void MusicManager::stopCurrentMusicPlayback()
 void MusicManager::onMusicPlaybackFinished() 
 {
 
+	Ceylan::checkpoint( "MusicManager::onMusicPlaybackFinished." ) ;
+	
 	if ( _currentMusicPlayback == 0 )
 	{
 	
