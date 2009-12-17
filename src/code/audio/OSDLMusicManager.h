@@ -55,7 +55,7 @@ namespace OSDL
 		
 			
 		/// Exceptions raised by MusicManager instances. 		
-		class OSDL_DLL MusicManagerException: public AudioException
+		class OSDL_DLL MusicManagerException : public AudioException
 		{ 
 			public: 
 			
@@ -146,6 +146,14 @@ namespace OSDL
 				 *
 				 */
 				virtual void startPlayback() ;
+				
+					
+				/**
+				 * Stops immediately the play-back corresponding to these
+				 * settings.
+				 *
+				 */
+				virtual void stopPlayback() ;
 				
 				
 				
