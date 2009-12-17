@@ -526,7 +526,7 @@ namespace OSDL
 				 * would make the scheduler fail constantly because of 
 				 * its idle function. 
 				 *
-				 * @param idleCallback the idle callback, which can be 
+				 * @param idleCallback the idle callback, which can be set to
 				 * null (0) to specify no idle callback is wanted.
 				 *
 				 * @param callbackData the user-supplied data pointer 
@@ -714,6 +714,24 @@ namespace OSDL
 				 *
 				 */
 				virtual void stop() ;
+				
+				
+				
+				/**
+				 * Registers a new stop callback, which will be called each
+				 * time the scheduler stops.
+				 *
+				 * @param stopCallback the callback to register, which can be
+				 * either a function or a static method; it can be set to
+				 * null (0) to specify no stop callback is wanted.
+				 *
+				 * @param callbackData the user-supplied data pointer 
+				 * that the stop callback will be given, if not null.
+				 *
+				 */
+				virtual void setStopCallback( 
+					Ceylan::System::Callback stopCallback = 0 , 
+					void * callbackData = 0 ) ;
 				
 				 
 				 						
@@ -1519,8 +1537,7 @@ namespace OSDL
 				 */
 				Ceylan::System::Callback _idleCallback ;
 						
-					
-								
+							
 				/**
 				 * The data, if any, to provide to the idle callback.
 				 *
@@ -1528,7 +1545,7 @@ namespace OSDL
 				void * _idleCallbackData ;				
 		
 		
-		
+				
 				/**
 				 * An estimated upper bound of the duration of current idle
 				 * callback. 
@@ -1571,9 +1588,26 @@ namespace OSDL
 				bool _isRunning ;
 				
 				
+				
+				// Stop section.
+		
 		
 				/// Tells whether the scheduler has been requested to stop.
 				bool _stopRequested ;
+		
+		
+				/**
+				 * The stop callback, if any, to be called by the scheduler.
+				 *
+				 */
+				Ceylan::System::Callback _stopCallback ;
+		
+								
+				/**
+				 * The data, if any, to provide to the stop callback.
+				 *
+				 */
+				void * _stopCallbackData ;				
 		
 		
 		
