@@ -2144,6 +2144,52 @@ void Surface::displayAt( const OpenGL::GLTexture & texture,
 }
 
 
+void Surface::displayWithAlphaAt( const OpenGL::GLTexture & texture,
+	Coordinate x, Coordinate y, Pixels::FloatColorElement alpha ) const	
+{
+
+#if OSDL_USES_OPENGL
+
+	/*
+	 * This is actually the way we set the alpha-blending for next renderings,
+	 * including texture ones:
+	 *
+	 * Note: blending is supposed to be enabled.
+	 *
+	 */
+	glColor4f( 1.0f, 1.0f, 1.0f, alpha ) ;
+
+	texture.setAsCurrent() ;
+		
+	glBegin(GL_QUADS) ; 
+	{
+	
+		glTexCoord2d( 0, 0 ) ;
+		glVertex2d( x, y ) ;
+		
+		glTexCoord2d( 0, 1 ) ;
+		glVertex2d( x, y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 1 ) ;
+		glVertex2d( x + texture.getWidth(), y + texture.getHeight() ) ;
+		
+		glTexCoord2d( 1, 0 ) ;
+		glVertex2d( x + texture.getWidth(), y ) ;
+		
+	}
+	glEnd() ;
+
+
+#else // if OSDL_USES_OPENGL
+
+	throw VideoException( "Surface::displayWithAlphaAt failed: "
+		"no OpenGL support available." ) ;
+		
+#endif // OSDL_USES_OPENGL
+
+}
+
+
 
 void Surface::displayCenteredHorizontallyAt( const OpenGL::GLTexture & texture,
 	Coordinate y ) const	
