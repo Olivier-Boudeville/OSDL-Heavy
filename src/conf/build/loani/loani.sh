@@ -1398,10 +1398,20 @@ for t in $target_list; do
 	if [ $use_svn -eq 0 ] ; then
 		
 		# Now, as soon as SVN is used for a package, we return res=2:
-		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "Ceylan_Erlang" -o "$t" = "OSDL" -o "$t" = "OSDL_win" -o "$t" = "Orge" -o "$t" = "egeoip" ] ; then
+		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "Ceylan_Erlang" -o "$t" = "OSDL" -o "$t" = "OSDL_win" ] ; then
 			res=2
 		fi
 		
+	fi
+
+	
+	# Note: some tools are always accessed thanks to SVN, they must be tested
+	# inconditionally as such, otherwise as soon as LOANI is run without the
+	# --sourceforge option, we have errors like: '[: 1: Illegal number:' and
+	# a giant integer.
+	
+	if [ "$t" = "Orge" -o "$t" = "egeoip" ] ; then
+		res=2
 	fi
 	
 	if [ ! $res -eq 2 ] ; then
