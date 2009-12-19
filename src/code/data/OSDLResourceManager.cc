@@ -453,7 +453,7 @@ void Data::ResourceManager::discardTexture( Ceylan::ResourceID textureId )
 	if ( it == _textureMap.end() )
 		throw ResourceManagerException( "ResourceManager::discardTexture: "
 			"no texture with ID #" + Ceylan::toString( textureId ) 
-			+ "found." ) ;
+			+ " found." ) ;
 	
 	// Ensures the texture is removed from video card and deleted:
 	_textureMap.erase( it ) ;
