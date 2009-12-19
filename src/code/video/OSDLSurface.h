@@ -123,7 +123,7 @@ namespace OSDL
 		 * to its widgets (listeners).
 		 *
 		 */
-		class OSDL_DLL SurfaceEvent: public Ceylan::Event
+		class OSDL_DLL SurfaceEvent : public Ceylan::Event
 		{
 		
 			public:
@@ -140,7 +140,7 @@ namespace OSDL
 		
 		
 		/// Thrown when video memory has been lost.
-		class OSDL_DLL VideoMemoryLostException: public VideoException
+		class OSDL_DLL VideoMemoryLostException : public VideoException
 		{
 		
 			public:
@@ -2257,6 +2257,35 @@ namespace OSDL
 				 */	
 				virtual void displayAt( const OpenGL::GLTexture & texture,
 					Coordinate x, Coordinate y ) const ;
+				 
+				 
+				/**
+				 * Displays the specified texture at the specified location
+				 * on that surface, supposed to be the screen surface, at
+				 * natural size (i.e. one pixel of the texture corresponds
+				 * exactly to one pixel on the screen).
+				 *
+				 * @param texture the texture to map.
+				 *
+				 * @param x the abscissa screen coordinate.
+				 *
+				 * @param y the ordiante screen coordinate.
+				 *
+				 * @param alpha a floating-point value in [0,1], from
+				 * invisible to solid.
+				 *
+				 * @throw VideoException if the operation failed.
+				 *
+				 * @note If the texture is bigger than the surface, then
+				 * only a part of the texture will be displayed.
+				 *
+				 * @note Should be used only when in OpenGLFor2D mode. 
+				 *
+				 */	
+				virtual void displayWithAlphaAt( 
+					const OpenGL::GLTexture & texture,
+					Coordinate x, Coordinate y, 
+					Pixels::FloatColorElement alpha ) const ;
 				 
 				 
 				 
