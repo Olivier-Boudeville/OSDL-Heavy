@@ -542,7 +542,7 @@ void Data::ResourceManager::displayLoadedResources()
 		if ( ((*it).second)->hasContent() )
 			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
 				+ ": " + (*it).second->toString(level)
-				+ ") and whose reference count is " 
+				+ " and whose reference count is " 
 				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 	}	
@@ -556,7 +556,7 @@ void Data::ResourceManager::displayLoadedResources()
 		if ( ((*it).second)->hasContent() )
 			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
 				+ ": " + (*it).second->toString(level)
-				+ ") and whose reference count is " 
+				+ " and whose reference count is " 
 				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 	}	
@@ -570,7 +570,7 @@ void Data::ResourceManager::displayLoadedResources()
 		if ( ((*it).second)->hasContent() )
 			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
 				+ ": " + (*it).second->toString(level)
-				+ ") and whose reference count is " 
+				+ " and whose reference count is " 
 				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 	}	
@@ -584,7 +584,7 @@ void Data::ResourceManager::displayLoadedResources()
 		if ( ((*it).second)->hasContent() )
 			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
 				+ ": " + (*it).second->toString(level)
-				+ ") and whose reference count is " 
+				+ " and whose reference count is " 
 				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 	}	
@@ -598,7 +598,7 @@ void Data::ResourceManager::displayLoadedResources()
 		if ( ((*it).second)->hasContent() )
 			loadedList.push_back( "ID #" + Ceylan::toString( (*it).first )
 				+ ": " + (*it).second->toString(level)
-				+ ") and whose reference count is " 
+				+ " and whose reference count is " 
 				+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 	}	
@@ -649,7 +649,7 @@ const string Data::ResourceManager::toString(
 			
 				musics.push_back( (*it).second->toString(level)
 					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ ") and whose reference count is " 
+					+ " and whose reference count is " 
 					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 			}	
@@ -690,7 +690,7 @@ const string Data::ResourceManager::toString(
 			
 				sounds.push_back( (*it).second->toString(level)
 					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ ") and whose reference count is " 
+					+ " and whose reference count is " 
 					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 			}	
@@ -731,7 +731,7 @@ const string Data::ResourceManager::toString(
 			
 				images.push_back( (*it).second->toString(level)
 					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ ") and whose reference count is " 
+					+ " and whose reference count is " 
 					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 			}	
@@ -772,7 +772,7 @@ const string Data::ResourceManager::toString(
 			
 				textures.push_back( (*it).second->toString(level)
 					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ ") and whose reference count is " 
+					+ " and whose reference count is " 
 					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 			}	
@@ -814,7 +814,7 @@ const string Data::ResourceManager::toString(
 			
 				trueTypeFonts.push_back( (*it).second->toString(level)
 					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ ") and whose reference count is " 
+					+ " and whose reference count is " 
 					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
 			
 			}	
@@ -995,7 +995,12 @@ void Data::ResourceManager::registerResource(
 	ContentType resourceType = GetContentType( resourceStringifiedType,
 		/* throwIfNotMatched */ false ) ;
 	
-	
+	if ( resourceType == Data::unknown )
+		throw ResourceManagerException( 
+			"ResourceManager::registerResource: the resource whose path is '"
+			+ resourcePath + "' is not of a known content type. "
+			"Forgot to post-process it, or to remove this file?" ) ;
+			
 	if ( resourceType == Data::music )
 	{
 	
