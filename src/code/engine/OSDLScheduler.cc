@@ -3080,8 +3080,20 @@ void Scheduler::scheduleBestEffort()
 	if ( _stopCallback != 0 )
 	{
 	
+		//Ceylan::checkpoint( "Scheduler calling stop callback." ) ;
+		
 		// Calls the user-supplied stop callback:
 		(*_stopCallback)( _stopCallbackData ) ;
+		
+	}
+	else
+	{
+	
+		/*
+		 
+		 Ceylan::checkpoint( "Scheduler not having a stop callback to call." ) ;
+		 
+		 */
 		
 	}
 			
