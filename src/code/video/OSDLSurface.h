@@ -2245,7 +2245,7 @@ namespace OSDL
 				 *
 				 * @param x the abscissa screen coordinate.
 				 *
-				 * @param y the ordiante screen coordinate.
+				 * @param y the ordinate screen coordinate.
 				 *
 				 * @throw VideoException if the operation failed.
 				 *
@@ -2269,7 +2269,7 @@ namespace OSDL
 				 *
 				 * @param x the abscissa screen coordinate.
 				 *
-				 * @param y the ordiante screen coordinate.
+				 * @param y the ordinate screen coordinate.
 				 *
 				 * @param alpha a floating-point value in [0,1], from
 				 * invisible to solid.
@@ -2512,7 +2512,7 @@ namespace OSDL
 				 *
 				 * @param x the abscissa screen coordinate.
 				 *
-				 * @param y the ordiante screen coordinate.
+				 * @param y the ordinate screen coordinate.
 				 *
 				 * @param alpha a floating-point value in [0,1], from
 				 * invisible to solid.
