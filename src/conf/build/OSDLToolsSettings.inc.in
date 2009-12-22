@@ -208,18 +208,18 @@ freetype_osx_precompiled_MD5="xxx"
 
 # Sources.
  
-# Actually 2.0.9 (defined in configure-template.ac):
+# Actually 2.0.10 (defined in configure-template.ac):
 SDL_ttf_VERSION="@SDL_TTF_RECOMMENDED_VERSION@"
 SDL_ttf_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}.tar.gz"
 SDL_ttf_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_ttf_MD5="6dd5a85e4924689a35a5fb1cb3336156"
+SDL_ttf_MD5=""
 
 SDL_ttf_win_VERSION="$SDL_ttf_VERSION"
 SDL_ttf_win_ARCHIVE="SDL_ttf-${SDL_ttf_win_VERSION}.zip"
 SDL_ttf_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_ttf_win_MD5="d805ed95eec4bbb09a97109fd1246976"
+SDL_ttf_win_MD5=""
 
 
 
@@ -454,10 +454,10 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R13B02-1"
+Erlang_VERSION="R13B03"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5="2593b9312eb1b15bf23a968743138c52"
+Erlang_MD5="411fcb29f0819973f71e28f6b56d9948"
 
 
 
@@ -476,8 +476,8 @@ egeoip_SVN_SERVER="egeoip.googlecode.com"
 
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
-# Version of 10-Oct-2009:
-Geolite_MD5="f844bf1bd7dc8502997dbed6ffc6229e"
+# Version of Saturday, December 19, 2009:
+Geolite_MD5="a7205fed358dadbdacd266a9c85c72b4"
 
 
 
