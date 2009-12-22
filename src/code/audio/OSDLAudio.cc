@@ -589,6 +589,8 @@ Ceylan::System::Millisecond AudioModule::getObtainedMode(
 void AudioModule::unsetMode()
 {
 
+	//Ceylan::checkpoint( "AudioModule::unsetMode." ) ;
+	
 #if OSDL_USES_SDL_MIXER
 
 	if ( _mixerInitialized )
