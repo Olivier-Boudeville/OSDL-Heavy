@@ -381,8 +381,14 @@ void OpenGLContext::set3DFlavour()
 
 	_flavour = OpenGLFor3D ;
 
-	// Saves a lot of the OpenGL state machine:
-	pushAttribute( GL_ENABLE_BIT ) ;
+	/*
+	 * Saves a lot of the OpenGL state machine:
+	 * Actually setting explicitly the OpenGL state is preferred here
+	 * to pushing/popping it (more reliable).
+	 *
+	 */
+	//pushAttribute( GL_ENABLE_BIT ) ;
+	
 
 	// Depth tests wanted:
 	EnableFeature( DepthTests ) ;
@@ -406,7 +412,7 @@ void OpenGLContext::set3DFlavour()
 	GLTexture::SetTextureFlavour( GLTexture::For3D ) ;
 
 	glMatrixMode( GL_PROJECTION ) ;
-	glPushMatrix() ;
+	//glPushMatrix() ;
 	glLoadIdentity() ;
 
 	gluPerspective( /* angle of view */ 45.0f, 
