@@ -257,6 +257,8 @@ Music::~Music() throw()
 		
 	}
 	
+	//Ceylan::checkpoint( "Music deallocated." ) ;
+	
 	//LogPlug::trace( "Music deallocated." ) ;
 	
 }
@@ -487,6 +489,8 @@ bool Music::unload()
 	
 #if OSDL_USES_SDL_MIXER
 
+	//Ceylan::checkpoint( "Music::unload: Mix_FreeMusic." ) ;
+	
 	// Deallocation of SDL_RWops inspired from playmus.c:
 	::Mix_FreeMusic( _content ) ;
 	
@@ -1020,7 +1024,9 @@ void Music::stop()
 #else // OSDL_ARCH_NINTENDO_DS
 
 #if OSDL_USES_SDL_MIXER
-	
+
+	//Ceylan::checkpoint( "Music::stop." ) ;
+		
 	// No test performed about music availability:
 	::Mix_HaltMusic() ;
 			
