@@ -169,7 +169,7 @@ namespace OSDL
 
 			
 		/// Exceptions raised by Music instances. 		
-		class OSDL_DLL MusicException: public AudibleException
+		class OSDL_DLL MusicException : public AudibleException
 		{ 
 			public: 
 			
