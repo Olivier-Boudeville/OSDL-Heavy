@@ -351,7 +351,7 @@ void MusicManager::enqueue( Music & music, PlaybackCount count,
 	
 	_playList.push_back( newSetting ) ;
 		
-	// Starts playback immediately if none is in progress:	
+	// Starts playback immediately if none is currently in progress:	
 	if ( _currentMusicPlayback == 0 )
 		startNextMusicPlayback() ;
 	
@@ -459,6 +459,8 @@ void MusicManager::stopCurrentMusicPlayback()
 	
 #if OSDL_USES_SDL_MIXER
 	
+	LogPlug::trace( "MusicManager::stopCurrentMusicPlayback" ) ;
+	
 	/*
 	 * No test performed about music availability:
 	 * (and should trigger the proper onMusicPlaybackFinished callback)
@@ -487,6 +489,8 @@ void MusicManager::stopCurrentMusicPlayback()
 		LogPlug::warning( "MusicManager::stopCurrentMusicPlayback: "
 			"no music was being played." ) ;
 			
+	}
+	
 	}
 	
 }
