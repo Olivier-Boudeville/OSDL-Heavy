@@ -284,14 +284,20 @@ namespace OSDL
 						/**
 						 * Loads the font from file with specified point size.
 						 *
+						 * @param newPointSize the desired new point size.
+						 *
 						 * @return true iff the font had to be actually loaded
 						 * whereas not being loaded at all initially.
 						 *
 						 * @throw Ceylan::LoadableException whenever the 
 						 * loading fails.
 						 *
+						 * @note If the font was already loaded, and with a
+						 * a different point size, then it will be unloaded
+						 * then reloaded with the newer point size.
+						 *
 						 */
-						virtual bool load( PointSize PointSize ) ;
+						virtual bool load( PointSize newPointSize ) ;
 		
 		
 						

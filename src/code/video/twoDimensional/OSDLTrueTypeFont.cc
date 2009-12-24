@@ -191,6 +191,11 @@ bool TrueTypeFont::load()
 	try
 	{
     
+		/*
+		Ceylan::checkpoint( "TrueTypeFont::load: actual loading for size "
+		 	+ Ceylan::toString( _pointSize ) ) ;
+		 */
+		 
 		// Will be deleted by the IMG_Load_RW close callback:
 		Ceylan::System::File & fontFile = File::Open( _contentPath ) ;
 
@@ -240,7 +245,6 @@ bool TrueTypeFont::load()
 bool TrueTypeFont::unload()
 {
 
-
 	if ( ! hasContent() )
 		return false ;
 
@@ -256,7 +260,13 @@ bool TrueTypeFont::unload()
 #if OSDL_USES_SDL_TTF
 
 	if ( _content != 0 )
+	{
+	
+		//Ceylan::checkpoint( "TrueTypeFont::unload: actual unloading." ) ;
+		
 		::TTF_CloseFont( _content ) ;
+	
+	}	
 		
 	FontCounter-- ;
 	
@@ -281,10 +291,10 @@ bool TrueTypeFont::unload()
 
 
 
-bool TrueTypeFont::load( PointSize PointSize )
+bool TrueTypeFont::load( PointSize newPointSize )
 {
 
-	setPointSize( PointSize ) ;
+	setPointSize( newPointSize ) ;
 	
 	return load() ;
 		
@@ -304,7 +314,7 @@ PointSize TrueTypeFont::getPointSize() const
 void TrueTypeFont::setPointSize( PointSize newPointSize )
 {
 
-	// Unchanged size? Then nothing to do:
+	// Unchanged size? Then nothing to do, whether loaded or not:
 	if ( newPointSize == _pointSize )
 		return ;
 	
@@ -314,7 +324,7 @@ void TrueTypeFont::setPointSize( PointSize newPointSize )
 	if ( ! hasContent() )
 		return ;
 		
-	// Here, already loaded, we must preserve that fact:
+	// Here, already loaded, we must preserve that fact and set the point size:
 		
 	unload() ;
 	
