@@ -375,12 +375,20 @@ namespace OSDL
 				 *
 				 * @param id the resource identifier for that font.
 				 *
+				 * @param pointSize the targeted point size; it must be
+				 * specified as otherwise, since a returned resource must
+				 * always be loaded (due to conventions), it would be loaded
+				 * with the default point size which is seldom the one wanted,
+				 * thus it would have to be unloaded and then reloaded with
+				 * the correct size, when wanting to use it for real. 
+				 *
 				 * @throw ResourceManagerException if the font could not be
 				 * found.
 				 *
 				 */
 			 	virtual Video::TwoDimensional::Text::TrueTypeFontCountedPtr
-					getTrueTypeFont( Ceylan::ResourceID id ) ; 
+					getTrueTypeFont( Ceylan::ResourceID id,
+						Video::TwoDimensional::Text::PointSize pointSize ) ; 
 					
 					
 					
@@ -393,18 +401,26 @@ namespace OSDL
 				 * identifier which will be then used to return a corresponding
 				 * counted font pointer.
 				 *
+				 * @param pointSize the targeted point size; it must be
+				 * specified as otherwise, since a returned resource must
+				 * always be loaded (due to conventions), it would be loaded
+				 * with the default point size which is seldom the one wanted,
+				 * thus it would have to be unloaded and then reloaded with
+				 * the correct size, when wanting to use it for real. 
+				 *
 				 * @throw ResourceManagerException if the font could not be
 				 * found.
 				 *
 				 */
 			 	virtual Video::TwoDimensional::Text::TrueTypeFontCountedPtr
-					getTrueTypeFont( const std::string & fontPath ) ; 
+					getTrueTypeFont( const std::string & fontPath,
+						Video::TwoDimensional::Text::PointSize pointSize ) ; 
 					
 					
 				
 					
 				/**
-				 * Discards permanently specified texture entry from this
+				 * Discards permanently the specified texture entry from this
 				 * manager.
 				 * 
 				 * @note Useful for resources like generated textures that
@@ -417,7 +433,7 @@ namespace OSDL
 				 *
 				 */
 				 virtual void discardTexture( Ceylan::ResourceID textureId ) ;	
-				
+								
 					
 					
 				/**

@@ -401,7 +401,8 @@ std::pair<Video::OpenGL::TextureCountedPtr,Ceylan::ResourceID>
 					
 
 Video::TwoDimensional::Text::TrueTypeFontCountedPtr
-	Data::ResourceManager::getTrueTypeFont( Ceylan::ResourceID id )
+	Data::ResourceManager::getTrueTypeFont( Ceylan::ResourceID id,
+	Text::PointSize pointSize )
 {
 
 	map<ResourceID,Text::TrueTypeFontCountedPtr>::iterator it = 
@@ -414,7 +415,7 @@ Video::TwoDimensional::Text::TrueTypeFontCountedPtr
 	Video::TwoDimensional::Text::TrueTypeFontCountedPtr res = (*it).second ;
 	
 	// Ensures a returned resource is always loaded:
-	res->load() ;
+	res->load( pointSize ) ;
 	
 	return res ;
 			
@@ -423,7 +424,8 @@ Video::TwoDimensional::Text::TrueTypeFontCountedPtr
 
 
 Video::TwoDimensional::Text::TrueTypeFontCountedPtr
-	Data::ResourceManager::getTrueTypeFont( const string & fontPath )
+	Data::ResourceManager::getTrueTypeFont( const string & fontPath,
+	Text::PointSize pointSize )
 {
 
 	map<ResourceID,Text::TrueTypeFontCountedPtr>::iterator it =
@@ -436,7 +438,7 @@ Video::TwoDimensional::Text::TrueTypeFontCountedPtr
 	Text::TrueTypeFontCountedPtr res = (*it).second ;
 	
 	// Ensures a returned resource is always loaded:
-	res->load() ;
+	res->load( pointSize ) ;
 			
 	return res ;
 			
