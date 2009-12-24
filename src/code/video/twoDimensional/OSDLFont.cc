@@ -1512,16 +1512,22 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	
 	System::Size textSize = text.size() ;
 
+
 #if OSDL_DEBUG_FONT
 
-	LogPlug::debug( "Font::basicRenderLatin1Text: rendering '" 
-		+ text + "'." ) ;
+	LogPlug::debug( "Font::basicRenderLatin1Text: rendering '" + text + "'." ) ;
 		
 	LogPlug::debug( "Font::basicRenderLatin1Text: line skip is " 
 		+ Ceylan::toString( lineSkip ) ) ;
 		
 	LogPlug::debug( "Font::basicRenderLatin1Text: ascent is " 
 		+ Ceylan::toString( ascent ) ) ;
+		
+	LogPlug::debug( "Font::basicRenderLatin1Text: descent is " 
+		+ Ceylan::toString( getDescent() ) ) ;
+
+	LogPlug::debug( "Font::basicRenderLatin1Text: height is " 
+		+ Ceylan::toString( getHeight() ) ) ;
 		
 #endif // OSDL_DEBUG_FONT
 		
