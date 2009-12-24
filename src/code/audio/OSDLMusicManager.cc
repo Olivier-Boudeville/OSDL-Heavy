@@ -491,8 +491,6 @@ void MusicManager::stopCurrentMusicPlayback()
 			
 	}
 	
-	}
-	
 }
 
 
