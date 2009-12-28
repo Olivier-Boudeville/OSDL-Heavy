@@ -1,5 +1,5 @@
 ## Makefile.am for the submodule 'Two Dimensional' of the 'Video' module 
-## of the OSDL library.
+## of the OSDL library.
 
 
 # Convenience library for the 'Two Dimensional' submodule :

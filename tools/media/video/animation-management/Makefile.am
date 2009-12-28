@@ -33,7 +33,7 @@ PALETTE_IMAGES = $(patsubst %.osdl.palette,%.png,$(PALETTES))
 
 
 # 256 = 16x16 colors, +5 is used to remove OSDL palette header (a colorkey
-# is expected to be set, thus the header is made of a tag, a colorkey
+# is expected to be set, thus the header is made of a tag, a colorkey
 % indicator, a color index, thus it is 2+1+2=5 bytes).
 %.png: %.osdl.palette
 	@echo "Converting palette in $< into a color panel in $@"

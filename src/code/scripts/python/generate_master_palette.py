@@ -2,7 +2,7 @@
 
 
 # See http://en.wikipedia.org/wiki/List_of_software_palettes#6-8-5_levels_RGB
-# See also:
+# See also:
 # trunk/tools/media/video/animation-management/generateMasterPalette.cc
 #
 def quantize(component):

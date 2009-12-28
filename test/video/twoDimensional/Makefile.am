@@ -1,5 +1,5 @@
 ## Tests for the submodule 'Two Dimensional' of the 'Video' module 
-## of the OSDL library.
+## of the OSDL library.
 
 
 teststwodimensionaldir=@OSDL_TEST_DIR@/video/twoDimensional

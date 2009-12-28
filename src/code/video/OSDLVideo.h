@@ -315,7 +315,7 @@ namespace OSDL
 				 * One particularly useful feature is DoubleBuffered, since 
 				 * it allows to suppress most of the tearing on most platforms.
 				 * Flags must be OR'd together (ex: VideoModule::SoftwareSurface
-				 * || VideoModule::Resizable), specify 0 if not wanting to 
+				 * || VideoModule::Resizable), specify 0 if not wanting to 
 				 * activate any of these features.
 				 *
 				 * @param flavour the selected OpenGL flavour, if any, and if

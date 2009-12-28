@@ -1,5 +1,5 @@
 ## Tests for the submodule 'Renderer' of the 'Audio' module 
-## of the OSDL library.
+## of the OSDL library.
 
 
 testsaudioRendererdir=@OSDL_TEST_DIR@/audio/audioRenderer

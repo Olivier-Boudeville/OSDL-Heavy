@@ -13,7 +13,7 @@ do_sort_by_name=0
 
 do_convert_to_oam=1
 
-# Conversion to OSDL Animation Format:
+# Conversion to OSDL Animation Format:
 do_convert_to_oam=1
 do_zip_result=1
 
@@ -41,7 +41,7 @@ if [ ! -f "${PALETTE_FILE}" ] ; then
 fi
 
 
-# Static options used with ImageMagick tool:
+# Static options used with ImageMagick tool:
 CONVERT_STATIC_SETTINGS=" -quality 100 -filter Lanczos"
 #CONVERT_STATIC_SETTINGS="-antialias"
 
@@ -51,8 +51,8 @@ CONVERT_SECOND_STATIC_OPERATORS="+dither -map ${PALETTE_FILE}"
 
 
 get_scaling_ratio_for()
-# Returns, in THIS_OBJECT_RATIO variable, the scaling ratio corresponding to
-# the animated object specified in $1.
+# Returns, in THIS_OBJECT_RATIO variable, the scaling ratio corresponding to
+# the animated object specified in $1.
 {
 	
 	TARGET_OBJECT="$1"
@@ -123,7 +123,7 @@ rename_resource_file()
 # Returns for specified file ($1) (ex: 'tipping-over-se0008.bmp') a canonical
 # name (ex: '1-4-7-6-8.png', for
 # 'Stan-ArmedWithAnAxeAndAShield-TipOver-SouthEast-FrameNumber').
-# Uses $2 as local tileset directory. 
+# Uses $2 as local tileset directory. 
 {
 
 	SOURCE_FILE=$1
@@ -131,11 +131,11 @@ rename_resource_file()
 	
 	LOCAL_TILESET_DIR=$2
 	
-	# Remove leadind './' and extension:
+	# Remove leadind './' and extension:
 	PREFIX=`echo ${SOURCE_FILE}|sed 's|^\./||1'|sed 's|.bmp$||1'`
 
 	
-	# 1. guessing the frame:
+	# 1. guessing the frame:
 
 	FRAME=`echo ${PREFIX}|tail -c 5` 
 	FRAME_ID=`expr ${FRAME} + 0`
@@ -145,13 +145,13 @@ rename_resource_file()
 	#echo "REMAINDER = ${REMAINDER}"
 
 
-	# 2. guessing the direction:
+	# 2. guessing the direction:
 
-	# Note: awk -F- '{print $2}' would not work as there might be '-' in
+	# Note: awk -F- '{print $2}' would not work as there might be '-' in
 	# original attitude (ex: tipping-over).
 	DIRECTION=`echo ${REMAINDER}|sed 's|^.*-||1'`
 	
-	# Order is the one of identifiers (in directions.id): 
+	# Order is the one of identifiers (in directions.id): 
 	case "${DIRECTION}" in
 	
 		"e"  ) DIRECTION_ID=${East};;
@@ -171,12 +171,12 @@ rename_resource_file()
 	echo "DIRECTION=${DIRECTION}, DIRECTION_ID=${DIRECTION_ID}"
 
 
-	# 3. guessing the attitude:
+	# 3. guessing the attitude:
 
 	ATTITUDE=`echo ${REMAINDER}|sed "s|-${DIRECTION}\$||1"`
 	
 	
-	# Order is the one of identifiers (in attitudes.id): 
+	# Order is the one of identifiers (in attitudes.id): 
 	case "${ATTITUDE}" in
 	
 		"attack" ) 
@@ -266,8 +266,8 @@ rename_resource_file()
 	echo "ATTITUDE = ${ATTITUDE}, ATTITUDE_ID = ${ATTITUDE_ID}"
 
 
-	# 4. guessing the outside look:
-	# (try to respect the outside-looks.id order)
+	# 4. guessing the outside look:
+	# (try to respect the outside-looks.id order)
 	LOOK=${LOCAL_TILESET_DIR}
 	case "${LOOK}" in
 	
@@ -348,7 +348,7 @@ test_rename()
 
 
 rename_if_exist()
-# Renames $1 to $2 if file $1 exists.
+# Renames $1 to $2 if file $1 exists.
 {
 	
 	[ -f "$1" ] && ${MV} $1 $2
@@ -358,7 +358,7 @@ rename_if_exist()
 
 
 remove_dir_if_exist()
-# Removes $1 if it is exists and is a directory.
+# Removes $1 if it is exists and is a directory.
 {
 	
 	if [ -d "$1" ]; then
@@ -381,8 +381,8 @@ correct_names()
 
 	cd ${LOCAL_TILESET_DIR}
 	
-	# General corrections:
-	# (for example, 'battlefield 96x bitmaps')
+	# General corrections:
+	# (for example, 'battlefield 96x bitmaps')
 	find . -type d -exec ${CORRECT_SCRIPT} '{}' ';' 2>/dev/null
 	find . -type f -exec ${CORRECT_SCRIPT} '{}' ';'
 	
@@ -393,7 +393,7 @@ correct_names()
 
 
 convert_frame()
-# Converts specified BMP file (in $1) into specified PNG file (in $2) with
+# Converts specified BMP file (in $1) into specified PNG file (in $2) with
 # the specified object ratio (in $3).
 {
 		
@@ -404,11 +404,11 @@ convert_frame()
 	echo "+ transforming ${SOURCE_FILE} and replacing it by ${TARGET_FILE}"
 	echo	
 
-	# For some unknown reason, 'convert -quality 100 -filter Lanczos test.bmp -resize 60%
+	# For some unknown reason, 'convert -quality 100 -filter Lanczos test.bmp -resize 60%
 	# -sharpen 1x.5 -strip +dither -map master-palette-quantized.png test.png' results in:
 	#
 	# "test.png: PNG image data, 58 x 58, 16-bit/color RGB, non-interlaced", i.e. an image not
-	# using a palette, 
+	# using a palette, 
 	#
 	# whereas:
 	#
@@ -462,9 +462,9 @@ transform_to_png_in()
 
 	cd ${LOCAL_TILESET_DIR}
 
-	# First, fix incorrect initial naming (special cases):
+	# First, fix incorrect initial naming (special cases):
 
-	# Sometimes the name of the animated object is prefixed, let's remove it:
+	# Sometimes the name of the animated object is prefixed, let's remove it:
 	# First prefix ex: 'axestan-kippt-um-n0004.bmp' -> 'kippt-um-n0004.bmp')
 	for f in `/bin/ls ${LOCAL_TILESET_DIR}-* 2>/dev/null`; do
 		echo "Renaming $f to "`echo $f|sed "s|^${LOCAL_TILESET_DIR}-||1"`
@@ -477,7 +477,7 @@ transform_to_png_in()
 		${MV} -f $f `echo $f|sed "s|^stan-||1"`		
 	done
 	
-	# Premature translation for special fixes:
+	# Premature translation for special fixes:
 	# Ex: steht0001.bmp -> stopped0001.bmp
 	for f in `/bin/ls steht* 2>/dev/null` ; do
 		TARGET_FILE=`echo $f|sed 's|^steht|stopped|1'`
@@ -490,12 +490,12 @@ transform_to_png_in()
 	
 	
 		"bowstan" )
-			# Arrows are stored in original bowstan archive, whereas for 
-			# us they are a separate object, created here:
+			# Arrows are stored in original bowstan archive, whereas for 
+			# us they are a separate object, created here:
 			ARROW_DIR="../../../../../Objects/Weapons/Arrows/SimpleArrow"
 			${MKDIR} ${ARROW_DIR}
 
-			# Sets THIS_OBJECT_RATIO:
+			# Sets THIS_OBJECT_RATIO:
 			get_scaling_ratio_for bowstan
 			ACTUAL_RATIO=$(( ${DOWNSCALE_RATIO} * ${THIS_OBJECT_RATIO} / 100 ))
 
@@ -530,19 +530,19 @@ transform_to_png_in()
 				
 		"rosalila" )
 			# The rocking chair is stored in original rosalila archive, 
-			# whereas for us it is a separate object, created here:
+			# whereas for us it is a separate object, created here:
 			CHAIR_DIR="../../../../../Objects/Furniture"
 			${MKDIR} ${CHAIR_DIR}
 
 			ROCKIN_CHAIR_INITIAL='nur-stuhl.bmp'
 			TARGET_FILE="${CHAIR_DIR}/Rocking-chair.png"
 
-			# Sets THIS_OBJECT_RATIO:
+			# Sets THIS_OBJECT_RATIO:
 			get_scaling_ratio_for rosalila
 
 			convert_frame "${ROCKIN_CHAIR_INITIAL}" "${TARGET_FILE}" ${THIS_OBJECT_RATIO}
 			
-			# Other problem: when Rosalila is in her rocking-chair, only the
+			# Other problem: when Rosalila is in her rocking-chair, only the
 			# south-west direction is actually available:
 			${MV} -f 'im-schaukelstuhl.bmp'   rest-sw0000.bmp		 
 			${MV} -f 'im-schaukelstuhl1.bmp'  rest-sw0001.bmp		
@@ -562,14 +562,14 @@ transform_to_png_in()
 				
 		"hammerwilly" )
 			# The hammer is stored in original hammerwilly archive, 
-			# whereas for us it is a separate object, created here:
+			# whereas for us it is a separate object, created here:
 			HAMMER_DIR="../../../../../Objects/Tools"
 			${MKDIR} ${HAMMER_DIR}
 
 			HAMMER_INITIAL='hammer-at-ground.bmp'
 			TARGET_FILE="${HAMMER_DIR}/Hammer.png"
 
-			# Sets THIS_OBJECT_RATIO:
+			# Sets THIS_OBJECT_RATIO:
 			#get_scaling_ratio_for hammerwilly
 			# Full-sized, otherwise too small:
 			THIS_OBJECT_RATIO=100
@@ -580,21 +580,21 @@ transform_to_png_in()
 			
 		"schaufelwilly" )
 			# The shovel is stored in original schaufelwilly archive, 
-			# whereas for us it is a separate object, created here:
+			# whereas for us it is a separate object, created here:
 			SHOVEL_DIR="../../../../../Objects/Tools"
 			${MKDIR} ${SHOVEL_DIR}
 
 			SHOVEL_INITIAL='schaufel-at-ground.bmp'
 			TARGET_FILE="${SHOVEL_DIR}/Shovel.png"
 
-			# Sets THIS_OBJECT_RATIO:
+			# Sets THIS_OBJECT_RATIO:
 			#get_scaling_ratio_for schaufelwilly
 			# Full-sized, otherwise too small:
 			THIS_OBJECT_RATIO=100
 
 			convert_frame "${SHOVEL_INITIAL}" "${TARGET_FILE}" ${THIS_OBJECT_RATIO}
 			
-			# Other problem: bending animation for south lacks direction, 
+			# Other problem: bending animation for south lacks direction, 
 			# let's fix the filenames:
 			${MV} -f 'bückt-sich0000.bmp' 'bückt-sich-s0000.bmp'
 			${MV} -f 'bückt-sich0001.bmp' 'bückt-sich-s0001.bmp'
@@ -611,7 +611,7 @@ transform_to_png_in()
 	esac 
 	
 	
-	# Here, 'stopped' attitude lacks direction:
+	# Here, 'stopped' attitude lacks direction:
 	rename_if_exist stopped0000.bmp stopped-s0000.bmp
 	rename_if_exist stopped0001.bmp stopped-sw0000.bmp
 	rename_if_exist stopped0002.bmp stopped-w0000.bmp
@@ -621,7 +621,7 @@ transform_to_png_in()
 	rename_if_exist stopped0006.bmp stopped-e0000.bmp
 	rename_if_exist stopped0007.bmp stopped-se0000.bmp
 
-	# Here, 'stopped' attitude lacks frame numbering:
+	# Here, 'stopped' attitude lacks frame numbering:
 	rename_if_exist stopped-e.bmp  stopped-e0000.bmp
 	rename_if_exist stopped-n.bmp  stopped-n0000.bmp
 	rename_if_exist stopped-ne.bmp stopped-ne0000.bmp
@@ -631,7 +631,7 @@ transform_to_png_in()
 	rename_if_exist stopped-sw.bmp stopped-sw0000.bmp
 	rename_if_exist stopped-w.bmp  stopped-w0000.bmp
 		
-	# Sets THIS_OBJECT_RATIO:
+	# Sets THIS_OBJECT_RATIO:
 	get_scaling_ratio_for "${LOCAL_TILESET_DIR}"
 				
 	for f in `find . -name '*.bmp'`; do
@@ -751,7 +751,7 @@ if ! ls ${ASSET_REPOSITORY}/*.id 1>/dev/null 2>&1; then
 	exit 22
 fi
 
-# Source these id files to be able to translate identifier names into values:
+# Source these id files to be able to translate identifier names into values:
 for f in ${ASSET_REPOSITORY}/*.id; do
 	. $f
 done	
@@ -806,7 +806,7 @@ fi
 
 # Perform the work:
 
-# Move all BMP files to tileset dir (ex: axestan_shield).
+# Move all BMP files to tileset dir (ex: axestan_shield).
 if [ $do_uncompress -eq 0 ]; then
 
 	echo " + unzipping ${TILESET_ARCHIVE}"
@@ -822,35 +822,35 @@ if [ $do_uncompress -eq 0 ]; then
 	
 	
 		"bjorn" )
-			# In bjorn archive there are actually two outside looks:
+			# In bjorn archive there are actually two outside looks:
 			${MKDIR} ../bjorn_wearing_weapons ../bjorn_sword_shield
 		
 			find 'town 96x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../bjorn_wearing_weapons ';'
 		
-			# The rest is in 'battlefield*':
+			# The rest is in 'battlefield*':
 			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../bjorn_sword_shield ';'
 			;;
 			
 			
 		"freya_axe" )
-			# In freya archive there are actually two attitudes:
+			# In freya archive there are actually two attitudes:
 			${MKDIR} ../freya_wearing_weapons ../freya_axe
 		
 			find 'freya axe bitmaps/town' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../freya_wearing_weapons ';'
 		
-			# The rest is in 'battlefield':
+			# The rest is in 'battlefield':
 			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../freya_axe ';'
 			;;
 			
 				
 		"luigi" )
-			# In luigi archive there are actually three attitudes:
+			# In luigi archive there are actually three attitudes:
 			${MKDIR} ../luigi_unarmed ../luigi_bread ../luigi_pancake
 		
 			find 'luigi pancake 128x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../luigi_pancake ';'
 			find 'luigi bread 128x bitmaps' -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../luigi_bread ';'
 			
-			# Catch everything left:
+			# Catch everything left:
 			find . -type f -a -name '*.bmp' -exec ${MV} -f '{}' ../luigi_unarmed ';'
 			;;
 				
@@ -945,7 +945,7 @@ if [ $do_zip_result -eq 0 ]; then
 	cd ..
 	NEW_TILESET_DIR=`echo ${TILESET_DIR} | sed 's|^T_|OAF_|1'`
 	
-	if [ -d "${NEW_TILESET_DIR}" ]; then
+	if [ -d "${NEW_TILESET_DIR}" ]; then
 		${RM} -rf ${NEW_TILESET_DIR}
 		${MKDIR} ${NEW_TILESET_DIR}
 	fi

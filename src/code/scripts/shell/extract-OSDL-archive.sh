@@ -77,11 +77,11 @@ cd "${target_dir}"
 
 
 # OAR archives are based on the Lempel-Ziv-Markov chain-Algorithm (LZMA).
-# See: http://en.wikipedia.org/wiki/Lempel-Ziv-Markov_chain_algorithm
+# See: http://en.wikipedia.org/wiki/Lempel-Ziv-Markov_chain_algorithm
 # On Debian-based distributions, use: 'apt-get install p7zip' to have the 
-# archiver.
-# The lzma package is not enough, as it compresses only files, not filesystem
-# full trees.
+# archiver.
+# The lzma package is not enough, as it compresses only files, not filesystem
+# full trees.
 
 dearchiver_name="7zr"
 archiver=`which ${dearchiver_name}`

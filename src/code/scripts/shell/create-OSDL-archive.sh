@@ -165,7 +165,7 @@ fi
 # Would copy also the .svn directories:
 #${CP} -r "${archive_directory}" ${tmp_base}
 
-# Would not be relevant as the target tree would be flatten:
+# Would not be relevant as the target tree would be flatten:
 #${FIND} "${archive_directory}" \( -name .svn -prune \) -o  -exec cp... ';' 
 
 # --cvs-exclude removes also .svn directories:

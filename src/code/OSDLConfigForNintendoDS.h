@@ -85,7 +85,7 @@
 #include "nds.h"
 
 
-// Not available on the DS:
+// Not available on the DS:
 #define OSDL_USES_AGAR 0
 #define OSDL_USES_LIBPNG 0
 // OSDL_USES_OPENGL partly used on the DS.

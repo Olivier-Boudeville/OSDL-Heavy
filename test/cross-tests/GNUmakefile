@@ -1,8 +1,8 @@
 # This is a simple Makefile (not a Makefile.cross, not using overall 
-# Makerules.inc rules so that tests are completely uncoupled from the 
-# OSDL library).
+# Makerules.inc rules so that tests are completely uncoupled from the 
+# OSDL library).
 
-# This way, these tests can be directly used as guidelines to build 
+# This way, these tests can be directly used as guidelines to build 
 # one's application using the OSDL library.
 
 TOP = ../..
@@ -14,14 +14,14 @@ TOP = ../..
 
 CROSS_TARGET=nintendo-ds
 
-# For tool locations, not for flags nor build rules:
+# For tool locations, not for flags nor build rules:
 include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makevars.inc
 
 
-# Test target section.
+# Test target section.
 
 
-# Target linker can be sc (SuperCard) or r4 (R4 DS):
+# Target linker can be sc (SuperCard) or r4 (R4 DS):
 TARGET_LINKER = r4
 
 TEST_PREFIX= $(OSDL_TESTED_VERSION)-$(OSDL_TESTED_BUILD_MODE)
@@ -41,7 +41,7 @@ TEST_TARGETS = testOSDLVideoFramebuffer-$(TEST_SUFFIX)
 
 	
 
-# Some are patched, the others not:
+# Some are patched, the others not:
 #TESTS_TO_TRANSFER = $(wildcard *.$(CURRENT_LINKER).nds)
 
 #RESOURCES = test.osdl.sound
@@ -51,7 +51,7 @@ FILES_TO_TRANSFER = $(TEST_TARGETS) $(RESOURCES)
 OSDL_TESTED_VERSION    = $(OSDL_VERSION)
 OSDL_TESTED_BUILD_MODE = $(OSDL_BUILD_MODE)
 
-# Use 'make emulate TEST_NAME=testOSDLTextConsole' for example to override:
+# Use 'make emulate TEST_NAME=testOSDLTextConsole' for example to override:
 TEST_NAME = testOSDLMusic
 
 TEST_FULL_NAME = $(TEST_NAME)-$(TEST_PREFIX)
@@ -113,12 +113,12 @@ info-target:
 
 # Build common section.
 
-# By default, use THUMB mode (16 bit), not ARM one (32 bit):
+# By default, use THUMB mode (16 bit), not ARM one (32 bit):
 TEST_ARCH_FLAGS_COMMON = -mthumb -mthumb-interwork
 
 
 
-# Preprocessor section: exports TEST_CPP_FLAGS_ARM7 / TEST_CPP_FLAGS_ARM9
+# Preprocessor section: exports TEST_CPP_FLAGS_ARM7 / TEST_CPP_FLAGS_ARM9
 
 TEST_CPP_FLAGS_COMMON = -I. -I$(OSDL_INSTALL_INC) -I$(ceylan_DIR)/include   \
 	-I$(libfat_DIR)/include -I$(libnds_DIR)/include                         \
@@ -134,10 +134,10 @@ TEST_CPP_FLAGS_ARM9 = $(TEST_CPP_FLAGS_COMMON) -DCEYLAN_RUNS_ON_ARM9 \
 
 
 
-# Compiler section: 
+# Compiler section: 
 
 
-# -Wconversion had to be removed because of incomprehensible warnings like:
+# -Wconversion had to be removed because of incomprehensible warnings like:
 # 'passing argument 1 of XXX with different width due to prototype'
 TEST_CC_FLAGS_COMMON_BASE = -Winline -Wall -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
@@ -146,7 +146,7 @@ TEST_CC_FLAGS_COMMON_RELAXED = $(TEST_ARCH_FLAGS_COMMON) $(TEST_CC_FLAGS_COMMON_
 
 TEST_CC_FLAGS_COMMON = $(TEST_CC_FLAGS_COMMON_RELAXED) -Werror
 
-# (32-bit, as no $(TEST_ARCH_FLAGS_COMMON) specified):
+# (32-bit, as no $(TEST_ARCH_FLAGS_COMMON) specified):
 # (relaxed, as using non-blocking warnings: no -Werror set):
 TEST_CC_FLAGS_COMMON_32_BIT_RELAXED = $(TEST_CC_FLAGS_COMMON_BASE)
 
@@ -160,7 +160,7 @@ TEST_CXX_FLAGS_COMMON = $(TEST_ARCH_FLAGS_COMMON) -Wall -Werror -Woverloaded-vir
 
 
 
-# Tests will follow the release mode of the OSDL library:
+# Tests will follow the release mode of the OSDL library:
 ifeq ($(OSDL_TESTED_BUILD_MODE),debug)
 
 # Flags common to the ARM7 and the ARM9 for compilation in debug mode:
@@ -193,11 +193,11 @@ TEST_CXX_FLAGS_ARM9 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -march=arm
 TEST_CC_FLAGS_ARM9 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -march=armv5te -mtune=arm946e-s 
 
 
-# Linker section: exports TEST_LD_FLAGS_ARM7 / TEST_LD_FLAGS_ARM9,
+# Linker section: exports TEST_LD_FLAGS_ARM7 / TEST_LD_FLAGS_ARM9,
 # TEST_LIBPATHS_ARM7 / TEST_LIBPATHS_ARM9 and TEST_LIBS_ARM7 / TEST_LIBS_ARM9
 
 
-# TEST_LD_FLAGS_ARM7 and TEST_LD_FLAGS_ARM9 section:
+# TEST_LD_FLAGS_ARM7 and TEST_LD_FLAGS_ARM9 section:
 TEST_LD_FLAGS_COMMON:= $(TEST_ARCH_FLAGS_COMMON)
 
 TEST_LD_FLAGS_ARM7:= -specs=ds_arm7.specs
@@ -220,7 +220,7 @@ TEST_LD_FLAGS_ARM9:= $(TEST_LD_FLAGS_COMMON) $(TEST_LD_FLAGS_ARM9)
 
 
 
-# TEST_LIBPATHS_ARM7 and TEST_LIBPATHS_ARM9 section:
+# TEST_LIBPATHS_ARM7 and TEST_LIBPATHS_ARM9 section:
 
 # Let the possibility for the user to define his own LIBPATHS:
 TEST_LIBPATHS_COMMON = $(LIBPATHS) -L$(ceylan_DIR)/lib -L$(libfat_DIR)/lib -L$(libnds_DIR)/lib
@@ -230,7 +230,7 @@ TEST_LIBPATHS_ARM9 = -L$(OSDL_INSTALL_LIB) $(TEST_LIBPATHS_COMMON)
 
 
 
-# Ceylan section.
+# Ceylan section.
 
 
 CEYLAN_BASE_LIB_NAME:= Ceylan-${CEYLAN_USED_VERSION}-release
@@ -252,7 +252,7 @@ CEYLAN_ARM9_INSTALLED_LIB := $(CEYLAN_INSTALL_LIB)/$(CEYLAN_ARM9_LIB_NAME)
 
 
 # Let the possibility for the user to define his own LIBS.
-# Not libfat for the ARM7 yet (library too big), but Helix-OSDL:
+# Not libfat for the ARM7 yet (library too big), but Helix-OSDL:
 TEST_BASE_LIBS_ARM7:= $(LIBS) -l$(CEYLAN_BASE_LIB_NAME)-arm7 -lHelix-OSDL-arm7 -lnds7
 	
 TEST_BASE_LIBS_ARM9:= $(LIBS) -l$(CEYLAN_BASE_LIB_NAME)-arm9 -lfat -lnds9
@@ -301,7 +301,7 @@ info-run:
 	
 
 
-# Rules section.
+# Rules section.
 
 
 
@@ -400,7 +400,7 @@ getMP3Settings-$(TEST_PREFIX).arm7.o: getMP3Settings.arm7.c
 # Patching does not stop on error, as not all tests have to be patched.
 
 
-# sc for SuperCard linker:
+# sc for SuperCard linker:
 
 # .sc.nds not working, use .nds instead
 #%-patched.sc.nds: %.sc.nds $(OSDL_ARM9_INSTALLED_LIB)

@@ -1,5 +1,5 @@
 ## Makefile.am for the submodule 'Renderer' of the 'Video' module 
-## of the OSDL library.
+## of the OSDL library.
 
 
 # Convenience library for the 'Renderer' submodule :

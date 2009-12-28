@@ -3,7 +3,7 @@
 USAGE="This script will create a test archive to be used by the testOSDLEmbeddedFileSystem test. Expected to be run directly from the osdl/OSDL/trunk/test/basic directory."
 
 
-# See also:
+# See also:
 #  - osdl/OSDL/trunk/src/code/scripts/shell/create-OSDL-archive.sh
 #  - osdl/OSDL/trunk/src/code/scripts/shell/extract-OSDL-archive.sh
 

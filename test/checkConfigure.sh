@@ -2,7 +2,7 @@
 
 USAGE="Usage:"`basename $0`"[diff tool]: compares current configure.ac with the ones suggested first by autoscan, then by autoupdate."
 
-# Debug mode activated iff equal to true (0):
+# Debug mode activated iff equal to true (0):
 debug_mode=1
 
 DEBUG()
@@ -40,7 +40,7 @@ fi
 DEBUG "DIFF_TOOL = $DIFF_TOOL"
 
 
-# Autoscan section.
+# Autoscan section.
 
 AUTOSCAN=`which autoscan`
 DEBUG "AUTOSCAN = $AUTOSCAN"
@@ -59,7 +59,7 @@ if [ -e "$AUTOSCAN_ERR" ]; then
 fi
 
 
-# Autoupdate section.
+# Autoupdate section.
 
 
 AUTOUPDATE=`which autoupdate`

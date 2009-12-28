@@ -8,7 +8,7 @@ EXTRA_DIST = \
 	web
 
 # For doxygen and dot tool versions:
-# (if the build fails here due to OSDL_LOANI_INSTALLATIONS being equal to
+# (if the build fails here due to OSDL_LOANI_INSTALLATIONS being equal to
 # NONE, check that your OSDL-environment.sh file still contains a OSDL_PREFIX
 # definition)
 include @OSDL_LOANI_INSTALLATIONS@/Ceylan-@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@/share/Ceylan/CeylanToolsSettings.inc

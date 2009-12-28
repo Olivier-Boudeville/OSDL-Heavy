@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# Updates the MD5 checksums of Ceylan and OSDL release archives in this LOANI
-# file :
+# Updates the MD5 checksums of Ceylan and OSDL release archives in this LOANI
+# file :
 loani_tools_settings=$1
 
 ceylan_release=$2

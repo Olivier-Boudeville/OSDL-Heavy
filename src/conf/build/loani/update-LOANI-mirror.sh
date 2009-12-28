@@ -109,9 +109,9 @@ fi
 
 
 
-# Archives will be stored under ${base_dir}/${package_name}, without the 
-# _win suffix (ex: libvorbis_win will be in LOANI-archive-repository/libvorbis,
-# i.e. with libvorbis)
+# Archives will be stored under ${base_dir}/${package_name}, without the 
+# _win suffix (ex: libvorbis_win will be in LOANI-archive-repository/libvorbis,
+# i.e. with libvorbis)
 mkdir -p ${tmp_dir}/${base_dir}
 
 cd ${tmp_dir}/${base_dir}

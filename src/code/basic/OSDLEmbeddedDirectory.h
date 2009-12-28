@@ -184,7 +184,7 @@ namespace OSDL
              * there is also a "C:\userdir" in the search path that has a
              * "savegames" subdirectory with "w.sav", then for the directory
              * corresponding to "savegames" this method will return:
-             * [ "x.sav", "y.sav", "z.sav", "w.sav" ].
+             * [ "x.sav", "y.sav", "z.sav", "w.sav" ].
              *
              * There will be no duplicates, but the order the list is not
              * specified.

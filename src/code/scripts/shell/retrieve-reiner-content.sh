@@ -29,7 +29,7 @@ date
 
 WGET=wget
 
-# M_*.zip are MMF files, not wanted:
+# M_*.zip are MMF files, not wanted:
 WGET_OPT="--limit-rate=10k --wait=5 --random-wait --retry-connrefused --recursive --level=10 --reject exe,"M_*.zip" --exclude-directories=forum,buttons,meshes,screenshots"
 
 ${WGET} ${WGET_OPT} ${TARGET_URL}

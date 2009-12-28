@@ -1057,7 +1057,7 @@ namespace OSDL
 				 *
 				 * @note This is used only in text input mode. 
 				 * Linked event handlers will only be notified in this 
-				 * mode of key presses and repeats (not of key releases 
+				 * mode of key presses and repeats (not of key releases 
 				 * which are not relevant in this context).
 				 *
 				 */

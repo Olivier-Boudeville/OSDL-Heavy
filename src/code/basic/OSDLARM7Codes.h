@@ -66,8 +66,8 @@
 /**
  * ARM7 error code values.
  *
- * Error codes in the [1024..2048] range are reserved for OSDL use, knowing 
- * that the [0..1023] range is reserved for Ceylan use.
+ * Error codes in the [1024..2048] range are reserved for OSDL use, knowing 
+ * that the [0..1023] range is reserved for Ceylan use.
  *
  */
 

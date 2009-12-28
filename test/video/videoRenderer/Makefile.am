@@ -1,5 +1,5 @@
 ## Tests for the submodule 'Renderer' of the 'Video' module 
-## of the OSDL library.
+## of the OSDL library.
 
 
 testsvideorendererdir=@OSDL_TEST_DIR@/video/videoRenderer

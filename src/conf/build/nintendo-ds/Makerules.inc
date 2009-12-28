@@ -1,8 +1,8 @@
 # General build rules for the cross-compilation of Nintendo DS binaries
 # from GNU/Linux.
-# To be included by all the Makefiles after they define their relevant TOP
+# To be included by all the Makefiles after they define their relevant TOP
 # variable, ex: 'TOP = ..', when the Makefile is in a direct subdirectory 
-# of the source root. 
+# of the source root. 
 
 include $(TOP)/src/conf/build/nintendo-ds/Makevars.inc
 
@@ -14,15 +14,15 @@ include $(TOP)/src/conf/build/nintendo-ds/Makevars.inc
 
 # Compilation.
 
-# Generally, all ARM7 object files are to be built in 32-bit mode (ex: for
+# Generally, all ARM7 object files are to be built in 32-bit mode (ex: for
 # Helix integration), whereas all ARM9 ones are in thumb mode.
-# All prerequesites, including Ceylan, must respect this rule.
+# All prerequesites, including Ceylan, must respect this rule.
 
 
 # For C++ source files common to both ARM:
 
-# C++ for the ARM7 is in 32-bit mode by default (but ARM7 C++ library no used).
-# C++ for the ARM9 is in thumb mode by default (ARM9 C++ library used).
+# C++ for the ARM7 is in 32-bit mode by default (but ARM7 C++ library no used).
+# C++ for the ARM9 is in thumb mode by default (ARM9 C++ library used).
 
 %.arm7.o: %.cc %.h 
 	@echo "      Compiling in 32-bit mode $^ into $@"
@@ -56,8 +56,8 @@ include $(TOP)/src/conf/build/nintendo-ds/Makevars.inc
 
 # For C source files common to both ARM:
 
-# C for the ARM7 is in 32-bit mode by default.
-# C for the ARM9 is in Thumb mode by default.
+# C for the ARM7 is in 32-bit mode by default.
+# C for the ARM9 is in Thumb mode by default.
 
 
 OSDLARM7Base.arm7.o: OSDLARM7Base.c OSDLARM7Base.h 
@@ -120,7 +120,7 @@ lib%.arm9.a: %.arm9.o
 # Executable linking.	
 
 
-# Only related object files are included:
+# Only related object files are included:
 
 
 
@@ -165,7 +165,7 @@ lib%.arm9.a: %.arm9.o
 	@/bin/cp -f $< $@
 
 
-# Add here: 
+# Add here: 
 # dlditool Sclt.dldi helloworld.sc.nds
 
 
@@ -209,7 +209,7 @@ clean-recurse:
 	
 	
 	
-# Cancel automatic rule:	
+# Cancel automatic rule:	
 %.o: %.cc
 
 

@@ -5,24 +5,24 @@
 
 # The NDS_DEV_ROOT variable can be set outside of these Makefiles.
 # Either through a shell variable once the local definition has been commented
-# out, ex: 
+# out, ex: 
 # export NDS_DEV_ROOT=$LOANI_INSTALLATIONS/Nintendo-DS-development
 # or as a Make variable (no commenting out needed), ex:
 # make NDS_DEV_ROOT=$LOANI_INSTALLATIONS/Nintendo-DS-development
 # or directly hardcoded here:
 # NDS_DEV_ROOT = $(LOANI_INSTALLATIONS)/Nintendo-DS-development
-# Otherwise it will be guessed from LOANI-enforced directory layout:
+# Otherwise it will be guessed from LOANI-enforced directory layout:
 LOANI_INSTALLATIONS = $(TOP)/../../../../LOANI-installations
 NDS_DEV_ROOT        = $(LOANI_INSTALLATIONS)/Nintendo-DS-development
 
 
-# Safety check:
+# Safety check:
 ifeq ($(strip $(NDS_DEV_ROOT)),)
 $(error Please set the NDS_DEV_ROOT variable)
 endif
 
 
-# Tool section.
+# Tool section.
 
 devkitPro_DIR = $(NDS_DEV_ROOT)/devkitPro
 devkitARM_DIR = $(devkitPro_DIR)/devkitARM
@@ -48,7 +48,7 @@ RANLIB    = $(build_tool_DIR)/$(build_tool_PREFIX)ranlib
 STRIP     = $(build_tool_DIR)/$(build_tool_PREFIX)strip
 
 
-# The version installed by LOANI is preferred here:
+# The version installed by LOANI is preferred here:
 DLDITOOL_ROOT   = $(NDS_DEV_ROOT)/dldi
 DLDITOOL        = $(DLDITOOL_ROOT)/dlditool
 
@@ -112,7 +112,7 @@ OSDL_VIDEO_RENDERER_INC        := -I$(OSDL_VIDEO_RENDERER)
 
 
 
-# For OSDL versions and al:
+# For OSDL versions and al:
 include $(TOP)/src/conf/OSDLSettings.inc
 
 OSDL_LT_CURRENT  := $(OSDL_MAJOR_VERSION)
@@ -134,8 +134,8 @@ ARCH_FLAGS_COMMON_32_BIT =
 
 # The -DARM7/-DARM flags are needed by libnds but set by OSDL DS header:
 
-# Only the DS build needs CEYLAN defines, so that Ceylan.h includes DS-specific
-# headers, such as CeylanFIFO.h.
+# Only the DS build needs CEYLAN defines, so that Ceylan.h includes DS-specific
+# headers, such as CeylanFIFO.h.
 
 ARCH_FLAGS_ARM7_COMMON = -mcpu=arm7tdmi -mtune=arm7tdmi -DOSDL_RUNS_ON_ARM7=1 -DCEYLAN_RUNS_ON_ARM7=1
 
@@ -151,7 +151,7 @@ ARCH_FLAGS_ARM9   = $(ARCH_FLAGS_COMMON) $(ARCH_FLAGS_ARM9_COMMON)
 ARCH_FLAGS_ARM9_32_BIT   = $(ARCH_FLAGS_COMMON_32_BIT) $(ARCH_FLAGS_ARM9_COMMON)
 
 
-# Determines which kind of build is expected:
+# Determines which kind of build is expected:
 #OSDL_BUILD_MODE = debug
 OSDL_BUILD_MODE = release
 
@@ -196,7 +196,7 @@ HELIX_OSDL_ARM7_LIB_FULL_PATH:=$(HELIX_OSDL_LIB_LOCATION)/$(HELIX_OSDL_ARM7_LIB_
 HELIX_OSDL_ARM9_LIB_FULL_PATH:=$(HELIX_OSDL_LIB_LOCATION)/$(HELIX_OSDL_ARM9_LIB_NAME)
 
 
-# Preprocessor flags.
+# Preprocessor flags.
 
 CPP_DEFINES = \
 	$(CPP_ARCH_DEFINES)    \
@@ -216,7 +216,7 @@ CPP_ARCH_DEFINES:= \
 
 
 # Defined here rather than in OSDLConfigForNintendoDS.h as headers may mention
-# these includes (ex: '#include "SDL.h"' for a necessary typedef):
+# these includes (ex: '#include "SDL.h"' for a necessary typedef):
 CPP_FEATURE_DEFINES:= \
 	-DOSDL_USES_LIBPNG=0         \
 	-DOSDL_USES_OPENGL=0         \
@@ -285,7 +285,7 @@ CPP_FLAGS_ARM7  := $(CPP_FLAGS) $(CPP_FLAGS_COMMON)
 CPP_FLAGS_ARM9  := $(CPP_FLAGS) $(CPP_FLAGS_COMMON)
 
 
-# ARM assembler flags.
+# ARM assembler flags.
 ASM_FLAGS = -g -marm -mthumb-interwork
 
 
@@ -299,11 +299,11 @@ ASM_FLAGS = -g -marm -mthumb-interwork
 CC_FLAGS_COMMON_RELAXED:=  -Wall -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
 # When needing to gain some room in ARM7 binary, using -Os instead of -O3
-# implies removing -Winline:
+# implies removing -Winline:
 CC_FLAGS_COMMON:= $(CC_FLAGS_COMMON_RELAXED) -Werror
 
 
-# Removed: 
+# Removed: 
 #   -Wcast-qual: cause Helix code to issue warnings (cast discards qualifiers) 
 #   -Wconversion: cause Helix code to issue warnings (prototype/memmove)
 #   -Wcast-align: too many warnings due to STL casts
@@ -313,7 +313,7 @@ CC_FLAGS_COMMON:= $(CC_FLAGS_COMMON_RELAXED) -Werror
 
 CXX_FLAGS_COMMON:= -Winline -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings -Wconversion -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long
 
-# Removed: 
+# Removed: 
 #   -Wcast-align: too many warnings due to STL casts
 #   -Wpacked: too many warnings about 'packed attribute causes inefficient
 # alignment' in libnds headers
@@ -366,7 +366,7 @@ CXX_FLAGS_ARM9_32_BIT := $(CXX_FLAGS) $(CXX_FLAGS_COMMON) $(ARCH_FLAGS_ARM9_32_B
 # C/C++ Link flags.
 
 
-# Generating a library:
+# Generating a library:
 
 AR_FLAGS_COMMON:= -rc
 
@@ -374,7 +374,7 @@ AR_FLAGS_ARM7:= $(AR_FLAGS_COMMON)
 AR_FLAGS_ARM9:= $(AR_FLAGS_COMMON)
 
 
-# Generating an executable is defined in trunk/test/cross-tests/GNUmakefile.
+# Generating an executable is defined in trunk/test/cross-tests/GNUmakefile.
 
 
 

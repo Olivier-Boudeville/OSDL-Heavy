@@ -150,7 +150,7 @@ generateErlang()
 	if [ -n "$prefix" ] ; then	
 		{		
 			
-			# First OSDL config file:	
+			# First OSDL config file:	
 			echo "# Erlang section." >> ${OSDL_ENV_FILE}
 			echo "Erlang_PREFIX=${ERLANG_PREFIX}" >> ${OSDL_ENV_FILE}
 			echo "export Erlang_PREFIX" >> ${OSDL_ENV_FILE}
@@ -345,7 +345,7 @@ cleanegeoip()
 
 ################################################################################
 # Geolite: free database for IP to location conversions, offered by
-# MaxMind (see http://www.maxmind.com/app/geolitecity)
+# MaxMind (see http://www.maxmind.com/app/geolitecity)
 ################################################################################
 
 

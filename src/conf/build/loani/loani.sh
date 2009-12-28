@@ -67,7 +67,7 @@ fi
 
 declareRetrievalBegin()
 # Declares to the user that a package is enqueued in download spool.
-# $1: name of the archive file.
+# $1: name of the archive file.
 {
 
  if [ $be_quiet -eq 1 ] ; then 
@@ -1059,7 +1059,7 @@ echo "" >> ${OSDL_ENV_FILE}
 echo "" >> ${OSDL_ENV_FILE}
 
 
-# Same thing for DS:
+# Same thing for DS:
 if [ $target_nds -eq 0 ] ; then
 
 	OSDL_DS_ENV_FILE=${ds_prefix}/${OSDL_DS_ENV_FILE_NAME}
@@ -1082,7 +1082,7 @@ if [ $target_nds -eq 0 ] ; then
 fi
 
 
-# Same thing for Orge:
+# Same thing for Orge:
 if [ $manage_orge_tools -eq 0 ] ; then
 
 	ORGE_ENV_FILE=${alternate_prefix}/${ORGE_ENV_FILE_NAME}
@@ -1273,7 +1273,7 @@ if [ $only_orge_tools -eq 1 ] ; then
 		${RM} -rf "${visual_dir}"
 	fi	 
 	
-	# On GNU/Linux, early test for OpenGL headers and al:
+	# On GNU/Linux, early test for OpenGL headers and al:
 	if [ $is_linux -eq 0 ] ; then
 
 
@@ -1508,7 +1508,7 @@ if [ -n "$retrieve_list" ] ; then
 	
     # Checking whether an Internet connection is working is not performed
     # with ping anymore, as Virtualboxed OS are based on user-space NAT,
-    # thus no ICMP ping can be used. 
+    # thus no ICMP ping can be used. 
 	#if findTool ping ; then
 	#
 	#	PING=$returnedString

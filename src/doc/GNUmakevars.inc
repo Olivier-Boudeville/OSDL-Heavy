@@ -1,5 +1,5 @@
 
-# Generic rules for documentation generation.
+# Generic rules for documentation generation.
 
 
 RST_SOURCES     = $(wildcard *.rst)

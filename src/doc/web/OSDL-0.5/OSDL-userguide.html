@@ -407,7 +407,7 @@ More precisely, the combination of log-emitting scheduled objects (in simulation
 </p>
 
 <p>
-Log output to console is a lot faster, even when redirecting these logs to a file (thanks to <code>&gt; myLogFile.txt</code> or to <code> | tee myLogFile.txt</code>), most probably because these streams are buffered. It leads us to think that the classical plug could be used if ever the user set its classical plug and/or its raw log aggregator to <code>immediateWrite = false</code>, which would disable synchronous file I/O (but, in case of crashes, may cause the loss of log messages). 
+Log output to console is a lot faster, even when redirecting these logs to a file (thanks to <code>&gt; myLogFile.txt</code> or to <code> | tee myLogFile.txt</code>), most probably because these streams are buffered. It leads us to think that the classical plug could be used if ever the user set its classical plug and/or its raw log aggregator to <code>immediateWrite = false</code>, which would disable synchronous file I/O (but, in case of crashes, may cause the loss of log messages). 
 </p>
 
 <p>

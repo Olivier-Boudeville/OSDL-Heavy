@@ -108,7 +108,7 @@ snapshot:
 	-@/bin/rm -rf OSDL
 	
 	
-# Brute-force archiving with bzip2, see also the 'source-release' target.
+# Brute-force archiving with bzip2, see also the 'source-release' target.
 # clean required not to archive test* executables:	
 # To avoid uselessly fat archives, some cleaning has
 # to be done, but using cleanGeneratedConfigFiles.sh removes the 
@@ -128,7 +128,7 @@ bz2:
 	&& echo
 	
 	
-# Brute-force archiving with gzip, see also the 'source-release' target.
+# Brute-force archiving with gzip, see also the 'source-release' target.
 # clean required not to archive test* executables:			
 # Note: usually deprecated in favor of generate-releases.
 tgz:

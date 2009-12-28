@@ -37,7 +37,7 @@ fi
 
 TARGET_ROOT="$2"
 
-# Absolute path only:
+# Absolute path only:
 first_char=`echo ${TARGET_ROOT} | cut -b 1`
 if [ ${first_char} != "/" ] ; then
 	TARGET_ROOT=`pwd`/${TARGET_ROOT}
