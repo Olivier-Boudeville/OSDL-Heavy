@@ -16,8 +16,8 @@ BASE_DIR=`dirname $0`/../../..
 cd $BASE_DIR
 #pwd
 
- 
- 
+
+
 # Only the Makefile (if any) knows which executables should be removed:
 cd test
 #echo "cleaning test"
@@ -38,10 +38,8 @@ $FIND . \( -name 'autom4te.cache' -o -name '.deps' -o -name 'libltdl' -o -name '
 $FIND . \( -name ltmain.sh -o -name aclocal.m4 -o -name install-sh -o -name missing -o -name depcomp -o -name stamp-h1 -o -name configure.ac -o -name configure-from-autoscan.ac -o -name configure-from-autoupdate.ac -o -name configure -o -name 'auto*.log' -o -name 'auto*.err' -o -name config.guess -o -name config.log -o -name config.status -o -name config.sub -o -name libtool -o -name Makefile -o -name Makefile.in -o -name OSDLTemporaryConfig.h -o -name OSDLConfig.h -o -name OSDLHeaderVersion.cc -o -name '*.so' -o -name '*.a' -o -name 'svn-commit*.tmp' -o -name '*.o' -o -name '*.loT' -o -name '*.lo' -o -name 'test*.pal' -o -name 'test*.png' -o -name 'test*.bmp' -o -name 'test*.rgb' -o -name 'test*.bmp' -o -name '*.la' -o -name test-OSDLEmbeddedFileSystem-archive.oar -o -name core \) -exec $RM -f '{}' ';' 2>/dev/null
 
 $RM -f TODO MAINTENERS AUTHORS INSTALL FAQ ChangeLog THANKS NEWS COPYING.LIB README LOANI-README src/conf/build/loani/LOANI-README-template.txt src/conf/build/loani/LOANI-README osdl-*.tar.gz osdl-*.tar.bz2 test/testsOutcome.txt
-																	
+
 $RM -f src/doc/basic/OSDL-*-template.txt src/conf/doc/doxygen.conf src/conf/build/osdl-*.pc src/conf/build/m4/osdl.m4 src/code/OSDLConfig.h.in
 
-		
-						 
-echo "    Cleaning done."
 
+echo "    Cleaning done."
