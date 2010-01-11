@@ -5085,7 +5085,7 @@ generatelibtool()
 
 	LOG_STATUS "Generating libtool..."
 
-	cd "libtool-${libtool_VERSION}"
+	cd "libtool-${libtool_VERSION}b"
 
 	printItem "configuring"
 
