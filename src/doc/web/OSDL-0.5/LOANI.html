@@ -911,6 +911,9 @@ Certificate information:
 	If most OSDL tests fail (inspect <code>OSDL/trunk/test/testsOutcome.txt</code> for <code>No available video device</code>), check that the user can display windows indeed, with respect to the X server (ex: test with <code>xclock</code>). 
 	</dd>
 
+	<dt>LOANI fails while in <code>erlang/common/src</code>, short of finding the <code>kernel/include/file.hrl</code></dt>
+	<dd>You must be using a stripped-down Erlang compiler, lacking header files, like the one installed by default with Ubuntu Karmic Koala. To fix that, either request LOANI to install a custom-built Erlang environment as well by adding the <code>--OrgeTools</code> option (recommended), or install the <code>erlang-dev</code> package</dd> 
+
 	<dt>Random or unexplained LOANI failures during build</dt>
 	<dd>One should first check that there is still enough room on device. On Windows, one could ensure too that the installation was performed close enough to the root of the filesystem (ex: <code>C:\LOANI-install</code>), as various tools may fail when paths become too long.
 </dd>
