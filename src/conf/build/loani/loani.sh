@@ -601,6 +601,9 @@ only_orge_tools=1
 # Install only third-party tools: [default: false (1)]
 manage_only_third_party_tools=1
 
+# Tells whether the Erlang environment should be installed:[default: false (1)]
+install_erlang=0
+
 # Cross-compilation to Nintendo DS homebrew: [default: false (1)]
 target_nds=1
 
@@ -1139,7 +1142,7 @@ if [ $is_linux -eq 0 ] ; then
 		#else if [ "$distro" = "Ubuntu" ] ; then
 		else
 
-			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
+			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake cmake-curses-gui patch gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
 
 		fi
 
@@ -1148,11 +1151,9 @@ if [ $is_linux -eq 0 ] ; then
 fi
 
 
-
 # findBasicShellTools already automatically run when sourced.
 
 if [ $only_orge_tools -eq 0 ] ; then
-
 
 	findTool awk $1 "${lacking_tool_message}"
 	AWK=$returnedString
@@ -1183,7 +1184,6 @@ if [ $only_orge_tools -eq 0 ] ; then
 
 	findTool svn $1 "${lacking_tool_message}"
 	SVN=$returnedString
-
 
 else
 
@@ -1335,6 +1335,34 @@ if [ $only_orge_tools -eq 1 ] ; then
 	fi
 
 fi
+
+
+# Checkings for Erlang:
+if [ $install_erlang -eq 0 ] ; then
+
+
+    if [ ! -e "/usr/include/ncurses.h" ] ; then
+	
+	ERROR "  Error, the libncurses headers cannot be found, whereas they are needed for the build.
+		Use for instance 'apt-get install libncurses5-dev' (other packages should preferably be also installed beforehand: openssl and libssl-dev)."
+	
+	exit 21
+	
+    fi
+
+else
+	
+    erl_exec=`which erl 2>/dev/null`
+    
+    if [ ! -x "$erl_exec" ] ; then
+	    
+	WARNING "No Erlang environment available, not requested to be installed, thus the Erlang part of the Ceylan and OSDL libraries will be disabled. Consider installing Erlang beforehand, or adding the '--OrgeTools' option."
+	
+    fi
+    
+fi
+
+
 
 
 #TRACE "Toolsets sourced."
