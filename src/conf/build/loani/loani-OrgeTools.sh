@@ -16,14 +16,8 @@ ORGE_TOOLS="egeoip Geolite Ceylan_Erlang Orge"
 
 # Updating retrieve list:
 # (new tools are put ahead of those already selected, so that CVS retrievals
-#do not delay them)
-if [ $is_windows -eq 0 ] ; then
-	WARNING "on Windows, no Orge tool managed."
-else
-  # Put at end rather than begin so that any newly installed build tool
-  #(ex: gcc) can be used nevertheless:
-	target_list="$target_list $ORGE_TOOLS"
-fi
+# do not delay them)
+
 
 target_erlang="/usr/local/bin/erl"
 if [ -x "$target_erlang" ] ; then
@@ -32,7 +26,9 @@ if [ -x "$target_erlang" ] ; then
 
 	if [ "$found_erlang_version" = "$Erlang_VERSION" ] ; then
 
-		DISPLAY "Erlang found in $target_erlang in the correct version ($found_erlang_version), thus not installing it."
+		DISPLAY "Erlang found in $target_erlang in the correct version ($found_erlang_version), thus not installing it (expecting it to have been built with the proper options)."
+
+		install_erlang=1
 
 	else
 
@@ -47,6 +43,15 @@ else
 
 	ORGE_TOOLS="Erlang $ORGE_TOOLS"
 
+fi
+
+
+if [ $is_windows -eq 0 ] ; then
+	WARNING "on Windows, no Orge tool managed."
+else
+  # Put at end rather than begin so that any newly installed build tool
+  #(ex: gcc) can be used nevertheless:
+	target_list="$target_list $ORGE_TOOLS"
 fi
 
 
