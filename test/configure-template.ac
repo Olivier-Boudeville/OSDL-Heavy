@@ -143,10 +143,14 @@ if test x$ac_cv_cxx_compiler_gnu = xyes; then
 fi
 
 
+# If the following line fails, then probably the reason is that the OSDL
+# library was not installed (and thus osdl.m4 was not included):
 OSDL_PATH(ST_OSDL_TESTED_LT_CURRENT_VERSION,ST_OSDL_TESTED_LT_REVISION_VERSION,ST_OSDL_TESTED_LT_AGE_VERSION)
+
 
 CPPFLAGS="$CPPFLAGS $OSDL_CPPFLAGS"
 AC_SUBST(CPPFLAGS)
+
 
 LIBS="$LIBS $OSDL_LIBS"
 AC_SUBST(LIBS)
