@@ -205,7 +205,7 @@ common:
 	[$(DESTDIR)@OSDL_LOCAL_WEB_SHARED_DIR@]@OSDL_DEFAULT_STYLE@"
 	@if [ -d "$(DESTDIR)@OSDL_LOCAL_DOC_DIR@" ] ; then \
 	chmod a+w $(DESTDIR)@OSDL_LOCAL_DOC_DIR@; else \
-	chmod a+w `dirname (DESTDIR)@OSDL_LOCAL_DOC_DIR@`; \
+	chmod a+w `dirname $(DESTDIR)@OSDL_LOCAL_DOC_DIR@`; \
 	mkdir -p $(DESTDIR)@OSDL_LOCAL_DOC_DIR@ ; fi
 	@mkdir -p $(DESTDIR)@OSDL_LOCAL_WEB_DIR@
 	@mkdir -p $(DESTDIR)@OSDL_LOCAL_WEB_SHARED_DIR@
@@ -300,9 +300,6 @@ transfer: toSF toMirror
 
 # toSF will copy all documentation files (doc and, if available, api) 
 # to SF webserver.
-# As doc is in CVS, one would generally only need to transfer api.
-# Updating doc manually is notably useful to instantaneously update
-# the website.
 toSF: 
 	@if [ -x "$(RSYNC)" ]; then $(MAKE) toSF-rsync; \
 	else $(MAKE) toSF-scp; fi 
