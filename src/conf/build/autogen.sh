@@ -324,9 +324,9 @@ if [ ! -d "${CEYLAN_SHARED_DIR}" ] ; then
 	exit 11
 fi
 
-SUBSTITUTE_SCRIPT="${CEYLAN_SHARED_DIR}/scripts/shell/substitute.sh"
-if [ ! -x "${SUBSTITUTE_SCRIPT}" ] ; then
-	echo "Error, no executable substitute script found ($SUBSTITUTE_SCRIPT)" 1>&2	
+substitute_script="${CEYLAN_SHARED_DIR}/scripts/shell/substitute.sh"
+if [ ! -x "${substitute_script}" ] ; then
+	echo "Error, no executable substitute script found ($substitute_script)" 1>&2	
 	exit 12
 fi
 
@@ -340,7 +340,9 @@ else
 fi
 
 
-# If OSDL-environment.sh is used, we have to add the tools prefix:
+# If OSDL-environment.sh is used, we have to add the tools prefix so
+# that with this autogen.sh script we link to the tools specified by LOANI
+# in this OSDL environment file:
 if [ -n "$osdl_environment_file" ] ; then
 
 	if [ -n "${gcc_PREFIX}" ] ; then
@@ -350,6 +352,7 @@ if [ -n "$osdl_environment_file" ] ; then
 	if [ -n "${SDL_PREFIX}" ] ; then
 		configure_opt="${configure_opt} --with-sdl-prefix=$SDL_PREFIX"
 	fi
+
 		
 fi
 
@@ -361,18 +364,36 @@ fi
 # It results in the prefix being stored in OSDL-environment.sh
 # For next builds from scratch (i.e. directly with this autogen.sh), the
 # OSDL-environment.sh will be read, and OSDL_PREFIX will be read and used.
+# Note that if no OSDL_PREFIX is found, then no --prefix will be specified,
+# and build will fail if any prerequisite is not in a standard location,
+# since the configure script relies on this prefix to determine where is
+# the LOANI-installation directory, then every package directory.
 if [ -n "${OSDL_PREFIX}" ] ; then
 	mkdir -p ${OSDL_PREFIX}
 	PREFIX_OPT="--prefix=$OSDL_PREFIX"
 else
+
+	# LOANI will use this script just to generate the configure script, then
+	# will run it by its own means, thus the prefix here would not matter:
+	if [ $do_stop_after_configure_generation -eq 1 ] ; then
+	
+		echo "
+	#### Warning: no OSDL_PREFIX variable was set, thus no prefix will be transmitted to the configure script, prerequisite paths may be incorrect. Did you####" 1>&2
+	
+	fi
+	
 	PREFIX_OPT=""
+	
 fi
 
 
 if [ -n "${configure_user_opt}" ] ; then
+
 	# Overrides all default configure options:
 	configure_opt="$configure_user_opt"
-else	
+	
+else
+	
 	configure_opt="$configure_opt $osdl_features_opt --enable-strict-ansi --enable-debug $PREFIX_OPT $test_overriden_options"
 fi
 
@@ -524,7 +545,7 @@ generateCustom()
 	echo " - generating $CONFIG_TARGET, by filling $CONFIG_SOURCE with $SETTINGS_FILE"
 
 	# Generates 'configure.ac' with an already cooked dedicated Makefile:
-	execute make -f MakeConfigure clean config-files SUBSTITUTE=$SUBSTITUTE_SCRIPT
+	execute make -f MakeConfigure clean config-files SUBSTITUTE=$substitute_script
 	
 	# Prepare to run everything from the root directory (containing 'src'
 	# and 'test').
