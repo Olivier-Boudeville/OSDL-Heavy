@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2009 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -54,15 +54,15 @@
  * Many thanks to Andreas Schiffler.
  *
  * This file is meant to be only included internally by OSDLFromGfx.cc
- * and the (internal too) OSDL implementation files calling these 
+ * and the (internal too) OSDL implementation files calling these
  * functions.
  *
  */
- 
- 
+
+
 // for OSDL::Video::Pixels::PixelColor, OSDL::Video::Pixels::ColorElement:
-#include "OSDLPixel.h"   
- 
+#include "OSDLPixel.h"
+
 
 
 // These functions operate directly on SDL surfaces:
@@ -71,7 +71,7 @@ struct SDL_Surface ;
 
 
 /*
- * In this file, all per pixel operations are made thanks to the 
+ * In this file, all per pixel operations are made thanks to the
  * atomic putpixel functions of SDL_gfx.
  *
  * @see http://www.ferzkopp.net/~aschiffler/Software/SDL_gfx-2.0/
@@ -87,16 +87,16 @@ struct SDL_Surface ;
 
 
 
-/* 
- * List of putpixel functions and of their dependencies: 
+/*
+ * List of putpixel functions and of their dependencies:
  *
- * 1. No blending: 
+ * 1. No blending:
  *
  *   fastPixelColorNolockNoclip (never used)
  *
  *   fastPixelColorNolock (no depends) [clips]
  *
- *   fastPixelColor = lock + fastPixelColorNolock 
+ *   fastPixelColor = lock + fastPixelColorNolock
  *   fastPixelRGBANolock = map + fastPixelColorNolock
  *
  *   fastPixelRGBA = map + fastPixelColor = map + lock + fastPixelColorNolock
@@ -113,8 +113,8 @@ struct SDL_Surface ;
  *
  *
  */
- 
- 
+
+
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
@@ -122,83 +122,83 @@ extern "C" {
 
 
 
-// Supplementary pixel-level primitives to declare (were internal):
- 
- 
- 
-int fastPixelColorNolock( SDL_Surface * dst, Ceylan::Sint16 x,
+  // Supplementary pixel-level primitives to declare (were internal):
+
+
+
+  int fastPixelColorNolock( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
-	
-	
-int fastPixelColorNolockNoclip( SDL_Surface * dst, Ceylan::Sint16 x,
+
+
+  int fastPixelColorNolockNoclip( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
-	
-	
-int fastPixelColor( SDL_Surface * dst, Ceylan::Sint16 x, 
+
+
+  int fastPixelColor( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
 
 
 
-// This one is not used:
-int fastPixelRGBA( SDL_Surface * dst, Ceylan::Sint16 x, 
-	Ceylan::Sint16 y, Ceylan::Uint8 r, Ceylan::Uint8 g, Ceylan::Uint8 b,
-	Ceylan::Uint8 a ) ;
- 
- 
-// This one is not used: 
-int fastPixelRGBANolock( SDL_Surface * dst, Ceylan::Sint16 x,
+  // This one is not used:
+  int fastPixelRGBA( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Uint8 r, Ceylan::Uint8 g, Ceylan::Uint8 b,
 	Ceylan::Uint8 a ) ;
 
 
+  // This one is not used:
+  int fastPixelRGBANolock( SDL_Surface * dst, Ceylan::Sint16 x,
+	Ceylan::Sint16 y, Ceylan::Uint8 r, Ceylan::Uint8 g, Ceylan::Uint8 b,
+	Ceylan::Uint8 a ) ;
 
-/**
- * OSDL's version of putPixelAlpha.
- *
- * @param color this color is not a color definition, it is a pixel color
- * already converted to the pixel format of the target surface.
- *
- * @param the alpha coefficient to use for this pixel to be blended.
- *
- * @note the alpha color element has to be specified since it cannot 
- * reliably be deduced from the 'color' parameter, which is already 
- * encoded to a specific pixel format.
- *
- */
-int putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x,
+
+
+  /**
+   * OSDL's version of putPixelAlpha.
+   *
+   * @param color this color is not a color definition, it is a pixel color
+   * already converted to the pixel format of the target surface.
+   *
+   * @param the alpha coefficient to use for this pixel to be blended.
+   *
+   * @note the alpha color element has to be specified since it cannot
+   * reliably be deduced from the 'color' parameter, which is already
+   * encoded to a specific pixel format.
+   *
+   */
+  int putPixelAlpha( SDL_Surface * surface, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, OSDL::Video::Pixels::PixelColor color,
 	OSDL::Video::Pixels::ColorElement alpha ) ;
-	
-	
-	
-/* 
- * This one is already exported by SDL_gfx:
- * int pixelColor( SDL_Surface * dst, Ceylan::Sint16 x, Ceylan::Sint16 y,
- * Ceylan::Uint32 color) ;
- *
- */
- 
- 
-int pixelColorNolock( SDL_Surface * dst, Ceylan::Sint16 x,
+
+
+
+  /*
+   * This one is already exported by SDL_gfx:
+   * int pixelColor( SDL_Surface * dst, Ceylan::Sint16 x, Ceylan::Sint16 y,
+   * Ceylan::Uint32 color) ;
+   *
+   */
+
+
+  int pixelColorNolock( SDL_Surface * dst, Ceylan::Sint16 x,
 	Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
 
 
-int aalineColorInt( SDL_Surface * dst, Ceylan::Sint16 x1,
-	Ceylan::Sint16 y1, Ceylan::Sint16 x2, Ceylan::Sint16 y2, 
+  int aalineColorInt( SDL_Surface * dst, Ceylan::Sint16 x1,
+	Ceylan::Sint16 y1, Ceylan::Sint16 x2, Ceylan::Sint16 y2,
 	Ceylan::Uint32 color, int draw_endpoint ) ;
 
 
-int hlineColorStore( SDL_Surface * dst, Ceylan::Sint16 x1,
+  int hlineColorStore( SDL_Surface * dst, Ceylan::Sint16 x1,
 	Ceylan::Sint16 x2, Ceylan::Sint16 y, Ceylan::Uint32 color ) ;
 
 
-int filledCircleRGBANotBlended( SDL_Surface * dst, 
-	Ceylan::Sint16 x, Ceylan::Sint16 y, Ceylan::Sint16 rad, 
+  int filledCircleRGBANotBlended( SDL_Surface * dst,
+	Ceylan::Sint16 x, Ceylan::Sint16 y, Ceylan::Sint16 rad,
 	Ceylan::Uint8 r, Ceylan::Uint8 g, Ceylan::Uint8 b, Ceylan::Uint8 a ) ;
 
 
 
-/* Ends C function definitions when using C++ */
+  /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
 #endif // __cplusplus
@@ -209,4 +209,3 @@ int filledCircleRGBANotBlended( SDL_Surface * dst,
 
 
 # endif // OSDL_FROM_GFX_H_
-
