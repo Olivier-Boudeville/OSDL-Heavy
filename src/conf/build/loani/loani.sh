@@ -1342,24 +1342,24 @@ if [ $install_erlang -eq 0 ] ; then
 
 
     if [ ! -e "/usr/include/ncurses.h" ] ; then
-	
+
 	ERROR "  Error, the libncurses headers cannot be found, whereas they are needed for the build.
 		Use for instance 'apt-get install libncurses5-dev' (other packages should preferably be also installed beforehand: openssl and libssl-dev)."
-	
+
 	exit 21
-	
+
     fi
 
 else
-	
+
     erl_exec=`which erl 2>/dev/null`
-    
+
     if [ ! -x "$erl_exec" ] ; then
-	    
+
 	WARNING "No Erlang environment available, not requested to be installed, thus the Erlang part of the Ceylan and OSDL libraries will be disabled. Consider installing Erlang beforehand, or adding the '--OrgeTools' option."
-	
+
     fi
-    
+
 fi
 
 
