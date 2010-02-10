@@ -1287,9 +1287,12 @@ generatelibpng()
 			echo "libpng_PREFIX=${libpng_PREFIX}" >> ${OSDL_ENV_FILE}
 			echo "export libpng_PREFIX" >> ${OSDL_ENV_FILE}
 
+			# There is now a libpng-config script:
+			echo "PATH=\$libpng_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 			echo "LD_LIBRARY_PATH=\$libpng_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
 		# In order SDL_image configure does not fail:
+		    PATH=${libpng_PREFIX}/bin:${PATH}
 			LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}
 			export LD_LIBRARY_PATH
 
