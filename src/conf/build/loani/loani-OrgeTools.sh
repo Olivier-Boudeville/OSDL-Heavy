@@ -590,7 +590,7 @@ getCeylan_Erlang()
 	touch "${rules_dead_link}"
 
 
-	script_dead_link="common/src/generate-docutils.sh"
+	script_dead_link="common/src/scripts/generate-docutils.sh"
 
 	if [ -h "${script_dead_link}" ] ; then
 
