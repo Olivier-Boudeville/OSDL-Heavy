@@ -1376,7 +1376,7 @@ DISPLAY "Target package list is <$target_list >."
 # Checks that there is enough available space on disk:
 
 # Available size in megabytes (1048576 is 1024^2):
-available_size=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
+available_size=`${DF} -P -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
 
 
 DEBUG "Detected available size on current disk is ${available_size} megabytes."
