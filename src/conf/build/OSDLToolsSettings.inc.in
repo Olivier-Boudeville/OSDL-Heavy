@@ -454,10 +454,10 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R13B03"
+Erlang_VERSION="R13B04"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5="411fcb29f0819973f71e28f6b56d9948"
+Erlang_MD5="ca6da4921e438891967900aa6a084341"
 
 
 
@@ -477,7 +477,7 @@ egeoip_SVN_SERVER="egeoip.googlecode.com"
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
 # Version of Saturday, December 19, 2009:
-Geolite_MD5="a7205fed358dadbdacd266a9c85c72b4"
+Geolite_MD5="5fa77fb3cb3dc578cf2e2265a838bfbd"
 
 
 
