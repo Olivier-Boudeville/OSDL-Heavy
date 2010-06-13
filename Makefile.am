@@ -1,16 +1,19 @@
-
 # Root Makefile.am for the whole OSDL package, including tests.
 
 # Requires following version of automake or newer:
 AUTOMAKE_OPTIONS = 1.9
 
-SUBDIRS = src 
+SUBDIRS = src
+
+# For parallel builds:
+MAKEFLAGS = -j `grep -c processor /proc/cpuinfo`
 
 
 # These are the subdirectories which will be distributed with 'make dist':
-# (the 'test' directory is not included since it is managed by dist-hook, as
-# it may or may not be configured).
-DIST_SUBDIRS = $(SUBDIRS) 
+#
+# (the 'test' directory is not included since it is managed by dist-hook, as it
+# may or may not be configured).
+DIST_SUBDIRS = $(SUBDIRS)
 
 
 .PHONY: source-release update-basic-doc-files bz2 tgz style doc api stat    \
@@ -30,20 +33,23 @@ SRC_SNAPSHOT_ARCHIVE_NAME = \
 
 
 
-# A file is assumed to be a project file if it is a file, not located in
-# a directory named .svn or .libs or LOANI-*, not a generated binary
-# (object file, executable, library ), not a dependency. 
-# Using implicit definition of a project file (defining what it is not
-# rather than what it is) reduces the risk of missing a project file:
-# in case of mistake, too many files will be archived, not too few.
+# A file is assumed to be a project file if it is a file, not located in a
+# directory named .svn or .libs or LOANI-*, not a generated binary (object file,
+# executable, library ), not a dependency.
+#
+# Using implicit definition of a project file (defining what it is not rather
+# than what it is) reduces the risk of missing a project file: in case of
+# mistake, too many files will be archived, not too few.
+#
 # Useful notably for bz2 and tgz make targets.
 # The following line should not be broken otherwise it will not work.
 OSDL_PROJECT_FILES = `current_dir=\`basename $$PWD\`; cd $(top_srcdir)/..; find $$current_dir \( -path '*.svn*' -prune -o -path '*.libs' -prune -o -path '.deps' -prune -o -path '*autom4te.cache*' -prune -o -path 'testOSDL*-logs' -prune -o -path '*LOANI-*' -prune \) -a \( -type d -a ! -name '*.svn*' -a ! -name '.libs' -a ! -name '*LOANI*' \) -o \( -type f -a ! -name '*.o' -a ! -name '*.exe' ! -name '*.a' ! -name '*.so*' ! -name '.*list' ! -name '*.lo' ! -name '*.Plo' ! -name '*.la' ! -name '*.lai' ! -name 'Makefile.in' ! -name 'stamp-h1' ! -name 'OSDL-?.?.tar.gz' ! -name 'Makefile' ! -name '.*.d' ! -name '*.log' ! -name '*.pyc' \)| grep -v '.svn' | grep -v '.deps' | grep -v autom4te.cache`
-	
-		
-# A file is assumed to be a source file if it is a file, not located in
-# a directory named .svn, and if its name finishes by .h or .cc. 
-# Useful notably for style make targets. 
+
+
+# A file is assumed to be a source file if it is a file, not located in a
+# directory named .svn, and if its name finishes by .h or .cc.
+#
+# Useful notably for style make targets.
 # Only takes into account the library (ex: test sources are ignored).
 # The following line should not be broken otherwise it will not work.
 OSDL_LIBRARY_SOURCE_FILES = `cd $(top_srcdir); find src/code -path '*.svn*' -prune -a \( -type d -a ! -name '*.svn*' \) -o -name '*.cc' -o -name '*.h' -a -type f| grep -v '.svn'`
@@ -70,7 +76,7 @@ install-exec-hook:
 	-ldconfig
 
 update-basic-doc-files:
-	cd ${top_builddir}/src/doc/basic; $(MAKE) update-basic-doc-files 
+	cd ${top_builddir}/src/doc/basic; $(MAKE) update-basic-doc-files
 
 
 # Note: usually deprecated in favor of generate-releases.
@@ -106,13 +112,14 @@ snapshot:
 	&& echo "      $(HOME)/OSDL-@OSDL_VERSION@-svn-snapshot.tar.bz2 \
 	@OSDL_DEFAULT_STYLE@" && echo
 	-@/bin/rm -rf OSDL
-	
-	
+
+
 # Brute-force archiving with bzip2, see also the 'source-release' target.
-# clean required not to archive test* executables:	
-# To avoid uselessly fat archives, some cleaning has
-# to be done, but using cleanGeneratedConfigFiles.sh removes the 
-# Makefile being used itself.	
+# clean required not to archive test* executables:
+#
+# To avoid uselessly fat archives, some cleaning has to be done, but using
+# cleanGeneratedConfigFiles.sh removes the Makefile being used itself.
+#
 # Note: usually deprecated in favor of generate-releases.
 bz2:
 	@echo; echo "@OSDL_COMMAND_STYLE@    Saving all \
@@ -126,10 +133,10 @@ bz2:
 	"      $(SRC_SNAPSHOT_ARCHIVE_DIR)/$(SRC_SNAPSHOT_ARCHIVE_NAME).tar.bz2 \
 	@OSDL_DEFAULT_STYLE@" \
 	&& echo
-	
-	
+
+
 # Brute-force archiving with gzip, see also the 'source-release' target.
-# clean required not to archive test* executables:			
+# clean required not to archive test* executables.
 # Note: usually deprecated in favor of generate-releases.
 tgz:
 	@echo; echo "@OSDL_COMMAND_STYLE@    Saving all \
@@ -150,11 +157,11 @@ ASTYLE      = `which astyle 2>/dev/null`
 ASTYLE_CONF = ${top_srcdir}/src/conf/doc/astyle.conf
 
 
-style: 
+style:
 	@[ -x "$(ASTYLE)" ] \
 	|| ( echo "@OSDL_ERROR_STYLE@    Unable to format source code \
 	according to @PROJECT_NAME@'s conventions: \
-	astyle tool not found.@OSDL_DEFAULT_STYLE@"; false ) 
+	astyle tool not found.@OSDL_DEFAULT_STYLE@"; false )
 	@echo
 	@echo "    Do you really want to use astyle on each of \
 	the project files ? (y/n) [n]"; \
@@ -169,15 +176,15 @@ style:
 
 
 doc:
-	cd $(top_srcdir)/src/doc && $(MAKE) site  
-	
-	
+	cd $(top_srcdir)/src/doc && $(MAKE) site
+
+
 api:
-	cd $(top_srcdir)/src/doc && $(MAKE) api  
+	cd $(top_srcdir)/src/doc && $(MAKE) api
 
 
 stat:
-	@echo 		
+	@echo
 	@for f in $(OSDL_LIBRARY_SOURCE_FILES);\
 	do ( cat $$f >> .wholeSrcContent.txt; \
 	echo $$f >> .srcFileList.txt ); done
@@ -189,22 +196,22 @@ stat:
 	echo "    "`echo $$s | awk '{print $$1}'` lines; \
 	echo "    "`echo $$s | awk '{print $$2}'` words; \
 	echo "    "`echo $$s | awk '{print $$3}'` characters\
-	"@OSDL_DEFAULT_STYLE@"; 
+	"@OSDL_DEFAULT_STYLE@";
 	-@/bin/rm -f .wholeSrcContent.txt .srcFileList.txt
 
 
 help:
-	@echo; echo "@OSDL_DEFAULT_STYLE@  Main make targets are:"; echo 
+	@echo; echo "@OSDL_DEFAULT_STYLE@  Main make targets are:"; echo
 	@echo "    @OSDL_ITEM_STYLE@all @OSDL_DEFAULT_STYLE@           \
 	- builds and installs a full ready-to-use\
 	@PROJECT_NAME@-$(VERSION) release"
 	@echo "    @OSDL_ITEM_STYLE@install @OSDL_DEFAULT_STYLE@       \
 	- installs an already built @PROJECT_NAME@ release in PREFIX"
-	@echo "                 [currently PREFIX=$(prefix)]"	
+	@echo "                 [currently PREFIX=$(prefix)]"
 	@echo "    @OSDL_ITEM_STYLE@tests @OSDL_DEFAULT_STYLE@         \
-	- generates all tests for built libraries"		
+	- generates all tests for built libraries"
 	@echo "    @OSDL_ITEM_STYLE@source-release @OSDL_DEFAULT_STYLE@\
-	- creates a new source release archive"	
+	- creates a new source release archive"
 	@echo "    @OSDL_ITEM_STYLE@bz2 @OSDL_DEFAULT_STYLE@           \
 	- creates @PROJECT_NAME@ bz2 archive in @OSDL_ARCHIVE_DIR@"
 	@echo "    @OSDL_ITEM_STYLE@tgz @OSDL_DEFAULT_STYLE@           \
@@ -214,7 +221,7 @@ help:
 	@echo "    @OSDL_ITEM_STYLE@doc @OSDL_DEFAULT_STYLE@           \
 	- builds @PROJECT_NAME@'s documentation, API excluded"
 	@echo "    @OSDL_ITEM_STYLE@api @OSDL_DEFAULT_STYLE@           \
-	- builds @PROJECT_NAME@'s API pages"	
+	- builds @PROJECT_NAME@'s API pages"
 	@echo "    @OSDL_ITEM_STYLE@stat @OSDL_DEFAULT_STYLE@          \
 	- prints statistics about @PROJECT_NAME@'s source code"
 	@echo "    @OSDL_ITEM_STYLE@info @OSDL_DEFAULT_STYLE@          \
@@ -224,10 +231,10 @@ help:
 	@echo "    @OSDL_ITEM_STYLE@clean @OSDL_DEFAULT_STYLE@         \
 	- removes all generated files"
 	@echo "    @OSDL_ITEM_STYLE@help @OSDL_DEFAULT_STYLE@          \
-	- displays this message"	
+	- displays this message"
 	@echo "    @OSDL_ITEM_STYLE@hints @OSDL_DEFAULT_STYLE@         \
 	- shows how to overcome build errors and redefine output\
-	directories"	
+	directories"
 	@echo
 	@echo "Other @OSDL_ITEM_STYLE@GNU standard targets \
 	@OSDL_DEFAULT_STYLE@ also available with their usual meaning:"
@@ -237,7 +244,7 @@ help:
 	@echo "You can find detailed informations and support at @OSDL_SF_URL@"
 
 
-hints: 
+hints:
 	@echo
 	@echo "Stable versions of @PROJECT_NAME@ should compile fine \
 	out-of-the-box on all supported platforms."
@@ -245,9 +252,9 @@ hints:
 	@echo "The most common source of build failure is when the \
 	build system detects a tool's availability (for instance, libtool) \
 	whereas the found tool is in a too old version to be used by \
-	@PROJECT_NAME@." 
+	@PROJECT_NAME@."
 	@echo
-	@echo 
+	@echo
 	@echo "Following settings are set:"
 	@echo
 	@echo " + where most of @PROJECT_NAME@ is to be installed: \
@@ -261,16 +268,16 @@ hints:
 	@echo
 	@echo " + base directory where @PROJECT_NAME@ archives \
 	(source release, bz2 or tgz) are to be put: @OSDL_ARCHIVE_DIR@"
-	@echo 
-	
-	
+	@echo
+
+
 info-files: info-project-files info-library-sources
 
 
 info-project-files:
 	@echo "OSDL_PROJECT_FILES = $(OSDL_PROJECT_FILES)"
-	
-	
+
+
 info-library-sources:
 	@echo "OSDL_LIBRARY_SOURCE_FILES = $(OSDL_LIBRARY_SOURCE_FILES)"
 
@@ -287,20 +294,20 @@ rm-svn:
 
 clean-local:
 	@echo "@OSDL_CLEAN_STYLE@    Cleaning all from top build \
-	directory@OSDL_DEFAULT_STYLE@" 
+	directory@OSDL_DEFAULT_STYLE@"
 	-@cd ${top_builddir}; /bin/rm -f AUTHORS COPYING.LIB ChangeLog FAQ \
 	INSTALL MAINTENERS NEWS	README THANKS TODO $(RELEASE_FILES)
 
 
 real-clean: clean-local
 	-@/bin/rm -f Makefile.in aclocal.m4 config.log configure configure.ac \
-	libtool config.status config.cache 
+	libtool config.status config.cache
 	-@/bin/rm -rf autom4te.cache
 
 
 # Only useful if the source and build directories are the same.
-clean-generated: 
-	@cd ${top_srcdir}/conf/build; cleanGeneratedConfigFiles.sh 
+clean-generated:
+	@cd ${top_srcdir}/conf/build; cleanGeneratedConfigFiles.sh
 
 
 distclean-local: real-clean
@@ -321,7 +328,7 @@ dist-hook:
 	echo "Tool configure script not available, generating it." ; \
 	cd $(srcdir)/tools ; ./autogen.sh --only-prepare-dist -g; fi
 	@if test -f $(srcdir)/tools/Makefile; then \
-	(cd $(srcdir)/tools; $(MAKE) distclean); fi	
+	(cd $(srcdir)/tools; $(MAKE) distclean); fi
 	-@/bin/rm -rf $(srcdir)/tools/autom4te*
 	@cp -rp $(srcdir)/tools $(distdir)
 	-@/bin/rm -rf `find $(distdir) -type d -name '.svn' -print`
@@ -345,14 +352,12 @@ upload-releases: $(RELEASE_FILES)
 	   @rsync -avP -e ssh $(RELEASE_FILES) @OSDL_DEFAULT_SF_USER@@frs.sourceforge.net:uploads/
 
 
-# Apparently does not work if listed only as:
-# 'generate-releases: dist-bzip2 dist-zip dist'
-# (the release directory is removed and then next archive is empty)
-generate-releases: 
+# Apparently does not work if listed only as: 'generate-releases: dist-bzip2
+# dist-zip dist' (the release directory is removed and then next archive is
+# empty)
+generate-releases:
 	@$(MAKE) dist-bzip2 && $(MAKE) dist-zip && $(MAKE) dist
 
 
 info-releases:
 	@echo "RELEASE_FILES = $(RELEASE_FILES)"
-	
-	
