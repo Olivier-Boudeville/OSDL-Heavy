@@ -250,7 +250,7 @@ libvorbis_VERSION="1.3.1"
 libvorbis_ARCHIVE="libvorbis-${libvorbis_VERSION}.tar.gz"
 libvorbis_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/vorbis"
 libvorbis_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libvorbis_MD5="90b1eb86e6d57694ffdfc2e4d8c7a64e"
+libvorbis_MD5="016e523fac70bdd786258a9d15fd36e9"
 
 libvorbis_win_VERSION="${libvorbis_VERSION}"
 libvorbis_win_ARCHIVE="libvorbis-${libvorbis_win_VERSION}.zip"
@@ -302,7 +302,7 @@ guichan_MD5="f9ace11cc70d3ba60b62347172334a5f"
 guichan_win_VERSION="$guichan_VERSION"
 guichan_win_ARCHIVE="$guichan_ARCHIVE"
 guichan_win_DOWNLOAD_LOCATION="$guichan_DOWNLOAD_LOCATION"
-guichan_win_ALTERNATE_DOWNLOAD_LOCATION="guichan_ALTERNATE_DOWNLOAD_LOCATION$"
+guichan_win_ALTERNATE_DOWNLOAD_LOCATION="$guichan_ALTERNATE_DOWNLOAD_LOCATION"
 guichan_win_MD5="$guichan_MD5"
 
 
@@ -314,13 +314,13 @@ Agar_VERSION="@AGAR_RECOMMENDED_VERSION@"
 Agar_ARCHIVE="agar-${Agar_VERSION}.tar.gz"
 Agar_DOWNLOAD_LOCATION="http://stable.hypertriton.com/agar"
 Agar_ALTERNATE_DOWNLOAD_LOCATION=""
-Agar_MD5=""
+Agar_MD5="4259d53536d33f93268493ac499df927"
 
 Agar_win_VERSION="$Agar_VERSION"
 Agar_win_ARCHIVE="agar-${Agar_VERSION}.zip"
 Agar_win_DOWNLOAD_LOCATION="$Agar_DOWNLOAD_LOCATION"
 Agar_win_ALTERNATE_DOWNLOAD_LOCATION="$Agar_ALTERNATE_DOWNLOAD_LOCATION"
-Agar_win_MD5="4259d53536d33f93268493ac499df927"
+Agar_win_MD5=""
 
 
 
