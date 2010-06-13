@@ -1142,7 +1142,7 @@ if [ $is_linux -eq 0 ] ; then
 		#else if [ "$distro" = "Ubuntu" ] ; then
 		else
 
-			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake cmake-curses-gui patch gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
+			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake cmake-curses-gui patch gcc g++ flex subversion autoconf automake libx11-dev libxpm-dev x11proto-xext-dev libxext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
 
 		fi
 
@@ -1303,7 +1303,7 @@ if [ $only_orge_tools -eq 1 ] ; then
 
 		if [ ! -f "/usr/include/X11/extensions/XShm.h" ] ; then
 
-			ERROR "No headers for X11 extension about shared memory found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install x11proto-xext-dev'."
+			ERROR "No headers for X11 extension about shared memory found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install libx11-dev libxpm-dev x11proto-xext-dev libxext-dev'."
 			exit 17
 
 		fi
