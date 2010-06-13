@@ -1,10 +1,10 @@
-# 'configure-template.ac' is the source file in charge of dealing
-# with the Autoconf/Automake macros to be found in the generated
-# 'configure.ac'. One can use the 'checkConfigure.sh' script to check
-# whether the corresponding 'configure.ac' is the appropriate result.
+# 'configure-template.ac' is the source file in charge of dealing with the
+# Autoconf/Automake macros to be found in the generated 'configure.ac'. One can
+# use the 'checkConfigure.sh' script to check whether the corresponding
+# 'configure.ac' is the appropriate result.
 
 # This is a way of customizing settings prior to the whole 'autogen.sh' process,
-# leading to have the build system generated. 
+# leading to have the build system generated.
 
 
 AC_PREREQ(2.61)
@@ -19,30 +19,34 @@ AC_CONFIG_SRCDIR([ST_CONFIG_HEADER.in])
 AC_CONFIG_AUX_DIR([src/conf/build])
 
 # Detects the canonical host and target build environment:
+
 AC_CANONICAL_TARGET
 
-# 'tar-ustar' selects the ustar format defined by POSIX 1003.1-1988. 
-# This format is believed to be old enough to be portable, and allows
-# for paths longer than 99 characters:
+# 'tar-ustar' selects the ustar format defined by POSIX 1003.1-1988.
+# This format is believed to be old enough to be portable, and allows for paths
+# longer than 99 characters:
 AM_INIT_AUTOMAKE([tar-ustar])
 
-# OSDLTemporaryConfig.h is the first basic config file to be generated,
-# it contains what classically is in an usual config.h.
-# It is then transformed by AX_PREFIX_CONFIG_H into OSDLConfig.h, whose
-# defines are prefixed and have include guards.
-# Finally AC_CONFIG_COMMANDS updates OSDLConfig.h so that symbols
-# such as OSDL_HAVE_CTIME are replaced by OSDL_USES_CTIME.
+# OSDLTemporaryConfig.h is the first basic config file to be generated, it
+# contains what classically is in an usual config.h.
 
-# This macro adds '-DHAVE_CONFIG_H' in DEFS for compiler, but OSDL
-# ignores this too common (hence risky) symbol, and uses 
-# OSDL_USES_CONFIG_H instead.
+# It is then transformed by AX_PREFIX_CONFIG_H into OSDLConfig.h, whose defines
+# are prefixed and have include guards.
+
+# Finally AC_CONFIG_COMMANDS updates OSDLConfig.h so that symbols such as
+# OSDL_HAVE_CTIME are replaced by OSDL_USES_CTIME.
+
+# This macro adds '-DHAVE_CONFIG_H' in DEFS for compiler, but OSDL ignores this
+# too common (hence risky) symbol, and uses OSDL_USES_CONFIG_H instead.
 AC_CONFIG_HEADERS([ST_CONFIG_HEADER],[],[])
 OSDL_CPPFLAGS="-DOSDL_USES_CONFIG_H $OSDL_CPPFLAGS"
 
 
 # OSDLConfig.h will be the only config header to be installed.
-# It is obtained from ST_CONFIG_HEADER by renaming all entries that may 
-# clash when included by some user code.
+
+# It is obtained from ST_CONFIG_HEADER by renaming all entries that may clash
+# when included by some user code.
+
 # Ex: HAVE_CTIME is ultimately renamed to OSDL_USES_CTIME
 AX_PREFIX_CONFIG_H([src/code/OSDLConfig.h])
 
@@ -69,7 +73,7 @@ OSDL_RELEASE_DATE=ST_DATE_OF_RELEASE
 AC_SUBST(OSDL_RELEASE_DATE)
 
 
-# Usual versioning. 
+# Usual versioning.
 
 
 OSDL_MAJOR_VERSION=ST_MAJOR_VERSION
@@ -113,13 +117,13 @@ AC_SUBST(OSDL_LT_AGE)
 
 OSDL_LIBTOOL_VERSION="$OSDL_LT_CURRENT.$OSDL_LT_REVISION.$OSDL_LT_AGE"
 # The OSDL_LIBTOOL_VERSION symbol is used to update
-# basic/OSDLHeaderVersion.h.in with the actual OSDL libtool version, 
+# basic/OSDLHeaderVersion.h.in with the actual OSDL libtool version,
 # so that this header-embedded version can be compared with the library
-# version (see: test/osdl.m4). 
+# version (see: test/osdl.m4).
 AC_SUBST(OSDL_LIBTOOL_VERSION)
 
 
-# The value must be quoted with "" since it will be an argument of a C++ 
+# The value must be quoted with "" since it will be an argument of a C++
 # function call.
 # See: generic/OSDLUtils.cc for the library-embedded version.
 AC_DEFINE_UNQUOTED([LIBTOOL_VERSION],
@@ -142,15 +146,15 @@ OSDL_PKGCONFIG_FILE="osdl-${OSDL_VERSION}.pc"
 AC_SUBST(OSDL_PKGCONFIG_FILE)
 
 
-# Archive base directory. 
+# Archive base directory.
 OSDL_ARCHIVE_DIR="\${HOME}/Archive/${PROJECT_NAME}"
 AC_SUBST(OSDL_ARCHIVE_DIR)
 
 # Local shared directory for OSDL:
 # If the user wants to redefine his prefix, then he should reconfigure the
-# package: if not hardcoding the prefix at the configure step, then for
-# example we could not use autoconf to generate doxygen.conf which needs
-# a fully expanded output path (hence not containing '${prefix}').
+# package: if not hardcoding the prefix at the configure step, then for example
+# we could not use autoconf to generate doxygen.conf which needs a fully
+# expanded output path (hence not containing '${prefix}').
 OSDL_INSTALL_SHARED_DIR="\${prefix}/share/${PROJECT_NAME}"
 AC_SUBST(OSDL_INSTALL_SHARED_DIR)
 
@@ -203,9 +207,9 @@ AC_SUBST(OSDL_CURRENT_VERSION_PREFIX)
 
 # Local root of the whole OSDL documentation:
 # If the user wants to redefine his prefix, then he should reconfigure the
-# package: if not hardcoding the prefix at the configure step, then for
-# example we could not use autoconf to generate doxygen.conf which needs
-# a full expanded output path (hence not containing ${prefix}).
+# package: if not hardcoding the prefix at the configure step, then for example
+# we could not use autoconf to generate doxygen.conf which needs a full expanded
+# output path (hence not containing ${prefix}).
 OSDL_LOCAL_DOC_DIR="\${prefix}/share/${PROJECT_NAME}/doc"
 AC_SUBST(OSDL_LOCAL_DOC_DIR)
 
@@ -246,7 +250,7 @@ AC_SUBST(OSDL_MAILING_LIST_BUGTRACKING)
 
 
 # If the user did not override CXXFLAGS, provide our own default settings:
-# (in all cases the clumsy "-g -O2" automake default is removed) 
+# (in all cases the clumsy "-g -O2" automake default is removed)
 CXXFLAGS=${CXXFLAGS-""}
 
 
@@ -267,7 +271,7 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 
-# Only headers independent from all OSDL features are checked here: 
+# Only headers independent from all OSDL features are checked here:
 # (actually nothing to test, everything has been checked by Ceylan)
 #AC_CHECK_HEADERS([])
 
@@ -297,7 +301,7 @@ AC_FUNC_STAT
 AC_FUNC_UTIME_NULL
 
 
-# Only functions independent from all OSDL features are checked here. 
+# Only functions independent from all OSDL features are checked here.
 # (actually nothing to test, everything is provided by Ceylan)
 #AC_CHECK_FUNCS([])
 
@@ -314,9 +318,8 @@ OSDL_INSTALLATION="\${prefix}"
 
 # Needed to avoid a '..' in the path which would result in the includes not
 # being found at build time, since the installed OSDL directory does not exist
-# yet:
-# (if a build fails due to OSDL_LOANI_INSTALLATIONS being equal to
-# NONE, check that your OSDL-environment.sh file still contains a OSDL_PREFIX
+# yet: (if a build fails due to OSDL_LOANI_INSTALLATIONS being equal to NONE,
+# check that your OSDL-environment.sh file still contains a OSDL_PREFIX
 # definition)
 OSDL_LOANI_INSTALLATIONS=`echo ${prefix} | sed 's|LOANI-installations/OSDL-.*$|LOANI-installations|1'`
 AC_SUBST(OSDL_LOANI_INSTALLATIONS)
@@ -345,9 +348,8 @@ AC_SUBST(LOANI_MAILING_LIST)
 # m4 configure macros (ex: AM_PATH_SDL( 1.2.11 ...)) and they are used
 # to generate OSDLToolsSettings.inc.
 
-# The order according to prerequisites are listed here is from the most
-# specific to the least, as their libraries flags will respect that
-# order.
+# The order according to prerequisites are listed here is from the most specific
+# to the least, as their libraries flags will respect that order.
 
 # As soon as the autotools are used, the whole SDL family and its own
 # prerequisites will be used: OSDL_USES_SDL and al are thus defined
@@ -355,7 +357,7 @@ AC_SUBST(LOANI_MAILING_LIST)
 
 
 
-# SDL_gfx. 
+# SDL_gfx.
 # Depends on SDL, hence managed first (for the order in OSDL_LIBS).
 
 SDL_GFX_MAJOR_VERSION="2.0"
@@ -363,8 +365,8 @@ AC_SUBST(SDL_GFX_MAJOR_VERSION)
 
 # In the hope the configure removed options are then restored
 # (otherwise switch back to 2.0.18):
-#SDL_GFX_MINOR_VERSION="21"
-SDL_GFX_MINOR_VERSION="18"
+SDL_GFX_MINOR_VERSION="21"
+#SDL_GFX_MINOR_VERSION="18"
 AC_SUBST(SDL_GFX_MINOR_VERSION)
 
 SDL_GFX_RECOMMENDED_VERSION="$SDL_GFX_MAJOR_VERSION.$SDL_GFX_MINOR_VERSION"
@@ -386,20 +388,20 @@ sdl_gfx_support_activated=false
 if [ $sdl_gfx_support_activated = "true" ] ; then
 
    OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$SDL_GFX_PREFIX/include/SDL"
-   OSDL_LIBS="$OSDL_LIBS -L$SDL_GFX_PREFIX/lib -lSDL_gfx"	
-	
+   OSDL_LIBS="$OSDL_LIBS -L$SDL_GFX_PREFIX/lib -lSDL_gfx"
+
    AC_DEFINE([USES_SDL_GFX],[1],[Define to 1 if OSDL is to use SDL_gfx])
 
 else
 
    AC_DEFINE([USES_SDL_GFX],[0],[Define to 1 if OSDL is to use SDL_gfx])
-	
+
 fi
-	
 
 
-	
-# SDL_ttf. 
+
+
+# SDL_ttf.
 # Depends on SDL, hence managed first (for the order in OSDL_LIBS).
 
 SDL_TTF_RECOMMENDED_VERSION="2.0.9"
@@ -414,19 +416,19 @@ sdl_ttf_support_activated=true
 
 if [ $sdl_ttf_support_activated = "true" ] ; then
    OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$SDL_TTF_PREFIX/include/SDL"
-   OSDL_LIBS="$OSDL_LIBS -L$SDL_TTF_PREFIX/lib -lSDL_ttf"	
-	
+   OSDL_LIBS="$OSDL_LIBS -L$SDL_TTF_PREFIX/lib -lSDL_ttf"
+
 	AC_DEFINE([USES_SDL_TTF],[1],[Define to 1 if OSDL is to use SDL_ttf])
 
 else
 
 	AC_DEFINE([USES_SDL_TTF],[0],[Define to 1 if OSDL is to use SDL_ttf])
-	
+
 fi
-	
-	
-	
-# SDL_image. 
+
+
+
+# SDL_image.
 # Depends on SDL, hence managed first (for the order in OSDL_LIBS).
 
 SDL_IMAGE_RECOMMENDED_VERSION="1.2.10"
@@ -438,13 +440,13 @@ AC_SUBST(SDL_IMAGE_OLDEST_SUPPORTED_VERSION)
 SDL_IMAGE_PREFIX="${OSDL_LOANI_INSTALLATIONS}/SDL_image-$SDL_IMAGE_RECOMMENDED_VERSION"
 
 OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$SDL_IMAGE_PREFIX/include/SDL"
-OSDL_LIBS="$OSDL_LIBS -L$SDL_IMAGE_PREFIX/lib -lSDL_image"	
-	
+OSDL_LIBS="$OSDL_LIBS -L$SDL_IMAGE_PREFIX/lib -lSDL_image"
+
 AC_DEFINE([USES_SDL_IMAGE],[1],[Define to 1 if OSDL is to use SDL_image])
 
 
-	
-# SDL_mixer. 
+
+# SDL_mixer.
 # Depends on SDL, hence managed first (for the order in OSDL_LIBS).
 
 SDL_MIXER_RECOMMENDED_VERSION="1.2.11"
@@ -457,15 +459,15 @@ AC_SUBST(SDL_MIXER_OLDEST_SUPPORTED_VERSION)
 SDL_MIXER_PREFIX="${OSDL_LOANI_INSTALLATIONS}/SDL_mixer-$SDL_MIXER_RECOMMENDED_VERSION"
 
 OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$SDL_MIXER_PREFIX/include/SDL"
-OSDL_LIBS="$OSDL_LIBS -L$SDL_MIXER_PREFIX/lib -lSDL_mixer"	
-	
+OSDL_LIBS="$OSDL_LIBS -L$SDL_MIXER_PREFIX/lib -lSDL_mixer"
+
 AC_DEFINE([USES_SDL_MIXER],[1],[Define to 1 if OSDL is to use SDL_mixer])
 
 
 # Agar.
 # Depends on SDL, hence managed first (for the order in OSDL_LIBS).
 
-AGAR_RECOMMENDED_VERSION="1.3.4"
+AGAR_RECOMMENDED_VERSION="1.4.0"
 AC_SUBST(AGAR_RECOMMENDED_VERSION)
 
 AGAR_OLDEST_SUPPORTED_VERSION="$AGAR_RECOMMENDED_VERSION"
@@ -474,14 +476,14 @@ AC_SUBST(AGAR_OLDEST_SUPPORTED_VERSION)
 AGAR_PREFIX="${OSDL_LOANI_INSTALLATIONS}/agar-$AGAR_RECOMMENDED_VERSION"
 
 OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$AGAR_PREFIX/include/agar"
-OSDL_LIBS="$OSDL_LIBS -L$AGAR_PREFIX/lib -lag_gui -lag_core"	
+OSDL_LIBS="$OSDL_LIBS -L$AGAR_PREFIX/lib -lag_gui -lag_core"
 
 AC_DEFINE([USES_AGAR],[1],[Define to 1 if OSDL is to use Agar])
-	
 
-# png (libpng). 
 
-LIBPNG_RECOMMENDED_VERSION="1.2.40"
+# png (libpng).
+
+LIBPNG_RECOMMENDED_VERSION="1.4.2"
 AC_SUBST(LIBPNG_RECOMMENDED_VERSION)
 
 LIBPNG_OLDEST_SUPPORTED_VERSION="$LIBPNG_RECOMMENDED_VERSION"
@@ -490,12 +492,12 @@ AC_SUBST(LIBPNG_OLDEST_SUPPORTED_VERSION)
 LIBPNG_PREFIX="${OSDL_LOANI_INSTALLATIONS}/PNG-$LIBPNG_RECOMMENDED_VERSION"
 
 OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$LIBPNG_PREFIX/include"
-OSDL_LIBS="$OSDL_LIBS -L$LIBPNG_PREFIX/lib -lpng"	
+OSDL_LIBS="$OSDL_LIBS -L$LIBPNG_PREFIX/lib -lpng"
 
 AC_DEFINE([USES_LIBPNG],[1],[Define to 1 if OSDL is to use libpng])
-	
-	
-	
+
+
+
 # SDL.
 
 SDL_RECOMMENDED_VERSION="1.2.14"
@@ -528,12 +530,12 @@ PHYSICSFS_PREFIX="${OSDL_LOANI_INSTALLATIONS}/PhysicsFS-$PHYSICSFS_RECOMMENDED_V
 OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$PHYSICSFS_PREFIX/include"
 
 # Only constraint is to have PhysicsFS before any zlib:
-OSDL_LIBS="$OSDL_LIBS -L$PHYSICSFS_PREFIX/lib -lphysfs"	
+OSDL_LIBS="$OSDL_LIBS -L$PHYSICSFS_PREFIX/lib -lphysfs"
 
 AC_DEFINE([USES_PHYSICSFS],[1],[Define to 1 if OSDL is to use PhysicsFS])
 
-	
-	
+
+
 # Ceylan section.
 
 
@@ -549,7 +551,7 @@ AC_SUBST(CEYLAN_RECOMMENDED_RELEASE)
 
 # For the moment, backward compatibility does not go further than the
 # current version (when Ceylan will be more mature, will be able to separate
-# oldest supported/recommended versions) 
+# oldest supported/recommended versions)
 CEYLAN_OLDEST_SUPPORTED_MAJOR="$CEYLAN_RECOMMENDED_MAJOR"
 AC_SUBST(CEYLAN_OLDEST_SUPPORTED_MAJOR)
 
@@ -595,7 +597,7 @@ AC_SUBST(OSDL_UPDATE_RST)
 
 # Zlib.
 
-ZLIB_RECOMMENDED_VERSION="1.2.3"
+ZLIB_RECOMMENDED_VERSION="1.2.5"
 AC_SUBST(ZLIB_RECOMMENDED_VERSION)
 
 ZLIB_OLDEST_SUPPORTED_VERSION="$ZLIB_RECOMMENDED_VERSION"
@@ -605,11 +607,11 @@ ZLIB_PREFIX="${OSDL_LOANI_INSTALLATIONS}/zlib-$ZLIB_RECOMMENDED_VERSION"
 
 OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$ZLIB_PREFIX/include"
 
-OSDL_LIBS="$OSDL_LIBS -L$ZLIB_PREFIX/lib -lz"	
+OSDL_LIBS="$OSDL_LIBS -L$ZLIB_PREFIX/lib -lz"
 
 AC_DEFINE([USES_ZLIB],[1],[Define to 1 if OSDL is to use Zlib])
-	
-	
+
+
 
 
 # Build section.
@@ -673,7 +675,7 @@ if test x$enable_debug = xyes; then
 	DEBUG_BLIT=0
 	DEBUG_BOUNDING_BOX=0
 	DEBUG_CACHED_STATES=1
-	DEBUG_COLOR=0	
+	DEBUG_COLOR=0
 	DEBUG_CONICS=0
 	DEBUG_EVENTS=0
 	DEBUG_FONT=0
@@ -692,34 +694,34 @@ if test x$enable_debug = xyes; then
 	DEBUG_VIDEO=0
 	DEBUG_VIDEO_RENDERER=1
 	DEBUG_WIDGET=0
-	
+
 	VERBOSE_AUDIO_MODULE=0
 	VERBOSE_BASIC_MODULE=0
 	VERBOSE_DATA_MODULE=0
 	VERBOSE_ENGINE_MODULE=1
 	VERBOSE_EVENTS_MODULE=1
 	VERBOSE_VIDEO_MODULE=1
-	
+
 	VERBOSE_CONTROLLER=0
 	VERBOSE_JOYSTICK=0
 	VERBOSE_JOYSTICK_HANDLER=0
 	VERBOSE_KEYBOARD_HANDLER=0
 	VERBOSE_MOUSE=0
 	VERBOSE_MOUSE_HANDLER=0
-	
+
 	COUNT_INSTANCES=0
 	CHECK_OPENGL_CALLS=1
 	CACHE_OVERALL_SETTINGS=0
-		
-	AM_CXXFLAGS="$AM_CXXFLAGS -g" 
-    if test x$ac_cv_cxx_compiler_gnu = xyes; then
+
+	AM_CXXFLAGS="$AM_CXXFLAGS -g"
+	if test x$ac_cv_cxx_compiler_gnu = xyes; then
 		# Add -pg to manage profile information for gprof.
 		# -fstack-check used to be specified but wroke havoc in generated code,
 		# causing crashes and various valgrind reports.
 		#AM_CXXFLAGS="$AM_CXXFLAGS -ggdb -O0 -fno-inline -fbounds-check -ftrapv -fnon-call-exceptions"
 		# Safest settings:
-		AM_CXXFLAGS="$AM_CXXFLAGS -ggdb -O0 -fno-inline"				
-	fi	 
+		AM_CXXFLAGS="$AM_CXXFLAGS -ggdb -O0 -fno-inline"
+	fi
 else
 
 	# Aggressive optimizations:
@@ -728,8 +730,8 @@ else
 	DEBUG_AUDIO_RENDERER=0
 	DEBUG_BLIT=0
 	DEBUG_BOUNDING_BOX=0
-	DEBUG_CACHED_STATES=0	
-	DEBUG_COLOR=0	
+	DEBUG_CACHED_STATES=0
+	DEBUG_COLOR=0
 	DEBUG_CONICS=0
 	DEBUG_EVENTS=0
 	DEBUG_FONT=0
@@ -755,44 +757,44 @@ else
 	VERBOSE_ENGINE_MODULE=0
 	VERBOSE_EVENTS_MODULE=0
 	VERBOSE_VIDEO_MODULE=0
-	
+
 	VERBOSE_CONTROLLER=0
 	VERBOSE_JOYSTICK=0
 	VERBOSE_JOYSTICK_HANDLER=0
 	VERBOSE_KEYBOARD_HANDLER=0
 	VERBOSE_MOUSE=0
 	VERBOSE_MOUSE_HANDLER=0
-	
+
 	COUNT_INSTANCES=0
 	CHECK_OPENGL_CALLS=0
 	CACHE_OVERALL_SETTINGS=1
-	
-    if test x$ac_cv_cxx_compiler_gnu = xyes; then
+
+	if test x$ac_cv_cxx_compiler_gnu = xyes; then
 		# -fomit-frame-pointer: may prevent debugging on some platforms
 		# -ffast-math: not requesting exact IEEE or ISO implementation
 		# rules/specifications
-        AM_CXXFLAGS="$AM_CXXFLAGS -g0 -O3 -fexpensive-optimizations -fomit-frame-pointer -ffast-math -funroll-loops"
-    fi
-	
+		AM_CXXFLAGS="$AM_CXXFLAGS -g0 -O3 -fexpensive-optimizations -fomit-frame-pointer -ffast-math -funroll-loops"
+	fi
+
 	AM_LDFLAGS="$AM_LDFLAGS --strip-all"
-	
-    case "$target" in
-        i486-*-*)
-            if test x$ac_cv_cxx_compiler_gnu = xyes; then
-                AM_CXXFLAGS="$AM_CXXFLAGS -march=i486"
-            fi
-            ;;
-        i?86-*-*)
-            if test x$ac_cv_cxx_compiler_gnu = xyes; then
-                AM_CXXFLAGS="$AM_CXXFLAGS -march=pentium -mcpu=pentiumpro"
-            fi
-            ;;
-        *-*-osf*)
-            if test x$ac_cv_cxx_compiler_gnu != xyes; then
-                AM_CXXFLAGS="$AM_CXXFLAGS -g3 -fast -arch host"
-            fi
-            ;;
-    esac
+
+	case "$target" in
+		i486-*-*)
+			if test x$ac_cv_cxx_compiler_gnu = xyes; then
+				AM_CXXFLAGS="$AM_CXXFLAGS -march=i486"
+			fi
+			;;
+		i?86-*-*)
+			if test x$ac_cv_cxx_compiler_gnu = xyes; then
+				AM_CXXFLAGS="$AM_CXXFLAGS -march=pentium -mcpu=pentiumpro"
+			fi
+			;;
+		*-*-osf*)
+			if test x$ac_cv_cxx_compiler_gnu != xyes; then
+				AM_CXXFLAGS="$AM_CXXFLAGS -g3 -fast -arch host"
+			fi
+			;;
+	esac
 fi
 
 
@@ -900,56 +902,56 @@ AC_DEFINE_UNQUOTED([DEBUG_SPRITE],
 AC_DEFINE_UNQUOTED([DEBUG_SURFACE],
 	[$DEBUG_SURFACE],
 	[Define to 1 if debug mode for surfaces is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([DEBUG_VIDEO],
 	[$DEBUG_VIDEO],
 	[Define to 1 if debug mode for general video is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([DEBUG_VIDEO_RENDERER],
 	[$DEBUG_VIDEO_RENDERER],
 	[Define to 1 if debug mode for video renderer is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([DEBUG_WIDGET],
 	[$DEBUG_WIDGET],
 	[Define to 1 if debug mode for widgets is to be enabled])
 
-	
+
 AC_DEFINE_UNQUOTED([VERBOSE_AUDIO_MODULE],
 	[$VERBOSE_AUDIO_MODULE],
 	[Define to 1 if verbose mode for audio module is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([VERBOSE_BASIC_MODULE],
 	[$VERBOSE_BASIC_MODULE],
 	[Define to 1 if verbose mode for basic module is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([VERBOSE_DATA_MODULE],
 	[$VERBOSE_DATA_MODULE],
 	[Define to 1 if verbose mode for data module is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([VERBOSE_ENGINE_MODULE],
 	[$VERBOSE_ENGINE_MODULE],
 	[Define to 1 if verbose mode for engine module is to be enabled])
-	
+
 AC_DEFINE_UNQUOTED([VERBOSE_EVENTS_MODULE],
 	[$VERBOSE_EVENTS_MODULE],
 	[Define to 1 if verbose mode for events module is to be enabled])
-	
+
 AC_DEFINE_UNQUOTED([VERBOSE_VIDEO_MODULE],
 	[$VERBOSE_VIDEO_MODULE],
 	[Define to 1 if verbose mode for video module is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([VERBOSE_CONTROLLER],
 	[$VERBOSE_CONTROLLER],
 	[Define to 1 if verbose mode for controller is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([VERBOSE_JOYSTICK],
 	[$VERBOSE_JOYSTICK],
 	[Define to 1 if verbose mode for joystick is to be enabled])
@@ -958,13 +960,13 @@ AC_DEFINE_UNQUOTED([VERBOSE_JOYSTICK],
 AC_DEFINE_UNQUOTED([VERBOSE_JOYSTICK_HANDLER],
 	[$VERBOSE_JOYSTICK_HANDLER],
 	[Define to 1 if verbose mode for joystick handler is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([VERBOSE_KEYBOARD_HANDLER],
 	[$VERBOSE_KEYBOARD_HANDLER],
 	[Define to 1 if verbose mode for keyboard handler is to be enabled])
-	
-	
+
+
 AC_DEFINE_UNQUOTED([VERBOSE_MOUSE],
 	[$VERBOSE_MOUSE],
 	[Define to 1 if verbose mode for mouse is to be enabled])
@@ -973,9 +975,9 @@ AC_DEFINE_UNQUOTED([VERBOSE_MOUSE],
 AC_DEFINE_UNQUOTED([VERBOSE_MOUSE_HANDLER],
 	[$VERBOSE_MOUSE_HANDLER],
 	[Define to 1 if verbose mode for mouse handler is to be enabled])
-	
-	
-	
+
+
+
 AC_DEFINE_UNQUOTED([COUNT_INSTANCES],
 	[$COUNT_INSTANCES],
 	[Define to 1 if instance counting mode is to be enabled])
@@ -1001,8 +1003,8 @@ AC_ARG_ENABLE(strict-ansi,
 	AS_HELP_STRING([--enable-strict-ansi],[enable strict ANSI compliance build [[default=yes]]]),,enable_strict_ansi=yes)
 if test x$ac_cv_cxx_compiler_gnu = xyes; then
 	# Basically paranoïd in all cases:
-	
-	# Following warnings are not used, explanations follow: 
+
+	# Following warnings are not used, explanations follow:
 	#    -Weffc++: the standard library headers trigger zillions of warnings.
 	#    -Waggregate-return: even a simple std::string is an aggregate.
 	#    -Wunused-parameter: inherited methods may not use some of their
@@ -1011,26 +1013,26 @@ if test x$ac_cv_cxx_compiler_gnu = xyes; then
 	# some bytes.
 	#    -Wmissing-noreturn: would force declaring __attribute__ ((noreturn))
 	# in every method which throws exceptions about unimplemented feature
-	#	 -Wold-style-cast: some standard macros (WIFEXITED, WEXITSTATUS, 
+	#	 -Wold-style-cast: some standard macros (WIFEXITED, WEXITSTATUS,
 	# etc.) expand into old-style C casts
 	#    -Wunreachable-code: temporarily removed because of gcc 4.0.2
 	# incorrecly complaining: 'warning: will never be executed' in Exception
 	# constructor
 	#    -Wpacked: some structures may be declared packed with no effect, we
 	# usually do not care if it is the case
-    #    -pedantic-errors: removed to allow Agar's variadic macros
-    #    -Wredundant-decls: removed to allow Agar's multiple declarations in
-    # same scope
+	#    -pedantic-errors: removed to allow Agar's variadic macros
+	#    -Wredundant-decls: removed to allow Agar's multiple declarations in
+	# same scope
 	#    -Wconversion: (temporarily?) removed because of gcc 4.3 complaining
 	# with 'conversion to Ceylan::Uint8 from int may alter its value',
 	# when 'a += b ;' with a and b being both Ceylan::Uint8.
 	#    -Wfloat-equal: (temporarily?) removed because of Agar 1.3.3 having
 	# float comparisons in headers (ex: in agar/gui/widget.h)
-    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
-    if test x$enable_strict_ansi = xyes; then
+	AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
+	if test x$enable_strict_ansi = xyes; then
 		# Do not know what "-D_XOPEN_SOURCE" would change.
-        AM_CXXFLAGS="$AM_CXXFLAGS -ansi"
-    fi
+		AM_CXXFLAGS="$AM_CXXFLAGS -ansi"
+	fi
 fi
 
 
@@ -1043,7 +1045,7 @@ fi
 # --disable-colored-build
 
 # See also: function updateColorSupport of
-# Ceylan/trunk/src/code/scripts/shell/termUtils.sh 
+# Ceylan/trunk/src/code/scripts/shell/termUtils.sh
 
 # Text color codes:
 
@@ -1089,7 +1091,7 @@ AC_ARG_ENABLE(colored-build,
 if test x$enable_colored_build = xyes; then
 
 	# The quadrigram '@<:@' is needed to allow for an unbalanced '[':
-	
+
 	OSDL_DEFAULT_STYLE="@<:@${default_att};${white_text};${black_back}m"
 	OSDL_TITLE_STYLE="@<:@${default_att};${magenta_text};${black_back}m"
 	OSDL_ITEM_STYLE="@<:@${default_att};${cyan_text};${black_back}m"
@@ -1143,11 +1145,11 @@ AC_SUBST(OSDL_WARNING_STYLE)
 #
 CheckPlatform()
 {
-	
+
 	# This symbol ought to be specifically defined only so that Windows
 	# builds declare correctly import/export defines:
 	OSDL_DLL=""
-	
+
 	# Needed when building a library on Windows platforms:
 	OSDL_DLL_EXPORT_WINDOWS="__declspec( dllexport )"
 
@@ -1155,86 +1157,86 @@ CheckPlatform()
 
 	# Needed with gcc compilers:
 	OSDL_PACKED_ATTRIBUTE="\"__attribute__ ((packed))\""
-	
-    # Base on host rather than on target:
+
+	# Base on host rather than on target:
 	case "$host" in
-	
-		*-*-win32*) 
-        	HOST_ARCH=win32
+
+		*-*-win32*)
+			HOST_ARCH=win32
 			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
 			OSDL_PACKED_ATTRIBUTE=""
 			;;
 
 		*-*-cygwin*)
-        	HOST_ARCH=win32
+			HOST_ARCH=win32
 			CFLAGS="$CFLAGS -I/usr/include/mingw -DWIN32 -Uunix -mno-cygwin"
 			LIBS="$LIBS -mno-cygwin"
 			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
 			;;
-		
+
 		*-*-mingw32*)
-        	HOST_ARCH=win32
-	        LIBS="-lmingw32 $LIBS -mwindows"
+			HOST_ARCH=win32
+			LIBS="-lmingw32 $LIBS -mwindows"
 			OSDL_DLL="${OSDL_DLL_EXPORT_WINDOWS}"
 			;;
-				
-	    *-*-linux*|*-*-uclinux*) 
-        	HOST_ARCH=linux
+
+		*-*-linux*|*-*-uclinux*)
+			HOST_ARCH=linux
 			;;
-		
-        *-*-bsdi*)
-        	HOST_ARCH=bsdi
-            ;;
-			
+
+		*-*-bsdi*)
+			HOST_ARCH=bsdi
+			;;
+
 		*-*-freebsd*|*-*-dragonfly*)
-        	HOST_ARCH=freebsd
-			;;
-			
-		*-*-netbsd*) 
-        	HOST_ARCH=netbsd
+			HOST_ARCH=freebsd
 			;;
 
-		*-*-openbsd*) 
-        	HOST_ARCH=openbsd
+		*-*-netbsd*)
+			HOST_ARCH=netbsd
 			;;
-		
-        *-*-beos*)
-        	HOST_ARCH=beos
+
+		*-*-openbsd*)
+			HOST_ARCH=openbsd
 			;;
-        
-        *-*-darwin* )
-        	HOST_ARCH=macosx
+
+		*-*-beos*)
+			HOST_ARCH=beos
 			;;
-		
-        *-*-sysv5*)
-        	HOST_ARCH=sysv5
-            ;;
-		
-		*-*-solaris*)	
-        	HOST_ARCH=solaris
+
+		*-*-darwin* )
+			HOST_ARCH=macosx
 			;;
-            
+
+		*-*-sysv5*)
+			HOST_ARCH=sysv5
+			;;
+
+		*-*-solaris*)
+			HOST_ARCH=solaris
+			;;
+
 		*-*-hpux*)
-        	HOST_ARCH=hpux
-			;;
-            
-		*-*-irix*)          
-        	HOST_ARCH=irix
-			;;
-            
-		*-*-aix*)
-        	HOST_ARCH=aix
-			;;
-            
-		*-*-osf*)
-        	HOST_ARCH=osf
+			HOST_ARCH=hpux
 			;;
 
-	    *)
-	        # Not identified
-            HOST_ARCH=unknown
-	        ;;
-		
+		*-*-irix*)
+			HOST_ARCH=irix
+			;;
+
+		*-*-aix*)
+			HOST_ARCH=aix
+			;;
+
+		*-*-osf*)
+			HOST_ARCH=osf
+			;;
+
+		*)
+			# Not identified
+			HOST_ARCH=unknown
+			;;
+
 	esac
 
 
@@ -1243,14 +1245,14 @@ CheckPlatform()
 		[Define to 1 if the target platform is the Nintendo DS])
 
 
-	# For all builds, OSDL_DLL will be actually defined
-	# thanks to command-line preprocessor options (-DOSDL_DLL="...")
-	# so that headers can avoid #including platform-specific configuration
-	# files. Hence no 'AC_DEFINE_UNQUOTED([OSDL_DLL], ...' here.
-	# Same reason applies for OSDL_PACKED_ATTRIBUTE. 
-	
+	# For all builds, OSDL_DLL will be actually defined thanks to command-line
+	# preprocessor options (-DOSDL_DLL="...")  so that headers can avoid
+	# #including platform-specific configuration files. Hence no
+	# 'AC_DEFINE_UNQUOTED([OSDL_DLL], ...' here. Same reason applies for
+	# OSDL_PACKED_ATTRIBUTE.
+
 	AM_CXXFLAGS="${AM_CXXFLAGS} -DOSDL_DLL=${OSDL_DLL} -DOSDL_PACKED_ATTRIBUTE=${OSDL_PACKED_ATTRIBUTE}"
-	
+
 }
 
 
@@ -1258,80 +1260,79 @@ CheckPlatform()
 # Note: CheckPlatform must have been executed first, for HOST_ARCH.
 CheckRpath()
 {
-  
+
   AC_ARG_ENABLE([rpath],
-    AS_HELP_STRING([--enable-rpath],[use an rpath when linking to OSDL [[default=yes]]]),
-      [case "${enableval}" in
-        yes) use_rpath=yes ;;
-        no)  use_rpath=no ;;
-	    *) AC_MSG_ERROR(bad value ${enableval} for --enable-rpath) ;;
-      esac],[use_rpath=yes])
+	AS_HELP_STRING([--enable-rpath],[use an rpath when linking to OSDL [[default=yes]]]),
+	  [case "${enableval}" in
+		yes) use_rpath=yes ;;
+		no)  use_rpath=no ;;
+		*) AC_MSG_ERROR(bad value ${enableval} for --enable-rpath) ;;
+	  esac],[use_rpath=yes])
 
   if test "x$enable_rpath" = "xyes"; then
 
-    if test $HOST_ARCH = bsdi -o $HOST_ARCH = freebsd -o $HOST_ARCH = irix -o $HOST_ARCH = linux -o $HOST_ARCH = netbsd; then
-      OSDL_RPATH_LD_FLAGS="-Wl,-rpath,\${libdir}"
-    fi
+	if test $HOST_ARCH = bsdi -o $HOST_ARCH = freebsd -o $HOST_ARCH = irix -o $HOST_ARCH = linux -o $HOST_ARCH = netbsd; then
+	  OSDL_RPATH_LD_FLAGS="-Wl,-rpath,\${libdir}"
+	fi
 
-    if test $HOST_ARCH = solaris; then
-      OSDL_RPATH_LD_FLAGS="-R\${libdir}"
-    fi
-    
+	if test $HOST_ARCH = solaris; then
+	  OSDL_RPATH_LD_FLAGS="-R\${libdir}"
+	fi
+
   else
-  
-    OSDL_RPATH_LD_FLAGS=""
-    
-  fi  
+
+	OSDL_RPATH_LD_FLAGS=""
+
+  fi
 
 }
 
 
 # Detects OpenGL capabilities and setup build accordingly.
-#
 CheckOpenGL()
 {
 
   # Is OpenGL to be used?
   OSDL_USES_OPENGL=0
   AC_ARG_ENABLE([opengl],
-    AS_HELP_STRING([--enable-opengl],[use OpenGL and GLU in OSDL internals [[default=yes]]]),
-      [case "${enableval}" in
-        yes) opengl=yes ;;
-        no)  opengl=no ;;
-	    *) AC_MSG_ERROR(bad value ${enableval} for --enable-opengl) ;;
-      esac],[opengl=yes])
-    # If wanted, is OpenGL available?	
+	AS_HELP_STRING([--enable-opengl],[use OpenGL and GLU in OSDL internals [[default=yes]]]),
+	  [case "${enableval}" in
+		yes) opengl=yes ;;
+		no)  opengl=no ;;
+		*) AC_MSG_ERROR(bad value ${enableval} for --enable-opengl) ;;
+	  esac],[opengl=yes])
+	# If wanted, is OpenGL available?
 	AC_MSG_CHECKING([whether OpenGL and GLU are wanted])
 	if test x$opengl = xyes; then
-        AC_MSG_RESULT([yes])
-        have_opengl=yes
-        # Defined in opengl.m4:
-        AX_CHECK_GL
-		if test x$no_gl = xyes; then 
+		AC_MSG_RESULT([yes])
+		have_opengl=yes
+		# Defined in opengl.m4:
+		AX_CHECK_GL
+		if test x$no_gl = xyes; then
 			AC_MSG_WARN([OpenGL use requested but not available, disabling it])
 			have_opengl=no
 		else
-			# OpenGL is ok, GLU too?	
-        	AX_CHECK_GLU
-			if test x$no_glu = xyes; then 
+			# OpenGL is ok, GLU too?
+			AX_CHECK_GLU
+			if test x$no_glu = xyes; then
 				AC_MSG_WARN([GLU use requested but not available, OpenGL use disabled])
 				have_opengl=no
 			else
 				CFLAGS="$CFLAGS $GLU_CFLAGS $GL_CFLAGS"
 				LIBS="$LIBS $GLU_LIBS $GL_LIBS"
-			fi	
+			fi
 		fi
 		AC_MSG_CHECKING([whether OpenGL and GLU are enabled])
 		AC_MSG_RESULT([$have_opengl])
 	else
 		# OpenGL not wanted here:
-		AC_MSG_RESULT([no])	
+		AC_MSG_RESULT([no])
 	fi
-	
+
 	if test x$have_opengl = xyes; then
-      OSDL_USES_OPENGL=1
-    fi	
-	
+	  OSDL_USES_OPENGL=1
+	fi
+
 	AC_DEFINE_UNQUOTED([USES_OPENGL],
 		[$OSDL_USES_OPENGL],
 		[Define to 1 if OSDL is to use OpenGL and GLU])
@@ -1360,7 +1361,7 @@ AC_SUBST(OSDL_EXTRA_DIRS)
 AC_SUBST(OSDL_EXTRA_LIBS)
 
 AC_MSG_NOTICE([OSDL_CPPFLAGS = $OSDL_CPPFLAGS])
-AC_MSG_NOTICE([OSDL_LIBS = $OSDL_LIBS]) 
+AC_MSG_NOTICE([OSDL_LIBS = $OSDL_LIBS])
 
 CPPFLAGS="$CPPFLAGS $OSDL_CPPFLAGS"
 AC_SUBST(CPPFLAGS)
@@ -1435,4 +1436,3 @@ Configuration:
 
   See trunk/src/code/OSDLConfig.h for further configuration information.
 ------------------------------------------------------------------------"
-
