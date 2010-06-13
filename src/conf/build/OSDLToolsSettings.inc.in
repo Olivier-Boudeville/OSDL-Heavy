@@ -1,10 +1,10 @@
-# Centralized version and release informations about tools used by OSDL. 
+# Centralized version and release informations about tools used by OSDL.
 
 # This file is intended to be included both in Makefiles and in Bourne shell
 # scripts.
 
-# When the version of a tool is changed in trunk/src/conf/OSDLSettings.inc,
-# the corresponding section must be updated here (ex: for the MD5 code).
+# When the version of a tool is changed in trunk/src/conf/OSDLSettings.inc, the
+# corresponding section must be updated here (ex: for the MD5 code).
 
 
 
@@ -37,11 +37,11 @@ SDL_win_MD5="fe131238609393d7dc82206f3d013df2"
 
 # JPEG library (libjpeg.so): http://www.ijg.org/
 
-libjpeg_VERSION="7"
+libjpeg_VERSION="8b"
 libjpeg_ARCHIVE="jpegsrc.v${libjpeg_VERSION}.tar.gz"
 libjpeg_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
 libjpeg_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
-libjpeg_MD5="382ef33b339c299b56baf1296cda9785"
+libjpeg_MD5="e022acbc5b36cd2cb70785f5b575661e"
 
 # Same archive for Windows actually:
 libjpeg_win_VERSION="$libjpeg_VERSION"
@@ -54,45 +54,45 @@ libjpeg_win_MD5="$libjpeg_MD5"
 
 # zlib library (libzlib.a): http://www.zlib.net/
 
-# Actually 1.2.3 (defined in configure-template.ac):
+# Actually 1.2.5 (defined in configure-template.ac):
 zlib_VERSION="@ZLIB_RECOMMENDED_VERSION@"
 zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.bz2"
 zlib_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
-zlib_MD5="dee233bf288ee795ac96a98cc2e369b6"
+zlib_MD5="be1e89810e66150f5b0327984d8625a0"
 
-zlib_win_VERSION="1.2.3"
-zlib_win_archive_VERSION="123"
+zlib_win_VERSION="${zlib_VERSION}"
+zlib_win_archive_VERSION="125"
 zlib_win_ARCHIVE="zlib${zlib_win_archive_VERSION}.zip"
 zlib_win_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
-zlib_win_MD5="abbd0f2b456206da5e3ffd179324413a"
+zlib_win_MD5="d6f1eef40a2dd3f17c63d24d8ca402c8"
 
 
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
-# Actually 1.2.40 (defined in configure-template.ac):
+# Actually 1.4.2 (defined in configure-template.ac):
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_MD5="29bbd1c3cbe54b04bfc2bda43067ccb5"
+libpng_MD5="80556970ecd0b07209732284d6227c98"
 
 libpng_win_VERSION="$libpng_VERSION"
-libpng_win_archive_VERSION="1240"
+libpng_win_archive_VERSION="142"
 libpng_win_ARCHIVE="lpng${libpng_win_archive_VERSION}.zip"
 libpng_win_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_win_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_win_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_win_MD5="a9d5d22abf6f2fe1d9acd220fa4c7de1"
+libpng_win_MD5="1532e3fa76223ec3fdae906c6331caa6"
 
 
 
 # TIFF library (libtiff.so): http://www.remotesensing.org/libtiff/
-
 # (TIFF support for OSDL not maintained anymore: use PNG or JPEG instead)
+
 libtiff_VERSION="3.7.3"
 libtiff_ARCHIVE="tiff-v${libtiff_VERSION}.tar.gz"
 libtiff_DOWNLOAD_LOCATION="ftp://ftp.remotesensing.org/pub/libtiff/"
@@ -149,7 +149,8 @@ SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.@SDL_GFX_MINOR_VERSION@"
 SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
 SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_gfx_MD5="b107fd478d3d1269d7a6ff42906f0482"
+# 2.0.18: SDL_gfx_MD5="b107fd478d3d1269d7a6ff42906f0482"
+SDL_gfx_MD5="f3794d809ed6a415fb20dcc4c8ab9f5e"
 
 
 # Same as for UNIX:
@@ -165,13 +166,13 @@ SDL_gfx_win_MD5="$SDL_gfx_MD5"
 
 # Sources.
 
-freetype_VERSION="2.3.11"
+freetype_VERSION="2.3.12"
 freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
 freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_MD5="519c7cbf5cbd72ffa822c66844d3114c"
+freetype_MD5="e974a82e5939be8e05ee65f07275d7c5"
 
 
 # Same as for UNIX:
@@ -207,7 +208,7 @@ freetype_osx_precompiled_MD5="xxx"
 # SDL_ttf (libSDL_ttf.so): http://www.libsdl.org/projects/SDL_ttf/
 
 # Sources.
- 
+
 # Actually 2.0.9 (defined in configure-template.ac):
 SDL_ttf_VERSION="@SDL_TTF_RECOMMENDED_VERSION@"
 SDL_ttf_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}.tar.gz"
@@ -242,13 +243,14 @@ SDL_ttf_osx_precompiled_MD5="xxx"
 
 
 # libvorbis (libvorbis.so): http://www.xiph.org/vorbis/
-# (this ogg/vorbis order must be respected as ogg section uses vorbis variable)
+# (this ogg/vorbis order must be respected, as the ogg section uses vorbis
+# variable)
 
-libvorbis_VERSION="1.2.3"
+libvorbis_VERSION="1.3.1"
 libvorbis_ARCHIVE="libvorbis-${libvorbis_VERSION}.tar.gz"
 libvorbis_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/vorbis"
 libvorbis_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libvorbis_MD5="5aa77f55c0e0aab8eb8ed982335daac8"
+libvorbis_MD5="90b1eb86e6d57694ffdfc2e4d8c7a64e"
 
 libvorbis_win_VERSION="${libvorbis_VERSION}"
 libvorbis_win_ARCHIVE="libvorbis-${libvorbis_win_VERSION}.zip"
@@ -259,11 +261,11 @@ libvorbis_win_MD5=""
 
 # libogg (libogg.so): http://www.xiph.org/ogg/
 
-libogg_VERSION="1.1.4"
+libogg_VERSION="1.2.0"
 libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.gz"
 libogg_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
 libogg_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libogg_MD5="10200ec22543841d9d1c23e0aed4e5e9"
+libogg_MD5="c95b73759acfc30712beef6ce4e88efa"
 
 libogg_win_VERSION="${libogg_VERSION}"
 libogg_win_ARCHIVE="libogg-${libogg_win_VERSION}.zip"
@@ -307,18 +309,18 @@ guichan_win_MD5="$guichan_MD5"
 
 # Agar (libag_core.so/libag_gui.so): http://libagar.org
 
-# Actually 1.3.4 (defined in configure-template.ac):
+# Actually 1.4.0 (defined in configure-template.ac):
 Agar_VERSION="@AGAR_RECOMMENDED_VERSION@"
 Agar_ARCHIVE="agar-${Agar_VERSION}.tar.gz"
 Agar_DOWNLOAD_LOCATION="http://stable.hypertriton.com/agar"
 Agar_ALTERNATE_DOWNLOAD_LOCATION=""
-Agar_MD5="9065ffa9fe28d9e11413c4cac6c7a172"
+Agar_MD5=""
 
 Agar_win_VERSION="$Agar_VERSION"
 Agar_win_ARCHIVE="agar-${Agar_VERSION}.zip"
 Agar_win_DOWNLOAD_LOCATION="$Agar_DOWNLOAD_LOCATION"
 Agar_win_ALTERNATE_DOWNLOAD_LOCATION="$Agar_ALTERNATE_DOWNLOAD_LOCATION"
-Agar_win_MD5="5caf494f5dffe5185094b0dbdad92dd7"
+Agar_win_MD5="4259d53536d33f93268493ac499df927"
 
 
 
@@ -476,8 +478,8 @@ egeoip_SVN_SERVER="egeoip.googlecode.com"
 
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
-# Version of Saturday, December 19, 2009:
-Geolite_MD5="5fa77fb3cb3dc578cf2e2265a838bfbd"
+# Version of Sunday, June 13, 2010:
+Geolite_MD5="e5f618709c57462daff012bc44cfde5f"
 
 
 
@@ -501,7 +503,8 @@ Geolite_MD5="5fa77fb3cb3dc578cf2e2265a838bfbd"
 
 # Ceylan (libCeylan.so): http://ceylan.sourceforge.net
 
-# Ceylan can be retrieved from SVN or from a source code archive.
+# Ceylan can be preferably retrieved from SVN, otherwise from a source code
+# archive (usually a lot less recent than latest stable SVN).
 
 Ceylan_VERSION="@CEYLAN_RECOMMENDED_MAJOR@.@CEYLAN_RECOMMENDED_MINOR@"
 Ceylan_ARCHIVE="ceylan-${Ceylan_VERSION}.tar.bz2"
@@ -529,7 +532,9 @@ Ceylan_SVN_SERVER=ceylan.svn.sourceforge.net
 
 # OSDL (libOSDL.so): http://osdl.sourceforge.net
 
-# OSDL can be retrieved from SVN or from a source code archive.
+
+# OSDL can be preferably retrieved from SVN, otherwise from a source code
+# archive (usually a lot less recent than latest stable SVN).
 
 OSDL_VERSION="@OSDL_VERSION@"
 OSDL_ARCHIVE="osdl-${OSDL_VERSION}.tar.bz2"
@@ -549,11 +554,8 @@ OSDL_win_MD5="${OSDL_MD5}"
 OSDL_SVN_SERVER=osdl.svn.sourceforge.net
 
 
-
-
 # Next to come maybe: SDL_sound.
 
 
 
 # End of OSDL tools definitions.
-
