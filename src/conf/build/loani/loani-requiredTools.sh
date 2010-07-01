@@ -3509,7 +3509,7 @@ generateAgar()
 
 	printItem "configuring"
 
-	AGAR_CONFIGURE_OPT="--disable-network --disable-threads --disable-server --enable-gui --enable-utf8 --with-gl --with-jpeg --with-freetype "
+	AGAR_CONFIGURE_OPT="--disable-network --disable-threads --disable-server --disable-legacy --enable-gui --enable-utf8 --with-gl --with-jpeg --with-freetype "
 
 	if [ -n "$prefix" ] ; then
 		{
