@@ -61,8 +61,8 @@ else
 
 	if [ $target_nds -eq 1 ] ; then
 
-	    # All non-windows non-DS platforms should build everything from sources:
-		
+		# All non-windows non-DS platforms should build everything from sources:
+
 		# We stopped building SDL_gfx (which was built just after SDL_image), as
 		# it would fail on 64-bit platforms:
 		REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS"
@@ -2319,7 +2319,7 @@ generatelibogg()
 		# link: warning: library `[...]/libogg.la' was moved."
 
 		# Disabled since it would prevent SDL_mixer build:
-		#	
+		#
 		#${MV} -f ${libogg_PREFIX}/lib/libogg.la
 		#${libogg_PREFIX}/lib/libogg.la-hidden-by-LOANI
 		#
@@ -3511,7 +3511,8 @@ generateAgar()
 
 	printItem "configuring"
 
-	AGAR_CONFIGURE_OPT="--disable-network --disable-threads --disable-server --disable-legacy --enable-gui --enable-utf8 --with-gl --with-jpeg --with-freetype "
+	# --disable-legacy removed, as was breaking the 1.4.0 build:
+	AGAR_CONFIGURE_OPT="--disable-network --disable-threads --disable-server --enable-gui --enable-utf8 --with-gl --with-jpeg --with-freetype "
 
 	if [ -n "$prefix" ] ; then
 		{
