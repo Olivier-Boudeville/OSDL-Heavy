@@ -10,7 +10,7 @@ NDS_SUBDIRS = audio basic engine events video
 # Library content (do not select Helix files).
 ARM7_LIB_CONTENT := $(shell find . -name 'OSDL*.arm7.o')
 ARM9_LIB_CONTENT := $(shell find . -name 'OSDL*.arm9.o')
-	
+
 
 include $(TOP)/src/conf/build/$(CROSS_TARGET)/Makerules.inc
 
@@ -20,42 +20,42 @@ $(OSDL_ARM7_LIB_NAME):  $(ARM7_LIB_CONTENT)
 	@echo "    Linking" $(shell echo $(ARM7_LIB_CONTENT) | wc -w) \
 	"ARM7 object files into $@"
 	@$(AR) $(AR_FLAGS_ARM7) $@ $^
-	
-	
+
+
 $(OSDL_ARM9_LIB_NAME):  $(ARM9_LIB_CONTENT)
 	@echo "    Linking" $(shell echo $(ARM9_LIB_CONTENT) | wc -w) \
 	"ARM9 object files into $@"
 	@$(AR) $(AR_FLAGS_ARM9) $@ $^
-	
+
 
 
 
 lib: $(OSDL_ARM7_LIB_NAME) $(OSDL_ARM9_LIB_NAME)
 	@echo "Libraries $(OSDL_ARM7_LIB_NAME) $(OSDL_ARM9_LIB_NAME) are available."
-	
-	
-	
+
+
+
 install: install-local install-lib
 
 
 install-local:
-	@mkdir -p $(OSDL_INSTALL_INC) 
-	@cp -f OSDL.h OSDLConfigForNintendoDS.h $(OSDL_INSTALL_INC) 
+	@mkdir -p $(OSDL_INSTALL_INC)
+	@cp -f OSDL.h OSDLConfigForNintendoDS.h $(OSDL_INSTALL_INC)
 
 
 install-lib: lib
-	@mkdir -p $(OSDL_INSTALL_LIB) 
+	@mkdir -p $(OSDL_INSTALL_LIB)
 	@echo "    Installing libraries in $(OSDL_INSTALL_LIB)"
 	@cp -f $(OSDL_ARM7_LIB_NAME) $(OSDL_ARM9_LIB_NAME) \
 		$(OSDL_INSTALL_LIB)
-	
-	
-	
+
+
+
 info-lib:
 	@echo "OSDL_ARM7_LIB_NAME = $(OSDL_ARM7_LIB_NAME)"
 	@echo "OSDL_ARM9_LIB_NAME = $(OSDL_ARM9_LIB_NAME)"
-	
-	
+
+
 info-lib-content:
 	@echo "ARM7:" $(shell echo $(ARM7_LIB_CONTENT) | wc -w) "object files."
 	@echo "ARM9:" $(shell echo $(ARM9_LIB_CONTENT) | wc -w) "object files."
@@ -64,4 +64,3 @@ info-lib-content:
 info-lib-content-detailed:
 	@echo "ARM7_LIB_CONTENT = $(ARM7_LIB_CONTENT)"
 	@echo "ARM9_LIB_CONTENT = $(ARM9_LIB_CONTENT)"
-
