@@ -357,7 +357,6 @@ if [ -n "$osdl_environment_file" ] ; then
 		configure_opt="${configure_opt} --with-sdl-prefix=$SDL_PREFIX"
 	fi
 
-
 fi
 
 
