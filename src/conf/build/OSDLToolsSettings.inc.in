@@ -72,13 +72,14 @@ zlib_win_MD5="d6f1eef40a2dd3f17c63d24d8ca402c8"
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
-# Actually 1.4.2 (defined in configure-template.ac):
+# Actually 1.2.44 (was 1.4.3) (defined in configure-template.ac):
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_MD5="80556970ecd0b07209732284d6227c98"
+#libpng_MD5="9347eeda4241401f7da4dc9ba7f6a416"
+libpng_MD5="e3ac7879d62ad166a6f0c7441390d12b"
 
 libpng_win_VERSION="$libpng_VERSION"
 libpng_win_archive_VERSION="142"
