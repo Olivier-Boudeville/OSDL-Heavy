@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2009 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -29,7 +29,7 @@
 
 
 /*
- * This is the OSDL library, a free portable high-level open-source C++ 
+ * This is the OSDL library, a free portable high-level open-source C++
  * library for multimedia and game programming.
  *
  * More informations available at http://osdl.sourceforge.net/OSDL-latest/
@@ -38,37 +38,37 @@
 
 
 /**
- * Main header file for OSDL Project (Object-oriented Simple DirectMedia Layer, 
+ * Main header file for OSDL Project (Object-oriented Simple DirectMedia Layer,
  * see http://osdl.sourceforge.net).
- * 
- * Add below all include files corresponding to OSDL modules which are to 
+ *
+ * Add below all include files corresponding to OSDL modules which are to
  * be explicitly exported in OSDL's library.
- * 
+ *
  * Each top-level module may include others modules as well, and so on.
  *
  */
 
 
 /**
- * A OSDL-using application or library may be compiled against OSDL 
- * header files of a particular version, and dynamically linked with 
- * a OSDL library of a different version. 
+ * A OSDL-using application or library may be compiled against OSDL
+ * header files of a particular version, and dynamically linked with
+ * a OSDL library of a different version.
  *
  * Even if retro-compatibility is searched after, necessary API changes often
  * break backward compatibility, which can be determined thanks to interface
  * versions and ages, according to Libtool conventions.
  *
- * To know to which OSDL version a set of installed headers corresponds, 
- * the OSDLHeaderVersion.h file (generated at configure time) should be read, 
- * for the actualOSDLHeaderLibtoolVersion variable. Including only OSDL.h 
- * is enough to have everything from OSDL available. 
+ * To know to which OSDL version a set of installed headers corresponds,
+ * the OSDLHeaderVersion.h file (generated at configure time) should be read,
+ * for the actualOSDLHeaderLibtoolVersion variable. Including only OSDL.h
+ * is enough to have everything from OSDL available.
  *
  * The OSDLConfig.h file (generated at configure time) cannot be read for
- * version informations, as it is on purpose not installed, to avoid clashes. 
+ * version informations, as it is on purpose not installed, to avoid clashes.
  *
- * To know to which OSDL version an installed library corresponds, 
+ * To know to which OSDL version an installed library corresponds,
  * its OSDL::GetVersion function should be called. It is defined in
- * trunk/src/code/basic/OSDLBasic.h, and retrieves the version 
+ * trunk/src/code/basic/OSDLBasic.h, and retrieves the version
  * information which was defined in its OSDL_LIBTOOL_VERSION when it was
  * compiled.
  *
@@ -96,7 +96,7 @@
  *
  * @see OSDLConfig.h, OSDLConfigForWindows.h, and basic/OSDLBasic.h
  * in the common module for more informations, including the macro
- * definition. 
+ * definition.
  *
  * @see test/basic/testOSDLBasic.cc for the macro use.
  *
@@ -125,4 +125,3 @@
 #include "OSDLIncludeCorrecter.h"
 
 #endif // OSDL_H_
-
