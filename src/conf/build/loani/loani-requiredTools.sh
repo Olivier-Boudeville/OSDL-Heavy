@@ -61,9 +61,11 @@ else
 
 	if [ $target_nds -eq 1 ] ; then
 
-	# All non-windows non-DS platforms should build everything from sources:
-
-		REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS"
+	    # All non-windows non-DS platforms should build everything from sources:
+		
+		# We stopped building SDL_gfx (which was built just after SDL_image), as
+		# it would fail on 64-bit platforms:
+		REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS"
 
 		if [ $manage_only_third_party_tools -eq 1 ] ; then
 
