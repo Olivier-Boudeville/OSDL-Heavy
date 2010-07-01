@@ -132,7 +132,10 @@ $USAGE" 1>&2
 done
 
 
-
+# Was kept to true (otherwise the testSDL_gfx test will not find the SDL_gfx
+# headers), however SDL_gfx is currently broken and cannot be used (2.0.19 and
+# more recent versions, lack the support of an installation prefix, and thee
+# build of 2.0.18 fails on 64-bit platforms).
 sdl_gfx_support_activated=false
 
 # Where the libraries should be found:
