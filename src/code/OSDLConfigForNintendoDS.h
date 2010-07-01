@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2009 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -42,17 +42,17 @@
  */
 
 #define CEYLAN_ARCH_NINTENDO_DS 1
- 
- 
+
+
 // Auto-set the arch flags expected by libnds:
 #ifdef OSDL_RUNS_ON_ARM7
 
 	#define ARM7
-	
+
 	#define OSDL_DS_LOG(messageString)
-	
+
 	#define CEYLAN_RUNS_ON_ARM7 1
-	
+
 #else // OSDL_RUNS_ON_ARM7
 
 	#ifdef OSDL_RUNS_ON_ARM9
@@ -60,15 +60,15 @@
 		#define ARM9
 
 		#define CEYLAN_RUNS_ON_ARM9 1
-	
+
 		// For iprintf and al:
-		#include <stdio.h> 
+		#include <stdio.h>
 
 		#define OSDL_DS_LOG(messageString) ::iprintf( "[Debug] %s\n", ((messageString).c_str()) )
 
 		// Only included in the DS ARM9 case:
 		#include "OSDLCommandManager.h"
-		
+
 	#else // OSDL_RUNS_ON_ARM9
 
 		#error OSDLConfigForNintendoDS.h: either OSDL_RUNS_ON_ARM7 or OSDL_RUNS_ON_ARM9 must be defined.
@@ -79,7 +79,7 @@
 
 
 // For iprintf and al:
-#include <stdio.h> 
+#include <stdio.h>
 
 // For libnds (discriminates between ARM7/ARM9):
 #include "nds.h"
@@ -97,6 +97,5 @@
 #define OSDL_USES_SDL_TTF 0
 
 
- 
-#endif // OSDL_CONFIG_FOR_NINTENDO_DS
 
+#endif // OSDL_CONFIG_FOR_NINTENDO_DS
