@@ -122,7 +122,7 @@ int main( int argc, char * argv[] )
 		}
 		
 
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Prerequisite : initializing the display" ) ;	
 	         		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
 			CommonModule::UseVideo | CommonModule::UseKeyboard ) ;				

@@ -113,7 +113,7 @@ int main( int argc, char * argv[] )
 		}
 
 			
-		LogPlug::info( "Pre requesite: starting OSDL with video enabled." ) ;
+		LogPlug::info( "Prerequisite: starting OSDL with video enabled." ) ;
 			
         CommonModule & myOSDL = getCommonModule( 
 			CommonModule::UseVideo | CommonModule::UseEvents ) ;		

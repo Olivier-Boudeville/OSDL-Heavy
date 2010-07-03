@@ -172,7 +172,7 @@ int main( int argc, char * argv[] )
 		screen.lock() ;
 
 
-    	LogPlug::info( "Prerequesite : having four random generators" ) ;	
+    	LogPlug::info( "Prerequisite : having four random generators" ) ;	
 		
 		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0, 
 			screenWidth ) ;

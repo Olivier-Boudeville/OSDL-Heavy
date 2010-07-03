@@ -110,7 +110,7 @@ int main( int argc, char * argv[] )
 		}
 
 		
-    	LogPlug::info( "Pre requesite : initializing the display" ) ;	
+    	LogPlug::info( "Prerequisite : initializing the display" ) ;	
 	         
 		 
 		CommonModule & myOSDL = OSDL::getCommonModule( 
@@ -160,7 +160,7 @@ int main( int argc, char * argv[] )
 	
     	LogPlug::info( "Drawing random coloured lines" ) ;	
 
-    	LogPlug::info( "Prerequesite : having three random generators" ) ;	
+    	LogPlug::info( "Prerequisite : having three random generators" ) ;	
 		
 		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 
 			0, screenWidth ) ;

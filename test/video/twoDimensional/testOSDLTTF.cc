@@ -318,7 +318,7 @@ int main( int argc, char * argv[] )
 	    	LogPlug::info( "Random test: "
 				"writing at random places text with random color." ) ;	
 		
-	    	LogPlug::info( "Prerequesite: having four random generators" ) ;	
+	    	LogPlug::info( "Prerequisite: having four random generators" ) ;	
 		
 			Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0,
 				screenWidth ) ;
