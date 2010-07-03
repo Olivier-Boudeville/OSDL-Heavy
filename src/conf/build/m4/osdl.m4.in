@@ -259,7 +259,9 @@ AC_DEFUN([OSDL_PATH],
 
 
   # 9. take care of SDL_gfx:
-  # We need to avoid to add libraries if they are not to be used/to be available:
+
+  # We need to avoid to add libraries if they are not to be used/to be
+  # available:
   AC_ARG_WITH(sdl_gfx-prefix,
 	AS_HELP_STRING([--with-sdl_gfx-prefix={PFX|no}],[Prefix where SDL_gfx is installed (optional; specify 'no' to disable SDL_gfx support)]),
 	  [
@@ -277,8 +279,9 @@ AC_DEFUN([OSDL_PATH],
 	  ]
   )
 
-  OSDL_CPPFLAGS="$OSDL_CPPFLAGS $SDL_GFX_CPPFLAGS"
-  OSDL_LIBS="$OSDL_LIBS $SDL_GFX_LIBS"
+  # Currently disabled, as SDl_gfx does not build anymore:
+  #OSDL_CPPFLAGS="$OSDL_CPPFLAGS $SDL_GFX_CPPFLAGS"
+  #OSDL_LIBS="$OSDL_LIBS $SDL_GFX_LIBS"
 
 
   # 10. take care of SDL_ttf:
