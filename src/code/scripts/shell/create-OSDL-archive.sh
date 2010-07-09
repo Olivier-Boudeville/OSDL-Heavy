@@ -13,13 +13,13 @@ Ex: `basename $0` myArchive.oar content-directory [my-resource-map]"
 #  - osdl/OSDL/trunk/src/code/scripts/shell/extract-OSDL-archive.sh
 #  - osdl/OSDL/trunk/test/basic/create-testOSDLEmbeddedFileSystem-archive.sh
 
-# Thus produced archive can be decompresssed with: 
+# Thus produced archive can be decompresssed with:
 # 7zr x myArchive.oar - or - extract-OSDL-archive.sh myArchive.oar
 
 # The OSDL-environment.sh script is expected to have already been sourced.
 
 
-# By default use LZMA, otherwise use ZIP: 
+# By default use LZMA, otherwise use ZIP:
 #use_lzma=0
 use_lzma=1
 
@@ -30,7 +30,7 @@ cypher_name()
 {
 
 	res=`echo $1 | tr A-Za-z N-ZA-Mn-za-m`
- 
+
 }
 
 
@@ -38,9 +38,9 @@ cypher_name()
 if [ $# -le 1 ] ; then
 
 	echo "Error, at least two parameters required.
-    " $USAGE 1>&2
-    exit 10
-	
+	" $USAGE 1>&2
+	exit 10
+
 fi
 
 archive_target="$1"
@@ -59,9 +59,9 @@ fi
 if [ ! -d "${archive_directory}" ] ; then
 
 	echo "Error, ${archive_directory} is not a directory.
-    " $USAGE 1>&2
-    exit 11
-	
+	" $USAGE 1>&2
+	exit 11
+
 fi
 
 
@@ -75,7 +75,7 @@ if [ ! -x "${RSYNC}" ] ; then
 
 	echo "Error, no rsync tool found." 1>&2
 	exit 20
-	
+
 fi
 
 
@@ -91,7 +91,7 @@ cypher_exec=`PATH=$PWD/$cypher_dir:$PATH which $cypher_tool 2>/dev/null`
 if [ ! -x "${cypher_exec}" ] ; then
 
 	echo "Error, no executable cypher tool ${cypher_tool} found (were the OSDL tools compiled?)." 1>&2
-    exit 12
+	exit 12
 
 fi
 
@@ -101,12 +101,12 @@ fi
 if [ $use_lzma -eq 0 ] ; then
 
 	archiver_name="7zr"
-	
+
 else
 
 	archiver_name="zip"
-	
-fi	
+
+fi
 
 
 archiver=`which ${archiver_name}`
@@ -114,8 +114,8 @@ archiver=`which ${archiver_name}`
 if [ ! -x "${archiver}" ] ; then
 
 	echo "Error, no archiver available (${archiver_name})." 1>&2
-    exit 30
-    
+	exit 30
+
 fi
 
 indexer_name="resource_indexer.sh"
@@ -124,11 +124,11 @@ indexer_name="resource_indexer.sh"
 if [ -z "$Ceylan_PREFIX" ] ; then
 
 	osdl_env_file="${LOANI_INSTALLATIONS}/OSDL-environment.sh"
-	
+
 	if [ -f "${osdl_env_file}" ] ; then
 		. "${osdl_env_file}"
 	fi
-	
+
 fi
 
 
@@ -139,9 +139,9 @@ indexer=`PATH=$indexer_dir:$PATH which ${indexer_name}`
 
 if [ ! -x "${indexer}" ] ; then
 
-	echo "Error, no resource indexer tool available (${indexer_name})." 1>&2
-    exit 35
-    
+	echo "Error, no resource indexer tool (${indexer_name}) available. Was Ceylan-Erlang installed?" 1>&2
+	exit 35
+
 fi
 
 
@@ -155,7 +155,7 @@ tmp_base="tmp-create-OSDL-archive"
 if [ -d "${tmp_base}" ] ; then
 
 	echo "Error, temporary directory '${tmp_base}' already exists, remove it first if appropriate." 1>&2
-    exit 13
+	exit 13
 
 fi
 
@@ -166,7 +166,7 @@ fi
 #${CP} -r "${archive_directory}" ${tmp_base}
 
 # Would not be relevant as the target tree would be flatten:
-#${FIND} "${archive_directory}" \( -name .svn -prune \) -o  -exec cp... ';' 
+#${FIND} "${archive_directory}" \( -name .svn -prune \) -o  -exec cp... ';'
 
 # --cvs-exclude removes also .svn directories:
 ${RSYNC} -r --cvs-exclude ${archive_directory}/* ${tmp_base}
@@ -174,8 +174,8 @@ ${RSYNC} -r --cvs-exclude ${archive_directory}/* ${tmp_base}
 if [ ! $? -eq 0	] ; then
 
 	echo "Error, copy to temporary directory '${tmp_base}' failed, removing it." 1>&2
-    ${RM} -r ${tmp_base}
-    exit 13
+	${RM} -r ${tmp_base}
+	exit 13
 
 fi
 
@@ -194,7 +194,7 @@ ${indexer} -index_basename ${index_basename} -scan_dir `pwd` -output_dir `pwd`/.
 if [ ! $? -eq 0	] ; then
 
 	echo "Error, generation of resource index failed." 1>&2
-    exit 15
+	exit 15
 
 fi
 
@@ -210,19 +210,19 @@ for f in $files; do
 	# Now let's cypher the content of files in the temporary directory:
 	${cypher_exec} --nullPlug $f
 	if [ ! $? -eq 0 ] ; then
-	
+
 		echo "Error, cyphering of file '$f' with tool '${cypher_exec}' failed." 1>&2
 		exit 20
-	
+
 	fi
-	
+
 	base_dir=`dirname $f`
 	filename=`basename $f`
 	cypher_name $filename
 	new_path=$base_dir/$res
 	echo "  File $f renamed into $new_path"
 	/bin/mv $f $new_path
-	
+
 done
 
 
@@ -235,16 +235,16 @@ directories=`${FIND} . -depth -type d`
 for d in $directories; do
 
 	if [ ! $d = "." ] ; then
-	
+
 		base_dir=`dirname $d`
 		dir_name=`basename $d`
 		cypher_name $dir_name
 		new_path=$base_dir/$res
 		echo "  Directory $d renamed into $new_path"
 		/bin/mv $d $new_path
-		
+
 	fi
-	
+
 done
 
 
@@ -252,7 +252,7 @@ echo
 
 # OAR archives are based on the Lempel-Ziv-Markov chain-Algorithm (LZMA).
 # See: http://en.wikipedia.org/wiki/Lempel-Ziv-Markov_chain_algorithm
-# On Debian-based distributions, use: 'apt-get install p7zip' to have the 
+# On Debian-based distributions, use: 'apt-get install p7zip' to have the
 # archiver.
 # The lzma package is not enough, as it compresses only files, not filesystem
 # full trees.
@@ -267,27 +267,26 @@ if [ $use_lzma -eq 0 ] ; then
 
 	# or (best compression):
 	LANG= ${archiver} a -t7z -mx=9 ../${archive_target} * 1>/dev/null
-	
+
 else
 
 	# For zip:
 	LANG= ${archiver} -r ../${archive_target} *
-	
-fi	
+
+fi
 
 
 
 
 if [ $? -eq 0 ] ; then
-	
+
 	cd ..
 	echo "OSDL Archive ${archive_target} successfully produced from directory ${archive_directory}:"
 	file ${archive_target}
 	du -sh ${tmp_base}
-    /bin/ls -l ${archive_target}
-	
+	/bin/ls -l ${archive_target}
+
 fi
 
 
 ${RM} -r ${tmp_base}
-
