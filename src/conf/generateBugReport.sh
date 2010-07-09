@@ -23,7 +23,7 @@ addDir()
 }
 
 
-echo 
+echo
 echo "        Welcome to LOANI's bug report generator."
 
 echo
@@ -35,10 +35,10 @@ echo >> ${REPORT_FILE}
 
 add "Bug report generated for ${USER}@`hostname`, on `date '+%A %d %B, %Y at %H:%M:%S'`, from `pwd`" >> ${REPORT_FILE}
 
-  
+
 add "Host platform: `uname -a`"
 add "Available disk size: " `df -k .`
- 
+
 addDir LOANI-repository
 addDir LOANI-installations
 
@@ -63,10 +63,9 @@ else
 	add "No LOANI.log found, not appending anything."
 fi
 
-echo >> ${REPORT_FILE} 
-echo >> ${REPORT_FILE} 
-echo "${MESSAGE_PREFIX} End of bug report" >> ${REPORT_FILE} 
+echo >> ${REPORT_FILE}
+echo >> ${REPORT_FILE}
+echo "${MESSAGE_PREFIX} End of bug report" >> ${REPORT_FILE}
 
 echo
-echo "You should send this report (${REPORT_FILE}) as attachment to our mail account dedicated to troubleshooting, ${BUG_ML_ADDRESS} (no registering needed), we will do our best to help you!" 
-
+echo "You should send this report (${REPORT_FILE}) as attachment to our mail account dedicated to troubleshooting, ${BUG_ML_ADDRESS} (no registering needed), we will do our best to help you!"
