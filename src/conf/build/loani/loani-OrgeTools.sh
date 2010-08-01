@@ -19,7 +19,11 @@ ORGE_TOOLS="egeoip Geolite Ceylan_Erlang Orge"
 # do not delay them)
 
 
-target_erlang="/usr/local/bin/erl"
+# Any user-installed version is expected to be already in the PATH:
+target_erlang=`which erl`
+#target_erlang="/usr/local/bin/erl"
+
+
 if [ -x "$target_erlang" ] ; then
 
 	found_erlang_version=`$target_erlang -noinput -eval 'io:format( "~s", [erlang:system_info(otp_release)]),halt()'`
@@ -490,19 +494,30 @@ manage_package_backup()
 	package=$1
 
 	if [ -d "${repository}/$package" ] ; then
+
 		if [ -d "${repository}/$package.save" ] ; then
+
 			if [ $be_strict -eq 0 ] ; then
-				ERROR "There already exist a back-up directory for $package, it is on the way, please remove it first (${repository}/$package.save)"
+
+				ERROR "A back-up directory for $package is already existing, please remove it first (${repository}/$package.save)"
 				exit 5
+
 			else
+
 				WARNING "Deleting already existing back-up directory for $package (removing ${repository}/$package.save)"
+
 				${RM} -rf "${repository}/$package.save" 2>/dev/null
+
 				# Sometimes rm fails apparently (long names or other reasons):
 				${MV} -f ${repository}/$package.save ${repository}/$package.save-`date '+%Hh-%Mm-%Ss'` 2>/dev/null
+
 			fi
 		fi
+
 		${MV} -f ${repository}/$package ${repository}/$package.save 2>/dev/null
-		WARNING "There already existed a directory for $package (${repository}/$package), it has been moved to ${repository}/$package.save."
+
+		WARNING "A back-up directory for $package was already existing (${repository}/$package), it has been moved to ${repository}/$package.save."
+
 	fi
 
 }
@@ -559,7 +574,7 @@ getCeylan_Erlang()
 	# Manage back-up directories if necessary:
 	for p in $ceylan_erlang_packages; do
 
-		manage_package_backup $p
+		manage_package_backup "Ceylan-Erlang/$p"
 
 		{
 
@@ -740,6 +755,9 @@ getOrge()
 
 	cd ${repository}
 
+	# Not in osdl any more, in OSDL-Erlang:
+	manage_package_backup OSDL-Erlang/Orge
+
 	${MKDIR} -p OSDL-Erlang/Orge
 
 	cd OSDL-Erlang/Orge
@@ -769,8 +787,6 @@ getOrge()
 	fi
 
 	LOG_STATUS "Getting Orge in the source directory ${repository}..."
-
-	# Not in osdl any more, in OSDL-Erlang: manage_package_backup osdl
 
 	{
 
