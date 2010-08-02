@@ -714,7 +714,7 @@ Set default ~/.bashrc.minimal file."
 			${LN} -s $HOME/.bashrc.minimal $HOME/.bashrc
 
 			loani_final_hint="$loani_final_hint
-Linked ~/.bashrc to ~/.bashrc.minimal."
+Linked ~/.bashrc (not existing previously) to ~/.bashrc.minimal."
 
 		fi
 
