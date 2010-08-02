@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 Olivier Boudeville
+ * Copyright (C) 2003-2010 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
@@ -69,6 +69,11 @@
 #include <agar/core.h>
 #include <agar/gui.h>
 #include <agar/gui/opengl.h>
+
+#include <agar/core/types.h>
+#include <agar/gui/cursors.h>        // for AG_Cursor, needed by drv_sdl_common.h
+#include <agar/gui/drv_sdl_common.h> // for AG_SDL_TranslateEvent
+#include <agar/core/close_types.h>
 
 #endif // OSDL_USES_AGAR
 
@@ -924,8 +929,34 @@ void EventsModule::updateInputState()
 
 #if OSDL_USES_AGAR
 
-			// All events are sent to the Agar GUI: (a filtering could be done)
-			// FIXME AG_ProcessEvent( & currentEvent ) ;
+		  AG_DriverEvent driverEvent ;
+
+		  /*
+		   * All events are sent here to the Agar GUI (a filtering could be
+		   * done). We translate here the SDL_Event into a AG_DriverEvent.
+		   *
+		   * Was, with previous versions of Agar:
+		   * 'AG_ProcessEvent( & currentEvent ) ;'
+		   *
+		   */
+		  AG_SDL_TranslateEvent( /* AG_Driver* */ 0,
+			/* source SDL event */ currentEvent,
+			/* target translated AG_DriverEvent */ driverEvent ) ;
+
+		  // Processes the event in a default, generic manner:
+		  if ( AG_ProcessEvent( /* AG_Driver* */ 0, &driverEvent ) == -1)
+		  {
+
+			/* Fatal error, or the application should be terminated as a result
+			 * of the last event:
+			 */
+			if( agTerminating == 1 )
+			  onQuitRequested() ;
+			else
+			  LogPlug::error( "AG_ProcessEvent returned -1, "
+				"but we are not known to be terminating." ) ;
+
+		  }
 
 #else // OSDL_USES_AGAR
 
