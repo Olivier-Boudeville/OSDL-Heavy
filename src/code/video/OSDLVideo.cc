@@ -708,16 +708,15 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 #if OSDL_USES_AGAR
 
 	  /*
-	   * We will use the sdlgl driver of Agar, which is a Single-Window one
-	   * (agDriverSw, which is a global variable, a pointer to AG_Driver).
+	   * We will use the sdlgl driver of Agar, which is a Single-Window one:
 	   */
 
 	  AG_InitVideoSDL( screen, AG_VIDEO_OVERLAY ) ;
 
 	  send( std::string(
-		  "The libagar GUI rendering will be done using the " )
-		+ ( (agDriverSw->flags & AG_DRIVER_OPENGL) ? "OpenGL" : "SDL" )
-		+ std::string( " backend." ) ) ;
+		  "The libagar GUI rendering will be done using a backend " )
+		+ ( AG_UsingGL()  ? "with" : "without" ) + " OpenGL, and "
+		+ ( AG_UsingSDL() ? "with" : "without" ) + " SDL" ;
 
 #endif // OSDL_USES_AGAR
 
