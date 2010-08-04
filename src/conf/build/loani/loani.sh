@@ -22,30 +22,30 @@ HELP="This is LOANI, the famous Lazy OSDL Automatic Net Installer.
 	$USAGE
 
 Options:
-    -d or --debug            : display debug informations to screen
-    -s or --strict           : be strict, stop on wrong md5 checksums or on unexpected tool locations
-    -q or --quiet            : avoid being too verbose
-    -w or --wizard           : enter wizard interactive mode, so that questions are asked to configure
-    -u or --useSVN           : retrieve Ceylan and OSDL from SVN, instead of downloading prepackaged source archives
-    -c or --currentSVN       : retrieve current SVN for Ceylan and OSDL, instead of latest SVN tagged stable release (implies --useSVN)
-    --sourceforge <user name>: uses SourceForge developer access to retrieve projects from SVN  (implies --currentSVN)
-    --buildTools             : retrieve and install common build tools too (ex: gcc, binutils, gdb)
-    --optionalTools          : retrieve and install optional tools too (ex: doxygen, dot, tidy)
-    --OrgeTools              : retrieve and install all tools for Orge (ex: Erlang)
-    --onlyOrgeTools          : retrieve and install all tools for Orge, and no other tool
-    --allTools               : retrieve all tools (required, build, optional, Orge tools)
-    --nds                    : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
-    --setEnv                 : set full developer environment (ex: bash, nedit configuration)
-    --fetchonly              : only retrieve (download in cache) prerequisite, do not install them
-    --all                    : install all and set all, including developer environment
-    --prefix <a path>        : install everything under <a path>
-    --repository <a path>    : specify an alternate cache repository for downloads
-    --noLog                  : do not log installation results
-    --noClean                : do not remove build trees after a successful installation
-    -h or --help             : display this message
+	-d or --debug		 : display debug informations to screen
+	-s or --strict		 : be strict, stop on wrong md5 checksums or on unexpected tool locations
+	-q or --quiet		 : avoid being too verbose
+	-w or --wizard		 : enter wizard interactive mode, so that questions are asked to configure
+	-u or --useSVN           : retrieve Ceylan and OSDL from SVN, instead of downloading prepackaged source archives
+	-c or --currentSVN       : retrieve current SVN for Ceylan and OSDL, instead of latest SVN tagged stable release (implies --useSVN)
+	--sourceforge <user name>: uses SourceForge developer access to retrieve projects from SVN  (implies --currentSVN)
+	--buildTools		 : retrieve and install common build tools too (ex: gcc, binutils, gdb)
+	--optionalTools		 : retrieve and install optional tools too (ex: doxygen, dot, tidy)
+	--OrgeTools              : retrieve and install all tools for Orge (ex: Erlang)
+	--onlyOrgeTools          : retrieve and install all tools for Orge, and no other tool
+	--allTools		 : retrieve all tools (required, build, optional, Orge tools)
+	--nds			 : set mode for cross-compilation from GNU/Linux to Nintendo DS homebrew
+	--setEnv		 : set full developer environment (ex: bash, nedit configuration)
+	--fetchonly		 : only retrieve (download in cache) prerequisite, do not install them
+	--all			 : install all and set all, including developer environment
+	--prefix <a path>	 : install everything under <a path>
+	--repository <a path>	 : specify an alternate cache repository for downloads
+	--noLog			 : do not log installation results
+	--noClean                : do not remove build trees after a successful installation
+	-h or --help		 : display this message
 
-    $EXAMPLE
-    "
+$EXAMPLE
+	"
 
 starting_time=`date '+%H:%M:%S'`
 
@@ -70,9 +70,9 @@ declareRetrievalBegin()
 # $1: name of the archive file.
 {
 
-	if [ $be_quiet -eq 1 ] ; then
-		DISPLAY "      ----> enqueuing $1 in download spool"
-	fi
+ if [ $be_quiet -eq 1 ] ; then
+   DISPLAY "      ----> enqueuing $1 in download spool"
+ fi
 
 }
 
@@ -142,17 +142,17 @@ launchFileRetrieval()
 
 getDownloadLocation()
 {
-# Returns the URL where the archive for the specified package can be
-# downloaded, in variable named 'current_download_location'
+# Returns the URL where the archive for the specified package can be downloaded,
+# in variable named 'current_download_location'
 #
-# If all mirrors have been tried unsuccessfully, issues an error message
-# and exit.
+# If all mirrors have been tried unsuccessfully, issues an error message and
+# exit.
 #
-# Basically, one main download site should be tried, then one alternate
-# location and, on failure, our own private last-chance mirror.
+# Basically, one main download site should be tried, then one alternate location
+# and, on failure, our own private last-chance mirror.
 #
-# A location is tried only once: its variable is blanked afterwards,
-# so that further attempts can use next mirror, if any.
+# A location is tried only once: its variable is blanked afterwards, so that
+# further attempts can use next mirror, if any.
 #
 # Usage :
 #   getDownloadLocation <package name>;
@@ -214,13 +214,13 @@ getDownloadLocation()
 # Used to test 'getDownloadLocation':
 testGetDownloadLocation()
 {
-	target=doxygen
+  target=doxygen
 
-	getDownloadLocation $target
-	getDownloadLocation $target
-	getDownloadLocation $target
+  getDownloadLocation $target
+  getDownloadLocation $target
+  getDownloadLocation $target
 
-	exit 0
+  exit 0
 }
 
 
@@ -459,11 +459,13 @@ launchwizard()
 
 # Checking own LOANI's prerequisites.
 
-# This script will make available all common UNIX tools that LOANI will use,
-# as well as some utilities for terminals (termUtils.sh) that it relies on,
-# for example for text output.
-# Finally, as the locations of these tools are platform-dependent, a
-# dedicated script is automatically used too (platformDetection.sh).
+# This script will make available all common UNIX tools that LOANI will use, as
+# well as some utilities for terminals (termUtils.sh) that it relies on, for
+# example for text output.
+#
+# Finally, as the locations of these tools are platform-dependent, a dedicated
+# script is automatically used too (platformDetection.sh).
+#
 # Such detection is necessary for example for libpng.
 
 #echo "Trace: Just before defaultLocations.sh"
@@ -525,8 +527,7 @@ be_strict=1
 # Used to enable strict md5 sum checking [default: false (1)]:
 do_strict_md5=1
 
-# Used to check that tools are in their expected location
-# [default: false (1)]:
+# Used to check that tools are in their expected location [default: false (1)]:
 be_strict_on_location=1
 
 # Raise a fatal error if a tool is nowhere to be found [default: true (0)]:
@@ -538,47 +539,45 @@ do_debug=1
 # Used to simulate only (no downloading performed) [default: false (1)]:
 do_simulate=1
 
-# Used to specify if common build tools should be managed too
-# [default: false (1)]:
+# Used to specify if common build tools should be managed too [default: false
+# (1)]:
 manage_build_tools=1
 
-# Used to specify whether optional tools should be managed too
-# [default: false (1)]:
+# Used to specify whether optional tools should be managed too [default: false
+# (1)]:
 manage_optional_tools=1
 
-# Used to specify whether Orge tools should be managed too
-# [default: false (1)]:
+# Used to specify whether Orge tools should be managed too [default: false (1)]:
 manage_orge_tools=1
 
 # Used to demand only prerequisite retrieval, not their installation
 # [default: false (1)]:
 fetch_only=1
 
-# Used to specify whether wizard should be used to configure LOANI
-# interactively [default: false (1)]:
+# Used to specify whether wizard should be used to configure LOANI interactively
+# [default: false (1)]:
 wizard=1
 
 # Disable SVN retrieval [default: false (1)]:
 no_svn=1
 
-# Tells whether SVN should be used (if 0) or if source archives should
-# be downloaded (if 1) [default: false (1)]:
+# Tells whether SVN should be used (if 0) or if source archives should be
+# downloaded (if 1) [default: false (1)]:
 use_svn=1
 
 # Used to specify whether current SVN should be used for Ceylan and OSDL
 # (true) or latest stable version tagged in SVN (false) [default: false (1)]:
 use_current_svn=1
 
-# Used to specify whether developer access should be used with
-# Sourceforge's SVN (developer access: SVN checkout, otherwise SVN export)
-# [default: false (1)]:
+# Used to specify whether developer access should be used with Sourceforge's SVN
+# (developer access: SVN checkout, otherwise SVN export) [default: false (1)]:
 developer_access=1
 
 # Set developer environment [default: false (1)]:
 set_env=1
 
-# Tells whether after successfull installation the build trees are to
-# be removed [default: true (0)]:
+# Tells whether after successfull installation the build trees are to be removed
+# [default: true (0)]:
 clean_on_success=0
 
 # Used to activate quiet mode [default: false (1)]:
@@ -600,9 +599,6 @@ only_orge_tools=1
 
 # Install only third-party tools: [default: false (1)]
 manage_only_third_party_tools=1
-
-# Tells whether the Erlang environment should be installed:[default: false (1)]
-install_erlang=0
 
 # Cross-compilation to Nintendo DS homebrew: [default: false (1)]
 target_nds=1
@@ -635,8 +631,8 @@ initial_dir=`pwd`
 private_archive_mirror="ftp://ftp.esperide.com/LOANI-archive-repository"
 
 
-# wget should run in background, using any specified proxy directive
-# and using passive FTP to solve client firewall issues:
+# wget should run in background, using any specified proxy directive and using
+# passive FTP to solve client firewall issues:
 WGET_OPT="--background $PROXY_CONF --passive-ftp"
 
 CVS_OPT="-Q -z6"
@@ -646,9 +642,8 @@ CVS_RSH="ssh"
 # 'list' command is issued first to check them:
 SVN_OPT="--non-interactive"
 
-# Maximum count of attempts to retrieve a module by SVN
-# (when Sourceforge's SVN servers are overloaded, they throw
-# "connection closed").
+# Maximum count of attempts to retrieve a module by SVN (when Sourceforge's SVN
+# servers are overloaded, they throw "connection closed").
 MAX_SVN_RETRY=8
 
 # Saving the whole command line to have it stored in logs:
@@ -888,8 +883,8 @@ if [ $wizard -eq 0 ] ; then
 	launchwizard
 fi
 
-# We hereby consider will always need debug informations, be it on
-# file and/or on screen:
+# We hereby consider will always need debug informations, be it on file and/or
+# on screen:
 do_debug=0
 
 if [ $do_log -eq 0 ] ; then
@@ -1006,8 +1001,8 @@ else
 fi
 
 
-# In debug mode, unset SILENT make variable to have more build details
-# with Ceylan and OSDL:
+# In debug mode, unset SILENT make variable to have more build details with
+# Ceylan and OSDL:
 if [ $do_debug -eq 0 ] ; then
 	BUILD_SILENT="SILENT="
 else
@@ -1015,8 +1010,8 @@ else
 fi
 
 if [ $is_windows -eq 0 ] ; then
-	# On Windows with Visual Express, sources available only from SVN
-	# at the moment:
+	# On Windows with Visual Express, sources available only from SVN at the
+	# moment:
 	use_svn=0
 fi
 
@@ -1118,19 +1113,19 @@ lacking_tool_message=""
 if [ $is_linux -eq 0 ] ; then
 
 	# Trying to guess the distribution:
-    distro=`cat /etc/lsb-release 2>/dev/null | grep DISTRIB_ID | sed 's|^DISTRIB_ID=||' `
+	distro=`cat /etc/lsb-release 2>/dev/null | grep DISTRIB_ID | sed 's|^DISTRIB_ID=||' `
 
 	# Some distros do not define /etc/lsb-release.
 
-    intro="
-			To ensure most needed tools are installed, one may run:
-			"
+	intro="
+To ensure most needed tools are installed, one may run:
+  "
 
 	# Only to be done if dealing with Orge:
 	if [ $only_orge_tools -eq 0 ] ; then
 
 		# more and ping must be built-in:
-		lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make gcc subversion libncurses5-dev openssl libssl-dev uuid-runtime"
+		lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make gcc subversion"
 
 	else
 
@@ -1142,7 +1137,7 @@ if [ $is_linux -eq 0 ] ; then
 		#else if [ "$distro" = "Ubuntu" ] ; then
 		else
 
-			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake cmake-curses-gui patch gcc g++ flex subversion autoconf automake libx11-dev libxpm-dev x11proto-xext-dev libxext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
+			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
 
 		fi
 
@@ -1151,9 +1146,11 @@ if [ $is_linux -eq 0 ] ; then
 fi
 
 
+
 # findBasicShellTools already automatically run when sourced.
 
 if [ $only_orge_tools -eq 0 ] ; then
+
 
 	findTool awk $1 "${lacking_tool_message}"
 	AWK=$returnedString
@@ -1185,6 +1182,7 @@ if [ $only_orge_tools -eq 0 ] ; then
 	findTool svn $1 "${lacking_tool_message}"
 	SVN=$returnedString
 
+
 else
 
 	findBuildTools "${lacking_tool_message}"
@@ -1213,9 +1211,9 @@ DISPLAY "Retrieving all prerequisites, pipe-lining when possible."
 # Register all LOANI strict prerequisites for download.
 . ./loani-requiredTools.sh
 
-# Put the optional tools before the build tools so that their are taken
-# into account in following order:
-# build / optional / required / Orge(best both for download and build).
+# Put the optional tools before the build tools so that their are taken into
+# account in following order: build / optional / required / Orge (best both for
+# download and build).
 if [ $manage_optional_tools -eq 0 ] ; then
 	# Empty list only if optional tools are wanted:
 	if [ $only_optional_tools -eq 0 ] ; then
@@ -1257,7 +1255,13 @@ if [ $no_svn -eq 1 ] ; then
 fi
 
 
-if [ $is_windows -eq 1 ] ; then
+
+
+# Anticipated checkings section.
+
+
+# Only to be done if dealing with something else than Orge:
+if [ $only_orge_tools -eq 1 ] ; then
 
 	# Directory removed, as could be misleading:
 	visual_dir="$repository/visual-express"
@@ -1267,17 +1271,9 @@ if [ $is_windows -eq 1 ] ; then
 		${RM} -rf "${visual_dir}"
 	fi
 
-fi
-
-
-# Anticipated checkings section.
-
-
-# Only to be done if dealing with something else than Orge:
-if [ $only_orge_tools -eq 1 ] ; then
-
 	# On GNU/Linux, early test for OpenGL headers and al:
 	if [ $is_linux -eq 0 ] ; then
+
 
 		if findTool cmake ; then
 			CMAKE=$returnedString
@@ -1289,21 +1285,21 @@ if [ $only_orge_tools -eq 1 ] ; then
 
 		if [ ! -f "/usr/include/GL/gl.h" ] ; then
 
-			ERROR "No OpenGL headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install mesa-common-dev'."
-			exit 16
+				ERROR "No OpenGL headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install mesa-common-dev'."
+				exit 16
 
 		fi
 
 		if [ ! -f "/usr/include/GL/glu.h" ] ; then
 
-			ERROR "No GLU headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install libglu1-mesa-dev'."
-			exit 16
+				ERROR "No GLU headers found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install libglu1-mesa-dev'."
+				exit 16
 
 		fi
 
 		if [ ! -f "/usr/include/X11/extensions/XShm.h" ] ; then
 
-			ERROR "No headers for X11 extension about shared memory found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install libx11-dev libxpm-dev x11proto-xext-dev libxext-dev'."
+			ERROR "No headers for X11 extension about shared memory found, users of Debian-based distributions may retrieve them thanks to: 'sudo apt-get install x11proto-xext-dev libxext-dev'."
 			exit 17
 
 		fi
@@ -1337,37 +1333,9 @@ if [ $only_orge_tools -eq 1 ] ; then
 fi
 
 
-# Checkings for Erlang:
-if [ $install_erlang -eq 0 ] ; then
-
-
-    if [ ! -e "/usr/include/ncurses.h" ] ; then
-
-	ERROR "  Error, the libncurses headers cannot be found, whereas they are needed for the build.
-		Use for instance 'apt-get install libncurses5-dev' (other packages should preferably be also installed beforehand: openssl and libssl-dev)."
-
-	exit 21
-
-    fi
-
-else
-
-    erl_exec=`which erl 2>/dev/null`
-
-    if [ ! -x "$erl_exec" ] ; then
-
-	WARNING "No Erlang environment available, not requested to be installed, thus the Erlang part of the Ceylan and OSDL libraries will be disabled. Consider installing Erlang beforehand, or adding the '--OrgeTools' option."
-
-    fi
-
-fi
-
-
-
-
 #TRACE "Toolsets sourced."
 
-DISPLAY "Target package list is <$target_list >."
+DISPLAY "Target package list is <$target_list>."
 
 
 # Insert here any bypass for testing
@@ -1376,7 +1344,7 @@ DISPLAY "Target package list is <$target_list >."
 # Checks that there is enough available space on disk:
 
 # Available size in megabytes (1048576 is 1024^2):
-available_size=`${DF} -P -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
+available_size=`${DF} -m . | ${AWK} '{print $4}' | ${TAIL} -n 1`
 
 
 DEBUG "Detected available size on current disk is ${available_size} megabytes."
@@ -1437,8 +1405,8 @@ for t in $target_list; do
 
 	# Note: some tools are always accessed thanks to SVN, they must be tested
 	# inconditionally as such, otherwise as soon as LOANI is run without the
-	# --sourceforge option, we have errors like: '[: 1: Illegal number:' and
-	# a giant integer.
+	# --sourceforge option, we have errors like: '[: 1: Illegal number:' and a
+	# giant integer.
 
 	if [ "$t" = "Orge" -o "$t" = "egeoip" ] ; then
 		res=2
@@ -1521,8 +1489,8 @@ else
 	fi
 fi
 
-# Check wget is available, that an internet connection is available
-# and there exist end-to-end web access.
+# Check wget is available, that an internet connection is available and there
+# exist end-to-end web access.
 
 # Server which should almost never be down:
 RELIABLE_SERVER="google.com"
@@ -1536,9 +1504,10 @@ if [ -n "$retrieve_list" ] ; then
 		exit 5
 	fi
 
-    # Checking whether an Internet connection is working is not performed
-    # with ping anymore, as Virtualboxed OS are based on user-space NAT,
-    # thus no ICMP ping can be used.
+	# Checking whether an Internet connection is working is not performed with
+	# ping anymore, as Virtualboxed OS are based on user-space NAT, thus no ICMP
+	# ping can be used.
+	#
 	#if findTool ping ; then
 	#
 	#	PING=$returnedString
@@ -1560,8 +1529,8 @@ if [ -n "$retrieve_list" ] ; then
 		DEBUG "End-to-end web access successfully checked."
 	fi
 
-	# Pre-check that no wget process is already running, since it would
-	# confuse LOANI:
+	# Pre-check that no wget process is already running, since it would confuse
+	# LOANI:
 	if ${PS} ax | ${GREP} -v grep | ${GREP} wget 1>/dev/null 2>&1 ; then
 		ERROR "An executable whose name matches wget (possibly wget itself) appears to be already running ("`${PS} ax | ${GREP} -v grep | ${GREP} wget`"). Please ensure that this executable is not running any more in parallel with LOANI before re-launching our script, since it might confuse LOANI."
 
@@ -1595,6 +1564,7 @@ while [ -n "$retrieve_list" ] ; do
 		get${t}
 		res=$?
 		if [ $res -eq 0 ] ; then
+
 			# Success, one fewer file to take care of.
 			DEBUG "Removing $t of retrieve list and adding it to available list."
 			if [ $be_quiet -eq 1 ] ; then
@@ -1736,17 +1706,9 @@ fi
 DISPLAY "End of LOANI, started at ${starting_time}, successfully ended at "`date '+%H:%M:%S'`"."
 
 
-if [ $target_nds -eq 1 ] && [ $only_orge_tools -eq 1 ] ; then
+if [ $target_nds -eq 1 ] ; then
 
 	DISPLAY "You can now test the whole installation by executing ${alternate_prefix}/share/OSDL/scripts/shell/playTests.sh"
-
-fi
-
-
-if [ -n "$loani_final_hint" ] ; then
-
-	DISPLAY "
-$loani_final_hint"
 
 fi
 
