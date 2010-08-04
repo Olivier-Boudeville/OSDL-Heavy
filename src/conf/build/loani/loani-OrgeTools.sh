@@ -265,11 +265,17 @@ getegeoip()
 	LOG_STATUS "Getting egeoip in its source directory ${repository}..."
 
 	{
-		${SVN} co http://${egeoip_SVN_SERVER}/svn/trunk/ egeoip-read-only ${SVN_OPT}
+		# Previously was using a SVN server:
+		# ${SVN} co http://${egeoip_SVN_SERVER}/svn/trunk/ egeoip-read-only
+		# ${SVN_OPT}
+
+		# Now using GIT:
+		${GIT} clone http://${egeoip_GIT_SERVER}/egeoip.git
+
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to check-out egeoip."
+		ERROR "Unable to clone egeoip."
 		exit 10
 	fi
 
@@ -298,21 +304,11 @@ generateegeoip()
 {
 	DEBUG "Generating egeoip..."
 
-	egeoip_root=$repository/egeoip-read-only/egeoip
+	egeoip_root=$repository/egeoip
 
 	cd $egeoip_root
 
 	printItem "configuring"
-
-	{
-		setBuildEnv ${MAKE} clean
-	} 1>>"$LOG_OUTPUT" 2>&1
-
-	if [ $? != 0 ] ; then
-		echo
-		ERROR "Unable to clean egeoip initially."
-		exit 11
-	fi
 
 	printOK
 
@@ -339,13 +335,13 @@ generateegeoip()
 		echo "# egeoip section." >> ${OSDL_ENV_FILE}
 
 		echo "egeoip_PREFIX=${EGEOIP_PREFIX}" >> ${OSDL_ENV_FILE}
-		echo "# See \${egeoip_PREFIX}/ebin and \${egeoip_PREFIX}/include" >> ${OSDL_ENV_FILE}
+		echo "# See \${egeoip_PREFIX}/ebin" >> ${OSDL_ENV_FILE}
 
 		echo "" >> ${OSDL_ENV_FILE}
 
 		${MKDIR} ${EGEOIP_PREFIX}
 
-		for d in ebin include priv; do
+		for d in ebin support; do
 			${CP} -rf ${egeoip_root}/* ${EGEOIP_PREFIX}
 		done
 
