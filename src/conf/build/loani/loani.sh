@@ -1151,7 +1151,6 @@ fi
 
 if [ $only_orge_tools -eq 0 ] ; then
 
-
 	findTool awk $1 "${lacking_tool_message}"
 	AWK=$returnedString
 
@@ -1182,6 +1181,8 @@ if [ $only_orge_tools -eq 0 ] ; then
 	findTool svn $1 "${lacking_tool_message}"
 	SVN=$returnedString
 
+	findTool git $1 "${lacking_tool_message}"
+	GIT=$returnedString
 
 else
 
