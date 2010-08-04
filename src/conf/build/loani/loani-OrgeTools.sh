@@ -255,14 +255,21 @@ getegeoip()
 
 	DEBUG "Getting egeoip..."
 
-	declareRetrievalBegin "egeoip (from SVN)"
+	declareRetrievalBegin "egeoip (from GIT)"
 
 	# To avoid a misleading message when the retrieval is finished:
-	egeoip_ARCHIVE="from SVN"
+	egeoip_ARCHIVE="from GIT"
 
 	cd $repository
 
 	LOG_STATUS "Getting egeoip in its source directory ${repository}..."
+
+	if [ -d "egeoip" ] ; then
+
+		# Otherwise GIT will refuse to clone again:
+		/bin/rm -rf egeoip
+
+	fi
 
 	{
 		# Previously was using a SVN server:
@@ -270,7 +277,7 @@ getegeoip()
 		# ${SVN_OPT}
 
 		# Now using GIT:
-		${GIT} clone http://${egeoip_GIT_SERVER}/egeoip.git
+		${GIT} clone http://${egeoip_GIT_SERVER}/mochi/egeoip.git
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 
