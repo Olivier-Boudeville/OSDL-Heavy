@@ -23,63 +23,64 @@ latest_stable_osdl="release-0.5.0"
 
 if [ $is_windows -eq 0 ] ; then
 
-	# Windows special case:
-	REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win Agar_win"
+  # Always remember that, on Windows, DLL are searched through the PATH, not the
+  # LD_LIBRARY_PATH.
 
-	if [ $manage_only_third_party_tools -eq 1 ] ; then
+  # Windows special case:
+  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win Agar_win"
 
-		REQUIRED_TOOLS="${REQUIRED_TOOLS} Ceylan_win OSDL_win"
+  if [ $manage_only_third_party_tools -eq 1 ] ; then
 
-	fi
+	REQUIRED_TOOLS="${REQUIRED_TOOLS} Ceylan_win OSDL_win"
+
+  fi
 
   # For Ceylan and OSDL:
-	use_svn=0
+  use_svn=0
 
   # Where LOANI-specific package solutions are stored:
-	WINDOWS_SOLUTIONS_ROOT="$repository/visual-express"
+  WINDOWS_SOLUTIONS_ROOT="$repository/visual-express"
 
-	if [ ! -d "${WINDOWS_SOLUTIONS_ROOT}" ] ; then
+  if [ ! -d "${WINDOWS_SOLUTIONS_ROOT}" ] ; then
 
-		echo "Error, unable to find the directory where Windows Visual Express solutions are stored (searched for ${WINDOWS_SOLUTIONS_ROOT})." 1>&2
-		exit 40
+	echo "Error, unable to find the directory where Windows Visual Express solutions are stored (searched for ${WINDOWS_SOLUTIONS_ROOT})." 1>&2
+	exit 40
 
-	fi
+  fi
 
 
   # Build type for libraries:
   #  - either debug or release
   #  - either classical or multithread (mt)
-	library_build_type="debug-mt"
+  library_build_type="debug-mt"
 
-	dll_install_dir="${alternate_prefix}/OSDL-libraries/${library_build_type}/dll"
-	${MKDIR} -p ${dll_install_dir}
+  dll_install_dir="${alternate_prefix}/OSDL-libraries/${library_build_type}/dll"
+  ${MKDIR} -p ${dll_install_dir}
 
-	lib_install_dir="${alternate_prefix}/OSDL-libraries/${library_build_type}/lib"
-	${MKDIR} -p ${lib_install_dir}
+  lib_install_dir="${alternate_prefix}/OSDL-libraries/${library_build_type}/lib"
+  ${MKDIR} -p ${lib_install_dir}
 
 else
 
-	if [ $target_nds -eq 1 ] ; then
+  if [ $target_nds -eq 1 ] ; then
 
-		# All non-windows non-DS platforms should build everything from sources:
+	# All non-windows non-DS platforms should build everything from sources:
 
-		# We stopped building SDL_gfx (which was built just after SDL_image), as
-		# it would fail on 64-bit platforms:
-		REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS"
+	REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS"
 
-		if [ $manage_only_third_party_tools -eq 1 ] ; then
+	if [ $manage_only_third_party_tools -eq 1 ] ; then
 
-			REQUIRED_TOOLS="${REQUIRED_TOOLS} Ceylan OSDL"
+	  REQUIRED_TOOLS="${REQUIRED_TOOLS} Ceylan OSDL"
 
-		fi
+	fi
 
-	else
+  else
 
 	# Not on Windows and aiming at the Nintendo DS:
 
-		REQUIRED_TOOLS="dlditool"
+	REQUIRED_TOOLS="dlditool"
 
-	fi
+  fi
 
 fi
 
@@ -110,40 +111,41 @@ LOG_STATUS "Scheduling retrieval of required tools ($REQUIRED_TOOLS)."
 GenerateWithVisualExpress()
 # Launches Visual Express 2005 with specified solution so that the user
 # regenerates it.
+#
 # Usage: GenerateWithVisualExpress <package name> <solution path>
 # Ex: GenerateWithVisualExpress SDL a/dir/SDL.sln
 {
 
-	PACKAGE_NAME="$1"
-	SOLUTION_PATH="$2"
+  PACKAGE_NAME="$1"
+  SOLUTION_PATH="$2"
 
-	if [ ! -f "${SOLUTION_PATH}" ] ; then
+  if [ ! -f "${SOLUTION_PATH}" ] ; then
 		ERROR "Unable to find solution ${SOLUTION_PATH} for ${PACKAGE_NAME}."
 		exit 20
-	fi
+  fi
 
-	WIN_SOLUTION_PATH=`cygpath -w ${SOLUTION_PATH}`
+  WIN_SOLUTION_PATH=`cygpath -w ${SOLUTION_PATH}`
 
-	if [ $be_quiet -eq 1 ] ; then
-		DISPLAY ""
-		DISPLAY "Visual Express will be launched now to generate ${PACKAGE_NAME}, choose regenerate the full solution, and exit on build success."
+  if [ $be_quiet -eq 1 ] ; then
+	DISPLAY ""
+	DISPLAY "Visual Express will be launched now to generate ${PACKAGE_NAME}, choose regenerate the full solution, and exit on build success."
 	#waitForKey "< Hit enter and wait for the IDE to be launched >"
-	fi
+  fi
 
-	DEBUG "Loading solution in ${WIN_SOLUTION_PATH}"
+  DEBUG "Loading solution in ${WIN_SOLUTION_PATH}"
 
-	PREVIOUS_PATH=`pwd`
+  PREVIOUS_PATH=`pwd`
 
-	cd "${VISUAL_ROOT}"
+  cd "${VISUAL_ROOT}"
 
-	./${VISUAL_CMD} "${WIN_SOLUTION_PATH}"
+  ./${VISUAL_CMD} "${WIN_SOLUTION_PATH}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to generate ${PACKAGE_NAME} from solution ."${SOLUTION_PATH}
 		exit 21
 	fi
 
-	cd "${PREVIOUS_PATH}"
+  cd "${PREVIOUS_PATH}"
 
 }
 
@@ -202,7 +204,7 @@ prepareSDL()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_ARCHIVE}."
 		${MV} -f ${SDL_ARCHIVE}.save ${SDL_ARCHIVE}
@@ -229,30 +231,30 @@ generateSDL()
 	printItem "configuring"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			if [ $is_windows -eq 0 ] ; then
-				SDL_PREFIX=`cygpath -w ${prefix}/SDL-${SDL_VERSION} | ${SED} 's|\\\|/|g'`
-			else
-				SDL_PREFIX="${prefix}/SDL-${SDL_VERSION}"
-			fi
+		if [ $is_windows -eq 0 ] ; then
+			SDL_PREFIX=`cygpath -w ${prefix}/SDL-${SDL_VERSION} | ${SED} 's|\\\|/|g'`
+		else
+			SDL_PREFIX="${prefix}/SDL-${SDL_VERSION}"
+		fi
 
 
-			${MKDIR} -p ${SDL_PREFIX}
+		${MKDIR} -p ${SDL_PREFIX}
 
-	# DirectFB disabled, as build will fail on openSuse if corresponding package
-	# is not installed (Ubuntu can cope with this situation though)
-			setBuildEnv ./configure --enable-video-directfb=no --disable-rpath --prefix=${SDL_PREFIX} --exec-prefix=${SDL_PREFIX}
+		# DirectFB disabled, as build will fail on openSuse if corresponding
+		# package is not installed (Ubuntu can cope with this situation though).
+		setBuildEnv ./configure --enable-video-directfb=no --disable-rpath --prefix=${SDL_PREFIX} --exec-prefix=${SDL_PREFIX}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL."
 		exit 11
@@ -264,11 +266,11 @@ generateSDL()
 
 	{
 
-		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
+		 setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL."
 		exit 12
@@ -280,58 +282,57 @@ generateSDL()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			echo "# SDL section." >> ${OSDL_ENV_FILE}
+		echo "# SDL section." >> ${OSDL_ENV_FILE}
 
-			echo "SDL_PREFIX=${SDL_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export SDL_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "PATH=\$SDL_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_PREFIX=${SDL_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$SDL_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 
-			echo "LD_LIBRARY_PATH=\$SDL_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			PATH=${SDL_PREFIX}/bin:${PATH}
+		PATH=${SDL_PREFIX}/bin:${PATH}
+		export PATH
+
+		LD_LIBRARY_PATH=${SDL_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		if [ $is_windows -eq 0 ] ; then
+
+			PATH=${SDL_PREFIX}/lib:${PATH}
 			export PATH
 
-			LD_LIBRARY_PATH=${SDL_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+			echo "PATH=\$SDL_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through
-			# the PATH, not the LD_LIBRARY_PATH.
+		echo "" >> ${OSDL_ENV_FILE}
 
-				PATH=${SDL_PREFIX}/lib:${PATH}
-				export PATH
+		LIBPATH="-L${SDL_PREFIX}/lib"
 
-				echo "PATH=\$SDL_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+		# Do not ever imagine that to avoid bad nedit syntax highlighting
+		# you could change:
+		# include/*.h to "include/*.h" in next line.
+		# It would fail at runtime with "include/*.h" not found...
 
-			echo "" >> ${OSDL_ENV_FILE}
+		setBuildEnv ${MAKE} install && ${CP} -f include/*.h ${SDL_PREFIX}/include/SDL
 
-			LIBPATH="-L${SDL_PREFIX}/lib"
-
-		# Do not ever imagine that to avoid bad nedit syntax highlighting you
-		# could change: include/*.h to "include/*.h" in next line. It would
-		# fail at runtime with "include/*.h" not found...
-
-			setBuildEnv ${MAKE} install && ${CP} -f include/*.h ${SDL_PREFIX}/include/SDL
-
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL."
 		exit 13
 	fi
 
 	if [ $is_windows -eq 0 ] ; then
-		${MV} -f ${SDL_PREFIX}/bin/*.dll ${SDL_PREFIX}/lib
+			${MV} -f ${SDL_PREFIX}/bin/*.dll ${SDL_PREFIX}/lib
 	fi
 
 	printOK
@@ -389,14 +390,14 @@ prepareSDL_win()
 		${UNZIP} -o ${SDL_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_win_ARCHIVE}."
 		exit 10
 	fi
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL-from-LOANI" "SDL-${SDL_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL solution in build tree."
 		exit 11
 	fi
@@ -485,9 +486,9 @@ cleanSDL_win()
 
 getlibjpeg()
 {
-	LOG_STATUS "Getting JPEG library..."
-	launchFileRetrieval libjpeg
-	return $?
+		LOG_STATUS "Getting JPEG library..."
+		launchFileRetrieval libjpeg
+		return $?
 }
 
 
@@ -521,7 +522,7 @@ preparelibjpeg()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libjpeg_ARCHIVE}."
 		LOG_STATUS "Restoring ${libjpeg_ARCHIVE}."
 		${MV} -f ${libjpeg_ARCHIVE}.save ${libjpeg_ARCHIVE}
@@ -544,7 +545,7 @@ generatelibjpeg()
 	cd "jpeg-${libjpeg_VERSION}"
 
 	# Everything is always built since, even on Windows, the jpeg.dll cannot be
-	# used without jconfig.h which ... is only generated by the build process !
+	# used without jconfig.h which ... is only generated by the build process!
 
 	printItem "configuring"
 
@@ -552,59 +553,60 @@ generatelibjpeg()
 
 	# On some platforms, libtool is unable to guess the correct host type:
 	# config.guess fails to detect anything as soon as --enable-shared is added.
+	#
 	# One attempt is being made in case of failure, to test whether it cannot be
 	# the most common platform used for OSDL by far, i686-pc-linux-gnu.
 
 	if ! ./ltconfig ltmain.sh 1>>"$LOG_OUTPUT" 2>&1 ; then
 
-		LOG_STATUS "ltconfig host detection will fail in the configure step."
+			LOG_STATUS "ltconfig host detection will fail in the configure step."
 
-		if [ $is_linux -eq 0 ] ; then
-			WORK_AROUND_PLATFORM=i686-pc-linux-gnu
-			LOG_STATUS "Linux detected, trying workaround of most common platform (${WORK_AROUND_PLATFORM})."
-			${CAT} configure | ${SED} "s|ltmain.sh$|ltmain.sh ${WORK_AROUND_PLATFORM}|1" > configure.tmp
-			${MV} -f configure.tmp configure
-			${CHMOD} +x configure
-		else
-			echo
-			ERROR "Unable to pre-configure libjpeg, host detection failed and there is no host work-around for your platform."
-			exit 11
-		fi
+				if [ $is_linux -eq 0 ] ; then
+					WORK_AROUND_PLATFORM=i686-pc-linux-gnu
+					LOG_STATUS "Linux detected, trying workaround of most common platform (${WORK_AROUND_PLATFORM})."
+					${CAT} configure | ${SED} "s|ltmain.sh$|ltmain.sh ${WORK_AROUND_PLATFORM}|1" > configure.tmp
+					${MV} -f configure.tmp configure
+					${CHMOD} +x configure
+				else
+					echo
+					ERROR "Unable to pre-configure libjpeg, host detection failed and there is no host work-around for your platform."
+					exit 11
+				fi
 	fi
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
 
-			libjpeg_PREFIX=${prefix}/jpeg-${libjpeg_VERSION}
+		libjpeg_PREFIX=${prefix}/jpeg-${libjpeg_VERSION}
 
-			if [ $is_mingw -eq 0 ] ; then
-				OLD_LD=$LD
-				LD=${MINGW_PATH}/ld
-				export LD
-				DEBUG "Selected LD is $LD."
+		if [ $is_mingw -eq 0 ] ; then
+			OLD_LD=$LD
+			LD=${MINGW_PATH}/ld
+			export LD
+			DEBUG "Selected LD is $LD."
 
-				if [ ! -x "$LD" ] ; then
-					ERROR "No executable ld found (tried $LD)."
-					exit 14
-				fi
-
+			if [ ! -x "$LD" ] ; then
+				ERROR "No executable ld found (tried $LD)."
+				exit 14
 			fi
 
-			setBuildEnv --exportEnv ./configure --prefix=${libjpeg_PREFIX} --exec-prefix=${libjpeg_PREFIX} --enable-shared
+		fi
 
-		} 1>>"$LOG_OUTPUT" 2>&1
-	else
-		{
-			setBuildEnv ./configure --enable-shared
-		} 1>>"$LOG_OUTPUT" 2>&1
-	fi
+		setBuildEnv --exportEnv ./configure --prefix=${libjpeg_PREFIX} --exec-prefix=${libjpeg_PREFIX} --enable-shared
 
-	if [ ! $? -eq 0 ] ; then
-		echo
-		ERROR "Unable to configure libjpeg."
-		exit 12
-	fi
+	 } 1>>"$LOG_OUTPUT" 2>&1
+	 else
+	 {
+		setBuildEnv ./configure --enable-shared
+	 } 1>>"$LOG_OUTPUT" 2>&1
+	 fi
+
+	 if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to configure libjpeg."
+			exit 12
+	 fi
 
 
 	printOK
@@ -612,11 +614,9 @@ generatelibjpeg()
 
 	printItem "building"
 
-	# On Windows (Cygwin/MinGW), the configure step will pretend
-	# shared libraries cannot be generated:
-	# checking for ld used by GCC... no
-	# ltconfig: error: no acceptable ld found in $PATH
-	# so jpeg dll won't be created.
+	# On Windows (Cygwin/MinGW), the configure step will pretend shared
+	# libraries cannot be generated: checking for ld used by GCC... no ltconfig:
+	# error: no acceptable ld found in $PATH so jpeg dll won't be created.
 	#
 	# Nevertheless some other generated files (ex: jconfig.h) will be needed to
 	# build libraries using JPEG, such as SDL_image: it remains useful.
@@ -625,7 +625,7 @@ generatelibjpeg()
 		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libjpeg."
 		exit 12
@@ -637,58 +637,57 @@ generatelibjpeg()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
+		LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
 
-			echo "# libjpeg section." >> ${OSDL_ENV_FILE}
+		echo "# libjpeg section." >> ${OSDL_ENV_FILE}
 
-			echo "libjpeg_PREFIX=${libjpeg_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export libjpeg_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$libjpeg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "libjpeg_PREFIX=${libjpeg_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export libjpeg_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$libjpeg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
 		# In order SDL_image configure does not fail:
-			LD_LIBRARY_PATH=${libjpeg_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=${libjpeg_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+		if [ $is_windows -eq 0 ] ; then
 
-				PATH=${libjpeg_PREFIX}/lib:${PATH}
-				export PATH
+			PATH=${libjpeg_PREFIX}/lib:${PATH}
+			export PATH
 
-				echo "PATH=\$libjpeg_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$libjpeg_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 
-			fi
+		fi
 
-			echo "" >> ${OSDL_ENV_FILE}
-
-
-			${MKDIR} -p ${libjpeg_PREFIX}/include
-			${MKDIR} -p ${libjpeg_PREFIX}/bin
-			${MKDIR} -p ${libjpeg_PREFIX}/lib
-			${MKDIR} -p ${libjpeg_PREFIX}/man/man1
-
-			setBuildEnv ${MAKE} install prefix=${libjpeg_PREFIX}
+		echo "" >> ${OSDL_ENV_FILE}
 
 
-			if [ ! $? -eq 0 ] ; then
-				ERROR "Unable to install libjpeg."
-				exit 13
-			fi
+		${MKDIR} -p ${libjpeg_PREFIX}/include
+		${MKDIR} -p ${libjpeg_PREFIX}/bin
+		${MKDIR} -p ${libjpeg_PREFIX}/lib
+		${MKDIR} -p ${libjpeg_PREFIX}/man/man1
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+		setBuildEnv ${MAKE} install prefix=${libjpeg_PREFIX}
+
+
+		if [ $? != 0 ] ; then
+			ERROR "Unable to install libjpeg."
+			exit 13
+		fi
+
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
+	{
 			setBuildEnv ${MAKE} install
 
-			if [ ! $? -eq 0 ] ; then
+			if [ $? != 0 ] ; then
 				echo
 				ERROR "Unable to install libjpeg."
 				exit 13
 			fi
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 	printOK
@@ -752,7 +751,7 @@ preparelibjpeg_win()
 		${CP} -f ${libjpeg_win_ARCHIVE} ${libjpeg_win_ARCHIVE}.save && ${GUNZIP} -f ${libjpeg_win_ARCHIVE} && ${TAR} -xvf "jpegsrc.v${libjpeg_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libjpeg_win_ARCHIVE}."
 		exit 10
 	fi
@@ -763,14 +762,14 @@ preparelibjpeg_win()
 	libjpeg_source_dir="$repository/jpeg-${libjpeg_win_VERSION}"
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libjpeg-from-LOANI" "${WINDOWS_SOLUTIONS_ROOT}/libjpeg-from-LOANI/jmorecfg.h" ${libjpeg_source_dir}
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy libjpeg solution in build tree."
 		exit 11
 	fi
 
 	# Prefer Visual-based config:
 	${CP} -f ${libjpeg_source_dir}/jconfig.vc ${libjpeg_source_dir}/jconfig.h
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to update libjpeg config header in build tree."
 		exit 12
 	fi
@@ -872,7 +871,7 @@ preparezlib()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${zlib_ARCHIVE}."
 		LOG_STATUS "Restoring ${zlib_ARCHIVE}."
 		${MV} -f ${zlib_ARCHIVE}.save ${zlib_ARCHIVE}
@@ -903,19 +902,19 @@ generatezlib()
 	printItem "configuring"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			zlib_PREFIX=${prefix}/zlib-${zlib_VERSION}
+		zlib_PREFIX=${prefix}/zlib-${zlib_VERSION}
 
-			setBuildEnv ./configure --shared --prefix=${zlib_PREFIX}
+		setBuildEnv ./configure --shared --prefix=${zlib_PREFIX} --exec_prefix=${zlib_PREFIX}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure --shared
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure --shared
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure zlib."
 		exit 11
@@ -931,7 +930,7 @@ generatezlib()
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build zlib."
 		exit 12
@@ -943,41 +942,39 @@ generatezlib()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
-			LIBFLAG="-L${zlib_PREFIX}/lib ${LIBFLAG}"
+	{
+		LIBFLAG="-L${zlib_PREFIX}/lib ${LIBFLAG}"
 
-			echo "# zlib section." >> ${OSDL_ENV_FILE}
+		echo "# zlib section." >> ${OSDL_ENV_FILE}
 
-			echo "zlib_PREFIX=${zlib_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export zlib_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$zlib_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "zlib_PREFIX=${zlib_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export zlib_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$zlib_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
 		# In order SDL_image configure does not fail:
-			LD_LIBRARY_PATH=${zlib_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=${zlib_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through
-			# the PATH, not the LD_LIBRARY_PATH.
+		if [ $is_windows -eq 0 ] ; then
 
-				PATH=${zlib_PREFIX}/lib:${PATH}
-				export PATH
+			PATH=${zlib_PREFIX}/lib:${PATH}
+			export PATH
 
-				echo "PATH=\$zlib_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+			echo "PATH=\$zlib_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			echo "" >> ${OSDL_ENV_FILE}
+		echo "" >> ${OSDL_ENV_FILE}
 
-			setBuildEnv ${MAKE} install prefix=${zlib_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${zlib_PREFIX}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install zlib."
 		exit 13
@@ -1035,7 +1032,7 @@ preparezlib_win()
 
 	cd $repository
 
-	# Archive content is not contained into a unique root directory!
+	# Archive content is not contained into a unique root directory !
 
 	zlib_source_dir="zlib-${zlib_win_VERSION}"
 	${MKDIR} -p ${zlib_source_dir}
@@ -1046,7 +1043,7 @@ preparezlib_win()
 		${UNZIP} -o ${zlib_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${zlib_win_ARCHIVE}."
 		exit 10
 	fi
@@ -1058,7 +1055,7 @@ preparezlib_win()
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/zlib-from-LOANI" "zlib-${zlib_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy zlib solution in build tree."
 		exit 11
 	fi
@@ -1160,7 +1157,7 @@ preparelibpng()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libpng_ARCHIVE}."
 		LOG_STATUS "Restoring ${libpng_ARCHIVE}."
 		${MV} -f ${libpng_ARCHIVE}.save ${libpng_ARCHIVE}
@@ -1268,7 +1265,7 @@ generatelibpng()
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libpng."
 		exit 12
@@ -1280,57 +1277,53 @@ generatelibpng()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			LIBFLAG="-L${libpng_PREFIX}/lib ${LIBFLAG}"
+		LIBFLAG="-L${libpng_PREFIX}/lib ${LIBFLAG}"
 
-			echo "# libpng section." >> ${OSDL_ENV_FILE}
+		echo "# libpng section." >> ${OSDL_ENV_FILE}
 
-			echo "libpng_PREFIX=${libpng_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export libpng_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "libpng_PREFIX=${libpng_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export libpng_PREFIX" >> ${OSDL_ENV_FILE}
 
-			# There is now a libpng-config script:
-			echo "PATH=\$libpng_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$libpng_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$libpng_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
 		# In order SDL_image configure does not fail:
-			PATH=${libpng_PREFIX}/bin:${PATH}
-			LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			if [ $is_windows -eq 0 ] ; then
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
-				PATH=${libpng_PREFIX}/lib:${PATH}
-				export PATH
+		if [ $is_windows -eq 0 ] ; then
 
-				echo "PATH=\$libpng_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+			PATH=${libpng_PREFIX}/lib:${PATH}
+			export PATH
 
-			echo "" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$libpng_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			${MKDIR} -p ${libpng_PREFIX}/include
-			${MKDIR} -p ${libpng_PREFIX}/lib
-			${MKDIR} -p ${libpng_PREFIX}/man
-			${MKDIR} -p ${libpng_PREFIX}/bin
+		echo "" >> ${OSDL_ENV_FILE}
 
-			if [ $is_mingw -eq 0 ] ; then
-				PNG_SHARED_LIB=libpng${PNG_NUMBER}.dll
-				setBuildEnv ${MAKE} install prefix=${libpng_PREFIX} SHAREDLIB=${PNG_SHARED_LIB}
-				${CP} -f ${libpng_PREFIX}/bin/${PNG_SHARED_LIB} ${libpng_PREFIX}/lib/libpng.dll
-				${MV} -f ${libpng_PREFIX}/include/libpng${PNG_NUMBER}/* ${libpng_PREFIX}/include
-			else
-				setBuildEnv ${MAKE} install prefix=${libpng_PREFIX}
-			fi
+		${MKDIR} -p ${libpng_PREFIX}/include
+		${MKDIR} -p ${libpng_PREFIX}/lib
+		${MKDIR} -p ${libpng_PREFIX}/man
+		${MKDIR} -p ${libpng_PREFIX}/bin
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+		if [ $is_mingw -eq 0 ] ; then
+			PNG_SHARED_LIB=libpng${PNG_NUMBER}.dll
+			setBuildEnv ${MAKE} install prefix=${libpng_PREFIX} SHAREDLIB=${PNG_SHARED_LIB}
+			${CP} -f ${libpng_PREFIX}/bin/${PNG_SHARED_LIB} ${libpng_PREFIX}/lib/libpng.dll
+			${MV} -f ${libpng_PREFIX}/include/libpng${PNG_NUMBER}/* ${libpng_PREFIX}/include
+		else
+			setBuildEnv ${MAKE} install prefix=${libpng_PREFIX}
+		fi
+
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libpng."
 		exit 13
@@ -1356,6 +1349,7 @@ cleanlibpng()
 
 ################################################################################
 # libpng build thanks to Visual Express.
+#
 # Its libpng and libpng prerequisites are managed seperatly, whereas libjpeg is
 # managed here (this second order library is not built, it is just downloaded
 # with the libpng package).
@@ -1397,7 +1391,7 @@ preparelibpng_win()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libpng_win_ARCHIVE}."
 		exit 10
 	fi
@@ -1409,7 +1403,7 @@ preparelibpng_win()
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libpng-from-LOANI" "libpng-${libpng_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy libpng solution in build tree."
 		exit 11
 	fi
@@ -1510,7 +1504,7 @@ preparelibtiff()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libtiff_ARCHIVE}."
 		LOG_STATUS "Restoring ${libtiff_ARCHIVE}."
 		${MV} -f ${libtiff_ARCHIVE}.save ${libtiff_ARCHIVE}
@@ -1534,30 +1528,30 @@ generatelibtiff()
 
 	printItem "configuring"
 
-################################################################################
+	############################################################################
 	# Not gone any further, since tiff support is not required and
 	# the makefile generated from ./configure --noninteractive
 	# is totally unusable.
 	ERROR "TIFF support not implemented yet."
 	exit 1
-################################################################################
+	############################################################################
 
 	printOK
 
 	printItem "building"
 
 	if [ -n "${CC}" ] ; then
-		{
+	{
 			# LDFLAGS="-lgcc_s" not added.
 			${MAKE} CC=${CC}
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
+	{
 			${MAKE}
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libtiff."
 		exit 12
@@ -1569,24 +1563,24 @@ generatelibtiff()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			libtiff_PREFIX=${prefix}/TIFF-${libtiff_VERSION}
+		libtiff_PREFIX=${prefix}/TIFF-${libtiff_VERSION}
 
-			${MKDIR} -p ${libtiff_PREFIX}/include
-			${MKDIR} -p ${libtiff_PREFIX}/lib
-			${MKDIR} -p ${libtiff_PREFIX}/man
-			${MKDIR} -p ${libtiff_PREFIX}/bin
-			${MAKE} install prefix=${libtiff_PREFIX}
+		${MKDIR} -p ${libtiff_PREFIX}/include
+		${MKDIR} -p ${libtiff_PREFIX}/lib
+		${MKDIR} -p ${libtiff_PREFIX}/man
+		${MKDIR} -p ${libtiff_PREFIX}/bin
+		${MAKE} install prefix=${libtiff_PREFIX}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
+	{
 			${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libtiff."
 		exit 13
@@ -1659,7 +1653,7 @@ prepareSDL_image()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_image_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_image_ARCHIVE}."
 		${MV} -f ${SDL_image_ARCHIVE}.save ${SDL_image_ARCHIVE}
@@ -1708,9 +1702,9 @@ generateSDL_image()
 	fi
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			SDL_image_PREFIX=${prefix}/SDL_image-${SDL_image_VERSION}
+		SDL_image_PREFIX=${prefix}/SDL_image-${SDL_image_VERSION}
 
 		# For debug purpose (should be set from other targets):
 
@@ -1719,55 +1713,55 @@ generateSDL_image()
 		#LIBFLAG="-L${zlib_PREFIX}/lib ${LIBFLAG}"
 		#LIBFLAG="-L${libpng_PREFIX}/lib ${LIBFLAG}"
 
-			if [ $is_windows -eq 0 ] ; then
+		if [ $is_windows -eq 0 ] ; then
 
-				LIBFLAG="-L`cygpath -w ${SDL_PREFIX}/lib`"
-				LIBFLAG="-L`cygpath -w ${libjpeg_PREFIX}/lib ${LIBFLAG}`"
-				LIBFLAG="-L`cygpath -w ${zlib_PREFIX}/lib ${LIBFLAG}`"
-				LIBFLAG="-L`cygpath -w ${libpng_PREFIX}/lib ${LIBFLAG}`"
+			LIBFLAG="-L`cygpath -w ${SDL_PREFIX}/lib`"
+			LIBFLAG="-L`cygpath -w ${libjpeg_PREFIX}/lib ${LIBFLAG}`"
+			LIBFLAG="-L`cygpath -w ${zlib_PREFIX}/lib ${LIBFLAG}`"
+			LIBFLAG="-L`cygpath -w ${libpng_PREFIX}/lib ${LIBFLAG}`"
 
-				LIBFLAG=`echo $LIBFLAG | ${SED} 's|\\\|/|g'`
+			LIBFLAG=`echo $LIBFLAG | ${SED} 's|\\\|/|g'`
 
 			# DLL are searched from PATH on Windows.
 
-				PATH=${SDL_PREFIX}/lib:${PATH}
-				PATH=${libjpeg_PREFIX}/lib:${PATH}
-				PATH=${zlib_PREFIX}/lib:${PATH}
-				PATH=${libpng_PREFIX}/lib:${PATH}
+			PATH=${SDL_PREFIX}/lib:${PATH}
+			PATH=${libjpeg_PREFIX}/lib:${PATH}
+			PATH=${zlib_PREFIX}/lib:${PATH}
+			PATH=${libpng_PREFIX}/lib:${PATH}
 
-				export PATH
-
-			fi
-
-			PATH=${SDL_PREFIX}/bin:${PATH}
 			export PATH
 
-			LD_LIBRARY_PATH=${SDL_PREFIX}/lib:${LD_LIBRARY_PATH}
-			LD_LIBRARY_PATH=${libjpeg_PREFIX}/lib:${LD_LIBRARY_PATH}
-			LD_LIBRARY_PATH=${zlib_PREFIX}/lib:${LD_LIBRARY_PATH}
-			LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}
+		fi
 
-			export LD_LIBRARY_PATH
+		PATH=${SDL_PREFIX}/bin:${PATH}
+		export PATH
+
+		LD_LIBRARY_PATH=${SDL_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${libjpeg_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${zlib_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}
+
+		export LD_LIBRARY_PATH
 
 
-			LOG_STATUS "PATH for SDL_image configure is <${PATH}>."
-			LOG_STATUS "LD_LIBRARY_PATH for SDL_image configure is <${LD_LIBRARY_PATH}>."
+		LOG_STATUS "PATH for SDL_image configure is <${PATH}>."
+		LOG_STATUS "LD_LIBRARY_PATH for SDL_image configure is <${LD_LIBRARY_PATH}>."
 
-			if [ $is_mingw -eq 0 ] ; then
+		if [ $is_mingw -eq 0 ] ; then
 
-				LOG_STATUS "Using SDL prefix $SDL_PREFIX for SDL_image."
+			LOG_STATUS "Using SDL prefix $SDL_PREFIX for SDL_image."
 
-				OLD_LDFLAGS=${LDFLAGS}
+			OLD_LDFLAGS=${LDFLAGS}
 
-				LDFLAGS=${LIBFLAG}
-				export LDFLAGS
+			LDFLAGS=${LIBFLAG}
+			export LDFLAGS
 
-				setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif "LDFLAGS=${LDFLAGS}"
+			setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif "LDFLAGS=${LDFLAGS}"
 
-				LDFLAGS=${OLD_LDFLAGS}
-				export LDFLAGS
+			LDFLAGS=${OLD_LDFLAGS}
+			export LDFLAGS
 
-			else
+		else
 
 			# --disable-sdltest added since configure tries to compile a test
 			# without letting the system libraries locations to be
@@ -1775,18 +1769,18 @@ generateSDL_image()
 			# to errors such as: "undefined reference to
 			# `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 
-				setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif --disable-sdltest LDFLAGS="${LIBFLAG} -lz" CPPFLAGS="-I${libjpeg_PREFIX}/include -I${libpng_PREFIX}/include -I${zlib_PREFIX}/include"
+			setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif --disable-sdltest LDFLAGS="${LIBFLAG} -lz" CPPFLAGS="-I${libjpeg_PREFIX}/include -I${libpng_PREFIX}/include -I${zlib_PREFIX}/include"
 
-			fi
+		fi
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_image."
 		exit 11
@@ -1797,35 +1791,35 @@ generateSDL_image()
 	printItem "building"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
 		#setBuildEnv ${MAKE} "CFLAGS=-O2 -I${SDL_PREFIX}/include/SDL -D_REENTRANT -DLOAD_BMP -DLOAD_GIF -DLOAD_LBM -DLOAD_PCX -DLOAD_PNM -DLOAD_TGA -DLOAD_XPM -DLOAD_JPG -DLOAD_PNG" "LDFLAGS=${LIBFLAG} -ljpeg -lpng -lz" "IMG_LIBS=-ljpeg -lpng -lz"
 
-			if [ $is_windows -eq 0 ] ; then
+		if [ $is_windows -eq 0 ] ; then
 
-				JPEG_INC=`cygpath -w ${libjpeg_PREFIX}/include | ${SED} 's|\\\|/|g'`
-				PNG_INC=`cygpath -w ${libpng_PREFIX}/include | ${SED} 's|\\\|/|g'`
-				ZLIB_INC=`cygpath -w ${zlib_PREFIX}/include | ${SED} 's|\\\|/|g'`
+			JPEG_INC=`cygpath -w ${libjpeg_PREFIX}/include | ${SED} 's|\\\|/|g'`
+			PNG_INC=`cygpath -w ${libpng_PREFIX}/include | ${SED} 's|\\\|/|g'`
+			ZLIB_INC=`cygpath -w ${zlib_PREFIX}/include | ${SED} 's|\\\|/|g'`
 
-			else
+		else
 
-				JPEG_INC="${libjpeg_PREFIX}/include"
-				ZLIB_INC="${zlib_PREFIX}/include"
-				PNG_INC="${libpng_PREFIX}/include"
+			JPEG_INC="${libjpeg_PREFIX}/include"
+			ZLIB_INC="${zlib_PREFIX}/include"
+			PNG_INC="${libpng_PREFIX}/include"
 
-			fi
+		fi
 
-			setBuildEnv ${MAKE} LDFLAGS="-lgcc_s ${LIBFLAG}" CPPFLAGS="-I${JPEG_INC} -I${ZLIB_INC} -I${PNG_INC}"
+		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s ${LIBFLAG}" CPPFLAGS="-I${JPEG_INC} -I${ZLIB_INC} -I${PNG_INC}"
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
+	{
+		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL_image."
 		exit 12
@@ -1837,59 +1831,58 @@ generateSDL_image()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
-			echo "# SDL_image section." >> ${OSDL_ENV_FILE}
+	{
+		echo "# SDL_image section." >> ${OSDL_ENV_FILE}
 
-			echo "SDL_image_PREFIX=${SDL_image_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export SDL_image_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$SDL_image_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_image_PREFIX=${SDL_image_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL_image_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_image_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			LD_LIBRARY_PATH=${SDL_image_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=${SDL_image_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched
-			# through the PATH, not the LD_LIBRARY_PATH.
-				PATH=${SDL_image_PREFIX}/lib:${PATH}
-				export PATH
+		if [ $is_windows -eq 0 ] ; then
 
-				echo "PATH=\$SDL_image_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+			PATH=${SDL_image_PREFIX}/lib:${PATH}
+			export PATH
 
-			echo "" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL_image_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			${MKDIR} -p ${SDL_image_PREFIX}
+		echo "" >> ${OSDL_ENV_FILE}
 
-			setBuildEnv ${MAKE} install prefix=${SDL_image_PREFIX}
+		${MKDIR} -p ${SDL_image_PREFIX}
 
-			if [ ! $? -eq 0 ] ; then
-				echo
-				ERROR "Unable to install SDL_image."
-				exit 13
-			fi
+		setBuildEnv ${MAKE} install prefix=${SDL_image_PREFIX}
+
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to install SDL_image."
+			exit 13
+		fi
 
 		# Rename 'libSDL_image.la', to prevent libtool from detecting it when
 		# linking OSDL and issuing very annoying messages twice, such as:
 		# "libtool: link: warning: library `[...]/libSDL_image.la' was moved."
 
-			${MV} -f ${SDL_image_PREFIX}/lib/libSDL_image.la ${SDL_image_PREFIX}/lib/libSDL_image.la-hidden-by-LOANI
+		${MV} -f ${SDL_image_PREFIX}/lib/libSDL_image.la ${SDL_image_PREFIX}/lib/libSDL_image.la-hidden-by-LOANI
 
-			if [ ! $? -eq 0 ] ; then
-				echo
-				ERROR "Unable to post-install SDL_image (correction for libtool)."
-				exit 13
-			fi
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to post-install SDL_image (correction for libtool)."
+			exit 13
+		fi
 
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_image."
 		exit 13
@@ -1917,9 +1910,10 @@ cleanSDL_image()
 
 ################################################################################
 # SDL_image build thanks to Visual Express.
+#
 # Its libpng and zlib prerequisites are managed seperatly, whereas libjpeg is
-# managed here (this second order library is not built, it is
-# just downloaded with the SDL_image package).
+# managed here (this second order library is not built, it is just downloaded
+# with the SDL_image package).
 ################################################################################
 
 #TRACE "[loani-requiredTools] SDL_image for Visual Express targets"
@@ -1954,7 +1948,7 @@ prepareSDL_image_win()
 		${UNZIP} -o ${SDL_image_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_image_win_ARCHIVE}."
 		exit 10
 	fi
@@ -1969,7 +1963,7 @@ prepareSDL_image_win()
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-LOANI" "SDL_image-${SDL_image_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_image solution in build tree."
 		exit 11
 	fi
@@ -2029,9 +2023,9 @@ cleanSDL_image_win()
 
 getSDL_image_win_precompiled()
 {
-	LOG_STATUS "Getting prebuilt JPEG library for windows (SDL_image package)..."
-	launchFileRetrieval SDL_image_win_precompiled
-	return $?
+		LOG_STATUS "Getting prebuilt JPEG library for windows (SDL_image package)..."
+		launchFileRetrieval SDL_image_win_precompiled
+		return $?
 }
 
 
@@ -2061,7 +2055,7 @@ prepareSDL_image_win_precompiled()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_image_win_precompiled_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_image_win_precompiled_ARCHIVE}."
 		${MV} -f ${SDL_image_win_precompiled_ARCHIVE}.save ${SDL_image_win_precompiled_ARCHIVE}
@@ -2098,9 +2092,9 @@ generateSDL_image_win_precompiled()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-		# Let us suppose the precompiled version has for version libjpeg_VERSION.
+		# Let's suppose the precompiled version has for version libjpeg_VERSION.
 
 		# The libjpeg target should already have:
 		#       - created ${libjpeg_PREFIX}/lib
@@ -2109,22 +2103,22 @@ generateSDL_image_win_precompiled()
 		#       - added the libjpeg section." in ${OSDL_ENV_FILE}
 		#       - updated LD_LIBRARY_PATH *and* PATH with ${libjpeg_PREFIX}/lib
 
-			${CP} -f lib/jpeg.dll ${libjpeg_PREFIX}/lib
+		${CP} -f lib/jpeg.dll ${libjpeg_PREFIX}/lib
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			if [ $is_windows -eq 1 ] ; then
-				setBuildEnv ${MAKE} install
-			else
-				DEBUG "Using ${windows_dll_location} as target Windows DLL location."
-				${CP} -f lib/jpeg.dll ${windows_dll_location}
-			fi
+	{
+		if [ $is_windows -eq 1 ] ; then
+			setBuildEnv ${MAKE} install
+		else
+			DEBUG "Using ${windows_dll_location} as target Windows DLL location."
+			${CP} -f lib/jpeg.dll ${windows_dll_location}
+		fi
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install precompiled binaries."
 		exit 13
@@ -2199,7 +2193,7 @@ preparelibogg()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libogg_ARCHIVE}."
 		LOG_STATUS "Restoring ${libogg_ARCHIVE}."
 		${MV} -f ${libogg_ARCHIVE}.save ${libogg_ARCHIVE}
@@ -2230,20 +2224,20 @@ generatelibogg()
 	fi
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			libogg_PREFIX=${prefix}/libogg-${libogg_VERSION}
+		libogg_PREFIX=${prefix}/libogg-${libogg_VERSION}
 
-			setBuildEnv ./configure --prefix=${libogg_PREFIX} --exec-prefix=${libogg_PREFIX}
+		setBuildEnv ./configure --prefix=${libogg_PREFIX} --exec-prefix=${libogg_PREFIX}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure libogg."
 		exit 11
@@ -2254,19 +2248,19 @@ generatelibogg()
 	printItem "building"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			setBuildEnv ${MAKE}
+		setBuildEnv ${MAKE}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE}
+	{
+		setBuildEnv ${MAKE}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libogg."
 		exit 12
@@ -2278,67 +2272,62 @@ generatelibogg()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			LIBFLAG="-L${libogg_PREFIX}/lib ${LIBFLAG}"
-			INCLUDE
-			echo "# libogg section." >> ${OSDL_ENV_FILE}
+		LIBFLAG="-L${libogg_PREFIX}/lib ${LIBFLAG}"
+		INCLUDE
+		echo "# libogg section." >> ${OSDL_ENV_FILE}
 
-			echo "libogg_PREFIX=${libogg_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export libogg_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$libogg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "libogg_PREFIX=${libogg_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export libogg_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$libogg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			LD_LIBRARY_PATH=${libogg_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=${libogg_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			if [ $is_windows -eq 0 ] ; then
+		if [ $is_windows -eq 0 ] ; then
 
-			# Always remember that, on Windows, DLL are searched
-			# through the PATH, not the LD_LIBRARY_PATH.
+			PATH=${libogg_PREFIX}/lib:${PATH}
+			export PATH
 
-				PATH=${libogg_PREFIX}/lib:${PATH}
-				export PATH
+			echo "PATH=\$libogg_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-				echo "PATH=\$libogg_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+		echo "" >> ${OSDL_ENV_FILE}
 
-			echo "" >> ${OSDL_ENV_FILE}
+		${MKDIR} -p ${libogg_PREFIX}
 
-			${MKDIR} -p ${libogg_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${libogg_PREFIX}
 
-			setBuildEnv ${MAKE} install prefix=${libogg_PREFIX}
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to install libogg."
+			exit 13
+		fi
 
-			if [ ! $? -eq 0 ] ; then
-				echo
-				ERROR "Unable to install libogg."
-				exit 13
-			fi
-
-		# Rename 'libogg.la', to prevent libtool from detecting it when linking
-		# OSDL and issuing very annoying messages twice, such as: "libtool:
-		# link: warning: library `[...]/libogg.la' was moved."
+		# Rename 'libogg.la', to prevent libtool from detecting it when
+		# linking OSDL and issuing very annoying messages twice, such as:
+		# "libtool: link: warning: library `[...]/libogg.la' was moved."
 
 		# Disabled since it would prevent SDL_mixer build:
+		#${MV} -f ${libogg_PREFIX}/lib/libogg.la ${libogg_PREFIX}/lib/libogg.la-hidden-by-LOANI
 		#
-		#${MV} -f ${libogg_PREFIX}/lib/libogg.la
-		#${libogg_PREFIX}/lib/libogg.la-hidden-by-LOANI
-		#
-		#if [ ! $? -eq 0 ] ; then
+		#if [ $? != 0 ] ; then
 		#	echo
 		#	ERROR "Unable to post-install libogg (correction for libtool)."
 		#	exit 13
 		#fi
 
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libogg."
 		exit 13
@@ -2399,7 +2388,7 @@ preparelibogg_win()
 		${UNZIP} -o ${libogg_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libogg_win_ARCHIVE}."
 		exit 10
 	fi
@@ -2414,7 +2403,7 @@ preparelibogg_win()
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libogg-from-LOANI" "libogg-${libogg_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy libogg solution in build tree."
 		exit 11
 	fi
@@ -2516,7 +2505,7 @@ preparelibvorbis()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libvorbis_ARCHIVE}."
 		LOG_STATUS "Restoring ${libvorbis_ARCHIVE}."
 		${MV} -f ${libvorbis_ARCHIVE}.save ${libvorbis_ARCHIVE}
@@ -2547,20 +2536,20 @@ generatelibvorbis()
 	fi
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			libvorbis_PREFIX=${prefix}/libvorbis-${libvorbis_VERSION}
+		libvorbis_PREFIX=${prefix}/libvorbis-${libvorbis_VERSION}
 
-			setBuildEnv ./configure --prefix=${libvorbis_PREFIX} --exec-prefix=${libvorbis_PREFIX} --with-ogg=${libogg_PREFIX}
+		setBuildEnv ./configure --prefix=${libvorbis_PREFIX} --exec-prefix=${libvorbis_PREFIX} --with-ogg=${libogg_PREFIX}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure libvorbis."
 		exit 11
@@ -2571,19 +2560,19 @@ generatelibvorbis()
 	printItem "building"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			setBuildEnv ${MAKE}
+		setBuildEnv ${MAKE}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE}
+	{
+		setBuildEnv ${MAKE}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libvorbis."
 		exit 12
@@ -2595,61 +2584,60 @@ generatelibvorbis()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
-			echo "# libvorbis section." >> ${OSDL_ENV_FILE}
+	{
+		echo "# libvorbis section." >> ${OSDL_ENV_FILE}
 
-			echo "libvorbis_PREFIX=${libvorbis_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export libvorbis_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$libvorbis_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "libvorbis_PREFIX=${libvorbis_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export libvorbis_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$libvorbis_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			LD_LIBRARY_PATH=${libvorbis_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=${libvorbis_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through the
-			# PATH, not the LD_LIBRARY_PATH.
+		if [ $is_windows -eq 0 ] ; then
 
-				PATH=${libvorbis_PREFIX}/lib:${PATH}
-				export PATH
+			PATH=${libvorbis_PREFIX}/lib:${PATH}
+			export PATH
 
-				echo "PATH=\$libvorbis_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+			echo "PATH=\$libvorbis_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			echo "" >> ${OSDL_ENV_FILE}
+		echo "" >> ${OSDL_ENV_FILE}
 
-			${MKDIR} -p ${libvorbis_PREFIX}
+		${MKDIR} -p ${libvorbis_PREFIX}
 
-			setBuildEnv ${MAKE} install prefix=${libvorbis_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${libvorbis_PREFIX}
 
-			if [ ! $? -eq 0 ] ; then
-				echo
-				ERROR "Unable to install libvorbis."
-				exit 13
-			fi
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to install libvorbis."
+			exit 13
+		fi
 
 		# Rename 'libvorbis.la', to prevent libtool from detecting it when
 		# linking OSDL and issuing very annoying messages twice, such as:
 		# "libtool: link: warning: library `[...]/libvorbis.la' was moved."
 
-		# Disabled since would prevent SDL_mixer build:
-		#${MV} -f ${libvorbis_PREFIX}/lib/libvorbis.la ${libvorbis_PREFIX}/lib/libvorbis.la-hidden-by-LOANI
+		# Disabled since would prevent SDL_mixer build: ${MV} -f
+		#${libvorbis_PREFIX}/lib/libvorbis.la
+		#${libvorbis_PREFIX}/lib/libvorbis.la-hidden-by-LOANI
 		#
-		#if [ ! $? -eq 0 ] ; then
+		#if [ $? != 0 ] ; then
 		#	echo
 		#	ERROR "Unable to post-install libvorbis (correction for libtool)."
 		#	exit 13
 		#fi
 
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libvorbis."
 		exit 13
@@ -2712,7 +2700,7 @@ preparelibvorbis_win()
 		${UNZIP} -o ${libvorbis_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libvorbis_win_ARCHIVE}."
 		exit 10
 	fi
@@ -2727,7 +2715,7 @@ preparelibvorbis_win()
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/libvorbis-from-LOANI" "libvorbis-${libvorbis_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy libvorbis solution in build tree."
 		exit 11
 	fi
@@ -2832,7 +2820,7 @@ prepareSDL_mixer()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_mixer_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_mixer_ARCHIVE}."
 		${MV} -f ${SDL_mixer_ARCHIVE}.save ${SDL_mixer_ARCHIVE}
@@ -2863,9 +2851,9 @@ generateSDL_mixer()
 	fi
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			SDL_mixer_PREFIX=${prefix}/SDL_mixer-${SDL_mixer_VERSION}
+		SDL_mixer_PREFIX=${prefix}/SDL_mixer-${SDL_mixer_VERSION}
 
 		#LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib ${LDFLAGS}"
 		#export LDFLAGS
@@ -2873,10 +2861,10 @@ generateSDL_mixer()
 		#CFLAGS="-I${libogg_PREFIX}/include -I${libvorbis_PREFIX}/include"
 		#export CFLAGS
 
-		# Following features are deactivated automatically
-		# (their companion library is not installed
-		# by LOANI yet, and they are currently considered as less
-		# useful than the ones of the core selection):
+		# Following features are deactivated automatically (their companion
+		# library is not installed by LOANI yet, and they are currently
+		# considered as less useful than the ones of the core selection):
+		#
 		#  - MOD support (including libmikmod),
 		#  - MIDI support (including native and timidity),
 		#  - MP3 support (including SMPEG)
@@ -2896,16 +2884,16 @@ generateSDL_mixer()
 		# vorbis versions.
 
 
-			setBuildEnv ./configure --prefix=${SDL_mixer_PREFIX} --exec-prefix=${SDL_mixer_PREFIX} -with-sdl-prefix=${SDL_PREFIX}  --disable-static --disable-music-mod --disable-music-midi --disable-music-timidity-midi --disable-music-native-midi --disable-music-native-midi-gpl --disable-music-mp3 --disable-smpegtest --enable-music-wave LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib" CFLAGS="-I${libogg_PREFIX}/include  -I${libvorbis_PREFIX}/include"
+		setBuildEnv ./configure --prefix=${SDL_mixer_PREFIX} --exec-prefix=${SDL_mixer_PREFIX} -with-sdl-prefix=${SDL_PREFIX}  --disable-static --disable-music-mod --disable-music-midi --disable-music-timidity-midi --disable-music-native-midi --disable-music-native-midi-gpl --disable-music-mp3 --disable-smpegtest --enable-music-wave LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib" CFLAGS="-I${libogg_PREFIX}/include  -I${libvorbis_PREFIX}/include"
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_mixer."
 		exit 11
@@ -2916,19 +2904,19 @@ generateSDL_mixer()
 	printItem "building"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			setBuildEnv ${MAKE}
+		setBuildEnv ${MAKE}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE}
+	{
+		setBuildEnv ${MAKE}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL_mixer."
 		exit 12
@@ -2940,61 +2928,58 @@ generateSDL_mixer()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
-			echo "# SDL_mixer section." >> ${OSDL_ENV_FILE}
+	{
+		echo "# SDL_mixer section." >> ${OSDL_ENV_FILE}
 
-			echo "SDL_mixer_PREFIX=${SDL_mixer_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export SDL_mixer_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$SDL_mixer_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_mixer_PREFIX=${SDL_mixer_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL_mixer_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_mixer_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			LD_LIBRARY_PATH=${SDL_mixer_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=${SDL_mixer_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			if [ $is_windows -eq 0 ] ; then
+		if [ $is_windows -eq 0 ] ; then
 
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
+			PATH=${SDL_mixer_PREFIX}/lib:${PATH}
+			export PATH
 
-				PATH=${SDL_mixer_PREFIX}/lib:${PATH}
-				export PATH
+			echo "PATH=\$SDL_mixer_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-				echo "PATH=\$SDL_mixer_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+		echo "" >> ${OSDL_ENV_FILE}
 
-			echo "" >> ${OSDL_ENV_FILE}
+		${MKDIR} -p ${SDL_mixer_PREFIX}
 
-			${MKDIR} -p ${SDL_mixer_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${SDL_mixer_PREFIX}
 
-			setBuildEnv ${MAKE} install prefix=${SDL_mixer_PREFIX}
-
-			if [ ! $? -eq 0 ] ; then
-				echo
-				ERROR "Unable to install SDL_mixer."
-				exit 13
-			fi
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to install SDL_mixer."
+			exit 13
+		fi
 
 		# Rename 'libSDL_mixer.la', to prevent libtool from detecting it when
 		# linking OSDL and issuing very annoying messages twice, such as:
 		# "libtool: link: warning: library `[...]/libSDL_mixer.la' was moved."
 
-			${MV} -f ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la-hidden-by-LOANI
+		${MV} -f ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la-hidden-by-LOANI
 
-			if [ ! $? -eq 0 ] ; then
-				echo
-				ERROR "Unable to post-install SDL_mixer (correction for libtool)."
-				exit 13
-			fi
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to post-install SDL_mixer (correction for libtool)."
+			exit 13
+		fi
 
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_mixer."
 		exit 13
@@ -3058,7 +3043,7 @@ prepareSDL_mixer_win()
 		${UNZIP} -o ${SDL_mixer_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_mixer_win_ARCHIVE}."
 		exit 10
 	fi
@@ -3073,7 +3058,7 @@ prepareSDL_mixer_win()
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_mixer-from-LOANI" "SDL_mixer-${SDL_mixer_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_mixer solution in build tree."
 		exit 11
 	fi
@@ -3175,7 +3160,7 @@ prepareguichan()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${guichan_ARCHIVE}."
 		LOG_STATUS "Restoring ${guichan_ARCHIVE}."
 		${MV} -f ${guichan_ARCHIVE}.save ${guichan_ARCHIVE}
@@ -3201,28 +3186,28 @@ generateguichan()
 	printItem "configuring"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			if [ $is_windows -eq 0 ] ; then
-				guichan_PREFIX=`cygpath -w ${prefix}/guichan-${guichan_VERSION} | ${SED} 's|\\\|/|g'`
-			else
-				guichan_PREFIX="${prefix}/guichan-${guichan_VERSION}"
-			fi
+		if [ $is_windows -eq 0 ] ; then
+			guichan_PREFIX=`cygpath -w ${prefix}/guichan-${guichan_VERSION} | ${SED} 's|\\\|/|g'`
+		else
+			guichan_PREFIX="${prefix}/guichan-${guichan_VERSION}"
+		fi
 
 
-			${MKDIR} -p ${guichan_PREFIX}
+		${MKDIR} -p ${guichan_PREFIX}
 
-			setBuildEnv ./configure --prefix=${guichan_PREFIX} --enable-sdl --enable-sdlimage --enable-opengl CPPFLAGS="-I${SDL_PREFIX}/include/SDL -I${SDL_image_PREFIX}/include/SDL" LDFLAGS="-L${SDL_PREFIX}/lib -L${SDL_image_PREFIX}/lib"
+		setBuildEnv ./configure --prefix=${guichan_PREFIX} --enable-sdl --enable-sdlimage --enable-opengl CPPFLAGS="-I${SDL_PREFIX}/include/SDL -I${SDL_image_PREFIX}/include/SDL" LDFLAGS="-L${SDL_PREFIX}/lib -L${SDL_image_PREFIX}/lib"
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure guichan."
 		exit 11
@@ -3234,11 +3219,11 @@ generateguichan()
 
 	{
 
-		setBuildEnv ${MAKE}
+		 setBuildEnv ${MAKE}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build guichan."
 		exit 12
@@ -3250,57 +3235,57 @@ generateguichan()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			echo "# guichan section." >> ${OSDL_ENV_FILE}
+		echo "# guichan section." >> ${OSDL_ENV_FILE}
 
-			echo "guichan_PREFIX=${guichan_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export guichan_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "PATH=\$guichan_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "guichan_PREFIX=${guichan_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export guichan_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$guichan_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 
-			echo "LD_LIBRARY_PATH=\$guichan_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$guichan_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			PATH=${guichan_PREFIX}/bin:${PATH}
+		PATH=${guichan_PREFIX}/bin:${PATH}
+		export PATH
+
+		LD_LIBRARY_PATH=${guichan_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		if [ $is_windows -eq 0 ] ; then
+
+			PATH=${guichan_PREFIX}/lib:${PATH}
 			export PATH
 
-			LD_LIBRARY_PATH=${guichan_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+			echo "PATH=\$guichan_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through the PATH, not the LD_LIBRARY_PATH.
+		echo "" >> ${OSDL_ENV_FILE}
 
-				PATH=${guichan_PREFIX}/lib:${PATH}
-				export PATH
+		LIBPATH="-L${guichan_PREFIX}/lib"
 
-				echo "PATH=\$guichan_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+		# Do not ever imagine that to avoid bad nedit syntax highlighting
+		# you could change:
+		# include/*.h to "include/*.h" in next line.
+		# It would fail at runtime with "include/*.h" not found...
 
-			echo "" >> ${OSDL_ENV_FILE}
+		setBuildEnv ${MAKE} install && ${CP} -f include/*.h ${guichan_PREFIX}/include/guichan
 
-			LIBPATH="-L${guichan_PREFIX}/lib"
-
-		# Do not ever imagine that to avoid bad nedit syntax highlighting you
-		# could change: include/*.h to "include/*.h" in next line.  It would
-		# fail at runtime with "include/*.h" not found...
-
-			setBuildEnv ${MAKE} install && ${CP} -f include/*.h ${guichan_PREFIX}/include/guichan
-
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install guichan."
 		exit 13
 	fi
 
 	if [ $is_windows -eq 0 ] ; then
-		${MV} -f ${guichan_PREFIX}/bin/*.dll ${guichan_PREFIX}/lib
+			${MV} -f ${guichan_PREFIX}/bin/*.dll ${guichan_PREFIX}/lib
 	fi
 
 	printOK
@@ -3366,7 +3351,7 @@ prepareguichan_win()
 		${CP} -f ${guichan_win_ARCHIVE} ${guichan_win_ARCHIVE}.save && ${GUNZIP} -f ${guichan_win_ARCHIVE} && ${TAR} -xvf "guichan-${guichan_win_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${guichan_win_ARCHIVE}."
 		LOG_STATUS "Restoring ${guichan_win_ARCHIVE}."
 		${MV} -f ${guichan_win_ARCHIVE}.save ${guichan_win_ARCHIVE}
@@ -3382,7 +3367,7 @@ prepareguichan_win()
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/guichan-from-LOANI" "guichan-${guichan_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy guichan solution in build tree."
 		exit 11
 	fi
@@ -3486,7 +3471,7 @@ prepareAgar()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${Agar_ARCHIVE}."
 		LOG_STATUS "Restoring ${Agar_ARCHIVE}."
 		${MV} -f ${Agar_ARCHIVE}.save ${Agar_ARCHIVE}
@@ -3511,34 +3496,33 @@ generateAgar()
 
 	printItem "configuring"
 
-	# --disable-legacy removed, as was breaking the 1.4.0 build:
 	AGAR_CONFIGURE_OPT="--disable-network --disable-threads --disable-server --enable-gui --enable-utf8 --with-gl --with-jpeg --with-freetype "
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			if [ $is_windows -eq 0 ] ; then
-				Agar_PREFIX=`cygpath -w ${prefix}/agar-${Agar_VERSION} | ${SED} 's|\\\|/|g'`
-			else
-				Agar_PREFIX="${prefix}/agar-${Agar_VERSION}"
-			fi
+		if [ $is_windows -eq 0 ] ; then
+			Agar_PREFIX=`cygpath -w ${prefix}/agar-${Agar_VERSION} | ${SED} 's|\\\|/|g'`
+		else
+			Agar_PREFIX="${prefix}/agar-${Agar_VERSION}"
+		fi
 
 
-			${MKDIR} -p ${Agar_PREFIX}
+		${MKDIR} -p ${Agar_PREFIX}
 
-			# Currently the Agar configure cannot override the default location for
-			# libjpeg (CFLAGS="-I${libjpeg_PREFIX}/include" is rejected):
-			setBuildEnv ./configure --prefix=${Agar_PREFIX} ${AGAR_CONFIGURE_OPT}
+		# Currently the Agar configure cannot override the default location
+		# for libjpeg (CFLAGS="-I${libjpeg_PREFIX}/include" is rejected):
+		setBuildEnv ./configure --prefix=${Agar_PREFIX} ${AGAR_CONFIGURE_OPT}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure	${AGAR_CONFIGURE_OPT}
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure	${AGAR_CONFIGURE_OPT}
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure Agar."
 		exit 11
@@ -3550,11 +3534,11 @@ generateAgar()
 
 	{
 
-		setBuildEnv ${MAKE} depend all
+		 setBuildEnv ${MAKE} depend all
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build Agar."
 		exit 12
@@ -3566,48 +3550,45 @@ generateAgar()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			echo "# Agar section." >> ${OSDL_ENV_FILE}
+		echo "# Agar section." >> ${OSDL_ENV_FILE}
 
-			echo "Agar_PREFIX=${Agar_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export Agar_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "PATH=\$Agar_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$Agar_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "Agar_PREFIX=${Agar_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export Agar_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$Agar_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$Agar_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			PATH=${Agar_PREFIX}/bin:${PATH}
+		PATH=${Agar_PREFIX}/bin:${PATH}
+		export PATH
+
+		LD_LIBRARY_PATH=${Agar_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		if [ $is_windows -eq 0 ] ; then
+
+			PATH=${Agar_PREFIX}/lib:${PATH}
 			export PATH
 
-			LD_LIBRARY_PATH=${Agar_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+			echo "PATH=\$Agar_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			if [ $is_windows -eq 0 ] ; then
+		echo "" >> ${OSDL_ENV_FILE}
 
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
-
-				PATH=${Agar_PREFIX}/lib:${PATH}
-				export PATH
-
-				echo "PATH=\$Agar_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
-
-			echo "" >> ${OSDL_ENV_FILE}
-
-			LIBPATH="-L${Agar_PREFIX}/lib"
+		LIBPATH="-L${Agar_PREFIX}/lib"
 
 
-			setBuildEnv ${MAKE} install
+		setBuildEnv ${MAKE} install
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install Agar."
 		exit 13
@@ -3677,7 +3658,7 @@ prepareAgar_win()
 		${UNZIP} -o ${Agar_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${Agar_win_ARCHIVE}."
 		LOG_STATUS "Restoring ${Agar_win_ARCHIVE}."
 		${MV} -f ${Agar_win_ARCHIVE}.save ${Agar_win_ARCHIVE}
@@ -3688,7 +3669,7 @@ prepareAgar_win()
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/Agar-from-LOANI" "agar-${Agar_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy Agar solution in build tree."
 		exit 12
 	fi
@@ -3703,7 +3684,7 @@ prepareAgar_win()
 		${CP} -f "ProjectFiles/${AGAR_FLAVOUR_ARCHIVE}" . && ${UNZIP} -o "${AGAR_FLAVOUR_ARCHIVE}"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${AGAR_FLAVOUR_ARCHIVE}."
 		exit 11
 	fi
@@ -3812,7 +3793,7 @@ preparePhysicsFS()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${PhysicsFS_ARCHIVE}."
 		LOG_STATUS "Restoring ${PhysicsFS_ARCHIVE}."
 		${MV} -f ${PhysicsFS_ARCHIVE}.save ${PhysicsFS_ARCHIVE}
@@ -3843,7 +3824,7 @@ generatePhysicsFS()
 
 		PhysicsFS_PREFIX="${alternate_prefix}/PhysicsFS-${PhysicsFS_VERSION}"
 
-		PHYSICSFS_CMAKE_OPT="-DCMAKE_INSTALL_PREFIX=${PhysicsFS_PREFIX}"
+PHYSICSFS_CMAKE_OPT="-DCMAKE_INSTALL_PREFIX=${PhysicsFS_PREFIX}"
 
 	fi
 
@@ -3854,7 +3835,7 @@ generatePhysicsFS()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to pre-configure PhysicsFS."
 		exit 11
@@ -3867,7 +3848,7 @@ generatePhysicsFS()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure PhysicsFS."
 		exit 12
@@ -3879,11 +3860,11 @@ generatePhysicsFS()
 
 	{
 
-		setBuildEnv ${MAKE}
+		 setBuildEnv ${MAKE}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build PhysicsFS."
 		exit 12
@@ -3895,47 +3876,45 @@ generatePhysicsFS()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			echo "# PhysicsFS section." >> ${OSDL_ENV_FILE}
+		echo "# PhysicsFS section." >> ${OSDL_ENV_FILE}
 
-			echo "PhysicsFS_PREFIX=${PhysicsFS_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export PhysicsFS_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "PATH=\$PhysicsFS_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$PhysicsFS_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "PhysicsFS_PREFIX=${PhysicsFS_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export PhysicsFS_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$PhysicsFS_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$PhysicsFS_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			PATH=${PhysicsFS_PREFIX}/bin:${PATH}
+		PATH=${PhysicsFS_PREFIX}/bin:${PATH}
+		export PATH
+
+		LD_LIBRARY_PATH=${PhysicsFS_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		if [ $is_windows -eq 0 ] ; then
+
+			PATH=${PhysicsFS_PREFIX}/lib:${PATH}
 			export PATH
 
-			LD_LIBRARY_PATH=${PhysicsFS_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+			echo "PATH=\$PhysicsFS_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			if [ $is_windows -eq 0 ] ; then
-			# Always remember that, on Windows, DLL are searched through
-			# the PATH, not the LD_LIBRARY_PATH.
+		echo "" >> ${OSDL_ENV_FILE}
 
-				PATH=${PhysicsFS_PREFIX}/lib:${PATH}
-				export PATH
+		LIBPATH="-L${PhysicsFS_PREFIX}/lib"
 
-				echo "PATH=\$PhysicsFS_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
-
-			echo "" >> ${OSDL_ENV_FILE}
-
-			LIBPATH="-L${PhysicsFS_PREFIX}/lib"
-
-			setBuildEnv ${MAKE} install
+		setBuildEnv ${MAKE} install
 
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install PhysicsFS."
 		exit 13
@@ -4013,7 +3992,7 @@ preparePhysicsFS_win()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${PhysicsFS_win_ARCHIVE}."
 		LOG_STATUS "Restoring ${PhysicsFS_win_ARCHIVE}."
 		${MV} -f ${PhysicsFS_win_ARCHIVE}.save ${PhysicsFS_win_ARCHIVE}
@@ -4025,7 +4004,7 @@ preparePhysicsFS_win()
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/PhysicsFS-from-LOANI" "physfs-${PhysicsFS_win_VERSION}"
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy PhysicsFS solution in build tree."
 		exit 12
 	fi
@@ -4127,7 +4106,7 @@ prepareSDL_gfx()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_gfx_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_gfx_ARCHIVE}."
 		${MV} -f ${SDL_gfx_ARCHIVE}.save ${SDL_gfx_ARCHIVE}
@@ -4154,7 +4133,7 @@ generateSDL_gfx()
 		setBuildEnv ./autogen.sh
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_gfx: autogen failed."
 		exit 11
@@ -4165,42 +4144,47 @@ generateSDL_gfx()
 	fi
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			SDL_gfx_PREFIX=${prefix}/SDL_gfx-${SDL_gfx_VERSION}
+		SDL_gfx_PREFIX=${prefix}/SDL_gfx-${SDL_gfx_VERSION}
 
 		# SDL_gfx uses wrongly SDL includes: asks for SDL/SDL.h instead of
-		# SDL.h. Ugly hack: (copy could be used instead, to avoid needing
-		# symbolic links for filesystems such as vfat)
-			${LN} -s ${SDL_PREFIX}/include/SDL ${SDL_PREFIX}/include/SDL/SDL
+		# SDL.h.
+		#
+		# Ugly hack:
+		# (copy could be used instead, to avoid needing symbolic links for
+		# filesystems such as vfat)
+		${LN} -s ${SDL_PREFIX}/include/SDL ${SDL_PREFIX}/include/SDL/SDL
 
-			OLD_CPP_FLAGS=$CPP_FLAGS
-			CPP_FLAGS="-I${SDL_PREFIX}/include $CPP_FLAGS"
-			export CPP_FLAGS
+		OLD_CPP_FLAGS=$CPP_FLAGS
+		CPP_FLAGS="-I${SDL_PREFIX}/include $CPP_FLAGS"
+		export CPP_FLAGS
 
-			OLD_LD_FLAGS=$LD_FLAGS
+		OLD_LD_FLAGS=$LD_FLAGS
 
-			LDFLAGS="-L${SDL_PREFIX}/lib $LDFLAGS"
-			export LDFLAGS
+		LDFLAGS="-L${SDL_PREFIX}/lib $LDFLAGS"
+		export LDFLAGS
 
-			LIBS=$LDFLAGS
-			export LIBS
+		LIBS=$LDFLAGS
+		export LIBS
 
 		# --disable-sdltest added since configure tries to compile a test
 		# without letting the system libraries locations to be redefined.
-		# Therefore a wrong libstdc++.so could be chosen, leading to errors such
-		# as: "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
+		#
+		# Therefore a wrong libstdc++.so could be chosen, leading to errors
+		# such as:
+		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 
-			setBuildEnv ./configure --prefix=${SDL_gfx_PREFIX} --exec-prefix=${SDL_gfx_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --disable-sdltest
+		setBuildEnv ./configure --prefix=${SDL_gfx_PREFIX} --exec-prefix=${SDL_gfx_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --disable-sdltest
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_gfx."
 		exit 11
@@ -4221,7 +4205,7 @@ generateSDL_gfx()
 		setBuildEnv ./nodebug.sh
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "SDL_gfx post-configure script failed (nodebug.sh)."
 		exit 12
@@ -4236,7 +4220,7 @@ generateSDL_gfx()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL_gfx."
 		exit 12
@@ -4248,41 +4232,39 @@ generateSDL_gfx()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			echo "# SDL_gfx section." >> ${OSDL_ENV_FILE}
+		echo "# SDL_gfx section." >> ${OSDL_ENV_FILE}
 
-			echo "SDL_gfx_PREFIX=${SDL_gfx_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export SDL_gfx_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$SDL_gfx_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_gfx_PREFIX=${SDL_gfx_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL_gfx_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_gfx_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			LD_LIBRARY_PATH=${SDL_gfx_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=${SDL_gfx_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			if [ $is_windows -eq 0 ] ; then
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
+		if [ $is_windows -eq 0 ] ; then
 
-				PATH=${SDL_gfx_PREFIX}/lib:${PATH}
-				export PATH
+			PATH=${SDL_gfx_PREFIX}/lib:${PATH}
+			export PATH
 
-				echo "PATH=\$SDL_gfx_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+			echo "PATH=\$SDL_gfx_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			echo "" >> ${OSDL_ENV_FILE}
+		echo "" >> ${OSDL_ENV_FILE}
 
-			setBuildEnv ${MAKE} install prefix=${SDL_gfx_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${SDL_gfx_PREFIX}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
+	{
+		setBuildEnv ${MAKE} install
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_gfx (application)."
 		exit 13
@@ -4290,7 +4272,7 @@ generateSDL_gfx()
 
 	FIXED_FONT_REPOSITORY="${OSDL_DATA_FULL_DIR_NAME}/fonts/fixed"
 	${MKDIR} -p "${FIXED_FONT_REPOSITORY}" && ${CP} -f Fonts/*.fnt "${FIXED_FONT_REPOSITORY}"
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_gfx fonts."
 		exit 14
@@ -4302,7 +4284,7 @@ generateSDL_gfx()
 		setBuildEnv ${MAKE} distclean
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		WARNING "SDL_gfx post-install cleaning failed, non-fatal error."
 	fi
@@ -4365,7 +4347,7 @@ prepareSDL_gfx_win()
 		${CP} -f ${SDL_gfx_win_ARCHIVE} ${SDL_gfx_win_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_win_ARCHIVE} && ${TAR} -xvf "SDL_gfx-${SDL_gfx_win_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_gfx_win_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_gfx_win_ARCHIVE}."
 		${MV} -f ${SDL_gfx_win_ARCHIVE}.save ${SDL_gfx_win_ARCHIVE}
@@ -4473,7 +4455,7 @@ preparefreetype()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${freetype_ARCHIVE}."
 		LOG_STATUS "Restoring ${freetype_ARCHIVE}."
 		${MV} -f ${freetype_ARCHIVE}.save ${freetype_ARCHIVE}
@@ -4498,19 +4480,19 @@ generatefreetype()
 	printItem "configuring"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			freetype_PREFIX=${prefix}/freetype-${freetype_VERSION}
+		freetype_PREFIX=${prefix}/freetype-${freetype_VERSION}
 
-			setBuildEnv ./configure --prefix=${freetype_PREFIX} --exec-prefix=${freetype_PREFIX}
-		} 1>>"$LOG_OUTPUT" 2>&1
+		setBuildEnv ./configure --prefix=${freetype_PREFIX} --exec-prefix=${freetype_PREFIX}
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure freetype."
 		exit 11
@@ -4526,7 +4508,7 @@ generatefreetype()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build freetype."
 		exit 12
@@ -4541,45 +4523,42 @@ generatefreetype()
 	# script afterwards:
 
 	if [ -n "$prefix" ] ; then
-		{
-			echo "# freetype section." >> ${OSDL_ENV_FILE}
+	{
+		echo "# freetype section." >> ${OSDL_ENV_FILE}
 
-			echo "freetype_PREFIX=${freetype_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export freetype_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "freetype_PREFIX=${freetype_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export freetype_PREFIX" >> ${OSDL_ENV_FILE}
 
-			echo "PATH=\$freetype_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$freetype_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$freetype_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$freetype_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			if [ $is_windows -eq 0 ] ; then
+		if [ $is_windows -eq 0 ] ; then
 
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
-
-				PATH=${freetype_PREFIX}/lib:${freetype_PREFIX}/bin:${PATH}
-				export PATH
-
-				echo "PATH=\$freetype_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
-
-			echo "" >> ${OSDL_ENV_FILE}
-
-			PATH=${freetype_PREFIX}/bin:${PATH}
+			PATH=${freetype_PREFIX}/lib:${freetype_PREFIX}/bin:${PATH}
 			export PATH
 
-			LD_LIBRARY_PATH=${freetype_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+			echo "PATH=\$freetype_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-			setBuildEnv ${MAKE} install
+		echo "" >> ${OSDL_ENV_FILE}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+		PATH=${freetype_PREFIX}/bin:${PATH}
+		export PATH
+
+		LD_LIBRARY_PATH=${freetype_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		setBuildEnv ${MAKE} install
+
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
+	{
 			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install freetype."
 		exit 13
@@ -4649,7 +4628,7 @@ preparefreetype_win()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${freetype_win_ARCHIVE}."
 		LOG_STATUS "Restoring ${freetype_win_ARCHIVE}."
 		${MV} -f ${freetype_win_ARCHIVE}.save ${freetype_win_ARCHIVE}
@@ -4760,7 +4739,7 @@ prepareSDL_ttf()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_ttf_ARCHIVE}."
 		LOG_STATUS "Restoring ${SDL_ttf_ARCHIVE}."
 		${MV} -f ${SDL_ttf_ARCHIVE}.save ${SDL_ttf_ARCHIVE}
@@ -4788,35 +4767,35 @@ generateSDL_ttf()
 		setBuildEnv ./autogen.sh
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_ttf: autogen failed."
 		exit 11
 	fi
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			SDL_ttf_PREFIX=${prefix}/SDL_ttf-${SDL_ttf_VERSION}
+		SDL_ttf_PREFIX=${prefix}/SDL_ttf-${SDL_ttf_VERSION}
 
-		# --disable-sdltest added since configure tries to compile a test
-		# without letting the system libraries locations to be
-		# redefined. Therefore a wrong libstdc++.so could be chosen, leading to
-		# errors such as: "undefined reference to
-		# `_Unwind_Resume_or_Rethrow@GCC_3.3'"
+		# --disable-sdltest added since configure tries to compile
+		# a test without letting the system libraries locations to
+		# be redefined. Therefore a wrong libstdc++.so
+		# could be chosen, leading to errors such as:
+		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 
 		# SDL_ttf.c needs freetype/internal/ftobjs.h, which is in the
 		# freetype sources only (not installed), hence the CPPFLAGS:
 
-			setBuildEnv ./configure --prefix=${SDL_ttf_PREFIX} --exec-prefix=${SDL_ttf_PREFIX} --with-freetype-prefix=${freetype_PREFIX} --with-freetype-exec-prefix=${freetype_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --with-sdl-exec-prefix=${SDL_PREFIX} --disable-sdltest CPPFLAGS="-I${repository}/freetype-${freetype_VERSION}/include"
-		} 1>>"$LOG_OUTPUT" 2>&1
+		setBuildEnv ./configure --prefix=${SDL_ttf_PREFIX} --exec-prefix=${SDL_ttf_PREFIX} --with-freetype-prefix=${freetype_PREFIX} --with-freetype-exec-prefix=${freetype_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --with-sdl-exec-prefix=${SDL_PREFIX} --disable-sdltest CPPFLAGS="-I${repository}/freetype-${freetype_VERSION}/include"
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ./configure
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure SDL_ttf."
 		exit 11
@@ -4826,10 +4805,10 @@ generateSDL_ttf()
 
 	printItem "building"
 
-	# SDL_ttf will not compile if not patched: Ugly tr-based hack to prevent the
-	# numerous versions of sed to panic when having a newline in replacement
-	# string: This modification used to work with previous SDL_ttf releases:
-
+	# SDL_ttf will not compile if not patched:
+	# Ugly tr-based hack to prevent the numerous versions of sed to
+	# panic when having a newline in replacement string:
+	# This modification used to work with previous SDL_ttf releases:
 	#${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/freetype.h>|#include <ft2build.h>?#include FT_FREETYPE_H??#include <freetype/freetype.h>|1' | ${TR} "?" "\n" > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c
 
 	# This one works, at least for SDL_ttf-2.0.8:
@@ -4837,7 +4816,7 @@ generateSDL_ttf()
 	#    - http://www.freetype.org/freetype2/freetype-2.2.0.html
 	#    - http://www.freetype.org/freetype2/patches/rogue-patches.html
 	${CAT} SDL_ttf.c | ${SED} 's|#include <freetype/internal/ftobjs.h>||g' | sed 's|library->memory|NULL|g' > SDL_ttf-patched.c && ${RM} -f SDL_ttf.c && ${MV} -f SDL_ttf-patched.c SDL_ttf.c
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		WARNING "SDL_ttf include patch failed, continuing anyway."
 	fi
@@ -4847,7 +4826,7 @@ generateSDL_ttf()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build SDL_ttf."
 		exit 12
@@ -4859,42 +4838,39 @@ generateSDL_ttf()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
 
-			echo "# SDL_ttf section." >> ${OSDL_ENV_FILE}
+		echo "# SDL_ttf section." >> ${OSDL_ENV_FILE}
 
-			echo "SDL_ttf_PREFIX=${SDL_ttf_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export SDL_ttf_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$SDL_ttf_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL_ttf_PREFIX=${SDL_ttf_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL_ttf_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL_ttf_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			if [ $is_windows -eq 0 ] ; then
+		if [ $is_windows -eq 0 ] ; then
 
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
+			PATH=${SDL_ttf_PREFIX}/lib:${PATH}
+			export PATH
 
-				PATH=${SDL_ttf_PREFIX}/lib:${PATH}
-				export PATH
+			echo "PATH=\$SDL_ttf_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
 
-				echo "PATH=\$SDL_ttf_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			fi
+		echo "" >> ${OSDL_ENV_FILE}
 
-			echo "" >> ${OSDL_ENV_FILE}
+		LD_LIBRARY_PATH=${SDL_ttf_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			LD_LIBRARY_PATH=${SDL_ttf_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		setBuildEnv ${MAKE} install prefix=${SDL_ttf_PREFIX}
 
-			setBuildEnv ${MAKE} install prefix=${SDL_ttf_PREFIX}
-
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install SDL_ttf."
 		exit 13
@@ -4953,7 +4929,7 @@ prepareSDL_ttf_win()
 		${UNZIP} -o ${SDL_ttf_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${SDL_ttf_win_ARCHIVE}."
 		exit 10
 	fi
@@ -4966,7 +4942,7 @@ prepareSDL_ttf_win()
 	cd $repository
 
 	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-LOANI" "SDL_ttf-${SDL_ttf_win_VERSION}" && ${CP} -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-LOANI/SDL_ttf.c" "SDL_ttf-${SDL_ttf_win_VERSION}"
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy SDL_ttf solution and fixes in build tree."
 		exit 11
 	fi
@@ -5019,8 +4995,10 @@ cleanSDL_ttf_win()
 
 ################################################################################
 # GNU Libtool
-# Note that this will be a version of libtool specifically patched, so
-# that it stops always linking libraries with a rpath set.
+#
+# Note that this will be a version of libtool specifically patched, so that it
+# stops always linking libraries with a rpath set.
+#
 # Otherwise this would prevent distributing prebuilt OSDL libraries.
 # See http://wiki.debian.org/RpathIssue for more informations.
 ################################################################################
@@ -5070,7 +5048,7 @@ preparelibtool()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${libtool_ARCHIVE}."
 		LOG_STATUS "Restoring ${libtool_ARCHIVE}."
 		${MV} -f ${libtool_ARCHIVE}.save ${libtool_ARCHIVE}
@@ -5097,61 +5075,61 @@ generatelibtool()
 	printItem "configuring"
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
 		# Warns that this is a patched version:
-			libtool_PREFIX=${prefix}/libtool-${libtool_VERSION}-no-rpath
+		libtool_PREFIX=${prefix}/libtool-${libtool_VERSION}-no-rpath
 
 		# configure calls libltdl configure and loose env.
-			old_path=$PATH
-			old_ld_path=$LD_LIBRARY_PATH
-			old_cc=$CC
-			old_cxx=$CXX
+		old_path=$PATH
+		old_ld_path=$LD_LIBRARY_PATH
+		old_cc=$CC
+		old_cxx=$CXX
 
-			if [ $is_mingw -eq 0 ] ; then
+		if [ $is_mingw -eq 0 ] ; then
 
-				PATH=${MINGW_PATH}:$PATH
-				export PATH
+			PATH=${MINGW_PATH}:$PATH
+			export PATH
 
-				LD_LIBRARY_PATH=${MINGW_LD_LIBRARY_PATH}:$LD_LIBRARY_PATH
-				export LD_LIBRARY_PATH
+			LD_LIBRARY_PATH=${MINGW_LD_LIBRARY_PATH}:$LD_LIBRARY_PATH
+			export LD_LIBRARY_PATH
 
-				CC=${MINGW_GCC}
-				export CC
+			CC=${MINGW_GCC}
+			export CC
 
-				CXX=${MINGW_GPP}
-				export CXX
+			CXX=${MINGW_GPP}
+			export CXX
 
-			fi
+		fi
 
-			setBuildEnv ./configure --prefix=${libtool_PREFIX} --exec-prefix=${libtool_PREFIX} --enable-ltdl-install
+		setBuildEnv ./configure --prefix=${libtool_PREFIX} --exec-prefix=${libtool_PREFIX} --enable-ltdl-install
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			if [ $is_mingw -eq 0 ] ; then
+	{
+		if [ $is_mingw -eq 0 ] ; then
 
-				PATH=${MINGW_PATH}:$PATH
-				export PATH
+			PATH=${MINGW_PATH}:$PATH
+			export PATH
 
-				LD_LIBRARY_PATH=${MINGW_LD_LIBRARY_PATH}:$LD_LIBRARY_PATH
-				export LD_LIBRARY_PATH
+			LD_LIBRARY_PATH=${MINGW_LD_LIBRARY_PATH}:$LD_LIBRARY_PATH
+			export LD_LIBRARY_PATH
 
-				CC=${MINGW_GCC}
-				export CC
+			CC=${MINGW_GCC}
+			export CC
 
-				CXX=${MINGW_GPP}
-				export CXX
+			CXX=${MINGW_GPP}
+			export CXX
 
-			fi
+		fi
 
-			setBuildEnv ./configure
+		setBuildEnv ./configure
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure libtool."
 		exit 11
@@ -5181,7 +5159,7 @@ generatelibtool()
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build libtool."
 		exit 12
@@ -5193,73 +5171,70 @@ generatelibtool()
 	printItem "installing"
 
 	if [ -n "$prefix" ] ; then
-		{
-			${MKDIR} -p ${libtool_PREFIX}
+	{
+		${MKDIR} -p ${libtool_PREFIX}
 
-			echo "# libtool section." >> ${OSDL_ENV_FILE}
+		echo "# libtool section." >> ${OSDL_ENV_FILE}
 
-			echo "libtool_PREFIX=${libtool_PREFIX}" >> ${OSDL_ENV_FILE}
-			echo "export libtool_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "PATH=\$libtool_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$libtool_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "libtool_PREFIX=${libtool_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export libtool_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$libtool_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$libtool_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			if [ $is_windows -eq 0 ] ; then
+		if [ $is_windows -eq 0 ] ; then
 
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
-
-				PATH=${libtool_PREFIX}/lib:${PATH}
-				export PATH
-
-				echo "PATH=\$libtool_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-
-			fi
-
-			echo "" >> ${OSDL_ENV_FILE}
-
-			PATH=${libtool_PREFIX}/bin:${PATH}
+			PATH=${libtool_PREFIX}/lib:${PATH}
 			export PATH
 
-			LD_LIBRARY_PATH=${libtool_PREFIX}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+			echo "PATH=\$libtool_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 
-			setBuildEnv ${MAKE} install prefix=${libtool_PREFIX}
+		fi
+
+		echo "" >> ${OSDL_ENV_FILE}
+
+		PATH=${libtool_PREFIX}/bin:${PATH}
+		export PATH
+
+		LD_LIBRARY_PATH=${libtool_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		setBuildEnv ${MAKE} install prefix=${libtool_PREFIX}
 
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			setBuildEnv ${MAKE} install
-		} 1>>"$LOG_OUTPUT" 2>&1
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install libtool."
 		exit 13
 	fi
 
-	# Patching only if a prefix is used (not installing a modified libtool in
-	# system tree):
+	# Patching only if a prefix is used (not installing a modified
+	# libtool in system tree):
 
 	if [ -n "$prefix" ] ; then
-		{
+	{
 
-			target_script="${libtool_PREFIX}/bin/libtool"
+		target_script="${libtool_PREFIX}/bin/libtool"
 
-			if [ ! -f "${target_script}" ] ; then
-				echo
-				ERROR "Unable to patch libtool."
-				exit 14
-			fi
+		if [ ! -f "${target_script}" ] ; then
+			echo
+			ERROR "Unable to patch libtool."
+			exit 14
+		fi
 
-			# Largely inspired from http://wiki.debian.org/RpathIssue:
-			${CAT} "${target_script}" | sed 's|^hardcode_libdir_flag_spec=.*$|hardcode_libdir_flag_spec="-DLOANI_PATCHED_LIBTOOL_FOR_RPATH"|1' > libtool-patched
-			${MV} -f libtool-patched "${target_script}"
-			${CHMOD} 755 "${target_script}"
+		# Largely inspired from http://wiki.debian.org/RpathIssue:
+		${CAT} "${target_script}" | sed 's|^hardcode_libdir_flag_spec=.*$|hardcode_libdir_flag_spec="-DLOANI_PATCHED_LIBTOOL_FOR_RPATH"|1' > libtool-patched
+		${MV} -f libtool-patched "${target_script}"
+		${CHMOD} 755 "${target_script}"
 
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
@@ -5308,8 +5283,8 @@ getwin_pthread()
 	else
 		DEBUG "Not all parts of win_pthread available, downloading them."
 
-		# The following is commented out, it would have to be updated before
-		# use:
+		# The following is commented out, it would have to be updated
+		# before use:
 
 		# Needs to download recursively the FTP root:
 		#OLD_WGET_OPT="${WGET_OPT}"
@@ -5376,7 +5351,7 @@ generatewin_pthread()
 	else
 
 		# Clean-up wget mess:
-		{
+		 {
 			sleep 5
 			${MKDIR} -p $repository/${PTHREADS_WIN32_DIR}
 
@@ -5385,7 +5360,7 @@ generatewin_pthread()
 				${CP} -f ${repository}/${win_pthread_HEADER_MAIN} ${repository}/${win_pthread_HEADER_SCHED} ${repository}/${win_pthread_HEADER_SEM} ${repository}/${PTHREADS_WIN32_DIR}/include
 
 				${MKDIR} -p ${repository}/${PTHREADS_WIN32_DIR}/lib
-				${CP} -f ${repository}/${win_pthread_DLL} ${repository}/${PTHREADS_WIN32_DIR}/lib
+				 ${CP} -f ${repository}/${win_pthread_DLL} ${repository}/${PTHREADS_WIN32_DIR}/lib
 			else
 				ERROR "Not all win_pthread parts are available while pre installing."
 				exit 16
@@ -5396,11 +5371,11 @@ generatewin_pthread()
 				${CP} -f ${real_download_target}/${win_pthread_ftp_dir}/* $repository/${PTHREADS_WIN32_DIR}
 			else
 				DEBUG "No win_pthread FTP directory to retrieve (no ${real_download_target}/${win_pthread_ftp_dir} directory)."
-			fi
+						fi
 		} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		WARNING "Pre installation phase for win pthread had errors."
 		${RM} -rf ${win_pthread_wget_dir}
@@ -5408,50 +5383,48 @@ generatewin_pthread()
 
 
 	if [ -n "$prefix" ] ; then
-		{
-			echo "# pthreads win32 section." >> ${OSDL_ENV_FILE}
+	{
+		echo "# pthreads win32 section." >> ${OSDL_ENV_FILE}
 
-			echo "pthreads_win32_PREFIX=${prefix}/${PTHREADS_WIN32_DIR}" >> ${OSDL_ENV_FILE}
-			echo "export pthreads_win32_PREFIX" >> ${OSDL_ENV_FILE}
-			echo "LD_LIBRARY_PATH=\$pthreads_win32_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "pthreads_win32_PREFIX=${prefix}/${PTHREADS_WIN32_DIR}" >> ${OSDL_ENV_FILE}
+		echo "export pthreads_win32_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$pthreads_win32_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-			if [ $is_windows -eq 0 ] ; then
+		if [ $is_windows -eq 0 ] ; then
 
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
-				PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:${PATH}
-				export PATH
+			PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:${PATH}
+			export PATH
 
-				echo "PATH=\$pthreads_win32_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$pthreads_win32_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 
-			fi
+		fi
 
-			echo "" >> ${OSDL_ENV_FILE}
+		echo "" >> ${OSDL_ENV_FILE}
 
-			LD_LIBRARY_PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=${prefix}/${PTHREADS_WIN32_DIR}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			${CP} -rf ${repository}/${PTHREADS_WIN32_DIR} ${prefix}
+		${CP} -rf ${repository}/${PTHREADS_WIN32_DIR} ${prefix}
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	else
-		{
-			WARNING "Win pthread installation without prefix not tested."
+	{
+		WARNING "Win pthread installation without prefix not tested."
 
-			echo "# pthreads win32 section." >> ${OSDL_ENV_FILE}
-			echo "PATH=/usr/local/lib:\${PATH}" >> ${OSDL_ENV_FILE}
-			echo "export PATH" >> ${OSDL_ENV_FILE}
-			echo "" >> ${OSDL_ENV_FILE}
+		echo "# pthreads win32 section." >> ${OSDL_ENV_FILE}
+		echo "PATH=/usr/local/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "export PATH" >> ${OSDL_ENV_FILE}
+		echo "" >> ${OSDL_ENV_FILE}
 
-			LD_LIBRARY_PATH=/usr:local/lib:${LD_LIBRARY_PATH}
-			export LD_LIBRARY_PATH
+		LD_LIBRARY_PATH=/usr:local/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
 
-			${MKDIR} -p /usr/local/include /usr/local/lib && ${CP} -f ${repository}/${PTHREADS_WIN32_DIR}/include/* /usr/local/include && ${CP} -f ${repository}/${PTHREADS_WIN32_DIR}/lib/* /usr/local/lib
+		${MKDIR} -p /usr/local/include /usr/local/lib && ${CP} -f ${repository}/${PTHREADS_WIN32_DIR}/include/* /usr/local/include && ${CP} -f ${repository}/${PTHREADS_WIN32_DIR}/lib/* /usr/local/lib
 
-		} 1>>"$LOG_OUTPUT" 2>&1
+	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install win pthread."
 		exit 15
@@ -5542,7 +5515,7 @@ preparedlditool()
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to extract ${dlditool_ARCHIVE}."
 		exit 11
 	fi
@@ -5571,7 +5544,7 @@ generatedlditool()
 		${UNZIP} -o ${dldi_patch_fcsr_ARCHIVE} && ${CP} -f fcsr/fcsr.dldi .
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure dlditool."
 		exit 11
@@ -5742,13 +5715,14 @@ getCeylan()
 					LOG_STATUS "SVN command failed."
 					#${SLEEP} 3
 
-					# Warning: cygwin uses a quite small MAX_PATH, which limits
-					# the maximum length of paths. It may cause, among others,
-					# a SVN error ("svn: Can't open file 'XXX': File name too
-					# long).  A work-around is to request the user to update
-					# herself her repository with TortoiseSVN (this tool is not
-					# affected by the MAX_PATH issue), as soon as an error
-					# occured.
+					# Warning:
+					# cygwin uses a quite small MAX_PATH, which limits the
+					# maximum length of paths.
+					#It may cause, among others, a SVN error
+					# ("svn: Can't open file 'XXX': File name too long).
+					# A work-around is to request the user to update herself her
+					# repository with TortoiseSVN (this tool is not affected by
+					# the MAX_PATH issue), as soon as an error occured.
 
 					# Now ask the user to trigger the full update by herself,
 					# with TortoiseSVN:
@@ -5890,7 +5864,7 @@ prepareCeylan()
 		} 1>>"$LOG_OUTPUT" 2>&1
 
 
-		if [ ! $? -eq 0 ] ; then
+		if [ $? != 0 ] ; then
 			ERROR "Unable to extract ${Ceylan_ARCHIVE}."
 			DEBUG "Restoring ${Ceylan_ARCHIVE}."
 			${MV} -f ${Ceylan_ARCHIVE}.save ${Ceylan_ARCHIVE}
@@ -5918,7 +5892,7 @@ generateCeylan()
 			setBuildEnv ./autogen.sh --no-build
 		} 1>>"$LOG_OUTPUT" 2>&1
 
-		if [ ! $? -eq 0 ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to generate build system for Ceylan (with autogen.sh)."
 			exit 10
@@ -5951,7 +5925,7 @@ generateCeylan()
 		} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure Ceylan."
 		exit 11
@@ -5965,7 +5939,7 @@ generateCeylan()
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build Ceylan."
 		exit 12
@@ -5985,9 +5959,6 @@ generateCeylan()
 
 
 			if [ $is_windows -eq 0 ] ; then
-
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
 
 				echo "PATH=\$Ceylan_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 
@@ -6034,13 +6005,13 @@ generateCeylan()
 
 	if [ ${use_svn} -eq 0 ]; then
 
-		# Here we are in the SVN tree, needing to generate the build system for
-		# tests:
+		# Here we are in the SVN tree, needing to generate the
+		# build system for tests:
 		{
 			setBuildEnv ./autogen.sh --no-build --ceylan-install-prefix ${Ceylan_PREFIX}
 		} 1>>"$LOG_OUTPUT" 2>&1
 
-		if [ ! $? -eq 0 ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to generate build system for Ceylan tests (with autogen.sh)."
 			exit 10
@@ -6060,7 +6031,7 @@ generateCeylan()
 		} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure Ceylan tests."
 		exit 14
@@ -6070,7 +6041,7 @@ generateCeylan()
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build Ceylan tests."
 		exit 15
@@ -6080,7 +6051,7 @@ generateCeylan()
 		setBuildEnv ${MAKE} install
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install Ceylan tests."
 		exit 16
@@ -6090,7 +6061,7 @@ generateCeylan()
 		setBuildEnv ./playTests.sh
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to pass Ceylan tests."
 		exit 17
@@ -6144,10 +6115,10 @@ prepareCeylan_win()
 	${MKDIR} -p ${ceylan_install_dir}
 
 	# LOANI's version preferred to SVN's one for ease of debugging:
-	ceylan_solution_dir="$repository/ceylan/Ceylan/trunk/src/conf/build/visual-express"
+ceylan_solution_dir="$repository/ceylan/Ceylan/trunk/src/conf/build/visual-express"
 
 	${CP} -f "${WINDOWS_SOLUTIONS_ROOT}"/Ceylan-from-LOANI/* ${ceylan_solution_dir}
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy Ceylan solution in build tree."
 		exit 11
 	fi
@@ -6319,13 +6290,14 @@ getOSDL()
 					LOG_STATUS "SVN command failed."
 					#${SLEEP} 3
 
-					# Warning: cygwin uses a quite small MAX_PATH, which limits
-					# the maximum length of paths.  It may cause, among others,
-					# a SVN error ("svn: Can't open file 'XXX': File name too
-					# long).  A work-around is to request the user to update
-					# herself her repository with TortoiseSVN (this tool is not
-					# affected by the MAX_PATH issue), as soon as an error
-					# occured.
+					# Warning:
+					# cygwin uses a quite small MAX_PATH, which limits the
+					# maximum length of paths.
+					# It may cause, among others, a SVN error
+					# ("svn: Can't open file 'XXX': File name too long).
+					# A work-around is to request the user to update herself her
+					# repository with TortoiseSVN (this tool is not affected by
+					# the MAX_PATH issue), as soon as an error occured.
 
 					# Now ask the user to trigger the full update by herself,
 					# with TortoiseSVN:
@@ -6464,7 +6436,7 @@ prepareOSDL()
 		} 1>>"$LOG_OUTPUT" 2>&1
 
 
-		if [ ! $? -eq 0 ] ; then
+		if [ $? != 0 ] ; then
 			ERROR "Unable to extract ${OSDL_ARCHIVE}."
 			DEBUG "Restoring ${OSDL_ARCHIVE}."
 			${MV} -f ${OSDL_ARCHIVE}.save ${OSDL_ARCHIVE}
@@ -6484,8 +6456,8 @@ generateOSDL()
 	LOG_STATUS "Generating OSDL..."
 
 
-	# Premature generation of OSDL-environment.sh so that it is available for
-	# autogen.sh:
+	# Premature generation of OSDL-environment.sh so that it is available
+	# for autogen.sh:
 
 	if [ -n "$prefix" ] ; then
 		{
@@ -6498,9 +6470,6 @@ generateOSDL()
 			echo "export OSDL_PREFIX" >> ${OSDL_ENV_FILE}
 
 			if [ $is_windows -eq 0 ] ; then
-
-				# Always remember that, on Windows, DLL are searched through the
-				# PATH, not the LD_LIBRARY_PATH.
 
 				echo "PATH=\$OSDL_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 
@@ -6563,7 +6532,7 @@ generateOSDL()
 			} 1>>"$LOG_OUTPUT" 2>&1
 		fi
 
-		if [ ! $? -eq 0 ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to generate build system for OSDL (with autogen.sh)."
 			exit 11
@@ -6594,7 +6563,7 @@ generateOSDL()
 		} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure OSDL."
 		exit 11
@@ -6608,7 +6577,7 @@ generateOSDL()
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build OSDL."
 		exit 12
@@ -6647,13 +6616,13 @@ generateOSDL()
 
 	if [ ${use_svn} -eq 0 ]; then
 
-		# Here we are in the SVN tree, needing to generate the build system for
-		# tests:
+		# Here we are in the SVN tree, needing to generate the
+		# build system for tests:
 		{
 			setBuildEnv ./autogen.sh --no-build --with-osdl-env-file ${OSDL_ENV_FILE}
 		} 1>>"$LOG_OUTPUT" 2>&1
 
-		if [ ! $? -eq 0 ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to generate build system for OSDL tests (with autogen.sh)."
 			exit 10
@@ -6667,7 +6636,8 @@ generateOSDL()
 	if [ -n "$prefix" ] ; then
 		{
 
-			# We suppose here that if we have a prefix, all tools use prefixes:
+			# We suppose here that if we have a prefix, all tools use
+			# prefixes:
 
 			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-libagar-prefix=$Agar_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
 
@@ -6680,7 +6650,7 @@ generateOSDL()
 		} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure OSDL tests."
 		exit 14
@@ -6690,7 +6660,7 @@ generateOSDL()
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build OSDL tests."
 		exit 15
@@ -6700,7 +6670,7 @@ generateOSDL()
 		setBuildEnv ${MAKE} install
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install OSDL tests."
 		exit 16
@@ -6710,7 +6680,7 @@ generateOSDL()
 		setBuildEnv ./playTests.sh
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to pass OSDL tests."
 		exit 17
@@ -6732,7 +6702,7 @@ generateOSDL()
 			setBuildEnv ./autogen.sh --no-build --with-osdl-env-file ${OSDL_ENV_FILE}
 		} 1>>"$LOG_OUTPUT" 2>&1
 
-		if [ ! $? -eq 0 ] ; then
+		if [ $? != 0 ] ; then
 			echo
 			ERROR "Unable to generate build system for OSDL tools (with autogen.sh)."
 			exit 10
@@ -6746,7 +6716,8 @@ generateOSDL()
 	if [ -n "$prefix" ] ; then
 		{
 
-			# We suppose here that if we have a prefix, all tools use prefixes:
+			# We suppose here that if we have a prefix, all tools use
+			# prefixes:
 
 			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-libagar-prefix=$Agar_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
 
@@ -6759,7 +6730,7 @@ generateOSDL()
 		} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to configure OSDL tools."
 		exit 14
@@ -6769,7 +6740,7 @@ generateOSDL()
 		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to build OSDL tools."
 		exit 15
@@ -6779,7 +6750,7 @@ generateOSDL()
 		setBuildEnv ${MAKE} install
 	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		echo
 		ERROR "Unable to install OSDL tools."
 		exit 16
@@ -6829,12 +6800,12 @@ prepareOSDL_win()
 	osdl_install_dir="${alternate_prefix}/OSDL-${OSDL_win_VERSION}"
 	${MKDIR} -p ${osdl_install_dir}
 
-	osdl_solution_dir="$repository/osdl/OSDL/trunk/src/conf/build/visual-express"
+osdl_solution_dir="$repository/osdl/OSDL/trunk/src/conf/build/visual-express"
 
-	# LOANI's version preferred to SVN's LOANI one for ease of debugging, copies
-	# OSDL* (sln/vcproj/vsprops etc.) from LOANI to their place in SVN:
+	# LOANI's version preferred to SVN's LOANI one for ease of debugging,
+	# copies OSDL* (sln/vcproj/vsprops etc.) from LOANI to their place in SVN:
 	${CP} -f "${WINDOWS_SOLUTIONS_ROOT}"/OSDL* ${osdl_solution_dir}
-	if [ ! $? -eq 0 ] ; then
+	if [ $? != 0 ] ; then
 		ERROR "Unable to copy OSDL solution in build tree."
 		exit 21
 	fi
@@ -6892,6 +6863,9 @@ cleanOSDL_win()
 	LOG_STATUS "Cleaning OSDL build tree..."
 	${RM} -rf "$repository/osdl*"
 }
+
+
+
 
 
 
