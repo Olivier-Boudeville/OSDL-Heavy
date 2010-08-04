@@ -465,12 +465,13 @@ Erlang_MD5="ca6da4921e438891967900aa6a084341"
 
 # egeoip: http://code.google.com/p/egeoip/
 
-# Not used actually, as only available through SVN:
+# Not used actually, as only available through GIT:
 egeoip_ARCHIVE="egeoip.tar.bz2"
 egeoip_DOWNLOAD_LOCATION=""
 egeoip_MD5="(blanked)"
 
-egeoip_SVN_SERVER="egeoip.googlecode.com"
+#egeoip_SVN_SERVER="egeoip.googlecode.com"
+egeoip_GIT_SERVER="github.com"
 
 
 
