@@ -456,10 +456,10 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R13B04"
+Erlang_VERSION="R14A"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5="ca6da4921e438891967900aa6a084341"
+Erlang_MD5="a24873bbace9ab3c307f3d2492d9e134"
 
 
 
