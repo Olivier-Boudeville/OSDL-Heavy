@@ -713,10 +713,14 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 
 	  AG_InitVideoSDL( screen, AG_VIDEO_OVERLAY ) ;
 
-	  send( std::string(
-		  "The libagar GUI rendering will be done using a backend " )
-		+ ( AG_UsingGL()  ? "with" : "without" ) + " OpenGL, and "
-		+ ( AG_UsingSDL() ? "with" : "without" ) + " SDL" ;
+	  std::string usingGL  =
+		( AG_UsingGL( /* drv */ 0 )  ? "with" : "without" ) ;
+
+	  std::string usingSDL =
+		( AG_UsingGL( /* drv */ 0 )  ? "with" : "without" ) ;
+
+	  send( "The libagar GUI rendering will be done using a backend "
+		+ usingGL  + " OpenGL, and " + usingSDL + " SDL." ) ;
 
 #endif // OSDL_USES_AGAR
 
