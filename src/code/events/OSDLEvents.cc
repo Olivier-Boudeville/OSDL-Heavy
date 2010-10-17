@@ -933,15 +933,18 @@ void EventsModule::updateInputState()
 
 		  /*
 		   * All events are sent here to the Agar GUI (a filtering could be
-		   * done). We translate here the SDL_Event into a AG_DriverEvent.
+		   * done).
+		   *
+		   * We translate here the SDL_Event into a AG_DriverEvent, as it is
+		   * what Agar expects.
 		   *
 		   * Was, with previous versions of Agar:
 		   * 'AG_ProcessEvent( & currentEvent ) ;'
 		   *
 		   */
 		  AG_SDL_TranslateEvent( /* AG_Driver* */ 0,
-			/* source SDL event */ currentEvent,
-			/* target translated AG_DriverEvent */ driverEvent ) ;
+			/* source SDL event */ & currentEvent,
+			/* target translated AG_DriverEvent */ & driverEvent ) ;
 
 		  // Processes the event in a default, generic manner:
 		  if ( AG_ProcessEvent( /* AG_Driver* */ 0, &driverEvent ) == -1)
