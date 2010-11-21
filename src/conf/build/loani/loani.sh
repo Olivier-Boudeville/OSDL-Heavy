@@ -1137,7 +1137,7 @@ To ensure most needed tools are installed, one may run:
 		#else if [ "$distro" = "Ubuntu" ] ; then
 		else
 
-			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev"
+			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev libpulse-dev"
 
 		fi
 
@@ -1189,6 +1189,13 @@ else
 	findBuildTools "${lacking_tool_message}"
 	findAutoTools "${lacking_tool_message}"
 	findSupplementaryShellTools "${lacking_tool_message}"
+
+	if [ ! -f "/usr/lib/libpulse-simple.so" ] ; then
+
+		# Not all distro rely on PulseAudio though:
+		WARNING "No PulseAudio development support found, the generated SDL library may not be able to output sound. ${lacking_tool_message}"
+
+	fi
 
 fi
 
