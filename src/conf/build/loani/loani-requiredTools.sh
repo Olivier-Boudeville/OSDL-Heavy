@@ -244,6 +244,10 @@ generateSDL()
 
 		# DirectFB disabled, as build will fail on openSuse if corresponding
 		# package is not installed (Ubuntu can cope with this situation though).
+
+		# Note also that, at least on Ubuntu Maverick, the libpulse-dev package
+		# must be installed beforehand, otherwise PulseAudio support will be
+		# deactivated, and SDL will say: No available audio device.
 		setBuildEnv ./configure --enable-video-directfb=no --disable-rpath --prefix=${SDL_PREFIX} --exec-prefix=${SDL_PREFIX}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
