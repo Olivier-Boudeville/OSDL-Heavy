@@ -139,7 +139,7 @@ indexer=`PATH=$indexer_dir:$PATH which ${indexer_name}`
 
 if [ ! -x "${indexer}" ] ; then
 
-	echo "Error, no resource indexer tool (${indexer_name}) available. Was Ceylan-Erlang installed?" 1>&2
+	echo "Error, no resource indexer tool (${indexer_name}) available. Was Ceylan-Erlang installed? If not, run 'make install-erlang' from Ceylan/trunk/src/code/scripts." 1>&2
 	exit 35
 
 fi
