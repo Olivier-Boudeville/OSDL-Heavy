@@ -1312,12 +1312,30 @@ generatelibpng()
 		${MKDIR} -p ${libpng_PREFIX}/bin
 
 		if [ $is_mingw -eq 0 ] ; then
+
 			PNG_SHARED_LIB=libpng${PNG_NUMBER}.dll
 			setBuildEnv ${MAKE} install prefix=${libpng_PREFIX} SHAREDLIB=${PNG_SHARED_LIB}
 			${CP} -f ${libpng_PREFIX}/bin/${PNG_SHARED_LIB} ${libpng_PREFIX}/lib/libpng.dll
 			${MV} -f ${libpng_PREFIX}/include/libpng${PNG_NUMBER}/* ${libpng_PREFIX}/include
+
 		else
+
 			setBuildEnv ${MAKE} install prefix=${libpng_PREFIX}
+
+			# Apparently, some libraries (notably Agar examples) expect to find
+			# a PNG library like libpng14.so.14 whereas the only shared
+			# libraries installed are libpng14.so, libpng14.so.14.4 and
+			# libpng.so. Thus we create this "missing" link:
+
+			full_png_name=`/bin/ls ${libpng_PREFIX}/lib/libpng*.so.*.*`
+			# Ex: full_png_name=libpng14.so.14.4
+
+			# Remove the rightmost dot and characters after it:
+			target_png_link=`echo ${full_png_name} | ${AWK} -F"." '{print $1,$2,$3}' OFS="."`
+			# Ex: target_png_link=libpng14.so.14 (not using sed as would be
+			# greedy)
+			${LN} -sf ${full_png_name} ${target_png_link}
+
 		fi
 
 	} 1>>"$LOG_OUTPUT" 2>&1
