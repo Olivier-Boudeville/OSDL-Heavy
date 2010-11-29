@@ -72,14 +72,13 @@ zlib_win_MD5="d6f1eef40a2dd3f17c63d24d8ca402c8"
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
-# Actually 1.2.44 (was 1.4.3) (defined in configure-template.ac):
+# Actually 1.4.4 (defined in configure-template.ac):
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-#libpng_MD5="9347eeda4241401f7da4dc9ba7f6a416"
-libpng_MD5="e3ac7879d62ad166a6f0c7441390d12b"
+libpng_MD5="e6446d6cc10621ce0ed27ff82a70a7e8"
 
 libpng_win_VERSION="$libpng_VERSION"
 libpng_win_archive_VERSION="142"
@@ -144,13 +143,13 @@ SDL_image_osx_precompiled_MD5="xxx"
 # SDL_gfx (libSDL_gfx.so): http://www.ferzkopp.net/Software/SDL_gfx-2.0/
 # No binaries available!
 
-# Actually 2.0.18, waiting for 2.0.21 (defined in configure-template.ac):
+# Actually 2.0.22 (defined in configure-template.ac):
 SDL_gfx_MAJOR_VERSION="@SDL_GFX_MAJOR_VERSION@"
 SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.@SDL_GFX_MINOR_VERSION@"
 SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
 SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_gfx_MD5="b107fd478d3d1269d7a6ff42906f0482"
+SDL_gfx_MD5="330f291f1f09a1bdf397c9b40d92ca41"
 
 
 # Same as for UNIX:
