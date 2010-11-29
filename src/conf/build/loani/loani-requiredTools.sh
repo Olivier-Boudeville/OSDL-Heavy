@@ -2171,10 +2171,11 @@ preparelibogg()
 {
 
 	LOG_STATUS "Preparing libogg..."
-	if findTool gunzip ; then
-		GUNZIP=$returnedString
+
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
 	else
-		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
 		exit 8
 	fi
 
@@ -2193,7 +2194,7 @@ preparelibogg()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libogg_ARCHIVE} ${libogg_ARCHIVE}.save && ${GUNZIP} -f ${libogg_ARCHIVE} && ${TAR} -xvf "libogg-${libogg_VERSION}.tar"
+		${CP} -f ${libogg_ARCHIVE} ${libogg_ARCHIVE}.save && ${BUNZIP2} -f ${libogg_ARCHIVE} && ${TAR} -xvf "libogg-${libogg_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
@@ -2483,10 +2484,11 @@ preparelibvorbis()
 {
 
 	LOG_STATUS "Preparing libvorbis..."
-	if findTool gunzip ; then
-		GUNZIP=$returnedString
+
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
 	else
-		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
 		exit 8
 	fi
 
@@ -2505,7 +2507,7 @@ preparelibvorbis()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libvorbis_ARCHIVE} ${libvorbis_ARCHIVE}.save && ${GUNZIP} -f ${libvorbis_ARCHIVE} && ${TAR} -xvf "libvorbis-${libvorbis_VERSION}.tar"
+		${CP} -f ${libvorbis_ARCHIVE} ${libvorbis_ARCHIVE}.save && ${BUNZIP2} -f ${libvorbis_ARCHIVE} && ${TAR} -xvf "libvorbis-${libvorbis_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
