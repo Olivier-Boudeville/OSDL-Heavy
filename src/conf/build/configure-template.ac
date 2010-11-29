@@ -365,8 +365,8 @@ AC_SUBST(SDL_GFX_MAJOR_VERSION)
 
 # In the hope the configure removed options are then restored
 # (otherwise switch back to 2.0.18):
-#SDL_GFX_MINOR_VERSION="21"
-SDL_GFX_MINOR_VERSION="18"
+SDL_GFX_MINOR_VERSION="22"
+#SDL_GFX_MINOR_VERSION="18"
 AC_SUBST(SDL_GFX_MINOR_VERSION)
 
 SDL_GFX_RECOMMENDED_VERSION="$SDL_GFX_MAJOR_VERSION.$SDL_GFX_MINOR_VERSION"
@@ -382,8 +382,8 @@ SDL_GFX_PREFIX="${OSDL_LOANI_INSTALLATIONS}/SDL_gfx-$SDL_GFX_RECOMMENDED_VERSION
 # We currently deactivated the use of SDL_gfx, as it does not compile on 64 bits
 # *and* it lost its '--with-sdl-prefix' option. Hoping everything will be
 # restored in the 2.0.21 version.
-#sdl_gfx_support_activated=true
-sdl_gfx_support_activated=false
+sdl_gfx_support_activated=true
+#sdl_gfx_support_activated=false
 
 if [ $sdl_gfx_support_activated = "true" ] ; then
 
@@ -404,7 +404,7 @@ fi
 # SDL_ttf.
 # Depends on SDL, hence managed first (for the order in OSDL_LIBS).
 
-SDL_TTF_RECOMMENDED_VERSION="2.0.9"
+SDL_TTF_RECOMMENDED_VERSION="2.0.10"
 AC_SUBST(SDL_TTF_RECOMMENDED_VERSION)
 
 SDL_TTF_OLDEST_SUPPORTED_VERSION="$SDL_TTF_RECOMMENDED_VERSION"
@@ -522,7 +522,7 @@ AC_DEFINE([USES_SDL],[1],[Define to 1 if OSDL is to use SDL])
 
 # PhysicsFS.
 
-PHYSICSFS_RECOMMENDED_VERSION="2.0.0"
+PHYSICSFS_RECOMMENDED_VERSION="2.0.1"
 AC_SUBST(PHYSICSFS_RECOMMENDED_VERSION)
 
 PHYSICSFS_OLDEST_SUPPORTED_VERSION="$PHYSICSFS_RECOMMENDED_VERSION"
