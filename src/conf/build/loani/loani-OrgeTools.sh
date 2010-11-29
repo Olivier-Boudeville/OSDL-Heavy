@@ -428,17 +428,20 @@ generateGeolite()
 
 	printItem "installing"
 
-	# If no prefix is used, the database is installed in the egeoip
-	# installation (not in repository), otherwise it is installed in
+	# If a prefix is used, the database is installed in the egeoip installation
+	# directory (not in repository), otherwise it is installed in
 	# /usr/local/share/GeoIP/ and a link is made to it from egeoip:
 	cd $repository
 
-	geolite_dir="/usr/local/share/GeoIP"
+
 
 	if [ -z "${prefix}" ] ; then
 
-		# No prefix, installing in system tree:
+		# No prefix, installing directly in system tree:
 		{
+
+			geolite_dir="/usr/local/share/GeoIP"
+
 			${MKDIR} -p ${geolite_dir} && ${CP} ${Geolite_ARCHIVE} ${geolite_dir} && cd ${EGEOIP_PREFIX}/priv/ && ${LN} -s ${geolite_dir}/${Geolite_ARCHIVE}
 
 		} 1>>"$LOG_OUTPUT" 2>&1
@@ -446,7 +449,12 @@ generateGeolite()
 	else
 
 		{
-			${CP} ${Geolite_ARCHIVE} ${EGEOIP_PREFIX}/priv/
+
+			geolite_dir="${EGEOIP_PREFIX}/priv/"
+
+			# A symlink could be made:
+			${MKDIR} -p ${geolite_dir} && ${CP} ${Geolite_ARCHIVE} ${EGEOIP_PREFIX}/priv/
+
 		} 1>>"$LOG_OUTPUT" 2>&1
 
 
