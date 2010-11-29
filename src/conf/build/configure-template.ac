@@ -483,10 +483,7 @@ AC_DEFINE([USES_AGAR],[1],[Define to 1 if OSDL is to use Agar])
 
 # png (libpng).
 
-# Some libraries (ex: SDL_image, Agar?) insist on using 1.2 and/or will crash
-# otherwise:
-LIBPNG_RECOMMENDED_VERSION="1.2.44"
-#LIBPNG_RECOMMENDED_VERSION="1.4.3"
+LIBPNG_RECOMMENDED_VERSION="1.4.4"
 AC_SUBST(LIBPNG_RECOMMENDED_VERSION)
 
 LIBPNG_OLDEST_SUPPORTED_VERSION="$LIBPNG_RECOMMENDED_VERSION"
