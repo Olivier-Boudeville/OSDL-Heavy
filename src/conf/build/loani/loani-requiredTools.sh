@@ -910,7 +910,7 @@ generatezlib()
 
 		zlib_PREFIX=${prefix}/zlib-${zlib_VERSION}
 
-		setBuildEnv ./configure --shared --prefix=${zlib_PREFIX} --exec_prefix=${zlib_PREFIX}
+		setBuildEnv ./configure --shared --prefix=${zlib_PREFIX}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
