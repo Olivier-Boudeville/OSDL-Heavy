@@ -4133,15 +4133,20 @@ generateSDL_gfx()
 	cd "SDL_gfx-${SDL_gfx_VERSION}"
 
 	printItem "configuring"
-	{
-		setBuildEnv ./autogen.sh
-	} 1>>"$LOG_OUTPUT" 2>&1
 
-	if [ $? != 0 ] ; then
-		echo
-		ERROR "Unable to configure SDL_gfx: autogen failed."
-		exit 11
-	fi
+	# Not running autogen.sh by ourselves, as the built-in configure is now
+	# perfectly usable, and unless adding -I ${SDL_PREFIX}/share/aclocal to
+	# the aclocal call, the right sdl.m4 would not be found anyway.
+
+	#{
+	#	setBuildEnv ./autogen.sh
+	#} 1>>"$LOG_OUTPUT" 2>&1
+
+	#if [ $? != 0 ] ; then
+	#	echo
+	#	ERROR "Unable to configure SDL_gfx: autogen failed."
+	#	exit 11
+	#fi
 
 	if [ -f "config.cache" ] ; then
 		${RM} -f config.cache
