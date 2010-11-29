@@ -908,6 +908,13 @@ generatezlib()
 	if [ -n "$prefix" ] ; then
 	{
 
+		# Note: at least with zlib-1.2.5, following patch must be applied:
+		# http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-libs/zlib/files/zlib-1.2.5-lfs-decls.patch?revision=1.2
+
+		# Otherwise: LOANI-installations/zlib-1.2.5/include/zlib.h:1583: error:
+		# declaration of C function 'off_t gzseek64(void*, off_t, int)'
+		# conflicts with previous declaration 'off64_t gzseek64(void*, off64_t,
+		# int)'
 		zlib_PREFIX=${prefix}/zlib-${zlib_VERSION}
 
 		setBuildEnv ./configure --shared --prefix=${zlib_PREFIX}
