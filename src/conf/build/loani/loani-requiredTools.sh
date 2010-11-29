@@ -6732,8 +6732,8 @@ generateOSDL()
 
 	if [ ${use_svn} -eq 0 ]; then
 
-		# Here we are in the SVN tree, needing to generate the
-		# build system for tools:
+		# Here we are in the SVN tree, needing to generate the build system for
+		# tools:
 		{
 			setBuildEnv ./autogen.sh --no-build --with-osdl-env-file ${OSDL_ENV_FILE}
 		} 1>>"$LOG_OUTPUT" 2>&1
