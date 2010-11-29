@@ -166,13 +166,13 @@ SDL_gfx_win_MD5="$SDL_gfx_MD5"
 
 # Sources.
 
-freetype_VERSION="2.3.12"
+freetype_VERSION="2.4.3"
 freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
 freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_MD5="e974a82e5939be8e05ee65f07275d7c5"
+freetype_MD5="75ac7082bde7b3805dc5d6bc806fa045"
 
 
 # Same as for UNIX:
@@ -209,18 +209,18 @@ freetype_osx_precompiled_MD5="xxx"
 
 # Sources.
 
-# Actually 2.0.9 (defined in configure-template.ac):
+# Actually 2.0.10 (defined in configure-template.ac):
 SDL_ttf_VERSION="@SDL_TTF_RECOMMENDED_VERSION@"
 SDL_ttf_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}.tar.gz"
 SDL_ttf_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_ttf_MD5="6dd5a85e4924689a35a5fb1cb3336156"
+SDL_ttf_MD5="814e6e17e8879254208d23b3b7e0354b"
 
 SDL_ttf_win_VERSION="$SDL_ttf_VERSION"
 SDL_ttf_win_ARCHIVE="SDL_ttf-${SDL_ttf_win_VERSION}.zip"
 SDL_ttf_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_ttf_win_MD5="d805ed95eec4bbb09a97109fd1246976"
+SDL_ttf_win_MD5="xxx"
 
 
 
@@ -246,32 +246,32 @@ SDL_ttf_osx_precompiled_MD5="xxx"
 # (this ogg/vorbis order must be respected, as the ogg section uses vorbis
 # variable)
 
-libvorbis_VERSION="1.3.1"
-libvorbis_ARCHIVE="libvorbis-${libvorbis_VERSION}.tar.gz"
+libvorbis_VERSION="1.3.2"
+libvorbis_ARCHIVE="libvorbis-${libvorbis_VERSION}.tar.bz2"
 libvorbis_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/vorbis"
 libvorbis_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libvorbis_MD5="016e523fac70bdd786258a9d15fd36e9"
+libvorbis_MD5="798a4211221073c1409f26eac4567e8b"
 
 libvorbis_win_VERSION="${libvorbis_VERSION}"
 libvorbis_win_ARCHIVE="libvorbis-${libvorbis_win_VERSION}.zip"
-libvorbis_win_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/vorbis"
+libvorbis_win_DOWNLOAD_LOCATION="$libvorbis_DOWNLOAD_LOCATION"
 libvorbis_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_win_VERSION}/unix"
-libvorbis_win_MD5=""
+libvorbis_win_MD5="xxx"
 
 
 # libogg (libogg.so): http://www.xiph.org/ogg/
 
-libogg_VERSION="1.2.0"
-libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.gz"
+libogg_VERSION="1.2.1"
+libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.bz2"
 libogg_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
 libogg_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libogg_MD5="c95b73759acfc30712beef6ce4e88efa"
+libogg_MD5="84ef7b0cb5f36fdf26341fe5a2aa62f5"
 
 libogg_win_VERSION="${libogg_VERSION}"
 libogg_win_ARCHIVE="libogg-${libogg_win_VERSION}.zip"
-libogg_win_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
+libogg_win_DOWNLOAD_LOCATION="$libogg_DOWNLOAD_LOCATION"
 libogg_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_win_VERSION}/unix"
-libogg_win_MD5="15520916d1b6ba5ddeff11c4b6d14869"
+libogg_win_MD5="xxx"
 
 
 
@@ -326,12 +326,12 @@ Agar_win_MD5=""
 
 # PhysicsFS: http://icculus.org/physfs/
 
-# Actually 2.0.0 (defined in configure-template.ac):
+# Actually 2.0.1 (defined in configure-template.ac):
 PhysicsFS_VERSION="@PHYSICSFS_RECOMMENDED_VERSION@"
 PhysicsFS_ARCHIVE="physfs-${PhysicsFS_VERSION}.tar.gz"
 PhysicsFS_DOWNLOAD_LOCATION="http://icculus.org/physfs/downloads"
 PhysicsFS_ALTERNATE_DOWNLOAD_LOCATION=""
-PhysicsFS_MD5="cfc53e0c193914c9c5ab522e58737373"
+PhysicsFS_MD5="df00465fcfa80e87f718961c6dd6b928"
 
 PhysicsFS_win_VERSION="$PhysicsFS_VERSION"
 PhysicsFS_win_ARCHIVE="${PhysicsFS_ARCHIVE}"
@@ -456,10 +456,10 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R14A"
+Erlang_VERSION="R14B"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5="a24873bbace9ab3c307f3d2492d9e134"
+Erlang_MD5=""
 
 
 
@@ -480,7 +480,7 @@ egeoip_GIT_SERVER="github.com"
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
 # Version of Sunday, June 13, 2010:
-Geolite_MD5="e5f618709c57462daff012bc44cfde5f"
+Geolite_MD5="xxx"
 
 
 
