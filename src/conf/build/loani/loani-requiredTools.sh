@@ -66,7 +66,20 @@ else
 
 	# All non-windows non-DS platforms should build everything from sources:
 
-	REQUIRED_TOOLS="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS"
+	# Note: as of Tuesday, November 30, 2010, we removed 'zlib libpng' as when
+	# their respective versions (1.2.5 and 1.4.4) are used, programs using them
+	# crash.
+	# Ex: > ./darm.exe
+	# Checkpoint [1]: Launching DARM.
+	# Checkpoint [2]: Initializing sound adjustment model.
+	# Checkpoint [3]: Initializing sound adjustment view.
+	# libpng warning: Image height exceeds user limit in IHDR
+	# libpng error: Invalid IHDR data
+	# Segmentation fault
+	#
+	# whereas morse-icon.tex2D is a normal PNG image, 300 x 286, 8-bit/color
+	# RGBA, non-interlaced
+	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -915,6 +928,10 @@ generatezlib()
 		# declaration of C function 'off_t gzseek64(void*, off_t, int)'
 		# conflicts with previous declaration 'off64_t gzseek64(void*, off64_t,
 		# int)'
+		#
+		# However after some testing, it appeared that this built zlib resulted
+		# in crashed (ex: tested an otherwise functional eog).
+		# Thus currently we install it in a 'deactivated' directory.
 		zlib_PREFIX=${prefix}/zlib-${zlib_VERSION}
 
 		setBuildEnv ./configure --shared --prefix=${zlib_PREFIX}
@@ -976,12 +993,15 @@ generatezlib()
 
 		echo "" >> ${OSDL_ENV_FILE}
 
-		setBuildEnv ${MAKE} install prefix=${zlib_PREFIX}
+		# Currently (1.2.5) causes crashes, hence deactivated:
+		setBuildEnv ${MAKE} install prefix=${zlib_PREFIX}-deactivated
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
 	{
+
 		setBuildEnv ${MAKE} install
+
 	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 

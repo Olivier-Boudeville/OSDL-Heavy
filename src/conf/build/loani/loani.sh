@@ -1137,7 +1137,8 @@ To ensure most needed tools are installed, one may run:
 		#else if [ "$distro" = "Ubuntu" ] ; then
 		else
 
-			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev libpulse-dev"
+			# Too many problems with libpng, thus added here:
+			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev libpulse-dev libpng12-0 libpng12-dev"
 
 		fi
 
