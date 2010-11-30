@@ -20,8 +20,8 @@ Ex: `basename $0` myArchive.oar content-directory [my-resource-map]"
 
 
 # By default use LZMA, otherwise use ZIP:
-#use_lzma=0
-use_lzma=1
+use_lzma=0
+#use_lzma=1
 
 
 # Returns a cyphered version (currently rot13) of specified name.
