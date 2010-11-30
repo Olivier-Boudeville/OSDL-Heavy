@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 Olivier Boudeville
+ * Copyright (C) 2003-2010 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
@@ -59,15 +59,15 @@
  *
  * @note In a non-static method, no static method should be used, as the former
  * is expected to use the embedded filesystem manager, whereas the latter shall
- * use the default filesystem manager, which may or may not be the embedded
- * one.
+ * use the default filesystem manager, which may or may not be the embedded one.
  *
  * Regarding cyphering, only the minimal transformation is done currently: only
  * a one-byte XOR pattern and a numerical offset is applied when reading and
  * writing.
+ *
  * Another pass could consist on hashing the filename, seeding a random
- * generator with this hash, and XOR'ing each byte of the file according to
- * the corresponding random series.
+ * generator with this hash, and XOR'ing each byte of the file according to the
+ * corresponding random series.
  *
  */
 
@@ -292,8 +292,7 @@ time_t EmbeddedFile::getLastChangeTime() const
   catch( const Ceylan::Exception & e )
   {
 	throw FileLastChangeTimeRequestFailed(
-	  "EmbeddedFile::getLastChangeTime failed: "
-	  + e.toString() ) ;
+	  "EmbeddedFile::getLastChangeTime failed: " + e.toString() ) ;
   }
 
 #else // OSDL_USES_PHYSICSFS
@@ -629,7 +628,7 @@ StreamID EmbeddedFile::getStreamID() const
 
   // Converting a pointer to an integer might loose precision:
   return static_cast<StreamID>( reinterpret_cast<uintptr_t>(
-      & getPhysicsFSHandle() ) ) ;
+	  & getPhysicsFSHandle() ) ) ;
 
 #else // OSDL_USES_PHYSICSFS
 
