@@ -715,13 +715,15 @@ if test x$enable_debug = xyes; then
 
 	AM_CXXFLAGS="$AM_CXXFLAGS -g"
 	if test x$ac_cv_cxx_compiler_gnu = xyes; then
-		# Add -pg to manage profile information for gprof.
+
 		# -fstack-check used to be specified but wroke havoc in generated code,
 		# causing crashes and various valgrind reports.
 		#AM_CXXFLAGS="$AM_CXXFLAGS -ggdb -O0 -fno-inline -fbounds-check -ftrapv -fnon-call-exceptions"
 		# Safest settings:
 		AM_CXXFLAGS="$AM_CXXFLAGS -ggdb -O0 -fno-inline"
+
 	fi
+
 else
 
 	# Aggressive optimizations:
@@ -796,6 +798,24 @@ else
 			;;
 	esac
 fi
+
+
+
+# Profiling section. Applies even when built for release mode.
+
+if test x$ac_cv_cxx_compiler_gnu = xyes; then
+
+   # Add -pg to manage profiling information for gprof. For example:
+   # gprof ./XXX.exe|~/gprof2dot.py|dot -Tpng -o output.png && eog output.png
+
+   #profiling_opt="-pg"
+   profiling_opt=""
+
+fi
+
+AM_CXXFLAGS="${AM_CXXFLAGS} ${profiling_opt}"
+AM_LDFLAGS="${AM_LDFLAGS} ${profiling_opt}"
+
 
 
 
