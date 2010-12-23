@@ -1357,6 +1357,11 @@ Scheduler::~Scheduler() throw()
 void Scheduler::scheduleBestEffort()
 {
 
+  /* For most interactive applications (like games), best-effort is to be
+   * chosen.
+   *
+   */
+
 	_isRunning = true ;
 
 	/*
@@ -1441,7 +1446,7 @@ void Scheduler::scheduleBestEffort()
 
 	OSDL_SCHEDULE_LOG( "Initial estimated duration for the idle callback is "
 		+ Ceylan::toString( _idleCallbackMaxDuration ) + " microseconds, i.e. "
-		+ Ceylan::toString(	baseIdleCallbackTickCount )
+		+ Ceylan::toString( baseIdleCallbackTickCount )
 		+ " engine ticks." ) ;
 
 
@@ -1461,7 +1466,7 @@ void Scheduler::scheduleBestEffort()
 	getPreciseTime( _scheduleStartingSecond, _scheduleStartingMicrosecond ) ;
 
 	send( "Scheduler starting in soft real-time best effort mode. "
-		"Scheduler informations: " + toString( Ceylan::low ) ) ;
+		"Scheduler information: " + toString( Ceylan::low ) ) ;
 
 	/*
 	 * To be sure we start by overestimating the minimum:
@@ -1526,7 +1531,7 @@ void Scheduler::scheduleBestEffort()
 
 
 	/*
-	 * Starts with all zero	ticks:
+	 * Starts with all zero ticks:
 	 * (not using 0 constants allows to tweak the engine to make it start at
 	 * arbitrary engine tick, for debugging).
 	 *
@@ -1534,13 +1539,13 @@ void Scheduler::scheduleBestEffort()
 	_currentEngineTick = computeEngineTickFromCurrentTime() ;
 
 	OSDL_SCHEDULE_LOG( "Simulation period: "
-		+ Ceylan::toString(	_simulationPeriod ) + " engine ticks" ) ;
+		+ Ceylan::toString( _simulationPeriod ) + " engine ticks" ) ;
 
 	OSDL_SCHEDULE_LOG( "Rendering period: "
-		+ Ceylan::toString(	_renderingPeriod ) + " engine ticks" ) ;
+		+ Ceylan::toString( _renderingPeriod ) + " engine ticks" ) ;
 
 	OSDL_SCHEDULE_LOG( "Input period: "
-		+ Ceylan::toString(	_inputPeriod ) + " engine ticks" ) ;
+		+ Ceylan::toString( _inputPeriod ) + " engine ticks" ) ;
 
 	_currentSimulationTick = _currentEngineTick / _simulationPeriod  ;
 	_currentRenderingTick  = _currentEngineTick / _renderingPeriod;
@@ -1556,16 +1561,16 @@ void Scheduler::scheduleBestEffort()
 	setInitialBirthTicks( _currentSimulationTick ) ;
 
 	OSDL_SCHEDULE_LOG( "Initial engine tick: "
-		+ Ceylan::toString(	_currentEngineTick ) ) ;
+		+ Ceylan::toString( _currentEngineTick ) ) ;
 
 	OSDL_SCHEDULE_LOG( "Initial simulation tick: "
-		+ Ceylan::toString(	_currentSimulationTick ) ) ;
+		+ Ceylan::toString( _currentSimulationTick ) ) ;
 
 	OSDL_SCHEDULE_LOG( "Initial rendering tick: "
-		+ Ceylan::toString(	_currentRenderingTick ) ) ;
+		+ Ceylan::toString( _currentRenderingTick ) ) ;
 
 	OSDL_SCHEDULE_LOG( "Initial input tick: "
-		+ Ceylan::toString(	_currentInputTick ) ) ;
+		+ Ceylan::toString( _currentInputTick ) ) ;
 
 
 	EngineTick nextSimulationDeadline = _currentEngineTick + _simulationPeriod ;
@@ -1576,7 +1581,7 @@ void Scheduler::scheduleBestEffort()
 		nextRenderingDeadline, nextInputDeadline ) ;
 
 	OSDL_SCHEDULE_LOG( "Initial deadline: "
-		+ Ceylan::toString(	nextDeadline ) ) ;
+		+ Ceylan::toString( nextDeadline ) ) ;
 
 	/*
 	 * By design the actual frequencies can only be less than the expected ones,
@@ -1584,12 +1589,11 @@ void Scheduler::scheduleBestEffort()
 	 * Hz or so, because of OS process switching, if no tolerance was used for
 	 * deadlines.
 	 *
-	 * The algorithm checks the delay D (time exceeding a missed deadline) for
-	 * a given tick, and if the delay is small enough
-	 * (ex for rendering ticks: D < rendering tolerance = period / 4 = 6 ms ),
-	 * then the scheduler does as if the delay had not existed: it does not
-	 * cancel or skip anything, instead it activates the rendering as usual,
-	 * despite the delay.
+	 * The algorithm checks the delay D (time exceeding a missed deadline) for a
+	 * given tick, and if the delay is small enough (example for rendering
+	 * ticks: D < rendering tolerance = period / 4 = 6 ms ), then the scheduler
+	 * does as if the delay had not existed: it does not cancel or skip
+	 * anything, instead it activates the rendering as usual, despite the delay.
 	 *
 	 * Otherwise, if the actions are really triggered too late (delay higher
 	 * than the tolerance), then the scheduler use the on*Skip methods.
@@ -1626,7 +1630,7 @@ void Scheduler::scheduleBestEffort()
 	 * overloaded:
 	 *
 	 */
-	const Delay bucketFillThreshold = 100000 ;
+	const Delay bucketFillThreshold = 1000000 ;
 
 
 	/*
@@ -1747,7 +1751,11 @@ void Scheduler::scheduleBestEffort()
 
 
 
-	// Enters now the schedule loop:
+	/*
+	 * Enters now the schedule loop:
+	 * (this "tight" loop is surely a good candidate for optimisation)
+	 *
+	 */
 
 	while ( ! _stopRequested )
 	{
@@ -1936,8 +1944,16 @@ void Scheduler::scheduleBestEffort()
 				 * Finally may fail too quicky:
 				 *
 				 */
-				delayBucket += 35 * static_cast<Delay>(
-					Ceylan::Maths::Sqrt( 2.0f * missedTicks ) ) ;
+				//delayBucket += 35 * static_cast<Delay>(
+				//  Ceylan::Maths::Sqrt( 2.0f * missedTicks ) ) ;
+
+				/*
+				 * Let's be very gentle and in the worst case trust the user to
+				 * killthe application instead:
+				 *
+				 */
+				delayBucket += 20 * static_cast<Delay>(
+					Ceylan::Maths::Sqrt( 1.0f * missedTicks ) ) ;
 
 				/*
 				delayBucket += 30 * static_cast<Delay>(
@@ -2061,7 +2077,7 @@ void Scheduler::scheduleBestEffort()
 
 				OSDL_SCHEDULE_LOG( "@@@@@ Rendering deadline #"
 					+ Ceylan::toString( _currentRenderingTick )
-					+ " recovered from "	+ Ceylan::toString( missedTicks )
+					+ " recovered from " + Ceylan::toString( missedTicks )
 					+ " engine ticks delay ("
 					+ Ceylan::toString( missedTicks * _engineTickDuration )
 					+ " microseconds)." ) ;
@@ -2119,7 +2135,7 @@ void Scheduler::scheduleBestEffort()
 				/*
 				OSDL_SCHEDULE_LOG( "##### Input deadline #"
 					+ Ceylan::toString( _currentInputTick )
-					+ " missed of "	+ Ceylan::toString( missedTicks )
+					+ " missed of " + Ceylan::toString( missedTicks )
 					+ " engine ticks ("
 					+ Ceylan::toString( missedTicks * _engineTickDuration )
 					+ " microseconds), cancelling input polling." ) ;
@@ -2285,7 +2301,7 @@ void Scheduler::scheduleBestEffort()
 			// Barycentre/filter:
 			forecastIdleCallbackTickCount = static_cast<Microsecond>(
 				( baseIdleCallbackTickCount + 3 * forecastIdleCallbackTickCount
-					+ lastIdleTickCount	+ idleCallbackMaxTickCount ) / 6.0f ) ;
+					+ lastIdleTickCount + idleCallbackMaxTickCount ) / 6.0f ) ;
 
 			OSDL_SCHEDULE_LOG( "Current forecasted idle callback duration is "
 				+ Ceylan::toString( forecastIdleCallbackTickCount
