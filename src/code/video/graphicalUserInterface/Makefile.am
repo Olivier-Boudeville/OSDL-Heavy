@@ -13,7 +13,7 @@ libOSDLGraphicalUserInterface_la_SOURCES = \
 libOSDLGraphicalUserInterface_la_CPPFLAGS = -I@OSDL_BASIC@
 
 
-libOSDLGraphicalUserInterfaceIncludedir      = $(includedir)/OSDL
+libOSDLGraphicalUserInterfaceIncludedir = $(includedir)/OSDL
 
 libOSDLGraphicalUserInterfaceInclude_HEADERS = \
 	$(GRAPHICAL_USER_INTERFACE_INTERFACES)
@@ -21,11 +21,8 @@ libOSDLGraphicalUserInterfaceInclude_HEADERS = \
 
 GRAPHICAL_USER_INTERFACE_INTERFACES = \
 	OSDLBaseGUIView.h                     \
-	OSDLGraphicalUserInterfaceIncludes.h  \
-	OSDLGUICommon.h
-	
+	OSDLGraphicalUserInterfaceIncludes.h
+
 
 GRAPHICAL_USER_INTERFACE_IMPLEMENTATIONS = \
-	OSDLBaseGUIView.cc    \
-	OSDLGUICommon.cc
-
+	OSDLBaseGUIView.cc
