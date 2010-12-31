@@ -15,8 +15,8 @@ archiver=`PATH=$PWD:../../src/code/scripts/shell:$PATH which ${archiver_name}`
 if [ ! -x "${archiver}" ] ; then
 
 	echo "Error, no archiver available (${archiver_name})." 1>&2
-    exit 1
-    
+	exit 1
+
 fi
 
 mkdir="/bin/mkdir -p"
@@ -43,7 +43,7 @@ sound_file="../../src/doc/web/common/sounds/OSDL.wav"
 if [ ! -e "${sound_file}" ] ; then
 
 	echo "Error, sound file not available (${sound_file})." 1>&2
-    exit 10
+	exit 10
 fi
 
 
@@ -52,7 +52,7 @@ music_file="../../src/doc/web/common/sounds/welcome-to-OSDL.ogg"
 if [ ! -e "${music_file}" ] ; then
 
 	echo "Error, music file not available (${music_file})." 1>&2
-    exit 11
+	exit 11
 fi
 
 
@@ -61,7 +61,7 @@ png_image_file="../../src/doc/web/images/Soldier-heavy-purple-small.png"
 if [ ! -e "${png_image_file}" ] ; then
 
 	echo "Error, image file not available (${png_image_file})." 1>&2
-    exit 12
+	exit 12
 fi
 
 
@@ -70,7 +70,7 @@ jpeg_image_file="../../src/doc/web/images/Rune-stone-small.jpg"
 if [ ! -e "${jpeg_image_file}" ] ; then
 
 	echo "Error, image file not available (${jpeg_image_file})." 1>&2
-    exit 13
+	exit 13
 fi
 
 
@@ -79,7 +79,7 @@ font_file="../../src/doc/web/common/fonts/neurochr.ttf"
 if [ ! -e "${font_file}" ] ; then
 
 	echo "Error, font file not available (${font_file})." 1>&2
-    exit 14
+	exit 14
 fi
 
 
@@ -105,13 +105,12 @@ if [ $? -eq 0 ] ; then
 	echo "Test OSDL Archive ${test_archive_name} successfully produced."
 else
 	echo "Error, execution of ${archiver} failed." 1>&2
-	exit 15	
+	exit 15
 fi
 
 
-# Produced archive can be decompresssed with: 
+# Produced archive can be decompresssed with:
 # 7zr x test-OSDLEmbeddedFileSystem-archive.oar
 # or extract-OSDL-archive.sh
 
 ${rm} -r ${test_archive_dir}
-
