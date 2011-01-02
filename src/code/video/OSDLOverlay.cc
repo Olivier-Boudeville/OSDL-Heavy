@@ -1,12 +1,12 @@
-/* 
- * Copyright (C) 2003-2009 Olivier Boudeville
+/*
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -59,7 +59,7 @@ typedef struct LowLevelOverlay {} ;
 
 
 
-// Note: overlay support is currently almost completely not tested.
+// Note: overlay support is currently almost completly untested.
 
 
 using namespace OSDL::Video ;
@@ -74,19 +74,19 @@ OverlayException::OverlayException( const std::string & message ) :
 
 }
 
-	
-	
+
+
 OverlayException::~OverlayException() throw()
 {
 
 }
 
-	
-	
-	
+
+
+
 // Overlay section.
 
-	
+
 Overlay::Overlay( Length width, Length height, EncodingFormat format ) :
 	_overlay( 0 ),
 	_width  ( 0 ),
@@ -98,25 +98,25 @@ Overlay::Overlay( Length width, Length height, EncodingFormat format ) :
 	if ( ! OSDL::hasExistingCommonModule() )
 		throw OverlayException( "Overlay constructor: "
 			"no OSDL common module available." ) ;
-		
+
 	CommonModule & common = OSDL::getExistingCommonModule() ;
 
 	if ( ! common.hasVideoModule() )
 		throw OverlayException( "Overlay constructor: "
 			"no OSDL video module available." ) ;
-			
+
 	_overlay = SDL_CreateYUVOverlay( width, height, format,
 		& common.getVideoModule().getScreenSurface().getSDLSurface() ) ;
 
 	if ( _overlay == 0 )
 		throw OverlayException( "Overlay constructor: "
 			"overlay instanciation failed." ) ;
-			
+
 #else // OSDL_USES_SDL
 
 	throw OverlayException( "Overlay constructor failed: "
 		"no SDL support available." ) ;
-		
+
 #endif // OSDL_USES_SDL
 
 }
@@ -130,9 +130,9 @@ Overlay::~Overlay() throw()
 
 	if ( _overlay != 0 )
 		SDL_FreeYUVOverlay( _overlay ) ;
-		
+
 #endif // OSDL_USES_SDL
-		
+
 }
 
 
@@ -143,19 +143,19 @@ void Overlay::blit( Coordinate x, Coordinate y ) const
 #if OSDL_USES_SDL
 
 	SDL_Rect destinationRect ;
-	
+
 	destinationRect.x = x ;
 	destinationRect.y = y ;
-	
+
 	destinationRect.w = _width ;
 	destinationRect.h = _height ;
-	
+
 	if ( SDL_DisplayYUVOverlay( _overlay, & destinationRect ) != 0 )
 		throw OverlayException( "Overlay::blit failed: "
 			+ Utils::getBackendLastError() ) ;
 
 #endif // OSDL_USES_SDL
-	
+
 }
 
 
@@ -171,10 +171,10 @@ void Overlay::blit() const
 
 bool Overlay::mustBeLocked() const
 {
-	
+
 	// @fixme
-	return true ; 
-	
+	return true ;
+
 }
 
 
@@ -185,14 +185,14 @@ void Overlay::preUnlock()
 #if OSDL_USES_SDL
 
 	/*
-	 * Lockable framework ensures it is called only if necessary 
-	 * (i.e. only if 'must be locked'):
+	 * Lockable framework ensures it is called only if necessary (i.e. only if
+	 * 'must be locked'):
 	 *
 	 */
 	SDL_UnlockYUVOverlay( _overlay ) ;
 
 #endif // OSDL_USES_SDL
-	
+
 }
 
 
@@ -203,14 +203,14 @@ void Overlay::postLock()
 #if OSDL_USES_SDL
 
 	/*
-	 * Lockable framework ensures it is called only if necessary 
-	 * (i.e. only if 'must be locked'):
+	 * Lockable framework ensures it is called only if necessary (i.e. only if
+	 * 'must be locked'):
 	 *
 	 */
 	SDL_LockYUVOverlay( _overlay ) ;
 
 #endif // OSDL_USES_SDL
-	
+
 }
 
 
@@ -218,9 +218,8 @@ void Overlay::postLock()
 const string Overlay::toString( Ceylan::VerbosityLevels level ) const
 {
 
-	return "Overlay whose original size is width = " 
+	return "Overlay whose original size is width = "
 		+ Ceylan::toString( _width )
 		+ ", height = " + Ceylan::toString( _height ) ;
-		
-}
 
+}
