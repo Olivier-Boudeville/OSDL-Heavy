@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 Olivier Boudeville
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
@@ -402,8 +402,8 @@ Width TrueTypeFont::getWidth( Ceylan::Latin1Char character ) const
 	  "font not loaded" ) ;
 
   /*
-   * Not using the advance parameter except for space, whose width
-   * would be zero otherwise.
+   * Not using the advance parameter except for space, whose width would be zero
+   * otherwise.
    *
    */
 
@@ -896,11 +896,11 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeGlyph(
   {
 
 	/*
-	 * First check that the character-quality-color combination is
-	 * not already available in cache:
+	 * First check that the character-quality-color combination is not already
+	 * available in cache:
 	 *
-	 * @note 'character' is in Unicode, conversion to Latin1 is
-	 * somewhat abusive...
+	 * @note 'character' is in Unicode, conversion to Latin1 is somewhat
+	 * abusive...
 	 *
 	 */
 	CharColorQualityKey renderKey(
@@ -1028,8 +1028,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 
 	/*
 	 * We have to create a new surface so that the surface returned by
-	 * '::TTF_RenderText_Shaded' will no more be palettized: we need a
-	 * color key to have transparent blits.
+	 * '::TTF_RenderText_Shaded' will no more be palettized: we need a color key
+	 * to have transparent blits.
 	 *
 	 */
 	ColorMask redMask, greenMask, blueMask ;
@@ -1052,8 +1052,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	{
 	  colorKey = Pixels::Black ;
 	  /*
-	   * No need to fill 'res' with black, since new RGB
-	   * surfaces come all black already.
+	   * No need to fill 'res' with black, since new RGB surfaces come all black
+	   * already.
 	   *
 	   */
 	}
@@ -1091,8 +1091,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 #ifdef OSDL_ADDS_COLOR_KEY
 
 	/*
-	 * Alpha should be preserved since the blending is the
-	 * point of this quality, but adding a color key should not harm:
+	 * Alpha should be preserved since the blending is the point of this
+	 * quality, but adding a color key should not harm:
 	 *
 	 */
 
@@ -1110,8 +1110,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 	  colorKey = Pixels::Black ;
 
 	  /*
-	   * No need to fill 'res' with black, since new RGB
-	   * surfaces come all black already.
+	   * No need to fill 'res' with black, since new RGB surfaces come all black
+	   * already.
 	   *
 	   */
 	}
@@ -1148,8 +1148,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
   {
 
 	/*
-	 * We want to keep our colorkey (if any), so we choose to add
-	 * alpha only if no colorkey is used.
+	 * We want to keep our colorkey (if any), so we choose to add alpha only if
+	 * no colorkey is used.
 	 *
 	 * Surface will be RLE encoded here:
 	 *
@@ -1218,8 +1218,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 
 	/*
 	 * We have to create a new surface so that the surface returned by
-	 * '::TTF_RenderUTF8_Shaded' will no more be palettized:
-	 * we need a color key to have transparent blits.
+	 * '::TTF_RenderUTF8_Shaded' will no more be palettized: we need a color key
+	 * to have transparent blits.
 	 *
 	 */
 	ColorMask redMask, greenMask, blueMask ;
@@ -1245,8 +1245,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 
 	  colorKey = Pixels::Black ;
 	  /*
-	   * No need to fill 'res' with black, since new RGB surfaces
-	   * come all black already.
+	   * No need to fill 'res' with black, since new RGB surfaces come all black
+	   * already.
 	   *
 	   */
 
@@ -1289,8 +1289,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 #ifdef OSDL_ADDS_COLOR_KEY
 
 	/*
-	 * Alpha should be preserved since the blending is the
-	 * point of this quality, but adding a color key should not harm:
+	 * Alpha should be preserved since the blending is the point of this
+	 * quality, but adding a color key should not harm:
 	 *
 	 */
 
@@ -1310,8 +1310,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 
 	  colorKey = Pixels::Black ;
 	  /*
-	   * No need to fill 'res' with black, since new RGB
-	   * surfaces come all black already.
+	   * No need to fill 'res' with black, since new RGB surfaces come all black
+	   * already.
 	   *
 	   */
 	}
@@ -1349,8 +1349,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
   {
 
 	/*
-	 * We want to keep our colorkey (if any), so we choose to add
-	 * alpha only if no colorkey is used.
+	 * We want to keep our colorkey (if any), so we choose to add alpha only if
+	 * no colorkey is used.
 	 *
 	 * Surface will be RLE encoded here:
 	 *
@@ -1421,8 +1421,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 
 	/*
 	 * We have to create a new surface so that the surface returned by
-	 * '::TTF_RenderUNICODE_Shaded' will no more be palettized:
-	 * we need a color key to have transparent blits.
+	 * '::TTF_RenderUNICODE_Shaded' will no more be palettized: we need a color
+	 * key to have transparent blits.
 	 *
 	 */
 	ColorMask redMask, greenMask, blueMask ;
@@ -1449,8 +1449,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 	  colorKey = Pixels::Black ;
 
 	  /*
-	   * No need to fill 'res' with black, since new RGB surfaces
-	   * come all black already.
+	   * No need to fill 'res' with black, since new RGB surfaces come all black
+	   * already.
 	   *
 	   */
 	}
@@ -1489,8 +1489,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 #ifdef OSDL_ADDS_COLOR_KEY
 
 	/*
-	 * Alpha should be preserved since the blending is the
-	 * point of this quality, but adding a color key should not harm:
+	 * Alpha should be preserved since the blending is the point of this
+	 * quality, but adding a color key should not harm:
 	 *
 	 */
 
@@ -1511,16 +1511,16 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 	  colorKey = Pixels::Black ;
 
 	  /*
-	   * No need to fill 'res' with black, since new RGB
-	   * surfaces come all black already.
+	   * No need to fill 'res' with black, since new RGB surfaces come all black
+	   * already.
 	   *
 	   */
 	}
 
 
 	/*
-	 * Alpha should be preserved since the blending is the point
-	 * of this quality, but adding a color key should not harm:
+	 * Alpha should be preserved since the blending is the point of this
+	 * quality, but adding a color key should not harm:
 	 *
 	 */
 	try
@@ -1557,8 +1557,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
   {
 
 	/*
-	 * We want to keep our colorkey (if any), so we choose to add
-	 *  alpha only if no colorkey is used.
+	 * We want to keep our colorkey (if any), so we choose to add alpha only if
+	 *  no colorkey is used.
 	 *
 	 * Surface will be RLE encoded here:
 	 *
@@ -1626,7 +1626,7 @@ const string TrueTypeFont::toString( Ceylan::VerbosityLevels level ) const
   res +=". The family name of the current face is '" + getFaceFamilyName()
 	+ "', and its style name is '" + getFaceStyleName() + "'" ;
 
-  if 	( level == Ceylan::medium )
+  if ( level == Ceylan::medium )
 	return res ;
 
   SDL_version compileVersion ;
@@ -1811,21 +1811,21 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 
   // case Solid:
 
-  // 	textSurface = ::TTF_RenderGlyph_Solid( _content, character,
-  // 	  glyphColor ) ;
+  //	textSurface = ::TTF_RenderGlyph_Solid( _content, character,
+  //	  glyphColor ) ;
 
-  // 	if ( textSurface == 0 )
-  // 	  throw FontException(
-  // 		"TrueTypeFont::basicRenderUnicodeGlyph (solid): "
-  // 		"unable to render character '"
-  // 		+ Ceylan::toString( character )
-  // 		+ "': " + DescribeLastError() ) ;
+  //	if ( textSurface == 0 )
+  //	  throw FontException(
+  //		"TrueTypeFont::basicRenderUnicodeGlyph (solid): "
+  //		"unable to render character '"
+  //		+ Ceylan::toString( character )
+  //		+ "': " + DescribeLastError() ) ;
 
-  // 	res = new Surface( * textSurface,
-  // 	  /* display type */ Surface::BackBuffer ) ;
+  //	res = new Surface( * textSurface,
+  //	  /* display type */ Surface::BackBuffer ) ;
 
-  // 	// No colorkey added, since already there.
-  // 	break ;
+  //	// No colorkey added, since already there.
+  //	break ;
 
  case Solid:
  case Shaded:
@@ -1841,8 +1841,8 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 
 	/*
 	 * We have to create a new surface so that the surface returned by
-	 * '::TTF_RenderGlyph_Shaded' will no more be palettized:
-	 * we need a color key to have transparent blits.
+	 * '::TTF_RenderGlyph_Shaded' will no more be palettized: we need a color
+	 * key to have transparent blits.
 	 *
 	 */
 
@@ -1870,8 +1870,8 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 	  colorKey = Pixels::Black ;
 
 	  /*
-	   * No need to fill 'res' with black, since new RGB
-	   * surfaces come all black already.
+	   * No need to fill 'res' with black, since new RGB surfaces come all black
+	   * already.
 	   *
 	   */
 
@@ -1928,8 +1928,8 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
   {
 
 	/*
-	 * We want to keep our colorkey (if any), so we choose to add
-	 * alpha only if no colorkey is used.
+	 * We want to keep our colorkey (if any), so we choose to add alpha only if
+	 * no colorkey is used.
 	 *
 	 * Surface will be RLE encoded here:
 	 *
