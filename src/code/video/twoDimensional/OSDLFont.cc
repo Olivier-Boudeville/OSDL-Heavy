@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 Olivier Boudeville
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
@@ -149,9 +149,9 @@ Font::Font(
 {
 
   /*
-   * _spaceWidth and _alineaWidth cannot be initialized in this Font
-   *  mother class since getWidth is abstract for it (pure virtual).
-   * Therefore each child class should initialize it.
+   * _spaceWidth and _alineaWidth cannot be initialized in this Font mother
+   * class since getWidth is abstract for it (pure virtual).  Therefore each
+   * child class should initialize it.
    *
    */
 
@@ -160,15 +160,16 @@ Font::Font(
 
 
 	/*
-	 * The several sub-switches allow to get rid of following parameter
-	 * in signature:
+	 * The several sub-switches allow to get rid of following parameter in
+	 * signature:
+	 *
 	 * 'Ceylan::SmartResourceManager<CharColorQualityKey>::CachePolicy
 	 * cachePolicy = Ceylan::SmartResourceManager<CharColorQualityKey>::
 	 * DropLessRequestedFirst' which would not be compliant with a
 	 * SmartResourceManager<StringColorQualityKey>, which is also needed.
 	 *
-	 * The abstract AllowedCachePolicy is therefore to be converted
-	 * to its templated version.
+	 * The abstract AllowedCachePolicy is therefore to be converted to its
+	 * templated version.
 	 *
 	 */
 
@@ -195,8 +196,8 @@ Font::Font(
 	  actualGlyphPolicy ;
 
 	/*
-	 * Let's convert our allowed cache policy into a
-	 * templated-ready cache policy:
+	 * Let's convert our allowed cache policy into a templated-ready cache
+	 * policy:
 	 *
 	 */
 	switch( cachePolicy )
@@ -239,8 +240,8 @@ Font::Font(
 	  actualWordPolicy ;
 
 	/*
-	 * Let's convert our allowed cache policy into a
-	 * templated-ready cache policy:
+	 * Let's convert our allowed cache policy into a templated-ready cache
+	 * policy:
 	 *
 	 */
 	switch( cachePolicy )
@@ -282,8 +283,8 @@ Font::Font(
 	  actualTextPolicy ;
 
 	/*
-	 * Let's convert our allowed cache policy into a
-	 * templated-ready cache policy:
+	 * Let's convert our allowed cache policy into a templated-ready cache
+	 * policy:
 	 *
 	 */
 	switch( cachePolicy )
@@ -484,12 +485,10 @@ void Font::blitLatin1Text( Surface & targetSurface, Coordinate x, Coordinate y,
 {
 
   /*
-   * Shortcut:
-   * Tests if one can retrieve and blit its target from the text cache
-   * instead of creating, blitting and destroying a Surface just for
-   * this blit (if the text cache is used; word cache has far
-   * too few chances of having 'text', it is not interrogated here as a
-   * shortcut):
+   * Shortcut: tests if one can retrieve and blit its target from the text cache
+   * instead of creating, blitting and destroying a Surface just for this blit
+   * (if the text cache is used; word cache has far too few chances of having
+   * 'text', it is not interrogated here as a shortcut):
    *
    */
   if ( _cacheSettings == TextCached )
@@ -526,8 +525,8 @@ void Font::blitLatin1Text( Surface & targetSurface, Coordinate x, Coordinate y,
 
 
   /*
-   * Here we have to ask a full one-shot rendered surface
-   * (possibly with cache help):
+   * Here we have to ask a full one-shot rendered surface (possibly with cache
+   * help):
    *
    */
   Surface & res = renderLatin1Text( text, quality, textColor ) ;
@@ -573,9 +572,10 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
   /*
    * Avoid messing text color with color key.
-   * 'Pixels::selectColorDifferentFrom' could be used but here a full
-   * surface fill can be saved in most cases (as long as the text color
-   * is not pure black).
+   *
+   * 'Pixels::selectColorDifferentFrom' could be used but here a full surface
+   * fill can be saved in most cases (as long as the text color is not pure
+   * black).
    *
    */
   Pixels::ColorDefinition colorKey ;
@@ -592,8 +592,8 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
 	colorKey = Pixels::Black ;
 	/*
-	 * No need to fill 'res' with black, since new RGB surfaces come
-	 * all black already.
+	 * No need to fill 'res' with black, since new RGB surfaces come all black
+	 * already.
 	 *
 	 */
 
@@ -602,8 +602,8 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
   Length lineSkip = getLineSkip() ;
 
   /*
-   * This integer division returns the maximum usable number of lines
-   * in this box:
+   * This integer division returns the maximum usable number of lines in this
+   * box:
    *
    */
   LineNumber maxLines = height / lineSkip ;
@@ -626,9 +626,9 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
 
   /*
-   * Auto-centering vertically the usable area for text in its surface
-   * should not be enforced here since it would hinder placing the
-   * returned surface exactly where appropriate in its container.
+   * Auto-centering vertically the usable area for text in its surface should
+   * not be enforced here since it would hinder placing the returned surface
+   * exactly where appropriate in its container.
    *
    * Hence disabled:
    * 'Height lineHeight = ( height - maxLines * lineSkip ) / 2 ;'
@@ -648,19 +648,21 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
 
   /*
-   * Having a justified text implies that all words in a line of text
-   * must be rendered before starting the blits for this line.
+   * Having a justified text implies that all words in a line of text must be
+   * rendered before starting the blits for this line.
    *
-   * If word or text caches are used, then word renderings are directly
-   * taken from them: it prevents from creating, rendering and
-   * destroying uselessly as many surfaces as words.
+   * If word or text caches are used, then word renderings are directly taken
+   * from them: it prevents from creating, rendering and destroying uselessly as
+   * many surfaces as words.
    *
    * If no word nor text cache is used, these renderings have to be kept
    * nonetheless, whether only a glyph cache is used or not.
-   * Therefore a word cache is temporarily used to speed up this
-   * two-pass line rendering.
-   * Glyph cache, if any, is used as well nonetheless and will be fed,
-   * whereas word cache will be deallocated after this rendering.
+   *
+   * Therefore a word cache is temporarily used to speed up this two-pass line
+   * rendering.
+   *
+   * Glyph cache, if any, is used as well nonetheless and will be fed, whereas
+   * word cache will be deallocated after this rendering.
    *
    */
 
@@ -689,8 +691,8 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
   }
 
   /*
-   * Hence in all cases we can rely on having a word cache
-   * (even though it starts empty).
+   * Hence in all cases we can rely on having a word cache (even though it
+   * starts empty).
    *
    */
 
@@ -715,8 +717,8 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	storedWidth = currentWidth ;
 
 	/*
-	 * Start from the left edge, and select as many words as possible
-	 * within this line:
+	 * Start from the left edge, and select as many words as possible within
+	 * this line:
 	 *
 	 */
 	totalWordWidth = 0 ;
@@ -747,9 +749,10 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
 		/*
 		 * Check it is at least possible to fit that word alone:
-		 * (better an error log than an exception that would prevent
-		 * any rendering to take place: at least the previous words
-		 * can be displayed).
+		 *
+		 * (better an error log than an exception that would prevent any
+		 * rendering to take place: at least the previous words can be
+		 * displayed).
 		 *
 		 */
 		if ( wordWidth > width )
@@ -793,10 +796,9 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 	currentWidth = storedWidth ;
 
 	/*
-	 * Last part of a paragraph should not be justified: it would
-	 * result in huge inter-word spaces, instead the text can stop
-	 * anywhere before the line's end.
-	 * Hence we check that 'words' is not empty.
+	 * Last part of a paragraph should not be justified: it would result in huge
+	 * inter-word spaces, instead the text can stop anywhere before the line's
+	 * end. Hence we check that 'words' is not empty.
 	 *
 	 * Zero word or only one word? Do nothing special to justify text.
 	 *
@@ -825,34 +827,32 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 		}
 
 		/*
-		 * For justified text, space width is computed with
-		 * pixel-perfect accuracy.
-		 * Knowing exactly what words fit with normal space width,
-		 * a new space width is computed so that these words are
-		 * dispatched regularly on the line, and begin and end with
-		 * it, provided it is not a paragraph end.
+		 * For justified text, space width is computed with pixel-perfect
+		 * accuracy.
 		 *
-		 * As this space width has to be an integer, round off errors
-		 * would accumulate if a constant corrected space width
-		 * was used, and the last word of the line would not end
-		 * perfectly at the end of it, which would lead to a rather
-		 * unpleasant visual effect: the right edge of the text
-		 * would not be vertically aligned.
+		 * Knowing exactly what words fit with normal space width, a new space
+		 * width is computed so that these words are dispatched regularly on the
+		 * line, and begin and end with it, provided it is not a paragraph end.
 		 *
-		 * To correct that, after each word the perfect space width
-		 * for this step is computed, considering only what remains
-		 * to be written.
-		 * Hence the space width is adapted and the text fit
-		 * perfectly on the line.
+		 * As this space width has to be an integer, round off errors would
+		 * accumulate if a constant corrected space width was used, and the last
+		 * word of the line would not end perfectly at the end of it, which
+		 * would lead to a rather unpleasant visual effect: the right edge of
+		 * the text would not be vertically aligned.
 		 *
-		 * Better round to lowest integer (ceil or static_cast) than
-		 * to nearest, since if space width is rounded up (floor)
-		 * the text might be clipped by the line edge.
+		 * To correct that, after each word the perfect space width for this
+		 * step is computed, considering only what remains to be written.
 		 *
-		 * Number of spaces is equal to number of remaining words
-		 * minus one, the width of the current justified space is
-		 * the one that would be chosen if it was divided equally
-		 * for all remaining spaces.
+		 * Hence the space width is adapted and the text fit perfectly on the
+		 * line.
+		 *
+		 * Better round to lowest integer (ceil or static_cast) than to nearest,
+		 * since if space width is rounded up (floor) the text might be clipped
+		 * by the line edge.
+		 *
+		 * Number of spaces is equal to number of remaining words minus one, the
+		 * width of the current justified space is the one that would be chosen
+		 * if it was divided equally for all remaining spaces.
 		 *
 		 */
 		wordCount-- ;
@@ -954,8 +954,7 @@ OSDL::Video::Surface & Font::renderLatin1MultiLineText(
 
 
   /*
-   * Comment out following two lines to see blit blocks
-   * (as black rectangles):
+   * Comment out following two lines to see blit blocks (as black rectangles):
    *
    */
   res.setColorKey( Surface::ColorkeyBlit | Surface::RLEColorkeyBlit,
@@ -996,7 +995,7 @@ void Font::blitLatin1MultiLineText( Surface & targetSurface,
 
   blitLatin1MultiLineText( targetSurface, clientArea.getUpperLeftAbscissa(),
 	clientArea.getUpperLeftOrdinate(), clientArea.getWidth(),
-	clientArea.getHeight(),	text, renderIndex, quality,
+	clientArea.getHeight(), text, renderIndex, quality,
 	textColor, justified ) ;
 
 }
@@ -1014,8 +1013,8 @@ void Font::blitLatin1MultiLineText( Surface & targetSurface,
   Coordinate lastOrdinateUsed ;
 
   /*
-   * Nothing to optimize at this level, user ought cache multiline
-   * renderings if appropriate.
+   * Nothing to optimize at this level, user ought cache multiline renderings if
+   * appropriate.
    *
    */
   Surface * res = & renderLatin1MultiLineText( width, height,
@@ -1238,8 +1237,8 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 
 	colorKey = Pixels::Black ;
 	/*
-	 * No need to fill 'res' with black, since new RGB surfaces
-	 * come all black already.
+	 * No need to fill 'res' with black, since new RGB surfaces come all black
+	 * already.
 	 *
 	 */
 
@@ -1250,10 +1249,10 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
   /*
    * Second iteration: blit the word renderings.
    *
-   * Surfaces from first iteration could have been stored to save
-   * the efforts needed to find them in cache, but depending on the
-   * cache quota and policy, it cannot be assumed they are
-   * are all still available (the last could make the first go out).
+   * Surfaces from first iteration could have been stored to save the efforts
+   * needed to find them in cache, but depending on the cache quota and policy,
+   * it cannot be assumed they are are all still available (the last could make
+   * the first go out).
    *
    */
   for ( list<string>::const_iterator it = words.begin();
@@ -1286,8 +1285,7 @@ OSDL::Video::Surface & Font::renderLatin1TextWithWordCached(
 	convertColorDefinitionToPixelColor( res.getPixelFormat(), colorKey ) ) ;
 
   /*
-   * Uncomment next line to debug computation of bounding boxes for
-   * renderings:
+   * Uncomment next line to debug computation of bounding boxes for renderings:
    *
    */
   //res.drawEdges() ;
@@ -1378,14 +1376,14 @@ void Font::blitLatin1Word( Surface & targetSurface, Coordinate x, Coordinate y,
    * We do not expect a given word to be already in cache if text-cached:
    * OSDL_WORD_LOOKUP_IN_TEXT_CACHE is not defined by default.
    *
-   * Hence there are two different cases: either we are word-cached,
-   * and we may have a rendering in cache, or not.
+   * Hence there are two different cases: either we are word-cached, and we may
+   * have a rendering in cache, or not.
    *
    */
 
   /*
-   * Uncomment to search in text cache too
-   * (not recommended since not more efficient):
+   * Uncomment to search in text cache too (not recommended since not more
+   * efficient):
    *
    */
   //#define OSDL_WORD_LOOKUP_IN_TEXT_CACHE
@@ -1412,8 +1410,8 @@ void Font::blitLatin1Word( Surface & targetSurface, Coordinate x, Coordinate y,
 
 
 /*
- * This method cannot exist since the caller should never have to deallocate
- * the returned surface:
+ * This method cannot exist since the caller should never have to deallocate the
+ * returned surface:
  *
  const OSDL::Video::Surface & Font::getConstRenderingForLatin1Word(
  const std::string & word,
@@ -1450,7 +1448,7 @@ const OSDL::Video::Surface & Font::getConstLatin1WordFromCache(
   if ( inCache != 0 )
   {
 
-	// Found in cache !
+	// Found in cache!
 	const Surface * wordSurface = dynamic_cast<const Surface *>( inCache ) ;
 
 #if OSDL_DEBUG_FONT
@@ -1488,8 +1486,8 @@ const OSDL::Video::Surface & Font::getConstLatin1WordFromCache(
   {
 
 	/*
-	 * This really should never happen: we know this word rendering
-	 * is not in cache.
+	 * This really should never happen: we know this word rendering is not in
+	 * cache.
 	 *
 	 */
 	throw FontException( "Font::getConstLatin1WordFromCache: "
@@ -1536,19 +1534,19 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 
 
   /*
-   * When adding a letter y after a letter x, y has to be drawn at:
-   * abscissa of x plus x's advance, so that if x leaves room in the
-   * baseline, y can start as left as possible, even if x spreads on the
-   * right of the position where y starts (ex: if x is a capital 'L' whose
-   * bottom line goes under the baseline).
+   * When adding a letter y after a letter x, y has to be drawn at: abscissa of
+   * x plus x's advance, so that if x leaves room in the baseline, y can start
+   * as left as possible, even if x spreads on the right of the position where y
+   * starts (ex: if x is a capital 'L' whose bottom line goes under the
+   * baseline).
    *
-   * However when a letter is the last in a surface, one should use its
-   $ width instead of its advance, so that the letter is not truncated.
-   * Moreover, the (n-1) letter might spread more to the right than the
-   * n one (ex: 'y.', the dot can be placed at the left of the rightmost
-   * branch of the 'y'), so the best solution is to record max width
-   * at each step (instead of replacing the advance by the width for the
-   * last glyph).
+   * However when a letter is the last in a surface, one should use its width
+   * instead of its advance, so that the letter is not truncated.
+   *
+   * Moreover, the (n-1) letter might spread more to the right than the n one
+   * (ex: 'y.', the dot can be placed at the left of the rightmost branch of the
+   * 'y'), so the best solution is to record max width at each step (instead of
+   * replacing the advance by the width for the last glyph).
    *
    */
   Length width = 0 ;
@@ -1592,8 +1590,8 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	{
 
 	  /*
-	   * The offset corresponds to the abscissa of the leftmost
-	   * part of the glyph in its local referential.
+	   * The offset corresponds to the abscissa of the leftmost part of the
+	   * glyph in its local referential.
 	   *
 	   */
 	  horizSteps[charCount] = width + currentOffset ;
@@ -1614,10 +1612,9 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 	width += currentAdvance ;
 
 	/*
-	 * Previously using next addition, which leads to too much space
-	 * between letters and not to compact uppercase letters (ex: 'OSDL')
-	 * whereas they should be
-	 * (see with cursive fonts with really wide uppercase glyphs, such
+	 * Previously using next addition, which leads to too much space between
+	 * letters and not to compact uppercase letters (ex: 'OSDL') whereas they
+	 * should be (see with cursive fonts with really wide uppercase glyphs, such
 	 * as 'cretino.ttf').
 	 *
 	 */
@@ -1627,9 +1624,10 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 
   /*
    * Retrieves the rightmost abscissa that could be drawn:
-   * (character width should be taken into account in addition to
-   * advance, so that its rightmost part is not truncated, as none is
-   * always smaller than the other):
+   *
+   * (character width should be taken into account in addition to advance, so
+   * that its rightmost part is not truncated, as none is always smaller than
+   * the other):
    *
    */
   maxWidth = horizSteps[ textSize - 1 ] + currentOffset
@@ -1645,8 +1643,8 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
 #endif // OSDL_DEBUG_FONT
 
   /*
-   * Must be filled with glyphs now
-   * (lineskip is used to avoid complex blits of lines):
+   * Must be filled with glyphs now (lineskip is used to avoid complex blits of
+   * lines):
    *
    */
 
@@ -1681,14 +1679,14 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
   {
 	colorKey = Pixels::Black ;
 	/*
-	 * No need to fill 'res' with black, since new RGB surfaces come
-	 * all black already.
+	 * No need to fill 'res' with black, since new RGB surfaces come all black
+	 * already.
 	 *
 	 */
   }
 
 
-  // Second pass: actual rendering:
+  // Second pass, actual rendering:
   charCount = 0 ;
 
   for ( string::const_iterator it = text.begin(); it != text.end(); it++ )
@@ -1743,8 +1741,7 @@ OSDL::Video::Surface & Font::basicRenderLatin1Text( const std::string & text,
   }
 
   /*
-   * Uncomment next line to debug computation of bounding boxes for
-   * renderings:
+   * Uncomment next line to debug computation of bounding boxes for renderings:
    *
    */
   //res->drawEdges() ;
