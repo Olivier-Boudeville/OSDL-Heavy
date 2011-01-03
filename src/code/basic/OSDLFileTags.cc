@@ -1,12 +1,12 @@
-/* 
- * Copyright (C) 2003-2009 Olivier Boudeville
+/*
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -24,7 +24,7 @@
  */
 
 
-#include "OSDLFileTags.h" 
+#include "OSDLFileTags.h"
 
 
 
@@ -44,7 +44,7 @@ const FileTag              FirstFreeTag  = 5 ;
 
 
 
-const std::string SoundTagDescription	 = "sound (PCM or IMA ADPCM)" ;
+const std::string SoundTagDescription    = "sound (PCM or IMA ADPCM)" ;
 const std::string MusicTagDescription    = "music (MP3)" ;
 const std::string PaletteTagDescription  = "color palette" ;
 const std::string FrameTagDescription    = "animation frame" ;
@@ -58,7 +58,7 @@ bool OSDL::IsAValidOSDLFileTag( FileTag tag )
 {
 
 	return ( tag < FirstFreeTag ) ;
-	
+
 }
 
 
@@ -68,28 +68,27 @@ const std::string & OSDL::DescribeFileTag( FileTag tag )
 
 	switch( tag )
 	{
-	
+
 		case SoundTag:
 			return SoundTagDescription ;
 			break ;
-			
+
 		case MusicTag:
 			return MusicTagDescription ;
 			break ;
-			
+
 		case PaletteTag:
 			return PaletteTagDescription ;
 			break ;
-			
+
 		case FrameTag:
 			return FrameTagDescription ;
 			break ;
-			
+
 		default:
 			return UnknownTagDescription ;
 			break ;
-	
-	}
-	
-}
 
+	}
+
+}

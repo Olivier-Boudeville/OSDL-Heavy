@@ -1,12 +1,12 @@
-/* 
- * Copyright (C) 2003-2009 Olivier Boudeville
+/*
+ * Copyright (C) 2003-2010 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -72,7 +72,7 @@ const string OSDL::Utils::getBackendLastError()
 #if OSDL_USES_SDL
 
 	return SDL_GetError() ;
-	
+
 #else // OSDL_USES_SDL
 
 	// errno supposed used here:
@@ -84,35 +84,35 @@ const string OSDL::Utils::getBackendLastError()
 
 
 
-Ceylan::Latin1Char OSDL::Utils::getNativeDirectorySeparator() 
+Ceylan::Latin1Char OSDL::Utils::getNativeDirectorySeparator()
 {
 
 #if OSDL_USES_PHYSICSFS
 
 	string res( PHYSFS_getDirSeparator() );
-    
-    switch( res.size() )
-    {
-    
-    	case 0:
-        	throw OSDL::Exception( "OSDL::Utils::getNativeDirectorySeparator "
-            	"failed: empty separator found." ) ;
-            break ;
-                
-    	case 1:
-        	return static_cast<Ceylan::Latin1Char>( res[0] ) ;
-            break ;
-    	
-    	default:
-        	throw OSDL::Exception( "OSDL::Utils::getNativeDirectorySeparator "
-            	"failed: multi-character separator found (" + res + ")." ) ;
-            break ;
+
+	switch( res.size() )
+	{
+
+		case 0:
+			throw OSDL::Exception( "OSDL::Utils::getNativeDirectorySeparator "
+				"failed: empty separator found." ) ;
+			break ;
+
+		case 1:
+			return static_cast<Ceylan::Latin1Char>( res[0] ) ;
+			break ;
+
+		default:
+			throw OSDL::Exception( "OSDL::Utils::getNativeDirectorySeparator "
+				"failed: multi-character separator found (" + res + ")." ) ;
+			break ;
 
 	}
-    
-    // Never executed:
-    return 0 ;
-    	
+
+	// Never executed:
+	return 0 ;
+
 #else // OSDL_USES_PHYSICSFS
 
 	throw OSDL::Exception( "OSDL::Utils::getNativeDirectorySeparator "
@@ -120,10 +120,10 @@ Ceylan::Latin1Char OSDL::Utils::getNativeDirectorySeparator()
 
 #endif // OSDL_USES_PHYSICSFS
 
-}    
-           
-            
-            
+}
+
+
+
 std::string OSDL::Utils::getProgramPath()
 {
 
@@ -133,7 +133,7 @@ std::string OSDL::Utils::getProgramPath()
 	EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager() ;
 
 	return std::string( PHYSFS_getBaseDir() ) ;
-    
+
 #else // OSDL_USES_PHYSICSFS
 
 	throw OSDL::Exception( "OSDL::Utils::getProgramPath failed:"
@@ -154,7 +154,7 @@ std::string OSDL::Utils::getUserDirectory()
 	EmbeddedFileSystemManager::SecureEmbeddedFileSystemManager() ;
 
 	return std::string( PHYSFS_getUserDir() ) ;
-    
+
 #else // OSDL_USES_PHYSICSFS
 
 	throw OSDL::Exception( "OSDL::Utils::getUserDirectory failed:"
@@ -173,14 +173,14 @@ std::string OSDL::Utils::getUserDirectory()
  *
  * Useful to integrate to specific libraries.
  *
- * @note Not in Ceylan as this library must not depend on SDL, and
- * SDL_RWops is needed here.
+ * @note Not in Ceylan as this library must not depend on SDL, and SDL_RWops is
+ * needed here.
  *
  */
-  
- 
- 
- 
+
+
+
+
 /**
  * Callback for seek operations.
  *
@@ -191,81 +191,80 @@ static int seekCallback( DataStream * datastream, int offset, int whence )
 {
 
 	//LogPlug::debug( "OSDL::Utils::seekCallback called" ) ;
-    
+
 	Ceylan::System::File & myFile = * reinterpret_cast<Ceylan::System::File *>(
-    	datastream->hidden.unknown.data1 ) ;
-        
+		datastream->hidden.unknown.data1 ) ;
+
 	Position pos ;
 
 	string seek ;
-    
+
 	try
-    {
-    
+	{
+
 		switch( whence )
-	    {
-    
-    		case SEEK_SET:
+		{
+
+			case SEEK_SET:
 				//seek = " from begin" ;
-        		pos = offset ;
-            	break ;
-            
-	   		case SEEK_CUR:
+				pos = offset ;
+				break ;
+
+			case SEEK_CUR:
 				//seek = " from current" ;
-    	    	pos = myFile.tell() + offset ;
-            	break ;
-                
-    		case SEEK_END:
+				pos = myFile.tell() + offset ;
+				break ;
+
+			case SEEK_END:
 				/*
 				seek = " from end" ;
-				LogPlug::debug( 
-                	"OSDL::Utils::seekCallback setting to offset to end "
-                	+ Ceylan::toString(offset) ) ;
-				 */	
-            	pos = myFile.size() + offset ;
-            	break ;
-                
-            default:
+				LogPlug::debug(
+					"OSDL::Utils::seekCallback setting to offset to end "
+					+ Ceylan::toString(offset) ) ;
+				 */
+				pos = myFile.size() + offset ;
+				break ;
+
+			default:
 				LogPlug::error( "OSDL::Utils seekCallback failed: "
-                	"unexpected 'whence' parameter." ) ;
-                return -1 ;    
-            	break ;
-    
-	    }
-    
-		if ( pos < 0 )
-    	{
-		
-        	LogPlug::error( "OSDL::Utils seekCallback failed: "
-				"attempt to seek past start of file." ) ;
-            
-			return -1 ;    
-        
+					"unexpected 'whence' parameter." ) ;
+				return -1 ;
+				break ;
+
 		}
 
-        
-        myFile.seek( pos ) ;
+		if ( pos < 0 )
+		{
+
+			LogPlug::error( "OSDL::Utils seekCallback failed: "
+				"attempt to seek past start of file." ) ;
+
+			return -1 ;
+
+		}
+
+
+		myFile.seek( pos ) ;
 
 		/*
-		LogPlug::debug( "OSDL::Utils::seekCallback: seeking position #" 
-        	+ Ceylan::toString( pos ) + seek + " with offset " 
-            + Ceylan::toString( offset ) + ", new position is #" 
-            + Ceylan::toString( myFile.tell() ) ) ;
-         */
-		 
+		LogPlug::debug( "OSDL::Utils::seekCallback: seeking position #"
+			+ Ceylan::toString( pos ) + seek + " with offset "
+			+ Ceylan::toString( offset ) + ", new position is #"
+			+ Ceylan::toString( myFile.tell() ) ) ;
+		 */
+
 	}
-    catch( const Ceylan::Exception & e )
-    {
-    
-    	LogPlug::error( "OSDL::Utils seekCallback failed: " + e.toString() ) ;
-    
-    }
-    
-    
-    return pos ;
-    
-}    
-    
+	catch( const Ceylan::Exception & e )
+	{
+
+		LogPlug::error( "OSDL::Utils seekCallback failed: " + e.toString() ) ;
+
+	}
+
+	return pos ;
+
+}
+
 
 
 
@@ -275,96 +274,96 @@ static int seekCallback( DataStream * datastream, int offset, int whence )
  * @note No exception can be raised here, only using LogPlug.
  *
  */
-static int readCallback( DataStream * datastream, void *buffer, int chunkSize, 
+static int readCallback( DataStream * datastream, void *buffer, int chunkSize,
 	int chunkCount )
 {
 
 	//LogPlug::debug( "OSDL::Utils::readCallback called" ) ;
 
 	Ceylan::System::File & myFile = * reinterpret_cast<Ceylan::System::File *>(
-    	datastream->hidden.unknown.data1 ) ;
+		datastream->hidden.unknown.data1 ) ;
 
 	Size readSize ;
-    
+
 	try
-    {
-    
+	{
+
 		readSize = myFile.read( static_cast<Ceylan::Byte*>( buffer ),
-        	chunkSize*chunkCount ) ;
+			chunkSize*chunkCount ) ;
 
 	}
-    catch( const Ceylan::Exception & e )
-    {
-    
-    	LogPlug::error( "OSDL::Utils readCallback failed: " + e.toString() ) ;
-    
-    }
-    
-    if ( readSize % chunkSize != 0 )
-    {
-		
-        LogPlug::error( "OSDL::Utils readCallback failed: "
-			"fractional chunk read." ) ;
-            
-		return -1 ;    
-        
+	catch( const Ceylan::Exception & e )
+	{
+
+		LogPlug::error( "OSDL::Utils readCallback failed: " + e.toString() ) ;
+
 	}
-    
+
+	if ( readSize % chunkSize != 0 )
+	{
+
+		LogPlug::error( "OSDL::Utils readCallback failed: "
+			"fractional chunk read." ) ;
+
+		return -1 ;
+
+	}
+
 	/*
-	LogPlug::debug( "OSDL::Utils::readCallback read " 
-    	+ Ceylan::toString( readSize ) + " bytes, for " 
-        + Ceylan::toString( chunkSize*chunkCount ) + " requested."  ) ;
-     */
-	     
-    // Integer division:
+	LogPlug::debug( "OSDL::Utils::readCallback read "
+		+ Ceylan::toString( readSize ) + " bytes, for "
+		+ Ceylan::toString( chunkSize*chunkCount ) + " requested."  ) ;
+	 */
+
+	// Integer division:
 	return ( readSize / chunkSize ) ;
-    
+
 }
 
 
- 
+
 /**
  * Callback for write operations.
  *
  * @note No exception can be raised here, only using LogPlug.
  *
  */
-static int writeCallback( DataStream * datastream, const void *buffer, 
+static int writeCallback( DataStream * datastream, const void *buffer,
 	int chunkSize, int chunkCount )
 {
 
 	//LogPlug::debug( "OSDL::Utils::writeCallback called" ) ;
 
 	Ceylan::System::File & myFile = * reinterpret_cast<Ceylan::System::File *>(
-    	datastream->hidden.unknown.data1 ) ;
+		datastream->hidden.unknown.data1 ) ;
 
 	Size writtenSize ;
-    
+
 	try
-    {
-    
+	{
+
 		writtenSize = myFile.write( static_cast<const Ceylan::Byte*>( buffer ),
-        	chunkSize*chunkCount ) ;
+			chunkSize*chunkCount ) ;
 
 	}
-    catch( const Ceylan::Exception & e )
-    {
-    
-    	LogPlug::error( "OSDL::Utils writeCallback failed: " + e.toString() ) ;
-    
-    }
+	catch( const Ceylan::Exception & e )
+	{
 
-    if ( writtenSize % chunkSize != 0 )
-    {
-		
-        LogPlug::error( "OSDL::Utils writeCallback failed: "
+		LogPlug::error( "OSDL::Utils writeCallback failed: " + e.toString() ) ;
+
+	}
+
+	if ( writtenSize % chunkSize != 0 )
+	{
+
+		LogPlug::error( "OSDL::Utils writeCallback failed: "
 			"fractional chunk read." ) ;
-            
-		return -1 ;    
-        
+
+		return -1 ;
+
 	}
-    
-    // Integer division:
+
+	// Integer division:
 	return ( writtenSize / chunkSize ) ;
 
 }
@@ -383,92 +382,91 @@ static int closeCallback( DataStream * datastream )
 	//LogPlug::debug( "OSDL::Utils::closeCallback called" ) ;
 
 	Ceylan::System::File & myFile = * reinterpret_cast<Ceylan::System::File *>(
-    	datastream->hidden.unknown.data1 ) ;
+		datastream->hidden.unknown.data1 ) ;
 
 	try
-    {
-    
- 		myFile.close() ;
+	{
+
+		myFile.close() ;
 
 	}
-    catch( const Ceylan::Exception & e )
-    {
-    
-    	LogPlug::error( "OSDL::Utils closeCallback failed: " + e.toString() ) ;
+	catch( const Ceylan::Exception & e )
+	{
 
-		return -1 ;    
-    
-    }
-    
+		LogPlug::error( "OSDL::Utils closeCallback failed: " + e.toString() ) ;
+
+		return -1 ;
+
+	}
+
 	/*
-	LogPlug::debug( "Deleting a datastream corresponding to: " 
-    	+ myFile.toString() ) ;
-     */
-	 
-    delete & myFile ;
+	LogPlug::debug( "Deleting a datastream corresponding to: "
+		+ myFile.toString() ) ;
+	 */
+
+	delete & myFile ;
 
 	SDL_FreeRW( datastream ) ;
-    
-    return 0 ;
-    
+
+	return 0 ;
+
 }
 
 
 
-OSDL::Utils::DataStream & OSDL::Utils::createDataStreamFrom( 
+OSDL::Utils::DataStream & OSDL::Utils::createDataStreamFrom(
 	Ceylan::System::File & sourceFile )
 {
 
 #if OSDL_USES_SDL
 
 	//LogPlug::debug( "Creating a datastream from: " + sourceFile.toString() ) ;
-     
+
 	/*
-     * Largely inspired from SDL_sound's physfsrwops.h/physfsrwops.c.
-     *
-     */
-     
+	 * Largely inspired from SDL_sound's physfsrwops.h/physfsrwops.c.
+	 *
+	 */
+
 	SDL_RWops * res = SDL_AllocRW() ;
 
 	if ( res == 0 )
-    	throw OSDL::Exception( "OSDL::Utils::createDataStreamFrom failed: "
-    		"unable to create a SDL_RWops." ) ;
-    
-    // Using static methods as basic function pointers needed:
-            
-   	res->seek  = seekCallback ;
-    res->read  = readCallback ;
+		throw OSDL::Exception( "OSDL::Utils::createDataStreamFrom failed: "
+			"unable to create a SDL_RWops." ) ;
+
+	// Using static methods as basic function pointers needed:
+
+	res->seek  = seekCallback ;
+	res->read  = readCallback ;
 	res->write = writeCallback ;
 	res->close = closeCallback ;
-    
+
 	res->hidden.unknown.data1 = & sourceFile ;
 
 	return *res ;
-         	
+
 #else // OSDL_USES_SDL
 
 	throw OSDL::Exception( "OSDL::Utils::createDataStreamFrom failed: "
-    	"no SDL support available." ) ;
-        
+		"no SDL support available." ) ;
+
 #endif // OSDL_USES_SDL
 
 }
 
 
 
-void OSDL::Utils::deleteDataStream( DataStream & datastream ) 
+void OSDL::Utils::deleteDataStream( DataStream & datastream )
 {
 
 #if OSDL_USES_SDL
 
 	SDL_FreeRW( &datastream ) ;
-    
+
 #else // OSDL_USES_SDL
 
 	throw OSDL::Exception( "OSDL::Utils::deleteDataStream failed: "
-    	"no SDL support available." ) ;
-        
+		"no SDL support available." ) ;
+
 #endif // OSDL_USES_SDL
 
 }
-

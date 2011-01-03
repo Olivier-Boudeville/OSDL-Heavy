@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 Olivier Boudeville
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
@@ -65,6 +65,7 @@ using namespace OSDL ;
  * Implementation notes:
  *
  * Based on PhysicsFS. Thanks to Ryan Gordon!
+ *
  * @see http://icculus.org/physfs/
  *
  * Not integrated yet:
@@ -127,8 +128,8 @@ void EmbeddedFileSystemManager::chooseBasicSettings(
 {
 
 	/*
-	 * This is a member method, the embedded filesystem has thus already
-	 * been initialized in the EmbeddedFileSystemManager constructor.
+	 * This is a member method, the embedded filesystem has thus already been
+	 * initialized in the EmbeddedFileSystemManager constructor.
 	 *
 	 */
 
@@ -230,8 +231,8 @@ void EmbeddedFileSystemManager::setWriteDirectory(
 {
 
 	/*
-	 * This is a member method, the embedded filesystem has thus already
-	 * been initialized in the EmbeddedFileSystemManager constructor.
+	 * This is a member method, the embedded filesystem has thus already been
+	 * initialized in the EmbeddedFileSystemManager constructor.
 	 *
 	 */
 
@@ -350,8 +351,8 @@ std::string EmbeddedFileSystemManager::getMountPointFor(
 {
 
 	/*
-	 * This is a member method, the embedded filesystem has thus already
-	 * been initialized in the EmbeddedFileSystemManager constructor.
+	 * This is a member method, the embedded filesystem has thus already been
+	 * initialized in the EmbeddedFileSystemManager constructor.
 	 *
 	 */
 
@@ -382,8 +383,8 @@ std::list<std::string> EmbeddedFileSystemManager::getSearchPath() const
 {
 
 	/*
-	 * This is a member method, the embedded filesystem has thus already
-	 * been initialized in the EmbeddedFileSystemManager constructor.
+	 * This is a member method, the embedded filesystem has thus already been
+	 * initialized in the EmbeddedFileSystemManager constructor.
 	 *
 	 */
 
@@ -396,15 +397,15 @@ std::list<std::string> EmbeddedFileSystemManager::getSearchPath() const
 			"EmbeddedFileSystemManager::getSearchPath failed: "
 			+ GetBackendLastError() ) ;
 
- 	list<string> res ;
+	list<string> res ;
 
 
 	for ( ; *paths != 0; paths++ )
 		res.push_back( string( *paths ) ) ;
 
 	/*
-	 * Cannot use it, otherwise a core dump (invalide glib pointer)
-	 * is triggered:
+	 * Cannot use it, otherwise a core dump (invalide glib pointer) is
+	 * triggered:
 
 	PHYSFS_freeList( paths ) ;
 
@@ -434,8 +435,8 @@ bool EmbeddedFileSystemManager::existsAsEntry( const string & entryPath ) const
 {
 
 	/*
-	 * This is a member method, the embedded filesystem has thus already
-	 * been initialized in the EmbeddedFileSystemManager constructor.
+	 * This is a member method, the embedded filesystem has thus already been
+	 * initialized in the EmbeddedFileSystemManager constructor.
 	 *
 	 */
 
@@ -1053,8 +1054,7 @@ bool EmbeddedFileSystemManager::isAbsolutePath( const string & path )
 		return false ;
 
 	/*
-	 * Starts with separator, or with prefix (if prefix is used):
-	 * absolute path.
+	 * Starts with separator, or with prefix (if prefix is used): absolute path.
 	 *
 	 */
 
@@ -1072,13 +1072,13 @@ std::string EmbeddedFileSystemManager::getCurrentWorkingDirectoryPath()
 #ifdef CEYLAN_USES_GETCWD
 
 	/*
-	 * With following automatic variable, frame size is deemed
-	 * 'too large for reliable stack checking':
+	 * With following automatic variable, frame size is deemed 'too large for
+	 * reliable stack checking':
 
 	char buf[ PATH_MAX + 1 ] ;
 
-	 * Another solution would be to use a static string, but this method
-	 * would not be reentrant anymore.
+	 * Another solution would be to use a static string, but this method would
+	 * not be reentrant anymore.
 	 *
 	 * Hence using dynamic allocation, even if slower:
 	 *
@@ -1112,13 +1112,13 @@ std::string EmbeddedFileSystemManager::getCurrentWorkingDirectoryPath()
 
 
 	/*
-	 * With following automatic variable, frame size is deemed
-	 * 'too large for reliable stack checking':
+	 * With following automatic variable, frame size is deemed 'too large for
+	 * reliable stack checking':
 
 	char buf[ PATH_MAX + 1 ] ;
 
-	 * Another solution would be to use a static string, but this method
-	 * would not be reentrant anymore.
+	 * Another solution would be to use a static string, but this method would
+	 * not be reentrant anymore.
 	 *
 	 * Hence using dynamic allocation, even if slower:
 	 *

@@ -25,6 +25,7 @@ BASIC_INTERFACES = \
 	OSDLEmbeddedFileSystemManager.h      \
 	OSDLException.h                      \
 	OSDLFileTags.h                       \
+	OSDLGUI.h                            \
 	OSDLHeaderVersion.h                  \
 	OSDLIncludeCorrecter.h               \
 	OSDLIPCCommands.h                    \
@@ -42,9 +43,9 @@ BASIC_IMPLEMENTATIONS = \
 	OSDLEmbeddedFileSystemManager.cc     \
 	OSDLException.cc                     \
 	OSDLFileTags.cc                      \
+	OSDLGUI.cc                           \
 	OSDLTestException.cc                 \
 	OSDLUtils.cc
-	
+
 
 # DISABLED = OSDLDocMainPage.h
-

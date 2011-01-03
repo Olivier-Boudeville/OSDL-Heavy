@@ -1,12 +1,12 @@
-/* 
- * Copyright (C) 2003-2009 Olivier Boudeville
+/*
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -32,26 +32,26 @@
  * For Ceylan base codes.
  *
  */
- 
+
 
 #include "CeylanARM7Codes.h"
 
 
 
 /**
- * This include file centralizes all the ARM7 status words and error codes
- * added for OSDL.
+ * This include file centralizes all the ARM7 status words and error codes added
+ * for OSDL.
  *
  * It is to be included by ARM7 C code (for setting) and ARM9 C++ code (for
  * interpretation).
  *
  * typedef for ARM7StatusWord and ARM7ErrorCode are expected to be already
- * defined (they cannot be defined here as their definition is specific to
- * each ARM: Ceylan::Uint16/uint16).
+ * defined (they cannot be defined here as their definition is specific to each
+ * ARM: Ceylan::Uint16/uint16).
  *
- * In the ARM9 this is done automatically thanks to:
+ * In the ARM9 this is done automatically.
  *
- */ 
+ */
 
 
 
@@ -66,8 +66,8 @@
 /**
  * ARM7 error code values.
  *
- * Error codes in the [1024..2048] range are reserved for OSDL use, knowing 
- * that the [0..1023] range is reserved for Ceylan use.
+ * Error codes in the [1024..2048] range are reserved for OSDL use, knowing that
+ * the [0..1023] range is reserved for Ceylan use.
  *
  */
 
@@ -84,8 +84,8 @@ const ARM7ErrorCode UnexpectedSampleFormat = 1025 ;
  * Helix-OSDL error codes are in the [1056..1088] range.
  *
  */
- 
- 
+
+
 /*
  * The initialization of the Helix decoder failed (most probably: not enough
  * memory to malloc internal buffers
@@ -97,13 +97,15 @@ const ARM7ErrorCode HelixInitializationFailed = 1056 ;
 const ARM7ErrorCode HelixSyncWordNotFound = 1057 ;
 
 
-/* 
- * The Helix decoder is out of data, found a truncated or last frame in 
- * the raw mp3 stream */
+/*
+ * The Helix decoder is out of data, found a truncated or last frame in the raw
+ * mp3 stream.
+ *
+ */
 const ARM7ErrorCode HelixFoundTruncatedFrame = 1058 ;
 
 
-/* 
+/*
  * The Helix decoder does not have enough data in bit reservoir from previous
  * frames. Perhaps starting in the middle of a mp3 file?
  *
@@ -111,21 +113,21 @@ const ARM7ErrorCode HelixFoundTruncatedFrame = 1058 ;
 const ARM7ErrorCode HelixLacksDataInBitReservoir = 1059 ;
 
 
-/* 
+/*
  * The Helix decoder lacks a free bitrate slot.
  *
  */
 const ARM7ErrorCode HelixLacksFreeBitrateSlot = 1060 ;
 
 
-/* 
+/*
  * The Helix decoding failed.
  *
  */
 const ARM7ErrorCode HelixDecodingError = 1061 ;
 
 
-/* 
+/*
  * The length of a decoded frame is not the expected one.
  *
  */
@@ -139,8 +141,8 @@ const ARM7ErrorCode HelixUnexpectedDecodedLength = 1062 ;
  * FIFO element is used by OSDL.
  *
  */
- 
-#ifdef CEYLAN_SAFE_FIFO 
+
+#ifdef CEYLAN_SAFE_FIFO
 
 
 	#if CEYLAN_SAFE_FIFO
@@ -159,4 +161,3 @@ const ARM7ErrorCode HelixUnexpectedDecodedLength = 1062 ;
 
 
 #endif // OSDL_ARM7_CODES_H_
-
