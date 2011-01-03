@@ -1,12 +1,12 @@
-/* 
- * Copyright (C) 2003-2009 Olivier Boudeville
+/*
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -33,7 +33,7 @@ using namespace OSDL ;
 
 
 
-TestException::TestException( const string & reason ) : 
+TestException::TestException( const string & reason ) :
 	Exception( reason )
 {
 
@@ -51,7 +51,6 @@ TestException::~TestException() throw ()
 std::ostream & operator << ( std::ostream & os, const OSDL::TestException & e )
 {
 
-    return os << e.toString() ;
-	
-}
+	return os << e.toString() ;
 
+}

@@ -1,12 +1,12 @@
-/* 
- * Copyright (C) 2003-2009 Olivier Boudeville
+/*
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -47,28 +47,28 @@ namespace OSDL
 	 * All OSDL exceptions should inherit from it, directly or not.
 	 *
 	 */
-    class OSDL_DLL Exception : public Ceylan::Exception
-    {
+	class OSDL_DLL Exception : public Ceylan::Exception
+	{
 
-        public:
-  			
-			
+		public:
+
+
 			/**
 			 * Basic constructor.
 			 *
-			 * @param reason the message giving details about this 
-			 * raised exception.
+			 * @param reason the message giving details about this raised
+			 * exception.
 			 *
 			 */
 			explicit Exception( const std::string & reason ) ;
-			
-			
+
+
 			/// Basic destructor.
 			virtual ~Exception() throw() ;
 
 
-    } ;
-	
+	} ;
+
 
 }
 
@@ -76,19 +76,17 @@ namespace OSDL
 
 
 /**
- * Operator used to display easily an exception's message in an output 
- * stream.
+ * Operator used to display easily an exception's message in an output stream.
  *
  * The message is the one returned by toString with high level of detail
  * selected.
  *
  * @see toString.
- * 
+ *
  */
-OSDL_DLL std::ostream & operator << ( std::ostream & os, 
-	const OSDL::Exception & e )	;
+OSDL_DLL std::ostream & operator << ( std::ostream & os,
+	const OSDL::Exception & e ) ;
 
 
 
 #endif // OSDL_EXCEPTION_H_
-

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 Olivier Boudeville
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
@@ -52,13 +52,12 @@
 /*
  * Implementation notes.
  *
- * @note All internal paths kept in directory references (this object)
- * should be absolute paths.
+ * @note All internal paths kept in directory references (this object) should be
+ * absolute paths.
  *
  * @note In a non-static method, no static method should be used, as the former
  * is expected to use the embedded filesystem manager, whereas the latter shall
- * use the default filesystem manager, which may or may not be the embedded
- * one.
+ * use the default filesystem manager, which may or may not be the embedded one.
  *
  */
 
@@ -217,8 +216,7 @@ void EmbeddedDirectory::getSubdirectories( list<string> & subDirectories ) const
 {
 
   /*
-   * Could be implemented if PHYSFS_enumerateFiles returned directory
-   * (to check)
+   * Could be implemented if PHYSFS_enumerateFiles returned directory (to check)
    *
    */
   throw DirectoryLookupFailed( " EmbeddedDirectory::getSubdirectories: "
@@ -285,8 +283,7 @@ void EmbeddedDirectory::getSortedEntries( list<string> & subDirectories,
 {
 
   /*
-   * Could be implemented if PHYSFS_enumerateFiles returned directory
-   * (to check)
+   * Could be implemented if PHYSFS_enumerateFiles returned directory (to check)
    *
    */
   throw DirectoryLookupFailed( "EmbeddedDirectory::getSortedEntries: "
