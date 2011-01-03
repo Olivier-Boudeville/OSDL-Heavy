@@ -1,14 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/REC-html40/loose.dtd">
-<!--    This document is a part of the OSDL project 
-        For any comment, please mail to olivier.boudeville@online.fr
+<!--    This document is a part of the OSDL project
+		For any comment, please mail to olivier.boudeville@online.fr
 -->
-<!--    
-        Creation date: 2003, December 19.
-        Author: Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by:  the author
-        Version number: 0.1
-        Adapted from: no previous document
+<!--
+		Creation date: 2003, December 19.
+		Author: Olivier Boudeville (olivier.boudeville@online.fr)
+		Update made by:  the author
+		Version number: 0.1
+		Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -25,13 +25,13 @@
 
 <body>
   <div class="banner">
-    <em>General</em> <a href="../common/black.html" onclick= 
-    "parent.toolbar.location='../MainMenu.html'">home page</a>
-    <a href="../../../Map.html">site map</a> <a href=
-    "mailto:olivier.boudeville@online.fr?subject=[OSDL-0.5]%20Developer's%20guide">
-    mail us</a>
+	<em>General</em> <a href="../common/black.html" onclick=
+	"parent.toolbar.location='../MainMenu.html'">home page</a>
+	<a href="../../../Map.html">site map</a> <a href=
+	"mailto:olivier.boudeville@online.fr?subject=[OSDL-0.5]%20Developer's%20guide">
+	mail us</a>
   </div><br>
-  <a name="_top_"></a> 
+  <a name="_top_"></a>
 
 
 <h1>Developer Guide for the OSDL 0.5 version</h1>
@@ -45,46 +45,46 @@ The intended public for this document is OSDL <b>developers</b>, i.e. working on
 
 <p>This developer's guide is still to be written, however here are a few hints about OSDL's inner working.</p>
 
-  
+
 <p>See also: <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html" target="_blank">Ceylan developer's guide</a> for common informations.
 </p>
 
 <center>
-    <table summary="a box" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="a box" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 Note: this documentation is quite deprecated, it would need some serious update and rewriting.
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 
 <p>
 <a name="toc"></a>
   <center>
-  	<table style="border: none">
-  	<tr>
+<table style="border: none">
+	<tr>
 		<td>
 			<div class="box" summary="Table of contents" style="padding: 8px">
-  				<a href="#conventions">Conventions</a><br>
-  				<a href="#release">Releasing a new OSDL version</a><br>
-  				<a href="#customization">Customization</a><br>
-  				<a href="#hints">Random hints</a><br>
-    		</div>
+				<a href="#conventions">Conventions</a><br>
+				<a href="#release">Releasing a new OSDL version</a><br>
+				<a href="#customization">Customization</a><br>
+				<a href="#hints">Random hints</a><br>
+			</div>
 		</td>
 	</tr>
-  	</table>
+	</table>
   </center>
 </p>
- 
 
-  
-<a name="conventions"></a>  
+
+
+<a name="conventions"></a>
 <h2>Conventions</h2>
-  
- 
+
+
 <h3>Overall conventions</h3>
 <p>
 For some transverse subjects, such as the anti-aliasing mode (wanted or not), at least two ways of managing these informations were possible, having them static or not:
@@ -98,7 +98,7 @@ For some transverse subjects, such as the anti-aliasing mode (wanted or not), at
 <p>
 The first solution was preferred, since the 'singleton to many instances' transition could be performed with a state machine indeed, but the call to static methods could handle that internally without needing to perform tremendous changes in the code that uses these features: that change could be transparent for user code.
 </p>
-  
+
 <h4>Endianness (byte order)</h4>
 <p>
 The endianness of the system is detected at <b>compile-time</b> (<code>#if SDL_BYTEORDER == SDL_BIG_ENDIAN...#else ... #endif</code>), not at "<b>run-time</b>" (<code> if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {... } else { ... }</code>). This does not change much, since even the second form, which should evaluate to a comparison between constants, should be translated by the compiler similarly to the first one.
@@ -117,16 +117,16 @@ The endianness of the system is detected at <b>compile-time</b> (<code>#if SDL_B
 <a name="release-before"></a>
 <h3>Releasing a new OSDL version</h3>
 <p>
-First of all, the 
+First of all, the
 <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-developerguide.html#release-before" target="_blank">Ceylan release guide</a> should be applied in the OSDL context as well. Additional actions are:
 <ul>
 
 <!--
-    <li></li>
+	<li></li>
 -->
 
-    <li>copy latest Ceylan's generated <code>ceylan.m4</code> in <code>trunk/src/conf/build/m4</code>.</li>
-	
+	<li>copy latest Ceylan's generated <code>ceylan.m4</code> in <code>trunk/src/conf/build/m4</code>.</li>
+
 </ul>
 
 </p>
@@ -135,17 +135,17 @@ First of all, the
 As for SVN, it leads to a tag command like:
 
 <center>
-    <table summary="Code" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="Code" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 <code><pre>
 svn copy https://osdl.svn.sourceforge.net/svnroot/osdl/OSDL/trunk https://osdl.svn.sourceforge.net/svnroot/osdl/OSDL/tags/release-0.5.0 -m "First release of the 0.5 series, with SVN support, autotools-based build system, integration to the Ceylan 0.6 version, improved OSDL scheduler."
 </pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 
 </p>
@@ -153,12 +153,12 @@ svn copy https://osdl.svn.sourceforge.net/svnroot/osdl/OSDL/trunk https://osdl.s
 <p>
 Here is an example template for the osdl-announces@lists.sourceforge.net list:
 <center>
-    <table summary="Code" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="Code" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 <code><pre>
-Subject: 
+Subject:
 OSDL 0.5 released!
 
 Body:
@@ -175,18 +175,18 @@ OSDL 0.5 is somewhat an intermediary version, between the 0.4 which was truely a
 Main OSDL 0.5 changes are:
 
 	* SVN used instead of CVS
-	
+
 	* the Autotools are used, instead of custom-made GNUMakefiles
-	
+
 	* integration to the Ceylan 0.6 version
-	
-	* OSDL scheduler robustified and enhanced a lot 
+
+	* OSDL scheduler robustified and enhanced a lot
 
 	* numerous tests improved (full test suite added), and many bugs fixed
 
 Feel free to download latest LOANI archive (ex:
 http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.bz2) to test OSDL 0.5.
-       
+
 Support available through the osdl-support@lists.sourceforge.net mailing list.
 
 Report OSDL bugs to the osdl-bugs@lists.sourceforge.net mailing list.
@@ -194,25 +194,25 @@ Report OSDL bugs to the osdl-bugs@lists.sourceforge.net mailing list.
 Homepage at http://osdl.sourceforge.net
 
 Enjoy!
- 
+
 Wondersye, on Friday, March 30, 2007.
 </pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 </p>
 
 <p>The corresponding news item could be:
 <center>
-    <table summary="Code" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="Code" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 <code><pre>
-Summary: 
-OSDL 0.5 released! 
+Summary:
+OSDL 0.5 released!
 
 Body:
 we are proud to announce the 0.5.0 version of the OSDL library.
@@ -224,18 +224,18 @@ OSDL 0.5 is somewhat an intermediary version, between the 0.4 which was truely a
 Main OSDL 0.5 changes are:
 
 	* SVN used instead of CVS
-	
+
 	* the Autotools are used, instead of custom-made GNUMakefiles
-	
+
 	* integration to the Ceylan 0.6 version
-	
-	* OSDL scheduler robustified and enhanced a lot 
+
+	* OSDL scheduler robustified and enhanced a lot
 
 	* numerous tests improved (full test suite added), and many bugs fixed
 
 Feel free to download latest LOANI archive (ex:
 http://downloads.sourceforge.net/osdl/LOANI-0.5.tar.bz2) to test OSDL 0.5.
-       
+
 Support available through the osdl-support@lists.sourceforge.net mailing list.
 
 Report OSDL bugs to the osdl-bugs@lists.sourceforge.net mailing list.
@@ -243,23 +243,23 @@ Report OSDL bugs to the osdl-bugs@lists.sourceforge.net mailing list.
 Homepage at http://osdl.sourceforge.net
 
 Enjoy!
- 
+
 Wondersye, on Friday, March 30, 2007.
 
 </pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 
 </p>
-	
- 
+
+
 <p>
 Then update both LOANI archives in Sourceforge file release system.
 </p>
- 
+
 <a name="release-after"></a>
 <h3>Prepare for the next version</h3>
 <p>
@@ -282,21 +282,21 @@ To use another version of gcc than the one OSDL selected (use <code>make checkto
 
 
 
-<a name="hints"></a> 
+<a name="hints"></a>
 <h2>Random hints</h2>
- 
+
 <h3>Retrieving cutting-edge OSDL code</h3>
 <p> One should get latest OSDL sources from SVN:
 <center>
-    <table summary="a box" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="a box" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 svn [--username YourSFUserName] co https://osdl.svn.sourceforge.net/svnroot/osdl osdl
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 
 </p>
@@ -309,43 +309,43 @@ svn [--username YourSFUserName] co https://osdl.svn.sourceforge.net/svnroot/osdl
 
 <center>
   <table border="1" summary="table">
-    <caption>Main make variables that can be used to customize build</caption>
+	<caption>Main make variables that can be used to customize build</caption>
 
-    <tr>
-        <th>Make variable</th>
-        <th>Meaning</th>
+	<tr>
+		<th>Make variable</th>
+		<th>Meaning</th>
 		<th>Used in build phase</th>
-    </tr>
+	</tr>
 
-    <tr>
-        <td>INC</td>
-        <td>include flags</td>
-        <td>compilation</td>
-    </tr>
+	<tr>
+		<td>INC</td>
+		<td>include flags</td>
+		<td>compilation</td>
+	</tr>
 
-    <tr>
-        <td>DFLAGS</td>
-        <td>debug flags</td>
-        <td>compilation and link</td>
-    </tr>
+	<tr>
+		<td>DFLAGS</td>
+		<td>debug flags</td>
+		<td>compilation and link</td>
+	</tr>
 
-    <tr>
-        <td>CFLAGS</td>
-        <td>compile flags</td>
-        <td>compilation</td>
-    </tr>
+	<tr>
+		<td>CFLAGS</td>
+		<td>compile flags</td>
+		<td>compilation</td>
+	</tr>
 
-    <tr>
-        <td>LDFLAGS</td>
-        <td>link flags</td>
-        <td>link</td>
-    </tr>
+	<tr>
+		<td>LDFLAGS</td>
+		<td>link flags</td>
+		<td>link</td>
+	</tr>
 
-    <tr>
-        <td>OPT</td>
-        <td>option flags</td>
-        <td>compilation and link</td>
-    </tr>
+	<tr>
+		<td>OPT</td>
+		<td>option flags</td>
+		<td>compilation and link</td>
+	</tr>
 
 
   </table>
@@ -359,7 +359,7 @@ svn [--username YourSFUserName] co https://osdl.svn.sourceforge.net/svnroot/osdl
 
 <p>
 <center>
-    <img src="OSDL-Ceylan-class-diagram.png" alt="Image"></img>
+	<img src="OSDL-Ceylan-class-diagram.png" alt="Image"></img>
 </center>
 </p>
 
@@ -390,7 +390,7 @@ to make us of variables with the same names, but suffixed with <code>_PRIV</code
 <p>
 That way, everywhere where library informations were needed, we used <code>$(LDFLAGS) $(LD_FLAGS_PRIV)</code>, in that order, letting the possibility to customize the build thanks to a <code>LD_FLAGS</code> which would not interfere with our <code>LD_FLAGS_PRIV</code>. So the user just has to specify <code>make LDFLAGS="-L&lt;a path&gt; -l&lt;a library&gt;"</code> to <b>add</b>, not <b>replace</b> library informations and such.</p>
 
-<p>Of course, if ever one wanted actually to <b>replace</b> these values, he just would have to specify 
+<p>Of course, if ever one wanted actually to <b>replace</b> these values, he just would have to specify
 <code>make LDFLAGS_PRIV="-L&lt;a path&gt; -l&lt;a library&gt;"</code>.
 </p>
 
@@ -402,16 +402,16 @@ This procedure applies for the Ceylan library as well.
 <p>
 One should not be afraid of those libtool warnings for various libraries:
 <center>
-    <table summary="a box" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="a box" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 libtool: link: warning: library `&lt;your path&gt;/LOANI-installations/SDL_image-1.2.3/lib/libSDL_image.la' was moved.
 
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 </p>
 
@@ -426,28 +426,28 @@ For the moment, we did not manage to get rid of these messages, but they do not 
   sources, is named:</p>
 
   <ul>
-    <li><strong>libOSDL.so.0.0.5</strong>, it is the full shared
-    library filename, with sonname and al, and the installation process
-    should have created links <code>libOSDL.so.0</code> and
-    <code>libOSDL.so</code> pointing directly towards
-    <code>libOSDL.so.0.0.5</code>.</li>
+	<li><strong>libOSDL.so.0.0.5</strong>, it is the full shared
+	library filename, with sonname and al, and the installation process
+	should have created links <code>libOSDL.so.0</code> and
+	<code>libOSDL.so</code> pointing directly towards
+	<code>libOSDL.so.0.0.5</code>.</li>
 
-    <li>similarly, there should be a <strong>libOSDL-0.5.0.a</strong>
-    for the static library, along with its exact copy
-    <code>libOSDL.a</code>, and with <code>libOSDL.la</code>, which
-    does respect GNU libtool's conventions (no links for them, .a
-    and .la are different files)</li>
+	<li>similarly, there should be a <strong>libOSDL-0.5.0.a</strong>
+	for the static library, along with its exact copy
+	<code>libOSDL.a</code>, and with <code>libOSDL.la</code>, which
+	does respect GNU libtool's conventions (no links for them, .a
+	and .la are different files)</li>
   </ul><br>
   <br>
 
   <p>Please keep in mind that OSDL is a multimedia-oriented library
   built on top of <a href="#prereq">prerequisites</a>, so you should
   install them priorly to have OSDL-0.5 working.</p><br>
-  
-  
+
+
 <h3>Setting up one's environment by script</h3>
 <p>
-One interesting file to source is <code>OSDL-environment.sh</code>, which is to be found under the prefix used by LOANI, <code>LOANI-installations</code> by default.  
+One interesting file to source is <code>OSDL-environment.sh</code>, which is to be found under the prefix used by LOANI, <code>LOANI-installations</code> by default.
 </p>
 
 <p>
@@ -465,20 +465,21 @@ When developing code that performs rendering, it is often difficult to know what
 <p>
 The build of tests is split from library's build, since we designed these tests to behave exactly as any other user application which would make use of Ceylan or OSDL.
 </p>
-    
-	                               			
+
+
   <h3>Please react!</h3>
 
   <p>If you have informations more detailed or more recent than those
   presented in this document, if you noticed errors, neglects or points
-  insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL-0.5]%20Developer's%20guide">  drop us a line</a>!</p><br>
+  insufficiently discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL-0.5]%20Developer's%20guide">drop us a line</a>!</p><br>
   <br>
   <hr>
 
   <center>
-    [<a href="#_top_">Top</a>]<br>
-    <br>
-    <em>Last update: Sunday, April 5, 2009</em>
+	[<a href="#_top_">Top</a>]<br>
+	<br>
+	<em>Last update: Monday, January 3, 2011
+</em>
   </center>
 </body>
 </html>

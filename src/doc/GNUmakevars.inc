@@ -1,4 +1,3 @@
-
 # Generic rules for documentation generation.
 
 
@@ -13,8 +12,8 @@ GENERATED_PNG   = $(patsubst %.dat,%.png,$(PLOT_SOURCES))
 %.png: %.plot
 	@echo "    Generating $@ from $< with gnuplot"
 	@gnuplot $<
-	
-	
+
+
 %-negated.png: %.png
 	@echo "    Generating $@ from $< with convert"
 	@convert $< -negate $@
@@ -33,4 +32,3 @@ info:
 	@echo "GENERATED_PDF  = $(GENERATED_PDF)"
 	@echo "PLOT_SOURCES   = $(PLOT_SOURCES)"
 	@echo "GENERATED_PNG  = $(GENERATED_PNG)"
-	

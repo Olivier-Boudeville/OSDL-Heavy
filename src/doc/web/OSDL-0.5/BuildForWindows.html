@@ -1,14 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/REC-html40/loose.dtd">
-<!--    This document is a part of the OSDL project 
-        For any comment, please mail to olivier.boudeville@online.fr
+<!--    This document is a part of the OSDL project
+		For any comment, please mail to olivier.boudeville@online.fr
 -->
-<!--    
-        Creation date: 2003, December 19.
-        Author: Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by:  the author
-        Version number: 0.1
-        Adapted from: no previous document
+<!--
+		Creation date: 2003, December 19.
+		Author: Olivier Boudeville (olivier.boudeville@online.fr)
+		Update made by:  the author
+		Version number: 0.1
+		Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -19,19 +19,18 @@
   <meta name="description" content="OSDL">
   <meta name="keywords" content="OSDL, video game, GPL">
   <link href="../images/OSDL-icon.png" rel="OSDL icon">
-  <link rel="STYLESHEET" type="text/css" href=
-  "../common/css/OSDL.css">
+  <link rel="STYLESHEET" type="text/css" href="../common/css/OSDL.css">
 </head>
 
 <body>
   <div class="banner">
-    <em>General</em> <a href="../common/black.html" onclick= 
-    "parent.toolbar.location='../MainMenu.html'">home page</a>
-    <a href="../../../Map.html">site map</a> <a href=
-    "mailto:olivier.boudeville@online.fr?subject=[LOANI-0.5]%20User's%20guide">
-    mail us</a>
+	<em>General</em> <a href="../common/black.html" onclick=
+	"parent.toolbar.location='../MainMenu.html'">home page</a>
+	<a href="../../../Map.html">site map</a> <a href=
+	"mailto:olivier.boudeville@online.fr?subject=[LOANI-0.5]%20User's%20guide">
+	mail us</a>
   </div><br>
-  <a name="_top_"></a> 
+  <a name="_top_"></a>
 
 
 <h1>How to build OSDL and its prerequisites on Windows</h1>
@@ -44,34 +43,34 @@ The goal here is to explain to developers how to <b>build</b> the 0.5 version of
 
 <p>
 <center>
-    <table summary="a box" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="a box" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 <b>Note</b>: the Windows port of the OSDL toolchain is generally lagging behind the GNU/Linux development version. We regularly fix the various small issues that affect the Windows build, but quite often the ongoing newer developments on GNU/Linux result in a broken source tree for Windows. In that case just notify us that something went in the way of the Windows version, and we will do our best to fix it quickly.
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 
 
 
 <p>
 If a user just needs the OSDL DLL so that she can <b>run</b> an executable depending on the OSDL library (only <code>OSDL-0.5-from-LOANI-release-mt.dll</code> and its prerequisite DLL
- are required), then she can download, if available, a <strong>LOANI prebuilt user package</strong> from 
+ are required), then she can download, if available, a <strong>LOANI prebuilt user package</strong> from
 <a href="http://sourceforge.net/project/showfiles.php?group_id=71354" target="_blank">OSDL File Releases</a> on Sourceforge (search for <code>LOANI-0.5-prebuilt-for-windows-users.zip</code>). Should an up-to-date archive be unavailable, <a href="mailto:osdl@esperide.com?subject=[LOANI-0.5]%20Windows%20User%20Build%20needed" target="_blank">ask us</a> and we will add it quickly.
 </p>
 
 <p>
-If a user just wants to <b>develop</b> a program or a library depending on the OSDL library (hence needing OSDL installed headers, and preferably <code>OSDL-0.5-from-LOANI-debug-mt.dll</code> and <code>OSDL-0.5-from-LOANI-debug-mt.lib</code>, same for the OSDL prerequisites) and does not wish to build OSDL by herself, then she can download, if available, a <strong>OSDL prebuilt developer package</strong> from 
+If a user just wants to <b>develop</b> a program or a library depending on the OSDL library (hence needing OSDL installed headers, and preferably <code>OSDL-0.5-from-LOANI-debug-mt.dll</code> and <code>OSDL-0.5-from-LOANI-debug-mt.lib</code>, same for the OSDL prerequisites) and does not wish to build OSDL by herself, then she can download, if available, a <strong>OSDL prebuilt developer package</strong> from
 <a href="http://sourceforge.net/project/showfiles.php?group_id=158516" target="_blank">OSDL File Releases</a> on Sourceforge (search for <code>LOANI-0.5-prebuilt-for-windows-developers.zip</code>). If an up-to-date archive is not available, please
 <a href="mailto:ceylan@esperide.com?subject=[LOANI-0.5]%20Windows%20Developer%20Build%20needed" target="_blank">ask us</a> and we will add it quickly.
 </ul>
 </p>
 
 <p>
-If you are still reading, then it is that you really want to build the OSDL library <b>by yourself</b>. This is the recommended way. 
+If you are still reading, then it is that you really want to build the OSDL library <b>by yourself</b>. This is the recommended way.
 </p>
 
 <p>
@@ -131,21 +130,21 @@ To ensure the package was correctly built, as expected, one can check that nothi
 </p>
 
 <p>
-Due to the use of Visual Express, the user will be prompted to trigger, for each package, the corresponding build. 
+Due to the use of Visual Express, the user will be prompted to trigger, for each package, the corresponding build.
 </p>
 
 <center>
-    <table summary="Code" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
-That's it! You should have, once LOANI has finished, everything needed to make good use of the OSDL library. In case of problem, re-read everything carefully (this document, the <a href="OSDL-userguide.html" target="_blank">OSDL user guide</a>, the <a href="LOANI.html" target="_blank">LOANI guide</a>) and should the problem persist, <a href="mailto:osdl@esperide.com?subject=[OSDL-0.6]%20Windows%20Build%20Problem" target="_blank">send us a mail</a>. 
-For in-depth technical details about Windows-specific inner workings of OSDL and its prerequisites, one may continue the reading. 
+	<table summary="Code" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
+That's it! You should have, once LOANI has finished, everything needed to make good use of the OSDL library. In case of problem, re-read everything carefully (this document, the <a href="OSDL-userguide.html" target="_blank">OSDL user guide</a>, the <a href="LOANI.html" target="_blank">LOANI guide</a>) and should the problem persist, <a href="mailto:osdl@esperide.com?subject=[OSDL-0.6]%20Windows%20Build%20Problem" target="_blank">send us a mail</a>.
+For in-depth technical details about Windows-specific inner workings of OSDL and its prerequisites, one may continue the reading.
 Most people will stop and continue by using by themselves the library.
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 
 
@@ -180,7 +179,7 @@ One pitfall: the code uses lrint, which is not available on Windows. The work-ar
 
 
 
- 
+
 
 
 <h2>How to add a new OSDL unit test</h2>
@@ -197,46 +196,42 @@ Adapted from its Ceylan <a href="http://ceylan.sourceforge.net/Ceylan-latest/Bui
 -->
 
 	<li>open the OSDL <b>solution</b></li>
-	
+
 	<li><b>add</b> a new project to it</li>
-	
+
 	<li>choose project <b>type</b>: <code>Visual C++ -&gt; General -&gt; Empty Project</code>
 </li>
 
 	<li>choose project <b>name</b>, ex: <code>testOSDLBasicResourceManager</code> for source in <code>basic/testOSDLBasicResourceManager.cc</code>. Note that the initial project name is not <code>basic-testOSDLBasicResourceManager</code>, so that the associated files and directory names remain short
 	</li>
-	
+
 	<li>choose project <b>location</b> in the relevant module, ex: <code>trunk/test/basic</code> for <code>testOSDLBasicResourceManager</code>
 </li>
 
 	<li>remove <b>default</b> directories: Header, Resource, Source Files</li>
-	
+
 	<li>add in project an <b>existing element</b>, ex: <code>testOSDLBasicResourceManager.cc</code>, which should lie in the parent directory of the one of this test</li>
-	
+
 	<li>go to the property manager, right click on your test project, choose <b>add an existing property sheet</b>, and select, seven directories up (in <code>src/conf/build/visual-express</code>), the <code>OSDLProperties.vsprops</code> file. Then (in that order), do the same for <code>OSDLPropertiesForTests.vsprops</code></li>
-	
+
 	<li>(optional) go to the project <b>properties,</b>, in <code>Common Properties -&gt; References</code>, click on <code>Add New Reference</code> and select <code>OSDL-0.5 library </code>
 	</li>
-		
+
 	  </ul>
 	</li>
-	
+
 	<li><b>rename</b> in the IDE the project, so that it is prefixed by its module. Ex: <code>testOSDLBasicResourceManager</code> becomes <code>basic-testOSDLBasicResourceManager</code>. It allows to sort the projects in the IDE panel without having the long names in the filesystem</li>
-	
+
 	<li><b>build</b> the project</li>
-	
+
 	<li>from a cygwin terminal, run playTests.sh</li>
-	
+
 	<li><b>add</b> the project file to SVN repository: for example, right-click on the <code>trunk/test/basic/testOSDLBasicResourceManager</code> directory, and select only <code>testOSDLBasicResourceManager.vcproj</code></li>
-	
+
 
 </ol>
 </p>
 
-
- 
-  <br>
-  <br>
 
   <h3>Please react!</h3>
 
@@ -248,9 +243,10 @@ Adapted from its Ceylan <a href="http://ceylan.sourceforge.net/Ceylan-latest/Bui
   <hr>
 
   <center>
-    [<a href="#_top_">Top</a>]<br>
-    <br>
-    <em>Last update: Saturday, June 6, 2009</em>
+	[<a href="#_top_">Top</a>]<br>
+	<br>
+	<em>Last update: Monday, January 3, 2011
+</em>
   </center>
 </body>
 </html>

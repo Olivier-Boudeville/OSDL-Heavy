@@ -1,12 +1,12 @@
 Created on Thursday, April 26, 2007.
 Updated on Sunday, April 5, 2009.
- 
+
 
 
 		OSDL 0.5 release notes
-		
 
-OSDL 0.5 has been the first OSDL version ported to Windows (XP), although this support would need an update now. 
+
+OSDL 0.5 has been the first OSDL version ported to Windows (XP), although this support would need an update now.
 
 Lot of work on OpenGL, still lot to come.
 
@@ -15,4 +15,3 @@ OSDL and all its prerequisites should be installed by LOANI, both on GNU/Linux (
 Support available through the osdl-support@lists.sourceforge.net mailing list.
 
 Report OSDL bugs to the osdl-bugs@lists.sourceforge.net mailing list.
-

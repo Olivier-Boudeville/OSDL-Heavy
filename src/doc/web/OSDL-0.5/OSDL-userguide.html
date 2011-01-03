@@ -1,14 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/REC-html40/loose.dtd">
-<!--    This document is a part of the OSDL project 
-        For any comment, please mail to olivier.boudeville@online.fr
+<!--    This document is a part of the OSDL project
+		For any comment, please mail to olivier.boudeville@online.fr
 -->
-<!--    
-        Creation date: 2003, December 19.
-        Author: Olivier Boudeville (olivier.boudeville@online.fr)
-        Update made by:  the author
-        Version number: 0.1
-        Adapted from: no previous document
+<!--
+		Creation date: 2003, December 19.
+		Author: Olivier Boudeville (olivier.boudeville@online.fr)
+		Update made by:  the author
+		Version number: 0.1
+		Adapted from: no previous document
 -->
 
 <html lang="EN">
@@ -25,13 +25,13 @@
 
 <body>
   <div class="banner">
-    <em>General</em> <a href="../common/black.html" onclick= 
-    "parent.toolbar.location='../MainMenu.html'">home page</a>
-    <a href="../../../Map.html">site map</a> <a href=
-    "mailto:olivier.boudeville@online.fr?subject=[OSDL-0.5]%20User's%20guide">
-    mail us</a>
+	<em>General</em> <a href="../common/black.html" onclick=
+	"parent.toolbar.location='../MainMenu.html'">home page</a>
+	<a href="../../../Map.html">site map</a> <a href=
+	"mailto:olivier.boudeville@online.fr?subject=[OSDL-0.5]%20User's%20guide">
+	mail us</a>
   </div><br>
-  <a name="_top_"></a> 
+  <a name="_top_"></a>
 
 
 <h1>User Guide for the OSDL 0.5 version</h1>
@@ -43,49 +43,49 @@
 
 <p>One may refer to the <a href="OSDL-developerguide.html" target="_blank">OSDL Developer guide</a> for further informations.
 </p>
-  
+
 <p>See also: <a href="http://ceylan.sourceforge.net/Ceylan-latest/Ceylan-userguide.html" target="_blank">Ceylan user's guide</a> for common informations.
 </p>
 
 
 <center>
-    <table summary="a box" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="a box" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 Note: this documentation is quite deprecated, it would need some serious update and rewriting.
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 
 
 <p>
 <a name="toc"></a>
   <center>
-  	<table style="border: none">
-  	<tr>
+	<table style="border: none">
+	<tr>
 		<td>
 			<div class="box" summary="Table of contents" style="padding: 8px">
-  				<a href="#installbuild">Installation &amp; build</a><br>
-  				<a href="#conventions">Conventions</a><br>
-  				<a href="#surfacewidget">Surface-Widget framework</a><br>
-  				<a href="#schedulingMVC">How scheduling, rendering, logic and inputs interact with MVC</a><br>
-  				<a href="#activeBB">How active objects, world objects, locatables and bounding boxes interact</a><br>
+				<a href="#installbuild">Installation &amp; build</a><br>
+				<a href="#conventions">Conventions</a><br>
+				<a href="#surfacewidget">Surface-Widget framework</a><br>
+				<a href="#schedulingMVC">How scheduling, rendering, logic and inputs interact with MVC</a><br>
+				<a href="#activeBB">How active objects, world objects, locatables and bounding boxes interact</a><br>
 				<a href="#screenshot">Using the screenshot mode to realize animations with the OSDL engine</a><br>
-  				<a href="#troubleshooting">Troubleshooting</a><br>
- 				<a href="#contributing">Contributing to the project</a><br>
-    		</div>
+				<a href="#troubleshooting">Troubleshooting</a><br>
+				<a href="#contributing">Contributing to the project</a><br>
+			</div>
 		</td>
 	</tr>
-  	</table>
+	</table>
   </center>
 </p>
- 
- 
 
-<a name="installbuild"></a> 
+
+
+<a name="installbuild"></a>
 <h2>Installation &amp; build</h2>
 
   <p>You can notably install OSDL with three methods, the first being dull and risky, the second being recommended, the third being still to be written.</p>
@@ -99,15 +99,15 @@ Note: this documentation is quite deprecated, it would need some serious update 
   <h4>Pre requesites</h4>
 
   <ul>
-    <li><a href="http://www.libsdl.org" target="_blank">SDL</a>, the
-    famous Sam Lantinga's library used for the low-level platform
-    independance</li>
+	<li><a href="http://www.libsdl.org" target="_blank">SDL</a>, the
+	famous Sam Lantinga's library used for the low-level platform
+	independance</li>
 
-    <li><a href="http://ceylan.sourceforge.net/Ceylan-latest" target="_blank">Ceylan</a>, our own generic-purpose library</li>
-	
-	<li>many others: libtool, SDL, libjpeg, libzlib, libPNG, SDL_image, SDL_gfx, FreeType, SDL_ttf, etc.</li>    
+	<li><a href="http://ceylan.sourceforge.net/Ceylan-latest" target="_blank">Ceylan</a>, our own generic-purpose library</li>
+
+	<li>many others: libtool, SDL, libjpeg, libzlib, libPNG, SDL_image, SDL_gfx, FreeType, SDL_ttf, etc.</li>
   </ul>
-  
+
   <p>
 	As you can see, the list if far too long to be pleasant, we therefore set up an automatic tool that manages the whole build process on your behalf: LOANI.
   </p>
@@ -120,7 +120,7 @@ Note: this documentation is quite deprecated, it would need some serious update 
 
   <h3>Third method: use precompiled binaries</h3>
 <p>
-As soon as OSDL will be widespread enough so that its main audience will not be OSDL developers but OSDL users, a set of binaries will be released for each and every supported platform, including various GNU/Linux distributions (Debian [.deb], Gentoo [emerge], Fedora Core [rpm]). 
+As soon as OSDL will be widespread enough so that its main audience will not be OSDL developers but OSDL users, a set of binaries will be released for each and every supported platform, including various GNU/Linux distributions (Debian [.deb], Gentoo [emerge], Fedora Core [rpm]).
 </p>
 
 <p>
@@ -133,31 +133,31 @@ For the moment, it is far more convenient to let LOANI handle that, and to rebui
 
 
 
-  
-<a name="conventions"></a>  
+
+<a name="conventions"></a>
 <h2>Conventions</h2>
-  
- 
+
+
 <h3>Overall conventions</h3>
 <p>
 On Windows, each library or executable using OSDL must define the OSDL_RUNS_ON_WINDOWS.
 </p>
-  
 
-  
+
+
 <h3>Video conventions</h3>
-  
+
 <h4>Two dimensional conventions</h4>
-  
+
 <p>
   The screen coordinates are measured the following way:
   <ul>
 	<li>the <b>abscissa</b> (the x-axis) corresponds to the horizontal coordinate, parallel to the screen horizontal sides, ranging from 0 to Screen::MaximumAbscissa, from the left to the right</li>
 	<li>the <b>ordinate</b> (the y-axis) corresponds to the vertical coordinate, perpendicular to the screen horizontal sides, ranging from 0 to Screen::MaximumOrdinate, from top to bottom</li>
-  </ul>  
-  
+  </ul>
+
 </p>
-  
+
 <p>
 Therefore the origin (point whose coordinates on the screen are <code>[0,0]</code>) is to be found in the upper left corner of the screen, and the third coordinate, corresponding to the z-axis (perpendicular to the plane containing the screen) would be going from the viewer's eyes to the screen.
 </p>
@@ -177,16 +177,16 @@ Many low-level OSDL's graphic-drawing primitive does not lock the target surface
 <a name="surfacewidget"></a>
 <h2>Understanding the Surface-Widget framework</h2>
 <p>
-The overall objective of this framework is to allow to draw efficiently surfaces with an arbitrary level of compositing widgets. Widgets being themselves surfaces, they can contain widgets, and so on. Finally, the Surface-Widget framework is dealing with trees of graphical elements, as shown below. 
+The overall objective of this framework is to allow to draw efficiently surfaces with an arbitrary level of compositing widgets. Widgets being themselves surfaces, they can contain widgets, and so on. Finally, the Surface-Widget framework is dealing with trees of graphical elements, as shown below.
 </p>
 
 <p>
-The key point is that the internal video buffer of a graphical element, when up-to-date, should display both its own internal video buffer and the ones of all the widgets of its subtree, blitted in correct order, to their correct location.  
+The key point is that the internal video buffer of a graphical element, when up-to-date, should display both its own internal video buffer and the ones of all the widgets of its subtree, blitted in correct order, to their correct location.
 </p>
 
 <p>
 <center>
-    <img src="GraphicalView.png" alt="Graphical view of the tree"></img>
+	<img src="GraphicalView.png" alt="Graphical view of the tree"></img>
 </center>
 </p>
 
@@ -194,7 +194,7 @@ The key point is that the internal video buffer of a graphical element, when up-
 <p>
 From this view the following tree, focusing on containing relationships, can be deduced:
 <center>
-    <img src="TreeView.png" alt="Logical view of the tree"></img>
+	<img src="TreeView.png" alt="Logical view of the tree"></img>
 </center>
 </p>
 
@@ -218,7 +218,7 @@ The relationship between nodes being container-based, the surface owned by each 
 To manage the rendering, the whole point is to walk carefully the graphical tree so that widgets are redrawn in the correct order, which is from bottom to top, since they are likely to overlap. The correct algorithm is a depth-first walk of the tree: at each node, one has at first to deal with the background of the widget, then with the whole subtree of its first child (the child that is closest to the back), then with the whole subtree of its second child, and so on.
 </p>
 
-<p>To do so, we defined the <b>needsRedraw</b> boolean attribute for each graphical element (a node of the tree, hence a Surface, be it specifically a Widget or not). This attribute tells whether this node and its subtree are up-to-date. This information is to be propagated from any node that changed, up to the root of the tree, so that unchanged subtrees can be entirely skipped during the redraw phase: a node whose <code>needsRedraw</code> attribute is false should have its whole subtree unchanged, therefore its internal video buffer must be up-to-date. 
+<p>To do so, we defined the <b>needsRedraw</b> boolean attribute for each graphical element (a node of the tree, hence a Surface, be it specifically a Widget or not). This attribute tells whether this node and its subtree are up-to-date. This information is to be propagated from any node that changed, up to the root of the tree, so that unchanged subtrees can be entirely skipped during the redraw phase: a node whose <code>needsRedraw</code> attribute is false should have its whole subtree unchanged, therefore its internal video buffer must be up-to-date.
 </p>
 
 <p>Let's see the algorithm described in pseudo-code:
@@ -234,10 +234,10 @@ class Surface
 			redrawInternal() ;
 			for c in myWidgets()
 				c.redraw() ;
-			needsRedraw = false ;	
-		}		
-	}			
-	
+			needsRedraw = false ;
+		}
+	}
+
 
 }
 
@@ -249,8 +249,8 @@ class Widget: Surface
 	{
 		Surface::redraw() ;
 		BlitTo( getContainer(), getMyVideoBuffer() ) ;
-	}			
-	
+	}
+
 }
 
 </pre></code>
@@ -338,7 +338,7 @@ At the core of the system is the OSDL scheduler. When it is used, it is working 
 
 </p>
 
-<p>These frequencies are expressed relatively to the real time, so that the virtual time is kept synchronous with the user time. As the vast majority of systems are soft real-time, the best effort scheme cannot enfore strict frequencies, and usually deadlines, be it input, simulation or rendering, are missed, often because of time slices being given to other processes by the operating system.</p>  
+<p>These frequencies are expressed relatively to the real time, so that the virtual time is kept synchronous with the user time. As the vast majority of systems are soft real-time, the best effort scheme cannot enfore strict frequencies, and usually deadlines, be it input, simulation or rendering, are missed, often because of time slices being given to other processes by the operating system.</p>
 
 <p>When an input skip occurs, by default nothing is done, since next input tick will have to read all events of the queue, beginning by the ones that were not read because of the skip. If latency is deemed too high, the <code>Scheduler::onInputSkipped</code> method can be overriden so that inputs are read nevertheless as soon as possible after the missed input deadline, thanks to a call to <code>Scheduler::scheduleInput</code>.
 </p>
@@ -372,22 +372,22 @@ can be scheduled for simulation according to two non-exclusive schemes:
 	<li><b>programmed</b> activations: a list of simulation ticks can be provided to the scheduler alongside an active object, so that it will be activated during these specific ticks</li>
 	<li><b>periodic</b> activations: expressed in simulation ticks, this allows objects to be regularly activated by the scheduler</li>
 </ul>
- 
+
 </p>
 
 <p>
 All kinds of objects can be scheduled, as soon as they need to live on their own, i.e. without being triggered by anything specific. Among all these active objects, a specialized form exists, called Model, the <b>M</b> of the MVC framework. Model encapsulates the state of an active world object which may be linked to controller(s) and/or to views.</p>
 
-<p>Only the model is activated during the simulation tick, but to compute its new state it may need inputs from its controller(s). Whereas the input step updated all controllers, the simulation step (all steps being uncoupled on purpose) updates the models, which may have to read some of their inputs from controllers. Note therefore that here the controller-model pair is driven by the model: another scheme could be event-driven, i.e. low level events coming from the input layer could trigger the update of controllers, which in turn trigger the update of models, views, etc. 
+<p>Only the model is activated during the simulation tick, but to compute its new state it may need inputs from its controller(s). Whereas the input step updated all controllers, the simulation step (all steps being uncoupled on purpose) updates the models, which may have to read some of their inputs from controllers. Note therefore that here the controller-model pair is driven by the model: another scheme could be event-driven, i.e. low level events coming from the input layer could trigger the update of controllers, which in turn trigger the update of models, views, etc.
 </p>
 
 <p>
-The simulation tick is typically the place where physics take place in a game. 
+The simulation tick is typically the place where physics take place in a game.
 </p>
 
 <h3>Rendering</h3>
 <p>
-The rendering tick is the place where the outline of the virtual world is built for the user. Based on the available description of the world, its purpose is to generate a view, principally video and audio, given to the user. To do so, a dedicated module, the root renderer, is used. This root renderer must take in charge everything, by doing it itself or, generally, by delegating it to specialized sub-renderers, usually purely audio or purely video. 
+The rendering tick is the place where the outline of the virtual world is built for the user. Based on the available description of the world, its purpose is to generate a view, principally video and audio, given to the user. To do so, a dedicated module, the root renderer, is used. This root renderer must take in charge everything, by doing it itself or, generally, by delegating it to specialized sub-renderers, usually purely audio or purely video.
 </p>
 
 <p>
@@ -407,7 +407,7 @@ More precisely, the combination of log-emitting scheduled objects (in simulation
 </p>
 
 <p>
-Log output to console is a lot faster, even when redirecting these logs to a file (thanks to <code>&gt; myLogFile.txt</code> or to <code> | tee myLogFile.txt</code>), most probably because these streams are buffered. It leads us to think that the classical plug could be used if ever the user set its classical plug and/or its raw log aggregator to <code>immediateWrite = false</code>, which would disable synchronous file I/O (but, in case of crashes, may cause the loss of log messages). 
+Log output to console is a lot faster, even when redirecting these logs to a file (thanks to <code>&gt; myLogFile.txt</code> or to <code> | tee myLogFile.txt</code>), most probably because these streams are buffered. It leads us to think that the classical plug could be used if ever the user set its classical plug and/or its raw log aggregator to <code>immediateWrite = false</code>, which would disable synchronous file I/O (but, in case of crashes, may cause the loss of log messages).
 </p>
 
 <p>
@@ -438,16 +438,16 @@ Whereas it may seem more logical to prefer the second way (all wolves are treate
 <p>
 Simply put, objects can be living or not, independantly from having any kind of representation in the world. These objects are active objects (<code>OSDL::Engine::ActiveObject</code>), and are to be managed by the scheduler (<code>OSDL::Engine::Scheduler</code>). Active objects can be completely abstract, such as the remaining time before the game state is saved.
 </p>
- 	
-	
+
+
 <p>
 Completely unrelated to being active or not, objects can have some interactions with the world. These are world objects (<code>OSDL::Engine::WorldObject</code>), which means they are <code>Ceylan::Model</code> instances in the MVC framework. So they are taken into account in two ways: when they impact the world, thanks to their <code>Ceylan::View</code> instances (if any), and when the world impacts them, thanks to their <code>Ceylan::Controller</code> instances (if any).
 </p>
-	
+
 <p>
 This does not imply in any way that these world objects are active. For example, a stone can be perceived by any observer (thanks to its View, be it visual, olfactive, sound, etc.), and someone could throw them (thanks to their Controller). This does not mean that the stone thinks, i.e. needs dedicated processing power in any way. As such, a stone should not be an active object. On the contrary, a bird might be both a world object and an active object, since it clearly belongs to the world (one can view, smell, hear or touch it for example), and it is clearly not passive (it can fly according to its own will, therefore it may need processing power regularly).
 </p>
-	
+
 <p>
 World objects are all locatables (<code>Ceylan::Maths::Linear::Locatable</code>) in some way. It means that, depending on the space they are to be in (2D, 3D), they will respect the corresponding locatable inheritance. For example, an object in a 2D world will be an <code>OSDL::Engine::WorldObject2D</code>, which means it will be both a WorldObject and a Locatable2D.
 </p>
@@ -455,11 +455,11 @@ World objects are all locatables (<code>Ceylan::Maths::Linear::Locatable</code>)
 <p>
 Locatables allow to manage the position and angle(s) of rigid-body objects in space. This is done thanks to an homogeneous matrix which represents the geometrical transformation which defines their position and angle(s) relatively to their father locatable (if any). For example, the arm of a 3D robot will be a WorldObject3D, i.e. a world object being also a Locatable3D, which embeds a 4x4 homogeneous matrix. The father locatable of the arm might be the torso of the robot, which in turn have a father locatable and so on.
 </p>
-				 
+
 <p>
 As world objects can be complex, they all have at least one bounding box, which is a simpler abstract object which contains them as a whole, and whose shape allows easier computations. This world object-linked bounding box is itself a Locatable (for our robot arm, it would be <code>Ceylan::Maths::Linear::Locatable3D</code>), and its shape could be a sphere. This box is defined relatively to its object, so the later is the father locatable of the former.
 </p>
-				 
+
 <p>
 Bounding boxes are particuler insofar as they are used both by the model (ex: to detect collisions) and by most views (ex: to know whether the object is visible), whereas model and views are as much as possible uncoupled (ex: they might live on different computers, models on a server and views on clients). For local executions, the bounding boxes will be shared between model and views, whereas on a distributed context they will be as many replications as processes involved.
 </p>
@@ -467,18 +467,18 @@ Bounding boxes are particuler insofar as they are used both by the model (ex: to
 <br>
 <p>
 <center>
-    <img src="EngineObjects.png" alt="Engine objects"></img>
+	<img src="EngineObjects.png" alt="Engine objects"></img>
 </center>
 </p>
-<br>		
-		
+<br>
+
  <br><br><br>
  <center>[<a href="#toc">Back to table of contents</a>]</center>
  <br><br><br>
- 
- 
 
-<a name="screenshot"></a>              
+
+
+<a name="screenshot"></a>
 <h3>Using the screenshot mode to realize animations with the OSDL engine</h3>
 
 <p>
@@ -487,11 +487,11 @@ If one wants to render a non-interactive session of the simulated world into a M
 
 <p>
 <dl>
-    <dt>From a set of PNG files to an AVI video</dt>
-    <dd><code>mencoder "mf://*.png" -mf fps=25  -o output.avi -ovc xvid</code></dd>
+	<dt>From a set of PNG files to an AVI video</dt>
+	<dd><code>mencoder "mf://*.png" -mf fps=25  -o output.avi -ovc xvid</code></dd>
 
-    <dt>From a set of PNG files to a MPEG video</dt>
-    <dd><code>mencoder -of mpeg -ovc lavc -lavcopts vcodec=mpeg1video -oac copy "mf://*.png" -mf fps=25 -o output.mpeg</code></dd>
+	<dt>From a set of PNG files to a MPEG video</dt>
+	<dd><code>mencoder -of mpeg -ovc lavc -lavcopts vcodec=mpeg1video -oac copy "mf://*.png" -mf fps=25 -o output.mpeg</code></dd>
 
 	<dt>Direct capture from screen</dt>
 	<dd>To capture things going on, on an X-Windows display, to either individual frames or an MPEG video, one can use <a href="http://xvidcap.sourceforge.net/" target="_blank">xvidcap</a>.</dd>
@@ -504,26 +504,26 @@ If one wants to render a non-interactive session of the simulated world into a M
 Here is a simple makefile which allows to generate automatically a MPEG movie out of the generated PNG files:
 
 <center>
-    <table summary="Code" style="border: none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="Code" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 <code><pre>
 ENCODER = mencoder
 FPS     = 25
 
 
-output.mpeg: 
-        @$(ENCODER) -of mpeg -ovc lavc -lavcopts vcodec=mpeg1video -oac copy "mf://*.png" -mf fps=$(F
+output.mpeg:
+		@$(ENCODER) -of mpeg -ovc lavc -lavcopts vcodec=mpeg1video -oac copy "mf://*.png" -mf fps=$(F
 PS) -o $@
- 
+
 clean:
-        -@rm -f *.avi *.mpeg
+		-@rm -f *.avi *.mpeg
 </pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 
  <br><br>
@@ -532,14 +532,14 @@ clean:
 
 
 
-<a name="troubleshooting"></a>			
+<a name="troubleshooting"></a>
 <h2>Troubleshooting</h2>
 <p>
 
 <dl>
 
-    <dt>My joystick is not detected under Linux</dt>
-    <dd>Your kernel must have already been compiled with the joystick support enabled. If it is not the case, update your kernel. If your joystick is still not detected, maybe it is because the appropriate kernel module is not inserted. Try the following, as root: <code>modprobe joydev</code> (you should trigger the use of an object file <code>joydev.o</code>, see for example <code>/lib/modules/2.x.y-z/kernel/drivers/input/joydev.o</code>). Use our joystick test (under <code>$OSDL_ROOT/bin/events/testOSDLJoystick</code>) to check whether the joystick(s) is/are correctly detected, including relevant axes, hats, balls and buttons. 
+	<dt>My joystick is not detected under Linux</dt>
+	<dd>Your kernel must have already been compiled with the joystick support enabled. If it is not the case, update your kernel. If your joystick is still not detected, maybe it is because the appropriate kernel module is not inserted. Try the following, as root: <code>modprobe joydev</code> (you should trigger the use of an object file <code>joydev.o</code>, see for example <code>/lib/modules/2.x.y-z/kernel/drivers/input/joydev.o</code>). Use our joystick test (under <code>$OSDL_ROOT/bin/events/testOSDLJoystick</code>) to check whether the joystick(s) is/are correctly detected, including relevant axes, hats, balls and buttons.
 	</dd>
 
 	<dt>When launching my program using OSDL, I get: <code>error while loading shared libraries: libXXX: cannot open shared object file: No such file or directory</code>
@@ -547,7 +547,7 @@ clean:
 	<dd>
 	Often, XXX happens to be <code>SDL_image</code>. Failing to load libraries occurs often when <code>LD_LIBRARY_PATH</code> is not set correctly. Didn't you forget to issue your <code>source ${LOANI_ROOT}/LOANI-installations/OSDL-environment.sh</code>?
 	</dd>
-	
+
 	<dt>When launching my program using OSDL, I get: <code>Aborted</code> and that's all</dt>
 	<dd>Two reasons might explain this. The first is that either the user application or the OSDL library itself does not make a careful use of exception declaration in signatures: when a function can propagate or throw itself an exception, if there is a <code>throw</code> statement in this signature, then the exception must be listed by it. Failing to do so leads to only an <code>Aborted</code> (or one of its translated versions, such as <code>Abandon</code> in French) to be written. Using the debugger (gdb) with: <code>gdb myProgram</code>, then <code>run</code>, then <code>where</code> allows to see in the backtrace which succession of calls stumbled in an unexpected exception. The code just has to be corrected afterwards. <code>gdb</code> mail fail at startup nevertheless, see next pieces of advice in this case.
 </dd>
@@ -559,10 +559,10 @@ clean:
 
 	<dt>None of these hints helped me</dt>
 	<dd>Please check Ceylan's <a href="http://ceylan.sourceforge.net/Ceylan-latest/Troubleshooting.html" target="_blank">troubleshooting section</a>, where all known issues common to Ceylan and OSDL are discussed.</dd>
-	
+
 	<dt>Still out of luck after Ceylan troubleshooting section</dt>
 	<dd>Please describe your issue, and specify what your platform is precisely and what you did, and send us the result to our mail account dedicated to troubleshooting, <a href="mailto:osdl-bugs@esperide.com?subject=Bug%20report">osdl-bugs at esperide.com</a>, we will do our best to investigate and overcome the issue on a timely basis.</dd>
-	
+
 
 </dl>
 
@@ -571,20 +571,21 @@ clean:
 
  <center>[<a href="#toc">Back to table of contents</a>]</center>
 
- 
+
   <h3>Please react!</h3>
 
-  <p>If you have informations more detailed or more recent than those
-  presented in this document, if you noticed errors, neglects or points
-  insufficiently discussed, <a href=
-  "mailto:olivier.boudeville@online.fr?subject=[OSDL-0.5]%20User's%20guide">  drop us a line</a>!</p><br>
+  <p>If you have information more detailed or more recent than those presented
+  in this document, if you noticed errors, neglects or points insufficiently
+  discussed, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL-0.5]%20User's%20guide">
+  drop us a line</a>!</p><br>
   <br>
   <hr>
 
   <center>
-    [<a href="#_top_">Top</a>]<br>
-    <br>
-    <em>Last update: Sunday, April 5, 2009</em>
+	[<a href="#_top_">Top</a>]<br>
+	<br>
+	<em>Last update: Monday, January 3, 2011
+</em>
   </center>
 </body>
 </html>
