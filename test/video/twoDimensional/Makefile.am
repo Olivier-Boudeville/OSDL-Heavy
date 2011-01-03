@@ -1,8 +1,8 @@
-## Tests for the submodule 'Two Dimensional' of the 'Video' module 
-## of the OSDL library.
+## Tests for the submodule 'Two Dimensional' of the 'Video' module of the OSDL
+## library.
 
 
-teststwodimensionaldir=@OSDL_TEST_DIR@/video/twoDimensional
+teststwodimensionaldir = @OSDL_TEST_DIR@/video/twoDimensional
 
 teststwodimensional_CXXFLAGS = @AM_CXXFLAGS@
 
@@ -25,7 +25,7 @@ teststwodimensional_PROGRAMS = \
 	testOSDLTTFCache.exe                         \
 	testOSDLTTF.exe                              \
 	testOSDLUprightRect.exe                      \
-	testOSDLWidget.exe	
+	testOSDLWidget.exe
 
 
 testOSDLAnimation_exe_SOURCES         = testOSDLAnimation.cc
@@ -47,4 +47,3 @@ testOSDLTTFCache_exe_SOURCES          = testOSDLTTFCache.cc
 testOSDLTTF_exe_SOURCES               = testOSDLTTF.cc
 testOSDLUprightRect_exe_SOURCES       = testOSDLUprightRect.cc
 testOSDLWidget_exe_SOURCES            = testOSDLWidget.cc
- 
