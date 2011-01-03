@@ -1,10 +1,10 @@
 ## Tests for the 'Video' module of the OSDL library.
 
 
-SUBDIRS = twoDimensional videoRenderer
+SUBDIRS = graphicalUserInterface twoDimensional videoRenderer
 
 
-testsvideodir=@OSDL_TEST_DIR@/video
+testsvideodir = @OSDL_TEST_DIR@/video
 
 testsvideo_CXXFLAGS = @AM_CXXFLAGS@
 
@@ -33,4 +33,3 @@ testOSDLWindowManager_exe_SOURCES          = testOSDLWindowManager.cc
 
 clean-local:
 	@/bin/rm -f testOSDLPalette.pal testOSDLPalette.rgb
-
