@@ -1,12 +1,12 @@
-/* 
- * Copyright (C) 2003-2009 Olivier Boudeville
+/*
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -39,25 +39,26 @@ namespace OSDL
 	 * This is the libtool version of the OSDL headers, as defined in the
 	 * configure step.
 	 *
-	 * Allows to detect run-time mismatches between the OSDL headers a 
+	 * Allows to detect run-time mismatches between the OSDL headers a
 	 * program or a library was compiled with, and the actual OSDL library
 	 * it is then linked to.
 	 *
+	 * This file is a non-UNIX (e.g. Windows) version: for UNIX, it is generated
+	 * from its *.h.in counterpart.
+	 *
 	 */
-	OSDL_DLL const std::string actualOSDLHeaderLibtoolVersion 
+	OSDL_DLL const std::string actualOSDLHeaderLibtoolVersion
 		= "0.5.0" ;
 
 
 	/*
-	 * NEVER check-in this file if there is no more OSDL_LIBTOOL_VERSION 
-	 * above!
+	 * NEVER check-in this file if there is no more OSDL_LIBTOOL_VERSION above!
 	 *
 	 */
-		
-		
+
+
 }
 
 
 
 #endif // OSDL_HEADER_VERSION_H_
-

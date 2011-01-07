@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-20109 Olivier Boudeville
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *

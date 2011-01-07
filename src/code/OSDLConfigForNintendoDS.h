@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 Olivier Boudeville
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
@@ -31,8 +31,8 @@
 /*
  * Common defines for cross-compilation to the Nintendo DS.
  *
- * The library user just has to ensure that either OSDL_RUNS_ON_ARM7 or
- * or OSDL_RUNS_ON_ARM9 is set to 1, the other one being set to 0.
+ * The library user just has to ensure that either OSDL_RUNS_ON_ARM7 or or
+ * OSDL_RUNS_ON_ARM9 is set to 1, the other one being set to 0.
  *
  * Not related in any way to autoconf.
  *
@@ -95,7 +95,6 @@
 #define OSDL_USES_SDL_IMAGE 0
 #define OSDL_USES_MIXER 0
 #define OSDL_USES_SDL_TTF 0
-
 
 
 #endif // OSDL_CONFIG_FOR_NINTENDO_DS
