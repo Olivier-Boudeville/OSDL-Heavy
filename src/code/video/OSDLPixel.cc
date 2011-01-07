@@ -1,12 +1,12 @@
-/* 
- * Copyright (C) 2003-2009 Olivier Boudeville
+/*
+ * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
  *
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -39,7 +39,7 @@
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include "OSDLConfig.h"          // for OSDL_DEBUG_PIXEL and al 
+#include "OSDLConfig.h"          // for OSDL_DEBUG_PIXEL and al
 #endif // OSDL_USES_CONFIG_H
 
 
@@ -73,8 +73,8 @@ using std::string ;
 
 /// Fully Transparent special color:
 
-extern const ColorDefinition OSDL::Video::Pixels::Transparent     = 
-	{   0,   0,   0,  0  } ; 
+extern const ColorDefinition OSDL::Video::Pixels::Transparent     =
+	{   0,   0,   0,  0  } ;
 
 
 
@@ -82,22 +82,22 @@ extern const ColorDefinition OSDL::Video::Pixels::Transparent     =
 
 /// Shades of Grey:
 
-extern const ColorDefinition OSDL::Video::Pixels::Black           = 
-	{   0,   0,   0, 255 } ; 
-	
-extern const ColorDefinition OSDL::Video::Pixels::Grey            = 
-	{ 190, 190, 190, 255 } ; 
-	
-extern const ColorDefinition OSDL::Video::Pixels::DimGrey         = 
-	{ 105, 105, 105, 255 } ; 
-	
-extern const ColorDefinition OSDL::Video::Pixels::LightGrey       = 
-	{ 211, 211, 211, 255 } ; 
-	
-extern const ColorDefinition OSDL::Video::Pixels::SlateGrey       = 
-	{ 112, 128, 144, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::Black           =
+	{   0,   0,   0, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::Silver          = 
+extern const ColorDefinition OSDL::Video::Pixels::Grey            =
+	{ 190, 190, 190, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::DimGrey         =
+	{ 105, 105, 105, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::LightGrey       =
+	{ 211, 211, 211, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::SlateGrey       =
+	{ 112, 128, 144, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::Silver          =
 	{ 230, 232, 250, 255 } ;
 
 
@@ -105,437 +105,437 @@ extern const ColorDefinition OSDL::Video::Pixels::Silver          =
 
 /// Shades of Blue:
 
-extern const ColorDefinition OSDL::Video::Pixels::AliceBlue       = 
+extern const ColorDefinition OSDL::Video::Pixels::AliceBlue       =
 	{ 240, 248, 255, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::BlueViolet      = 
-	{ 138,  43, 226, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::BlueViolet      =
+	{ 138,  43, 226, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::CadetBlue       = 
-	{  95, 158, 160, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::CadetBlue       =
+	{  95, 158, 160, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::DarkSlateBlue   = 
-	{  72,  61, 139, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::DarkSlateBlue   =
+	{  72,  61, 139, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::DarkTurquoise   = 
-	{   0, 206, 209, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::DarkTurquoise   =
+	{   0, 206, 209, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::DeepSkyBlue     = 
-	{   0, 191, 255, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::DeepSkyBlue     =
+	{   0, 191, 255, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::DodgerBlue      = 
+extern const ColorDefinition OSDL::Video::Pixels::DodgerBlue      =
 	{  30, 144, 255, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::LightBlue       = 
-	{ 173, 216, 230, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::LightCyan       = 
-	{ 224, 255, 255, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::LightBlue       =
+	{ 173, 216, 230, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::MediumBlue      = 
-	{ 123, 104, 238, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::LightCyan       =
+	{ 224, 255, 255, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::NavyBlue        = 
+extern const ColorDefinition OSDL::Video::Pixels::MediumBlue      =
+	{ 123, 104, 238, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::NavyBlue        =
 	{   0,   0, 128, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::RoyalBlue       = 
-	{  65, 105, 225, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::SkyBlue         = 
+extern const ColorDefinition OSDL::Video::Pixels::RoyalBlue       =
+	{  65, 105, 225, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::SkyBlue         =
 	{ 135, 206, 235, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::SlateBlue       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::SlateBlue       =
 	{ 106,  90, 205, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::SteelBlue       = 
-	{  70, 130, 180, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::Aquamarine      = 
-	{ 127, 255, 212, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::SteelBlue       =
+	{  70, 130, 180, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::Azure           = 
+extern const ColorDefinition OSDL::Video::Pixels::Aquamarine      =
+	{ 127, 255, 212, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::Azure           =
 	{ 240, 255, 255, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Blue            = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Blue            =
 	{   0,   0, 255, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Cyan            = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Cyan            =
 	{   0, 255, 255, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Turquoise       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Turquoise       =
 	{  64, 224, 208, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::MidnightBlue    = 
-	{  25,  25, 112, 255 } ; 
+
+extern const ColorDefinition OSDL::Video::Pixels::MidnightBlue    =
+	{  25,  25, 112, 255 } ;
 
 
 
 
 /// Shades of Brown:
 
-extern const ColorDefinition OSDL::Video::Pixels::Brown           = 
-	{ 165,  42,  42, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::Brown           =
+	{ 165,  42,  42, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::RosyBrown       = 
+extern const ColorDefinition OSDL::Video::Pixels::RosyBrown       =
 	{ 188, 143, 143, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::SaddleBrown     = 
-	{ 139,  69,  19, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::Beige           = 
+extern const ColorDefinition OSDL::Video::Pixels::SaddleBrown     =
+	{ 139,  69,  19, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::Beige           =
 	{ 245,  42,  42, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Burlywood       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Burlywood       =
 	{ 222, 184, 135, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Chocolate       = 
-	{ 210, 105,  30, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::Peru            = 
+extern const ColorDefinition OSDL::Video::Pixels::Chocolate       =
+	{ 210, 105,  30, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::Peru            =
 	{ 205, 133,  63, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Tan             = 
-	{ 210, 180, 140, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::Copper          = 
-	{ 184, 115,  51, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::Tan             =
+	{ 210, 180, 140, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::Copper          =
+	{ 184, 115,  51, 255 } ;
 
 
 
 
 /// Shades of Green:
 
-extern const ColorDefinition OSDL::Video::Pixels::DarkGreen       = 
-	{	0, 100,   0, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::DarkGreen       =
+	{	0, 100,   0, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::DarkOliveGreen  = 
+extern const ColorDefinition OSDL::Video::Pixels::DarkOliveGreen  =
 	{  85, 107,  47, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::ForestGreen     = 
+
+extern const ColorDefinition OSDL::Video::Pixels::ForestGreen     =
 	{  34, 139,  34, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::GreenYellow     = 
-	{ 173, 255,  47, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::LawnGreen       = 
-	{ 124, 252,   0, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::GreenYellow     =
+	{ 173, 255,  47, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::LimeGreen       = 
+extern const ColorDefinition OSDL::Video::Pixels::LawnGreen       =
+	{ 124, 252,   0, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::LimeGreen       =
 	{  50, 205,  50, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::MintCream       = 
-	{ 245, 255, 250, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::OliveDrab       = 
-	{ 107, 142,  35, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::PaleGreen       = 
+extern const ColorDefinition OSDL::Video::Pixels::MintCream       =
+	{ 245, 255, 250, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::OliveDrab       =
+	{ 107, 142,  35, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::PaleGreen       =
 	{ 152, 251, 152, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::SeaGreen        = 
+
+extern const ColorDefinition OSDL::Video::Pixels::SeaGreen        =
 	{  46, 139,  87, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::SpringGreen     = 
+
+extern const ColorDefinition OSDL::Video::Pixels::SpringGreen     =
 	{	0, 255, 127, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::YellowGreen     = 
+
+extern const ColorDefinition OSDL::Video::Pixels::YellowGreen     =
 	{ 154, 205,  50, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Chartreuse      = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Chartreuse      =
 	{ 127, 255,   0, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Green           = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Green           =
 	{	0, 255,   0, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Khaki           = 
-	{ 240, 230, 140, 255 } ; 
+
+extern const ColorDefinition OSDL::Video::Pixels::Khaki           =
+	{ 240, 230, 140, 255 } ;
 
 
 
 
 /// Shades of Orange:
 
-extern const ColorDefinition OSDL::Video::Pixels::DarkOrange      = 
-	{ 255, 140,   0, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::DarkOrange      =
+	{ 255, 140,   0, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::DarkSalmon      = 
+extern const ColorDefinition OSDL::Video::Pixels::DarkSalmon      =
 	{ 233, 150, 122, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::LightCoral      = 
-	{ 240, 128, 128, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::LightSalmon     = 
-	{ 255, 160, 122, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::PeachPuff       = 
-	{ 255, 218, 185, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Bisque          = 
-	{ 255, 228, 196, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Coral           = 
-	{ 255, 127,  80, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::Honeydew        = 
+extern const ColorDefinition OSDL::Video::Pixels::LightCoral      =
+	{ 240, 128, 128, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::LightSalmon     =
+	{ 255, 160, 122, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::PeachPuff       =
+	{ 255, 218, 185, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::Bisque          =
+	{ 255, 228, 196, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::Coral           =
+	{ 255, 127,  80, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::Honeydew        =
 	{ 240, 255, 240, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Orange          = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Orange          =
 	{ 255, 165,   0, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Salmon          = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Salmon          =
 	{ 250, 128, 114, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Sienna          = 
-	{ 160,  82,  45, 255 } ; 
+
+extern const ColorDefinition OSDL::Video::Pixels::Sienna          =
+	{ 160,  82,  45, 255 } ;
 
 
 
 
 /// Shades of Red:
 
-extern const ColorDefinition OSDL::Video::Pixels::DeepPink        = 
+extern const ColorDefinition OSDL::Video::Pixels::DeepPink        =
 	{ 255,  20, 147, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::HotPink         = 
+
+extern const ColorDefinition OSDL::Video::Pixels::HotPink         =
 	{ 255, 105, 180, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::IndianRed       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::IndianRed       =
 	{ 205,  92,  92, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::LightPink       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::LightPink       =
 	{ 255, 182, 193, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::MediumVioletRed = 
+
+extern const ColorDefinition OSDL::Video::Pixels::MediumVioletRed =
 	{ 199,  21, 133, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::MistyRose       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::MistyRose       =
 	{ 255, 228, 225, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::OrangeRed       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::OrangeRed       =
 	{ 255,  69,   0, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::VioletRed       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::VioletRed       =
 	{ 208,  32, 144, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Firebrick       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Firebrick       =
 	{ 178,  34, 34 , 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Pink            = 
-	{ 255, 192, 203, 255 } ; 
 
-extern const ColorDefinition OSDL::Video::Pixels::Red             = 
-	{ 255,   0,   0, 255 } ; 
+extern const ColorDefinition OSDL::Video::Pixels::Pink            =
+	{ 255, 192, 203, 255 } ;
 
-extern const ColorDefinition OSDL::Video::Pixels::Tomato          = 
+extern const ColorDefinition OSDL::Video::Pixels::Red             =
+	{ 255,   0,   0, 255 } ;
+
+extern const ColorDefinition OSDL::Video::Pixels::Tomato          =
 	{ 255,  99,  71, 255 } ;
- 
+
 
 
 
 /// Shades of Violet:
 
-extern const ColorDefinition OSDL::Video::Pixels::DarkOrchid      = 
+extern const ColorDefinition OSDL::Video::Pixels::DarkOrchid      =
 	{ 153,  50, 204, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::DarkViolet      = 
+
+extern const ColorDefinition OSDL::Video::Pixels::DarkViolet      =
 	{ 148,   0, 211, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::LavenderBlush   = 
+
+extern const ColorDefinition OSDL::Video::Pixels::LavenderBlush   =
 	{ 255, 240, 245, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::MediumOrchid    = 
+
+extern const ColorDefinition OSDL::Video::Pixels::MediumOrchid    =
 	{ 186,  85, 211, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::MediumPurple    = 
+
+extern const ColorDefinition OSDL::Video::Pixels::MediumPurple    =
 	{ 147, 112, 219, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Lavender        = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Lavender        =
 	{ 230, 230, 250, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Magenta         = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Magenta         =
 	{ 255,   0, 255, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Maroon          = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Maroon          =
 	{ 176,  48,  96, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Orchid          = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Orchid          =
 	{ 218, 112, 214, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Plum            = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Plum            =
 	{ 221, 160, 221, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Purple          = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Purple          =
 	{ 160,  32, 240, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Thistle         = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Thistle         =
 	{ 216, 191, 216, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Violet          = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Violet          =
 	{ 238, 130, 238, 255 } ;
- 
+
 
 
 
 /// Shades of White:
 
-extern const ColorDefinition OSDL::Video::Pixels::AntiqueWhite    = 
+extern const ColorDefinition OSDL::Video::Pixels::AntiqueWhite    =
 	{ 250, 235, 215, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::FloralWhite     = 
+
+extern const ColorDefinition OSDL::Video::Pixels::FloralWhite     =
 	{ 255, 250, 240, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::GhostWhite      = 
+
+extern const ColorDefinition OSDL::Video::Pixels::GhostWhite      =
 	{ 248, 248, 255, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::NavajoWhite     = 
+
+extern const ColorDefinition OSDL::Video::Pixels::NavajoWhite     =
 	{ 255, 222, 173, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::OldLace         = 
+
+extern const ColorDefinition OSDL::Video::Pixels::OldLace         =
 	{ 253, 245, 230, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::WhiteSmoke      = 
+
+extern const ColorDefinition OSDL::Video::Pixels::WhiteSmoke      =
 	{ 245, 245, 245, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Gainsboro       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Gainsboro       =
 	{ 220, 220, 220, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Ivory           = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Ivory           =
 	{ 255, 255, 240, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Linen           = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Linen           =
 	{ 250, 240, 230, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Seashell        = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Seashell        =
 	{ 255, 245, 238, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Snow            = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Snow            =
 	{ 255, 250, 250, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Wheat           = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Wheat           =
 	{ 245, 222, 179, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::White           = 
-	{ 255, 255, 255, 255 } ; 
+
+extern const ColorDefinition OSDL::Video::Pixels::White           =
+	{ 255, 255, 255, 255 } ;
 
 
 
 
 /// Shades of Yellow:
 
-extern const ColorDefinition OSDL::Video::Pixels::BlanchedAlmond  = 
+extern const ColorDefinition OSDL::Video::Pixels::BlanchedAlmond  =
 	{ 255, 235, 205, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::DarkGoldenrod   = 
+
+extern const ColorDefinition OSDL::Video::Pixels::DarkGoldenrod   =
 	{ 184, 134,  11, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::LemonChiffon    = 
+
+extern const ColorDefinition OSDL::Video::Pixels::LemonChiffon    =
 	{ 255, 250, 205, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::LightGoldenrod  = 
+
+extern const ColorDefinition OSDL::Video::Pixels::LightGoldenrod  =
 	{ 238, 221, 130, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::LightYellow     = 
+
+extern const ColorDefinition OSDL::Video::Pixels::LightYellow     =
 	{ 255, 255, 224, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::PaleGoldenrod   = 
+
+extern const ColorDefinition OSDL::Video::Pixels::PaleGoldenrod   =
 	{ 238, 232, 170, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::PapayaWhip      = 
+
+extern const ColorDefinition OSDL::Video::Pixels::PapayaWhip      =
 	{ 255, 239, 213, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Cornsilk        = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Cornsilk        =
 	{ 255, 248, 220, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Gold            = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Gold            =
 	{ 255, 215,   0, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Goldenrod       = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Goldenrod       =
 	{ 218, 165,  32, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Moccasin        = 
+
+extern const ColorDefinition OSDL::Video::Pixels::Moccasin        =
 	{ 255, 228, 181, 255 } ;
- 
-extern const ColorDefinition OSDL::Video::Pixels::Yellow          = 
-	{ 255, 255,   0, 255 } ; 
+
+extern const ColorDefinition OSDL::Video::Pixels::Yellow          =
+	{ 255, 255,   0, 255 } ;
 
 
-extern const ColorDefinition OSDL::Video::Pixels::DefaultColorkey = Magenta ; 
+extern const ColorDefinition OSDL::Video::Pixels::DefaultColorkey = Magenta ;
 
 
 
 
 
-bool Pixels::setGamma( GammaFactor red, GammaFactor green, GammaFactor blue )	
+bool Pixels::setGamma( GammaFactor red, GammaFactor green, GammaFactor blue )
 {
 
 #if OSDL_USES_SDL
 
 	if ( SDL_SetGamma( red, green, blue ) == -1 )
 	{
-		LogPlug::error( "Pixels::setGamma: " 
+		LogPlug::error( "Pixels::setGamma: "
 			+ Utils::getBackendLastError() ) ;
 		return false ;
 	}
-	
+
 	return true ;
 
 #else // OSDL_USES_SDL
 
 	return false ;
-	
+
 #endif // OSDL_USES_SDL
-	
+
 }
 
 
 
-bool Pixels::setGammaRamp( GammaRampElement * redRamp, 
-	GammaRampElement * greenRamp, GammaRampElement * blueRamp ) 
+bool Pixels::setGammaRamp( GammaRampElement * redRamp,
+	GammaRampElement * greenRamp, GammaRampElement * blueRamp )
 {
 
 #if OSDL_USES_SDL
 
 	if ( SDL_SetGammaRamp( redRamp, greenRamp, blueRamp ) == -1 )
 	{
-		LogPlug::error( "Pixels::setGammaRamp: " 
+		LogPlug::error( "Pixels::setGammaRamp: "
 			+ Utils::getBackendLastError() ) ;
 		return false ;
 	}
-	
+
 	return true ;
 
 #else // OSDL_USES_SDL
 
 	return false ;
-	
+
 #endif // OSDL_USES_SDL
-	
-}	
+
+}
 
 
 
-bool Pixels::getGammaRamp( GammaRampElement * redRamp, 
-	GammaRampElement * greenRamp, GammaRampElement * blueRamp ) 
+bool Pixels::getGammaRamp( GammaRampElement * redRamp,
+	GammaRampElement * greenRamp, GammaRampElement * blueRamp )
 {
 
 #if OSDL_USES_SDL
 
 	if ( SDL_GetGammaRamp( redRamp, greenRamp, blueRamp ) == -1 )
 	{
-		LogPlug::error( "Pixels::getGammaRamp: " 
+		LogPlug::error( "Pixels::getGammaRamp: "
 			+ Utils::getBackendLastError() ) ;
 		return false ;
 	}
-	
+
 	return true ;
 
 #else // OSDL_USES_SDL
 
 	return false ;
-	
+
 #endif // OSDL_USES_SDL
 
-}	
+}
 
 
 
@@ -544,62 +544,62 @@ bool Pixels::getGammaRamp( GammaRampElement * redRamp,
 
 
 
-void Pixels::getRecommendedColorMasks( ColorMask & redMask, 
-	ColorMask & greenMask, ColorMask & blueMask, ColorMask & alphaMask ) 
+void Pixels::getRecommendedColorMasks( ColorMask & redMask,
+	ColorMask & greenMask, ColorMask & blueMask, ColorMask & alphaMask )
 {
 
 #if OSDL_DEBUG_PIXEL
 
 	// Check endianness here just to output a log message:
-	
+
 #if CEYLAN_DETECTED_LITTLE_ENDIAN
 
 	LogPlug::debug( "Pixels::getRecommendedColorMasks (with alpha): "
 		"using little endian convention." ) ;
-		
+
 #else // CEYLAN_DETECTED_LITTLE_ENDIAN
 
 	LogPlug::debug( "Pixels::getRecommendedColorMasks (with alpha): "
 		"using big endian convention." ) ;
-		
+
 #endif // CEYLAN_DETECTED_LITTLE_ENDIAN
 
 #endif // OSDL_DEBUG_PIXEL
-	
+
 	/*
-	 * Ensure color masks are only defined once (in OpenGL module) to 
-	 * avoid disaster:
+	 * Ensure color masks are only defined once (in OpenGL module) to avoid
+	 * disaster:
 	 *
 	 */
-	
+
 	redMask   = OpenGL::RedMask ;
 	greenMask = OpenGL::GreenMask ;
 	blueMask  = OpenGL::BlueMask ;
 	alphaMask = OpenGL::AlphaMask ;
-		
-}	
-								
-	
-				
-void Pixels::getRecommendedColorMasks( ColorMask & redMask, 
-	ColorMask & greenMask, ColorMask & blueMask ) 
+
+}
+
+
+
+void Pixels::getRecommendedColorMasks( ColorMask & redMask,
+	ColorMask & greenMask, ColorMask & blueMask )
 {
 
 
 #if OSDL_DEBUG_PIXEL
 
 	// Check endianness here just to output a log message:
-	
+
 #if CEYLAN_DETECTED_LITTLE_ENDIAN
 
 	LogPlug::debug( "Pixels::getRecommendedColorMasks (with alpha): "
 		"using little endian convention." ) ;
-		
+
 #else // CEYLAN_DETECTED_LITTLE_ENDIAN
 
 	LogPlug::debug( "Pixels::getRecommendedColorMasks (with alpha): "
 		"using big endian convention." ) ;
-		
+
 #endif // CEYLAN_DETECTED_LITTLE_ENDIAN
 
 #endif // OSDL_DEBUG_PIXEL
@@ -609,20 +609,20 @@ void Pixels::getRecommendedColorMasks( ColorMask & redMask,
 	greenMask = OpenGL::GreenMask ;
 	blueMask  = OpenGL::BlueMask ;
 
-}	
-				
+}
 
 
-void Pixels::getCurrentColorMasks( const Pixels::PixelFormat & format, 
-	Pixels::ColorMask & redMask,  Pixels::ColorMask & greenMask, 
-	Pixels::ColorMask & blueMask, Pixels::ColorMask & alphaMask ) 
+
+void Pixels::getCurrentColorMasks( const Pixels::PixelFormat & format,
+	Pixels::ColorMask & redMask,  Pixels::ColorMask & greenMask,
+	Pixels::ColorMask & blueMask, Pixels::ColorMask & alphaMask )
 {
 
 	redMask   = format.Rmask ;
 	greenMask = format.Gmask ;
 	blueMask  = format.Bmask ;
 	alphaMask = format.Amask ;
-		
+
 }
 
 
@@ -631,138 +631,138 @@ void Pixels::getCurrentColorMasks( const Pixels::PixelFormat & format,
 // Color conversion section.
 
 
-ColorDefinition Pixels::convertRGBAToColorDefinition( 
-	ColorElement red,  ColorElement green, 
-	ColorElement blue, ColorElement alpha ) 
+ColorDefinition Pixels::convertRGBAToColorDefinition(
+	ColorElement red,  ColorElement green,
+	ColorElement blue, ColorElement alpha )
 {
 
 	ColorDefinition result ;
-	
+
 	result.r      = red ;
-	result.g      = green ;	
-	result.b      = blue ;	
-	result.unused = alpha ;	
-	
+	result.g      = green ;
+	result.b      = blue ;
+	result.unused = alpha ;
+
 	return result ;
-	
+
 }
-	
-	
-				
+
+
+
 void Pixels::convertColorDefinitionToRGBA( ColorDefinition color,
-	ColorElement & red, ColorElement & green, ColorElement & blue, 
-	ColorElement & alpha )  
+	ColorElement & red, ColorElement & green, ColorElement & blue,
+	ColorElement & alpha )
 {
 
 	red   = color.r ;
 	green = color.g ;
 	blue  = color.b ;
 	alpha = color.unused ;
-	
-}	
-							
 
-				
+}
+
+
+
 PixelColor Pixels::convertRGBAToPixelColor( const Pixels::PixelFormat & format,
-	ColorElement red, ColorElement green, ColorElement blue, 
-	ColorElement alpha )  
-{	
+	ColorElement red, ColorElement green, ColorElement blue,
+	ColorElement alpha )
+{
 
 #if OSDL_USES_SDL
 
 	/*
-	
-	LogPlug::debug( "convertRGBAToPixelColor: pixel format is " 
+
+	LogPlug::debug( "convertRGBAToPixelColor: pixel format is "
 		+ Pixels::toString( format ) + ", pixel is [ R, G, B, A ] = [ "
 				+ Ceylan::toString( static_cast<Uint16>( red ) ) )   + " ; "
 				+ Ceylan::toString( static_cast<Uint16>( green ) ) + " ; "
 				+ Ceylan::toString( static_cast<Uint16>( blue  ) )  + " ; "
 				+ Ceylan::toString( static_cast<Uint16>( alpha ) )  + " ] " ) ;
 	*/
-				
-	return SDL_MapRGBA( const_cast<Pixels::PixelFormat *>( & format ), 
+
+	return SDL_MapRGBA( const_cast<Pixels::PixelFormat *>( & format ),
 		red, green, blue, alpha ) ;
 
 #else // OSDL_USES_SDL
 
 	throw VideoException( "Pixels::convertRGBAToPixelColor failed: "
 		"no SDL support available" ) ;
-		
+
 #endif // OSDL_USES_SDL
-	
+
 }
 
 
 
 ColorDefinition Pixels::convertPixelColorToColorDefinition(
-	 const PixelFormat & format, PixelColor pixel )	
+	 const PixelFormat & format, PixelColor pixel )
 {
 
 #if OSDL_USES_SDL
 
 	ColorDefinition pixDef ;
 
-	SDL_GetRGBA( pixel, const_cast<Pixels::PixelFormat *>( & format ), 
+	SDL_GetRGBA( pixel, const_cast<Pixels::PixelFormat *>( & format ),
 		& pixDef.r, & pixDef.g, & pixDef.b, & pixDef.unused ) ;
-	
+
 	return pixDef ;
-	
+
 #else // OSDL_USES_SDL
 
 	throw VideoException( "Pixels::convertPixelColorToColorDefinition failed: "
 		"no SDL support available" ) ;
-		
+
 #endif // OSDL_USES_SDL
 
 }
 
 
 
-PixelColor Pixels::convertColorDefinitionToPixelColor( 
-	const PixelFormat & format, ColorDefinition colorDef ) 
+PixelColor Pixels::convertColorDefinitionToPixelColor(
+	const PixelFormat & format, ColorDefinition colorDef )
 {
 
 #if OSDL_USES_SDL
 
 	return SDL_MapRGBA( const_cast<Pixels::PixelFormat *>( & format ),
 		colorDef.r, colorDef.g, colorDef.b, colorDef.unused ) ;
-	
+
 #else // OSDL_USES_SDL
 
 	throw VideoException( "Pixels::convertColorDefinitionToPixelColor failed: "
 		"no SDL support available" ) ;
-		
+
 #endif // OSDL_USES_SDL
-	
+
 }
 
 
 
-PixelColor Pixels::convertColorDefinitionToRawPixelColor( 
-	ColorDefinition colorDef ) 
+PixelColor Pixels::convertColorDefinitionToRawPixelColor(
+	ColorDefinition colorDef )
 {
 
 	/*
-	 * This is a very artificial transformation, requested by the compiler:
-	 * from a set of four bytes (struct SDL_Color) to a Uint32...
+	 * This is a very artificial transformation, requested by the compiler: from
+	 * a set of four bytes (struct SDL_Color) to a Uint32...
 	 *
 	 */
-	return ((Ceylan::Uint32) colorDef.r << 24) 
-		| ((Ceylan::Uint32) colorDef.g << 16) 
-		| ((Ceylan::Uint32) colorDef.b << 8 ) 
+	return ((Ceylan::Uint32) colorDef.r << 24)
+		| ((Ceylan::Uint32) colorDef.g << 16)
+		| ((Ceylan::Uint32) colorDef.b << 8 )
 		| ((Ceylan::Uint32) colorDef.unused ) ;
-		 
+
 }
 
 
 
-PixelColor Pixels::convertRGBAToRawPixelColor( 
-	ColorElement red, ColorElement green, ColorElement blue, 
-	ColorElement alpha ) 
+PixelColor Pixels::convertRGBAToRawPixelColor(
+	ColorElement red, ColorElement green, ColorElement blue,
+	ColorElement alpha )
 {
-	return ((Ceylan::Uint32) red << 24) | ((Ceylan::Uint32) green << 16) 
+	return ((Ceylan::Uint32) red << 24) | ((Ceylan::Uint32) green << 16)
 		| ((Ceylan::Uint32) blue << 8) | ((Ceylan::Uint32) alpha ) ;
-	
+
 }
 
 
@@ -771,136 +771,136 @@ PixelColor Pixels::convertRGBAToRawPixelColor(
 // Color comparisons section.
 
 
-bool Pixels::areEqual( ColorDefinition first, ColorDefinition second, 
-	bool useAlpha ) 
+bool Pixels::areEqual( ColorDefinition first, ColorDefinition second,
+	bool useAlpha )
 {
-	
+
 
 #if OSDL_DEBUG_COLOR
-	LogPlug::trace( "Pixels::areEqual: comparing " 
+	LogPlug::trace( "Pixels::areEqual: comparing "
 		+ Pixels::toString( first ) + " with "
-		+ Pixels::toString( second ) 
+		+ Pixels::toString( second )
 		+ ( useAlpha ? " (alpha taken into account)": " (alpha ignored)" ) ) ;
 #endif // OSDL_DEBUG_COLOR
-	
+
 	if ( first.r != second.r )
 		return false ;
 
 	if ( first.g != second.g )
 		return false ;
-		
+
 	if ( first.b != second.b )
 		return false ;
 
 	if ( useAlpha )
 		return ( first.unused == second.unused ) ;
 	else
-		return true ;	
-		
+		return true ;
+
 }
 
 
 
-bool Pixels::isLess( ColorDefinition value, ColorDefinition comparison ) 
+bool Pixels::isLess( ColorDefinition value, ColorDefinition comparison )
 {
 
 	if ( value.r < comparison.r )
 		return true ;
-		
+
 	if ( value.r > comparison.r )
 		return false ;
-		
-		
+
+
 	if ( value.g < comparison.g )
 		return true ;
-		
+
 	if ( value.g > comparison.g )
 		return false ;
-		
-		
+
+
 	if ( value.b < comparison.b )
 		return true ;
-		
+
 	if ( value.b > comparison.b )
 		return false ;
-		
-		
+
+
 	if ( value.unused < comparison.unused )
 		return true ;
-	
+
 	if ( value.unused > comparison.unused )
 		return false ;
-	
-	return false ;	
-		
-}					
 
+	return false ;
 
-
-bool Pixels::areEqual( PixelColor first, PixelColor second ) 
-{
-
-	return first == second ;
-	
 }
 
 
-		
-ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first, 
-	ColorDefinition second )  	
+
+bool Pixels::areEqual( PixelColor first, PixelColor second )
+{
+
+	return first == second ;
+
+}
+
+
+
+ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first,
+	ColorDefinition second )
 {
 
 	// Three different choices are always enough:
 	ColorDefinition res = Pixels::Red ;
-	
-	if ( ( ! areEqual( res, first, /* useAlpha */ false ) ) 
+
+	if ( ( ! areEqual( res, first, /* useAlpha */ false ) )
 			&& ( ! areEqual( res, second, /* useAlpha */ false ) ) )
 		return res ;
-	
+
 	res = Pixels::Green ;
-		
-	if ( ( ! areEqual( res, first, /* useAlpha */ false ) ) 
+
+	if ( ( ! areEqual( res, first, /* useAlpha */ false ) )
 			&& ( ! areEqual( res, second, /* useAlpha */ false ) ) )
 		return res ;
-	
+
 	return Pixels::Blue ;
-			
+
 }
-	
-		
-		
-ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first, 
-	ColorDefinition second, ColorDefinition third )  	
+
+
+
+ColorDefinition Pixels::selectColorDifferentFrom( ColorDefinition first,
+	ColorDefinition second, ColorDefinition third )
 {
 
 	// Four different choices are always enough:
 	ColorDefinition res = Pixels::Red ;
-	
-	if ( ( ! areEqual( res, first, /* useAlpha */ false ) ) 
-		&& ( ! areEqual( res, second, /* useAlpha */ false  ) 
+
+	if ( ( ! areEqual( res, first, /* useAlpha */ false ) )
+		&& ( ! areEqual( res, second, /* useAlpha */ false  )
 			&& ( ! areEqual( res, third, /* useAlpha */ false ) ) ) )
 		return res ;
-	
+
 	res = Pixels::Green ;
-		
-	if ( ( ! areEqual( res, first, /* useAlpha */ false ) ) 
-		&& ( ! areEqual( res, second, /* useAlpha */ false  ) 
+
+	if ( ( ! areEqual( res, first, /* useAlpha */ false ) )
+		&& ( ! areEqual( res, second, /* useAlpha */ false  )
 			&& ( ! areEqual( res, third, /* useAlpha */ false ) ) ) )
 		return res ;
-	
+
 	res = Pixels::Blue ;
-		
-	if ( ( ! areEqual( res, first, /* useAlpha */ false ) ) 
-		&& ( ! areEqual( res, second, /* useAlpha */ false  ) 
+
+	if ( ( ! areEqual( res, first, /* useAlpha */ false ) )
+		&& ( ! areEqual( res, second, /* useAlpha */ false  )
 			&& ( ! areEqual( res, third, /* useAlpha */ false ) ) ) )
 		return res ;
-	
+
 	return Pixels::Black ;
-	
+
 }
-		
-	
-		
+
+
+
 
 // get/put pixel operations.
 
@@ -911,273 +911,272 @@ Pixels::PixelColor Pixels::getPixelColor( const Surface & fromSurface,
 {
 
 #if OSDL_USES_SDL
-	
-    BytesPerPixel bpp = fromSurface.getBytesPerPixel() ;
-	
-    /*
-	 * Here p is the address to the pixel whose color we want to 
-	 * retrieve:
+
+	BytesPerPixel bpp = fromSurface.getBytesPerPixel() ;
+
+	/*
+	 * Here p is the address to the pixel whose color we want to retrieve:
 	 *
 	 */
-    Uint8 * p = reinterpret_cast<Uint8 *>( fromSurface.getPixels() )
+	Uint8 * p = reinterpret_cast<Uint8 *>( fromSurface.getPixels() )
 		+ y * fromSurface.getPitch() + x * bpp ;
 
-    switch( bpp ) 
+	switch( bpp )
 	{
-	
-    	case 1:
-    	    return * p ;
 
-    	case 2:
-    	    return *( Uint16 * ) p ;
+		case 1:
+			return * p ;
 
-   		 case 3:
-#if CEYLAN_DETECTED_LITTLE_ENDIAN		 
-   	        return p[0] | ( p[1] << 8 ) | p[2] << 16 ;
+		case 2:
+			return *( Uint16 * ) p ;
+
+		 case 3:
+#if CEYLAN_DETECTED_LITTLE_ENDIAN
+			return p[0] | ( p[1] << 8 ) | p[2] << 16 ;
 #else // CEYLAN_DETECTED_LITTLE_ENDIAN
 			return ( p[0] << 16 ) | ( p[1] << 8 ) | p[2] ;
 #endif // CEYLAN_DETECTED_LITTLE_ENDIAN
- 
-    	case 4:
-   	  		return *( Uint32 * ) p ;
- 	
-    	default:
-        	throw VideoException( "Pixels::getPixelColor: "
+
+		case 4:
+			return *( Uint32 * ) p ;
+
+		default:
+			throw VideoException( "Pixels::getPixelColor: "
 				"abnormal bit per pixel detected" ) ;
-    }
+	}
 
 #else // OSDL_USES_SDL
 
 	throw VideoException( "Pixels::getPixelColor failed: "
 		"no SDL support available" ) ;
-		
+
 #endif // OSDL_USES_SDL
-	
-} 
 
-
-
-Pixels::ColorDefinition Pixels::getColorDefinition( 
-	const Surface & fromSurface, Coordinate x, Coordinate y ) 
-{
-
-	return convertPixelColorToColorDefinition( fromSurface.getPixelFormat(),
-		getPixelColor( fromSurface, x, y ) ) ;
-		
 }
 
 
 
-		
-void Pixels::putRGBAPixel( Surface & targetSurface, 
-	Coordinate x, Coordinate y, 
-	ColorElement red, ColorElement green, ColorElement blue, 
-	ColorElement alpha, bool blending, bool clipping, bool locking ) 
+Pixels::ColorDefinition Pixels::getColorDefinition(
+	const Surface & fromSurface, Coordinate x, Coordinate y )
 {
 
-	putPixelColor( targetSurface, x, y, 
-		convertRGBAToPixelColor( targetSurface.getPixelFormat(), 
+	return convertPixelColorToColorDefinition( fromSurface.getPixelFormat(),
+		getPixelColor( fromSurface, x, y ) ) ;
+
+}
+
+
+
+
+void Pixels::putRGBAPixel( Surface & targetSurface,
+	Coordinate x, Coordinate y,
+	ColorElement red, ColorElement green, ColorElement blue,
+	ColorElement alpha, bool blending, bool clipping, bool locking )
+{
+
+	putPixelColor( targetSurface, x, y,
+		convertRGBAToPixelColor( targetSurface.getPixelFormat(),
 			red, green, blue, alpha ), alpha, blending, clipping, locking ) ;
 
 }
 
 
 
-void Pixels::putColorDefinition( Surface & targetSurface, 
-	Coordinate x, Coordinate y, ColorDefinition colorDef, 
+void Pixels::putColorDefinition( Surface & targetSurface,
+	Coordinate x, Coordinate y, ColorDefinition colorDef,
 	bool blending, bool clipping, bool locking )
 {
 
-	putPixelColor( targetSurface, x, y, 
-		convertRGBAToPixelColor( targetSurface.getPixelFormat(), 
-			colorDef.r, colorDef.g, colorDef.b, colorDef.unused ), 
+	putPixelColor( targetSurface, x, y,
+		convertRGBAToPixelColor( targetSurface.getPixelFormat(),
+			colorDef.r, colorDef.g, colorDef.b, colorDef.unused ),
 		colorDef.unused, blending, clipping, locking ) ;
-		
-}	
+
+}
 
 
 
-void Pixels::putPixelColor( Surface & targetSurface, 
-	Coordinate x, Coordinate y, PixelColor convertedColor, 
-	ColorElement alpha, bool blending, bool clipping, bool locking ) 	
+void Pixels::putPixelColor( Surface & targetSurface,
+	Coordinate x, Coordinate y, PixelColor convertedColor,
+	ColorElement alpha, bool blending, bool clipping, bool locking )
 {
-	
+
 #if OSDL_USES_SDL_GFX
-	
+
 	/*
 	 * The lock method is conditional, mustBeLocked() tests could not be used.
 	 *
 	 */
 
-	/* 
+	/*
 	 * Selects the right SDL_gfx primitive to call:
 	 * [ blending, clipping, locking ] = [ B, C, L ]
 	 *
 	 */
-	
+
 	if ( locking )
 	{
-		
+
 		if ( clipping )
 		{
-		
+
 			if ( blending )
 			{
-			
+
 				// [ B, C, L ] = [ 1, 1, 1 ]
-				
+
 				if ( targetSurface.mustBeLocked() )
-				{	
+				{
 					targetSurface.lock() ;
-					
-					::putPixelAlpha( & targetSurface.getSDLSurface(), x, y, 
+
+					::putPixelAlpha( & targetSurface.getSDLSurface(), x, y,
 						convertedColor, alpha ) ;
-					
-					targetSurface.unlock() ;								
+
+					targetSurface.unlock() ;
 				}
 				else
 				{
-					::putPixelAlpha( & targetSurface.getSDLSurface(), x, y, 
-						convertedColor, alpha ) ;	
+					::putPixelAlpha( & targetSurface.getSDLSurface(), x, y,
+						convertedColor, alpha ) ;
 				}
-				
+
 			}
 			else // blending is false:
 			{
-			
+
 				// [ B, C, L ] = [ 0, 1, 1 ]
 
 				if ( targetSurface.mustBeLocked() )
-				{	
+				{
 					targetSurface.lock() ;
-					
-					::fastPixelColorNolock( & targetSurface.getSDLSurface(), 
+
+					::fastPixelColorNolock( & targetSurface.getSDLSurface(),
 						x, y, convertedColor ) ;
-								
-					targetSurface.unlock() ;								
+
+					targetSurface.unlock() ;
 				}
 				else
 				{
-					::fastPixelColorNolock( & targetSurface.getSDLSurface(), 
-						x, y, convertedColor ) ;			
+					::fastPixelColorNolock( & targetSurface.getSDLSurface(),
+						x, y, convertedColor ) ;
 				}
-					
+
 			} // end blending
-		
-		} 
+
+		}
 		else // clipping is false (beware !):
 		{
-		
+
 			if ( blending )
 			{
-			
+
 				// [ B, C, L ] = [ 1, 0, 1 ]
-			
+
 				/*
-				 * Clipping is done nevertheless (cannot be disabled, not 
-				 * that bad).
+				 * Clipping is done nevertheless (cannot be disabled, not that
+				 * bad).
 				 *
 				 */
-				
+
 				if ( targetSurface.mustBeLocked() )
-				{	
+				{
 					targetSurface.lock() ;
-					::putPixelAlpha( & targetSurface.getSDLSurface(), x, y, 
+					::putPixelAlpha( & targetSurface.getSDLSurface(), x, y,
 						convertedColor, alpha ) ;
-					targetSurface.unlock() ;								
+					targetSurface.unlock() ;
 				}
 				else
 				{
-					::putPixelAlpha( & targetSurface.getSDLSurface(), x, y, 
-						convertedColor, alpha ) ;	
+					::putPixelAlpha( & targetSurface.getSDLSurface(), x, y,
+						convertedColor, alpha ) ;
 				}
-			
-			
+
+
 			}
 			else // blending is false:
 			{
-			
+
 				// [ B, C, L ] = [ 0, 0, 1 ]
-			
+
 				// This time, clipping is *not* performed, as wanted...
-				
+
 				if ( targetSurface.mustBeLocked() )
-				{	
+				{
 					targetSurface.lock() ;
-					::fastPixelColorNolockNoclip( 
-						& targetSurface.getSDLSurface(), 
+					::fastPixelColorNolockNoclip(
+						& targetSurface.getSDLSurface(),
 						x, y, convertedColor ) ;
-					targetSurface.unlock() ;								
+					targetSurface.unlock() ;
 				}
 				else
 				{
-					::fastPixelColorNolockNoclip( 
-						& targetSurface.getSDLSurface(), 
-						x, y, convertedColor ) ;		
+					::fastPixelColorNolockNoclip(
+						& targetSurface.getSDLSurface(),
+						x, y, convertedColor ) ;
 				}
-			
-								
+
+
 			} // end blending
-		
-		
+
+
 		} // end clipping
-		
-		
-	} 
+
+
+	}
 	else // locking is false:
 	{
 
 		if ( clipping )
 		{
 
-	
+
 			if ( blending )
 			{
-			
+
 				// [ B, C, L ] = [ 1, 1, 0 ]
-				
+
 				// This is the most commonly used case !
-				
-				//alternativePut( targetSurface, x, y, convertedColor ) ;	
-				::putPixelAlpha( & targetSurface.getSDLSurface(), x, y, 
-					convertedColor, alpha ) ;			
-					
+
+				//alternativePut( targetSurface, x, y, convertedColor ) ;
+				::putPixelAlpha( & targetSurface.getSDLSurface(), x, y,
+					convertedColor, alpha ) ;
+
 			}
 			else // blending is false:
-			{		
-			
+			{
+
 				// [ B, C, L ] = [ 0, 1, 0 ]
-				
-				::fastPixelColorNolock( & targetSurface.getSDLSurface(), 
+
+				::fastPixelColorNolock( & targetSurface.getSDLSurface(),
 					x, y, convertedColor ) ;
-				
+
 			} // end blending
-	
-		} 
+
+		}
 		else // clipping is false (beware !):
 		{
-		
+
 			if ( blending )
 			{
 
 				// [ B, C, L ] = [ 1, 0, 0 ]
 
 				// Actually the clipping is made in this case too.
-				::putPixelAlpha( & targetSurface.getSDLSurface(), x, y, 
-					convertedColor, alpha ) ;	
-				
+				::putPixelAlpha( & targetSurface.getSDLSurface(), x, y,
+					convertedColor, alpha ) ;
+
 			}
 			else // blending is false:
 			{
-			
+
 				// [ B, C, L ] = [ 0, 0, 0 ]
-				
-				::fastPixelColorNolockNoclip( & targetSurface.getSDLSurface(), 
+
+				::fastPixelColorNolockNoclip( & targetSurface.getSDLSurface(),
 					x, y, convertedColor ) ;
-			
+
 			} // end blending
-		
-		
+
+
 		} // end clipping
 
 
@@ -1188,99 +1187,99 @@ void Pixels::putPixelColor( Surface & targetSurface,
 
 	throw VideoException( "Pixels::putPixelColor failed: "
 		"no SDL support available" ) ;
-		
+
 #endif // OSDL_USES_SDL_GFX
 
 }
 
 
 
-void Pixels::alternativePutPixelColor( Surface & targetSurface, 
+void Pixels::alternativePutPixelColor( Surface & targetSurface,
 	Coordinate x, Coordinate y, PixelColor color, bool mapToSurfaceFormat )
 {
-	
+
 #if OSDL_USES_SDL
-	
+
 	/*
-	
+
 	LogPlug::debug( "Pixels::alternativePut called for point in [ "
-		+ Ceylan::toString( x ) + " ; " 
+		+ Ceylan::toString( x ) + " ; "
 		+ Ceylan::toString( y ) + " ] with pixel color "
-		+ Ceylan::toString( color ) 
+		+ Ceylan::toString( color )
 		+ " (" + Ceylan::toString( color, true ) + " )." ) ;
-	
+
 	*/
 
 	ColorMask redMask, greenMask, blueMask, alphaMask ;
-	Pixels::getRecommendedColorMasks( redMask, greenMask, blueMask, 
+	Pixels::getRecommendedColorMasks( redMask, greenMask, blueMask,
 		alphaMask ) ;
 
 	if ( mapToSurfaceFormat )
 	{
-		color = SDL_MapRGBA( & targetSurface.getPixelFormat(), 
+		color = SDL_MapRGBA( & targetSurface.getPixelFormat(),
 			( color & redMask   ) >> 24,
-		    ( color & greenMask ) >> 16, 
+			( color & greenMask ) >> 16,
 			( color & blueMask  ) >>  8,
 			  color & alphaMask ) ;
 	}
-					
+
 	BytesPerPixel bytes = targetSurface.getBytesPerPixel() ;
-	
-    // Here p is the address of the pixel whose color is to be set:
-    ColorElement * p = reinterpret_cast<ColorElement *>(
-			targetSurface.getPixels() )	
+
+	// Here p is the address of the pixel whose color is to be set:
+	ColorElement * p = reinterpret_cast<ColorElement *>(
+			targetSurface.getPixels() )
 			+ y * targetSurface.getPitch() + x * bytes ;
 
-    switch( bytes ) 
+	switch( bytes )
 	{
-	
-    	case 1:
-    	    *p = color ;
-    	    break ;
 
-    	case 2:
-    	    *( Uint16 * ) p = color ;
-    	    break ;
+		case 1:
+			*p = color ;
+			break ;
 
-   	 	case 3:
+		case 2:
+			*( Uint16 * ) p = color ;
+			break ;
+
+		case 3:
 #if CEYLAN_DETECTED_LITTLE_ENDIAN
-   	        	p[0] =   color         & 0xff ;
-            	p[1] = ( color >> 8  ) & 0xff ;
-            	p[2] = ( color >> 16 ) & 0xff ;
+				p[0] =   color         & 0xff ;
+				p[1] = ( color >> 8  ) & 0xff ;
+				p[2] = ( color >> 16 ) & 0xff ;
 #else // CEYLAN_DETECTED_LITTLE_ENDIAN
-          		p[0] = ( color >> 16 ) & 0xff ;
+				p[0] = ( color >> 16 ) & 0xff ;
 				p[1] = ( color >>  8 ) & 0xff ;
-        	    p[2] =   color         & 0xff ;
-#endif // CEYLAN_DETECTED_LITTLE_ENDIAN		
-        	break ;
+				p[2] =   color         & 0xff ;
+#endif // CEYLAN_DETECTED_LITTLE_ENDIAN
+			break ;
 
 		case 4:
-        	*( Uint32 * ) p = color ;
-        	break ;
-			
+			*( Uint32 * ) p = color ;
+			break ;
+
 		default:
 			LogPlug::error( "Pixels::alternativePut: "
 				"unexpected bytes per pixel specified ("
-				+ Ceylan::toString( 
-					static_cast<Ceylan::Uint16>( bytes ) ) 
+				+ Ceylan::toString(
+					static_cast<Ceylan::Uint16>( bytes ) )
 				+ "), nothing done." ) ;
 			break ;
-			
-    }
+
+	}
 
 
 #else // OSDL_USES_SDL
 
 	throw VideoException( "Pixels::alternativePutPixelColor failed: "
 		"no SDL support available" ) ;
-		
+
 #endif // OSDL_USES_SDL
 
 }
 
 
-	
-string Pixels::toString( const Pixels::PixelFormat & format ) 
+
+string Pixels::toString( const Pixels::PixelFormat & format )
 {
 
 	string result = "Pixel format description "
@@ -1291,102 +1290,101 @@ string Pixels::toString( const Pixels::PixelFormat & format )
 
 	std::list<string> l ;
 
-	l.push_back( Ceylan::toNumericalString( format.BitsPerPixel ) 
+	l.push_back( Ceylan::toNumericalString( format.BitsPerPixel )
 		+ " bits per pixel." ) ;
-		
-	l.push_back( Ceylan::toNumericalString( format.BytesPerPixel ) 
+
+	l.push_back( Ceylan::toNumericalString( format.BytesPerPixel )
 		+ " bytes per pixel." ) ;
 
-	l.push_back( "Colorkey (pixel value of transparent pixels) is " 
+	l.push_back( "Colorkey (pixel value of transparent pixels) is "
 		+ toString( format.colorkey, format ) + "." ) ;
-		
-	l.push_back( "Overall alpha is " 
+
+	l.push_back( "Overall alpha is "
 		+ Ceylan::toNumericalString( format.alpha ) + "." ) ;
-	
+
 	if ( format.palette )
 		l.push_back( "Palette available." ) ;
 	else
 		l.push_back( "No palette used." ) ;
-		
-	
+
+
 	l.push_back( "Rmask is " + Ceylan::toString( format.Rmask, true ) + "." ) ;
 	l.push_back( "Gmask is " + Ceylan::toString( format.Gmask, true ) + "." ) ;
 	l.push_back( "Bmask is " + Ceylan::toString( format.Bmask, true ) + "." ) ;
 	l.push_back( "Amask is " + Ceylan::toString( format.Amask, true ) + "." ) ;
 
-	l.push_back( "Rshift is " 
+	l.push_back( "Rshift is "
 		+ Ceylan::toNumericalString( format.Rshift ) + "." ) ;
-		
-	l.push_back( "Gshift is " 
+
+	l.push_back( "Gshift is "
 		+ Ceylan::toNumericalString( format.Gshift ) + "." ) ;
-		
-	l.push_back( "Bshift is " 
+
+	l.push_back( "Bshift is "
 		+ Ceylan::toNumericalString( format.Bshift ) + "." ) ;
-		
-	l.push_back( "Ashift is " 
+
+	l.push_back( "Ashift is "
 		+ Ceylan::toNumericalString( format.Ashift ) + "." ) ;
-		
-	l.push_back( "Rloss is " 
+
+	l.push_back( "Rloss is "
 		+ Ceylan::toNumericalString( format.Rloss ) + "." ) ;
-		
-	l.push_back( "Gloss is " 
+
+	l.push_back( "Gloss is "
 		+ Ceylan::toNumericalString( format.Gloss ) + "." ) ;
-		
-	l.push_back( "Bloss is " 
+
+	l.push_back( "Bloss is "
 		+ Ceylan::toNumericalString( format.Bloss ) + "." ) ;
-		
-	l.push_back( "Aloss is " 
+
+	l.push_back( "Aloss is "
 		+ Ceylan::toNumericalString( format.Aloss ) + "." ) ;
-	
-		
+
+
 	return result + Ceylan::formatStringList( l ) ;
-	
+
 }
 
 
 
-string Pixels::toString( PixelColor pixel, const PixelFormat & format ) 
+string Pixels::toString( PixelColor pixel, const PixelFormat & format )
 {
 
-	return "Pixel whose color definition is " 
-		+ toString( convertPixelColorToColorDefinition( format, pixel ) ) ; 
-	
+	return "Pixel whose color definition is "
+		+ toString( convertPixelColorToColorDefinition( format, pixel ) ) ;
+
 }
-			
-		
-				
-string Pixels::toString( ColorDefinition color )  
+
+
+
+string Pixels::toString( ColorDefinition color )
 {
-	
-	string result = "[R;G;B;A] = [ " 
+
+	string result = "[R;G;B;A] = [ "
 			+ Ceylan::toNumericalString( color.r ) + " ; "
 			+ Ceylan::toNumericalString( color.g ) + " ; "
 			+ Ceylan::toNumericalString( color.b ) + " ; "
 			+ Ceylan::toNumericalString( color.unused ) + " ]" ;
-			
-	if ( Ceylan::TextDisplayable::GetOutputFormat() 
+
+	if ( Ceylan::TextDisplayable::GetOutputFormat()
 		== Ceylan::TextDisplayable::html )
 	{
-	
-		string hexcolor = Ceylan::toHexString( color.r, 
-				/* prefix */ false, /* minDigits */ 2 ) 
+
+		string hexcolor = Ceylan::toHexString( color.r,
+				/* prefix */ false, /* minDigits */ 2 )
 			+ Ceylan::toHexString( color.g ,
-				/* prefix */ false, /* minDigits */ 2 ) 
-			+ Ceylan::toHexString( color.b , 
+				/* prefix */ false, /* minDigits */ 2 )
+			+ Ceylan::toHexString( color.b ,
 				/* prefix */ false, /* minDigits */ 2 ) ;
-		
+
 		/*
-		 * Some characters have to be displayed so that the HTML table 
-		 * cell is drawn:
+		 * Some characters have to be displayed so that the HTML table cell is
+		 * drawn:
 		 *
 		 */
-		result += "<table><tr><td style=\"background: #" 
-			+ hexcolor + "; color: #" 
+		result += "<table><tr><td style=\"background: #"
+			+ hexcolor + "; color: #"
 			+ hexcolor + "\">OSDL rocks!</td></tr></table>" ;
 
 	}
-	
-	return result ;
-	
-}
 
+	return result ;
+
+}
