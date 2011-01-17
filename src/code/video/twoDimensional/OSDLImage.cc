@@ -49,8 +49,11 @@
 
 #if OSDL_USES_LIBPNG
 
-/* FIXME: to avoid :
-  In file included from LOANI-0.6/LOANI-installations/PNG-1.4.3/include/png.h:397, from OSDLImage.cc:51: LOANI-0.6/LOANI-installations/zlib-1.2.5/include/zlib.h:1574:32: error: "_FILE_OFFSET_BITS" is not defined
+/* FIXME: to avoid : In file included from
+  LOANI-0.6/LOANI-installations/PNG-1.4.3/include/png.h:397, from
+  OSDLImage.cc:51:
+  LOANI-0.6/LOANI-installations/zlib-1.2.5/include/zlib.h:1574:32: error:
+  "_FILE_OFFSET_BITS" is not defined
 
  */
 #define _FILE_OFFSET_BITS 64
@@ -354,8 +357,8 @@ Surface & Image::LoadIcon( const string & filename,
 			maskIndex    = i * iconSurface.getWidth() + j ;
 
 			/*
-			 * Write the corresponding bit to 1 when current pixel is
-			 * not the color key:
+			 * Write the corresponding bit to 1 when current pixel is not the
+			 * color key:
 			 *
 			 */
 			if ( pixels[ paletteIndex ] != *pixels )
@@ -434,8 +437,8 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 #endif // OSDL_DEBUG_IMAGE
 
 	/*
-	 * If conversion to display format is needed, substitute the
-	 * converted image to the loaded one:
+	 * If conversion to display format is needed, substitute the converted image
+	 * to the loaded one:
 	 *
 	 */
 
@@ -451,8 +454,8 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 		SDL_Surface * formattedImage ;
 
 		/*
-		 * SDL_DisplayFormat* copies the surface, which therefore is
-		 * to be deallocated:
+		 * SDL_DisplayFormat* copies the surface, which therefore is to be
+		 * deallocated:
 		 *
 		 */
 
@@ -490,8 +493,8 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 	}
 
 	/*
-	 * Now we have our image surface, we can either blit it or have
-	 * it replace the former one:
+	 * Now we have our image surface, we can either blit it or have it replace
+	 * the former one:
 	 *
 	 */
 
@@ -534,12 +537,12 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 				"Image::Load: video memory was lost during blit." ) ;
 
 		/*
-		 * In this case, the loaded image has been used and therefore
-		 * is not needed any more:
+		 * In this case, the loaded image has been used and therefore is not
+		 * needed any more:
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -565,11 +568,12 @@ void Image::Load( Surface & targetSurface, const std::string & filename,
 
 	/*
 	 * In all cases:
-	 *	- no memory leak should occur with the internal surface, since
-	 * blit does not change anything for that, and replacement triggers
-	 * deallocation
-	 *  - any used temporary surface got deallocated (it is the case
-	 * for display format conversion and for blitted image)
+	 *
+	 *  - no memory leak should occur with the internal surface, since blit does
+	 * not change anything for that, and replacement triggers deallocation
+	 *
+	 *  - any used temporary surface got deallocated (it is the case for display
+	 * format conversion and for blitted image)
 	 *
 	 */
 
@@ -598,7 +602,7 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 		throw ImageException( "Unable to load JPG file "
 			+ filename + ": file not found." ) ;
 
-	SDL_Surface * image	;
+	SDL_Surface * image ;
 
 	try
 	{
@@ -625,8 +629,8 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 
 
 	/*
-	 * If conversion to display format is needed, substitute the
-	 * converted image to the loaded one:
+	 * If conversion to display format is needed, substitute the converted image
+	 * to the loaded one:
 	 *
 	 */
 
@@ -642,8 +646,8 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 		SDL_Surface * formattedImage ;
 
 		/*
-		 * SDL_DisplayFormat* copies the surface, which therefore is to
-		 * be deallocated:
+		 * SDL_DisplayFormat* copies the surface, which therefore is to be
+		 * deallocated:
 		 *
 		 */
 
@@ -667,8 +671,8 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 	}
 
 	/*
-	 * Now we have our image surface, we can either blit it or have
-	 * it replace the former one:
+	 * Now we have our image surface, we can either blit it or have it replace
+	 * the former one:
 	 *
 	 */
 
@@ -715,7 +719,7 @@ void Image::LoadJPG( Surface & targetSurface, const std::string & filename,
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -883,7 +887,7 @@ void Image::LoadPNG( Surface & targetSurface, const std::string & filename,
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -961,8 +965,8 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 			+ " thanks to IMG_LoadTyped_RW: " + string( IMG_GetError() ) ) ;
 
 	/*
-	 * If conversion to display format is needed, substitute the
-	 * converted image to the loaded one:
+	 * If conversion to display format is needed, substitute the converted image
+	 * to the loaded one:
 	 *
 	 */
 
@@ -978,8 +982,8 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 		SDL_Surface * formattedImage ;
 
 		/*
-		 * SDL_DisplayFormat* copies the surface, which therefore is
-		 * to be deallocated:
+		 * SDL_DisplayFormat* copies the surface, which therefore is to be
+		 * deallocated:
 		 *
 		 */
 
@@ -1044,12 +1048,12 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 				"Image::LoadBMP: video memory was lost during blit." ) ;
 
 		/*
-		 * In this case, the loaded image has been used and therefore
-		 * is not needed any more:
+		 * In this case, the loaded image has been used and therefore is not
+		 * needed any more:
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -1059,8 +1063,8 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 		 * Simply replace the former internal surface by this new one.
 		 * The former surface gets automatically deallocated by setSDLSurface.
 		 *
-		 * The target surface is, from now on, the new owner of the
-		 * buffer pointed to by the image pointer.
+		 * The target surface is, from now on, the new owner of the buffer
+		 * pointed to by the image pointer.
 		 *
 		 */
 
@@ -1069,11 +1073,12 @@ void Image::LoadBMP( Surface & targetSurface, const std::string & filename,
 
 	/*
 	 * In all cases:
-	 *	- no memory leak should occur with the internal surface, since
-	 * blit does not change
-	 * anything for that, and replacement triggers deallocation
-	 *  - any used temporary surface got deallocated (it is the case
-	 * for display format conversion and for blitted image)
+	 *
+	 * - no memory leak should occur with the internal surface, since blit does
+	 * not change anything for that, and replacement triggers deallocation
+	 *
+	 * - any used temporary surface got deallocated (it is the case for display
+	 * format conversion and for blitted image)
 	 *
 	 */
 
@@ -1206,12 +1211,12 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 				"Image::LoadGIF: video memory was lost during blit." ) ;
 
 		/*
-		 * In this case, the loaded image has been used and therefore
-		 * is not needed any more:
+		 * In this case, the loaded image has been used and therefore is not
+		 * needed any more:
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -1232,11 +1237,12 @@ void Image::LoadGIF( Surface & targetSurface, const std::string & filename,
 
 	/*
 	 * In all cases:
-	 *	- no memory leak should occur with the internal surface, since
-	 * blit does not change anything for that, and replacement triggers
-	 * deallocation
-	 *  - any used temporary surface got deallocated (it is the case for
-	 * display format conversion and for blitted image)
+	 *
+	 * - no memory leak should occur with the internal surface, since blit does
+	 * not change anything for that, and replacement triggers deallocation
+	 *
+	 * - any used temporary surface got deallocated (it is the case for display
+	 * format conversion and for blitted image)
 	 *
 	 */
 
@@ -1288,8 +1294,8 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 
 
 	/*
-	 * If conversion to display format is needed, substitute the converted
-	 * image to the loaded one:
+	 * If conversion to display format is needed, substitute the converted image
+	 * to the loaded one:
 	 *
 	 */
 
@@ -1305,8 +1311,8 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 		SDL_Surface * formattedImage ;
 
 		/*
-		 * SDL_DisplayFormat* copies the surface, which therefore is
-		 * to be deallocated:
+		 * SDL_DisplayFormat* copies the surface, which therefore is to be
+		 * deallocated:
 		 *
 		 */
 
@@ -1330,8 +1336,8 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 	}
 
 	/*
-	 * Now we have our image surface, we can either blit it or have
-	 * it replace the former one:
+	 * Now we have our image surface, we can either blit it or have it replace
+	 * the former one:
 	 *
 	 */
 
@@ -1370,12 +1376,12 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 				"Image::LoadLBM: video memory was lost during blit." ) ;
 
 		/*
-		 * In this case, the loaded image has been used and therefore
-		 * is not needed any more:
+		 * In this case, the loaded image has been used and therefore is not
+		 * needed any more:
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -1397,11 +1403,12 @@ void Image::LoadLBM( Surface & targetSurface, const std::string & filename,
 
 	/*
 	 * In all cases:
-	 *	- no memory leak should occur with the internal surface, since
-	 * blit does not change anything for that, and replacement triggers
-	 * deallocation
-	 *  - any used temporary surface got deallocated (it is the case for
-	 * display format conversion and for blitted image)
+	 *
+	 * - no memory leak should occur with the internal surface, since blit does
+	 * not change anything for that, and replacement triggers deallocation
+	 *
+	 * - any used temporary surface got deallocated (it is the case for display
+	 * format conversion and for blitted image)
 	 *
 	 */
 
@@ -1453,8 +1460,8 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 
 
 	/*
-	 * If conversion to display format is needed, substitute the converted
-	 * image to the loaded one:
+	 * If conversion to display format is needed, substitute the converted image
+	 * to the loaded one:
 	 *
 	 */
 
@@ -1471,8 +1478,8 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 		SDL_Surface * formattedImage ;
 
 		/*
-		 * SDL_DisplayFormat* copies the surface, which therefore is
-		 * to be deallocated:
+		 * SDL_DisplayFormat* copies the surface, which therefore is to be
+		 * deallocated:
 		 *
 		 */
 
@@ -1496,8 +1503,8 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 	}
 
 	/*
-	 * Now we have our image surface, we can either blit it or have
-	 * it replace the former one:
+	 * Now we have our image surface, we can either blit it or have it replace
+	 * the former one:
 	 *
 	 */
 
@@ -1536,12 +1543,12 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 				"Image::LoadPCX: video memory was lost during blit." ) ;
 
 		/*
-		 * In this case, the loaded image has been used and therefore
-		 * is not needed any more:
+		 * In this case, the loaded image has been used and therefore is not
+		 * needed any more:
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -1562,11 +1569,12 @@ void Image::LoadPCX( Surface & targetSurface, const std::string & filename,
 
 	/*
 	 * In all cases:
-	 *	- no memory leak should occur with the internal surface, since
-	 * blit does not change anything for that, and replacement triggers
-	 * deallocation
-	 *  - any used temporary surface got deallocated (it is the case for
-	 * display format conversion and for blitted image)
+	 *
+	 * - no memory leak should occur with the internal surface, since blit does
+	 * not change anything for that, and replacement triggers deallocation
+	 *
+	 * - any used temporary surface got deallocated (it is the case for display
+	 * format conversion and for blitted image)
 	 *
 	 */
 
@@ -1618,8 +1626,8 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 
 
 	/*
-	 * If conversion to display format is needed, substitute the converted
-	 * image to the loaded one:
+	 * If conversion to display format is needed, substitute the converted image
+	 * to the loaded one:
 	 *
 	 */
 
@@ -1635,8 +1643,8 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 		SDL_Surface * formattedImage ;
 
 		/*
-		 * SDL_DisplayFormat* copies the surface, which therefore is
-		 * to be deallocated:
+		 * SDL_DisplayFormat* copies the surface, which therefore is to be
+		 * deallocated:
 		 *
 		 */
 
@@ -1660,8 +1668,8 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 	}
 
 	/*
-	 * Now we have our image surface, we can either blit it or have
-	 * it replace the former one:
+	 * Now we have our image surface, we can either blit it or have it replace
+	 * the former one:
 	 *
 	 */
 
@@ -1699,12 +1707,12 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 				"Image::LoadPNM: video memory was lost during blit." ) ;
 
 		/*
-		 * In this case, the loaded image has been used and therefore
-		 * is not needed any more:
+		 * In this case, the loaded image has been used and therefore is not
+		 * needed any more:
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -1725,11 +1733,12 @@ void Image::LoadPNM( Surface & targetSurface, const std::string & filename,
 
 	/*
 	 * In all cases:
-	 *	- no memory leak should occur with the internal surface, since
-	 * blit does not change anything for that, and replacement triggers
-	 * deallocation
-	 *  - any used temporary surface got deallocated (it is the case for
-	 * display format conversion and for blitted image)
+	 *
+	 * - no memory leak should occur with the internal surface, since blit does
+	 * not change anything for that, and replacement triggers deallocation
+	 *
+	 * - any used temporary surface got deallocated (it is the case for display
+	 * format conversion and for blitted image)
 	 *
 	 */
 
@@ -1781,8 +1790,8 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 
 
 	/*
-	 * If conversion to display format is needed, substitute the converted
-	 * image to the loaded one:
+	 * If conversion to display format is needed, substitute the converted image
+	 * to the loaded one:
 	 *
 	 */
 
@@ -1798,8 +1807,8 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 		SDL_Surface * formattedImage ;
 
 		/*
-		 * SDL_DisplayFormat* copies the surface, which therefore is
-		 * to be deallocated:
+		 * SDL_DisplayFormat* copies the surface, which therefore is to be
+		 * deallocated:
 		 *
 		 */
 
@@ -1823,8 +1832,8 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 	}
 
 	/*
-	 * Now we have our image surface, we can either blit it or have
-	 * it replace the former one:
+	 * Now we have our image surface, we can either blit it or have it replace
+	 * the former one:
 	 *
 	 */
 
@@ -1863,12 +1872,12 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 				"Image::LoadTGA: video memory was lost during blit." ) ;
 
 		/*
-		 * In this case, the loaded image has been used and therefore
-		 * is not needed any more:
+		 * In this case, the loaded image has been used and therefore is not
+		 * needed any more:
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -1890,11 +1899,12 @@ void Image::LoadTGA( Surface & targetSurface, const std::string & filename,
 
 	/*
 	 * In all cases:
-	 *	- no memory leak should occur with the internal surface, since
-	 * blit does not change anything for that, and replacement triggers
-	 * deallocation
-	 *  - any used temporary surface got deallocated (it is the case for
-	 * display format conversion and for blitted image)
+	 *
+	 * - no memory leak should occur with the internal surface, since blit does
+	 * not change anything for that, and replacement triggers deallocation
+	 *
+	 * - any used temporary surface got deallocated (it is the case for display
+	 * format conversion and for blitted image)
 	 *
 	 */
 
@@ -1946,8 +1956,8 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 
 
 	/*
-	 * If conversion to display format is needed, substitute the converted
-	 * image to the loaded one:
+	 * If conversion to display format is needed, substitute the converted image
+	 * to the loaded one:
 	 *
 	 */
 
@@ -1963,8 +1973,8 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 		SDL_Surface * formattedImage ;
 
 		/*
-		 * SDL_DisplayFormat* copies the surface, which therefore is
-		 * to be deallocated:
+		 * SDL_DisplayFormat* copies the surface, which therefore is to be
+		 * deallocated:
 		 *
 		 */
 
@@ -1988,8 +1998,8 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 	}
 
 	/*
-	 * Now we have our image surface, we can either blit it or have
-	 * it replace the former one:
+	 * Now we have our image surface, we can either blit it or have it replace
+	 * the former one:
 	 *
 	 */
 
@@ -2029,12 +2039,12 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 				"Image::LoadXPM: video memory was lost during blit." ) ;
 
 		/*
-		 * In this case, the loaded image has been used and therefore
-		 * is not needed any more:
+		 * In this case, the loaded image has been used and therefore is not
+		 * needed any more:
 		 *
 		 */
 
-	 	SDL_FreeSurface( image ) ;
+		SDL_FreeSurface( image ) ;
 
 	}
 	else
@@ -2056,11 +2066,12 @@ void Image::LoadXPM( Surface & targetSurface, const std::string & filename,
 
 	/*
 	 * In all cases:
-	 *	- no memory leak should occur with the internal surface, since
-	 * blit does not change anything for that, and replacement triggers
-	 * deallocation
-	 *  - any used temporary surface got deallocated (it is the case for
-	 * display format conversion and for blitted image)
+	 *
+	 * - no memory leak should occur with the internal surface, since blit does
+	 * not change anything for that, and replacement triggers deallocation
+	 *
+	 * - any used temporary surface got deallocated (it is the case for display
+	 * format conversion and for blitted image)
 	 *
 	 */
 
@@ -2156,7 +2167,7 @@ void Image::SavePNG( Surface & targetSurface, const std::string & filename,
 	 * The choice of a 8-bit depth might be not as generic as wished.
 	 *
 	 * At least two other color types should be managed:
-	 *	- PNG_COLOR_TYPE_GRAY
+	 *  - PNG_COLOR_TYPE_GRAY
 	 *  - PNG_COLOR_TYPE_PALETTE
 	 *
 	 * No alpha coordinate seems to be managed.
