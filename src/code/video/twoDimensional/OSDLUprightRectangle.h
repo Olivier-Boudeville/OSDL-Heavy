@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -35,7 +35,7 @@
 
 
 
-#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
 
 #include "SDL.h"             // for ColorDefinition
 
@@ -48,53 +48,53 @@
 
 
 
-#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
 
 // No need to include SDL header here:
 struct SDL_Rect ;
 struct SDL_Color ;
 
-#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL 
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
 
 
 
 
-namespace OSDL 
+namespace OSDL
 {
 
 
 
-	namespace Video 
+	namespace Video
 	{
-		
-		
-		
+
+
+
 		namespace TwoDimensional
 		{
-		
-		
-		
+
+
+
 			// Forward declaration to be able to define the operator ==.
 			class UprightRectangle ;
-			
-			
-			
+
+
+
 			#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
-			
+
 			// The internal actual rectangle object.
 			typedef ::SDL_Rect LowLevelRect ;
-				
+
 			#else // OSDL_USES_SDL
 
 			struct LowLevelRect {} ;
-				
+
 			#endif // OSDL_USES_SDL
-			
-			
+
+
 		}
-				
+
 	}
-	
+
 }
 
 
@@ -103,77 +103,75 @@ namespace OSDL
 
 
 /// Equality operator defined.
-OSDL_DLL bool operator == ( 
-	const OSDL::Video::TwoDimensional::UprightRectangle & first, 
+OSDL_DLL bool operator == (
+	const OSDL::Video::TwoDimensional::UprightRectangle & first,
 	const OSDL::Video::TwoDimensional::UprightRectangle & second ) ;
 
 
 
 /**
- * Unequality operator defined (as if by default it could not be 
- * inferred from operator '==' !).
+ * Unequality operator defined (as if by default it could not be inferred from
+ * operator '==' !).
  *
  */
-OSDL_DLL bool operator != ( 
-	const OSDL::Video::TwoDimensional::UprightRectangle & first, 
+OSDL_DLL bool operator != (
+	const OSDL::Video::TwoDimensional::UprightRectangle & first,
 	const OSDL::Video::TwoDimensional::UprightRectangle & second ) ;
 
 
 
 
-namespace OSDL 
+namespace OSDL
 {
 
 
-	namespace Video 
+	namespace Video
 	{
-		
-		
-		
+
+
+
 		// UprightRectangle instances can be drawn into surfaces.
 		class Surface ;
-		
-		
-		
+
+
+
 		namespace TwoDimensional
 		{
-		
-		
-		
+
+
+
 			// UprightRectangle instances are defined thanks to 2D points.
 			class Point2D ;
-		
-	 
-	 
-			
+
+
+
+
 			/**
-			 * This classes defines a rectangle whose sides are parallel 
-			 * or orthogonal to the screen's sides.
+			 * This classes defines a rectangle whose sides are parallel or
+			 * orthogonal to the screen's sides.
 			 *
-			 * It is the user responsability to provide a set of 
-			 * coordinates so that the upper left corner is indeed higher 
-			 * than the lower right corner, and at its left, in usual
-			 * OSDL 2D referential.
+			 * It is the user responsability to provide a set of coordinates so
+			 * that the upper left corner is indeed higher than the lower right
+			 * corner, and at its left, in usual OSDL 2D referential.
 			 *
 			 * Failure to do so results in an exception to be raised.
 			 *
-			 * @note When width or height for an upright rectangle is to 
-			 * be retrieved, even in its own implementation or in the one 
-			 * of its children, getWidth() and getHeight() should always
-			 * be used, instead of _width and _height, since one child 
-			 * class may overload these two get methods (see Surface for 
-			 * an example).
+			 * @note When width or height for an upright rectangle is to be
+			 * retrieved, even in its own implementation or in the one of its
+			 * children, getWidth() and getHeight() should always be used,
+			 * instead of _width and _height, since one child class may overload
+			 * these two get methods (see Surface for an example).
 			 *
 			 */
-			class OSDL_DLL UprightRectangle: public Ceylan::TextDisplayable
+			class OSDL_DLL UprightRectangle : public Ceylan::TextDisplayable
 			{
-					
-									
-				friend bool::operator == ( const UprightRectangle & first, 
+
+
+				friend bool::operator == ( const UprightRectangle & first,
 					const UprightRectangle & second ) ;
-					
-						
-						
+
+
+
 				public:
 
 
@@ -181,19 +179,18 @@ namespace OSDL
 					/// Two corners define an UprightRectangle.
 					UprightRectangle( const Point2D & upperLeftCorner,
 						const Point2D & lowerRightCorner ) ;
-					
-					
-					
+
+
+
 					/**
-					 * One corner, width and height define an 
-					 * UprightRectangle.
+					 * One corner, width and height define an UprightRectangle.
 					 *
 					 */
-					UprightRectangle( const Point2D & upperLeftCorner, 
+					UprightRectangle( const Point2D & upperLeftCorner,
 						Length width, Length height ) ;
-					
-					
-					
+
+
+
 					/**
 					 * Two coordinates, width and height define an
 					 * UprightRectangle.
@@ -201,9 +198,9 @@ namespace OSDL
 					 */
 					UprightRectangle( Coordinate x, Coordinate y, Length width,
 						 Length height ) ;
-					 
-					 
-					 
+
+
+
 					/**
 					 * A LowLevelRect defines an UprightRectangle.
 					 *
@@ -211,242 +208,240 @@ namespace OSDL
 					 *
 					 */
 					explicit UprightRectangle( const LowLevelRect & source ) ;
-		
-		
-		
+
+
+
 					/// Basic destructor, so that it remains virtual.
 					virtual ~UprightRectangle() throw() ;
-	
-	
-	
-	
-					
+
+
+
+
+
 					// Section for upper-left corner.
-					
-	
-	
+
+
+
 					/// Returns this UprightRectangle's upper left corner.
-					virtual Point2D getUpperLeftCorner() const ; 
-					
-					
-					
+					virtual Point2D getUpperLeftCorner() const ;
+
+
+
 					/**
-					 * Sets this UprightRectangle's upper left corner, 
-					 * width and height do not change.
+					 * Sets this UprightRectangle's upper left corner, width and
+					 * height do not change.
 					 *
 					 */
-					virtual void setUpperLeftCorner( 
-						Point2D & newUpperLeftCorner ) ; 
-					
-					
-					
-					
+					virtual void setUpperLeftCorner(
+						Point2D & newUpperLeftCorner ) ;
+
+
+
+
 					/// Returns directly the abscissa of upper left corner.
 					virtual Coordinate getUpperLeftAbscissa() const ;
 
 
 
 					/**
-					 * Sets directly the abscissa of the upper left 
-					 * corner of this rectangle.
+					 * Sets directly the abscissa of the upper left corner of
+					 * this rectangle.
 					 *
 					 */
-					virtual void setUpperLeftAbscissa( 
+					virtual void setUpperLeftAbscissa(
 						Coordinate newAbscissa ) ;
 
 
-					
+
 					/// Returns directly the ordinate of upper left corner.
 					virtual Coordinate getUpperLeftOrdinate() const ;
-					
-					
-					
+
+
+
 					/**
-					 * Sets directly the ordinate of the upper left 
-					 * corner of this rectangle.
+					 * Sets directly the ordinate of the upper left corner of
+					 * this rectangle.
 					 *
 					 */
-					virtual void setUpperLeftOrdinate( 
+					virtual void setUpperLeftOrdinate(
 						Coordinate newOrdinate ) ;
-					
-					
-					
 
-					
+
+
+
+
 					// Section for lower-right corner.
-					
-	
-	
+
+
+
 					/// Returns this UprightRectangle's lower right corner.
-					virtual Point2D getLowerRightCorner() const ; 
-					
-					
-					
+					virtual Point2D getLowerRightCorner() const ;
+
+
+
 					/**
 					 * Sets directly the lower right corner of this rectangle.
 					 *
-					 * @throw VideoException if width or height would 
-					 * become negative.
+					 * @throw VideoException if width or height would become
+					 * negative.
 					 *
 					 */
-					virtual void setLowerRightCorner( 
-						Point2D & newLowerRightCorner ) ; 
-					
-					
-					
+					virtual void setLowerRightCorner(
+						Point2D & newLowerRightCorner ) ;
+
+
+
 					/// Returns directly the abscissa of lower right corner.
 					virtual Coordinate getLowerRightAbscissa() const ;
 
 
 					/**
-					 * Sets directly the abscissa of the lower right 
-					 * corner of this rectangle.
+					 * Sets directly the abscissa of the lower right corner of
+					 * this rectangle.
 					 *
-					 * @throw VideoException if width or height would 
-					 * become negative.
+					 * @throw VideoException if width or height would become
+					 * negative.
 					 *
 					 */
-					virtual void setLowerRightAbscissa( 
+					virtual void setLowerRightAbscissa(
 						Coordinate newAbscissa ) ;
 
 
 
-					
+
 					/// Returns directly the ordinate of lower right corner.
 					virtual Coordinate getLowerRightOrdinate() const ;
-					
-					
+
+
 					/**
-					 * Sets directly the ordinate of the lower right 
-					 * corner of this rectangle.
+					 * Sets directly the ordinate of the lower right corner of
+					 * this rectangle.
 					 *
-					 * @throw VideoException if width or height would 
-					 * become negative.
+					 * @throw VideoException if width or height would become
+					 * negative.
 					 *
 					 */
-					virtual void setLowerRightOrdinate( 
+					virtual void setLowerRightOrdinate(
 						Coordinate newOrdinate ) ;
-					
 
-					
-					
+
+
+
 					/// Returns this UprightRectangle's width.
 					virtual Length getWidth() const ;
-				
-				
-				
+
+
+
 					/// Sets this UprightRectangle's width.
 					virtual void setWidth( Length newWidth ) ;
-	
-	
-	
-	
+
+
+
+
 					/// Returns this UprightRectangle's height.
 					virtual Length getHeight() const ;
-				
-				
-				
+
+
+
 					/// Sets this UprightRectangle's height.
 					virtual void setHeight( Length newHeight ) ;
-						
-						
-	
+
+
+
 					/**
-					 * Draws this UprightRectangle to specified surface 
-					 * with specified RGBA color.
-					 * 
-					 * @param target the surface to which this rectangle 
-					 * will be rendered.
+					 * Draws this UprightRectangle to specified surface with
+					 * specified RGBA color.
 					 *
-					 * @param filled tells whether the drawn rectangle 
-					 * should be filled with specified color, or if only 
-					 * its sides should be drawn.
+					 * @param target the surface to which this rectangle will be
+					 * rendered.
+					 *
+					 * @param filled tells whether the drawn rectangle should be
+					 * filled with specified color, or if only its sides should
+					 * be drawn.
 					 *
 					 * @note Locks surface if needed.
 					 *
 					 */
-					virtual bool draw( 
-						Surface & target, 
-						Pixels::ColorElement red, 
-						Pixels::ColorElement blue, 
-						Pixels::ColorElement green, 
+					virtual bool draw(
+						Surface & target,
+						Pixels::ColorElement red,
+						Pixels::ColorElement blue,
+						Pixels::ColorElement green,
 						Pixels::ColorElement alpha = Pixels::AlphaOpaque,
 						bool filled = true ) const ;
-					
-	
-	
+
+
+
 					/**
-					 * Draws this UprightRectangle to specified surface 
-					 * with specified RGBA color.
-					 * 
-					 * @param target the surface to which this rectangle 
-					 * will be rendered.
+					 * Draws this UprightRectangle to specified surface with
+					 * specified RGBA color.
 					 *
-					 * @param filled tells whether the drawn rectangle 
-					 * should be filled with specified color, or if only 
-					 * its sides should be drawn.
+					 * @param target the surface to which this rectangle will be
+					 * rendered.
+					 *
+					 * @param filled tells whether the drawn rectangle should be
+					 * filled with specified color, or if only its sides should
+					 * be drawn.
 					 *
 					 * @note Locks surface if needed.
 					 *
 					 */
-					virtual bool draw( Surface & target, 
+					virtual bool draw( Surface & target,
 						Pixels::ColorDefinition colorDef = Pixels::White,
 						bool filled = true ) const ;
-					
-					
-					
+
+
+
 					/**
-					 * Draws this UprightRectangle to specified surface 
-					 * with rounded corners, drawn with specified color, 
-					 * above a background of specified color. 
+					 * Draws this UprightRectangle to specified surface with
+					 * rounded corners, drawn with specified color, above a
+					 * background of specified color.
 					 *
-					 * The width of the borders can be chosen, and should 
-					 * not be incompatible with the dimensions of this
-					 * rectangle.
-					 * 
-					 * @param target the surface to which this rectangle 
-					 * will be rendered.
+					 * The width of the borders can be chosen, and should not be
+					 * incompatible with the dimensions of this rectangle.
+					 *
+					 * @param target the surface to which this rectangle will be
+					 * rendered.
 					 *
 					 * @param edgeWidth the width of the edges of this
 					 * rectangle.
 					 *
-					 * @param edgeColorDef the color definition of the 
-					 * edges of this rectangle.
+					 * @param edgeColorDef the color definition of the edges of
+					 * this rectangle.
 					 *
-					 * @param backgroundColorDef the color definition 
-					 * of the background of this rectangle.
+					 * @param backgroundColorDef the color definition of the
+					 * background of this rectangle.
 					 *
 					 * @note Locks surface if needed.
 					 *
 					 */
-					virtual bool drawWithRoundedCorners( 
-						Surface & target, Length edgeWidth = 3, 
-						Pixels::ColorDefinition edgeColorDef = Pixels::White, 
-						Pixels::ColorDefinition backgroundColorDef 
+					virtual bool drawWithRoundedCorners(
+						Surface & target, Length edgeWidth = 3,
+						Pixels::ColorDefinition edgeColorDef = Pixels::White,
+						Pixels::ColorDefinition backgroundColorDef
 							= Pixels::Transparent ) const ;
-					
-					
-					
+
+
+
 					/**
-					 * Computes the preferred radius of round corners for 
-					 * this rectangle, with the specified edge width. 
+					 * Computes the preferred radius of round corners for this
+					 * rectangle, with the specified edge width.
 					 *
-					 * @param edgeWidth the edge width to take into 
-					 * account for the radius.
+					 * @param edgeWidth the edge width to take into account for
+					 * the radius.
 					 *
-					 * @return a suitable radius, whose dimension is 
-					 * deemed appropriate.
+					 * @return a suitable radius, whose dimension is deemed
+					 * appropriate.
 					 *
-					 * @throw VideoException if no radius can fullfill 
-					 * the set of constraints due to this rectangle and 
-					 * the edge width.
+					 * @throw VideoException if no radius can fullfill the set
+					 * of constraints due to this rectangle and the edge width.
 					 *
 					 */
-					virtual Length computeRadiusForRoundRectangle( 
+					virtual Length computeRadiusForRoundRectangle(
 						Length edgeWidth ) const ;
-					
-					
-					
+
+
+
 					/**
 					 * Returns the back-end counterpart of this
 					 * UprightRectangle.
@@ -462,96 +457,95 @@ namespace OSDL
 					 */
 					virtual LowLevelRect * toLowLevelRect() const ;
 
-				
-				
-	 	            /**
-		             * Returns an user-friendly description of the state
-					 * of this object.
-		             *
+
+
+					/**
+					 * Returns an user-friendly description of the state of this
+					 * object.
+					 *
 					 * @param level the requested verbosity level.
 					 *
-					 * @note Text output format is determined from 
-					 * overall settings.
+					 * @note Text output format is determined from overall
+					 * settings.
 					 *
 					 * @see Ceylan::TextDisplayable
-		             *
-		             */
-			 		virtual const std::string toString( 
+					 *
+					 */
+					virtual const std::string toString(
 						Ceylan::VerbosityLevels level = Ceylan::high ) const ;
-				
-	
-	
-	
-	
+
+
+
+
+
 				protected:
-				
-				
-				
+
+
+
 					/// Upper left corner's abscissa (horizontal coordinate).
 					Coordinate _x ;
-				
-				
+
+
 					/// Upper left corner's ordinate (vertical coordinate).
 					Coordinate _y ;
-				
-			
-			
-			
+
+
+
+
 				private:
-				
-				
-				
+
+
+
 					/// Width is counted from current abscissa, going right.
 					Length _width ;
-				
-				
+
+
 					/// Height is count from current ordinate, going down.
-					Length _height ;			
-				
-				
-				
+					Length _height ;
+
+
+
 					/**
-					 * Copy constructor made private to ensure that it 
-					 * will be never called.
+					 * Copy constructor made private to ensure that it will be
+					 * never called.
 					 *
-					 * The compiler should complain whenever this 
-					 * undefined constructor is called, implicitly or not.
-					 * 
-					 */			 
-					explicit UprightRectangle( 
+					 * The compiler should complain whenever this undefined
+					 * constructor is called, implicitly or not.
+					 *
+					 */
+					explicit UprightRectangle(
 						const UprightRectangle & source ) ;
-			
-			
-			
+
+
+
 					/**
-					 * Assignment operator made private to ensure that 
-					 * it will be never called.
+					 * Assignment operator made private to ensure that it will
+					 * be never called.
 					 *
-					 * The compiler should complain whenever this 
-					 * undefined operator is called, implicitly or not.
-					 * 
-					 */			 
-					UprightRectangle & operator = ( 
+					 * The compiler should complain whenever this undefined
+					 * operator is called, implicitly or not.
+					 *
+					 */
+					UprightRectangle & operator = (
 						const UprightRectangle & source ) ;
-	
-	
-			} ;	
+
+
+			} ;
 
 
 		}
-		
+
 	}
-	
+
 }
 
 
 
 
 /// To output its state in an output stream.
-std::ostream & operator << ( std::ostream & os, 
+std::ostream & operator << ( std::ostream & os,
 	OSDL::Video::TwoDimensional::UprightRectangle & rect ) ;
 
 
 
 #endif // OSDL_UPRIGHT_RECTANGLE_H_
-
