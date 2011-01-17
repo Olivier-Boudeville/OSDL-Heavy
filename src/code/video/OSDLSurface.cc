@@ -75,11 +75,10 @@
 
 
 /*
- * Always remember to access the width and the height of a Surface thanks
- * to their dedicated methods (getWidth/getHeight) since the '_width' and
- * '_height' attributes, inherited from  UprightRectangle, are never
- * updated: the values are to be read directly from the internal
- * back-end surface.
+ * Always remember to access the width and the height of a Surface thanks to
+ * their dedicated methods (getWidth/getHeight) since the '_width' and '_height'
+ * attributes, inherited from UprightRectangle, are never updated: the values
+ * are to be read directly from the internal back-end surface.
  *
  */
 
@@ -287,7 +286,7 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 		_surface( 0 ),
 		_displayType( BackBuffer ),
 		_mustBeLocked( false ),
- 		_needsRedraw( true )
+		_needsRedraw( true )
 {
 
 #if OSDL_USES_SDL
@@ -298,7 +297,7 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 
 	LogPlug::trace( "Surface constructor with flags = "
 		+ Ceylan::toString( flags, /* bit field */ true )
-		+ ", with width = "		  + Ceylan::toString( width )
+		+ ", with width = "       + Ceylan::toString( width )
 		+ ", with height = "      + Ceylan::toString( height )
 		+ ", with color depth = " + Ceylan::toNumericalString( depth )
 		+ ", with specified red mask = "    + Ceylan::toHexString( redMask )
@@ -375,8 +374,8 @@ Surface::Surface( Flags flags, Length width, Length height, BitsPerPixel depth,
 
 
 /*
- * Protected Surface constructor only supposed to be called on very
- * special cases.
+ * Protected Surface constructor only supposed to be called on very special
+ * cases.
  *
  */
 Surface::Surface():
@@ -425,8 +424,8 @@ Surface::~Surface() throw()
 
 	/*
 	 * Listeners will be removed one by one thanks to unsubscribeFrom calls:
-	 * this is because it is rather unusual that sources detach themselves
-	 * from listeners, it is usually the opposite.
+	 * this is because it is rather unusual that sources detach themselves from
+	 * listeners, it is usually the opposite.
 	 *
 	 */
 
@@ -437,9 +436,9 @@ Surface::~Surface() throw()
 		widget->unsubscribeFrom( *this ) ;
 
 		/*
-		 * Do not use: '_listeners.pop_back() ;' since this widget has
-		 * already been removed thanks to the call to unsubscribeFrom: it
-		 * would pop next listener!
+		 * Do not use: '_listeners.pop_back() ;' since this widget has already
+		 * been removed thanks to the call to unsubscribeFrom: it would pop next
+		 * listener!
 		 *
 		 */
 		delete widget ;
@@ -482,9 +481,9 @@ Clonable & Surface::clone() const
 		/*
 		 * Blit the source content onto it:
 		 *
-		 * "The blit function should not be called on a locked surface":
-		 * which one?
-		 * Supposing it is the target surface, 'copied', which is not locked.
+		 * "The blit function should not be called on a locked surface": which
+		 * one? Supposing it is the target surface, 'copied', which is not
+		 * locked.
 		 *
 		 */
 
@@ -827,7 +826,7 @@ bool Surface::setPalette( const Palette & newPalette,
 	}
 
 	/*
-	 * In video/SDL_video.c, SDL_SetPalette seems to copy palette, not take
+	 * In video/SDL_video.c, SDL_SetPalette seems to copy palette, not taking
 	 * ownership of it:
 	 *
 	 */
@@ -1025,8 +1024,8 @@ Surface & Surface::flipVertical() const
 	Ceylan::Uint8 * target =
 		reinterpret_cast<Ceylan::Uint8 *>( result->pixels ) + scanline - bpp ;
 
-  	const Coordinate height = result->h ;
-  	const Coordinate width  = result->w ;
+	const Coordinate height = result->h ;
+	const Coordinate width  = result->w ;
 
 	/*
 	 * Line by line, stores the copied pixel from right to left in target
@@ -1076,9 +1075,9 @@ Surface & Surface::flipHorizontal() const
 		reinterpret_cast<Ceylan::Uint8 *>( result->pixels )
 			+ result->pitch * ( result->h - 1 ) ;
 
-  	const Coordinate height = result->h ;
+	const Coordinate height = result->h ;
 
-  	// Changes simply the order of the lines:
+	// Changes simply the order of the lines:
 
 	for ( Coordinate y = 0; y < height; y++ )
 		::memcpy ( target - ( scanline * y ),
@@ -1468,8 +1467,8 @@ bool Surface::setAlphaForColor( Pixels::ColorDefinition colorDef,
 #endif // OSDL_DEBUG_COLOR
 
 	/*
-	 * Useless if surface has no alpha coordinate (maybe the alpha mask
-	 * could be checked too):
+	 * Useless if surface has no alpha coordinate (maybe the alpha mask could be
+	 * checked too):
 	 *
 	 */
 	if ( ( getFlags() & AlphaBlendingBlit ) == 0 )
@@ -1988,8 +1987,8 @@ bool Surface::blitTo( Surface & targetSurface, Coordinate x, Coordinate y )
 
 		case -2:
 			/*
-			 * VideoMemoryLostException is a child class of VideoException,
-			 * no special message to deliver:
+			 * VideoMemoryLostException is a child class of VideoException, no
+			 * special message to deliver:
 			 *
 			 */
 			throw VideoMemoryLostException() ;
@@ -2108,8 +2107,8 @@ void Surface::displayAt( const OpenGL::GLTexture & texture,
 #if OSDL_USES_OPENGL
 
 	/*
-	 * We suppose here that, if blending is enabled, the glColor4f-based
-	 * overall alpha coordinate is equal to 1.0.
+	 * We suppose here that, if blending is enabled, the glColor4f-based overall
+	 * alpha coordinate is equal to 1.0.
 	 *
 	 */
 
@@ -2198,8 +2197,8 @@ void Surface::displayCenteredHorizontallyAt( const OpenGL::GLTexture & texture,
 #if OSDL_USES_OPENGL
 
 	/*
-	 * We suppose here that, if blending is enabled, the glColor4f-based
-	 * overall alpha coordinate is equal to 1.0.
+	 * We suppose here that, if blending is enabled, the glColor4f-based overall
+	 * alpha coordinate is equal to 1.0.
 	 *
 	 */
 
@@ -2309,8 +2308,8 @@ void Surface::displayCenteredHorizontallyAt( const OpenGL::GLTexture & texture,
 #if OSDL_USES_OPENGL
 
 	/*
-	 * We suppose here that, if blending is enabled, the glColor4f-based
-	 * overall alpha coordinate is equal to 1.0.
+	 * We suppose here that, if blending is enabled, the glColor4f-based overall
+	 * alpha coordinate is equal to 1.0.
 	 *
 	 */
 
@@ -2361,8 +2360,8 @@ void Surface::displayAtCenter( const OpenGL::GLTexture & texture ) const
 #if OSDL_USES_OPENGL
 
 	/*
-	 * We suppose here that, if blending is enabled, the glColor4f-based
-	 * overall alpha coordinate is equal to 1.0.
+	 * We suppose here that, if blending is enabled, the glColor4f-based overall
+	 * alpha coordinate is equal to 1.0.
 	 *
 	 */
 
@@ -2469,8 +2468,9 @@ void Surface::displayAtCenterWithFadeIn( const OpenGL::GLTexture & texture,
 
 	/*
 	 * Uses the natural pace induced by the OS atomic sleeps.
-	 * We use a linearly interpolated fade effect, instead of the natural
-	 * pace induced by the OS atomic sleeps, which is not reliable.
+	 *
+	 * We use a linearly interpolated fade effect, instead of the natural pace
+	 * induced by the OS atomic sleeps, which is not reliable.
 	 *
 	 */
 
@@ -2562,8 +2562,9 @@ void Surface::displayAtCenterWithFadeOut( const OpenGL::GLTexture & texture,
 
 	/*
 	 * Uses the natural pace induced by the OS atomic sleeps.
-	 * We use a linearly interpolated fade effect, instead of the natural
-	 * pace induced by the OS atomic sleeps, which is not reliable.
+	 *
+	 * We use a linearly interpolated fade effect, instead of the natural pace
+	 * induced by the OS atomic sleeps, which is not reliable.
 	 *
 	 */
 
@@ -2654,8 +2655,8 @@ void Surface::displayInFullscreen( const OpenGL::GLTexture & texture ) const
 #if OSDL_USES_OPENGL
 
 	/*
-	 * We suppose here that, if blending is enabled, the glColor4f-based
-	 * overall alpha coordinate is equal to 1.0.
+	 * We suppose here that, if blending is enabled, the glColor4f-based overall
+	 * alpha coordinate is equal to 1.0.
 	 *
 	 */
 
@@ -3250,13 +3251,13 @@ void Surface::updateRectangles( const list<UprightRectangle *> & listRects )
 {
 
 	/*
-	 * Does not use SDL_UpdateRects for efficiency reasons
-	 * (avoid too many structure conversions).
+	 * Does not use SDL_UpdateRects for efficiency reasons (avoid too many
+	 * structure conversions).
 	 *
 	 */
 
 	for ( list<UprightRectangle *>::const_iterator it = listRects.begin() ;
-		it != listRects.end() ;	it++ )
+		it != listRects.end() ; it++ )
 	{
 
 #if OSDL_DEBUG
@@ -3268,7 +3269,7 @@ void Surface::updateRectangles( const list<UprightRectangle *> & listRects )
 		}
 #endif // OSDL_DEBUG
 
-	 	updateRectangle( * (*it) ) ;
+		updateRectangle( * (*it) ) ;
 
 	}
 
@@ -3362,9 +3363,9 @@ void Surface::redraw()
 		RedrawRequestEvent redrawEvent( *this ) ;
 
 		/*
-		 * This code relies on notifyAllListeners order, which uses a
-		 * classic iterator, from front to back of listeners list,
-		 * therefore from bottom to top-level widgets.
+		 * This code relies on notifyAllListeners order, which uses a classic
+		 * iterator, from front to back of listeners list, therefore from bottom
+		 * to top-level widgets.
 		 *
 		 */
 		notifyAllListeners( redrawEvent ) ;
@@ -3413,8 +3414,8 @@ void Surface::addWidget( TwoDimensional::Widget & widget )
 #endif // OSDL_DEBUG_WIDGET
 
 	/*
-	 * Relies on event source implementation, which add new listeners to
-	 * back of list (push_back), which means for widgets, the top level.
+	 * Relies on event source implementation, which add new listeners to back of
+	 * list (push_back), which means for widgets, the top level.
 	 *
 	 */
 
@@ -3436,12 +3437,8 @@ void Surface::addWidget( TwoDimensional::Widget & widget )
 Surface & Surface::getWidgetRenderTarget()
 {
 
-	/*
-	 * For simple surfaces (and widgets), subwidgets should target
-	 * this surface:
-	 *
-	 */
-	return *this ;
+  // For simple surfaces (and widgets), subwidgets should target this surface:
+  return *this ;
 
 }
 
@@ -3451,8 +3448,8 @@ void Surface::putWidgetToFront( TwoDimensional::Widget & widget )
 {
 
 	/*
-	 * Reorders _listeners list, inherited from EventSource, so that
-	 * the widget is at top level, i.e. in last position of the list (back).
+	 * Reorders _listeners list, inherited from EventSource, so that the widget
+	 * is at top level, i.e. in last position of the list (back).
 	 *
 	 * Could iterate to stop at first occurrence found.
 	 *
@@ -3470,9 +3467,8 @@ void Surface::putWidgetToBack( TwoDimensional::Widget & widget )
 {
 
 	/*
-	 * Reorders _listeners list, inherited from EventSource, so that
-	 * the widget is at bottom level, i.e. in first position of the list
-	 * (front).
+	 * Reorders _listeners list, inherited from EventSource, so that the widget
+	 * is at bottom level, i.e. in first position of the list (front).
 	 *
 	 * Could iterate to stop at first occurrence found.
 	 *
@@ -3545,8 +3541,8 @@ void Surface::preUnlock()
 #if OSDL_USES_SDL
 
 	/*
-	 * Lockable framework ensures it is called only if necessary
-	 * (i.e. only if 'must be locked'):
+	 * Lockable framework ensures it is called only if necessary (i.e. only if
+	 * 'must be locked'):
 	 *
 	 */
 	SDL_UnlockSurface( _surface ) ;
@@ -3563,8 +3559,8 @@ void Surface::postLock()
 #if OSDL_USES_SDL
 
 	/*
-	 * Lockable framework ensures it is called only if necessary
-	 * (i.e. only if 'must be locked'):
+	 * Lockable framework ensures it is called only if necessary (i.e. only if
+	 * 'must be locked'):
 	 *
 	 */
 	SDL_LockSurface( _surface ) ;
@@ -3646,8 +3642,8 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	{
 
 		/*
-		 * This absurd copy is a bit clumsy, but it allows to avoid making
-		 * a new rectangle in the other branch.
+		 * This absurd copy is a bit clumsy, but it allows to avoid making a new
+		 * rectangle in the other branch.
 		 *
 		 */
 
@@ -3682,8 +3678,8 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 
 
 	/*
-	 * Number of pixel in abscissa for each sample
-	 * (auto-adjust to largest possible):
+	 * Number of pixel in abscissa for each sample (auto-adjust to largest
+	 * possible):
 	 *
 	 */
 	Coordinate stride = static_cast<Coordinate>(
@@ -3798,7 +3794,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 
 		/*
 		 * LogPlug::debug( "yplotPrevious is "
-		  	+ Ceylan::toString( yplotPrevious ) ) ;
+			+ Ceylan::toString( yplotPrevious ) ) ;
 		 *
 		 */
 
@@ -3808,8 +3804,8 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 	}
 
 	/*
-	 * These are not real axes
-	 * (they are not set so that they are y=0 for example):
+	 * These are not real axes (they are not set so that they are y=0 for
+	 * example):
 	 *
 	 */
 
@@ -3821,7 +3817,7 @@ bool Surface::displayData( const Ceylan::Maths::IntegerData * dataArray,
 
 	/*
 	 * LogPlug::debug( "Last y plotted was "
-	 	+ Ceylan::toString( yplotPrevious ) + "." ) ;
+		+ Ceylan::toString( yplotPrevious ) + "." ) ;
 	 *
 	 */
 
@@ -3900,7 +3896,7 @@ const string Surface::toString( Ceylan::VerbosityLevels level ) const
 
 	/*
 	 * surfaceList.push_back( "Reference count: "
-	 	+ Ceylan::toString( _refcount ) ) ;
+		+ Ceylan::toString( _refcount ) ) ;
 	 *
 	 */
 
@@ -4047,8 +4043,8 @@ string Surface::InterpretFlags( Flags flags )
 				"Display surface supports OpenGL blitting (deprecated)." ) ;
 
 		/*
-		 * Ignore if OpenGLBlit is not used: avoid useless publicity
-		 * for bad habits.
+		 * Ignore if OpenGLBlit is not used: avoid useless publicity for bad
+		 * habits.
 		 *
 
 		else
