@@ -30,6 +30,7 @@
 
 
 #include "OSDLException.h"   // for inheritance.
+#include "OSDLFont.h"        // for PointSize
 
 #include "Ceylan.h"          // for inheritance.
 
@@ -72,19 +73,19 @@ namespace OSDL
 
 #if ! defined(OSDL_USES_AGAR) || OSDL_USES_AGAR
 
-		/// Agar surface being used.
-		typedef ::AG_Surface GUILevelSurface
+  /// Agar surface being used.
+  typedef ::AG_Surface GUILevelSurface ;
 
-		/// Agar font being used.
-		typedef ::AG_Font GUILevelFont
+  /// Agar font being used.
+  typedef ::AG_Font GUILevelFont ;
 
 #else // ! defined(OSDL_USES_AGAR) || OSDL_USES_AGAR
 
-		/// GUI-level surface being used.
-		struct GUILevelSurface {} ;
+  /// GUI-level surface being used.
+  struct GUILevelSurface {} ;
 
-		/// GUI-level font being used.
-		struct GUILevelFont {} ;
+  /// GUI-level font being used.
+  struct GUILevelFont {} ;
 
 
 #endif // ! defined(OSDL_USES_AGAR) || OSDL_USES_AGAR
@@ -196,7 +197,7 @@ namespace OSDL
 	 *
 	 */
 	static GUILevelFont & LoadFont( const std::string & fontFilename,
-	  Video::TwoDimensional::Text::PointSize pointSize ) ;
+	  OSDL::Video::TwoDimensional::Text::PointSize pointSize ) ;
 
 
 
