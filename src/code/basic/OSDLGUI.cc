@@ -74,7 +74,6 @@ const Ceylan::Version::VersionNumber oldestAgarSupportedPatch = 0 ;
 
 #include <agar/core.h>
 #include <agar/gui.h>
-#include <agar/gui/opengl.h>
 
 
 
