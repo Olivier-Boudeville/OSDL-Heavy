@@ -187,7 +187,6 @@ AC_CONFIG_FILES([
 	engine/Makefile
 	events/Makefile
 	video/Makefile
-	video/graphicalUserInterface/Makefile
 	video/twoDimensional/Makefile
 	video/videoRenderer/Makefile
 ])
