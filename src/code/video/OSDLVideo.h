@@ -112,12 +112,12 @@ namespace OSDL
 		 *
 		 * Notably manages the screen surface.
 		 *
-		 * @note if the video subsystem has already been initialized,
-		 * calling the static methods returning video informations will
-		 * apply to the current video mode.
-		 * If the video subsystem has not already been initialized,
-		 * those static methods will return informations about the best
-		 * available video mode.
+		 * @note if the video subsystem has already been initialized, calling
+		 * the static methods returning video informations will apply to the
+		 * current video mode.
+		 *
+		 * If the video subsystem has not already been initialized, those static
+		 * methods will return informations about the best available video mode.
 		 *
 		 */
 		class OSDL_DLL VideoModule : public Ceylan::Module
@@ -259,7 +259,7 @@ namespace OSDL
 				 *
 				 */
 				 virtual BitsPerPixel getBestColorDepthForMode(
-				 	Length width, Length height,
+					Length width, Length height,
 					BitsPerPixel askedBpp, Ceylan::Flags flags ) ;
 
 
@@ -312,8 +312,10 @@ namespace OSDL
 				 *
 				 * @param flags describes the desired features, such as
 				 * SoftwareSurface, Resizable, etc.
-				 * One particularly useful feature is DoubleBuffered, since
-				 * it allows to suppress most of the tearing on most platforms.
+				 *
+				 * One particularly useful feature is DoubleBuffered, since it
+				 * allows to suppress most of the tearing on most platforms.
+				 *
 				 * Flags must be OR'd together (ex: VideoModule::SoftwareSurface
 				 * || VideoModule::Resizable), specify 0 if not wanting to
 				 * activate any of these features.
@@ -533,8 +535,8 @@ namespace OSDL
 				 *
 				 * @note If the application is running in a window managed
 				 * environment, this method attempts to iconify (minimise) it.
-				 * If this call is successful, the application will receive
-				 * an ApplicationFocus loss event.
+				 * If this call is successful, the application will receive an
+				 * ApplicationFocus loss event.
 				 *
 				 * @return true on success, false if iconification is not
 				 * supported or was refused by the window manager.
@@ -576,7 +578,7 @@ namespace OSDL
 				 * @see Ceylan::TextDisplayable
 				 *
 				 */
-		 		virtual const std::string toString(
+				virtual const std::string toString(
 					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
 
@@ -604,12 +606,12 @@ namespace OSDL
 
 
 				/**
-				 * Tells whether the last pixel of a segment of line should
-				 * be drawn.
+				 * Tells whether the last pixel of a segment of line should be
+				 * drawn.
 				 *
-				 * @note This method is static so that calling it is
-				 * convenient: no need to explicitly retrieve the common
-				 * module, then the video module, before knowing the result.
+				 * @note This method is static so that calling it is convenient:
+				 * no need to explicitly retrieve the common module, then the
+				 * video module, before knowing the result.
 				 *
 				 * The need to retrieve the right module from scratch at each
 				 * call is rather inefficient though.
@@ -651,8 +653,9 @@ namespace OSDL
 				 * Describes specified video flags according to the semantics
 				 * used in setMode.
 				 *
-				 * @note One shall not call this method on flags used with
-				 * a surface.
+				 * @note One shall not call this method on flags used with a
+				 * surface.
+				 *
 				 * Use Surface::interpretFlags instead, since their meaning
 				 * is different.
 				 *
@@ -826,6 +829,7 @@ namespace OSDL
 				 * @param definitions an empty list in which dimension pairs
 				 * will be stored, if not all dimensions are allowed for the
 				 * given pixel format.
+				 *
 				 * The list may remain empty, if nothing is available for
 				 * specified choice.
 				 *
@@ -855,8 +859,9 @@ namespace OSDL
 				 * meaning as the setMode flags.
 				 *
 				 * @param format: desired pixel format.
-				 * If format is null (0), the definition list will
-				 * correspond to the "best" mode available.
+				 *
+				 * If format is null (0), the definition list will correspond to
+				 * the "best" mode available.
 				 *
 				 * @throw VideoException if the operation failed.
 				 *
