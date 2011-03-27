@@ -52,7 +52,16 @@
 // No need to include Agar header here:
 
 struct AG_Surface ;
-struct AG_Font ;
+
+
+/*
+ * We would have liked to forward-declare AG_Font, but the struct is declared
+ * as: 'typdef struct ag_font {...} AG_Font;' in Agar's text.h so we have to
+ * mention the internal ag_font instead.
+ *
+ */
+//struct AG_Font ;
+struct ag_font ;
 
 #endif // ! defined(OSDL_USES_AGAR) || OSDL_USES_AGAR
 
@@ -77,7 +86,7 @@ namespace OSDL
   typedef ::AG_Surface GUILevelSurface ;
 
   /// Agar font being used.
-  typedef ::AG_Font GUILevelFont ;
+  typedef ::ag_font GUILevelFont ;
 
 #else // ! defined(OSDL_USES_AGAR) || OSDL_USES_AGAR
 
@@ -95,6 +104,30 @@ namespace OSDL
   // GUI module is created by common module.
   class CommonModule ;
 
+
+  namespace Video
+  {
+
+	class VideoModule ;
+
+  }
+
+
+  namespace Audio
+  {
+
+	class AudioModule ;
+
+  }
+
+
+  namespace Events
+  {
+
+	class EventsModule ;
+
+  }
+  
 
 
   /**
@@ -141,7 +174,7 @@ namespace OSDL
 	 *
 	 * @see Ceylan::TextDisplayable
 	 *
-				 */
+	 */
 	virtual const std::string toString(
 	  Ceylan::VerbosityLevels level = Ceylan::high ) const ;
 
@@ -200,11 +233,6 @@ namespace OSDL
 	  OSDL::Video::TwoDimensional::Text::PointSize pointSize ) ;
 
 
-
-
-  protected:
-
-
 	/**
 	 * Returns a string describing the last error (if any) that occurred with
 	 * the GUI backend.
@@ -213,10 +241,24 @@ namespace OSDL
 	static std::string GetBackendLastError() ;
 
 
+
+  protected:
+
+
 	// Variables section.
 
 	/// The name of the current application.
 	std::string _applicationName ;
+
+
+	/// Video module, needed by the GUI subsystem:
+	Video::VideoModule * _video ;
+
+	/// Audio module, needed by the GUI subsystem:
+	Audio::AudioModule * _audio ;
+
+	/// Events module, needed by the GUI subsystem:
+	Events::EventsModule  * _events ;
 
 
 
@@ -233,7 +275,9 @@ namespace OSDL
 	 * @throw GUIException if the GUI subsystem initialization failed.
 	 *
 	 */
-	GUIModule( const std::string & applicationName ) ;
+	GUIModule( const std::string & applicationName,
+	  Video::VideoModule & videoModule, Audio::AudioModule & audioModule,
+	  Events::EventsModule & eventsModule ) ;
 
 
 
