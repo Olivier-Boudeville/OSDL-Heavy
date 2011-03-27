@@ -31,6 +31,7 @@
 #include "OSDLVideoRenderer.h"  // for VideoRenderer
 #include "OSDLUtils.h"          // for getBackendLastError
 #include "OSDLBasic.h"          // for getExistingCommonModule, GetVersion, etc.
+#include "OSDLGUI.h"            // for GUIModule::GetBackendLastError, etc.
 
 
 #include <list>
@@ -82,13 +83,13 @@ using namespace OSDL::Video::OpenGL ;
 #define LOG_TRACE_VIDEO(message)   LogPlug::trace(message)
 #define LOG_WARNING_VIDEO(message) LogPlug::warning(message)
 
-#else // OSDL_DEBUG_AUDIO_PLAYBACK
+#else // OSDL_VERBOSE_VIDEO_MODULE
 
 #define LOG_DEBUG_VIDEO(message)
 #define LOG_TRACE_VIDEO(message)
 #define LOG_WARNING_VIDEO(message)
 
-#endif // OSDL_DEBUG_AUDIO_PLAYBACK
+#endif // OSDL_VERBOSE_VIDEO_MODULE
 
 
 
@@ -486,15 +487,14 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	Ceylan::Flags userFlags = flags ;
 
 	send( "Trying to set "
-		+ Ceylan::toString( width )    + 'x'
-		+ Ceylan::toString( height )   + " video mode, with "
-		+ ( ( askedBpp == 0 ) ?
-			string( "current screen color depth" ):
-			Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) )
-			+ " bits per pixel)" )
-		+ ", with user-defined flags. "	+ InterpretFlags( flags )
-		+ "The " + OpenGLContext::ToString( flavour )
-		+ " flavour is selected" ) ;
+	  + Ceylan::toString( width ) + 'x'
+	  + Ceylan::toString( height ) + " video mode, with "
+	  + ( ( askedBpp == 0 ) ? string( "current screen color depth" ) :
+		Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) )
+	  + " bits per pixel), with user-defined flags "
+	  + InterpretFlags( flags )
+	  + "The " + OpenGLContext::ToString( flavour )
+	  + " flavour is selected" ) ;
 
 	if ( ( ( flags & OpenGL ) == 0 ) && ( flavour != OpenGL::None ) )
 	{
@@ -519,7 +519,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 		 * OpenGL context):
 		 *
 		 */
-		flags &= ~ DoubleBuffered ;
+		flags &= ~DoubleBuffered ;
 
 	}
 
@@ -530,7 +530,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 		OpenGLContext::SetUpForFlavour( flavour, /* safest */ false ) ;
 
 		if ( askedBpp != 0 )
-			 OpenGLContext::SetColorDepth( askedBpp ) ;
+			OpenGLContext::SetColorDepth( askedBpp ) ;
 
 	}
 
@@ -567,8 +567,8 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 		}
 
 		/*
-		 * No fall-back available yet for non-OpenGL modes, next exception
-		 * will be thrown.
+		 * No fall-back available yet for non-OpenGL modes, next exception will
+		 * be thrown.
 		 *
 		 */
 
@@ -619,8 +619,8 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	{
 
 		/*
-		 * Initializes the flavours and the context since setMode has just
-		 * been called:
+		 * Initializes the flavours and the context, since setMode has just been
+		 * called:
 		 *
 		 */
 		switch ( flavour )
@@ -673,15 +673,14 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	}
 
 	/*
-	 * In all cases, if OpenGL is to be used, an OpenGL context is
-	 * available here.
+	 * In all cases, if OpenGL is to be used, an OpenGL context is available
+	 * here.
 	 *
 	 */
 
 	/*
-	 * Defines the viewport independently of flavours
-	 * (lower-left corner of the OpenGL viewport is the origin of the
-	 * setMode window).
+	 * Defines the viewport independently of flavours (lower-left corner of the
+	 * OpenGL viewport is the origin of the setMode window).
 	 *
 	 * By default, the viewport is chosen so that it takes all the display
 	 * window.
@@ -695,7 +694,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 	send( "After display creation, interpreting actually obtained surface: "
 		+ _screen->toString()
 		+ "The corresponding pixel format for this screen surface is: "
-		+ Pixels::toString( _screen->getPixelFormat() )	) ;
+		+ Pixels::toString( _screen->getPixelFormat() ) ) ;
 
 	if ( _openGLcontext != 0 )
 		send( "Current OpenGL context: " + _openGLcontext->toString() ) ;
@@ -708,16 +707,21 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 #if OSDL_USES_AGAR
 
 	  /*
-	   * We will use the sdlgl driver of Agar, which is a Single-Window one:
+	   * If OpenGL was requested, we will use the sdlgl driver of Agar (which is
+	   * a Single-Window one), otherwise we will use sdlfb.
+	   *
 	   */
 
-	  AG_InitVideoSDL( screen, AG_VIDEO_OVERLAY ) ;
+	  // Instead of AG_VIDEO_FULLSCREEN | AG_VIDEO_OPENGL | AG_VIDEO_ANYFORMAT:
+	  if ( AG_InitVideoSDL( screen, /* flags */ AG_VIDEO_OVERLAY ) != 0 )
+		throw VideoException( "VideoModule::setMode failed when "
+		  "initializing Agar: " + GUIModule::GetBackendLastError() ) ;
 
 	  std::string usingGL  =
-		( AG_UsingGL( /* drv */ 0 )  ? "with" : "without" ) ;
+		( AG_UsingGL( /* drv */ AGDRIVER(agDriverSw) )  ? "with" : "without" ) ;
 
 	  std::string usingSDL =
-		( AG_UsingGL( /* drv */ 0 )  ? "with" : "without" ) ;
+		( AG_UsingGL( /* drv */ AGDRIVER(agDriverSw) )  ? "with" : "without" ) ;
 
 	  send( "The libagar GUI rendering will be done using a backend "
 		+ usingGL  + " OpenGL, and " + usingSDL + " SDL." ) ;
@@ -846,8 +850,7 @@ void write16( Ceylan::Uint16* address, Ceylan::Uint16 value)
 
 
 /**
- * Writes specified 32-bit value to specified address, with specific byte
- * order.
+ * Writes specified 32-bit value to specified address, with specific byte order.
  *
  */
 void write32( Ceylan::Uint32* address, Ceylan::Uint32 value)
@@ -887,8 +890,8 @@ void VideoModule::makeBMPScreenshot( const string & screenshotFilename )
 	/*
 	 * Generating a BMP file for the content of the main core.
 	 *
-	 * Inspired from Graphics/capture/ScreenShot/source/screenshot.cpp,
-	 * from libnds examples.
+	 * Inspired from Graphics/capture/ScreenShot/source/screenshot.cpp, from
+	 * libnds examples.
 	 *
 	 * @note VRAM D must be free, as the capture uses it.
 	 *
@@ -957,14 +960,14 @@ void VideoModule::makeBMPScreenshot( const string & screenshotFilename )
 		write32( &infoHeader->importantcolours, 0 ) ;
 		write32( &infoHeader->ncolours, 0 ) ;
 
- 		// Wait until ready (deferred waiting, thus reduced):
+		// Wait until ready (deferred waiting, thus reduced):
 		while( REG_DISPCAPCNT & DCAP_ENABLE )
 			;
 
 		/*
 		dmaCopy( VRAM_D, temp + sizeOfHeaders,
-		 	SCREEN_WIDTH*SCREEN_HEIGHT*sizeof(Ceylan::Uint16) ) ;
- 		 */
+			SCREEN_WIDTH*SCREEN_HEIGHT*sizeof(Ceylan::Uint16) ) ;
+		 */
 
 		// Then write the image pixels:
 		for( int y=0; y<SCREEN_HEIGHT; y++ )
@@ -1115,18 +1118,19 @@ void VideoModule::setWindowIcon( const std::string & filename )
 			"(VideoModule::setMode was already called)." ) ;
 
 	/*
-	 * The mask is a bitmask that describes the shape of the icon.
-	 * - if mask is null (0), then the shape is determined by the
-	 * colorkey of icon, if any, or makes the icon rectangular
-	 * (no transparency) otherwise.
-	 * - if mask is non-null (non 0), it has to point to a bitmap
-	 * with bits set where the corresponding pixel should be
-	 * visible.
+	 * The mask is a bitmask that describes the shape of the icon:
+	 *
+	 * - if mask is null (0), then the shape is determined by the colorkey of
+	 * icon, if any, or makes the icon rectangular (no transparency) otherwise
+	 *
+	 * - if mask is non-null (non 0), it has to point to a bitmap with bits set
+	 * where the corresponding pixel should be visible
+	 *
 	 * The format of the bitmap is as follows.
 	 * Scanlines come in the usual top-down order.
 	 * Each scanline consists of (width / 8) bytes, rounded up.
-	 * The most significant bit of each byte represents the
-	 * leftmost pixel.
+	 *
+	 * The most significant bit of each byte represents the leftmost pixel.
 	 *
 	 */
 
@@ -1270,8 +1274,8 @@ bool VideoModule::IsDisplayInitialized()
 {
 
 	/*
-	 * Display is initialized iff the video module says so, therefore
-	 * video module and common module must (necessarily) already exist.
+	 * Display is initialized iff the video module says so, therefore video
+	 * module and common module must (necessarily) already exist.
 	 *
 	 */
 
@@ -1419,8 +1423,8 @@ string VideoModule::InterpretFlags( Ceylan::Flags flags )
 	std::list<string> res ;
 
 	/*
-	 * As the Software (SDL_SWSURFACE) flag is null (0), the test had no
-	 * real meaning:
+	 * As the Software (SDL_SWSURFACE) flag is null (0), the test had no real
+	 * meaning:
 	 *
 	 */
 
@@ -1749,7 +1753,6 @@ bool VideoModule::ColorFillsAccelerated()
 
 #if OSDL_USES_SDL
 
-
 	const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo() ;
 
 	if ( videoInfo == 0 )
@@ -1935,10 +1938,10 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 	/*
 	 * Beware to 64-bit machines.
 	 *
-	 * Basically we are trying to convert a pointer to an int, gcc on
-	 * Linux will not accept Ceylan::Uint32 to become Ceylan::Uint64,
-	 * whereas Visual C++ on 32 bit will find a pointer truncation
-	 * from 'SDL_Rect **' to Ceylan::SignedLongInteger:
+	 * Basically we are trying to convert a pointer to an int, gcc on Linux will
+	 * not accept Ceylan::Uint32 to become Ceylan::Uint64, whereas Visual C++ on
+	 * 32 bit will find a pointer truncation from 'SDL_Rect **' to
+	 * Ceylan::SignedLongInteger:
 	 *
 	 */
 #ifdef OSDL_RUNS_ON_WINDOWS
@@ -1949,8 +1952,8 @@ bool VideoModule::AreDefinitionsRestricted( list<Definition> & definitions,
 #else // OSDL_RUNS_ON_WINDOWS
 
 	/*
-	 * long and void * have the same size in 32 bit-platforms (4 bytes)
-	 * and on 64 bit ones (8 bytes).
+	 * long and void * have the same size in 32 bit-platforms (4 bytes) and on
+	 * 64 bit ones (8 bytes).
 	 *
 	 */
 	Ceylan::SignedLongInteger numericModes =
@@ -2066,7 +2069,7 @@ string VideoModule::DescribeAvailableDefinitions( Ceylan::Flags flags,
 
 #else // OSDL_USES_SDL
 
- 	throw VideoException( "VideoModule::DescribeAvailableDefinitions: "
+	throw VideoException( "VideoModule::DescribeAvailableDefinitions: "
 		"no SDL support available" ) ;
 
 #endif // OSDL_USES_SDL
