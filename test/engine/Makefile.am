@@ -12,7 +12,7 @@ testsengine_PROGRAMS = \
 	testOSDLScheduler.exe                     \
 	testOSDLSchedulerNoDeadline.exe           \
 	testOSDLScheduledMVC.exe
-	
+
 
 testOSDLAndMVC_exe_SOURCES                       = testOSDLAndMVC.cc
 testOSDLCircleBoundingBox_exe_SOURCES            = testOSDLCircleBoundingBox.cc
@@ -28,12 +28,7 @@ testOSDLScheduledMVC_exe_SOURCES                 = testOSDLScheduledMVC.cc
 view-durations:
 	@gnuplot plotIdleCallDurations.p
 	@eog testOSDLScheduler-idleCallDurations.png
-	
-	
-
-clean: clean-local
 
 
 clean-local:
 	-@/bin/rm -f idle-calls.dat
-	
