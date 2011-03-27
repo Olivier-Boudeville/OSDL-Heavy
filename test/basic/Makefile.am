@@ -18,7 +18,7 @@ testsbasic_PROGRAMS = \
 	testSDL_image.exe                           \
 	testSDL_mixer.exe                           \
 	testSDLWithOpenGL.exe
-	
+
 
 testBasic_exe_SOURCES                        = testBasic.cc
 testOSDLBasic_exe_SOURCES                    = testOSDLBasic.cc
@@ -34,9 +34,5 @@ testSDL_mixer_exe_SOURCES                    = testSDL_mixer.cc
 testSDLWithOpenGL_exe_SOURCES                = testSDLWithOpenGL.cc
 
 
-clean: clean-local
-
-
 clean-local:
 	-@/bin/rm -f resource-map.h resource-map.xml cypherOSDLFile.exe.log
-	
