@@ -51,13 +51,13 @@ class MyGUIView : public OSDL::Rendering::BaseGUIView
 			// Here is the place where we are to define the GUI elements:
 
 			AG_BindGlobalKey(
-			  
+
 			  //static_cast<SDLKey>( KeyboardHandler::EscapeKey ),
 			  AG_KEY_ESCAPE,
 
 			  // static_cast<SDLMod>( KeyboardHandler::NoneModifier ),
 			  AG_KEYMOD_ANY,
-			  
+
 			  Engine::Scheduler::StopExistingScheduler ) ;
 
 
