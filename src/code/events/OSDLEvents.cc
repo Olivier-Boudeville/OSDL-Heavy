@@ -48,6 +48,7 @@
 #include <OSDLConfig.h>              // for OSDL_DEBUG and al (private header)
 #endif // OSDL_USES_CONFIG_H
 
+
 #if OSDL_ARCH_NINTENDO_DS
 #include "OSDLConfigForNintendoDS.h" // for OSDL_USES_SDL and al
 #endif // OSDL_ARCH_NINTENDO_DS
@@ -71,7 +72,10 @@
 #include <agar/gui/opengl.h>
 
 #include <agar/core/types.h>
-#include <agar/gui/cursors.h>        // for AG_Cursor, needed by drv_sdl_common.h
+
+// For AG_Cursor, needed by drv_sdl_common.h:
+#include <agar/gui/cursors.h>
+
 #include <agar/gui/drv_sdl_common.h> // for AG_SDL_TranslateEvent
 #include <agar/core/close_types.h>
 
@@ -921,7 +925,7 @@ void EventsModule::updateInputState()
 
 	// Checks for all pending events:
 
-	while ( SDL_PollEvent( & currentEvent ) )
+	while ( SDL_PollEvent( &currentEvent ) )
 	{
 
 		if ( _isGuiEnabled )
@@ -939,19 +943,23 @@ void EventsModule::updateInputState()
 		   * what Agar expects.
 		   *
 		   * Was, with previous versions of Agar:
-		   * 'AG_ProcessEvent( & currentEvent ) ;'
+		   * 'AG_ProcessEvent( &currentEvent ) ;'
 		   *
 		   */
-		  AG_SDL_TranslateEvent( /* AG_Driver* */ 0,
-			/* source SDL event */ & currentEvent,
-			/* target translated AG_DriverEvent */ & driverEvent ) ;
+		  AG_Driver * driver = AGDRIVER(agDriverSw) ;
+
+		  AG_SDL_TranslateEvent( /* AG_Driver* */ driver,
+			/* source SDL event */ &currentEvent,
+			/* target translated AG_DriverEvent */ &driverEvent ) ;
 
 		  // Processes the event in a default, generic manner:
-		  if ( AG_ProcessEvent( /* AG_Driver* */ 0, &driverEvent ) == -1)
+		  if ( AG_ProcessEvent( /* AG_Driver* */ driver, &driverEvent ) == -1)
 		  {
 
-			/* Fatal error, or the application should be terminated as a result
+			/*
+			 * Fatal error, or the application should be terminated as a result
 			 * of the last event:
+			 *
 			 */
 			if( agTerminating == 1 )
 			  onQuitRequested() ;
@@ -1337,8 +1345,8 @@ void EventsModule::enterBasicMainLoop()
 	*/
 
 	/*
-	 * This event loop will drive the rendering, by using the renderer
-	 * if available, otherwise by using the video module.
+	 * This event loop will drive the rendering, by using the renderer if
+	 * available, otherwise by using the video module.
 	 *
 	 */
 
@@ -1374,8 +1382,8 @@ void EventsModule::enterBasicMainLoop()
 	/*
 	 * No scheduler, using classical event loop.
 	 *
-	 * We believe we have a better accuracy than 'SDL_framerate' from
-	 * SDL_gfx with that mechanism:
+	 * We believe we have a better accuracy than 'SDL_framerate' from SDL_gfx
+	 * with that mechanism:
 	 *
 	 */
 
