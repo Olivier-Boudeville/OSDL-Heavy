@@ -1,7 +1,7 @@
 ## Tests for the 'Video' module of the OSDL library.
 
 
-SUBDIRS = graphicalUserInterface twoDimensional videoRenderer
+SUBDIRS = twoDimensional videoRenderer
 
 
 testsvideodir = @OSDL_TEST_DIR@/video
