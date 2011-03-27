@@ -99,6 +99,10 @@ using namespace Ceylan::Log ;
 #include "OSDLBasic.h"      // for OSDL::GetVersion
 #include "OSDLFont.h"       // for PointSize
 
+#include "OSDLVideo.h"      // for VideModule
+#include "OSDLAudio.h"      // for AudioModule
+#include "OSDLEvents.h"     // for Eventsodule
+
 
 using namespace OSDL ;
 using namespace OSDL::Video::TwoDimensional::Text ;
@@ -138,7 +142,9 @@ GUIException::~GUIException() throw()
 
 
 
-GUIModule::GUIModule( const std::string & applicationName ) :
+GUIModule::GUIModule( const std::string & applicationName,
+  Video::VideoModule & videoModule, Audio::AudioModule & audioModule,
+  Events::EventsModule & eventsModule ) :
 	Ceylan::Module(
 		"OSDL GUI module",
 		"This is the GUI module of OSDL",
@@ -147,7 +153,10 @@ GUIModule::GUIModule( const std::string & applicationName ) :
 		"olivier.boudeville@online.fr",
 		OSDL::GetVersion(),
 		"disjunctive LGPL/GPL" ),
-	_applicationName( applicationName )
+	_applicationName( applicationName ),
+	_video(  &videoModule ),
+	_audio(  &audioModule ),
+	_events( &eventsModule )
 {
 
   send( "Initializing GUI subsystem." ) ;
@@ -200,6 +209,7 @@ GUIModule::GUIModule( const std::string & applicationName ) :
 			+ Ceylan::toNumericalString( oldestAgarSupportedMinor ) + "."
 			+ Ceylan::toNumericalString( oldestAgarSupportedPatch ) + "." );
 
+	AG_SetString( agConfig, "font-path", "." ) ;
 
 #else // OSDL_USES_AGAR
 
@@ -208,6 +218,22 @@ GUIModule::GUIModule( const std::string & applicationName ) :
 
 #endif // OSDL_USES_AGAR
 
+	/*
+	 * Not doable, as common module not constructed/registered yet:
+
+	CommonModule & common = OSDL::getExistingCommonModule() ;
+
+	Video::VideoModule & video    = common.getVideoModule() ;
+	Audio::AudioModule & audio    = common.getAudioModule() ;
+	Events::EventsModule & events = common.getEventsModule() ;
+
+	 *
+	 */
+
+
+	_video->setGUIEnableStatus(  true ) ;
+	_audio->setGUIEnableStatus(  true ) ;
+	_events->setGUIEnableStatus( true ) ;
 
 	send( "GUI subsystem initialized." ) ;
 
@@ -221,6 +247,10 @@ GUIModule::~GUIModule() throw()
 {
 
 	send( "Stopping GUI subsystem." ) ;
+
+	_events->setGUIEnableStatus( false ) ;
+	_audio->setGUIEnableStatus(  false ) ;
+	_video->setGUIEnableStatus(  false ) ;
 
 #if OSDL_USES_AGAR
 
