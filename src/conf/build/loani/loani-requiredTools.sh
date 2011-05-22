@@ -574,22 +574,22 @@ generatelibjpeg()
 	# One attempt is being made in case of failure, to test whether it cannot be
 	# the most common platform used for OSDL by far, i686-pc-linux-gnu.
 
-	if ! ./ltconfig ltmain.sh 1>>"$LOG_OUTPUT" 2>&1 ; then
+	# if ! ./ltconfig ltmain.sh 1>>"$LOG_OUTPUT" 2>&1 ; then
 
-			LOG_STATUS "ltconfig host detection will fail in the configure step."
+	#		LOG_STATUS "ltconfig host detection will fail in the configure step."
 
-				if [ $is_linux -eq 0 ] ; then
-					WORK_AROUND_PLATFORM=i686-pc-linux-gnu
-					LOG_STATUS "Linux detected, trying workaround of most common platform (${WORK_AROUND_PLATFORM})."
-					${CAT} configure | ${SED} "s|ltmain.sh$|ltmain.sh ${WORK_AROUND_PLATFORM}|1" > configure.tmp
-					${MV} -f configure.tmp configure
-					${CHMOD} +x configure
-				else
-					echo
-					ERROR "Unable to pre-configure libjpeg, host detection failed and there is no host work-around for your platform."
-					exit 11
-				fi
-	fi
+	#			if [ $is_linux -eq 0 ] ; then
+	#				WORK_AROUND_PLATFORM=i686-pc-linux-gnu
+	#			LOG_STATUS "Linux detected, trying workaround of most common platform (${WORK_AROUND_PLATFORM})."
+	#				${CAT} configure | ${SED} "s|ltmain.sh$|ltmain.sh ${WORK_AROUND_PLATFORM}|1" > configure.tmp
+	#				${MV} -f configure.tmp configure
+	#				${CHMOD} +x configure
+	#			else
+	#				echo
+	#				ERROR "Unable to pre-configure libjpeg, host detection failed and there is no host work-around for your platform."
+	#				exit 11
+	#			fi
+	# fi
 
 	if [ -n "$prefix" ] ; then
 	{
@@ -639,7 +639,8 @@ generatelibjpeg()
 	# build libraries using JPEG, such as SDL_image: it remains useful.
 
 	{
-		setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
+		#setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
+		setBuildEnv ${MAKE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
@@ -687,6 +688,21 @@ generatelibjpeg()
 
 		setBuildEnv ${MAKE} install prefix=${libjpeg_PREFIX}
 
+		# Note: for some unknown reason, this build is to create a library like
+		# jpeg-8c/lib/libjpeg.so.8.3.0, whereas user tools (ex: Agar, emacs,
+		# etc.) will request libjpeg.so.62.0.0 instead (which is surprinsingly
+		# different).
+		#
+		# A good work-around is simply to build them against the right (jpeg-8c)
+		# headers, and to create a fake 0.62 version thanks to a symbolic link
+		# like: ln -s libjpeg.so.8.3.0 libjpeg.so.62
+		#
+		# Moreover, for Agar, one may have to previously hide the system libjpeg
+		# libraries (ex: /usr/lib/libjpeg.so.62.0.0, for example with
+		# /root/hide-jpeg.sh) otherwise the -L/usr/lib64 put at the beginning of
+		# the link command-line will pick them up instead (this will break the
+		# build as the compile step will have recorded that it expects for
+		# example 80, not 62).
 
 		if [ $? != 0 ] ; then
 			ERROR "Unable to install libjpeg."
