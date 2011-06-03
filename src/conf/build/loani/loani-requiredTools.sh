@@ -27,7 +27,7 @@ if [ $is_windows -eq 0 ] ; then
   # LD_LIBRARY_PATH.
 
   # Windows special case:
-  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win Agar_win"
+  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win CEGUI_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -79,7 +79,7 @@ else
 	#
 	# whereas morse-icon.tex2D is a normal PNG image, 300 x 286, 8-bit/color
 	# RGBA, non-interlaced
-	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer Agar PhysicsFS"
+	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer CEGUI PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -3803,6 +3803,326 @@ cleanAgar_win()
 	${RM} -rf "agar-${Agar_win_VERSION}"
 }
 
+
+
+
+################################################################################
+################################################################################
+# CEGUI
+################################################################################
+################################################################################
+
+
+#TRACE "[loani-requiredTools] CEGUI"
+
+################################################################################
+# CEGUI for non-Windows platforms:
+################################################################################
+
+getCEGUI()
+{
+	LOG_STATUS "Getting CEGUI..."
+	launchFileRetrieval CEGUI
+	return $?
+}
+
+
+prepareCEGUI()
+{
+
+	LOG_STATUS "Preparing CEGUI..."
+
+	if findTool gunzip ; then
+		GUNZIP=$returnedString
+	else
+		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		exit 8
+	fi
+
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 9
+	fi
+
+	printBeginList "CEGUI       "
+
+	printItem "extracting"
+
+	cd $repository
+
+	# Prevent archive from disappearing because of gunzip.
+	{
+		${CP} -f ${CEGUI_ARCHIVE} ${CEGUI_ARCHIVE}.save && ${GUNZIP} -f ${CEGUI_ARCHIVE} && ${TAR} -xvf "CEGUI-${CEGUI_VERSION}.tar"
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${CEGUI_ARCHIVE}."
+		LOG_STATUS "Restoring ${CEGUI_ARCHIVE}."
+		${MV} -f ${CEGUI_ARCHIVE}.save ${CEGUI_ARCHIVE}
+		exit 10
+	fi
+
+	${MV} -f ${CEGUI_ARCHIVE}.save ${CEGUI_ARCHIVE}
+	${RM} -f "CEGUI-${CEGUI_VERSION}.tar"
+
+	printOK
+
+}
+
+
+generateCEGUI()
+{
+
+	LOG_STATUS "Generating CEGUI..."
+
+
+	cd "CEGUI-${CEGUI_VERSION}"
+
+	printItem "configuring"
+
+	# --with-zlib=DIR could be used as well:
+	CEGUI_CONFIGURE_OPT="--enable-debug --disable-lua-module --disable-python-module"
+
+	if [ -n "$prefix" ] ; then
+	{
+
+		if [ $is_windows -eq 0 ] ; then
+			CEGUI_PREFIX=`cygpath -w ${prefix}/CEGUI-${CEGUI_VERSION} | ${SED} 's|\\\|/|g'`
+		else
+			CEGUI_PREFIX="${prefix}/CEGUI-${CEGUI_VERSION}"
+		fi
+
+
+		${MKDIR} -p ${CEGUI_PREFIX}
+
+		# Currently the CEGUI configure cannot override the default location
+		# for libjpeg (CFLAGS="-I${libjpeg_PREFIX}/include" is rejected):
+		setBuildEnv ./configure --prefix=${CEGUI_PREFIX} ${CEGUI_CONFIGURE_OPT}
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	else
+	{
+		setBuildEnv ./configure	${CEGUI_CONFIGURE_OPT}
+	} 1>>"$LOG_OUTPUT" 2>&1
+	fi
+
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure CEGUI."
+		exit 11
+	fi
+
+	printOK
+
+	printItem "building"
+
+	{
+
+		 setBuildEnv ${MAKE} depend all
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build CEGUI."
+		exit 12
+	fi
+
+	printOK
+
+
+	printItem "installing"
+
+	if [ -n "$prefix" ] ; then
+	{
+
+		echo "# CEGUI section." >> ${OSDL_ENV_FILE}
+
+		echo "CEGUI_PREFIX=${CEGUI_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export CEGUI_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$CEGUI_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$CEGUI_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+
+		PATH=${CEGUI_PREFIX}/bin:${PATH}
+		export PATH
+
+		LD_LIBRARY_PATH=${CEGUI_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		if [ $is_windows -eq 0 ] ; then
+
+			PATH=${CEGUI_PREFIX}/lib:${PATH}
+			export PATH
+
+			echo "PATH=\$CEGUI_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
+
+		echo "" >> ${OSDL_ENV_FILE}
+
+		LIBPATH="-L${CEGUI_PREFIX}/lib"
+
+
+		setBuildEnv ${MAKE} install
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	else
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
+	fi
+
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install CEGUI."
+		exit 13
+	fi
+
+	if [ $is_windows -eq 0 ] ; then
+		${MV} -f ${CEGUI_PREFIX}/bin/*.dll ${CEGUI_PREFIX}/lib
+	fi
+
+	printOK
+
+	printEndList
+
+	LOG_STATUS "CEGUI successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanCEGUI()
+{
+	LOG_STATUS "Cleaning CEGUI build tree..."
+	${RM} -rf "CEGUI-${CEGUI_VERSION}"
+}
+
+
+
+
+################################################################################
+# CEGUI build thanks to Visual Express.
+# Static libraries have been removed.
+# Paths and properties have been updated in CEGUI*vcproj files.
+################################################################################
+
+
+
+getCEGUI_win()
+{
+	LOG_STATUS "Getting CEGUI for windows..."
+	launchFileRetrieval CEGUI_win
+	return $?
+}
+
+
+
+prepareCEGUI_win()
+{
+
+
+	LOG_STATUS "Preparing CEGUI for windows.."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "CEGUI       "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${CEGUI_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${CEGUI_win_ARCHIVE}."
+		LOG_STATUS "Restoring ${CEGUI_win_ARCHIVE}."
+		${MV} -f ${CEGUI_win_ARCHIVE}.save ${CEGUI_win_ARCHIVE}
+		exit 10
+	fi
+
+	# Now let's use our own solution:
+
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/CEGUI-from-LOANI" "CEGUI-${CEGUI_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy CEGUI solution in build tree."
+		exit 12
+	fi
+
+	cd "CEGUI-${CEGUI_win_VERSION}"
+
+	CEGUI_FLAVOUR_ARCHIVE="vs2005-windows-nothreads.zip"
+
+	# Now we use the project prebuilt files as a base:
+	{
+
+		${CP} -f "ProjectFiles/${CEGUI_FLAVOUR_ARCHIVE}" . && ${UNZIP} -o "${CEGUI_FLAVOUR_ARCHIVE}"
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${CEGUI_FLAVOUR_ARCHIVE}."
+		exit 11
+	fi
+
+
+	printOK
+
+
+}
+
+
+
+generateCEGUI_win()
+{
+
+	LOG_STATUS "Generating CEGUI for windows..."
+
+
+	printItem "configuring"
+	printOK
+
+	CEGUI_solution=`pwd`"/CEGUI-from-LOANI/CEGUI-from-LOANI.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress CEGUI ${CEGUI_solution}
+	printOK
+
+	printItem "installing"
+
+	# Take care of the exported header files (API):
+	CEGUI_install=${alternate_prefix}/CEGUI-${CEGUI_win_VERSION}
+	${MKDIR} -p ${CEGUI_install}
+	${CP} -rf include ${CEGUI_install}
+	printOK
+
+	printEndList
+
+	LOG_STATUS "CEGUI successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+
+cleanCEGUI_win()
+{
+	LOG_STATUS "Cleaning CEGUI build tree..."
+	${RM} -rf "CEGUI-${CEGUI_win_VERSION}"
+}
 
 
 
