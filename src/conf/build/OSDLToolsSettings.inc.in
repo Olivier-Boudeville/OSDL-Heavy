@@ -308,6 +308,9 @@ guichan_win_MD5="$guichan_MD5"
 
 # Agar (libag_core.so/libag_gui.so): http://libagar.org
 
+# Not used anymore (not stable, maintained and mature enough), preferring CE GUI
+# instead.
+
 # Actually 1.4.0 (defined in configure-template.ac):
 Agar_VERSION="@AGAR_RECOMMENDED_VERSION@"
 Agar_ARCHIVE="agar-${Agar_VERSION}.tar.gz"
@@ -320,6 +323,40 @@ Agar_win_ARCHIVE="agar-${Agar_VERSION}.zip"
 Agar_win_DOWNLOAD_LOCATION="$Agar_DOWNLOAD_LOCATION"
 Agar_win_ALTERNATE_DOWNLOAD_LOCATION="$Agar_ALTERNATE_DOWNLOAD_LOCATION"
 Agar_win_MD5=""
+
+
+
+# CEGUI: http://www.cegui.org.uk
+
+# Actually 0.7.5 (defined in configure-template.ac):
+CEGUI_VERSION="@CEGUI_RECOMMENDED_VERSION@"
+CEGUI_ARCHIVE="CEGUI-${CEGUI_VERSION}.tar.gz"
+CEGUI_DOWNLOAD_LOCATION="http://sourceforge.net/projects/crayzedsgui/files/CEGUI%20Mk-2/${CEGUI_VERSION}/${CEGUI_ARCHIVE}"
+CEGUI_ALTERNATE_DOWNLOAD_LOCATION=""
+CEGUI_MD5="38c79d1fdfaaa10f481c99a2ac479516"
+
+CEGUI_win_VERSION="$CEGUI_VERSION"
+CEGUI_win_ARCHIVE="CEGUI-${CEGUI_VERSION}.zip"
+CEGUI_win_DOWNLOAD_LOCATION="$CEGUI_DOWNLOAD_LOCATION"
+CEGUI_win_ALTERNATE_DOWNLOAD_LOCATION="$CEGUI_ALTERNATE_DOWNLOAD_LOCATION"
+CEGUI_win_MD5=""
+
+
+
+# PCRE: http://www.pcre.org/
+
+# Actually 8.12 (defined in configure-template.ac):
+PCRE_VERSION="@PCRE_RECOMMENDED_VERSION@"
+PCRE_ARCHIVE="pcre-${PCRE_VERSION}.tar.bz2"
+PCRE_DOWNLOAD_LOCATION="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/"
+PCRE_ALTERNATE_DOWNLOAD_LOCATION=""
+PCRE_MD5="f14a9fef3c92f3fc6c5ac92d7a2c7eb3"
+
+PCRE_win_VERSION="$PCRE_VERSION"
+PCRE_win_ARCHIVE="pcre-${PCRE_VERSION}.zip"
+PCRE_win_DOWNLOAD_LOCATION="$PCRE_DOWNLOAD_LOCATION"
+PCRE_win_ALTERNATE_DOWNLOAD_LOCATION="$PCRE_ALTERNATE_DOWNLOAD_LOCATION"
+PCRE_win_MD5=""
 
 
 
