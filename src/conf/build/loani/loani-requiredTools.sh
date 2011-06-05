@@ -27,7 +27,7 @@ if [ $is_windows -eq 0 ] ; then
   # LD_LIBRARY_PATH.
 
   # Windows special case:
-  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win CEGUI_win"
+  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win pcre_win FreeImage_win CEGUI_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -79,7 +79,7 @@ else
 	#
 	# whereas morse-icon.tex2D is a normal PNG image, 300 x 286, 8-bit/color
 	# RGBA, non-interlaced
-	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer CEGUI PhysicsFS"
+	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer pcre FreeImage CEGUI PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -3806,6 +3806,593 @@ cleanAgar_win()
 
 
 
+
+################################################################################
+################################################################################
+# PCRE (Perl Compatible Regular Expressions, http://www.pcre.org/)
+# Needed by CEGUI.
+################################################################################
+################################################################################
+
+
+################################################################################
+# pcre for non-Windows platforms
+################################################################################
+
+#TRACE "[loani-requiredTools] pcre"
+
+
+getpcre()
+{
+	LOG_STATUS "Getting pcre..."
+	launchFileRetrieval pcre
+	return $?
+}
+
+
+preparepcre()
+{
+
+	LOG_STATUS "Preparing pcre..."
+
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
+	else
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
+		exit 14
+	fi
+
+	if findTool tar ; then
+		TAR=$returnedString
+	else
+		ERROR "No tar tool found, whereas some files have to be detarred."
+		exit 9
+	fi
+
+	printBeginList "pcre       "
+
+	printItem "extracting"
+
+	cd $repository
+
+	# Prevent archive from disappearing because of bunzip2.
+	{
+		${CP} -f ${pcre_ARCHIVE} ${pcre_ARCHIVE}.save && ${BUNZIP2} -f ${pcre_ARCHIVE} && tar -xvf "pcre-${pcre_VERSION}.tar"
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${pcre_ARCHIVE}."
+		LOG_STATUS "Restoring ${pcre_ARCHIVE}."
+		${MV} -f ${pcre_ARCHIVE}.save ${pcre_ARCHIVE}
+		exit 10
+	fi
+
+	${MV} -f ${pcre_ARCHIVE}.save ${pcre_ARCHIVE}
+	${RM} -f "pcre-${pcre_VERSION}.tar"
+
+	printOK
+
+}
+
+
+generatepcre()
+{
+
+	LOG_STATUS "Generating pcre..."
+
+
+	cd "pcre-${pcre_VERSION}"
+
+	printItem "configuring"
+
+
+	if [ -f "config.cache" ] ; then
+		${RM} -f config.cache
+	fi
+
+	if [ -n "$prefix" ] ; then
+	{
+
+		pcre_PREFIX=${prefix}/pcre-${pcre_VERSION}
+
+		setBuildEnv ./configure --prefix=${pcre_PREFIX} --enable-unicode-properties
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	else
+	{
+		setBuildEnv ./configure
+	} 1>>"$LOG_OUTPUT" 2>&1
+	fi
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure pcre."
+		exit 11
+	fi
+
+	printOK
+
+	printItem "building"
+
+	if [ -n "$prefix" ] ; then
+	{
+
+		setBuildEnv ${MAKE}
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	else
+	{
+		setBuildEnv ${MAKE}
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	fi
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build pcre."
+		exit 12
+	fi
+
+	printOK
+
+
+	printItem "installing"
+
+	if [ -n "$prefix" ] ; then
+	{
+		echo "# pcre section." >> ${OSDL_ENV_FILE}
+
+		echo "pcre_PREFIX=${pcre_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export pcre_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$pcre_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+
+		LD_LIBRARY_PATH=${pcre_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		if [ $is_windows -eq 0 ] ; then
+
+			PATH=${pcre_PREFIX}/lib:${PATH}
+			export PATH
+
+			echo "PATH=\$pcre_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
+
+		echo "" >> ${OSDL_ENV_FILE}
+
+		${MKDIR} -p ${pcre_PREFIX}
+
+		setBuildEnv ${MAKE} install prefix=${pcre_PREFIX}
+
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to install pcre."
+			exit 13
+		fi
+
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	else
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
+	fi
+
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install pcre."
+		exit 13
+	fi
+
+
+	printOK
+
+	printEndList
+
+	LOG_STATUS "pcre successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanpcre()
+{
+	LOG_STATUS "Cleaning pcre library build tree..."
+	${RM} -rf "pcre-${pcre_VERSION}"
+}
+
+
+
+################################################################################
+# pcre build thanks to Visual Express.
+################################################################################
+
+
+getpcre_win()
+{
+	LOG_STATUS "Getting pcre for windows..."
+	launchFileRetrieval pcre_win
+	return $?
+}
+
+
+preparepcre_win()
+{
+
+	LOG_STATUS "Preparing pcre for windows.."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "pcre  "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${pcre_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${pcre_win_ARCHIVE}."
+		exit 10
+	fi
+
+	cd "pcre-${pcre_win_VERSION}"
+
+	pcre_install_dir="${prefix}/pcre-${pcre_win_VERSION}"
+
+	${MKDIR} -p ${pcre_install_dir}
+
+	cd $repository
+
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/pcre-from-LOANI" "pcre-${pcre_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy pcre solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generatepcre_win()
+{
+
+	LOG_STATUS "Generating pcre for windows..."
+
+	cd "pcre-${pcre_win_VERSION}"
+
+	printItem "configuring"
+	printOK
+
+	pcre_solution=`pwd`"/pcre-from-LOANI/pcre-from-LOANI.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress pcre ${pcre_solution}
+	printOK
+
+	printItem "installing"
+
+	pcre_install_include_dir=${pcre_install_dir}/include
+	${MKDIR} -p ${pcre_install_include_dir}
+	${CP} -f pcre.h ${pcre_install_include_dir}
+
+	printOK
+
+	printEndList
+
+	LOG_STATUS "pcre successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanpcre_win()
+{
+	LOG_STATUS "Cleaning pcre build tree..."
+	${RM} -rf "pcre-${pcre_win_VERSION}"
+}
+
+
+
+################################################################################
+################################################################################
+# FreeImage (http://freeimage.sourceforge.net)
+# Needed by CEGUI.
+################################################################################
+################################################################################
+
+
+################################################################################
+# FreeImage for non-Windows platforms
+################################################################################
+
+#TRACE "[loani-requiredTools] FreeImage"
+
+
+getFreeImage()
+{
+	LOG_STATUS "Getting FreeImage..."
+	launchFileRetrieval FreeImage
+	return $?
+}
+
+
+prepareFreeImage()
+{
+
+	LOG_STATUS "Preparing FreeImage..."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "FreeImage  "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o "${FreeImage_ARCHIVE}" && ${MV} -f FreeImage "FreeImage-${FREEIMAGE_VERSION}"
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ ! $? -eq 0 ] ; then
+		ERROR "Unable to extract ${FreeImage_ARCHIVE}."
+		exit 10
+	fi
+
+	printOK
+
+}
+
+
+generateFreeImage()
+{
+
+	LOG_STATUS "Generating FreeImage..."
+
+	cd "FreeImage-${FREEIMAGE_VERSION}"
+
+	printItem "configuring"
+
+	# Nothing to do here.
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to configure FreeImage."
+		exit 11
+	fi
+
+	printOK
+
+	printItem "building"
+
+	if [ -n "$prefix" ] ; then
+	{
+
+		setBuildEnv ${MAKE}
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	else
+	{
+		setBuildEnv ${MAKE}
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	fi
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to build FreeImage."
+		exit 12
+	fi
+
+	printOK
+
+
+	printItem "installing"
+
+	if [ -n "$prefix" ] ; then
+	{
+
+		FreeImage_PREFIX="${prefix}/FreeImage-${FREEIMAGE_VERSION}"
+
+		echo "# FreeImage section." >> ${OSDL_ENV_FILE}
+
+		echo "FreeImage_PREFIX=${FreeImage_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export FreeImage_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$FreeImage_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+
+		LD_LIBRARY_PATH=${FreeImage_PREFIX}/lib:${LD_LIBRARY_PATH}
+		export LD_LIBRARY_PATH
+
+		if [ $is_windows -eq 0 ] ; then
+
+			PATH=${FreeImage_PREFIX}/lib:${PATH}
+			export PATH
+
+			echo "PATH=\$FreeImage_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+		fi
+
+		echo "" >> ${OSDL_ENV_FILE}
+
+		${MKDIR} -p ${FreeImage_PREFIX}
+
+		# The default install make target cannot be used, as it requires root
+		# privileges.
+
+		#setBuildEnv ${MAKE} install INSTALLDIR=${FreeImage_PREFIX}
+
+		# Custom-made install instead:
+		FreeImage_inc="${FreeImage_PREFIX}/include"
+		FreeImage_lib="${FreeImage_PREFIX}/lib"
+
+		# Ex: libfreeimage-3.15.0.so
+		FreeImage_shared_lib="libfreeimage-${FREEIMAGE_VERSION}.so"
+
+		# Ex: libfreeimage.so.3
+		FreeImage_shared_lib_short="libfreeimage.so."`echo ${FREEIMAGE_VERSION} | sed 's|\..*||1'`
+
+		install -d ${FreeImage_inc} ${FreeImage_lib} && install -m 644 Source/FreeImage.h ${FreeImage_inc} && install -m 644 libfreeimage.a  ${FreeImage_lib} && install -m 755 ${FreeImage_shared_lib} ${FreeImage_lib} && ln -sf ${FreeImage_shared_lib} ${FreeImage_lib}/${FreeImage_shared_lib_short} && ln -sf ${FreeImage_shared_lib_short} ${FreeImage_lib}/libfreeimage.so
+
+		if [ $? != 0 ] ; then
+			echo
+			ERROR "Unable to install FreeImage."
+			exit 13
+		fi
+
+
+	} 1>>"$LOG_OUTPUT" 2>&1
+	else
+	{
+		setBuildEnv ${MAKE} install
+	} 1>>"$LOG_OUTPUT" 2>&1
+	fi
+
+
+	if [ $? != 0 ] ; then
+		echo
+		ERROR "Unable to install FreeImage."
+		exit 13
+	fi
+
+
+	printOK
+
+	printEndList
+
+	LOG_STATUS "FreeImage successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanFreeImage()
+{
+	LOG_STATUS "Cleaning FreeImage library build tree..."
+	${RM} -rf "FreeImage-${FreeImage_VERSION}"
+}
+
+
+
+################################################################################
+# FreeImage build thanks to Visual Express.
+################################################################################
+
+
+getFreeImage_win()
+{
+	LOG_STATUS "Getting FreeImage for windows..."
+	launchFileRetrieval FreeImage_win
+	return $?
+}
+
+
+prepareFreeImage_win()
+{
+
+	LOG_STATUS "Preparing FreeImage for windows.."
+
+	if findTool unzip ; then
+		UNZIP=$returnedString
+	else
+		ERROR "No unzip tool found, whereas some files have to be unzipped."
+		exit 8
+	fi
+
+	printBeginList "FreeImage  "
+
+	printItem "extracting"
+
+	cd $repository
+
+	{
+		${UNZIP} -o ${FreeImage_win_ARCHIVE}
+	} 1>>"$LOG_OUTPUT" 2>&1
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to extract ${FreeImage_win_ARCHIVE}."
+		exit 10
+	fi
+
+	cd "FreeImage-${FreeImage_win_VERSION}"
+
+	FreeImage_install_dir="${prefix}/FreeImage-${FreeImage_win_VERSION}"
+
+	${MKDIR} -p ${FreeImage_install_dir}
+
+	cd $repository
+
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/FreeImage-from-LOANI" "FreeImage-${FreeImage_win_VERSION}"
+
+	if [ $? != 0 ] ; then
+		ERROR "Unable to copy FreeImage solution in build tree."
+		exit 11
+	fi
+
+	printOK
+
+}
+
+
+generateFreeImage_win()
+{
+
+	LOG_STATUS "Generating FreeImage for windows..."
+
+	cd "FreeImage-${FreeImage_win_VERSION}"
+
+	printItem "configuring"
+	printOK
+
+	FreeImage_solution=`pwd`"/FreeImage-from-LOANI/FreeImage-from-LOANI.sln"
+
+	printItem "building"
+	GenerateWithVisualExpress FreeImage ${FreeImage_solution}
+	printOK
+
+	printItem "installing"
+
+	FreeImage_install_include_dir=${FreeImage_install_dir}/include
+	${MKDIR} -p ${FreeImage_install_include_dir}
+	${CP} -f FreeImage.h ${FreeImage_install_include_dir}
+
+	printOK
+
+	printEndList
+
+	LOG_STATUS "FreeImage successfully installed."
+
+	cd "$initial_dir"
+
+}
+
+
+cleanFreeImage_win()
+{
+	LOG_STATUS "Cleaning FreeImage build tree..."
+	${RM} -rf "FreeImage-${FreeImage_win_VERSION}"
+}
+
+
+
+
+
 ################################################################################
 ################################################################################
 # CEGUI
@@ -3846,7 +4433,7 @@ prepareCEGUI()
 		exit 9
 	fi
 
-	printBeginList "CEGUI       "
+	printBeginList "CEGUI      "
 
 	printItem "extracting"
 
@@ -3882,6 +4469,23 @@ generateCEGUI()
 	cd "CEGUI-${CEGUI_VERSION}"
 
 	printItem "configuring"
+
+	# Telling where the CEGUI dependencies are to be found:
+
+	export pcre_CFLAGS="-I${pcre_PREFIX}/include"
+	export pcre_LIBS="-L${pcre_PREFIX}/lib -lpcre"
+
+	export freetype2_CFLAGS="-I${freetype_PREFIX}/include -I${freetype_PREFIX}/include/freetype2"
+	export freetype2_LIBS="-L${freetype_PREFIX}/lib -lfreetype"
+
+
+	# --disable-pcre does not work (thus removed), as CEGUI still requires PCRE:
+	# In file included from elements/CEGUIEditbox.cpp:38:0:
+	# ../../cegui/include/CEGUIPCRERegexMatcher.h:33:18: fatal error: pcre.h: No
+	# such file or directory
+	#
+	# Note: the glut package is not required for CEGUI itself, but is required
+	# for the samples: 'apt-get install libglut3-dev libglut3'.
 
 	# --with-zlib=DIR could be used as well:
 	CEGUI_CONFIGURE_OPT="--enable-debug --disable-lua-module --disable-python-module"
