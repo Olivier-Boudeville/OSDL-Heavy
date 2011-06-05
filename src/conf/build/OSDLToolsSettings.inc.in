@@ -360,6 +360,27 @@ PCRE_win_MD5=""
 
 
 
+# FREEIMAGE: http://freeimage.sourceforge.net
+
+# Actually 3.15.0 (defined in configure-template.ac):
+FREEIMAGE_VERSION="@FREEIMAGE_RECOMMENDED_VERSION@"
+
+# Ex: '3.15.0' must become '3150':
+FREEIMAGE_ARCHIVE_VERSION=`echo ${FREEIMAGE_VERSION} | sed 's|\.||g'`
+
+FREEIMAGE_ARCHIVE="FreeImage${FREEIMAGE_ARCHIVE_VERSION}.zip"
+FREEIMAGE_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/freeimage"
+FREEIMAGE_ALTERNATE_DOWNLOAD_LOCATION=""
+FREEIMAGE_MD5="3b4f08e4985b269beb29a2fced1ef888"
+
+FREEIMAGE_win_VERSION="$FREEIMAGE_VERSION"
+FREEIMAGE_win_ARCHIVE="FreeImage${FREEIMAGE_ARCHIVE_VERSION}.zip"
+FREEIMAGE_win_DOWNLOAD_LOCATION="$FREEIMAGE_DOWNLOAD_LOCATION"
+FREEIMAGE_win_ALTERNATE_DOWNLOAD_LOCATION="$FREEIMAGE_ALTERNATE_DOWNLOAD_LOCATION"
+FREEIMAGE_win_MD5=""
+
+
+
 # PhysicsFS: http://icculus.org/physfs/
 
 # Actually 2.0.1 (defined in configure-template.ac):
