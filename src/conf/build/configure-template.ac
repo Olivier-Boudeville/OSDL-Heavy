@@ -493,7 +493,13 @@ AC_SUBST(CEGUI_OLDEST_SUPPORTED_VERSION)
 
 CEGUI_PREFIX="${OSDL_LOANI_INSTALLATIONS}/CEGUI-$CEGUI_RECOMMENDED_VERSION"
 
-OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$CEGUI_PREFIX/include/CEGUI"
+# CEGUI_INSTALL_PATH has to be specified so that its resources can be found from
+# the OSDL code:
+# (note though that we are setting here at configure-time a path that should
+# apply at execution-time)
+
+OSDL_CPPFLAGS="$OSDL_CPPFLAGS -I$CEGUI_PREFIX/include/CEGUI -DCEGUI_INSTALL_PATH=$OSDL_LOANI_INSTALLATIONS/CEGUI-$CEGUI_RECOMMENDED_VERSION"
+
 OSDL_LIBS="$OSDL_LIBS -L$CEGUI_PREFIX/lib -lCEGUIOpenGLRenderer -lCEGUIBase"
 
 AC_DEFINE([USES_CEGUI],[1],[Define to 1 if OSDL is to use CEGUI])
