@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -79,21 +79,21 @@ MouseHandler::MouseHandler( bool useClassicalMice ) :
 	// No SDL_InitSubSystem for mice.
 
 	_miceCount = GetAvailableMiceCount() ;
-	
+
 	_mice = new Mouse *[ _miceCount ] ;
-	
+
 	for ( MouseNumber i = 0; i < _miceCount ; i++ )
 		_mice[i] = new Mouse( i, _useClassicalMice ) ;
-	
+
 	send( "Mouse subsystem initialized." ) ;
 
 	dropIdentifier() ;
-	
+
 #else // OSDL_USES_SDL
 
 	throw InputDeviceHandlerException( "MouseHandler constructor failed: "
 		"no SDL support available" ) ;
-		 
+
 #endif // OSDL_USES_SDL
 
 }
@@ -107,11 +107,11 @@ MouseHandler::~MouseHandler() throw()
 
 	// Mouse instances are owned by the handler:
 	blank() ;
-	
+
 	// No SDL_QuitSubSystem for Mouse.
-	
+
 	send( "Mouse subsystem stopped." ) ;
-		
+
 }
 
 
@@ -120,7 +120,7 @@ bool MouseHandler::hasDefaultMouse() const
 {
 
 	return ( _miceCount != 0 ) ;
-	
+
 }
 
 
@@ -133,97 +133,97 @@ Mouse & MouseHandler::getDefaultMouse()
 			"no mouse detected." ) ;
 
 	return *_mice[DefaultMouse] ;
-				
+
 }
 
 
 
 void MouseHandler::linkToController( OSDL::MVC::Controller & controller )
 {
-	
+
 	linkToController( DefaultMouse, controller ) ;
-			
+
 }
 
 
-					
+
 void MouseHandler::linkToController( MouseNumber mouseIndex,
 	OSDL::MVC::Controller & controller )
 {
-	
+
 	/*
 	 * Beware, mouse list might be out of synch, test is not exactly
 	 * equivalent to _miceCount.
 	 *
-	 */	
+	 */
 	if ( mouseIndex >= static_cast<MouseNumber>( GetAvailableMiceCount() ) )
-		throw MouseException( "MouseHandler::linkToController: index " 
-			+ Ceylan::toString( mouseIndex ) + " out of bounds (" 
+		throw MouseException( "MouseHandler::linkToController: index "
+			+ Ceylan::toString( mouseIndex ) + " out of bounds ("
 			+ Ceylan::toString( GetAvailableMiceCount() )
 			+ " mice attached)." ) ;
-			
+
 	if ( mouseIndex >= _miceCount )
-		throw MouseException( "MouseHandler::linkToController: index " 
-			+ Ceylan::toString( mouseIndex ) + " out of bounds (" 
+		throw MouseException( "MouseHandler::linkToController: index "
+			+ Ceylan::toString( mouseIndex ) + " out of bounds ("
 			+ Ceylan::toString( _miceCount )
 			+ " mice attached according to internal mouse list)." ) ;
-	
+
 #if OSDL_DEBUG
 	if ( _mice[ mouseIndex ] == 0 )
 		throw MouseException( "MouseHandler::linkToController: "
-			"no known mouse for index " 
+			"no known mouse for index "
 			+ Ceylan::toString( mouseIndex ) + "." ) ;
 #endif // OSDL_DEBUG
 
 	_mice[ mouseIndex ]->setController( controller ) ;
 
 }
-	
 
-	
+
+
 const string MouseHandler::toString( Ceylan::VerbosityLevels level ) const
 {
 
 	string res = "Mouse handler " ;
-	
+
 	switch( _miceCount )
 	{
-	
+
 		case 0:
 			res += "does not manage any mouse" ;
 			break ;
-			
+
 		case 1:
 			res += "managing one mouse" ;
 			break ;
-		
-		default:	
-			res += "managing " + Ceylan::toNumericalString( _miceCount ) 
+
+		default:
+			res += "managing " + Ceylan::toNumericalString( _miceCount )
 			+ " mice" ;
-			
+
 	}
-	
-	if ( level == Ceylan::low ) 	
+
+	if ( level == Ceylan::low )
 		return res ;
-	
+
 	res += ". Listing detected mice: " ;
-		
+
 	list<string> mice ;
-		
+
 	for ( MouseNumber i = 0; i < _miceCount; i++ )
 		if ( _mice[i] != 0 )
 			mice.push_back( _mice[i]->toString( level ) ) ;
 		else
-			mice.push_back( "no mouse at index " + Ceylan::toString( i ) 
+			mice.push_back( "no mouse at index " + Ceylan::toString( i )
 				+ " (abnormal)" ) ;
-			
-	return res + Ceylan::formatStringList( mice ) ;	
-		
+
+	return res + Ceylan::formatStringList( mice ) ;
+
 }
 
 
 
-MouseNumber MouseHandler::GetAvailableMiceCount() 
+MouseNumber MouseHandler::GetAvailableMiceCount()
 {
 
 	/*
@@ -231,7 +231,7 @@ MouseNumber MouseHandler::GetAvailableMiceCount()
 	 *
 	 */
 	return static_cast<MouseNumber>( 1 ) ;
-	
+
 }
 
 
@@ -246,13 +246,13 @@ void MouseHandler::focusGained( const FocusEvent & mouseFocusEvent ) const
 {
 
 #if OSDL_USES_SDL
-	 
+
 #if OSDL_DEBUG
 	checkMouseAt( DefaultMouse ) ;
 #endif // OSDL_DEBUG
-	
+
 	_mice[ DefaultMouse ]->focusGained( mouseFocusEvent ) ;
-	
+
 #endif // OSDL_USES_SDL
 
 }
@@ -263,15 +263,15 @@ void MouseHandler::focusLost( const FocusEvent & mouseFocusEvent ) const
 {
 
 #if OSDL_USES_SDL
-	 
+
 #if OSDL_DEBUG
 	checkMouseAt( DefaultMouse ) ;
 #endif // OSDL_DEBUG
-	
+
 	_mice[ DefaultMouse ]->focusLost( mouseFocusEvent ) ;
 
 #endif // OSDL_USES_SDL
-	
+
 }
 
 
@@ -280,50 +280,50 @@ void MouseHandler::mouseMoved( const MouseMotionEvent & mouseMovedEvent ) const
 {
 
 #if OSDL_USES_SDL
-	 
+
 #if OSDL_DEBUG
 	checkMouseAt( mouseMovedEvent.which ) ;
 #endif // OSDL_DEBUG
-	
+
 	_mice[ mouseMovedEvent.which ]->mouseMoved( mouseMovedEvent ) ;
-	
+
 #endif // OSDL_USES_SDL
 
 }
 
 
 
-void MouseHandler::buttonPressed( 
+void MouseHandler::buttonPressed(
 	const MouseButtonEvent & mouseButtonPressedEvent ) const
 {
 
 #if OSDL_USES_SDL
-	 
+
 #if OSDL_DEBUG
 	checkMouseAt( mouseButtonPressedEvent.which ) ;
 #endif // OSDL_DEBUG
-	
+
 	_mice[ mouseButtonPressedEvent.which ]->buttonPressed(
 		mouseButtonPressedEvent ) ;
-	
+
 #endif // OSDL_USES_SDL
 
 }
 
 
-void MouseHandler::buttonReleased( 
+void MouseHandler::buttonReleased(
 	const MouseButtonEvent & mouseButtonReleasedEvent ) const
 {
 
 #if OSDL_USES_SDL
-	 
+
 #if OSDL_DEBUG
 	checkMouseAt( mouseButtonReleasedEvent.which ) ;
 #endif // OSDL_DEBUG
-	
+
 	_mice[ mouseButtonReleasedEvent.which ]->buttonReleased(
 		mouseButtonReleasedEvent ) ;
-	
+
 #endif // OSDL_USES_SDL
 
 }
@@ -344,9 +344,9 @@ void MouseHandler::blank()
 		delete [] _mice ;
 		_mice = 0 ;
 	}
-	
+
 	_miceCount = 0 ;
-	
+
 }
 
 
@@ -355,16 +355,15 @@ void MouseHandler::checkMouseAt( MouseNumber index ) const
 {
 
 	if ( index >= _miceCount )
-		Ceylan::emergencyShutdown( 
+		Ceylan::emergencyShutdown(
 			"MouseHandler::checkMouseAt: index "
-			+ Ceylan::toNumericalString( index ) 
+			+ Ceylan::toNumericalString( index )
 			+ " out of bounds (maximum value is "
-			+ Ceylan::toNumericalString( _miceCount - 1 ) + ")." ) ; 
-		
+			+ Ceylan::toNumericalString( _miceCount - 1 ) + ")." ) ;
+
 	if ( _mice[ index ] == 0 )
 		Ceylan::emergencyShutdown( "MouseHandler::checkMouseAt: "
 			"no mouse intance at index "
 			+ Ceylan::toNumericalString( index ) + "." ) ;
-	
-}
 
+}

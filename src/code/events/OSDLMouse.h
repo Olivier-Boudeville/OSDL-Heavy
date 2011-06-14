@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -47,53 +47,53 @@ namespace OSDL
 
 	namespace Video
 	{
-	
-	
+
+
 		namespace TwoDimensional
 		{
-		
+
 			// For cursor position.
 			class Point2D ;
-		
+
 		}
-		
-		
+
+
 	}
-			
-	
-		
+
+
+
 	namespace Events
 	{
-	
-			
-					
-		
+
+
+
+
 		/**
 		 * Models a basic mouse, including relevant buttons and wheels.
 		 *
 		 * All events for this mouse are propagated to the associated
 		 * controller, if any, which allows to finely master all available
-		 * informations, at the expense of a higher complexity on the 
-		 * controller part.
+		 * informations, at the expense of a higher complexity on the controller
+		 * part.
 		 *
-		 * For usual needs, Mouse instances should be set in classical
-		 * mode: it would be more convenient, since it is a higher-level
-		 * (but a little less general-purpose) model.
+		 * For usual needs, Mouse instances should be set in classical mode: it
+		 * would be more convenient, since it is a higher-level (but a little
+		 * less general-purpose) model.
 		 *
 		 */
-		class OSDL_DLL Mouse: public OSDL::Events::InputDevice
+		class OSDL_DLL Mouse : public OSDL::Events::InputDevice
 		{
-		
-		
+
+
 			/*
-			 * The mouse handler has to trigger the mouse event callbacks
-			 * for this mouse.
+			 * The mouse handler has to trigger the mouse event callbacks for
+			 * this mouse.
 			 *
 			 */
 			friend class OSDL::Events::MouseHandler ;
-			
-			
-			
+
+
+
 			public:
 
 
@@ -103,49 +103,49 @@ namespace OSDL
 				 *
 				 * @param index the index of this mouse in platform list.
 				 *
-				 * @param classicalMouseMode tells whether this mouse should
-				 * be in classical mode (higher level), or in normal mode
+				 * @param classicalMouseMode tells whether this mouse should be
+				 * in classical mode (higher level), or in normal mode
 				 * (low-level events only are propagated to controllers).
 				 *
 				 * @throw MouseException if the operation failed or is not
 				 * supported.
 				 *
 				 */
-				explicit Mouse( MouseNumber index, 
+				explicit Mouse( MouseNumber index,
 					bool classicalMouseMode = true ) ;
-				
-				
-				
+
+
+
 				/**
 				 * Virtual destructor, closing corresponding mouse device.
 				 *
 				 */
 				virtual ~Mouse() throw() ;
-				
-				
+
+
 
 
 
 				// Cursor position.
-				
-				
-				
+
+
+
 				/**
 				 * Returns the absolute abscissa of this mouse cursor.
 				 *
-				 */ 
+				 */
 				virtual Video::Coordinate getCursorAbscissa() const ;
-				 				
-				
-				
+
+
+
 				/**
 				 * Returns the absolute ordinate of this mouse cursor.
 				 *
-				 */ 
+				 */
 				virtual Video::Coordinate getCursorOrdinate() const ;
-				 
-				 
-				 
+
+
+
 				/**
 				 * Sets the cursor position for this mouse.
 				 *
@@ -154,11 +154,11 @@ namespace OSDL
 				 * @note Generation a mouse moved event.
 				 *
 				 */
-				virtual void setCursorPosition( 
+				virtual void setCursorPosition(
 					const Video::TwoDimensional::Point2D & newPosition ) const ;
-				 
-				 
-				 
+
+
+
 				/**
 				 * Sets the cursor position for this mouse.
 				 *
@@ -169,21 +169,21 @@ namespace OSDL
 				 * @note Generation a mouse moved event.
 				 *
 				 */
-				virtual void setCursorPosition( Video::Coordinate x, 
+				virtual void setCursorPosition( Video::Coordinate x,
 					Video::Coordinate y ) const ;
-				 
-				
-				
+
+
+
 				/**
 				 * Returns whether the cursor of this mouse is visible.
 				 *
 				 * @return true iff the cursor is visible.
 				 *
-				 */ 
+				 */
 				virtual bool getCursorVisibility() const ;
 
-				 
-				 
+
+
 				/**
 				 * Sets the visibility for the cursor of this mouse.
 				 *
@@ -191,25 +191,25 @@ namespace OSDL
 				 *
 				 * @note The mouse cursor starts as visible.
 				 *
-				 */ 
+				 */
 				virtual void setCursorVisibility( bool on ) ;
-				 
-				
-				
-				
+
+
+
+
 				// Buttons & wheels section.
-				
-				
-				
+
+
+
 				/**
 				 * Returns the number of actual mouse buttons, wheels not
 				 * included.
 				 *
 				 */
 				virtual MouseButtonNumber getNumberOfButtons() const ;
-				 
-				 
-				 
+
+
+
 				/**
 				 * Returns the number of mouse wheels.
 				 *
@@ -217,98 +217,99 @@ namespace OSDL
 				 *
 				 */
 				virtual MouseWheelNumber getNumberOfWheels() const ;
-				
-				
-				
+
+
+
 				/**
 				 * Tells whether the left button of this mouse is currently
-				 * pressed. 
+				 * pressed.
 				 *
 				 * @return true iff this button is pressed.
 				 *
-				 */ 
+				 */
 				virtual bool isLeftButtonPressed() const ;
-				 
-				 
+
+
 
 				/**
 				 * Tells whether the middle button of this mouse is currently
-				 * pressed. 
+				 * pressed.
 				 *
 				 * @return true iff this button is pressed.
 				 *
-				 */ 
+				 */
 				virtual bool isMiddleButtonPressed() const ;
-				 
+
 
 
 				/**
 				 * Tells whether the right button of this mouse is currently
-				 * pressed. 
+				 * pressed.
 				 *
 				 * @return true iff this button is pressed.
 				 *
-				 */ 
+				 */
 				virtual bool isRightButtonPressed() const ;
-				
-				
-				 
+
+
+
 				/**
 				 * Tells whether specified mouse button is pressed.
 				 *
-				 * @param buttonNumber the number of the button for this
-				 * mouse, for example 'LeftButton'.
+				 * @param buttonNumber the number of the button for this mouse,
+				 * for example 'LeftButton'.
 				 *
 				 * @return true iff the button is currently pressed.
 				 *
-				 * @throw MouseException if the mouse is not 
-				 * already open or if the button number is out of bounds.
+				 * @throw MouseException if the mouse is not already open or if
+				 * the button number is out of bounds.
 				 *
-				 */ 
-				virtual bool isButtonPressed( MouseButtonNumber buttonNumber ) 
-					const ;				 
-				 
-				 
-				 
+				 */
+				virtual bool isButtonPressed( MouseButtonNumber buttonNumber )
+					const ;
+
+
+
 				/**
-				 * Returns the state of all the buttons of this mouse. 
+				 * Returns the state of all the buttons of this mouse.
+				 *
 				 * This includes the wheels.
 				 *
-				 * @return a button mask, each bit of which tells whether 
-				 * the associated button is pressed.
+				 * @return a button mask, each bit of which tells whether the
+				 * associated button is pressed.
 				 *
 				 * @see IsPressed to interpret the button mask.
 				 *
-				 */ 
-				virtual MouseButtonMask getButtonStates() const ;   
-				 				 			
-							
-								 					
+				 */
+				virtual MouseButtonMask getButtonStates() const ;
+
+
+
 				/**
-				 * Updates the description of this mouse, for relative 
-				 * movements of the cursor.
+				 * Updates the description of this mouse, for relative movements
+				 * of the cursor.
 				 *
 				 */
 				virtual void update() ;
-				
-							
-								
-	            /**
-	             * Returns an user-friendly description of the state of 
-				 * this object.
-	             *
+
+
+
+				/**
+				 * Returns an user-friendly description of the state of this
+				 * object.
+				 *
 				 * @param level the requested verbosity level.
 				 *
 				 * @note Text output format is determined from overall settings.
 				 *
 				 * @see Ceylan::TextDisplayable
-	             *
-	             */
-		 		virtual const std::string toString( 
+				 *
+				 */
+				virtual const std::string toString(
 					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
-				
-				
-				
+
+
+
 				/**
 				 * Reads specified button mask, and tells whether specified
 				 * mouse button is currently pressed.
@@ -316,48 +317,48 @@ namespace OSDL
 				 * @note Wheel directions are managed like buttons, if
 				 * IsPressed( aMask, WheelUp ) is true, then the wheel is up.
 				 *
-				 * @return true iff the button is pressed, according to 
-				 * the mask.
+				 * @return true iff the button is pressed, according to the
+				 * mask.
 				 *
 				 * @see getButtonStates.
 				 *
 				 */
-				static bool IsPressed( MouseButtonMask mask, 
+				static bool IsPressed( MouseButtonMask mask,
 					MouseButtonNumber buttonToInspect ) ;
-					
-					
-					
+
+
+
 				/**
-				 * By default, a mouse is supposed to have 5 buttons:
-				 * left, middle, right, wheel up and down. 
-				 *	
-				 */	
+				 * By default, a mouse is supposed to have 5 buttons: left,
+				 * middle, right, wheel up and down.
+				 *
+				 */
 				static const MouseButtonNumber DefaultButtonTotalNumber ;
-				
-				
-				
+
+
+
 				/**
 				 * By default, a mouse is supposed to have 3 actual buttons:
-				 * left, middle, right. 
-				 *	
-				 */	
+				 * left, middle, right.
+				 *
+				 */
 				static const MouseButtonNumber DefaultButtonActualNumber ;
-				
-				
-				
+
+
+
 				/**
 				 * By default, a mouse is supposed to have 1 wheel.
-				 *	
-				 */	
+				 *
+				 */
 				static const MouseWheelNumber DefaultWheelNumber ;
-				
-				
-				
-				
+
+
+
+
 		protected:
-		
-		
-		
+
+
+
 				/**
 				 * Returns the index of this mouse in the platform list.
 				 *
@@ -365,96 +366,96 @@ namespace OSDL
 				 *
 				 */
 				virtual MouseNumber getIndex() const ;
-		
-		
-		
+
+
+
 				/*
-				 * Event-driven callbacks for input propagation, from
-				 * the joystick handler to this mouse.
+				 * Event-driven callbacks for input propagation, from the
+				 * joystick handler to this mouse.
 				 *
 				 */
 
 
-				
-				
+
+
 				// Focus section.
 
 
 
 				/**
-				 * Called whenever this mouse gained focus, and 
-				 * notifies the linked controller, if any.
+				 * Called whenever this mouse gained focus, and notifies the
+				 * linked controller, if any.
 				 *
-				 * @param mouseFocusEvent the event about the change in 
-				 * mouse focus.
+				 * @param mouseFocusEvent the event about the change in mouse
+				 * focus.
 				 *
 				 */
-				virtual void focusGained( 
+				virtual void focusGained(
 					const FocusEvent & mouseFocusEvent ) ;
-	
-	
-	
-				/**
-				 * Called whenever this mouse lost focus, and 
-				 * notifies the linked controller, if any.
-				 *
-				 * @param mouseFocusEvent the event about the change in 
-				 * mouse focus.
-				 *
-				 */
-				virtual void focusLost(	const FocusEvent & mouseFocusEvent ) ;
-	
-	
-	
-	
-				// Cursor position section.
-	
-	
-	
-				/**
-				 * Called whenever this mouse moved, and 
-				 * notifies the linked controller, if any.
-				 *
-				 * @param mouseEvent the corresponding mouse event.
-				 *
-				 */
-				virtual void mouseMoved( 
-					const MouseMotionEvent & mouseEvent ) ;
-		
-		
+
+
 
 				/**
-				 * Called whenever a button of this mouse was pressed, 
-				 * and notifies the linked controller, if any.
+				 * Called whenever this mouse lost focus, and notifies the
+				 * linked controller, if any.
 				 *
-				 * @param mouseEvent the corresponding mouse event.
+				 * @param mouseFocusEvent the event about the change in mouse
+				 * focus.
 				 *
 				 */
-				virtual void buttonPressed( 
-					const MouseButtonEvent & mouseEvent ) ;
-	
-	
-	
+				virtual void focusLost( const FocusEvent & mouseFocusEvent ) ;
+
+
+
+
+				// Cursor position section.
+
+
+
 				/**
-				 * Called whenever a button of this mouse was released, 
-				 * and notifies the linked controller, if any.
+				 * Called whenever this mouse moved, and notifies the linked
+				 * controller, if any.
 				 *
 				 * @param mouseEvent the corresponding mouse event.
 				 *
 				 */
-				virtual void buttonReleased( 
+				virtual void mouseMoved(
+					const MouseMotionEvent & mouseEvent ) ;
+
+
+
+				/**
+				 * Called whenever a button of this mouse was pressed, and
+				 * notifies the linked controller, if any.
+				 *
+				 * @param mouseEvent the corresponding mouse event.
+				 *
+				 */
+				virtual void buttonPressed(
 					const MouseButtonEvent & mouseEvent ) ;
-				
-				
-				
-				
-				/// The number of this mouse in platform list.				
+
+
+
+				/**
+				 * Called whenever a button of this mouse was released, and
+				 * notifies the linked controller, if any.
+				 *
+				 * @param mouseEvent the corresponding mouse event.
+				 *
+				 */
+				virtual void buttonReleased(
+					const MouseButtonEvent & mouseEvent ) ;
+
+
+
+
+				/// The number of this mouse in platform list.
 				MouseNumber _index ;
-				
-				
-				
+
+
+
 				/// Tells whether this mouse should be in classical mode.
-				bool _inClassicalMode ; 
+				bool _inClassicalMode ;
 
 
 
@@ -464,50 +465,49 @@ namespace OSDL
 
 				/// Records the last relative abscissa.
 				Video::Coordinate _lastRelativeAbscissa ;
-				
-				
+
+
 				/// Records the last relative ordinate.
 				Video::Coordinate _lastRelativeOrdinate ;
-				
+
 
 
 
 		private:
-		
-		
-		
+
+
+
 				/**
-				 * Copy constructor made private to ensure that it will 
-				 * never be called.
+				 * Copy constructor made private to ensure that it will never be
+				 * called.
 				 *
-				 * The compiler should complain whenever this undefined 
+				 * The compiler should complain whenever this undefined
 				 * constructor is called, implicitly or not.
-				 * 
-				 */			 
-				explicit Mouse( const Mouse & source ) ;
-			
-			
-			
-				/**
-				 * Assignment operator made private to ensure that it 
-				 * will never be called.
 				 *
-				 * The compiler should complain whenever this undefined 
-				 * operator is called, implicitly or not.
-				 * 
-				 */			 
+				 */
+				explicit Mouse( const Mouse & source ) ;
+
+
+
+				/**
+				 * Assignment operator made private to ensure that it will never
+				 * be called.
+				 *
+				 * The compiler should complain whenever this undefined operator
+				 * is called, implicitly or not.
+				 *
+				 */
 				Mouse & operator = ( const Mouse & source ) ;
-										
-				
-				
+
+
+
 		} ;
-		
-	
-	}	
-	
+
+
+	}
+
 }
 
 
 
 #endif // OSDL_MOUSE_H_
-

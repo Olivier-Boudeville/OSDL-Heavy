@@ -29,8 +29,11 @@
  * Implementation notes
  *
  * Currently, despite some tiny efforts to build a OSDL custom one, the GUI is
- * supported thanks to the use of only one back-end, Agar (see
- * http://libagar.org/).
+ * supported thanks to the use of only one back-end, CEGUI (see
+ * http://www.cegui.org.uk).
+ *
+ * We were using previously Guichan and Agar (see http://libagar.org/), but were
+ * not satisfied of them.
  *
  * Here are the parts of the GUI which are generic: aspects dealing more
  * precisely with video, audio, events, etc. are defined in the respective
@@ -54,7 +57,7 @@ using std::string ;
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>              // for OSDL_USES_AGAR and al
+#include <OSDLConfig.h>              // for OSDL_USES_{CEGUI,AGAR} and al
 #endif // OSDL_USES_CONFIG_H
 
 
@@ -88,6 +91,34 @@ const std::string & WindowClassName    = "AG_Widget:AG_Window" ;
 
 
 #endif // OSDL_USES_AGAR
+
+
+
+
+#if OSDL_USES_CEGUI
+
+/*
+ * Defines the most ancient version of the CEGUI library that is supported by
+ * OSDL:
+ *
+ */
+
+const Ceylan::Version::VersionNumber oldestCEGUISupportedMajor = 0 ;
+const Ceylan::Version::VersionNumber oldestCEGUISupportedMinor = 7 ;
+const Ceylan::Version::VersionNumber oldestCEGUISupportedPatch = 5 ;
+
+#include "CEGUI.h"
+#include "RendererModules/OpenGL/CEGUIOpenGLRenderer.h"
+
+
+/**
+ * Base CEGUI-defined look.
+ *
+ */
+const std::string & BaseLook = "TaharezLook" ;
+
+
+#endif // OSDL_USES_CEGUI
 
 
 
@@ -170,6 +201,24 @@ GUIModule::GUIModule( const std::string & applicationName,
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+
+#ifndef OSDL_USES_AGAR
+
+#ifndef OSDL_USES_CEGUI
+
+#error "No support available for any integrated GUI back-end."
+
+	throw GUIException( "GUIModule constructor failed: "
+		"no support available for any integrated GUI back-end." ) ;
+
+#endif // OSDL_USES_CEGUI
+
+#endif //OSDL_USES_CEGUI
+
+#endif //OSDL_USES_AGAR
+
+
+
 #if OSDL_USES_AGAR
 
 	AG_AgarVersion linkTimeAgarVersion ;
@@ -211,12 +260,127 @@ GUIModule::GUIModule( const std::string & applicationName,
 
 	AG_SetString( agConfig, "font-path", "." ) ;
 
-#else // OSDL_USES_AGAR
-
-	throw GUIException( "GUIModule constructor failed: "
-		"no Agar support available." ) ;
-
 #endif // OSDL_USES_AGAR
+
+
+#if OSDL_USES_CEGUI
+
+	// Add compile-time / link-time version checking.
+
+	send( "Using CEGUI backend for the GUI." ) ;
+
+	/*
+	 * See our CEGUI-SDL-all-widgets.cc example file to understand how SDL,
+	 * OpenGL and CEGUI are to be used together.
+	 *
+	 */
+
+
+	// First, let's set the preferred SDL settings for CEGUI:
+
+	// Corresponds to a mere 'SDL_ShowCursor( SDL_DISABLE ) ;':
+
+	if ( ! eventsModule.hasMouseHandler() )
+	  throw( OSDL::GUIException( "A mouse handler is needed for the GUI." ) ) ;
+
+	MouseHandler & mouseHandler = eventsModule.getMouseHandler() ;
+
+	if ( ! mouseHandler.hasDefaultMouse() )
+	  throw( OSDL::GUIException( "A default mouse is needed for the GUI." ) ) ;
+
+	mouseHandler.getDefaultMouse().setCursorVisibility( false ) ;
+
+
+	/*
+	 * Corresponds to:
+	 *
+	 * SDL_EnableUNICODE( 1 ) ;
+	 * SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY,
+	 *   DL_DEFAULT_REPEAT_INTERVAL ) ;
+	 *
+	 */
+
+	if ( ! eventsModule.hasKeyboardHandler() )
+	  throw( OSDL::GUIException(
+		  "A keyboard handler is needed for the GUI." ) ) ;
+
+	KeyboardHandler::SetMode( KeyboardHandler::textInput ) ;
+
+
+	// Then initialize CEGUI by itself:
+
+	CEGUI::OpenGLRenderer::bootstrapSystem() ;
+
+	// Initialises the required directories for the DefaultResourceProvider:
+
+	CEGUI::DefaultResourceProvider & defaultResProvider =
+		* static_cast<CEGUI::DefaultResourceProvider*>(
+		  CEGUI::System::getSingleton().getResourceProvider() ) ;
+
+	// CEGUI_INSTALL_PATH defined by OSDL's configure:
+#ifdef CEGUI_INSTALL_PATH
+
+	const string CEGUIInstallSharePath = CEGUI_INSTALL_PATH + "/share/CEGUI/" ;
+
+	if ( ! Ceylan::System::Directory::Exists( CEGUIInstallSharePath ) )
+	  throw( OSDL::GUIException( "GUIModule constructor failed: "
+		  "CEGUI install shared directory ('" + CEGUIInstallSharePath
+		  + "') does not exist." ) ) ;
+
+	// For each resource type, sets a corresponding resource group directory:
+
+	send( "Using CEGUI shared install directory '" + CEGUIInstallSharePath
+	  + "'." ) ;
+
+	defaultResProvider.setResourceGroupDirectory( "schemes",
+	  CEGUIInstallSharePath + "schemes/" ) ;
+
+	defaultResProvider.setResourceGroupDirectory( "imagesets",
+	  CEGUIInstallSharePath + "imagesets/" ) ;
+
+	defaultResProvider.setResourceGroupDirectory( "fonts",
+	  CEGUIInstallSharePath + "fonts/" ) ;
+
+	defaultResProvider.setResourceGroupDirectory( "layouts",
+	  CEGUIInstallSharePath + "layouts/" ) ;
+
+	defaultResProvider.setResourceGroupDirectory( "looknfeels",
+	  CEGUIInstallSharePath + "looknfeel/" ) ;
+
+	defaultResProvider.setResourceGroupDirectory( "lua_scripts",
+	  CEGUIInstallSharePath + "lua_scripts/" ) ;
+
+	defaultResProvider.setResourceGroupDirectory( "schemas",
+	  CEGUIInstallSharePath + "xml_schemas/" ) ;
+
+	defaultResProvider.setResourceGroupDirectory( "animations",
+	  CEGUIInstallSharePath + "animations/" ) ;
+
+	// Sets the default resource groups to be used:
+	CEGUI::Imageset::setDefaultResourceGroup( "imagesets" ) ;
+	CEGUI::Font::setDefaultResourceGroup( "fonts" ) ;
+	CEGUI::Scheme::setDefaultResourceGroup( "schemes" ) ;
+	CEGUI::WidgetLookManager::setDefaultResourceGroup( "looknfeels" ) ;
+	CEGUI::WindowManager::setDefaultResourceGroup( "layouts" ) ;
+	CEGUI::ScriptModule::setDefaultResourceGroup( "lua_scripts" ) ;
+	CEGUI::AnimationManager::setDefaultResourceGroup( "animations" ) ;
+
+	// Set-up default group for validation schemas:
+	CEGUI::XMLParser * parser = CEGUI::System::getSingleton().getXMLParser() ;
+	if ( parser->isPropertyPresent( "SchemaDefaultResourceGroup" ) )
+	  parser->setProperty( "SchemaDefaultResourceGroup", "schemas" ) ;
+
+	CEGUI::SchemeManager::getSingleton().create( BaseLook + ".scheme" ) ;
+
+	// Enforces some defaults:
+
+	System::getSingleton().setDefaultMouseCursor( BaseLook, "MouseArrow" ) ;
+
+	FontManager::getSingleton().create( "DejaVuSans-10.font" ) ;
+
+#endif // OSDL_USES_CEGUI
+
+
 
 	/*
 	 * Not doable, as common module not constructed/registered yet:

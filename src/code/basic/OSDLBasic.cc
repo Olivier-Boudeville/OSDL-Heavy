@@ -64,6 +64,21 @@
 #endif // OSDL_USES_AGAR
 
 
+#if OSDL_USES_CEGUI
+
+#include "CEGUI.h"
+#include "RendererModules/OpenGL/CEGUIOpenGLRenderer.h"
+
+#endif // OSDL_USES_CEGUI
+
+
+/*
+ * Implementation notes:
+ *
+ * We tested, and used a bit, various GUI-related libraries (ex: Guichan, Agar)
+ * and finally preferred clearly CEGUI.
+ *
+ */
 
 
 using std::string ;
@@ -359,6 +374,10 @@ CommonModule::CommonModule( Flags flags ) :
 			send( "No additional timer initialization is needed for Agar." ) ;
 #endif // OSDL_USES_AGAR
 
+#if OSDL_USES_CEGUI
+			send( "No additional timer initialization is needed for CEGUI." ) ;
+#endif // OSDL_USES_CEGUI
+
 		}
 		else
 		{
@@ -520,12 +539,12 @@ CommonModule::~CommonModule() throw()
 
 	if ( wasUsingGUI )
 	{
-	  
+
 #if OSDL_USES_SDL
 
 		/*
-		 * When Agar did not initialize SDL, we have to shut SDL down by
-		 * ourself:
+		 * When, as here, Agar or CEGUI did not initialize SDL, we have to shut
+		 * SDL down by ourself:
 		 *
 		 */
 		SDL_Quit() ;

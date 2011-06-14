@@ -728,6 +728,9 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 
 #endif // OSDL_USES_AGAR
 
+#if OSDL_USES_CEGUI
+
+	  
 	}
 
 
