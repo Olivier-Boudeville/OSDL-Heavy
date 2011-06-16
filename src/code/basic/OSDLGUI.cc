@@ -192,6 +192,9 @@ GUIModule::GUIModule( const std::string & applicationName,
 
   send( "Initializing GUI subsystem." ) ;
 
+  _video->setGUIEnableStatus( true ) ;
+  _audio->setGUIEnableStatus( true ) ;
+  _events->setGUIEnableStatus( true ) ;
 
 #if OSDL_ARCH_NINTENDO_DS
 
