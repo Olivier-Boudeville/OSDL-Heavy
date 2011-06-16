@@ -165,13 +165,13 @@ SDL_gfx_win_MD5="$SDL_gfx_MD5"
 
 # Sources.
 
-freetype_VERSION="2.4.3"
+freetype_VERSION="2.4.4"
 freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
 freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_MD5="75ac7082bde7b3805dc5d6bc806fa045"
+freetype_MD5="b3e2b6e2f1c3e0dffa1fd2a0f848b671"
 
 
 # Same as for UNIX:
@@ -260,11 +260,11 @@ libvorbis_win_MD5="xxx"
 
 # libogg (libogg.so): http://www.xiph.org/ogg/
 
-libogg_VERSION="1.2.1"
+libogg_VERSION="1.2.2"
 libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.bz2"
 libogg_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
 libogg_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libogg_MD5="84ef7b0cb5f36fdf26341fe5a2aa62f5"
+libogg_MD5="5a9fcabc9a1b7c6f1cd75ddc78f36c56"
 
 libogg_win_VERSION="${libogg_VERSION}"
 libogg_win_ARCHIVE="libogg-${libogg_win_VERSION}.zip"
@@ -360,7 +360,7 @@ PCRE_win_MD5=""
 
 
 
-# FREEIMAGE: http://freeimage.sourceforge.net
+# FreeImage: http://freeimage.sourceforge.net
 
 # Actually 3.15.0 (defined in configure-template.ac):
 FREEIMAGE_VERSION="@FREEIMAGE_RECOMMENDED_VERSION@"
@@ -383,12 +383,12 @@ FREEIMAGE_win_MD5=""
 
 # PhysicsFS: http://icculus.org/physfs/
 
-# Actually 2.0.1 (defined in configure-template.ac):
+# Actually 2.0.2 (defined in configure-template.ac):
 PhysicsFS_VERSION="@PHYSICSFS_RECOMMENDED_VERSION@"
 PhysicsFS_ARCHIVE="physfs-${PhysicsFS_VERSION}.tar.gz"
 PhysicsFS_DOWNLOAD_LOCATION="http://icculus.org/physfs/downloads"
 PhysicsFS_ALTERNATE_DOWNLOAD_LOCATION=""
-PhysicsFS_MD5="df00465fcfa80e87f718961c6dd6b928"
+PhysicsFS_MD5="4e8927c3d30279b03e2592106eb9184a"
 
 PhysicsFS_win_VERSION="$PhysicsFS_VERSION"
 PhysicsFS_win_ARCHIVE="${PhysicsFS_ARCHIVE}"
@@ -513,10 +513,10 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R14B"
+Erlang_VERSION="R14B03"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5=""
+Erlang_MD5="7979e662d11476b97c462feb7c132fb7"
 
 
 
