@@ -536,7 +536,6 @@ CommonModule::~CommonModule() throw()
 
 	send( "Video stopped." ) ;
 
-
 	if ( wasUsingGUI )
 	{
 
