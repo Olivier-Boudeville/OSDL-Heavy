@@ -261,10 +261,10 @@ libvorbis_win_MD5="xxx"
 # libogg (libogg.so): http://www.xiph.org/ogg/
 
 libogg_VERSION="1.2.2"
-libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.bz2"
+libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.xz"
 libogg_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
 libogg_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libogg_MD5="5a9fcabc9a1b7c6f1cd75ddc78f36c56"
+libogg_MD5="203c28a1d356b641253c960365e4cc48"
 
 libogg_win_VERSION="${libogg_VERSION}"
 libogg_win_ARCHIVE="libogg-${libogg_win_VERSION}.zip"
@@ -363,21 +363,21 @@ PCRE_win_MD5=""
 # FreeImage: http://freeimage.sourceforge.net
 
 # Actually 3.15.0 (defined in configure-template.ac):
-FREEIMAGE_VERSION="@FREEIMAGE_RECOMMENDED_VERSION@"
+FreeImage_VERSION="@FreeImage_RECOMMENDED_VERSION@"
 
 # Ex: '3.15.0' must become '3150':
-FREEIMAGE_ARCHIVE_VERSION=`echo ${FREEIMAGE_VERSION} | sed 's|\.||g'`
+FreeImage_ARCHIVE_VERSION=`echo ${FreeImage_VERSION} | sed 's|\.||g'`
 
-FREEIMAGE_ARCHIVE="FreeImage${FREEIMAGE_ARCHIVE_VERSION}.zip"
-FREEIMAGE_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/freeimage"
-FREEIMAGE_ALTERNATE_DOWNLOAD_LOCATION=""
-FREEIMAGE_MD5="3b4f08e4985b269beb29a2fced1ef888"
+FreeImage_ARCHIVE="FreeImage${FreeImage_ARCHIVE_VERSION}.zip"
+FreeImage_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/freeimage"
+FreeImage_ALTERNATE_DOWNLOAD_LOCATION=""
+FreeImage_MD5="3b4f08e4985b269beb29a2fced1ef888"
 
-FREEIMAGE_win_VERSION="$FREEIMAGE_VERSION"
-FREEIMAGE_win_ARCHIVE="FreeImage${FREEIMAGE_ARCHIVE_VERSION}.zip"
-FREEIMAGE_win_DOWNLOAD_LOCATION="$FREEIMAGE_DOWNLOAD_LOCATION"
-FREEIMAGE_win_ALTERNATE_DOWNLOAD_LOCATION="$FREEIMAGE_ALTERNATE_DOWNLOAD_LOCATION"
-FREEIMAGE_win_MD5=""
+FreeImage_win_VERSION="$FreeImage_VERSION"
+FreeImage_win_ARCHIVE="FreeImage${FreeImage_ARCHIVE_VERSION}.zip"
+FreeImage_win_DOWNLOAD_LOCATION="$FreeImage_DOWNLOAD_LOCATION"
+FreeImage_win_ALTERNATE_DOWNLOAD_LOCATION="$FreeImage_ALTERNATE_DOWNLOAD_LOCATION"
+FreeImage_win_MD5=""
 
 
 
