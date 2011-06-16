@@ -27,7 +27,7 @@ if [ $is_windows -eq 0 ] ; then
   # LD_LIBRARY_PATH.
 
   # Windows special case:
-  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win pcre_win FreeImage_win CEGUI_win"
+  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win PCRE_win FreeImage_win CEGUI_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -79,7 +79,7 @@ else
 	#
 	# whereas morse-icon.tex2D is a normal PNG image, 300 x 286, 8-bit/color
 	# RGBA, non-interlaced
-	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer pcre FreeImage CEGUI PhysicsFS"
+	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -2255,7 +2255,7 @@ preparelibogg()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libogg_ARCHIVE} ${libogg_ARCHIVE}.save && ${BUNZIP2} -f ${libogg_ARCHIVE} && ${TAR} -xvf "libogg-${libogg_VERSION}.tar"
+		${CP} -f ${libogg_ARCHIVE} ${libogg_ARCHIVE}.save && ${XZ} --decompress -f ${libogg_ARCHIVE} && ${TAR} -xvf "libogg-${libogg_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
@@ -3816,24 +3816,24 @@ cleanAgar_win()
 
 
 ################################################################################
-# pcre for non-Windows platforms
+# PCRE for non-Windows platforms
 ################################################################################
 
-#TRACE "[loani-requiredTools] pcre"
+#TRACE "[loani-requiredTools] PCRE"
 
 
-getpcre()
+getPCRE()
 {
-	LOG_STATUS "Getting pcre..."
-	launchFileRetrieval pcre
+	LOG_STATUS "Getting PCRE..."
+	launchFileRetrieval PCRE
 	return $?
 }
 
 
-preparepcre()
+preparePCRE()
 {
 
-	LOG_STATUS "Preparing pcre..."
+	LOG_STATUS "Preparing PCRE..."
 
 	if findTool bunzip2 ; then
 		BUNZIP2=$returnedString
@@ -3849,7 +3849,7 @@ preparepcre()
 		exit 9
 	fi
 
-	printBeginList "pcre       "
+	printBeginList "PCRE       "
 
 	printItem "extracting"
 
@@ -3857,32 +3857,32 @@ preparepcre()
 
 	# Prevent archive from disappearing because of bunzip2.
 	{
-		${CP} -f ${pcre_ARCHIVE} ${pcre_ARCHIVE}.save && ${BUNZIP2} -f ${pcre_ARCHIVE} && tar -xvf "pcre-${pcre_VERSION}.tar"
+		${CP} -f ${PCRE_ARCHIVE} ${PCRE_ARCHIVE}.save && ${BUNZIP2} -f ${PCRE_ARCHIVE} && tar -xvf "pcre-${PCRE_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${pcre_ARCHIVE}."
-		LOG_STATUS "Restoring ${pcre_ARCHIVE}."
-		${MV} -f ${pcre_ARCHIVE}.save ${pcre_ARCHIVE}
+		ERROR "Unable to extract ${PCRE_ARCHIVE}."
+		LOG_STATUS "Restoring ${PCRE_ARCHIVE}."
+		${MV} -f ${PCRE_ARCHIVE}.save ${PCRE_ARCHIVE}
 		exit 10
 	fi
 
-	${MV} -f ${pcre_ARCHIVE}.save ${pcre_ARCHIVE}
-	${RM} -f "pcre-${pcre_VERSION}.tar"
+	${MV} -f ${PCRE_ARCHIVE}.save ${PCRE_ARCHIVE}
+	${RM} -f "pcre-${PCRE_VERSION}.tar"
 
 	printOK
 
 }
 
 
-generatepcre()
+generatePCRE()
 {
 
-	LOG_STATUS "Generating pcre..."
+	LOG_STATUS "Generating PCRE..."
 
 
-	cd "pcre-${pcre_VERSION}"
+	cd "pcre-${PCRE_VERSION}"
 
 	printItem "configuring"
 
@@ -3894,9 +3894,9 @@ generatepcre()
 	if [ -n "$prefix" ] ; then
 	{
 
-		pcre_PREFIX=${prefix}/pcre-${pcre_VERSION}
+		PCRE_PREFIX=${prefix}/PCRE-${PCRE_VERSION}
 
-		setBuildEnv ./configure --prefix=${pcre_PREFIX} --enable-unicode-properties
+		setBuildEnv ./configure --prefix=${PCRE_PREFIX} --enable-unicode-properties
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
@@ -3907,7 +3907,7 @@ generatepcre()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to configure pcre."
+		ERROR "Unable to configure PCRE."
 		exit 11
 	fi
 
@@ -3930,7 +3930,7 @@ generatepcre()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to build pcre."
+		ERROR "Unable to build PCRE."
 		exit 12
 	fi
 
@@ -3941,32 +3941,32 @@ generatepcre()
 
 	if [ -n "$prefix" ] ; then
 	{
-		echo "# pcre section." >> ${OSDL_ENV_FILE}
+		echo "# PCRE section." >> ${OSDL_ENV_FILE}
 
-		echo "pcre_PREFIX=${pcre_PREFIX}" >> ${OSDL_ENV_FILE}
-		echo "export pcre_PREFIX" >> ${OSDL_ENV_FILE}
-		echo "LD_LIBRARY_PATH=\$pcre_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "PCRE_PREFIX=${PCRE_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export PCRE_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$PCRE_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${pcre_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${PCRE_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
 		if [ $is_windows -eq 0 ] ; then
 
-			PATH=${pcre_PREFIX}/lib:${PATH}
+			PATH=${PCRE_PREFIX}/lib:${PATH}
 			export PATH
 
-			echo "PATH=\$pcre_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$PCRE_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 		fi
 
 		echo "" >> ${OSDL_ENV_FILE}
 
-		${MKDIR} -p ${pcre_PREFIX}
+		${MKDIR} -p ${PCRE_PREFIX}
 
-		setBuildEnv ${MAKE} install prefix=${pcre_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${PCRE_PREFIX}
 
 		if [ $? != 0 ] ; then
 			echo
-			ERROR "Unable to install pcre."
+			ERROR "Unable to install PCRE."
 			exit 13
 		fi
 
@@ -3981,7 +3981,7 @@ generatepcre()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to install pcre."
+		ERROR "Unable to install PCRE."
 		exit 13
 	fi
 
@@ -3990,7 +3990,7 @@ generatepcre()
 
 	printEndList
 
-	LOG_STATUS "pcre successfully installed."
+	LOG_STATUS "PCRE successfully installed."
 
 	cd "$initial_dir"
 
@@ -3999,29 +3999,29 @@ generatepcre()
 
 cleanpcre()
 {
-	LOG_STATUS "Cleaning pcre library build tree..."
-	${RM} -rf "pcre-${pcre_VERSION}"
+	LOG_STATUS "Cleaning PCRE library build tree..."
+	${RM} -rf "pcre-${PCRE_VERSION}"
 }
 
 
 
 ################################################################################
-# pcre build thanks to Visual Express.
+# PCRE build thanks to Visual Express.
 ################################################################################
 
 
-getpcre_win()
+getPCRE_win()
 {
-	LOG_STATUS "Getting pcre for windows..."
-	launchFileRetrieval pcre_win
+	LOG_STATUS "Getting PCRE for windows..."
+	launchFileRetrieval PCRE_win
 	return $?
 }
 
 
-preparepcre_win()
+preparePCRE_win()
 {
 
-	LOG_STATUS "Preparing pcre for windows.."
+	LOG_STATUS "Preparing PCRE for windows.."
 
 	if findTool unzip ; then
 		UNZIP=$returnedString
@@ -4030,33 +4030,33 @@ preparepcre_win()
 		exit 8
 	fi
 
-	printBeginList "pcre  "
+	printBeginList "PCRE  "
 
 	printItem "extracting"
 
 	cd $repository
 
 	{
-		${UNZIP} -o ${pcre_win_ARCHIVE}
+		${UNZIP} -o ${PCRE_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${pcre_win_ARCHIVE}."
+		ERROR "Unable to extract ${PCRE_win_ARCHIVE}."
 		exit 10
 	fi
 
-	cd "pcre-${pcre_win_VERSION}"
+	cd "PCRE-${PCRE_win_VERSION}"
 
-	pcre_install_dir="${prefix}/pcre-${pcre_win_VERSION}"
+	PCRE_install_dir="${prefix}/PCRE-${PCRE_win_VERSION}"
 
-	${MKDIR} -p ${pcre_install_dir}
+	${MKDIR} -p ${PCRE_install_dir}
 
 	cd $repository
 
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/pcre-from-LOANI" "pcre-${pcre_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/PCRE-from-LOANI" "PCRE-${PCRE_win_VERSION}"
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to copy pcre solution in build tree."
+		ERROR "Unable to copy PCRE solution in build tree."
 		exit 11
 	fi
 
@@ -4065,43 +4065,43 @@ preparepcre_win()
 }
 
 
-generatepcre_win()
+generatePCRE_win()
 {
 
-	LOG_STATUS "Generating pcre for windows..."
+	LOG_STATUS "Generating PCRE for windows..."
 
-	cd "pcre-${pcre_win_VERSION}"
+	cd "pcre-${PCRE_win_VERSION}"
 
 	printItem "configuring"
 	printOK
 
-	pcre_solution=`pwd`"/pcre-from-LOANI/pcre-from-LOANI.sln"
+	PCRE_solution=`pwd`"/PCRE-from-LOANI/PCRE-from-LOANI.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress pcre ${pcre_solution}
+	GenerateWithVisualExpress PCRE ${PCRE_solution}
 	printOK
 
 	printItem "installing"
 
-	pcre_install_include_dir=${pcre_install_dir}/include
-	${MKDIR} -p ${pcre_install_include_dir}
-	${CP} -f pcre.h ${pcre_install_include_dir}
+	PCRE_install_include_dir=${PCRE_install_dir}/include
+	${MKDIR} -p ${PCRE_install_include_dir}
+	${CP} -f pcre.h ${PCRE_install_include_dir}
 
 	printOK
 
 	printEndList
 
-	LOG_STATUS "pcre successfully installed."
+	LOG_STATUS "PCRE successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanpcre_win()
+cleanPCRE_win()
 {
-	LOG_STATUS "Cleaning pcre build tree..."
-	${RM} -rf "pcre-${pcre_win_VERSION}"
+	LOG_STATUS "Cleaning PCRE build tree..."
+	${RM} -rf "pcre-${PCRE_win_VERSION}"
 }
 
 
@@ -4242,19 +4242,12 @@ generateFreeImage()
 		FreeImage_lib="${FreeImage_PREFIX}/lib"
 
 		# Ex: libfreeimage-3.15.0.so
-		FreeImage_shared_lib="libfreeimage-${FREEIMAGE_VERSION}.so"
+		FreeImage_shared_lib="libfreeimage-${FreeImage_VERSION}.so"
 
 		# Ex: libfreeimage.so.3
 		FreeImage_shared_lib_short="libfreeimage.so."`echo ${FREEIMAGE_VERSION} | sed 's|\..*||1'`
 
 		install -d ${FreeImage_inc} ${FreeImage_lib} && install -m 644 Source/FreeImage.h ${FreeImage_inc} && install -m 644 libfreeimage.a  ${FreeImage_lib} && install -m 755 ${FreeImage_shared_lib} ${FreeImage_lib} && ln -sf ${FreeImage_shared_lib} ${FreeImage_lib}/${FreeImage_shared_lib_short} && ln -sf ${FreeImage_shared_lib_short} ${FreeImage_lib}/libfreeimage.so
-
-		if [ $? != 0 ] ; then
-			echo
-			ERROR "Unable to install FreeImage."
-			exit 13
-		fi
-
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
@@ -4472,8 +4465,8 @@ generateCEGUI()
 
 	# Telling where the CEGUI dependencies are to be found:
 
-	export pcre_CFLAGS="-I${pcre_PREFIX}/include"
-	export pcre_LIBS="-L${pcre_PREFIX}/lib -lpcre"
+	export pcre_CFLAGS="-I${PCRE_PREFIX}/include"
+	export pcre_LIBS="-L${PCRE_PREFIX}/lib -lpcre"
 
 	export freetype2_CFLAGS="-I${freetype_PREFIX}/include -I${freetype_PREFIX}/include/freetype2"
 	export freetype2_LIBS="-L${freetype_PREFIX}/lib -lfreetype"
@@ -4509,7 +4502,7 @@ generateCEGUI()
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
 	{
-		setBuildEnv ./configure	${CEGUI_CONFIGURE_OPT}
+		setBuildEnv ./configure ${CEGUI_CONFIGURE_OPT}
 	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
@@ -4526,7 +4519,7 @@ generateCEGUI()
 
 	{
 
-		 setBuildEnv ${MAKE} depend all
+		 setBuildEnv ${MAKE} all
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 
