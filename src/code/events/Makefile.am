@@ -6,7 +6,7 @@ noinst_LTLIBRARIES = libOSDLEvents.la
 
 libOSDLEvents_la_SOURCES = $(EVENTS_INTERFACES) $(EVENTS_IMPLEMENTATIONS)
 
-libOSDLEvents_la_CPPFLAGS = -I@OSDL_BASIC@ -I@OSDL_VIDEO@ -I@OSDL_VIDEO_TWO_DIMENSIONAL@ -I@OSDL_ENGINE@ 
+libOSDLEvents_la_CPPFLAGS = -I@OSDL_BASIC@ -I@OSDL_VIDEO@ -I@OSDL_VIDEO_TWO_DIMENSIONAL@ -I@OSDL_ENGINE@
 
 libOSDLEventsIncludedir      = $(includedir)/OSDL
 libOSDLEventsInclude_HEADERS = $(EVENTS_INTERFACES)
@@ -42,4 +42,3 @@ EVENTS_IMPLEMENTATIONS = \
 	OSDLMouse.cc                         \
 	OSDLMouseCommon.cc                   \
 	OSDLMouseHandler.cc
-	
