@@ -4148,7 +4148,7 @@ prepareFreeImage()
 	cd $repository
 
 	{
-		${UNZIP} -o "${FreeImage_ARCHIVE}" && ${MV} -f FreeImage "FreeImage-${FREEIMAGE_VERSION}"
+		${UNZIP} -o "${FreeImage_ARCHIVE}" && ${MV} -f FreeImage "FreeImage-${FreeImage_VERSION}"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ ! $? -eq 0 ] ; then
@@ -4166,7 +4166,7 @@ generateFreeImage()
 
 	LOG_STATUS "Generating FreeImage..."
 
-	cd "FreeImage-${FREEIMAGE_VERSION}"
+	cd "FreeImage-${FreeImage_VERSION}"
 
 	printItem "configuring"
 
@@ -4209,7 +4209,7 @@ generateFreeImage()
 	if [ -n "$prefix" ] ; then
 	{
 
-		FreeImage_PREFIX="${prefix}/FreeImage-${FREEIMAGE_VERSION}"
+		FreeImage_PREFIX="${prefix}/FreeImage-${FreeImage_VERSION}"
 
 		echo "# FreeImage section." >> ${OSDL_ENV_FILE}
 
@@ -4245,7 +4245,7 @@ generateFreeImage()
 		FreeImage_shared_lib="libfreeimage-${FreeImage_VERSION}.so"
 
 		# Ex: libfreeimage.so.3
-		FreeImage_shared_lib_short="libfreeimage.so."`echo ${FREEIMAGE_VERSION} | sed 's|\..*||1'`
+		FreeImage_shared_lib_short="libfreeimage.so."`echo ${FreeImage_VERSION} | sed 's|\..*||1'`
 
 		install -d ${FreeImage_inc} ${FreeImage_lib} && install -m 644 Source/FreeImage.h ${FreeImage_inc} && install -m 644 libfreeimage.a  ${FreeImage_lib} && install -m 755 ${FreeImage_shared_lib} ${FreeImage_lib} && ln -sf ${FreeImage_shared_lib} ${FreeImage_lib}/${FreeImage_shared_lib_short} && ln -sf ${FreeImage_shared_lib_short} ${FreeImage_lib}/libfreeimage.so
 
