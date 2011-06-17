@@ -136,13 +136,14 @@ done
 # headers), however SDL_gfx is currently broken and cannot be used (2.0.19 and
 # more recent versions, lack the support of an installation prefix, and thee
 # build of 2.0.18 fails on 64-bit platforms).
-sdl_gfx_support_activated=false
+sdl_gfx_support_activated=true
 
 # Where the libraries should be found:
 if [ -n "$osdl_environment_file" ] ; then
 
 	# If these lines are changed, change accordingly loani-requiredTools.sh,
 	# search for "Making tests for OSDL".
+	# (used by osdl.m4.in)
 
 	osdl_install_prefix_opt="--with-osdl-prefix=$OSDL_PREFIX"
 	ceylan_install_prefix_opt="--with-ceylan-prefix=$Ceylan_PREFIX"
@@ -163,10 +164,13 @@ if [ -n "$osdl_environment_file" ] ; then
 	libogg_install_prefix_opt="--with-ogg=$libogg_PREFIX"
 	libvorbis_install_prefix_opt="--with-vorbis=$libvorbis_PREFIX"
 	sdl_mixer_install_prefix_opt="--with-sdl_mixer-prefix=$SDL_mixer_PREFIX"
-	libagar_install_prefix_opt="--with-libagar-prefix=$Agar_PREFIX"
+	#libagar_install_prefix_opt="--with-libagar-prefix=$Agar_PREFIX"
+	pcre_install_prefix_opt="--with-pcre-prefix=$PCRE_PREFIX"
+	freeimage_install_prefix_opt="--with-freeimage-prefix=$FreeImage_PREFIX"
+	cegui_install_prefix_opt="--with-cegui-prefix=$CEGUI_PREFIX"
 	physicsfs_install_prefix_opt="--with-physicsfs-prefix=$PhysicsFS_PREFIX"
 
-	prerequesites_prefix_opt="$osdl_install_prefix_opt $ceylan_install_prefix_opt $sdl_install_prefix_opt $libjpeg_install_prefix_opt $zlib_install_prefix_opt $libpng_install_prefix_opt $sdl_image_install_prefix_opt $sdl_gfx_install_prefix_opt $freetype_install_prefix_opt $sdl_ttf_install_prefix_opt $libogg_install_prefix_opt $libvorbis_install_prefix_opt $sdl_mixer_install_prefix_opt $libagar_install_prefix_opt $physicsfs_install_prefix_opt"
+	prerequisites_prefix_opt="$osdl_install_prefix_opt $ceylan_install_prefix_opt $sdl_install_prefix_opt $libjpeg_install_prefix_opt $zlib_install_prefix_opt $libpng_install_prefix_opt $sdl_image_install_prefix_opt $sdl_gfx_install_prefix_opt $freetype_install_prefix_opt $sdl_ttf_install_prefix_opt $libogg_install_prefix_opt $libvorbis_install_prefix_opt $sdl_mixer_install_prefix_opt $pcre_install_prefix_opt $freeimage_install_prefix_opt $cegui_install_prefix_opt $physicsfs_install_prefix_opt"
 
 fi
 
@@ -185,7 +189,7 @@ fi
 #test_overriden_options="CPPFLAGS=\"-DTEST_CPPFLAGS\" LDFLAGS=\"-LTEST_LDFLAGS\""
 test_overriden_options=""
 
-configure_opt="-enable-strict-ansi --enable-debug $prerequesites_prefix_opt $test_install_location_opt $test_overriden_options"
+configure_opt="-enable-strict-ansi --enable-debug $prerequisites_prefix_opt $test_install_location_opt $test_overriden_options"
 
 
 if [ -n "$Ceylan_PREFIX" ] ; then
