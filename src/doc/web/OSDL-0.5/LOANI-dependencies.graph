@@ -3,7 +3,7 @@ digraph finite_state_machine {
 	bgcolor=black
 
 	edge [color=white]
-	
+
 	node [fontcolor=white,color=white]
 
 
@@ -13,9 +13,9 @@ digraph finite_state_machine {
 	"SDL_mixer" -> "OSDL"
 	"SDL_ttf"   -> "OSDL"
 	"SDL_gfx"   -> "OSDL"
-	"Agar"      -> "OSDL"
+	"CEGUI"     -> "OSDL"
 	"PhysicsFS" -> "OSDL"
-	
+
 	"SDL"       -> "SDL_mixer"
 	"libvorbis" -> "SDL_mixer"
 	"libogg"    -> "libvorbis"
@@ -25,8 +25,9 @@ digraph finite_state_machine {
 
 	"SDL"       -> "SDL_gfx"
 
-	"SDL"       -> "Agar"
-	"Freetype"  -> "Agar"
+	"PCRE"      -> "CEGUI"
+	"Freetype"  -> "CEGUI"
+	"FreeImage" -> "CEGUI"
 
 	"libpng"    -> "SDL_image"
 	"libjpeg"   -> "SDL_image"
@@ -35,4 +36,4 @@ digraph finite_state_machine {
 	"zlib"      -> "libpng"
 	"zlib"      -> "PhysicsFS"
 
-}	
+}
