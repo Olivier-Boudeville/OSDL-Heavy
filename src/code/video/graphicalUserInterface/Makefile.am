@@ -10,7 +10,7 @@ libOSDLGraphicalUserInterface_la_SOURCES = \
 	$(GRAPHICAL_USER_INTERFACE_IMPLEMENTATIONS)
 
 
-libOSDLGraphicalUserInterface_la_CPPFLAGS = -I@OSDL_BASIC@
+libOSDLGraphicalUserInterface_la_CPPFLAGS = -I@OSDL_BASIC@ -I@OSDL_VIDEO@ -I@OSDL_VIDEO_TWO_DIMENSIONAL@ 
 
 
 libOSDLGraphicalUserInterfaceIncludedir = $(includedir)/OSDL
