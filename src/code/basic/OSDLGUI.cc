@@ -127,15 +127,19 @@ using namespace Ceylan ;
 using namespace Ceylan::Log ;
 
 
-#include "OSDLBasic.h"      // for OSDL::GetVersion
-#include "OSDLFont.h"       // for PointSize
+#include "OSDLBasic.h"            // for OSDL::GetVersion
+#include "OSDLFont.h"             // for PointSize
 
-#include "OSDLVideo.h"      // for VideModule
-#include "OSDLAudio.h"      // for AudioModule
-#include "OSDLEvents.h"     // for Eventsodule
+#include "OSDLVideo.h"            // for VideModule
+#include "OSDLAudio.h"            // for AudioModule
+#include "OSDLEvents.h"           // for EventsModule
+#include "OSDLMouseHandler.h"     // for MouseHandler
+#include "OSDLMouse.h"            // for Mouse
+#include "OSDLKeyboardHandler.h"  // for KeyboardHandler
 
 
 using namespace OSDL ;
+using namespace OSDL::Events ;
 using namespace OSDL::Video::TwoDimensional::Text ;
 
 
@@ -192,7 +196,7 @@ GUIModule::GUIModule( const std::string & applicationName,
 
   send( "Initializing GUI subsystem." ) ;
 
-  _video->setGUIEnableStatus( true ) ;
+  _video->setGUIModule( *this ) ;
   _audio->setGUIEnableStatus( true ) ;
   _events->setGUIEnableStatus( true ) ;
 
@@ -204,19 +208,14 @@ GUIModule::GUIModule( const std::string & applicationName,
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
-
 #ifndef OSDL_USES_AGAR
 
 #ifndef OSDL_USES_CEGUI
-
-#error "No support available for any integrated GUI back-end."
 
 	throw GUIException( "GUIModule constructor failed: "
 		"no support available for any integrated GUI back-end." ) ;
 
 #endif // OSDL_USES_CEGUI
-
-#endif //OSDL_USES_CEGUI
 
 #endif //OSDL_USES_AGAR
 
@@ -276,113 +275,13 @@ GUIModule::GUIModule( const std::string & applicationName,
 	 * See our CEGUI-SDL-all-widgets.cc example file to understand how SDL,
 	 * OpenGL and CEGUI are to be used together.
 	 *
-	 */
-
-
-	// First, let's set the preferred SDL settings for CEGUI:
-
-	// Corresponds to a mere 'SDL_ShowCursor( SDL_DISABLE ) ;':
-
-	if ( ! eventsModule.hasMouseHandler() )
-	  throw( OSDL::GUIException( "A mouse handler is needed for the GUI." ) ) ;
-
-	MouseHandler & mouseHandler = eventsModule.getMouseHandler() ;
-
-	if ( ! mouseHandler.hasDefaultMouse() )
-	  throw( OSDL::GUIException( "A default mouse is needed for the GUI." ) ) ;
-
-	mouseHandler.getDefaultMouse().setCursorVisibility( false ) ;
-
-
-	/*
-	 * Corresponds to:
-	 *
-	 * SDL_EnableUNICODE( 1 ) ;
-	 * SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY,
-	 *   DL_DEFAULT_REPEAT_INTERVAL ) ;
+	 * Note: most of CEGUI's initialization requires at least an OpenGL context
+	 * to be already available, so it is triggered mostly in
+	 * VideoModule::setMode (see the postSetModeInit method below).
 	 *
 	 */
-
-	if ( ! eventsModule.hasKeyboardHandler() )
-	  throw( OSDL::GUIException(
-		  "A keyboard handler is needed for the GUI." ) ) ;
-
-	KeyboardHandler::SetMode( KeyboardHandler::textInput ) ;
-
-
-	// Then initialize CEGUI by itself:
-
-	CEGUI::OpenGLRenderer::bootstrapSystem() ;
-
-	// Initialises the required directories for the DefaultResourceProvider:
-
-	CEGUI::DefaultResourceProvider & defaultResProvider =
-		* static_cast<CEGUI::DefaultResourceProvider*>(
-		  CEGUI::System::getSingleton().getResourceProvider() ) ;
-
-	// CEGUI_INSTALL_PATH defined by OSDL's configure:
-#ifdef CEGUI_INSTALL_PATH
-
-	const string CEGUIInstallSharePath = CEGUI_INSTALL_PATH + "/share/CEGUI/" ;
-
-	if ( ! Ceylan::System::Directory::Exists( CEGUIInstallSharePath ) )
-	  throw( OSDL::GUIException( "GUIModule constructor failed: "
-		  "CEGUI install shared directory ('" + CEGUIInstallSharePath
-		  + "') does not exist." ) ) ;
-
-	// For each resource type, sets a corresponding resource group directory:
-
-	send( "Using CEGUI shared install directory '" + CEGUIInstallSharePath
-	  + "'." ) ;
-
-	defaultResProvider.setResourceGroupDirectory( "schemes",
-	  CEGUIInstallSharePath + "schemes/" ) ;
-
-	defaultResProvider.setResourceGroupDirectory( "imagesets",
-	  CEGUIInstallSharePath + "imagesets/" ) ;
-
-	defaultResProvider.setResourceGroupDirectory( "fonts",
-	  CEGUIInstallSharePath + "fonts/" ) ;
-
-	defaultResProvider.setResourceGroupDirectory( "layouts",
-	  CEGUIInstallSharePath + "layouts/" ) ;
-
-	defaultResProvider.setResourceGroupDirectory( "looknfeels",
-	  CEGUIInstallSharePath + "looknfeel/" ) ;
-
-	defaultResProvider.setResourceGroupDirectory( "lua_scripts",
-	  CEGUIInstallSharePath + "lua_scripts/" ) ;
-
-	defaultResProvider.setResourceGroupDirectory( "schemas",
-	  CEGUIInstallSharePath + "xml_schemas/" ) ;
-
-	defaultResProvider.setResourceGroupDirectory( "animations",
-	  CEGUIInstallSharePath + "animations/" ) ;
-
-	// Sets the default resource groups to be used:
-	CEGUI::Imageset::setDefaultResourceGroup( "imagesets" ) ;
-	CEGUI::Font::setDefaultResourceGroup( "fonts" ) ;
-	CEGUI::Scheme::setDefaultResourceGroup( "schemes" ) ;
-	CEGUI::WidgetLookManager::setDefaultResourceGroup( "looknfeels" ) ;
-	CEGUI::WindowManager::setDefaultResourceGroup( "layouts" ) ;
-	CEGUI::ScriptModule::setDefaultResourceGroup( "lua_scripts" ) ;
-	CEGUI::AnimationManager::setDefaultResourceGroup( "animations" ) ;
-
-	// Set-up default group for validation schemas:
-	CEGUI::XMLParser * parser = CEGUI::System::getSingleton().getXMLParser() ;
-	if ( parser->isPropertyPresent( "SchemaDefaultResourceGroup" ) )
-	  parser->setProperty( "SchemaDefaultResourceGroup", "schemas" ) ;
-
-	CEGUI::SchemeManager::getSingleton().create( BaseLook + ".scheme" ) ;
-
-	// Enforces some defaults:
-
-	System::getSingleton().setDefaultMouseCursor( BaseLook, "MouseArrow" ) ;
-
-	FontManager::getSingleton().create( "DejaVuSans-10.font" ) ;
 
 #endif // OSDL_USES_CEGUI
-
 
 
 	/*
@@ -396,11 +295,6 @@ GUIModule::GUIModule( const std::string & applicationName,
 
 	 *
 	 */
-
-
-	_video->setGUIEnableStatus(  true ) ;
-	_audio->setGUIEnableStatus(  true ) ;
-	_events->setGUIEnableStatus( true ) ;
 
 	send( "GUI subsystem initialized." ) ;
 
@@ -417,7 +311,7 @@ GUIModule::~GUIModule() throw()
 
 	_events->setGUIEnableStatus( false ) ;
 	_audio->setGUIEnableStatus(  false ) ;
-	_video->setGUIEnableStatus(  false ) ;
+	_video->forgetGUIModule() ;
 
 #if OSDL_USES_AGAR
 
@@ -427,6 +321,180 @@ GUIModule::~GUIModule() throw()
 #endif // OSDL_USES_AGAR
 
 	send( "GUI subsystem stopped." ) ;
+
+}
+
+
+
+void GUIModule::postSetModeInit( LowLevelSurface & screen )
+{
+
+#if OSDL_USES_SDL
+
+#if OSDL_USES_AGAR
+
+  /*
+   * If OpenGL was requested, we will use the sdlgl driver of Agar (which is a
+   * Single-Window one), otherwise we will use sdlfb.
+   *
+   */
+
+  // Instead of AG_VIDEO_FULLSCREEN | AG_VIDEO_OPENGL | AG_VIDEO_ANYFORMAT:
+  if ( AG_InitVideoSDL( screen, /* flags */ AG_VIDEO_OVERLAY ) != 0 )
+	throw VideoException( "VideoModule::setMode failed when "
+	  "initializing Agar: " + GUIModule::GetBackendLastError() ) ;
+
+  std::string usingGL  =
+	( AG_UsingGL( /* drv */ AGDRIVER(agDriverSw) )  ? "with" : "without" ) ;
+
+  std::string usingSDL =
+	( AG_UsingGL( /* drv */ AGDRIVER(agDriverSw) )  ? "with" : "without" ) ;
+
+  send( "The libagar GUI rendering will be done using a backend "
+	+ usingGL  + " OpenGL, and " + usingSDL + " SDL." ) ;
+
+#endif // OSDL_USES_AGAR
+
+
+
+#if OSDL_USES_CEGUI
+
+  // First, let's set the preferred SDL settings for CEGUI:
+
+  // Corresponds to a mere 'SDL_ShowCursor( SDL_DISABLE ) ;':
+
+  if ( ! _events->hasMouseHandler() )
+	throw( OSDL::GUIException( "A mouse handler is needed for the GUI." ) ) ;
+
+  MouseHandler & mouseHandler = _events->getMouseHandler() ;
+
+  if ( ! mouseHandler.hasDefaultMouse() )
+	throw( OSDL::GUIException( "A default mouse is needed for the GUI." ) ) ;
+
+  mouseHandler.getDefaultMouse().setCursorVisibility( false ) ;
+
+
+  /*
+   * Corresponds to:
+   *
+   * SDL_EnableUNICODE( 1 ) ;
+   * SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY,
+   *   SDL_DEFAULT_REPEAT_INTERVAL ) ;
+   *
+   */
+
+  if ( ! _events->hasKeyboardHandler() )
+	throw( OSDL::GUIException(
+		"A keyboard handler is needed for the GUI." ) ) ;
+
+  KeyboardHandler::SetMode( textInput ) ;
+
+
+  // Then initialize CEGUI by itself:
+
+  CEGUI::OpenGLRenderer::bootstrapSystem() ;
+
+  // Initialises the required directories for the DefaultResourceProvider:
+
+  CEGUI::DefaultResourceProvider & defaultResProvider =
+	* static_cast<CEGUI::DefaultResourceProvider*>(
+	  CEGUI::System::getSingleton().getResourceProvider() ) ;
+
+  // CEGUI_INSTALL_PATH defined by OSDL's configure:
+#ifdef CEGUI_INSTALL_PATH
+
+  const string CEGUIInstallSharePath = CEYLAN_STRINGIFY(CEGUI_INSTALL_PATH)
+	+ std::string( "/share/CEGUI/" ) ;
+
+#else // CEGUI_INSTALL_PATH
+
+#error CEGUI install path (CEGUI_INSTALL_PATH) not defined.
+
+#endif // CEGUI_INSTALL_PATH
+
+  if ( ! Ceylan::System::Directory::Exists( CEGUIInstallSharePath ) )
+	throw( OSDL::GUIException( "GUIModule constructor failed: "
+		"CEGUI install shared directory ('" + CEGUIInstallSharePath
+		+ "') does not exist." ) ) ;
+
+  // For each resource type, sets a corresponding resource group directory:
+
+  send( "Using CEGUI shared install directory '" + CEGUIInstallSharePath
+	+ "'." ) ;
+
+  defaultResProvider.setResourceGroupDirectory( "schemes",
+	CEGUIInstallSharePath + "schemes/" ) ;
+
+  defaultResProvider.setResourceGroupDirectory( "imagesets",
+	CEGUIInstallSharePath + "imagesets/" ) ;
+
+  defaultResProvider.setResourceGroupDirectory( "fonts",
+	CEGUIInstallSharePath + "fonts/" ) ;
+
+  defaultResProvider.setResourceGroupDirectory( "layouts",
+	CEGUIInstallSharePath + "layouts/" ) ;
+
+  defaultResProvider.setResourceGroupDirectory( "looknfeels",
+	CEGUIInstallSharePath + "looknfeel/" ) ;
+
+  defaultResProvider.setResourceGroupDirectory( "lua_scripts",
+	CEGUIInstallSharePath + "lua_scripts/" ) ;
+
+  defaultResProvider.setResourceGroupDirectory( "schemas",
+	CEGUIInstallSharePath + "xml_schemas/" ) ;
+
+  defaultResProvider.setResourceGroupDirectory( "animations",
+	CEGUIInstallSharePath + "animations/" ) ;
+
+  // Sets the default resource groups to be used:
+  CEGUI::Imageset::setDefaultResourceGroup( "imagesets" ) ;
+  CEGUI::Font::setDefaultResourceGroup( "fonts" ) ;
+  CEGUI::Scheme::setDefaultResourceGroup( "schemes" ) ;
+  CEGUI::WidgetLookManager::setDefaultResourceGroup( "looknfeels" ) ;
+  CEGUI::WindowManager::setDefaultResourceGroup( "layouts" ) ;
+  CEGUI::ScriptModule::setDefaultResourceGroup( "lua_scripts" ) ;
+  CEGUI::AnimationManager::setDefaultResourceGroup( "animations" ) ;
+
+  // Set-up default group for validation schemas:
+  CEGUI::XMLParser * parser = CEGUI::System::getSingleton().getXMLParser() ;
+  if ( parser->isPropertyPresent( "SchemaDefaultResourceGroup" ) )
+	parser->setProperty( "SchemaDefaultResourceGroup", "schemas" ) ;
+
+  CEGUI::SchemeManager::getSingleton().create( BaseLook + ".scheme" ) ;
+
+  // Enforces some defaults:
+
+  CEGUI::System::getSingleton().setDefaultMouseCursor( BaseLook, "MouseArrow" ) ;
+
+  CEGUI::FontManager::getSingleton().create( "DejaVuSans-10.font" ) ;
+
+#endif // OSDL_USES_CEGUI
+
+#endif // OSDL_USES_SDL
+
+}
+
+
+
+void GUIModule::redraw()
+{
+
+#if OSDL_USES_SDL
+
+#if OSDL_USES_CEGUI
+
+  // Clears the colour buffer:
+  glClear( GL_COLOR_BUFFER_BIT ) ;
+
+  // Renders the GUI:
+  CEGUI::System::getSingleton().renderGUI() ;
+
+  // Updates the screen:
+  SDL_GL_SwapBuffers() ;
+
+#endif // OSDL_USES_CEGUI
+
+#endif // OSDL_USES_SDL
 
 }
 

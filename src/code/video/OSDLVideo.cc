@@ -227,7 +227,7 @@ VideoModule::VideoModule() :
 		"disjunctive LGPL/GPL" ),
 	_screen( 0 ),
 	_displayInitialized( false ),
-	_isGuiEnabled( false ),
+	_gui( 0 ),
 	_renderer( 0 ),
 	_openGLcontext( 0 ),
 	_drawEndPoint( false ),
@@ -288,6 +288,8 @@ VideoModule::~VideoModule() throw()
 #if OSDL_USES_SDL
 
 	send( "Stopping video subsystem." ) ;
+
+	// _gui not owned.
 
 	if ( _openGLcontext != 0 )
 		delete _openGLcontext ;
@@ -456,18 +458,31 @@ bool VideoModule::isDisplayInitialized() const
 bool VideoModule::isGUIEnabled() const
 {
 
-	return _isGuiEnabled ;
+  return ( _gui != 0) ;
 
 }
 
 
 
-void VideoModule::setGUIEnableStatus( bool newStatus )
+void VideoModule::setGUIModule( GUIModule & guiModule )
 {
 
-	// Preferably to be called before setMode, to be taken into account.
+  // Preferably to be called before setMode, to be taken into account.
 
-	_isGuiEnabled = newStatus ;
+  if ( _gui != 0 )
+	throw VideoException( "VideoModule::setGUIModule failed: "
+	  "a GUI module was already registered." ) ;
+
+  _gui = & guiModule ;
+
+}
+
+
+
+void VideoModule::forgetGUIModule()
+{
+
+  _gui = 0 ;
 
 }
 
@@ -486,8 +501,7 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 
 	Ceylan::Flags userFlags = flags ;
 
-	send( "Trying to set "
-	  + Ceylan::toString( width ) + 'x'
+	send( "Trying to set " + Ceylan::toString( width ) + 'x'
 	  + Ceylan::toString( height ) + " video mode, with "
 	  + ( ( askedBpp == 0 ) ? string( "current screen color depth" ) :
 		Ceylan::toString( static_cast<Ceylan::Uint16>( askedBpp ) ) )
@@ -701,37 +715,9 @@ Ceylan::Flags VideoModule::setMode( Length width, Length height,
 
 
 	// Done only once OpenGL has been set:
-	if ( _isGuiEnabled )
-	{
+	if ( _gui != 0 )
+	  _gui->postSetModeInit( *screen ) ;
 
-#if OSDL_USES_AGAR
-
-	  /*
-	   * If OpenGL was requested, we will use the sdlgl driver of Agar (which is
-	   * a Single-Window one), otherwise we will use sdlfb.
-	   *
-	   */
-
-	  // Instead of AG_VIDEO_FULLSCREEN | AG_VIDEO_OPENGL | AG_VIDEO_ANYFORMAT:
-	  if ( AG_InitVideoSDL( screen, /* flags */ AG_VIDEO_OVERLAY ) != 0 )
-		throw VideoException( "VideoModule::setMode failed when "
-		  "initializing Agar: " + GUIModule::GetBackendLastError() ) ;
-
-	  std::string usingGL  =
-		( AG_UsingGL( /* drv */ AGDRIVER(agDriverSw) )  ? "with" : "without" ) ;
-
-	  std::string usingSDL =
-		( AG_UsingGL( /* drv */ AGDRIVER(agDriverSw) )  ? "with" : "without" ) ;
-
-	  send( "The libagar GUI rendering will be done using a backend "
-		+ usingGL  + " OpenGL, and " + usingSDL + " SDL." ) ;
-
-#endif // OSDL_USES_AGAR
-
-#if OSDL_USES_CEGUI
-
-	  
-	}
 
 
 	// Start counting time:
@@ -804,7 +790,11 @@ void VideoModule::redraw()
 	}
 	else
 	*/
-	_screen->redraw() ;
+
+	if ( _gui != 0 )
+	  _gui->redraw() ;
+	else
+	  _screen->redraw() ;
 
 }
 
@@ -1239,7 +1229,7 @@ const string VideoModule::toString( Ceylan::VerbosityLevels level ) const
 	else
 		res += "an OpenGL context is available, " ;
 
-	if ( _isGuiEnabled )
+	if ( _gui != 0 )
 		res += "with GUI support enabled" ;
 	else
 		res += "with no GUI support enabled" ;

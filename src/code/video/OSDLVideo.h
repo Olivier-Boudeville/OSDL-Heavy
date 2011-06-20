@@ -52,6 +52,9 @@ namespace OSDL
 	class CommonModule ;
 
 
+	// Video module can refer to GUI module.
+	class GUIModule ;
+
 
 	namespace Rendering
 	{
@@ -283,14 +286,21 @@ namespace OSDL
 
 
 				/**
-				 * Determines whether a GUI (Graphical User Interface) should be
-				 * used.
+				 * Registers a GUI (Graphical User Interface) module for further
+				 * use.
 				 *
-				 * @param newStatus the new enable status of the GUI.
+				 * @param guiModule the GUI module to register.
 				 *
 				 */
-				virtual void setGUIEnableStatus( bool newStatus ) ;
+				virtual void setGUIModule( GUIModule & guiModule ) ;
 
+
+				/**
+				 * Requests this video module to forget any previously known GUI
+				 * (Graphical User Interface) module.
+				 *
+				 */
+				virtual void forgetGUIModule() ;
 
 
 				/**
@@ -1080,10 +1090,13 @@ namespace OSDL
 
 
 				/**
-				 * Tells whether a graphical user interface is to be managed.
+				 * Records any graphical user interface module being used.
+				 *
+				 * @note This GUI module (if any) is not owned by the video
+				 * module.
 				 *
 				 */
-				bool _isGuiEnabled ;
+				OSDL::GUIModule * _gui ;
 
 
 

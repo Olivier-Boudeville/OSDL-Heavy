@@ -1117,9 +1117,9 @@ CommonModule & OSDL::getCommonModule( Flags flags )
 		{
 
 			/*
-			 * if requested flags are the same that the ones of the
-			 * currently running OSDL instance, return currently running OSDL
-			 * instance.
+			 * If the requested flags are the same as the ones of the currently
+			 * running OSDL instance, return currently running common module
+			 * instance:
 			 */
 
 			LogPlug::info( "Flags are matching, "

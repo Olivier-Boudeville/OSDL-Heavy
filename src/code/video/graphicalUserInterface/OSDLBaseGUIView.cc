@@ -26,6 +26,7 @@
 
 #include "OSDLBaseGUIView.h"
 
+#include "OSDLGUI.h"  // for GUIException
 
 
 using namespace OSDL::Rendering ;

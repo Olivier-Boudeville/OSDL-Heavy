@@ -46,6 +46,14 @@
  */
 
 
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
+
+// No need to include SDL header here:
+struct SDL_Surface ;
+
+#endif //  ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
+
+
 
 #if ! defined(OSDL_USES_AGAR) || OSDL_USES_AGAR
 
@@ -69,6 +77,26 @@ struct ag_font ;
 
 namespace OSDL
 {
+
+
+#if ! defined(OSDL_USES_SDL) || OSDL_USES_SDL
+
+  /*
+   * No way of forward declaring LowLevelSurface apparently: we would have liked
+   * to specify 'struct LowLevelThing ;' here and in the implementation file
+   * (.cc): 'typedef BackendThing LowLevelThing' but then the compiler finds
+   * they are conflicting declarations.
+   *
+   */
+
+  /// The internal actual surface.
+  typedef ::SDL_Surface LowLevelSurface ;
+
+#else // OSDL_USES_SDL
+
+  struct LowLevelSurface {} ;
+
+#endif // OSDL_USES_SDL
 
 
   /*
@@ -163,6 +191,21 @@ namespace OSDL
 
 
   public:
+
+
+	/**
+	 * Called at the end of VideoModule::setMode, so that the GUI can finish its
+	 * initialization, once a proper screen is available.
+	 *
+	 */
+	void postSetModeInit( LowLevelSurface & screen ) ;
+
+
+	/**
+	 * Requests the GUI to redraw itself.
+	 *
+	 */
+	void redraw() ;
 
 
 	/**

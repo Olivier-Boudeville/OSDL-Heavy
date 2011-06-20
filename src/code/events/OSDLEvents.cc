@@ -83,6 +83,14 @@
 
 
 
+#if OSDL_USES_CEGUI
+
+#include "CEGUI.h"
+
+#endif // OSDL_USES_CEGUI
+
+
+
 using std::string ;
 using Ceylan::Maths::Hertz ;
 
@@ -786,7 +794,7 @@ void EventsModule::requestQuit()
 		{
 			Scheduler::GetExistingScheduler().stop() ;
 		}
-		catch (	const SchedulingException & e )
+		catch ( const SchedulingException & e )
 		{
 			LogPlug::error( "EventsModule::requestQuit: "
 				"no scheduler found, none stopped, or stop failed: "
@@ -915,6 +923,108 @@ void EventsModule::setMouseHandler( MouseHandler & newHandler )
 
 
 
+void handle_mouse_down( Ceylan::Uint8 button )
+{
+
+#if OSDL_USES_SDL
+
+#if OSDL_USES_CEGUI
+
+  switch ( button )
+  {
+
+  case SDL_BUTTON_LEFT:
+	CEGUI::System::getSingleton().injectMouseButtonDown( CEGUI::LeftButton ) ;
+	break ;
+
+  case SDL_BUTTON_MIDDLE:
+	CEGUI::System::getSingleton().injectMouseButtonDown( CEGUI::MiddleButton ) ;
+	break ;
+
+  case SDL_BUTTON_RIGHT:
+	CEGUI::System::getSingleton().injectMouseButtonDown( CEGUI::RightButton) ;
+	break ;
+
+  case SDL_BUTTON_WHEELDOWN:
+	CEGUI::System::getSingleton().injectMouseWheelChange( -1 ) ;
+	break ;
+
+  case SDL_BUTTON_WHEELUP:
+	CEGUI::System::getSingleton().injectMouseWheelChange( +1 ) ;
+	break ;
+
+  default:
+#if OSDL_DEBUG
+	LOG_DEBUG_EVENTS( "handle_mouse_down ignored button '"
+	  + Ceylan::toNumericalString( button ) + "'." ) ;
+#endif // OSDL_DEBUG
+	break ;
+
+  }
+
+#else // OSDL_USES_CEGUI
+
+  throw EventException( "handle_mouse_down: not available for current GUI "
+	"backend." ) ;
+
+#endif // OSDL_USES_CEGUI
+
+#endif // OSDL_USES_SDL
+
+}
+
+
+
+void handle_mouse_up( Ceylan::Uint8 button )
+{
+
+#if OSDL_USES_SDL
+
+#if OSDL_USES_CEGUI
+
+  switch ( button )
+  {
+
+  case SDL_BUTTON_LEFT:
+	CEGUI::System::getSingleton().injectMouseButtonUp( CEGUI::LeftButton ) ;
+	break ;
+
+  case SDL_BUTTON_MIDDLE:
+	CEGUI::System::getSingleton().injectMouseButtonUp( CEGUI::MiddleButton ) ;
+	break ;
+
+  case SDL_BUTTON_RIGHT:
+	CEGUI::System::getSingleton().injectMouseButtonUp( CEGUI::RightButton ) ;
+	break ;
+
+  case SDL_BUTTON_WHEELDOWN:
+	break ;
+
+  case SDL_BUTTON_WHEELUP:
+	break ;
+
+  default:
+#if OSDL_DEBUG
+	LOG_DEBUG_EVENTS( "handle_mouse_up ignored button '"
+	  + Ceylan::toNumericalString( button ) + "'." ) ;
+#endif // OSDL_DEBUG
+	break ;
+
+  }
+
+#else // OSDL_USES_CEGUI
+
+  throw EventException( "handle_mouse_up: not available for current GUI "
+	"backend." ) ;
+
+#endif // OSDL_USES_CEGUI
+
+#endif // OSDL_USES_SDL
+
+}
+
+
+
 void EventsModule::updateInputState()
 {
 
@@ -923,6 +1033,17 @@ void EventsModule::updateInputState()
 
 	BasicEvent currentEvent ;
 
+#if OSDL_USES_CEGUI
+
+	CEGUI::System & sys = CEGUI::System::getSingleton() ;
+
+	// Get "run-time" duration, in seconds:
+	Ceylan::Float64 lastTimePulse = 0.001 * static_cast<Ceylan::Float64>(
+	  SDL_GetTicks() ) ;
+
+#endif // OSDL_USES_CEGUI
+
+
 	// Checks for all pending events:
 
 	while ( SDL_PollEvent( &currentEvent ) )
@@ -930,6 +1051,18 @@ void EventsModule::updateInputState()
 
 		if ( _isGuiEnabled )
 		{
+
+#ifndef OSDL_USES_AGAR
+
+#ifndef OSDL_USES_CEGUI
+
+		  throw EventsException( "EventsModule::updateInputState failed: "
+			"no support available for any integrated GUI back-end." ) ;
+
+#endif // OSDL_USES_CEGUI
+
+#endif //OSDL_USES_AGAR
+
 
 #if OSDL_USES_AGAR
 
@@ -969,12 +1102,71 @@ void EventsModule::updateInputState()
 
 		  }
 
-#else // OSDL_USES_AGAR
-
-			throw EventsException( "EventsModule::updateInputState: "
-				"GUI enabled but cannot be managed." ) ;
-
 #endif // OSDL_USES_AGAR
+
+
+
+#if OSDL_USES_CEGUI
+
+		  // Route according to the event type:
+		  switch( currentEvent.type )
+		  {
+
+			// Mouse section:
+
+		  case MouseMoved:
+			// We inject the mouse position directly here:
+			sys.injectMousePosition(
+			  static_cast<Ceylan::Float32>( currentEvent.motion.x ),
+			  static_cast<Ceylan::Float32>( currentEvent.motion.y ) ) ;
+			break ;
+
+		  case MouseButtonPressed:
+			handle_mouse_down( currentEvent.button.button ) ;
+			break ;
+
+		  case MouseButtonReleased:
+			handle_mouse_up( currentEvent.button.button ) ;
+			break ;
+
+			// Keyboard section:
+
+		  case KeyPressed:
+			sys.injectKeyDown(
+			  currentEvent.key.keysym.scancode ) ;
+
+			/*
+			 * Managing the character is more difficult, we have to use a
+			 * translated unicode value:
+			 *
+			 */
+
+			if ( (currentEvent.key.keysym.unicode & 0xFF80) == 0 )
+			{
+			  sys.injectChar(
+				currentEvent.key.keysym.unicode & 0x7F ) ;
+			}
+			break ;
+
+		  case KeyReleased:
+			sys.injectKeyUp(
+			  currentEvent.key.keysym.scancode ) ;
+			break ;
+
+			// A WM quit event occurred:
+		  case UserRequestedQuit:
+			onQuitRequested() ;
+			break ;
+
+		  case UserResizedVideoMode:
+			sys.notifyDisplaySizeChanged(
+			  CEGUI::Size( currentEvent.resize.w, currentEvent.resize.h ) ) ;
+			break ;
+
+		  }
+
+#endif // OSDL_USES_CEGUI
+
 
 		}
 		else
@@ -1073,7 +1265,22 @@ void EventsModule::updateInputState()
 			}
 
 		}
-	}
+
+	} // while poll events...
+
+#if OSDL_USES_CEGUI
+
+	Ceylan::Float64 currentTimePulse = 0.001 * SDL_GetTicks() ;
+
+	// Injects the time that passed since the last call:
+	sys.injectTimePulse( static_cast<Ceylan::Float64>(
+		currentTimePulse - lastTimePulse ) ) ;
+
+	// Records the new time as the last time:
+	lastTimePulse = currentTimePulse ;
+
+#endif // OSDL_USES_CEGUI
+
 
 #endif // OSDL_USES_SDL
 
@@ -1331,7 +1538,6 @@ Millisecond EventsModule::GetMillisecondsSinceStartup()
 void EventsModule::enterBasicMainLoop()
 {
 
-
 	//Milliseconds * frameClock = 0 ;
 	Ceylan::Uint32 frameCount = 0 ;
 
@@ -1420,7 +1626,7 @@ void EventsModule::enterBasicMainLoop()
 
 
 		// Compute the event loop period, in microsecond (default: 100 Hz):
-		Microsecond	loopExpectedDuration
+		Microsecond loopExpectedDuration
 			= static_cast<Microsecond>( 1000000.0f / _loopTargetedFrequency ) ;
 
 		// Default: 10ms, hence 10 000 microseconds:
@@ -1438,6 +1644,7 @@ void EventsModule::enterBasicMainLoop()
 
 		while ( ! _quitRequested )
 		{
+
 
 			// Checks for all pending events:
 			updateInputState() ;
@@ -1459,7 +1666,7 @@ void EventsModule::enterBasicMainLoop()
 
 			// Do not call onIdle if it will likely make us miss the deadline:
 			while ( getDurationBetween( lastSec, lastMicrosec,
-					nowSec,	nowMicrosec ) + _loopIdleCallbackMaxDuration
+					nowSec, nowMicrosec ) + _loopIdleCallbackMaxDuration
 				< loopExpectedDuration )
 			{
 
