@@ -33,6 +33,18 @@ using namespace OSDL::Events ;
 using namespace Ceylan::Log ;
 
 
+// We must know whether we can use CEGUI to define our actual test CEGUI:
+#include "OSDLConfig.h"
+
+#ifdef OSDL_USES_CEGUI
+
+#include "CEGUI.h"
+using namespace CEGUI ;
+
+#endif // OSDL_USES_CEGUI
+
+
+
 /*
  * Test of OSDL GUI support.
  *
@@ -90,6 +102,43 @@ class MyGUIView : public OSDL::Rendering::BaseGUIView
 } ;
 
 */
+
+
+void create_gui( Video::Surface & screen )
+{
+
+#ifdef OSDL_USES_CEGUI
+
+  LogPlug::info( "Creating the GUI." ) ;
+
+  WindowManager & winManager = WindowManager::getSingleton() ;
+
+  DefaultWindow & rootWin = * static_cast<DefaultWindow*>(
+	winManager.createWindow( "DefaultWindow", "Root" ) ) ;
+
+  System::getSingleton().setGUISheet( &rootWin ) ;
+
+  FrameWindow & myWin = * static_cast<FrameWindow*>( winManager.createWindow(
+	  "TaharezLook/FrameWindow", "Demo Window" ) ) ;
+
+  rootWin.addChildWindow( &myWin ) ;
+
+  myWin.setPosition( UVector2( cegui_reldim(0.25f), cegui_reldim(0.25f) ) ) ;
+  myWin.setSize( UVector2( cegui_reldim(0.5f), cegui_reldim(0.5f) ) ) ;
+
+  myWin.setMaxSize( UVector2( cegui_reldim(1.0f), cegui_reldim(1.0f) ) ) ;
+  myWin.setMinSize( UVector2( cegui_reldim(0.1f), cegui_reldim(0.1f) ) ) ;
+
+  myWin.setText( "Hello World! This is a minimal SDL+OpenGL+CEGUI test." ) ;
+
+#else // OSDL_USES_CEGUI
+
+  throw( OSDL::TestException( "No CEGUI support available." ) ) ;
+
+#endif // OSDL_USES_CEGUI
+
+}
+
 
 
 /**
@@ -223,6 +272,9 @@ int main( int argc, char * argv[] )
 		// Ownership not taken:
 		renderer->registerView( *myGUIView ) ;
 		*/
+
+		create_gui( myVideo.getScreenSurface() ) ;
+
 		if ( ! isBatch )
 			myEvents.enterMainLoop() ;
 

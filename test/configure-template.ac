@@ -132,32 +132,47 @@ fi
 AC_ARG_ENABLE(strict-ansi,
 	AS_HELP_STRING(--enable-strict-ansi,[enable strict ANSI compliance build [[default=yes]]]),,enable_strict_ansi=yes)
 if test x$ac_cv_cxx_compiler_gnu = xyes; then
-	# Basically paranoïd in all cases:
 
+	# Basically paranoïd in all cases:
+	# (taken directly from OSDL's counterpart configure-template.ac)
 	# Following warnings are not used, explanations follow:
-	#    -Weffc++: the standard library headers trigger zillions of warnings.
-	#    -Waggregate-return: even a simple std::string is an aggregate.
+	#
+	#    -Weffc++: the standard library headers trigger zillions of warnings
+	#
+	#    -Waggregate-return: even a simple std::string is an aggregate
+	#
 	#    -Wunused-parameter: inherited methods may not use some of their
-	# parameters, not wanting to freeze API with "__attribute__" keyword.
+	# parameters, not wanting to freeze API with "__attribute__" keyword
+	#
 	#    -Wpadded: add it if wanting to reorder fields of structures to save
-	# some bytes.
+	# some bytes
+	#
 	#    -Wmissing-noreturn: would force declaring __attribute__ ((noreturn))
 	# in every method which throws exceptions about unimplemented feature
+	#
 	#	 -Wold-style-cast: some standard macros (WIFEXITED, WEXITSTATUS,
 	# etc.) expand into old-style C casts
-	#    -Wunreachable-code: temporarily removed because of gcc 4.0.1
-	# incorrecly complaining: 'warning: will never be executed' in
-	# TestResourceException constructor
+	#
+	#    -Wunreachable-code: temporarily removed because of gcc 4.0.2
+	# incorrecly complaining: 'warning: will never be executed' in Exception
+	# constructor
+	#
 	#    -Wpacked: some structures may be declared packed with no effect, we
 	# usually do not care if it is the case
+	#
 	#    -Wconversion: (temporarily?) removed because of gcc 4.3 complaining
 	# with 'conversion to Ceylan::Uint8 from int may alter its value',
-	# when 'a += b ;' with a and b being both Ceylan::Uint8.
-	AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror -Woverloaded-virtual -W -Wfloat-equal -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wredundant-decls -Wno-unused-parameter -Wno-unknown-pragmas"
+	# when 'a += b ;' with a and b being both Ceylan::Uint8
+	#
+	# Temporarily removed for CEGUI: -Wshadow -pedantic-errors
+	# -Wredundant-decls -Wfloat-equal  -Wcast-qual -Woverloaded-virtual
+	#
+	AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Werror  -W -Wundef -Wendif-labels -Wpointer-arith -Wcast-align -Wwrite-strings -Wsign-compare -Wmissing-format-attribute -Wno-unused-parameter -Wno-unknown-pragmas -Wno-long-long"
 	if test x$enable_strict_ansi = xyes; then
 		# Do not know what "-D_XOPEN_SOURCE" would change.
-		AM_CXXFLAGS="$AM_CXXFLAGS -ansi -pedantic-errors"
+		AM_CXXFLAGS="$AM_CXXFLAGS -ansi"
 	fi
+
 fi
 
 

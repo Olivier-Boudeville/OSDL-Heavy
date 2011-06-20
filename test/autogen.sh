@@ -76,8 +76,8 @@ loani_installations=`dirname $loani_repository`/LOANI-installations
 osdl_environment_file=""
 
 while [ $# -gt 0 ] ; do
-	token_eaten=1
 
+	token_eaten=1
 
 	if [ "$1" = "-g" -o "$1" = "--guess-osdl-environment" ] ; then
 
