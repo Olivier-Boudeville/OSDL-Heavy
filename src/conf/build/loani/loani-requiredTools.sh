@@ -79,7 +79,10 @@ else
 	#
 	# whereas morse-icon.tex2D is a normal PNG image, 300 x 286, 8-bit/color
 	# RGBA, non-interlaced
-	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
+	#
+	# SDL_gfx (which was just after SDL_image) was removed, due to build
+	# problems with the 2.0.22 version (m4-related).
+	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
 

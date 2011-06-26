@@ -382,8 +382,12 @@ SDL_GFX_PREFIX="${OSDL_LOANI_INSTALLATIONS}/SDL_gfx-$SDL_GFX_RECOMMENDED_VERSION
 # We currently deactivated the use of SDL_gfx, as it does not compile on 64 bits
 # *and* it lost its '--with-sdl-prefix' option. Hoping everything will be
 # restored in the 2.0.21 version.
-sdl_gfx_support_activated=true
-#sdl_gfx_support_activated=false
+#
+# It was enabled back for the 2.0.22 version, however on Ubuntu 11.04 the
+# configuration failed due to a lacking m4 directory and problems with SDL m4
+# macros.
+#sdl_gfx_support_activated=true
+sdl_gfx_support_activated=false
 
 if [ $sdl_gfx_support_activated = "true" ] ; then
 
