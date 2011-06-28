@@ -7608,8 +7608,8 @@ generateOSDL()
 
 	if [ ${use_svn} -eq 0 ]; then
 
-		# Here we are in the SVN tree, needing to generate the
-		# build system for tests:
+		# Here we are in the SVN tree, needing to generate the build system for
+		# tests:
 		{
 			setBuildEnv ./autogen.sh --no-build --with-osdl-env-file ${OSDL_ENV_FILE}
 		} 1>>"$LOG_OUTPUT" 2>&1
@@ -7628,10 +7628,9 @@ generateOSDL()
 	if [ -n "$prefix" ] ; then
 		{
 
-			# We suppose here that if we have a prefix, all tools use
-			# prefixes:
+			# We suppose here that if we have a prefix, all tools use prefixes:
 
-			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-libagar-prefix=$Agar_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
+			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-pcre-prefix=$PCRE_PREFIX --with-freeimage-prefix=$FreeImage_PREFIX --with-cegui-prefix=$CEGUI_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
 
 			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${OSDL_PREFIX} ${tools_prefixes}
 
