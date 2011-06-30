@@ -363,7 +363,7 @@ PCRE_win_MD5=""
 # FreeImage: http://freeimage.sourceforge.net
 
 # Actually 3.15.0 (defined in configure-template.ac):
-FreeImage_VERSION="@FreeImage_RECOMMENDED_VERSION@"
+FreeImage_VERSION="@FREEIMAGE_RECOMMENDED_VERSION@"
 
 # Ex: '3.15.0' must become '3150':
 FreeImage_ARCHIVE_VERSION=`echo ${FreeImage_VERSION} | sed 's|\.||g'`
