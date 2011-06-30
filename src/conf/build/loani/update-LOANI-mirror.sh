@@ -94,9 +94,12 @@ orge_package_name_list="Erlang Geolite"
 
 
 # Taken from loani-requiredTools.sh:
-required_package_name_list_win="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PCRE_win FreeImage_win CEGUI_win PhysicsFS_win Ceylan_win OSDL_win"
 
-required_package_name_list_non_win="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS Ceylan OSDL"
+# Temporarily removed: Ceylan_win OSDL_win
+required_package_name_list_win="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PCRE_win FreeImage_win CEGUI_win PhysicsFS_win"
+
+# Temporarily removed: Ceylan OSDL
+required_package_name_list_non_win="libtool SDL libjpeg zlib libpng SDL_image SDL_gfx freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
 
 required_package_name_list="${required_package_name_list_non_win} ${required_package_name_list_win}"
 
@@ -157,15 +160,22 @@ for package_name in ${full_package_name_list}; do
 		target_md5_var="${package_name}_MD5"
 		eval expected_md5="\$$target_md5_var"
 
-		md5_res=`${md5sum} "${LOANI_REPOSITORY}/${archive_file}"`
-
-		computed_md5=`echo ${md5_res}| awk '{printf $1}'`
-
-		if [ "${computed_md5}" = "${expected_md5}" ] ; then
-			echo "MD5 sums match."
+		if [ "${expected_md5}" = "xxx" ] ; then
+				echo "Warning: no available MD5 sum for ${package_name}, hence not checked." 1>&2
 		else
-			echo "Error, MD5 sums not matching: expected ${expected_md5}, computed ${computed_md5}." 1>&2
-			exit 25
+
+			md5_res=`${md5sum} "${LOANI_REPOSITORY}/${archive_file}"`
+
+			computed_md5=`echo ${md5_res}| awk '{printf $1}'`
+
+			if [ "${computed_md5}" = "${expected_md5}" ] ; then
+				echo "MD5 sums match."
+			else
+
+				echo "Error, MD5 sums not matching: expected ${expected_md5}, computed ${computed_md5}." 1>&2
+
+			fi
+
 		fi
 
 
