@@ -48,9 +48,9 @@ if [ ! -x "${MD5}" ]; then
 		echo "No MD5 sum tool found." 1>&2
 		exit 10
 	else
-		MD5="${MD5} -5"	
+		MD5="${MD5} -5"
 	fi
-		
+
 fi
 
 [ "$do_debug" -eq 1 ] || echo "Using MD5 = $MD5"
