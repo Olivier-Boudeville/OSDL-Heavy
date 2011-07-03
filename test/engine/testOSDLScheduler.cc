@@ -863,7 +863,7 @@ int main( int argc, char * argv[] )
 	firstList.push_back( 2 * stopTick ) ;
 
 
-	bool testKilledStopper = false ;
+	bool testKilledStopper = true ;
 
 	if ( testKilledStopper )
 	{
@@ -879,7 +879,7 @@ int main( int argc, char * argv[] )
 	}
 
 
-	bool testSameTickDeletionOfProgrammed = false ;
+	bool testSameTickDeletionOfProgrammed = true ;
 
 	if ( testSameTickDeletionOfProgrammed )
 	{
@@ -916,7 +916,7 @@ int main( int argc, char * argv[] )
 	}
 
 
-	bool enableActualStopper = false ;
+	bool enableActualStopper = true ;
 
 	if ( enableActualStopper )
 	{
@@ -933,7 +933,7 @@ int main( int argc, char * argv[] )
 
 
 
-	bool testPacer = false ;
+	bool testPacer = true ;
 
 	if ( testPacer )
 	{
@@ -954,7 +954,7 @@ int main( int argc, char * argv[] )
 
 
 
-	bool testSameTickDeletionOfPeriodical = false ;
+	bool testSameTickDeletionOfPeriodical = true ;
 
 	if ( testSameTickDeletionOfPeriodical )
 	{
@@ -988,7 +988,7 @@ int main( int argc, char * argv[] )
 
 
 	// A set of stopper active objects can be used:
-	bool useStoppers = false ;
+	bool useStoppers = true ;
 	list<SchedulerStopper *> stoppers ;
 
 	if ( useStoppers )
