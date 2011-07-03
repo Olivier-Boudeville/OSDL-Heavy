@@ -86,13 +86,13 @@ const Delay Scheduler::ShutdownBucketLevel = 1000000 ;
  * *slow* and triggers context switches.
  *
  * So the scheduler may fail constantly with this mode, whereas it could work
- * flawlessly without...
+ * flawlessly without... (for example with the --HTMLPlug command-line option).
  *
  */
 
 #define OSDL_SCHEDULE_LOG(message) /* nothing */
 //#define OSDL_SCHEDULE_LOG(message) send( message )
-//define OSDL_SCHEDULE_LOG(message) std::cout << message << std::endl
+//#define OSDL_SCHEDULE_LOG(message) std::cout << message << std::endl
 
 
 /*
@@ -1546,7 +1546,7 @@ void Scheduler::scheduleBestEffort()
 		+ Ceylan::toString( _inputPeriod ) + " engine ticks" ) ;
 
 	/*
-	 * Starts with all zero ticks:
+	 * Starts with all zero ticks here (by default):
 	 *
 	 */
 	_currentEngineTick = 0 ;
@@ -1792,7 +1792,7 @@ void Scheduler::scheduleBestEffort()
 
 #if OSDL_DEBUG_SCHEDULER
 
-		// Will default settings, one log per 1s:
+		// With default settings, one log per 1s:
 		if ( _currentEngineTick % 1000 == 0 )
 			send( "[ E: "  + Ceylan::toString( _currentEngineTick )
 				+ " ; S: " + Ceylan::toString( _currentSimulationTick )
@@ -1888,7 +1888,7 @@ void Scheduler::scheduleBestEffort()
 		 * is not necessarily a problem.
 		 *
 		 * What must not occur is that these actions lasted so long that the
-		 * first next deadline (either simulation, rendering or input), was
+		 * first next deadline (either simulation, rendering or input) was
 		 * missed.
 		 *
 		 * The next '+1' is here because the soonest possible deadlines will be
@@ -1897,7 +1897,6 @@ void Scheduler::scheduleBestEffort()
 		 * Engine time is regularly updated, as any intermediate call may last
 		 * for non negligible durations.
 		 *
-		 * As multiple ticks can be missed, a while structure is required.
 		 *
 		 */
 		_currentEngineTick = computeEngineTickFromCurrentTime() ;
@@ -1906,7 +1905,10 @@ void Scheduler::scheduleBestEffort()
 		/*
 		 * Should a computer be unable to withstand the requested load, it may
 		 * be unable to catch up with the clock, using the delay bucket to
-		 * escape from this loop on desesperate cases:
+		 * escape from this loop on desesperate cases.
+		 *
+		 * Finally, as multiple ticks can be missed, a while structure is
+		 * required.
 		 *
 		 */
 		while ( nextSimulationDeadline < _currentEngineTick + 1
@@ -2024,13 +2026,26 @@ void Scheduler::scheduleBestEffort()
 
 			}
 
+			/*
+			 * Note: if not having enough margin in terms of processing power,
+			 * the scheduler may spend all its time stuck in such inner
+			 * "deadline-catching" loops, never going back to the outer 'while'
+			 * loop, thus never being aware that quitting was requested.
+			 *
+			 */
+
 			_currentSimulationTick++ ;
 
 			nextSimulationDeadline += _simulationPeriod ;
 
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
 
-			// We should have reduced the simulation delay at least a bit..
+			/*
+			 * We should have reduced the simulation delay at least a bit..
+			 * provided we have been quick enough....
+			 *
+			 */
+
 
 		}
 
@@ -2132,9 +2147,9 @@ void Scheduler::scheduleBestEffort()
 
 			}
 
-			_currentRenderingTick++ ;
-
 			nextRenderingDeadline += _renderingPeriod ;
+
+			_currentRenderingTick++ ;
 
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
 
@@ -2218,13 +2233,14 @@ void Scheduler::scheduleBestEffort()
 
 			}
 
-			_currentInputTick++ ;
-
 			nextInputDeadline += _inputPeriod ;
+
+			_currentInputTick++ ;
 
 			_currentEngineTick = computeEngineTickFromCurrentTime() ;
 
 		}
+
 
 		if ( maxDelayBucket < delayBucket )
 			maxDelayBucket = delayBucket ;
