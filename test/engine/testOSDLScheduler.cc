@@ -1040,7 +1040,11 @@ int main( int argc, char * argv[] )
 
 	  std::cout << std::endl
 				<< "Warning: this test should last for exactly "
-				<< stopTick / 100 << " seconds (and it is not interactive)"
+				<< stopTick / 100 << " seconds (and it is not interactive)."
+				<< std::endl
+				<< "Moreover it should preferably be run with the "
+		"null log plug (i.e. with the --nullPlug command-line option), "
+		"otherwise it may fail because of too slow synchronous disk writes."
 				<< std::endl ;
 
 	}
