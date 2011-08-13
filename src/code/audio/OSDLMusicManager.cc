@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -84,11 +84,6 @@ using namespace OSDL::Audio ;
 
 
 
-/**
- * Implementation notes:
- *
- */
-
 
 
 
@@ -99,7 +94,7 @@ MusicManagerException::MusicManagerException( const string & reason ) :
 }
 
 
-	
+
 MusicManagerException::~MusicManagerException() throw()
 {
 
@@ -112,7 +107,7 @@ MusicManagerException::~MusicManagerException() throw()
 // Music playback setting section.
 
 
-MusicPlaybackSetting::MusicPlaybackSetting( Music & music, 
+MusicPlaybackSetting::MusicPlaybackSetting( Music & music,
 		PlaybackCount count ) :
 	_music( & music ),
 	_count( count ),
@@ -123,7 +118,7 @@ MusicPlaybackSetting::MusicPlaybackSetting( Music & music,
 	if ( count == 0 )
 		throw AudioException( "MusicPlaybackSetting construction failed: "
 			"null playback count specified" ) ;
-			
+
 	if ( count < Audio::Loop )
 		throw AudioException( "MusicPlaybackSetting construction failed: "
 			"unexpected playback count specified" ) ;
@@ -137,7 +132,7 @@ MusicPlaybackSetting::~MusicPlaybackSetting() throw()
 {
 
 	// _music not owned.
-	
+
 }
 
 
@@ -146,7 +141,7 @@ void MusicPlaybackSetting::setFadeInStatus( bool on )
 {
 
 	_fadeIn = on ;
-	
+
 }
 
 
@@ -155,61 +150,61 @@ void MusicPlaybackSetting::setFadeOutStatus( bool on )
 {
 
 	_fadeOut = on ;
-	
+
 }
 
 
 
 void MusicPlaybackSetting::startPlayback()
 {
-	
-	
+
+
 	if ( _fadeIn )
 	{
-	
+
 		// Fade-in wanted.
-	
+
 		if ( _fadeOut )
 		{
-	
+
 			// Fade-out wanted.
-			
-			// Fade-out not supported yet!		
+
+			// Fade-out not supported yet!
 			_music->playWithFadeIn( _count ) ;
-		
+
 		}
 		else
 		{
-	
+
 			// No fade-out wanted.
 			_music->playWithFadeIn( _count ) ;
-			
+
 		}
-		
+
 	}
 	else
 	{
-	
+
 		// No fade-in wanted.
-		
+
 		if ( _fadeOut )
 		{
-	
+
 			// Fade-out wanted.
-	
-			// Fade-out not supported yet!		
+
+			// Fade-out not supported yet!
 			_music->play( _count ) ;
-		
+
 		}
 		else
 		{
-	
+
 			// No fade-out wanted.
 			_music->play( _count ) ;
-			
+
 		}
 	}
-	
+
 }
 
 
@@ -231,29 +226,29 @@ bool MusicPlaybackSetting::onPlaybackEnded()
 	 * over.
 	 *
 	 */
-	
-	LogPlug::trace( "MusicPlaybackSetting::onPlaybackEnded: " 
+
+	LogPlug::trace( "MusicPlaybackSetting::onPlaybackEnded: "
 		+ toString() ) ;
-	
+
 	//_music->removeRef() ;
-	
+
 	// One more playback triggered:
-	
-	/*	
+
+	/*
 	 * Count is directly managed by the Music::play* methods.
 	 *
-	 
+
 	if ( _count == Loop )
 		return true ;
-		
+
 	_count-- ;
-	
+
 	return ( _count != 0 ) ;
 	 */
-	
+
 	// Therefore this playback has never to be kept:
-	return false ; 
-	
+	return false ;
+
 }
 
 
@@ -261,19 +256,19 @@ bool MusicPlaybackSetting::onPlaybackEnded()
 const string MusicPlaybackSetting::toString( Ceylan::VerbosityLevels level )
 	const
 {
-	
-	string res = "Music playback setting referencing '" 
+
+	string res = "Music playback setting referencing '"
 		+ _music->toString( level )
-		+ string( "', with " ) + ( _fadeIn ? "a " : "no " ) 
-		+ string( "fade-in and " ) + ( _fadeOut ? "a " : "no " ) 
+		+ string( "', with " ) + ( _fadeIn ? "a " : "no " )
+		+ string( "fade-in and " ) + ( _fadeOut ? "a " : "no " )
 		+ string( "fade-out, " ) ;
-	
+
 	if ( _count == Loop )
 		return res + "and (infinite) looping requested" ;
 	else
-		return res + "with " + Ceylan::toString( _count ) 
-			+ " planned playbacks" ; 	
-			
+		return res + "with " + Ceylan::toString( _count )
+			+ " planned playbacks" ;
+
 }
 
 
@@ -289,10 +284,10 @@ MusicManager * MusicManager::_CurrentMusicManager = 0 ;
 MusicManager::MusicManager():
 	_currentMusicPlayback( 0 )
 {
-			
+
 	// Registers callback-like method:
 	::Mix_HookMusicFinished( HandleMusicPlaybackFinishedCallback ) ;
-	
+
 }
 
 
@@ -300,8 +295,6 @@ MusicManager::MusicManager():
 MusicManager::~MusicManager() throw()
 {
 
-	Ceylan::checkpoint( "MusicManager destructor." ) ;
-	
 	send( "Deleting music manager, whose state was: " + toString() ) ;
 
 
@@ -310,28 +303,28 @@ MusicManager::~MusicManager() throw()
 	 * would make us continue with them:
 	 *
 	 */
-		
+
 	Ceylan::Uint32 playbackCount = _playList.size() ;
-	
+
 	if ( playbackCount != 0 )
 	{
-	
+
 		LogPlug::warning( "MusicManager destructor: still "
-			+ Ceylan::toString( playbackCount ) 
-			+ " music playback(s) in playlist, removing them." ) ;	
-	
+			+ Ceylan::toString( playbackCount )
+			+ " music playback(s) in playlist, removing them." ) ;
+
 		for ( list<MusicPlaybackSetting *>::iterator it = _playList.begin();
 			it != _playList.end(); it++ )
 		{
-		
+
 			delete( *it ) ;
-			
+
 		}
-			
-	}		
+
+	}
 
 	stopCurrentMusicPlayback() ;
-	
+
 }
 
 
@@ -342,19 +335,19 @@ void MusicManager::enqueue( Music & music, PlaybackCount count,
 
 	MusicPlaybackSetting * newSetting = new MusicPlaybackSetting( music,
 		count ) ;
-	
-	if ( fadeIn ) 
+
+	if ( fadeIn )
 		newSetting->setFadeInStatus( true ) ;
-	
-	if ( fadeOut ) 
+
+	if ( fadeOut )
 		newSetting->setFadeOutStatus( true ) ;
-	
+
 	_playList.push_back( newSetting ) ;
-		
-	// Starts playback immediately if none is currently in progress:	
+
+	// Starts playback immediately if none is currently in progress:
 	if ( _currentMusicPlayback == 0 )
 		startNextMusicPlayback() ;
-	
+
 }
 
 
@@ -363,50 +356,50 @@ bool MusicManager::isPlaying() const
 {
 
 	return _currentMusicPlayback != 0 ;
-	
+
 }
 
 
 
 const string MusicManager::toString( Ceylan::VerbosityLevels level ) const
 {
-	
+
 	string res = "Music manager with " ;
-	
+
 	if ( _currentMusicPlayback != 0 )
 	{
-	
-		res += "following current playback: '" 
+
+		res += "following current playback: '"
 			+ _currentMusicPlayback->toString() + "'registered" ;
-	 
+
 	}
 	else
 	{
-	
+
 		res = "no current playback registered" ;
-	
+
 	}
-	
+
 	if ( level == Ceylan::low )
-		return res + ". Current playlist has " 
+		return res + ". Current playlist has "
 			+ Ceylan::toString( _playList.size() ) + " entries" ;
-	
+
 	list<string> playbacks ;
-	
+
 	for ( list<MusicPlaybackSetting *>::const_iterator it = _playList.begin();
 		it != _playList.end(); it++ )
 	{
-	
+
 		playbacks.push_back( (*it)->toString( level ) ) ;
-	
-	}					
- 	
+
+	}
+
 	if ( playbacks.empty() )
 		return res + ". Current playlist is empty" ;
 	else
-		return res + ". Current playlist is: " 
+		return res + ". Current playlist is: "
 			+ Ceylan::formatStringList( playbacks ) ;
-		
+
 }
 
 
@@ -428,17 +421,17 @@ void MusicManager::startNextMusicPlayback()
 	if ( _playList.empty() )
 		throw MusicManagerException( "MusicManager::startNextMusicPlayback: "
 			"called with an empty playlist." ) ;
-	
+
 	if ( _currentMusicPlayback != 0 )
 		throw MusicManagerException( "MusicManager::startNextMusicPlayback: "
 			"called while a music is still being played." ) ;
-	
+
 #endif // OSDL_DEBUG_MUSIC_PLAYBACK
 
 	_currentMusicPlayback = _playList.front() ;
-	
+
 	_playList.pop_front() ;
-	
+
 	_currentMusicPlayback->startPlayback() ;
 
 }
@@ -448,82 +441,80 @@ void MusicManager::startNextMusicPlayback()
 void MusicManager::stopCurrentMusicPlayback()
 {
 
-	Ceylan::checkpoint( "MusicManager::stopCurrentMusicPlayback." ) ;
-	
 	if ( _currentMusicPlayback != 0 )
 	{
-	
+
 		_currentMusicPlayback->stopPlayback() ;
-	
+
 	}
-	
+
 #if OSDL_USES_SDL_MIXER
-	
+
 	LogPlug::trace( "MusicManager::stopCurrentMusicPlayback" ) ;
-	
+
 	/*
 	 * No test performed about music availability:
 	 * (and should trigger the proper onMusicPlaybackFinished callback)
 	 *
 	 */
 	::Mix_HaltMusic() ;
-			
+
 #else // OSDL_USES_SDL_MIXER
 
-	throw MusicManagerException( 
+	throw MusicManagerException(
 		"MusicManager::stopCurrentMusicPlayback failed: "
 		"no SDL_mixer support available." ) ;
-	
+
 #endif // OSDL_USES_SDL_MIXER
-	
+
 	if ( _currentMusicPlayback != 0 )
 	{
-	
+
 		delete _currentMusicPlayback ;
 		_currentMusicPlayback = 0 ;
-	
-	}	
+
+	}
 	else
 	{
-	
+
 		LogPlug::warning( "MusicManager::stopCurrentMusicPlayback: "
 			"no music was being played." ) ;
-			
+
 	}
-	
+
 }
 
 
 
-void MusicManager::onMusicPlaybackFinished() 
+void MusicManager::onMusicPlaybackFinished()
 {
 
 	Ceylan::checkpoint( "MusicManager::onMusicPlaybackFinished." ) ;
-	
+
 	if ( _currentMusicPlayback == 0 )
 	{
-	
+
 		LogPlug::debug( "MusicManager::onMusicPlaybackFinished failed: "
 			"no music was being played. Supposing the music playback was "
 			"triggered directly on the music, rather than thanks to "
 			"this music manager." ) ;
-	
+
 		return ;
-	
+
 	}
-		
+
 	if ( _currentMusicPlayback->onPlaybackEnded() == false )
 	{
-	
+
 		delete _currentMusicPlayback ;
-	
+
 		_currentMusicPlayback = 0 ;
-	
+
 	}
-	
+
 	if ( ! _playList.empty() )
-		startNextMusicPlayback() ; 
-	
+		startNextMusicPlayback() ;
+
 }
 
 
@@ -542,7 +533,7 @@ void MusicManager::HandleMusicPlaybackFinishedCallback()
 {
 
 	OSDL::Audio::getExistingMusicManager().onMusicPlaybackFinished() ;
-	
+
 }
 
 
@@ -557,8 +548,7 @@ MusicManager & OSDL::Audio::getExistingMusicManager()
 	if ( MusicManager::_CurrentMusicManager == 0 )
 		throw MusicManagerException( "OSDL::Audio::getExistingMusicManager "
 			"failed: no manager available." ) ;
-	
-	return * MusicManager::_CurrentMusicManager ;
-		
-}
 
+	return * MusicManager::_CurrentMusicManager ;
+
+}
