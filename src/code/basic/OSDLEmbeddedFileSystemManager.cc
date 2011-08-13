@@ -404,12 +404,17 @@ std::list<std::string> EmbeddedFileSystemManager::getSearchPath() const
 		res.push_back( string( *paths ) ) ;
 
 	/*
-	 * Cannot use it, otherwise a core dump (invalide glib pointer) is
-	 * triggered:
+	 * Cannot use:
+	 PHYSFS_freeList( paths ) ;
 
-	PHYSFS_freeList( paths ) ;
-
-	 * (sorry for the small memory leak!)
+	 * or, otherwise a core dump (invalide glib pointer) is
+	 * triggered, or, with Valgrind:
+	 *  Invalid free() / delete / delete[]
+	 *  at 0x4C282ED: free (vg_replace_malloc.c:366)
+	 *  by 0x6BC5EB1: mallocAllocatorFree (physfs.c:2171)
+	 *  by 0x6BC2FA6: PHYSFS_freeList (physfs.c:874)
+	 *
+	 * (sorry for the small memory leak thus induced!)
 	 *
 	 */
 
