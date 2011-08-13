@@ -320,6 +320,13 @@ GUIModule::~GUIModule() throw()
 
 #endif // OSDL_USES_AGAR
 
+#if OSDL_USES_CEGUI
+
+	// Reciprocal at least of CEGUI::OpenGLRenderer::bootstrapSystem():
+	CEGUI::OpenGLRenderer::destroySystem() ;
+
+#endif // OSDL_USES_CEGUI
+
 	send( "GUI subsystem stopped." ) ;
 
 }
