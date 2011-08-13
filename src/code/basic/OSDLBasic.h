@@ -118,9 +118,25 @@ namespace OSDL
 
 
 
-	/// Shutdowns all OSDL services.
+	/// Stops all OSDL services.
 	OSDL_DLL void stop() ;
 
+
+	/**
+	 * Allows to fully shutdown OSDL and its prerequisites.
+	 *
+	 * Calling this function is fully optional, it just allows to release all
+	 * last remaining resources (notably in RAM) acquired by OSDL and its
+	 * prerequisites that would be still used after a proper stop, even blocks
+	 * reported as being still reachable by Valgrind.
+	 *
+	 * @note Does not execute OSDL::stop, which is to be called beforehand. This
+	 * function returns, but is expected to be among the last few instructions
+	 * before the program stops (and of course no call relying on OSDL or on its
+	 * prerequisites is to be attempted afterwards).
+	 *
+	 */
+	OSDL_DLL void shutdown() ;
 
 
 
@@ -164,9 +180,12 @@ namespace OSDL
 		OSDL_DLL friend CommonModule & getExistingCommonModule() ;
 
 
-		/// This friend function allows to shutdown all OSDL services.
+		/// This friend function allows to stop all OSDL services.
 		OSDL_DLL friend void stop() ;
 
+
+		/// This friend function allows to shutdown for good all OSDL services.
+		OSDL_DLL friend void shutdown() ;
 
 
 

@@ -31,6 +31,9 @@
 #include "OSDLCDROMDriveHandler.h"   // for CD-ROM drive handler
 #include "OSDLGUI.h"                 // for GUI module
 
+// for RemoveEmbeddedFileSystemManager:
+#include "OSDLEmbeddedFileSystemManager.h"
+
 #include "OSDLAudio.h"               // for audio module
 
 #include "OSDLUtils.h"               // for getBackendLastError
@@ -1195,5 +1198,16 @@ void OSDL::stop()
 		CommonModule::_CurrentCommonModule = 0 ;
 
 	}
+
+	EmbeddedFileSystemManager::RemoveEmbeddedFileSystemManager() ;
+
+}
+
+
+
+void OSDL::shutdown()
+{
+
+  Ceylan::shutdown() ;
 
 }
