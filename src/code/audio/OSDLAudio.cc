@@ -159,7 +159,7 @@ const SampleFormat AudioModule::IMAADPCMSampleFormat     = 0x0012 ;
  * More than 2 channels means surround.
  *
  */
-const ChannelFormat AudioModule::Mono	= 1 ;
+const ChannelFormat AudioModule::Mono   = 1 ;
 const ChannelFormat AudioModule::Stereo = 2 ;
 
 
@@ -462,7 +462,19 @@ AudioModule::~AudioModule() throw()
 	}
 
 
+
 #if OSDL_USES_SDL
+
+	if ( _AudioInitialized )
+	{
+
+#if OSDL_USES_SDL_MIXER
+
+	  ::Mix_Quit() ;
+
+#endif // OSDL_USES_SDL_MIXER
+
+	}
 
 	SDL_QuitSubSystem( CommonModule::UseAudio ) ;
 
@@ -563,7 +575,7 @@ Ceylan::System::Millisecond AudioModule::getObtainedMode(
 
 	if ( ::Mix_QuerySpec( & frequency, & actualOutputSampleFormat,
 			& channelNumber ) == 0 )
-		throw AudioException( "	AudioModule::getObtainedMode failed: "
+		throw AudioException( "AudioModule::getObtainedMode failed: "
 			+  string( ::Mix_GetError() ) ) ;
 
 	actualOutputChannelCount = channelNumber ;
@@ -615,7 +627,12 @@ void AudioModule::unsetMode()
 
 	}
 
-	::Mix_Quit() ;
+	/*
+	 * '::Mix_Quit() ;' not called here, as Mix_Init has been unconditonally
+	 * called, thus its reciprocal must also always be called, whether or not
+	 * setMode has been called.
+	 *
+	 */
 
 #else // OSDL_USES_SDL_MIXER
 
