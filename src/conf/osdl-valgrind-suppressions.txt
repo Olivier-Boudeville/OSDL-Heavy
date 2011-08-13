@@ -13,26 +13,35 @@
 # obj:/usr/lib/*libstdc++.so.6.0.13 were transformed in
 # obj:/usr/lib/libstdc++.so.*
 # obj:/lib/ld-2.11.1.so were transformed in obj:/lib/ld-*.so
-# obj:/usr/lib/libxcb.so.1.1.0 were transformed in obj:/usr/lib/libxcb.so.*
+# obj:/usr/lib/libxcb.so.1.1.0 were transformed in obj:/usr/lib/*libxcb.so.*
 # obj:/usr/lib/nvidia-current/libGL.so.270.41.06 transformed in
 # obj:/usr/lib/nvidia-current/libGL.so.*
 # obj $PREFIX/Ceylan-0.7/lib/libCeylan-0.7.so.0.0.7 were transformed in
 # */Ceylan-*/lib/libCeylan-*.so.*
+# obj:/usr/lib/libpulsecommon-0.9.22.so were transformed in
+# obj:/usr/lib/libpulsecommon-*.so
+# obj:/usr/lib/libpulse.so.0.12.3 were transformed in obj:/usr/lib/libpulse.so.*
+
 
 
 # Sections:
 #
-# 1. SDL/X11 related
-# 2. OSDL related
+# 1. SDL/X11 related suppressions
+# 2. other SDL related suppressions
+# 3. PhysicsFS related suppressions
+# 4. CEGUI related suppressions
+# 5. Freetype related suppressions
+# . OSDL related suppressions
+# . others suppressions
 
-
+# (Ceylan suppressions listed in ceylan-valgrind-suppressions.txt)
 
 
 
 
 
 ################################################################################
-# Section 1: SDL/X11 related
+# Section 1: SDL/X11 related suppressions
 ################################################################################
 
 
@@ -478,8 +487,8 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   obj:/usr/lib/libxcb.so.*
-   obj:/usr/lib/libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
    fun:xcb_connect_to_fd
    fun:xcb_connect_to_display_with_auth_info
    fun:xcb_connect
@@ -496,8 +505,8 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   obj:/usr/lib/libxcb.so.*
-   obj:/usr/lib/libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
    fun:xcb_connect_to_fd
    fun:xcb_connect_to_display_with_auth_info
    fun:xcb_connect
@@ -1002,7 +1011,7 @@
    Memcheck:Leak
    fun:malloc
    fun:realloc
-   obj:/usr/lib/libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
    fun:xcb_get_extension_data
    fun:xcb_prefetch_maximum_request_length
    fun:xcb_get_maximum_request_length
@@ -1020,7 +1029,7 @@
    Memcheck:Leak
    fun:malloc
    fun:realloc
-   obj:/usr/lib/libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
    fun:xcb_get_extension_data
    fun:xcb_prefetch_maximum_request_length
    fun:xcb_get_maximum_request_length
@@ -1561,8 +1570,8 @@
    SDL/X11/XCB MLK
    Memcheck:Leak
    fun:malloc
-   obj:/usr/lib/libxcb.so.*
-   obj:/usr/lib/libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
    fun:xcb_wait_for_reply
    fun:xcb_query_extension_reply
    fun:xcb_get_extension_data
@@ -1579,8 +1588,8 @@
    SDL/X11/XCB MLK
    Memcheck:Leak
    fun:malloc
-   obj:/usr/lib/libxcb.so.*
-   obj:/usr/lib/libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
    fun:xcb_wait_for_reply
    fun:xcb_query_extension_reply
    fun:xcb_get_extension_data
@@ -5742,8 +5751,8 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   obj:/usr/lib/libxcb.so.*
-   obj:/usr/lib/libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
    fun:xcb_connect_to_display_with_auth_info
    fun:_XConnectXCB
    fun:XOpenDisplay
@@ -5757,8 +5766,8 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   obj:/usr/lib/libxcb.so.*
-   obj:/usr/lib/libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
    fun:xcb_connect_to_display_with_auth_info
    fun:_XConnectXCB
    fun:XOpenDisplay
@@ -5772,8 +5781,8 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   obj:/usr/lib/libxcb.so.*
-   obj:/usr/lib/libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
+   obj:/usr/lib/*libxcb.so.*
    fun:xcb_connect_to_display_with_auth_info
    fun:_XConnectXCB
    fun:XOpenDisplay
@@ -6213,32 +6222,590 @@
 }
 
 
+{
+   X11 MLK
+   Memcheck:Cond
+   fun:X11_SetKeyboardState
+   fun:X11_DispatchEvent
+   fun:X11_PumpEvents
+   fun:SDL_PumpEvents
+   fun:SDL_PollEvent
+}
+
+
+{
+   X11 MLK
+   Memcheck:Leak
+   fun:malloc
+   obj:/usr/lib/*linux-gnu/libX11.so.*
+   fun:_XimSetICValueData
+   fun:_XimLocalCreateIC
+   fun:XCreateIC
+   fun:create_aux_windows
+   fun:X11_CreateWindow
+   fun:X11_SetVideoMode
+   fun:SDL_SetVideoMode
+}
+
+
+{
+   X11/GL MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:XGetVisualInfo
+   obj:/usr/lib/nvidia-current/libGL.so.*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:X11_GL_GetVisual
+   fun:X11_CreateWindow
+}
+
+
+{
+   X11/GL MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:_dl_map_object_deps
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_*
+   fun:X11_GL_LoadLibrary
+   fun:X11_GL_GetVisual
+   fun:X11_CreateWindow
+}
 
 
 
+################################################################################
+# Section 2: other SDL related suppressions
+################################################################################
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_tls_new
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_run_once
+   fun:pa_thread_self
+   fun:pa_threaded_mainloop_wait
+   fun:pa_simple_new
+   fun:Audio_Available
+   fun:SDL_AudioInit
+   fun:SDL_InitSubSystem
+}
 
 
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   obj:/usr/lib/*-linux-gnu/libxcb.so.*
+   obj:/usr/lib/*-linux-gnu/libxcb.so.*
+   fun:xcb_connect_to_display_with_auth_info
+   obj:/usr/lib/libpulse.so.*
+   fun:pa_context_new_with_proplist
+   fun:pa_simple_new
+   fun:Audio_Available
+   fun:SDL_AudioInit
+   fun:SDL_InitSubSystem
+}
 
+
+{
+   SDL audio MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   obj:/usr/lib/libpulse.so.*
+   fun:pa_log_set_ident
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_log_levelv_meta
+   fun:pa_log_level_meta
+   fun:pa_mempool_new
+   fun:pa_context_new_with_proplist
+   fun:pa_simple_new
+   fun:Audio_Available
+   fun:SDL_AudioInit
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_queue_push
+   fun:pa_pstream_send_packet
+   fun:pa_pstream_send_tagstruct_with_creds
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+   fun:pa_mainloop_run
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+}
+
+
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:open_path
+   fun:_dl_map_object
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_*
+   fun:SDL_LoadObject
+   fun:LoadPulseLibrary
+}
+
+
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:calloc
+   fun:pa_xmalloc0
+   fun:pa_thread_self
+   fun:pa_threaded_mainloop_wait
+   fun:pa_simple_new
+   fun:Audio_Available
+   fun:SDL_AudioInit
+   fun:SDL_InitSubSystem
+}
+
+
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   obj:/usr/lib/libpulse.so.*
+   fun:pa_log_set_ident
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_log_levelv_meta
+   fun:pa_log_level_meta
+   fun:pa_mempool_new
+   fun:pa_context_new_with_proplist
+   fun:pa_simple_new
+   fun:Audio_Available
+   fun:SDL_AudioInit
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_queue_push
+   fun:pa_pstream_send_packet
+   fun:pa_pstream_send_tagstruct_with_creds
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+   fun:pa_mainloop_run
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+}
+
+
+{
+   SDL MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:_dl_new_object
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_*
+   fun:SDL_LoadObject
+}
+
+
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_hashmap_put
+   fun:pa_proplist_sets
+   fun:pa_context_new_with_proplist
+   fun:pa_simple_new
+   fun:Audio_Available
+   fun:SDL_AudioInit
+   fun:SDL_InitSubSystem
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_hashmap_put
+   fun:pa_proplist_sets
+   fun:pa_init_proplist
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_pdispatch_run
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+}
+
+
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_hashmap_put
+   fun:pa_proplist_sets
+   fun:pa_stream_new_with_proplist
+   fun:pa_simple_new
+   fun:Audio_Available
+   fun:SDL_AudioInit
+   fun:SDL_InitSubSystem
+}
+
+
+{
+   SDL MLK
+   Memcheck:Leak
+   fun:calloc
+   fun:_dl_new_object
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_*
+   fun:SDL_LoadObject
+}
+
+
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:calloc
+   fun:_dl_check_map_versions
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_*
+   fun:SDL_LoadObject
+   fun:LoadPulseLibrary
+   fun:Audio_Available
+}
+
+
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:_dl_map_object_deps
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_*
+   fun:SDL_LoadObject
+   fun:LoadPulseLibrary
+   fun:Audio_Available
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_hashmap_put
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_pdispatch_run
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+   fun:pa_mainloop_run
+   obj:/usr/lib/libpulse.so.*
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_pdispatch_register_reply
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+   fun:pa_mainloop_run
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:start_thread
+   fun:clone
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   obj:/usr/lib/libpulse.so.*
+   fun:pa_stream_update_timing_info
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_pdispatch_run
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_pstream_send_packet
+   fun:pa_pstream_send_tagstruct_with_creds
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+   fun:pa_mainloop_run
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:start_thread
+}
+
+
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:calloc
+   fun:pa_xmalloc0
+   fun:pa_flist_new
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_run_once
+   fun:pa_hashmap_put
+   fun:pa_proplist_sets
+   fun:pa_context_new_with_proplist
+   fun:pa_simple_new
+   fun:Audio_Available
+   fun:SDL_AudioInit
+   fun:SDL_InitSubSystem
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:calloc
+   fun:pa_xmalloc0
+   fun:pa_flist_new
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_run_once
+   fun:pa_pstream_send_packet
+   fun:pa_pstream_send_tagstruct_with_creds
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+   fun:pa_mainloop_run
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:calloc
+   fun:pa_xmalloc0
+   fun:pa_flist_new
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_run_once
+   fun:pa_queue_push
+   fun:pa_pstream_send_packet
+   fun:pa_pstream_send_tagstruct_with_creds
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+}
+
+
+{
+   libpulse MLK
+   Memcheck:Leak
+   fun:calloc
+   fun:pa_xmalloc0
+   fun:pa_flist_new
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_run_once
+   fun:pa_pdispatch_register_reply
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_mainloop_dispatch
+   fun:pa_mainloop_iterate
+   fun:pa_mainloop_run
+   obj:/usr/lib/libpulse.so.*
+}
+
+
+{
+   libpulse
+   Memcheck:Leak
+   fun:calloc
+   fun:pa_xmalloc0
+   fun:pa_flist_new
+   obj:/usr/lib/libpulse.so.*
+   fun:pa_run_once
+   obj:/usr/lib/libpulse.so.*
+   fun:pa_stream_update_timing_info
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulse.so.*
+   obj:/usr/lib/libpulsecommon-*.so
+   fun:pa_pdispatch_run
+   obj:/usr/lib/libpulse.so.*
+}
 
 
 
 
 ################################################################################
-# Section 2: OSDL related
+# Section 3: PhysicsFS related suppressions
 ################################################################################
 
 
-
+{
+   Due to a PhysicsFS bug in PHYSFS_freeList (1/2)
+   Memcheck:Leak
+   fun:malloc
+   fun:mallocAllocatorMalloc
+   fun:enumStringListCallback
+   fun:PHYSFS_getSearchPathCallback
+   fun:doEnumStringList
+   fun:PHYSFS_getSearchPath
+   fun:_ZNK4OSDL25EmbeddedFileSystemManager13getSearchPathEv
+}
 
 
 {
-   Ceylan default standard filesystem manager
+   Due to a PhysicsFS bug in PHYSFS_freeList (2/2)
    Memcheck:Leak
-   fun:_Znwj
-   fun:_ZN6Ceylan6System25StandardFileSystemManager28GetStandardFileSystemManagerEv
-   fun:_ZN6Ceylan6System17FileSystemManager44SetDefaultFileSystemManagerToPlatformDefaultEv
-   fun:_ZN6Ceylan6System17FileSystemManager30GetAnyDefaultFileSystemManagerEv
+   fun:realloc
+   fun:mallocAllocatorRealloc
+   fun:enumStringListCallback
+   fun:PHYSFS_getSearchPathCallback
+   fun:doEnumStringList
+   fun:PHYSFS_getSearchPath
+   fun:_ZNK4OSDL25EmbeddedFileSystemManager13getSearchPathEv
 }
+
+
+
+
+################################################################################
+# Section 4: CEGUI related suppressions
+################################################################################
+
+
+{
+   CEGUI::MouseCursor::constrainPosition bug
+   Memcheck:Cond
+   fun:_ZN5CEGUI11MouseCursor17constrainPositionEv
+   fun:_ZN5CEGUI11MouseCursor17setConstraintAreaEPKNS_4RectE
+   fun:_ZN5CEGUI11MouseCursorC1Ev
+   fun:_ZN5CEGUI6System16createSingletonsEv
+   fun:_ZN5CEGUI6SystemC1ERNS_8RendererEPNS_16ResourceProviderEPNS_9XMLParserEPNS_10ImageCodecEPNS_12ScriptModuleERKNS_6StringESD_
+   fun:_ZN5CEGUI6System6createERNS_8RendererEPNS_16ResourceProviderEPNS_9XMLParserEPNS_10ImageCodecEPNS_12ScriptModuleERKNS_6StringESD_
+   fun:_ZN5CEGUI14OpenGLRenderer15bootstrapSystemENS0_17TextureTargetTypeE
+}
+
+
+{
+   CEGUI logger possible MLK
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSt15basic_stringbufIcSt11char_traitsIcESaIcEE8overflowEi
+   fun:_ZNSt15basic_streambufIcSt11char_traitsIcEE6xsputnEPKcl
+   fun:_ZNKSt7num_putIcSt19ostreambuf_iteratorIcSt11char_traitsIcEEE13_M_insert_intIlEES3_S3_RSt8ios_basecT_
+   fun:_ZNKSt7num_putIcSt19ostreambuf_iteratorIcSt11char_traitsIcEEE6do_putES3_RSt8ios_basecl
+   fun:_ZNSo9_M_insertIlEERSoT_
+   fun:_ZN5CEGUI13DefaultLogger8logEventERKNS_6StringENS_12LoggingLevelE
+   fun:_ZN5CEGUI13DefaultLoggerC1Ev
+   fun:_ZN5CEGUI6SystemC1ERNS_8RendererEPNS_16ResourceProviderEPNS_9XMLParserEPNS_10ImageCodecEPNS_12ScriptModuleERKNS_6StringESD_
+}
+
+
+{
+   CEGUI XML MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:decompose_rpath
+   fun:_dl_map_object
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_*
+   fun:_ZN5CEGUI13DynamicModuleC1ERKNS_6StringE
+   fun:_ZN5CEGUI6System12setXMLParserERKNS_6StringE
+}
+
+
+
+################################################################################
+# Section 5: Freetype related suppressions
+################################################################################
+
+
+################################################################################
+# Section 5: OSDL related suppressions
+################################################################################
 
 
 {
@@ -6252,116 +6819,9 @@
 
 
 {
-   Ceylan MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   fun:_ZNSs4_Rep8_M_cloneERKSaIcEj
-   fun:_ZNSs7reserveEj
-   fun:_ZNSs6appendERKSs
-   fun:_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_
-   fun:_ZN6Ceylan3Log8Loggable14setChannelNameERKSs
-   fun:_ZN6Ceylan6Object4sendERKSsh
-   fun:_ZN6Ceylan6ModuleC2ERKSsS2_S2_S2_S2_RKNS_7VersionES2_
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   Ceylan MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   fun:_ZNSs4_Rep8_M_cloneERKSaIcEj
-   fun:_ZNSs7reserveEj
-   fun:_ZNSs6appendERKSs
-   fun:_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_ERKS6_S8_
-   fun:_ZN6Ceylan3Log8Loggable14setChannelNameERKSs
-   fun:_ZN6Ceylan6Object4sendERKSsh
-   fun:_ZN6Ceylan6ModuleC2ERKSsS2_S2_S2_S2_RKNS_7VersionES2_
-   fun:_ZN4OSDL5Video11VideoModuleC1Ev
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-}
-
-
-{
-   Ceylan MLK
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZN6Ceylan6System5MutexC1Ev
-   fun:_ZN6Ceylan6System12SynchronizedIjEC1Ej
-   fun:_Z41__static_initialization_and_destruction_0ii
-   fun:_GLOBAL__I_CeylanThread.cc
-   obj:*/Ceylan-*/lib/libCeylan-*.so.*
-   obj:*/Ceylan-*/lib/libCeylan-*.so.*
-   fun:call_init
-   fun:_dl_init
-   obj:/lib/ld-*.so
-}
-
-
-{
-   Ceylan MLK
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_Z41__static_initialization_and_destruction_0ii
-   fun:_GLOBAL__I_CeylanThread.cc
-   obj:*/Ceylan-*/lib/libCeylan-*.so.*
-   obj:*/Ceylan-*/lib/libCeylan-*.so.*
-   fun:call_init
-   fun:_dl_init
-   obj:/lib/ld-*.so
-}
-
-
-{
    OSDL MLK FIXME
    Memcheck:Leak
    fun:_Znwj
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL5Video11VideoModuleC1Ev
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL12CommonModuleC1Ej
    fun:_ZN4OSDL15getCommonModuleEj
    fun:main
 }
@@ -6379,6 +6839,20 @@
    fun:_ZN4OSDL15getCommonModuleEj
    fun:main
 }
+
+
+{
+   OSDL MLK FIXME
+   Memcheck:Leak
+   fun:_Znwj
+   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
+   obj:/usr/lib/libstdc++.so.*
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN4OSDL12CommonModuleC1Ej
+   fun:_ZN4OSDL15getCommonModuleEj
+   fun:main
+}
+
 
 
 {
@@ -6435,6 +6909,33 @@
 }
 
 
+{
+   OSDL MLK FIXME
+   Memcheck:Leak
+   fun:_Znwj
+   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
+   obj:/usr/lib/libstdc++.so.*
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN4OSDL12CommonModuleC1Ej
+   fun:_ZN4OSDL15getCommonModuleEj
+   fun:main
+}
+
+
+{
+   OSDL MLK FIXME
+   Memcheck:Leak
+   fun:_Znwj
+   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
+   obj:/usr/lib/libstdc++.so.*
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN4OSDL5Video11VideoModuleC1Ev
+   fun:_ZN4OSDL12CommonModuleC1Ej
+   fun:_ZN4OSDL15getCommonModuleEj
+   fun:main
+}
+
+
 
 {
    OSDL MLK FIXME
@@ -6500,4 +7001,94 @@
    fun:_ZN4OSDL12CommonModuleC1Ej
    fun:_ZN4OSDL15getCommonModuleEj
    fun:main
+}
+
+
+
+
+################################################################################
+# Section 6: other suppressions
+################################################################################
+
+
+{
+   Linker jump if the loading of shared libraries failed
+   Memcheck:Jump
+   obj:*
+   fun:_dl_signal_error
+   fun:_dl_map_object_deps
+   fun:dl_main
+   fun:_dl_sysdep_start
+   fun:_dl_start
+   obj:/lib/*linux-gnu/ld-*.so
+}
+
+
+{
+   GL MLK
+   Memcheck:Leak
+   fun:malloc
+   obj:/usr/lib/nvidia-current/libGL.so.*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:/lib/*linux-gnu/libpthread-*.so
+}
+
+
+{
+   GL MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:XGetVisualInfo
+   obj:/usr/lib/nvidia-current/libGL.so.*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*libCEGUITinyXMLParser-*.so
+   fun:X11_GL_GetVisual
+   fun:X11_CreateWindow
+}
+
+
+{
+   GL MLK
+   Memcheck:Leak
+   fun:malloc
+   obj:/usr/lib/nvidia-current/libGL.so.*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+}
+
+
+{
+   GL MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:XextCreateExtension
+   obj:/usr/lib/nvidia-current/libGL.so.*
+   obj:*
+   fun:do_sym
+   obj:*
+}
+
+
+{
+   GL MLK
+   Memcheck:Leak
+   fun:malloc
+   obj:/usr/lib/nvidia-current/libGL.so.*
+   obj:*
+   obj:*
 }
