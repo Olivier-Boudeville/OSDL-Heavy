@@ -362,8 +362,23 @@ AudioModule::AudioModule() :
 		+ " version." ) ;
 
 
-	// Initializing mixer, for Ogg playback:
-	::Mix_Init( MIX_INIT_OGG ) ;
+	/*
+	 * Initializing mixer, for Ogg playback:
+	 *
+	 * (avoids later hiccups, thanks to initial library loading)
+	 *
+	 */
+	Ceylan::Flags requestedFormatFlags = MIX_INIT_OGG ;
+
+	Ceylan::Flags actualFormatFlags = ::Mix_Init( requestedFormatFlags ) ;
+
+	if ( actualFormatFlags != requestedFormatFlags )
+		throw AudioException( "AudioModule constructor: "
+		  "unable to initialize the mixer subsystem (SDL_mixer): "
+		  "requested flags "
+		  + Ceylan::toString( requestedFormatFlags, /* bitField */ true )
+		  + " differ from obtained flags "
+		  + Ceylan::toString( actualFormatFlags, /* bitField */ true ) ) ;
 
 
 	// Registers callback-like method:
@@ -470,6 +485,7 @@ AudioModule::~AudioModule() throw()
 
 #if OSDL_USES_SDL_MIXER
 
+	  // No 'while(Mix_Init(0)) Mix_Quit();' loop needed here:
 	  ::Mix_Quit() ;
 
 #endif // OSDL_USES_SDL_MIXER
