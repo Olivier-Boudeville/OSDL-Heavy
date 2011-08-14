@@ -199,7 +199,7 @@ int main( int argc, char * argv[] )
 		  + Ceylan::toString( abscissa ) + " ; "
 		  + Ceylan::toString( ordinate )
 		  + " ] pixel [R;G;B;A] = [ "
-		  + Ceylan::toNumericalString( red )	+ " ; "
+		  + Ceylan::toNumericalString( red )   + " ; "
 		  + Ceylan::toNumericalString( green ) + " ; "
 		  + Ceylan::toNumericalString( blue )  + " ; "
 		  + Ceylan::toNumericalString( alpha ) + " ]" ) ;
@@ -358,6 +358,8 @@ int main( int argc, char * argv[] )
 	return Ceylan::ExitFailure ;
 
   }
+
+  OSDL::shutdown() ;
 
   return Ceylan::ExitSuccess ;
 

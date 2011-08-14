@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -37,85 +37,86 @@ using namespace Ceylan::Log ;
  * Small usage tests for Point2D.
  *
  */
-int main( int argc, char * argv[] ) 
+int main( int argc, char * argv[] )
 {
 
 
 	LogHolder myLog( argc, argv ) ;
 
 
-    try 
+	try
 	{
-			
-    	LogPlug::info( "Testing OSDL Point2D." ) ;	
 
-        Point2D p1( static_cast<OSDL::Video::Coordinate>( 14 ), 34 ) ;
-        
-		LogPlug::info( "Point located at ( 14 ; 34 ) displays as " 
+		LogPlug::info( "Testing OSDL Point2D." ) ;
+
+		Point2D p1( static_cast<OSDL::Video::Coordinate>( 14 ), 34 ) ;
+
+		LogPlug::info( "Point located at ( 14 ; 34 ) displays as "
 			+ p1.toString() ) ;
- 
- 		LogPlug::info( "Getting first coordinate : "  
+
+		LogPlug::info( "Getting first coordinate: "
 			+ Ceylan::toString( p1.getX() ) ) ;
-			
- 		LogPlug::info( "Getting second coordinate : " 
+
+		LogPlug::info( "Getting second coordinate: "
 			+ Ceylan::toString( p1.getY() ) ) ;
-		
- 		LogPlug::info( "Setting first coordinate : 11 " ) ;
+
+		LogPlug::info( "Setting first coordinate: 11 " ) ;
 		p1.setX( 11 ) ;
-		
- 		LogPlug::info( "Setting second coordinate : 108 " ) ;
+
+		LogPlug::info( "Setting second coordinate: 108 " ) ;
 		p1.setY( 108 ) ;
-		
- 		LogPlug::info( "Getting first coordinate : "  
+
+		LogPlug::info( "Getting first coordinate: "
 			+ Ceylan::toString( p1.getX() ) ) ;
- 		LogPlug::info( "Getting second coordinate : " 
+		LogPlug::info( "Getting second coordinate: "
 			+ Ceylan::toString( p1.getY() ) ) ;
-		
-		LogPlug::info( "Point now displays as " 
+
+		LogPlug::info( "Point now displays as "
 			+ p1.toString() ) ;
-		
+
 		// OSDL not launched hence not stopped.
-				
+
 		LogPlug::info( "End of OSDL Point2D test." ) ;
-		
-    }
-	
-    catch ( const OSDL::Exception & e )
-    {
-	
-        LogPlug::error( "OSDL exception caught : "
-        	 + e.toString( Ceylan::high ) ) ;
-       	return Ceylan::ExitFailure ;
 
-    }
+	}
 
-    catch ( const Ceylan::Exception & e )
-    {
-	
-        LogPlug::error( "Ceylan exception caught : "
-        	 + e.toString( Ceylan::high ) ) ;
-       	return Ceylan::ExitFailure ;
+	catch ( const OSDL::Exception & e )
+	{
 
-    }
+		LogPlug::error( "OSDL exception caught: "
+			 + e.toString( Ceylan::high ) ) ;
+		return Ceylan::ExitFailure ;
 
-    catch ( const std::exception & e )
-    {
-	
-        LogPlug::error( "Standard exception caught : " 
+	}
+
+	catch ( const Ceylan::Exception & e )
+	{
+
+		LogPlug::error( "Ceylan exception caught: "
+			 + e.toString( Ceylan::high ) ) ;
+		return Ceylan::ExitFailure ;
+
+	}
+
+	catch ( const std::exception & e )
+	{
+
+		LogPlug::error( "Standard exception caught: "
 			 + std::string( e.what() ) ) ;
-       	return Ceylan::ExitFailure ;
+		return Ceylan::ExitFailure ;
 
-    }
+	}
 
-    catch ( ... )
-    {
-	
-        LogPlug::error( "Unknown exception caught" ) ;
-       	return Ceylan::ExitFailure ;
+	catch ( ... )
+	{
 
-    }
+		LogPlug::error( "Unknown exception caught" ) ;
+		return Ceylan::ExitFailure ;
 
-    return Ceylan::ExitSuccess ;
+	}
+
+	OSDL::shutdown() ;
+
+	return Ceylan::ExitSuccess ;
 
 }
-

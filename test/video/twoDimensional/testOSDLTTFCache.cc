@@ -507,6 +507,8 @@ int main( int argc, char * argv[] )
 
   }
 
+  OSDL::shutdown() ;
+
   return Ceylan::ExitSuccess ;
 
 }

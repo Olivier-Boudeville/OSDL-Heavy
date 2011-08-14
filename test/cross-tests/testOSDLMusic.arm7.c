@@ -1,10 +1,8 @@
-
-
 /**
  * ARM7 side of the OSDL music test.
  *
  * @see testOSDLMusic.arm9.cc for the ARM9 peer implementation.
- * 
+ *
  */
 #include "OSDLARM7Base.h"
 
@@ -13,7 +11,7 @@ extern volatile bool startMP3PlaybackRequested ;
 
 
 /* Example of application-specific command handler */
-void handleReceivedApplicationCommand( FIFOCommandID commandID, 
+void handleReceivedApplicationCommand( FIFOCommandID commandID,
 	FIFOElement element )
 {
 
@@ -29,26 +27,26 @@ void handleReceivedApplicationCommand( FIFOCommandID commandID,
 	 *
 	 * gcc says: 'case label does not reduce to an integer constant'
 	 *
-			
+
 	switch ( commandID )
 	{
-	
-			
+
+
 		default:
 			setError( UnexpectedApplicationCommand ) ;
 			break ;
-				
+
 	}
 
-	*/	 
+	*/
 
 	setError( UnexpectedApplicationCommand ) ;
-	
+
 }
 
 
 
-int main(int argc, char ** argv) 
+int main(int argc, char ** argv)
 {
 
 	initOSDL() ;
@@ -59,14 +57,13 @@ int main(int argc, char ** argv)
 	 */
 	while( true )
 	{
-	
-		atomicSleep() ;
-		
-		/* Sets if a handlePlayMusicRequest call is performed: */
-		if ( startMP3PlaybackRequested ) 
-			manageMP3Playback() ;
-		
-	}
-	
-}
 
+		atomicSleep() ;
+
+		/* Sets if a handlePlayMusicRequest call is performed: */
+		if ( startMP3PlaybackRequested )
+			manageMP3Playback() ;
+
+	}
+
+}

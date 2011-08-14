@@ -116,7 +116,7 @@ int main( int argc, char * argv[] )
 
 
 
-	   	LogPlug::info( "Prerequisite: initializing the display" ) ;
+		LogPlug::info( "Prerequisite: initializing the display" ) ;
 
 		CommonModule & myOSDL = OSDL::getCommonModule(
 			CommonModule::UseVideo | CommonModule::UseKeyboard ) ;
@@ -135,7 +135,8 @@ int main( int argc, char * argv[] )
 		screen.lock() ;
 		screen.redraw() ;
 
-		/* Should SDL_gfx be unavailable, we do not want exceptions to be
+		/* 
+		 * Should SDL_gfx be unavailable, we do not want exceptions to be
 		 * triggered:
 		 */
 		if ( VideoModule::IsUsingDrawingPrimitives() )
@@ -168,7 +169,7 @@ int main( int argc, char * argv[] )
 
 		if ( screenshotWanted )
 		  offscreen.savePNG( argv[0] + std::string( "-offscreen.png" ) ) ;
-		
+
 		offscreen.blitTo( screen,
 			TwoDimensional::Point2D(
 				static_cast<Coordinate>( 400 ), 250 ) ) ;
@@ -222,6 +223,8 @@ int main( int argc, char * argv[] )
 		return Ceylan::ExitFailure ;
 
 	}
+
+	OSDL::shutdown() ;
 
 	return Ceylan::ExitSuccess ;
 

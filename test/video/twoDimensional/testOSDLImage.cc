@@ -44,23 +44,23 @@ const std::string secondImageFile = "Battle-three-actors-small.jpg"  ;
 
 
 /*
- * Image font directory is defined relatively to OSDL documentation
- * tree, from executable build directory:
+ * Image font directory is defined relatively to OSDL documentation tree, from
+ * executable build directory:
  *
  */
 const std::string imageDirFromExec = "../../../src/doc/web/images" ;
 
 
 /*
- * Image font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in build tree:
+ * Image font directory is defined relatively to OSDL documentation tree, from
+ * playTests.sh location in build tree:
  *
  */
 const std::string imageDirForBuildPlayTests = "../src/doc/web/images" ;
 
 /*
- * Image font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in installed tree:
+ * Image font directory is defined relatively to OSDL documentation tree, from
+ * playTests.sh location in installed tree:
  *
  */
 const std::string imageDirForInstalledPlayTests = "../OSDL/doc/web/images" ;
@@ -309,8 +309,8 @@ int main( int argc, char * argv[] )
 		myEmbedddedManager.umount( archiveFullPath ) ;
 
 		/*
-		 * Will deallocate and replace embedded FS manager, so that the logs
-		 * can be written as usual:
+		 * Will deallocate and replace embedded FS manager, so that the logs can
+		 * be written as usual:
 		 *
 		 */
 		FileSystemManager::SetDefaultFileSystemManager( standardFSManager ) ;
@@ -357,6 +357,8 @@ int main( int argc, char * argv[] )
 		return Ceylan::ExitFailure ;
 
 	}
+
+	OSDL::shutdown() ;
 
 	return Ceylan::ExitSuccess ;
 

@@ -41,8 +41,8 @@ using namespace Ceylan::System ;
 
 /**
  * This font directory is defined relatively to the place where the script
- * automating the test suite will be run (trunk/test/playTests.sh, which
- * changes its current directory to trunk/test in all cases):
+ * automating the test suite will be run (trunk/test/playTests.sh, which changes
+ * its current directory to trunk/test in all cases):
  *
  */
 const std::string fixedFontDirForPlayTests = "../src/doc/web/common/fonts" ;
@@ -64,7 +64,7 @@ const std::string fixedFontDirFromTestInstallLocation =
 	"../OSDL/doc/web/common/fonts" ;
 
 
-const std::string firstTestSentence  = "Ceylan and OSDL rock !" ;
+const std::string firstTestSentence  = "Ceylan and OSDL rock!" ;
 const std::string secondTestSentence = "Yeah man, they both rock" ;
 
 
@@ -186,7 +186,7 @@ int main( int argc, char * argv[] )
 			fixedFontDirFromTestBuildLocation ) ;
 
 		FixedFont::FixedFontFileLocator.addPath(
-			fixedFontDirFromTestInstallLocation	) ;
+			fixedFontDirFromTestInstallLocation ) ;
 
 		/* SDL_gfx might be disabled, in that case no fixed font (nor grid) will
 		 * be available:
@@ -478,6 +478,8 @@ int main( int argc, char * argv[] )
 		return Ceylan::ExitFailure ;
 
 	}
+
+	OSDL::shutdown() ;
 
 	return Ceylan::ExitSuccess ;
 

@@ -54,8 +54,8 @@ using std::string ;
 
 
 /*
- * This module is made to test just plain SDL_gfx : nothing here should depend
- * on OSDL!
+ * This module is made to test just plain SDL_gfx: nothing here should depend on
+ * OSDL, except basic helpers.
  *
  */
 
@@ -70,7 +70,7 @@ void displayString( const string & message, SDL_Surface * targetSurface,
 	if ( stringRGBA( targetSurface, x, y,
 		const_cast<char *>( message.c_str() ), r, g, b, a ) != 0 )
 	{
-		LogPlug::error( "Error in displayString : stringRGBA." ) ;
+		LogPlug::error( "Error in displayString: stringRGBA." ) ;
 	}
 #endif // OSDL_BYPASS_SDL_GFX_TESTING
 }
@@ -131,7 +131,7 @@ int main( int argc, char * argv[] )
 			if ( ! tokenEaten )
 			{
 				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument : " + token ) ;
+					"Unexpected command line argument: " + token ) ;
 			}
 
 		}
@@ -140,9 +140,11 @@ int main( int argc, char * argv[] )
 
 		if ( SDL_Init( SDL_INIT_VIDEO ) != SDL_SUCCESS )
 		{
-			LogPlug::fatal( "Unable to initialize SDL : "
+
+			LogPlug::fatal( "Unable to initialize SDL: "
 				+ Utils::getBackendLastError() ) ;
- 			return Ceylan::ExitFailure ;
+
+			return Ceylan::ExitFailure ;
 		}
 
 		LogPlug::info( "SDL successfully initialized" ) ;
@@ -150,7 +152,7 @@ int main( int argc, char * argv[] )
 		int xrange = 640 ;
 		int yrange = 480 ;
 
-		// A null value signifies the current screen bpp shoud be used :
+		// A null value signifies the current screen bpp shoud be used:
 		int askedBpp = 0 ;
 
 		LogPlug::info( "Setting "
@@ -164,12 +166,15 @@ int main( int argc, char * argv[] )
 
 		if ( screen == 0 )
 		{
+
 			LogPlug::fatal( "Couldn't set "
 				+ Ceylan::toString( xrange ) + "x"
 				+ Ceylan::toString( yrange ) + " with "
-				+ Ceylan::toString( askedBpp ) + " bits per pixel video mode : "
+				+ Ceylan::toString( askedBpp ) + " bits per pixel video mode: "
 				+ Utils::getBackendLastError() ) ;
- 			return Ceylan::ExitFailure ;
+
+			return Ceylan::ExitFailure ;
+
 		}
 
 		int bpp = screen->format->BitsPerPixel ;
@@ -179,15 +184,17 @@ int main( int argc, char * argv[] )
 
 		if ( askedBpp != bpp )
 		{
+
 			 LogPlug::info( "Color depth is " + Ceylan::toString( bpp )
-			 	+ " bits per pixel instead of the asked "
+				+ " bits per pixel instead of the asked "
 				+ Ceylan::toString( askedBpp ) + " bits per pixel." ) ;
+
 		}
 
 		LogPlug::info( "Drawing various graphical primitives." ) ;
 
-		displayString( "OSDL rocks !", screen, 50, 50, 0, 255, 0, 127 ) ;
-		displayString( "Ceylan rocks !", screen, 5, 5, 255, 255, 0, 255 ) ;
+		displayString( "OSDL rocks!", screen, 50, 50, 0, 255, 0, 127 ) ;
+		displayString( "Ceylan rocks!", screen, 5, 5, 255, 255, 0, 255 ) ;
 
 #ifndef OSDL_BYPASS_SDL_GFX_TESTING
 
@@ -211,8 +218,8 @@ int main( int argc, char * argv[] )
 			do
 			{
 
-				// Avoid busy waits :
-	  			SDL_WaitEvent( & event ) ;
+				// Avoid busy waits:
+				SDL_WaitEvent( & event ) ;
 
 			} while ( event.type != SDL_KEYDOWN ) ;
 		}
@@ -233,7 +240,7 @@ int main( int argc, char * argv[] )
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught : "
+		LogPlug::error( "Ceylan exception caught: "
 			 + e.toString( Ceylan::high ) ) ;
 		return Ceylan::ExitFailure ;
 
@@ -242,7 +249,7 @@ int main( int argc, char * argv[] )
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught : "
+		LogPlug::error( "Standard exception caught: "
 			 + std::string( e.what() ) ) ;
 		return Ceylan::ExitFailure ;
 
@@ -255,6 +262,9 @@ int main( int argc, char * argv[] )
 		return Ceylan::ExitFailure ;
 
 	}
+
+	// To deallocate helpers like Ceylan's filesystem manager for logs:
+	OSDL::shutdown() ;
 
 	return Ceylan::ExitSuccess ;
 

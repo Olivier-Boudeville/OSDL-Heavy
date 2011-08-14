@@ -79,8 +79,8 @@ int main( int argc, char * argv[] )
 
   LogHolder myLog( argc, argv ) ;
 
-  /* SDL_gfx might be disabled, in that case no fixed font (nor grid) will
-   * be available:
+  /* SDL_gfx might be disabled, in that case no fixed font (nor grid) will be
+   * available:
    */
   if ( ! VideoModule::IsUsingDrawingPrimitives() )
   {
@@ -537,6 +537,8 @@ int main( int argc, char * argv[] )
 	return Ceylan::ExitFailure ;
 
   }
+
+  OSDL::shutdown() ;
 
   return Ceylan::ExitSuccess ;
 

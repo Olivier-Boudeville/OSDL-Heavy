@@ -139,8 +139,8 @@ int main( int argc, char * argv[] )
 	{
 
 	  /*
-	   * Widgets will be owned (and deallocated) by their container, here
-	   * the screen surface.
+	   * Widgets will be owned (and deallocated) by their container, here the
+	   * screen surface.
 	   *
 	   * Widget width is only 100, so 'Heimdal' will be truncated to 'Heimd':
 	   *
@@ -227,6 +227,8 @@ int main( int argc, char * argv[] )
 	return Ceylan::ExitFailure ;
 
   }
+
+  OSDL::shutdown() ;
 
   return Ceylan::ExitSuccess ;
 

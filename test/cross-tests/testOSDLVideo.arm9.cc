@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -57,75 +57,76 @@ int main( int argc, char * argv[] )
 	// To avoid using a screen for the logs:
 	LogHolder myLog( argc, argv, /* immediateWrite */ false ) ;
 
-	
-    try
-    {
-				
-		
+
+	try
+	{
+
+
 		// For the test:
 		bool interactive = true ;
 		//bool interactive = false ;
-		
-		bool testFailed = false ;		
-		
-		LogPlug::info( "Test of OSDL support for video." ) ;		
-	
-		
-		CommonModule & myOSDL = OSDL::getCommonModule( 
-			CommonModule::UseVideo ) ;	
+
+		bool testFailed = false ;
+
+		LogPlug::info( "Test of OSDL support for video." ) ;
+
+
+		CommonModule & myOSDL = OSDL::getCommonModule(
+			CommonModule::UseVideo ) ;
 
 		LogPlug::info( "OSDL state: " + myOSDL.toString() ) ;
 
-		//LogPlug::info( "Loading 
-		
+		//LogPlug::info( "Loading
 
-										
-		
+
+
+
 		if ( testFailed )
 			throw OSDL::TestException( "Test failed because of error(s) "
 				"previously displayed." ) ;
-								
+
 		if ( interactive )
 		{
-		
+
 			LogPlug::info( "Press any key to end the test" ) ;
 			waitForKey() ;
-		
+
 		}
-			
+
 		// LogHolder out of scope: log browser triggered.
-		
-    }
-   
-    catch ( const Ceylan::Exception & e )
-    {
-	
-        LogPlug::error( "Ceylan exception caught: " 
+
+	}
+
+	catch ( const Ceylan::Exception & e )
+	{
+
+		LogPlug::error( "Ceylan exception caught: "
 			+ e.toString( Ceylan::high ) ) ;
-			
+
 		return Ceylan::ExitFailure ;
 
-    }
+	}
 
-    catch ( const std::exception & e )
-    {
-	
-        LogPlug::error( string( "Standard exception caught: " ) + e.what() ) ;
+	catch ( const std::exception & e )
+	{
+
+		LogPlug::error( string( "Standard exception caught: " ) + e.what() ) ;
 		return Ceylan::ExitFailure ;
 
-    }
+	}
 
-    catch ( ... )
-    {
-	
-        LogPlug::error( "Unknown exception caught" ) ;
+	catch ( ... )
+	{
+
+		LogPlug::error( "Unknown exception caught" ) ;
 		return Ceylan::ExitFailure ;
 
-    }
+	}
 
 	LogPlug::info( "Exit on success (no error)" ) ;
-	
-    return Ceylan::ExitSuccess ;
+
+	OSDL::shutdown() ;
+
+	return Ceylan::ExitSuccess ;
 
 }
-

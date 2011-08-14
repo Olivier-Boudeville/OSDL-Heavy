@@ -260,10 +260,10 @@ int main( int argc, char * argv[] )
 	LogPlug::info( "Testing TrueType font text output." ) ;
 
 	const string firstTestSentence =
-	  "This is a test for OSDL's TrueType Font rendering. It is ok ?"	;
+	  "This is a test for OSDL's TrueType Font rendering. It is ok?" ;
 
 	const string secondTestSentence = "I hope so, coz it was quite "
-	  "a nightmare to have it all workin'"	;
+	  "a nightmare to have it all workin'" ;
 
 	Text::Font::RenderQuality quality =
 	  /* Text::Font::Solid */ Text::Font::Blended ;
@@ -299,7 +299,7 @@ int main( int argc, char * argv[] )
 	  firstTestSentence, quality, Pixels::Orchid ) ;
 
 	myFirstTrueTypeFont.blitLatin1Text( screen, 10, 140,
-	  secondTestSentence,	quality, Pixels::Orchid ) ;
+	  secondTestSentence, quality, Pixels::Orchid ) ;
 
 
 
@@ -360,7 +360,7 @@ int main( int argc, char * argv[] )
 	  firstTestSentence, quality, Pixels::LawnGreen ) ;
 
 	myFourthTrueTypeFont.blitLatin1Text( screen, 10, 440,
-	  secondTestSentence,	quality, Pixels::LawnGreen ) ;
+	  secondTestSentence, quality, Pixels::LawnGreen ) ;
 
 
 	screen.unlock() ;
@@ -415,6 +415,8 @@ int main( int argc, char * argv[] )
 	return Ceylan::ExitFailure ;
 
   }
+
+  OSDL::shutdown() ;
 
   return Ceylan::ExitSuccess ;
 

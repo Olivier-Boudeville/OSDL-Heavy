@@ -135,7 +135,7 @@ int main( int argc, char * argv[] )
 
 		Surface & screen = myVideo.getScreenSurface() ;
 
-		LogPlug::info( "Informations about this screen surface: "
+		LogPlug::info( "Information about this screen surface: "
 			+ screen.toString() ) ;
 
 
@@ -154,7 +154,7 @@ int main( int argc, char * argv[] )
 		// When run from executable install directory:
 		imageFinder.addPath( "../OSDL/doc/web/images" ) ;
 
- 		screen.loadImage( imageFinder.find( firstImageFile ),
+		screen.loadImage( imageFinder.find( firstImageFile ),
 			/* blit only */ true ) ;
 
 		screen.unlock() ;
@@ -272,8 +272,8 @@ int main( int argc, char * argv[] )
 			{
 
 			  /*
-			   * Do not order radiuses, hence one disc out of two should not
-			   * be drawn.
+			   * Do not order radiuses, hence one disc out of two should not be
+			   * drawn.
 			   *
 			   */
 			  screen.drawDiscWithEdge( x, y,
@@ -343,6 +343,8 @@ int main( int argc, char * argv[] )
 		return Ceylan::ExitFailure ;
 
 	}
+
+	OSDL::shutdown() ;
 
 	return Ceylan::ExitSuccess ;
 

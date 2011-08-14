@@ -4,7 +4,7 @@
  * This file is part of the OSDL library.
  *
  * The OSDL library is free software: you can redistribute it and/or modify
- * it under the terms of either the GNU Lesser General Public License or
+ * it under the terms of either th2e GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
  * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
@@ -90,8 +90,8 @@ const std::string thirdTrueTypeFontName  = "earwigfa.ttf" ;
 
 
 /*
- * Fixed font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in build tree:
+ * Fixed font directory is defined relatively to OSDL documentation tree, from
+ * playTests.sh location in build tree:
  *
  */
 const std::string fixedFontDirFromExec = "../../../src/doc/web/common/fonts" ;
@@ -106,8 +106,8 @@ const std::string fixedFontDirForBuildPlayTests =
 
 
 /*
- * Fixed font directory is defined relatively to OSDL documentation tree,
- * from playTests.sh location in installed tree:
+ * Fixed font directory is defined relatively to OSDL documentation tree, from
+ * playTests.sh location in installed tree:
  *
  */
 const std::string fixedFontDirForInstalledPlayTests
@@ -353,11 +353,10 @@ int main( int argc, char * argv[] )
 	// Made to overlap:
 
 	/*
-	 * Automatic registering to container (screen), which would remove
-	 * it automatically, but, for example purpose here, the pointer is
-	 * kept so that the deallocation is triggered explicitly in user code.
-	 * As this instance count should show, both types of deletion should
-	 * work.
+	 * Automatic registering to container (screen), which would remove it
+	 * automatically, but, for example purpose here, the pointer is kept so that
+	 * the deallocation is triggered explicitly in user code. As this instance
+	 * count should show, both types of deletion should work.
 	 *
 	 */
 	new TextWidget( screen,
@@ -388,7 +387,7 @@ int main( int argc, char * argv[] )
 	  /* background color */ Pixels::Blue,
 	  /* title */ "",
 	  /* minMaximizable */ false, /* draggable */ false,
-	  /* wrappable */ false, 	/* closable */ false ) ;
+	  /* wrappable */ false, /* closable */ false ) ;
 
 	LogPlug::info( "After adding text widget, screen surface is: "
 	  + screen.toString() ) ;
@@ -405,8 +404,8 @@ int main( int argc, char * argv[] )
 	  myOSDL.getEventsModule().waitForAnyKey() ;
 
 	/*
-	 * If you do not want this widget to show up in second screen just
-	 * delete it:
+	 * If you do not want this widget to show up in second screen just delete
+	 * it:
 	 *
 	 */
 	delete theWidgetIChoseToDeleteMyself ;
@@ -566,6 +565,8 @@ int main( int argc, char * argv[] )
   }
 
   CHECKPOINT( "Just before exiting: " + Ceylan::Countable::ToString() ) ;
+
+  OSDL::shutdown() ;
 
   return Ceylan::ExitSuccess ;
 

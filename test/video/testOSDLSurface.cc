@@ -155,7 +155,7 @@ int main( int argc, char * argv[] )
 						+ Point2D( x, y ).toString() + ": "
 						+ screen.describePixelAt( x, y ) ) ;
 
-		 		ColorDefinition current = screen.getColorDefinitionAt( x, y ) ;
+				ColorDefinition current = screen.getColorDefinitionAt( x, y ) ;
 
 				// Screen is RGB, not RGBA:
 				if ( ! Pixels::areEqual( last, current,
@@ -207,7 +207,7 @@ int main( int argc, char * argv[] )
 						+ Point2D( x, y ).toString() + ": "
 						+ testSurface.describePixelAt( x, y ) ) ;
 
-		 		ColorDefinition current = testSurface.getColorDefinitionAt(
+				ColorDefinition current = testSurface.getColorDefinitionAt(
 					x, y ) ;
 
 				// Test surface is RGBA:
@@ -291,8 +291,8 @@ int main( int argc, char * argv[] )
 		RandomValue newValue ;
 
 		/*
-		 * Constructs a table recording how many samples are drawn for
-		 * each possible value.
+		 * Constructs a table recording how many samples are drawn for each
+		 * possible value.
 		 *
 		 */
 
@@ -314,7 +314,7 @@ int main( int argc, char * argv[] )
 			/*
 			 if ( currentDrawCount % 10 == 0 )
 
-			 	LogPlug::info( "Drawing value "
+				LogPlug::info( "Drawing value "
 					+ Ceylan::toString( newValue ) + "." ) ;
 			*/
 
@@ -393,7 +393,7 @@ int main( int argc, char * argv[] )
 			/*
 			 if ( currentDrawCount % 10 == 0 )
 
-			 	LogPlug::info( "Drawing value "
+				LogPlug::info( "Drawing value "
 					+ Ceylan::toString( newValue ) + "." ) ;
 			*/
 
@@ -424,7 +424,7 @@ int main( int argc, char * argv[] )
 			/*
 			 if ( currentDrawCount % 10 == 0 )
 
-			 	LogPlug::info( "Drawing value "
+				LogPlug::info( "Drawing value "
 					+ Ceylan::toString( newValue ) + "." ) ;
 			*/
 
@@ -506,6 +506,8 @@ int main( int argc, char * argv[] )
 		return Ceylan::ExitFailure ;
 
 	}
+
+	OSDL::shutdown() ;
 
 	return Ceylan::ExitSuccess ;
 

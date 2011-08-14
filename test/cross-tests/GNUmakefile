@@ -1,9 +1,9 @@
-# This is a simple Makefile (not a Makefile.cross, not using overall 
-# Makerules.inc rules so that tests are completely uncoupled from the 
-# OSDL library).
+# This is a simple Makefile (not a Makefile.cross, not using overall
+# Makerules.inc rules so that tests are completely uncoupled from the OSDL
+# library).
 
-# This way, these tests can be directly used as guidelines to build 
-# one's application using the OSDL library.
+# This way, these tests can be directly used as guidelines to build one's
+# application using the OSDL library.
 
 TOP = ../..
 
@@ -39,7 +39,7 @@ TEST_SUFFIX = $(TEST_PREFIX)-patched.$(TEST_EXEC_EXTENSION)
 
 TEST_TARGETS = testOSDLVideoFramebuffer-$(TEST_SUFFIX)
 
-	
+
 
 # Some are patched, the others not:
 #TESTS_TO_TRANSFER = $(wildcard *.$(CURRENT_LINKER).nds)
@@ -63,14 +63,14 @@ all: $(TEST_TARGETS)
 test: emulate transfer
 
 
-emulate: emulate-with-NoCashGBA 
+emulate: emulate-with-NoCashGBA
 
 
 emulate-with-NoCashGBA: $(TEST_FULL_NAME).ds.gba
 	@echo "    Running $< thanks to NoCashGBA emulator"
 	@$(WINE) $(NO_CASH_GBA) $<
-	
-	
+
+
 emulate-with-DeSmuME: $(TEST_FULL_NAME).nds
 	@echo "    Running $< thanks to DeSmuME emulator"
 	@$(WINE) $(DESMUME) $<
@@ -79,22 +79,22 @@ emulate-with-DeSmuME: $(TEST_FULL_NAME).nds
 patch: $(TEST_FULL_NAME).sc.nds
 	@echo "    Patching $< with script $(DLDITOOL_SCRIPT)"
 	@$(DLDITOOL) $(DLDITOOL_SCRIPT) $<
-	
-	
+
+
 transfer: $(FILES_TO_TRANSFER)
 	@echo "    Transferring $^ to $(TRANSFER_DIRECTORY)"
 	@/bin/ls $(TRANSFER_DIRECTORY) 1>/dev/null 2>&1
 	@cp -f $^ $(TRANSFER_DIRECTORY)
 
 
-umount: 	
+umount:
 	@echo "    Unmounting $(TRANSFER_MOUNT_POINT)"
 	@pumount $(TRANSFER_MOUNT_POINT)
 
 
 export: transfer umount
 
-	
+
 
 info-target:
 	@echo "TEST_ARM9_SOURCES = $(TEST_ARM9_SOURCES)"
@@ -134,7 +134,7 @@ TEST_CPP_FLAGS_ARM9 = $(TEST_CPP_FLAGS_COMMON) -DCEYLAN_RUNS_ON_ARM9 \
 
 
 
-# Compiler section: 
+# Compiler section:
 
 
 # -Wconversion had to be removed because of incomprehensible warnings like:
@@ -178,19 +178,19 @@ TEST_CC_FLAGS_MODE_FOR_SIZE = -Os -fomit-frame-pointer -ffast-math
 endif
 
 
-TEST_CXX_FLAGS_ARM7 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi 
+TEST_CXX_FLAGS_ARM7 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi
 
 
-TEST_CC_FLAGS_ARM7 = $(TEST_CC_FLAGS_COMMON) $(TEST_CC_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi 
+TEST_CC_FLAGS_ARM7 = $(TEST_CC_FLAGS_COMMON) $(TEST_CC_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi
 
-TEST_CC_FLAGS_ARM7_RELAXED = $(TEST_CC_FLAGS_COMMON_RELAXED) $(TEST_CC_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi 
+TEST_CC_FLAGS_ARM7_RELAXED = $(TEST_CC_FLAGS_COMMON_RELAXED) $(TEST_CC_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi
 
 TEST_CC_FLAGS_ARM7_32_BIT = $(TEST_CC_FLAGS_COMMON_32_BIT) $(TEST_CC_FLAGS_MODE) -mcpu=arm7tdmi -mtune=arm7tdmi
 
 
-TEST_CXX_FLAGS_ARM9 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -march=armv5te -mtune=arm946e-s 
+TEST_CXX_FLAGS_ARM9 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -march=armv5te -mtune=arm946e-s
 
-TEST_CC_FLAGS_ARM9 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -march=armv5te -mtune=arm946e-s 
+TEST_CC_FLAGS_ARM9 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -march=armv5te -mtune=arm946e-s
 
 
 # Linker section: exports TEST_LD_FLAGS_ARM7 / TEST_LD_FLAGS_ARM9,
@@ -201,12 +201,12 @@ TEST_CC_FLAGS_ARM9 = $(TEST_CXX_FLAGS_COMMON) $(TEST_CXX_FLAGS_MODE) -march=armv
 TEST_LD_FLAGS_COMMON:= $(TEST_ARCH_FLAGS_COMMON)
 
 TEST_LD_FLAGS_ARM7:= -specs=ds_arm7.specs
-TEST_LD_FLAGS_ARM9:= -specs=ds_arm9.specs 
+TEST_LD_FLAGS_ARM9:= -specs=ds_arm9.specs
 
 
 ifeq ($(OSDL_TESTED_BUILD_MODE),debug)
 
-TEST_LD_FLAGS_COMMON:= $(TEST_LD_FLAGS_COMMON) -g 
+TEST_LD_FLAGS_COMMON:= $(TEST_LD_FLAGS_COMMON) -g
 
 else
 
@@ -225,8 +225,8 @@ TEST_LD_FLAGS_ARM9:= $(TEST_LD_FLAGS_COMMON) $(TEST_LD_FLAGS_ARM9)
 # Let the possibility for the user to define his own LIBPATHS:
 TEST_LIBPATHS_COMMON = $(LIBPATHS) -L$(ceylan_DIR)/lib -L$(libfat_DIR)/lib -L$(libnds_DIR)/lib
 
-TEST_LIBPATHS_ARM7 = -L$(OSDL_INSTALL_LIB) $(TEST_LIBPATHS_COMMON) 
-TEST_LIBPATHS_ARM9 = -L$(OSDL_INSTALL_LIB) $(TEST_LIBPATHS_COMMON) 
+TEST_LIBPATHS_ARM7 = -L$(OSDL_INSTALL_LIB) $(TEST_LIBPATHS_COMMON)
+TEST_LIBPATHS_ARM9 = -L$(OSDL_INSTALL_LIB) $(TEST_LIBPATHS_COMMON)
 
 
 
@@ -254,20 +254,20 @@ CEYLAN_ARM9_INSTALLED_LIB := $(CEYLAN_INSTALL_LIB)/$(CEYLAN_ARM9_LIB_NAME)
 # Let the possibility for the user to define his own LIBS.
 # Not libfat for the ARM7 yet (library too big), but Helix-OSDL:
 TEST_BASE_LIBS_ARM7:= $(LIBS) -l$(CEYLAN_BASE_LIB_NAME)-arm7 -lHelix-OSDL-arm7 -lnds7
-	
+
 TEST_BASE_LIBS_ARM9:= $(LIBS) -l$(CEYLAN_BASE_LIB_NAME)-arm9 -lfat -lnds9
 
 
 TEST_LIBS_ARM7 = \
-       -lOSDL-$(OSDL_TESTED_VERSION)-$(OSDL_TESTED_BUILD_MODE)-arm7 \
-       $(TEST_BASE_LIBS_ARM7)
-	
+	   -lOSDL-$(OSDL_TESTED_VERSION)-$(OSDL_TESTED_BUILD_MODE)-arm7 \
+	   $(TEST_BASE_LIBS_ARM7)
+
 TEST_LIBS_ARM9 = \
-       -lOSDL-$(OSDL_TESTED_VERSION)-$(OSDL_TESTED_BUILD_MODE)-arm9 \
-       $(TEST_BASE_LIBS_ARM9)
+	   -lOSDL-$(OSDL_TESTED_VERSION)-$(OSDL_TESTED_BUILD_MODE)-arm9 \
+	   $(TEST_BASE_LIBS_ARM9)
 
 
-	
+
 info: info-target info-flags info-debug info-run
 
 
@@ -291,14 +291,14 @@ info-flags:
 info-debug:
 	@echo "nm command-line: $(NM) --demangle "
 	@echo "strip command-line: $(STRIP)"
-		
+
 
 info-run:
 	@echo "NO_CASH_GBA = $(NO_CASH_GBA)"
 	@echo "DESMUME = $(DESMUME)"
-	
 
-	
+
+
 
 
 # Rules section.
@@ -321,7 +321,7 @@ getMP3Settings-$(TEST_PREFIX).arm7.o: getMP3Settings.arm7.c
 	@echo "    Compiling $< into $@"
 	@$(CC) $(TEST_CC_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
 
-# Notably for OSDLDefaultMain.arm7.c:	
+# Notably for OSDLDefaultMain.arm7.c:
 %.arm7.o: %.arm7.c
 	@echo "    Compiling $< into $@"
 	@$(CC) $(TEST_CC_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
@@ -330,14 +330,14 @@ getMP3Settings-$(TEST_PREFIX).arm7.o: getMP3Settings.arm7.c
 %-$(TEST_PREFIX).arm7.o: %.arm7.cc
 	@echo "    Compiling $< into $@"
 	@$(CXX) $(TEST_CXX_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
-	
+
 %.arm7.o: %.arm7.cc
 	@echo "    Compiling $< into $@"
 	@$(CXX) $(TEST_CXX_FLAGS_ARM7) $(TEST_CPP_FLAGS_ARM7) -c $< -o $@
-	
-	
-	
-	
+
+
+
+
 %-$(TEST_PREFIX).arm9.o: %.arm9.cc
 	@echo "    Compiling $< into $@"
 	@$(CXX) $(TEST_CXX_FLAGS_ARM9) $(TEST_CPP_FLAGS_ARM9) -c $< -o $@
@@ -432,4 +432,3 @@ getMP3Settings-$(TEST_PREFIX).arm7.o: getMP3Settings.arm7.c
 clean:
 	@echo "    Cleaning tests"
 	@rm -f *.o *.elf *.map *.bin *.nds *.ds.gba
-
