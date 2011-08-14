@@ -54,6 +54,10 @@ using std::pair ;
 #endif // OSDL_ARCH_NINTENDO_DS
 
 
+#if OSDL_USES_SDL_IMAGE
+#include "SDL_image.h"               // for IMG_Init and IMG_Quit
+#endif // OSDL_USES_SDL_IMAGE
+
 
 #if OSDL_USES_AGAR
 
@@ -265,6 +269,28 @@ VideoModule::VideoModule() :
 			"unable to initialize video subsystem: "
 			+ Utils::getBackendLastError() ) ;
 
+#if OSDL_USES_SDL_IMAGE
+
+	/*
+	 * Initializing image loader, for JPEG and PNG support:
+	 *
+	 * (avoids later hiccups, thanks to initial library loading)
+	 *
+	 */
+	Ceylan::Flags requestedFormatFlags = IMG_INIT_JPG | IMG_INIT_PNG ;
+
+	Ceylan::Flags actualFormatFlags = ::IMG_Init( requestedFormatFlags ) ;
+
+	if ( actualFormatFlags != requestedFormatFlags )
+		throw VideoException( "VideoModule constructor: "
+		  "unable to initialize the image subsystem (SDL_image): "
+		  "requested flags "
+		  + Ceylan::toString( requestedFormatFlags, /* bitField */ true )
+		  + " differ from obtained flags "
+		  + Ceylan::toString( actualFormatFlags, /* bitField */ true ) ) ;
+
+#endif // OSDL_USES_SDL_IMAGE
+
 	send( "Video subsystem initialized." ) ;
 
 	dropIdentifier() ;
@@ -290,6 +316,15 @@ VideoModule::~VideoModule() throw()
 	send( "Stopping video subsystem." ) ;
 
 	// _gui not owned.
+
+
+#if OSDL_USES_SDL_IMAGE
+
+	send( "Stopping SDL_image subsystem." ) ;
+	::IMG_Quit() ;
+
+#endif // OSDL_USES_SDL_IMAGE
+
 
 	if ( _openGLcontext != 0 )
 		delete _openGLcontext ;
