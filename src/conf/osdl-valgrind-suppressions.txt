@@ -27,12 +27,14 @@
 # Sections:
 #
 # 1. SDL/X11 related suppressions
-# 2. other SDL related suppressions
-# 3. PhysicsFS related suppressions
-# 4. CEGUI related suppressions
-# 5. Freetype related suppressions
-# . OSDL related suppressions
-# . others suppressions
+# 2. SDL_image related suppressions
+# 3: audio-related suppressions (SDL, libpulse, etc.)
+# 4. other SDL related suppressions
+# 5. PhysicsFS related suppressions
+# 6. CEGUI related suppressions
+# 7. Freetype related suppressions
+# 8. OSDL related suppressions
+# 9. others suppressions
 
 # (Ceylan suppressions listed in ceylan-valgrind-suppressions.txt)
 
@@ -103,6 +105,24 @@
    fun:create_aux_windows
    fun:X11_VideoInit
    fun:SDL_VideoInit
+}
+
+
+{
+   SDL/X11/cursor MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   obj:/usr/lib/*-linux-gnu/libX11.so.*
+   fun:XrmGetStringDatabase
+   obj:/usr/lib/*-linux-gnu/libX11.so.*
+   fun:XGetDefault
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorSupportsARGB
+   fun:XcursorNoticeCreateBitmap
+   fun:XCreatePixmap
+   fun:X11_CreateWMCursor
 }
 
 
@@ -6223,13 +6243,24 @@
 
 
 {
-   X11 MLK
+   SDL + X11 cond
    Memcheck:Cond
    fun:X11_SetKeyboardState
    fun:X11_DispatchEvent
    fun:X11_PumpEvents
    fun:SDL_PumpEvents
    fun:SDL_PollEvent
+}
+
+
+{
+   SDL + X11 cond
+   Memcheck:Cond
+   fun:X11_SetKeyboardState
+   fun:X11_DispatchEvent
+   fun:X11_PumpEvents
+   fun:SDL_PumpEvents
+   fun:SDL_WaitEvent
 }
 
 
@@ -6284,9 +6315,61 @@
 }
 
 
+################################################################################
+# Section 2: SDL_image related suppressions
+################################################################################
+
+
+{
+   libpng bug
+   Memcheck:Cond
+   fun:inflateReset2
+   fun:inflateInit2_
+   fun:png_create_read_struct_2
+   fun:png_create_read_struct
+   fun:IMG_LoadPNG_RW
+   fun:IMG_LoadTyped_RW
+}
+
+
+{
+   SDL_image MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:_dl_map_object_deps
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_*
+   fun:SDL_LoadObject
+   fun:IMG_InitJPG
+   fun:IMG_Init
+}
+
+
+{
+   SDL_image MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:_dl_map_object_deps
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_*
+   fun:SDL_LoadObject
+   fun:IMG_InitPNG
+   fun:IMG_Init
+}
+
 
 ################################################################################
-# Section 2: other SDL related suppressions
+# Section 3: audio-related suppressions (SDl, libpulse, etc.)
 ################################################################################
 
 {
@@ -6691,7 +6774,7 @@
 
 
 {
-   libpulse
+   libpulse MLK
    Memcheck:Leak
    fun:calloc
    fun:pa_xmalloc0
@@ -6708,6 +6791,87 @@
 }
 
 
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_queue_push
+   fun:pa_pstream_send_memblock
+   fun:pa_stream_write
+   fun:PULSE_PlayAudio
+   fun:SDL_RunAudio
+   fun:SDL_RunThread
+   fun:RunThread
+   fun:start_thread
+   fun:clone
+}
+
+
+{
+   SDL_mixer MLK
+   Memcheck:Leak
+   fun:calloc
+   fun:SDL_CreateMutex
+   fun:SDL_ThreadsInit
+   fun:SDL_CreateThread
+   fun:SDL_OpenAudio
+   fun:Mix_OpenAudio
+}
+
+
+{
+   SDL_mixer MLK (probably)
+   Memcheck:Leak
+   fun:malloc
+   fun:_dl_map_object_deps
+   fun:dl_open_worker
+   fun:_dl_catch_error
+   fun:_dl_open
+   fun:do_dlopen
+   fun:_dl_catch_error
+   fun:__libc_dlopen_mode
+   fun:pthread_cancel_init
+   fun:_Unwind_ForcedUnwind
+   fun:__pthread_unwind
+   fun:pthread_exit
+}
+
+
+{
+   SDL_mixer + libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   obj:/usr/lib/*-linux-gnu/libxcb.so.*
+   obj:/usr/lib*-linux-gnu/libxcb.so.*
+   fun:xcb_connect_to_display_with_auth_info
+   obj:/usr/lib/libpulse.so.*
+   fun:pa_context_new_with_proplist
+   fun:PULSE_OpenAudio
+   fun:SDL_OpenAudio
+   fun:Mix_OpenAudio
+}
+
+
+{
+   SDL + libpulse MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:pa_xmalloc
+   fun:pa_pstream_send_memblock
+   fun:pa_stream_write
+   fun:PULSE_PlayAudio
+   fun:SDL_RunAudio
+   fun:SDL_RunThread
+   fun:RunThread
+   fun:start_thread
+   fun:clone
+}
+
+
+################################################################################
+# Section 4: other SDL related suppressions
+################################################################################
 
 
 ################################################################################
@@ -6804,204 +6968,11 @@
 
 
 ################################################################################
-# Section 5: OSDL related suppressions
+# Section 6: OSDL related suppressions
 ################################################################################
 
 
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
 
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL5Video11VideoModuleC1Ev
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL5Video11VideoModuleC1Ev
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL5Video11VideoModuleC1Ev
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL5Video11VideoModuleC1Ev
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL5Video11VideoModuleC1Ev
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
-
-
-{
-   OSDL MLK FIXME
-   Memcheck:Leak
-   fun:_Znwj
-   fun:_ZNSs4_Rep9_S_createEjjRKSaIcE
-   obj:/usr/lib/libstdc++.so.*
-   fun:_ZNSsC1EPKcRKSaIcE
-   fun:_ZN4OSDL5Video11VideoModuleC1Ev
-   fun:_ZN4OSDL12CommonModuleC1Ej
-   fun:_ZN4OSDL15getCommonModuleEj
-   fun:main
-}
 
 
 
@@ -7090,5 +7061,15 @@
    fun:malloc
    obj:/usr/lib/nvidia-current/libGL.so.*
    obj:*
+   obj:*
+}
+
+
+{
+   GL MLK
+   Memcheck:Leak
+   fun:malloc
+   fun:XextCreateExtension
+   obj:/usr/lib/nvidia-current/libGL.so.*
    obj:*
 }
