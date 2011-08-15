@@ -62,6 +62,30 @@ const std::string musicDirForInstalledPlayTests
 
 
 
+/*
+ * Implementation notes:
+ *
+ * For this test, we used to use automatic variables for musics, like in:
+ * 'Music myFirstMusic( Audible::FindAudiblePath( targetMusic ) ) ;'.
+ *
+ * This was a mistake, as this led these variables to be deallocated after OSDL
+ * (hence SDL_mixer) was stopped, resulting in a crash:
+ *
+ * #0  0x00007fffee4e2760 in ?? ()
+ * #1  0x00007ffff4efd01e in OGG_delete () from libSDL_mixer-1.2.so.0
+ * #2  0x00007ffff4efa3bb in Mix_FreeMusic () from libSDL_mixer-1.2.so.0
+ * #3  0x00007ffff7ac48d0 in OSDL::Audio::Music::unload (this=0x7fffffffc210)
+ *  at OSDLMusic.cc:499
+ * #4  0x00007ffff7ac431f in OSDL::Audio::Music::~Music (this=0x7fffffffc210,
+ *__in_chrg=<value optimized out>) at OSDLMusic.cc:253
+ * #5  0x0000000000404fa4 in main (argc=1, argv=0x7fffffffc9a8) at
+ * testOSDLMusic.cc pointing to the creation of the music automatic variable.
+ *
+ * Now musics are dynamically created instead.
+ *
+ */
+
+
 
 /**
  * Testing the music management of the OSDL audio module.
@@ -77,9 +101,7 @@ int main( int argc, char * argv[] )
 	try
 	{
 
-
 		LogPlug::info( "Testing OSDL music services." ) ;
-
 
 		bool isBatch = false ;
 
@@ -143,8 +165,6 @@ int main( int argc, char * argv[] )
 
 		CommonModule & myOSDL = getCommonModule( CommonModule::UseAudio ) ;
 
-		myOSDL.logState() ;
-
 		LogPlug::info( "Testing real audio (audible)." ) ;
 
 		LogPlug::info( "Getting audio module." ) ;
@@ -173,7 +193,7 @@ int main( int argc, char * argv[] )
 			/* sample format */ AudioModule::NativeSint16SampleFormat,
 			outputChannel, chunkSize ) ;
 
-		myAudio.logState() ;
+		//myAudio.logState() ;
 
 		ChannelNumber count ;
 
@@ -191,7 +211,6 @@ int main( int argc, char * argv[] )
 
 		// Section for music playback from standard file.
 
-
 		AudioModule::AudioFileLocator.addPath( musicDirFromExec ) ;
 		AudioModule::AudioFileLocator.addPath( musicDirForBuildPlayTests ) ;
 		AudioModule::AudioFileLocator.addPath( musicDirForInstalledPlayTests ) ;
@@ -202,17 +221,22 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Loading first music file '" + targetMusic
 			+ "' thanks to audio locator." ) ;
 
-		// Preload implied:
-		Music myFirstMusic( Audible::FindAudiblePath( targetMusic ) ) ;
+		/*
+		 * Preload implied; not an automatic variable to be able to deallocate
+		 * it when wanted (before stopping OSDL):
+		 *
+		 */
+		Music * myFirstMusic = new Music(
+		  Audible::FindAudiblePath( targetMusic ) ) ;
 
-		LogPlug::info( "Loaded music: " + myFirstMusic.toString() ) ;
+		LogPlug::info( "Loaded music: " + myFirstMusic->toString() ) ;
 
 		if ( ! isBatch )
 		{
 
 			LogPlug::info( "Playing music now." ) ;
 
-			myFirstMusic.play() ;
+			myFirstMusic->play() ;
 
 			LogPlug::info( "Waiting for this music to finish." ) ;
 
@@ -229,13 +253,17 @@ int main( int argc, char * argv[] )
 
 		}
 
+		delete myFirstMusic ;
+
+
 		LogPlug::info( "Loading second music file '" + targetMusic
 			+ "' thanks to audio locator." ) ;
 
-		// Preload implied:
-		Music mySecondMusic( Audible::FindAudiblePath( targetMusic ) ) ;
+		// Preload implied, targeting actually the same file:
+		Music * mySecondMusic = new Music(
+		  Audible::FindAudiblePath( targetMusic ) ) ;
 
-		LogPlug::info( "Loaded music: " + mySecondMusic.toString() ) ;
+		LogPlug::info( "Loaded music: " + mySecondMusic->toString() ) ;
 
 
 		if ( ! isBatch )
@@ -247,7 +275,6 @@ int main( int argc, char * argv[] )
 			LogPlug::info( "Playing music now, with fade in "
 				"and from a position around the middle, and repeat once." ) ;
 
-
 			// Position in seconds:
 			MusicPosition startPosition ;
 
@@ -256,7 +283,7 @@ int main( int argc, char * argv[] )
 			else
 				startPosition = 1 ;
 
-			mySecondMusic.playWithFadeInFromPosition(
+			mySecondMusic->playWithFadeInFromPosition(
 				/* fadeInMaxDuration */ 5000, startPosition,
 				/* playCount */ 2 ) ;
 
@@ -275,9 +302,9 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Playing that music with a 2-second fade-in, "
 			"and from the start." ) ;
 
-		mySecondMusic.rewind() ;
+		mySecondMusic->rewind() ;
 
-		mySecondMusic.playWithFadeIn( /* fadeInMaxDuration */ 2000 ) ;
+		mySecondMusic->playWithFadeIn( /* fadeInMaxDuration */ 2000 ) ;
 
 		LogPlug::info( "Waiting for this music to finish." ) ;
 
@@ -286,10 +313,11 @@ int main( int argc, char * argv[] )
 
 		LogPlug::info( "Music finished." ) ;
 
+		delete mySecondMusic ;
 
 
 
-		// Section for music playback from archive-embedded file.
+		// Section for music playback from an archive-embedded file.
 
 
 		LogPlug::info(
@@ -319,7 +347,11 @@ int main( int argc, char * argv[] )
 				"script beforehand to have it ready for this test. "
 				"Stopping now." ) ;
 
-			return 0 ;
+			OSDL::stop() ;
+
+			OSDL::shutdown() ;
+
+			return Ceylan::ExitSuccess ;
 
 		}
 
@@ -345,11 +377,10 @@ int main( int argc, char * argv[] )
 		FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
 			/* deallocatePreviousIfAny */ false ) ;
 
-		string targetEmbeddedMusic = "welcome-to-OSDL.ogg" ;
+		string targetEmbeddedMusic = "welcome-to-OSDL.music" ;
 
 		// Preload implied; platform-independent paths:
-		Music myEmbeddedMusic(
-			"test-OSDLEmbeddedFileSystem-archive/" + targetEmbeddedMusic ) ;
+		Music * myEmbeddedMusic = new Music( targetEmbeddedMusic ) ;
 
 
 		if ( ! isBatch )
@@ -357,7 +388,7 @@ int main( int argc, char * argv[] )
 
 			LogPlug::info( "Playing embedded music now." ) ;
 
-			myEmbeddedMusic.play() ;
+			myEmbeddedMusic->play() ;
 
 			LogPlug::info( "Waiting for this embedded music to finish." ) ;
 
@@ -375,7 +406,9 @@ int main( int argc, char * argv[] )
 		}
 
 		// Otherwise archive could not be unmounted:
-		myEmbeddedMusic.unload() ;
+		myEmbeddedMusic->unload() ;
+
+		delete myEmbeddedMusic ;
 
 		myEmbedddedManager.umount( archiveFullPath ) ;
 
