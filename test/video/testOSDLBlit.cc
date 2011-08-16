@@ -135,7 +135,7 @@ int main( int argc, char * argv[] )
 		screen.lock() ;
 		screen.redraw() ;
 
-		/* 
+		/*
 		 * Should SDL_gfx be unavailable, we do not want exceptions to be
 		 * triggered:
 		 */
@@ -173,6 +173,8 @@ int main( int argc, char * argv[] )
 		offscreen.blitTo( screen,
 			TwoDimensional::Point2D(
 				static_cast<Coordinate>( 400 ), 250 ) ) ;
+
+		delete &offscreen ;
 
 		screen.unlock() ;
 
