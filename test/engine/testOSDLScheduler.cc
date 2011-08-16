@@ -686,9 +686,10 @@ public:
 		"still " + Ceylan::toString( _periodCount )
 		+ " periods to wait." ) ;
 
+	  _periodCount-- ;
+
 	}
 
-	_periodCount-- ;
 
   }
 
@@ -729,9 +730,7 @@ private:
 int main( int argc, char * argv[] )
 {
 
-
   LogHolder myLog( argc, argv ) ;
-
 
   try
   {
@@ -822,6 +821,10 @@ int main( int argc, char * argv[] )
 	  LogPlug::info( "No subsecond sleep available, "
 		"scheduler cannot run, test finished." ) ;
 
+	  OSDL::stop() ;
+
+	  OSDL::shutdown() ;
+
 	  return Ceylan::ExitSuccess ;
 
 	}
@@ -855,7 +858,7 @@ int main( int argc, char * argv[] )
 
 	// Uncomment to test with classical logs:
 	//Scheduler::GetScheduler().setScreenshotMode( /* on */ true,
-	//	/* frameFilenamePrefix */ "testOSDLScheduler" ) ;
+	//  /* frameFilenamePrefix */ "testOSDLScheduler" ) ;
 
 	LogPlug::info( "Creating an active object whose role is "
 	  "to stop the scheduler at simulation tick "
@@ -954,6 +957,8 @@ int main( int argc, char * argv[] )
 	bool testPacer = true ;
 	//bool testPacer = false ;
 
+	SchedulerPacer * pacerLeftBehind = 0 ;
+
 	if ( testPacer )
 	{
 
@@ -966,8 +971,8 @@ int main( int argc, char * argv[] )
 	  LogPlug::warning( "The warning about an object of period 7 not being "
 		"unregistered (see below) is perfectly normal for this test." ) ;
 
-	  new SchedulerPacer( /* period */ 7, /* activation count */ 3000,
-		/* verbose */ true ) ;
+	  pacerLeftBehind = new SchedulerPacer( /* period */ 7,
+		/* activation count */ 3000, /* verbose */ true ) ;
 
 	}
 
@@ -1096,6 +1101,9 @@ int main( int argc, char * argv[] )
 	  actualStopper = 0 ;
 
 	}
+
+	delete pacerLeftBehind ;
+	pacerLeftBehind = 0 ;
 
 	LogPlug::info( "Stopping OSDL." ) ;
 
