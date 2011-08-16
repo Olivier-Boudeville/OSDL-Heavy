@@ -319,7 +319,11 @@ int main( int argc, char * argv[] )
 				"script beforehand to have it ready for this test. "
 				"Stopping now." ) ;
 
-			return 0 ;
+			OSDL::stop() ;
+
+			OSDL::shutdown() ;
+
+			return Ceylan::ExitSuccess ;
 
 		}
 
@@ -345,11 +349,10 @@ int main( int argc, char * argv[] )
 		FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
 			/* deallocatePreviousIfAny */ false ) ;
 
-		string targetEmbeddedSound = "OSDL.wav" ;
+		string targetEmbeddedSound = "OSDL.sound" ;
 
 		// Preload implied; platform-independent paths:
-		Sound myEmbeddedSound(
-			"test-OSDLEmbeddedFileSystem-archive/" + targetEmbeddedSound ) ;
+		Sound myEmbeddedSound( targetEmbeddedSound ) ;
 
 
 		if ( ! isBatch )
