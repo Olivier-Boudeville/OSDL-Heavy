@@ -1168,7 +1168,7 @@ void VideoModule::setWindowIcon( const std::string & filename )
 
 	try
 	{
-		iconSurface = & TwoDimensional::Image::LoadIcon( filename, & mask ) ;
+		iconSurface = & TwoDimensional::Image::LoadIcon( filename, &mask ) ;
 	}
 	catch( const TwoDimensional::ImageException & e )
 	{
@@ -1183,11 +1183,12 @@ void VideoModule::setWindowIcon( const std::string & filename )
 
 	/*
 	 * Do not know whether they can/should be freed:
-	 *
-	 * delete mask ;
-	 * delete iconSurface ;
+	 * (Valgrind apparently prefers that version)
 	 *
 	 */
+	delete [] mask ;
+
+	delete iconSurface ;
 
 #endif // OSDL_USES_SDL
 
