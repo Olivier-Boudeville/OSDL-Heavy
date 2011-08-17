@@ -158,7 +158,6 @@ void MusicPlaybackSetting::setFadeOutStatus( bool on )
 void MusicPlaybackSetting::startPlayback()
 {
 
-
 	if ( _fadeIn )
 	{
 
@@ -416,6 +415,8 @@ const string MusicManager::toString( Ceylan::VerbosityLevels level ) const
 void MusicManager::startNextMusicPlayback()
 {
 
+	//Ceylan::checkpoint( "MusicManager::startNextMusicPlayback." ) ;
+
 #if OSDL_DEBUG_MUSIC_PLAYBACK
 
 	if ( _playList.empty() )
@@ -440,6 +441,8 @@ void MusicManager::startNextMusicPlayback()
 
 void MusicManager::stopCurrentMusicPlayback()
 {
+
+	//Ceylan::checkpoint( "MusicManager::stopCurrentMusicPlayback." ) ;
 
 	if ( _currentMusicPlayback != 0 )
 	{
@@ -489,7 +492,7 @@ void MusicManager::stopCurrentMusicPlayback()
 void MusicManager::onMusicPlaybackFinished()
 {
 
-	Ceylan::checkpoint( "MusicManager::onMusicPlaybackFinished." ) ;
+	//Ceylan::checkpoint( "MusicManager::onMusicPlaybackFinished." ) ;
 
 	if ( _currentMusicPlayback == 0 )
 	{
