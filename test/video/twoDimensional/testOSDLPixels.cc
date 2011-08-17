@@ -54,6 +54,10 @@ int main( int argc, char * argv[] )
 	LogPlug::warning( "SDL_gfx is disabled, thus no fixed font will be "
 	  "available, stopping test now." ) ;
 
+	OSDL::stop() ;
+
+	OSDL::shutdown() ;
+
 	return Ceylan::ExitSuccess ;
 
   }
@@ -144,7 +148,7 @@ int main( int argc, char * argv[] )
 	Surface & screen = myVideo.getScreenSurface() ;
 
 
-	if ( randomTest	)
+	if ( randomTest )
 	{
 
 	  LogPlug::info( "Prerequisite: having three random generators" ) ;
@@ -194,7 +198,7 @@ int main( int argc, char * argv[] )
 
 		}
 
-		// Avoid having too many logs (300 000 would be too much !)
+		// Avoid having too many logs (300 000 would be too much!)
 		LogPlug::info( "Putting at [ "
 		  + Ceylan::toString( abscissa ) + " ; "
 		  + Ceylan::toString( ordinate )
@@ -260,9 +264,11 @@ int main( int argc, char * argv[] )
 
 		LogPlug::info( "Small test for basic two-way conversion "
 		  "between RGBA and color definition succeeded." ) ;
+
 	  }
 	  else
 	  {
+
 		throw Ceylan::TestException( "This color definition "
 		  + Pixels::toString( secondColorDef )
 		  + " should be strictly equal to this RGBA coordinates: [ "
@@ -270,6 +276,7 @@ int main( int argc, char * argv[] )
 		  + Ceylan::toNumericalString( green ) + " ; "
 		  + Ceylan::toNumericalString( blue  ) + " ; "
 		  + Ceylan::toNumericalString( alpha ) + " ]." ) ;
+
 	  }
 
 

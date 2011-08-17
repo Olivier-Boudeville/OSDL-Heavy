@@ -197,6 +197,10 @@ int main( int argc, char * argv[] )
 		  LogPlug::warning( "SDL_gfx is disabled, thus no fixed font will be "
 			"available, stopping test now." ) ;
 
+		  OSDL::stop() ;
+
+		  OSDL::shutdown() ;
+
 		  return Ceylan::ExitSuccess ;
 
 		}

@@ -88,6 +88,10 @@ int main( int argc, char * argv[] )
 	LogPlug::warning( "SDL_gfx is disabled, thus no fixed font will be "
 	  "available, stopping test now." ) ;
 
+	OSDL::stop() ;
+
+	OSDL::shutdown() ;
+
 	return Ceylan::ExitSuccess ;
 
   }
@@ -210,6 +214,7 @@ int main( int argc, char * argv[] )
 		  "Asking for a non-existing font failed as expected: "
 		  + e.toString() ) ;
 		correct = true ;
+
 	  }
 
 	  if ( ! correct )
@@ -217,8 +222,8 @@ int main( int argc, char * argv[] )
 		  "did not fail as expected." ) ;
 
 	  /*
-	   * Wanting to use at first '6x12.fnt', and to find it from
-	   * various locations.
+	   * Wanting to use at first '6x12.fnt', and to find it from various
+	   * locations.
 	   *
 	   */
 

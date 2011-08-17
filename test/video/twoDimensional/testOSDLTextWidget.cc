@@ -60,7 +60,7 @@ using std::string ;
  *
  */
 const std::string trueTypeFontDirFromExec =
-																			   "../../../src/doc/web/common/fonts" ;
+									"../../../src/doc/web/common/fonts" ;
 
 
 /*
@@ -68,8 +68,8 @@ const std::string trueTypeFontDirFromExec =
  * from playTests.sh location in build tree:
  *
  */
-const std::string trueTypeFontDirForBuildPlayTests
-= "../src/doc/web/common/fonts" ;
+const std::string trueTypeFontDirForBuildPlayTests =
+									"../src/doc/web/common/fonts" ;
 
 
 /*
@@ -77,8 +77,8 @@ const std::string trueTypeFontDirForBuildPlayTests
  * from playTests.sh location in installed tree:
  *
  */
-const std::string trueTypeFontDirForInstalledPlayTests
-= "../OSDL/doc/web/common/fonts" ;
+const std::string trueTypeFontDirForInstalledPlayTests =
+									"../OSDL/doc/web/common/fonts" ;
 
 
 
@@ -102,7 +102,7 @@ const std::string fixedFontDirFromExec = "../../../src/doc/web/common/fonts" ;
  *
  */
 const std::string fixedFontDirForBuildPlayTests =
-																			   "../src/doc/web/common/fonts" ;
+									"../src/doc/web/common/fonts" ;
 
 
 /*
@@ -110,8 +110,8 @@ const std::string fixedFontDirForBuildPlayTests =
  * playTests.sh location in installed tree:
  *
  */
-const std::string fixedFontDirForInstalledPlayTests
-= "../OSDL/doc/web/common/fonts" ;
+const std::string fixedFontDirForInstalledPlayTests =
+									"../OSDL/doc/web/common/fonts" ;
 
 
 
@@ -132,6 +132,10 @@ int main( int argc, char * argv[] )
 
 	LogPlug::warning( "SDL_gfx is disabled, thus no fixed font will be "
 	  "available, stopping test now." ) ;
+
+	OSDL::stop() ;
+
+	OSDL::shutdown() ;
 
 	return Ceylan::ExitSuccess ;
 
