@@ -485,7 +485,13 @@ AudioModule::~AudioModule() throw()
 
 #if OSDL_USES_SDL_MIXER
 
-	  // No 'while(Mix_Init(0)) Mix_Quit();' loop needed here:
+	  /*
+	   * No 'while(Mix_Init(0)) Mix_Quit();' loop needed here:
+	   *
+	   * (note: any later music deallocation, for example OGG-based) may then 
+	   * result in a crash)
+	   *
+	   */
 	  ::Mix_Quit() ;
 
 #endif // OSDL_USES_SDL_MIXER
