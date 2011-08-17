@@ -192,7 +192,11 @@ int main( int argc, char * argv[] )
 		{
 
 			LogPlug::info( "No joystick to test, stopping test." ) ;
+
 			OSDL::stop() ;
+
+			OSDL::shutdown() ;
+
 			return Ceylan::ExitSuccess ;
 
 		}
@@ -242,7 +246,6 @@ int main( int argc, char * argv[] )
 			LogPlug::info( "Exiting main loop." ) ;
 
 		}
-
 
 
 		LogPlug::info( "End of joystick test." ) ;
