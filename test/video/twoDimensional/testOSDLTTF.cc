@@ -683,6 +683,10 @@ int main( int argc, char * argv[] )
 				"script beforehand to have it ready for this test. "
 				"Stopping now." ) ;
 
+			OSDL::stop() ;
+
+			OSDL::shutdown() ;
+
 			return Ceylan::ExitSuccess ;
 
 		}

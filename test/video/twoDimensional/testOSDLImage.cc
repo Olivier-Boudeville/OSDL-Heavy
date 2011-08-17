@@ -239,7 +239,11 @@ int main( int argc, char * argv[] )
 				"create-testOSDLEmbeddedFileSystem-archive.sh script "
 				"beforehand to have it ready for this test. Stopping now." ) ;
 
-			return 0 ;
+			OSDL::stop() ;
+
+			OSDL::shutdown() ;
+
+			return Ceylan::ExitSuccess ;
 
 		}
 
