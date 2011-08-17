@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -53,45 +53,45 @@ namespace OSDL
 		 *
 		 */
 		class Controller ;
-	
+
 	}
 
-		
-		
+
+
 	namespace Events
 	{
-	
-	
-	
+
+
+
 		// Manages joysticks.
 		class Joystick ;
-		
 
-		
-		
+
+
+
 		/**
 		 * Handler for all detected joysticks.
 		 *
 		 * Joystick indexes range from 0 (included) to
 		 * GetAvailableJoystickCount() (excluded).
 		 *
-		 * @note The UseJoystick flag must be specified  in the call to 
+		 * @note The UseJoystick flag must be specified in the call to
 		 * CommonModule::getCommonModule so that joystick support is enabled.
 		 *
 		 */
-		class OSDL_DLL JoystickHandler: public InputDeviceHandler
+		class OSDL_DLL JoystickHandler : public InputDeviceHandler
 		{
-		
-		
+
+
 			/*
-			 * The events module has to trigger the joystick event callbacks
-			 * of this joystick handler.
+			 * The events module has to trigger the joystick event callbacks of
+			 * this joystick handler.
 			 *
 			 */
 			friend class OSDL::Events::EventsModule ;
 
 
-			
+
 			public:
 
 
@@ -99,21 +99,20 @@ namespace OSDL
 				/**
 				 * Constructs a new joystick handler.
 				 *
-				 * @param useClassicalJoysticks tells whether detected 
-				 * joysticks should be managed as complex joysticks 
-				 * (powerful interface, but it requires the controller to 
-				 * take in charge this complexity) or classical joysticks 
-				 * (for usual needs, comes with preset behaviours which ease
-				 * controller work).
+				 * @param useClassicalJoysticks tells whether detected joysticks
+				 * should be managed as complex joysticks (powerful interface,
+				 * but it requires the controller to take in charge this
+				 * complexity) or classical joysticks (for usual needs, comes
+				 * with preset behaviours which ease controller work).
 				 *
-				 * @throw InputDeviceHandlerException if the initialization 
-				 * of the joystick subsystem failed.
+				 * @throw InputDeviceHandlerException if the initialization of
+				 * the joystick subsystem failed.
 				 *
 				 */
 				explicit JoystickHandler( bool useClassicalJoysticks = true ) ;
-				
-				
-				
+
+
+
 				/**
 				 * Virtual destructor.
 				 *
@@ -144,74 +143,74 @@ namespace OSDL
 				 *
 				 */
 				virtual void openJoystick( JoystickNumber index ) ;
-	
-	
-	
+
+
+
 				/**
-				 * Links specified joystick to specified controller, so that 
-				 * any further joystick-related event will be sent to the
-				 * controller. 
+				 * Links specified joystick to specified controller, so that any
+				 * further joystick-related event will be sent to the
+				 * controller.
 				 *
 				 * Removes automatically any link previously defined between
 				 * this joystick and any other controller.
 				 *
-				 * @param index the index of the joystick that shall be 
-				 * linked to the controller.
+				 * @param index the index of the joystick that shall be linked
+				 * to the controller.
 				 *
-				 * @param controller the OSDL controller which will be 
-				 * notified of joystick changes.
+				 * @param controller the OSDL controller which will be notified
+				 * of joystick changes.
 				 *
 				 * @throw JoystickException if index is out of bounds.
 				 *
 				 */
-				virtual void linkToController( JoystickNumber index, 
+				virtual void linkToController( JoystickNumber index,
 					OSDL::MVC::Controller & controller ) ;
-				 
-			
-			
-	            /**
-	             * Returns an user-friendly description of the state of 
-				 * this object.
-	             *
+
+
+
+				/**
+				 * Returns an user-friendly description of the state of this
+				 * object.
+				 *
 				 * @param level the requested verbosity level.
 				 *
 				 * @note Text output format is determined from overall settings.
 				 *
 				 * @see Ceylan::TextDisplayable
-	             *
-	             */
-		 		virtual const std::string toString( 
+				 *
+				 */
+				virtual const std::string toString(
 					Ceylan::VerbosityLevels level = Ceylan::high ) const ;
-				
-				
-				
-				
+
+
+
+
 				// Static section.
-				
-				 
-				 
+
+
+
 				/**
-				 * Returns the number of available joysticks, i.e. the 
-				 * joysticks currently attached to the system.
+				 * Returns the number of available joysticks, i.e. the joysticks
+				 * currently attached to the system.
 				 *
 				 */
 				static JoystickNumber GetAvailableJoystickCount() ;
-				
-				
-				
-				
+
+
+
+
 		protected:
-						 	
-				
-				
+
+
+
 				/*
-				 * Event-driven callbacks for input propagation, from
-				 * the Events module to this handler.
+				 * Event-driven callbacks for input propagation, from the Events
+				 * module to this handler.
 				 *
 				 */
-				 
-				 
-				 
+
+
+
 				/**
 				 * Called whenever a joystick axis changed, so that its
 				 * controller, if any, is notified.
@@ -219,23 +218,23 @@ namespace OSDL
 				 * @note Expected to be triggered by the EventsModule.
 				 *
 				 */
-				virtual void axisChanged( 
+				virtual void axisChanged(
 					const JoystickAxisEvent & joystickEvent ) const ;
-							
-							
-							
+
+
+
 				/**
-				 * Called whenever a joystick trackball changed, so that 
-				 * its controller, if any, is notified.
+				 * Called whenever a joystick trackball changed, so that its
+				 * controller, if any, is notified.
 				 *
 				 * @note Expected to be triggered by the EventsModule.
 				 *
 				 */
-				virtual void trackballChanged( 
+				virtual void trackballChanged(
 					const JoystickTrackballEvent & joystickEvent ) const ;
-					
-							
-							
+
+
+
 				/**
 				 * Called whenever a joystick hat changed, so that its
 				 * controller, if any, is notified.
@@ -243,33 +242,33 @@ namespace OSDL
 				 * @note Expected to be triggered by the EventsModule.
 				 *
 				 */
-				virtual void hatChanged( 
+				virtual void hatChanged(
 					const JoystickHatEvent & joystickEvent ) const ;
-				
-				
-							
+
+
+
 				/**
-				 * Called whenever a joystick button was pressed, so 
-				 * that its controller, if any, is notified.
+				 * Called whenever a joystick button was pressed, so that its
+				 * controller, if any, is notified.
 				 *
 				 * @note Expected to be triggered by the EventsModule.
 				 *
 				 */
-				virtual void buttonPressed( 
+				virtual void buttonPressed(
 					const JoystickButtonEvent & joystickEvent )	const ;
-						
-						
-							
+
+
+
 				/**
-				 * Called whenever a joystick button was released, so 
-				 * that its controller, if any, is notified.
+				 * Called whenever a joystick button was released, so that its
+				 * controller, if any, is notified.
 				 *
 				 * @note Expected to be triggered by the EventsModule.
 				 *
 				 */
-				virtual void buttonReleased( 
+				virtual void buttonReleased(
 					const JoystickButtonEvent & joystickEvent )	const ;
-						
+
 
 
 				/**
@@ -278,31 +277,31 @@ namespace OSDL
 				 *
 				 */
 				virtual void blank() ;
-				 			
-							
-				
+
+
+
 				/**
-				 * Checks that the joystick at the specified index exists 
-				 * and is opened.
+				 * Checks that the joystick at the specified index exists and is
+				 * opened.
 				 *
 				 * @param index the index of the joystick to check.
 				 *
 				 * @note Stop in emergency the application if the check failed.
 				 *
-				 */						
+				 */
 				virtual void checkJoystickAt( JoystickNumber index ) const ;
-				
-				
-				
-								
+
+
+
+
 				/**
 				 * Records how many joysticks are known by this handler.
 				 *
 				 */
 				JoystickNumber _joystickCount ;
-				
-				 
-				 
+
+
+
 				/**
 				 * Records all known joysticks.
 				 *
@@ -313,9 +312,9 @@ namespace OSDL
 				 *
 				 */
 				Joystick ** _joysticks ;
-				
-				
-				
+
+
+
 				/**
 				 * Tells whether complex joysticks (if false) or classical
 				 * joysticks (if true) should be created.
@@ -327,42 +326,42 @@ namespace OSDL
 
 
 			private:
-		
-		
-		
+
+
+
 				/**
-				 * Copy constructor made private to ensure that it will 
-				 * never be called.
+				 * Copy constructor made private to ensure that it will never be
+				 * called.
 				 *
-				 * The compiler should complain whenever this undefined 
+				 * The compiler should complain whenever this undefined
 				 * constructor is called, implicitly or not.
-				 * 
-				 */			 
-				explicit JoystickHandler( const JoystickHandler & source ) ;
-			
-			
-			
-				/**
-				 * Assignment operator made private to ensure that it 
-				 * will never be called.
 				 *
-				 * The compiler should complain whenever this undefined 
-				 * operator is called, implicitly or not.
-				 * 
-				 */			 
-				JoystickHandler & operator = ( 
+				 */
+				explicit JoystickHandler( const JoystickHandler & source ) ;
+
+
+
+				/**
+				 * Assignment operator made private to ensure that it will never
+				 * be called.
+				 *
+				 * The compiler should complain whenever this undefined operator
+				 * is called, implicitly or not.
+				 *
+				 */
+				JoystickHandler & operator = (
 					const JoystickHandler & source ) ;
-										
-				
-				
+
+
+
 		} ;
-		
-	
-	}	
-	
+
+
+	}
+
+
 }
 
 
 
 #endif // OSDL_JOYSTICK_HANDLER_H_
-
