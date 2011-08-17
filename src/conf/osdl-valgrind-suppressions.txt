@@ -6905,6 +6905,25 @@
 }
 
 
+{
+   gzip cond
+   Memcheck:Cond
+   fun:inflateReset2
+   fun:inflateInit2_
+   fun:ZIP_openRead
+   fun:PHYSFS_openRead
+}
+
+
+{
+   gzip cond
+   Memcheck:Cond
+   fun:inflateReset2
+   fun:inflateInit2_
+   fun:ZIP_seek
+   fun:PHYSFS_seek
+}
+
 
 
 ################################################################################
