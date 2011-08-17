@@ -1011,7 +1011,7 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 		"TrueTypeFont::renderLatin1Text (solid): "
 		"unable to render text '" + text
 		+ "': " + DescribeLastError() ) ;
-	res = new Surface( * textSurface,
+	res = new Surface( *textSurface,
 	  /* display type */ Surface::BackBuffer ) ;
 	// No colorkey added, since already there.
 	break ;
@@ -1072,6 +1072,8 @@ OSDL::Video::Surface & TrueTypeFont::renderLatin1Text(
 		"color keying failed: " + e.toString() ) ;
 	}
 	SDL_BlitSurface( textSurface, 0, & res->getSDLSurface(), 0 ) ;
+	SDL_FreeSurface( textSurface ) ;
+	textSurface = 0 ;
 	break ;
 
 
@@ -1268,6 +1270,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUTF8Text(
 	}
 
 	SDL_BlitSurface( textSurface, 0, & res->getSDLSurface(), 0 ) ;
+	SDL_FreeSurface( textSurface ) ;
+	textSurface = 0 ;
 	break ;
 
 
@@ -1469,6 +1473,8 @@ OSDL::Video::Surface & TrueTypeFont::renderUnicodeText(
 		"color keying failed: " + e.toString() ) ;
 	}
 	SDL_BlitSurface( textSurface, 0, & res->getSDLSurface(), 0 ) ;
+	SDL_FreeSurface( textSurface ) ;
+	textSurface = 0 ;
 	break ;
 
 
@@ -1821,7 +1827,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
   //		+ Ceylan::toString( character )
   //		+ "': " + DescribeLastError() ) ;
 
-  //	res = new Surface( * textSurface,
+  //	res = new Surface( *textSurface,
   //	  /* display type */ Surface::BackBuffer ) ;
 
   //	// No colorkey added, since already there.
@@ -1893,6 +1899,8 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 
 	}
 	SDL_BlitSurface( textSurface, 0, & res->getSDLSurface(), 0 ) ;
+	SDL_FreeSurface( textSurface ) ;
+	textSurface = 0 ;
 	break ;
 
 
@@ -1907,7 +1915,7 @@ OSDL::Video::Surface & TrueTypeFont::basicRenderUnicodeGlyph(
 		+ Ceylan::toString( character )
 		+ "': " + DescribeLastError() ) ;
 
-	res = new Surface( * textSurface,
+	res = new Surface( *textSurface,
 	  /* display type */ Surface::BackBuffer ) ;
 
 	// No color key enforced.
