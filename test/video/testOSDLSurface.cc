@@ -360,7 +360,7 @@ int main( int argc, char * argv[] )
 			/*
 			 if ( currentDrawCount % 10 == 0 )
 
-			 	LogPlug::info( "Drawing value "
+				LogPlug::info( "Drawing value "
 					+ Ceylan::toString( newValue ) + "." ) ;
 			*/
 
@@ -454,6 +454,9 @@ int main( int argc, char * argv[] )
 			LogPlug::info( Ceylan::toString( i + sampleStart ) + " occured "
 				+ Ceylan::toString( distributionTable[ i ] ) + " time(s)." ) ;
 		*/
+
+		delete [] distributionTable ;
+		distributionTable = 0 ;
 
 		screen.unlock() ;
 
