@@ -587,7 +587,8 @@ void Scheduler::unregisterPeriodicalObject(
 
 	slot.removeFromSubslot( toUnregister ) ;
 
-	send( "New scheduler state: " + toString() ) ;
+	send( "New scheduler state after unregisterPeriodicalObject: "
+	  + toString() ) ;
 
 }
 
@@ -891,6 +892,12 @@ void Scheduler::stop()
 {
 
   OSDL_SCHEDULE_LOG( "Scheduler::stop: stop request registered." ) ;
+
+  /*
+   * @note This call does not imply that no other rendering/input/simulation
+   * step will be performed (ex: a model stopping the run while other elements
+   * are still to be processed before testing _stopRequested):
+   */
   _stopRequested = true ;
 
 }
