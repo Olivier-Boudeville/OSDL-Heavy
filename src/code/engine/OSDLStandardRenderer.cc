@@ -78,7 +78,7 @@ StandardRenderer::StandardRenderer( Video::Surface & screen,
 	if ( ! registerToScheduler )
 		message += "not " ;
 
-	message += "registred to scheduler." ;
+	message += "registered to scheduler." ;
 
 	send( message ) ;
 
@@ -109,7 +109,7 @@ StandardRenderer::~StandardRenderer() throw()
 void StandardRenderer::registerView( Ceylan::MVC::BaseView & view )
 {
 
-	_registeredViews.push_back( & view ) ;
+	_registeredViews.push_back( &view ) ;
 
 }
 
@@ -189,16 +189,18 @@ void StandardRenderer::onRenderingSkipped(
 const string StandardRenderer::toString( Ceylan::VerbosityLevels level ) const
 {
 
+	// Mostly a duplicate of Renderer::toString:
 	string res = "Standard renderer, last rendering tick was "
 		+ Ceylan::toString( _lastRender )
 		+ ", having performed "
 		+ Ceylan::toString( _renderingDone )    + " rendering(s) for "
 		+ Ceylan::toString( _renderingSkipped ) + " skip(s)" ;
 
-	if ( _renderingDone + _renderingSkipped != 0 )
+	RenderCount totalRendered = _renderingDone + _renderingSkipped ;
+
+	if ( totalRendered != 0 )
 		res += " (rendering proportion: "
-			+ Ceylan::toString( 100 * _renderingDone / ( _renderingDone
-				+ _renderingSkipped ) ) + "%)" ;
+			+ Ceylan::toString( 100 * _renderingDone / totalRendered ) + "%)" ;
 
 	return res ;
 
