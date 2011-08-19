@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -41,7 +41,7 @@ using std::string ;
 
 
 #ifdef OSDL_USES_CONFIG_H
-#include <OSDLConfig.h>       // for OSDL_DEBUG_RENDERER and al 
+#include <OSDLConfig.h>       // for OSDL_DEBUG_RENDERER and al
 #endif // OSDL_USES_CONFIG_H
 
 
@@ -89,19 +89,19 @@ Renderer::Renderer( bool registerToScheduler ) :
 	{
 		try
 		{
-		
+
 			// The scheduler tales ownership of the renderer:
 			Scheduler::GetExistingScheduler().setRenderer( * this ) ;
-			
+
 		}
 		catch( const RenderingException & e )
 		{
-			throw RenderingException( 
+			throw RenderingException(
 				"Renderer constructor: no already existing scheduler ("
 				+ e.toString() + ") whereas registering had been requested." ) ;
-		} 
+		}
 	}
-	
+
 }
 
 
@@ -110,7 +110,7 @@ Renderer::~Renderer() throw()
 {
 
 	// Views are not owned.
-	
+
 }
 
 
@@ -119,14 +119,14 @@ void Renderer::render( RenderingTick currentRenderingTick )
 {
 
 	OSDL_RENDER_LOG( "Rendering! " ) ;
-	
+
 	/*
-	 * Beware, currentRenderingTick might be always zero if no scheduler 
-	 * is used.
+	 * Beware, currentRenderingTick might be always zero if no scheduler is
+	 * used.
 	 *
 	 */
 	_renderingDone++ ;
-	
+
 }
 
 
@@ -136,27 +136,28 @@ void Renderer::onRenderingSkipped( RenderingTick skippedRenderingTick )
 
 	OSDL_RENDER_LOG( "Rendering skipped." ) ;
 	_renderingSkipped++ ;
-	
+
 }
 
 
 
-const string Renderer::toString( Ceylan::VerbosityLevels level ) const 
+const string Renderer::toString( Ceylan::VerbosityLevels level ) const
 {
 
-	string res = "Basic renderer, last rendering tick was " 
+	string res = "Basic renderer, last rendering tick was "
 		+ Ceylan::toString( _lastRender )
-		+ ", having performed " 
+		+ ", having performed "
 		+ Ceylan::toString( _renderingDone )    + " rendering(s) for "
 		+ Ceylan::toString( _renderingSkipped ) + " skip(s)" ;
-	
-	if ( _renderingDone + _renderingSkipped != 0 )
-		res += " (rendering proportion: " 
-			+ Ceylan::toString( 100 * _renderingDone / ( _renderingDone 
-				+ _renderingSkipped ) )	+ "%)" ;
-			
+
+	RenderCount totalRendered = _renderingDone + _renderingSkipped ;
+
+	if ( totalRendered != 0 )
+		res += " (rendering proportion: "
+			+ Ceylan::toString( 100 * _renderingDone / totalRendered ) + "%)" ;
+
 	return res ;
-	
+
 }
 
 
@@ -165,7 +166,7 @@ bool Renderer::HasExistingRootRenderer()
 {
 
 	return ( _internalRootRenderer != 0 ) ;
-	
+
 }
 
 
@@ -173,10 +174,10 @@ bool Renderer::HasExistingRootRenderer()
 Renderer & Renderer::GetExistingRootRenderer()
 {
 
-    if ( Renderer::_internalRootRenderer == 0 )
-		throw RenderingException( 
+	if ( Renderer::_internalRootRenderer == 0 )
+		throw RenderingException(
 			"Renderer::GetExistingRenderer: no Renderer available." ) ;
-    return * Renderer::_internalRootRenderer ;
+	return * Renderer::_internalRootRenderer ;
 
 }
 
@@ -185,13 +186,13 @@ Renderer & Renderer::GetExistingRootRenderer()
 void Renderer::DeleteExistingRootRenderer()
 {
 
-    if ( Renderer::_internalRootRenderer != 0 )
+	if ( Renderer::_internalRootRenderer != 0 )
 		throw RenderingException( "Renderer::DeleteExistingRenderer: "
 			"there was no already existing Renderer." ) ;
-			
-    LogPlug::debug( "Renderer::DeleteExistingRenderer: effective deleting." ) ;
 
-    delete Renderer::_internalRootRenderer ;
+	LogPlug::debug( "Renderer::DeleteExistingRenderer: effective deleting." ) ;
+
+	delete Renderer::_internalRootRenderer ;
 	Renderer::_internalRootRenderer = 0 ;
 
 }
@@ -201,21 +202,20 @@ void Renderer::DeleteExistingRootRenderer()
 void Renderer::DeleteRootRenderer()
 {
 
-    if ( Renderer::_internalRootRenderer != 0 )
-    {
-	
-        LogPlug::debug( "Renderer::DeleteRenderer: effective deleting." ) ;
+	if ( Renderer::_internalRootRenderer != 0 )
+	{
 
-        delete Renderer::_internalRootRenderer ;
+		LogPlug::debug( "Renderer::DeleteRenderer: effective deleting." ) ;
+
+		delete Renderer::_internalRootRenderer ;
 		Renderer::_internalRootRenderer = 0 ;
-		
-    }
-    else
-    {
-	
-        LogPlug::debug( "Renderer::DeleteRenderer: no deleting needed." ) ;
-		
-    }
+
+	}
+	else
+	{
+
+		LogPlug::debug( "Renderer::DeleteRenderer: no deleting needed." ) ;
+
+	}
 
 }
-
