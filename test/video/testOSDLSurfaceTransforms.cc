@@ -51,6 +51,7 @@ const std::string firstImageFile  = "Soldier-heavy-purple-small.png" ;
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -59,252 +60,252 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL surface transformations" ) ;
+	  LogPlug::info( "Testing OSDL surface transformations" ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
-
-		LogPlug::info( "Prerequisite: initializing the display" ) ;
-
-
-		CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseVideo | CommonModule::UseKeyboard ) ;
-
-		VideoModule & myVideo = myOSDL.getVideoModule() ;
-
-		Length screenWidth  = 640 ;
-		Length screenHeight = 480 ;
-
-		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
-
-		Surface & screen = myVideo.getScreenSurface() ;
-
-		LogPlug::info( "Information about this screen surface: "
-			+ screen.toString() ) ;
-
-
-		screen.lock() ;
-
-		screen.drawGrid() ;
-
-		Ceylan::System::FileLocator imageFinder ;
-
-		// When run from playTests.sh build directory:
-		imageFinder.addPath( "../../src/doc/web/images" ) ;
-
-		// When run from executable build directory:
-		imageFinder.addPath( "../src/doc/web/images" ) ;
-
-		// When run from executable install directory:
-		imageFinder.addPath( "../OSDL/doc/web/images" ) ;
-
-		screen.loadImage( imageFinder.find( firstImageFile ),
-			/* blit only */ true ) ;
-
-		screen.unlock() ;
-
-		screen.update() ;
-
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
-
-
-		Surface & flipV = screen.flipVertical() ;
-		flipV.blitTo( screen, TwoDimensional::Point2D::Origin ) ;
-		Surface & clonedSurface( * dynamic_cast<Surface * >(
-			& flipV.clone() ) ) ;
-
-		delete & flipV ;
-		screen.update() ;
-
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
-
-
-		Surface & flipH = screen.flipHorizontal() ;
-		flipH.blitTo( screen, TwoDimensional::Point2D::Origin ) ;
-		delete & flipH ;
-		screen.update() ;
-
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
-
-
-		// Relies on clipping:
-
-		clonedSurface.blitTo( screen, -30, 30 ) ;
-		screen.update() ;
-
-		clonedSurface.blitTo( screen, -130, 130 ) ;
-		screen.update() ;
-
-		// SDL_gfx might be disabled:
-		if ( VideoModule::IsUsingDrawingPrimitives() )
+		if ( ! tokenEaten )
 		{
-
-		  Surface * stretched = & clonedSurface.zoom( 1, 0.3f ) ;
-		  stretched->blitTo( screen, -30, 30 ) ;
-		  delete stretched ;
-
-		  clonedSurface.resize( 150, 400, /* scale content */ true ) ;
-
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
 		}
 
-
-		clonedSurface.blitTo( screen, 30, 10 ) ;
-
-		screen.update() ;
-
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
+	  }
 
 
-		// Finish with a correct image:
-		clonedSurface.blitTo( screen, TwoDimensional::Point2D::Origin ) ;
-		delete & clonedSurface ;
+
+	  LogPlug::info( "Prerequisite: initializing the display" ) ;
 
 
-		// Add some random bordered discs:
+	  CommonModule & myOSDL = OSDL::getCommonModule(
+		CommonModule::UseVideo | CommonModule::UseKeyboard ) ;
 
-		screen.lock() ;
+	  VideoModule & myVideo = myOSDL.getVideoModule() ;
 
-		LogPlug::info( "Prerequisite: having three random generators" ) ;
+	  Length screenWidth  = 640 ;
+	  Length screenHeight = 480 ;
 
-		Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0,
-			screenWidth ) ;
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 
-		Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0,
-			screenHeight ) ;
+	  Surface & screen = myVideo.getScreenSurface() ;
 
-		Ceylan::Maths::Random::WhiteNoiseGenerator radiusRand( 0, 100 ) ;
+	  LogPlug::info( "Information about this screen surface: "
+		+ screen.toString() ) ;
 
 
-		Ceylan::Maths::Random::WhiteNoiseGenerator colorRand( 0, 256 ) ;
+	  screen.lock() ;
 
-		Coordinate x, y ;
+	  screen.drawGrid() ;
 
-		ColorElement red ;
-		ColorElement green ;
-		ColorElement blue ;
-		ColorElement alpha ;
+	  Ceylan::System::FileLocator imageFinder ;
 
-		for ( Ceylan::Uint32 i = 0; i < 100; i++ )
-		{
+	  // When run from playTests.sh build directory:
+	  imageFinder.addPath( "../../src/doc/web/images" ) ;
 
-			x = abscissaRand.getNewValue() ;
-			y = ordinateRand.getNewValue() ;
+	  // When run from executable build directory:
+	  imageFinder.addPath( "../src/doc/web/images" ) ;
 
-			red   = colorRand.getNewValue() ;
-			green = colorRand.getNewValue() ;
-			blue  = colorRand.getNewValue() ;
-			alpha = colorRand.getNewValue() ;
+	  // When run from executable install directory:
+	  imageFinder.addPath( "../OSDL/doc/web/images" ) ;
 
-			Pixels::ColorDefinition discColorDef =
-				Pixels::convertRGBAToColorDefinition(
-				red, green, blue, alpha ) ;
+	  screen.loadImage( imageFinder.find( firstImageFile ),
+		/* blit only */ true ) ;
 
-			red   = colorRand.getNewValue() ;
-			green = colorRand.getNewValue() ;
-			blue  = colorRand.getNewValue() ;
-			alpha = colorRand.getNewValue() ;
+	  screen.unlock() ;
 
-			Pixels::ColorDefinition ringColorDef =
-				Pixels::convertRGBAToColorDefinition(
-				red, green, blue, alpha ) ;
+	  screen.update() ;
 
-			if ( VideoModule::IsUsingDrawingPrimitives() )
-			{
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
 
-			  /*
-			   * Do not order radiuses, hence one disc out of two should not be
-			   * drawn.
-			   *
-			   */
-			  screen.drawDiscWithEdge( x, y,
-				radiusRand.getNewValue(), radiusRand.getNewValue(),
-				discColorDef, ringColorDef ) ;
-			}
 
-		}
+	  Surface & flipV = screen.flipVertical() ;
+	  flipV.blitTo( screen, TwoDimensional::Point2D::Origin ) ;
+	  Surface & clonedSurface( * dynamic_cast<Surface * >(
+		  & flipV.clone() ) ) ;
 
+	  delete & flipV ;
+	  screen.update() ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+
+	  Surface & flipH = screen.flipHorizontal() ;
+	  flipH.blitTo( screen, TwoDimensional::Point2D::Origin ) ;
+	  delete & flipH ;
+	  screen.update() ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+
+	  // Relies on clipping:
+
+	  clonedSurface.blitTo( screen, -30, 30 ) ;
+	  screen.update() ;
+
+	  clonedSurface.blitTo( screen, -130, 130 ) ;
+	  screen.update() ;
+
+	  // SDL_gfx might be disabled:
+	  if ( VideoModule::IsUsingDrawingPrimitives() )
+	  {
+
+		Surface * stretched = & clonedSurface.zoom( 1, 0.3f ) ;
+		stretched->blitTo( screen, -30, 30 ) ;
+		delete stretched ;
+
+		clonedSurface.resize( 150, 400, /* scale content */ true ) ;
+
+	  }
+
+
+	  clonedSurface.blitTo( screen, 30, 10 ) ;
+
+	  screen.update() ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+
+	  // Finish with a correct image:
+	  clonedSurface.blitTo( screen, TwoDimensional::Point2D::Origin ) ;
+	  delete & clonedSurface ;
+
+
+	  // Add some random bordered discs:
+
+	  screen.lock() ;
+
+	  LogPlug::info( "Prerequisite: having three random generators" ) ;
+
+	  Ceylan::Maths::Random::WhiteNoiseGenerator abscissaRand( 0,
+		screenWidth ) ;
+
+	  Ceylan::Maths::Random::WhiteNoiseGenerator ordinateRand( 0,
+		screenHeight ) ;
+
+	  Ceylan::Maths::Random::WhiteNoiseGenerator radiusRand( 0, 100 ) ;
+
+
+	  Ceylan::Maths::Random::WhiteNoiseGenerator colorRand( 0, 256 ) ;
+
+	  Coordinate x, y ;
+
+	  ColorElement red ;
+	  ColorElement green ;
+	  ColorElement blue ;
+	  ColorElement alpha ;
+
+	  for ( Ceylan::Uint32 i = 0; i < 100; i++ )
+	  {
+
+		x = abscissaRand.getNewValue() ;
+		y = ordinateRand.getNewValue() ;
+
+		red   = colorRand.getNewValue() ;
+		green = colorRand.getNewValue() ;
+		blue  = colorRand.getNewValue() ;
+		alpha = colorRand.getNewValue() ;
+
+		Pixels::ColorDefinition discColorDef =
+		  Pixels::convertRGBAToColorDefinition(
+			red, green, blue, alpha ) ;
+
+		red   = colorRand.getNewValue() ;
+		green = colorRand.getNewValue() ;
+		blue  = colorRand.getNewValue() ;
+		alpha = colorRand.getNewValue() ;
+
+		Pixels::ColorDefinition ringColorDef =
+		  Pixels::convertRGBAToColorDefinition(
+			red, green, blue, alpha ) ;
 
 		if ( VideoModule::IsUsingDrawingPrimitives() )
 		{
 
-		  // Draws a single blue disc with white edges on top of all:
-		  screen.drawDiscWithEdge( /* x */ 50, /* y */ 50, /* outer radius */ 50,
-			/* inner radius */ 45 ) ;
-
+		  /*
+		   * Do not order radiuses, hence one disc out of two should not be
+		   * drawn.
+		   *
+		   */
+		  screen.drawDiscWithEdge( x, y,
+			radiusRand.getNewValue(), radiusRand.getNewValue(),
+			discColorDef, ringColorDef ) ;
 		}
 
-		screen.unlock() ;
-
-		screen.update() ;
-
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
+	  }
 
 
-		LogPlug::info( "Stopping OSDL." ) ;
-		OSDL::stop() ;
+	  if ( VideoModule::IsUsingDrawingPrimitives() )
+	  {
 
-		LogPlug::info( "End of OSDL Surface transformation test." ) ;
+		// Draws a single blue disc with white edges on top of all:
+		screen.drawDiscWithEdge( /* x */ 50, /* y */ 50, /* outer radius */ 50,
+		  /* inner radius */ 45 ) ;
+
+	  }
+
+	  screen.unlock() ;
+
+	  screen.update() ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
+
+	  LogPlug::info( "End of OSDL Surface transformation test." ) ;
 
 
 	}
@@ -312,40 +313,42 @@ int main( int argc, char * argv[] )
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

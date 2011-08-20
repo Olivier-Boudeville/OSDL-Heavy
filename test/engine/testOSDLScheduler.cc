@@ -168,7 +168,7 @@ public:
 	  //			<< std::endl ;
 
 	  //LogPlug::info( "SchedulerStopper::onActivation: "
-		//	"unregistering from scheduler." ) ;
+	  //	"unregistering from scheduler." ) ;
 
 	  // Useless as implied by the deletion:
 	  unregisterFromScheduler() ;
@@ -730,421 +730,426 @@ private:
 int main( int argc, char * argv[] )
 {
 
-  LogHolder myLog( argc, argv ) ;
-
-  try
   {
 
 
-	LogPlug::info( "Testing OSDL scheduler services in real-time mode." ) ;
+	LogHolder myLog( argc, argv ) ;
 
-	/*
-	 * Tells when the test will stop, by default after 10s (100 Hz):
-	 * (now shorten to 2s, for convenience)
-	 *
-	 */
-	Events::SimulationTick stopTick = /*10 */ 2 * 100 ;
-
-
-	bool isBatch = false ;
-
-	std::string executableName ;
-	std::list<std::string> options ;
-
-	Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
-
-	std::string token ;
-	bool tokenEaten ;
-
-
-	while ( ! options.empty() )
+	try
 	{
 
-	  token = options.front() ;
-	  options.pop_front() ;
 
-	  tokenEaten = false ;
+	  LogPlug::info( "Testing OSDL scheduler services in real-time mode." ) ;
 
-	  if ( token == "--batch" )
+	  /*
+	   * Tells when the test will stop, by default after 10s (100 Hz):
+	   * (now shorten to 2s, for convenience)
+	   *
+	   */
+	  Events::SimulationTick stopTick = /*10 */ 2 * 100 ;
+
+
+	  bool isBatch = false ;
+
+	  std::string executableName ;
+	  std::list<std::string> options ;
+
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+
+	  std::string token ;
+	  bool tokenEaten ;
+
+
+	  while ( ! options.empty() )
 	  {
 
-		LogPlug::info( "Batch mode selected" ) ;
-		isBatch = true ;
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
+		{
+
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+
+		  /*
+		   * Will stop the scheduler after 1 second:
+		   * (100 simulation ticks, since logic frequency is 100 Hz here)
+		   *
+		   */
+		  stopTick = 100 ;
+
+		  tokenEaten = true ;
+
+		}
+
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+
+		  // Relying thus on default durations.
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
+
+		if ( token == "--online" )
+		{
+
+		  // Ignored for this test.
+		  tokenEaten = true ;
+
+		}
+
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
+		}
+
+
+		if ( ! tokenEaten )
+		{
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
+		}
+
+	  }
+
+
+	  if ( ! Ceylan::System::areSubSecondSleepsAvailable() )
+	  {
+
+		LogPlug::info( "No subsecond sleep available, "
+		  "scheduler cannot run, test finished." ) ;
+
+		OSDL::stop() ;
+
+		OSDL::shutdown() ;
+
+		return Ceylan::ExitSuccess ;
+
+	  }
+
+
+
+	  LogPlug::info(
+		"Starting OSDL with video and, therefore, events enabled." ) ;
+
+	  OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
+		CommonModule::UseVideo | CommonModule::UseEvents ) ;
+
+	  LogPlug::info( "Getting events module." ) ;
+	  EventsModule & myEvents = myOSDL.getEventsModule() ;
+
+	  LogPlug::info( EventsModule::DescribeEnvironmentVariables() ) ;
+
+	  LogPlug::info( "Displaying a dummy window "
+		"to have access to an event queue." ) ;
+
+	  LogPlug::info( "Getting video." ) ;
+	  OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ;
+
+	  // A SDL window is needed to have the SDL event system working:
+	  myVideo.setMode( 640, 480, VideoModule::UseCurrentColorDepth,
+		VideoModule::SoftwareSurface ) ;
+
+
+	  LogPlug::info( "Asking for a scheduler to be used." ) ;
+	  myEvents.useScheduler() ;
+
+	  // Uncomment to test with classical logs:
+	  //Scheduler::GetScheduler().setScreenshotMode( /* on */ true,
+	  //  /* frameFilenamePrefix */ "testOSDLScheduler" ) ;
+
+	  LogPlug::info( "Creating an active object whose role is "
+		"to stop the scheduler at simulation tick "
+		+ Ceylan::toString( stopTick ) + "." ) ;
+
+
+
+
+	  /*
+	   * A bit of testing for a programmed object with a tick list:
+	   * (ownership not taken)
+	   *
+	   */
+	  SimulationTickList firstList ;
+	  firstList.push_back( stopTick / 4 );
+	  firstList.push_back( stopTick / 2 ) ;
+	  firstList.push_back( stopTick ) ;
+	  firstList.push_back( 2 * stopTick ) ;
+
+
+	  bool testKilledStopper = true ;
+	  //bool testKilledStopper = false ;
+
+	  if ( testKilledStopper )
+	  {
+
+		// Will be killed just before being able to stop the scheduler:
+		SchedulerStopper * toKillStopper = new SchedulerStopper( firstList,
+		  stopTick/2, /* verbose */ true ) ;
+
+		// Just-in-time (anonymous) killer of the previous stopper:
+		new ActiveObjectKiller( stopTick/2 - 1, *toKillStopper,
+		  /* verbose */ true ) ;
+
+	  }
+
+
+	  bool testSameTickDeletionOfProgrammed = true ;
+	  //bool testSameTickDeletionOfProgrammed = false ;
+
+	  if ( testSameTickDeletionOfProgrammed )
+	  {
 
 		/*
-		 * Will stop the scheduler after 1 second:
-		 * (100 simulation ticks, since logic frequency is 100 Hz here)
+		 * Here we define A, B and C, (three programmed actors, with the
+		 * stopTick/2 tick in common) knowing than B is expected to remove A and
+		 * C, which are by design programmed at the same tick, just before and
+		 * just after.
+		 *
+		 * This is the worst case scenario, one of the two would have been
+		 * scheduled just after B, hence the removal is tested when iterating in
+		 * the same list.
 		 *
 		 */
-		stopTick = 100 ;
+		SchedulerStopper * stopperA = new SchedulerStopper( firstList,
+		  /* stop tick */ 1000, /* verbose */ true ) ;
 
-		tokenEaten = true ;
+		// Will hit at the second tick of the list (i.e. stopTick/2):
+		ActiveObjectProgrammedSerialKiller * killerB =
+		  new ActiveObjectProgrammedSerialKiller(
+			stopTick/2, /* verbose */ true ) ;
+
+		SchedulerStopper * stopperC = new SchedulerStopper( firstList,
+		  /* stop tick */ 1000, /* verbose */ true ) ;
+
+		/*
+		 * Thus both stoppers (A and C) will be killed (by B) at stopTick/2,
+		 * i.e. before they have a chance of stopping the scheduler.
+		 */
+		killerB->addTarget( *stopperA ) ;
+		killerB->addTarget( *stopperC ) ;
 
 	  }
 
-	  if ( token == "--interactive" )
+
+	  bool enableActualStopper = true ;
+
+	  SchedulerStopper * actualStopper = 0 ;
+
+	  if ( enableActualStopper )
 	  {
-		LogPlug::info( "Interactive mode selected" ) ;
 
-		// Relying thus on default durations.
-		isBatch = false ;
-		tokenEaten = true ;
+		SimulationTickList secondList ;
+		secondList.push_back( stopTick / 3 );
+		secondList.push_back( stopTick ) ;
+		secondList.push_back( 3 * stopTick ) ;
+
+		// So the actual (and only) stopper of the scheduler will be this one:
+		actualStopper = new SchedulerStopper( secondList, stopTick,
+		  /* verbose */ true ) ;
+
 	  }
 
-	  if ( token == "--online" )
+
+
+	  bool testPacer = true ;
+	  //bool testPacer = false ;
+
+	  SchedulerPacer * pacerLeftBehind = 0 ;
+
+	  if ( testPacer )
 	  {
 
-		// Ignored for this test.
-		tokenEaten = true ;
+		// A pacer:
+		new SchedulerPacer( /* period */ 3, /* activation count */ 20,
+		  /* verbose */ true ) ;
+
+
+		// Another one (will never be removed):
+		LogPlug::warning( "The warning about an object of period 7 not being "
+		  "unregistered (see below) is perfectly normal for this test." ) ;
+
+		pacerLeftBehind = new SchedulerPacer( /* period */ 7,
+		  /* activation count */ 3000, /* verbose */ true ) ;
 
 	  }
 
-	  if ( LogHolder::IsAKnownPlugOption( token ) )
+
+
+	  bool testSameTickDeletionOfPeriodical = true ;
+	  //bool testSameTickDeletionOfPeriodical = false ;
+
+	  if ( testSameTickDeletionOfPeriodical )
 	  {
-		// Ignores log-related (argument-less) options.
-		tokenEaten = true ;
+
+		/*
+		 * Here we define D, E and F, (three periodical actors, with the same
+		 * period, 5) knowing than E is expected to remove D and F, which are by
+		 * design programmed at the same tick, just before and just after.
+		 *
+		 * This is the worst case scenario, one of the two would have been
+		 * scheduled just after E, hence the removal is tested when iterating in
+		 * the same list.
+		 *
+		 */
+		SchedulerPacer * pacerD = new SchedulerPacer( /* period */ 5,
+		  /* stop tick */ 1000, /* verbose */ true ) ;
+
+		// Will hit at tick 5*6 = 30:
+		ActiveObjectPeriodicalSerialKiller * killerE =
+		  new ActiveObjectPeriodicalSerialKiller(
+			/* period */ 5, /* period count */ 6, /* verbose */ true ) ;
+
+		SchedulerPacer * pacerF = new SchedulerPacer( /* period */ 5,
+		  /* stop tick */ 1000, /* verbose */ true ) ;
+
+		killerE->addTarget( *pacerD ) ;
+		killerE->addTarget( *pacerF ) ;
+
 	  }
 
 
-	  if ( ! tokenEaten )
+
+	  // A set of stopper active objects can be used as well:
+
+	  bool useStoppers = true ;
+	  //bool useStoppers = false ;
+
+	  list<SchedulerStopper *> stoppers ;
+
+	  if ( useStoppers )
 	  {
-		throw Ceylan::CommandLineParseException(
-		  "Unexpected command line argument: " + token ) ;
+
+		const Ceylan::Uint32 stoppersCount = 300 ;
+
+
+		// All these stoppers will arrive after the battle:
+		WhiteNoiseGenerator stopTickRand( 1, stoppersCount ) ;
+
+		for ( Ceylan::Uint32 i = 1; i < stoppersCount; i++ )
+		{
+
+		  // All stoppers will stop at simulation tick stopTick+1 or later:
+		  stoppers.push_back( new SchedulerStopper(
+			  stopTick + stopTickRand.getNewValue() ) ) ;
+
+		}
+
 	  }
 
-	}
+
+	  if ( ! isBatch )
+	  {
+
+		std::cout << std::endl
+				  << "Warning: this test should last for exactly "
+				  << stopTick / 100 << " seconds (and it is not interactive)."
+				  << std::endl
+				  << "Moreover it should preferably be run with the "
+		  "null log plug (i.e. with the --nullPlug command-line option), "
+		  "otherwise it may fail because of too slow synchronous disk writes."
+				  << std::endl ;
+
+	  }
 
 
-	if ( ! Ceylan::System::areSubSecondSleepsAvailable() )
-	{
+	  LogPlug::info(
+		"Just before starting the scheduling, scheduler state is: "
+		+ Scheduler::GetScheduler().toString() ) ;
 
-	  LogPlug::info( "No subsecond sleep available, "
-		"scheduler cannot run, test finished." ) ;
+
+	  LogPlug::info( "Entering the schedule loop." ) ;
+	  myEvents.enterMainLoop() ;
+	  LogPlug::info( "Exit from schedule loop." ) ;
+
+	  if ( ! isBatch )
+	  {
+
+		std::cout << std::endl << "Scheduling finished" << std::endl ;
+
+	  }
+
+
+	  /*
+	   * Deallocation summary:
+	   *
+	   *   - toKillStopper deleted by the anonymous killer
+	   *
+	   *   - this killer committed suicide once having murdered toKillStopper
+	   *
+	   *   - the (anonymous) actual stopper committed suicide once having
+	   * stopped the scheduler
+	   *
+	   *   - any remaining (useless) stopper has to be removed
+	   *
+	   */
+	  if ( useStoppers )
+	  {
+
+		for ( list<SchedulerStopper *>::iterator it = stoppers.begin();
+			  it != stoppers.end(); it++ )
+		  delete (*it) ;
+
+	  }
+
+	  if ( actualStopper != 0 )
+	  {
+
+		delete actualStopper ;
+		actualStopper = 0 ;
+
+	  }
+
+	  delete pacerLeftBehind ;
+	  pacerLeftBehind = 0 ;
+
+	  LogPlug::info( "Stopping OSDL." ) ;
 
 	  OSDL::stop() ;
 
-	  OSDL::shutdown() ;
-
-	  return Ceylan::ExitSuccess ;
+	  LogPlug::info( "End of OSDL scheduler test." ) ;
 
 	}
 
-
-
-	LogPlug::info(
-	  "Starting OSDL with video and, therefore, events enabled." ) ;
-
-	OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
-	  CommonModule::UseVideo | CommonModule::UseEvents ) ;
-
-	LogPlug::info( "Getting events module." ) ;
-	EventsModule & myEvents = myOSDL.getEventsModule() ;
-
-	LogPlug::info( EventsModule::DescribeEnvironmentVariables() ) ;
-
-	LogPlug::info( "Displaying a dummy window "
-	  "to have access to an event queue." ) ;
-
-	LogPlug::info( "Getting video." ) ;
-	OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ;
-
-	// A SDL window is needed to have the SDL event system working:
-	myVideo.setMode( 640, 480, VideoModule::UseCurrentColorDepth,
-	  VideoModule::SoftwareSurface ) ;
-
-
-	LogPlug::info( "Asking for a scheduler to be used." ) ;
-	myEvents.useScheduler() ;
-
-	// Uncomment to test with classical logs:
-	//Scheduler::GetScheduler().setScreenshotMode( /* on */ true,
-	//  /* frameFilenamePrefix */ "testOSDLScheduler" ) ;
-
-	LogPlug::info( "Creating an active object whose role is "
-	  "to stop the scheduler at simulation tick "
-	  + Ceylan::toString( stopTick ) + "." ) ;
-
-
-
-
-	/*
-	 * A bit of testing for a programmed object with a tick list:
-	 * (ownership not taken)
-	 *
-	 */
-	SimulationTickList firstList ;
-	firstList.push_back( stopTick / 4 );
-	firstList.push_back( stopTick / 2 ) ;
-	firstList.push_back( stopTick ) ;
-	firstList.push_back( 2 * stopTick ) ;
-
-
-	bool testKilledStopper = true ;
-	//bool testKilledStopper = false ;
-
-	if ( testKilledStopper )
+	catch ( const OSDL::Exception & e )
 	{
 
-	  // Will be killed just before being able to stop the scheduler:
-	  SchedulerStopper * toKillStopper = new SchedulerStopper( firstList,
-		stopTick/2, /* verbose */ true ) ;
-
-	  // Just-in-time (anonymous) killer of the previous stopper:
-	  new ActiveObjectKiller( stopTick/2 - 1, *toKillStopper,
-		/* verbose */ true ) ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-
-	bool testSameTickDeletionOfProgrammed = true ;
-	//bool testSameTickDeletionOfProgrammed = false ;
-
-	if ( testSameTickDeletionOfProgrammed )
+	catch ( const Ceylan::Exception & e )
 	{
 
-	  /*
-	   * Here we define A, B and C, (three programmed actors, with the
-	   * stopTick/2 tick in common) knowing than B is expected to remove A and
-	   * C, which are by design programmed at the same tick, just before and
-	   * just after.
-	   *
-	   * This is the worst case scenario, one of the two would have been
-	   * scheduled just after B, hence the removal is tested when iterating in
-	   * the same list.
-	   *
-	   */
-	  SchedulerStopper * stopperA = new SchedulerStopper( firstList,
-		/* stop tick */ 1000, /* verbose */ true ) ;
-
-	  // Will hit at the second tick of the list (i.e. stopTick/2):
-	  ActiveObjectProgrammedSerialKiller * killerB =
-		new ActiveObjectProgrammedSerialKiller(
-		  stopTick/2, /* verbose */ true ) ;
-
-	  SchedulerStopper * stopperC = new SchedulerStopper( firstList,
-		/* stop tick */ 1000, /* verbose */ true ) ;
-
-	  /*
-	   * Thus both stoppers (A and C) will be killed (by B) at stopTick/2,
-	   * i.e. before they have a chance of stopping the scheduler.
-	   */
-	  killerB->addTarget( *stopperA ) ;
-	  killerB->addTarget( *stopperC ) ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-
-	bool enableActualStopper = true ;
-
-	SchedulerStopper * actualStopper = 0 ;
-
-	if ( enableActualStopper )
+	catch ( const std::exception & e )
 	{
 
-	  SimulationTickList secondList ;
-	  secondList.push_back( stopTick / 3 );
-	  secondList.push_back( stopTick ) ;
-	  secondList.push_back( 3 * stopTick ) ;
-
-	  // So the actual (and only) stopper of the scheduler will be this one:
-	  actualStopper = new SchedulerStopper( secondList, stopTick,
-		/* verbose */ true ) ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-
-
-	bool testPacer = true ;
-	//bool testPacer = false ;
-
-	SchedulerPacer * pacerLeftBehind = 0 ;
-
-	if ( testPacer )
+	catch ( ... )
 	{
 
-	  // A pacer:
-	  new SchedulerPacer( /* period */ 3, /* activation count */ 20,
-		/* verbose */ true ) ;
-
-
-	  // Another one (will never be removed):
-	  LogPlug::warning( "The warning about an object of period 7 not being "
-		"unregistered (see below) is perfectly normal for this test." ) ;
-
-	  pacerLeftBehind = new SchedulerPacer( /* period */ 7,
-		/* activation count */ 3000, /* verbose */ true ) ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
-
-
-
-	bool testSameTickDeletionOfPeriodical = true ;
-	//bool testSameTickDeletionOfPeriodical = false ;
-
-	if ( testSameTickDeletionOfPeriodical )
-	{
-
-	  /*
-	   * Here we define D, E and F, (three periodical actors, with the same
-	   * period, 5) knowing than E is expected to remove D and F, which are by
-	   * design programmed at the same tick, just before and just after.
-	   *
-	   * This is the worst case scenario, one of the two would have been
-	   * scheduled just after E, hence the removal is tested when iterating in
-	   * the same list.
-	   *
-	   */
-	  SchedulerPacer * pacerD = new SchedulerPacer( /* period */ 5,
-		/* stop tick */ 1000, /* verbose */ true ) ;
-
-	  // Will hit at tick 5*6 = 30:
-	  ActiveObjectPeriodicalSerialKiller * killerE =
-		new ActiveObjectPeriodicalSerialKiller(
-		  /* period */ 5, /* period count */ 6, /* verbose */ true ) ;
-
-	  SchedulerPacer * pacerF = new SchedulerPacer( /* period */ 5,
-		/* stop tick */ 1000, /* verbose */ true ) ;
-
-	  killerE->addTarget( *pacerD ) ;
-	  killerE->addTarget( *pacerF ) ;
-
-	}
-
-
-
-	// A set of stopper active objects can be used as well:
-
-	bool useStoppers = true ;
-	//bool useStoppers = false ;
-
-	list<SchedulerStopper *> stoppers ;
-
-	if ( useStoppers )
-	{
-
-	  const Ceylan::Uint32 stoppersCount = 300 ;
-
-
-	  // All these stoppers will arrive after the battle:
-	  WhiteNoiseGenerator stopTickRand( 1, stoppersCount ) ;
-
-	  for ( Ceylan::Uint32 i = 1; i < stoppersCount; i++ )
-	  {
-
-		// All stoppers will stop at simulation tick stopTick+1 or later:
-		stoppers.push_back( new SchedulerStopper(
-			stopTick + stopTickRand.getNewValue() ) ) ;
-
-	  }
-
-	}
-
-
-	if ( ! isBatch )
-	{
-
-	  std::cout << std::endl
-				<< "Warning: this test should last for exactly "
-				<< stopTick / 100 << " seconds (and it is not interactive)."
-				<< std::endl
-				<< "Moreover it should preferably be run with the "
-		"null log plug (i.e. with the --nullPlug command-line option), "
-		"otherwise it may fail because of too slow synchronous disk writes."
-				<< std::endl ;
-
-	}
-
-
-	LogPlug::info(
-	  "Just before starting the scheduling, scheduler state is: "
-	  + Scheduler::GetScheduler().toString() ) ;
-
-
-	LogPlug::info( "Entering the schedule loop." ) ;
-	myEvents.enterMainLoop() ;
-	LogPlug::info( "Exit from schedule loop." ) ;
-
-	if ( ! isBatch )
-	{
-
-	  std::cout << std::endl << "Scheduling finished" << std::endl ;
-
-	}
-
-
-	/*
-	 * Deallocation summary:
-	 *
-	 *   - toKillStopper deleted by the anonymous killer
-	 *
-	 *   - this killer committed suicide once having murdered toKillStopper
-	 *
-	 *   - the (anonymous) actual stopper committed suicide once having
-	 * stopped the scheduler
-	 *
-	 *   - any remaining (useless) stopper has to be removed
-	 *
-	 */
-	if ( useStoppers )
-	{
-
-	  for ( list<SchedulerStopper *>::iterator it = stoppers.begin();
-			it != stoppers.end(); it++ )
-		delete (*it) ;
-
-	}
-
-	if ( actualStopper != 0 )
-	{
-
-	  delete actualStopper ;
-	  actualStopper = 0 ;
-
-	}
-
-	delete pacerLeftBehind ;
-	pacerLeftBehind = 0 ;
-
-	LogPlug::info( "Stopping OSDL." ) ;
-
-	OSDL::stop() ;
-
-	LogPlug::info( "End of OSDL scheduler test." ) ;
-
-  }
-
-  catch ( const OSDL::Exception & e )
-  {
-
-	LogPlug::error( "OSDL exception caught: "
-	  + e.toString( Ceylan::high ) ) ;
-	return Ceylan::ExitFailure ;
-
-  }
-
-  catch ( const Ceylan::Exception & e )
-  {
-
-	LogPlug::error( "Ceylan exception caught: "
-	  + e.toString( Ceylan::high ) ) ;
-	return Ceylan::ExitFailure ;
-
-  }
-
-  catch ( const std::exception & e )
-  {
-
-	LogPlug::error( "Standard exception caught: "
-	  + std::string( e.what() ) ) ;
-	return Ceylan::ExitFailure ;
-
-  }
-
-  catch ( ... )
-  {
-
-	LogPlug::error( "Unknown exception caught" ) ;
-	return Ceylan::ExitFailure ;
 
   }
 

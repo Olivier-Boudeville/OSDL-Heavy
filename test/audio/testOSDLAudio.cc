@@ -40,6 +40,7 @@ using namespace Ceylan::Log ;
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -48,174 +49,176 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL audio basic services." ) ;
+	  LogPlug::info( "Testing OSDL audio basic services." ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
-		LogPlug::info( "Starting OSDL with audio enabled." ) ;
+		if ( ! tokenEaten )
+		{
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
+		}
 
-		CommonModule & myOSDL = getCommonModule( CommonModule::UseAudio ) ;
-
-		myOSDL.logState() ;
-
-
-		LogPlug::info( "Getting audio module." ) ;
-		AudioModule & myAudio = myOSDL.getAudioModule() ;
-
-		myAudio.logState() ;
+	  }
 
 
-		LogPlug::info( "Displaying audio driver name: "
-			+ myAudio.getDriverName() + "." ) ;
+	  LogPlug::info( "Starting OSDL with audio enabled." ) ;
 
-		Ceylan::Maths::Hertz outputFrequency = 22050 ;
+	  CommonModule & myOSDL = getCommonModule( CommonModule::UseAudio ) ;
 
-		SampleFormat outputSampleFormat =
-			AudioModule::NativeSint16SampleFormat ;
-
-		ChannelFormat outputChannel = AudioModule::Stereo ;
-
-		ChunkSize chunkSize = 4096 ;
-
-		ChannelNumber mixingChannelNumber = 16 ;
-
-		LogPlug::info( "Requesting a mixing mode at "
-			+ Ceylan::toString( outputFrequency ) + " Hz, with sample format "
-			+ sampleFormatToString( outputSampleFormat )
-			+ ", channel format "
-			+ channelFormatToString( outputChannel )
-			+ ", a chunk size of " + Ceylan::toString( chunkSize )
-			+ " bytes and " + Ceylan::toString( mixingChannelNumber )
-			+ " input (logical) mixing channels." ) ;
+	  myOSDL.logState() ;
 
 
-		myAudio.setMode( outputFrequency, outputSampleFormat, outputChannel,
-			chunkSize, mixingChannelNumber ) ;
+	  LogPlug::info( "Getting audio module." ) ;
+	  AudioModule & myAudio = myOSDL.getAudioModule() ;
 
-		myAudio.logState() ;
-
-		ChannelNumber count ;
-
-		Ceylan::System::Millisecond latency = myAudio.getObtainedMode(
-			outputFrequency, outputSampleFormat, count ) ;
-
-		/*
-		 * An exception would have been thrown otherwise, and specified
-		 * variables will have their values updated by the call:
-		 *
-		 */
-		LogPlug::info( "Obtained a mixing mode at "
-			+ Ceylan::toString( outputFrequency ) + " Hz, with sample format "
-			+ sampleFormatToString( outputSampleFormat ) + " and "
-			+ Ceylan::toString( count ) + " output channel(s), "
-			"which results in a mean theoritical latency of "
-			+ Ceylan::toString( latency ) + " milliseconds." ) ;
+	  myAudio.logState() ;
 
 
-		/*
+	  LogPlug::info( "Displaying audio driver name: "
+		+ myAudio.getDriverName() + "." ) ;
+
+	  Ceylan::Maths::Hertz outputFrequency = 22050 ;
+
+	  SampleFormat outputSampleFormat =
+		AudioModule::NativeSint16SampleFormat ;
+
+	  ChannelFormat outputChannel = AudioModule::Stereo ;
+
+	  ChunkSize chunkSize = 4096 ;
+
+	  ChannelNumber mixingChannelNumber = 16 ;
+
+	  LogPlug::info( "Requesting a mixing mode at "
+		+ Ceylan::toString( outputFrequency ) + " Hz, with sample format "
+		+ sampleFormatToString( outputSampleFormat )
+		+ ", channel format "
+		+ channelFormatToString( outputChannel )
+		+ ", a chunk size of " + Ceylan::toString( chunkSize )
+		+ " bytes and " + Ceylan::toString( mixingChannelNumber )
+		+ " input (logical) mixing channels." ) ;
+
+
+	  myAudio.setMode( outputFrequency, outputSampleFormat, outputChannel,
+		chunkSize, mixingChannelNumber ) ;
+
+	  myAudio.logState() ;
+
+	  ChannelNumber count ;
+
+	  Ceylan::System::Millisecond latency = myAudio.getObtainedMode(
+		outputFrequency, outputSampleFormat, count ) ;
+
+	  /*
+	   * An exception would have been thrown otherwise, and specified variables
+	   * will have their values updated by the call:
+	   *
+	   */
+	  LogPlug::info( "Obtained a mixing mode at "
+		+ Ceylan::toString( outputFrequency ) + " Hz, with sample format "
+		+ sampleFormatToString( outputSampleFormat ) + " and "
+		+ Ceylan::toString( count ) + " output channel(s), "
+		"which results in a mean theoritical latency of "
+		+ Ceylan::toString( latency ) + " milliseconds." ) ;
+
+
+	  /*
 		if ( ! isBatch )
-			myEvents.waitForAnyKey() ;
-		*/
+		myEvents.waitForAnyKey() ;
+	  */
 
-		LogPlug::info( "Stopping OSDL." ) ;
-		OSDL::stop() ;
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
 
-		LogPlug::info( "End of OSDL audio test." ) ;
+	  LogPlug::info( "End of OSDL audio test." ) ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

@@ -51,55 +51,55 @@ using namespace CEGUI ;
  */
 
 /*
-class MyGUIView : public OSDL::Rendering::BaseGUIView
-{
+  class MyGUIView : public OSDL::Rendering::BaseGUIView
+  {
 
-	public:
-
-
-		MyGUIView()
-		{
-
-			// Here is the place where we are to define the GUI elements:
-
-			AG_BindGlobalKey(
-
-			  //static_cast<SDLKey>( KeyboardHandler::EscapeKey ),
-			  AG_KEY_ESCAPE,
-
-			  // static_cast<SDLMod>( KeyboardHandler::NoneModifier ),
-			  AG_KEYMOD_ANY,
-
-			  Engine::Scheduler::StopExistingScheduler ) ;
+  public:
 
 
-			AG_BindGlobalKey(
+  MyGUIView()
+  {
 
-			  //static_cast<SDLKey>( KeyboardHandler::F8Key ),
-			  AG_KEY_F8,
+  // Here is the place where we are to define the GUI elements:
 
-			  //static_cast<SDLMod>( KeyboardHandler::NoneModifier ),
-			  AG_KEYMOD_ANY,
+  AG_BindGlobalKey(
 
-			  AG_ViewCapture ) ;
+  //static_cast<SDLKey>( KeyboardHandler::EscapeKey ),
+  AG_KEY_ESCAPE,
 
-			MultiLineExample( "Multiline Example (no word wrapping)", 0 ) ;
+  // static_cast<SDLMod>( KeyboardHandler::NoneModifier ),
+  AG_KEYMOD_ANY,
 
-			MultiLineExample( "Multiline Example (with word wrapping)", 1 ) ;
-
-			SingleLineExample() ;
-
-		}
+  Engine::Scheduler::StopExistingScheduler ) ;
 
 
-		virtual ~MyGUIView() throw()
-		{
+  AG_BindGlobalKey(
 
-		}
+  //static_cast<SDLKey>( KeyboardHandler::F8Key ),
+  AG_KEY_F8,
 
-		// The render() method can be inherited as is.
+  //static_cast<SDLMod>( KeyboardHandler::NoneModifier ),
+  AG_KEYMOD_ANY,
 
-} ;
+  AG_ViewCapture ) ;
+
+  MultiLineExample( "Multiline Example (no word wrapping)", 0 ) ;
+
+  MultiLineExample( "Multiline Example (with word wrapping)", 1 ) ;
+
+  SingleLineExample() ;
+
+  }
+
+
+  virtual ~MyGUIView() throw()
+  {
+
+  }
+
+  // The render() method can be inherited as is.
+
+  } ;
 
 */
 
@@ -150,6 +150,7 @@ void create_gui( Video::Surface & screen )
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -158,172 +159,174 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL GUI services." ) ;
+	  LogPlug::info( "Testing OSDL GUI services." ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
-		LogPlug::info( "Starting OSDL with GUI enabled." ) ;
+		if ( ! tokenEaten )
+		{
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
+		}
 
-		// Implies UseVideo, UseAudio and UseEvents:
-		CommonModule & myOSDL = getCommonModule( CommonModule::UseGUI ) ;
-
-		myOSDL.logState() ;
-
-
-		LogPlug::info( "Testing real video (displayable)." ) ;
-
-		LogPlug::info( "Getting video module." ) ;
-		VideoModule & myVideo = myOSDL.getVideoModule() ;
-
-		myVideo.logState() ;
-
-		LogPlug::info( "Displaying available video definitions: "
-			+ VideoModule::DescribeAvailableDefinitions(
-					Surface::FullScreen | Surface::Hardware ) ) ;
-
-		LogPlug::info( "Displaying configuration informations, "
-			"including best available pixel format: "
-			+ VideoModule::DescribeVideoCapabilities() ) ;
-
-		LogPlug::info( "Displaying video driver name: "
-			+ myVideo.getDriverName() + "." ) ;
+	  }
 
 
-		// Going from potential to real:
+	  LogPlug::info( "Starting OSDL with GUI enabled." ) ;
 
-		LogPlug::info( "Entering visual tests: initializing the screen." ) ;
+	  // Implies UseVideo, UseAudio and UseEvents:
+	  CommonModule & myOSDL = getCommonModule( CommonModule::UseGUI ) ;
 
-		Length screenWidth  = 640 ;
-		Length screenHeight = 480 ;
-
-		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface,
-			OpenGL::OpenGLFor2D ) ;
-
-		LogPlug::info( "Displaying now new current video informations. "
-			+ VideoModule::DescribeVideoCapabilities() ) ;
+	  myOSDL.logState() ;
 
 
-		OSDL::Events::EventsModule & myEvents = myOSDL.getEventsModule() ;
-		/*
+	  LogPlug::info( "Testing real video (displayable)." ) ;
+
+	  LogPlug::info( "Getting video module." ) ;
+	  VideoModule & myVideo = myOSDL.getVideoModule() ;
+
+	  myVideo.logState() ;
+
+	  LogPlug::info( "Displaying available video definitions: "
+		+ VideoModule::DescribeAvailableDefinitions(
+		  Surface::FullScreen | Surface::Hardware ) ) ;
+
+	  LogPlug::info( "Displaying configuration informations, "
+		"including best available pixel format: "
+		+ VideoModule::DescribeVideoCapabilities() ) ;
+
+	  LogPlug::info( "Displaying video driver name: "
+		+ myVideo.getDriverName() + "." ) ;
+
+
+	  // Going from potential to real:
+
+	  LogPlug::info( "Entering visual tests: initializing the screen." ) ;
+
+	  Length screenWidth  = 640 ;
+	  Length screenHeight = 480 ;
+
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface,
+		OpenGL::OpenGLFor2D ) ;
+
+	  LogPlug::info( "Displaying now new current video informations. "
+		+ VideoModule::DescribeVideoCapabilities() ) ;
+
+
+	  OSDL::Events::EventsModule & myEvents = myOSDL.getEventsModule() ;
+	  /*
 		myEvents.useScheduler() ;
 
 		// Subscribes to the scheduler, which takes ownership of it:
 		Rendering::StandardRenderer * renderer =
-			new Rendering::StandardRenderer( myVideo.getScreenSurface() ) ;
+		new Rendering::StandardRenderer( myVideo.getScreenSurface() ) ;
 
 		MyGUIView * myGUIView = new MyGUIView() ;
 
 		// Ownership not taken:
 		renderer->registerView( *myGUIView ) ;
-		*/
+	  */
 
-		create_gui( myVideo.getScreenSurface() ) ;
+	  create_gui( myVideo.getScreenSurface() ) ;
 
-		if ( ! isBatch )
-			myEvents.enterMainLoop() ;
+	  if ( ! isBatch )
+		myEvents.enterMainLoop() ;
 
-		LogPlug::info( "Stopping OSDL." ) ;
-		OSDL::stop() ;
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
 
-		//delete myGUIView ;
+	  //delete myGUIView ;
 
-		LogPlug::info( "End of OSDL GUI test." ) ;
+	  LogPlug::info( "End of OSDL GUI test." ) ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

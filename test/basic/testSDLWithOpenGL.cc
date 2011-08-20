@@ -127,24 +127,26 @@ void DrawGLScene()
 int main( int argc, char **argv )
 {
 
-  LogHolder myLog( argc, argv ) ;
-
-  LogPlug::info( "Testing basic OpenGL support, "
-	"with SDL (OSDL not involved)" ) ;
-
-  bool isBatch = false ;
-
-  std::string executableName ;
-  std::list<std::string> options ;
-
-  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
-
-  std::string token ;
-  bool tokenEaten ;
-
-
-  while ( ! options.empty() )
   {
+
+	LogHolder myLog( argc, argv ) ;
+
+	LogPlug::info( "Testing basic OpenGL support, "
+	  "with SDL (OSDL not involved)" ) ;
+
+	bool isBatch = false ;
+
+	std::string executableName ;
+	std::list<std::string> options ;
+
+	Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+
+	std::string token ;
+	bool tokenEaten ;
+
+
+	while ( ! options.empty() )
+	{
 
 	  token = options.front() ;
 	  options.pop_front() ;
@@ -153,115 +155,117 @@ int main( int argc, char **argv )
 
 	  if ( token == "--batch" )
 	  {
-		  LogPlug::info( "Batch mode selected" ) ;
-		  isBatch = true ;
-		  tokenEaten = true ;
+		LogPlug::info( "Batch mode selected" ) ;
+		isBatch = true ;
+		tokenEaten = true ;
 	  }
 
 	  if ( token == "--interactive" )
 	  {
-		  LogPlug::info( "Interactive mode selected" ) ;
-		  isBatch = false ;
-		  tokenEaten = true ;
+		LogPlug::info( "Interactive mode selected" ) ;
+		isBatch = false ;
+		tokenEaten = true ;
 	  }
 
 
 	  if ( LogHolder::IsAKnownPlugOption( token ) )
 	  {
-		  // Ignores log-related (argument-less) options.
-		  tokenEaten = true ;
+		// Ignores log-related (argument-less) options.
+		tokenEaten = true ;
 	  }
 
 
 	  if ( ! tokenEaten )
 	  {
-		  // No exception can be thrown because of SDLmain declaration:
-		  LogPlug::fatal( "Unexpected command line argument: " + token ) ;
-		  exit( 1 ) ;
+		// No exception can be thrown because of SDLmain declaration:
+		LogPlug::fatal( "Unexpected command line argument: " + token ) ;
+		exit( 1 ) ;
 	  }
 
-  }
+	}
 
 
-  int done ;
+	int done ;
 
-  /* Initialize SDL for video output */
-  if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
-  {
-	std::cerr << "Unable to initialize SDL: "
-		<< Utils:: getBackendLastError() << std::endl ;
-	return 1 ;
-  }
+	/* Initialize SDL for video output */
+	if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
+	{
+	  std::cerr << "Unable to initialize SDL: "
+				<< Utils:: getBackendLastError() << std::endl ;
+	  return 1 ;
+	}
 
-  int screenWidth  = 640 ;
-  int screenHeight = 480 ;
+	int screenWidth  = 640 ;
+	int screenHeight = 480 ;
 
-  /* Create a 640x480 OpenGL screen */
-  if ( SDL_SetVideoMode( screenWidth, screenHeight, /* current bpp */ 0,
-	SDL_OPENGL) == 0 )
-  {
-
-	std::cerr << "Unable to create OpenGL screen: " <<
-		Utils:: getBackendLastError() << std::endl ;
-
-	SDL_Quit() ;
-	return 2 ;
-
-  }
-
-  /* Set the title bar in environments that support it */
-  SDL_WM_SetCaption( "SDL with OpenGL example, taken from "
-	"Jeff Molofee's GL Code Tutorial, NeHe '99", 0) ;
-
-  /* Loop, drawing and checking events */
-  InitGL( screenWidth, screenHeight ) ;
-  done = 0;
-
-  if ( ! isBatch )
-	Ceylan::display( "< Press any key on SDL window to stop >" ) ;
-
-  while ( ! done )
-  {
-
-	DrawGLScene() ;
-
-	/*
-	 * Added by OSDL to avoid display saturation which prevents inputs to be
-	 * processed on time:
-	 *
-	 */
-	SDL_Delay(10) ;
-
-	/* This could go in a separate function */
+	/* Create a 640x480 OpenGL screen */
+	if ( SDL_SetVideoMode( screenWidth, screenHeight, /* current bpp */ 0,
+		SDL_OPENGL) == 0 )
 	{
 
-	  SDL_Event event;
+	  std::cerr << "Unable to create OpenGL screen: " <<
+		Utils:: getBackendLastError() << std::endl ;
 
-	  if ( ! isBatch )
+	  SDL_Quit() ;
+	  return 2 ;
+
+	}
+
+	/* Set the title bar in environments that support it */
+	SDL_WM_SetCaption( "SDL with OpenGL example, taken from "
+	  "Jeff Molofee's GL Code Tutorial, NeHe '99", 0) ;
+
+	/* Loop, drawing and checking events */
+	InitGL( screenWidth, screenHeight ) ;
+	done = 0;
+
+	if ( ! isBatch )
+	  Ceylan::display( "< Press any key on SDL window to stop >" ) ;
+
+	while ( ! done )
+	{
+
+	  DrawGLScene() ;
+
+	  /*
+	   * Added by OSDL to avoid display saturation which prevents inputs to be
+	   * processed on time:
+	   *
+	   */
+	  SDL_Delay(10) ;
+
+	  /* This could go in a separate function */
 	  {
+
+		SDL_Event event;
+
+		if ( ! isBatch )
+		{
 
 		  do
 		  {
 
-			  // Avoid busy waits:
-			  SDL_WaitEvent( & event ) ;
+			// Avoid busy waits:
+			SDL_WaitEvent( & event ) ;
 
 		  } while ( event.type != SDL_KEYDOWN ) ;
 
 		  done = true ;
 
-	  }
-	  else
-	  {
+		}
+		else
+		{
 		  SDL_Delay( 1000 /* milliseconds */ ) ;
 		  done = true ;
+		}
+
 	  }
 
 	}
 
-  }
+	SDL_Quit() ;
 
-  SDL_Quit() ;
+  }
 
   // To deallocate helpers like Ceylan's filesystem manager for logs:
   OSDL::shutdown() ;

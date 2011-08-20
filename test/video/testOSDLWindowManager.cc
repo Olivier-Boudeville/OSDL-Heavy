@@ -38,6 +38,7 @@ using std::string ;
 const std::string iconFile = "OSDL-icon.png" ;
 
 
+
 /**
  * Test for window manager operations.
  *
@@ -45,6 +46,7 @@ const std::string iconFile = "OSDL-icon.png" ;
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -53,165 +55,167 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL window manager services." ) ;
+	  LogPlug::info( "Testing OSDL window manager services." ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
-		LogPlug::info( "Prerequisite: starting OSDL with video enabled." ) ;
+		if ( ! tokenEaten )
+		{
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
+		}
 
-		CommonModule & myOSDL = getCommonModule(
-			CommonModule::UseVideo | CommonModule::UseEvents ) ;
-
-		VideoModule & myVideo = myOSDL.getVideoModule() ;
-
-		string title ;
-		string iconName ;
-
-		myVideo.getWindowCaption( title, iconName ) ;
-
-		LogPlug::info( "Reading window caption: title is '" + title
-			+ "', icon name is '" + iconName + "'." ) ;
-
-		title    = "OSDL is great" ;
-		iconName = "OSDL window manager test" ;
-
-		LogPlug::info( "Writing window caption: title will be '" + title
-			+ "', icon name will be '" + iconName + "'." ) ;
-
-		myVideo.setWindowCaption( title, iconName ) ;
-
-		LogPlug::info( "Reading window caption: title is '" + title
-			+ "', icon name is '" + iconName + "'." ) ;
-
-		LogPlug::info( "Setting icon image." ) ;
-
-		Ceylan::System::FileLocator imageFinder ;
+	  }
 
 
-		// When run from playTests.sh build directory:
-		imageFinder.addPath( "../src/doc/web/images" ) ;
+	  LogPlug::info( "Prerequisite: starting OSDL with video enabled." ) ;
 
-		// When run from executable build directory:
-		imageFinder.addPath( "../../src/doc/web/images" ) ;
+	  CommonModule & myOSDL = getCommonModule(
+		CommonModule::UseVideo | CommonModule::UseEvents ) ;
 
-		// When run from executable install directory:
-		imageFinder.addPath( "../OSDL/doc/web/images" ) ;
+	  VideoModule & myVideo = myOSDL.getVideoModule() ;
 
-		myVideo.setWindowIcon( imageFinder.find( iconFile ) ) ;
+	  string title ;
+	  string iconName ;
 
-		Length screenWidth  = 640 ;
-		Length screenHeight = 480 ;
+	  myVideo.getWindowCaption( title, iconName ) ;
 
-		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
+	  LogPlug::info( "Reading window caption: title is '" + title
+		+ "', icon name is '" + iconName + "'." ) ;
 
-		Surface & screen = myVideo.getScreenSurface() ;
+	  title    = "OSDL is great" ;
+	  iconName = "OSDL window manager test" ;
 
-		screen.update() ;
+	  LogPlug::info( "Writing window caption: title will be '" + title
+		+ "', icon name will be '" + iconName + "'." ) ;
 
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
+	  myVideo.setWindowCaption( title, iconName ) ;
+
+	  LogPlug::info( "Reading window caption: title is '" + title
+		+ "', icon name is '" + iconName + "'." ) ;
+
+	  LogPlug::info( "Setting icon image." ) ;
+
+	  Ceylan::System::FileLocator imageFinder ;
 
 
-		LogPlug::info( "Stopping OSDL." ) ;
-		OSDL::stop() ;
+	  // When run from playTests.sh build directory:
+	  imageFinder.addPath( "../src/doc/web/images" ) ;
 
-		LogPlug::info( "End of OSDL window manager test." ) ;
+	  // When run from executable build directory:
+	  imageFinder.addPath( "../../src/doc/web/images" ) ;
+
+	  // When run from executable install directory:
+	  imageFinder.addPath( "../OSDL/doc/web/images" ) ;
+
+	  myVideo.setWindowIcon( imageFinder.find( iconFile ) ) ;
+
+	  Length screenWidth  = 640 ;
+	  Length screenHeight = 480 ;
+
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
+
+	  Surface & screen = myVideo.getScreenSurface() ;
+
+	  screen.update() ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
+
+	  LogPlug::info( "End of OSDL window manager test." ) ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

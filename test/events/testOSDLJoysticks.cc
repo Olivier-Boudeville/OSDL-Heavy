@@ -40,43 +40,43 @@ using namespace Ceylan::Log ;
 class MyController : public OSDL::MVC::Controller
 {
 
-	public:
+public:
 
 
-		MyController( EventsModule & eventsModule ) throw() :
-			_eventsModule( & eventsModule )
-		{
+  MyController( EventsModule & eventsModule ) throw() :
+	_eventsModule( & eventsModule )
+  {
 
 
-		}
+  }
 
 
-		void rawKeyPressed( const KeyboardEvent & keyboardPressedEvent ) throw()
-		{
-			LogPlug::info( "A key was pressed, exiting." ) ;
-			_eventsModule->requestQuit() ;
-		}
+  void rawKeyPressed( const KeyboardEvent & keyboardPressedEvent ) throw()
+  {
+	LogPlug::info( "A key was pressed, exiting." ) ;
+	_eventsModule->requestQuit() ;
+  }
 
 
-		void joystickAxisChanged( const JoystickAxisEvent & joystickAxisEvent )
-			throw()
-		{
-			std::cout << "Joystick is moving..." << std::endl ;
-		}
+  void joystickAxisChanged( const JoystickAxisEvent & joystickAxisEvent )
+	throw()
+  {
+	std::cout << "Joystick is moving..." << std::endl ;
+  }
 
 
-		const Ceylan::Event & getEventFor(
-				const Ceylan::CallerEventListener & listener )
-			throw( Ceylan::EventException )
-		{
-			throw Ceylan::EventException( "MyController::getEventFor: "
-				"not expected to be called." ) ;
-		}
+  const Ceylan::Event & getEventFor(
+	const Ceylan::CallerEventListener & listener )
+	throw( Ceylan::EventException )
+  {
+	throw Ceylan::EventException( "MyController::getEventFor: "
+	  "not expected to be called." ) ;
+  }
 
 
-	protected:
+protected:
 
-		EventsModule * _eventsModule ;
+  EventsModule * _eventsModule ;
 
 
 } ;
@@ -91,6 +91,8 @@ class MyController : public OSDL::MVC::Controller
 int main( int argc, char * argv[] )
 {
 
+  {
+
 	LogHolder myLog( argc, argv ) ;
 
 
@@ -98,199 +100,201 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL joystick services." ) ;
+	  LogPlug::info( "Testing OSDL joystick services." ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
-		LogPlug::info( "Starting OSDL with joystick support." ) ;
-		OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseJoystick ) ;
-
-		LogPlug::info( "Testing basic event handling." ) ;
-
-		LogPlug::info( "Getting events module." ) ;
-		EventsModule & myEvents = myOSDL.getEventsModule() ;
-
-		LogPlug::info( "Events module: " + myEvents.toString() ) ;
-
-		JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
-		LogPlug::info( "Current joystick handler is: "
-			+ myJoystickHandler.toString( Ceylan::high ) ) ;
-
-		JoystickNumber joyCount =
-			myJoystickHandler.GetAvailableJoystickCount() ;
-
-		if ( joyCount > 0 )
+		if ( ! tokenEaten )
 		{
-
-			LogPlug::info( "There are " + Ceylan::toString( joyCount )
-				+ " attached joystick(s), opening them all." ) ;
-
-			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
-				myJoystickHandler.openJoystick( i ) ;
-
-			LogPlug::info( "New joystick handler state is: "
-				+ myJoystickHandler.toString( Ceylan::high ) ) ;
-
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
 		}
-		else
-		{
 
-			LogPlug::info( "No joystick to test, stopping test." ) ;
+	  }
 
-			OSDL::stop() ;
 
-			OSDL::shutdown() ;
+	  LogPlug::info( "Starting OSDL with joystick support." ) ;
+	  OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
+		CommonModule::UseJoystick ) ;
 
-			return Ceylan::ExitSuccess ;
+	  LogPlug::info( "Testing basic event handling." ) ;
 
-		}
+	  LogPlug::info( "Getting events module." ) ;
+	  EventsModule & myEvents = myOSDL.getEventsModule() ;
+
+	  LogPlug::info( "Events module: " + myEvents.toString() ) ;
+
+	  JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
+	  LogPlug::info( "Current joystick handler is: "
+		+ myJoystickHandler.toString( Ceylan::high ) ) ;
+
+	  JoystickNumber joyCount =
+		myJoystickHandler.GetAvailableJoystickCount() ;
+
+	  if ( joyCount > 0 )
+	  {
+
+		LogPlug::info( "There are " + Ceylan::toString( joyCount )
+		  + " attached joystick(s), opening them all." ) ;
+
+		for ( JoystickNumber i = 0 ; i < joyCount; i++ )
+		  myJoystickHandler.openJoystick( i ) ;
 
 		LogPlug::info( "New joystick handler state is: "
-			+ myJoystickHandler.toString( Ceylan::high ) ) ;
+		  + myJoystickHandler.toString( Ceylan::high ) ) ;
 
+	  }
+	  else
+	  {
 
-		LogPlug::info( "Displaying a dummy window "
-			"to have access to an event queue." ) ;
+		LogPlug::info( "No joystick to test, stopping test." ) ;
 
-		LogPlug::info( "Getting video." ) ;
-		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ;
-
-		// A window is needed to have the event system working:
-
-		Length screenWidth  = 640 ;
-		Length screenHeight = 480 ;
-
-		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
-
-		LogPlug::info( "Using the first joystick" ) ;
-
-		MyController myController( myEvents ) ;
-
-		if ( joyCount > 0 )
-			myJoystickHandler.linkToController( /* first joystick */ 0,
-				myController ) ;
-
-		if ( isBatch )
-		{
-
-			LogPlug::warning( "Main loop not launched, as in batch mode." ) ;
-
-		}
-		else
-		{
-
-			LogPlug::info( "Entering the event loop "
-				"for event waiting so that joystick can be tested." ) ;
-
-			std::cout << std::endl << "< Push the first button of joystick "
-			"or hit any key to stop this test >" << std::endl ;
-
-			myEvents.enterMainLoop() ;
-			LogPlug::info( "Exiting main loop." ) ;
-
-		}
-
-
-		LogPlug::info( "End of joystick test." ) ;
-
-		LogPlug::info( "Stopping OSDL." ) ;
 		OSDL::stop() ;
+
+		OSDL::shutdown() ;
+
+		return Ceylan::ExitSuccess ;
+
+	  }
+
+	  LogPlug::info( "New joystick handler state is: "
+		+ myJoystickHandler.toString( Ceylan::high ) ) ;
+
+
+	  LogPlug::info( "Displaying a dummy window "
+		"to have access to an event queue." ) ;
+
+	  LogPlug::info( "Getting video." ) ;
+	  OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ;
+
+	  // A window is needed to have the event system working:
+
+	  Length screenWidth  = 640 ;
+	  Length screenHeight = 480 ;
+
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
+
+	  LogPlug::info( "Using the first joystick" ) ;
+
+	  MyController myController( myEvents ) ;
+
+	  if ( joyCount > 0 )
+		myJoystickHandler.linkToController( /* first joystick */ 0,
+		  myController ) ;
+
+	  if ( isBatch )
+	  {
+
+		LogPlug::warning( "Main loop not launched, as in batch mode." ) ;
+
+	  }
+	  else
+	  {
+
+		LogPlug::info( "Entering the event loop "
+		  "for event waiting so that joystick can be tested." ) ;
+
+		std::cout << std::endl << "< Push the first button of joystick "
+		  "or hit any key to stop this test >" << std::endl ;
+
+		myEvents.enterMainLoop() ;
+		LogPlug::info( "Exiting main loop." ) ;
+
+	  }
+
+
+	  LogPlug::info( "End of joystick test." ) ;
+
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

@@ -41,12 +41,12 @@ using namespace Ceylan::Log ;
 void informShape( Length width, Length height )
 {
 
-	LogPlug::info( "A sprite whose dimensions would be width = "
-		+ Ceylan::toString( width ) + " and height = "
-		+ Ceylan::toString( height ) + " would be placed in a "
-		+ Sprite::DescribeShape(
-			Sprite::GetSmallestEnclosingShape( width, height ) )
-		+ " shape." ) ;
+  LogPlug::info( "A sprite whose dimensions would be width = "
+	+ Ceylan::toString( width ) + " and height = "
+	+ Ceylan::toString( height ) + " would be placed in a "
+	+ Sprite::DescribeShape(
+	  Sprite::GetSmallestEnclosingShape( width, height ) )
+	+ " shape." ) ;
 
 }
 
@@ -60,6 +60,7 @@ void informShape( Length width, Length height )
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -67,118 +68,118 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL Sprite class." ) ;
+	  LogPlug::info( "Testing OSDL Sprite class." ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
-		LogPlug::info( "Testing assigned sprite shapes for various dimensions."
-			) ;
+		if ( ! tokenEaten )
+		{
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
+		}
 
-		// 8x8:
-		informShape(  1,  2 ) ;
-		informShape(  1,  8 ) ;
-
-		// 16x8:
-		informShape(  9,  7 ) ;
-
-		// 32x8:
-		informShape(  19,  7 ) ;
+	  }
 
 
-		// 8x16:
-		informShape(  1,  9 ) ;
+	  LogPlug::info( "Testing assigned sprite shapes for various dimensions."
+					 ) ;
 
-		// 16x16:
-		informShape( 16,  9 ) ;
+	  // 8x8:
+	  informShape(  1,  2 ) ;
+	  informShape(  1,  8 ) ;
 
-		// 32x16:
-		informShape( 32,  9 ) ;
+	  // 16x8:
+	  informShape(  9,  7 ) ;
 
-
-		// 8x32:
-		informShape( 5, 32 ) ;
-
-		// 16x32:
-		informShape( 16, 32 ) ;
-
-		// 32x32:
-		informShape( 31, 32 ) ;
-		informShape( 32, 32 ) ;
-
-		// 64x32:
-		informShape( 33, 32 ) ;
-
-		// 32x64:
-		informShape( 32, 33 ) ;
-
-		// 64x64:
-		informShape( 45, 64 ) ;
-
-		// Exception correctly raised: informShape( 65, 33 ) ;
+	  // 32x8:
+	  informShape(  19,  7 ) ;
 
 
-		/*
+	  // 8x16:
+	  informShape(  1,  9 ) ;
+
+	  // 16x16:
+	  informShape( 16,  9 ) ;
+
+	  // 32x16:
+	  informShape( 32,  9 ) ;
+
+
+	  // 8x32:
+	  informShape( 5, 32 ) ;
+
+	  // 16x32:
+	  informShape( 16, 32 ) ;
+
+	  // 32x32:
+	  informShape( 31, 32 ) ;
+	  informShape( 32, 32 ) ;
+
+	  // 64x32:
+	  informShape( 33, 32 ) ;
+
+	  // 32x64:
+	  informShape( 32, 33 ) ;
+
+	  // 64x64:
+	  informShape( 45, 64 ) ;
+
+	  // Exception correctly raised: informShape( 65, 33 ) ;
+
+
+	  /*
 
 		LogPlug::info( "Prerequisite: initializing the display" ) ;
 
 
 		CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseVideo ) ;
+		CommonModule::UseVideo ) ;
 
 		VideoModule & myVideo = myOSDL.getVideoModule() ;
 
@@ -186,7 +187,7 @@ int main( int argc, char * argv[] )
 		Length screenHeight = 480 ;
 
 		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 
 		Surface & screen = myVideo.getScreenSurface() ;
 
@@ -194,49 +195,51 @@ int main( int argc, char * argv[] )
 		LogPlug::info( "Stopping OSDL." ) ;
 		OSDL::stop() ;
 
-		*/
+	  */
 
-		LogPlug::info( "End of OSDL sprite test." ) ;
+	  LogPlug::info( "End of OSDL sprite test." ) ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

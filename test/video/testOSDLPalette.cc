@@ -44,6 +44,7 @@ using std::string ;
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -52,208 +53,210 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL palette services." ) ;
+	  LogPlug::info( "Testing OSDL palette services." ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
+		if ( ! tokenEaten )
+		{
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
+		}
 
-		OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
-				CommonModule::UseVideo | CommonModule::UseEvents ) ;
-
-		VideoModule & myVideo = myOSDL.getVideoModule() ;
-
-		Length screenWidth  = 640 ;
-		Length screenHeight = 480 ;
-
-		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
-
-		Surface & screen = myVideo.getScreenSurface() ;
+	  }
 
 
-		LogPlug::info( "Creating greyscale palette." ) ;
-		Palette & greyPal = Palette::CreateGreyScalePalette( screenHeight ) ;
+
+	  OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
+		CommonModule::UseVideo | CommonModule::UseEvents ) ;
+
+	  VideoModule & myVideo = myOSDL.getVideoModule() ;
+
+	  Length screenWidth  = 640 ;
+	  Length screenHeight = 480 ;
+
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
+
+	  Surface & screen = myVideo.getScreenSurface() ;
 
 
-		LogPlug::info( "Displaying greyscale palette: "
-			+ greyPal.toString() ) ;
-
-		greyPal.draw( screen ) ;
+	  LogPlug::info( "Creating greyscale palette." ) ;
+	  Palette & greyPal = Palette::CreateGreyScalePalette( screenHeight ) ;
 
 
-		screen.update() ;
+	  LogPlug::info( "Displaying greyscale palette: "
+		+ greyPal.toString() ) ;
 
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
-
-		delete & greyPal ;
+	  greyPal.draw( screen ) ;
 
 
-		Palette & colorPal = Palette::CreateGradationPalette(
-			Pixels::MidnightBlue, Pixels::DeepPink, screenHeight ) ;
+	  screen.update() ;
 
-		LogPlug::info( "Displaying colored palette: " + colorPal.toString() ) ;
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
 
-		colorPal.draw( screen ) ;
-
-		screen.update() ;
-
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
-
-		delete & colorPal ;
-
-		Palette & masterPal = Palette::CreateMasterPalette() ;
-
-		LogPlug::info( "Displaying master palette: " + masterPal.toString() ) ;
-
-		if ( masterPal.hasDuplicates() )
-			LogPlug::info( "Master palette has duplicated colors." ) ;
-		else
-			LogPlug::info( "Master palette has no duplicated color." ) ;
-
-		const string unencodedMasterPalFilename = "testOSDLPalette.rgb" ;
-		LogPlug::info( "Saving it in unencoded format in '"
-			+ unencodedMasterPalFilename + "'." ) ;
-		masterPal.save( unencodedMasterPalFilename, /* encoded */ false ) ;
-
-		const string encodedMasterPalFilename = "testOSDLPalette.pal" ;
-		LogPlug::info( "Saving it in encoded format in '"
-			+ encodedMasterPalFilename + "'." ) ;
-		masterPal.save( encodedMasterPalFilename, /* encoded */ true ) ;
+	  delete & greyPal ;
 
 
-		/*
-		 * Checking correctness: color #6 is [ 0 ; 36 ; 63] (in 8-bit).
-		 *
-		 * It should be in bytes 12 and 13 of the .pal, which are:
-		 * 0x9C80 = 40064 = 1001110010000000 = 1 00111 00100 00000 in BGR order.
-		 *
-		 * So in [0;31] R = 00000 = 0, G = 00100 = 4, B = 00111 = 7 which in
-		 * [0;255] is R = 0, G = 33, B = 58. The small differences compared to
-		 * the color #6 are quantization errors.
-		 *
-		 */
+	  Palette & colorPal = Palette::CreateGradationPalette(
+		Pixels::MidnightBlue, Pixels::DeepPink, screenHeight ) ;
+
+	  LogPlug::info( "Displaying colored palette: " + colorPal.toString() ) ;
+
+	  colorPal.draw( screen ) ;
+
+	  screen.update() ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+	  delete & colorPal ;
+
+	  Palette & masterPal = Palette::CreateMasterPalette() ;
+
+	  LogPlug::info( "Displaying master palette: " + masterPal.toString() ) ;
+
+	  if ( masterPal.hasDuplicates() )
+		LogPlug::info( "Master palette has duplicated colors." ) ;
+	  else
+		LogPlug::info( "Master palette has no duplicated color." ) ;
+
+	  const string unencodedMasterPalFilename = "testOSDLPalette.rgb" ;
+	  LogPlug::info( "Saving it in unencoded format in '"
+		+ unencodedMasterPalFilename + "'." ) ;
+	  masterPal.save( unencodedMasterPalFilename, /* encoded */ false ) ;
+
+	  const string encodedMasterPalFilename = "testOSDLPalette.pal" ;
+	  LogPlug::info( "Saving it in encoded format in '"
+		+ encodedMasterPalFilename + "'." ) ;
+	  masterPal.save( encodedMasterPalFilename, /* encoded */ true ) ;
 
 
-		masterPal.draw( screen ) ;
+	  /*
+	   * Checking correctness: color #6 is [ 0 ; 36 ; 63] (in 8-bit).
+	   *
+	   * It should be in bytes 12 and 13 of the .pal, which are:
+	   * 0x9C80 = 40064 = 1001110010000000 = 1 00111 00100 00000 in BGR order.
+	   *
+	   * So in [0;31] R = 00000 = 0, G = 00100 = 4, B = 00111 = 7 which in
+	   * [0;255] is R = 0, G = 33, B = 58. The small differences compared to the
+	   * color #6 are quantization errors.
+	   *
+	   */
 
-		screen.update() ;
 
-		masterPal.quantize( /* quantizeMaxCoordinate */ 31,
-			/* scaleUp */ false ) ;
+	  masterPal.draw( screen ) ;
 
-		if ( masterPal.hasDuplicates() )
-			LogPlug::info( "Quantized master palette has duplicated colors." ) ;
-		else
-			LogPlug::info(
-				"Quantized master palette has no duplicated color." ) ;
+	  screen.update() ;
+
+	  masterPal.quantize( /* quantizeMaxCoordinate */ 31,
+		/* scaleUp */ false ) ;
+
+	  if ( masterPal.hasDuplicates() )
+		LogPlug::info( "Quantized master palette has duplicated colors." ) ;
+	  else
+		LogPlug::info(
+		  "Quantized master palette has no duplicated color." ) ;
 
 
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
 
-		delete & masterPal ;
+	  delete & masterPal ;
 
-		LogPlug::info( "Stopping OSDL." ) ;
-		OSDL::stop() ;
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
 
-		LogPlug::info( "End of OSDL palette test." ) ;
+	  LogPlug::info( "End of OSDL palette test." ) ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

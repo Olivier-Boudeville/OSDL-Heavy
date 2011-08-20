@@ -41,62 +41,71 @@ using namespace Ceylan::Log ;
 int main( int argc, char * argv[] )
 {
 
+  {
+
 	LogHolder myLog( argc, argv ) ;
+
+	bool success = false ;
 
 	try
 	{
 
-		LogPlug::info( "Testing OSDL exception handling" ) ;
+	  LogPlug::info( "Testing OSDL exception handling" ) ;
 
-		throw OSDL::TestException(
-			"This exception has been explicitly raised." ) ;
+	  throw OSDL::TestException(
+		"This exception has been explicitly raised." ) ;
 
 
-		// Never reached :
+	  // Never reached :
 
-		LogPlug::fatal( "Failed raising exception." ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::fatal( "Failed raising exception." ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::info( "End of OSDL exception handling test." ) ;
+	  LogPlug::info( "End of OSDL exception handling test." ) ;
 
-		OSDL::shutdown() ;
-
-		// This is a success, from this test point of view.
-		return Ceylan::ExitSuccess ;
+	  // This is a success, from this test point of view:
+	  success = true ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	// Exception missed :
+  }
+
+  OSDL::shutdown() ;
+
+  // Exception missed:
+  if ( success )
+	return Ceylan::ExitSuccess ;
+  else
 	return Ceylan::ExitFailure ;
 
 }

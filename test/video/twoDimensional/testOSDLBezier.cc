@@ -46,7 +46,9 @@ int main( int argc, char * argv[] )
 {
 
 
-	bool screenshotWanted = true ;
+  bool screenshotWanted = true ;
+
+  {
 
 
 	LogHolder myLog( argc, argv ) ;
@@ -56,273 +58,275 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL Bezier curves" ) ;
+	  LogPlug::info( "Testing OSDL Bezier curves" ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
-		LogPlug::info( "Prerequisite: initializing the display" ) ;
-
-
-		CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseVideo | CommonModule::UseKeyboard ) ;
-
-		VideoModule & myVideo = myOSDL.getVideoModule() ;
-
-		Length screenWidth  = 640 ;
-		Length screenHeight = 480 ;
-
-		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
-
-		Surface & screen = myVideo.getScreenSurface() ;
-
-
-		LogPlug::info( "Drawing Bezier curves" ) ;
-
-		listPoint2D controlPoints ;
-
-		screen.lock() ;
-
-		// Draws 'O':
-		Point2D oFirst( 100, 80 ) ;
-		controlPoints.push_back( & oFirst ) ;
-		screen.drawCross( oFirst ) ;
-
-		Point2D oSecond( 5, 180 ) ;
-		controlPoints.push_back( & oSecond ) ;
-		screen.drawCross( oSecond ) ;
-
-		Point2D oThird( 170, 220 ) ;
-		controlPoints.push_back( & oThird ) ;
-		screen.drawCross( oThird ) ;
-
-		Point2D oFourth( 180, 120 ) ;
-		controlPoints.push_back( & oFourth ) ;
-		screen.drawCross( oFourth ) ;
-
-		Point2D oFifth( 100, 90 ) ;
-		controlPoints.push_back( & oFifth ) ;
-		screen.drawCross( oFifth ) ;
-
-		// SDL_gfx might be disabled:
-		if ( VideoModule::IsUsingDrawingPrimitives() )
+		if ( ! tokenEaten )
 		{
-
-		  if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints,
-			  /* numberOfSteps */ 50, Pixels::Bisque ) )
-			throw Ceylan::TestException(
-			  "Drawing of Bezier curve failed (letter 'O')." ) ;
-
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
 		}
 
-		controlPoints.clear() ;
+	  }
 
 
-		// Draws 'S':
-
-		Point2D sFirst( 200, 200 ) ;
-		controlPoints.push_back( & sFirst ) ;
-		screen.drawCross( sFirst ) ;
-
-		Point2D sSecond( 350, 180 ) ;
-		controlPoints.push_back( & sSecond ) ;
-		screen.drawCross( sSecond ) ;
-
-		Point2D sThird( 170, 100 ) ;
-		controlPoints.push_back( & sThird ) ;
-		screen.drawCross( sThird ) ;
-
-		Point2D sFourth( 300, 80 ) ;
-		controlPoints.push_back( & sFourth ) ;
-		screen.drawCross( sFourth ) ;
-
-		if ( VideoModule::IsUsingDrawingPrimitives() )
-		{
-
-		  if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints,
-			  /* numberOfSteps */ 50, Pixels::Bisque ) )
-			throw Ceylan::TestException(
-			  "Drawing of Bezier curve failed (letter 'S')." ) ;
-
-		}
-
-		controlPoints.clear() ;
+	  LogPlug::info( "Prerequisite: initializing the display" ) ;
 
 
+	  CommonModule & myOSDL = OSDL::getCommonModule(
+		CommonModule::UseVideo | CommonModule::UseKeyboard ) ;
 
-		// Draws 'D':
+	  VideoModule & myVideo = myOSDL.getVideoModule() ;
 
-		Point2D dFirst( 360, 100 ) ;
-		controlPoints.push_back( & dFirst ) ;
-		screen.drawCross( dFirst ) ;
+	  Length screenWidth  = 640 ;
+	  Length screenHeight = 480 ;
 
-		Point2D dSecond( 300, 300 ) ;
-		controlPoints.push_back( & dSecond ) ;
-		screen.drawCross( dSecond ) ;
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 
-		Point2D dThird( 480, 180 ) ;
-		controlPoints.push_back( & dThird ) ;
-		screen.drawCross( dThird ) ;
-
-		Point2D dFourth( 480, 140 ) ;
-		controlPoints.push_back( & dFourth ) ;
-		screen.drawCross( dFourth ) ;
-
-		Point2D dFifth( 350, 90 ) ;
-		controlPoints.push_back( & dFifth ) ;
-		screen.drawCross( dFifth ) ;
-
-		if ( VideoModule::IsUsingDrawingPrimitives() )
-		{
-
-		  if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints,
-			  /* numberOfSteps */ 50, Pixels::Bisque ) )
-			throw Ceylan::TestException(
-			  "Drawing of Bezier curve failed (letter 'D')." ) ;
-
-		}
-
-		controlPoints.clear() ;
+	  Surface & screen = myVideo.getScreenSurface() ;
 
 
-		// Draws 'L':
+	  LogPlug::info( "Drawing Bezier curves" ) ;
 
-		Point2D lFirst( 520, 100 ) ;
-		controlPoints.push_back( & lFirst ) ;
-		screen.drawCross( lFirst ) ;
+	  listPoint2D controlPoints ;
 
-		Point2D lSecond( 480, 220 ) ;
-		controlPoints.push_back( & lSecond ) ;
-		screen.drawCross( lSecond ) ;
+	  screen.lock() ;
 
-		Point2D lThird( 620, 180 ) ;
-		controlPoints.push_back( & lThird ) ;
-		screen.drawCross( lThird ) ;
+	  // Draws 'O':
+	  Point2D oFirst( 100, 80 ) ;
+	  controlPoints.push_back( & oFirst ) ;
+	  screen.drawCross( oFirst ) ;
+
+	  Point2D oSecond( 5, 180 ) ;
+	  controlPoints.push_back( & oSecond ) ;
+	  screen.drawCross( oSecond ) ;
+
+	  Point2D oThird( 170, 220 ) ;
+	  controlPoints.push_back( & oThird ) ;
+	  screen.drawCross( oThird ) ;
+
+	  Point2D oFourth( 180, 120 ) ;
+	  controlPoints.push_back( & oFourth ) ;
+	  screen.drawCross( oFourth ) ;
+
+	  Point2D oFifth( 100, 90 ) ;
+	  controlPoints.push_back( & oFifth ) ;
+	  screen.drawCross( oFifth ) ;
+
+	  // SDL_gfx might be disabled:
+	  if ( VideoModule::IsUsingDrawingPrimitives() )
+	  {
+
+		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints,
+			/* numberOfSteps */ 50, Pixels::Bisque ) )
+		  throw Ceylan::TestException(
+			"Drawing of Bezier curve failed (letter 'O')." ) ;
+
+	  }
+
+	  controlPoints.clear() ;
 
 
-		if ( VideoModule::IsUsingDrawingPrimitives() )
-		{
+	  // Draws 'S':
 
-		  if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints,
-			  /* numberOfSteps */ 50, Pixels::Bisque ) )
-			throw Ceylan::TestException(
-			  "Drawing of Bezier curve failed (letter 'L')." ) ;
+	  Point2D sFirst( 200, 200 ) ;
+	  controlPoints.push_back( & sFirst ) ;
+	  screen.drawCross( sFirst ) ;
 
-		}
+	  Point2D sSecond( 350, 180 ) ;
+	  controlPoints.push_back( & sSecond ) ;
+	  screen.drawCross( sSecond ) ;
 
-		controlPoints.clear() ;
+	  Point2D sThird( 170, 100 ) ;
+	  controlPoints.push_back( & sThird ) ;
+	  screen.drawCross( sThird ) ;
+
+	  Point2D sFourth( 300, 80 ) ;
+	  controlPoints.push_back( & sFourth ) ;
+	  screen.drawCross( sFourth ) ;
+
+	  if ( VideoModule::IsUsingDrawingPrimitives() )
+	  {
+
+		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints,
+			/* numberOfSteps */ 50, Pixels::Bisque ) )
+		  throw Ceylan::TestException(
+			"Drawing of Bezier curve failed (letter 'S')." ) ;
+
+	  }
+
+	  controlPoints.clear() ;
 
 
-		screen.unlock() ;
 
-		screen.update() ;
+	  // Draws 'D':
 
-		if ( screenshotWanted )
-			screen.savePNG( argv[0] + std::string( ".png" ) ) ;
+	  Point2D dFirst( 360, 100 ) ;
+	  controlPoints.push_back( & dFirst ) ;
+	  screen.drawCross( dFirst ) ;
 
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
+	  Point2D dSecond( 300, 300 ) ;
+	  controlPoints.push_back( & dSecond ) ;
+	  screen.drawCross( dSecond ) ;
+
+	  Point2D dThird( 480, 180 ) ;
+	  controlPoints.push_back( & dThird ) ;
+	  screen.drawCross( dThird ) ;
+
+	  Point2D dFourth( 480, 140 ) ;
+	  controlPoints.push_back( & dFourth ) ;
+	  screen.drawCross( dFourth ) ;
+
+	  Point2D dFifth( 350, 90 ) ;
+	  controlPoints.push_back( & dFifth ) ;
+	  screen.drawCross( dFifth ) ;
+
+	  if ( VideoModule::IsUsingDrawingPrimitives() )
+	  {
+
+		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints,
+			/* numberOfSteps */ 50, Pixels::Bisque ) )
+		  throw Ceylan::TestException(
+			"Drawing of Bezier curve failed (letter 'D')." ) ;
+
+	  }
+
+	  controlPoints.clear() ;
 
 
-		LogPlug::info( "Stopping OSDL." ) ;
-		OSDL::stop() ;
+	  // Draws 'L':
 
-		LogPlug::info( "End of OSDL Bezier curves test" ) ;
+	  Point2D lFirst( 520, 100 ) ;
+	  controlPoints.push_back( & lFirst ) ;
+	  screen.drawCross( lFirst ) ;
+
+	  Point2D lSecond( 480, 220 ) ;
+	  controlPoints.push_back( & lSecond ) ;
+	  screen.drawCross( lSecond ) ;
+
+	  Point2D lThird( 620, 180 ) ;
+	  controlPoints.push_back( & lThird ) ;
+	  screen.drawCross( lThird ) ;
+
+
+	  if ( VideoModule::IsUsingDrawingPrimitives() )
+	  {
+
+		if ( ! TwoDimensional::drawBezierCurve( screen, controlPoints,
+			/* numberOfSteps */ 50, Pixels::Bisque ) )
+		  throw Ceylan::TestException(
+			"Drawing of Bezier curve failed (letter 'L')." ) ;
+
+	  }
+
+	  controlPoints.clear() ;
+
+
+	  screen.unlock() ;
+
+	  screen.update() ;
+
+	  if ( screenshotWanted )
+		screen.savePNG( argv[0] + std::string( ".png" ) ) ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
+
+	  LogPlug::info( "End of OSDL Bezier curves test" ) ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

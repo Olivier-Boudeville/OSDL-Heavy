@@ -74,9 +74,9 @@ const std::string imageDirForInstalledPlayTests = "../OSDL/doc/web/images" ;
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
-
 
 	bool screenshotWanted = true ;
 
@@ -84,245 +84,245 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL Image" ) ;
+	  LogPlug::info( "Testing OSDL Image" ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
-		// Initialization section.
-
-		OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseVideo | CommonModule::UseKeyboard ) ;
-
-
-		VideoModule & myVideo = myOSDL.getVideoModule() ;
-
-		Length screenWidth  = 640 ;
-		Length screenHeight = 480 ;
-
-		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
-
-		Surface & screen = myVideo.getScreenSurface() ;
-
-
-
-		// Section for standard operation, using standard files.
-
-		LogPlug::info( "Loading image located in " + firstImageFile ) ;
-
-
-		Ceylan::System::FileLocator imageFinder ;
-
-		imageFinder.addPath( imageDirFromExec ) ;
-		imageFinder.addPath( imageDirForBuildPlayTests ) ;
-		imageFinder.addPath( imageDirForInstalledPlayTests ) ;
-
-		screen.lock() ;
-
-		screen.fill( Pixels::Yellow ) ;
-		screen.drawGrid() ;
-
-		screen.unlock() ;
-
-		screen.loadImage( imageFinder.find( firstImageFile ),
-			/* blit only */ true ) ;
-
-		screen.update() ;
-
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
-
-
-		LogPlug::info( "Loading image located in " + secondImageFile
-			+ " with request of image format auto-detection." ) ;
-
-		Surface & other = Surface::LoadImage(
-			imageFinder.find( secondImageFile ) ) ;
-
-		other.blitTo( screen, 270, 155 ) ;
-
-		screen.update() ;
-
-		if ( screenshotWanted )
-			screen.savePNG( std::string( argv[0] ) + ".png" ) ;
-
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
-
-		delete & other ;
-
-
-
-
-		// Section for image loading from archive-embedded file.
-
-
-
-		LogPlug::info(
-			"Now, trying to read images from an archive-embedded file." ) ;
-
-		EmbeddedFileSystemManager::ArchiveFileLocator.addPath( "../../basic" ) ;
-
-		const string archiveFilename =
-			"test-OSDLEmbeddedFileSystem-archive.oar" ;
-
-		string archiveFullPath ;
-
-		try
+		if ( ! tokenEaten )
 		{
-
-			// This is (implicitly) the standard filesystem manager here:
-			archiveFullPath = EmbeddedFileSystemManager::FindArchivePath(
-				archiveFilename ) ;
-
-		}
-		catch( const EmbeddedFileSystemManagerException & e )
-		{
-
-			LogPlug::warning( "Test archive '" + archiveFilename
-				+ "' not found (" + e.toString() + "), run the "
-				"create-testOSDLEmbeddedFileSystem-archive.sh script "
-				"beforehand to have it ready for this test. Stopping now." ) ;
-
-			OSDL::stop() ;
-
-			OSDL::shutdown() ;
-
-			return Ceylan::ExitSuccess ;
-
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
 		}
 
-		LogPlug::info( "Test archive '" + archiveFilename
-			+ "' found, mounting it." ) ;
-
-		// Keep the standard manager, to restore it:
-		FileSystemManager & standardFSManager =
-			FileSystemManager::GetExistingDefaultFileSystemManager() ;
+	  }
 
 
-		EmbeddedFileSystemManager & myEmbedddedManager =
-			EmbeddedFileSystemManager::GetEmbeddedFileSystemManager() ;
+	  // Initialization section.
 
-		myEmbedddedManager.chooseBasicSettings( /* organization name */ "OSDL",
-			/* application name */ "testOSDLImage" ) ;
+	  OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
+		CommonModule::UseVideo | CommonModule::UseKeyboard ) ;
 
-		myEmbedddedManager.setWriteDirectory( "." ) ;
 
-		myEmbedddedManager.mount( archiveFullPath ) ;
+	  VideoModule & myVideo = myOSDL.getVideoModule() ;
 
-		// Thus images will be searched in specified archive:
-		FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
-			/* deallocatePreviousIfAny */ false ) ;
+	  Length screenWidth  = 640 ;
+	  Length screenHeight = 480 ;
 
-		/*
-		 * An interesting test is also to open the same file twice:
-		 *
-		 */
-		string targetEmbeddedFirstImage = "Soldier-heavy-purple-small.image" ;
-		//string targetEmbeddedFirstImage = "Rune-stone-small.image" ;
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 
-		// Preload implied; actually a PNG file; platform-independent paths:
-		Surface & embeddedImage =
-			Surface::LoadImage( targetEmbeddedFirstImage ) ;
+	  Surface & screen = myVideo.getScreenSurface() ;
 
-		screen.lock() ;
 
-		screen.fill( Pixels::Red ) ;
 
-		screen.unlock() ;
+	  // Section for standard operation, using standard files.
 
-		Surface & flippedImage = embeddedImage.flipVertical() ;
+	  LogPlug::info( "Loading image located in " + firstImageFile ) ;
 
-		delete & embeddedImage ;
 
-		flippedImage.blitTo( screen, 80, 50 ) ;
+	  Ceylan::System::FileLocator imageFinder ;
 
-		delete & flippedImage ;
+	  imageFinder.addPath( imageDirFromExec ) ;
+	  imageFinder.addPath( imageDirForBuildPlayTests ) ;
+	  imageFinder.addPath( imageDirForInstalledPlayTests ) ;
 
-		string targetEmbeddedSecondImage = "Rune-stone-small.image" ;
+	  screen.lock() ;
 
-		// Preload implied; actually a JPEG file; platform-independent paths:
-		Surface & otherEmbeddedImage =
-			Surface::LoadImage( targetEmbeddedSecondImage,
-			/* convertToDisplayFormat */ false, /* convertWithAlpha */ true ) ;
+	  screen.fill( Pixels::Yellow ) ;
+	  screen.drawGrid() ;
 
-		otherEmbeddedImage.blitTo( screen, 300, 50 ) ;
+	  screen.unlock() ;
 
-		delete & otherEmbeddedImage ;
+	  screen.loadImage( imageFinder.find( firstImageFile ),
+		/* blit only */ true ) ;
 
-		screen.update() ;
+	  screen.update() ;
 
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
 
-		myEmbedddedManager.umount( archiveFullPath ) ;
 
-		/*
-		 * Will deallocate and replace embedded FS manager, so that the logs can
-		 * be written as usual:
-		 *
-		 */
-		FileSystemManager::SetDefaultFileSystemManager( standardFSManager ) ;
+	  LogPlug::info( "Loading image located in " + secondImageFile
+		+ " with request of image format auto-detection." ) ;
 
-		LogPlug::info( "Stopping OSDL." ) ;
+	  Surface & other = Surface::LoadImage(
+		imageFinder.find( secondImageFile ) ) ;
+
+	  other.blitTo( screen, 270, 155 ) ;
+
+	  screen.update() ;
+
+	  if ( screenshotWanted )
+		screen.savePNG( std::string( argv[0] ) + ".png" ) ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+	  delete & other ;
+
+
+
+
+	  // Section for image loading from archive-embedded file.
+
+
+
+	  LogPlug::info(
+		"Now, trying to read images from an archive-embedded file." ) ;
+
+	  EmbeddedFileSystemManager::ArchiveFileLocator.addPath( "../../basic" ) ;
+
+	  const string archiveFilename =
+		"test-OSDLEmbeddedFileSystem-archive.oar" ;
+
+	  string archiveFullPath ;
+
+	  try
+	  {
+
+		// This is (implicitly) the standard filesystem manager here:
+		archiveFullPath = EmbeddedFileSystemManager::FindArchivePath(
+		  archiveFilename ) ;
+
+	  }
+	  catch( const EmbeddedFileSystemManagerException & e )
+	  {
+
+		LogPlug::warning( "Test archive '" + archiveFilename
+		  + "' not found (" + e.toString() + "), run the "
+		  "create-testOSDLEmbeddedFileSystem-archive.sh script "
+		  "beforehand to have it ready for this test. Stopping now." ) ;
+
 		OSDL::stop() ;
 
-		LogPlug::info( "End of OSDL Image test." ) ;
+		OSDL::shutdown() ;
+
+		return Ceylan::ExitSuccess ;
+
+	  }
+
+	  LogPlug::info( "Test archive '" + archiveFilename
+		+ "' found, mounting it." ) ;
+
+	  // Keep the standard manager, to restore it:
+	  FileSystemManager & standardFSManager =
+		FileSystemManager::GetExistingDefaultFileSystemManager() ;
+
+
+	  EmbeddedFileSystemManager & myEmbedddedManager =
+		EmbeddedFileSystemManager::GetEmbeddedFileSystemManager() ;
+
+	  myEmbedddedManager.chooseBasicSettings( /* organization name */ "OSDL",
+		/* application name */ "testOSDLImage" ) ;
+
+	  myEmbedddedManager.setWriteDirectory( "." ) ;
+
+	  myEmbedddedManager.mount( archiveFullPath ) ;
+
+	  // Thus images will be searched in specified archive:
+	  FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
+		/* deallocatePreviousIfAny */ false ) ;
+
+	  /*
+	   * An interesting test is also to open the same file twice:
+	   *
+	   */
+	  string targetEmbeddedFirstImage = "Soldier-heavy-purple-small.image" ;
+	  //string targetEmbeddedFirstImage = "Rune-stone-small.image" ;
+
+	  // Preload implied; actually a PNG file; platform-independent paths:
+	  Surface & embeddedImage =
+		Surface::LoadImage( targetEmbeddedFirstImage ) ;
+
+	  screen.lock() ;
+
+	  screen.fill( Pixels::Red ) ;
+
+	  screen.unlock() ;
+
+	  Surface & flippedImage = embeddedImage.flipVertical() ;
+
+	  delete & embeddedImage ;
+
+	  flippedImage.blitTo( screen, 80, 50 ) ;
+
+	  delete & flippedImage ;
+
+	  string targetEmbeddedSecondImage = "Rune-stone-small.image" ;
+
+	  // Preload implied; actually a JPEG file; platform-independent paths:
+	  Surface & otherEmbeddedImage =
+		Surface::LoadImage( targetEmbeddedSecondImage,
+		  /* convertToDisplayFormat */ false, /* convertWithAlpha */ true ) ;
+
+	  otherEmbeddedImage.blitTo( screen, 300, 50 ) ;
+
+	  delete & otherEmbeddedImage ;
+
+	  screen.update() ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+	  myEmbedddedManager.umount( archiveFullPath ) ;
+
+	  /*
+	   * Will deallocate and replace embedded FS manager, so that the logs can
+	   * be written as usual:
+	   *
+	   */
+	  FileSystemManager::SetDefaultFileSystemManager( standardFSManager ) ;
+
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
+
+	  LogPlug::info( "End of OSDL Image test." ) ;
 
 
 	}
@@ -330,40 +330,42 @@ int main( int argc, char * argv[] )
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

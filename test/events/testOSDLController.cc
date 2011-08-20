@@ -46,171 +46,171 @@ using std::string ;
 class MyController : public OSDL::MVC::Controller
 {
 
-	public:
+public:
 
 
-		MyController( EventsModule & events ) throw():
-			_direction( 1 ),
-			_events( & events )
-		{
+  MyController( EventsModule & events ) throw():
+	_direction( 1 ),
+	_events( & events )
+  {
 
 
-		}
+  }
 
 
-		void joystickButtonPressed(
-			const JoystickButtonEvent & joystickButtonPressedEvent ) throw()
-		{
+  void joystickButtonPressed(
+	const JoystickButtonEvent & joystickButtonPressedEvent ) throw()
+  {
 
-			_events->requestQuit() ;
+	_events->requestQuit() ;
 
-		}
-
-
-		void rawKeyPressed( const KeyboardEvent & keyboardPressedEvent ) throw()
-		{
-
-			switch( keyboardPressedEvent.keysym.sym )
-			{
-
-				case KeyboardHandler::UpArrowKey:
-					_direction = 1 ;
-					break ;
-
-				case KeyboardHandler::DownArrowKey:
-					_direction = 2 ;
-					break ;
-
-				case KeyboardHandler::LeftArrowKey:
-					_direction = 3 ;
-					break ;
-
-				case KeyboardHandler::RightArrowKey:
-					_direction = 4 ;
-					break ;
-
-				case KeyboardHandler::EnterKey:
-					_events->requestQuit() ;
-					break ;
-
-				default:
-					// Do nothing.
-					break ;
-			}
-
-			cout << "                  " << toString() << std::endl ;
+  }
 
 
-		}
+  void rawKeyPressed( const KeyboardEvent & keyboardPressedEvent ) throw()
+  {
+
+	switch( keyboardPressedEvent.keysym.sym )
+	{
+
+	case KeyboardHandler::UpArrowKey:
+	  _direction = 1 ;
+	  break ;
+
+	case KeyboardHandler::DownArrowKey:
+	  _direction = 2 ;
+	  break ;
+
+	case KeyboardHandler::LeftArrowKey:
+	  _direction = 3 ;
+	  break ;
+
+	case KeyboardHandler::RightArrowKey:
+	  _direction = 4 ;
+	  break ;
+
+	case KeyboardHandler::EnterKey:
+	  _events->requestQuit() ;
+	  break ;
+
+	default:
+	  // Do nothing.
+	  break ;
+	}
+
+	cout << "                  " << toString() << std::endl ;
+
+
+  }
 
 
 
-		void joystickUp( AxisPosition leftExtent ) throw()
-		{
+  void joystickUp( AxisPosition leftExtent ) throw()
+  {
 
-			_direction = 1 ;
-			cout << "                  " << toString() ;
+	_direction = 1 ;
+	cout << "                  " << toString() ;
 
-		}
-
-
-		void joystickDown( AxisPosition leftExtent ) throw()
-		{
-
-			_direction = 2 ;
-			cout << "                  " << toString() ;
-
-		}
+  }
 
 
-		void joystickLeft( AxisPosition leftExtent ) throw()
-		{
+  void joystickDown( AxisPosition leftExtent ) throw()
+  {
 
-			_direction = 3 ;
-			cout << "                  " << toString() ;
+	_direction = 2 ;
+	cout << "                  " << toString() ;
 
-		}
-
-
-		void joystickRight( AxisPosition leftExtent ) throw()
-		{
-
-			_direction = 4 ;
-			cout << "                  " << toString() ;
-
-		}
+  }
 
 
-		const Ceylan::Event & getEventFor(
-				const Ceylan::CallerEventListener & listener )
-			throw( Ceylan::EventException )
-		{
+  void joystickLeft( AxisPosition leftExtent ) throw()
+  {
 
-			throw Ceylan::EventException( "MyController::getEventFor: "
-				"not expected to be called." ) ;
+	_direction = 3 ;
+	cout << "                  " << toString() ;
 
-		}
+  }
 
 
-		/*
+  void joystickRight( AxisPosition leftExtent ) throw()
+  {
 
-		 If no classical joystick is to be used:
+	_direction = 4 ;
+	cout << "                  " << toString() ;
 
-		void joystickAxisChanged( const JoystickAxisEvent & joystickAxisEvent )
-			throw()
-		{
-
-			// Dead zones: [-1000; 1000]
-
-			if ( joystickAxisEvent.axis == 0 )
-			{
-				if ( joystickAxisEvent.value < -1000 )
-					_direction = 3 ;
-				else if ( joystickAxisEvent.value > -1000 )
-					_direction = 4 ;
-			}
-			else if ( joystickAxisEvent.axis == 1 )
-			{
-				if ( joystickAxisEvent.value < -1000 )
-					_direction = 1 ;
-				else if ( joystickAxisEvent.value > -1000 )
-					_direction = 2;
-			}
-
-			cout << "                  " << toString() ;
-
-		}
-
-		*/
+  }
 
 
-		const string toString( Ceylan::VerbosityLevels level = Ceylan::high )
-			const throw()
-		{
+  const Ceylan::Event & getEventFor(
+	const Ceylan::CallerEventListener & listener )
+	throw( Ceylan::EventException )
+  {
 
-			switch( _direction )
-			{
-				case 1:
-					return "^" ;
-				case 2:
-					return "v" ;
-				case 3:
-					return "<" ;
-				case 4:
-					return ">" ;
-			}
+	throw Ceylan::EventException( "MyController::getEventFor: "
+	  "not expected to be called." ) ;
 
-			return "(unexpected direction selected)" ;
-
-		}
+  }
 
 
-	protected:
+  /*
 
-		/// 1: up, 2: down, 3: left, 4: right.
-		Ceylan::Uint8 _direction ;
+	If no classical joystick is to be used:
 
-		EventsModule * _events ;
+	void joystickAxisChanged( const JoystickAxisEvent & joystickAxisEvent )
+	throw()
+	{
+
+	// Dead zones: [-1000; 1000]
+
+	if ( joystickAxisEvent.axis == 0 )
+	{
+	if ( joystickAxisEvent.value < -1000 )
+	_direction = 3 ;
+	else if ( joystickAxisEvent.value > -1000 )
+	_direction = 4 ;
+	}
+	else if ( joystickAxisEvent.axis == 1 )
+	{
+	if ( joystickAxisEvent.value < -1000 )
+	_direction = 1 ;
+	else if ( joystickAxisEvent.value > -1000 )
+	_direction = 2;
+	}
+
+	cout << "                  " << toString() ;
+
+	}
+
+  */
+
+
+  const string toString( Ceylan::VerbosityLevels level = Ceylan::high )
+	const throw()
+  {
+
+	switch( _direction )
+	{
+	case 1:
+	  return "^" ;
+	case 2:
+	  return "v" ;
+	case 3:
+	  return "<" ;
+	case 4:
+	  return ">" ;
+	}
+
+	return "(unexpected direction selected)" ;
+
+  }
+
+
+protected:
+
+  /// 1: up, 2: down, 3: left, 4: right.
+  Ceylan::Uint8 _direction ;
+
+  EventsModule * _events ;
 
 } ;
 
@@ -223,6 +223,7 @@ class MyController : public OSDL::MVC::Controller
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -231,214 +232,216 @@ int main( int argc, char * argv[] )
 	{
 
 
-		LogPlug::info( "Testing OSDL controller to input device bridge." ) ;
+	  LogPlug::info( "Testing OSDL controller to input device bridge." ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
-
-			tokenEaten = false ;
-
-			if ( token == "--batch" )
-			{
-
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
 		}
 
-		LogPlug::info( "Starting OSDL with keyboard and joystick support." ) ;
-
-		// Will trigger the video module as well for events:
-		OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseJoystick | CommonModule::UseKeyboard ) ;
-
-		LogPlug::info( "Testing basic event handling." ) ;
-
-		LogPlug::info( "Getting events module." ) ;
-		EventsModule & myEvents = myOSDL.getEventsModule() ;
-
-		LogPlug::info( "Events module: " + myEvents.toString() ) ;
-
-		myEvents.getKeyboardHandler().setSmarterDefaultKeyHandlers() ;
-
-		JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
-		LogPlug::info( "Current joystick handler is: "
-			+ myJoystickHandler.toString( Ceylan::high ) ) ;
-
-		JoystickNumber joyCount =
-			myJoystickHandler.GetAvailableJoystickCount() ;
-
-		if ( joyCount > 0 )
+		if ( token == "--interactive" )
 		{
-
-			LogPlug::info( "There are " + Ceylan::toString( joyCount )
-				+ " attached joystick(s), opening them all." ) ;
-
-			for ( JoystickNumber i = 0 ; i < joyCount; i++ )
-				myJoystickHandler.openJoystick( i ) ;
-
-			LogPlug::info( "New joystick handler state is: "
-				+ myJoystickHandler.toString( Ceylan::high ) ) ;
-
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
 		}
-		else
+
+		if ( token == "--online" )
 		{
-
-			LogPlug::info( "There is no joystick attached." ) ;
-
+		  // Ignored:
+		  tokenEaten = true ;
 		}
+
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
+		}
+
+
+		if ( ! tokenEaten )
+		{
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
+		}
+
+	  }
+
+	  LogPlug::info( "Starting OSDL with keyboard and joystick support." ) ;
+
+	  // Will trigger the video module as well for events:
+	  OSDL::CommonModule & myOSDL = OSDL::getCommonModule(
+		CommonModule::UseJoystick | CommonModule::UseKeyboard ) ;
+
+	  LogPlug::info( "Testing basic event handling." ) ;
+
+	  LogPlug::info( "Getting events module." ) ;
+	  EventsModule & myEvents = myOSDL.getEventsModule() ;
+
+	  LogPlug::info( "Events module: " + myEvents.toString() ) ;
+
+	  myEvents.getKeyboardHandler().setSmarterDefaultKeyHandlers() ;
+
+	  JoystickHandler & myJoystickHandler = myEvents.getJoystickHandler() ;
+	  LogPlug::info( "Current joystick handler is: "
+		+ myJoystickHandler.toString( Ceylan::high ) ) ;
+
+	  JoystickNumber joyCount =
+		myJoystickHandler.GetAvailableJoystickCount() ;
+
+	  if ( joyCount > 0 )
+	  {
+
+		LogPlug::info( "There are " + Ceylan::toString( joyCount )
+		  + " attached joystick(s), opening them all." ) ;
+
+		for ( JoystickNumber i = 0 ; i < joyCount; i++ )
+		  myJoystickHandler.openJoystick( i ) ;
 
 		LogPlug::info( "New joystick handler state is: "
-			+ myJoystickHandler.toString( Ceylan::high ) ) ;
+		  + myJoystickHandler.toString( Ceylan::high ) ) ;
 
-		LogPlug::info( "Displaying a dummy window "
-			"to have access to an event queue." ) ;
+	  }
+	  else
+	  {
 
-		LogPlug::info( "Getting video." ) ;
-		OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ;
+		LogPlug::info( "There is no joystick attached." ) ;
 
-		// A window is needed to have the event system working:
-		Length screenWidth  = 640 ;
-		Length screenHeight = 480 ;
+	  }
 
-		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
+	  LogPlug::info( "New joystick handler state is: "
+		+ myJoystickHandler.toString( Ceylan::high ) ) ;
 
-		MyController aController( myEvents ) ;
+	  LogPlug::info( "Displaying a dummy window "
+		"to have access to an event queue." ) ;
 
+	  LogPlug::info( "Getting video." ) ;
+	  OSDL::Video::VideoModule & myVideo = myOSDL.getVideoModule() ;
 
-		myEvents.getKeyboardHandler().linkToController(
-			KeyboardHandler::UpArrowKey, aController ) ;
+	  // A window is needed to have the event system working:
+	  Length screenWidth  = 640 ;
+	  Length screenHeight = 480 ;
 
-		myEvents.getKeyboardHandler().linkToController(
-			KeyboardHandler::DownArrowKey, aController ) ;
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 
-		myEvents.getKeyboardHandler().linkToController(
-			KeyboardHandler::LeftArrowKey, aController ) ;
-
-		myEvents.getKeyboardHandler().linkToController(
-			KeyboardHandler::RightArrowKey, aController ) ;
-
-		myEvents.getKeyboardHandler().linkToController(
-			KeyboardHandler::EnterKey, aController ) ;
+	  MyController aController( myEvents ) ;
 
 
-		if ( joyCount > 0 )
-			myJoystickHandler.linkToController( /* first joystick */ 0,
-				aController ) ;
+	  myEvents.getKeyboardHandler().linkToController(
+		KeyboardHandler::UpArrowKey, aController ) ;
+
+	  myEvents.getKeyboardHandler().linkToController(
+		KeyboardHandler::DownArrowKey, aController ) ;
+
+	  myEvents.getKeyboardHandler().linkToController(
+		KeyboardHandler::LeftArrowKey, aController ) ;
+
+	  myEvents.getKeyboardHandler().linkToController(
+		KeyboardHandler::RightArrowKey, aController ) ;
+
+	  myEvents.getKeyboardHandler().linkToController(
+		KeyboardHandler::EnterKey, aController ) ;
 
 
-		if ( isBatch )
-		{
+	  if ( joyCount > 0 )
+		myJoystickHandler.linkToController( /* first joystick */ 0,
+		  aController ) ;
 
-			LogPlug::warning( "Main loop not launched, as in batch mode." ) ;
 
-		}
-		else
-		{
+	  if ( isBatch )
+	  {
 
-			LogPlug::info( "Entering the event loop "
-				"for event waiting so that Controller can act." ) ;
+		LogPlug::warning( "Main loop not launched, as in batch mode." ) ;
 
-			std::cout << std::endl
-				<< "When the joystick is pushed, a character "
-				"('<' or '>' or '^' or 'v', for left, right, up and down) "
-				"describes the direction it is aimed at." << std::endl
-				<< "< Hit Enter on the OSDL window, or push the first button "
-				"of the first joystick (if any) "
-				"to end OSDL controller test >" << std::endl ;
+	  }
+	  else
+	  {
 
-			myEvents.enterMainLoop() ;
-			LogPlug::info( "Exiting main loop." ) ;
+		LogPlug::info( "Entering the event loop "
+		  "for event waiting so that Controller can act." ) ;
 
-		}
+		std::cout << std::endl
+				  << "When the joystick is pushed, a character "
+		  "('<' or '>' or '^' or 'v', for left, right, up and down) "
+		  "describes the direction it is aimed at." << std::endl
+				  << "< Hit Enter on the OSDL window, or push the first button "
+		  "of the first joystick (if any) "
+		  "to end OSDL controller test >" << std::endl ;
 
-		LogPlug::info( "End of OSDL controller test." ) ;
+		myEvents.enterMainLoop() ;
+		LogPlug::info( "Exiting main loop." ) ;
 
-		LogPlug::info( "stopping OSDL." ) ;
-		OSDL::stop() ;
+	  }
+
+	  LogPlug::info( "End of OSDL controller test." ) ;
+
+	  LogPlug::info( "stopping OSDL." ) ;
+	  OSDL::stop() ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

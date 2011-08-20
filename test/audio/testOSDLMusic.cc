@@ -49,7 +49,7 @@ const std::string musicDirFromExec = "../../src/doc/web/common/sounds" ;
  *
  */
 const std::string musicDirForBuildPlayTests
-	= "../src/doc/web/common/sounds" ;
+= "../src/doc/web/common/sounds" ;
 
 
 /*
@@ -58,7 +58,7 @@ const std::string musicDirForBuildPlayTests
  *
  */
 const std::string musicDirForInstalledPlayTests
-	= "../OSDL/doc/web/common/sounds" ;
+= "../OSDL/doc/web/common/sounds" ;
 
 
 
@@ -94,6 +94,7 @@ const std::string musicDirForInstalledPlayTests
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -101,368 +102,370 @@ int main( int argc, char * argv[] )
 	try
 	{
 
-		LogPlug::info( "Testing OSDL music services." ) ;
+	  LogPlug::info( "Testing OSDL music services." ) ;
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
-		// Initialization section.
-
-		LogPlug::info( "Starting OSDL with audio enabled." ) ;
-
-		CommonModule & myOSDL = getCommonModule( CommonModule::UseAudio ) ;
-
-		LogPlug::info( "Testing real audio (audible)." ) ;
-
-		LogPlug::info( "Getting audio module." ) ;
-		AudioModule & myAudio = myOSDL.getAudioModule() ;
-
-		myAudio.logState() ;
-
-		Ceylan::Maths::Hertz outputFrequency = 22050 ;
-
-		SampleFormat outputSampleFormat =
-			AudioModule::NativeSint16SampleFormat ;
-
-		ChannelFormat outputChannel = AudioModule::Stereo ;
-
-		ChunkSize chunkSize = 4096 ;
-
-		LogPlug::info( "Requesting a mixing mode at "
-			+ Ceylan::toString( outputFrequency ) + " Hz, with sample format "
-			+ sampleFormatToString( outputSampleFormat )
-			+ ", channel format "
-			+ channelFormatToString( outputChannel )
-			+ " and a chunk size of " + Ceylan::toString( chunkSize )
-			+ " bytes." ) ;
-
-		myAudio.setMode( outputFrequency,
-			/* sample format */ AudioModule::NativeSint16SampleFormat,
-			outputChannel, chunkSize ) ;
-
-		//myAudio.logState() ;
-
-		ChannelNumber count ;
-
-		Ceylan::System::Millisecond latency = myAudio.getObtainedMode(
-			outputFrequency, outputSampleFormat, count ) ;
-
-		LogPlug::info( "Obtained a mixing mode at "
-			+ Ceylan::toString( outputFrequency ) + " Hz, with sample format "
-			+ sampleFormatToString( outputSampleFormat ) + " and "
-			+ Ceylan::toString( count )
-			+ " channel(s), which results in a mean theoritical latency of "
-			+ Ceylan::toString( latency ) + " milliseconds." ) ;
-
-
-
-		// Section for music playback from standard file.
-
-		AudioModule::AudioFileLocator.addPath( musicDirFromExec ) ;
-		AudioModule::AudioFileLocator.addPath( musicDirForBuildPlayTests ) ;
-		AudioModule::AudioFileLocator.addPath( musicDirForInstalledPlayTests ) ;
-
-		// WAV not allowed anymore as musics: string targetMusic = "OSDL.wav" ;
-		string targetMusic = "welcome-to-OSDL.ogg" ;
-
-		LogPlug::info( "Loading first music file '" + targetMusic
-			+ "' thanks to audio locator." ) ;
-
-		/*
-		 * Preload implied; not an automatic variable to be able to deallocate
-		 * it when wanted (before stopping OSDL):
-		 *
-		 */
-		Music * myFirstMusic = new Music(
-		  Audible::FindAudiblePath( targetMusic ) ) ;
-
-		LogPlug::info( "Loaded music: " + myFirstMusic->toString() ) ;
-
-		if ( ! isBatch )
+		if ( ! tokenEaten )
 		{
-
-			LogPlug::info( "Playing music now." ) ;
-
-			myFirstMusic->play() ;
-
-			LogPlug::info( "Waiting for this music to finish." ) ;
-
-			while ( myAudio.isMusicPlaying() )
-				Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
-
-			LogPlug::info( "Music finished." ) ;
-
-		}
-		else
-		{
-
-			LogPlug::info( "In batch mode, hence first music not played." ) ;
-
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
 		}
 
-		delete myFirstMusic ;
+	  }
 
 
-		LogPlug::info( "Loading second music file '" + targetMusic
-			+ "' thanks to audio locator." ) ;
+	  // Initialization section.
 
-		// Preload implied, targeting actually the same file:
-		Music * mySecondMusic = new Music(
-		  Audible::FindAudiblePath( targetMusic ) ) ;
+	  LogPlug::info( "Starting OSDL with audio enabled." ) ;
 
-		LogPlug::info( "Loaded music: " + mySecondMusic->toString() ) ;
+	  CommonModule & myOSDL = getCommonModule( CommonModule::UseAudio ) ;
+
+	  LogPlug::info( "Testing real audio (audible)." ) ;
+
+	  LogPlug::info( "Getting audio module." ) ;
+	  AudioModule & myAudio = myOSDL.getAudioModule() ;
+
+	  myAudio.logState() ;
+
+	  Ceylan::Maths::Hertz outputFrequency = 22050 ;
+
+	  SampleFormat outputSampleFormat =
+		AudioModule::NativeSint16SampleFormat ;
+
+	  ChannelFormat outputChannel = AudioModule::Stereo ;
+
+	  ChunkSize chunkSize = 4096 ;
+
+	  LogPlug::info( "Requesting a mixing mode at "
+		+ Ceylan::toString( outputFrequency ) + " Hz, with sample format "
+		+ sampleFormatToString( outputSampleFormat )
+		+ ", channel format "
+		+ channelFormatToString( outputChannel )
+		+ " and a chunk size of " + Ceylan::toString( chunkSize )
+		+ " bytes." ) ;
+
+	  myAudio.setMode( outputFrequency,
+		/* sample format */ AudioModule::NativeSint16SampleFormat,
+		outputChannel, chunkSize ) ;
+
+	  //myAudio.logState() ;
+
+	  ChannelNumber count ;
+
+	  Ceylan::System::Millisecond latency = myAudio.getObtainedMode(
+		outputFrequency, outputSampleFormat, count ) ;
+
+	  LogPlug::info( "Obtained a mixing mode at "
+		+ Ceylan::toString( outputFrequency ) + " Hz, with sample format "
+		+ sampleFormatToString( outputSampleFormat ) + " and "
+		+ Ceylan::toString( count )
+		+ " channel(s), which results in a mean theoritical latency of "
+		+ Ceylan::toString( latency ) + " milliseconds." ) ;
 
 
-		if ( ! isBatch )
-		{
 
-			LogPlug::info(
-				"Running in interactive mode, more tests performed." ) ;
+	  // Section for music playback from standard file.
 
-			LogPlug::info( "Playing music now, with fade in "
-				"and from a position around the middle, and repeat once." ) ;
+	  AudioModule::AudioFileLocator.addPath( musicDirFromExec ) ;
+	  AudioModule::AudioFileLocator.addPath( musicDirForBuildPlayTests ) ;
+	  AudioModule::AudioFileLocator.addPath( musicDirForInstalledPlayTests ) ;
 
-			// Position in seconds:
-			MusicPosition startPosition ;
+	  // WAV not allowed anymore as musics: string targetMusic = "OSDL.wav" ;
+	  string targetMusic = "welcome-to-OSDL.ogg" ;
 
-			if ( isBatch )
-				startPosition = 5 ;
-			else
-				startPosition = 1 ;
+	  LogPlug::info( "Loading first music file '" + targetMusic
+		+ "' thanks to audio locator." ) ;
 
-			mySecondMusic->playWithFadeInFromPosition(
-				/* fadeInMaxDuration */ 5000, startPosition,
-				/* playCount */ 2 ) ;
+	  /*
+	   * Preload implied; not an automatic variable to be able to deallocate
+	   * it when wanted (before stopping OSDL):
+	   *
+	   */
+	  Music * myFirstMusic = new Music(
+		Audible::FindAudiblePath( targetMusic ) ) ;
 
-			LogPlug::info( "Waiting for this music to finish." ) ;
+	  LogPlug::info( "Loaded music: " + myFirstMusic->toString() ) ;
 
-			while ( myAudio.isMusicPlaying() )
-				Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
+	  if ( ! isBatch )
+	  {
 
-			LogPlug::info( "Music finished." ) ;
+		LogPlug::info( "Playing music now." ) ;
 
-		}
-
-
-		// Short enough even for batch mode:
-
-		LogPlug::info( "Playing that music with a 2-second fade-in, "
-			"and from the start." ) ;
-
-		mySecondMusic->rewind() ;
-
-		mySecondMusic->playWithFadeIn( /* fadeInMaxDuration */ 2000 ) ;
+		myFirstMusic->play() ;
 
 		LogPlug::info( "Waiting for this music to finish." ) ;
 
 		while ( myAudio.isMusicPlaying() )
-			Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
+		  Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
 
 		LogPlug::info( "Music finished." ) ;
 
-		delete mySecondMusic ;
+	  }
+	  else
+	  {
+
+		LogPlug::info( "In batch mode, hence first music not played." ) ;
+
+	  }
+
+	  delete myFirstMusic ;
 
 
+	  LogPlug::info( "Loading second music file '" + targetMusic
+		+ "' thanks to audio locator." ) ;
 
-		// Section for music playback from an archive-embedded file.
+	  // Preload implied, targeting actually the same file:
+	  Music * mySecondMusic = new Music(
+		Audible::FindAudiblePath( targetMusic ) ) ;
 
+	  LogPlug::info( "Loaded music: " + mySecondMusic->toString() ) ;
+
+
+	  if ( ! isBatch )
+	  {
 
 		LogPlug::info(
-			"Now, trying to read music from an archive-embedded file." ) ;
+		  "Running in interactive mode, more tests performed." ) ;
 
-		EmbeddedFileSystemManager::ArchiveFileLocator.addPath( "../basic" ) ;
+		LogPlug::info( "Playing music now, with fade in "
+		  "and from a position around the middle, and repeat once." ) ;
 
-		const string archiveFilename =
-			"test-OSDLEmbeddedFileSystem-archive.oar" ;
+		// Position in seconds:
+		MusicPosition startPosition ;
 
-		string archiveFullPath ;
-
-		try
-		{
-
-			// This is (implicitly) the standard filesystem manager here:
-			archiveFullPath = EmbeddedFileSystemManager::FindArchivePath(
-				archiveFilename ) ;
-
-		}
-		catch( const EmbeddedFileSystemManagerException & e )
-		{
-
-			LogPlug::warning( "Test archive '" + archiveFilename
-				+ "' not found (" + e.toString() + "), run the "
-				"test/basic/create-testOSDLEmbeddedFileSystem-archive.sh "
-				"script beforehand to have it ready for this test. "
-				"Stopping now." ) ;
-
-			OSDL::stop() ;
-
-			OSDL::shutdown() ;
-
-			return Ceylan::ExitSuccess ;
-
-		}
-
-		LogPlug::info( "Test archive '" + archiveFilename
-			+ "' found, mounting it." ) ;
-
-		// Keep the standard manager, to restore it:
-		FileSystemManager & standardFSManager =
-			FileSystemManager::GetExistingDefaultFileSystemManager() ;
-
-
-		EmbeddedFileSystemManager & myEmbedddedManager =
-			EmbeddedFileSystemManager::GetEmbeddedFileSystemManager() ;
-
-		myEmbedddedManager.chooseBasicSettings( /* organization name */ "OSDL",
-			/* application name */ "testOSDLMusic" ) ;
-
-		myEmbedddedManager.setWriteDirectory( "." ) ;
-
-		myEmbedddedManager.mount( archiveFullPath ) ;
-
-		// Thus music will be searched in specified archive:
-		FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
-			/* deallocatePreviousIfAny */ false ) ;
-
-		string targetEmbeddedMusic = "welcome-to-OSDL.music" ;
-
-		// Preload implied; platform-independent paths:
-		Music * myEmbeddedMusic = new Music( targetEmbeddedMusic ) ;
-
-
-		if ( ! isBatch )
-		{
-
-			LogPlug::info( "Playing embedded music now." ) ;
-
-			myEmbeddedMusic->play() ;
-
-			LogPlug::info( "Waiting for this embedded music to finish." ) ;
-
-			while ( myAudio.isMusicPlaying() )
-				Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
-
-			LogPlug::info( "Embedded music finished." ) ;
-
-		}
+		if ( isBatch )
+		  startPosition = 5 ;
 		else
-		{
+		  startPosition = 1 ;
 
-			LogPlug::info( "In batch mode, hence embedded music not played." ) ;
+		mySecondMusic->playWithFadeInFromPosition(
+		  /* fadeInMaxDuration */ 5000, startPosition,
+		  /* playCount */ 2 ) ;
 
-		}
+		LogPlug::info( "Waiting for this music to finish." ) ;
 
-		// Otherwise archive could not be unmounted:
-		myEmbeddedMusic->unload() ;
+		while ( myAudio.isMusicPlaying() )
+		  Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
 
-		delete myEmbeddedMusic ;
+		LogPlug::info( "Music finished." ) ;
 
-		myEmbedddedManager.umount( archiveFullPath ) ;
+	  }
 
-		/*
-		 * Will deallocate and replace embedded FS manager, so that the logs can
-		 * be written as usual:
-		 *
-		 */
-		FileSystemManager::SetDefaultFileSystemManager( standardFSManager ) ;
 
-		LogPlug::info( "Stopping OSDL." ) ;
+	  // Short enough even for batch mode:
+
+	  LogPlug::info( "Playing that music with a 2-second fade-in, "
+		"and from the start." ) ;
+
+	  mySecondMusic->rewind() ;
+
+	  mySecondMusic->playWithFadeIn( /* fadeInMaxDuration */ 2000 ) ;
+
+	  LogPlug::info( "Waiting for this music to finish." ) ;
+
+	  while ( myAudio.isMusicPlaying() )
+		Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
+
+	  LogPlug::info( "Music finished." ) ;
+
+	  delete mySecondMusic ;
+
+
+
+	  // Section for music playback from an archive-embedded file.
+
+
+	  LogPlug::info(
+		"Now, trying to read music from an archive-embedded file." ) ;
+
+	  EmbeddedFileSystemManager::ArchiveFileLocator.addPath( "../basic" ) ;
+
+	  const string archiveFilename =
+		"test-OSDLEmbeddedFileSystem-archive.oar" ;
+
+	  string archiveFullPath ;
+
+	  try
+	  {
+
+		// This is (implicitly) the standard filesystem manager here:
+		archiveFullPath = EmbeddedFileSystemManager::FindArchivePath(
+		  archiveFilename ) ;
+
+	  }
+	  catch( const EmbeddedFileSystemManagerException & e )
+	  {
+
+		LogPlug::warning( "Test archive '" + archiveFilename
+		  + "' not found (" + e.toString() + "), run the "
+		  "test/basic/create-testOSDLEmbeddedFileSystem-archive.sh "
+		  "script beforehand to have it ready for this test. "
+		  "Stopping now." ) ;
+
 		OSDL::stop() ;
 
-		LogPlug::info( "End of OSDL music test." ) ;
+		OSDL::shutdown() ;
+
+		return Ceylan::ExitSuccess ;
+
+	  }
+
+	  LogPlug::info( "Test archive '" + archiveFilename
+		+ "' found, mounting it." ) ;
+
+	  // Keep the standard manager, to restore it:
+	  FileSystemManager & standardFSManager =
+		FileSystemManager::GetExistingDefaultFileSystemManager() ;
+
+
+	  EmbeddedFileSystemManager & myEmbedddedManager =
+		EmbeddedFileSystemManager::GetEmbeddedFileSystemManager() ;
+
+	  myEmbedddedManager.chooseBasicSettings( /* organization name */ "OSDL",
+		/* application name */ "testOSDLMusic" ) ;
+
+	  myEmbedddedManager.setWriteDirectory( "." ) ;
+
+	  myEmbedddedManager.mount( archiveFullPath ) ;
+
+	  // Thus music will be searched in specified archive:
+	  FileSystemManager::SetDefaultFileSystemManager( myEmbedddedManager,
+		/* deallocatePreviousIfAny */ false ) ;
+
+	  string targetEmbeddedMusic = "welcome-to-OSDL.music" ;
+
+	  // Preload implied; platform-independent paths:
+	  Music * myEmbeddedMusic = new Music( targetEmbeddedMusic ) ;
+
+
+	  if ( ! isBatch )
+	  {
+
+		LogPlug::info( "Playing embedded music now." ) ;
+
+		myEmbeddedMusic->play() ;
+
+		LogPlug::info( "Waiting for this embedded music to finish." ) ;
+
+		while ( myAudio.isMusicPlaying() )
+		  Ceylan::System::basicSleep( /* Microsecond */ 1000 ) ;
+
+		LogPlug::info( "Embedded music finished." ) ;
+
+	  }
+	  else
+	  {
+
+		LogPlug::info( "In batch mode, hence embedded music not played." ) ;
+
+	  }
+
+	  // Otherwise archive could not be unmounted:
+	  myEmbeddedMusic->unload() ;
+
+	  delete myEmbeddedMusic ;
+
+	  myEmbedddedManager.umount( archiveFullPath ) ;
+
+	  /*
+	   * Will deallocate and replace embedded FS manager, so that the logs can
+	   * be written as usual:
+	   *
+	   */
+	  FileSystemManager::SetDefaultFileSystemManager( standardFSManager ) ;
+
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
+
+	  LogPlug::info( "End of OSDL music test." ) ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

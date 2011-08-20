@@ -76,6 +76,8 @@ const std::string musicFile = "welcome-to-OSDL.ogg" ;
 int main( int argc, char * argv[] )
 {
 
+  {
+
 	LogHolder myLog( argc, argv ) ;
 
 	bool loop = false ;
@@ -83,195 +85,196 @@ int main( int argc, char * argv[] )
 	try
 	{
 
-		LogPlug::info( "Testing basic SDL_mixer" ) ;
+	  LogPlug::info( "Testing basic SDL_mixer" ) ;
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
-
-			token = options.front() ;
-			options.pop_front() ;
-
-			tokenEaten = false ;
-
-			if ( token == "--batch" )
-			{
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--loop" )
-			{
-				LogPlug::info( "Loop mode selected" ) ;
-				loop = true ;
-				tokenEaten = true ;
-			}
-
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
 		}
 
-		LogPlug::info( "Starting SDL (base, audio and video)" ) ;
-
-		if ( SDL_Init( SDL_INIT_AUDIO ) != SDL_SUCCESS )
+		if ( token == "--interactive" )
 		{
-
-			LogPlug::fatal( "Unable to initialize SDL: "
-				+ Utils::getBackendLastError() ) ;
-
-			return Ceylan::ExitFailure ;
-
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
 		}
 
-		LogPlug::info( "SDL successfully initialized" ) ;
-
-		::Mix_Init( MIX_INIT_OGG ) ;
-
-		int audio_rate = 22050 ;
-		Uint16 audio_format = AUDIO_S16 ;
-
-		int audio_channels = 2 ;
-
-		// High buffer size indeed, latency does not matter:
-		int audio_buffers = 4096 ;
-
-		int audio_volume = MIX_MAX_VOLUME ;
-
-		/* Open the audio device */
-		if ( Mix_OpenAudio( audio_rate, audio_format, audio_channels,
-			audio_buffers ) < 0 )
+		if ( token == "--loop" )
 		{
-			LogPlug::fatal( "Could not open audio: "
-				+ Utils::getBackendLastError() ) ;
-			return Ceylan::ExitFailure ;
+		  LogPlug::info( "Loop mode selected" ) ;
+		  loop = true ;
+		  tokenEaten = true ;
 		}
 
-		Mix_QuerySpec( & audio_rate, & audio_format, & audio_channels ) ;
 
-		LogPlug::info( "Opened audio at " + Ceylan::toString( audio_rate )
-			+ " Hz, " + Ceylan::toString( audio_format & 0xFF )
-			+ string( " bit " )
-			+ ( (audio_channels > 2 ) ? "surround" : (audio_channels > 1 ) ?
-				"stereo" : "mono" )
-			+ string( ", with ") + Ceylan::toString( audio_buffers )
-			+ " bytes audio buffer." ) ;
-
-		/* Set the music volume */
-		Mix_VolumeMusic( audio_volume ) ;
-
-		Ceylan::System::FileLocator soundLocator ;
-		soundLocator.addPath( soundDirFromExec ) ;
-		soundLocator.addPath( soundDirForPlayTests ) ;
-
-		Mix_Music * music = Mix_LoadMUS(
-			soundLocator.find( musicFile ).c_str() ) ;
-
-		if ( music == 0 )
+		if ( LogHolder::IsAKnownPlugOption( token ) )
 		{
-
-			LogPlug::fatal( "Could not load " + musicFile + ": "
-				+ Utils::getBackendLastError() ) ;
-
-			return Ceylan::ExitFailure ;
-
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
-		Ceylan::Uint32 seconds = 0 ;
 
-
-		Mix_PlayMusic( music, loop ? -1 : 1 ) ;
-
-		/*
-		 * Necessary to wait, otherwise next test is evaluated *before* music
-		 * starts playing:
-		 *
-		 */
-		SDL_Delay( 100 ) ;
-
-		while ( Mix_PlayingMusic() )
+		if ( ! tokenEaten )
 		{
-
-			SDL_Delay( 1000 /* milliseconds */ ) ;
-			LogPlug::info( "Playing for " + Ceylan::toString( seconds )
-				+ " second(s)." ) ;
-			seconds++ ;
-
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
 		}
 
-		Mix_FreeMusic( music ) ;
+	  }
 
-		LogPlug::info( "Stopping SDL_mixer" ) ;
-		::Mix_CloseAudio() ;
-		::Mix_Quit() ;
+	  LogPlug::info( "Starting SDL (base, audio and video)" ) ;
 
-		LogPlug::info( "Stopping SDL" ) ;
-		SDL_Quit() ;
-		LogPlug::info( "SDL successfully stopped." ) ;
+	  if ( SDL_Init( SDL_INIT_AUDIO ) != SDL_SUCCESS )
+	  {
 
-		LogPlug::info( "End of basic SDL_mixer test." ) ;
+		LogPlug::fatal( "Unable to initialize SDL: "
+		  + Utils::getBackendLastError() ) ;
 
+		return Ceylan::ExitFailure ;
+
+	  }
+
+	  LogPlug::info( "SDL successfully initialized" ) ;
+
+	  ::Mix_Init( MIX_INIT_OGG ) ;
+
+	  int audio_rate = 22050 ;
+	  Uint16 audio_format = AUDIO_S16 ;
+
+	  int audio_channels = 2 ;
+
+	  // High buffer size indeed, latency does not matter:
+	  int audio_buffers = 4096 ;
+
+	  int audio_volume = MIX_MAX_VOLUME ;
+
+	  /* Open the audio device */
+	  if ( Mix_OpenAudio( audio_rate, audio_format, audio_channels,
+		  audio_buffers ) < 0 )
+	  {
+		LogPlug::fatal( "Could not open audio: "
+		  + Utils::getBackendLastError() ) ;
+		return Ceylan::ExitFailure ;
+	  }
+
+	  Mix_QuerySpec( & audio_rate, & audio_format, & audio_channels ) ;
+
+	  LogPlug::info( "Opened audio at " + Ceylan::toString( audio_rate )
+		+ " Hz, " + Ceylan::toString( audio_format & 0xFF )
+		+ string( " bit " )
+		+ ( (audio_channels > 2 ) ? "surround" : (audio_channels > 1 ) ?
+		  "stereo" : "mono" )
+		+ string( ", with ") + Ceylan::toString( audio_buffers )
+		+ " bytes audio buffer." ) ;
+
+	  /* Set the music volume */
+	  Mix_VolumeMusic( audio_volume ) ;
+
+	  Ceylan::System::FileLocator soundLocator ;
+	  soundLocator.addPath( soundDirFromExec ) ;
+	  soundLocator.addPath( soundDirForPlayTests ) ;
+
+	  Mix_Music * music = Mix_LoadMUS(
+		soundLocator.find( musicFile ).c_str() ) ;
+
+	  if ( music == 0 )
+	  {
+
+		LogPlug::fatal( "Could not load " + musicFile + ": "
+		  + Utils::getBackendLastError() ) ;
+
+		return Ceylan::ExitFailure ;
+
+	  }
+
+	  Ceylan::Uint32 seconds = 0 ;
+
+
+	  Mix_PlayMusic( music, loop ? -1 : 1 ) ;
+
+	  /*
+	   * Necessary to wait, otherwise next test is evaluated *before* music
+	   * starts playing:
+	   *
+	   */
+	  SDL_Delay( 100 ) ;
+
+	  while ( Mix_PlayingMusic() )
+	  {
+
+		SDL_Delay( 1000 /* milliseconds */ ) ;
+		LogPlug::info( "Playing for " + Ceylan::toString( seconds )
+		  + " second(s)." ) ;
+		seconds++ ;
+
+	  }
+
+	  Mix_FreeMusic( music ) ;
+
+	  LogPlug::info( "Stopping SDL_mixer" ) ;
+	  ::Mix_CloseAudio() ;
+	  ::Mix_Quit() ;
+
+	  LogPlug::info( "Stopping SDL" ) ;
+	  SDL_Quit() ;
+	  LogPlug::info( "SDL successfully stopped." ) ;
+
+	  LogPlug::info( "End of basic SDL_mixer test." ) ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	// To deallocate helpers like Ceylan's filesystem manager for logs:
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  // To deallocate helpers like Ceylan's filesystem manager for logs:
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

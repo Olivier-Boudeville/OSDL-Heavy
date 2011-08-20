@@ -89,421 +89,424 @@ const std::string secondTestSentence = "Yeah man, they both rock." ;
 int main( int argc, char * argv[] )
 {
 
-
-  LogHolder myLog( argc, argv ) ;
-
-
-  bool testGlyphCache = true ;
-  bool testWordCache  = true ;
-  bool testTextCache  = true ;
-
-
-  try
   {
 
-
-	LogPlug::info( "Testing OSDL TrueType font cache: "
-	  "inspect 'Debug' channel to check cache hits and misses" ) ;
+	LogHolder myLog( argc, argv ) ;
 
 
-	LogPlug::info( "At the end of this test, one should see red letters "
-	  " ('a', 'b'), and two groups of two sentences, "
-	  "first green, then blue." ) ;
+	bool testGlyphCache = true ;
+	bool testWordCache  = true ;
+	bool testTextCache  = true ;
 
 
-	LogPlug::info( "Note that having compiled OSDL "
-	  "with the OSDL_DEBUG_FONT flag set "
-	  "allows for far more debug informations." ) ;
-
-
-	LogPlug::info( "Testing OSDL video basic services." ) ;
-
-
-
-	bool isBatch = false ;
-
-	std::string executableName ;
-	std::list<std::string> options ;
-
-	Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
-
-	std::string token ;
-	bool tokenEaten ;
-
-
-	while ( ! options.empty() )
-	{
-
-	  token = options.front() ;
-	  options.pop_front() ;
-
-	  tokenEaten = false ;
-
-	  if ( token == "--batch" )
-	  {
-
-		LogPlug::info( "Batch mode selected" ) ;
-		isBatch = true ;
-		tokenEaten = true ;
-	  }
-
-	  if ( token == "--interactive" )
-	  {
-		LogPlug::info( "Interactive mode selected" ) ;
-		isBatch = false ;
-		tokenEaten = true ;
-	  }
-
-	  if ( token == "--online" )
-	  {
-		// Ignored:
-		tokenEaten = true ;
-	  }
-
-	  if ( LogHolder::IsAKnownPlugOption( token ) )
-	  {
-		// Ignores log-related (argument-less) options.
-		tokenEaten = true ;
-	  }
-
-
-	  if ( ! tokenEaten )
-	  {
-		throw Ceylan::CommandLineParseException(
-		  "Unexpected command line argument: " + token ) ;
-	  }
-
-	}
-
-
-	LogPlug::info( "Prerequisite: initializing the display" ) ;
-
-
-	CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo
-	  | CommonModule::UseKeyboard ) ;
-
-	VideoModule & myVideo = myOSDL.getVideoModule() ;
-
-	Length screenWidth  = 640 ;
-	Length screenHeight = 480 ;
-
-	myVideo.setMode( screenWidth, screenHeight,
-	  VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
-
-	Surface & screen = myVideo.getScreenSurface() ;
-
-	Pixels::ColorDefinition textColor = Pixels::Red  ;
-
-
-	TrueTypeFont::TrueTypeFontFileLocator.addPath(
-	  trueTypeFontDirFromExec ) ;
-
-	TrueTypeFont::TrueTypeFontFileLocator.addPath(
-	  trueTypeFontDirForBuildPlayTests ) ;
-
-	TrueTypeFont::TrueTypeFontFileLocator.addPath(
-	  trueTypeFontDirForInstalledPlayTests ) ;
-
-
-	Surface * mySurface ;
-
-	bool gridWanted = true ;
-
-	if ( gridWanted )
-	{
-
-	  if ( VideoModule::IsUsingDrawingPrimitives() )
-	  {
-
-		LogPlug::info( "Drawing a grid to check transparency of text." ) ;
-
-		if ( ! screen.drawGrid() )
-		  LogPlug::error( "Grid rendering failed." ) ;
-	  }
-
-	}
-
-	// Glyph cached section.
-
-
-	if ( testGlyphCache )
+	try
 	{
 
 
-	  LogPlug::info( "First: testing cache for glyph rendering." ) ;
+	  LogPlug::info( "Testing OSDL TrueType font cache: "
+		"inspect 'Debug' channel to check cache hits and misses" ) ;
 
 
-	  std::string firstTrueTypeFontPath = Text::TrueTypeFont::FindPathFor(
-		firstTrueTypeFontFile ) ;
+	  LogPlug::info( "At the end of this test, one should see red letters "
+		" ('a', 'b'), and two groups of two sentences, "
+		"first green, then blue." ) ;
 
-	  TrueTypeFont myGlyphCachedTrueTypeFont( firstTrueTypeFontPath,
-		/* font index */ 0, /* convertToDisplay */ true,
-		/* render cache */ Font::GlyphCached ) ;
 
-	  myGlyphCachedTrueTypeFont.load( /* point size */ 15 ),
+	  LogPlug::info( "Note that having compiled OSDL "
+		"with the OSDL_DEBUG_FONT flag set "
+		"allows for far more debug informations." ) ;
 
-		LogPlug::info(
-		  "Successfully loaded following font in initial state: "
+
+	  LogPlug::info( "Testing OSDL video basic services." ) ;
+
+
+
+	  bool isBatch = false ;
+
+	  std::string executableName ;
+	  std::list<std::string> options ;
+
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+
+	  std::string token ;
+	  bool tokenEaten ;
+
+
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
+		{
+
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
+
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
+
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
+
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
+		}
+
+
+		if ( ! tokenEaten )
+		{
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
+		}
+
+	  }
+
+
+	  LogPlug::info( "Prerequisite: initializing the display" ) ;
+
+
+	  CommonModule & myOSDL = OSDL::getCommonModule( CommonModule::UseVideo
+		| CommonModule::UseKeyboard ) ;
+
+	  VideoModule & myVideo = myOSDL.getVideoModule() ;
+
+	  Length screenWidth  = 640 ;
+	  Length screenHeight = 480 ;
+
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
+
+	  Surface & screen = myVideo.getScreenSurface() ;
+
+	  Pixels::ColorDefinition textColor = Pixels::Red  ;
+
+
+	  TrueTypeFont::TrueTypeFontFileLocator.addPath(
+		trueTypeFontDirFromExec ) ;
+
+	  TrueTypeFont::TrueTypeFontFileLocator.addPath(
+		trueTypeFontDirForBuildPlayTests ) ;
+
+	  TrueTypeFont::TrueTypeFontFileLocator.addPath(
+		trueTypeFontDirForInstalledPlayTests ) ;
+
+
+	  Surface * mySurface ;
+
+	  bool gridWanted = true ;
+
+	  if ( gridWanted )
+	  {
+
+		if ( VideoModule::IsUsingDrawingPrimitives() )
+		{
+
+		  LogPlug::info( "Drawing a grid to check transparency of text." ) ;
+
+		  if ( ! screen.drawGrid() )
+			LogPlug::error( "Grid rendering failed." ) ;
+		}
+
+	  }
+
+	  // Glyph cached section.
+
+
+	  if ( testGlyphCache )
+	  {
+
+
+		LogPlug::info( "First: testing cache for glyph rendering." ) ;
+
+
+		std::string firstTrueTypeFontPath = Text::TrueTypeFont::FindPathFor(
+		  firstTrueTypeFontFile ) ;
+
+		TrueTypeFont myGlyphCachedTrueTypeFont( firstTrueTypeFontPath,
+		  /* font index */ 0, /* convertToDisplay */ true,
+		  /* render cache */ Font::GlyphCached ) ;
+
+		myGlyphCachedTrueTypeFont.load( /* point size */ 15 ),
+
+		  LogPlug::info(
+			"Successfully loaded following font in initial state: "
+			+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+
+		mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph(
+		  'a', Font::Solid, textColor ) ;
+
+		Coordinate ordinate = 60 ;
+
+		mySurface->blitTo( screen, 20, ordinate ) ;
+		delete mySurface ;
+
+		LogPlug::info( "Font after first render of 'a': "
 		  + myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
-	  mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph(
-		'a', Font::Solid, textColor ) ;
+		mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph(
+		  'a', Font::Solid, textColor ) ;
 
-	  Coordinate ordinate = 60 ;
+		mySurface->blitTo( screen, 40, ordinate ) ;
+		delete mySurface ;
 
-	  mySurface->blitTo( screen, 20, ordinate ) ;
-	  delete mySurface ;
+		LogPlug::info( "Font after second render of 'a': "
+		  + myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
-	  LogPlug::info( "Font after first render of 'a': "
-		+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+		mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph(
+		  'a', Font::Solid, textColor ) ;
 
-	  mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph(
-		'a', Font::Solid, textColor ) ;
+		mySurface->blitTo( screen, 60, ordinate ) ;
+		delete mySurface ;
 
-	  mySurface->blitTo( screen, 40, ordinate ) ;
-	  delete mySurface ;
+		LogPlug::info( "Font after third render of 'a': "
+		  + myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
-	  LogPlug::info( "Font after second render of 'a': "
-		+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+		myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 30, ordinate,
+		  'b', Font::Solid, textColor ) ;
 
-	  mySurface = & myGlyphCachedTrueTypeFont.renderLatin1Glyph(
-		'a', Font::Solid, textColor ) ;
+		LogPlug::info( "Font after first blit of 'b': "
+		  + myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
-	  mySurface->blitTo( screen, 60, ordinate ) ;
-	  delete mySurface ;
+		myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 50, ordinate,
+		  'b', Font::Solid, textColor ) ;
 
-	  LogPlug::info( "Font after third render of 'a': "
-		+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+		LogPlug::info( "Font after second blit of 'b': "
+		  + myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
-	  myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 30, ordinate,
-		'b', Font::Solid, textColor ) ;
+		myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 70, ordinate,
+		  'b', Font::Solid, textColor ) ;
 
-	  LogPlug::info( "Font after first blit of 'b': "
-		+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-	  myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 50, ordinate,
-		'b', Font::Solid, textColor ) ;
-
-	  LogPlug::info( "Font after second blit of 'b': "
-		+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-	  myGlyphCachedTrueTypeFont.blitLatin1Glyph( screen, 70, ordinate,
-		'b', Font::Solid, textColor ) ;
-
-	  LogPlug::info( "Font after third blit of 'b': "
-		+ myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+		LogPlug::info( "Font after third blit of 'b': "
+		  + myGlyphCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
 
-	}
+	  }
 
 
 
-	// Word cached section.
+	  // Word cached section.
 
-	if ( testWordCache )
-	{
+	  if ( testWordCache )
+	  {
 
-	  LogPlug::info( "Second: testing cache for word rendering, "
-		"with first test sentence: '" + firstTestSentence
-		+ "', with second test sentence '"
-		+ secondTestSentence + "'." ) ;
+		LogPlug::info( "Second: testing cache for word rendering, "
+		  "with first test sentence: '" + firstTestSentence
+		  + "', with second test sentence '"
+		  + secondTestSentence + "'." ) ;
 
-	  textColor = Pixels::Green ;
+		textColor = Pixels::Green ;
 
-	  std::string secondTrueTypeFontPath =
-		Text::TrueTypeFont::FindPathFor( secondTrueTypeFontFile ) ;
+		std::string secondTrueTypeFontPath =
+		  Text::TrueTypeFont::FindPathFor( secondTrueTypeFontFile ) ;
 
-	  TrueTypeFont myWordCachedTrueTypeFont( secondTrueTypeFontPath,
-		/* font index */ 0, /* convertToDisplay */ true,
-		/* render cache */ Font::WordCached ) ;
+		TrueTypeFont myWordCachedTrueTypeFont( secondTrueTypeFontPath,
+		  /* font index */ 0, /* convertToDisplay */ true,
+		  /* render cache */ Font::WordCached ) ;
 
-	  myWordCachedTrueTypeFont.load( /* point size */ 15 ) ;
-
-	  LogPlug::info(
-		"Successfully loaded following font in initial state: "
-		+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-	  mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
-		firstTestSentence, Font::Solid, textColor ) ;
-
-	  Coordinate ordinate = 100 ;
-
-	  mySurface->blitTo( screen, 20, ordinate ) ;
-	  delete mySurface ;
-
-	  LogPlug::info( "Font after first render of first test sentence: "
-		+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-	  mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
-		firstTestSentence, Font::Solid, textColor ) ;
-
-	  mySurface->blitTo( screen, 220, ordinate ) ;
-	  delete mySurface ;
-
-	  LogPlug::info( "Font after second render of first test sentence: "
-		+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-	  mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
-		firstTestSentence, Font::Solid, textColor ) ;
-
-	  mySurface->blitTo( screen, 420, ordinate ) ;
-	  delete mySurface ;
-
-	  LogPlug::info( "Font after third render of first test sentence: "
-		+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-
-	  myWordCachedTrueTypeFont.blitLatin1Text( screen, 20, 150,
-		secondTestSentence, Font::Solid, textColor ) ;
-
-	  LogPlug::info( "Font after first blit of second test sentence: "
-		+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-	  myWordCachedTrueTypeFont.blitLatin1Text( screen, 220, 150,
-		secondTestSentence, Font::Solid, textColor ) ;
-
-	  LogPlug::info( "Font after first blit of second test sentence: "
-		+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-	  myWordCachedTrueTypeFont.blitLatin1Text( screen, 420, 150,
-		secondTestSentence, Font::Solid, textColor ) ;
-
-	  LogPlug::info( "Font after first blit of second test sentence: "
-		+ myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-	}
-
-
-
-	// Text cached section.
-
-
-	if ( testTextCache )
-	{
-
-
-	  LogPlug::info( "Third: testing cache for text rendering, "
-		"with first test sentence: '" + firstTestSentence
-		+ "', with second test sentence '"
-		+ secondTestSentence + "'." ) ;
-
-	  textColor = Pixels::Blue ;
-
-
-	  std::string thirdTrueTypeFontPath =
-		Text::TrueTypeFont::FindPathFor( thirdTrueTypeFontFile ) ;
-
-	  TrueTypeFont myTextCachedTrueTypeFont( thirdTrueTypeFontPath,
-		/* font index */ 0, /* convertToDisplay */ true,
-		/* render cache */ Font::TextCached ) ;
-
-	  myTextCachedTrueTypeFont.load( /* point size */ 28 ),
+		myWordCachedTrueTypeFont.load( /* point size */ 15 ) ;
 
 		LogPlug::info(
 		  "Successfully loaded following font in initial state: "
+		  + myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+
+		mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
+		  firstTestSentence, Font::Solid, textColor ) ;
+
+		Coordinate ordinate = 100 ;
+
+		mySurface->blitTo( screen, 20, ordinate ) ;
+		delete mySurface ;
+
+		LogPlug::info( "Font after first render of first test sentence: "
+		  + myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+
+		mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
+		  firstTestSentence, Font::Solid, textColor ) ;
+
+		mySurface->blitTo( screen, 220, ordinate ) ;
+		delete mySurface ;
+
+		LogPlug::info( "Font after second render of first test sentence: "
+		  + myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+
+		mySurface = & myWordCachedTrueTypeFont.renderLatin1Text(
+		  firstTestSentence, Font::Solid, textColor ) ;
+
+		mySurface->blitTo( screen, 420, ordinate ) ;
+		delete mySurface ;
+
+		LogPlug::info( "Font after third render of first test sentence: "
+		  + myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+
+
+		myWordCachedTrueTypeFont.blitLatin1Text( screen, 20, 150,
+		  secondTestSentence, Font::Solid, textColor ) ;
+
+		LogPlug::info( "Font after first blit of second test sentence: "
+		  + myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+
+		myWordCachedTrueTypeFont.blitLatin1Text( screen, 220, 150,
+		  secondTestSentence, Font::Solid, textColor ) ;
+
+		LogPlug::info( "Font after first blit of second test sentence: "
+		  + myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+
+		myWordCachedTrueTypeFont.blitLatin1Text( screen, 420, 150,
+		  secondTestSentence, Font::Solid, textColor ) ;
+
+		LogPlug::info( "Font after first blit of second test sentence: "
+		  + myWordCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+
+	  }
+
+
+
+	  // Text cached section.
+
+
+	  if ( testTextCache )
+	  {
+
+
+		LogPlug::info( "Third: testing cache for text rendering, "
+		  "with first test sentence: '" + firstTestSentence
+		  + "', with second test sentence '"
+		  + secondTestSentence + "'." ) ;
+
+		textColor = Pixels::Blue ;
+
+
+		std::string thirdTrueTypeFontPath =
+		  Text::TrueTypeFont::FindPathFor( thirdTrueTypeFontFile ) ;
+
+		TrueTypeFont myTextCachedTrueTypeFont( thirdTrueTypeFontPath,
+		  /* font index */ 0, /* convertToDisplay */ true,
+		  /* render cache */ Font::TextCached ) ;
+
+		myTextCachedTrueTypeFont.load( /* point size */ 28 ),
+
+		  LogPlug::info(
+			"Successfully loaded following font in initial state: "
+			+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+
+		Coordinate ordinate = 200 ;
+
+		mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
+		  firstTestSentence, Font::Solid, textColor ) ;
+
+		mySurface->blitTo( screen, 20, ordinate ) ;
+		delete mySurface ;
+
+		LogPlug::info( "Font after first render of first test sentence: "
 		  + myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
-	  Coordinate ordinate = 200 ;
+		mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
+		  firstTestSentence, Font::Solid, textColor ) ;
 
-	  mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
-		firstTestSentence, Font::Solid, textColor ) ;
+		mySurface->blitTo( screen, 220, ordinate ) ;
+		delete mySurface ;
 
-	  mySurface->blitTo( screen, 20, ordinate ) ;
-	  delete mySurface ;
+		LogPlug::info( "Font after second render of first test sentence: "
+		  + myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
-	  LogPlug::info( "Font after first render of first test sentence: "
-		+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+		mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
+		  firstTestSentence, Font::Solid, textColor ) ;
 
-	  mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
-		firstTestSentence, Font::Solid, textColor ) ;
+		mySurface->blitTo( screen, 420, ordinate ) ;
+		delete mySurface ;
 
-	  mySurface->blitTo( screen, 220, ordinate ) ;
-	  delete mySurface ;
-
-	  LogPlug::info( "Font after second render of first test sentence: "
-		+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
-
-	  mySurface = & myTextCachedTrueTypeFont.renderLatin1Text(
-		firstTestSentence, Font::Solid, textColor ) ;
-
-	  mySurface->blitTo( screen, 420, ordinate ) ;
-	  delete mySurface ;
-
-	  LogPlug::info(
-		"Font after third render of first test sentence being "
-		+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+		LogPlug::info(
+		  "Font after third render of first test sentence being "
+		  + myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
 
-	  ordinate = 250 ;
+		ordinate = 250 ;
 
-	  myTextCachedTrueTypeFont.blitLatin1Text( screen, 20, ordinate,
-		secondTestSentence, Font::Solid, textColor ) ;
+		myTextCachedTrueTypeFont.blitLatin1Text( screen, 20, ordinate,
+		  secondTestSentence, Font::Solid, textColor ) ;
 
-	  LogPlug::info( "Font after first blit of second test sentence: "
-		+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+		LogPlug::info( "Font after first blit of second test sentence: "
+		  + myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
-	  myTextCachedTrueTypeFont.blitLatin1Text( screen, 220, ordinate,
-		secondTestSentence, Font::Solid, textColor ) ;
+		myTextCachedTrueTypeFont.blitLatin1Text( screen, 220, ordinate,
+		  secondTestSentence, Font::Solid, textColor ) ;
 
-	  LogPlug::info( "Font after first blit of second test sentence: "
-		+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+		LogPlug::info( "Font after first blit of second test sentence: "
+		  + myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
-	  myTextCachedTrueTypeFont.blitLatin1Text( screen, 420, ordinate,
-		secondTestSentence, Font::Solid, textColor ) ;
+		myTextCachedTrueTypeFont.blitLatin1Text( screen, 420, ordinate,
+		  secondTestSentence, Font::Solid, textColor ) ;
 
-	  LogPlug::info( "Font after first blit of second test sentence: "
-		+ myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
+		LogPlug::info( "Font after first blit of second test sentence: "
+		  + myTextCachedTrueTypeFont.toString( Ceylan::high ) ) ;
 
+
+	  }
+
+
+	  screen.update() ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
+
+
+	  LogPlug::info( "End of OSDL TrueType font cache test." ) ;
 
 	}
 
+	catch ( const OSDL::Exception & e )
+	{
 
-	screen.update() ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
-	if ( ! isBatch )
-	  myOSDL.getEventsModule().waitForAnyKey() ;
+	}
 
+	catch ( const Ceylan::Exception & e )
+	{
 
-	LogPlug::info( "Stopping OSDL." ) ;
-	OSDL::stop() ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
+	}
 
-	LogPlug::info( "End of OSDL TrueType font cache test." ) ;
+	catch ( const std::exception & e )
+	{
 
-  }
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
-  catch ( const OSDL::Exception & e )
-  {
+	}
 
-	LogPlug::error( "OSDL exception caught: "
-	  + e.toString( Ceylan::high ) ) ;
-	return Ceylan::ExitFailure ;
+	catch ( ... )
+	{
 
-  }
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
-  catch ( const Ceylan::Exception & e )
-  {
-
-	LogPlug::error( "Ceylan exception caught: "
-	  + e.toString( Ceylan::high ) ) ;
-	return Ceylan::ExitFailure ;
-
-  }
-
-  catch ( const std::exception & e )
-  {
-
-	LogPlug::error( "Standard exception caught: "
-	  + std::string( e.what() ) ) ;
-	return Ceylan::ExitFailure ;
-
-  }
-
-  catch ( ... )
-  {
-
-	LogPlug::error( "Unknown exception caught" ) ;
-	return Ceylan::ExitFailure ;
+	}
 
   }
 

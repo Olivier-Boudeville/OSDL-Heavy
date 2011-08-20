@@ -40,6 +40,7 @@ using namespace Ceylan::Log ;
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -47,24 +48,24 @@ int main( int argc, char * argv[] )
 	try
 	{
 
-		LogPlug::info( "Testing OSDL utility services." ) ;
+	  LogPlug::info( "Testing OSDL utility services." ) ;
 
-		// No need to start OSDL services for them:
-		LogPlug::info( "Native directory separator is: "
-			+ Ceylan::toString( Utils::getNativeDirectorySeparator() ) ) ;
+	  // No need to start OSDL services for them:
+	  LogPlug::info( "Native directory separator is: "
+		+ Ceylan::toString( Utils::getNativeDirectorySeparator() ) ) ;
 
-		LogPlug::info( "Base program path is: "	+ Utils::getProgramPath() ) ;
+	  LogPlug::info( "Base program path is: " + Utils::getProgramPath() ) ;
 
-		LogPlug::info( "User directory is: " + Utils::getUserDirectory() ) ;
+	  LogPlug::info( "User directory is: " + Utils::getUserDirectory() ) ;
 
-		/*
-		 * Useful here, as getProgramPath triggers the creation of an embedded
-		 * filesystem manager:
-		 *
-		 */
-		OSDL::stop() ;
+	  /*
+	   * Useful here, as getProgramPath triggers the creation of an embedded
+	   * filesystem manager:
+	   *
+	   */
+	  OSDL::stop() ;
 
-		LogPlug::info( "End of OSDL utils test." ) ;
+	  LogPlug::info( "End of OSDL utils test." ) ;
 
 
 	}
@@ -72,40 +73,42 @@ int main( int argc, char * argv[] )
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			+ e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			+ e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			+ std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

@@ -58,6 +58,7 @@ using namespace OSDL::Audio ;
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
@@ -66,109 +67,111 @@ int main( int argc, char * argv[] )
 	{
 
 
-		// For the test:
-		bool interactive = true ;
-		//bool interactive = false ;
+	  // For the test:
+	  bool interactive = true ;
+	  //bool interactive = false ;
 
 
-		LogPlug::info( "Test of OSDL support for raw sound output" ) ;
+	  LogPlug::info( "Test of OSDL support for raw sound output" ) ;
 
 
-		CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseAudio ) ;
+	  CommonModule & myOSDL = OSDL::getCommonModule(
+		CommonModule::UseAudio ) ;
 
-		LogPlug::info( "OSDL state: " + myOSDL.toString() ) ;
-
-
-		CommandManager & myCommandManager =
-			CommandManager::GetExistingCommandManager() ;
-
-		LogPlug::info( "Current ARM7 status just after OSDL activation is: "
-			 + myCommandManager.interpretLastARM7StatusWord() ) ;
-
-		const string soundFilename = "OSDL.osdl.sound" ;
-
-		LogPlug::info( "Creating test sound instance from the '"
-			+ soundFilename + "' file." ) ;
-
-		Sound testSound( soundFilename, /* preload */ false ) ;
-
-		LogPlug::info( "Loading its data." ) ;
-		testSound.load() ;
-
-		LogPlug::info( "Sending to the ARM7 a command request to play it." ) ;
-		testSound.play() ;
+	  LogPlug::info( "OSDL state: " + myOSDL.toString() ) ;
 
 
-		if ( interactive )
-		{
+	  CommandManager & myCommandManager =
+		CommandManager::GetExistingCommandManager() ;
 
-			LogPlug::info( "Press any key to stop waiting" ) ;
-			waitForKey() ;
+	  LogPlug::info( "Current ARM7 status just after OSDL activation is: "
+		+ myCommandManager.interpretLastARM7StatusWord() ) ;
 
-		}
+	  const string soundFilename = "OSDL.osdl.sound" ;
 
-		LogPlug::info( "Current ARM7 status just after OSDL activation is: "
-			 + myCommandManager.interpretLastARM7StatusWord() ) ;
+	  LogPlug::info( "Creating test sound instance from the '"
+		+ soundFilename + "' file." ) ;
 
-		bool testFailed = false ;
+	  Sound testSound( soundFilename, /* preload */ false ) ;
 
+	  LogPlug::info( "Loading its data." ) ;
+	  testSound.load() ;
 
-		if ( interactive )
-		{
-
-			LogPlug::info( "Press any key to stop waiting" ) ;
-			waitForKey() ;
-
-		}
+	  LogPlug::info( "Sending to the ARM7 a command request to play it." ) ;
+	  testSound.play() ;
 
 
-		if ( testFailed )
-			throw OSDL::TestException( "Test failed because of error(s) "
-				"previously displayed." ) ;
+	  if ( interactive )
+	  {
 
-		if ( interactive )
-		{
+		LogPlug::info( "Press any key to stop waiting" ) ;
+		waitForKey() ;
 
-			LogPlug::info( "Press any key to end the test" ) ;
-			waitForKey() ;
+	  }
 
-		}
+	  LogPlug::info( "Current ARM7 status just after OSDL activation is: "
+		+ myCommandManager.interpretLastARM7StatusWord() ) ;
 
-		// LogHolder out of scope: log browser triggered.
+	  bool testFailed = false ;
+
+
+	  if ( interactive )
+	  {
+
+		LogPlug::info( "Press any key to stop waiting" ) ;
+		waitForKey() ;
+
+	  }
+
+
+	  if ( testFailed )
+		throw OSDL::TestException( "Test failed because of error(s) "
+		  "previously displayed." ) ;
+
+	  if ( interactive )
+	  {
+
+		LogPlug::info( "Press any key to end the test" ) ;
+		waitForKey() ;
+
+	  }
+
+	  // LogHolder out of scope: log browser triggered.
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			+ e.toString( Ceylan::high ) ) ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
 
-		return Ceylan::ExitFailure ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( string( "Standard exception caught: " ) + e.what() ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( string( "Standard exception caught: " ) + e.what() ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	LogPlug::info( "Exit on success (no error)" ) ;
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

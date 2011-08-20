@@ -51,54 +51,54 @@ Length screenHeight = 480 ;
 
 /*
 
-class Sun: public ActiveObject
-{
+  class Sun: public ActiveObject
+  {
 
-	public:
+  public:
 
-		Sun( Events::Milliseconds startingTime, Point2D & origin,
-				Length initialRadius,
-				Pixels::ColorDefinition initialColor ) throw():
-			TimedDrawable( startingTime ),
-			_origin( origin.getX(), origin.getY() ),
-			_currentPosition( origin ),
-			_initialRadius( initialRadius ),
-			_initialColor( initialColor )
-		{
-
-
-		}
-
-		virtual ~Sun() throw()
-		{
-
-		}
+  Sun( Events::Milliseconds startingTime, Point2D & origin,
+  Length initialRadius,
+  Pixels::ColorDefinition initialColor ) throw():
+  TimedDrawable( startingTime ),
+  _origin( origin.getX(), origin.getY() ),
+  _currentPosition( origin ),
+  _initialRadius( initialRadius ),
+  _initialColor( initialColor )
+  {
 
 
-		virtual void updatePosition() throw()
-		{
-			_currentPosition.setTo(
-				_origin.getX()  +     EventsModule::getSimulationTime(),
-				_origin.getX() + 2 * EventsModule::getSimulationTime() ) ;
-		}
+  }
+
+  virtual ~Sun() throw()
+  {
+
+  }
 
 
-		virtual void draw( Surface & targetSurface ) throw()
-		{
-			updatePosition() ;
-			targetSurface.drawCircle( _currentPosition.getX(),
-				_currentPosition.getY(), _initialRadius, _initialColor ) ;
-		}
+  virtual void updatePosition() throw()
+  {
+  _currentPosition.setTo(
+  _origin.getX()  +     EventsModule::getSimulationTime(),
+  _origin.getX() + 2 * EventsModule::getSimulationTime() ) ;
+  }
 
 
-	protected:
+  virtual void draw( Surface & targetSurface ) throw()
+  {
+  updatePosition() ;
+  targetSurface.drawCircle( _currentPosition.getX(),
+  _currentPosition.getY(), _initialRadius, _initialColor ) ;
+  }
 
-		Bipoint _origin ;
-		Point2D _currentPosition ;
-		Length _initialRadius ;
-		ColorDefinition _initialColor ;
 
-} ;
+  protected:
+
+  Bipoint _origin ;
+  Point2D _currentPosition ;
+  Length _initialRadius ;
+  ColorDefinition _initialColor ;
+
+  } ;
 
 
 */
@@ -107,136 +107,140 @@ class Sun: public ActiveObject
 int main( int argc, char * argv[] )
 {
 
+  {
+
 	LogHolder myLog( argc, argv ) ;
 
 	try
 	{
 
 
-		LogPlug::info( "Testing OSDL Animation" ) ;
+	  LogPlug::info( "Testing OSDL Animation" ) ;
 
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
 
-			token = options.front() ;
-			options.pop_front() ;
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			tokenEaten = false ;
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
+		}
 
-			if ( token == "--batch" )
-			{
+		if ( token == "--online" )
+		{
+		  // Ignored:
+		  tokenEaten = true ;
+		}
 
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--online" )
-			{
-				// Ignored:
-				tokenEaten = true ;
-			}
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( LogHolder::IsAKnownPlugOption( token ) )
+		{
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
 
+		if ( ! tokenEaten )
+		{
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
+		}
 
-		LogPlug::info( "Prerequisite: initializing the display" ) ;
+	  }
 
 
-		CommonModule & myOSDL = OSDL::getCommonModule(
-			CommonModule::UseVideo | CommonModule::UseEvents ) ;
 
-		VideoModule & myVideo = myOSDL.getVideoModule() ;
+	  LogPlug::info( "Prerequisite: initializing the display" ) ;
 
-		myVideo.setMode( screenWidth, screenHeight,
-			VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 
-		Surface & screen = myVideo.getScreenSurface() ;
+	  CommonModule & myOSDL = OSDL::getCommonModule(
+		CommonModule::UseVideo | CommonModule::UseEvents ) ;
 
-		// Nothing for the moment.
+	  VideoModule & myVideo = myOSDL.getVideoModule() ;
 
-		screen.update() ;
+	  myVideo.setMode( screenWidth, screenHeight,
+		VideoModule::UseCurrentColorDepth, VideoModule::SoftwareSurface ) ;
 
-		if ( ! isBatch )
-			myOSDL.getEventsModule().waitForAnyKey() ;
+	  Surface & screen = myVideo.getScreenSurface() ;
 
-		LogPlug::info( "Stopping OSDL." ) ;
-		OSDL::stop() ;
+	  // Nothing for the moment.
 
-		LogPlug::info( "End of OSDL Animation test" ) ;
+	  screen.update() ;
+
+	  if ( ! isBatch )
+		myOSDL.getEventsModule().waitForAnyKey() ;
+
+	  LogPlug::info( "Stopping OSDL." ) ;
+	  OSDL::stop() ;
+
+	  LogPlug::info( "End of OSDL Animation test" ) ;
 
 	}
 
 	catch ( const OSDL::Exception & e )
 	{
 
-		LogPlug::error( "OSDL exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "OSDL exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }

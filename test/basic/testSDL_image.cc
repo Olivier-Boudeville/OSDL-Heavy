@@ -47,6 +47,7 @@ using std::string ;
  */
 
 
+
 /**
  * Displays an image (type auto-detected) stored in file fileName into
  * SDL_Surface targetSurface.
@@ -62,229 +63,232 @@ using std::string ;
 void displayImage( const string & fileName, SDL_Surface * targetSurface )
 {
 
-	// Loads the image file into a surface.
+  // Loads the image file into a surface.
 
-	SDL_Surface * mySurface ;
+  SDL_Surface * mySurface ;
 
-	mySurface = IMG_Load( fileName.c_str() ) ;
+  mySurface = IMG_Load( fileName.c_str() ) ;
 
-	if ( mySurface == 0 )
-	{
+  if ( mySurface == 0 )
+  {
 
-		LogPlug::fatal( "Unable to load image from file '" + fileName
-			+ "': " + Ceylan::toString( IMG_GetError() ) ) ;
+	LogPlug::fatal( "Unable to load image from file '" + fileName
+	  + "': " + Ceylan::toString( IMG_GetError() ) ) ;
 
-		throw Ceylan::TestException( "Unable to load image from file '"
-			+ fileName + "': " + Ceylan::toString( IMG_GetError() ) ) ;
+	throw Ceylan::TestException( "Unable to load image from file '"
+	  + fileName + "': " + Ceylan::toString( IMG_GetError() ) ) ;
 
-	}
+  }
 
-	/*
-	 * Palettized targetSurface modes will have a default palette (a standard
-	 * 8*8*4 colour cube), but if the image is palettized as well we can use
-	 * that palette for a nicer colour matching.
-	 *
+  /*
+   * Palettized targetSurface modes will have a default palette (a standard
+   * 8*8*4 colour cube), but if the image is palettized as well we can use that
+   * palette for a nicer colour matching.
+   *
 
-	if ( mySurface->format->palette && targetSurface->format->palette )
-		SDL_SetColors( targetSurface, mySurface->format->palette->colors, 0,
-			mySurface->format->palette->ncolors ) ;
+   if ( mySurface->format->palette && targetSurface->format->palette )
+   SDL_SetColors( targetSurface, mySurface->format->palette->colors, 0,
+   mySurface->format->palette->ncolors ) ;
 
-	 */
+  */
 
-	// Blit onto the targetSurface surface;
+  // Blit onto the targetSurface surface;
 
-	if ( SDL_BlitSurface( mySurface, 0, targetSurface, 0 ) < 0 )
-	{
+  if ( SDL_BlitSurface( mySurface, 0, targetSurface, 0 ) < 0 )
+  {
 
-		LogPlug::fatal( "BlitSurface error: "
-			+ Utils::getBackendLastError() ) ;
+	LogPlug::fatal( "BlitSurface error: "
+	  + Utils::getBackendLastError() ) ;
 
-		throw Ceylan::TestException( "BlitSurface error: "
-			+ Utils::getBackendLastError() ) ;
+	throw Ceylan::TestException( "BlitSurface error: "
+	  + Utils::getBackendLastError() ) ;
 
-	}
+  }
 
-	LogPlug::info( "Image width is " + Ceylan::toString( mySurface->w )
-		+ ", height is " + Ceylan::toString( mySurface->h ) );
+  LogPlug::info( "Image width is " + Ceylan::toString( mySurface->w )
+	+ ", height is " + Ceylan::toString( mySurface->h ) );
 
-	SDL_UpdateRect( targetSurface, 0, 0, targetSurface->w, targetSurface->h ) ;
+  SDL_UpdateRect( targetSurface, 0, 0, targetSurface->w, targetSurface->h ) ;
 
-	// Free the allocated BMP surface:
-	SDL_FreeSurface( mySurface ) ;
+  // Free the allocated BMP surface:
+  SDL_FreeSurface( mySurface ) ;
 
 }
+
 
 
 void waiter( bool isBatch )
 {
 
-	SDL_Event event ;
+  SDL_Event event ;
 
-	if ( ! isBatch )
+  if ( ! isBatch )
+  {
+
+	Ceylan::display( "< Press any key on SDL window to stop >" ) ;
+
+	do
 	{
 
-		Ceylan::display( "< Press any key on SDL window to stop >" ) ;
+	  // Avoid busy waits:
+	  SDL_WaitEvent( & event ) ;
 
-		do
-		{
-
-			// Avoid busy waits:
-			SDL_WaitEvent( & event ) ;
-
-		} while ( event.type != SDL_KEYDOWN ) ;
-	}
-	else
-	{
-		SDL_Delay( 1000 /* milliseconds */ ) ;
-	}
+	} while ( event.type != SDL_KEYDOWN ) ;
+  }
+  else
+  {
+	SDL_Delay( 1000 /* milliseconds */ ) ;
+  }
 
 }
+
 
 
 int main( int argc, char * argv[] )
 {
 
+  {
 
 	LogHolder myLog( argc, argv ) ;
 
 	try
 	{
 
-		LogPlug::info( "Testing basic SDL_image" ) ;
+	  LogPlug::info( "Testing basic SDL_image" ) ;
 
-		bool isBatch = false ;
+	  bool isBatch = false ;
 
-		std::string executableName ;
-		std::list<std::string> options ;
+	  std::string executableName ;
+	  std::list<std::string> options ;
 
-		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
+	  Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
 
-		std::string token ;
-		bool tokenEaten ;
+	  std::string token ;
+	  bool tokenEaten ;
 
 
-		while ( ! options.empty() )
+	  while ( ! options.empty() )
+	  {
+
+		token = options.front() ;
+		options.pop_front() ;
+
+		tokenEaten = false ;
+
+		if ( token == "--batch" )
 		{
+		  LogPlug::info( "Batch mode selected" ) ;
+		  isBatch = true ;
+		  tokenEaten = true ;
+		}
 
-			token = options.front() ;
-			options.pop_front() ;
-
-			tokenEaten = false ;
-
-			if ( token == "--batch" )
-			{
-				LogPlug::info( "Batch mode selected" ) ;
-				isBatch = true ;
-				tokenEaten = true ;
-			}
-
-			if ( token == "--interactive" )
-			{
-				LogPlug::info( "Interactive mode selected" ) ;
-				isBatch = false ;
-				tokenEaten = true ;
-			}
-
-
-			if ( LogHolder::IsAKnownPlugOption( token ) )
-			{
-				// Ignores log-related (argument-less) options.
-				tokenEaten = true ;
-			}
-
-
-			if ( ! tokenEaten )
-			{
-				throw Ceylan::CommandLineParseException(
-					"Unexpected command line argument: " + token ) ;
-			}
-
+		if ( token == "--interactive" )
+		{
+		  LogPlug::info( "Interactive mode selected" ) ;
+		  isBatch = false ;
+		  tokenEaten = true ;
 		}
 
 
-		LogPlug::info( "Starting SDL (base, audio and video)" ) ;
-
-		if ( SDL_Init( SDL_INIT_VIDEO ) != SDL_SUCCESS )
+		if ( LogHolder::IsAKnownPlugOption( token ) )
 		{
-
-			LogPlug::fatal( "Unable to initialize SDL: "
-				+ Utils::getBackendLastError() ) ;
-
-			return Ceylan::ExitFailure ;
+		  // Ignores log-related (argument-less) options.
+		  tokenEaten = true ;
 		}
 
-		LogPlug::info( "SDL successfully initialized" ) ;
 
-		int xrange   = 640 ;
-		int yrange   = 480 ;
-
-		// 0 means current bpp:
-		int askedBpp = 0 ;
-
-		LogPlug::info( "Setting "
-			+ Ceylan::toString( xrange ) + "x"
-			+ Ceylan::toString( yrange ) + " with "
-			+ Ceylan::toString( askedBpp ) + " bits per pixel video mode." ) ;
-
-		SDL_Surface * screen = SDL_SetVideoMode( xrange, yrange, askedBpp,
-			SDL_SWSURFACE ) ;
-
-		if ( screen == 0 )
+		if ( ! tokenEaten )
 		{
-			LogPlug::fatal( "Couldn't set "
-				+ Ceylan::toString( xrange ) + "x"
-				+ Ceylan::toString( yrange ) + " with "
-				+ Ceylan::toString( askedBpp ) + " bits per pixel video mode: "
-				+ Utils::getBackendLastError() ) ;
-			return Ceylan::ExitFailure ;
+		  throw Ceylan::CommandLineParseException(
+			"Unexpected command line argument: " + token ) ;
 		}
 
-		int bpp = screen->format->BitsPerPixel ;
+	  }
 
+
+	  LogPlug::info( "Starting SDL (base, audio and video)" ) ;
+
+	  if ( SDL_Init( SDL_INIT_VIDEO ) != SDL_SUCCESS )
+	  {
+
+		LogPlug::fatal( "Unable to initialize SDL: "
+		  + Utils::getBackendLastError() ) ;
+
+		return Ceylan::ExitFailure ;
+	  }
+
+	  LogPlug::info( "SDL successfully initialized" ) ;
+
+	  int xrange   = 640 ;
+	  int yrange   = 480 ;
+
+	  // 0 means current bpp:
+	  int askedBpp = 0 ;
+
+	  LogPlug::info( "Setting "
+		+ Ceylan::toString( xrange ) + "x"
+		+ Ceylan::toString( yrange ) + " with "
+		+ Ceylan::toString( askedBpp ) + " bits per pixel video mode." ) ;
+
+	  SDL_Surface * screen = SDL_SetVideoMode( xrange, yrange, askedBpp,
+		SDL_SWSURFACE ) ;
+
+	  if ( screen == 0 )
+	  {
+		LogPlug::fatal( "Couldn't set "
+		  + Ceylan::toString( xrange ) + "x"
+		  + Ceylan::toString( yrange ) + " with "
+		  + Ceylan::toString( askedBpp ) + " bits per pixel video mode: "
+		  + Utils::getBackendLastError() ) ;
+		return Ceylan::ExitFailure ;
+	  }
+
+	  int bpp = screen->format->BitsPerPixel ;
+
+	  LogPlug::info( "Color depth is " + Ceylan::toString( bpp )
+		+ " bits per pixel" ) ;
+
+	  if ( askedBpp != bpp )
+	  {
 		LogPlug::info( "Color depth is " + Ceylan::toString( bpp )
-			+ " bits per pixel" ) ;
-
-		if ( askedBpp != bpp )
-		{
-			 LogPlug::info( "Color depth is " + Ceylan::toString( bpp )
-				+ " bits per pixel instead of the asked "
-				+ Ceylan::toString( askedBpp ) + " bits per pixel." ) ;
-		}
+		  + " bits per pixel instead of the asked "
+		  + Ceylan::toString( askedBpp ) + " bits per pixel." ) ;
+	  }
 
 
-		Ceylan::System::FileLocator imageFinder ;
+	  Ceylan::System::FileLocator imageFinder ;
 
-		// When run from executable directory:
-		imageFinder.addPath( "../../src/doc/web/images" ) ;
+	  // When run from executable directory:
+	  imageFinder.addPath( "../../src/doc/web/images" ) ;
 
-		// When run from tests-results directory:
-		imageFinder.addPath( "../src/doc/web/images" ) ;
+	  // When run from tests-results directory:
+	  imageFinder.addPath( "../src/doc/web/images" ) ;
 
-		const string firstImageFile = imageFinder.find(
-			"VikingWalkingInSnow.jpg" ) ;
+	  const string firstImageFile = imageFinder.find(
+		"VikingWalkingInSnow.jpg" ) ;
 
-		LogPlug::info( "Displaying a JPEG image from file " + firstImageFile ) ;
+	  LogPlug::info( "Displaying a JPEG image from file " + firstImageFile ) ;
 
-		IMG_Init( IMG_INIT_JPG | IMG_INIT_PNG ) ;
+	  IMG_Init( IMG_INIT_JPG | IMG_INIT_PNG ) ;
 
-		displayImage( firstImageFile, screen ) ;
-		waiter( isBatch ) ;
+	  displayImage( firstImageFile, screen ) ;
+	  waiter( isBatch ) ;
 
-		const string secondImageFile = imageFinder.find(
-			"osdl-zoom-inverted.png" ) ;
+	  const string secondImageFile = imageFinder.find(
+		"osdl-zoom-inverted.png" ) ;
 
-		LogPlug::info( "Displaying a PNG image from file " + secondImageFile ) ;
+	  LogPlug::info( "Displaying a PNG image from file " + secondImageFile ) ;
 
-		displayImage( secondImageFile, screen ) ;
-		waiter( isBatch ) ;
+	  displayImage( secondImageFile, screen ) ;
+	  waiter( isBatch ) ;
 
-		IMG_Quit() ;
+	  IMG_Quit() ;
 
-		LogPlug::info( "Stopping SDL" ) ;
-		SDL_Quit() ;
-		LogPlug::info( "SDL successfully stopped." ) ;
+	  LogPlug::info( "Stopping SDL" ) ;
+	  SDL_Quit() ;
+	  LogPlug::info( "SDL successfully stopped." ) ;
 
-		LogPlug::info( "End of basic SDL_image test." ) ;
+	  LogPlug::info( "End of basic SDL_image test." ) ;
 
 
 	}
@@ -292,32 +296,34 @@ int main( int argc, char * argv[] )
 	catch ( const Ceylan::Exception & e )
 	{
 
-		LogPlug::error( "Ceylan exception caught: "
-			 + e.toString( Ceylan::high ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Ceylan exception caught: "
+		+ e.toString( Ceylan::high ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( const std::exception & e )
 	{
 
-		LogPlug::error( "Standard exception caught: "
-			 + std::string( e.what() ) ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Standard exception caught: "
+		+ std::string( e.what() ) ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
 	catch ( ... )
 	{
 
-		LogPlug::error( "Unknown exception caught" ) ;
-		return Ceylan::ExitFailure ;
+	  LogPlug::error( "Unknown exception caught" ) ;
+	  return Ceylan::ExitFailure ;
 
 	}
 
-	// To deallocate helpers like Ceylan's filesystem manager for logs:
-	OSDL::shutdown() ;
+  }
 
-	return Ceylan::ExitSuccess ;
+  // To deallocate helpers like Ceylan's filesystem manager for logs:
+  OSDL::shutdown() ;
+
+  return Ceylan::ExitSuccess ;
 
 }
