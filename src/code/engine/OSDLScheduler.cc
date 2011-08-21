@@ -2522,7 +2522,7 @@ void Scheduler::scheduleBestEffort()
 		+ Ceylan::toString( _desiredSimulationFrequency )
 		+ " Hz</td>"
 		"		<td>"
-		+ Ceylan::toString(	1E6 / ( _simulationPeriod * _engineTickDuration ),
+		+ Ceylan::toString( 1E6 / ( _simulationPeriod * _engineTickDuration ),
 			precision ) + " Hz</td>"
 		"		<td>"
 		+ Ceylan::toString(
@@ -2553,7 +2553,7 @@ void Scheduler::scheduleBestEffort()
 		+ Ceylan::toString( _desiredRenderingFrequency )
 		+ " Hz</td>"
 		"		<td>"
-		+ Ceylan::toString(	1E6 / ( _renderingPeriod * _engineTickDuration ),
+		+ Ceylan::toString( 1E6 / ( _renderingPeriod * _engineTickDuration ),
 			precision ) + " Hz</td>"
 		"		<td>"
 		+ Ceylan::toString(
@@ -2582,7 +2582,7 @@ void Scheduler::scheduleBestEffort()
 		+ Ceylan::toString( _desiredInputFrequency )
 		+ " Hz</td>"
 		"		<td>"
-		+ Ceylan::toString(	1E6 / ( _inputPeriod * _engineTickDuration ),
+		+ Ceylan::toString( 1E6 / ( _inputPeriod * _engineTickDuration ),
 			precision ) + " Hz</td>"
 		"		<td>"
 		+ Ceylan::toString(
@@ -2707,7 +2707,7 @@ void Scheduler::scheduleBestEffort()
 #if OSDL_DEBUG_SCHEDULER
 
 	/*
-	 * Collect some informations, and check them to assess the scheduler
+	 * Collect some information, and check them to assess the scheduler
 	 * behaviour.
 	 *
 	 */

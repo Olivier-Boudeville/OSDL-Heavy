@@ -110,6 +110,9 @@ namespace OSDL
 		 * This scheduler manages active objects so that they are in turn
 		 * granted with the processing power they requested.
 		 *
+		 * @note The scheduler never takes ownership of the objects it
+		 * schedules.
+		 *
 		 * Two kinds of active objects can be scheduled:
 		 *
 		 *  - periodically activated objects: they just have to define their
@@ -574,7 +577,7 @@ namespace OSDL
 				virtual void setIdleCallback(
 					Ceylan::System::Callback idleCallback = 0 ,
 					void * callbackData = 0,
-					Ceylan::System::Microsecond	callbackExpectedMaxDuration = 0
+					Ceylan::System::Microsecond callbackExpectedMaxDuration = 0
 				) ;
 
 
@@ -1352,7 +1355,7 @@ namespace OSDL
 				 * its value is a list of all objects having requested to be
 				 * scheduled at this particular simulation tick.
 				 *
-				 * A map (namely, a hash table) has been prefered to a list
+				 * A map (namely, a hash table) has been preferred to a list
 				 * sorted in chronological order (with std::set), since with a
 				 * map, even if reading whether there are programmed triggers
 				 * for the next simulation tick is slower (0(log n) instead of
