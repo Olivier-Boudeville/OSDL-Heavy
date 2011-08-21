@@ -148,7 +148,7 @@ TrueTypeFont::~TrueTypeFont() throw()
 
   }
 
-  LogPlug::trace( "TrueTypeFont deallocated." ) ;
+  //LogPlug::trace( "TrueTypeFont '" + _contentPath + "' deallocated." ) ;
 
 
 }
@@ -268,7 +268,10 @@ bool TrueTypeFont::unload()
   if ( _content != 0 )
   {
 
-	//Ceylan::checkpoint( "TrueTypeFont::unload: actual unloading." ) ;
+	/*
+	Ceylan::checkpoint( "TrueTypeFont::unload: actual unloading for '"
+	  + _contentPath + "'." ) ;
+	*/
 
 	::TTF_CloseFont( _content ) ;
 
