@@ -41,11 +41,12 @@ using namespace Ceylan::Log ;
 int main( int argc, char * argv[] )
 {
 
+  bool success = false ;
+
   {
 
 	LogHolder myLog( argc, argv ) ;
 
-	bool success = false ;
 
 	try
 	{
