@@ -5,7 +5,7 @@
  *
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
- * the GNU General Public License, as they are published by the Free Software
+ * the GNU General Public License, a2s they are published by the Free Software
  * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
@@ -327,18 +327,34 @@ void EmbeddedFileSystemManager::umount(
 
 #if OSDL_USES_PHYSICSFS
 
-	if ( PHYSFS_removeFromSearchPath( actualFilesystemElement.c_str() ) == 0 )
-		throw EmbeddedFileSystemManagerException(
-			"EmbeddedFileSystemManager::umount failed: "
-			+ GetBackendLastError() ) ;
+  if ( _trackOpenFiles )
+  {
 
-	send( "Element '" + actualFilesystemElement + "' unmounted." ) ;
+	if ( hasOpenFiles() )
+	{
+
+	  LogPlug::error( "EmbeddedFileSystemManager umount called whereas "
+		"following files were still reported as open:"
+		+ Ceylan::formatStringList( Ceylan::encodeToROT13( _openFiles ) ) ) ;
+
+	}
+
+  }
+
+
+  if ( PHYSFS_removeFromSearchPath( actualFilesystemElement.c_str() ) == 0 )
+	throw EmbeddedFileSystemManagerException(
+	  "EmbeddedFileSystemManager::umount failed for '"
+	  + actualFilesystemElement + "': "
+	  + GetBackendLastError() ) ;
+
+  send( "Element '" + actualFilesystemElement + "' unmounted." ) ;
 
 #else // OSDL_USES_PHYSICSFS
 
 	throw EmbeddedFileSystemManagerException(
-		"EmbeddedFileSystemManager::umount failed: "
-		"no PhysicsFS support available." ) ;
+	  "EmbeddedFileSystemManager::umount failed: "
+	  "no PhysicsFS support available." ) ;
 
 #endif // OSDL_USES_PHYSICSFS
 
@@ -733,7 +749,7 @@ void EmbeddedFileSystemManager::copyFile( const string & sourceFilename,
 				delete [] buf ;
 
 				throw FileCopyFailed( "EmbeddedFileSystemManager::copyFile "
-					"failed when copying '"	+ sourceFilename + "' to '"
+					"failed when copying '" + sourceFilename + "' to '"
 					+ targetFilename + "': " + e.toString() ) ;
 
 			}
@@ -769,7 +785,7 @@ void EmbeddedFileSystemManager::copyFile( const string & sourceFilename,
 	{
 
 		throw FileCopyFailed( "EmbeddedFileSystemManager::copyFile "
-			"failed when copying '"	+ sourceFilename + "' to '"
+			"failed when copying '" + sourceFilename + "' to '"
 			+ targetFilename + "': " + e.toString() ) ;
 
 	}
@@ -887,6 +903,27 @@ void EmbeddedFileSystemManager::allowSymbolicFiles( bool newStatus )
 }
 
 
+std::string EmbeddedFileSystemManager::listOpenFiles() const
+{
+
+  if ( _trackOpenFiles )
+  {
+
+	if ( _openFiles.empty() )
+	  return "not having any open file currently" ;
+
+	return "having following files currently opened:"
+	  + Ceylan::formatStringList( Ceylan::encodeToROT13( _openFiles ) ) ;
+
+  }
+  else
+  {
+
+	return "(tracking of open files not activated)" ;
+
+  }
+
+}
 
 
 // Directory-related section.
@@ -1233,7 +1270,13 @@ const string EmbeddedFileSystemManager::toString(
 	Ceylan::VerbosityLevels level ) const
 {
 
-	return "Embedded filesystem manager, based on the PhysicsFS backend" ;
+	string mes = "Embedded filesystem manager, "
+	  "based on the PhysicsFS backend " ;
+
+	if ( _trackOpenFiles )
+	  return mes + listOpenFiles() ;
+	else
+	  return mes + "(not tracking open files)" ;
 
 }
 
@@ -1250,7 +1293,7 @@ EmbeddedFileSystemManager &
 
 	if ( _EmbeddedFileSystemManager == 0 )
 		_EmbeddedFileSystemManager = new EmbeddedFileSystemManager(
-			/* use cypher */ cypher ) ;
+		  /* use cypher */ cypher, /* track opened files */ true ) ;
 
 	return *_EmbeddedFileSystemManager ;
 
@@ -1291,8 +1334,10 @@ void EmbeddedFileSystemManager::RemoveEmbeddedFileSystemManager()
 
 
 
-EmbeddedFileSystemManager::EmbeddedFileSystemManager( bool cypherWritings ) :
-	_cypher( cypherWritings )
+EmbeddedFileSystemManager::EmbeddedFileSystemManager( bool cypherWritings,
+  bool trackOpenedFiles ) :
+  Ceylan::System::FileSystemManager( trackOpenedFiles ),
+  _cypher( cypherWritings )
 {
 
 #if OSDL_USES_PHYSICSFS

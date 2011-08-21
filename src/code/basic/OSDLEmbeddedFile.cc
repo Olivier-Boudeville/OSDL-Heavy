@@ -175,17 +175,23 @@ bool EmbeddedFile::close()
 
 #if OSDL_USES_PHYSICSFS
 
-	if ( PHYSFS_close( _physfsHandle ) == 0 )
-	  throw Stream::CloseException( "EmbeddedFile::close failed: "
-		+ EmbeddedFileSystemManager::GetBackendLastError() ) ;
+  // getCorrespondingFileSystemManager() would require a cast to embedded:
+  EmbeddedFileSystemManager & manager =
+				EmbeddedFileSystemManager::GetEmbeddedFileSystemManager() ;
 
-	_physfsHandle = 0 ;
+  manager.declareFileClosing( *this ) ;
 
-	return true ;
+  if ( PHYSFS_close( _physfsHandle ) == 0 )
+	throw Stream::CloseException( "EmbeddedFile::close failed: "
+	  + EmbeddedFileSystemManager::GetBackendLastError() ) ;
+
+  _physfsHandle = 0 ;
+
+  return true ;
 
 #else // OSDL_USES_PHYSICSFS
 
-	throw Stream::CloseException( "EmbeddedFile::close failed: "
+  throw Stream::CloseException( "EmbeddedFile::close failed: "
 	  "no PhysicsFS support available." ) ;
 
 #endif // OSDL_USES_PHYSICSFS
@@ -762,7 +768,8 @@ void EmbeddedFile::reopen()
 	file = PHYSFS_openWrite( _name.c_str() ) ;
 
 	if ( file == 0 )
-	  throw FileOpeningFailed("EmbeddedFile::reopen for writing failed for file '"
+	  throw FileOpeningFailed(
+		"EmbeddedFile::reopen for writing failed for file '"
 		+ _name + "': "
 		+ EmbeddedFileSystemManager::GetBackendLastError() ) ;
 
@@ -802,6 +809,12 @@ void EmbeddedFile::reopen()
 
 
   _physfsHandle = file ;
+
+  // getCorrespondingFileSystemManager() would require a cast to embedded:
+  EmbeddedFileSystemManager & manager =
+				EmbeddedFileSystemManager::GetEmbeddedFileSystemManager() ;
+
+  manager.declareFileOpening( *this ) ;
 
 #else // OSDL_USES_PHYSICSFS
 

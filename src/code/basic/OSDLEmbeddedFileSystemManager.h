@@ -85,8 +85,10 @@ namespace OSDL
 	{
 
 
+	  friend class EmbeddedFile ;
 
-		public:
+
+	public:
 
 
 
@@ -753,10 +755,17 @@ namespace OSDL
 			virtual void allowSymbolicFiles( bool newStatus ) ;
 
 
+			/**
+			 * Returns a textual description of the files currently opened
+			 * through this filesystem manager.
+			 *
+			 */
+			std::string listOpenFiles() const ;
+
+
 
 
 			// Directory-related section.
-
 
 
 			// Factory-related subsection.
@@ -1074,6 +1083,9 @@ namespace OSDL
 			 * written files will not be directly readable. If false, raw I/O
 			 * will be performed, with no further transformation.
 			 *
+			 * @param trackOpenedFiles tells whether opened files should be
+			 * tracked.
+			 *
 			 * @note Not to be called by the user.
 			 *
 			 * @see GetEmbeddedFileSystemManager instead.
@@ -1082,7 +1094,8 @@ namespace OSDL
 			 * failed.
 			 *
 			 */
-			explicit EmbeddedFileSystemManager( bool cypher = true ) ;
+			explicit EmbeddedFileSystemManager( bool cypher = true,
+			  bool trackOpenedFiles = true ) ;
 
 
 
@@ -1144,7 +1157,6 @@ namespace OSDL
 
 
 		private:
-
 
 
 			/**
