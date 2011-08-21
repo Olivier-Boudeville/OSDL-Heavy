@@ -170,6 +170,8 @@ Data::ResourceManager::~ResourceManager() throw()
 Audio::MusicCountedPtr Data::ResourceManager::getMusic( Ceylan::ResourceID id )
 {
 
+	send( "Getting music whose ID is " + Ceylan::toString( id ) ) ;
+
 	map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
 		_musicMap.find( id ) ;
 
@@ -191,6 +193,8 @@ Audio::MusicCountedPtr Data::ResourceManager::getMusic( Ceylan::ResourceID id )
 Audio::MusicCountedPtr Data::ResourceManager::getMusic(
 	const string & musicPath )
 {
+
+	send( "Getting music whose path is '" + musicPath + "'." ) ;
 
 	map<Ceylan::ResourceID, Audio::MusicCountedPtr>::iterator it =
 		_musicMap.find( getIDForPath(musicPath) ) ;
@@ -215,6 +219,7 @@ Audio::MusicCountedPtr Data::ResourceManager::getMusic(
 Audio::SoundCountedPtr Data::ResourceManager::getSound( Ceylan::ResourceID id )
 {
 
+	send( "Getting sound whose ID is " + Ceylan::toString( id ) ) ;
 
 	map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
 		_soundMap.find( id ) ;
@@ -237,6 +242,8 @@ Audio::SoundCountedPtr Data::ResourceManager::getSound( Ceylan::ResourceID id )
 Audio::SoundCountedPtr Data::ResourceManager::getSound(
 	const string & soundPath )
 {
+
+	send( "Getting sound whose path is '" + soundPath + "'" ) ;
 
 	map<Ceylan::ResourceID, Audio::SoundCountedPtr>::iterator it =
 		_soundMap.find( getIDForPath(soundPath) ) ;
@@ -262,6 +269,8 @@ Video::TwoDimensional::ImageCountedPtr Data::ResourceManager::getImage(
 	Ceylan::ResourceID id )
 {
 
+	send( "Getting image whose ID is " + Ceylan::toString( id ) ) ;
+
 	map<Ceylan::ResourceID,
 			Video::TwoDimensional::ImageCountedPtr>::iterator it =
 		_imageMap.find( id ) ;
@@ -285,6 +294,8 @@ Video::TwoDimensional::ImageCountedPtr Data::ResourceManager::getImage(
 	const string & imagePath )
 {
 
+	send( "Getting image whose path is '" + imagePath + "'" ) ;
+
 	map<Ceylan::ResourceID,
 			Video::TwoDimensional::ImageCountedPtr>::iterator it =
 		_imageMap.find( getIDForPath(imagePath) ) ;
@@ -307,6 +318,8 @@ Video::TwoDimensional::ImageCountedPtr Data::ResourceManager::getImage(
 Video::OpenGL::TextureCountedPtr Data::ResourceManager::getTexture(
 	Ceylan::ResourceID id, bool uploadWanted )
 {
+
+	send( "Getting texture whose ID is " + Ceylan::toString( id ) ) ;
 
 	map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
 		_textureMap.find( id ) ;
@@ -340,6 +353,8 @@ Video::OpenGL::TextureCountedPtr Data::ResourceManager::getTexture(
 Video::OpenGL::TextureCountedPtr Data::ResourceManager::getTexture(
 	const string & texturePath, bool uploadWanted )
 {
+
+	send( "Getting texture whose path is '" + texturePath + "'" ) ;
 
 	map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
 		_textureMap.find( getIDForPath(texturePath) ) ;
@@ -378,6 +393,9 @@ std::pair<Video::OpenGL::TextureCountedPtr,Ceylan::ResourceID>
 		bool uploadWanted )
 {
 
+	send( "Getting texture from surface "
+	  + sourceSurface.toString( Ceylan::low ) ) ;
+
 	Video::OpenGL::TextureCountedPtr resPtr = new Video::OpenGL::GLTexture(
 		sourceSurface, flavour ) ;
 
@@ -404,6 +422,8 @@ Video::TwoDimensional::Text::TrueTypeFontCountedPtr
 	Text::PointSize pointSize )
 {
 
+	send( "Getting TrueTypeFont whose ID is " + Ceylan::toString( id ) ) ;
+
 	map<ResourceID,Text::TrueTypeFontCountedPtr>::iterator it =
 		_truetypeFontMap.find( id ) ;
 
@@ -427,6 +447,8 @@ Video::TwoDimensional::Text::TrueTypeFontCountedPtr
 	Text::PointSize pointSize )
 {
 
+	send( "Getting TrueTypeFont whose path is '" + fontPath + "'" ) ;
+
 	map<ResourceID,Text::TrueTypeFontCountedPtr>::iterator it =
 		_truetypeFontMap.find( getIDForPath(fontPath) ) ;
 
@@ -447,6 +469,8 @@ Video::TwoDimensional::Text::TrueTypeFontCountedPtr
 
 void Data::ResourceManager::discardTexture( Ceylan::ResourceID textureId )
 {
+
+	send( "Discarding texture whose ID is " + Ceylan::toString( textureId ) ) ;
 
 	map<Ceylan::ResourceID,Video::OpenGL::TextureCountedPtr>::iterator it =
 		_textureMap.find( textureId ) ;
@@ -649,9 +673,10 @@ const string Data::ResourceManager::toString(
 			{
 
 				musics.push_back( (*it).second->toString(level)
-					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ " and whose reference count is "
-					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+				  + " (ID #" + Ceylan::toString( (*it).first )
+				  + " and whose reference count is "
+				  + Ceylan::toString( (*it).second.getReferenceCount() )
+				  + ")" ) ;
 
 			}
 
@@ -690,9 +715,10 @@ const string Data::ResourceManager::toString(
 			{
 
 				sounds.push_back( (*it).second->toString(level)
-					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ " and whose reference count is "
-					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+				  + " (ID #" + Ceylan::toString( (*it).first )
+				  + " and whose reference count is "
+				  + Ceylan::toString( (*it).second.getReferenceCount() )
+				  + ")" ) ;
 
 			}
 
@@ -731,9 +757,10 @@ const string Data::ResourceManager::toString(
 			{
 
 				images.push_back( (*it).second->toString(level)
-					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ " and whose reference count is "
-					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+				  + " (ID #" + Ceylan::toString( (*it).first )
+				  + " and whose reference count is "
+				  + Ceylan::toString( (*it).second.getReferenceCount() )
+				  + ")" ) ;
 
 			}
 
@@ -772,9 +799,10 @@ const string Data::ResourceManager::toString(
 			{
 
 				textures.push_back( (*it).second->toString(level)
-					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ " and whose reference count is "
-					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+				  + " (ID #" + Ceylan::toString( (*it).first )
+				  + " and whose reference count is "
+				  + Ceylan::toString( (*it).second.getReferenceCount() )
+				  + ")" ) ;
 
 			}
 
@@ -814,9 +842,11 @@ const string Data::ResourceManager::toString(
 			{
 
 				trueTypeFonts.push_back( (*it).second->toString(level)
-					+ " (ID #" + Ceylan::toString( (*it).first )
-					+ " and whose reference count is "
-					+ Ceylan::toString( (*it).second.getReferenceCount() ) ) ;
+				  + " (ID #" + Ceylan::toString( (*it).first )
+				  + " and whose reference count is "
+				  + Ceylan::toString( (*it).second.getReferenceCount() )
+				  + ")" ) ;
+
 
 			}
 
