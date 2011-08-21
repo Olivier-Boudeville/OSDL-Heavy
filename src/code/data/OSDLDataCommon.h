@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -37,43 +37,42 @@
 
 
 /*
- * This file has for purpose to solve all intricated dependency links 
- * existing between files dealing with data management.
+ * This file has for purpose to solve all intricated dependency links existing
+ * between files dealing with data management.
  *
  */
- 
- 
- 
+
+
+
 
 namespace OSDL
 {
 
 
 
-	namespace Data 
+	namespace Data
 	{
-	
-			
-		
+
+
+
 		/// Exception to be thrown when an abnormal situation occurs with data.
 		class OSDL_DLL DataException : public OSDL::Exception
 		{
 			public:
-		
+
 				explicit DataException( const std::string & reason ) ;
-				
+
 				virtual ~DataException() throw() ;
-			
+
 		} ;
 
-		
-				
-		
+
+
+
 	}
-	
-}	
+
+}
 
 
 
 #endif // OSDL_DATA_COMMON_H_
-
