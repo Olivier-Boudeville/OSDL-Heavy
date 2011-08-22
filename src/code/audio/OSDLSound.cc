@@ -583,6 +583,8 @@ void Sound::setVolume( Volume newVolume )
 void Sound::play( PlaybackCount playCount )
 {
 
+	LOG_DEBUG_AUDIO( "Sound::play for " + toString() ) ;
+
 #if OSDL_ARCH_NINTENDO_DS
 
 #ifdef OSDL_RUNS_ON_ARM7
@@ -622,6 +624,8 @@ void Sound::play( PlaybackCount playCount )
 ChannelNumber Sound::playReturnChannel( PlaybackCount playCount )
 {
 
+	LOG_DEBUG_AUDIO( "Sound::playReturnChannel for " + toString() ) ;
+
 #if OSDL_USES_SDL_MIXER
 
 	if ( ! hasContent() )
@@ -651,6 +655,8 @@ ChannelNumber Sound::playReturnChannel( PlaybackCount playCount )
 
 void Sound::play( ChannelNumber mixingChannelNumber, PlaybackCount playCount )
 {
+
+	LOG_DEBUG_AUDIO( "Sound::play for " + toString() ) ;
 
 #if OSDL_USES_SDL_MIXER
 
@@ -683,6 +689,8 @@ void Sound::playForAtMost( Ceylan::System::Millisecond maxDuration,
 	PlaybackCount playCount )
 {
 
+	LOG_DEBUG_AUDIO( "Sound::playForAtMost for " + toString() ) ;
+
 	// Returned value ignored:
 	playForAtMostReturnChannel( maxDuration, playCount ) ;
 
@@ -693,6 +701,8 @@ void Sound::playForAtMost( Ceylan::System::Millisecond maxDuration,
 ChannelNumber Sound::playForAtMostReturnChannel(
 	Ceylan::System::Millisecond maxDuration, PlaybackCount playCount )
 {
+
+	LOG_DEBUG_AUDIO( "Sound::playForAtMostReturnChannel for " + toString() ) ;
 
 #if OSDL_USES_SDL_MIXER
 
@@ -725,6 +735,8 @@ void Sound::playForAtMost( Ceylan::System::Millisecond maxDuration,
 	ChannelNumber mixingChannelNumber, PlaybackCount playCount )
 {
 
+	LOG_DEBUG_AUDIO( "Sound::playForAtMost for " + toString() ) ;
+
 #if OSDL_USES_SDL_MIXER
 
 	if ( ! hasContent() )
@@ -756,6 +768,8 @@ void Sound::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
 	PlaybackCount playCount )
 {
 
+	LOG_DEBUG_AUDIO( "Sound::playWithFadeIn for " + toString() ) ;
+
 	// Returned value ignored:
 	playWithFadeInReturnChannel( fadeInMaxDuration, playCount ) ;
 
@@ -767,6 +781,8 @@ void Sound::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
 ChannelNumber Sound::playWithFadeInReturnChannel(
 	Ceylan::System::Millisecond fadeInMaxDuration, PlaybackCount playCount )
 {
+
+	LOG_DEBUG_AUDIO( "Sound::playWithFadeInReturnChannel for " + toString() ) ;
 
 #if OSDL_USES_SDL_MIXER
 
@@ -798,6 +814,8 @@ ChannelNumber Sound::playWithFadeInReturnChannel(
 void Sound::playWithFadeIn( Ceylan::System::Millisecond fadeInMaxDuration,
 	ChannelNumber mixingChannelNumber, PlaybackCount playCount )
 {
+
+	LOG_DEBUG_AUDIO( "Sound::playWithFadeIn for " + toString() ) ;
 
 #if OSDL_USES_SDL_MIXER
 
@@ -832,6 +850,8 @@ void Sound::playWithFadeInForAtMost(
 	PlaybackCount playCount )
 {
 
+	LOG_DEBUG_AUDIO( "Sound::playWithFadeInForAtMost for " + toString() ) ;
+
 	// Returned value ignored:
 	playWithFadeInForAtMostReturnChannel( playbackMaxDuration,
 		fadeInMaxDuration, playCount ) ;
@@ -845,6 +865,9 @@ ChannelNumber Sound::playWithFadeInForAtMostReturnChannel(
 	Ceylan::System::Millisecond fadeInMaxDuration,
 	PlaybackCount playCount )
 {
+
+	LOG_DEBUG_AUDIO( "Sound::playWithFadeInForAtMostReturnChannel for "
+	  + toString() ) ;
 
 #if OSDL_USES_SDL_MIXER
 
@@ -882,6 +905,9 @@ void Sound::playWithFadeInForAtMost(
 	ChannelNumber mixingChannelNumber,
 	PlaybackCount playCount )
 {
+
+	LOG_DEBUG_AUDIO( "Sound::playWithFadeInForAtMost for "
+	  + toString() ) ;
 
 #if OSDL_USES_SDL_MIXER
 
