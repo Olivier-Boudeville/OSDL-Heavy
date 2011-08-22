@@ -1,3 +1,5 @@
+# This is the OSDL suppression file, to be used with Valgrind.
+
 # Comments:
 #
 #   - we kept from the call stack only the parts in third-party libraries
@@ -5,9 +7,10 @@
 #
 #	- depending on a 32-bit or 64-bit OS being used, we had for example either
 # obj:/usr/lib/libX11.so.6.3.0 or /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
-# (thus we retained obj:/usr/lib/*libX11.so.6.3.0)
+# (thus we retained first obj:/usr/lib/*libX11.so.6.3.0)
 #
-#   - we do not want to depend on library versions, so lines including:
+#   - we do not want suppressions to depend on library versions, so lines
+# including:
 # obj:/usr/lib/*libX11.so.6.3.0 were transformed in obj:/usr/lib/*libX11.so.*
 # obj:/usr/lib/*libXext.so.6.4.0 were transformed in obj:/usr/lib/*libXext.so.*
 # obj:/usr/lib/*libstdc++.so.6.0.13 were transformed in
@@ -6315,6 +6318,8 @@
 }
 
 
+
+
 ################################################################################
 # Section 2: SDL_image related suppressions
 ################################################################################
@@ -6369,7 +6374,7 @@
 
 
 ################################################################################
-# Section 3: audio-related suppressions (SDl, libpulse, etc.)
+# Section 3: audio-related suppressions (SDL, libpulse, etc.)
 ################################################################################
 
 {
@@ -6869,13 +6874,15 @@
 }
 
 
+
 ################################################################################
 # Section 4: other SDL related suppressions
 ################################################################################
 
 
+
 ################################################################################
-# Section 3: PhysicsFS related suppressions
+# Section 5: PhysicsFS related suppressions
 ################################################################################
 
 
@@ -6926,8 +6933,9 @@
 
 
 
+
 ################################################################################
-# Section 4: CEGUI related suppressions
+# Section 6: CEGUI related suppressions
 ################################################################################
 
 
@@ -6982,12 +6990,12 @@
 
 
 ################################################################################
-# Section 5: Freetype related suppressions
+# Section 7: Freetype related suppressions
 ################################################################################
 
 
 ################################################################################
-# Section 6: OSDL related suppressions
+# Section 8: OSDL related suppressions
 ################################################################################
 
 
@@ -6997,8 +7005,20 @@
 
 
 ################################################################################
-# Section 6: other suppressions
+# Section 9: other suppressions
 ################################################################################
+
+{
+   STL or libc use of uninitialised value of size 8
+   Memcheck:Value8
+   fun:profil_counter
+   obj:/lib/*-linux-gnu/libc-*.so
+   fun:_ZNKSt6locale2id5_M_idEv
+   fun:_ZNKSt7num_putIcSt19ostreambuf_iteratorIcSt11char_traitsIcEEE13_M_insert_intImEES3_S3_RSt8ios_basecT_
+   fun:_ZNKSt7num_putIcSt19ostreambuf_iteratorIcSt11char_traitsIcEEE6do_putES3_RSt8ios_basecm
+   fun:_ZNSo9_M_insertImEERSoT_
+   fun:_ZN6Ceylan8toStringEmb
+}
 
 
 {
