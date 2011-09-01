@@ -23,7 +23,7 @@ clean: clean-local
 
 clean-local:
 	@echo "    Cleaning generated documentation"
-	-@rm -f *.tex *.out *.toc *.aux *.log $(GENERATED_HTML) $(GENERATED_PDF) $(GENERATED_PNG)
+	-@/bin/rm -f *.tex *.out *.toc *.aux *.log $(GENERATED_HTML) $(GENERATED_PDF) $(GENERATED_PNG)
 
 
 info:
