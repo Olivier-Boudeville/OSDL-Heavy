@@ -165,6 +165,15 @@ namespace OSDL
 	 * records the path of the resource file and, if loaded, the resource
 	 * itself.
 	 *
+	 * When a resource is requested, one may specify whether it is done in the
+	 * context of a one-shot use (that no other request will be done later for
+	 * that resource). In that case this resource will be marked as purgeable.
+	 *
+	 * When a resource has been marked as purgeable, if its reference count
+	 * drops to 1 (which means it is only detained by the resource manager), it
+	 * will be immediately deallocated the next time the manager inspects its
+	 * resources (whereas otherwise it could have lingered).
+	 *
 	 * @note When the resource archive is modified (ex: a resource is added),
 	 * the code loading from the archive must be recompiled, as resource
 	 * identifiers are likely to change.
@@ -207,11 +216,15 @@ namespace OSDL
 	   *
 	   * @param id the resource identifier for that music.
 	   *
+	   * @param oneShot tells whether if the use of that resource is expected to
+	   * be only punctual; in that case this manager will not let this resource
+	   * linger too long in the cache.
+	   *
 	   * @throw ResourceManagerException if the music could not be found.
 	   *
 	   */
 	  virtual Audio::MusicCountedPtr getMusic(
-		Ceylan::ResourceID id ) ;
+		Ceylan::ResourceID id, bool oneShot = false ) ;
 
 
 
@@ -222,12 +235,14 @@ namespace OSDL
 	   * resource map, resolved to a resource identifier which will be then used
 	   * to return a corresponding counted music pointer.
 	   *
+	   * @note This reverse mode of operation allows to specify at runtime which
+	   * content is to be loaded (ex: locale-dependent files).
+	   *
 	   * @throw ResourceManagerException if the music could not be found.
 	   *
 	   */
 	  virtual Audio::MusicCountedPtr getMusic(
-		const std::string & musicPath ) ;
-
+		const std::string & musicPath, bool oneShot = false ) ;
 
 
 
@@ -236,12 +251,16 @@ namespace OSDL
 	   *
 	   * @param id the resource identifier for that sound.
 	   *
+	   * @param oneShot tells whether if the use of that resource is expected to
+	   * be only punctual; in that case this manager will not let this resource
+	   * linger too long in the cache.
+	   *
 	   * @throw ResourceManagerException if the sound could not be
 	   * found.
 	   *
 	   */
 	  virtual Audio::SoundCountedPtr getSound(
-		Ceylan::ResourceID id ) ;
+		Ceylan::ResourceID id, bool oneShot = false ) ;
 
 
 
@@ -252,11 +271,18 @@ namespace OSDL
 	   * resource map, resolved to a resource identifier which will be then used
 	   * to return a corresponding counted sound pointer.
 	   *
+	   * @param oneShot tells whether if the use of that resource is expected to
+	   * be only punctual; in that case this manager will not let this resource
+	   * linger too long in the cache.
+	   *
+	   * @note This reverse mode of operation allows to specify at runtime which
+	   * content is to be loaded (ex: locale-dependent files).
+	   *
 	   * @throw ResourceManagerException if the sound could not be found.
 	   *
 	   */
 	  virtual Audio::SoundCountedPtr getSound(
-		const std::string & soundPath ) ;
+		const std::string & soundPath, bool oneShot = false ) ;
 
 
 
@@ -265,11 +291,15 @@ namespace OSDL
 	   *
 	   * @param id the resource identifier for that image.
 	   *
+	   * @param oneShot tells whether if the use of that resource is expected to
+	   * be only punctual; in that case this manager will not let this resource
+	   * linger too long in the cache.
+	   *
 	   * @throw ResourceManagerException if the image could not be found.
 	   *
 	   */
 	  virtual Video::TwoDimensional::ImageCountedPtr
-		getImage( Ceylan::ResourceID id ) ;
+		getImage( Ceylan::ResourceID id, bool oneShot = false ) ;
 
 
 
@@ -280,11 +310,18 @@ namespace OSDL
 	   * resource map, resolved to a resource identifier which will be then used
 	   * to return a corresponding counted image pointer.
 	   *
+	   * @param oneShot tells whether if the use of that resource is expected to
+	   * be only punctual; in that case this manager will not let this resource
+	   * linger too long in the cache.
+	   *
+	   * @note This reverse mode of operation allows to specify at runtime which
+	   * content is to be loaded (ex: locale-dependent files).
+	   *
 	   * @throw ResourceManagerException if the image could not be found.
 	   *
 	   */
 	  virtual Video::TwoDimensional::ImageCountedPtr getImage(
-		const std::string & imagePath ) ;
+		const std::string & imagePath, bool oneShot = false ) ;
 
 
 
@@ -296,13 +333,18 @@ namespace OSDL
 	   * @param uploadWanted if true, the method will ensure that this texture
 	   * is available in the video card before returning.
 	   *
+	   * @param oneShot tells whether if the use of that resource is expected to
+	   * be only punctual; in that case this manager will not let this resource
+	   * linger too long in the cache.
+	   *
 	   * @throw ResourceManagerException if the texture could not be found.
 	   *
 	   * @note The returned texture has not been uploaded yet.
 	   *
 	   */
 	  virtual Video::OpenGL::TextureCountedPtr getTexture(
-		Ceylan::ResourceID id, bool uploadWanted = true ) ;
+		Ceylan::ResourceID id, bool uploadWanted = true,
+		bool oneShot = false ) ;
 
 
 
@@ -316,6 +358,13 @@ namespace OSDL
 	   * @param uploadWanted if true, the method will ensure that this texture
 	   * is available in the video card before returning.
 	   *
+	   * @param oneShot tells whether if the use of that resource is expected to
+	   * be only punctual; in that case this manager will not let this resource
+	   * linger too long in the cache.
+	   *
+	   * @note This reverse mode of operation allows to specify at runtime which
+	   * content is to be loaded (ex: locale-dependent files).
+	   *
 	   * @throw ResourceManagerException if the texture could not be found.
 	   *
 	   * @note The returned texture has not been uploaded yet.
@@ -323,7 +372,7 @@ namespace OSDL
 	   */
 	  virtual Video::OpenGL::TextureCountedPtr getTexture(
 		const std::string & texturePath,
-		bool uploadWanted = true ) ;
+		bool uploadWanted = true, bool oneShot = false ) ;
 
 
 
@@ -345,6 +394,10 @@ namespace OSDL
 	   * @param uploadWanted if true, the method will ensure that this texture
 	   * is available in the video card before returning.
 	   *
+	   * @param oneShot tells whether if the use of that resource is expected to
+	   * be only punctual; in that case this manager will not let this resource
+	   * linger too long in the cache.
+	   *
 	   * @throw ResourceManagerException if the operation failed.
 	   *
 	   */
@@ -352,7 +405,7 @@ namespace OSDL
 		Ceylan::ResourceID> getTextureFrom(
 		  Video::Surface & sourceSurface,
 		  Video::OpenGL::GLTexture::TextureFlavour flavour,
-		  bool uploadWanted = true ) ;
+		  bool uploadWanted = true, bool oneShot = false ) ;
 
 
 
@@ -373,7 +426,8 @@ namespace OSDL
 	   */
 	  virtual Video::TwoDimensional::Text::TrueTypeFontCountedPtr
 		getTrueTypeFont( Ceylan::ResourceID id,
-		  Video::TwoDimensional::Text::PointSize pointSize ) ;
+		  Video::TwoDimensional::Text::PointSize pointSize,
+		  bool oneShot = false ) ;
 
 
 
@@ -390,12 +444,20 @@ namespace OSDL
 	   * seldom the one wanted, thus it would have to be unloaded and then
 	   * reloaded with the correct size, when wanting to use it for real.
 	   *
+	   * @param oneShot tells whether if the use of that resource is expected to
+	   * be only punctual; in that case this manager will not let this resource
+	   * linger too long in the cache.
+	   *
+	   * @note This reverse mode of operation allows to specify at runtime which
+	   * content is to be loaded (ex: locale-dependent files).
+	   *
 	   * @throw ResourceManagerException if the font could not be found.
 	   *
 	   */
 	  virtual Video::TwoDimensional::Text::TrueTypeFontCountedPtr
 		getTrueTypeFont( const std::string & fontPath,
-		  Video::TwoDimensional::Text::PointSize pointSize ) ;
+		  Video::TwoDimensional::Text::PointSize pointSize,
+		  bool oneShot = false ) ;
 
 
 
@@ -404,9 +466,9 @@ namespace OSDL
 	   * Discards permanently the specified texture entry from this manager.
 	   *
 	   * @note Useful for resources like generated textures that cannot be
-	   * unloaded (as they could not be then reloaded from file) and that we
-	   * want nevertheless to be able to get rid of, when finished with them, so
-	   * that their memory can be released.
+	   * unloaded arbitrarily by the resource manager (as they could not be then
+	   * reloaded from file) and that we want nevertheless to be able to get rid
+	   * of, when finished with them, so that their memory can be released.
 	   *
 	   * @throw ResourceManagerException if not such resource exists.
 	   *
@@ -416,6 +478,19 @@ namespace OSDL
 
 
 	  /**
+	   * Tidies up this resource manager.
+	   *
+	   * Requests resources only referenced by this manager and most likely not
+	   * to be useful again to unload their content.
+	   *
+	   */
+	  virtual void tidy() ;
+
+
+
+	  /**
+	   * Performs a major purge of this resource manager.
+	   *
 	   * Requests all resources only referenced by this manager to unload their
 	   * content.
 	   *
@@ -520,6 +595,19 @@ namespace OSDL
 #pragma warning( disable: 4251 )
 
 
+	  /*
+	   * All resource dictionaries have resource ID as keys.
+	   *
+	   * The value associated to a key is a pair, whose first element is the
+	   * counted pointer of the specified resource (ex: a MusicCountedPtr) and
+	   * second is a boolean meaning 'marked as purgeable', like for example are
+	   * one shot resources (as soon as their reference count comes back to one,
+	   * they are purgeable at the next tidy/purge operation).
+	   *
+	   */
+
+
+
 	  /**
 	   * Dictionary for music resources.
 	   *
@@ -531,7 +619,8 @@ namespace OSDL
 	   * path of the resource file and, if loaded, the resource itself.
 	   *
 	   */
-	  std::map<Ceylan::ResourceID, Audio::MusicCountedPtr> _musicMap ;
+	  std::map< Ceylan::ResourceID, std::pair<Audio::MusicCountedPtr,bool> >
+		_musicMap ;
 
 
 
@@ -546,7 +635,8 @@ namespace OSDL
 	   * path of the resource file and, if loaded, the resource itself.
 	   *
 	   */
-	  std::map<Ceylan::ResourceID, Audio::SoundCountedPtr> _soundMap ;
+	  std::map< Ceylan::ResourceID, std::pair<Audio::SoundCountedPtr,bool> >
+		_soundMap ;
 
 
 
@@ -561,8 +651,8 @@ namespace OSDL
 	   * path of the resource file and, if loaded, the resource itself.
 	   *
 	   */
-	  std::map<Ceylan::ResourceID,
-		Video::TwoDimensional::ImageCountedPtr> _imageMap ;
+	  std::map< Ceylan::ResourceID,
+		std::pair<Video::TwoDimensional::ImageCountedPtr,bool> > _imageMap ;
 
 
 	  /**
@@ -576,8 +666,8 @@ namespace OSDL
 	   * the path of the resource file and, if loaded, the resource itself.
 	   *
 	   */
-	  std::map<Ceylan::ResourceID,
-		Video::OpenGL::TextureCountedPtr> _textureMap ;
+	  std::map< Ceylan::ResourceID,
+		std::pair<Video::OpenGL::TextureCountedPtr,bool> >_textureMap ;
 
 
 
@@ -593,8 +683,8 @@ namespace OSDL
 	   * itself.
 	   *
 	   */
-	  std::map<Ceylan::ResourceID,
-		Video::TwoDimensional::Text::TrueTypeFontCountedPtr>
+	  std::map< Ceylan::ResourceID,
+		std::pair<Video::TwoDimensional::Text::TrueTypeFontCountedPtr,bool> >
 		_truetypeFontMap ;
 
 
