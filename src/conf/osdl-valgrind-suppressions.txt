@@ -24,7 +24,7 @@
 # obj:/usr/lib/libpulsecommon-0.9.22.so were transformed in
 # obj:/usr/lib/libpulsecommon-*.so
 # obj:/usr/lib/libpulse.so.0.12.3 were transformed in obj:/usr/lib/libpulse.so.*
-
+# etc.; same process for @@GLIBC_*.
 
 
 # Sections:
@@ -63,20 +63,6 @@
    fun:SDL_InitSubSystem
 }
 
-
-{
-   SDL/X11/OpenIM MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-
-}
 
 
 {
@@ -164,6 +150,7 @@
    fun:_XcursorGetDisplayInfo
 }
 
+
 {
    SDL/X11/cursor MLK
    Memcheck:Leak
@@ -245,178 +232,6 @@
 
 
 {
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    X11 MLK
    Memcheck:Leak
    fun:malloc
@@ -467,60 +282,6 @@
    fun:_XcursorGetDisplayInfo
    fun:XcursorSupportsARGB
    fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcAddLoader
-   fun:_XlcInitLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcAddLoader
-   fun:_XlcInitLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libxcb.so.*
-   obj:/usr/lib/*libxcb.so.*
-   fun:xcb_connect_to_fd
-   fun:xcb_connect_to_display_with_auth_info
-   fun:xcb_connect
-   fun:_XConnectXCB
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
 }
 
 
@@ -635,24 +396,6 @@
 
 
 {
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-}
-
-
-{
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
@@ -719,20 +462,6 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   fun:XInitExtension
-   fun:XkbUseExtension
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
    fun:_XlcCreateLC
    fun:_XlcUtf8Loader
    fun:_XOpenLC
@@ -743,24 +472,6 @@
    fun:X11_VideoInit
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
 }
 
 
@@ -847,24 +558,6 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
    fun:_XOpenLC
    fun:_XlcCurrentLC
    fun:XSetLocaleModifiers
@@ -895,69 +588,6 @@
 
 
 {
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   fun:_XimSetLocalIMDefaults
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    X11 MLK
    Memcheck:Leak
    fun:malloc
@@ -972,24 +602,6 @@
    fun:XOpenIM
    fun:create_aux_windows
    fun:X11_VideoInit
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetFileDatabase
-   fun:_XInitKeysymDB
-   fun:XStringToKeysym
-   fun:_XimParseStringFile
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
 }
 
 
@@ -1141,47 +753,11 @@
 
 
 {
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-   fun:_XNoticeCreateBitmap
-   fun:XCreatePixmap
-   fun:XCreatePixmap
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-   fun:_XNoticeCreateBitmap
-   fun:XCreatePixmap
-   fun:XCreatePixmap
-}
-
-
-{
    Linker MLK
    Memcheck:Leak
    fun:calloc
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
+   fun:dlopen@@GLIBC_*
    fun:SDL_LoadObject
    fun:SDL_X11_LoadSymbols
    fun:X11_Available
@@ -1194,85 +770,10 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
    fun:_XUpdateAtomCache
    fun:XInternAtom
    fun:XSetWMProtocols
    fun:XSetWMProtocols
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XUpdateAtomCache
-   fun:XInternAtom
-   fun:XInternAtom
-   fun:X11_SetCaptionNoLock
    fun:create_aux_windows
    fun:X11_VideoInit
    fun:SDL_VideoInit
@@ -1287,20 +788,6 @@
    fun:_XcmsAddCmapRec
    fun:XCreateColormap
    fun:XCreateColormap
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XUpdateAtomCache
-   fun:XInternAtom
-   fun:XInternAtom
-   fun:create_aux_windows
    fun:X11_VideoInit
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
@@ -1366,27 +853,9 @@
    fun:dlopen_doit
    fun:_dl_catch_error
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
+   fun:dlopen@@GLIBC_*
    obj:/usr/lib/*libX11.so.*
    fun:_XNoticeCreateBitmap
-}
-
-
-{
-   Linker MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_dl_new_object
-   fun:_dl_map_object_from_fd
-   fun:_dl_map_object
-   fun:dl_open_worker
-   fun:_dl_catch_error
-   fun:_dl_open
-   fun:dlopen_doit
-   fun:_dl_catch_error
-   fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
-   obj:/usr/lib/*libX11.so.*
 }
 
 
@@ -1470,61 +939,6 @@
    fun:SDL_InitSubSystem
 }
 
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcOpenConverter
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
 {
    SDL/X11/XIM MLK
    Memcheck:Leak
@@ -1552,24 +966,6 @@
    fun:X11_VideoInit
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
-}
-
-
-{
-   Linker MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_dl_map_object_deps
-   fun:dl_open_worker
-   fun:_dl_catch_error
-   fun:_dl_open
-   fun:dlopen_doit
-   fun:_dl_catch_error
-   fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
-   obj:/usr/lib/*libX11.so.*
-   fun:_XNoticeCreateBitmap
-   fun:XCreatePixmap
 }
 
 
@@ -1608,78 +1004,6 @@
 
 
 {
-   SDL/X11/XCB MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libxcb.so.*
-   obj:/usr/lib/*libxcb.so.*
-   fun:xcb_wait_for_reply
-   fun:xcb_query_extension_reply
-   fun:xcb_get_extension_data
-   fun:xcb_prefetch_maximum_request_length
-   fun:xcb_get_maximum_request_length
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-}
-
-
-{
    SDL/X11/XLC MLK
    Memcheck:Leak
    fun:malloc
@@ -1715,284 +1039,6 @@
 
 
 {
-   SDL/X11/XMC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    SDL/X11/XLC MLK
    Memcheck:Leak
    fun:malloc
@@ -2016,384 +1062,6 @@
    fun:malloc
    fun:_XlcSetConverter
    fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
    fun:_XlcUtf8Loader
    fun:_XOpenLC
    fun:_XlcCurrentLC
@@ -2447,186 +1115,6 @@
    Memcheck:Leak
    fun:malloc
    fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
    fun:_XlcAddUtf8Converters
    fun:_XlcDefaultLoader
    fun:_XOpenLC
@@ -2637,125 +1125,6 @@
    fun:XGetDefault
    fun:_XcursorGetDisplayInfo
    fun:XcursorSupportsARGB
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-}
-
-
-{
-   SDL MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:SDL_AllocBlitMap
-   fun:SDL_CreateRGBSurface
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
 }
 
 
@@ -2765,60 +1134,6 @@
    fun:malloc
    fun:SDL_CreateCursor
    fun:SDL_CursorInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/OpenIM MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   fun:_XimSetLocalIMDefaults
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XPollfdCacheInit
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
 }
@@ -2884,109 +1199,10 @@
 }
 
 
-
 {
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   fun:_XConnectXCB
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XConnectXCB
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcAddCT
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XConnectXCB
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XConnectXCB
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:realloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:X11_CreateDevice
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:calloc
    fun:_XConnectXCB
    fun:XOpenDisplay
    fun:XOpenDisplay
@@ -3006,24 +1222,6 @@
    fun:X11_VideoInit
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
 }
 
 
@@ -3056,50 +1254,10 @@
 
 
 {
-   SDL MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:SDL_CreateCursor
-   fun:SDL_CursorInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:X11_GetVideoModes
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    SDL/X11/XLC MLK
    Memcheck:Leak
    fun:realloc
    obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateDefaultCharSet
    obj:/usr/lib/*libX11.so.*
    obj:/usr/lib/*libX11.so.*
    fun:_XlcCreateLC
@@ -3128,20 +1286,6 @@
    fun:XCreatePixmap
    fun:X11_CreateWMCursor
    fun:X11_VideoInit
-}
-
-
-{
-   sDL/X11/XKB MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:XInitExtension
-   fun:XkbUseExtension
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
 }
 
 
@@ -3262,130 +1406,10 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
    fun:X11_GetVideoModes
    fun:X11_VideoInit
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
-}
-
-
-{
-   Linker MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_dl_map_object_deps
-   fun:dl_open_worker
-   fun:_dl_catch_error
-   fun:_dl_open
-   fun:dlopen_doit
-   fun:_dl_catch_error
-   fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
-   obj:/usr/lib/*libX11.so.*
-   fun:_XNoticeCreateBitmap
-   fun:XCreatePixmap
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   X11/SDL MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateDefaultCharSet
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
 }
 
 
@@ -3475,19 +1499,6 @@
 
 
 {
-   SDL/X11/XKB MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:XkbUseExtension
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
@@ -3506,64 +1517,6 @@
 
 
 {
-   SDL/X11/XEXT MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libXext.so.*
-   obj:/usr/lib/*libXext.so.*
-   fun:XextAddDisplay
-   obj:/usr/lib/*libXext.so.*
-   fun:XShmQueryExtension
-   fun:XShmQueryExtension
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/cursor MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-   obj:/usr/lib/*libX11.so.*
-   fun:XGetDefault
-   fun:_XcursorGetDisplayInfo
-   fun:XcursorSupportsARGB
-   fun:XcursorNoticeCreateBitmap
-   fun:_XNoticeCreateBitmap
-   fun:XCreatePixmap
-   fun:XCreatePixmap
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
@@ -3573,31 +1526,6 @@
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
 
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XCreateGC
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
 }
 
 
@@ -3633,24 +1561,6 @@
 
 
 {
-   Linker MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_dl_map_object_deps
-   fun:dl_open_worker
-   fun:_dl_catch_error
-   fun:_dl_open
-   fun:dlopen_doit
-   fun:_dl_catch_error
-   fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
-   fun:SDL_LoadObject
-   fun:SDL_X11_LoadSymbols
-   fun:X11_Available
-}
-
-
-{
    SDL/X11/OpenIM MLK
    Memcheck:Leak
    fun:malloc
@@ -3664,24 +1574,6 @@
    fun:X11_VideoInit
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
 }
 
 
@@ -3739,56 +1631,6 @@
 
 
 {
-   Linker MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:_dl_check_map_versions
-   fun:dl_open_worker
-   fun:_dl_catch_error
-   fun:_dl_open
-   fun:dlopen_doit
-   fun:_dl_catch_error
-   fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
-   obj:/usr/lib/*libX11.so.*
-   fun:_XNoticeCreateBitmap
-   fun:XCreatePixmap
-}
-
-
-{
-   SDL/X11/OpenIM MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/locale MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
-}
-
-
-{
    SDL/X11/XLC MLK
    Memcheck:Leak
    fun:malloc
@@ -3817,24 +1659,6 @@
    fun:X11_VideoInit
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XrmInitParseInfo
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetStringDatabase
 }
 
 
@@ -3892,19 +1716,6 @@
 
 
 {
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XimLocalCreateIC
-   fun:XCreateIC
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    SDL/X11/XLC MLK
    Memcheck:Leak
    fun:malloc
@@ -3919,16 +1730,6 @@
    fun:_XrmInitParseInfo
    obj:/usr/lib/*libX11.so.*
    fun:XrmGetStringDatabase
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:X11_CreateDevice
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
 }
 
 
@@ -3969,42 +1770,6 @@
 
 
 {
-   SDL/X11/OpenIM MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:XrmGetFileDatabase
-   fun:_XInitKeysymDB
-   fun:XStringToKeysym
-   fun:_XimParseStringFile
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-}
-
-
-{
-   Linker MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:_dl_new_object
-   fun:_dl_map_object_from_fd
-   fun:_dl_map_object
-   fun:dl_open_worker
-   fun:_dl_catch_error
-   fun:_dl_open
-   fun:dlopen_doit
-   fun:_dl_catch_error
-   fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.1
-   obj:/usr/lib/*libX11.so.*
-}
-
-
-{
    Linker MLK
    Memcheck:Leak
    fun:calloc
@@ -4023,24 +1788,6 @@
 
 
 {
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateDefaultCharSet
-   fun:_XlcAddCT
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-}
-
-
-{
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
@@ -4048,6 +1795,7 @@
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
 }
+
 
 {
    SDL/X11 MLK
@@ -4102,96 +1850,6 @@
    Memcheck:Leak
    fun:malloc
    obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-}
-
-
-{
-   SDL/X11/XLC
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateDefaultCharSet
-   fun:_XlcAddCT
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:XSetLocaleModifiers
-}
-
-
-{
-   SDL/X11/XLC MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateLocaleDataBase
    obj:/usr/lib/*libX11.so.*
    obj:/usr/lib/*libX11.so.*
    fun:_XlcCreateLC
@@ -4276,22 +1934,6 @@
 
 
 {
-   SDL/X11/XCB MLK
-   Memcheck:Leak
-   fun:realloc
-   fun:xcb_connect_to_fd
-   fun:xcb_connect_to_display_with_auth_info
-   fun:xcb_connect
-   fun:_XConnectXCB
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    SDL/X11/XLC MLK
    Memcheck:Leak
    fun:malloc
@@ -4310,56 +1952,9 @@
 
 
 {
-   SDL MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:SDL_CreateCursor
-   fun:SDL_CursorInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:calloc
    fun:XOpenDisplay
    fun:XOpenDisplay
    fun:X11_VideoInit
@@ -4419,24 +2014,6 @@
    fun:_XimOpenIM
    fun:XOpenIM
    fun:XOpenIM
-}
-
-
-{
-   SDL/X11/XRM MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   fun:_XrmInternalStringToQuark
-   fun:XStringToKeysym
-   fun:_XimParseStringFile
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
 }
 
 
@@ -4507,18 +2084,6 @@
 
 
 {
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
    SDL/X11/XCB MLK
    Memcheck:Leak
    fun:calloc
@@ -4528,70 +2093,6 @@
    fun:_XConnectXCB
    fun:XOpenDisplay
    fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/XCB MLK
-   Memcheck:Leak
-   fun:calloc
-   fun:xcb_connect_to_fd
-   fun:xcb_connect_to_display_with_auth_info
-   fun:xcb_connect
-   fun:_XConnectXCB
-   fun:XOpenDisplay
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/OpenIM MLK
-   Memcheck:Leak
-   fun:realloc
-   fun:_XimParseStringFile
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/OpenIM MLK
-   Memcheck:Leak
-   fun:realloc
-   fun:_XimParseStringFile
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11/OpenIM MLK
-   Memcheck:Leak
-   fun:realloc
-   fun:_XimParseStringFile
-   fun:_XimLocalOpenIM
-   fun:_XimOpenIM
-   fun:XOpenIM
-   fun:XOpenIM
-   fun:create_aux_windows
    fun:X11_VideoInit
    fun:SDL_VideoInit
    fun:SDL_InitSubSystem
@@ -4623,24 +2124,6 @@
    Memcheck:Leak
    fun:malloc
    fun:_XlcDefaultMapModifiers
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
    fun:XSetLocaleModifiers
    fun:create_aux_windows
    fun:X11_VideoInit
@@ -4713,23 +2196,6 @@
 {
    SDL/X11 MLK
    Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
    fun:realloc
    fun:_XlcResolveLocaleName
    obj:/usr/lib/*libX11.so.*
@@ -4764,7 +2230,7 @@
    Memcheck:Leak
    fun:calloc
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.2.5
+   fun:dlopen@@GLIBC_*
    obj:/usr/lib/nvidia-current/libGL.so.*
 }
 
@@ -4785,24 +2251,6 @@
 
 
 {
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-}
-
-
-{
    X11 MLK
    Memcheck:Leak
    fun:malloc
@@ -4813,7 +2261,7 @@
    fun:dlopen_doit
    fun:_dl_catch_error
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.2.5
+   fun:dlopen@@GLIBC_*
    obj:/usr/lib/*libX11.so.*
    fun:_XNoticeCreateBitmap
    fun:XCreatePixmap
@@ -4833,26 +2281,8 @@
    fun:dlopen_doit
    fun:_dl_catch_error
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.2.5
+   fun:dlopen@@GLIBC_*
    obj:/usr/lib/*libX11.so.*
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcAddCT
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
 }
 
 
@@ -4890,216 +2320,6 @@
    fun:create_aux_windows
    fun:X11_VideoInit
 }
-{
-	MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-}
-{
-	MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-	MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
 
 
 {
@@ -5140,91 +2360,6 @@
    Memcheck:Leak
    fun:malloc
    fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcDefaultLoader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
    fun:_XlcDefaultLoader
    fun:_XOpenLC
    fun:_XlcCurrentLC
@@ -5243,345 +2378,6 @@
    fun:malloc
    fun:_XlcSetConverter
    fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8LocaleConverters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcSetConverter
-   fun:_XlcAddUtf8Converters
    fun:_XlcUtf8Loader
    fun:_XOpenLC
    fun:_XlcCurrentLC
@@ -5647,24 +2443,6 @@
 {
    SDL/X11 MLK
    Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateDefaultCharSet
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
    fun:realloc
    obj:/usr/lib/*libX11.so.*
    obj:/usr/lib/*libX11.so.*
@@ -5712,43 +2490,7 @@
    fun:dlopen_doit
    fun:_dl_catch_error
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.2.5
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateDefaultCharSet
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_dl_map_object_deps
-   fun:dl_open_worker
-   fun:_dl_catch_error
-   fun:_dl_open
-   fun:dlopen_doit
-   fun:_dl_catch_error
-   fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.2.5
-   obj:/usr/lib/*libX11.so.*
-   fun:_XNoticeCreateBitmap
-   fun:XCreatePixmap
+   fun:dlopen@@GLIBC_*
 }
 
 
@@ -5803,21 +2545,6 @@
 {
    SDL/X11 MLK
    Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libxcb.so.*
-   obj:/usr/lib/*libxcb.so.*
-   fun:xcb_connect_to_display_with_auth_info
-   fun:_XConnectXCB
-   fun:XOpenDisplay
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
    fun:realloc
    obj:/usr/lib/*libX11.so.*
    obj:/usr/lib/*libX11.so.*
@@ -5855,23 +2582,6 @@
    SDL/X11 MLK
    Memcheck:Leak
    fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-   fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
    fun:_dl_map_object_deps
    fun:dl_open_worker
    fun:_dl_catch_error
@@ -5879,7 +2589,7 @@
    fun:dlopen_doit
    fun:_dl_catch_error
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.2.5
+   fun:dlopen@@GLIBC_*
    obj:/usr/lib/*libX11.so.*
    fun:_XNoticeCreateBitmap
    fun:XCreatePixmap
@@ -5932,7 +2642,7 @@
    fun:dlopen_doit
    fun:_dl_catch_error
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.2.5
+   fun:dlopen@@GLIBC_*
    fun:SDL_LoadObject
    fun:SDL_X11_LoadSymbols
    fun:X11_Available
@@ -5940,7 +2650,7 @@
 
 
 {
-   X11 MLK
+   Linker MLK
    Memcheck:Leak
    fun:calloc
    fun:_dl_check_map_versions
@@ -5950,7 +2660,7 @@
    fun:dlopen_doit
    fun:_dl_catch_error
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.2.5
+   fun:dlopen@@GLIBC_*
    obj:/usr/lib/*libX11.so.*
    fun:_XNoticeCreateBitmap
    fun:XCreatePixmap
@@ -5972,24 +2682,6 @@
    fun:create_aux_windows
    fun:X11_VideoInit
    fun:SDL_VideoInit
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateDefaultCharSet
-   fun:_XlcAddCT
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
 }
 
 
@@ -6012,43 +2704,7 @@
 
 
 {
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateDefaultCharSet
-   fun:_XlcAddCT
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-}
-
-
-{
-	MLK
+   dlopen MLK
    Memcheck:Leak
    fun:calloc
    fun:_dl_new_object
@@ -6060,7 +2716,7 @@
    fun:dlopen_doit
    fun:_dl_catch_error
    fun:_dlerror_run
-   fun:dlopen@@GLIBC_2.2.5
+   fun:dlopen@@GLIBC_*
    obj:/usr/lib/*libX11.so.*
 }
 
@@ -6088,24 +2744,6 @@
    Memcheck:Leak
    fun:malloc
    obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-   fun:X11_VideoInit
-   fun:SDL_VideoInit
-}
-
-
-{
-   SDL/X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XlcCreateLocaleDataBase
    obj:/usr/lib/*libX11.so.*
    obj:/usr/lib/*libX11.so.*
    fun:_XlcCreateLC
@@ -6170,42 +2808,6 @@
    fun:_XlcCurrentLC
    fun:XSetLocaleModifiers
    fun:create_aux_windows
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLocaleDataBase
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
-   fun:create_aux_windows
-}
-
-
-{
-   X11 MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:_XrmInternalStringToQuark
-   fun:_XlcGetCharSet
-   fun:_XlcAddCT
-   fun:_XlcInitCTInfo
-   obj:/usr/lib/*libX11.so.*
-   obj:/usr/lib/*libX11.so.*
-   fun:_XlcCreateLC
-   fun:_XlcUtf8Loader
-   fun:_XOpenLC
-   fun:_XlcCurrentLC
-   fun:XSetLocaleModifiers
 }
 
 
@@ -6373,6 +2975,7 @@
 }
 
 
+
 ################################################################################
 # Section 3: audio-related suppressions (SDL, libpulse, etc.)
 ################################################################################
@@ -6475,42 +3078,6 @@
    fun:Audio_Available
    fun:SDL_AudioInit
    fun:SDL_InitSubSystem
-}
-
-
-{
-   SDL + libpulse MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:pa_xmalloc
-   obj:/usr/lib/libpulse.so.*
-   fun:pa_log_set_ident
-   obj:/usr/lib/libpulsecommon-*.so
-   fun:pa_log_levelv_meta
-   fun:pa_log_level_meta
-   fun:pa_mempool_new
-   fun:pa_context_new_with_proplist
-   fun:pa_simple_new
-   fun:Audio_Available
-   fun:SDL_AudioInit
-}
-
-
-{
-   libpulse MLK
-   Memcheck:Leak
-   fun:malloc
-   fun:pa_xmalloc
-   fun:pa_queue_push
-   fun:pa_pstream_send_packet
-   fun:pa_pstream_send_tagstruct_with_creds
-   obj:/usr/lib/libpulse.so.*
-   obj:/usr/lib/libpulsecommon-*.so
-   fun:pa_mainloop_dispatch
-   fun:pa_mainloop_iterate
-   fun:pa_mainloop_run
-   obj:/usr/lib/libpulse.so.*
-   obj:/usr/lib/libpulsecommon-*.so
 }
 
 
