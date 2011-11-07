@@ -298,6 +298,14 @@ namespace OSDL
 			virtual void enableGUI() ;
 
 
+			/**
+			 * Ensures the GUI is enabled (creating it if needed), and returns a
+			 * reference to the corresponding module.
+			 *
+			 */
+			virtual GUIModule & getGUIModule() ;
+
+
 			/// Disables the GUI support.
 			virtual void disableGUI() ;
 

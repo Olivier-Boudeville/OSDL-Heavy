@@ -794,6 +794,18 @@ void CommonModule::enableGUI()
 
 
 
+GUIModule & CommonModule::getGUIModule()
+{
+
+  if ( _gui == 0 )
+	enableGUI() ;
+
+  return * _gui ;
+
+}
+
+
+
 void CommonModule::CommonModule::disableGUI()
 {
 
