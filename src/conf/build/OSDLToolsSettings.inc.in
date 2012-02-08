@@ -19,29 +19,29 @@
 
 # SDL (libsdl.so): http://www.libsdl.org
 
-# 1.2.14 actually:
+# 1.2.15 actually:
 SDL_VERSION="@SDL_RECOMMENDED_VERSION@"
 SDL_ARCHIVE="SDL-$SDL_VERSION.tar.gz"
 SDL_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
 SDL_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_MD5="e52086d1b508fa0b76c52ee30b55bec4"
+SDL_MD5="9d96df8417572a2afb781a7c4c811a85"
 
 # For Windows, using sources as well, these are not prebuilt binaries:
 SDL_win_VERSION="$SDL_VERSION"
 SDL_win_ARCHIVE="SDL-$SDL_win_VERSION.zip"
 SDL_win_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
 SDL_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_win_MD5="fe131238609393d7dc82206f3d013df2"
+SDL_win_MD5="7e1d793751d2b2d93b33655e4f4b0f96"
 
 
 
 # JPEG library (libjpeg.so): http://www.ijg.org/
 
-libjpeg_VERSION="8c"
+libjpeg_VERSION="8d"
 libjpeg_ARCHIVE="jpegsrc.v${libjpeg_VERSION}.tar.gz"
 libjpeg_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
 libjpeg_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
-libjpeg_MD5="a2c10c04f396a9ce72894beb18b4e1f9"
+libjpeg_MD5="52654eb3b2e60c35731ea8fc87f1bd29"
 
 # Same archive for Windows actually:
 libjpeg_win_VERSION="$libjpeg_VERSION"
@@ -54,39 +54,39 @@ libjpeg_win_MD5="$libjpeg_MD5"
 
 # zlib library (libzlib.a): http://www.zlib.net/
 
-# Actually 1.2.5 (defined in configure-template.ac):
+# Actually 1.2.6 (defined in configure-template.ac):
 zlib_VERSION="@ZLIB_RECOMMENDED_VERSION@"
 zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.bz2"
 zlib_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
-zlib_MD5="be1e89810e66150f5b0327984d8625a0"
+zlib_MD5="dc2cfa0d2313ca77224b4d932b2911e9"
 
 zlib_win_VERSION="${zlib_VERSION}"
-zlib_win_archive_VERSION="125"
+zlib_win_archive_VERSION="126"
 zlib_win_ARCHIVE="zlib${zlib_win_archive_VERSION}.zip"
 zlib_win_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
-zlib_win_MD5="d6f1eef40a2dd3f17c63d24d8ca402c8"
+zlib_win_MD5="4af5b19ab6d7e829c88ef6211ecd605d"
 
 
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
-# Actually 1.4.4 (defined in configure-template.ac):
+# Actually 1.5.8 (defined in configure-template.ac):
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
 libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_MD5="e6446d6cc10621ce0ed27ff82a70a7e8"
+libpng_MD5="dc2b84a1c077531ceb5bf9d79ad889a4"
 
 libpng_win_VERSION="$libpng_VERSION"
-libpng_win_archive_VERSION="142"
+libpng_win_archive_VERSION="158"
 libpng_win_ARCHIVE="lpng${libpng_win_archive_VERSION}.zip"
 libpng_win_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_win_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_win_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_win_MD5="1532e3fa76223ec3fdae906c6331caa6"
+libpng_win_MD5="2446ea00891be04b9d0f5fdfc6456e48"
 
 
 
@@ -103,18 +103,18 @@ libtiff_MD5="xxx"
 
 # SDL_image: http://www.libsdl.org/projects/SDL_image/release/
 
-# Actually 1.2.10 (defined in configure-template.ac):
+# Actually 1.2.12 (defined in configure-template.ac):
 SDL_image_VERSION="@SDL_IMAGE_RECOMMENDED_VERSION@"
 SDL_image_ARCHIVE="SDL_image-${SDL_image_VERSION}.tar.gz"
 SDL_image_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
 SDL_image_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_image_MD5="6c06584b31559e2b59f2b982d0d1f628"
+SDL_image_MD5="a0f9098ebe5400f0bdc9b62e60797ecb"
 
 SDL_image_win_VERSION="$SDL_image_VERSION"
 SDL_image_win_ARCHIVE="SDL_image-${SDL_image_VERSION}.zip"
 SDL_image_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
 SDL_image_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_image_win_MD5="4aff52d5ed108700b25beb65e64df93b"
+SDL_image_win_MD5="b88d7d090c4819c15084ecb5244a6ae0"
 
 
 
@@ -130,7 +130,8 @@ SDL_image_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
 SDL_image_win_precompiled_MD5="xxx"
 
 
-# Precompiled binaries of SDL_image, zlib, jpeg, png for Mac OS X: http://www.libsdl.org/projects/SDL_image/release/
+# Precompiled binaries of SDL_image, zlib, jpeg, png for Mac OS X:
+# http://www.libsdl.org/projects/SDL_image/release/
 
 SDL_image_osx_precompiled_VERSION="$SDL_image_VERSION"
 SDL_image_osx_precompiled_ARCHIVE="SDL_image-devel-${SDL_image_osx_precompiled_VERSION}.ppc.rpm"
@@ -143,13 +144,13 @@ SDL_image_osx_precompiled_MD5="xxx"
 # SDL_gfx (libSDL_gfx.so): http://www.ferzkopp.net/Software/SDL_gfx-2.0/
 # No binaries available!
 
-# Actually 2.0.22 (defined in configure-template.ac):
+# Actually 2.0.23 (defined in configure-template.ac):
 SDL_gfx_MAJOR_VERSION="@SDL_GFX_MAJOR_VERSION@"
 SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.@SDL_GFX_MINOR_VERSION@"
 SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
 SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_gfx_MD5="330f291f1f09a1bdf397c9b40d92ca41"
+SDL_gfx_MD5="fcc3c4f2d1b4943409bf7e67dd65d03a"
 
 
 # Same as for UNIX:
@@ -165,13 +166,13 @@ SDL_gfx_win_MD5="$SDL_gfx_MD5"
 
 # Sources.
 
-freetype_VERSION="2.4.4"
+freetype_VERSION="2.4.8"
 freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
 freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_MD5="b3e2b6e2f1c3e0dffa1fd2a0f848b671"
+freetype_MD5="dbf2caca1d3afd410a29217a9809d397"
 
 
 # Same as for UNIX:
@@ -208,18 +209,18 @@ freetype_osx_precompiled_MD5="xxx"
 
 # Sources.
 
-# Actually 2.0.10 (defined in configure-template.ac):
+# Actually 2.0.11 (defined in configure-template.ac):
 SDL_ttf_VERSION="@SDL_TTF_RECOMMENDED_VERSION@"
 SDL_ttf_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}.tar.gz"
 SDL_ttf_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_ttf_MD5="814e6e17e8879254208d23b3b7e0354b"
+SDL_ttf_MD5="61e29bd9da8d245bc2471d1b2ce591aa"
 
 SDL_ttf_win_VERSION="$SDL_ttf_VERSION"
 SDL_ttf_win_ARCHIVE="SDL_ttf-${SDL_ttf_win_VERSION}.zip"
 SDL_ttf_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_ttf_win_MD5="xxx"
+SDL_ttf_win_MD5="8a8d5b9d6dd854b2333f112a6fc9383c"
 
 
 
@@ -260,11 +261,11 @@ libvorbis_win_MD5="xxx"
 
 # libogg (libogg.so): http://www.xiph.org/ogg/
 
-libogg_VERSION="1.2.2"
+libogg_VERSION="1.3.0"
 libogg_ARCHIVE="libogg-${libogg_VERSION}.tar.xz"
 libogg_DOWNLOAD_LOCATION="http://downloads.xiph.org/releases/ogg"
 libogg_ALTERNATE_DOWNLOAD_LOCATION="http://www.vorbis.com/files/${libvorbis_VERSION}/unix"
-libogg_MD5="203c28a1d356b641253c960365e4cc48"
+libogg_MD5="84a35715170f2cd4c77a4448772b95d5""
 
 libogg_win_VERSION="${libogg_VERSION}"
 libogg_win_ARCHIVE="libogg-${libogg_win_VERSION}.zip"
@@ -276,16 +277,16 @@ libogg_win_MD5="xxx"
 
 # SDL_mixer (libSDL_mixer.so): http://www.libsdl.org/projects/SDL_mixer/
 
-# Actually 1.2.11 (defined in configure-template.ac):
+# Actually 1.2.12 (defined in configure-template.ac):
 SDL_mixer_VERSION="@SDL_MIXER_RECOMMENDED_VERSION@"
 SDL_mixer_ARCHIVE="SDL_mixer-${SDL_mixer_VERSION}.tar.gz"
 SDL_mixer_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_MD5="65ada3d997fe85109191a5fb083f248c"
+SDL_mixer_MD5="e03ff73d77a55e3572ad0217131dc4a1"
 
 SDL_mixer_win_VERSION="${SDL_mixer_VERSION}"
 SDL_mixer_win_ARCHIVE="SDL_mixer-${SDL_mixer_win_VERSION}.zip"
 SDL_mixer_win_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_mixer/release"
-SDL_mixer_win_MD5="986166207f952f8128497580a4c1c2cb"
+SDL_mixer_win_MD5="4bb0bc0e73f90f13bd0c92b7693a582f"
 
 
 
@@ -328,56 +329,56 @@ Agar_win_MD5=""
 
 # CEGUI: http://www.cegui.org.uk
 
-# Actually 0.7.5 (defined in configure-template.ac):
+# Actually 0.7.6 (defined in configure-template.ac):
 CEGUI_VERSION="@CEGUI_RECOMMENDED_VERSION@"
 CEGUI_ARCHIVE="CEGUI-${CEGUI_VERSION}.tar.gz"
 CEGUI_DOWNLOAD_LOCATION="http://sourceforge.net/projects/crayzedsgui/files/CEGUI%20Mk-2/${CEGUI_VERSION}/${CEGUI_ARCHIVE}"
 CEGUI_ALTERNATE_DOWNLOAD_LOCATION=""
-CEGUI_MD5="38c79d1fdfaaa10f481c99a2ac479516"
+CEGUI_MD5="7ddb5145dc94fb7daf9aea1d30a6ffa3"
 
 CEGUI_win_VERSION="$CEGUI_VERSION"
 CEGUI_win_ARCHIVE="CEGUI-${CEGUI_VERSION}.zip"
 CEGUI_win_DOWNLOAD_LOCATION="$CEGUI_DOWNLOAD_LOCATION"
 CEGUI_win_ALTERNATE_DOWNLOAD_LOCATION="$CEGUI_ALTERNATE_DOWNLOAD_LOCATION"
-CEGUI_win_MD5=""
+CEGUI_win_MD5="xxx"
 
 
 
 # PCRE: http://www.pcre.org/
 
-# Actually 8.12 (defined in configure-template.ac):
+# Actually 8.21 (defined in configure-template.ac):
 PCRE_VERSION="@PCRE_RECOMMENDED_VERSION@"
 PCRE_ARCHIVE="pcre-${PCRE_VERSION}.tar.bz2"
 PCRE_DOWNLOAD_LOCATION="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/"
 PCRE_ALTERNATE_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/project/pcre/pcre/$PCRE_VERSION/pcre-$PCRE_VERSION.tar.bz2"
-PCRE_MD5="f14a9fef3c92f3fc6c5ac92d7a2c7eb3"
+PCRE_MD5="0a7b592bea64b7aa7f4011fc7171a730"
 
 PCRE_win_VERSION="$PCRE_VERSION"
 PCRE_win_ARCHIVE="pcre-${PCRE_VERSION}.zip"
 PCRE_win_DOWNLOAD_LOCATION="$PCRE_DOWNLOAD_LOCATION"
 PCRE_win_ALTERNATE_DOWNLOAD_LOCATION="$PCRE_ALTERNATE_DOWNLOAD_LOCATION"
-PCRE_win_MD5=""
+PCRE_win_MD5="xxx"
 
 
 
 # FreeImage: http://freeimage.sourceforge.net
 
-# Actually 3.15.0 (defined in configure-template.ac):
+# Actually 3.15.1 (defined in configure-template.ac):
 FreeImage_VERSION="@FREEIMAGE_RECOMMENDED_VERSION@"
 
-# Ex: '3.15.0' must become '3150':
+# Ex: '3.15.1' must become '3151':
 FreeImage_ARCHIVE_VERSION=`echo ${FreeImage_VERSION} | sed 's|\.||g'`
 
 FreeImage_ARCHIVE="FreeImage${FreeImage_ARCHIVE_VERSION}.zip"
 FreeImage_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/freeimage"
 FreeImage_ALTERNATE_DOWNLOAD_LOCATION=""
-FreeImage_MD5="3b4f08e4985b269beb29a2fced1ef888"
+FreeImage_MD5="450d2ff278690b0d1d7d7d58fad083cc"
 
 FreeImage_win_VERSION="$FreeImage_VERSION"
 FreeImage_win_ARCHIVE="FreeImage${FreeImage_ARCHIVE_VERSION}.zip"
 FreeImage_win_DOWNLOAD_LOCATION="$FreeImage_DOWNLOAD_LOCATION"
 FreeImage_win_ALTERNATE_DOWNLOAD_LOCATION="$FreeImage_ALTERNATE_DOWNLOAD_LOCATION"
-FreeImage_win_MD5=""
+FreeImage_win_MD5="xxx"
 
 
 
@@ -513,10 +514,10 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R14B03"
+Erlang_VERSION="R15B"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5="7979e662d11476b97c462feb7c132fb7"
+Erlang_MD5="dd6c2a4807551b4a8a536067bde31d73"
 
 
 
