@@ -4000,7 +4000,7 @@ generatePCRE()
 }
 
 
-cleanpcre()
+cleanPCRE()
 {
 	LOG_STATUS "Cleaning PCRE library build tree..."
 	${RM} -rf "pcre-${PCRE_VERSION}"
