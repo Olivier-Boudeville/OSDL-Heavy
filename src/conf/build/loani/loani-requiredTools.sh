@@ -2571,7 +2571,7 @@ preparelibvorbis()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libvorbis_ARCHIVE} ${libvorbis_ARCHIVE}.save && ${BUNZIP2} -f ${libvorbis_ARCHIVE} && ${TAR} -xvf "libvorbis-${libvorbis_VERSION}.tar"
+		${CP} -f ${libvorbis_ARCHIVE} ${libvorbis_ARCHIVE}.save && ${XZ} --decompress ${libvorbis_ARCHIVE} && ${TAR} -xvf "libvorbis-${libvorbis_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
