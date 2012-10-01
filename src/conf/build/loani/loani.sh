@@ -1343,6 +1343,21 @@ if [ $only_orge_tools -eq 1 ] ; then
 
 	fi
 
+
+fi
+
+# Still more anticipated checkings:
+if [ $manage_build_tools -eq 0 ] ; then
+
+	mpfr_lib="/usr/lib/libmpfr.so"
+
+	# GCC prerequisites include GMP, MPFR and MPC:
+	if [ ! -f "${mpfr_lib}" ] ; then
+
+		ERROR "MPFR support not found (${mpfr_lib}), needed for the build of GCC, users of Debian-based distributions may run: 'sudo apt-get install libgmp3-dev libmpfr-dev libmpc-dev'."
+
+	fi
+
 fi
 
 
