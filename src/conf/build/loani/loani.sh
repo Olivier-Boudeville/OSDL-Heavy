@@ -1193,6 +1193,7 @@ else
 	findBuildTools "${lacking_tool_message}"
 	findAutoTools "${lacking_tool_message}"
 	findSupplementaryShellTools "${lacking_tool_message}"
+	findMoreSpecificTools "${lacking_tool_message}"
 
 	if [ ! -f "/usr/lib/libpulse-simple.so" ] ; then
 
