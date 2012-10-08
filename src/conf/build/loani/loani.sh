@@ -1351,6 +1351,8 @@ if [ $manage_build_tools -eq 0 ] ; then
 
 	# Looking for GCC prerequisites:
 
+	# First, GMP:
+
 	gmp_header="/usr/include/gmp.h"
 
 	if [ ! -f "${gmp_header}" ] ; then
@@ -1360,6 +1362,9 @@ if [ $manage_build_tools -eq 0 ] ; then
 		exit 25
 
 	fi
+
+
+	# then MPFR:
 
 	mpfr_header="/usr/include/mpfr.h"
 
@@ -1384,6 +1389,9 @@ if [ $manage_build_tools -eq 0 ] ; then
 
 	fi
 
+
+	# MPC:
+
 	mpc_header="/usr/include/mpc.h"
 
 	if [ ! -f "${mpc_header}" ] ; then
@@ -1394,6 +1402,18 @@ if [ $manage_build_tools -eq 0 ] ; then
 
 	fi
 
+
+	# 32-bit libc6 headers:
+
+	libc_i386_header="/usr/include/gnu/stubs-32.h"
+
+	if [ ! -f "${libc_i386_header}" ] ; then
+
+		ERROR "Libc6 development files for i386 not found (${libc_i386_header}), needed for the build of GCC, users of Debian-based distributions may run: 'sudo apt-get install libc6-dev-i386'."
+
+		exit 28
+
+	fi
 
 
 fi
