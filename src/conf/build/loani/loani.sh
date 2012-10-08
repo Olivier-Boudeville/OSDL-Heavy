@@ -1349,16 +1349,55 @@ fi
 # Still more anticipated checkings:
 if [ $manage_build_tools -eq 0 ] ; then
 
-	mpfr_lib="/usr/lib/libmpfr.so"
+	# Looking for GCC prerequisites:
 
-	# GCC prerequisites include GMP, MPFR and MPC:
-	if [ ! -f "${mpfr_lib}" ] ; then
+	gmp_header="/usr/include/gmp.h"
 
-		ERROR "MPFR support not found (${mpfr_lib}), needed for the build of GCC, users of Debian-based distributions may run: 'sudo apt-get install libgmp3-dev libmpfr-dev libmpc-dev'."
+	if [ ! -f "${gmp_header}" ] ; then
+
+		ERROR "GMP development files not found (${gmp_header}), needed for the build of GCC, users of Debian-based distributions may run: 'sudo apt-get install libgmp3-dev libmpfr-dev libmpc-dev'."
+
+		exit 25
 
 	fi
 
+	mpfr_header="/usr/include/mpfr.h"
+
+	if [ ! -f "${mpfr_header}" ] ; then
+
+		ERROR "MPFR development files not found (${mpfr_header}), needed for the build of GCC, users of Debian-based distributions may run: 'sudo apt-get install libgmp3-dev libmpfr-dev libmpc-dev'."
+
+		exit 26
+
+	fi
+
+	# For example in Ubuntu we have /usr/lib/libmpfr.so.4 but no libmpfr.so
+	# apparently:
+	mpfr_lib=`ls /usr/lib/libmpfr.so*`
+
+	# GCC prerequisites include GMP, MPFR and MPC:
+	if [ -z "${mpfr_lib}" ] ; then
+
+		ERROR "MPFR support not found (${mpfr_lib}), needed for the build of GCC, users of Debian-based distributions may run: 'sudo apt-get install libgmp3-dev libmpfr-dev libmpc-dev'."
+
+		exit 28
+
+	fi
+
+	mpc_header="/usr/include/mpc.h"
+
+	if [ ! -f "${mpc_header}" ] ; then
+
+		ERROR "MPC development files not found (${mpc_header}), needed for the build of GCC, users of Debian-based distributions may run: 'sudo apt-get install libgmp3-dev libmpfr-dev libmpc-dev'."
+
+		exit 27
+
+	fi
+
+
+
 fi
+
 
 
 #TRACE "Toolsets sourced."
