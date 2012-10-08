@@ -58,6 +58,10 @@ DEBUG "Scheduling retrieval of common build tools ($COMMON_BUILD_TOOLS)."
 ################################################################################
 
 
+# Apparently building GCC even on Debian is a mess, and cannot be done safely
+# and simply (ex: gdb build will fail), see for example
+# http://stackoverflow.com/questions/7284009/cannot-find-lc-and-lm-in-g-linux.
+# Let's stick with distro-default tools then.
 
 getgcc()
 {
@@ -500,8 +504,6 @@ generategdb()
 	cd $repository/gdb-${gdb_VERSION}
 
 	printItem "configuring"
-
-	# Restricted to C++ since java would too often not bootstrap, or be slow to bootstrap.
 
 	if [ -n "$prefix" ] ; then
 		{
