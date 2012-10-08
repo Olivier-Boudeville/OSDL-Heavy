@@ -3,10 +3,10 @@
 <!--    This document is part of the OSDL project.
 		For any question, send a mail to homebrew@esperide.com
 -->
-<!--    
-        Creation date: Sunday, February 17, 2008.
-        Author: Olivier Boudeville (homebrew@esperide.com)
-        Version: 0.1
+<!--
+		Creation date: Sunday, February 17, 2008.
+		Author: Olivier Boudeville (homebrew@esperide.com)
+		Version: 0.1
 -->
 
 <html lang="EN">
@@ -20,14 +20,14 @@
 </head>
 
 <body>
-  
+
   <div class="banner">
-  
-    <p><em>General</em> <a href="../../../../../common/black.html" onclick="parent.toolbar.location='../../../../MainMenu.html'">home page</a>
-    <a href="../../../../Map.html">site map</a> <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Graphical%20rendering%20for%20the%20DS">mail us</a></p>
-	
+
+	<p><em>General</em> <a href="../../../../../common/black.html" onclick="parent.toolbar.location='../../../../MainMenu.html'">home page</a>
+	<a href="../../../../Map.html">site map</a> <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Graphical%20rendering%20for%20the%20DS">mail us</a></p>
+
   </div><a name="_top_"></a>
-  
+
 
 <h1>Graphical rendering &amp; asset pipeline for the Nintendo DS</h1>
 
@@ -35,25 +35,25 @@
 <a name="toc"></a>
 <center>
 	<table summary="Table of content" style="border: none">
-        <tr>
-          <td>
+		<tr>
+		  <td>
 		<!--
-		       <a href="#"></a><br>
+			   <a href="#"></a><br>
 		-->
 
 		   <div class="box">
-		       <a href="#overview">Overview</a><br>
-		       <a href="#design-choices">Design choices</a><br>
-		       <a href="#technical-architecture">Technical architecture</a><br>
-		       <a href="#in-world-rendering">In-world rendering</a><br>
-		       <a href="#graphic-pipeline">Graphic pipeline</a><br>
-		       <a href="#user-interface">User interface</a><br>
+			   <a href="#overview">Overview</a><br>
+			   <a href="#design-choices">Design choices</a><br>
+			   <a href="#technical-architecture">Technical architecture</a><br>
+			   <a href="#in-world-rendering">In-world rendering</a><br>
+			   <a href="#graphic-pipeline">Graphic pipeline</a><br>
+			   <a href="#user-interface">User interface</a><br>
 			   <a href="#tools">Tools used here</a><br>
-		       <a href="#reiner">Some more informations about Reiner Tilesets</a>
+			   <a href="#reiner">Some more information about Reiner Tilesets</a>
 
-          </td>
-        </tr>
-    </table>
+		  </td>
+		</tr>
+	</table>
 </center>
 <!--
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
@@ -64,7 +64,7 @@
 
 <!-- ###################################################################### -->
 
-  
+
 <a name="overview"></a>
 <h2>Overview</h2>
 <p>
@@ -98,7 +98,7 @@ We are discussing here only about the graphical rendering of the underlying game
 </p>
 
 
-<a name="design-choices"></a> 
+<a name="design-choices"></a>
 <h2>Design choices</h2>
 
 <p>
@@ -138,74 +138,74 @@ In-world rendering being the most intensive task, the main 2D core will be devot
 Based on the bank <a href="http://www.dev-scene.com/NDS/NDS_Tutorials_VramTable" target="_blank">abilities</a>, the in-game bank layout we chose is:
 <center>
   <table border="1" summary="VRAM Memory Banks">
-    <caption>VRAM Memory Banks (total: 656 kilobytes)</caption>
+	<caption>VRAM Memory Banks (total: 656 kilobytes)</caption>
 
-    <tr>
-        <th>Bank name</th>
-        <th>Bank size (in Kilobytes)</th>
-        <th>Bank owner</th>
-        <th>Intended role</th>
-    </tr>
+	<tr>
+		<th>Bank name</th>
+		<th>Bank size (in Kilobytes)</th>
+		<th>Bank owner</th>
+		<th>Intended role</th>
+	</tr>
 
-    <tr>
-        <td>VRAM_A</td>
-        <td>128</td>
+	<tr>
+		<td>VRAM_A</td>
+		<td>128</td>
 		<td>Main engine</td>
 		<td>Sprite Graphics</td>
    </tr>
 
-    <tr>
-        <td>VRAM_B</td>
-        <td>128</td>
+	<tr>
+		<td>VRAM_B</td>
+		<td>128</td>
 		<td>Main engine</td>
 		<td>Sprite Graphics</td>
    </tr>
 
-    <tr>
-        <td>VRAM_C</td>
-        <td>128</td>
+	<tr>
+		<td>VRAM_C</td>
+		<td>128</td>
 		<td>Sub engine</td>
 		<td>Background</td>
    </tr>
 
-    <tr>
-        <td>VRAM_D</td>
-        <td>128</td>
+	<tr>
+		<td>VRAM_D</td>
+		<td>128</td>
 		<td>Main engine</td>
 		<td>Background</td>
    </tr>
 
-    <tr>
-        <td>VRAM_E</td>
-        <td>64</td>
+	<tr>
+		<td>VRAM_E</td>
+		<td>64</td>
 		<td>Main engine</td>
 		<td>Sprite Graphics</td>
    </tr>
 
-    <tr>
-        <td>VRAM_F</td>
-        <td>16</td>
+	<tr>
+		<td>VRAM_F</td>
+		<td>16</td>
 		<td>Main engine</td>
 		<td>Sprite Graphics</td>
    </tr>
 
-    <tr>
-        <td>VRAM_G</td>
-        <td>16</td>
+	<tr>
+		<td>VRAM_G</td>
+		<td>16</td>
 		<td>Main engine</td>
 		<td>Sprite Graphics</td>
    </tr>
 
-    <tr>
-        <td>VRAM_H</td>
-        <td>32</td>
+	<tr>
+		<td>VRAM_H</td>
+		<td>32</td>
 		<td>Sub engine</td>
 		<td>Background</td>
    </tr>
 
-    <tr>
-        <td>VRAM_I</td>
-        <td>16</td>
+	<tr>
+		<td>VRAM_I</td>
+		<td>16</td>
 		<td>Main engine</td>
 		<td>Extended palettes</td>
    </tr>
@@ -227,7 +227,7 @@ Main reasons for that is that we want to dedicate as much as possible memory for
 <!-- ###################################################################### -->
 
 
-<a name="in-world-rendering"></a> 
+<a name="in-world-rendering"></a>
 <h2>In-world rendering</h2>
 
 <p>
@@ -276,21 +276,21 @@ Most implementations may cope with one general-purpose palette for all sprites (
 </p>
 
 <p>
-We keep in mind that a lot of our sprites will come from the aforementioned Reiner's Tilesets. If we take <a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">Swordstan</a> as an example (most probably our main character, as having multiple animations with multiple outside appearances), the source image (BMP in 24 Bit TrueColor), could be (taken from <code>swordstan shield 96x  bitmaps/attack se0000.bmp</code>) :
+We keep in mind that a lot of our sprites will come from the aforementioned Reiner's Tilesets. If we take <a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">Swordstan</a> as an example (most probably our main character, as having multiple animations with multiple outside appearances), the source image (BMP in 24 Bit TrueColor), could be (taken from <code>swordstan shield 96x  bitmaps/attack se0000.bmp</code>):
 <center>
-    <img src="swordstan-original.png" alt="Original image"></img>
+	<img src="swordstan-original.png" alt="Original image"></img>
 </center>
 </p>
 
 <p>
 The same image (here in PNG) with a 256-color <em>dedicated</em> optimal palette (i.e. all its colors have been chosen specifically for this image) looks almost exactly the same:
 <center>
-    <img src="swordstan-optimal-palette.png" alt="With 256-color optimal palette"></img>
+	<img src="swordstan-optimal-palette.png" alt="With 256-color optimal palette"></img>
 </center>
 </p>
 
 <p>
-However we have to rely on a general-purpose palette here, that will be shared by <em>all</em> our sprites. As index #0 is reserved for transparency (colorkey), there are 255 colors to be chosen, in [1,255]. 
+However we have to rely on a general-purpose palette here, that will be shared by <em>all</em> our sprites. As index #0 is reserved for transparency (colorkey), there are 255 colors to be chosen, in [1,255].
 </p>
 
 
@@ -327,9 +327,9 @@ With this format, also known as unencoded format, a palette is made of a header,
 <ol>
 
 	<li>the OSDL tag identifying palettes (<code>PaletteTag</code>)</li>
-	
+
 	<li>in next byte, the colorkey indicator: 1 if a colorkey is defined, 0 otherwise</li>
-	
+
 	<li>if there is a color key, in next 16 bits the index of the color key is specified (otherwise the header contains only the first indicator byte)</li>
 
 <!--
@@ -367,7 +367,7 @@ We had chosen initially to generate our shared (master) palette with a python sc
 <p>
 Indeed, once a base master palette has been defined, it has to be transformed for various needs. First one is to generate from the palette a 256-color panel that represents it. It is done thanks a Makefile (see <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/animation-management/Makefile.am?view=markup" target="_blank">Makefile.am</a>): <code>make master-palette-original.png</code> generates the corresponding panel:
 <center>
-    <img src="master-palette-original.png" alt="Original Palette Image"></img>
+	<img src="master-palette-original.png" alt="Original Palette Image"></img>
 </center>
 
 </p>
@@ -379,7 +379,7 @@ We can clearly see, from top-left to bottom-right, the magenta color key at firs
 <p>
 We can generate as well the same palette, but quantized like it would be when encoded in <code>.pal</code> format: each color component is scaled to the only 32 levels already mentioned, instead of the 256 levels of the original palette. The result, <code>master-palette-quantized.png</code>, looks however very similar to the original palette:
 <center>
-    <img src="master-palette-quantized.png" alt="Quantized Palette Image"></img>
+	<img src="master-palette-quantized.png" alt="Quantized Palette Image"></img>
 </center>
 </p>
 
@@ -394,12 +394,12 @@ This transformation is called <a href="http://en.wikipedia.org/wiki/Gamma_correc
 <p>
 We retained a gamma of 2.3 for the average DS screen (intermediate way between DS Fat and DS Lite, see also <a href="http://forum.gbadev.org/viewtopic.php?t=6484" target="_blank">this discussion</a>).
 </p>
-	
+
 
 <p>
-We apply the gamma-correction to the original master palette as well, to gain a better accuracy when the color-reduction of the gamma-corrected images will take place. The final quantization of this palette adds to this gamma-correction the effect of the <code>.pal</code> encoding. As expected, this palette looks brighter than the original :
+We apply the gamma-correction to the original master palette as well, to gain a better accuracy when the color-reduction of the gamma-corrected images will take place. The final quantization of this palette adds to this gamma-correction the effect of the <code>.pal</code> encoding. As expected, this palette looks brighter than the original:
 <center>
-    <img src="master-palette-quantized-gamma-corrected.png" alt="Gamma-corrected Quantized Palette Image"></img>
+	<img src="master-palette-quantized-gamma-corrected.png" alt="Gamma-corrected Quantized Palette Image"></img>
 </center>
 </p>
 
@@ -449,7 +449,7 @@ We disabled for the first four tests the colorkey transformation, and for the ma
 
 
 <p>
-Finally the result seems very good indeed, colors are well preserved in non gamma-corrected images. Note that the colorkey changed a bit in each image, notably due to the quantization and to the gamma-correction, but it did not trouble its management in last image.	
+Finally the result seems very good indeed, colors are well preserved in non gamma-corrected images. Note that the colorkey changed a bit in each image, notably due to the quantization and to the gamma-correction, but it did not trouble its management in last image.
 </p>
 
 
@@ -462,7 +462,7 @@ Finally the result seems very good indeed, colors are well preserved in non gamm
 Here is a screenshot of our <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/test/cross-tests/testOSDLVideoFramebuffer.arm9.cc?view=markup" target="_blank">testOSDLVideoFramebuffer.exe</a> test program taken with the NO$GBA emulator:
 
 <center>
-    <img src="sprite-sizes.png" alt="Sprite sizes"></img>
+	<img src="sprite-sizes.png" alt="Sprite sizes"></img>
 </center>
 
 </p>
@@ -474,19 +474,19 @@ It allows to better figure out the <a href="http://osdl.sourceforge.net/main/doc
 <p>
 Using Swordstan again as an example, knowing that Reiner's Tilesets offer bigger frames, the source image could be:
 <center>
-    <img src="swordstan-original.png" alt="Original image"></img>
+	<img src="swordstan-original.png" alt="Original image"></img>
 </center>
 This is 96x96. If we reduced the original directly to 32x32, it would result in:
 <center>
-    <img src="swordstan-direct-32x32.png" alt="Reduced image"></img>
+	<img src="swordstan-direct-32x32.png" alt="Reduced image"></img>
 </center>
 which is too small. Instead if we first crop the frame (the actual original content could fit in a 75x85 rectangle):
 <center>
-    <img src="swordstan-cropped-original.png" alt="Original Cropped Image"></img>
+	<img src="swordstan-cropped-original.png" alt="Original Cropped Image"></img>
 </center>
 then we reduce it to 20x32 (preserving the ratio), we have:
 <center>
-    <img src="swordstan-cropped-32.png" alt="Image"></img>
+	<img src="swordstan-cropped-32.png" alt="Image"></img>
 </center>
 which is better.
 </p>
@@ -500,9 +500,9 @@ These resized images have been obtained thanks to <a href="http://www.imagemagic
 <ul>
 
 	<li><b>Lanczos</b>: <code>convert swordstan-original.png -filter Lanczos -resize 50x50 swordstan-IM-Lanczos.png</code></li>
-	
+
 	<li><b>Linear</b>: <code>convert swordstan-original.png -filter triangle  -resize 50x50 swordstan-IM-Bilinear.png</code></li>
-	
+
 	<li><b>Cubic</b>: <code>convert swordstan-original.png -filter Cubic  -resize 50x50 swordstan-IM-Bicubic.png</code></li>
 
 <!--
@@ -520,7 +520,7 @@ These resized images have been obtained thanks to <a href="http://www.imagemagic
 <h4>Sprite tiling</h4>
 
 <p>
-Once we have an image ready for animation (notably scaled-down, color-reduced gamma-corrected, etc.), we have to prepare it specifically so that it can be rendered directly by the Nintendo DS, whose 2D engines are tile-based.  
+Once we have an image ready for animation (notably scaled-down, color-reduced gamma-corrected, etc.), we have to prepare it specifically so that it can be rendered directly by the Nintendo DS, whose 2D engines are tile-based.
 </p>
 
 <p>
@@ -530,7 +530,7 @@ First step is to extract the actual content of the frame from the original one: 
 <p>
 To do so, first we find the smallest upright rectangle which encloses the frame content, colorkey excluded:
 <center>
-    <img src="swordstan-content-extracted.png" alt="Trimmed frame"></img>
+	<img src="swordstan-content-extracted.png" alt="Trimmed frame"></img>
 </center>
 We want to manage the inside of the yellow rectangle as a DS sprite.
 </p>
@@ -538,25 +538,25 @@ We want to manage the inside of the yellow rectangle as a DS sprite.
 <p>
 Our home-made rendering engine will have to render a given frame (whose original version is shown here as a magenta rectangle) centered at a given screen location <code>[x;y]</code> (expressed in pixels) corresponding here to the character position, thus the frame will have to store an offset (signed) vector <code>[x_offset;y_offset])</code> (shown as the red arrow) so that, when the trimmed-down sprite (shown here as a gold rectangle) will be rendered from its upper-left corner at <code>[x+x_offset;y+y_offset])</code> it will be correctly be re-centered:
 <center>
-    <img src="frame-offset.png" alt="Frame offset"></img>
+	<img src="frame-offset.png" alt="Frame offset"></img>
 </center>
 </p>
 
 <p>
 The offset vector corresponds simply to the coordinates of the upper-left corner of the trimmed rectangle (<code>trimmedRect</code>, whose coordinates are initially defined relatively to the upper-left corner of the original rectangle) expressed relatively to the center of the original frame (<code>frame</code>):
 <center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="Code" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 <code><pre>
 x_offset = trimmedRect.getUpperLeftAbscissa() - ( frame.getWidth() / 2 )
 y_offset = trimmedRect.getUpperLeftOrdinate() - ( frame.getHeight() / 2 )
 </pre></code>
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 Thus each frame file will store <code>x_offset</code> and <code>y_offset</code> in its metadata.
 </p>
@@ -577,7 +577,7 @@ Then we have to prepare the tiling of the trimmed content. It has to be copied t
 In our case, the actual content of the frame character (not scaled down here) is <code>39x62</code>, it leads our algorithm to select, as smallest enclosing shape, the <code>64x64</code> one:
 
 <center>
-    <img src="frame-tiled.png" alt="Frame tiled"></img>
+	<img src="frame-tiled.png" alt="Frame tiled"></img>
 </center>
 
 
@@ -587,7 +587,7 @@ In our case, the actual content of the frame character (not scaled down here) is
 <h4>Tile management for frames</h4>
 
 <p>
-On the DS, a sprite is rendered as a map of sprite tiles. 
+On the DS, a sprite is rendered as a map of sprite tiles.
 </p>
 
 <p>
@@ -633,57 +633,57 @@ Let's take the character that is most probably the most complex one that will ha
 
 <h5>Outside looks for a given character</h5>
 <p>
-First of all Stan has 8 different outside looks, sorted roughly according to the order in which they might appear in a story (example images are in low quality):
+First of all, Stan has 8 different outside looks, sorted roughly according to the order in which they might appear in a story (example images are in low quality):
 <ol>
 <!--
-	<li><b></b> : </li>
+	<li><b></b>: </li>
 -->
 
-	<li><b>Unarmed</b> Stan (<a href="http://reinerstileset.4players.de/Tstanunarmed.zip" target="_blank">stanunarmed</a>): 
+	<li><b>Unarmed</b> Stan (<a href="http://reinerstileset.4players.de/Tstanunarmed.zip" target="_blank">stanunarmed</a>):
 <center>
-    <img src="Stan-unarmed.png" alt="Unarmed"></img>
+	<img src="Stan-unarmed.png" alt="Unarmed"></img>
 </center>
 </li>
 
-	<li>Stan with <b>a club</b> (<a href="http://reinerstileset.4players.de/Tclubstan.zip" target="_blank">clubstan</a>): 
+	<li>Stan with <b>a club</b> (<a href="http://reinerstileset.4players.de/Tclubstan.zip" target="_blank">clubstan</a>):
 <center>
-    <img src="Stan-club.png" alt="Club"></img>
+	<img src="Stan-club.png" alt="Club"></img>
 </center>
 </li>
 
 	<li>Stan with <b>a sword (and no shield)</b> (<a href="http://reinerstileset.4players.de/Tswordstan.zip" target="_blank">swordstan</a>)
 <center>
-    <img src="Stan-sword.png" alt="Sword"></img>
+	<img src="Stan-sword.png" alt="Sword"></img>
 </center>
 </li>
 
-	<li>Stan with <b>a bow</b> (<a href="http:///http://reinerstileset.4players.de/T_bowstan.zip" target="_blank">bowstan</a>): 
+	<li>Stan with <b>a bow</b> (<a href="http:///http://reinerstileset.4players.de/T_bowstan.zip" target="_blank">bowstan</a>):
 <center>
-    <img src="Stan-bow.png" alt="Bow"></img>
+	<img src="Stan-bow.png" alt="Bow"></img>
 </center>
 </li>
 
-	<li>Stan with <b>an axe (and no shield)</b> (<a href="http://reinerstileset.4players.de/Taxestan.zip" target="_blank">axestan</a>): 
+	<li>Stan with <b>an axe (and no shield)</b> (<a href="http://reinerstileset.4players.de/Taxestan.zip" target="_blank">axestan</a>):
 <center>
-    <img src="Stan-axe.png" alt="Axe"></img>
+	<img src="Stan-axe.png" alt="Axe"></img>
 </center>
 </li>
 
 	<li>Stan with <b>a sword and a shield</b> (<a href="http://reinerstileset.4players.de/T_swordstan_shield.zip" target="_blank">swordstan shield</a>)
 <center>
-    <img src="Stan-sword-shield.png" alt="Sword and Shield"></img>
+	<img src="Stan-sword-shield.png" alt="Sword and Shield"></img>
 </center>
 </li>
 
-	<li>Stan with <b>an axe and a shield</b> (<a href="http://reinerstileset.4players.de/T_axestan_shield.zip" target="_blank">axestan shield</a>): 
+	<li>Stan with <b>an axe and a shield</b> (<a href="http://reinerstileset.4players.de/T_axestan_shield.zip" target="_blank">axestan shield</a>):
 <center>
-    <img src="Stan-axe-shield.png" alt="Axe and Shield"></img>
+	<img src="Stan-axe-shield.png" alt="Axe and Shield"></img>
 </center>
 </li>
 
-	<li>Stan with <b>a staff</b> (<a href="http://reinerstileset.4players.de/Tstaffstan%20.zip" target="_blank">staffstan</a>): 
+	<li>Stan with <b>a staff</b> (<a href="http://reinerstileset.4players.de/Tstaffstan%20.zip" target="_blank">staffstan</a>):
 <center>
-    <img src="Stan-staff.png" alt="Staff"></img>
+	<img src="Stan-staff.png" alt="Staff"></img>
 </center>
 </li>
 
@@ -694,11 +694,11 @@ First of all Stan has 8 different outside looks, sorted roughly according to the
 
 <h5>Attitudes</h5>
 <p>
-To each of these different outside looks correspond a set of attitudes (behaviours in action). Different looks have often different sets of attitudes. 
+To each of these different outside looks correspond a set of attitudes (behaviours in action). Different looks have often different sets of attitudes.
 </p>
 
 <p>
-For example, the unarmed Stan can:
+For example, the "Unarmed Stan" can:
 <ul>
 
 	<li>be still</li>
@@ -706,7 +706,7 @@ For example, the unarmed Stan can:
 	<li>run</li>
 	<li>attack (high kick)</li>
 	<li>tip over (fall on the ground)</li>
-	<li>been hit by a blow</li>
+	<li>be hit by a blow</li>
 	<li>talk</li>
 	<li>knit (most probably after having be idle for too long)</li>
 
@@ -716,26 +716,26 @@ For example, the unarmed Stan can:
 -->
 
 </ul>
-whereas Stan with a sword and a shield cannot knit, Stan with a staff has two attacks (regular and magical one), etc.
+whereas "Stan with a sword and a shield" cannot knit, "Stan with a staff" has two attacks (regular and magical one), etc.
 </p>
 
 
 <h5>Directions</h5>
 <p>
-For each attitude, eight directions have always to be taken into account : character facing north, south, west, east, and the four related diagonals.
+For each attitude, eight directions have always to be taken into account: character facing north, south, west, east, and the four related diagonals.
 </p>
 
 <p>
-As characters are usually asymmetric, one cannot deduce for example eastward animations from westward ones (showing the character rotate clockwise):
+As characters are usually asymmetric, one cannot deduce for example eastward animations from westward ones (showing here the character rotate clockwise):
 <center>
-    <img src="staffstan-north.png" alt="North"></img>
-    <img src="staffstan-north-east.png" alt="North-East"></img>
-    <img src="staffstan-east.png" alt="East"></img>
-    <img src="staffstan-south-east.png" alt="South-East"></img>
-    <img src="staffstan-south.png" alt="South"></img>
-    <img src="staffstan-south-west.png" alt="South-West"></img>
-    <img src="staffstan-west.png" alt="West"></img>
-    <img src="staffstan-north-west.png" alt="North-West"></img>
+	<img src="staffstan-north.png" alt="North"></img>
+	<img src="staffstan-north-east.png" alt="North-East"></img>
+	<img src="staffstan-east.png" alt="East"></img>
+	<img src="staffstan-south-east.png" alt="South-East"></img>
+	<img src="staffstan-south.png" alt="South"></img>
+	<img src="staffstan-south-west.png" alt="South-West"></img>
+	<img src="staffstan-west.png" alt="West"></img>
+	<img src="staffstan-north-west.png" alt="North-West"></img>
 </center>
 </p>
 
@@ -749,16 +749,16 @@ Finally, for each direction a given character attitude can be decomposed into a 
 </p>
 
 <p>
-For example a Stan with sword and shield walking eastward uses following 8 frames in a cycle:
+For example, a "Stan with sword and shield" walking eastward uses following 8 frames in a cycle:
 <center>
-    <img src="swordstanshield-w-e-0.png" alt="0"></img>
-    <img src="swordstanshield-w-e-1.png" alt="1"></img>
-    <img src="swordstanshield-w-e-2.png" alt="2"></img>
-    <img src="swordstanshield-w-e-3.png" alt="3"></img>
-    <img src="swordstanshield-w-e-4.png" alt="4"></img>
-    <img src="swordstanshield-w-e-5.png" alt="5"></img>
-    <img src="swordstanshield-w-e-6.png" alt="6"></img>
-    <img src="swordstanshield-w-e-7.png" alt="7"></img>
+	<img src="swordstanshield-w-e-0.png" alt="0"></img>
+	<img src="swordstanshield-w-e-1.png" alt="1"></img>
+	<img src="swordstanshield-w-e-2.png" alt="2"></img>
+	<img src="swordstanshield-w-e-3.png" alt="3"></img>
+	<img src="swordstanshield-w-e-4.png" alt="4"></img>
+	<img src="swordstanshield-w-e-5.png" alt="5"></img>
+	<img src="swordstanshield-w-e-6.png" alt="6"></img>
+	<img src="swordstanshield-w-e-7.png" alt="7"></img>
 </center>
 
 </p>
@@ -783,7 +783,7 @@ For a given outside look, various attitudes might be available (walking, running
 </p>
 
 <p>
-An attitude has usually to be defined according to 8 directions.
+An attitude has usually to be defined according to 8 main isometric directions.
 </p>
 
 <p>
@@ -810,7 +810,7 @@ Compared to the overall 656 kilobytes of VRAM memory, to the 4 megabytes of RAM 
 
 <!-- ###################################################################### -->
 
-<a name="graphic-pipeline"></a> 
+<a name="graphic-pipeline"></a>
 <h2>Graphic pipeline</h2>
 <p>
 After having taken into account all previous constraints (size, formats, colors, etc.), we chose the following process, that should led from the raw assets (coming for Reiner or other sources) to the precomputed content ready and optimized for the DS.
@@ -821,7 +821,7 @@ After having taken into account all previous constraints (size, formats, colors,
 <p>
 
 	<ol>
-	
+
 		<li><b>choice</b> of the target DS palette, a master palette shared by most if not all animations, thus made so that all colors possibly used can be approximated with minimal mean error. Maybe later: creation of a palette dedicated to a given animated object, instead of a global palette
 		</li>
 
@@ -847,7 +847,7 @@ Then, for each frame:
 
 		<li><b>resizing</b>, from original size to target DS planned size, based on a global and a per-asset ratio, determined so that the resized sprite complies with the in-game chosen scale
 		</li>
-	
+
 		<li><b>color best-effort quantification</b>, from the original colors of the frame (per-pixel or indexed) to the optimal mapping according to the aforementioned target DS palette, with color key set for the sprite borders
 		</li>
 
@@ -862,10 +862,10 @@ Then, for each frame:
 
 		<li><b>RLE encoding</b> (optional), to save some space in the storage media with repeated colorkeyed pixels
 		</li>
-			
+
 		<li><b>generation of the frame file</b> (see below)
 		</li>
-			
+
 	</ol>
 
 </p>
@@ -875,12 +875,12 @@ Finally, creation of:
 <ol>
 
 <!--
-	<li><b></b> : </li>
+	<li><b></b>: </li>
 -->
 
 	<li>a <b>per-frame file</b>: for a given animated object, outside look, attitude, direction and animation step, it stores a given frame, with a somewhat self-describing filename (see naming conventions below). The file contains an header, specifying the frame metadata (notably the offset vector, the size and type of the frame map, the reference of the palette), and then the ordered set of tiles
 	</li>
-	
+
 	<li>a <b>per-direction file</b>: for a given animated object, outside look, attitude and direction, stores the corresponding series of frames. The file contains an header, specifying the per-direction animation metadata (notably the number of frames involved, and their offset in this file), and then the ordered series of frames. Such a file is made from a generated header followed by the concatenated per-frame files
 	</li>
 
@@ -889,10 +889,10 @@ Finally, creation of:
 
 	<li>a <b>per-outside look file</b>: for a given animated object and outside look, stores the corresponding attitudes. The file contains an header, specifying the outside look metadata (notably the number of attitudes, their identifier and their offset in this file), and then the associated set of per-attitude files
 	</li>
-	
+
 	<li>a <b>per-animated object file</b>: for a given animated object , stores the corresponding outside looks. The file contains an header, specifying the  metadata of the animated object (notably the number of outside looks, their identifier and their offset in this file), and then the associated set of per-outside look files
 	</li>
-		
+
 </ol>
 
 
@@ -901,7 +901,7 @@ Finally, creation of:
 <h3>Naming conventions</h3>
 
 <p>
-To avoid to store too many informations in index files, filenames should respect the following conventions, so that they can be deduced rather than stored in an associative map.
+To avoid storing too many information in index files, filenames should respect the following conventions, so that they can be deduced rather than having to be stored in an associative map.
 </p>
 
 <p>
@@ -913,7 +913,7 @@ Fields are:
 
 <ol>
 <!--
-	<li><b></b> : </li>
+	<li><b></b>: </li>
 -->
 	<li><b>animated object identifier</b> (F1)</li>
 
@@ -924,12 +924,12 @@ Fields are:
 	<li><b>direction identifier</b> (F4)</li>
 
 	<li><b>frame identifier</b> (F5)</li>
-	
+
 </ol>
 </p>
 
 <p>
-A given field is not specific to the previous one. For example, the outside look (F2) <code>ArmedWithASword</code> may apply to multiple characters (F1) : Stan, but also all characters whose outside look can be described as "<code>ArmedWithASword</code>".
+A given field is not specific to the previous one. For example, the outside look (F2) <code>ArmedWithASword</code> may apply to multiple characters (F1): Stan, but also all characters whose outside look can be described as "<code>ArmedWithASword</code>".
 </p>
 
 <p>
@@ -945,11 +945,11 @@ The repository of:
 <ul>
 
 	<li>animated object identifiers (F1) is defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/animated-object-identifiers.txt?view=markup" target="_blank">animated-object-identifiers.txt</a></li>
-	
+
 	<li>outside look identifiers (F2) is defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/outside-looks-identifiers.txt?view=markup" target="_blank">outside-look-identifiers.txt</a></li>
-	
+
 	<li>attitude identifiers (F3) is defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/attitude-identifiers.txt?view=markup" target="_blank">attitude-identifiers.txt</a></li>
-	
+
 	<li>direction identifiers (F4) is defined in <a href="http://osdl.svn.sourceforge.net/viewvc/osdl/OSDL/trunk/tools/media/video/asset-repository/direction-identifiers.txt?view=markup" target="_blank">direction-identifiers.txt</a>. It is composed of the 8 main directions</li>
 
 <!--
@@ -967,17 +967,17 @@ Frame identifiers start from 1 onward, and go typically to 6.
 <p>
 All the assets which we transformed like described are referenced in our <a href="../../../../../../../../tools/media/video/asset-repository/OSDL-asset-map.html">Asset Map</a> (see notice below).
 <center>
-    <table summary="Code" style="border : none">
-        <tr>
-          <td>
-            <div class="box">
+	<table summary="Code" style="border: none">
+		<tr>
+		  <td>
+			<div class="box">
 <code>
- <b>Note</b>: this is currently an intentional broken link when searched from the Internet (non-local use). It is to comply with the will of the author of <a href="http://reinerstileset.4players.de/englisch.html" target="_blank">Reiner's Tilesets</a>, whose only rule is not to have concurrent web pages to his, so that he can present his work as wanted. That's fair, and thanks again Reiner for your beautiful artwork !
+ <b>Note</b>: this is currently an intentional broken link when searched from the Internet (non-local use). It is to comply with the will of the author of <a href="http://reinerstileset.4players.de/englisch.html" target="_blank">Reiner's Tilesets</a>, whose only rule is not to have concurrent web pages to his, so that he can present his work as wanted. That's fair, and thanks again Reiner for your beautiful artwork!
 </code>
-            </div>
-          </td>
-        </tr>
-    </table>
+			</div>
+		  </td>
+		</tr>
+	</table>
 </center>
 
 </p>
@@ -988,7 +988,7 @@ All the assets which we transformed like described are referenced in our <a href
 
 <!-- ###################################################################### -->
 
-<a name="user-interface"></a> 
+<a name="user-interface"></a>
 <h2>User interface</h2>
 
 <h3></h3>
@@ -999,7 +999,7 @@ All the assets which we transformed like described are referenced in our <a href
 <br><p><center>[<a href="#toc">Back to the table of contents</a>]</center></p><br><br>
 
 
-<a name="tools"></a> 
+<a name="tools"></a>
 <h2>Tools used here</h2>
 
 <p>
@@ -1010,19 +1010,19 @@ All of them are free and open source. They have been used on GNU/Linux, but many
 <p>
 <ul>
 
-    <li><a href="http://www.gimp.org/" target="_blank">The Gimp</a> (<em>GNU Image Manipulation Program</em>), for most image exploratory manipulations</li>
+	<li><a href="http://www.gimp.org/" target="_blank">The Gimp</a> (<em>GNU Image Manipulation Program</em>), for most image exploratory manipulations</li>
 
 	<li><a href="http://www.imagemagick.org" target="_blank">ImageMagick</a>,
 for powerful command-line bitmap manipulations, allowing to automate them
 through scripts that can handle the hundred of sprite frames to be
 transformed</li>
-	
-    <li><a href="http://www.coranac.com/category/proj/grit/" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>), for test conversion to the DS hardware formats and for testing tiling</li>
- 
-    <li><a href="http://osdl.sourceforge.net" target="_blank">OSDL</a>, our game library, to ease the development of our home-made converting tools, notably for palette generation (including quantization and gamma correction) and frame preprocessing (colorkey fixing, tiling, encoding, etc.)</li>
- 
+
+	<li><a href="http://www.coranac.com/category/proj/grit/" target="_blank">grit</a> (<em>GBA Raster Image Transmogrifier</em>), for test conversion to the DS hardware formats and for testing tiling</li>
+
+	<li><a href="http://osdl.sourceforge.net" target="_blank">OSDL</a>, our game library, to ease the development of our home-made converting tools, notably for palette generation (including quantization and gamma correction) and frame preprocessing (colorkey fixing, tiling, encoding, etc.)</li>
+
 <!--
-    <li><a href="" target="_blank"></a></li>
+	<li><a href="" target="_blank"></a></li>
 -->
 
 </ul>
@@ -1036,10 +1036,10 @@ All of them are free and open source. They have been used on GNU/Linux, but many
 </p>
 
 
-<a name="reiner"></a> 
-<h2>Some more informations about Reiner Tilesets</h2>
+<a name="reiner"></a>
+<h2>Some more information about Reiner Tilesets</h2>
 <p>
-As many of our graphical assets come from the splendid work available in <a href="http://reinerstileset.4players.de/" target="_blank">Reiner's Tilesets</a>, some specific informations are gathered here.
+As many of our graphical assets come from the splendid work available in <a href="http://reinerstileset.4players.de/" target="_blank">Reiner's Tilesets</a>, some specific information are gathered here.
 </p>
 
 <p>
@@ -1051,18 +1051,18 @@ Orginal images are BMP, usually with a kaki (greenish) colorkey: <code>6a4c30</c
   <br>
   <br>
 
- <h3>Please react !</h3>
+ <h3>Please react!</h3>
 
   <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, <a href="mailto:homebrew@esperide.com?subject=[OSDL]%20Graphical%20rendering%20for%20the%20DS">drop us a line</a>!</p><br>
   <br>
   <hr>
   <br>
- 
+
   <center>
-    [<a href="#_top_">Top</a>]
+	[<a href="#_top_">Top</a>]
 	<br>
-    <br>
-    <em>Last update: Saturday, April 12, 2008</em>
+	<br>
+	<em>Last update: Monday, October 8, 2012</em>
   </center>
 </body>
 </html>
