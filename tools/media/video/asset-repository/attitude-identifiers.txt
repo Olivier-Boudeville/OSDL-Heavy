@@ -1,4 +1,4 @@
-BasicAttack 
+BasicAttack
 BeenHit
 Bend
 BeStill

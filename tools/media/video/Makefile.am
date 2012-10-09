@@ -6,11 +6,10 @@ videotoolsdir = @OSDL_TOOL_DIR@/media/video
 videotools_CXXFLAGS = @AM_CXXFLAGS@
 
 
-videotools_PROGRAMS = 
+videotools_PROGRAMS =
 
 
 clean: clean-local
 
-clean-local: 
-	@rm -f *.log
-
+clean-local:
+	@/bin/rm -f *.log

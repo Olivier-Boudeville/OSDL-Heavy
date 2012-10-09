@@ -5,8 +5,8 @@ THIS_SCRIPT=`basename $0`
 USAGE="Usage: ${THIS_SCRIPT} [-h|--help] [-i|--ima-adpcm] SOURCE_WAVE_FILE
 Converts specified wave file into an OSDL sound counterpart.
   Example: ${THIS_SCRIPT} hello.wav uses hello.wav to generate its hello.osdl.sound counterpart (needs sox and wavToOSDLSound.exe).
-    -h/--help: displays this help
-    -i/--ima-adpcm: encode the wave samples into IMA-ADPCM (about four times smaller but with poorer quality) [uses ffmpeg]
+	-h/--help: displays this help
+	-i/--ima-adpcm: encode the wave samples into IMA-ADPCM (about four times smaller but with poorer quality) [uses ffmpeg]
   Note that the wave file can contain usual PCM samples or IMA ADPCM samples: both will be managed automatically by this tool and by the OSDL player on the Nintendo DS.
   To generate an IMA ADPCM-encoded wave file, one should better use ffmpeg or audacity than sox, as the data produced by the latter is incorrectly decoded by the DS.
 "
@@ -27,7 +27,7 @@ CONVERTER="wavToOSDLSound.exe"
 if [ ! -x "${CONVERTER}" ] ; then
 
 	echo "Error, no wave to OSDL sound converter (${CONVERTER}) found." 1>&2
-	exit 2 
+	exit 2
 
 fi
 
@@ -55,7 +55,7 @@ if [ ! $# -eq 1 ] ; then
 
 	echo "Error, wrong number of parameters.\n$USAGE" 1>&2
 	exit 3
-	
+
 fi
 
 
@@ -63,7 +63,7 @@ if [ ! -e "${SOURCE_WAVE_FILE}" ] ; then
 
 	echo "Error, source wave file (${SOURCE_WAVE_FILE}) not found.\n$USAGE" 1>&2
 	exit 4
-	
+
 fi
 
 
@@ -77,24 +77,24 @@ if [ $do_encode -eq 0 ] ; then
 		echo "Error, IMA-ADPCM encoder (${ENCODER}) not found." 1>&2
 		exit 5
 	fi
-	
+
 	NEW_SOURCE_FILE=${SOURCE_FILE_PREFIX}-tmp.wav
-	
+
 	echo "    Encoding ${SOURCE_WAVE_FILE} to IMA-ADPCM"
-	
+
 	ENCODER_MSG=`${ENCODER} -y -i ${SOURCE_WAVE_FILE} -acodec adpcm_ima_wav ${NEW_SOURCE_FILE} 2>&1`
-	
+
 	ENCODER_RES=$?
-	
+
 	if [ ! $ENCODER_RES -eq 0 ] ; then
 
 		echo "Error, encoder (${ENCODER}) failed with error code ${ENCODER_RES} and output: ${ENCODER_MSG}." 1>&2
 		exit 10
 
 	fi
-			 
+
 	SOURCE_WAVE_FILE=${NEW_SOURCE_FILE}
-	
+
 fi
 
 
@@ -122,13 +122,13 @@ SOX_MSG_INPUT=`echo "${SOX_MSG}"|head -n 8`
 SAMPLE_RATE=`echo "${SOX_MSG_INPUT}"|grep 'Sample Rate'|awk '{print $4}'`
 #echo "SAMPLE_RATE = ${SAMPLE_RATE}"
 
-CONVERTER_ARGS="${CONVERTER_ARGS} -f ${SAMPLE_RATE}" 
+CONVERTER_ARGS="${CONVERTER_ARGS} -f ${SAMPLE_RATE}"
 
 CHANNELS=`echo "${SOX_MSG_INPUT}"|grep 'Channels'|awk '{print $3}'`
 #echo "CHANNELS = ${CHANNELS}"
 
-if [ "${CHANNELS}" = "1" ]; then 
-	CONVERTER_ARGS="${CONVERTER_ARGS} -m mono" 
+if [ "${CHANNELS}" = "1" ]; then
+	CONVERTER_ARGS="${CONVERTER_ARGS} -m mono"
 else
 	echo "Error, unsupported channel number (${CHANNELS})."	1>&2
 	exit 7
@@ -155,7 +155,7 @@ if [ "${SAMPLE_ENCODING}" = "IMA-ADPCM" ]; then
 fi
 
 
-CONVERTER_ARGS="${CONVERTER_ARGS} -b ${OSDL_SAMPLE_SIZE}" 
+CONVERTER_ARGS="${CONVERTER_ARGS} -b ${OSDL_SAMPLE_SIZE}"
 
 
 # Here we have retrieved the sound settings, now removing the wav header from
@@ -177,12 +177,12 @@ if [ ! ${CONVERTER_RES} -eq 0 ] ; then
 
 fi
 
-rm -f wavToOSDLSound.exe.log
+/bin/rm -f wavToOSDLSound.exe.log
 
 if [ $do_encode -eq 0 ]; then
 
-	mv ${SOURCE_FILE_PREFIX}-tmp.osdl.sound ${SOURCE_FILE_PREFIX}.osdl.sound 
-	rm ${SOURCE_FILE_PREFIX}-tmp.wav
+	/bin/mv ${SOURCE_FILE_PREFIX}-tmp.osdl.sound ${SOURCE_FILE_PREFIX}.osdl.sound
+	/bin/rm ${SOURCE_FILE_PREFIX}-tmp.wav
 fi
 
 
@@ -190,4 +190,3 @@ fi
 TARGET_FILE="${SOURCE_FILE_PREFIX}.osdl.sound"
 echo "    ${TARGET_FILE} produced, ready to be used !"
 ls -l ${INITIAL_WAVE_FILE} ${TARGET_FILE}
-
