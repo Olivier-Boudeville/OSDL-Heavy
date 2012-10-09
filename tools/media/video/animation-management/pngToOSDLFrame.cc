@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003-2011 Olivier Boudeville
  *
  * This file is part of the OSDL library.
@@ -6,7 +6,7 @@
  * The OSDL library is free software: you can redistribute it and/or modify
  * it under the terms of either the GNU Lesser General Public License or
  * the GNU General Public License, as they are published by the Free Software
- * Foundation, either version 3 of these Licenses, or (at your option) 
+ * Foundation, either version 3 of these Licenses, or (at your option)
  * any later version.
  *
  * The OSDL library is distributed in the hope that it will be useful,
@@ -60,201 +60,201 @@ std::string getUsage( const std::string & execName ) throw()
 
 }
 
-	
 
-int main( int argc, char * argv[] ) 
+
+int main( int argc, char * argv[] )
 {
 
-	
+
 	//bool displayImage = false ;
 	bool displayImage = true ;
-	
+
 	bool isBatch = false ;
-	
+
 	Coordinate x_offset = 0 ;
 	Coordinate y_offset = 0 ;
-	
+
 	PaletteIdentifier paletteId = 1 ;
-	
+
 	LogHolder myLog( argc, argv ) ;
-	
-	
-    try 
+
+
+	try
 	{
 
-		
+
 		LogPlug::info( "Converting a PNG file into an OSDL frame." ) ;
 
-		
+
 		std::string executableName ;
 		std::list<std::string> options ;
-		
+
 		Ceylan::parseCommandLineOptions( executableName, options, argc, argv ) ;
-		
+
 		std::string token ;
 		bool tokenEaten ;
-		
+
 		string inputFilename ;
-		
+
 		while ( ! options.empty() )
 		{
-		
+
 			token = options.front() ;
 			options.pop_front() ;
 
 			tokenEaten = false ;
-					
-						
+
+
 			if ( token == "-o" )
 			{
-			
+
 				if ( options.size() < 2 )
 				{
-				
-					cerr << "Error, parameters lacking for offset.\n" 
+
+					cerr << "Error, parameters lacking for offset.\n"
 						+ getUsage( argv[0] ) << endl ;
-					
-					exit( 9 ) ;	
-					
-				}	
-			
+
+					exit( 9 ) ;
+
+				}
+
 				// User-offset:
-				x_offset = static_cast<Coordinate>( 
+				x_offset = static_cast<Coordinate>(
 					Ceylan::stringToUnsignedLong( options.front() ) ) ;
-					
+
 				options.pop_front() ;
 
-				y_offset = static_cast<Coordinate>( 
+				y_offset = static_cast<Coordinate>(
 					Ceylan::stringToUnsignedLong( options.front() ) ) ;
-					
+
 				options.pop_front() ;
-				
+
 				LogPlug::info( "User offset set to ("
 					+ Ceylan::toString( x_offset ) + ","
 					+ Ceylan::toString( y_offset ) + " )." ) ;
-					
+
 				tokenEaten = true ;
-				
+
 			}
-			
-			
+
+
 			if ( token == "-p" )
 			{
-			
-				paletteId = static_cast<PaletteIdentifier>( 
+
+				paletteId = static_cast<PaletteIdentifier>(
 					Ceylan::stringToUnsignedLong( options.front() ) ) ;
-					
+
 				options.pop_front() ;
-				
+
 				LogPlug::info( "Palette identifier set to "
 					+ Ceylan::toString( paletteId ) + "." ) ;
-					
+
 				tokenEaten = true ;
-				
+
 			}
-					
-			
+
+
 			if ( LogHolder::IsAKnownPlugOption( token ) )
 			{
 				// Ignores log-related (argument-less) options.
 				tokenEaten = true ;
 			}
-			
-			
+
+
 			if ( ! tokenEaten )
 			{
-			
+
 				if ( options.empty() )
-				{	
+				{
 
 					inputFilename = token ;
 
 				}
 				else
-				{	
-					
-					cerr << "Unexpected command line argument: '" + token 
+				{
+
+					cerr << "Unexpected command line argument: '" + token
 						+ "'.\n" + getUsage( argv[0] ) << endl ;
-					exit( 1 ) ;	
-				
+					exit( 1 ) ;
+
 				}
-					
+
 			}
-		
-		
+
+
 		} // while
-		
-		
-		
+
+
+
 		LogPlug::info( "Checking the source image file." ) ;
 		if ( inputFilename.empty() )
 		{
-			
-			cerr << "Error, no input file specified.\n" 
+
+			cerr << "Error, no input file specified.\n"
 				+ getUsage( argv[0] ) << endl ;
-			exit( 4 ) ;	
-			
-		}	
-		
+			exit( 4 ) ;
+
+		}
+
 		if ( ! File::ExistsAsFileOrSymbolicLink( inputFilename ) )
 		{
-			
-			cerr << "Error, source image file '" << inputFilename 
+
+			cerr << "Error, source image file '" << inputFilename
 				<< "' not found.\n" + getUsage( argv[0] ) << endl ;
-			exit( 5 ) ;	
-			
-		}	
-		
-		
-		
+			exit( 5 ) ;
+
+		}
+
+
+
 		/*
-		 * const string paletteFilename = Ceylan::toString( paletteId ) 
+		 * const string paletteFilename = Ceylan::toString( paletteId )
 		 *  + ".pal" ;
 		 *
 		 */
-		 
-		const string paletteFilename = Ceylan::toString( paletteId ) 
+
+		const string paletteFilename = Ceylan::toString( paletteId )
 			+ ".osdl.palette" ;
-		
+
 		LogPlug::info( "Checking the source palette file, '"
 			+ paletteFilename + "'." ) ;
-			
+
 		if ( ! File::ExistsAsFileOrSymbolicLink( paletteFilename ) )
 		{
-			
-			cerr << "Error, source palette file '" << paletteFilename 
-				<< "' not found.\n" 
-				+ getUsage( argv[0] ) << endl ;
-			exit( 6 ) ;	
-			
-		}	
-		
 
-			
-		string outputFilename = substituteIn( inputFilename, ".png", 
+			cerr << "Error, source palette file '" << paletteFilename
+				<< "' not found.\n"
+				+ getUsage( argv[0] ) << endl ;
+			exit( 6 ) ;
+
+		}
+
+
+
+		string outputFilename = substituteIn( inputFilename, ".png",
 			".osdl.frame" ) ;
-		
+
 		if ( inputFilename == outputFilename )
 		{
-		
-			cerr << "Error, input file '" << inputFilename 
+
+			cerr << "Error, input file '" << inputFilename
 				<< "' does not have an appropriate name (*.png)." << endl ;
-			exit( 7 ) ;	
-		
+			exit( 7 ) ;
+
 		}
-		
-		cout << "Converting '" << inputFilename << "' into '" << outputFilename 
-			<< "', using user-specified frame offset (" << x_offset 
-			<< "," << y_offset 
-			<< "), and palette identifier #" << paletteId << "." 
+
+		cout << "Converting '" << inputFilename << "' into '" << outputFilename
+			<< "', using user-specified frame offset (" << x_offset
+			<< "," << y_offset
+			<< "), and palette identifier #" << paletteId << "."
 			<< endl << endl ;
-			
-			
-			
+
+
+
 		LogPlug::info( "Loading the source image." ) ;
 		Surface & sourceSurface = Surface::LoadImage( inputFilename,
 			/* convertToDisplayFormat */ false ) ;
-		
+
 		LogPlug::info( "Image '" + inputFilename + "' loaded in: "
 			+ sourceSurface.toString() + ", guessed colorkey is "
 			+ Pixels::toString( sourceSurface.guessColorKeyDefinition() ) ) ;
@@ -264,166 +264,165 @@ int main( int argc, char * argv[] )
 		Palette & sourcePalette = * new Palette( paletteFilename ) ;
 		LogPlug::info( "Palette '" + paletteFilename + "' loaded in: "
 			+ sourcePalette.toString() ) ;
-		
+
 		LogPlug::info( "Color-reducing the source image with this palette." ) ;
-		Surface & colorReducedSurface = 
+		Surface & colorReducedSurface =
 			sourceSurface.createColorReducedSurfaceFor( sourcePalette ) ;
-			
-		
+
+
 		UprightRectangle & trimmedRect = colorReducedSurface.getContentArea() ;
-		
-		Coordinate x_computed_offset = trimmedRect.getUpperLeftAbscissa() 
-			- static_cast<Coordinate>( 
+
+		Coordinate x_computed_offset = trimmedRect.getUpperLeftAbscissa()
+			- static_cast<Coordinate>(
 				Round( colorReducedSurface.getWidth() / 2.0f ) ) ;
-			
-		Coordinate y_computed_offset = trimmedRect.getUpperLeftOrdinate() 
-			- static_cast<Coordinate>( 
+
+		Coordinate y_computed_offset = trimmedRect.getUpperLeftOrdinate()
+			- static_cast<Coordinate>(
 				Round( colorReducedSurface.getHeight() / 2.0f ) ) ;
-			
-		LogPlug::info( "Extracted content rectangle is " 
+
+		LogPlug::info( "Extracted content rectangle is "
 			+ trimmedRect.toString() + ", offset vector is ["
 			+ Ceylan::toString( x_computed_offset ) + ";"
 			+ Ceylan::toString( y_computed_offset ) + "]." ) ;
-		
+
 		// Do not forget any user offset:
 		x_offset += x_computed_offset ;
 		y_offset += y_computed_offset ;
-		
+
 		Sprite::Shape shape = Sprite::GetSmallestEnclosingShape(
-			trimmedRect.getWidth(),	trimmedRect.getHeight() ) ; 
-		
-		LogPlug::info( "Extracted frame content is " 
-			+ Ceylan::toString( trimmedRect.getWidth() ) + "x" 
-			+ Ceylan::toString( trimmedRect.getHeight() ) 
-			+ " pixels, selecting sprite shape " 
+			trimmedRect.getWidth(), trimmedRect.getHeight() ) ;
+
+		LogPlug::info( "Extracted frame content is "
+			+ Ceylan::toString( trimmedRect.getWidth() ) + "x"
+			+ Ceylan::toString( trimmedRect.getHeight() )
+			+ " pixels, selecting sprite shape "
 			+ Sprite::DescribeShape( shape ) + "." ) ;
-			
+
 		Length tiledWidth  = Sprite::GetShapeWidthFor( shape ) ;
 		Length tiledHeight = Sprite::GetShapeHeightFor( shape ) ;
-		
-		Surface & tileSurface = *new Surface( /* flags */ Surface::Software, 
+
+		Surface & tileSurface = * new Surface( /* flags */ Surface::Software,
 			/* width */ tiledWidth, /* height */ tiledHeight, /* depth */ 8 ) ;
-			
+
 		tileSurface.setPalette( sourcePalette ) ;
-		
-		LogPlug::info( "Blitting color-reduced " 
-			+ colorReducedSurface.toString() + " to " 
+
+		LogPlug::info( "Blitting color-reduced "
+			+ colorReducedSurface.toString() + " to "
 			+ tileSurface.toString() ) ;
-			
-		colorReducedSurface.blitTo( tileSurface, 
-			/* source rectangle */ trimmedRect, 
-			/* destination location */ Point2D( 0, 0 ) ) ;	
+
+		colorReducedSurface.blitTo( tileSurface,
+			/* source rectangle */ trimmedRect,
+			/* destination location */ Point2D( 0, 0 ) ) ;
 
 		// Rectangle can be drawn now that blit is performed:
-		trimmedRect.draw( colorReducedSurface, /* color */ Gold, 
+		trimmedRect.draw( colorReducedSurface, /* color */ Pixels::Gold,
 			/* filled */ false ) ;
 
 		//colorReducedSurface.saveBMP( "reduced-with-rectangle.bmp" ) ;
-		
+
 		LogPlug::info( "Tiling target surface." ) ;
 		tileSurface.drawGrid( 8, 8 ) ;
 
 		tileSurface.saveBMP( "frame-tiled.bmp" ) ;
-		
+
 		// The 'resize' method is not used here:
-		
+
 		//Length newWidth = 8 * ( ( colorReducedSurface.getWidth() % 8 ) + 1 ) ;
-		
+
 		LogPlug::info( "Creating the target frame file." ) ;
 		File & outputFile = File::Create( outputFilename ) ;
-		
+
 		LogPlug::info( "Writing the frame header, with final offset vector ["
 			+ Ceylan::toString( x_offset ) + ";"
 			+ Ceylan::toString( y_offset ) + "]." ) ;
-			
+
 		outputFile.writeUint16( OSDL::FrameTag ) ;
 		outputFile.writeUint16( x_offset ) ;
 		outputFile.writeUint16( y_offset ) ;
 		outputFile.writeUint16( paletteId ) ;
-		outputFile.writeUint8( shape ) ;
-				
-				
+		outputFile.writeUint8(  shape ) ;
+
+
 		Surface * screen = 0 ;
-		
+
 		OSDL::CommonModule * myOSDL = 0 ;
-		
+
 		if ( displayImage )
 		{
-		
-			myOSDL = & OSDL::getCommonModule( 
-				CommonModule::UseVideo | CommonModule::UseEvents ) ;	
-				
-			VideoModule & myVideo = myOSDL->getVideoModule() ; 
-		
+
+			myOSDL = & OSDL::getCommonModule(
+				CommonModule::UseVideo | CommonModule::UseEvents ) ;
+
+			VideoModule & myVideo = myOSDL->getVideoModule() ;
+
 			Length screenWidth  = 640 ;
-			Length screenHeight = 480 ; 
+			Length screenHeight = 480 ;
 
 			myVideo.setMode( screenWidth, screenHeight,
-				VideoModule::UseCurrentColorDepth, 
+				VideoModule::UseCurrentColorDepth,
 				VideoModule::SoftwareSurface ) ;
-		
+
 			screen = & myVideo.getScreenSurface() ;
-			
+
 			sourceSurface.blitTo( *screen ) ;
 			colorReducedSurface.blitTo( *screen, 320, 0 ) ;
 			tileSurface.blitTo( *screen, 0, 240 ) ;
 			screen->update() ;
-		
-			if ( ! isBatch )				
+
+			if ( ! isBatch )
 				myOSDL->getEventsModule().waitForAnyKey() ;
-			
+
 		}
-		
-		LogPlug::info( "Source image is " 
-			+ Ceylan::toString( sourceSurface.getWidth() ) + "x" 
-			+ Ceylan::toString( sourceSurface.getHeight() ) 
-			+ " pixels, and pixel at (0,0) is " 
+
+		LogPlug::info( "Source image is "
+			+ Ceylan::toString( sourceSurface.getWidth() ) + "x"
+			+ Ceylan::toString( sourceSurface.getHeight() )
+			+ " pixels, and pixel at (0,0) is "
 			+ Ceylan::toString( sourceSurface.getPixelColorAt( 0, 0 ) ) ) ;
 
-		/*		sourcePalette.correctGamma( 2.3 ) ; */
+		/* sourcePalette.correctGamma( 2.3 ) ; */
 
-		
+
 		delete & sourcePalette ;
-		
+
 		delete & outputFile ;
-		
-		cout << "Generation of '" << outputFilename << "' succeeded !" 
+
+		cout << "Generation of '" << outputFilename << "' succeeded !"
 			<< endl ;
 
    }
-	
-    catch ( const OSDL::Exception & e )
-    {
-        LogPlug::error( "OSDL exception caught: "
-        	 + e.toString( Ceylan::high ) ) ;
-       	return Ceylan::ExitFailure ;
 
-    }
+	catch ( const OSDL::Exception & e )
+	{
+		LogPlug::error( "OSDL exception caught: "
+			 + e.toString( Ceylan::high ) ) ;
+		return Ceylan::ExitFailure ;
 
-    catch ( const Ceylan::Exception & e )
-    {
-        LogPlug::error( "Ceylan exception caught: "
-        	 + e.toString( Ceylan::high ) ) ;
-       	return Ceylan::ExitFailure ;
+	}
 
-    }
+	catch ( const Ceylan::Exception & e )
+	{
+		LogPlug::error( "Ceylan exception caught: "
+			 + e.toString( Ceylan::high ) ) ;
+		return Ceylan::ExitFailure ;
 
-    catch ( const std::exception & e )
-    {
-        LogPlug::error( "Standard exception caught: " 
+	}
+
+	catch ( const std::exception & e )
+	{
+		LogPlug::error( "Standard exception caught: "
 			 + std::string( e.what() ) ) ;
-       	return Ceylan::ExitFailure ;
+		return Ceylan::ExitFailure ;
 
-    }
+	}
 
-    catch ( ... )
-    {
-        LogPlug::error( "Unknown exception caught" ) ;
-       	return Ceylan::ExitFailure ;
+	catch ( ... )
+	{
+		LogPlug::error( "Unknown exception caught" ) ;
+		return Ceylan::ExitFailure ;
 
-    }
+	}
 
-    return Ceylan::ExitSuccess ;
+	return Ceylan::ExitSuccess ;
 
 }
-
