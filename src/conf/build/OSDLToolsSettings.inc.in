@@ -330,12 +330,12 @@ Agar_win_MD5=""
 
 # CEGUI: http://www.cegui.org.uk
 
-# Actually 0.7.7 (defined in configure-template.ac):
+# Actually 0.7.9 (defined in configure-template.ac):
 CEGUI_VERSION="@CEGUI_RECOMMENDED_VERSION@"
 CEGUI_ARCHIVE="CEGUI-${CEGUI_VERSION}.tar.gz"
 CEGUI_DOWNLOAD_LOCATION="http://sourceforge.net/projects/crayzedsgui/files/CEGUI%20Mk-2/${CEGUI_VERSION}/${CEGUI_ARCHIVE}"
-CEGUI_ALTERNATE_DOWNLOAD_LOCATION=""
-CEGUI_MD5="8b83577f86eaa1581765dd155c7c8f24"
+CEGUI_ALTERNATE_DOWNLOAD_LOCATION="http://freefr.dl.sourceforge.net/project/crayzedsgui/CEGUI%20Mk-2/${CEGUI_VERSION}/${CEGUI_ARCHIVE}"
+CEGUI_MD5="a8b682daf82e383edc169c2e6eb2b321"
 
 CEGUI_win_VERSION="$CEGUI_VERSION"
 CEGUI_win_ARCHIVE="CEGUI-${CEGUI_VERSION}.zip"
