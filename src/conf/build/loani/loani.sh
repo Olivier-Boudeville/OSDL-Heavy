@@ -126,12 +126,20 @@ launchFileRetrieval()
 		declareRetrievalBegin ${archive_file}
 
 		if [ $do_simulate -eq 1 ] ; then
+
 			DEBUG ${WGET} ${WGET_OPT} --output-document=${full_archive_path} ${download_url}
 			${WGET} ${WGET_OPT} --output-document=${full_archive_path} ${download_url} 1>>"$LOG_OUTPUT" 2>&1
+
+			# In the background (for parallelism), so cannot have a return code.
+
 			return 2
+
 		else
+
 			DISPLAY "Simulating only, no network retrieval for $1."
+
 			return 0
+
 		fi
 
 	fi
@@ -633,7 +641,7 @@ private_archive_mirror="ftp://ftp.esperide.com/LOANI-archive-repository"
 
 # wget should run in background, using any specified proxy directive and using
 # passive FTP to solve client firewall issues:
-WGET_OPT="--background $PROXY_CONF --passive-ftp"
+WGET_OPT="--background $PROXY_CONF --passive-ftp --timeout=30"
 
 CVS_OPT="-Q -z6"
 CVS_RSH="ssh"
@@ -1195,10 +1203,10 @@ else
 	findSupplementaryShellTools "${lacking_tool_message}"
 	findMoreSpecificTools "${lacking_tool_message}"
 
-	if [ ! -f "/usr/lib/libpulse-simple.so" ] ; then
+	if [ ! -f "/usr/lib/libpulse-simple.so" ] && [ ! -f "/usr/lib/x86_64-linux-gnu/libpulse.so" ]; then
 
 		# Not all distro rely on PulseAudio though:
-		WARNING "No PulseAudio development support found, the generated SDL library may not be able to output sound. ${lacking_tool_message}"
+		WARNING "No PulseAudio library support found, the generated SDL library may not be able to output sound. ${lacking_tool_message}"
 
 	fi
 
@@ -1317,7 +1325,8 @@ if [ $only_orge_tools -eq 1 ] ; then
 
 		fi
 
-		if [ ! -f "/usr/lib/libGL.so" ] ; then
+		# Nowadays apparently we manage to put the OpenGL library in various locations:
+		if [ ! -f "/usr/lib/libGL.so" ] && [ ! -f "/usr/lib/x86_64-linux-gnu/libGL.so" ]; then
 
 			ERROR "No OpenGL library found, users of Debian-based distributions may retrieve it thanks to: 'sudo apt-get install libgl1-mesa-dev' (note also that hardware-accelerated drivers should be preferred)."
 			exit 18
