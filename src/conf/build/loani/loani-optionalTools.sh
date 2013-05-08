@@ -2,14 +2,13 @@
 # These tools are not required, but are deemed useful.
 
 # Creation date: 2004, February 22.
-# Author: Olivier Boudeville (olivier.boudeville@online.fr)
+# Author: Olivier Boudeville (olivier.boudeville@esperide.com)
 
 
 # Optional tools section.
 
-# tidy deactivated since seldom used and causes problems
-# (configure step fails with libtool, md5sum not constant since no
-# version number provided)
+# tidy deactivated since seldom used and causes problems (configure step fails
+# with libtool, md5sum not constant since no version number provided)
 
 # Note: if this list is to be updated, update as well:
 # osdl/OSDL/trunk/src/conf/build/loani/update-LOANI-mirror.sh
@@ -17,7 +16,10 @@ OPTIONAL_TOOLS="dot doxygen"
 
 
 # Updating retrieve list:
-# (new tools are put ahead of those already selected, so that CVS retrievals do not delay them)
+#
+# (new tools are put ahead of those already selected, so that VCS retrievals do
+# not delay them)
+
 if [ $is_windows -eq 0 ] ; then
   WARNING "on Windows, no optional tool managed."
 else

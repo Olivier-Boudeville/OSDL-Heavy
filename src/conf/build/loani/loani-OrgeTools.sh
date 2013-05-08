@@ -2,7 +2,7 @@
 # These tools are required only for server-side Orge.
 
 # Creation date: Monday, July 7, 2008.
-# Author: Olivier Boudeville (olivier.boudeville@online.fr)
+# Author: Olivier Boudeville (olivier.boudeville@esperide.com)
 
 
 # Orge tools section.
@@ -15,8 +15,9 @@ ORGE_TOOLS="egeoip Geolite Ceylan_Erlang Orge"
 
 
 # Updating retrieve list:
-# (new tools are put ahead of those already selected, so that CVS retrievals
-# do not delay them)
+#
+# (new tools are put ahead of those already selected, so that VCS retrievals do
+# not delay them)
 
 
 # Any user-installed version is expected to be already in the PATH:
@@ -977,7 +978,6 @@ cleanOrge()
 	LOG_STATUS "Cleaning Orge install in ${prefix}/Orge..."
 
 }
-
 
 
 

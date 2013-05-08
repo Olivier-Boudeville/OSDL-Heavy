@@ -1,9 +1,10 @@
-# This script is made to be sourced by LOANI when retrieving basic
-# common build tools.
+# This script is made to be sourced by LOANI when retrieving basic common build
+# tools.
+#
 # Most of them is expected to be already available in user'system.
 
 # Creation date: 2004, February 22.
-# Author: Olivier Boudeville (olivier.boudeville@online.fr)
+# Author: Olivier Boudeville (olivier.boudeville@esperide.com)
 
 
 # Basic common build tools section.
@@ -58,9 +59,10 @@ DEBUG "Scheduling retrieval of common build tools ($COMMON_BUILD_TOOLS)."
 ################################################################################
 
 
-# Apparently building GCC even on Debian is a mess, and cannot be done safely
-# and simply (ex: gdb build will fail), see for example
+# Apparently building GCC even on Debian is areal mess, and cannot be done
+# safely and simply (ex: gdb build will fail), see for example
 # http://stackoverflow.com/questions/7284009/cannot-find-lc-and-lm-in-g-linux.
+#
 # Let's stick with distro-default tools then.
 
 getgcc()
@@ -433,6 +435,7 @@ cleanbinutils()
 	LOG_STATUS "Cleaning binutils build tree..."
 	${RM} -rf "$repository/binutils-${binutils_VERSION}"
 }
+
 
 
 

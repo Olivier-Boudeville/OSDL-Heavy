@@ -4,18 +4,22 @@
 # Lazy OSDL Automatic Net Installer.
 
 # Creation date: 2003, April 14
-# Author: Olivier Boudeville (olivier.boudeville@online.fr)
+# Author: Olivier Boudeville (olivier.boudeville@esperide.com)
 
 
-USAGE="Usage: "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useSVN ] [ -c | --currentSVN ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools ] [ --OrgeTools ] [ --onlyOrgeTools ] [ --allTools ] [ --nds ] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
+USAGE="Usage: "`basename $0`" [ -d | --debug ] [ -s | --strict ] [ -q | --quiet ] [ -w | --wizard ] [ -u | --useVCS ] [ -c | --choose-vcs-head ] [ --sourceforge <user name> ] [ --buildTools ] [ --optionalTools ] [ --OrgeTools ] [ --onlyOrgeTools ] [ --allTools ] [ --nds ] [ --setEnv ] [ --fetchonly ] [ --all ] [ --prefix <a path> ] [ --repository <a path> ] [ --noLog ] [ --noClean ] [ -h | --help ]"
 
 EXAMPLE="    Recommended examples (long but safe):
 	for a end-user  (export of last stable)       : ./"`basename $0`"
-	for a developer (check-out of current sources): ./"`basename $0`" --allTools --sourceforge <your developer login> --currentSVN
+	for a developer (check-out of current sources): ./"`basename $0`" --allTools --sourceforge <your developer login> --choose-vcs-head
 	"
 
+
+# Version control systems are bound to change (ex: previous one was SVN):
+current_vcs="git"
+
 # For testing purposes:
-# ./loani.sh --debug --strict --currentSVN --sourceforge wondersye --allTools
+# ./loani.sh --debug --strict --choose-vcs-head --sourceforge wondersye --allTools
 
 HELP="This is LOANI, the famous Lazy OSDL Automatic Net Installer.
 
@@ -26,9 +30,9 @@ Options:
 	-s or --strict		 : be strict, stop on wrong md5 checksums or on unexpected tool locations
 	-q or --quiet		 : avoid being too verbose
 	-w or --wizard		 : enter wizard interactive mode, so that questions are asked to configure
-	-u or --useSVN           : retrieve Ceylan and OSDL from SVN, instead of downloading prepackaged source archives
-	-c or --currentSVN       : retrieve current SVN for Ceylan and OSDL, instead of latest SVN tagged stable release (implies --useSVN)
-	--sourceforge <user name>: uses SourceForge developer access to retrieve projects from SVN  (implies --currentSVN)
+	-u or --useVCS           : retrieve Ceylan and OSDL from our Version Control System ($current_vcs), instead of downloading prepackaged source archives
+	-c or --choose-vcs-head       : retrieve current head of $current_vcs for Ceylan and OSDL, instead of the latest tagged stable release (implies --useVCS)
+	--sourceforge <user name>: uses SourceForge developer access to retrieve projects from $current_vcs (implies --choose-vcs-head)
 	--buildTools		 : retrieve and install common build tools too (ex: gcc, binutils, gdb)
 	--optionalTools		 : retrieve and install optional tools too (ex: doxygen, dot, tidy)
 	--OrgeTools              : retrieve and install all tools for Orge (ex: Erlang)
@@ -51,14 +55,19 @@ starting_time=`date '+%H:%M:%S'`
 
 
 # Undocumented (since seldom used) options:
+#
 #   --onlyBuildTools: only build tools will be installed.
+#
 #   --onlyOptionalTools: only optional tools will be installed.
+#
 #   --onlyOrgeTools: only Orge tools will be installed.
+#
 #   --onlyThirdPartyTools: only third party tools will be installed (no Ceylan,
 # OSDL or Orge installed). Used to test LOANI or during Sourceforge outages.
-#   --noSVN: do not retrieve anything from SVN, merely used for LOANI
-# debugging (variable: no_svn)
-
+#
+#   --noVCS: do not retrieve anything from VCS, merely used for LOANI debugging
+# (variable: no_vcs)
+#
 if [ "$1" = "-h" -o "$1" = "--help" ] ; then
 	echo "$HELP"
 	exit 0
@@ -334,34 +343,34 @@ launchwizard()
 	fi
 
 
-	if askDefaultNo "${OFFSET}Use SVN to retrieve sources instead of downloading source archives?" ; then
-		DISPLAY "SVN mode activated."
-		use_svn=0
+	if askDefaultNo "${OFFSET}Use $current_vcs to retrieve sources instead of downloading source archives?" ; then
+		DISPLAY "$current_vcs mode activated."
+		use_vcs=0
 
-		if askDefaultNo "${OFFSET}Use current SVN, not last stable version, for Ceylan and OSDL? [not recommended]" ; then
+		if askDefaultNo "${OFFSET}Use current $current_vcs head, not last stable version, for Ceylan and OSDL? [not recommended]" ; then
 
-			DISPLAY "Current SVN will be used (let's hope the build is not currently broken)."
-			use_current_svn=0
+			DISPLAY "Current $current_vcs head will be used (let's hope the build is not currently broken)."
+			use_current_vcs=0
 
-			if askDefaultNo "${OFFSET}Use developer access for Sourceforge's SVN?" ; then
-				DISPLAY "SVN developer mode activated."
+			if askDefaultNo "${OFFSET}Use developer access for Sourceforge's $current_vcs?" ; then
+				DISPLAY "Developer mode activated."
 				developer_access=0
 				askNonVoidString "${OFFSET}Please enter your Sourceforge's user name:"
 				developer_name="$returnedString"
 				DISPLAY "Developer name will be $developer_name"
 			else
-				DISPLAY "SVN developer mode deactivated."
+				DISPLAY "Developer mode deactivated."
 				developer_access=1
 			fi
 
 		else
-			DISPLAY "Latest stable SVN tag will be used for Ceylan and OSDL."
-			use_current_svn=1
+			DISPLAY "Latest stable $current_vcs tag will be used for Ceylan and OSDL."
+			use_current_vcs=1
 		fi
 
 	else
-		DISPLAY "SVN mode deactivated."
-		use_svn=1
+		DISPLAY "$current_vcs mode deactivated."
+		use_vcs=1
 	fi
 
 
@@ -566,19 +575,29 @@ fetch_only=1
 # [default: false (1)]:
 wizard=1
 
-# Disable SVN retrieval [default: false (1)]:
-no_svn=1
+# Disable VCS retrieval [default: false (1)]:
+no_vcs=1
 
-# Tells whether SVN should be used (if 0) or if source archives should be
-# downloaded (if 1) [default: false (1)]:
+# Tells whether for Ceylan and OSDL VCS should be used (if 0) or if source
+# archives should be downloaded (if 1) [default: false (1)]:
+use_vcs=1
+
+# Used to specify whether current VCS head should be used for Ceylan and OSDL
+# (true) or latest stable version tagged in VCS (false) [default: false (1)]:
+use_current_vcs=1
+
+
+# Tells whether SVN is needed [default: false (1)]:
 use_svn=1
 
-# Used to specify whether current SVN should be used for Ceylan and OSDL
-# (true) or latest stable version tagged in SVN (false) [default: false (1)]:
-use_current_svn=1
+# Tells whether GIT is needed [default: false (1)]:
+use_git=1
 
-# Used to specify whether developer access should be used with Sourceforge's SVN
-# (developer access: SVN checkout, otherwise SVN export) [default: false (1)]:
+
+
+# Used to specify whether developer access should be used with Sourceforge's VCS
+# (developer access: read-write checkout, otherwise read-only export) [default:
+# false (1)]:
 developer_access=1
 
 # Set developer environment [default: false (1)]:
@@ -650,9 +669,9 @@ CVS_RSH="ssh"
 # 'list' command is issued first to check them:
 SVN_OPT="--non-interactive"
 
-# Maximum count of attempts to retrieve a module by SVN (when Sourceforge's SVN
-# servers are overloaded, they throw "connection closed").
-MAX_SVN_RETRY=8
+# Maximum count of attempts to retrieve a module through VCS (ex: when
+# Sourceforge's SVN servers are overloaded, they throw "connection closed").
+MAX_VCS_RETRY=8
 
 # Saving the whole command line to have it stored in logs:
 SAVED_CMD_LINE="$0 $*"
@@ -695,26 +714,26 @@ while [ $# -gt 0 ] ; do
 		token_eaten=0
 	fi
 
-	if [ "$1" = "-u" -o "$1" = "--useSVN" ] ; then
-		DEBUG "SVN mode activated."
-		use_svn=0
+	if [ "$1" = "-u" -o "$1" = "--useVCS" ] ; then
+		DEBUG "VCS mode activated."
+		use_vcs=0
 		token_eaten=0
 	fi
 
-	if [ "$1" = "-c" -o "$1" = "--currentSVN" ] ; then
-		DEBUG "Use current SVN mode activated."
-		use_svn=0
-		use_current_svn=0
+	if [ "$1" = "-c" -o "$1" = "--choose-vcs-head" ] ; then
+		DEBUG "Current head of $current_vcs will be used."
+		use_vcs=0
+		use_current_vcs=0
 		token_eaten=0
 	fi
 
 	if [ "$1" = "--sourceforge" ] ; then
-		use_svn=0
-		use_current_svn=0
+		use_vcs=0
+		use_current_vcs=0
 		shift
 		developer_access=0
 		developer_name="$1"
-		DEBUG "Developer SVN access set with user name $developer_name."
+		DEBUG "Developer access set with user name $developer_name."
 		token_eaten=0
 	fi
 
@@ -806,9 +825,9 @@ while [ $# -gt 0 ] ; do
 	fi
 
 
-	if [ "$1" = "--noSVN" ] ; then
-		DEBUG "No SVN retrieval will be performed."
-		no_svn=0
+	if [ "$1" = "--noVCS" ] ; then
+		DEBUG "No $current_vcs retrieval will be performed."
+		no_vcs=0
 		token_eaten=0
 	fi
 
@@ -929,10 +948,10 @@ DEBUG "Specified command line was: ${SAVED_CMD_LINE}"
 # Check developer name is set if necessary.
 if [ $developer_access -eq 0 ] ; then
 	if [ -z "$developer_name" ] ; then
-		ERROR "No developer name specified whereas SVN developer access demanded."
+		ERROR "No developer name specified whereas developer access requested."
 		exit 2
 	else
-		DEBUG "SVN developer access selected, with username ${developer_name}."
+		DEBUG "Developer access selected, with username ${developer_name}."
 	fi
 fi
 
@@ -1018,20 +1037,28 @@ else
 fi
 
 if [ $is_windows -eq 0 ] ; then
-	# On Windows with Visual Express, sources available only from SVN at the
+	# On Windows with Visual Express, sources available only from VCS at the
 	# moment:
-	use_svn=0
+	use_vcs=0
 fi
 
-# If developer access is selected, use current SVN is implied:
+# If developer access is selected, use current VCS is implied:
 if [ $developer_access -eq 0 ] ; then
-	use_current_svn=0
+	use_current_vcs=0
 fi
 
 if [ "$manage_optional_tools" -eq 0 ] ; then
 	if [ -x "$FLEX" ] ; then
 		ERROR "No executable flex tool available ($FLEX), whereas needed by doxygen."
 	fi
+fi
+
+
+# Using VCS (for Ceylan and OSDL) currently implies using GIT:
+if [ $use_vcs -eq 0 ] ; then
+
+	use_git=0
+
 fi
 
 
@@ -1133,20 +1160,20 @@ To ensure most needed tools are installed, one may run:
 	if [ $only_orge_tools -eq 0 ] ; then
 
 		# more and ping must be built-in:
-		lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make gcc subversion"
+		lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 wget make gcc subversion git"
 
 	else
 
 		# Probably not exactly the correct string to match:
 		if [ "$distro" = "openSUSE" ] ; then
 
-			lacking_tool_message="${intro} sudo yast --update && yast -i coreutils gawk tar gzip bzip2 wget make cmake gcc gcc-c++ flex subversion autoconf automake xorg-x11-proto-devel libjpeg-devel Mesa Mesa-devel"
+			lacking_tool_message="${intro} sudo yast --update && yast -i coreutils gawk tar gzip bzip2 wget make cmake gcc gcc-c++ flex subversion git autoconf automake xorg-x11-proto-devel libjpeg-devel Mesa Mesa-devel"
 
 		#else if [ "$distro" = "Ubuntu" ] ; then
 		else
 
 			# Too many problems with libpng, thus added here:
-			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 xz-utils wget make cmake gcc g++ flex subversion autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev libpulse-dev libpng12-0 libpng12-dev p7zip"
+			lacking_tool_message="${intro} sudo apt-get update && apt-get install coreutils gawk tar gzip bzip2 xz-utils wget make cmake gcc g++ flex subversion git autoconf automake x11proto-xext-dev libjpeg-dev mesa-common-dev libglu1-mesa-dev libpulse-dev libpng12-0 libpng12-dev p7zip"
 
 		fi
 
@@ -1205,7 +1232,7 @@ else
 
 	if [ ! -f "/usr/lib/libpulse-simple.so" ] && [ ! -f "/usr/lib/x86_64-linux-gnu/libpulse.so" ]; then
 
-		# Not all distro rely on PulseAudio though:
+		# Not all distros rely on PulseAudio though:
 		WARNING "No PulseAudio library support found, the generated SDL library may not be able to output sound. ${lacking_tool_message}"
 
 	fi
@@ -1257,6 +1284,7 @@ if [ $manage_orge_tools -eq 0 ] ; then
 	if [ $only_orge_tools -eq 0 ] ; then
 		target_list=""
 	fi
+
 	# SVN needed by egeoip:
 	use_svn=0
 	. ./loani-OrgeTools.sh
@@ -1264,15 +1292,26 @@ fi
 
 
 # Check for SVN tool if needed:
-if [ $no_svn -eq 1 ] ; then
-	if [ $use_svn -eq 0 ] ; then
+if [ $no_vcs -eq 1 ] ; then
+
+	if [ $use_vcs -eq 0 ] ; then
+
 		if findTool svn ; then
 			SVN=$returnedString
 		else
-			ERROR "No svn tool found, whereas SVN retrieval was requested."
+			ERROR "No SVN tool found, whereas SVN retrieval was needed."
 			exit 15
 		fi
 	fi
+
+		if findTool git ; then
+			GIT=$returnedString
+		else
+			ERROR "No GIT tool found, whereas GIT retrieval was needed."
+			exit 16
+		fi
+	fi
+
 fi
 
 
@@ -1489,7 +1528,7 @@ for t in $target_list; do
 
 	DEBUG "Examining <$t>"
 
-	if [ $use_svn -eq 0 ] ; then
+	if [ $use_vcs -eq 0 ] ; then
 
 		# Now, as soon as SVN is used for a package, we return res=2:
 		if [ "$t" = "Ceylan" -o "$t" = "Ceylan_win" -o "$t" = "Ceylan_Erlang" -o "$t" = "OSDL" -o "$t" = "OSDL_win" ] ; then

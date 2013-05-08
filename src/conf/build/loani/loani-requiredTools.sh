@@ -2,10 +2,10 @@
 # Therefore, all tools managed here should be strict LOANI prerequisites.
 
 # Creation date: 2004, February 22.
-# Author: Olivier Boudeville (olivier.boudeville@online.fr)
+# Author: Olivier Boudeville (olivier.boudeville@esperide.com)
 
 
-# SVN tags to select versions to retrieve (if use_current_svn not selected):
+# VCS tags to select versions to retrieve (if use_current_vcs not selected):
 latest_stable_ceylan="release-0.7.0"
 latest_stable_osdl="release-0.5.0"
 
@@ -5042,6 +5042,7 @@ cleanPhysicsFS_win()
 }
 
 
+
 ################################################################################
 ################################################################################
 # SDL_gfx
@@ -6593,6 +6594,7 @@ cleandlditool()
 
 
 
+
 ################################################################################
 ################################################################################
 # Ceylan
@@ -6616,95 +6618,94 @@ getCeylan()
 
 	DEBUG "Getting Ceylan..."
 
-	# Ceylan can be obtained by downloading a release archive or by using SVN.
+	# Ceylan can be obtained by downloading a release archive or by using VCS.
 
-	if [ ${use_svn} -eq 1 ]; then
-		# Use archive instead of SVN:
+	if [ ${use_current_vcs} -eq 1 ]; then
+
+		# Use archive, instead of VCS:
 		launchFileRetrieval Ceylan
 		return $?
+
 	else
-		declareRetrievalBegin "Ceylan (from SVN)"
+
+		declareRetrievalBegin "Ceylan (from ${current_vcs})"
+
 	fi
 
-	# Here we are to use SVN:
+	# Here we are to use VCS:
 
 	# To avoid a misleading message when the retrieval is finished:
-	Ceylan_ARCHIVE="from SVN"
+	Ceylan_ARCHIVE="from ${current_vcs}"
 
 	cd ${repository}
 
 	# Manage back-up directory if necessary:
 
 	if [ -d "${repository}/ceylan" ] ; then
+
 		if [ -d "${repository}/ceylan.save" ] ; then
+
 			if [ $be_strict -eq 0 ] ; then
-				ERROR "There already exist a back-up directory for Ceylan, it is on the way, please remove it first (${repository}/ceylan.save)"
+				ERROR "There already exists a back-up directory for Ceylan, it is on the way, please remove it first (${repository}/ceylan.save)"
 				exit 5
+
 			else
+
 				WARNING "Deleting already existing back-up directory for ceylan (removing ${repository}/ceylan.save)"
 				${RM} -rf "${repository}/ceylan.save" 2>/dev/null
 				# Sometimes rm fails apparently (long names or other reasons):
 				${MV} -f ${repository}/ceylan.save ${repository}/ceylan.save-`date '+%Hh-%Mm-%Ss'` 2>/dev/null
+
 			fi
+
 		fi
+
 		${MV} -f ${repository}/ceylan ${repository}/ceylan.save 2>/dev/null
 		WARNING "There already existed a directory for Ceylan (${repository}/ceylan), it has been moved to ${repository}/ceylan.save."
 	fi
 
 	LOG_STATUS "Getting Ceylan in its source directory ${repository}..."
 
-	# Note: SVN from Cygwin is really really slow due to the filesystem access.
+	# Note: VCS from Cygwin is really really slow due to the filesystem access.
 
 	if [ $developer_access -eq 0 ] ; then
 
-		#DISPLAY "Retrieving Ceylan from developer SVN with user name ${developer_name}."
+		#DISPLAY "Retrieving Ceylan from developer VCS with user name ${developer_name}."
 
-		if [ $no_svn -eq 1 ] ; then
+		CHECKOUT_LOCATION="$repository/ceylan/Ceylan"
+		${MKDIR} -p ${CHECKOUT_LOCATION}
 
-			DISPLAY "      ----> getting Ceylan from SVN with user name ${developer_name} (check-out)"
+		VCS_SERVER_PATH="git.code.sf.net/p/ceylan/code"
 
-			svnAttemptNumber=1
+		if [ $no_vcs -eq 1 ] ; then
+
+			DISPLAY "      ----> getting Ceylan from ${current_vcs} with user name ${developer_name} (check-out)"
+
+			vcsAttemptNumber=1
 			success=1
 
-			if [ $use_current_svn -eq 0 ] ; then
+			VCS_URL="git.code.sf.net/p/ceylan/code"
 
-				DEBUG "No stable tag wanted, retrieving directly latest main-line version (trunk only) from SVN."
+			while [ "$vcsAttemptNumber" -le "$MAX_VCS_RETRY" ]; do
 
-				# Only selecting trunk, as otherwise could be way too long:
-				CHECKOUT_LOCATION=ceylan/Ceylan/trunk
-				${MKDIR} -p ${CHECKOUT_LOCATION}
-				SVN_URL="/svnroot/${CHECKOUT_LOCATION}"
-
-			else
-
-				# Should be quite uncommon for Ceylan developers:
-				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
-
-				CHECKOUT_LOCATION=ceylan
-				${MKDIR} -p ${CHECKOUT_LOCATION}
-				SVN_URL="/svnroot/ceylan/Ceylan/tags/${latest_stable_ceylan}"
-			fi
-
-			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
-
-				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
-
-				# Made to force certificate checking before next non-interactive
-				# svn command:
-				${SVN} info https://${Ceylan_SVN_SERVER}:${SVN_URL} --username=${developer_name} 1>/dev/null
+				LOG_STATUS "Attempt #${vcsAttemptNumber} to retrieve Ceylan."
 
 				{
-					DEBUG "SVN command: ${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}"
-					${SVN} co https://${Ceylan_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}
+					DEBUG "VCS command: ${GIT} clone ssh://${developer_name}@${VCS_SERVER_PATH} ${CHECKOUT_LOCATION}"
+
+					${GIT} clone ssh://${developer_name}@${VCS_SERVER_PATH} ${CHECKOUT_LOCATION}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 
 				if [ $? -eq 0 ] ; then
-					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
+
+					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
+
 				else
-					svnAttemptNumber=$(($svnAttemptNumber+1))
-					LOG_STATUS "SVN command failed."
+
+					vcsAttemptNumber=$(($vcsAttemptNumber+1))
+					LOG_STATUS "VCS command failed."
 					#${SLEEP} 3
 
 					# Warning:
@@ -6718,12 +6719,12 @@ getCeylan()
 
 					# Now ask the user to trigger the full update by herself,
 					# with TortoiseSVN:
-					DISPLAY "Ceylan SVN checkout failed, maybe because of too long pathnames."
-					DISPLAY "Please use a tool like TortoiseSVN to update manually the Ceylan repository."
-					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
+					DISPLAY "Ceylan VCS checkout failed, maybe because of too long pathnames."
+					DISPLAY "Please use a tool like Tortoise to update manually the Ceylan repository."
+					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'Update'"
 					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
 					# Suppose success:
-					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
+					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
 				fi
 
@@ -6731,16 +6732,19 @@ getCeylan()
 
 
 			if [ $success -ne 0 ] ; then
-				ERROR "Unable to retrieve Ceylan from SVN after $MAX_SVN_RETRY attempts (did you accept permanently the Sourceforge certificate, if asked ?)."
+
+				ERROR "Unable to retrieve Ceylan from VCS after $MAX_VCS_RETRY attempts (did you accept permanently the Sourceforge certificate, if asked?)."
+
 				exit 20
+
 			fi
 
 		else
-			DISPLAY "      ----> SVN retrieval disabled for Ceylan."
+			DISPLAY "      ----> VCS retrieval disabled for Ceylan."
 		fi
 
 		if [ $? -ne 0 ] ; then
-			ERROR "Unable to retrieve Ceylan from developer SVN."
+			ERROR "Unable to retrieve Ceylan from developer VCS."
 			exit 20
 		fi
 
@@ -6748,59 +6752,49 @@ getCeylan()
 
 		# Not a developer access, anonymous:
 
-		if [ $no_svn -eq 1 ] ; then
+		if [ $no_vcs -eq 1 ] ; then
 
-			DISPLAY "      ----> getting Ceylan from anonymous SVN (export)"
+			DISPLAY "      ----> getting Ceylan from anonymous VCS (export)"
 
-			svnAttemptNumber=1
+			vcsAttemptNumber=1
 			success=1
 
-			if [ $use_current_svn -eq 0 ] ; then
-				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				SVN_URL="/svnroot/ceylan"
-			else
-				DEBUG "Using latest stable SVN tag (${latest_stable_ceylan})."
-				SVN_URL="/svnroot/ceylan/Ceylan/tags/${latest_stable_ceylan}"
-			fi
+			while [ "$vcsAttemptNumber" -le "$MAX_VCS_RETRY" ]; do
 
-			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
-
-				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve Ceylan."
+				LOG_STATUS "Attempt #${vcsAttemptNumber} to retrieve Ceylan."
 
 				{
 
-					# Remove any symbolic link coming from a previous attempt:
-					${RM} -f ${latest_stable_ceylan} 2>/dev/null
-
 					# No https, no credential required:
 					DEBUG "${SVN} export http://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
-					${SVN} export http://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT}
+					${GIT} clone git://${VCS_SERVER_PATH} ${CHECKOUT_LOCATION}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 
 				if [ $? -eq 0 ] ; then
-					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
+
+					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
+
 				else
-					svnAttemptNumber=$(($svnAttemptNumber+1))
+
+					vcsAttemptNumber=$(($vcsAttemptNumber+1))
 					LOG_STATUS "SVN command failed."
 					${SLEEP} 3
+
 				fi
+
 			done
 
 			if [ $success -ne 0 ] ; then
-				ERROR "Unable to retrieve Ceylan from SVN after $MAX_SVN_RETRY attempts."
+
+				ERROR "Unable to retrieve Ceylan from VCS after $MAX_VCS_RETRY attempts."
 				exit 21
-			else
-				EXPORT_TARGET_DIR="ceylan/Ceylan"
-				${MKDIR} -p ${EXPORT_TARGET_DIR}
-				${MV} -f ${latest_stable_ceylan} ${EXPORT_TARGET_DIR}/trunk
-				${LN} -s ${EXPORT_TARGET_DIR}/trunk ${latest_stable_ceylan}
-				WARNING "Exported Ceylan sources have been placed in faked trunk, in ${EXPORT_TARGET_DIR}/trunk."
+
 			fi
 
 		else
-			DISPLAY "      ----> SVN retrieval disabled for Ceylan."
+			DISPLAY "      ----> VCS retrieval disabled for Ceylan."
 		fi
 
 		if [ $? -ne 0 ] ; then
@@ -6823,14 +6817,14 @@ prepareCeylan()
 
 	printItem "extracting"
 
-	if [ $no_svn -eq 0 ] ; then
+	if [ $no_vcs -eq 0 ] ; then
 		echo
-		WARNING "As the --noSVN option was used, build process stops here."
+		WARNING "As the --noVCS option was used, build process stops here."
 		exit 0
 	fi
 
 
-	if [ ${use_svn} -eq 1 ]; then
+	if [ ${use_vcs} -eq 1 ]; then
 
 		# Here we use source archives:
 
@@ -6863,6 +6857,41 @@ prepareCeylan()
 			exit 10
 		fi
 
+	else
+
+		# Using VCS here.
+
+		if [ $use_current_vcs -eq 0 ] ; then
+
+			DEBUG "No stable tag wanted, retrieving directly latest main-line head version (main branch only) from VCS."
+			
+			VCS_BRANCH="master"
+			
+		else
+			
+				# Should be quite uncommon for Ceylan developers:
+			DEBUG "Using latest stable VCS tag (${latest_stable_ceylan})."
+			
+			VCS_BRANCH="${latest_stable_ceylan}"
+				
+		fi
+
+		cd ${CHECKOUT_LOCATION}
+
+		{
+
+			${GIT} co ${VCS_BRANCH}
+
+		} 1>>"$LOG_OUTPUT" 2>&1
+
+
+		if [ $? != 0 ] ; then
+			ERROR "Unable to switch to Ceylan branch ${VCS_BRANCH}."
+			DEBUG "Restoring ${Ceylan_ARCHIVE}."
+			${MV} -f ${Ceylan_ARCHIVE}.save ${Ceylan_ARCHIVE}
+			exit 10
+		fi
+
 	fi
 
 	printOK
@@ -6876,9 +6905,9 @@ generateCeylan()
 
 	LOG_STATUS "Generating Ceylan..."
 
-	if [ ${use_svn} -eq 0 ]; then
+	if [ ${use_vcs} -eq 0 ]; then
 
-		# Here we are in the SVN tree, needing to generate the build system:
+		# Here, fin this source tree, we need to generate the build system:
 		cd $repository/ceylan/Ceylan/trunk/src/conf/build
 		{
 			setBuildEnv ./autogen.sh --no-build
@@ -6891,7 +6920,7 @@ generateCeylan()
 		fi
 
 		# Going to the root of the source to continue the normal build process:
-		cd $repository/ceylan/Ceylan/trunk
+		cd $repository/ceylan/Ceylan
 
 	else
 
@@ -7215,7 +7244,7 @@ getOSDL()
 	if [ -d "${repository}/osdl" ] ; then
 		if [ -d "${repository}/osdl.save" ] ; then
 			if [ $be_strict -eq 0 ] ; then
-				ERROR "There already exist a back-up directory for OSDL, it is on the way, please remove it first (${repository}/osdl.save)"
+				ERROR "There already exists a back-up directory for OSDL, it is on the way, please remove it first (${repository}/osdl.save)"
 				exit 5
 			else
 				WARNING "Deleting already existing back-up directory for osdl (removing ${repository}/osdl.save)"
@@ -7237,14 +7266,14 @@ getOSDL()
 
 		#DISPLAY "Retrieving OSDL from developer SVN with user name ${developer_name} (check-out)."
 
-		if [ $no_svn -eq 1 ] ; then
+		if [ $no_vcs -eq 1 ] ; then
 
 			DISPLAY "      ----> getting OSDL from SVN with user name ${developer_name} (check-out)"
 
-			svnAttemptNumber=1
+			vcsAttemptNumber=1
 			success=1
 
-			if [ $use_current_svn -eq 0 ] ; then
+			if [ $use_current_vcs -eq 0 ] ; then
 				DEBUG "No stable tag wanted, retrieving directly latest main-line version (trunk only) from SVN."
 
 				# Only selecting trunk, as otherwise could be way too long:
@@ -7261,9 +7290,9 @@ getOSDL()
 				SVN_URL="/svnroot/osdl/OSDL/tags/${latest_stable_osdl}"
 			fi
 
-			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+			while [ "$vcsAttemptNumber" -le "$MAX_VCS_RETRY" ]; do
 
-				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
+				LOG_STATUS "Attempt #${vcsAttemptNumber} to retrieve OSDL."
 
 				# Made to force certificate checking before next non-interactive svn command:
 				${SVN} info https://${OSDL_SVN_SERVER}:${SVN_URL} --username=${developer_name} 1>/dev/null
@@ -7275,10 +7304,10 @@ getOSDL()
 				} 1>>"$LOG_OUTPUT" 2>&1
 
 				if [ $? -eq 0 ] ; then
-					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
+					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
 				else
-					svnAttemptNumber=$(($svnAttemptNumber+1))
+					vcsAttemptNumber=$(($vcsAttemptNumber+1))
 					LOG_STATUS "SVN command failed."
 					#${SLEEP} 3
 
@@ -7298,7 +7327,7 @@ getOSDL()
 					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
 					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
 					# Suppose success:
-					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
+					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
 				fi
 
@@ -7306,7 +7335,7 @@ getOSDL()
 
 
 			if [ $success -ne 0 ] ; then
-				ERROR "Unable to retrieve OSDL from SVN after $MAX_SVN_RETRY attempts (did you accept permanently the Sourceforge certificate, if asked ?)."
+				ERROR "Unable to retrieve OSDL from SVN after $MAX_VCS_RETRY attempts (did you accept permanently the Sourceforge certificate, if asked ?)."
 				exit 20
 			fi
 
@@ -7321,14 +7350,14 @@ getOSDL()
 
 	else
 
-		if [ $no_svn -eq 1 ] ; then
+		if [ $no_vcs -eq 1 ] ; then
 
 			DISPLAY "      ----> getting OSDL from anonymous SVN (export)"
 
-			svnAttemptNumber=1
+			vcsAttemptNumber=1
 			success=1
 
-			if [ $use_current_svn -eq 0 ] ; then
+			if [ $use_current_vcs -eq 0 ] ; then
 				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
 				SVN_URL="/svnroot/osdl"
 			else
@@ -7336,9 +7365,9 @@ getOSDL()
 				SVN_URL="/svnroot/osdl/OSDL/tags/${latest_stable_osdl}"
 			fi
 
-			while [ "$svnAttemptNumber" -le "$MAX_SVN_RETRY" ]; do
+			while [ "$vcsAttemptNumber" -le "$MAX_VCS_RETRY" ]; do
 
-				LOG_STATUS "Attempt #${svnAttemptNumber} to retrieve OSDL."
+				LOG_STATUS "Attempt #${vcsAttemptNumber} to retrieve OSDL."
 
 				{
 
@@ -7353,17 +7382,17 @@ getOSDL()
 				} 1>>"$LOG_OUTPUT" 2>&1
 
 				if [ $? -eq 0 ] ; then
-					svnAttemptNumber=$(($MAX_SVN_RETRY+1))
+					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
 				else
-					svnAttemptNumber=$(($svnAttemptNumber+1))
+					vcsAttemptNumber=$(($vcsAttemptNumber+1))
 					LOG_STATUS "SVN command failed."
 					${SLEEP} 3
 				fi
 			done
 
 			if [ $success -ne 0 ] ; then
-				ERROR "Unable to retrieve OSDL from SVN after $MAX_SVN_RETRY attempts."
+				ERROR "Unable to retrieve OSDL from SVN after $MAX_VCS_RETRY attempts."
 				exit 21
 			else
 				EXPORT_TARGET_DIR="osdl/OSDL"
@@ -7395,7 +7424,7 @@ prepareOSDL()
 
 	printItem "extracting"
 
-	if [ $no_svn -eq 0 ] ; then
+	if [ $no_vcs -eq 0 ] ; then
 		echo
 		WARNING "As the --noSVN option was used, build process stops here."
 		exit 0
