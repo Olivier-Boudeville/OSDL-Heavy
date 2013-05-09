@@ -52,11 +52,15 @@ fi
 
 
 if [ $is_windows -eq 0 ] ; then
+	
 	WARNING "on Windows, no Orge tool managed."
+
 else
+	
   # Put at end rather than begin so that any newly installed build tool
-  #(ex: gcc) can be used nevertheless:
+  # (ex: gcc) can be used nevertheless:
 	target_list="$target_list $ORGE_TOOLS"
+
 fi
 
 
@@ -541,13 +545,13 @@ getCeylan_Erlang()
 
 	DEBUG "Getting Ceylan-Erlang..."
 
-	# We prefer using SVN here:
+	# We prefer using VCS here:
 	# (simplified version of getCeylan in loani-requiredTools.sh)
 
-	declareRetrievalBegin "Ceylan-Erlang (from SVN)"
+	declareRetrievalBegin "Ceylan-Erlang (from ${current_vcs})"
 
 	# To avoid a misleading message when the retrieval is finished:
-	Ceylan_Erlang_ARCHIVE="from SVN"
+	Ceylan_Erlang_ARCHIVE="from ${current_vcs}"
 
 	cd ${repository}
 
@@ -555,33 +559,26 @@ getCeylan_Erlang()
 
 	cd Ceylan-Erlang
 
-	SVN_URL="svnroot/ceylan/Ceylan/trunk/src/code/scripts/erlang"
+	# We need to download the following separate Ceylan repositories for that:
+	ceylan_erlang_packages="common wooper traces tools"
 
-	base_svn_url="http://${Ceylan_SVN_SERVER}/${SVN_URL}"
+	base_url="git.code.sf.net/p/ceylan/"
 
 	if [ $developer_access -eq 0 ] ; then
 
-		user_opt="--username=${developer_name}"
-
-		DISPLAY "      ----> getting Ceylan-Erlang packages from SVN with user name ${developer_name} (check-out)"
-
-		svn_command="co"
-
+		DISPLAY "      ----> getting Ceylan-Erlang packages from ${current_vcs} with user name ${developer_name}"
+		protocol="ssh"
+		base_url="${developer_name}@${base_url}"
+		
 	else
 
-		# Not really supported, http should be used, not https...
-
-		user_opt=""
-
-		DISPLAY "      ----> getting Ceylan-Erlang packages from anonymous SVN (export)"
-
-		svn_command="export"
+		DISPLAY "      ----> getting Ceylan-Erlang packages from ${current_vcs} (read-only)"
+		protocol="git"
 
 	fi
 
 	LOG_STATUS "Getting Ceylan-Erlang packages in the source directory ${repository}..."
 
-	ceylan_erlang_packages="common wooper traces"
 
 	# Manage back-up directories if necessary:
 	for p in $ceylan_erlang_packages; do
@@ -590,43 +587,19 @@ getCeylan_Erlang()
 
 		{
 
-			${SVN} ${svn_command} ${base_svn_url}/$p ${user_opt}
-
+			${GIT} clone ${protocol}://${base_url}/$p $p
+			
 		} 1>>"$LOG_OUTPUT" 2>&1
 
 		if [ ! $? -eq 0 ] ; then
 
-			ERROR "Unable to retrieve Ceylan-Erlang package $p from SVN."
+			ERROR "Unable to retrieve Ceylan-Erlang package $p from VCS (using $protocol)."
 			exit 20
 
 		fi
 
 	done
 
-	# Dead symbolic links, as the rest of the Ceylan tree has not been
-	# retrieved:
-	rules_dead_link="common/doc/GNUmakerules-docutils.inc"
-
-	if [ -h "${rules_dead_link}" ] ; then
-
-		${RM} "${rules_dead_link}"
-
-	fi
-
-	# Replaced by an empty file here:
-	touch "${rules_dead_link}"
-
-
-	script_dead_link="common/src/scripts/generate-docutils.sh"
-
-	if [ -h "${script_dead_link}" ] ; then
-
-		${RM} "${script_dead_link}"
-
-	fi
-
-	# Replaced by an empty file here:
-	touch "${script_dead_link}"
 
 	return 0
 
@@ -643,7 +616,7 @@ prepareCeylan_Erlang()
 
 	printItem "extracting"
 
-	# Nothing to do, as sources were already retrieved from SVN.
+	# Nothing to do, as sources were already retrieved from VCS.
 
 	printOK
 

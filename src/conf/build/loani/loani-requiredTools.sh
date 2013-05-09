@@ -6593,8 +6593,6 @@ cleandlditool()
 
 
 
-
-
 ################################################################################
 ################################################################################
 # Ceylan
@@ -6618,9 +6616,9 @@ getCeylan()
 
 	DEBUG "Getting Ceylan..."
 
-	# Ceylan can be obtained by downloading a release archive or by using VCS.
+	# Ceylan can be obtained by downloading a release archive or by using a VCS.
 
-	if [ ${use_current_vcs} -eq 1 ]; then
+	if [ ${use_vcs} -eq 1 ]; then
 
 		# Use archive, instead of VCS:
 		launchFileRetrieval Ceylan
@@ -6661,7 +6659,9 @@ getCeylan()
 		fi
 
 		${MV} -f ${repository}/ceylan ${repository}/ceylan.save 2>/dev/null
+		
 		WARNING "There already existed a directory for Ceylan (${repository}/ceylan), it has been moved to ${repository}/ceylan.save."
+		
 	fi
 
 	LOG_STATUS "Getting Ceylan in its source directory ${repository}..."
@@ -6677,14 +6677,13 @@ getCeylan()
 
 		VCS_SERVER_PATH="git.code.sf.net/p/ceylan/code"
 
+		
 		if [ $no_vcs -eq 1 ] ; then
 
 			DISPLAY "      ----> getting Ceylan from ${current_vcs} with user name ${developer_name} (check-out)"
 
 			vcsAttemptNumber=1
 			success=1
-
-			VCS_URL="git.code.sf.net/p/ceylan/code"
 
 			while [ "$vcsAttemptNumber" -le "$MAX_VCS_RETRY" ]; do
 
@@ -6721,11 +6720,12 @@ getCeylan()
 					# with TortoiseSVN:
 					DISPLAY "Ceylan VCS checkout failed, maybe because of too long pathnames."
 					DISPLAY "Please use a tool like Tortoise to update manually the Ceylan repository."
-					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'Update'"
+					DISPLAY "To do so, right-click on ${CHECKOUT_LOCATION}, and select 'Update'"
 					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
 					# Suppose success:
 					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
+					
 				fi
 
 			done
@@ -6740,7 +6740,9 @@ getCeylan()
 			fi
 
 		else
+		
 			DISPLAY "      ----> VCS retrieval disabled for Ceylan."
+			
 		fi
 
 		if [ $? -ne 0 ] ; then
@@ -6766,7 +6768,7 @@ getCeylan()
 				{
 
 					# No https, no credential required:
-					DEBUG "${SVN} export http://${Ceylan_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
+					DEBUG "${GIT} clone git://${VCS_SERVER_PATH} ${CHECKOUT_LOCATION}"
 					${GIT} clone git://${VCS_SERVER_PATH} ${CHECKOUT_LOCATION}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
@@ -6779,7 +6781,7 @@ getCeylan()
 				else
 
 					vcsAttemptNumber=$(($vcsAttemptNumber+1))
-					LOG_STATUS "SVN command failed."
+					LOG_STATUS "VCS command failed."
 					${SLEEP} 3
 
 				fi
@@ -6798,8 +6800,10 @@ getCeylan()
 		fi
 
 		if [ $? -ne 0 ] ; then
-			ERROR "Unable to retrieve Ceylan from anonymous SVN."
-			exit 21
+		
+			ERROR "Unable to retrieve Ceylan from anonymous VCS."
+			exit 22
+			
 		fi
 	fi
 
@@ -6854,7 +6858,7 @@ prepareCeylan()
 			ERROR "Unable to extract ${Ceylan_ARCHIVE}."
 			DEBUG "Restoring ${Ceylan_ARCHIVE}."
 			${MV} -f ${Ceylan_ARCHIVE}.save ${Ceylan_ARCHIVE}
-			exit 10
+			exit 16
 		fi
 
 	else
@@ -6869,7 +6873,7 @@ prepareCeylan()
 			
 		else
 			
-				# Should be quite uncommon for Ceylan developers:
+			# Should be quite uncommon for Ceylan developers:
 			DEBUG "Using latest stable VCS tag (${latest_stable_ceylan})."
 			
 			VCS_BRANCH="${latest_stable_ceylan}"
@@ -7100,7 +7104,6 @@ generateCeylan()
 }
 
 
-
 cleanCeylan()
 {
 	LOG_STATUS "Cleaning Ceylan build tree..."
@@ -7222,27 +7225,33 @@ getOSDL()
 
 	DEBUG "Getting OSDL..."
 
-	# OSDL can be obtained by downloading a release archive or by using SVN.
+	# OSDL can be obtained by downloading a release archive or by using a VCS.
 
-	if [ ${use_svn} -eq 1 ]; then
+	if [ ${use_vcs} -eq 1 ]; then
+		
 		# Use archive instead of SVN:
 		launchFileRetrieval OSDL
 		return $?
+		
 	else
-		declareRetrievalBegin "OSDL (from SVN)"
+		
+		declareRetrievalBegin "OSDL (from ${current_vcs})"
+
 	fi
 
-	# Here we are to use SVN:
+	# Here we are to use VCS:
 
 	# To avoid a misleading message when the retrieval is finished:
-	OSDL_ARCHIVE="from SVN"
+	OSDL_ARCHIVE="from ${current_vcs}"
 
 	cd ${repository}
 
 	# Manage back-up directory if necessary:
 
 	if [ -d "${repository}/osdl" ] ; then
+		
 		if [ -d "${repository}/osdl.save" ] ; then
+			
 			if [ $be_strict -eq 0 ] ; then
 				ERROR "There already exists a back-up directory for OSDL, it is on the way, please remove it first (${repository}/osdl.save)"
 				exit 5
@@ -7254,67 +7263,60 @@ getOSDL()
 
 			fi
 		fi
+		
 		${MV} -f ${repository}/osdl ${repository}/osdl.save 2>/dev/null
+		
 		WARNING "There already existed a directory for OSDL (${repository}/osdl), it has been moved to ${repository}/osdl.save."
+		
 	fi
 
 	LOG_STATUS "Getting OSDL in its source directory ${repository}..."
 
-	# Note: SVN from Cygwin is really really slow due to the filesystem access.
+	# Note: VCS from Cygwin is really really slow due to the filesystem access.
 
 	if [ $developer_access -eq 0 ] ; then
 
-		#DISPLAY "Retrieving OSDL from developer SVN with user name ${developer_name} (check-out)."
+		#DISPLAY "Retrieving OSDL from developer VCS with user name ${developer_name} (check-out)."
+
+		CHECKOUT_LOCATION="$repository/osdl/OSDL"
+		${MKDIR} -p ${CHECKOUT_LOCATION}
+
+		VCS_SERVER_PATH="git.code.sf.net/p/osdl/code"
+		
 
 		if [ $no_vcs -eq 1 ] ; then
 
-			DISPLAY "      ----> getting OSDL from SVN with user name ${developer_name} (check-out)"
+			DISPLAY "      ----> getting OSDL from ${current_vcs} with user name ${developer_name} (check-out)"
 
 			vcsAttemptNumber=1
 			success=1
-
-			if [ $use_current_vcs -eq 0 ] ; then
-				DEBUG "No stable tag wanted, retrieving directly latest main-line version (trunk only) from SVN."
-
-				# Only selecting trunk, as otherwise could be way too long:
-				CHECKOUT_LOCATION=osdl/OSDL/trunk
-				${MKDIR} -p ${CHECKOUT_LOCATION}
-				SVN_URL="/svnroot/${CHECKOUT_LOCATION}"
-			else
-
-				# Should be quite uncommon for OSDL developers:
-				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
-
-				CHECKOUT_LOCATION=osdl
-				${MKDIR} -p ${CHECKOUT_LOCATION}
-				SVN_URL="/svnroot/osdl/OSDL/tags/${latest_stable_osdl}"
-			fi
 
 			while [ "$vcsAttemptNumber" -le "$MAX_VCS_RETRY" ]; do
 
 				LOG_STATUS "Attempt #${vcsAttemptNumber} to retrieve OSDL."
 
-				# Made to force certificate checking before next non-interactive svn command:
-				${SVN} info https://${OSDL_SVN_SERVER}:${SVN_URL} --username=${developer_name} 1>/dev/null
-
 				{
-					DEBUG "SVN command: ${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}"
-					${SVN} co https://${OSDL_SVN_SERVER}:${SVN_URL} ${CHECKOUT_LOCATION} --username=${developer_name} ${SVN_OPT}
+					DEBUG "VCS command: ${GIT} clone ssh://${developer_name}@${VCS_SERVER_PATH} ${CHECKOUT_LOCATION}"
+
+					${GIT} clone ssh://${developer_name}@${VCS_SERVER_PATH} ${CHECKOUT_LOCATION}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 
 				if [ $? -eq 0 ] ; then
+
 					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
+
 				else
+
 					vcsAttemptNumber=$(($vcsAttemptNumber+1))
-					LOG_STATUS "SVN command failed."
+					LOG_STATUS "VCS command failed."
 					#${SLEEP} 3
 
 					# Warning:
 					# cygwin uses a quite small MAX_PATH, which limits the
 					# maximum length of paths.
-					# It may cause, among others, a SVN error
+					#It may cause, among others, a SVN error
 					# ("svn: Can't open file 'XXX': File name too long).
 					# A work-around is to request the user to update herself her
 					# repository with TortoiseSVN (this tool is not affected by
@@ -7322,48 +7324,48 @@ getOSDL()
 
 					# Now ask the user to trigger the full update by herself,
 					# with TortoiseSVN:
-					DISPLAY "OSDL SVN checkout failed, maybe because of too long pathnames."
-					DISPLAY "Please use TortoiseSVN to update manually the OSDL repository."
-					DISPLAY "To do so, right-click on ${repository}/${CHECKOUT_LOCATION}, and select 'SVN Update'"
+					DISPLAY "OSDL VCS checkout failed, maybe because of too long pathnames."
+					DISPLAY "Please use a tool like Tortoise to update manually the OSDL repository."
+					DISPLAY "To do so, right-click on ${CHECKOUT_LOCATION}, and select 'Update'"
 					waitForKey "< Press enter when the repository is up-to-date, use CTRL-C if the operation could not be performed >"
 					# Suppose success:
 					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
+					
 				fi
 
 			done
 
 
 			if [ $success -ne 0 ] ; then
-				ERROR "Unable to retrieve OSDL from SVN after $MAX_VCS_RETRY attempts (did you accept permanently the Sourceforge certificate, if asked ?)."
-				exit 20
+
+				ERROR "Unable to retrieve OSDL from VCS after $MAX_VCS_RETRY attempts (did you accept permanently the Sourceforge certificate, if asked?)."
+
+				exit 30
+
 			fi
 
 		else
-			DISPLAY "      ----> SVN retrieval disabled for OSDL."
+			
+			DISPLAY "      ----> VCS retrieval disabled for OSDL."
+
 		fi
 
 		if [ $? -ne 0 ] ; then
-			ERROR "Unable to retrieve OSDL from developer SVN."
+			ERROR "Unable to retrieve OSDL from developer VCS."
 			exit 20
 		fi
 
 	else
 
+		# Not a developer access, anonymous:
+
 		if [ $no_vcs -eq 1 ] ; then
 
-			DISPLAY "      ----> getting OSDL from anonymous SVN (export)"
+			DISPLAY "      ----> getting OSDL from anonymous VCS (export)"
 
 			vcsAttemptNumber=1
 			success=1
-
-			if [ $use_current_vcs -eq 0 ] ; then
-				DEBUG "No stable tag wanted, retrieving directly latest version from SVN."
-				SVN_URL="/svnroot/osdl"
-			else
-				DEBUG "Using latest stable SVN tag (${latest_stable_osdl})."
-				SVN_URL="/svnroot/osdl/OSDL/tags/${latest_stable_osdl}"
-			fi
 
 			while [ "$vcsAttemptNumber" -le "$MAX_VCS_RETRY" ]; do
 
@@ -7371,50 +7373,51 @@ getOSDL()
 
 				{
 
-					# Remove any symbolic link coming from a previous attempt:
-					${RM} -f ${latest_stable_osdl} 2>/dev/null
-
 					# No https, no credential required:
-					DEBUG "${SVN} export http://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT}"
-					${SVN} export http://${OSDL_SVN_SERVER}:${SVN_URL} ${SVN_OPT}
-
+					DEBUG "${GIT} clone git://${VCS_SERVER_PATH} ${CHECKOUT_LOCATION}"
+					${GIT} clone git://${VCS_SERVER_PATH} ${CHECKOUT_LOCATION}
 
 				} 1>>"$LOG_OUTPUT" 2>&1
 
 				if [ $? -eq 0 ] ; then
+
 					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
+
 				else
+
 					vcsAttemptNumber=$(($vcsAttemptNumber+1))
-					LOG_STATUS "SVN command failed."
+					LOG_STATUS "VCS command failed."
 					${SLEEP} 3
+
 				fi
+
 			done
 
 			if [ $success -ne 0 ] ; then
-				ERROR "Unable to retrieve OSDL from SVN after $MAX_VCS_RETRY attempts."
-				exit 21
-			else
-				EXPORT_TARGET_DIR="osdl/OSDL"
-				${MKDIR} -p ${EXPORT_TARGET_DIR}
-				${MV} -f ${latest_stable_osdl} ${EXPORT_TARGET_DIR}/trunk
-				${LN} -s ${EXPORT_TARGET_DIR}/trunk ${latest_stable_osdl}
-				WARNING "Exported OSDL sources have been placed in faked trunk, in ${EXPORT_TARGET_DIR}/trunk."
+
+				ERROR "Unable to retrieve OSDL from VCS after $MAX_VCS_RETRY attempts."
+				exit 31
+
 			fi
 
 		else
-			DISPLAY "      ----> SVN retrieval disabled for OSDL."
+			DISPLAY "      ----> VCS retrieval disabled for OSDL."
 		fi
 
 		if [ $? -ne 0 ] ; then
-			ERROR "Unable to retrieve OSDL from anonymous SVN."
-			exit 21
+			
+			ERROR "Unable to retrieve OSDL from anonymous VCS."
+			exit 32
+			
 		fi
 	fi
 
 	return 0
+
 }
 
+				
 
 prepareOSDL()
 {
@@ -7426,12 +7429,12 @@ prepareOSDL()
 
 	if [ $no_vcs -eq 0 ] ; then
 		echo
-		WARNING "As the --noSVN option was used, build process stops here."
+		WARNING "As the --noVCS option was used, build process stops here."
 		exit 0
 	fi
 
 
-	if [ ${use_svn} -eq 1 ]; then
+	if [ ${use_vcs} -eq 1 ]; then
 
 		# Here we use source archives:
 
@@ -7439,14 +7442,14 @@ prepareOSDL()
 			BUNZIP2=$returnedString
 		else
 			ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
-			exit 14
+			exit 34
 		fi
 
 		if findTool tar ; then
 			TAR=$returnedString
 		else
 			ERROR "No tar tool found, whereas some files have to be detarred."
-			exit 15
+			exit 35
 		fi
 
 		cd $repository
@@ -7459,6 +7462,41 @@ prepareOSDL()
 
 		if [ $? != 0 ] ; then
 			ERROR "Unable to extract ${OSDL_ARCHIVE}."
+			DEBUG "Restoring ${OSDL_ARCHIVE}."
+			${MV} -f ${OSDL_ARCHIVE}.save ${OSDL_ARCHIVE}
+			exit 36
+		fi
+		
+	else
+
+		# Using VCS here.
+
+		if [ $use_current_vcs -eq 0 ] ; then
+
+			DEBUG "No stable tag wanted, retrieving directly latest main-line head version (main branch only) from VCS."
+			
+			VCS_BRANCH="master"
+			
+		else
+			
+			# Should be quite uncommon for OSDL developers:
+			DEBUG "Using latest stable VCS tag (${latest_stable_osdl})."
+			
+			VCS_BRANCH="${latest_stable_osdl}"
+				
+		fi
+
+		cd ${CHECKOUT_LOCATION}
+
+		{
+
+			${GIT} co ${VCS_BRANCH}
+
+		} 1>>"$LOG_OUTPUT" 2>&1
+
+
+		if [ $? != 0 ] ; then
+			ERROR "Unable to switch to OSDL branch ${VCS_BRANCH}."
 			DEBUG "Restoring ${OSDL_ARCHIVE}."
 			${MV} -f ${OSDL_ARCHIVE}.save ${OSDL_ARCHIVE}
 			exit 10
