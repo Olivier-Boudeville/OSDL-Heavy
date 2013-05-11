@@ -683,9 +683,10 @@ generateCeylan_Erlang()
 
 		cd $HOME
 
+		# Apparently no simple way of using GIT to download just one file:
 		{
 
-			${SVN} export http://${Ceylan_SVN_SERVER}/svnroot/ceylan/Ceylan/trunk/src/conf/environment/.bashrc.minimal 1>/dev/null
+			${WGET} http://sourceforge.net/p/ceylan/code/ci/master/tree/src/conf/environment/.bashrc.minimal?format=raw --output-document=.bashrc.minimal 1>/dev/null
 
 		} 1>>"$LOG_OUTPUT" 2>&1
 
@@ -707,7 +708,7 @@ Linked ~/.bashrc (not existing previously) to ~/.bashrc.minimal."
 
 	fi
 
-}
+	}
 
 
 
