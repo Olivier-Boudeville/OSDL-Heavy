@@ -923,7 +923,7 @@ int aalineColorInt(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 y1,
   Ceylan::Sint32 xx0, yy0, xx1, yy1;
   int result;
   Ceylan::Uint32 intshift, erracc, erradj;
-  Ceylan::Uint32 erracctmp, wgt, wgtcompmask;
+  Ceylan::Uint32 erracctmp, wgt;
   int dx, dy, tmp, xdir, y0p1, x0pxdir;
 
   /*
@@ -1003,10 +1003,6 @@ int aalineColorInt(SDL_Surface * dst, Ceylan::Sint16 x1, Ceylan::Sint16 y1,
    * # of bits by which to shift erracc to get intensity level
    */
   intshift = 32 - AAbits;
-  /*
-   * Mask used to flip all bits in an intensity weighting
-   */
-  wgtcompmask = AAlevels - 1;
 
   /* Lock surface */
   if (SDL_MUSTLOCK(dst)) {
