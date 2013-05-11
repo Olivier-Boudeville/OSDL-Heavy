@@ -218,7 +218,7 @@ SOURCE_OFFSET="../../.."
 
 
 # Default value guessed from current path:
-loani_repository=`pwd|sed 's|/osdl/OSDL/trunk/src/conf/build||1'`
+loani_repository=`pwd|sed 's|/osdl/OSDL/src/conf/build||1'`
 #echo "loani_repository = $loani_repository"
 
 loani_installations=`dirname $loani_repository`/LOANI-installations
