@@ -9,9 +9,11 @@ Usage: "`basename $0`" [ --with-osdl-env-file <filename> ] [ -g | --guess-osdl-e
 	--no-build: stop just after having generated the configure script
 	--only-prepare-dist: perform only necessary operations so that the test directory can be distributed afterwards"
 
+
 # These tests must rely on a related Ceylan source directory, since they:
-#	- need to know which Ceylan version is t1o be tested
-#	- use some Ceylan facilities (ex: Ceylan substitute script)
+#
+# - need to know which Ceylan version is t1o be tested
+# - use some Ceylan facilities (ex: Ceylan substitute script)
 
 
 # Main settings section.
@@ -65,7 +67,7 @@ cd `dirname $COMMAND`
 
 
 # Default value guessed from current path:
-loani_repository=`pwd|sed 's|/osdl/OSDL/trunk/test||1'`
+loani_repository=`pwd|sed 's|/osdl/OSDL/test||1'`
 #echo "loani_repository = $loani_repository"
 
 loani_installations=`dirname $loani_repository`/LOANI-installations
@@ -489,8 +491,8 @@ generateCustom()
 
 
 regenerateWithAutoreconf()
-# The current way of having a build system up and running, since autoreconf
-# has been fixed now. However it seems to
+# The current way of having a build system up and running, since autoreconf has
+# been fixed now. However it seems not to work great.
 {
 
 	echo "--- updating build system using autoreconf"
