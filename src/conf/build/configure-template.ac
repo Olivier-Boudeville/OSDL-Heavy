@@ -365,7 +365,7 @@ AC_SUBST(SDL_GFX_MAJOR_VERSION)
 
 # In the hope the configure removed options are then restored
 # (otherwise switch back to 2.0.18):
-SDL_GFX_MINOR_VERSION="23"
+SDL_GFX_MINOR_VERSION="24"
 #SDL_GFX_MINOR_VERSION="18"
 AC_SUBST(SDL_GFX_MINOR_VERSION)
 
@@ -514,7 +514,7 @@ AC_DEFINE([USES_CEGUI],[1],[Define to 1 if OSDL is to use CEGUI])
 # PCRE.
 # (needed by CEGUI)
 
-PCRE_RECOMMENDED_VERSION="8.31"
+PCRE_RECOMMENDED_VERSION="8.32"
 AC_SUBST(PCRE_RECOMMENDED_VERSION)
 
 PCRE_OLDEST_SUPPORTED_VERSION="$PCRE_RECOMMENDED_VERSION"
@@ -532,7 +532,7 @@ AC_DEFINE([USES_PCRE],[1],[Define to 1 if OSDL is to use PCRE])
 # FreeImage.
 # (needed by CEGUI)
 
-FREEIMAGE_RECOMMENDED_VERSION="3.15.3"
+FREEIMAGE_RECOMMENDED_VERSION="3.15.4"
 AC_SUBST(FREEIMAGE_RECOMMENDED_VERSION)
 
 FREEIMAGE_OLDEST_SUPPORTED_VERSION="$FREEIMAGE_RECOMMENDED_VERSION"
@@ -549,7 +549,7 @@ AC_DEFINE([USES_FREEIMAGE],[1],[Define to 1 if OSDL is to use FREEIMAGE])
 
 # png (libpng).
 
-LIBPNG_RECOMMENDED_VERSION="1.5.12"
+LIBPNG_RECOMMENDED_VERSION="1.6.2"
 AC_SUBST(LIBPNG_RECOMMENDED_VERSION)
 
 LIBPNG_OLDEST_SUPPORTED_VERSION="$LIBPNG_RECOMMENDED_VERSION"
@@ -585,7 +585,7 @@ AC_DEFINE([USES_SDL],[1],[Define to 1 if OSDL is to use SDL])
 
 # PhysicsFS.
 
-PHYSICSFS_RECOMMENDED_VERSION="2.0.2"
+PHYSICSFS_RECOMMENDED_VERSION="2.0.3"
 AC_SUBST(PHYSICSFS_RECOMMENDED_VERSION)
 
 PHYSICSFS_OLDEST_SUPPORTED_VERSION="$PHYSICSFS_RECOMMENDED_VERSION"
@@ -663,7 +663,7 @@ AC_SUBST(OSDL_UPDATE_RST)
 
 # Zlib.
 
-ZLIB_RECOMMENDED_VERSION="1.2.7"
+ZLIB_RECOMMENDED_VERSION="1.2.8"
 AC_SUBST(ZLIB_RECOMMENDED_VERSION)
 
 ZLIB_OLDEST_SUPPORTED_VERSION="$ZLIB_RECOMMENDED_VERSION"
@@ -1154,7 +1154,7 @@ fi
 # --disable-colored-build
 
 # See also: function updateColorSupport of
-# Ceylan/trunk/src/code/scripts/shell/termUtils.sh
+# Ceylan/src/code/scripts/shell/termUtils.sh
 
 # Text color codes:
 
@@ -1543,5 +1543,5 @@ Configuration:
   Host System Type:       ${host}
   Install path (prefix):  ${OSDL_INSTALL_SHARED_DIR}
 
-  See trunk/src/code/OSDLConfig.h for further configuration information.
+  See src/code/OSDLConfig.h for further configuration information.
 ------------------------------------------------------------------------"

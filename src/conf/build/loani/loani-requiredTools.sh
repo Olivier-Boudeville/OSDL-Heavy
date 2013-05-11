@@ -69,6 +69,7 @@ else
 	# Note: as of Tuesday, November 30, 2010, we removed 'zlib libpng' as when
 	# their respective versions (1.2.5 and 1.4.4) are used, programs using them
 	# crash.
+	#  
 	# Ex: > ./darm.exe
 	# Checkpoint [1]: Launching DARM.
 	# Checkpoint [2]: Initializing sound adjustment model.
@@ -82,6 +83,7 @@ else
 	#
 	# SDL_gfx (which was just after SDL_image) was removed, due to build
 	# problems with the 2.0.22 version (m4-related).
+	#  
 	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
@@ -881,10 +883,10 @@ preparezlib()
 
 	LOG_STATUS "Preparing zlib library..."
 
-	if findTool bunzip2 ; then
-		BUNZIP2=$returnedString
+	if findTool xz ; then
+		XZ=$returnedString
 	else
-		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
+		ERROR "No xz tool found, whereas some files have to be xz-ed."
 		exit 8
 	fi
 
@@ -903,7 +905,7 @@ preparezlib()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${zlib_ARCHIVE} ${zlib_ARCHIVE}.save && ${BUNZIP2} -f ${zlib_ARCHIVE} && ${TAR} -xvf "zlib-${zlib_VERSION}.tar"
+		${CP} -f ${zlib_ARCHIVE} ${zlib_ARCHIVE}.save && ${XZ} --decompress ${zlib_ARCHIVE} && ${TAR} -xvf "zlib-${zlib_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
@@ -1181,10 +1183,10 @@ preparelibpng()
 
 	LOG_STATUS "Preparing PNG library..."
 
-	if findTool bunzip2 ; then
-		BUNZIP2=$returnedString
+	if findTool xz ; then
+		XZ=$returnedString
 	else
-		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
+		ERROR "No xz tool found, whereas some files have to be xz-ed."
 		exit 8
 	fi
 
@@ -1203,7 +1205,7 @@ preparelibpng()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${libpng_ARCHIVE} ${libpng_ARCHIVE}.save && ${BUNZIP2} -f ${libpng_ARCHIVE} && ${TAR} -xvf "libpng-${libpng_VERSION}.tar"
+		${CP} -f ${libpng_ARCHIVE} ${libpng_ARCHIVE}.save && ${XZ} --decompress ${libpng_ARCHIVE} && ${TAR} -xvf "libpng-${libpng_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
@@ -2236,10 +2238,10 @@ preparelibogg()
 
 	LOG_STATUS "Preparing libogg..."
 
-	if findTool bunzip2 ; then
-		BUNZIP2=$returnedString
+	if findTool xz ; then
+		XZ=$returnedString
 	else
-		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
+		ERROR "No xz tool found, whereas some files have to be xz-ed."
 		exit 8
 	fi
 
@@ -2549,10 +2551,10 @@ preparelibvorbis()
 
 	LOG_STATUS "Preparing libvorbis..."
 
-	if findTool bunzip2 ; then
-		BUNZIP2=$returnedString
+	if findTool xz ; then
+		XZ=$returnedString
 	else
-		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
+		ERROR "No xz tool found, whereas some files have to be xz-ed."
 		exit 8
 	fi
 
@@ -4754,10 +4756,10 @@ preparePhysicsFS()
 
 	LOG_STATUS "Preparing PhysicsFS..."
 
-	if findTool gunzip ; then
-		GUNZIP=$returnedString
+	if findTool bunzip2 ; then
+		BUNZIP2=$returnedString
 	else
-		ERROR "No gunzip tool found, whereas some files have to be gunzipped."
+		ERROR "No bunzip2 tool found, whereas some files have to be bunzip2-ed."
 		exit 8
 	fi
 
@@ -4776,7 +4778,7 @@ preparePhysicsFS()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${PhysicsFS_ARCHIVE} ${PhysicsFS_ARCHIVE}.save && ${GUNZIP} -f ${PhysicsFS_ARCHIVE} && ${TAR} -xvf "physfs-${PhysicsFS_VERSION}.tar"
+		${CP} -f ${PhysicsFS_ARCHIVE} ${PhysicsFS_ARCHIVE}.save && ${BUNZIP2} -f ${PhysicsFS_ARCHIVE} && ${TAR} -xvf "physfs-${PhysicsFS_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 

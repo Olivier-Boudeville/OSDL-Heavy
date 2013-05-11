@@ -37,11 +37,11 @@ SDL_win_MD5="7e1d793751d2b2d93b33655e4f4b0f96"
 
 # JPEG library (libjpeg.so): http://www.ijg.org/
 
-libjpeg_VERSION="8d"
+libjpeg_VERSION="9"
 libjpeg_ARCHIVE="jpegsrc.v${libjpeg_VERSION}.tar.gz"
 libjpeg_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
 libjpeg_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
-libjpeg_MD5="52654eb3b2e60c35731ea8fc87f1bd29"
+libjpeg_MD5="b397211ddfd506b92cd5e02a22ac924d"
 
 # Same archive for Windows actually:
 libjpeg_win_VERSION="$libjpeg_VERSION"
@@ -54,15 +54,15 @@ libjpeg_win_MD5="$libjpeg_MD5"
 
 # zlib library (libzlib.a): http://www.zlib.net/
 
-# Actually 1.2.7 (defined in configure-template.ac):
+# Actually 1.2.8 (defined in configure-template.ac):
 zlib_VERSION="@ZLIB_RECOMMENDED_VERSION@"
-zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.bz2"
+zlib_ARCHIVE="zlib-${zlib_VERSION}.tar.xz"
 zlib_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
-zlib_MD5="2ab442d169156f34c379c968f3f482dd"
+zlib_MD5="28f1205d8dd2001f26fec1e8c2cebe37"
 
 zlib_win_VERSION="${zlib_VERSION}"
-zlib_win_archive_VERSION="127"
+zlib_win_archive_VERSION="128"
 zlib_win_ARCHIVE="zlib${zlib_win_archive_VERSION}.zip"
 zlib_win_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
@@ -72,16 +72,16 @@ zlib_win_MD5="update_me"
 
 # PNG library (libpng.so): http://www.libpng.org/pub/png/libpng.html
 
-# Actually 1.5.12 (defined in configure-template.ac):
+# Actually 1.6.2 (defined in configure-template.ac):
 libpng_VERSION="@LIBPNG_RECOMMENDED_VERSION@"
-libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.bz2"
+libpng_ARCHIVE="libpng-${libpng_VERSION}.tar.xz"
 libpng_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_MD5="d87f9c34ccab8242c00e41925839f6c9"
+libpng_MD5="9d838f6fca9948a9f360a0cc1b516d5f"
 
 libpng_win_VERSION="$libpng_VERSION"
-libpng_win_archive_VERSION="1512"
+libpng_win_archive_VERSION="162"
 libpng_win_ARCHIVE="lpng${libpng_win_archive_VERSION}.zip"
 libpng_win_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_win_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
@@ -144,13 +144,13 @@ SDL_image_osx_precompiled_MD5="update_me"
 # SDL_gfx (libSDL_gfx.so): http://www.ferzkopp.net/Software/SDL_gfx-2.0/
 # No binaries available!
 
-# Actually 2.0.23 (defined in configure-template.ac):
+# Actually 2.0.24 (defined in configure-template.ac):
 SDL_gfx_MAJOR_VERSION="@SDL_GFX_MAJOR_VERSION@"
 SDL_gfx_VERSION="${SDL_gfx_MAJOR_VERSION}.@SDL_GFX_MINOR_VERSION@"
 SDL_gfx_ARCHIVE="SDL_gfx-${SDL_gfx_VERSION}.tar.gz"
 SDL_gfx_DOWNLOAD_LOCATION="http://www.ferzkopp.net/Software/SDL_gfx-${SDL_gfx_MAJOR_VERSION}"
 SDL_gfx_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_gfx_MD5="fcc3c4f2d1b4943409bf7e67dd65d03a"
+SDL_gfx_MD5="838514185ff9a3b6377760aaa52fef8a"
 
 
 # Same as for UNIX:
@@ -166,13 +166,13 @@ SDL_gfx_win_MD5="$SDL_gfx_MD5"
 
 # Sources.
 
-freetype_VERSION="2.4.10"
+freetype_VERSION="2.4.12"
 freetype_ARCHIVE="freetype-${freetype_VERSION}.tar.bz2"
 freetype_DOWNLOAD_LOCATION="http://savannah.nongnu.org/download/freetype"
 freetype_ALTERNATE_DOWNLOAD_LOCATION="http://heanet.dl.sourceforge.net/sourceforge/freetype"
 freetype_PREVIOUS_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/freetype"
 freetype_OTHER_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/freetype"
-freetype_MD5="13286702e9390a91661f980608adaff1"
+freetype_MD5="3463102764315eb86c0d3c2e1f3ffb7d"
 
 
 # Same as for UNIX:
@@ -348,12 +348,12 @@ CEGUI_win_MD5="update_me"
 # PCRE: http://www.pcre.org/
 # (needed by CEGUI)
 
-# Actually 8.31 (defined in configure-template.ac):
+# Actually 8.32 (defined in configure-template.ac):
 PCRE_VERSION="@PCRE_RECOMMENDED_VERSION@"
 PCRE_ARCHIVE="pcre-${PCRE_VERSION}.tar.bz2"
 PCRE_DOWNLOAD_LOCATION="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/"
 PCRE_ALTERNATE_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/project/pcre/pcre/$PCRE_VERSION/pcre-$PCRE_VERSION.tar.bz2"
-PCRE_MD5="1c9a276af932b5599157f96e945391f0"
+PCRE_MD5="62f02a76bb57a40bc66681760ed511d5"
 
 PCRE_win_VERSION="$PCRE_VERSION"
 PCRE_win_ARCHIVE="pcre-${PCRE_VERSION}.zip"
@@ -366,7 +366,7 @@ PCRE_win_MD5="update_me"
 # FreeImage: http://freeimage.sourceforge.net
 # (needed by CEGUI)
 
-# Actually 3.15.3 (defined in configure-template.ac):
+# Actually 3.15.4 (defined in configure-template.ac):
 FreeImage_VERSION="@FREEIMAGE_RECOMMENDED_VERSION@"
 
 # Ex: '3.15.1' must become '3151':
@@ -375,7 +375,7 @@ FreeImage_ARCHIVE_VERSION=`echo ${FreeImage_VERSION} | sed 's|\.||g'`
 FreeImage_ARCHIVE="FreeImage${FreeImage_ARCHIVE_VERSION}.zip"
 FreeImage_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/freeimage"
 FreeImage_ALTERNATE_DOWNLOAD_LOCATION=""
-FreeImage_MD5="6c305b4086500ff8541c596ea6fc7cd7"
+FreeImage_MD5="9f9a3b2c3c1b4fd24fe479e8aaee86b1"
 
 FreeImage_win_VERSION="$FreeImage_VERSION"
 FreeImage_win_ARCHIVE="FreeImage${FreeImage_ARCHIVE_VERSION}.zip"
@@ -387,12 +387,12 @@ FreeImage_win_MD5="update_me"
 
 # PhysicsFS: http://icculus.org/physfs/
 
-# Actually 2.0.2 (defined in configure-template.ac):
+# Actually 2.0.3 (defined in configure-template.ac):
 PhysicsFS_VERSION="@PHYSICSFS_RECOMMENDED_VERSION@"
-PhysicsFS_ARCHIVE="physfs-${PhysicsFS_VERSION}.tar.gz"
+PhysicsFS_ARCHIVE="physfs-${PhysicsFS_VERSION}.tar.bz2"
 PhysicsFS_DOWNLOAD_LOCATION="http://icculus.org/physfs/downloads"
 PhysicsFS_ALTERNATE_DOWNLOAD_LOCATION=""
-PhysicsFS_MD5="4e8927c3d30279b03e2592106eb9184a"
+PhysicsFS_MD5="c2c727a8a8deb623b521b52d0080f613"
 
 PhysicsFS_win_VERSION="$PhysicsFS_VERSION"
 PhysicsFS_win_ARCHIVE="${PhysicsFS_ARCHIVE}"
@@ -517,10 +517,10 @@ NoCashGBA_MD5="2f20d530a434a117e0aad4ae780ae86f"
 
 # Erlang: http://erlang.org
 
-Erlang_VERSION="R15B02"
+Erlang_VERSION="R16B"
 Erlang_ARCHIVE="otp_src_${Erlang_VERSION}.tar.gz"
 Erlang_DOWNLOAD_LOCATION="http://erlang.org/download"
-Erlang_MD5="ccbe5e032a2afe2390de8913bfe737a1"
+Erlang_MD5="7ee131515bc496e7522e0dec2a4c26e3"
 
 
 
@@ -540,7 +540,7 @@ egeoip_GIT_SERVER="github.com"
 
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
-# Version of Sunday, June 13, 2010:
+# Versions are changing silently and too frequently to be tracked.
 Geolite_MD5="update_me"
 
 
