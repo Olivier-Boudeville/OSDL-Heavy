@@ -10,8 +10,8 @@ usage="`basename $0` [--interactive]: executes all tests for OSDL in a row.
 
 
 # Please remember, when debugging on UNIX playTests.sh, to execute it from
-# *installed* version, but to modify the playTests.sh from *source* code, 
-# and to copy back the latter to the former.
+# *installed* version, but to modify the playTests.sh from *source* code, and to
+# copy back the latter to the former.
 
 
 # In batch (non-interactive) mode by default (0):
@@ -253,7 +253,7 @@ fi
 #echo "starting_dir = $starting_dir"
 
 # Suppose we are in the build tree: 
-loani_installations=`echo $starting_dir | sed 's|osdl/OSDL/trunk/test||1'`"../LOANI-installations"
+loani_installations=`echo $starting_dir | sed 's|osdl/OSDL/test||1'`"../LOANI-installations"
 	
 #echo "loani_installations = $loani_installations"
 
@@ -296,7 +296,7 @@ if [ `uname -s | cut -b1-6` = "CYGWIN" ] ; then
 	on_cygwin=0
 	DEBUG_INTERNAL "Running tests in the Windows (Cygwin) context."
 
-	shell_location="$loani_repository/ceylan/Ceylan/trunk/src/code/scripts/shell"
+	shell_location="$loani_repository/ceylan/Ceylan/src/code/scripts/shell"
 	
 else
 
@@ -323,10 +323,10 @@ findSupplementaryShellTools
 test_dir="tests-results-"`date '+%Y%m%d'`
 
 
-# Specifies the log plug the tests should be run with. 
-# Note: avoid using the classical plug because it may cause scheduling 
-# failures (ex: with testOSDLScheduler) because of its default synchronous 
-# file I/O). 
+# Specifies the log plug the tests should be run with.
+#
+# Note: avoid using the classical plug because it may cause scheduling failures
+# (ex: with testOSDLScheduler) because of its default synchronous file I/O).
 log_plug_option="--HTMLPlug"
 
 
@@ -340,8 +340,8 @@ fi
 
 
 
-# Apparently the ping utility provided by Cygwin is not able to send a 
-# given number of packets (neither '-n' nor '-c' is working):
+# Apparently the ping utility provided by Cygwin is not able to send a given
+# number of packets (neither '-n' nor '-c' is working):
 if [ $use_cygwin -eq 1 ] ; then
 
 	# Not on Cygwin, testing whether we are online (needed for DNS queries):
