@@ -44,6 +44,7 @@ using std::string ;
  * Sound directory is defined relatively to OSDL documentation tree, usually
  * this pathname relative to the install directory where this test executable
  * should lie is:
+ *
  * (to be reached from executable directory)
  *
  */
@@ -54,6 +55,7 @@ const std::string soundDirFromExec = "../../src/doc/web/common/sounds" ;
  * Sound directory is defined relatively to OSDL documentation tree, usually
  * this pathname relative to the install directory where this test executable
  * should lie is:
+ *
  * (to be reached from OSDL/OSDL-${OSDL_VERSION}/src/code)
  *
  */
@@ -87,8 +89,6 @@ int main( int argc, char * argv[] )
 
 	  LogPlug::info( "Testing basic SDL_mixer" ) ;
 
-	  bool isBatch = false ;
-
 	  std::string executableName ;
 	  std::list<std::string> options ;
 
@@ -109,14 +109,12 @@ int main( int argc, char * argv[] )
 		if ( token == "--batch" )
 		{
 		  LogPlug::info( "Batch mode selected" ) ;
-		  isBatch = true ;
 		  tokenEaten = true ;
 		}
 
 		if ( token == "--interactive" )
 		{
 		  LogPlug::info( "Interactive mode selected" ) ;
-		  isBatch = false ;
 		  tokenEaten = true ;
 		}
 

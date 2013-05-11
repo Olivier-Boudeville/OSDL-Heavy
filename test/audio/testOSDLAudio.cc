@@ -52,8 +52,6 @@ int main( int argc, char * argv[] )
 	  LogPlug::info( "Testing OSDL audio basic services." ) ;
 
 
-	  bool isBatch = false ;
-
 	  std::string executableName ;
 	  std::list<std::string> options ;
 
@@ -75,14 +73,12 @@ int main( int argc, char * argv[] )
 		{
 
 		  LogPlug::info( "Batch mode selected" ) ;
-		  isBatch = true ;
 		  tokenEaten = true ;
 		}
 
 		if ( token == "--interactive" )
 		{
 		  LogPlug::info( "Interactive mode selected" ) ;
-		  isBatch = false ;
 		  tokenEaten = true ;
 		}
 
@@ -167,11 +163,6 @@ int main( int argc, char * argv[] )
 		"which results in a mean theoritical latency of "
 		+ Ceylan::toString( latency ) + " milliseconds." ) ;
 
-
-	  /*
-		if ( ! isBatch )
-		myEvents.waitForAnyKey() ;
-	  */
 
 	  LogPlug::info( "Stopping OSDL." ) ;
 	  OSDL::stop() ;

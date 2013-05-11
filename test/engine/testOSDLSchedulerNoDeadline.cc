@@ -114,6 +114,7 @@ public:
 
   virtual void onSkip( Events::SimulationTick newTick ) throw()
   {
+	
 	LogPlug::warning( "SchedulerStopper::onSkip: the simulation tick "
 	  + Ceylan::toString( newTick ) + " had been skipped !" ) ;
 
@@ -123,8 +124,8 @@ public:
 
 
   /**
-   * This pure method of EventListener is inherited since ActiveObjects
-   * are Model instances.
+   * This pure method of EventListener is inherited since ActiveObjects are
+   * Model instances.
    *
    */
   virtual void beNotifiedOf( const Ceylan::Event & newEvent ) throw()
@@ -169,8 +170,6 @@ int main( int argc, char * argv[] )
 	  Events::SimulationTick stopTick = 30 * 100 ;
 
 
-	  bool isBatch = false ;
-
 	  std::string executableName ;
 	  std::list<std::string> options ;
 
@@ -192,11 +191,10 @@ int main( int argc, char * argv[] )
 		{
 
 		  LogPlug::info( "Batch mode selected" ) ;
-		  isBatch = true ;
 
 		  /*
-		   * Will stop the scheduler after 2 seconds
-		   * (200 simulation ticks, since logic frequency is 100 Hz here).
+		   * Will stop the scheduler after 2 seconds (200 simulation ticks,
+		   * since logic frequency is 100 Hz here).
 		   *
 		   */
 		  stopTick = 2*100 ;
@@ -208,7 +206,6 @@ int main( int argc, char * argv[] )
 		if ( token == "--interactive" )
 		{
 		  LogPlug::info( "Interactive mode selected" ) ;
-		  isBatch = false ;
 		  tokenEaten = true ;
 		}
 

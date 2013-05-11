@@ -67,9 +67,6 @@ int main( int argc, char * argv[] )
 
 	  LogPlug::info( "Testing OSDL resource management." ) ;
 
-
-	  bool isBatch = false ;
-
 	  std::string executableName ;
 	  std::list<std::string> options ;
 
@@ -91,14 +88,12 @@ int main( int argc, char * argv[] )
 		{
 
 		  LogPlug::info( "Batch mode selected" ) ;
-		  isBatch = true ;
 		  tokenEaten = true ;
 		}
 
 		if ( token == "--interactive" )
 		{
 		  LogPlug::info( "Interactive mode selected" ) ;
-		  isBatch = false ;
 		  tokenEaten = true ;
 		}
 

@@ -162,9 +162,6 @@ int main( int argc, char * argv[] )
 		ColorDefinition green = Pixels::convertRGBAToColorDefinition( 0,
 		  255, 0, 128 ) ;
 
-		ColorDefinition blue  = Pixels::convertRGBAToColorDefinition( 0,
-		  0, 255, 128 ) ;
-
 		// Both green must look the same:
 		screen.drawCircle( 550, 400, 80, green, /* filled */ true ) ;
 
