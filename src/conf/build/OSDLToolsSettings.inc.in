@@ -333,8 +333,8 @@ Agar_win_MD5=""
 # Actually 0.7.9 (defined in configure-template.ac):
 CEGUI_VERSION="@CEGUI_RECOMMENDED_VERSION@"
 CEGUI_ARCHIVE="CEGUI-${CEGUI_VERSION}.tar.gz"
-CEGUI_DOWNLOAD_LOCATION="http://sourceforge.net/projects/crayzedsgui/files/CEGUI%20Mk-2/${CEGUI_VERSION}/${CEGUI_ARCHIVE}"
-CEGUI_ALTERNATE_DOWNLOAD_LOCATION="http://freefr.dl.sourceforge.net/project/crayzedsgui/CEGUI%20Mk-2/${CEGUI_VERSION}/${CEGUI_ARCHIVE}"
+CEGUI_DOWNLOAD_LOCATION="http://sourceforge.net/projects/crayzedsgui/files/CEGUI%20Mk-2/${CEGUI_VERSION}"
+CEGUI_ALTERNATE_DOWNLOAD_LOCATION="http://freefr.dl.sourceforge.net/project/crayzedsgui/CEGUI%20Mk-2/${CEGUI_VERSION}"
 CEGUI_MD5="a8b682daf82e383edc169c2e6eb2b321"
 
 CEGUI_win_VERSION="$CEGUI_VERSION"
@@ -351,8 +351,8 @@ CEGUI_win_MD5="update_me"
 # Actually 8.32 (defined in configure-template.ac):
 PCRE_VERSION="@PCRE_RECOMMENDED_VERSION@"
 PCRE_ARCHIVE="pcre-${PCRE_VERSION}.tar.bz2"
-PCRE_DOWNLOAD_LOCATION="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/"
-PCRE_ALTERNATE_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/project/pcre/pcre/$PCRE_VERSION/pcre-$PCRE_VERSION.tar.bz2"
+PCRE_DOWNLOAD_LOCATION="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre"
+PCRE_ALTERNATE_DOWNLOAD_LOCATION="http://downloads.sourceforge.net/project/pcre/pcre/$PCRE_VERSION"
 PCRE_MD5="62f02a76bb57a40bc66681760ed511d5"
 
 PCRE_win_VERSION="$PCRE_VERSION"
