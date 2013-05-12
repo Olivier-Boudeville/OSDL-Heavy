@@ -66,7 +66,8 @@ starting_time=`date '+%H:%M:%S'`
 # OSDL or Orge installed). Used to test LOANI or during Sourceforge outages.
 #
 #   --noVCS: do not retrieve anything from VCS, merely used for LOANI debugging
-# (variable: no_vcs)
+# (useful to fix prerequisites without downloading again and again Ceylan and
+# OSDL (variable: no_vcs).
 #
 if [ "$1" = "-h" -o "$1" = "--help" ] ; then
 	echo "$HELP"
