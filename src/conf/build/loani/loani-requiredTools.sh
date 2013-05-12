@@ -84,7 +84,11 @@ else
 	# SDL_gfx (which was just after SDL_image) was removed, due to build
 	# problems with the 2.0.22 version (m4-related).
 	#  
-	REQUIRED_TOOLS="libtool SDL libjpeg SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
+	# As of May 2013, we removed also 'libjpeg' as SDL_image will always pick
+	# the one of the system (ex: 8) instead of ours (ex: 9), resulting in 'JPEG
+	# loading error' crashes at runtime.
+	#  
+	REQUIRED_TOOLS="libtool SDL SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -1832,6 +1836,15 @@ generateSDL_image()
 			export LDFLAGS
 
 		else
+
+			# Looking at the configure.in of SDL_image, we see that no matter
+			# what we can specify, it will select the libjpeg of the system (ex:
+			# 8) instead of any one installed by LOANI (ex: 9); see the find_lib
+			# fonction. Hence we'd better not even try to install libjpeg by
+			# ourselves.
+
+			LDFLAGS=${LIBFLAG}
+			export LDFLAGS
 
 			# --disable-sdltest added since configure tries to compile a test
 			# without letting the system libraries locations to be
