@@ -4153,6 +4153,13 @@ prepareFreeImage()
 	cd $repository
 
 	{
+
+		if [ -e "FreeImage-${FreeImage_VERSION}" ] ; then
+
+			/bin/rm -rf "FreeImage-${FreeImage_VERSION}"
+
+		fi
+
 		${UNZIP} -o "${FreeImage_ARCHIVE}" && ${MV} -f FreeImage "FreeImage-${FreeImage_VERSION}"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
@@ -4189,16 +4196,20 @@ generateFreeImage()
 
 	# We had to add a permissive flag, otherwise gcc will stop on error in
 	# various places:
+	${CAT} Makefile.gnu | ${SED} 's|^CFLAGS += \$(INCLUDE)|CFLAGS += \$(INCLUDE) -fpermissive|1' | ${SED} 's|^CXXFLAGS += \$(INCLUDE)|CXXFLAGS += \$(INCLUDE) -fpermissive|1' > Makefile.gnu.tmp
+
+	${MV} -f Makefile.gnu.tmp Makefile.gnu
 
 	if [ -n "$prefix" ] ; then
 	{
 
-		setBuildEnv CFLAGS="-fPIC -fexceptions -fvisibility=hidden -DNO_LCMS -fpermissive" CXXFLAGS="-O3 -fPIC -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -fpermissive" ${MAKE}
+		setBuildEnv ${MAKE}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
 	{
-		setBuildEnv CFLAGS="-fPIC -fexceptions -fvisibility=hidden -DNO_LCMS -fpermissive" CXXFLAGS="-O3 -fPIC -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -fpermissive" ${MAKE}
+
+		setBuildEnv ${MAKE}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
