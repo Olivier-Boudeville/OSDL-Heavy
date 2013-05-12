@@ -4187,15 +4187,18 @@ generateFreeImage()
 
 	printItem "building"
 
+	# We had to add a permissive flag, otherwise gcc will stop on error in
+	# various places:
+
 	if [ -n "$prefix" ] ; then
 	{
 
-		setBuildEnv ${MAKE}
+		setBuildEnv CFLAGS="-fPIC -fexceptions -fvisibility=hidden -DNO_LCMS -fpermissive" CXXFLAGS="-O3 -fPIC -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -fpermissive" ${MAKE}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
 	{
-		setBuildEnv ${MAKE}
+		setBuildEnv CFLAGS="-fPIC -fexceptions -fvisibility=hidden -DNO_LCMS -fpermissive" CXXFLAGS="-O3 -fPIC -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -fpermissive" ${MAKE}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
