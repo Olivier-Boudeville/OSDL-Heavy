@@ -32,11 +32,11 @@ LOANI_INSTALL_DIR    = @LOANI_INSTALL_DIR@
 
 # Where the Ceylan source archive is, so that its MD5 sum can be computed:
 CEYLAN_RELEASE = \
-	$(LOANI_REPOSITORY_DIR)/ceylan/Ceylan/trunk/@CEYLAN_CURRENT_SOURCE_ARCHIVE@
+	$(LOANI_REPOSITORY_DIR)/ceylan/Ceylan/@CEYLAN_CURRENT_SOURCE_ARCHIVE@
 
 # Where the OSDL source archive is, so that its MD5 sum can be computed:
 OSDL_RELEASE = \
-	$(LOANI_REPOSITORY_DIR)/osdl/OSDL/trunk/@OSDL_CURRENT_SOURCE_ARCHIVE@
+	$(LOANI_REPOSITORY_DIR)/osdl/OSDL/@OSDL_CURRENT_SOURCE_ARCHIVE@
 
 
 # Where helper scripts for LOANI should be found:
