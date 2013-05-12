@@ -18,7 +18,7 @@ latest_stable_osdl="release-0.5.0"
 # guichan/guichan_win not listed, since has been deprecated here by Agar.
 
 # Note: if this list is to be updated, update as well:
-# osdl/OSDL/trunk/src/conf/build/loani/update-LOANI-mirror.sh
+# osdl/OSDL/src/conf/build/loani/update-LOANI-mirror.sh
 
 
 if [ $is_windows -eq 0 ] ; then
@@ -6941,7 +6941,7 @@ generateCeylan()
 	if [ ${use_vcs} -eq 0 ]; then
 
 		# Here, fin this source tree, we need to generate the build system:
-		cd $repository/ceylan/Ceylan/trunk/src/conf/build
+		cd $repository/ceylan/Ceylan/src/conf/build
 		{
 			setBuildEnv ./autogen.sh --no-build
 		} 1>>"$LOG_OUTPUT" 2>&1
@@ -7168,7 +7168,7 @@ prepareCeylan_win()
 	${MKDIR} -p ${ceylan_install_dir}
 
 	# LOANI's version preferred to SVN's one for ease of debugging:
-ceylan_solution_dir="$repository/ceylan/Ceylan/trunk/src/conf/build/visual-express"
+	ceylan_solution_dir="$repository/ceylan/Ceylan/src/conf/build/visual-express"
 
 	${CP} -f "${WINDOWS_SOLUTIONS_ROOT}"/Ceylan-from-LOANI/* ${ceylan_solution_dir}
 	if [ $? != 0 ] ; then
@@ -7190,7 +7190,7 @@ generateCeylan_win()
 	if [ ${use_svn} -eq 0 ]; then
 
 		# Here we are in the SVN tree:
-		cd $repository/ceylan/Ceylan/trunk
+		cd $repository/ceylan/Ceylan
 
 	else
 
@@ -7607,7 +7607,7 @@ generateOSDL()
 	if [ ${use_svn} -eq 0 ]; then
 
 		# Here we are in the SVN tree, needing to generate the build system:
-		cd $repository/osdl/OSDL/trunk/src/conf/build
+		cd $repository/osdl/OSDL/src/conf/build
 
 		if [ -n "$Ceylan_PREFIX" ] ; then
 			{
@@ -7627,7 +7627,7 @@ generateOSDL()
 		fi
 
 		# Going to the root of the source to continue the normal build process:
-		cd $repository/osdl/OSDL/trunk
+		cd $repository/osdl/OSDL
 
 	else
 
@@ -7887,7 +7887,7 @@ prepareOSDL_win()
 	osdl_install_dir="${alternate_prefix}/OSDL-${OSDL_win_VERSION}"
 	${MKDIR} -p ${osdl_install_dir}
 
-osdl_solution_dir="$repository/osdl/OSDL/trunk/src/conf/build/visual-express"
+	osdl_solution_dir="$repository/osdl/OSDL/src/conf/build/visual-express"
 
 	# LOANI's version preferred to SVN's LOANI one for ease of debugging,
 	# copies OSDL* (sln/vcproj/vsprops etc.) from LOANI to their place in SVN:
@@ -7910,7 +7910,7 @@ generateOSDL_win()
 	if [ ${use_svn} -eq 0 ]; then
 
 		# Here we are in the SVN tree:
-		cd $repository/osdl/OSDL/trunk
+		cd $repository/osdl/OSDL
 
 	else
 

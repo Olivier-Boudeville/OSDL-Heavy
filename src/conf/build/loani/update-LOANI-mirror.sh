@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Expected to be run from its directory (osdl/OSDL/trunk/src/conf/build/loani).
+# Expected to be run from its directory (osdl/OSDL/src/conf/build/loani).
 
 mirror_host="ftp.esperide.com"
 

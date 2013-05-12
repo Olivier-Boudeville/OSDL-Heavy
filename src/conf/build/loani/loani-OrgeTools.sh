@@ -734,56 +734,55 @@ getOrge()
 
 	DEBUG "Getting Orge..."
 
-	declareRetrievalBegin "Orge (from SVN)"
+	# We prefer using VCS here:
+	# (simplified version of getCeylan in loani-requiredTools.sh)
+
+	declareRetrievalBegin "Orge (from ${current_vcs})"
 
 	# To avoid a misleading message when the retrieval is finished:
-	Orge_ARCHIVE="from SVN"
+	Orge_ARCHIVE="from ${current_vcs}"
+
+	# Orge corresponds somewhat to OSDL-Erlang.
 
 	cd ${repository}
 
-	# Not in osdl any more, in OSDL-Erlang:
-	manage_package_backup OSDL-Erlang/Orge
+	CHECKOUT_LOCATION="OSDL-Erlang/Orge"
 
-	${MKDIR} -p OSDL-Erlang/Orge
+	${MKDIR} -p ${CHECKOUT_LOCATION}
 
-	cd OSDL-Erlang/Orge
+	cd OSDL-Erlang
 
-	SVN_URL="svnroot/osdl/Orge/trunk"
-
-	base_svn_url="http://${OSDL_SVN_SERVER}/${SVN_URL}"
+	base_url="git.code.sf.net/p/osdl"
 
 	if [ $developer_access -eq 0 ] ; then
 
-		user_opt="--username=${developer_name}"
-
-		DISPLAY "      ----> getting Orge from SVN with user name ${developer_name} (check-out)"
-
-		svn_command="co"
-
+		DISPLAY "      ----> getting Orge from ${current_vcs} with user name ${developer_name}"
+		protocol="ssh"
+		base_url="${developer_name}@${base_url}"
+		
 	else
 
-		# Not really supported, http should be used, not https...
-
-		user_opt=""
-
-		DISPLAY "      ----> getting Orge from anonymous SVN (export)"
-
-		svn_command="export"
+		DISPLAY "      ----> getting Orge from ${current_vcs} (read-only)"
+		protocol="git"
 
 	fi
 
 	LOG_STATUS "Getting Orge in the source directory ${repository}..."
 
+
+	# Manage back-up if necessary:
+	manage_package_backup orge
+
 	{
 
-		${SVN} ${svn_command} ${base_svn_url} ${user_opt}
-
+		${GIT} clone ${protocol}://${base_url}/orge orge
+		
 	} 1>>"$LOG_OUTPUT" 2>&1
-
+	
 	if [ ! $? -eq 0 ] ; then
-
-		ERROR "Unable to retrieve Orge from SVN."
-		exit 20
+		
+		ERROR "Unable to retrieve Orge from VCS (using $protocol)."
+		exit 40
 
 	fi
 
@@ -802,7 +801,7 @@ prepareOrge()
 
 	printItem "extracting"
 
-	# Nothing to do, as sources were already retrieved from SVN.
+	# Nothing to do, as sources were already retrieved from VCS.
 
 	printOK
 
@@ -822,22 +821,7 @@ generateOrge()
 	printItem "building"
 
 
-	cd ${repository}/OSDL-Erlang/Orge/trunk
-
-	# Dead symbolic link, as the rest of the Ceylan tree has not been
-	# retrieved:
-	rules_dead_link="doc/GNUmakerules-docutils.inc"
-
-	if [ -h "${rules_dead_link}" ] ; then
-
-		${RM} "${rules_dead_link}"
-
-	fi
-
-	touch "${rules_dead_link}"
-
-
-	cd ${repository}/OSDL-Erlang/Orge/trunk/src/code
+	cd ${repository}/OSDL-Erlang/orge/src/code
 
 	{
 
@@ -858,7 +842,7 @@ generateOrge()
 	{
 
 		# Not wanting install-doc:
-		cd ${repository}/OSDL-Erlang/Orge/trunk && ${MAKE} install-prod INSTALLATION_PREFIX="${prefix}/Orge" && cd ..
+		cd ${repository}/${CHECKOUT_LOCATION} && ${MAKE} install-prod INSTALLATION_PREFIX="${prefix}/Orge" && cd ..
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 
