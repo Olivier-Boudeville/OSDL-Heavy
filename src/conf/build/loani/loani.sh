@@ -31,7 +31,7 @@ Options:
 	-q or --quiet		 : avoid being too verbose
 	-w or --wizard		 : enter wizard interactive mode, so that questions are asked to configure
 	-u or --useVCS           : retrieve Ceylan and OSDL from our Version Control System ($current_vcs), instead of downloading prepackaged source archives
-	-c or --choose-vcs-head       : retrieve current head of $current_vcs for Ceylan and OSDL, instead of the latest tagged stable release (implies --useVCS)
+	-c or --choose-vcs-head  : retrieve current head of $current_vcs for Ceylan and OSDL, instead of the latest tagged stable release (implies --useVCS)
 	--sourceforge <user name>: uses SourceForge developer access to retrieve projects from $current_vcs (implies --choose-vcs-head)
 	--buildTools		 : retrieve and install common build tools too (ex: gcc, binutils, gdb)
 	--optionalTools		 : retrieve and install optional tools too (ex: doxygen, dot, tidy)
@@ -1302,17 +1302,22 @@ if [ $no_vcs -eq 1 ] ; then
 			ERROR "No SVN tool found, whereas SVN retrieval was needed."
 			exit 15
 		fi
+		
 	fi
 
-		if findTool git ; then
-			GIT=$returnedString
-		else
-			ERROR "No GIT tool found, whereas GIT retrieval was needed."
-			exit 16
-		fi
+	if findTool git ; then
+		
+		GIT=$returnedString
+		
+	else
+		
+		ERROR "No GIT tool found, whereas GIT retrieval was needed."
+		exit 16
+			
 	fi
-
+	
 fi
+
 
 
 
