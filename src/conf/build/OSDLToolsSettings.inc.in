@@ -37,11 +37,18 @@ SDL_win_MD5="7e1d793751d2b2d93b33655e4f4b0f96"
 
 # JPEG library (libjpeg.so): http://www.ijg.org/
 
-libjpeg_VERSION="9"
+# Note: not currently used, as SDL_image will pick anyway the version of the
+# system, which results in crashes.
+
+#libjpeg_VERSION="9"
+libjpeg_VERSION="8d"
+
 libjpeg_ARCHIVE="jpegsrc.v${libjpeg_VERSION}.tar.gz"
 libjpeg_DOWNLOAD_LOCATION="ftp://ftp.uu.net/graphics/jpeg"
 libjpeg_ALTERNATE_DOWNLOAD_LOCATION="http://www.ijg.org/files"
-libjpeg_MD5="b397211ddfd506b92cd5e02a22ac924d"
+
+#libjpeg_MD5="b397211ddfd506b92cd5e02a22ac924d"
+libjpeg_MD5="52654eb3b2e60c35731ea8fc87f1bd29"
 
 # Same archive for Windows actually:
 libjpeg_win_VERSION="$libjpeg_VERSION"
