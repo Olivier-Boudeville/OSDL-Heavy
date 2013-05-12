@@ -16,8 +16,8 @@
 
 # Updating retrieve list:
 
-# Note: if this list is to be updated, update as well:
-# osdl/OSDL/trunk/src/conf/build/loani/update-LOANI-mirror.sh
+# Note: if this list is to be updated, update as well
+# osdl/OSDL/src/conf/build/loani/update-LOANI-mirror.sh
 
 if [ $is_windows -eq 0 ] ; then
 

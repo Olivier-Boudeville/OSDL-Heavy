@@ -11,7 +11,8 @@
 # with libtool, md5sum not constant since no version number provided)
 
 # Note: if this list is to be updated, update as well:
-# osdl/OSDL/trunk/src/conf/build/loani/update-LOANI-mirror.sh
+# osdl/OSDL/src/conf/build/loani/update-LOANI-mirror.sh
+#
 OPTIONAL_TOOLS="dot doxygen"
 
 

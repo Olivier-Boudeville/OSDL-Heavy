@@ -1813,7 +1813,7 @@ done
 # Manages set_env too:
 
 if [ $set_env -eq 0 ] ; then
-	RETRIEVE_SCRIPT="${repository}/ceylan/Ceylan/trunk/src/conf/environment/retrieveEnvironment.sh"
+	RETRIEVE_SCRIPT="${repository}/ceylan/Ceylan/src/conf/environment/retrieveEnvironment.sh"
 	DISPLAY "Modifying environment to have it be developer-friendly."
 	if [ ! -x "$RETRIEVE_SCRIPT" ] ; then
 		ERROR "Unable to modify environment to have it be developer-friendly: script $RETRIEVE_SCRIPT not found or not executable."
