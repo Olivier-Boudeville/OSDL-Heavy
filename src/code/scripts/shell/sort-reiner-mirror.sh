@@ -12,15 +12,15 @@ ERROR_OUTPUT="2>/dev/null"
 
 # Recommended usage:
 # 1. Perform a very slow wget (to avoid disturbing anybody) on Reiner's site:
-# wget --limit-rate=10k --wait=5 --random-wait --retry-connrefused --recursive --level=10 --reject 'M_*.zip' --exclude-directories=forum http://reinerstileset.4players.de 
+# wget --limit-rate=10k --wait=5 --random-wait --retry-connrefused --recursive --level=10 --reject 'M_*.zip' --exclude-directories=forum http://reinerstileset.4players.de
 # 2. Archive it in ~/Archive/Content/<date>-reiners-tileset-mirror.tar.bz2
-# 3. Extract a copy of this archive to be used here as Reiner's mirror 
+# 3. Extract a copy of this archive to be used here as Reiner's mirror
 # (its content will be removed)
 
 if [ ! $# -eq 2 ] ; then
 	echo "
 	Error, two arguments expected. $USAGE
-	
+
 	" 1>&2
 	exit 1
 fi
@@ -30,7 +30,7 @@ MIRROR_ROOT="$1"
 if [ ! -d "${MIRROR_ROOT}" ] ; then
 	echo "
 	Error, no directory named <${MIRROR_ROOT}> exists for mirror. $USAGE
-	
+
 	" 1>&2
 	exit 2
 fi
@@ -47,11 +47,11 @@ fi
 if [ ! -d "${TARGET_ROOT}" ] ; then
 	echo "
 	Error, no directory named <${TARGET_ROOT}> exists for target repository. $USAGE
-	
+
 	" 1>&2
 	exit 3
 fi
-	
+
 
 # Look in Ceylan sources:
 CEYLAN_LOANI_OFFSET="../../../../../../../ceylan/Ceylan/trunk/src/code/scripts/shell/"
@@ -64,7 +64,7 @@ cd ${MIRROR_ROOT}
 if [ ! -x "${CORRECTER}" ] ; then
 	echo "
 	Error, no executable correcter script found (searched ${CORRECTER}).
-	
+
 	" 1>&2
 	exit 5
 
@@ -82,7 +82,7 @@ fi
 echo "
 
 	Will sort Reiner's tileset mirror now...
-	
+
 	"
 
 echo "  + removing non-wanted content"
@@ -107,8 +107,8 @@ echo "    - correcting underscores #1"
 # 'T ' became 'T-', we want 'T_' for uniformity:
 for f in `find . -name 'T-*.zip'` ; do
 	corrected=`echo $f | tr '-' '_'`
-	${MV} -f $f $corrected	
-done 
+	${MV} -f $f $corrected
+done
 
 echo "    - correcting underscores #2"
 # No 'Tgrundvari.zip', we want 'T_grundvari.zip':
@@ -118,7 +118,7 @@ for f in `find . -depth -name 'T*.zip'` ; do
 		corrected=`echo $f | sed 's|^./T|./T_|1'`
 		${MV} -f $f $corrected
 	fi
-done 
+done
 
 
 # Rename for convenience some files:
@@ -494,100 +494,100 @@ ${MKDIR} ${GUI}
 
 # Transfer rules:
 
-${MV} sounds/*   ${SOUND_ROOT} 
-${MV} sprites/*  ${SPRITES} 
-${MV} tilesets/* ${TILESETS} 
+${MV} sounds/*   ${SOUND_ROOT}
+${MV} sprites/*  ${SPRITES}
+${MV} tilesets/* ${TILESETS}
 ${RMDIR} sounds sprites tilesets
 
-${MV} *menu* *button* *gui* *butscr* *levelup* *pointrunes* ${GUI}  
+${MV} *menu* *button* *gui* *butscr* *levelup* *pointrunes* ${GUI}
 
 
 # Creatures:
 
-${MV} *groggy* ${CREATURES} 
+${MV} *groggy* ${CREATURES}
 
 
 # Humans:
 
-${MV} *flying_soul*    ${HUMANS} 
+${MV} *flying_soul*    ${HUMANS}
 
-${MV} *archer*          ${ARCHERS} 
-${MV} *baker.*          ${BAKERS} 
-${MV} *barbar*          ${BARBARIANS} 
-${MV} *beekeeper*       ${BEEKEEPERS} 
-${MV} *boy* *girl*      ${CHILDREN} 
-${MV} *builder*         ${BUILDERS} 
-${MV} *carrier*         ${CARRIERS} 
-${MV} *caveman*         ${CAVEMEN} 
-${MV} *doc.*            ${DOCTORS} 
-${MV} *farmer*          ${FARMERS} 
-${MV} *fisherman*       ${FISHERMEN} 
-${MV} *hunter*          ${HUNTERS} 
-${MV} *knight*          ${KNIGHTS} 
-${MV} *konig* *prince*  ${ROYALTY} 
-${MV} *lumberjack*      ${LUMBERJACKS} 
-${MV} *mage* *magier*   ${MAGES} 
-${MV} *miller*          ${MILLERS} 
-${MV} *miner*           ${MINERS} 
-${MV} *monk*            ${MONKS} 
-${MV} *ninja*           ${NINJAS} 
-${MV} *pirsa* *nobeard* ${PIRATES} 
-${MV} *professor*       ${PROFESSORS} 
-${MV} *_smith.*         ${SMITHS} 
-${MV} *soldier*         ${SOLDIERS} 
-${MV} *swordsman*       ${SWORDSMEN} 
-${MV} *thief*           ${THIEVES} 
+${MV} *archer*          ${ARCHERS}
+${MV} *baker.*          ${BAKERS}
+${MV} *barbar*          ${BARBARIANS}
+${MV} *beekeeper*       ${BEEKEEPERS}
+${MV} *boy* *girl*      ${CHILDREN}
+${MV} *builder*         ${BUILDERS}
+${MV} *carrier*         ${CARRIERS}
+${MV} *caveman*         ${CAVEMEN}
+${MV} *doc.*            ${DOCTORS}
+${MV} *farmer*          ${FARMERS}
+${MV} *fisherman*       ${FISHERMEN}
+${MV} *hunter*          ${HUNTERS}
+${MV} *knight*          ${KNIGHTS}
+${MV} *konig* *prince*  ${ROYALTY}
+${MV} *lumberjack*      ${LUMBERJACKS}
+${MV} *mage* *magier*   ${MAGES}
+${MV} *miller*          ${MILLERS}
+${MV} *miner*           ${MINERS}
+${MV} *monk*            ${MONKS}
+${MV} *ninja*           ${NINJAS}
+${MV} *pirsa* *nobeard* ${PIRATES}
+${MV} *professor*       ${PROFESSORS}
+${MV} *_smith.*         ${SMITHS}
+${MV} *soldier*         ${SOLDIERS}
+${MV} *swordsman*       ${SWORDSMEN}
+${MV} *thief*           ${THIEVES}
 
 
 # Named characters:
 
-${MV} *anna*  ${ANNA} 
-${MV} *arno*  ${ARNO} 
-${MV} *billy* ${BILLY} 
-${MV} *bjorn* ${BJORN} 
-${MV} *burra* ${BURRA} 
-${MV} *elsa*  ${ELSA} 
-${MV} *freya* ${FREYA} 
-${MV} *horst* ${HORST} 
-${MV} *john_doe_santa* ${JOHN} 
-${MV} *katie* ${KATIE} 
-${MV} *lilly* ${LILLY} 
-${MV} *luigi* ${LUIGI} 
-${MV} *luzia* ${LUZIA} 
-${MV} *mrs_ruin* ${MRSRUIN} 
-${MV} *rosalila* ${ROSALILA} 
-${MV} *stan*  ${STAN} 
-${MV} *vlad*  ${VLAD} 
-${MV} *willy* ${WILLY} 
+${MV} *anna*  ${ANNA}
+${MV} *arno*  ${ARNO}
+${MV} *billy* ${BILLY}
+${MV} *bjorn* ${BJORN}
+${MV} *burra* ${BURRA}
+${MV} *elsa*  ${ELSA}
+${MV} *freya* ${FREYA}
+${MV} *horst* ${HORST}
+${MV} *john_doe_santa* ${JOHN}
+${MV} *katie* ${KATIE}
+${MV} *lilly* ${LILLY}
+${MV} *luigi* ${LUIGI}
+${MV} *luzia* ${LUZIA}
+${MV} *mrs_ruin* ${MRSRUIN}
+${MV} *rosalila* ${ROSALILA}
+${MV} *stan*  ${STAN}
+${MV} *vlad*  ${VLAD}
+${MV} *willy* ${WILLY}
 
 # Animals:
 
-${MV} *donkey* *bat.* *chicken* *cow* *crow* *deer* *_mouse.* *rabbit* *roebuck* *rooster* *schwein* ${ANIMALS} 
+${MV} *donkey* *bat.* *chicken* *cow* *crow* *deer* *_mouse.* *rabbit* *roebuck* *rooster* *schwein* ${ANIMALS}
 
-${MV} *dragonfly* *butterfly* ${INSECTS} 
-${MV} *fish*   ${FISH} 
-${MV} *wasp*   ${WASPS} 
-${MV} *spider* ${SPIDERS} 
-${MV} *wolf*   ${WOLVES} 
-${MV} *lion*   ${LIONS} 
-${MV} *sheep*  ${SHEEP} 
+${MV} *dragonfly* *butterfly* ${INSECTS}
+${MV} *fish*   ${FISH}
+${MV} *wasp*   ${WASPS}
+${MV} *spider* ${SPIDERS}
+${MV} *wolf*   ${WOLVES}
+${MV} *lion*   ${LIONS}
+${MV} *sheep*  ${SHEEP}
 
 # Monsters:
 
-${MV} *doteater*     ${DOTEATERS} 
+${MV} *doteater*     ${DOTEATERS}
 
-${MV} *devil* *ogre* *fairy* *skull* *ghost* *theorc* *mummy* *mushy* *puff* *Sworm* ${MONSTERS} 
+${MV} *devil* *ogre* *fairy* *skull* *ghost* *theorc* *mummy* *mushy* *puff* *Sworm* ${MONSTERS}
 
-${MV} *dragon*       ${DRAGONS} 
-${MV} *dwarf*        ${DWARVES} 
-${MV} *gnome*        ${GNOMES} 
-${MV} *troll*        ${TROLLS} 
-${MV} *zombie*       ${ZOMBIES} 
-${MV} *ratz*         ${RATS} 
-${MV} *dino* *pteri* ${DINOSAURS} 
-${MV} *mister_eye*   ${CYCLOPS} 
-${MV} *crocy* *swampthing* ${REPTILES} 
-${MV} *skel* *mister_death* ${SKELETONS} 
+${MV} *dragon*       ${DRAGONS}
+${MV} *dwarf*        ${DWARVES}
+${MV} *gnome*        ${GNOMES}
+${MV} *troll*        ${TROLLS}
+${MV} *zombie*       ${ZOMBIES}
+${MV} *ratz*         ${RATS}
+${MV} *dino* *pteri* ${DINOSAURS}
+${MV} *mister_eye*   ${CYCLOPS}
+${MV} *crocy* *swampthing* ${REPTILES}
+${MV} *skel* *mister_death* ${SKELETONS}
 
 
 
@@ -595,76 +595,75 @@ ${MV} *skel* *mister_death* ${SKELETONS}
 
 
 # Weapons:
-${MV} *cannon* *arrow* *tnt* *ammo* *pickup_weapon* *rotating_spike* *spear_catapult* ${WEAPONS} 
- 
-# Mechanisms: 
-${MV} *mecha* *lever* *rotating_switch* ${MECHANISMS} 
+${MV} *cannon* *arrow* *tnt* *ammo* *pickup_weapon* *rotating_spike* *spear_catapult* ${WEAPONS}
+
+# Mechanisms:
+${MV} *mecha* *lever* *rotating_switch* ${MECHANISMS}
 
 # Traps:
-${MV} *trap* *mines* *spikefield* *spiketrench* ${TRAPS} 
+${MV} *trap* *mines* *spikefield* *spiketrench* ${TRAPS}
 
 # Intangible:
-${MV} *flamewall* *aura* *feuer* *bubble* *leafstorm* *magic_ani* ${INTANGIBLE} 
+${MV} *flamewall* *aura* *feuer* *bubble* *leafstorm* *magic_ani* ${INTANGIBLE}
 
 # Pieces of furniture:
-${MV} *beds* *carpet* *chest* *door* *furniture* *hedge_column* *keycolumn* *kitchen* *library* *pool_* *Sdrahomix* *shelfes* *shops_2* *throne_room* ${FURNITURE} 
+${MV} *beds* *carpet* *chest* *door* *furniture* *hedge_column* *keycolumn* *kitchen* *library* *pool_* *Sdrahomix* *shelfes* *shops_2* *throne_room* ${FURNITURE}
 
-${MV} *doormask* *wallpictures* *objects* *fields* *box* *item* *scare* *things* *gym* *lantern* *pickup_armor* *pickup_strategy* *_barrel* *rolling_stone* *sarkophag* *soulstones* *stoneheap* ${OBJECTS} 
+${MV} *doormask* *wallpictures* *objects* *fields* *box* *item* *scare* *things* *gym* *lantern* *pickup_armor* *pickup_strategy* *_barrel* *rolling_stone* *sarkophag* *soulstones* *stoneheap* ${OBJECTS}
 
 
 # Vehicles:
 
 # Boats:
-${MV} *schiff* *boot* *grokanbo* *grpirschi* *klpirschi* ${BOATS} 
+${MV} *schiff* *boot* *grokanbo* *grpirschi* *klpirschi* ${BOATS}
 
 # Spaceships:
-${MV} *spaceship* ${SPACESHIPS} 
+${MV} *spaceship* ${SPACESHIPS}
 
 # Cars:
-${MV} *rallye* ${CARS} 
+${MV} *rallye* ${CARS}
 
 # Trains:
-${MV} *waggon* *lore.* *steam_engine* *woodwag* ${TRAINS} 
+${MV} *waggon* *lore.* *steam_engine* *woodwag* ${TRAINS}
 
 # Armored:
-${MV} *tank* ${ARMORED} 
+${MV} *tank* ${ARMORED}
 
 # Food:
-${MV} *meat* ${FOOD} 
+${MV} *meat* ${FOOD}
 
 
 
 # Environments:
 
-${MV} *castle* ${CASTLES} 
+${MV} *castle* ${CASTLES}
 
-${MV} *hill* ${HILLS} 
+${MV} *hill* ${HILLS}
 
-${MV} *set* *anitown* *beautiful_town* *casino* *cavestuff* *pipeline* *Sdraho* *Sdungeon* *thingmachine_all* *actrumb* ${SETS} 
+${MV} *set* *anitown* *beautiful_town* *casino* *cavestuff* *pipeline* *Sdraho* *Sdungeon* *thingmachine_all* *actrumb* ${SETS}
 
 
 # Walls:
 
-${MV} *inside_wall* *quarry* *shops_1* *ug_fence* ${INSIDE} 
-${MV} *wall* *parapet* *msw* *palisade* *woodenfence* ${OUTSIDE} 
+${MV} *inside_wall* *quarry* *shops_1* *ug_fence* ${INSIDE}
+${MV} *wall* *parapet* *msw* *palisade* *woodenfence* ${OUTSIDE}
 
 # Stairs:
-${MV} *stairs* ${STAIRS} 
+${MV} *stairs* ${STAIRS}
 
 # Buildings:
 
-${MV} *house* *mill* *bakery* *barracks* *chapel* *crabuil* *building* *lodge* *hotel* *hut* *market_place* *_mine* *palace* *pottery* *_pub* *railroad* *ruins* *shipyard* *temple* *smithy* *_stable.* *triumph_arc* ${BUILDINGS}  
+${MV} *house* *mill* *bakery* *barracks* *chapel* *crabuil* *building* *lodge* *hotel* *hut* *market_place* *_mine* *palace* *pottery* *_pub* *railroad* *ruins* *shipyard* *temple* *smithy* *_stable.* *triumph_arc* ${BUILDINGS}
 
 
 # Plants:
 
-${MV} *tree* *bush* *growing_fir* ${TREES} 
-${MV} *growing* *reef* ${PLANTS} 
+${MV} *tree* *bush* *growing_fir* ${TREES}
+${MV} *growing* *reef* ${PLANTS}
 
 
 # Grounds:
-${MV} *earth* *wall* *beach* *cobble* *creek* *sand* *ground* *stonepath* *slope* *grund* *mountain* *pathway* *pfad* *quai* *_road_* *_rocks_* *tiled_floor* *weg_mit_randstein* *ani_water* ${GROUNDS} 
+${MV} *earth* *wall* *beach* *cobble* *creek* *sand* *ground* *stonepath* *slope* *grund* *mountain* *pathway* *pfad* *quai* *_road_* *_rocks_* *tiled_floor* *weg_mit_randstein* *ani_water* ${GROUNDS}
 
 
 echo "End of mirror sorting."
-
