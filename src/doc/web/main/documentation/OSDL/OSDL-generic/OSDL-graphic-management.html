@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+
+<!--    This document is part of the OSDL project.
+		For any comment, please mail to olivier.boudeville@online.fr
+-->
+
+<!--
+		Creation date: Saturday, October 26, 2013
+		Author: Olivier Boudeville (olivier.boudeville@online.fr)
+-->
+
+<html lang="EN">
+<head>
+  <title>OSDL - Graphical Rendering & Asset Pipeline</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="OSDL">
+  <meta name="keywords" content="OSDL, library, video, game, quality, LGPL">
+  <link rel="stylesheet" type="text/css" href="../../../../common/css/OSDL.css">
+  <link href="../../../../images/OSDL-icon.png" rel="OSDL icon">
+</head>
+
+<body>
+
+  <div class="banner">
+	<p><em>General</em> <a href="../../../../common/black.html" onclick="parent.toolbar.location=&#39;../../../MainMenu.html&#39;">home page</a>
+	<a href="../../../Map.html">site map</a> <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Graphical%20Rendering%20and%20Asset%20Pipeline">mail us</a></p>
+  </div><a name="_top_"></a>
+
+<h1>OSDL Graphical Rendering & Asset Pipeline</h1>
+
+
+<a name="toc"></a>
+<center>
+	<table summary="Table of content" style="border: none">
+		<tr>
+		  <td>
+		<!--
+			   <a href="#"></a><br>
+		-->
+
+		   <div class="box">
+			   <a href="#overview">Overview</a><br>
+			   <a href="#conventions">Conventions</a><br>
+		  </td>
+		</tr>
+	</table>
+</center>
+
+
+<a name="overview"></a>
+<h2>Overview</h2>
+
+<p>
+This document describes the conventions undertaken by OSDL when dealing with the rendering of assets. See also the <a href="../../misc/nintendo-DS/graphical-chain/OSDL-graphical-chain.html">seminal work</a> we did for the Nintendo DS, a few years ago.
+</p>
+
+<p>
+The point is to establish the transformation process of third-party assets so that they can be used by the various OSDL-related developments (typically Orge clients).
+</p>
+
+<p>
+We will primarily focus here on 2D assets (even if they may have been generated out of 3D ones), like the ones kindly provided by <a href="http://www.reinerstilesets.de/" target="_blank">Reiner's Tilesets</a>. However we want to design solutions generic enough to encompass most 2D assets.
+</p>
+
+<p>
+In the general case, to a given in-game "entity", one or more images can be associated; a rock may be described by exactly one image, while a character may wear different outfits, may perform different actions, and is generally animated.
+</p>
+
+<p>
+We will respect the following conventions: an <b>entity</b> (ex: Stan) may have different <b>outside looks</b> (ex: unarmed, with a club, with a sword, etc.), each allowing to develop different <b>behaviours</b> (ex: "unarmed Stan" can: be still, walk, attack, etc.), each that can be performed along a set of <b>directions</b> (typically eight, facing north, north-east, east, etc.), leading to an animation made of a series of <b>frames</b>.
+</p>
+
+<p>
+We will consider that (possibly after some preprocessing) the assets are made of a series of 24-bit frames (RGB), relying on a colorkey. By default we do not plan to rely on color indexes and palettes, to gamma-correct or to resize any asset (this should have been done previously).
+</p>
+
+<p>
+The objective here is to:
+<ul>
+
+  <li>establish a set of conventions so that, for all assets, a rendering engine can determine which frame is to be displayed, when and at what position</li>
+
+  <li>generate the appropriate data for that rendering</li>
+
+</ul>
+</p>
+
+<p>
+Typically, we will want to reduce as much as possible the memory footprint induced by assets (notably on the video card), and to ensure they are appropriately gathered (to allow for incremental loading of new entities, to avoid binding too many textures, etc.).
+</p>
+
+<p>
+For that we will strip the frames (find, for each of them, the smallest enclosing rectangle, and record its coordinates) and space-efficiently pack all frames corresponding to a given outside look (the granularity we found the most relevant) into a single, compact (relatively square) image file (typically to be loaded into a texture whose dimensions would be powers of two), with a companion XML file that allows to extract any frame from it.
+</p>
+
+
+
+<a name="conventions"></a>
+<h2>Conventions</h2>
+<p>
+</p>
+
+
+<h3>Please react!</h3>
+
+<p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, or if you would like to contribute and help us, even a little bit, <a href="mailto:olivier.boudeville@online.fr?subject=[OSDL]%20Graphical%20Rendering%20and%20Asset%20Pipeline">drop us a line</a>!</p>
+
+
+<hr>
+
+<center>
+  [<a href="#_top_">Top</a>]
+  <br>
+  <br>
+  <em>Last update: Saturday, October 26, 2013</em>
+</center>
+
+</body>
+</html>
