@@ -6739,7 +6739,8 @@ getCeylan()
 					# Warning:
 					# cygwin uses a quite small MAX_PATH, which limits the
 					# maximum length of paths.
-					#It may cause, among others, a SVN error
+					#
+					# It may cause, among others, a SVN error
 					# ("svn: Can't open file 'XXX': File name too long).
 					# A work-around is to request the user to update herself her
 					# repository with TortoiseSVN (this tool is not affected by
@@ -6781,7 +6782,7 @@ getCeylan()
 
 	else
 
-		# Not a developer access, anonymous:
+		# Not a developer access, anonymous (hence read-only):
 
 		if [ $no_vcs -eq 1 ] ; then
 
@@ -7345,7 +7346,8 @@ getOSDL()
 					# Warning:
 					# cygwin uses a quite small MAX_PATH, which limits the
 					# maximum length of paths.
-					#It may cause, among others, a SVN error
+					#
+					# It may cause, among others, a SVN error
 					# ("svn: Can't open file 'XXX': File name too long).
 					# A work-around is to request the user to update herself her
 					# repository with TortoiseSVN (this tool is not affected by
@@ -7387,7 +7389,7 @@ getOSDL()
 
 	else
 
-		# Not a developer access, anonymous:
+		# Not a developer access, anonymous (hence read-only):
 
 		if [ $no_vcs -eq 1 ] ; then
 
