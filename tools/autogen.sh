@@ -296,7 +296,7 @@ execute()
 			if [ "$1" = "./configure" ]; then
 				echo "
 	Note: check config.log (the one in the 'tools' directory)"
-  			fi
+			fi
 		fi
 
 		exit $RES
@@ -342,14 +342,14 @@ generateCustom()
 		echo "**Error**: You must have 'libtool' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
 		exit 20
-   	}
+	}
 
 	(libtoolize --version) < /dev/null > /dev/null 2>&1 || {
 		echo
 		echo "**Error**: You must have 'libtoolize' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
 		exit 21
-   	}
+	}
 
 	if test -z "$verbose"; then
 		libtoolize_verbose=""
@@ -379,13 +379,20 @@ generateCustom()
 
 	ACLOCAL_OUTPUT=aclocal.m4
 
+	# Not used anymore, as, for example with Arch Linux, libtool is
+	# '/bin/libtool', and most if not all m4 files are in /usr/share/aclocal.
+	# Not adding specific includes seems to work correctly now:
+
 	# With newer libtool (ex: 2.2.4), we need to include a whole bunch of *.m4
 	# files, otherwise 'warning: LTOPTIONS_VERSION is m4_require'd but not
 	# m4_defun'd' ... ', same thing for LTSUGAR_VERSION, LTVERSION_VERSION, etc.
-	GUESSED_LIBTOOL_BASE=`which libtool|sed 's|/bin/libtool$||1'`
+	#GUESSED_LIBTOOL_BASE=`which libtool|sed 's|/bin/libtool$||1'`
 
 	# Do not use '--acdir=.' since it prevents aclocal from writing its file:
-	execute aclocal -I ${GUESSED_LIBTOOL_BASE}/share/aclocal -I $CEYLAN_M4_DIR -I $OSDL_M4_DIR --output=$ACLOCAL_OUTPUT $force $verbose
+	#execute aclocal -I ${GUESSED_LIBTOOL_BASE}/share/aclocal -I $CEYLAN_M4_DIR -I $OSDL_M4_DIR --output=$ACLOCAL_OUTPUT $force $verbose
+
+	# Apparently sufficient now:
+	execute aclocal -I ${M4_DIR} --output=$ACLOCAL_OUTPUT $force $verbose
 
 	echo
 	echo " - generating '.in' files from '.am' files with automake"
@@ -413,7 +420,7 @@ generateCustom()
 
 	echo
 	echo " - generating 'configure' script"
- 	execute autoconf $warnings $force $verbose
+	execute autoconf $warnings $force $verbose
 
 	# Add GNU gettext (autopoint) ?
 
@@ -438,27 +445,27 @@ generateCustom()
 		LD_LIBRARY_PATH=$ceylan_install_prefix/lib:$LD_LIBRARY_PATH
 	fi
 
- 	execute ./configure $configure_opt
+	execute ./configure $configure_opt
 
 
 	if [ $do_clean -eq 0 ] ; then
 		echo
 		echo " - cleaning all"
-	 	execute make clean
+		execute make clean
 	fi
 
 
 	if [ $do_build -eq 0 ] ; then
 		echo
 		echo " - building all"
-	 	execute make
+		execute make
 	fi
 
 
 	if [ $do_install -eq 0 ] ; then
 		echo
 		echo " - installing"
-	 	execute make install
+		execute make install
 	else
 
 		if [ -n "$osdl_install_prefix_opt" ] ; then
@@ -473,7 +480,7 @@ generateCustom()
 		export LD_LIBRARY_PATH=$ceylan_install_prefix/lib:$LD_LIBRARY_PATH
 		echo
 		echo " - running unit tests"
-	 	execute make check
+		execute make check
 	fi
 
 

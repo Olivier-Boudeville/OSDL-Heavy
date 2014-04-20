@@ -491,7 +491,7 @@ Note: check that your libtoolize version is indeed 2.2.4 or newer, otherwise the
 			elif [ "$1" = "./configure" ]; then
 				echo "
 Note: check the following log:" `pwd`/config.log
-  			fi
+			fi
 
 		fi
 
@@ -572,14 +572,14 @@ generateCustom()
 		echo "**Error**: You must have 'libtool' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
 		exit 20
-   	}
+	}
 
 	(libtoolize --version) < /dev/null > /dev/null 2>&1 || {
 		echo
 		echo "**Error**: You must have 'libtoolize' installed."
 		echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
 		exit 21
-   	}
+	}
 
 	if test -z "$verbose"; then
 		libtoolize_verbose=""
@@ -605,13 +605,21 @@ generateCustom()
 
 	ACLOCAL_OUTPUT=src/conf/build/m4/aclocal.m4
 
+	# Not used anymore, as, for example with Arch Linux, libtool is
+	# '/bin/libtool', and most if not all m4 files are in /usr/share/aclocal.
+	# Not adding specific includes seems to work correctly now:
+
 	# With newer libtool (ex: 2.2.4), we need to include a whole bunch of *.m4
 	# files, otherwise 'warning: LTOPTIONS_VERSION is m4_require'd but not
 	# m4_defun'd' ... ', same thing for LTSUGAR_VERSION, LTVERSION_VERSION, etc.
-	GUESSED_LIBTOOL_BASE=`which libtool|sed 's|/bin/libtool$||1'`
+	#GUESSED_LIBTOOL_BASE=`which libtool|sed 's|/bin/libtool$||1'`
+
 
 	# Do not use '--acdir=.' since it prevents aclocal from writing its file:
-	execute aclocal -I ${M4_DIR} -I ${GUESSED_LIBTOOL_BASE}/share/aclocal --output=$ACLOCAL_OUTPUT $force $verbose
+	#execute aclocal -I ${M4_DIR} -I ${GUESSED_LIBTOOL_BASE}/share/aclocal --output=$ACLOCAL_OUTPUT $force $verbose
+
+	# Apparently sufficient now:
+	execute aclocal -I ${M4_DIR} --output=$ACLOCAL_OUTPUT $force $verbose
 
 	# automake wants absolutely to find aclocal.m4 in the top-level directory:
 	ln -sf src/conf/build/m4/aclocal.m4
@@ -655,7 +663,7 @@ generateCustom()
 
 	echo
 	echo " - generating 'configure' script"
- 	execute autoconf $warnings $force $verbose
+	execute autoconf $warnings $force $verbose
 
 	# Add GNU gettext (autopoint)?
 
@@ -676,41 +684,41 @@ generateCustom()
 	}
 
 
- 	execute ./configure $configure_opt
+	execute ./configure $configure_opt
 
 
 	if [ $do_clean -eq 0 ] ; then
 		echo
 		echo " - cleaning all"
-	 	execute make clean
+		execute make clean
 	fi
 
 
 	if [ $do_build -eq 0 ] ; then
 		echo
 		echo " - building all"
-	 	execute make
+		execute make
 	fi
 
 
 	if [ $do_check -eq 0 ] ; then
 		echo
 		echo " - checking all"
-	 	execute make check
+		execute make check
 	fi
 
 
 	if [ $do_install -eq 0 ] ; then
 		echo
 		echo " - installing"
-	 	execute make install
+		execute make install
 	fi
 
 
 	if [ $do_installcheck -eq 0 ] ; then
 		echo
 		echo " - checking install"
-	 	execute make installcheck
+		execute make installcheck
 	fi
 
 
@@ -718,13 +726,13 @@ generateCustom()
 		echo
 		echo " - building and running OSDL test suite"
 		cd test
-	 	execute ./autogen.sh --with-osdl-env-file $osdl_environment_file
+		execute ./autogen.sh --with-osdl-env-file $osdl_environment_file
 		cd ..
 	elif [ $do_only_prepare_dist -eq 0 ] ; then
 		echo
 		echo " - generating configure for test suite"
 		cd test
-	 	execute ./autogen.sh --only-prepare-dist --with-osdl-env-file $osdl_environment_file
+		execute ./autogen.sh --only-prepare-dist --with-osdl-env-file $osdl_environment_file
 		cd ..
 		echo " - making distribution package"
 		execute make dist-bzip2
@@ -734,7 +742,7 @@ generateCustom()
 	if [ $do_distcheck -eq 0 ] ; then
 		echo
 		echo " - making distcheck"
-	 	execute make distcheck
+		execute make distcheck
 	fi
 
 
@@ -742,7 +750,7 @@ generateCustom()
 		echo
 		echo " - building and running OSDL tools"
 		cd tools
-	 	execute ./autogen.sh --with-osdl-env-file $osdl_environment_file
+		execute ./autogen.sh --with-osdl-env-file $osdl_environment_file
 		cd ..
 	fi
 
