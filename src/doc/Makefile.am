@@ -325,10 +325,16 @@ toSF-scp: check-scp site
 	[@OSDL_LOCAL_WEB_DIR@] using scp@OSDL_DEFAULT_STYLE@"
 	@echo
 	@opt=$(SCP_OPT); $(SCP) $$opt @OSDL_LOCAL_WEB_DIR@/* \
-	@OSDL_DEFAULT_SF_USER@@$(SF_WEB_SERVER):$(SF_WEB_DIR)
+	@OSDL_DEFAULT_SF_USER@,@UNIX_PROJECT_NAME@@$(SF_WEB_SERVER):$(SF_WEB_DIR)
 	@echo "@OSDL_COMMAND_STYLE@    + you can bookmark \
 	@PROJECT_NAME@'s website on Sourceforge at \
 	$(SF_WEB_URL)@OSDL_DEFAULT_STYLE@"
+
+
+log-to-SF-web:
+	@echo
+	@echo "@OSDL_INSTALL_STYLE@    Logging to Sourceforge's @PROJECT_NAME@ shell@OSDL_DEFAULT_STYLE@"
+	@ssh -t @OSDL_DEFAULT_SF_USER@,@UNIX_PROJECT_NAME@@shell.sourceforge.net create
 
 
 toMirror:
