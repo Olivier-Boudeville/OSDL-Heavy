@@ -339,7 +339,7 @@ Agar_win_MD5=""
 
 # Actually 0.8.3 (defined in configure-template.ac):
 CEGUI_VERSION="@CEGUI_RECOMMENDED_VERSION@"
-CEGUI_ARCHIVE="CEGUI-${CEGUI_VERSION}.tar.gz"
+CEGUI_ARCHIVE="cegui-${CEGUI_VERSION}.tar.gz"
 CEGUI_DOWNLOAD_LOCATION="http://sourceforge.net/projects/crayzedsgui/files/CEGUI%20Mk-2/${CEGUI_VERSION}"
 CEGUI_ALTERNATE_DOWNLOAD_LOCATION="http://freefr.dl.sourceforge.net/project/crayzedsgui/CEGUI%20Mk-2/${CEGUI_VERSION}"
 CEGUI_MD5="142cca3648cee034e04d0f61bd9863ce"
