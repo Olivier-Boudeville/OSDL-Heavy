@@ -536,7 +536,8 @@ Erlang_MD5="a5f78c1cf0eb7724de3a59babc1a28e5"
 # Not used actually, as only available through GIT:
 egeoip_ARCHIVE="egeoip.tar.bz2"
 egeoip_DOWNLOAD_LOCATION=""
-egeoip_MD5="(blanked)"
+# Blanked, as varying constantly:
+egeoip_MD5="xxx"
 
 #egeoip_SVN_SERVER="egeoip.googlecode.com"
 egeoip_GIT_SERVER="github.com"
