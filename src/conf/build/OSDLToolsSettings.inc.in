@@ -216,12 +216,12 @@ freetype_osx_precompiled_MD5="update_me"
 
 # Sources.
 
-# Actually 2.0.12 (defined in configure-template.ac):
+# Actually 2.0.11 (defined in configure-template.ac):
 SDL_ttf_VERSION="@SDL_TTF_RECOMMENDED_VERSION@"
 SDL_ttf_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}.tar.gz"
 SDL_ttf_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_ttf_MD5="79787216b56cb4707f39d538f2225e00"
+SDL_ttf_MD5="61e29bd9da8d245bc2471d1b2ce591aa"
 
 SDL_ttf_win_VERSION="$SDL_ttf_VERSION"
 SDL_ttf_win_ARCHIVE="SDL_ttf-${SDL_ttf_win_VERSION}.zip"
