@@ -353,8 +353,9 @@ if [ -n "$osdl_environment_file" ] ; then
 		configure_opt="${configure_opt} CXX=${gcc_PREFIX}/bin/g++ "
 	fi
 
-	if [ -n "${SDL_PREFIX}" ] ; then
-		configure_opt="${configure_opt} --with-sdl-prefix=$SDL_PREFIX"
+	if [ -n "${SDL2_PREFIX}" ] ; then
+		# Not named '--with-sdl2-prefix':
+		configure_opt="${configure_opt} --with-sdl-prefix=${SDL2_PREFIX}"
 	fi
 
 fi
