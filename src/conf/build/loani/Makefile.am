@@ -99,8 +99,12 @@ $(LOANI_README_TARGET):
 	@cat $(LOANI_README_TEMPLATE) | sed 's|ST_LOANI_VERSION|$(LOANI_VERSION)|g' | sed "s|ST_LOANI_DATE|`LANG= && date '+%A, %B %-e, %Y (%H:%M)'`|g" > $@
 
 
-$(LOANI_TOOLS_SETTINGS): $(CEYLAN_TOOLS_SETTINGS) $(OSDL_TOOLS_SETTINGS) \
-		$(CEYLAN_RELEASE) $(OSDL_RELEASE)
+# Both releases are not listed here anymore, as they are not stable enough not
+# to be used through VCS:
+#
+#$(LOANI_TOOLS_SETTINGS): $(CEYLAN_TOOLS_SETTINGS) $(OSDL_TOOLS_SETTINGS) \
+#		$(CEYLAN_RELEASE) $(OSDL_RELEASE)
+$(LOANI_TOOLS_SETTINGS): $(CEYLAN_TOOLS_SETTINGS) $(OSDL_TOOLS_SETTINGS)
 	@echo "@OSDL_MAKE_STYLE@    Merging $@ @OSDL_DEFAULT_STYLE@"
 	@echo "# This file tells LOANI and the build system about the tools " > $@
 	@echo "# that they must know." >> $@
@@ -118,8 +122,9 @@ $(LOANI_TOOLS_SETTINGS): $(CEYLAN_TOOLS_SETTINGS) $(OSDL_TOOLS_SETTINGS) \
 	@echo "# " >> $@
 	@echo "# From $(OSDL_TOOLS_SETTINGS):"         >> $@
 	@cat $(OSDL_TOOLS_SETTINGS)                    >> $@
-	@$(srcdir)/updateLOANI-MD5.sh $(LOANI_TOOLS_SETTINGS) $(CEYLAN_RELEASE) \
-		$(OSDL_RELEASE)	$(REPLACE_SCRIPT)
+
+#	@$(srcdir)/updateLOANI-MD5.sh $(LOANI_TOOLS_SETTINGS) $(CEYLAN_RELEASE) \
+#		$(OSDL_RELEASE)	$(REPLACE_SCRIPT)
 
 
 blank-MD5:
@@ -141,7 +146,7 @@ $(LOANI_ZIP): $(LOANI_FELLOWS_FILES) $(LOANI_README_TEMPLATE)
 
 
 prepare-release: $(LOANI_README_TARGET) $(LOANI_TOOLS_SETTINGS)
-	-@rm -rf $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)
+	-@/bin/rm -rf $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)
 	@mkdir -p $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR)/LOANI-repository
 	@cd $(srcdir) && \
 	cp -f $(LOANI_FELLOWS_FILES) $(srcdir)/$(LOANI_TMP_ARCHIVE_DIR) && \
