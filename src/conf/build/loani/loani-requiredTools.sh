@@ -27,7 +27,7 @@ if [ $is_windows -eq 0 ] ; then
   # LD_LIBRARY_PATH.
 
   # Windows special case:
-  REQUIRED_TOOLS="SDL_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win PCRE_win FreeImage_win CEGUI_win"
+  REQUIRED_TOOLS="SDL2_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win PCRE_win FreeImage_win CEGUI_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -88,7 +88,7 @@ else
 	# the one of the system (ex: 8) instead of ours (ex: 9), resulting in 'JPEG
 	# loading error' crashes at runtime.
 	#  
-	REQUIRED_TOOLS="libtool SDL SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
+	REQUIRED_TOOLS="libtool SDL2 SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -175,31 +175,31 @@ GenerateWithVisualExpress()
 
 ################################################################################
 ################################################################################
-# SDL
+# SDL2
 ################################################################################
 ################################################################################
 
 
-#TRACE "[loani-requiredTools] SDL"
+#TRACE "[loani-requiredTools] SDL2"
 
 ################################################################################
 # SDL for non-Windows platforms:
 ################################################################################
 
 
-getSDL()
+getSDL2()
 {
-	LOG_STATUS "Getting SDL..."
-	launchFileRetrieval SDL
+	LOG_STATUS "Getting SDL2..."
+	launchFileRetrieval SDL2
 	return $?
 }
 
 
 
-prepareSDL()
+prepareSDL2()
 {
 
-	LOG_STATUS "Preparing SDL..."
+	LOG_STATUS "Preparing SDL2..."
 	if findTool gunzip ; then
 		GUNZIP=$returnedString
 	else
@@ -214,7 +214,7 @@ prepareSDL()
 		exit 9
 	fi
 
-	printBeginList "SDL        "
+	printBeginList "SDL2       "
 
 	printItem "extracting"
 
@@ -222,19 +222,19 @@ prepareSDL()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_ARCHIVE} ${SDL_ARCHIVE}.save && ${GUNZIP} -f ${SDL_ARCHIVE} && ${TAR} -xvf "SDL-${SDL_VERSION}.tar"
+		${CP} -f ${SDL2_ARCHIVE} ${SDL2_ARCHIVE}.save && ${GUNZIP} -f ${SDL2_ARCHIVE} && ${TAR} -xvf "SDL2-${SDL2_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_ARCHIVE}."
-		LOG_STATUS "Restoring ${SDL_ARCHIVE}."
-		${MV} -f ${SDL_ARCHIVE}.save ${SDL_ARCHIVE}
+		ERROR "Unable to extract ${SDL2_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL2_ARCHIVE}."
+		${MV} -f ${SDL2_ARCHIVE}.save ${SDL2_ARCHIVE}
 		exit 10
 	fi
 
-	${MV} -f ${SDL_ARCHIVE}.save ${SDL_ARCHIVE}
-	${RM} -f "SDL-${SDL_VERSION}.tar"
+	${MV} -f ${SDL2_ARCHIVE}.save ${SDL2_ARCHIVE}
+	${RM} -f "SDL2-${SDL2_VERSION}.tar"
 
 	printOK
 
@@ -242,13 +242,13 @@ prepareSDL()
 
 
 
-generateSDL()
+generateSDL2()
 {
 
-	LOG_STATUS "Generating SDL..."
+	LOG_STATUS "Generating SDL2..."
 
 
-	cd "SDL-${SDL_VERSION}"
+	cd "SDL2-${SDL2_VERSION}"
 
 	printItem "configuring"
 
@@ -256,21 +256,25 @@ generateSDL()
 	{
 
 		if [ $is_windows -eq 0 ] ; then
-			SDL_PREFIX=`cygpath -w ${prefix}/SDL-${SDL_VERSION} | ${SED} 's|\\\|/|g'`
+			SDL2_PREFIX=`cygpath -w ${prefix}/SDL2-${SDL2_VERSION} | ${SED} 's|\\\|/|g'`
 		else
-			SDL_PREFIX="${prefix}/SDL-${SDL_VERSION}"
+			SDL2_PREFIX="${prefix}/SDL2-${SDL2_VERSION}"
 		fi
 
 
-		${MKDIR} -p ${SDL_PREFIX}
+		${MKDIR} -p ${SDL2_PREFIX}
 
-		# DirectFB disabled, as build will fail on openSuse if corresponding
-		# package is not installed (Ubuntu can cope with this situation though).
+		# --disable-rpath used in order to be reallocatable libraries.
+
+		# DirectFB used to be disabled, as build will fail on openSuse if
+		# corresponding package is not installed (Ubuntu can cope with this
+		# situation though).  Removed since then: --enable-video-directfb=no
 
 		# Note also that, at least on Ubuntu Maverick, the libpulse-dev package
 		# must be installed beforehand, otherwise PulseAudio support will be
 		# deactivated, and SDL will say: No available audio device.
-		setBuildEnv ./configure --enable-video-directfb=no --disable-rpath --prefix=${SDL_PREFIX} --exec-prefix=${SDL_PREFIX}
+		
+		setBuildEnv ./configure --disable-rpath --prefix=${SDL2_PREFIX} --exec-prefix=${SDL2_PREFIX}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
@@ -282,7 +286,7 @@ generateSDL()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to configure SDL."
+		ERROR "Unable to configure SDL2."
 		exit 11
 	fi
 
@@ -292,13 +296,16 @@ generateSDL()
 
 	{
 
-		 setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
+		# Not needed anymore:
+		#setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
+
+		setBuildEnv ${MAKE}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to build SDL."
+		ERROR "Unable to build SDL2."
 		exit 12
 	fi
 
@@ -310,62 +317,64 @@ generateSDL()
 	if [ -n "$prefix" ] ; then
 	{
 
-		echo "# SDL section." >> ${OSDL_ENV_FILE}
+		echo "# SDL2 section." >> ${OSDL_ENV_FILE}
 
-		echo "SDL_PREFIX=${SDL_PREFIX}" >> ${OSDL_ENV_FILE}
-		echo "export SDL_PREFIX" >> ${OSDL_ENV_FILE}
-		echo "PATH=\$SDL_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL2_PREFIX=${SDL2_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL2_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "PATH=\$SDL2_PREFIX/bin:\${PATH}" >> ${OSDL_ENV_FILE}
 
-		echo "LD_LIBRARY_PATH=\$SDL_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL2_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		PATH=${SDL_PREFIX}/bin:${PATH}
+		PATH=${SDL2_PREFIX}/bin:${PATH}
 		export PATH
 
-		LD_LIBRARY_PATH=${SDL_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL2_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
 		if [ $is_windows -eq 0 ] ; then
 
-			PATH=${SDL_PREFIX}/lib:${PATH}
+			PATH=${SDL2_PREFIX}/lib:${PATH}
 			export PATH
 
-			echo "PATH=\$SDL_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL2_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 		fi
 
 		echo "" >> ${OSDL_ENV_FILE}
 
-		LIBPATH="-L${SDL_PREFIX}/lib"
+		LIBPATH="-L${SDL2_PREFIX}/lib"
 
 		# Do not ever imagine that to avoid bad nedit syntax highlighting
 		# you could change:
 		# include/*.h to "include/*.h" in next line.
 		# It would fail at runtime with "include/*.h" not found...
 
-		setBuildEnv ${MAKE} install && ${CP} -f include/*.h ${SDL_PREFIX}/include/SDL
+		setBuildEnv ${MAKE} install && ${CP} -f include/*.h ${SDL2_PREFIX}/include/SDL2
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
 	{
+
 		setBuildEnv ${MAKE} install
+
 	} 1>>"$LOG_OUTPUT" 2>&1
 	fi
 
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to install SDL."
+		ERROR "Unable to install SDL2."
 		exit 13
 	fi
 
 	if [ $is_windows -eq 0 ] ; then
-			${MV} -f ${SDL_PREFIX}/bin/*.dll ${SDL_PREFIX}/lib
+		${MV} -f ${SDL2_PREFIX}/bin/*.dll ${SDL2_PREFIX}/lib
 	fi
 
 	printOK
 
 	printEndList
 
-	LOG_STATUS "SDL successfully installed."
+	LOG_STATUS "SDL2 successfully installed."
 
 	cd "$initial_dir"
 
@@ -373,32 +382,32 @@ generateSDL()
 
 
 
-cleanSDL()
+cleanSDL2()
 {
-	LOG_STATUS "Cleaning SDL build tree..."
-	${RM} -rf "SDL-${SDL_VERSION}"
+	LOG_STATUS "Cleaning SDL2 build tree..."
+	${RM} -rf "SDL2-${SDL2_VERSION}"
 }
 
 
 
 
 ################################################################################
-# SDL build thanks to Visual Express.
+# SDL2 build thanks to Visual Express.
 ################################################################################
 
 
-getSDL_win()
+getSDL2_win()
 {
-	LOG_STATUS "Getting SDL for windows..."
-	launchFileRetrieval SDL_win
+	LOG_STATUS "Getting SDL2 for windows..."
+	launchFileRetrieval SDL2_win
 	return $?
 }
 
 
-prepareSDL_win()
+prepareSDL2_win()
 {
 
-	LOG_STATUS "Preparing SDL for windows.."
+	LOG_STATUS "Preparing SDL2 for windows.."
 	if findTool unzip ; then
 		UNZIP=$returnedString
 	else
@@ -406,25 +415,25 @@ prepareSDL_win()
 		exit 8
 	fi
 
-	printBeginList "SDL        "
+	printBeginList "SDL2       "
 
 	printItem "extracting"
 
 	cd $repository
 
 	{
-		${UNZIP} -o ${SDL_win_ARCHIVE}
+		${UNZIP} -o ${SDL2_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_win_ARCHIVE}."
+		ERROR "Unable to extract ${SDL2_win_ARCHIVE}."
 		exit 10
 	fi
 
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL-from-LOANI" "SDL-${SDL_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL2-from-LOANI" "SDL2-${SDL2_win_VERSION}"
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to copy SDL solution in build tree."
+		ERROR "Unable to copy SDL2 solution in build tree."
 		exit 11
 	fi
 
@@ -433,43 +442,43 @@ prepareSDL_win()
 }
 
 
-generateSDL_win()
+generateSDL2_win()
 {
 
-	LOG_STATUS "Generating SDL for windows..."
+	LOG_STATUS "Generating SDL2 for windows..."
 
-	cd "SDL-${SDL_win_VERSION}"
+	cd "SDL2-${SDL2_win_VERSION}"
 
 	printItem "configuring"
 	printOK
 
-	sdl_solution=`pwd`"/SDL-from-LOANI/SDL-from-LOANI.sln"
+	sdl2_solution=`pwd`"/SDL2-from-LOANI/SDL2-from-LOANI.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress SDL ${sdl_solution}
+	GenerateWithVisualExpress SDL2 ${sdl2_solution}
 	printOK
 
 	printItem "installing"
 
 	# Take care of the exported header files (API):
-	sdl_install=${alternate_prefix}/SDL-${SDL_win_VERSION}
-	${MKDIR} -p ${sdl_install}
-	${CP} -rf include ${sdl_install}
+	sdl2_install=${alternate_prefix}/SDL2-${SDL2_win_VERSION}
+	${MKDIR} -p ${sdl2_install}
+	${CP} -rf include ${sdl2_install}
 	printOK
 
 	printEndList
 
-	LOG_STATUS "SDL successfully installed."
+	LOG_STATUS "SDL2 successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanSDL_win()
+cleanSDL2_win()
 {
-	LOG_STATUS "Cleaning SDL build tree..."
-	${RM} -rf "SDL-${SDL_win_VERSION}"
+	LOG_STATUS "Cleaning SDL2 build tree..."
+	${RM} -rf "SDL2-${SDL2_win_VERSION}"
 }
 
 

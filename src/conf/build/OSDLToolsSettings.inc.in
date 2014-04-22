@@ -17,21 +17,21 @@
 
 
 
-# SDL (libsdl.so): http://www.libsdl.org
+# SDL2 (libsdl2.so): http://www.libsdl.org
 
-# 1.2.15 actually:
-SDL_VERSION="@SDL_RECOMMENDED_VERSION@"
-SDL_ARCHIVE="SDL-$SDL_VERSION.tar.gz"
-SDL_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
-SDL_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_MD5="9d96df8417572a2afb781a7c4c811a85"
+# Actually 2.0.3 (defined in configure-template.ac):
+SDL2_VERSION="@SDL2_RECOMMENDED_VERSION@"
+SDL2_ARCHIVE="SDL2-$SDL2_VERSION.tar.gz"
+SDL2_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
+SDL2_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL2_MD5="fe6c61d2e9df9ef570e7e80c6e822537"
 
 # For Windows, using sources as well, these are not prebuilt binaries:
-SDL_win_VERSION="$SDL_VERSION"
-SDL_win_ARCHIVE="SDL-$SDL_win_VERSION.zip"
-SDL_win_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
-SDL_win_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_win_MD5="7e1d793751d2b2d93b33655e4f4b0f96"
+SDL2_win_VERSION="$SDL2_VERSION"
+SDL2_win_ARCHIVE="SDL2-$SDL2_win_VERSION.zip"
+SDL2_win_DOWNLOAD_LOCATION="http://www.libsdl.org/release"
+SDL2_win_ALTERNATE_DOWNLOAD_LOCATION=""
+SDL2_win_MD5="xxx"
 
 
 
