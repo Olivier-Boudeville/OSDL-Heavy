@@ -69,7 +69,7 @@ else
 	# Note: as of Tuesday, November 30, 2010, we removed 'zlib libpng' as when
 	# their respective versions (1.2.5 and 1.4.4) are used, programs using them
 	# crash.
-	#  
+	#
 	# Ex: > ./darm.exe
 	# Checkpoint [1]: Launching DARM.
 	# Checkpoint [2]: Initializing sound adjustment model.
@@ -83,11 +83,11 @@ else
 	#
 	# SDL_gfx (which was just after SDL_image) was removed, due to build
 	# problems with the 2.0.22 version (m4-related).
-	#  
+	#
 	# As of May 2013, we removed also 'libjpeg' as SDL_image will always pick
 	# the one of the system (ex: 8) instead of ours (ex: 9), resulting in 'JPEG
 	# loading error' crashes at runtime.
-	#  
+	#
 	REQUIRED_TOOLS="libtool SDL2 SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
@@ -273,7 +273,7 @@ generateSDL2()
 		# Note also that, at least on Ubuntu Maverick, the libpulse-dev package
 		# must be installed beforehand, otherwise PulseAudio support will be
 		# deactivated, and SDL will say: No available audio device.
-		
+
 		setBuildEnv ./configure --disable-rpath --prefix=${SDL2_PREFIX} --exec-prefix=${SDL2_PREFIX}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
@@ -6697,9 +6697,9 @@ getCeylan()
 		fi
 
 		${MV} -f ${repository}/ceylan ${repository}/ceylan.save 2>/dev/null
-		
+
 		WARNING "There already existed a directory for Ceylan (${repository}/ceylan), it has been moved to ${repository}/ceylan.save."
-		
+
 	fi
 
 	LOG_STATUS "Getting Ceylan in its source directory ${repository}..."
@@ -6715,7 +6715,7 @@ getCeylan()
 
 		VCS_SERVER_PATH="git.code.sf.net/p/ceylan/code"
 
-		
+
 		if [ $no_vcs -eq 1 ] ; then
 
 			DISPLAY "      ----> getting Ceylan from ${current_vcs} with user name ${developer_name} (check-out)"
@@ -6764,7 +6764,7 @@ getCeylan()
 					# Suppose success:
 					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
-					
+
 				fi
 
 			done
@@ -6779,9 +6779,9 @@ getCeylan()
 			fi
 
 		else
-		
+
 			DISPLAY "      ----> VCS retrieval disabled for Ceylan."
-			
+
 		fi
 
 		if [ $? -ne 0 ] ; then
@@ -6839,10 +6839,10 @@ getCeylan()
 		fi
 
 		if [ $? -ne 0 ] ; then
-		
+
 			ERROR "Unable to retrieve Ceylan from anonymous VCS."
 			exit 22
-			
+
 		fi
 	fi
 
@@ -6907,16 +6907,16 @@ prepareCeylan()
 		if [ $use_current_vcs -eq 0 ] ; then
 
 			DEBUG "No stable tag wanted, retrieving directly latest main-line head version (main branch only) from VCS."
-			
+
 			VCS_BRANCH="master"
-			
+
 		else
-			
+
 			# Should be quite uncommon for Ceylan developers:
 			DEBUG "Using latest stable VCS tag (${latest_stable_ceylan})."
-			
+
 			VCS_BRANCH="${latest_stable_ceylan}"
-				
+
 		fi
 
 		cd ${CHECKOUT_LOCATION}
@@ -7267,13 +7267,13 @@ getOSDL()
 	# OSDL can be obtained by downloading a release archive or by using a VCS.
 
 	if [ ${use_vcs} -eq 1 ]; then
-		
+
 		# Use archive instead of SVN:
 		launchFileRetrieval OSDL
 		return $?
-		
+
 	else
-		
+
 		declareRetrievalBegin "OSDL (from ${current_vcs})"
 
 	fi
@@ -7288,9 +7288,9 @@ getOSDL()
 	# Manage back-up directory if necessary:
 
 	if [ -d "${repository}/osdl" ] ; then
-		
+
 		if [ -d "${repository}/osdl.save" ] ; then
-			
+
 			if [ $be_strict -eq 0 ] ; then
 				ERROR "There already exists a back-up directory for OSDL, it is on the way, please remove it first (${repository}/osdl.save)"
 				exit 5
@@ -7302,11 +7302,11 @@ getOSDL()
 
 			fi
 		fi
-		
+
 		${MV} -f ${repository}/osdl ${repository}/osdl.save 2>/dev/null
-		
+
 		WARNING "There already existed a directory for OSDL (${repository}/osdl), it has been moved to ${repository}/osdl.save."
-		
+
 	fi
 
 	LOG_STATUS "Getting OSDL in its source directory ${repository}..."
@@ -7321,7 +7321,7 @@ getOSDL()
 		${MKDIR} -p ${CHECKOUT_LOCATION}
 
 		VCS_SERVER_PATH="git.code.sf.net/p/osdl/code"
-		
+
 
 		if [ $no_vcs -eq 1 ] ; then
 
@@ -7371,7 +7371,7 @@ getOSDL()
 					# Suppose success:
 					vcsAttemptNumber=$(($MAX_VCS_RETRY+1))
 					success=0
-					
+
 				fi
 
 			done
@@ -7386,7 +7386,7 @@ getOSDL()
 			fi
 
 		else
-			
+
 			DISPLAY "      ----> VCS retrieval disabled for OSDL."
 
 		fi
@@ -7446,10 +7446,10 @@ getOSDL()
 		fi
 
 		if [ $? -ne 0 ] ; then
-			
+
 			ERROR "Unable to retrieve OSDL from anonymous VCS."
 			exit 32
-			
+
 		fi
 	fi
 
@@ -7457,7 +7457,7 @@ getOSDL()
 
 }
 
-				
+
 
 prepareOSDL()
 {
@@ -7506,7 +7506,7 @@ prepareOSDL()
 			${MV} -f ${OSDL_ARCHIVE}.save ${OSDL_ARCHIVE}
 			exit 36
 		fi
-		
+
 	else
 
 		# Using VCS here.
@@ -7514,16 +7514,16 @@ prepareOSDL()
 		if [ $use_current_vcs -eq 0 ] ; then
 
 			DEBUG "No stable tag wanted, retrieving directly latest main-line head version (main branch only) from VCS."
-			
+
 			VCS_BRANCH="master"
-			
+
 		else
-			
+
 			# Should be quite uncommon for OSDL developers:
 			DEBUG "Using latest stable VCS tag (${latest_stable_osdl})."
-			
+
 			VCS_BRANCH="${latest_stable_osdl}"
-				
+
 		fi
 
 		cd ${CHECKOUT_LOCATION}
