@@ -73,7 +73,7 @@ zlib_win_archive_VERSION="128"
 zlib_win_ARCHIVE="zlib${zlib_win_archive_VERSION}.zip"
 zlib_win_DOWNLOAD_LOCATION="http://www.zlib.net"
 zlib_win_ALTERNATE_DOWNLOAD_LOCATION="http://www.gzip.org/zlib"
-zlib_win_MD5="update_me"
+zlib_win_MD5="xxx"
 
 
 
@@ -93,7 +93,7 @@ libpng_win_ARCHIVE="lpng${libpng_win_archive_VERSION}.zip"
 libpng_win_DOWNLOAD_LOCATION="http://ovh.dl.sourceforge.net/sourceforge/libpng"
 libpng_win_ALTERNATE_DOWNLOAD_LOCATION="ftp://ftp.simplesystems.org/pub/libpng/png/src"
 libpng_win_PREVIOUS_DOWNLOAD_LOCATION="ftp://swrinde.nde.swri.edu/pub/png/src"
-libpng_win_MD5="update_me"
+libpng_win_MD5="xxx"
 
 
 
@@ -104,7 +104,7 @@ libtiff_VERSION="3.7.3"
 libtiff_ARCHIVE="tiff-v${libtiff_VERSION}.tar.gz"
 libtiff_DOWNLOAD_LOCATION="ftp://ftp.remotesensing.org/pub/libtiff/"
 libtiff_ALTERNATE_DOWNLOAD_LOCATION=""
-libtiff_MD5="update_me"
+libtiff_MD5="xxx"
 
 
 
@@ -134,7 +134,7 @@ SDL_image_win_precompiled_VERSION="$SDL_image_VERSION"
 SDL_image_win_precompiled_ARCHIVE="SDL_image-devel-${SDL_image_win_precompiled_VERSION}-VC6.zip"
 SDL_image_win_precompiled_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
 SDL_image_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_image_win_precompiled_MD5="update_me"
+SDL_image_win_precompiled_MD5="xxx"
 
 
 # Precompiled binaries of SDL_image, zlib, jpeg, png for Mac OS X:
@@ -144,7 +144,7 @@ SDL_image_osx_precompiled_VERSION="$SDL_image_VERSION"
 SDL_image_osx_precompiled_ARCHIVE="SDL_image-devel-${SDL_image_osx_precompiled_VERSION}.ppc.rpm"
 SDL_image_osx_precompiled_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_image/release"
 SDL_image_osx_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_image_osx_precompiled_MD5="update_me"
+SDL_image_osx_precompiled_MD5="xxx"
 
 
 
@@ -199,7 +199,7 @@ freetype_win_precompiled_ARCHIVE="freetype-${freetype_VERSION}-1-bin.zip"
 freetype_win_precompiled_ARCHIVE_SECOND="freetype-${freetype_VERSION}-1-lib.zip"
 freetype_win_precompiled_DOWNLOAD_LOCATION="http://belnet.dl.sourceforge.net/sourceforge/gnuwin32"
 freetype_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
-freetype_win_precompiled_MD5="update_me"
+freetype_win_precompiled_MD5="xxx"
 
 
 # Precompiled binaries of freetype for Mac OSX (not used currently).
@@ -208,7 +208,7 @@ freetype_osx_precompiled_VERSION="$freetype_VERSION"
 freetype_osx_precompiled_ARCHIVE=""
 freetype_osx_precompiled_DOWNLOAD_LOCATION=""
 freetype_osx_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
-freetype_osx_precompiled_MD5="update_me"
+freetype_osx_precompiled_MD5="xxx"
 
 
 
@@ -237,7 +237,7 @@ SDL_ttf_win_precompiled_VERSION="$SDL_ttf_VERSION"
 SDL_ttf_win_precompiled_ARCHIVE="SDL_ttf-${SDL_ttf_VERSION}-win32.zip"
 SDL_ttf_win_precompiled_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_win_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_ttf_win_precompiled_MD5="update_me"
+SDL_ttf_win_precompiled_MD5="xxx"
 
 # Precompiled binaries of SDL_ttf for Mac OSX (not used currently).
 
@@ -245,7 +245,7 @@ SDL_ttf_osx_precompiled_VERSION="$SDL_ttf_VERSION"
 SDL_ttf_osx_precompiled_ARCHIVE=""
 SDL_ttf_osx_precompiled_DOWNLOAD_LOCATION="http://www.libsdl.org/projects/SDL_ttf/release"
 SDL_ttf_osx_precompiled_ALTERNATE_DOWNLOAD_LOCATION=""
-SDL_ttf_osx_precompiled_MD5="update_me"
+SDL_ttf_osx_precompiled_MD5="xxx"
 
 
 
@@ -388,7 +388,7 @@ FreeImage_win_VERSION="$FreeImage_VERSION"
 FreeImage_win_ARCHIVE="FreeImage${FreeImage_ARCHIVE_VERSION}.zip"
 FreeImage_win_DOWNLOAD_LOCATION="$FreeImage_DOWNLOAD_LOCATION"
 FreeImage_win_ALTERNATE_DOWNLOAD_LOCATION="$FreeImage_ALTERNATE_DOWNLOAD_LOCATION"
-FreeImage_win_MD5="xxx
+FreeImage_win_MD5="xxx"
 
 
 
@@ -549,7 +549,7 @@ egeoip_GIT_SERVER="github.com"
 Geolite_ARCHIVE="GeoLiteCity.dat.gz"
 Geolite_DOWNLOAD_LOCATION="http://www.maxmind.com/download/geoip/database"
 # Versions are changing silently and too frequently to be tracked.
-Geolite_MD5="update_me"
+Geolite_MD5="xxx"
 
 
 
