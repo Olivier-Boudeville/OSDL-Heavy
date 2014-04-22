@@ -27,7 +27,7 @@ if [ $is_windows -eq 0 ] ; then
   # LD_LIBRARY_PATH.
 
   # Windows special case:
-  REQUIRED_TOOLS="SDL2_win zlib_win libjpeg_win libpng_win SDL_image_win SDL_gfx_win freetype_win SDL_ttf_win libogg_win libvorbis_win SDL_mixer_win PhysicsFS_win PCRE_win FreeImage_win CEGUI_win"
+  REQUIRED_TOOLS="SDL2_win zlib_win libjpeg_win libpng_win SDL2_image_win SDL2_gfx_win freetype_win SDL2_ttf_win libogg_win libvorbis_win SDL2_mixer_win PhysicsFS_win PCRE_win FreeImage_win CEGUI_win"
 
   if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -81,14 +81,14 @@ else
 	# whereas morse-icon.tex2D is a normal PNG image, 300 x 286, 8-bit/color
 	# RGBA, non-interlaced
 	#
-	# SDL_gfx (which was just after SDL_image) was removed, due to build
+	# SDL2_gfx (which was just after SDL2_image) was removed, due to build
 	# problems with the 2.0.22 version (m4-related).
 	#
-	# As of May 2013, we removed also 'libjpeg' as SDL_image will always pick
+	# As of May 2013, we removed also 'libjpeg' as SDL2_image will always pick
 	# the one of the system (ex: 8) instead of ours (ex: 9), resulting in 'JPEG
 	# loading error' crashes at runtime.
 	#
-	REQUIRED_TOOLS="libtool SDL2 SDL_image freetype SDL_ttf libogg libvorbis SDL_mixer PCRE FreeImage CEGUI PhysicsFS"
+	REQUIRED_TOOLS="libtool SDL2 SDL2_image freetype SDL2_ttf libogg libvorbis SDL2_mixer PCRE FreeImage CEGUI PhysicsFS"
 
 	if [ $manage_only_third_party_tools -eq 1 ] ; then
 
@@ -106,7 +106,7 @@ else
 
 fi
 
-# Maybe libmikmod should be added for SDL_mixer, if MOD music was to be
+# Maybe libmikmod should be added for SDL2_mixer, if MOD music was to be
 # supported.
 
 
@@ -486,14 +486,16 @@ cleanSDL2_win()
 
 ################################################################################
 ################################################################################
-# SDL_image prerequisites
+# SDL2_image prerequisites
 ################################################################################
 ################################################################################
 
 
-# Prerequisites of SDL_image: JPEG library, PNG library, zlib library.
+# Prerequisites of SDL2_image: JPEG library, PNG library, zlib library.
 # TIFF support is disabled for the moment.
-# For Visual Express builds, these prerequisites are managed from SDL_image_win.
+#
+# For Visual Express builds, these prerequisites are managed from
+# SDL2_image_win.
 
 ################################################################################
 ################################################################################
@@ -516,7 +518,7 @@ cleanSDL2_win()
 
 # However, even on Windows, the building of the static library is still
 # maintained, since one of its byproducts is a generated header file which is
-# needed by SDL_image's own building.
+# needed by SDL2_image's own building.
 
 
 getlibjpeg()
@@ -654,7 +656,7 @@ generatelibjpeg()
 	# error: no acceptable ld found in $PATH so jpeg dll won't be created.
 	#
 	# Nevertheless some other generated files (ex: jconfig.h) will be needed to
-	# build libraries using JPEG, such as SDL_image: it remains useful.
+	# build libraries using JPEG, such as SDL2_image: it remains useful.
 
 	{
 		#setBuildEnv ${MAKE} LDFLAGS="-lgcc_s"
@@ -683,7 +685,7 @@ generatelibjpeg()
 		echo "export libjpeg_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$libjpeg_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		# In order SDL_image configure does not fail:
+		# In order that SDL2_image configure does not fail:
 		LD_LIBRARY_PATH=${libjpeg_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
@@ -1013,7 +1015,7 @@ generatezlib()
 		echo "export zlib_PREFIX" >> ${OSDL_ENV_FILE}
 		echo "LD_LIBRARY_PATH=\$zlib_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		# In order SDL_image configure does not fail:
+		# In order that SDL2_image configure does not fail:
 		LD_LIBRARY_PATH=${zlib_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
@@ -1353,7 +1355,7 @@ generatelibpng()
 
 		echo "LD_LIBRARY_PATH=\$libpng_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		# In order SDL_image configure does not fail:
+		# In order that SDL2_image configure does not fail:
 		LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
@@ -1690,26 +1692,26 @@ cleanlibtiff()
 
 ################################################################################
 ################################################################################
-# SDL_image
+# SDL2_image
 ################################################################################
 ################################################################################
 
 
-#TRACE "[loani-requiredTools] SDL_image"
+#TRACE "[loani-requiredTools] SDL2_image"
 
 
-getSDL_image()
+getSDL2_image()
 {
-	LOG_STATUS "Getting SDL_image..."
-	launchFileRetrieval SDL_image
+	LOG_STATUS "Getting SDL2_image..."
+	launchFileRetrieval SDL2_image
 	return $?
 }
 
 
-prepareSDL_image()
+prepareSDL2_image()
 {
 
-	LOG_STATUS "Preparing SDL_image..."
+	LOG_STATUS "Preparing SDL2_image..."
 	if findTool gunzip ; then
 		GUNZIP=$returnedString
 	else
@@ -1724,7 +1726,7 @@ prepareSDL_image()
 		exit 9
 	fi
 
-	printBeginList "SDL_image  "
+	printBeginList "SDL2_image  "
 
 	printItem "extracting"
 
@@ -1732,50 +1734,50 @@ prepareSDL_image()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_image_ARCHIVE} ${SDL_image_ARCHIVE}.save && ${GUNZIP} -f ${SDL_image_ARCHIVE} && ${TAR} -xvf "SDL_image-${SDL_image_VERSION}.tar"
+		${CP} -f ${SDL2_image_ARCHIVE} ${SDL2_image_ARCHIVE}.save && ${GUNZIP} -f ${SDL2_image_ARCHIVE} && ${TAR} -xvf "SDL2_image-${SDL2_image_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_image_ARCHIVE}."
-		LOG_STATUS "Restoring ${SDL_image_ARCHIVE}."
-		${MV} -f ${SDL_image_ARCHIVE}.save ${SDL_image_ARCHIVE}
+		ERROR "Unable to extract ${SDL2_image_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL2_image_ARCHIVE}."
+		${MV} -f ${SDL2_image_ARCHIVE}.save ${SDL2_image_ARCHIVE}
 		exit 10
 	fi
 
-	${MV} -f ${SDL_image_ARCHIVE}.save ${SDL_image_ARCHIVE}
-	${RM} -f "SDL_image-${SDL_image_VERSION}.tar"
+	${MV} -f ${SDL2_image_ARCHIVE}.save ${SDL2_image_ARCHIVE}
+	${RM} -f "SDL2_image-${SDL2_image_VERSION}.tar"
 
 	printOK
 
 }
 
 
-generateSDL_image()
+generateSDL2_image()
 {
 
-	LOG_STATUS "Generating SDL_image..."
+	LOG_STATUS "Generating SDL2_image..."
 
 	if [ $is_windows -eq 0 ] ; then
 
-		DEBUG "Correcting sdl-config for SDL_image."
+		DEBUG "Correcting sdl-config for SDL2_image."
 
-		sdl_config=${SDL_PREFIX}/bin/sdl-config
+		sdl_config=${SDL2_PREFIX}/bin/sdl-config
 
 		DEBUG "Correcting ${sdl_config}"
-		prefix_one=`cygpath -w ${SDL_PREFIX} | ${SED} 's|\\\|/|g'`
-		prefix_two=`cygpath -w ${SDL_PREFIX} | ${SED} 's|\\\|/|g'`
+		prefix_one=`cygpath -w ${SDL2_PREFIX} | ${SED} 's|\\\|/|g'`
+		prefix_two=`cygpath -w ${SDL2_PREFIX} | ${SED} 's|\\\|/|g'`
 
 		${CAT} ${sdl_config} | ${SED} "s|^prefix=.*$|prefix=$prefix_one|1" > sdl-config.tmp && ${CAT} sdl-config.tmp | ${SED} "s|^exec_prefix=.*$|exec_prefix=$prefix_two|1" > sdl-config.tmp2 && ${RM} -f ${sdl_config} sdl-config.tmp && ${MV} -f sdl-config.tmp2 ${sdl_config}
 
 		if [ $? -ne 0 ] ; then
-			ERROR "Unable to correct sdl-config so that SDL_image can use it."
+			ERROR "Unable to correct sdl-config so that SDL2_image can use it."
 			exit 10
 		fi
 	fi
 
 
-	cd "SDL_image-${SDL_image_VERSION}"
+	cd "SDL2_image-${SDL2_image_VERSION}"
 
 	printItem "configuring"
 
@@ -1787,7 +1789,7 @@ generateSDL_image()
 	if [ -n "$prefix" ] ; then
 	{
 
-		SDL_image_PREFIX=${prefix}/SDL_image-${SDL_image_VERSION}
+		SDL2_image_PREFIX=${prefix}/SDL2_image-${SDL2_image_VERSION}
 
 		# For debug purpose (should be set from other targets):
 
@@ -1798,7 +1800,7 @@ generateSDL_image()
 
 		if [ $is_windows -eq 0 ] ; then
 
-			LIBFLAG="-L`cygpath -w ${SDL_PREFIX}/lib`"
+			LIBFLAG="-L`cygpath -w ${SDL2_PREFIX}/lib`"
 			LIBFLAG="-L`cygpath -w ${libjpeg_PREFIX}/lib ${LIBFLAG}`"
 			LIBFLAG="-L`cygpath -w ${zlib_PREFIX}/lib ${LIBFLAG}`"
 			LIBFLAG="-L`cygpath -w ${libpng_PREFIX}/lib ${LIBFLAG}`"
@@ -1816,10 +1818,10 @@ generateSDL_image()
 
 		fi
 
-		PATH=${SDL_PREFIX}/bin:${PATH}
+		PATH=${SDL2_PREFIX}/bin:${PATH}
 		export PATH
 
-		LD_LIBRARY_PATH=${SDL_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL2_PREFIX}/lib:${LD_LIBRARY_PATH}
 		LD_LIBRARY_PATH=${libjpeg_PREFIX}/lib:${LD_LIBRARY_PATH}
 		LD_LIBRARY_PATH=${zlib_PREFIX}/lib:${LD_LIBRARY_PATH}
 		LD_LIBRARY_PATH=${libpng_PREFIX}/lib:${LD_LIBRARY_PATH}
@@ -1827,26 +1829,26 @@ generateSDL_image()
 		export LD_LIBRARY_PATH
 
 
-		LOG_STATUS "PATH for SDL_image configure is <${PATH}>."
-		LOG_STATUS "LD_LIBRARY_PATH for SDL_image configure is <${LD_LIBRARY_PATH}>."
+		LOG_STATUS "PATH for SDL2_image configure is <${PATH}>."
+		LOG_STATUS "LD_LIBRARY_PATH for SDL2_image configure is <${LD_LIBRARY_PATH}>."
 
 		if [ $is_mingw -eq 0 ] ; then
 
-			LOG_STATUS "Using SDL prefix $SDL_PREFIX for SDL_image."
+			LOG_STATUS "Using SDL2 prefix $SDL2_PREFIX for SDL2_image."
 
 			OLD_LDFLAGS=${LDFLAGS}
 
 			LDFLAGS=${LIBFLAG}
 			export LDFLAGS
 
-			setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif "LDFLAGS=${LDFLAGS}"
+			setBuildEnv ./configure --with-sdl-prefix=${SDL2_PREFIX} --disable-tif "LDFLAGS=${LDFLAGS}"
 
 			LDFLAGS=${OLD_LDFLAGS}
 			export LDFLAGS
 
 		else
 
-			# Looking at the configure.in of SDL_image, we see that no matter
+			# Looking at the configure.in of SDL2_image, we see that no matter
 			# what we can specify, it will select the libjpeg of the system (ex:
 			# 8) instead of any one installed by LOANI (ex: 9); see the find_lib
 			# fonction. Hence we'd better not even try to install libjpeg by
@@ -1861,7 +1863,7 @@ generateSDL_image()
 			# to errors such as: "undefined reference to
 			# `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 
-			setBuildEnv ./configure --with-sdl-prefix=${SDL_PREFIX} --disable-tif --disable-sdltest LDFLAGS="${LIBFLAG} -lz" CPPFLAGS="-I${libjpeg_PREFIX}/include -I${libpng_PREFIX}/include -I${zlib_PREFIX}/include"
+			setBuildEnv ./configure --with-sdl-prefix=${SDL2_PREFIX} --disable-tif --disable-sdltest LDFLAGS="${LIBFLAG} -lz" CPPFLAGS="-I${libjpeg_PREFIX}/include -I${libpng_PREFIX}/include -I${zlib_PREFIX}/include"
 
 		fi
 
@@ -1874,7 +1876,7 @@ generateSDL_image()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to configure SDL_image."
+		ERROR "Unable to configure SDL2_image."
 		exit 11
 	fi
 
@@ -1885,7 +1887,7 @@ generateSDL_image()
 	if [ -n "$prefix" ] ; then
 	{
 
-		#setBuildEnv ${MAKE} "CFLAGS=-O2 -I${SDL_PREFIX}/include/SDL -D_REENTRANT -DLOAD_BMP -DLOAD_GIF -DLOAD_LBM -DLOAD_PCX -DLOAD_PNM -DLOAD_TGA -DLOAD_XPM -DLOAD_JPG -DLOAD_PNG" "LDFLAGS=${LIBFLAG} -ljpeg -lpng -lz" "IMG_LIBS=-ljpeg -lpng -lz"
+		#setBuildEnv ${MAKE} "CFLAGS=-O2 -I${SDL2_PREFIX}/include/SDL -D_REENTRANT -DLOAD_BMP -DLOAD_GIF -DLOAD_LBM -DLOAD_PCX -DLOAD_PNM -DLOAD_TGA -DLOAD_XPM -DLOAD_JPG -DLOAD_PNG" "LDFLAGS=${LIBFLAG} -ljpeg -lpng -lz" "IMG_LIBS=-ljpeg -lpng -lz"
 
 		if [ $is_windows -eq 0 ] ; then
 
@@ -1913,7 +1915,7 @@ generateSDL_image()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to build SDL_image."
+		ERROR "Unable to build SDL2_image."
 		exit 12
 	fi
 
@@ -1924,44 +1926,44 @@ generateSDL_image()
 
 	if [ -n "$prefix" ] ; then
 	{
-		echo "# SDL_image section." >> ${OSDL_ENV_FILE}
+		echo "# SDL2_image section." >> ${OSDL_ENV_FILE}
 
-		echo "SDL_image_PREFIX=${SDL_image_PREFIX}" >> ${OSDL_ENV_FILE}
-		echo "export SDL_image_PREFIX" >> ${OSDL_ENV_FILE}
-		echo "LD_LIBRARY_PATH=\$SDL_image_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL2_image_PREFIX=${SDL2_image_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL2_image_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL2_image_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${SDL_image_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL2_image_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
 		if [ $is_windows -eq 0 ] ; then
 
-			PATH=${SDL_image_PREFIX}/lib:${PATH}
+			PATH=${SDL2_image_PREFIX}/lib:${PATH}
 			export PATH
 
-			echo "PATH=\$SDL_image_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL2_image_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 		fi
 
 		echo "" >> ${OSDL_ENV_FILE}
 
-		${MKDIR} -p ${SDL_image_PREFIX}
+		${MKDIR} -p ${SDL2_image_PREFIX}
 
-		setBuildEnv ${MAKE} install prefix=${SDL_image_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${SDL2_image_PREFIX}
 
 		if [ $? != 0 ] ; then
 			echo
-			ERROR "Unable to install SDL_image."
+			ERROR "Unable to install SDL2_image."
 			exit 13
 		fi
 
-		# Rename 'libSDL_image.la', to prevent libtool from detecting it when
+		# Rename 'libSDL2_image.la', to prevent libtool from detecting it when
 		# linking OSDL and issuing very annoying messages twice, such as:
-		# "libtool: link: warning: library `[...]/libSDL_image.la' was moved."
+		# "libtool: link: warning: library `[...]/libSDL2_image.la' was moved."
 
-		${MV} -f ${SDL_image_PREFIX}/lib/libSDL_image.la ${SDL_image_PREFIX}/lib/libSDL_image.la-hidden-by-LOANI
+		${MV} -f ${SDL2_image_PREFIX}/lib/libSDL2_image.la ${SDL2_image_PREFIX}/lib/libSDL2_image.la-hidden-by-LOANI
 
 		if [ $? != 0 ] ; then
 			echo
-			ERROR "Unable to post-install SDL_image (correction for libtool)."
+			ERROR "Unable to post-install SDL2_image (correction for libtool)."
 			exit 13
 		fi
 
@@ -1976,7 +1978,7 @@ generateSDL_image()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to install SDL_image."
+		ERROR "Unable to install SDL2_image."
 		exit 13
 	fi
 
@@ -1985,43 +1987,43 @@ generateSDL_image()
 
 	printEndList
 
-	LOG_STATUS "SDL_image successfully installed."
+	LOG_STATUS "SDL2_image successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanSDL_image()
+cleanSDL2_image()
 {
-	LOG_STATUS "Cleaning SDL_image library build tree..."
-	${RM} -rf "SDL_image-${SDL_image_VERSION}"
+	LOG_STATUS "Cleaning SDL2_image library build tree..."
+	${RM} -rf "SDL2_image-${SDL2_image_VERSION}"
 }
 
 
 
 ################################################################################
-# SDL_image build thanks to Visual Express.
+# SDL2_image build thanks to Visual Express.
 #
-# Its libpng and zlib prerequisites are managed seperatly, whereas libjpeg is
+# Its libpng and zlib prerequisites are managed separately, whereas libjpeg is
 # managed here (this second order library is not built, it is just downloaded
-# with the SDL_image package).
+# with the SDL2_image package).
 ################################################################################
 
-#TRACE "[loani-requiredTools] SDL_image for Visual Express targets"
+#TRACE "[loani-requiredTools] SDL2_image for Visual Express targets"
 
-getSDL_image_win()
+getSDL2_image_win()
 {
-	LOG_STATUS "Getting SDL_image for windows..."
-	launchFileRetrieval SDL_image_win
+	LOG_STATUS "Getting SDL2_image for windows..."
+	launchFileRetrieval SDL2_image_win
 	return $?
 }
 
 
-prepareSDL_image_win()
+prepareSDL2_image_win()
 {
 
-	LOG_STATUS "Preparing SDL_image for windows.."
+	LOG_STATUS "Preparing SDL2_image for windows.."
 
 	if findTool unzip ; then
 		UNZIP=$returnedString
@@ -2030,33 +2032,33 @@ prepareSDL_image_win()
 		exit 8
 	fi
 
-	printBeginList "SDL_image  "
+	printBeginList "SDL2_image  "
 
 	printItem "extracting"
 
 	cd $repository
 
 	{
-		${UNZIP} -o ${SDL_image_win_ARCHIVE}
+		${UNZIP} -o ${SDL2_image_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_image_win_ARCHIVE}."
+		ERROR "Unable to extract ${SDL2_image_win_ARCHIVE}."
 		exit 10
 	fi
 
-	cd "SDL_image-${SDL_image_win_VERSION}"
+	cd "SDL2_image-${SDL2_image_win_VERSION}"
 
-	sdl_image_install_dir="${prefix}/SDL_image-${SDL_image_win_VERSION}"
+	sdl2_image_install_dir="${prefix}/SDL2_image-${SDL2_image_win_VERSION}"
 
-	${MKDIR} -p ${sdl_image_install_dir}
+	${MKDIR} -p ${sdl2_image_install_dir}
 
 	cd $repository
 
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_image-from-LOANI" "SDL_image-${SDL_image_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL2_image-from-LOANI" "SDL2_image-${SDL2_image_win_VERSION}"
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to copy SDL_image solution in build tree."
+		ERROR "Unable to copy SDL2_image solution in build tree."
 		exit 11
 	fi
 
@@ -2065,63 +2067,63 @@ prepareSDL_image_win()
 }
 
 
-generateSDL_image_win()
+generateSDL2_image_win()
 {
 
-	LOG_STATUS "Generating SDL_image for windows..."
+	LOG_STATUS "Generating SDL2_image for windows..."
 
-	cd "SDL_image-${SDL_image_win_VERSION}"
+	cd "SDL2_image-${SDL2_image_win_VERSION}"
 
 	printItem "configuring"
 	printOK
 
-	sdl_image_solution=`pwd`"/SDL_image-from-LOANI/SDL_image-from-LOANI.sln"
+	sdl2_image_solution=`pwd`"/SDL2_image-from-LOANI/SDL2_image-from-LOANI.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress SDL_image ${sdl_image_solution}
+	GenerateWithVisualExpress SDL2_image ${sdl2_image_solution}
 	printOK
 
 	printItem "installing"
 
-	# Take care of the exported header files (API for SDL_image and libjpeg):
-	sdl_image_include_install_dir="${sdl_image_install_dir}/include"
-	${MKDIR} -p ${sdl_image_include_install_dir}
-	${CP} -f *.h ${sdl_image_include_install_dir}
+	# Take care of the exported header files (API for SDL2_image and libjpeg):
+	sdl2_image_include_install_dir="${sdl2_image_install_dir}/include"
+	${MKDIR} -p ${sdl2_image_include_install_dir}
+	${CP} -f *.h ${sdl2_image_include_install_dir}
 
 	printOK
 
 	printEndList
 
-	LOG_STATUS "SDL_image successfully installed."
+	LOG_STATUS "SDL2_image successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanSDL_image_win()
+cleanSDL2_image_win()
 {
-	LOG_STATUS "Cleaning SDL build tree..."
-	${RM} -rf "SDL_image-${SDL_image_win_VERSION}"
+	LOG_STATUS "Cleaning SDL2_image build tree..."
+	${RM} -rf "SDL2_image-${SDL2_image_win_VERSION}"
 }
 
 
 
 ################################################################################
-# SDL_image_*_precompiled targets.
+# SDL2_image_*_precompiled targets.
 ################################################################################
 
 # Windows binaries.
 
-getSDL_image_win_precompiled()
+getSDL2_image_win_precompiled()
 {
-		LOG_STATUS "Getting prebuilt JPEG library for windows (SDL_image package)..."
-		launchFileRetrieval SDL_image_win_precompiled
+		LOG_STATUS "Getting prebuilt JPEG library for windows (SDL2_image package)..."
+		launchFileRetrieval SDL2_image_win_precompiled
 		return $?
 }
 
 
-prepareSDL_image_win_precompiled()
+prepareSDL2_image_win_precompiled()
 {
 
 	LOG_STATUS "Preparing prebuilt JPEG library..."
@@ -2138,35 +2140,35 @@ prepareSDL_image_win_precompiled()
 
 	cd $repository
 
-	SDL_image_prebuilt_dir="SDL_image-${SDL_image_VERSION}-prebuilt"
+	SDL2_image_prebuilt_dir="SDL2_image-${SDL2_image_VERSION}-prebuilt"
 
 	# Prevent archive from disappearing because of unzip.
-	# Create SDL_image-x.y.z-prebuilt directory with precompiled DLL in it.
+	# Create SDL2_image-x.y.z-prebuilt directory with precompiled DLL in it.
 	{
-		${CP} -f ${SDL_image_win_precompiled_ARCHIVE} ${SDL_image_win_precompiled_ARCHIVE}.save && ${UNZIP} -o ${SDL_image_win_precompiled_ARCHIVE} && ${MV} -f SDL_image-${SDL_image_VERSION} ${SDL_image_prebuilt_dir}
+		${CP} -f ${SDL2_image_win_precompiled_ARCHIVE} ${SDL2_image_win_precompiled_ARCHIVE}.save && ${UNZIP} -o ${SDL2_image_win_precompiled_ARCHIVE} && ${MV} -f SDL2_image-${SDL2_image_VERSION} ${SDL2_image_prebuilt_dir}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_image_win_precompiled_ARCHIVE}."
-		LOG_STATUS "Restoring ${SDL_image_win_precompiled_ARCHIVE}."
-		${MV} -f ${SDL_image_win_precompiled_ARCHIVE}.save ${SDL_image_win_precompiled_ARCHIVE}
+		ERROR "Unable to extract ${SDL2_image_win_precompiled_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL2_image_win_precompiled_ARCHIVE}."
+		${MV} -f ${SDL2_image_win_precompiled_ARCHIVE}.save ${SDL2_image_win_precompiled_ARCHIVE}
 		exit 10
 	fi
 
-	${MV} -f ${SDL_image_win_precompiled_ARCHIVE}.save ${SDL_image_win_precompiled_ARCHIVE}
+	${MV} -f ${SDL2_image_win_precompiled_ARCHIVE}.save ${SDL2_image_win_precompiled_ARCHIVE}
 
 	printOK
 
 }
 
 
-generateSDL_image_win_precompiled()
+generateSDL2_image_win_precompiled()
 {
 
-	LOG_STATUS "Generating SDL_image_win_precompiled ..."
+	LOG_STATUS "Generating SDL2_image_win_precompiled ..."
 
-	cd "${SDL_image_prebuilt_dir}"
+	cd "${SDL2_image_prebuilt_dir}"
 
 	printItem "configuring"
 
@@ -2189,11 +2191,10 @@ generateSDL_image_win_precompiled()
 		# Let's suppose the precompiled version has for version libjpeg_VERSION.
 
 		# The libjpeg target should already have:
-		#       - created ${libjpeg_PREFIX}/lib
-		#       - defined:
-		# LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
-		#       - added the libjpeg section." in ${OSDL_ENV_FILE}
-		#       - updated LD_LIBRARY_PATH *and* PATH with ${libjpeg_PREFIX}/lib
+		#  - created ${libjpeg_PREFIX}/lib
+		#  - defined: LIBFLAG="-L${libjpeg_PREFIX}/lib ${LIBFLAG}"
+		#  - added the libjpeg section." in ${OSDL_ENV_FILE}
+		#  - updated LD_LIBRARY_PATH *and* PATH with ${libjpeg_PREFIX}/lib
 
 		${CP} -f lib/jpeg.dll ${libjpeg_PREFIX}/lib
 
@@ -2227,10 +2228,10 @@ generateSDL_image_win_precompiled()
 }
 
 
-cleanSDL_image_win_precompiled()
+cleanSDL2_image_win_precompiled()
 {
-	LOG_STATUS "Cleaning SDL_image precompiled for windows build tree..."
-	${RM} -rf "${SDL_image_prebuilt_dir}"
+	LOG_STATUS "Cleaning SDL2_image precompiled for windows build tree..."
+	${RM} -rf "${SDL2_image_prebuilt_dir}"
 }
 
 
@@ -2402,7 +2403,7 @@ generatelibogg()
 		# linking OSDL and issuing very annoying messages twice, such as:
 		# "libtool: link: warning: library `[...]/libogg.la' was moved."
 
-		# Disabled since it would prevent SDL_mixer build:
+		# Disabled since it would prevent the SDL2_mixer build:
 		#${MV} -f ${libogg_PREFIX}/lib/libogg.la ${libogg_PREFIX}/lib/libogg.la-hidden-by-LOANI
 		#
 		#if [ $? != 0 ] ; then
@@ -2449,7 +2450,7 @@ cleanlibogg()
 # libogg build thanks to Visual Express.
 ################################################################################
 
-#TRACE "[loani-requiredTools] SDL_image for Visual Express targets"
+#TRACE "[loani-requiredTools] SDL2_image for Visual Express targets"
 
 getlibogg_win()
 {
@@ -2712,7 +2713,7 @@ generatelibvorbis()
 		# linking OSDL and issuing very annoying messages twice, such as:
 		# "libtool: link: warning: library `[...]/libvorbis.la' was moved."
 
-		# Disabled since would prevent SDL_mixer build: ${MV} -f
+		# Disabled since would prevent the SDL2_mixer build: ${MV} -f
 		#${libvorbis_PREFIX}/lib/libvorbis.la
 		#${libvorbis_PREFIX}/lib/libvorbis.la-hidden-by-LOANI
 		#
@@ -2864,30 +2865,30 @@ cleanlibvorbis_win()
 
 ################################################################################
 ################################################################################
-# SDL_mixer
+# SDL2_mixer
 ################################################################################
 ################################################################################
 
 
 ################################################################################
-# SDL_mixer for non-Windows platforms
+# SDL2_mixer for non-Windows platforms
 ################################################################################
 
-#TRACE "[loani-requiredTools] SDL_mixer"
+#TRACE "[loani-requiredTools] SDL2_mixer"
 
 
-getSDL_mixer()
+getSDL2_mixer()
 {
-	LOG_STATUS "Getting SDL_mixer..."
-	launchFileRetrieval SDL_mixer
+	LOG_STATUS "Getting SDL2_mixer..."
+	launchFileRetrieval SDL2_mixer
 	return $?
 }
 
 
-prepareSDL_mixer()
+prepareSDL2_mixer()
 {
 
-	LOG_STATUS "Preparing SDL_mixer..."
+	LOG_STATUS "Preparing SDL2_mixer..."
 	if findTool gunzip ; then
 		GUNZIP=$returnedString
 	else
@@ -2902,7 +2903,7 @@ prepareSDL_mixer()
 		exit 9
 	fi
 
-	printBeginList "SDL_mixer  "
+	printBeginList "SDL2_mixer "
 
 	printItem "extracting"
 
@@ -2910,32 +2911,32 @@ prepareSDL_mixer()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_mixer_ARCHIVE} ${SDL_mixer_ARCHIVE}.save && ${GUNZIP} -f ${SDL_mixer_ARCHIVE} && ${TAR} -xvf "SDL_mixer-${SDL_mixer_VERSION}.tar"
+		${CP} -f ${SDL2_mixer_ARCHIVE} ${SDL2_mixer_ARCHIVE}.save && ${GUNZIP} -f ${SDL2_mixer_ARCHIVE} && ${TAR} -xvf "SDL2_mixer-${SDL2_mixer_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_mixer_ARCHIVE}."
-		LOG_STATUS "Restoring ${SDL_mixer_ARCHIVE}."
-		${MV} -f ${SDL_mixer_ARCHIVE}.save ${SDL_mixer_ARCHIVE}
+		ERROR "Unable to extract ${SDL2_mixer_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL2_mixer_ARCHIVE}."
+		${MV} -f ${SDL2_mixer_ARCHIVE}.save ${SDL2_mixer_ARCHIVE}
 		exit 10
 	fi
 
-	${MV} -f ${SDL_mixer_ARCHIVE}.save ${SDL_mixer_ARCHIVE}
-	${RM} -f "SDL_mixer-${SDL_mixer_VERSION}.tar"
+	${MV} -f ${SDL2_mixer_ARCHIVE}.save ${SDL2_mixer_ARCHIVE}
+	${RM} -f "SDL2_mixer-${SDL2_mixer_VERSION}.tar"
 
 	printOK
 
 }
 
 
-generateSDL_mixer()
+generateSDL2_mixer()
 {
 
-	LOG_STATUS "Generating SDL_mixer..."
+	LOG_STATUS "Generating SDL2_mixer..."
 
 
-	cd "SDL_mixer-${SDL_mixer_VERSION}"
+	cd "SDL2_mixer-${SDL2_mixer_VERSION}"
 
 	printItem "configuring"
 
@@ -2947,7 +2948,7 @@ generateSDL_mixer()
 	if [ -n "$prefix" ] ; then
 	{
 
-		SDL_mixer_PREFIX=${prefix}/SDL_mixer-${SDL_mixer_VERSION}
+		SDL2_mixer_PREFIX=${prefix}/SDL2_mixer-${SDL2_mixer_VERSION}
 
 		#LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib ${LDFLAGS}"
 		#export LDFLAGS
@@ -2959,13 +2960,13 @@ generateSDL_mixer()
 		# library is not installed by LOANI yet, and they are currently
 		# considered as less useful than the ones of the core selection):
 		#
-		#  - MOD support (including libmikmod),
-		#  - MIDI support (including native and timidity),
+		#  - MOD support (including libmikmod)
+		#  - MIDI support (including native and timidity)
 		#  - MP3 support (including SMPEG)
 		#
 		# The recommended sound encodings are:
 		#  - WAVE (for short samples)
-		#  - OggVorbis (for longer ones, including music).
+		#  - OggVorbis (for longer ones, including music)
 		#
 
 		# Saturday, October 20, 2007: there is a problem with SDL_mixer (1.2.8)
@@ -2978,7 +2979,7 @@ generateSDL_mixer()
 		# vorbis versions.
 
 
-		setBuildEnv ./configure --prefix=${SDL_mixer_PREFIX} --exec-prefix=${SDL_mixer_PREFIX} -with-sdl-prefix=${SDL_PREFIX}  --disable-static --disable-music-mod --disable-music-midi --disable-music-timidity-midi --disable-music-native-midi --disable-music-native-midi-gpl --disable-music-mp3 --disable-smpegtest --enable-music-wave LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib" CFLAGS="-I${libogg_PREFIX}/include  -I${libvorbis_PREFIX}/include"
+		setBuildEnv ./configure --prefix=${SDL2_mixer_PREFIX} --exec-prefix=${SDL2_mixer_PREFIX} -with-sdl-prefix=${SDL2_PREFIX} --disable-static --disable-music-mod --disable-music-midi --disable-music-timidity-midi --disable-music-native-midi --disable-music-native-midi-gpl --disable-music-mp3 --disable-smpegtest --enable-music-wave LDFLAGS="-L${libogg_PREFIX}/lib -L${libvorbis_PREFIX}/lib" CFLAGS="-I${libogg_PREFIX}/include -I${libvorbis_PREFIX}/include"
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
@@ -2989,7 +2990,7 @@ generateSDL_mixer()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to configure SDL_mixer."
+		ERROR "Unable to configure SDL2_mixer."
 		exit 11
 	fi
 
@@ -3012,7 +3013,7 @@ generateSDL_mixer()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to build SDL_mixer."
+		ERROR "Unable to build SDL2_mixer."
 		exit 12
 	fi
 
@@ -3023,44 +3024,44 @@ generateSDL_mixer()
 
 	if [ -n "$prefix" ] ; then
 	{
-		echo "# SDL_mixer section." >> ${OSDL_ENV_FILE}
+		echo "# SDL2_mixer section." >> ${OSDL_ENV_FILE}
 
-		echo "SDL_mixer_PREFIX=${SDL_mixer_PREFIX}" >> ${OSDL_ENV_FILE}
-		echo "export SDL_mixer_PREFIX" >> ${OSDL_ENV_FILE}
-		echo "LD_LIBRARY_PATH=\$SDL_mixer_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL2_mixer_PREFIX=${SDL2_mixer_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL2_mixer_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL2_mixer_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${SDL_mixer_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL2_mixer_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
 		if [ $is_windows -eq 0 ] ; then
 
-			PATH=${SDL_mixer_PREFIX}/lib:${PATH}
+			PATH=${SDL2_mixer_PREFIX}/lib:${PATH}
 			export PATH
 
-			echo "PATH=\$SDL_mixer_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL2_mixer_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 		fi
 
 		echo "" >> ${OSDL_ENV_FILE}
 
-		${MKDIR} -p ${SDL_mixer_PREFIX}
+		${MKDIR} -p ${SDL2_mixer_PREFIX}
 
-		setBuildEnv ${MAKE} install prefix=${SDL_mixer_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${SDL2_mixer_PREFIX}
 
 		if [ $? != 0 ] ; then
 			echo
-			ERROR "Unable to install SDL_mixer."
+			ERROR "Unable to install SDL2_mixer."
 			exit 13
 		fi
 
-		# Rename 'libSDL_mixer.la', to prevent libtool from detecting it when
+		# Rename 'libSDL2_mixer.la', to prevent libtool from detecting it when
 		# linking OSDL and issuing very annoying messages twice, such as:
-		# "libtool: link: warning: library `[...]/libSDL_mixer.la' was moved."
+		# "libtool: link: warning: library `[...]/libSDL2_mixer.la' was moved."
 
-		${MV} -f ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la ${SDL_mixer_PREFIX}/lib/libSDL_mixer.la-hidden-by-LOANI
+		${MV} -f ${SDL2_mixer_PREFIX}/lib/libSDL2_mixer.la ${SDL2_mixer_PREFIX}/lib/libSDL2_mixer.la-hidden-by-LOANI
 
 		if [ $? != 0 ] ; then
 			echo
-			ERROR "Unable to post-install SDL_mixer (correction for libtool)."
+			ERROR "Unable to post-install SDL2_mixer (correction for libtool)."
 			exit 13
 		fi
 
@@ -3075,7 +3076,7 @@ generateSDL_mixer()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to install SDL_mixer."
+		ERROR "Unable to install SDL2_mixer."
 		exit 13
 	fi
 
@@ -3084,41 +3085,42 @@ generateSDL_mixer()
 
 	printEndList
 
-	LOG_STATUS "SDL_mixer successfully installed."
+	LOG_STATUS "SDL2_mixer successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanSDL_mixer()
+cleanSDL2_mixer()
 {
-	LOG_STATUS "Cleaning SDL_mixer library build tree..."
-	${RM} -rf "SDL_mixer-${SDL_mixer_VERSION}"
+	LOG_STATUS "Cleaning SDL2_mixer library build tree..."
+	${RM} -rf "SDL2_mixer-${SDL2_mixer_VERSION}"
 }
 
 
 
+
 ################################################################################
-# SDL_mixer build thanks to Visual Express.
+# SDL2_mixer build thanks to Visual Express.
 # Its prerequisites (Ogg/Vorbis libraries, including VorbisFile) are managed
 # here as well (these second order libraries are not built, they are just
-# downloaded with the SDL_mixer package).
+# downloaded with the SDL2_mixer package).
 ################################################################################
 
 
-getSDL_mixer_win()
+getSDL2_mixer_win()
 {
-	LOG_STATUS "Getting SDL_mixer for windows..."
-	launchFileRetrieval SDL_mixer_win
+	LOG_STATUS "Getting SDL2_mixer for windows..."
+	launchFileRetrieval SDL2_mixer_win
 	return $?
 }
 
 
-prepareSDL_mixer_win()
+prepareSDL2_mixer_win()
 {
 
-	LOG_STATUS "Preparing SDL_mixer for windows.."
+	LOG_STATUS "Preparing SDL2_mixer for windows.."
 
 	if findTool unzip ; then
 		UNZIP=$returnedString
@@ -3127,33 +3129,33 @@ prepareSDL_mixer_win()
 		exit 8
 	fi
 
-	printBeginList "SDL_mixer  "
+	printBeginList "SDL2_mixer "
 
 	printItem "extracting"
 
 	cd $repository
 
 	{
-		${UNZIP} -o ${SDL_mixer_win_ARCHIVE}
+		${UNZIP} -o ${SDL2_mixer_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_mixer_win_ARCHIVE}."
+		ERROR "Unable to extract ${SDL2_mixer_win_ARCHIVE}."
 		exit 10
 	fi
 
-	cd "SDL_mixer-${SDL_mixer_win_VERSION}"
+	cd "SDL2_mixer-${SDL2_mixer_win_VERSION}"
 
-	sdl_mixer_install_dir="${prefix}/SDL_mixer-${SDL_mixer_win_VERSION}"
+	sdl2_mixer_install_dir="${prefix}/SDL2_mixer-${SDL2_mixer_win_VERSION}"
 
-	${MKDIR} -p ${sdl_mixer_install_dir}
+	${MKDIR} -p ${sdl2_mixer_install_dir}
 
 	cd $repository
 
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_mixer-from-LOANI" "SDL_mixer-${SDL_mixer_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL2_mixer-from-LOANI" "SDL2_mixer-${SDL2_mixer_win_VERSION}"
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to copy SDL_mixer solution in build tree."
+		ERROR "Unable to copy SDL2_mixer solution in build tree."
 		exit 11
 	fi
 
@@ -3162,44 +3164,45 @@ prepareSDL_mixer_win()
 }
 
 
-generateSDL_mixer_win()
+generateSDL2_mixer_win()
 {
 
-	LOG_STATUS "Generating SDL_mixer for windows..."
+	LOG_STATUS "Generating SDL2_mixer for windows..."
 
-	cd "SDL_mixer-${SDL_mixer_win_VERSION}"
+	cd "SDL2_mixer-${SDL2_mixer_win_VERSION}"
 
 	printItem "configuring"
 	printOK
 
-	sdl_mixer_solution=`pwd`"/SDL_mixer-from-LOANI/SDL_mixer-from-LOANI.sln"
+	sdl2_mixer_solution=`pwd`"/SDL2_mixer-from-LOANI/SDL2_mixer-from-LOANI.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress SDL_mixer ${sdl_mixer_solution}
+	GenerateWithVisualExpress SDL2_mixer ${sdl2_mixer_solution}
 	printOK
 
 	printItem "installing"
 
-	sdl_mixer_install_include_dir=${sdl_mixer_install_dir}/include
-	${MKDIR} -p ${sdl_mixer_install_include_dir}
-	${CP} -f SDL_mixer.h ${sdl_mixer_install_include_dir}
+	sdl2_mixer_install_include_dir=${sdl2_mixer_install_dir}/include
+	${MKDIR} -p ${sdl2_mixer_install_include_dir}
+	${CP} -f SDL2_mixer.h ${sdl2_mixer_install_include_dir}
 
 	printOK
 
 	printEndList
 
-	LOG_STATUS "SDL_mixer successfully installed."
+	LOG_STATUS "SDL2_mixer successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanSDL_mixer_win()
+cleanSDL2_mixer_win()
 {
-	LOG_STATUS "Cleaning SDL_mixer build tree..."
-	${RM} -rf "SDL-${SDL_mixer_win_VERSION}"
+	LOG_STATUS "Cleaning SDL2_mixer build tree..."
+	${RM} -rf "SDL2-${SDL2_mixer_win_VERSION}"
 }
+
 
 
 
@@ -3291,7 +3294,7 @@ generateguichan()
 
 		${MKDIR} -p ${guichan_PREFIX}
 
-		setBuildEnv ./configure --prefix=${guichan_PREFIX} --enable-sdl --enable-sdlimage --enable-opengl CPPFLAGS="-I${SDL_PREFIX}/include/SDL -I${SDL_image_PREFIX}/include/SDL" LDFLAGS="-L${SDL_PREFIX}/lib -L${SDL_image_PREFIX}/lib"
+		setBuildEnv ./configure --prefix=${guichan_PREFIX} --enable-sdl --enable-sdlimage --enable-opengl CPPFLAGS="-I${SDL_PREFIX}/include/SDL -I${SDL2_image_PREFIX}/include/SDL" LDFLAGS="-L${SDL_PREFIX}/lib -L${SDL2_image_PREFIX}/lib"
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
@@ -3490,9 +3493,9 @@ generateguichan_win()
 	printItem "installing"
 
 	# Take care of the exported header files (API):
-	sdl_install=${alternate_prefix}/guichan-${guichan_win_VERSION}
-	${MKDIR} -p ${sdl_install}
-	${CP} -rf include ${sdl_install}
+	sdl2_install=${alternate_prefix}/guichan-${guichan_win_VERSION}
+	${MKDIR} -p ${sdl2_install}
+	${CP} -rf include ${sdl2_install}
 	printOK
 
 	printEndList
@@ -5083,29 +5086,29 @@ cleanPhysicsFS_win()
 
 ################################################################################
 ################################################################################
-# SDL_gfx
+# SDL2_gfx
 ################################################################################
 ################################################################################
 
 
 ################################################################################
-# SDL_gfx for non-Windows platforms:
+# SDL2_gfx for non-Windows platforms:
 ################################################################################
 
-#TRACE "[loani-requiredTools] SDL_gfx"
+#TRACE "[loani-requiredTools] SDL2_gfx"
 
-getSDL_gfx()
+getSDL2_gfx()
 {
-	LOG_STATUS "Getting SDL_gfx..."
-	launchFileRetrieval SDL_gfx
+	LOG_STATUS "Getting SDL2_gfx..."
+	launchFileRetrieval SDL2_gfx
 	return $?
 }
 
 
-prepareSDL_gfx()
+prepareSDL2_gfx()
 {
 
-	LOG_STATUS "Preparing SDL_gfx..."
+	LOG_STATUS "Preparing SDL2_gfx..."
 	if findTool gunzip ; then
 		GUNZIP=$returnedString
 	else
@@ -5120,7 +5123,7 @@ prepareSDL_gfx()
 		exit 9
 	fi
 
-	printBeginList "SDL_gfx    "
+	printBeginList "SDL2_gfx   "
 
 	printItem "extracting"
 
@@ -5128,37 +5131,37 @@ prepareSDL_gfx()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_gfx_ARCHIVE} ${SDL_gfx_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_ARCHIVE} && ${TAR} -xvf "SDL_gfx-${SDL_gfx_VERSION}.tar"
+		${CP} -f ${SDL2_gfx_ARCHIVE} ${SDL2_gfx_ARCHIVE}.save && ${GUNZIP} -f ${SDL2_gfx_ARCHIVE} && ${TAR} -xvf "SDL2_gfx-${SDL2_gfx_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_gfx_ARCHIVE}."
-		LOG_STATUS "Restoring ${SDL_gfx_ARCHIVE}."
-		${MV} -f ${SDL_gfx_ARCHIVE}.save ${SDL_gfx_ARCHIVE}
+		ERROR "Unable to extract ${SDL2_gfx_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL2_gfx_ARCHIVE}."
+		${MV} -f ${SDL2_gfx_ARCHIVE}.save ${SDL2_gfx_ARCHIVE}
 		exit 10
 	fi
 
-	${MV} -f ${SDL_gfx_ARCHIVE}.save ${SDL_gfx_ARCHIVE}
-	${RM} -f "SDL_gfx-${SDL_gfx_VERSION}.tar"
+	${MV} -f ${SDL2_gfx_ARCHIVE}.save ${SDL2_gfx_ARCHIVE}
+	${RM} -f "SDL2_gfx-${SDL2_gfx_VERSION}.tar"
 
 	printOK
 
 }
 
 
-generateSDL_gfx()
+generateSDL2_gfx()
 {
 
-	LOG_STATUS "Generating SDL_gfx..."
+	LOG_STATUS "Generating SDL2_gfx..."
 
-	cd "SDL_gfx-${SDL_gfx_VERSION}"
+	cd "SDL2_gfx-${SDL2_gfx_VERSION}"
 
 	printItem "configuring"
 
 	# Not running autogen.sh by ourselves, as the built-in configure is now
-	# perfectly usable, and unless adding -I ${SDL_PREFIX}/share/aclocal to
-	# the aclocal call, the right sdl.m4 would not be found anyway.
+	# perfectly usable, and unless adding -I ${SDL2_PREFIX}/share/aclocal to
+	# the aclocal call, the right sdl2.m4 would not be found anyway.
 
 	#{
 	#	setBuildEnv ./autogen.sh
@@ -5166,7 +5169,7 @@ generateSDL_gfx()
 
 	#if [ $? != 0 ] ; then
 	#	echo
-	#	ERROR "Unable to configure SDL_gfx: autogen failed."
+	#	ERROR "Unable to configure SDL2_gfx: autogen failed."
 	#	exit 11
 	#fi
 
@@ -5177,23 +5180,24 @@ generateSDL_gfx()
 	if [ -n "$prefix" ] ; then
 	{
 
-		SDL_gfx_PREFIX=${prefix}/SDL_gfx-${SDL_gfx_VERSION}
+		SDL2_gfx_PREFIX=${prefix}/SDL2_gfx-${SDL2_gfx_VERSION}
 
-		# SDL_gfx uses wrongly SDL includes: asks for SDL/SDL.h instead of
+		# SDL2_gfx uses wrongly SDL includes: asks for SDL/SDL.h instead of
 		# SDL.h.
 		#
 		# Ugly hack:
 		# (copy could be used instead, to avoid needing symbolic links for
 		# filesystems such as vfat)
-		${LN} -s ${SDL_PREFIX}/include/SDL ${SDL_PREFIX}/include/SDL/SDL
+		#
+		${LN} -s ${SDL2_PREFIX}/include/SDL ${SDL2_PREFIX}/include/SDL/SDL
 
 		OLD_CPP_FLAGS=$CPP_FLAGS
-		CPP_FLAGS="-I${SDL_PREFIX}/include $CPP_FLAGS"
+		CPP_FLAGS="-I${SDL2_PREFIX}/include $CPP_FLAGS"
 		export CPP_FLAGS
 
 		OLD_LD_FLAGS=$LD_FLAGS
 
-		LDFLAGS="-L${SDL_PREFIX}/lib $LDFLAGS"
+		LDFLAGS="-L${SDL2_PREFIX}/lib $LDFLAGS"
 		export LDFLAGS
 
 		LIBS=$LDFLAGS
@@ -5206,7 +5210,7 @@ generateSDL_gfx()
 		# such as:
 		# "undefined reference to `_Unwind_Resume_or_Rethrow@GCC_3.3'"
 
-		setBuildEnv ./configure --prefix=${SDL_gfx_PREFIX} --exec-prefix=${SDL_gfx_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --disable-sdltest
+		setBuildEnv ./configure --prefix=${SDL2_gfx_PREFIX} --exec-prefix=${SDL2_gfx_PREFIX} --with-sdl-prefix=${SDL2_PREFIX} --disable-sdltest
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
@@ -5217,7 +5221,7 @@ generateSDL_gfx()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to configure SDL_gfx."
+		ERROR "Unable to configure SDL2_gfx."
 		exit 11
 	fi
 
@@ -5231,14 +5235,14 @@ generateSDL_gfx()
 
 	fi
 
-	# SDL_gfx will not be compiled with debug machinery:
+	# SDL2_gfx will not be compiled with debug machinery:
 	{
 		setBuildEnv ./nodebug.sh
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "SDL_gfx post-configure script failed (nodebug.sh)."
+		ERROR "SDL2_gfx post-configure script failed (nodebug.sh)."
 		exit 12
 	fi
 
@@ -5253,7 +5257,7 @@ generateSDL_gfx()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to build SDL_gfx."
+		ERROR "Unable to build SDL2_gfx."
 		exit 12
 	fi
 
@@ -5265,26 +5269,26 @@ generateSDL_gfx()
 	if [ -n "$prefix" ] ; then
 	{
 
-		echo "# SDL_gfx section." >> ${OSDL_ENV_FILE}
+		echo "# SDL2_gfx section." >> ${OSDL_ENV_FILE}
 
-		echo "SDL_gfx_PREFIX=${SDL_gfx_PREFIX}" >> ${OSDL_ENV_FILE}
-		echo "export SDL_gfx_PREFIX" >> ${OSDL_ENV_FILE}
-		echo "LD_LIBRARY_PATH=\$SDL_gfx_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL2_gfx_PREFIX=${SDL2_gfx_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL2_gfx_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL2_gfx_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${SDL_gfx_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL2_gfx_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
 		if [ $is_windows -eq 0 ] ; then
 
-			PATH=${SDL_gfx_PREFIX}/lib:${PATH}
+			PATH=${SDL2_gfx_PREFIX}/lib:${PATH}
 			export PATH
 
-			echo "PATH=\$SDL_gfx_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL2_gfx_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 		fi
 
 		echo "" >> ${OSDL_ENV_FILE}
 
-		setBuildEnv ${MAKE} install prefix=${SDL_gfx_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${SDL2_gfx_PREFIX}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
@@ -5297,7 +5301,7 @@ generateSDL_gfx()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to install SDL_gfx (application)."
+		ERROR "Unable to install SDL2_gfx (application)."
 		exit 13
 	fi
 
@@ -5305,7 +5309,7 @@ generateSDL_gfx()
 	${MKDIR} -p "${FIXED_FONT_REPOSITORY}" && ${CP} -f Fonts/*.fnt "${FIXED_FONT_REPOSITORY}"
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to install SDL_gfx fonts."
+		ERROR "Unable to install SDL2_gfx fonts."
 		exit 14
 	fi
 
@@ -5317,42 +5321,42 @@ generateSDL_gfx()
 
 	if [ $? != 0 ] ; then
 		echo
-		WARNING "SDL_gfx post-install cleaning failed, non-fatal error."
+		WARNING "SDL2_gfx post-install cleaning failed, non-fatal error."
 	fi
 
 	printEndList
 
-	LOG_STATUS "SDL_gfx successfully installed."
+	LOG_STATUS "SDL2_gfx successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanSDL_gfx()
+cleanSDL2_gfx()
 {
-	LOG_STATUS "Cleaning SDL gfx library build tree..."
-	${RM} -rf "SDL_gfx-${SDL_gfx_VERSION}"
+	LOG_STATUS "Cleaning SDL2_gfx library build tree..."
+	${RM} -rf "SDL2_gfx-${SDL2_gfx_VERSION}"
 }
 
 
 
 ################################################################################
-# SDL_gfx build thanks to Visual Express:
+# SDL2_gfx build thanks to Visual Express:
 ################################################################################
 
-getSDL_gfx_win()
+getSDL2_gfx_win()
 {
-	LOG_STATUS "Getting SDL_gfx_win..."
-	launchFileRetrieval SDL_gfx_win
+	LOG_STATUS "Getting SDL2_gfx_win..."
+	launchFileRetrieval SDL2_gfx_win
 	return $?
 }
 
 
-prepareSDL_gfx_win()
+prepareSDL2_gfx_win()
 {
 
-	LOG_STATUS "Preparing SDL_gfx_win..."
+	LOG_STATUS "Preparing SDL2_gfx_win..."
 	if findTool gunzip ; then
 		GUNZIP=$returnedString
 	else
@@ -5367,7 +5371,7 @@ prepareSDL_gfx_win()
 		exit 9
 	fi
 
-	printBeginList "SDL_gfx    "
+	printBeginList "SDL2_gfx   "
 
 	printItem "extracting"
 
@@ -5375,64 +5379,64 @@ prepareSDL_gfx_win()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_gfx_win_ARCHIVE} ${SDL_gfx_win_ARCHIVE}.save && ${GUNZIP} -f ${SDL_gfx_win_ARCHIVE} && ${TAR} -xvf "SDL_gfx-${SDL_gfx_win_VERSION}.tar"
+		${CP} -f ${SDL2_gfx_win_ARCHIVE} ${SDL2_gfx_win_ARCHIVE}.save && ${GUNZIP} -f ${SDL2_gfx_win_ARCHIVE} && ${TAR} -xvf "SDL2_gfx-${SDL2_gfx_win_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_gfx_win_ARCHIVE}."
-		LOG_STATUS "Restoring ${SDL_gfx_win_ARCHIVE}."
-		${MV} -f ${SDL_gfx_win_ARCHIVE}.save ${SDL_gfx_win_ARCHIVE}
+		ERROR "Unable to extract ${SDL2_gfx_win_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL2_gfx_win_ARCHIVE}."
+		${MV} -f ${SDL2_gfx_win_ARCHIVE}.save ${SDL2_gfx_win_ARCHIVE}
 		exit 10
 	fi
 
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_gfx-from-LOANI" "SDL_gfx-${SDL_gfx_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL2_gfx-from-LOANI" "SDL2_gfx-${SDL2_gfx_win_VERSION}"
 
-	${MV} -f ${SDL_gfx_win_ARCHIVE}.save ${SDL_gfx_win_ARCHIVE}
-	${RM} -f "SDL_gfx-${SDL_gfx_win_VERSION}.tar"
+	${MV} -f ${SDL2_gfx_win_ARCHIVE}.save ${SDL2_gfx_win_ARCHIVE}
+	${RM} -f "SDL2_gfx-${SDL2_gfx_win_VERSION}.tar"
 
 	printOK
 
 }
 
 
-generateSDL_gfx_win()
+generateSDL2_gfx_win()
 {
 
-	LOG_STATUS "Generating SDL_gfx_win..."
+	LOG_STATUS "Generating SDL2_gfx_win..."
 
-	cd "SDL_gfx-${SDL_gfx_win_VERSION}"
+	cd "SDL2_gfx-${SDL2_gfx_win_VERSION}"
 
 	printItem "configuring"
 	printOK
 
-	sdl_gfx_solution=`pwd`"/SDL_gfx-from-LOANI/SDL_gfx-from-LOANI.sln"
+	sdl2_gfx_solution=`pwd`"/SDL2_gfx-from-LOANI/SDL2_gfx-from-LOANI.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress SDL_gfx ${sdl_gfx_solution}
+	GenerateWithVisualExpress SDL2_gfx ${sdl2_gfx_solution}
 	printOK
 
 	printItem "installing"
 
-	sdl_gfx_install_dir="${prefix}/SDL_gfx-${SDL_gfx_win_VERSION}"
-	sdl_gfx_include_install_dir="${sdl_gfx_install_dir}/include"
-	${MKDIR} -p "${sdl_gfx_include_install_dir}"
-	${CP} -f *.h "${sdl_gfx_include_install_dir}"
+	sdl2_gfx_install_dir="${prefix}/SDL2_gfx-${SDL2_gfx_win_VERSION}"
+	sdl2_gfx_include_install_dir="${sdl2_gfx_install_dir}/include"
+	${MKDIR} -p "${sdl2_gfx_include_install_dir}"
+	${CP} -f *.h "${sdl2_gfx_include_install_dir}"
 
 	printOK
 
 	printEndList
 
-	LOG_STATUS "SDL_gfx successfully installed."
+	LOG_STATUS "SDL2_gfx successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanSDL_gfx_win()
+cleanSDL2_gfx_win()
 {
-	LOG_STATUS "Cleaning SDL gfx library build tree..."
-	${RM} -rf "SDL_gfx-${SDL_gfx_win_VERSION}"
+	LOG_STATUS "Cleaning SDL2_gfx library build tree..."
+	${RM} -rf "SDL2_gfx-${SDL2_gfx_win_VERSION}"
 }
 
 
@@ -5721,29 +5725,29 @@ cleanfreetype_win()
 
 ################################################################################
 ################################################################################
-# SDL_ttf
+# SDL2_ttf
 ################################################################################
 ################################################################################
 
 ################################################################################
-# SDL_ttf for non-Windows platforms
+# SDL2_ttf for non-Windows platforms
 ################################################################################
 
-#TRACE "[loani-requiredTools] SDL_ttf"
+#TRACE "[loani-requiredTools] SDL2_ttf"
 
 
-getSDL_ttf()
+getSDL2_ttf()
 {
-	LOG_STATUS "Getting SDL_ttf..."
-	launchFileRetrieval SDL_ttf
+	LOG_STATUS "Getting SDL2_ttf..."
+	launchFileRetrieval SDL2_ttf
 	return $?
 }
 
 
-prepareSDL_ttf()
+prepareSDL2_ttf()
 {
 
-	LOG_STATUS "Preparing SDL_ttf..."
+	LOG_STATUS "Preparing SDL2_ttf..."
 	if findTool gunzip ; then
 		GUNZIP=$returnedString
 	else
@@ -5758,7 +5762,7 @@ prepareSDL_ttf()
 		exit 9
 	fi
 
-	printBeginList "SDL_ttf    "
+	printBeginList "SDL2_ttf   "
 
 	printItem "extracting"
 
@@ -5766,31 +5770,31 @@ prepareSDL_ttf()
 
 	# Prevent archive from disappearing because of gunzip.
 	{
-		${CP} -f ${SDL_ttf_ARCHIVE} ${SDL_ttf_ARCHIVE}.save && ${GUNZIP} -f ${SDL_ttf_ARCHIVE} && ${TAR} -xvf "SDL_ttf-${SDL_ttf_VERSION}.tar"
+		${CP} -f ${SDL2_ttf_ARCHIVE} ${SDL2_ttf_ARCHIVE}.save && ${GUNZIP} -f ${SDL2_ttf_ARCHIVE} && ${TAR} -xvf "SDL2_ttf-${SDL2_ttf_VERSION}.tar"
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_ttf_ARCHIVE}."
-		LOG_STATUS "Restoring ${SDL_ttf_ARCHIVE}."
-		${MV} -f ${SDL_ttf_ARCHIVE}.save ${SDL_ttf_ARCHIVE}
+		ERROR "Unable to extract ${SDL2_ttf_ARCHIVE}."
+		LOG_STATUS "Restoring ${SDL2_ttf_ARCHIVE}."
+		${MV} -f ${SDL2_ttf_ARCHIVE}.save ${SDL2_ttf_ARCHIVE}
 		exit 10
 	fi
 
-	${MV} -f ${SDL_ttf_ARCHIVE}.save ${SDL_ttf_ARCHIVE}
-	${RM} -f "SDL_ttf-${SDL_ttf_VERSION}.tar"
+	${MV} -f ${SDL2_ttf_ARCHIVE}.save ${SDL2_ttf_ARCHIVE}
+	${RM} -f "SDL2_ttf-${SDL2_ttf_VERSION}.tar"
 
 	printOK
 
 }
 
 
-generateSDL_ttf()
+generateSDL2_ttf()
 {
 
-	LOG_STATUS "Generating SDL_ttf..."
+	LOG_STATUS "Generating SDL2_ttf..."
 
-	cd "SDL_ttf-${SDL_ttf_VERSION}"
+	cd "SDL2_ttf-${SDL2_ttf_VERSION}"
 
 	printItem "configuring"
 
@@ -5800,14 +5804,14 @@ generateSDL_ttf()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to configure SDL_ttf: autogen failed."
+		ERROR "Unable to configure SDL2_ttf: autogen failed."
 		exit 11
 	fi
 
 	if [ -n "$prefix" ] ; then
 	{
 
-		SDL_ttf_PREFIX=${prefix}/SDL_ttf-${SDL_ttf_VERSION}
+		SDL2_ttf_PREFIX=${prefix}/SDL2_ttf-${SDL2_ttf_VERSION}
 
 		# --disable-sdltest added since configure tries to compile
 		# a test without letting the system libraries locations to
@@ -5818,7 +5822,7 @@ generateSDL_ttf()
 		# SDL_ttf.c needs freetype/internal/ftobjs.h, which is in the
 		# freetype sources only (not installed), hence the CPPFLAGS:
 
-		setBuildEnv ./configure --prefix=${SDL_ttf_PREFIX} --exec-prefix=${SDL_ttf_PREFIX} --with-freetype-prefix=${freetype_PREFIX} --with-freetype-exec-prefix=${freetype_PREFIX} --with-sdl-prefix=${SDL_PREFIX} --with-sdl-exec-prefix=${SDL_PREFIX} --disable-sdltest CPPFLAGS="-I${repository}/freetype-${freetype_VERSION}/include"
+		setBuildEnv ./configure --prefix=${SDL2_ttf_PREFIX} --exec-prefix=${SDL2_ttf_PREFIX} --with-freetype-prefix=${freetype_PREFIX} --with-freetype-exec-prefix=${freetype_PREFIX} --with-sdl-prefix=${SDL2_PREFIX} --with-sdl-exec-prefix=${SDL2_PREFIX} --disable-sdltest CPPFLAGS="-I${repository}/freetype-${freetype_VERSION}/include"
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
 	{
@@ -5828,7 +5832,7 @@ generateSDL_ttf()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to configure SDL_ttf."
+		ERROR "Unable to configure SDL2_ttf."
 		exit 11
 	fi
 
@@ -5836,7 +5840,7 @@ generateSDL_ttf()
 
 	printItem "building"
 
-	# SDL_ttf will not compile if not patched:
+	# SDL2_ttf will not compile if not patched:
 	# Ugly tr-based hack to prevent the numerous versions of sed to
 	# panic when having a newline in replacement string:
 	# This modification used to work with previous SDL_ttf releases:
@@ -5859,7 +5863,7 @@ generateSDL_ttf()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to build SDL_ttf."
+		ERROR "Unable to build SDL2_ttf."
 		exit 12
 	fi
 
@@ -5872,26 +5876,26 @@ generateSDL_ttf()
 	{
 
 
-		echo "# SDL_ttf section." >> ${OSDL_ENV_FILE}
+		echo "# SDL2_ttf section." >> ${OSDL_ENV_FILE}
 
-		echo "SDL_ttf_PREFIX=${SDL_ttf_PREFIX}" >> ${OSDL_ENV_FILE}
-		echo "export SDL_ttf_PREFIX" >> ${OSDL_ENV_FILE}
-		echo "LD_LIBRARY_PATH=\$SDL_ttf_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
+		echo "SDL2_ttf_PREFIX=${SDL2_ttf_PREFIX}" >> ${OSDL_ENV_FILE}
+		echo "export SDL2_ttf_PREFIX" >> ${OSDL_ENV_FILE}
+		echo "LD_LIBRARY_PATH=\$SDL2_ttf_PREFIX/lib:\${LD_LIBRARY_PATH}" >> ${OSDL_ENV_FILE}
 
 		if [ $is_windows -eq 0 ] ; then
 
-			PATH=${SDL_ttf_PREFIX}/lib:${PATH}
+			PATH=${SDL2_ttf_PREFIX}/lib:${PATH}
 			export PATH
 
-			echo "PATH=\$SDL_ttf_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
+			echo "PATH=\$SDL2_ttf_PREFIX/lib:\${PATH}" >> ${OSDL_ENV_FILE}
 		fi
 
 		echo "" >> ${OSDL_ENV_FILE}
 
-		LD_LIBRARY_PATH=${SDL_ttf_PREFIX}/lib:${LD_LIBRARY_PATH}
+		LD_LIBRARY_PATH=${SDL2_ttf_PREFIX}/lib:${LD_LIBRARY_PATH}
 		export LD_LIBRARY_PATH
 
-		setBuildEnv ${MAKE} install prefix=${SDL_ttf_PREFIX}
+		setBuildEnv ${MAKE} install prefix=${SDL2_ttf_PREFIX}
 
 	} 1>>"$LOG_OUTPUT" 2>&1
 	else
@@ -5903,7 +5907,7 @@ generateSDL_ttf()
 
 	if [ $? != 0 ] ; then
 		echo
-		ERROR "Unable to install SDL_ttf."
+		ERROR "Unable to install SDL2_ttf."
 		exit 13
 	fi
 
@@ -5911,38 +5915,38 @@ generateSDL_ttf()
 
 	printEndList
 
-	LOG_STATUS "SDL_ttf successfully installed."
+	LOG_STATUS "SDL2_ttf successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanSDL_ttf()
+cleanSDL2_ttf()
 {
-	LOG_STATUS "Cleaning SDL ttf library build tree..."
-	${RM} -rf "SDL_ttf-${SDL_ttf_VERSION}"
+	LOG_STATUS "Cleaning SDL2_ttf library build tree..."
+	${RM} -rf "SDL2_ttf-${SDL2_ttf_VERSION}"
 }
 
 
 
 ################################################################################
-# SDL_ttf build thanks to Visual Express.
+# SDL2_ttf build thanks to Visual Express.
 ################################################################################
 
 
-getSDL_ttf_win()
+getSDL2_ttf_win()
 {
-	LOG_STATUS "Getting SDL_ttf for windows..."
-	launchFileRetrieval SDL_ttf_win
+	LOG_STATUS "Getting SDL2_ttf for windows..."
+	launchFileRetrieval SDL2_ttf_win
 	return $?
 }
 
 
-prepareSDL_ttf_win()
+prepareSDL2_ttf_win()
 {
 
-	LOG_STATUS "Preparing SDL_ttf for windows.."
+	LOG_STATUS "Preparing SDL2_ttf for windows.."
 	if findTool unzip ; then
 		UNZIP=$returnedString
 	else
@@ -5950,31 +5954,31 @@ prepareSDL_ttf_win()
 		exit 8
 	fi
 
-	printBeginList "SDL_ttf    "
+	printBeginList "SDL2_ttf   "
 
 	printItem "extracting"
 
 	cd $repository
 
 	{
-		${UNZIP} -o ${SDL_ttf_win_ARCHIVE}
+		${UNZIP} -o ${SDL2_ttf_win_ARCHIVE}
 	} 1>>"$LOG_OUTPUT" 2>&1
 
 	if [ $? != 0 ] ; then
-		ERROR "Unable to extract ${SDL_ttf_win_ARCHIVE}."
+		ERROR "Unable to extract ${SDL2_ttf_win_ARCHIVE}."
 		exit 10
 	fi
 
-	cd "SDL_ttf-${SDL_ttf_win_VERSION}"
+	cd "SDL2_ttf-${SDL2_ttf_win_VERSION}"
 
-	sdl_ttf_install_dir="${prefix}/SDL_ttf-${SDL_ttf_win_VERSION}"
+	sdl2_ttf_install_dir="${prefix}/SDL2_ttf-${SDL2_ttf_win_VERSION}"
 
-	${MKDIR} -p ${sdl_ttf_install_dir}
+	${MKDIR} -p ${sdl2_ttf_install_dir}
 	cd $repository
 
-	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-LOANI" "SDL_ttf-${SDL_ttf_win_VERSION}" && ${CP} -f "${WINDOWS_SOLUTIONS_ROOT}/SDL_ttf-from-LOANI/SDL_ttf.c" "SDL_ttf-${SDL_ttf_win_VERSION}"
+	${CP} -r -f "${WINDOWS_SOLUTIONS_ROOT}/SDL2_ttf-from-LOANI" "SDL2_ttf-${SDL2_ttf_win_VERSION}" && ${CP} -f "${WINDOWS_SOLUTIONS_ROOT}/SDL2_ttf-from-LOANI/SDL2_ttf.c" "SDL2_ttf-${SDL2_ttf_win_VERSION}"
 	if [ $? != 0 ] ; then
-		ERROR "Unable to copy SDL_ttf solution and fixes in build tree."
+		ERROR "Unable to copy SDL2_ttf solution and fixes in build tree."
 		exit 11
 	fi
 
@@ -5983,43 +5987,43 @@ prepareSDL_ttf_win()
 }
 
 
-generateSDL_ttf_win()
+generateSDL2_ttf_win()
 {
 
-	LOG_STATUS "Generating SDL_ttf for windows..."
+	LOG_STATUS "Generating SDL2_ttf for windows..."
 
-	cd "SDL_ttf-${SDL_ttf_win_VERSION}"
+	cd "SDL2_ttf-${SDL2_ttf_win_VERSION}"
 
 	printItem "configuring"
 	printOK
 
-	sdl_ttf_solution=`pwd`"/SDL_ttf-from-LOANI/SDL_ttf-from-LOANI.sln"
+	sdl2_ttf_solution=`pwd`"/SDL2_ttf-from-LOANI/SDL2_ttf-from-LOANI.sln"
 
 	printItem "building"
-	GenerateWithVisualExpress SDL_ttf ${sdl_ttf_solution}
+	GenerateWithVisualExpress SDL2_ttf ${sdl2_ttf_solution}
 	printOK
 
 	printItem "installing"
 
-	sdl_ttf_include_install_dir="${sdl_ttf_install_dir}/include"
-	${MKDIR} -p ${sdl_ttf_include_install_dir}
-	${CP} -f SDL_ttf.h ${sdl_ttf_include_install_dir}
+	sdl2_ttf_include_install_dir="${sdl2_ttf_install_dir}/include"
+	${MKDIR} -p ${sdl2_ttf_include_install_dir}
+	${CP} -f SDL2_ttf.h ${sdl2_ttf_include_install_dir}
 
 	printOK
 
 	printEndList
 
-	LOG_STATUS "SDL_ttf successfully installed."
+	LOG_STATUS "SDL2_ttf successfully installed."
 
 	cd "$initial_dir"
 
 }
 
 
-cleanSDL_ttf_win()
+cleanSDL2_ttf_win()
 {
-	LOG_STATUS "Cleaning SDL_ttf build tree..."
-	${RM} -rf "SDL_ttf-${SDL_ttf_win_VERSION}"
+	LOG_STATUS "Cleaning SDL2_ttf build tree..."
+	${RM} -rf "SDL2_ttf-${SDL2_ttf_win_VERSION}"
 }
 
 
@@ -7737,7 +7741,7 @@ generateOSDL()
 
 			# We suppose here that if we have a prefix, all tools use prefixes:
 
-			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-pcre-prefix=$PCRE_PREFIX --with-freeimage-prefix=$FreeImage_PREFIX --with-cegui-prefix=$CEGUI_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
+			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL2_image_PREFIX --with-sdl_gfx-prefix=$SDL2_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL2_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL2_mixer_PREFIX --with-pcre-prefix=$PCRE_PREFIX --with-freeimage-prefix=$FreeImage_PREFIX --with-cegui-prefix=$CEGUI_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
 
 			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${OSDL_PREFIX} ${tools_prefixes}
 
@@ -7817,7 +7821,7 @@ generateOSDL()
 			# We suppose here that if we have a prefix, all tools use
 			# prefixes:
 
-			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL_image_PREFIX --with-sdl_gfx-prefix=$SDL_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL_mixer_PREFIX --with-libagar-prefix=$Agar_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
+			tools_prefixes="--with-osdl-prefix=$OSDL_PREFIX --with-ceylan-prefix=$Ceylan_PREFIX --with-sdl-prefix=$SDL_PREFIX --with-libjpeg-prefix=$libjpeg_PREFIX --with-zlib-prefix=$zlib_PREFIX --with-libpng-prefix=$libpng_PREFIX --with-sdl_image-prefix=$SDL2_image_PREFIX --with-sdl_gfx-prefix=$SDL2_gfx_PREFIX --with-freetype-prefix=$freetype_PREFIX --with-sdl_ttf-prefix=$SDL2_ttf_PREFIX --with-ogg=$libogg_PREFIX --with-vorbis=$libvorbis_PREFIX --with-sdl_mixer-prefix=$SDL2_mixer_PREFIX --with-libagar-prefix=$Agar_PREFIX --with-physicsfs-prefix=$PhysicsFS_PREFIX"
 
 			setBuildEnv --exportEnv --appendEnv ./configure --prefix=${OSDL_PREFIX} ${tools_prefixes}
 
